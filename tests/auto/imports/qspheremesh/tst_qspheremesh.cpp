@@ -162,7 +162,7 @@ void tst_QSphereMesh::testGeometry()
                     if (triangleNormal.lengthSquared()>0.001) {
                         triangleNormal.normalize();
                         float dp = QVector3D::dotProduct(triangleNormal,nn0);
-                        QVERIFY(dp<-0.8628);
+                        QVERIFY(dp>0.8628);
                     }
                 }
             }
