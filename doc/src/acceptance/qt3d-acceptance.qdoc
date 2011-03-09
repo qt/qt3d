@@ -1,0 +1,196 @@
+/****************************************************************************
+**
+** Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
+** All rights reserved.
+** Contact: Nokia Corporation (qt-info@nokia.com)
+**
+** This file is part of the QtQuick3D documentation of the Qt Toolkit.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the Technology Preview License Agreement accompanying
+** this package.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of this
+** file.
+**
+** If you have questions regarding the use of this file, please contact
+** Nokia at qt-info@nokia.com.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \page qt3d-acceptance.html
+    \title Acceptance tests for Qt/3D
+    \keyword Acceptance
+
+    This section of the documentation contains some recommended
+    acceptance tests for use when verifying that Qt/3D has been
+    successfully ported to a new platform or device, and to
+    determine if the major features of Qt/3D work correctly prior
+    to a release.  The list of tests is not intended to be exhaustive.
+
+    When \l{Contributing to Qt/3D}{reporting bugs}, please include
+    as much information as possible about your platform and particularly
+    its OpenGL implementation.  The \c{qglinfo} program in the Qt/3D
+    source tree can be used to collect up information about the OpenGL
+    version, features, and extensions.  On X11 systems, usually
+    \c{glxinfo} can be run to obtain similar information.
+
+    \section1 Basic bring-up
+
+    A pre-requisite for the acceptance tests is that Qt and Qt/3D have
+    been built and installed in accordance with the
+    \l{Building Qt/3D}{build instructions}.  In particular, Qt must
+    be configured with OpenGL support and QGLWidget must be working.
+
+    First, run all unit tests on the platform or device and verify that
+    they all pass (\l{Contributing to Qt/3D}{report bugs} for those that
+    do not pass).  The "make check" rule can be used to run the
+    unit tests if you are not cross-compiling.  For cross-compile
+    environments, copy all of the \c{tst_*} binaries under \c{tests/auto}
+    to the device and run them.
+
+    Next, run the \l{Teapot Example} and verify that it looks similar
+    to the following picture:
+
+    \image teapot-screenshot.png
+
+    Verify that there is no horizontal or vertical distortion,
+    as shown in the following pictures:
+
+    \raw HTML
+    <center><table><tr><td>
+    \endraw
+    \image teapot-distortion.png
+    \raw HTML
+    </td><td>
+    \endraw
+    \image teapot-distortion2.png
+    \raw HTML
+    </td></tr></table></center>
+    \endraw
+
+    Resize the window if possible.  The teapot should change scale but
+    keep its relative horizontal and vertical size without distortion.
+    Next, verify that the teapot can be rotated using either the mouse
+    or the cursor keys:
+
+    \image teapot-rotated.png
+
+    If the teapot does not appear at all, then check stdout for any
+    error and warning messages from the GLSL shader compiler.
+
+    \section1 Animations
+
+    Run the \l{Basket Example} and verify that the basket spins on
+    its vertical axis, and continues to do so as the window is
+    resized or the orientiation is changed with the mouse or keyboard.
+    The model should also be textured with a basket weave pattern:
+
+    \image basket-screenshot.png
+
+    Running the basket example with the environment variable
+    \c{QT3D_LOG_EVENTS} set to 1 should produce some qDebug()
+    output that indicates the number of milliseconds per frame,
+    and hence the frame rate:
+
+    \code
+    $ QT3D_LOG_EVENTS=1 ./basket
+    ...
+    LOG[0:00:01.681]: ENTER: QGLView::paintGL (16 ms since last enter)
+    LOG[0:00:01.681]: LEAVE: QGLView::paintGL (0 ms elapsed)
+    LOG[0:00:01.696]: ENTER: QGLView::paintGL (15 ms since last enter)
+    LOG[0:00:01.696]: LEAVE: QGLView::paintGL (0 ms elapsed)
+    LOG[0:00:01.713]: ENTER: QGLView::paintGL (17 ms since last enter)
+    ...
+    \endcode
+
+    If the basket does not spin, then try to determine if
+    \c{BasketView::paintGL()} is being called every frame or not.
+    If it is being called over and over, then the problem
+    may be in Qt/3D.  But if it is not being called repeatedly, then
+    it could be a problem in Qt's animation framework or QGLWidget
+    update processing.
+
+    \section1 Rendering into a framebuffer object
+
+    Run the \l{nesting}{Nesting} example to test if rendering into a
+    framebuffer object works:
+
+    \image nesting-screenshot.png
+
+    The teapot on the side of the blue cube is the part of the scene
+    that uses a framebuffer object.  The teapot should be spinning.
+
+    This test also checks that alpha blending works in the underlying
+    OpenGL implementation.
+
+    \section1 Model loading
+
+    Run the \l{Loading a 3DS model with Qt/3D}{Penguin} example
+    to check that 3DS model loading basically works:
+
+    \image penguin-screenshot.png
+
+    If the model fails to appear, it is possible that the 3DS
+    plug-in has not been installed correctly or it could not
+    be located at runtime.  It is recommended that you set the
+    \c{QT_DEBUG_PLUGINS} environment variable to 1 to get extra
+    information about why the plug-in could not be loaded.
+
+    \section1 QML/3D
+
+    Run the QML/3D version of the bouncing
+    \l{Teapot Example in QML/3D}{Teapot Example} using
+    "qmlviewer -opengl teapot-bounce.qml".  The teapot should have a
+    shiny appearence (compared to the grey teapot above) and bounce
+    up and down:
+
+    \image teapot-china-screenshot.png
+
+    It should be possible to rotate the teapot using the mouse
+    and keyboard.
+
+    Note that when running QML/3D examples on a device that both the
+    QML files and the model files must be copied to the device (the model
+    file is "teapot.bez" in the case of the bouncing teapot example).
+
+    \section1 Object picking
+
+    Run the QML/3D \l{Tea Service Demo in QML}{Tea Service} demo
+    with "qmlviewer -opengl teaservice.qml".  Click on the teapot, teacups,
+    and teaspoons to make them jump up, and click on the teapot
+    spout and handle for other effects.  This example tests object
+    picking and QML animations.
+
+    \image teaservice-qml-screenshot.png
+
+    Note: It may be necessary to adjust the width and height properties
+    in teaservice.qml to match the device's screen size.
+
+    \section1 Build tests
+
+    The Qt/3D code base contains a number of \c{#ifdef} statements
+    that may cause the build to fail in non-default Qt configurations
+    or when strict API options are enabled.  It is recommended that
+    these configurations be verified periodically, particularly
+    prior to a release.
+
+    \code
+    qmake opengl.pro \
+            DEFINES+=QT_NO_DEBUG_STREAM \
+            DEFINES+=QT_NO_DATASTREAM \
+            DEFINES+=QT_NO_CAST_FROM_BYTEARRAY \
+            DEFINES+=QT_NO_CAST_TO_ASCII \
+            DEFINES+=QT_NO_CAST_FROM_ASCII
+    \endcode
+
+    \l{index.html}{Return to the main Qt/3D page}.
+*/

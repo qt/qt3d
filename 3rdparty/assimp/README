@@ -1,0 +1,71 @@
+ASSIMP - Open Asset Import Library
+==================================
+
+v1.1 (April 2010)
+
+http://assimp.sourceforge.net/lib_html/index.html
+
+
+ASSIMP is a library to load and process geometric scenes from various
+data formats. It is tailored at typical game scenarios by supporting a
+node hierarchy, static or skinned meshes, materials, bone animations and
+potential texture data. The library is *not* designed for speed, it is
+primarily useful for importing assets from various sources once and
+storing it in a engine-specific format for easy and fast
+every-day-loading. ASSIMP is also able to apply various post processing
+steps to the imported data such as conversion to indexed meshes,
+calculation of normals or tangents/bitangents or conversion from
+right-handed to left-handed coordinate systems.
+
+ASSIMP currently supports the following file formats (note that some
+loaders lack some features of their formats because some file formats
+contain data not supported by ASSIMP, some stuff would require so much
+conversion work that it has not been implemented yet and some (most ...)
+formats lack proper specifications):
+
+
+Collada ( *.dae;*.xml )
+Biovision BVH ( *.bvh )
+3D Studio Max 3DS ( *.3ds )
+3D Studio Max ASE ( *.ase )
+Wavefront Object ( *.obj )
+Stanford Polygon Library ( *.ply )
+AutoCAD DXF ( *.dxf ) 2
+Neutral File Format ( *.nff )
+Sense8 WorldToolkit ( *.nff )
+Valve Model ( *.smd,*.vta ) 3
+Quake I ( *.mdl )
+Quake II ( *.md2 )
+Quake III ( *.md3 )
+RtCW ( *.mdc )
+Doom 3 ( *.md5mesh;*.md5anim;*.md5camera )
+DirectX X ( *.x ).
+Quick3D ( *.q3o;*q3s ).
+Raw Triangles ( *.raw ).
+AC3D ( *.ac ).
+Stereolithography ( *.stl ).
+Autodesk DXF ( *.dxf ).
+Irrlicht Mesh ( *.irrmesh;*.xml ).
+Irrlicht Scene ( *.irr;*.xml ).
+Object File Format ( *.off ).
+Terragen Terrain ( *.ter )
+3D GameStudio Model ( *.mdl )
+3D GameStudio Terrain ( *.hmp )
+Ogre (*.mesh.xml, *.skeleton.xml, *.material)3
+Milkshape 3D ( *.ms3d )
+LightWave Model ( *.lwo )
+LightWave Scene ( *.lws )
+Modo Model ( *.lxo )
+CharacterStudio Motion ( *.csm )
+Stanford Ply ( *.ply )
+TrueSpace ( *.cob, *.scn )
+
+See the Importer Notes Page for informations, what a specific importer
+can do and what not. Note that although this paper claims to be the
+official documentation,
+http://assimp.sourceforge.net/main_features_formats.html
+is usually the most up-to-date list of file formats supported by the library.
+
+3: These formats support animations, but ASSIMP doesn't yet support them
+(or they're buggy)
+

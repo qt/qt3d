@@ -1,0 +1,71 @@
+/****************************************************************************
+**
+** Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
+** All rights reserved.
+** Contact: Nokia Corporation (qt-info@nokia.com)
+**
+** This file is part of the QtQuick3D documentation of the Qt Toolkit.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the Technology Preview License Agreement accompanying
+** this package.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of this
+** file.
+**
+** If you have questions regarding the use of this file, please contact
+** Nokia at qt-info@nokia.com.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \page qt3d-examples.html
+    \title Qt3D Tutorials and Examples
+    \keyword Qt3D Examples
+
+    Using C++ to build applications with Qt/3D:
+
+    \list
+    \o \l{Teapot Example}{Hello Teapot} - drawing a basic object in 3D.
+    \o \l{Applying transformations and materials to objects}{Cube} - applying transformations and materials to objects.
+    \o \l{basket}{Basket} - animating objects in 3D.
+    \o \l{nesting}{Nesting} - drawing into framebuffer objects.
+    \o \l{Loading a 3DS model with Qt/3D}{Penguin} - loading a 3DS model with Qt/3D.
+    \o \l{painter}{Painter} - basic painting operations using QGLPainter.
+    \o \l{stereo}{Stereo} - using stereoscopic displays.
+    \o \l{pvcolor}{Per-vertex Color} - building models with QGLBuilder
+       that have per-vertex color values.
+    \o \l{pageflip}{Page Flip} - using shaders to combine textures.
+    \o \l{shapes}{Shapes} - paints all of the basic OpenGL shapes.
+    \o \l{teaservice}{Tea Service} - complex scenes and object picking.
+    \endlist
+
+    Using QML to build applications with Qt/3D:
+
+    \list
+    \o \l{Teapot Example in QML/3D}{Hello Teapot} in QML/3D
+    \o \l{basket#Basket in QML/3D}{Basket} in QML/3D
+    \o \l{Applying transformations and materials to objects#Cube in QML/3D}{Cube} in QML/3D
+    \o \l{QML Stereo Viewing Example}{Stereo} - using stereoscopic displays in QML, and mixing 2D and 3D content.
+    \o \l{Monkey God in QML}{Monkey God} in QML/3D
+    \o \l{Tea Service Demo in QML}{Tea Service} in QML/3D
+    \o \l{Forest Example}{Forest} - creating billboard objects.
+    \o \l{Using GLSL shaders in QML/3D}
+    \endlist
+
+    Other topics:
+
+    \list
+    \o \l{Converting raw GL applications to use QGLPainter}
+    \o \l{Writing a scene format plug-in for Qt/3D}
+    \endlist
+
+    \l{index.html}{Return to the main Qt/3D page}.
+*/

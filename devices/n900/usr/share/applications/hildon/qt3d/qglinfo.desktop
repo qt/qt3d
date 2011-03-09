@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Name=qglinfo
+Comment=qglinfo
+Exec=/opt/desktop/scripts/run-qt.sh /opt/qt3d/bin/qglinfo -fullscreen
+Icon=teapot-logo
+Terminal=false
+Type=Application
+Categories=System;TerminalEmulator;
+X-HildonDesk-ShowInToolbar=true

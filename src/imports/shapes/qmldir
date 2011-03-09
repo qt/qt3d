@@ -1,0 +1,4 @@
+plugin qshapesqmlplugin
+Cube 1.0 Cube.qml
+Teapot 1.0 Teapot.qml
+Quad 1.0 Quad.qml

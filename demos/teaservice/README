@@ -1,0 +1,7 @@
+
+This example demonstrates a view with multiple scene objects, plus material
+parameters.  It shows a teapot, two teacups, and two teaspoons.
+
+The model source data came from "http://www.sjbaker.org/teapot/teaset.tgz".
+
+Note: the teacups have no bottoms in the original source data.

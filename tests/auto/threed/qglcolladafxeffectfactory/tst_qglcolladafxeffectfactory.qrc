@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>collada_cube.xml</file>
+    </qresource>
+    <qresource prefix="/../flowers">
+        <file>rose01.jpg</file>
+    </qresource>
+</RCC>

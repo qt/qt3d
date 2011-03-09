@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Name=monkeygod
+Comment=monkeygod
+Exec=/opt/desktop/scripts/run-qt.sh qmlviewer -opengl /opt/desktop/declarative/monkeygod/monkeygod_no_platform.qml
+Icon=qml3d-logo
+Terminal=false
+Type=Application
+Categories=System;TerminalEmulator;
+X-HildonDesk-ShowInToolbar=true
