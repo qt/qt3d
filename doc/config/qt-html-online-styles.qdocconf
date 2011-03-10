@@ -41,6 +41,7 @@ extraimages.HTML        = qt-logo.png \
                           sprites-combined.png \
                           spinner.gif \
                           teapot-logo.png \
+                          qt3d-logo.png \
                           gradient.png
 
 # Include the style sheets and scripts used.

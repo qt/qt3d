@@ -27,8 +27,8 @@
 
 /*!
     \group qt3d::graphicsview
-    \title Qt/3D Graphics View Integration
-    \keyword Qt/3D Graphics View Integration
+    \title Qt3D Graphics View Integration
+    \keyword Qt3D Graphics View Integration
 
     \generatelist{related}
 */

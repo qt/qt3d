@@ -2,7 +2,7 @@
 # Determine which qdoc3 binary we should be using.  We try to use the
 # one from the Qt we built against.  Otherwise use "qdoc3" on the PATH.
 TOPSRC          = $$PWD/..
-QDOCCONF_FILE   = $$PWD/config/qt3d.qdocconf
+QDOCCONF_FILE   = $$PWD/config/qt3d-online.qdocconf
 DESTDIR         = $$OUT_PWD/doc
 
 win32:!win32-g++ {

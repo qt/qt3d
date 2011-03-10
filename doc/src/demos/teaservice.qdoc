@@ -29,7 +29,7 @@
     \example teaservice
     \title Tea Service Demo
 
-    The Tea Service demo shows how Qt/3D can be used to draw a complex
+    The Tea Service demo shows how Qt3D can be used to draw a complex
     scene made up of several objects.  It also demonstrates object picking.
 
     \image teaservice-screenshot.png

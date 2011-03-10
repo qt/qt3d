@@ -24,10 +24,6 @@ SOURCES += \
     qt3dnamespace.cpp \
     scale3d.cpp \
     viewport.cpp \
-    floatingitem.cpp \
-    floatingitemeffect.cpp \
-    stereoview.cpp \
-    stereovieweffect.cpp \
     qgraphicslookattransform.cpp \
     shaderprogram.cpp
 
@@ -35,25 +31,15 @@ HEADERS += \
     qt3dnamespace.h \
     scale3d.h \
     viewport.h \
-    floatingitem.h \
-    floatingitemeffect.h \
-    stereoview.h \
-    stereovieweffect.h \
     qgraphicslookattransform.h \
     shaderprogram.h \
     shaderprogram_p.h
 
 scenegraph {
     SOURCES += \
-        floatingitem_sg.cpp \
-        floatingitemnode_sg.cpp \
-        stereoinfo_sg.cpp \
         viewport_sg.cpp \
         viewportfbonode_sg.cpp
     HEADERS += \
-        floatingitem_sg.h \
-        floatingitemnode_sg.h \
-        stereoinfo_sg.h \
         viewport_sg.h \
         viewportfbonode_sg.h
 }

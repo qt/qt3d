@@ -30,6 +30,7 @@ symbian {
     }
 }
 
+include(../private/private.pri)
 include(threed.pri)
 PUBLIC_HEADERS = $$HEADERS
 HEADERS += $$PRIVATE_HEADERS
@@ -38,9 +39,9 @@ DEFINES += QT_BUILD_Qt3D_LIB
 !contains(QT_CONFIG, egl):DEFINES += QT_NO_EGL
 
 INSTALL_HEADERS = ""
-for (hdr, PUBLIC_HEADERS) {
+for(hdr, PUBLIC_HEADERS) {
     found_vdir = $$PWD
-    for (vdir, VPATH) {
+    for(vdir, VPATH) {
         found_vdir = $$vdir
         exists($$found_vdir/$$hdr):break()
     }

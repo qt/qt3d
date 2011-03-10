@@ -59,8 +59,6 @@
 #include "qgraphicslookattransform.h"
 #include "shaderprogram.h"
 #include "qt3dnamespace.h"
-#include "floatingitem.h"
-#include "stereoview.h"
 #if defined(QML_VERSION) && QML_VERSION >= 0x020000
 #define QT_USE_SCENEGRAPH 1
 #include "floatingitem_sg.h"
@@ -103,8 +101,6 @@ public:
         qmlRegisterType<ShaderProgram>(uri,1,0,"ShaderProgram");
 
         qmlRegisterType<Viewport>(uri,1,0,"Viewport");
-        qmlRegisterType<FloatingItem>(uri,1,0,"FloatingItem");
-        qmlRegisterType<StereoView>(uri,1,0,"StereoView");
 
         // Needed to make QDeclarativeListProperty<QGraphicsTransform3D> work.
         qmlRegisterType<QGraphicsTransform3D>();
@@ -112,7 +108,6 @@ public:
 
 #ifdef QT_USE_SCENEGRAPH
         qmlRegisterType<ViewportSG>(uri,2,0,"Viewport");
-        qmlRegisterType<FloatingItemSG>(uri,2,0,"FloatingItem");
 #endif
     }
     void initializeEngine(QDeclarativeEngine *engine, const char *uri)

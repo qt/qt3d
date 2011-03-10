@@ -26,12 +26,12 @@
 ****************************************************************************/
 
 /*!
-    \title Using GLSL shaders in QML/3D
+    \title Using GLSL shaders in QtQuick3D
     \example tutorials/shaders
 
 
     In this tutorial, we will show how to apply QML property animations to
-    GLSL shaders in a QML/3D application.
+    GLSL shaders in a QtQuick3D application.
 
     Starting with a relatively simple shader program, we are going to
     manipulate various parameters to explain how both the shader and the QML
@@ -52,7 +52,7 @@
         </table>
     \endraw
 
-    At the highest level, shaders in QML/3D are created using the ShaderProgram
+    At the highest level, shaders in QtQuick3D are created using the ShaderProgram
     element.  The ShaderProgram element in this example has the id \a program,
     and applying it to the teapot is as simple as assigning it to the \c effect
     property of an Item3D derived element.

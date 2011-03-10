@@ -27,9 +27,9 @@
 
 /*!
     \example tutorials/penguin
-    \title Loading a 3DS model with Qt/3D
+    \title Loading a 3DS model with Qt3D
 
-    This tutorial shows how Qt/3D can be used to load a simple
+    This tutorial shows how Qt3D can be used to load a simple
     model object in 3D Studio Max (3DS) format with a perspective
     camera view.
 

@@ -45,7 +45,7 @@
 
 #include <QtCore/qfile.h>
 #include <QtCore/qfileinfo.h>
-#include <QtCore/private/qfactoryloader_p.h>
+//#include <QtCore/private/qfactoryloader_p.h>
 #include <QtCore/qlibraryinfo.h>
 #include <QtNetwork/qnetworkreply.h>
 #include <QtCore/qcoreevent.h>

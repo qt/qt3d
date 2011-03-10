@@ -41,7 +41,6 @@
 
 #include "viewport.h"
 #include "qdeclarativeeffect.h"
-#include "stereoview.h"
 
 #include <Qt3D/qgllightmodel.h>
 #include <Qt3D/qgllightparameters.h>
@@ -84,7 +83,7 @@
     }
     \endcode
 
-    \sa Camera, StereoView
+    \sa Camera
 */
 
 QT_BEGIN_NAMESPACE
@@ -439,17 +438,8 @@ void Viewport::paint(QPainter *p, const QStyleOptionGraphicsItem * style, QWidge
     if (!d->itemsInitialized)
         initializeGL(&painter);
 
-    // If this Viewport is surrounded by a StereoView item,
-    // then fetch the eye to be rendered from it.
-    StereoView *stereoView = StereoView::findView(this);
-    qreal adjust;
-    if (stereoView) {
-        painter.setEye(stereoView->eye());
-        adjust = stereoView->aspectRatioAdjustment();
-    } else {
-        painter.setEye(QGL::NoEye);
-        adjust = 1.0f;
-    }
+    painter.setEye(QGL::NoEye);
+    qreal adjust = 1.0f;
 
     // Modify the GL viewport to only cover the extent of this QDeclarativeItem.
     QTransform transform = p->combinedTransform();

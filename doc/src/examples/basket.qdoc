@@ -29,9 +29,27 @@
     \example basket
     \title Basket Example
 
-    \section2 Basket in C++
+    \section2 Basket in QtQuick3D
 
-    The Basket example shows how Qt/3D can be used to draw an animated
+    The QtQuick3D version of the basket example is very similar in
+    structure to the C++ version above, but much simpler.
+    We start by defining a viewport with a specific camera position:
+
+    \snippet declarative/basket.qml 1
+
+    We then add an \l Item3D object to load the basket model and
+    apply the desired texture to it:
+
+    \snippet declarative/basket.qml 2
+
+    And then we apply an animation to the rotation component of
+    the item's transform property:
+
+    \snippet declarative/basket.qml 3
+
+    \section2 Basket in Qt3D 
+
+    The Basket example shows how Qt3D can be used to draw an animated
     object covered in a texture.  The basic application shell is similar
     to the \l{teapot}{Hello Teapot} example.  In this case, we create
     the basket object and add a texture to it as follows:
@@ -57,24 +75,6 @@
     \snippet basket/basketview.cpp 3
 
     \image basket-screenshot.png
-
-    \section2 Basket in QML/3D
-
-    The QML/3D version of the basket example is very similar in
-    structure to the C++ version above, but much simpler.
-    We start by defining a viewport with a specific camera position:
-
-    \snippet declarative/basket.qml 1
-
-    We then add an \l Item3D object to load the basket model and
-    apply the desired texture to it:
-
-    \snippet declarative/basket.qml 2
-
-    And then we apply an animation to the rotation component of
-    the item's transform property:
-
-    \snippet declarative/basket.qml 3
 
     \l{qt3d-examples.html}{Return to Examples}.
 */

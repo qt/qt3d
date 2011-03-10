@@ -29,9 +29,9 @@
     \example teapot
     \title Teapot Example
 
-    The Teapot example shows how Qt/3D can be used to draw a simple
+    The Teapot example shows how Qt3D can be used to draw a simple
     teapot object with a perspective camera view in C++.  There is
-    also a \l{Teapot Example in QML/3D}{QML/3D version} of the teapot
+    also a \l{Teapot Example in QtQuick3D}{QtQuick3D version} of the teapot
     example.
 
     We start by defining a class that inherits from QGLView, which

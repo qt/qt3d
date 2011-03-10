@@ -26,13 +26,14 @@
 ****************************************************************************/
 
 /*!
-    \title Writing a scene format plug-in for Qt/3D
+    \title Writing a scene format plug-in for Qt3D
+    \keyword Scene Format Plugin
     \example sceneformats/obj
 
     Scene format plugins are used to load external 3D model file
     formats like \bold 3DS, \bold obj, and so on.  In this tutorial we will
     do a walk-through of the \bold obj scene format plugin to
-    demonstrate what is required to add a new format to Qt/3D.
+    demonstrate what is required to add a new format to Qt3D.
 
     Models are loaded by QGLAbstractScene::loadScene(), which locates
     a suitable plug-in for the format, and then asks the plug-in to
@@ -87,7 +88,7 @@
     \snippet sceneformats/obj/qglobjscene.h 3
 
     The most important function is the override for
-    QGLAbstractScene::objects(), which allows the rest of Qt/3D
+    QGLAbstractScene::objects(), which allows the rest of Qt3D
     to query the full list of objects in the model file.
     The scene object can also override QGLAbstractScene::object()
     if it has an efficient method to quickly look up an object by name.
@@ -98,11 +99,11 @@
     but doesn't have to be.
 
     Note: the plug-in does not need to use QGLBuilder and the
-    other Qt/3D classes to load the model if it doesn't want to.
+    other Qt3D classes to load the model if it doesn't want to.
     It can instantiate subclasses of QGLSceneNode that override
     the draw() method and draws the object using whatever technique
     the plug-in chooses.  It just needs to leave the OpenGL state
-    in the condition that it found it so that other parts of Qt/3D
+    in the condition that it found it so that other parts of Qt3D
     will not be confused.
 
     Once you have written a plug-in for your new format, you should

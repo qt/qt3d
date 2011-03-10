@@ -83,6 +83,8 @@ QT_BEGIN_NAMESPACE
 
     \section1 Stereo viewing support
 
+    Note - Stereo viewing is experimental and unsupported.
+
     If the hardware supports stereo buffers, then each time the scene needs
     to be painted, QGLView renders it twice: first from the perspective of
     the left eye, and then from the perspective of the right eye.
@@ -162,8 +164,6 @@ QT_BEGIN_NAMESPACE
     If the application sets the stereo type with setStereoType(),
     that will be used.  Next is the command-line setting, and finally
     the contents of the environment variable.
-
-    \sa {Stereo Viewing Example}
 */
 
 /*!

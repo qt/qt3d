@@ -30,7 +30,7 @@
     \title Shapes Demo
 
     The Shapes demo shows many of the basic shapes that can be
-    drawn using Qt/3D.
+    drawn using Qt3D.
 
     \image shapes-screenshot.png
 

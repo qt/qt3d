@@ -27,7 +27,7 @@
 
 /*!
     \group qt3d::arrays
-    \title Qt/3D Arrays and Vertex Buffers
+    \title Qt3D Arrays and Vertex Buffers
     \keyword Vertex Buffer
 
     \generatelist{related}

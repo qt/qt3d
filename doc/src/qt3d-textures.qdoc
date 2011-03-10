@@ -27,8 +27,8 @@
 
 /*!
     \group qt3d::textures
-    \title Qt/3D Texture Handling
-    \keyword Qt/3D Texture Handling
+    \title Qt3D Texture Handling
+    \keyword Qt3D Texture Handling
 
     \generatelist{related}
 */

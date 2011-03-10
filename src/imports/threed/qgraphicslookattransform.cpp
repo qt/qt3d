@@ -142,8 +142,6 @@ QT_BEGIN_NAMESPACE
         effect: Effect { texture: "picture.jpg" }
     }
     \endcode
-
-    \sa {Forest Example}
 */
 
 /*!

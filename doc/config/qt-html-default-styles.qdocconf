@@ -20,6 +20,7 @@ extraimages.HTML        = qt-logo.png \
                           horBar.png \
                           sprites-combined.png \
                           teapot-logo.png \
+                          qt3d-logo.png \
                           gradient.png
 
 # Include the style sheets and scripts used.

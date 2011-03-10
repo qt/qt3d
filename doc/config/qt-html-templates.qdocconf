@@ -3,7 +3,7 @@ include(qt-html-default-styles.qdocconf)
 HTML.postheader = \
     "<div class=\"header\" id=\"qtdocheader\">\n" \
     "  <div class=\"content\"> \n" \
-    "    <a href=\"index.html\" class=\"qtref\"><span>Qt/3D Reference Documentation</span></a>\n" \
+    "    <a href=\"index.html\" class=\"qtref\"><span>QtQuick3D Reference Documentation</span></a>\n" \
     "  </div>\n" \
     "  <div class=\"breadcrumb toolblock\">\n" \
     "    <ul>\n" \
@@ -14,7 +14,7 @@ HTML.postpostheader = \
     "    </ul>\n" \
     "  </div>\n" \
     "</div>\n" \
-    "<img src=\"images/teapot-logo.png\" border=\"0\" />\n" \
+    "<img src=\"images/qt3d-logo.png\" border=\"0\" />\n" \
     "<div class=\"content mainContent\">\n"
 
 HTML.footer = \
@@ -53,4 +53,5 @@ qhp.Qt3D.extraFiles = index.html \
                       images/horBar.png \
                       images/sprites-combined.png \
                       images/teapot-logo.png \
+                      images/qt3d-logo.png \
                       style/offline.css

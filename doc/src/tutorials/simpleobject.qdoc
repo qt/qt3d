@@ -26,13 +26,24 @@
 ****************************************************************************/
 
 /*!
-    \title Applying transformations and materials to objects
+    \title Applying Transformations and Materials
+    \keyword Object Effects
     \example tutorials/cube4
 
     In this tutorial we will apply transformations and materials to a
     simple cube object to demonstrate how to modify the QGLPainter
-    state to achieve different effects.  We start by declaring a
-    view class to show our cube on the screen:
+    state to achieve different effects.
+
+    \section2 Cube in QtQuick3D
+
+    It is quite simple to achieve these effects in QtQuick3D:
+
+    \snippet tutorials/cube4/cube.qml 1
+
+    \section2 Cube in Qt3D
+
+    In the C++ world we start by declaring a view class to show our cube
+    on the screen:
 
     \snippet tutorials/cube1/cubeview.h 1
 
@@ -90,12 +101,6 @@
     \snippet tutorials/cube4/cubeview.cpp 3
 
     \image tutorials/cube4-screenshot.png
-
-    \section2 Cube in QML/3D
-
-    It is quite simple to achieve the same effect in QML:
-
-    \snippet tutorials/cube4/cube.qml 1
 
     \l{qt3d-examples.html}{Return to the main Tutorials page}.
 */

@@ -39,9 +39,9 @@ DEFINES += QT_BUILD_QT3D_QUICK_LIB
 !contains(QT_CONFIG, egl):DEFINES += QT_NO_EGL
 
 INSTALL_HEADERS = ""
-for (hdr, PUBLIC_HEADERS) {
+for(hdr, PUBLIC_HEADERS) {
     found_vdir = $$PWD
-    for (vdir, VPATH) {
+    for(vdir, VPATH) {
         found_vdir = $$vdir
         exists($$found_vdir/$$hdr):break()
     }

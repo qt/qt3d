@@ -27,28 +27,28 @@
 
 /*!
     \page qt3d-contrib.html
-    \title Contributing to Qt/3D
-    \keyword Contributing to Qt/3D
+    \title Contributing to QtQuick3D and Qt3D
+    \keyword Contributing to Qt3D
 
-    Qt/3D is being developed primarily in the Brisbane office of Qt
+    QtQuick3D and Qt3D are developed primarily in the Brisbane office of Qt
     Development Frameworks, but anyone is welcome to join the effort with
     patches, new examples, and major feature development.
 
-    Contact Rhys Weatherley in the Brisbane office for more information
-    on how you can contribute to Qt/3D.
+    Qt3D research may be a better place to contribute as the QtQuick3D has a strong
+    product focus.  Check the Qt3D \l{http://doc.qt.nokia.com/qt3d-snapshot/qt3d-contrib.html}{contributions page}.
 
-    Because Qt/3D may eventually become part of Qt, all contributions
-    need to conform with the
+    Jump on the IRC channel at #qt-3d on irc.freenode.net, or join our qt3d
+    mailing list at \l{http://lists.trolltech.com/mailman/listinfo/qt-3d}.
+
+    All contributions need to conform with the
     \l{http://qt.gitorious.org/qt/pages/QtContributionGuidelines}{Qt Contribution Model Guidelines}.
 
-    The source for Qt/3D is hosted on Gitorious at
-    \l{http://qt.gitorious.org/qt-labs/qt3d}.
+    The source for QtQuick3D is hosted on Gitorious at
+    \l{http://qt.gitorious.org/qt-labs/quick3d}.
 
     Bugs can be reported against the "Qt3D" component of the "Qt" project
     at \l{http://bugreports.qt.nokia.com/}.
 
-    The Qt/3D project has an open mailing list, which can be subscribed
-    to at \l{http://lists.trolltech.com/mailman/listinfo/qt-3d}.
 
-    \l{index.html}{Return to the main Qt/3D page}.
+    \l{index.html}{Return to the main QtQuick3D page}.
 */

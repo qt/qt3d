@@ -27,16 +27,16 @@
 
 /*!
     \example tutorials/teapot-qml
-    \title Teapot Example in QML/3D
+    \title Teapot Example in QtQuick3D
 
-    This example shows to use QML/3D to display a teapot on
+    This example shows to use QtQuick3D to display a teapot on
     the screen.  The QML is fairly simple:
 
     \snippet tutorials/teapot-qml/teapot.qml 1
 
     \image teapot-qml-screenshot.png
 
-    The example starts by importing the Qt and Qt/3D QML modules:
+    The example starts by importing the Qt and Qt3D QML modules:
 
     \snippet tutorials/teapot-qml/teapot.qml 2
 

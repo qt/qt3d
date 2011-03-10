@@ -29,7 +29,7 @@
     \example painter
     \title Painter Example
 
-    The Painter example shows how Qt/3D can be used to draw basic
+    The Painter example shows how Qt3D can be used to draw basic
     orthographic and perspective objects using QGLPainter.
 
     \image painter-screenshot.png

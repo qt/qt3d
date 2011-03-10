@@ -27,8 +27,8 @@
 
 /*!
 \group qt3d::painting
-\title Qt/3D Painting
-\keyword Qt/3D Painting
+\title Qt3D Painting
+\keyword Qt3D Painting
 
 Porting between desktop OpenGL and embedded OpenGL/ES has traditionally
 been difficult.  The usual sequence of operations for a drawing request
@@ -50,15 +50,11 @@ for the above, but they are all different.  OpenGL/ES 2.0 in particular
 presents unique problems because it lacks a fixed-function pipeline mode
 to perform common painting operations.
 
-In Qt/3D the QGLPainter class wraps OpenGL to present a consistent
+In Qt3D the QGLPainter class wraps OpenGL to present a consistent
 OpenGL painting API across all platforms.  Shaders and fixed-function
 options are supplied as an instance of QGLAbstractEffect.  Several
 built-in standard effects are provided for drawing with flat colors,
 material-based lighting, and simple texturing.
-
-The tutorial "\l{Converting raw GL applications to use QGLPainter}"
-compares a raw GL application that draws a triangle with its
-QGLPainter counterpart.
 
 \generatelist{related}
 */

@@ -29,20 +29,20 @@
     \example nesting
     \title Drawing into framebuffer objects
 
-    The Nesting example shows how Qt/3D can be used to draw into a
+    The Nesting example shows how Qt3D can be used to draw into a
     framebuffer object and then use the associated texture in
     subsequent drawing operations.  It is assumed that the reader
     is already familar with the following examples:
 
     \list
     \o \l{Teapot Example}{Hello Teapot} - drawing a basic object in 3D.
-    \o \l{Applying transformations and materials to objects}{Cube} - applying transformations and materials to objects.
+    \o \l{Object Effects}{Cube} - applying transformations and materials to objects.
     \o \l{basket}{Basket} - animating objects in 3D.
     \endlist
 
     In this example we are going to draw two rotating and transparent
     cubes.  One cube will display a simple texture as in the
-    \l{Applying transformations and materials to objects}{Cube} example,
+    \l{Object Effects}{Cube} example,
     and the other cube will display a nested scene containing a
     rotating teapot.
 
@@ -110,7 +110,7 @@
     \snippet nesting/cubeview.cpp 9
 
     Drawing the first cube with the simple texture is very similar to
-    the \l{Applying transformations and materials to objects}{Cube} example:
+    the \l{Object Effects}{Cube} example:
 
     \snippet nesting/cubeview.cpp 10
 

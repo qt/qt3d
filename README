@@ -1,32 +1,34 @@
+This directory contains the QtQuick3D product tree derived from the Qt3D project.
 
-This directory contains a prototype 3D API and examples for Qt 4.7 or later.
+Run qmake and then make to build it against Qt.  As of 10 March 2011 it requires
+version 4.7.x of Qt, built with OpenGL and declarative support.  This is standard
+for binary distributions of Qt.
 
-Run qmake and then make to build it against your favourite version of Qt.
+As of 10 March 2011 this product tree is being ported to avoid the dependency
+on private headers in Qt.  If it fails to build against your version of Qt
+try building it against a developer build from source.
+
 You will need to have built Qt with the "-opengl" option.  Run "make install"
 afterwards to install the plugins into your Qt build.
-
-Note: a build tree for Qt is required, not the SDK version of Qt.
-The SDK version of Qt lacks the private headers that are needed to
-build some parts of Qt/3D.
 
 Directory structure:
 
 src/threed/
-    This is the main library of the Qt/3D project, containing abstractions
+    This is the main library of the Qt3D project, containing abstractions
     for cross-platform GL, shaders, lighting models, and so on.
 src/plugins/
     Scene format loading plugins.
 src/imports/
     QML import plugins.
 util/
-    Various utilities that are useful when working with Qt/3D.
+    Various utilities that are useful when working with Qt3D.
 examples/
-    Some examples of using the Qt/3D library.
+    Some examples of using the Qt3D library.
 demos/
-    More complex demos of Qt/3D, including QML/3D for integrating
-    Qt/3D with the "Qt Quick" Declarative UI component of Qt 4.7.
+    More complex demos of Qt3D, including QtQuick3D for integrating
+    Qt3D with the "Qt Quick" Declarative UI component of Qt 4.7.
 tests/
-    Unit tests for the Qt/3D libraries.
+    Unit tests for the Qt3D libraries.
 doc/
     Documentation.
 devices/symbian/
