@@ -49,7 +49,6 @@
 
 #include <QtDeclarative/qdeclarativeengine.h>
 
-#include "private/qdeclarativepixmapcache_p.h"
 #include <qdeclarativeinfo.h>
 
 /*!
@@ -92,7 +91,6 @@ public:
           blending(false),
           texture2D(0),
           material(0),
-          declarativePixmap(),
           progress(0.0)
     {
     }
@@ -110,8 +108,6 @@ public:
     QGLTexture2D *texture2D;
     QUrl textureUrl;
     QGLMaterial *material;
-
-    QDeclarativePixmap declarativePixmap;
     qreal progress;
 };
 
@@ -227,6 +223,9 @@ void QDeclarativeEffect::setBlending(bool value)
     Textures can also be defined directly as images using the textureImage
     property.
 
+    If the value is non-empty, and the texture could not be loaded from
+    the QUrl for any reason, then the property will not be changed.
+
     \sa textureImage
 */
 QUrl QDeclarativeEffect::texture() const
@@ -239,92 +238,63 @@ void QDeclarativeEffect::setTexture(const QUrl& value)
     if (d->textureUrl == value)
         return;
 
-    d->textureUrl = value;
-    // got a new value, so abort any in-progress request
-    d->declarativePixmap.clear(this);
-
     if (d->progress != 0.0)
     {
         d->progress = 0.0;
         emit progressChanged(d->progress);
     }
 
-    if (d->textureUrl.isEmpty())
+    if (value.isEmpty())
     {
-        d->textureChanged = true;
+        d->textureUrl = value;
+        delete d->texture2D;
+        d->texture2D = 0;
     }
     else
     {
-        // Start loading the new texture
-        d->textureUrl = value;
-        emit effectChanged();
-
-        bool async(true);
-#ifndef QT_NO_LOCALFILE_OPTIMIZED_QML
-        async = d->textureUrl.scheme() != QLatin1String("file");
-#endif
-#if QT_VERSION >= 0x040702
-        QDeclarativePixmap::Options options = QDeclarativePixmap::Cache;
-        if (async)
-            options |= QDeclarativePixmap::Asynchronous;
-        d->declarativePixmap.load(qmlEngine(this), d->textureUrl, options);
-#else
-        d->declarativePixmap.load(qmlEngine(this), d->textureUrl, async );
-#endif
-        if (d->declarativePixmap.isLoading())
+        if (value.scheme() != QLatin1String("file"))
         {
-            d->declarativePixmap.connectFinished(this, SLOT(textureRequestFinished()));
-            d->declarativePixmap.connectDownloadProgress(this, SLOT(textureRequestProgress(qint64,qint64)));
+            // TODO - support network URL's for loading - note that this feature is for
+            // the Qt3D 1.1 release and there is no point in implementing it until for example
+            // model loading and all other parts of Qt3D support it.  Also when it is implemented
+            // it has to be done with a facility that does not depend on private headers in
+            // QtDeclarative which can change within minor dot-point releases.
+            qWarning("Network URL's not yet supported - %s", qPrintable(d->textureUrl.toString()));
         }
         else
         {
-            if (d->declarativePixmap.isError())
-                qWarning() << "Error loading pixmap: " <<                     d->declarativePixmap.error();
-            else if (d->declarativePixmap.isReady())
+            // Load the new texture
+            QString localFile = d->textureUrl.toLocalFile();
+            if (localFile.endsWith(QLatin1String(".dds")))
             {
-                textureRequestFinished();
+                QGLTexture2D *tex = new QGLTexture2D;
+                bool valid = tex->setCompressedFile(localFile);
+                if (!valid)
+                {
+                    delete tex;
+                }
+                else
+                {
+                    delete d->texture2D;
+                    d->texture2D = tex;
+                }
+            }
+            else
+            {
+                QImage im(localFile);
+                if (im.isNull())
+                {
+                    qWarning("Could not load image from local file path - %s", qPrintable(localFile));
+                }
+                else
+                {
+                    setTextureImage(im);
+                    emit effectChanged();
+                }
             }
         }
     }
 }
-
-/*!
-    This function is used to emit the appropriate signal when the texture request has finished.
-
-    \sa effectChanged()
-*/
-void QDeclarativeEffect::textureRequestFinished()
-{
-    QDeclarativePixmap::Status status = d->declarativePixmap.status();
-    d->textureChanged = true;
-    if (status == QDeclarativePixmap::Ready)
-    {
-        setTextureImage(d->declarativePixmap.pixmap().toImage());
-        if (d->declarativePixmap.pixmap().isNull() ) {
-            qWarning() << "Could not load specified texture file";
-        }
-        d->progress = 1.0;
-        emit progressChanged(d->progress);
-        emit effectChanged();
-    } else if (status != QDeclarativePixmap::Loading)
-    {
-        qWarning() << "Error getting texture image from cache: "
-                << d->declarativePixmap.error();
-    }
-}
-
-/*!
-    Updates the progress of an asynchronous resource request.  Progress is
-    simply \a received / \a total.
-*/
-void QDeclarativeEffect::textureRequestProgress(qint64 received, qint64 total)
-{
-    if (d->declarativePixmap.status() == QDeclarativePixmap::Loading && total > 0) {
-        d->progress = qreal(received)/total;
-        emit progressChanged(d->progress);
-    }
-}
-
 
 /*!
     \qmlproperty image Effect::textureImage
@@ -337,8 +307,7 @@ void QDeclarativeEffect::textureRequestProgress(qint64 received, qint64 total)
 */
 QImage QDeclarativeEffect::textureImage() const
 {
-    // Expensive
-    return d->declarativePixmap.pixmap().toImage();
+    return d->texture2D->image();
 }
 
 /*!
@@ -347,7 +316,9 @@ QImage QDeclarativeEffect::textureImage() const
 */
 void QDeclarativeEffect::setTextureImage(const QImage& value)
 {
-    d->declarativePixmap.setPixmap(QPixmap::fromImage(value));
+    if (d->texture2D == NULL)
+        d->texture2D = new QGLTexture2D;
+    d->texture2D->setImage(value);
     d->textureChanged = true;
     emit effectChanged();
 }
@@ -395,7 +366,7 @@ void QDeclarativeEffect::setMaterial(QGLMaterial *value)
 */
 void QDeclarativeEffect::enableEffect(QGLPainter *painter)
 {
-    QGLTexture2D *tex = texture2D();
+    QGLTexture2D *tex = d->texture2D;
     if (tex == NULL && d->material)
         tex = d->material->texture();
     if (d->useLighting) {
@@ -441,29 +412,17 @@ void QDeclarativeEffect::disableEffect(QGLPainter *painter)
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+QGLTexture2D *QDeclarativeEffect::texture2D()
+{
+    return d->texture2D;
+}
+
 /*!
   Returns the progress of remote resource loading.
   */
 qreal QDeclarativeEffect::progress()
 {
     return d->progress;
-}
-
-/*!
-    \internal
-    This function returns a \l QGLTexture2D based on the \c texture property of the \l Effect.
-*/
-QGLTexture2D *QDeclarativeEffect::texture2D()
-{
-    if (d->textureChanged) {
-        delete d->texture2D;
-        QGLTexture2D *newtex = new QGLTexture2D();
-        if (!d->declarativePixmap.pixmap().isNull())
-            newtex->setPixmap(d->declarativePixmap.pixmap());
-        d->texture2D = newtex;
-        d->textureChanged = false;
-    }
-    return d->texture2D;
 }
 
 QT_END_NAMESPACE

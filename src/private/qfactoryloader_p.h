@@ -1,10 +1,10 @@
 /****************************************************************************
 **
-** Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies).
 ** All rights reserved.
 ** Contact: Nokia Corporation (qt-info@nokia.com)
 **
-** This file is part of the QtQuick3D module of the Qt Toolkit.
+** This file is part of the QtCore module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
 ** No Commercial Usage
@@ -39,47 +39,55 @@
 **
 ****************************************************************************/
 
-#ifndef SHADERPROGRAM_H
-#define SHADERPROGRAM_H
+#ifndef QFACTORYLOADER_P_H
+#define QFACTORYLOADER_P_H
 
-#include "qdeclarativeeffect.h"
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
-QT_BEGIN_HEADER
+#include "QtCore/qobject.h"
+#include "QtCore/qstringlist.h"
+//#include "private/qlibrary_p.h"
+
+#ifndef QT_NO_LIBRARY
 
 QT_BEGIN_NAMESPACE
 
-class ShaderProgramPrivate;
+class QFactoryLoaderPrivate;
 
-class ShaderProgram : public QDeclarativeEffect
+class Q_CORE_EXPORT QFactoryLoader : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString vertexShader READ vertexShader WRITE setVertexShader NOTIFY shaderChanged)
-    Q_PROPERTY(QString fragmentShader READ fragmentShader WRITE setFragmentShader NOTIFY shaderChanged)
+    Q_DECLARE_PRIVATE(QFactoryLoader)
+
 public:
-    ShaderProgram(QObject *parent = 0);
-    virtual ~ShaderProgram();
+    QFactoryLoader(const char *iid,
+                   const QString &suffix = QString(),
+                   Qt::CaseSensitivity = Qt::CaseSensitive);
+    ~QFactoryLoader();
 
-    QString vertexShader() const;
-    void setVertexShader(const QString& value);
+    QStringList keys() const;
+    QObject *instance(const QString &key) const;
 
-    QString fragmentShader() const;
-    void setFragmentShader(const QString& value);
+#ifdef Q_WS_X11
+    QLibraryPrivate *library(const QString &key) const;
+#endif
 
-    virtual void enableEffect(QGLPainter *painter);
-public Q_SLOTS:
-    void markAllPropertiesDirty();
-    void markPropertyDirty(int property);
-Q_SIGNALS:
-    void finishedLoading();
-    void shaderChanged();
-private:
-    ShaderProgramPrivate *d;
+    void update();
+
+    static void refreshAll();
 };
-
-QML_DECLARE_TYPE(ShaderProgram)
 
 QT_END_NAMESPACE
 
-QT_END_HEADER
+#endif // QT_NO_LIBRARY
 
-#endif
+#endif // QFACTORYLOADER_P_H

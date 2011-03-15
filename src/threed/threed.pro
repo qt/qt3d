@@ -48,11 +48,15 @@ for(hdr, PUBLIC_HEADERS) {
     INSTALL_HEADERS += $$found_vdir/$$hdr
 }
 
+
+#      -install_name	/Users/sarasmit/build/qt/qt-qml/lib/QtOpenGL.framework/Versions/4/QtOpenGL
+
 # If Qt has been configured to build frameworks, then the build will put
 # the Qt3D library into a framework bundle, so put the headers in the bundle
 # as well.  Other OS's, or mac without frameworks, install the headers into
 # the Qt build tree directly.
 macx:CONFIG(qt_framework, qt_framework|qt_no_framework) {
+    QMAKE_LFLAGS_SONAME = -Wl,-install_name,$$DESTDIR/
     CONFIG += lib_bundle
     FRAMEWORK_HEADERS.version = Versions
     FRAMEWORK_HEADERS.path = Headers

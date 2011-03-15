@@ -30,6 +30,8 @@ symbian {
     }
 }
 
+include(../private/private.pri)
+
 include(quick3d.pri)
 
 PUBLIC_HEADERS = $$HEADERS
@@ -53,6 +55,7 @@ for(hdr, PUBLIC_HEADERS) {
 # as well.  Other OS's, or mac without frameworks, install the headers into
 # the Qt build tree directly.
 macx:CONFIG(qt_framework, qt_framework|qt_no_framework) {
+    QMAKE_LFLAGS_SONAME = -Wl,-install_name,$$DESTDIR/
     CONFIG += lib_bundle
     FRAMEWORK_HEADERS.version = Versions
     FRAMEWORK_HEADERS.path = Headers

@@ -53,12 +53,6 @@
 #include <QtGui/qevent.h>
 #include <QtDeclarative/qdeclarativecontext.h>
 
-// Hack to prevent inclusion of <private/qdeclarativestate_p.h>
-// which creates problems with undefined symbols under Windows.
-// We only need the definition of QDeclarativeStateGroup.
-#define QDECLARATIVESTATE_H
-
-#include <QtDeclarative/private/qdeclarativestategroup_p.h>
 
 /*!
     \qmlclass Item3D QDeclarativeItem3D
@@ -250,7 +244,6 @@ public:
         , objectPickId(-1)
         , cullFaces(QDeclarativeItem3D::CullDisabled)
         , sortChildren(QDeclarativeItem3D::DefaultSorting)
-        , _stateGroup(0)
         , inheritEvents(false)
         , isEnabled(true)
         , isInitialized(false)
@@ -273,8 +266,6 @@ public:
     int objectPickId;
     QDeclarativeItem3D::CullFaces cullFaces;
     QDeclarativeItem3D::SortMode sortChildren;
-    QDeclarativeStateGroup *states();
-    QDeclarativeStateGroup *_stateGroup;
     QList<QDeclarativeItem3D *> children;
 
     bool inheritEvents;
@@ -518,24 +509,11 @@ QMatrix4x4 QDeclarativeItem3DPrivate::localTransforms() const
 }
 
 
-
-QDeclarativeStateGroup *QDeclarativeItem3DPrivate::states()
-{
-    if (!_stateGroup) {
-        _stateGroup = new QDeclarativeStateGroup(item);
-        QObject::connect(_stateGroup, SIGNAL(stateChanged(QString)),
-                         item, SIGNAL(stateChanged(QString)));
-    }
-
-    return _stateGroup;
-}
-
-
 /*!
     \internal
 */
 QDeclarativeItem3D::QDeclarativeItem3D(QObject *parent)
-    : QObject(parent)
+    : QDeclarativeItem(0)
 {
     d = new QDeclarativeItem3DPrivate(this);
     QDeclarativeItem3D *itemParent = qobject_cast<QDeclarativeItem3D *>(parent);
@@ -964,72 +942,6 @@ QDeclarativeListProperty<QObject> QDeclarativeItem3D::data()
 }
 
 /*!
-    \qmlproperty list<State> Item3D::states
-
-    QML allows users to define any number of states for objects, including \l Item3D objects.
-    These states are arbitrarily assigned and can be used to represent anything the user desires.
-    An \l Item3D representing a door, for example, may have an \i "open" and \i "closed" state.
-
-    States can be connected by transitions, which define an animation or other transitional change
-    which occurs during the change from one state to another.  In our open and closed door state,
-    for example, the transition may define the rotation of the opening door when it swings open and
-    swings back closed.
-
-    By default the list of valid states for the item is empty.
-
-    \sa state, transitions
-*/
-QDeclarativeListProperty<QDeclarativeState> QDeclarativeItem3D::states()
-{
-    return d->states()->statesProperty();
-}
-
-/*!
-    \qmlproperty list<Transition> Item3D::transitions
-
-    When an object in QML moves from one state to another its behavior during this
-    change can be defined using transitions.  These transitions may define changes to one or
-    more objects or properties, and may include animations such as rotations, scaling,
-    translation, and so on.
-
-    Users can define a set of transitional procedures using this property.
-
-    As with states, by default there are no transitions defined.
-
-    \sa state, states
-*/
-QDeclarativeListProperty<QDeclarativeTransition> QDeclarativeItem3D::transitions()
-{
-    return d->states()->transitionsProperty();
-}
-
-
-/*!
-    \qmlproperty string Item3D::state
-
-    This property describes the current state of the \l Item3D as defined in the list of
-    allowable states for this item.
-
-    By default an item's state is undefined and irrelevant.  It is only when the states property
-    has been modified that a current state makes any sense.
-
-    \sa states
-*/
-
-QString QDeclarativeItem3D::state() const
-{
-    if (!d->_stateGroup)
-        return QString();
-    else
-        return d->_stateGroup->state();
-}
-
-void QDeclarativeItem3D::setState(const QString &state)
-{
-    d->states()->setState(state);
-}
-
-/*!
     \qmlproperty Item3D Item3D::parent
 
     This property specifies the Item3D parent of this item,
@@ -1297,22 +1209,6 @@ void QDeclarativeItem3D::initialize(QGLPainter *painter)
         }
     }
     d->isInitialized = true;
-}
-
-/*!
-    \internal
-*/
-void QDeclarativeItem3D::classBegin()
-{
-    d->states()->classBegin();
-}
-
-/*!
-    \internal
-*/
-void QDeclarativeItem3D::componentComplete()
-{
-    d->states()->componentComplete();
 }
 
 /*!

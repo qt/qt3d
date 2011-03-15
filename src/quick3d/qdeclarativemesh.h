@@ -68,6 +68,8 @@ QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
+QT_MODULE(QtQuick3D)
+
 class QDeclarativeMeshPrivate;
 class QGLAbstractScene;
 class QGLMaterial;

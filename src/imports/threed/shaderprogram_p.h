@@ -47,12 +47,9 @@
 
 #include "qdeclarativeeffect.h"
 #include "qglshaderprogrameffect.h"
-#include "private/qdeclarativepixmapcache_p.h"
 
 class ShaderProgram;
-
 class ShaderProgramEffect;
-class QDeclarativePixmapReply;
 
 /*!
   \internal
@@ -117,7 +114,6 @@ public:
     void setPropertiesDirty();
     void setPropertyDirty(int property);
 
-    bool pixmapRequestFinished();
     void setAttributeFields(QGL::VertexAttribute fields);
 protected:
     void processTextureUrl(int uniformLocation, QString urlString);
@@ -141,7 +137,7 @@ private:
 
     // Thes maps are all referenced by uniform location
     QMap<int, QGLTexture2D*> texture2Ds;
-    QMap<int, QDeclarativePixmap*> declarativePixmaps;
+    QMap<int, QImage> images;
     QMap<int, QString> urls;
 
     // These are sets of uniform locations

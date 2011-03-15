@@ -45,7 +45,6 @@
 #include <QtOpenGL/qglshaderprogram.h>
 #include <QWeakPointer>
 
-#include "private/qdeclarativepixmapcache_p.h"
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
 
@@ -245,9 +244,6 @@ ShaderProgramEffect::~ShaderProgramEffect()
     QGLTexture2D* texture;
     foreach (texture, textures)
         delete texture;
-    QDeclarativePixmap* declarativePixmap;
-    foreach (declarativePixmap, declarativePixmaps)
-        delete declarativePixmap;
 }
 
 /*
@@ -397,15 +393,15 @@ void ShaderProgramEffect::update
     {
         foreach (int i, changedTextures)
         {
-            if (!declarativePixmaps.contains(i))
+            if (!images.contains(i))
             {
                 changedTextures.remove(i);
                 continue;
             }
 
-            if (declarativePixmaps[i]->isReady())
+            if (!images[i].isNull())
             {
-                setUniform(i, declarativePixmaps[i]->pixmap(), painter);
+                setUniform(i, images[i], painter);
             } else
             {
                 qWarning() << "Warning: ShaderProgramEffect failed to apply texture for uniform" << i << (urls.contains(i) ? QLatin1String(" url: ") + urls[i] : QString());
@@ -596,41 +592,6 @@ void ShaderProgramEffect::setPropertyDirty(int property)
 }
 
 /*!
-  \internal Notification received via parent ShaderProgram parent that
-  a requested network resource is ready, so load the pixmap and get
-  ready for painting with it.
-
-  Returns true if the Effect has finished loading all it's remote resources.
-*/
-bool ShaderProgramEffect::pixmapRequestFinished()
-{
-    bool removedTexture = false;
-    foreach (int i, loadingTextures)
-    {
-        if (!declarativePixmaps.contains(i))
-        {
-            loadingTextures.remove(i);
-            removedTexture = true;
-            continue;
-        }
-
-        if (declarativePixmaps[i]->isReady())
-        {
-            changedTextures.insert(i);
-            loadingTextures.remove(i);
-            removedTexture = true;
-        } else if (!declarativePixmaps[i]->isLoading())
-        {
-            qWarning() << "Error loading " << urls[i] << ": "
-                    << declarativePixmaps[i]->error();
-            loadingTextures.remove(i);
-            removedTexture = true;
-        }
-    }
-    return (removedTexture && loadingTextures.count() == 0);
-}
-
-/*!
   \internal Update the image for the texture bound at \a uniform location with
     the the image at \a urlString.  If \a urlString is a remote resource, this
     starts an asycnrounous loading process.
@@ -644,9 +605,9 @@ void ShaderProgramEffect::processTextureUrl(int uniformLocation, QString urlStri
        urls.contains(uniformLocation) &&
        !urls[uniformLocation].isNull())
     {
-        if (!declarativePixmaps[uniformLocation]->isNull())
+        if (images.contains(uniformLocation) && !images[uniformLocation].isNull())
         {
-            declarativePixmaps[uniformLocation]->clear(parent.data());
+            images[uniformLocation] = QImage();
             urls.remove(uniformLocation);
             changedTextures.insert(uniformLocation);
             return;
@@ -680,37 +641,35 @@ void ShaderProgramEffect::processTextureUrl(int uniformLocation, QString urlStri
 
     if (urlString != urls[uniformLocation])
     {
-        urls.insert(uniformLocation, urlString);
-        if (declarativePixmaps.contains(uniformLocation))
-            declarativePixmaps[uniformLocation]->clear();
+        if (url.scheme() != QLatin1String("file"))
+        {
+            // TODO - support network URL's for loading - note that this feature is for
+            // the Qt3D 1.1 release and there is no point in implementing it until for example
+            // model loading and all other parts of Qt3D support it.  Also when it is implemented
+            // it has to be done with a facility that does not depend on private headers in
+            // QtDeclarative which can change within minor dot-point releases.
+            qWarning("Network URL's not yet supported - %s", qPrintable(urlString));
+        }
         else
-            declarativePixmaps[uniformLocation] = new QDeclarativePixmap();
-
-        QDeclarativePixmap* declarativePixmap =
-                declarativePixmaps[uniformLocation];
-        QDeclarativeEngine *engine = qmlEngine(parent.data());
-#if QT_VERSION >= 0x040702
-        QDeclarativePixmap::Options options = QDeclarativePixmap::Cache;
-        if (async)
-            options |= QDeclarativePixmap::Asynchronous;
-        declarativePixmap->load(engine, urlString, options);
-#else
-        declarativePixmap->load(engine, urlString, async);
-#endif
-
-        QDeclarativePixmap::Status status =
-                declarativePixmap->status();
-        if ( status == QDeclarativePixmap::Ready)
         {
-            changedTextures.insert(uniformLocation);
-            return;
-        } else if (status == QDeclarativePixmap::Loading)
-        {
-            declarativePixmap->connectFinished(parent.data(), SLOT(pixmapRequestFinished()));
-            loadingTextures.insert(uniformLocation);
-        } else {
-            qWarning() << "Failed to load texture " << urlString << ": "
-                    << declarativePixmap->error();
+            QString localFile = url.toLocalFile();
+            if (localFile.endsWith(QLatin1String(".dds")))
+            {
+                qWarning("Shader effects with compressed textures not supported: %s",
+                         qPrintable(urlString));
+            }
+            else
+            {
+                QImage im(localFile);
+                if (im.isNull())
+                {
+                    qWarning("Could not load image from local file path - %s", qPrintable(localFile));
+                }
+                else
+                {
+                    images[uniformLocation] = im;
+                }
+            }
         }
     }
 }
@@ -845,17 +804,6 @@ void ShaderProgram::markPropertyDirty(int property)
   Emitted when the last remote resource request is resolved, and implies that
   the effect is ready to be displayed.
 */
-
-/*!
- \internal Proxy the signal for the ShaderProgramEffect class
- */
-void ShaderProgram::pixmapRequestFinished()
-{
-    if (d->effect->pixmapRequestFinished())
-    {
-        emit finishedLoading();
-    }
-}
 
 /*!
     \internal

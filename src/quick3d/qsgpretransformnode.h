@@ -49,6 +49,8 @@ QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
+QT_MODULE(QtQuick3D)
+
 class Q_QT3D_QUICK_EXPORT QSGPreTransformNode : public TransformNode
 {
 public:

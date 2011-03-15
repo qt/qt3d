@@ -56,6 +56,8 @@ QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
+QT_MODULE(QtQuick3D)
+
 class QDeclarativeEffectPrivate;
 class QGLPainter;
 class QGLMaterial;
@@ -105,9 +107,6 @@ Q_SIGNALS:
     void effectChanged();
     void progressChanged(qreal progress);
 
-protected Q_SLOTS:
-    virtual void textureRequestFinished();
-    virtual void textureRequestProgress(qint64 recieived, qint64 total);
 protected:
     QGLTexture2D *texture2D();
 

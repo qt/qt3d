@@ -42,7 +42,8 @@
 #include "qglext_p.h"
 #include "qopenglfunctions.h"
 
-#include <QtOpenGL/private/qglextensions_p.h>
+// copied private header
+#include "qglextensions_p.h"
 
 QT_BEGIN_NAMESPACE
 

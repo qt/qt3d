@@ -47,9 +47,8 @@
 #include <QtCore/qobject.h>
 #include <QtCore/qvariant.h>
 #include <QtGui/qvector3d.h>
-#include <QtDeclarative/qdeclarative.h>
-#include <QtDeclarative/qdeclarativelist.h>
-#include <QtDeclarative/qdeclarativeparserstatus.h>
+
+#include <QtDeclarative/qdeclarativeitem.h>
 
 #include "qglscenenode.h"
 #include "qglpainter.h"
@@ -66,7 +65,7 @@ class QDeclarativeViewport;
 class QDeclarativeState;
 class QDeclarativeTransition;
 
-class Q_QT3D_QUICK_EXPORT QDeclarativeItem3D : public QObject, public QDeclarativeParserStatus
+class Q_QT3D_QUICK_EXPORT QDeclarativeItem3D : public QDeclarativeItem
 {
     Q_OBJECT
     Q_INTERFACES(QDeclarativeParserStatus)
@@ -86,9 +85,6 @@ class Q_QT3D_QUICK_EXPORT QDeclarativeItem3D : public QObject, public QDeclarati
     Q_PROPERTY(QDeclarativeListProperty<QObject> resources READ resources DESIGNABLE false)
     Q_PROPERTY(QDeclarativeListProperty<QObject> data READ data DESIGNABLE false)
     Q_PROPERTY(QDeclarativeListProperty<QDeclarativeItem3D> children READ itemChildren DESIGNABLE false NOTIFY childrenChanged)
-    Q_PROPERTY(QDeclarativeListProperty<QDeclarativeState> states READ states DESIGNABLE false)
-    Q_PROPERTY(QDeclarativeListProperty<QDeclarativeTransition> transitions READ transitions DESIGNABLE false)
-    Q_PROPERTY(QString state READ state WRITE setState NOTIFY stateChanged)
     Q_PROPERTY(CullFaces cullFaces READ cullFaces WRITE setCullFaces NOTIFY meshChanged)
     Q_PROPERTY(SortMode sortChildren READ sortChildren WRITE setSortChildren NOTIFY sortChildrenChanged)
     Q_PROPERTY(QString meshNode READ meshNode WRITE setMeshNode NOTIFY meshNodeChanged)
@@ -151,13 +147,6 @@ public:
     QDeclarativeListProperty<QGraphicsTransform3D> transform();
     QDeclarativeListProperty<QGraphicsTransform3D> pretransform();
 
-    QDeclarativeListProperty<QDeclarativeState> states();
-
-    QDeclarativeListProperty<QDeclarativeTransition> transitions();
-
-    QString state() const;
-    void setState(const QString &);
-
     CullFaces cullFaces() const;
     void setCullFaces(CullFaces value);
 
@@ -172,9 +161,6 @@ public:
 
     virtual void draw(QGLPainter *painter);
     virtual void initialize(QGLPainter *painter);
-
-    void classBegin();
-    void componentComplete();
 
     Q_INVOKABLE QVector3D localToWorld(const QVector3D &point = QVector3D()) const;
     Q_INVOKABLE QVector3D worldToLocal(const QVector3D &point = QVector3D()) const;
