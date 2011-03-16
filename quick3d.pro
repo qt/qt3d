@@ -21,26 +21,26 @@ contains(QT_CONFIG, opengles1) {
 # Install qt3d.prf into the Qt mkspecs so that "CONFIG += qt3d"
 # can be used in applications to build against Qt3D.
 symbian|win32 {
-    Qt3DFile=$$PWD\\features\\Qt3D.prf
+    Qt3DFile=$$PWD\\features\\qt3d.prf
     Qt3DFile=$$replace(Qt3DFile,/,\\)
     featuresDir=$$[QT_INSTALL_DATA]\\mkspecs\\features
     featuresDir=$$replace(featuresDir,/,\\)
     system(copy "$$Qt3DFile $$featuresDir")
 
-    Qt3DQuickFile=$$PWD\\features\\Qt3Dquick.prf
+    Qt3DQuickFile=$$PWD\\features\\qt3dquick.prf
     Qt3DQuickFile=$$replace(Qt3DQuickFile,/,\\)
     system(copy "$$Qt3DQuickFile $$featuresDir")
 } else {
-    Qt3DFile=$$PWD/features/Qt3D.prf
+    Qt3DFile=$$PWD/features/qt3d.prf
     featuresDir=$$[QT_INSTALL_DATA]/mkspecs/features
     system(cp "$$Qt3DFile $$featuresDir")
 
-    Qt3DQuickFile=$$PWD/features/Qt3Dquick.prf
+    Qt3DQuickFile=$$PWD/features/qt3dquick.prf
     system(cp "$$Qt3DQuickFile $$featuresDir")
 }
 
 symbian {
-    # symbian needs to be at the end, because Qt3D.pro does an ordered build,
+    # symbian needs to be at the end, because qt3d.pro does an ordered build,
     # and symbian depends on all the others.
     SUBDIRS += symbianinstall
 
