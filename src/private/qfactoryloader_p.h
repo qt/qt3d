@@ -67,7 +67,7 @@ class QFactoryLoaderPrivate;
 class QLibraryPrivate;
 #endif
 
-class Q_CORE_EXPORT QFactoryLoader : public QObject
+class QFactoryLoader : public QObject
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(QFactoryLoader)

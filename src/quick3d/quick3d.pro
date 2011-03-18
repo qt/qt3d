@@ -30,8 +30,6 @@ symbian {
     }
 }
 
-include(../private/private.pri)
-
 include(quick3d.pri)
 
 PUBLIC_HEADERS = $$HEADERS
