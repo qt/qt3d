@@ -63,6 +63,10 @@ QT_BEGIN_NAMESPACE
 
 class QFactoryLoaderPrivate;
 
+#ifdef Q_WS_X11
+class QLibraryPrivate;
+#endif
+
 class Q_CORE_EXPORT QFactoryLoader : public QObject
 {
     Q_OBJECT
