@@ -264,6 +264,7 @@ void QDeclarativeEffect::setTexture(const QUrl& value)
         else
         {
             // Load the new texture
+            d->textureUrl = value;
             QString localFile = d->textureUrl.toLocalFile();
             if (localFile.endsWith(QLatin1String(".dds")))
             {
