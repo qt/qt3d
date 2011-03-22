@@ -1,0 +1,36 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+# To build using this rules file:
+# mkdir qt3d-1.0
+# (cd ~/depot/research/qt3d && tar cf - --exclude-vcs .)|(cd qt3d-1.0 && tar xvpf -)
+# cd qt3d-1.0
+# export DEB_BUILD_OPTIONS="parallel=4"
+# dpkg-buildpackage -b
+
+# Uncomment this to turn on verbose mode.
+export DH_OPTIONS=-v
+export DH_VERBOSE=1
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/class/makefile.mk
+
+# Find out how many parallel threads to run 
+TMP_BUILD_OPTS = $(subst $(comma),$(space),$(DEB_BUILD_OPTIONS))
+ifneq (,$(filter parallel=%,$(TMP_BUILD_OPTS)))
+	NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(TMP_BUILD_OPTS)))
+	PARALLEL_MAKEFLAGS += -j$(NUMJOBS)
+endif
+
+DEB_MAKE_INVOKE := $(MAKE) $(PARALLEL_MAKEFLAGS)
+DEB_MAKE_INSTALL_TARGET := INSTALL_ROOT=$(DEB_DESTDIR) install
+DEB_DH_INSTALL_SOURCEDIR := debian/tmp
+
+common-configure-arch::
+	qmake -spec linux-g++-maemo opengl.pro CONFIG+=maemo
+
+common-install-arch:: install-examples
+
+install-examples:
+	cp -a bin $(DEB_DESTDIR)/usr
+	cp -a demos/declarative $(DEB_DESTDIR)/usr/share/qt4

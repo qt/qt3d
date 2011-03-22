@@ -66,8 +66,11 @@ size_t AiLoaderIOStream::Read( void* pvBuffer, size_t pSize, size_t pCount)
         fprintf(stderr, "AI read error: %s\n", qPrintable(m_device->errorString()));
     if ((pSize * pCount) != res) // AI will treat as error
     {
+        long unsigned int pSizeP = pSize;
+        long unsigned int pCountP = pCount;
+        long unsigned int pRes = res;
         fprintf(stderr, "read mismatch requested size: %lu x count: %lu = %lu != %lu actuall read\n",
-                pSize, pCount, (pSize * pCount), res);
+                pSizeP, pCountP, (pSizeP * pCountP), pRes);
     }
     return res;
 }
