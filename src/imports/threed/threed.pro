@@ -44,8 +44,10 @@ scenegraph {
         viewportfbonode_sg.h
 }
 
+# See the file README.library_xml for more on this
 qdeclarativesources.files += \
-    qmldir
+    qmldir \
+    library.xml
 
 qdeclarativesources.path += $$[QT_INSTALL_IMPORTS]/Qt3D
 

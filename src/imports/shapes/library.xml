@@ -1,0 +1,55 @@
+Filtering for modules in Qt3D.Shapes
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+    <type name="Capsule" defaultProperty="data" extends="QDeclarativeItem3D">
+        <exports>
+            <export module="Qt3D.Shapes" version="1.0" type="Capsule" />
+        </exports>
+        <property name="radius" type="qreal" />
+        <property name="length" type="qreal" />
+        <property name="levelOfDetail" type="int" />
+        <signal name="radiusChanged" />
+        <signal name="lengthChanged" />
+        <signal name="levelOfDetailChanged" />
+    </type>
+    <type name="Cylinder" defaultProperty="data" extends="QDeclarativeItem3D">
+        <exports>
+            <export module="Qt3D.Shapes" version="1.0" type="Cylinder" />
+        </exports>
+        <property name="radius" type="qreal" />
+        <property name="length" type="qreal" />
+        <property name="levelOfDetail" type="int" />
+        <signal name="radiusChanged" />
+        <signal name="lengthChanged" />
+        <signal name="levelOfDetailChanged" />
+    </type>
+    <type name="Line" defaultProperty="data" extends="QDeclarativeItem3D">
+        <exports>
+            <export module="Qt3D.Shapes" version="1.0" type="Line" />
+        </exports>
+        <property name="width" type="qreal" />
+        <property name="vertices" type="QVariant" />
+        <signal name="verticesChanged" />
+        <signal name="widthChanged" />
+    </type>
+    <type name="Point" defaultProperty="data" extends="QDeclarativeItem3D">
+        <exports>
+            <export module="Qt3D.Shapes" version="1.0" type="Point" />
+        </exports>
+        <property name="pointSize" type="qreal" />
+        <property name="vertices" type="QVariant" />
+        <signal name="verticesChanged" />
+        <signal name="pointSizeChanged" />
+    </type>
+    <type name="Sphere" defaultProperty="data" extends="QDeclarativeItem3D">
+        <exports>
+            <export module="Qt3D.Shapes" version="1.0" type="Sphere" />
+        </exports>
+        <property name="radius" type="qreal" />
+        <property name="levelOfDetail" type="int" />
+        <property name="axis" type="Qt.Axis" />
+        <signal name="radiusChanged" />
+        <signal name="levelOfDetailChanged" />
+        <signal name="axisChanged" />
+    </type>
+<\module>

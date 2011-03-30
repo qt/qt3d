@@ -33,12 +33,14 @@ HEADERS += \
 
 qdeclarativesources.files += \
     qmldir \
+    library.xml \
     Cube.qml \
     cube.obj \
     Quad.qml \
     quad.obj \
     Teapot.qml \
     teapot.bez
+# see the file README.library_xml for more on library.xml
 
 qdeclarativesources.path += $$[QT_INSTALL_IMPORTS]/Qt3D/Shapes
 
