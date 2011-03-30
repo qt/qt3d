@@ -1,4 +1,11 @@
+TEMPLATE = app
+TARGET = basket_qml
+CONFIG += qt warn_on
+QT += declarative
+
+DESTDIR = ../../bin
+
 qmlFiles.sources = qml
 DEPLOYMENT += qmlFiles
-QML_IMPORT_PATH = $$[QT_INSTALL_IMPORTS]/Qt3D
+
 SOURCES += main.cpp

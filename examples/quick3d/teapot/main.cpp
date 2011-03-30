@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     QDeclarativeView view;
-    view.setSource(QUrl::fromLocalFile(QLatin1String("qml/teapot.qml"));
+    view.setSource(QUrl::fromLocalFile(QLatin1String("qml/teapot.qml")));
 
     if (QApplication::arguments().contains(QLatin1String("-maximize")))
         view.showMaximized();
