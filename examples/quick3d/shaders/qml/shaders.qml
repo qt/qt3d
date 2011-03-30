@@ -8,7 +8,7 @@ Rectangle {
         width: parent.width
 
         anchors.top: parent.top
-        anchors.bottom: tabBar.top
+        anchors.bottom: tabButtonArea.top
         Repeater {
             model: tabsModel
         }
@@ -16,10 +16,10 @@ Rectangle {
 
     VisualItemModel {
         id: tabsModel
-        Animation { }
         Collapsing { }
         Images { }
         Interpolate { }
+        Bouncing { }
     }
 
     Rectangle {
@@ -38,16 +38,6 @@ Rectangle {
 
         Component {
             id: tabButton
-            onStatusChanged:
-
-            function tabClicked(index)
-            {
-                tabs.children[current].color = "transparent";
-                tabsModel.children[current].visible = false;
-                current = index;
-                tabs.children[current].color = "#30ffffff";
-                tabsModel.children[current].visible = true;
-            }
 
             Rectangle {
                 height: tabButtonArea.height
@@ -89,5 +79,23 @@ Rectangle {
         }
     }
 
+    function tabClicked(index)
+    {
+        tabs.children[current].color = "transparent";
+        tabsModel.children[current].visible = false;
+        current = index;
+        tabs.children[current].color = "#30ffffff";
+        tabsModel.children[current].visible = true;
+    }
+
     Component.onCompleted:
+    {
+        // hide all the tab views
+        for(var i = 0; i < tabsModel.children.length; i++)
+        {
+            tabsModel.children[i].visible = false;
+        }
+        // select the default tab index
+        tabClicked(current);
+    }
 }

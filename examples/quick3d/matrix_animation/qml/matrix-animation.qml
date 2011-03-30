@@ -51,7 +51,7 @@ Viewport {
     }
 
     Item3D {
-        mesh: Mesh { source: "meshes/teapot.bez" }
+        mesh: Mesh { source: "teapot.bez" }
         effect: program
 
 
@@ -102,7 +102,7 @@ Viewport {
                 NumberAnimation { from: 0.001; to: 1.0; duration: 1500; easing.type:"OutBounce" }
             }
 
-            texture: "textures/qtlogo.png"
+            texture: "qtlogo.png"
 
             vertexShader: "
             attribute highp vec4 qt_Vertex;

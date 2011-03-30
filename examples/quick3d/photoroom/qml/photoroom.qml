@@ -57,22 +57,22 @@ Viewport {
     PhotoPane {
         offset: -2.1
         layer: 0
-        image: "textures/button/woman.jpg"
+        image: "textures/woman.jpg"
     }
     PhotoPane {
         offset: -2.1
         layer: 1
-        image: "textures/photos/niagara_falls.jpg"
+        image: "textures/niagara_falls.jpg"
     }
     PhotoPane {
         offset: -2.1
         layer: 2
-        image: "textures/photos/place.jpg"
+        image: "textures/place.jpg"
     }
     PhotoPane {
         offset: -2.1
         layer: 3
-        image: "textures/photos/background.jpg"
+        image: "textures/background.jpg"
     }
     PhotoPane {
         offset: -2.1
@@ -89,17 +89,17 @@ Viewport {
     PhotoPane {
         offset: 2.1
         layer: 0
-        image: "textures/photos/niagara_falls.jpg"
+        image: "textures/niagara_falls.jpg"
     }
     PhotoPane {
         offset: 2.1
         layer: 1
-        image: "textures/photos/place.jpg"
+        image: "textures/place.jpg"
     }
     PhotoPane {
         offset: 2.1
         layer: 2
-        image: "textures/photos/background.jpg"
+        image: "textures/background.jpg"
     }
     PhotoPane {
         offset: 2.1

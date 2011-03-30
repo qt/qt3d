@@ -46,7 +46,7 @@ Viewport {
 
     Item3D {
         id: teapot
-        mesh: Mesh { source: "meshes/teapot.bez" }
+        mesh: Mesh { source: "teapot.bez" }
         effect: Effect {
             material: china
         }

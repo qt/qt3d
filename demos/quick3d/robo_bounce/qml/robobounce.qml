@@ -157,15 +157,10 @@ Image {
         }
     }
 
-    StereoView {
-        id: stereo
-        width: 640; height: 480
-        //layout: StereoView.LeftRight
-
         Viewport {
             id: viewport
-            width: parent.width
-            height: parent.height
+            width: 640
+            height: 480
             navigation: true
             picking: true
             //showPicking: true
@@ -612,5 +607,4 @@ Image {
                 }
             }
         }
-    }
 }

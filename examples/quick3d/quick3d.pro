@@ -8,7 +8,6 @@ SUBDIRS += \
     matrix_animation \
     monkeygod \
     moon \
-    photopane \
     photoroom \
     shaders \
     sphere \

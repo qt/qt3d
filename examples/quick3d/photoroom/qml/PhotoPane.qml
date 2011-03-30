@@ -49,7 +49,7 @@ Item3D {
     property variant image
     property bool bounce: false
 
-    mesh: Mesh { source: "meshes/photopane.obj" }
+    mesh: Mesh { source: "photopane.obj" }
 
     position: Qt.vector3d(offset, 0, -layer)
     effect: Effect { decal: true; texture: image }

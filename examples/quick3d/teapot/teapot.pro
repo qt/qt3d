@@ -1,11 +1,23 @@
 TEMPLATE = app
-TARGET = basket_qml
+TARGET = teapot
 CONFIG += qt warn_on
-QT += declarative
-
-DESTDIR = ../../bin
-
-qmlFiles.sources = qml
-DEPLOYMENT += qmlFiles
 
 SOURCES += main.cpp
+HEADERS += qmlres.h
+
+QT += declarative
+
+DESTDIR = ../../../bin/$$TARGET
+
+qmlResources.files = qml
+symbian {
+    DEPLOYMENT = qmlResources
+} else {
+    macx {
+        qmlResources.path = Contents/Resources
+        QMAKE_BUNDLE_DATA += qmlResources
+    } else {
+        qmlResources.path = $$OUT_PWD/../../../bin/$$TARGET.qml
+        INSTALLS += qmlResources
+    }
+}

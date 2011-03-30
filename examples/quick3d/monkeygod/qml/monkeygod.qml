@@ -40,6 +40,7 @@
 
 import Qt 4.7
 import Qt3D 1.0
+import Qt3D.Shapes 1.0
 
     Viewport  {
         width: 1000
@@ -76,13 +77,16 @@ import Qt3D 1.0
             }
         }
 
-        Item3D {
-            scale: 0.012
+        Cube {
+            scale: 2.0
             y: -6.5
             z: -2
-            mesh: Mesh { source: "meshes/lintel.3ds"}
-            transform: [Rotation3D {angle: -90; axis: Qt.vector3d(1,0,0)}]
-            effect: Effect{}
+
+            effect: Effect {
+                color: "#aaca00"
+                texture: "marble.png"
+                decal: true
+            }
         }
 
         Item3D

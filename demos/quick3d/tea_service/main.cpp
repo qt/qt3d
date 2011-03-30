@@ -42,12 +42,15 @@
 #include <QtGui/QApplication>
 #include <QtDeclarative/qdeclarativeview.h>
 
+#include "qmlres.h"
+
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
     QDeclarativeView view;
-    view.setSource(QUrl::fromLocalFile(QLatin1String("qml/teaservice.qml")));
+    QString qml = q_get_qmldir(QLatin1String("qml/teaservice.qml"));
+    view.setSource(QUrl::fromLocalFile(qml));
 
     if (QApplication::arguments().contains(QLatin1String("-maximize")))
         view.showMaximized();

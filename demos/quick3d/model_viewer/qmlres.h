@@ -1,10 +1,10 @@
 /****************************************************************************
 **
-** Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies).
 ** All rights reserved.
 ** Contact: Nokia Corporation (qt-info@nokia.com)
 **
-** This file is part of the QtQuick3D module of the Qt Toolkit.
+** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
 ** No Commercial Usage
@@ -39,22 +39,29 @@
 **
 ****************************************************************************/
 
-#include <QtGui/QApplication>
-#include <QtDeclarative/qdeclarativeview.h>
 
-int main(int argc, char *argv[])
+#ifndef QMLRES_H
+#define QMLRES_H
+
+#include <QtCore/qdir.h>
+
+static inline QString q_get_qmldir(const QString &name)
 {
-    QApplication app(argc, argv);
-
-    QDeclarativeView view;
-    view.setSource(QUrl::fromLocalFile(QLatin1String("qml/photopane.qml")));
-
-    if (QApplication::arguments().contains(QLatin1String("-maximize")))
-        view.showMaximized();
-    else if (QApplication::arguments().contains(QLatin1String("-fullscreen")))
-        view.showFullScreen();
-    else
-        view.show();
-
-    return app.exec();
+    QString qml = name;
+    QDir dir = QApplication::applicationDirPath();
+    QString resDir = QApplication::applicationName() + QLatin1String("_resources");
+    if (dir.path().endsWith(QLatin1String("MacOS")))
+    {
+        // inside an app bundle - get qml resources from there
+        dir.cdUp();
+        dir.cd(QLatin1String("Resources"));
+        qml = dir.filePath(qml);
+    }
+    else if (dir.exists(resDir))
+    {
+        qml = dir.filePath(qml.prepend(resDir));
+    }
+    return qml;
 }
+
+#endif // QMLRES_H
