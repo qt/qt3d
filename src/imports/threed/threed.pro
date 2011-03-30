@@ -35,15 +35,6 @@ HEADERS += \
     shaderprogram.h \
     shaderprogram_p.h
 
-scenegraph {
-    SOURCES += \
-        viewport_sg.cpp \
-        viewportfbonode_sg.cpp
-    HEADERS += \
-        viewport_sg.h \
-        viewportfbonode_sg.h
-}
-
 # See the file README.library_xml for more on this
 qdeclarativesources.files += \
     qmldir \
