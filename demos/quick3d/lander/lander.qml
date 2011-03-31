@@ -97,6 +97,15 @@ Rectangle {
             property real yMax : y + 2.4;
         }
 
+        Quad {
+            // Simple drop shadow
+            x: lander.x
+            y: landingPad.yMax
+            z: lander.z
+            scale: 2.0
+            effect: Effect { texture: "dropshadow.png"; blending: true }
+        }
+
         Item3D {
             id: lander
             scale: 0.5
@@ -121,7 +130,7 @@ Rectangle {
             ]
 
             // HACK.  There should be API for this
-            property real yMin: y - 0.97;
+            property real yMin: -0.37;
             property bool jetsVisible: true
             property real yBoostScaleFactor: (gameLogic.yboosting ? 1.5 : 1.0)
             // Back
@@ -219,9 +228,12 @@ Rectangle {
                 lander.z += zVelocity;
 
                 // Check win condition
-                if (lander.yMin <= landingPad.yMax)
+                if (lander.y + lander.yMin <= landingPad.yMax)
+                {
+                    // Correct very fast landings
+                    lander.y = landingPad.yMax - lander.yMin;
                     win();
-
+                }
             }
 
             function win() {
@@ -242,7 +254,6 @@ Rectangle {
             }
 
             function newGame() {
-                state = "playing";
                 titleBar.visible = false;
                 tapToStart.visible = false;
                 viewport.visible = true;
@@ -259,19 +270,24 @@ Rectangle {
                 yboosting = false
 
                 // Random starting position
-                lander.position = Qt.vector3d(Math.random() * 10.0 - 5.0, 5, Math.random() * 10.0 - 5.0);
+                lander.position = Qt.vector3d(Math.random() * 10.0 - 5.0,
+                                              5.0,
+                                              Math.random() * 10.0 - 5.0);
                 // add a small positive yVelocity to give the player a chance
                 // to get their bearings
                 yVelocity = 0.1
             }
 
             function endGame() {
-                state = "titleScreen";
+                simulationTickTimer.running = false;
+                // Tidy up visuals
                 titleBar.visible = true;
                 tapToStart.visible = true;
-                simulationTickTimer.running = false;
                 gameInputPad.enabled = false;
                 lander.jetsVisible = false;
+                gameLogic.zBoostInput = 0.0;
+                gameLogic.xBoostInput = 0.0;
+                gameLogic.yboosting = false;
             }
         }
     }
