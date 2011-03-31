@@ -59,11 +59,6 @@
 #include "qgraphicslookattransform.h"
 #include "shaderprogram.h"
 #include "qt3dnamespace.h"
-#if defined(QML_VERSION) && QML_VERSION >= 0x020000
-#define QT_USE_SCENEGRAPH 1
-#include "floatingitem_sg.h"
-#include "viewport_sg.h"
-#endif
 
 QT_BEGIN_NAMESPACE
 

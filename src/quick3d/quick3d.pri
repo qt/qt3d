@@ -13,11 +13,3 @@ SOURCES += \
     qdeclarativeeffect.cpp \
     qdeclarativeitem3d.cpp \
     qdeclarativemesh.cpp
-
-scenegraph {
-    SOURCES += \
-        qsgpretransformnode.cpp
-
-    HEADERS += \
-        qsgpretransformnode.h
-}

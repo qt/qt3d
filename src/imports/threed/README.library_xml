@@ -1,0 +1,13 @@
+The library.xml file is required to get syntax highlighting of Qt3D 
+plugin items.  It is install into the imports/Qt3D tree along with
+the plugin and the qmldir file.
+
+When any of the elements - property names, class names or other exports
+- in the Qt3D plugin are changed this file will need to be regenerated.
+
+To generate the library.xml file see the scripts/README file for a
+description of how to use the filter-qmldump.pl script.
+
+This is a less-than-optimal solution but as syntax discovery improves
+in Qt Creator better solutions should become available at which time
+this temporary script and syntax file may be deprecated.
