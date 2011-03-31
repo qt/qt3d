@@ -92,12 +92,25 @@ struct ChunkInfo
     // chunk size in bytes, only relevant for binary files
     // NO_SIZE is also valid.
     unsigned int size;
+/*
+    ChunkInfo& ChunkInfo::operator=(const ChunkInfo &rhs) {
+        // Only do assignment if RHS is a different object from this.
+        if (this != &rhs) {
+          this->id=rhs.id;
+          this->parent_id=rhs.parent_id;
+          this->version=rhs.version;
+          this->size=rhs.size;
+        }
+
+        return *this;
+    }*/
 };
 
 // ------------------
 /** A node in the scenegraph */
 struct Node : public ChunkInfo
 {
+    using ChunkInfo::operator=;
     enum Type {
         TYPE_MESH,TYPE_GROUP,TYPE_LIGHT,TYPE_CAMERA,TYPE_BONE
     };
