@@ -330,8 +330,8 @@ struct QGLExtensionFuncs
 
 #ifndef QT_NO_EGL
         // OES_EGL_image
-        qt_glEGLImageTargetTexture2DOES = 0;
-        qt_glEGLImageTargetRenderbufferStorageOES = 0;
+        //qt_glEGLImageTargetTexture2DOES = 0;
+        //qt_glEGLImageTargetRenderbufferStorageOES = 0;
 #endif
     }
 
@@ -456,8 +456,8 @@ struct QGLExtensionFuncs
 
 #ifndef QT_NO_EGL
     // OES_EGL_image
-    _glEGLImageTargetTexture2DOES qt_glEGLImageTargetTexture2DOES;
-    _glEGLImageTargetRenderbufferStorageOES qt_glEGLImageTargetRenderbufferStorageOES;
+    //_glEGLImageTargetTexture2DOES qt_glEGLImageTargetTexture2DOES;
+    //_glEGLImageTargetRenderbufferStorageOES qt_glEGLImageTargetRenderbufferStorageOES;
 #endif
 };
 
