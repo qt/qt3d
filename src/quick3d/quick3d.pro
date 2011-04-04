@@ -33,6 +33,7 @@ win32 {
 symbian {
     DEFINES += QT_MAKEDLL
     CONFIG += epocallowdlldata
+    MMP_RULES += EXPORTUNFROZEN
     contains(QT_EDITION, OpenSource) {
         TARGET.CAPABILITY = LocalServices NetworkServices ReadUserData UserEnvironment WriteUserData
     } else {

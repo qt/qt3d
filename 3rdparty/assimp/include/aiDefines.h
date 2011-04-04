@@ -246,7 +246,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #  error unknown architecture
 # endif
 #else
-# error unknown compiler
+#define ASSIMP_BUILD_ARM_32BIT_ARCHITECTURE
+//# error unknown compiler
 #endif
 
     //////////////////////////////////////////////////////////////////////////

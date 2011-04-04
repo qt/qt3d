@@ -1,0 +1,5 @@
+Lander is intended to use the Joystix font available for free from Ray Larabie via:
+http://typodermicfonts.com/the-larabie-fonts-collection
+
+Licencing does not allow distribution in ttf form as part of the source package, so please download and place the "JOYSTIX.TTF" file in this directory.
+

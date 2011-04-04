@@ -917,7 +917,7 @@ void WriteLogOpening(const std::string& file)
 #elif defined(__GNUC__)
         << " gcc"
 #else
-# error unknown compiler
+# warning unknown compiler
 #endif
 
 #ifndef NDEBUG

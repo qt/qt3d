@@ -27,7 +27,8 @@
 #elif defined( __GNUC__ )
 # define PACK_STRUCT __attribute__((packed))
 #else
-# error Compiler not supported
+# define PACK_STRUCT
+//# error Compiler not supported
 #endif
 
 #if defined(_MSC_VER)
