@@ -1348,7 +1348,7 @@ void QDeclarativeItem3D::update()
                     (k.at(i)->geometry().hasField(QGL::Position) &&
                      !k.at(i)->geometry().hasField(QGL::TextureCoord0)))
                 {
-                    qWarning() << "QGLSceneNode" << k.at(i)->objectName() << "from" << d->mesh->source() << "is missing texture coordinates.  Placeholder coordinates are being generated, which may take some time.";
+                    qWarning() << "QGLSceneNode" << k.at(i)->objectName() << "from" << d->mesh->source() << "is missing texture coordinates.  Dummy coordinates are being generated, which may take some time.";
                     k.at(i)->geometry().generateTextureCoordinates();
                 }
             }
