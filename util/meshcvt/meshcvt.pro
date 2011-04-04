@@ -1,6 +1,11 @@
 TARGET = meshcvt
 
-CONFIG += qt3d
+package {
+    LIBS += -L../../src/threed -lQt3D
+    INCLUDEPATH += ../../include
+} else {
+    CONFIG += qt3d
+}
 
 SOURCES += \
     meshcvt.cpp \

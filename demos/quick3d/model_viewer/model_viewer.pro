@@ -3,11 +3,11 @@ TARGET = model_viewer
 CONFIG += qt warn_on
 
 SOURCES += main.cpp
-HEADERS += qmlres.h
+HEADERS += ../qmlres.h
 
 QT += declarative
 
-DESTDIR = ../../../bin/$$TARGET
+!package:DESTDIR = ../../../bin
 
 qmlResources.files = qml
 symbian {
@@ -17,7 +17,23 @@ symbian {
         qmlResources.path = Contents/Resources
         QMAKE_BUNDLE_DATA += qmlResources
     } else {
-        qmlResources.path = $$OUT_PWD/../../../bin/$${TARGET}_resources/qml
-        INSTALLS += qmlResources
+        !package {
+            qmlResources.input = qmlResources.files
+            qmlResources.output = $$OUT_PWD/../../../bin/resources/demos/$$TARGET/qml
+            qmlResources.commands = $$QMAKE_COPY_DIR ${QMAKE_FILE_IN} ${QMAKE_FILE_OUT}
+            qmlResources.CONFIG += no_link_no_clean
+            qmlResources.variable_out = POST_TARGETDEPS
+            QMAKE_EXTRA_COMPILERS += qmlResources
+        }
     }
+}
+
+# for make install use in packages
+distInstalls.files = qml
+distInstalls.path = $$[QT_INSTALL_DATA]/quick3d/demos/$$TARGET
+INSTALLS += distInstalls
+
+package {
+    target.path = $$[QT_INSTALL_BINS]
+    INSTALLS += target
 }

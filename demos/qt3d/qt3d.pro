@@ -1,2 +1,2 @@
 TEMPLATE = subdirs
-SUBDIRS = teaservice shapes pageflip photobrowser3d cubehouse
+SUBDIRS = teaservice shapes pageflip cubehouse photobrowser3d

@@ -4,7 +4,15 @@ SOURCES += main.cpp \
     qglinfo.cpp \
     aboutdialog.cpp \
     fpswidget.cpp
-DESTDIR = ../../bin
+
+package {
+    LIBS += -L../../src/threed -lQt3D
+    INCLUDEPATH += ../../include
+} else {
+    CONFIG += qt3d
+    DESTDIR = ../../bin
+}
+
 CONFIG += qt3d warn_on
 FORMS += qglinfowindow.ui \
     aboutdialog.ui
@@ -15,3 +23,8 @@ HEADERS += qglinfowindow.h \
 RESOURCES += qglinfo.qrc
 
 !contains(QT_CONFIG, egl):DEFINES += QT_NO_EGL
+
+package {
+    target.path = $$[QT_INSTALL_BINS]
+    INSTALLS += target
+}

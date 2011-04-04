@@ -1,6 +1,9 @@
 TEMPLATE = app
 TARGET = photobrowser3d
-CONFIG += qt warn_on qt3d
+CONFIG += qt warn_on
+!package: CONFIG += qt3d
+package: QT += opengl
+
 SOURCES += main.cpp\
     photobrowser3dview.cpp \
     imagedisplay.cpp \
@@ -47,11 +50,18 @@ HEADERS  += photobrowser3dview.h \
 RESOURCES += \
     photobrowser3d.qrc
 
-DESTDIR = ../../bin
-
 OTHER_FILES += \
     shaders/replace_texture.fsh \
     shaders/replace_texture.vsh
+
+package {
+    LIBS += -L../../../src/threed -lQt3D
+    INCLUDEPATH += ../../../include
+    target.path += $$[QT_INSTALL_BINS]
+    INSTALLS += target
+} else {
+    DESTDIR = ../../../bin
+}
 
 symbian {
     symbian-abld|symbian-sbsv2 {
@@ -60,3 +70,4 @@ symbian {
         QMAKE_LFLAGS.GCCE += -Tdata 0xC00000
     }
 }
+

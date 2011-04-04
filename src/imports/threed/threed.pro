@@ -1,6 +1,13 @@
 TEMPLATE = lib
 TARGET  = qthreedqmlplugin
-CONFIG += qt plugin qt3d qt3dquick
+CONFIG += qt plugin
+
+package {
+    LIBS += -L../../threed -L../../quick3d
+    INCLUDEPATH += ../../../include
+} else {
+    CONFIG += qt3d qt3dquick
+}
 
 win32 {
     CONFIG(debug, debug|release) {

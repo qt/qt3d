@@ -43,7 +43,7 @@
 #include <QtDeclarative/qdeclarativeview.h>
 #include <QtCore/qdir.h>
 
-#include "qmlres.h"
+#include "../qmlres.h"
 
 int main(int argc, char *argv[])
 {

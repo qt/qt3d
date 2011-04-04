@@ -2,6 +2,13 @@ TEMPLATE = lib
 TARGET  = qshapesqmlplugin
 CONFIG += qt plugin qt3dquick
 
+package {
+    LIBS += -L../../quick3d -L../../threed
+    INCLUDEPATH += ../../../include
+} else {
+    CONFIG += qt3dquick
+}
+
 win32 {
     CONFIG(debug, debug|release) {
         TARGET = $$member(TARGET, 0)d

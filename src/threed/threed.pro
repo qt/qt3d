@@ -9,7 +9,13 @@ gcov {
 }
 QT += opengl \
     network
-DESTDIR = $$[QT_INSTALL_LIBS]
+
+package {
+    target.path = $$[QT_INSTALL_LIBS]
+    INSTALLS += target
+} else {
+    DESTDIR = $$[QT_INSTALL_LIBS]
+}
 
 win32 {
     DLLDESTDIR = ../../bin
@@ -48,8 +54,11 @@ for(hdr, PUBLIC_HEADERS) {
     INSTALL_HEADERS += $$found_vdir/$$hdr
 }
 
-
-#      -install_name	/Users/sarasmit/build/qt/qt-qml/lib/QtOpenGL.framework/Versions/4/QtOpenGL
+package {
+    distInstalls.files = $$PUBLIC_HEADERS
+    distInstalls.path = $$[QT_INSTALL_HEADERS]/Qt3D
+    INSTALLS += distInstalls
+}
 
 # If Qt has been configured to build frameworks, then the build will put
 # the Qt3D library into a framework bundle, so put the headers in the bundle
@@ -64,7 +73,11 @@ macx:CONFIG(qt_framework, qt_framework|qt_no_framework) {
     QMAKE_BUNDLE_DATA += FRAMEWORK_HEADERS
 } else {
     exportHeaders.input = PUBLIC_HEADERS
-    exportHeaders.output = $$[QT_INSTALL_HEADERS]/Qt3D/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
+    package {
+        exportHeaders.output = ../../include/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
+    } else {
+        exportHeaders.output = $$[QT_INSTALL_HEADERS]/Qt3D/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
+    }
     exportHeaders.commands = $$QMAKE_COPY ${QMAKE_FILE_IN} ${QMAKE_FILE_OUT}
     exportHeaders.CONFIG += no_link_no_clean
     exportHeaders.variable_out = PRE_TARGETDEPS

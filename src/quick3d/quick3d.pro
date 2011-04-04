@@ -7,9 +7,19 @@ gcov {
 } else {
     CONFIG += dll warn_on
 }
-CONFIG += qt3d
+
 QT += declarative
-DESTDIR = $$[QT_INSTALL_LIBS]
+
+package {
+    target.path = $$[QT_INSTALL_LIBS]
+    INSTALLS += target
+    LIBS += -L$$PWD/../threed
+    INCLUDEPATH += ../../include
+    QT += opengl network
+} else {
+    CONFIG += qt3d
+    DESTDIR = $$[QT_INSTALL_LIBS]
+}
 
 win32 {
     DLLDESTDIR = ../../bin
@@ -48,6 +58,12 @@ for(hdr, PUBLIC_HEADERS) {
     INSTALL_HEADERS += $$found_vdir/$$hdr
 }
 
+package {
+    distInstalls.files = $$PUBLIC_HEADERS
+    distInstalls.path = $$[QT_INSTALL_HEADERS]/Qt3DQuick
+    INSTALLS += distInstalls
+}
+
 # If Qt has been configured to build frameworks, then the build witll put
 # the Qt3DQuick library into a framework bundle, so put the headers in the bundle
 # as well.  Other OS's, or mac without frameworks, install the headers into
@@ -61,7 +77,11 @@ macx:CONFIG(qt_framework, qt_framework|qt_no_framework) {
     QMAKE_BUNDLE_DATA += FRAMEWORK_HEADERS
 } else {
     exportHeaders.input = PUBLIC_HEADERS
-    exportHeaders.output = $$[QT_INSTALL_HEADERS]/Qt3DQuick/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
+    package {
+        exportHeaders.output = ../../include/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
+    } else {
+        exportHeaders.output = $$[QT_INSTALL_HEADERS]/Qt3DQuick/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
+    }
     exportHeaders.commands = $$QMAKE_COPY ${QMAKE_FILE_IN} ${QMAKE_FILE_OUT}
     exportHeaders.CONFIG += no_link_no_clean
     exportHeaders.variable_out = PRE_TARGETDEPS

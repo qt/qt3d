@@ -9,7 +9,14 @@ SOURCES += main.cpp \
     qgl3dsscene.cpp \
     qgl3dsscenehandler.cpp \
     qgl3dsmesh.cpp
-CONFIG += qt3d
+
+package {
+    LIBS += -L../../../threed
+    INCLUDEPATH += ../../../../include
+} else {
+    CONFIG += qt3d
+}
+
 system_3ds {
     !isEmpty(QMAKE_INCDIR_3DS):INCLUDEPATH += $$QMAKE_INCDIR_3DS
     !isEmpty(QMAKE_LIBDIR_3DS):LIBS += -L$$QMAKE_LIBDIR_3DS
@@ -23,6 +30,5 @@ system_3ds {
     include(../../../../3rdparty/lib3ds/lib3ds.pri)
 }
 
-QTDIR_build:DESTDIR = $$QT_BUILD_TREE/plugins/sceneformats
 target.path += $$[QT_INSTALL_PLUGINS]/sceneformats
 INSTALLS += target

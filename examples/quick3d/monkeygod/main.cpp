@@ -42,7 +42,7 @@
 #include <QtGui/QApplication>
 #include <QtDeclarative/qdeclarativeview.h>
 
-#include "qmlres.h"
+#include "../qmlres.h"
 
 int main(int argc, char *argv[])
 {

@@ -1,6 +1,7 @@
-CONFIG += qt warn_on qt3d
 TARGET = tank
 TEMPLATE = app
+CONFIG += qt warn_on
+!package: CONFIG += qt3d
 
 SOURCES += main.cpp\
     tankview.cpp \
@@ -11,4 +12,11 @@ HEADERS  += tankview.h \
     tank.h \
     quadplane.h
 
-DESTDIR = ../../bin
+package {
+    LIBS += -L../../../src/threed -lQt3D
+    INCLUDEPATH += ../../../include
+    target.path += $$[QT_INSTALL_BINS]
+    INSTALLS += target
+} else {
+    DESTDIR = ../../../bin
+}
