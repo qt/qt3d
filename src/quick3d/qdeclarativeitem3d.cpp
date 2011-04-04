@@ -53,7 +53,6 @@
 #include <QtGui/qevent.h>
 #include <QtDeclarative/qdeclarativecontext.h>
 
-
 /*!
     \qmlclass Item3D QDeclarativeItem3D
     \brief The Item3D item encapsulates 3D objects and contains all of the properties and methods needed for simple 3D operations.
@@ -1343,6 +1342,15 @@ void QDeclarativeItem3D::update()
             {
                 if (k.at(i)->hasEffect())
                     k.at(i)->setEffectEnabled(false);
+                // If the effect has a texture, make sure the mesh does too
+                if ((!d->effect->texture().isEmpty() ||
+                     !d->effect->textureImage().isNull()) &&
+                    (k.at(i)->geometry().hasField(QGL::Position) &&
+                     !k.at(i)->geometry().hasField(QGL::TextureCoord0)))
+                {
+                    qWarning() << "QGLSceneNode" << k.at(i)->objectName() << "from" << d->mesh->source() << "is missing texture coordinates.  Placeholder coordinates are being generated, which may take some time.";
+                    k.at(i)->geometry().generateTextureCoordinates();
+                }
             }
         }
         d->requireBlockingEffectsCheck = false;
