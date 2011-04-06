@@ -109,10 +109,10 @@ Rectangle {
         Item3D {
             id: lander
             scale: 0.5
-            mesh: Mesh { source: "meshes/lunar-lander.3ds"; options: "ForceSmooth" }
+            mesh: Mesh { source: "meshes/lunar-lander.3ds" }
             effect: Effect {
                 color: "#aaca00"
-//                texture: "rusty.png"
+                texture: "rusty.png"
                 decal: true
             }
 
@@ -132,29 +132,42 @@ Rectangle {
             // HACK.  There should be API for this
             property real yMin: -0.37;
             property bool jetsVisible: true
-            property real yBoostScaleFactor: (gameLogic.yboosting ? 1.5 : 1.0)
+            property real yBoostScaleFactor: (gameLogic.yboosting ? 1.2 : 0.7)
+            property real activeScaleFactor: 1.3
+
+            // Draw back to front to avoid depth vs transparancy issues
+
             // Back
-            Jet { z: -2.7
-                scaleFactor: lander.yBoostScaleFactor - gameLogic.zBoostInput
+            Jet {
+                z: -2.7
+                scaleFactor: lander.yBoostScaleFactor -
+                             gameLogic.zBoostInput * lander.activeScaleFactor
                 enabled: lander.jetsVisible
             }
+
             // Left
-            Jet { x: -2.7
-                scaleFactor: lander.yBoostScaleFactor - gameLogic.xBoostInput
+            Jet {
+                x: -2.7
+                scaleFactor: lander.yBoostScaleFactor -
+                             gameLogic.xBoostInput * lander.activeScaleFactor
                 enabled: lander.jetsVisible
             }
+
             // Right
-            Jet { x: 2.7
-                scaleFactor: lander.yBoostScaleFactor + gameLogic.xBoostInput
+            Jet {
+                x: 2.7
+                scaleFactor: lander.yBoostScaleFactor +
+                             gameLogic.xBoostInput * lander.activeScaleFactor
                 enabled:  lander.jetsVisible
             }
 
             // Front
-            Jet { z: 2.7
-                scaleFactor: lander.yBoostScaleFactor + gameLogic.zBoostInput
+            Jet {
+                z: 2.7
+                scaleFactor: lander.yBoostScaleFactor +
+                             gameLogic.zBoostInput * lander.activeScaleFactor
                 enabled:  lander.jetsVisible
             }
-
         }
 
         MouseArea {
@@ -376,66 +389,5 @@ Rectangle {
             anchors.fill: parent
             onClicked: gameLogic.newGame();
         }
-    }
-
-    ShaderProgram {
-        id: flame
-        blending: true
-        texture: "flame.png"
-        property variant texture2 : "flame2.png"
-        property real interpolationFactor : 1.0
-
-        SequentialAnimation on interpolationFactor {
-            running: true
-            loops: Animation.Infinite
-            NumberAnimation { to : 1.0; duration: 750; }
-
-
-            PauseAnimation { duration: 550 }
-            NumberAnimation { to : 0.0; duration: 750; }
-            PauseAnimation { duration: 550 }
-        }
-
-        SequentialAnimation on color{
-            running: true
-            loops: Animation.Infinite
-            ColorAnimation {
-                from: "#aaca00"
-                to: "#0033ca"
-                duration: 500
-            }
-            ColorAnimation {
-                from: "#0033ca"
-                to: "#aaca00"
-                duration: 500
-            }
-        }
-
-        vertexShader: "
-        attribute highp vec4 qt_Vertex;
-        attribute highp vec4 qt_MultiTexCoord0;
-        uniform mediump mat4 qt_ModelViewProjectionMatrix;
-        varying highp vec4 texCoord;
-
-        void main(void)
-        {
-        gl_Position = qt_ModelViewProjectionMatrix * qt_Vertex;
-        texCoord = qt_MultiTexCoord0;
-        }
-        "
-        fragmentShader: "
-        varying highp vec4 texCoord;
-        uniform sampler2D qt_Texture0;
-        uniform sampler2D texture2;
-        uniform mediump vec4 qt_Color;
-        uniform mediump float interpolationFactor;
-
-        void main(void)
-        {
-        mediump vec4 col1 = texture2D(qt_Texture0, texCoord.st);
-        mediump vec4 col2 = texture2D(texture2, texCoord.st);
-        gl_FragColor = mix(col1, col2, interpolationFactor);
-        }
-        "
     }
 }
