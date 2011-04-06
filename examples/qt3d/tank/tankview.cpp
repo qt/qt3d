@@ -60,8 +60,6 @@ TankView::TankView(QWidget *parent)
     Tank *tank = addTank();
     connect(tank, SIGNAL(updated()), this, SLOT(update()));
 
-    qDumpScene(m_tankScene);
-
     setToolTip(tr("Double-click to add more tanks"));
     setWindowTitle(tr("Double-click Me!"));
 }

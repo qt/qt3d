@@ -36,8 +36,8 @@ ifneq (,$(filter parallel=%,$(TMP_BUILD_OPTS)))
 endif
 
 ifeq (arm,$(findstring arm,$(shell g++ -v 2>&1 | sed -n '/Target: arm/p')))
-	QMAKE_CONF_MKSPEC = "-spec linux-g++-maemo"
-	QMAKE_CONF_OPTS = "CONFIG+=maemo"
+        QMAKE_CONF_MKSPEC = -spec linux-g++-maemo
+        QMAKE_CONF_OPTS = CONFIG+=maemo
 endif
 
 DEB_MAKE_INVOKE := $(MAKE) $(PARALLEL_MAKEFLAGS)

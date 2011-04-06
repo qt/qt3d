@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=cube Qt3D
+Icon=icon-l-qt3d
+Exec=/usr/bin/cube -fullscreen
+OnlyShowIn=X-MeeGo;
+X-MeeGo-Logical-Id=qtn_comm_appname_cube
+X-MeeGo-Translation-Catalog=essentials

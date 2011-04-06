@@ -3,7 +3,7 @@ TARGET  = qthreedqmlplugin
 CONFIG += qt plugin
 
 package {
-    LIBS += -L../../threed -L../../quick3d
+    LIBS += -L../../threed -L../../quick3d -lQt3D -lQt3DQuick
     INCLUDEPATH += ../../../include
 } else {
     CONFIG += qt3d qt3dquick

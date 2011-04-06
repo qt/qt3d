@@ -42,12 +42,12 @@
 #include "viewport.h"
 #include "qdeclarativeeffect.h"
 
-#include <Qt3D/qgllightmodel.h>
-#include <Qt3D/qgllightparameters.h>
-#include <Qt3D/qglcamera.h>
-#include <Qt3D/qglview.h>
-#include <Qt3D/qglsubsurface.h>
-#include <Qt3D/qglframebufferobjectsurface.h>
+#include "qgllightmodel.h"
+#include "qgllightparameters.h"
+#include "qglcamera.h"
+#include "qglview.h"
+#include "qglsubsurface.h"
+#include "qglframebufferobjectsurface.h"
 
 #include <QtGui/qpainter.h>
 #include <QtGui/qgraphicsview.h>

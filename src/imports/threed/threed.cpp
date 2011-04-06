@@ -50,11 +50,11 @@
 #include "qdeclarativeeffect.h"
 #include "scale3d.h"
 
-#include <Qt3D/qgraphicsrotation3d.h>
-#include <Qt3D/qgraphicstranslation3d.h>
-#include <Qt3D/qgraphicsscale3d.h>
-#include <Qt3D/qgraphicsbillboardtransform.h>
-#include <Qt3D/qglscenenode.h>
+#include "qgraphicsrotation3d.h"
+#include "qgraphicstranslation3d.h"
+#include "qgraphicsscale3d.h"
+#include "qgraphicsbillboardtransform.h"
+#include "qglscenenode.h"
 
 #include "qgraphicslookattransform.h"
 #include "shaderprogram.h"

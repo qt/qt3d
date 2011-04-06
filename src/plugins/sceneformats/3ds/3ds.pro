@@ -11,7 +11,7 @@ SOURCES += main.cpp \
     qgl3dsmesh.cpp
 
 package {
-    LIBS += -L../../../threed
+    LIBS += -L$$PWD/../threed -lQt3D
     INCLUDEPATH += ../../../../include
 } else {
     CONFIG += qt3d

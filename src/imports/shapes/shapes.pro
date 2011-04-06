@@ -3,7 +3,7 @@ TARGET  = qshapesqmlplugin
 CONFIG += qt plugin qt3dquick
 
 package {
-    LIBS += -L../../quick3d -L../../threed
+    LIBS += -L../../quick3d -L../../threed -lQt3D -lQt3DQuick
     INCLUDEPATH += ../../../include
 } else {
     CONFIG += qt3dquick

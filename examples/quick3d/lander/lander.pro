@@ -1,7 +1,6 @@
 TEMPLATE = app
 TARGET = lander
 CONFIG += qt warn_on
-INCLUDEPATH += ../basket
 
 SOURCES += main.cpp
 HEADERS += ../qmlres.h
@@ -35,6 +34,15 @@ distInstalls.path = $$[QT_INSTALL_DATA]/quick3d/examples/$$TARGET
 INSTALLS += distInstalls
 
 package {
+    maemo {
+        applnk.files = lander.desktop
+        applnk.path = /usr/share/applications
+
+        icons.files = icon-l-qtquick3d.png
+        icons.path = /usr/share/themes/base/meegotouch/icons
+        INSTALLS += icons applnk
+    }
+
     target.path = $$[QT_INSTALL_BINS]
     INSTALLS += target
 }

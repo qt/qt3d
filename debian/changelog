@@ -1,5 +1,5 @@
-libqt4-3d (1.0) unstable; urgency=low
+libqt4-3d (tp1) unstable; urgency=low
 
-  * Initial Release.
+  * Technology Preview 1 Release.
 
- -- Sarah Smith <sarah.j.smith@nokia.com>  Wed, 09 Feb 2011 20:59:27 +1000
+ -- Sarah Smith <sarah.j.smith@nokia.com>  Wed, 06 Apr 2011 16:30:00 +1000

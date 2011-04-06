@@ -241,7 +241,6 @@ void PhotoBrowser3DView::nonThreadedFileLoad(const QUrl &url)
         m_display->addThumbnailNode(url);
     }
     pickableDirty();
-    qDumpScene(m_display);
 #else
     FileScanner *scanner = new FileScanner(this);
     scanner->setBaseUrl(url);
