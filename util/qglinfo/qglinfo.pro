@@ -8,6 +8,7 @@ SOURCES += main.cpp \
 package {
     LIBS += -L../../src/threed -lQt3D
     INCLUDEPATH += ../../include
+    QT += opengl
 } else {
     CONFIG += qt3d
     DESTDIR = ../../bin

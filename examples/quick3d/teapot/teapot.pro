@@ -1,5 +1,5 @@
 TEMPLATE = app
-TARGET = teapot
+TARGET = teapot_qml
 CONFIG += qt warn_on
 
 SOURCES += main.cpp
@@ -34,6 +34,15 @@ distInstalls.path = $$[QT_INSTALL_DATA]/quick3d/examples/$$TARGET
 INSTALLS += distInstalls
 
 package {
+    maemo {
+        applnk.files = teapot_qml.desktop
+        applnk.path = /usr/share/applications
+
+        icons.files = icon-l-qtquick3d.png
+        icons.path = /usr/share/themes/base/meegotouch/icons
+        INSTALLS += icons applnk
+    }
+
     target.path = $$[QT_INSTALL_BINS]
     INSTALLS += target
 }

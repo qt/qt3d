@@ -34,6 +34,15 @@ distInstalls.path = $$[QT_INSTALL_DATA]/quick3d/demos/$$TARGET
 INSTALLS += distInstalls
 
 package {
+    maemo {
+        applnk.files = model_viewer.desktop
+        applnk.path = /usr/share/applications
+
+        icons.files = icon-l-qtquick3d.png
+        icons.path = /usr/share/themes/base/meegotouch/icons
+        INSTALLS += icons applnk
+    }
+
     target.path = $$[QT_INSTALL_BINS]
     INSTALLS += target
 }

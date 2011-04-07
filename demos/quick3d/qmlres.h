@@ -60,8 +60,9 @@ static QString q_get_qmldir(const QString &name)
     QString qml = name;
     // try for a Linux package install first
     QDir pkgdir(QLatin1String("/usr/share/qt4/quick3d/demos"));
-    if (pkgdir.cd(QCoreApplication::applicationName())
-            && pkgdir.exists())
+    QString app = QCoreApplication::applicationFilePath();
+    app = app.section(QDir::separator(), -1);
+    if (pkgdir.cd(app) && pkgdir.exists())
     {
         qml = pkgdir.filePath(qml);
     }
@@ -97,7 +98,7 @@ static QString q_get_qmldir(const QString &name)
                 {
                     QString msg = QLatin1String("demos");
                     msg += QDir::separator();
-                    msg += QCoreApplication::applicationName();
+                    msg += app;
                     qWarning("Expected %s directry with qml resources!", qPrintable(msg));
                 }
             }

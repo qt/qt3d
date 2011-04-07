@@ -41,10 +41,10 @@
 
 #include "qdeclarativemesh.h"
 
-#include <Qt3D/qglabstractscene.h>
-#include <Qt3D/qglscenenode.h>
-#include <Qt3D/qglmaterial.h>
-#include <Qt3D/qglmaterialcollection.h>
+#include "qglabstractscene.h"
+#include "qglscenenode.h"
+#include "qglmaterial.h"
+#include "qglmaterialcollection.h"
 
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -181,7 +181,9 @@ void QDeclarativeMesh::setSource(const QUrl& value)
 //#define QT_NO_LOCALFILE_OPTIMIZED_QML
 #ifndef QT_NO_LOCALFILE_OPTIMIZED_QML
     if (d->data.scheme() == QLatin1String("file")) {
-        setScene(QGLAbstractScene::loadScene(d->data.toLocalFile(), QString(), d->options));
+        QGLAbstractScene *s = QGLAbstractScene::loadScene(d->data.toLocalFile(),
+                                                          QString(), d->options);
+        setScene(s);
     } else
 #endif
     {

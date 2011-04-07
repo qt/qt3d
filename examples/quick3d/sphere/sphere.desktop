@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Sphere
+Icon=icon-l-qtquick3d
+Exec=/usr/bin/sphere -fullscreen
+OnlyShowIn=X-MeeGo;
+X-MeeGo-Logical-Id=qtn_comm_appname_sphere
+X-MeeGo-Translation-Catalog=essentials

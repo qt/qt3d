@@ -49,8 +49,13 @@ int main(int argc, char *argv[])
     qsrand(time(0));
 
     QApplication a(argc, argv);
-    TankView w;
-    w.show();
+    TankView view;
+    if (QApplication::arguments().contains(QLatin1String("-maximize")))
+        view.showMaximized();
+    else if (QApplication::arguments().contains(QLatin1String("-fullscreen")))
+        view.showFullScreen();
+    else
+        view.show();
 
     return a.exec();
 }

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Lunar Lander
+Icon=icon-l-qtquick3d
+Exec=/usr/bin/lander -fullscreen
+OnlyShowIn=X-MeeGo;
+X-MeeGo-Logical-Id=qtn_comm_appname_lander
+X-MeeGo-Translation-Catalog=essentials

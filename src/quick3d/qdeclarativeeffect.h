@@ -50,7 +50,7 @@
 #include <QtGui/qimage.h>
 #include <QtDeclarative/qdeclarative.h>
 
-#include <Qt3D/qgltexture2d.h>
+#include "qgltexture2d.h"
 
 QT_BEGIN_HEADER
 

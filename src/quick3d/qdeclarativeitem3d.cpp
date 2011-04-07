@@ -44,11 +44,11 @@
 #include "qdeclarativemesh.h"
 #include "qdeclarativeeffect.h"
 
-#include <Qt3D/qgllightparameters.h>
-#include <Qt3D/qglabstractscene.h>
-#include <Qt3D/qglscenenode.h>
-#include <Qt3D/qglview.h>
-#include <Qt3D/qgraphicstransform3d.h>
+#include "qgllightparameters.h"
+#include "qglabstractscene.h"
+#include "qglscenenode.h"
+#include "qglview.h"
+#include "qgraphicstransform3d.h"
 
 #include <QtGui/qevent.h>
 #include <QtDeclarative/qdeclarativecontext.h>
@@ -1218,7 +1218,9 @@ void QDeclarativeItem3D::initialize(QGLPainter *painter)
 void QDeclarativeItem3D::drawItem(QGLPainter *painter)
 {
     if (d->mesh)
+    {
         d->mesh->draw(painter, d->mainBranchId);
+    }
 }
 
 

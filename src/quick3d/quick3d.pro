@@ -13,7 +13,7 @@ QT += declarative
 package {
     target.path = $$[QT_INSTALL_LIBS]
     INSTALLS += target
-    LIBS += -L$$PWD/../threed
+    LIBS += -L$$PWD/../threed -lQt3D
     INCLUDEPATH += ../../include
     QT += opengl network
 } else {

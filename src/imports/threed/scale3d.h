@@ -42,7 +42,7 @@
 #ifndef SCALE3D_H
 #define SCALE3D_H
 
-#include <Qt3D/qgraphicsscale3d.h>
+#include "qgraphicsscale3d.h"
 
 #include <QtCore/qvariant.h>
 #include <QtDeclarative/qdeclarative.h>

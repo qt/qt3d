@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Builder
+Icon=icon-l-qt3d
+Exec=/usr/bin/builder -fullscreen
+OnlyShowIn=X-MeeGo;
+X-MeeGo-Logical-Id=qtn_comm_appname_builder
+X-MeeGo-Translation-Catalog=essentials

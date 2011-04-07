@@ -41,8 +41,8 @@
 
 #include "qdeclarativeeffect.h"
 
-#include <Qt3D/qglpainter.h>
-#include <Qt3D/qglmaterial.h>
+#include "qglpainter.h"
+#include "qglmaterial.h"
 
 #include <QNetworkRequest>
 #include <QNetworkReply>
