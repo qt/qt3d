@@ -85,12 +85,22 @@ static QString q_get_qmldir(const QString &name)
         else
         {
             // for Windows (pkg & dev), and for Linux dev expect to find it
-            // in a "resources" directory next to the binary
+            // in a "resources" directory next to the binary            
             if (dir.cd(QLatin1String("resources")) && dir.exists())
             {
+                app = QDir::toNativeSeparators(app);
+                //For windows platforms the "app" filepath should have the .exe extension removed.
+                const QString winExtension = ".exe";
+                if (app.right(winExtension.length()) == winExtension) {
+                    app = app.left(app.length() - winExtension.length());
+                }
+
+                //Grab just the app name itself.
+                app = app.section(QDir::separator(), -1);
+
                 if (dir.cd(QLatin1String("examples")) && dir.cd(app) && dir.exists())
-                {
-                    qml = dir.filePath(qml);
+                {                    
+                    qml = dir.filePath(qml);                    
                 }
                 else
                 {
