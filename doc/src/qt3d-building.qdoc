@@ -32,108 +32,164 @@
 
     \section1 QtQuick3D Binary Packages
 
-    Typically QtQuick3D is obtained via the QtSDK installer - just ensure the
-    option for QtQuick3D is checked when running the installer.  Alternatively
-    you can install the latest binary packages - check the
-    \l{http://qt.nokia.com/downloads}{Qt downloads page}.  
+    Do you have to build QtQuick3D?  Check if binary packages are available
+    for your platform on the \l{http://qt.nokia.com/downloads}{Qt downloads page}.
 
-    This section is for advanced use, or if you want to contribute to the
-    development of QtQuick3D.
+    This page gives guidelines on how to build Qt3D either from a source package
+    or from a repository snapshot.
 
     \section1 Obtaining QtQuick3D sources
 
-    If you want to work with the latest bleeding edge QtQuick3D features you
-    can build it from source.
+    If you want to work with the latest bleeding edge QtQuick3D features, or if
+    you would like to modify or contribute to QtQuick3D you can build it from
+    our source repository.
 
     The source for QtQuick3D is hosted on Gitorious as the git repository
     \l{http://qt.gitorious.org/qt-labs/quick3d}{\c{qt-labs/quick3d.git}}.
     It can be cloned as follows:
 
     \code
-    $ mkdir -p $HOME/depot/qt-labs
-    $ cd $HOME/depot/qt-labs
+    $ mkdir -p $HOME/depot/qt
+    $ cd $HOME/depot/qt
     $ git clone git://gitorious.org/qt-labs/quick3d.git
     \endcode
 
+    More stable versions of the QtQuick3D source code is available as source
+    packages from \l{http://qt.nokia.com/downloads}{Qt downloads page}.
+
     \section1 Building QtQuick3D
 
-    QtQuick3D requires Qt 4.7.  Ensure that the binary package for Qt that you are
-    using to build QtQuick3D against is a 4.7 package.  The QtSDK currently ships
-    with Qt 4.7 so if you're using the SDK you should be fine.
+    QtQuick3D requires Qt 4.7.  The QtSDK currently ships with Qt 4.7 so if
+    you're using the SDK you should be fine.  Alternatively you can build
+    against a Qt that you have compiled from source.  Just make sure that
+    when you build Qt, that you use the -developer-build option, and do not
+    do a \c{make install} as root.  The reason for this is when Qt3D builds in
+    it will place the libraries, headers and plugins into the correct position
+    in the hosted Qt library, so that will need to be writable.
+
+    Here's an example configure line you can use:
+    \code
+    mkdir -p $HOME/build/qt/4.7 && cd $HOME/build/qt/4.7
+    /path/to/qt/configure -developer-build -no-qt3support -no-webkit -no-xmlpatterns \
+         -no-phonon -opengl -declarative -nomake demos -nomake examples
+    make
+    \endcode
+    ...this line turns off many features that aren't needed for QtQuick3D, and
+    it also explicitly asks for declarative and opengl (even though those are
+    on by default) so that an error will be generated if OpenGL is not available.
 
     \section1 Building QtQuick3D Using QtCreator / QtSDK
 
     Here is a step-by-step guide to building QtQuick3D using the
     \l{http://qt.nokia.com/products/appdev/developer-tools/developer-tools}{QtCreator IDE}.
-    Read and refer to the command line section below for the full details
-    of building QtQuick3D.
+    QtCreator is the development environment for the QtSDK.  Here we're using
+    version 2.0 on Mac OSX, but other operating systems and versions should
+    look similar.  Always use the latest release of QtCreator if possible.
+
+    \image build-qt3d-qtcreator-1.png
 
     \bold{Step 1} - Open the QtQuick3D project.
 
     Choose \c{Open} from the \c{File} menu and navigate to the quick3d.pro project
-    file \c {$HOME/depot/qt-labs/quick3d/quick3d.pro}.  Click \c{Open}.
+    file \c {$HOME/depot/qt/quick3d/quick3d.pro}.  Click \c{Open}.
 
-    \bold{Step 2} - Select Qt, and specify a build directory.
+    \image build-qt3d-qtcreator-2.png
 
-    Now the QtQuick3D project is displayed in the \c{Project} listing.  Click the
-    \c{Projects} button on the left-hand side of the screen, and under the
-    \c{Build Settings} tab, choose \c{General} from the \c{Debug} category.
-    Set the Qt build to use, making sure it has OpenGL enabled.  Also
-    specify a build directory, and check the "Shadow Build" box.
+    \bold{Step 2} - Select the Qt and load Qt3D.
 
-    \image qt-creator-shadow-build.png
+    \image build-qt3d-qtcreator-4.png
 
-    Note these screen shots apply to QtCreator v1.3 (beta) on MacOSX, but similar
-    functionality is available in later QtCreator versions, even if the
-    screen appears different.
+    Set the Qt build to use, making sure it has OpenGL and QtDeclarative.  In this
+    situation where I have a large number of Qt versions to choose from it is
+    easiest to use the "Uncheck All" button, then check the one I want - which is the
+    Qt that ships with the QtSDK.
 
-    \bold{Step 3} - Add the system_3ds switch to qmake
+    If you can't tell from the screen above which is the right Qt to use, just
+    choose a safe looking one, perhaps the default, as you can change it easily
+    below.
 
-    Only do this step if you have lib3ds installed on your system, as
-    described above, and you want to use the system lib3ds instead of
-    the one included with QtQuick3D.
+    \image build-qt3d-qtcreator-3.png
 
-    Do this in QtCreator from the \c{Projects} mode, under the
-    \c{Build Steps} category.  Add \c{CONFIG+=system_3ds} to the "Additional arguments"
-    for the "QMake build configuration".
+    After a short time QtCreator will have loaded up the Qt3D project, read all its
+    project files and display the source tree as shown just above.
 
-    \image qt-creator-config-3ds.png
+    \bold{Step 2a} - Useful Options
 
-    \bold{Step 4} - Add QtQuick3D libraries to the path
+    Use \c{QtCreator} -> \c{Preferences...} to bring up QtCreators options and settings.
+    On Windows its \c{Tools} -> \c{Options...}.
 
-    As shown above you'll need to specify the QtQuick3D libraries so that they can
-    be found.  Do this in QtCreator from the \c{Projects} mode, under the
-    \c{Build Environment} category.  This will also propagate to the
-    \c{Run Environment}.  On MacOSX the name of the environment variable is
-    \c{DYLD_LIBRARY_PATH}, on Linux it is \c{LD_LIBRARY_PATH}.  On Windows,
-    you'll need to add the \c{bin} directory to the \c{PATH} variable.
+    Make sure you have QtCreator set to display the compile process, so you can check
+    what any errors may be.  The other options are set how I like them, and may suit
+    your use too.  Give them a try, as shown in this screenshot just below.
 
-    \image qt-creator-lib-path.png
+    \image build-qt3d-qtcreator-7.png
 
-    \bold{Step 5} - Specify the plugin install
+    \bold{Step 3} - Set up for Building.
 
-    Only do this step if you want to use the QtQuick3D model loading plugins,
-    as described above.
+    \image build-qt3d-qtcreator-5.png
 
-    Do this in QtCreator from the \c{Projects} mode, under the
-    \c{Build Steps} category.  Use the + drop-down under the steps list-box
-    to add a \c{Custom Process Step}, and move it below \c{QMake} and \c{Make}.
-    Set the name appropriately, set the command to \c{/usr/bin/make} and
-    the arguments to \c{-C plugins install}.  Note that the
-    name you set may not display in the list box until you restart QtCreator.
+    Click the projects tab at the left to display the QtQuick3D target's \c{Build Settings}
+    pane.  Here you can specify a Shadow Build directory.  It is always a good idea to
+    build in a shadow directory, instead of inside the source tree.
 
-    \image qt-creator-plugins.png
+    In the screenshot just above I use the Finder (Mac's equivalent to the Windows File
+    Manager) to create the shadow build directory as a "new folder".
 
-    In Windows set the command to the full path to your make program, eg:
-    \c{C:\Program Files\Microsoft Visual Studio 9.0\VC\bin\nmake} and set
-    the "Working Directory" to the imageformats directory: eg
-    \c{C:\build\qt-labs\qt3d\plugins\imageformats}.  The "Command Arguments"
-    are now simply \c{install}.
+    \image build-qt3d-qtcreator-6.png
 
-    \bold{Step 6} - Build QtQuick3D
+    In this screenshot, I have renamed the "new folder" to match the shadow build directory
+    name that I gave QtCreator.  Now I'm ready to click the "Build" button - circled in
+    red in the bottom left hand corner of Qt Creators main screen.
 
-    Click the "Build All" button now to build QtQuick3D.
+    \image build-qt3d-qtcreator-8.png
 
+    Before you do that here's a handy trick - set QtCreator to use multiple cores
+    when it builds, if its supported on your platform.  On Mac and other platforms that
+    use GCC I can set the \c{-j 4} argument to \c{make}.  For Windows check for the
+    \c{jom} tool which you will already be using automatically, to see how many
+    parallel jobs your build will use.
+
+    Ok, now hit the build button.
+
+    \bold{Step 4} - Build QtQuick3D and run a test App.
+
+    Qt3D will go ahead and compile all its libraries, plugins and QML imports.
+
+    The build is set up so that these will be placed into the directories as specified
+    by the host qmake - inside the Qt build tree.  To find what these directories are run
+    \c{qmake -query}.  If you like after the build you can check those directories to be sure
+    that Qt3D's files got placed there correctly.
+
+    As explained above for this reason you will need to have the privileges on your
+    computer to write to the directories given by \c{qmake -query}.  On Windows this is
+    generally not a problem.  On Mac and Linux it should work fine when building with the
+    SDK which is by default installed in your home directory.  It will also be fine
+    with builds from a source package.
+
+    Qt3D will also place its \c{qt3d.prf} and \c{qt3dquick.prf} files into the
+    host Qt's QMAKE_MKSPECS/features directory.  Again see \c{qmake -query} for what
+    that directory is on your system.  This means that you can write Qt3D applications
+    in C++ that use the libraries by simply adding \c{CONFIG += qt3d} to your
+    .pro file.
+
+    If you get early errors about not being able to copy the .prf files then check
+    that you have set up QtCreator to use a Qt that you can write to.
+
+    The build will then continue on and compile all of Qt3D's examples and demos,
+    using the libraries as installed.  When finished a message like "The process /usr/bin/make
+    exited normally" should be displayed.
+
+    There is no need to run a make install step.
+
+    \image build-qt3d-qtcreator-9.png
+
+    Now you can use QtCreator to run one of the examples.  Click the button for the
+    project switcher (circled in red) and then choose one of the apps.  Here we
+    have chosen the QML "Moon" app from the menu (indicated by the red arrow).
+
+    Click the green arrow bottom left to actually launch the "Moon" app.
+
+    Congratulations on building Qt3D!
 
     \section1 Building from the Command Line
 
@@ -141,34 +197,37 @@
     \c{$HOME/build/qt/4.7}, you would configure and build QtQuick3D as follows:
 
     \code
-    $ mkdir -p $HOME/build/qt-labs/qt3d
-    $ cd $HOME/build/qt-labs/qt3d
-    $ $HOME/build/qt/4.7/bin/qmake $HOME/depot/qt-labs/qt3d/opengl.pro
-    $ make
-    $ make install
-    $ export LD_LIBRARY_PATH=$PWD/lib:$LD_LIBRARY_PATH
+    $ mkdir -p $HOME/build/qt/quick3d
+    $ cd $HOME/build/qt/quick3d
+    $ $HOME/build/qt/4.7/bin/qmake $HOME/depot/qt/quick3d/quick3d.pro
+    $ make -j 4
+    $ bin/moon
     \endcode
 
-    The last line exports the library path so that you can run applications
-    from QtQuick3D, and is needed so those applications can find the QtQuick3D libraries.
+    Note that the \c{$} above means the shell prompt (don't type the \{$}).
 
-    The "\c{make install}" step is required to make plug-ins work,
-    particularly the model loading and QML/3D plug-ins.
+    The last line runs the example QML application \c{moon} to check that
+    the build went OK.
 
     On Windows (with Visual Studio) those commands look like this:
 
     \code
-    mkdir \build\qt-labs\qt3d
-    cd \build\qt-labs\qt3d
-    \build\qt\4.7\bin\qmake \depot\qt-labs\qt3d\opengl.pro
+    mkdir \build\qt\quick3d
+    cd \build\qt\quick3d
+    qmake \depot\qt\quick3d\quick3d.pro
     nmake
-    set PATH=%PATH%;\build\qt-labs\qt3d\bin
+    bin\moon
     \endcode
+
+    These commands for Windows assume that your Qt build for Qt 4.7 is in
+    the current PATH - so that the qmake invoked above is actually going to
+    be the Qt 4.7 qmake.
 
     On Symbian (with RVCT) those commands look like this:
 
     \code
-    cd C:\depot\qt-labs\qt3d
+    mkdir C:\depot\qt\quick3d
+    cd C:\depot\qt\quick3d
     qmake CONFIG+=old_importer
     sbs -c armv5_urel
     cd devices\symbian
@@ -176,11 +235,10 @@
     runonphone --sis QtQuick3D.sis
     \endcode
 
-    Once you have built QtQuick3D, you can run the "teapot" example to test
-    it as follows (ensure you've exported the library path as above):
+    Once you have built QtQuick3D, you can run the "teapot" example:
 
     \code
-    $ cd $HOME/build/qt-labs/qt3d
+    $ cd $HOME/build/qt/quick3d
     $ bin/teapot
     \endcode
 
@@ -190,38 +248,9 @@
     \image teapot-screenshot.png
 
     QtQuick3D has been tested with Qt/X11 and Qt/Embedded under Linux, on MacOSX
-    and Windows XP.  Patches for other platforms are welcome.
+    and Windows XP.  It also runs on Symbian^3 and MeeGo/Maemo.
 
-    \section1 Installing plugins
-
-    QtQuick3D has support for loading 3D model files.  This is enabled via
-    plugins for the various formats.
-
-    3DS files are supported using the open source
-    \l{http://lib3ds.org}{lib3ds} library.  A copy of version 1.3 of this
-    library is included with the QtQuick3D sources under the \c{3rdparty}
-    directory.
-
-    If you already have lib3ds installed on your system and you wish to use
-    that instead of the version included with QtQuick3D, you can pass the
-    \c{system_3ds} option to qmake:
-
-    \code
-    $ $HOME/build/qt/4.7/bin/qmake $HOME/depot/qt-labs/qt3d/opengl.pro CONFIG+=system_3ds
-    $ make
-    $ make install
-    \endcode
-
-    The last step above will install the plugins into Qt's plugin
-    directory so that the Qt plugin loader can find them at run-time.
-
-    Note that the imageformats plugins include a rudimentary read-only TGA
-    format reader which is required for many model files that use TGA for
-    textures.  If you know for sure that your model files don't use TGA
-    then this step can be skipped.
-
-    See the instructions in \c{plugins/sceneformats/3ds/README.txt} for
-    more information on using the system lib3ds.
+    Patches for other platforms are welcome.
 
     \l{index.html}{Return to the main QtQuick3D page} or
     \l{qt3d-examples.html}{Continue to the Tutorials and Examples}.
