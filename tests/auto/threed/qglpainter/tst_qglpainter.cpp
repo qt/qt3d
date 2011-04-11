@@ -534,7 +534,9 @@ void tst_QGLPainter::worldMatrix()
 
 void tst_QGLPainter::isCullable()
 {
-    QGLPainter painter(widget);
+    QGLWidget w;
+    QGLPainter painter(&w);
+    painter.modelViewMatrix().setToIdentity();
 
     QGLCamera camera;
     painter.setCamera(&camera);

@@ -1345,10 +1345,12 @@ void QDeclarativeItem3D::update()
                 if (k.at(i)->hasEffect())
                     k.at(i)->setEffectEnabled(false);
                 // If the effect has a texture, make sure the mesh does too
-                if ((!d->effect->texture().isEmpty() ||
-                     !d->effect->textureImage().isNull()) &&
-                    (k.at(i)->geometry().hasField(QGL::Position) &&
-                     !k.at(i)->geometry().hasField(QGL::TextureCoord0)))
+                bool hasTexture = (!d->effect->texture().isEmpty() ||
+                                   (!d->effect->textureImage().isNull()));
+                bool missingTextureCoordinates =
+                        k.at(i)->geometry().hasField(QGL::Position) &&
+                        !k.at(i)->geometry().hasField(QGL::TextureCoord0);
+                if ( hasTexture && missingTextureCoordinates )
                 {
                     qWarning() << "QGLSceneNode" << k.at(i)->objectName() << "from" << d->mesh->source() << "is missing texture coordinates.  Dummy coordinates are being generated, which may take some time.";
                     k.at(i)->geometry().generateTextureCoordinates();

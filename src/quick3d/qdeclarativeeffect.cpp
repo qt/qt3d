@@ -308,7 +308,7 @@ void QDeclarativeEffect::setTexture(const QUrl& value)
 */
 QImage QDeclarativeEffect::textureImage() const
 {
-    return d->texture2D->image();
+    return d->texture2D ? d->texture2D->image() : QImage();
 }
 
 /*!

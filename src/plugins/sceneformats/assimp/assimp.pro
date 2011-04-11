@@ -19,6 +19,7 @@ package {
     INCLUDEPATH += ../../../../include
 } else {
     CONFIG += qt3d
+    DESTDIR = $$[QT_INSTALL_PLUGINS]/sceneformats
 }
 
 system_ai {
