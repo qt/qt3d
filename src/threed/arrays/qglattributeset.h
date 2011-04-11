@@ -75,26 +75,34 @@ public:
     bool operator!=(const QGLAttributeSet &other) const;
 
 private:
+    bool isValidAttr(QGL::VertexAttribute attr) const;
+
     quint32 m_attrs;
 };
+
+inline bool QGLAttributeSet::isValidAttr(QGL::VertexAttribute attr) const
+{
+    int a = int(attr);
+    return (a > -1 && a < 32);
+}
 
 inline bool QGLAttributeSet::contains(QGL::VertexAttribute attr) const
 {
     quint32 flag = quint32(attr);
-    return flag < 32 ? ((m_attrs & (((quint32)1) << flag)) != 0) : false;
+    return isValidAttr(attr) ? ((m_attrs & (((quint32)1) << flag)) != 0) : false;
 }
 
 inline void QGLAttributeSet::insert(QGL::VertexAttribute attr)
 {
     quint32 flag = quint32(attr);
-    if (flag < 32)
+    if (isValidAttr(attr))
         m_attrs |= (((quint32)1) << flag);
 }
 
 inline void QGLAttributeSet::remove(QGL::VertexAttribute attr)
 {
     quint32 flag = quint32(attr);
-    if (flag < 32)
+    if (isValidAttr(attr))
         m_attrs &= ~(((quint32)1) << flag);
 }
 
