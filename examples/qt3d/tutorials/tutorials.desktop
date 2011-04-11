@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=tutorials Qt3D
-Icon=icon-l-qt3d
-Exec=/usr/bin/tutorials -fullscreen
-OnlyShowIn=X-MeeGo;
-X-MeeGo-Logical-Id=qtn_comm_appname_tutorials
-X-MeeGo-Translation-Catalog=essentials
