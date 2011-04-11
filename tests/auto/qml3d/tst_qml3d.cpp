@@ -226,6 +226,15 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
+    {
+        QGLWidget checkWidget;
+        if (!checkWidget.isValid())
+        {
+            fprintf(stderr, "Disabling qml tests due to invalid GL context!");
+            return 1;
+        }
+    }
+
     // Parse the command-line arguments.
     const char *filename = 0;
     for (int index = 1; index < argc; ++index) {
