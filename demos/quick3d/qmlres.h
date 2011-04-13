@@ -89,7 +89,16 @@ static QString q_get_qmldir(const QString &name)
             if (dir.cd(QLatin1String("resources")) && dir.exists())
             {
                 QString app = QCoreApplication::applicationFilePath();
+                app = QDir::toNativeSeparators(app);
+                //For windows platforms the "app" filepath should have the .exe extension removed.
+                const QString winExtension = ".exe";
+                if (app.right(winExtension.length()) == winExtension) {
+                    app = app.left(app.length() - winExtension.length());
+                }
+
+                //Grab just the app name itself.
                 app = app.section(QDir::separator(), -1);
+
                 if (dir.cd(QLatin1String("demos")) && dir.cd(app) && dir.exists())
                 {
                     qml = dir.filePath(qml);
