@@ -339,12 +339,13 @@ Image {
                             PropertyAction{target: theCamera; property: "fieldOfView"; value: 11.45}
                             PropertyAction{target: spinSign; property: "angle"; value: 0}
                             PropertyAction{target: robot; property: "position"; value: Qt.vector3d(0,10,4)}
-                            PropertyAction{target: pitch; property: "angle"; value: 0}
-                            PropertyAction{target: roll; property: "angle"; value: 75}
-                            PropertyAction{target: yaw; property: "angle"; value: 90}
+                            PropertyAction{target: pitch; property: "angle"; value: -15}
+                            PropertyAction{target: roll; property: "angle"; value: 0}
+                            PropertyAction{target: yaw; property: "angle"; value: 0}
                             PropertyAction{target: spinSign; property: "angle"; value: 0}
                             PropertyAction{target: innerCube; property: "scale"; value: 0.95}
                             PropertyAction{target: signCube; property: "scale"; value: 2.375}
+                            PropertyAction{target: headroll; property: "angle"; value: -45}
                         }
                     },
                     Transition {
@@ -371,7 +372,7 @@ Image {
                             NumberAnimation {target: signCube; property: "scale"; to: 0.0; duration: 2500; easing.type: "InOutQuad"}
                             Vector3dAnimation {target: robot; property: "position"; to: Qt.vector3d(0,0,4); duration: 1000; easing.type: "OutBounce"}
                             PauseAnimation {duration: 500}
-                            NumberAnimation { target:roll; property: "angle"; to: 0; duration: 2500; easing.type: "InOutElastic"}
+                            NumberAnimation { target:pitch; property: "angle"; to: -90; duration: 2500; easing.type: "InOutElastic"}
                             NumberAnimation { target: theCamera; property: "fieldOfView"; to: 20; duration: 1000; easing.type: "InOutQuad" }
                             NumberAnimation { target: headroll; property: "angle"; to: 0; duration: 500; easing.type: "OutElastic"}
                             NumberAnimation { target: headyaw; property: "angle"; to: 30; duration: 70; easing.type: "InOutQuad"}
@@ -387,9 +388,9 @@ Image {
                             PauseAnimation{duration: 1000}
                             ParallelAnimation {
                                 SequentialAnimation {
-                                    NumberAnimation {target: pitch; property: "angle"; to: -10; duration: 500; easing.type: "InOutBack"}
+                                    NumberAnimation {target: roll; property: "angle"; to: -20; duration: 500; easing.type: "InOutBack"}
                                     PauseAnimation{duration: 1000}
-                                    NumberAnimation {target: pitch; property: "angle"; to: 0; duration: 500; easing.type: "InOutBack"}
+                                    NumberAnimation {target: roll; property: "angle"; to: 0; duration: 500; easing.type: "InOutBack"}
                                 }
                                 Vector3dAnimation {target: robot; property: "position"; to: Qt.vector3d(0,0,0); duration: 2000; easing.type: "InOutBack"}
                             }
@@ -468,7 +469,7 @@ Image {
                                 NumberAnimation {target: spinSmallCube; property: "angle"; to: 360; easing.type: "InOutQuad"; duration: 1750}
                                 SequentialAnimation {
                                     Vector3dAnimation {target: smallCube; property: "position"; to: Qt.vector3d(0,3.2,0); easing.type: "InQuad"; duration: 250}
-                                    PropertyAction {target: robotHead; property: "y"; value: 9.00;}
+                                    PropertyAction {target: robotHead; property: "z"; value: -9.0;}
                                     ParallelAnimation {
                                         NumberAnimation {target: smallCube; property: "x"; to: 2; easing.type: "Linear"; duration: 1500}
                                         SequentialAnimation {
@@ -479,7 +480,7 @@ Image {
                                 }
                             }
                             PauseAnimation {duration: 500 }
-                            NumberAnimation { target: robotHead; property: "y"; to: 9.2; easing.type: "OutBounce"; duration: 250 }
+                            NumberAnimation { target: robotHead; property: "z"; to: -9.2; easing.type: "OutBounce"; duration: 250 }
                             PauseAnimation {duration: 500 }
                             NumberAnimation { target: headyaw; property: "angle"; to: 30; duration: 70; easing.type: "InOutQuad"}
                             NumberAnimation { target: headyaw; property: "angle"; to: -30; duration: 70; easing.type: "InOutQuad"}
@@ -490,11 +491,11 @@ Image {
                             NumberAnimation { target: headyaw; property: "angle"; to: 30; duration: 70; easing.type: "InOutQuad"}
                             NumberAnimation { target: headyaw; property: "angle"; to: -30; duration: 70; easing.type: "InOutQuad"}
                             NumberAnimation { target: headyaw; property: "angle"; to: 00; duration: 100; easing.type: "OutQuad"}
-                            NumberAnimation { target: yaw; property: "angle"; to: 180; duration: 250; easing.type: "InOutQuad"}
+                            NumberAnimation { target: yaw; property: "angle"; to: 90; duration: 250; easing.type: "InOutQuad"}
                             NumberAnimation { target: armBend; property: "angle"; to: -45; duration: 500; easing.type: "InOutQuad"}
                             ParallelAnimation {
                                 NumberAnimation { target: robot; property: "x"; to: 0.5; duration: 500; easing.type: "InQuad"}
-                                NumberAnimation { target: pitch; property: "angle"; to: 30; duration: 500; easing.type: "InOutQuad"}
+                                NumberAnimation { target: roll; property: "angle"; to: 30; duration: 500; easing.type: "InOutQuad"}
                             }
                             ParallelAnimation {
                                 NumberAnimation { target: robot; property: "x"; to: 3.5; duration: 1000; easing.type: "Linear"}
@@ -508,14 +509,14 @@ Image {
                                 }
                                 ParallelAnimation {
                                     SequentialAnimation {
-                                        NumberAnimation {target: pitch; property: "angle"; to: -10; duration: 750; easing.type: "InOutBack"}
+                                        NumberAnimation {target: roll; property: "angle"; to: -10; duration: 750; easing.type: "InOutBack"}
                                         PauseAnimation{duration: 1500}
-                                        NumberAnimation {target: pitch; property: "angle"; to: 0; duration: 750; easing.type: "InOutBack"}
+                                        NumberAnimation {target: roll; property: "angle"; to: 0; duration: 750; easing.type: "InOutBack"}
                                     }
                                     Vector3dAnimation {target: robot; property: "position"; to: Qt.vector3d(0,0,0); duration: 3000; easing.type: "InOutBack"}
                                 }
                             }
-                            NumberAnimation { target: yaw; property: "angle"; to: 90; duration: 250; easing.type: "InOutQuad"}
+                            NumberAnimation { target: yaw; property: "angle"; to: 0; duration: 250; easing.type: "InOutQuad"}
                             NumberAnimation { target: armBend; property: "angle"; to: -90; duration: 500; easing.type: "InOutQuad"}
                             PauseAnimation { duration: 1000 }
                             PropertyAction {target: smallCube; property: "position"; value: Qt.vector3d(0,10,0)}
@@ -564,7 +565,7 @@ Image {
 
                     Robot {
                         id: robot
-                        position:  Qt.vector3d(0,10,4)
+                        position:  Qt.vector3d(0,0,4)
 
                         onClicked: {
                             heartbeat.restart();
@@ -573,16 +574,17 @@ Image {
                         }
 
                         transform: [
-                            Rotation3D {id: pitch; angle: 0; axis: Qt.vector3d(0,0,1)},
-                            Rotation3D {id: roll; angle: 75; axis: Qt.vector3d(1,0,0)},
-                            Rotation3D {id: yaw; angle: 90; axis: Qt.vector3d(0,1,0)}
+                            Rotation3D {id: correct; angle: 90; axis: Qt.vector3d(0,1,0)},
+                            Rotation3D {id: pitch; angle: -90; axis: Qt.vector3d(0,0,1)},
+                            Rotation3D {id: roll; angle: 0; axis: Qt.vector3d(1,0,0)},
+                            Rotation3D {id: yaw; angle: 0; axis: Qt.vector3d(0,1,0)}
                         ]
 
                         Item3D {
                             id: robotArms
                             mesh: Mesh { source: "Assets/roboticArms.3ds"}
-                            transform: Rotation3D{id: armBend; angle: -90;axis: Qt.vector3d(0,0,1)}
-                            position: Qt.vector3d(.18, 5.4,0)
+                            transform: Rotation3D{id: armBend; angle: -90;axis: Qt.vector3d(0,1,0)}
+                            position: Qt.vector3d(.18, 0,-5.4)
 
                             SequentialAnimation {
                                 running: false
@@ -596,11 +598,11 @@ Image {
                         Item3D {
                             id: robotHead
                             mesh: Mesh { source: "Assets/roboticHead.3ds" }
-                            position: Qt.vector3d(0,9.1,0)
+                            position: Qt.vector3d(0,0,-9.1)
                             transform: [
-                                Rotation3D {id: headpitch; angle: 0; axis: Qt.vector3d(0,0,1)},
-                                Rotation3D {id: headroll; angle: 45; axis: Qt.vector3d(1,0,0)},
-                                Rotation3D {id: headyaw; angle: 0; axis: Qt.vector3d(0,1,0)}
+                                Rotation3D {id: headyaw; angle: 0; axis: Qt.vector3d(0,0,1)},
+                                Rotation3D {id: headroll; angle: -45; axis: Qt.vector3d(1,0,0)},
+                                Rotation3D {id: headpitch; angle: 0; axis: Qt.vector3d(0,1,0)}
                             ]
                         }
                     }
