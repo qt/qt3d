@@ -270,7 +270,7 @@
     Here the front can is a set of built geometry and the other two are
     scene nodes that reference it, without copying any geometry.
 
-    \snippet builder/builder.cpp 0
+    \snippet qt3d/builder/builder.cpp 0
 
     QGLSceneNodes can be used after the builder is created to cheaply
     copy and redisplay the whole scene.  Or to reference parts of the geometry
@@ -280,7 +280,7 @@
     To draw the resulting built geometry simply call the draw method of the
     build geometry.
 
-    \snippet builder/builder.cpp 1
+    \snippet qt3d/builder/builder.cpp 1
 
     Call the \l{QGLSceneNode::palette()}{palette()} function on the sceneNode()
     to get the QGLMaterialCollection for the node, and place textures
@@ -291,7 +291,7 @@
     or pass no arguments to the constructor and the QGLBuilder
     will create a palette:
 
-    \snippet builder/builder.cpp 2
+    \snippet qt3d/builder/builder.cpp 2
 
     These may then be applied as needed throughout the building of the
     geometry using the integer reference, \c{canMat} in the above code.
@@ -306,7 +306,7 @@
 
     Call the newSection() function to create a new section:
 
-    \snippet builder/builder.cpp 3
+    \snippet qt3d/builder/builder.cpp 3
 
     Here separate sections for the rounded outside cylinder and flat top and
     bottom of the soup can model makes for the appearance of a sharp edge

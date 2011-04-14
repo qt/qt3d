@@ -43,14 +43,14 @@
 #include <QtDeclarative/qdeclarativeview.h>
 #include <QtCore/qdir.h>
 
-#include "../qmlres.h"
+#include "../../qmlres.h"
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
     QDeclarativeView view;
-    QString qml = q_get_qmldir(QLatin1String("qml/basket.qml"));
+    QString qml = q_get_qmldir(QLatin1String("qml/teapot-bounce.qml"));
     view.setSource(QUrl::fromLocalFile(qml));
 
     if (QApplication::arguments().contains(QLatin1String("-maximize")))

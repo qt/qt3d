@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Bounce
-Icon=icon-l-qtquick3d
-Exec=/usr/bin/bounce -fullscreen
-OnlyShowIn=X-MeeGo;
-X-MeeGo-Logical-Id=qtn_comm_appname_bounce
-X-MeeGo-Translation-Catalog=essentials

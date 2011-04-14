@@ -26,7 +26,7 @@
 ****************************************************************************/
 
 /*!
-    \example declarative/teaservice
+    \example quick3d/tea_service
     \title Tea Service Demo in QML
 
     The Tea Service demo in QML shows how QML/3D can be used to draw a complex
