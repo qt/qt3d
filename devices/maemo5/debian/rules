@@ -1,9 +1,6 @@
 #!/usr/bin/make -f
 # -*- makefile -*-
 
-# This rules file is for new Nokia devices.  For fremantle / N900 see the file
-# devices/maemo5/debian/rules.
-
 # To build using this rules file:
 # #
 # ### install debian packaging stuff if not already present:
@@ -14,15 +11,11 @@
 #
 # ### copy all the stuff across - cannot shadow build (probably don't want git)
 # (cd ~/depot/qt/quick3d && tar cf - --exclude-vcs .)|(cd quick3d-tp1 && tar xf -)
-#
-# ### if the qmake in the $PATH is not the Qt you want to use
-# ### you can use a binary package or a Qt built from source (even if its installed with
-# ### "make install") as long as it has declarative & opengl
-# # export PATH=/usr/local/Trolltech/Qt-4.7.2/bin:$PATH
+# cp -f ~/depot/qt/quick3d/devices/maemo5/debian/* quick3d-tp1/debian/.
 #
 # cd quick3d-tp1
 # export DEB_BUILD_OPTIONS="parallel=4"
-# dpkg-buildpackage -b
+# fakeroot dpkg-buildpackage -b
 
 # Uncomment this to turn on verbose mode.
 export DH_OPTIONS=-v
@@ -38,14 +31,15 @@ ifneq (,$(filter parallel=%,$(TMP_BUILD_OPTS)))
 	PARALLEL_MAKEFLAGS += -j$(NUMJOBS)
 endif
 
-ifeq (arm,$(findstring arm,$(shell g++ -v 2>&1 | sed -n '/Target: arm/p')))
-        QMAKE_CONF_MKSPEC = -spec linux-g++-maemo
-        QMAKE_CONF_OPTS = CONFIG+=maemo
-endif
-
 DEB_MAKE_INVOKE := $(MAKE) $(PARALLEL_MAKEFLAGS)
 DEB_MAKE_INSTALL_TARGET := INSTALL_ROOT=$(DEB_DESTDIR) install
 DEB_DH_INSTALL_SOURCEDIR := debian/tmp
 
 common-configure-arch::
-	qmake $(QMAKE_CONF_MKSPEC) quick3d.pro $(QMAKE_CONF_OPTS) CONFIG+=package
+	qmake -spec linux-g++-maemo5 quick3d.pro CONFIG+=maemo CONFIG+=package
+
+common-install-arch:: install-pixmaps
+
+install-pixmaps:
+		mkdir -p $(DEB_DESTDIR)/usr/share/pixmaps
+		find examples -name "icon-l*.png" -exec cp {} $(DEB_DESTDIR)/usr/share/pixmaps \;
