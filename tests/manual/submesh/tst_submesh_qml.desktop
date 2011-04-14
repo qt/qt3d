@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=tst_submesh
+Icon=icon-l-qtquick3d
+Exec=/usr/bin/tst_submesh -fullscreen
+OnlyShowIn=X-MeeGo;
+X-MeeGo-Logical-Id=qtn_comm_appname_tst_submesh_qml
+X-MeeGo-Translation-Catalog=essentials
