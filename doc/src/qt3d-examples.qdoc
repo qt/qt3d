@@ -34,7 +34,7 @@
 
     \list
     \o \l{Teapot Example in QtQuick3D}{Hello Teapot} in QtQuick3D
-    \o \l{basket#Basket in QtQuick3D}{Basket} in QtQuick3D
+    \o \l{quick3d/basket#Basket in QtQuick3D}{Basket} in QtQuick3D
     \o \l{Object Effects}{Cube} in QtQuick3D
     \o \l{Monkey God in QML}{Monkey God} in QtQuick3D
     \o \l{Tea Service Demo in QML}{Tea Service} in QtQuick3D
@@ -46,12 +46,10 @@
     \list
     \o \l{Teapot Example}{Hello Teapot} - drawing a basic object in 3D.
     \o \l{Object Effects#Cube in Qt3D}{Cube in C++} - applying transformations and materials to objects.
-    \o \l{basket}{Basket} - animating objects in 3D.
-    \o \l{nesting}{Nesting} - drawing into framebuffer objects.
+    \o \l{qt3d/nesting}{Nesting} - drawing into framebuffer objects.
     \o \l{Loading a 3DS model with Qt3D}{Penguin} - loading a 3DS model with Qt3D.
-    \o \l{pageflip}{Page Flip} - using shaders to combine textures.
-    \o \l{shapes}{Shapes} - paints all of the basic OpenGL shapes.
-    \o \l{teaservice}{Tea Service} - complex scenes and object picking.
+    \o \l{qt3d/pageflip}{Page Flip} - using shaders to combine textures.
+    \o \l{qt3d/shapes}{Shapes} - paints all of the basic OpenGL shapes.
     \endlist
 
     Other topics:

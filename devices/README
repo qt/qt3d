@@ -1,10 +1,5 @@
 This directory contains useful scripts and resources for use when
 using Qt3D on devices.
 
-In the case of devices/n900 the following commands can be used to get a
-set of clickable application launch icons on the N900's apps screen:
-
-cd $DEPOT/qt3d/devices
-scp -r n900/* root@192.168.2.15:/.
-cd $BUILD/qt3d
-scp -r bin/* root@192.168.2.15:/opt/qt3d/bin
+In the case of the N900 and other maemo devices, use the packaging system
+by following the instructions in the debian/rules file.

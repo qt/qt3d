@@ -46,7 +46,7 @@
 void TeapotView::initializeGL(QGLPainter *painter)
 {
     painter->setStandardEffect(QGL::LitMaterial);
-//! [create-display-list]
+//! [build-geometry]
     QGLBuilder builder;
     builder << QGLTeapot();
     teapot = builder.finalizedSceneNode();

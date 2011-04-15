@@ -26,7 +26,7 @@
 ****************************************************************************/
 
 /*!
-    \example teapot
+    \example qt3d/teapot
     \title Teapot Example
 
     The Teapot example shows how Qt3D can be used to draw a simple
@@ -37,9 +37,9 @@
     We start by defining a class that inherits from QGLView, which
     provides some basic scene setup logic and 3D camera navigation:
 
-    \snippet teapot/teapotview.h class-defn
+    \snippet qt3d/teapot/teapotview.h class-defn
     \dots
-    \quotefromfile teapot/main.cpp
+    \quotefromfile qt3d/teapot/main.cpp
     \skipuntil [main]
     \printto [main-args]
     \skipuntil [main-args-end]
@@ -48,9 +48,9 @@
     When the application starts up, we set up some scene parameters
     in the \c{initializeGL()} function:
 
-    \quotefromfile teapot/teapotview.cpp
+    \quotefromfile qt3d/teapot/teapotview.cpp
     \skipuntil [initialize]
-    \printto [create-display-list]
+    \printto [build-geometry]
 
     The first line of the function selects a standard rendering
     effect that lights material colors with the default OpenGL
@@ -59,8 +59,8 @@
     The \c{teapot} member variable is an instance of QGLSceneNode,
     which we create using QGLBuilder during \c{initializeGL()}:
 
-    \quotefromfile teapot/teapotview.cpp
-    \skipuntil [create-display-list]
+    \quotefromfile qt3d/teapot/teapotview.cpp
+    \skipuntil [build-geometry]
     \printto [initialize]
 
     The QGLTeapot class represents the geometry for the teapot,
@@ -73,11 +73,11 @@
     We have to take care to clean up our scene after we're done with it
     and here that is done in the destructor:
 
-    \snippet teapot/teapotview.cpp destructor
+    \snippet qt3d/teapot/teapotview.cpp destructor
 
     Finally, we paint the teapot every time the window is refreshed:
 
-    \snippet teapot/teapotview.cpp paint
+    \snippet qt3d/teapot/teapotview.cpp paint
 
     The QGLView class has in-built support for camera navigation
     using the mouse and keyboard.  By clicking and dragging the mouse,

@@ -1,7 +1,6 @@
 TEMPLATE = subdirs
 SUBDIRS += \
     basket \
-    bounce \
     cube \
     forest \
     lander \
@@ -11,5 +10,5 @@ SUBDIRS += \
     photoroom \
     shaders \
     sphere \
-    teapot
+    tutorials
 
