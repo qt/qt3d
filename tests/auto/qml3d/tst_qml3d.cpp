@@ -223,12 +223,12 @@ void TestReport::log_incident
     fprintf(stream, "</TestFunction>\n");
 }
 
-class SkipBadOpenGL : public QObject
+class tst_qml3d : public QObject
 {
     Q_OBJECT
 public:
 private slots:
-    void skip_bad_opengl()
+    void initTestCase()
     {
         QSKIP("Disabling qml tests due to invalid GL context!", SkipSingle);
     }
@@ -242,7 +242,7 @@ int main(int argc, char *argv[])
         QGLWidget checkWidget;
         if (!checkWidget.isValid())
         {
-            SkipBadOpenGL xf;
+            tst_qml3d xf;
             return QTest::qExec(&xf, argc, argv);
         }
     }
