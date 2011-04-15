@@ -51,6 +51,7 @@
 #include <QtCore/qdebug.h>
 #include <QtCore/qeventloop.h>
 #include <QtGui/qtextdocument.h>
+#include <QtTest/qtestcase.h>
 #include <stdio.h>
 
 class QuitObject : public QObject
@@ -222,6 +223,17 @@ void TestReport::log_incident
     fprintf(stream, "</TestFunction>\n");
 }
 
+class SkipBadOpenGL : public QObject
+{
+    Q_OBJECT
+public:
+private slots:
+    void skip_bad_opengl()
+    {
+        QSKIP("Disabling qml tests due to invalid GL context!", SkipSingle);
+    }
+};
+
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
@@ -230,8 +242,8 @@ int main(int argc, char *argv[])
         QGLWidget checkWidget;
         if (!checkWidget.isValid())
         {
-            fprintf(stderr, "Disabling qml tests due to invalid GL context!");
-            return 1;
+            SkipBadOpenGL xf;
+            return QTest::qExec(&xf, argc, argv);
         }
     }
 
