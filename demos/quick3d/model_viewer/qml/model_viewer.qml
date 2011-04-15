@@ -70,109 +70,6 @@ Rectangle {
         NumberAnimation { properties: "x"; easing.type: Easing.OutQuad; duration: 600 }
     }
 
-
-    Viewport {
-        visible: false
-        x: 800
-        id: viewport1
-        width: 800; height: 500
-        picking: false
-
-        camera: Camera {
-            eye: Qt.vector3d(0, 0, 350)
-            farPlane: 2000
-        }
-
-
-    Text {
-        id: imgSrc
-        text: "Image Source"; font.family: "Helvetica"; font.pointSize: 22; color: "white"
-        anchors.top: parent.top
-        z: 10
-    }
-
-    LongButton {
-        //width: 800
-        id: imgSrcButton
-        anchors.top: imgSrc.bottom
-        anchors.topMargin: 2
-        z: 10
-    }
-    Text {
-        id: displayOptions
-        anchors.top: imgSrcButton.bottom
-        anchors.topMargin: 2
-        text: "Display Options"; font.family: "Helvetica"; font.pointSize: 22; color: "white"
-        z: 10
-    }
-    FourButtons {
-        id: displayOptionsButton
-        anchors.top: displayOptions.bottom
-        anchors.topMargin: 2
-        z: 10
-    }
-    Text {
-        id: texture
-        anchors.top: displayOptionsButton.bottom
-        anchors.topMargin: 2
-        text: "Texture"; font.family: "Helvetica"; font.pointSize:22; color: "white"
-        z: 10
-    }
-    LongButton {
-        id: textureButton
-        anchors.top: texture.bottom
-        anchors.topMargin: 2
-        z: 10
-    }
-    Text {
-        id: navigation
-        anchors.top: textureButton.bottom
-        anchors.topMargin: 2
-        text: "Navigation"; font.family: "Helvetica"; font.pointSize: 22; color: "white"
-        z: 10
-    }
-    FourButtons {
-        id: navigationButton
-        anchors.top: navigation.bottom
-        anchors.topMargin: 2
-        z: 10
-    }
-    Text {
-        id: background
-        anchors.top: navigationButton.bottom
-        anchors.topMargin: 2
-        text: "Background"; font.family: "Helvetica"; font.pointSize: 22; color: "white"
-        z: 10
-    }
-    LongButton {
-        id: backgroundButton
-        anchors.top: background.bottom
-        anchors.topMargin: 2
-        z: 10
-    }
-
-        //Button 1
-        MainButton {
-            id: button1c
-            anchors.top: parent.top
-            imageSource: "images/cog.svg"
-
-
-            MouseArea {
-                //property bool on: false
-                anchors.fill: parent
-                onClicked: {
-                    //source_mesh.options =  "ForceSmooth";
-                    //source_mesh.source = textInput.text;
-                    parent.bounce = true;
-
-                    if (mainwindow.state == "")mainwindow.state = "Open"; else mainwindow.state = "";
-                }
-            }
-        }
-
-    }
-
     Item {
         width: 800; height: 500
 
@@ -274,7 +171,7 @@ Rectangle {
 
 
         //Button 1
-        MainButton {
+ /*       MainButton {
             id: button1
             anchors.top: parent.top
             imageSource: "images/cog.svg"
@@ -290,12 +187,12 @@ Rectangle {
                     if (mainwindow.state == "")mainwindow.state = "Open"; else mainwindow.state = "";
                 }
             }
-        }
+        }*/
 
         //Button 2
         MainButton {
             id: button2
-            anchors.top: button1.bottom
+            anchors.top: parent.top
             imageSource: "images/zoomin.svg";
             property bool zoom: false
             property real changeScale: 1.1
