@@ -7,13 +7,12 @@ HEADERS += ../qmlres.h
 
 QT += declarative
 
+!package:DESTDIR = ../../../bin
 # for cleanup on Windows platforms - avoid deletion prompts
 win32 {
     QMAKE_DEL_FILE = del /q
     QMAKE_DEL_DIR = rmdir /s /q
 }
-
-!package:DESTDIR = ../../../bin
 
 qmlResources.files = qml
 symbian {
