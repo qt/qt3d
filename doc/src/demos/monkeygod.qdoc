@@ -26,7 +26,7 @@
 ****************************************************************************/
 
 /*!
-    \example declarative/monkeygod
+    \example quick3d/monkeygod
     \title Monkey God in QML
 
     The Monkey God demo in QML shows how QML/3D can be used to build

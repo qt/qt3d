@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies).
 ** All rights reserved.
 ** Contact: Nokia Corporation (qt-info@nokia.com)
 **
@@ -48,7 +48,7 @@ Item3D {
     transform: [
         Rotation3D {
             id: penguinTilt
-            angle: -100
+            angle: 10
             axis: Qt.vector3d(1,0,0)
         },
         Rotation3D {
@@ -64,14 +64,14 @@ Item3D {
 
     SequentialAnimation {
         running: true
-        loops: 100
-        NumberAnimation {target: penguinTilt; property: "angle"; to: -45; duration: 600; easing.type: "OutQuad"}
-        NumberAnimation {target: penguinTilt; property: "angle"; to: -100; duration: 600; easing.type: "OutQuad"}
+        loops: Animation.Infinite
+        NumberAnimation {target: penguinTilt; property: "angle"; to: -30; duration: 600; easing.type: "OutQuad"}
+        NumberAnimation {target: penguinTilt; property: "angle"; to: 10; duration: 600; easing.type: "OutQuad"}
     }
 
     SequentialAnimation on y {
         running: true
-        loops: 100
+        loops: Animation.Infinite
         NumberAnimation {to: 0.5; duration: 200; easing.type: "OutQuad"}
         NumberAnimation {to: 0.0; duration: 200; easing.type: "OutQuad"}
     }

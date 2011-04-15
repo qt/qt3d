@@ -26,7 +26,7 @@
 ****************************************************************************/
 
 /*!
-    \example tutorials/penguin
+    \example qt3d/tutorials/penguin
     \title Loading a 3DS model with Qt3D
 
     This tutorial shows how Qt3D can be used to load a simple
@@ -36,7 +36,7 @@
     We start by defining a class that inherits from QGLView, which
     provides some basic scene setup logic and 3D camera navigation:
 
-    \snippet tutorials/penguin/modelview.h class-defn
+    \snippet qt3d/tutorials/penguin/modelview.h class-defn
 
     Refer first to the \l{Teapot Example} for the basics of using
     the QGLView class, lighting and so on.
@@ -45,12 +45,12 @@
     resource file, and store the result in a member variable, so
     we can refer to it in the paint function:
 
-    \snippet tutorials/penguin/modelview.cpp initialize
+    \snippet qt3d/tutorials/penguin/modelview.cpp initialize
 
     In the teapot example we had to specify appropriate effects but
     the model loader sets appropriate effects on the scene for us.
 
-    \snippet tutorials/penguin/modelview.cpp paint
+    \snippet qt3d/tutorials/penguin/modelview.cpp paint
 
     Here in the paint function we call the \c{draw()} function of
     the scene's main object, in order to display the fully
@@ -72,7 +72,7 @@
     Let's make a few changes to have our penguin display nicely
     when the application opens.
 
-    \snippet tutorials/penguin_advanced/modelview.cpp initialize
+    \snippet qt3d/tutorials/penguin_advanced/modelview.cpp initialize
 
     First of all, let move the camera away from the penguin and up
     so he fits in the frame and we can get a better angle on him,
@@ -95,7 +95,7 @@
     calculated and stored as a quaternion - we want the x twist first
     so that goes last in the product of the two quaternions.
 
-    \snippet tutorials/penguin_advanced/modelview.cpp paint
+    \snippet qt3d/tutorials/penguin_advanced/modelview.cpp paint
 
     Now all that remains in the updated paint function is to apply the
     new pose, and then paint the penguin.

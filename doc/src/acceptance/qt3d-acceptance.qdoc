@@ -124,7 +124,7 @@
 
     \section1 Rendering into a framebuffer object
 
-    Run the \l{nesting}{Nesting} example to test if rendering into a
+    Run the \l{qt3d/nesting}{Nesting} example to test if rendering into a
     framebuffer object works:
 
     \image nesting-screenshot.png

@@ -1,6 +1,9 @@
 #!/usr/bin/make -f
 # -*- makefile -*-
 
+# This rules file is for new Nokia devices.  For fremantle / N900 see the file
+# devices/maemo5/debian/rules.
+
 # To build using this rules file:
 # #
 # ### install debian packaging stuff if not already present:

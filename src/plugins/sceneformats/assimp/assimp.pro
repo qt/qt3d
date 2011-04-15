@@ -15,10 +15,11 @@ SOURCES += main.cpp \
     ailoaderiosystem.cpp
 
 package {
-    LIBS += -L$$PWD/../threed -lQt3D
+    LIBS += -L$$PWD/../../../threed -lQt3D
     INCLUDEPATH += ../../../../include
 } else {
     CONFIG += qt3d
+    DESTDIR = $$[QT_INSTALL_PLUGINS]/sceneformats
 }
 
 system_ai {

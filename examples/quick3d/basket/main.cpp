@@ -49,8 +49,6 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    qDebug() << "basket_qml";
-
     QDeclarativeView view;
     QString qml = q_get_qmldir(QLatin1String("qml/basket.qml"));
     view.setSource(QUrl::fromLocalFile(qml));

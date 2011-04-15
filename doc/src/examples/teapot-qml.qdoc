@@ -26,28 +26,28 @@
 ****************************************************************************/
 
 /*!
-    \example tutorials/teapot-qml
+    \example quick3d/tutorials/teapot_qml
     \title Teapot Example in QtQuick3D
 
     This example shows to use QtQuick3D to display a teapot on
     the screen.  The QML is fairly simple:
 
-    \snippet tutorials/teapot-qml/teapot.qml 1
+    \snippet quick3d/tutorials/teapot_qml/qml/teapot.qml 1
 
     \image teapot-qml-screenshot.png
 
     The example starts by importing the Qt and Qt3D QML modules:
 
-    \snippet tutorials/teapot-qml/teapot.qml 2
+    \snippet quick3d/tutorials/teapot_qml/qml/teapot.qml 2
 
     Then we create a viewport of size 640x480 to display the teapot:
 
-    \snippet tutorials/teapot-qml/teapot.qml 3
+    \snippet quick3d/tutorials/teapot_qml/qml/teapot.qml 3
 
     And now we create a \l Item3D to display the teapot with a
     default lit material effect:
 
-    \snippet tutorials/teapot-qml/teapot.qml 4
+    \snippet quick3d/tutorials/teapot_qml/qml/teapot.qml 4
 
     The teapot data itself is loaded from \c{teapot.bez}, which contains
     Bezier patch data that describes the geometry of the teapot.
@@ -55,17 +55,17 @@
     Let's make the teapot a little more interesting by adding a
     material to simulate bone china:
 
-    \snippet tutorials/teapot-qml/teapot-bounce.qml 1
-    \snippet tutorials/teapot-qml/teapot-bounce.qml 2
+    \snippet quick3d/tutorials/teapot_bounce_qml/qml/teapot-bounce.qml 1
+    \snippet quick3d/tutorials/teapot_bounce_qml/qml/teapot-bounce.qml 2
 
     \image teapot-china-screenshot.png
 
     To make the teapot even more interesting, we can cause it to
     bounce up and down using a QML animation item:
 
-    \snippet tutorials/teapot-qml/teapot-bounce.qml 3
+    \snippet quick3d/tutorials/teapot_bounce_qml/qml/teapot-bounce.qml 3
 
-    This QML teapot example can be compared with the \l{teapot}{C++ version}.
+    This QML teapot example can be compared with the \l{qt3d/teapot}{C++ version}.
     Using QML is briefer than C++, and easier to modify to adjust
     materials and add new features like animations.
 
