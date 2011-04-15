@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies).
 ** All rights reserved.
 ** Contact: Nokia Corporation (qt-info@nokia.com)
 **
@@ -49,20 +49,23 @@ import Qt3D.Shapes 1.0
         camera: Camera { eye: Qt.vector3d(21,7,19)}
 
         Item3D {
-            id: monkey
-            scale: 2
-            position: Qt.vector3d(0, 1.5, -6)
+            transform: LookAt { subject: focalPenguin}
+            position: Qt.vector3d(0, 1.7, -6)
 
-            mesh: Mesh { source: "meshes/monkey.3ds"; options: "ForceSmooth"}
-            effect: Effect { material: gold}
-                        transform: LookAt { subject: focalPenguin}
+            Item3D {
+                id: monkey
+                scale: 2
+                mesh: Mesh { source: "meshes/monkey.3ds"; options: "ForceSmooth"}
+                effect: Effect { material: gold}
+                transform: Rotation3D {angle: 90; axis: Qt.vector3d(1,0,0);}
+            }
         }
 
         Item3D
         {
             Penguin {position: Qt.vector3d(-1.5,0,1)}
             Penguin {position: Qt.vector3d(1.5,0,1)}
-                        Penguin {id: focalPenguin; position: Qt.vector3d(-0.5,0,2)}
+            Penguin {id: focalPenguin; position: Qt.vector3d(-0.5,0,2)}
             Penguin {position: Qt.vector3d(0.5,0,2)}
 
             transform: [
@@ -71,14 +74,14 @@ import Qt3D.Shapes 1.0
 
             SequentialAnimation {
                 running: true
-                loops: 100
+                loops: Animation.Infinite
                 NumberAnimation {target: swivel1; property: "angle"; to: 20; duration: 1200; easing.type: "OutQuad"}
                 NumberAnimation {target: swivel1; property: "angle"; to: -20; duration: 1200; easing.type: "OutQuad"}
             }
         }
 
         Cube {
-            scale: 2.0
+            scale: 12.0
             y: -6.5
             z: -2
 
@@ -104,7 +107,7 @@ import Qt3D.Shapes 1.0
 
             SequentialAnimation {
                 running: true
-                loops: 100
+                loops: Animation.Infinite
                 NumberAnimation {target: swivel2; property: "angle"; to: -20; duration: 1200; easing.type: "OutQuad"}
                 NumberAnimation {target: swivel2; property: "angle"; to: 20; duration: 1200; easing.type: "OutQuad"}
             }
