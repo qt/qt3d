@@ -42,7 +42,7 @@
         <table align="left" width="100%">
         <tr class="qt-code"><td>
     \endraw
-    \quotefile quick3d/tutorials/shaders/shader-tutorial.qml
+    \snippet quick3d/tutorials/shaders/shader-tutorial.qml 1
     \raw HTML
         </td><td align="right">
     \endraw
