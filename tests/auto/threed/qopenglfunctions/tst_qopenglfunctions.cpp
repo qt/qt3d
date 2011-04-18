@@ -90,6 +90,9 @@ void tst_QOpenGLFunctions::features()
 
     // Make a context current.
     QGLWidget glw;
+    if (!glw.isValid())
+        QSKIP("GL Implementation not valid", SkipSingle);
+
     glw.makeCurrent();
     funcs.initializeGLFunctions();
 

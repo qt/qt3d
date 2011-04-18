@@ -79,6 +79,9 @@ bool tst_QGLAbstractSurface::isFboCurrent(QGLFramebufferObject *fbo)
 void tst_QGLAbstractSurface::glWidgetSurface()
 {
     QGLWidget glw;
+    if (!glw.isValid())
+        QSKIP("GL Implementation not valid", SkipSingle);
+
 
     QGLWidgetSurface surface1;
     QVERIFY(surface1.surfaceType() == QGLAbstractSurface::Widget);
@@ -117,6 +120,9 @@ void tst_QGLAbstractSurface::fboSurface()
         QSKIP("fbo's are not supported", SkipSingle);
 
     QGLWidget glw;
+    if (!glw.isValid())
+        QSKIP("GL Implementation not valid", SkipSingle);
+
     QGLWidgetSurface surface1(&glw);
     QVERIFY(surface1.activate());
     QCOMPARE(surface1.viewportGL(), QRect(0, 0, glw.width(), glw.height()));
@@ -204,6 +210,9 @@ void tst_QGLAbstractSurface::pbufferSurface()
         QSKIP("pbuffer's are not supported", SkipSingle);
 
     QGLWidget glw;
+    if (!glw.isValid())
+        QSKIP("GL Implementation not valid", SkipSingle);
+
     QGLWidgetSurface surface1(&glw);
     QVERIFY(surface1.activate());
     QCOMPARE(surface1.viewportGL(), QRect(0, 0, glw.width(), glw.height()));
@@ -278,6 +287,9 @@ void tst_QGLAbstractSurface::pbufferSurface()
 void tst_QGLAbstractSurface::subSurface()
 {
     QGLWidget glw;
+    if (!glw.isValid())
+        QSKIP("GL Implementation not valid", SkipSingle);
+
     QGLWidgetSurface surface1(&glw);
 
     QGLSubsurface surface2(&surface1, QRect(0, 0, 32, 16));
