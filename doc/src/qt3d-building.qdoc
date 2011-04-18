@@ -149,7 +149,18 @@
     \c{jom} tool which you will already be using automatically, to see how many
     parallel jobs your build will use.
 
-    Ok, now hit the build button.
+    \image build-qt3d-qtcreator-set-to-release.png
+
+    \bold{Special note for Windows} - make sure that the type of build matches the
+    Qt that you are building against.  In the case of binary packages, and the Qt
+    that ships with the SDK these are binary release builds - so in those cases set
+    your Qt3D to a release build also.  One way to tell that this has gone wrong is
+    that your Qt3D library will be called \c{Qt3Dd.dll} (note the lower case "d"
+    for debug) when your QtGui library is called \c{QtGui4.dll} (no lower case "d").
+
+    By default the Qt build system used by QtCreator will build Qt3D in debug mode.
+
+    Ok, \b{now} hit the build button.
 
     \bold{Step 4} - Build QtQuick3D and run a test App.
 
