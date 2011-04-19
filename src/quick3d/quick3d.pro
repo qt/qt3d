@@ -10,11 +10,25 @@ gcov {
 
 QT += declarative
 
+# See the README in the root dir re this code
 package {
+    macx:CONFIG(qt_framework, qt_framework|qt_no_framework) {
+        LIBS += -framework Qt3D -F../threed
+        INCLUDEPATH += ../threed/Qt3D.framework/Versions/1/Headers
+    } else {
+        win32 {
+            CONFIG(debug, debug|release) {
+                LIBS += ..\\threed\\debug\\Qt3Dd.lib
+            } else {
+                LIBS += ..\\threed\\release\\Qt3D.lib
+            }
+        } else {
+            LIBS += -L../threed -lQt3D
+        }
+        INCLUDEPATH += ../../include/Qt3D
+    }
     target.path = $$[QT_INSTALL_LIBS]
     INSTALLS += target
-    LIBS += -L$$PWD/../threed -lQt3D
-    INCLUDEPATH += ../../include
     QT += opengl network
 } else {
     CONFIG += qt3d
@@ -22,9 +36,14 @@ package {
 }
 
 win32 {
-    DLLDESTDIR = ../../bin
     !static:DEFINES += QT_MAKEDLL
-
+    package {
+        installDll.path = $$[QT_INSTALL_BINS]
+        installDll.files = $$DESTDIR_TARGET
+        INSTALLS += installDll
+    } else {
+        DLLDESTDIR = $$[QT_INSTALL_BINS]
+    }
     CONFIG(debug, debug|release) {
         TARGET = $$member(TARGET, 0)d
     }
@@ -79,7 +98,7 @@ macx:CONFIG(qt_framework, qt_framework|qt_no_framework) {
 } else {
     exportHeaders.input = PUBLIC_HEADERS
     package {
-        exportHeaders.output = ../../include/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
+        exportHeaders.output = ../../include/Qt3DQuick/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
     } else {
         exportHeaders.output = $$[QT_INSTALL_HEADERS]/Qt3DQuick/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
     }

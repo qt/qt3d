@@ -1,2 +1,3 @@
 TEMPLATE = subdirs
-SUBDIRS = meshcvt qglinfo
+SUBDIRS = qglinfo
+!package: SUBDIRS += meshcvt
