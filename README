@@ -1,15 +1,17 @@
-This directory contains the QtQuick3D product tree derived from the Qt3D project.
+This directory contains the Qt3D project:
+   * QtQuick3D QML bindings and
+   * Qt3D C++ APIs
 
-Run qmake and then make to build it against Qt.  As of 10 March 2011 it requires
-version 4.7.x of Qt, built with OpenGL and declarative support.  This is standard
-for binary distributions of Qt.
 
-As of 10 March 2011 this product tree is being ported to avoid the dependency
-on private headers in Qt.  If it fails to build against your version of Qt
-try building it against a developer build from source.
+Building QtQuick3D
+==================
 
-You will need to have built Qt with the "-opengl" option.  Run "make install"
-afterwards to install the plugins into your Qt build.
+Check the building instructions in doc/src/qt3d-building.qdoc also available
+online at: http://doc.qt.nokia.com/qt-quick3d-snapshot/qt3d-building.html
+
+
+Whats in QtQuick3D
+==================
 
 Directory structure:
 
@@ -23,16 +25,21 @@ src/imports/
 util/
     Various utilities that are useful when working with Qt3D.
 examples/
-    Some examples of using the Qt3D library.
+    Some examples of using QtQuiick3D (QML bindings) and Qt3D (C++ API).
 demos/
-    More complex demos of Qt3D, including QtQuick3D for integrating
-    Qt3D with the "Qt Quick" Declarative UI component of Qt 4.7.
-tests/
-    Unit tests for the Qt3D libraries.
+    Some more complex demos of using QtQuiick3D (QML bindings) and Qt3D (C++ API).
+tests/auto/qml3d/
+    Unit tests for the QtQuick3D bindings.
+tests/auto/threed/
+    Unit tests for the Qt3D C++ API
 doc/
     Documentation.
 devices/symbian/
     Symbian deployment file
+
+
+Documentation
+=============
 
 The documentation can be generated with "make docs".  It will be placed
 into "doc/html" in the build directory.
