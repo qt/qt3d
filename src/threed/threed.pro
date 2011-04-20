@@ -18,9 +18,14 @@ package {
 }
 
 win32 {
-    DLLDESTDIR = ../../bin
     !static:DEFINES += QT_MAKEDLL
-
+    package {
+        installDll.path = $$[QT_INSTALL_BINS]
+        installDll.files = $$DESTDIR_TARGET
+        INSTALLS += installDll
+    } else {
+        DLLDESTDIR = $$[QT_INSTALL_BINS]
+    }
     CONFIG(debug, debug|release) {
         TARGET = $$member(TARGET, 0)d
     }
@@ -74,7 +79,7 @@ macx:CONFIG(qt_framework, qt_framework|qt_no_framework) {
 } else {
     exportHeaders.input = PUBLIC_HEADERS
     package {
-        exportHeaders.output = ../../include/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
+        exportHeaders.output = ../../include/Qt3D/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
     } else {
         exportHeaders.output = $$[QT_INSTALL_HEADERS]/Qt3D/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
     }

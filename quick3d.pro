@@ -4,6 +4,10 @@ SUBDIRS += src
 !package: SUBDIRS += tests
 CONFIG += ordered
 
+package {
+    !maemo*: SUBDIRS -= examples demos
+}
+
 include(doc/doc.pri)
 
 # We need opengl, minimum es2 or desktop

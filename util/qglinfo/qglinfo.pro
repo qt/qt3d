@@ -6,8 +6,23 @@ SOURCES += main.cpp \
     fpswidget.cpp
 
 package {
-    LIBS += -L../../src/threed -lQt3D
-    INCLUDEPATH += ../../include
+    macx:CONFIG(qt_framework, qt_framework|qt_no_framework) {
+        LIBS += -framework Qt3D -F../../src/threed
+        INCLUDEPATH += ../../src/threed/Qt3D.framework/Versions/1/Headers
+    } else {
+        win32 {
+            CONFIG(debug, debug|release) {
+                LIBS += ..\\..\\src\\threed\\debug\\Qt3Dd.lib
+            } else {
+                LIBS += ..\\..\\src\\threed\\release\\Qt3D.lib
+            }
+        } else {
+            LIBS += -L../../src/threed -lQt3D
+        }
+        INCLUDEPATH += ../../include/Qt3D
+    }
+    target.path += $$[QT_INSTALL_BINS]
+    INSTALLS += target
     QT += opengl
 } else {
     CONFIG += qt3d
@@ -24,8 +39,3 @@ HEADERS += qglinfowindow.h \
 RESOURCES += qglinfo.qrc
 
 !contains(QT_CONFIG, egl):DEFINES += QT_NO_EGL
-
-package {
-    target.path = $$[QT_INSTALL_BINS]
-    INSTALLS += target
-}
