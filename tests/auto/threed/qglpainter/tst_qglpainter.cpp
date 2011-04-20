@@ -92,6 +92,9 @@ void tst_QGLPainter::cleanupTestCase()
 
 void tst_QGLPainter::clear()
 {
+    if (!widget->isValid())
+        QSKIP("GL Implementation not valid", SkipSingle);
+
     QVERIFY(widget->runTest(this, "clearPaint"));
 }
 
@@ -112,6 +115,9 @@ void tst_QGLPainter::clearPaintQ(QPainter *painter, const QSize& size)
 
 void tst_QGLPainter::drawTriangle()
 {
+    if (!widget->isValid())
+        QSKIP("GL Implementation not valid", SkipSingle);
+
     QVERIFY(widget->runTest(this, "drawTrianglePaint"));
 }
 
@@ -174,6 +180,9 @@ static QRect fetchGLScissor(const QRect& windowRect)
 
 void tst_QGLPainter::scissor()
 {
+    if (!widget->isValid())
+        QSKIP("GL Implementation not valid", SkipSingle);
+
     // Run a painting test to check that the scissor works.
     QVERIFY(widget->runTest(this, "scissorPaint"));
 
@@ -435,6 +444,9 @@ static bool checkGLMatrix(GLenum, const QMatrix4x4&) { return true; }
 
 void tst_QGLPainter::projectionMatrixStack()
 {
+    if (!widget->isValid())
+        QSKIP("GL Implementation not valid", SkipSingle);
+
     QGLPainter painter(widget);
 
     painter.projectionMatrix().setToIdentity();
@@ -462,6 +474,9 @@ void tst_QGLPainter::projectionMatrixStack()
 
 void tst_QGLPainter::modelViewMatrixStack()
 {
+    if (!widget->isValid())
+        QSKIP("GL Implementation not valid", SkipSingle);
+
     QGLPainter painter(widget);
 
     painter.modelViewMatrix().setToIdentity();

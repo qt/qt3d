@@ -689,6 +689,9 @@ static QColor litColor(const QGLMaterial &material)
 
 void tst_QGLMaterial::standardMaterialDraw()
 {
+    if (!widget->isValid())
+        QSKIP("GL Implementation not valid", SkipSingle);
+
     QGLMaterial mat1;
     QVERIFY(widget->runTest(&mat1));
     QVERIFY(widget->sameColor(litColor(mat1)));
@@ -696,6 +699,9 @@ void tst_QGLMaterial::standardMaterialDraw()
 
 void tst_QGLMaterial::colorMaterialDraw()
 {
+    if (!widget->isValid())
+        QSKIP("GL Implementation not valid", SkipSingle);
+
     QGLColorMaterial mat1;
     mat1.setColor(Qt::blue);
     QVERIFY(widget->runTest(&mat1));

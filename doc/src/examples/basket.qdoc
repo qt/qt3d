@@ -26,7 +26,7 @@
 ****************************************************************************/
 
 /*!
-    \example basket
+    \example quick3d/basket
     \title Basket Example
 
     \section2 Basket in QtQuick3D
@@ -35,44 +35,44 @@
     structure to the C++ version above, but much simpler.
     We start by defining a viewport with a specific camera position:
 
-    \snippet declarative/basket.qml 1
+    \snippet quick3d/basket/qml/basket.qml 1
 
     We then add an \l Item3D object to load the basket model and
     apply the desired texture to it:
 
-    \snippet declarative/basket.qml 2
+    \snippet quick3d/basket/qml/basket.qml 2
 
     And then we apply an animation to the rotation component of
     the item's transform property:
 
-    \snippet declarative/basket.qml 3
+    \snippet quick3d/basket/qml/basket.qml 3
 
     \section2 Basket in Qt3D 
 
     The Basket example shows how Qt3D can be used to draw an animated
     object covered in a texture.  The basic application shell is similar
-    to the \l{teapot}{Hello Teapot} example.  In this case, we create
+    to the \l{qt3d/teapot}{Hello Teapot} example.  In this case, we create
     the basket object and add a texture to it as follows:
 
-    \snippet basket/basketview.cpp 1
+    \snippet qt3d/basket/basketview.cpp 1
 
     For this animation, we want to spin the basket around its Y axis,
     once every 2 seconds.  We first declare an \c angle property in the
     class declaration (calling \c{update()} will force the view to
     redraw whenever the angle changes):
 
-    \snippet basket/basketview.h 1
+    \snippet qt3d/basket/basketview.h 1
 
     Then we create a QPropertyAnimation object that will update
     \c angle every time through the event loop with a new value
     between 0 and 360 degrees:
 
-    \snippet basket/basketview.cpp 2
+    \snippet qt3d/basket/basketview.cpp 2
 
     Now all we have to do is draw the basket using the \c angle
     property every time \c{paintGL()} is called:
 
-    \snippet basket/basketview.cpp 3
+    \snippet qt3d/basket/basketview.cpp 3
 
     \image basket-screenshot.png
 

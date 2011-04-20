@@ -90,6 +90,9 @@ void tst_QOpenGLFunctions::features()
 
     // Make a context current.
     QGLWidget glw;
+    if (!glw.isValid())
+        QSKIP("GL Implementation not valid", SkipSingle);
+
     glw.makeCurrent();
     funcs.initializeGLFunctions();
 
@@ -192,6 +195,8 @@ void tst_QOpenGLFunctions::multitexture()
 {
     QOpenGLFunctions funcs;
     QGLWidget glw;
+    if (!glw.isValid())
+        QSKIP("GL Implementation not valid", SkipSingle);
     glw.makeCurrent();
     funcs.initializeGLFunctions();
 
@@ -216,6 +221,8 @@ void tst_QOpenGLFunctions::blendColor()
 {
     QOpenGLFunctions funcs;
     QGLWidget glw;
+    if (!glw.isValid())
+        QSKIP("GL Implementation not valid", SkipSingle);
     glw.makeCurrent();
     funcs.initializeGLFunctions();
 

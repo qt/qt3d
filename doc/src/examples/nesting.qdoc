@@ -26,7 +26,7 @@
 ****************************************************************************/
 
 /*!
-    \example nesting
+    \example qt3d/nesting
     \title Drawing into framebuffer objects
 
     The Nesting example shows how Qt3D can be used to draw into a
@@ -37,7 +37,6 @@
     \list
     \o \l{Teapot Example}{Hello Teapot} - drawing a basic object in 3D.
     \o \l{Object Effects}{Cube} - applying transformations and materials to objects.
-    \o \l{basket}{Basket} - animating objects in 3D.
     \endlist
 
     In this example we are going to draw two rotating and transparent
@@ -52,25 +51,25 @@
     we need in the constructor (we will share the cube geometry between
     the two cubes we will be drawing):
 
-    \snippet nesting/cubeview.cpp 1
+    \snippet qt3d/nesting/cubeview.cpp 1
 
     We also need three QPropertyAnimation objects to drive our
     animations; rotation angle for the teapot, rotation angle for
     the cube; orbit angle of the two cubes around each other:
 
-    \snippet nesting/cubeview.cpp 2
+    \snippet qt3d/nesting/cubeview.cpp 2
 
     The final step in the constructor is to create a camera for
     the nested scene we will be drawing into the framebuffer object.
     This is in addition to the default QGLView::camera() object that
     provides the camera for the main scene.
 
-    \snippet nesting/cubeview.cpp 3
+    \snippet qt3d/nesting/cubeview.cpp 3
 
     To draw the nested scene, we of course need a framebuffer object,
     which we create in the \c{initializeGL()} method:
 
-    \snippet nesting/cubeview.cpp 4
+    \snippet qt3d/nesting/cubeview.cpp 4
 
     Note that we also set the framebuffer object on an instance of
     QGLFramebufferObjectSurface.  We will use this fact later when
@@ -79,13 +78,13 @@
     For the other cube, we need a regular texture.  And we'll also
     turn on blending to make our cubes transparent:
 
-    \snippet nesting/cubeview.cpp 5
+    \snippet qt3d/nesting/cubeview.cpp 5
 
     Now it is time to paint the scene in \c{paintGL()}.  The first
     thing we want to do is draw the teapot into the framebuffer object.
     To do that, we need to establish a nested drawing state:
 
-    \snippet nesting/cubeview.cpp 6
+    \snippet qt3d/nesting/cubeview.cpp 6
 
     In the code above, we first push the main scene's modelview and
     projection matrices.  And then we push a new drawing surface onto
@@ -94,12 +93,12 @@
     To do that, we set the inner camera position, adjust the painter
     state, clear the framebuffer object, and draw the teapot:
 
-    \snippet nesting/cubeview.cpp 7
+    \snippet qt3d/nesting/cubeview.cpp 7
 
     Now that the nested scene has been drawn to the framebuffer object,
     we pop the surface and matrix stacks to return to the main scene:
 
-    \snippet nesting/cubeview.cpp 8
+    \snippet qt3d/nesting/cubeview.cpp 8
 
     Because our cubes are transparent, we need to make sure we draw
     the objects in the scene from back to front.  Otherwise the result
@@ -107,12 +106,12 @@
     mid-points is furtherest away from the camera and draw that cube first
     (the more negative the z value, the further away it is):
 
-    \snippet nesting/cubeview.cpp 9
+    \snippet qt3d/nesting/cubeview.cpp 9
 
     Drawing the first cube with the simple texture is very similar to
     the \l{Object Effects}{Cube} example:
 
-    \snippet nesting/cubeview.cpp 10
+    \snippet qt3d/nesting/cubeview.cpp 10
 
     The main interesting wrinkle is that we draw the cube twice,
     once with front faces culled, and the second time with back
@@ -123,7 +122,7 @@
     the framebuffer object's texture to the state instead of a static
     texture:
 
-    \snippet nesting/cubeview.cpp 11
+    \snippet qt3d/nesting/cubeview.cpp 11
 
     Face culling is a simple way to draw transparent objects, but it
     really only works on non-intersecting convex objects like our cubes.

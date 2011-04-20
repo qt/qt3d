@@ -239,6 +239,9 @@ void tst_QGLRender::sequence()
     cl->setEffect(QGL::LitDecalTexture2D);
 
     TestView widget(scene);
+    if (!widget.isValid())
+        QSKIP("GL Implementation not valid", SkipSingle);
+
     TestPainter *ptr = new TestPainter(&widget);
 
     widget.paintGL(ptr);

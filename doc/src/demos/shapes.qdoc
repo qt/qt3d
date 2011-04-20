@@ -26,7 +26,7 @@
 ****************************************************************************/
 
 /*!
-    \example shapes
+    \example qt3d/shapes
     \title Shapes Demo
 
     The Shapes demo shows many of the basic shapes that can be

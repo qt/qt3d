@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=textures
-Icon=icon-l-qtquick3d
-Exec=/usr/bin/textures -fullscreen
-OnlyShowIn=X-MeeGo;
-X-MeeGo-Logical-Id=qtn_comm_appname_textures
-X-MeeGo-Translation-Catalog=essentials

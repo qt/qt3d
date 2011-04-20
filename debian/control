@@ -2,7 +2,7 @@ Source: libqt4-3d
 Section: libdevel
 Priority: extra
 Maintainer: Sarah Smith <sarah.j.smith@nokia.com>
-Build-Depends: debhelper (>= 7), libqt4-dev (>= 4.7.2~git20110208-0maemo1+0m6)
+Build-Depends: debhelper (>= 7), libqt4-dev (>= 4.7.2~git20110208-0maemo1+0m6), cdbs (>= 0.4.87+maemo2+0m6)
 Standards-Version: 3.8.4
 
 Package: libqt4-3d
