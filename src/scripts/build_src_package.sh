@@ -23,8 +23,10 @@ if [[ $# != 2 ]]; then
     usage;
 fi
 
-/usr/bin/type -P "qmake" || usage
+## Is the qmake binary in the path?
+/usr/bin/type -P qmake 2>&1 >/dev/null || usage
 
+echo "Using Qt $(qmake -query QT_INSTALL_BINS)/qdoc3 to build doc"
 test -f quick3d.pro || usage
 
 BRANCH=$1
@@ -35,8 +37,9 @@ echo "Creating zip archive..."
 git archive --format=zip --prefix=qtquick3d-${VERSION}-src/ ${BRANCH} > ../qtquick3d-${VERSION}-src.zip || exit 1
 echo "Creating documentation..."
 rm -r doc/html
-qmake -r > /dev/null && make docs || exit 1
+qmake quick3d.pro -spec macx-g++ CONFIG+=package >/dev/null || exit 1
+make docs || exit 1
 cd doc
 cp -r html qtquick3d-${VERSION}
-zip -r ../qtquick3d-${VERSION}-doc.zip qtquick3d-${VERSION}
+zip -r ../qtquick3d-${VERSION}-doc.zip qtquick3d-${VERSION} >/dev/null
 rm -r qtquick3d-${VERSION}
