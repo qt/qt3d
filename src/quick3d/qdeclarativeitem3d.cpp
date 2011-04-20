@@ -247,6 +247,7 @@ public:
         , isEnabled(true)
         , isInitialized(false)
         , mainBranchId(0)
+        , componentComplete(false)
     {
     }
     ~QDeclarativeItem3DPrivate();
@@ -305,6 +306,7 @@ public:
     QMatrix4x4 localTransforms() const;
     QMatrix4x4 localToWorldMatrix() const;
     QMatrix4x4 worldToLocalMatrix() const;
+    bool componentComplete;
 };
 
 QDeclarativeItem3DPrivate::~QDeclarativeItem3DPrivate()
@@ -1172,17 +1174,6 @@ void QDeclarativeItem3D::initialize(QGLPainter *painter)
 
     d->objectPickId = d->viewport->registerPickableObject(this);
 
-    if (mesh() && !meshNode().isEmpty()) {
-        int branchNumber = mesh()->createSceneBranch(meshNode());
-        if (branchNumber>=0) {
-            d->mainBranchId = branchNumber;
-        }
-        else {
-            qWarning()<< "3D item initialization failed: unable to find the specified mesh-node. Defaulting to default node.";
-            d->mainBranchId = 0;
-        }
-    }
-
     for (int index = 0; index < d->children.size(); ++index) {
         QDeclarativeItem3D *item = d->children.at(index);
         if (item) {
@@ -1208,6 +1199,24 @@ void QDeclarativeItem3D::initialize(QGLPainter *painter)
         }
     }
     d->isInitialized = true;
+}
+
+void QDeclarativeItem3D::componentComplete()
+{
+    d->componentComplete = true;
+
+    // Now that we have all the mesh and subnode information we need, it's time to setup the mesh scene objects.
+    if (mesh() && !meshNode().isEmpty()) {
+        int branchNumber = mesh()->createSceneBranch(meshNode());
+        if (branchNumber>=0) {
+            d->mainBranchId = branchNumber;
+        }
+        else {
+            qWarning()<< "3D item initialization failed: unable to find the specified mesh-node. Defaulting to default node.";
+            d->mainBranchId = 0;
+        }
+    }
+    update();
 }
 
 /*!
@@ -1329,21 +1338,23 @@ void QDeclarativeItem3D::setMeshNode(const QString &node)
 */
 void QDeclarativeItem3D::update()
 {
-    if (d->requireBlockingEffectsCheck && d->effect && d->mesh)
+    if (d->requireBlockingEffectsCheck && d->effect && d->mesh && d->componentComplete)
     {
         QGLSceneNode *n = 0;
-        if (d->mainBranchId)
+        if(!meshNode().isEmpty())
+            n = d->mesh->getSceneObject(meshNode());
+        if(!n)
             n = d->mesh->getSceneBranch(d->mainBranchId);
         if (!n)
+        {
             n = d->mesh->getSceneObject();
+        }
         if (n)
         {
             QList<QGLSceneNode*> k = n->allChildren();
             k.prepend(n);
             for (int i = 0; i < k.size(); ++i)
             {
-                if (k.at(i)->hasEffect())
-                    k.at(i)->setEffectEnabled(false);
                 // If the effect has a texture, make sure the mesh does too
                 bool hasTexture = (!d->effect->texture().isEmpty() ||
                                    (!d->effect->textureImage().isNull()));
@@ -1354,6 +1365,26 @@ void QDeclarativeItem3D::update()
                 {
                     qWarning() << "QGLSceneNode" << k.at(i)->objectName() << "from" << d->mesh->source() << "is missing texture coordinates.  Dummy coordinates are being generated, which may take some time.";
                     k.at(i)->geometry().generateTextureCoordinates();
+                }
+
+                QGLSceneNode* sceneObject;
+                if(!this->meshNode().isEmpty())
+                {
+                    sceneObject = d->mesh->getSceneObject(meshNode());
+                } else
+                    sceneObject = d->mesh->getSceneObject();
+
+                if(sceneObject)
+                {
+                    QList<QGLSceneNode*> k = n->allChildren();
+                    k.prepend(n);
+                    if(this->effect())
+                    {
+                        for (int i = 0; i < k.size(); ++i)
+                        {
+                            this->effect()->applyTo(k.at(i));
+                        }
+                    }
                 }
             }
         }

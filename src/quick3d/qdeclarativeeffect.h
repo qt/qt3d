@@ -61,6 +61,7 @@ QT_MODULE(QtQuick3D)
 class QDeclarativeEffectPrivate;
 class QGLPainter;
 class QGLMaterial;
+class QGLSceneNode;
 
 class Q_QT3D_QUICK_EXPORT QDeclarativeEffect : public QObject
 {
@@ -100,6 +101,7 @@ public:
 
     virtual void enableEffect(QGLPainter *painter);
     virtual void disableEffect(QGLPainter *painter);
+    virtual void applyTo(QGLSceneNode *node);
 
     virtual qreal progress();
 
