@@ -36,10 +36,10 @@ git archive --format=tar --prefix=qtquick3d-${VERSION}-src/ ${BRANCH} | gzip > .
 echo "Creating zip archive..."
 git archive --format=zip --prefix=qtquick3d-${VERSION}-src/ ${BRANCH} > ../qtquick3d-${VERSION}-src.zip || exit 1
 echo "Creating documentation..."
-rm -r doc/html
+rm -r -f doc/html
 qmake quick3d.pro -spec macx-g++ CONFIG+=package >/dev/null || exit 1
 make docs || exit 1
 cd doc
 cp -r html qtquick3d-${VERSION}
-zip -r ../qtquick3d-${VERSION}-doc.zip qtquick3d-${VERSION} >/dev/null
+zip -r ../../qtquick3d-${VERSION}-doc.zip qtquick3d-${VERSION} >/dev/null
 rm -r qtquick3d-${VERSION}
