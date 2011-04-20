@@ -433,7 +433,7 @@ void QDeclarativeEffect::applyTo(QGLSceneNode *node)
     } else if (!node->material())
     {
         QGLMaterial* newMaterial = new QGLMaterial(node);
-        if(d->color.isValid())
+        if (d->color.isValid())
             newMaterial->setColor(d->color);
         node->setMaterial(newMaterial);
     }

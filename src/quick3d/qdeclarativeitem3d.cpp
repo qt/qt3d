@@ -1341,9 +1341,9 @@ void QDeclarativeItem3D::update()
     if (d->requireBlockingEffectsCheck && d->effect && d->mesh && d->componentComplete)
     {
         QGLSceneNode *n = 0;
-        if(!meshNode().isEmpty())
+        if (!meshNode().isEmpty())
             n = d->mesh->getSceneObject(meshNode());
-        if(!n)
+        if (!n)
             n = d->mesh->getSceneBranch(d->mainBranchId);
         if (!n)
         {
@@ -1368,17 +1368,17 @@ void QDeclarativeItem3D::update()
                 }
 
                 QGLSceneNode* sceneObject;
-                if(!this->meshNode().isEmpty())
+                if (!this->meshNode().isEmpty())
                 {
                     sceneObject = d->mesh->getSceneObject(meshNode());
                 } else
                     sceneObject = d->mesh->getSceneObject();
 
-                if(sceneObject)
+                if (sceneObject)
                 {
                     QList<QGLSceneNode*> k = n->allChildren();
                     k.prepend(n);
-                    if(this->effect())
+                    if (this->effect())
                     {
                         for (int i = 0; i < k.size(); ++i)
                         {
