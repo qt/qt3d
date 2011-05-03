@@ -50,6 +50,7 @@
 #include <QtDeclarative/qdeclarativeengine.h>
 
 #include <qdeclarativeinfo.h>
+#include "qglscenenode.h"
 
 /*!
     \qmlclass Effect QDeclarativeEffect
@@ -411,6 +412,58 @@ void QDeclarativeEffect::disableEffect(QGLPainter *painter)
     painter->setColor(Qt::white);
     painter->glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+/*!
+  \internal
+  Set a scenenode's material and effect properties to enact this effect.
+
+  The desired functionality should mirror the Mesh::draw(QGLPainter*)
+  functionality as closely as possible.
+
+  Subclasses can reimplement this function to set desired effects (e.g. user
+  effects);
+*/
+void QDeclarativeEffect::applyTo(QGLSceneNode *node)
+{
+    if (d->material)
+    {
+        node->setMaterial(d->material);
+        // TODO: back material?
+    } else if (!node->material())
+    {
+        QGLMaterial* newMaterial = new QGLMaterial(node);
+        if (d->color.isValid())
+            newMaterial->setColor(d->color);
+        node->setMaterial(newMaterial);
+    }
+
+    QGLTexture2D *tex = d->texture2D;
+    if (tex == NULL && d->material)
+        tex = d->material->texture();
+    if (tex && !tex->isNull())
+        node->material()->setTexture(tex);
+
+    // Determine which standard effect to use
+    if (d->useLighting) {
+        if (tex && !tex->isNull()) {
+            if (d->decal)
+                node->setEffect(QGL::LitDecalTexture2D);
+            else
+                node->setEffect(QGL::LitModulateTexture2D);
+        } else {
+            node->setEffect(QGL::LitMaterial);
+        }
+    } else {
+        if (tex && !tex->isNull()) {
+            if (d->decal)
+                node->setEffect(QGL::FlatDecalTexture2D);
+            else
+                node->setEffect(QGL::FlatReplaceTexture2D);
+        } else {
+            node->setEffect(QGL::FlatColor);
+        }
+    }
 }
 
 QGLTexture2D *QDeclarativeEffect::texture2D()

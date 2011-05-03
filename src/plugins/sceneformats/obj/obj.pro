@@ -10,7 +10,7 @@ SOURCES += main.cpp \
 # See the README in the root dir re this code
 package {
     macx:CONFIG(qt_framework, qt_framework|qt_no_framework) {
-        LIBS += -framework Qt3D -F../threed
+        LIBS += -framework Qt3D -F../../../threed
         INCLUDEPATH += ../../../threed/Qt3D.framework/Versions/1/Headers
     } else {
         win32 {
