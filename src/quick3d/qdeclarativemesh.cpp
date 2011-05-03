@@ -480,8 +480,6 @@ int QDeclarativeMesh::createSceneBranch(QString nodeName, QObject *parent)
 #endif
         if (sceneNode) {
             QGLSceneNode *parentNode = qobject_cast<QGLSceneNode *>(sceneNode->parent());
-            qDebug() << "retrieved parentNode:" << parentNode << "from:" << sceneNode->parent();
-
             QObject *prevParent=parentNode;
             if (parentNode)
                 parentNode->removeNode(sceneNode);  //this becomes irrelevant.

@@ -44,7 +44,6 @@ import Qt3D 1.0
 Item3D {
     id: penguin
     scale: 0.2
-    effect: Effect{}
     transform: [
         Rotation3D {
             id: penguinTilt
