@@ -559,7 +559,6 @@ const QGLContext *QGLPainter::context() const
 */
 bool QGLPainter::isFixedFunction() const
 {
-    return false;
 #if defined(QT_OPENGL_ES_2)
     return false;
 #else
