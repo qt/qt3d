@@ -87,6 +87,7 @@
         <li><a href="sceneformats-obj.html">Scene format plug-ins</a></li>
         <li><a href="qt3d-contrib.html">Contributing</a></li>
         <li><a href="qt3d-acceptance.html">Acceptance tests</a></li>
+        <li><a href="qt3d-troubleshooting.html">Troubleshooting Quick3D</a></li>
         </ul>
         </td>
         <td valign="top">
