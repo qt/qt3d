@@ -247,6 +247,11 @@ int main(int argc, char *argv[])
         }
     }
 
+    // Just display the functions available and then exit
+    bool displayFunctions = false;
+
+    QStringList restrictFunctions;
+
     // Parse the command-line arguments.
     const char *filename = 0;
     for (int index = 1; index < argc; ++index) {
@@ -255,6 +260,13 @@ int main(int argc, char *argv[])
             xmlOutput = true;
         else if (arg == QLatin1String("-o") && (index + 1) < argc)
             filename = argv[++index];
+        else if (arg == QLatin1String("-functions"))
+            displayFunctions = true;
+        else
+        {
+            // assume it is the names of test functions - run only those
+            restrictFunctions += arg;
+        }
     }
 
     // Determine where to look for the test data.  On a device it will
@@ -293,7 +305,8 @@ int main(int argc, char *argv[])
                         "   <QTestVersion>%s</QTestVersion>\n"
                         "</Environment>\n", qVersion(), qVersion());
     } else {
-        fprintf(stream, "********* Start testing of tst_qml3d *********\n");
+        if (!displayFunctions)
+            fprintf(stream, "********* Start testing of tst_qml3d *********\n");
     }
 
     qmlRegisterType<TestReport>("QtQuickTest", 1, 0, "TestReport");
@@ -303,6 +316,9 @@ int main(int argc, char *argv[])
     // and run each of them in turn with a QDeclarativeView.
     QStringList filters;
     filters += QLatin1String("tst_*.qml");
+    bool atLeastOne = false;
+    if (displayFunctions)
+        restrictFunctions.clear();
     foreach (QString name, entries) {
         QDir subdir(testPath + QDir::separator() + name);
         QStringList files = subdir.entryList(filters, QDir::Files);
@@ -310,6 +326,43 @@ int main(int argc, char *argv[])
             QString source = subdir.path() + QDir::separator() + file;
             QFileInfo fi(source);
             if (fi.exists()) {
+                bool hasFunc = true;
+                if (restrictFunctions.size() > 0 || displayFunctions)
+                {
+                    hasFunc = false;
+                    QFile qmlFile(fi.absoluteFilePath());
+                    if (!qmlFile.open(QIODevice::ReadOnly))
+                        continue;
+                    {
+                        QTextStream is(&qmlFile);
+                        while (!is.atEnd())
+                        {
+                            QString line = is.readLine();
+                            for (int i = 0; i < restrictFunctions.size() && !hasFunc; ++i)
+                            {
+                                QString funcName("function ");
+                                funcName += restrictFunctions.at(i);
+                                if (line.contains(funcName))
+                                    hasFunc = true;
+                            }
+                            if (displayFunctions)
+                            {
+                                int pos = line.indexOf(QLatin1String("function test_"));
+                                if (pos >= 0)
+                                {
+                                    QString fname = line.mid(pos + 9); // "function".length
+                                    pos = fname.indexOf("()");
+                                    fname.truncate(pos + 2);
+                                    fprintf(stderr, "   %s\n", qPrintable(fname));
+                                }
+                            }
+                        }
+                    }
+                    qmlFile.close();
+                }
+                if (!hasFunc)
+                    continue;
+                atLeastOne = true;
                 QDeclarativeView view;
                 QuitObject quitobj;
                 QEventLoop eventLoop;
@@ -319,6 +372,7 @@ int main(int argc, char *argv[])
                                  &eventLoop, SLOT(quit()));
                 view.setViewport(new QGLWidget());
                 view.engine()->addImportPath(testPath);
+                view.rootContext()->setContextProperty(QLatin1String("filterTestCases"), restrictFunctions);
                 view.setSource(QUrl::fromLocalFile(fi.absoluteFilePath()));
                 if (view.status() == QDeclarativeView::Error) {
                     // Error compiling the test - flag failure and continue.
@@ -337,12 +391,18 @@ int main(int argc, char *argv[])
         }
     }
 
+    if (!atLeastOne && !xmlOutput && restrictFunctions.size() > 1)
+        fprintf(stream, "No test functions matched specified name: %s\n", qPrintable(restrictFunctions.at(0)));
+
     if (xmlOutput) {
         fprintf(stream, "</TestCase>\n");
     } else {
-        fprintf(stream, "Totals: %d passed, %d failed, %d skipped\n",
-                passed, failed, skipped);
-        fprintf(stream, "********* Finished testing of tst_qml3d *********\n");
+        if (!displayFunctions)
+        {
+            fprintf(stream, "Totals: %d passed, %d failed, %d skipped\n",
+                    passed, failed, skipped);
+            fprintf(stream, "********* Finished testing of tst_qml3d *********\n");
+        }
     }
 
     if (filename)
