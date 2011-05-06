@@ -2,7 +2,7 @@ import Qt 4.7
 import Qt3D 1.0
 import Qt3D.Shapes 1.0
 
-// QTBUG-17418
+// QTBUG-17392 / QTBUG-17391
 Item {
     id: screen
     width: 720
