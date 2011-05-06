@@ -168,7 +168,6 @@ void Capsule::drawItem(QGLPainter *painter)
     // Create a new geometry node for this level of detail if necessary.
     QGLSceneNode *geometry = m_lodGeometry.value(lod, 0);
     if (!geometry) {
-
         QGLBuilder builder;
 
         //For the cylinder
@@ -210,6 +209,8 @@ void Capsule::drawItem(QGLPainter *painter)
         builder.currentNode()->setLocalTransform(translateMatrix);
 
         geometry = builder.finalizedSceneNode();
+
+        m_lodGeometry.insert(lod, geometry);
     }
 
     // Draw the geometry.
