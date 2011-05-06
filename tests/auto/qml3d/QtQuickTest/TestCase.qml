@@ -169,6 +169,17 @@ Item {
         for (var prop in testCase) {
             if (prop.indexOf("test_") != 0)
                 continue
+            if (filterTestCases.length > 0) {
+                // if there is a list, only run the tests in the list
+                var excludeTest = true
+                for (var i = 0; i < filterTestCases.length && excludeTest; i++)
+                {
+                    if (filterTestCases[i] == prop)
+                        excludeTest = false
+                }
+                if (excludeTest)
+                    continue
+            }
             var tail = prop.lastIndexOf("_data");
             if (tail != -1 && tail == (prop.length - 5))
                 continue

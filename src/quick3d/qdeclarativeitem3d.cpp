@@ -1203,6 +1203,7 @@ void QDeclarativeItem3D::initialize(QGLPainter *painter)
 
 void QDeclarativeItem3D::componentComplete()
 {
+    QDeclarativeItem::componentComplete();
     d->componentComplete = true;
 
     // Now that we have all the mesh and subnode information we need, it's time to setup the mesh scene objects.

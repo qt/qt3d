@@ -1,3 +1,3 @@
 TEMPLATE = subdirs
-SUBDIRS += submesh displaymodel
+SUBDIRS += submesh rotation displaymodel
 
