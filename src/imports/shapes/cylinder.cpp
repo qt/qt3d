@@ -182,7 +182,6 @@ void Cylinder::drawItem(QGLPainter *painter)
     // Create a new geometry node for this level of detail if necessary.
     QGLSceneNode *geometry = m_lodGeometry.value(lod, 0);
     if (!geometry) {
-        qWarning() << "Creating new geometry";
         QGLBuilder builder;
         builder << QGL::Faceted << QGLCylinder(2.0, 2.0, 1.0, facets, layers, true, true);
         geometry = builder.finalizedSceneNode();

@@ -1,18 +1,19 @@
 TEMPLATE = app
-TARGET = teapot_qml
+TARGET = tst_displaymodel
 CONFIG += qt warn_on
 
 SOURCES += main.cpp
-HEADERS += ../../qmlres.h
+HEADERS += ../../shared/qmlres.h
 
 QT += declarative
 
-!package:DESTDIR = ../../../../bin
+!package:DESTDIR = ../../../bin
 # for cleanup on Windows platforms - avoid deletion prompts
 win32 {
     QMAKE_DEL_FILE = del /q
     QMAKE_DEL_DIR = rmdir /s /q
 }
+
 qmlResources.files = qml
 symbian {
     DEPLOYMENT = qmlResources
@@ -23,7 +24,7 @@ symbian {
     } else {
         !package {
             qmlResources.input = qmlResources.files
-            qmlResources.output = $$OUT_PWD/../../../bin/resources/examples/$$TARGET/qml
+            qmlResources.output = $$OUT_PWD/../../../bin/resources/tests/$$TARGET/qml
             qmlResources.commands = $$QMAKE_COPY_DIR ${QMAKE_FILE_IN} ${QMAKE_FILE_OUT}
             qmlResources.CONFIG += no_link_no_clean
             qmlResources.variable_out = POST_TARGETDEPS
@@ -32,14 +33,20 @@ symbian {
     }
 }
 
+# for cleanup on Windows platforms - avoid deletion prompts
+win32 {
+    QMAKE_DEL_FILE = del /q
+    QMAKE_DEL_DIR = rmdir /s /q
+}
+
 # for make install use in packages
 distInstalls.files = qml
-distInstalls.path = $$[QT_INSTALL_DATA]/quick3d/examples/$$TARGET
+distInstalls.path = $$[QT_INSTALL_DATA]/quick3d/tests/$$TARGET
 INSTALLS += distInstalls
 
 package {
     maemo {
-        applnk.files = teapot_qml.desktop
+        applnk.files = tst_submesh_qml.desktop
         applnk.path = /usr/share/applications
 
         icons.files = icon-l-qtquick3d.png
