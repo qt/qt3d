@@ -38,8 +38,10 @@ DEB_DH_INSTALL_SOURCEDIR := debian/tmp
 common-configure-arch::
 	qmake -spec linux-g++-maemo5 quick3d.pro CONFIG+=maemo CONFIG+=package
 
-common-install-arch:: install-pixmaps
+common-install-arch:: install-desktop-items
 
-install-pixmaps:
-		mkdir -p $(DEB_DESTDIR)/usr/share/pixmaps
-		find examples -name "icon-l*.png" -exec cp {} $(DEB_DESTDIR)/usr/share/pixmaps \;
+install-desktop-items:
+	mkdir -p $(DEB_DESTDIR)/usr/share/pixmaps
+	find examples -name "icon-l*.png" -exec cp {} $(DEB_DESTDIR)/usr/share/pixmaps \;
+	mkdir -p $(DEB_DESTDIR)/usr/share/applications/hildon
+	find examples -name "m5-*.desktop" -exec cp {} $(DEB_DESTDIR)/usr/share/applications/hildon \;
