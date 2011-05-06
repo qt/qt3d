@@ -1,2 +1,2 @@
 TEMPLATE = subdirs
-SUBDIRS += submesh
+SUBDIRS += submesh rotation

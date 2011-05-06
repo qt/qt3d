@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=tst_rotation
+Icon=icon-l-qtquick3d
+Exec=/usr/bin/tst_rotation -fullscreen
+OnlyShowIn=X-MeeGo;
+X-MeeGo-Logical-Id=qtn_comm_appname_tst_rotation_qml
+X-MeeGo-Translation-Catalog=essentials
