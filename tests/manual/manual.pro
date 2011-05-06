@@ -1,3 +1,5 @@
 TEMPLATE = subdirs
-SUBDIRS += submesh rotation displaymodel
-
+SUBDIRS +=  submesh \
+            rotation \
+            displaymodel \
+            scaling
