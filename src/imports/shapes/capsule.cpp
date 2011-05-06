@@ -169,8 +169,6 @@ void Capsule::drawItem(QGLPainter *painter)
     QGLSceneNode *geometry = m_lodGeometry.value(lod, 0);
     if (!geometry) {
 
-        qWarning() << "Creating new geometry";
-
         QGLBuilder builder;
 
         //For the cylinder
