@@ -1,0 +1,14 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Name=Sphere
+Comment=Qt3D example application
+Exec=/usr/bin/sphere -fullscreen
+Icon=icon-l-qtquick3d
+Terminal=false
+Type=Application
+Categories=Development;
+X-HildonDesk-ShowInToolbar=true
+X-Osso-Type=application/x-executable
+X-Text-Domain=qt3d
+
