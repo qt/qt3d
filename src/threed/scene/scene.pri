@@ -1,13 +1,13 @@
 INCLUDEPATH += $$PWD
 VPATH += $$PWD
-HEADERS += qglabstractscene.h \
-    qglsceneformatplugin.h \
-    qglscenenode.h \
-    qglpicknode.h \
-    qglrendersequencer.h \
-    qglrenderorder.h \
-    qglrenderordercomparator.h \
-    qglrenderstate.h
+HEADERS += scene/qglabstractscene.h \
+    scene/qglsceneformatplugin.h \
+    scene/qglscenenode.h \
+    scene/qglpicknode.h \
+    scene/qglrendersequencer.h \
+    scene/qglrenderorder.h \
+    scene/qglrenderordercomparator.h \
+    scene/qglrenderstate.h
 SOURCES += qglabstractscene.cpp \
     qglsceneformatplugin.cpp \
     qglscenenode.cpp \

@@ -1,11 +1,11 @@
 INCLUDEPATH += $$PWD
 VPATH += $$PWD
 HEADERS += \
-    qglabstractsurface.h \
-    qglframebufferobjectsurface.h \
-    qglpixelbuffersurface.h \
-    qglsubsurface.h \
-    qglwidgetsurface.h
+    surfaces/qglabstractsurface.h \
+    surfaces/qglframebufferobjectsurface.h \
+    surfaces/qglpixelbuffersurface.h \
+    surfaces/qglsubsurface.h \
+    surfaces/qglwidgetsurface.h
 SOURCES += \
     qglabstractsurface.cpp \
     qglcontextsurface.cpp \

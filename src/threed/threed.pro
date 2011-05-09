@@ -34,6 +34,7 @@ win32 {
 symbian {
     DEFINES += QT_MAKEDLL
     CONFIG += epocallowdlldata
+    MMP_RULES += EXPORTUNFROZEN
     contains(QT_EDITION, OpenSource) {
         TARGET.CAPABILITY = LocalServices NetworkServices ReadUserData UserEnvironment WriteUserData
     } else {
@@ -87,4 +88,19 @@ macx:CONFIG(qt_framework, qt_framework|qt_no_framework) {
     exportHeaders.CONFIG += no_link_no_clean
     exportHeaders.variable_out = PRE_TARGETDEPS
     QMAKE_EXTRA_COMPILERS += exportHeaders
+}
+
+symbian {
+    export_headers.files = $$PUBLIC_HEADERS
+    exportPath=$${EPOCROOT}$${MW_LAYER_PUBLIC_EXPORT_PATH}/Qt3D/
+    nativePath=$$replace(exportPath,/,\\)
+    exists($$nativePath) {
+    } else {
+        system($$QMAKE_MKDIR $$nativePath)
+    }
+
+    message($$PUBLIC_HEADERS)
+    for(export_header, export_headers.files) {
+        BLD_INF_RULES.prj_exports += "$$export_header $$MW_LAYER_PUBLIC_EXPORT_PATH(Qt3D/$$basename(export_header))"
+    }
 }
