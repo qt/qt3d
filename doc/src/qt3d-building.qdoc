@@ -45,13 +45,13 @@
     our source repository.
 
     The source for QtQuick3D is hosted on Gitorious as the git repository
-    \l{http://qt.gitorious.org/qt-labs/quick3d}{\c{qt-labs/quick3d.git}}.
+    \l{http://qt.gitorious.org/qt-quick3d/qt-quick3d}{\c{qt-quick3d/qt-quick3d.git}}.
     It can be cloned as follows:
 
     \code
     $ mkdir -p $HOME/depot/qt
     $ cd $HOME/depot/qt
-    $ git clone git://gitorious.org/qt-labs/quick3d.git
+    $ git clone git://gitorious.org/qt-quick3d/qt-quick3d.git
     \endcode
 
     More stable versions of the QtQuick3D source code is available as source
