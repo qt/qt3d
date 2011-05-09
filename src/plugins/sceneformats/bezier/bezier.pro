@@ -31,3 +31,4 @@ package {
     CONFIG += qt3d
     DESTDIR = $$[QT_INSTALL_PLUGINS]/sceneformats
 }
+symbian: LIBS += -lQt3D

@@ -2,9 +2,9 @@ INCLUDEPATH += $$PWD
 VPATH += $$PWD
 
 HEADERS += \
-    qglcamera.h \
-    qglcameraanimation.h \
-    qglview.h
+    viewing/qglcamera.h \
+    viewing/qglcameraanimation.h \
+    viewing/qglview.h
 
 SOURCES += \
     qglcamera.cpp \

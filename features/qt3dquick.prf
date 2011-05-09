@@ -20,6 +20,7 @@ CONFIG += qt3d
     load(data_caging_paths)
 
     INCLUDEPATH+=$$MW_LAYER_PUBLIC_EXPORT_PATH(Qt3DQuick)
+    LIBS += -lQt3DQuick
 }
 
 QT += opengl network declarative

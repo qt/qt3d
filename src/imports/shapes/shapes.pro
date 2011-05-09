@@ -42,6 +42,7 @@ win32 {
 symbian {
     CONFIG += epocallowdlldata
     MMP_RULES += EXPORTUNFROZEN
+    LIBS += -lQt3D -lQt3DQuick
     contains(QT_EDITION, OpenSource) {
         TARGET.CAPABILITY = LocalServices NetworkServices ReadUserData UserEnvironment WriteUserData
     } else {

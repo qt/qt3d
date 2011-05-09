@@ -17,6 +17,7 @@
     load(data_caging_paths)
 
     INCLUDEPATH+=$$MW_LAYER_PUBLIC_EXPORT_PATH(Qt3D)
+    LIBS += -lQt3D
 }
 
 QT += opengl network

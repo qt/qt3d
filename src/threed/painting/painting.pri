@@ -3,11 +3,11 @@ INCLUDEPATH += $$PWD
 VPATH += $$PWD
 
 HEADERS += \
-    qglabstracteffect.h \
-    qgllightmodel.h \
-    qgllightparameters.h \
-    qglpainter.h \
-    qmatrix4x4stack.h
+    painting/qglabstracteffect.h \
+    painting/qgllightmodel.h \
+    painting/qgllightparameters.h \
+    painting/qglpainter.h \
+    painting/qmatrix4x4stack.h
 
 SOURCES += \
     qglabstracteffect.cpp \

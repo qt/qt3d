@@ -53,6 +53,7 @@ symbian {
     DEFINES += QT_MAKEDLL
     CONFIG += epocallowdlldata
     MMP_RULES += EXPORTUNFROZEN
+    LIBS += -lQt3D
     contains(QT_EDITION, OpenSource) {
         TARGET.CAPABILITY = LocalServices NetworkServices ReadUserData UserEnvironment WriteUserData
     } else {

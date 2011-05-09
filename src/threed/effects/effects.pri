@@ -3,10 +3,10 @@ INCLUDEPATH += $$PWD
 VPATH += $$PWD
 
 HEADERS += \
-    qglshaderprogrameffect.h \
-    qglcolladafxeffectfactory.h \
-    qglcolladafxeffect.h \
-    qglcolladafxeffectloader.h
+    effects/qglshaderprogrameffect.h \
+    effects/qglcolladafxeffectfactory.h \
+    effects/qglcolladafxeffect.h \
+    effects/qglcolladafxeffectloader.h
 
 SOURCES += \
     qglflatcoloreffect.cpp \

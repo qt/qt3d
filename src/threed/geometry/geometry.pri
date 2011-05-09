@@ -1,15 +1,15 @@
 INCLUDEPATH += $$PWD
 VPATH += $$PWD
-HEADERS += qglcube.h \
-    qglsphere.h \
-    qgeometrydata.h \
-    qlogicalvertex.h \
-    qglbuilder.h \
-    qglbezierpatches.h \
-    qglmaterialcollection.h \
-    qglteapot.h \
-    qglcylinder.h \
-    qgldome.h
+HEADERS += geometry/qglcube.h \
+    geometry/qglsphere.h \
+    geometry/qgeometrydata.h \
+    geometry/qlogicalvertex.h \
+    geometry/qglbuilder.h \
+    geometry/qglbezierpatches.h \
+    geometry/qglmaterialcollection.h \
+    geometry/qglteapot.h \
+    geometry/qglcylinder.h \
+    geometry/qgldome.h
 SOURCES += qglcube.cpp \
     qglsphere.cpp \
     qgeometrydata.cpp \

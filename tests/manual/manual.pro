@@ -1,6 +1,7 @@
 TEMPLATE = subdirs
-SUBDIRS +=  submesh \
-            rotation \
-            displaymodel \
+SUBDIRS +=  displaymodel \
             model3ds \
-            scaling
+            rotation \
+            scaling \
+            submesh \
+            translation
