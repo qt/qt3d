@@ -5,6 +5,8 @@
 ::         for these first two, use the C:\Qt\<ver>\bin\qtvars.bat vsvars command
 ::    - NSIS compiler, "makensis"
 ::         set PATH=%PATH%;"C:\Program Files (x86)\NSIS"
+::         NSIS needs the custom license plugin - if its not installed get it
+::         from http://nsis.sourceforge.net/CustomLicense_plug-in
 :: Run this script from the root of a complete source tree of Qt3D, eg
 ::    mkdir C:\build\qt
 ::    cd C:\build\qt
@@ -25,6 +27,7 @@ qmake.exe quick3d.pro -spec win32-msvc2008 CONFIG+=release CONFIG+=package
 :: This has to be the full path, but without the drive letter...
 set INSTALL_ROOT=%CD:~2%\tmp
 %MAKE_PRG% install
+%MAKE_PRG% docs
 qmake -query QT_VERSION >tmp\qt_version
 set /P QT_VERSION= <tmp\qt_version
 makensis /DQT_VERSION=%QT_VERSION% /NOCD src\scripts\build_win_package.nsi

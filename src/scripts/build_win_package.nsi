@@ -1,9 +1,10 @@
 !include LogicLib.nsh
+!include nsDialogs.nsh
 
 !define PRODUCT_NAME "QtQuick3D"
 !define PRODUCT_VERSION "1.0-tp1"
 !define PRODUCT_PUBLISHER "Nokia"
-!define PRODUCT_WEB_SITE "http://qt.nokia.com"
+!define PRODUCT_WEB_SITE "http://doc.qt.nokia.com/qt-quick3d-snapshot/"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\qglinfo.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
@@ -15,6 +16,9 @@
 !define MUI_ABORTWARNING
 !define MUI_ICON "src\scripts\qtquick3d.ico"
 !define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall.ico"
+!define MUI_WELCOMEFINISHPAGE_BITMAP "src\scripts\win_installer_background.bmp"
+!define MUI_WELCOMEPAGE_TITLE "${PRODUCT_NAME} Setup"
+!define MUI_WELCOMEPAGE_TEXT "QtQuick3D will be installed into Qt ${QT_VERSION}, found in $INSTDIR.  If you do not want ${PRODUCT_NAME} installed there, click cancel below."
 
 ; Welcome page
 !insertmacro MUI_PAGE_WELCOME
@@ -27,9 +31,12 @@
 !insertmacro MUI_PAGE_INSTFILES
 !define MUI_FINISHPAGE_NOAUTOCLOSE
 ; Finish page
-!define MUI_FINISHPAGE_RUN "$INSTDIR\Qt\${QT_VERSION}\bin\qglinfo.exe"
-!define MUI_FINISHPAGE_RUN_TEXT "QtQuick3D QGLInfo program"
-!define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\doc\windows-install.rtf"
+Page custom DisplayWelcomeMessage
+!define MUI_FINISHPAGE_RUN $INSTDIR\quick3d\bin\qglinfo.exe
+!define MUI_FINISHPAGE_RUN_TEXT "Run QtQuick3D QGLInfo program"
+!define MUI_FINISHPAGE_LINK "QtQuick3D documentation"
+!define MUI_FINISHPAGE_LINK_LOCATION $INSTDIR\quick3d\doc\html\index.html
+
 !insertmacro MUI_PAGE_FINISH
 
 ; Uninstaller pages
@@ -41,10 +48,10 @@
 ; MUI end ------
 
 ; Where make install puts all the files
-!define MK_INST_ROOT .\tmp
+!define MK_INST_ROOT tmp
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "Setup.exe"
+OutFile "${PRODUCT_NAME}-${PRODUCT_VERSION}.exe"
 InstallDir "$PROGRAMFILES\QtQuick3D"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
@@ -57,28 +64,52 @@ Function .onInit
   ReadRegStr $0 HKCU "Software\Trolltech\Versions" "DefaultQtVersion"
   ; MessageBox MB_OK "Qt version installed: $0"
   ${If} $0 != ${QT_VERSION}
-    MessageBox MB_ICONEXCLAMATION "Please install Qt v${QT_VERSION} before installing ${PRODUCT_NAME} ${PRODUCT_VERSION}"
+    MessageBox MB_ICONEXCLAMATION "Please install Qt v${QT_VERSION} from http:\\qt.nokia.com\downloads before installing ${PRODUCT_NAME} ${PRODUCT_VERSION}"
     Abort
   ${EndIf}
   ReadRegStr $1 HKCU "Software\Trolltech\Versions\$0" "InstallDir"
   StrCpy $INSTDIR $1
-  MessageBox MB_YESNO|MB_ICONQUESTION "Detected Qt v${QT_VERSION} in $INSTDIR.  Install QtQuick3D into $INSTDIR?" IDYES GoAhead
-  Abort
-GoAhead:
+  LogSet on
 FunctionEnd
 
+Function DisplayWelcomeMessage
+        ; Create the temporary plugins directory
+        InitPluginsDir
+
+        ; Put the welcome message in the temporary plugins directory.
+        ; The plugins directory is deleted when the installer quits.
+        File "/oname=$PLUGINSDIR\windows-install.txt" "src\scripts\windows-install.txt"
+
+        nsDialogs::Create 1018
+        Pop $0
+
+        nsDialogs::CreateControl /NOUNLOAD ${__NSD_Text_CLASS} ${DEFAULT_STYLES}|${WS_TABSTOP}|${ES_MULTILINE} ${__NSD_Text_EXSTYLE} 20 45 325 200 ''
+        Pop $1
+
+        CustomLicense::LoadFile "$PLUGINSDIR\windows-install.txt" $1
+        nsDialogs::Show
+
+FunctionEnd
 
 Section "MainSection" SEC01
   SetOutPath "$INSTDIR\bin"
   SetOverwrite try
-  File "tmp\Qt\${QT_VERSION}\bin\qglinfo.exe"
+  File "${MK_INST_ROOT}\Qt\${QT_VERSION}\bin\qglinfo.exe"
   CreateDirectory "$SMPROGRAMS\QtQuick3D"
-  CreateShortCut "$SMPROGRAMS\QtQuick3D\QtQuick3D.lnk" "$INSTDIR\Qt\${QT_VERSION}\bin\qglinfo.exe"
-  CreateShortCut "$DESKTOP\QtQuick3D.lnk" "$INSTDIR\Qt\${QT_VERSION}\bin\qglinfo.exe"
+  CreateShortCut "$SMPROGRAMS\QtQuick3D\QtQuick3D.lnk" "$INSTDIR\quick3d\bin\qglinfo.exe"
+  CreateShortCut "$DESKTOP\QtQuick3D.lnk" "$INSTDIR\quick3d\bin\qglinfo.exe"
+  ; bin imports include lib mkspecs plugins quick3d
+  SetOutPath "$INSTDIR\quick3d\bin"
+  File /r "${MK_INST_ROOT}\Qt\${QT_VERSION}\bin\*.*"
+  SetOutPath "$INSTDIR\quick3d\doc"
+  File /r "doc\html"
   SetOutPath "$INSTDIR"
-  File /r "${MK_INST_ROOT}\Qt\${QT_VERSION}"
-  SetOutPath "$INSTDIR\doc"
-  File "src\scripts\windows-install.rtf"
+  File /r "${MK_INST_ROOT}\Qt\${QT_VERSION}\imports"
+  File /r "${MK_INST_ROOT}\Qt\${QT_VERSION}\include"
+  File /r "${MK_INST_ROOT}\Qt\${QT_VERSION}\lib"
+  File /r "${MK_INST_ROOT}\Qt\${QT_VERSION}\mkspecs"
+  File /r "${MK_INST_ROOT}\Qt\${QT_VERSION}\plugins"
+  File /r "${MK_INST_ROOT}\Qt\${QT_VERSION}\quick3d"
 SectionEnd
 
 Section -AdditionalIcons
@@ -113,18 +144,16 @@ FunctionEnd
 Section Uninstall
   Delete "$INSTDIR\${PRODUCT_NAME}.url"
   Delete "$INSTDIR\uninst.exe"
-  RMDir /r "$INSTDIR\Qt\${QT_VERSION}\plugins\sceneformats"
-  RMDir /r "$INSTDIR\Qt\${QT_VERSION}\plugins\imageformats"
-  Delete "$INSTDIR\Qt\${QT_VERSION}\mkspecs\features\qt3dquick.prf"
-  Delete "$INSTDIR\Qt\${QT_VERSION}\mkspecs\features\qt3d.prf"
-  Delete "$INSTDIR\Qt\${QT_VERSION}\lib\Qt3DQuickd.pdb"
-  Delete "$INSTDIR\Qt\${QT_VERSION}\lib\Qt3DQuickd.lib"
-  Delete "$INSTDIR\Qt\${QT_VERSION}\lib\Qt3DQuickd.dll"
-  Delete "$INSTDIR\Qt\${QT_VERSION}\lib\Qt3Dd.pdb"
-  Delete "$INSTDIR\Qt\${QT_VERSION}\lib\Qt3Dd.lib"
-  Delete "$INSTDIR\Qt\${QT_VERSION}\lib\Qt3Dd.dll"
-  RMDir /r "$INSTDIR\Qt\${QT_VERSION}\include\Qt3D"
-  RMDir /r "$INSTDIR\Qt\${QT_VERSION}\include\Qt3DQuick"
+  RMDir /r "$INSTDIR\plugins\sceneformats"
+  RMDir /r "$INSTDIR\plugins\imageformats"
+  Delete "$INSTDIR\mkspecs\features\qt3dquick.prf"
+  Delete "$INSTDIR\mkspecs\features\qt3d.prf"
+  Delete "$INSTDIR\lib\Qt3DQuick.*"
+  Delete "$INSTDIR\lib\Qt3DQuickd.*"
+  Delete "$INSTDIR\lib\Qt3D.*"
+  Delete "$INSTDIR\lib\Qt3Dd.*"
+  RMDir /r "$INSTDIR\include\Qt3D"
+  RMDir /r "$INSTDIR\include\Qt3DQuick"
   Delete "$INSTDIR\Qt\${QT_VERSION}\bin\qglinfo.exe"
 
   Delete "$SMPROGRAMS\QtQuick3D\Uninstall.lnk"
