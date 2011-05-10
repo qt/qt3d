@@ -6,14 +6,14 @@ usage:
   $0 <refspec> <version>
 
   Creates tar and zip source package from <refspec> and documentation-zip from current checkout.
-  Run the command from inside the depot root.
+  Run it from inside [a copy of] the git checkout of qt3d source.
 
   Generated package files and directories are named after <version>.
 
   Make sure the bin path for a valid Qt with qdoc3 is in the $PATH.
 
   example:
-    env PATH=/path/to/Qt/bin:$PATH src/scripts/createSrcAndDocPackage.sh origin/2.0.0 2.0.0-rc1
+    env PATH=/path/to/Qt/bin:$PATH src/scripts/build_src_package.sh origin/tp1 1.0-tp1
 USAGE
     exit 1
 }
@@ -23,10 +23,11 @@ if [[ $# != 2 ]]; then
     usage;
 fi
 
-## Is the qmake binary in the path?
-/usr/bin/type -P qmake 2>&1 >/dev/null || usage
+set -e
 
-echo "Using Qt $(qmake -query QT_INSTALL_BINS)/qdoc3 to build doc"
+QDOC3=$(qmake -query QT_INSTALL_BINS)/qdoc3
+
+echo "Using Qt ${QDOC3} to build doc"
 test -f quick3d.pro || usage
 
 BRANCH=$1
