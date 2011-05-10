@@ -1,8 +1,9 @@
 #!/usr/bin/make -f
 # -*- makefile -*-
 
-# This rules file is for new Nokia devices.  For fremantle / N900 see the file
-# devices/maemo5/debian/rules.
+# This rules file is for new Nokia devices using maemo6/meego.
+# For fremantle / N900 see the file devices/maemo5/debian/rules.
+# For ubuntu desktop see the file devices/ubuntu/debian/rules.
 
 # To build using this rules file:
 # #
@@ -38,14 +39,9 @@ ifneq (,$(filter parallel=%,$(TMP_BUILD_OPTS)))
 	PARALLEL_MAKEFLAGS += -j$(NUMJOBS)
 endif
 
-ifeq (arm,$(findstring arm,$(shell g++ -v 2>&1 | sed -n '/Target: arm/p')))
-        QMAKE_CONF_MKSPEC = -spec linux-g++-maemo
-        QMAKE_CONF_OPTS = CONFIG+=maemo
-endif
-
 DEB_MAKE_INVOKE := $(MAKE) $(PARALLEL_MAKEFLAGS)
 DEB_MAKE_INSTALL_TARGET := INSTALL_ROOT=$(DEB_DESTDIR) install
 DEB_DH_INSTALL_SOURCEDIR := debian/tmp
 
 common-configure-arch::
-	qmake $(QMAKE_CONF_MKSPEC) quick3d.pro $(QMAKE_CONF_OPTS) CONFIG+=package
+	qmake -spec linux-g++-maemo quick3d.pro CONFIG+=maemo CONFIG+=package
