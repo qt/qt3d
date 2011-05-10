@@ -50,16 +50,6 @@ DEFINES += QT_BUILD_QT3D_LIB
 
 !contains(QT_CONFIG, egl):DEFINES += QT_NO_EGL
 
-INSTALL_HEADERS = ""
-for(hdr, PUBLIC_HEADERS) {
-    found_vdir = $$PWD
-    for(vdir, VPATH) {
-        found_vdir = $$vdir
-        exists($$found_vdir/$$hdr):break()
-    }
-    INSTALL_HEADERS += $$found_vdir/$$hdr
-}
-
 package {
     distInstalls.files = $$PUBLIC_HEADERS
     distInstalls.path = $$[QT_INSTALL_HEADERS]/Qt3D
@@ -75,7 +65,7 @@ macx:CONFIG(qt_framework, qt_framework|qt_no_framework) {
     CONFIG += lib_bundle
     FRAMEWORK_HEADERS.version = Versions
     FRAMEWORK_HEADERS.path = Headers
-    FRAMEWORK_HEADERS.files = $$INSTALL_HEADERS
+    FRAMEWORK_HEADERS.files = $$PUBLIC_HEADERS
     QMAKE_BUNDLE_DATA += FRAMEWORK_HEADERS
 } else {
     exportHeaders.input = PUBLIC_HEADERS
