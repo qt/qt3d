@@ -39,6 +39,8 @@ package {
     DESTDIR = $$[QT_INSTALL_PLUGINS]/sceneformats
 }
 
+symbian: LIBS += -lQt3D
+
 # suppress warnings about std::copy using unsafe parameters
 win32: DEFINES +=_SCL_SECURE_NO_WARNINGS
 

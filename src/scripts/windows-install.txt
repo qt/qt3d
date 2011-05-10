@@ -1,0 +1,10 @@
+Thanks for installing QtQuick3D!
+
+To create applications with QtQuick3D
+simply open QtCreator, and ensure that
+your new project uses the Qt installed
+at C:\Qt\4.7.2.
+
+You can also compile applications from
+the command line by using the Start Menu
+item : "Qt 4.7.2 Command Prompt".

@@ -3,10 +3,10 @@ INCLUDEPATH += $$PWD
 VPATH += $$PWD
 
 HEADERS += \
-    qglabstractmaterial.h \
-    qglcolormaterial.h \
-    qglmaterial.h \
-    qgltwosidedmaterial.h
+    materials/qglabstractmaterial.h \
+    materials/qglcolormaterial.h \
+    materials/qglmaterial.h \
+    materials/qgltwosidedmaterial.h
 
 SOURCES += \
     qglabstractmaterial.cpp \

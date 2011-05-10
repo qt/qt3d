@@ -1,9 +1,9 @@
 INCLUDEPATH += $$PWD
 VPATH += $$PWD
 HEADERS += \
-    qgltexture2d.h \
-    qgltexturecube.h \
-    qareaallocator.h
+    textures/qgltexture2d.h \
+    textures/qgltexturecube.h \
+    textures/qareaallocator.h
 SOURCES += \
     qareaallocator.cpp \
     qglsharedresource.cpp \

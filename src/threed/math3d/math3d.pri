@@ -1,10 +1,10 @@
 INCLUDEPATH += $$PWD
 VPATH += $$PWD
-HEADERS += qbox3d.h \
-    qplane3d.h \
-    qray3d.h \
-    qsphere3d.h \
-    qtriangle3d.h
+HEADERS += math3d/qbox3d.h \
+    math3d/qplane3d.h \
+    math3d/qray3d.h \
+    math3d/qsphere3d.h \
+    math3d/qtriangle3d.h
 SOURCES += qbox3d.cpp \
     qplane3d.cpp \
     qray3d.cpp \

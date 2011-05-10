@@ -1,17 +1,17 @@
 INCLUDEPATH += $$PWD
 VPATH += $$PWD
 HEADERS += \
-    qglattributedescription.h \
-    qglattributeset.h \
-    qglattributevalue.h \
-    qglindexbuffer.h \
-    qglvertexbundle.h \
-    qarray.h \
-    qcolor4ub.h \
-    qcustomdataarray.h \
-    qvector2darray.h \
-    qvector3darray.h \
-    qvector4darray.h
+    arrays/qglattributedescription.h \
+    arrays/qglattributeset.h \
+    arrays/qglattributevalue.h \
+    arrays/qglindexbuffer.h \
+    arrays/qglvertexbundle.h \
+    arrays/qarray.h \
+    arrays/qcolor4ub.h \
+    arrays/qcustomdataarray.h \
+    arrays/qvector2darray.h \
+    arrays/qvector3darray.h \
+    arrays/qvector4darray.h
 SOURCES += \
     qglattributedescription.cpp \
     qglattributeset.cpp \

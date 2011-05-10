@@ -1,4 +1,4 @@
 INCLUDEPATH += $$PWD
 VPATH += $$PWD
-HEADERS += qopenglfunctions.h
+HEADERS += api/qopenglfunctions.h
 SOURCES += qopenglfunctions.cpp

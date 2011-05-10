@@ -1,7 +1,7 @@
 INCLUDEPATH += $$PWD
 VPATH += $$PWD
 HEADERS += \
-    qt3dglobal.h \
-    qglnamespace.h
+    global/qt3dglobal.h \
+    global/qglnamespace.h
 SOURCES += \
     qglnamespace.cpp
