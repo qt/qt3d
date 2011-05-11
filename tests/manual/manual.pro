@@ -4,4 +4,5 @@ SUBDIRS +=  displaymodel \
             rotation \
             scaling \
             submesh \
-            translation
+            translation \
+            transformations
