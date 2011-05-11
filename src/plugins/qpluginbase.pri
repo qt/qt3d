@@ -16,10 +16,6 @@ wince*:LIBS += $$QMAKE_LIBS_GUI
 
 symbian: {
     TARGET.EPOCALLOWDLLDATA=1
-    contains(QT_EDITION, OpenSource) {
-        TARGET.CAPABILITY = LocalServices NetworkServices ReadUserData UserEnvironment WriteUserData
-    } else {
-        TARGET.CAPABILITY = All -Tcb
-    }
+    TARGET.CAPABILITY = All -Tcb
     TARGET = $${TARGET}$${QT_LIBINFIX}
 }

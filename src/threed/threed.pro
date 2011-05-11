@@ -35,11 +35,8 @@ symbian {
     DEFINES += QT_MAKEDLL
     CONFIG += epocallowdlldata
     MMP_RULES += EXPORTUNFROZEN
-    contains(QT_EDITION, OpenSource) {
-        TARGET.CAPABILITY = LocalServices NetworkServices ReadUserData UserEnvironment WriteUserData
-    } else {
-        TARGET.CAPABILITY = All -Tcb
-    }
+    TARGET.CAPABILITY = All -Tcb
+    TARGET.UID3 = 0x20031E95
 }
 
 include(../private/private.pri)
