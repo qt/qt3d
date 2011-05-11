@@ -31,4 +31,7 @@ package {
     CONFIG += qt3d
     DESTDIR = $$[QT_INSTALL_PLUGINS]/sceneformats
 }
-symbian: LIBS += -lQt3D
+symbian {
+    LIBS += -lQt3D
+    TARGET.UID3 = 0x20031E98
+}

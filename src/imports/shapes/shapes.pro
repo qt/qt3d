@@ -43,11 +43,9 @@ symbian {
     CONFIG += epocallowdlldata
     MMP_RULES += EXPORTUNFROZEN
     LIBS += -lQt3D -lQt3DQuick
-    contains(QT_EDITION, OpenSource) {
-        TARGET.CAPABILITY = LocalServices NetworkServices ReadUserData UserEnvironment WriteUserData
-    } else {
-        TARGET.CAPABILITY = All -Tcb
-    }
+    TARGET.EPOCALLOWDLLDATA = 1
+    TARGET.CAPABILITY = All -Tcb
+    TARGET.UID3 = 0x20031E9C
 }
 
 SOURCES += \
