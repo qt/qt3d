@@ -61,8 +61,9 @@ class Viewport : public QDeclarativeItem, public QDeclarativeViewport
 {
     Q_OBJECT
     Q_PROPERTY(bool picking READ picking WRITE setPicking NOTIFY viewportChanged)
-    Q_PROPERTY(bool showPicking READ showPicking WRITE setShowPicking NOTIFY viewportChanged)
+    Q_PROPERTY(bool showPicking READ showPicking WRITE setShowPicking NOTIFY viewportChanged)   
     Q_PROPERTY(bool navigation READ navigation WRITE setNavigation NOTIFY viewportChanged)
+    Q_PROPERTY(bool fovzoom READ fovzoom WRITE setFovzoom NOTIFY viewportChanged)
     Q_PROPERTY(bool blending READ blending WRITE setBlending NOTIFY viewportChanged)
     Q_PROPERTY(QGLCamera *camera READ camera WRITE setCamera)
     Q_PROPERTY(QGLLightParameters *light READ light WRITE setLight NOTIFY viewportChanged)
@@ -79,6 +80,9 @@ public:
 
     bool navigation() const;
     void setNavigation(bool value);
+
+    bool fovzoom() const;
+    void setFovzoom(bool value);
 
     bool blending() const;
     void setBlending(bool value);
