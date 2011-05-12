@@ -2,6 +2,8 @@ import Qt 4.7
 
 Rectangle {
     property int current : 0
+    width: 640
+    height: 480
 
     Rectangle {
         id: tabContentArea
