@@ -65,6 +65,7 @@ HEADERS += \
 qdeclarativesources.files += \
     qmldir \
     library.xml \
+    plugins.qmltypes \
     Cube.qml \
     cube.obj \
     Quad.qml \
@@ -84,3 +85,7 @@ qdeclarativesources.files += \
     qdeclarativesources.path += $$[QT_INSTALL_IMPORTS]/Qt3D/Shapes
     INSTALLS += qdeclarativesources
 }
+
+OTHER_FILES += \
+    README.plugins_types \
+    README.library_xml

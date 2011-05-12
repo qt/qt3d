@@ -66,7 +66,8 @@ HEADERS += \
 # See the file README.library_xml for more on this
 qdeclarativesources.files += \
     qmldir \
-    library.xml
+    library.xml \
+    plugins.qmltypes
 
 !package {
     qdeclarative_in_place.input = qdeclarativesources.files
@@ -79,3 +80,7 @@ qdeclarativesources.files += \
     qdeclarativesources.path += $$[QT_INSTALL_IMPORTS]/Qt3D
     INSTALLS += qdeclarativesources
 }
+
+OTHER_FILES += \
+    README.plugins_types \
+    README.library_xml

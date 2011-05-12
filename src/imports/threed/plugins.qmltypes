@@ -1,0 +1,499 @@
+import QtQuick.tooling 1.0
+
+// This file describes the plugin-supplied types contained in the library.
+// It is used for QML tooling purposes only.
+
+Module {
+    Component {
+        name: "QDeclarativeEffect"
+        prototype: "QObject"
+        exports: [
+            "Effect 1.0"
+        ]
+        Property { name: "color"; type: "QColor" }
+        Property { name: "useLighting"; type: "bool" }
+        Property { name: "decal"; type: "bool" }
+        Property { name: "blending"; type: "bool" }
+        Property { name: "texture"; type: "QUrl" }
+        Property { name: "textureImage"; type: "QImage" }
+        Property { name: "material"; type: "QGLMaterial"; isPointer: true }
+        Property { name: "progress"; type: "qreal"; isReadonly: true }
+        Signal { name: "effectChanged" }
+        Signal {
+            name: "progressChanged"
+            Parameter { name: "progress"; type: "qreal" }
+        }
+    }
+    Component {
+        name: "QDeclarativeItem3D"
+        defaultProperty: "data"
+        prototype: "QDeclarativeItem"
+        exports: [
+            "Item3D 1.0"
+        ]
+        Enum {
+            name: "CullFace"
+            values: {
+                "CullDisabled": 0,
+                "CullFrontFaces": 1028,
+                "CullBackFaces": 1029,
+                "CullAllFaces": 1032,
+                "CullClockwise": 65536
+            }
+        }
+        Enum {
+            name: "CullFaces"
+            values: {
+                "CullDisabled": 0,
+                "CullFrontFaces": 1028,
+                "CullBackFaces": 1029,
+                "CullAllFaces": 1032,
+                "CullClockwise": 65536
+            }
+        }
+        Enum {
+            name: "SortMode"
+            values: {
+                "DefaultSorting": 0,
+                "BackToFront": 1
+            }
+        }
+        Property { name: "position"; type: "QVector3D" }
+        Property { name: "x"; type: "qreal" }
+        Property { name: "y"; type: "qreal" }
+        Property { name: "z"; type: "qreal" }
+        Property { name: "scale"; type: "qreal" }
+        Property { name: "transform"; type: "QGraphicsTransform3D"; isList: true; isReadonly: true }
+        Property { name: "pretransform"; type: "QGraphicsTransform3D"; isList: true; isReadonly: true }
+        Property { name: "mesh"; type: "QDeclarativeMesh"; isPointer: true }
+        Property { name: "effect"; type: "QDeclarativeEffect"; isPointer: true }
+        Property { name: "light"; type: "QGLLightParameters"; isPointer: true }
+        Property { name: "resources"; type: "QObject"; isList: true; isReadonly: true }
+        Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
+        Property { name: "children"; type: "QDeclarativeItem3D"; isList: true; isReadonly: true }
+        Property { name: "cullFaces"; type: "CullFaces" }
+        Property { name: "sortChildren"; type: "SortMode" }
+        Property { name: "meshNode"; type: "string" }
+        Property { name: "inheritEvents"; type: "bool" }
+        Property { name: "enabled"; type: "bool" }
+        Property { name: "parent"; type: "QDeclarativeItem3D"; isPointer: true }
+        Signal { name: "positionChanged" }
+        Signal { name: "scaleChanged" }
+        Signal { name: "rotationChanged" }
+        Signal { name: "meshChanged" }
+        Signal { name: "meshNodeChanged" }
+        Signal { name: "effectChanged" }
+        Signal { name: "lightChanged" }
+        Signal {
+            name: "stateChanged"
+            Parameter { type: "string" }
+        }
+        Signal { name: "clicked" }
+        Signal { name: "doubleClicked" }
+        Signal { name: "pressed" }
+        Signal { name: "released" }
+        Signal { name: "hoverEnter" }
+        Signal { name: "hoverLeave" }
+        Signal { name: "inheritEventsChanged" }
+        Signal { name: "enabledChanged" }
+        Signal { name: "childrenChanged" }
+        Signal { name: "parentChanged" }
+        Signal { name: "sortChildrenChanged" }
+        Method { name: "update" }
+        Method {
+            name: "localToWorld"
+            type: "QVector3D"
+            Parameter { name: "point"; type: "QVector3D" }
+        }
+        Method { name: "localToWorld"; type: "QVector3D" }
+        Method {
+            name: "worldToLocal"
+            type: "QVector3D"
+            Parameter { name: "point"; type: "QVector3D" }
+        }
+        Method { name: "worldToLocal"; type: "QVector3D" }
+    }
+    Component {
+        name: "QDeclarativeMesh"
+        prototype: "QObject"
+        exports: [
+            "Mesh 1.0"
+        ]
+        Property { name: "source"; type: "QUrl" }
+        Property { name: "meshName"; type: "string" }
+        Property { name: "options"; type: "string" }
+        Property { name: "dumpInfo"; type: "bool" }
+        Signal { name: "dataChanged" }
+        Signal { name: "loaded" }
+        Signal { name: "optionsChanged" }
+        Signal { name: "dumpInfoChanged" }
+        Method {
+            name: "material"
+            type: "QObject*"
+            Parameter { name: "nodeName"; type: "string" }
+            Parameter { name: "materialName"; type: "string" }
+        }
+    }
+    Component {
+        name: "QGLAbstractMaterial"
+        prototype: "QObject"
+        Signal { name: "materialChanged" }
+    }
+    Component {
+        name: "QGLCamera"
+        prototype: "QObject"
+        exports: [
+            "Camera 1.0"
+        ]
+        Enum {
+            name: "ProjectionType"
+            values: {
+                "Perspective": 0,
+                "Orthographic": 1
+            }
+        }
+        Enum {
+            name: "RotateOrder"
+            values: {
+                "TiltPanRoll": 0,
+                "TiltRollPan": 1,
+                "PanTiltRoll": 2,
+                "PanRollTilt": 3,
+                "RollTiltPan": 4,
+                "RollPanTilt": 5
+            }
+        }
+        Property { name: "projectionType"; type: "ProjectionType" }
+        Property { name: "fieldOfView"; type: "qreal" }
+        Property { name: "nearPlane"; type: "qreal" }
+        Property { name: "farPlane"; type: "qreal" }
+        Property { name: "viewSize"; type: "QSizeF" }
+        Property { name: "minViewSize"; type: "QSizeF" }
+        Property { name: "screenRotation"; type: "int" }
+        Property { name: "eye"; type: "QVector3D" }
+        Property { name: "upVector"; type: "QVector3D" }
+        Property { name: "center"; type: "QVector3D" }
+        Property { name: "eyeSeparation"; type: "qreal" }
+        Property { name: "motionAdjustment"; type: "QVector3D" }
+        Property { name: "adjustForAspectRatio"; type: "bool" }
+        Signal { name: "projectionChanged" }
+        Signal { name: "viewChanged" }
+        Method {
+            name: "translateEye"
+            Parameter { name: "x"; type: "qreal" }
+            Parameter { name: "y"; type: "qreal" }
+            Parameter { name: "z"; type: "qreal" }
+        }
+        Method {
+            name: "translateCenter"
+            Parameter { name: "x"; type: "qreal" }
+            Parameter { name: "y"; type: "qreal" }
+            Parameter { name: "z"; type: "qreal" }
+        }
+        Method {
+            name: "tiltPanRollCenter"
+            Parameter { name: "tiltAngle"; type: "qreal" }
+            Parameter { name: "panAngle"; type: "qreal" }
+            Parameter { name: "rollAngle"; type: "qreal" }
+            Parameter { name: "order"; type: "QGLCamera::RotateOrder" }
+        }
+        Method {
+            name: "tiltPanRollCenter"
+            Parameter { name: "tiltAngle"; type: "qreal" }
+            Parameter { name: "panAngle"; type: "qreal" }
+            Parameter { name: "rollAngle"; type: "qreal" }
+        }
+        Method {
+            name: "tiltPanRollEye"
+            Parameter { name: "tiltAngle"; type: "qreal" }
+            Parameter { name: "panAngle"; type: "qreal" }
+            Parameter { name: "rollAngle"; type: "qreal" }
+            Parameter { name: "order"; type: "QGLCamera::RotateOrder" }
+        }
+        Method {
+            name: "tiltPanRollEye"
+            Parameter { name: "tiltAngle"; type: "qreal" }
+            Parameter { name: "panAngle"; type: "qreal" }
+            Parameter { name: "rollAngle"; type: "qreal" }
+        }
+    }
+    Component {
+        name: "QGLLightModel"
+        prototype: "QObject"
+        exports: [
+            "LightModel 1.0"
+        ]
+        Enum {
+            name: "Model"
+            values: {
+                "OneSided": 0,
+                "TwoSided": 1
+            }
+        }
+        Enum {
+            name: "ColorControl"
+            values: {
+                "SingleColor": 0,
+                "SeparateSpecularColor": 1
+            }
+        }
+        Enum {
+            name: "ViewerPosition"
+            values: {
+                "ViewerAtInfinity": 0,
+                "LocalViewer": 1
+            }
+        }
+        Property { name: "model"; type: "Model" }
+        Property { name: "colorControl"; type: "ColorControl" }
+        Property { name: "viewerPosition"; type: "ViewerPosition" }
+        Property { name: "ambientSceneColor"; type: "QColor" }
+        Signal { name: "modelChanged" }
+        Signal { name: "colorControlChanged" }
+        Signal { name: "viewerPositionChanged" }
+        Signal { name: "ambientSceneColorChanged" }
+        Signal { name: "lightModelChanged" }
+    }
+    Component {
+        name: "QGLLightParameters"
+        prototype: "QObject"
+        exports: [
+            "Light 1.0"
+        ]
+        Enum {
+            name: "LightType"
+            values: {
+                "Directional": 0,
+                "Positional": 1
+            }
+        }
+        Property { name: "type"; type: "LightType"; isReadonly: true }
+        Property { name: "position"; type: "QVector3D" }
+        Property { name: "direction"; type: "QVector3D" }
+        Property { name: "ambientColor"; type: "QColor" }
+        Property { name: "diffuseColor"; type: "QColor" }
+        Property { name: "specularColor"; type: "QColor" }
+        Property { name: "spotDirection"; type: "QVector3D" }
+        Property { name: "spotExponent"; type: "qreal" }
+        Property { name: "spotAngle"; type: "qreal" }
+        Property { name: "constantAttenuation"; type: "qreal" }
+        Property { name: "linearAttenuation"; type: "qreal" }
+        Property { name: "quadraticAttenuation"; type: "qreal" }
+        Signal { name: "positionChanged" }
+        Signal { name: "directionChanged" }
+        Signal { name: "ambientColorChanged" }
+        Signal { name: "diffuseColorChanged" }
+        Signal { name: "specularColorChanged" }
+        Signal { name: "spotDirectionChanged" }
+        Signal { name: "spotExponentChanged" }
+        Signal { name: "spotAngleChanged" }
+        Signal { name: "constantAttenuationChanged" }
+        Signal { name: "linearAttenuationChanged" }
+        Signal { name: "quadraticAttenuationChanged" }
+        Signal { name: "lightChanged" }
+    }
+    Component {
+        name: "QGLMaterial"
+        prototype: "QGLAbstractMaterial"
+        exports: [
+            "Material 1.0"
+        ]
+        Enum {
+            name: "TextureCombineMode"
+            values: {
+                "Modulate": 0,
+                "Decal": 1,
+                "Replace": 2
+            }
+        }
+        Property { name: "ambientColor"; type: "QColor" }
+        Property { name: "diffuseColor"; type: "QColor" }
+        Property { name: "specularColor"; type: "QColor" }
+        Property { name: "emittedLight"; type: "QColor" }
+        Property { name: "shininess"; type: "qreal" }
+        Property { name: "texture"; type: "QGLTexture2D"; isPointer: true }
+        Property { name: "textureCombineMode"; type: "QGLMaterial::TextureCombineMode" }
+        Property { name: "textureUrl"; type: "QUrl" }
+        Signal { name: "ambientColorChanged" }
+        Signal { name: "diffuseColorChanged" }
+        Signal { name: "specularColorChanged" }
+        Signal { name: "emittedLightChanged" }
+        Signal { name: "shininessChanged" }
+        Signal { name: "texturesChanged" }
+    }
+    Component {
+        name: "QGLSceneNode"
+        prototype: "QObject"
+        exports: [
+            "SceneNode 1.0"
+        ]
+        Property { name: "position"; type: "QVector3D" }
+        Property { name: "x"; type: "qreal" }
+        Property { name: "y"; type: "qreal" }
+        Property { name: "z"; type: "qreal" }
+        Property { name: "material"; type: "QGLMaterial"; isPointer: true }
+        Property { name: "backMaterial"; type: "QGLMaterial"; isPointer: true }
+        Signal { name: "updated" }
+        Method {
+            name: "clone"
+            type: "QGLSceneNode*"
+            Parameter { name: "parent"; type: "QObject"; isPointer: true }
+        }
+        Method { name: "clone"; type: "QGLSceneNode*" }
+        Method {
+            name: "cloneNoChildren"
+            type: "QGLSceneNode*"
+            Parameter { name: "parent"; type: "QObject"; isPointer: true }
+        }
+        Method { name: "cloneNoChildren"; type: "QGLSceneNode*" }
+        Method {
+            name: "allExcept"
+            type: "QGLSceneNode*"
+            Parameter { name: "name"; type: "string" }
+            Parameter { name: "parent"; type: "QObject"; isPointer: true }
+        }
+        Method {
+            name: "allExcept"
+            type: "QGLSceneNode*"
+            Parameter { name: "name"; type: "string" }
+        }
+        Method {
+            name: "only"
+            type: "QGLSceneNode*"
+            Parameter { name: "name"; type: "string" }
+            Parameter { name: "parent"; type: "QObject"; isPointer: true }
+        }
+        Method {
+            name: "only"
+            type: "QGLSceneNode*"
+            Parameter { name: "name"; type: "string" }
+        }
+        Method {
+            name: "allExcept"
+            type: "QGLSceneNode*"
+            Parameter { name: "names"; type: "QStringList" }
+            Parameter { name: "parent"; type: "QObject"; isPointer: true }
+        }
+        Method {
+            name: "allExcept"
+            type: "QGLSceneNode*"
+            Parameter { name: "names"; type: "QStringList" }
+        }
+        Method {
+            name: "only"
+            type: "QGLSceneNode*"
+            Parameter { name: "names"; type: "QStringList" }
+            Parameter { name: "parent"; type: "QObject"; isPointer: true }
+        }
+        Method {
+            name: "only"
+            type: "QGLSceneNode*"
+            Parameter { name: "names"; type: "QStringList" }
+        }
+    }
+    Component {
+        name: "QGraphicsBillboardTransform"
+        prototype: "QGraphicsTransform3D"
+        exports: [
+            "BillboardTransform 1.0"
+        ]
+        Property { name: "preserveUpVector"; type: "bool" }
+        Signal { name: "preserveUpVectorChanged" }
+    }
+    Component {
+        name: "QGraphicsLookAtTransform"
+        prototype: "QGraphicsTransform3D"
+        exports: [
+            "LookAt 1.0"
+        ]
+        Property { name: "preserveUpVector"; type: "bool" }
+        Property { name: "subject"; type: "QDeclarativeItem3D"; isPointer: true }
+        Signal { name: "preserveUpVectorChanged" }
+        Signal { name: "subjectChanged" }
+    }
+    Component {
+        name: "QGraphicsRotation3D"
+        prototype: "QGraphicsTransform3D"
+        exports: [
+            "Rotation3D 1.0"
+        ]
+        Property { name: "origin"; type: "QVector3D" }
+        Property { name: "angle"; type: "qreal" }
+        Property { name: "axis"; type: "QVector3D" }
+        Signal { name: "originChanged" }
+        Signal { name: "angleChanged" }
+        Signal { name: "axisChanged" }
+    }
+    Component {
+        name: "QGraphicsScale3D"
+        prototype: "QGraphicsTransform3D"
+        Property { name: "origin"; type: "QVector3D" }
+        Property { name: "scale"; type: "QVector3D" }
+        Signal { name: "originChanged" }
+        Signal { name: "scaleChanged" }
+    }
+    Component {
+        name: "QGraphicsTransform3D"
+        prototype: "QObject"
+        Signal { name: "transformChanged" }
+    }
+    Component {
+        name: "QGraphicsTranslation3D"
+        prototype: "QGraphicsTransform3D"
+        exports: [
+            "Translation3D 1.0"
+        ]
+        Property { name: "translate"; type: "QVector3D" }
+        Property { name: "progress"; type: "qreal" }
+        Signal { name: "translateChanged" }
+        Signal { name: "progressChanged" }
+    }
+    Component {
+        name: "Scale3D"
+        prototype: "QGraphicsScale3D"
+        exports: [
+            "Scale3D 1.0"
+        ]
+        Property { name: "scale"; type: "QVariant" }
+        Signal { name: "variantScaleChanged" }
+    }
+    Component {
+        name: "ShaderProgram"
+        prototype: "QDeclarativeEffect"
+        exports: [
+            "ShaderProgram 1.0"
+        ]
+        Property { name: "vertexShader"; type: "string" }
+        Property { name: "fragmentShader"; type: "string" }
+        Signal { name: "finishedLoading" }
+        Signal { name: "shaderChanged" }
+        Method { name: "markAllPropertiesDirty" }
+        Method {
+            name: "markPropertyDirty"
+            Parameter { name: "property"; type: "int" }
+        }
+    }
+    Component {
+        name: "Viewport"
+        defaultProperty: "data"
+        prototype: "QDeclarativeItem"
+        exports: [
+            "Viewport 1.0"
+        ]
+        Property { name: "picking"; type: "bool" }
+        Property { name: "showPicking"; type: "bool" }
+        Property { name: "navigation"; type: "bool" }
+        Property { name: "blending"; type: "bool" }
+        Property { name: "camera"; type: "QGLCamera"; isPointer: true }
+        Property { name: "light"; type: "QGLLightParameters"; isPointer: true }
+        Property { name: "lightModel"; type: "QGLLightModel"; isPointer: true }
+        Signal { name: "viewportChanged" }
+        Method { name: "update3d" }
+        Method {
+            name: "objectForPoint"
+            type: "QObject*"
+            Parameter { name: "x"; type: "qreal" }
+            Parameter { name: "y"; type: "qreal" }
+        }
+    }
+}
