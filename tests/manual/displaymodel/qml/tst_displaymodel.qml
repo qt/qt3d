@@ -20,6 +20,7 @@ Item {
         Viewport  {
             anchors.fill: parent
             camera: Camera { eye: Qt.vector3d(0,3,15)}
+            picking: true
 
             Point {
                 vertices: [
@@ -28,6 +29,7 @@ Item {
                    1, -2, 0
                 ]
                 pointSize:  3
+                onClicked: console.log("Points clicked")
             }
         }
 
@@ -58,6 +60,7 @@ Item {
         Viewport  {
             anchors.fill: parent
             camera: Camera { eye: Qt.vector3d(0,3,15)}
+            picking: true
 
             Line {
                 vertices: [
@@ -66,6 +69,7 @@ Item {
                    1, -2, 0
                 ]
                 width:  3
+                onClicked: console.log("Line clicked")
             }
         }
 
@@ -96,8 +100,9 @@ Item {
         Viewport  {
             anchors.fill: parent
             camera: Camera { eye: Qt.vector3d(0,0,10)}
+            picking: true
 
-            Sphere {}
+            Sphere {onClicked: console.log("Sphere clicked")}
         }
         //text for item3
         Rectangle {
@@ -127,8 +132,9 @@ Item {
         Viewport  {
             anchors.fill: parent
             camera: Camera { eye: Qt.vector3d(0,0,10)}
+            picking: true
 
-            Cylinder {height: 3}
+            Cylinder {height: 3; onClicked: console.log("Cylinder clicked");}
         }
 
         Rectangle {
@@ -158,8 +164,10 @@ Item {
        Viewport  {
            anchors.fill: parent
            camera: Camera { eye: Qt.vector3d(0,0,10)}
+           picking: true
 
-           Capsule {}
+           Capsule {onClicked: console.log("Capsule clicked");}
+
        }
 
        Rectangle {
@@ -188,10 +196,12 @@ Item {
 
        Viewport  {
            anchors.fill: parent
-           camera: Camera { eye: Qt.vector3d(0,5,10)}
+           camera: Camera {eye: Qt.vector3d(0,5,10)}
+           picking: true
 
            Quad {
-               scale: 2
+               scale: 2;
+               onClicked: console.log("Quad clicked")
            }
        }
 
@@ -219,12 +229,15 @@ Item {
       border.width:  3
       color: "#3333aa"
 
+
       Viewport  {
           anchors.fill: parent
           camera: Camera { eye: Qt.vector3d(0,0,10)}
+          picking: true
 
           Cube {
               scale: 2
+              onClicked: console.log("Cube clicked");
           }
       }
 
@@ -255,8 +268,12 @@ Item {
      Viewport  {
          anchors.fill: parent
          camera: Camera { eye: Qt.vector3d(0,0,10)}
+         picking: true
 
-         Teapot { scale: 1.3 }
+         Teapot {
+             scale: 1.3
+             onClicked: console.log("Teapot clicked");
+         }
      }
 
      Rectangle {
@@ -286,11 +303,13 @@ Item {
      Viewport  {
          anchors.fill: parent
          camera: Camera { eye: Qt.vector3d(0,0,10)}
+         picking: true
 
          Item3D {
              scale: 0.5
              position: Qt.vector3d(0,-1,0)
              mesh: Mesh {source: "meshes/lunar-lander.3ds"}
+             onClicked: console.log("Lunar lander clicked")
          }
      }
 

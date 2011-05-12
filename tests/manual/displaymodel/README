@@ -9,4 +9,8 @@ The next mesh is a .bez teapot mesh.
 
 The final mesh is a .3ds mesh of a lunar lander.
 
-All meshes should be lit & shaded, and can be manually rotated etc. as per QtQuick3D norms.
+All meshes should be lit & shaded, and can be manually rotated by using ctrl+leftclick and dragging.
+
+Zoom can be achieved by mouse wheel.
+
+Click each object for an "Object clicked" debug message in the debugger.
