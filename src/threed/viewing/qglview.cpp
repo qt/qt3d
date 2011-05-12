@@ -45,6 +45,7 @@
 #include "qglmaskedsurface_p.h"
 #include "qglwidgetsurface.h"
 #include "qgldrawbuffersurface_p.h"
+#include "qray3d.h"
 #include <QtGui/qevent.h>
 #include <QtCore/qmap.h>
 #include <QtGui/qapplication.h>
@@ -177,6 +178,8 @@ QT_BEGIN_NAMESPACE
     \value CameraNavigation Camera navigation using the keyboard and mouse
            is enabled.  Enabled by default.
     \omitvalue PaintingLog
+    \value FOVZoom Enables zooming by changing field of view instead of
+           physically moving the camera.
 */
 
 /*!
@@ -235,7 +238,6 @@ public:
         startPan = QPoint(-1, -1);
         lastPan = QPoint(-1, -1);
         panModifiers = Qt::NoModifier;
-
         QObject::connect(defaultCamera, SIGNAL(projectionChanged()),
                          parent, SLOT(cameraChanged()));
         QObject::connect(defaultCamera, SIGNAL(viewChanged()),
@@ -1360,18 +1362,37 @@ void QGLView::sendLeaveEvent(QObject *object)
 // Zoom in and out according to the change in wheel delta.
 void QGLView::wheel(int delta)
 {
-    qreal scale = qAbs(viewDelta(delta, delta).x());
-    if (delta < 0)
-        scale = -scale;
-    if (scale >= 0.0f)
-        scale += 1.0f;
-    else
-        scale = 1.0f / (1.0f - scale);
-    qreal fov = d->camera->fieldOfView();
-    if (fov != 0.0f)
-        d->camera->setFieldOfView(d->camera->fieldOfView() / scale);
-    else
-        d->camera->setViewSize(d->camera->viewSize() / scale);
+    if (d->options & QGLView::FOVZoom) {     
+        //Use field-of view as zoom (much like a traditional camera)
+        qreal scale = qAbs(viewDelta(delta, delta).x());
+        if (delta < 0)
+            scale = -scale;
+        if (scale >= 0.0f)
+            scale += 1.0f;
+        else
+            scale = 1.0f / (1.0f - scale);
+        qreal fov = d->camera->fieldOfView();
+        if (fov != 0.0f)
+            d->camera->setFieldOfView(d->camera->fieldOfView() / scale);
+        else
+            d->camera->setViewSize(d->camera->viewSize() / scale);
+    } else {
+        // enable this to get wheel navigation that actually zooms by moving the
+        // camera back, as opposed to making the angle of view wider.        
+        QVector3D viewVector= camera()->eye() - camera()->center();
+        qreal zoomMag = viewVector.length();
+        qreal zoomIncrement = -float(delta) / 100.0f;
+        if (!qFuzzyIsNull(zoomIncrement))
+        {
+            zoomMag += zoomIncrement;
+            if (zoomMag < 1.0f)
+                zoomMag = 1.0f;
+
+            QRay3D viewLine(camera()->center(), viewVector.normalized());
+            camera()->setEye(viewLine.point(zoomMag));
+        }
+    }
+
 }
 
 // Pan left/right/up/down without rotating about the object.
