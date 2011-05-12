@@ -46,7 +46,7 @@ Viewport {
 
     property string name: "Animation Shader"
     property string icon: "images/teapot-logo.png"
-    property bool run: false
+    property bool run: true
 
     Item3D {
         mesh: Mesh { source: "meshes/teapot.bez" }
