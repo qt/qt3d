@@ -13,23 +13,27 @@ module name to filter on.
 Typical use:
 
 1) Build and install Qt3D into a given Qt at $QTDIR
-2) Ensure $QTDIR/qtc-qmldump exists (see below)
+2) Ensure qmldump is available in your $PATH (see below)
 3) Run qmldump to generate the library.xml file:
-   $QTDIR/qtc-qmldump/qmldump $QTDIR/imports Qt3D > library.xml
+   qmldump $QTDIR/imports Qt3D > library.xml
 4) Filter the output to just include the Qt3D module:
    filter-qmldump.pl Qt3D > library-qt3d.xml
 
 Repeat 3) & 4) for the Shapes library:
-   $QTDIR/qtc-qmldump/qmldump.app/Contents/MacOS/qmldump $QTDIR/imports/Shapes Qt3D.Shapes > library.xml
+   qmldump $QTDIR/imports/Shapes Qt3D.Shapes > library.xml
    filter-qmldump.pl Qt3D > library-qt3d.xml
 
-Note: the "qmldump" utility is specific to the Qt version, since it has to
-load the actual QML plugin to generate the XML description of the items.
-In binary packages of Qt there should already be a qmldump utility shipped
-with the package.  In other cases Qt Creator will build qmldump on the fly
-and install it into the relevant Qt build.  However there are several fail
-modes: http://labs.qt.nokia.com/2010/11/30/new-qml-editor-features/
+To generate the plugins.qmltypes, you first need a qmldump binary generated from
+sources shipped with Qt Creator version less than 2.2.  On Mac these are inside
+the app bundle, other platforms vary.  If all else fails get the sources from the
+Qt Creator repo.
 
-If it doesn't exist, the only way to be sure is to build Qt from source
-with the -nokia-developer option, and then run Qt Creator to create a
-QML project which uses that version of Qt.
+To build qmldump you need access to private headers, so therefore it must be
+built against a source build of Qt.  On Mac it is helpful to build qmldump with
+"qmake CONFIG-=app_bundle" so that you get a regular command-line binary.
+
+In the above note that $QTDIR points to the root of the Qt where Qt3D is installed.
+
+Check the contents of library.xml above and ensure it is XML - not yaml.  If you
+see some curly braces { } - then the version of qmldump source you used was for
+Qt Creator > 2.2 - you somehow have the later version qmldump sources.

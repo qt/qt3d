@@ -1,5 +1,7 @@
 The library.xml file is required to get syntax highlighting of Qt3D.Shapes 
-plugin items.  It is install into the imports/Qt3D.Shapes tree along with
+plugin items in Qt Creator < version 2.2.
+
+The library.xml file is installed into the imports/Qt3D.Shapes tree along with
 the plugin and the qmldir file.
 
 When any of the elements - property names, class names or other exports

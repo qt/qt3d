@@ -1,0 +1,34 @@
+The plugins.qmltypes file is required to get syntax highlighting of Qt3D.Shapes
+plugin items inside Qt Creator 2.1 and later.
+
+To support earlier versions of Qt Creator the library.xml file is used.
+
+The plugins.qmltypes file is installed into the imports/Qt3D.Shapes tree along
+with the plugin and the qmldir file.
+
+When any of the elements - property names, class names or other exports
+- in the Qt3D.Shapes plugin are changed this file will need to be regenerated.
+
+To generate the plugins.qmltypes, you first need a qmldump binary generated from
+sources shipped with Qt Creator 2.2 or greater.  On Mac these are inside the app
+bundle, other platforms vary.  If all else fails get the sources from the Qt
+Creator repo.
+
+To build qmldump you need access to private headers, so therefore it must be
+built against a source build of Qt.  On Mac it is helpful to build qmldump with
+"qmake CONFIG-=app_bundle" so that you get a regular command-line binary.
+
+Once you finally have a viable qmldump binary:
+
+./qmldump Qt3D.Shapes 1.0 $QTDIR/imports > plugins.qmltypes
+
+...where $QTDIR points to the root of the Qt where Qt3D is installed.
+
+If you get a usage error like:
+
+Usage: qmldump [plugin/import/path plugin.uri]
+
+...then the version of qmldump source you used was not for Qt Creator > 2.2 -
+you somehow have the earlier version qmldump sources.
+
+You do not need to use the filter-qmldump.pl script.
