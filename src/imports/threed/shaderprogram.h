@@ -49,6 +49,7 @@ QT_BEGIN_HEADER
 QT_BEGIN_NAMESPACE
 
 class ShaderProgramPrivate;
+class QGLSceneNode;
 
 class ShaderProgram : public QDeclarativeEffect
 {
@@ -66,6 +67,7 @@ public:
     void setFragmentShader(const QString& value);
 
     virtual void enableEffect(QGLPainter *painter);
+    virtual void applyTo(QGLSceneNode *node);
 public Q_SLOTS:
     void markAllPropertiesDirty();
     void markPropertyDirty(int property);

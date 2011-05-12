@@ -47,7 +47,7 @@
 
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
-
+#include "qglscenenode.h"
 /*!
     \qmlclass ShaderProgram ShaderProgram
     \brief The ShaderProgram item is derivative class of the more general Effect class in QML/3d.
@@ -745,10 +745,13 @@ void ShaderProgram::setFragmentShader(const QString& value)
 void ShaderProgram::enableEffect(QGLPainter *painter)
 {
     if (!d->shadersSupported && !d->regenerate) {
+        // Use a simple fallback effect.
         QDeclarativeEffect::enableEffect(painter);
         return;
     }
     if (!d->effect) {
+        // note that the ShaderProgramEffect can also be created when this
+        // effect is applied to a QGLSceneNode if that happens first
         d->effect = new ShaderProgramEffect(this);
         if (!d->effect->create(d->vertexShader, d->fragmentShader)) {
             delete d->effect;
@@ -779,6 +782,24 @@ void ShaderProgram::enableEffect(QGLPainter *painter)
         tex->bind();
     else
         glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+/*!
+  \internal
+  Set a scenenode's material and effect properties to enact this effect.
+
+  This can happen before glInitialize, so setup is delayed until the effect is
+  used or explicitly initialized.
+*/
+void ShaderProgram::applyTo(QGLSceneNode *node)
+{
+    if (!d->effect) {
+        // This function is often called during setup, before glInitilization,
+        // so create the effect now, and then initializion it later.
+        d->effect = new ShaderProgramEffect(this);
+        d->regenerate = true;
+    }
+    node->setUserEffect(d->effect);
 }
 
 /*!
