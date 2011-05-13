@@ -668,6 +668,7 @@ void ShaderProgramEffect::processTextureUrl(int uniformLocation, QString urlStri
                 else
                 {
                     images[uniformLocation] = im;
+                    changedTextures.insert(uniformLocation);
                 }
             }
         }
