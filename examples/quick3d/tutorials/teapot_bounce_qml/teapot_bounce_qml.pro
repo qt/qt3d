@@ -24,7 +24,7 @@ symbian {
     } else {
         !package {
             qmlResources.input = qmlResources.files
-            qmlResources.output = $$OUT_PWD/../../../bin/resources/examples/$$TARGET/qml
+            qmlResources.output = $$OUT_PWD/../../../../bin/resources/examples/$$TARGET/qml
             qmlResources.commands = $$QMAKE_COPY_DIR ${QMAKE_FILE_IN} ${QMAKE_FILE_OUT}
             qmlResources.CONFIG += no_link_no_clean
             qmlResources.variable_out = POST_TARGETDEPS
