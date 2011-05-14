@@ -66,14 +66,12 @@ Viewport {
             id: program
             texture: "images/basket.jpg"
             property variant texture2 : "images/qtlogo.png"
-            property real interpolationFactor : 1.0
+            property real interpolationFactor : 0.0
 
             SequentialAnimation on interpolationFactor {
                 running: true
                 loops: Animation.Infinite
                 NumberAnimation { to : 1.0; duration: 750; }
-
-
                 PauseAnimation { duration: 550 }
                 NumberAnimation { to : 0.0; duration: 750; }
                 PauseAnimation { duration: 550 }

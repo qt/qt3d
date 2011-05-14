@@ -315,6 +315,8 @@ QImage QDeclarativeEffect::textureImage() const
 /*!
   \internal
   Sets this effect to use \value as the image for it's texture.
+  
+  OpenGL defaults have been overridden to clamp the texture both horizontally and vertically as per QGL::Clamp.
 */
 void QDeclarativeEffect::setTextureImage(const QImage& value)
 {
@@ -322,6 +324,11 @@ void QDeclarativeEffect::setTextureImage(const QImage& value)
         d->texture2D = new QGLTexture2D;
     d->texture2D->setImage(value);
     d->textureChanged = true;
+    
+    // prevents artifacts due to texture smoothing wrapping around edges of texture 
+    d->texture2D->setHorizontalWrap(QGL::Clamp);
+    d->texture2D->setVerticalWrap(QGL::Clamp);
+    
     emit effectChanged();
 }
 
