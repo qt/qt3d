@@ -14,6 +14,7 @@
 ::    echo .git >exclude
 ::    xcopy /EXCLUDE:exclude /S C:\depot\qt\quick3d quick3d_mk_win_pkg
 ::    cd quick3d_mk_win_pkg
+::    src\scripts\build_win_package.bat
 
 :: Use jom if possible - put jom in the path if you want faster compiles
 where jom.exe
