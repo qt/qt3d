@@ -61,14 +61,12 @@ ShowUnInstDetails show
 ; HKCU\Software\Trolltech\Versions\${QT_VERSION}\InstallDir REG_SZ "C:\Qt\${QT_VERSION}"
 
 Function .onInit
-  ReadRegStr $0 HKCU "Software\Trolltech\Versions" "DefaultQtVersion"
-  ; MessageBox MB_OK "Qt version installed: $0"
-  ${If} $0 != ${QT_VERSION}
-    MessageBox MB_ICONEXCLAMATION "Please install Qt v${QT_VERSION} from http:\\qt.nokia.com\downloads before installing ${PRODUCT_NAME} ${PRODUCT_VERSION}"
+  ReadRegStr $0 HKCU "Software\Trolltech\Versions\${QT_VERSION}" "InstallDir"
+  ${If} $0 == ""
+    MessageBox MB_ICONEXCLAMATION "Please install Qt v${QT_VERSION} MSVC from http:\\qt.nokia.com\downloads before installing ${PRODUCT_NAME} ${PRODUCT_VERSION}"
     Abort
   ${EndIf}
-  ReadRegStr $1 HKCU "Software\Trolltech\Versions\$0" "InstallDir"
-  StrCpy $INSTDIR $1
+  StrCpy $INSTDIR $0
   LogSet on
 FunctionEnd
 
