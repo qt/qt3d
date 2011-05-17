@@ -49,6 +49,8 @@
 #include <QtCore/qtimer.h>
 #include <QtCore/qdatetime.h>
 
+#include <QtCore/qsettings.h>
+
 #if !defined(QT_NO_EGL) && defined(QT_BUILD_INTERNAL)
 #include <QtGui/private/qegl_p.h>
 #include <QtGui/private/qeglproperties_p.h>
@@ -85,6 +87,19 @@ void QGLInfo::initialize()
     glWidget->doneCurrent();
     delete glWidget;
 
+    QString welcome;
+    {
+        QSettings freshStart;
+        if (!freshStart.contains(QLatin1String("new_install")))
+        {
+            welcome = QLatin1String("<h1>Welcome to QtQuick 3D!</h1>"
+                                    "<p>Try running the FPS test from the "
+                                    "View menu above to confirm that Qt3Quick 3D "
+                                    "is installed correctly.</p><hr>");
+        }
+        freshStart.setValue(QLatin1String("new_install"), true);
+    }
+
     QString html = tr("<h1>Qt GL Info Report</h1>"
                       "<p>Generated at: %1</p>"
                       "<h2>Qt GL Version Info</h2>"
@@ -100,6 +115,9 @@ void QGLInfo::initialize()
             .arg(nice(m_qtGLFeatures))
             .arg(nice(m_glVersionInfo))
             .arg(nice(m_glExtensionInfo));
+    if (!welcome.isEmpty())
+        html.prepend(welcome);
+
 #if !defined(QT_NO_EGL)
     html += tr("<h2>EGL Version Info</h2>"
                "<p>%1</p>"
