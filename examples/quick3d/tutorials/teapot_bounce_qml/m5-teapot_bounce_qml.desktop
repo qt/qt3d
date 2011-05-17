@@ -1,9 +1,9 @@
 [Desktop Entry]
 Encoding=UTF-8
 Version=1.0
-Name=Basket
+Name=Teapot Bounce
 Comment=Qt3D example application
-Exec=/usr/bin/basket_qml -fullscreen
+Exec=/usr/bin/teapot_bounce_qml -fullscreen
 Icon=icon-l-qtquick3d
 Terminal=false
 Type=Application
