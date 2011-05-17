@@ -39,3 +39,8 @@ HEADERS += qglinfowindow.h \
 RESOURCES += qglinfo.qrc
 
 !contains(QT_CONFIG, egl):DEFINES += QT_NO_EGL
+
+OTHER_FILES += \
+    qglinfo.rc
+
+RC_FILE = qglinfo.rc
