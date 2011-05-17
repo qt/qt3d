@@ -18,7 +18,7 @@
 !define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall.ico"
 !define MUI_WELCOMEFINISHPAGE_BITMAP "src\scripts\win_installer_background.bmp"
 !define MUI_WELCOMEPAGE_TITLE "${PRODUCT_NAME} Setup"
-!define MUI_WELCOMEPAGE_TEXT "QtQuick3D will be installed into Qt ${QT_VERSION}, found in $INSTDIR.  If you do not want ${PRODUCT_NAME} installed there, click cancel below."
+!define MUI_WELCOMEPAGE_TEXT "${PRODUCT_NAME} will be installed into Qt ${QT_VERSION}, found in $INSTDIR.  If you do not want ${PRODUCT_NAME} installed there, click cancel below."
 
 ; Welcome page
 !insertmacro MUI_PAGE_WELCOME
@@ -32,7 +32,7 @@
 !define MUI_FINISHPAGE_NOAUTOCLOSE
 ; Finish page
 Page custom DisplayWelcomeMessage
-!define MUI_FINISHPAGE_RUN $INSTDIR\quick3d\bin\qglinfo.exe
+!define MUI_FINISHPAGE_RUN $INSTDIR\quick3d\bin\run_start_program.bat
 !define MUI_FINISHPAGE_RUN_TEXT "Run QtQuick3D QGLInfo program"
 !define MUI_FINISHPAGE_LINK "QtQuick3D documentation"
 !define MUI_FINISHPAGE_LINK_LOCATION $INSTDIR\quick3d\doc\html\index.html
@@ -52,7 +52,7 @@ Page custom DisplayWelcomeMessage
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 OutFile "${PRODUCT_NAME}-${PRODUCT_VERSION}.exe"
-InstallDir "$PROGRAMFILES\QtQuick3D"
+InstallDir "$PROGRAMFILES\Qt\${PRODUCT_VERSION}\quick3d"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
 ShowUnInstDetails show
@@ -90,14 +90,13 @@ Function DisplayWelcomeMessage
 FunctionEnd
 
 Section "MainSection" SEC01
-  SetOutPath "$INSTDIR\bin"
   SetOverwrite try
-  File "${MK_INST_ROOT}\Qt\${QT_VERSION}\bin\qglinfo.exe"
   CreateDirectory "$SMPROGRAMS\QtQuick3D"
-  CreateShortCut "$SMPROGRAMS\QtQuick3D\QtQuick3D.lnk" "$INSTDIR\quick3d\bin\qglinfo.exe"
-  CreateShortCut "$DESKTOP\QtQuick3D.lnk" "$INSTDIR\quick3d\bin\qglinfo.exe"
+  CreateShortCut "$SMPROGRAMS\QtQuick3D\QtQuick3D.lnk" "$INSTDIR\quick3d\bin\run_start_program.bat" "" "$INSTDIR\quick3d\bin\qglinfo.exe"
+  CreateShortCut "$DESKTOP\QtQuick3D.lnk" "$INSTDIR\quick3d\bin\run_start_program.bat" "" "$INSTDIR\quick3d\bin\qglinfo.exe"
   ; bin imports include lib mkspecs plugins quick3d
   SetOutPath "$INSTDIR\quick3d\bin"
+  File "src\scripts\run_start_program.bat"
   File /r "${MK_INST_ROOT}\Qt\${QT_VERSION}\bin\*.*"
   SetOutPath "$INSTDIR\quick3d\doc"
   File /r "doc\html"
@@ -114,18 +113,19 @@ Section -AdditionalIcons
   SetOutPath $INSTDIR
   WriteIniStr "$INSTDIR\${PRODUCT_NAME}.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
   CreateShortCut "$SMPROGRAMS\QtQuick3D\Website.lnk" "$INSTDIR\${PRODUCT_NAME}.url"
-  CreateShortCut "$SMPROGRAMS\QtQuick3D\Uninstall.lnk" "$INSTDIR\uninst.exe"
+  CreateShortCut "$SMPROGRAMS\QtQuick3D\Uninstall.lnk" "$INSTDIR\quick3d\uninst.exe"
 SectionEnd
 
 Section -Post
-  WriteUninstaller "$INSTDIR\uninst.exe"
-  WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\Qt\${QT_VERSION}\bin\qglinfo.exe"
+  WriteUninstaller "$INSTDIR\quick3d\uninst.exe"
+  WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\quick3d\bin\qglinfo.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\Qt\${QT_VERSION}\bin\qglinfo.exe"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\quick3d\uninst.exe"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\quick3d\bin\qglinfo.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "InstallRoot" "$INSTDIR"
 SectionEnd
 
 
@@ -135,36 +135,36 @@ Function un.onUninstSuccess
 FunctionEnd
 
 Function un.onInit
+  ; LogSet on
+  ReadRegStr $0 ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "InstallRoot"
+  StrCpy $INSTDIR $0
   MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "Are you sure you want to completely remove $(^Name) and all of its components?" IDYES +2
   Abort
 FunctionEnd
 
 Section Uninstall
   Delete "$INSTDIR\${PRODUCT_NAME}.url"
-  Delete "$INSTDIR\uninst.exe"
+  Delete "$INSTDIR\quick3d\uninst.exe"
   RMDir /r "$INSTDIR\plugins\sceneformats"
-  RMDir /r "$INSTDIR\plugins\imageformats"
+  Delete "$INSTDIR\plugins\imageformats\qtga4.dll"
   Delete "$INSTDIR\mkspecs\features\qt3dquick.prf"
   Delete "$INSTDIR\mkspecs\features\qt3d.prf"
   Delete "$INSTDIR\lib\Qt3DQuick.*"
   Delete "$INSTDIR\lib\Qt3DQuickd.*"
   Delete "$INSTDIR\lib\Qt3D.*"
   Delete "$INSTDIR\lib\Qt3Dd.*"
+  Delete "$INSTDIR\bin\Qt3DQuick.*"
+  Delete "$INSTDIR\bin\Qt3DQuickd.*"
+  Delete "$INSTDIR\bin\Qt3D.*"
+  Delete "$INSTDIR\bin\Qt3Dd.*"
   RMDir /r "$INSTDIR\include\Qt3D"
   RMDir /r "$INSTDIR\include\Qt3DQuick"
-  Delete "$INSTDIR\Qt\${QT_VERSION}\bin\qglinfo.exe"
+  RMDir /r "$INSTDIR\imports\Qt3D"
+  RMDir /r "$INSTDIR\quick3d"
 
-  Delete "$SMPROGRAMS\QtQuick3D\Uninstall.lnk"
-  Delete "$SMPROGRAMS\QtQuick3D\Website.lnk"
   Delete "$DESKTOP\QtQuick3D.lnk"
-  Delete "$SMPROGRAMS\QtQuick3D\QtQuick3D.lnk"
-
-  RMDir "$SMPROGRAMS\QtQuick3D"
-  RMDir /r "$INSTDIR\Qt\${QT_VERSION}\plugins\sceneformats"
-  RMDir /r "$INSTDIR\Qt\${QT_VERSION}\plugins\imageformats"
-  RMDir /r "$INSTDIR\Qt\${QT_VERSION}\include\Qt3DQuick"
-  RMDir /r "$INSTDIR\Qt\${QT_VERSION}\include\Qt3D"
-  RMDir /r "$INSTDIR\Qt\${QT_VERSION}\imports\Qt3D"
+  RMDir /r "$SMPROGRAMS\QtQuick3D"
+  RMDir /r "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\QtQuick3D"
 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
