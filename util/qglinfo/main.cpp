@@ -47,6 +47,10 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
+    // for QSettings
+    QCoreApplication::setOrganizationName("Nokia");
+    QCoreApplication::setOrganizationDomain("nokia.com");
+    QCoreApplication::setApplicationName("qglinfo");
 
     QGLInfoWindow w;
     if (QApplication::arguments().contains(QLatin1String("-maximize")))
