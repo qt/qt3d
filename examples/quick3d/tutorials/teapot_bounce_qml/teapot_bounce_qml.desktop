@@ -1,8 +1,8 @@
 [Desktop Entry]
 Type=Application
-Name=Basket
+Name=Teapot Bounce
 Icon=icon-l-qtquick3d
-Exec=/usr/bin/basket_qml -fullscreen
+Exec=/usr/bin/teapot_bounce_qml -fullscreen
 OnlyShowIn=X-MeeGo;
-X-MeeGo-Logical-Id=qtn_comm_appname_basket_qml
+X-MeeGo-Logical-Id=qtn_comm_appname_teapot_bounce_qml
 X-MeeGo-Translation-Catalog=essentials
