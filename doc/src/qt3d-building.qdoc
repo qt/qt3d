@@ -55,7 +55,8 @@
     \endcode
 
     More stable versions of the QtQuick3D source code is available as source
-    packages from \l{http://qt.nokia.com/downloads}{Qt downloads page}.
+    packages from \l{ftp://ftp.qt.nokia.com/qt3d/noarch}{Qt3D downloads page}.
+    Just unzip or untar it into your \c{depot} directory.
 
     \section1 Building QtQuick3D
 
