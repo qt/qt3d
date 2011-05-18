@@ -19,8 +19,8 @@ Rectangle {
     VisualItemModel {
         id: tabsModel
         Collapsing { }
-        Images { }
-        Interpolate { }
+        //Images { }
+        //Interpolate { }
         Bouncing { }
     }
 
