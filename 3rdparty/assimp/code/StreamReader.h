@@ -333,7 +333,8 @@ private:
             throw DeadlyImportError("End of file or stream limit was reached");
         }
 
-        T f = *((const T*)current);
+        T f;
+        memcpy(&f, current, sizeof(T));
         Intern :: Getter<SwapEndianess,T,RuntimeSwitch>() (&f,le);
 
         current += sizeof(T);
