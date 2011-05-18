@@ -87,29 +87,38 @@ public:
     QDeclarativeEffectPrivate()
         : color(255, 255, 255, 255),
           useLighting(true),
-          textureChanged(false),
           decal(false),
           blending(false),
-          texture2D(0),
-          material(0),
+          palette(0),
+          materialIndex(-1),
           progress(0.0)
     {
     }
 
     ~QDeclarativeEffectPrivate()
     {
-        delete texture2D;
+        delete palette;
     }
 
     QColor color;
     bool useLighting;
-    bool textureChanged;
     bool decal;
     bool blending;
-    QGLTexture2D *texture2D;
-    QUrl textureUrl;
-    QGLMaterial *material;
+    QGLMaterialCollection *palette;
+    int materialIndex;
     qreal progress;
+    inline void ensureMaterial() {
+        if (!palette)
+        {
+            palette = new QGLMaterialCollection();
+        }
+        if (materialIndex == -1)
+        {
+            materialIndex = palette->addMaterial(new QGLMaterial(palette));
+            palette->material(materialIndex)->setColor(color);
+        }
+        // TODO: decal & blending
+    }
 };
 
 /*!
@@ -146,6 +155,8 @@ QColor QDeclarativeEffect::color() const
 void QDeclarativeEffect::setColor(const QColor& value)
 {
     d->color = value;
+    d->ensureMaterial();
+    material()->setColor(value);
     emit effectChanged();
 }
 
@@ -231,12 +242,14 @@ void QDeclarativeEffect::setBlending(bool value)
 */
 QUrl QDeclarativeEffect::texture() const
 {
-    return d->textureUrl;
+    if(!material())
+        return QUrl();
+    return material()->textureUrl();
 }
 
 void QDeclarativeEffect::setTexture(const QUrl& value)
 {
-    if (d->textureUrl == value)
+    if(material() && material()->textureUrl() == value)
         return;
 
     if (d->progress != 0.0)
@@ -247,54 +260,18 @@ void QDeclarativeEffect::setTexture(const QUrl& value)
 
     if (value.isEmpty())
     {
-        d->textureUrl = value;
-        delete d->texture2D;
-        d->texture2D = 0;
+        if(material())
+        {
+            material()->setTextureUrl(value);
+            emit effectChanged();
+        }
     }
     else
     {
-        if (value.scheme() != QLatin1String("file"))
-        {
-            // TODO - support network URL's for loading - note that this feature is for
-            // the Qt3D 1.1 release and there is no point in implementing it until for example
-            // model loading and all other parts of Qt3D support it.  Also when it is implemented
-            // it has to be done with a facility that does not depend on private headers in
-            // QtDeclarative which can change within minor dot-point releases.
-            qWarning("Network URL's not yet supported - %s", qPrintable(d->textureUrl.toString()));
-        }
-        else
-        {
-            // Load the new texture
-            d->textureUrl = value;
-            QString localFile = d->textureUrl.toLocalFile();
-            if (localFile.endsWith(QLatin1String(".dds")))
-            {
-                QGLTexture2D *tex = new QGLTexture2D;
-                bool valid = tex->setCompressedFile(localFile);
-                if (!valid)
-                {
-                    delete tex;
-                }
-                else
-                {
-                    delete d->texture2D;
-                    d->texture2D = tex;
-                }
-            }
-            else
-            {
-                QImage im(localFile);
-                if (im.isNull())
-                {
-                    qWarning("Could not load image from local file path - %s", qPrintable(localFile));
-                }
-                else
-                {
-                    setTextureImage(im);
-                    emit effectChanged();
-                }
-            }
-        }
+        d->ensureMaterial();
+        // Warning: This will trigger the deletion of the old texure.
+        material()->setTextureUrl(value);
+        emit effectChanged();
     }
 }
 
@@ -309,7 +286,8 @@ void QDeclarativeEffect::setTexture(const QUrl& value)
 */
 QImage QDeclarativeEffect::textureImage() const
 {
-    return d->texture2D ? d->texture2D->image() : QImage();
+    return (material() && material()->texture()) ?
+                material()->texture()->image() : QImage();
 }
 
 /*!
@@ -320,14 +298,25 @@ QImage QDeclarativeEffect::textureImage() const
 */
 void QDeclarativeEffect::setTextureImage(const QImage& value)
 {
-    if (d->texture2D == NULL)
-        d->texture2D = new QGLTexture2D;
-    d->texture2D->setImage(value);
-    d->textureChanged = true;
+    QGLTexture2D * tex;
+    d->ensureMaterial();
+    if (!material()->texture())
+    {
+        // Should this texture be parented?
+        tex = new QGLTexture2D();
+        material()->setTexture(tex);
+    } else
+    {
+        tex = material()->texture();
+    }
+
+    // Equality test of images can be very expensive, so always assign the
+    // value and emit effect changed
+    tex->setImage(value);
     
     // prevents artifacts due to texture smoothing wrapping around edges of texture 
-    d->texture2D->setHorizontalWrap(QGL::Clamp);
-    d->texture2D->setVerticalWrap(QGL::Clamp);
+    tex->setHorizontalWrap(QGL::Clamp);
+    tex->setVerticalWrap(QGL::Clamp);
     
     emit effectChanged();
 }
@@ -339,26 +328,26 @@ void QDeclarativeEffect::setTextureImage(const QImage& value)
 */
 QGLMaterial *QDeclarativeEffect::material() const
 {
-    return d->material;
+    if(!d->palette)
+        return 0;
+    return d->palette->material(d->materialIndex);
 }
 
 /*!
   \internal
-  Sets the material for use with this effect.
+  Sets the material for use with this effect.  Creates a QGLMaterialCollection
+  to contain it if necessary.
 */
 void QDeclarativeEffect::setMaterial(QGLMaterial *value)
 {
-    if (d->material != value) {
-        if (d->material) {
-            disconnect(d->material, SIGNAL(materialChanged()),
-                       this, SIGNAL(effectChanged()));
-        }
-        d->material = value;
-        if (d->material) {
-            connect(d->material, SIGNAL(materialChanged()),
-                    this, SIGNAL(effectChanged()));
-        }
+    d->ensureMaterial();
+
+    int newIndex = d->palette->addMaterial(value);
+    if(newIndex != d->materialIndex)
+    {
+        d->materialIndex = newIndex;
         emit effectChanged();
+        // TODO: deleting old materials
     }
 }
 
@@ -375,36 +364,37 @@ void QDeclarativeEffect::setMaterial(QGLMaterial *value)
 */
 void QDeclarativeEffect::enableEffect(QGLPainter *painter)
 {
-    QGLTexture2D *tex = d->texture2D;
-    if (tex == NULL && d->material)
-        tex = d->material->texture();
+    painter->setColor(d->color);
+    if (d->materialIndex != -1 && d->palette->material(d->materialIndex))
+    {
+        painter->setFaceMaterial(QGL::FrontFaces, material()->front());
+        painter->setFaceMaterial(QGL::BackFaces, material()->back());
+    } else
+        painter->setFaceColor(QGL::AllFaces, d->color);
+
+    QGLTexture2D *tex = 0;
+    if (material())
+        tex = material()->texture();
     if (d->useLighting) {
         if (tex && !tex->isNull()) {
             if (d->decal)
                 painter->setStandardEffect(QGL::LitDecalTexture2D);
             else
                 painter->setStandardEffect(QGL::LitModulateTexture2D);
-            painter->glActiveTexture(GL_TEXTURE0);
             tex->bind();
         } else {
             painter->setStandardEffect(QGL::LitMaterial);
         }
-        if (d->material)
-            painter->setFaceMaterial(QGL::AllFaces, d->material);
-        else
-            painter->setFaceColor(QGL::AllFaces, d->color);
     } else {
         if (tex && !tex->isNull()) {
             if (d->decal)
                 painter->setStandardEffect(QGL::FlatDecalTexture2D);
             else
                 painter->setStandardEffect(QGL::FlatReplaceTexture2D);
-            painter->glActiveTexture(GL_TEXTURE0);
+//            painter->glActiveTexture(GL_TEXTURE0);
             tex->bind();
-            painter->setColor(d->color);
         } else {
             painter->setStandardEffect(QGL::FlatColor);
-            painter->setColor(d->color);
         }
     }
 }
@@ -433,21 +423,14 @@ void QDeclarativeEffect::disableEffect(QGLPainter *painter)
 */
 void QDeclarativeEffect::applyTo(QGLSceneNode *node)
 {
-    if (d->material)
-    {
-        node->setMaterial(d->material);
-        // TODO: back material?
-    } else if (!node->material())
-    {
-        QGLMaterial* newMaterial = new QGLMaterial(node);
-        if (d->color.isValid())
-            newMaterial->setColor(d->color);
-        node->setMaterial(newMaterial);
-    }
+    d->ensureMaterial();
 
-    QGLTexture2D *tex = d->texture2D;
-    if (tex == NULL && d->material)
-        tex = d->material->texture();
+    node->setPalette(d->palette);
+    node->setMaterialIndex(d->materialIndex);
+
+    Q_ASSERT(node->material());
+
+    QGLTexture2D *tex = material()->texture();
     if (tex && !tex->isNull())
         node->material()->setTexture(tex);
 
@@ -475,7 +458,9 @@ void QDeclarativeEffect::applyTo(QGLSceneNode *node)
 
 QGLTexture2D *QDeclarativeEffect::texture2D()
 {
-    return d->texture2D;
+    if(!material())
+        return 0;
+    return material()->texture();
 }
 
 /*!
