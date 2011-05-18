@@ -62,7 +62,15 @@ Viewport {
     TestCase {
         name: "Effect"
 
-        function test_color() {
+        // Note that test_material must be called before tests that create
+        // a material e.g. setColor() (tests are run in alphabetical order)
+        function test_material() {
+            verify(!effect.material, "default material is null")
+            effect.material = china;
+            compare(effect.material, china, "setMaterial()");
+        }
+
+        function test_setColor() {
             verify(effect.color == "#ffffff", "Default color is white");
             effect.color = "#ff4488";
             verify(effect.color == "#ff4488", "setColor()")
@@ -101,12 +109,6 @@ Viewport {
         function test_textureImage() {
             // No support for interrogating QImages from QML
             // so can't write meaningful test case for textureImage
-        }
-
-        function test_material() {
-            verify(!effect.material, "default material is null")
-            effect.material = china;
-            compare(effect.material, china, "setMaterial()");
         }
 
         function test_progress() {
