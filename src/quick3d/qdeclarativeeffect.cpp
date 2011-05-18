@@ -242,14 +242,14 @@ void QDeclarativeEffect::setBlending(bool value)
 */
 QUrl QDeclarativeEffect::texture() const
 {
-    if(!material())
+    if (!material())
         return QUrl();
     return material()->textureUrl();
 }
 
 void QDeclarativeEffect::setTexture(const QUrl& value)
 {
-    if(material() && material()->textureUrl() == value)
+    if (material() && material()->textureUrl() == value)
         return;
 
     if (d->progress != 0.0)
@@ -260,7 +260,7 @@ void QDeclarativeEffect::setTexture(const QUrl& value)
 
     if (value.isEmpty())
     {
-        if(material())
+        if (material())
         {
             material()->setTextureUrl(value);
             emit effectChanged();
@@ -328,7 +328,7 @@ void QDeclarativeEffect::setTextureImage(const QImage& value)
 */
 QGLMaterial *QDeclarativeEffect::material() const
 {
-    if(!d->palette)
+    if (!d->palette)
         return 0;
     return d->palette->material(d->materialIndex);
 }
@@ -343,7 +343,7 @@ void QDeclarativeEffect::setMaterial(QGLMaterial *value)
     d->ensureMaterial();
 
     int newIndex = d->palette->addMaterial(value);
-    if(newIndex != d->materialIndex)
+    if (newIndex != d->materialIndex)
     {
         d->materialIndex = newIndex;
         emit effectChanged();
@@ -458,7 +458,7 @@ void QDeclarativeEffect::applyTo(QGLSceneNode *node)
 
 QGLTexture2D *QDeclarativeEffect::texture2D()
 {
-    if(!material())
+    if (!material())
         return 0;
     return material()->texture();
 }
