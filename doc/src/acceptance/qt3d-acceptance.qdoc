@@ -46,6 +46,46 @@
     version, features, and extensions.  On X11 systems, usually
     \c{glxinfo} can be run to obtain similar information.
 
+    \section1 Packaging Verification
+
+    Where Qt Quick 3D has been packaged into a new packaging format, follow
+    these steps to confirm that the newly installed package has validly set
+    up a correct Qt Quick 3D environment.
+
+    1) Launch Qt Creator
+
+    2) Choose "File" > "New File or Project..."
+
+    3) Choose "Qt Quick Project" > "Qt Quick UI", press "Choose..."
+
+    4) Name the project "acceptance" and leave the default location
+
+    5) A template with QML code is generated.  Edit the code so that it
+    appears as follows:
+
+    \code
+        import QtQuick 1.0
+        import Qt3D 1.0
+
+        Viewport { width: 400; height: 400 }
+    \endcode
+
+    6) Choose "File" > "Save"
+
+    7) Select the "Projects" tab, and set the "Qt Version:" to be the
+    path of the qmake binary for the Qt where the newly installed
+    Qt Quick 3D is located.  Use the "Manage" button to add this Qt
+    to the list if necessary.
+
+    8) If the package is correctly installed the code above should be
+    clear of any error-underlining (a red wavy line indicating a problem).
+
+    9) Choose "Build" > "Run", ensuring the "acceptance" project is
+    selected.
+
+    10) A 400 x 400 black viewport should be displayed.
+
+
     \section1 Basic bring-up
 
     A pre-requisite for the acceptance tests is that Qt and Qt3D have
