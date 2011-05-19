@@ -27,7 +27,11 @@ package {
         }
         INCLUDEPATH += ../../include/Qt3D
     }
-    target.path = $$[QT_INSTALL_LIBS]
+    win32 {
+        target.path = $$[QT_INSTALL_BINS]
+    } else {
+        target.path = $$[QT_INSTALL_LIBS]
+    }
     INSTALLS += target
     QT += opengl network
 } else {
