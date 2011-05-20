@@ -1,4 +1,3 @@
-Filtering for modules in Qt3D.Shapes
 <?xml version="1.0" encoding="UTF-8"?>
 <module>
     <type name="Capsule" defaultProperty="data" extends="QDeclarativeItem3D">
@@ -52,4 +51,4 @@ Filtering for modules in Qt3D.Shapes
         <signal name="levelOfDetailChanged" />
         <signal name="axisChanged" />
     </type>
-<\module>
+</module>
