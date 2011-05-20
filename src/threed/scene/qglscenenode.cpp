@@ -180,6 +180,7 @@ QT_BEGIN_NAMESPACE
     \enum QGLSceneNode::Option
     This enum defines option flags for QGLSceneNode.
 
+    \value NoOptions Do not enable any QGLSceneNode options.
     \value CullBoundingBox Perform a cull using boundingBox() before
         attempting to draw the geometry().  Default is false.
     \value ViewNormals Enables the display of lighting normals for
