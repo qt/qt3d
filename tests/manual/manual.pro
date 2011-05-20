@@ -6,4 +6,5 @@ SUBDIRS +=  displaymodel \
             scaling \
             submesh \
             translation \
-            transformations
+            transformations \
+            animations
