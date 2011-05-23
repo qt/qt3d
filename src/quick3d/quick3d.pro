@@ -100,11 +100,11 @@ symbian {
     load(data_caging_paths)
 
     qt3dMwHeaders = *.h
-    for (api, qt3dMwHeaders) {
+    for(api,qt3dMwHeaders) {
         entries=$$files($$api);
         #files() attaches a ';' at the end which needs to be removed
         entries=$$replace(entries, ;,)
-        for (entry, entries) {
+        for(entry,entries) {
             exists($$entry) {
                 contains(PUBLIC_HEADERS, $$basename(entry)) {
                     BLD_INF_RULES.prj_exports += "$$entry $$MW_LAYER_PUBLIC_EXPORT_PATH(Qt3DQuick/$$basename(entry))"
