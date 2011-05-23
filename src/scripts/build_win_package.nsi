@@ -61,13 +61,13 @@ ShowUnInstDetails show
 ; HKCU\Software\Trolltech\Versions\${QT_VERSION}\InstallDir REG_SZ "C:\Qt\${QT_VERSION}"
 
 Function .onInit
+  LogSet on
   ReadRegStr $0 HKCU "Software\Trolltech\Versions\${QT_VERSION}" "InstallDir"
   ${If} $0 == ""
     MessageBox MB_ICONEXCLAMATION "Please install Qt v${QT_VERSION} MSVC from http:\\qt.nokia.com\downloads before installing ${PRODUCT_NAME} ${PRODUCT_VERSION}"
     Abort
   ${EndIf}
   StrCpy $INSTDIR $0
-  LogSet on
 FunctionEnd
 
 Function DisplayWelcomeMessage
@@ -92,21 +92,34 @@ FunctionEnd
 Section "MainSection" SEC01
   SetOverwrite try
   CreateDirectory "$SMPROGRAMS\QtQuick3D"
+
   CreateShortCut "$SMPROGRAMS\QtQuick3D\QtQuick3D.lnk" "$INSTDIR\quick3d\bin\run_start_program.bat" "" "$INSTDIR\quick3d\bin\qglinfo.exe"
   CreateShortCut "$DESKTOP\QtQuick3D.lnk" "$INSTDIR\quick3d\bin\run_start_program.bat" "" "$INSTDIR\quick3d\bin\qglinfo.exe"
   ; bin imports include lib mkspecs plugins quick3d
   SetOutPath "$INSTDIR\quick3d\bin"
-  File "src\scripts\run_start_program.bat"
-  File /r "${MK_INST_ROOT}\Qt\${QT_VERSION}\bin\*.*"
+  File "${MK_INST_ROOT}${QT_PREFIX_PATH}\bin\*.exe"
+  CreateDirectory "$INSTDIR\quick3d\bin\resources"
+  SetOutPath "$INSTDIR\quick3d\bin\resources"
+  File /r "${MK_INST_ROOT}${QT_PREFIX_PATH}\quick3d\examples"
+  File /r "${MK_INST_ROOT}${QT_PREFIX_PATH}\quick3d\demos"
+  SetOutPath "$INSTDIR\lib"
+  File "${MK_INST_ROOT}${QT_PREFIX_PATH}\bin\*.lib"
   SetOutPath "$INSTDIR\quick3d\doc"
   File /r "doc\html"
+  SetOutPath "$INSTDIR\bin"
+  File "${MK_INST_ROOT}${QT_PREFIX_PATH}\bin\*.dll"
   SetOutPath "$INSTDIR"
-  File /r "${MK_INST_ROOT}\Qt\${QT_VERSION}\imports"
-  File /r "${MK_INST_ROOT}\Qt\${QT_VERSION}\include"
-  File /r "${MK_INST_ROOT}\Qt\${QT_VERSION}\lib"
-  File /r "${MK_INST_ROOT}\Qt\${QT_VERSION}\mkspecs"
-  File /r "${MK_INST_ROOT}\Qt\${QT_VERSION}\plugins"
-  File /r "${MK_INST_ROOT}\Qt\${QT_VERSION}\quick3d"
+  File /r "${MK_INST_ROOT}${QT_PREFIX_PATH}\imports"
+  File /r "${MK_INST_ROOT}${QT_PREFIX_PATH}\include"
+  File /r "${MK_INST_ROOT}${QT_PREFIX_PATH}\mkspecs"
+  File /r "${MK_INST_ROOT}${QT_PREFIX_PATH}\plugins"
+
+  ClearErrors
+  FileOpen $0 $INSTDIR\quick3d\bin\run_start_program.bat w
+  IfErrors done
+  FileWrite $0 "start /D $INSTDIR\bin $INSTDIR\quick3d\bin\qglinfo.exe"
+  FileClose $0
+  done:
 SectionEnd
 
 Section -AdditionalIcons
