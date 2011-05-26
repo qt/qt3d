@@ -77,7 +77,7 @@ public:
         , backMaterial(-1)
         , start(0)
         , count(0)
-        , options(QGLSceneNode::CullBoundingBox)
+        , options(0)
         , pickNode(0)
         , boxValid(false)
         , drawingMode(QGL::Triangles)
