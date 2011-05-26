@@ -145,3 +145,18 @@ void QGLInfoWindow::on_actionRun_FPS_Test_triggered()
     fps->show();
 }
 
+void QGLInfoWindow::on_actionCopy_triggered()
+{
+    if (ui->textBrowser->textCursor().hasSelection()) {
+        ui->textBrowser->copy();
+    }
+    else {
+        ui->textBrowser->selectAll();
+        ui->textBrowser->copy();
+        
+        QTextCursor tc(ui->textBrowser->textCursor());
+        tc.clearSelection();
+        tc.setPosition(0);
+        ui->textBrowser->setTextCursor(tc);
+    }
+}

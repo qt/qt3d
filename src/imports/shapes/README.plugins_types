@@ -1,5 +1,5 @@
 The plugins.qmltypes file is required to get syntax highlighting of Qt3D.Shapes
-plugin items inside Qt Creator 2.1 and later.
+plugin items inside Qt Creator 2.2 and later.
 
 To support earlier versions of Qt Creator the library.xml file is used.
 

@@ -39,39 +39,26 @@
 **
 ****************************************************************************/
 
-#ifndef QGLINFOWINDOW_H
-#define QGLINFOWINDOW_H
+#include <QtGui/QApplication>
+#include <QtDeclarative/qdeclarativeview.h>
+#include <QtCore/qdir.h>
 
-#include <QMainWindow>
+#include "../../shared/qmlres.h"
 
-namespace Ui {
-    class QGLInfoWindow;
+int main(int argc, char *argv[])
+{
+    QApplication app(argc, argv);
+
+    QDeclarativeView view;
+    QString qml = q_get_qmldir(QLatin1String("qml/tst_animations.qml"));
+    view.setSource(QUrl::fromLocalFile(qml));
+
+    if (QApplication::arguments().contains(QLatin1String("-maximize")))
+        view.showMaximized();
+    else if (QApplication::arguments().contains(QLatin1String("-fullscreen")))
+        view.showFullScreen();
+    else
+        view.show();
+
+    return app.exec();
 }
-
-class QGLInfo;
-class FPSWidget;
-
-class QGLInfoWindow : public QMainWindow {
-    Q_OBJECT
-public:
-    QGLInfoWindow(QWidget *parent = 0);
-    ~QGLInfoWindow();
-public slots:
-    void on_actionQuit_triggered();
-    void on_action_Save_As_triggered();
-
-protected:
-    void changeEvent(QEvent *e);
-
-private:
-    Ui::QGLInfoWindow *ui;
-    QGLInfo *info;
-    FPSWidget *fps;
-
-private slots:
-    void on_actionRun_FPS_Test_triggered();
-    void on_actionAbout_triggered();
-    void on_actionCopy_triggered();
-};
-
-#endif // QGLINFOWINDOW_H
