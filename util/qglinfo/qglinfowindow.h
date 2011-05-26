@@ -71,6 +71,7 @@ private:
 private slots:
     void on_actionRun_FPS_Test_triggered();
     void on_actionAbout_triggered();
+    void on_actionCopy_triggered();
 };
 
 #endif // QGLINFOWINDOW_H
