@@ -48,7 +48,7 @@
 #include <QtCore/qvariant.h>
 #include <QtGui/qvector3d.h>
 
-#include <QtDeclarative/qdeclarativeitem.h>
+#include <QtDeclarative/qsgitem.h>
 
 #include "qglscenenode.h"
 #include "qglpainter.h"
@@ -65,7 +65,7 @@ class QDeclarativeViewport;
 class QDeclarativeState;
 class QDeclarativeTransition;
 
-class Q_QT3D_QUICK_EXPORT QDeclarativeItem3D : public QDeclarativeItem
+class Q_QT3D_QUICK_EXPORT QDeclarativeItem3D : public QSGItem
 {
     Q_OBJECT
     Q_INTERFACES(QDeclarativeParserStatus)

@@ -514,7 +514,7 @@ QMatrix4x4 QDeclarativeItem3DPrivate::localTransforms() const
     \internal
 */
 QDeclarativeItem3D::QDeclarativeItem3D(QObject *parent)
-    : QDeclarativeItem(0)
+    : QSGItem(0)
 {
     d = new QDeclarativeItem3DPrivate(this);
     QDeclarativeItem3D *itemParent = qobject_cast<QDeclarativeItem3D *>(parent);
@@ -1203,7 +1203,7 @@ void QDeclarativeItem3D::initialize(QGLPainter *painter)
 
 void QDeclarativeItem3D::componentComplete()
 {
-    QDeclarativeItem::componentComplete();
+    QSGItem::componentComplete();
     d->componentComplete = true;
 
     // Now that we have all the mesh and subnode information we need, it's time to setup the mesh scene objects.

@@ -176,13 +176,12 @@ void ViewportPrivate::setDefaults(QGLPainter *painter)
 
 /*!
     \internal
-    Construct the class and assign it a \a parent QDeclarativeItem.
+    Construct the class and assign it a \a parent QSGItem.
 */
-Viewport::Viewport(QDeclarativeItem *parent)
-    : QDeclarativeItem(parent)
+Viewport::Viewport(QSGItem *parent)
+    : QSGPaintedItem(parent)
 {
     d = new ViewportPrivate();
-    setFlag(QGraphicsItem::ItemHasNoContents, false);
 
     connect(this, SIGNAL(viewportChanged()), this, SLOT(update3d()));
 
@@ -191,6 +190,9 @@ Viewport::Viewport(QDeclarativeItem *parent)
 
     setAcceptedMouseButtons(Qt::LeftButton);
     setAcceptHoverEvents(true);
+
+    setRenderTarget(QSGPaintedItem::FramebufferObject);
+    setFillColor(Qt::black);
 }
 
 /*!
@@ -432,28 +434,12 @@ qreal ViewportSubsurface::aspectRatio() const
 
     Note, currently \a style and \a widget are unused, but are reserved for later development.
 */
-void Viewport::paint(QPainter *p, const QStyleOptionGraphicsItem * style, QWidget *widget)
+void Viewport::paint(QPainter *p)
 {
-    Q_UNUSED(style);
-
-    if (!d->viewWidget)
-        d->viewWidget = widget;
     d->needsPick = true;
 
     QGLPainter painter;
     if (!painter.begin(p)) {
-        if (widget) {
-            // Probably running with a plain QDeclarativeView (e.g. qmlviewer).
-            // Switch the surrounding QGraphicsView to use a QGLWidget as its
-            // viewport.  We cannot do it here during painting, so schedule a
-            // slot to switch it the next time we reach the event loop.
-            QGraphicsView *view =
-                qobject_cast<QGraphicsView *>(widget->parentWidget());
-            if (view) {
-                QTimer::singleShot(0, this, SLOT(switchToOpenGL()));
-                return;
-            }
-        }
         qWarning("GL graphics system is not active; cannot use 3D items");
         return;
     }
@@ -465,7 +451,7 @@ void Viewport::paint(QPainter *p, const QStyleOptionGraphicsItem * style, QWidge
     painter.setEye(QGL::NoEye);
     qreal adjust = 1.0f;
 
-    // Modify the GL viewport to only cover the extent of this QDeclarativeItem.
+    // Modify the GL viewport to only cover the extent of this QSGItem.
     QTransform transform = p->combinedTransform();
     QRect viewport = transform.mapRect(boundingRect()).toRect();
     ViewportSubsurface surface(painter.currentSurface(), viewport, adjust);
@@ -721,33 +707,6 @@ void Viewport::cameraChanged()
     update();
 }
 
-/*!
-    \internal
-*/
-void Viewport::switchToOpenGL()
-{
-    // If there are multiple Viewport items in the QML, then it is
-    // possible that another Viewport has already switched to QGLWidget.
-    QList<QGraphicsView *> views = scene()->views();
-    if (!views.isEmpty()) {
-        QGLWidget *glw = qobject_cast<QGLWidget *>(views[0]->viewport());
-        if (glw) {
-            d->viewWidget = glw;
-            return;
-        }
-    }
-
-    QGraphicsView *view =
-        qobject_cast<QGraphicsView *>(d->viewWidget->parentWidget());
-    if (view) {
-        bool focused = view->viewport()->hasFocus();
-        d->viewWidget = new QGLWidget(view);
-        view->setViewport(d->viewWidget);
-        if (focused)
-            d->viewWidget->setFocus();
-    }
-}
-
 static inline void sendEnterEvent(QObject *object)
 {
     QEvent event(QEvent::Enter);
@@ -797,11 +756,8 @@ void Viewport::mousePressEvent(QGraphicsSceneMouseEvent *e)
         d->startCenter = d->camera->center();
         d->startUpVector = d->camera->upVector();
         d->panModifiers = e->modifiers();
-#ifndef QT_NO_CURSOR
-        setCursor(Qt::ClosedHandCursor);
-#endif
     } else {
-        QDeclarativeItem::mousePressEvent(e);
+        QSGItem::mousePressEvent(e);
         return;
     }
     e->setAccepted(true);
@@ -814,9 +770,6 @@ void Viewport::mouseReleaseEvent(QGraphicsSceneMouseEvent *e)
 {
     if (d->panning && e->button() == Qt::LeftButton) {
         d->panning = false;
-#ifndef QT_NO_CURSOR
-        unsetCursor();
-#endif
     }
     if (d->pressedObject) {
         // Notify the previously pressed object about the release.
@@ -853,7 +806,7 @@ void Viewport::mouseReleaseEvent(QGraphicsSceneMouseEvent *e)
         }
         e->setAccepted(true);
     } else {
-        QDeclarativeItem::mouseReleaseEvent(e);
+        QSGItem::mouseReleaseEvent(e);
     }
 }
 
@@ -874,7 +827,7 @@ void Viewport::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *e)
             return;
         }
     }
-    QDeclarativeItem::mouseDoubleClickEvent(e);
+    QSGItem::mouseDoubleClickEvent(e);
 }
 
 /*!
@@ -929,11 +882,11 @@ void Viewport::mouseMoveEvent(QGraphicsSceneMouseEvent *e)
             sendLeaveEvent(d->enteredObject);
             d->enteredObject = 0;
         } else {
-            QDeclarativeItem::mouseMoveEvent(e);
+            QSGItem::mouseMoveEvent(e);
             return;
         }
     } else {
-        QDeclarativeItem::mouseMoveEvent(e);
+        QSGItem::mouseMoveEvent(e);
         return;
     }
     e->setAccepted(true);
@@ -947,7 +900,7 @@ void Viewport::hoverEnterEvent(QGraphicsSceneHoverEvent *e)
     if (hoverEvent(e))
         e->setAccepted(true);
     else
-        QDeclarativeItem::hoverEnterEvent(e);
+        QSGItem::hoverEnterEvent(e);
 }
 
 /*!
@@ -958,7 +911,7 @@ void Viewport::hoverMoveEvent(QGraphicsSceneHoverEvent *e)
     if (hoverEvent(e))
         e->setAccepted(true);
     else
-        QDeclarativeItem::hoverMoveEvent(e);
+        QSGItem::hoverMoveEvent(e);
 }
 
 /*!
@@ -971,7 +924,7 @@ void Viewport::hoverLeaveEvent(QGraphicsSceneHoverEvent *e)
         d->enteredObject = 0;
         e->setAccepted(true);
     } else {
-        QDeclarativeItem::hoverLeaveEvent(e);
+        QSGItem::hoverLeaveEvent(e);
     }
 }
 
@@ -984,7 +937,7 @@ void Viewport::wheelEvent(QGraphicsSceneWheelEvent *e)
         wheel(e->delta());
         e->setAccepted(true);
     } else {
-        QDeclarativeItem::wheelEvent(e);
+        QSGItem::wheelEvent(e);
     }
 }
 
@@ -994,14 +947,10 @@ void Viewport::wheelEvent(QGraphicsSceneWheelEvent *e)
 void Viewport::keyPressEvent(QKeyEvent *e)
 {
     // Process the "Keys" property on the item first.
-    keyPressPreHandler(e);
-    if (e->isAccepted())
-        return;
-
     qreal sep;
 
     if (!d->navigation) {
-        QDeclarativeItem::keyPressEvent(e);
+        QSGItem::keyPressEvent(e);
         return;
     }
 
@@ -1060,7 +1009,7 @@ void Viewport::keyPressEvent(QKeyEvent *e)
     break;
 
     default:
-        QDeclarativeItem::keyPressEvent(e);
+        QSGItem::keyPressEvent(e);
         return;
     }
 

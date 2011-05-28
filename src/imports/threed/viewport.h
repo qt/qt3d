@@ -42,7 +42,7 @@
 #ifndef VIEWPORT_H
 #define VIEWPORT_H
 
-#include <QtDeclarative/qdeclarativeitem.h>
+#include <QtDeclarative/qsgpainteditem.h>
 
 #include "qdeclarativeitem3d.h"
 #include "qdeclarativeviewport.h"
@@ -57,7 +57,7 @@ class QGLLightModel;
 class QGLLightParameters;
 class QDeclarativeEffect;
 
-class Viewport : public QDeclarativeItem, public QDeclarativeViewport
+class Viewport : public QSGPaintedItem, public QDeclarativeViewport
 {
     Q_OBJECT
     Q_PROPERTY(bool picking READ picking WRITE setPicking NOTIFY viewportChanged)
@@ -69,7 +69,7 @@ class Viewport : public QDeclarativeItem, public QDeclarativeViewport
     Q_PROPERTY(QGLLightParameters *light READ light WRITE setLight NOTIFY viewportChanged)
     Q_PROPERTY(QGLLightModel *lightModel READ lightModel WRITE setLightModel NOTIFY viewportChanged)
 public:
-    Viewport(QDeclarativeItem *parent = 0);
+    Viewport(QSGItem *parent = 0);
     ~Viewport();
 
     bool picking() const;
@@ -96,7 +96,7 @@ public:
     QGLLightModel *lightModel() const;
     void setLightModel(QGLLightModel *value);
 
-    void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *);
+    void paint(QPainter *);
 
     int registerPickableObject(QObject *obj);
 
@@ -110,7 +110,6 @@ public Q_SLOTS:
 
 private Q_SLOTS:
     void cameraChanged();
-    void switchToOpenGL();
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
