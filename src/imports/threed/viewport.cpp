@@ -620,23 +620,26 @@ QObject *Viewport::objectForPoint(qreal x, qreal y)
     QPainter qpainter;
     QGLPainter painter;
     QGLWidget *glw = qobject_cast<QGLWidget *>(d->viewWidget);
-    bool doubleBuffer;
-    if (glw) {
+    bool painterValid = false;
+    bool doubleBuffer = false;
+    if (glw && painter.begin(glw)) {
         doubleBuffer = glw->doubleBuffer();
-        if (!painter.begin(glw))
-            return 0;
-    } else {
-        doubleBuffer = false;
-        qpainter.begin(d->viewWidget);
-        if (!painter.begin(&qpainter))
-            return 0;
+        painterValid = true;
+    } else if (qpainter.begin(d->viewWidget) && painter.begin(&qpainter)) {
+        painterValid = true;
+    }
+
+    if (!painterValid && !QGLContext::currentContext()) {
+        // Won't be able to read or generate a pick buffer, so bail out.
+        return 0;
     }
 
     int objectId = -1;
 
     QSize size(qRound(width()), qRound(height()));
     QSize fbosize(QGL::nextPowerOfTwo(size));
-    if (!d->needsPick && d->pickFbo && d->pickFbo->size() == fbosize) {
+    if (!d->needsPick && d->pickFbo && d->pickFbo->size() == fbosize
+            && painterValid) {
         // The previous pick fbo contents should still be valid.
         d->pickFbo->bind();
         objectId = painter.pickObject(qRound(x), fbosize.height() - 1 - qRound(y));
@@ -658,46 +661,53 @@ QObject *Viewport::objectForPoint(qreal x, qreal y)
             height = fbosize.height();
             fboSurface = new QGLFramebufferObjectSurface(d->pickFbo);
             mainSurface = fboSurface;
-        } else {
+        } else if (painterValid) {
             // Use the QGLWidget's back buffer for picking to avoid the
             // need to create a separate fbo in GPU memory.
             mainSurface = painter.currentSurface();
             height = mainSurface->viewportGL().height();
         }
         QGLSubsurface surface(mainSurface, QRect(QPoint(0, 0), size));
-        painter.pushSurface(&surface);
-        painter.setPicking(true);
-        painter.clearPickObjects();
-        painter.setClearColor(Qt::black);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        painter.setEye(QGL::NoEye);
-        glEnable(GL_DEPTH_TEST);
-        glDepthFunc(GL_LESS);
-        glDepthMask(GL_TRUE);
+        // If our view is a hijacked QWidget, we're going to have failed
+        // to find a QGLWidget, but we'll still have a QGLContext and be able
+        // to draw the pick buffer into the pickFbo.
+        if (painterValid || painter.begin(&surface)) {
+            if (painterValid)
+                painter.pushSurface(&surface);
+            painter.setPicking(true);
+            painter.clearPickObjects();
+            painter.setClearColor(Qt::black);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            painter.setEye(QGL::NoEye);
+            glEnable(GL_DEPTH_TEST);
+            glDepthFunc(GL_LESS);
+            glDepthMask(GL_TRUE);
 #if defined(QT_OPENGL_ES)
-        glDepthRangef(0.0f, 1.0f);
+            glDepthRangef(0.0f, 1.0f);
 #else
-        glDepthRange(0.0f, 1.0f);
+            glDepthRange(0.0f, 1.0f);
 #endif
-        glDisable(GL_BLEND);
-        if (painter.hasOpenGLFeature(QOpenGLFunctions::BlendColor))
-            painter.glBlendColor(0, 0, 0, 0);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        if (painter.hasOpenGLFeature(QOpenGLFunctions::BlendEquation))
-            painter.glBlendEquation(GL_FUNC_ADD);
-        else if (painter.hasOpenGLFeature(QOpenGLFunctions::BlendEquationSeparate))
-            painter.glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
-        glDisable(GL_CULL_FACE);
-        if (d->camera) {
-            painter.setCamera(d->camera);
-        } else {
-            QGLCamera defCamera;
-            painter.setCamera(&defCamera);
+            glDisable(GL_BLEND);
+            if (painter.hasOpenGLFeature(QOpenGLFunctions::BlendColor))
+                painter.glBlendColor(0, 0, 0, 0);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            if (painter.hasOpenGLFeature(QOpenGLFunctions::BlendEquation))
+                painter.glBlendEquation(GL_FUNC_ADD);
+            else if (painter.hasOpenGLFeature(QOpenGLFunctions::BlendEquationSeparate))
+                painter.glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
+            glDisable(GL_CULL_FACE);
+            if (d->camera) {
+                painter.setCamera(d->camera);
+            } else {
+                QGLCamera defCamera;
+                painter.setCamera(&defCamera);
+            }
+            draw(&painter);
+            painter.setPicking(false);
+            objectId = painter.pickObject(qRound(x), height - 1 - qRound(y));
+            painter.popSurface();
+            painter.end();
         }
-        draw(&painter);
-        painter.setPicking(false);
-        objectId = painter.pickObject(qRound(x), height - 1 - qRound(y));
-        painter.popSurface();
         delete fboSurface;
     }
 
