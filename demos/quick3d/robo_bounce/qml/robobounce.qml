@@ -45,6 +45,7 @@ import "Calculator"
 import "RobotCore"
 
 Image {
+    objectName: "tronscape image"
     property real eyeSeparation: 0.0   //Eye separation: 0.1 for 3d, 0.0 for standard
     property real repeatAnimationTimer: 30;  //Auto click the 'start' button this often
 
@@ -158,6 +159,7 @@ Image {
     }
 
         Viewport {
+            objectName: "Viewport 3D"
             id: viewport
             width: 640
             height: 480

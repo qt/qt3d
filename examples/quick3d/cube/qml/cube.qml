@@ -38,15 +38,18 @@
 **
 ****************************************************************************/
 //! [1]
-import Qt 4.7
+import QtQuick 1.0
 import Qt3D 1.0
 import Qt3D.Shapes 1.0
 
 Viewport {
     width: 640; height: 480
+    fillColor: "blue"
+    objectName: "cube viewport"
 
     Cube {
         scale: 1.5
+        objectName: "cube"
 
         transform: Rotation3D {
             angle: 45

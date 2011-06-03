@@ -431,8 +431,6 @@ qreal ViewportSubsurface::aspectRatio() const
 
     The paint function is responsible for setting up the viewing transform, as well as other display
     options, before calling the draw function to perform the actual drawing of the scene.
-
-    Note, currently \a style and \a widget are unused, but are reserved for later development.
 */
 void Viewport::paint(QPainter *p)
 {
@@ -481,7 +479,6 @@ void Viewport::paint(QPainter *p)
     glDisable(GL_CULL_FACE);
     d->setDefaults(&painter);
     glDisable(GL_DEPTH_TEST);
-
 }
 
 /*!
