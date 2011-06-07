@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>planet.jpg</file>
+        <file>solar.jpg</file>
+        <file>moon-texture.jpg</file>
+    </qresource>
+</RCC>
