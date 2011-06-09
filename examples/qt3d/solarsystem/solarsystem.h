@@ -79,7 +79,7 @@ private:
     qreal m_angle1;
     qreal m_angle2;
     qreal m_angle3;
-    qreal m_glowFactor;
+    float m_glowFactor;
     QGraphicsRotation3D *sunRotation;
     QGraphicsRotation3D *planetRotation;
     QGraphicsRotation3D *moonRotation;

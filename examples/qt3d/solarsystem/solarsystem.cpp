@@ -98,8 +98,9 @@ SolarSystemView::SolarSystemView(QWidget *parent)
     QPropertyAnimation *glowAnimation;
     animation3 = new QPropertyAnimation(this, "glowFactor", this);
     animation3->setStartValue(0.0f);
-    animation3->setEndValue(1.0f);
-    animation3->setDuration(2000);
+    animation3->setEndValue(0.0f);
+    animation3->setKeyValueAt(0.5, 1.0f);
+    animation3->setDuration(3000);
     animation3->setLoopCount(-1);
     animation3->start();
 }
