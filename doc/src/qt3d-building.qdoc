@@ -161,7 +161,7 @@
 
     By default the Qt build system used by QtCreator will build Qt3D in debug mode.
 
-    Ok, \b{now} hit the build button.
+    Ok, \bold{now} hit the build button.
 
     \bold{Step 4} - Build QtQuick3D and run a test App.
 
