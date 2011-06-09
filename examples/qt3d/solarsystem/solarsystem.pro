@@ -7,6 +7,7 @@ SOURCES = solarsystem.cpp \
     main.cpp
 HEADERS = solarsystem.h
 RESOURCES += solarsystem.qrc
+DEPENDPATH += resources
 
 package {
     maemo {
@@ -40,3 +41,9 @@ package {
     DESTDIR = ../../../bin
 }
 
+OTHER_FILES += \
+    resources/moon-texture.jpg \
+    resources/planet.jpg \
+    resources/solar.jpg \
+    resources/solar.fsh \
+    resources/solar.vsh
