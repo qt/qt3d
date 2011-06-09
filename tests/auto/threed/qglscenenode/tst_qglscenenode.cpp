@@ -73,7 +73,7 @@ private slots:
 void tst_QGLSceneNode::defaultValues()
 {
     QGLSceneNode node;
-    QVERIFY(node.options() == 0);
+    QVERIFY(node.options() == QGLSceneNode::NoOptions);
     QVERIFY(node.geometry().isNull());
     QVERIFY(node.boundingBox().isNull());
     QVERIFY(node.localTransform().isIdentity());

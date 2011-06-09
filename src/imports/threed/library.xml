@@ -364,6 +364,7 @@
         <property name="picking" type="bool" />
         <property name="showPicking" type="bool" />
         <property name="navigation" type="bool" />
+        <property name="fovzoom" type="bool" />
         <property name="blending" type="bool" />
         <property name="camera" type="QGLCamera" />
         <property name="light" type="QGLLightParameters" />
@@ -375,4 +376,4 @@
             <param name="y" type="qreal" />
         </method>
     </type>
-<\module>
+</module>
