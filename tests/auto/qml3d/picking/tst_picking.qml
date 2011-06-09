@@ -74,7 +74,6 @@ Rectangle
             property color color: "#ff0000"
 
             effect: Effect {
-                //            useLighting: false // uh-oh
                 color: fullScreenQuad.color
             }
 
@@ -99,7 +98,6 @@ Rectangle
             property color color: "#0000ff"
 
             effect: Effect {
-                //            useLighting: false // uh-oh, crash
                 color: smallerQuad.color
             }
 
