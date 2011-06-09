@@ -206,7 +206,7 @@ Viewport::~Viewport()
     \qmlproperty bool Viewport::picking
 
     User interaction in QML/3d is handled through the concept of object picking.  Each
-    item has a unique picking id which s queried for a given screen click position when the
+    item has a unique picking id which is queried for a given screen click position when the
     mouse is clicked.
 
     If this property is set to true, picking will be supported for this
@@ -256,7 +256,7 @@ void Viewport::setShowPicking(bool value)
     \qmlproperty bool Viewport::navigation
 
     This property is used to set or unset camera navigation in for the viewport.
-    Camera navigation allows the user to move the camera position around using the moose.
+    Camera navigation allows the user to move the camera position around using the mouse.
 
     By default, camera navigation is set to true.
 */
