@@ -46,6 +46,7 @@
 
 class QGLSceneNode;
 class QGLBuilder;
+class QGLShaderProgramEffect;
 
 class SolarSystemView : public QGLView
 {
@@ -53,6 +54,7 @@ class SolarSystemView : public QGLView
     Q_PROPERTY(qreal angle1 READ angle1 WRITE setAngle1)
     Q_PROPERTY(qreal angle2 READ angle2 WRITE setAngle2)
     Q_PROPERTY(qreal angle3 READ angle3 WRITE setAngle3)
+    Q_PROPERTY(qreal glowFactor READ glowFactor WRITE setGlowFactor)
 public:
     SolarSystemView(QWidget *parent = 0);
     ~SolarSystemView();
@@ -66,6 +68,9 @@ public:
     qreal angle3() const { return m_angle3; }
     void setAngle3(qreal angle) { m_angle3 = angle; update(); }
 
+    qreal glowFactor() const { return m_glowFactor; }
+    void setGlowFactor(qreal arg) { m_glowFactor = arg; update(); }
+
 protected:
     void initializeGL(QGLPainter *painter);
     void paintGL(QGLPainter *painter);
@@ -74,11 +79,14 @@ private:
     qreal m_angle1;
     qreal m_angle2;
     qreal m_angle3;
+    qreal m_glowFactor;
     QGraphicsRotation3D *sunRotation;
     QGraphicsRotation3D *planetRotation;
     QGraphicsRotation3D *moonRotation;
     QGraphicsRotation3D *systemRotation;
     QGLSceneNode *spaceScene;
+
+    QGLShaderProgramEffect* sunEffect;
 
     QGLSceneNode *createScene();
 };

@@ -49,6 +49,8 @@
 #include "qglsphere.h"
 #include "qgraphicsrotation3d.h"
 #include "qgraphicstranslation3d.h"
+#include "qglshaderprogrameffect.h"
+#include "qglshaderprogram.h"
 
 #include <QtGui/qmatrix4x4.h>
 
@@ -57,6 +59,7 @@
 SolarSystemView::SolarSystemView(QWidget *parent)
     : QGLView(parent)
     , spaceScene(new QGLSceneNode(this))
+    , sunEffect(0)
 {
     //Generate geometry for the scene
     spaceScene = createScene();
@@ -90,11 +93,21 @@ SolarSystemView::SolarSystemView(QWidget *parent)
     animation3->setDuration(30000);
     animation3->setLoopCount(-1);
     animation3->start();
+
+    //Create the animation for the glow effect
+    QPropertyAnimation *glowAnimation;
+    animation3 = new QPropertyAnimation(this, "glowFactor", this);
+    animation3->setStartValue(0.0f);
+    animation3->setEndValue(1.0f);
+    animation3->setDuration(2000);
+    animation3->setLoopCount(-1);
+    animation3->start();
 }
 
 SolarSystemView::~SolarSystemView()
 {    
     delete spaceScene;
+    delete sunEffect;
 }
 
 void SolarSystemView::initializeGL(QGLPainter *painter)
@@ -108,6 +121,10 @@ void SolarSystemView::paintGL(QGLPainter *painter)
     sunRotation->setAngle(-m_angle1);
     planetRotation->setAngle(m_angle2);
     systemRotation->setAngle(m_angle3);
+    // Set the effect active to make sure that the program is created
+    // and bound so that we can update our uniform
+    sunEffect->setActive(painter,true);
+    sunEffect->program()->setUniformValue("glowFactor", m_glowFactor);
     spaceScene->draw(painter);
 }
 
@@ -124,7 +141,10 @@ QGLSceneNode *SolarSystemView::createScene()
     QGLMaterial *mat1 = new QGLMaterial;
     url.setPath(QLatin1String(":/solar.jpg"));
     url.setScheme(QLatin1String("file"));
-    mat1->setTextureUrl(url);
+    mat1->setTextureUrl(url,0);
+    url.setPath(QLatin1String(":/solar2.jpg"));
+    url.setScheme(QLatin1String("file"));
+    mat1->setTextureUrl(url, 1);
     //mat1->setEmittedLight(Qt::white);
     int sunMat = root->palette()->addMaterial(mat1);
 
@@ -151,7 +171,11 @@ QGLSceneNode *SolarSystemView::createScene()
     builder.pushNode()->setObjectName(QLatin1String("Solar"));
     builder<<QGLSphere(1.5);
     builder.currentNode()->setMaterialIndex(sunMat);
-    builder.currentNode()->setEffect(QGL::LitModulateTexture2D);
+    sunEffect = new QGLShaderProgramEffect();
+    sunEffect->setVertexShaderFromFile(":/solar.vsh");
+    sunEffect->setFragmentShaderFromFile(":/solar.fsh");
+//    builder.currentNode()->setEffect(QGL::LitModulateTexture2D);
+    builder.currentNode()->setUserEffect(sunEffect);
 
     //create and add rotations for axial tilt and rotation
     sunRotation = new QGraphicsRotation3D();
