@@ -1,3 +1,3 @@
 TEMPLATE = subdirs
-SUBDIRS += basket builder cube cylinder geometry graphicsview nesting tank teapot
+SUBDIRS += basket builder cube cylinder geometry graphicsview nesting solarsystem tank teapot
 !package: SUBDIRS += tutorials
