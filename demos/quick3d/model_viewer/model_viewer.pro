@@ -33,12 +33,6 @@ symbian {
     }
 }
 
-# for cleanup on Windows platforms - avoid deletion prompts
-win32 {
-    QMAKE_DEL_FILE = del /q
-    QMAKE_DEL_DIR = rmdir /s /q
-}
-
 # for make install use in packages
 distInstalls.files = qml
 distInstalls.path = $$[QT_INSTALL_DATA]/quick3d/demos/$$TARGET

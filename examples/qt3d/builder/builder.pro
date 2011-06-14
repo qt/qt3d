@@ -39,4 +39,3 @@ package {
 } else {
     DESTDIR = ../../../bin
 }
-
