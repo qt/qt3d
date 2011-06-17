@@ -139,6 +139,29 @@
 
     To resolve this problem follow Resolution Action 5 onward, below.
 
+    \section2 PROBLEM 7: Case mis-match on loading QML plugins
+
+    You get a blank screen when the Qt Quick 3D application runs.  The debug output
+    (see Problem 1 above) reveals a message similar to
+    \code
+    Starting C:\Qt\4.7.3\\bin\qmlviewer.exe -I C://Qt/4.7.3/imports C:/Qt/4.7.3/quick3d/bin/resources/examples/basket_qml/qml/basket.qml
+    C:/Qt/4.7.3/quick3d/bin/resources/examples/basket_qml/qml/basket.qml: File name case mismatch
+    \endcode
+
+    This issue can occur when a custom install directory for Qt is used, which does not
+    match the expected directory used by the Qt3D binary installer, but still installs
+    without apparent error due to Windows tolerance for case error.
+
+    For example you install Qt applications into \bold{C:\\qt} such as Qt Creator
+    but then when you install Qt 4.7.3 you accept the default install location
+    of "C:\\Qt" - this succeeds, even though the case preserved name of the
+    directory is "C:\\qt".  When Qt Declarative's case checking code parses the
+    import statement it refuses to load the qml file.
+
+    This error is very difficult to diagnose and the best way to fix it is to
+    uninstall everything from the directory in question, using the package uninstallers
+    in the start menu, then remove the directory itself, the finally reinstall everything.
+
     \section1 Resolution Actions
 
     \section2 ACTION 1: Ensure that Quick3D is Building Correctly
@@ -159,14 +182,14 @@
     The core Quick3D import directory is:
 
     \code
-    \path\to\qt\imports\Qt3D
+    \\path\\to\\qt\\imports\\Qt3D
     \endcode
 
     This should contain the following files:
 
     \list
     \o qthreedqmlplugin.dll
-    \o \quick3d\src\imports\threed\qmldir
+    \o \\quick3d\\src\\imports\\threed\\qmldir
     \endlist
 
     The additional Quick3D "Shapes" plugin directory is:
@@ -179,13 +202,13 @@
 
     \list
     \o qshapesqmlplugin.dll
-    \o \quick3d\src\imports\shapes\Cube.qml
-    \o \quick3d\src\imports\shapes\cube.obj
-    \o \quick3d\src\imports\shapes\Quad.qml
-    \o \quick3d\src\imports\shapes\quad.obj
-    \o \quick3d\src\imports\shapes\Teapot.qml
-    \o \quick3d\src\imports\shapes\teapot.bez
-    \o \quick3d\src\imports\shapes\qmldir
+    \o \\quick3d\\src\\imports\\shapes\\Cube.qml
+    \o \\quick3d\\src\\imports\\shapes\\cube.obj
+    \o \\quick3d\\src\\imports\\shapes\\Quad.qml
+    \o \\quick3d\\src\\imports\\shapes\\quad.obj
+    \o \\quick3d\\src\\imports\\shapes\\Teapot.qml
+    \o \\quick3d\\src\\imports\\shapes\\teapot.bez
+    \o \\quick3d\\src\\imports\\shapes\\qmldir
     \endlist
 
     If these files are not in the correct locations copy them manually into the
