@@ -13,6 +13,7 @@ win32 {
     QMAKE_DEL_FILE = del /q
     QMAKE_DEL_DIR = rmdir /s /q
 }
+
 qmlResources.files = qml
 symbian {
     DEPLOYMENT = qmlResources
