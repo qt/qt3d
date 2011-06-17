@@ -43,3 +43,7 @@ package {
 } else {
     DESTDIR = ../../../bin
 }
+OTHER_FILES += \
+    cubehouse.rc
+
+RC_FILE = cubehouse.rc

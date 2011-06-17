@@ -44,3 +44,8 @@ package {
 } else {
     DESTDIR = ../../../bin
 }
+
+OTHER_FILES += \
+    geometry.rc
+
+RC_FILE = geometry.rc

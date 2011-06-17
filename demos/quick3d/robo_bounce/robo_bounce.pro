@@ -57,3 +57,8 @@ package {
     target.path = $$[QT_INSTALL_BINS]
     INSTALLS += target
 }
+
+OTHER_FILES += \
+    robo_bounce.rc
+
+RC_FILE = robo_bounce.rc

@@ -57,3 +57,8 @@ package {
     target.path = $$[QT_INSTALL_BINS]
     INSTALLS += target
 }
+
+OTHER_FILES += \
+    model_viewer.rc
+
+RC_FILE = model_viewer.rc

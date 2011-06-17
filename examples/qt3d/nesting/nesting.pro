@@ -38,3 +38,8 @@ package {
 } else {
     DESTDIR = ../../../bin
 }
+
+OTHER_FILES += \
+    nesting.rc
+
+RC_FILE = nesting.rc

@@ -57,3 +57,8 @@ package {
     target.path = $$[QT_INSTALL_BINS]
     INSTALLS += target
 }
+
+OTHER_FILES += \
+    tea_service.rc
+
+RC_FILE = tea_service.rc

@@ -38,3 +38,8 @@ package {
 } else {
     DESTDIR = ../../../bin
 }
+
+OTHER_FILES += \
+    basket.rc
+
+RC_FILE = basket.rc

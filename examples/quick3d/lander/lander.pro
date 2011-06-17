@@ -57,3 +57,8 @@ package {
     target.path = $$[QT_INSTALL_BINS]
     INSTALLS += target
 }
+
+OTHER_FILES += \
+    lander.rc
+
+RC_FILE = lander.rc

@@ -57,3 +57,8 @@ package {
     target.path = $$[QT_INSTALL_BINS]
     INSTALLS += target
 }
+
+OTHER_FILES += \
+    cube_qml.rc
+
+RC_FILE = cube_qml.rc

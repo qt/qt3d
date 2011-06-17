@@ -37,3 +37,8 @@ package {
 } else {
     DESTDIR = ../../../bin
 }
+
+OTHER_FILES += \
+    teapot.rc
+
+RC_FILE = teapot.rc
