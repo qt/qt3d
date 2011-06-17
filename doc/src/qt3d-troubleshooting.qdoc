@@ -139,6 +139,29 @@
 
     To resolve this problem follow Resolution Action 5 onward, below.
 
+    \section2 PROBLEM 7: Case mis-match on loading QML plugins
+
+    You get a blank screen when the Qt Quick 3D application runs.  The debug output
+    (see Problem 1 above) reveals a message similar to
+    \code
+    Starting C:\Qt\4.7.3\bin\qmlviewer.exe -I C:/Qt/4.7.3/imports C:/Qt/4.7.3/quick3d/bin/resources/examples/basket_qml/qml/basket.qml
+    C:/Qt/4.7.3/quick3d/bin/resources/examples/basket_qml/qml/basket.qml: File name case mismatch
+    \endcode
+
+    This issue can occur when a custom install directory for Qt is used, which does not
+    match the expected directory used by the Qt3D binary installer, but still installs
+    without apparent error due to Windows tolerance for case error.
+
+    For example you install Qt applications into \bold{C:\\qt} such as Qt Creator
+    but then when you install Qt 4.7.3 you accept the default install location
+    of "C:\\Qt" - this succeeds, even though the case preserved name of the
+    directory is "C:\\qt".  When Qt Declarative's case checking code parses the
+    import statement it refuses to load the qml file.
+
+    This error is very difficult to diagnose and the best way to fix it is to
+    uninstall everything from the directory in question, using the package uninstallers
+    in the start menu, then remove the directory itself, the finally reinstall everything.
+
     \section1 Resolution Actions
 
     \section2 ACTION 1: Ensure that Quick3D is Building Correctly
@@ -156,41 +179,21 @@
     Ensure that the Quick3D import libraries are in the directory specified by
     the QtQuick import path.
 
-    The core Quick3D import directory is:
+    The core Quick3D import directory is: \c{imports\Qt3D} in the directory
+    where Qt is installed.
 
-    \code
-    \path\to\qt\imports\Qt3D
-    \endcode
+    This directory should contain the files as shown in the following diagram:
 
-    This should contain the following files:
+    \image imports-dir.png
 
-    \list
-    \o qthreedqmlplugin.dll
-    \o \quick3d\src\imports\threed\qmldir
-    \endlist
-
-    The additional Quick3D "Shapes" plugin directory is:
-
-    \code
-    \path\to\qt\imports\Qt3D\Shapes
-    \endcode
-
-    This should contain the following files:
-
-    \list
-    \o qshapesqmlplugin.dll
-    \o \quick3d\src\imports\shapes\Cube.qml
-    \o \quick3d\src\imports\shapes\cube.obj
-    \o \quick3d\src\imports\shapes\Quad.qml
-    \o \quick3d\src\imports\shapes\quad.obj
-    \o \quick3d\src\imports\shapes\Teapot.qml
-    \o \quick3d\src\imports\shapes\teapot.bez
-    \o \quick3d\src\imports\shapes\qmldir
-    \endlist
+    Here for the sake of illustration it is assumed Qt 4.7.3 is intalled under
+    \c{C:\Qt\4.7.3}.
 
     If these files are not in the correct locations copy them manually into the
     specified locations and retry your Quick3D application before moving on to
-    other fixes.
+    other fixes.  The dll's should have been built as part of your build process
+    and the other files are shipped in the source tree, and can be simply copied
+    over if somehow the build process has failed to do this.
 
     \section2 ACTION 3: Ensure Qt3D Libraries Are Correctly Located
 
@@ -204,9 +207,13 @@
 
     There are three ways to make these files available to your application:
 
-    1.  Copy these files into the same directory as your application executable.
-    2.  Add the current location of these files to your PATH environment variable.
-    3.  Copy these files into the Qt binaries directory.  That is:
+    \list
+    \o 1.  Copy these files into the same directory as your application executable.
+    \o 2.  Add the current location of these files to your PATH environment variable.
+    \o 3.  Copy these files into the Qt binaries directory.
+    \endlist
+
+    The Qt binaries directory is:
     \code
     \path\to\qt\bin
     \endcode

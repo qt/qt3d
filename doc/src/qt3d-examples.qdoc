@@ -60,3 +60,13 @@
 
     \l{index.html}{Return to the main Qt3D page}.
 */
+
+/*!
+    \page qt-examples-placeholder.html
+    \title Qt Examples
+    \keyword Qt Examples
+
+    Check the \l{http://doc.qt.nokia.com/4.7/all-examples.html}{Qt Examples for sample code specific to Qt itself.}
+
+    For examples specific to Qt3D check our \l{qt3d-examples.html}{examples page}.
+*/
