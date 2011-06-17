@@ -38,3 +38,8 @@ package {
 } else {
     DESTDIR = ../../../bin
 }
+
+OTHER_FILES += \
+    teaservice.rc
+
+RC_FILE = teaservice.rc

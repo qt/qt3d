@@ -94,3 +94,7 @@ symbian {
     }
 }
 
+OTHER_FILES += \
+    photobrowser.rc
+
+RC_FILE = photobrowser.rc

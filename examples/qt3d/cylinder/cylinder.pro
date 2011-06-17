@@ -38,3 +38,8 @@ package {
 } else {
     DESTDIR = ../../../bin
 }
+
+OTHER_FILES += \
+    cylinder.rc
+
+RC_FILE = cylinder.rc

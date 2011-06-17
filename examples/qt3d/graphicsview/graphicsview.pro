@@ -57,3 +57,8 @@ package {
 } else {
     DESTDIR = ../../../bin
 }
+
+OTHER_FILES += \
+    graphicsview.rc
+
+RC_FILE = graphicsview.rc

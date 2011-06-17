@@ -43,3 +43,8 @@ package {
 } else {
     DESTDIR = ../../../bin
 }
+
+OTHER_FILES += \
+    tank.rc
+
+RC_FILE = tank.rc

@@ -39,3 +39,8 @@ package {
 } else {
     DESTDIR = ../../../bin
 }
+
+OTHER_FILES += \
+    builder.rc
+
+RC_FILE = builder.rc

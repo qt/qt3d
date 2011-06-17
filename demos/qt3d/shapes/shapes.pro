@@ -36,3 +36,8 @@ package {
 } else {
     DESTDIR = ../../../bin
 }
+
+OTHER_FILES += \
+    shapes.rc
+
+RC_FILE = shapes.rc

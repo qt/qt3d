@@ -39,3 +39,8 @@ package {
 } else {
     DESTDIR = ../../../bin
 }
+
+OTHER_FILES += \
+    cube.rc
+
+RC_FILE = cube.rc

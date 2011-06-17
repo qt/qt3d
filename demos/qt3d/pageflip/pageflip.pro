@@ -38,3 +38,8 @@ package {
 } else {
     DESTDIR = ../../../bin
 }
+
+OTHER_FILES += \
+    pageflip.rc
+
+RC_FILE = pageflip.rc

@@ -51,3 +51,8 @@ package {
     target.path = $$[QT_INSTALL_BINS]
     INSTALLS += target
 }
+
+OTHER_FILES += \
+    moon.rc
+
+RC_FILE = moon.rc

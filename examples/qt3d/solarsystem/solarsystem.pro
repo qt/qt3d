@@ -47,3 +47,8 @@ OTHER_FILES += \
     resources/solar.jpg \
     resources/solar.fsh \
     resources/solar.vsh
+
+OTHER_FILES += \
+    solarsystem.rc
+
+RC_FILE = solarsystem.rc

@@ -51,3 +51,8 @@ package {
     target.path = $$[QT_INSTALL_BINS]
     INSTALLS += target
 }
+
+OTHER_FILES += \
+    teapot_qml.rc
+
+RC_FILE = teapot_qml.rc

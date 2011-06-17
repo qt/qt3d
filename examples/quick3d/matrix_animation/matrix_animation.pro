@@ -51,3 +51,8 @@ package {
     target.path = $$[QT_INSTALL_BINS]
     INSTALLS += target
 }
+
+OTHER_FILES += \
+    matrix_animation.rc
+
+RC_FILE = matrix_animation.rc
