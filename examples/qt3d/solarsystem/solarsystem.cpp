@@ -96,13 +96,13 @@ SolarSystemView::SolarSystemView(QWidget *parent)
 
     //Create the animation for the glow effect
     QPropertyAnimation *glowAnimation;
-    animation3 = new QPropertyAnimation(this, "glowFactor", this);
-    animation3->setStartValue(0.0f);
-    animation3->setEndValue(0.0f);
-    animation3->setKeyValueAt(0.5, 1.0f);
-    animation3->setDuration(3000);
-    animation3->setLoopCount(-1);
-    animation3->start();
+    glowAnimation = new QPropertyAnimation(this, "glowFactor", this);
+    glowAnimation->setStartValue(0.0f);
+    glowAnimation->setEndValue(0.0f);
+    glowAnimation->setKeyValueAt(0.5, 1.0f);
+    glowAnimation->setDuration(3000);
+    glowAnimation->setLoopCount(-1);
+    glowAnimation->start();
 }
 
 SolarSystemView::~SolarSystemView()
@@ -113,6 +113,7 @@ SolarSystemView::~SolarSystemView()
 
 void SolarSystemView::initializeGL(QGLPainter *painter)
 {
+    Q_UNUSED(painter);
     //nothing for now
 }
 
