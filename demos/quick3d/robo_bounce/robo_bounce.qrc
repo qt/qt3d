@@ -1,0 +1,34 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/robobounce.qml</file>
+        <file>qml/Assets/button.png</file>
+        <file>qml/Assets/calculatorSign.png</file>
+        <file>qml/Assets/cubeButton.png</file>
+        <file>qml/Assets/hazard.png</file>
+        <file>qml/Assets/infobutton.png</file>
+        <file>qml/Assets/QML3DSign.png</file>
+        <file>qml/Assets/qtlogo.png</file>
+        <file>qml/Assets/roboInfo.png</file>
+        <file>qml/Assets/roboticArms.3ds</file>
+        <file>qml/Assets/roboticBody.3ds</file>
+        <file>qml/Assets/roboticHead.3ds</file>
+        <file>qml/Assets/rotateButton2.png</file>
+        <file>qml/Assets/sQt3D_logo.png</file>
+        <file>qml/Assets/tronscape.png</file>
+        <file>qml/Calculator/Calculator.qml</file>
+        <file>qml/Calculator/CalculatorCore/Button.qml</file>
+        <file>qml/Calculator/CalculatorCore/calculator.js</file>
+        <file>qml/Calculator/CalculatorCore/Display.qml</file>
+        <file>qml/Calculator/CalculatorCore/qmldir</file>
+        <file>qml/Calculator/CalculatorCore/images/button-.png</file>
+        <file>qml/Calculator/CalculatorCore/images/button-blue.png</file>
+        <file>qml/Calculator/CalculatorCore/images/button-green.png</file>
+        <file>qml/Calculator/CalculatorCore/images/button-purple.png</file>
+        <file>qml/Calculator/CalculatorCore/images/button-red.png</file>
+        <file>qml/Calculator/CalculatorCore/images/display.png</file>
+        <file>qml/RobotCore/PushButton.qml</file>
+        <file>qml/RobotCore/QMLPanels.qml</file>
+        <file>qml/RobotCore/Robot.qml</file>
+        <file>qml/RobotCore/TronCube.qml</file>
+    </qresource>
+</RCC>
