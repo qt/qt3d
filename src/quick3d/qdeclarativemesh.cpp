@@ -184,6 +184,11 @@ void QDeclarativeMesh::setSource(const QUrl& value)
         QGLAbstractScene *s = QGLAbstractScene::loadScene(d->data.toLocalFile(),
                                                           QString(), d->options);
         setScene(s);
+    } else if (d->data.scheme() == QLatin1String("qrc")) {
+        QGLAbstractScene *s = QGLAbstractScene::loadScene(
+                    d->data.toString().replace(QLatin1String("qrc:///"), QLatin1String(":/")),
+                    QString(), d->options);
+        setScene(s);
     } else
 #endif
     {

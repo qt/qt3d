@@ -42,15 +42,12 @@
 #include <QtGui/QApplication>
 #include <QtDeclarative/qdeclarativeview.h>
 
-#include "../qmlres.h"
-
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
     QDeclarativeView view;
-    QString qml = q_get_qmldir(QLatin1String("qml/robobounce.qml"));
-    view.setSource(QUrl::fromLocalFile(qml));
+    view.setSource(QUrl(QLatin1String("qrc:///qml/robobounce.qml")));
 
     if (QApplication::arguments().contains(QLatin1String("-maximize")))
         view.showMaximized();
