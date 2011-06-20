@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/basket.bez</file>
+        <file>qml/basket.jpg</file>
+        <file>qml/basket.qml</file>
+    </qresource>
+</RCC>

@@ -379,9 +379,15 @@ void QGLTexture2D::setUrl(const QUrl &url)
     }
     else
     {
-        if (url.scheme() == QLatin1String("file"))
+        if (url.scheme() == QLatin1String("file") || url.scheme() == QLatin1String("qrc"))
         {
             QString fileName = url.toLocalFile();
+            
+            // slight hack since there doesn't appear to be a QUrl::toResourcePath() function
+            // to convert qrc:///foo into :/foo
+            if (url.scheme() == QLatin1String("qrc"))
+                fileName = url.toString().replace(QLatin1String("qrc:///"), QLatin1String(":/"));
+            
             if (fileName.endsWith(QLatin1String(".dds"), Qt::CaseInsensitive))
             {
                 setCompressedFile(fileName);
