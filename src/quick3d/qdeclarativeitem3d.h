@@ -182,7 +182,6 @@ Q_SIGNALS:
     void meshNodeChanged();
     void effectChanged();
     void lightChanged();
-    void stateChanged(const QString &);
     void clicked();
     void doubleClicked();
     void pressed();
