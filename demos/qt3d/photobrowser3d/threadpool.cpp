@@ -116,7 +116,10 @@ void ThreadPool::retrieveLoader()
 void ThreadPool::stop()
 {
     m_stop.ref();
-    emit stopAll();
+    if (m_allWorkers.isEmpty())
+        emit stopped();
+    else
+        emit stopAll();
 }
 
 void ThreadPool::closeLoader()
