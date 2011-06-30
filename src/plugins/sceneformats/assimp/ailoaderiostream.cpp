@@ -63,13 +63,13 @@ size_t AiLoaderIOStream::Read( void* pvBuffer, size_t pSize, size_t pCount)
     size_t res = result;
     m_errorState = (result == -1);
     if (m_errorState)
-        fprintf(stderr, "AI read error: %s\n", qPrintable(m_device->errorString()));
+        qWarning("AI read error: %s\n", qPrintable(m_device->errorString()));
     if ((pSize * pCount) != res) // AI will treat as error
     {
         long unsigned int pSizeP = pSize;
         long unsigned int pCountP = pCount;
         long unsigned int pRes = res;
-        fprintf(stderr, "read mismatch requested size: %lu x count: %lu = %lu != %lu actuall read\n",
+        qWarning("read mismatch requested size: %lu x count: %lu = %lu != %lu actuall read\n",
                 pSizeP, pCountP, (pSizeP * pCountP), pRes);
     }
     return res;
@@ -80,7 +80,7 @@ size_t AiLoaderIOStream::Write( const void* pvBuffer, size_t pSize, size_t pCoun
     qint64 result = m_device->write((char*)pvBuffer, pSize * pCount);
     m_errorState = (result == -1);
     if (m_errorState)
-        fprintf(stderr, "AI write error: %s\n", qPrintable(m_device->errorString()));
+        qWarning("AI write error: %s\n", qPrintable(m_device->errorString()));
     return result;
 }
 

@@ -103,7 +103,7 @@ extern "C" {
         qint64 result = io3d->dev->read((char*)buffer, size);
         io3d->errorState = (result == -1);
         if (io3d->errorState)
-            fprintf(stderr, "3ds io error: %s\n", io3d->dev->errorString().toLocal8Bit().constData());
+            qWarning("3ds io error: %s\n", io3d->dev->errorString().toLocal8Bit().constData());
         return result;
     }
 
@@ -113,7 +113,7 @@ extern "C" {
         qint64 result = io3d->dev->write((char*)buffer, size);
         io3d->errorState = (result == -1);
         if (io3d->errorState)
-            fprintf(stderr, "3ds io error: %s\n", io3d->dev->errorString().toLocal8Bit().constData());
+            qWarning("3ds io error: %s\n", io3d->dev->errorString().toLocal8Bit().constData());
         return result;
     }
 }

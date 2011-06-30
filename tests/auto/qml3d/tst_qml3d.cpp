@@ -353,7 +353,7 @@ int main(int argc, char *argv[])
                                     QString fname = line.mid(pos + 9); // "function".length
                                     pos = fname.indexOf("()");
                                     fname.truncate(pos + 2);
-                                    fprintf(stderr, "   %s\n", qPrintable(fname));
+                                    qWarning("   %s\n", qPrintable(fname));
                                 }
                             }
                         }

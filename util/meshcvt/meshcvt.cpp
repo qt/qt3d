@@ -47,7 +47,7 @@
 
 static void meshError(const char *filename)
 {
-    fprintf(stderr, "%s: does not contain valid mesh data\n", filename);
+    qWarning("%s: does not contain valid mesh data\n", filename);
     exit(1);
 }
 
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
 
     // Validate the command-line arguments.
     if (argc < 3) {
-        fprintf(stderr, "Usage: %s [--teapot-adjust] [--reverse-patches] mesh-filename name [depth]\n", argv[0]);
+        qWarning("Usage: %s [--teapot-adjust] [--reverse-patches] mesh-filename name [depth]\n", argv[0]);
         return 1;
     }
     if (!strcmp(argv[1], "--teapot-adjust")) {
@@ -205,12 +205,12 @@ int main(int argc, char *argv[])
     printf("};\n");
 
     // Dump some statistics to stderr.
-    fprintf(stderr, "Depth:               %d\n", depth);
-    fprintf(stderr, "Number of vertices:  %d\n", numVertices);
-    fprintf(stderr, "Number of patches:   %d\n", numPatches);
+    qWarning("Depth:               %d\n", depth);
+    qWarning("Number of vertices:  %d\n", numVertices);
+    qWarning("Number of patches:   %d\n", numPatches);
     int storage = numVertices * sizeof(float) * 3;
     storage += numPatches * sizeof(ushort);
-    fprintf(stderr, "Bezier storage:      %d bytes\n", storage);
+    qWarning("Bezier storage:      %d bytes\n", storage);
 
     return 0;
 }

@@ -944,7 +944,7 @@ static void generateComponentMap(void)
     value = values[index] * 31 / 255;
     index2 = value * 255 / 31;
     if (values[index] != map[index2]) {
-        fprintf(stderr, "RGB565 (i5) failure: 0x%02X -> 0x%02X -> 0x%02X\n",
+        qWarning("RGB565 (i5) failure: 0x%02X -> 0x%02X -> 0x%02X\n",
             values[index], index2, map[index2]);
     }
 
@@ -952,7 +952,7 @@ static void generateComponentMap(void)
     value = values[index] * 63 / 255;
     index2 = value * 255 / 63;
     if (values[index] != map[index2]) {
-        fprintf(stderr, "RGB565 (i6) failure: 0x%02X -> 0x%02X -> 0x%02X\n",
+        qWarning("RGB565 (i6) failure: 0x%02X -> 0x%02X -> 0x%02X\n",
             values[index], index2, map[index2]);
     }
 
@@ -960,7 +960,7 @@ static void generateComponentMap(void)
     value = (int)((values[index] * 31.0 / 255.0) + 0.5);
     index2 = (int)((value * 255.0 / 31.0) + 0.5);
     if (values[index] != map[index2]) {
-        fprintf(stderr, "RGB565 (f5) failure: 0x%02X -> 0x%02X -> 0x%02X\n",
+        qWarning("RGB565 (f5) failure: 0x%02X -> 0x%02X -> 0x%02X\n",
             values[index], index2, map[index2]);
     }
 
@@ -968,7 +968,7 @@ static void generateComponentMap(void)
     value = (int)((values[index] * 63.0 / 255.0) + 0.5);
     index2 = (int)((value * 255.0 / 63.0) + 0.5);
     if (values[index] != map[index2]) {
-        fprintf(stderr, "RGB565 (f6) failure: 0x%02X -> 0x%02X -> 0x%02X\n",
+        qWarning("RGB565 (f6) failure: 0x%02X -> 0x%02X -> 0x%02X\n",
             values[index], index2, map[index2]);
     }
 
@@ -976,13 +976,13 @@ static void generateComponentMap(void)
     value = values[index] * 31 / 255;
     index2 = (value << 3) | (value >> 2);
     if (values[index] != map[index2]) {
-        fprintf(stderr, "RGB565 (di5) failure: 0x%02X -> 0x%02X -> 0x%02X\n",
+        qWarning("RGB565 (di5) failure: 0x%02X -> 0x%02X -> 0x%02X\n",
             values[index], index2, map[index2]);
     }
     value = (int)((values[index] * 31.0 / 255.0) + 0.5);
     index2 = (value << 3) | (value >> 2);
     if (values[index] != map[index2]) {
-        fprintf(stderr, "RGB565 (df5) failure: 0x%02X -> 0x%02X -> 0x%02X\n",
+        qWarning("RGB565 (df5) failure: 0x%02X -> 0x%02X -> 0x%02X\n",
             values[index], index2, map[index2]);
     }
 
@@ -990,13 +990,13 @@ static void generateComponentMap(void)
     value = values[index] * 63 / 255;
     index2 = (value << 2) | (value >> 4);
     if (values[index] != map[index2]) {
-        fprintf(stderr, "RGB565 (di6) failure: 0x%02X -> 0x%02X -> 0x%02X\n",
+        qWarning("RGB565 (di6) failure: 0x%02X -> 0x%02X -> 0x%02X\n",
             values[index], index2, map[index2]);
     }
     value = (int)((values[index] * 63.0 / 255.0) + 0.5);
     index2 = (value << 2) | (value >> 4);
     if (values[index] != map[index2]) {
-        fprintf(stderr, "RGB565 (df6) failure: 0x%02X -> 0x%02X -> 0x%02X\n",
+        qWarning("RGB565 (df6) failure: 0x%02X -> 0x%02X -> 0x%02X\n",
             values[index], index2, map[index2]);
     }
     }
@@ -1056,7 +1056,7 @@ static void generateComponentMap444(void)
     value = values[index] * 15 / 255;
     index2 = value * 255 / 15;
     if (values[index] != map[index2]) {
-        fprintf(stderr, "RGB444 (i) failure: 0x%02X -> 0x%02X -> 0x%02X\n",
+        qWarning("RGB444 (i) failure: 0x%02X -> 0x%02X -> 0x%02X\n",
             values[index], index2, map[index2]);
     }
 
@@ -1064,7 +1064,7 @@ static void generateComponentMap444(void)
     value = (int)((values[index] * 15.0 / 255.0) + 0.5);
     index2 = (int)((value * 255.0 / 15.0) + 0.5);
     if (values[index] != map[index2]) {
-        fprintf(stderr, "RGB444 (f) failure: 0x%02X -> 0x%02X -> 0x%02X\n",
+        qWarning("RGB444 (f) failure: 0x%02X -> 0x%02X -> 0x%02X\n",
             values[index], index2, map[index2]);
     }
 
@@ -1072,13 +1072,13 @@ static void generateComponentMap444(void)
     value = values[index] * 15 / 255;
     index2 = value | (value << 4);
     if (values[index] != map[index2]) {
-        fprintf(stderr, "RGB444 (di) failure: 0x%02X -> 0x%02X -> 0x%02X\n",
+        qWarning("RGB444 (di) failure: 0x%02X -> 0x%02X -> 0x%02X\n",
             values[index], index2, map[index2]);
     }
     value = (int)((values[index] * 15.0 / 255.0) + 0.5);
     index2 = value | (value << 4);
     if (values[index] != map[index2]) {
-        fprintf(stderr, "RGB444 (df) failure: 0x%02X -> 0x%02X -> 0x%02X\n",
+        qWarning("RGB444 (df) failure: 0x%02X -> 0x%02X -> 0x%02X\n",
             values[index], index2, map[index2]);
     }
     }
