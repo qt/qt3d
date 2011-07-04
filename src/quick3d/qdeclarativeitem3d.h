@@ -84,20 +84,15 @@ class Q_QT3D_QUICK_EXPORT QDeclarativeItem3D : public QDeclarativeItem
     Q_PROPERTY(QGLLightParameters *light READ light WRITE setLight NOTIFY lightChanged)
     Q_PROPERTY(QDeclarativeListProperty<QObject> resources READ resources DESIGNABLE false)
     Q_PROPERTY(QDeclarativeListProperty<QObject> data READ data DESIGNABLE false)
-    Q_PROPERTY(QDeclarativeListProperty<QDeclarativeItem3D> children READ itemChildren DESIGNABLE false NOTIFY childrenChanged)
     Q_PROPERTY(CullFaces cullFaces READ cullFaces WRITE setCullFaces NOTIFY meshChanged)
     Q_PROPERTY(SortMode sortChildren READ sortChildren WRITE setSortChildren NOTIFY sortChildrenChanged)
     Q_PROPERTY(QString meshNode READ meshNode WRITE setMeshNode NOTIFY meshNodeChanged)
     Q_PROPERTY(bool inheritEvents READ inheritEvents WRITE setInheritEvents NOTIFY inheritEventsChanged)
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
-    Q_PROPERTY(QDeclarativeItem3D *parent READ parentItem WRITE setParentItem NOTIFY parentChanged DESIGNABLE false FINAL)
     Q_CLASSINFO("DefaultProperty", "data")
 public:
     QDeclarativeItem3D(QObject *parent = 0);
     ~QDeclarativeItem3D();
-
-    QDeclarativeItem3D *parentItem() const;
-    void setParentItem(QDeclarativeItem3D *parent);
 
     enum CullFace
     {
@@ -142,7 +137,6 @@ public:
 
     QDeclarativeListProperty<QObject> data();
     QDeclarativeListProperty<QObject> resources();
-    QDeclarativeListProperty<QDeclarativeItem3D> itemChildren();
 
     QDeclarativeListProperty<QGraphicsTransform3D> transform();
     QDeclarativeListProperty<QGraphicsTransform3D> pretransform();
@@ -190,8 +184,6 @@ Q_SIGNALS:
     void hoverLeave();
     void inheritEventsChanged();
     void enabledChanged();
-    void childrenChanged();
-    void parentChanged();
     void sortChildrenChanged();
 
 private:
