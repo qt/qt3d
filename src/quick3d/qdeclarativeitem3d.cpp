@@ -219,6 +219,37 @@
 
     It should be noted that no support is currently provided for skeleton animation or
     kinematic control of items.  This is left to the user to implement as required.
+
+    \section1 Using QML Data Models With Item3D
+
+    QDeclarativeItem3D supports standard \l
+    {http://doc.qt.nokia.com/4.7/qdeclarativemodels.html#qml-data-models}
+    {QML Data Models} with a few caveats.
+
+    QDeclarativeItem3D derives from QtDeclarativeItem, and interacts with
+    the \l{http://doc.qt.nokia.com/4.7/qml-component.html}{Component} element
+    normally.  However, there is a delay between between removing an item from
+    a model and the cleaning up the corresponding Item3D, so it is recommended
+    that Item3D based delegates hide themselves when their index is
+    -1 as shown in the photoroom example:
+
+    \snippet quick3d/photoroom/qml/photoroom.qml 1
+
+    However Item3D does not use the width or height properties, so most
+    positioners and views will not work.  Use a
+    \l{http://doc.qt.nokia.com/4.7/qml-repeater.html}{Repeater} element to
+    generate Item3Ds from model data.  For example:
+
+    \snippet quick3d/photoroom/qml/photoroom.qml 2
+
+    Models can be used normally, so
+\l{http://doc.qt.nokia.com/4.7/qdeclarativemodels.html#listmodel}{ListModel},
+\l{http://doc.qt.nokia.com/4.7/qdeclarativemodels.html#qstringlist}{QStringList}
+    etc. work just like they would with two dimensional Items.  For example:
+
+    \snippet quick3d/photoroom/qml/photoroom.qml 0
+
+    \sa{http://doc.qt.nokia.com/4.7/qdeclarativemodels.html#qml-data-models}{QML Data Models}
 */
 
 
