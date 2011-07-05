@@ -1,2 +1,3 @@
 TEMPLATE = subdirs
-SUBDIRS = auto benchmarks manual
+SUBDIRS = manual
+!package: SUBDIRS += auto benchmarks

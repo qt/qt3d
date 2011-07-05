@@ -1,5 +1,6 @@
 TARGET = qsceneai
 include(../../qpluginbase.pri)
+include(../../../../pkg.pri)
 HEADERS += qailoader.h \
     qaiscene.h \
     qaiscenehandler.h \
@@ -32,11 +33,11 @@ package {
         }
         INCLUDEPATH += ../../../../include/Qt3D
     }
-    target.path = $$[QT_INSTALL_PLUGINS]/sceneformats
+    target.path = $$QT3D_INSTALL_PLUGINS/sceneformats
     INSTALLS += target
 } else {
     CONFIG += qt3d
-    DESTDIR = $$[QT_INSTALL_PLUGINS]/sceneformats
+    DESTDIR = $$QT3D_INSTALL_PLUGINS/sceneformats
 }
 
 symbian {

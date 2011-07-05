@@ -1,32 +1,12 @@
 TEMPLATE = app
 TARGET = basket_qml
 CONFIG += qt warn_on
+!package: CONFIG += qt3dquick
 
 SOURCES += main.cpp
-HEADERS += ../qmlres.h
 
-QT += declarative
-
-!package:DESTDIR = ../../../bin
-# for cleanup on Windows platforms - avoid deletion prompts
-win32 {
-    QMAKE_DEL_FILE = del /q
-    QMAKE_DEL_DIR = rmdir /s /q
-}
-
-package {
-    maemo {
-        applnk.files = basket_qml.desktop
-        applnk.path = /usr/share/applications
-
-        icons.files = icon-l-qtquick3d.png
-        icons.path = /usr/share/themes/base/meegotouch/icons
-        INSTALLS += icons applnk
-    }
-
-    target.path = $$[QT_INSTALL_BINS]
-    INSTALLS += target
-}
+include(../../../qt3dquick_pkg_dep.pri)
+include(../../../qml_pkg.pri)
 
 OTHER_FILES += \
     basket_qml.rc

@@ -10,6 +10,8 @@ gcov {
 
 QT += declarative
 
+include(../../pkg.pri)
+
 # See the README in the root dir re this code
 package {
     macx:CONFIG(qt_framework, qt_framework|qt_no_framework) {
@@ -28,25 +30,25 @@ package {
         INCLUDEPATH += ../../include/Qt3D
     }
     win32 {
-        target.path = $$[QT_INSTALL_BINS]
+        target.path = $$QT3D_INSTALL_BINS
     } else {
-        target.path = $$[QT_INSTALL_LIBS]
+        target.path = $$QT3D_INSTALL_LIBS
     }
     INSTALLS += target
     QT += opengl network
 } else {
     CONFIG += qt3d
-    DESTDIR = $$[QT_INSTALL_LIBS]
+    DESTDIR = $$QT3D_INSTALL_LIBS
 }
 
 win32 {
     !static:DEFINES += QT_MAKEDLL
     package {
-        installDll.path = $$[QT_INSTALL_BINS]
+        installDll.path = $$QT3D_INSTALL_BINS
         installDll.files = $$DESTDIR_TARGET
         INSTALLS += installDll
     } else {
-        DLLDESTDIR = $$[QT_INSTALL_BINS]
+        DLLDESTDIR = $$QT3D_INSTALL_BINS
     }
     CONFIG(debug, debug|release) {
         TARGET = $$member(TARGET, 0)d

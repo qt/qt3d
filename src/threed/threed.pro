@@ -10,25 +10,27 @@ gcov {
 QT += opengl \
     network
 
+include(../../pkg.pri)
+
 package {
     win32 {
-        target.path = $$[QT_INSTALL_BINS]
+        target.path = $$QT3D_INSTALL_BINS
     } else {
-        target.path = $$[QT_INSTALL_LIBS]
+        target.path = $$QT3D_INSTALL_LIBS
     }
     INSTALLS += target
 } else {
-    DESTDIR = $$[QT_INSTALL_LIBS]
+    DESTDIR = $$QT3D_INSTALL_LIBS
 }
 
 win32 {
     !static:DEFINES += QT_MAKEDLL
     package {
-        installDll.path = $$[QT_INSTALL_BINS]
+        installDll.path = $$QT3D_INSTALL_BINS
         installDll.files = $$DESTDIR_TARGET
         INSTALLS += installDll
     } else {
-        DLLDESTDIR = $$[QT_INSTALL_BINS]
+        DLLDESTDIR = $$QT3D_INSTALL_BINS
     }
     CONFIG(debug, debug|release) {
         TARGET = $$member(TARGET, 0)d
@@ -51,7 +53,7 @@ DEFINES += QT_BUILD_QT3D_LIB
 
 !contains(QT_CONFIG, egl):DEFINES += QT_NO_EGL
 
-package {
+package: !qtc_harmattan {
     distInstalls.files = $$PUBLIC_HEADERS
     distInstalls.path = $$[QT_INSTALL_HEADERS]/Qt3D
     INSTALLS += distInstalls

@@ -1,32 +1,11 @@
 TEMPLATE = app
 TARGET = robo_bounce
 CONFIG += qt warn_on
+!package: CONFIG += qt3dquick
 
 SOURCES += main.cpp
-HEADERS += ../qmlres.h
 
-QT += declarative
-
-!package:DESTDIR = ../../../bin
-# for cleanup on Windows platforms - avoid deletion prompts
-win32 {
-    QMAKE_DEL_FILE = del /q
-    QMAKE_DEL_DIR = rmdir /s /q
-}
-
-package {
-    maemo {
-        applnk.files = robo_bounce.desktop
-        applnk.path = /usr/share/applications
-
-        icons.files = icon-l-qtquick3d.png
-        icons.path = /usr/share/themes/base/meegotouch/icons
-        INSTALLS += icons applnk
-    }
-
-    target.path = $$[QT_INSTALL_BINS]
-    INSTALLS += target
-}
+include(../../../qt3dquick_pkg_dep.pri)
 
 OTHER_FILES += \
     robo_bounce.rc
