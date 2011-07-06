@@ -55,7 +55,7 @@ Item {
     property real variableBoundToMatrix : 1.0
     property real variableBoundToVariantList : 1.0
 
-    property variant matrixWithBoundVariable : Qt3d.matrix4x4 (
+    property variant matrixWithBoundVariable : Qt3D.matrix4x4 (
             1.0, 0.0, 0.0, variableBoundToMatrix,
             0.0, 1.0, 0.0, 1.0,
             0.0, 0.0, 1.0, 1.0,
