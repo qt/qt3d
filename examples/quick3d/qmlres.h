@@ -59,7 +59,11 @@ static QString q_get_qmldir(const QString &name)
 {
     QString qml = name;
     // try for a Linux package install first
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+    QDir pkgdir(QLatin1String("/usr/share/qt5/quick3d/examples"));
+#else
     QDir pkgdir(QLatin1String("/usr/share/qt4/quick3d/examples"));
+#endif
     QString app = QCoreApplication::applicationFilePath();
     app = app.section(QDir::separator(), -1);
     if (pkgdir.cd(app) && pkgdir.exists())
