@@ -109,8 +109,7 @@ public Q_SLOTS:
     void update3d();
 
 private Q_SLOTS:
-    void cameraChanged();
-    void switchToOpenGL();
+    void cameraChanged();    
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);

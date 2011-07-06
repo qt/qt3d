@@ -39,32 +39,32 @@
 **
 ****************************************************************************/
 
-#include <QApplication>
-#include "cubeview.h"
+#ifndef QDECLARATIVEVIEW3D_H
+#define QDECLARATIVEVIEW3D_H
 
-int main(int argc, char *argv[])
+#include <QtDeclarative/qdeclarativeview.h>
+#include "qt3dquickglobal.h"
+
+QT_BEGIN_HEADER
+
+QT_BEGIN_NAMESPACE
+
+QT_MODULE(QtQuick3D)
+
+class QGLWidget;
+
+class Q_QT3D_QUICK_EXPORT QDeclarativeView3D : public QDeclarativeView
 {
-    QApplication app(argc, argv);
-    CubeView view;
-    if (QApplication::arguments().contains(QLatin1String("-framerate")))
-        view.setShowFrameRate(true);
-    if (QApplication::arguments().contains(QLatin1String("-projectivetexture")))
-        view.setProjectiveTextureEffect(true);
-    if (QApplication::arguments().contains(QLatin1String("-stereo")))
-        view.setStereo(true);
-    else if (view.stereoType() != QGLView::RedCyanAnaglyph)
-        view.setStereo(true);  
+public:
+    QDeclarativeView3D(QWidget *parent = 0);
+    ~QDeclarativeView3D();
 
-#ifdef Q_OS_SYMBIAN
-    view.setAttribute(Qt::WA_LockLandscapeOrientation, true);
-    view.showMaximized();
-#else
-    if (QApplication::arguments().contains(QLatin1String("-maximize")))
-        view.showMaximized();
-    else if (QApplication::arguments().contains(QLatin1String("-fullscreen")))
-        view.showFullScreen();
-    else
-        view.show();
+protected:
+    QGLWidget *defaultViewportWidget;
+};
+
+QT_END_NAMESPACE
+
+QT_END_HEADER
+
 #endif
-    return app.exec();
-}

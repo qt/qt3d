@@ -39,32 +39,50 @@
 **
 ****************************************************************************/
 
-#include <QApplication>
-#include "cubeview.h"
+#include "qdeclarativeview3d.h"
+#include <QtOpenGL/QGLWidget>
 
-int main(int argc, char *argv[])
+/*!
+    \qmlclass QDeclarativeView3D
+    \brief The QDeclarativeView3D replaces the QDeclarativeView for applications
+    using OpenGL.
+    \since 4.8
+    \ingroup qt3d::qml3d
+
+    \section1 Usage
+
+    This class is substituted for the QDeclarativeView class when creating
+    Qt3D applications.  It replaces the standard raster viewport with an OpenGL
+    capable viewport suitable for rendering 3D content.
+*/
+
+QT_BEGIN_NAMESPACE
+
+/*!
+    \internal
+*/
+QDeclarativeView3D::QDeclarativeView3D(QWidget *parent) : QDeclarativeView(parent)
 {
-    QApplication app(argc, argv);
-    CubeView view;
-    if (QApplication::arguments().contains(QLatin1String("-framerate")))
-        view.setShowFrameRate(true);
-    if (QApplication::arguments().contains(QLatin1String("-projectivetexture")))
-        view.setProjectiveTextureEffect(true);
-    if (QApplication::arguments().contains(QLatin1String("-stereo")))
-        view.setStereo(true);
-    else if (view.stereoType() != QGLView::RedCyanAnaglyph)
-        view.setStereo(true);  
-
-#ifdef Q_OS_SYMBIAN
-    view.setAttribute(Qt::WA_LockLandscapeOrientation, true);
-    view.showMaximized();
+    //Set up the GL viewport widget format in the same manner that
+    //qmlviewer does when openGL is specified.
+    QGLFormat format = QGLFormat::defaultFormat();
+#ifdef Q_WS_MAC
+    format.setSampleBuffers(true);
 #else
-    if (QApplication::arguments().contains(QLatin1String("-maximize")))
-        view.showMaximized();
-    else if (QApplication::arguments().contains(QLatin1String("-fullscreen")))
-        view.showFullScreen();
-    else
-        view.show();
+    format.setSampleBuffers(false);
 #endif
-    return app.exec();
+
+    //Assign a GLWidget as the viewport.
+    defaultViewportWidget = new QGLWidget(format);
+    setViewport(defaultViewportWidget);
 }
+
+/*!
+    \internal
+*/
+QDeclarativeView3D::~QDeclarativeView3D()
+{
+    if (defaultViewportWidget) delete defaultViewportWidget;
+}
+
+QT_END_NAMESPACE

@@ -12,3 +12,7 @@ OTHER_FILES += \
     teapot.rc
 
 RC_FILE = teapot.rc
+
+symbian {
+    ICON = ../qt3d.svg
+}

@@ -22,3 +22,7 @@ OTHER_FILES += \
     solarsystem.rc
 
 RC_FILE = solarsystem.rc
+
+symbian {
+    ICON = ../qt3d.svg
+}

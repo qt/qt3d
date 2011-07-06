@@ -5,3 +5,7 @@ SOURCES = cubeview.cpp main.cpp
 HEADERS = cubeview.h
 RESOURCES = cube.qrc
 DESTDIR = ../../../../bin/qt3d/tutorials
+
+symbian {
+    ICON = ../../qt3d.svg
+}

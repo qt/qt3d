@@ -40,7 +40,7 @@
 ****************************************************************************/
 
 #include <QtGui/QApplication>
-#include <QtDeclarative/qdeclarativeview.h>
+#include "qdeclarativeview3d.h"
 
 #include "../qmlres.h"
 
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    QDeclarativeView view;
+    QDeclarativeView3D view;
     QString qml = q_get_qmldir(QLatin1String("qml/photoroom.qml"));
     view.setSource(QUrl::fromLocalFile(qml));
 

@@ -47,6 +47,11 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
     TeapotView view;
 //! [main-args]
+
+#ifdef Q_OS_SYMBIAN
+    view.setAttribute(Qt::WA_LockLandscapeOrientation, true);
+    view.showMaximized();
+#else
     if (view.stereoType() != QGLView::RedCyanAnaglyph)
         view.camera()->setEyeSeparation(0.3f);
     if (QApplication::arguments().contains(QLatin1String("-maximize")))
@@ -55,6 +60,8 @@ int main(int argc, char *argv[])
         view.showFullScreen();
     else
         view.show();
+#endif
+
 //! [main-args-end]
     return app.exec();
 }

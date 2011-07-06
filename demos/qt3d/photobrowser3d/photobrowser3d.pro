@@ -70,3 +70,7 @@ OTHER_FILES += \
     photobrowser.rc
 
 RC_FILE = photobrowser.rc
+
+symbian {
+    ICON = ../qt3d.svg
+}

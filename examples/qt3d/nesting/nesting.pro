@@ -13,3 +13,7 @@ OTHER_FILES += \
     nesting.rc
 
 RC_FILE = nesting.rc
+
+symbian {
+    ICON = ../qt3d.svg
+}

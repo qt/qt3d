@@ -6,3 +6,7 @@ SOURCES = modelview.cpp \
 HEADERS = modelview.h
 RESOURCES = model.qrc
 DESTDIR = ../../../../bin/qt3d/tutorials
+
+symbian {    
+    ICON = ../../qt3d.svg
+}

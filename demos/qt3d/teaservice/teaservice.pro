@@ -15,3 +15,7 @@ OTHER_FILES += \
     teaservice.rc
 
 RC_FILE = teaservice.rc
+
+symbian {
+    ICON = ../qt3d.svg
+}

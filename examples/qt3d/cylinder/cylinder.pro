@@ -13,3 +13,7 @@ OTHER_FILES += \
     cylinder.rc
 
 RC_FILE = cylinder.rc
+
+symbian {
+    ICON = ../qt3d.svg
+}

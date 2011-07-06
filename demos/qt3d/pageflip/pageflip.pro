@@ -14,3 +14,7 @@ OTHER_FILES += \
     pageflip.rc
 
 RC_FILE = pageflip.rc
+
+symbian {
+    ICON = ../qt3d.svg
+}

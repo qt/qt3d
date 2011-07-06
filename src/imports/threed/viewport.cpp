@@ -444,18 +444,20 @@ void Viewport::paint(QPainter *p, const QStyleOptionGraphicsItem * style, QWidge
     if (!painter.begin(p)) {
         if (widget) {
             // Probably running with a plain QDeclarativeView (e.g. qmlviewer).
-            // Switch the surrounding QGraphicsView to use a QGLWidget as its
-            // viewport.  We cannot do it here during painting, so schedule a
-            // slot to switch it the next time we reach the event loop.
+            // We need to have switched the surrounding QGraphicsView to use a
+            // QGLWidget as its viewport.
             QGraphicsView *view =
                 qobject_cast<QGraphicsView *>(widget->parentWidget());
-            if (view) {
-                QTimer::singleShot(0, this, SLOT(switchToOpenGL()));
+            if (!view) {
                 return;
+            } else {
+                QGLWidget *glw = qobject_cast<QGLWidget *>(view->viewport());
+                if (!glw) {
+                    qWarning("GL graphics system is not active; cannot use 3D items");
+                    return;
+                }
             }
         }
-        qWarning("GL graphics system is not active; cannot use 3D items");
-        return;
     }
 
     // Initialize the objects in the scene if this is the first paint.
@@ -729,33 +731,6 @@ void Viewport::update3d()
 void Viewport::cameraChanged()
 {
     update();
-}
-
-/*!
-    \internal
-*/
-void Viewport::switchToOpenGL()
-{
-    // If there are multiple Viewport items in the QML, then it is
-    // possible that another Viewport has already switched to QGLWidget.
-    QList<QGraphicsView *> views = scene()->views();
-    if (!views.isEmpty()) {
-        QGLWidget *glw = qobject_cast<QGLWidget *>(views[0]->viewport());
-        if (glw) {
-            d->viewWidget = glw;
-            return;
-        }
-    }
-
-    QGraphicsView *view =
-        qobject_cast<QGraphicsView *>(d->viewWidget->parentWidget());
-    if (view) {
-        bool focused = view->viewport()->hasFocus();
-        d->viewWidget = new QGLWidget(view);
-        view->setViewport(d->viewWidget);
-        if (focused)
-            d->viewWidget->setFocus();
-    }
 }
 
 static inline void sendEnterEvent(QObject *object)

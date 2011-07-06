@@ -6,3 +6,7 @@ SOURCES = modelview.cpp \
     main.cpp
 HEADERS = modelview.h
 RESOURCES = model_advanced.qrc
+
+symbian {
+    ICON = ../../qt3d.svg
+}

@@ -54,5 +54,9 @@ int main(int argc, char *argv[])
     view.setViewport(new QGLWidget(format));
     view.show();
 
+#ifdef Q_OS_SYMBIAN
+    view.setAttribute(Qt::WA_LockLandscapeOrientation, true);
+    view.showMaximized();
+#endif
     return app.exec();
 }

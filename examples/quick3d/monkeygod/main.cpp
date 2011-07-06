@@ -40,7 +40,7 @@
 ****************************************************************************/
 
 #include <QtGui/QApplication>
-#include <QtDeclarative/qdeclarativeview.h>
+#include "qdeclarativeview3d.h"
 
 #include "../qmlres.h"
 
@@ -48,16 +48,22 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    QDeclarativeView view;
+    QDeclarativeView3D view;
     QString qml = q_get_qmldir(QLatin1String("qml/monkeygod.qml"));
     view.setSource(QUrl::fromLocalFile(qml));
 
+#ifdef Q_OS_SYMBIAN
+    view.setAttribute(Qt::WA_LockLandscapeOrientation, true);
+    view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
+    view.showMaximized();
+#else
     if (QApplication::arguments().contains(QLatin1String("-maximize")))
         view.showMaximized();
     else if (QApplication::arguments().contains(QLatin1String("-fullscreen")))
         view.showFullScreen();
     else
         view.show();
+#endif
 
     return app.exec();
 }
