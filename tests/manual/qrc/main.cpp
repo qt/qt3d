@@ -40,30 +40,29 @@
 ****************************************************************************/
 
 #include <QtGui/QApplication>
-#include "qdeclarativeview3d.h"
-
-#include "../qmlres.h"
+#include <QtDeclarative/qdeclarativeview.h>
+#include <QtCore/qdir.h>
+#include <QWidget>
+#include <QHBoxLayout>
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    QDeclarativeView3D view;
-    QString qml = q_get_qmldir(QLatin1String("qml/teapot.qml"));
-    view.setSource(QUrl::fromLocalFile(qml));
+    QWidget widget;
+    QHBoxLayout layout;
 
-#ifdef Q_OS_SYMBIAN
-    view.setAttribute(Qt::WA_LockLandscapeOrientation, true);
-    view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
-    view.showFullScreen();
-#else
-    if (QApplication::arguments().contains(QLatin1String("-maximize")))
-        view.showMaximized();
-    else if (QApplication::arguments().contains(QLatin1String("-fullscreen")))
-        view.showFullScreen();
-    else
-        view.show();
-#endif
+    QDeclarativeView viewL;
+    viewL.setSource(QUrl("qrc:///qml/cube.qml"));
+    layout.addWidget(&viewL);
+
+    QDeclarativeView viewR;
+    viewR.setSource(QUrl("qrc:/qml/cube.qml"));
+
+    layout.addWidget(&viewR);
+
+    widget.setLayout(&layout);
+    widget.show();
 
     return app.exec();
 }

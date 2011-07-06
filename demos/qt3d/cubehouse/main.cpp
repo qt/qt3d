@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
 
 #ifdef Q_OS_SYMBIAN
     view.setAttribute(Qt::WA_LockLandscapeOrientation, true);
-    view.showMaximized();
+    view.showFullScreen();
 #else
     if (QApplication::arguments().contains(QLatin1String("-maximize")))
         view.showMaximized();

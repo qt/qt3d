@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/forest.qml</file>
+        <file>qml/ground.obj</file>
+        <file>qml/tree.obj</file>
+        <file>qml/tree.png</file>
+        <file>qml/Tree.qml</file>
+    </qresource>
+</RCC>

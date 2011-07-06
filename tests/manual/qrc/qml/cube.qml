@@ -37,33 +37,27 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
+//! [1]
+import Qt 4.7
+import Qt3D 1.0
+import Qt3D.Shapes 1.0
 
-#include <QtGui/QApplication>
+Viewport {
+    width: 640; height: 480
 
-#include <time.h>
+    Cube {
+        scale: 1.5
 
-#include "tankview.h"
+        transform: Rotation3D {
+            angle: 45
+            axis: Qt.vector3d(1, 1, 1)
+        }
 
-int main(int argc, char *argv[])
-{
-    qsrand(time(0));
-
-    QApplication a(argc, argv);
-    TankView view;
-
-#ifdef Q_OS_SYMBIAN
-    view.setAttribute(Qt::WA_LockLandscapeOrientation, true);
-    view.showFullScreen();
-#else
-    if (view.stereoType() != QGLView::RedCyanAnaglyph)
-        view.camera()->setEyeSeparation(0.3f);
-    if (QApplication::arguments().contains(QLatin1String("-maximize")))
-        view.showMaximized();
-    else if (QApplication::arguments().contains(QLatin1String("-fullscreen")))
-        view.showFullScreen();
-    else
-        view.show();
-#endif
-
-    return a.exec();
+        effect: Effect {
+            color: "#aaca00"
+            texture: "qtlogo.png"
+            decal: true
+        }
+    }
 }
+//! [1]

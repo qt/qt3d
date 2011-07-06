@@ -385,8 +385,11 @@ void QGLTexture2D::setUrl(const QUrl &url)
             
             // slight hack since there doesn't appear to be a QUrl::toResourcePath() function
             // to convert qrc:///foo into :/foo
-            if (url.scheme() == QLatin1String("qrc"))
-                fileName = url.toString().replace(QLatin1String("qrc:///"), QLatin1String(":/"));
+            if (url.scheme() == QLatin1String("qrc")) {
+                QUrl tempUrl(url);
+                tempUrl.setScheme("");
+                fileName = QLatin1String(":")+tempUrl.toString();
+            }
             
             if (fileName.endsWith(QLatin1String(".dds"), Qt::CaseInsensitive))
             {

@@ -166,6 +166,10 @@ QDeclarativeMesh::~QDeclarativeMesh()
     Source files can be of any type supported by QtQuick3D.  The types of file currently
     supported can be found in the \c sceneFormat plugins, with \i .3ds, \i .bez, \i. obj
     files currently being supported.
+    
+    Meshes can also be stored within QRC files and loaded via the standard resource
+    mechanisms, however there may be issues with some esoteric remote resource loading
+    requirements within the different file types.
 */
 
 QUrl QDeclarativeMesh::source() const
@@ -185,8 +189,9 @@ void QDeclarativeMesh::setSource(const QUrl& value)
                                                           QString(), d->options);
         setScene(s);
     } else if (d->data.scheme() == QLatin1String("qrc")) {
+        d->data.setScheme("");
         QGLAbstractScene *s = QGLAbstractScene::loadScene(
-                    d->data.toString().replace(QLatin1String("qrc:///"), QLatin1String(":/")),
+                    QLatin1String(":")+d->data.toString(),
                     QString(), d->options);
         setScene(s);
     } else

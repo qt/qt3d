@@ -49,14 +49,12 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
     QDeclarativeView3D view;
 
-    QString qml = q_get_qmldir(QLatin1String("qml/forest.qml"));
-
-    view.setSource(QUrl::fromLocalFile(qml));
+    view.setSource(QUrl(QLatin1String("qrc:///qml/forest.qml")));
 
 #ifdef Q_OS_SYMBIAN
     view.setAttribute(Qt::WA_LockLandscapeOrientation, true);
     view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
-    view.showMaximized();
+    view.showFullScreen();
 #else
     if (QApplication::arguments().contains(QLatin1String("-maximize")))
         view.showMaximized();

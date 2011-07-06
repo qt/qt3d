@@ -374,7 +374,7 @@ int main(int argc, char *argv[])
 
 #ifdef Q_OS_SYMBIAN
     mainw.setAttribute(Qt::WA_LockLandscapeOrientation, true);
-    mainw.showMaximized();
+    mainw.showFullScreen();
 #endif
 
     mainw.show();

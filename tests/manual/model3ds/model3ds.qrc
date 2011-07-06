@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/tst_model3ds.qml</file>
+        <file>qml/meshes/lunar-lander.3ds</file>
+        <file>qml/meshes/monkey.3ds</file>
+        <file>qml/meshes/penguin.3ds</file>
+        <file>qml/meshes/robot.3ds</file>
+        <file>qml/meshes/hazard.png</file>
+    </qresource>
+</RCC>
