@@ -63,43 +63,43 @@ Rectangle
         property variant emptyStringListModel:[]
 
         property variant stringListModelForViewport:[
-            "textures/woman.jpg",
-            "textures/niagara_falls.jpg",
-            "textures/place.jpg",
-            "textures/background.jpg",
-            "textures/basket.jpg",
+            "textures/threedgreen.jpg",
+            "textures/amethyst.jpg",
+            "textures/bigblue.jpg",
+            "textures/pastelstuff.jpg",
+            "textures/blueweb.jpg",
             "textures/qtlogo.png"
         ]
 
         property variant stringListModelEmptyForItem: []
 
         property variant stringListModelForItem:[
-            "textures/niagara_falls.jpg",
-            "textures/background.jpg",
-            "textures/place.jpg",
+            "textures/amethyst.jpg",
+            "textures/pastelstuff.jpg",
+            "textures/bigblue.jpg",
             "textures/qtlogo.png",
-            "textures/basket.jpg",
-            "textures/woman.jpg"
+            "textures/blueweb.jpg",
+            "textures/threedgreen.jpg"
         ]
 
         ListModel {
             id: listModelForViewport
-            ListElement { image:"textures/woman.jpg"}
-            ListElement { image:"textures/niagara_falls.jpg"}
-            ListElement { image:"textures/place.jpg"}
-            ListElement { image:"textures/background.jpg"}
-            ListElement { image:"textures/basket.jpg"}
+            ListElement { image:"textures/threedgreen.jpg"}
+            ListElement { image:"textures/amethyst.jpg"}
+            ListElement { image:"textures/bigblue.jpg"}
+            ListElement { image:"textures/pastelstuff.jpg"}
+            ListElement { image:"textures/blueweb.jpg"}
             ListElement { image:"textures/qtlogo.png"}
         }
 
         ListModel {
             id: listModelForItem
-            ListElement { image:"textures/niagara_falls.jpg"}
-            ListElement { image:"textures/background.jpg"}
-            ListElement { image:"textures/place.jpg"}
+            ListElement { image:"textures/amethyst.jpg"}
+            ListElement { image:"textures/pastelstuff.jpg"}
+            ListElement { image:"textures/bigblue.jpg"}
             ListElement { image:"textures/qtlogo.png"}
-            ListElement { image:"textures/basket.jpg"}
-            ListElement { image:"textures/woman.jpg"}
+            ListElement { image:"textures/blueweb.jpg"}
+            ListElement { image:"textures/threedgreen.jpg"}
         }
 
         Component {
@@ -161,6 +161,7 @@ Rectangle
 
         TestCase {
             id: modelViewTestAddingCase
+//            when: false
             name: "Quick3d ModelView Adding Data Test"
 
             function test_changing_stringList_model() {
@@ -196,8 +197,8 @@ Rectangle
                 var viewportChildCount = viewport.children.length;
                 var itemChildCount = listModelParentItem.children.length;
 
-                listModelForViewport.append({"image":"textures/background.jpg"});
-                listModelForItem.append({"image":"textures/background.jpg"});
+                listModelForViewport.append({"image":"textures/pastelstuff.jpg"});
+                listModelForItem.append({"image":"textures/pastelstuff.jpg"});
                 viewport.update3d();
                 compare(viewport.children.length, viewportChildCount + 1,
                         "Viewport missing child after listModel.append()");
