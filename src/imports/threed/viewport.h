@@ -121,6 +121,7 @@ protected:
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
     void wheelEvent(QGraphicsSceneWheelEvent *event);
     void keyPressEvent(QKeyEvent *event);
+    virtual QVariant itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value);
 
 private:
     ViewportPrivate *d;

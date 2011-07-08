@@ -106,6 +106,34 @@ Rectangle
             }
         }
 
+        Component {
+            id: pickTestDelegate
+            Quad {
+                objectName: "foo"
+                transform: [
+                    Rotation3D {
+                        axis: Qt.vector3d(1,0,0);
+                        angle: 90
+                    },
+                    // Bring quad forwards a little bit to ensure it's drawn
+                    Translation3D { translate: Qt.vector3d(0,0,0.1)}
+                ]
+
+                // Ensure items are above smallerQuad
+                position: Qt.vector3d(0, 0, (index + 1) * 0.1)
+                property color color: model.color
+            }
+        }
+
+        ListModel{
+            id: pickTestModel
+        }
+
+        Repeater {
+            delegate: pickTestDelegate
+            model: pickTestModel
+        }
+
         // picking fails until the first paint occurs.  There's no
         // straight-forward way to wait for the first paint, so we'll use a
         // timer to allow the paint to happen.
@@ -153,6 +181,12 @@ Rectangle
                        "Didn't find smaller quad at midpoint");
                 verify(viewport.objectForPoint(-midX,-midY) == null,
                        "Incorrectly found object off viewport");
+                pickTestModel.append({"color":"#00ff00"});
+                verify(viewport.objectForPoint(midX,midY).color == "#00ff00",
+                       "Didn't find modelview quad at midpoint");
+                pickTestModel.append({"color":"#ff00ff"});
+                verify(viewport.objectForPoint(midX,midY).color == "#ff00ff",
+                       "Didn't find second modelview quad at midpoint");
             }
         }
     }

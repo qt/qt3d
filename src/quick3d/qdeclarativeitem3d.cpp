@@ -1040,6 +1040,8 @@ void QDeclarativeItem3D::draw(QGLPainter *painter)
     // Bail out if this item and its children have been disabled.
     if (!d->isEnabled)
         return;
+    if (!d->isInitialized)
+        initialize(painter);
 
     int prevId = painter->objectPickId();
     painter->setObjectPickId(d->objectPickId);
@@ -1162,6 +1164,16 @@ void QDeclarativeViewport::setItemViewport(QDeclarativeItem3D *item)
 void QDeclarativeItem3D::initialize(QGLPainter *painter)
 {
     if (d->isInitialized) return;
+
+    if (!d->viewport)
+    {
+        if (QDeclarativeItem3D* parentItem =
+                qobject_cast<QDeclarativeItem3D*>(parent()))
+        {
+            d->viewport = parentItem->d->viewport;
+            Q_ASSERT(d->viewport);
+        }
+    }
 
     d->objectPickId = d->viewport->registerPickableObject(this);
 

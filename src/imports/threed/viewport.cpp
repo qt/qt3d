@@ -1203,4 +1203,17 @@ QPointF Viewport::viewDelta(qreal deltax, qreal deltay)
     return QPointF(deltax * scaleX / w, deltay * scaleY / h);
 }
 
+QVariant Viewport::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)
+{
+    if (change == QGraphicsItem::ItemChildAddedChange)
+    {
+        QGraphicsItem *newItem = value.value<QGraphicsItem*>();
+        if (QDeclarativeItem3D* item3d =
+                qobject_cast<QDeclarativeItem3D*>(newItem))
+        {
+            setItemViewport(item3d);
+        }
+    };
+    return QGraphicsItem::itemChange(change, value);
+}
 QT_END_NAMESPACE
