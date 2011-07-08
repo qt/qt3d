@@ -42,8 +42,6 @@
 #include <QtGui/QApplication>
 #include "qdeclarativeview3d.h"
 
-#include "../qmlres.h"
-
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);

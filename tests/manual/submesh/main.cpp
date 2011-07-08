@@ -40,8 +40,7 @@
 ****************************************************************************/
 
 #include <QtGui/QApplication>
-#include <QtDeclarative/qdeclarativeview.h>
-#include <QtCore/qdir.h>
+#include "qdeclarativeview3d.h"
 
 #include "../../shared/qmlres.h"
 
@@ -49,9 +48,7 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    qDebug() << "tst_submesh.qml";
-
-    QDeclarativeView view;
+    QDeclarativeView3D view;
     QString qml = q_get_qmldir(QLatin1String("qml/tst_submesh.qml"));
     view.setSource(QUrl::fromLocalFile(qml));
 
