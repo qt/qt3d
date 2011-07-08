@@ -10,7 +10,7 @@ include(../../../qt3dquick_pkg_dep.pri)
 include(../../../qml_pkg.pri)
 
 OTHER_FILES += \
-    qml/tst_model3ds.qml
+    qml/tst_cube.qml
 
 RESOURCES += \
     qrc.qrc

@@ -40,8 +40,7 @@
 ****************************************************************************/
 
 #include <QtGui/QApplication>
-#include <QtDeclarative/qdeclarativeview.h>
-#include <QtCore/qdir.h>
+#include "qdeclarativeview3d.h"
 #include <QWidget>
 #include <QHBoxLayout>
 
@@ -52,12 +51,12 @@ int main(int argc, char *argv[])
     QWidget widget;
     QHBoxLayout layout;
 
-    QDeclarativeView viewL;
+    QDeclarativeView3D viewL;
     viewL.setSource(QUrl("qrc:///qml/cube.qml"));
     layout.addWidget(&viewL);
 
-    QDeclarativeView viewR;
-    viewR.setSource(QUrl("qrc:/qml/cube.qml"));
+    QDeclarativeView3D viewR;
+    viewR.setSource(QUrl("Qrc:/qml/cube.qml"));
 
     layout.addWidget(&viewR);
 
