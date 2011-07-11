@@ -1,5 +1,5 @@
 TEMPLATE = app
-TARGET = penguin
+TARGET = penguin_advanced
 DESTDIR = ../../../bin/qt3d/tutorials
 CONFIG += qt warn_on qt3d
 SOURCES = modelview.cpp \

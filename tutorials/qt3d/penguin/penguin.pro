@@ -5,7 +5,7 @@ SOURCES = modelview.cpp \
     main.cpp
 HEADERS = modelview.h
 RESOURCES = model.qrc
-DESTDIR = ../../../../bin/qt3d/tutorials
+DESTDIR = ../../../bin/qt3d/tutorials
 
 symbian {    
     vendorinfo = \
