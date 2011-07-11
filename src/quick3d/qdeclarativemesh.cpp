@@ -188,7 +188,7 @@ void QDeclarativeMesh::setSource(const QUrl& value)
         QGLAbstractScene *s = QGLAbstractScene::loadScene(d->data.toLocalFile(),
                                                           QString(), d->options);
         setScene(s);
-    } else if (d->data.scheme() == QLatin1String("qrc")) {
+    } else if (d->data.scheme().toLower() == QLatin1String("qrc")) {
         // strips off any qrc: prefix and any excess slashes and replaces it with :/
         d->data.setScheme("");
         QGLAbstractScene *s = QGLAbstractScene::loadScene(
