@@ -70,7 +70,7 @@
     the size of the view, the camera position, lights, and the main 3D object:
 
     \code
-    import Qt 4.7
+    import QtQuick 1.0
     import Qt3D 1.0
 
     Viewport {

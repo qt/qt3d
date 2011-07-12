@@ -1,4 +1,4 @@
-import Qt 4.7
+import QtQuick 1.0
 import Qt3D 1.0
 
 // QTBUG-17418
