@@ -11,6 +11,7 @@ CONFIG+=pkg_pri_included
 qtc_harmattan {
     CONFIG += maemo
     CONFIG += package
+    QMAKE_CXXFLAGS += -Wno-psabi
     # The Qt SDK / Qt Creator harmattan integration needs some special treatment
     QT3D_INSTALL_BINS = /bin
     QT3D_INSTALL_LIBS = /usr/lib

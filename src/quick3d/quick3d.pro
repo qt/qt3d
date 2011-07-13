@@ -72,7 +72,7 @@ DEFINES += QT_BUILD_QT3D_QUICK_LIB
 
 !contains(QT_CONFIG, egl):DEFINES += QT_NO_EGL
 
-package {
+package: !qtc_harmattan {
     distInstalls.files = $$PUBLIC_HEADERS
     distInstalls.path = $$[QT_INSTALL_HEADERS]/Qt3DQuick
     INSTALLS += distInstalls

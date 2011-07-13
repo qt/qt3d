@@ -2,6 +2,8 @@
 # Note that the paths here all assumed the including .pro file
 # is exactly 3 levels of directory tree below the root
 
+include(pkg.pri)
+
 package {
     macx:CONFIG(qt_framework, qt_framework|qt_no_framework) {
         LIBS += -framework Qt3D -F../../../src/threed
@@ -21,5 +23,3 @@ package {
     }
     QT += opengl
 }
-
-include(pkg.pri)

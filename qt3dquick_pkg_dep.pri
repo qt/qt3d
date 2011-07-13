@@ -2,6 +2,8 @@
 # Note that the paths here all assumed the including .pro file
 # is exactly 3 levels of directory tree below the root
 
+include(qt3d_pkg_dep.pri)
+
 package {
     macx:CONFIG(qt_framework, qt_framework|qt_no_framework) {
         LIBS += -framework Qt3DQuick -F../../../src/quick3d
@@ -23,8 +25,6 @@ package {
 
     maemo: icons.files = icon-l-qtquick3d.png
 }
-
-include(qt3d_pkg_dep.pri)
 
 symbian {
     ICON = ../qtquick3d.svg
