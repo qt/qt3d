@@ -27,7 +27,7 @@
 
 /*!
     \title Using GLSL shaders in QtQuick3D
-    \example quick3d/tutorials/shaders
+    \example quick3d/shaders
 
 
     In this tutorial, we will show how to apply QML property animations to
@@ -42,7 +42,7 @@
         <table align="left" width="100%">
         <tr class="qt-code"><td>
     \endraw
-    \snippet quick3d/tutorials/shaders/shader-tutorial.qml 1
+    \snippet quick3d/shaders/shader-tutorial.qml 1
     \raw HTML
         </td><td align="right">
     \endraw
