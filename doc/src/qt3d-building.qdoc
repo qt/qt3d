@@ -87,6 +87,12 @@
     version 2.0 on Mac OSX, but other operating systems and versions should
     look similar.  Always use the latest release of QtCreator if possible.
 
+    \bold{Special note: Harmattan SDK.}  When using the Harmattan support in the Qt SDK:
+    \list
+        \o in Step 2 below ensure you choose the appropriate Qt Build eg \c{Meego 1.2 Harmattan API}; and
+        \o in Step 3 under \c{Build Steps > QMake > Additional arguments} add in \c{CONFIG += qtc_harmattan}
+    \endlist
+
     \image build-qt3d-qtcreator-1.png
 
     \bold{Step 1} - Open the QtQuick3D project.
