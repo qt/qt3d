@@ -177,7 +177,7 @@ void QGL3dsMesh::initialize()
         if (!forceSmooth && m_mesh->faces > FACETED_THRESHOLD)
         {
             if (m_options & QGL::ShowWarnings)
-                fprintf(stderr, "Mesh %s has %d faces (threshold is %d):"
+                qWarning("Mesh %s has %d faces (threshold is %d):"
                         "forcing smooth render", m_mesh->name, m_mesh->faces,
                         FACETED_THRESHOLD);
             forceSmooth = true;
@@ -411,7 +411,7 @@ static inline void doNormalCorrect(Lib3dsFace *face)
         float na = lib3ds_vector_dot(face->normal, avgn);
         if (na < INVERSE)
         {
-            //fprintf(stderr, "corrected: %p - %d, %d, %d", face,
+            //qWarning("corrected: %p - %d, %d, %d", face,
             //        face->points[0], face->points[1], face->points[2]);
             //lib3ds_vector_dump(face->normal);
             lib3ds_vector_neg(face->normal);
@@ -440,7 +440,7 @@ static inline void doModulate(Lib3dsFace *face, ModulateRecord *mod)
         {
             if (lib3ds_vector_dot(face->normal, neighbour->normal) < ACUTE)
             {
-                fprintf(stderr, "Modulated due to ACUTE\n");
+                qWarning("Modulated due to ACUTE\n");
                 modFace(neighbour, mod);
                 mod->keyFresh = false;
             }

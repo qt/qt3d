@@ -109,7 +109,7 @@ void FileScanner::scan()
             {
                 // small optimization: if the file has a suffix, check if that
                 // is known as an image format before sending to loader
-                QString ext = u.suffix();
+                QString ext = u.suffix().toLower();
                 if (ext.isEmpty() ||
                         QImageReader::supportedImageFormats().contains(ext.toLocal8Bit()))
                 {

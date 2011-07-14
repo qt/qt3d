@@ -305,7 +305,7 @@ QT_BEGIN_NAMESPACE
     Viewport::camera property:
 
     \code
-    import Qt 4.7
+    import QtQuick 1.0
     import Qt3D 1.0
 
     Viewport {

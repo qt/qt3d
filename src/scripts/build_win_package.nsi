@@ -92,9 +92,45 @@ FunctionEnd
 Section "MainSection" SEC01
   SetOverwrite try
   CreateDirectory "$SMPROGRAMS\QtQuick3D"
+  CreateDirectory "$SMPROGRAMS\QtQuick3D\Examples"
+  CreateDirectory "$SMPROGRAMS\QtQuick3D\Demos"
 
-  CreateShortCut "$SMPROGRAMS\QtQuick3D\QtQuick3D.lnk" "$INSTDIR\quick3d\bin\run_start_program.bat" "" "$INSTDIR\quick3d\bin\qglinfo.exe"
-  CreateShortCut "$DESKTOP\QtQuick3D.lnk" "$INSTDIR\quick3d\bin\run_start_program.bat" "" "$INSTDIR\quick3d\bin\qglinfo.exe"
+  ; For the CreateShortCut command, the outpath is actually used for the working directory.
+  ; By setting $INSTDIR\bin to the working directory all these lnk targets should be able
+  ; to find their dependent dll's without needing to set the path
+  SetOutPath "$INSTDIR\bin"
+  CreateShortCut "$SMPROGRAMS\QtQuick3D\QtQuick3D.lnk" "$INSTDIR\quick3d\bin\qglinfo.exe"
+  CreateShortCut "$DESKTOP\QtQuick3D.lnk" "$INSTDIR\quick3d\bin\qglinfo.exe"
+  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Basket.lnk" "$INSTDIR\quick3d\bin\basket_qml.exe"
+  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Cube.lnk" "$INSTDIR\quick3d\bin\cube_qml.exe"
+  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Forest.lnk" "$INSTDIR\quick3d\bin\forest.exe"
+  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Lander.lnk" "$INSTDIR\quick3d\bin\lander.exe"
+  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Matrix Animation.lnk" "$INSTDIR\quick3d\bin\matrix_animation.exe"
+  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Monkey God.lnk" "$INSTDIR\quick3d\bin\monkeygod.exe"
+  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Moon.lnk" "$INSTDIR\quick3d\bin\moon.exe"
+  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Photo Room.lnk" "$INSTDIR\quick3d\bin\photoroom.exe"
+  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Shaders.lnk" "$INSTDIR\quick3d\bin\shaders.exe"
+  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Sphere.lnk" "$INSTDIR\quick3d\bin\sphere.exe"
+  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Teapot.lnk" "$INSTDIR\quick3d\bin\teapot_qml.exe"
+  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Teapot Bounce.lnk" "$INSTDIR\quick3d\bin\teapot_bounce_qml.exe"
+  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Basket (C++).lnk" "$INSTDIR\quick3d\bin\basket.exe"
+  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Builder.lnk" "$INSTDIR\quick3d\bin\builder.exe"
+  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Cube (C++).lnk" "$INSTDIR\quick3d\bin\cube.exe"
+  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Cylinder.lnk" "$INSTDIR\quick3d\bin\cylinder.exe"
+  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Geometry.lnk" "$INSTDIR\quick3d\bin\geometry.exe"
+  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Graphicsview.lnk" "$INSTDIR\quick3d\bin\graphicsview.exe"
+  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Nesting.lnk" "$INSTDIR\quick3d\bin\nesting.exe"
+  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Tank.lnk" "$INSTDIR\quick3d\bin\tank.exe"
+  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Teapot (C++).lnk" "$INSTDIR\quick3d\bin\teapot.exe"
+  CreateShortCut "$SMPROGRAMS\QtQuick3D\Demos\Model Viewer.lnk" "$INSTDIR\quick3d\bin\model_viewer.exe"
+  CreateShortCut "$SMPROGRAMS\QtQuick3D\Demos\Robo Bounce.lnk" "$INSTDIR\quick3d\bin\robo_bounce.exe"
+  CreateShortCut "$SMPROGRAMS\QtQuick3D\Demos\Tea Service.lnk" "$INSTDIR\quick3d\bin\tea_service.exe"
+  CreateShortCut "$SMPROGRAMS\QtQuick3D\Demos\Cube House.lnk" "$INSTDIR\quick3d\bin\cubehouse.exe"
+  CreateShortCut "$SMPROGRAMS\QtQuick3D\Demos\Page Flip.lnk" "$INSTDIR\quick3d\bin\pageflip.exe"
+  CreateShortCut "$SMPROGRAMS\QtQuick3D\Demos\Photo-browser 3D.lnk" "$INSTDIR\quick3d\bin\photobrowser3d.exe"
+  CreateShortCut "$SMPROGRAMS\QtQuick3D\Demos\Shapes.lnk" "$INSTDIR\quick3d\bin\shapes.exe"
+  CreateShortCut "$SMPROGRAMS\QtQuick3D\Demos\Tea Service (C++).lnk" "$INSTDIR\quick3d\bin\teaservice.exe"
+
   ; bin imports include lib mkspecs plugins quick3d
   SetOutPath "$INSTDIR\quick3d\bin"
   File "${MK_INST_ROOT}${QT_PREFIX_PATH}\bin\*.exe"

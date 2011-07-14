@@ -44,15 +44,15 @@ import Qt3D 1.0
 Item3D {
     id: photo
 
-    property real offset
     property real layer
     property variant image
     property bool bounce: false
+    property string color: "#ffffff"
 
     mesh: Mesh { source: "photopane.obj" }
 
-    position: Qt.vector3d(offset, 0, -layer)
-    effect: Effect { decal: true; texture: image }
+    position: Qt.vector3d(0, 0, -layer)
+    effect: Effect { decal: true; texture: image; color: photo.color }
 
     onClicked: {
         if (photo.state == "pulled_out")
@@ -76,7 +76,8 @@ Item3D {
             name: "pulled_out"
             PropertyChanges {
                 target: photo
-                x: 0
+                // Center item in the X axis
+                x: -parent.x
             }
             PropertyChanges {
                 target: photo
@@ -95,7 +96,7 @@ Item3D {
             name: "returned"
             PropertyChanges {
                 target: photo
-                x: offset
+                x: 0
             }
             PropertyChanges {
                 target: photo

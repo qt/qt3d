@@ -39,3 +39,11 @@
 
     \generatelist{related}
 */
+
+/*!
+    \page qt3d-all-namespaces.html
+    \title All Namespaces
+    \keyword All Namespaces
+
+    \l{QGL}{QGL Namespace}
+*/

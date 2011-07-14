@@ -43,6 +43,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * for all imported meshes
  */
 
+#include <QtCore/qdebug.h>
 #include "AssimpPCH.h"
 #ifndef ASSIMP_BUILD_NO_JOINVERTICES_PROCESS
 
@@ -56,7 +57,7 @@ using namespace Assimp;
 // Constructor to be privately used by Importer
 JoinVerticesProcess::JoinVerticesProcess()
 {
-    // nothing to do here
+    // nothing to do here    
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -85,7 +86,6 @@ void JoinVerticesProcess::Execute( aiScene* pScene)
             iNumOldVertices += pScene->mMeshes[a]->mNumVertices;
         }
     }
-
     // execute the step
     int iNumVertices = 0;
     for ( unsigned int a = 0; a < pScene->mNumMeshes; a++)
@@ -125,7 +125,17 @@ int JoinVerticesProcess::ProcessMesh( aiMesh* pMesh, unsigned int meshIndex)
 
     // We'll never have more vertices afterwards.
     std::vector<Vertex> uniqueVertices;
-    uniqueVertices.reserve( pMesh->mNumVertices);
+
+#ifndef __GCCE__
+#ifndef __arm__
+    try {
+        uniqueVertices.reserve( pMesh->mNumVertices);
+    } catch (...) {
+        qWarning("Unable to reserve vertex space");
+        return 0;
+    }
+#endif
+#endif
 
     // For each vertex the index of the vertex it was replaced by.
     // Since the maximal number of vertices is 2^31-1, the most significand bit can be used to mark
@@ -188,7 +198,6 @@ int JoinVerticesProcess::ProcessMesh( aiMesh* pMesh, unsigned int meshIndex)
 
         // check all unique vertices close to the position if this vertex is already present among them
         for ( unsigned int b = 0; b < verticesFound.size(); b++) {
-
             const unsigned int vidx = verticesFound[b];
             const unsigned int uidx = replaceIndex[ vidx];
             if ( uidx & 0x80000000)

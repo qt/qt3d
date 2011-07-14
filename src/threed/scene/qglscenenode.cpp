@@ -180,6 +180,7 @@ QT_BEGIN_NAMESPACE
     \enum QGLSceneNode::Option
     This enum defines option flags for QGLSceneNode.
 
+    \value NoOptions Do not enable any QGLSceneNode options.
     \value CullBoundingBox Perform a cull using boundingBox() before
         attempting to draw the geometry().  Default is false.
     \value ViewNormals Enables the display of lighting normals for
@@ -1591,74 +1592,74 @@ void qDumpScene(QGLSceneNode *node, int indent, const QSet<QGLSceneNode *> &loop
     lp.insert(node);
     QString ind;
     ind.fill(QLatin1Char(' '), indent * 4);
-    fprintf(stderr, "\n%s ======== Node: %p - %s =========\n", qPrintable(ind), node,
+    qWarning("\n%s ======== Node: %p - %s =========\n", qPrintable(ind), node,
             qPrintable(node->objectName()));
 #if !defined(QT_NO_THREAD)
     if (appThread && appThread != node->thread())
-        fprintf(stderr, "\n%s        from thread: %p\n", qPrintable(ind), node->thread());
+        qWarning("\n%s        from thread: %p\n", qPrintable(ind), node->thread());
 #endif
-    fprintf(stderr, "%s start: %d   count: %d   children:", qPrintable(ind), node->start(), node->count());
+    qWarning("%s start: %d   count: %d   children:", qPrintable(ind), node->start(), node->count());
     {
         QList<QGLSceneNode*> children = node->children();
         QList<QGLSceneNode*>::const_iterator it = children.constBegin();
         for (int i = 0; it != children.constEnd(); ++it, ++i)
-            fprintf(stderr, "%d: %p  ", i, *it);
+            qWarning("%d: %p  ", i, *it);
     }
-    fprintf(stderr, "\n");
+    qWarning("\n");
     if (!node->position().isNull())
     {
         QVector3D p = node->position();
-        fprintf(stderr, "%s position: (%0.4f, %0.4f, %0.4f)\n", qPrintable(ind),
+        qWarning("%s position: (%0.4f, %0.4f, %0.4f)\n", qPrintable(ind),
                 p.x(), p.y(), p.z());
     }
     if (node->localTransform().isIdentity())
     {
-        fprintf(stderr, "%s local transform: identity\n", qPrintable(ind));
+        qWarning("%s local transform: identity\n", qPrintable(ind));
     }
     else
     {
-        fprintf(stderr, "%s local transform:\n", qPrintable(ind));
+        qWarning("%s local transform:\n", qPrintable(ind));
         QMatrix4x4 m = node->localTransform();
         for (int i = 0; i < 4; ++i)
-            fprintf(stderr, "%s     %0.4f   %0.4f   %0.4f   %0.4f\n",
+            qWarning("%s     %0.4f   %0.4f   %0.4f   %0.4f\n",
                     qPrintable(ind), m(i, 0), m(i, 1), m(i, 2), m(i, 3));
     }
     if (!node->geometry().isEmpty())
     {
-        fprintf(stderr, "%s geometry: %d indexes, %d vertices\n",
+        qWarning("%s geometry: %d indexes, %d vertices\n",
                 qPrintable(ind), node->geometry().count(), node->geometry().count(QGL::Position));
     }
     else
     {
-        fprintf(stderr, "%s geometry: NULL\n", qPrintable(ind));
+        qWarning("%s geometry: NULL\n", qPrintable(ind));
     }
     if (node->materialIndex() != -1)
     {
-        fprintf(stderr, "%s material: %d", qPrintable(ind), node->materialIndex());
+        qWarning("%s material: %d", qPrintable(ind), node->materialIndex());
         QGLMaterial *mat = node->material();
         QGLMaterialCollection *pal = node->palette();
         if (pal)
-            fprintf(stderr, "%s palette: %p", qPrintable(ind), pal);
+            qWarning("%s palette: %p", qPrintable(ind), pal);
         else
-            fprintf(stderr, "%s no palette", qPrintable(ind));
+            qWarning("%s no palette", qPrintable(ind));
         if (pal)
         {
             mat = pal->material(node->materialIndex());
             if (mat)
-                fprintf(stderr, "%s mat name from pal: %s ", qPrintable(ind),
+                qWarning("%s mat name from pal: %s ", qPrintable(ind),
                         qPrintable(pal->material(node->materialIndex())->objectName()));
             else
-                fprintf(stderr, "%s indexed material %d does not exist in palette!",
+                qWarning("%s indexed material %d does not exist in palette!",
                         qPrintable(ind), node->materialIndex());
         }
         if (mat)
         {
             if (mat->objectName().isEmpty())
-                fprintf(stderr, " -- %p:", mat);
+                qWarning(" -- %p:", mat);
             else
-                fprintf(stderr, " -- \"%s\":",
+                qWarning(" -- \"%s\":",
                         qPrintable(mat->objectName()));
-            fprintf(stderr, " Amb: %s - Diff: %s - Spec: %s - Shin: %0.2f\n",
+            qWarning(" Amb: %s - Diff: %s - Spec: %s - Shin: %0.2f\n",
                     qPrintable(mat->ambientColor().name()),
                     qPrintable(mat->diffuseColor().name()),
                     qPrintable(mat->specularColor().name()),
@@ -1669,30 +1670,30 @@ void qDumpScene(QGLSceneNode *node, int indent, const QSet<QGLSceneNode *> &loop
                 {
                     QGLTexture2D *tex = mat->texture(i);
                     if (tex->objectName().isEmpty())
-                        fprintf(stderr, "%s         texture %p", qPrintable(ind), tex);
+                        qWarning("%s         texture %p", qPrintable(ind), tex);
                     else
-                        fprintf(stderr, "%s         texture %s", qPrintable(ind),
+                        qWarning("%s         texture %s", qPrintable(ind),
                                 qPrintable(tex->objectName()));
                     QSize sz = tex->size();
-                    fprintf(stderr, " - size: %d (w) x %d (h)\n", sz.width(), sz.height());
+                    qWarning(" - size: %d (w) x %d (h)\n", sz.width(), sz.height());
                 }
             }
         }
         else
         {
-            fprintf(stderr, "%s - could not find indexed material!!", qPrintable(ind));
+            qWarning("%s - could not find indexed material!!", qPrintable(ind));
         }
     }
     else
     {
-        fprintf(stderr, "%s material: NONE\n", qPrintable(ind));
+        qWarning("%s material: NONE\n", qPrintable(ind));
     }
 
     if (node->hasEffect())
     {
         if (node->userEffect())
         {
-            fprintf(stderr, "%s user effect %p\n", qPrintable(ind),
+            qWarning("%s user effect %p\n", qPrintable(ind),
                     node->userEffect());
         }
         else
@@ -1700,25 +1701,25 @@ void qDumpScene(QGLSceneNode *node, int indent, const QSet<QGLSceneNode *> &loop
             switch (node->effect())
             {
             case QGL::FlatColor:
-                fprintf(stderr, "%s flat color effect\n", qPrintable(ind)); break;
+                qWarning("%s flat color effect\n", qPrintable(ind)); break;
             case QGL::FlatPerVertexColor:
-                fprintf(stderr, "%s flat per vertex color effect\n", qPrintable(ind)); break;
+                qWarning("%s flat per vertex color effect\n", qPrintable(ind)); break;
             case QGL::FlatReplaceTexture2D:
-                fprintf(stderr, "%s flat replace texture 2D effect\n", qPrintable(ind)); break;
+                qWarning("%s flat replace texture 2D effect\n", qPrintable(ind)); break;
             case QGL::FlatDecalTexture2D:
-                fprintf(stderr, "%s flat decal texture 2D effect\n", qPrintable(ind)); break;
+                qWarning("%s flat decal texture 2D effect\n", qPrintable(ind)); break;
             case QGL::LitMaterial:
-                fprintf(stderr, "%s lit material effect\n", qPrintable(ind)); break;
+                qWarning("%s lit material effect\n", qPrintable(ind)); break;
             case QGL::LitDecalTexture2D:
-                fprintf(stderr, "%s lit decal texture 2D effect\n", qPrintable(ind)); break;
+                qWarning("%s lit decal texture 2D effect\n", qPrintable(ind)); break;
             case QGL::LitModulateTexture2D:
-                fprintf(stderr, "%s lit modulate texture 2D effect\n", qPrintable(ind)); break;
+                qWarning("%s lit modulate texture 2D effect\n", qPrintable(ind)); break;
             }
         }
     }
     else
     {
-        fprintf(stderr, "%s no effect set\n", qPrintable(ind));
+        qWarning("%s no effect set\n", qPrintable(ind));
     }
     QList<QGLSceneNode*> children = node->children();
     QList<QGLSceneNode*>::const_iterator it = children.constBegin();

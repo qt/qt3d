@@ -75,6 +75,7 @@ public:
 
     enum Option
     {
+        NoOptions       = 0x0000,
         CullBoundingBox = 0x0001,
         ViewNormals     = 0x0002
     };

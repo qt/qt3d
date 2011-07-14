@@ -1,5 +1,6 @@
 TARGET  = qsceneobj
 include(../../qpluginbase.pri)
+include(../../../../pkg.pri)
 
 HEADERS += qglobjscene.h \
            qglobjscenehandler.h
@@ -25,12 +26,12 @@ package {
         }
         INCLUDEPATH += ../../../../include/Qt3D
     }
-    target.path = $$[QT_INSTALL_PLUGINS]/sceneformats
+    target.path = $$QT3D_INSTALL_PLUGINS/sceneformats
     INSTALLS += target
 } else {
     CONFIG += qt3d
-    DESTDIR = $$[QT_INSTALL_PLUGINS]/sceneformats
+    DESTDIR = $$QT3D_INSTALL_PLUGINS/sceneformats
 }
 
-target.path += $$[QT_INSTALL_PLUGINS]/sceneformats
+target.path += $$QT3D_INSTALL_PLUGINS/sceneformats
 INSTALLS += target

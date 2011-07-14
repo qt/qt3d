@@ -219,6 +219,37 @@
 
     It should be noted that no support is currently provided for skeleton animation or
     kinematic control of items.  This is left to the user to implement as required.
+
+    \section1 Using QML Data Models With Item3D
+
+    QDeclarativeItem3D supports standard \l
+    {http://doc.qt.nokia.com/4.7/qdeclarativemodels.html#qml-data-models}
+    {QML Data Models} with a few caveats.
+
+    QDeclarativeItem3D derives from QtDeclarativeItem, and interacts with
+    the \l{http://doc.qt.nokia.com/4.7/qml-component.html}{Component} element
+    normally.  However, there is a delay between between removing an item from
+    a model and the cleaning up the corresponding Item3D, so it is recommended
+    that Item3D based delegates hide themselves when their index is
+    -1 as shown in the photoroom example:
+
+    \snippet quick3d/photoroom/qml/photoroom.qml 1
+
+    However Item3D does not use the width or height properties, so most
+    positioners and views will not work.  Use a
+    \l{http://doc.qt.nokia.com/4.7/qml-repeater.html}{Repeater} element to
+    generate Item3Ds from model data.  For example:
+
+    \snippet quick3d/photoroom/qml/photoroom.qml 2
+
+    Models can be used normally, so
+\l{http://doc.qt.nokia.com/4.7/qdeclarativemodels.html#listmodel}{ListModel},
+\l{http://doc.qt.nokia.com/4.7/qdeclarativemodels.html#qstringlist}{QStringList}
+    etc. work just like they would with two dimensional Items.  For example:
+
+    \snippet quick3d/photoroom/qml/photoroom.qml 0
+
+    \sa{http://doc.qt.nokia.com/4.7/qdeclarativemodels.html#qml-data-models}{QML Data Models}
 */
 
 
@@ -230,7 +261,6 @@ class QDeclarativeItem3DPrivate
 public:
     QDeclarativeItem3DPrivate(QDeclarativeItem3D *_item)
         : item(_item)
-        , parent(0)
         , viewport(0)
         , position(0.0f, 0.0f, 0.0f)
         , pivot(0.0f,0.0f,0.0f)
@@ -253,7 +283,6 @@ public:
     ~QDeclarativeItem3DPrivate();
 
     QDeclarativeItem3D *item;
-    QDeclarativeItem3D *parent;
     QDeclarativeViewport *viewport;
     QVector3D position;
     QVector3D pivot;
@@ -266,7 +295,6 @@ public:
     int objectPickId;
     QDeclarativeItem3D::CullFaces cullFaces;
     QDeclarativeItem3D::SortMode sortChildren;
-    QList<QDeclarativeItem3D *> children;
 
     bool inheritEvents;
     bool isEnabled;
@@ -281,11 +309,6 @@ public:
     static QObject *resources_at(QDeclarativeListProperty<QObject> *, int);
     static void resources_append(QDeclarativeListProperty<QObject> *, QObject *);
     static int resources_count(QDeclarativeListProperty<QObject> *);
-
-    //// children property
-    static QDeclarativeItem3D *children_at(QDeclarativeListProperty<QDeclarativeItem3D> *, int);
-    static void children_append(QDeclarativeListProperty<QDeclarativeItem3D> *, QDeclarativeItem3D *);
-    static int children_count(QDeclarativeListProperty<QDeclarativeItem3D> *);
 
     // transform property
     static int transform_count(QDeclarativeListProperty<QGraphicsTransform3D> *list);
@@ -311,14 +334,6 @@ public:
 
 QDeclarativeItem3DPrivate::~QDeclarativeItem3DPrivate()
 {
-    // Detach our item children from us - they will be destroyed
-    // separately by their QObject parent.
-    for (int index = 0; index < children.size(); ++index)
-        children.at(index)->d->parent = 0;
-
-    // Detach ourselves from our own item parent.
-    if (parent)
-        parent->d->children.removeOne(item);
 }
 
 int QDeclarativeItem3DPrivate::transform_count(QDeclarativeListProperty<QGraphicsTransform3D> *list)
@@ -433,7 +448,24 @@ void QDeclarativeItem3DPrivate::pretransform_clear(QDeclarativeListProperty<QGra
 
 void QDeclarativeItem3DPrivate::data_append(QDeclarativeListProperty<QObject> *prop, QObject *o)
 {
-    QDeclarativeItem3D *i = qobject_cast<QDeclarativeItem3D *>(o);
+    // This function is called by the QML runtime to assign children to
+    // an item3d.  The object 'o' is the new child, and prop->object is the
+    // Item3d that is to be the parent.
+
+    // Either way we're going to call something like setParent(prop->object)
+    // we're just determining whether to use the QDeclarativeItem or QObject
+    // version.
+
+    // The primary purpose of this function is to divide new children into
+    // renderable qml Items and non-renderable QObject derived resources.
+    // We want to accept all Items, and and simply ignore non-3d items
+    // during drawing.
+
+    // It is important that we imitate this behaviour of non-3d
+    // QDeclarativeItems so view items will assign dynamically created objects
+    // to the Item3d and make them available for drawing.
+
+    QDeclarativeItem *i = qobject_cast<QDeclarativeItem *>(o);
     if (i)
         i->setParentItem(static_cast<QDeclarativeItem3D *>(prop->object));
     else
@@ -458,26 +490,6 @@ void QDeclarativeItem3DPrivate::resources_append(QDeclarativeListProperty<QObjec
 int QDeclarativeItem3DPrivate::resources_count(QDeclarativeListProperty<QObject> *prop)
 {
     return prop->object->children().count();
-}
-
-QDeclarativeItem3D *QDeclarativeItem3DPrivate::children_at(QDeclarativeListProperty<QDeclarativeItem3D> *prop, int index)
-{
-    QDeclarativeItem3D *item = static_cast<QDeclarativeItem3D *>(prop->object);
-    if (index >= 0 && index < item->d->children.count())
-        return item->d->children.at(index);
-    else
-        return 0;
-}
-
-void QDeclarativeItem3DPrivate::children_append(QDeclarativeListProperty<QDeclarativeItem3D> *prop, QDeclarativeItem3D *i)
-{
-    if (i)
-        i->setParentItem(static_cast<QDeclarativeItem3D*>(prop->object));
-}
-
-int QDeclarativeItem3DPrivate::children_count(QDeclarativeListProperty<QDeclarativeItem3D> *prop)
-{
-    return static_cast<QDeclarativeItem3D*>(prop->object)->d->children.count();
 }
 
 /*!
@@ -517,12 +529,15 @@ QDeclarativeItem3D::QDeclarativeItem3D(QObject *parent)
     : QSGItem(0)
 {
     d = new QDeclarativeItem3DPrivate(this);
-    QDeclarativeItem3D *itemParent = qobject_cast<QDeclarativeItem3D *>(parent);
+
+    QDeclarativeItem *itemParent = qobject_cast<QDeclarativeItem *>(parent);
     if (itemParent) {
-        d->parent = itemParent;
-        itemParent->d->children.append(this);
-        emit itemParent->childrenChanged();
+        setParentItem(itemParent);
+    } else {
+        setParent(parent);
     }
+
+    // TODO: Handle QDeclarativeItem3D case
 }
 
 /*!
@@ -747,8 +762,8 @@ void QDeclarativeItem3D::setInheritEvents(bool inherit)
     //Generally we would only want to
     if (inherit)
     {
-        for (int index = 0; index < d->children.size(); ++index) {
-            QDeclarativeItem3D *subItem = d->children.at(index);
+        for (int index = 0; index < children().size(); ++index) {
+            QDeclarativeItem3D *subItem = qobject_cast<QDeclarativeItem3D *>(children().at(index));
             if (subItem)
             {
                 // Proxy the mouse event signals to the parent so that
@@ -764,8 +779,8 @@ void QDeclarativeItem3D::setInheritEvents(bool inherit)
     }
     else
     {
-        for (int index = 0; index < d->children.size(); ++index) {
-            QDeclarativeItem3D *subItem = d->children.at(index);
+        for (int index = 0; index < children().size(); ++index) {
+            QDeclarativeItem *subItem = qobject_cast<QDeclarativeItem *>(children().at(index));
             if (subItem)
             {
                 // Proxy the mouse event signals to the parent so that
@@ -899,13 +914,16 @@ void QDeclarativeItem3D::setLight(QGLLightParameters *value)
     \qmlproperty list<Item3D> Item3D::children
     \qmlproperty list<Object> Item3D::resources
 
-    The children property contains a list of all 3D child items for
-    this item.  This provides logical grouping of items in a 3D scene.
-    Transformations that are applied to this item will also affect
-    child items.
+    The children property contains a list of all QDeclarativeItem derived
+    child items for this item.  This provides logical grouping of items in a
+    scene. Transformations that are applied to this item will also affect
+    child items.  Note that children that are not derived from
+    QDeclarativeItem3D will not be rendered at draw time, but will interact
+    normally otherwise (e.g. parenting, signal passing etc).  Use a
+    qobject_cast if you need to check whether a child is an Item3D.
 
     The resources property holds all other children that do not
-    directly inherit from Item3D, such as effects, meshes, and
+    directly inherit from QDeclarativeItem, such as effects, meshes, and
     other supporting objects.
 
     Normally it isn't necessary to assign to the children or resources
@@ -914,12 +932,6 @@ void QDeclarativeItem3D::setLight(QGLLightParameters *value)
 
     \sa transform
 */
-QDeclarativeListProperty<QDeclarativeItem3D> QDeclarativeItem3D::itemChildren()
-{
-    return QDeclarativeListProperty<QDeclarativeItem3D>(this, 0, QDeclarativeItem3DPrivate::children_append,
-                                                     QDeclarativeItem3DPrivate::children_count,
-                                                     QDeclarativeItem3DPrivate::children_at);
-}
 
 QDeclarativeListProperty<QObject> QDeclarativeItem3D::resources()
 {
@@ -940,37 +952,6 @@ QDeclarativeListProperty<QObject> QDeclarativeItem3D::resources()
 QDeclarativeListProperty<QObject> QDeclarativeItem3D::data()
 {
     return QDeclarativeListProperty<QObject>(this, 0, QDeclarativeItem3DPrivate::data_append);
-}
-
-/*!
-    \qmlproperty Item3D Item3D::parent
-
-    This property specifies the Item3D parent of this item,
-    or null if this item does not have a parent.
-*/
-
-QDeclarativeItem3D *QDeclarativeItem3D::parentItem() const
-{
-    return d->parent;
-}
-
-void QDeclarativeItem3D::setParentItem(QDeclarativeItem3D *parent)
-{
-    QDeclarativeItem3D *prevParent = d->parent;
-    if (prevParent != parent) {
-        d->parent = 0;
-        if (prevParent) {
-            prevParent->d->children.removeOne(this);
-            emit prevParent->childrenChanged();
-        }
-        d->parent = parent;
-        if (parent) {
-            parent->d->children.append(this);
-            emit parent->childrenChanged();
-        }
-        QObject::setParent(parent);
-        emit parentChanged();
-    }
 }
 
 /*!
@@ -1107,7 +1088,17 @@ void QDeclarativeItem3D::draw(QGLPainter *painter)
 
     //Drawing
     drawItem(painter);
-    QList<QDeclarativeItem3D *> list = d->children;
+
+    // Find all 3d children for drawing
+    QList<QDeclarativeItem3D *> list;;
+    foreach (QObject* o, children())
+    {
+        if (QDeclarativeItem3D *item3d = qobject_cast<QDeclarativeItem3D*>(o))
+        {
+            list.append(item3d);
+        }
+    }
+
     if (d->sortChildren == QDeclarativeItem3D::BackToFront) {
         // Collect up the transformed z positions of all children.
         QList<qreal> zlist;
@@ -1174,8 +1165,8 @@ void QDeclarativeItem3D::initialize(QGLPainter *painter)
 
     d->objectPickId = d->viewport->registerPickableObject(this);
 
-    for (int index = 0; index < d->children.size(); ++index) {
-        QDeclarativeItem3D *item = d->children.at(index);
+    for (int index = 0; index < children().size(); ++index) {
+        QDeclarativeItem3D *item = qobject_cast<QDeclarativeItem3D *>(children().at(index));
         if (item) {
             //Event inheritance is generally only declared at initialization, but can also be done at runtime
             //if the user wishes (though not recommended).
@@ -1242,13 +1233,13 @@ void QDeclarativeItem3D::drawItem(QGLPainter *painter)
 QMatrix4x4 QDeclarativeItem3DPrivate::localToWorldMatrix() const
 {
     QMatrix4x4 result;
-    QDeclarativeItem3D *anscestor = parent;
 
     result = localTransforms() * result;
+    QDeclarativeItem3D *anscestor = qobject_cast<QDeclarativeItem3D *>(item->parent());
     while (anscestor)
     {
         result = anscestor->d->localTransforms() * result;
-        anscestor = anscestor->d->parent;
+        anscestor = qobject_cast<QDeclarativeItem3D *>(anscestor->parent());
     }
     return result;
 }
@@ -1290,6 +1281,7 @@ QVector3D QDeclarativeItem3D::worldToLocal(const QVector3D &point) const
 
     Returns the boolean value of the regular QObject::event() function.oo
 */
+
 bool QDeclarativeItem3D::event(QEvent *e)
 {
     // Convert the raw event into a signal representing the user's action.

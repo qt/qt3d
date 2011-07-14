@@ -245,9 +245,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # else
 #  error unknown architecture
 # endif
-#else
+#elif defined (__GCCE__)
 #define ASSIMP_BUILD_ARM_32BIT_ARCHITECTURE
-//# error unknown compiler
+#elif defined (__arm__)
+#define ASSIMP_BUILD_ARM_32BIT_ARCHITECTURE
+#else //assume
+# error unknown compiler
 #endif
 
     //////////////////////////////////////////////////////////////////////////

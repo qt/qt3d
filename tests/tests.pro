@@ -1,2 +1,4 @@
 TEMPLATE = subdirs
-SUBDIRS = auto benchmarks manual
+SUBDIRS = manual
+include(../pkg.pri)
+!package: SUBDIRS += auto benchmarks

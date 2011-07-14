@@ -74,6 +74,7 @@ public:
 
 private Q_SLOTS:
     void subjectPositionChanged();
+    void ancestryChanged();
 
 Q_SIGNALS:
     void preserveUpVectorChanged();

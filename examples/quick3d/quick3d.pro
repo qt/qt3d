@@ -9,6 +9,4 @@ SUBDIRS += \
     moon \
     photoroom \
     shaders \
-    sphere \
-    tutorials
-
+    sphere

@@ -186,21 +186,26 @@ static QMatrix4x4* cheatingCylindricalBillboard(QMatrix4x4 *matrix)
 
 #define RADS_TO_DEGREES (180.0 / M_PI)
 
+struct LookAtRotationCache {
+    QGraphicsRotation3D primaryRotation;
+    QGraphicsRotation3D secondaryRotation;
+};
+
 class QGraphicsLookAtTransformPrivate
 {
 public:
     QGraphicsLookAtTransformPrivate(QGraphicsLookAtTransform* _lookAt);
     QGraphicsLookAtTransform* lookAt;
     void determineOriginItem();
-    void calculateRotationValues();
-    QVector3D relativePosition(QDeclarativeItem3D* originItem, QDeclarativeItem3D* subject);
+    void calculateRotationValues() const;
+    QVector3D relativePosition(QDeclarativeItem3D* originItem, QDeclarativeItem3D* subject) const;
 
     bool preserveUpVector;
     QDeclarativeItem3D* originItem;
     QDeclarativeItem3D* subject;
+    mutable LookAtRotationCache rotationCache;
+    mutable bool rotationCacheDirty;
 
-    QGraphicsRotation3D primaryRotation;
-    QGraphicsRotation3D secondaryRotation;
 };
 
 QGraphicsLookAtTransformPrivate::QGraphicsLookAtTransformPrivate(QGraphicsLookAtTransform* _lookAt) :
@@ -222,19 +227,25 @@ void QGraphicsLookAtTransformPrivate::determineOriginItem()
         qWarning() << "LookAt transform requires an Item3D ancestor";
 }
 
-QVector3D QGraphicsLookAtTransformPrivate::relativePosition(QDeclarativeItem3D* originItem, QDeclarativeItem3D* subject)
+QVector3D QGraphicsLookAtTransformPrivate::relativePosition(QDeclarativeItem3D* originItem, QDeclarativeItem3D* subject) const
 {
     QVector3D result =  originItem->worldToLocal(subject->localToWorld());
     return result;
 
 }
 
-void QGraphicsLookAtTransformPrivate::calculateRotationValues()
+/*! \internal
+  Calculate the actual rotation values for the transform.
+
+  Note this function has to be const to be called within applyTo(), but
+  modifies the mutable rotationCache and rotationCacheDirty values.
+*/
+void QGraphicsLookAtTransformPrivate::calculateRotationValues() const
 {
     QVector3D forwards(0, 0, 1);
-    primaryRotation.setAngle(0);
-    secondaryRotation.setAngle(0);
-    determineOriginItem();
+    rotationCache.primaryRotation.setAngle(0);
+    rotationCache.secondaryRotation.setAngle(0);
+    rotationCacheDirty = false;
 
     if (subject == 0 || originItem == 0)
     {
@@ -242,10 +253,10 @@ void QGraphicsLookAtTransformPrivate::calculateRotationValues()
             qWarning() << "LookAt transform got null subject";
         if (originItem == 0)
             qWarning() << "LookAt transform got null originItem";
-        primaryRotation.setAxis(QVector3D(0,1,0));
-        primaryRotation.setAngle(0);
-        secondaryRotation.setAxis(QVector3D(1,0,0));
-        secondaryRotation.setAngle(0);
+        rotationCache.primaryRotation.setAxis(QVector3D(0,1,0));
+        rotationCache.primaryRotation.setAngle(0);
+        rotationCache.secondaryRotation.setAxis(QVector3D(1,0,0));
+        rotationCache.secondaryRotation.setAngle(0);
         return;
     }
 
@@ -271,12 +282,12 @@ void QGraphicsLookAtTransformPrivate::calculateRotationValues()
                 QVector3D::dotProduct(forwards, subjectProjection);
         qreal angle = qAcos(angleCosine);
 
-        primaryRotation.setAxis(primaryRotationAxis);
-        primaryRotation.setAngle(angle * RADS_TO_DEGREES );
+        rotationCache.primaryRotation.setAxis(primaryRotationAxis);
+        rotationCache.primaryRotation.setAngle(angle * RADS_TO_DEGREES );
     } else {
         // Target is directly above or below, so zero primary rotation
-        primaryRotation.setAxis(QVector3D(0,1,0));
-        primaryRotation.setAngle(0);
+        rotationCache.primaryRotation.setAxis(QVector3D(0,1,0));
+        rotationCache.primaryRotation.setAngle(0);
     }
 
     relativePositionVector.normalize();
@@ -287,13 +298,13 @@ void QGraphicsLookAtTransformPrivate::calculateRotationValues()
     if (secondaryAngleCosine <= 1.0 && secondaryAngleCosine >= -1.0)
     {
         if (relativePositionVector.y() < 0)
-            secondaryRotation.setAxis(QVector3D(1,0,0));
+            rotationCache.secondaryRotation.setAxis(QVector3D(1,0,0));
         else
-            secondaryRotation.setAxis(QVector3D(-1,0,0));
-        secondaryRotation.setAngle(qAcos(secondaryAngleCosine)*RADS_TO_DEGREES);
+            rotationCache.secondaryRotation.setAxis(QVector3D(-1,0,0));
+        rotationCache.secondaryRotation.setAngle(qAcos(secondaryAngleCosine)*RADS_TO_DEGREES);
     } else {
-        secondaryRotation.setAxis(QVector3D(1,0,0));
-        secondaryRotation.setAngle(0.0);
+        rotationCache.secondaryRotation.setAxis(QVector3D(1,0,0));
+        rotationCache.secondaryRotation.setAngle(0.0);
     }
 }
 
@@ -354,7 +365,7 @@ void QGraphicsLookAtTransform::setPreserveUpVector(bool value)
     Q_D(QGraphicsLookAtTransform);
     if (d->preserveUpVector != value) {
         d->preserveUpVector = value;
-        d->calculateRotationValues();
+        d->rotationCacheDirty = true;
         emit preserveUpVectorChanged();
         emit transformChanged();
     }
@@ -421,7 +432,7 @@ void QGraphicsLookAtTransform::setSubject(QDeclarativeItem3D* value)
             connect(ancestorItem, SIGNAL(positionChanged()), this, SLOT(subjectPositionChanged()));
             connect(ancestorItem, SIGNAL(rotationChanged()), this, SLOT(subjectPositionChanged()));
             connect(ancestorItem, SIGNAL(scaleChanged()), this, SLOT(subjectPositionChanged()));
-            connect(ancestorItem, SIGNAL(parentChanged()), this, SLOT(subjectPositionChanged()));
+            connect(ancestorItem, SIGNAL(parentChanged()), this, SLOT(ancestryChanged()));
             QDeclarativeListProperty<QGraphicsTransform3D> transforms =
                     ancestorItem->transform();
 
@@ -435,7 +446,8 @@ void QGraphicsLookAtTransform::setSubject(QDeclarativeItem3D* value)
             ancestorItem = qobject_cast<QDeclarativeItem3D*> (ancestorItem->parent());
         };
 
-        d->calculateRotationValues();
+        d->rotationCacheDirty = true;
+        d->determineOriginItem();
         emit subjectChanged();
         emit transformChanged();
     }
@@ -444,7 +456,14 @@ void QGraphicsLookAtTransform::setSubject(QDeclarativeItem3D* value)
 void QGraphicsLookAtTransform::subjectPositionChanged()
 {
     Q_D(QGraphicsLookAtTransform);
-    d->calculateRotationValues();
+    d->rotationCacheDirty = true;
+}
+
+void QGraphicsLookAtTransform::ancestryChanged()
+{
+    Q_D(QGraphicsLookAtTransform);
+    d->determineOriginItem();
+    d->rotationCacheDirty = true;
 }
 
 /*!
@@ -467,11 +486,14 @@ void QGraphicsLookAtTransform::applyTo(QMatrix4x4 *matrix) const
         return;
     }
 
-    d->primaryRotation.applyTo(matrix);
+    if (d->rotationCacheDirty)
+        d->calculateRotationValues();
+
+    d->rotationCache.primaryRotation.applyTo(matrix);
     // then, if preserveVector is not set, perform a second rotation
     // around the x-axis
     if (!preserveUpVector())
-        d->secondaryRotation.applyTo(matrix);
+        d->rotationCache.secondaryRotation.applyTo(matrix);
 }
 
 /*!

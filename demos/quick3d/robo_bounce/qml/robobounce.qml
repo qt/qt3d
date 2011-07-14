@@ -267,7 +267,6 @@ Image {
 
                 SequentialAnimation {
                     running: roboInfo.showVisible
-                    loops: Animation.infinite
                     NumberAnimation {target: roboInfo; property: "opacity"; to: 0.7; duration: 500}
                     PauseAnimation {duration: 3000}
                     NumberAnimation {target: roboInfo; property: "opacity"; to: 0.0; duration: 500}
@@ -436,7 +435,6 @@ Image {
 
                     NumberAnimation {
                         running: room.spinning
-                        loops: Animation.infinite
                         target: roomSpin
                         property: "angle"
                         to: 360
@@ -465,7 +463,6 @@ Image {
 
                         SequentialAnimation {
                             running: smallCube.fallingCubeAnimation
-                            loops: Animation.infinite
                             onCompleted: {smallCube.fallingCubeAnimation=false;}
                             ParallelAnimation {
                                 NumberAnimation {target: spinSmallCube; property: "angle"; to: 360; easing.type: "InOutQuad"; duration: 1750}

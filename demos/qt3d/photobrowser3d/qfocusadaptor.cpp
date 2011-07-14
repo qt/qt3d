@@ -171,6 +171,7 @@ void QFocusAdaptor::calculateValues()
             qreal qw = (nearDist * sz.x()) / v.width();
 
             qreal q = qMax(qh, qw);
+            q = qMax(q, qreal(nearDist * 1.05));
 
             d->sourceCenter = cam->center();
             d->sourceEye = cam->eye();

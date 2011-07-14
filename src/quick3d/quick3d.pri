@@ -1,4 +1,3 @@
-
 INCLUDEPATH += $$PWD
 VPATH += $$PWD
 
@@ -7,9 +6,13 @@ HEADERS += \
     qdeclarativeitem3d.h \
     qdeclarativeeffect.h \
     qdeclarativemesh.h \
+    qdeclarativeview3d.h \
     qdeclarativeviewport.h
+
 
 SOURCES += \
     qdeclarativeeffect.cpp \
     qdeclarativeitem3d.cpp \
+    qdeclarativeview3d.cpp \
     qdeclarativemesh.cpp
+

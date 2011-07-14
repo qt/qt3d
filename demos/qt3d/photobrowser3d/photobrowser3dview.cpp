@@ -195,8 +195,20 @@ void PhotoBrowser3DView::initialise()
     url.setScheme("file");
     url.setPath(path);
 
+    bool atLeastOneImageFound = false;
     QFileInfo fi(path);
-    if (!fi.exists() || !fi.isDir())
+    if (fi.exists() && fi.isDir())
+    {
+        QDir pics(path);
+        QStringList entries = pics.entryList(QDir::Files);
+        for (int i = 0; i < entries.size() && !atLeastOneImageFound; ++i)
+        {
+            QImage im(pics.filePath(entries.at(i)));
+            if (!im.isNull())
+                atLeastOneImageFound = true;
+        }
+    }
+    if (!atLeastOneImageFound)
     {
         qWarning("No pictures directory found at %s\n"
                  "using test images", qPrintable(path));
@@ -327,11 +339,9 @@ void PhotoBrowser3DView::closeEvent(QCloseEvent *e)
         // set this flag to indicate that when the image manager stops done event
         // should be signalled to the state machine, resulting in close
         m_closing = true;
-        fprintf(stderr, "Closing down........");
     }
     else
     {
-        fprintf(stderr, " done\n");
         e->accept();
     }
 }

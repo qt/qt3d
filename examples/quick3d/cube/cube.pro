@@ -1,59 +1,14 @@
 TEMPLATE = app
 TARGET = cube_qml
 CONFIG += qt warn_on
+!package: CONFIG += qt3dquick
 
 SOURCES += main.cpp
-HEADERS += ../qmlres.h
 
-QT += declarative
+include(../../../qt3dquick_pkg_dep.pri)
+include(../../../qml_pkg.pri)
 
-!package:DESTDIR = ../../../bin
-# for cleanup on Windows platforms - avoid deletion prompts
-win32 {
-    QMAKE_DEL_FILE = del /q
-    QMAKE_DEL_DIR = rmdir /s /q
-}
+OTHER_FILES += \
+    cube_qml.rc
 
-qmlResources.files = qml
-symbian {
-    DEPLOYMENT = qmlResources
-} else {
-    macx {
-        qmlResources.path = Contents/Resources
-        QMAKE_BUNDLE_DATA += qmlResources
-    } else {
-        !package {
-            qmlResources.input = qmlResources.files
-            qmlResources.output = $$OUT_PWD/../../../bin/resources/examples/$$TARGET/qml
-            qmlResources.commands = $$QMAKE_COPY_DIR ${QMAKE_FILE_IN} ${QMAKE_FILE_OUT}
-            qmlResources.CONFIG += no_link_no_clean
-            qmlResources.variable_out = POST_TARGETDEPS
-            QMAKE_EXTRA_COMPILERS += qmlResources
-        }
-    }
-}
-
-# for cleanup on Windows platforms - avoid deletion prompts
-win32 {
-    QMAKE_DEL_FILE = del /q
-    QMAKE_DEL_DIR = rmdir /s /q
-}
-
-# for make install use in packages
-distInstalls.files = qml
-distInstalls.path = $$[QT_INSTALL_DATA]/quick3d/examples/$$TARGET
-INSTALLS += distInstalls
-
-package {
-    maemo {
-        applnk.files = cube_qml.desktop
-        applnk.path = /usr/share/applications
-
-        icons.files = icon-l-qtquick3d.png
-        icons.path = /usr/share/themes/base/meegotouch/icons
-        INSTALLS += icons applnk
-    }
-
-    target.path = $$[QT_INSTALL_BINS]
-    INSTALLS += target
-}
+RC_FILE = cube_qml.rc

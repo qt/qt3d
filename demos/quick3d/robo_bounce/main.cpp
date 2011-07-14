@@ -51,15 +51,20 @@ int main(int argc, char *argv[])
     QGLFormat f = QGLFormat::defaultFormat();
     f.setSampleBuffers(true);
     QSGView view(f);
-    QString qml = q_get_qmldir(QLatin1String("qml/robobounce.qml"));
-    view.setSource(QUrl::fromLocalFile(qml));
+    view.setSource(QUrl(QLatin1String("qrc:///qml/robobounce.qml")));
 
+#ifdef Q_OS_SYMBIAN
+    view.setAttribute(Qt::WA_LockPortraitOrientation, true);
+    view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
+    view.showFullScreen();
+#else
     if (QApplication::arguments().contains(QLatin1String("-maximize")))
         view.showMaximized();
     else if (QApplication::arguments().contains(QLatin1String("-fullscreen")))
         view.showFullScreen();
     else
         view.show();
+#endif
 
     return app.exec();
 }

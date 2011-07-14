@@ -51,15 +51,22 @@ int main(int argc, char *argv[])
     QGLFormat f = QGLFormat::defaultFormat();
     f.setSampleBuffers(true);
     QSGView view(f);
+    QDeclarativeView3D view;
     QString qml = q_get_qmldir(QLatin1String("qml/matrix-animation.qml"));
     view.setSource(QUrl::fromLocalFile(qml));
 
+#ifdef Q_OS_SYMBIAN
+    view.setAttribute(Qt::WA_LockLandscapeOrientation, true);
+    view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
+    view.showFullScreen();
+#else
     if (QApplication::arguments().contains(QLatin1String("-maximize")))
         view.showMaximized();
     else if (QApplication::arguments().contains(QLatin1String("-fullscreen")))
         view.showFullScreen();
     else
         view.show();
+#endif
 
     return app.exec();
 }

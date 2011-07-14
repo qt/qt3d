@@ -112,7 +112,7 @@ uint QGLRenderOrder::effectHash() const
         if (eff)
             result = reinterpret_cast<quint64>(eff);
         else
-            result = effectiveStandardEffect();
+            result = effectiveStandardEffect() + 1;
         Q_ASSERT(result);
     }
     return qHash(result);

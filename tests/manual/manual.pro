@@ -7,4 +7,5 @@ SUBDIRS +=  displaymodel \
             submesh \
             translation \
             transformations \
-            animations
+            animations \
+            qrc

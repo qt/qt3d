@@ -2,35 +2,17 @@ TEMPLATE = lib
 TARGET  = qshapesqmlplugin
 CONFIG += qt plugin
 
+include(../../../qt3d_pkg_dep.pri)
+include(../../../qt3dquick_pkg_dep.pri)
+
 # See the README in the root dir re this code
 package {
-    macx:CONFIG(qt_framework, qt_framework|qt_no_framework) {
-        LIBS += -framework Qt3D -F../../threed
-        LIBS += -framework Qt3DQuick -F../../quick3d
-        INCLUDEPATH += ../../threed/Qt3D.framework/Versions/1/Headers
-        INCLUDEPATH += ../../quick3d/Qt3DQuick.framework/Versions/1/Headers
-    } else {
-        win32 {
-            CONFIG(debug, debug|release) {
-                LIBS += ..\\..\\threed\\debug\\Qt3Dd.lib
-                LIBS += ..\\..\\quick3d\\debug\\Qt3DQuickd.lib
-            } else {
-                LIBS += ..\\..\\threed\\release\\Qt3D.lib
-                LIBS += ..\\..\\quick3d\\release\\Qt3DQuick.lib
-            }
-        } else {
-            LIBS += -L../../threed -lQt3D
-            LIBS += -L../../quick3d -lQt3DQuick
-        }
-        INCLUDEPATH += ../../../include/Qt3D
-        INCLUDEPATH += ../../../include/Qt3DQuick
-    }
-    target.path += $$[QT_INSTALL_IMPORTS]/Qt3D/Shapes
+    target.path += $$QT3D_INSTALL_IMPORTS/Qt3D/Shapes
     INSTALLS += target
     QT += declarative
 } else {
     CONFIG += qt3dquick qt3d
-    DESTDIR = $$[QT_INSTALL_IMPORTS]/Qt3D/Shapes
+    DESTDIR = $$QT3D_INSTALL_IMPORTS/Qt3D/Shapes
 }
 
 win32 {
@@ -76,13 +58,13 @@ qdeclarativesources.files += \
 
 !package {
     qdeclarative_in_place.input = qdeclarativesources.files
-    qdeclarative_in_place.output = $$[QT_INSTALL_IMPORTS]/Qt3D/Shapes/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
+    qdeclarative_in_place.output = $$QT3D_INSTALL_IMPORTS/Qt3D/Shapes/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
     qdeclarative_in_place.commands = $$QMAKE_COPY ${QMAKE_FILE_IN} ${QMAKE_FILE_OUT}
     qdeclarative_in_place.CONFIG += no_link_no_clean
     qdeclarative_in_place.variable_out = PRE_TARGETDEPS
     QMAKE_EXTRA_COMPILERS += qdeclarative_in_place
 } else {
-    qdeclarativesources.path += $$[QT_INSTALL_IMPORTS]/Qt3D/Shapes
+    qdeclarativesources.path += $$QT3D_INSTALL_IMPORTS/Qt3D/Shapes
     INSTALLS += qdeclarativesources
 }
 

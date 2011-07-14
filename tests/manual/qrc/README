@@ -1,0 +1,4 @@
+Test is to make sure that the qrc: loaders don't change their functionality
+between releases.
+
+Both left and right cubes should be non-rotating and textured with Qt logo.

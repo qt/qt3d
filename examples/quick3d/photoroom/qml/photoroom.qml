@@ -54,68 +54,70 @@ Viewport {
         center: Qt.vector3d(0, 0, -2.5)
     }
 
-    PhotoPane {
-        offset: -2.1
-        layer: 0
-        image: "textures/woman.jpg"
-    }
-    PhotoPane {
-        offset: -2.1
-        layer: 1
-        image: "textures/niagara_falls.jpg"
-    }
-    PhotoPane {
-        offset: -2.1
-        layer: 2
-        image: "textures/place.jpg"
-    }
-    PhotoPane {
-        offset: -2.1
-        layer: 3
-        image: "textures/background.jpg"
-    }
-    PhotoPane {
-        offset: -2.1
-        layer: 4
-        image: "textures/basket.jpg"
-    }
-    PhotoPane {
-        offset: -2.1
-        layer: 5
-        image: "textures/qtlogo.png"
-        effect.color: "#006090"
+    ListModel {
+        id: imagesModelLeft
+        ListElement { image: "textures/woman.jpg"; }
+        ListElement { image: "textures/niagara_falls.jpg"; }
+        ListElement { image: "textures/place.jpg"; }
+        ListElement { image: "textures/basket.jpg"; }
+        ListElement { image: "textures/qtlogo.png"; color: "#006090" }
     }
 
-    PhotoPane {
-        offset: 2.1
-        layer: 0
-        image: "textures/niagara_falls.jpg"
+    Component {
+        id: paneComponent
+        PhotoPane {
+            layer: index
+            image: model.image
+            // Items end up with the default value defined in PhotoPane if you
+            // try and assign an undefined value, but this logic avoids a
+            // string of warnings
+            color: (model.color == undefined) ? "#ffffff" : model.color
+        }
     }
-    PhotoPane {
-        offset: 2.1
-        layer: 1
-        image: "textures/place.jpg"
+
+    Item3D {
+        // Left stack of images
+        x: -2.1
+        Repeater {
+            delegate: paneComponent
+            model: imagesModelLeft
+        }
     }
-    PhotoPane {
-        offset: 2.1
-        layer: 2
-        image: "textures/background.jpg"
+
+    //! [0]
+    ListModel {
+        id: exampleModel
+        ListElement { image: "textures/niagara_falls.jpg" }
+        ListElement { image: "textures/place.jpg" }
+        ListElement { image: "textures/background.jpg" }
+        ListElement { image: "textures/basket.jpg" }
+        ListElement { image: "textures/woman.jpg" }
     }
-    PhotoPane {
-        offset: 2.1
-        layer: 3
-        image: "textures/basket.jpg"
+    //! [0]
+
+    //! [1]
+    Component {
+        id: exampleDelegate
+        PhotoPane {
+            layer: index
+            image: model.image
+            // If you intend on removing elements from the model,
+            // include this line:
+            enabled: index != -1
+        }
     }
-    PhotoPane {
-        offset: 2.1
-        layer: 4
-        image: "textures/qtlogo.png"
-        effect.color: "#006090"
-    }
-    PhotoPane {
-        offset: 2.1
-        layer: 5
-        image: "textures/button/woman.jpg"
+    //! [1]
+
+    Item3D {
+        // Right stack of images
+        x: 2.1
+        //! [2]
+        Repeater {
+            id: exampleRepeater
+            delegate: exampleDelegate
+            model: exampleModel
+        }
+        //! [2]
     }
 
     states: [
