@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
     view.setSource(QUrl(QLatin1String("qrc:///qml/robobounce.qml")));
 
 #ifdef Q_OS_SYMBIAN
-    view.setAttribute(Qt::WA_LockPortraitOrientation, true);
+    view.setAttribute(Qt::WA_LockLandscapeOrientation, true);
     view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
     view.showFullScreen();
 #else

@@ -26,8 +26,10 @@ package {
     maemo: icons.files = icon-l-qtquick3d.png
 }
 
-symbian {
-    ICON = ../qtquick3d.svg
+contains(TEMPLATE, app){
+    symbian {
+        ICON = ../qtquick3d.svg
+    }
 }
 
 include(pkg.pri)

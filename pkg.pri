@@ -43,8 +43,8 @@ contains(TEMPLATE, app) {
     }
     symbian {
         vendorinfo = \
-         "%{\"NOKIA\"}" \
-         ":\"NOKIA\""
+         "%{\"Nokia\"}" \
+         ":\"Nokia\""
 
         my_deployment.pkg_prerules = vendorinfo
         DEPLOYMENT += my_deployment

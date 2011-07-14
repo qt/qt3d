@@ -9,11 +9,11 @@ RESOURCES = model_advanced.qrc
 
 symbian {
     vendorinfo = \
-     "%{\"NOKIA\"}" \
-     ":\"NOKIA\""
+     "%{\"Nokia\"}" \
+     ":\"Nokia\""
 
     my_deployment.pkg_prerules = vendorinfo
     DEPLOYMENT += my_deployment
 
-    ICON = ../../qt3d.svg
+    ICON = ../qt3d.svg
 }
