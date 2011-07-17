@@ -121,6 +121,7 @@ protected:
     void hoverLeaveEvent(QHoverEvent *event);
     void wheelEvent(QWheelEvent *event);
     void keyPressEvent(QKeyEvent *event);
+    void itemChange(QSGItem::ItemChange change, const ItemChangeData &value);
 
 private:
     ViewportPrivate *d;

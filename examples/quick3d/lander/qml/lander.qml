@@ -60,10 +60,6 @@ Image {
         anchors.fill: parent
         visible: false
 
-        Rectangle {
-            id: fuelGauge
-        }
-
         camera: Camera {
             eye.x: cameraTarget.x
             // Keep the lander and pad in view for reasonable values
@@ -94,7 +90,8 @@ Image {
 
             mesh: Mesh { source: "meshes/lunar-landscape.obj" }
 
-            // HACK.  There should be API for this
+            // This is the top of the model, where we want the lander to land.
+            // It would be nice if there was API for this
             property real yMax : y + 3.6;
         }
 
@@ -121,18 +118,19 @@ Image {
                 Rotation3D {
                     Behavior on angle { NumberAnimation { duration: 200}}
                     axis: Qt.vector3d(-1.0,0,0)
-                    angle: gameLogic.zBoostInput * 50
+                    angle: gameLogic.fuel > 0 ? gameLogic.zBoostInput * 50 : 0
                 },
                 Rotation3D {
                     Behavior on angle { NumberAnimation { duration: 200}}
                     axis: Qt.vector3d(0,0,1.0)
-                    angle: gameLogic.xBoostInput * 50
+                    angle: gameLogic.fuel > 0 ? gameLogic.xBoostInput * 50 : 0
                 }
             ]
 
             // HACK.  There should be API for this
             property real yMin: -0.37;
-            property bool jetsVisible: true
+            property bool jetsVisible: gameLogic.gameRunning &&
+                                       gameLogic.fuel > 0.0
             property real yBoostScaleFactor: (gameLogic.yboosting ? 1.3 : 0.8)
             property real activeScaleFactor: 1.3
 
@@ -171,6 +169,25 @@ Image {
             }
         }
 
+        Rectangle {
+            id: fuelGauge
+            color: "#333333"
+            anchors.left: parent.left
+            anchors.bottom: parent.bottom
+            anchors.top: parent.top
+            width: 15
+            visible: true
+
+            Rectangle {
+                id: gauge
+                anchors.bottom: fuelGauge.bottom
+                anchors.horizontalCenter: parent.horizontalCenter
+                height: fuelGauge.height * gameLogic.fuel;
+                width: fuelGauge.width * 0.8
+                color: Qt.rgba(1.0 -gameLogic.fuel,0.2,gameLogic.fuel)
+            }
+        }
+
         MouseArea {
             id: gameInputPad
             anchors.fill: parent
@@ -203,6 +220,9 @@ Image {
             // Game State
             property int score : 0
             property int hiScore : 0
+            property bool gameRunning: false
+            property real fuel : 1.0;
+
             property real xBoostInput: 0.0
             property real xVelocity : 0
             property real xBoostFactor: gravity
@@ -217,6 +237,8 @@ Image {
 
             // Constants
             property real gravity: 0.1 / 60.0;
+            // Should be about 5 seconds of fuel
+            property real fuelConsuptionRate: 1.0 / 60.0 / 5.0
 
             Timer {
                 id: simulationTickTimer
@@ -231,10 +253,16 @@ Image {
             function tick() {
                 // apply gravity and user inputs to velocities
                 yVelocity -= gravity;
-                if (yboosting)
-                    yVelocity += yBoostFactor;
-                xVelocity -= xBoostInput * xBoostFactor;
-                zVelocity -= zBoostInput * zBoostFactor;
+                if (fuel > 0.0)
+                {
+                    if (yboosting)
+                    {
+                        yVelocity += yBoostFactor;
+                        fuel -= fuelConsuptionRate;
+                    }
+                    xVelocity -= xBoostInput * xBoostFactor;
+                    zVelocity -= zBoostInput * zBoostFactor;
+                }
 
                 // update lander position
                 lander.x += xVelocity;
@@ -251,11 +279,10 @@ Image {
             }
 
             function win() {
-                // Theoretical max score is 100^5, or 10,000,000,000
+                // Theoretical max score is 2 * 100^5, or 20,000,000,000
                 score = Math.floor(sanitize(xVelocity) / sanitize(yVelocity) /
                                    sanitize(zVelocity) / sanitize(lander.x)
-                                   / sanitize(lander.z)
-                                   );
+                                   / sanitize(lander.z) * (fuel + 1)                                   );
                 if (score > hiScore) hiScore = score;
                 simulationTickTimer.running = false;
                 endGame();
@@ -272,7 +299,7 @@ Image {
                 viewport.visible = true;
                 simulationTickTimer.running = true;
                 gameInputPad.enabled = true;
-                lander.jetsVisible = true;
+                gameLogic.gameRunning = true;
 
                 // reset state
                 score = 0;
@@ -281,6 +308,7 @@ Image {
                 zBoostInput = 0.0
                 zVelocity = 0
                 yboosting = false
+                fuel = 1.0;
 
                 // Random starting position
                 lander.position = Qt.vector3d(Math.random() * 10.0 - 5.0,
@@ -297,7 +325,7 @@ Image {
                 // Tidy up visuals
                 titleBar.visible = true;
                 gameInputPad.enabled = false;
-                lander.jetsVisible = false;
+                gameLogic.gameRunning = false;
                 gameLogic.zBoostInput = 0.0;
                 gameLogic.xBoostInput = 0.0;
                 gameLogic.yboosting = false;

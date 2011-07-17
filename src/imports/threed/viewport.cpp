@@ -1174,4 +1174,17 @@ QPointF Viewport::viewDelta(qreal deltax, qreal deltay)
     return QPointF(deltax * scaleX / w, deltay * scaleY / h);
 }
 
+void Viewport::itemChange(QSGItem::ItemChange change, const ItemChangeData &value)
+{
+    if (change == QSGItem::ItemChildAddedChange)
+    {
+        QSGItem *newItem = value.item;
+        if (QDeclarativeItem3D* item3d =
+                qobject_cast<QDeclarativeItem3D*>(newItem))
+        {
+            setItemViewport(item3d);
+        }
+    };
+    return QSGItem::itemChange(change, value);
+}
 QT_END_NAMESPACE
