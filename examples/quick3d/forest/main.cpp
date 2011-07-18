@@ -42,12 +42,9 @@
 #include <QtGui/QApplication>
 #include <QtDeclarative/qsgview.h>
 
-#include "../qmlres.h"
-
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    QDeclarativeView3D view;
 
     QGLFormat f = QGLFormat::defaultFormat();
     f.setSampleBuffers(true);

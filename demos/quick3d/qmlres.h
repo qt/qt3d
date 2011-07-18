@@ -60,9 +60,9 @@ static QString q_get_qmldir(const QString &name)
     QString qml = name;
     // try for a Linux package install first
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
-    QDir pkgdir(QLatin1String("/usr/share/qt5/quick3d/examples"));
+    QDir pkgdir(QLatin1String("/usr/share/qt5/quick3d/demos"));
 #else
-    QDir pkgdir(QLatin1String("/usr/share/qt4/quick3d/examples"));
+    QDir pkgdir(QLatin1String("/usr/share/qt4/quick3d/demos"));
 #endif
     QString app = QCoreApplication::applicationFilePath();
     app = app.section(QDir::separator(), -1);
@@ -103,13 +103,13 @@ static QString q_get_qmldir(const QString &name)
                 //Grab just the app name itself.
                 app = app.section(QDir::separator(), -1);
 
-                if (dir.cd(QLatin1String("examples")) && dir.cd(app) && dir.exists())
+                if (dir.cd(QLatin1String("demos")) && dir.cd(app) && dir.exists())
                 {
                     qml = dir.filePath(qml);
                 }
                 else
                 {
-                    QString msg = QLatin1String("examples");
+                    QString msg = QLatin1String("demos");
                     msg += QDir::separator();
                     msg += app;
                     qWarning("Expected %s directry with qml resources!", qPrintable(msg));
