@@ -3,7 +3,8 @@ TARGET = cubehouse
 CONFIG += qt warn_on
 !package: CONFIG += qt3d
 
-include(../../../qt3d_pkg_dep.pri)
+CONFIG += qt3d_deploy_pkg
+include(../../../pkg.pri)
 
 SOURCES = cubeview.cpp main.cpp projectivetextureeffect.cpp
 HEADERS = cubeview.h projectivetextureeffect.h

@@ -2,8 +2,8 @@ TEMPLATE = lib
 TARGET  = qshapesqmlplugin
 CONFIG += qt plugin
 
-include(../../../qt3d_pkg_dep.pri)
-include(../../../qt3dquick_pkg_dep.pri)
+CONFIG += qt3dquick_deploy_pkg
+include(../../../pkg.pri)
 
 # See the README in the root dir re this code
 package {

@@ -8,4 +8,8 @@ HEADERS += ../qmlres.h
 
 DESTDIR = ../../../bin
 
-include(../../../qml_pkg.pri)
+INSTALL_DIRS = qml
+
+CONFIG += qt3d_deploy_qml
+include(../../../pkg.pri)
+qtcAddDeployment()

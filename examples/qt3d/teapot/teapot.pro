@@ -6,7 +6,8 @@ CONFIG += qt warn_on
 SOURCES = teapotview.cpp main.cpp
 HEADERS = teapotview.h
 
-include(../../../qt3d_pkg_dep.pri)
+CONFIG += qt3d_deploy_pkg
+include(../../../pkg.pri)
 
 OTHER_FILES += \
     teapot.rc

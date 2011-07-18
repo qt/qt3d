@@ -5,8 +5,9 @@ CONFIG += qt warn_on
 
 SOURCES += main.cpp
 
-include(../../../qt3dquick_pkg_dep.pri)
-include(../../../qml_pkg.pri)
+CONFIG += qt3d_deploy_qml qt3dquick_deploy_pkg
+include(../../../pkg.pri)
+qtcAddDeployment()
 
 OTHER_FILES += \
     basket_qml.rc

@@ -26,7 +26,8 @@ HEADERS = \
 RESOURCES = \
     graphicsview.qrc
 
-include(../../../qt3d_pkg_dep.pri)
+CONFIG += qt3d_deploy_pkg
+include(../../../pkg.pri)
 
 OTHER_FILES += \
     graphicsview.rc
