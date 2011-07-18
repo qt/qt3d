@@ -1,8 +1,14 @@
 # Manages deploying the QML files and resources along with the binary
 
-distInstalls.files = qml
-distInstalls.path = $$QT3D_INSTALL_DATA/quick3d/examples/$$TARGET
-INSTALLS += distInstalls
+mt {
+    distInstalls.files = qml
+    distInstalls.path = /opt/mt/applications/$$TARGET
+    INSTALLS += distInstalls
+} else {
+    distInstalls.files = qml
+    distInstalls.path = $$QT3D_INSTALL_DATA/quick3d/examples/$$TARGET
+    INSTALLS += distInstalls
+}
 
 win32 {
     QMAKE_DEL_FILE = del /q

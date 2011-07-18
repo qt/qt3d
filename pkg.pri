@@ -35,9 +35,24 @@ contains(TEMPLATE, app) {
             # icons.files is set by qt3dquick_pkg_dep.pri or qt3d_pkg_dep.pri
             icons.path = /usr/share/themes/base/meegotouch/icons
             INSTALLS += icons applnk
+
+            target.path += $$QT3D_INSTALL_BINS
+            INSTALLS += target
+        } else {
+            mt {
+                applnk.files = info.json
+                applnk.path = /opt/mt/applications/$${TARGET}
+
+                # icons.files is set by qt3dquick_pkg_dep.pri or qt3d_pkg_dep.pri
+                icons.path = /opt/mt/applications/$${TARGET}
+                INSTALLS += icons applnk
+                target.path += /opt/mt/applications/$${TARGET}
+                INSTALLS += target
+            } else {
+                target.path += $$QT3D_INSTALL_BINS
+                INSTALLS += target
+            }
         }
-        target.path += $$QT3D_INSTALL_BINS
-        INSTALLS += target
     } else {
         DESTDIR = ../../../bin
     }
