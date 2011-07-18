@@ -465,7 +465,7 @@ void QDeclarativeItem3DPrivate::data_append(QDeclarativeListProperty<QObject> *p
     // QDeclarativeItems so view items will assign dynamically created objects
     // to the Item3d and make them available for drawing.
 
-    QDeclarativeItem *i = qobject_cast<QDeclarativeItem *>(o);
+    QDeclarativeItem3D *i = qobject_cast<QDeclarativeItem3D *>(o);
     if (i)
         i->setParentItem(static_cast<QDeclarativeItem3D *>(prop->object));
     else
@@ -530,7 +530,7 @@ QDeclarativeItem3D::QDeclarativeItem3D(QObject *parent)
 {
     d = new QDeclarativeItem3DPrivate(this);
 
-    QDeclarativeItem *itemParent = qobject_cast<QDeclarativeItem *>(parent);
+    QDeclarativeItem3D *itemParent = qobject_cast<QDeclarativeItem3D *>(parent);
     if (itemParent) {
         setParentItem(itemParent);
     } else {
@@ -780,7 +780,7 @@ void QDeclarativeItem3D::setInheritEvents(bool inherit)
     else
     {
         for (int index = 0; index < children().size(); ++index) {
-            QDeclarativeItem *subItem = qobject_cast<QDeclarativeItem *>(children().at(index));
+            QDeclarativeItem3D *subItem = qobject_cast<QDeclarativeItem3D *>(children().at(index));
             if (subItem)
             {
                 // Proxy the mouse event signals to the parent so that
