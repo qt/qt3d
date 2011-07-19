@@ -6,9 +6,11 @@ CONFIG += qt warn_on
 SOURCES += main.cpp
 
 include(../../../qt3dquick_pkg_dep.pri)
-include(../../../qml_pkg.pri)
 
 OTHER_FILES += \
     forest.rc
 
 RC_FILE = forest.rc
+
+RESOURCES += \
+    forest.qrc
