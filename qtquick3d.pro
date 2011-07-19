@@ -18,10 +18,6 @@ include(doc/doc.pri)
 contains(QT_CONFIG, opengles1) {
     error(QtQuick3D does not support OpenGL ES 1!)
 }
-# We need qt declarative
-!contains(QT_CONFIG, declarative) {
-    error(QtQuick3D requires Qt Declarative!)
-}
 
 include(pkg.pri)
 

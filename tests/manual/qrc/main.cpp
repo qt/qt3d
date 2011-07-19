@@ -40,22 +40,24 @@
 ****************************************************************************/
 
 #include <QtGui/QApplication>
-#include "qdeclarativeview3d.h"
 #include <QWidget>
 #include <QHBoxLayout>
+#include <QtDeclarative/qsgview.h>
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
+    QGLFormat f = QGLFormat::defaultFormat();
+    f.setSampleBuffers(true);
+    QSGView viewL(f);
     QWidget widget;
     QHBoxLayout layout;
 
-    QDeclarativeView3D viewL;
     viewL.setSource(QUrl("qrc:///qml/cube.qml"));
     layout.addWidget(&viewL);
 
-    QDeclarativeView3D viewR;
+    QSGView viewR(f);
     viewR.setSource(QUrl("Qrc:/qml/cube.qml"));
 
     layout.addWidget(&viewR);

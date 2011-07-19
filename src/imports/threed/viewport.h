@@ -116,10 +116,10 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
-    void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
-    void hoverMoveEvent(QGraphicsSceneHoverEvent *event);
-    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
-    void wheelEvent(QGraphicsSceneWheelEvent *event);
+    void hoverEnterEvent(QHoverEvent *event);
+    void hoverMoveEvent(QHoverEvent *event);
+    void hoverLeaveEvent(QHoverEvent *event);
+    void wheelEvent(QWheelEvent *event);
     void keyPressEvent(QKeyEvent *event);
 
 private:
@@ -129,7 +129,7 @@ private:
     void draw(QGLPainter *painter);
     void initializeGL(QGLPainter *painter);
 
-    bool hoverEvent(QGraphicsSceneHoverEvent *event);
+    bool hoverEvent(QHoverEvent *event);
 
     QObject *objectForPoint(const QPointF &pos)
     {

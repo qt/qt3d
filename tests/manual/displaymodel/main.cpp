@@ -40,7 +40,7 @@
 ****************************************************************************/
 
 #include <QtGui/QApplication>
-#include "qdeclarativeview3d.h"
+#include <QtDeclarative/qsgview.h>
 
 #include "../../shared/qmlres.h"
 
@@ -48,7 +48,9 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    QDeclarativeView3D view;
+    QGLFormat f = QGLFormat::defaultFormat();
+    f.setSampleBuffers(true);
+    QSGView view(f);
     QString qml = q_get_qmldir(QLatin1String("qml/tst_displaymodel.qml"));
     view.setSource(QUrl::fromLocalFile(qml));
 

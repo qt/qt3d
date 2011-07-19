@@ -902,7 +902,7 @@ void Viewport::mouseMoveEvent(QGraphicsSceneMouseEvent *e)
 /*!
     \internal
 */
-void Viewport::hoverEnterEvent(QGraphicsSceneHoverEvent *e)
+void Viewport::hoverEnterEvent(QHoverEvent *e)
 {
     if (hoverEvent(e))
         e->setAccepted(true);
@@ -913,7 +913,7 @@ void Viewport::hoverEnterEvent(QGraphicsSceneHoverEvent *e)
 /*!
     \internal
 */
-void Viewport::hoverMoveEvent(QGraphicsSceneHoverEvent *e)
+void Viewport::hoverMoveEvent(QHoverEvent *e)
 {
     if (hoverEvent(e))
         e->setAccepted(true);
@@ -924,7 +924,7 @@ void Viewport::hoverMoveEvent(QGraphicsSceneHoverEvent *e)
 /*!
     \internal
 */
-void Viewport::hoverLeaveEvent(QGraphicsSceneHoverEvent *e)
+void Viewport::hoverLeaveEvent(QHoverEvent *e)
 {
     if (!d->pressedObject && d->enteredObject) {
         sendLeaveEvent(d->enteredObject);
@@ -938,7 +938,7 @@ void Viewport::hoverLeaveEvent(QGraphicsSceneHoverEvent *e)
 /*!
     \internal
 */
-void Viewport::wheelEvent(QGraphicsSceneWheelEvent *e)
+void Viewport::wheelEvent(QWheelEvent *e)
 {
     if (d->navigation) {
         wheel(e->delta());
@@ -1026,7 +1026,7 @@ void Viewport::keyPressEvent(QKeyEvent *e)
 /*!
     \internal
 */
-bool Viewport::hoverEvent(QGraphicsSceneHoverEvent *e)
+bool Viewport::hoverEvent(QHoverEvent *e)
 {
     if (!d->panning && d->picking) {
         QObject *object = objectForPoint(e->pos());
@@ -1037,7 +1037,7 @@ bool Viewport::hoverEvent(QGraphicsSceneHoverEvent *e)
             QMouseEvent event
                 (QEvent::MouseMove,
                  (d->pressedObject == object) ? QPoint(0, 0) : QPoint(-1, -1),
-                 e->screenPos(), Qt::NoButton, Qt::NoButton, e->modifiers());
+                 e->pos(), Qt::NoButton, Qt::NoButton, e->modifiers());
             QCoreApplication::sendEvent(d->pressedObject, &event);
         } else if (object) {
             if (object != d->enteredObject) {
@@ -1048,7 +1048,7 @@ bool Viewport::hoverEvent(QGraphicsSceneHoverEvent *e)
             }
             QMouseEvent event
                 (QEvent::MouseMove, QPoint(0, 0),
-                 e->screenPos(), Qt::NoButton, Qt::NoButton, e->modifiers());
+                 e->pos(), Qt::NoButton, Qt::NoButton, e->modifiers());
             QCoreApplication::sendEvent(object, &event);
         } else if (d->enteredObject) {
             sendLeaveEvent(d->enteredObject);

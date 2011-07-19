@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 #include <QtGui/QApplication>
-#include "qdeclarativeview3d.h"
+#include <QtDeclarative/qsgview.h>
 
 #include "../qmlres.h"
 
@@ -47,7 +47,9 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    QDeclarativeView3D view;
+    QGLFormat f = QGLFormat::defaultFormat();
+    f.setSampleBuffers(true);
+    QSGView view(f);
     QString qml = q_get_qmldir(QLatin1String("qml/lander.qml"));
     view.setSource(QUrl::fromLocalFile(qml));
 

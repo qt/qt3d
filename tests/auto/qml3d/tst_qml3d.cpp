@@ -41,7 +41,7 @@
 
 #include <QApplication>
 #include <QtDeclarative/qdeclarative.h>
-#include <QtDeclarative/qdeclarativeview.h>
+#include <QtDeclarative/qsgview.h>
 #include <QtDeclarative/qdeclarativeengine.h>
 #include <QtDeclarative/qdeclarativecontext.h>
 #include <QtOpenGL/qgl.h>
@@ -319,6 +319,7 @@ int main(int argc, char *argv[])
     bool atLeastOne = false;
     if (displayFunctions)
         restrictFunctions.clear();
+    qDebug() << "Looking at " << entries;
     foreach (QString name, entries) {
         QDir subdir(testPath + QDir::separator() + name);
         QStringList files = subdir.entryList(filters, QDir::Files);
@@ -363,18 +364,23 @@ int main(int argc, char *argv[])
                 if (!hasFunc)
                     continue;
                 atLeastOne = true;
-                QDeclarativeView view;
+
+                QGLFormat f = QGLFormat::defaultFormat();
+                f.setSampleBuffers(true);
+                QSGView view(f);
+
                 QuitObject quitobj;
                 QEventLoop eventLoop;
                 QObject::connect(view.engine(), SIGNAL(quit()),
                                  &quitobj, SLOT(quit()));
                 QObject::connect(view.engine(), SIGNAL(quit()),
                                  &eventLoop, SLOT(quit()));
-                view.setViewport(new QGLWidget());
+                fprintf(stderr, "test path: %s\n", qPrintable(testPath));
+                fprintf(stderr, "file path: %s\n", qPrintable(fi.absoluteFilePath()));
                 view.engine()->addImportPath(testPath);
                 view.rootContext()->setContextProperty(QLatin1String("filterTestCases"), restrictFunctions);
                 view.setSource(QUrl::fromLocalFile(fi.absoluteFilePath()));
-                if (view.status() == QDeclarativeView::Error) {
+                if (view.status() == QSGView::Error) {
                     // Error compiling the test - flag failure and continue.
                     ++failed;
                     continue;
