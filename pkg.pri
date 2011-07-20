@@ -48,6 +48,8 @@ contains(TEMPLATE, app) {
                 INSTALLS += icons applnk
                 target.path += /opt/mt/applications/$${TARGET}
                 INSTALLS += target
+
+                DEFINES += QT3D_USE_OPT=$${TARGET}
             } else {
                 target.path += $$QT3D_INSTALL_BINS
                 INSTALLS += target
