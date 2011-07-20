@@ -10,23 +10,16 @@ win32 {
 }
 
 qmlResources.files = qml
-symbian {
-    DEPLOYMENT += qmlResources
-    qmlDeployment.sources = qml\*
-    qmlDeployment.path = qml
-    DEPLOYMENT += qmlDeployment
+macx {
+    qmlResources.path = Contents/Resources
+    QMAKE_BUNDLE_DATA += qmlResources
 } else {
-    macx {
-        qmlResources.path = Contents/Resources
-        QMAKE_BUNDLE_DATA += qmlResources
-    } else {
-        !package {
-            qmlResources.input = qmlResources.files
-            qmlResources.output = $$OUT_PWD/../../../bin/resources/examples/$$TARGET/qml
-            qmlResources.commands = $$QMAKE_COPY_DIR ${QMAKE_FILE_IN} ${QMAKE_FILE_OUT}
-            qmlResources.CONFIG += no_link_no_clean
-            qmlResources.variable_out = POST_TARGETDEPS
-            QMAKE_EXTRA_COMPILERS += qmlResources
-        }
+    !package {
+        qmlResources.input = qmlResources.files
+        qmlResources.output = $$OUT_PWD/../../../bin/resources/examples/$$TARGET/qml
+        qmlResources.commands = $$QMAKE_COPY_DIR ${QMAKE_FILE_IN} ${QMAKE_FILE_OUT}
+        qmlResources.CONFIG += no_link_no_clean
+        qmlResources.variable_out = POST_TARGETDEPS
+        QMAKE_EXTRA_COMPILERS += qmlResources
     }
 }

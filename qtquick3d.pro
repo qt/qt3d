@@ -28,7 +28,7 @@ package {
     distInstalls.path = $$QT3D_INSTALL_DATA/mkspecs/features
     !qtc_hmtn: INSTALLS += distInstalls
 } else {
-    symbian|win32 {
+    win32 {
         Qt3DFile=$$PWD\\features\\qt3d.prf
         Qt3DFile=$$replace(Qt3DFile,/,\\)
         featuresDir=$$QT3D_INSTALL_DATA\\mkspecs\\features
@@ -46,17 +46,6 @@ package {
         Qt3DQuickFile=$$PWD/features/qt3dquick.prf
         system(cp "$$Qt3DQuickFile $$featuresDir")
     }
-}
-
-symbian {
-    # symbian needs to be at the end, because qt3d.pro does an ordered build,
-    # and symbian depends on all the others.
-    SUBDIRS += symbianinstall
-
-    symbianinstall.subdir = devices/symbian
-    symbianinstall.target = sub-symbianinstall
-    symbianinstall.depends = $$SUBDIRS
-    symbianinstall.depends -= symbianinstall
 }
 
 OTHER_FILES += \

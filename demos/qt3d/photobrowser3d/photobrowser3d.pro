@@ -58,19 +58,7 @@ OTHER_FILES += \
 
 include(../../../qt3d_pkg_dep.pri)
 
-symbian {
-    symbian-abld|symbian-sbsv2 {
-        # ro-section in photobrowser3d can exceed default allocated space, so move rw-section a little further
-        QMAKE_LFLAGS.ARMCC += --rw-base 0x800000
-        QMAKE_LFLAGS.GCCE += -Tdata 0xC00000
-    }
-}
-
 OTHER_FILES += \
     photobrowser.rc
 
 RC_FILE = photobrowser.rc
-
-symbian {
-    ICON = ../qt3d.svg
-}

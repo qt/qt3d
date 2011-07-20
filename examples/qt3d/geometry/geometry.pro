@@ -18,7 +18,3 @@ OTHER_FILES += \
     geometry.rc
 
 RC_FILE = geometry.rc
-
-symbian {
-    ICON = ../qt3d.svg
-}

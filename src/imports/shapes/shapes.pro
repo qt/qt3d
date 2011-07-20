@@ -21,15 +21,6 @@ win32 {
     }
 }
 
-symbian {
-    CONFIG += epocallowdlldata
-    MMP_RULES += EXPORTUNFROZEN
-    LIBS += -lQt3D -lQt3DQuick
-    TARGET.EPOCALLOWDLLDATA = 1
-    TARGET.CAPABILITY = All -Tcb
-    TARGET.UID3 = 0x20031E9C
-}
-
 SOURCES += \
     sphere.cpp \
     shapes.cpp \

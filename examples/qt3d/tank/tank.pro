@@ -18,7 +18,3 @@ OTHER_FILES += \
     tank.rc
 
 RC_FILE = tank.rc
-
-symbian {
-    ICON = ../qt3d.svg
-}

@@ -13,9 +13,3 @@ contains(QT_CONFIG, reduce_exports):CONFIG += hide_symbols
 include(qt_targets.pri)
 
 wince*:LIBS += $$QMAKE_LIBS_GUI
-
-symbian: {
-    TARGET.EPOCALLOWDLLDATA=1
-    TARGET.CAPABILITY = All -Tcb
-    TARGET = $${TARGET}$${QT_LIBINFIX}
-}

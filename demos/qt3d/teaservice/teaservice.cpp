@@ -372,11 +372,6 @@ int main(int argc, char *argv[])
     menu->addAction(exitAction);
     QObject::connect(exitAction, SIGNAL(triggered()), &app, SLOT(quit()));
 
-#ifdef Q_OS_SYMBIAN
-    mainw.setAttribute(Qt::WA_LockLandscapeOrientation, true);
-    mainw.showFullScreen();
-#endif
-
     mainw.show();
     return app.exec();
 }

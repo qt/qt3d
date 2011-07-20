@@ -413,17 +413,12 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
     ShapesWidget w;
 
-#ifdef Q_OS_SYMBIAN
-    w.setAttribute(Qt::WA_LockLandscapeOrientation, true);
-    w.showFullScreen();
-#else
     if (QApplication::arguments().contains(QLatin1String("-maximize")))
         w.showMaximized();
     else if (QApplication::arguments().contains(QLatin1String("-fullscreen")))
         w.showFullScreen();
     else
         w.show();
-#endif
     return app.exec();
 }
 

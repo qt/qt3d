@@ -55,16 +55,11 @@ int main(int argc, char *argv[])
     else if (view.stereoType() != QGLView::RedCyanAnaglyph)
         view.setStereo(true);  
 
-#ifdef Q_OS_SYMBIAN
-    view.setAttribute(Qt::WA_LockLandscapeOrientation, true);
-    view.showFullScreen();
-#else
     if (QApplication::arguments().contains(QLatin1String("-maximize")))
         view.showMaximized();
     else if (QApplication::arguments().contains(QLatin1String("-fullscreen")))
         view.showFullScreen();
     else
         view.show();
-#endif
     return app.exec();
 }

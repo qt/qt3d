@@ -51,18 +51,12 @@ int main(int argc, char *argv[])
     QSGView view(f);
     view.setSource(QUrl(QLatin1String("qrc:///qml/forest.qml")));
 
-#ifdef Q_OS_SYMBIAN
-    view.setAttribute(Qt::WA_LockLandscapeOrientation, true);
-    view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
-    view.showFullScreen();
-#else
     if (QApplication::arguments().contains(QLatin1String("-maximize")))
         view.showMaximized();
     else if (QApplication::arguments().contains(QLatin1String("-fullscreen")))
         view.showFullScreen();
     else
         view.show();
-#endif
 
     return app.exec();
 }

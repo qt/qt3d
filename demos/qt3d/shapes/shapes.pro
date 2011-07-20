@@ -11,7 +11,3 @@ OTHER_FILES += \
     shapes.rc
 
 RC_FILE = shapes.rc
-
-symbian {
-    ICON = ../qt3d.svg
-}

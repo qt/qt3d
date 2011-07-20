@@ -9,6 +9,3 @@ SOURCES += main.cpp \
     qtgafile.cpp
 target.path += $$QT3D_INSTALL_PLUGINS/imageformats
 INSTALLS += target
-symbian {
-    TARGET.UID3 = 0x20031E99
-}

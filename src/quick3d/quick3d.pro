@@ -55,15 +55,6 @@ win32 {
     }
 }
 
-symbian {
-    DEFINES += QT_MAKEDLL
-    CONFIG += epocallowdlldata
-    MMP_RULES += EXPORTUNFROZEN
-    LIBS += -lQt3D
-    TARGET.UID3 = 0x20031E96
-    TARGET.CAPABILITY = All -Tcb
-}
-
 include(quick3d.pri)
 
 PUBLIC_HEADERS = $$HEADERS
@@ -102,20 +93,3 @@ macx:CONFIG(qt_framework, qt_framework|qt_no_framework) {
     QMAKE_EXTRA_COMPILERS += exportHeaders
 }
 
-symbian {
-    load(data_caging_paths)
-
-    qt3dMwHeaders = *.h
-    for(api,qt3dMwHeaders) {
-        entries=$$files($$api);
-        #files() attaches a ';' at the end which needs to be removed
-        entries=$$replace(entries, ;,)
-        for(entry,entries) {
-            exists($$entry) {
-                contains(PUBLIC_HEADERS, $$basename(entry)) {
-                    BLD_INF_RULES.prj_exports += "$$entry $$MW_LAYER_PUBLIC_EXPORT_PATH(Qt3DQuick/$$basename(entry))"
-                }
-            }
-        }
-    }
-}

@@ -5,14 +5,3 @@ SOURCES = cubeview.cpp main.cpp
 HEADERS = cubeview.h
 RESOURCES = cube.qrc
 DESTDIR = ../../../bin/qt3d/tutorials
-
-symbian {
-    vendorinfo = \
-     "%{\"NOKIA\"}" \
-     ":\"NOKIA\""
-
-    my_deployment.pkg_prerules = vendorinfo
-    DEPLOYMENT += my_deployment
-
-    ICON = ../../qt3d.svg
-}

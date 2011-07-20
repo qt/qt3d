@@ -13,7 +13,3 @@ OTHER_FILES += \
     cube.rc
 
 RC_FILE = cube.rc
-
-symbian {
-    ICON = ../qt3d.svg
-}

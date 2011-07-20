@@ -45,7 +45,7 @@
 #include <QtCore/qglobal.h>
 
 QT_LICENSED_MODULE(QtQuick3D)
-#if defined(Q_OS_WIN) || defined(Q_OS_SYMBIAN)
+#if defined(Q_OS_WIN)
 #  if defined(QT_NODLL)
 #    undef QT_MAKEDLL
 #    undef QT_DLL

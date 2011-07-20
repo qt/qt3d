@@ -8,12 +8,6 @@ SOURCES += main.cpp
 include(../../../qt3dquick_pkg_dep.pri)
 include(../../../qml_pkg.pri)
 
-symbian {
-    qmlDeployment2.sources = qml\meshes\*
-    qmlDeployment2.path = qml\meshes
-    DEPLOYMENT += qmlDeployment2
-}
-
 OTHER_FILES += \
     lander.rc
 

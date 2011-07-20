@@ -32,11 +32,3 @@ OTHER_FILES += \
     graphicsview.rc
 
 RC_FILE = graphicsview.rc
-
-symbian {
-    ICON = ../qt3d.svg
-}
-
-symbian {
-    ICON = ../qt3d.svg
-}

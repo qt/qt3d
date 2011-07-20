@@ -18,7 +18,3 @@ OTHER_FILES += \
     cubehouse.rc
 
 RC_FILE = cubehouse.rc
-
-symbian {
-    ICON = ../qt3d.svg
-}

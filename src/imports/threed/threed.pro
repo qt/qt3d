@@ -20,14 +20,6 @@ win32 {
     }
 }
 
-symbian {
-    CONFIG += epocallowdlldata
-    MMP_RULES += EXPORTUNFROZEN
-    LIBS += -lQt3D -lQt3DQuick
-    TARGET.CAPABILITY = All -Tcb
-    TARGET.UID3 = 0x20031E9B
-}
-
 SOURCES += \
     threed.cpp \
     qt3dnamespace.cpp \

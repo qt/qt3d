@@ -27,15 +27,15 @@ util/
 examples/
     Some examples of using QtQuick3D (QML bindings) and Qt3D (C++ API).
 demos/
-    Some more complex demos of using QtQuiick3D (QML bindings) and Qt3D (C++ API).
+    Some more complex demos of using QtQuick3D (QML bindings) and Qt3D (C++ API).
+tutorials/
+    Step-by-step tutorials
 tests/auto/qml3d/
     Unit tests for the QtQuick3D bindings.
 tests/auto/threed/
     Unit tests for the Qt3D C++ API
 doc/
     Documentation.
-devices/symbian/
-    Symbian deployment file
 
 
 Documentation

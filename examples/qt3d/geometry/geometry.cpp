@@ -133,13 +133,8 @@ Geometry::Geometry(QObject *parent, QGLMaterialCollection *materials)
         { { u4, v9 }, { u5, v8 }, { u4, v7 } }  // L-G-B
     };
 
-#ifdef Q_OS_SYMBIAN
-    const int imgSize = 256;
-    const int txtSize = 6;
-#else
     const int imgSize = 1024;
     const int txtSize = 36;
-#endif
 
     QImage uv(imgSize, imgSize, QImage::Format_ARGB32);
     uv.fill(qRgba(196, 196, 196, 196));

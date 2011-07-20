@@ -46,10 +46,7 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     BuilderView view;
-#ifdef Q_OS_SYMBIAN
-    view.setAttribute(Qt::WA_LockLandscapeOrientation, true);
-    view.showFullScreen();
-#else
+
     if (view.stereoType() != QGLView::RedCyanAnaglyph)
         view.camera()->setEyeSeparation(0.3f);
     if (QApplication::arguments().contains(QLatin1String("-maximize")))
@@ -58,6 +55,6 @@ int main(int argc, char *argv[])
         view.showFullScreen();
     else
         view.show();
-#endif
+
     return app.exec();
 }
