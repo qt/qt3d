@@ -1,0 +1,206 @@
+/****************************************************************************
+**
+** Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
+** All rights reserved.
+** Contact: Nokia Corporation (qt-info@nokia.com)
+**
+** This file is part of the QtQuick3D documentation of the Qt Toolkit.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the Technology Preview License Agreement accompanying
+** this package.
+**
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of this
+** file.
+**
+** If you have questions regarding the use of this file, please contact
+** Nokia at qt-info@nokia.com.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \ingroup qt3d
+    \ingroup qt3d::math
+    \since 4.8
+    \title Camera and View Frustum
+    \page qt3d-camera-frustum.html
+    \keyword Camera View Frustum
+    \brief Basis for the vamera and view frustum culling test.
+
+    The QGLCamera class provides useful viewing functionality, such as being able
+    to position and orient view point within a scene.  In combination with the
+    QGLPainter::isCullable() function, basic view frustum culling is available.
+    To understand in more depth these concepts, or to verify the implementation
+    more details of these are presented here.  To simply use the functionality
+    read the documentation.
+
+    \list
+    \o QGLCamera
+    \o QGLPainter::isCullable()
+    \endlist
+
+    \section1 The Default Camera
+
+    Qt3D uses the OpenGL co-ordinate system, that is a right-handed system.  In
+    this system you can think of X as pointing to the right, Y as pointing up and
+    Z as pointing toward you.  If you hold your right-hand so that the thumb,
+    index and middle fingers are all at right angles to each other, then
+
+    \list
+    \o Thumb - X axis - points to the right
+    \o Index - Y axis - points upward
+    \o Middle - Z axis - points toward you
+    \endlist
+
+    When you first create a QGLCamera object, by default it has
+    \list
+    \o center: x=0, y=0, z=0
+    \o eye: x=0, y=0, z=10
+    \o viewportSize: w=2.0 x h=2.0
+    \o nearPlane: 5
+    \o farPlane: 1000
+    \endlist
+
+    In the visualisation just mentioned, with positive Z pointing toward you the
+    camera is sitting at the tip of your middle finger, looking in the same
+    direction you are, that is down toward the negative end of the Z axis.
+
+    \section1 Positioning a Custom Camera.
+
+    In this image we have a camera positioned with the following settings:
+    \code
+    camera.setNearPlane(2.2f);
+    camera.setFarPlane(14.0f);
+    camera.setViewSize(QSizeF(0.62857f, 0.62857f));
+    camera.setEye(QVector3D(0, 0, -8.0f));
+    \endcode
+
+    This screen capture from a 3D modelling program shows how this camera is
+    set up in a scene, where its viewing a cube.  The image shows a purple area
+    which indicates the \i{view frustum}, which you can think of for
+    now as the area captured by the camera.  Actually its more correct to think
+    of the volume captured by the camera, and imagine that the purple indication
+    in the image is the shadow cast by this volume.
+
+    \image view-frustum-angle-shot.png
+
+    The odd value for view size comes from the far plane size which was set at
+    4 x 4 when creating the diagram: (4 / 14) x 2.2 = 0.62587.  There is no
+    API call for setting the size of the far-plane, same as in OpenGL.  So to
+    get this 4 x 4 far plane we had to work out the near plane size.
+
+    \image view-frustum-origin.png
+
+    This plan view shows the parameters of the camera by reference to a grid.
+    You can see that the camera is situated - by QGLCamera::setEye() - to a point
+    8 units back along the negative z axis.  The far plane is 14 units away from
+    the eye - set by QGLCamera::setFarPlane().
+
+    Note that here also the camera is sitting down the negative z axis, looking
+    back toward us - the opposite of the default.  Its near plane and far plane
+    are also much closer.  The camera is still pointing to the origin - where a
+    3D cube is situated, ready to be viewed by the camera.
+
+    \section1 The View Frustum
+
+    The camera can only see a \bold part of the scene - not all of it.  Anything
+    too far to the camera's right or left is out of the range of its view, and
+    even though that part of the scene may contain geometry that is sent to the GPU
+    for processing, those triangles will not be visible on the screen.  The GPU
+    will clip them away - but it still has to do work to do this.
+
+    The part of the scene which the camera can see, and which will get displayed
+    is called the \bold{View Frustum}.  A Frustum is a geometric shape, like a
+    pyramid with its top cut off.  It has sloping sides due to the perspective
+    transformation performed by OpenGL, when simulating the effect of the camera
+    in the 3D scene.
+
+    The cube in this scene has 6 sides, just like the view frustum, so we can
+    compare the names of these:
+
+    \table
+    \header
+    \o Cube
+    \o View Frustum
+    \row
+    \o Front
+    \o Near Plane
+    \row
+    \o Back
+    \o Far Plane
+    \row
+    \o Left side
+    \o Left side
+    \row
+    \o Right side
+    \o Right side
+    \row
+    \o Top
+    \o Top
+    \row
+    \o Bottom
+    \o Bottom
+    \endtable
+
+    Like the cube, the frustum is a solid, and can contain things.  You can think of
+    it as having a set of bounds.  Anything inside these bounds is rendered by OpenGL.
+
+    \image view-frustum-10-degrees-angle-shot.png
+
+    In this image, we see the camera as a black-line wire-frame.  The rectangle of the
+    front of the camera represents the \bold{aperture}.
+
+    The triangular purple colored area on the floor corresponds to the camera's eye
+    and spreads out, as determined by the size of the camera's aperture.  If you extended
+    the lines from the camera's eye to the four corners of its aperture, those lines would
+    define the view frustum.  That view frustum would be the same size as the purple
+    view triangle, except the part behind the camera aperture is sliced off.
+
+    Anything that falls inside the black wire-frame of the camera itself \bold{does not
+    get displayed}.
+
+    Because the scene needs to be projected onto a camera aperture of a non-zero size,
+    this means there is this area between the eye of the camera and its aperture which
+    cannot be displayed.  Notice that the camera aperture and the Near Plane of the view
+    frustum are the same thing.
+
+    We can also say that anything which falls outside the fiew frustum \bold{does not get
+    displayed} including anything in front of the near plane.  Poor camera positioning
+    in a scene can often result in this near plane culling which can produce odd visual
+    effects as geometry appears and disappears when it passes in front and behind of
+    the near plane.
+
+    \section1 View Frustum Culling
+
+    Carefully examine the next 3 screenshots, which show the same plan view of the
+    camera, cube and view - except the cube is rotated arount the eye of the camera
+    by 10 degrees each time.
+
+    \image view-frustum-10-degrees.png
+
+    In this image the cube is slightly out of the view frustum.  It still must be sent
+    to the GPU, but some of its pixels will be clipped off during rendering.
+
+    \image view-frustum-20-degrees.png
+
+    In this image the cube is mostly out of the view frustum.  It still must be sent
+    to the GPU, but most of its pixels will be clipped off during rendering.
+
+    \image view-frustum-30-degrees.png
+
+    In this image the cube is completey out of the view frustum.  Performance could be
+    improved by not sending the cubes geometry to the GPU at all.  This test must
+    be made on the CPU side, so therefore it must be very cheap to do in order to beat
+    the cost of just sending it anyway and allowing the GPU to clip away all of it.
+
+    The optimisation technique where you detect this case is called \bold{View Frustum
+    Culling} and it can a simple and valuable performance enhancement.  Qt3D implements
+    view frustum culling via the QGLPainter::isCullable() function.
+*/
