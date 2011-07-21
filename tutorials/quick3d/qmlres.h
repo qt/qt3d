@@ -48,6 +48,9 @@
 
 #include <QtCore/qdebug.h>
 
+#define internal_xstr(s) internal_str(s)
+#define internal_str(s) #s
+
 /*!
     \internal
     Returns a string with the path to qml resources, including qml sources,
@@ -61,7 +64,7 @@ static QString q_get_qmldir(const QString &name)
     // try for a Linux package install first
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
 #ifdef QT3D_USE_OPT
-    QDir pkgdir(QLatin1String("/opt/mt/applications/" QT3D_USE_OPT));
+    QDir pkgdir(QLatin1String("/opt/mt/applications/" internal_xstr(QT3D_USE_OPT)));
 #else
     QDir pkgdir(QLatin1String("/usr/share/qt5/quick3d/examples"));
 #endif
