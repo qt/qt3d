@@ -107,11 +107,47 @@ Image {
         Item3D {
             id: lander
             scale: 0.5
-            mesh: Mesh { source: "meshes/lunar-lander.obj" }
+            mesh: Mesh {
+                id: landerMesh;
+                source: "meshes/lunar-lander.3ds"
+                // dumpInfo lets us see the names the 3d artist has assigned
+                // to the various nodes in the model for use with the meshNode
+                // syntax
+                // dumpInfo: true
+            }
             effect: Effect {
                 color: "#aaca00"
                 texture: "rusty.png"
                 decal: true
+            }
+            Item3D {
+                // This mesh/meshNode combination serves to pull these
+                // elements off the parent mesh, meaning that they are not
+                // drawn as part of the lander Item3D, and are instead drawn
+                // by these three Item3Ds, where we can control their position
+                // and characteristics
+
+                Item3D { mesh: landerMesh; meshNode: "Rod.001" }
+                Item3D { mesh: landerMesh; meshNode: "Receiver.001" }
+                Item3D { mesh: landerMesh; meshNode: "Dish.001" }
+
+                transform: [
+                    // Correct context loss from "pulling off" of graph
+                    Rotation3D { axis: Qt.vector3d(1.0, 0.0, 0.0) ; angle: -90},
+                    // Rotate the radar dish around the lander's aerial
+                    Rotation3D {
+                        id: radarSpin2 ; axis: Qt.vector3d(0.0, 1.0, 0.0);
+                        angle: 0
+                        // Move the origin so the dish rotates relative to
+                        // lander's aerial
+                        origin: Qt.vector3d(0.55,0.0,0.0)
+                        NumberAnimation on angle {
+                            running: gameLogic.gameRunning
+                            loops: Animation.Infinite
+                            from: 360; to: 0; duration: 3000;
+                        }
+                    }
+                ]
             }
 
             transform: [
