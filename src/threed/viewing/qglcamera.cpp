@@ -1307,4 +1307,22 @@ void QGLCamera::tiltPanRollEye
     }
 }
 
+QDebug operator<<(QDebug dbg, const QGLCamera &cam)
+{
+    dbg << "QGLCamera";
+    if (!cam.objectName().isEmpty())
+        dbg << cam.objectName();
+    dbg << "\n";
+    dbg << "   projection:" << ( cam.projectionType() == QGLCamera::Perspective ?
+                                     "Perspective" : "Orthographic" );
+    dbg << "-- viewsize:" << cam.viewSize().width() << "x" << cam.viewSize().height() << "\n";
+    dbg << "   near-plane:" << cam.nearPlane() << "-- far-plane:" << cam.farPlane();
+    dbg << "-- field-of-view:" << cam.fieldOfView() << "\n";
+    dbg << "   rotation:" << cam.screenRotation() << " -- motion adjust:" <<
+           cam.motionAdjustment() << " -- aspect adjust:" << cam.adjustForAspectRatio() << "\n";
+    dbg << "   eye:" << cam.eye() << "-- center:" << cam.center();
+    dbg << "-- up:" << cam.upVector() << "\n";
+    return dbg;
+}
+
 QT_END_NAMESPACE

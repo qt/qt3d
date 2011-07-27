@@ -172,6 +172,11 @@ private:
     Q_DISABLE_COPY(QGLCamera)
 };
 
+#ifndef QT_NO_DEBUG_STREAM
+#include <QtCore/qdebug.h>
+Q_QT3D_EXPORT QDebug operator<<(QDebug dbg, const QGLCamera &order);
+#endif
+
 QT_END_NAMESPACE
 
 QT_END_HEADER

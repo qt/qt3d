@@ -60,13 +60,17 @@
     \endlist
 
     When you first create a QGLCamera object, by default it has
-    \list
-    \o center: x=0, y=0, z=0
-    \o eye: x=0, y=0, z=10
-    \o viewportSize: w=2.0 x h=2.0
-    \o nearPlane: 5
-    \o farPlane: 1000
-    \endlist
+    \code
+    QGLCamera camera;
+    qDebug() camera;
+    --
+    // displays:
+    QGLCamera
+        projection: Perspective -- viewsize: 2 x 2
+        near-plane: 5 -- far-plane: 1000 -- field-of-view: 0
+        rotation: 0  -- motion adjust: QVector3D(0, 0, 1)  -- aspect adjust: true
+        eye: QVector3D(0, 0, 10) -- center: QVector3D(0, 0, 0) -- up: QVector3D(0, 1, 0)
+    \endcode
 
     In the visualisation just mentioned, with positive Z pointing toward you the
     camera is sitting at the tip of your middle finger, looking in the same
@@ -78,7 +82,7 @@
     \code
     camera.setNearPlane(2.2f);
     camera.setFarPlane(14.0f);
-    camera.setViewSize(QSizeF(0.62857f, 0.62857f));
+    camera.setViewSize(QSizeF(1.257f, 1.257f));
     camera.setEye(QVector3D(0, 0, -8.0f));
     \endcode
 
@@ -92,9 +96,9 @@
     \image view-frustum-angle-shot.png
 
     The odd value for view size comes from the far plane size which was set at
-    4 x 4 when creating the diagram: (4 / 14) x 2.2 = 0.62587.  There is no
-    API call for setting the size of the far-plane, same as in OpenGL.  So to
-    get this 4 x 4 far plane we had to work out the near plane size.
+    8 x 8 when creating the diagram: by similar triangles (8 / 14) x 2.2 = 1.257.
+    There is no API call for setting the size of the far-plane, same as in OpenGL.
+    So to get this 8 x 8 far plane we had to work out the near plane size.
 
     \image view-frustum-origin.png
 
@@ -203,4 +207,34 @@
     The optimisation technique where you detect this case is called \bold{View Frustum
     Culling} and it can a simple and valuable performance enhancement.  Qt3D implements
     view frustum culling via the QGLPainter::isCullable() function.
+
+    \section1 Aspect-Ratio Correction
+
+    The default camera has a viewport which is 2 x 2 in size, as discussed above.  However
+    when the camera is used to display a scene on a QGLAbstractSurface, for example a
+    QGLWidgetSurface, the \bold{aspect ratio} of that surface is taken into account in
+    the View Frustum.  Specifically code in the QGLCamera::projectionMatrix() function
+    takes the aspect ratio and expands the default viewport to match.  If the surface is
+    wider than it is high, the aspect ratio is greater than 1 and the viewport width is
+    multiplied by the aspect ratio to make it larger.  If the surface is higher than it
+    is wide, the aspect ratio is less than 1 and the viewport height is divided by the
+    aspect ratio to make it larger.  The result is the viewport aspect ratio matches that
+    of the surface it is to be displayed on.
+
+    \code
+    QGLWidget widget;              // creates a 640 x 480 widget by default
+    QGLPainter painter(&widget)    // internally makes a 640 x 480 QGLWidgetSurface
+    qreal asp = painter.currentSurface()->aspectRatio();
+    // asp == 1.3333 which is (640 / 480)
+    QGLCamera camera;              // default camera as above
+    painter.setCamera(&camera);    // applies the aspect ratio to the perspective projection
+    QMatrix4x4 p = painter.projectionMatrix().top();
+    QMatrix4x4 q;
+    q.frustum(-asp, asp, -1, 1, camera.nearPlane(), camera.farPlane());
+    qDebug() << q == p;                     // prints "true"
+    \endcode
+
+    One result of this is that clipping to the view frustum can only be done with the
+    knowledge of the surface because more of the scene is visible to the left and right
+    than would be suggested by the default camera settings.
 */
