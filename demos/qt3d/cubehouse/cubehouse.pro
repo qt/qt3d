@@ -4,6 +4,7 @@ CONFIG += qt warn_on
 !package: CONFIG += qt3d
 
 include(../../../qt3d_pkg_dep.pri)
+include(../../../pkg.pri)
 
 SOURCES = cubeview.cpp main.cpp projectivetextureeffect.cpp
 HEADERS = cubeview.h projectivetextureeffect.h

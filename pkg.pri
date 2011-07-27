@@ -26,6 +26,60 @@ qtc_harmattan {
     QT3D_INSTALL_DATA = $$[QT_INSTALL_DATA]
 }
 
+qt3dquick_deploy_pkg {
+    include(qt3d_pkg_dep.pri)
+
+    package {
+        macx:CONFIG(qt_framework, qt_framework|qt_no_framework) {
+            LIBS += -framework Qt3DQuick -F../../../src/quick3d
+            INCLUDEPATH += ../../../src/quick3d/Qt3DQuick.framework/Versions/1/Headers
+        } else {
+            win32 {
+                CONFIG(debug, debug|release) {
+                    TARGET = $$member(TARGET, 0)d
+                    LIBS += ..\\..\\..\\src\\quick3d\\debug\\Qt3DQuickd.lib
+                } else {
+                    LIBS += ..\\..\\..\\src\\quick3d\\release\\Qt3DQuick.lib
+                }
+            } else {
+                LIBS += -L../../../src/quick3d -lQt3DQuick
+            }
+            INCLUDEPATH += ../../../include/Qt3DQuick
+        }
+        QT += declarative opengl
+    
+        maemo: icons.files = icon-l-qtquick3d.png
+    }
+    
+    contains(TEMPLATE, app){
+        symbian {
+            ICON = ../qtquick3d.svg
+        }
+    }
+}
+
+qt3d_deploy_pkg {
+    package {
+        macx:CONFIG(qt_framework, qt_framework|qt_no_framework) {
+            LIBS += -framework Qt3D -F../../../src/threed
+            INCLUDEPATH += ../../../src/threed/Qt3D.framework/Versions/1/Headers
+        } else {
+            win32 {
+                CONFIG(debug, debug|release) {
+                    TARGET = $$member(TARGET, 0)d
+                    LIBS += ..\\..\\..\\src\\threed\\debug\\Qt3Dd.lib
+                } else {
+                    LIBS += ..\\..\\..\\src\\threed\\release\\Qt3D.lib
+                }
+            } else {
+                LIBS += -L../../../src/threed -lQt3D
+            }
+            INCLUDEPATH += ../../../include/Qt3D
+        }
+        QT += opengl
+    }
+}
+
 contains(TEMPLATE, app) {
     package  {
         maemo {

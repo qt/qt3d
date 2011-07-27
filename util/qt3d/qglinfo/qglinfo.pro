@@ -2,6 +2,7 @@ TARGET = qglinfo
 !package: CONFIG += qt3d
 
 include(../../../qt3d_pkg_dep.pri)
+include(../../../pkg.pri)
 
 SOURCES += main.cpp \
     qglinfowindow.cpp \

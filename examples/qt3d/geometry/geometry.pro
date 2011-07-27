@@ -13,6 +13,7 @@ HEADERS = geometryview.h \
 RESOURCES = geometry.qrc
 
 include(../../../qt3d_pkg_dep.pri)
+include(../../../pkg.pri)
 
 OTHER_FILES += \
     geometry.rc

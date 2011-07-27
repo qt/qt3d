@@ -10,6 +10,7 @@ HEADERS = meshobject.h sceneobject.h perpixeleffect.h
 RESOURCES = teaservice.qrc
 
 include(../../../qt3d_pkg_dep.pri)
+include(../../../pkg.pri)
 
 OTHER_FILES += \
     teaservice.rc

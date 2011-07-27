@@ -8,6 +8,7 @@ HEADERS = cylinderview.h
 RESOURCES = cylinder.qrc
 
 include(../../../qt3d_pkg_dep.pri)
+include(../../../pkg.pri)
 
 OTHER_FILES += \
     cylinder.rc

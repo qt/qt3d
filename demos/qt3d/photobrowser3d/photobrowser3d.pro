@@ -57,6 +57,7 @@ OTHER_FILES += \
     shaders/replace_texture.vsh
 
 include(../../../qt3d_pkg_dep.pri)
+include(../../../pkg.pri)
 
 symbian {
     symbian-abld|symbian-sbsv2 {

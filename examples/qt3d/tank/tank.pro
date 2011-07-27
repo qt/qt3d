@@ -13,6 +13,7 @@ HEADERS  += tankview.h \
     quadplane.h
 
 include(../../../qt3d_pkg_dep.pri)
+include(../../../pkg.pri)
 
 OTHER_FILES += \
     tank.rc

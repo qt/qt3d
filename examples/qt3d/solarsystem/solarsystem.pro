@@ -10,6 +10,7 @@ RESOURCES += solarsystem.qrc
 DEPENDPATH += resources
 
 include(../../../qt3d_pkg_dep.pri)
+include(../../../pkg.pri)
 
 OTHER_FILES += \
     resources/moon-texture.jpg \

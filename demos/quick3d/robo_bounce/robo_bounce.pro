@@ -5,7 +5,8 @@ CONFIG += qt warn_on
 
 SOURCES += main.cpp
 
-include(../../../qt3dquick_pkg_dep.pri)
+CONFIG += qt3dquick_deploy_pkg
+include(../../../pkg.pri)
 
 OTHER_FILES += \
     robo_bounce.rc

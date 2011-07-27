@@ -5,8 +5,7 @@ CONFIG += qt warn_on
 
 SOURCES += main.cpp
 
-CONFIG += qt3d_deploy_qml
-include(../../../qt3dquick_pkg_dep.pri)
+CONFIG += qt3d_deploy_qml qt3dquick_deploy_pkg
 include(../../../pkg.pri)
 
 OTHER_FILES += \

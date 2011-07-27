@@ -9,6 +9,7 @@ HEADERS = pageflipmath_p.h
 RESOURCES = pageflip.qrc
 
 include(../../../qt3d_pkg_dep.pri)
+include(../../../pkg.pri)
 
 OTHER_FILES += \
     pageflip.rc

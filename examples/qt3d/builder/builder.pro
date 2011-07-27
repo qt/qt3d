@@ -10,6 +10,7 @@ HEADERS = builder.h
 RESOURCES += builder.qrc
 
 include(../../../qt3d_pkg_dep.pri)
+include(../../../pkg.pri)
 
 OTHER_FILES += \
     builder.rc

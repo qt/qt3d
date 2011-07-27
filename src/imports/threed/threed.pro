@@ -2,8 +2,9 @@ TEMPLATE = lib
 TARGET  = qthreedqmlplugin
 CONFIG += qt plugin
 
+CONFIG += qt3dquick_deploy_pkg
 include(../../../qt3d_pkg_dep.pri)
-include(../../../qt3dquick_pkg_dep.pri)
+include(../../../pkg.pri)
 
 # See the README in the root dir re this code
 package {
