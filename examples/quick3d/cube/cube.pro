@@ -5,8 +5,9 @@ CONFIG += qt warn_on
 
 SOURCES += main.cpp
 
+CONFIG += qt3d_deploy_qml
 include(../../../qt3dquick_pkg_dep.pri)
-include(../../../qml_pkg.pri)
+include(../../../pkg.pri)
 
 OTHER_FILES += \
     cube_qml.rc
