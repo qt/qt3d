@@ -7,6 +7,7 @@ SOURCES += main.cpp
 
 CONFIG += qt3d_deploy_qml qt3dquick_deploy_pkg
 include(../../../pkg.pri)
+qtcAddDeployment()
 
 OTHER_FILES += \
     basket_qml.rc

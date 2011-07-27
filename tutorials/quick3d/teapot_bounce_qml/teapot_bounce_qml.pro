@@ -8,8 +8,11 @@ HEADERS += ../qmlres.h
 
 DESTDIR = ../../../bin
 
+INSTALL_DIRS = qml
+
 CONFIG += qt3d_deploy_qml
 include(../../../pkg.pri)
+qtcAddDeployment()
 
 symbian {
     vendorinfo = \
