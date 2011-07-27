@@ -5,7 +5,7 @@ CONFIG += qt warn_on
 
 SOURCES = shapes.cpp
 
-include(../../../qt3d_pkg_dep.pri)
+CONFIG += qt3d_deploy_pkg
 include(../../../pkg.pri)
 
 OTHER_FILES += \

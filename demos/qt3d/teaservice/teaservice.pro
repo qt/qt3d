@@ -9,7 +9,7 @@ SOURCES = teaservice.cpp meshobject.cpp sceneobject.cpp perpixeleffect.cpp
 HEADERS = meshobject.h sceneobject.h perpixeleffect.h
 RESOURCES = teaservice.qrc
 
-include(../../../qt3d_pkg_dep.pri)
+CONFIG += qt3d_deploy_pkg
 include(../../../pkg.pri)
 
 OTHER_FILES += \

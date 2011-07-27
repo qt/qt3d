@@ -27,7 +27,7 @@ qtc_harmattan {
 }
 
 qt3dquick_deploy_pkg {
-    include(qt3d_pkg_dep.pri)
+    CONFIG += qt3d_deploy_pkg
 
     package {
         macx:CONFIG(qt_framework, qt_framework|qt_no_framework) {

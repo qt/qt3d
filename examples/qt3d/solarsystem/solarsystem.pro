@@ -9,7 +9,7 @@ HEADERS = solarsystem.h
 RESOURCES += solarsystem.qrc
 DEPENDPATH += resources
 
-include(../../../qt3d_pkg_dep.pri)
+CONFIG += qt3d_deploy_pkg
 include(../../../pkg.pri)
 
 OTHER_FILES += \

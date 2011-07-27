@@ -56,7 +56,7 @@ OTHER_FILES += \
     shaders/replace_texture.fsh \
     shaders/replace_texture.vsh
 
-include(../../../qt3d_pkg_dep.pri)
+CONFIG += qt3d_deploy_pkg
 include(../../../pkg.pri)
 
 symbian {
