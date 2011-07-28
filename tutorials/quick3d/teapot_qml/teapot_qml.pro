@@ -1,8 +1,6 @@
 TEMPLATE = app
 TARGET = teapot_qml
 CONFIG += qt warn_on
-CONFIG += qt3dquick
-
 
 SOURCES += main.cpp
 HEADERS += ../qmlres.h
@@ -11,7 +9,7 @@ DESTDIR = ../../../bin
 
 INSTALL_DIRS = qml
 
-CONFIG += qt3d_deploy_qml
+CONFIG += qt3d_deploy_qml qt3dquick_deploy_pkg
 include(../../../pkg.pri)
 qtcAddDeployment()
 

@@ -1,5 +1,4 @@
 TARGET = qglinfo
-!package: CONFIG += qt3d
 
 CONFIG += qt3d_deploy_pkg
 include(../../../pkg.pri)

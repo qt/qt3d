@@ -1,7 +1,9 @@
 TEMPLATE = app
 TARGET = graphicsview
 CONFIG += qt warn_on
-!package: CONFIG += qt3d
+
+CONFIG += qt3d_deploy_pkg
+include(../../../pkg.pri)
 
 VPATH += $$PWD/../../src/threed/geometry
 SOURCES = \
@@ -26,18 +28,8 @@ HEADERS = \
 RESOURCES = \
     graphicsview.qrc
 
-CONFIG += qt3d_deploy_pkg
-include(../../../pkg.pri)
-
 OTHER_FILES += \
     graphicsview.rc
 
 RC_FILE = graphicsview.rc
 
-symbian {
-    ICON = ../qt3d.svg
-}
-
-symbian {
-    ICON = ../qt3d.svg
-}

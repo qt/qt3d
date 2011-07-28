@@ -1,16 +1,15 @@
 TEMPLATE = app
 TARGET = solarsystem
 CONFIG += qt warn_on
-!package: CONFIG += qt3d
+
+CONFIG += qt3d_deploy_pkg
+include(../../../pkg.pri)
 
 SOURCES = solarsystem.cpp \
     main.cpp
 HEADERS = solarsystem.h
 RESOURCES += solarsystem.qrc
 DEPENDPATH += resources
-
-CONFIG += qt3d_deploy_pkg
-include(../../../pkg.pri)
 
 OTHER_FILES += \
     resources/moon-texture.jpg \
@@ -23,7 +22,3 @@ OTHER_FILES += \
     solarsystem.rc
 
 RC_FILE = solarsystem.rc
-
-symbian {
-    ICON = ../qt3d.svg
-}

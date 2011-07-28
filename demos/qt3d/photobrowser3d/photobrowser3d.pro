@@ -2,9 +2,8 @@ TEMPLATE = app
 TARGET = photobrowser3d
 CONFIG += qt warn_on
 
+CONFIG += qt3d_deploy_pkg
 include(../../../pkg.pri)
-!package: CONFIG += qt3d
-package: QT += opengl
 
 SOURCES += main.cpp\
     photobrowser3dview.cpp \
@@ -56,9 +55,6 @@ OTHER_FILES += \
     shaders/replace_texture.fsh \
     shaders/replace_texture.vsh
 
-CONFIG += qt3d_deploy_pkg
-include(../../../pkg.pri)
-
 symbian {
     symbian-abld|symbian-sbsv2 {
         # ro-section in photobrowser3d can exceed default allocated space, so move rw-section a little further
@@ -71,7 +67,3 @@ OTHER_FILES += \
     photobrowser.rc
 
 RC_FILE = photobrowser.rc
-
-symbian {
-    ICON = ../qt3d.svg
-}

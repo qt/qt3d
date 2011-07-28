@@ -44,6 +44,8 @@ qt3dquick_deploy_pkg {
         QT += declarative opengl
 
         maemo: icons.files = icon-l-qtquick3d.png
+    } else {
+        CONFIG += qt3dquick
     }
 }
 
@@ -66,6 +68,10 @@ qt3d_deploy_pkg {
             INCLUDEPATH += ../../../include/Qt3D
         }
         QT += opengl
+
+        maemo: icons.files = icon-l-qt3d.png
+    } else {
+        CONFIG += qt3d
     }
 }
 

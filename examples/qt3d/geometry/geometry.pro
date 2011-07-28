@@ -1,7 +1,9 @@
 TEMPLATE = app
 TARGET = geometry
 CONFIG += qt warn_on
-!package: CONFIG += qt3d
+
+CONFIG += qt3d_deploy_pkg
+include(../../../pkg.pri)
 
 SOURCES = geometryview.cpp \
     main.cpp \
@@ -12,14 +14,8 @@ HEADERS = geometryview.h \
     quadplane.h
 RESOURCES = geometry.qrc
 
-CONFIG += qt3d_deploy_pkg
-include(../../../pkg.pri)
-
 OTHER_FILES += \
     geometry.rc
 
 RC_FILE = geometry.rc
 
-symbian {
-    ICON = ../qt3d.svg
-}

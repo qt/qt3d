@@ -23,8 +23,6 @@ contains(QT_CONFIG, opengles1) {
     error(QtQuick3D requires Qt Declarative!)
 }
 
-include(pkg.pri)
-
 # Install qt3d.prf into the Qt mkspecs so that "CONFIG += qt3d"
 # can be used in applications to build against Qt3D.
 package {
