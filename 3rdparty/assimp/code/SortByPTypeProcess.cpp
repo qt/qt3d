@@ -367,6 +367,9 @@ void SortByPTypeProcess::Execute( aiScene* pScene)
 
         // delete the input mesh
         delete mesh;
+        
+        // nullify the original pointer in case outMeshes.empty() is true at the end of this loop
+        pScene->mMeshes[i] = NULL;
     }
 
     if (outMeshes.empty())
