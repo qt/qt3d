@@ -44,6 +44,8 @@ qt3dquick_deploy_pkg {
         QT += declarative opengl
 
         maemo: icons.files = icon-l-qtquick3d.png
+    } else {
+        CONFIG += qt3dquick
     }
 }
 
@@ -66,6 +68,10 @@ qt3d_deploy_pkg {
             INCLUDEPATH += ../../../include/Qt3D
         }
         QT += opengl
+
+        maemo: icons.files = icon-l-qt3d.png
+    } else {
+        CONFIG += qt3d
     }
 }
 
@@ -107,17 +113,17 @@ qt3d_deploy_qml {
     mt {
         TARGET_DIR = /opt/mt/applications/$$TARGET
     } else {
-        TARGET_DIR = $$QT3D_INSTALL_DATA/quick3d/examples/$$TARGET
+        TARGET_DIR = $$QT3D_INSTALL_DATA/quick3d/resources/examples/$$TARGET
     }
-
-    macx {
+    symbian {
+        TARGET_DIR = .
+    } else: macx {
         TARGET_DIR = .
     } else {
         !package {
             TARGET_DIR = ../../../bin/resources/examples/$$TARGET
         }
     }
-
     for(dir, INSTALL_DIRS) {
         di.source = $${dir}
         di.target = $$TARGET_DIR
@@ -138,31 +144,44 @@ defineTest(qtcAddDeployment) {
 
     win32 {
         copyCommand =
-        for(deploymentfolder, DEPLOYMENTFOLDERS) {
-            source = $$MAINPROFILEPWD/$$eval($${deploymentfolder}.source)
-            source = $$replace(source, /, \\)
-            sourcePathSegments = $$split(source, \\)
-            target = $$OUT_PWD/$$eval($${deploymentfolder}.target)/$$last(sourcePathSegments)
-            target = $$replace(target, /, \\)
-            !isEqual(source,$$target) {
-                !isEmpty(copyCommand):copyCommand += &&
-                isEqual(QMAKE_DIR_SEP, \\) {
-                    copyCommand += $(COPY_DIR) \"$$source\" \"$$target\"
-                } else {
-                    source = $$replace(source, \\\\, /)
-                    target = $$OUT_PWD/$$eval($${deploymentfolder}.target)
-                    target = $$replace(target, \\\\, /)
-                    copyCommand += test -d \"$$target\" || mkdir -p \"$$target\" && cp -r \"$$source\" \"$$target\"
+        !package {
+            for(deploymentfolder, DEPLOYMENTFOLDERS) {
+                source = $$MAINPROFILEPWD/$$eval($${deploymentfolder}.source)
+                source = $$replace(source, /, \\)
+                sourcePathSegments = $$split(source, \\)
+                target = $$OUT_PWD/$$eval($${deploymentfolder}.target)/$$last(sourcePathSegments)
+                target = $$replace(target, /, \\)
+                !isEqual(source,$$target) {
+                    !isEmpty(copyCommand):copyCommand += &&
+                    isEqual(QMAKE_DIR_SEP, \\) {
+                        copyCommand += $$QMAKE_COPY_DIR \"$$source\" \"$$target\"
+                    } else {
+                        source = $$replace(source, \\\\, /)
+                        target = $$OUT_PWD/$$eval($${deploymentfolder}.target)
+                        target = $$replace(target, \\\\, /)
+                        copyCommand += test -d \"$$target\" || mkdir -p \"$$target\" && cp -r \"$$source\" \"$$target\"
+                    }
                 }
             }
+            !isEmpty(copyCommand) {
+                message(copyCommand - $$copyCommand)
+                copyCommand = @echo Copying application data... && $$copyCommand
+                copydeploymentfolders.commands = $$copyCommand
+                first.depends = $(first) copydeploymentfolders
+                export(first.depends)
+                export(copydeploymentfolders.commands)
+                QMAKE_EXTRA_TARGETS += first copydeploymentfolders
+            }
         }
-        !isEmpty(copyCommand) {
-            copyCommand = @echo Copying application data... && $$copyCommand
-            copydeploymentfolders.commands = $$copyCommand
-            first.depends = $(first) copydeploymentfolders
-            export(first.depends)
-            export(copydeploymentfolders.commands)
-            QMAKE_EXTRA_TARGETS += first copydeploymentfolders
+        for(deploymentfolder, DEPLOYMENTFOLDERS) {
+            item = item$${deploymentfolder}
+            itemfiles = $${item}.files
+            $$itemfiles = $$eval($${deploymentfolder}.source)
+            itempath = $${item}.path
+            $$itempath = $$eval($${deploymentfolder}.target)
+            export($$itemfiles)
+            export($$itempath)
+            INSTALLS += $$item
         }
     } else:unix {
         maemo5 {
