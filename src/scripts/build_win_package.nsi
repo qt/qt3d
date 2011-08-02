@@ -134,10 +134,7 @@ Section "MainSection" SEC01
   ; bin imports include lib mkspecs plugins quick3d
   SetOutPath "$INSTDIR\quick3d\bin"
   File "${MK_INST_ROOT}${QT_PREFIX_PATH}\bin\*.exe"
-  CreateDirectory "$INSTDIR\quick3d\bin\resources"
-  SetOutPath "$INSTDIR\quick3d\bin\resources"
-  File /r "${MK_INST_ROOT}${QT_PREFIX_PATH}\quick3d\examples"
-  File /r "${MK_INST_ROOT}${QT_PREFIX_PATH}\quick3d\demos"
+  File /r "${MK_INST_ROOT}${QT_PREFIX_PATH}\quick3d\resources"
   SetOutPath "$INSTDIR\lib"
   File "${MK_INST_ROOT}${QT_PREFIX_PATH}\bin\*.lib"
   SetOutPath "$INSTDIR\quick3d\doc"
