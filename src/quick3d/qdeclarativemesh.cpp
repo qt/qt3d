@@ -166,7 +166,12 @@ QDeclarativeMesh::~QDeclarativeMesh()
     Source files can be of any type supported by QtQuick3D.  The types of file currently
     supported can be found in the \c sceneFormat plugins, with \i .3ds, \i .bez, \i. obj
     files currently being supported.
-    
+
+    Also due to limitations of 3rd party libraries, .dxf support is rather limited.
+    Only 3d components (no 2d lines and such supported), and there are also issues with
+    loading newer file types (everything up to the 2004-2006 file format seems to work,
+    anything after we've had issues with).
+
     Meshes can also be stored within QRC files and loaded via the standard resource
     mechanisms, however there may be issues with some esoteric remote resource loading
     requirements within the different file types.
