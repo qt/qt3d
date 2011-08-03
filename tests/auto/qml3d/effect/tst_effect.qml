@@ -41,7 +41,7 @@
 
 import QtQuick 2.0
 import Qt3D 1.0
-import QtQuickTest 1.0
+import QtTest 1.0
 
 Viewport {
     id: viewport
