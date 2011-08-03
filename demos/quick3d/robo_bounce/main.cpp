@@ -42,8 +42,6 @@
 #include <QtGui/QApplication>
 #include <QtDeclarative/qsgview.h>
 
-#include "../qmlres.h"
-
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);

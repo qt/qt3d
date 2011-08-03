@@ -38,7 +38,7 @@
 **
 ****************************************************************************/
 
-import QtQuick 1.0
+import QtQuick 2.0
 import Qt3D 1.0
 import Qt3D.Shapes 1.0
 
@@ -193,7 +193,12 @@ Image {
             anchors.fill: parent
             enabled: false
 
-            onMousePositionChanged: {
+            onMouseYChanged: {
+                gameLogic.yboosting = true;
+                gameLogic.xBoostInput = (mouseX / viewport.width) - 0.5;
+                gameLogic.zBoostInput = (mouseY / viewport.height) - 0.5;
+            }
+            onMouseXChanged: {
                 gameLogic.yboosting = true;
                 gameLogic.xBoostInput = (mouseX / viewport.width) - 0.5;
                 gameLogic.zBoostInput = (mouseY / viewport.height) - 0.5;

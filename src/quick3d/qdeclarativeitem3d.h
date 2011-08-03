@@ -62,8 +62,6 @@ class QDeclarativeItem3DPrivate;
 class QDeclarativeMesh;
 class QDeclarativeEffect;
 class QDeclarativeViewport;
-class QDeclarativeState;
-class QDeclarativeTransition;
 
 class Q_QT3D_QUICK_EXPORT QDeclarativeItem3D : public QSGItem
 {

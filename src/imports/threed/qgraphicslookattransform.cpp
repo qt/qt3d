@@ -432,7 +432,7 @@ void QGraphicsLookAtTransform::setSubject(QDeclarativeItem3D* value)
             connect(ancestorItem, SIGNAL(positionChanged()), this, SLOT(subjectPositionChanged()));
             connect(ancestorItem, SIGNAL(rotationChanged()), this, SLOT(subjectPositionChanged()));
             connect(ancestorItem, SIGNAL(scaleChanged()), this, SLOT(subjectPositionChanged()));
-            connect(ancestorItem, SIGNAL(parentChanged()), this, SLOT(ancestryChanged()));
+            connect(ancestorItem, SIGNAL(parentChanged(QSGItem*)), this, SLOT(ancestryChanged()));
             QDeclarativeListProperty<QGraphicsTransform3D> transforms =
                     ancestorItem->transform();
 
