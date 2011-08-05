@@ -69,7 +69,7 @@ qt3d_deploy_pkg {
         }
         QT += opengl
 
-        maemo: icons.files = icon-l-qt3d.png
+        !qt3dquick_deploy_pkg: maemo: icons.files = icon-l-qt3d.png
     } else {
         CONFIG += qt3d
     }
