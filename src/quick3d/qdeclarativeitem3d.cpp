@@ -453,19 +453,18 @@ void QDeclarativeItem3DPrivate::data_append(QDeclarativeListProperty<QObject> *p
     // Item3d that is to be the parent.
 
     // Either way we're going to call something like setParent(prop->object)
-    // we're just determining whether to use the QDeclarativeItem or QObject
-    // version.
+    // we're just determining whether to use the QSGItem or QObject version.
 
     // The primary purpose of this function is to divide new children into
     // renderable qml Items and non-renderable QObject derived resources.
     // We want to accept all Items, and and simply ignore non-3d items
     // during drawing.
 
-    // It is important that we imitate this behaviour of non-3d
-    // QDeclarativeItems so view items will assign dynamically created objects
-    // to the Item3d and make them available for drawing.
+    // It is important that we imitate this behaviour of non-3d QSGItems so
+    // view items will assign dynamically created objects to the Item3d and
+    // make them available for drawing.
 
-    QDeclarativeItem3D *i = qobject_cast<QDeclarativeItem3D *>(o);
+    QSGItem *i = qobject_cast<QSGItem *>(o);
     if (i)
         i->setParentItem(static_cast<QDeclarativeItem3D *>(prop->object));
     else
@@ -914,7 +913,7 @@ void QDeclarativeItem3D::setLight(QGLLightParameters *value)
     \qmlproperty list<Item3D> Item3D::children
     \qmlproperty list<Object> Item3D::resources
 
-    The children property contains a list of all QDeclarativeItem derived
+    The children property contains a list of all QSGItem derived
     child items for this item.  This provides logical grouping of items in a
     scene. Transformations that are applied to this item will also affect
     child items.  Note that children that are not derived from
@@ -923,7 +922,7 @@ void QDeclarativeItem3D::setLight(QGLLightParameters *value)
     qobject_cast if you need to check whether a child is an Item3D.
 
     The resources property holds all other children that do not
-    directly inherit from QDeclarativeItem, such as effects, meshes, and
+    directly inherit from QSGItem, such as effects, meshes, and
     other supporting objects.
 
     Normally it isn't necessary to assign to the children or resources
