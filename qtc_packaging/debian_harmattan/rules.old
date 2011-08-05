@@ -19,7 +19,7 @@
 # ### if the qmake in the $PATH is not the Qt you want to use
 # ### you can use a binary package or a Qt built from source (even if its installed with
 # ### "make install") as long as it has declarative & opengl
-# # export PATH=/usr/local/Trolltech/Qt-4.7.2/bin:$PATH
+# # export PATH=/usr/local/qt/%VERSION%/bin:$PATH
 #
 # cd quick3d-tp1
 # export DEB_BUILD_OPTIONS="parallel=4"
