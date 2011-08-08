@@ -1,10 +1,10 @@
+load(qmltestcase.prf)
 TEMPLATE=app
 TARGET=tst_qml3d
-CONFIG += warn_on qmltestcase
+CONFIG += warn_on
 SOURCES += tst_qml3d.cpp
 
-INSTALL_DIRS = qml
-
+DEFINES -= QUICK_TEST_SOURCE_DIR
 DEFINES += QUICK_TEST_SOURCE_DIR=\"\\\"$$PWD\\\"\"
 win32:DEFINES+=_CRT_SECURE_NO_WARNINGS
 

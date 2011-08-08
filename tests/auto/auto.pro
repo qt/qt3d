@@ -1,2 +1,2 @@
 TEMPLATE = subdirs
-SUBDIRS = threed
+SUBDIRS = threed qml3d
