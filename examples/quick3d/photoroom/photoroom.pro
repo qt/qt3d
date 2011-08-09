@@ -1,13 +1,13 @@
 TEMPLATE = app
 TARGET = photoroom
 CONFIG += qt warn_on
-!package: CONFIG += qt3dquick
+QT += declarative
 
 SOURCES += main.cpp
 
 INSTALL_DIRS = qml
 
-CONFIG += qt3d_deploy_qml qt3dquick_deploy_pkg
+CONFIG += qt3d_deploy_qml
 include(../../../pkg.pri)
 qtcAddDeployment()
 

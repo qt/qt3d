@@ -1,11 +1,11 @@
 TEMPLATE = app
 TARGET = basket_qml
+QT += declarative
 CONFIG += qt warn_on
-!package: CONFIG += qt3dquick
 
 SOURCES += main.cpp
 
-CONFIG += qt3d_deploy_qml qt3dquick_deploy_pkg
+CONFIG += qt3d_deploy_qml
 include(../../../pkg.pri)
 qtcAddDeployment()
 
