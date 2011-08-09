@@ -62,12 +62,15 @@ class Q_QT3D_EXPORT QGLSceneNode : public QObject
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(QGLSceneNode)
+    Q_ENUMS(Option)
+    Q_FLAGS(Options)
     Q_PROPERTY(QVector3D position READ position WRITE setPosition NOTIFY updated)
     Q_PROPERTY(qreal x READ x WRITE setX NOTIFY updated)
     Q_PROPERTY(qreal y READ y WRITE setY NOTIFY updated)
     Q_PROPERTY(qreal z READ z WRITE setZ NOTIFY updated)
     Q_PROPERTY(QGLMaterial *material READ material WRITE setMaterial NOTIFY updated)
     Q_PROPERTY(QGLMaterial *backMaterial READ backMaterial WRITE setBackMaterial NOTIFY updated)
+    Q_PROPERTY(Options options READ options WRITE setOptions NOTIFY updated)
 public:
     explicit QGLSceneNode(QObject *parent = 0);
     explicit QGLSceneNode(const QGeometryData &geometry, QObject *parent = 0);
@@ -77,7 +80,8 @@ public:
     {
         NoOptions       = 0x0000,
         CullBoundingBox = 0x0001,
-        ViewNormals     = 0x0002
+        ViewNormals     = 0x0002,
+        ReportCulling   = 0x0004
     };
     Q_DECLARE_FLAGS(Options, Option)
 
@@ -161,6 +165,8 @@ public:
 
 Q_SIGNALS:
     void updated();
+    void culled();
+    void displayed();
 
 protected:
     virtual void drawGeometry(QGLPainter *painter);

@@ -46,7 +46,6 @@
 #include "qglpainter.h"
 #include "qgeometrydata.h"
 #include "qglmaterialcollection.h"
-#include "qmatrix4x4.h"
 #include "qglrendersequencer.h"
 #include "qglabstracteffect.h"
 #include "qgraphicstransform3d.h"
@@ -185,6 +184,7 @@ QT_BEGIN_NAMESPACE
         attempting to draw the geometry().  Default is false.
     \value ViewNormals Enables the display of lighting normals for
         debugging purposes.  Default is false.
+    \value ReportCulling Send a signal when an object is displayed or culled.
 
     \sa setOptions()
 */
@@ -265,6 +265,20 @@ QGLSceneNode::Options QGLSceneNode::options() const
     Q_D(const QGLSceneNode);
     return d->options;
 }
+
+/*!
+    \qmlproperty enumeration QGLSceneNode::options
+
+    Defines the settings of various options configurabled on
+    nodes in the mesh.
+
+    \list
+    \o NoOptions Use no options.  This is the default.
+    \o CullBoundingBox Use the camera position to cull the whole node if possible.
+    \o ViewNormals Turn on normals debugging mode visually depict lighting normals.
+    \o ReportCulling Send a signal when an object is displayed or culled.
+    \endlist
+*/
 
 /*!
     Sets the drawing \a options associated with this node.
@@ -1329,9 +1343,22 @@ void QGLSceneNode::draw(QGLPainter *painter)
             QBox3D bb = boundingBox();
             if (bb.isFinite() && !bb.isNull() && painter->isCullable(bb))
             {
+                if (!d->culled && d->options & ReportCulling)
+                {
+                    d->culled = true;
+                    emit culled();
+                }
                 if (wasTransformed)
                     painter->modelViewMatrix().pop();
                 return;
+            }
+            else
+            {
+                if (d->culled && d->options & ReportCulling)
+                {
+                    d->culled = false;
+                    emit displayed();
+                }
             }
         }
     }
@@ -1569,6 +1596,21 @@ QGLSceneNode *QGLSceneNode::only(const QStringList &names, QObject *parent) cons
     \fn QGLSceneNode::updated()
     Signals that some property of this scene node, or one of its children,
     has changed in a manner that will require that the node be redrawn.
+*/
+
+/*!
+    \fn QGLSceneNode::culled()
+    Signals that the node was culled due to falling wholly outside the view
+    frustum.  This signal can only fire if both QGLSceneNode::CullBoundingBox
+    and QGLSceneNode::ReportCulling options are both set.
+*/
+
+/*!
+    \fn QGLSceneNode::displayed()
+    Signals that the node was displayed - or at least its geometry was sent
+    to the GPU for rendering, since the GPU might still clip or occlude the
+    node.  This signal can only fire if both QGLSceneNode::CullBoundingBox
+    and QGLSceneNode::ReportCulling options are both set.
 */
 
 #ifndef QT_NO_DEBUG_STREAM
