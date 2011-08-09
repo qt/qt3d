@@ -561,35 +561,34 @@ template <> void Structure :: Convert<MirrorModifierData> (
 
 //--------------------------------------------------------------------------------
 void DNA::RegisterConverters() {
-
-    converters["Object"] = DNA::FactoryPair( &Structure::Allocate<Object>, &Structure::Convert<Object> );
-    converters["Group"] = DNA::FactoryPair( &Structure::Allocate<Group>, &Structure::Convert<Group> );
-    converters["MTex"] = DNA::FactoryPair( &Structure::Allocate<MTex>, &Structure::Convert<MTex> );
-    converters["TFace"] = DNA::FactoryPair( &Structure::Allocate<TFace>, &Structure::Convert<TFace> );
-    converters["SubsurfModifierData"] = DNA::FactoryPair( &Structure::Allocate<SubsurfModifierData>, &Structure::Convert<SubsurfModifierData> );
-    converters["MFace"] = DNA::FactoryPair( &Structure::Allocate<MFace>, &Structure::Convert<MFace> );
-    converters["Lamp"] = DNA::FactoryPair( &Structure::Allocate<Lamp>, &Structure::Convert<Lamp> );
-    converters["MDeformWeight"] = DNA::FactoryPair( &Structure::Allocate<MDeformWeight>, &Structure::Convert<MDeformWeight> );
-    converters["PackedFile"] = DNA::FactoryPair( &Structure::Allocate<PackedFile>, &Structure::Convert<PackedFile> );
-    converters["Base"] = DNA::FactoryPair( &Structure::Allocate<Base>, &Structure::Convert<Base> );
-    converters["MTFace"] = DNA::FactoryPair( &Structure::Allocate<MTFace>, &Structure::Convert<MTFace> );
-    converters["Material"] = DNA::FactoryPair( &Structure::Allocate<Material>, &Structure::Convert<Material> );
-    converters["Mesh"] = DNA::FactoryPair( &Structure::Allocate<Mesh>, &Structure::Convert<Mesh> );
-    converters["MDeformVert"] = DNA::FactoryPair( &Structure::Allocate<MDeformVert>, &Structure::Convert<MDeformVert> );
-    converters["World"] = DNA::FactoryPair( &Structure::Allocate<World>, &Structure::Convert<World> );
-    converters["MVert"] = DNA::FactoryPair( &Structure::Allocate<MVert>, &Structure::Convert<MVert> );
-    converters["MEdge"] = DNA::FactoryPair( &Structure::Allocate<MEdge>, &Structure::Convert<MEdge> );
-    converters["GroupObject"] = DNA::FactoryPair( &Structure::Allocate<GroupObject>, &Structure::Convert<GroupObject> );
-    converters["ListBase"] = DNA::FactoryPair( &Structure::Allocate<ListBase>, &Structure::Convert<ListBase> );
-    converters["ModifierData"] = DNA::FactoryPair( &Structure::Allocate<ModifierData>, &Structure::Convert<ModifierData> );
-    converters["ID"] = DNA::FactoryPair( &Structure::Allocate<ID>, &Structure::Convert<ID> );
-    converters["MCol"] = DNA::FactoryPair( &Structure::Allocate<MCol>, &Structure::Convert<MCol> );
-    converters["Image"] = DNA::FactoryPair( &Structure::Allocate<Image>, &Structure::Convert<Image> );
-    converters["Scene"] = DNA::FactoryPair( &Structure::Allocate<Scene>, &Structure::Convert<Scene> );
-    converters["Library"] = DNA::FactoryPair( &Structure::Allocate<Library>, &Structure::Convert<Library> );
-    converters["Tex"] = DNA::FactoryPair( &Structure::Allocate<Tex>, &Structure::Convert<Tex> );
-    converters["Camera"] = DNA::FactoryPair( &Structure::Allocate<Camera>, &Structure::Convert<Camera> );
-    converters["MirrorModifierData"] = DNA::FactoryPair( &Structure::Allocate<MirrorModifierData>, &Structure::Convert<MirrorModifierData> );
+    converters["Object"] = DNA::FactoryPair( static_cast<AllocProcPtr>(&Structure::Allocate<Object>), static_cast<ConvertProcPtr>(&Structure::Convert<Object>) );
+    converters["Group"] = DNA::FactoryPair( static_cast<AllocProcPtr>(&Structure::Allocate<Group>), static_cast<ConvertProcPtr>(&Structure::Convert<Group>) );
+    converters["MTex"] = DNA::FactoryPair( static_cast<AllocProcPtr>(&Structure::Allocate<MTex>), static_cast<ConvertProcPtr>(&Structure::Convert<MTex>) );
+    converters["TFace"] = DNA::FactoryPair( static_cast<AllocProcPtr>(&Structure::Allocate<TFace>), static_cast<ConvertProcPtr>(&Structure::Convert<TFace>) );
+    converters["SubsurfModifierData"] = DNA::FactoryPair( static_cast<AllocProcPtr>(&Structure::Allocate<SubsurfModifierData>), static_cast<ConvertProcPtr>(&Structure::Convert<SubsurfModifierData>) );
+    converters["MFace"] = DNA::FactoryPair( static_cast<AllocProcPtr>(&Structure::Allocate<MFace>), static_cast<ConvertProcPtr>(&Structure::Convert<MFace>) );
+    converters["Lamp"] = DNA::FactoryPair( static_cast<AllocProcPtr>(&Structure::Allocate<Lamp>), static_cast<ConvertProcPtr>(&Structure::Convert<Lamp>) );
+    converters["MDeformWeight"] = DNA::FactoryPair( static_cast<AllocProcPtr>(&Structure::Allocate<MDeformWeight>), static_cast<ConvertProcPtr>(&Structure::Convert<MDeformWeight>) );
+    converters["PackedFile"] = DNA::FactoryPair( static_cast<AllocProcPtr>(&Structure::Allocate<PackedFile>), static_cast<ConvertProcPtr>(&Structure::Convert<PackedFile>) );
+    converters["Base"] = DNA::FactoryPair( static_cast<AllocProcPtr>(&Structure::Allocate<Base>), static_cast<ConvertProcPtr>(&Structure::Convert<Base>) );
+    converters["MTFace"] = DNA::FactoryPair( static_cast<AllocProcPtr>(&Structure::Allocate<MTFace>), static_cast<ConvertProcPtr>(&Structure::Convert<MTFace>) );
+    converters["Material"] = DNA::FactoryPair( static_cast<AllocProcPtr>(&Structure::Allocate<Material>), static_cast<ConvertProcPtr>(&Structure::Convert<Material>) );
+    converters["Mesh"] = DNA::FactoryPair( static_cast<AllocProcPtr>(&Structure::Allocate<Mesh>), static_cast<ConvertProcPtr>(&Structure::Convert<Mesh>) );
+    converters["MDeformVert"] = DNA::FactoryPair( static_cast<AllocProcPtr>(&Structure::Allocate<MDeformVert>), static_cast<ConvertProcPtr>(&Structure::Convert<MDeformVert>) );
+    converters["World"] = DNA::FactoryPair( static_cast<AllocProcPtr>(&Structure::Allocate<World>), static_cast<ConvertProcPtr>(&Structure::Convert<World>) );
+    converters["MVert"] = DNA::FactoryPair( static_cast<AllocProcPtr>(&Structure::Allocate<MVert>), static_cast<ConvertProcPtr>(&Structure::Convert<MVert>) );
+    converters["MEdge"] = DNA::FactoryPair( static_cast<AllocProcPtr>(&Structure::Allocate<MEdge>), static_cast<ConvertProcPtr>(&Structure::Convert<MEdge>) );
+    converters["GroupObject"] = DNA::FactoryPair( static_cast<AllocProcPtr>(&Structure::Allocate<GroupObject>), static_cast<ConvertProcPtr>(&Structure::Convert<GroupObject>) );
+    converters["ListBase"] = DNA::FactoryPair( static_cast<AllocProcPtr>(&Structure::Allocate<ListBase>), static_cast<ConvertProcPtr>(&Structure::Convert<ListBase>) );
+    converters["ModifierData"] = DNA::FactoryPair( static_cast<AllocProcPtr>(&Structure::Allocate<ModifierData>), static_cast<ConvertProcPtr>(&Structure::Convert<ModifierData>) );
+    converters["ID"] = DNA::FactoryPair( static_cast<AllocProcPtr>(&Structure::Allocate<ID>), static_cast<ConvertProcPtr>(&Structure::Convert<ID>) );
+    converters["MCol"] = DNA::FactoryPair( static_cast<AllocProcPtr>(&Structure::Allocate<MCol>), static_cast<ConvertProcPtr>(&Structure::Convert<MCol>) );
+    converters["Image"] = DNA::FactoryPair( static_cast<AllocProcPtr>(&Structure::Allocate<Image>), static_cast<ConvertProcPtr>(&Structure::Convert<Image>) );
+    converters["Scene"] = DNA::FactoryPair( static_cast<AllocProcPtr>(&Structure::Allocate<Scene>), static_cast<ConvertProcPtr>(&Structure::Convert<Scene>) );
+    converters["Library"] = DNA::FactoryPair( static_cast<AllocProcPtr>(&Structure::Allocate<Library>), static_cast<ConvertProcPtr>(&Structure::Convert<Library>) );
+    converters["Tex"] = DNA::FactoryPair( static_cast<AllocProcPtr>(&Structure::Allocate<Tex>), static_cast<ConvertProcPtr>(&Structure::Convert<Tex>) );
+    converters["Camera"] = DNA::FactoryPair( static_cast<AllocProcPtr>(&Structure::Allocate<Camera>), static_cast<ConvertProcPtr>(&Structure::Convert<Camera>) );
+    converters["MirrorModifierData"] = DNA::FactoryPair( static_cast<AllocProcPtr>(&Structure::Allocate<MirrorModifierData>), static_cast<ConvertProcPtr>(&Structure::Convert<MirrorModifierData>) );
 }
 
 

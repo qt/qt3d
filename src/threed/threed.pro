@@ -71,28 +71,22 @@ macx:CONFIG(qt_framework, qt_framework|qt_no_framework) {
     FRAMEWORK_HEADERS.files = $$PUBLIC_HEADERS
     QMAKE_BUNDLE_DATA += FRAMEWORK_HEADERS
 } else {
-    exportHeaders.input = PUBLIC_HEADERS
-    package {
-        exportHeaders.output = ../../include/Qt3D/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
-    } else {
-        exportHeaders.output = $$[QT_INSTALL_HEADERS]/Qt3D/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
+    !symbian {
+        exportHeaders.input = PUBLIC_HEADERS
+        package {
+            exportHeaders.output = ../../include/Qt3D/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
+        } else {
+            exportHeaders.output = $$[QT_INSTALL_HEADERS]/Qt3D/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
+        }
+        exportHeaders.commands = $$QMAKE_COPY ${QMAKE_FILE_IN} ${QMAKE_FILE_OUT}
+        exportHeaders.CONFIG += no_link_no_clean
+        exportHeaders.variable_out = PRE_TARGETDEPS
+        QMAKE_EXTRA_COMPILERS += exportHeaders
     }
-    exportHeaders.commands = $$QMAKE_COPY ${QMAKE_FILE_IN} ${QMAKE_FILE_OUT}
-    exportHeaders.CONFIG += no_link_no_clean
-    exportHeaders.variable_out = PRE_TARGETDEPS
-    QMAKE_EXTRA_COMPILERS += exportHeaders
 }
 
 symbian {
     export_headers.files = $$PUBLIC_HEADERS
-    exportPath=$${EPOCROOT}$${MW_LAYER_PUBLIC_EXPORT_PATH}/Qt3D/
-    nativePath=$$replace(exportPath,/,\\)
-    exists($$nativePath) {
-    } else {
-        system($$QMAKE_MKDIR $$nativePath)
-    }
-
-    message($$PUBLIC_HEADERS)
     for(export_header, export_headers.files) {
         BLD_INF_RULES.prj_exports += "$$export_header $$MW_LAYER_PUBLIC_EXPORT_PATH(Qt3D/$$basename(export_header))"
     }
