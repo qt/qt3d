@@ -81,6 +81,7 @@ public:
         , pickNode(0)
         , boxValid(false)
         , drawingMode(QGL::Triangles)
+        , culled(false)
     {
     }
 
@@ -103,6 +104,7 @@ public:
         , boxValid(other->boxValid)
         , drawingMode(other->drawingMode)
         , drawingWidth(1.0)
+        , culled(other->culled)
     {
     }
 
@@ -133,6 +135,7 @@ public:
     mutable bool boxValid;
     QGL::DrawingMode drawingMode;
     qreal drawingWidth;
+    bool culled;
 };
 
 #endif // QGLSCENENODE_P_H
