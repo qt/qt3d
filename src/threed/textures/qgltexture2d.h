@@ -43,6 +43,8 @@
 #define QGLTEXTURE2D_H
 
 #include "qglnamespace.h"
+#include "qdownloadmanager.h"
+
 #include <QtOpenGL/qgl.h>
 #include <QtCore/qscopedpointer.h>
 
@@ -95,7 +97,10 @@ public:
     GLuint textureId() const;
 
     static QGLTexture2D *fromTextureId(GLuint id, const QSize& size);
-
+signals:
+    void textureUpdated();
+public slots:
+    void textureRequestFinished(QByteArray*);
 private:
     QScopedPointer<QGLTexture2DPrivate> d_ptr;
 

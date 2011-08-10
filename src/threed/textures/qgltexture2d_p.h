@@ -56,6 +56,7 @@
 #include "qgltexture2d.h"
 #include "qgltextureutils_p.h"
 #include "qurl.h"
+#include "qdownloadmanager.h"
 
 #include <QtCore/qatomic.h>
 
@@ -106,6 +107,7 @@ public:
     uint imageGeneration;
     uint parameterGeneration;
     QGLTexture2DTextureInfo *infos;
+    QDownloadManager *downloadManager;
 
     bool bind(GLenum target);
     virtual void bindImages(QGLTexture2DTextureInfo *info);

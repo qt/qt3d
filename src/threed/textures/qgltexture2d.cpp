@@ -44,6 +44,7 @@
 #include "qgltextureutils_p.h"
 #include "qglpainter_p.h"
 #include "qglext_p.h"
+#include "qdownloadmanager.h"
 
 #include <QtCore/qfile.h>
 #include <QtCore/qfileinfo.h>
@@ -98,6 +99,7 @@ QGLTexture2DPrivate::QGLTexture2DPrivate()
     imageGeneration = 0;
     parameterGeneration = 0;
     infos = 0;
+    downloadManager = 0;
 }
 
 QGLTexture2DPrivate::~QGLTexture2DPrivate()
@@ -406,16 +408,21 @@ void QGLTexture2D::setUrl(const QUrl &url)
         }
         else
         {
-            qWarning("Network URLs not yet supported");
-            /*
-            if (d->textureReply)
-                d->textureReply->deleteLater();
-            QNetworkRequest req(d->textureUrl);
-            req.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache);
-            d->textureReply = qmlEngine(this)->networkAccessManager()->get(req);
-            QObject::connect(d->textureReply, SIGNAL(finished()),
-                             this, SLOT(textureRequestFinished()));
-                             */
+            if (!d->downloadManager) {
+                d->downloadManager = new QDownloadManager(this);
+                connect (d->downloadManager,SIGNAL(downloadComplete(QByteArray*)),this, SLOT(textureRequestFinished(QByteArray*)));
+            }
+
+            //Create a temporary image that will be used until the Url is loaded.
+            static QImage tempImg(128,128, QImage::Format_RGB32);
+            QColor fillcolor(Qt::gray);
+            tempImg.fill(fillcolor.rgba());
+            setImage(tempImg);
+
+            //Issue download request.
+            if (!d->downloadManager->downloadAsset(url)) {
+                qWarning("Unable to issue texture download request.");
+            }
         }
     }
 }
@@ -703,5 +710,43 @@ QGLTexture2D *QGLTexture2D::fromTextureId(GLuint id, const QSize& size)
     texture->d_ptr->infos = info;
     return texture;
 }
+
+/*!
+    This slot is used to recieve signals from the QDownloadManager class
+    which provides Url download capability across the network.
+
+    A successful download will have a valid QByteArray stored in \a assetData,
+    while a failed download (due to network error, etc), will result in
+    a NULL value.
+
+    Successful downloads use the image data downloaded into \a assetData,
+    which is converted to an image/texture, and emit a textureUpdated()
+    signal.
+
+    \sa QDownloadManager
+*/
+void QGLTexture2D::textureRequestFinished(QByteArray* assetData)
+{
+    //Ensure valid asset data exists.
+    if (!assetData) {
+        qWarning("DownloadManager request failed. Texture not loaded.");
+    } else {
+        //Convert asset data to an image.
+        QImage texImage;
+        texImage.loadFromData(*assetData);
+        setImage(texImage.mirrored());
+
+        emit textureUpdated();
+    }
+
+    if (assetData)
+        delete assetData;
+}
+
+/*!
+    \fn QGLTexture2D::textureUpdated()
+    Signals that some property of this texture has changed in a manner
+    that may require that the parent material class be updated.
+*/
 
 QT_END_NAMESPACE
