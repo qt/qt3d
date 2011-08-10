@@ -383,14 +383,6 @@ template <> struct Structure :: _defaultInitializer<ErrorPolicy_Fail> {
     }
 };
 
-// -------------------------------------------------------------------------------------------------------
-template <> inline void Structure :: ResolvePointer<boost::shared_ptr,ElemBase>(boost::shared_ptr<ElemBase>& out,
-    const Pointer & ptrval,
-    const FileDatabase& db,
-    const Field& f
-    ) const;
-
-
 // -------------------------------------------------------------------------------
 /** Represents the full data structure information for a single BLEND file.
  *  This data is extracted from the DNA1 chunk in the file.
@@ -789,6 +781,74 @@ private:
 
     FileDatabase& db;
 };
+
+// -------------------------------------------------------------------------------------------------------
+template <> inline void Structure :: ResolvePointer<boost::shared_ptr,ElemBase>(boost::shared_ptr<ElemBase>& out,
+    const Pointer & ptrval,
+    const FileDatabase& db,
+    const Field& f
+    ) const
+{
+    // Special case when the data type needs to be determined at runtime.
+    // Less secure than in the `strongly-typed` case.
+
+    out.reset();
+    if (!ptrval.val) {
+        return;
+    }
+
+    // find the file block the pointer is pointing to
+    const FileBlockHead* block = LocateFileBlockForAddress(ptrval,db);
+
+    // determine the target type from the block header
+    const Structure& s = db.dna[block->dna_index];
+
+    // try to retrieve the object from the cache
+    db.cache(out).get(s,out,ptrval);
+    if (out) {
+        return;
+    }
+
+    // seek to this location, but save the previous stream pointer.
+    const StreamReaderAny::pos pold = db.reader->GetCurrentPos();
+    db.reader->SetCurrentPos(block->start+ static_cast<size_t>((ptrval.val - block->address.val) ));
+    // FIXME: basically, this could cause problems with 64 bit pointers on 32 bit systems.
+    // I really ought to improve StreamReader to work with 64 bit indices exclusively.
+
+    // continue conversion after allocating the required storage
+    DNA::FactoryPair builders = db.dna.GetBlobToStructureConverter(s,db);
+    if (!builders.first) {
+        // this might happen if DNA::RegisterConverters hasn't been called so far
+        // or if the target type is not contained in `our` DNA.
+        out.reset();
+        DefaultLogger::get()->warn((Formatter::format(),
+            "Failed to find a converter for the `",s.name,"` structure"
+            ));
+        return;
+    }
+
+    // allocate the object hull
+    out = (s.*builders.first)();
+
+    // cache the object immediately to prevent infinite recursion in a
+    // circular list with a single element (i.e. a self-referencing element).
+    db.cache(out).set(s,out,ptrval);
+
+    // and do the actual conversion
+    (s.*builders.second)(out,db);
+    db.reader->SetCurrentPos(pold);
+
+    // store a pointer to the name string of the actual type
+    // in the object itself. This allows the conversion code
+    // to perform additional type checking.
+    out->dna_type = s.name.c_str();
+
+
+
+#ifndef ASSIMP_BUILD_BLENDER_NO_STATS
+    ++db.stats().pointers_resolved;
+#endif
+}
 
     } // end Blend
 } // end Assimp
