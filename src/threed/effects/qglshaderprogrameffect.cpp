@@ -435,7 +435,9 @@ class QGLShaderProgramEffectPrivate
 {
 public:
     QGLShaderProgramEffectPrivate()
-        : maximumLights(8)
+        : geometryInputType(GL_TRIANGLE_STRIP)
+        , geometryOutputType(GL_TRIANGLE_STRIP)
+        , maximumLights(8)
         , attributes(0)
         , regenerate(true)
         , fixedFunction(false)
@@ -467,6 +469,9 @@ public:
 
     QByteArray vertexShader;
     QByteArray fragmentShader;
+    QByteArray geometryShader;
+    GLenum geometryInputType;
+    GLenum geometryOutputType;
     int maximumLights;
     int attributes;
     bool regenerate;
@@ -702,6 +707,15 @@ void QGLShaderProgramEffect::setActive(QGLPainter *painter, bool flag)
             (QGLShader::Vertex, d->vertexShader);
         d->program->addShaderFromSourceCode
             (QGLShader::Fragment, d->fragmentShader);
+        if (!d->geometryShader.isEmpty())
+        {
+            d->program->addShaderFromSourceCode
+                (QGLShader::Geometry, d->geometryShader);
+            d->program->setGeometryInputType(d->geometryInputType);
+            d->program->setGeometryOutputType(d->geometryOutputType);
+
+        }
+
         if (beforeLink()) {
             for (attr = 0; attr < numAttributes; ++attr)
                 d->program->bindAttributeLocation(attributes[attr], attr);
@@ -865,7 +879,7 @@ void QGLShaderProgramEffect::update(QGLPainter *painter, QGLPainter::Updates upd
 /*!
     Returns the source code for the vertex shader.
 
-    \sa setVertexShader(), fragmentShader(), setVertexShaderFromFile()
+    \sa setVertexShader(), geometryShader(), fragmentShader(), setVertexShaderFromFile()
 */
 QByteArray QGLShaderProgramEffect::vertexShader() const
 {
@@ -876,7 +890,7 @@ QByteArray QGLShaderProgramEffect::vertexShader() const
 /*!
     Sets the \a source code for the vertex shader.
 
-    \sa vertexShader(), setFragmentShader(), setVertexShaderFromFile()
+    \sa vertexShader(), setGeometryShader(), setFragmentShader(), setVertexShaderFromFile()
 */
 void QGLShaderProgramEffect::setVertexShader(const QByteArray &source)
 {
@@ -889,7 +903,7 @@ void QGLShaderProgramEffect::setVertexShader(const QByteArray &source)
     Sets the source code for the vertex shader to the contents
     of \a fileName.
 
-    \sa setVertexShader(), setFragmentShaderFromFile()
+    \sa setVertexShader(), setGeometryShaderFromFile(), setFragmentShaderFromFile()
 */
 void QGLShaderProgramEffect::setVertexShaderFromFile(const QString &fileName)
 {
@@ -904,9 +918,50 @@ void QGLShaderProgramEffect::setVertexShaderFromFile(const QString &fileName)
 }
 
 /*!
+    Returns the source code for the geometry shader.
+
+    \sa setGeometryShader(), fragmentShader(), setGeometryShaderFromFile()
+*/
+QByteArray QGLShaderProgramEffect::geometryShader() const
+{
+    Q_D(const QGLShaderProgramEffect);
+    return d->geometryShader;
+}
+
+/*!
+    Sets the \a source code for the geometry shader.
+
+    \sa geometryShader(), setFragmentShader(), setGeometryShaderFromFile()
+*/
+void QGLShaderProgramEffect::setGeometryShader(const QByteArray &source)
+{
+    Q_D(QGLShaderProgramEffect);
+    d->geometryShader = source;
+    d->regenerate = true;
+}
+
+/*!
+    Sets the source code for the geometry shader to the contents
+    of \a fileName.
+
+    \sa setGeometryShader(), setFragmentShaderFromFile()
+*/
+void QGLShaderProgramEffect::setGeometryShaderFromFile(const QString &fileName)
+{
+    Q_D(QGLShaderProgramEffect);
+    QFile file(fileName);
+    if (file.open(QIODevice::ReadOnly)) {
+        d->geometryShader = file.readAll();
+        d->regenerate = true;
+    } else {
+        qWarning() << "QGLShaderProgramEffect::setGeometryShaderFromFile: could not open " << fileName;
+    }
+}
+
+/*!
     Returns the source code for the fragment shader.
 
-    \sa setFragmentShader(), vertexShader()
+    \sa setFragmentShader(), vertexShader(), geometryShader()
 */
 QByteArray QGLShaderProgramEffect::fragmentShader() const
 {
@@ -918,7 +973,7 @@ QByteArray QGLShaderProgramEffect::fragmentShader() const
     Sets the source code for the fragment shader to the contents
     of \a fileName.
 
-    \sa setFragmentShader(), setVertexShaderFromFile()
+    \sa setFragmentShader(), setVertexShaderFromFile(), setGeometryShaderFromFile()
 */
 void QGLShaderProgramEffect::setFragmentShaderFromFile(const QString &fileName)
 {
@@ -935,13 +990,55 @@ void QGLShaderProgramEffect::setFragmentShaderFromFile(const QString &fileName)
 /*!
     Sets the \a source code for the fragment shader.
 
-    \sa fragmentShader(), setVertexShader()
+    \sa fragmentShader(), setVertexShader(), setGeometryShader()
 */
 void QGLShaderProgramEffect::setFragmentShader(const QByteArray &source)
 {
     Q_D(QGLShaderProgramEffect);
     d->fragmentShader = source;
     d->regenerate = true;
+}
+
+/*!
+    Sets the type of primitive the program's geometry shader is expecting to
+    recieve from the vertex shader.  The default value is GL_TRIANGLE_STRIP.
+
+    If the program has no geometry shader, this has no effect.
+*/
+void QGLShaderProgramEffect::setGeometryInputType(GLenum drawingMode)
+{
+    Q_D(QGLShaderProgramEffect);
+    d->geometryInputType = drawingMode;
+}
+
+/*!
+    Sets what sort of primitives the program's geometry shader will produce.
+    The default value is GL_TRIANGLE_STRIP.
+
+    If the program has no geometry shader, this has no effect.
+*/
+void QGLShaderProgramEffect::setGeometryOutputType(GLenum drawingMode)
+{
+    Q_D(QGLShaderProgramEffect);
+    d->geometryOutputType = drawingMode;
+}
+
+/*!
+    Returns the type of primitives this program's geometry shader is expecting.
+*/
+GLenum QGLShaderProgramEffect::geometryInputType()
+{
+    Q_D(QGLShaderProgramEffect);
+    return d->geometryInputType;
+}
+
+/*!
+    Returns the type of primitive this program's geometry shader will produce.
+*/
+GLenum QGLShaderProgramEffect::geometryOutputType()
+{
+    Q_D(QGLShaderProgramEffect);
+    return d->geometryOutputType;
 }
 
 /*!
