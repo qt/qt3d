@@ -64,9 +64,18 @@ public:
     void setVertexShader(const QByteArray &source);
     void setVertexShaderFromFile(const QString &fileName);
 
+    QByteArray geometryShader() const;
+    void setGeometryShader(const QByteArray &source);
+    void setGeometryShaderFromFile(const QString &fileName);
+
     QByteArray fragmentShader() const;
     void setFragmentShader(const QByteArray &source);
     void setFragmentShaderFromFile(const QString &fileName);
+
+    void setGeometryInputType(GLenum drawingMode);
+    void setGeometryOutputType(GLenum drawingMode);
+    GLenum geometryInputType();
+    GLenum geometryOutputType();
 
     int maximumLights() const;
     void setMaximumLights(int value);
