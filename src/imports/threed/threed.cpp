@@ -100,10 +100,6 @@ public:
         // Needed to make QDeclarativeListProperty<QGraphicsTransform3D> work.
         qmlRegisterType<QGraphicsTransform3D>();
         qmlRegisterType<QGraphicsScale3D>();
-
-#ifdef QT_USE_SCENEGRAPH
-        qmlRegisterType<ViewportSG>(uri,2,0,"Viewport");
-#endif
     }
     void initializeEngine(QDeclarativeEngine *engine, const char *uri)
     {
