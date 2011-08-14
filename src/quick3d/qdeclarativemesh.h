@@ -81,6 +81,7 @@ class Q_QT3D_QUICK_EXPORT QDeclarativeMesh : public QObject, public QDeclarative
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY dataChanged)
     Q_PROPERTY(QString meshName READ meshName WRITE setMeshName NOTIFY dataChanged)
     Q_PROPERTY(QString options READ options WRITE setOptions NOTIFY optionsChanged)
+    Q_PROPERTY(QGLSceneNode *node READ getSceneObject NOTIFY nodeChanged)
     Q_PROPERTY(bool dumpInfo READ dumpInfo WRITE setDumpInfo NOTIFY dumpInfoChanged)
 
 public:
@@ -131,6 +132,7 @@ Q_SIGNALS:
     void loaded();
     void optionsChanged();
     void dumpInfoChanged();
+    void nodeChanged();
 
 private Q_SLOTS:
     void dataRequestFinished();

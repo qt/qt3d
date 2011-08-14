@@ -310,13 +310,17 @@ void QDeclarativeMesh::initSceneObjectList()
             if (node)
                 d->sceneObjects.append(node);
         }
+        QGLSceneNode *old = d->mainSceneObject;
         d->mainSceneObject = d->scene->mainNode();
+        if (old != d->mainSceneObject)
+            emit nodeChanged();
     }
 }
 
 /*!
-    \internal
-    Get the main scene object for the \l QGLAbstractScene associated with this mesh.
+    \qmlproperty QGLSceneNode Mesh::getSceneObject
+
+    Get the main scene node for the \l QGLAbstractScene associated with this mesh.
 */
 QGLSceneNode *QDeclarativeMesh::getSceneObject()
 {
@@ -686,7 +690,10 @@ void QDeclarativeMesh::componentComplete()
 {
     d->completed = true;
     if (d->loaded)
+    {
         emit loaded();
+        emit nodeChanged();
+    }
 }
 
 /*!
