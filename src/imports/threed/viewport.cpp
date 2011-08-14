@@ -49,6 +49,7 @@
 #include "qglsubsurface.h"
 #include "qray3d.h"
 #include "qglframebufferobjectsurface.h"
+#include "skybox.h"
 
 #include <QtGui/qpainter.h>
 #include <QtGui/qgraphicsview.h>
@@ -119,6 +120,7 @@ public:
     QVector3D startCenter;
     QVector3D startUpVector;
     Qt::KeyboardModifiers panModifiers;
+    QMap<int, QObject*> earlyDrawList;
 
     void setDefaults(QGLPainter *painter);
 };
@@ -547,6 +549,26 @@ void Viewport::draw(QGLPainter *painter)
 #else
     glDepthRange(0.0f, 1.0f);
 #endif
+
+    // At present only skyboxes work, with early draw and they are drawn
+    // without blending and without a lighting model - just flat texture rendering
+    int cnt = d->earlyDrawList.size();
+    int order = 0;
+    while (cnt)
+    {
+        QMap<int, QObject *>::const_iterator it = d->earlyDrawList.constFind(order);
+        while (it != d->earlyDrawList.constEnd())
+        {
+            // TODO: make more than just skybox work with early draw
+            Skybox *sb = qobject_cast<Skybox *>(*it);
+            if (sb)
+                sb->draw(painter);
+            ++it;
+            --cnt;
+        }
+        ++order;
+    }
+
     if (d->blending)
         glEnable(GL_BLEND);
     else
@@ -586,6 +608,14 @@ void Viewport::initializeGL(QGLPainter *painter)
             setItemViewport(item);
             item->initialize(painter);
         }
+        // TODO: make this more generic with some sort of abstract interface
+        // so that more than just skybox works with early draw
+        Skybox *sb = qobject_cast<Skybox *>(child);
+        if (sb)
+        {
+            sb->setViewport(this);
+            registerEarlyDrawObject(sb, 0);
+        }
     }
     d->itemsInitialized = true;
 }
@@ -600,6 +630,11 @@ int Viewport::registerPickableObject(QObject *obj)
     int id = (d->pickId)++;
     d->objects[id] = obj;
     return id;
+}
+
+void Viewport::registerEarlyDrawObject(QObject *obj, int order)
+{
+    d->earlyDrawList.insertMulti(order, obj);
 }
 
 /*!
