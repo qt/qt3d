@@ -99,6 +99,7 @@ public:
     void paint(QPainter *);
 
     int registerPickableObject(QObject *obj);
+    virtual void registerEarlyDrawObject(QObject *obj, int order);
 
     Q_INVOKABLE QObject *objectForPoint(qreal x, qreal y);
 

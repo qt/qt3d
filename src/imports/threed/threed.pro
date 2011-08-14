@@ -26,7 +26,8 @@ SOURCES += \
     scale3d.cpp \
     viewport.cpp \
     qgraphicslookattransform.cpp \
-    shaderprogram.cpp
+    shaderprogram.cpp \
+    skybox.cpp
 
 HEADERS += \
     qt3dnamespace.h \
@@ -34,7 +35,8 @@ HEADERS += \
     viewport.h \
     qgraphicslookattransform.h \
     shaderprogram.h \
-    shaderprogram_p.h
+    shaderprogram_p.h \
+    skybox.h
 
 # See the file README.library_xml for more on this
 qdeclarativesources.files += \

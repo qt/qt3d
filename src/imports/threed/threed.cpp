@@ -49,6 +49,7 @@
 #include "viewport.h"
 #include "qdeclarativeeffect.h"
 #include "scale3d.h"
+#include "skybox.h"
 
 #include "qgraphicsrotation3d.h"
 #include "qgraphicstranslation3d.h"
@@ -94,6 +95,7 @@ public:
         qmlRegisterType<QGraphicsLookAtTransform>(uri,1,0,"LookAt");
         qmlRegisterType<QGLMaterial>(uri,1,0,"Material");
         qmlRegisterType<ShaderProgram>(uri,1,0,"ShaderProgram");
+        qmlRegisterType<Skybox>(uri, 1, 0, "Skybox");
 
         qmlRegisterType<Viewport>(uri,1,0,"Viewport");
 
