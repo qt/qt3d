@@ -24,7 +24,7 @@ win32 {
 symbian {
     CONFIG += epocallowdlldata
     MMP_RULES += EXPORTUNFROZEN
-    LIBS += -lQt3D -lQt3DQuick
+    LIBS += -lQt3D$${QT_LIBINFIX} -lQt3DQuick$${QT_LIBINFIX}
     TARGET.EPOCALLOWDLLDATA = 1
     TARGET.CAPABILITY = All -Tcb
     TARGET.UID3 = 0x20031E9C

@@ -22,7 +22,7 @@ package {
                 LIBS += ..\\..\\..\\threed\\release\\Qt3D.lib
             }
         } else {
-            LIBS += -L../../../threed -lQt3D
+            LIBS += -L../../../threed -lQt3D$${QT_LIBINFIX}
         }
         INCLUDEPATH += ../../../../include/Qt3D
     }
@@ -33,6 +33,6 @@ package {
     DESTDIR = $$QT3D_INSTALL_PLUGINS/sceneformats
 }
 symbian {
-    LIBS += -lQt3D
+    LIBS += -lQt3D$${QT_LIBINFIX}
     TARGET.UID3 = 0x20031E98
 }

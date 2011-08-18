@@ -59,7 +59,7 @@ symbian {
     DEFINES += QT_MAKEDLL
     CONFIG += epocallowdlldata
     MMP_RULES += EXPORTUNFROZEN
-    LIBS += -lQt3D
+    LIBS += -lQt3D$${QT_LIBINFIX}
     TARGET.UID3 = 0x20031E96
     TARGET.CAPABILITY = All -Tcb
 }

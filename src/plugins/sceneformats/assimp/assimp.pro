@@ -41,7 +41,7 @@ package {
 }
 
 symbian {
-    LIBS += -lQt3D
+    LIBS += -lQt3D$${QT_LIBINFIX}
     TARGET.UID3 = 0x20031E97
 }
 # suppress warnings about std::copy using unsafe parameters
