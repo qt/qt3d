@@ -103,7 +103,7 @@ Section "MainSection" SEC01
   CreateShortCut "$DESKTOP\QtQuick3D.lnk" "$INSTDIR\quick3d\bin\qglinfo.exe"
   CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Basket.lnk" "$INSTDIR\quick3d\bin\basket_qml.exe"
   CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Cube.lnk" "$INSTDIR\quick3d\bin\cube_qml.exe"
-  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Forest.lnk" "$INSTDIR\quick3d\bin\forest.exe"
+  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Forest.lnk" "$INSTDIR\quick3d\bin\forest_qml.exe"
   CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Lander.lnk" "$INSTDIR\quick3d\bin\lander.exe"
   CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Matrix Animation.lnk" "$INSTDIR\quick3d\bin\matrix_animation.exe"
   CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Monkey God.lnk" "$INSTDIR\quick3d\bin\monkeygod.exe"
