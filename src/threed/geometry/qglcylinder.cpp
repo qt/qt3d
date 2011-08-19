@@ -64,6 +64,9 @@ QT_BEGIN_NAMESPACE
     builder << QGLCylinder(1.0,2.0,3.0);
     QGLSceneNode *node = builder.finalizedSceneNode();
 
+    // view the cylinder structure during development
+    qDumpScene(node);
+
     painter.translate(10, 25, 0);
     node->draw(&painter);
     \endcode
@@ -114,6 +117,62 @@ QT_BEGIN_NAMESPACE
     With this knowledge, and an understanding of the texture coordinate mapping,
     it is possible to make custom textures which will be usable with these
     three dimensional objects.
+
+    \section1 Cylinder Sections and Non-Trivial Scene Structure
+
+    When the cylinder is placed in the builder, by necessity separate sections are created
+    so that the correct hard edge for the normals is rendered.  If there were no
+    sections, the smooth shading would try to make the cylinder sides and its flat bases
+    all part of a smoothly shaded surface instead of having a sharp crease between them.
+
+    Because of this necessary limitation when working with QGLCylinder always examine the
+    generate node structure using the qDumpScene() function, as shown above.  This will
+    display the structure of the generated sections by their named scenenodes,and quickly
+    make obvious what required code is needed to render the scene as desired.
+
+    In the case of most non-trivial programatically generate geometry, for example
+    compiling cubes, cylinders and domes into a single builder, the resulting scene
+    will be not organised in a predictable way.  Due to the section limitation it is hard
+    to avoid the results all being siblings.  Using pushNode() does not work because
+    section boundaries cause QGLBuilder to reset it's node stack, as the section
+    boundaries must be discrete.
+
+    \section1 Analysing and Re-organising Scenes
+
+    To deal with the structure imposed by separate sections, first use qDumpScene() to
+    analyse the scene.
+
+    In the simplest case disable the caps of the cylinder so that only one simple node is
+    generated, and get a handle to this node via builder.currentNode().  Alternatively
+    use seperate builder objects and finalizedSceneNode() calls to obtain distinct
+    nodes - these will have Base and Dome sibling objects beneath them.
+
+    In extreme cases the tree can have nodes cut out and transplanted onto alternative
+    parents like this:
+    \code
+    // Here root is the builder's root node, either from the
+    // sceneNode() function or from finalizedSceneNode():
+    QGLSceneNode *dome = new QGLSceneNode;
+    dome->setObjectName("Icecream Top");
+    QList<QGLSceneNode*> c = root->allChildren();
+    for (int i = 0; i < c.size(); ++i)
+    {
+        if (c.at(i)->objectName() == "Dome" || c.at(i)->objectName() == "Base")
+        {
+            root->removeNode(c.at(i));
+            dome->addNode(c.at(i));
+        }
+    }
+    dome->setPalette(root->palette());
+    dome->setMaterialIndex(domeMat);
+    \endcode
+
+    Note that this code relies on knowledge that the nodes "Dome" and "Base" are created
+    and this is obtained via qDumpScene.  Using the QGLSceneNode::allChildren() function
+    returns a flat list of the heierarchy enabling easy finding of nodes that might be
+    deeper in the scene.
+
+    Executive summary - use qDumpScene();
 
     \sa QGLBuilder
 */

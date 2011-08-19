@@ -60,6 +60,9 @@ QT_BEGIN_NAMESPACE
     builder << QGLDome(2);
     QGLSceneNode *node = builder.finalizedSceneNode();
 
+    // view the dome structure during development
+    qDumpScene(node);
+
     painter.translate(10, 25, 0);
     node->draw(&painter);
     \endcode
@@ -81,7 +84,29 @@ QT_BEGIN_NAMESPACE
     the poles than it is elsewhere on the sphere and is a poor choice if a
     uniform density of pixels from the texture map is required.
 
-    \sa QGLBuilder
+    \section1 Dome Sections and Non-Trivial Scene Structure
+
+    When the dome is placed in the builder, by necessity separate sections are created
+    so that the correct hard edge for the normals is rendered.  If there were no
+    sections, the smooth shading would try to make the dome surface and its flat base
+    all part of a smoothly shaded surface instead of having a sharp crease between them.
+
+    Because of this necessary limitation when working with QGLDome always examine the
+    generate node structure using the qDumpScene() function, as shown above.  This will
+    display the structure of the generated sections by their named scenenodes,and quickly
+    make obvious what required code is needed to render the scene as desired.
+
+    In the simplest case disable the base of the dome so that only one simple node is
+    generated, and get a handle to this node via builder.currentNode().  Alternatively
+    use seperate builder objects and finalizedSceneNode() calls to obtain distinct
+    nodes - these will have Base and Dome sibling objects beneath them.
+
+    For other options see \l{QGLCylinder#analysing-and-re-organising-scenes}{Analysing and Re-organising Scenes} in the QGLCylinder class
+    documentation.
+
+    Executive summary - use qDumpScene();
+
+    \sa QGLBuilder, QGLCylinder
 */
 
 /*!
