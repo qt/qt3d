@@ -54,9 +54,6 @@ Rectangle
         width: 480; height: 480
         picking: true
 
-        // Result of manual click
-        property color clickedColor: "#000000"
-
         Quad {
             id: fullScreenQuad
 
@@ -75,10 +72,6 @@ Rectangle
 
             effect: Effect {
                 color: fullScreenQuad.color
-            }
-
-            onClicked: {
-                viewport.clickedColor = fullScreenQuad.color
             }
         }
 
@@ -99,10 +92,6 @@ Rectangle
 
             effect: Effect {
                 color: smallerQuad.color
-            }
-
-            onClicked: {
-                viewport.clickedColor = smallerQuad.color
             }
         }
 

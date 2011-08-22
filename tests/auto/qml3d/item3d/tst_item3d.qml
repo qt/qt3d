@@ -46,10 +46,6 @@ import QtTest 1.0
 Viewport {
     id: viewport
 
-//    Item3DClicker {
-//        id: mouseClicker
-//    }
-
     Item3D {
         id: "other"
         scale: 12
@@ -273,18 +269,17 @@ Viewport {
 
             function test_inheritEvents()
             {
-                skip("Simulated mouse events not yet ported");
                 verify(!item.inheritEvents, "default inheritEvents is false");
                 compare(item.onClickedSignalTriggered, false, "pretest onClickedSignalTriggered check");
                 compare(inheritEventTestChild.parent, item, "pretest parent check");
 
-                mouseClicker.click(inheritEventTestChild);
+                inheritEventTestChild.clicked();
                 compare(item.onClickedSignalTriggered, false,
                         "no parent event when inheritEvents is false");
 
                 item.inheritEvents = true;
                 verify(item.inheritEvents, "setInheritEvents()");
-                mouseClicker.click(inheritEventTestChild);
+                inheritEventTestChild.clicked();
                 compare(item.onClickedSignalTriggered, true, "parent event when inheritEvents is true");
             }
 
