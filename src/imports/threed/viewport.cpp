@@ -59,6 +59,11 @@
 #include <QtOpenGL/qglframebufferobject.h>
 #include <QtCore/qtimer.h>
 #include <QtCore/qcoreapplication.h>
+#include <QtDeclarative/qdeclarativeinfo.h>
+#include <QSGCanvas>
+#include <QSGEngine>
+#include <QtOpenGL/qglbuffer.h>
+#include <QtCore/qthread.h>
 
 /*!
     \qmlclass Viewport Viewport
@@ -103,6 +108,7 @@ public:
     bool blending;
     bool itemsInitialized;
     bool needsPick;
+    bool needsRepaint;
     QGLCamera *camera;
     QGLLightParameters *light;
     QGLLightModel *lightModel;
@@ -121,8 +127,12 @@ public:
     QVector3D startUpVector;
     Qt::KeyboardModifiers panModifiers;
     QMap<int, QObject*> earlyDrawList;
+    Viewport::RenderMode renderMode;
+
+    QSGCanvas* canvas;
 
     void setDefaults(QGLPainter *painter);
+    void setRenderSettings(QGLPainter *painter);
 };
 
 ViewportPrivate::ViewportPrivate()
@@ -133,6 +143,7 @@ ViewportPrivate::ViewportPrivate()
     , blending(false)
     , itemsInitialized(false)
     , needsPick(true)
+    , needsRepaint(true)
     , camera(0)
     , light(0)
     , lightModel(0)
@@ -146,6 +157,8 @@ ViewportPrivate::ViewportPrivate()
     , startPan(-1, -1)
     , lastPan(-1, -1)
     , panModifiers(Qt::NoModifier)
+    , renderMode(Viewport::UnknownRender)
+    , canvas(0)
 {
 }
 
@@ -156,7 +169,15 @@ ViewportPrivate::~ViewportPrivate()
 
 void ViewportPrivate::setDefaults(QGLPainter *painter)
 {
+    // Try to restore the default options
+    glDisable(GL_CULL_FACE);
+    glDisable(GL_DEPTH_TEST);
     // Set the default depth buffer options.
+#if defined(QT_OPENGL_ES)
+    glClearDepthf(0);
+#else
+    glClearDepth(0);
+#endif
     glDepthFunc(GL_LESS);
     glDepthMask(GL_TRUE);
 #if defined(QT_OPENGL_ES)
@@ -164,7 +185,6 @@ void ViewportPrivate::setDefaults(QGLPainter *painter)
 #else
     glDepthRange(0.0f, 1.0f);
 #endif
-
     // Set the default blend options.
     glDisable(GL_BLEND);
     if (painter->hasOpenGLFeature(QOpenGLFunctions::BlendColor))
@@ -176,14 +196,41 @@ void ViewportPrivate::setDefaults(QGLPainter *painter)
         painter->glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
 }
 
+void ViewportPrivate::setRenderSettings(QGLPainter *painter)
+{
+    // Declarative SG sets clearDepth, and other depth buffer options to
+    // unexpected values.  Set them up to standard Qt3Dvalues.
+
+    // This seems to be only needed in beforeRendering()
+#if defined(QT_OPENGL_ES)
+    glClearDepthf(1);
+#else
+    glClearDepth(1);
+#endif
+    glDepthMask(GL_TRUE);
+#if defined(QT_OPENGL_ES)
+    glDepthRangef(0.0f, 1.0f);
+#else
+    glDepthRange(0.0f, 1.0f);
+#endif
+    glDepthFunc(GL_LESS);
+    glEnable(GL_DEPTH_TEST);
+
+    painter->setClearColor(Qt::black);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
 /*!
     \internal
     Construct the class and assign it a \a parent QSGItem.
 */
 Viewport::Viewport(QSGItem *parent)
     : QSGPaintedItem(parent)
+    , d(new ViewportPrivate())
 {
-    d = new ViewportPrivate();
+    // Has to be set or we crash on render.  Intention of this is that
+    // the update() function gets called when a re-render is needed.
+    setFlags(QSGItem::ItemHasContents);
 
     connect(this, SIGNAL(viewportChanged()), this, SLOT(update3d()));
 
@@ -192,9 +239,6 @@ Viewport::Viewport(QSGItem *parent)
 
     setAcceptedMouseButtons(Qt::LeftButton);
     setAcceptHoverEvents(true);
-
-    setRenderTarget(QSGPaintedItem::FramebufferObject);
-    setFillColor(Qt::black);
 }
 
 /*!
@@ -204,6 +248,80 @@ Viewport::Viewport(QSGItem *parent)
 Viewport::~Viewport()
 {
     delete d;
+}
+
+/*!
+    \qmlproperty enumeration Viewport::renderMode
+
+    This property defines the mode of rendering of this viewport as to
+    whether it is direct to the GL context, or via a buffer (in this case
+    a framebuffer object).
+
+    If the scene occupies most of the display, but the Viewport is
+    not the top level item, this property can be set to DirectRender in
+    order to improve performance.
+
+    At construction the render mode is set to UnknownRender, but during
+    initialization it is updated to an appropriate default.  It is an error
+    to set the renderMode() to UnknownRender, and in debug mode an
+    assert will be thrown in this case.  In release mode behavior is
+    undefined.
+
+    By default if the viewport is a child object of another SGItem, then
+    the renderMode() is set to use a buffer.  This is suitable for most
+    simple 3D items which are small in size relative to the overall QML content
+    displayed.  The buffer is prepared by drawing the 3D items into it and
+    then in a second step the buffer is composited into the QML 2D scene.
+
+    Otherwise if the viewport is a top-level item, the renderMode() is set
+    by default to use direct rendering, in this case using a "GL Under"
+    approach to capture the GL context prior to other QML content being
+    rendered.  The 3D items are then rendered directly into the context
+    with any 2D QML content being rendered over the top.  This is suitable
+    where the 3D components of the scene occupies most or all of the screen.
+
+    \list
+        \o UnknownRender  The mode is not specified.
+        \o DirectRender  Render to the GL context directly.  This is the default for top-level viewports.
+        \o BufferedRender  Render to an offscreen buffer.  This is the default for a viewport that is a child.
+    \endlist
+    */
+Viewport::RenderMode Viewport::renderMode() const
+{
+    return d->renderMode;
+}
+
+void Viewport::setRenderMode(Viewport::RenderMode mode)
+{
+    Q_ASSERT(mode != UnknownRender);
+    if (d->renderMode != mode)
+    {
+        Q_ASSERT(d->canvas != 0);
+        QSGEngine* engine =  d->canvas->sceneGraphEngine();
+        d->renderMode = mode;
+        if (d->renderMode == BufferedRender)
+        {
+            setRenderTarget(QSGPaintedItem::FramebufferObject);
+            //setFlags(flags() | QSGItem::ItemHasContents);
+            // TODO: buggy if theres another viewport
+            // if (engine)
+            //     engine->setClearBeforeRendering(true);
+        }
+        else
+        {
+            //setFlags(flags() & ~QSGItem::ItemHasContents);
+
+            if (!engine)
+            {
+                qmlInfo(this) << tr("Unable to get QSGEngine. Will not be able to render!");
+                return;
+            }
+            connect((QObject*)engine, SIGNAL(beforeRendering()),
+                    this, SLOT(beforeRendering()), Qt::DirectConnection);
+            engine->setClearBeforeRendering(false);
+        }
+        emit viewportChanged();
+    }
 }
 
 /*!
@@ -227,8 +345,11 @@ bool Viewport::picking() const
 
 void Viewport::setPicking(bool value)
 {
-    d->picking = value;
-    emit viewportChanged();
+    if (value != d->picking)
+    {
+        d->picking = value;
+        emit viewportChanged();
+    }
 }
 
 /*!
@@ -427,60 +548,118 @@ qreal ViewportSubsurface::aspectRatio() const
 }
 
 /*!
+    \reimp
     \internal
-    The main paint function for the Viewport class.  It takes a  QPainter \a p, which performs the
-    painting of objects in the 3d environment.
 
-    The paint function is responsible for setting up the viewing transform, as well as other display
-    options, before calling the draw function to perform the actual drawing of the scene.
+    Only used in the case of renderMode() == BufferedRender.
+
+    Called by QSGPaintedItem to refresh the content.
+
+    \sa beforeRendering() setRenderMode()
 */
-void Viewport::paint(QPainter *p)
+void Viewport::paint(QPainter *painter)
 {
-    d->needsPick = true;
+    Q_ASSERT(renderMode() == BufferedRender);
 
-    QGLPainter painter;
-    if (!painter.begin(p)) {
+    QGLPainter glPainter;
+    if (!glPainter.begin(painter))
+    {
         qWarning("GL graphics system is not active; cannot use 3D items");
         return;
     }
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
+
+    render(&glPainter);
+
+    d->setDefaults(&glPainter);
+}
+
+/*!
+    \internal
+
+    Only used in the case of renderMode() == DirectRender.
+
+    Called by beforeRendering signal from QSGContext.
+
+    \sa paint()
+*/
+void Viewport::beforeRendering()
+{
+    Q_ASSERT(renderMode() == DirectRender);
+
+    // Note: this slot will be executed in the QSG rendering thread
+    // (Qt::DirectConnection) - not in the GUI/main thread of the app.
+    // Beware of thread-safety issues.
+
+    if (!isVisible() || !d->needsRepaint)
+        return;
+
+    Q_ASSERT(d->canvas && d->canvas->isValid());
+    Q_ASSERT(d->canvas->context() != 0);
+
+    QGLPainter painter;
+    if (!painter.begin())
+    {
+        qmlInfo(this) << tr("Unable to paint 3D items!");
+        return;
+    }
+
+    d->setRenderSettings(&painter);
+    render(&painter);
+
+    d->needsRepaint = false;
+}
+
+void Viewport::render(QGLPainter *painter)
+{
+    d->needsPick = true;
 
     // Initialize the objects in the scene if this is the first paint.
     if (!d->itemsInitialized)
-        initializeGL(&painter);
+        initializeGL(painter);
 
-    painter.setEye(QGL::NoEye);
+    // No stereo rendering, set the eye as neutral
+    painter->setEye(QGL::NoEye);
+
+    // TODO
+    // Deal with transforms on the object, which change the viewport?
+
+    // boundingRect is in local coordinates. We need to map it to the scene coordinates
+    // in order to render to correct area.
+    QRect viewport = mapRectToScene(boundingRect()).toRect();
     qreal adjust = 1.0f;
-
-    // Modify the GL viewport to only cover the extent of this QSGItem.
-    QTransform transform = p->combinedTransform();
-    QRect viewport = transform.mapRect(boundingRect()).toRect();
-    ViewportSubsurface surface(painter.currentSurface(), viewport, adjust);
-    painter.pushSurface(&surface);
+    ViewportSubsurface surface(painter->currentSurface(), viewport, adjust);
+    painter->pushSurface(&surface);
 
     // Perform early drawing operations.
-    earlyDraw(&painter);
+    earlyDraw(painter);
 
     // Set up the camera the way QGLView would if we were using it.
     if (d->camera) {
-        painter.setCamera(d->camera);
+        painter->setCamera(d->camera);
     } else {
         QGLCamera defCamera;
-        painter.setCamera(&defCamera);
+        painter->setCamera(&defCamera);
     }
 
     // Draw the Item3D children.
-    painter.setPicking(d->showPicking);
-    draw(&painter);
-    painter.setPicking(false);
-    painter.popSurface();
+    painter->setPicking(d->showPicking);
+
+    // May've been set by early draw
+    glDisable(GL_CULL_FACE);
+
+    draw(painter);
+
+    // May've been set by one of the items
+    glDisable(GL_CULL_FACE);
+
+    painter->setPicking(false);
+
+    painter->popSurface();
 
     // Disable the effect to return control to the GL paint engine.
-    painter.disableEffect();
-
-    // Try to restore the GL state to something paint-engine compatible.
-    glDisable(GL_CULL_FACE);
-    d->setDefaults(&painter);
-    glDisable(GL_DEPTH_TEST);
+    painter->disableEffect();
 }
 
 /*!
@@ -488,27 +667,12 @@ void Viewport::paint(QPainter *p)
 */
 void Viewport::earlyDraw(QGLPainter *painter)
 {
-    // If we have a parent, then assume that the parent has painted
-    // the background and overpaint over the top of it.  If we don't
-    // have a parent, then clear to black.
-    if (parentItem()) {
-        glClear(GL_DEPTH_BUFFER_BIT);
-    } else {
-        painter->setClearColor(Qt::black);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    }
-
-    // Force the effect to be updated.  The GL paint engine
-    // has left the GL state in an unknown condition.
     painter->disableEffect();
-
 #ifdef GL_RESCALE_NORMAL
+    // Scale normals by a scale factor derived from modelview matrix.
+    // Note: normals need to be unit length.
     glEnable(GL_RESCALE_NORMAL);
 #endif
-
-    // Set the default effect for the scene.
-    painter->setStandardEffect(QGL::LitMaterial);
-    painter->setFaceColor(QGL::AllFaces, Qt::white);
 }
 
 /*!
@@ -521,16 +685,6 @@ void Viewport::earlyDraw(QGLPainter *painter)
 */
 void Viewport::draw(QGLPainter *painter)
 {
-    // Set up the initial depth, blend, and other options.
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
-    glDepthMask(GL_TRUE);
-#if defined(QT_OPENGL_ES)
-    glDepthRangef(0.0f, 1.0f);
-#else
-    glDepthRange(0.0f, 1.0f);
-#endif
-
     // At present only skyboxes work, with early draw and they are drawn
     // without blending and without a lighting model - just flat texture rendering
     int cnt = d->earlyDrawList.size();
@@ -626,94 +780,49 @@ void Viewport::registerEarlyDrawObject(QObject *obj, int order)
 */
 QObject *Viewport::objectForPoint(qreal x, qreal y)
 {
-    if (!d->viewWidget)
-        return 0;
-
     // Check the viewport boundaries in case a mouse move has
     // moved the pointer outside the window.
     QRectF rect = boundingRect();
     if (!rect.contains(QPointF(x, y)))
         return 0;
 
-    QPainter qpainter;
-    QGLPainter painter;
-    QGLWidget *glw = qobject_cast<QGLWidget *>(d->viewWidget);
-    bool painterValid = false;
-    bool doubleBuffer = false;
-    if (glw && painter.begin(glw)) {
-        doubleBuffer = glw->doubleBuffer();
-        painterValid = true;
-    } else if (qpainter.begin(d->viewWidget) && painter.begin(&qpainter)) {
-        painterValid = true;
-    }
-
-    if (!painterValid && !QGLContext::currentContext()) {
+    if (!QGLContext::currentContext()) {
         // Won't be able to read or generate a pick buffer, so bail out.
         return 0;
     }
 
-    int objectId = -1;
-
+    QGLPainter painter;
+    bool painterBegun = false;
     QSize size(qRound(width()), qRound(height()));
     QSize fbosize(QGL::nextPowerOfTwo(size));
-    if (!d->needsPick && d->pickFbo && d->pickFbo->size() == fbosize
-            && painterValid) {
-        // The previous pick fbo contents should still be valid.
-        d->pickFbo->bind();
-        objectId = painter.pickObject(qRound(x), fbosize.height() - 1 - qRound(y));
-        d->pickFbo->release();
-    } else {
+
+    int objectId = -1;
+
+    if (d->pickFbo && d->pickFbo->size() != fbosize) {
+        delete d->pickFbo;
+        d->pickFbo = 0;
+        d->needsPick = true;
+    };
+
+    if (!d->pickFbo) {
+        d->pickFbo = new QGLFramebufferObject
+                (fbosize, QGLFramebufferObject::CombinedDepthStencil);
+        Q_ASSERT(d->needsPick == true);
+    }
+
+    QScopedPointer<QGLAbstractSurface> fboSurface(new QGLFramebufferObjectSurface(d->pickFbo));
+    // The fbo has to be a power of 2, so use a subsurface to get the
+    // actual size we want
+    QScopedPointer<QGLSubsurface> subSurface(new QGLSubsurface(fboSurface.data(), QRect(QPoint(0, 0), size)));
+
+    if ( d->needsPick ) {
         // Regenerate the pick fbo contents.
-        QGLAbstractSurface *mainSurface = 0;
-        QGLAbstractSurface *fboSurface = 0;
-        int height = 0;
-        if (!doubleBuffer) {
-            if (d->pickFbo && d->pickFbo->size() != fbosize) {
-                delete d->pickFbo;
-                d->pickFbo = 0;
-            }
-            if (!d->pickFbo) {
-                d->pickFbo = new QGLFramebufferObject
-                    (fbosize, QGLFramebufferObject::CombinedDepthStencil);
-            }
-            height = fbosize.height();
-            fboSurface = new QGLFramebufferObjectSurface(d->pickFbo);
-            mainSurface = fboSurface;
-        } else if (painterValid) {
-            // Use the QGLWidget's back buffer for picking to avoid the
-            // need to create a separate fbo in GPU memory.
-            mainSurface = painter.currentSurface();
-            height = mainSurface->viewportGL().height();
-        }
-        QGLSubsurface surface(mainSurface, QRect(QPoint(0, 0), size));
-        // If our view is a hijacked QWidget, we're going to have failed
-        // to find a QGLWidget, but we'll still have a QGLContext and be able
-        // to draw the pick buffer into the pickFbo.
-        if (painterValid || painter.begin(&surface)) {
-            if (painterValid)
-                painter.pushSurface(&surface);
+        if (painter.begin(subSurface.data())) {
             painter.setPicking(true);
             painter.clearPickObjects();
             painter.setClearColor(Qt::black);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             painter.setEye(QGL::NoEye);
-            glEnable(GL_DEPTH_TEST);
-            glDepthFunc(GL_LESS);
-            glDepthMask(GL_TRUE);
-#if defined(QT_OPENGL_ES)
-            glDepthRangef(0.0f, 1.0f);
-#else
-            glDepthRange(0.0f, 1.0f);
-#endif
-            glDisable(GL_BLEND);
-            if (painter.hasOpenGLFeature(QOpenGLFunctions::BlendColor))
-                painter.glBlendColor(0, 0, 0, 0);
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            if (painter.hasOpenGLFeature(QOpenGLFunctions::BlendEquation))
-                painter.glBlendEquation(GL_FUNC_ADD);
-            else if (painter.hasOpenGLFeature(QOpenGLFunctions::BlendEquationSeparate))
-                painter.glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
-            glDisable(GL_CULL_FACE);
             if (d->camera) {
                 painter.setCamera(d->camera);
             } else {
@@ -722,14 +831,19 @@ QObject *Viewport::objectForPoint(qreal x, qreal y)
             }
             draw(&painter);
             painter.setPicking(false);
-            objectId = painter.pickObject(qRound(x), height - 1 - qRound(y));
-            painter.popSurface();
-            painter.end();
+        } else {
+            qWarning() << "Warning: unable to paint into fbo, picking will be unavailable";
         }
-        delete fboSurface;
     }
 
-    d->needsPick = doubleBuffer;
+    Q_ASSERT(d->pickFbo);
+    if (!painterBegun)
+        painter.begin(subSurface.data());
+    objectId = painter.pickObject(qRound(x), fbosize.height() - 1 - qRound(y));
+    painter.end();
+    d->needsPick = false;
+
+    // surfaces cleaned up here by scoped pointer deleters.
     return d->objects.value(objectId, 0);
 }
 
@@ -739,6 +853,7 @@ QObject *Viewport::objectForPoint(qreal x, qreal y)
 void Viewport::update3d()
 {
     update();
+    d->needsRepaint = true;
 }
 
 /*!
@@ -747,6 +862,7 @@ void Viewport::update3d()
 void Viewport::cameraChanged()
 {
     update();
+    d->needsRepaint = true;
 }
 
 static inline void sendEnterEvent(QObject *object)
@@ -1220,6 +1336,70 @@ void Viewport::itemChange(QSGItem::ItemChange change, const ItemChangeData &valu
             setItemViewport(item3d);
         }
     }
+    if (change == ItemSceneChange && value.canvas != d->canvas)
+    {
+        if (d->canvas && d->canvas->sceneGraphEngine())
+        {
+            d->canvas->disconnect(this);
+            d->canvas->sceneGraphEngine()->disconnect(this);
+        }
+        d->canvas = value.canvas;
+        if (d->canvas)
+        {
+            connect(d->canvas, SIGNAL(sceneGraphInitialized()),
+                    this, SLOT(sceneGraphInitialized()), Qt::DirectConnection);
+            connect(d->canvas, SIGNAL(destroyed()),
+                    this, SLOT(canvasDestroyed()));
+        }
+    }
+
     return QSGItem::itemChange(change, value);
 }
+
+void Viewport::canvasDestroyed()
+{
+    d->canvas = 0;
+}
+
+QSGNode* Viewport::updatePaintNode(QSGNode* node, UpdatePaintNodeData* data)
+{
+    Q_UNUSED(node);
+    Q_UNUSED(data);
+    if (d->renderMode == BufferedRender)
+        return QSGPaintedItem::updatePaintNode(node, data);
+    return 0;
+}
+
+void Viewport::sceneGraphInitialized()
+{
+    // This function is the approved SG spot for getting the initialized scene
+    // graph canvas.  Its the earliest point when we can be sure the canvas is
+    // properly set up.  Note that it will usually occur well after the main
+    // objects have been initialised (when the QSGView is created) and after the
+    // initial QML is loaded (which causes the initialisation of specific settings
+    // for the render mode).
+    if (renderMode() == UnknownRender)
+    {
+        Q_ASSERT(d->canvas);
+        if (d->canvas->rootItem() != parentItem())
+        {
+            qWarning() << "Viewport has parent %1:"
+                       << parentItem()->metaObject()->className()
+                       << "so switching to FBO composition.  For direct \'GL Under\' "
+                          "rendering make this viewport the top-level item.  If "
+                          "renderMode property is explicitly set ignore this warning.";
+            setRenderMode(BufferedRender);
+        }
+        else
+        {
+            setRenderMode(DirectRender);
+        }
+    }
+}
+
+void Viewport::geometryChanged(const QRectF &newGeometry, const QRectF & /*oldGeometry*/)
+{
+    setSize(newGeometry.size());
+}
+
 QT_END_NAMESPACE

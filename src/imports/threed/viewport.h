@@ -60,8 +60,10 @@ class QDeclarativeEffect;
 class Viewport : public QSGPaintedItem, public QDeclarativeViewport
 {
     Q_OBJECT
+    Q_ENUMS(RenderMode)
+    Q_PROPERTY(RenderMode renderMode READ renderMode WRITE setRenderMode NOTIFY viewportChanged)
     Q_PROPERTY(bool picking READ picking WRITE setPicking NOTIFY viewportChanged)
-    Q_PROPERTY(bool showPicking READ showPicking WRITE setShowPicking NOTIFY viewportChanged)   
+    Q_PROPERTY(bool showPicking READ showPicking WRITE setShowPicking NOTIFY viewportChanged)
     Q_PROPERTY(bool navigation READ navigation WRITE setNavigation NOTIFY viewportChanged)
     Q_PROPERTY(bool fovzoom READ fovzoom WRITE setFovzoom NOTIFY viewportChanged)
     Q_PROPERTY(bool blending READ blending WRITE setBlending NOTIFY viewportChanged)
@@ -69,6 +71,13 @@ class Viewport : public QSGPaintedItem, public QDeclarativeViewport
     Q_PROPERTY(QGLLightParameters *light READ light WRITE setLight NOTIFY viewportChanged)
     Q_PROPERTY(QGLLightModel *lightModel READ lightModel WRITE setLightModel NOTIFY viewportChanged)
 public:
+    enum RenderMode
+    {
+        UnknownRender,
+        DirectRender,
+        BufferedRender
+    };
+
     Viewport(QSGItem *parent = 0);
     ~Viewport();
 
@@ -96,12 +105,15 @@ public:
     QGLLightModel *lightModel() const;
     void setLightModel(QGLLightModel *value);
 
-    void paint(QPainter *);
-
     int registerPickableObject(QObject *obj);
     virtual void registerEarlyDrawObject(QObject *obj, int order);
 
     Q_INVOKABLE QObject *objectForPoint(qreal x, qreal y);
+
+    void paint(QPainter *painter);
+
+    RenderMode renderMode() const;
+    void setRenderMode(RenderMode mode);
 
 Q_SIGNALS:
     void viewportChanged();
@@ -111,6 +123,9 @@ public Q_SLOTS:
 
 private Q_SLOTS:
     void cameraChanged();
+    void beforeRendering();
+    void sceneGraphInitialized();
+    void canvasDestroyed();
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
@@ -122,9 +137,16 @@ protected:
     void hoverLeaveEvent(QHoverEvent *event);
     void wheelEvent(QWheelEvent *event);
     void keyPressEvent(QKeyEvent *event);
+
+    // from QSGItem
+    virtual QSGNode *updatePaintNode(QSGNode *, UpdatePaintNodeData *);
     void itemChange(QSGItem::ItemChange change, const ItemChangeData &value);
 
+    void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry);
+
 private:
+    void render(QGLPainter *painter);
+
     ViewportPrivate *d;
 
     void earlyDraw(QGLPainter *painter);
