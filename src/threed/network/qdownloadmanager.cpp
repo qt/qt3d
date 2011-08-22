@@ -38,26 +38,32 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-
 #include "qdownloadmanager.h"
-
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QDebug>
-#include <QUrl>
 
 QT_BEGIN_NAMESPACE
 
 /*!
     \class QDownloadManager
-    \brief The QDownloadManager class provides asset data download capability.
+    \brief The QDownloadManager class provides asset data download capability within the
+    current thread.
     \since 4.8
     \ingroup qt3d
     \ingroup qt3d::network
 
-    QDownloadManager encapsulates the functions needed for the downloading
-    of asset data (eg. textures) from a network URL (eg. a website).
+    QDownloadManager extends the QAbstractDownloadManager class for use in a
+    single-threaded Qt3D application. The QDownloadManager performs its network
+    activities asynchronously, and processing will continue as normal while the download
+    is underway (ie. the call is non-blocking).
+
+    It should be noted that this does not preclude its usage in a multi-threaded
+    application, rather that it does not itself spawn any threads of its own.
+
+    In circumstances where an application will benefit greatly from multithreading,
+    the developer may prefer to use the QThreadedDownloadManager.
 
     At the core of QDownloadManager is a QNetworkAccessManager which is
     shared by all instances of QDownloadManager.  The download manager itself
@@ -74,7 +80,7 @@ QT_BEGIN_NAMESPACE
     \code
     QDownloadManager dlmanage;
 
-    connect(this, SLOT(myReceiverSlot(QByteArray*)), &dlmanage, SIGNAL(downloadComplete(QByteArray*)));
+    connect(this, SLOT(myReceiverSlot(QByteArray)), &dlmanage, SIGNAL(downloadComplete(QByteArray)));
 
     if (!dlmanage.downloadAsset(QUrl("www.my.image.url.net/image.jpg"))) {
         dWarning("the manager was unable to send the url request.");
@@ -86,39 +92,39 @@ QT_BEGIN_NAMESPACE
     to convert this data to the format they require, and to verify that it is
     correct.
 */
-QNetworkAccessManager* QDownloadManager::m_netAccessMgr = NULL;
+
+Q_GLOBAL_STATIC(QNetworkAccessManager, getNetworkAccessManager)
 
 /*!
-    Construct a new instance of the QDownloadManager and attach it
-    to \a parent.  Internally this initialises the QNetworkAccessManager
-    which is shared by instances of this class, if it has not yet been
-    initialised.
+    Constructs a new instance of the QDownloadManager and attach it
+    to a \a parent QObject.  Internally this initialises the
+    QNetworkAccessManager instance which is shared by all instances of
+    this class, and manages downloading of asset data.
 */
-QDownloadManager::QDownloadManager(QObject *parent):QObject(parent)
+QDownloadManager::QDownloadManager(QObject *parent) : QAbstractDownloadManager(parent)
 {
-    if (!m_netAccessMgr) {
-        m_netAccessMgr = new QNetworkAccessManager();
-    }
 }
 
+
 /*!
-    Returns a pointer to the underlying QNetworkAccessManager which the
-    QDownloadManager instances use to download content.
+    Destroys the current instance of the QDownloadManager.  The destructor
+    checks whether other instances of the class exist, and if none are found
+    it deletes the internal QNetworkAccessManager instance.
 */
-QNetworkAccessManager * QDownloadManager::getNetworkManager()
+QDownloadManager::~QDownloadManager()
 {
-    return m_netAccessMgr;
 }
 
 /*!
     Instructs the QDownloadManager to download the content specified
-    in \a assetUrl.
+    in \a assetUrl.  This may be a texture, 3d model, or similar.
 
     A return value of true indicates that the network request was
-    successfully queued/sent, while a return value of false indicates
-    a problem with sending (possibly a poorly specified URL).
+    successfully queued for sending, while a return value of false
+    indicates a problem with sending (possibly a poorly specified URL, or
+    network failure).
 */
-bool QDownloadManager::downloadAsset(QUrl assetUrl)
+bool QDownloadManager::beginDownload(QUrl assetUrl)
 {
     //URL Sanity check
     if ( ! assetUrl.isValid()) {
@@ -128,10 +134,14 @@ bool QDownloadManager::downloadAsset(QUrl assetUrl)
 
     QNetworkRequest request(assetUrl);
     request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache);
-    QNetworkReply *netReply = m_netAccessMgr->get(request);
+    QNetworkReply *netReply = getNetworkAccessManager()->get(request);
+
+    if (!netReply) {
+        qWarning() << "Unable to send the request to the network.";
+        return false;
+    }
 
     connect(netReply, SIGNAL(finished()), this, SLOT(netReplyDone()));
-
     return true;
 }
 
@@ -149,7 +159,7 @@ void QDownloadManager::netReplyDone()
 {
     //Ensure sanity of the sender
     QNetworkReply *reply = qobject_cast<QNetworkReply*>(sender());
-    //Q_ASSERT(reply);
+
     if (!reply) {
         qWarning("DownloadManager's signal sender was not a QNetworkReply.");
         return;
@@ -158,7 +168,9 @@ void QDownloadManager::netReplyDone()
     if (reply->error() != QNetworkReply::NoError) {
         qWarning() << "Error in network reply: " << reply->url() << "(" << reply->errorString() << ")";
         reply->deleteLater();
-        emit downloadComplete(NULL);
+        QByteArray tempArray;
+        tempArray.clear();
+        emit downloadComplete(tempArray);
         return;
     }
 
@@ -174,27 +186,28 @@ void QDownloadManager::netReplyDone()
 
         //Reissue redirected request.
         QNetworkRequest request(url);
-        QNetworkReply * netReply = m_netAccessMgr->get(request);
-        connect(netReply, SIGNAL(finished()), SLOT(netReplyDone()));
-        reply->deleteLater();
+        if (getNetworkAccessManager())
+        {
+            QNetworkReply * netReply = getNetworkAccessManager()->get(request);
+            connect(netReply, SIGNAL(finished()), SLOT(netReplyDone()));
+            reply->deleteLater();
+        } else {
+            QByteArray tempArray;
+            tempArray.clear();
+            emit downloadComplete(tempArray);
+        }
+
         return;
     }
 
     //In the case of just data being returned
     //qDebug() << "ContentType:" << reply->header(QNetworkRequest::ContentTypeHeader).toString();
-    QByteArray *assetData = new QByteArray();
-    *assetData = reply->readAll();
+    QByteArray assetData;
+    assetData = reply->readAll();
     reply->deleteLater();
 
     emit downloadComplete(assetData);
+
 }
-
-/*!
-    \fn QDownloadManager::downloadComplete(QByteArray* assetData)
-
-    Signals that the download is completed.   A successful download will
-    have a valid QByteArray stored in \a assetData, while a failed download
-    (due to network error, etc), will result in a NULL value.
-*/
 
 QT_END_NAMESPACE

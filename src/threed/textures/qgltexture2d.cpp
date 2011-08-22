@@ -44,7 +44,9 @@
 #include "qgltextureutils_p.h"
 #include "qglpainter_p.h"
 #include "qglext_p.h"
+#include "qabstractdownloadmanager.h"
 #include "qdownloadmanager.h"
+#include "qthreadeddownloadmanager.h"
 
 #include <QtCore/qfile.h>
 #include <QtCore/qfileinfo.h>
@@ -367,6 +369,10 @@ QUrl QGLTexture2D::url() const
 
 /*!
     Sets this texture to have the contents of the image stored at \a url.
+
+    If the environment variable QT3D_MULTITHREAD is defined, network urls
+    (http, etc) are downloaded in a separate download thread, otherwise they are
+    downloaded asynchronously in the current thread.
 */
 void QGLTexture2D::setUrl(const QUrl &url)
 {
@@ -384,7 +390,7 @@ void QGLTexture2D::setUrl(const QUrl &url)
         if (url.scheme() == QLatin1String("file") || url.scheme().toLower() == QLatin1String("qrc"))
         {
             QString fileName = url.toLocalFile();
-            
+
             // slight hack since there doesn't appear to be a QUrl::toResourcePath() function
             // to convert qrc:///foo into :/foo
             if (url.scheme().toLower() == QLatin1String("qrc")) {
@@ -393,7 +399,7 @@ void QGLTexture2D::setUrl(const QUrl &url)
                 tempUrl.setScheme("");
                 fileName = QLatin1String(":")+tempUrl.toString();
             }
-            
+
             if (fileName.endsWith(QLatin1String(".dds"), Qt::CaseInsensitive))
             {
                 setCompressedFile(fileName);
@@ -408,9 +414,15 @@ void QGLTexture2D::setUrl(const QUrl &url)
         }
         else
         {
-            if (!d->downloadManager) {
-                d->downloadManager = new QDownloadManager(this);
-                connect (d->downloadManager,SIGNAL(downloadComplete(QByteArray*)),this, SLOT(textureRequestFinished(QByteArray*)));
+             if (!d->downloadManager) {
+                if (getenv(QT3D_MULTITHREAD)) {
+                    //Download in a multithreaded environment
+                    d->downloadManager = new QThreadedDownloadManager();
+                } else {
+                    //Download in a single threaded environment
+                    d->downloadManager = new QDownloadManager();
+                }
+                connect (d->downloadManager,SIGNAL(downloadComplete(QByteArray)),this, SLOT(textureRequestFinished(QByteArray)));
             }
 
             //Create a temporary image that will be used until the Url is loaded.
@@ -419,8 +431,7 @@ void QGLTexture2D::setUrl(const QUrl &url)
             tempImg.fill(fillcolor.rgba());
             setImage(tempImg);
 
-            //Issue download request.
-            if (!d->downloadManager->downloadAsset(url)) {
+            if (!d->downloadManager->beginDownload(QUrl(url.toString()))) {
                 qWarning("Unable to issue texture download request.");
             }
         }
@@ -725,22 +736,19 @@ QGLTexture2D *QGLTexture2D::fromTextureId(GLuint id, const QSize& size)
 
     \sa QDownloadManager
 */
-void QGLTexture2D::textureRequestFinished(QByteArray* assetData)
+void QGLTexture2D::textureRequestFinished(QByteArray assetData)
 {
     //Ensure valid asset data exists.
-    if (!assetData) {
-        qWarning("DownloadManager request failed. Texture not loaded.");
+    if (assetData.isEmpty()) {
+        qWarning("Network request failed. Texture not loaded.");
     } else {
         //Convert asset data to an image.
         QImage texImage;
-        texImage.loadFromData(*assetData);
+        texImage.loadFromData(assetData);
         setImage(texImage.mirrored());
 
         emit textureUpdated();
     }
-
-    if (assetData)
-        delete assetData;
 }
 
 /*!

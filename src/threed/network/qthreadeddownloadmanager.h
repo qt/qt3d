@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef DOWNLOADMANAGER_H
-#define DOWNLOADMANAGER_H
+#ifndef QTHREADEDDOWNLOADMANAGER_H
+#define QTHREADEDDOWNLOADMANAGER_H
 
 #include "qabstractdownloadmanager.h"
 
@@ -48,25 +48,31 @@ QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
+#define QT3D_MULTITHREAD "QT3D_MULTITHREAD"
+
 QT_MODULE(Qt3D)
 
-class QNetworkAccessManager;
-class QUrl;
+class QDownloadThread;
 
-class Q_QT3D_EXPORT QDownloadManager : public QAbstractDownloadManager {
+class Q_QT3D_EXPORT QThreadedDownloadManager : public QAbstractDownloadManager
+{
     Q_OBJECT
 public:
-    explicit QDownloadManager(QObject *parent = 0);
+    explicit QThreadedDownloadManager(QObject *parent = 0);
+    ~QThreadedDownloadManager();
 
-    ~QDownloadManager();
-
+    void beginThread();
     bool beginDownload(QUrl assetUrl);
+signals:
+    void endThread();
+    void startDownload(QUrl assetUrl);
 public slots:
     void netReplyDone();
+    void threadExit();
 };
 
 QT_END_NAMESPACE
 
 QT_END_HEADER
 
-#endif // DOWNLOADMANAGER_H
+#endif // QTHREADEDDOWNLOADMANAGER_H

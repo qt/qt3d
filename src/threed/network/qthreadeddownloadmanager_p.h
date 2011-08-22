@@ -38,9 +38,8 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-
-#ifndef QGLTEXTURE2D_P_H
-#define QGLTEXTURE2D_P_H
+#ifndef QTHREADEDDOWNLOADMANAGER_P_H
+#define QTHREADEDDOWNLOADMANAGER_P_H
 
 //
 //  W A R N I N G
@@ -53,66 +52,63 @@
 // We mean it.
 //
 
-#include "qgltexture2d.h"
-#include "qgltextureutils_p.h"
-#include "qurl.h"
-#include <QtCore/qatomic.h>
+#include "qthreadeddownloadmanager.h"
+#include <QThread>
+#include <QMutex>
+
+QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
-class QAbstractDownloadManager;
+QT_MODULE(Qt3D)
 
-class QGLTexture2DTextureInfo
+class QNetworkAccessManager;
+
+//This is the main download thread where the network requests are queued and
+//processed.
+class QDownloadThread : public QThread
 {
+    Q_OBJECT
+    friend class QDownloadInstance;
 public:
-    QGLTexture2DTextureInfo
-            (const QGLContext *context, GLuint textureId, uint imageGeneration,
-             uint parameterGeneration, bool isLiteral = false)
-    {
-        if (textureId)
-            tex.setTextureId(context, textureId);
-        this->imageGeneration = imageGeneration;
-        this->parameterGeneration = parameterGeneration;
-        this->isLiteral = isLiteral;
-        this->next = 0;
-    }
+    QDownloadThread(QObject *parent = 0);
+    ~QDownloadThread();
 
-    QGLBoundTexture tex;
-    uint imageGeneration;
-    uint parameterGeneration;
-    bool isLiteral;
-    QGLTexture2DTextureInfo *next;
+    void run();
+
+    bool isThreadQuitting() const;
+protected:
+    QNetworkAccessManager * m_netAccessMgr;
+    int m_requestCount;
+    bool m_threadQuitting;
 };
 
-class DDSFormat;
-
-class QGLTexture2DPrivate
+//This is a single instance of a download request, and acts as an intermediary
+//processing object between threads.
+class QDownloadInstance : public QObject
 {
+    Q_OBJECT
 public:
-    QGLTexture2DPrivate();
-    ~QGLTexture2DPrivate();
+    explicit QDownloadInstance(QObject *parent = 0);
+     ~QDownloadInstance();
+    void doSetup(QThreadedDownloadManager &cComm);
 
-    QSize size;
-    QSize requestedSize;
-    QImage image;
-    QUrl url;
-    QByteArray compressedData;
-    QGLContext::BindOptions bindOptions;
-    QGL::TextureWrap horizontalWrap;
-    QGL::TextureWrap verticalWrap;
-#if !defined(QT_OPENGL_ES)
-    bool mipmapSupported;
-    bool mipmapSupportedKnown;
-#endif
-    uint imageGeneration;
-    uint parameterGeneration;
-    QGLTexture2DTextureInfo *infos;
-    QAbstractDownloadManager *downloadManager;
+signals:
+    void downloadComplete(QByteArray assetData);
+    void killDownloadThread();
 
-    bool bind(GLenum target);
-    virtual void bindImages(QGLTexture2DTextureInfo *info);
+public slots:
+    void doWork(QUrl assetUrl);
+    void doneWork();
+
+protected:
+    QNetworkAccessManager * getNetworkManager();
+    void incrementRequestCount();
+    void decrementRequestCount();
 };
 
 QT_END_NAMESPACE
 
-#endif
+QT_END_HEADER
+
+#endif // QTHREADEDDOWNLOADMANAGER_P_H
