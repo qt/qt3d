@@ -111,7 +111,11 @@ contains(TEMPLATE, app) {
 
 qt3d_deploy_qml {
     mt {
-        TARGET_DIR = /opt/mt/applications/$$TARGET
+        package {
+            TARGET_DIR = $$PWD
+        } else {
+            TARGET_DIR = /opt/mt/applications/$$TARGET
+        }
     } else {
         TARGET_DIR = $$QT3D_INSTALL_DATA/quick3d/resources/examples/$$TARGET
     }
@@ -221,18 +225,31 @@ defineTest(qtcAddDeployment) {
                 QMAKE_EXTRA_TARGETS += first copydeploymentfolders
             }
         }
-#        installPrefix = /opt/$${TARGET}
-        for(deploymentfolder, DEPLOYMENTFOLDERS) {
-            item = item$${deploymentfolder}
-            itemfiles = $${item}.files
-            $$itemfiles = $$eval($${deploymentfolder}.source)
-            itempath = $${item}.path
-            $$itempath = $${installPrefix}/$$eval($${deploymentfolder}.target)
-            export($$itemfiles)
-            export($$itempath)
-            INSTALLS += $$item
+        mt {
+            for(deploymentfolder, DEPLOYMENTFOLDERS) {
+                item = item$${deploymentfolder}
+                itemfiles = $${item}.files
+                $$itemfiles = $$eval($${deploymentfolder}.source)
+                itempath = $${item}.path
+                $$itempath = /opt/mt/applications/$$TARGET
+                export($$itemfiles)
+                export($$itempath)
+                INSTALLS += $$item
+            }
+            target.path = /opt/mt/applications/$$TARGET
+        } else {
+            for(deploymentfolder, DEPLOYMENTFOLDERS) {
+                item = item$${deploymentfolder}
+                itemfiles = $${item}.files
+                $$itemfiles = $$eval($${deploymentfolder}.source)
+                itempath = $${item}.path
+                $$itempath = $${installPrefix}/$$eval($${deploymentfolder}.target)
+                export($$itemfiles)
+                export($$itempath)
+                INSTALLS += $$item
+            }
+            target.path = $${installPrefix}/bin
         }
-        target.path = $${installPrefix}/bin
         export(icon.files)
         export(icon.path)
         export(desktopfile.files)
