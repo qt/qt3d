@@ -1,0 +1,18 @@
+{
+    "info-version": "1.0",
+    "dict": {
+        "Category": "application",
+        "Runtime": "qml",
+        "DisplayName": "Cube_QML",
+        "Subcategory": "utility",
+        "MainQML": "qml/cube.qml",
+        "Version": "1.0",
+        "Identifier": "com.nokia.quick3d.cube_qml",
+        "Depends": {
+            "com.nokia.components": "1.0",
+            "com.nokia.sphone.components": "1.0",
+            "com.nokia.sphone.JsonDB": "1.0"
+        },
+        "Summary": "Cube QML Demo"
+    }
+}

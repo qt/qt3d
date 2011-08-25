@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
     QGLFormat f = QGLFormat::defaultFormat();
     f.setSampleBuffers(true);
     QSGView view(f);
-    QString qml = q_get_qmldir(QLatin1String("qml/cube.qml"));
+    QString qml = q_get_qmldir(QLatin1String("qml/desktop.qml"));
 
     view.setSource(QUrl::fromLocalFile(qml));
 

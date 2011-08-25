@@ -14,4 +14,6 @@ qtcAddDeployment()
 OTHER_FILES += \
     cube_qml.rc
 
+mt: OTHER_FILES += mt.qml
+
 RC_FILE = cube_qml.rc

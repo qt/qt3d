@@ -89,7 +89,7 @@ contains(TEMPLATE, app) {
             INSTALLS += target
         } else {
             mt {
-                applnk.files = info.json
+                applnk.files = info.json $${TARGET}.qmlproject
                 applnk.path = /opt/mt/applications/$${TARGET}
 
                 # icons.files is set by qt3dquick_pkg_dep.pri or qt3d_pkg_dep.pri
@@ -205,7 +205,7 @@ defineTest(qtcAddDeployment) {
                 macx {
                     target = $$DESTDIR/$${TARGET}.app/Contents/Resources/$$eval($${deploymentfolder}.target)
                 } else {
-                    target = $$DESTDIR/$$eval($${deploymentfolder}.target)
+                    target = $$OUT_PWD/$$eval($${deploymentfolder}.target)
                 }
                 target = $$replace(target, \\\\, /)
                 sourcePathSegments = $$split(source, /)
@@ -226,6 +226,11 @@ defineTest(qtcAddDeployment) {
             }
         }
         mt {
+            desktopfile.files = $${TARGET}.qmlproject info.json
+            desktopfile.path = /opt/mt/applications/$$TARGET
+            icon.files = ../icon.png
+            icon.path = /opt/mt/applications/$$TARGET
+
             for(deploymentfolder, DEPLOYMENTFOLDERS) {
                 item = item$${deploymentfolder}
                 itemfiles = $${item}.files
