@@ -72,6 +72,7 @@ QML_DECLARE_TYPE(QGraphicsLookAtTransform)
 QML_DECLARE_TYPE(QGLMaterial)
 QML_DECLARE_TYPE(QGLLightModel)
 QML_DECLARE_TYPE(QGLLightParameters)
+QML_DECLARE_TYPE(QGLTexture2D)
 QML_DECLARE_TYPE(QGLCamera)
 
 class QThreedQmlModule : public QDeclarativeExtensionPlugin
@@ -94,6 +95,7 @@ public:
         qmlRegisterType<QGraphicsBillboardTransform>(uri,1,0,"BillboardTransform");
         qmlRegisterType<QGraphicsLookAtTransform>(uri,1,0,"LookAt");
         qmlRegisterType<QGLMaterial>(uri,1,0,"Material");
+        qmlRegisterType<QGLTexture2D>(uri,1,0,"Texture2D");
         qmlRegisterType<ShaderProgram>(uri,1,0,"ShaderProgram");
         qmlRegisterType<Skybox>(uri, 1, 0, "Skybox");
 
