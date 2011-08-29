@@ -90,7 +90,7 @@
     \bold{Special note: Harmattan SDK.}  When using the Harmattan support in the Qt SDK:
     \list
         \o in Step 2 below ensure you choose the appropriate Qt Build eg \c{Meego 1.2 Harmattan API}; and
-        \o in Step 3 under \c{Build Steps > QMake > Additional arguments} add in \c{CONFIG += qtc_harmattan}
+        \o in Step 3 under \c{Build Steps > QMake > Additional arguments} add in \c{CONFIG+=qtc_harmattan}
     \endlist
 
     \image build-qt3d-qtcreator-1.png
