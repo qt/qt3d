@@ -85,8 +85,8 @@ contains(TEMPLATE, app) {
             icons.path = /usr/share/themes/base/meegotouch/icons
             INSTALLS += icons applnk
 
-            target.path += $$QT3D_INSTALL_BINS
-            INSTALLS += target
+            app_target.path += $$QT3D_INSTALL_BINS
+            INSTALLS += app_target
         } else {
             mt {
                 applnk.files = info.json $${TARGET}.qmlproject
@@ -95,13 +95,13 @@ contains(TEMPLATE, app) {
                 # icons.files is set by qt3dquick_pkg_dep.pri or qt3d_pkg_dep.pri
                 icons.path = /opt/mt/applications/$${TARGET}
                 INSTALLS += icons applnk
-                target.path += /opt/mt/applications/$${TARGET}
-                INSTALLS += target
+                app_target.path += /opt/mt/applications/$${TARGET}
+                INSTALLS += app_target
 
                 DEFINES += QT3D_USE_OPT=$${TARGET}
             } else {
-                target.path += $$QT3D_INSTALL_BINS
-                INSTALLS += target
+                app_target.path += $$QT3D_INSTALL_BINS
+                INSTALLS += app_target
             }
         }
     } else {
@@ -132,6 +132,11 @@ qt3d_deploy_qml {
         di.source = $${dir}
         di.target = $$TARGET_DIR
         DEPLOYMENTFOLDERS += di
+    }
+    for(file, INSTALL_FILES) {
+        fi.source = $${file}
+        fi.target = $$TARGET_DIR
+        DEPLOYMENTFOLDERS += fi
     }
 }
 

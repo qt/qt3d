@@ -5,7 +5,7 @@
         "Runtime": "qml",
         "DisplayName": "Cube_QML",
         "Subcategory": "utility",
-        "MainQML": "qml/cube.qml",
+        "MainQML": "mt.qml",
         "Version": "1.0",
         "Identifier": "com.nokia.quick3d.cube_qml",
         "Depends": {
