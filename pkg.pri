@@ -228,7 +228,7 @@ defineTest(qtcAddDeployment) {
                 macx {
                     target = $$DESTDIR/$${TARGET}.app/Contents/Resources/$$eval($${deploymentfolder}.target)
                 } else {
-                    target = $$DESTDIR/$$eval($${deploymentfolder}.target)
+                    target = $$OUT_PWD/$$eval($${deploymentfolder}.target)
                 }
                 target = $$replace(target, \\\\, /)
                 sourcePathSegments = $$split(source, /)
