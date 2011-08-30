@@ -97,9 +97,10 @@ QT_BEGIN_NAMESPACE
 Sphere::Sphere(QObject *parent)
     : QDeclarativeItem3D(parent)
     , m_radius(1.0f)
-    , m_lod(5)
+    , m_lod(-1)
     , m_axis(Qt::ZAxis)
 {
+    setLevelOfDetail(5);
 }
 
 /*!
@@ -123,7 +124,7 @@ void Sphere::setRadius(qreal radius)
     This property defines the level of detail, between 1 and 10,
     which controls the number of triangles that are generated to
     render the surface of the sphere.  Values outside the range
-    1 to 10 will be clamped to the range when the sphere is drawn.
+    1 to 10 will be clamped.
 
     The default value is 5.  An increase in 1 in level of detail
     doubles the number of triangles.  The following picture shows
@@ -147,8 +148,19 @@ void Sphere::setRadius(qreal radius)
 */
 void Sphere::setLevelOfDetail(int lod)
 {
+    if (lod < 1)
+    {
+        lod = 1;
+    }
+    else
+    {
+        if (lod > 10)
+            lod = 10;
+    }
+
     if (m_lod != lod) {
         m_lod = lod;
+        updateGeometry();
         emit levelOfDetailChanged();
         update();
     }
@@ -174,28 +186,25 @@ void Sphere::setAxis(Qt::Axis axis)
 /*!
     \internal
 */
-void Sphere::drawItem(QGLPainter *painter)
+void Sphere::updateGeometry()
 {
     // Convert the level of detail into a depth value for QGLSphere.
     // We cache a maximum of 10 levels of detail for lod animations.
-    int lod = m_lod;
-    if (lod < 1)
-        lod = 1;
-    else if (lod > 10)
-        lod = 10;
-
 
     // Create a new geometry node for this level of detail if necessary.
-    QGLSceneNode *geometry = m_lodGeometry.value(lod, 0);
+    QGLSceneNode *geometry = m_lodGeometry.value(m_lod, 0);
     if (!geometry) {
         QGLBuilder builder;
         builder.newSection(QGL::Faceted);
-        builder << QGLSphere(2.0f, lod);
+        builder << QGLSphere(2.0f, m_lod);
         geometry = builder.finalizedSceneNode();
         geometry->setParent(this);
-        m_lodGeometry.insert(lod, geometry);
+        m_lodGeometry.insert(m_lod, geometry);
     }
+}
 
+void Sphere::drawItem(QGLPainter *painter)
+{
     // Set the radius as a scale on the modelview transformation.
     // This way, we don't have to regenerate the geometry every
     // frame if the radius is being animated.  Also rotate the
@@ -211,6 +220,7 @@ void Sphere::drawItem(QGLPainter *painter)
     }
 
     // Draw the geometry.
+    QGLSceneNode *geometry = m_lodGeometry.value(m_lod, 0);
     geometry->draw(painter);
 
     // Restore the original modelview.

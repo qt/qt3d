@@ -78,6 +78,8 @@ protected:
     void drawItem(QGLPainter *painter);
 
 private:
+    void updateGeometry();
+
     qreal m_radius;
     int m_lod;
     Qt::Axis m_axis;
