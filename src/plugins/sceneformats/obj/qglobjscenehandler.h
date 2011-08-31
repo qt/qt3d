@@ -55,6 +55,7 @@ class QGLObjSceneHandler : public QGLSceneFormatHandler
 public:
     QGLObjSceneHandler();
     QGLAbstractScene *read();
+    QGLAbstractScene *download();
 //! [1]
     void decodeOptions(const QString &options);
 

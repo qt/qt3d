@@ -61,7 +61,7 @@ QGLSceneFormatHandler *QGLBezierScenePlugin::create(QIODevice *device, const QUr
     Q_UNUSED(device);
     Q_UNUSED(url);
     Q_UNUSED(format);
-    return new QGLBezierSceneHandler;
+    return new QGLBezierSceneHandler();
 }
 
 Q_EXPORT_STATIC_PLUGIN(QGLBezierScenePlugin)

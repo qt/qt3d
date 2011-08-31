@@ -47,9 +47,12 @@
 #include "aiPostProcess.h"
 #include "DefaultLogger.h"
 
+#include "qdownloadmanager.h"
+
 #include <QtCore/qdir.h>
 #include <QtCore/qdebug.h>
-
+#include <QObject>
+#include <QBuffer>
 
 #define qAiPostProcessPreset ( \
     aiProcess_CalcTangentSpace           | \
@@ -233,10 +236,10 @@ QGLAbstractScene *QAiSceneHandler::read()
     QUrl u = url();
     if (u.scheme() != QLatin1String("file"))
     {
-        qWarning("Non-file URL's not yet supported");
-        return 0;
+        path = u.toEncoded();
+    } else {
+        path = u.toLocalFile();
     }
-    path = u.toLocalFile();
 
     if (m_removeComponentFlags)
         m_options |= aiProcess_RemoveComponent;
@@ -272,15 +275,105 @@ QGLAbstractScene *QAiSceneHandler::read()
         qWarning("Asset importer error: %s\n", m_importer.GetErrorString());
         if (log)
             qWarning("For details check log: %s/AssimpLog.txt\n", qPrintable(c));
+        finalize();
         return 0;
     }
-
 
     QAiScene *qscene = new QAiScene(scene, this);
 
     Assimp::DefaultLogger::kill();
 
+    finalize();
     return qscene;
+}
+
+QGLAbstractScene * QAiSceneHandler::download()
+{
+    QUrl u = url();
+
+    if (u.scheme() == QLatin1String("file")) {
+        qWarning() << "Cannot download urls with FILE scheme.  Use the read() method.";
+    } else {
+        if (m_removeComponentFlags)
+            m_options |= aiProcess_RemoveComponent;
+        else
+            m_options &= ~aiProcess_RemoveComponent;
+
+        m_importer.SetPropertyInteger(AI_CONFIG_PP_RVC_FLAGS, m_removeComponentFlags);
+        m_importer.SetPropertyInteger(AI_CONFIG_PP_SBP_REMOVE, m_removeSortFlags);
+        m_importer.SetPropertyInteger(AI_CONFIG_PP_SLM_VERTEX_LIMIT, m_meshSplitVertexLimit);
+        m_importer.SetPropertyInteger(AI_CONFIG_PP_SLM_TRIANGLE_LIMIT, m_meshSplitTriangleLimit);
+
+        // force this on, and provide no way to turn it off.  Its set by the
+        // aiProcessPreset_TargetRealtime_Quality option in the constructor.
+        // Guarantees that all meshes only have one primitive type
+        Q_ASSERT(m_options & aiProcess_SortByPType);
+
+        setScene(new QAiScene(this));
+        //m_scene = new QAiScene(this);
+
+        //m_scene->begindownLoad(url());
+
+        downloadScene();
+    }
+    return getScene();
+}
+
+void QAiSceneHandler::downloadComplete(QByteArray sceneData)
+{
+    //Create i/o device to use for file reading.
+    QBuffer sceneBuffer(&sceneData);
+    sceneBuffer.open(QIODevice::ReadOnly);
+    setDevice(&sceneBuffer);
+
+    //Set i/o system to use non-file based device.
+    AiLoaderIOSystem *ios = new AiLoaderIOSystem(device(), url());
+    m_importer.SetIOHandler(ios);
+
+    QString path;
+    path = url().toEncoded();
+
+    Assimp::Logger *log = 0;
+    Assimp::Logger::LogSeverity severity = Assimp::Logger::NORMAL;
+    if (m_showWarnings)
+    {
+        severity = Assimp::Logger::VERBOSE;
+        int streams = aiDefaultLogStream_FILE |
+#ifdef Q_CC_MSVC
+                aiDefaultLogStream_DEBUGGER
+#else
+                aiDefaultLogStream_STDERR
+#endif
+                ;
+        log = Assimp::DefaultLogger::create("AssimpLog.txt", severity, streams);
+    }
+
+    const aiScene* scene = m_importer.ReadFile(path.toStdString(), m_options);
+    if (!scene)
+    {
+        // Notes on import success flags - according to assimp doco if validation
+        // is requested the flags AI_SCENE_FLAGS_VALIDATION_WARNING will be set
+        // if there's a warning, and AI_SCENE_FLAGS_VALIDATED is set on success.
+        // This does not happen.  Also AI_SCENE_FLAGS_INCOMPLETE can be set on a
+        // valid model, so checking for that is no use either.  Best way to proceed
+        // is that if ShowWarnings is turned on above, then any pertinent warnings
+        // will be shown; and if a NULL result is returned here, then its a fatal
+        // error and a message is shown here.  If a non-NULL result is returned
+        // just go ahead and try to load it.
+        QString c = QDir::current().absolutePath();
+        qWarning("Asset importer error: %s\n", m_importer.GetErrorString());
+        if (log)
+            qWarning("For details check log: %s/AssimpLog.txt\n", qPrintable(c));
+    } else {
+        //If we have reached this point everything has proceeded correctly,
+        //load the scene.
+        QAiScene *theScene = qobject_cast<QAiScene*>(getScene());
+        theScene->loadScene(scene);
+    }
+
+    Assimp::DefaultLogger::kill();
+
+    finalize();
 }
 
 QT_END_NAMESPACE

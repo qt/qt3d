@@ -70,6 +70,7 @@ public:
     ~QGL3dsSceneHandler();
 
     QGLAbstractScene *read();
+    QGLAbstractScene *download();
 
     void setOptions(QGL::ModelOptions options) { m_options |= options; }
     QGL::ModelOptions options() const { return m_options; }

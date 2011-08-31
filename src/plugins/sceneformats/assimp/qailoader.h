@@ -55,15 +55,16 @@ class QGLSceneNode;
 class QAiSceneHandler;
 class QGLMaterial;
 class aiMaterial;
-
+class QAiScene;
 class QAiLoader
 {
 public:
     QAiLoader(const aiScene *scene, QAiSceneHandler* handler);
     ~QAiLoader();
     QGLSceneNode *loadMeshes();
-
 private:
+    friend class QAiScene;
+
     void loadMesh(aiMesh *);
     void loadNodes(aiNode *, QGLSceneNode *);
     void loadMaterial(aiMaterial *);

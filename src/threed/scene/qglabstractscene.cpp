@@ -55,6 +55,7 @@
 #include <QtCore/qcoreapplication.h>
 #include <QtCore/qdir.h>
 #include <QtCore/qpluginloader.h>
+#include <QBuffer>
 
 QT_BEGIN_NAMESPACE
 
@@ -361,8 +362,6 @@ QGLAbstractScene *QGLAbstractScene::loadScene
     (QIODevice *device, const QUrl& url, const QString& format, const QString &options)
 {
 #if !defined (QT_NO_LIBRARY) && !defined(QT_NO_SETTINGS)
-    if (!device)
-        return 0;
 
     QFactoryLoader *l = loader();
     QStringList keys = l->keys();
@@ -370,14 +369,20 @@ QGLAbstractScene *QGLAbstractScene::loadScene
     // If the format is not specified, then use the filename/url extension.
     QString fmt = format;
     if (fmt.isEmpty()) {
+        //First try to resolve a file io device
         QFile *file = qobject_cast<QFile *>(device);
         QString name;
         if (file) {
             name = file->fileName();
         } else {
+            //Next try to resolve a network io device
             QNetworkReply *reply = qobject_cast<QNetworkReply *>(device);
             if (reply)
                 name = reply->url().path();
+            else {
+                //otherwise just use the url pathname.
+                name = url.path();
+            }
         }
         int dot = name.lastIndexOf(QLatin1Char('.'));
         QString suffix = name.mid(dot+1).toLower();
@@ -395,10 +400,17 @@ QGLAbstractScene *QGLAbstractScene::loadScene
             handler->setDevice(device);
             handler->setUrl(url);
             handler->setFormat(format);
+
+
             if (!options.isEmpty())
                 handler->decodeOptions(options);
-            QGLAbstractScene *scene = handler->read();
-            delete handler;
+
+            QGLAbstractScene *scene = 0;
+            if (!device) {
+                scene = handler->download();
+            } else {
+                scene = handler->read();
+            }
             return scene;
         }
     }
@@ -420,6 +432,51 @@ QGLAbstractScene *QGLAbstractScene::loadScene
 }
 
 /*!
+    Loads a scene from the internet in the specified \a format using
+    the registered scene format plugins.  If \a format is an empty
+    string, then the format will be autodetected from the filename
+    extension of the \a url, which specifies the location of
+    the data online.
+
+    The \a options string is passed to the underlying format loader
+    and its meaning and format depend on the loader.  For example the
+    format string for the .3ds loader accepts the following options:
+    \list
+    \o ForceSmooth - average normals for a smooth appearance
+    \o ForceFaceted - per face normals for a faceted appearance
+    \o NativeIndices - map native indices for poorly smoothed models
+    \o CorrectNormals - fix inverted normals on models with bad windings
+    \o CorrectAcute - fix normals on models that smooth acute angles
+    \endlist
+
+    The options may be specified globally for the whole model, or just
+    for a particular mesh.
+
+    In this example smoothing is forced on globally, and native indices
+    are used on just the mesh called "BattCoverMesh".
+
+    \code
+    QString op = "ForceSmooth BattCoverMesh=NativeIndices";
+    QString url = "http://www.example.url.com/music-player.3ds";
+    QGLAbstractScene *scene = QGLAbstractScene::loadScene(url, QString(), op);
+    \endcode
+
+    Returns the scene object, or null if the scene could not be loaded
+    or the \a format was not supported by any of the plugins.
+
+    The scene object returned by this will contain only a single stub
+    node at the root of the scenegraph, which will be filled out later
+    once the asynchronous download of the scene data is complete.
+
+    \sa QGLSceneFormatPlugin
+*/
+QGLAbstractScene *QGLAbstractScene::loadScene
+    (const QUrl& url, const QString& format, const QString &options)
+{
+    return QGLAbstractScene::loadScene(0, url, format, options);
+}
+
+/*!
     Loads a scene from \a fileName in the specified \a format, with the
     supplied \a options, and using the registered scene format plugins.
 
@@ -438,16 +495,24 @@ QGLAbstractScene *QGLAbstractScene::loadScene
 QGLAbstractScene *QGLAbstractScene::loadScene
     (const QString& fileName, const QString& format, const QString &options)
 {
-    QFile file(fileName);
-    if (!file.open(QIODevice::ReadOnly))
-    {
-        if (options.contains(QLatin1String("ShowWarnings")))
-            qWarning("Could not read %s", qPrintable(fileName));
-        return 0;
+    QUrl fileUrl(fileName);
+
+    if (fileUrl.scheme()!="http" && fileUrl.scheme()!="ftp") {
+        QFile file(fileName);
+        if (!file.open(QIODevice::ReadOnly))
+        {
+            if (options.contains(QLatin1String("ShowWarnings")))
+                qWarning("Could not read %s", qPrintable(fileName));
+            return 0;
+        }
+        QFileInfo fi(fileName);
+        QUrl url = QUrl::fromLocalFile(fi.absoluteFilePath());
+        return loadScene(&file, url, format, options);
+    } else {
+        //the following call should initiate network loading on the correct
+        //downloader class.
+        return loadScene(QUrl(fileName), format, options);
     }
-    QFileInfo fi(fileName);
-    QUrl url = QUrl::fromLocalFile(fi.absoluteFilePath());
-    return loadScene(&file, url, format, options);
 }
 
 /*!
@@ -524,6 +589,17 @@ QStringList QGLAbstractScene::supportedFormats(QGLAbstractScene::FormatListType 
     }
     return formats;
 }
+
+/*!
+    \fn QGLAbstractScene::sceneUpdated()
+    \internal
+    This signal should be emitted when a network download of a scene has
+    been completed.
+
+    The user is left to implement the exact mechanism behind the scenes which
+    causes this signal to be emitted, and is responsible for the handling
+    of the signal.
+*/
 
 
 QT_END_NAMESPACE

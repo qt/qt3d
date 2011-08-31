@@ -246,4 +246,10 @@ QGLAbstractScene *QGL3dsSceneHandler::read()
     return scene;
 }
 
+QGLAbstractScene * QGL3dsSceneHandler::download()
+{
+    qWarning() << "Network loading of 3ds files using this plugin is not implemented.";
+    return NULL;
+}
+
 QT_END_NAMESPACE

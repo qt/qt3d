@@ -43,8 +43,6 @@
 #include "qaimesh.h"
 #include "qailoader.h"
 
-#include "qglscenenode.h"
-
 QT_BEGIN_NAMESPACE
 
 /*!
@@ -69,6 +67,25 @@ QAiScene::QAiScene(const aiScene *scene, QAiSceneHandler *handler)
     Q_ASSERT(scene);
     QAiLoader loader(scene, handler);
     m_root = loader.loadMeshes();
+    m_aiLoader = 0;
+}
+/*!
+    \internal
+    Construct a new QAiScene object and setting the given \a handler.
+
+    Note that the scene which will be used to generate the QAiScene has
+    not been added yet - this is used in the network case and requires
+    a later call to the loadScene function to work correctly
+
+    \sa loadScene()
+*/
+QAiScene::QAiScene(QAiSceneHandler *handler)
+    : QGLAbstractScene(0)
+{
+    Q_ASSERT(handler);
+    //create a temporary loader and get a temporary root node for the scene.
+    m_aiLoader = new QAiLoader(0, handler);
+    m_root=m_aiLoader->m_builder.sceneNode();
 }
 
 /*!
@@ -80,7 +97,7 @@ QAiScene::QAiScene(const aiScene *scene, QAiSceneHandler *handler)
 */
 QAiScene::~QAiScene()
 {
-    // nothing to do here
+    delete m_aiLoader;
 }
 
 /*!
@@ -107,6 +124,59 @@ QList<QObject *> QAiScene::objects() const
 QGLSceneNode *QAiScene::mainNode() const
 {
     return m_root;
+}
+
+/*!
+    \internal
+    Returns the aiLoader associated with the scene (if any).
+*/
+QAiLoader * QAiScene::aiLoader() const
+{
+    return m_aiLoader;
+}
+
+/*!
+    \internal
+    Load the new \a scene and swap the extant palette from the temporary roote
+    node into the current root node.
+
+    The QAiScene object takes ownership of the \a file.
+*/
+void QAiScene::loadScene(const aiScene *scene)
+{
+    Q_ASSERT(scene);
+
+    //Get the old material information
+    QGLMaterialCollection *oldPalette= m_aiLoader->m_builder.palette();
+    int oldIndex = m_root->materialIndex();
+
+    //Reset the palette for the root node.
+    QGLMaterialCollection *newPalette = new QGLMaterialCollection();
+    m_aiLoader->m_builder.sceneNode()->setPalette(newPalette);
+    m_aiLoader->m_scene = scene;
+
+    //Commence loading of the mesh.
+    m_root = m_aiLoader->loadMeshes(); //this won't actually change the root unless we've messed up.
+    delete m_aiLoader;
+    m_aiLoader = 0;
+
+    //Swap out the materials palette
+    int indexCount=0;
+    int materialCount=0;
+    QGLMaterial * currentMaterial = NULL;
+    do {
+        currentMaterial = oldPalette->removeMaterial(indexCount);
+        if (currentMaterial) {
+            materialCount = m_root->palette()->addMaterial(currentMaterial);
+            indexCount++;
+        }
+    } while (currentMaterial);
+    m_root->setMaterialIndex(materialCount-(indexCount-1)+oldIndex);
+
+    //update picking nodes for the whole scene if needed
+    if (pickable()) generatePickNodes();
+
+    emit sceneUpdated();
 }
 
 QT_END_NAMESPACE

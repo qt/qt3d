@@ -171,6 +171,7 @@ QGLAbstractScene *QGLObjSceneHandler::read()
     builder.pushNode();
 
     QGeometryData op;
+
     while (!device()->atEnd()) {
         // Read the next line, including any backslash continuations.
         line = device()->readLine().trimmed();
@@ -325,6 +326,12 @@ QGLAbstractScene *QGLObjSceneHandler::read()
 
     // Create a scene from the geometry
     return new QGLObjScene(builder.finalizedSceneNode());
+}
+
+QGLAbstractScene *QGLObjSceneHandler::download()
+{
+    qWarning() << "Network loading of obj files using this plugin is not implemented.";
+    return NULL;
 }
 
 void QGLObjSceneHandler::loadMaterialLibrary(const QString& name)

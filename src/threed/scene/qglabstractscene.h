@@ -78,6 +78,9 @@ public:
     virtual QGLSceneNode *mainNode() const = 0;
 
     static QGLAbstractScene *loadScene
+        (const QUrl& url, const QString& format = QString(),
+        const QString& options = QString());
+    static QGLAbstractScene *loadScene
         (QIODevice *device, const QUrl& url, const QString& format = QString(),
      const QString& options = QString());
     static QGLAbstractScene *loadScene
@@ -89,6 +92,9 @@ public:
     };
 
     static QStringList supportedFormats(FormatListType t = AsFilter);
+
+signals:
+    void sceneUpdated();
 
 protected:
     void childEvent(QChildEvent * event);

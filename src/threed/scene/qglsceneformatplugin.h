@@ -43,6 +43,7 @@
 #define QGLSCENEFORMATPLUGIN_H
 
 #include "qt3dglobal.h"
+#include <QObject>
 #include <QtCore/qplugin.h>
 #include <QtCore/qfactoryinterface.h>
 #include <QtCore/qurl.h>
@@ -55,9 +56,11 @@ QT_MODULE(Qt3D)
 
 class QGLAbstractScene;
 class QGLSceneFormatHandlerPrivate;
+class QAbstractDownloadManager;
 
-class Q_QT3D_EXPORT QGLSceneFormatHandler
+class Q_QT3D_EXPORT QGLSceneFormatHandler : public QObject
 {
+    Q_OBJECT
 public:
     QGLSceneFormatHandler();
     virtual ~QGLSceneFormatHandler();
@@ -72,9 +75,21 @@ public:
     void setUrl(const QUrl& url);
 
     virtual QGLAbstractScene *read() = 0;
+    virtual QGLAbstractScene *download() = 0;
 
     virtual void decodeOptions(const QString &options);
 
+    void finalize();
+
+    void downloadScene();
+
+public slots:
+    virtual void downloadComplete(QByteArray sceneData);
+protected:
+    void setScene(QGLAbstractScene *theScene);
+    QGLAbstractScene * getScene() const;
+
+    QAbstractDownloadManager *m_downloadManager;
 private:
     QGLSceneFormatHandlerPrivate *d_ptr;
 };

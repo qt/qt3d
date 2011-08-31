@@ -93,6 +93,26 @@
         texture: "texture.png"
     }
     \endcode
+
+    For objects loaded from the network week can wait for an "onLoaded" signal in QML (from the loaded() signal
+    in the Mesh class) before performing specific actions.  For example:
+
+    \code
+    Item3D {
+        id: theMesh
+        mesh: Mesh {
+            source: "http://www.example_3d_model_url.com/sample.obj"
+            onLoaded:{theMesh.effect=theEffect}
+        }
+
+        Effect {
+            id: theEffect
+            texture: ":/qml/texture.jpg" }
+        }
+    }
+    \endcode
+
+    This code will wait until the mesh has been fully loaded before attempting to apply the effects.
 */
 
 QT_BEGIN_NAMESPACE
@@ -187,8 +207,6 @@ void QDeclarativeMesh::setSource(const QUrl& value)
     if (d->data == value)
         return;
     d->data = value;
-//#define QT_NO_LOCALFILE_OPTIMIZED_QML
-#ifndef QT_NO_LOCALFILE_OPTIMIZED_QML
     if (d->data.scheme() == QLatin1String("file")) {
         QGLAbstractScene *s = QGLAbstractScene::loadScene(d->data.toLocalFile(),
                                                           QString(), d->options);
@@ -200,16 +218,10 @@ void QDeclarativeMesh::setSource(const QUrl& value)
                     QLatin1String(":")+d->data.toString(),
                     QString(), d->options);
         setScene(s);
-    } else
-#endif
-    {
-        if (d->dataReply)
-            d->dataReply->deleteLater();
-        QNetworkRequest req(d->data);
-        req.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache);
-        d->dataReply = qmlEngine(this)->networkAccessManager()->get(req);
-        QObject::connect(d->dataReply, SIGNAL(finished()),
-                         this, SLOT(dataRequestFinished()));
+    } else {
+        //network loading
+        QGLAbstractScene *s = QGLAbstractScene::loadScene(d->data,QString(), d->options);
+        connect(s, SIGNAL(sceneUpdated()), this, SLOT(dataRequestFinished()));
     }
 }
 
@@ -284,9 +296,18 @@ void QDeclarativeMesh::setOptions(const QString &options)
 */
 void QDeclarativeMesh::dataRequestFinished()
 {
-    setScene(QGLAbstractScene::loadScene(d->dataReply, d->data, d->options));
-    d->dataReply->deleteLater();
-    d->dataReply = 0;
+    //other processing may be required, but for now, simply emit a
+    //change of data signal.
+    QGLAbstractScene *sceneData = qobject_cast<QGLAbstractScene*>(sender());
+
+    if (sceneData) {
+        if (sceneData == d->scene)
+            emit dataChanged();
+        else
+            setScene(sceneData);
+    } else {
+        qWarning("Data request recieved a signal from a class other than a valid scene.");
+    }
 }
 
 /*!
@@ -698,6 +719,7 @@ void QDeclarativeMesh::componentComplete()
     {
         emit loaded();
         emit nodeChanged();
+        emit dataChanged();
     }
 }
 

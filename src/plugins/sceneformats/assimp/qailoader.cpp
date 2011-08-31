@@ -70,6 +70,7 @@ QAiLoader::QAiLoader(const aiScene *scene, QAiSceneHandler* handler)
      , m_hasLitMaterials(false)
      , m_builder(new QGLMaterialCollection(m_root))
 {
+    //nothing to do here
 }
 
 QAiLoader::~QAiLoader()

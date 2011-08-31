@@ -52,13 +52,13 @@
 Q_DECLARE_FLAGS(aiPostProcessFlags, aiPostProcessSteps);
 Q_DECLARE_OPERATORS_FOR_FLAGS(aiPostProcessFlags);
 
-
 QT_BEGIN_NAMESPACE
 
 class QIODevice;
 
 class QAiSceneHandler : public QGLSceneFormatHandler
 {
+    Q_OBJECT
 public:
     enum Options {
         NoOptions,
@@ -82,6 +82,7 @@ public:
     ~QAiSceneHandler();
 
     QGLAbstractScene *read();
+    QGLAbstractScene *download();
 
     void decodeOptions(const QString &options);
 
@@ -92,6 +93,8 @@ public:
     quint32 removeComponentFlags() const { return m_removeComponentFlags; }
     quint32 removeSortFlags() const { return m_removeSortFlags; }
 
+public slots:
+    void downloadComplete(QByteArray sceneData);
 private:
     aiPostProcessFlags m_options;
     bool m_showWarnings;

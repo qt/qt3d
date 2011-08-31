@@ -201,6 +201,12 @@ void QThreadedDownloadManager::threadExit()
     remaining messages in the message loop will be processed.
 */
 
+/*!
+    \fn QThreadedDownloadManager::startDownload(QUrl assetUrl)
+    Signals the download thread to begin downloading from \a assetUrl.  This will
+    be performed in the background until the download is complete.
+*/
+
 //Private Function Implementation for QDownloadInstance below.
 QDownloadInstance::QDownloadInstance(QObject *parent) : QObject(parent)
 {
