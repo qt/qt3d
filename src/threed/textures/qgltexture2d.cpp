@@ -254,7 +254,7 @@ void QGLTexture2D::setImage(const QImage& image)
         // changing the image in the GL server, only the client copy.
         d->image = image;
     } else {
-        if (!d->size.isValid())
+        if (image.size().isValid())
             setSize(image.size());
         d->image = image;
         ++(d->imageGeneration);
