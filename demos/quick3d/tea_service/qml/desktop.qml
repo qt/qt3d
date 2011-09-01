@@ -44,9 +44,9 @@ import Qt3D.Shapes 1.0
 import "."
 
 Item {
-    width: 640
+    width: 850
     height: 480
 
-    Thing {
+    TeaService {
     }
 }

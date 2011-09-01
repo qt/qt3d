@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
     QGLFormat f = QGLFormat::defaultFormat();
     f.setSampleBuffers(true);
     QSGView view(f);
-    view.setSource(QUrl(QLatin1String("qrc:///qml/robobounce.qml")));
+    view.setSource(QUrl(QLatin1String("qrc:///qml/desktop.qml")));
 
     if (QApplication::arguments().contains(QLatin1String("-maximize")))
         view.showMaximized();

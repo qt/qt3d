@@ -45,8 +45,8 @@ import "."
 
 Item {
     width: 640
-    height: 480
+    height: 360
 
-    Thing {
+    ModelViewer {
     }
 }

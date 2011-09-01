@@ -85,7 +85,7 @@ contains(TEMPLATE, app) {
             icons.path = /usr/share/themes/base/meegotouch/icons
             INSTALLS += icons applnk
 
-            app_target.path += $$QT3D_INSTALL_BINS
+            app_target.path = $$QT3D_INSTALL_BINS
             INSTALLS += app_target
         } else {
             mt {
@@ -95,12 +95,12 @@ contains(TEMPLATE, app) {
                 # icons.files is set by qt3dquick_pkg_dep.pri or qt3d_pkg_dep.pri
                 icons.path = /opt/mt/applications/$${TARGET}
                 INSTALLS += icons applnk
-                app_target.path += /opt/mt/applications/$${TARGET}
+                app_target.path = /opt/mt/applications/$${TARGET}
                 INSTALLS += app_target
 
                 DEFINES += QT3D_USE_OPT=$${TARGET}
             } else {
-                app_target.path += $$QT3D_INSTALL_BINS
+                app_target.path = $$QT3D_INSTALL_BINS
                 INSTALLS += app_target
             }
         }

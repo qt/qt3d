@@ -43,8 +43,8 @@ import Qt3D 1.0
 
 Rectangle {
     id: mainwindow
-    width: 640
-    height: 360
+    width: parent.width
+    height: parent.height
 
     gradient: Gradient {
          GradientStop { position: 0.0; color: "#300000" }

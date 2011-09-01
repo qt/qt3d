@@ -3,16 +3,16 @@
     "dict": {
         "Category": "application",
         "Runtime": "qml",
-        "DisplayName": "Thing",
+        "DisplayName": "Model Viewer",
         "Subcategory": "utility",
         "MainQML": "mt.qml",
         "Version": "1.0",
-        "Identifier": "com.nokia.qtquick3d.thing",
+        "Identifier": "com.nokia.qtquick3d.modelviewer",
         "Depends": {
             "com.nokia.components": "1.0",
             "com.nokia.sphone.components": "1.0",
             "com.nokia.sphone.JsonDB": "1.0"
         },
-        "Summary": "Thing QML Demo"
+        "Summary": "Model Viewer QML Demo"
     }
 }

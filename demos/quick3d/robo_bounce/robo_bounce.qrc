@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>qml/robobounce.qml</file>
         <file>qml/Assets/button.png</file>
         <file>qml/Assets/calculatorSign.png</file>
         <file>qml/Assets/cubeButton.png</file>
@@ -30,5 +29,7 @@
         <file>qml/RobotCore/QMLPanels.qml</file>
         <file>qml/RobotCore/Robot.qml</file>
         <file>qml/RobotCore/TronCube.qml</file>
+        <file>qml/RoboBounce.qml</file>
+        <file>qml/desktop.qml</file>
     </qresource>
 </RCC>

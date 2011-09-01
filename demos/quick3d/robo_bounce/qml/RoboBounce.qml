@@ -50,8 +50,8 @@ Image {
     property real repeatAnimationTimer: 30;  //Auto click the 'start' button this often
 
     id: theBackground
-    width: 640
-    height: 480
+    width: parent.width
+    height: parent.height
     source: "Assets/tronscape.png"
 
     focus: true
@@ -161,8 +161,8 @@ Image {
         Viewport {
             objectName: "Viewport 3D"
             id: viewport
-            width: 640
-            height: 480
+            width: parent.width
+            height: parent.height
             navigation: true
             picking: true
             //showPicking: true

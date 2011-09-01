@@ -43,8 +43,8 @@ import Qt3D 1.0
 import Qt3D.Shapes 1.0
 
 Viewport {
-    width: 1024
-    height: 768
+    width: parent.width
+    height: parent.height
 
     camera: Camera {
         id: cam
