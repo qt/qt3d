@@ -41,8 +41,8 @@
 #include "modelitem.h"
 #include "qglpainter.h"
 #include "qgraphicsembedscene.h"
-#include <QtGui/qgraphicssceneevent.h>
-#include <QtGui/qapplication.h>
+#include <QtWidgets/qgraphicssceneevent.h>
+#include <QtWidgets/qapplication.h>
 
 const qreal CubeSize = 2.0f;
 

@@ -43,7 +43,7 @@
 #include "teapotitem.h"
 #include "graph.h"
 #include "qglcamera.h"
-#include <QtGui/qgraphicssceneevent.h>
+#include <QtWidgets/qgraphicssceneevent.h>
 
 View::View(QWidget *parent)
     : QGraphicsView(parent)

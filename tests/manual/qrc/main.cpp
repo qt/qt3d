@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 #include "qdeclarativeview3d.h"
 #include <QWidget>
 #include <QHBoxLayout>

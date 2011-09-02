@@ -111,49 +111,6 @@ private:
 // we can avoid a direct dependency upon private headers in Qt.
 
 #if QT_VERSION >= 0x040800
-
-class QGLContextGroup;
-
-#if !defined(QGL_P_H)
-
-class Q_OPENGL_EXPORT QGLContextGroupResourceBase
-{
-public:
-    QGLContextGroupResourceBase();
-    virtual ~QGLContextGroupResourceBase();
-    void insert(const QGLContext *context, void *value);
-    void *value(const QGLContext *context);
-    void cleanup(const QGLContext *context, void *value);
-    virtual void freeResource(void *value) = 0;
-
-protected:
-    QList<QGLContextGroup *> m_groups;
-
-private:
-    QAtomicInt active;
-};
-
-#endif
-
-template <class T>
-class QGLResource : public QGLContextGroupResourceBase
-{
-public:
-    T *value(const QGLContext *context) {
-        T *resource = reinterpret_cast<T *>(QGLContextGroupResourceBase::value(context));
-        if (!resource) {
-            resource = new T(context);
-            insert(context, resource);
-        }
-        return resource;
-    }
-
-protected:
-    void freeResource(void *resource) {
-        delete reinterpret_cast<T *>(resource);
-    }
-};
-
 #else
 
 #if !defined(QGL_P_H)

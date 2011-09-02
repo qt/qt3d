@@ -52,9 +52,9 @@
 #include "skybox.h"
 
 #include <QtGui/qpainter.h>
-#include <QtGui/qgraphicsview.h>
-#include <QtGui/qgraphicsscene.h>
-#include <QtGui/qgraphicssceneevent.h>
+#include <QtWidgets/qgraphicsview.h>
+#include <QtWidgets/qgraphicsscene.h>
+#include <QtWidgets/qgraphicssceneevent.h>
 #include <QtGui/qevent.h>
 #include <QtOpenGL/qglframebufferobject.h>
 #include <QtCore/qtimer.h>
