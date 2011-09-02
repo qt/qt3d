@@ -42,8 +42,8 @@ import QtQuick 2.0
 import Qt3D 1.0
 
 Viewport {
-    width: 640;
-    height: 480
+    width: parent.width
+    height: parent.height
     id: viewPort
 
     MouseArea {

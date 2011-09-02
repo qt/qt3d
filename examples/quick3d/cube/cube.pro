@@ -6,7 +6,7 @@ CONFIG += qt warn_on
 SOURCES += main.cpp
 
 INSTALL_DIRS = qml
-INSTALL_FILES = mt.qml
+mt: INSTALL_FILES = mt.qml
 
 CONFIG += qt3d_deploy_qml
 include(../../../pkg.pri)

@@ -45,8 +45,8 @@ import Qt3D.Shapes 1.0
 Image {
     id: screen
     source: "nebula.jpg"
-    width: 720
-    height: 480
+    width: parent.width
+    height: parent.height
 
     // Joystix font available for free from Ray Larabie via
     // http://typodermicfonts.com/the-larabie-fonts-collection

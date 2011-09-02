@@ -38,37 +38,37 @@
 **
 ****************************************************************************/
 
+//! [1]
 import QtQuick 2.0
 import Qt3D 1.0
-import Qt3D.Shapes 1.0
 
 Viewport {
-    width: 300
-    height: 200
-    Sphere {
-        effect: Effect {
-            texture: "moon-texture.jpg"
-        }
+    width: parent.width; height: parent.height
 
-        NumberAnimation {
-            running: true
-            target: rot;
-            loops: Animation.Infinite
-            property: "angle";
-            to: 360; duration: 2000
-
-        }
-
-
-        transform: Rotation3D {
-            id: rot
-            axis: Qt.vector3d(0,1,0)
-            angle: 0
-        }
+    camera: Camera {
+        eye: Qt.vector3d(0, 4, 10)
     }
+//! [1]
 
-    Quad {
-        scale: 0.5
-
+//! [2]
+    Item3D {
+        mesh: Mesh { source: "basket.bez" }
+        effect: Effect { texture: "basket.jpg" }
+//! [2]
+//! [3]
+        transform: [
+            Scale3D { scale: 1.5 },
+            Rotation3D {
+                axis: Qt.vector3d(0, 1, 0)
+                NumberAnimation on angle {
+                    running: true
+                    loops: Animation.Infinite
+                    from: 0
+                    to: 360
+                    duration: 2000
+                }
+            }
+        ]
     }
 }
+//! [3]

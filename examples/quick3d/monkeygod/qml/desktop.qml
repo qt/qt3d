@@ -44,9 +44,9 @@ import Qt3D.Shapes 1.0
 import "."
 
 Item {
-    width: 640
-    height: 480
+    width: 1000
+    height: 800
 
-    Thing {
+    Monkeygod {
     }
 }

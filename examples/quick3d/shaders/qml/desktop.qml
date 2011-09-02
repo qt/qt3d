@@ -47,6 +47,6 @@ Item {
     width: 640
     height: 480
 
-    Thing {
+    Shaders {
     }
 }

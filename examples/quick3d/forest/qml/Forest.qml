@@ -44,7 +44,7 @@ import Qt3D 1.0
 
 Viewport {
     id: viewport
-    width: 640; height: 480
+    width: parent.width; height: parent.height
     picking: false
 
     camera: Camera {

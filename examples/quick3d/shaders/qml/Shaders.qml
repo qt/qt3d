@@ -42,8 +42,8 @@ import QtQuick 2.0
 
 Rectangle {
     property int current : 0
-    width: 640
-    height: 480
+    width: parent.width
+    height: parent.height
 
     Rectangle {
         id: tabContentArea
