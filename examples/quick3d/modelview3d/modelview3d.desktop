@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=ModelView3D
+Icon=icon-l-qtquick3d
+Exec=/usr/bin/modelview3d -fullscreen
+OnlyShowIn=X-MeeGo;
+X-MeeGo-Logical-Id=qtn_comm_appname_modelview3d
+X-MeeGo-Translation-Catalog=essentials

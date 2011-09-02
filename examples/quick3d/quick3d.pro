@@ -6,6 +6,7 @@ SUBDIRS += \
     lander \
     matrix_animation \
     monkeygod \
+    modelview3d \
     moon \
     photoroom \
     shaders \
