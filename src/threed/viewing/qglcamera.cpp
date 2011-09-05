@@ -1334,7 +1334,6 @@ QGLCamera *QGLCamera::clone(QObject *parent) const
     return copy;
 }
 
-
 QDebug operator<<(QDebug dbg, const QGLCamera &cam)
 {
     dbg << "QGLCamera";
