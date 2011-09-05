@@ -779,6 +779,10 @@ void QGLPainter::setEye(QGL::Eye eye)
     This function is typically called at the beginning of a scene rendering
     pass to initialize the modelview and projection matrices.
 
+    Note that this does not cause the painter to take ownership of the camera
+    and it does not save the pointer value.  The \a camera may be safely
+    deleted after calling this function.
+
     \sa eye(), modelViewMatrix(), projectionMatrix(), worldMatrix()
 */
 void QGLPainter::setCamera(const QGLCamera *camera)
