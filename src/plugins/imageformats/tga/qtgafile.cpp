@@ -232,6 +232,8 @@ QImage QTgaFile::readImage()
                 im.setPixel(x, y, read(mDevice));
     }
 
+    delete reader;
+
     // TODO: add processing of TGA extension information - ie TGA 2.0 files
     return im;
 }
