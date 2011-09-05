@@ -63,7 +63,11 @@ private slots:
     void projectionMatrixStack();
     void modelViewMatrixStack();
     void worldMatrix();
+    void basicCullable();
+    void isCullable_data();
     void isCullable();
+    void isCullableVert_data();
+    void isCullableVert();
     void lights();
     void nextPowerOfTwo_data();
     void nextPowerOfTwo();
@@ -550,39 +554,29 @@ void tst_QGLPainter::worldMatrix()
     QVERIFY(fuzzyCompare(painter.worldMatrix(), world));
 }
 
-void tst_QGLPainter::isCullable()
+void tst_QGLPainter::basicCullable()
 {
     QGLWidget w;
     QGLPainter painter(&w);
     painter.modelViewMatrix().setToIdentity();
 
+    // Default values for the camera have
+    // eye = (0, 0, 10) - so eye at positive 10 on z-axis
+    // center = (0, 0, 0) - looking at the origin, in a negative z-direction
+    // viewport = 2 x 2 - ideal square view frustum
+    // near = 5 - distance from eye to near plane
+    // far = 1000 - distance from eye to far plane
+    // far plane is a z = -990
     QGLCamera camera;
     painter.setCamera(&camera);
+
+    // origin itself and a point 10 further down the view vector
+    // both must be visible
     QVERIFY(!painter.isCullable(QVector3D(0, 0, 0)));
     QVERIFY(!painter.isCullable(QVector3D(0, 0, -10)));
+
+    // the position of the eye itself, is behind the near plane, so culled.
     QVERIFY(painter.isCullable(QVector3D(0, 0, 10)));
-
-    // Check the cullability of a box at 10 degree increments of rotation.
-    // It should be visible between -20 and 20 degrees but otherwise not.
-    // Also check the center point of the box.
-    QBox3D box1(QVector3D(-1, -1, -1), QVector3D(1, 1, 1));
-    for (int angle = 0; angle <= 360; angle += 10) {
-        if (angle <= 20 || angle >= 340) {
-            QVERIFY(!painter.isCullable(box1));
-            if (angle < 20 || angle > 340) {
-                QVERIFY(!painter.isCullable(QVector3D(0, 0, 0)));
-            } else {
-                // Box intersects, but center point is now outside.
-                QVERIFY(painter.isCullable(QVector3D(0, 0, 0)));
-            }
-        } else {
-            QVERIFY(painter.isCullable(box1));
-            QVERIFY(painter.isCullable(QVector3D(0, 0, 0)));
-        }
-        camera.rotateEye(camera.pan(10.0f));
-        painter.setCamera(&camera);
-    }
-
     // Reset the camera and then check boxes in front of the camera
     // that are close to the near and far planes and the eye.
     QGLCamera camera2;
@@ -616,6 +610,152 @@ void tst_QGLPainter::isCullable()
     // Box that is beyond the far plane.
     QBox3D box8(QVector3D(-1, -1, -1000), QVector3D(1, 1, -1001));
     QVERIFY(painter.isCullable(box8));
+}
+
+static void setupTestCamera(QGLCamera &camera, float distance)
+{
+    // These values are based on the special camera as per the images in
+    // doc/src/images/view-frustum*
+
+    // Check the cullability of a box at 10 degree increments of rotation.
+    // It should be visible between -20 and 20 degrees but otherwise not.
+    // Also check the center point of the box.
+
+    camera.setNearPlane(2.2f);
+    camera.setFarPlane(14.0f);
+
+    // This value comes from the ratio of the far plane size 8 x 8 to the
+    // far plane distance, multiplied by the near plane, to give the near
+    // plane size:  2.2 x (4 / 14) = 1.257
+    camera.setViewSize(QSizeF(1.257f, 1.257f));
+
+    // as shown in the images, we use a camera at -z instead of the default +z
+    // but the center remains the same at 0, 0, 0
+    camera.setEye(QVector3D(0, 0, distance));
+
+    // if the distance would push the camera eye past the view center
+    // move the view center away
+    if (distance > 0.0f)
+        camera.setCenter(QVector3D(0.0f, 0.0f, distance + 2));
+}
+
+void tst_QGLPainter::isCullable_data()
+{
+    QTest::addColumn<float>("angle");
+    QTest::addColumn<float>("distance");
+    QTest::addColumn<bool>("culled");
+    QTest::addColumn<bool>("center_culled");
+
+    // Check the cullability of a box at 10 degree increments of rotation.
+    // It should be visible between -20 and 20 degrees but otherwise not.
+    // Also check the point at the center of the box.
+
+    QTest::newRow("culled-neg40") << -40.0f << -8.0f << true << true;
+    QTest::newRow("culled-neg30") << -30.0f << -8.0f << true << true;
+    QTest::newRow("part-vis-neg20") << -20.0f << -8.0f << false << false;
+    QTest::newRow("part-vis-neg10") << -10.0f << -8.0f << false << false;
+    QTest::newRow("all-vis-00") << 0.0f << -8.0f << false << false;
+    QTest::newRow("part-vis-pos10") << 10.0f << -8.0f << false << false;
+    QTest::newRow("part-vis-pos20") << 20.0f << -8.0f << false << false;
+    QTest::newRow("culled-pos30") << 30.0f << -8.0f << true << true;
+    QTest::newRow("culled-pos40") << 40.0f << -8.0f << true << true;
+
+    // Check when the eye is at varying distances from the box, with
+    // (in one case with an angle for good measure) so that it needs
+    // testing against the near and far planes.
+
+    QTest::newRow("culled-eye-z+2") << 0.0f << 2.0f << true << true;
+    QTest::newRow("culled-eye-z+0") << 0.0f << 0.0f << true << true;
+    QTest::newRow("part-vis-eye-z-2-around-np") << 0.0f << -2.0f << false << true;
+    QTest::newRow("part-vis-eye-z-3-around-np") << 0.0f << -3.0f << false << false;
+    QTest::newRow("part-vis-eye-z-4-close-np") << 0.0f << -4.0f << false << false;
+    QTest::newRow("part-vis-eye-z-14.5") << 0.0f << -14.5f << false << true;
+    QTest::newRow("part-vis-eye-z-14-angle-20") << 20.0f << -14.0f << false << false;
+    QTest::newRow("culled-eye-z-20") << 0.0f << -20.0f << true << true;
+}
+
+void tst_QGLPainter::isCullable()
+{
+    QGLWidget w;
+    QGLPainter painter(&w);
+    painter.modelViewMatrix().setToIdentity();
+
+    QGLCamera camera;
+
+    QFETCH(float, angle);
+    QFETCH(float, distance);
+    QFETCH(bool, culled);
+    QFETCH(bool, center_culled);
+
+    setupTestCamera(camera, distance);
+    if (angle != 0.0f)
+        camera.rotateEye(camera.pan(angle));
+
+    painter.setCamera(&camera);
+
+    QBox3D box(QVector3D(-1, -1, -1), QVector3D(1, 1, 1));
+    QCOMPARE(painter.isCullable(box), culled);
+    QCOMPARE(painter.isCullable(box.center()), center_culled);
+}
+
+void tst_QGLPainter::isCullableVert_data()
+{
+    QTest::addColumn<float>("angle");
+    QTest::addColumn<float>("distance");
+    QTest::addColumn<bool>("culled");
+    QTest::addColumn<bool>("center_culled");
+
+    // Check the cullability of a box at 10 degree increments of rotation.
+    // It should be visible between -20 and 20 degrees but otherwise not.
+    // Also check the point at the center of the box.
+
+    QTest::newRow("culled-neg40") << -40.0f << -8.0f << true << true;
+    QTest::newRow("culled-neg30") << -30.0f << -8.0f << true << true;
+    QTest::newRow("part-vis-neg20") << -20.0f << -8.0f << false << true;
+    QTest::newRow("part-vis-neg10") << -10.0f << -8.0f << false << false;
+    QTest::newRow("all-vis-00") << 0.0f << -8.0f << false << false;
+    QTest::newRow("part-vis-pos10") << 10.0f << -8.0f << false << false;
+    QTest::newRow("part-vis-pos20") << 20.0f << -8.0f << false << true;
+    QTest::newRow("culled-pos30") << 30.0f << -8.0f << true << true;
+    QTest::newRow("culled-pos40") << 40.0f << -8.0f << true << true;
+
+    QTest::newRow("culled-eye-z+2") << 0.0f << 2.0f << true << true;
+    QTest::newRow("culled-eye-z+0") << 0.0f << 0.0f << true << true;
+    QTest::newRow("part-vis-eye-z-2-around-np") << 0.0f << -2.0f << false << true;
+    QTest::newRow("part-vis-eye-z-3-around-np") << 0.0f << -3.0f << false << false;
+    QTest::newRow("part-vis-eye-z-4-close-np") << 0.0f << -4.0f << false << false;
+    QTest::newRow("part-vis-eye-z-14.2") << 0.0f << -14.2f << false << true;
+    QTest::newRow("part-vis-eye-z-14-angle-20") << 20.0f << -14.0f << false << true;
+    QTest::newRow("culled-eye-z-20") << 0.0f << -20.0f << true << true;
+}
+
+void tst_QGLPainter::isCullableVert()
+{
+    //QSKIP("isCullableVert not passing currently", SkipAll);
+    // same test as isCullable, except we tilt the camera forward
+    // and back instead of rotating it from side to side
+    // since the view frustum is typically not square in section
+    // as it depends on the surface, this will give different results.
+    QGLWidget w;
+    QGLPainter painter(&w);
+    painter.modelViewMatrix().setToIdentity();
+
+    QGLCamera camera;
+
+    QFETCH(float, angle);
+    QFETCH(float, distance);
+    QFETCH(bool, culled);
+    QFETCH(bool, center_culled);
+
+    setupTestCamera(camera, distance);
+    if (angle != 0.0f)
+        camera.rotateEye(camera.tilt(angle));
+
+    painter.setCamera(&camera);
+
+    QBox3D box(QVector3D(-1, -1, -1), QVector3D(1, 1, 1));
+    QCOMPARE(painter.isCullable(box), culled);
+    QCOMPARE(painter.isCullable(box.center()), center_culled);
 }
 
 void tst_QGLPainter::lights()

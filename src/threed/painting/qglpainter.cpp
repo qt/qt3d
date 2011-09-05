@@ -805,6 +805,25 @@ bool QGLPainter::isCullable(const QVector3D& point) const
     return !d->viewingCube.contains(projected);
 }
 
+static inline uint outcode(const QVector4D &v)
+{
+    // For a discussion of outcodes see pg 388 Dunn & Parberry.
+    // For why you can't just test if the point is in a bounding box
+    // consider the case where a view frustum with view-size 1.5 x 1.5
+    // is tested against a 2x2 box which encloses the near-plane, while
+    // all the points in the box are outside the frustum.
+    // TODO: optimise this with assembler - according to D&P this can
+    // be done in one line of assembler on some platforms
+    uint code = 0;
+    if (v.x() < -v.w()) code |= 0x01;
+    if (v.x() > v.w())  code |= 0x02;
+    if (v.y() < -v.w()) code |= 0x04;
+    if (v.y() > v.w())  code |= 0x08;
+    if (v.z() < -v.w()) code |= 0x10;
+    if (v.z() > v.w())  code |= 0x20;
+    return code;
+}
+
 /*!
     Returns true if \a box is completely outside the current viewing volume.
     This is used to perform object culling checks.
@@ -813,30 +832,33 @@ bool QGLPainter::isCullable(const QBox3D& box) const
 {
     Q_D(const QGLPainter);
     QGLPAINTER_CHECK_PRIVATE();
-    QBox3D projected = box.transformed(d->modelViewMatrix);
-    if (projected.minimum().z() >= 0.0f || projected.maximum().z() >= 0.0f) {
-        // The box crosses the eye line in the view.  Don't do the
-        // projection or the math will go all strange with a
-        // perspective projection.  Just assume that it is cullable
-        // if it passes the eye line, and hence is definitely outside
-        // the viewing volume.  Note that it is possible that the box is
-        // half in front of the eye and half behind, which we handle now
-        // by truncating the box at the eye plane.
-        //
-        // If the projection is orthographic, we don't need to do this.
-        // Orthographic projections have the last row set to (0, 0, 0, 1).
-        QMatrix4x4 *proj = &(d->projectionMatrix.d_ptr->matrix);
-        if ((*proj)(3, 0) != 0.0f || (*proj)(3, 1) != 0.0f ||
-                (*proj)(3, 2) != 0.0f || (*proj)(3, 3) != 1.0f) {
-            if (projected.minimum().z() >= 0.0f)
-                return true;
-            projected.setExtents(projected.minimum(),
-                                 QVector3D(projected.maximum().x(),
-                                           projected.maximum().y(), 0.0f));
-        }
+    // This function uses the technique of view frustum culling known as
+    // clip space testing.  Since the normal QVector3D representation
+    // of the points throws away the w value needed, we convert the box
+    // into a set of 8 points represented as QVector4D's and then apply
+    // the test.  The test is to transform the points into clip space
+    // by applying the MV and Proj matrices, then test to see if the 4D
+    // points are outside the clip space by testing x, y & z against w.
+    QArray<QVector4D> box4d;
+    QVector3D n = box.minimum();
+    QVector3D x = box.maximum();
+    box4d.append(QVector4D(n.x(), n.y(), x.z(), 1), QVector4D(x.x(), n.y(), x.z(), 1),
+                 QVector4D(x.x(), x.y(), x.z(), 1), QVector4D(n.x(), x.y(), x.z(), 1));
+    box4d.append(QVector4D(n.x(), n.y(), n.z(), 1), QVector4D(x.x(), n.y(), n.z(), 1),
+                 QVector4D(x.x(), x.y(), n.z(), 1), QVector4D(n.x(), x.y(), n.z(), 1));
+    QMatrix4x4 mvp = d->projectionMatrix.top() * d->modelViewMatrix.top();
+    for (int i = 0; i < box4d.size(); ++i)
+    {
+        box4d[i] = mvp * box4d.at(i);
     }
-    projected.transform(d->projectionMatrix);
-    return !d->viewingCube.intersects(projected);
+    // if the logical AND of all the outcodes is non-zero then the BB is
+    // definitely outside the view frustum.
+    uint out = 0xff;
+    for (int i = 0; i < box4d.size(); ++i)
+    {
+        out = out & outcode(box4d.at(i));
+    }
+    return out;
 }
 
 /*!

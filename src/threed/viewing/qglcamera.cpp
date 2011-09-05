@@ -1307,4 +1307,50 @@ void QGLCamera::tiltPanRollEye
     }
 }
 
+/*!
+    Create a copy of this QGLCamera, parented onto the \a parent given,
+    by default 0 (which results in no parenting).
+
+    The copy returned has exactly the same state as the original.
+*/
+QGLCamera *QGLCamera::clone(QObject *parent) const
+{
+    Q_D(const QGLCamera);
+    QGLCamera *copy = new QGLCamera(parent);
+    copy->d_func()->projectionType = d->projectionType;
+    copy->d_func()->fieldOfView = d->fieldOfView;
+    copy->d_func()->nearPlane = d->nearPlane;
+    copy->d_func()->farPlane = d->farPlane;
+    copy->d_func()->viewSize = d->viewSize;
+    copy->d_func()->minViewSize = d->minViewSize;
+    copy->d_func()->screenRotation = d->screenRotation;
+    copy->d_func()->eye = d->eye;
+    copy->d_func()->upVector = d->upVector;
+    copy->d_func()->center = d->center;
+    copy->d_func()->viewVector = d->viewVector;
+    copy->d_func()->eyeSeparation = d->eyeSeparation;
+    copy->d_func()->motionAdjustment = d->motionAdjustment;
+    copy->d_func()->adjustForAspectRatio = d->adjustForAspectRatio;
+    return copy;
+}
+
+
+QDebug operator<<(QDebug dbg, const QGLCamera &cam)
+{
+    dbg << "QGLCamera";
+    if (!cam.objectName().isEmpty())
+        dbg << cam.objectName();
+    dbg << "\n";
+    dbg << "   projection:" << ( cam.projectionType() == QGLCamera::Perspective ?
+                                     "Perspective" : "Orthographic" );
+    dbg << "-- viewsize:" << cam.viewSize().width() << "x" << cam.viewSize().height() << "\n";
+    dbg << "   near-plane:" << cam.nearPlane() << "-- far-plane:" << cam.farPlane();
+    dbg << "-- field-of-view:" << cam.fieldOfView() << "\n";
+    dbg << "   rotation:" << cam.screenRotation() << " -- motion adjust:" <<
+           cam.motionAdjustment() << " -- aspect adjust:" << cam.adjustForAspectRatio() << "\n";
+    dbg << "   eye:" << cam.eye() << "-- center:" << cam.center();
+    dbg << "-- up:" << cam.upVector() << "\n";
+    return dbg;
+}
+
 QT_END_NAMESPACE

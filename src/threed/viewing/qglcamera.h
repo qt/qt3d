@@ -151,6 +151,8 @@ public:
         RollPanTilt
     };
 
+    QGLCamera *clone(QObject *parent = 0) const;
+
 public Q_SLOTS:
     void translateEye(qreal x, qreal y, qreal z);
     void translateCenter(qreal x, qreal y, qreal z);
@@ -171,6 +173,11 @@ private:
 
     Q_DISABLE_COPY(QGLCamera)
 };
+
+#ifndef QT_NO_DEBUG_STREAM
+#include <QtCore/qdebug.h>
+Q_QT3D_EXPORT QDebug operator<<(QDebug dbg, const QGLCamera &order);
+#endif
 
 QT_END_NAMESPACE
 
