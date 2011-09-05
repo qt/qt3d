@@ -636,7 +636,10 @@ private:
         for (s32 i=0; i<amount; ++i)
             array[i] = old_array[i];
 
-        if (allocated < used)
+        _IRR_DEBUG_BREAK_IF(allocated<0);
+        _IRR_DEBUG_BREAK_IF(used<0);
+
+        if ((u32)allocated < (u32)used)
             used = allocated;
 
         delete [] old_array;

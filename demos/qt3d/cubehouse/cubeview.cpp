@@ -415,8 +415,11 @@ QVector3D CubeView::gravity() const
     float x = 0;
     float y = 0;
     float z = 0;
-    fscanf(file, "%f %f %f", &x, &y, &z);
+    int numValues = fscanf(file, "%f %f %f", &x, &y, &z);
     fclose(file);
+
+    if (numValues!=3)
+        qWarning("i2c adaptor returned less then 3 values on fscanf.");
 
     // Smooth out the reported values.  Large changes are applied as-is,
     // and small jitters smooth to the rest position.

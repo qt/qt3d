@@ -666,7 +666,7 @@ QObject *Viewport::objectForPoint(qreal x, qreal y)
         // Regenerate the pick fbo contents.
         QGLAbstractSurface *mainSurface = 0;
         QGLAbstractSurface *fboSurface = 0;
-        int height;
+        int height = 0;
         if (!doubleBuffer) {
             if (d->pickFbo && d->pickFbo->size() != fbosize) {
                 delete d->pickFbo;
