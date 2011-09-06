@@ -70,9 +70,9 @@ Viewport {
         property int radChanged: 0
         property int lodChanged: 0
         property int axChanged: 0
-        onRadiusChanged: ++radChanged
-        onLevelOfDetailChanged: ++lodChanged
-        onAxisChanged: ++axChanged
+        onRadiusChanged: radChanged = radChanged + 1
+        onLevelOfDetailChanged: lodChanged = lodChanged + 1
+        onAxisChanged: axChanged = axChanged + 1
     }
 
     TestCase {
