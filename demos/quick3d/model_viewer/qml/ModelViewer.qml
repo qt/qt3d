@@ -71,7 +71,7 @@ Rectangle {
     }
 
     Item {
-        width: 640; height: 360
+        width: parent.width; height: parent.height
 
         Viewport {
             anchors.fill: parent

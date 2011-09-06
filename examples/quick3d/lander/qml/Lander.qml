@@ -396,7 +396,7 @@ Image {
             y: screen.height / 5.0
             text: "Qt-Lander"
             font.family: customFont.name
-            font.pointSize: 48
+            font.pointSize: 42
             color: "white"
             SequentialAnimation on color {
                 loops: Animation.Infinite
