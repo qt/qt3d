@@ -377,6 +377,8 @@ int main(int argc, char *argv[])
     mainw.showFullScreen();
 #endif
 
+    view.updateGL();
+    mainw.update();
     mainw.show();
     return app.exec();
 }
