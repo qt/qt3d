@@ -1,0 +1,1094 @@
+/****************************************************************************
+**
+** Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
+** All rights reserved.
+** Contact: Nokia Corporation (qt-info@nokia.com)
+**
+** This file is part of the Qt Mobility Components.
+**
+** $QT_BEGIN_LICENSE:LGPL$
+** GNU Lesser General Public License Usage
+** This file may be used under the terms of the GNU Lesser General Public
+** License version 2.1 as published by the Free Software Foundation and
+** appearing in the file LICENSE.LGPL included in the packaging of this
+** file. Please review the following information to ensure the GNU Lesser
+** General Public License version 2.1 requirements will be met:
+** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain additional
+** rights. These rights are described in the Nokia Qt LGPL Exception
+** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
+**
+** GNU General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU General
+** Public License version 3.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of this
+** file. Please review the following information to ensure the GNU General
+** Public License version 3.0 requirements will be met:
+** http://www.gnu.org/copyleft/gpl.html.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms and
+** conditions contained in a signed written agreement between you and Nokia.
+**
+**
+**
+**
+**
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+//TESTED_COMPONENT=src/qtquick3d
+
+testcase = {
+
+    basket_test: function()
+    {
+        //test meta data
+        testTitle = "Qt3D - Basket";
+        testBinary = "basket";
+        testSource = "$QTDIR/qtquick3d/examples/qt3d/";
+        testGoal = "Test animating objects in Qt3D.";
+        testPreconditions = "OpenGL/OpenGL ES required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the basket C++ example | the application starts and shows animation of a rotating basket with textures |
+            | Use the mouse or touch pad to rotate the view | the view rotates fine, user can view the basket from all angles |
+            | Maximize/minimize/resize the view | the animation maximizes/minimizes/resize with the viewport, shows fine, no crash |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    basket_qml_test: function()
+    {
+        //test meta data
+        testTitle = "Quick3D - Basket";
+        testBinary = "basket_qml";
+        testSource = "$QTDIR/qtquick3d/examples/quick3d/";
+        testGoal = "Test animating objects in Quick3D.";
+        testPreconditions = "OpenGL/OpenGL ES required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the basket_qml example | the application starts and showss animation of a rotating basket with textures |
+            | Use the mouse or touch pad to rotate the view | the view rotates fine, user can view the basket from all angles |
+            | Maximize/minimize/resize the view | the animation doesn't change size with the viewport, shows fine with no crash |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    builder_test: function()
+    {
+        //test meta data
+        testTitle = "Qt3D - Builder";
+        testBinary = "builder";
+        testSource = "$QTDIR/qtquick3d/examples/qt3d/";
+        testGoal = "Test creating scenes using Builder";
+        testPreconditions = "OpenGL/OpenGL ES required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the builder example | the application starts and shows three cans with picture textures |
+            | Use the mouse or touch pad to rotate the view | the view rotates fine, user can view the cans from all angles, no culling out of any can |
+            | Maximize/minimize/resize the view | the animation maximizes/minimizes/resize with the viewport, shows fine, no crash |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    cube_test: function()
+    {
+        //test meta data
+        testTitle = "Qt3D - Cube";
+        testBinary = "cube";
+        testSource = "$QTDIR/qtquick3d/examples/qt3d/";
+        testGoal = "Test applying transformations and materials to objects.";
+        testPreconditions = "OpenGL/OpenGL ES required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the cube C++ example | the application starts and show a cube with Qt logo textures on each face |
+            | Use the mouse or touch pad to rotate the view | the cube rotates fine, user can view all faces of the cube |
+            | Maximize/minimize/resize the view | the cube maximizes/minizes/resize with the viewport, shows fine without crash |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    cubehouse_test: function()
+    {
+        //test meta data
+        testTitle = "Qt3D - Cube House";
+        testBinary = "cubehouse";
+        testSource = "$QTDIR/qtquick3d/demos/qt3d/";
+        testGoal = "Test rendering, accelerometers handling";
+        testPreconditions = "OpenGL/OpenGL ES required, GLSL Extension Required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the cube house demo | the application starts and shows a teapot with a semi-transparent rotating cube with Qt logo texture, in a colored block house |
+            | Maximize/minimize/resize the view | the house resizes, the models scales retaining the aspect ratio, animation keeps going |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    cube_qml_test: function()
+    {
+        //test meta data
+        testTitle = "Quick3D - Cube";
+        testBinary = "cube_qml";
+        testSource = "$QTDIR/qtquick3d/examples/quick3d/";
+        testGoal = "Test applying transformations and materials to objects using QML.";
+        testPreconditions = "OpenGL/OpenGL ES required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the cube qml example | the application starts and show a cube with Qt logo textures on each face |
+            | Use the mouse or touch pad to rotate the view | the cube rotates fine, user can view all faces of the cube |
+            | Maximize/minimize/resize the view | the cube doesn't change in size |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    cylinder_test: function()
+    {
+        //test meta data
+        testTitle = "Qt3D - Cylinder";
+        testBinary = "cylinder";
+        testSource = "$QTDIR/qtquick3d/examples/qt3d/";
+        testGoal = "Test Builder, material, network transparency";
+        testPreconditions = "OpenGL/OpenGL ES required, Internet required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the cylinder example | the application starts and shows a cup of cappucino, with Qt 3D label and a coffee teapot texture on top |
+            | Use the mouse or touch pad to rotate the view | the cup rotates fine, user can view all faces of the cube |
+            | Maximize/minimize/resize the view | the cup maximizes/minimizes/resizes without crash |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    flickr3d_test: function()
+    {
+        //test meta data
+        testTitle = "Quick3D - Flickr 3D";
+        testBinary = "flickr3d";
+        testSource = "$QTDIR/qtquick3d/demos/quick3d/";
+        testGoal = "Test camera use with QML, skybox in QML";
+        testPreconditions = "OpenGL/OpenGL ES required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the flickr3d demo | the application starts and shows a swing lake surrounded with mountains, together with a green cube floating on the center |
+            | Drag mouse or touch | the green cube will slightly swing |
+            | Maximize/minimize/resize the view | the view keeps size without resizing |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    forest_qml_test: function()
+    {
+        //test meta data
+        testTitle = "Quick3D - Forest";
+        testBinary = "forest_qml";
+        testSource = "$QTDIR/qtquick3d/examples/quick3d/";
+        testGoal = "Test creating billboard objects.";
+        testPreconditions = "OpenGL/OpenGL ES required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the forest qml example | the application starts and shows a brown earth plain with 11 green trees planted |
+            | Use the mouse or touch pad to rotate the view | the objects rotates fine, user can view from all angles |
+            | Maximize/minimize/resize the view | the view keeps size without resizing |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    geometry_test: function()
+    {
+        //test meta data
+        testTitle = "Qt3D - Geometry";
+        testBinary = "geometry";
+        testSource = "$QTDIR/qtquick3d/examples/qt3d/";
+        testGoal = "Test geometry building and painter building";
+        testPreconditions = "OpenGL/OpenGL ES required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the geometry | the application starts and shows a paper polyhedron with number textures, together with its unfolded plain view |
+            | Use the mouse or touch pad to rotate the view | the objects rotates fine, user can view from all angles |
+            | Maximize/minimize/resize the view | the view resizes accordingly, animation continues |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    graphicsview_test: function()
+    {
+        //test meta data
+        testTitle = "Qt3D - Graphicsview";
+        testBinary = "graphicsview";
+        testSource = "$QTDIR/qtquick3d/examples/qt3d/";
+        testGoal = "Test frame buffer and interactions.";
+        testPreconditions = "OpenGL/OpenGL ES required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the graphicsview example | the application starts, showing a teapot with rubber band textures on it |
+            | Use the mouse or touch pad to rotate the view | the teapot rotates fine |
+            | Click and drag the rubber band end points | the rubber band texture should be dragged, presenting a texture animation |
+            | Maximize/minimize/resize the view | the view resizes accordingly, animation continues |
+            | Click on the cube on top left corner | the main object change from teapot to cube, retaining the texture |
+            | Repeat 2-4 for the cube | the behavior are same as the teapot |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    lander_test: function()
+    {
+        //test meta data
+        testTitle = "Quick3D - Lander";
+        testBinary = "lander";
+        testSource = "$QTDIR/qtquick3d/examples/quick3d/";
+        testGoal = "Test QML integration, shaders, submesh, materials, mouse events";
+        testPreconditions = "OpenGL/OpenGL ES required, GLSL Extension Required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the lander example | the application starts, showing a galaxy background with color flashing Qt-Lander and tap to play text |
+            | Click to start play | over the galaxy background there is a lunar land, a lunar ship floating on top with shadow projected |
+            | Click and hold mouse/tap to navigate the ship | the ship flames and accelerates to the sky |
+            | Navigate the ship to land on the surface | the game finishes when the ship hits the surface, return to the welcome screen |
+            | Navigate the ship to land outside the surface | the game finishes when the ship hits the surface, return to the welcome screen |
+            | Maximize/minimize/resize the view | the view keeps size without resizing |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    matrix_animation_test: function()
+    {
+        //test meta data
+        testTitle = "Qt3D - Matrix Animation";
+        testBinary = "matrix_animation";
+        testSource = "$QTDIR/qtquick3d/examples/quick3d/";
+        testGoal = "Test matrix animation.";
+        testPreconditions = "OpenGL/OpenGL ES required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the matrix animation example | the application starts, showing a Qt logo textured teapot, rotating and jumping up and down |
+            | Click on the screen | the teapot stretches/squeezes in response to click |
+            | Maximize/minimize/resize the view | the view keeps size without resizing |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    model_viewer_test: function()
+    {
+        //test meta data
+        testTitle = "Qt3D - Model Viewer";
+        testBinary = "model_viewer";
+        testSource = "$QTDIR/qtquick3d/demos/quick3d/";
+        testGoal = "Test model loading and zooming.";
+        testPreconditions = "OpenGL/OpenGL ES required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the model viewer demo | the application starts, showing a gray monkey head and buttons with an address bar on bottom |
+            | Rotate the model by mouse/tap | the model rotates as desired |
+            | Click on +/- button | the model zoom in/out accordingly |
+            | Fill in a file address/url to the address bar, click on the arrow | the model get loaded and displayed |
+            | Repeat step 4 for all supported model formats | all supported formats load and display fine |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    monkeygod_test: function()
+    {
+        //test meta data
+        testTitle = "Quick3D - Monkey God";
+        testBinary = "monkeygod";
+        testSource = "$QTDIR/qtquick3d/examples/quick3d/";
+        testGoal = "Test building up complex 3D scenes including materials and animations.";
+        testPreconditions = "OpenGL/OpenGL ES required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the monkeygod example | the application starts, showing a wooden textured cube, a monkey head watching some penguins dancing |
+            | Rotate the view with mouse/tap | the material/lights are correctly rendered, animation works while rotating |
+            | Maximize/minimize/resize the view | the view keeps size without resizing |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    moon_test: function()
+    {
+        //test meta data
+        testTitle = "Quick3D - Moon";
+        testBinary = "moon";
+        testSource = "$QTDIR/qtquick3d/examples/quick3d/";
+        testGoal = "Test sphere and textures.";
+        testPreconditions = "OpenGL/OpenGL ES required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the moon example | the application starts, showing a moon ball in the center of the view, with moon texture |
+            | Rotate the moon | the lights from right side to left renders fine |
+            | Maximize/minimize/resize the view | the view keeps size without resizing |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    nesting_test: function()
+    {
+        //test meta data
+        testTitle = "Qt3D - Nesting";
+        testBinary = "nesting";
+        testSource = "$QTDIR/qtquick3d/examples/qt3d/";
+        testGoal = "Test drawing into framebuffer objects.";
+        testPreconditions = "OpenGL/OpenGL ES required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the nesting example | the application starts, showing two rotating cubes, one brown with Qt logo texture, the other blue with spinning teapot animating texture |
+            | Rotate the view | the objects get rotated while spinning |
+            | Maximize/minimize/resize the view | the resizes accordingly |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    pageflip_test: function()
+    {
+        //test meta data
+        testTitle = "Qt3D - Page Flip";
+        testBinary = "pageflip";
+        testSource = "$QTDIR/qtquick3d/demos/qt3d/";
+        testGoal = "Test using shaders to combine textures.";
+        testPreconditions = "OpenGL/OpenGL ES required, GLSL Extension Required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the pageflip demo | the application starts, showing a page flipping book with Qt Quarterly content |
+            | Observe the animation | the shadow is projected properly while page flips |
+            | Maximize/minimize/resize the view | the view keeps size without resizing |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    photobrowser3d_test: function()
+    {
+        //test meta data
+        testTitle = "Qt3D - Photo Browser 3D";
+        testBinary = "photobrowser3d";
+        testSource = "$QTDIR/qtquick3d/demos/qt3d/";
+        testGoal = "Test skybox, animation, mouse intraction and camera.";
+        testPreconditions = "OpenGL/OpenGL ES required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the photo browser 3d demo | the application starts, a lake surrounded with mountain appears, plus a photo frame with some pictures |
+            | Click on one of the pictures | the picture shows full screen |
+            | Maximize/minimize/resize the view | the resizes accordingly |
+            | Click again on the picture | the picture goes back to the frame |
+            | Close the application | application closes without warning or errors |
+            | Click on the << or >> button | the camera swings around |
+        '));
+    },
+
+    photoroom_test: function()
+    {
+        //test meta data
+        testTitle = "Quick3D - Photo Room";
+        testBinary = "photoroom";
+        testSource = "$QTDIR/qtquick3d/examples/quick3d/";
+        testGoal = "Test mouse events on items, model view";
+        testPreconditions = "OpenGL/OpenGL ES required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the photo room example | the application starts, showing 10 pictures in two rows |
+            | Move mouse cursor over the pictures | the pictures hovered pops up with bouncing effect (this is not applicable for touch screen devices) |
+            | Maximize/minimize/resize the view | the view keeps size without resizing |
+            | Click on one of the pictures | the picture shows full screen |
+            | Close the application | application closes without warning or errors |
+            | Click on the picture again | the picture falls back with effects |
+        '));
+    },
+
+    qglinfo_test: function()
+    {
+        //test meta data
+        testTitle = "Qt3D - QGLInfo";
+        testBinary = "qglinfo";
+        testSource = "$QTDIR/qtquick3d/utils/qt3d/";
+        testGoal = "Test OpenGL information.";
+        testPreconditions = "OpenGL/OpenGL ES required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch qglinfo utility (called QtQuick3D on Windows) | the application starts, showing a window with OpenGL informations |
+            | Read the information | the information displayed reflects the system OpenGL ability |
+            | Click on menu File - Save as | the displayed information can be saved as a text file |
+            | Click on menu Edit - Copy | the information are copied to the clipboard |
+            | Click on menu View - Run FPS Test | a test window pops up with a green cube rotating |
+            | Close the test window | a frame per second number is shown in the main window's status bar |
+            | Click on menu Help - About | correct about information are displayed |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    qt3d/tutorials/penguin_advanced_test: function()
+    {
+        //test meta data
+        testTitle = "Qt3D - Penguin Advanced";
+        testBinary = "qt3d/tutorials/penguin_advanced";
+        testSource = "$QTDIR/qtquick3d/tutorials/qt3d/";
+        testGoal = "Test 3DS model loading and camera.";
+        testPreconditions = "OpenGL/OpenGL ES required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the penguin advanced application in tutorial (not available in binary packages) | the application starts, showing a penguin on dark background |
+            | Maximize/minimize/resize the view | the view keeps size without resizing |
+            | Rotate the view | the object get rotated |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    robo_bounce_test: function()
+    {
+        //test meta data
+        testTitle = "Qt3D - Robot Bounce";
+        testBinary = "robo_bounce";
+        testSource = "$QTDIR/qtquick3d/demos/quick3d/";
+        testGoal = "Test building complex objects using models, materials, and interactions.";
+        testPreconditions = "OpenGL/OpenGL ES required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the robo bounce demo | the application starts, showing a calculator |
+            | Try some simple calculation on the calculator | correct results are got |
+            | Click on QML 3D icon on top left corner | the scene changes to a face of a cube, rotates |
+            | Watch the animation | a scene with modern city background, a celled plain, a robot fells down and stand up, a magic cube and three icons appears on top of the scene |
+            | Click on the magic cube or the cube icon | the magic cube fells down, the robot catch up and push it down the plain, then return to the center |
+            | Click on the spin icon | the plain spins around |
+            | Click on the specification icon | a specification appears on left |
+            | Rotate the view | the objects get rotated properly |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    shaders_test: function()
+    {
+        //test meta data
+        testTitle = "Quick3D - Shaders";
+        testBinary = "shaders";
+        testSource = "$QTDIR/qtquick3d/examples/quick3d/";
+        testGoal = "Test using GLSL shaders in QML";
+        testPreconditions = "OpenGL/OpenGL ES required, GLSL Extension Required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the shader example | a rotating teapot with Qt logo texture is shown |
+            | Click on the collapsing shader button | the teapot collapses into a Qt logo icon piece repeatly |
+            | Click on the animation shader button | the teapot is squeezed into a flat teapot shape repeatly |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    shapes_test: function()
+    {
+        //test meta data
+        testTitle = "Qt3D - Shapes";
+        testBinary = "shapes";
+        testSource = "$QTDIR/qtquick3d/demos/qt3d/";
+        testGoal = "Test paints all of the basic OpenGL shapes.";
+        testPreconditions = "OpenGL/OpenGL ES required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Lauch the shapes demo | nine basic shapes are drawn on the view port |
+            | Observe the shapes | the correct names and shapes are drawn (on small screens the dots might not be big enough to see) |
+            | Maximize/minimize/resize the view | the view resizes accordingly |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    solarsystem_test: function()
+    {
+        //test meta data
+        testTitle = "Qt3D - Solar System";
+        testBinary = "solarsystem";
+        testSource = "$QTDIR/qtquick3d/examples/qt3d/";
+        testGoal = "Test shaders effects, QGLBuilder, nest tranformations and translations";
+        testPreconditions = "OpenGL/OpenGL ES required, GLSL Extension Required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the solar system example | a sun, an earth, a moon appears and moves on their tracks |
+            | Observe the animation | the sun glares with shader effects, earth and moon moves correct following track |
+            | Rotate the view | the objects get rotated properly |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    sphere_test: function()
+    {
+        //test meta data
+        testTitle = "Quick3D - Sphere";
+        testBinary = "sphere";
+        testSource = "$QTDIR/qtquick3d/examples/quick3d/";
+        testGoal = "Test sphers.";
+        testPreconditions = "OpenGL/OpenGL ES required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the sphere example | ten spheres with different smootheness appear |
+            | Observe the spheres | all spheres are drawn properly |
+            | Rotate the view | the objects get rotated properly |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    tank_test: function()
+    {
+        //test meta data
+        testTitle = "Qt3D - Tank";
+        testBinary = "tank";
+        testSource = "$QTDIR/qtquick3d/examples/qt3d/";
+        testGoal = "Test blending, texture, property animation and interactions.";
+        testPreconditions = "OpenGL/OpenGL ES required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the tank example | a grided plane appears with one rising transparent water tank |
+            | Double click on the grided plane | a new water tank with different color appears and grow |
+            | Rotate the view | the objects get rotated properly |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    teapot_test: function()
+    {
+        //test meta data
+        testTitle = "Qt3D - Teapot";
+        testBinary = "teapot";
+        testSource = "$QTDIR/qtquick3d/examples/qt3d/";
+        testGoal = "Test drawing a basic object in Qt3D.";
+        testPreconditions = "OpenGL/OpenGL ES required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the teapot example | the application starts and shows a gray teapot |
+            | Use the mouse or touch pad to rotate the view | the view rotates fine, user can view the teapot from all angles |
+            | Maximize/minimize/resize the view | the teapot maximizes/minimizes/resize with the viewport, shows fine, no crash |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    teapot_bounce_qml_test: function()
+    {
+        //test meta data
+        testTitle = "Quick3D - Teapot Bounce";
+        testBinary = "teapot_bounce_qml";
+        testSource = "$QTDIR/qtquick3d/demos/quick3d/";
+        testGoal = "Test QML integration.";
+        testPreconditions = "OpenGL/OpenGL ES required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the teapot bounce qml example | the application starts and shows a gray teapot bouncing repeatly |
+            | Use the mouse or touch pad to rotate the view | the view rotates fine, user can view the teapot from all angles |
+            | Maximize/minimize/resize the view | the teapot maximizes/minimizes/resize with the viewport, shows fine, no crash |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    teapot_qml_test: function()
+    {
+        //test meta data
+        testTitle = "Quick3D - Teapot";
+        testBinary = "teapot_qml";
+        testSource = "$QTDIR/qtquick3d/demos/quick3d/";
+        testGoal = "Test drawing a basic object in Quick3D.";
+        testPreconditions = "OpenGL/OpenGL ES required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the teapot qml example | the application starts and shows a gray teapot |
+            | Use the mouse or touch pad to rotate the view | the view rotates fine, user can view the teapot from all angles |
+            | Maximize/minimize/resize the view | the teapot maximizes/minimizes/resize with the viewport, shows fine, no crash |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    teaservice_test: function()
+    {
+        //test meta data
+        testTitle = "Qt3D - Tea Service";
+        testBinary = "teaservice";
+        testSource = "$QTDIR/qtquick3d/demos/quick3d/";
+        testGoal = "Test complex scenes and object picking.";
+        testPreconditions = "OpenGL/OpenGL ES required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the tea service C++ example | the application starts and shows a set of tea stuff |
+            | Move mouse over the teapot and cups | the material/reflection of object changes |
+            | Maximize/minimize/resize the view | the teapot maximizes/minimizes/resize with the viewport, shows fine, no crash |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    tea_service_test: function()
+    {
+        //test meta data
+        testTitle = "Quick3D - Tea Service";
+        testBinary = "tea_service";
+        testSource = "$QTDIR/qtquick3d/demos/quick3d/";
+        testGoal = "Test complex scenes and object picking with QML.";
+        testPreconditions = "OpenGL/OpenGL ES required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the tea service qml example | the application starts and shows a set of tea stuff |
+            | Click on the tepot and cups | the object clicked will bounce up in response |
+            | Maximize/minimize/resize the view | the teapot doesn't resize with the viewport, shows fine, no crash |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    tst_animations_test: function()
+    {
+        //test meta data
+        testTitle = "Qt3D - Animation Tests";
+        testBinary = "tst_animations";
+        testSource = "$QTDIR/qtquick3d/tests/manual/";
+        testGoal = "Test basic animations.";
+        testPreconditions = "OpenGL/OpenGL ES required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | observe the first scene | the cube rotates to the left as described |
+            | Launch the tst_animation test | four test scenes are displayed with animations |
+            | observe the second scene | the cube rotates to the left as described |
+            | observe the third scene | the cube rotates to the left once (not continuesly, so start the application and observe immediately) |
+            | observe the fourth scene | the cube rotates to the left once with spring effect (not continuesly, so start the application and observe immediately) |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    tst_displaymodel_test: function()
+    {
+        //test meta data
+        testTitle = "Qt3D - Display Model Tests";
+        testBinary = "tst_displaymodel";
+        testSource = "$QTDIR/qtquick3d/tests/manual/";
+        testGoal = "Test building/loading model and display.";
+        testPreconditions = "OpenGL/OpenGL ES required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the tst_displaymodel test | nine models should be loaded and displayed |
+            | observe the nine scenes | the correct model is displayed as described |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    tst_model3ds_test: function()
+    {
+        //test meta data
+        testTitle = "Qt3D - 3DS Model Tests";
+        testBinary = "tst_model3ds";
+        testSource = "$QTDIR/qtquick3d/tests/manual/";
+        testGoal = "Test loading 3DS model and display.";
+        testPreconditions = "OpenGL/OpenGL ES required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the tst_model3ds test | four scenes are created displayiing one 3ds model each |
+            | Observe the four scenes | the models get properly drawn as described |
+            | Close the application | application closes without warning or errors |
+            | Rotate the models with mouse/tap | the models rotates fine |
+        '));
+    },
+
+    tst_navigation1_test: function()
+    {
+        //test meta data
+        testTitle = "Qt3D - Navigation";
+        testBinary = "tst_navigation1";
+        testSource = "$QTDIR/qtquick3d/tests/manual/";
+        testGoal = "Test rotating/zooming model.";
+        testPreconditions = "OpenGL/OpenGL ES required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the tst_navigation1 test | two scenes are created with a dark gray monkey head in each |
+            | Rotate the monkey heads with mouse/tap | the models rotates properly |
+            | Zoom in using mouse wheel/multi-touch | the model on the left get culled when zoomed in to a certain level, the model on the right doesn't, as described |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    tst_qrc_test: function()
+    {
+        //test meta data
+        testTitle = "Qt3D - QRC resource Tests";
+        testBinary = "tst_qrc";
+        testSource = "$QTDIR/qtquick3d/tests/manual/";
+        testGoal = "Test loading resources from QRC files.";
+        testPreconditions = "OpenGL/OpenGL ES required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the tst_qrc test | two scenes are created with a textured cube in each |
+            | Observe the cubes | they are identical |
+            | Rotate the two cubes | they are fully textured with Qt logo and identical |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    tst_rotation_test: function()
+    {
+        //test meta data
+        testTitle = "Qt3D - Rotation Tests";
+        testBinary = "tst_rotation";
+        testSource = "$QTDIR/qtquick3d/tests/manual/";
+        testGoal = "Test rotating objects.";
+        testPreconditions = "OpenGL/OpenGL ES required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the tst_rotation test | nine scenes are created with rotating cube animations |
+            | Observe each scene | the cubes animates as described |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    tst_scaling_test: function()
+    {
+        //test meta data
+        testTitle = "Qt3D - Scaling Tests";
+        testBinary = "tst_scaling";
+        testSource = "$QTDIR/qtquick3d/tests/manual/";
+        testGoal = "Testing scaling objects.";
+        testPreconditions = "OpenGL/OpenGL ES required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the tst_scaling test | nine scenes are created with scaling teapot animations |
+            | Observe each scene | the teapots animates as described |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    tst_submesh_test: function()
+    {
+        //test meta data
+        testTitle = "Qt3D - Submesh Tests";
+        testBinary = "tst_submesh";
+        testSource = "$QTDIR/qtquick3d/tests/manual/";
+        testGoal = "Testing operating sub-meshes in object.";
+        testPreconditions = "OpenGL/OpenGL ES required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the tst_submesh test | a scene of animation is created |
+            | Observe the scene | the sub meshes move as described |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    tst_transformations_test: function()
+    {
+        //test meta data
+        testTitle = "Qt3D - Transformation Tests";
+        testBinary = "tst_transformations";
+        testSource = "$QTDIR/qtquick3d/tests/manual/";
+        testGoal = "Testing transformations on objects.";
+        testPreconditions = "OpenGL/OpenGL ES required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the tst_transformation test | two scenes are created with moving teapot animations |
+            | Observe each scene | the teapots animates as described |
+            | Close the application | application closes without warning or errors |
+        '));
+    },
+
+    tst_translation_test: function()
+    {
+        //test meta data
+        testTitle = "Qt3D - Translation Tests";
+        testBinary = "tst_translation";
+        testSource = "$QTDIR/qtquick3d/tests/manual/";
+        testGoal = "Testing object translation.";
+        testPreconditions = "OpenGL/OpenGL ES required";
+        testGroups = "BAT, TP1, TP2, 1.0";
+        testRequirements = "NA";
+        //Test Steps
+         prompt(twiki('---+++ ' + testTitle + '<br><br>
+             *Goal:* ' + testGoal + '<br>
+             *Pre-Requisites:* ' + testPreconditions + '<br>
+             *Tested Binary:* ' + testBinary + '<br>
+             *Requirements:* ' + testRequirements + '<br>
+            | *Step* | *Verification* |
+            | Launch the tst_translation test | ten scenes are created with moving teapot animations |
+            | Observe each scene | the teapots animates as described |
+            | Close the application | application closes without warning or errors |
+        '));
+    }
+
+}
