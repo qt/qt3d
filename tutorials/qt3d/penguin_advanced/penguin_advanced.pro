@@ -16,4 +16,6 @@ symbian {
     DEPLOYMENT += my_deployment
 
     ICON = ../qt3d.svg
+
+    TARGET.EPOCHEAPSIZE = 0x40000 0x4000000
 }

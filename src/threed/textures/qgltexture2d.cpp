@@ -50,6 +50,7 @@
 
 #include <QtCore/qfile.h>
 #include <QtCore/qfileinfo.h>
+#include <QImageReader>
 
 QT_BEGIN_NAMESPACE
 
@@ -88,6 +89,8 @@ QT_BEGIN_NAMESPACE
 
     \sa QGLTextureCube
 */
+
+Q_GLOBAL_STATIC(QSize, getMaxImageSize)
 
 QGLTexture2DPrivate::QGLTexture2DPrivate()
 {
@@ -406,7 +409,14 @@ void QGLTexture2D::setUrl(const QUrl &url)
             }
             else
             {
-                QImage im(fileName);
+                QImageReader imgReader;
+                imgReader.setFileName(fileName);
+
+                if (!getMaxImageSize()->isValid()) {
+                    imgReader.setScaledSize(imgReader.size().boundedTo(*getMaxImageSize()));
+                }
+
+                QImage im = imgReader.read();
                 if (im.isNull())
                     qWarning("Could not load texture: %s", qPrintable(fileName));
                 setImage(im);
@@ -749,6 +759,18 @@ void QGLTexture2D::textureRequestFinished(QByteArray assetData)
 
         emit textureUpdated();
     }
+}
+
+/*!
+    Sets the maximum size of an image file loaded in a texture as being
+    of \a width x \a height in size.
+
+    \sa setUrl()
+*/
+void QGLTexture2D::setMaxImageSize(int width, int height)
+{
+    Q_ASSERT(width>0 && height>0);
+    (*getMaxImageSize()) = QSize(width, height);
 }
 
 /*!

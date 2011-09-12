@@ -13,3 +13,7 @@ OTHER_FILES += \
     moon.rc
 
 RC_FILE = moon.rc
+
+symbian {
+    TARGET.EPOCHEAPSIZE = 40000 40000000
+}

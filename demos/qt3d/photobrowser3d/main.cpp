@@ -41,11 +41,15 @@
 
 #include <QtGui/QApplication>
 #include <QtCore/QThread>
-
+#include "qgltexture2d.h"
 #include "photobrowser3dview.h"
 
 int main(int argc, char *argv[])
 {
+#ifdef Q_OS_SYMBIAN
+    QGLTexture2D::setMaxImageSize(256,256);
+#endif
+
     Q_INIT_RESOURCE(photobrowser3d);
 
     QApplication app(argc, argv);

@@ -22,3 +22,7 @@ OTHER_FILES += \
     solarsystem.rc
 
 RC_FILE = solarsystem.rc
+
+symbian {
+    TARGET.EPOCHEAPSIZE = 0x40000 0x4000000
+}

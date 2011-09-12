@@ -15,3 +15,7 @@ RC_FILE = robo_bounce.rc
 RESOURCES += \
     robo_bounce.qrc
 
+
+symbian {
+    TARGET.EPOCHEAPSIZE = 0x40000 0x4000000
+}

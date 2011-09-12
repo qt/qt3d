@@ -40,13 +40,16 @@
 
 #include <QtGui/QApplication>
 #include "qdeclarativeview3d.h"
-
+#include "qgltexture2d.h"
 #include "../qmlres.h"
 
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
+#ifdef Q_OS_SYMBIAN
+    QGLTexture2D::setMaxImageSize(256,256);
+#endif
 
+    QApplication app(argc, argv);
     QDeclarativeView3D view;
     QString qml = q_get_qmldir(QLatin1String("qml/photoroom.qml"));
     view.setSource(QUrl::fromLocalFile(qml));

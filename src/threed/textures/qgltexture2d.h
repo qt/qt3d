@@ -94,6 +94,8 @@ public:
 
     GLuint textureId() const;
 
+    static void setMaxImageSize(int width, int height);
+
     static QGLTexture2D *fromTextureId(GLuint id, const QSize& size);
 signals:
     void textureUpdated();
