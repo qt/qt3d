@@ -124,8 +124,13 @@ contains(TEMPLATE, app) {
 }
 
 qt3d_deploy_qml {
+    # The final TARGET_DIR must match one of the cases that qmlres.h checks
+    # in q_get_qmldir() for a given platform in order for our examples to find
+    # their qml files and other assets
     mt {
         TARGET_DIR = /opt/mt/applications/$$TARGET
+    } else: maemo {
+        TARGET_DIR = $$QT3D_INSTALL_DATA/quick3d/examples/$$TARGET
     } else {
         TARGET_DIR = $$QT3D_INSTALL_DATA/quick3d/resources/examples/$$TARGET
     }
@@ -260,6 +265,14 @@ defineTest(qtcAddDeployment) {
             INSTALLS += $$item
         }
         target.path = $${installPrefix}/bin
+        # In the specific case of packages for a Maemo devices, binaries can't
+        # be installed into /bin, so use /usr/bin instead
+        maemo {
+            package {
+                target.path = /usr/bin
+            }
+        }
+
         export(icon.files)
         export(icon.path)
         export(desktopfile.files)
