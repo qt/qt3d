@@ -91,9 +91,12 @@ Skybox::Skybox(QObject *parent)
 {
     m_view = qobject_cast<Viewport*>(parent);
 
+    //Set the eye to to 0,0,0 and the near plane/view size such that
+    //a wide variety of aspect ratios will display without undue
+    //cropping against the near plane.
     m_camera->setEye(QVector3D());
-    m_camera->setNearPlane(0.6f);
-    m_camera->setViewSize(QSizeF(1.0f, 1.0f));
+    m_camera->setNearPlane(0.1f);
+    m_camera->setViewSize(QSizeF(0.17f, 0.17f));
 
     QGLBuilder builder;
     builder.newSection(QGL::Faceted);
