@@ -168,6 +168,9 @@ protected:
     virtual void drawItem(QGLPainter *painter);
     bool event(QEvent *e);
 
+private Q_SLOTS:
+    void handleEffectChanged();
+
 Q_SIGNALS:
     void positionChanged();
     void scaleChanged();

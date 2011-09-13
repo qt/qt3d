@@ -341,8 +341,9 @@ QGLMaterial *QDeclarativeEffect::material() const
 void QDeclarativeEffect::setMaterial(QGLMaterial *value)
 {
     d->ensureMaterial();
-
-    int newIndex = d->palette->addMaterial(value);
+    int newIndex = -1;
+    if (value)
+        newIndex = d->palette->addMaterial(value);
     if (newIndex != d->materialIndex)
     {
         d->materialIndex = newIndex;
