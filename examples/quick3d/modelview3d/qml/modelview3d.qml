@@ -126,7 +126,7 @@ Rectangle {
             // You can have your own functions, signals, animations etc.
             onClicked: {
 //                onClicked: console.log("Cube("+index+") color: " + itemEffect.color);
-//                removeAnimation.start();
+                removeAnimation.start();
             }
 
             SequentialAnimation  {

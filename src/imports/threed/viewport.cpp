@@ -59,6 +59,7 @@
 #include <QtOpenGL/qglframebufferobject.h>
 #include <QtCore/qtimer.h>
 #include <QtCore/qcoreapplication.h>
+#include <QtCore/qpointer.h>
 
 /*!
     \qmlclass Viewport Viewport
@@ -110,9 +111,9 @@ public:
     int pickId;
     QGLFramebufferObject *pickFbo;
     QMap<int, QObject *> objects;
-    QObject *pressedObject;
+    QPointer<QObject> pressedObject;
     Qt::MouseButton pressedButton;
-    QObject *enteredObject;
+    QPointer<QObject> enteredObject;
     bool panning;
     QPointF startPan;
     QPointF lastPan;
