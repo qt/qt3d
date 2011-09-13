@@ -41,9 +41,9 @@
 #ifndef VIEW_H
 #define VIEW_H
 
-#include <QtGui/qgraphicsview.h>
-#include <QtGui/qgraphicsscene.h>
-#include <QtGui/qgraphicsitem.h>
+#include <QtWidgets/qgraphicsview.h>
+#include <QtWidgets/qgraphicsscene.h>
+#include <QtWidgets/qgraphicsitem.h>
 
 class CubeItem;
 class TeapotItem;

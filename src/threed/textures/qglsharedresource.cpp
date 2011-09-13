@@ -42,6 +42,7 @@
 #include "qglsharedresource_p.h"
 #include <QtCore/qmutex.h>
 #include <QtCore/qcoreapplication.h>
+#include <qopenglcontext.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -139,8 +140,6 @@ QGLContextInfo *QGLContextManager::contextInfo(const QGLContext *ctx)
     return info;
 }
 
-Q_OPENGL_EXPORT const QGLContext *qt_gl_transfer_context(const QGLContext *);
-
 void QGLContextManager::aboutToDestroyContext(const QGLContext *ctx)
 {
     QMutexLocker locker(&managerLock);
@@ -148,12 +147,12 @@ void QGLContextManager::aboutToDestroyContext(const QGLContext *ctx)
     while (index < m_contexts.size()) {
         QGLContextInfo *info = m_contexts[index];
         if (info->m_context == ctx) {
-            const QGLContext *transfer = qt_gl_transfer_context(ctx);
+            QOpenGLContext *transfer = ctx->contextHandle()->shareContext();
             if (transfer) {
                 // Transfer ownership to another context in the same sharing
                 // group.  This may result in multiple QGLContextInfo objects
                 // for the same context, which is ok.
-                info->m_context = transfer;
+                info->m_context = QGLContext::fromOpenGLContext(transfer);
             } else {
                 // All contexts in the sharing group have been deleted,
                 // so detach all of the shared resources.

@@ -53,7 +53,7 @@
 #include <QtGui/qmatrix4x4.h>
 #if !defined(QT_NO_THREAD)
 #include <QtCore/qthread.h>
-#include <QtGui/qapplication.h>
+#include <QtWidgets/qapplication.h>
 #endif
 
 QT_BEGIN_NAMESPACE

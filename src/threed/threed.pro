@@ -7,8 +7,10 @@ gcov {
 } else {
     CONFIG += dll warn_on
 }
-QT += opengl \
-    network
+QT += opengl
+QT += network
+QT += gui-private
+QT += core-private
 
 include(../../pkg.pri)
 

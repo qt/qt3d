@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#include <QtGui/QApplication>
 #include "qgltexture2d.h"
+#include <QtWidgets/QApplication>
 #include "qdeclarativeview3d.h"
 
 int main(int argc, char *argv[])

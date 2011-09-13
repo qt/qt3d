@@ -38,7 +38,7 @@
 **
 ****************************************************************************/
 
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 #include "qdeclarativeview3d.h"
 
 int main(int argc, char *argv[])
