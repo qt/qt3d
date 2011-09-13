@@ -45,6 +45,8 @@ import Qt3D 1.0
 Viewport {
     width: parent.width; height: parent.height
 
+    fillColor: "#000000"
+
     camera: Camera {
         eye: Qt.vector3d(0, 4, 10)
     }

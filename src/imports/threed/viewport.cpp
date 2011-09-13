@@ -64,6 +64,8 @@
 #include <QSGEngine>
 #include <QtOpenGL/qglbuffer.h>
 #include <QtCore/qthread.h>
+#include <QtCore/qmutex.h>
+#include <QtCore/qmath.h>
 
 /*!
     \qmlclass Viewport Viewport
@@ -95,19 +97,131 @@
 
 QT_BEGIN_NAMESPACE
 
+// copied from the top of qsgcanvas.cpp and qdeclarativeglobal_p.h
+static bool qmlNoThreadedRenderer()
+{
+    static enum { Yes, No, Unknown } status = Unknown;
+#ifndef QT_NO_THREAD
+    if (status == Unknown)
+    {
+        QByteArray v = qgetenv("QML_NO_THREADED_RENDERER");
+        bool value = !v.isEmpty() && v != "0" && v != "false";
+        status = (value) ? Yes : No;
+    }
+#endif
+    return status == Yes;
+}
+
+class PickEvent
+{
+public:
+    PickEvent() : m_object(0), m_event(0), m_callback(-1), m_id(nextId++) {}
+    ~PickEvent()
+    {
+        delete m_event;
+        // we don't own the object so don't delete that
+    }
+    QObject *object() { return m_object; }
+    void setObject(QObject *o) { m_object = o; }
+    QGraphicsSceneMouseEvent *event() { return m_event; }
+    void setEvent(QGraphicsSceneMouseEvent *e) { m_event = e; }
+    int callback() const { return m_callback; }
+    void setCallback(int callback) { m_callback = callback; }
+    quint64 id() const { return m_id; }
+private:
+    QObject *m_object;
+    QGraphicsSceneMouseEvent *m_event;
+    int m_callback;
+    quint64 m_id;
+
+    // INVARIANT CONDITION: We only even construct new PickEvent objects from the
+    // gui thread (via calls to initiatePick in the mouse handlers) so thus the
+    // accesses to this NON-THREAD-SAFE static are always serialized.
+    static quint64 nextId;
+};
+
+quint64 PickEvent::nextId = 0;
+
+/*!
+    \internal
+    Like QMutexLocker class, except only do anything if qmlThreadedRenderer
+    is true.
+
+    Also hide nasty QT_NO_THREAD macros in here.  If built with
+    QT_NO_THREAD calls should compile away to nothing.
+
+    This class is not threadsafe.  Only ever use it by creating one on the local
+    stack and not passing references to it out of local scope.
+*/
+class QMutexMaybeLocker
+{
+public:
+#ifndef QT_NO_THREAD
+    typedef QMutex Lock;
+#else
+    typedef int Lock;
+#endif
+
+    // Construct the locker.  Also do an RAAI acquire the mutex - but only if the
+    // qmlNoThreadedRenderer function returns true.
+    QMutexMaybeLocker(Lock *mutex)
+        : m_mutex(mutex)
+        , m_isLocked(false)
+    {
+#ifndef QT_NO_THREAD
+        if (!qmlNoThreadedRenderer())
+        {
+            m_mutex->lock();
+            m_isLocked = true;
+        }
+#else
+        Q_UNUSED(mutex);
+#endif
+    }
+
+    // This is here for when an exception or other unusual condition causes
+    // control to jump out of the current block.  Also explicitly use the unlock
+    // function for the reasons stated.
+    ~QMutexMaybeLocker()
+    {
+#ifndef QT_NO_THREAD
+        unlock();
+#endif
+    }
+
+    // Have a seperate function like QMutexLocker for this.  Use it explicity for two
+    // reasons (rather than just nicely exiting the scope and letting the destructor
+    // do it) - reason one: documentation -> its clearer what is going on; reason two:
+    // syntax checkers and static analysis tools will complain about unused variables
+    // if you don't reference the constructed value.
+    void unlock()
+    {
+#ifndef QT_NO_THREAD
+        if (!qmlNoThreadedRenderer() && m_isLocked)
+        {
+            m_mutex->unlock();
+            m_isLocked = false;
+        }
+#endif
+    }
+private:
+    Lock *m_mutex;
+    bool m_isLocked;
+};
+
 class ViewportPrivate
 {
 public:
     ViewportPrivate();
     ~ViewportPrivate();
 
+    QColor fillColor;
     bool picking;
     bool showPicking;
     bool navigation;
     bool fovzoom;
     bool blending;
     bool itemsInitialized;
-    bool needsPick;
     bool needsRepaint;
     QGLCamera *camera;
     QGLLightParameters *light;
@@ -122,17 +236,41 @@ public:
     bool panning;
     QPointF startPan;
     QPointF lastPan;
+    QPointF lastPick;
+    QObject *lastObject;
+    bool needsPick;
     QVector3D startEye;
     QVector3D startCenter;
     QVector3D startUpVector;
     Qt::KeyboardModifiers panModifiers;
     QMap<int, QObject*> earlyDrawList;
     Viewport::RenderMode renderMode;
+    bool directRenderInitialized;
+    bool pickingRenderInitialized;
+    QList<PickEvent *> pickEventQueue;
+
+    // INVARIANT: PickEvents are always either in the queue, or in the registry, never
+    // in both.  Here "never" means "not outside of sections guarded by the lock".
+    //
+    // Serializing PickEvents across the signal/slot boundary is dicey, since they are
+    // not a value type.  Instead keep our own registry of them here, and forward the
+    // id values instead.  Should also make dispatch faster.
+    QMap<quint64, PickEvent *> pickEventRegistry;
+
+    // This lock is for the registry and for the pick event queue itself.  All accesses
+    // to that data structure must be guarded by this lock.
+    QMutexMaybeLocker::Lock pickEventQueueLock;
+
+    // This lock is for all of the class - generally concurrent accesses to any of the
+    // class instance data from other threads should be at a bare minimum.
+    QMutexMaybeLocker::Lock viewportLock;
 
     QSGCanvas* canvas;
 
     void setDefaults(QGLPainter *painter);
     void setRenderSettings(QGLPainter *painter);
+    void getOverflow(QGraphicsSceneMouseEvent *e);
+    PickEvent *takeFromRegistry(quint64 id);
 };
 
 ViewportPrivate::ViewportPrivate()
@@ -142,7 +280,6 @@ ViewportPrivate::ViewportPrivate()
     , fovzoom(true)
     , blending(false)
     , itemsInitialized(false)
-    , needsPick(true)
     , needsRepaint(true)
     , camera(0)
     , light(0)
@@ -156,8 +293,16 @@ ViewportPrivate::ViewportPrivate()
     , panning(false)
     , startPan(-1, -1)
     , lastPan(-1, -1)
+    , lastPick(-1, -1)
+    , lastObject(0)
+    , needsPick(true)
     , panModifiers(Qt::NoModifier)
     , renderMode(Viewport::UnknownRender)
+    , directRenderInitialized(false)
+    , pickingRenderInitialized(false)
+#ifdef QT_NO_THREAD
+    , pickEventQueueLock(0)
+#endif
     , canvas(0)
 {
 }
@@ -165,10 +310,13 @@ ViewportPrivate::ViewportPrivate()
 ViewportPrivate::~ViewportPrivate()
 {
     delete pickFbo;
+    qDeleteAll(pickEventQueue);
+    qDeleteAll(pickEventRegistry);
 }
 
 void ViewportPrivate::setDefaults(QGLPainter *painter)
 {
+    painter->disableEffect();
     // Try to restore the default options
     glDisable(GL_CULL_FACE);
     glDisable(GL_DEPTH_TEST);
@@ -216,9 +364,28 @@ void ViewportPrivate::setRenderSettings(QGLPainter *painter)
     glDepthFunc(GL_LESS);
     glEnable(GL_DEPTH_TEST);
 
-    painter->setClearColor(Qt::black);
+    QColor clearColor(Qt::black);
+    if (fillColor.isValid())
+        clearColor = fillColor;
+    painter->setClearColor(clearColor);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
+
+PickEvent *ViewportPrivate::takeFromRegistry(quint64 id)
+{
+    PickEvent *pick = 0;
+    QMutexMaybeLocker locker(&pickEventQueueLock);
+    QMap<quint64, PickEvent*>::iterator it = pickEventRegistry.find(id);
+    if (it != pickEventRegistry.end())
+    {
+        pick = it.value();
+        pickEventRegistry.erase(it);
+    }
+    locker.unlock();
+    return pick;
+}
+
+const int Viewport::FBO_SIZE = 8;
 
 /*!
     \internal
@@ -296,30 +463,62 @@ void Viewport::setRenderMode(Viewport::RenderMode mode)
     Q_ASSERT(mode != UnknownRender);
     if (d->renderMode != mode)
     {
-        Q_ASSERT(d->canvas != 0);
-        QSGEngine* engine =  d->canvas->sceneGraphEngine();
+        QSGEngine* engine = 0;
+        if (d->canvas)
+            engine =  d->canvas->sceneGraphEngine();
         d->renderMode = mode;
         if (d->renderMode == BufferedRender)
         {
             setRenderTarget(QSGPaintedItem::FramebufferObject);
-            //setFlags(flags() | QSGItem::ItemHasContents);
-            // TODO: buggy if theres another viewport
-            // if (engine)
-            //     engine->setClearBeforeRendering(true);
+            if (engine)
+            {
+                disconnect(engine, SIGNAL(beforeRendering()),
+                           this, SLOT(beforeRendering()));
+                engine->setClearBeforeRendering(true);
+                d->directRenderInitialized = false;
+            }
         }
         else
         {
-            //setFlags(flags() & ~QSGItem::ItemHasContents);
-
-            if (!engine)
+            // If there is no engine at this point the setup will
+            // be done in the sceneGraphInitialized handler
+            if (engine)
             {
-                qmlInfo(this) << tr("Unable to get QSGEngine. Will not be able to render!");
-                return;
+                connect(engine, SIGNAL(beforeRendering()),
+                        this, SLOT(beforeRendering()), Qt::DirectConnection);
+                engine->setClearBeforeRendering(false);
+                d->directRenderInitialized = true;
             }
-            connect((QObject*)engine, SIGNAL(beforeRendering()),
-                    this, SLOT(beforeRendering()), Qt::DirectConnection);
-            engine->setClearBeforeRendering(false);
         }
+        emit viewportChanged();
+    }
+}
+
+/*!
+    \qmlproperty bool Viewport::fillColor()
+
+    The color to use for the background of the viewport, if any.  When no color is set
+    then the underlying QML background will show through (the viewport will be trans-
+    parent).
+
+    If a color is set here, then the viewport will be filled with that color before
+    any content is rendered into it.
+
+    The default value for this property is no color (an invalid color) resulting in
+    a transparent viewport.
+
+    \sa showPicking
+*/
+QColor Viewport::fillColor() const
+{
+    return d->fillColor;
+}
+
+void Viewport::setFillColor(const QColor &color)
+{
+    if (d->fillColor != color)
+    {
+        d->fillColor = color;
         emit viewportChanged();
     }
 }
@@ -348,6 +547,26 @@ void Viewport::setPicking(bool value)
     if (value != d->picking)
     {
         d->picking = value;
+        QSGEngine* engine = 0;
+        if (d->canvas)
+            engine = d->canvas->sceneGraphEngine();
+        // If there is no engine at this point the setup will
+        // be done in the sceneGraphInitialized handler
+        if (engine)
+        {
+            if (d->picking)
+            {
+                connect(engine, SIGNAL(beforeRendering()),
+                        this, SLOT(objectForPoint()), Qt::DirectConnection);
+                d->pickingRenderInitialized = true;
+            }
+            else
+            {
+                disconnect(engine, SIGNAL(beforeRendering()),
+                        this, SLOT(objectForPoint()));
+                d->pickingRenderInitialized = false;
+            }
+        }
         emit viewportChanged();
     }
 }
@@ -567,7 +786,16 @@ void Viewport::paint(QPainter *painter)
         qWarning("GL graphics system is not active; cannot use 3D items");
         return;
     }
-    glClear(GL_DEPTH_BUFFER_BIT);
+    if (d->fillColor.isValid())
+    {
+        glPainter.setClearColor(d->fillColor);
+        glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+    }
+    else
+    {
+        glClear(GL_DEPTH_BUFFER_BIT);
+    }
+
     glEnable(GL_DEPTH_TEST);
 
     render(&glPainter);
@@ -613,8 +841,6 @@ void Viewport::beforeRendering()
 
 void Viewport::render(QGLPainter *painter)
 {
-    d->needsPick = true;
-
     // Initialize the objects in the scene if this is the first paint.
     if (!d->itemsInitialized)
         initializeGL(painter);
@@ -649,6 +875,7 @@ void Viewport::render(QGLPainter *painter)
     // May've been set by early draw
     glDisable(GL_CULL_FACE);
 
+    d->needsPick = true;
     draw(painter);
 
     // May've been set by one of the items
@@ -772,79 +999,177 @@ void Viewport::registerEarlyDrawObject(QObject *obj, int order)
     d->earlyDrawList.insertMulti(order, obj);
 }
 
+PickEvent *Viewport::initiatePick(QGraphicsSceneMouseEvent *pick)
+{
+    PickEvent *p = new PickEvent;
+    QGraphicsSceneMouseEvent *copy = new QGraphicsSceneMouseEvent;
+    copy->setScreenPos(pick->screenPos());
+    copy->setButtons(pick->buttons());
+    copy->setButton(pick->button());
+    copy->setModifiers(pick->modifiers());
+    copy->setPos(pick->pos());
+    p->setEvent(copy);
+    {
+        QMutexMaybeLocker locker(&d->pickEventQueueLock);
+        if (d->pickEventQueue.size() > 10)
+        {
+            static bool warning_given = false;
+            if (!warning_given)
+            {
+                qWarning("Pick event queue overflow");
+                warning_given = true;
+            }
+            delete p;
+            p = 0;
+        }
+        else
+        {
+            d->pickEventQueue.append(p);
+        }
+        locker.unlock();
+    }
+
+    update();
+    return p;
+}
+
+/*!
+    \internal
+    Setup the \a painter with a camera focussed down onto the location
+    that was picked by the \a pt.  Also set up all the other GL state
+    required to paint the pick scene into the FBO.
+*/
+void Viewport::setupPickPaint(QGLPainter *painter, const QPointF &pt)
+{
+    painter->setPicking(true);
+    painter->clearPickObjects();
+    d->setRenderSettings(painter);
+
+    painter->setEye(QGL::NoEye);
+
+    QScopedPointer<QGLCamera> cam;
+    if (d->camera)
+    {
+        cam.reset(d->camera->clone(0));
+    } else {
+        cam.reset(new QGLCamera);
+    }
+
+    qreal vw = cam->viewSize().width();
+    qreal vh = cam->viewSize().height();
+    qreal asp = 1.0f;
+    if (cam->adjustForAspectRatio())
+    {
+        // see QGLCamera::projectionMatrix for this logic
+        asp = width() / height();
+        if (asp > 1.0f)
+            vw *= asp;
+        else
+            vh /= asp;
+    }
+    qreal maxpect = vw / width();
+    Q_ASSERT(qFuzzyCompare(maxpect, (vh / height())));
+
+    // shrink the camera view size down to the size of the FBO relative
+    // to the viewports near plane size - note that the vw / width() and
+    // vh / height() should evaluate to the same thing.
+    cam->setAdjustForAspectRatio(false);
+
+    // map the pick to coordinate system with origin at center of viewport
+    qreal dx = pt.x() - (width() / 2.0);
+    qreal dy = pt.y() - (height() / 2.0);
+    dy = -dy;  // near plane coord system is correct, opengl style, not upside down like qt
+    dx *= vw / width();
+    dy *= vh / height();
+    qreal dim = qMin(width(), height());
+    qreal vs = cam->viewSize().width();
+    Q_ASSERT(vs = cam->viewSize().height());  // viewsize is square
+
+    painter->setCamera(cam.data());
+
+    QVector3D sideVec = QVector3D::crossProduct(cam->center() - cam->eye(), cam->upVector());
+    sideVec.normalize();
+    sideVec *= -dx;
+    QVector3D upVec = cam->upVector() * -dy;
+    QVector3D tx = sideVec + upVec;
+    QMatrix4x4 m;
+    m.translate(tx);
+
+    QMatrix4x4 s;
+    qreal fac = dim / qreal(FBO_SIZE);
+    s.scale(QVector3D(fac, fac, 0.0f));
+
+    painter->projectionMatrix() = s * m * painter->projectionMatrix().top();
+}
+
 /*!
   \internal
-    Returns the registered object that is under the mouse position
-    specified by (\a x, \a y).  This function may need to regenerate
-    the contents of the pick buffer by repainting the scene.
+    Finds the registered object that is under the mouse position
+    specified by the queued pick events.  Pick events are posted by
+    the various mouse event handlers.
+
+    To do this an FBO is painted using picking mode, and the painter
+    returns the object identified by its pick id.  Since the FBO is
+    focussed to the part of the viewport where the pick occurred using
+    view frustum culling will lead to good efficiencies in picking.
+
+    This function runs in the rendering thread in order to gain access
+    to the GL context.
 */
-QObject *Viewport::objectForPoint(qreal x, qreal y)
+void Viewport::objectForPoint()
 {
-    // Check the viewport boundaries in case a mouse move has
-    // moved the pointer outside the window.
-    QRectF rect = boundingRect();
-    if (!rect.contains(QPointF(x, y)))
-        return 0;
-
-    if (!QGLContext::currentContext()) {
-        // Won't be able to read or generate a pick buffer, so bail out.
-        return 0;
-    }
-
-    QGLPainter painter;
-    bool painterBegun = false;
-    QSize size(qRound(width()), qRound(height()));
-    QSize fbosize(QGL::nextPowerOfTwo(size));
-
-    int objectId = -1;
-
-    if (d->pickFbo && d->pickFbo->size() != fbosize) {
-        delete d->pickFbo;
-        d->pickFbo = 0;
-        d->needsPick = true;
-    };
-
-    if (!d->pickFbo) {
-        d->pickFbo = new QGLFramebufferObject
-                (fbosize, QGLFramebufferObject::CombinedDepthStencil);
-        Q_ASSERT(d->needsPick == true);
-    }
-
-    QScopedPointer<QGLAbstractSurface> fboSurface(new QGLFramebufferObjectSurface(d->pickFbo));
-    // The fbo has to be a power of 2, so use a subsurface to get the
-    // actual size we want
-    QScopedPointer<QGLSubsurface> subSurface(new QGLSubsurface(fboSurface.data(), QRect(QPoint(0, 0), size)));
-
-    if ( d->needsPick ) {
-        // Regenerate the pick fbo contents.
-        if (painter.begin(subSurface.data())) {
-            painter.setPicking(true);
-            painter.clearPickObjects();
-            painter.setClearColor(Qt::black);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            painter.setEye(QGL::NoEye);
-            if (d->camera) {
-                painter.setCamera(d->camera);
-            } else {
-                QGLCamera defCamera;
-                painter.setCamera(&defCamera);
-            }
-            draw(&painter);
-            painter.setPicking(false);
-        } else {
-            qWarning() << "Warning: unable to paint into fbo, picking will be unavailable";
+    QSize fbosize(QSize(FBO_SIZE, FBO_SIZE));
+    PickEvent *p = 0;
+    while (true)
+    {
+        {
+            p = 0;
+            QMutexMaybeLocker locker(&d->pickEventQueueLock);
+            if (d->pickEventQueue.size() > 0)
+                p = d->pickEventQueue.takeFirst();
+            if (p)
+                d->pickEventRegistry.insert(p->id(), p);
+            locker.unlock();
         }
+        if (!p)
+            break;
+
+        QPointF pt = p->event()->pos();
+        // Check the viewport boundaries in case a mouse move has
+        // moved the pointer outside the window.
+        QRectF rect = boundingRect();
+        if (!rect.contains(pt))
+            continue;
+
+        if (!d->pickFbo)
+        {
+            d->pickFbo = new QGLFramebufferObject(fbosize,
+                                                  QGLFramebufferObject::CombinedDepthStencil);
+        }
+        int objectId = -1;
+        QScopedPointer<QGLAbstractSurface> fboSurf(new QGLFramebufferObjectSurface(d->pickFbo));
+        {
+            QGLPainter painter;
+            if (painter.begin(fboSurf.data()))
+            {
+                setupPickPaint(&painter, pt);
+                draw(&painter);
+                painter.setPicking(false);
+                objectId = painter.pickObject(FBO_SIZE / 2, FBO_SIZE / 2);
+                d->setDefaults(&painter);
+                d->needsPick = false;
+                d->lastPick = pt;
+            } else {
+                qWarning() << "Warning: unable to paint into fbo, picking will be unavailable";
+                continue;
+            }
+        }
+        QObject *obj = d->objects.value(objectId, 0);
+        d->lastObject = obj;
+        p->setObject(obj);
+        QMetaMethod m = metaObject()->method(p->callback());
+        m.invoke(this, Qt::QueuedConnection, Q_ARG(quint64, p->id()));
     }
-
-    Q_ASSERT(d->pickFbo);
-    if (!painterBegun)
-        painter.begin(subSurface.data());
-    objectId = painter.pickObject(qRound(x), fbosize.height() - 1 - qRound(y));
-    painter.end();
-    d->needsPick = false;
-
-    // surfaces cleaned up here by scoped pointer deleters.
-    return d->objects.value(objectId, 0);
 }
 
 /*!
@@ -882,12 +1207,38 @@ static inline void sendLeaveEvent(QObject *object)
 */
 void Viewport::mousePressEvent(QGraphicsSceneMouseEvent *e)
 {
-    QObject *object;
+    static int processMousePressInvocation = -1;
+    if (processMousePressInvocation == -1)
+    {
+        processMousePressInvocation = metaObject()->indexOfMethod("processMousePress(quint64)");
+        Q_ASSERT(processMousePressInvocation != -1);
+    }
     if (!d->panning && d->picking)
-        object = objectForPoint(e->pos());
+    {
+        PickEvent * p = initiatePick(e);
+        if (p)
+            p->setCallback(processMousePressInvocation);
+    }
+    if (d->navigation && e->button() == Qt::LeftButton)
+    {
+        processNavEvent(e);
+    }
     else
-        object = 0;
-    if (d->pressedObject) {
+    {
+        QSGItem::mousePressEvent(e);
+        return;
+    }
+    e->setAccepted(true);
+}
+
+void Viewport::processMousePress(quint64 eventId)
+{
+    QScopedPointer<PickEvent> pick(d->takeFromRegistry(eventId));
+    Q_ASSERT(pick.data());
+    QObject *object = pick->object();
+    QGraphicsSceneMouseEvent *e = pick->event();
+    if (d->pressedObject)
+    {
         // Send the press event to the pressed object.  Use a position
         // of (0, 0) if the mouse is still within the pressed object,
         // or (-1, -1) if the mouse is no longer within the pressed object.
@@ -896,7 +1247,9 @@ void Viewport::mousePressEvent(QGraphicsSceneMouseEvent *e)
              (d->pressedObject == object) ? QPoint(0, 0) : QPoint(-1, -1),
              e->screenPos(), e->button(), e->buttons(), e->modifiers());
         QCoreApplication::sendEvent(d->pressedObject, &event);
-    } else if (object) {
+    }
+    else if (object)
+    {
         // Record the object that was pressed and forward the event.
         d->pressedObject = object;
         d->enteredObject = 0;
@@ -907,18 +1260,21 @@ void Viewport::mousePressEvent(QGraphicsSceneMouseEvent *e)
                           e->screenPos(), e->button(), e->buttons(),
                           e->modifiers());
         QCoreApplication::sendEvent(object, &event);
-    } else if (d->navigation && e->button() == Qt::LeftButton) {
-        d->panning = true;
-        d->lastPan = d->startPan = e->pos();
-        d->startEye = d->camera->eye();
-        d->startCenter = d->camera->center();
-        d->startUpVector = d->camera->upVector();
-        d->panModifiers = e->modifiers();
-    } else {
-        QSGItem::mousePressEvent(e);
-        return;
     }
-    e->setAccepted(true);
+    else if (d->navigation && e->button() == Qt::LeftButton)
+    {
+        processNavEvent(e);
+    }
+}
+
+void Viewport::processNavEvent(QGraphicsSceneMouseEvent *e)
+{
+    d->panning = true;
+    d->lastPan = d->startPan = e->pos();
+    d->startEye = d->camera->eye();
+    d->startCenter = d->camera->center();
+    d->startUpVector = d->camera->upVector();
+    d->panModifiers = e->modifiers();
 }
 
 /*!
@@ -926,45 +1282,63 @@ void Viewport::mousePressEvent(QGraphicsSceneMouseEvent *e)
 */
 void Viewport::mouseReleaseEvent(QGraphicsSceneMouseEvent *e)
 {
+    static int processMouseReleaseInvocation = -1;
+    if (processMouseReleaseInvocation == -1)
+    {
+        processMouseReleaseInvocation = metaObject()->indexOfMethod("processMouseRelease(quint64)");
+        Q_ASSERT(processMouseReleaseInvocation != -1);
+    }
     if (d->panning && e->button() == Qt::LeftButton) {
         d->panning = false;
     }
     if (d->pressedObject) {
-        // Notify the previously pressed object about the release.
-        QObject *object = objectForPoint(e->pos());
-        QObject *pressed = d->pressedObject;
-        if (e->button() == d->pressedButton) {
-            d->pressedObject = 0;
-            d->pressedButton = Qt::NoButton;
-            d->enteredObject = object;
-
-            // Send the release event to the pressed object.  Use a position
-            // of (0, 0) if the mouse is still within the pressed object,
-            // or (-1, -1) if the mouse is no longer within the pressed object.
-            QMouseEvent event
-                (QEvent::MouseButtonRelease,
-                 (pressed == object) ? QPoint(0, 0) : QPoint(-1, -1),
-                 e->screenPos(), e->button(), e->buttons(), e->modifiers());
-            QCoreApplication::sendEvent(pressed, &event);
-
-            // Send leave and enter events if necessary.
-            if (object != pressed) {
-                sendLeaveEvent(pressed);
-                if (object)
-                    sendEnterEvent(object);
-            }
-        } else {
-            // Some other button than the original was released.
-            // Forward the event to the pressed object.
-            QMouseEvent event
-                (QEvent::MouseButtonRelease,
-                 (pressed == object) ? QPoint(0, 0) : QPoint(-1, -1),
-                 e->screenPos(), e->button(), e->buttons(), e->modifiers());
-            QCoreApplication::sendEvent(pressed, &event);
-        }
+        PickEvent *p = initiatePick(e);
+        if (p)
+            p->setCallback(processMouseReleaseInvocation);
         e->setAccepted(true);
     } else {
         QSGItem::mouseReleaseEvent(e);
+    }
+}
+
+void Viewport::processMouseRelease(quint64 eventId)
+{
+    QScopedPointer<PickEvent> pick(d->takeFromRegistry(eventId));
+    Q_ASSERT(pick.data());
+    Q_ASSERT(d->pressedObject);
+    QObject *object = pick->object();
+    QGraphicsSceneMouseEvent *e = pick->event();
+
+    // Notify the previously pressed object about the release.
+    QObject *pressed = d->pressedObject;
+    if (e->button() == d->pressedButton) {
+        d->pressedObject = 0;
+        d->pressedButton = Qt::NoButton;
+        d->enteredObject = object;
+
+        // Send the release event to the pressed object.  Use a position
+        // of (0, 0) if the mouse is still within the pressed object,
+        // or (-1, -1) if the mouse is no longer within the pressed object.
+        QMouseEvent event
+            (QEvent::MouseButtonRelease,
+             (pressed == object) ? QPoint(0, 0) : QPoint(-1, -1),
+             e->screenPos(), e->button(), e->buttons(), e->modifiers());
+        QCoreApplication::sendEvent(pressed, &event);
+
+        // Send leave and enter events if necessary.
+        if (object != pressed) {
+            sendLeaveEvent(pressed);
+            if (object)
+                sendEnterEvent(object);
+        }
+    } else {
+        // Some other button than the original was released.
+        // Forward the event to the pressed object.
+        QMouseEvent event
+            (QEvent::MouseButtonRelease,
+             (pressed == object) ? QPoint(0, 0) : QPoint(-1, -1),
+             e->screenPos(), e->button(), e->buttons(), e->modifiers());
+        QCoreApplication::sendEvent(pressed, &event);
     }
 }
 
@@ -973,19 +1347,63 @@ void Viewport::mouseReleaseEvent(QGraphicsSceneMouseEvent *e)
 */
 void Viewport::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *e)
 {
+    static int processMouseDoubleClickInvocation = -1;
+    if (processMouseDoubleClickInvocation == -1)
+    {
+        processMouseDoubleClickInvocation = metaObject()->indexOfMethod("processMouseDoubleClick(quint64)");
+        Q_ASSERT(processMouseDoubleClickInvocation != -1);
+    }
     if (d->picking) {
-        QObject *object = objectForPoint(e->pos());
-        if (object) {
-            // Simulate a double click event for (0, 0).
-            QMouseEvent event
-                (QEvent::MouseButtonDblClick, QPoint(0, 0),
-                 e->screenPos(), e->button(), e->buttons(), e->modifiers());
-            QCoreApplication::sendEvent(object, &event);
-            e->setAccepted(true);
-            return;
-        }
+        PickEvent * p = initiatePick(e);
+        if (p)
+            p->setCallback(processMouseDoubleClickInvocation);
     }
     QSGItem::mouseDoubleClickEvent(e);
+}
+
+void Viewport::processMouseDoubleClick(quint64 eventId)
+{
+    QScopedPointer<PickEvent> pick(d->takeFromRegistry(eventId));
+    Q_ASSERT(pick.data());
+    QObject *object = pick->object();
+    QGraphicsSceneMouseEvent *e = pick->event();
+    if (object) {
+        // Simulate a double click event for (0, 0).
+        QMouseEvent event
+            (QEvent::MouseButtonDblClick, QPoint(0, 0),
+             e->screenPos(), e->button(), e->buttons(), e->modifiers());
+        QCoreApplication::sendEvent(object, &event);
+        e->setAccepted(true);
+    }
+}
+
+/*!
+    \internal
+    Returns true if the mouse move represented by the event \a e is too
+    quickly posted after previous events.  Here "too quickly" is defined
+    to be true when the distance from one point to the next is less than
+    3 pixels.  If there are no previous events, or if the most recent event
+    was not a move, then false is returned.
+*/
+bool Viewport::mouseMoveOverflow(QGraphicsSceneMouseEvent *e) const
+{
+    bool result = false;
+    QMutexMaybeLocker locker(&d->pickEventQueueLock);
+    if (d->pickEventQueue.size() > 0)
+    {
+        PickEvent *p = d->pickEventQueue.last();
+        QEvent::Type t = p->event()->type();
+        if (t == QEvent::MouseMove
+                || t == QEvent::HoverMove
+                || t == QEvent::HoverEnter
+                || t == QEvent::HoverLeave)
+        {
+            QPointF delta = p->event()->pos() - e->pos();
+            result = qRound(delta.manhattanLength()) < 3;
+        }
+    }
+    locker.unlock();
+    return result;
 }
 
 /*!
@@ -993,6 +1411,12 @@ void Viewport::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *e)
 */
 void Viewport::mouseMoveEvent(QGraphicsSceneMouseEvent *e)
 {
+    static int processMouseMoveInvocation = -1;
+    if (processMouseMoveInvocation == -1)
+    {
+        processMouseMoveInvocation = metaObject()->indexOfMethod("processMouseMove(quint64)");
+        Q_ASSERT(processMouseMoveInvocation != -1);
+    }
     if (d->panning) {
         QPointF delta = e->pos() - d->startPan;
         if (e->modifiers() == d->panModifiers) {
@@ -1014,40 +1438,50 @@ void Viewport::mouseMoveEvent(QGraphicsSceneMouseEvent *e)
             pan(delta.x(), delta.y());
         else
             rotate(delta.x(), delta.y());
-    } else if (d->picking) {
-        QObject *object = objectForPoint(e->pos());
-        if (d->pressedObject) {
-            // Send the move event to the pressed object.  Use a position
-            // of (0, 0) if the mouse is still within the pressed object,
-            // or (-1, -1) if the mouse is no longer within the pressed object.
-            QMouseEvent event
-                (QEvent::MouseMove,
-                 (d->pressedObject == object) ? QPoint(0, 0) : QPoint(-1, -1),
-                 e->screenPos(), e->button(), e->buttons(), e->modifiers());
-            QCoreApplication::sendEvent(d->pressedObject, &event);
-        } else if (object) {
-            if (object != d->enteredObject) {
-                if (d->enteredObject)
-                    sendLeaveEvent(d->enteredObject);
-                d->enteredObject = object;
-                sendEnterEvent(d->enteredObject);
-            }
-            QMouseEvent event
-                (QEvent::MouseMove, QPoint(0, 0),
-                 e->screenPos(), e->button(), e->buttons(), e->modifiers());
-            QCoreApplication::sendEvent(object, &event);
-        } else if (d->enteredObject) {
-            sendLeaveEvent(d->enteredObject);
-            d->enteredObject = 0;
-        } else {
-            QSGItem::mouseMoveEvent(e);
-            return;
-        }
+    } else if (d->picking && !mouseMoveOverflow(e)) {
+        PickEvent * p = initiatePick(e);
+        if (p)
+            p->setCallback(processMouseMoveInvocation);
     } else {
         QSGItem::mouseMoveEvent(e);
         return;
     }
     e->setAccepted(true);
+}
+
+void Viewport::processMouseMove(quint64 eventId)
+{
+    QScopedPointer<PickEvent> pick(d->takeFromRegistry(eventId));
+    Q_ASSERT(pick.data());
+    QObject *object = pick->object();
+    QGraphicsSceneMouseEvent *e = pick->event();
+    if (d->pressedObject) {
+        // Send the move event to the pressed object.  Use a position
+        // of (0, 0) if the mouse is still within the pressed object,
+        // or (-1, -1) if the mouse is no longer within the pressed object.
+        QMouseEvent event
+            (QEvent::MouseMove,
+             (d->pressedObject == object) ? QPoint(0, 0) : QPoint(-1, -1),
+             e->screenPos(), e->button(), e->buttons(), e->modifiers());
+        QCoreApplication::sendEvent(d->pressedObject, &event);
+    } else if (object) {
+        if (object != d->enteredObject) {
+            if (d->enteredObject)
+                sendLeaveEvent(d->enteredObject);
+            d->enteredObject = object;
+            sendEnterEvent(d->enteredObject);
+        }
+        QMouseEvent event
+            (QEvent::MouseMove, QPoint(0, 0),
+             e->screenPos(), e->button(), e->buttons(), e->modifiers());
+        QCoreApplication::sendEvent(object, &event);
+    } else if (d->enteredObject) {
+        sendLeaveEvent(d->enteredObject);
+        d->enteredObject = 0;
+    } else {
+        QSGItem::mouseMoveEvent(e);
+        return;
+    }
 }
 
 /*!
@@ -1179,35 +1613,57 @@ void Viewport::keyPressEvent(QKeyEvent *e)
 */
 bool Viewport::hoverEvent(QHoverEvent *e)
 {
+    static int processMouseHoverInvocation = -1;
+    if (processMouseHoverInvocation == -1)
+    {
+        processMouseHoverInvocation = metaObject()->indexOfMethod("processMouseHover(quint64)");
+        Q_ASSERT(processMouseHoverInvocation != -1);
+    }
     if (!d->panning && d->picking) {
-        QObject *object = objectForPoint(e->pos());
-        if (d->pressedObject) {
-            // Send the move event to the pressed object.  Use a position
-            // of (0, 0) if the mouse is still within the pressed object,
-            // or (-1, -1) if the mouse is no longer within the pressed object.
-            QMouseEvent event
-                (QEvent::MouseMove,
-                 (d->pressedObject == object) ? QPoint(0, 0) : QPoint(-1, -1),
-                 e->pos(), Qt::NoButton, Qt::NoButton, e->modifiers());
-            QCoreApplication::sendEvent(d->pressedObject, &event);
-        } else if (object) {
-            if (object != d->enteredObject) {
-                if (d->enteredObject)
-                    sendLeaveEvent(d->enteredObject);
-                d->enteredObject = object;
-                sendEnterEvent(d->enteredObject);
-            }
-            QMouseEvent event
-                (QEvent::MouseMove, QPoint(0, 0),
-                 e->pos(), Qt::NoButton, Qt::NoButton, e->modifiers());
-            QCoreApplication::sendEvent(object, &event);
-        } else if (d->enteredObject) {
-            sendLeaveEvent(d->enteredObject);
-            d->enteredObject = 0;
+        QGraphicsSceneMouseEvent ev;
+        ev.setPos(e->posF());
+        if (!mouseMoveOverflow(&ev))
+        {
+            PickEvent *p = initiatePick(&ev);
+            if (p)
+                p->setCallback(processMouseHoverInvocation);
         }
         return true;
     }
     return false;
+}
+
+void Viewport::processMouseHover(quint64 eventId)
+{
+    QScopedPointer<PickEvent> pick(d->takeFromRegistry(eventId));
+    Q_ASSERT(pick.data());
+    QObject *object = pick->object();
+    QGraphicsSceneMouseEvent *e = pick->event();
+
+    if (d->pressedObject) {
+        // Send the move event to the pressed object.  Use a position
+        // of (0, 0) if the mouse is still within the pressed object,
+        // or (-1, -1) if the mouse is no longer within the pressed object.
+        QMouseEvent event
+            (QEvent::MouseMove,
+             (d->pressedObject == object) ? QPoint(0, 0) : QPoint(-1, -1),
+             e->pos(), Qt::NoButton, Qt::NoButton, e->modifiers());
+        QCoreApplication::sendEvent(d->pressedObject, &event);
+    } else if (object) {
+        if (object != d->enteredObject) {
+            if (d->enteredObject)
+                sendLeaveEvent(d->enteredObject);
+            d->enteredObject = object;
+            sendEnterEvent(d->enteredObject);
+        }
+        QMouseEvent event
+            (QEvent::MouseMove, QPoint(0, 0),
+             e->pos(), Qt::NoButton, Qt::NoButton, e->modifiers());
+        QCoreApplication::sendEvent(object, &event);
+    } else if (d->enteredObject) {
+        sendLeaveEvent(d->enteredObject);
+        d->enteredObject = 0;
+    }
 }
 
 // Zoom in and out according to the change in wheel delta.
@@ -1344,21 +1800,17 @@ void Viewport::itemChange(QSGItem::ItemChange change, const ItemChangeData &valu
             d->canvas->sceneGraphEngine()->disconnect(this);
         }
         d->canvas = value.canvas;
+        d->directRenderInitialized = false;
         if (d->canvas)
         {
             connect(d->canvas, SIGNAL(sceneGraphInitialized()),
                     this, SLOT(sceneGraphInitialized()), Qt::DirectConnection);
             connect(d->canvas, SIGNAL(destroyed()),
-                    this, SLOT(canvasDestroyed()));
+                    this, SLOT(canvasDeleted()));
         }
     }
 
     return QSGItem::itemChange(change, value);
-}
-
-void Viewport::canvasDestroyed()
-{
-    d->canvas = 0;
 }
 
 QSGNode* Viewport::updatePaintNode(QSGNode* node, UpdatePaintNodeData* data)
@@ -1372,22 +1824,26 @@ QSGNode* Viewport::updatePaintNode(QSGNode* node, UpdatePaintNodeData* data)
 
 void Viewport::sceneGraphInitialized()
 {
+    // TODO: this function is called from the rendering thread first time thru.
+    // Check to see if there are concurrency issues.  Maybe not since the only
+    // thing that is running at this point is this thread.
+
     // This function is the approved SG spot for getting the initialized scene
     // graph canvas.  Its the earliest point when we can be sure the canvas is
     // properly set up.  Note that it will usually occur well after the main
     // objects have been initialised (when the QSGView is created) and after the
     // initial QML is loaded (which causes the initialisation of specific settings
     // for the render mode).
+    Q_ASSERT(d->canvas);
     if (renderMode() == UnknownRender)
     {
-        Q_ASSERT(d->canvas);
         if (d->canvas->rootItem() != parentItem())
         {
-            qWarning() << "Viewport has parent %1:"
+            qWarning() << "Viewport not the top level item - has parent %1:"
                        << parentItem()->metaObject()->className()
-                       << "so switching to FBO composition.  For direct \'GL Under\' "
-                          "rendering make this viewport the top-level item.  If "
-                          "renderMode property is explicitly set ignore this warning.";
+                       << "- so switching to FBO composition.  For direct \'GL Under\' "
+                          "rendering make this viewport the top-level item or explicitly "
+                          "set the renderMode property.";
             setRenderMode(BufferedRender);
         }
         else
@@ -1395,11 +1851,39 @@ void Viewport::sceneGraphInitialized()
             setRenderMode(DirectRender);
         }
     }
+    QSGEngine* engine = d->canvas->sceneGraphEngine();
+    if (engine)
+    {
+        if (!d->directRenderInitialized && renderMode() == DirectRender)
+        {
+            // this could happen if the call to setRenderMode occurred when there
+            // was no canvas or engine
+            connect((QObject*)engine, SIGNAL(beforeRendering()),
+                    this, SLOT(beforeRendering()), Qt::DirectConnection);
+            engine->setClearBeforeRendering(false);
+            d->directRenderInitialized = true;
+        }
+        if (!d->pickingRenderInitialized && d->picking)
+        {
+            connect(engine, SIGNAL(beforeRendering()),
+                    this, SLOT(objectForPoint()), Qt::DirectConnection);
+            d->pickingRenderInitialized = true;
+        }
+    }
+    else
+    {
+        qmlInfo(this) << tr("Unable to paint 3D items!");
+    }
 }
 
 void Viewport::geometryChanged(const QRectF &newGeometry, const QRectF & /*oldGeometry*/)
 {
     setSize(newGeometry.size());
+}
+
+void Viewport::canvasDeleted()
+{
+    d->canvas = 0;
 }
 
 QT_END_NAMESPACE

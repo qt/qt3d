@@ -41,11 +41,12 @@
 import QtQuick 2.0
 import Qt3D 1.0
 
+
 Viewport {
     width: parent.width
     height: parent.height
     picking: true
-    //showPicking: true
+    renderMode: "DirectRender"
 
     camera: Camera {
         eye: Qt.vector3d(0, 3, 10)

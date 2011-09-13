@@ -13,7 +13,7 @@ Image {
             eye: Qt.vector3d(2,5,20);
         }
 
-//        picking: true
+        picking: true
 
         Cube {
             onClicked: console.log("Cube clicked")
@@ -21,7 +21,11 @@ Image {
                 color: "#aaca00"
             }
         }
+    }
 
+    Text {
+        id: instructionsText
+        text: "Cube + back image. Drag to rotate, click & check log."
     }
 }
 

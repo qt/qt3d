@@ -56,11 +56,13 @@ class QGLCamera;
 class QGLLightModel;
 class QGLLightParameters;
 class QDeclarativeEffect;
+class PickEvent;
 
 class Viewport : public QSGPaintedItem, public QDeclarativeViewport
 {
     Q_OBJECT
     Q_ENUMS(RenderMode)
+    Q_PROPERTY(QColor fillColor READ fillColor WRITE setFillColor NOTIFY viewportChanged)
     Q_PROPERTY(RenderMode renderMode READ renderMode WRITE setRenderMode NOTIFY viewportChanged)
     Q_PROPERTY(bool picking READ picking WRITE setPicking NOTIFY viewportChanged)
     Q_PROPERTY(bool showPicking READ showPicking WRITE setShowPicking NOTIFY viewportChanged)
@@ -80,6 +82,9 @@ public:
 
     Viewport(QSGItem *parent = 0);
     ~Viewport();
+
+    QColor fillColor() const;
+    void setFillColor(const QColor &);
 
     bool picking() const;
     void setPicking(bool value);
@@ -108,8 +113,6 @@ public:
     int registerPickableObject(QObject *obj);
     virtual void registerEarlyDrawObject(QObject *obj, int order);
 
-    Q_INVOKABLE QObject *objectForPoint(qreal x, qreal y);
-
     void paint(QPainter *painter);
 
     RenderMode renderMode() const;
@@ -125,7 +128,8 @@ private Q_SLOTS:
     void cameraChanged();
     void beforeRendering();
     void sceneGraphInitialized();
-    void canvasDestroyed();
+    void objectForPoint();
+    void canvasDeleted();
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
@@ -146,6 +150,17 @@ protected:
 
 private:
     void render(QGLPainter *painter);
+    PickEvent *initiatePick(QGraphicsSceneMouseEvent *);
+    void setupPickPaint(QGLPainter *painter, const QPointF &pt);
+    bool mouseMoveOverflow(QGraphicsSceneMouseEvent *e) const;
+
+    Q_INVOKABLE void processMousePress(quint64 eventId);
+    Q_INVOKABLE void processMouseRelease(quint64);
+    Q_INVOKABLE void processMouseDoubleClick(quint64);
+    Q_INVOKABLE void processMouseMove(quint64);
+    Q_INVOKABLE void processMouseHover(quint64);
+
+    void processNavEvent(QGraphicsSceneMouseEvent *event);
 
     ViewportPrivate *d;
 
@@ -155,15 +170,12 @@ private:
 
     bool hoverEvent(QHoverEvent *event);
 
-    QObject *objectForPoint(const QPointF &pos)
-    {
-        return objectForPoint(pos.x(), pos.y());
-    }
-
     void wheel(qreal delta);
     void pan(qreal deltax, qreal deltay);
     void rotate(qreal deltax, qreal deltay);
     QPointF viewDelta(qreal deltax, qreal deltay);
+
+    static const int FBO_SIZE;
 };
 
 QML_DECLARE_TYPE(Viewport)

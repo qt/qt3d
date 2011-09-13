@@ -59,6 +59,7 @@ Image {
         y: 30
         anchors.fill: parent
         visible: false
+        navigation: false
 
         camera: Camera {
             eye.x: cameraTarget.x

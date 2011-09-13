@@ -137,8 +137,8 @@ Rectangle
                 var y = viewport.height / 2;
                 // Usually succeeds on the first run
 //                console.log("objectForPoint(" + x + "," + y + "): " + viewport.objectForPoint(x,y)  );
-                if (viewport.objectForPoint(x,y) != null)
-                    pickingTestCase.when = true;
+                //if (viewport.objectForPoint(x,y) != null)
+                //    pickingTestCase.when = true;
             }
         }
 
@@ -164,6 +164,7 @@ Rectangle
             property int midY : viewport.height / 2;
             function test_picking() {
                 skip("picking test need porting");
+                /*
                 verify(viewport.objectForPoint(0,0) == fullScreenQuad,
                        "Didn't find full screen quad in top left corner");
                 verify(viewport.objectForPoint(midX,midY) == smallerQuad,
@@ -176,6 +177,7 @@ Rectangle
                 pickTestModel.append({"color":"#ff00ff"});
                 verify(viewport.objectForPoint(midX,midY).color == "#ff00ff",
                        "Didn't find second modelview quad at midpoint");
+                       */
             }
         }
     }
