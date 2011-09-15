@@ -43,7 +43,7 @@
 #define QGRAPHICSEMBEDSCENE_H
 
 #include "qglnamespace.h"
-#include <QtWidgets/qgraphicsscene.h>
+#include <QtGui/qgraphicsscene.h>
 #include <QtOpenGL/qgl.h>
 
 QT_BEGIN_HEADER

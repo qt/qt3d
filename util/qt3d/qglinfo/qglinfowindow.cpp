@@ -46,7 +46,7 @@
 #include "fpswidget.h"
 
 #include <QtOpenGL/qgl.h>
-#include <QtWidgets/qfiledialog.h>
+#include <QtGui/qfiledialog.h>
 #include <QtGui/qfont.h>
 #include <QtCore/qdir.h>
 #include <QtCore/qfile.h>

@@ -387,7 +387,7 @@ bool QGLPainter::begin
     d_ptr->projectionMatrix.setDirty(true);
 
     // Initialize the QOpenGLFunctions parent class.
-    initializeGLFunctions();
+    initializeGLFunctions(context);
 
     // Determine if the OpenGL implementation is fixed-function or not.
     d_ptr->isFixedFunction = !hasOpenGLFeature(QOpenGLFunctions::Shaders);

@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include <QtWidgets/QApplication>
+#include <QtGui/QApplication>
 #include <QtCore/QThread>
 #include "qgltexture2d.h"
 #include "photobrowser3dview.h"

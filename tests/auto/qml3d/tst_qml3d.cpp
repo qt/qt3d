@@ -41,7 +41,7 @@
 
 #include <QApplication>
 #include <QtDeclarative/qdeclarative.h>
-#include <QtQuick1/qdeclarativeview.h>
+#include <QtDeclarative/qdeclarativeview.h>
 #include <QtDeclarative/qdeclarativeengine.h>
 #include <QtDeclarative/qdeclarativecontext.h>
 #include <QtOpenGL/qgl.h>

@@ -42,10 +42,10 @@
 #include "qgraphicsembedscene.h"
 #include "qglnamespace.h"
 #include <QtOpenGL/qglframebufferobject.h>
-#include <QtWidgets/qapplication.h>
+#include <QtGui/qapplication.h>
 #include <QtGui/qpainter.h>
 #include <QtGui/qevent.h>
-#include <QtWidgets/qgraphicssceneevent.h>
+#include <QtGui/qgraphicssceneevent.h>
 #include <QtCore/qdebug.h>
 
 QT_BEGIN_NAMESPACE

@@ -41,7 +41,6 @@
 
 #include <QtTest/QtTest>
 #include "qopenglfunctions.h"
-#include <QtOpenGL>
 
 class tst_QOpenGLFunctions : public QObject
 {

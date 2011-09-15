@@ -48,7 +48,7 @@
 #include <QtCore/qvariant.h>
 #include <QtGui/qvector3d.h>
 
-#include <QtQuick1/qdeclarativeitem.h>
+#include <QtDeclarative/qdeclarativeitem.h>
 
 #include "qglscenenode.h"
 #include "qglpainter.h"

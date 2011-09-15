@@ -43,7 +43,7 @@
 #define QGLGRAPHICSVIEWPORTITEM_H
 
 #include "qglnamespace.h"
-#include <QtWidgets/qgraphicsitem.h>
+#include <QtGui/qgraphicsitem.h>
 
 QT_BEGIN_HEADER
 

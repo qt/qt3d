@@ -42,7 +42,7 @@
 #ifndef QDECLARATIVEVIEW3D_H
 #define QDECLARATIVEVIEW3D_H
 
-#include <QtQuick1/qdeclarativeview.h>
+#include <QtDeclarative/qdeclarativeview.h>
 #include "qt3dquickglobal.h"
 
 QT_BEGIN_HEADER

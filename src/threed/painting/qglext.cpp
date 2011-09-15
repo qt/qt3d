@@ -40,62 +40,48 @@
 ****************************************************************************/
 
 #include "qglext_p.h"
-#include <qopenglfunctions.h>
+#include "qopenglfunctions.h"
 
 // copied private header
 #include "qglextensions_p.h"
-#include <private/qopenglcontext_p.h>
 
 QT_BEGIN_NAMESPACE
 
 #if !defined(QT_OPENGL_ES)
 
-typedef void (QOPENGLF_APIENTRYP q_PFNGLCLIENTACTIVETEXTUREPROC) (GLenum);
+typedef void (QT3D_GLF_APIENTRYP q_PFNGLCLIENTACTIVETEXTUREPROC) (GLenum);
 
-class QGLMultiTextureExtensions : public QOpenGLSharedResource
+class QGLMultiTextureExtensions
 {
 public:
-    QGLMultiTextureExtensions(const QGLContext *ctx)
-        : QOpenGLSharedResource(ctx ? ctx->contextHandle()->shareGroup() : 0)
+    QGLMultiTextureExtensions(const QGLContext * = 0)
     {
-
         clientActiveTexture = 0;
         multiTextureResolved = false;
     }
-    ~QGLMultiTextureExtensions();
-
-    void invalidateResource() {}
-    void freeResource(QOpenGLContext *) {}
 
     q_PFNGLCLIENTACTIVETEXTUREPROC clientActiveTexture;
     bool multiTextureResolved;
 };
 
-
-static QGLMultiTextureExtensions *qt_multitexture_funcs;
-
-QGLMultiTextureExtensions::~QGLMultiTextureExtensions()
-{
-    qt_multitexture_funcs = 0;
-}
+Q_GLOBAL_STATIC(QGLResource<QGLMultiTextureExtensions>, qt_multitexture_funcs)
 
 static QGLMultiTextureExtensions *resolveMultiTextureExtensions
     (const QGLContext *ctx)
 {
-    if (!qt_multitexture_funcs)
-        qt_multitexture_funcs = new QGLMultiTextureExtensions(ctx);
-    if (!(qt_multitexture_funcs->multiTextureResolved)) {
-        qt_multitexture_funcs->multiTextureResolved = true;
-        if (!qt_multitexture_funcs->clientActiveTexture) {
-            qt_multitexture_funcs->clientActiveTexture = (q_PFNGLCLIENTACTIVETEXTUREPROC)
+    QGLMultiTextureExtensions *extn = qt_multitexture_funcs()->value(ctx);
+    if (!(extn->multiTextureResolved)) {
+        extn->multiTextureResolved = true;
+        if (!extn->clientActiveTexture) {
+            extn->clientActiveTexture = (q_PFNGLCLIENTACTIVETEXTUREPROC)
                 ctx->getProcAddress(QLatin1String("glClientActiveTexture"));
         }
-        if (!qt_multitexture_funcs->clientActiveTexture) {
-            qt_multitexture_funcs->clientActiveTexture = (q_PFNGLCLIENTACTIVETEXTUREPROC)
+        if (!extn->clientActiveTexture) {
+            extn->clientActiveTexture = (q_PFNGLCLIENTACTIVETEXTUREPROC)
                 ctx->getProcAddress(QLatin1String("glClientActiveTextureARB"));
         }
     }
-    return qt_multitexture_funcs;
+    return extn;
 }
 
 void qt_gl_ClientActiveTexture(GLenum texture)

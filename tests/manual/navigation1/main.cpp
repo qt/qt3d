@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include <QtWidgets/QApplication>
+#include <QtGui/QApplication>
 #include "qdeclarativeview3d.h"
 
 #include "../../shared/qmlres.h"
