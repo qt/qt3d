@@ -51,17 +51,19 @@
 #include "qglframebufferobjectsurface.h"
 #include "skybox.h"
 
+#include <QtGui/QOpenGLContext>
+
 #include <QtGui/qpainter.h>
-#include <QtGui/qgraphicsview.h>
-#include <QtGui/qgraphicsscene.h>
-#include <QtGui/qgraphicssceneevent.h>
+#include <QtWidgets/qgraphicsview.h>
+#include <QtWidgets/qgraphicsscene.h>
+#include <QtWidgets/qgraphicssceneevent.h>
 #include <QtGui/qevent.h>
 #include <QtOpenGL/qglframebufferobject.h>
 #include <QtCore/qtimer.h>
 #include <QtCore/qcoreapplication.h>
 #include <QtDeclarative/qdeclarativeinfo.h>
-#include <QSGCanvas>
-#include <QSGEngine>
+#include <QtDeclarative/QSGCanvas>
+#include <QtDeclarative/QSGEngine>
 #include <QtOpenGL/qglbuffer.h>
 #include <QtCore/qthread.h>
 #include <QtCore/qmutex.h>
@@ -123,14 +125,14 @@ public:
     }
     QObject *object() { return m_object; }
     void setObject(QObject *o) { m_object = o; }
-    QGraphicsSceneMouseEvent *event() { return m_event; }
-    void setEvent(QGraphicsSceneMouseEvent *e) { m_event = e; }
+    QMouseEvent *event() { return m_event; }
+    void setEvent(QMouseEvent *e) { m_event = e; }
     int callback() const { return m_callback; }
     void setCallback(int callback) { m_callback = callback; }
     quint64 id() const { return m_id; }
 private:
     QObject *m_object;
-    QGraphicsSceneMouseEvent *m_event;
+    QMouseEvent *m_event;
     int m_callback;
     quint64 m_id;
 
@@ -269,7 +271,7 @@ public:
 
     void setDefaults(QGLPainter *painter);
     void setRenderSettings(QGLPainter *painter);
-    void getOverflow(QGraphicsSceneMouseEvent *e);
+    void getOverflow(QMouseEvent *e);
     PickEvent *takeFromRegistry(quint64 id);
 };
 
@@ -823,8 +825,8 @@ void Viewport::beforeRendering()
     if (!isVisible() || !d->needsRepaint)
         return;
 
-    Q_ASSERT(d->canvas && d->canvas->isValid());
-    Q_ASSERT(d->canvas->context() != 0);
+    Q_ASSERT(d->canvas);
+    Q_ASSERT(QOpenGLContext::currentContext() != 0);
 
     QGLPainter painter;
     if (!painter.begin())
@@ -999,15 +1001,10 @@ void Viewport::registerEarlyDrawObject(QObject *obj, int order)
     d->earlyDrawList.insertMulti(order, obj);
 }
 
-PickEvent *Viewport::initiatePick(QGraphicsSceneMouseEvent *pick)
+PickEvent *Viewport::initiatePick(QMouseEvent *pick)
 {
     PickEvent *p = new PickEvent;
-    QGraphicsSceneMouseEvent *copy = new QGraphicsSceneMouseEvent;
-    copy->setScreenPos(pick->screenPos());
-    copy->setButtons(pick->buttons());
-    copy->setButton(pick->button());
-    copy->setModifiers(pick->modifiers());
-    copy->setPos(pick->pos());
+    QMouseEvent *copy = new QMouseEvent(pick->type(), pick->localPos(), pick->screenPos(), pick->button(), pick->buttons(), pick->modifiers());
     p->setEvent(copy);
     {
         QMutexMaybeLocker locker(&d->pickEventQueueLock);
@@ -1205,7 +1202,7 @@ static inline void sendLeaveEvent(QObject *object)
 /*!
     \internal
 */
-void Viewport::mousePressEvent(QGraphicsSceneMouseEvent *e)
+void Viewport::mousePressEvent(QMouseEvent *e)
 {
     static int processMousePressInvocation = -1;
     if (processMousePressInvocation == -1)
@@ -1236,7 +1233,7 @@ void Viewport::processMousePress(quint64 eventId)
     QScopedPointer<PickEvent> pick(d->takeFromRegistry(eventId));
     Q_ASSERT(pick.data());
     QObject *object = pick->object();
-    QGraphicsSceneMouseEvent *e = pick->event();
+    QMouseEvent *e = pick->event();
     if (d->pressedObject)
     {
         // Send the press event to the pressed object.  Use a position
@@ -1267,7 +1264,7 @@ void Viewport::processMousePress(quint64 eventId)
     }
 }
 
-void Viewport::processNavEvent(QGraphicsSceneMouseEvent *e)
+void Viewport::processNavEvent(QMouseEvent *e)
 {
     d->panning = true;
     d->lastPan = d->startPan = e->pos();
@@ -1280,7 +1277,7 @@ void Viewport::processNavEvent(QGraphicsSceneMouseEvent *e)
 /*!
     \internal
 */
-void Viewport::mouseReleaseEvent(QGraphicsSceneMouseEvent *e)
+void Viewport::mouseReleaseEvent(QMouseEvent *e)
 {
     static int processMouseReleaseInvocation = -1;
     if (processMouseReleaseInvocation == -1)
@@ -1307,7 +1304,7 @@ void Viewport::processMouseRelease(quint64 eventId)
     Q_ASSERT(pick.data());
     Q_ASSERT(d->pressedObject);
     QObject *object = pick->object();
-    QGraphicsSceneMouseEvent *e = pick->event();
+    QMouseEvent *e = pick->event();
 
     // Notify the previously pressed object about the release.
     QObject *pressed = d->pressedObject;
@@ -1345,7 +1342,7 @@ void Viewport::processMouseRelease(quint64 eventId)
 /*!
     \internal
 */
-void Viewport::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *e)
+void Viewport::mouseDoubleClickEvent(QMouseEvent *e)
 {
     static int processMouseDoubleClickInvocation = -1;
     if (processMouseDoubleClickInvocation == -1)
@@ -1366,7 +1363,7 @@ void Viewport::processMouseDoubleClick(quint64 eventId)
     QScopedPointer<PickEvent> pick(d->takeFromRegistry(eventId));
     Q_ASSERT(pick.data());
     QObject *object = pick->object();
-    QGraphicsSceneMouseEvent *e = pick->event();
+    QMouseEvent *e = pick->event();
     if (object) {
         // Simulate a double click event for (0, 0).
         QMouseEvent event
@@ -1385,7 +1382,7 @@ void Viewport::processMouseDoubleClick(quint64 eventId)
     3 pixels.  If there are no previous events, or if the most recent event
     was not a move, then false is returned.
 */
-bool Viewport::mouseMoveOverflow(QGraphicsSceneMouseEvent *e) const
+bool Viewport::mouseMoveOverflow(QMouseEvent *e) const
 {
     bool result = false;
     QMutexMaybeLocker locker(&d->pickEventQueueLock);
@@ -1409,7 +1406,7 @@ bool Viewport::mouseMoveOverflow(QGraphicsSceneMouseEvent *e) const
 /*!
     \internal
 */
-void Viewport::mouseMoveEvent(QGraphicsSceneMouseEvent *e)
+void Viewport::mouseMoveEvent(QMouseEvent *e)
 {
     static int processMouseMoveInvocation = -1;
     if (processMouseMoveInvocation == -1)
@@ -1454,7 +1451,7 @@ void Viewport::processMouseMove(quint64 eventId)
     QScopedPointer<PickEvent> pick(d->takeFromRegistry(eventId));
     Q_ASSERT(pick.data());
     QObject *object = pick->object();
-    QGraphicsSceneMouseEvent *e = pick->event();
+    QMouseEvent *e = pick->event();
     if (d->pressedObject) {
         // Send the move event to the pressed object.  Use a position
         // of (0, 0) if the mouse is still within the pressed object,
@@ -1620,8 +1617,7 @@ bool Viewport::hoverEvent(QHoverEvent *e)
         Q_ASSERT(processMouseHoverInvocation != -1);
     }
     if (!d->panning && d->picking) {
-        QGraphicsSceneMouseEvent ev;
-        ev.setPos(e->posF());
+        QMouseEvent ev(QMouseEvent::MouseButtonPress, e->posF(), Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
         if (!mouseMoveOverflow(&ev))
         {
             PickEvent *p = initiatePick(&ev);
@@ -1638,7 +1634,7 @@ void Viewport::processMouseHover(quint64 eventId)
     QScopedPointer<PickEvent> pick(d->takeFromRegistry(eventId));
     Q_ASSERT(pick.data());
     QObject *object = pick->object();
-    QGraphicsSceneMouseEvent *e = pick->event();
+    QMouseEvent *e = pick->event();
 
     if (d->pressedObject) {
         // Send the move event to the pressed object.  Use a position

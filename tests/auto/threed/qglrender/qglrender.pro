@@ -4,3 +4,4 @@ QT += testlib
 CONFIG += unittest warn_on qt3d
 
 SOURCES += tst_qglrender.cpp
+QT+=widgets

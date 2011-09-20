@@ -48,7 +48,7 @@
 #include "qray3d.h"
 #include <QtGui/qevent.h>
 #include <QtCore/qmap.h>
-#include <QtGui/qapplication.h>
+#include <QtWidgets/qapplication.h>
 #include <QtCore/qtimer.h>
 #include <QtCore/qdatetime.h>
 #include <QtCore/qdebug.h>

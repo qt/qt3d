@@ -42,7 +42,9 @@
 #define QMLRES_H
 
 #include <QtCore/qdir.h>
-#include <QtCore/qcoreapplication.h>
+
+#include <QtGui/QGuiApplication>
+#include <QtDeclarative/qsgview.h>
 
 #include <QtCore/qdebug.h>
 
@@ -94,7 +96,7 @@ static QString q_get_qmldir(const QString &name)
         else
         {
             // for Windows (pkg & dev), and for Linux dev expect to find it
-            // in a "resources" directory next to the binary            
+            // in a "resources" directory next to the binary
             if (dir.cd(QLatin1String("resources")) && dir.exists())
             {
                 app = QDir::toNativeSeparators(app);
@@ -108,8 +110,8 @@ static QString q_get_qmldir(const QString &name)
                 app = app.section(QDir::separator(), -1);
 
                 if (dir.cd(QLatin1String("examples")) && dir.cd(app) && dir.exists())
-                {                    
-                    qml = dir.filePath(qml);                    
+                {
+                    qml = dir.filePath(qml);
                 }
                 else
                 {
@@ -123,5 +125,25 @@ static QString q_get_qmldir(const QString &name)
     }
     return qml;
 }
+
+#define QUICK3D_EXAMPLE_MAIN(file)                                                      \
+int main(int argc, char *argv[])                                                        \
+{                                                                                       \
+    QGuiApplication app(argc, argv);                                                    \
+    QSurfaceFormat f;                                                                   \
+    f.setSamples(16);                                                                   \
+    QSGView view;                                                                       \
+    view.setFormat(f);                                                                  \
+    QString qml = q_get_qmldir(QLatin1String("qml/desktop.qml"));                       \
+    view.setSource(QUrl::fromLocalFile(qml));                                           \
+    if (QGuiApplication::arguments().contains(QLatin1String("-maximize")))              \
+        view.showMaximized();                                                           \
+    else if (QGuiApplication::arguments().contains(QLatin1String("-fullscreen")))       \
+        view.showFullScreen();                                                          \
+    else                                                                                \
+        view.show();                                                                    \
+    return app.exec();                                                                  \
+}                                                                                       \
+
 
 #endif // QMLRES_H

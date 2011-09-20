@@ -43,7 +43,7 @@
 #include "qglpainter.h"
 #include "qglsubsurface.h"
 #include <QtGui/qpainter.h>
-#include <QtGui/qgraphicsscene.h>
+#include <QtWidgets/qgraphicsscene.h>
 
 QT_BEGIN_NAMESPACE
 

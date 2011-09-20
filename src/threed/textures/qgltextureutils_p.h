@@ -59,6 +59,8 @@
 #include "qopenglfunctions.h"
 #include "qglsharedresource_p.h"
 
+#include <private/qopenglcontext_p.h>
+
 QT_BEGIN_NAMESPACE
 
 #ifndef GL_BGRA
@@ -96,10 +98,10 @@ QT_BEGIN_NAMESPACE
 // Modify a wrapping mode to account for platform differences.
 QGL::TextureWrap qt_gl_modify_texture_wrap(QGL::TextureWrap value);
 
-typedef void (QT3D_GLF_APIENTRYP q_glCompressedTexImage2DARB)
+typedef void (QOPENGLF_APIENTRYP q_glCompressedTexImage2DARB)
     (GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLsizei, const GLvoid *);
 
-class QGLTextureExtensions
+class QGLTextureExtensions : public QOpenGLSharedResource
 {
 public:
     QGLTextureExtensions(const QGLContext *ctx);
@@ -114,6 +116,10 @@ public:
     q_glCompressedTexImage2DARB compressedTexImage2D;
 
     static QGLTextureExtensions *extensions();
+
+    void invalidateResource() {}
+    void freeResource(QOpenGLContext *context) {}
+
 };
 
 class QGLBoundTexture

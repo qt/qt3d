@@ -5,3 +5,4 @@ CONFIG += unittest warn_on qt3d
 
 INCLUDEPATH += ../../../shared
 SOURCES += tst_qglscenenode.cpp
+QT+=widgets

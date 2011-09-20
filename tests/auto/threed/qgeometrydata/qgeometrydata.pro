@@ -7,3 +7,4 @@ INCLUDEPATH += ../../../shared
 INCLUDEPATH += ../../../../src/threed/geometry
 
 SOURCES += tst_qgeometrydata.cpp
+QT+=widgets

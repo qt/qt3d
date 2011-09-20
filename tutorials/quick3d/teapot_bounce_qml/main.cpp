@@ -39,24 +39,27 @@
 **
 ****************************************************************************/
 
-#include <QtGui/QApplication>
+#include <QtGui/QGuiApplication>
 #include <QtDeclarative/qsgview.h>
 
 #include "../qmlres.h"
 
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
+    QGuiApplication app(argc, argv);
 
-    QGLFormat f = QGLFormat::defaultFormat();
-    f.setSampleBuffers(true);
-    QSGView view(f);
-    QString qml = q_get_qmldir(QLatin1String("qml/teapot-bounce.qml"));
+    QSurfaceFormat f;
+    f.setSamples(16);
+
+    QSGView view;
+    view.setFormat(f);
+
+    QString qml = q_get_qmldir(QLatin1String("qml/bounce-teapot.qml"));
     view.setSource(QUrl::fromLocalFile(qml));
 
-    if (QApplication::arguments().contains(QLatin1String("-maximize")))
+    if (QGuiApplication::arguments().contains(QLatin1String("-maximize")))
         view.showMaximized();
-    else if (QApplication::arguments().contains(QLatin1String("-fullscreen")))
+    else if (QGuiApplication::arguments().contains(QLatin1String("-fullscreen")))
         view.showFullScreen();
     else
         view.show();

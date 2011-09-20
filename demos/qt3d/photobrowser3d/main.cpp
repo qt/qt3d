@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 #include <QtCore/QThread>
 
 #include "photobrowser3dview.h"

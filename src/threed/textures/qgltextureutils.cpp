@@ -42,6 +42,7 @@
 #include "qgltextureutils_p.h"
 #include "qglext_p.h"
 #include <QtCore/qfile.h>
+#include <private/qopenglcontext_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -88,7 +89,8 @@ QGL::TextureWrap qt_gl_modify_texture_wrap(QGL::TextureWrap value)
 }
 
 QGLTextureExtensions::QGLTextureExtensions(const QGLContext *ctx)
-    : npotTextures(false)
+    : QOpenGLSharedResource(ctx->contextHandle()->shareGroup())
+    , npotTextures(false)
     , generateMipmap(false)
     , bgraTextureFormat(false)
     , ddsTextureCompression(false)
@@ -122,20 +124,26 @@ QGLTextureExtensions::QGLTextureExtensions(const QGLContext *ctx)
 #else
     compressedTexImage2D = glCompressedTexImage2D;
 #endif
+
 }
+
+static QGLTextureExtensions *qt_gl_texture_extensions;
 
 QGLTextureExtensions::~QGLTextureExtensions()
 {
+    qt_gl_texture_extensions = 0;
 }
 
-Q_GLOBAL_STATIC(QGLResource<QGLTextureExtensions>, qt_gl_texture_extensions)
+
 
 QGLTextureExtensions *QGLTextureExtensions::extensions()
 {
     const QGLContext *ctx = QGLContext::currentContext();
     if (!ctx)
         return 0;
-    return qt_gl_texture_extensions()->value(ctx);
+    if (!qt_gl_texture_extensions)
+        qt_gl_texture_extensions = new QGLTextureExtensions(ctx);
+    return qt_gl_texture_extensions;
 }
 
 static void qt_gl_destroyTextureId(GLuint id)

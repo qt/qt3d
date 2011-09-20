@@ -43,7 +43,8 @@
 #define QMLRES_H
 
 #include <QtCore/qdir.h>
-#include <QtCore/qcoreapplication.h>
+#include <QtGui/QGuiApplication>
+#include <QtDeclarative/QSGView>
 
 #include <QtCore/qdebug.h>
 
@@ -125,5 +126,25 @@ static QString q_get_qmldir(const QString &name)
     }
     return qml;
 }
+
+#define QUICK3D_EXAMPLE_MAIN(file)                                                      \
+int main(int argc, char *argv[])                                                        \
+{                                                                                       \
+    QGuiApplication app(argc, argv);                                                    \
+    QSurfaceFormat f;                                                                   \
+    f.setSamples(16);                                                                   \
+    QSGView view;                                                                       \
+    view.setFormat(f);                                                                  \
+    QString qml = q_get_qmldir(QLatin1String(file));                                    \
+    view.setSource(QUrl::fromLocalFile(qml));                                           \
+    if (QGuiApplication::arguments().contains(QLatin1String("-maximize")))              \
+        view.showMaximized();                                                           \
+    else if (QGuiApplication::arguments().contains(QLatin1String("-fullscreen")))       \
+        view.showFullScreen();                                                          \
+    else                                                                                \
+        view.show();                                                                    \
+    return app.exec();                                                                  \
+}                                                                                       \
+
 
 #endif // QMLRES_H

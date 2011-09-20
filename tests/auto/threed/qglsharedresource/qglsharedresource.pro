@@ -8,3 +8,4 @@ VPATH += ../../../../src/threed/textures
 
 HEADERS += qglsharedresource_p.h
 SOURCES += tst_qglsharedresource.cpp qglsharedresource.cpp
+QT+=widgets

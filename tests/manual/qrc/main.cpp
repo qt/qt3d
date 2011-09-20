@@ -39,31 +39,30 @@
 **
 ****************************************************************************/
 
-#include <QtGui/QApplication>
-#include <QWidget>
-#include <QHBoxLayout>
+#include <QtGui/QGuiApplication>
 #include <QtDeclarative/qsgview.h>
 
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
+    QGuiApplication app(argc, argv);
 
-    QGLFormat f = QGLFormat::defaultFormat();
-    f.setSampleBuffers(true);
-    QSGView viewL(f);
-    QWidget widget;
-    QHBoxLayout layout;
+    QSurfaceFormat format;
+    format.setSamples(16);
 
+    QWindow root;
+    root.resize(640 * 2, 480);
+
+    QSGView viewL(&root);
+    viewL.setFormat(format);
     viewL.setSource(QUrl("qrc:///qml/cube.qml"));
-    layout.addWidget(&viewL);
+    viewL.setGeometry(0, 0, 640, 480);
 
-    QSGView viewR(f);
+    QSGView viewR(&root);
+    viewR.setFormat(format);
     viewR.setSource(QUrl("Qrc:/qml/cube.qml"));
+    viewR.setGeometry(640, 0, 640, 480);
 
-    layout.addWidget(&viewR);
-
-    widget.setLayout(&layout);
-    widget.show();
+    root.show();
 
     return app.exec();
 }

@@ -132,10 +132,10 @@ private Q_SLOTS:
     void canvasDeleted();
 
 protected:
-    void mousePressEvent(QGraphicsSceneMouseEvent *event);
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
-    void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+    void mouseDoubleClickEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
     void hoverEnterEvent(QHoverEvent *event);
     void hoverMoveEvent(QHoverEvent *event);
     void hoverLeaveEvent(QHoverEvent *event);
@@ -150,9 +150,9 @@ protected:
 
 private:
     void render(QGLPainter *painter);
-    PickEvent *initiatePick(QGraphicsSceneMouseEvent *);
+    PickEvent *initiatePick(QMouseEvent *);
     void setupPickPaint(QGLPainter *painter, const QPointF &pt);
-    bool mouseMoveOverflow(QGraphicsSceneMouseEvent *e) const;
+    bool mouseMoveOverflow(QMouseEvent *e) const;
 
     Q_INVOKABLE void processMousePress(quint64 eventId);
     Q_INVOKABLE void processMouseRelease(quint64);
@@ -160,7 +160,7 @@ private:
     Q_INVOKABLE void processMouseMove(quint64);
     Q_INVOKABLE void processMouseHover(quint64);
 
-    void processNavEvent(QGraphicsSceneMouseEvent *event);
+    void processNavEvent(QMouseEvent *event);
 
     ViewportPrivate *d;
 

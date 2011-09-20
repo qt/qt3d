@@ -39,27 +39,6 @@
 **
 ****************************************************************************/
 
-#include <QtGui/QApplication>
-#include <QtDeclarative/qsgview.h>
-
 #include "../../shared/qmlres.h"
 
-int main(int argc, char *argv[])
-{
-    QApplication app(argc, argv);
-
-    QGLFormat f = QGLFormat::defaultFormat();
-    f.setSampleBuffers(true);
-    QSGView view(f);
-    QString qml = q_get_qmldir(QLatin1String("qml/tst_model3ds.qml"));
-    view.setSource(QUrl::fromLocalFile(qml));
-
-    if (QApplication::arguments().contains(QLatin1String("-maximize")))
-        view.showMaximized();
-    else if (QApplication::arguments().contains(QLatin1String("-fullscreen")))
-        view.showFullScreen();
-    else
-        view.show();
-
-    return app.exec();
-}
+QUICK3D_EXAMPLE_MAIN("qml/tst_model3ds.qml")

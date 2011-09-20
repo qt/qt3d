@@ -13,3 +13,4 @@ SOURCES += tst_qglpainter.cpp \
 HEADERS += qgltestwidget.h \
            compareimage.h \
            qglsimulator.h
+QT+=widgets
