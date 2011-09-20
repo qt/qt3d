@@ -751,9 +751,15 @@ void QGLShaderProgramEffect::setActive(QGLPainter *painter, bool flag)
         d->haveLights =
             (d->program->uniformLocation("qt_Lights[0].position") != -1);
         d->haveMaterial =
-            (d->program->uniformLocation("qt_Material.diffuse") != -1);
+                (d->program->uniformLocation("qt_Material.ambient") != -1) ||
+                (d->program->uniformLocation("qt_Material.diffuse") != -1) ||
+                (d->program->uniformLocation("qt_Material.specular") != -1) ||
+                (d->program->uniformLocation("qt_Material.emission") != -1);
         d->haveMaterials =
-            (d->program->uniformLocation("qt_Materials[0].diffuse") != -1);
+            (d->program->uniformLocation("qt_Material[0].ambient") != -1) ||
+            (d->program->uniformLocation("qt_Material[0].diffuse") != -1) ||
+            (d->program->uniformLocation("qt_Material[0].specular") != -1) ||
+            (d->program->uniformLocation("qt_Material[0].emission") != -1);
     }
     if (flag) {
         d->program->bind();
