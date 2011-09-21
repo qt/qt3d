@@ -423,7 +423,7 @@ void QAiLoader::loadTextures(aiMaterial *ma, QGLMaterial *mq)
             if (texCount && texType != aiTextureType_DIFFUSE)
             {
                 QString error = QLatin1String("Unsupported texture type \"%1\" in material \"%2\".");
-                error.arg(typeNames[i]).arg(mq->objectName());
+                error = error.arg(typeNames[i]).arg(mq->objectName());
                 Assimp::DefaultLogger::get()->warn(error.toStdString());
             }
         }
