@@ -46,6 +46,7 @@
 #include "qglsubsurface.h"
 #include "qglwidgetsurface.h"
 #include <QtGui/qpaintdevice.h>
+#include <QtDebug>
 
 QT_BEGIN_NAMESPACE
 
@@ -277,7 +278,11 @@ bool QGLAbstractSurface::switchTo(QGLAbstractSurface *nextSurface)
 QGLAbstractSurface *QGLAbstractSurface::createSurfaceForDevice
     (QPaintDevice *device)
 {
-    Q_ASSERT(device);
+    if(!device)
+    {
+        qWarning() << "Unable to create a surface for device " << device;
+        return 0;
+    }
     switch (device->devType()) {
     case QInternal::Widget: {
         QGLWidget *glw = qobject_cast<QGLWidget *>
