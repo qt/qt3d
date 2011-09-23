@@ -61,6 +61,8 @@
 #include "shaderprogram.h"
 #include "qt3dnamespace.h"
 
+#include "billboarditem3d.h"
+
 QT_BEGIN_NAMESPACE
 
 QML_DECLARE_TYPE(QGraphicsTransform3D)
@@ -98,6 +100,7 @@ public:
         qmlRegisterType<QGLTexture2D>(uri,1,0,"Texture2D");
         qmlRegisterType<ShaderProgram>(uri,1,0,"ShaderProgram");
         qmlRegisterType<Skybox>(uri, 1, 0, "Skybox");
+        qmlRegisterType<BillboardItem3D>(uri, 1, 0, "BillboardItem3D");
 
         qmlRegisterType<Viewport>(uri,1,0,"Viewport");
 

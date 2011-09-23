@@ -1013,47 +1013,91 @@ void QDeclarativeItem3D::setSortChildren(QDeclarativeItem3D::SortMode mode)
 
 /*!
     \internal
-    Performs the actual drawing of the Item3D using \a painter.
+    Sets the lighting conditions for this item on the \a painter.  The parameters \a currentLight and \a currentLightTransform
+    are used to store the current lighting parameters and transforms so that they can be reset on cleanup.
 
-    If the item is set to object picking mode this includes all of the infrastructure needed
-    to support picking of objects.
+    After drawing has finished the drawLightingCleanup() function should be called to restore previous settings.
 
-    The basic premise of the draw function should be familiar to users of OpenGL or similar
-    graphics libraries.  Essentially it is a stepwise progress through the following stages:
-
-    \list
-    \i 1. Iterate through the child objects of the item and set all lighting parameters found.
-    \i 2. Set up culling mode in the painter.
-    \i 3. Set effects if they exist.
-    \i 4. Set all local model view transformations for this item.
-    \i 5. Draw this item.
-    \i 6. Iterate through the child objects of the item and draw all child items.
-    \i 7. Unset the appropriate parameters and states.
-    \endlist
-
-    \sa drawItem()
+    \sa drawLightingCleanup(), draw()
 */
-
-void QDeclarativeItem3D::draw(QGLPainter *painter)
+void QDeclarativeItem3D::drawLightingSetup(QGLPainter *painter, const QGLLightParameters *currentLight, QMatrix4x4 &currentLightTransform)
 {
-    // Bail out if this item and its children have been disabled.
-    if (!d->isEnabled)
-        return;
-    if (!d->isInitialized)
-        initialize(painter);
-
-    int prevId = painter->objectPickId();
-    painter->setObjectPickId(d->objectPickId);
-
     //Lighting
-    const QGLLightParameters *currentLight = 0;
-    QMatrix4x4 currentLightTransform;
     if (d->light) {
         currentLight = painter->mainLight();
         currentLightTransform = painter->mainLightTransform();
         painter->setMainLight(d->light);
     }
+}
 
+/*!
+    \internal
+    Restores the lighting conditions for \a painter to the \a currentLight and \a currentLightTransform.  These values are usually
+    provided by an earlier call to drawLightingSetup().
+
+    \sa drawLightingSetup(), draw()
+*/
+void QDeclarativeItem3D::drawLightingCleanup(QGLPainter *painter, const QGLLightParameters *currentLight, QMatrix4x4 &currentLightTransform)
+{
+    if (d->light)
+        painter->setMainLight(currentLight, currentLightTransform);
+}
+
+/*!
+    \internal
+    Sets the effects for this item on the \a painter.  The parameters \a viewportBlend and \a effectBlend
+    are used to store the current blending parameters so that they can be reset on cleanup.
+
+    After drawing has finished the drawEffectCleanup() function should be called to restore previous settings.
+
+    \sa drawLightingCleanup(), draw()
+*/
+void QDeclarativeItem3D::drawEffectSetup(QGLPainter *painter, bool &viewportBlend, bool &effectBlend)
+{
+    // Blending change for the effect.
+    viewportBlend = d->viewport ? d->viewport->blending() : false;
+    effectBlend = d->effect ? d->effect->blending() : viewportBlend;
+    if (viewportBlend != effectBlend) {
+        if (effectBlend)
+            glEnable(GL_BLEND);
+        else
+            glDisable(GL_BLEND);
+    }
+
+    //Effects
+    if (d->effect)
+        d->effect->enableEffect(painter);
+}
+
+/*!
+    \internal
+    Restores the blending settings for \a painter to the \a viewportBlend and \a effectBlend.  These values are usually
+    provided by an earlier call to drawEffectSetup().
+
+    \sa drawEffectSetup(), draw()
+*/
+void QDeclarativeItem3D::drawEffectCleanup(QGLPainter *painter, bool &viewportBlend, bool &effectBlend)
+{
+    if (d->effect)
+        d->effect->disableEffect(painter);
+    if (viewportBlend != effectBlend) {
+        if (effectBlend)
+            glDisable(GL_BLEND);
+        else
+            glEnable(GL_BLEND);
+    }
+}
+
+/*!
+    \internal
+    Sets the culling settings for this item.
+
+    After drawing has finished the drawCullCleanup() function should be called to restore previous settings.
+
+    \sa drawCullCleanup(), draw()
+*/
+void QDeclarativeItem3D::drawCullSetup()
+{
     //Culling
     if ((d->cullFaces & ~CullClockwise) == CullDisabled) {
         glDisable(GL_CULL_FACE);
@@ -1066,30 +1110,57 @@ void QDeclarativeItem3D::draw(QGLPainter *painter)
         glCullFace(GLenum(d->cullFaces));
         glEnable(GL_CULL_FACE);
     }
+}
 
-    // Blending change for the effect.
-    bool viewportBlend = d->viewport ? d->viewport->blending() : false;
-    bool effectBlend = d->effect ? d->effect->blending() : viewportBlend;
-    if (viewportBlend != effectBlend) {
-        if (effectBlend)
-            glEnable(GL_BLEND);
-        else
-            glDisable(GL_BLEND);
-    }
+/*!
+    \internal
+    Restores the culling settings after an earlier call to drawCullSetup().
 
-    //Effects
-    if (d->effect)
-        d->effect->enableEffect(painter);
+    \sa drawCullSetup(), draw()
+*/
+void QDeclarativeItem3D::drawCullCleanup()
+{
+    if (d->cullFaces != CullDisabled)
+        glDisable(GL_CULL_FACE);
+}
 
+/*!
+    \internal
+    Applies the transforms for this item on the \a painter.
+
+    After drawing has finished the drawTransformCleanup() function should be called to restore previous settings.
+
+    \sa drawTransformCleanup(), draw()
+*/
+void QDeclarativeItem3D::drawTransformSetup(QGLPainter *painter)
+{
     //Local and Global transforms
-
-    //1) Item Transforms
     painter->modelViewMatrix().push();
     painter->modelViewMatrix() *= d->localTransforms();
+}
 
-    //Drawing
-    drawItem(painter);
+/*!
+    \internal
+    Restores the previous model-view matrix settings for \a painter after an earlier call to drawTransformSetup().
 
+    \sa drawTransformSetup(), draw()
+*/
+void QDeclarativeItem3D::drawTransformCleanup(QGLPainter *painter)
+{
+    //Unset parameters for transforms, effects etc.
+    painter->modelViewMatrix().pop();
+}
+
+/*!
+    \internal
+    Iterate through all of the child items for the current item and call their drawing functions.  Children will
+    be drawn in the order specified unless specified by sortChildren(), in which case they will be drawn in the
+    order specified (usually this will be back-to-front, to allow for transparency of objects).
+
+    \sa sortMode(), draw()
+*/
+void QDeclarativeItem3D::drawChildren(QGLPainter *painter)
+{
     // Find all 3d children for drawing
     QList<QDeclarativeItem3D *> list;;
     foreach (QObject* o, children())
@@ -1121,22 +1192,66 @@ void QDeclarativeItem3D::draw(QGLPainter *painter)
     }
     for (int index = 0; index < list.size(); ++index)
         list.at(index)->draw(painter);
+}
 
-    //Unset parameters for transforms, effects etc.
-    painter->modelViewMatrix().pop();
+/*!
+    \internal
+    Performs the actual drawing of the Item3D using \a painter.
 
-    if (d->effect)
-        d->effect->disableEffect(painter);
-    if (viewportBlend != effectBlend) {
-        if (effectBlend)
-            glDisable(GL_BLEND);
-        else
-            glEnable(GL_BLEND);
-    }
-    if (d->cullFaces != CullDisabled)
-        glDisable(GL_CULL_FACE);
-    if (d->light)
-        painter->setMainLight(currentLight, currentLightTransform);
+    If the item is set to object picking mode this includes all of the infrastructure needed
+    to support picking of objects.
+
+    The basic premise of the draw function should be familiar to users of OpenGL or similar
+    graphics libraries.  Essentially it is a stepwise progress through the following stages:
+
+    \list
+    \i 1. Iterate through the child objects of the item and set all lighting parameters found.
+    \i 2. Set up culling mode in the painter.
+    \i 3. Set effects if they exist.
+    \i 4. Set all local model view transformations for this item.
+    \i 5. Draw this item.
+    \i 6. Iterate through the child objects of the item and draw all child items.
+    \i 7. Unset the appropriate parameters and states.
+    \endlist
+
+
+
+    \sa drawItem(), drawLightingSetup(), drawCullSetup(), drawEffectSetup(), drawChildren(), drawTransformSetup()
+*/
+void QDeclarativeItem3D::draw(QGLPainter *painter)
+{
+    // Bail out if this item and its children have been disabled.
+    if (!d->isEnabled)
+        return;
+    if (!d->isInitialized)
+        initialize(painter);
+
+    //Setup picking
+    int prevId = painter->objectPickId();
+    painter->setObjectPickId(d->objectPickId);
+
+    //Setup effect (lighting, culling, effects etc)
+    const QGLLightParameters *currentLight = 0;
+    QMatrix4x4 currentLightTransform;
+    drawLightingSetup(painter, currentLight, currentLightTransform);
+    bool viewportBlend, effectBlend;
+    drawEffectSetup(painter, viewportBlend, effectBlend);
+    drawCullSetup();
+
+    //Local and Global transforms
+    drawTransformSetup(painter);
+
+    //Drawing
+    drawItem(painter);
+    drawChildren(painter);
+
+    //Cleanup
+    drawTransformCleanup(painter);
+    drawLightingCleanup(painter, currentLight, currentLightTransform);
+    drawEffectCleanup(painter, viewportBlend, effectBlend);
+    drawCullCleanup();
+
+    //Reset pick id.
     painter->setObjectPickId(prevId);
 }
 
@@ -1202,6 +1317,17 @@ void QDeclarativeItem3D::initialize(QGLPainter *painter)
     }
     d->isInitialized = true;
 }
+
+/*!
+    Returns true if the initialize() has been called, returns false otherwise.
+
+    \sa initialize()
+*/
+bool QDeclarativeItem3D::isInitialized() const
+{
+    return d->isInitialized;
+}
+
 
 void QDeclarativeItem3D::componentComplete()
 {
@@ -1418,6 +1544,14 @@ void QDeclarativeItem3D::setEnabled(bool value)
         d->isEnabled = value;
         emit enabledChanged();
     }
+}
+
+/*!
+  Returns the unique pick ID for this item.
+*/
+int QDeclarativeItem3D::objectPickId() const
+{
+    return d->objectPickId;
 }
 
 /*!

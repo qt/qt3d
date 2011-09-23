@@ -27,7 +27,8 @@ SOURCES += \
     viewport.cpp \
     qgraphicslookattransform.cpp \
     shaderprogram.cpp \
-    skybox.cpp
+    skybox.cpp \
+    billboarditem3d.cpp
 
 HEADERS += \
     qt3dnamespace.h \
@@ -36,7 +37,8 @@ HEADERS += \
     qgraphicslookattransform.h \
     shaderprogram.h \
     shaderprogram_p.h \
-    skybox.h
+    skybox.h \
+    billboarditem3d.h
 
 # See the file README.library_xml for more on this
 qdeclarativesources.files += \
@@ -59,3 +61,5 @@ qdeclarativesources.files += \
 OTHER_FILES += \
     README.plugins_types \
     README.library_xml
+
+

@@ -153,17 +153,34 @@ public:
 
     virtual void draw(QGLPainter *painter);
     virtual void initialize(QGLPainter *painter);
+    bool isInitialized() const;
 
     Q_INVOKABLE QVector3D localToWorld(const QVector3D &point = QVector3D()) const;
     Q_INVOKABLE QVector3D worldToLocal(const QVector3D &point = QVector3D()) const;
 
     void componentComplete();
 
+    int objectPickId() const;
+
 public Q_SLOTS:
     void update();
 
 protected:
+    virtual void drawLightingSetup(QGLPainter *painter, const QGLLightParameters *currentLight, QMatrix4x4 &currentLightTransform);
+    virtual void drawLightingCleanup(QGLPainter *painter, const QGLLightParameters *currentLight, QMatrix4x4 &currentLightTransform);
+
+    virtual void drawCullSetup();
+    virtual void drawCullCleanup();
+
+    virtual void drawEffectSetup(QGLPainter *painter, bool &viewportBlend, bool &effectBlend);
+    virtual void drawEffectCleanup(QGLPainter *painter, bool &viewportBlend, bool &effectBlend);
+
+    virtual void drawChildren(QGLPainter *painter);
     virtual void drawItem(QGLPainter *painter);
+
+    virtual void drawTransformSetup(QGLPainter *painter);
+    virtual void drawTransformCleanup(QGLPainter *painter);
+
     bool event(QEvent *e);
 
 Q_SIGNALS:
