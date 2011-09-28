@@ -511,13 +511,6 @@ QMatrix4x4 QDeclarativeItem3DPrivate::localTransforms() const
     }
     if (scale != 1.0f)
         m.scale(scale);
-    transformCount = pretransforms.count();
-    if (transformCount>0) {
-        // Pre-transforms for orienting the model.
-        for (int index = transformCount - 1; index >= 0; --index) {
-            pretransforms.at(index)->applyTo(&m);
-        }
-    }
     return m;
 }
 
@@ -1364,12 +1357,33 @@ void QDeclarativeItem3D::componentComplete()
     \internal
     The \c drawItem function performs the actual drawing of the mesh branch which corresponds
     to the section of the mesh being drawn by the \l Item3D to a specific \a painter.
+
+    This function does perform one transform - the pretransform, which is usually used to
+    rotate the item to give it the correct initial spatial orientation.
+
+    \sa pretransform()
 */
 void QDeclarativeItem3D::drawItem(QGLPainter *painter)
 {
+    int transformCount = d->pretransforms.count();
+    if (transformCount>0) {
+        painter->modelViewMatrix().push();
+
+        QMatrix4x4 *m = const_cast<QMatrix4x4 *>(&painter->modelViewMatrix().top());
+
+        // Pre-transforms for orienting the model.
+        for (int index = transformCount - 1; index >= 0; --index) {
+            d->pretransforms.at(index)->applyTo(m);
+        }
+    }
+
     if (d->mesh)
     {
         d->mesh->draw(painter, d->mainBranchId);
+    }
+
+    if (transformCount>0) {
+        painter->modelViewMatrix().pop();
     }
 }
 
