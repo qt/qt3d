@@ -1292,6 +1292,18 @@ void QDeclarativeItem3D::initialize(QGLPainter *painter)
 
     d->objectPickId = d->viewport->registerPickableObject(this);
 
+    //Setup mesh sub-nodes if possible.
+    if (mesh() && !meshNode().isEmpty()) {
+        int branchNumber = mesh()->createSceneBranch(meshNode());
+        if (branchNumber>=0) {
+            d->mainBranchId = branchNumber;
+        }
+        else {
+            qWarning()<< "3D item initialization failed: unable to find the specified mesh-node. Defaulting to default node.";
+            d->mainBranchId = 0;
+        }
+    }
+
     for (int index = 0; index < children().size(); ++index) {
         QDeclarativeItem3D *item = qobject_cast<QDeclarativeItem3D *>(children().at(index));
         if (item) {
@@ -1334,9 +1346,8 @@ void QDeclarativeItem3D::componentComplete()
 {
     QDeclarativeItem::componentComplete();
     d->componentComplete = true;
-
-    // Now that we have all the mesh and subnode information we need, it's time to setup the mesh scene objects.
-    if (mesh() && !meshNode().isEmpty()) {
+    // Now that we have all the mesh and subnode information we need, if we haven't already, then it's time to setup the mesh scene objects.
+    if (mesh() && !meshNode().isEmpty() && d->mainBranchId==0) {
         int branchNumber = mesh()->createSceneBranch(meshNode());
         if (branchNumber>=0) {
             d->mainBranchId = branchNumber;
