@@ -81,21 +81,11 @@
     the Mesh,
 
     \code
-    Effect {}
+    Mesh {source: "model.obj"}
     \endcode
 
-    More complex effects use the usual QML syntax for accessing and updating properties.  In order to specify
-    a texture, for example, the following could be used:
-
-    \code
-    Effect {
-        id: myTextureEffect
-        texture: "texture.png"
-    }
-    \endcode
-
-    For objects loaded from the network week can wait for an "onLoaded" signal in QML (from the loaded() signal
-    in the Mesh class) before performing specific actions.  For example:
+    For objects loaded from the network we can wait for an "onLoaded" signal in QML (from the
+    loaded() signal in the Mesh class) before performing specific actions.  For example:
 
     \code
     Item3D {
