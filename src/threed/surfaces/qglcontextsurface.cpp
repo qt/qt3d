@@ -39,6 +39,7 @@
 **
 ****************************************************************************/
 
+#include <QtDebug>
 #include "qglcontextsurface_p.h"
 
 QT_BEGIN_NAMESPACE
@@ -64,6 +65,11 @@ void QGLContextSurface::deactivate(QGLAbstractSurface *nextSurface)
 QRect QGLContextSurface::viewportGL() const
 {
     QPaintDevice *device = m_context->device();
+    if(!device)
+    {
+        qWarning() << "Null paint device in QGLContextSurface::viewportGL()";
+        return QRect(0,0,0,0);
+    }
     return QRect(0, 0, device->width(), device->height());
 }
 

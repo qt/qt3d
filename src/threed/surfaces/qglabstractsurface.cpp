@@ -236,8 +236,15 @@ qreal QGLAbstractSurface::aspectRatio() const
 
     // Use the device's DPI setting to determine the pixel aspect ratio.
     QPaintDevice *device = this->device();
-    int dpiX = device->logicalDpiX();
-    int dpiY = device->logicalDpiY();
+
+    int dpiX = 0;
+    int dpiY = 0;
+    if(device)
+    {
+        dpiX = device->logicalDpiX();
+        dpiY = device->logicalDpiY();
+    } else
+        qWarning() << "null device in QGLAbstractSurface::aspectRatio()";
     if (dpiX <= 0 || dpiY <= 0)
         dpiX = dpiY = 1;
 
