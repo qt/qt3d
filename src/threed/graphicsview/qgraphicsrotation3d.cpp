@@ -68,7 +68,7 @@ QT_BEGIN_NAMESPACE
     \code
     Item3D {
         id: helicoptor
-        mesh:  {source: "bellUH1.3ds"}
+        mesh:  Mesh {source: "monkey.3ds"}
         effect: Effect {}
         cullFaces: "CullBackFaces"
 
@@ -91,7 +91,7 @@ QT_BEGIN_NAMESPACE
                 ]
 
        SequentialAnimation {
-            NumberAnimation {target: rotate1; property: "angle"; to : 360.0; duration: 3000; easing:"easeOutQuad" }
+            NumberAnimation {target: rotate1; property: "angle"; to : 360.0; duration: 3000; easing.type:easeOutQuad }
         }
     }
     \endcode
