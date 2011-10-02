@@ -45,7 +45,7 @@
 #include "qglbuilder.h"
 #include "qglscenenode.h"
 
-BasketView::BasketView(QWidget *parent)
+BasketView::BasketView(QWindow *parent)
     : QGLView(parent)
     , m_angle(0)
 {

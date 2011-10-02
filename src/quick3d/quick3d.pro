@@ -8,7 +8,7 @@ gcov {
     CONFIG += dll warn_on
 }
 
-QT += declarative qtquick1
+QT += declarative
 
 include(../../pkg.pri)
 

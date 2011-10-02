@@ -5,3 +5,5 @@ CONFIG += unittest warn_on qt3d
 
 SOURCES += tst_qglmaterial.cpp
 QT+=widgets
+
+CONFIG+=insignificant_test

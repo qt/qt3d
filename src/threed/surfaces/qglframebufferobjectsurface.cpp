@@ -41,6 +41,9 @@
 
 #include "qglframebufferobjectsurface.h"
 
+#include <QtGui/QOpenGLContext>
+#include <QtCore/QDebug>
+
 QT_BEGIN_NAMESPACE
 
 /*!
@@ -51,15 +54,14 @@ QT_BEGIN_NAMESPACE
     \ingroup qt3d::painting
 */
 
+// This exists solely for future expansion
 class QGLFramebufferObjectSurfacePrivate
 {
 public:
-    QGLFramebufferObjectSurfacePrivate
-            (QGLFramebufferObject *fbo, const QGLContext *ctx)
-        : framebufferObject(fbo), context(ctx) {}
+    QGLFramebufferObjectSurfacePrivate()
+        : forExpansion(0) {}
 
-    QGLFramebufferObject *framebufferObject;
-    const QGLContext *context;
+    int forExpansion;
 };
 
 /*!
@@ -68,7 +70,7 @@ public:
 */
 QGLFramebufferObjectSurface::QGLFramebufferObjectSurface()
     : QGLAbstractSurface(QGLAbstractSurface::FramebufferObject)
-    , d_ptr(new QGLFramebufferObjectSurfacePrivate(0, 0))
+    , d_ptr(new QGLFramebufferObjectSurfacePrivate)
 {
 }
 
@@ -78,10 +80,12 @@ QGLFramebufferObjectSurface::QGLFramebufferObjectSurface()
     current context when activate() is called.
 */
 QGLFramebufferObjectSurface::QGLFramebufferObjectSurface
-        (QGLFramebufferObject *fbo, const QGLContext *context)
+        (QOpenGLFramebufferObject *fbo, QOpenGLContext *context)
     : QGLAbstractSurface(QGLAbstractSurface::FramebufferObject)
-    , d_ptr(new QGLFramebufferObjectSurfacePrivate(fbo, context))
+    , d_ptr(new QGLFramebufferObjectSurfacePrivate)
 {
+    m_fbo = fbo;
+    m_context = context;
 }
 
 /*!
@@ -92,47 +96,14 @@ QGLFramebufferObjectSurface::~QGLFramebufferObjectSurface()
 }
 
 /*!
-    Returns the context that owns framebufferObject(); or null
-    if the framebufferObject() should be assumed to be owned by
-    the current context when activate() is called.
-
-    \sa setContext(), framebufferObject()
-*/
-const QGLContext *QGLFramebufferObjectSurface::context() const
-{
-    Q_D(const QGLFramebufferObjectSurface);
-    return d->context;
-}
-
-/*!
-    Sets the \a context that owns framebufferObject().
-
-    When activate() is called, it checks to see if \a context is sharing
-    with the current context.  If it is, then the framebufferObject()
-    is directly bound to the current context.  Otherwise, \a context
-    is made current and then framebufferObject() is bound.
-
-    If \a context is null, then framebufferObject() will be bound
-    to whatever the current context is when activate() is called.
-
-    \sa context()
-*/
-void QGLFramebufferObjectSurface::setContext(const QGLContext *context)
-{
-    Q_D(QGLFramebufferObjectSurface);
-    d->context = context;
-}
-
-/*!
     Returns the framebuffer object for this surface, or null if
     it has not been set yet.
 
-    \sa setFramebufferObject(), context()
+    \sa setFramebufferObject()
 */
-QGLFramebufferObject *QGLFramebufferObjectSurface::framebufferObject() const
+QOpenGLFramebufferObject *QGLFramebufferObjectSurface::framebufferObject() const
 {
-    Q_D(const QGLFramebufferObjectSurface);
-    return d->framebufferObject;
+    return m_fbo;
 }
 
 /*!
@@ -141,19 +112,9 @@ QGLFramebufferObject *QGLFramebufferObjectSurface::framebufferObject() const
     \sa framebufferObject()
 */
 void QGLFramebufferObjectSurface::setFramebufferObject
-        (QGLFramebufferObject *fbo)
+        (QOpenGLFramebufferObject *fbo)
 {
-    Q_D(QGLFramebufferObjectSurface);
-    d->framebufferObject = fbo;
-}
-
-/*!
-    \reimp
-*/
-QPaintDevice *QGLFramebufferObjectSurface::device() const
-{
-    Q_D(const QGLFramebufferObjectSurface);
-    return d->framebufferObject;
+    m_fbo = fbo;
 }
 
 /*!
@@ -162,17 +123,27 @@ QPaintDevice *QGLFramebufferObjectSurface::device() const
 bool QGLFramebufferObjectSurface::activate(QGLAbstractSurface *prevSurface)
 {
     Q_UNUSED(prevSurface);
-    Q_D(QGLFramebufferObjectSurface);
-    if (d->context) {
-        if (!QGLContext::areSharing(QGLContext::currentContext(), d->context))
-            const_cast<QGLContext *>(d->context)->makeCurrent();
+    bool success = false;
+    if (m_context) {
+        if (!QOpenGLContext::areSharing(QOpenGLContext::currentContext(), m_context))
+        {
+            m_context->makeCurrent(m_context->surface());
+        }
     } else {
-        // If we don't have a current context, then something is wrong.
-        Q_ASSERT(QGLContext::currentContext());
+        m_context = QOpenGLContext::currentContext();
     }
-    if (d->framebufferObject)
-        return d->framebufferObject->bind();
-    return false;
+
+    if (isValid())
+    {
+        success = m_fbo->bind();
+    }
+#ifndef QT_NO_DEBUG_STREAM
+    else
+    {
+        qWarning() << "Attempt to activate invalid fbo surface";
+    }
+#endif
+    return success;
 }
 
 /*!
@@ -180,17 +151,16 @@ bool QGLFramebufferObjectSurface::activate(QGLAbstractSurface *prevSurface)
 */
 void QGLFramebufferObjectSurface::deactivate(QGLAbstractSurface *nextSurface)
 {
-    Q_D(QGLFramebufferObjectSurface);
-    if (d->framebufferObject) {
+    if (m_fbo) {
         if (nextSurface && nextSurface->surfaceType() == FramebufferObject) {
             // If we are about to switch to another fbo that is on the
             // same context, then don't bother doing the release().
             // This saves an unnecessary glBindFramebuffer(0) call.
             if (static_cast<QGLFramebufferObjectSurface *>(nextSurface)
-                    ->context() == d->context)
+                    ->context() == m_context)
                 return;
         }
-        d->framebufferObject->release();
+        m_fbo->release();
     }
 }
 
@@ -199,11 +169,18 @@ void QGLFramebufferObjectSurface::deactivate(QGLAbstractSurface *nextSurface)
 */
 QRect QGLFramebufferObjectSurface::viewportGL() const
 {
-    Q_D(const QGLFramebufferObjectSurface);
-    if (d->framebufferObject)
-        return QRect(QPoint(0, 0), d->framebufferObject->size());
+    if (m_fbo)
+        return QRect(QPoint(0, 0), m_fbo->size());
     else
         return QRect();
+}
+
+/*!
+    \reimp
+*/
+bool QGLFramebufferObjectSurface::isValid() const
+{
+    return QGLAbstractSurface::isValid() && m_fbo && m_context;
 }
 
 QT_END_NAMESPACE

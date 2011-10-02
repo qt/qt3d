@@ -42,7 +42,7 @@
 #include "qglabstractscene.h"
 #include "qglscenenode.h"
 
-ModelView::ModelView(QWidget *parent)
+ModelView::ModelView(QWindow *parent)
     : QGLView(parent)
     , m_scene(0)
     , m_main(0)

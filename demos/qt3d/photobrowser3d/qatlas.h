@@ -43,6 +43,7 @@
 #define QATLAS_H
 
 #include <QSize>
+#include <QtGui/QOpenGLFramebufferObject>
 
 #include "qarray.h"
 #include "qgeometrydata.h"
@@ -88,7 +89,7 @@ public:
 
 private:
     QSize m_size;
-    QGLFramebufferObject *m_data;
+    QOpenGLFramebufferObject *m_data;
     QGLFramebufferObjectSurface *m_renderTarget;
     QAreaAllocator *m_allocator;
     QGLTexture2D *m_tex;

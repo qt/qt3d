@@ -45,7 +45,7 @@
 #include "qglbuilder.h"
 #include "qglframebufferobjectsurface.h"
 
-class QGLFramebufferObject;
+class QOpenGLFramebufferObject;
 class QGLCamera;
 
 class CubeView : public QGLView
@@ -55,7 +55,7 @@ class CubeView : public QGLView
     Q_PROPERTY(qreal cubeAngle READ cubeAngle WRITE setCubeAngle)
     Q_PROPERTY(qreal orbitAngle READ orbitAngle WRITE setOrbitAngle)
 public:
-    CubeView(QWidget *parent = 0);
+    CubeView(QWindow *parent = 0);
     ~CubeView();
 
     qreal teapotAngle() const { return tangle; }
@@ -76,7 +76,7 @@ private:
     QGLSceneNode *cube;
     QGLSceneNode *teapot;
     QGLTexture2D qtlogo;
-    QGLFramebufferObject *fbo;
+    QOpenGLFramebufferObject *fbo;
     QGLFramebufferObjectSurface fboSurface;
     QGLCamera *innerCamera;
     qreal tangle;

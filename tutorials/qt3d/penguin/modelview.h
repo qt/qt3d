@@ -51,7 +51,7 @@ class ModelView : public QGLView
 {
     Q_OBJECT
 public:
-    ModelView(QWidget *parent = 0) : QGLView(parent) {}
+    ModelView(QWindow *parent = 0) : QGLView(parent) {}
     ~ModelView();
 
 protected:

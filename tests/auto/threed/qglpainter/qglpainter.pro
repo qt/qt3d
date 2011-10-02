@@ -14,3 +14,5 @@ HEADERS += qgltestwidget.h \
            compareimage.h \
            qglsimulator.h
 QT+=widgets
+
+CONFIG+=insignificant_test

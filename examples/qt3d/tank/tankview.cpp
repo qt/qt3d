@@ -48,7 +48,7 @@
 
 #include <QMouseEvent>
 
-TankView::TankView(QWidget *parent)
+TankView::TankView(QWindow *parent)
     : QGLView(parent)
     , m_tankScene(new QGLSceneNode)
     , m_count(0)
@@ -60,7 +60,8 @@ TankView::TankView(QWidget *parent)
     Tank *tank = addTank();
     connect(tank, SIGNAL(updated()), this, SLOT(update()));
 
-    setToolTip(tr("Double-click to add more tanks"));
+    // TODO: setToolTip not implemented in QWindow
+    // setToolTip(tr("Double-click to add more tanks"));
     setWindowTitle(tr("Double-click Me!"));
 }
 

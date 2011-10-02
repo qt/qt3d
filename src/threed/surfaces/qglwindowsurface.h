@@ -50,27 +50,25 @@ QT_BEGIN_NAMESPACE
 
 QT_MODULE(Qt3D)
 
-class QGLWidgetSurfacePrivate;
+class QWindow;
 
-class Q_QT3D_EXPORT QGLWidgetSurface : public QGLAbstractSurface
+class Q_QT3D_EXPORT QGLWindowSurface : public QGLAbstractSurface
 {
 public:
-    QGLWidgetSurface();
-    explicit QGLWidgetSurface(QGLWidget *widget);
-    ~QGLWidgetSurface();
+    QGLWindowSurface();
+    explicit QGLWindowSurface(QWindow *window);
+    ~QGLWindowSurface();
 
-    QGLWidget *widget() const;
-    void setWidget(QGLWidget *widget);
+    QWindow *window() const;
+    void setWindow(QWindow *window);
 
-    QPaintDevice *device() const;
     bool activate(QGLAbstractSurface *prevSurface = 0);
     void deactivate(QGLAbstractSurface *nextSurface = 0);
     QRect viewportGL() const;
+    bool isValid() const;
 
 private:
-    QGLWidget *m_widget;
-
-    Q_DISABLE_COPY(QGLWidgetSurface)
+    Q_DISABLE_COPY(QGLWindowSurface)
 };
 
 QT_END_NAMESPACE

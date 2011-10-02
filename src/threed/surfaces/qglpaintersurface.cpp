@@ -41,17 +41,25 @@
 
 #include "qglpaintersurface_p.h"
 
-QT_BEGIN_NAMESPACE
+#include <QtGui/QOpenGLContext>
 
-QPaintDevice *QGLPainterSurface::device() const
-{
-    return m_painter->device();
-}
+QT_BEGIN_NAMESPACE
 
 bool QGLPainterSurface::activate(QGLAbstractSurface *prevSurface)
 {
-    if (m_painterContext != QGLContext::currentContext())
-        const_cast<QGLContext *>(m_painterContext)->makeCurrent();
+    Q_ASSERT_X(QOpenGLContext::currentContext() || m_context, Q_FUNC_INFO,
+               "Activating GL painter surface without GL context");
+    if (m_context)
+    {
+        if (m_context != QOpenGLContext::currentContext())
+        {
+            m_context->makeCurrent(m_context->surface());
+        }
+    }
+    else
+    {
+        m_context = QOpenGLContext::currentContext();
+    }
     if (!prevSurface)
         m_painter->beginNativePainting();
     return true;
@@ -67,6 +75,11 @@ QRect QGLPainterSurface::viewportGL() const
 {
     QPaintDevice *device = m_painter->device();
     return QRect(0, 0, device->width(), device->height());
+}
+
+bool QGLPainterSurface::isValid() const
+{
+    return QGLAbstractSurface::isValid();
 }
 
 QT_END_NAMESPACE

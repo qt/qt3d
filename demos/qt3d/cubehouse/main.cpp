@@ -46,20 +46,40 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     CubeView view;
-    if (QApplication::arguments().contains(QLatin1String("-framerate")))
+
+    QStringList args = QCoreApplication::arguments();
+    if (args.contains(QLatin1String("-framerate")))
         view.setShowFrameRate(true);
-    if (QApplication::arguments().contains(QLatin1String("-projectivetexture")))
+    if (args.contains(QLatin1String("-projectivetexture")))
         view.setProjectiveTextureEffect(true);
-    if (QApplication::arguments().contains(QLatin1String("-stereo")))
+    if (args.contains(QLatin1String("-stereo")))
         view.setStereo(true);
     else if (view.stereoType() != QGLView::RedCyanAnaglyph)
         view.setStereo(true);  
 
-    if (QApplication::arguments().contains(QLatin1String("-maximize")))
-        view.showMaximized();
-    else if (QApplication::arguments().contains(QLatin1String("-fullscreen")))
-        view.showFullScreen();
+    int w_pos = args.indexOf(QLatin1String("-width"));
+    int h_pos = args.indexOf(QLatin1String("-height"));
+    if (w_pos >= 0 && h_pos >= 0)
+    {
+        bool ok = true;
+        int w = args.at(w_pos + 1).toInt(&ok);
+        if (!ok)
+        {
+            qWarning() << "Could not parse width argument:" << args;
+            return 1;
+        }
+        int h = args.at(h_pos + 1).toInt(&ok);
+        if (!ok)
+        {
+            qWarning() << "Could not parse height argument:" << args;
+            return 1;
+        }
+        view.resize(w, h);
+    }
     else
-        view.show();
+    {
+        view.resize(800, 600);
+    }
+    view.show();
     return app.exec();
 }

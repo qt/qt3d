@@ -43,14 +43,15 @@
 #define QGLTESTWIDGET_H
 
 #include <QtOpenGL/qgl.h>
+#include "qglview.h"
 
 class QEventLoop;
 
-class QGLTestWidget : public QGLWidget
+class QGLTestWidget : public QGLView
 {
     Q_OBJECT
 public:
-    QGLTestWidget(QWidget *parent = 0);
+    QGLTestWidget(QWindow *parent = 0);
     ~QGLTestWidget();
 
     bool runTest(QObject *target, const char *method, int timeout = 5000);

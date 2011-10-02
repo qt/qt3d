@@ -61,14 +61,12 @@ public:
     QGLPixelBuffer *pixelBuffer() const;
     void setPixelBuffer(QGLPixelBuffer *pbuffer);
 
-    QPaintDevice *device() const;
     bool activate(QGLAbstractSurface *prevSurface = 0);
     void deactivate(QGLAbstractSurface *nextSurface = 0);
     QRect viewportGL() const;
+    bool isValid() const;
 
 private:
-    QGLPixelBuffer *m_pbuffer;
-
     Q_DISABLE_COPY(QGLPixelBufferSurface)
 };
 

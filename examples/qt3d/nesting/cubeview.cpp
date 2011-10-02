@@ -41,11 +41,13 @@
 #include "cubeview.h"
 #include "qglcube.h"
 #include "qglteapot.h"
-#include <QtOpenGL/qglframebufferobject.h>
+
 #include <QtCore/qpropertyanimation.h>
 
+#include <QtGui/QOpenGLFramebufferObject>
+
 //! [1]
-CubeView::CubeView(QWidget *parent)
+CubeView::CubeView(QWindow *parent)
     : QGLView(parent)
     , fbo(0)
     , tangle(0.0f)
@@ -105,7 +107,7 @@ CubeView::~CubeView()
 //! [4]
 void CubeView::initializeGL(QGLPainter *)
 {
-    fbo = new QGLFramebufferObject(512, 512, QGLFramebufferObject::Depth);
+    fbo = new QOpenGLFramebufferObject(512, 512, QOpenGLFramebufferObject::Depth);
     fboSurface.setFramebufferObject(fbo);
 //! [4]
 

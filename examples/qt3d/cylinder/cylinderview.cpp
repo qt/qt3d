@@ -44,7 +44,7 @@
 #include "qglcylinder.h"
 #include <QtCore/qurl.h>
 
-CylinderView::CylinderView(QWidget *parent)
+CylinderView::CylinderView(QWindow *parent)
     : QGLView(parent)
 {
     QGLBuilder builder;

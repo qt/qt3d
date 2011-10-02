@@ -143,18 +143,6 @@ void QGLSubsurface::setRegion(const QRect &region)
 /*!
     \reimp
 */
-QPaintDevice *QGLSubsurface::device() const
-{
-    Q_D(const QGLSubsurface);
-    if (d->surface)
-        return d->surface->device();
-    else
-        return 0;
-}
-
-/*!
-    \reimp
-*/
 bool QGLSubsurface::activate(QGLAbstractSurface *prevSurface)
 {
     Q_D(QGLSubsurface);
@@ -194,6 +182,11 @@ QRect QGLSubsurface::viewportGL() const
         // so the best we can do is assume the region is bottom-aligned.
         return QRect(d->region.x(), 0, d->region.width(), d->region.height());
     }
+}
+
+bool QGLSubsurface::isValid() const
+{
+    return QGLAbstractSurface::isValid();
 }
 
 QT_END_NAMESPACE

@@ -44,6 +44,7 @@
 #include "qglview.h"
 
 class QGLSceneNode;
+class QWindow;
 
 //! [1]
 class BasketView : public QGLView
@@ -55,7 +56,7 @@ public:
     void setAngle(qreal angle) { m_angle = angle; update(); }
 //! [1]
 
-    BasketView(QWidget *parent = 0);
+    BasketView(QWindow *parent = 0);
     ~BasketView();
 
 protected:

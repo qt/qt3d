@@ -94,7 +94,7 @@ public:
     ~QGLPainterPrivate();
 
     QAtomicInt ref;
-    const QGLContext *context;
+    QOpenGLContext *context;
     QMatrix4x4Stack projectionMatrix;
     QMatrix4x4Stack modelViewMatrix;
     QMatrix4x4 inverseEyeMatrix;
@@ -137,17 +137,17 @@ public:
     QGLPainterPrivateCache();
     ~QGLPainterPrivateCache();
 
-    QMap<const QGLContext *, QGLPainterPrivate *> cache;
+    QMap<const QOpenGLContext *, QGLPainterPrivate *> cache;
 
-    QGLPainterPrivate *fromContext(const QGLContext *context);
+    QGLPainterPrivate *fromContext(QOpenGLContext *context);
 
     static QGLPainterPrivateCache *instance();
 
 public Q_SLOTS:
-    void contextDestroyed(const QGLContext *context);
+    void contextDestroyed();
 
 Q_SIGNALS:
-    void destroyedContext(const QGLContext *context);
+    void destroyedContext(const QOpenGLContext *context);
 };
 
 QT_END_NAMESPACE

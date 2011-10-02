@@ -49,7 +49,7 @@ class Tank;
 class TankView : public QGLView
 {
 public:
-    TankView(QWidget *parent = 0);
+    TankView(QWindow *parent = 0);
     ~TankView();
 protected:
     void initializeGL(QGLPainter *painter);

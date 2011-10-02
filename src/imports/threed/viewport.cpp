@@ -52,13 +52,13 @@
 #include "skybox.h"
 
 #include <QtGui/QOpenGLContext>
+#include <QtGui/QOpenGLFramebufferObject>
 
 #include <QtGui/qpainter.h>
 #include <QtWidgets/qgraphicsview.h>
 #include <QtWidgets/qgraphicsscene.h>
 #include <QtWidgets/qgraphicssceneevent.h>
 #include <QtGui/qevent.h>
-#include <QtOpenGL/qglframebufferobject.h>
 #include <QtCore/qtimer.h>
 #include <QtCore/qcoreapplication.h>
 #include <QtDeclarative/qdeclarativeinfo.h>
@@ -230,7 +230,7 @@ public:
     QGLLightModel *lightModel;
     QWidget *viewWidget;
     int pickId;
-    QGLFramebufferObject *pickFbo;
+    QOpenGLFramebufferObject *pickFbo;
     QMap<int, QObject *> objects;
     QObject *pressedObject;
     Qt::MouseButton pressedButton;
@@ -1140,8 +1140,8 @@ void Viewport::objectForPoint()
 
         if (!d->pickFbo)
         {
-            d->pickFbo = new QGLFramebufferObject(fbosize,
-                                                  QGLFramebufferObject::CombinedDepthStencil);
+            d->pickFbo = new QOpenGLFramebufferObject(fbosize,
+                                                  QOpenGLFramebufferObject::CombinedDepthStencil);
         }
         int objectId = -1;
         QScopedPointer<QGLAbstractSurface> fboSurf(new QGLFramebufferObjectSurface(d->pickFbo));

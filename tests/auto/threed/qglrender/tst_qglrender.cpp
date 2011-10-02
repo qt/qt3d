@@ -146,7 +146,7 @@ void tst_QGLRender::repo()
 class TestPainter : public QGLPainter
 {
 public:
-    TestPainter(QGLWidget *w) : QGLPainter(w) {}
+    TestPainter(QWindow *w) : QGLPainter(w) {}
     void draw(QGL::DrawingMode mode, const QGLIndexBuffer& indices,
               int offset, int count)
     {
@@ -239,7 +239,7 @@ void tst_QGLRender::sequence()
     cl->setEffect(QGL::LitDecalTexture2D);
 
     TestView widget(scene);
-    if (!widget.isValid())
+    if (!widget.context()->isValid())
         QSKIP("GL Implementation not valid", SkipSingle);
 
     TestPainter *ptr = new TestPainter(&widget);

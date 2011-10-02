@@ -156,8 +156,8 @@ void QFocusAdaptor::calculateValues()
 
             QSizeF v = cam->viewSize();
 
-            qreal vh = d->view->rect().height();
-            qreal vw = d->view->rect().width();
+            qreal vh = d->view->geometry().height();
+            qreal vw = d->view->geometry().width();
             if (!qFuzzyIsNull(vw - vh))
             {
                 qreal asp = vh / vw;

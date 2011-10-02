@@ -43,7 +43,8 @@
 #define QGLFRAMEBUFFEROBJECTSURFACE_H
 
 #include "qglabstractsurface.h"
-#include <QtOpenGL/qglframebufferobject.h>
+
+#include <QtGui/QOpenGLFramebufferObject>
 
 QT_BEGIN_HEADER
 
@@ -58,19 +59,16 @@ class Q_QT3D_EXPORT QGLFramebufferObjectSurface : public QGLAbstractSurface
 public:
     QGLFramebufferObjectSurface();
     explicit QGLFramebufferObjectSurface
-        (QGLFramebufferObject *fbo, const QGLContext *context = 0);
+        (QOpenGLFramebufferObject *fbo, QOpenGLContext *context = 0);
     ~QGLFramebufferObjectSurface();
 
-    const QGLContext *context() const;
-    void setContext(const QGLContext *context);
+    QOpenGLFramebufferObject *framebufferObject() const;
+    void setFramebufferObject(QOpenGLFramebufferObject *fbo);
 
-    QGLFramebufferObject *framebufferObject() const;
-    void setFramebufferObject(QGLFramebufferObject *fbo);
-
-    QPaintDevice *device() const;
     bool activate(QGLAbstractSurface *prevSurface = 0);
     void deactivate(QGLAbstractSurface *nextSurface = 0);
     QRect viewportGL() const;
+    bool isValid() const;
 
 private:
     QScopedPointer<QGLFramebufferObjectSurfacePrivate> d_ptr;

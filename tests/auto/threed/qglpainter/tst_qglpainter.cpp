@@ -96,7 +96,7 @@ void tst_QGLPainter::cleanupTestCase()
 
 void tst_QGLPainter::clear()
 {
-    if (!widget->isValid())
+    if (!widget->context()->isValid())
         QSKIP("GL Implementation not valid", SkipSingle);
 
     QVERIFY(widget->runTest(this, "clearPaint"));
@@ -120,7 +120,7 @@ void tst_QGLPainter::clearPaintQ(QPainter *painter, const QSize& size)
 void tst_QGLPainter::drawTriangle()
 {
     QSKIP("Fails under qt5", SkipSingle);
-    if (!widget->isValid())
+    if (!widget->context()->isValid())
         QSKIP("GL Implementation not valid", SkipSingle);
 
     QVERIFY(widget->runTest(this, "drawTrianglePaint"));
@@ -134,7 +134,7 @@ void tst_QGLPainter::drawTrianglePaint()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     QMatrix4x4 projm;
-    projm.ortho(widget->rect());
+    projm.ortho(widget->geometry());
     painter.projectionMatrix() = projm;
     painter.modelViewMatrix().setToIdentity();
 
@@ -158,7 +158,7 @@ void tst_QGLPainter::drawTrianglePaintQ(QPainter *painter, const QSize& size)
     sim.setColor(Qt::green);
 
     QMatrix4x4 proj;
-    proj.ortho(widget->rect());
+    proj.ortho(widget->geometry());
     sim.setProjectionMatrix(proj);
 
     QVector2DArray vertices;
@@ -187,7 +187,7 @@ void tst_QGLPainter::scissor()
 {
     QSKIP("Does not pass on Qt5", SkipSingle);
 
-    if (!widget->isValid())
+    if (!widget->context()->isValid())
         QSKIP("GL Implementation not valid", SkipSingle);
 
     // Run a painting test to check that the scissor works.
@@ -197,7 +197,7 @@ void tst_QGLPainter::scissor()
     // GL state is updated properly as the scissor changes.
     QGLPainter painter;
     painter.begin(widget);
-    QRect windowRect = widget->rect();
+    QRect windowRect = widget->geometry();
 
     QVERIFY(!glIsEnabled(GL_SCISSOR_TEST));
 
@@ -226,7 +226,7 @@ void tst_QGLPainter::scissorPaint()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     QMatrix4x4 projm;
-    projm.ortho(widget->rect());
+    projm.ortho(widget->geometry());
     painter.projectionMatrix() = projm;
     painter.modelViewMatrix().setToIdentity();
 
@@ -279,7 +279,7 @@ void tst_QGLPainter::scissorPaintQ(QPainter *painter, const QSize& size)
     sim.clear();
 
     QMatrix4x4 proj;
-    proj.ortho(widget->rect());
+    proj.ortho(widget->geometry());
     sim.setProjectionMatrix(proj);
 
     QVector2DArray vertices;
@@ -451,7 +451,7 @@ static bool checkGLMatrix(GLenum, const QMatrix4x4&) { return true; }
 
 void tst_QGLPainter::projectionMatrixStack()
 {
-    if (!widget->isValid())
+    if (!widget->context()->isValid())
         QSKIP("GL Implementation not valid", SkipSingle);
 
     QGLPainter painter(widget);
@@ -481,7 +481,7 @@ void tst_QGLPainter::projectionMatrixStack()
 
 void tst_QGLPainter::modelViewMatrixStack()
 {
-    if (!widget->isValid())
+    if (!widget->context()->isValid())
         QSKIP("GL Implementation not valid", SkipSingle);
 
     QGLPainter painter(widget);
@@ -554,10 +554,36 @@ void tst_QGLPainter::worldMatrix()
     QVERIFY(fuzzyCompare(painter.worldMatrix(), world));
 }
 
+static void ensureContext(QWindow &win, QOpenGLContext &ctx)
+{
+    QSurfaceFormat format;
+    format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
+    ctx.setFormat(format);
+#ifndef QT_NO_DEBUG_STREAM
+    QSurfaceFormat oldFormat = format;
+#endif
+    ctx.create();
+    // TODO: is it possible that the platform will downgrade the actual
+    // format, or will it just fail if it can't deliver the actual format
+    format = ctx.format();
+#ifndef QT_NO_DEBUG_STREAM
+    if (oldFormat.swapBehavior() != format.swapBehavior())
+        qWarning() << "Could not create context for swap behavior"
+                   << oldFormat.swapBehavior();
+#endif
+    ctx.makeCurrent(&win);
+}
+
 void tst_QGLPainter::basicCullable()
 {
-    QGLWidget w;
-    QGLPainter painter(&w);
+    QWindow glw;
+    glw.setSurfaceType(QWindow::OpenGLSurface);
+    QOpenGLContext ctx;
+    ensureContext(glw, ctx);
+    if (!ctx.isValid())
+        QSKIP("GL Implementation not valid", SkipSingle);
+
+    QGLPainter painter(&glw);
     painter.modelViewMatrix().setToIdentity();
 
     // Default values for the camera have
@@ -676,8 +702,14 @@ void tst_QGLPainter::isCullable_data()
 
 void tst_QGLPainter::isCullable()
 {
-    QGLWidget w;
-    QGLPainter painter(&w);
+    QWindow glw;
+    glw.setSurfaceType(QWindow::OpenGLSurface);
+    QOpenGLContext ctx;
+    ensureContext(glw, ctx);
+    if (!ctx.isValid())
+        QSKIP("GL Implementation not valid", SkipSingle);
+
+    QGLPainter painter(&glw);
     painter.modelViewMatrix().setToIdentity();
 
     QGLCamera camera;
@@ -736,8 +768,14 @@ void tst_QGLPainter::isCullableVert()
     // and back instead of rotating it from side to side
     // since the view frustum is typically not square in section
     // as it depends on the surface, this will give different results.
-    QGLWidget w;
-    QGLPainter painter(&w);
+    QWindow glw;
+    glw.setSurfaceType(QWindow::OpenGLSurface);
+    QOpenGLContext ctx;
+    ensureContext(glw, ctx);
+    if (!ctx.isValid())
+        QSKIP("GL Implementation not valid", SkipSingle);
+
+    QGLPainter painter(&glw);
     painter.modelViewMatrix().setToIdentity();
 
     QGLCamera camera;

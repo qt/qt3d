@@ -43,7 +43,7 @@
 #include "qglcube.h"
 
 //! [1]
-CubeView::CubeView(QWidget *parent)
+CubeView::CubeView(QWindow *parent)
     : QGLView(parent)
 {
 //! [1]

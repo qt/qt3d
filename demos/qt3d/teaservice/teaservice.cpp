@@ -46,6 +46,8 @@
 #include <QKeyEvent>
 #include <QAction>
 #include <QDebug>
+#include <QtCore/QTimer>
+
 #include "qglview.h"
 #include "meshobject.h"
 #include "sceneobject.h"
@@ -285,7 +287,7 @@ class TeaServiceView : public QGLView
 {
     Q_OBJECT
 public:
-    TeaServiceView(QWidget *parent=0);
+    TeaServiceView(QWindow *parent=0);
 
 public slots:
     void standardLighting();
@@ -300,14 +302,14 @@ private:
     TeaService *teaService;
 };
 
-TeaServiceView::TeaServiceView(QWidget *parent)
+TeaServiceView::TeaServiceView(QWindow *parent)
     : QGLView(parent)
 {
     teaService = new TeaService(this);
 
     setOption(QGLView::ObjectPicking, true);
 
-    connect(teaService, SIGNAL(changed()), this, SLOT(updateGL()));
+    connect(teaService, SIGNAL(changed()), this, SLOT(update()));
 }
 
 void TeaServiceView::initializeGL(QGLPainter *painter)
@@ -323,13 +325,13 @@ void TeaServiceView::paintGL(QGLPainter *painter)
 void TeaServiceView::standardLighting()
 {
     teaService->changeMaterials(false);
-    updateGL();
+    update();
 }
 
 void TeaServiceView::perPixelLighting()
 {
     teaService->changeMaterials(true);
-    updateGL();
+    update();
 }
 
 void TeaServiceView::keyPressEvent(QKeyEvent *e)
@@ -338,7 +340,7 @@ void TeaServiceView::keyPressEvent(QKeyEvent *e)
         // The Tab key turns the ShowPicking option on and off,
         // which helps show what the pick buffer looks like.
         setOption(QGLView::ShowPicking, ((options() & QGLView::ShowPicking) == 0));
-        updateGL();
+        update();
     }
     QGLView::keyPressEvent(e);
 }
@@ -346,33 +348,46 @@ void TeaServiceView::keyPressEvent(QKeyEvent *e)
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    QMainWindow mainw;
-    mainw.setMinimumSize(850, 480);
-    mainw.setWindowTitle(QLatin1String("Tea Service"));
 
     TeaServiceView view;
-    mainw.setCentralWidget(&view);
-    view.setFocus();
+    QStringList args = QCoreApplication::arguments();
+    int w_pos = args.indexOf("-width");
+    int h_pos = args.indexOf("-height");
+    if (w_pos >= 0 && h_pos >= 0)
+    {
+        bool ok = true;
+        int w = args.at(w_pos + 1).toInt(&ok);
+        if (!ok)
+        {
+            qWarning() << "Could not parse width argument:" << args;
+            return 1;
+        }
+        int h = args.at(h_pos + 1).toInt(&ok);
+        if (!ok)
+        {
+            qWarning() << "Could not parse height argument:" << args;
+            return 1;
+        }
+        view.resize(w, h);
+    }
+    else
+    {
+        view.resize(800, 600);
+    }
+    view.show();
+
+    // TODO: QWindow has no setFocus function
+    // view.setFocus();
 
     view.camera()->setEye(QVector3D(0, 3, 10));
 
-    QMenu *menu = mainw.menuBar()->addMenu(QLatin1String("Effects"));
+    if (args.contains("-per-pixel-lighting"))
+    {
+        QTimer::singleShot(0, &view, SLOT(perPixelLighting()));
+    }
 
-    QAction *standardLighting = new QAction(QLatin1String("Standard lighting"), &mainw);
-    menu->addAction(standardLighting);
-    QObject::connect(standardLighting, SIGNAL(triggered()), &view, SLOT(standardLighting()));
+    view.show();
 
-    QAction *perPixelLighting = new QAction(QLatin1String("Per-pixel lighting"), &mainw);
-    menu->addAction(perPixelLighting);
-    QObject::connect(perPixelLighting, SIGNAL(triggered()), &view, SLOT(perPixelLighting()));
-
-    menu->addSeparator();
-
-    QAction *exitAction = new QAction(QLatin1String("E&xit"), &mainw);
-    menu->addAction(exitAction);
-    QObject::connect(exitAction, SIGNAL(triggered()), &app, SLOT(quit()));
-
-    mainw.show();
     return app.exec();
 }
 

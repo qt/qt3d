@@ -46,6 +46,7 @@
 #include "qvector_utils_p.h"
 #include "qtest_helpers.h"
 #include "qglpainter.h"
+#include "qglview.h"
 
 #include <QtCore/qdebug.h>
 
@@ -618,7 +619,7 @@ void tst_QGeometryData::draw()
     data.appendVertex(a, b, c, d);
     data.appendNormal(an, bn, cn, dn);
 
-    QGLWidget w;
+    QGLView w;
     QGLPainter p(&w);
     data.draw(&p, 0, 4);
 }

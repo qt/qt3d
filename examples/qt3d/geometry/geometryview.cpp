@@ -55,7 +55,7 @@
 #include "qglmaterialcollection.h"
 #include "qgraphicsscale3d.h"
 
-GeometryView::GeometryView(QWidget *parent)
+GeometryView::GeometryView(QWindow *parent)
     : QGLView(parent)
     , timer(new QTimer(this))
 {
@@ -118,5 +118,5 @@ void GeometryView::paintGL(QGLPainter *painter)
 void GeometryView::rotate()
 {
     angle = (angle + 2) % 360;
-    updateGL();
+    update();
 }

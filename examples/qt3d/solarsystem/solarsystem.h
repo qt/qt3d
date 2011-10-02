@@ -56,7 +56,7 @@ class SolarSystemView : public QGLView
     Q_PROPERTY(qreal angle3 READ angle3 WRITE setAngle3)
     Q_PROPERTY(qreal glowFactor READ glowFactor WRITE setGlowFactor)
 public:
-    SolarSystemView(QWidget *parent = 0);
+    SolarSystemView(QWindow *parent = 0);
     ~SolarSystemView();
 
     qreal angle1() const { return m_angle1; }

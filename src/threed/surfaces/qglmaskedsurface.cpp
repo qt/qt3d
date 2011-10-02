@@ -164,15 +164,6 @@ void QGLMaskedSurface::setMask(QGLMaskedSurface::BufferMask mask)
 /*!
     \reimp
 */
-QPaintDevice *QGLMaskedSurface::device() const
-{
-    Q_D(const QGLMaskedSurface);
-    return d->surface ? d->surface->device() : 0;
-}
-
-/*!
-    \reimp
-*/
 bool QGLMaskedSurface::activate(QGLAbstractSurface *prevSurface)
 {
     Q_D(const QGLMaskedSurface);
@@ -209,6 +200,11 @@ QRect QGLMaskedSurface::viewportGL() const
 {
     Q_D(const QGLMaskedSurface);
     return d->surface ? d->surface->viewportGL() : QRect();
+}
+
+bool QGLMaskedSurface::isValid() const
+{
+    return QGLAbstractSurface::isValid();
 }
 
 QT_END_NAMESPACE

@@ -43,11 +43,6 @@
 
 QT_BEGIN_NAMESPACE
 
-QPaintDevice *QGLDrawBufferSurface::device() const
-{
-    return m_surface->device();
-}
-
 bool QGLDrawBufferSurface::activate(QGLAbstractSurface *prevSurface)
 {
     if (!m_surface->activate(prevSurface))
@@ -66,6 +61,11 @@ void QGLDrawBufferSurface::deactivate(QGLAbstractSurface *nextSurface)
 QRect QGLDrawBufferSurface::viewportGL() const
 {
     return m_surface->viewportGL();
+}
+
+bool QGLDrawBufferSurface::isValid() const
+{
+    return QGLAbstractSurface::isValid();
 }
 
 QT_END_NAMESPACE

@@ -62,19 +62,21 @@ QT_BEGIN_NAMESPACE
 class QGLContextSurface : public QGLAbstractSurface
 {
 public:
-    explicit QGLContextSurface(const QGLContext *context)
-        : QGLAbstractSurface(502)
-        , m_context(context) {}
+    static const int QGLCONTEXT_SURFACE_ID = 502;
+
+    explicit QGLContextSurface(QOpenGLContext *context)
+        : QGLAbstractSurface(QGLCONTEXT_SURFACE_ID)
+    {
+        m_context = context;
+    }
     ~QGLContextSurface() {}
 
-    QPaintDevice *device() const;
     bool activate(QGLAbstractSurface *prevSurface);
     void deactivate(QGLAbstractSurface *nextSurface);
     QRect viewportGL() const;
+    bool isValid() const;
 
 private:
-    const QGLContext *m_context;
-
     Q_DISABLE_COPY(QGLContextSurface)
 };
 

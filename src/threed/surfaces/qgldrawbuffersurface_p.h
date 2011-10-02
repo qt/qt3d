@@ -71,6 +71,7 @@ public:
     bool activate(QGLAbstractSurface *prevSurface);
     void deactivate(QGLAbstractSurface *nextSurface);
     QRect viewportGL() const;
+    bool isValid() const;
 
 private:
     QGLAbstractSurface *m_surface;

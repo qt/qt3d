@@ -57,7 +57,7 @@ class GeometryView : public QGLView
 {
     Q_OBJECT
 public:
-    GeometryView(QWidget *parent = 0);
+    GeometryView(QWindow *parent = 0);
     ~GeometryView();
 
 protected:

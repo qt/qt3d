@@ -57,7 +57,6 @@ QT_BEGIN_NAMESPACE
 */
 QGLPixelBufferSurface::QGLPixelBufferSurface()
     : QGLAbstractSurface(QGLAbstractSurface::PixelBuffer)
-    , m_pbuffer(0)
 {
 }
 
@@ -66,8 +65,8 @@ QGLPixelBufferSurface::QGLPixelBufferSurface()
 */
 QGLPixelBufferSurface::QGLPixelBufferSurface(QGLPixelBuffer *pbuffer)
     : QGLAbstractSurface(QGLAbstractSurface::PixelBuffer)
-    , m_pbuffer(pbuffer)
 {
+    m_pb = pbuffer;
 }
 
 /*!
@@ -85,7 +84,7 @@ QGLPixelBufferSurface::~QGLPixelBufferSurface()
 */
 QGLPixelBuffer *QGLPixelBufferSurface::pixelBuffer() const
 {
-    return m_pbuffer;
+    return m_pb;
 }
 
 /*!
@@ -96,15 +95,7 @@ QGLPixelBuffer *QGLPixelBufferSurface::pixelBuffer() const
 void QGLPixelBufferSurface::setPixelBuffer
         (QGLPixelBuffer *pbuffer)
 {
-    m_pbuffer = pbuffer;
-}
-
-/*!
-    \reimp
-*/
-QPaintDevice *QGLPixelBufferSurface::device() const
-{
-    return m_pbuffer;
+    m_pb = pbuffer;
 }
 
 /*!
@@ -113,8 +104,8 @@ QPaintDevice *QGLPixelBufferSurface::device() const
 bool QGLPixelBufferSurface::activate(QGLAbstractSurface *prevSurface)
 {
     Q_UNUSED(prevSurface);
-    if (m_pbuffer)
-        return m_pbuffer->makeCurrent();
+    if (m_pb)
+        return m_pb->makeCurrent();
     else
         return false;
 }
@@ -133,10 +124,15 @@ void QGLPixelBufferSurface::deactivate(QGLAbstractSurface *nextSurface)
 */
 QRect QGLPixelBufferSurface::viewportGL() const
 {
-    if (m_pbuffer)
-        return QRect(0, 0, m_pbuffer->width(), m_pbuffer->height());
+    if (m_pb)
+        return QRect(0, 0, m_pb->width(), m_pb->height());
     else
         return QRect();
+}
+
+bool QGLPixelBufferSurface::isValid() const
+{
+    return QGLAbstractSurface::isValid() && m_pb;
 }
 
 QT_END_NAMESPACE

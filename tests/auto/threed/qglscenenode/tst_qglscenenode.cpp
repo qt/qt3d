@@ -695,6 +695,26 @@ protected:
 
 };
 
+static void ensureContext(QWindow &win, QOpenGLContext &ctx)
+{
+    QSurfaceFormat format;
+    format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
+    ctx.setFormat(format);
+#ifndef QT_NO_DEBUG_STREAM
+    QSurfaceFormat oldFormat = format;
+#endif
+    ctx.create();
+    // TODO: is it possible that the platform will downgrade the actual
+    // format, or will it just fail if it can't deliver the actual format
+    format = ctx.format();
+#ifndef QT_NO_DEBUG_STREAM
+    if (oldFormat.swapBehavior() != format.swapBehavior())
+        qWarning() << "Could not create context for swap behavior"
+                   << oldFormat.swapBehavior();
+#endif
+    ctx.makeCurrent(&win);
+}
+
 void tst_QGLSceneNode::position_QTBUG_17279()
 {
     QGeometryData geom;
@@ -713,8 +733,14 @@ void tst_QGLSceneNode::position_QTBUG_17279()
     QVERIFY(node->localTransform().isIdentity());
     QCOMPARE(node->position().z(), -5.0);
 
-    QGLWidget w;
-    QGLPainter p(&w);
+    QWindow glw;
+    glw.setSurfaceType(QWindow::OpenGLSurface);
+    QOpenGLContext ctx;
+    ensureContext(glw, ctx);
+    if (!ctx.isValid())
+        QSKIP("GL Implementation not valid", SkipSingle);
+
+    QGLPainter p(&glw);
     QGLCamera cam;
     p.setCamera(&cam);
 

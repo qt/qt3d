@@ -43,6 +43,8 @@
 #include "qglpainter_p.h"
 #include "qglabstracteffect.h"
 #include "qglext_p.h"
+#include <QtGui/QOpenGLContext>
+
 #include <QtOpenGL/qglpixelbuffer.h>
 #include <QtOpenGL/qglshaderprogram.h>
 #include <QtOpenGL/qglframebufferobject.h>
@@ -52,6 +54,7 @@
 #include <QtCore/qmap.h>
 #if !defined(QT_NO_THREAD)
 #include <QtCore/qthreadstorage.h>
+#include <QtCore/QThread>
 #endif
 #include "qglflatcoloreffect_p.h"
 #include "qglflattextureeffect_p.h"
@@ -63,7 +66,7 @@
 #include "qgeometrydata.h"
 #include "qglvertexbundle_p.h"
 #include "qmatrix4x4stack_p.h"
-#include "qglwidgetsurface.h"
+#include "qglwindowsurface.h"
 #include "qglpixelbuffersurface.h"
 #include "qglpaintersurface_p.h"
 
@@ -185,22 +188,25 @@ Q_GLOBAL_STATIC(QGLPainterPrivateCache, painterPrivateCache)
 
 QGLPainterPrivateCache::QGLPainterPrivateCache()
 {
-    connect(QGLSignalProxy::instance(),
-            SIGNAL(aboutToDestroyContext(const QGLContext *)),
-            this,
-            SLOT(contextDestroyed(const QGLContext *)));
 }
 
 QGLPainterPrivateCache::~QGLPainterPrivateCache()
 {
 }
 
-QGLPainterPrivate *QGLPainterPrivateCache::fromContext
-    (const QGLContext *context)
+QGLPainterPrivate *QGLPainterPrivateCache::fromContext(QOpenGLContext *context)
 {
     QGLPainterPrivate *priv = cache.value(context, 0);
     if (priv)
         return priv;
+#ifndef QT_NO_THREAD
+    Q_ASSERT_X(context->thread() == QThread::currentThread(),
+               Q_FUNC_INFO,
+               "Attempt to fetch painter state for context outside contexts thread");
+#endif
+    // since we assert this is the same thread then this is bound to be a direct
+    // connection, not a queued (asynchronous) connection
+    connect(context, SIGNAL(destroyed()), this, SLOT(contextDestroyed()));
     priv = new QGLPainterPrivate();
     priv->context = context;
     cache.insert(context, priv);
@@ -212,8 +218,9 @@ QGLPainterPrivateCache *QGLPainterPrivateCache::instance()
     return painterPrivateCache();
 }
 
-void QGLPainterPrivateCache::contextDestroyed(const QGLContext *context)
+void QGLPainterPrivateCache::contextDestroyed()
 {
+    QOpenGLContext *context = qobject_cast<QOpenGLContext *>(sender());
     QGLPainterPrivate *priv = cache.value(context, 0);
     if (priv) {
         priv->context = 0;
@@ -241,7 +248,7 @@ QGLPainter::QGLPainter()
 
     \sa begin()
 */
-QGLPainter::QGLPainter(const QGLContext *context)
+QGLPainter::QGLPainter(QOpenGLContext *context)
     : d_ptr(0)
 {
     begin(context);
@@ -249,15 +256,15 @@ QGLPainter::QGLPainter(const QGLContext *context)
 
 /*!
     Constructs a new GL painter and attaches it to the GL
-    context associated with \a widget.  It is not necessary to
+    context associated with \a window.  It is not necessary to
     call begin() after construction.
 
     \sa begin(), isActive()
 */
-QGLPainter::QGLPainter(QGLWidget *widget)
+QGLPainter::QGLPainter(QWindow *window)
     : d_ptr(0)
 {
-    begin(widget);
+    begin(window);
 }
 
 /*!
@@ -301,14 +308,14 @@ QGLPainter::~QGLPainter()
 }
 
 /*!
-    Begins painting on QGLContext::currentContext().  Returns false
+    Begins painting on the current GL context.  Returns false
     if there is no GL context current.
 
     \sa end()
 */
 bool QGLPainter::begin()
 {
-    return begin(QGLContext::currentContext());
+    return begin(QOpenGLContext::currentContext());
 }
 
 /*!
@@ -325,7 +332,7 @@ bool QGLPainter::begin()
 
     \sa end(), isActive()
 */
-bool QGLPainter::begin(const QGLContext *context)
+bool QGLPainter::begin(QOpenGLContext *context)
 {
     if (!context)
         return false;
@@ -337,13 +344,13 @@ bool QGLPainter::begin(const QGLContext *context)
     \internal
 */
 bool QGLPainter::begin
-    (const QGLContext *context, QGLAbstractSurface *surface,
+    (QOpenGLContext *context, QGLAbstractSurface *surface,
      bool destroySurface)
 {
     // If we don't have a context specified, then use the one
     // that the surface just made current.
     if (!context)
-        context = QGLContext::currentContext();
+        context = QOpenGLContext::currentContext();
 
     // Find the QGLPainterPrivate for the context, or create a new one.
     d_ptr = painterPrivateCache()->fromContext(context);
@@ -395,17 +402,19 @@ bool QGLPainter::begin
 }
 
 /*!
-    Begins painting on the GL context associated with \a widget.
-    Returns false if \a widget is null.
+    Begins GL painting on \a widget.  Returns false if \a widget is null.
 
     \sa end()
 */
-bool QGLPainter::begin(QGLWidget *widget)
+bool QGLPainter::begin(QWindow *window)
 {
-    if (!widget)
-        return false;
-    end();
-    return begin(widget->context(), new QGLWidgetSurface(widget));
+    bool result = false;
+    if (window)
+    {
+        end();
+        result = begin(0, new QGLWindowSurface(window));
+    }
+    return result;
 }
 
 /*!
@@ -535,7 +544,7 @@ bool QGLPainter::isActive() const
     Returns the GL context that is bound to this painter, or null
     if it is not currently bound.
 */
-const QGLContext *QGLPainter::context() const
+QOpenGLContext *QGLPainter::context() const
 {
     if (d_ptr)
         return d_ptr->context;

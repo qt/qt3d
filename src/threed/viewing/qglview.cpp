@@ -43,7 +43,7 @@
 #include "qglframebufferobject.h"
 #include "qglsubsurface.h"
 #include "qglmaskedsurface_p.h"
-#include "qglwidgetsurface.h"
+#include "qglwindowsurface.h"
 #include "qgldrawbuffersurface_p.h"
 #include "qray3d.h"
 #include <QtGui/qevent.h>
@@ -52,6 +52,9 @@
 #include <QtCore/qtimer.h>
 #include <QtCore/qdatetime.h>
 #include <QtCore/qdebug.h>
+
+#include <QtGui/QOpenGLContext>
+#include <QtGui/QSurfaceFormat>
 
 QT_BEGIN_NAMESPACE
 
@@ -211,7 +214,11 @@ class QGLViewPrivate
 {
 public:
     QGLViewPrivate(QGLView *parent)
-        : view(parent), mainSurface(parent)
+        : view(parent)
+        , context(0)
+        , initialized(false)
+        , mainSurface(parent)
+        , visible(false)
     {
         options = QGLView::CameraNavigation;
         fbo = 0;
@@ -257,10 +264,14 @@ public:
     }
 
     QGLView *view;
+    QOpenGLContext *context;
+    QSurfaceFormat format;
+    bool initialized;
     QGLView::Options options;
     QGLView::StereoType stereoType;
     QGLFramebufferObject *fbo;
-    QGLWidgetSurface mainSurface;
+    QGLWindowSurface mainSurface;
+    bool visible;
     QGLAbstractSurface *leftSurface;
     QGLAbstractSurface *rightSurface;
     bool pickBufferForceUpdate;
@@ -292,6 +303,8 @@ public:
     QGLAbstractSurface *leftEyeSurface(const QSize &size);
     QGLAbstractSurface *rightEyeSurface(const QSize &size);
     QGLAbstractSurface *bothEyesSurface();
+
+    void ensureContext();
 };
 
 inline void QGLViewPrivate::logEnter(const char *message)
@@ -315,6 +328,30 @@ inline void QGLViewPrivate::logLeave(const char *message)
     qDebug("LOG[%d:%02d:%02d.%03d]: LEAVE: %s (%d ms elapsed)",
            ms / 3600000, (ms / 60000) % 60,
            (ms / 1000) % 60, ms % 1000, message, duration);
+}
+
+inline void QGLViewPrivate::ensureContext()
+{
+    if (!context)
+    {
+        context = new QOpenGLContext();
+        context->setFormat(format);
+#ifndef QT_NO_DEBUG_STREAM
+        QSurfaceFormat oldFormat = format;
+#endif
+        bool success = context->create();
+        // TODO: is it possible that the platform will downgrade the actual
+        // format, or will it just fail if it can't deliver the actual format
+        format = context->format();
+#ifndef QT_NO_DEBUG_STREAM
+        if (!success)
+            qWarning() << "Context was not successfully created";
+        if (oldFormat.swapBehavior() != format.swapBehavior())
+            qWarning() << "Could not create requested format"
+                          << oldFormat.swapBehavior();
+#endif
+    }
+    context->makeCurrent(view);
 }
 
 static QString qt_gl_stereo_arg()
@@ -394,10 +431,12 @@ QGLAbstractSurface *QGLViewPrivate::leftEyeSurface(const QSize &size)
     switch (stereoType) {
     case QGLView::Hardware:
 #if defined(GL_BACK_LEFT) && defined(GL_BACK_RIGHT)
-        if (!leftSurface) {
-            leftSurface = new QGLDrawBufferSurface
-                (&mainSurface,
-                 view->doubleBuffer() ? GL_BACK_LEFT : GL_FRONT_LEFT);
+        if (!leftSurface)
+        {
+            if (format.swapBehavior() == QSurfaceFormat::DoubleBuffer)
+                leftSurface = new QGLDrawBufferSurface(&mainSurface, GL_BACK_LEFT);
+            else
+                leftSurface = new QGLDrawBufferSurface(&mainSurface, GL_FRONT_LEFT);
         }
         return leftSurface;
 #endif
@@ -459,7 +498,7 @@ QGLAbstractSurface *QGLViewPrivate::rightEyeSurface(const QSize &size)
         if (!rightSurface) {
             rightSurface = new QGLDrawBufferSurface
                 (&mainSurface,
-                 view->doubleBuffer() ? GL_BACK_RIGHT : GL_FRONT_RIGHT);
+                 format.swapBehavior() == QSurfaceFormat::DoubleBuffer ? GL_BACK_RIGHT : GL_FRONT_RIGHT);
         }
         return rightSurface;
 #endif
@@ -527,31 +566,35 @@ QGLAbstractSurface *QGLViewPrivate::bothEyesSurface()
     }
 }
 
-static QGLFormat makeStereoGLFormat(const QGLFormat& format)
+static QSurfaceFormat makeStereoGLFormat(const QSurfaceFormat& format)
 {
+    QSurfaceFormat fmt(format);
 #if defined(GL_BACK_LEFT) && defined(GL_BACK_RIGHT)
-    QGLFormat fmt(format);
     if (qt_gl_stereo_arg() == QLatin1String("-stereo-hw"))
-        fmt.setOption(QGL::StereoBuffers);
-    return fmt;
+        fmt.setOption(QSurfaceFormat::StereoBuffers);
 #else
-    QGLFormat fmt(format);
-    fmt.setOption(QGL::NoStereoBuffers);
-    return fmt;
+    qWarning("No option to clear stereo buffers");
 #endif
+    return fmt;
 }
 
 /*!
     Constructs a new view widget and attaches it to \a parent.
 
     This constructor will request a stereo rendering context if
-    the hardware supports it.
+    the hardware supports it (and the -stereo-hw option is set).
 */
-QGLView::QGLView(QWidget *parent)
-    : QGLWidget(makeStereoGLFormat(QGLFormat::defaultFormat()), parent)
+QGLView::QGLView(QWindow *parent)
+    : QWindow(parent)
 {
     d = new QGLViewPrivate(this);
-    setMouseTracking(true);
+    d->format = makeStereoGLFormat(QSurfaceFormat());
+    d->format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
+    d->format.setDepthBufferSize(24);
+    setSurfaceType(QWindow::OpenGLSurface);
+    setFormat(d->format);
+    // TODO: No mouse tracking available
+    // setMouseTracking(true);
     if (!parent)
         d->processStereoOptions(this);
 }
@@ -563,12 +606,19 @@ QGLView::QGLView(QWidget *parent)
 
     If \a format does not include the stereo option, then a stereo
     viewing context will not be requested.
+
+    The format will be set onto the window, and also onto the underlying
+    OpenGL context.
 */
-QGLView::QGLView(const QGLFormat& format, QWidget *parent)
-    : QGLWidget(format, parent)
+QGLView::QGLView(const QSurfaceFormat& format, QWindow *parent)
+    : QWindow(parent)
 {
     d = new QGLViewPrivate(this);
-    setMouseTracking(true);
+    d->format = format;
+    setSurfaceType(QWindow::OpenGLSurface);
+    setFormat(d->format);
+    // TODO: No mouse tracking available
+    // setMouseTracking(true);
     if (!parent)
         d->processStereoOptions(this);
 }
@@ -742,17 +792,13 @@ QVector3D QGLView::mapPoint(const QPoint &point) const
     int width = viewportSize.width();
     int height = viewportSize.height();
 
-    // Use the device's DPI setting to determine the pixel aspect ratio.
-    int dpiX = logicalDpiX();
-    int dpiY = logicalDpiY();
-    if (dpiX <= 0 || dpiY <= 0)
-        dpiX = dpiY = 1;
+    // TODO: previous implementations catered for non-square pixels
 
-    // Derive the aspect ratio based on window and pixel size.
+    // Derive the aspect ratio based on window size.
     if (width <= 0 || height <= 0)
         aspectRatio = 1.0f;
     else
-        aspectRatio = ((qreal)(width * dpiY)) / ((qreal)(height * dpiX));
+        aspectRatio = (qreal)width / (qreal)height;
 
     // Map the point into eye co-ordinates.
     return d->camera->mapPoint(point, aspectRatio, viewportSize);
@@ -764,7 +810,39 @@ void QGLView::cameraChanged()
     d->pickBufferForceUpdate = true;
 
     // Queue an update for the next event loop.
+
     update();
+}
+
+void QGLView::showEvent(QShowEvent *e)
+{
+    Q_UNUSED(e);
+    d->visible = true;
+}
+
+void QGLView::hideEvent(QHideEvent *e)
+{
+    Q_UNUSED(e);
+    d->visible = false;
+}
+
+void QGLView::exposeEvent(QExposeEvent *e)
+{
+    Q_UNUSED(e);
+
+    d->updateQueued = false;
+    d->ensureContext();
+
+    QRect rect = geometry();
+    resizeGL(rect.width(), rect.height());
+
+    if (!d->initialized)
+        initializeGL();
+
+    paintGL();
+
+    if (d->format.swapBehavior() == QSurfaceFormat::DoubleBuffer)
+        d->context->swapBuffers(this);
 }
 
 /*!
@@ -797,6 +875,7 @@ void QGLView::initializeGL()
 
     glDisable(GL_CULL_FACE);
     initializeGL(&painter);
+    d->initialized = true;
     d->logLeave("QGLView::initializeGL");
 }
 
@@ -870,6 +949,15 @@ void QGLView::paintGL()
     d->logLeave("QGLView::paintGL");
 }
 
+void QGLView::update()
+{
+    if (!d->updateQueued)
+    {
+        d->updateQueued = true;
+        QApplication::postEvent(this, new QExposeEvent(geometry()));
+    }
+}
+
 /*!
     Initializes the current GL context represented by \a painter.
 
@@ -914,8 +1002,15 @@ void QGLView::earlyPaintGL(QGLPainter *painter)
     may wish to render a simpler scene that omits unselectable
     objects and uses simpler meshes for the selectable objects.
 
+    The base default implementation does nothing.  Sub-classes should
+    re-implement this function to paint GL content.
+
     \sa earlyPaintGL()
 */
+void QGLView::paintGL(QGLPainter *painter)
+{
+    Q_UNUSED(painter);
+}
 
 /*!
     Processes the mouse press event \a e.
@@ -956,10 +1051,11 @@ void QGLView::mousePressEvent(QMouseEvent *e)
         d->startUpVector = d->camera->upVector();
         d->panModifiers = e->modifiers();
 #ifndef QT_NO_CURSOR
-        setCursor(Qt::ClosedHandCursor);
+        // TODO: not supported under QWindow
+        //setCursor(Qt::ClosedHandCursor);
 #endif
     }
-    QGLWidget::mousePressEvent(e);
+    QWindow::mousePressEvent(e);
 }
 
 /*!
@@ -970,7 +1066,8 @@ void QGLView::mouseReleaseEvent(QMouseEvent *e)
     if (d->panning && e->button() == Qt::LeftButton) {
         d->panning = false;
 #ifndef QT_NO_CURSOR
-        unsetCursor();
+        // TODO: unsetCursor not support with QWindow
+        //unsetCursor();
 #endif
     }
     if (d->pressedObject) {
@@ -1007,7 +1104,7 @@ void QGLView::mouseReleaseEvent(QMouseEvent *e)
             QCoreApplication::sendEvent(pressed, &event);
         }
     }
-    QGLWidget::mouseReleaseEvent(e);
+    QWindow::mouseReleaseEvent(e);
 }
 
 /*!
@@ -1025,7 +1122,7 @@ void QGLView::mouseDoubleClickEvent(QMouseEvent *e)
             QCoreApplication::sendEvent(object, &event);
         }
     }
-    QGLWidget::mouseDoubleClickEvent(e);
+    QWindow::mouseDoubleClickEvent(e);
 }
 
 /*!
@@ -1081,19 +1178,7 @@ void QGLView::mouseMoveEvent(QMouseEvent *e)
             d->enteredObject = 0;
         }
     }
-    QGLWidget::mouseMoveEvent(e);
-}
-
-/*!
-    Processes the leave event \a e.
-*/
-void QGLView::leaveEvent(QEvent *e)
-{
-    if (!d->pressedObject && d->enteredObject) {
-        sendLeaveEvent(d->enteredObject);
-        d->enteredObject = 0;
-    }
-    QGLWidget::leaveEvent(e);
+    QWindow::mouseMoveEvent(e);
 }
 
 #ifndef QT_NO_WHEELEVENT
@@ -1105,7 +1190,7 @@ void QGLView::wheelEvent(QWheelEvent *e)
 {
     if ((d->options & QGLView::CameraNavigation) != 0)
         wheel(e->delta());
-    QGLWidget::wheelEvent(e);
+    QWindow::wheelEvent(e);
 }
 
 #endif
@@ -1119,7 +1204,7 @@ void QGLView::keyPressEvent(QKeyEvent *e)
     qreal sep;
 
     if ((d->options & QGLView::CameraNavigation) == 0) {
-        QGLWidget::keyPressEvent(e);
+        QWindow::keyPressEvent(e);
         return;
     }
     switch (e->key()) {
@@ -1127,7 +1212,7 @@ void QGLView::keyPressEvent(QKeyEvent *e)
         case Qt::Key_Escape:
         case Qt::Key_Q:
         {
-            if (parentWidget() == 0)
+            if (parent() == 0)
                 close();
         }
 
@@ -1189,7 +1274,7 @@ void QGLView::keyPressEvent(QKeyEvent *e)
         }
         break;
     }
-    QGLWidget::keyPressEvent(e);
+    QWindow::keyPressEvent(e);
 }
 
 class QGLViewPickSurface : public QGLAbstractSurface
@@ -1216,11 +1301,6 @@ QGLViewPickSurface::QGLViewPickSurface
     , m_fbo(fbo)
     , m_viewportGL(QPoint(0, 0), areaSize)
 {
-}
-
-QPaintDevice *QGLViewPickSurface::device() const
-{
-    return m_view;
 }
 
 bool QGLViewPickSurface::activate(QGLAbstractSurface *prevSurface)
@@ -1306,7 +1386,7 @@ QObject *QGLView::objectForPoint(const QPoint &point)
         // Create a framebuffer object as big as the window to act
         // as the pick buffer if we are single buffered.  If we are
         // double-buffered, then use the window back buffer.
-        bool useBackBuffer = doubleBuffer();
+        bool useBackBuffer = d->format.swapBehavior() == QSurfaceFormat::DoubleBuffer;
         if (!useBackBuffer) {
             QSize fbosize = QGL::nextPowerOfTwo(areaSize);
             if (!d->fbo) {
@@ -1343,7 +1423,6 @@ QObject *QGLView::objectForPoint(const QPoint &point)
 
     // Release the framebuffer object and return.
     painter.end();
-    doneCurrent();
     return object;
 }
 
@@ -1492,5 +1571,24 @@ QPointF QGLView::viewDelta(int deltax, int deltay) const
     the percentage values, typically between -1 and 1.
 */
 
+/*!
+    Returns the OpenGL context object associated with this view, or null
+    if one has not been associated yet.  The default is null.
+*/
+QOpenGLContext *QGLView::context()
+{
+    return d->context;
+}
+
+/*!
+    Returns true if the view is visible, that is its show event has been called
+    and was not followed by a hide event.  Note that this cannot be relied apon
+    for the visibility of the window, as it depends on whether hide and show
+    events are triggered, which is platform dependent.
+*/
+bool QGLView::isVisible() const
+{
+    return d->visible;
+}
 
 QT_END_NAMESPACE

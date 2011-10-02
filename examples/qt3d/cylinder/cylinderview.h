@@ -49,7 +49,7 @@ class CylinderView : public QGLView
 {
     Q_OBJECT
 public:
-    CylinderView(QWidget *parent = 0);
+    CylinderView(QWindow *parent = 0);
     ~CylinderView();
 
 protected:

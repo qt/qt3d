@@ -50,19 +50,29 @@
 #include <QImage>
 #include <QPainter>
 #include <QDebug>
+#include <QtGui/QFontDatabase>
 
-class ShapesWidget : public QGLWidget
+#include <QtGui/QWindow>
+#include <QtGui/QOpenGLContext>
+#include <QtGui/QSurfaceFormat>
+
+class ShapesWidget : public QWindow
 {
     Q_OBJECT
 public:
-    ShapesWidget(QWidget *parent = 0);
+    ShapesWidget(QWindow *parent = 0);
     ~ShapesWidget();
 
 protected:
+    void exposeEvent(QExposeEvent *);
+
+    void resizeGL(int w, int h);
     void initializeGL();
     void paintGL();
 
 private:
+    void ensureContext();
+
     void paintPoints(QGLPainter *painter, const QRect& rect);
     void paintLines(QGLPainter *painter, const QRect& rect);
     void paintLineStrip(QGLPainter *painter, const QRect& rect);
@@ -82,12 +92,23 @@ private:
     QGLSceneNode *teapot;
     QGLLightModel oneSidedModel;
     QGLLightModel twoSidedModel;
+
+    QOpenGLContext *context;
+    bool initialised;
+    QSurfaceFormat format;
 };
 
-ShapesWidget::ShapesWidget(QWidget *parent)
-    : QGLWidget(parent)
+ShapesWidget::ShapesWidget(QWindow *parent)
+    : QWindow(parent)
+    , context(0)
+    , initialised(false)
 {
     setWindowTitle(tr("GL Primitive Shapes"));
+    format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
+    format.setDepthBufferSize(24);
+    setSurfaceType(QWindow::OpenGLSurface);
+    setFormat(format);
+
     oneSidedModel.setModel(QGLLightModel::OneSided);
     twoSidedModel.setModel(QGLLightModel::TwoSided);
 }
@@ -97,9 +118,33 @@ ShapesWidget::~ShapesWidget()
     delete scene;
 }
 
+void ShapesWidget::exposeEvent(QExposeEvent *e)
+{
+    Q_UNUSED(e);
+
+    ensureContext();
+
+    QRect rect = geometry();
+    resizeGL(rect.width(), rect.height());
+
+    if (!initialised)
+        initializeGL();
+
+    paintGL();
+
+    if (format.swapBehavior() == QSurfaceFormat::DoubleBuffer)
+        context->swapBuffers(this);
+}
+
+void ShapesWidget::resizeGL(int w, int h)
+{
+    glViewport(0, 0, w, h);
+}
+
 void ShapesWidget::initializeGL()
 {
-    QGLPainter painter(this);
+    QGLPainter painter;
+    painter.begin();
 
     painter.setLightModel(&twoSidedModel);
     painter.setFaceColor(QGL::FrontFaces, QColor(170, 202, 0));
@@ -111,6 +156,8 @@ void ShapesWidget::initializeGL()
     builder << QGL::Smooth << QGLTeapot();
     teapot = builder.currentNode();
     scene = builder.finalizedSceneNode();
+
+    initialised = true;
 }
 
 void ShapesWidget::paintGL()
@@ -122,11 +169,11 @@ void ShapesWidget::paintGL()
     glDisable(GL_DEPTH_TEST);
 
     QMatrix4x4 projm;
-    projm.ortho(rect());
+    projm.ortho(geometry());
     painter.projectionMatrix() = projm;
     painter.modelViewMatrix().setToIdentity();
 
-    QRect wrect = rect();
+    QRect wrect = geometry();
     int boxw = wrect.width() / 3;
     int boxh = wrect.height() / 3;
 
@@ -365,11 +412,10 @@ void ShapesWidget::paintTeapot(QGLPainter *painter, const QRect& rect)
 void ShapesWidget::drawText
         (QGLPainter *painter, const QRect& posn, const QString& str)
 {
-    QFontMetrics metrics = fontMetrics();
+    QFont f = QApplication::font();
+    QFontMetrics metrics(f);
     QRect rect = metrics.boundingRect(str);
     rect.adjust(0, 0, 1, 1);
-
-    QFont f = font();
 
     QImage image(rect.size(), QImage::Format_ARGB32);
     image.fill(0);
@@ -408,18 +454,67 @@ void ShapesWidget::drawText
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+void ShapesWidget::ensureContext()
+{
+    if (!context)
+    {
+        format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
+        context = new QOpenGLContext();
+        context->setFormat(format);
+#ifndef QT_NO_DEBUG_STREAM
+        QSurfaceFormat oldFormat = format;
+#endif
+        context->create();
+        // TODO: is it possible that the platform will downgrade the actual
+        // format, or will it just fail if it can't deliver the actual format
+        format = context->format();
+#ifndef QT_NO_DEBUG_STREAM
+        if (oldFormat.swapBehavior() != format.swapBehavior())
+            qWarning() << "Could not create context for swap behavior"
+                       << oldFormat.swapBehavior();
+#endif
+        context->makeCurrent(this);
+    }
+    else
+    {
+        context->makeCurrent(this);
+    }
+}
+
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    ShapesWidget w;
+    ShapesWidget view;
 
-    if (QApplication::arguments().contains(QLatin1String("-maximize")))
-        w.showMaximized();
-    else if (QApplication::arguments().contains(QLatin1String("-fullscreen")))
-        w.showFullScreen();
+    QStringList args = QCoreApplication::arguments();
+    int w_pos = args.indexOf("-width");
+    int h_pos = args.indexOf("-height");
+    if (w_pos >= 0 && h_pos >= 0)
+    {
+        bool ok = true;
+        int w = args.at(w_pos + 1).toInt(&ok);
+        if (!ok)
+        {
+            qWarning() << "Could not parse width argument:" << args;
+            return 1;
+        }
+        int h = args.at(h_pos + 1).toInt(&ok);
+        if (!ok)
+        {
+            qWarning() << "Could not parse height argument:" << args;
+            return 1;
+        }
+        view.resize(w, h);
+    }
     else
-        w.show();
+    {
+        view.resize(800, 600);
+    }
+    view.show();
+
     return app.exec();
 }
+
+
 
 #include "shapes.moc"

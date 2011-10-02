@@ -135,7 +135,7 @@ int main(int argc, char *argv[])                                                
     f.setSamples(16);                                                                   \
     QSGView view;                                                                       \
     view.setFormat(f);                                                           \
-    QString qml = q_get_qmldir(QLatin1String("qml/desktop.qml"));                       \
+    QString qml = q_get_qmldir(QLatin1String( file ));                       \
     view.setSource(QUrl::fromLocalFile(qml));                                           \
     if (QGuiApplication::arguments().contains(QLatin1String("-maximize")))              \
         view.showMaximized();                                                           \

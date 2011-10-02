@@ -50,7 +50,7 @@
 
 #include <QtCore/qmath.h>
 
-BuilderView::BuilderView(QWidget *parent)
+BuilderView::BuilderView(QWindow *parent)
     : QGLView(parent)
     , canScene(new QGLSceneNode(this))
 {

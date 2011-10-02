@@ -39,22 +39,50 @@
 **
 ****************************************************************************/
 
-#include <QtDebug>
 #include "qglcontextsurface_p.h"
 
-QT_BEGIN_NAMESPACE
+#include <QtCore/QtDebug>
+#include <QtGui/QWindow>
+#include <QtGui/QOpenGLContext>
 
-QPaintDevice *QGLContextSurface::device() const
-{
-    return m_context->device();
-}
+QT_BEGIN_NAMESPACE
 
 bool QGLContextSurface::activate(QGLAbstractSurface *prevSurface)
 {
     Q_UNUSED(prevSurface);
-    if (QGLContext::currentContext() != m_context)
-        const_cast<QGLContext *>(m_context)->makeCurrent();
-    return true;
+    Q_ASSERT_X(QOpenGLContext::currentContext() || m_context,
+               Q_FUNC_INFO,
+               "Activating GL contex surface without GL context");
+    if (m_context)
+    {
+        if (m_context != QOpenGLContext::currentContext())
+        {
+            m_context->makeCurrent(m_window);
+        }
+    }
+    else
+    {
+        m_context = QOpenGLContext::currentContext();
+    }
+    // Once we have used this context with a window remember that window and
+    // complain if it is used with another window, since that will affect the
+    // viewport and other rendering assumptions.
+    if (!m_window)
+    {
+#ifndef QT_NO_DEBUG_STREAM
+        if (!m_context->surface() || m_context->surface()->surfaceType() == QSurface::Window)
+            qWarning() << "Attempt to access context without GL window";
+#endif
+        m_window = static_cast<QWindow*>(m_context->surface());
+    }
+#ifndef QT_NO_DEBUG_STREAM
+    else
+    {
+        if (m_context->surface() != m_window)
+            qWarning() << "Attempt to render in wrong window for context";
+    }
+#endif
+    return isValid();
 }
 
 void QGLContextSurface::deactivate(QGLAbstractSurface *nextSurface)
@@ -64,13 +92,27 @@ void QGLContextSurface::deactivate(QGLAbstractSurface *nextSurface)
 
 QRect QGLContextSurface::viewportGL() const
 {
-    QPaintDevice *device = m_context->device();
-    if(!device)
+    QRect r;
+    if (m_window)
     {
-        qWarning() << "Null paint device in QGLContextSurface::viewportGL()";
-        return QRect(0,0,0,0);
+        r = m_window->geometry();
     }
-    return QRect(0, 0, device->width(), device->height());
+#ifndef QT_NO_DEBUG_STREAM
+    else
+    {
+        qWarning() << "Attempt to get viewport rect with no window\n"
+                      << "Call activate() first";
+    }
+#endif
+    return r;
+}
+
+bool QGLContextSurface::isValid() const
+{
+    bool winOK = true;
+    if (m_window)
+        winOK = m_window->surfaceType() == QWindow::OpenGLSurface;
+    return isValid() && winOK;
 }
 
 QT_END_NAMESPACE

@@ -44,9 +44,14 @@
 #include "qglframebufferobjectsurface.h"
 #include "qglpixelbuffersurface.h"
 #include "qglsubsurface.h"
-#include "qglwidgetsurface.h"
-#include <QtGui/qpaintdevice.h>
-#include <QtDebug>
+#include "qglwindowsurface.h"
+
+#include <QtCore/QtDebug>
+#include <QtGui/QWindow>
+#include <QtGui/QOpenGLFramebufferObject>
+#include <QtOpenGL/QGLPixelBuffer>
+#include <QtGui/QOpenGLContext>
+#include <QtGui/QSurface>
 
 QT_BEGIN_NAMESPACE
 
@@ -97,7 +102,7 @@ QT_BEGIN_NAMESPACE
     When QGLPainter::popSurface() is called, the previous surface
     is re-activated and the \c{glViewport()} changed accordingly.
 
-    \sa QGLFramebufferObjectSurface, QGLWidgetSurface, QGLSubsurface
+    \sa QGLFramebufferObjectSurface, QGLWindowSurface, QGLSubsurface
     \sa QGLPixelBufferSurface, QGLPainter::pushSurface()
 */
 
@@ -105,7 +110,7 @@ QT_BEGIN_NAMESPACE
     \enum QGLAbstractSurface::SurfaceType
     This enum defines the type of a QGLAbstractSurface.
 
-    \value Widget Instance of QGLWidgetSurface.
+    \value Window Instance of QGLWindowSurface.
     \value FramebufferObject Instance of QGLFramebufferObjectSurface.
     \value PixelBuffer Instance of QGLPixelBufferSurface.
     \value Subsurface Instance of QGLSubsurface.
@@ -117,6 +122,14 @@ QT_BEGIN_NAMESPACE
 
     Constructs an OpenGL drawing surface of the specified \a surfaceType.
 */
+QGLAbstractSurface::QGLAbstractSurface(int surfaceType)
+    : m_context(0)
+    , m_window(0)
+    , m_fbo(0)
+    , m_pb(0)
+    , m_type(surfaceType)
+{
+}
 
 /*!
     Destroys this OpenGL drawing surface.
@@ -132,28 +145,38 @@ QGLAbstractSurface::~QGLAbstractSurface()
 */
 
 /*!
-    \fn QPaintDevice *QGLAbstractSurface::device() const
+    \fn QOpenGLContext *context() const
 
-    Returns the raw device that this surface will draw on.
+    Returns the OpenGL context which is associated with this surface, if any.
+    When this surface is first activated, if this value is null then it will be
+    set to the context current at that time.
 
-    If the surface is an instance of QGLSubsurface, then this will
-    return the device of the surface that underlies the subsurface.
-    The viewportRect() defines the region to render into.
+    The default value is null.
 
-    \sa viewportRect()
+    \sa setContext()
 */
 
 /*!
-    \fn bool QGLAbstractSurface::activate(QGLAbstractSurface *prevSurface)
+    \fn void context(QOpenGLContext *context)
 
-    Activate this surface by making its context current, and binding
-    the associated framebuffer object, if any.
+    Sets the OpenGL context which is to be associated with this surface.
+    When this surface is first activated, if this value is null then it will be
+    set to the context current at that time.
+
+    \sa context()
+*/
+
+/*!
+    \fn void QGLAbstractSurface::activate(QGLAbstractSurface *prevSurface)
+
+    Activate this surface.
 
     If \a prevSurface is null, then that surface has just been deactivated
     in the process of switching to this surface.  This may allow activate()
     to optimize the transition to avoid unnecessary state changes.
 
-    Returns true if the surface was activated; false otherwise.
+    Typically implementations should assert if this fails in debug mode,
+    since no rendering into the surface is possible.
 
     \sa deactivate(), switchTo()
 */
@@ -165,7 +188,7 @@ QGLAbstractSurface::~QGLAbstractSurface()
     context current.  Typically this will release the framebuffer
     object associated with the surface.
 
-    If \a nextSurface is null, then that surface will be activated next
+    If \a nextSurface is not-null, then that surface will be activated next
     in the process of switching away from this surface.  This may allow
     deactivate() to optimize the transition to avoid unnecessary state
     changes.
@@ -185,13 +208,26 @@ QGLAbstractSurface::~QGLAbstractSurface()
 */
 QRect QGLAbstractSurface::viewportRect() const
 {
+    Q_ASSERT(isValid());
+
     QRect view = viewportGL();
-    QPaintDevice *dev = device();
     int height;
-    if (dev->devType() == QInternal::Widget)
-        height = static_cast<QWidget *>(dev)->height();
-    else
-        height = dev->height();
+    if (m_type == Window)
+    {
+        Q_ASSERT(m_window);
+        height = m_window->height();
+    }
+    else if (m_type == FramebufferObject)
+    {
+        Q_ASSERT(m_fbo);
+        height = m_fbo->size().height();
+    }
+    else if (m_type == PixelBuffer)
+    {
+        Q_ASSERT(m_pb);
+        height = m_pb->size().height();
+    }
+
     return QRect(view.x(), height - (view.y() + view.height()),
                  view.width(), view.height());
 }
@@ -199,7 +235,7 @@ QRect QGLAbstractSurface::viewportRect() const
 /*!
     \fn QRect QGLAbstractSurface::viewportGL() const
 
-    Returns the rectangle of the surface device() that is occupied by
+    Returns the rectangle of the surface that is occupied by
     the viewport for this surface.  The origin is at the bottom-left,
     which makes the value suitable for passing to \c{glViewport()}:
 
@@ -214,42 +250,35 @@ QRect QGLAbstractSurface::viewportRect() const
     and right stereo eye images into the two halves of a QGLWidget.
     The eye surfaces would typically be instances of QGLSubsurface.
 
+    Note that the value returned from this function is not defined before
+    the activate() function has been called at least once.
+
     \sa viewportRect(), device()
 */
 
 /*!
-    Returns the aspect ratio of viewportGL() after correcting for the
-    DPI of device().
+    Returns the aspect ratio of viewportGL().
 
     The return value is used to correct perspective and orthographic
-    projections for the aspect ratio of the drawing surface.  Subclasses
-    may override this function to adjust the return value if the DPI of
-    device() is not sufficient to determine the aspect ratio.
+    projections for the aspect ratio of the drawing surface.
+
+    No adjustments are made for DPI.
+
+    Subclasses may override this function to further adjust the return value
+    if the DPI in the horizontal vs vertical direction is not the same,
+    that is, the pixels are not square.
 */
 qreal QGLAbstractSurface::aspectRatio() const
 {
+    Q_ASSERT(isValid());
+
     // Get the size of the current viewport.
     QSize size = viewportGL().size();
-    if (size.width() == 0 || size.height() == 0 ||
-            size.width() == size.height())
+    if (size.width() == size.height())
         return 1.0f;
 
-    // Use the device's DPI setting to determine the pixel aspect ratio.
-    QPaintDevice *device = this->device();
-
-    int dpiX = 0;
-    int dpiY = 0;
-    if(device)
-    {
-        dpiX = device->logicalDpiX();
-        dpiY = device->logicalDpiY();
-    } else
-        qWarning() << "null device in QGLAbstractSurface::aspectRatio()";
-    if (dpiX <= 0 || dpiY <= 0)
-        dpiX = dpiY = 1;
-
-    // Return the final aspect ratio based on viewport and pixel size.
-    return ((qreal)(size.width() * dpiY)) / ((qreal)(size.height() * dpiX));
+    // Return the final aspect ratio based on viewport.
+    return (qreal)size.width() / (qreal)size.height();
 }
 
 /*!
@@ -277,54 +306,46 @@ bool QGLAbstractSurface::switchTo(QGLAbstractSurface *nextSurface)
 }
 
 /*!
-    Creates an OpenGL drawing surface for the specified paint \a device.
-    Returns null if it is not possible to create a surface for \a device.
+    Returns true if this surface is valid and ready to be drawn into with OpenGL
+    commands.  Typically it will be true if the surface has been associated with
+    an opengl context and a supported painting context such as a window or fbo.
 
-    \sa createSurfaceForContext()
+    Sub-class implementations can use this fall-back, which simply checks for
+    a valid viewport rectangle.
+
+    Note that the surface may only become valid during activate() calls.
 */
-QGLAbstractSurface *QGLAbstractSurface::createSurfaceForDevice
-    (QPaintDevice *device)
+bool QGLAbstractSurface::isValid() const
 {
-    if(!device)
-    {
-        qWarning() << "Unable to create a surface for device " << device;
-        return 0;
-    }
-    switch (device->devType()) {
-    case QInternal::Widget: {
-        QGLWidget *glw = qobject_cast<QGLWidget *>
-                (static_cast<QWidget *>(device));
-        if (glw)
-            return new QGLWidgetSurface(glw);
-        else
-            return 0;
-    }
-    case QInternal::Pbuffer:
-        return new QGLPixelBufferSurface(static_cast<QGLPixelBuffer *>(device));
-    case QInternal::FramebufferObject:
-        return new QGLFramebufferObjectSurface
-            (static_cast<QGLFramebufferObject *>(device));
-    default:
-        return 0;
-    }
+    return viewportGL().isValid();
 }
 
 /*!
-    Creates an OpenGL drawing surface for the paint device
-    underlying \a context.  If the paint device is not recognized,
-    then a generic surface will be created that makes \a context
-    current when the surface is activated.
+    Creates an OpenGL drawing surface using the given \a context.  This relies on
+    the \a context having a valid surface which is a QWindow in which case the
+    surface returned is a QGLWindowSurface.
 
-    \sa createSurfaceForDevice()
+    If not, then a generic surface based on the OpenGL context is returned.  In this
+    case the generic surface will fail unless an underlying rendering surface becomes
+    available prior to attempting to activate the surface.
 */
-QGLAbstractSurface *QGLAbstractSurface::createSurfaceForContext
-    (const QGLContext *context)
+QGLAbstractSurface *QGLAbstractSurface::createSurfaceForContext(QOpenGLContext *context)
 {
     Q_ASSERT(context);
-    QGLAbstractSurface *surface = createSurfaceForDevice(context->device());
-    if (!surface)
-        surface = new QGLContextSurface(context);
-    return surface;
+#ifndef QT_NO_DEBUG_STREAM
+    if (context->surface() && context->surface()->surfaceType() != QSurface::Window)
+        qWarning() << "Attempt to cast non-window surface";
+#endif
+    QWindow *win = static_cast<QWindow*>(context->surface());
+    if (win)
+    {
+        return new QGLWindowSurface(win);
+    }
+    else
+    {
+        return new QGLContextSurface(context);
+    }
+    return 0;
 }
 
 QT_END_NAMESPACE

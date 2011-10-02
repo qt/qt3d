@@ -45,6 +45,8 @@
 #include "qglpainter.h"
 #include "qglcamera.h"
 
+#include <QtGui/QWindow>
+
 QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
@@ -53,12 +55,12 @@ QT_MODULE(Qt3D)
 
 class QGLViewPrivate;
 
-class Q_QT3D_EXPORT QGLView : public QGLWidget
+class Q_QT3D_EXPORT QGLView : public QWindow
 {
     Q_OBJECT
 public:
-    explicit QGLView(QWidget *parent=0);
-    explicit QGLView(const QGLFormat& format, QWidget *parent=0);
+    explicit QGLView(QWindow *parent = 0);
+    explicit QGLView(const QSurfaceFormat &format, QWindow *parent=0);
     ~QGLView();
 
     enum Option
@@ -100,24 +102,33 @@ public:
     void setCamera(QGLCamera *camera);
 
     QVector3D mapPoint(const QPoint &point) const;
+    QOpenGLContext *context();
+    bool isVisible() const;
+
+public Q_SLOTS:
+    void update();
 
 protected:
     void initializeGL();
     void resizeGL(int w, int h);
     void paintGL();
+
     virtual void initializeGL(QGLPainter *painter);
     virtual void earlyPaintGL(QGLPainter *painter);
-    virtual void paintGL(QGLPainter *painter) = 0;
+    virtual void paintGL(QGLPainter *painter);
 
     void mousePressEvent(QMouseEvent *e);
     void mouseReleaseEvent(QMouseEvent *e);
     void mouseDoubleClickEvent(QMouseEvent *e);
     void mouseMoveEvent(QMouseEvent *e);
-    void leaveEvent(QEvent *e);
 #ifndef QT_NO_WHEELEVENT
     void wheelEvent(QWheelEvent *e);
 #endif
     void keyPressEvent(QKeyEvent *e);
+
+    void showEvent(QShowEvent *e);
+    void hideEvent(QHideEvent *e);
+    void exposeEvent(QExposeEvent *e);
 
     QPointF viewDelta(int deltax, int deltay) const;
     QPointF viewDelta(const QPoint &delta) const

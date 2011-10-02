@@ -118,7 +118,7 @@ public:
     static QGLTextureExtensions *extensions();
 
     void invalidateResource() {}
-    void freeResource(QOpenGLContext *context) {}
+    void freeResource(QOpenGLContext *) {}
 
 };
 

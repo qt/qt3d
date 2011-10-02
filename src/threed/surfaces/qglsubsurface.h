@@ -65,10 +65,10 @@ public:
     QRect region() const;
     void setRegion(const QRect &region);
 
-    QPaintDevice *device() const;
     bool activate(QGLAbstractSurface *prevSurface = 0);
     void deactivate(QGLAbstractSurface *nextSurface = 0);
     QRect viewportGL() const;
+    bool isValid() const;
 
 private:
     QScopedPointer<QGLSubsurfacePrivate> d_ptr;

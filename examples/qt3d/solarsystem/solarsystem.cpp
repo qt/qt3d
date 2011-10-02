@@ -56,7 +56,7 @@
 
 #include <QtCore/qmath.h>
 
-SolarSystemView::SolarSystemView(QWidget *parent)
+SolarSystemView::SolarSystemView(QWindow *parent)
     : QGLView(parent)
     , spaceScene(new QGLSceneNode(this))
     , sunEffect(0)

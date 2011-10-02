@@ -42,12 +42,14 @@
 #include <QtTest/QtTest>
 #include "qgltestwidget.h"
 #include "compareimage.h"
+#include "qglframebufferobjectsurface.h"
+
 #include <QtCore/qeventloop.h>
 #include <QtCore/qtimer.h>
 #include <QtGui/qpainter.h>
 
-QGLTestWidget::QGLTestWidget(QWidget *parent)
-    : QGLWidget(parent)
+QGLTestWidget::QGLTestWidget(QWindow *parent)
+    : QGLView(parent)
 {
     eventLoop = 0;
     paintDone = false;
@@ -77,7 +79,7 @@ bool QGLTestWidget::runTest(QObject *target, const char *method, int timeout)
         qt_x11_wait_for_window_manager(this);
 #endif
     } else {
-        updateGL();
+        update();
     }
     if (!paintDone)
         eventLoop->exec();
@@ -100,7 +102,11 @@ void QGLTestWidget::paintGL()
 {
     if (target && method)
         QMetaObject::invokeMethod(target, method, Qt::DirectConnection);
-    capture = grabFrameBuffer();
+    QOpenGLFramebufferObject fbo(512, 512);
+    QGLFramebufferObjectSurface surf(&fbo);
+
+    capture = fbo.toImage();
+
     if (target && method) {
         QSize sz = size();
         simulated = QImage(sz, QImage::Format_RGB32);

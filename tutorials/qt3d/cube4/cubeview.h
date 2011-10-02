@@ -52,7 +52,7 @@ class CubeView : public QGLView
 //! [1]
     Q_OBJECT
 public:
-    CubeView(QWidget *parent = 0);
+    CubeView(QWindow *parent = 0);
     ~CubeView();
 
 protected:

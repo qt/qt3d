@@ -158,11 +158,11 @@ void ThumbnailNode::draw(QGLPainter *painter)
 {
     QGLSceneNode *p = qobject_cast<QGLSceneNode*>(parent());
     Q_ASSERT_X(p && p->userEffect() && (!hasEffect()),
-               "ThumbnailNode::draw", "Should only inherit parents ThumbnailEffect");
+               Q_FUNC_INFO, "Should only inherit parents ThumbnailEffect");
 
     ThumbnailEffect *effect = static_cast<ThumbnailEffect*>(p->userEffect());
     Q_ASSERT_X(effect && effect->name() == QLatin1String("ThumbnailEffect"),
-               "ThumbnailNode::draw", "Can only be drawn with custom ThumbnailEffect");
+               Q_FUNC_INFO, "Can only be drawn with custom ThumbnailEffect");
 
     if (m_defaultMaterial == -1)
         m_defaultMaterial = materialIndex();

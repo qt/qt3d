@@ -50,7 +50,7 @@ class BuilderView : public QGLView
 {
     Q_OBJECT
 public:
-    BuilderView(QWidget *parent = 0);
+    BuilderView(QWindow *parent = 0);
     ~BuilderView();
 
 protected:

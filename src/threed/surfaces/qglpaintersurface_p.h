@@ -62,19 +62,22 @@ QT_BEGIN_NAMESPACE
 class QGLPainterSurface : public QGLAbstractSurface
 {
 public:
+    static const int QGLPAINTER_SURFACE_ID = 503;
+
     explicit QGLPainterSurface(QPainter *painter)
-        : QGLAbstractSurface(503)
-        , m_painter(painter), m_painterContext(QGLContext::currentContext()) {}
+        : QGLAbstractSurface(QGLPAINTER_SURFACE_ID)
+        , m_painter(painter)
+    {
+    }
     ~QGLPainterSurface() {}
 
-    QPaintDevice *device() const;
     bool activate(QGLAbstractSurface *prevSurface);
     void deactivate(QGLAbstractSurface *nextSurface);
     QRect viewportGL() const;
+    bool isValid() const;
 
 private:
     QPainter *m_painter;
-    const QGLContext *m_painterContext;
 
     Q_DISABLE_COPY(QGLPainterSurface)
 };

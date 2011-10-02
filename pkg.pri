@@ -218,7 +218,7 @@ defineTest(qtcAddDeployment) {
                 !isEqual(source,$$targetFullPath) {
                     !isEmpty(copyCommand):copyCommand += &&
                     copyCommand += $(MKDIR) \"$$target\"
-                    copyCommand += && $(COPY_DIR) \"$$source\" \"$$target\"
+                    copyCommand += && $(COPY_DIR) -v \"$$source\" \"$$target\"
                 }
             }
             !isEmpty(copyCommand) {

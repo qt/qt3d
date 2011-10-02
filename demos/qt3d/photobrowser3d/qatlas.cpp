@@ -83,7 +83,7 @@ void QAtlas::initialize(QGLPainter *painter)
     Q_UNUSED(painter);
     if (!m_initialized)
     {
-        m_data = new QGLFramebufferObject(m_size);
+        m_data = new QOpenGLFramebufferObject(m_size);
         m_renderTarget = new QGLFramebufferObjectSurface(m_data);
         m_tex = QGLTexture2D::fromTextureId(m_data->texture(), m_size);
         m_material->setTexture(m_tex, 1);

@@ -51,26 +51,34 @@
 
 class PageFlipGradientEffect;
 
-class PageFlipView : public QGLWidget
+class PageFlipView : public QWindow
 {
     Q_OBJECT
 public:
-    PageFlipView(QWidget *parent = 0);
+    PageFlipView(QWindow *parent = 0);
     ~PageFlipView();
 
     void setBlend(bool value) { blend = value; }
     void setVertical(bool value) { vertical = value; }
 
+public Q_SLOTS:
+    void update();
+
 protected:
     void resizeGL(int width, int height);
     void initializeGL();
     void paintGL();
+
+    void exposeEvent(QExposeEvent *e);
     void mousePressEvent(QMouseEvent *e);
 
 private slots:
     void animate();
 
 private:
+    void ensureContext();
+    void setAlphaValue(QGLPainter *painter, GLfloat value);
+
     bool blend;
     bool vertical;
 
@@ -91,7 +99,10 @@ private:
 
     PageFlipGradientEffect *effect;
 
-    void setAlphaValue(QGLPainter *painter, GLfloat value);
+    QOpenGLContext *context;
+    bool initialised;
+    QSurfaceFormat format;
+    bool updateQueued;
 };
 
 class PageFlipGradientEffect : public QGLShaderProgramEffect
@@ -103,9 +114,17 @@ public:
     void setAlphaValue(GLfloat value);
 };
 
-PageFlipView::PageFlipView(QWidget *parent)
-    : QGLWidget(parent)
+PageFlipView::PageFlipView(QWindow *parent)
+    : QWindow(parent)
+    , context(0)
+    , initialised(false)
+    , updateQueued(false)
 {
+    format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
+    format.setDepthBufferSize(24);
+    setSurfaceType(QWindow::OpenGLSurface);
+    setFormat(format);
+
     posn = 0.0f;
     blend = false;
     vertical = false;
@@ -126,6 +145,25 @@ PageFlipView::PageFlipView(QWidget *parent)
 PageFlipView::~PageFlipView()
 {
     delete effect;
+}
+
+void PageFlipView::exposeEvent(QExposeEvent *e)
+{
+    Q_UNUSED(e);
+
+    updateQueued = false;
+    ensureContext();
+
+    QRect rect = geometry();
+    resizeGL(rect.width(), rect.height());
+
+    if (!initialised)
+        initializeGL();
+
+    paintGL();
+
+    if (format.swapBehavior() == QSurfaceFormat::DoubleBuffer)
+        context->swapBuffers(this);
 }
 
 void PageFlipView::resizeGL(int width, int height)
@@ -165,13 +203,15 @@ void PageFlipView::initializeGL()
         pageFlipMath.setStartCorner(PageFlipMath::VerticalBottomRight);
     else
         pageFlipMath.setStartCorner(PageFlipMath::BottomRight);
+
+    initialised = true;
 }
 
 void PageFlipView::paintGL()
 {
     QGLPainter painter(this);
 
-    QRect rect = this->rect();
+    QRect rect = this->geometry();
     int midx = rect.width() / 2;
     int topy = (rect.height() - pageSize.height()) / 2;
 
@@ -299,7 +339,7 @@ void PageFlipView::mousePressEvent(QMouseEvent *e)
     }
     if (changed)
         posn = 0.0f;
-    QGLWidget::mousePressEvent(e);
+    QWindow::mousePressEvent(e);
 }
 
 void PageFlipView::animate()
@@ -309,7 +349,16 @@ void PageFlipView::animate()
         posn = 0.0f;
         colorIndex = (colorIndex + 2) % 4;
     }
-    updateGL();
+    update();
+}
+
+void PageFlipView::update()
+{
+    if (!updateQueued)
+    {
+        updateQueued = true;
+        QApplication::postEvent(this, new QExposeEvent(geometry()));
+    }
 }
 
 void PageFlipView::setAlphaValue(QGLPainter *painter, GLfloat value)
@@ -360,21 +409,63 @@ void PageFlipGradientEffect::setAlphaValue(GLfloat value)
     program()->setUniformValue("alphaValue", value);
 }
 
+inline void PageFlipView::ensureContext()
+{
+    if (!context)
+    {
+        context = new QOpenGLContext();
+        context->setFormat(format);
+#ifndef QT_NO_DEBUG_STREAM
+        QSurfaceFormat oldFormat = format;
+#endif
+        context->create();
+        // TODO: is it possible that the platform will downgrade the actual
+        // format, or will it just fail if it can't deliver the actual format
+        format = context->format();
+#ifndef QT_NO_DEBUG_STREAM
+        if (oldFormat != format)
+            qWarning() << "Could not create context requested:\n"
+                       << oldFormat << "\nactual format:\n" << format;
+#endif
+    }
+    context->makeCurrent(this);
+}
+
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     PageFlipView view;
-    if (QApplication::arguments().contains(QLatin1String("-blend")))
+
+    QStringList args = QCoreApplication::arguments();
+    if (args.contains(QLatin1String("-blend")))
         view.setBlend(true);
-    if (QApplication::arguments().contains(QLatin1String("-vertical")))
+    if (args.contains(QLatin1String("-vertical")))
         view.setVertical(true);
 
-    if (QApplication::arguments().contains(QLatin1String("-maximize")))
-        view.showMaximized();
-    else if (QApplication::arguments().contains(QLatin1String("-fullscreen")))
-        view.showFullScreen();
+    int w_pos = args.indexOf("-width");
+    int h_pos = args.indexOf("-height");
+    if (w_pos >= 0 && h_pos >= 0)
+    {
+        bool ok = true;
+        int w = args.at(w_pos + 1).toInt(&ok);
+        if (!ok)
+        {
+            qWarning() << "Could not parse width argument:" << args;
+            return 1;
+        }
+        int h = args.at(h_pos + 1).toInt(&ok);
+        if (!ok)
+        {
+            qWarning() << "Could not parse height argument:" << args;
+            return 1;
+        }
+        view.resize(w, h);
+    }
     else
-        view.show();
+    {
+        view.resize(800, 600);
+    }
+    view.show();
 
     return app.exec();
 }

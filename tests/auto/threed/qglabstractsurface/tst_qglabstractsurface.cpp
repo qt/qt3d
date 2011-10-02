@@ -41,11 +41,13 @@
 
 #include <QtTest/QtTest>
 #include "qglabstractsurface.h"
-#include "qglwidgetsurface.h"
+#include "qglwindowsurface.h"
 #include "qglframebufferobjectsurface.h"
 #include "qglpixelbuffersurface.h"
 #include "qglsubsurface.h"
 #include "qopenglfunctions.h"
+
+#include <QtGui/QOpenGLContext>
 
 class tst_QGLAbstractSurface : public QObject
 {
@@ -55,16 +57,16 @@ public:
     ~tst_QGLAbstractSurface() {}
 
 private slots:
-    void glWidgetSurface();
+    void glWindowSurface();
     void fboSurface();
-    void pbufferSurface();
+    //  TODO: void pbufferSurface();
     void subSurface();
 
 private:
-    bool isFboCurrent(QGLFramebufferObject *fbo);
+    bool isFboCurrent(QOpenGLFramebufferObject *fbo);
 };
 
-bool tst_QGLAbstractSurface::isFboCurrent(QGLFramebufferObject *fbo)
+bool tst_QGLAbstractSurface::isFboCurrent(QOpenGLFramebufferObject *fbo)
 {
     GLint currentFbo = -1;
     glGetIntegerv(GL_FRAMEBUFFER_BINDING, &currentFbo);
@@ -76,92 +78,121 @@ bool tst_QGLAbstractSurface::isFboCurrent(QGLFramebufferObject *fbo)
         return currentFbo == 0;
 }
 
-void tst_QGLAbstractSurface::glWidgetSurface()
+static void ensureContext(QWindow &win, QOpenGLContext &ctx)
 {
-    QGLWidget glw;
-    if (!glw.isValid())
+    QSurfaceFormat format;
+    format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
+    ctx.setFormat(format);
+#ifndef QT_NO_DEBUG_STREAM
+    QSurfaceFormat oldFormat = format;
+#endif
+    ctx.create();
+    // TODO: is it possible that the platform will downgrade the actual
+    // format, or will it just fail if it can't deliver the actual format
+    format = ctx.format();
+#ifndef QT_NO_DEBUG_STREAM
+    if (oldFormat.swapBehavior() != format.swapBehavior())
+        qWarning() << "Could not create context for swap behavior"
+                   << oldFormat.swapBehavior();
+#endif
+    ctx.makeCurrent(&win);
+}
+
+void tst_QGLAbstractSurface::glWindowSurface()
+{
+    QWindow glw;
+    glw.setSurfaceType(QWindow::OpenGLSurface);
+    QOpenGLContext ctx;
+    ensureContext(glw, ctx);
+    if (!ctx.isValid())
         QSKIP("GL Implementation not valid", SkipSingle);
 
-
-    QGLWidgetSurface surface1;
-    QVERIFY(surface1.surfaceType() == QGLAbstractSurface::Widget);
-    QVERIFY(surface1.widget() == 0);
-    surface1.setWidget(&glw);
-    QVERIFY(surface1.widget() == &glw);
-    QVERIFY(surface1.device() == &glw);
-    QCOMPARE(surface1.viewportRect(), glw.rect());
+    QGLWindowSurface surface1;
+    QVERIFY(surface1.surfaceType() == QGLAbstractSurface::Window);
+    QVERIFY(surface1.window() == 0);
+    surface1.setWindow(&glw);
+    QVERIFY(surface1.window() == &glw);
+    QCOMPARE(surface1.viewportRect(), glw.geometry());
 
     QVERIFY(surface1.activate());
-    QVERIFY(QGLContext::currentContext() == glw.context());
+    QVERIFY(QOpenGLContext::currentContext() == &ctx);
     QCOMPARE(surface1.viewportGL(), QRect(0, 0, glw.width(), glw.height()));
 
     surface1.deactivate();
-    QVERIFY(QGLContext::currentContext() == glw.context()); // Left current.
+    QVERIFY(QOpenGLContext::currentContext() == &ctx); // Left current.
 
-    QGLWidget glw2;
+    QWindow glw2;
+    glw2.setSurfaceType(QWindow::OpenGLSurface);
+    QOpenGLContext ctx2;
+    ensureContext(glw2, ctx2);
 
-    QGLWidgetSurface surface2(&glw2);
-    QVERIFY(surface2.surfaceType() == QGLAbstractSurface::Widget);
-    QVERIFY(surface2.widget() == &glw2);
-    QVERIFY(surface2.device() == &glw2);
+    QGLWindowSurface surface2(&glw2);
+    QVERIFY(surface2.surfaceType() == QGLAbstractSurface::Window);
+    QVERIFY(surface2.window() == &glw2);
 
     QVERIFY(surface1.activate());
     QVERIFY(surface1.switchTo(&surface2));
 
-    QVERIFY(QGLContext::currentContext() == glw2.context());
+    QVERIFY(QOpenGLContext::currentContext() == &ctx2);
 
     QVERIFY(surface2.switchTo(&surface1));
-    QVERIFY(QGLContext::currentContext() == glw.context());
+    QVERIFY(QOpenGLContext::currentContext() == &ctx);
 }
 
 void tst_QGLAbstractSurface::fboSurface()
 {
-    if (!QGLFramebufferObject::hasOpenGLFramebufferObjects())
+    if (!QOpenGLFramebufferObject::hasOpenGLFramebufferObjects())
         QSKIP("fbo's are not supported", SkipSingle);
 
-    QGLWidget glw;
-    if (!glw.isValid())
+    QWindow glw;
+    glw.setSurfaceType(QWindow::OpenGLSurface);
+    QOpenGLContext ctx;
+    ensureContext(glw, ctx);
+    if (!ctx.isValid())
         QSKIP("GL Implementation not valid", SkipSingle);
 
-    QGLWidgetSurface surface1(&glw);
+    QGLWindowSurface surface1(&glw);
     QVERIFY(surface1.activate());
     QCOMPARE(surface1.viewportGL(), QRect(0, 0, glw.width(), glw.height()));
 
-    QGLFramebufferObject fbo1(128, 128);
+    QOpenGLFramebufferObject fbo1(128, 128);
     QVERIFY(fbo1.handle() != 0);
 
     QGLFramebufferObjectSurface surface2(&fbo1);
     QVERIFY(surface2.surfaceType() == QGLAbstractSurface::FramebufferObject);
     QVERIFY(surface2.framebufferObject() == &fbo1);
-    QVERIFY(surface2.device() == &fbo1);
 
     QVERIFY(isFboCurrent(0));
 
     QVERIFY(surface2.activate());
-    QVERIFY(QGLContext::currentContext() == glw.context());
+    QVERIFY(QOpenGLContext::currentContext() == &ctx);
     QVERIFY(isFboCurrent(&fbo1));
     QCOMPARE(surface2.viewportGL(), QRect(QPoint(0, 0), fbo1.size()));
 
     surface2.deactivate();
     QVERIFY(isFboCurrent(0));
-    QVERIFY(QGLContext::currentContext() == glw.context());
+    QVERIFY(QOpenGLContext::currentContext() == &ctx);
 
-    surface2.setContext(glw.context());
+    surface2.setContext(&ctx);
 
-    QGLWidget glw2;
-    QGLWidgetSurface surface3(&glw2);
+    QWindow glw2;
+    glw2.setSurfaceType(QWindow::OpenGLSurface);
+    QOpenGLContext ctx2;
+    ensureContext(glw2, ctx2);
+
+    QGLWindowSurface surface3(&glw2);
     QVERIFY(surface3.activate());
-    QVERIFY(QGLContext::currentContext() == glw2.context());
+    QVERIFY(QOpenGLContext::currentContext() == &ctx2);
     QCOMPARE(surface3.viewportGL(), QRect(0, 0, glw2.width(), glw2.height()));
 
     QVERIFY(surface3.switchTo(&surface2));
     QVERIFY(isFboCurrent(&fbo1));
-    QVERIFY(QGLContext::currentContext() == glw.context());
+    QVERIFY(QOpenGLContext::currentContext() == &ctx);
     QCOMPARE(surface2.viewportGL(), QRect(QPoint(0, 0), fbo1.size()));
 
     QVERIFY(surface2.switchTo(&surface3));
     QVERIFY(isFboCurrent(0));
-    QVERIFY(QGLContext::currentContext() == glw2.context());
+    QVERIFY(QOpenGLContext::currentContext() == &ctx2);
     QCOMPARE(surface3.viewportGL(), QRect(0, 0, glw2.width(), glw2.height()));
 
     surface3.deactivate();
@@ -169,41 +200,40 @@ void tst_QGLAbstractSurface::fboSurface()
     surface1.activate();
     QCOMPARE(surface1.viewportGL(), QRect(0, 0, glw.width(), glw.height()));
 
-    QGLFramebufferObject fbo2(256, 256);
+    QOpenGLFramebufferObject fbo2(256, 256);
     QVERIFY(fbo2.handle() != 0);
 
     QGLFramebufferObjectSurface surface4;
     QVERIFY(surface4.surfaceType() == QGLAbstractSurface::FramebufferObject);
     QVERIFY(surface4.framebufferObject() == 0);
-    QVERIFY(surface4.device() == 0);
     QVERIFY(!surface4.activate(0));
     QVERIFY(surface4.viewportGL().isNull());
     surface4.setFramebufferObject(&fbo2);
     QVERIFY(surface4.framebufferObject() == &fbo2);
-    QVERIFY(surface4.device() == &fbo2);
-    surface4.setContext(glw.context());
+    surface4.setContext(&ctx);
 
     QVERIFY(surface1.switchTo(&surface2));
-    QVERIFY(QGLContext::currentContext() == glw.context());
+    QVERIFY(QOpenGLContext::currentContext() == &ctx);
     QVERIFY(isFboCurrent(&fbo1));
     QCOMPARE(surface2.viewportGL(), QRect(QPoint(0, 0), fbo1.size()));
 
     QVERIFY(surface2.switchTo(&surface4));
-    QVERIFY(QGLContext::currentContext() == glw.context());
+    QVERIFY(QOpenGLContext::currentContext() == &ctx);
     QVERIFY(isFboCurrent(&fbo2));
     QCOMPARE(surface4.viewportGL(), QRect(QPoint(0, 0), fbo2.size()));
 
     QVERIFY(surface3.switchTo(&surface2));
-    QVERIFY(QGLContext::currentContext() == glw.context());
+    QVERIFY(QOpenGLContext::currentContext() == &ctx);
     QVERIFY(isFboCurrent(&fbo1));
     QCOMPARE(surface2.viewportGL(), QRect(QPoint(0, 0), fbo1.size()));
 
     QVERIFY(surface2.switchTo(&surface1));
-    QVERIFY(QGLContext::currentContext() == glw.context());
+    QVERIFY(QOpenGLContext::currentContext() == &ctx);
     QVERIFY(isFboCurrent(0));
     QCOMPARE(surface1.viewportGL(), QRect(0, 0, glw.width(), glw.height()));
 }
 
+/*
 void tst_QGLAbstractSurface::pbufferSurface()
 {
     if (!QGLPixelBuffer::hasOpenGLPbuffers())
@@ -213,7 +243,7 @@ void tst_QGLAbstractSurface::pbufferSurface()
     if (!glw.isValid())
         QSKIP("GL Implementation not valid", SkipSingle);
 
-    QGLWidgetSurface surface1(&glw);
+    QGLWindowSurface surface1(&glw);
     QVERIFY(surface1.activate());
     QCOMPARE(surface1.viewportGL(), QRect(0, 0, glw.width(), glw.height()));
 
@@ -234,7 +264,7 @@ void tst_QGLAbstractSurface::pbufferSurface()
     QVERIFY(QGLContext::currentContext() == surface2ctx); // Left current.
 
     QGLWidget glw2;
-    QGLWidgetSurface surface3(&glw2);
+    QGLWindowSurface surface3(&glw2);
     QVERIFY(surface3.activate());
     QVERIFY(QGLContext::currentContext() == glw2.context());
     QCOMPARE(surface3.viewportGL(), QRect(0, 0, glw2.width(), glw2.height()));
@@ -283,23 +313,25 @@ void tst_QGLAbstractSurface::pbufferSurface()
     QVERIFY(QGLContext::currentContext() == glw.context());
     QCOMPARE(surface1.viewportGL(), QRect(0, 0, glw.width(), glw.height()));
 }
-
+*/
 void tst_QGLAbstractSurface::subSurface()
 {
-    QGLWidget glw;
-    if (!glw.isValid())
+    QWindow glw;
+    glw.setSurfaceType(QWindow::OpenGLSurface);
+    QOpenGLContext ctx;
+    ensureContext(glw, ctx);
+    if (!ctx.isValid())
         QSKIP("GL Implementation not valid", SkipSingle);
 
-    QGLWidgetSurface surface1(&glw);
+    QGLWindowSurface surface1(&glw);
 
     QGLSubsurface surface2(&surface1, QRect(0, 0, 32, 16));
     QVERIFY(surface2.surfaceType() == QGLAbstractSurface::Subsurface);
     QVERIFY(surface2.surface() == &surface1);
-    QVERIFY(surface2.device() == &glw);
     QCOMPARE(surface2.region(), QRect(0, 0, 32, 16));
 
     QVERIFY(surface2.activate());
-    QVERIFY(QGLContext::currentContext() == glw.context());
+    QVERIFY(QOpenGLContext::currentContext() == &ctx);
     QCOMPARE(surface2.viewportGL(), QRect(0, glw.height() - 16, 32, 16));
 
     QGLSubsurface surface3(&surface1, QRect(16, 8, 32, 16));
@@ -308,13 +340,12 @@ void tst_QGLAbstractSurface::subSurface()
     QCOMPARE(surface3.region(), QRect(16, 8, 32, 16));
 
     QVERIFY(surface2.switchTo(&surface3));
-    QVERIFY(QGLContext::currentContext() == glw.context());
+    QVERIFY(QOpenGLContext::currentContext() == &ctx);
     QCOMPARE(surface3.viewportGL(), QRect(16, glw.height() - (8 + 16), 32, 16));
 
     QGLSubsurface surface4;
     QVERIFY(surface4.surfaceType() == QGLAbstractSurface::Subsurface);
     QVERIFY(surface4.surface() == 0);
-    QVERIFY(surface4.device() == 0);
     QVERIFY(surface4.region().isNull());
     QVERIFY(!surface4.activate(0));
     surface4.setRegion(QRect(4, 6, 12, 8));
@@ -324,7 +355,7 @@ void tst_QGLAbstractSurface::subSurface()
     QCOMPARE(surface4.region(), QRect(4, 6, 12, 8));
 
     QVERIFY(surface2.switchTo(&surface4));
-    QVERIFY(QGLContext::currentContext() == glw.context());
+    QVERIFY(QOpenGLContext::currentContext() == &ctx);
     QCOMPARE(surface4.viewportGL(), QRect(16 + 4, glw.height() - (6 + 8 + 8), 12, 8));
 }
 

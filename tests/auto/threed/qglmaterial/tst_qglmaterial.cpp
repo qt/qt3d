@@ -55,6 +55,9 @@
 #include <QtGui/qvector3d.h>
 #include <QtGui/qvector4d.h>
 
+#include "qglframebufferobjectsurface.h"
+#include "qglview.h"
+
 class TestWidget;
 
 class tst_QGLMaterial : public QObject
@@ -81,11 +84,11 @@ private:
     TestWidget *widget;
 };
 
-class TestWidget : public QGLWidget
+class TestWidget : public QGLView
 {
     Q_OBJECT
 public:
-    TestWidget(QWidget *parent = 0);
+    TestWidget(QWindow *parent = 0);
     ~TestWidget();
 
     bool runTest(QGLAbstractMaterial *mat, int timeout = 5000);
@@ -107,8 +110,8 @@ private:
     QColor clearColor;
 };
 
-TestWidget::TestWidget(QWidget *parent)
-    : QGLWidget(parent)
+TestWidget::TestWidget(QWindow *parent)
+    : QGLView(parent)
     , material(0)
     , eventLoop(0)
     , paintDone(false)
@@ -155,7 +158,7 @@ bool TestWidget::runTest(QGLAbstractMaterial *mat, int timeout)
         qt_x11_wait_for_window_manager(this);
 #endif
     } else {
-        updateGL();
+        update();
     }
     if (!paintDone)
         eventLoop->exec();
@@ -197,6 +200,11 @@ void TestWidget::initializeGL()
 void TestWidget::paintGL()
 {
     QGLPainter painter(this);
+    QOpenGLFramebufferObject fbo(512, 512);
+    QGLFramebufferObjectSurface surf(&fbo);
+
+    surf.activate();
+
     painter.setClearColor(clearColor);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -212,7 +220,10 @@ void TestWidget::paintGL()
         material->release(&painter, 0);
     }
 
-    QImage capture = grabFrameBuffer();
+    surf.deactivate();
+
+    QImage capture = fbo.toImage();
+
     if (capture.width() > 0 && capture.height() > 0)
         pixel = QColor(capture.pixel(capture.width() / 2, capture.height() / 2));
 
@@ -689,7 +700,7 @@ static QColor litColor(const QGLMaterial &material)
 
 void tst_QGLMaterial::standardMaterialDraw()
 {
-    if (!widget->isValid())
+    if (!widget->context()->isValid())
         QSKIP("GL Implementation not valid", SkipSingle);
 
     QGLMaterial mat1;
@@ -699,7 +710,7 @@ void tst_QGLMaterial::standardMaterialDraw()
 
 void tst_QGLMaterial::colorMaterialDraw()
 {
-    if (!widget->isValid())
+    if (!widget->context()->isValid())
         QSKIP("GL Implementation not valid", SkipSingle);
 
     QGLColorMaterial mat1;

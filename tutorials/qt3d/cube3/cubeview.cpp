@@ -42,7 +42,7 @@
 #include "qglbuilder.h"
 #include "qglcube.h"
 
-CubeView::CubeView(QWidget *parent)
+CubeView::CubeView(QWindow *parent)
     : QGLView(parent)
 {
     QGLBuilder builder;

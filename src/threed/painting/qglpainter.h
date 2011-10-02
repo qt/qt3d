@@ -83,21 +83,21 @@ class Q_QT3D_EXPORT QGLPainter : public QOpenGLFunctions
 {
 public:
     QGLPainter();
-    explicit QGLPainter(const QGLContext *context);
-    explicit QGLPainter(QGLWidget *widget);
+    explicit QGLPainter(QOpenGLContext *context);
+    explicit QGLPainter(QWindow *widget);
     explicit QGLPainter(QPainter *painter);
     explicit QGLPainter(QGLAbstractSurface *surface);
     virtual ~QGLPainter();
 
     bool begin();
-    bool begin(const QGLContext *context);
-    bool begin(QGLWidget *widget);
+    bool begin(QOpenGLContext *context);
+    bool begin(QWindow *window);
     bool begin(QPainter *painter);
     bool begin(QGLAbstractSurface *surface);
     bool end();
     bool isActive() const;
 
-    const QGLContext *context() const;
+    QOpenGLContext *context() const;
 
     bool isFixedFunction() const;
 
@@ -212,7 +212,7 @@ private:
 
     friend class QGLAbstractEffect;
 
-    bool begin(const QGLContext *context, QGLAbstractSurface *surface,
+    bool begin(QOpenGLContext *context, QGLAbstractSurface *surface,
                bool destroySurface = true);
 };
 

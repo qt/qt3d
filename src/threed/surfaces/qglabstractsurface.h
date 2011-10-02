@@ -43,6 +43,7 @@
 #define QGLABSTRACTSURFACE_H
 
 #include "qt3dglobal.h"
+
 #include <QtOpenGL/qgl.h>
 
 QT_BEGIN_HEADER
@@ -51,6 +52,10 @@ QT_BEGIN_NAMESPACE
 
 QT_MODULE(Qt3D)
 
+class QWindow;
+class QOpenGLFramebufferObject;
+class QGLPixelBuffer;
+
 class Q_QT3D_EXPORT QGLAbstractSurface
 {
 public:
@@ -58,7 +63,7 @@ public:
 
     enum SurfaceType
     {
-        Widget,
+        Window,
         FramebufferObject,
         PixelBuffer,
         Subsurface,
@@ -67,7 +72,16 @@ public:
 
     int surfaceType() const { return m_type; }
 
-    virtual QPaintDevice *device() const = 0;
+    QOpenGLContext *context() const
+    {
+        return m_context;
+    }
+
+    void setContext(QOpenGLContext *context)
+    {
+        m_context = context;
+    }
+
     virtual bool activate(QGLAbstractSurface *prevSurface = 0) = 0;
     virtual void deactivate(QGLAbstractSurface *nextSurface = 0) = 0;
     virtual QRect viewportGL() const = 0;
@@ -75,12 +89,17 @@ public:
     virtual qreal aspectRatio() const;
 
     bool switchTo(QGLAbstractSurface *nextSurface);
+    virtual bool isValid() const;
 
-    static QGLAbstractSurface *createSurfaceForDevice(QPaintDevice *device);
-    static QGLAbstractSurface *createSurfaceForContext(const QGLContext *context);
+    static QGLAbstractSurface *createSurfaceForContext(QOpenGLContext *context);
 
 protected:
-    QGLAbstractSurface(int surfaceType) : m_type(surfaceType) {}
+    QGLAbstractSurface(int surfaceType);
+
+    QOpenGLContext *m_context;
+    QWindow *m_window;
+    QOpenGLFramebufferObject *m_fbo;
+    QGLPixelBuffer *m_pb;
 
 private:
     int m_type;

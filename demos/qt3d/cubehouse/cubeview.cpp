@@ -52,7 +52,7 @@
 //#define PROJECTOR_CAMERA_DEBUG_MARKERS
 
 
-CubeView::CubeView(QWidget *parent)
+CubeView::CubeView(QWindow *parent)
     : QGLView(parent), scene(0), cube(0), teapot(0), room(0),
       sensitivity(0.1f),
       lightParameters(0),
