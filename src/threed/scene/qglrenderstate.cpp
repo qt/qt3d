@@ -81,7 +81,7 @@ public:
     ~QGLRenderStatePrivate();
     QGLRenderStatePrivate *clone() const;
 
-    QBasicAtomicInt ref;
+    QAtomicInt ref;
 
     bool hasEffect;
     QGLMaterial *material;
@@ -92,15 +92,14 @@ public:
 };
 
 QGLRenderStatePrivate::QGLRenderStatePrivate()
-    : hasEffect(false)
+    : ref(0)
+    , hasEffect(false)
     , material(0)
     , backMaterial(0)
     , standardEffect(QGL::FlatColor)
     , userEffect(0)
     , node(0)
-{
-    ref = 0;
-}
+{ }
 
 QGLRenderStatePrivate::~QGLRenderStatePrivate()
 {

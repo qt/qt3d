@@ -68,7 +68,7 @@ public:
         return temp;
     }
 
-    QBasicAtomicInt ref;
+    QAtomicInt ref;
 
     bool thumbnailed;
     bool pending;
@@ -82,13 +82,13 @@ public:
 };
 
 ThumbnailableImagePrivate::ThumbnailableImagePrivate()
-    : thumbnailed(false)
+    : ref(0)
+    , thumbnailed(false)
     , pending(false)
     , tex(0)
     , mat(0)
     , scale(15.0f)
 {
-    ref = 0;
 }
 
 ThumbnailableImagePrivate::~ThumbnailableImagePrivate()

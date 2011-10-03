@@ -130,7 +130,7 @@ public:
     ~QGeometryDataPrivate();
     QGeometryDataPrivate *clone() const;
 
-    QBasicAtomicInt ref;
+    QAtomicInt ref;
 
     QVector3DArray vertices;
     QVector3DArray normals;
@@ -154,7 +154,8 @@ public:
 };
 
 QGeometryDataPrivate::QGeometryDataPrivate()
-    : uploadsViable(true)
+    : ref(0)
+    , uploadsViable(true)
     , modified(false)
     , fields(0)
     , count(0)
@@ -162,7 +163,6 @@ QGeometryDataPrivate::QGeometryDataPrivate()
     , boxValid(true)
     , bufferStrategy(QGeometryData::BufferIfPossible | QGeometryData::KeepClientData)
 {
-    ref = 0;
     qMemSet(key, -1, ATTR_CNT);
     qMemSet(size, 0, ATTR_CNT);
 }
@@ -1903,7 +1903,7 @@ void QGeometryData::create()
 void QGeometryData::detach()
 {
     create();
-    if (d->ref > 1)  // being shared, must detach
+    if (d->ref.load() > 1)  // being shared, must detach
     {
         QGeometryDataPrivate *temp = d->clone();
         d->ref.deref();

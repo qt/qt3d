@@ -76,7 +76,8 @@ class QGLIndexBufferPrivate
 {
 public:
     QGLIndexBufferPrivate()
-        : indexCount(0)
+        : ref(1)
+        , indexCount(0)
         , elementType(GL_UNSIGNED_SHORT)
         , buffer(QGLBuffer::IndexBuffer)
 #ifdef QT_OPENGL_ES
@@ -84,11 +85,9 @@ public:
 #else
         , hasIntBuffers(true)
 #endif
-    {
-        ref = 1;
-    }
+    { }
 
-    QBasicAtomicInt ref;
+    QAtomicInt ref;
     int indexCount;
     QArray<ushort> indexesShort;
     QArray<uint> indexesInt;
