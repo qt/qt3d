@@ -377,7 +377,7 @@ Q_INLINE_TEMPLATE Q_TYPENAME QArray<T, PreallocSize>::Data *QArray<T, PreallocSi
     Data *data = reinterpret_cast<Data *>
         (qMalloc(sizeof(Data) + sizeof(T) * (capacity - 1)));
     Q_CHECK_PTR(data);
-    data->ref = 1;
+    data->ref.store(1);
     data->capacity = capacity;
     T *dst = data->array;
     int copied = 0;
@@ -422,7 +422,7 @@ Q_OUTOFLINE_TEMPLATE void QArray<T, PreallocSize>::detach_helper()
 {
     // If the reference count is 1, then the array may have been
     // copied and then the copy released.  So just reset the limit.
-    if (m_data && m_data->ref == 1) {
+    if (m_data && m_data->ref.load() == 1) {
         m_limit = m_start + m_data->capacity;
         return;
     }
@@ -469,7 +469,7 @@ Q_OUTOFLINE_TEMPLATE void QArray<T, PreallocSize>::grow(int needed)
 {
     int size = m_end - m_start;
     int capacity = qArrayAllocMore(size, needed, sizeof(T));
-    if (!m_data || m_data->ref != 1) {
+    if (!m_data || m_data->ref.load() != 1) {
         // Copy preallocated, raw, or shared data and expand the capacity.
         Data *data = copyData(m_start, size, capacity);
         if (this->isPrealloc(m_start))
@@ -503,7 +503,7 @@ Q_OUTOFLINE_TEMPLATE void QArray<T, PreallocSize>::setSize(int size)
             (qMalloc(sizeof(Data) + sizeof(T) * (capacity - 1)));
         Q_CHECK_PTR(data);
         m_data = data;
-        m_data->ref = 1;
+        m_data->ref.store(1);
         m_data->capacity = capacity;
         m_start = m_data->array;
         m_end = m_start;
