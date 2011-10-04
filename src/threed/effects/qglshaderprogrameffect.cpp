@@ -700,8 +700,9 @@ void QGLShaderProgramEffect::setActive(QGLPainter *painter, bool flag)
     if (!d->program) {
         if (!flag)
             return;
-        Q_ASSERT(!d->vertexShader.isEmpty());
-        Q_ASSERT(!d->fragmentShader.isEmpty());
+        if (d->vertexShader.isEmpty() || d->fragmentShader.isEmpty())
+            return;
+
         d->program = new QGLShaderProgram();
         d->program->addShaderFromSourceCode
             (QGLShader::Vertex, d->vertexShader);
