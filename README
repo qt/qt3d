@@ -1,4 +1,4 @@
-This directory contains the Qt3D project:
+This directory contains the Qt3D project for Qt 4.x:
    * QtQuick3D QML bindings and
    * Qt3D C++ APIs
 
@@ -25,9 +25,9 @@ src/imports/
 util/
     Various utilities that are useful when working with Qt3D.
 examples/
-    Some examples of using QtQuiick3D (QML bindings) and Qt3D (C++ API).
+    Some examples of using QtQuick3D (QML bindings) and Qt3D (C++ API).
 demos/
-    Some more complex demos of using QtQuiick3D (QML bindings) and Qt3D (C++ API).
+    Some more complex demos of using QtQuick3D (QML bindings) and Qt3D (C++ API).
 tests/auto/qml3d/
     Unit tests for the QtQuick3D bindings.
 tests/auto/threed/
