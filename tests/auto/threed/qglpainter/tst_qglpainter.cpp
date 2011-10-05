@@ -86,6 +86,7 @@ private:
 
 void tst_QGLPainter::initTestCase()
 {
+    QSKIP("QWidget: Cannot create a QWidget when no GUI is being used", SkipSingle);
     widget = new QGLTestWidget();
 }
 

@@ -565,6 +565,7 @@ void tst_QGeometryData::generateTextureCoordinates()
 
 void tst_QGeometryData::clear()
 {
+    QSKIP("QWidget: Cannot create a QWidget when no GUI is being used", SkipSingle);
     QVector3D a(1.1, 1.2, 1.3);
     QVector3D b(2.1, 2.2, 2.3);
     QVector3D c(3.1, 3.2, 3.3);
@@ -606,6 +607,7 @@ void tst_QGeometryData::clear()
 
 void tst_QGeometryData::draw()
 {
+    QSKIP("QWidget: Cannot create a QWidget when no GUI is being used", SkipSingle);
     QVector3D a(1.1, 1.2, 1.3);
     QVector3D b(2.1, 2.2, 2.3);
     QVector3D c(3.1, 3.2, 3.3);

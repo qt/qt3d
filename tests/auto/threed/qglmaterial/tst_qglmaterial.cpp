@@ -235,6 +235,7 @@ void TestWidget::paintGL()
 
 void tst_QGLMaterial::initTestCase()
 {
+    QSKIP("QWidget: Cannot create a QWidget when no GUI is being used", SkipSingle);
     widget = new TestWidget();
 }
 

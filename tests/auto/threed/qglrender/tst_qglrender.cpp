@@ -179,6 +179,7 @@ private:
 
 void tst_QGLRender::sequence()
 {
+    QSKIP("QWidget: Cannot create a QWidget when no GUI is being used", SkipSingle);
     QGLMaterialCollection *palette = new QGLMaterialCollection;
 
     // create a yellow lit material

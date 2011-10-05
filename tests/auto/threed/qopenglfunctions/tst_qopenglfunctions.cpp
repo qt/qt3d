@@ -71,6 +71,7 @@ bool tst_QOpenGLFunctions::hasExtension(const char *name)
 // Check that the reported features are consistent with the platform.
 void tst_QOpenGLFunctions::features()
 {
+    QSKIP("QWidget: Cannot create a QWidget when no GUI is being used", SkipSingle);
     // Before being associated with a context, there should be
     // no features enabled.
     QOpenGLFunctions funcs;

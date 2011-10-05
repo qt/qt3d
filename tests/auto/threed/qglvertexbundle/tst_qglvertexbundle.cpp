@@ -63,6 +63,7 @@ private slots:
 
 void tst_QGLVertexBundle::interleaved()
 {
+    QSKIP("QWidget: Cannot create a QWidget when no GUI is being used", SkipSingle);
     // Interleave 4 positions and texture co-ordinates, which will
     // result in the numbers 1..20 ending up in the GL server's buffer.
     QVector3DArray positions;

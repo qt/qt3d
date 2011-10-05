@@ -717,6 +717,7 @@ static void ensureContext(QWindow &win, QOpenGLContext &ctx)
 
 void tst_QGLSceneNode::position_QTBUG_17279()
 {
+    QSKIP("QWidget: Cannot create a QWidget when no GUI is being used", SkipSingle);
     QGeometryData geom;
     geom.appendVertex(QVector3D(0, 0, 0),
                       QVector3D(1.414, 1.414, 0),
