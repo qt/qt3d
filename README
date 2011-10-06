@@ -1,4 +1,4 @@
-This directory contains the Qt3D project:
+This directory contains the Qt3D project for Qt5:
    * QtQuick3D QML bindings and
    * Qt3D C++ APIs
 
@@ -6,8 +6,37 @@ This directory contains the Qt3D project:
 Building QtQuick3D
 ==================
 
-Check the building instructions in doc/src/qt3d-building.qdoc also available
-online at: http://doc.qt.nokia.com/qt-quick3d-snapshot/qt3d-building.html
+Qt5 is a rapidly changing bleeding edge environment.  This branch is our initial
+support for it and thus is also rapidly changing and bleeding edge.
+
+This branch is experimental, and unsupported.  This information is provided for
+advanced use only.
+
+No guarantees about API stability or even if this works at all are supplied, use
+at your own risk.
+
+First fetch the Qt5 source tree and QtQuick3D qml2 branch:
+
+    cd ~/depot
+    git clone ssh://codereview.qt-project.org:29418/qt/qt5.git
+    cd qt5
+    ./init-repository --codereview-username <username> \
+        --module-subset=qtbase,qtsvg,qtdeclarative,qtscript,qttools,qtxmlpatterns,qtdoc,qlalr,qtrepotools,qtqa,qtlocation,qtquick3d
+    git submodule foreach "git fetch gerrit && git reset --hard gerrit/master"
+    cd qtquick3d
+    scp -p -P 29418 codereview.qt-project.org:hooks/commit-msg .git/hooks/
+    git fetch gerrit
+    git checkout --track -b qml2 gerrit/qml2
+
+If you are reading this file then somehow you probably already got this far anyway.
+
+Now build Qt5, which will also build QtQuick3D as a module:
+
+    cd ~/build
+    mkdir qt5
+    cd qt5
+    ~/depot/qt5/configure -nokia-developer -no-webkit -no-phonon -nomake tests \
+        -nomake demos -nomake examples -declarative -opengl -script -svg && make -j 4
 
 
 Whats in QtQuick3D
