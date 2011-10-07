@@ -1,6 +1,7 @@
-load(qttest_p4.prf)
+TARGET = tst_qsphere3d
+CONFIG += testcase
 TEMPLATE=app
 QT += testlib
 QT += opengl
-CONFIG += unittest warn_on qt3d
+CONFIG += warn_on qt3d
 SOURCES += tst_qsphere3d.cpp

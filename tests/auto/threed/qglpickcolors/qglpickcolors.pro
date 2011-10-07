@@ -1,7 +1,8 @@
-load(qttest_p4.prf)
+TARGET = tst_qglpickcolors
+CONFIG += testcase
 TEMPLATE=app
 QT += testlib
-CONFIG += unittest warn_on
+CONFIG += warn_on
 
 INCLUDEPATH += ../../../../src/threed/painting
 VPATH += ../../../../src/threed/painting

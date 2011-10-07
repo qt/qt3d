@@ -1,6 +1,7 @@
-load(qttest_p4.prf)
+TARGET = tst_qglindexbuffer
+CONFIG += testcase
 TEMPLATE=app
 QT += testlib
-CONFIG += unittest warn_on qt3d
+CONFIG += warn_on qt3d
 
 SOURCES += tst_qglindexbuffer.cpp

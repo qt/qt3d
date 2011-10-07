@@ -1,9 +1,10 @@
-load(qttest_p4.prf)
+TARGET = tst_qglmaterial
+CONFIG += testcase
 TEMPLATE=app
 QT += testlib
-CONFIG += unittest warn_on qt3d
+CONFIG += warn_on qt3d
 
 SOURCES += tst_qglmaterial.cpp
-QT+=widgets
+QT += widgets
 
 CONFIG+=insignificant_test

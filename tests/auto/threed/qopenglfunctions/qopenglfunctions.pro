@@ -1,9 +1,10 @@
-load(qttest_p4.prf)
+TARGET = tst_qopenglfunctions
+CONFIG += testcase
 TEMPLATE=app
 QT += testlib
 QT += opengl
 
-CONFIG += unittest warn_on qt3d
+CONFIG += warn_on qt3d
 
 SOURCES += tst_qopenglfunctions.cpp
 QT+=widgets
