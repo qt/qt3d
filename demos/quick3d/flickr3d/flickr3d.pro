@@ -14,3 +14,6 @@ OTHER_FILES += \
 
 RC_FILE = flickr3d.rc
 
+
+
+

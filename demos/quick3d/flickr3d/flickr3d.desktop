@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Flickr3D
+Icon=icon-l-qtquick3d
+Exec=/usr/bin/flickr3d -fullscreen
+OnlyShowIn=X-MeeGo;
+X-MeeGo-Logical-Id=qtn_comm_appname_flickr3d
+X-MeeGo-Translation-Catalog=essentials

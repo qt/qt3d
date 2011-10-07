@@ -41,6 +41,8 @@
 import QtQuick 1.0
 import Qt3D 1.0
 import Qt3D.Shapes 1.0
+import "common" as Common
+import "mobile" as Mobile
 
 Viewport {
     width: 1024
@@ -63,9 +65,50 @@ Viewport {
         source: "skybox"
     }
 
-    Cube {
-        effect: Effect {
-            color: "#aaca00"
+    Common.RssModel { id: rssModel }
+
+    Item3D {
+        transform: [
+            Rotation3D { axis: Qt.vector3d(1, 0, 0); angle: 90 },
+            Translation3D { translate: Qt.vector3d(0, 1, 0) }
+        ]
+
+        Cylinder {
+            levelOfDetail: 1
+            length: 2.0
+            radius: 2.8
+            effect: Effect {
+                color: "#ccccdd"
+            }
+        }
+
+    }
+
+    Component {
+        id: octoDisplayDelegate
+        Item3D {
+            transform: [
+                Translation3D { translate: Qt.vector3d(0, 0, 2.6) },
+                // index is a special variable that comes from model instancing
+                Rotation3D { axis: Qt.vector3d(0, 1, 0); angle: (360 / 16) * (index * 2 + 1) }
+            ]
+            Item3D {
+                enabled: index > -1 && index < 9
+                transform: [
+                    Rotation3D { axis: Qt.vector3d(1, 0, 0); angle: 90 }
+                ]
+                Quad {
+                    effect: Effect {
+                        texture: model.imagePath
+                    }
+                }
+            }
         }
     }
+
+    Repeater {
+        delegate: octoDisplayDelegate
+        model: rssModel
+    }
+
 }

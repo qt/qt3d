@@ -1,9 +1,9 @@
 [Desktop Entry]
 Encoding=UTF-8
 Version=1.0
-Name=RoboBounce
+Name=Flickr3D
 Comment=Qt3D example application
-Exec=/usr/bin/robo_bounce -fullscreen
+Exec=/usr/bin/flickr3d -fullscreen
 Icon=icon-l-qtquick3d
 Terminal=false
 Type=Application
