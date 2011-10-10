@@ -53,8 +53,9 @@ Image {
     // Licence does *NOT* allow distribution in ttf form as part of the
     // source package.
     // Install the font file into the same directory as this qml file, and
-    // uncomment the following line:
-//    FontLoader { id: customFont; source: "JOYSTIX.TTF" }
+    // uncomment the following line, and remove the susequent one:
+//    FontLoader { id: customFont; source: "JOYSTIX.TTF"
+    FontLoader { id: customFont; name: "Sans Serif" }
 
     Viewport  {
         id: viewport
