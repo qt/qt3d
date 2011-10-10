@@ -1442,7 +1442,8 @@ void QGLSceneNode::setPickNode(QGLPickNode *node)
     // TODO - resolve recursive picking - not supported by
     // color based pick AFAICT
     d->pickNode = node;
-    node->setTarget(this);
+    if (node)
+        node->setTarget(this);
 }
 
 /*!
