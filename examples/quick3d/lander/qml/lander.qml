@@ -52,7 +52,9 @@ Image {
     // http://typodermicfonts.com/the-larabie-fonts-collection
     // Licence does *NOT* allow distribution in ttf form as part of the
     // source package.
-    FontLoader { id: customFont; source: "JOYSTIX.TTF" }
+    // Install the font file into the same directory as this qml file, and
+    // uncomment the following line:
+//    FontLoader { id: customFont; source: "JOYSTIX.TTF" }
 
     Viewport  {
         id: viewport
