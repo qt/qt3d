@@ -827,6 +827,16 @@ void Viewport::beforeRendering()
 
     Q_ASSERT(d->canvas);
     Q_ASSERT(QOpenGLContext::currentContext() != 0);
+    QOpenGLContext *ctx = QOpenGLContext::currentContext();
+    QSurfaceFormat format = ctx->format();
+    if (format.depthBufferSize() != 24)
+    {
+        // in the itemChange() handler below we catch the canvas just after it
+        // has been created and ensure it has a 24bit depth buffer.  If somehow
+        // this has not been passed to the context we have a problem.  There
+        // are likely to be odd rendering artifacts.
+        qWarning() << "Problem detected with GL format!!";
+    }
 
     QGLPainter painter;
     if (!painter.begin())
@@ -1803,6 +1813,12 @@ void Viewport::itemChange(QSGItem::ItemChange change, const ItemChangeData &valu
                     this, SLOT(sceneGraphInitialized()), Qt::DirectConnection);
             connect(d->canvas, SIGNAL(destroyed()),
                     this, SLOT(canvasDeleted()));
+            QSurfaceFormat format = d->canvas->format();
+            if (format.depthBufferSize() != 24)
+            {
+                format.setDepthBufferSize(24);
+                d->canvas->setFormat(format);
+            }
         }
     }
 
