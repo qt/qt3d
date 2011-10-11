@@ -63,6 +63,7 @@ QT_BEGIN_NAMESPACE
            -1, -1, -1
         ]
         effect: Effect {
+            useLighting: false
             color: "#aaca00"
         }
     }
@@ -75,6 +76,9 @@ QT_BEGIN_NAMESPACE
     \code
     import Qt3D.Shapes 1.0
     \endcode
+
+    The Point element is intended only for drawing simple points, and does not
+    support point sprites or effect attributes other than color.
 
     \sa Item3D
 */
