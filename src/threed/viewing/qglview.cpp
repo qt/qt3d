@@ -267,6 +267,7 @@ public:
     QOpenGLContext *context;
     QSurfaceFormat format;
     bool initialized;
+    QRect viewport;
     QGLView::Options options;
     QGLView::StereoType stereoType;
     QGLFramebufferObject *fbo;
@@ -833,16 +834,24 @@ void QGLView::exposeEvent(QExposeEvent *e)
     d->updateQueued = false;
     d->ensureContext();
 
-    QRect rect = geometry();
-    resizeGL(rect.width(), rect.height());
-
     if (!d->initialized)
         initializeGL();
 
     paintGL();
 
-    //if (d->format.swapBehavior() == QSurfaceFormat::DoubleBuffer)
-        d->context->swapBuffers(this);
+    d->context->swapBuffers(this);
+}
+
+void QGLView::resizeEvent(QResizeEvent *e)
+{
+    Q_UNUSED(e);
+    QRect r = geometry();
+    Q_ASSERT(e->size() == r.size());
+    if (r.size() != d->viewport.size())
+    {
+        resizeGL(r.width(), r.height());
+        d->viewport = r;
+    }
 }
 
 /*!
@@ -874,6 +883,8 @@ void QGLView::initializeGL()
         painter.glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
 
     glDisable(GL_CULL_FACE);
+    QRect r = geometry();
+    resizeGL(r.width(), r.height());
     initializeGL(&painter);
     d->initialized = true;
     d->logLeave("QGLView::initializeGL");
@@ -886,6 +897,7 @@ void QGLView::resizeGL(int w, int h)
 {
     // Set up the standard viewport for the new window size.
     glViewport(0, 0, w, h);
+
 
     // We will need to regenerate the pick buffer.
     d->pickBufferForceUpdate = true;
@@ -1203,18 +1215,19 @@ void QGLView::keyPressEvent(QKeyEvent *e)
     QGLCamera *camera;
     qreal sep;
 
-    if ((d->options & QGLView::CameraNavigation) == 0) {
-        QWindow::keyPressEvent(e);
-        return;
-    }
-    switch (e->key()) {
-
+    // process the key only if we're doing camera navigation, or we
+    // have received a Quit action
+    if ((d->options & QGLView::CameraNavigation) ||
+            e->key() == Qt::Key_Escape || e->key() == Qt::Key_Q)
+    {
+        switch (e->key())
+        {
         case Qt::Key_Escape:
         case Qt::Key_Q:
         {
-            if (parent() == 0)
-                close();
+            emit quit();
         }
+        break;
 
         case Qt::Key_Left:
         {
@@ -1273,6 +1286,7 @@ void QGLView::keyPressEvent(QKeyEvent *e)
                 rotate(0, 10);
         }
         break;
+        }
     }
     QWindow::keyPressEvent(e);
 }

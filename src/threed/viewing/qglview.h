@@ -105,6 +105,9 @@ public:
     QOpenGLContext *context();
     bool isVisible() const;
 
+Q_SIGNALS:
+    void quit();
+
 public Q_SLOTS:
     void update();
 
@@ -129,6 +132,7 @@ protected:
     void showEvent(QShowEvent *e);
     void hideEvent(QHideEvent *e);
     void exposeEvent(QExposeEvent *e);
+    void resizeEvent(QResizeEvent * e);
 
     QPointF viewDelta(int deltax, int deltay) const;
     QPointF viewDelta(const QPoint &delta) const

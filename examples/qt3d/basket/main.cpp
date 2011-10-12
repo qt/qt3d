@@ -74,6 +74,7 @@ int main(int argc, char *argv[])
     {
         view.resize(800, 600);
     }
+    QObject::connect(&view, SIGNAL(quit()), &app, SLOT(quit()));
     view.show();
 
     return app.exec();
