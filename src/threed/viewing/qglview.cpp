@@ -346,9 +346,9 @@ inline void QGLViewPrivate::ensureContext()
 #ifndef QT_NO_DEBUG_STREAM
         if (!success)
             qWarning() << "Context was not successfully created";
-        if (oldFormat.swapBehavior() != format.swapBehavior())
-            qWarning() << "Could not create requested format"
-                          << oldFormat.swapBehavior();
+        if (oldFormat != format)
+            qWarning() << "Could not create requested format:\n"
+                       << oldFormat << "\n\tgot format:\n\t" << format;
 #endif
     }
     context->makeCurrent(view);
@@ -841,7 +841,7 @@ void QGLView::exposeEvent(QExposeEvent *e)
 
     paintGL();
 
-    if (d->format.swapBehavior() == QSurfaceFormat::DoubleBuffer)
+    //if (d->format.swapBehavior() == QSurfaceFormat::DoubleBuffer)
         d->context->swapBuffers(this);
 }
 
