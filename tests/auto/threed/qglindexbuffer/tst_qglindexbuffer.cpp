@@ -40,7 +40,6 @@
 ****************************************************************************/
 
 #include <QtTest/QtTest>
-#include <QtOpenGL/qgl.h>
 #include "qglindexbuffer.h"
 #include "qopenglfunctions.h"
 

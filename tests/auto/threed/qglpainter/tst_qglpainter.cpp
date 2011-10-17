@@ -40,7 +40,6 @@
 ****************************************************************************/
 
 #include <QtTest/QtTest>
-#include <QtOpenGL/qgl.h>
 #include <QtGui/qpainter.h>
 #include "qgltestwidget.h"
 #include "qglpainter.h"

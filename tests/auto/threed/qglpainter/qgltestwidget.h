@@ -42,7 +42,6 @@
 #ifndef QGLTESTWIDGET_H
 #define QGLTESTWIDGET_H
 
-#include <QtOpenGL/qgl.h>
 #include "qglview.h"
 
 class QEventLoop;

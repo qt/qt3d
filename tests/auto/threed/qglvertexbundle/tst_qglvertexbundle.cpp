@@ -40,7 +40,6 @@
 ****************************************************************************/
 
 #include <QtTest/QtTest>
-#include <QtOpenGL/qgl.h>
 #include "qglvertexbundle.h"
 #include "qvector2darray.h"
 #include "qvector3darray.h"
