@@ -1,6 +1,6 @@
 TARGET = meshcvt
 
-CONFIG += qt3d
+QT += qt3d
 
 SOURCES += \
     meshcvt.cpp \

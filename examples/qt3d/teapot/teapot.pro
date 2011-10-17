@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = teapot
 CONFIG += qt warn_on
-!package: CONFIG += qt3d
+QT += qt3d
 
 SOURCES = teapotview.cpp main.cpp
 HEADERS = teapotview.h

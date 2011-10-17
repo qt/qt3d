@@ -1,8 +1,8 @@
 TEMPLATE = app
 TARGET = teapot_qml
 CONFIG += qt warn_on
-CONFIG += qt3dquick
 
+QT += quick3d
 
 SOURCES += main.cpp
 HEADERS += ../qmlres.h

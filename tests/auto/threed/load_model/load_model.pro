@@ -1,8 +1,8 @@
 TARGET = tst_load_model
 CONFIG += testcase
 TEMPLATE=app
-QT += testlib
-CONFIG += warn_on qt3d
+QT += testlib qt3d
+CONFIG += warn_on
 
 SOURCES += tst_load_model.cpp
 

@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = nesting
 CONFIG += qt warn_on
-!package: CONFIG += qt3d
+QT += qt3d
 
 SOURCES = cubeview.cpp main.cpp
 HEADERS = cubeview.h

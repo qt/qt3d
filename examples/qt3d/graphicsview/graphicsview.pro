@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = graphicsview
 CONFIG += qt warn_on
-!package: CONFIG += qt3d
+QT += qt3d
 
 VPATH += $$PWD/../../src/threed/geometry
 SOURCES = \

@@ -1,7 +1,7 @@
 TARGET = tst_qglbezierpatches
 CONFIG += testcase
 TEMPLATE=app
-QT += testlib
-CONFIG += warn_on qt3d
+QT += testlib qt3d
+CONFIG += warn_on
 
 SOURCES += tst_qglbezierpatches.cpp

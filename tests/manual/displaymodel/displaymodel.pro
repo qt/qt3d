@@ -1,7 +1,8 @@
 TEMPLATE = app
 TARGET = tst_displaymodel
 CONFIG += qt warn_on
-!package: CONFIG += qt3dquick
+
+QT += quick3d
 
 SOURCES += main.cpp
 

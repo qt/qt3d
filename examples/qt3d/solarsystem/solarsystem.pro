@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = solarsystem
 CONFIG += qt warn_on
-!package: CONFIG += qt3d
+QT += qt3d
 
 SOURCES = solarsystem.cpp \
     main.cpp

@@ -1,6 +1,6 @@
 TEMPLATE=app
-QT += testlib
-CONFIG += warn_on qt3d
+QT += testlib qt3d
+CONFIG += warn_on
 
 SOURCES += tst_qglbuilder_perf.cpp
-INCLUDEPATH += ../../../src/threed/geometry
+INCLUDEPATH += $$QT.qt3d.sources/geometry

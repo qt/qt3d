@@ -3,8 +3,7 @@ TARGET = photobrowser3d
 CONFIG += qt warn_on
 
 include(../../../pkg.pri)
-!package: CONFIG += qt3d
-package: QT += opengl
+QT += qt3d opengl
 
 SOURCES += main.cpp\
     photobrowser3dview.cpp \

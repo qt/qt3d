@@ -1,10 +1,10 @@
 TARGET = tst_qglcolladafxeffectfactory
 CONFIG += testcase
 TEMPLATE = app
-QT += testlib
+QT += testlib qt3d
 QT += opengl
 
-CONFIG += warn_on qt3d
+CONFIG += warn_on
 
 INCLUDEPATH += ../../../../demos/shaderwizard/
 VPATH += ../../../../demos/shaderwizard/

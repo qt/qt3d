@@ -1,2 +1,2 @@
 TEMPLATE = subdirs
-SUBDIRS = qglinfo
+contains(QT_CONFIG, widgets): SUBDIRS += qglinfo

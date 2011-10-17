@@ -1,7 +1,8 @@
 TEMPLATE = app
 TARGET = cube4
-CONFIG += qt warn_on qt3d
+CONFIG += qt warn_on
+QT += qt3d
 SOURCES = cubeview.cpp main.cpp
 HEADERS = cubeview.h
 RESOURCES = cube.qrc
-DESTDIR = ../../../bin/qt3d/tutorials
+DESTDIR = $$QT.qt3d.bins/qt3d/tutorials

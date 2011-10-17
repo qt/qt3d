@@ -3,7 +3,7 @@ TARGET = teaservice
 CONFIG += qt warn_on
 
 include(../../../pkg.pri)
-!package: CONFIG += qt3d
+QT += qt3d
 
 SOURCES = teaservice.cpp meshobject.cpp sceneobject.cpp perpixeleffect.cpp
 HEADERS = meshobject.h sceneobject.h perpixeleffect.h

@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = geometry
 CONFIG += qt warn_on
-!package: CONFIG += qt3d
+QT += qt3d
 
 SOURCES = geometryview.cpp \
     main.cpp \

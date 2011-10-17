@@ -117,7 +117,7 @@ qt3d_deploy_qml {
             TARGET_DIR = /opt/mt/applications/$$TARGET
         }
     } else {
-        TARGET_DIR = $$QT3D_INSTALL_DATA/quick3d/resources/examples/$$TARGET
+        TARGET_DIR = $$[QT_INSTALL_DATA]/quick3d/resources/examples/$$TARGET
     }
     symbian {
         TARGET_DIR = .
@@ -253,12 +253,12 @@ defineTest(qtcAddDeployment) {
                 itemfiles = $${item}.files
                 $$itemfiles = $$eval($${deploymentfolder}.source)
                 itempath = $${item}.path
-                $$itempath = $${installPrefix}/$$eval($${deploymentfolder}.target)
+                $$itempath = $$[QT_INSTALL_PREFIX]/$$eval($${deploymentfolder}.target)
                 export($$itemfiles)
                 export($$itempath)
                 INSTALLS += $$item
             }
-            target.path = $${installPrefix}/bin
+            target.path = $$[QT_INSTALL_BINS]
         }
         export(icon.files)
         export(icon.path)

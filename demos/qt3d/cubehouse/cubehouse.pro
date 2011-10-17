@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = cubehouse
 CONFIG += qt warn_on
-!package: CONFIG += qt3d
+QT += qt3d
 
 CONFIG += qt3d_deploy_pkg
 include(../../../pkg.pri)

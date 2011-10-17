@@ -1,8 +1,5 @@
 TARGET = qglinfo
-!package: CONFIG += qt3d
-
-CONFIG += qt3d_deploy_pkg
-include(../../../pkg.pri)
+QT += qt3d widgets
 
 SOURCES += main.cpp \
     qglinfowindow.cpp \
@@ -24,3 +21,7 @@ OTHER_FILES += \
     qglinfo.rc
 
 RC_FILE = qglinfo.rc
+
+DESTDIR = $$QT.qt3d.bins
+target.path = $$[QT_INSTALL_BINS]
+INSTALLS += target

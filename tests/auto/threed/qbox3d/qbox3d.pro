@@ -1,7 +1,7 @@
 TARGET = tst_qbox3d
 CONFIG += testcase
 TEMPLATE=app
-QT += testlib
-CONFIG += warn_on qt3d
+QT += testlib qt3d
+CONFIG += warn_on
 
 SOURCES += tst_qbox3d.cpp
