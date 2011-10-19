@@ -175,7 +175,7 @@ void tst_LoadModel::create()
 
     if (model == QLatin1String("wave.obj"))
     {
-        QSKIP("Fails on Qt5", SkipSingle);
+        QSKIP("Fails on Qt5");
     }
 
     QGLAbstractScene *scene = 0;

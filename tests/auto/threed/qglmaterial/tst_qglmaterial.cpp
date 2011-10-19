@@ -236,7 +236,7 @@ void TestWidget::paintGL()
 
 void tst_QGLMaterial::initTestCase()
 {
-    QSKIP("QWidget: Cannot create a QWidget when no GUI is being used", SkipSingle);
+    QSKIP("QWidget: Cannot create a QWidget when no GUI is being used");
     widget = new TestWidget();
 }
 
@@ -703,7 +703,7 @@ static QColor litColor(const QGLMaterial &material)
 void tst_QGLMaterial::standardMaterialDraw()
 {
     if (!widget->context()->isValid())
-        QSKIP("GL Implementation not valid", SkipSingle);
+        QSKIP("GL Implementation not valid");
 
     QGLMaterial mat1;
     QVERIFY(widget->runTest(&mat1));
@@ -713,7 +713,7 @@ void tst_QGLMaterial::standardMaterialDraw()
 void tst_QGLMaterial::colorMaterialDraw()
 {
     if (!widget->context()->isValid())
-        QSKIP("GL Implementation not valid", SkipSingle);
+        QSKIP("GL Implementation not valid");
 
     QGLColorMaterial mat1;
     mat1.setColor(Qt::blue);

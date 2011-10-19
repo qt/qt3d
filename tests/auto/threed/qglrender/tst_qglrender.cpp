@@ -181,7 +181,7 @@ private:
 
 void tst_QGLRender::sequence()
 {
-    QSKIP("QWidget: Cannot create a QWidget when no GUI is being used", SkipSingle);
+    QSKIP("QWidget: Cannot create a QWidget when no GUI is being used");
     QGLMaterialCollection *palette = new QGLMaterialCollection;
 
     // create a yellow lit material
@@ -243,7 +243,7 @@ void tst_QGLRender::sequence()
 
     TestView widget(scene);
     if (!widget.context()->isValid())
-        QSKIP("GL Implementation not valid", SkipSingle);
+        QSKIP("GL Implementation not valid");
 
     TestPainter *ptr = new TestPainter(&widget);
 

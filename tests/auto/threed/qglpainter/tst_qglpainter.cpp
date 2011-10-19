@@ -87,7 +87,7 @@ private:
 
 void tst_QGLPainter::initTestCase()
 {
-    QSKIP("QWidget: Cannot create a QWidget when no GUI is being used", SkipSingle);
+    QSKIP("QWidget: Cannot create a QWidget when no GUI is being used");
     widget = new QGLTestWidget();
 }
 
@@ -99,7 +99,7 @@ void tst_QGLPainter::cleanupTestCase()
 void tst_QGLPainter::clear()
 {
     if (!widget->context()->isValid())
-        QSKIP("GL Implementation not valid", SkipSingle);
+        QSKIP("GL Implementation not valid");
 
     QVERIFY(widget->runTest(this, "clearPaint"));
 }
@@ -121,9 +121,9 @@ void tst_QGLPainter::clearPaintQ(QPainter *painter, const QSize& size)
 
 void tst_QGLPainter::drawTriangle()
 {
-    QSKIP("Fails under qt5", SkipSingle);
+    QSKIP("Fails under qt5");
     if (!widget->context()->isValid())
-        QSKIP("GL Implementation not valid", SkipSingle);
+        QSKIP("GL Implementation not valid");
 
     QVERIFY(widget->runTest(this, "drawTrianglePaint"));
 }
@@ -187,10 +187,10 @@ static QRect fetchGLScissor(const QRect& windowRect)
 
 void tst_QGLPainter::scissor()
 {
-    QSKIP("Does not pass on Qt5", SkipSingle);
+    QSKIP("Does not pass on Qt5");
 
     if (!widget->context()->isValid())
-        QSKIP("GL Implementation not valid", SkipSingle);
+        QSKIP("GL Implementation not valid");
 
     // Run a painting test to check that the scissor works.
     QVERIFY(widget->runTest(this, "scissorPaint"));
@@ -454,7 +454,7 @@ static bool checkGLMatrix(GLenum, const QMatrix4x4&) { return true; }
 void tst_QGLPainter::projectionMatrixStack()
 {
     if (!widget->context()->isValid())
-        QSKIP("GL Implementation not valid", SkipSingle);
+        QSKIP("GL Implementation not valid");
 
     QGLPainter painter(widget);
 
@@ -484,7 +484,7 @@ void tst_QGLPainter::projectionMatrixStack()
 void tst_QGLPainter::modelViewMatrixStack()
 {
     if (!widget->context()->isValid())
-        QSKIP("GL Implementation not valid", SkipSingle);
+        QSKIP("GL Implementation not valid");
 
     QGLPainter painter(widget);
 
@@ -583,7 +583,7 @@ void tst_QGLPainter::basicCullable()
     QOpenGLContext ctx;
     ensureContext(glw, ctx);
     if (!ctx.isValid())
-        QSKIP("GL Implementation not valid", SkipSingle);
+        QSKIP("GL Implementation not valid");
 
     QGLPainter painter(&glw);
     painter.modelViewMatrix().setToIdentity();
@@ -709,7 +709,7 @@ void tst_QGLPainter::isCullable()
     QOpenGLContext ctx;
     ensureContext(glw, ctx);
     if (!ctx.isValid())
-        QSKIP("GL Implementation not valid", SkipSingle);
+        QSKIP("GL Implementation not valid");
 
     QGLPainter painter(&glw);
     painter.modelViewMatrix().setToIdentity();
@@ -765,7 +765,7 @@ void tst_QGLPainter::isCullableVert_data()
 
 void tst_QGLPainter::isCullableVert()
 {
-    //QSKIP("isCullableVert not passing currently", SkipAll);
+    //QSKIP("isCullableVert not passing currently");
     // same test as isCullable, except we tilt the camera forward
     // and back instead of rotating it from side to side
     // since the view frustum is typically not square in section
@@ -775,7 +775,7 @@ void tst_QGLPainter::isCullableVert()
     QOpenGLContext ctx;
     ensureContext(glw, ctx);
     if (!ctx.isValid())
-        QSKIP("GL Implementation not valid", SkipSingle);
+        QSKIP("GL Implementation not valid");
 
     QGLPainter painter(&glw);
     painter.modelViewMatrix().setToIdentity();

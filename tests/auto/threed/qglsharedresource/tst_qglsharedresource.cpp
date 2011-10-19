@@ -65,7 +65,7 @@ static void destroyDummyResource(GLuint id)
 
 void tst_QGLSharedResource::resourceSharing()
 {
-    QSKIP("failing since refactor changes", SkipAll);
+    QSKIP("failing since refactor changes");
     dummyDestroyCount = 0;
 
     // Create a context.
@@ -89,7 +89,7 @@ void tst_QGLSharedResource::resourceSharing()
     if (!glw2->isSharing()) {
         delete glw2;
         delete glw1;
-        QSKIP("Context sharing is not supported", SkipSingle);
+        QSKIP("Context sharing is not supported");
     }
     QVERIFY(glw1->isSharing());
     QVERIFY(glw1->context() != glw2->context());

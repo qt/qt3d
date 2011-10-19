@@ -82,7 +82,7 @@ void tst_QGLAttributeSet::clear()
 
 void tst_QGLAttributeSet::insert()
 {
-    QSKIP("Fails on Qt5", SkipSingle);
+    QSKIP("Fails on Qt5");
 
     for (int index = -50; index <= 50; ++index) {
         QGLAttributeSet set;

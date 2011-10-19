@@ -105,7 +105,7 @@ void tst_QGLAbstractSurface::glWindowSurface()
     QOpenGLContext ctx;
     ensureContext(glw, ctx);
     if (!ctx.isValid())
-        QSKIP("GL Implementation not valid", SkipSingle);
+        QSKIP("GL Implementation not valid");
 
     QGLWindowSurface surface1;
     QVERIFY(surface1.surfaceType() == QGLAbstractSurface::Window);
@@ -142,14 +142,14 @@ void tst_QGLAbstractSurface::glWindowSurface()
 void tst_QGLAbstractSurface::fboSurface()
 {
     if (!QOpenGLFramebufferObject::hasOpenGLFramebufferObjects())
-        QSKIP("fbo's are not supported", SkipSingle);
+        QSKIP("fbo's are not supported");
 
     QWindow glw;
     glw.setSurfaceType(QWindow::OpenGLSurface);
     QOpenGLContext ctx;
     ensureContext(glw, ctx);
     if (!ctx.isValid())
-        QSKIP("GL Implementation not valid", SkipSingle);
+        QSKIP("GL Implementation not valid");
 
     QGLWindowSurface surface1(&glw);
     QVERIFY(surface1.activate());
@@ -237,11 +237,11 @@ void tst_QGLAbstractSurface::fboSurface()
 void tst_QGLAbstractSurface::pbufferSurface()
 {
     if (!QGLPixelBuffer::hasOpenGLPbuffers())
-        QSKIP("pbuffer's are not supported", SkipSingle);
+        QSKIP("pbuffer's are not supported");
 
     QGLWidget glw;
     if (!glw.isValid())
-        QSKIP("GL Implementation not valid", SkipSingle);
+        QSKIP("GL Implementation not valid");
 
     QGLWindowSurface surface1(&glw);
     QVERIFY(surface1.activate());
@@ -321,7 +321,7 @@ void tst_QGLAbstractSurface::subSurface()
     QOpenGLContext ctx;
     ensureContext(glw, ctx);
     if (!ctx.isValid())
-        QSKIP("GL Implementation not valid", SkipSingle);
+        QSKIP("GL Implementation not valid");
 
     QGLWindowSurface surface1(&glw);
 

@@ -719,7 +719,7 @@ static void ensureContext(QWindow &win, QOpenGLContext &ctx)
 
 void tst_QGLSceneNode::position_QTBUG_17279()
 {
-    QSKIP("QWidget: Cannot create a QWidget when no GUI is being used", SkipSingle);
+    QSKIP("QWidget: Cannot create a QWidget when no GUI is being used");
     QGeometryData geom;
     geom.appendVertex(QVector3D(0, 0, 0),
                       QVector3D(1.414, 1.414, 0),
@@ -741,7 +741,7 @@ void tst_QGLSceneNode::position_QTBUG_17279()
     QOpenGLContext ctx;
     ensureContext(glw, ctx);
     if (!ctx.isValid())
-        QSKIP("GL Implementation not valid", SkipSingle);
+        QSKIP("GL Implementation not valid");
 
     QGLPainter p(&glw);
     QGLCamera cam;
