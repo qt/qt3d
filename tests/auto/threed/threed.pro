@@ -29,7 +29,6 @@ SUBDIRS = \
     qglsphere \
     qglvertexbundle \
     qgraphicstransform3d \
-    qopenglfunctions \
     qplane3d \
     qray3d \
     qglcylinder \
