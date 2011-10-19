@@ -80,6 +80,7 @@ public:
     {
         --QGLColladaIndentLevel;
     }
+    operator QString () { return QString(QLatin1Char(' ')).repeated(QGLColladaIndentLevel * INDENT_SIZE); }
 };
 
 QString operator +(Indent&, QString string)
@@ -207,9 +208,9 @@ QList<QGLColladaFxEffect*> QGLColladaFxEffectFactory::loadEffectsFromXml( QXmlSt
 
     while ( !xml.atEnd() ) {
         xml.readNextStartElement();
-        if ( xml.name() == "library_effects" ) {
+        if (xml.name() == QLatin1String("library_effects")) {
             result += processLibraryEffectsElement( xml , &resultState );
-        } else if (xml.name() == "library_images")
+        } else if (xml.name() == QLatin1String("library_images"))
         {
             processLibraryImagesElement( xml, &resultState );
         }
@@ -1583,12 +1584,18 @@ QStringList QGLColladaFxEffectFactory::generateCodeElements( QGLColladaFxEffect*
 
     // put all this on one line to avoid adding carriage returns to the
     // shader programs
-    result += indent + QLatin1String("<code sid=\"") + baseSid + QLatin1String("VertexShader\">")
-              + effect->vertexShader() + QLatin1String("</code>");
-
-    result += indent + QLatin1String("<code sid=\"") + baseSid + QLatin1String("FragmentShader\">")
-              + effect->fragmentShader() + QLatin1String("</code>");
-
+    {
+        QStringList parts;
+        parts << indent << QLatin1String("<code sid=\"") << baseSid << QLatin1String("VertexShader\">")
+              << effect->vertexShader() << QLatin1String("</code>");
+        result << parts.join(QLatin1String(""));
+    }
+    {
+        QStringList parts;
+        parts << indent << QLatin1String("<code sid=\"") << baseSid << QLatin1String("FragmentShader\">")
+              << effect->fragmentShader() << QLatin1String("</code>\n");
+        result << parts.join(QLatin1String(""));
+    }
     return result;
 }
 

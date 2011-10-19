@@ -211,7 +211,7 @@ QRect QGLAbstractSurface::viewportRect() const
     Q_ASSERT(isValid());
 
     QRect view = viewportGL();
-    int height;
+    int height = 0;
     if (m_type == Window)
     {
         Q_ASSERT(m_window);

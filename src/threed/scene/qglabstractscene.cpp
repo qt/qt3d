@@ -514,7 +514,7 @@ QStringList QGLAbstractScene::supportedFormats(QGLAbstractScene::FormatListType 
                     if (!formatSet.contains(k) && !k.contains("/")) // dont add mime-type keys
                     {
                         if (t == AsFilter)
-                            k.prepend("*.");
+                            k.prepend(QLatin1String("*."));
                         formatSet.insert(k);
                         formats.append(k);
                     }
