@@ -41,6 +41,8 @@
 
 #include <QtTest/QtTest>
 #include <QtGui/qpainter.h>
+#include <QtGui/QOpenGLContext>
+
 #include "qgltestwidget.h"
 #include "qglpainter.h"
 #include "qglsimulator.h"

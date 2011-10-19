@@ -41,6 +41,8 @@
 
 #include <QtTest/QtTest>
 
+#include <QtGui/QOpenGLContext>
+
 #include "qglrenderorder.h"
 #include "qglrendersequencer.h"
 #include "qglrenderordercomparator.h"

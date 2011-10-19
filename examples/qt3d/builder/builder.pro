@@ -2,7 +2,7 @@ TEMPLATE = app
 TARGET = builder
 CONFIG += qt warn_on
 
-QT += qt3d
+QT += widgets qt3d
 
 SOURCES = builder.cpp \
     main.cpp

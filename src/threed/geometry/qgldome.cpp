@@ -206,7 +206,7 @@ QGLBuilder& operator<<(QGLBuilder& builder, const QGLDome& dome)
     stackSin[stacks] = 1.0f;
 
     builder.newSection();
-    builder.currentNode()->setObjectName("Dome");
+    builder.currentNode()->setObjectName(QStringLiteral("Dome"));
     // Create the stacks for the dome part of the dome
     for (int stack = 0; stack < stacks; ++stack) {
         QGeometryData prim;
@@ -233,7 +233,7 @@ QGLBuilder& operator<<(QGLBuilder& builder, const QGLDome& dome)
     if (dome.baseEnabled()) {
         //Draw end-cap at bottom
         builder.newSection();
-        builder.currentNode()->setObjectName("Base");
+        builder.currentNode()->setObjectName(QStringLiteral("Base"));
 
         //Generate a circle of vertices for this layer.
         QGeometryData tempBase;

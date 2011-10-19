@@ -2,7 +2,7 @@ load(qt_module)
 
 TARGET     = Qt3D
 MODULE     = qt3d
-QT         = core-private gui-private opengl network
+QT         = core-private gui-private opengl network widgets
 
 CONFIG += module
 MODULE_PRI = ../../modules/qt_qt3d.pri

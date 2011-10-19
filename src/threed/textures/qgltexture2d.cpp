@@ -388,8 +388,8 @@ void QGLTexture2D::setUrl(const QUrl &url)
             if (url.scheme().toLower() == QLatin1String("qrc")) {
                 // strips off any qrc: prefix and any excess slashes and replaces it with :/
                 QUrl tempUrl(url);
-                tempUrl.setScheme("");
-                fileName = QLatin1String(":")+tempUrl.toString();
+                tempUrl.setScheme(QString());
+                fileName = QLatin1Char(':')+tempUrl.toString();
             }
             
             if (fileName.endsWith(QLatin1String(".dds"), Qt::CaseInsensitive))

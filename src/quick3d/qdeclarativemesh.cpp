@@ -190,9 +190,9 @@ void QDeclarativeMesh::setSource(const QUrl& value)
         setScene(s);
     } else if (d->data.scheme().toLower() == QLatin1String("qrc")) {
         // strips off any qrc: prefix and any excess slashes and replaces it with :/
-        d->data.setScheme("");
+        d->data.setScheme(QString());
         QGLAbstractScene *s = QGLAbstractScene::loadScene(
-                    QLatin1String(":")+d->data.toString(),
+                    QLatin1Char(':')+d->data.toString(),
                     QString(), d->options);
         setScene(s);
     } else

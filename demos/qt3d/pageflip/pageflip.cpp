@@ -46,6 +46,7 @@
 #include "qglabstracteffect.h"
 #include "qgltexture2d.h"
 #include "qglshaderprogrameffect.h"
+#include <QtGui/QOpenGLContext>
 #include <QtOpenGL/qglshaderprogram.h>
 #include "pageflipmath_p.h"
 

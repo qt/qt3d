@@ -1,6 +1,7 @@
 TEMPLATE = app
 TARGET = teaservice
 CONFIG += qt warn_on
+QT += widgets
 
 include(../../../pkg.pri)
 QT += qt3d

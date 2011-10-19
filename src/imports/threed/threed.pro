@@ -2,7 +2,7 @@ TEMPLATE = lib
 TARGET  = qthreedqmlplugin
 CONFIG += qt plugin
 
-QT += qt3d quick3d
+QT += widgets opengl declarative qt3d quick3d
 
 DESTDIR = $$QT.quick3d.imports/Qt3D
 target.path = $$[QT_INSTALL_IMPORTS]/Qt3D

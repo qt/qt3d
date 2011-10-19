@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = cylinder
 CONFIG += qt warn_on
-QT += qt3d
+QT += widgets qt3d
 
 SOURCES = cylinderview.cpp main.cpp
 HEADERS = cylinderview.h

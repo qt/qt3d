@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = pageflip
 CONFIG += qt warn_on
-QT += qt3d
+QT += widgets qt3d
 
 SOURCES = pageflip.cpp pageflipmath.cpp
 HEADERS = pageflipmath_p.h

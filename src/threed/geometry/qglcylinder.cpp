@@ -324,7 +324,7 @@ QGLBuilder& operator<<(QGLBuilder& builder, const QGLCylinder& cylinder)
             //Draw end-cap at top
             QGeometryData top;
             builder.newSection();
-            builder.currentNode()->setObjectName("Cylinder Top");
+            builder.currentNode()->setObjectName(QStringLiteral("Cylinder Top"));
             top.appendVertex(newLayer.center());
             top.appendVertexArray(newLayer.vertices());
             //Generate a circle of texture vertices for this layer.
@@ -346,7 +346,7 @@ QGLBuilder& operator<<(QGLBuilder& builder, const QGLCylinder& cylinder)
             //If it's the first section, create a cylinder sides section
             if (layerCount==1) {
                 builder.newSection();
-                builder.currentNode()->setObjectName("Cylinder Sides");
+                builder.currentNode()->setObjectName(QStringLiteral("Cylinder Sides"));
             }
             builder.addQuadsInterleaved(oldLayer, newLayer);
         }
@@ -356,7 +356,7 @@ QGLBuilder& operator<<(QGLBuilder& builder, const QGLCylinder& cylinder)
             //Draw end-cap at bottom
             QGeometryData base;
             builder.newSection();
-            builder.currentNode()->setObjectName("Cylinder Base");
+            builder.currentNode()->setObjectName(QStringLiteral("Cylinder Base"));
             base.appendVertexArray(newLayer.vertices());
             base.appendVertex(newLayer.center());
             //Generate a circle of texture vertices for this layer.

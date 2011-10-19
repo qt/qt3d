@@ -511,7 +511,7 @@ QStringList QGLAbstractScene::supportedFormats(QGLAbstractScene::FormatListType 
                 for ( ; kit != formatKeys.constEnd(); ++kit)
                 {
                     QString k = *kit;
-                    if (!formatSet.contains(k) && !k.contains("/")) // dont add mime-type keys
+                    if (!formatSet.contains(k) && !k.contains(QLatin1Char('/'))) // dont add mime-type keys
                     {
                         if (t == AsFilter)
                             k.prepend(QLatin1String("*."));

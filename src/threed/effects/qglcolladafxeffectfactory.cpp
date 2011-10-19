@@ -71,11 +71,11 @@ static int QGLColladaIndentLevel = 0;
 class Indent
 {
 public:
-    static int currentIndent() { return QGLColladaIndentLevel; };
+    static int currentIndent() { return QGLColladaIndentLevel; }
     Indent()
     {
         ++QGLColladaIndentLevel;
-    };
+    }
     ~Indent()
     {
         --QGLColladaIndentLevel;
@@ -173,23 +173,23 @@ QString QGLColladaFxEffectFactory::exportEffect(QGLColladaFxEffect *effect, QStr
 
     {
         Indent indent;
-        result += indent + QLatin1String("<asset>");
+        result += indent + QString(QStringLiteral("<asset>"));
         {
             Indent indent;
             QDateTime time = QDateTime::currentDateTime();
-            result += indent + QLatin1String("<created>") + time.toString(Qt::ISODate) + QLatin1String("</created>");
-            result += indent + QLatin1String("<modified>") + time.toString(Qt::ISODate) + QLatin1String("</modified>");
+            result += indent + QString(QStringLiteral("<created>")) + time.toString(Qt::ISODate) + QLatin1String("</created>");
+            result += indent + QString(QStringLiteral("<modified>")) + time.toString(Qt::ISODate) + QLatin1String("</modified>");
         }
-        result += indent + QLatin1String("</asset>");
+        result += indent + QString(QStringLiteral("</asset>"));
 
-        result += indent + QLatin1String("<library_effects>");
+        result += indent + QString(QStringLiteral("<library_effects>"));
         {
             Indent indent;
-            result += indent + QLatin1String("<effect id=\"") + effectId + QLatin1String("\">");
+            result += indent + QString(QStringLiteral("<effect id=\"")) + effectId + QLatin1String("\">");
             result += glslProfileFromEffect(effect, techniqueSid);
-            result += indent + QLatin1String("</effect>");
+            result += indent + QString(QStringLiteral("</effect>"));
         }
-        result += indent + QLatin1String("</library_effects>");
+        result += indent + QString(QStringLiteral("</library_effects>"));
         result += QLatin1String("</COLLADA>");
         return result.join(QLatin1String("\n"));
     }
@@ -1425,19 +1425,19 @@ QStringList QGLColladaFxEffectFactory::glslProfileFromEffect(QGLColladaFxEffect*
     Q_UNUSED(effect)
     Indent indent;
     QStringList result;
-    result += indent + QLatin1String("<profile_GLSL>");
+    result += indent + QString(QStringLiteral("<profile_GLSL>"));
     {
         result += generateCodeElements(effect, sid);
-        result += indent + QLatin1String("<technique sid=\"") + sid + QLatin1String("\">");
+        result += indent + QString(QStringLiteral("<technique sid=\"")) + sid + QLatin1String("\">");
         {
             Indent indent;
-            result += indent + QLatin1String("<pass>");
+            result += indent + QString(QStringLiteral("<pass>"));
             result += generateProgramElement(effect, sid);
-            result += indent + QLatin1String("</pass>");
+            result += indent + QString(QStringLiteral("</pass>"));
         }
-        result += indent + QLatin1String("</technique>");
+        result += indent + QString(QStringLiteral("</technique>"));
     }
-    result += indent + QLatin1String("</profile_GLSL>");
+    result += indent + QString(QStringLiteral("</profile_GLSL>"));
 
     return result;
 }
@@ -1448,13 +1448,13 @@ QStringList QGLColladaFxEffectFactory::generateProgramElement(QGLColladaFxEffect
     QString vertexShaderRefSid = QLatin1String("VertexShaderRefSidRefsCodeOrIncludeAtProfileOrEffectLevel");
     QString fragmentShaderRefSid = QLatin1String("FragmentShaderRefSidRefsCodeOrIncludeAtProfileOrEffectLevel");
     Indent indent;
-    result += indent + QLatin1String("<program>");
+    result += indent + QString(QStringLiteral("<program>"));
     result += generateShaderElement(effect, techniqueSid + QLatin1String("VertexShader"), techniqueSid + QLatin1String("FragmentShader"));
     // 0 or more
     result += generateBindAttributeElement( effect );
     // 0 or more
     result += generateBindUniformElements( effect );
-    result += indent + QLatin1String("</program>");
+    result += indent + QString(QStringLiteral("</program>"));
     return result;
 }
 
@@ -1463,32 +1463,32 @@ QStringList QGLColladaFxEffectFactory::generateShaderElement( QGLColladaFxEffect
     Q_UNUSED(effect);
     QStringList result;
     Indent indent;
-    result += indent + QLatin1String("<shader stage=\"VERTEX\">");
+    result += indent + QString(QStringLiteral("<shader stage=\"VERTEX\">"));
     {
         Indent indent;
-        result += indent + QLatin1String("<sources>");
+        result += indent + QString(QStringLiteral("<sources>"));
         {
             // 0 or more <import> elements
             Indent indent;
-            result += indent + QLatin1String("<import ref=\"") + vertexShaderRefSid + QLatin1String("\"/>");
+            result += indent + QString(QStringLiteral("<import ref=\"")) + vertexShaderRefSid + QLatin1String("\"/>");
         }
-        result += indent + QLatin1String("</sources>");
+        result += indent + QString(QStringLiteral("</sources>"));
         // 0 or <extra> elements;
     }
-    result += indent + QLatin1String("</shader>");
+    result += indent + QString(QStringLiteral("</shader>"));
 
-    result += indent + QLatin1String("<shader stage=\"FRAGMENT\">");
+    result += indent + QString(QStringLiteral("<shader stage=\"FRAGMENT\">"));
     {
         Indent indent;
-        result += indent + QLatin1String("<sources>");
+        result += indent + QString(QStringLiteral("<sources>"));
         {
             Indent indent;
-            result += indent + QLatin1String("<import ref=\"") + fragmentShaderRefSid + QLatin1String("\"/>");
+            result += indent + QString(QStringLiteral("<import ref=\"")) + fragmentShaderRefSid + QLatin1String("\"/>");
         }
-        result += indent + QLatin1String("</sources>");
+        result += indent + QString(QStringLiteral("</sources>"));
         // <extra> element(s) here if necessary;
     }
-    result += indent + QLatin1String("</shader>");
+    result += indent + QString(QStringLiteral("</shader>"));
     return result;
 }
 
@@ -1508,12 +1508,12 @@ QStringList generateBindUniformParamElement( QString symbol, QString ref)
     QStringList result;
     // 0 or more <bind_uniform> elements
     Indent indent;
-    result += indent + QLatin1String("<bind_uniform symbol=\"") + symbol + QLatin1String("\">");
+    result += indent + QString(QStringLiteral("<bind_uniform symbol=\"")) + symbol + QLatin1String("\">");
     {
         Indent indent;
-        result += indent + QLatin1String("<param ref=\"") + ref + QLatin1String("\">");
+        result += indent + QString(QStringLiteral("<param ref=\"")) + ref + QLatin1String("\">");
     }
-    result += indent + QLatin1String("</bind_uniform>");
+    result += indent + QString(QStringLiteral("</bind_uniform>"));
     return result;
 }
 
@@ -1522,12 +1522,12 @@ QStringList generateBindUniformParamElement( QString symbol, const QVector3D& va
     QStringList result;
     // 0 or more <bind_uniform> elements
     Indent indent;
-    result += indent + QLatin1String("<bind_uniform symbol=\"") + symbol + QLatin1String("\">");
+    result += indent + QString(QStringLiteral("<bind_uniform symbol=\"")) + symbol + QLatin1String("\">");
     {
         Indent indent;
         result += indent + QString(QLatin1String("<float3> %1 %2 %3 </float3>")).arg(value.x()).arg(value.y()).arg(value.z());
     }
-    result += indent + QLatin1String("</bind_uniform>");
+    result += indent + QString(QStringLiteral("</bind_uniform>"));
     return result;
 }
 
@@ -1536,12 +1536,12 @@ QStringList generateBindUniformParamElement( QString symbol, const QColor& value
     QStringList result;
     // 0 or more <bind_uniform> elements
     Indent indent;
-    result += indent + QLatin1String("<bind_uniform symbol=\"") + symbol + QLatin1String("\">");
+    result += indent + QString(QStringLiteral("<bind_uniform symbol=\"")) + symbol + QLatin1String("\">");
     {
         Indent indent;
         result += indent + QString(QLatin1String("<float3> %1 %2 %3 </float3>")).arg(value.redF()).arg(value.greenF()).arg(value.blueF());
     }
-    result += indent + QLatin1String("</bind_uniform>");
+    result += indent + QString(QStringLiteral("</bind_uniform>"));
     return result;
 }
 
@@ -1587,13 +1587,13 @@ QStringList QGLColladaFxEffectFactory::generateCodeElements( QGLColladaFxEffect*
     {
         QStringList parts;
         parts << indent << QLatin1String("<code sid=\"") << baseSid << QLatin1String("VertexShader\">")
-              << effect->vertexShader() << QLatin1String("</code>");
+              << QString::fromAscii(effect->vertexShader()) << QLatin1String("</code>");
         result << parts.join(QLatin1String(""));
     }
     {
         QStringList parts;
         parts << indent << QLatin1String("<code sid=\"") << baseSid << QLatin1String("FragmentShader\">")
-              << effect->fragmentShader() << QLatin1String("</code>\n");
+              << QString::fromAscii(effect->fragmentShader()) << QLatin1String("</code>\n");
         result << parts.join(QLatin1String(""));
     }
     return result;

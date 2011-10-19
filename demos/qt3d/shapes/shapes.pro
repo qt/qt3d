@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = shapes
 CONFIG += qt warn_on
-QT += qt3d
+QT += widgets qt3d
 
 SOURCES = shapes.cpp
 

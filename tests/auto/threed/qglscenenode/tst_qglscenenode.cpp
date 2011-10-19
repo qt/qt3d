@@ -40,6 +40,8 @@
 ****************************************************************************/
 
 #include <QtTest/QtTest>
+#include <QtGui/QOpenGLContext>
+
 #include "qglscenenode.h"
 #include "qglpainter.h"
 #include "qglabstracteffect.h"

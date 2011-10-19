@@ -49,7 +49,7 @@
 
 #include <QtDeclarative/qdeclarativeengine.h>
 
-#include <qdeclarativeinfo.h>
+#include <QtDeclarative/qdeclarativeinfo.h>
 #include "qglscenenode.h"
 
 /*!

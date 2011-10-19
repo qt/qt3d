@@ -40,6 +40,7 @@
 ****************************************************************************/
 
 #include <QtTest/QtTest>
+#include <QtGui/QOpenGLContext>
 #include "qglmaterial.h"
 #include "qglcolormaterial.h"
 #include "qgltwosidedmaterial.h"

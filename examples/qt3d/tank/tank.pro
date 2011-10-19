@@ -1,7 +1,7 @@
 TARGET = tank
 TEMPLATE = app
 CONFIG += qt warn_on
-QT += qt3d
+QT += widgets qt3d
 
 SOURCES += main.cpp\
     tankview.cpp \

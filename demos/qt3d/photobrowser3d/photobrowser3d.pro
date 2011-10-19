@@ -1,6 +1,7 @@
 TEMPLATE = app
 TARGET = photobrowser3d
 CONFIG += qt warn_on
+QT += widgets
 
 include(../../../pkg.pri)
 QT += qt3d opengl
