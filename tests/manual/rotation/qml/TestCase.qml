@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-import QtQuick 1.0
+import QtQuick 2.0
 import Qt3D 1.0
 import Qt3D.Shapes 1.0
 
@@ -86,7 +86,7 @@ Rectangle {
             anchors.fill: parent
             picking: true
             camera: Camera { eye: Qt.vector3d(0,15,50)}
-            Cube
+            Teapot
             {
                 id: model
                 scale: 8.0
