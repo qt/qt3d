@@ -1,2 +1,2 @@
 TEMPLATE = subdirs
-SUBDIRS = qglinfo
+SUBDIRS = qglinfo modeltweak

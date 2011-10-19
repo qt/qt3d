@@ -1,0 +1,14 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Name=Model Tweaker
+Comment=QtQuick3d Model Tweaker
+Exec=/usr/bin/modeltweak -fullscreen
+Icon=icon-l-qtquick3d
+Terminal=false
+Type=Application
+Categories=Development;
+X-HildonDesk-ShowInToolbar=true
+X-Osso-Type=application/x-executable
+X-Text-Domain=qt3d
+
