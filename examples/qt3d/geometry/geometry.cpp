@@ -48,7 +48,7 @@
 
 // icosahedron is defined by phi, derived from the golden section
 // http://en.wikipedia.org/wiki/Icosahedron#Cartesian_coordinates
-const qreal phi = 1.618033988749894848f;
+const float phi = 1.618033988749894848f;
 
 Geometry::Geometry(QObject *parent, QGLMaterialCollection *materials)
     : QGLSceneNode(parent)
