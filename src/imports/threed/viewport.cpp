@@ -471,7 +471,7 @@ void Viewport::setRenderMode(Viewport::RenderMode mode)
         d->renderMode = mode;
         if (d->renderMode == BufferedRender)
         {
-            setRenderTarget(QQuickPaintedItem::FramebufferObject);
+            setRenderTarget(QQuickPaintedItem::InvertedYFramebufferObject);
             if (engine)
             {
                 disconnect(engine, SIGNAL(beforeRendering()),
