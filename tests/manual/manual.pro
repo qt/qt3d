@@ -9,4 +9,5 @@ SUBDIRS +=  displaymodel \
             translation \
             transformations \
             animations \
+            fullreferencing \
             qrc

@@ -1334,7 +1334,6 @@ bool QDeclarativeItem3D::isInitialized() const
     return d->isInitialized;
 }
 
-
 void QDeclarativeItem3D::componentComplete()
 {
     QDeclarativeItem::componentComplete();
@@ -1348,6 +1347,31 @@ void QDeclarativeItem3D::componentComplete()
         else {
             qWarning()<< "3D item initialization failed: unable to find the specified mesh-node. Defaulting to default node.";
             d->mainBranchId = 0;
+        }
+    }
+
+    QDeclarativeItem3D *parentItem3D = qobject_cast<QDeclarativeItem3D*>(parentItem());
+    if (!parentItem3D)
+    {
+        if (!d->viewport)
+        {
+            QDeclarativeContext *ctx = QDeclarativeEngine::contextForObject(this);
+            QDeclarativeEngine *engine = ctx->engine();
+            QDeclarativeComponent vp(engine);
+            vp.setData(QByteArray(
+                           "import QtQuick 1.0\n"
+                           "import Qt3D 1.0\n"
+                           "Viewport{ objectName: \"vp\" }\n"), QUrl());
+            QObject *implicitViewport = vp.create();
+            QDeclarativeItem *parentViewport = qobject_cast<QDeclarativeItem*>(implicitViewport);
+            parentViewport->setWidth(width());
+            parentViewport->setHeight(height());
+            Q_ASSERT(parentViewport);
+            Q_ASSERT(parentViewport->objectName() == QLatin1String("vp"));
+            QDeclarativeItem *prevParent = parentItem();
+            parentViewport->setParentItem(prevParent);
+            setParent(parentViewport);
+            setParentItem(parentViewport);
         }
     }
     update();
