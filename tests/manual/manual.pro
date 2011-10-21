@@ -10,4 +10,5 @@ SUBDIRS +=  displaymodel \
             animations \
             qrc \
             basic \
-            background
+            background \
+            fullreferencing
