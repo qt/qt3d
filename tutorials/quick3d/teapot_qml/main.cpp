@@ -40,7 +40,7 @@
 ****************************************************************************/
 
 #include <QtGui/QGuiApplication>
-#include <QtDeclarative/qsgview.h>
+#include <QtDeclarative/qquickview.h>
 
 #include "../qmlres.h"
 
@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
     QSurfaceFormat f;
     f.setSamples(16);
 
-    QSGView view;
+    QQuickView view;
     view.setFormat(f);
 
     QString qml = q_get_qmldir(QLatin1String("qml/teapot.qml"));

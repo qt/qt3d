@@ -40,7 +40,7 @@
 ****************************************************************************/
 
 #include <QtGui/QGuiApplication>
-#include <QtDeclarative/qsgview.h>
+#include <QtDeclarative/qquickview.h>
 
 int main(int argc, char *argv[])
 {
@@ -52,12 +52,12 @@ int main(int argc, char *argv[])
     QWindow root;
     root.resize(640 * 2, 480);
 
-    QSGView viewL(&root);
+    QQuickView viewL(&root);
     viewL.setFormat(format);
     viewL.setSource(QUrl("qrc:///qml/cube.qml"));
     viewL.setGeometry(0, 0, 640, 480);
 
-    QSGView viewR(&root);
+    QQuickView viewR(&root);
     viewR.setFormat(format);
     viewR.setSource(QUrl("Qrc:/qml/cube.qml"));
     viewR.setGeometry(640, 0, 640, 480);

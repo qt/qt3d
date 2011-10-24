@@ -43,6 +43,7 @@
 #include <QtGui/qpainter.h>
 #include <QtGui/qpaintengine.h>
 #include <QtGui/QOpenGLContext>
+#include <QtGui/QWindow>
 #include <QtCore/QDebug>
 
 QT_BEGIN_NAMESPACE

@@ -453,18 +453,18 @@ void QDeclarativeItem3DPrivate::data_append(QDeclarativeListProperty<QObject> *p
     // Item3d that is to be the parent.
 
     // Either way we're going to call something like setParent(prop->object)
-    // we're just determining whether to use the QSGItem or QObject version.
+    // we're just determining whether to use the QQuickItem or QObject version.
 
     // The primary purpose of this function is to divide new children into
     // renderable qml Items and non-renderable QObject derived resources.
     // We want to accept all Items, and and simply ignore non-3d items
     // during drawing.
 
-    // It is important that we imitate this behaviour of non-3d QSGItems so
+    // It is important that we imitate this behaviour of non-3d QQuickItems so
     // view items will assign dynamically created objects to the Item3d and
     // make them available for drawing.
 
-    QSGItem *i = qobject_cast<QSGItem *>(o);
+    QQuickItem *i = qobject_cast<QQuickItem *>(o);
     if (i)
         i->setParentItem(static_cast<QDeclarativeItem3D *>(prop->object));
     else
@@ -525,7 +525,7 @@ QMatrix4x4 QDeclarativeItem3DPrivate::localTransforms() const
     \internal
 */
 QDeclarativeItem3D::QDeclarativeItem3D(QObject *parent)
-    : QSGItem(0)
+    : QQuickItem(0)
 {
     d = new QDeclarativeItem3DPrivate(this);
 
@@ -913,7 +913,7 @@ void QDeclarativeItem3D::setLight(QGLLightParameters *value)
     \qmlproperty list<Item3D> Item3D::children
     \qmlproperty list<Object> Item3D::resources
 
-    The children property contains a list of all QSGItem derived
+    The children property contains a list of all QQuickItem derived
     child items for this item.  This provides logical grouping of items in a
     scene. Transformations that are applied to this item will also affect
     child items.  Note that children that are not derived from
@@ -922,7 +922,7 @@ void QDeclarativeItem3D::setLight(QGLLightParameters *value)
     qobject_cast if you need to check whether a child is an Item3D.
 
     The resources property holds all other children that do not
-    directly inherit from QSGItem, such as effects, meshes, and
+    directly inherit from QQuickItem, such as effects, meshes, and
     other supporting objects.
 
     Normally it isn't necessary to assign to the children or resources
@@ -1331,7 +1331,7 @@ bool QDeclarativeItem3D::isInitialized() const
 
 void QDeclarativeItem3D::componentComplete()
 {
-    QSGItem::componentComplete();
+    QQuickItem::componentComplete();
     d->componentComplete = true;
 
     // Now that we have all the mesh and subnode information we need, it's time to setup the mesh scene objects.

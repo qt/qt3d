@@ -62,7 +62,7 @@
 #include <QtCore/qtimer.h>
 #include <QtCore/qcoreapplication.h>
 #include <QtDeclarative/qdeclarativeinfo.h>
-#include <QtDeclarative/QSGCanvas>
+#include <QtDeclarative/QQuickCanvas>
 #include <QtDeclarative/QSGEngine>
 #include <QtOpenGL/qglbuffer.h>
 #include <QtCore/qthread.h>
@@ -267,7 +267,7 @@ public:
     // class instance data from other threads should be at a bare minimum.
     QMutexMaybeLocker::Lock viewportLock;
 
-    QSGCanvas* canvas;
+    QQuickCanvas* canvas;
 
     void setDefaults(QGLPainter *painter);
     void setRenderSettings(QGLPainter *painter);
@@ -391,15 +391,15 @@ const int Viewport::FBO_SIZE = 8;
 
 /*!
     \internal
-    Construct the class and assign it a \a parent QSGItem.
+    Construct the class and assign it a \a parent QQuickItem.
 */
-Viewport::Viewport(QSGItem *parent)
-    : QSGPaintedItem(parent)
+Viewport::Viewport(QQuickItem *parent)
+    : QQuickPaintedItem(parent)
     , d(new ViewportPrivate())
 {
     // Has to be set or we crash on render.  Intention of this is that
     // the update() function gets called when a re-render is needed.
-    setFlags(QSGItem::ItemHasContents);
+    setFlags(QQuickItem::ItemHasContents);
 
     connect(this, SIGNAL(viewportChanged()), this, SLOT(update3d()));
 
@@ -471,7 +471,7 @@ void Viewport::setRenderMode(Viewport::RenderMode mode)
         d->renderMode = mode;
         if (d->renderMode == BufferedRender)
         {
-            setRenderTarget(QSGPaintedItem::FramebufferObject);
+            setRenderTarget(QQuickPaintedItem::FramebufferObject);
             if (engine)
             {
                 disconnect(engine, SIGNAL(beforeRendering()),
@@ -774,7 +774,7 @@ qreal ViewportSubsurface::aspectRatio() const
 
     Only used in the case of renderMode() == BufferedRender.
 
-    Called by QSGPaintedItem to refresh the content.
+    Called by QQuickPaintedItem to refresh the content.
 
     \sa beforeRendering() setRenderMode()
 */
@@ -810,7 +810,7 @@ void Viewport::paint(QPainter *painter)
 
     Only used in the case of renderMode() == DirectRender.
 
-    Called by beforeRendering signal from QSGContext.
+    Called by beforeRendering signal from QQuickContext.
 
     \sa paint()
 */
@@ -1232,7 +1232,7 @@ void Viewport::mousePressEvent(QMouseEvent *e)
     }
     else
     {
-        QSGItem::mousePressEvent(e);
+        QQuickItem::mousePressEvent(e);
         return;
     }
     e->setAccepted(true);
@@ -1304,7 +1304,7 @@ void Viewport::mouseReleaseEvent(QMouseEvent *e)
             p->setCallback(processMouseReleaseInvocation);
         e->setAccepted(true);
     } else {
-        QSGItem::mouseReleaseEvent(e);
+        QQuickItem::mouseReleaseEvent(e);
     }
 }
 
@@ -1365,7 +1365,7 @@ void Viewport::mouseDoubleClickEvent(QMouseEvent *e)
         if (p)
             p->setCallback(processMouseDoubleClickInvocation);
     }
-    QSGItem::mouseDoubleClickEvent(e);
+    QQuickItem::mouseDoubleClickEvent(e);
 }
 
 void Viewport::processMouseDoubleClick(quint64 eventId)
@@ -1450,7 +1450,7 @@ void Viewport::mouseMoveEvent(QMouseEvent *e)
         if (p)
             p->setCallback(processMouseMoveInvocation);
     } else {
-        QSGItem::mouseMoveEvent(e);
+        QQuickItem::mouseMoveEvent(e);
         return;
     }
     e->setAccepted(true);
@@ -1486,7 +1486,7 @@ void Viewport::processMouseMove(quint64 eventId)
         sendLeaveEvent(d->enteredObject);
         d->enteredObject = 0;
     } else {
-        QSGItem::mouseMoveEvent(e);
+        QQuickItem::mouseMoveEvent(e);
         return;
     }
 }
@@ -1499,7 +1499,7 @@ void Viewport::hoverEnterEvent(QHoverEvent *e)
     if (hoverEvent(e))
         e->setAccepted(true);
     else
-        QSGItem::hoverEnterEvent(e);
+        QQuickItem::hoverEnterEvent(e);
 }
 
 /*!
@@ -1510,7 +1510,7 @@ void Viewport::hoverMoveEvent(QHoverEvent *e)
     if (hoverEvent(e))
         e->setAccepted(true);
     else
-        QSGItem::hoverMoveEvent(e);
+        QQuickItem::hoverMoveEvent(e);
 }
 
 /*!
@@ -1523,7 +1523,7 @@ void Viewport::hoverLeaveEvent(QHoverEvent *e)
         d->enteredObject = 0;
         e->setAccepted(true);
     } else {
-        QSGItem::hoverLeaveEvent(e);
+        QQuickItem::hoverLeaveEvent(e);
     }
 }
 
@@ -1536,7 +1536,7 @@ void Viewport::wheelEvent(QWheelEvent *e)
         wheel(e->delta());
         e->setAccepted(true);
     } else {
-        QSGItem::wheelEvent(e);
+        QQuickItem::wheelEvent(e);
     }
 }
 
@@ -1549,7 +1549,7 @@ void Viewport::keyPressEvent(QKeyEvent *e)
     qreal sep;
 
     if (!d->navigation) {
-        QSGItem::keyPressEvent(e);
+        QQuickItem::keyPressEvent(e);
         return;
     }
 
@@ -1608,7 +1608,7 @@ void Viewport::keyPressEvent(QKeyEvent *e)
     break;
 
     default:
-        QSGItem::keyPressEvent(e);
+        QQuickItem::keyPressEvent(e);
         return;
     }
 
@@ -1787,11 +1787,11 @@ QPointF Viewport::viewDelta(qreal deltax, qreal deltay)
     return QPointF(deltax * scaleX / w, deltay * scaleY / h);
 }
 
-void Viewport::itemChange(QSGItem::ItemChange change, const ItemChangeData &value)
+void Viewport::itemChange(QQuickItem::ItemChange change, const ItemChangeData &value)
 {
-    if (change == QSGItem::ItemChildAddedChange)
+    if (change == QQuickItem::ItemChildAddedChange)
     {
-        QSGItem *newItem = value.item;
+        QQuickItem *newItem = value.item;
         if (QDeclarativeItem3D* item3d =
                 qobject_cast<QDeclarativeItem3D*>(newItem))
         {
@@ -1822,7 +1822,7 @@ void Viewport::itemChange(QSGItem::ItemChange change, const ItemChangeData &valu
         }
     }
 
-    return QSGItem::itemChange(change, value);
+    return QQuickItem::itemChange(change, value);
 }
 
 QSGNode* Viewport::updatePaintNode(QSGNode* node, UpdatePaintNodeData* data)
@@ -1830,7 +1830,7 @@ QSGNode* Viewport::updatePaintNode(QSGNode* node, UpdatePaintNodeData* data)
     Q_UNUSED(node);
     Q_UNUSED(data);
     if (d->renderMode == BufferedRender)
-        return QSGPaintedItem::updatePaintNode(node, data);
+        return QQuickPaintedItem::updatePaintNode(node, data);
     return 0;
 }
 
@@ -1843,7 +1843,7 @@ void Viewport::sceneGraphInitialized()
     // This function is the approved SG spot for getting the initialized scene
     // graph canvas.  Its the earliest point when we can be sure the canvas is
     // properly set up.  Note that it will usually occur well after the main
-    // objects have been initialised (when the QSGView is created) and after the
+    // objects have been initialised (when the QQuickView is created) and after the
     // initial QML is loaded (which causes the initialisation of specific settings
     // for the render mode).
     Q_ASSERT(d->canvas);

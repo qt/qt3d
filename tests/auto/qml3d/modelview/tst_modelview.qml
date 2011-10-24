@@ -195,7 +195,7 @@ Rectangle
             }
 
             function test_adding_to_listModel() {
-                skip("'QSGItem::stackBefore: Cannot stack before 0x9e69f50, which must be a sibling' warning");
+                skip("'QQuickItem::stackBefore: Cannot stack before 0x9e69f50, which must be a sibling' warning");
                 var viewportChildCount = viewport.children.length;
                 var itemChildCount = listModelParentItem.children.length;
 

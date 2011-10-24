@@ -44,7 +44,7 @@
 #include <QtCore/qdir.h>
 
 #include <QtGui/QGuiApplication>
-#include <QtDeclarative/qsgview.h>
+#include <QtDeclarative/qquickview.h>
 
 #include <QtCore/qdebug.h>
 
@@ -132,7 +132,7 @@ int main(int argc, char *argv[])                                                
     QGuiApplication app(argc, argv);                                                    \
     QSurfaceFormat f;                                                                   \
     f.setSamples(16);                                                                   \
-    QSGView view;                                                                       \
+    QQuickView view;                                                                       \
     view.setFormat(f);                                                                  \
     QString qml = q_get_qmldir(QLatin1String("qml/desktop.qml"));                       \
     view.setSource(QUrl::fromLocalFile(qml));                                           \

@@ -42,6 +42,7 @@
 #include <QApplication>
 #include <QTimer>
 #include <QMouseEvent>
+#include <QWindow>
 #include "qglpainter.h"
 #include "qglabstracteffect.h"
 #include "qgltexture2d.h"

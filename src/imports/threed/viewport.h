@@ -42,7 +42,7 @@
 #ifndef VIEWPORT_H
 #define VIEWPORT_H
 
-#include <QtDeclarative/qsgpainteditem.h>
+#include <QtDeclarative/qquickpainteditem.h>
 
 #include "qdeclarativeitem3d.h"
 #include "qdeclarativeviewport.h"
@@ -58,7 +58,7 @@ class QGLLightParameters;
 class QDeclarativeEffect;
 class PickEvent;
 
-class Viewport : public QSGPaintedItem, public QDeclarativeViewport
+class Viewport : public QQuickPaintedItem, public QDeclarativeViewport
 {
     Q_OBJECT
     Q_ENUMS(RenderMode)
@@ -80,7 +80,7 @@ public:
         BufferedRender
     };
 
-    Viewport(QSGItem *parent = 0);
+    Viewport(QQuickItem *parent = 0);
     ~Viewport();
 
     QColor fillColor() const;
@@ -142,9 +142,9 @@ protected:
     void wheelEvent(QWheelEvent *event);
     void keyPressEvent(QKeyEvent *event);
 
-    // from QSGItem
+    // from QQuickItem
     virtual QSGNode *updatePaintNode(QSGNode *, UpdatePaintNodeData *);
-    void itemChange(QSGItem::ItemChange change, const ItemChangeData &value);
+    void itemChange(QQuickItem::ItemChange change, const ItemChangeData &value);
 
     void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry);
 
