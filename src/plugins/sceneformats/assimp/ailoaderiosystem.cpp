@@ -60,9 +60,9 @@ AiLoaderIOSystem::~AiLoaderIOSystem()
 
 bool AiLoaderIOSystem::Exists(const char* path) const
 {
-    return m_device->isReadable();
+    Q_UNUSED(path);
 
-    //return QFile::exists(QLatin1String(path));
+    return m_device->isReadable();
 }
 
 char AiLoaderIOSystem::getOsSeparator() const

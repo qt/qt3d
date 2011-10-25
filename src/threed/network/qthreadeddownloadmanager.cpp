@@ -141,7 +141,7 @@ void QThreadedDownloadManager::beginThread()
             qWarning("Download thread did not finish in timely manner - killing");
             getDownloadThread()->terminate();
             qWarning("Waiting for termination");
-            while (getDownloadThread()->wait(1000));
+            while (getDownloadThread()->wait(1000)) {}
         }
     }
 

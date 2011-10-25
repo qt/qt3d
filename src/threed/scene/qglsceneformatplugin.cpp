@@ -276,6 +276,7 @@ QGLAbstractScene * QGLSceneFormatHandler::getScene() const
 */
 void QGLSceneFormatHandler::downloadComplete(QByteArray sceneData)
 {
+    Q_UNUSED(sceneData);
     //unused - re-implement if you intend to support network
     //loading of model files.
 }

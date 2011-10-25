@@ -786,7 +786,7 @@ private:
 template <> inline void Structure :: ResolvePointer<boost::shared_ptr,ElemBase>(boost::shared_ptr<ElemBase>& out,
     const Pointer & ptrval,
     const FileDatabase& db,
-    const Field& f
+    const Field& /*  f  */
     ) const
 {
     // Special case when the data type needs to be determined at runtime.
