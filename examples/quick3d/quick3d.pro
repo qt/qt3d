@@ -10,4 +10,5 @@ SUBDIRS += \
     moon \
     photoroom \
     shaders \
-    sphere
+    sphere \
+    solarsystem_qml
