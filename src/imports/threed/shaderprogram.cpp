@@ -47,6 +47,8 @@
 
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
+#include <QFile>
+
 #include "qglscenenode.h"
 /*!
     \qmlclass ShaderProgram ShaderProgram
@@ -214,6 +216,8 @@ public:
 
     QString vertexShader;
     QString fragmentShader;
+    QUrl vertexShaderSource;
+    QUrl fragmentShaderSource;
     bool regenerate;
     bool shadersSupported;
     ShaderProgramEffect *effect;
@@ -697,12 +701,14 @@ ShaderProgram::~ShaderProgram()
 }
 
 /*!
-  \qmlproperty string ShaderProgram::vertexShader
+    \qmlproperty string ShaderProgram::vertexShader
 
-  This property defines the source for the vertex shader to be implemented by this
-  instance of the ShaderProgram.
+    This property defines the source for the vertex shader to be implemented by this
+    instance of the ShaderProgram.  This property and the vertexShaderSource()
+    property both effect the same underlying object, so setting one will override
+    the other.
 
-  \sa fragmentShader
+  \sa fragmentShader, vertexShaderSource
 */
 QString ShaderProgram::vertexShader() const
 {
@@ -711,19 +717,24 @@ QString ShaderProgram::vertexShader() const
 
 void ShaderProgram::setVertexShader(const QString& value)
 {
-    d->vertexShader = value;
-    d->regenerate = true;
-    emit shaderChanged();
-    emit effectChanged();
+    if (!d->vertexShaderSource.isEmpty() || value != d->vertexShader)
+    {
+        d->vertexShader = value;
+        d->regenerate = true;
+        d->vertexShaderSource = QUrl();
+        emit shaderChanged();
+        emit effectChanged();
+    }
 }
 
-
 /*!
-  \qmlproperty string ShaderProgram::fragmentShader
-  This property defines the source for the fragment shader (ie. pixel shader) to be
-  implemented by this instance of the ShaderProgram.
+    \qmlproperty string ShaderProgram::fragmentShader
+    This property defines the source for the fragment shader (ie. pixel shader) to be
+    implemented by this instance of the ShaderProgram.  This property and the
+    fragmentShaderSource() property both effect the same underlying object, so
+    setting one will override the other.
 
-  \sa vertexShader
+  \sa vertexShader, fragmentShaderSource
 */
 QString ShaderProgram::fragmentShader() const
 {
@@ -732,10 +743,108 @@ QString ShaderProgram::fragmentShader() const
 
 void ShaderProgram::setFragmentShader(const QString& value)
 {
-    d->fragmentShader = value;
-    d->regenerate = true;
-    emit shaderChanged();
-    emit effectChanged();
+    if (!d->fragmentShaderSource.isEmpty() || value != d->fragmentShader)
+    {
+        d->fragmentShader = value;
+        d->regenerate = true;
+        d->fragmentShaderSource = QUrl();
+        emit shaderChanged();
+        emit effectChanged();
+    }
+}
+
+/*!
+    \qmlproperty QUrl ShaderProgram::vertexShaderSource
+    This property allows the source for the vertex shader to be set to the contents
+    of a file containing shader source code.  This property and the vertexShader()
+    property both effect the same underlying object, so setting one will override
+    the other.
+
+    Note that at present networked URLs are not supported, only local files.  If a
+    URL has not been set for the vertex shader, for example because it was
+    specified via the vertexShader() in-line shader code property, then this property
+    will return a null (empty) QUrl.
+
+    \sa vertexShader, fragmentShaderSource
+*/
+QUrl ShaderProgram::vertexShaderSource() const
+{
+    return d->vertexShaderSource;
+}
+
+void ShaderProgram::setVertexShaderSource(const QUrl &url)
+{
+    if (!url.isEmpty() && url.isValid() && url != d->vertexShaderSource)
+    {
+        if (url.scheme() == QLatin1String("file"))
+        {
+            QString fn = url.toLocalFile();
+            QFile vs(fn);
+            if (vs.open(QIODevice::ReadOnly))
+            {
+                d->vertexShader = vs.readAll();
+                d->vertexShaderSource = url;
+                emit shaderChanged();
+                emit effectChanged();
+                d->regenerate = true;
+            }
+            else
+            {
+                qWarning() << "Unable to read" << url;
+            }
+        }
+        else
+        {
+            qWarning() << "vertexShaderSource property does not (yet) support non-file URLs";
+        }
+    }
+}
+
+/*!
+    \qmlproperty QUrl ShaderProgram::fragmentShaderSource
+    This property allows the source for the fragment shader to be set to the contents
+    of a file containing shader source code.  This property and the vertexShader()
+    property both effect the same underlying object, so setting one will override
+    the other.
+
+    Note that at present networked URLs are not supported, only local files.  If a
+    URL has not been set for the fragment shader, for example because it was
+    specified via the fragmentShader() in-line shader code property, then this property
+    will return a null (empty) QUrl.
+
+    \sa fragmentShader, vertexShaderSource
+*/
+QUrl ShaderProgram::fragmentShaderSource() const
+{
+    return d->fragmentShaderSource;
+}
+
+void ShaderProgram::setFragmentShaderSource(const QUrl &url)
+{
+    if (!url.isEmpty() && url.isValid() && url != d->fragmentShaderSource)
+    {
+        if (url.scheme() == QLatin1String("file"))
+        {
+            QString fn = url.toLocalFile();
+            QFile fs(fn);
+            if (fs.open(QIODevice::ReadOnly))
+            {
+                d->fragmentShader = fs.readAll();
+                d->fragmentShaderSource = url;
+                emit shaderChanged();
+                emit effectChanged();
+                d->regenerate = true;
+            }
+            else
+            {
+                qWarning() << "Unable to read fragment shader" << url;
+            }
+        }
+        else
+        {
+            qWarning() << "fragmentShaderSource property does not (yet) support non-file URLs";
+        }
+    }
 }
 
 /*!

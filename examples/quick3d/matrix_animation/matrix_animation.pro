@@ -13,3 +13,4 @@ OTHER_FILES += \
     matrix_animation.rc
 
 RC_FILE = matrix_animation.rc
+

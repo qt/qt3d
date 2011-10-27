@@ -56,6 +56,8 @@ class ShaderProgram : public QDeclarativeEffect
     Q_OBJECT
     Q_PROPERTY(QString vertexShader READ vertexShader WRITE setVertexShader NOTIFY shaderChanged)
     Q_PROPERTY(QString fragmentShader READ fragmentShader WRITE setFragmentShader NOTIFY shaderChanged)
+    Q_PROPERTY(QUrl vertexShaderSource READ vertexShaderSource WRITE setVertexShaderSource NOTIFY shaderChanged)
+    Q_PROPERTY(QUrl fragmentShaderSource READ fragmentShaderSource WRITE setFragmentShaderSource NOTIFY shaderChanged)
 public:
     ShaderProgram(QObject *parent = 0);
     virtual ~ShaderProgram();
@@ -65,6 +67,12 @@ public:
 
     QString fragmentShader() const;
     void setFragmentShader(const QString& value);
+
+    QUrl vertexShaderSource() const;
+    void setVertexShaderSource(const QUrl &url);
+
+    QUrl fragmentShaderSource() const;
+    void setFragmentShaderSource(const QUrl &url);
 
     virtual void enableEffect(QGLPainter *painter);
     virtual void applyTo(QGLSceneNode *node);
