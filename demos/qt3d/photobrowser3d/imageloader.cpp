@@ -56,10 +56,8 @@
 #include <QTimer>
 
 ImageLoader::ImageLoader()
-{
-    m_stop = 0;
-}
-
+    : m_stop(0)
+{ }
 ImageLoader::~ImageLoader()
 {
     // nothing to do here
@@ -73,7 +71,7 @@ ThumbnailableImage ImageLoader::image() const
 void ImageLoader::setImage(const ThumbnailableImage &image)
 {
     m_image = image;
-    if (!m_stop && isRunning())
+    if (!m_stop.load() && isRunning())
         emit readRequired(image);
 }
 

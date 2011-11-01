@@ -51,10 +51,8 @@
 #include <QDebug>
 
 FileScanner::FileScanner(QObject *parent)
-    : QThread(parent)
-{
-    m_stop = 0;
-}
+    : QThread(parent), m_stop(0)
+{ }
 
 FileScanner::~FileScanner()
 {
@@ -77,7 +75,7 @@ void FileScanner::scan()
     queue.append(m_url.path());
     QSet<QString> loopProtect;
     int count = 0;
-    while (queue.size() > 0 && !m_stop && count < 300)
+    while (queue.size() > 0 && !m_stop.load() && count < 300)
     {
         QString path = queue.takeFirst();
         QFileInfo u(path);

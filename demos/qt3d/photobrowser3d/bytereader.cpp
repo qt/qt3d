@@ -51,14 +51,12 @@
 #include <QCoreApplication>
 
 ByteReader::ByteReader()
-{
-    m_stop = 0;
-    m_loading = 0;
-}
+    : m_stop(0), m_loading(0)
+{ }
 
 void ByteReader::loadFile(const ThumbnailableImage &image)
 {
-    if (!m_stop)
+    if (!m_stop.load())
     {
         m_loading.ref();
 
@@ -78,7 +76,7 @@ void ByteReader::loadFile(const ThumbnailableImage &image)
         if (f.open(QIODevice::ReadOnly))
         {
             QByteArray bytes;
-            while (!f.atEnd() & !m_stop)
+            while (!f.atEnd() & !m_stop.load())
             {
                 bytes.append(f.read(1024));
                 QCoreApplication::processEvents();
@@ -92,7 +90,7 @@ void ByteReader::loadFile(const ThumbnailableImage &image)
         }
 
         QCoreApplication::processEvents();
-        if (!m_stop)
+        if (!m_stop.load())
         {
             if (im.isNull())
             {
@@ -145,7 +143,7 @@ void ByteReader::loadFile(const ThumbnailableImage &image)
         m_loading.deref();
     }
 
-    if (m_stop)
+    if (m_stop.load())
         emit stopped();
 
 }
@@ -153,6 +151,6 @@ void ByteReader::loadFile(const ThumbnailableImage &image)
 void ByteReader::stop()
 {
     m_stop.ref();
-    if (!m_loading)
+    if (!m_loading.load())
         emit stopped();
 }
