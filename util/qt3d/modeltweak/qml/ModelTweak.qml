@@ -106,6 +106,7 @@ Rectangle {
         width: 150
         height: 200
 
+        // POSITION
         Text {
             text: "Position";
             color: "#FFFFFF"
@@ -135,6 +136,20 @@ Rectangle {
             function update (f)  { mainItem.position.z = f; }
             function updateInc (f)  { mainItem.position.z += f; }
             Keys.onTabPressed:   { updateMe(); scale.focus = true; }
+        }
+
+        // SCALE
+        Text {
+            text: "Scale";
+            color: "#FFFFFF"
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+        ValueField {
+            id: scale
+            value: mainItem.scale
+            function update (f)  {  mainItem.scale = f; }
+            function updateInc (f)  { mainItem.scale += f; }
+            Keys.onTabPressed:   { updateMe(); rotX.focus = true; }
         }
     }
 }
