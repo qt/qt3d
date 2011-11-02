@@ -280,7 +280,7 @@ void ThumbnailableImage::detach()
     }
     else
     {
-        if (d->ref > 1)  // being shared, must detach
+        if (d->ref.load() > 1)  // being shared, must detach
         {
             ThumbnailableImagePrivate *temp = d->clone();
             d->ref.deref();
