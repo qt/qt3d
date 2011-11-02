@@ -97,4 +97,44 @@ Rectangle {
             }
         }
     }
+
+    Column {
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.leftMargin: 32
+        anchors.topMargin: 32
+        width: 150
+        height: 200
+
+        Text {
+            text: "Position";
+            color: "#FFFFFF"
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+        ValueField {
+            focus: true
+            id: posX
+            label: "X:"
+            value: mainItem.position.x
+            function update (f)  { mainItem.position.x = f; }
+            function updateInc (f)  { mainItem.position.x += f; }
+            Keys.onTabPressed:   { updateMe(); posY.focus = true; }
+        }
+        ValueField {
+            id: posY
+            label: "Y:"
+            value: mainItem.position.y
+            function update (f)  { mainItem.position.y = f; }
+            function updateInc (f)  { mainItem.position.y += f; }
+            Keys.onTabPressed:   { updateMe(); posZ.focus = true; }
+        }
+        ValueField {
+            id: posZ
+            label: "Z:"
+            value: mainItem.position.z
+            function update (f)  { mainItem.position.z = f; }
+            function updateInc (f)  { mainItem.position.z += f; }
+            Keys.onTabPressed:   { updateMe(); scale.focus = true; }
+        }
+    }
 }
