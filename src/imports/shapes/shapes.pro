@@ -56,21 +56,13 @@ qdeclarativesources.files += \
     teapot.bez
 # see the file README.library_xml for more on library.xml
 
-!symbian {
-    !package {
-        qdeclarative_in_place.input = qdeclarativesources.files
-        qdeclarative_in_place.output = $$QT3D_INSTALL_IMPORTS/Qt3D/Shapes/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
-        qdeclarative_in_place.commands = $$QMAKE_COPY ${QMAKE_FILE_IN} ${QMAKE_FILE_OUT}
-        qdeclarative_in_place.CONFIG += no_link_no_clean
-        qdeclarative_in_place.variable_out = PRE_TARGETDEPS
-        QMAKE_EXTRA_COMPILERS += qdeclarative_in_place
-    } else {
-        qdeclarativesources.path += $$QT3D_INSTALL_IMPORTS/Qt3D/Shapes
-        INSTALLS += qdeclarativesources
-    }
-    importFiles.sources = $$qdeclarativesources.files
-    importFiles.path = $$QT_IMPORTS_BASE_DIR/Qt3D/Shapes
-    DEPLOYMENT = importFiles
+copyqmlinfra.input = QML_INFRA_FILES
+copyqmlinfra.output = $$target.path/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
+copyqmlinfra.commands = $$QMAKE_COPY ${QMAKE_FILE_IN} ${QMAKE_FILE_OUT}
+copyqmlinfra.CONFIG += no_link_no_clean
+copyqmlinfra.variable_out = PRE_TARGETDEPS
+!package {
+    QMAKE_EXTRA_COMPILERS += copyqmlinfra
 }
 
 OTHER_FILES += \
