@@ -103,7 +103,7 @@ Rectangle {
         anchors.left: parent.left
         anchors.leftMargin: 32
         anchors.topMargin: 32
-        width: 150
+        width: 200
         height: 200
 
         // POSITION
@@ -150,6 +150,49 @@ Rectangle {
             function update (f)  {  mainItem.scale = f; }
             function updateInc (f)  { mainItem.scale += f; }
             Keys.onTabPressed:   { updateMe(); rotX.focus = true; }
+        }
+
+        // ROTATE
+        Text {
+            text: "Rotation";
+            color: "#FFFFFF"
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+        ValueField {
+            id: rotX
+            label: "X:"
+            value: transformRotate.axis.x
+            function update (f)  { transformRotate.axis.x = f }
+            function updateInc (f)  { transformRotate.axis.x += f; }
+            Keys.onTabPressed:   { updateMe(); rotY.focus = true; }
+        }
+        ValueField {
+            id: rotY
+            label: "Y:"
+            value: transformRotate.axis.y
+            function update (f)  { transformRotate.axis.y = f; }
+            function updateInc (f)  { transformRotate.axis.y += f; }
+            Keys.onTabPressed:   { updateMe(); rotZ.focus = true; }
+        }
+        ValueField {
+            id: rotZ
+            label: "Z:"
+            value: transformRotate.axis.z
+            function update (f)  { transformRotate.axis.z = f }
+            function updateInc (f)  { transformRotate.axis.z += f; }
+            Keys.onTabPressed:   { updateMe(); angle.focus = true; }
+        }
+        ValueField {
+            id: angle
+            label: "Angle:"
+            value: transformRotate.angle
+            delta: 1
+            max: 360
+            min: 0
+            limit: true
+            function update (f)  { transformRotate.angle = f }
+            function updateInc (f)  { transformRotate.angle += f; }
+            Keys.onTabPressed:   { updateMe(); posX.focus = true; }
         }
     }
 }
