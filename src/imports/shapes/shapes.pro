@@ -44,7 +44,7 @@ HEADERS += \
     line.h \
     point.h
 
-qdeclarativesources.files += \
+QML_INFRA_FILES += \
     qmldir \
     library.xml \
     plugins.qmltypes \
@@ -57,13 +57,11 @@ qdeclarativesources.files += \
 # see the file README.library_xml for more on library.xml
 
 copyqmlinfra.input = QML_INFRA_FILES
-copyqmlinfra.output = $$target.path/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
+copyqmlinfra.output = $$[QT_INSTALL_IMPORTS]/Qt3D/Shapes/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
 copyqmlinfra.commands = $$QMAKE_COPY ${QMAKE_FILE_IN} ${QMAKE_FILE_OUT}
 copyqmlinfra.CONFIG += no_link_no_clean
 copyqmlinfra.variable_out = PRE_TARGETDEPS
-!package {
-    QMAKE_EXTRA_COMPILERS += copyqmlinfra
-}
+!package: QMAKE_EXTRA_COMPILERS += copyqmlinfra
 
 OTHER_FILES += \
     README.plugins_types \
