@@ -46,63 +46,64 @@ Rectangle {
     width: 1024
     height: 768
     color: "#444444"
+    border.color: "black"
     property string targetMesh: "meshes/monkey.3ds";
 
-    Item {
-        width: parent.width; height: parent.height
+    Rotation3D {
+        id: transformRotate
+        axis: Qt.vector3d(1, 0, 0)
+    }
 
-        Viewport {
-            anchors.fill: parent
-            id: viewport
-            picking: false
-            blending: true
+    Mesh {
+        id: source_mesh
+        source: mainwindow.targetMesh
+    }
 
-            camera: Camera {
-                farPlane: 2000 // debugging
-            }
-            navigation: false
+    ModelViewport {
+        id: viewport2
+        x: 0;
+        y: 0
+        camera.eye: Qt.vector3d(10, 0, 0)
+    }
 
-            Item3D {
-                id: mainItem
-                mesh: source_mesh
-                effect: Effect {}
-                transform: Rotation3D {
-                    id: transformRotate
-                    angle: 45
-                    axis: Qt.vector3d(1, 0, 0)
-                }
-            }
+    ModelViewport {
+        id: viewport
+        x: parent.width/2;
+        y: 0
+        camera.eye: Qt.vector3d(0, 0, 10)
+    }
 
-            Mesh {
-                id: source_mesh
-                source: mainwindow.targetMesh
-            }
-        }
+    ModelViewport {
+        id: viewport3
+        x: parent.width/2
+        y: parent.height/2
+        camera.eye: Qt.vector3d(0, 10, 0)
+        camera.upVector: Qt.vector3d(0, 0, -1)
+    }
 
-        Rectangle {
+    Rectangle {
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottomMargin: 10
+        anchors.bottom: parent.bottom
+        radius: 10
+        border.width: 1
+        border.color: "black"
+        color: "white"
+        width: parent.width - 20
+        height: 20
+
+        Text {
+            anchors.verticalCenter: parent.verticalCenter
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottomMargin: 10
-            anchors.bottom: parent.bottom
-            radius: 10
-            border.width: 1
-            border.color: "black"
-            color: "white"
-            width: parent.width - 20
-            height: 20
-
-            Text {
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.horizontalCenter: parent.horizontalCenter
-                text: source_mesh.source
-            }
+            text: source_mesh.source
         }
     }
 
     Column {
-        anchors.top: parent.top
         anchors.left: parent.left
         anchors.leftMargin: 32
         anchors.topMargin: 32
+        y: parent.height/2 + 32
         width: 200
         height: 200
 
@@ -116,25 +117,25 @@ Rectangle {
             focus: true
             id: posX
             label: "X:"
-            value: mainItem.position.x
-            function update (f)  { mainItem.position.x = f; }
-            function updateInc (f)  { mainItem.position.x += f; }
+            value: viewport.itemPosition.x
+            function update (f)  { viewport.itemPosition.x = f; }
+            function updateInc (f)  { viewport.itemPosition.x += f; }
             Keys.onTabPressed:   { updateMe(); posY.focus = true; }
         }
         ValueField {
             id: posY
             label: "Y:"
-            value: mainItem.position.y
-            function update (f)  { mainItem.position.y = f; }
-            function updateInc (f)  { mainItem.position.y += f; }
+            value: viewport.itemPosition.y
+            function update (f)  { viewport.itemPosition.y = f; }
+            function updateInc (f)  { viewport.itemPosition.y += f; }
             Keys.onTabPressed:   { updateMe(); posZ.focus = true; }
         }
         ValueField {
             id: posZ
             label: "Z:"
-            value: mainItem.position.z
-            function update (f)  { mainItem.position.z = f; }
-            function updateInc (f)  { mainItem.position.z += f; }
+            value: viewport.itemPosition.z
+            function update (f)  { viewport.itemPosition.z = f; }
+            function updateInc (f)  { viewport.itemPosition.z += f; }
             Keys.onTabPressed:   { updateMe(); scale.focus = true; }
         }
 
@@ -146,9 +147,9 @@ Rectangle {
         }
         ValueField {
             id: scale
-            value: mainItem.scale
-            function update (f)  {  mainItem.scale = f; }
-            function updateInc (f)  { mainItem.scale += f; }
+            value: viewport.itemScale
+            function update (f)  {  viewport.itemScale = f; }
+            function updateInc (f)  { viewport.itemScale += f; }
             Keys.onTabPressed:   { updateMe(); rotX.focus = true; }
         }
 
@@ -193,6 +194,13 @@ Rectangle {
             function update (f)  { transformRotate.angle = f }
             function updateInc (f)  { transformRotate.angle += f; }
             Keys.onTabPressed:   { updateMe(); posX.focus = true; }
+        }
+
+        // CAMERA
+        Text {
+            text: "Camera";
+            color: "#FFFFFF"
+            anchors.horizontalCenter: parent.horizontalCenter
         }
     }
 }

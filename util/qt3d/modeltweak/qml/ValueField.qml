@@ -38,7 +38,6 @@ FocusScope {
             focus: true
             validator: DoubleValidator{}
             onAccepted: {
-                console.log("Accept!")
                 parent.parent.update(text)
 
             }
