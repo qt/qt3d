@@ -40,6 +40,7 @@
 
 import QtQuick 1.0
 import Qt3D 1.0
+import ModelTweak 1.0
 
 Rectangle {
     id: mainwindow
@@ -48,6 +49,10 @@ Rectangle {
     color: "#444444"
     border.color: "black"
     property string targetMesh: "meshes/monkey.3ds";
+
+    QuickSave {
+        id: quickSave;
+    }
 
     Translation3D {
         id: transformTranslate
@@ -255,7 +260,11 @@ Rectangle {
                             "        transformScale\n" +
                             "    ]\n" +
                             "}\n";
-                    console.log(saveData)
+
+                    quickSave.filename = source_mesh.source
+                    quickSave.data = saveData
+                    var result = quickSave.save
+                    console.log("If there was an error it will be after here:" + result)
                 }
             }
         }

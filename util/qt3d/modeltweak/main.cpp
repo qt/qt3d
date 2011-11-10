@@ -43,15 +43,20 @@
 #include "qdeclarativeview3d.h"
 #include <QGraphicsObject>
 #include <QDebug>
+#include <QtDeclarative>
 
 #include "../../../demos/quick3d/qmlres.h"
+#include "QuickSave.h"
 
 QString filename;
 
 int main(int argc, char *argv[])
 {
+    qmlRegisterType<QuickSave>("ModelTweak", 1, 0, "QuickSave");
+
     QApplication app(argc, argv);
     QDeclarativeView3D view;
+
     QString qml = q_get_qmldir(QLatin1String("qml/ModelTweak.qml"));
     view.setSource(QUrl::fromLocalFile(qml));
 
@@ -62,7 +67,7 @@ int main(int argc, char *argv[])
         //FIXME: QML likes files relative to QML directory above, or full paths.
         //  We need to sort out how this is implemented once we've worked how how it's going to
         //  be called via Qt Creator.
-        if (args.at(i).startsWith(QLatin1String("-model")) && (i+1 < args.size()) /*&& QFile::exists(args.at(i+1))*/)
+        if (args.at(i).startsWith(QLatin1String("-model")) && (i+1 < args.size()))
         {
             fn = args.at(i+1);
             qDebug() << fn;
