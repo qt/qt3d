@@ -9,13 +9,14 @@ FocusScope {
     property bool limit: false;
 
     width: parent.width
-    height: childrenRect.height
+    height: 20
 
     Text {
         id: textLabel
         anchors.left: parent.left
         color: "#FFFFFF"
         anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
         width: parent.width/3
         visible: parent.label !== ""
     }
@@ -26,20 +27,47 @@ FocusScope {
         border.width: 2
         border.color: "black"
         color: "white"
-        width: parent.label !== "" ? parent.width/3*2 : parent.width
-        height: childrenRect.height
+        width: radius*2 + textInput.width + plus.width + minus.width
+        height: parent.height
 
         TextInput {
+            id: textInput
             anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
             horizontalAlignment: TextInput.AlignHCenter
             //FIXME: this should not be hard coded, but for some reason the display does not update properly if I use parent.width
-            width: 200
-            id: textInput
+            width: 130
             focus: true
             validator: DoubleValidator{}
             onAccepted: {
                 parent.parent.update(text)
 
+            }
+        }
+        Image {
+            id: plus
+            source: "plus.png"
+            anchors.left: textInput.right
+            anchors.verticalCenter: parent.verticalCenter
+            MouseArea { id: plusMouseArea; anchors.fill: parent; onPressed: incDelta() }
+            Timer {
+                interval: 100;
+                running: plusMouseArea.pressedButtons & Qt.LeftButton
+                repeat: true
+                onTriggered: incDelta()
+            }
+        }
+        Image {
+            id: minus
+            source: "minus.png"
+            anchors.right: textInput.left
+            anchors.verticalCenter: parent.verticalCenter
+            MouseArea { id: minusMouseArea; anchors.fill: parent; onPressed: decDelta() }
+            Timer {
+                interval: 100;
+                running: minusMouseArea.pressedButtons & Qt.LeftButton
+                repeat: true
+                onTriggered: decDelta()
             }
         }
     }
@@ -48,7 +76,7 @@ FocusScope {
         update(textInput.text)
     }
 
-    Keys.onUpPressed:    {
+    function incDelta() {
         var t = value*1 + delta;
         if (limit)
             update(t>max ? max : t);
@@ -56,7 +84,8 @@ FocusScope {
             update(t);
         console.log("updated! " + t);
     }
-    Keys.onDownPressed:  {
+
+    function decDelta() {
         var t = value*1 - delta;
         if (limit)
             update(t<min ? min : t);
@@ -64,6 +93,9 @@ FocusScope {
             update(t);
         console.log("updated! " + t);
     }
-    Keys.onReturnPressed: { updateMe(); }
+
+    Keys.onUpPressed: incDelta()
+    Keys.onDownPressed: decDelta()
+    Keys.onReturnPressed: updateMe()
 }
 
