@@ -177,11 +177,10 @@ Rectangle {
         ValueField {
             id: angle
             label: "Angle:"
-            value: transformRotate.angle
             delta: 1
-            max: 360
-            min: 0
-            limit: true
+            min: 0;   limitMin: true
+            max: 360; limitMax: true
+            value: transformRotate.angle
             function update (f)  { transformRotate.angle = f }
             Keys.onTabPressed:   { updateMe(); scaleX.focus = true; }
         }
@@ -195,6 +194,7 @@ Rectangle {
         ValueField {
             id: scaleX
             label: "X:"
+            min: 0; limitMin: true
             value: transformScale.scale.x
             function update (f)  { transformScale.scale = Qt.vector3d(f, transformScale.scale.y, transformScale.scale.z); }
             Keys.onTabPressed:   { updateMe(); scaleY.focus = true; }
@@ -202,6 +202,7 @@ Rectangle {
         ValueField {
             id: scaleY
             label: "Y:"
+            min: 0; limitMin: true
             value: transformScale.scale.y
             function update (f)  { transformScale.scale = Qt.vector3d(transformScale.scale.x, f, transformScale.scale.z); }
             Keys.onTabPressed:   { updateMe(); scaleZ.focus = true; }
@@ -209,6 +210,7 @@ Rectangle {
         ValueField {
             id: scaleZ
             label: "Z:"
+            min: 0; limitMin: true
             value: transformScale.scale.z
             function update (f)  { transformScale.scale = Qt.vector3d(transformScale.scale.x, transformScale.scale.y, f); }
             Keys.onTabPressed:   { updateMe(); posX.focus = true; }

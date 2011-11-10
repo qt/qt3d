@@ -6,7 +6,8 @@ FocusScope {
     property double delta: 0.1;
     property double max: 1;
     property double min: -1;
-    property bool limit: false;
+    property bool limitMax: false;
+    property bool limitMin: false;
 
     width: parent.width
     height: 20
@@ -78,7 +79,7 @@ FocusScope {
 
     function incDelta() {
         var t = value*1 + delta;
-        if (limit)
+        if (limitMax)
             update(t>max ? max : t);
         else
             update(t);
@@ -87,7 +88,7 @@ FocusScope {
 
     function decDelta() {
         var t = value*1 - delta;
-        if (limit)
+        if (limitMin)
             update(t<min ? min : t);
         else
             update(t);
