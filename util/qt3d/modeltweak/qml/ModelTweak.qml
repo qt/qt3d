@@ -70,27 +70,9 @@ Rectangle {
         source: mainwindow.targetMesh
     }
 
-    ModelViewport {
-        id: viewport2
-        x: 0
-        y: 0
-        camera.eye: Qt.vector3d(10, 0, 0)
-    }
-
-    ModelViewport {
-        id: viewport
-        x: parent.width/2
-        y: 0
-        camera.eye: Qt.vector3d(0, 0, 10)
-    }
-
-    ModelViewport {
-        id: viewport3
-        x: parent.width/2
-        y: parent.height/2
-        camera.eye: Qt.vector3d(0, 10, 0)
-        camera.upVector: Qt.vector3d(0, 0, -1)
-    }
+    ModelViewport { x: 0;              y: 0;               camera.eye: Qt.vector3d(10, 0, 0); }
+    ModelViewport { x: parent.width/2; y: 0;               camera.eye: Qt.vector3d(0, 0, 10); }
+    ModelViewport { x: parent.width/2; y: parent.height/2; camera.eye: Qt.vector3d(0, 10, 0); camera.upVector: Qt.vector3d(0, 0, -1); }
 
     Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
@@ -221,6 +203,61 @@ Rectangle {
             text: "Camera";
             color: "#FFFFFF"
             anchors.horizontalCenter: parent.horizontalCenter
+        }
+
+        Rectangle {
+            anchors.topMargin: 8
+            width: parent.width
+            height: 30
+            Text {
+                anchors.fill: parent
+                text: "Click to Save!"
+                font.pixelSize: 20
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    var saveData =
+                            "import QtQuick 1.0\n" +
+                            "import Qt3D 1.0\n" +
+                            "\n" +
+                            "Item3D {\n" +
+                            "    Translation3D {\n" +
+                            "        id: transformTranslate\n" +
+                            "        translate: Qt.vector3d(" + transformTranslate.translate.x + ", " + transformTranslate.translate.y + ", " + transformTranslate.translate.z + ")\n" +
+                            "    }\n" +
+                            "\n" +
+                            "    Rotation3D {\n" +
+                            "        id: transformRotate\n" +
+                            "        angle: " + transformRotate.angle + "\n" +
+                            "        axis: Qt.vector3d(" + transformRotate.axis.x + ", " + transformRotate.axis.y + ", " + transformRotate.axis.z + ")\n" +
+                            "    }\n" +
+                            "\n" +
+                            "    Scale3D {\n" +
+                            "        id: transformScale\n" +
+                            "        scale: Qt.vector3d(" + transformScale.scale.x + ", " + transformScale.scale.y + ", " + transformScale.scale.z + ")\n" +
+                            "    }\n" +
+                            "\n" +
+                            "    Mesh {\n" +
+                            "        id: source_mesh\n" +
+                            "        source: \"" + targetMesh + "\"\n" +
+                            "    }\n" +
+                            "\n" +
+                            "    mesh: source_mesh\n" +
+                            "    effect: Effect {}\n" +
+                            "    transform: [\n" +
+                            "        transformTranslate,\n" +
+                            "        transformRotate,\n" +
+                            "        transformScale\n" +
+                            "    ]\n" +
+                            "}\n";
+                    console.log(saveData)
+                }
+            }
         }
     }
 }
