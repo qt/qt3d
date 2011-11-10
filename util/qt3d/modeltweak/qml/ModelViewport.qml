@@ -26,7 +26,11 @@ Rectangle {
             id: mainItem
             mesh: source_mesh
             effect: Effect {}
-            transform: transformRotate
+            transform: [
+                transformTranslate,
+                transformRotate,
+                transformScale
+            ]
         }
     }
 }

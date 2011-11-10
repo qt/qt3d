@@ -49,9 +49,20 @@ Rectangle {
     border.color: "black"
     property string targetMesh: "meshes/monkey.3ds";
 
+    Translation3D {
+        id: transformTranslate
+        translate: Qt.vector3d(0, 0, 0)
+    }
+
     Rotation3D {
         id: transformRotate
-        axis: Qt.vector3d(1, 0, 0)
+        angle: 0
+        axis: Qt.vector3d(0, 0, 1)
+    }
+
+    Scale3D {
+        id: transformScale
+        scale: Qt.vector3d(1, 1, 1)
     }
 
     Mesh {
@@ -61,14 +72,14 @@ Rectangle {
 
     ModelViewport {
         id: viewport2
-        x: 0;
+        x: 0
         y: 0
         camera.eye: Qt.vector3d(10, 0, 0)
     }
 
     ModelViewport {
         id: viewport
-        x: parent.width/2;
+        x: parent.width/2
         y: 0
         camera.eye: Qt.vector3d(0, 0, 10)
     }
@@ -117,39 +128,22 @@ Rectangle {
             focus: true
             id: posX
             label: "X:"
-            value: viewport.itemPosition.x
-            function update (f)  { viewport.itemPosition.x = f; }
-            function updateInc (f)  { viewport.itemPosition.x += f; }
+            value: transformTranslate.translate.x
+            function update (f)  { transformTranslate.translate = Qt.vector3d(f, transformTranslate.translate.y, transformTranslate.translate.z); }
             Keys.onTabPressed:   { updateMe(); posY.focus = true; }
         }
         ValueField {
             id: posY
             label: "Y:"
-            value: viewport.itemPosition.y
-            function update (f)  { viewport.itemPosition.y = f; }
-            function updateInc (f)  { viewport.itemPosition.y += f; }
+            value: transformTranslate.translate.y
+            function update (f)  { transformTranslate.translate = Qt.vector3d(transformTranslate.translate.x, f, transformTranslate.translate.z); }
             Keys.onTabPressed:   { updateMe(); posZ.focus = true; }
         }
         ValueField {
             id: posZ
             label: "Z:"
-            value: viewport.itemPosition.z
-            function update (f)  { viewport.itemPosition.z = f; }
-            function updateInc (f)  { viewport.itemPosition.z += f; }
-            Keys.onTabPressed:   { updateMe(); scale.focus = true; }
-        }
-
-        // SCALE
-        Text {
-            text: "Scale";
-            color: "#FFFFFF"
-            anchors.horizontalCenter: parent.horizontalCenter
-        }
-        ValueField {
-            id: scale
-            value: viewport.itemScale
-            function update (f)  {  viewport.itemScale = f; }
-            function updateInc (f)  { viewport.itemScale += f; }
+            value: transformTranslate.translate.z
+            function update (f)  { transformTranslate.translate = Qt.vector3d(transformTranslate.translate.x, transformTranslate.translate.y, f); }
             Keys.onTabPressed:   { updateMe(); rotX.focus = true; }
         }
 
@@ -164,7 +158,6 @@ Rectangle {
             label: "X:"
             value: transformRotate.axis.x
             function update (f)  { transformRotate.axis.x = f }
-            function updateInc (f)  { transformRotate.axis.x += f; }
             Keys.onTabPressed:   { updateMe(); rotY.focus = true; }
         }
         ValueField {
@@ -172,7 +165,6 @@ Rectangle {
             label: "Y:"
             value: transformRotate.axis.y
             function update (f)  { transformRotate.axis.y = f; }
-            function updateInc (f)  { transformRotate.axis.y += f; }
             Keys.onTabPressed:   { updateMe(); rotZ.focus = true; }
         }
         ValueField {
@@ -180,7 +172,6 @@ Rectangle {
             label: "Z:"
             value: transformRotate.axis.z
             function update (f)  { transformRotate.axis.z = f }
-            function updateInc (f)  { transformRotate.axis.z += f; }
             Keys.onTabPressed:   { updateMe(); angle.focus = true; }
         }
         ValueField {
@@ -192,7 +183,34 @@ Rectangle {
             min: 0
             limit: true
             function update (f)  { transformRotate.angle = f }
-            function updateInc (f)  { transformRotate.angle += f; }
+            Keys.onTabPressed:   { updateMe(); scaleX.focus = true; }
+        }
+
+        // SCALE
+        Text {
+            text: "Scale";
+            color: "#FFFFFF"
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+        ValueField {
+            id: scaleX
+            label: "X:"
+            value: transformScale.scale.x
+            function update (f)  { transformScale.scale = Qt.vector3d(f, transformScale.scale.y, transformScale.scale.z); }
+            Keys.onTabPressed:   { updateMe(); scaleY.focus = true; }
+        }
+        ValueField {
+            id: scaleY
+            label: "Y:"
+            value: transformScale.scale.y
+            function update (f)  { transformScale.scale = Qt.vector3d(transformScale.scale.x, f, transformScale.scale.z); }
+            Keys.onTabPressed:   { updateMe(); scaleZ.focus = true; }
+        }
+        ValueField {
+            id: scaleZ
+            label: "Z:"
+            value: transformScale.scale.z
+            function update (f)  { transformScale.scale = Qt.vector3d(transformScale.scale.x, transformScale.scale.y, f); }
             Keys.onTabPressed:   { updateMe(); posX.focus = true; }
         }
 

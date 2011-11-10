@@ -49,18 +49,20 @@ FocusScope {
     }
 
     Keys.onUpPressed:    {
-        var t = value*1 + delta; // this is sooooooo stupid!
+        var t = value*1 + delta;
         if (limit)
             update(t>max ? max : t);
         else
             update(t);
+        console.log("updated! " + t);
     }
     Keys.onDownPressed:  {
-        var t = value*1 - delta; // this is sooooooo stupid too!
+        var t = value*1 - delta;
         if (limit)
             update(t<min ? min : t);
         else
             update(t);
+        console.log("updated! " + t);
     }
     Keys.onReturnPressed: { updateMe(); }
 }
