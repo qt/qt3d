@@ -75,9 +75,52 @@ Rectangle {
         source: mainwindow.targetMesh
     }
 
-    ModelViewport { x: 0;              y: 0;               camera.eye: Qt.vector3d(10, 0, 0); }
-    ModelViewport { x: parent.width/2; y: 0;               camera.eye: Qt.vector3d(0, 0, 10); }
-    ModelViewport { x: parent.width/2; y: parent.height/2; camera.eye: Qt.vector3d(0, 10, 0); camera.upVector: Qt.vector3d(0, 0, -1); }
+    ModelViewport {
+        x: 0;
+        y: 0;
+        camera.eye: Qt.vector3d(10, 0, 0);
+
+        function moveMouseX(mouse) {
+            transformTranslate.translate =
+                    Qt.vector3d(transformTranslate.translate.x, transformTranslate.translate.y, originz + (downx - mouse.x)/sensitivity)
+        }
+        function moveMouseY(mouse) {
+            transformTranslate.translate =
+                    Qt.vector3d(transformTranslate.translate.x, originy + (downy - mouse.y)/sensitivity, transformTranslate.translate.z)
+        }
+    }
+
+    ModelViewport {
+        x: parent.width/2
+        y: 0;
+        camera.eye: Qt.vector3d(0, 0, 10);
+
+        function moveMouseX(mouse) {
+            transformTranslate.translate =
+                    Qt.vector3d(originx - (downx - mouse.x)/sensitivity, transformTranslate.translate.y, transformTranslate.translate.z)
+        }
+        function moveMouseY(mouse) {
+            transformTranslate.translate =
+                    Qt.vector3d(transformTranslate.translate.x, originy + (downy - mouse.y)/sensitivity, transformTranslate.translate.z)
+        }
+    }
+
+    ModelViewport {
+        x: parent.width/2;
+        y: parent.height/2;
+        camera.eye: Qt.vector3d(0, 10, 0);
+        camera.upVector: Qt.vector3d(0, 0, -1);
+
+        //FIXME: for some reason this "jumps" a little when clicking and moving at times, whereas the other two ModelViewports don't. Something to do with the reversed upVector?
+        function moveMouseX(mouse) {
+            transformTranslate.translate =
+                    Qt.vector3d(originy - (downx - mouse.x)/sensitivity, transformTranslate.translate.y, transformTranslate.translate.z)
+        }
+        function moveMouseY(mouse) {
+            transformTranslate.translate =
+                    Qt.vector3d(transformTranslate.translate.x, transformTranslate.translate.y, originz - (downy - mouse.y)/sensitivity)
+        }
+    }
 
     Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter

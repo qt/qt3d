@@ -11,6 +11,13 @@ Rectangle {
     property alias itemScale: mainItem.scale;
     property alias camera: viewport.camera
 
+    property double sensitivity: 32;
+    property int downx;
+    property int downy;
+    property double originx;
+    property double originy;
+    property double originz;
+
     Viewport {
         id: viewport
         anchors.fill: parent
@@ -32,5 +39,12 @@ Rectangle {
                 transformScale
             ]
         }
+    }
+    MouseArea {
+        anchors.fill: parent
+        onMouseXChanged: moveMouseX(mouse)
+        onMouseYChanged: moveMouseY(mouse)
+        onPressed: { downx = mouse.x; downy = mouse.y; originx = transformTranslate.translate.x; originy = transformTranslate.translate.y; originz = transformTranslate.translate.z; }
+        onReleased: { downx = 0; downy = 0; originx=0; originy=0; originz=0 }
     }
 }
