@@ -22,7 +22,7 @@ public:
 
         qDebug("Attempting to write: %s", file.fileName().toAscii().constData());
 
-        if(!file.open(QFile::WriteOnly))
+        if (!file.open(QFile::WriteOnly))
             return file.errorString();
 
         file.write(_data.toUtf8());
@@ -35,10 +35,10 @@ public:
     //TODO: these really should be emitting signals upon changing;
     //      but we don't display them so it doesn't technically matter
     QString filename() const { return _filename; }
-    void setFilename(const QString filename) { if(_filename != filename) _filename = filename; }
+    void setFilename(const QString filename) { if (_filename != filename) _filename = filename; }
 
     QString data() const { return _data; }
-    void setData(const QString data) { if(_data != data) _data = data; }
+    void setData(const QString data) { if (_data != data) _data = data; }
 
 };
 

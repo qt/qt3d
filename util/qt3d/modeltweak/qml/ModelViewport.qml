@@ -11,20 +11,35 @@ Rectangle {
     property alias itemScale: mainItem.scale;
     property alias camera: viewport.camera
 
+    // the current x/y positions of the mouse when the onPressed event was triggered;
+    // values are invalid if onRelease has occured
+    property int downX;
+    property int downY;
+
+    // current xyz positions of the Translation3D when onPressed was triggered;
+    // values are invalid if onRelease has occured
+    property double translateX;
+    property double translateY;
+    property double translateZ;
+
+    // current angles of the three Rotation3Ds when onPressed was triggered;
+    // values are invalid if onRelease has occured
+    property double rotateX;
+    property double rotateY;
+    property double rotateZ;
+
+    // current xyz sizes of the Scale3D when onPressed was triggered;
+    // values are invalid if onRelease has occured
+    property double scaleX;
+    property double scaleY;
+    property double scaleZ;
+
+    // the pixel sensitivity values of the mousemovements
+    // TODO: expose via api
+    // TODO: maybe save in settings api?
     property double translateSensitivity: 32;
     property double rotateSensitivity: 8;
     property double scaleSensitivity: 32;
-    property int downx;
-    property int downy;
-    property double originx;
-    property double originy;
-    property double originz;
-    property double rotx;
-    property double roty;
-    property double rotz;
-    property double scalex;
-    property double scaley;
-    property double scalez;
 
     Viewport {
         id: viewport
@@ -50,6 +65,7 @@ Rectangle {
             ]
         }
     }
+
     MouseArea {
         property int mouseDown: Qt.NoButton
 
@@ -57,43 +73,52 @@ Rectangle {
         acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
 
         onMouseXChanged: {
-            if(mouseDown & Qt.LeftButton)
-                moveMouseX(mouse);
-            else if(mouseDown === Qt.RightButton)
-                moveRotateX(mouse);
-            else if(mouseDown === Qt.MiddleButton)
+            if (mouseDown & Qt.LeftButton)
+                translateMouseX(mouse);
+            else if (mouseDown === Qt.RightButton)
+                rotateMouseX(mouse);
+            else if (mouseDown === Qt.MiddleButton)
                 scaleMouseX(mouse);
         }
 
         onMouseYChanged: {
-            if(mouseDown & Qt.LeftButton)
-                moveMouseY(mouse);
-            else if(mouseDown === Qt.RightButton)
-                moveRotateY(mouse);
-            else if(mouseDown === Qt.MiddleButton)
+            if (mouseDown & Qt.LeftButton)
+                translateMouseY(mouse);
+            else if (mouseDown === Qt.RightButton)
+                rotateMouseY(mouse);
+            else if (mouseDown === Qt.MiddleButton)
                 scaleMouseY(mouse);
         }
 
         onPressed: {
             // if we already have a mouse button down we don't want to do anything else until it's up again
-            if(mouseDown !== Qt.NoButton)
+            if (mouseDown !== Qt.NoButton)
                 return;
 
-            downx = mouse.x;
-            downy = mouse.y;
-            originx = transformTranslate.translate.x;
-            originy = transformTranslate.translate.y;
-            originz = transformTranslate.translate.z;
-            rotx = transformRotateX.angle
-            roty = transformRotateY.angle
-            rotz = transformRotateZ.angle
-            scalex = transformScale.scale.x
-            scaley = transformScale.scale.y
-            scalez = transformScale.scale.z
-
             mouseDown = mouse.button;
+
+            downX = mouse.x;
+            downY = mouse.y;
+
+            if (mouseDown & Qt.LeftButton) {
+                translateX = transformTranslate.translate.x;
+                translateY = transformTranslate.translate.y;
+                translateZ = transformTranslate.translate.z;
+            }
+
+            if (mouseDown & Qt.RightButton) {
+                rotateX = transformRotateX.angle
+                rotateY = transformRotateY.angle
+                rotateZ = transformRotateZ.angle
+            }
+            if (mouseDown & Qt.MiddleButton) {
+                scaleX = transformScale.scale.x
+                scaleY = transformScale.scale.y
+                scaleZ = transformScale.scale.z
+            }
         }
 
-        onReleased: { downx = 0; downy = 0; originx=0; originy=0; originz=0; mouseDown = Qt.NoButton }
+        // clear the current mouse button upon release
+        onReleased: { mouseDown = Qt.NoButton }
     }
 }

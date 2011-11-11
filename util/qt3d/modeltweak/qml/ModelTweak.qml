@@ -92,34 +92,34 @@ Rectangle {
         y: 0;
         camera.eye: Qt.vector3d(10, 0, 0);
 
-        function moveMouseX(mouse) {
+        function translateMouseX(mouse) {
             transformTranslate.translate =
                     Qt.vector3d(transformTranslate.translate.x,
                                 transformTranslate.translate.y,
-                                originz + (downx - mouse.x)/translateSensitivity)
+                                translateZ + (downX - mouse.x)/translateSensitivity)
         }
-        function moveMouseY(mouse) {
+        function translateMouseY(mouse) {
             transformTranslate.translate =
                     Qt.vector3d(transformTranslate.translate.x,
-                                originy + (downy - mouse.y)/translateSensitivity,
+                                translateY + (downY - mouse.y)/translateSensitivity,
                                 transformTranslate.translate.z)
         }
-        function moveRotateX(mouse) {
-            transformRotateY.angle = roty - (downx - mouse.x)/rotateSensitivity
+        function rotateMouseX(mouse) {
+            transformRotateY.angle = rotateY - (downX - mouse.x)/rotateSensitivity
         }
-        function moveRotateY(mouse) {
-            transformRotateZ.angle = rotz - (downy - mouse.y)/rotateSensitivity
+        function rotateMouseY(mouse) {
+            transformRotateZ.angle = rotateZ - (downY - mouse.y)/rotateSensitivity
         }
         function scaleMouseX(mouse) {
             transformScale.scale =
                     Qt.vector3d(transformScale.scale.x,
                                 transformScale.scale.y,
-                                scalez - (downx - mouse.x)/scaleSensitivity)
+                                scaleZ - (downX - mouse.x)/scaleSensitivity)
         }
         function scaleMouseY(mouse) {
             transformScale.scale =
                     Qt.vector3d(transformScale.scale.x,
-                                scaley + (downy - mouse.y)/scaleSensitivity,
+                                scaleY + (downY - mouse.y)/scaleSensitivity,
                                 transformScale.scale.z)
         }
     }
@@ -129,34 +129,34 @@ Rectangle {
         y: 0;
         camera.eye: Qt.vector3d(0, 0, 10);
 
-        function moveMouseX(mouse) {
+        function translateMouseX(mouse) {
             transformTranslate.translate =
-                    Qt.vector3d(originx - (downx - mouse.x)/translateSensitivity,
+                    Qt.vector3d(translateX - (downX - mouse.x)/translateSensitivity,
                                 transformTranslate.translate.y,
                                 transformTranslate.translate.z)
         }
-        function moveMouseY(mouse) {
+        function translateMouseY(mouse) {
             transformTranslate.translate =
                     Qt.vector3d(transformTranslate.translate.x,
-                                originy + (downy - mouse.y)/translateSensitivity,
+                                translateY + (downY - mouse.y)/translateSensitivity,
                                 transformTranslate.translate.z)
         }
-        function moveRotateX(mouse) {
-            transformRotateY.angle = roty - (downx - mouse.x)/rotateSensitivity
+        function rotateMouseX(mouse) {
+            transformRotateY.angle = rotateY - (downX - mouse.x)/rotateSensitivity
         }
-        function moveRotateY(mouse) {
-            transformRotateX.angle = rotx - (downy - mouse.y)/rotateSensitivity
+        function rotateMouseY(mouse) {
+            transformRotateX.angle = rotateX - (downY - mouse.y)/rotateSensitivity
         }
         function scaleMouseX(mouse) {
             transformScale.scale =
-                    Qt.vector3d(scalex - (downx - mouse.x)/scaleSensitivity,
+                    Qt.vector3d(scaleX - (downX - mouse.x)/scaleSensitivity,
                                 transformScale.scale.y,
                                 transformScale.scale.z)
         }
         function scaleMouseY(mouse) {
             transformScale.scale =
                     Qt.vector3d(transformScale.scale.x,
-                                scaley + (downy - mouse.y)/scaleSensitivity,
+                                scaleY + (downY - mouse.y)/scaleSensitivity,
                                 transformScale.scale.z)
         }
     }
@@ -167,27 +167,27 @@ Rectangle {
         camera.eye: Qt.vector3d(0, 10, 0);
         camera.upVector: Qt.vector3d(0, 0, -1);
 
-        function moveMouseX(mouse) {
+        function translateMouseX(mouse) {
             transformTranslate.translate =
-                    Qt.vector3d(originx - (downx - mouse.x)/translateSensitivity,
+                    Qt.vector3d(translateX - (downX - mouse.x)/translateSensitivity,
                                 transformTranslate.translate.y,
                                 transformTranslate.translate.z)
         }
-        function moveMouseY(mouse) {
+        function translateMouseY(mouse) {
             transformTranslate.translate =
                     Qt.vector3d(transformTranslate.translate.x,
                                 transformTranslate.translate.y,
-                                originz - (downy - mouse.y)/translateSensitivity)
+                                translateZ - (downY - mouse.y)/translateSensitivity)
         }
-        function moveRotateX(mouse) {
-            transformRotateZ.angle = rotz + (downx - mouse.x)/rotateSensitivity
+        function rotateMouseX(mouse) {
+            transformRotateZ.angle = rotateZ + (downX - mouse.x)/rotateSensitivity
         }
-        function moveRotateY(mouse) {
-            transformRotateX.angle = rotx - (downy - mouse.y)/rotateSensitivity
+        function rotateMouseY(mouse) {
+            transformRotateX.angle = rotateX - (downY - mouse.y)/rotateSensitivity
         }
         function scaleMouseX(mouse) {
             transformScale.scale =
-                    Qt.vector3d(scalex - (downx - mouse.x)/scaleSensitivity,
+                    Qt.vector3d(scaleX - (downX - mouse.x)/scaleSensitivity,
                                 transformScale.scale.y,
                                 transformScale.scale.z)
         }
@@ -195,7 +195,7 @@ Rectangle {
             transformScale.scale =
                     Qt.vector3d(transformScale.scale.x,
                                 transformScale.scale.y,
-                                scalez + (downy - mouse.y)/scaleSensitivity)
+                                scaleZ + (downY - mouse.y)/scaleSensitivity)
         }
     }
 
