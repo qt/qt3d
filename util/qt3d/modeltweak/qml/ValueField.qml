@@ -16,10 +16,11 @@ FocusScope {
         id: textLabel
         anchors.left: parent.left
         color: "#FFFFFF"
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
-        width: parent.width/3
+        width: parent.width/3 - 16
+        height: parent.height
         visible: parent.label !== ""
+        horizontalAlignment: Text.AlignRight
+        verticalAlignment: Text.AlignVCenter
     }
 
     Rectangle {

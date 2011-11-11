@@ -220,4 +220,9 @@ Rectangle {
     ConfigPane {
 
     }
+
+    HelpOverlay {
+        id: helpOverlay
+        visible: false
+    }
 }
