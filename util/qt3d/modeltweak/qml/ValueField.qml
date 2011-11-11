@@ -44,6 +44,9 @@ FocusScope {
                 parent.parent.update(text)
 
             }
+            //FIXME: this should auto-deselect when it looses focus, but even with select(0,0) it doesn't.
+            //  seems to be a bug in qt4.8 since I've used this in 4.7 and it works fine.
+            onFocusChanged: if(focus == true) selectAll(); else select(0,0)
         }
         Image {
             id: plus
