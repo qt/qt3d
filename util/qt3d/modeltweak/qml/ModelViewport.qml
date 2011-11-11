@@ -13,6 +13,7 @@ Rectangle {
 
     property double translateSensitivity: 32;
     property double rotateSensitivity: 8;
+    property double scaleSensitivity: 32;
     property int downx;
     property int downy;
     property double originx;
@@ -21,6 +22,9 @@ Rectangle {
     property double rotx;
     property double roty;
     property double rotz;
+    property double scalex;
+    property double scaley;
+    property double scalez;
 
     Viewport {
         id: viewport
@@ -50,13 +54,15 @@ Rectangle {
         property int mouseDown: Qt.NoButton
 
         anchors.fill: parent
-        acceptedButtons: Qt.LeftButton | Qt.RightButton
+        acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
 
         onMouseXChanged: {
             if(mouseDown & Qt.LeftButton)
                 moveMouseX(mouse);
             else if(mouseDown === Qt.RightButton)
                 moveRotateX(mouse);
+            else if(mouseDown === Qt.MiddleButton)
+                scaleMouseX(mouse);
         }
 
         onMouseYChanged: {
@@ -64,6 +70,8 @@ Rectangle {
                 moveMouseY(mouse);
             else if(mouseDown === Qt.RightButton)
                 moveRotateY(mouse);
+            else if(mouseDown === Qt.MiddleButton)
+                scaleMouseY(mouse);
         }
 
         onPressed: {
@@ -79,6 +87,9 @@ Rectangle {
             rotx = transformRotateX.angle
             roty = transformRotateY.angle
             rotz = transformRotateZ.angle
+            scalex = transformScale.scale.x
+            scaley = transformScale.scale.y
+            scalez = transformScale.scale.z
 
             mouseDown = mouse.button;
         }
