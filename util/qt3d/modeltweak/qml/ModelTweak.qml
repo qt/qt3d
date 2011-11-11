@@ -111,16 +111,16 @@ Rectangle {
             transformRotateZ.angle = rotateZ - (downY - mouse.y)/rotateSensitivity
         }
         function scaleMouseX(mouse) {
-            transformScale.scale =
-                    Qt.vector3d(transformScale.scale.x,
-                                transformScale.scale.y,
-                                scaleZ - (downX - mouse.x)/scaleSensitivity)
+            var s = scaleZ - (downX - mouse.x)/scaleSensitivity;
+            if (s<0)
+                return;
+            transformScale.scale = Qt.vector3d(transformScale.scale.x, transformScale.scale.y, s)
         }
         function scaleMouseY(mouse) {
-            transformScale.scale =
-                    Qt.vector3d(transformScale.scale.x,
-                                scaleY + (downY - mouse.y)/scaleSensitivity,
-                                transformScale.scale.z)
+            var s = scaleY + (downY - mouse.y)/scaleSensitivity;
+            if (s<0)
+                return;
+            transformScale.scale = Qt.vector3d(transformScale.scale.x, s, transformScale.scale.z)
         }
     }
 
@@ -148,16 +148,16 @@ Rectangle {
             transformRotateX.angle = rotateX - (downY - mouse.y)/rotateSensitivity
         }
         function scaleMouseX(mouse) {
-            transformScale.scale =
-                    Qt.vector3d(scaleX - (downX - mouse.x)/scaleSensitivity,
-                                transformScale.scale.y,
-                                transformScale.scale.z)
+            var s = scaleX - (downX - mouse.x)/scaleSensitivity
+            if (s<0)
+                return;
+            transformScale.scale = Qt.vector3d(s, transformScale.scale.y, transformScale.scale.z)
         }
         function scaleMouseY(mouse) {
-            transformScale.scale =
-                    Qt.vector3d(transformScale.scale.x,
-                                scaleY + (downY - mouse.y)/scaleSensitivity,
-                                transformScale.scale.z)
+            var s = scaleY + (downY - mouse.y)/scaleSensitivity
+            if (s<0)
+                return;
+            transformScale.scale = Qt.vector3d(transformScale.scale.x, s, transformScale.scale.z)
         }
     }
 
@@ -186,16 +186,16 @@ Rectangle {
             transformRotateX.angle = rotateX - (downY - mouse.y)/rotateSensitivity
         }
         function scaleMouseX(mouse) {
-            transformScale.scale =
-                    Qt.vector3d(scaleX - (downX - mouse.x)/scaleSensitivity,
-                                transformScale.scale.y,
-                                transformScale.scale.z)
+            var s = scaleX - (downX - mouse.x)/scaleSensitivity;
+            if (s<0)
+                return;
+            transformScale.scale = Qt.vector3d(s, transformScale.scale.y, transformScale.scale.z)
         }
         function scaleMouseY(mouse) {
-            transformScale.scale =
-                    Qt.vector3d(transformScale.scale.x,
-                                transformScale.scale.y,
-                                scaleZ + (downY - mouse.y)/scaleSensitivity)
+            var s = scaleZ + (downY - mouse.y)/scaleSensitivity;
+            if (s<0)
+                return;
+            transformScale.scale = Qt.vector3d(transformScale.scale.x, transformScale.scale.y, s)
         }
     }
 
