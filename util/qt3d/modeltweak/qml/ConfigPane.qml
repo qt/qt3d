@@ -54,32 +54,31 @@ Column {
     ValueField {
         id: rotX
         label: "X:"
-        value: transformRotate.axis.x
-        function update (f)  { transformRotate.axis.x = f }
+        delta: 1
+        min: 0;   limitMin: true
+        max: 360; limitMax: true
+        value: transformRotateX.angle
+        function update (f)  { transformRotateX.angle = f }
         Keys.onTabPressed:   { updateMe(); rotY.focus = true; }
     }
     ValueField {
         id: rotY
         label: "Y:"
-        value: transformRotate.axis.y
-        function update (f)  { transformRotate.axis.y = f; }
+        delta: 1
+        min: 0;   limitMin: true
+        max: 360; limitMax: true
+        value: transformRotateY.angle
+        function update (f)  { transformRotateY.angle = f }
         Keys.onTabPressed:   { updateMe(); rotZ.focus = true; }
     }
     ValueField {
         id: rotZ
         label: "Z:"
-        value: transformRotate.axis.z
-        function update (f)  { transformRotate.axis.z = f }
-        Keys.onTabPressed:   { updateMe(); angle.focus = true; }
-    }
-    ValueField {
-        id: angle
-        label: "Angle:"
         delta: 1
         min: 0;   limitMin: true
         max: 360; limitMax: true
-        value: transformRotate.angle
-        function update (f)  { transformRotate.angle = f }
+        value: transformRotateZ.angle
+        function update (f)  { transformRotateZ.angle = f }
         Keys.onTabPressed:   { updateMe(); scaleX.focus = true; }
     }
 
@@ -151,12 +150,21 @@ Column {
                         "    }\n" +
                         "\n" +
                         "    Rotation3D {\n" +
-                        "        id: transformRotate\n" +
-                        "        angle: " + transformRotate.angle + "\n" +
-                        "        axis: Qt.vector3d(" +
-                            transformRotate.axis.x + ", " +
-                            transformRotate.axis.y + ", " +
-                            transformRotate.axis.z + ")\n" +
+                        "        id: transformRotateX\n" +
+                        "        angle: " + transformRotateX.angle + "\n" +
+                        "        axis: Qt.vector3d(1, 0, 0)\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    Rotation3D {\n" +
+                        "        id: transformRotateY\n" +
+                        "        angle: " + transformRotateY.angle + "\n" +
+                        "        axis: Qt.vector3d(0, 1, 0)\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    Rotation3D {\n" +
+                        "        id: transformRotateZ\n" +
+                        "        angle: " + transformRotateZ.angle + "\n" +
+                        "        axis: Qt.vector3d(0, 0, 1)\n" +
                         "    }\n" +
                         "\n" +
                         "    Scale3D {\n" +

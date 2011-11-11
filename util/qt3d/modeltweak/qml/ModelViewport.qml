@@ -11,12 +11,16 @@ Rectangle {
     property alias itemScale: mainItem.scale;
     property alias camera: viewport.camera
 
-    property double sensitivity: 32;
+    property double translateSensitivity: 32;
+    property double rotateSensitivity: 8;
     property int downx;
     property int downy;
     property double originx;
     property double originy;
     property double originz;
+    property double rotx;
+    property double roty;
+    property double rotz;
 
     Viewport {
         id: viewport
@@ -35,16 +39,50 @@ Rectangle {
             effect: Effect {}
             transform: [
                 transformTranslate,
-                transformRotate,
+                transformRotateX,
+                transformRotateY,
+                transformRotateZ,
                 transformScale
             ]
         }
     }
     MouseArea {
+        property int mouseDown: Qt.NoButton
+
         anchors.fill: parent
-        onMouseXChanged: moveMouseX(mouse)
-        onMouseYChanged: moveMouseY(mouse)
-        onPressed: { downx = mouse.x; downy = mouse.y; originx = transformTranslate.translate.x; originy = transformTranslate.translate.y; originz = transformTranslate.translate.z; }
-        onReleased: { downx = 0; downy = 0; originx=0; originy=0; originz=0 }
+        acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+        onMouseXChanged: {
+            if(mouseDown & Qt.LeftButton)
+                moveMouseX(mouse);
+            else if(mouseDown === Qt.RightButton)
+                moveRotateX(mouse);
+        }
+
+        onMouseYChanged: {
+            if(mouseDown & Qt.LeftButton)
+                moveMouseY(mouse);
+            else if(mouseDown === Qt.RightButton)
+                moveRotateY(mouse);
+        }
+
+        onPressed: {
+            // if we already have a mouse button down we don't want to do anything else until it's up again
+            if(mouseDown !== Qt.NoButton)
+                return;
+
+            downx = mouse.x;
+            downy = mouse.y;
+            originx = transformTranslate.translate.x;
+            originy = transformTranslate.translate.y;
+            originz = transformTranslate.translate.z;
+            rotx = transformRotateX.angle
+            roty = transformRotateY.angle
+            rotz = transformRotateZ.angle
+
+            mouseDown = mouse.button;
+        }
+
+        onReleased: { downx = 0; downy = 0; originx=0; originy=0; originz=0; mouseDown = Qt.NoButton }
     }
 }

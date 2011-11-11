@@ -60,7 +60,19 @@ Rectangle {
     }
 
     Rotation3D {
-        id: transformRotate
+        id: transformRotateX
+        angle: 0
+        axis: Qt.vector3d(1, 0, 0)
+    }
+
+    Rotation3D {
+        id: transformRotateY
+        angle: 0
+        axis: Qt.vector3d(0, 1, 0)
+    }
+
+    Rotation3D {
+        id: transformRotateZ
         angle: 0
         axis: Qt.vector3d(0, 0, 1)
     }
@@ -82,11 +94,17 @@ Rectangle {
 
         function moveMouseX(mouse) {
             transformTranslate.translate =
-                    Qt.vector3d(transformTranslate.translate.x, transformTranslate.translate.y, originz + (downx - mouse.x)/sensitivity)
+                    Qt.vector3d(transformTranslate.translate.x, transformTranslate.translate.y, originz + (downx - mouse.x)/translateSensitivity)
         }
         function moveMouseY(mouse) {
             transformTranslate.translate =
-                    Qt.vector3d(transformTranslate.translate.x, originy + (downy - mouse.y)/sensitivity, transformTranslate.translate.z)
+                    Qt.vector3d(transformTranslate.translate.x, originy + (downy - mouse.y)/translateSensitivity, transformTranslate.translate.z)
+        }
+        function moveRotateX(mouse) {
+            transformRotateY.angle = roty - (downx - mouse.x)/rotateSensitivity
+        }
+        function moveRotateY(mouse) {
+            transformRotateZ.angle = rotz - (downy - mouse.y)/rotateSensitivity
         }
     }
 
@@ -97,11 +115,17 @@ Rectangle {
 
         function moveMouseX(mouse) {
             transformTranslate.translate =
-                    Qt.vector3d(originx - (downx - mouse.x)/sensitivity, transformTranslate.translate.y, transformTranslate.translate.z)
+                    Qt.vector3d(originx - (downx - mouse.x)/translateSensitivity, transformTranslate.translate.y, transformTranslate.translate.z)
         }
         function moveMouseY(mouse) {
             transformTranslate.translate =
-                    Qt.vector3d(transformTranslate.translate.x, originy + (downy - mouse.y)/sensitivity, transformTranslate.translate.z)
+                    Qt.vector3d(transformTranslate.translate.x, originy + (downy - mouse.y)/translateSensitivity, transformTranslate.translate.z)
+        }
+        function moveRotateX(mouse) {
+            transformRotateY.angle = roty - (downx - mouse.x)/rotateSensitivity
+        }
+        function moveRotateY(mouse) {
+            transformRotateX.angle = rotx - (downy - mouse.y)/rotateSensitivity
         }
     }
 
@@ -111,14 +135,19 @@ Rectangle {
         camera.eye: Qt.vector3d(0, 10, 0);
         camera.upVector: Qt.vector3d(0, 0, -1);
 
-        //FIXME: for some reason this "jumps" a little when clicking and moving at times, whereas the other two ModelViewports don't. Something to do with the reversed upVector?
         function moveMouseX(mouse) {
             transformTranslate.translate =
-                    Qt.vector3d(originy - (downx - mouse.x)/sensitivity, transformTranslate.translate.y, transformTranslate.translate.z)
+                    Qt.vector3d(originx - (downx - mouse.x)/translateSensitivity, transformTranslate.translate.y, transformTranslate.translate.z)
         }
         function moveMouseY(mouse) {
             transformTranslate.translate =
-                    Qt.vector3d(transformTranslate.translate.x, transformTranslate.translate.y, originz - (downy - mouse.y)/sensitivity)
+                    Qt.vector3d(transformTranslate.translate.x, transformTranslate.translate.y, originz - (downy - mouse.y)/translateSensitivity)
+        }
+        function moveRotateX(mouse) {
+            transformRotateZ.angle = rotz + (downx - mouse.x)/rotateSensitivity
+        }
+        function moveRotateY(mouse) {
+            transformRotateX.angle = rotx - (downy - mouse.y)/rotateSensitivity
         }
     }
 
