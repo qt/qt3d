@@ -88,8 +88,10 @@ Rectangle {
     }
 
     ModelViewport {
-        x: 0;
-        y: 0;
+        id: mvpZY
+        visible: !mvpXY.isBig && !mvpXZ.isBig ? true : false
+        x: isBig ? 0 : 0;
+        y: isBig ? 0 : 0;
         camera.eye: Qt.vector3d(10, 0, 0);
 
         function translateMouseX(mouse) {
@@ -125,8 +127,10 @@ Rectangle {
     }
 
     ModelViewport {
-        x: parent.width/2
-        y: 0;
+        id: mvpXY
+        visible: !mvpZY.isBig && !mvpXZ.isBig ? true : false
+        x: isBig ? 0 : parent.width/2
+        y: isBig ? 0 : 0;
         camera.eye: Qt.vector3d(0, 0, 10);
 
         function translateMouseX(mouse) {
@@ -162,8 +166,10 @@ Rectangle {
     }
 
     ModelViewport {
-        x: parent.width/2;
-        y: parent.height/2;
+        id: mvpXZ
+        visible: !mvpZY.isBig && !mvpXY.isBig ? true : false
+        x: isBig ? 0 : parent.width/2;
+        y: isBig ? 0 : parent.height/2;
         camera.eye: Qt.vector3d(0, 10, 0);
         camera.upVector: Qt.vector3d(0, 0, -1);
 

@@ -2,10 +2,12 @@ import QtQuick 1.0
 import Qt3D 1.0
 
 Rectangle {
-    width: parent.width/2;
-    height: parent.height/2
+    width: isBig ? parent.width : parent.width/2;
+    height: isBig ? parent.height : parent.height/2
     color: parent.color
     border.color: parent.border.color
+
+    property bool isBig: false;
 
     property alias itemPosition: mainItem.position;
     property alias itemScale: mainItem.scale;
@@ -120,5 +122,14 @@ Rectangle {
 
         // clear the current mouse button upon release
         onReleased: { mouseDown = Qt.NoButton }
+    }
+    Image {
+        anchors.top: parent.top
+        anchors.right: parent.right
+        source: parent.isBig ? "Shrink.png" : "Grow.png"
+        MouseArea {
+            anchors.fill: parent
+            onClicked: isBig = !isBig
+        }
     }
 }
