@@ -20,20 +20,27 @@ public:
     QuickSave(QObject *parent=0) : QObject(parent) {}
 
     QString save() const {
-        QString fileName = QFileDialog::getOpenFileName(0, tr("Save File"), "",tr("Files (*.qml)"));
+        QString qmlFilename = QFileDialog::getOpenFileName(0, tr("Save File"), "",tr("Files (*.qml)"));
 
         // FIXME: ensure fileName is appropriate as a qml Component
-        if(!fileName.endsWith(".qml"))
-            fileName.append(".qml");
+        if(!qmlFilename.endsWith(".qml"))
+            qmlFilename.append(".qml");
 
-        QFile file(fileName);
+        QString modelFilename = QUrl(_filename).toLocalFile();
+
+        QDir outputDir = QFileInfo(qmlFilename).absoluteDir();
+        QString relativeFilename = outputDir.relativeFilePath(modelFilename);
+
+        QFile file(qmlFilename);
 
         qDebug("Attempting to write: %s", file.fileName().toAscii().constData());
 
         if (!file.open(QFile::WriteOnly))
             return file.errorString();
 
-        file.write(_data.toUtf8());
+        QString dataToWrite = _data.arg(relativeFilename);
+
+        file.write(dataToWrite.toUtf8());
 
         file.close();
 

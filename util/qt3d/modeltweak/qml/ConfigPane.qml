@@ -174,7 +174,7 @@ Row {
                             "\n" +
                             "    Mesh {\n" +
                             "        id: source_mesh\n" +
-                            "        source: \"" + targetMesh + "\"\n" +
+                            "        source: \"%1\"\n" +
                             "    }\n" +
                             "\n" +
                             "    mesh: source_mesh\n" +
