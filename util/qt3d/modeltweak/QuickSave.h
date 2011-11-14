@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QFile>
 #include <QUrl>
+#include <QFileDialog>
+#include <QDebug>
 
 class QuickSave : public QObject {
     Q_OBJECT
@@ -18,7 +20,13 @@ public:
     QuickSave(QObject *parent=0) : QObject(parent) {}
 
     QString save() const {
-        QFile file(QUrl(_filename + QLatin1String(".qml")).toLocalFile());
+        QString fileName = QFileDialog::getOpenFileName(0, tr("Save File"), "",tr("Files (*.qml)"));
+
+        // FIXME: ensure fileName is appropriate as a qml Component
+        if(!fileName.endsWith(".qml"))
+            fileName.append(".qml");
+
+        QFile file(fileName);
 
         qDebug("Attempting to write: %s", file.fileName().toAscii().constData());
 
