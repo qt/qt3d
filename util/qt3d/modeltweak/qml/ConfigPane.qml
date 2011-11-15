@@ -124,23 +124,15 @@ Row {
         height: parent.height
         spacing: 8
 
-        Rectangle {
-            border.width: 3
+        Row {
             width: parent.width
-            height: 30
-            color: "#CCC"
-            Text {
-                anchors.fill: parent
-                text: "Click to Save!"
-                font.pixelSize: 20
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
+            height: childrenRect.height
+            spacing: 8
 
-            }
-
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
+            GrayButton {
+                width: parent.width / 2 - 4
+                buttonText: "Save!"
+                function onClicked() {
                     var saveData =
                             "import QtQuick 1.0\n" +
                             "import Qt3D 1.0\n" +
@@ -188,9 +180,11 @@ Row {
                             "    mesh: source_mesh\n" +
                             "    effect: Effect {}\n" +
                             "    transform: [\n" +
-                            "        transformTranslate,\n" +
-                            "        transformRotate,\n" +
                             "        transformScale\n" +
+                            "        transformRotateX,\n" +
+                            "        transformRotateY,\n" +
+                            "        transformRotateZ,\n" +
+                            "        transformTranslate,\n" +
                             "    ]\n" +
                             "}\n";
 
@@ -199,63 +193,31 @@ Row {
                     var result = quickSave.save
                     console.log("If there was an error it will be after here:" + result)
                 }
-                onPressed: parent.color = "#999"
-                onReleased: parent.color = "#CCC"
             }
+
+            GrayButton {
+                width: parent.width / 2 - 4
+                buttonText: "Load!"
+                function onClicked() { console.log(quickLoad.openModelFile); }
+            }
+
         }
+
         Row {
             width: parent.width
             height: childrenRect.height
             spacing: 8
 
-            Rectangle {
-                anchors.topMargin: 8
-                border.width: 3
+            GrayButton {
                 width: parent.width / 2 - 4
-                height: 30
-                color: "#CCC"
-
-                Text {
-                    anchors.fill: parent
-                    text: "Help!"
-                    font.pixelSize: 20
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-
-                }
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        helpOverlay.visible = true
-                    }
-                    onPressed: parent.color = "#999"
-                    onReleased: parent.color = "#CCC"
-                }
+                buttonText: "Help!"
+                function onClicked() { helpOverlay.visible = true }
             }
 
-            Rectangle {
-                anchors.topMargin: 8
-                border.width: 3
+            GrayButton {
                 width: parent.width / 2 - 4
-                height: 30
-                color: "#CCC"
-
-                Text {
-                    anchors.fill: parent
-                    text: "To let."
-                    font.pixelSize: 20
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-
-                }
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        console.log("Dunno what this does yet...")
-                    }
-                    onPressed: parent.color = "#999"
-                    onReleased: parent.color = "#CCC"
-                }
+                buttonText: "To let."
+                function onClicked() { console.log("Dunno what this does yet...") }
             }
         }
     }

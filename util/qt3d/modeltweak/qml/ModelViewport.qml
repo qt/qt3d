@@ -2,8 +2,10 @@ import QtQuick 1.0
 import Qt3D 1.0
 
 Rectangle {
+    id: rect
     width: isBig ? parent.width : parent.width/2;
     height: isBig ? parent.height : parent.height/2
+
     color: parent.color
     border.color: parent.border.color
 
@@ -59,11 +61,11 @@ Rectangle {
             mesh: source_mesh
             effect: Effect {}
             transform: [
-                transformTranslate,
+                transformScale,
                 transformRotateX,
                 transformRotateY,
                 transformRotateZ,
-                transformScale
+                transformTranslate,
             ]
         }
     }

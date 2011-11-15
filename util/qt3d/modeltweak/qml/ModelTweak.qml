@@ -48,10 +48,15 @@ Rectangle {
     height: 768
     color: "#444444"
     border.color: "black"
-    property string targetMesh: "meshes/monkey.3ds";
+    property alias targetMesh: quickLoad.filename
 
     QuickSave {
         id: quickSave;
+    }
+
+    QuickLoad {
+        id: quickLoad
+        filename: "meshes/monkey.3ds"
     }
 
     Translation3D {
@@ -84,7 +89,7 @@ Rectangle {
 
     Mesh {
         id: source_mesh
-        source: mainwindow.targetMesh
+        source: quickLoad.filename
     }
 
     ModelViewport {

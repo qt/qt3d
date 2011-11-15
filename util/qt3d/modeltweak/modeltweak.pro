@@ -21,5 +21,7 @@ OTHER_FILES += \
 RC_FILE = modeltweak.rc
 
 HEADERS += \
-    QuickSave.h
+    QuickSave.h \
+    QuickLoad.h
+
 
