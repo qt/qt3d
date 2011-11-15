@@ -129,7 +129,7 @@ Row {
             height: childrenRect.height
             spacing: 8
 
-            GrayButton {
+            BlenderToggle {
                 width: parent.width / 2 - 4
                 buttonText: "Save!"
                 function onClicked() {
@@ -195,7 +195,7 @@ Row {
                 }
             }
 
-            GrayButton {
+            BlenderToggle {
                 width: parent.width / 2 - 4
                 buttonText: "Load!"
                 function onClicked() { console.log(quickLoad.openModelFile); }
@@ -208,13 +208,13 @@ Row {
             height: childrenRect.height
             spacing: 8
 
-            GrayButton {
+            BlenderToggle {
                 width: parent.width / 2 - 4
                 buttonText: "Help!"
                 function onClicked() { helpOverlay.visible = true }
             }
 
-            GrayButton {
+            BlenderToggle {
                 width: parent.width / 2 - 4
                 buttonText: "To let."
                 function onClicked() { console.log("Dunno what this does yet...") }
