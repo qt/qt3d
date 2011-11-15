@@ -21,7 +21,7 @@ Row {
             width: parent.width
             horizontalAlignment: Text.AlignHCenter
         }
-        ValueField {
+        BlenderValueSlider {
             focus: true
             id: posX
             label: "X:"
@@ -29,25 +29,25 @@ Row {
             function update (f)  {
                 transformTranslate.translate = Qt.vector3d(f, transformTranslate.translate.y, transformTranslate.translate.z);
             }
-            Keys.onTabPressed:   { updateMe(); posY.focus = true; }
+            Keys.onTabPressed:   { updateMe(); focus = false; posY.focus = true; }
         }
-        ValueField {
+        BlenderValueSlider {
             id: posY
             label: "Y:"
             value: transformTranslate.translate.y.toFixed(3)
             function update (f)  {
                 transformTranslate.translate = Qt.vector3d(transformTranslate.translate.x, f, transformTranslate.translate.z);
             }
-            Keys.onTabPressed:   { updateMe(); posZ.focus = true; }
+            Keys.onTabPressed:   { updateMe(); focus = false; posZ.focus = true; }
         }
-        ValueField {
+        BlenderValueSlider {
             id: posZ
             label: "Z:"
             value: transformTranslate.translate.z.toFixed(3)
             function update (f)  {
                 transformTranslate.translate = Qt.vector3d(transformTranslate.translate.x, transformTranslate.translate.y, f);
             }
-            Keys.onTabPressed:   { updateMe(); rotX.focus = true; }
+            Keys.onTabPressed:   { updateMe(); focus = false; rotX.focus = true; }
         }
 
         // ROTATE
@@ -56,7 +56,7 @@ Row {
             color: "#FFFFFF"
             anchors.horizontalCenter: parent.horizontalCenter
         }
-        ValueField {
+        BlenderValueSlider {
             id: rotX
             label: "X:"
             delta: 1
@@ -64,9 +64,9 @@ Row {
             max: 360; limitMax: true
             value: transformRotateX.angle.toFixed(3)
             function update (f)  { transformRotateX.angle = f }
-            Keys.onTabPressed:   { updateMe(); rotY.focus = true; }
+            Keys.onTabPressed:   { updateMe(); focus = false; rotY.focus = true; }
         }
-        ValueField {
+        BlenderValueSlider {
             id: rotY
             label: "Y:"
             delta: 1
@@ -74,9 +74,9 @@ Row {
             max: 360; limitMax: true
             value: transformRotateY.angle.toFixed(3)
             function update (f)  { transformRotateY.angle = f }
-            Keys.onTabPressed:   { updateMe(); rotZ.focus = true; }
+            Keys.onTabPressed:   { updateMe(); focus = false; rotZ.focus = true; }
         }
-        ValueField {
+        BlenderValueSlider {
             id: rotZ
             label: "Z:"
             delta: 1
@@ -84,7 +84,7 @@ Row {
             max: 360; limitMax: true
             value: transformRotateZ.angle.toFixed(3)
             function update (f)  { transformRotateZ.angle = f }
-            Keys.onTabPressed:   { updateMe(); scaleX.focus = true; }
+            Keys.onTabPressed:   { updateMe(); focus = false; scaleX.focus = true; }
         }
 
         // SCALE
@@ -93,29 +93,29 @@ Row {
             color: "#FFFFFF"
             anchors.horizontalCenter: parent.horizontalCenter
         }
-        ValueField {
+        BlenderValueSlider {
             id: scaleX
             label: "X:"
             min: 0; limitMin: true
             value: transformScale.scale.x.toFixed(3)
             function update (f)  { transformScale.scale = Qt.vector3d(f, transformScale.scale.y, transformScale.scale.z); }
-            Keys.onTabPressed:   { updateMe(); scaleY.focus = true; }
+            Keys.onTabPressed:   { updateMe(); focus = false; scaleY.focus = true; }
         }
-        ValueField {
+        BlenderValueSlider {
             id: scaleY
             label: "Y:"
             min: 0; limitMin: true
             value: transformScale.scale.y.toFixed(3)
             function update (f)  { transformScale.scale = Qt.vector3d(transformScale.scale.x, f, transformScale.scale.z); }
-            Keys.onTabPressed:   { updateMe(); scaleZ.focus = true; }
+            Keys.onTabPressed:   { updateMe(); focus = false; scaleZ.focus = true; }
         }
-        ValueField {
+        BlenderValueSlider {
             id: scaleZ
             label: "Z:"
             min: 0; limitMin: true
             value: transformScale.scale.z.toFixed(3)
             function update (f)  { transformScale.scale = Qt.vector3d(transformScale.scale.x, transformScale.scale.y, f); }
-            Keys.onTabPressed:   { updateMe(); posX.focus = true; }
+            Keys.onTabPressed:   { updateMe(); focus = false; posX.focus = true; }
         }
 
     }

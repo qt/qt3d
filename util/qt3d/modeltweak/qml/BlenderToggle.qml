@@ -3,6 +3,7 @@ import QtQuick 1.0
 Rectangle {
     anchors.topMargin: 8
     border.width: 1
+    border.color: "#191919"
     radius: 8
     height: 20
     color: "#999999"
