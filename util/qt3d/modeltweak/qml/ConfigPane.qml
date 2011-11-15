@@ -25,7 +25,7 @@ Row {
             focus: true
             id: posX
             label: "X:"
-            value: transformTranslate.translate.x
+            value: transformTranslate.translate.x.toFixed(3)
             function update (f)  {
                 transformTranslate.translate = Qt.vector3d(f, transformTranslate.translate.y, transformTranslate.translate.z);
             }
@@ -34,7 +34,7 @@ Row {
         ValueField {
             id: posY
             label: "Y:"
-            value: transformTranslate.translate.y
+            value: transformTranslate.translate.y.toFixed(3)
             function update (f)  {
                 transformTranslate.translate = Qt.vector3d(transformTranslate.translate.x, f, transformTranslate.translate.z);
             }
@@ -43,7 +43,7 @@ Row {
         ValueField {
             id: posZ
             label: "Z:"
-            value: transformTranslate.translate.z
+            value: transformTranslate.translate.z.toFixed(3)
             function update (f)  {
                 transformTranslate.translate = Qt.vector3d(transformTranslate.translate.x, transformTranslate.translate.y, f);
             }
@@ -62,7 +62,7 @@ Row {
             delta: 1
             min: 0;   limitMin: true
             max: 360; limitMax: true
-            value: transformRotateX.angle
+            value: transformRotateX.angle.toFixed(3)
             function update (f)  { transformRotateX.angle = f }
             Keys.onTabPressed:   { updateMe(); rotY.focus = true; }
         }
@@ -72,7 +72,7 @@ Row {
             delta: 1
             min: 0;   limitMin: true
             max: 360; limitMax: true
-            value: transformRotateY.angle
+            value: transformRotateY.angle.toFixed(3)
             function update (f)  { transformRotateY.angle = f }
             Keys.onTabPressed:   { updateMe(); rotZ.focus = true; }
         }
@@ -82,7 +82,7 @@ Row {
             delta: 1
             min: 0;   limitMin: true
             max: 360; limitMax: true
-            value: transformRotateZ.angle
+            value: transformRotateZ.angle.toFixed(3)
             function update (f)  { transformRotateZ.angle = f }
             Keys.onTabPressed:   { updateMe(); scaleX.focus = true; }
         }
@@ -97,7 +97,7 @@ Row {
             id: scaleX
             label: "X:"
             min: 0; limitMin: true
-            value: transformScale.scale.x
+            value: transformScale.scale.x.toFixed(3)
             function update (f)  { transformScale.scale = Qt.vector3d(f, transformScale.scale.y, transformScale.scale.z); }
             Keys.onTabPressed:   { updateMe(); scaleY.focus = true; }
         }
@@ -105,7 +105,7 @@ Row {
             id: scaleY
             label: "Y:"
             min: 0; limitMin: true
-            value: transformScale.scale.y
+            value: transformScale.scale.y.toFixed(3)
             function update (f)  { transformScale.scale = Qt.vector3d(transformScale.scale.x, f, transformScale.scale.z); }
             Keys.onTabPressed:   { updateMe(); scaleZ.focus = true; }
         }
@@ -113,7 +113,7 @@ Row {
             id: scaleZ
             label: "Z:"
             min: 0; limitMin: true
-            value: transformScale.scale.z
+            value: transformScale.scale.z.toFixed(3)
             function update (f)  { transformScale.scale = Qt.vector3d(transformScale.scale.x, transformScale.scale.y, f); }
             Keys.onTabPressed:   { updateMe(); posX.focus = true; }
         }
