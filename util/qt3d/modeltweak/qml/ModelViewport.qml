@@ -2,7 +2,7 @@ import QtQuick 1.0
 import Qt3D 1.0
 
 Rectangle {
-    id: rect
+    id: view
     width: isBig ? parent.width : parent.width/2;
     height: isBig ? parent.height : parent.height/2
 
@@ -125,13 +125,28 @@ Rectangle {
         // clear the current mouse button upon release
         onReleased: { mouseDown = Qt.NoButton }
     }
-    Image {
-        anchors.top: parent.top
-        anchors.right: parent.right
-        source: parent.isBig ? "Shrink.png" : "Grow.png"
-        MouseArea {
-            anchors.fill: parent
-            onClicked: isBig = !isBig
+
+    Rectangle {
+        radius: 4
+        border.width: 1
+        border.color: "#191919"
+        anchors {
+            top: view.top; topMargin: 2;
+            right: view.right; rightMargin: 2;
+        }
+        width: 16 + 2
+        height: 16 + 2
+        color: "#999999"
+
+        Image {
+            id: img
+            source: view.isBig ? "images/shrink.png" : "images/grow.png"
+            x: 2
+            y: 2
+            MouseArea {
+                anchors.fill: parent
+                onClicked: isBig = !isBig
+            }
         }
     }
 }

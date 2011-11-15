@@ -51,7 +51,7 @@ FocusScope {
         }
         Image {
             id: plus
-            source: "plus.png"
+            source: "images/plus.png"
             anchors.left: textInput.right
             anchors.verticalCenter: parent.verticalCenter
             MouseArea { id: plusMouseArea; anchors.fill: parent; onPressed: incDelta() }
@@ -64,7 +64,7 @@ FocusScope {
         }
         Image {
             id: minus
-            source: "minus.png"
+            source: "images/minus.png"
             anchors.right: textInput.left
             anchors.verticalCenter: parent.verticalCenter
             MouseArea { id: minusMouseArea; anchors.fill: parent; onPressed: decDelta() }

@@ -65,13 +65,13 @@ Item {
         }
         Image {
             id: plus
-            source: "plus.png"
+            source: "images/plus.png"
             anchors.left: textInput.right
             anchors.verticalCenter: parent.verticalCenter
         }
         Image {
             id: minus
-            source: "minus.png"
+            source: "images/minus.png"
             anchors.right: textInput.left
             anchors.verticalCenter: parent.verticalCenter
         }
