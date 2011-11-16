@@ -20,7 +20,7 @@ Rectangle {
         Text {
             id: header
             font { pixelSize: 32; italic: true }
-            text: "Help!"
+            text: "ModelTweaker Help"
             anchors.top: parent.top
             anchors.topMargin: 16
             anchors.horizontalCenter: parent.horizontalCenter
@@ -34,8 +34,8 @@ Rectangle {
             anchors.rightMargin: 16
             textFormat: Text.RichText
             wrapMode: Text.WordWrap
-            text: "Apparently you're having problems." +
-                  "<ul><li>Clicking on one of the panes with the <b>Left Mouse Button</b> and dragging with translate the position.</li>" +
+            text: "Altering model parameters with the mouse:" +
+                  "<ul><li>Clicking on one of the panes with the <b>Left Mouse Button</b> and dragging will translate the position.</li>" +
                   "<li>Clicking on one of the panes with the <b>Right Mouse Button</b> and dragging will rotate the position.</li>" +
                   "<li>Clicking on one of the panes with the <b>Middle Mouse Button</b> and dragging will resize the model."
         }
@@ -51,8 +51,6 @@ Rectangle {
         anchors.fill: parent
         acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
         onClicked: parent.visible = false
-        //onPressed:
-        //onReleased:
     }
 }
 
