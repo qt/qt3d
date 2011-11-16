@@ -3,7 +3,7 @@ import Qt3D 1.0
 import ModelTweak 1.0
 
 Flow {
-    width: buttonWidth * 2 + 8
+    width: buttonWidth * 4 + spacing * 3
     spacing: 8
 
     property double buttonWidth: 80

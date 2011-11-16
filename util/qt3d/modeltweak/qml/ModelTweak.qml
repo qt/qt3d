@@ -236,10 +236,14 @@ Rectangle {
 
     }
 
-    ButtonBarPane {
-        anchors {
-            top: modelPropertiesPane.top;
-            left: modelPropertiesPane.right; leftMargin: 16
+    Item {
+        width: parent.width / 2
+        anchors.bottom: meshName.top
+        anchors.bottomMargin: 8
+        height: buttonBarPane.height
+        ButtonBarPane {
+            id: buttonBarPane
+            anchors.centerIn: parent
         }
     }
 
