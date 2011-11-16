@@ -22,24 +22,26 @@ HEADERS += \
     line.h \
     point.h
 
-QML_INFRA_FILES += \
-    qmldir \
-    library.xml \
-    plugins.qmltypes \
-    Cube.qml \
-    cube.obj \
-    Quad.qml \
-    quad.obj \
-    Teapot.qml \
-    teapot.bez
-# see the file README.library_xml for more on library.xml
+!package {
+    QML_INFRA_FILES += \
+        qmldir \
+        library.xml \
+        plugins.qmltypes \
+        Cube.qml \
+        cube.obj \
+        Quad.qml \
+        quad.obj \
+        Teapot.qml \
+        teapot.bez
+    # see the file README.library_xml for more on library.xml
 
-copyqmlinfra.input = QML_INFRA_FILES
-copyqmlinfra.output = $$target.path/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
-copyqmlinfra.commands = $$QMAKE_COPY ${QMAKE_FILE_IN} ${QMAKE_FILE_OUT}
-copyqmlinfra.CONFIG += no_link_no_clean
-copyqmlinfra.variable_out = PRE_TARGETDEPS
-QMAKE_EXTRA_COMPILERS += copyqmlinfra
+    copyqmlinfra.input = QML_INFRA_FILES
+    copyqmlinfra.output = $$target.path/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
+    copyqmlinfra.commands = $$QMAKE_COPY ${QMAKE_FILE_IN} ${QMAKE_FILE_OUT}
+    copyqmlinfra.CONFIG += no_link_no_clean
+    copyqmlinfra.variable_out = PRE_TARGETDEPS
+    QMAKE_EXTRA_COMPILERS += copyqmlinfra
+}
 
 OTHER_FILES += \
     README.plugins_types \
