@@ -6,6 +6,7 @@ include(pkg.pri)
 
 !package: SUBDIRS += tutorials
 
+tests.CONFIG = no_default_install
 SUBDIRS += tests
 CONFIG += ordered
 
