@@ -211,6 +211,7 @@ Rectangle {
     }
 
     Rectangle {
+        id: meshName
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottomMargin: 10
         anchors.bottom: parent.bottom
@@ -228,8 +229,18 @@ Rectangle {
         }
     }
 
-    ConfigPane {
+    ModelPropertiesPane {
+        id: modelPropertiesPane
+        x: 16;
+        y: parent.height / 2 + 16
 
+    }
+
+    ButtonBarPane {
+        anchors {
+            top: modelPropertiesPane.top;
+            left: modelPropertiesPane.right; leftMargin: 16
+        }
     }
 
     HelpOverlay {
