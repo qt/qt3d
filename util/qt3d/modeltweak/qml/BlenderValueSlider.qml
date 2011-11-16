@@ -18,7 +18,6 @@ Item {
 
     Rectangle {
         id: rect
-        anchors.right: parent.right
         radius: 8
         border.width: 1
         border.color: "#191919"

@@ -3,13 +3,11 @@ import Qt3D 1.0
 
 Rectangle {
     id: view
-    width: isBig ? parent.width : parent.width/2;
-    height: isBig ? parent.height : parent.height/2
+    width: parent.width/2;
+    height: parent.height/2
 
     color: parent.color
     border.color: parent.border.color
-
-    property bool isBig: false;
 
     property alias itemPosition: mainItem.position;
     property alias itemScale: mainItem.scale;
@@ -44,6 +42,13 @@ Rectangle {
     property double translateSensitivity: 32;
     property double rotateSensitivity: 8;
     property double scaleSensitivity: 32;
+
+    property string stateName
+
+    Behavior on x      { NumberAnimation { duration: 300 } }
+    Behavior on y      { NumberAnimation { duration: 300 } }
+    Behavior on width  { NumberAnimation { duration: 300 } }
+    Behavior on height { NumberAnimation { duration: 300 } }
 
     Viewport {
         id: viewport
@@ -140,12 +145,19 @@ Rectangle {
 
         Image {
             id: img
-            source: view.isBig ? "images/shrink.png" : "images/grow.png"
+            source: mainwindow.state !== "3Views" ? "images/shrink.png" : "images/grow.png"
             x: 2
             y: 2
             MouseArea {
                 anchors.fill: parent
-                onClicked: isBig = !isBig
+                onClicked: {
+                    if (view.stateName) {
+                        if(mainwindow.state !== "3Views")
+                            mainwindow.state = "3Views"
+                        else
+                            mainwindow.state = view.stateName
+                    }
+                }
             }
         }
     }

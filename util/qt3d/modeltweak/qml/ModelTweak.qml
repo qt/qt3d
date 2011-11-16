@@ -94,10 +94,10 @@ Rectangle {
 
     ModelViewport {
         id: mvpZY
-        visible: !mvpXY.isBig && !mvpXZ.isBig ? true : false
-        x: isBig ? 0 : 0;
-        y: isBig ? 0 : 0;
+        x: 0;
+        y: 0;
         camera.eye: Qt.vector3d(10, 0, 0);
+        stateName: "ZYMaximised"
 
         function translateMouseX(mouse) {
             transformTranslate.translate =
@@ -133,10 +133,10 @@ Rectangle {
 
     ModelViewport {
         id: mvpXY
-        visible: !mvpZY.isBig && !mvpXZ.isBig ? true : false
-        x: isBig ? 0 : parent.width/2
-        y: isBig ? 0 : 0;
+        x: parent.width/2
+        y: 0;
         camera.eye: Qt.vector3d(0, 0, 10);
+        stateName: "XYMaximised"
 
         function translateMouseX(mouse) {
             transformTranslate.translate =
@@ -172,11 +172,11 @@ Rectangle {
 
     ModelViewport {
         id: mvpXZ
-        visible: !mvpZY.isBig && !mvpXY.isBig ? true : false
-        x: isBig ? 0 : parent.width/2;
-        y: isBig ? 0 : parent.height/2;
+        x: parent.width/2;
+        y: parent.height/2;
         camera.eye: Qt.vector3d(0, 10, 0);
         camera.upVector: Qt.vector3d(0, 0, -1);
+        stateName: "XZMaximised"
 
         function translateMouseX(mouse) {
             transformTranslate.translate =
@@ -236,4 +236,30 @@ Rectangle {
         id: helpOverlay
         visible: false
     }
+
+    states: [
+        State {
+            name: "3Views"
+        },
+        State {
+            name: "ZYMaximised"
+            PropertyChanges { target: mvpZY; x: 0;                  y: 0;                 width: mainwindow.width;    height: mainwindow.height;   }
+            PropertyChanges { target: mvpXY; x: mainwindow.width;   y: 0;                 width: 0;                   height: mainwindow.height/2; }
+            PropertyChanges { target: mvpXZ; x: mainwindow.width;   y: mainwindow.height; width: 0;                   height: 0;                   }
+        },
+        State {
+            name: "XYMaximised"
+            PropertyChanges { target: mvpZY; x: 0;                  y: 0;                 width: 0;                   height: mainwindow.height/2; }
+            PropertyChanges { target: mvpXY; x: 0;                  y: 0;                 width: mainwindow.width;    height: mainwindow.height;   }
+            PropertyChanges { target: mvpXZ; x: mainwindow.width/2; y: mainwindow.height; width: mainwindow.width/2;  height: 0;                   }
+        },
+        State {
+            name: "XZMaximised"
+            PropertyChanges { target: mvpZY; x: 0;                  y: 0;                 width: 0;                   height: 0;                   }
+            PropertyChanges { target: mvpXY; x: mainwindow.width/2; y: 0;                 width: mainwindow.width/2;  height: 0;                   }
+            PropertyChanges { target: mvpXZ; x: 0;                  y: 0;                 width: mainwindow.width;    height: mainwindow.height;   }
+        }
+    ]
+
+    state: "3Views"
 }
