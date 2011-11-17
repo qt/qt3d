@@ -28,18 +28,23 @@ HEADERS += \
     skybox.h \
     billboarditem3d.h
 
-!package {
     QML_INFRA_FILES = \
         qmldir \
         library.xml \
         plugins.qmltypes
 
+!package {
     copyqmlinfra.input = QML_INFRA_FILES
     copyqmlinfra.output = $$[QT_INSTALL_IMPORTS]/Qt3D/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
     copyqmlinfra.commands = $$QMAKE_COPY ${QMAKE_FILE_IN} ${QMAKE_FILE_OUT}
     copyqmlinfra.CONFIG += no_link_no_clean
     copyqmlinfra.variable_out = PRE_TARGETDEPS
     QMAKE_EXTRA_COMPILERS += copyqmlinfra
+}
+else {
+    copyqmlinfra_install.files = QML_INFRA_FILES
+    copyqmlinfra_install.path = $$[QT_INSTALL_IMPORTS]/Qt3D
+    INSTALLS += copyqmlinfra_install
 }
 
 OTHER_FILES += \

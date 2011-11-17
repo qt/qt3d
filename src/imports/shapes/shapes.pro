@@ -22,7 +22,6 @@ HEADERS += \
     line.h \
     point.h
 
-!package {
     QML_INFRA_FILES += \
         qmldir \
         library.xml \
@@ -35,12 +34,18 @@ HEADERS += \
         teapot.bez
     # see the file README.library_xml for more on library.xml
 
+!package {
     copyqmlinfra.input = QML_INFRA_FILES
     copyqmlinfra.output = $$target.path/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
     copyqmlinfra.commands = $$QMAKE_COPY ${QMAKE_FILE_IN} ${QMAKE_FILE_OUT}
     copyqmlinfra.CONFIG += no_link_no_clean
     copyqmlinfra.variable_out = PRE_TARGETDEPS
     QMAKE_EXTRA_COMPILERS += copyqmlinfra
+}
+else {
+    copyqmlinfra_install.files = QML_INFRA_FILES
+    copyqmlinfra_install.path = $$[QT_INSTALL_IMPORTS]/Qt3D/Shapes
+    INSTALLS += copyqmlinfra_install
 }
 
 OTHER_FILES += \
