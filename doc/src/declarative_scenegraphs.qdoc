@@ -174,7 +174,7 @@
 
     Item3D {
             //Get just the subtree starting at wheel1
-            mesh: model.get(bike.body.wheel1)
+            mesh:  Mesh {scene: model.get(bike.body.wheel1)}
     }
     \endcode
 
@@ -191,11 +191,12 @@
     Mesh {
             id: model
             source: "bike.3ds"
+
     }
 
     Item3D {
             //get the model but exclude the sub-branch beginning at wheel1.
-            mesh: model.except(bike.body.wheel1)
+            mesh: Mesh {model: model.except(bike.body.wheel1)}
     }
     \endcode
 
@@ -220,7 +221,7 @@
     }
 
     Item3D {
-            mesh: model.get(bike.body.wheel1)
+            mesh: Mesh{scene: model.get(bike.body.wheel1)}
             x: -5
             z: 5
     }
@@ -247,7 +248,7 @@
     }
 
     Item3D {
-            mesh: model.get(bike.body.wheel1)
+            mesh: Mesh{scene: model.get(bike.body.wheel1)}
             effect: Effect {color: #00FF00}
     }
     \endcode
@@ -269,7 +270,7 @@
     }
 
     Item3D {
-            mesh: model.except(bike.body.wheel1)
+            mesh: Mesh{scene: model.except(bike.body.wheel1)}
             effect: Effect {color: #FF0000}
     }
 
@@ -295,11 +296,11 @@
     }
 
     Item3D {
-            mesh: model.except(bike.body.wheel1)
+            mesh: Mesh{scene: model.except(bike.body.wheel1)}
     }
 
     Item3D {
-            mesh: model.get(bike.body.wheel1)
+            mesh: Mesh{scene: model.get(bike.body.wheel1)}
             y: -2
     }
     \endcode
@@ -319,7 +320,7 @@
     }
 
     Item3D {
-            mesh: model.get([car.body.wheel1, car.body.wheel2])
+            mesh: Mesh{scene: model.get([car.body.wheel1, car.body.wheel2])}
     }
     \endcode
 
