@@ -43,7 +43,7 @@ HEADERS += \
     QMAKE_EXTRA_COMPILERS += copyqmlinfra
 }
 else {
-    copyqmlinfra_install.files = QML_INFRA_FILES
+    copyqmlinfra_install.files = $$QML_INFRA_FILES
     copyqmlinfra_install.path = $$[QT_INSTALL_IMPORTS]/Qt3D/Shapes
     INSTALLS += copyqmlinfra_install
 }
