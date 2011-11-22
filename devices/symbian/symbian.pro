@@ -42,11 +42,6 @@ symbian {
         DEPLOYMENT += qt3dsceneformats_plugins
     }
 
-    qt3dimageformats_plugins.sources = \
-                                qtga$${QT_LIBINFIX}.dll
-    qt3dimageformats_plugins.path = $$QT_PLUGINS_BASE_DIR/imageformats
-    DEPLOYMENT += qt3dimageformats_plugins
-
     qt3dquick.sources = Qt3DQuick$${QT_LIBINFIX}.dll
     qt3dquick.path = /sys/bin
     qt3dthreedImports.sources = \
