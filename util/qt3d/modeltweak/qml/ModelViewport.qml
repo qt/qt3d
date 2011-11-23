@@ -64,7 +64,6 @@ Rectangle {
         Item3D {
             id: mainItem
             mesh: source_mesh
-            effect: Effect {}
             transform: [
                 transformScale,
                 transformRotateX,

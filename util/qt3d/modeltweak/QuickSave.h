@@ -7,15 +7,16 @@
 #include <QFileDialog>
 #include <QDebug>
 
-class QuickSave : public QObject {
+class QuickSave : public QObject
+{
     Q_OBJECT
 
     QString _filename;
     QString _data;
 
-    Q_PROPERTY(QString save READ save)
     Q_PROPERTY(QString filename READ filename WRITE setFilename)
     Q_PROPERTY(QString data READ data WRITE setData)
+
 public:
     QuickSave(QObject *parent=0) : QObject(parent) {}
 
@@ -48,14 +49,15 @@ public:
         return QString();
     }
 
-    //TODO: these really should be emitting signals upon changing;
-    //      but we don't display them so it doesn't technically matter
     QString filename() const { return _filename; }
-    void setFilename(const QString filename) { if (_filename != filename) _filename = filename; }
+    void setFilename(const QString filename) { if (_filename != filename) _filename = filename; emit filenameChanged(filename); }
 
     QString data() const { return _data; }
-    void setData(const QString data) { if (_data != data) _data = data; }
+    void setData(const QString data) { if (_data != data) _data = data; emit dataChanged(data); }
 
+signals:
+    void filenameChanged(const QString newFilename);
+    void dataChanged(const QString newData);
 };
 
 #endif // QUICKSAVE_H

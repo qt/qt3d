@@ -57,7 +57,6 @@ Flow {
                     "    }\n" +
                     "\n" +
                     "    mesh: source_mesh\n" +
-                    "    effect: Effect {}\n" +
                     "    transform: [\n" +
                     "        transformScale\n" +
                     "        transformRotateX,\n" +
@@ -69,7 +68,7 @@ Flow {
 
             quickSave.filename = source_mesh.source
             quickSave.data = saveData
-            var result = quickSave.save
+            var result = quickSave.save()
             console.log("If there was an error it will be after here:" + result)
         }
     }
@@ -77,7 +76,7 @@ Flow {
     BlenderToggle {
         width: buttonWidth
         buttonText: "Load!"
-        function onClicked() { console.log(quickLoad.openModelFile); }
+        function onClicked() { console.log(quickLoad.openModelFile()); }
     }
 
     BlenderToggle {
