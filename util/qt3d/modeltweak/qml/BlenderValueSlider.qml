@@ -1,4 +1,6 @@
 import QtQuick 1.0
+import Qt3D 1.0
+import ModelTweak 1.0
 
 Item {
     id: valueSlider
@@ -52,7 +54,7 @@ Item {
             }
             visible: false
             onFocusChanged: {
-                if(focus == false) {
+                if (focus == false) {
                     visible = false
                     textLabel.visible = true
                 }
@@ -81,9 +83,9 @@ Item {
             onExited: parent.color = "#B4B4B4"
             hoverEnabled: true
             onClicked: {
-                if(mouse.x<width/3)
+                if (mouse.x<width/3)
                     decDelta();
-                else if(mouse.x>width/3*2)
+                else if (mouse.x>width/3*2)
                     incDelta();
                 else {
                     textLabel.visible = false;
@@ -122,7 +124,6 @@ Item {
             update(t>max ? max : t);
         else
             update(t);
-        console.log("updated! " + t);
 
     }
 
@@ -132,7 +133,6 @@ Item {
             update(t<min ? min : t);
         else
             update(t);
-        console.log("updated! " + t);
     }
 
     Keys.onUpPressed: incDelta()
