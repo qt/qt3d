@@ -5,4 +5,3 @@ Icon=icon-l-qtquick3d
 Exec=/usr/bin/model_viewer -fullscreen
 OnlyShowIn=X-MeeGo;
 X-MeeGo-Logical-Id=qtn_comm_appname_model_viewer
-X-MeeGo-Translation-Catalog=essentials

@@ -5,4 +5,3 @@ Icon=icon-l-qt3d
 Exec=/usr/bin/nesting -fullscreen
 OnlyShowIn=X-MeeGo;
 X-MeeGo-Logical-Id=qtn_comm_appname_nesting
-X-MeeGo-Translation-Catalog=essentials

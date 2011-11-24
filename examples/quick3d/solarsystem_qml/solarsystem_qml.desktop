@@ -5,4 +5,3 @@ Icon=icon-l-qtquick3d
 Exec=/usr/bin/solarsystem_qml -fullscreen
 OnlyShowIn=X-MeeGo;
 X-MeeGo-Logical-Id=qtn_comm_appname_solarsystem_qml
-X-MeeGo-Translation-Catalog=essentials

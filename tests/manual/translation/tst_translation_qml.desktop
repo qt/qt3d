@@ -5,4 +5,3 @@ Icon=icon-l-qtquick3d
 Exec=/usr/bin/tst_translation -fullscreen
 OnlyShowIn=X-MeeGo;
 X-MeeGo-Logical-Id=qtn_comm_appname_tst_translation_qml
-X-MeeGo-Translation-Catalog=essentials

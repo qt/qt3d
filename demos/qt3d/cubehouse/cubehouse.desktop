@@ -5,4 +5,3 @@ Icon=icon-l-qt3d
 Exec=/usr/bin/cubehouse -fullscreen
 OnlyShowIn=X-MeeGo;
 X-MeeGo-Logical-Id=qtn_comm_appname_cubehouse
-X-MeeGo-Translation-Catalog=essentials
