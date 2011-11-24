@@ -59,38 +59,16 @@ Rectangle {
         filename: "meshes/monkey.3ds"
     }
 
-    Translation3D {
-        id: transformTranslate
-        translate: Qt.vector3d(0, 0, 0)
-    }
-
-    Rotation3D {
-        id: transformRotateX
-        angle: 0
-        axis: Qt.vector3d(1, 0, 0)
-    }
-
-    Rotation3D {
-        id: transformRotateY
-        angle: 0
-        axis: Qt.vector3d(0, 1, 0)
-    }
-
-    Rotation3D {
-        id: transformRotateZ
-        angle: 0
-        axis: Qt.vector3d(0, 0, 1)
-    }
-
-    Scale3D {
-        id: transformScale
-        scale: Qt.vector3d(1, 1, 1)
-    }
-
     Mesh {
         id: source_mesh
         source: quickLoad.filename
     }
+
+    Translation3D { id: transformTranslate; translate: Qt.vector3d(0, 0, 0);           }
+    Rotation3D    { id: transformRotateX;   axis: Qt.vector3d(1, 0, 0);      angle: 0; }
+    Rotation3D    { id: transformRotateY;   axis: Qt.vector3d(0, 1, 0);      angle: 0; }
+    Rotation3D    { id: transformRotateZ;   axis: Qt.vector3d(0, 0, 1);      angle: 0; }
+    Scale3D       { id: transformScale;     scale: Qt.vector3d(1, 1, 1);               }
 
     ModelViewport {
         id: mvpZY
@@ -99,35 +77,19 @@ Rectangle {
         camera.eye: Qt.vector3d(10, 0, 0);
         stateName: "ZYMaximised"
 
-        function translateMouseX(mouse) {
-            transformTranslate.translate =
-                    Qt.vector3d(transformTranslate.translate.x,
-                                transformTranslate.translate.y,
-                                translateZ + (downX - mouse.x)/translateSensitivity)
+        property alias position: transformTranslate.translate;
+
+        onMouseTranslateX: position = Qt.vector3d(position.x, position.y, translate.z + (down.x - mouse.x)/translateSensitivity)
+        onMouseTranslateY: position = Qt.vector3d(position.x, translate.y + (down.y - mouse.y)/translateSensitivity, position.z)
+        onMouseRotateX: transformRotateY.angle = rotate.y - (down.x - mouse.x)/rotateSensitivity
+        onMouseRotateY: transformRotateZ.angle = rotate.z - (down.y - mouse.y)/rotateSensitivity
+        onMouseScaleX: {
+            var s = scale3d.z - (down.x - mouse.x)/scaleSensitivity;
+            transformScale.scale = Qt.vector3d(transformScale.scale.x, transformScale.scale.y, s<0 ? 0 : s)
         }
-        function translateMouseY(mouse) {
-            transformTranslate.translate =
-                    Qt.vector3d(transformTranslate.translate.x,
-                                translateY + (downY - mouse.y)/translateSensitivity,
-                                transformTranslate.translate.z)
-        }
-        function rotateMouseX(mouse) {
-            transformRotateY.angle = rotateY - (downX - mouse.x)/rotateSensitivity
-        }
-        function rotateMouseY(mouse) {
-            transformRotateZ.angle = rotateZ - (downY - mouse.y)/rotateSensitivity
-        }
-        function scaleMouseX(mouse) {
-            var s = scaleZ - (downX - mouse.x)/scaleSensitivity;
-            if (s<0)
-                return;
-            transformScale.scale = Qt.vector3d(transformScale.scale.x, transformScale.scale.y, s)
-        }
-        function scaleMouseY(mouse) {
-            var s = scaleY + (downY - mouse.y)/scaleSensitivity;
-            if (s<0)
-                return;
-            transformScale.scale = Qt.vector3d(transformScale.scale.x, s, transformScale.scale.z)
+        onMouseScaleY: {
+            var s = scale3d.y + (down.y - mouse.y)/scaleSensitivity;
+            transformScale.scale = Qt.vector3d(transformScale.scale.x, s<0 ? 0 : s, transformScale.scale.z)
         }
     }
 
@@ -138,35 +100,19 @@ Rectangle {
         camera.eye: Qt.vector3d(0, 0, 10);
         stateName: "XYMaximised"
 
-        function translateMouseX(mouse) {
-            transformTranslate.translate =
-                    Qt.vector3d(translateX - (downX - mouse.x)/translateSensitivity,
-                                transformTranslate.translate.y,
-                                transformTranslate.translate.z)
+        property alias position: transformTranslate.translate;
+
+        onMouseTranslateX: position = Qt.vector3d(translate.x - (down.x - mouse.x)/translateSensitivity, position.y, position.z)
+        onMouseTranslateY: position = Qt.vector3d(position.x, translate.y + (down.y - mouse.y)/translateSensitivity, position.z)
+        onMouseRotateX: transformRotateY.angle = rotate.y - (down.x - mouse.x)/rotateSensitivity
+        onMouseRotateY: transformRotateX.angle = rotate.x - (down.y - mouse.y)/rotateSensitivity
+        onMouseScaleX: {
+            var s = scale3d.x - (down.x - mouse.x)/scaleSensitivity
+            transformScale.scale = Qt.vector3d(s<0 ? 0 : s, transformScale.scale.y, transformScale.scale.z)
         }
-        function translateMouseY(mouse) {
-            transformTranslate.translate =
-                    Qt.vector3d(transformTranslate.translate.x,
-                                translateY + (downY - mouse.y)/translateSensitivity,
-                                transformTranslate.translate.z)
-        }
-        function rotateMouseX(mouse) {
-            transformRotateY.angle = rotateY - (downX - mouse.x)/rotateSensitivity
-        }
-        function rotateMouseY(mouse) {
-            transformRotateX.angle = rotateX - (downY - mouse.y)/rotateSensitivity
-        }
-        function scaleMouseX(mouse) {
-            var s = scaleX - (downX - mouse.x)/scaleSensitivity
-            if (s<0)
-                return;
-            transformScale.scale = Qt.vector3d(s, transformScale.scale.y, transformScale.scale.z)
-        }
-        function scaleMouseY(mouse) {
-            var s = scaleY + (downY - mouse.y)/scaleSensitivity
-            if (s<0)
-                return;
-            transformScale.scale = Qt.vector3d(transformScale.scale.x, s, transformScale.scale.z)
+        onMouseScaleY: {
+            var s = scale3d.y + (down.y - mouse.y)/scaleSensitivity
+            transformScale.scale = Qt.vector3d(transformScale.scale.x, s<0 ? 0 : s, transformScale.scale.z)
         }
     }
 
@@ -178,35 +124,19 @@ Rectangle {
         camera.upVector: Qt.vector3d(0, 0, -1);
         stateName: "XZMaximised"
 
-        function translateMouseX(mouse) {
-            transformTranslate.translate =
-                    Qt.vector3d(translateX - (downX - mouse.x)/translateSensitivity,
-                                transformTranslate.translate.y,
-                                transformTranslate.translate.z)
+        property alias position: transformTranslate.translate;
+
+        onMouseTranslateX: position = Qt.vector3d(translate.x - (down.x - mouse.x)/translateSensitivity, position.y, position.z)
+        onMouseTranslateY: position = Qt.vector3d(position.x, position.y, translate.z - (down.y - mouse.y)/translateSensitivity)
+        onMouseRotateX: transformRotateZ.angle = rotate.z + (down.x - mouse.x)/rotateSensitivity
+        onMouseRotateY: transformRotateX.angle = rotate.x - (down.y - mouse.y)/rotateSensitivity
+        onMouseScaleX: {
+            var s = scale3d.x - (down.x - mouse.x)/scaleSensitivity;
+            transformScale.scale = Qt.vector3d(s<0 ? 0 : s, transformScale.scale.y, transformScale.scale.z)
         }
-        function translateMouseY(mouse) {
-            transformTranslate.translate =
-                    Qt.vector3d(transformTranslate.translate.x,
-                                transformTranslate.translate.y,
-                                translateZ - (downY - mouse.y)/translateSensitivity)
-        }
-        function rotateMouseX(mouse) {
-            transformRotateZ.angle = rotateZ + (downX - mouse.x)/rotateSensitivity
-        }
-        function rotateMouseY(mouse) {
-            transformRotateX.angle = rotateX - (downY - mouse.y)/rotateSensitivity
-        }
-        function scaleMouseX(mouse) {
-            var s = scaleX - (downX - mouse.x)/scaleSensitivity;
-            if (s<0)
-                return;
-            transformScale.scale = Qt.vector3d(s, transformScale.scale.y, transformScale.scale.z)
-        }
-        function scaleMouseY(mouse) {
-            var s = scaleZ + (downY - mouse.y)/scaleSensitivity;
-            if (s<0)
-                return;
-            transformScale.scale = Qt.vector3d(transformScale.scale.x, transformScale.scale.y, s)
+        onMouseScaleY: {
+            var s = scale3d.z + (down.y - mouse.y)/scaleSensitivity;
+            transformScale.scale = Qt.vector3d(transformScale.scale.x, transformScale.scale.y, s<0 ? 0 : s)
         }
     }
 
@@ -241,6 +171,7 @@ Rectangle {
         anchors.bottom: meshName.top
         anchors.bottomMargin: 8
         height: buttonBarPane.height
+
         ButtonBarPane {
             id: buttonBarPane
             anchors.centerIn: parent
@@ -258,21 +189,21 @@ Rectangle {
         },
         State {
             name: "ZYMaximised"
-            PropertyChanges { target: mvpZY; x: 0;                  y: 0;                 width: mainwindow.width;    height: mainwindow.height;   }
-            PropertyChanges { target: mvpXY; x: mainwindow.width;   y: 0;                 width: 0;                   height: mainwindow.height/2; }
-            PropertyChanges { target: mvpXZ; x: mainwindow.width;   y: mainwindow.height; width: 0;                   height: 0;                   }
+            PropertyChanges { target: mvpZY; x: 0;                  y: 0;                 width: mainwindow.width;   height: mainwindow.height;   }
+            PropertyChanges { target: mvpXY; x: mainwindow.width;   y: 0;                 width: 0;                  height: mainwindow.height/2; }
+            PropertyChanges { target: mvpXZ; x: mainwindow.width;   y: mainwindow.height; width: 0;                  height: 0;                   }
         },
         State {
             name: "XYMaximised"
-            PropertyChanges { target: mvpZY; x: 0;                  y: 0;                 width: 0;                   height: mainwindow.height/2; }
-            PropertyChanges { target: mvpXY; x: 0;                  y: 0;                 width: mainwindow.width;    height: mainwindow.height;   }
-            PropertyChanges { target: mvpXZ; x: mainwindow.width/2; y: mainwindow.height; width: mainwindow.width/2;  height: 0;                   }
+            PropertyChanges { target: mvpZY; x: 0;                  y: 0;                 width: 0;                  height: mainwindow.height/2; }
+            PropertyChanges { target: mvpXY; x: 0;                  y: 0;                 width: mainwindow.width;   height: mainwindow.height;   }
+            PropertyChanges { target: mvpXZ; x: mainwindow.width/2; y: mainwindow.height; width: mainwindow.width/2; height: 0;                   }
         },
         State {
             name: "XZMaximised"
-            PropertyChanges { target: mvpZY; x: 0;                  y: 0;                 width: 0;                   height: 0;                   }
-            PropertyChanges { target: mvpXY; x: mainwindow.width/2; y: 0;                 width: mainwindow.width/2;  height: 0;                   }
-            PropertyChanges { target: mvpXZ; x: 0;                  y: 0;                 width: mainwindow.width;    height: mainwindow.height;   }
+            PropertyChanges { target: mvpZY; x: 0;                  y: 0;                 width: 0;                  height: 0;                   }
+            PropertyChanges { target: mvpXY; x: mainwindow.width/2; y: 0;                 width: mainwindow.width/2; height: 0;                   }
+            PropertyChanges { target: mvpXZ; x: 0;                  y: 0;                 width: mainwindow.width;   height: mainwindow.height;   }
         }
     ]
 

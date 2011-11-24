@@ -17,26 +17,13 @@ Rectangle {
 
     // the current x/y positions of the mouse when the onPressed event was triggered;
     // values are invalid if onRelease has occured
-    property int downX;
-    property int downY;
+    property variant down;
 
-    // current xyz positions of the Translation3D when onPressed was triggered;
+    // current xyz values of the Translation3D/Rotation3Ds/Scale3D when onPressed was triggered;
     // values are invalid if onRelease has occured
-    property double translateX;
-    property double translateY;
-    property double translateZ;
-
-    // current angles of the three Rotation3Ds when onPressed was triggered;
-    // values are invalid if onRelease has occured
-    property double rotateX;
-    property double rotateY;
-    property double rotateZ;
-
-    // current xyz sizes of the Scale3D when onPressed was triggered;
-    // values are invalid if onRelease has occured
-    property double scaleX;
-    property double scaleY;
-    property double scaleZ;
+    property variant translate;
+    property variant rotate;
+    property variant scale3d;
 
     // the pixel sensitivity values of the mousemovements
     // TODO: expose via api
@@ -45,12 +32,22 @@ Rectangle {
     property double rotateSensitivity: 8;
     property double scaleSensitivity: 32;
 
+    // the name of this viewport's state
     property string stateName
 
+    // the smoothness values for the state change transformations
+    // TODO: this should be alterable via the gui and saved in a settings file
     Behavior on x      { NumberAnimation { duration: 300 } }
     Behavior on y      { NumberAnimation { duration: 300 } }
     Behavior on width  { NumberAnimation { duration: 300 } }
     Behavior on height { NumberAnimation { duration: 300 } }
+
+    signal mouseTranslateX(variant mouse)
+    signal mouseTranslateY(variant mouse)
+    signal mouseRotateX(variant mouse)
+    signal mouseRotateY(variant mouse)
+    signal mouseScaleX(variant mouse)
+    signal mouseScaleY(variant mouse)
 
     Viewport {
         id: viewport
@@ -58,6 +55,7 @@ Rectangle {
         picking: false
         blending: true
 
+        // TODO: camera's position/rotation-around-origin/farplane should be alterable via gui
         camera: Camera {
             farPlane: 2000 // debugging
         }
@@ -84,20 +82,20 @@ Rectangle {
 
         onMouseXChanged: {
             if (mouseDown & Qt.LeftButton)
-                translateMouseX(mouse);
+                mouseTranslateX(mouse)
             else if (mouseDown === Qt.RightButton)
-                rotateMouseX(mouse);
+                mouseRotateX(mouse);
             else if (mouseDown === Qt.MiddleButton)
-                scaleMouseX(mouse);
+                mouseScaleX(mouse)
         }
 
         onMouseYChanged: {
             if (mouseDown & Qt.LeftButton)
-                translateMouseY(mouse);
+                mouseTranslateY(mouse)
             else if (mouseDown === Qt.RightButton)
-                rotateMouseY(mouse);
+                mouseRotateY(mouse);
             else if (mouseDown === Qt.MiddleButton)
-                scaleMouseY(mouse);
+                mouseScaleY(mouse)
         }
 
         onPressed: {
@@ -106,26 +104,10 @@ Rectangle {
                 return;
 
             mouseDown = mouse.button;
-
-            downX = mouse.x;
-            downY = mouse.y;
-
-            if (mouseDown & Qt.LeftButton) {
-                translateX = transformTranslate.translate.x;
-                translateY = transformTranslate.translate.y;
-                translateZ = transformTranslate.translate.z;
-            }
-
-            if (mouseDown & Qt.RightButton) {
-                rotateX = transformRotateX.angle
-                rotateY = transformRotateY.angle
-                rotateZ = transformRotateZ.angle
-            }
-            if (mouseDown & Qt.MiddleButton) {
-                scaleX = transformScale.scale.x
-                scaleY = transformScale.scale.y
-                scaleZ = transformScale.scale.z
-            }
+            down      = Qt.point(mouse.x, mouse.y)
+            translate = transformTranslate.translate
+            rotate    = Qt.vector3d(transformRotateX.angle, transformRotateY.angle, transformRotateZ.angle)
+            scale3d   = transformScale.scale
         }
 
         // clear the current mouse button upon release
