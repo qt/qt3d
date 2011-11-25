@@ -17,7 +17,7 @@ Flow {
     BlenderToggle {
         width: buttonWidth
         buttonText: "Load!"
-        onClicked: quickLoad.openModelFile()
+        onClicked: quickFile.load()
     }
 
     BlenderToggle {

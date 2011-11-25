@@ -48,20 +48,16 @@ Rectangle {
     height: 768
     color: "#444444"
     border.color: "black"
-    property alias targetMesh: quickLoad.filename
+    property alias targetMesh: quickFile.filename
 
-    QuickSave {
-        id: quickSave;
-    }
-
-    QuickLoad {
-        id: quickLoad
-        filename: "meshes/monkey.3ds"
+    QuickFile {
+        id: quickFile
+        filename: "meshes/penguin.3ds"
     }
 
     Mesh {
         id: source_mesh
-        source: quickLoad.filename
+        source: quickFile.filename
     }
 
     Translation3D { id: transformTranslate; translate: Qt.vector3d(0, 0, 0);           }
@@ -74,7 +70,7 @@ Rectangle {
         id: mvpZY
         x: 0;
         y: 0;
-        camera.eye: Qt.vector3d(10, 0, 0);
+        camera.eye: Qt.vector3d(20, 0, 0);
         stateName: "ZYMaximised"
 
         property alias position: transformTranslate.translate;
@@ -97,7 +93,7 @@ Rectangle {
         id: mvpXY
         x: parent.width/2
         y: 0;
-        camera.eye: Qt.vector3d(0, 0, 10);
+        camera.eye: Qt.vector3d(0, 0, 20);
         stateName: "XYMaximised"
 
         property alias position: transformTranslate.translate;
@@ -120,7 +116,7 @@ Rectangle {
         id: mvpXZ
         x: parent.width/2;
         y: parent.height/2;
-        camera.eye: Qt.vector3d(0, 10, 0);
+        camera.eye: Qt.vector3d(0, 20, 0);
         camera.upVector: Qt.vector3d(0, 0, -1);
         stateName: "XZMaximised"
 

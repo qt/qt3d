@@ -59,9 +59,9 @@ BlenderToggle {
                 "    ]\n" +
                 "}\n";
 
-        quickSave.filename = source_mesh.source
-        quickSave.data = saveData
-        var result = quickSave.save()
+        quickFile.filename = source_mesh.source
+        quickFile.data = saveData
+        var result = quickFile.save()
         if (result !== "")
             console.log("If there was an error it will be after here:" + result)
     }

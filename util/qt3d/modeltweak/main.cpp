@@ -46,15 +46,13 @@
 #include <QtDeclarative>
 
 #include "../../../demos/quick3d/qmlres.h"
-#include "QuickSave.h"
-#include "QuickLoad.h"
+#include "quickfile.h"
 
 QString filename;
 
 int main(int argc, char *argv[])
 {
-    qmlRegisterType<QuickSave>("ModelTweak", 1, 0, "QuickSave");
-    qmlRegisterType<QuickLoad>("ModelTweak", 1, 0, "QuickLoad");
+    qmlRegisterType<QuickFile>("ModelTweak", 1, 0, "QuickFile");
 
     QApplication app(argc, argv);
     QDeclarativeView3D view;

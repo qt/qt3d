@@ -7,7 +7,8 @@ CONFIG += qt3d_deploy_qml qt3dquick_deploy_pkg
 include(../../../pkg.pri)
 qtcAddDeployment()
 
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    quickfile.cpp
 
 symbian {
     qmlDeployment2.sources = qml\meshes\*
@@ -21,7 +22,6 @@ OTHER_FILES += \
 RC_FILE = modeltweak.rc
 
 HEADERS += \
-    QuickSave.h \
-    QuickLoad.h
+    quickfile.h
 
 
