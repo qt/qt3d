@@ -210,9 +210,9 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QDeclarativeItem3D::CullFaces)
 
-QML_DECLARE_TYPE(QDeclarativeItem3D)
-
 QT_END_NAMESPACE
+
+QML_DECLARE_TYPE(QDeclarativeItem3D)
 
 QT_END_HEADER
 
