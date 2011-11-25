@@ -8,7 +8,8 @@ include(../../../pkg.pri)
 SOURCES += main.cpp
 
 OTHER_FILES += \
-    forest.rc
+    forest.rc \
+    forest_qml.desktop
 
 RC_FILE = forest.rc
 

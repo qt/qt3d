@@ -9,6 +9,7 @@ SOURCES = teapotview.cpp main.cpp
 HEADERS = teapotview.h
 
 OTHER_FILES += \
-    teapot.rc
+    teapot.rc \
+    teapot.desktop
 
 RC_FILE = teapot.rc

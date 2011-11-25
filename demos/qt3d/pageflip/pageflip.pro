@@ -10,7 +10,8 @@ HEADERS = pageflipmath_p.h
 RESOURCES = pageflip.qrc
 
 OTHER_FILES += \
-    pageflip.rc
+    pageflip.rc \
+    pageflip.desktop
 
 RC_FILE = pageflip.rc
 

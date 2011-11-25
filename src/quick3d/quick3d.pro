@@ -72,13 +72,13 @@ DEFINES += QT_BUILD_QT3D_QUICK_LIB
 
 !contains(QT_CONFIG, egl):DEFINES += QT_NO_EGL
 
-package: !qtc_harmattan {
+package {
     distInstalls.files = $$PUBLIC_HEADERS
-    distInstalls.path = $$[QT_INSTALL_HEADERS]/Qt3DQuick
+    distInstalls.path = $$QT3D_INSTALL_HEADERS/Qt3DQuick
     INSTALLS += distInstalls
 }
 
-# If Qt has been configured to build frameworks, then the build witll put
+# If Qt has been configured to build frameworks, then the build will put
 # the Qt3DQuick library into a framework bundle, so put the headers in the bundle
 # as well.  Other OS's, or mac without frameworks, install the headers into
 # the Qt build tree directly.
@@ -92,9 +92,11 @@ macx:CONFIG(qt_framework, qt_framework|qt_no_framework) {
 } else {
     exportHeaders.input = PUBLIC_HEADERS
     package {
+        # in the package case we need the headers for the actual build, the
+        # distInstalls stanza above takes care of packaging the headers for the dev pkg
         exportHeaders.output = ../../include/Qt3DQuick/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
     } else {
-        exportHeaders.output = $$[QT_INSTALL_HEADERS]/Qt3DQuick/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
+        !maemo: exportHeaders.output = $$[QT_INSTALL_HEADERS]/Qt3DQuick/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
     }
     exportHeaders.commands = $$QMAKE_COPY ${QMAKE_FILE_IN} ${QMAKE_FILE_OUT}
     exportHeaders.CONFIG += no_link_no_clean

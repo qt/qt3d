@@ -1,14 +1,35 @@
-Source: quick3d
-Section: user/other
-Priority: optional
+Source: libqt4-3d
+Section: libdevel
+Priority: extra
 Maintainer: Sarah Smith <sarah.j.smith@nokia.com>
 Build-Depends: debhelper (>= 5), libqt4-dev
 Standards-Version: 3.7.3
 Homepage: http://doc.qt.nokia.com/qt-quick3d-snapshot/
 
-Package: quick3d
+Package: libqt4-3d
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: <insert up to 60 chars description>
+Description: Qt4 3D module
+ Qt is a cross-platform C++ application framework. Qt's primary feature
+ is its rich set of widgets that provide standard GUI functionality.
+ .
+ The Qt3d module contains functionality for 3D scenes and UIs.
+
+Package: libqt4-3d-examples
+Architecture: any
+Depends: libqt4-3d (= ${binary:Version})
+Description: Qt 4 3d module examples
+ Qt is a cross-platform C++ application framework. Qt's primary feature
+ is its rich set of widgets that provide standard GUI functionality.
+ .
+ This package contains examples and demos for the Qt3d module
+
+Package: libqt4-3d-dev
+Architecture: any
+Depends: libqt4-3d (= ${binary:Version})
+Description: Qt 4 3d module development files
+ Qt is a cross-platform C++ application framework. Qt's primary feature
+ is its rich set of widgets that provide standard GUI functionality.
+ .
+ This package contains the development headers for the Qt3d moduleescription: <insert up to 60 chars description>
  Qt Quick 3D lets you use QML to write 3D (OpenGL) apps.
-XSBC-Maemo-Display-Name: quick3d

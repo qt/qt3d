@@ -53,9 +53,9 @@ DEFINES += QT_BUILD_QT3D_LIB
 
 !contains(QT_CONFIG, egl):DEFINES += QT_NO_EGL
 
-package: !qtc_harmattan {
+package {
     distInstalls.files = $$PUBLIC_HEADERS
-    distInstalls.path = $$[QT_INSTALL_HEADERS]/Qt3D
+    distInstalls.path = $$QT3D_INSTALL_HEADERS/Qt3D
     INSTALLS += distInstalls
 }
 
@@ -73,10 +73,12 @@ macx:CONFIG(qt_framework, qt_framework|qt_no_framework) {
 } else {
     !symbian {
         exportHeaders.input = PUBLIC_HEADERS
+        # in the package case we need the headers for the actual build, the
+        # distInstalls stanza above takes care of packaging the headers for the dev pkg
         package {
             exportHeaders.output = ../../include/Qt3D/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
         } else {
-            exportHeaders.output = $$[QT_INSTALL_HEADERS]/Qt3D/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
+            !maemo: exportHeaders.output = $$[QT_INSTALL_HEADERS]/Qt3D/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
         }
         exportHeaders.commands = $$QMAKE_COPY ${QMAKE_FILE_IN} ${QMAKE_FILE_OUT}
         exportHeaders.CONFIG += no_link_no_clean

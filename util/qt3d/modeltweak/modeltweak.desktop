@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
 Name=Model Tweaker
-Icon=icon-l-qtquick3d
-Exec=/usr/bin/modeltweak -fullscreen
+Icon=/usr/share/icons/hicolor/80x80/apps/qtquick3d.png
+Exec=/usr/bin/invoker --type=e -s /usr/bin/modeltweak -fullscreen
 OnlyShowIn=X-MeeGo;
 X-MeeGo-Logical-Id=qtn_comm_appname_modeltweak

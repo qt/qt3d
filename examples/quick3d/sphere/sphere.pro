@@ -10,6 +10,7 @@ qtcAddDeployment()
 SOURCES += main.cpp
 
 OTHER_FILES += \
-    sphere.rc
+    sphere.rc \
+    sphere.desktop
 
 RC_FILE = sphere.rc

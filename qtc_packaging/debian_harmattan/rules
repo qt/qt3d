@@ -1,21 +1,61 @@
 #!/usr/bin/make -f
 # -*- makefile -*-
-# Sample debian/rules that uses debhelper.
-# This file was originally written by Joey Hess and Craig Small.
-# As a special exception, when this file is copied by dh-make into a
-# dh-make output file, you may use that output file without restriction.
-# This special exception was added by Craig Small in version 0.37 of dh-make.
+
+# This rules file is for new Nokia devices using maemo6/meego.
+# For fremantle / N900 see the file devices/maemo5/debian/rules.
+# For ubuntu desktop see the file devices/ubuntu/debian/rules.
+
+# To build using this rules file, the Madde environment is needed.  This ships
+# (for example) with the QtSDK.
+#
+# This file ships ready to use with Qt Creator.  To use it from the command line
+# uncomment the lines below which say # Uncomment for use without Qt Creator
+# and then follow these steps:
+#
+# ### Step 1: set up the build directory - DO NOT CD INTO IT YET!
+# mkdir -p ~/build/harmattan/pkg
+# cd ~/build/harmattan
+#
+# ### Step 2: set up to use the Madde build environment - eg if Madde is in your home under QtSDK:
+# export MADDE=$HOME/QtSDK/Madde
+# export PATH=$MADDE/targets/harmattan-platform-api/bin:$MADDE/bin:$MADDE/madlib:$MADDE/madbin:$PATH
+# export PERL5LIB=$MADDE/madlib/perl5
+# export SYSROOT_DIR=$MADDE/sysroots/harmattan-meego-arm-sysroot-1122-slim
+#
+# ### Step 3: copy all the stuff across - cannot shadow build (probably don't want git)
+# (cd ~/depot/qt/quick3d && tar cf - --exclude-vcs .)|(cd pkg && tar xf -)
+# cd pkg
+# cp -f -v qtc_packaging/debian_harmattan/* debian/.
+#
+# ### Step 4: actually do the build, using lots of cores if available
+# export DEB_BUILD_OPTIONS="parallel=4"
+# dpkg-buildpackage -b
+#
+#
+# This rules file should use the control and *.install files (driven by the dh_install cmd below)
+# to actually build 3 seperate debian packages:
+#    libqt4-3d  -- Qt3D "run time" with C++ libs and QML imports
+#    libqt4-3d-dev  -- Qt3D development files - eg headers and .prf files
+#    libqt4-3d-examples  -- installed Qt3D examples incl desktop files to run on device
+
 
 # Uncomment this to turn on verbose mode.
 export DH_VERBOSE=1
 
+# Find out how many parallel threads to run
+TMP_BUILD_OPTS = $(subst $(comma),$(space),$(DEB_BUILD_OPTIONS))
+ifneq (,$(filter parallel=%,$(TMP_BUILD_OPTS)))
+	NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(TMP_BUILD_OPTS)))
+	PARALLEL_MAKEFLAGS += -j$(NUMJOBS)
+endif
+
+DEB_MAKE_INVOKE := $(MAKE) $(PARALLEL_MAKEFLAGS)
+
 configure: configure-stamp
 configure-stamp:
 	dh_testdir
-	# qmake PREFIX=/usr# Uncomment this line for use without Qt Creator
-
+	qmake -spec linux-g++-maemo quick3d.pro CONFIG+=qtc_harmattan # Uncomment this line for use without Qt Creator
 	touch configure-stamp
-
 
 build: build-stamp
 
@@ -23,12 +63,12 @@ build-stamp: configure-stamp
 	dh_testdir
 
 	# Add here commands to compile the package.
-	# $(MAKE) # Uncomment this line for use without Qt Creator
+	$(DEB_MAKE_INVOKE) # Uncomment this line for use without Qt Creator
 	#docbook-to-man debian/quick3d.sgml > quick3d.1
 
 	touch $@
 
-clean: 
+clean: configure-stamp
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp configure-stamp
@@ -44,8 +84,8 @@ install: build
 	dh_clean -k 
 	dh_installdirs
 
-	# Add here commands to install the package into debian/quick3d.
-	$(MAKE) INSTALL_ROOT="$(CURDIR)"/debian/quick3d install
+	# Add here commands to install the package into debian/tmp.
+	$(MAKE) INSTALL_ROOT="$(CURDIR)"/debian/tmp install
 
 
 # Build architecture-independent files here.
@@ -59,7 +99,7 @@ binary-arch: build install
 	dh_installchangelogs 
 	dh_installdocs
 	dh_installexamples
-#	dh_install
+	dh_install --sourcedir=debian/tmp
 #	dh_installmenu
 #	dh_installdebconf	
 #	dh_installlogrotate

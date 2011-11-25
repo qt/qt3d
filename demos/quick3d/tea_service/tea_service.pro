@@ -10,6 +10,7 @@ qtcAddDeployment()
 SOURCES += main.cpp
 
 OTHER_FILES += \
-    tea_service.rc
+    tea_service.rc \
+    tea_service.desktop
 
 RC_FILE = tea_service.rc

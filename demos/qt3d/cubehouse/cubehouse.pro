@@ -15,7 +15,8 @@ OTHER_FILES += \
     shaders/objectlineartexgen.vert
 
 OTHER_FILES += \
-    cubehouse.rc
+    cubehouse.rc \
+    cubehouse.desktop
 
 RC_FILE = cubehouse.rc
 

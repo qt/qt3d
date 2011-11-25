@@ -8,6 +8,7 @@ include(../../../pkg.pri)
 SOURCES = shapes.cpp
 
 OTHER_FILES += \
-    shapes.rc
+    shapes.rc \
+    shapes.desktop
 
 RC_FILE = shapes.rc

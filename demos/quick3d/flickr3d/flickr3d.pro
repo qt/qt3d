@@ -10,7 +10,8 @@ qtcAddDeployment()
 SOURCES += main.cpp
 
 OTHER_FILES += \
-    flickr3d.rc
+    flickr3d.rc \
+    flickr3d.desktop
 
 RC_FILE = flickr3d.rc
 

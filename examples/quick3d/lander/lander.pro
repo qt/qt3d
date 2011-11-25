@@ -16,6 +16,7 @@ symbian {
 }
 
 OTHER_FILES += \
-    lander.rc
+    lander.rc \
+    lander.desktop
 
 RC_FILE = lander.rc

@@ -10,7 +10,8 @@ HEADERS = cubeview.h
 RESOURCES = nesting.qrc
 
 OTHER_FILES += \
-    nesting.rc
+    nesting.rc \
+    nesting.desktop
 
 RC_FILE = nesting.rc
 

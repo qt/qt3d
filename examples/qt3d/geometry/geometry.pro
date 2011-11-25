@@ -15,7 +15,8 @@ HEADERS = geometryview.h \
 RESOURCES = geometry.qrc
 
 OTHER_FILES += \
-    geometry.rc
+    geometry.rc \
+    geometry.desktop
 
 RC_FILE = geometry.rc
 

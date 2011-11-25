@@ -1,5 +1,5 @@
-quick3d (0.0.1) unstable; urgency=low
+libqt4-3d (1.0-rc) unstable; urgency=low
 
-  * Initial Release.
+  * Candidate for 1.0 Release.
 
- -- unknown <sarasmit@unknown>  Wed, 29 Jun 2011 16:52:34 +1000
+ -- Sarah Smith <sarah.j.smith@nokia.com>  Thu, 24 Nov 2011 16:00:00 +1000

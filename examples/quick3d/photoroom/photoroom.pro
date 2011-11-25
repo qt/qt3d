@@ -17,6 +17,7 @@ symbian {
 }
 
 OTHER_FILES += \
-    photoroom.rc
+    photoroom.rc \
+    photoroom.desktop
 
 RC_FILE = photoroom.rc

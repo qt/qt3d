@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=ModelView3D
+Icon=/usr/share/icons/hicolor/80x80/apps/qtquick3d.png
+Exec=/usr/bin/invoker --type=e -s /usr/bin/modelview3d_qml -fullscreen
+OnlyShowIn=X-MeeGo;
+X-MeeGo-Logical-Id=qtn_comm_appname_modelview3d

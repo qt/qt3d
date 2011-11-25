@@ -11,6 +11,7 @@ HEADERS = builder.h
 RESOURCES += builder.qrc
 
 OTHER_FILES += \
-    builder.rc
+    builder.rc \
+    builder.desktop
 
 RC_FILE = builder.rc

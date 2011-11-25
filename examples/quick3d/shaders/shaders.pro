@@ -19,6 +19,7 @@ symbian {
 }
 
 OTHER_FILES += \
-    shaders.rc
+    shaders.rc \
+    shaders.desktop
 
 RC_FILE = shaders.rc

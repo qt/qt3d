@@ -8,17 +8,19 @@ qtc_harmattan {
     CONFIG += package
     QMAKE_CXXFLAGS += -Wno-psabi
     # The Qt SDK / Qt Creator harmattan integration needs some special treatment
-    QT3D_INSTALL_BINS = /bin
+    QT3D_INSTALL_BINS = /usr/bin
     QT3D_INSTALL_LIBS = /usr/lib
     QT3D_INSTALL_PLUGINS = /usr/lib/qt4/plugins
     QT3D_INSTALL_IMPORTS = /usr/lib/qt4/imports
     QT3D_INSTALL_DATA = /usr/share/qt4
+    QT3D_INSTALL_HEADERS = /usr/include/qt4
 } else {
     QT3D_INSTALL_BINS = $$[QT_INSTALL_BINS]
     QT3D_INSTALL_LIBS = $$[QT_INSTALL_LIBS]
     QT3D_INSTALL_PLUGINS = $$[QT_INSTALL_PLUGINS]
     QT3D_INSTALL_IMPORTS = $$[QT_INSTALL_IMPORTS]
     QT3D_INSTALL_DATA = $$[QT_INSTALL_DATA]
+    QT3D_INSTALL_HEADERS = $$[QT_INSTALL_HEADERS]
 }
 
 qt3dquick_deploy_pkg {
@@ -43,7 +45,7 @@ qt3dquick_deploy_pkg {
         }
         QT += declarative opengl
 
-        maemo: icons.files = icon-l-qtquick3d.png
+        maemo: icons.files = qtquick3d.png
     } else {
         CONFIG += qt3dquick
     }
@@ -69,7 +71,7 @@ qt3d_deploy_pkg {
         }
         QT += opengl
 
-        !qt3dquick_deploy_pkg: maemo: icons.files = icon-l-qt3d.png
+        !qt3dquick_deploy_pkg: maemo: icons.files = qt3d.png
     } else {
         CONFIG += qt3d
     }
@@ -82,7 +84,7 @@ contains(TEMPLATE, app) {
             applnk.path = /usr/share/applications
 
             # icons.files is set by qt3dquick_pkg_dep.pri or qt3d_pkg_dep.pri
-            icons.path = /usr/share/themes/base/meegotouch/icons
+            icons.path = /usr/share/icons/hicolor/80x80/apps
             INSTALLS += icons applnk
 
             target.path += $$QT3D_INSTALL_BINS
@@ -253,7 +255,6 @@ defineTest(qtcAddDeployment) {
                 QMAKE_EXTRA_TARGETS += first copydeploymentfolders
             }
         }
-#        installPrefix = /opt/$${TARGET}
         for(deploymentfolder, DEPLOYMENTFOLDERS) {
             item = item$${deploymentfolder}
             itemfiles = $${item}.files
@@ -263,14 +264,6 @@ defineTest(qtcAddDeployment) {
             export($$itemfiles)
             export($$itempath)
             INSTALLS += $$item
-        }
-        target.path = $${installPrefix}/bin
-        # In the specific case of packages for a Maemo devices, binaries can't
-        # be installed into /bin, so use /usr/bin instead
-        maemo {
-            package {
-                target.path = /usr/bin
-            }
         }
 
         export(icon.files)

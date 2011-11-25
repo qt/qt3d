@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
 Name=D20 Qt3D
-Icon=icon-l-qt3d
-Exec=/usr/bin/geometry -fullscreen
+Icon=/usr/share/icons/hicolor/80x80/apps/qt3d.png
+Exec=/usr/bin/invoker --type=e -s /usr/bin/geometry -fullscreen
 OnlyShowIn=X-MeeGo;
 X-MeeGo-Logical-Id=qtn_comm_appname_geometry

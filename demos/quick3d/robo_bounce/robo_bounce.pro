@@ -8,7 +8,8 @@ include(../../../pkg.pri)
 SOURCES += main.cpp
 
 OTHER_FILES += \
-    robo_bounce.rc
+    robo_bounce.rc \
+    robo_bounce.desktop
 
 RC_FILE = robo_bounce.rc
 

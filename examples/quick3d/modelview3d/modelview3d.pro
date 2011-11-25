@@ -10,6 +10,7 @@ qtcAddDeployment()
 SOURCES += main.cpp
 
 OTHER_FILES += \
-    modelview3d_qml.rc
+    modelview3d_qml.rc \
+    modelview3d_qml.desktop
 
 RC_FILE = modelview3d_qml.rc

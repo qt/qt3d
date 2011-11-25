@@ -29,7 +29,8 @@ RESOURCES = \
     graphicsview.qrc
 
 OTHER_FILES += \
-    graphicsview.rc
+    graphicsview.rc \
+    graphicsview.desktop
 
 RC_FILE = graphicsview.rc
 

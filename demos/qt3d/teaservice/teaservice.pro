@@ -10,7 +10,8 @@ HEADERS = meshobject.h sceneobject.h perpixeleffect.h
 RESOURCES = teaservice.qrc
 
 OTHER_FILES += \
-    teaservice.rc
+    teaservice.rc \
+    teaservice.desktop
 
 RC_FILE = teaservice.rc
 

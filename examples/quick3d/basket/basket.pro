@@ -8,7 +8,8 @@ include(../../../pkg.pri)
 SOURCES += main.cpp
 
 OTHER_FILES += \
-    basket_qml.rc
+    basket_qml.rc \
+    basket_qml.desktop
 
 RC_FILE = basket_qml.rc
 

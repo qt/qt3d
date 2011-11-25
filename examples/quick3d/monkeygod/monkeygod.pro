@@ -16,6 +16,7 @@ symbian {
 }
 
 OTHER_FILES += \
-    monkeygod.rc
+    monkeygod.rc \
+    monkeygod.desktop
 
 RC_FILE = monkeygod.rc

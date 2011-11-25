@@ -10,7 +10,8 @@ qtcAddDeployment()
 SOURCES += main.cpp
 
 OTHER_FILES += \
-    moon.rc
+    moon.rc \
+    moon.desktop
 
 RC_FILE = moon.rc
 

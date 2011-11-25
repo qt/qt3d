@@ -10,6 +10,7 @@ qtcAddDeployment()
 SOURCES += main.cpp
 
 OTHER_FILES += \
-    cube_qml.rc
+    cube_qml.rc \
+    cube_qml.desktop
 
 RC_FILE = cube_qml.rc

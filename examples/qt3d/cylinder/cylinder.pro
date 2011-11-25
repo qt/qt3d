@@ -10,7 +10,8 @@ HEADERS = cylinderview.h
 RESOURCES = cylinder.qrc
 
 OTHER_FILES += \
-    cylinder.rc
+    cylinder.rc \
+    cylinder.desktop
 
 RC_FILE = cylinder.rc
 

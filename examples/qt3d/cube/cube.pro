@@ -10,7 +10,8 @@ HEADERS = cubeview.h
 RESOURCES = cube.qrc
 
 OTHER_FILES += \
-    cube.rc
+    cube.rc \
+    cube.desktop
 
 RC_FILE = cube.rc
 

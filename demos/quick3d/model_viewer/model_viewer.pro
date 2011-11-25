@@ -19,6 +19,7 @@ symbian {
 }
 
 OTHER_FILES += \
-    model_viewer.rc
+    model_viewer.rc \
+    model_viewer.desktop
 
 RC_FILE = model_viewer.rc

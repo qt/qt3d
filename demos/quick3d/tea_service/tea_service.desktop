@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
 Name=Tea Service
-Icon=icon-l-qtquick3d
-Exec=/usr/bin/tea_service -fullscreen
+Icon=/usr/share/icons/hicolor/80x80/apps/qtquick3d.png
+Exec=/usr/bin/invoker --type=e -s /usr/bin/tea_service -fullscreen
 OnlyShowIn=X-MeeGo;
 X-MeeGo-Logical-Id=qtn_comm_appname_tea_service

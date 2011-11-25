@@ -2,12 +2,12 @@ Source: libqt4-3d
 Section: libdevel
 Priority: extra
 Maintainer: Sarah Smith <sarah.j.smith@nokia.com>
-Build-Depends: debhelper (>= 7), libqt4-dev (>= 4.7.2~git20110208-0maemo1+0m6), cdbs (>= 0.4.87+maemo2+0m6)
+Build-Depends: debhelper (>= 7), libqtcore4 (>= 4.7.3), libqtgui4 (>= 4.7.3), libqt4-opengl (>= 4.7.3), libqt4-declarative-dev (>= 4.7.3), cdbs (>= 0.4.87+maemo2+0m6)
 Standards-Version: 3.8.4
 
 Package: libqt4-3d
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: libqtcore4 (>= 4.7.3), libqtgui4  (>= 4.7.3), libqt4-opengl (>= 4.7.3), libqt4-declarative (>= 4.7.3)
 Description: Qt4 3D module
  Qt is a cross-platform C++ application framework. Qt's primary feature
  is its rich set of widgets that provide standard GUI functionality.

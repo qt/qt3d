@@ -15,6 +15,7 @@ HEADERS  += tankview.h \
     quadplane.h
 
 OTHER_FILES += \
-    tank.rc
+    tank.rc \
+    tank.desktop
 
 RC_FILE = tank.rc

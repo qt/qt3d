@@ -10,7 +10,8 @@ qtcAddDeployment()
 SOURCES += main.cpp
 
 OTHER_FILES += \
-    matrix_animation.rc
+    matrix_animation.rc \
+    matrix_animation.desktop
 
 RC_FILE = matrix_animation.rc
 

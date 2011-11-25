@@ -10,6 +10,7 @@ qtcAddDeployment()
 SOURCES += main.cpp
 
 OTHER_FILES += \
-    solarsystem_qml.rc
+    solarsystem_qml.rc \
+    solarsystem_qml.desktop
 
 RC_FILE = solarsystem_qml.rc

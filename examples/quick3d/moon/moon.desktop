@@ -1,8 +1,8 @@
 [Desktop Entry]
 Type=Application
 Name=Moon
-Icon=icon-l-qtquick3d
-Exec=/usr/bin/moon -fullscreen
+Icon=/usr/share/icons/hicolor/80x80/apps/qtquick3d.png
+Exec=/usr/bin/invoker --type=e -s /usr/bin/moon -fullscreen
 OnlyShowIn=X-MeeGo;
 X-MeeGo-Logical-Id=qtn_comm_appname_moon
 X-MeeGo-Translation-Catalog=essentials

@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
 Name=Model Viewer
-Icon=icon-l-qtquick3d
-Exec=/usr/bin/model_viewer -fullscreen
+Icon=/usr/share/icons/hicolor/80x80/apps/qtquick3d.png
+Exec=/usr/bin/invoker --type=e -s /usr/bin/model_viewer -fullscreen
 OnlyShowIn=X-MeeGo;
 X-MeeGo-Logical-Id=qtn_comm_appname_model_viewer

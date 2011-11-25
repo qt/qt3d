@@ -19,7 +19,8 @@ OTHER_FILES += \
     resources/solar.vsh
 
 OTHER_FILES += \
-    solarsystem.rc
+    solarsystem.rc \
+    solarsystem.desktop
 
 RC_FILE = solarsystem.rc
 
