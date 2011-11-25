@@ -80,9 +80,9 @@ private:
     bool m_changeFlag;
 };
 
-QML_DECLARE_TYPE(Line)
-
 QT_END_NAMESPACE
+
+QML_DECLARE_TYPE(Line)
 
 QT_END_HEADER
 

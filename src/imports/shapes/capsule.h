@@ -85,9 +85,9 @@ private:
     QMap<int, QGLSceneNode *> m_lodGeometry;
 };
 
-QML_DECLARE_TYPE(Capsule)
-
 QT_END_NAMESPACE
+
+QML_DECLARE_TYPE(Capsule)
 
 QT_END_HEADER
 

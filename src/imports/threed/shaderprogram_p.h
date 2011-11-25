@@ -48,6 +48,8 @@
 #include "qdeclarativeeffect.h"
 #include "qglshaderprogrameffect.h"
 
+QT_BEGIN_NAMESPACE
+
 class ShaderProgram;
 class ShaderProgramEffect;
 
@@ -144,5 +146,7 @@ private:
     QSet<int> loadingTextures;
     QSet<int> changedTextures;
 };
+
+QT_END_NAMESPACE
 
 #endif // SHADERPROGRAM_P_H

@@ -63,8 +63,6 @@
 
 #include "billboarditem3d.h"
 
-QT_BEGIN_NAMESPACE
-
 QML_DECLARE_TYPE(QGraphicsTransform3D)
 QML_DECLARE_TYPE(QGraphicsRotation3D)
 QML_DECLARE_TYPE(QGraphicsTranslation3D)
@@ -76,6 +74,8 @@ QML_DECLARE_TYPE(QGLLightModel)
 QML_DECLARE_TYPE(QGLLightParameters)
 QML_DECLARE_TYPE(QGLTexture2D)
 QML_DECLARE_TYPE(QGLCamera)
+
+QT_BEGIN_NAMESPACE
 
 class QThreedQmlModule : public QDeclarativeExtensionPlugin
 {

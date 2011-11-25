@@ -178,9 +178,9 @@ private:
     static const int FBO_SIZE;
 };
 
-QML_DECLARE_TYPE(Viewport)
-
 QT_END_NAMESPACE
+
+QML_DECLARE_TYPE(Viewport)
 
 QT_END_HEADER
 

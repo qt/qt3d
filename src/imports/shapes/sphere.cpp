@@ -227,3 +227,5 @@ void Sphere::drawItem(QGLPainter *painter)
     if (m_radius != 1.0f || m_axis != Qt::ZAxis)
         painter->modelViewMatrix().pop();
 }
+
+QT_END_NAMESPACE

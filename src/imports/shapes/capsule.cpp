@@ -44,8 +44,6 @@
 #include "qglcylinder.h"
 #include "qgldome.h"
 
-QT_BEGIN_NAMESPACE
-
 /*!
     \qmlclass Capsule Capsule
     \brief The Capsule item represents a simple capsule in 3D space.

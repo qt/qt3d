@@ -78,9 +78,9 @@ private:
     ShaderProgramPrivate *d;
 };
 
-QML_DECLARE_TYPE(ShaderProgram)
-
 QT_END_NAMESPACE
+
+QML_DECLARE_TYPE(ShaderProgram)
 
 QT_END_HEADER
 

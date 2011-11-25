@@ -64,9 +64,9 @@ private:
     bool m_preserveUpVector;
 };
 
-QML_DECLARE_TYPE(BillboardItem3D)
-
 QT_END_NAMESPACE
+
+QML_DECLARE_TYPE(BillboardItem3D)
 
 QT_END_HEADER
 

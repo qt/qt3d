@@ -43,8 +43,6 @@
 #include "qglbuilder.h"
 #include "qglcylinder.h"
 
-QT_BEGIN_NAMESPACE
-
 /*!
     \qmlclass Cylinder Cylinder
     \brief The Cylinder item represents a simple cylinder in 3D space.
