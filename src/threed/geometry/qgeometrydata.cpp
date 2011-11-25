@@ -46,6 +46,8 @@
 #include <QtOpenGL/qgl.h>
 #include <QtCore/qdebug.h>
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QGeometryData
     \brief The QGeometryData class encapsulates sets of geometry data.
@@ -2022,4 +2024,7 @@ QDebug operator<<(QDebug dbg, const QGeometryData &vertices)
     }
     return dbg;
 }
+
+QT_END_NAMESPACE
+
 #endif

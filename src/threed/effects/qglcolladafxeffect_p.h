@@ -59,6 +59,8 @@
 #include "qgltexture2d.h"
 #include "qglcolladafxeffect.h"
 
+QT_BEGIN_NAMESPACE
+
 class QGLPainter;
 class QGLShaderProgram;
 class QGLMaterial;
@@ -103,5 +105,7 @@ public:
 
     bool currentlyActive;
 };
+
+QT_END_NAMESPACE
 
 #endif // QGLCOLLADAFXEFFECT_P_H

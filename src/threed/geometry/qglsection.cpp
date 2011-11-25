@@ -52,6 +52,8 @@
 
 #include <limits.h>
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \internal
     \class QGLSection
@@ -694,3 +696,5 @@ QDebug operator<<(QDebug dbg, const QGLSection &section)
     return dbg.space();
 }
 #endif
+
+QT_END_NAMESPACE

@@ -62,6 +62,8 @@
 #include <QtCore/qstringlist.h>
 #include <QtCore/qset.h>
 
+QT_BEGIN_NAMESPACE
+
 class QGLAbstractEffect;
 class QGLPickNode;
 
@@ -137,5 +139,7 @@ public:
     qreal drawingWidth;
     bool culled;
 };
+
+QT_END_NAMESPACE
 
 #endif // QGLSCENENODE_P_H
