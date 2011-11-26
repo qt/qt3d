@@ -81,7 +81,8 @@ public:
         NoOptions       = 0x0000,
         CullBoundingBox = 0x0001,
         ViewNormals     = 0x0002,
-        ReportCulling   = 0x0004
+        ReportCulling   = 0x0004,
+        HideNode        = 0x0008
     };
     Q_DECLARE_FLAGS(Options, Option)
 

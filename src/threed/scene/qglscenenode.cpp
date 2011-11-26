@@ -177,15 +177,16 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \enum QGLSceneNode::Option
-    This enum defines option flags for QGLSceneNode.
+    This enum defines option flags for QGLSceneNode.  By default the none of the flags
+    are set, so the options() function returns QGLSceneNode::NoOptions
 
     \value NoOptions Do not enable any QGLSceneNode options.
     \value CullBoundingBox Perform a cull using boundingBox() before
-        attempting to draw the geometry().  Default is false.
+        attempting to draw the geometry().
     \value ViewNormals Enables the display of lighting normals for
-        debugging purposes.  Default is false.
+        debugging purposes.
     \value ReportCulling Send a signal when an object is displayed or culled.
-
+    \value HideNode Hide this node so it, and all its children, are excluded from rendering.
     \sa setOptions()
 */
 
@@ -1319,10 +1320,15 @@ void QGLSceneNode::drawGeometry(QGLPainter *painter)
     The way draw is implemented ensures that this nodes effects, materials and
     transformations will apply by default to its child nodes.  Transformations
     are cumulative, but effects and materials override those of any parent node.
+
+    Note that if the HideNode option is set for this node, neither it nor its
+    children will be drawn.
 */
 void QGLSceneNode::draw(QGLPainter *painter)
 {
     Q_D(QGLSceneNode);
+    if (d->options & HideNode)
+        return;
     bool wasTransformed = false;
 
     QGLRenderSequencer *seq = painter->renderSequencer();
