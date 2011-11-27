@@ -130,10 +130,16 @@ QT_BEGIN_NAMESPACE
 class QGraphicsScale3DPrivate
 {
 public:
-    QGraphicsScale3DPrivate() : scale(1, 1, 1) {}
+    QGraphicsScale3DPrivate()
+        : scale(1, 1, 1)
+        , isIdentityScale(true)
+        , isIdentityOrigin(true)
+    {}
 
     QVector3D origin;
     QVector3D scale;
+    bool isIdentityScale;
+    bool isIdentityOrigin;
 };
 
 /*!
@@ -174,8 +180,40 @@ QVector3D QGraphicsScale3D::origin() const
 void QGraphicsScale3D::setOrigin(const QVector3D &value)
 {
     Q_D(QGraphicsScale3D);
-    if (d->origin != value) {
-        d->origin = value;
+
+    // Optimise for the common case of setting the origin to 0, 0, 0
+    // Also minimise the number of floating point compares required
+    bool changed = false;
+    QVector3D v = value;
+
+    // Are we about to set to 0, 0, 0 ...?
+    // Normalise inbound value & record in bool to save on compares
+    bool isSetToZeroOrigin = false;
+    if (qFuzzyIsNull(v.x()) && qFuzzyIsNull(v.y()) && qFuzzyIsNull(v.z()))
+    {
+        v = QVector3D(0, 0, 0);
+        isSetToZeroOrigin = true;
+    }
+    if (!isSetToZeroOrigin)
+    {
+        if (d->origin != v)
+        {
+            d->origin = v;
+            d->isIdentityOrigin = false;
+            changed = true;
+        }
+    }
+    else
+    {
+        if (!d->isIdentityOrigin)
+        {
+            d->origin = v;
+            d->isIdentityOrigin = true;
+            changed = true;
+        }
+    }
+    if (changed)
+    {
         emit transformChanged();
         emit originChanged();
     }
@@ -214,8 +252,40 @@ QVector3D QGraphicsScale3D::scale() const
 void QGraphicsScale3D::setScale(const QVector3D &value)
 {
     Q_D(QGraphicsScale3D);
-    if (d->scale != value) {
-        d->scale = value;
+
+    // Optimise for the common case of setting the scale to 1, 1, 1
+    // Also minimise the number of floating point compares required
+    bool changed = false;
+    QVector3D v = value;
+
+    // Are we about to set to 1, 1, 1 ...?
+    // Normalise inbound value & record in bool to save on compares
+    bool isSetToIdentity = false;
+    if (qFuzzyIsNull(v.x() - 1.0f) && qFuzzyIsNull(v.y() - 1.0f) && qFuzzyIsNull(v.z() - 1.0f))
+    {
+        v = QVector3D(1, 1, 1);
+        isSetToIdentity = true;
+    }
+    if (!isSetToIdentity)
+    {
+        if (d->scale != v)
+        {
+            d->scale = v;
+            d->isIdentityScale = false;
+            changed = true;
+        }
+    }
+    else
+    {
+        if (!d->isIdentityScale)
+        {
+            d->scale = v;
+            d->isIdentityScale = true;
+            changed = true;
+        }
+    }
+    if (changed)
+    {
         emit transformChanged();
         emit scaleChanged();
     }
@@ -227,9 +297,19 @@ void QGraphicsScale3D::setScale(const QVector3D &value)
 void QGraphicsScale3D::applyTo(QMatrix4x4 *matrix) const
 {
     Q_D(const QGraphicsScale3D);
-    matrix->translate(d->origin);
-    matrix->scale(d->scale);
-    matrix->translate(-d->origin);
+    if (!d->isIdentityScale)
+    {
+        if (d->isIdentityOrigin)
+        {
+            matrix->scale(d->scale);
+        }
+        else
+        {
+            matrix->translate(d->origin);
+            matrix->scale(d->scale);
+            matrix->translate(-d->origin);
+        }
+    }
 }
 
 /*!
