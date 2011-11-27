@@ -61,7 +61,8 @@ class Viewport : public QDeclarativeItem, public QDeclarativeViewport
 {
     Q_OBJECT
     Q_PROPERTY(bool picking READ picking WRITE setPicking NOTIFY viewportChanged)
-    Q_PROPERTY(bool showPicking READ showPicking WRITE setShowPicking NOTIFY viewportChanged)   
+    Q_PROPERTY(bool showPicking READ showPicking WRITE setShowPicking NOTIFY viewportChanged)
+    Q_PROPERTY(bool showSceneGraph READ showSceneGraph WRITE setShowSceneGraph NOTIFY showSceneGraphChanged)
     Q_PROPERTY(bool navigation READ navigation WRITE setNavigation NOTIFY viewportChanged)
     Q_PROPERTY(bool fovzoom READ fovzoom WRITE setFovzoom NOTIFY viewportChanged)
     Q_PROPERTY(bool blending READ blending WRITE setBlending NOTIFY viewportChanged)
@@ -77,6 +78,9 @@ public:
 
     bool showPicking() const;
     void setShowPicking(bool value);
+
+    bool showSceneGraph() const;
+    void setShowSceneGraph(bool show);
 
     bool navigation() const;
     void setNavigation(bool value);
@@ -105,6 +109,7 @@ public:
 
 Q_SIGNALS:
     void viewportChanged();
+    void showSceneGraphChanged();
 
 public Q_SLOTS:
     void update3d();

@@ -192,9 +192,9 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QGLSceneNode::Options)
 
-#ifndef QT_NO_DEBUG_STREAM
-Q_QT3D_EXPORT void qDumpScene(QGLSceneNode *, int indent = 0, const QSet<QGLSceneNode*> &loop = QSet<QGLSceneNode*>());
+Q_QT3D_EXPORT void qDumpScene(QGLSceneNode *, bool detailed = true, int indent = 0, const QSet<QGLSceneNode*> &loop = QSet<QGLSceneNode*>());
 
+#ifndef QT_NO_DEBUG_STREAM
 Q_QT3D_EXPORT QDebug operator<<(QDebug dbg, const QGLSceneNode &node);
 #endif
 
