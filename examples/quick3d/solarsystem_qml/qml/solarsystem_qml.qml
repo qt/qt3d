@@ -44,16 +44,30 @@ import Qt3D.Shapes 1.0
 
 Viewport {
     width: 800; height: 600
+    showSceneGraph: true
 
-    Planetoid {
+    //! [0]
+    SphereMesh {
+        id: planetoid
+        levelOfDetail: 6
+        axis: Qt.YAxis
+    }
+    //! [0]
+
+    //! [1]
+    Item3D {
         id: sun
-        size: 0.3
+        Item3D {
+            transform: [ Scale3D { scale: "0.3, 0.3, 0.3" } ]
+            mesh: planetoid
+        }
         effect: Effect { texture: "solar.jpg" }
         transform: [
             Rotation3D { id: spin; axis: "0,1,0"; angle: 0 }
         ]
         NumberAnimation { target: spin; property: "angle"; to: 360; duration: 10000; running: true; loops: Animation.Infinite }
     }
+    //! [1]
     Item3D {
         id: earth_system
         transform: [
@@ -64,17 +78,25 @@ Viewport {
         NumberAnimation { target: earth_orbit; property: "angle"; to: 360; duration: 20000;
             running: true; loops: Animation.Infinite }
         Item3D {
-            Planetoid {
+            Item3D {
+                id: earth
+                Item3D {
+                    transform: [ Scale3D { scale: "0.15, 0.15, 0.15" } ]
+                    mesh: planetoid
+                }
                 transform: [
                     Rotation3D { id: earth_spin; axis: "0,1,0"; angle: 0 }
                 ]
                 NumberAnimation { target: earth_spin; property: "angle"; to: 360; duration: 2000;
                     running: true; loops: Animation.Infinite }
-                size: 0.15
                 effect: Effect { texture: "planet.jpg" }
             }
-            Planetoid {
-                //x: 0.02
+            Item3D {
+                id: moon
+                Item3D {
+                    transform: [ Scale3D { scale: "0.09, 0.09, 0.09" } ]
+                    mesh: planetoid
+                }
                 transform: [
                     Translation3D { id: moon_orbit_distance; translate: "0.5,0,0" },
                     Rotation3D { id: moon_orbit; angle: 0; axis: "0,1,0" },
@@ -82,7 +104,6 @@ Viewport {
                 ]
                 NumberAnimation { target: moon_orbit; property: "angle"; to: 360; duration: 8000;
                     running: true; loops: Animation.Infinite }
-                size: 0.09
                 effect: Effect { texture: "moon-texture.jpg" }
             }
         }

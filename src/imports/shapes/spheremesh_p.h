@@ -39,34 +39,41 @@
 **
 ****************************************************************************/
 
-#include <QtDeclarative/qdeclarativeextensionplugin.h>
+#ifndef SPHERE_P_H
+#define SPHERE_P_H
 
-#include "spheremesh.h"
-#include "cylinder.h"
-#include "capsule.h"
-#include "line.h"
-#include "point.h"
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
-QT_BEGIN_NAMESPACE
+#include <QtCore/QMap>
 
-class QShapesQmlModule : public QDeclarativeExtensionPlugin
+class QGraphicsRotation3D;
+class QGraphicsScale3D;
+class QGLSceneNode;
+
+class SphereMeshPrivate
 {
-    Q_OBJECT
 public:
-    virtual void registerTypes(const char *uri)
-    {
-        Q_ASSERT(QLatin1String(uri) == QLatin1String("Qt3D.Shapes"));
-        qmlRegisterType<SphereMesh>(uri,1,0,"SphereMesh");
-        qmlRegisterType<Cylinder>(uri,1,0,"Cylinder");
-        qmlRegisterType<Capsule>(uri,1,0,"Capsule");
-        qmlRegisterType<Line>(uri,1,0,"Line");
-        qmlRegisterType<Point>(uri,1,0,"Point");
+    SphereMeshPrivate();
+    ~SphereMeshPrivate();
 
-    }
+    QMap<int, QGLSceneNode *> lodGeometry;
+    QGLSceneNode *topNode;
+    QGLSceneNode *currentSphere;
+    QGraphicsRotation3D *rot;
+    QGraphicsScale3D *scale;
+    qreal radius;
+    int lod;
+    Qt::Axis axis;
+    bool sceneSet;
 };
 
-QT_END_NAMESPACE
-
-#include "shapes.moc"
-
-Q_EXPORT_PLUGIN2(qshapesqmlplugin, QT_PREPEND_NAMESPACE(QShapesQmlModule));
+#endif // SPHERE_P_H

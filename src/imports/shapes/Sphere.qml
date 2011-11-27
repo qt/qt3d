@@ -39,34 +39,16 @@
 **
 ****************************************************************************/
 
-#include <QtDeclarative/qdeclarativeextensionplugin.h>
+import QtQuick 1.0
+import Qt3D 1.0
 
-#include "spheremesh.h"
-#include "cylinder.h"
-#include "capsule.h"
-#include "line.h"
-#include "point.h"
-
-QT_BEGIN_NAMESPACE
-
-class QShapesQmlModule : public QDeclarativeExtensionPlugin
-{
-    Q_OBJECT
-public:
-    virtual void registerTypes(const char *uri)
-    {
-        Q_ASSERT(QLatin1String(uri) == QLatin1String("Qt3D.Shapes"));
-        qmlRegisterType<SphereMesh>(uri,1,0,"SphereMesh");
-        qmlRegisterType<Cylinder>(uri,1,0,"Cylinder");
-        qmlRegisterType<Capsule>(uri,1,0,"Capsule");
-        qmlRegisterType<Line>(uri,1,0,"Line");
-        qmlRegisterType<Point>(uri,1,0,"Point");
-
+Item3D {
+    id: cube
+    property alias name: sphereMesh.objectName
+    property alias radius: sphereMesh.radius
+    property alias levelOfDetail: sphereMesh.levelOfDetail
+    property alias axis: sphereMesh.axis
+    mesh: SphereMesh {
+        id: sphereMesh
     }
-};
-
-QT_END_NAMESPACE
-
-#include "shapes.moc"
-
-Q_EXPORT_PLUGIN2(qshapesqmlplugin, QT_PREPEND_NAMESPACE(QShapesQmlModule));
+}

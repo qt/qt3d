@@ -89,7 +89,7 @@ Viewport {
             compare(sphere2.levelOfDetail, 2, "levelOfDetail");
             compare(sphere2.axis, Qt.YAxis, "axis");
             compare(sphere3.radius, -3.5, "radius (B)");
-            compare(sphere3.levelOfDetail, 23, "levelOfDetail (B)");
+            compare(sphere3.levelOfDetail, 10, "levelOfDetail (B)");
             compare(sphere3.axis, Qt.XAxis, "axis (B)");
         }
 

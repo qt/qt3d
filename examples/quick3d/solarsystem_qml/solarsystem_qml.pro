@@ -14,3 +14,4 @@ OTHER_FILES += \
     solarsystem_qml.desktop
 
 RC_FILE = solarsystem_qml.rc
+
