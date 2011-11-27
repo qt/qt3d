@@ -1386,6 +1386,45 @@ void QDeclarativeItem3D::drawItem(QGLPainter *painter)
     }
 }
 
+/*!
+    \relates QDeclarativeItem3D
+    Print a description of \a item to the console.
+
+    If \a detailed is true (which it is by default) then all the properties
+    of each node are printed.
+
+    If \a detailed is false, then just one line is printed with the name and
+    some identifying information including a unique id for the node.
+
+    The \a indent argument is used internally.
+*/
+void qDumpItem(QDeclarativeItem3D *item, bool detailed, int indent)
+{
+    if (item)
+    {
+        QDeclarativeMesh *mesh = item->mesh();
+        QString ind;
+        ind.fill(QLatin1Char(' '), indent * 4);
+        if (mesh)
+        {
+            QGLSceneNode *node = mesh->getSceneObject();
+            if (node)
+                qDumpScene(node, detailed, indent + 1);
+            else
+                qDebug("%sMesh %p - %s (no node)", qPrintable(ind), mesh, qPrintable(mesh->objectName()));
+        }
+        else
+        {
+            qDebug("%sItem %p - %s (no mesh)", qPrintable(ind), item, qPrintable(item->objectName()));
+        }
+        QObjectList kids = item->children();
+        for (int i = 0; i < kids.size(); ++i)
+        {
+            QDeclarativeItem3D *it = qobject_cast<QDeclarativeItem3D*>(kids.at(i));
+            qDumpItem(it, detailed, indent + 1);
+        }
+    }
+}
 
 /*!
     Calculates and returns a matrix that transforms local coordinates into

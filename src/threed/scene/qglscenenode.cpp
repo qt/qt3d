@@ -50,6 +50,11 @@
 #include "qglabstracteffect.h"
 #include "qgraphicstransform3d.h"
 
+#ifndef QT_NO_DEBUG_STREAM
+#include "qglmaterialcollection.h"
+#include "qgltexture2d.h"
+#endif
+
 #include <QtGui/qmatrix4x4.h>
 #if !defined(QT_NO_THREAD)
 #include <QtCore/qthread.h>
@@ -1069,7 +1074,10 @@ QList<QGLSceneNode*> QGLSceneNode::allChildren() const
     Adds the \a node to the list of child nodes for this node.
 
     This function does nothing if \a node is null or is already a child
-    of this node.  If the aim is to have the same geometry displayed several times under a
+    of this node.  If the \a node is the node itself, a warning about an
+    attempt to add a node to itself is printed, and no add takes place.
+
+    If the aim is to have the same geometry displayed several times under a
     given node, each time with different transformations, use the clone()
     call to create copies of the node and then apply the transformations to
     the copies.
@@ -1104,7 +1112,8 @@ QList<QGLSceneNode*> QGLSceneNode::allChildren() const
 void QGLSceneNode::addNode(QGLSceneNode *node)
 {
     Q_D(QGLSceneNode);
-    if (!node || node->d_ptr->parentNodes.contains(this))
+    bool alreadyAdded = node && node->d_ptr->parentNodes.contains(this);
+    if (!node || node == this || alreadyAdded)
         return;     // Invalid node, or already under this parent.
     invalidateBoundingBox();
     d->childNodes.append(node);
@@ -1298,7 +1307,7 @@ void QGLSceneNode::drawGeometry(QGLPainter *painter)
 }
 
 /*!
-    Draws this scene node on the \a painter.
+    Draws this scene node and its children on the \a painter.
 
     In detail this function:
     \list
@@ -1619,17 +1628,30 @@ QGLSceneNode *QGLSceneNode::only(const QStringList &names, QObject *parent) cons
     and QGLSceneNode::ReportCulling options are both set.
 */
 
-#ifndef QT_NO_DEBUG_STREAM
-#include "qglmaterialcollection.h"
-#include "qgltexture2d.h"
 /*!
     \relates QGLSceneNode
-    Print a description of \a node, and all its descendants, to stderr.  Only
-    available when compiled in debug mode (without QT_NO_DEBUG defined).
+    Print a description of \a node, and all its descendants, to the console.
+    This function uses qDebug for its output, so in the case of Windows the
+    output will go to the debug window.  If QT_NO_DEBUG_OUTPUT or QT_NO_DEBUG
+    has been defined, (as in release mode) this function will exit without
+    doing anything.
+
+    If \a detailed is true (which it is by default) then all the properties
+    of each node are printed, including materials, geometry and transforms.
+
+    If \a detailed is false, then just one line is printed with the name and
+    some identifying information including a unique id for the node.
+
     The \a indent and \a loop parameters are used internally.
 */
-void qDumpScene(QGLSceneNode *node, int indent, const QSet<QGLSceneNode *> &loop)
+void qDumpScene(QGLSceneNode *node, bool detailed, int indent, const QSet<QGLSceneNode *> &loop)
 {
+#if defined(QT_NO_DEBUG_STREAM) || defined(QT_NO_DEBUG) || defined(QT_NO_DEBUG_OUTPUT)
+    Q_UNUSED(node);
+    Q_UNUSED(detailed);
+    Q_UNUSED(indent);
+    Q_UNUSED(loop);
+#else
 #if !defined(QT_NO_THREAD)
     QCoreApplication *app = QApplication::instance();
     QThread *appThread = 0;
@@ -1640,108 +1662,124 @@ void qDumpScene(QGLSceneNode *node, int indent, const QSet<QGLSceneNode *> &loop
     lp.insert(node);
     QString ind;
     ind.fill(QLatin1Char(' '), indent * 4);
-    qWarning("\n%s ======== Node: %p - %s =========\n", qPrintable(ind), node,
-            qPrintable(node->objectName()));
+    if (detailed)
+    {
+        qDebug("\n%s ======== Node: %p - %s =========", qPrintable(ind), node,
+               qPrintable(node->objectName()));
+    }
+    else
+    {
+        qDebug("\n%s Node: %p - %s", qPrintable(ind), node,
+               qPrintable(node->objectName()));
+        return;
+    }
 #if !defined(QT_NO_THREAD)
     if (appThread && appThread != node->thread())
-        qWarning("\n%s        from thread: %p\n", qPrintable(ind), node->thread());
+        qDebug("\n%s        from thread: %p", qPrintable(ind), node->thread());
 #endif
-    qWarning("%s start: %d   count: %d   children:", qPrintable(ind), node->start(), node->count());
+    qDebug("%s start: %d   count: %d   children:", qPrintable(ind), node->start(), node->count());
     {
         QList<QGLSceneNode*> children = node->children();
         QList<QGLSceneNode*>::const_iterator it = children.constBegin();
         for (int i = 0; it != children.constEnd(); ++it, ++i)
-            qWarning("%d: %p  ", i, *it);
+            qDebug("%s    %d: %p  ", qPrintable(ind), i, *it);
     }
-    qWarning("\n");
     if (!node->position().isNull())
     {
         QVector3D p = node->position();
-        qWarning("%s position: (%0.4f, %0.4f, %0.4f)\n", qPrintable(ind),
+        qDebug("%s position: (%0.4f, %0.4f, %0.4f)", qPrintable(ind),
                 p.x(), p.y(), p.z());
     }
     if (node->localTransform().isIdentity())
     {
-        qWarning("%s local transform: identity\n", qPrintable(ind));
+        qDebug("%s local transform: identity", qPrintable(ind));
     }
     else
     {
-        qWarning("%s local transform:\n", qPrintable(ind));
+        qDebug("%s local transform:", qPrintable(ind));
         QMatrix4x4 m = node->localTransform();
         for (int i = 0; i < 4; ++i)
-            qWarning("%s     %0.4f   %0.4f   %0.4f   %0.4f\n",
+            qDebug("%s     %0.4f   %0.4f   %0.4f   %0.4f",
                     qPrintable(ind), m(i, 0), m(i, 1), m(i, 2), m(i, 3));
+    }
+    QList<QGraphicsTransform3D*> tx = node->transforms();
+    if (tx.size() > 0)
+        qDebug("%s transforms list:", qPrintable(ind));
+    for (int i = 0; i < tx.size(); ++i)
+    {
+        const QMetaObject *obj = tx.at(i)->metaObject();
+        qDebug("%s     %s", qPrintable(ind), obj->className());
     }
     if (!node->geometry().isEmpty())
     {
-        qWarning("%s geometry: %d indexes, %d vertices\n",
+        qDebug("%s geometry: %d indexes, %d vertices",
                 qPrintable(ind), node->geometry().count(), node->geometry().count(QGL::Position));
     }
     else
     {
-        qWarning("%s geometry: NULL\n", qPrintable(ind));
+        qDebug("%s geometry: NULL", qPrintable(ind));
     }
     if (node->materialIndex() != -1)
     {
-        qWarning("%s material: %d", qPrintable(ind), node->materialIndex());
+        qDebug("%s material: %d", qPrintable(ind), node->materialIndex());
         QGLMaterial *mat = node->material();
         QGLMaterialCollection *pal = node->palette();
         if (pal)
-            qWarning("%s palette: %p", qPrintable(ind), pal);
+            qDebug("%s palette: %p", qPrintable(ind), pal);
         else
-            qWarning("%s no palette", qPrintable(ind));
+            qDebug("%s no palette", qPrintable(ind));
         if (pal)
         {
             mat = pal->material(node->materialIndex());
             if (mat)
-                qWarning("%s mat name from pal: %s ", qPrintable(ind),
+                qDebug("%s mat name from pal: %s ", qPrintable(ind),
                         qPrintable(pal->material(node->materialIndex())->objectName()));
             else
-                qWarning("%s indexed material %d does not exist in palette!",
+                qDebug("%s indexed material %d does not exist in palette!",
                         qPrintable(ind), node->materialIndex());
         }
         if (mat)
         {
+            QString mat_spx = QString(QLatin1String(" Amb: %1 - Diff: %2 - Spec: %3 - Shin: %4"))
+                    .arg((mat->ambientColor().name()))
+                    .arg(mat->diffuseColor().name())
+                    .arg(mat->specularColor().name())
+                    .arg(mat->shininess());
             if (mat->objectName().isEmpty())
-                qWarning(" -- %p:", mat);
+                qDebug("%s    material pointer %p: %s", qPrintable(ind), mat, qPrintable(mat_spx));
             else
-                qWarning(" -- \"%s\":",
-                        qPrintable(mat->objectName()));
-            qWarning(" Amb: %s - Diff: %s - Spec: %s - Shin: %0.2f\n",
-                    qPrintable(mat->ambientColor().name()),
-                    qPrintable(mat->diffuseColor().name()),
-                    qPrintable(mat->specularColor().name()),
-                    mat->shininess());
+                qDebug("%s    \"%s\": %s", qPrintable(ind),
+                        qPrintable(mat->objectName()),  qPrintable(mat_spx));
             for (int i = 0; i < mat->textureLayerCount(); ++i)
             {
                 if (mat->texture(i) != 0)
                 {
                     QGLTexture2D *tex = mat->texture(i);
                     if (tex->objectName().isEmpty())
-                        qWarning("%s         texture %p", qPrintable(ind), tex);
+                        qDebug("%s         texture %p", qPrintable(ind), tex);
                     else
-                        qWarning("%s         texture %s", qPrintable(ind),
+                        qDebug("%s         texture %s", qPrintable(ind),
                                 qPrintable(tex->objectName()));
                     QSize sz = tex->size();
-                    qWarning(" - size: %d (w) x %d (h)\n", sz.width(), sz.height());
+                    qDebug(" - size: %d (w) x %d (h)", sz.width(), sz.height());
                 }
             }
         }
         else
         {
-            qWarning("%s - could not find indexed material!!", qPrintable(ind));
+            qDebug("%s - could not find indexed material!!", qPrintable(ind));
         }
     }
     else
     {
-        qWarning("%s material: NONE\n", qPrintable(ind));
+        qDebug("%s material: NONE", qPrintable(ind));
     }
 
     if (node->hasEffect())
     {
         if (node->userEffect())
         {
-            qWarning("%s user effect %p\n", qPrintable(ind),
+            qDebug("%s user effect %p", qPrintable(ind),
                     node->userEffect());
         }
         else
@@ -1749,33 +1787,35 @@ void qDumpScene(QGLSceneNode *node, int indent, const QSet<QGLSceneNode *> &loop
             switch (node->effect())
             {
             case QGL::FlatColor:
-                qWarning("%s flat color effect\n", qPrintable(ind)); break;
+                qDebug("%s flat color effect", qPrintable(ind)); break;
             case QGL::FlatPerVertexColor:
-                qWarning("%s flat per vertex color effect\n", qPrintable(ind)); break;
+                qDebug("%s flat per vertex color effect", qPrintable(ind)); break;
             case QGL::FlatReplaceTexture2D:
-                qWarning("%s flat replace texture 2D effect\n", qPrintable(ind)); break;
+                qDebug("%s flat replace texture 2D effect", qPrintable(ind)); break;
             case QGL::FlatDecalTexture2D:
-                qWarning("%s flat decal texture 2D effect\n", qPrintable(ind)); break;
+                qDebug("%s flat decal texture 2D effect", qPrintable(ind)); break;
             case QGL::LitMaterial:
-                qWarning("%s lit material effect\n", qPrintable(ind)); break;
+                qDebug("%s lit material effect", qPrintable(ind)); break;
             case QGL::LitDecalTexture2D:
-                qWarning("%s lit decal texture 2D effect\n", qPrintable(ind)); break;
+                qDebug("%s lit decal texture 2D effect", qPrintable(ind)); break;
             case QGL::LitModulateTexture2D:
-                qWarning("%s lit modulate texture 2D effect\n", qPrintable(ind)); break;
+                qDebug("%s lit modulate texture 2D effect", qPrintable(ind)); break;
             }
         }
     }
     else
     {
-        qWarning("%s no effect set\n", qPrintable(ind));
+        qDebug("%s no effect set", qPrintable(ind));
     }
     QList<QGLSceneNode*> children = node->children();
     QList<QGLSceneNode*>::const_iterator it = children.constBegin();
     for ( ; it != children.constEnd(); ++it)
         if (!lp.contains(*it))
             qDumpScene(*it, indent + 1);
+#endif
 }
 
+#ifndef QT_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QGLSceneNode &node)
 {
     dbg << &node << "\n    start:" << node.start() << " count:" << node.count();
@@ -1838,6 +1878,6 @@ QDebug operator<<(QDebug dbg, const QGLSceneNode &node)
     return dbg;
 }
 
-#endif
+#endif // QT_NO_DEBUG_STREAM
 
 QT_END_NAMESPACE

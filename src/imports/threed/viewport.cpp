@@ -220,6 +220,8 @@ public:
     QColor fillColor;
     bool picking;
     bool showPicking;
+    bool showSceneGraph;
+    int dumpCount;
     bool navigation;
     bool fovzoom;
     bool blending;
@@ -278,6 +280,8 @@ public:
 ViewportPrivate::ViewportPrivate()
     : picking(false)
     , showPicking(false)
+    , showSceneGraph(false)
+    , dumpCount(10)  // maybe this needs to be higher?
     , navigation(true)
     , fovzoom(true)
     , blending(false)
@@ -596,6 +600,30 @@ void Viewport::setShowPicking(bool value)
 {
     d->showPicking = value;
     emit viewportChanged();
+}
+
+/*!
+    \qmlproperty bool Viewport::showSceneGraph
+
+    This property controls whether or not the 3D scenegraph structure is dumped
+    to the console when the viewport is first rendered.  Studying the output can be very
+    useful for optimising the scene, and for detecting issues with rendering, such
+    as misplaced textures, materials, geometry and so on.
+
+    By default the value is set to false.
+*/
+bool Viewport::showSceneGraph() const
+{
+    return d->showSceneGraph;
+}
+
+void Viewport::setShowSceneGraph(bool show)
+{
+    if (show != d->showSceneGraph)
+    {
+        d->showSceneGraph = show;
+        emit showSceneGraphChanged();
+    }
 }
 
 /*!
@@ -963,8 +991,14 @@ void Viewport::draw(QGLPainter *painter)
     foreach (QObject *child, list) {
         QDeclarativeItem3D *item = qobject_cast<QDeclarativeItem3D *>(child);
         if (item)
+        {
+            if (d->showSceneGraph && (d->dumpCount == 0))
+                qDumpItem(item);
             item->draw(painter);
+        }
     }
+    if (d->dumpCount >= 0)
+        --d->dumpCount;
 }
 
 /*!
