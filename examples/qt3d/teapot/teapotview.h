@@ -45,7 +45,9 @@
 #include "qglview.h"
 #include "qglteapot.h"
 
+QT_BEGIN_NAMESPACE
 class QGLSceneNode;
+QT_END_NAMESPACE
 
 class TeapotView : public QGLView
 {

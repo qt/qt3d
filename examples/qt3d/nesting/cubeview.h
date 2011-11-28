@@ -45,8 +45,10 @@
 #include "qglbuilder.h"
 #include "qglframebufferobjectsurface.h"
 
+QT_BEGIN_NAMESPACE
 class QOpenGLFramebufferObject;
 class QGLCamera;
+QT_END_NAMESPACE
 
 class CubeView : public QGLView
 {

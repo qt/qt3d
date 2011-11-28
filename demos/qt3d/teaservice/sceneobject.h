@@ -45,7 +45,9 @@
 #include <QtCore/qobject.h>
 #include "qglpainter.h"
 
+QT_BEGIN_NAMESPACE
 class QGLView;
+QT_END_NAMESPACE
 
 class SceneObject : public QObject
 {

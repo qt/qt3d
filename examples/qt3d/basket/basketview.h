@@ -43,8 +43,10 @@
 
 #include "qglview.h"
 
+QT_BEGIN_NAMESPACE
 class QGLSceneNode;
 class QWindow;
+QT_END_NAMESPACE
 
 //! [1]
 class BasketView : public QGLView

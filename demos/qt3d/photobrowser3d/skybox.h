@@ -45,11 +45,13 @@
 #include <QString>
 #include <QObject>
 
+QT_BEGIN_NAMESPACE
 class QGLBuilder;
 class QGLSceneNode;
 class QGLPainter;
 class QGLView;
 class QGLCamera;
+QT_END_NAMESPACE
 
 class SkyBox : public QObject
 {

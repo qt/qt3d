@@ -44,8 +44,10 @@
 //! [class-defn]
 #include "qglview.h"
 
+QT_BEGIN_NAMESPACE
 class QGLAbstractScene;
 class QGLSceneNode;
+QT_END_NAMESPACE
 
 class ModelView : public QGLView
 {

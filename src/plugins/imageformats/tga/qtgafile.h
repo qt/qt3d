@@ -45,6 +45,8 @@
 #include <QtGui/qcolor.h>
 #include <QtGui/qimage.h>
 
+QT_BEGIN_NAMESPACE
+
 class QIODevice;
 
 class QTgaFile
@@ -142,5 +144,7 @@ inline QTgaFile::Compression QTgaFile::compression() const
     // and no compression
     return NoCompression;
 }
+
+QT_END_NAMESPACE
 
 #endif // QTGAFILE_H

@@ -44,6 +44,8 @@
 
 #include <QtCore/qdebug.h>
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QLogicalVertex
     \brief The QLogicalVertex class references QGeometryData at a single vertex.
@@ -414,3 +416,5 @@ QDebug operator<<(QDebug dbg, const QLogicalVertex &lv)
     return dbg.space();
 }
 #endif
+
+QT_END_NAMESPACE

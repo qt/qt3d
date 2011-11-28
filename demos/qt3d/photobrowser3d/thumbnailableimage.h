@@ -48,9 +48,12 @@
 #include "qarray.h"
 #include "qgeometrydata.h"
 
+QT_BEGIN_NAMESPACE
 class QImage;
-class ThumbnailableImagePrivate;
 class QGLPainter;
+QT_END_NAMESPACE
+
+class ThumbnailableImagePrivate;
 
 class ThumbnailableImage
 {

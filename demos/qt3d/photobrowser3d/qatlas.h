@@ -48,12 +48,14 @@
 #include "qarray.h"
 #include "qgeometrydata.h"
 
+QT_BEGIN_NAMESPACE
 class QAreaAllocator;
 class QGLTexture2D;
 class QGLMaterial;
 class QGeometryData;
 class QGLFramebufferObject;
 class QGLFramebufferObjectSurface;
+QT_END_NAMESPACE
 
 struct QAtlasEntry
 {

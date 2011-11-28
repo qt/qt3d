@@ -44,14 +44,17 @@
 #include "qglview.h"
 #include "qgltexture2d.h"
 
+QT_BEGIN_NAMESPACE
 class QTimer;
-class QuadPlane;
-class Geometry;
 class QGLLightParameters;
 class QGLMaterial;
 class QGLLightModel;
 class QGLMaterialCollection;
 class QWheelEvent;
+QT_END_NAMESPACE
+
+class QuadPlane;
+class Geometry;
 
 class GeometryView : public QGLView
 {

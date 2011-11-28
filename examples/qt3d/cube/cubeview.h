@@ -43,7 +43,9 @@
 
 #include "qglview.h"
 
+QT_BEGIN_NAMESPACE
 class QGLSceneNode;
+QT_END_NAMESPACE
 
 class CubeView : public QGLView
 {

@@ -44,18 +44,22 @@
 
 #include "qglview.h"
 
-class ImageDisplay;
-class SkyBox;
+QT_BEGIN_NAMESPACE
 class QGLMaterialCollection;
 class QGLSceneNode;
-class ImageManager;
 class QState;
 class QStateMachine;
-class QFocusAdaptor;
+QT_END_NAMESPACE
+
+
+class SkyBox;
+class ImageDisplay;
+class ImageManager;
 class QAtlas;
 class Buttons;
 class QPhotoBrowser3DScene;
 class PanController;
+class QFocusAdaptor;
 
 class PhotoBrowser3DView : public QGLView
 {
