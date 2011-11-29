@@ -148,7 +148,6 @@ int JoinVerticesProcess::ProcessMesh( aiMesh* pMesh, unsigned int meshIndex)
     // A little helper to find locally close vertices faster.
     // Try to reuse the lookup table from the last step.
     const static float epsilon = 1e-5f;
-    float posEpsilonSqr;
     SpatialSort* vertexFinder = NULL;
     SpatialSort _vertexFinder;
 
@@ -159,14 +158,12 @@ int JoinVerticesProcess::ProcessMesh( aiMesh* pMesh, unsigned int meshIndex)
         if (avf) {
             SpatPair& blubb = (*avf)[meshIndex];
             vertexFinder  = &blubb.first;
-            posEpsilonSqr = blubb.second;
         }
     }
     if (!vertexFinder) {
         // bad, need to compute it.
         _vertexFinder.Fill(pMesh->mVertices, pMesh->mNumVertices, sizeof( aiVector3D));
         vertexFinder = &_vertexFinder;
-        posEpsilonSqr = ComputePositionEpsilon(pMesh);
     }
 
     // Squared because we check against squared length of the vector difference

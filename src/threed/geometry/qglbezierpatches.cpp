@@ -451,7 +451,6 @@ void QGLBezierPatchesPrivate::subdivide(QGLBuilder *list) const
     for (int posn = 0; (posn + 15) < count; posn += 16) {
         // Construct a QGLBezierPatch object from the next high-level patch.
         QGLBezierPatch patch;
-        int vertex;
         for (int vertex = 0; vertex < 16; ++vertex)
             patch.points[vertex] = positions[posn + vertex];
         QVector2D tex1, tex2;
@@ -467,7 +466,6 @@ void QGLBezierPatchesPrivate::subdivide(QGLBuilder *list) const
         qreal wtex = tex2.x() - xtex;
         qreal htex = tex2.y() - ytex;
         for (int corner = 0; corner < 4; ++corner) {
-            vertex = posn + cornerOffsets[corner];
             QVector3D n = patch.normal(cornerS[corner], cornerT[corner]);
             patch.indices[corner] = prim.count();
             prim.appendVertex(patch.points[cornerOffsets[corner]]);

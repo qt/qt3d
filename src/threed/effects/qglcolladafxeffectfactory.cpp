@@ -476,14 +476,11 @@ QVariant QGLColladaFxEffectFactory::processFloatList( QXmlStreamReader& xml )
     QString elementString = xml.readElementText();
     QStringList list = elementString.split( QRegExp( QLatin1String("\\s+") ), QString::SkipEmptyParts );
     bool ok;
-    float f;
-    foreach ( QString string, list )
-    {
-        f = string.toFloat( &ok );
-        if ( ok )
-            floats.append(string.toFloat());
-        else
-        {
+    foreach ( const QString &string, list ) {
+        const float f = string.toFloat( &ok );
+        if ( ok ) {
+            floats.append(f);
+        } else {
             qWarning() << "Warning: malformed float ( line" << xml.lineNumber() << ")";
         }
     }

@@ -45,7 +45,7 @@
 #include "qaiscenehandler.h"
 #include "qgeometrydata.h"
 
-class aiMesh;
+struct aiMesh;
 
 QT_BEGIN_NAMESPACE
 

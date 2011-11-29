@@ -459,7 +459,6 @@ void tst_QGeometryData::normalizeNormals()
     data.appendNormal(an, bn, cn, dn);
 
     data.normalizeNormals();
-    QVector3D n = data.normalAt(1);
     QVERIFY(qFskCompare(data.normalAt(0), QVector3D(0.566178, 0.577279, 0.588381)));
     QVERIFY(qFskCompare(data.normalAt(1), QVector3D(0.567989, 0.577300, 0.586612)));
     QVERIFY(qFskCompare(data.normalAt(2), QVector3D(0.569295, 0.577313, 0.585331)));

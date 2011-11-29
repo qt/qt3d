@@ -50,7 +50,7 @@
 
 #include "qglbuilder.h"
 
-class aiMaterial;
+struct aiMaterial;
 
 QT_BEGIN_NAMESPACE
 

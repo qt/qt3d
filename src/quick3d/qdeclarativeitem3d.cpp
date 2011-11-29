@@ -1023,6 +1023,7 @@ void QDeclarativeItem3D::setSortChildren(QDeclarativeItem3D::SortMode mode)
 void QDeclarativeItem3D::drawLightingSetup(QGLPainter *painter, const QGLLightParameters *currentLight, QMatrix4x4 &currentLightTransform)
 {
     //Lighting
+    Q_UNUSED(currentLight)
     if (d->light) {
         currentLight = painter->mainLight();
         currentLightTransform = painter->mainLightTransform();

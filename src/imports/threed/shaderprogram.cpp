@@ -614,11 +614,9 @@ void ShaderProgramEffect::processTextureUrl(int uniformLocation, QString urlStri
         }
     };
 
-    bool async = true;
     // Try to make path absolute:
     if (url.isRelative())
     {
-        async = false;
         // Get the baseUrl from the declarative engine
         QDeclarativeContext *context =
                 QDeclarativeEngine::contextForObject(parent.data());
