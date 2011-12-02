@@ -51,7 +51,7 @@ BlenderToggle {
                 "\n" +
                 "    mesh: source_mesh\n" +
                 "    transform: [\n" +
-                "        transformScale\n" +
+                "        transformScale,\n" +
                 "        transformRotateX,\n" +
                 "        transformRotateY,\n" +
                 "        transformRotateZ,\n" +
