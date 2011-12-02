@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = photoroom
 CONFIG += qt warn_on
-QT += declarative
+QT += declarative quick
 
 SOURCES += main.cpp
 

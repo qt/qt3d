@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = monkeygod
 CONFIG += qt warn_on
-QT += declarative
+QT += declarative quick
 
 SOURCES += main.cpp
 

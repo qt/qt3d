@@ -62,8 +62,8 @@
 #include <QtCore/qtimer.h>
 #include <QtCore/qcoreapplication.h>
 #include <QtDeclarative/qdeclarativeinfo.h>
-#include <QtDeclarative/QQuickCanvas>
-#include <QtDeclarative/QSGEngine>
+#include <QtQuick/QQuickCanvas>
+#include <QtQuick/QSGEngine>
 #include <QtOpenGL/qglbuffer.h>
 #include <QtCore/qthread.h>
 #include <QtCore/qmutex.h>

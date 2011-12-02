@@ -40,7 +40,7 @@
 ****************************************************************************/
 
 #include <QtGui/QGuiApplication>
-#include <QtDeclarative/qquickview.h>
+#include <QtQuick/qquickview.h>
 
 #include "../qmlres.h"
 

@@ -1,6 +1,6 @@
 TEMPLATE = app
 TARGET = model_viewer
-QT += declarative widgets
+QT += declarative quick widgets
 CONFIG += qt warn_on
 
 SOURCES += main.cpp

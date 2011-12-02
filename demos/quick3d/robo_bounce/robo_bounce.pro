@@ -1,7 +1,6 @@
 TEMPLATE = app
 TARGET = robo_bounce
-QT += declarative
-CONFIG += qt warn_on
+QT += declarative quick
 
 SOURCES += main.cpp
 

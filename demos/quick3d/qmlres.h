@@ -44,7 +44,7 @@
 
 #include <QtCore/qdir.h>
 #include <QtGui/QGuiApplication>
-#include <QtDeclarative/QQuickView>
+#include <QtQuick/QQuickView>
 
 #include <QtCore/qdebug.h>
 

@@ -1,6 +1,6 @@
 TEMPLATE = app
 TARGET = flickr3d
-QT += declarative
+QT += declarative quick
 CONFIG += qt warn_on
 
 SOURCES += main.cpp
