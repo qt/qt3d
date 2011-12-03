@@ -162,3 +162,6 @@ void Line::drawItem(QGLPainter *painter)
     // Draw the geometry.
     m_geometry->draw(painter);
 }
+
+QT_END_NAMESPACE
+

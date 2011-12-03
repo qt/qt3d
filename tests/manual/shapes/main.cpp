@@ -39,17 +39,25 @@
 **
 ****************************************************************************/
 
-import QtQuick 1.0
-import Qt3D 1.0
-import Qt3D.Shapes 1.0
+#include <QtGui/QApplication>
+#include "qdeclarativeview3d.h"
 
-Item3D {
-    id: sphere
-    property alias name: sphereMesh.objectName
-    property alias radius: sphereMesh.radius
-    property alias levelOfDetail: sphereMesh.levelOfDetail
-    property alias axis: sphereMesh.axis
-    mesh: SphereMesh {
-        id: sphereMesh
-    }
+#include "../../shared/qmlres.h"
+
+int main(int argc, char *argv[])
+{
+    QApplication app(argc, argv);
+
+    QDeclarativeView3D view;
+    QString qml = q_get_qmldir(QLatin1String("qml/tst_shapes.qml"));
+    view.setSource(QUrl::fromLocalFile(qml));
+
+    if (QApplication::arguments().contains(QLatin1String("-maximize")))
+        view.showMaximized();
+    else if (QApplication::arguments().contains(QLatin1String("-fullscreen")))
+        view.showFullScreen();
+    else
+        view.show();
+
+    return app.exec();
 }

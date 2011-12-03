@@ -39,17 +39,56 @@
 **
 ****************************************************************************/
 
-import QtQuick 1.0
-import Qt3D 1.0
-import Qt3D.Shapes 1.0
+#ifndef CAPSULE_H
+#define CAPSULE_H
 
-Item3D {
-    id: sphere
-    property alias name: sphereMesh.objectName
-    property alias radius: sphereMesh.radius
-    property alias levelOfDetail: sphereMesh.levelOfDetail
-    property alias axis: sphereMesh.axis
-    mesh: SphereMesh {
-        id: sphereMesh
-    }
-}
+#include "qdeclarativemesh.h"
+#include "capsulemesh_p.h"
+
+QT_BEGIN_HEADER
+
+QT_BEGIN_NAMESPACE
+
+class CapsuleMesh : public QDeclarativeMesh
+{
+    Q_OBJECT
+    Q_PROPERTY(qreal radius READ radius WRITE setRadius NOTIFY radiusChanged)
+    Q_PROPERTY(qreal length READ length WRITE setLength NOTIFY lengthChanged)
+    Q_PROPERTY(int levelOfDetail READ levelOfDetail WRITE setLevelOfDetail NOTIFY levelOfDetailChanged)
+
+public:
+    explicit CapsuleMesh(QObject *parent = 0);
+    ~CapsuleMesh() {}
+
+    qreal radius() const;
+    void setRadius(qreal radius);
+
+    qreal length() const;
+    void setLength(qreal length);
+
+    int levelOfDetail() const;
+    void setLevelOfDetail(int lod);
+
+    void draw(QGLPainter *painter, int branchId);
+
+Q_SIGNALS:
+    void radiusChanged();
+    void lengthChanged();
+    void levelOfDetailChanged();
+
+private:
+    void createGeometry();
+
+    Q_DISABLE_COPY(CapsuleMesh)
+    Q_DECLARE_PRIVATE(CapsuleMesh)
+
+    QScopedPointer<CapsuleMeshPrivate> d_ptr;
+};
+
+QML_DECLARE_TYPE(CapsuleMesh)
+
+QT_END_NAMESPACE
+
+QT_END_HEADER
+
+#endif // CAPSULE_H

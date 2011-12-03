@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef SPHERE_P_H
-#define SPHERE_P_H
+#ifndef SPHEREMESH_P_H
+#define SPHEREMESH_P_H
 
 //
 //  W A R N I N G
@@ -54,6 +54,10 @@
 //
 
 #include <QtCore/QMap>
+
+QT_BEGIN_HEADER
+
+QT_BEGIN_NAMESPACE
 
 class QGraphicsRotation3D;
 class QGraphicsScale3D;
@@ -76,4 +80,8 @@ public:
     bool sceneSet;
 };
 
-#endif // SPHERE_P_H
+QT_END_NAMESPACE
+
+QT_END_HEADER
+
+#endif // SPHEREMESH_P_H

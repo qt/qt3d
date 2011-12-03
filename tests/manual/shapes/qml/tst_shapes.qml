@@ -43,13 +43,56 @@ import QtQuick 1.0
 import Qt3D 1.0
 import Qt3D.Shapes 1.0
 
-Item3D {
-    id: sphere
-    property alias name: sphereMesh.objectName
-    property alias radius: sphereMesh.radius
-    property alias levelOfDetail: sphereMesh.levelOfDetail
-    property alias axis: sphereMesh.axis
-    mesh: SphereMesh {
-        id: sphereMesh
+Item {
+    id: screen
+    width: 720
+    height: 480
+    Rectangle {
+        id: description
+        border.width: 3
+        radius: 5
+        width: parent.width
+        height: text.height + 10
+        Text {
+            id: text
+            width: parent.width
+            wrapMode: "WordWrap"
+            text: "There should be a green cylinder on the left, a beige sphere in the middle,\n" +
+                  "and a red capsule on the right hand side.\n\n" +
+                  "They should be the same diameter, but the capsule & cylinder twice the height.\n" +
+                  "The capsule and cylinder should be oriented with their length vertically.\n" +
+                  "Click & drag in the window to rotate the objects to confirm."
+            anchors.centerIn: parent
+        }
+    }
+    Rectangle {
+        width: parent.width
+        anchors.top: description.bottom
+        anchors.bottom: screen.bottom
+        anchors.left: screen.left
+        anchors.right: screen.right
+        color: "#aaccee"
+
+        Viewport  {
+            id: view
+            anchors.fill: parent
+            showSceneGraph: true
+            Cylinder {
+                x: -2.2
+                y: 1.5
+                transform: Rotation3D { axis: "1, 0, 0"; angle: 90 }
+                length: 3
+                effect: Effect { color: "green" }
+            }
+            Sphere {
+                effect: Effect { color: "burlywood" }
+            }
+            Capsule {
+                x: 2.2
+                length: 3
+                transform: Rotation3D { axis: "1, 0, 0"; angle: 90 }
+                effect: Effect { color: "red" }
+            }
+        }
     }
 }

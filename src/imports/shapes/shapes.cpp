@@ -42,8 +42,8 @@
 #include <QtDeclarative/qdeclarativeextensionplugin.h>
 
 #include "spheremesh.h"
-#include "cylinder.h"
-#include "capsule.h"
+#include "cylindermesh.h"
+#include "capsulemesh.h"
 #include "line.h"
 #include "point.h"
 
@@ -57,8 +57,8 @@ public:
     {
         Q_ASSERT(QLatin1String(uri) == QLatin1String("Qt3D.Shapes"));
         qmlRegisterType<SphereMesh>(uri,1,0,"SphereMesh");
-        qmlRegisterType<Cylinder>(uri,1,0,"Cylinder");
-        qmlRegisterType<Capsule>(uri,1,0,"Capsule");
+        qmlRegisterType<CylinderMesh>(uri,1,0,"CylinderMesh");
+        qmlRegisterType<CapsuleMesh>(uri,1,0,"CapsuleMesh");
         qmlRegisterType<Line>(uri,1,0,"Line");
         qmlRegisterType<Point>(uri,1,0,"Point");
 

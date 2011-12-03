@@ -57,17 +57,18 @@ QT_BEGIN_NAMESPACE
 
     The SphereMesh element in QML provides a simple way to create a sphere
     object, usually for testing material effects.  For example,
-    the following QML code creates a green sphere mesh of radius 1.5,
+    the following QML code displays a green sphere mesh of radius 1.5,
     centered on the origin:
 
     \code
-    SphereMesh {
-        radius: 1.5
-        effect: Effect {
-            color: "#aaca00"
-        }
+    Item3D {
+        mesh: SphereMesh { radius: 1.5 }
+        effect: Effect { color: "#aaca00" }
     }
     \endcode
+
+    As shown, the mesh is only displayed when it is set as the target of
+    a mesh property on an Item3D.
 
     The SphereMesh element is part of the \c{Qt3D.Shapes} namespace,
     so the following must appear at the top of any QML file that
@@ -83,17 +84,17 @@ QT_BEGIN_NAMESPACE
 
     \code
     SphereMesh {
-        scale: 1.5
+        radius: 1.5
         axis: Qt.YAxis
     }
     \endcode
 
-    To display the sphere mesh you can create your own Item3D or use
-    the convenience Sphere QML component:
+    To display the sphere mesh you can create your own Item3D as shown
+    above, or use the convenience Sphere QML component:
 
     \code
     Sphere {
-        scale: 1.5
+        radius: 1.5
         levelOfDetail: 6
         axis: Qt.YAxis
         effect: Effect { texture: "moon-texture.jpg" }
@@ -102,7 +103,12 @@ QT_BEGIN_NAMESPACE
 
     \image moon-screenshot.png
 
-    If you have a scene with a number of identical spheres use your own
+    \section1 Performance Hints for Larger Scenes
+
+    The convenience Sphere QML component will create a new mesh each
+    time it is instantiated.
+
+    If you have a scene with a number of similar spheres use your own
     Item3D elements to all refer to the same mesh - this will save on
     graphics memory and improve the performance of your application since
     there is no need to recreate many copies of the same geometry.  This
@@ -119,6 +125,24 @@ QT_BEGIN_NAMESPACE
     and of course you can specify materials and effects.
 
     \snippet quick3d/solarsystem_qml/qml/solarsystem_qml.qml 1
+
+    In this case since only one copy of the triangle data for the mesh is
+    sent to the GPU performance will generally be better.
+
+    \section1 Performance Hints for Animation
+
+    Some support for animation of the SphereMesh properties is provided
+    by utilizing a QGraphicsScale3D to implement the radius property,
+    and by caching levels of detail.
+
+    So within limits animation of these items should provide reasonable
+    results.  Be aware that on constrained devices animation of the
+    level of detail for many spheres could cause problems with memory
+    usage due to the caching.
+
+    The other shapes primitives are implemented differently with respect
+    to radius, length and so on, so read the performance notes there, as
+    they will differ from the sphere case.
 
     \sa Item3D
 */
@@ -274,6 +298,17 @@ void SphereMesh::setAxis(Qt::Axis axis)
 /*!
     \internal
 */
+void SphereMesh::draw(QGLPainter *painter, int branchId)
+{
+    Q_D(SphereMesh);
+    if (!d->currentSphere)
+        createGeometry();
+    QDeclarativeMesh::draw(painter, branchId);
+}
+
+/*!
+    \internal
+*/
 void SphereMesh::createGeometry()
 {
     Q_D(SphereMesh);
@@ -353,3 +388,6 @@ void SphereMesh::createGeometry()
         d->sceneSet = true;
     }
 }
+
+QT_END_NAMESPACE
+

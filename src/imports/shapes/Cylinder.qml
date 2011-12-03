@@ -39,56 +39,17 @@
 **
 ****************************************************************************/
 
-#ifndef CYLINDER_H
-#define CYLINDER_H
+import QtQuick 1.0
+import Qt3D 1.0
+import Qt3D.Shapes 1.0
 
-#include "qdeclarativeitem3d.h"
-#include "qglscenenode.h"
-#include <QtCore/qmap.h>
-
-QT_BEGIN_HEADER
-
-QT_BEGIN_NAMESPACE
-
-class Cylinder : public QDeclarativeItem3D
-{
-    Q_OBJECT
-    Q_PROPERTY(qreal radius READ radius WRITE setRadius NOTIFY radiusChanged)
-    Q_PROPERTY(qreal length READ length WRITE setLength NOTIFY lengthChanged)
-    Q_PROPERTY(int levelOfDetail READ levelOfDetail WRITE setLevelOfDetail NOTIFY levelOfDetailChanged)
-
-public:
-    explicit Cylinder(QObject *parent = 0);
-    ~Cylinder() {}
-
-    qreal radius() const { return m_radius; }
-    void setRadius(qreal radius);
-
-    qreal length() const {return m_length;}
-    void setLength(qreal length);
-
-    int levelOfDetail() const {return m_lod;}
-    void setLevelOfDetail(int lod);
-
-Q_SIGNALS:
-    void radiusChanged();
-    void lengthChanged();
-    void levelOfDetailChanged();
-
-protected:
-    void drawItem(QGLPainter *painter);
-
-private:
-    qreal m_radius;
-    qreal m_length;
-    int m_lod;
-    QMap<int, QGLSceneNode *> m_lodGeometry;
-};
-
-QML_DECLARE_TYPE(Cylinder)
-
-QT_END_NAMESPACE
-
-QT_END_HEADER
-
-#endif // CYLINDER_H
+Item3D {
+    id: cylinder
+    property alias name: cylinderMesh.objectName
+    property alias radius: cylinderMesh.radius
+    property alias length: cylinderMesh.length
+    property alias levelOfDetail: cylinderMesh.levelOfDetail
+    mesh: CylinderMesh {
+        id: cylinderMesh
+    }
+}

@@ -39,17 +39,45 @@
 **
 ****************************************************************************/
 
-import QtQuick 1.0
-import Qt3D 1.0
-import Qt3D.Shapes 1.0
+#ifndef CAPSULEMESH_P_H
+#define CAPSULEMESH_P_H
 
-Item3D {
-    id: sphere
-    property alias name: sphereMesh.objectName
-    property alias radius: sphereMesh.radius
-    property alias levelOfDetail: sphereMesh.levelOfDetail
-    property alias axis: sphereMesh.axis
-    mesh: SphereMesh {
-        id: sphereMesh
-    }
-}
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <QtCore/QMap>
+
+QT_BEGIN_HEADER
+
+QT_BEGIN_NAMESPACE
+
+class QGLSceneNode;
+
+class CapsuleMeshPrivate
+{
+public:
+    CapsuleMeshPrivate();
+    ~CapsuleMeshPrivate();
+
+    QMap<int, QGLSceneNode *> lodGeometry;
+    QGLSceneNode *topNode;
+    QGLSceneNode *currentCapsule;
+    qreal radius;
+    qreal length;
+    int lod;
+    bool sceneSet;
+};
+
+QT_END_NAMESPACE
+
+QT_END_HEADER
+
+#endif // CAPSULEMESH_P_H

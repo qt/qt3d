@@ -44,12 +44,12 @@ import Qt3D 1.0
 import Qt3D.Shapes 1.0
 
 Item3D {
-    id: sphere
-    property alias name: sphereMesh.objectName
-    property alias radius: sphereMesh.radius
-    property alias levelOfDetail: sphereMesh.levelOfDetail
-    property alias axis: sphereMesh.axis
-    mesh: SphereMesh {
-        id: sphereMesh
+    id: capsule
+    property alias name: capsuleMesh.objectName
+    property alias radius: capsuleMesh.radius
+    property alias length: capsuleMesh.length
+    property alias levelOfDetail: capsuleMesh.levelOfDetail
+    mesh: CapsuleMesh {
+        id: capsuleMesh
     }
 }

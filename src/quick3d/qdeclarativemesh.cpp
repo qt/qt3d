@@ -623,7 +623,7 @@ void QDeclarativeMesh::resetSceneBranches()
 void QDeclarativeMesh::draw(QGLPainter *painter, int branchId)
 {
     if (!d->sceneBranches.contains(branchId)) {
-        qWarning() << "Unable to find valid scene object with ID: " << branchId;
+        qWarning() << "No scene object with ID: " << branchId << "for" << this;
     } else {
         QDeclarativeMeshPrivate::branchObject targetBranch = d->sceneBranches.value(branchId);
         targetBranch.rootSceneObject->draw(painter);

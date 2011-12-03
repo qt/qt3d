@@ -39,18 +39,17 @@
 **
 ****************************************************************************/
 
-#ifndef CAPSULE_H
-#define CAPSULE_H
+#ifndef CYLINDER_H
+#define CYLINDER_H
 
-#include "qdeclarativeitem3d.h"
-#include "qglscenenode.h"
-#include <QtCore/qmap.h>
+#include "qdeclarativemesh.h"
+#include "cylindermesh_p.h"
 
 QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
-class Capsule : public QDeclarativeItem3D
+class CylinderMesh : public QDeclarativeMesh
 {
     Q_OBJECT
     Q_PROPERTY(qreal radius READ radius WRITE setRadius NOTIFY radiusChanged)
@@ -58,37 +57,38 @@ class Capsule : public QDeclarativeItem3D
     Q_PROPERTY(int levelOfDetail READ levelOfDetail WRITE setLevelOfDetail NOTIFY levelOfDetailChanged)
 
 public:
-    explicit Capsule(QObject *parent = 0);
-    ~Capsule() {}
+    explicit CylinderMesh(QObject *parent = 0);
+    ~CylinderMesh() {}
 
-    qreal radius() const { return m_radius; }
+    qreal radius() const;
     void setRadius(qreal radius);
 
-    qreal length() const {return m_length;}
+    qreal length() const;
     void setLength(qreal length);
 
-    int levelOfDetail() const {return m_lod;}
+    int levelOfDetail() const;
     void setLevelOfDetail(int lod);
+
+    void draw(QGLPainter *painter, int branchId);
 
 Q_SIGNALS:
     void radiusChanged();
     void lengthChanged();
     void levelOfDetailChanged();
 
-protected:
-    void drawItem(QGLPainter *painter);
-
 private:
-    qreal m_radius;
-    qreal m_length;
-    int m_lod;
-    QMap<int, QGLSceneNode *> m_lodGeometry;
+    void createGeometry();
+
+    Q_DISABLE_COPY(CylinderMesh)
+    Q_DECLARE_PRIVATE(CylinderMesh)
+
+    QScopedPointer<CylinderMeshPrivate> d_ptr;
 };
 
-QML_DECLARE_TYPE(Capsule)
+QML_DECLARE_TYPE(CylinderMesh)
 
 QT_END_NAMESPACE
 
 QT_END_HEADER
 
-#endif // CAPSULE_H
+#endif // CYLINDER_H
