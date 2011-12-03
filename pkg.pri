@@ -265,13 +265,14 @@ defineTest(qtcAddDeployment) {
             export($$itempath)
             INSTALLS += $$item
         }
-
-        export(icon.files)
-        export(icon.path)
-        export(desktopfile.files)
-        export(desktopfile.path)
-        export(target.path)
-        INSTALLS += desktopfile icon target
+        package {
+            export(icon.files)
+            export(icon.path)
+            export(desktopfile.files)
+            export(desktopfile.path)
+            export(target.path)
+            INSTALLS += desktopfile icon target
+        }
     }
 
     export (ICON)
