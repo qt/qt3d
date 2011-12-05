@@ -9,32 +9,41 @@ target.path = $$[QT_INSTALL_IMPORTS]/Qt3D/Shapes
 INSTALLS += target
 
 SOURCES += \
-    sphere.cpp \
     shapes.cpp \
     cylinder.cpp \
     capsule.cpp \
     line.cpp \
-    point.cpp
+    point.cpp \
+    spheremesh.cpp
 HEADERS += \
-    sphere.h \
     cylinder.h \
     capsule.h \
     line.h \
-    point.h
+    point.h \
+    spheremesh.h \
+    spheremesh_p.h
 
-    QML_INFRA_FILES += \
-        qmldir \
-        library.xml \
-        plugins.qmltypes \
-        Cube.qml \
-        cube.obj \
-        Quad.qml \
-        quad.obj \
-        Teapot.qml \
-        teapot.bez
-    # see the file README.library_xml for more on library.xml
+QML_FILES = \
+    Cube.qml \
+    Sphere.qml \
+    Quad.qml \
+    Teapot.qml
 
-!package {
+QML_INFRA_FILES += \
+    $$QML_FILES \
+    qmldir \
+    library.xml \
+    plugins.qmltypes \
+    cube.obj \
+    quad.obj \
+    teapot.bez
+# see the file README.library_xml for more on library.xml
+
+package {
+    copyqmlinfra_install.files = $$QML_INFRA_FILES
+    copyqmlinfra_install.path = $$QT3D_INSTALL_IMPORTS/Qt3D/Shapes
+    INSTALLS += copyqmlinfra_install
+} else {
     copyqmlinfra.input = QML_INFRA_FILES
     copyqmlinfra.output = $$target.path/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
     copyqmlinfra.commands = $$QMAKE_COPY ${QMAKE_FILE_IN} ${QMAKE_FILE_OUT}
@@ -51,3 +60,11 @@ else {
 OTHER_FILES += \
     README.plugins_types \
     README.library_xml
+
+OTHER_FILES += $$QML_FILES
+
+
+
+
+
+

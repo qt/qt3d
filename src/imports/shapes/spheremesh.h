@@ -42,31 +42,34 @@
 #ifndef SPHERE_H
 #define SPHERE_H
 
-#include "qdeclarativeitem3d.h"
 #include "qglscenenode.h"
+#include "qdeclarativemesh.h"
+#include "spheremesh_p.h"
+
 #include <QtCore/qmap.h>
+#include <QtCore/qscopedpointer.h>
 
 QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
-class Sphere : public QDeclarativeItem3D
+class SphereMesh : public QDeclarativeMesh
 {
     Q_OBJECT
     Q_PROPERTY(qreal radius READ radius WRITE setRadius NOTIFY radiusChanged)
     Q_PROPERTY(int levelOfDetail READ levelOfDetail WRITE setLevelOfDetail NOTIFY levelOfDetailChanged)
     Q_PROPERTY(Qt::Axis axis READ axis WRITE setAxis NOTIFY axisChanged)
 public:
-    Sphere(QObject *parent = 0);
-    ~Sphere() {}
+    SphereMesh(QObject *parent = 0);
+    ~SphereMesh() {}
 
-    qreal radius() const { return m_radius; }
+    qreal radius() const;
     void setRadius(qreal radius);
 
-    int levelOfDetail() const { return m_lod; }
+    int levelOfDetail() const;
     void setLevelOfDetail(int lod);
 
-    Qt::Axis axis() const { return m_axis; }
+    Qt::Axis axis() const;
     void setAxis(Qt::Axis axis);
 
 Q_SIGNALS:
@@ -74,21 +77,18 @@ Q_SIGNALS:
     void levelOfDetailChanged();
     void axisChanged();
 
-protected:
-    void drawItem(QGLPainter *painter);
-
 private:
-    void updateGeometry();
+    void createGeometry();
 
-    qreal m_radius;
-    int m_lod;
-    Qt::Axis m_axis;
-    QMap<int, QGLSceneNode *> m_lodGeometry;
+    Q_DISABLE_COPY(SphereMesh)
+    Q_DECLARE_PRIVATE(SphereMesh)
+
+    QScopedPointer<SphereMeshPrivate> d_ptr;
 };
 
 QT_END_NAMESPACE
 
-QML_DECLARE_TYPE(Sphere)
+QML_DECLARE_TYPE(SphereMesh)
 
 QT_END_HEADER
 
