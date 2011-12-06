@@ -21,7 +21,7 @@ First fetch the Qt5 source tree and QtQuick3D qml2 branch:
     git clone ssh://codereview.qt-project.org:29418/qt/qt5.git
     cd qt5
     ./init-repository --codereview-username <username> \
-        --module-subset=qtbase,qtsvg,qtdeclarative,qtscript,qttools,qtxmlpatterns,qtdoc,qlalr,qtrepotools,qtqa,qtlocation,qtquick3d
+        --module-subset=qtbase,qtsvg,qtdeclarative,qttools,qtxmlpatterns,qtdoc,qlalr,qtrepotools,qtqa,qtlocation,qtquick3d
     git submodule foreach "git fetch gerrit && git reset --hard gerrit/master"
     cd qtquick3d
     scp -p -P 29418 codereview.qt-project.org:hooks/commit-msg .git/hooks/
@@ -36,7 +36,7 @@ Now build Qt5, which will also build QtQuick3D as a module:
     mkdir qt5
     cd qt5
     ~/depot/qt5/configure -nokia-developer -no-webkit -no-phonon -nomake tests \
-        -nomake demos -nomake examples -declarative -opengl -script -svg && make -j 4
+        -nomake demos -nomake examples -declarative -opengl -svg && make -j 4
 
 
 Whats in QtQuick3D
