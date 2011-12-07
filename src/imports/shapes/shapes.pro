@@ -41,7 +41,7 @@ QML_INFRA_FILES += \
 
 package {
     copyqmlinfra_install.files = $$QML_INFRA_FILES
-    copyqmlinfra_install.path = $$QT3D_INSTALL_IMPORTS/Qt3D/Shapes
+    copyqmlinfra_install.path = $$[QT_INSTALL_IMPORTS]/Qt3D/Shapes
     INSTALLS += copyqmlinfra_install
 } else {
     copyqmlinfra.input = QML_INFRA_FILES
