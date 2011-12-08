@@ -10,8 +10,6 @@
         "Identifier": "com.nokia.qtquick3d.teaserviceqml",
         "Depends": {
             "com.nokia.components": "1.0",
-            "com.nokia.sphone.components": "1.0",
-            "com.nokia.sphone.JsonDB": "1.0"
         },
         "Summary": "Tea Service QML Demo"
     }
