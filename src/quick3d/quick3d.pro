@@ -1,7 +1,7 @@
 load(qt_module)
 
 TARGET     = Qt3DQuick
-MODULE     = quick3d
+MODULE     = qt3dquick
 QT         = core gui network declarative quick qt3d
 
 CONFIG += module

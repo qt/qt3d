@@ -2,7 +2,7 @@ TEMPLATE = app
 TARGET = tst_animations
 CONFIG += qt warn_on
 
-QT += quick3d
+QT += qt3dquick
 
 SOURCES += main.cpp
 

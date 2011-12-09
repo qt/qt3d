@@ -41,7 +41,7 @@ qt3dquick_deploy_pkg {
             }
             INCLUDEPATH += ../../../include/Qt3DQuick
         }
-        QT += declarative opengl
+        QT += declarative quick opengl
 
         maemo: icons.files = icon-l-qtquick3d.png
     } else {
