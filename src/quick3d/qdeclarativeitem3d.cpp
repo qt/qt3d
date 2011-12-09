@@ -4,7 +4,7 @@
 ** All rights reserved.
 ** Contact: Nokia Corporation (qt-info@nokia.com)
 **
-** This file is part of the QtQuick3D module of the Qt Toolkit.
+** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
 ** GNU Lesser General Public License Usage
@@ -799,7 +799,7 @@ void QDeclarativeItem3D::setInheritEvents(bool inherit)
     \qmlproperty Mesh Item3D::mesh
 
     Objects in most 3D environments are almost invariably defined as meshes - sets of
-    vertices which when linked as polygons form a recognisable 3D object.  QtQuick3D currently
+    vertices which when linked as polygons form a recognisable 3D object.  Qt3D currently
     supports a number of these \i {scene formats}, including \i {.obj} file, bezier patches
     \i {(.bez)}, and \i {.3ds} files.
 

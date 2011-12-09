@@ -4,7 +4,7 @@
 ** All rights reserved.
 ** Contact: Nokia Corporation (qt-info@nokia.com)
 **
-** This file is part of the QtQuick3D module of the Qt Toolkit.
+** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
 ** GNU Lesser General Public License Usage
@@ -163,7 +163,7 @@ QDeclarativeMesh::~QDeclarativeMesh()
     transformations, textures, and so on.  This data is generally stored in files and
     specified via the source property.
 
-    Source files can be of any type supported by QtQuick3D.  The types of file currently
+    Source files can be of any type supported by Qt3D.  The types of file currently
     supported can be found in the \c sceneFormat plugins, with \i .3ds, \i .bez, \i. obj
     files currently being supported.
     
