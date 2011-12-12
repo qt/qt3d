@@ -341,6 +341,8 @@ QGLMaterial *QDeclarativeEffect::material() const
 void QDeclarativeEffect::setMaterial(QGLMaterial *value)
 {
     d->ensureMaterial();
+    if (d->materialIndex != -1)
+        d->palette->material(d->materialIndex)->disconnect(this);
     int newIndex = -1;
     if (value)
         newIndex = d->palette->addMaterial(value);
@@ -349,6 +351,8 @@ void QDeclarativeEffect::setMaterial(QGLMaterial *value)
         d->materialIndex = newIndex;
         emit effectChanged();
         // TODO: deleting old materials
+        if (value)
+            connect(value, SIGNAL(materialChanged()), this, SIGNAL(effectChanged()));
     }
 }
 
