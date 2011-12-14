@@ -14,6 +14,7 @@ Rectangle {
     property alias itemPosition: mainItem.position;
     property alias itemScale: mainItem.scale;
     property alias camera: viewport.camera
+    property alias viewportName: viewportText.text;
 
     // the current x/y positions of the mouse when the onPressed event was triggered;
     // values are invalid if onRelease has occured
@@ -119,5 +120,15 @@ Rectangle {
             top: view.top; topMargin: 2;
             right: view.right; rightMargin: 2;
         }
+    }
+
+    Text {
+        id: viewportText
+        anchors {
+            top: view.top; topMargin: 4;
+            left: view.left; leftMargin: 4;
+        }
+        color: "white"
+        font.pixelSize: 16
     }
 }

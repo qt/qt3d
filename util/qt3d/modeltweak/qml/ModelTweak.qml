@@ -72,6 +72,7 @@ Rectangle {
         y: 0;
         camera.eye: Qt.vector3d(20, 0, 0);
         stateName: "ZYMaximised"
+        viewportName: "Z,Y axis (right)"
 
         property alias position: transformTranslate.translate;
 
@@ -95,6 +96,7 @@ Rectangle {
         y: 0;
         camera.eye: Qt.vector3d(0, 0, 20);
         stateName: "XYMaximised"
+        viewportName: "X,Y axis (front)"
 
         property alias position: transformTranslate.translate;
 
@@ -119,6 +121,7 @@ Rectangle {
         camera.eye: Qt.vector3d(0, 20, 0);
         camera.upVector: Qt.vector3d(0, 0, -1);
         stateName: "XZMaximised"
+        viewportName: "X,Z axis (top)"
 
         property alias position: transformTranslate.translate;
 

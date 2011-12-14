@@ -18,6 +18,10 @@ Item {
 
     property int textWidth: 80
 
+    signal next
+    signal prev
+    signal gotFocus
+
     Rectangle {
         id: rect
         radius: 8
@@ -55,6 +59,7 @@ Item {
             visible: false
             onFocusChanged: {
                 if (focus == false) {
+                    parent.parent.update(text)
                     visible = false
                     textLabel.visible = true
                 }
@@ -63,6 +68,9 @@ Item {
                     textLabel.visible = false
                 }
             }
+
+            Keys.onTabPressed: valueSlider.next()
+            Keys.onBacktabPressed: valueSlider.prev()
         }
         Image {
             id: plus
@@ -88,10 +96,7 @@ Item {
                 else if (mouse.x>width/3*2)
                     incDelta();
                 else {
-                    textLabel.visible = false;
-                    textInput.visible = true;
-                    textInput.focus = true;
-                    textInput.selectAll();
+                    valueSlider.gotFocus()
                 }
 
             }
@@ -134,6 +139,15 @@ Item {
         else
             update(t);
     }
+
+    onGotFocus: {
+        textLabel.visible = false;
+        textInput.visible = true;
+        textInput.focus = true;
+        textInput.selectAll();
+    }
+
+    onFocusChanged: if (focus) valueSlider.gotFocus()
 
     Keys.onUpPressed: incDelta()
     Keys.onDownPressed: decDelta()

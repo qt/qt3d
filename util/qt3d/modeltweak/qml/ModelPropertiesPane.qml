@@ -33,7 +33,8 @@ Column {
         function update (f)  {
             transformTranslate.translate = Qt.vector3d(f, transformTranslate.translate.y, transformTranslate.translate.z);
         }
-        Keys.onTabPressed:   { updateMe(); focus = false; posY.focus = true; }
+        onNext: { updateMe(); focus = false; posY.focus = true; }
+        onPrev: { updateMe(); focus = false; scaleZ.focus = true; }
     }
     BlenderValueSlider {
         id: posY
@@ -42,7 +43,8 @@ Column {
         function update (f)  {
             transformTranslate.translate = Qt.vector3d(transformTranslate.translate.x, f, transformTranslate.translate.z);
         }
-        Keys.onTabPressed:   { updateMe(); focus = false; posZ.focus = true; }
+        onNext: { updateMe(); focus = false; posZ.focus = true; }
+        onPrev: { updateMe(); focus = false; posX.focus = true; }
     }
     BlenderValueSlider {
         id: posZ
@@ -51,7 +53,8 @@ Column {
         function update (f)  {
             transformTranslate.translate = Qt.vector3d(transformTranslate.translate.x, transformTranslate.translate.y, f);
         }
-        Keys.onTabPressed:   { updateMe(); focus = false; rotX.focus = true; }
+        onNext: { updateMe(); focus = false; rotX.focus = true; }
+        onPrev: { updateMe(); focus = false; posY.focus = true; }
     }
 
     // ROTATE
@@ -80,7 +83,8 @@ Column {
         max: 360; limitMax: true
         value: transformRotateX.angle.toFixed(3)
         function update (f)  { transformRotateX.angle = f }
-        Keys.onTabPressed:   { updateMe(); focus = false; rotY.focus = true; }
+        onNext: { updateMe(); focus = false; rotY.focus = true; }
+        onPrev: { updateMe(); focus = false; posZ.focus = true; }
     }
     BlenderValueSlider {
         id: rotY
@@ -90,7 +94,8 @@ Column {
         max: 360; limitMax: true
         value: transformRotateY.angle.toFixed(3)
         function update (f)  { transformRotateY.angle = f }
-        Keys.onTabPressed:   { updateMe(); focus = false; rotZ.focus = true; }
+        onNext: { updateMe(); focus = false; rotZ.focus = true; }
+        onPrev: { updateMe(); focus = false; rotX.focus = true; }
     }
     BlenderValueSlider {
         id: rotZ
@@ -100,7 +105,8 @@ Column {
         max: 360; limitMax: true
         value: transformRotateZ.angle.toFixed(3)
         function update (f)  { transformRotateZ.angle = f }
-        Keys.onTabPressed:   { updateMe(); focus = false; scaleX.focus = true; }
+        onNext: { updateMe(); focus = false; scaleX.focus = true; }
+        onPrev: { updateMe(); focus = false; rotY.focus = true; }
     }
 
     // SCALE
@@ -127,7 +133,8 @@ Column {
         min: 0; limitMin: true
         value: transformScale.scale.x.toFixed(3)
         function update (f)  { transformScale.scale = Qt.vector3d(f, transformScale.scale.y, transformScale.scale.z); }
-        Keys.onTabPressed:   { updateMe(); focus = false; scaleY.focus = true; }
+        onNext: { updateMe(); focus = false; scaleY.focus = true; }
+        onPrev: { updateMe(); focus = false; rotZ.focus = true; }
     }
     BlenderValueSlider {
         id: scaleY
@@ -135,7 +142,8 @@ Column {
         min: 0; limitMin: true
         value: transformScale.scale.y.toFixed(3)
         function update (f)  { transformScale.scale = Qt.vector3d(transformScale.scale.x, f, transformScale.scale.z); }
-        Keys.onTabPressed:   { updateMe(); focus = false; scaleZ.focus = true; }
+        onNext: { updateMe(); focus = false; scaleZ.focus = true; }
+        onPrev: { updateMe(); focus = false; scaleX.focus = true; }
     }
     BlenderValueSlider {
         id: scaleZ
@@ -143,7 +151,7 @@ Column {
         min: 0; limitMin: true
         value: transformScale.scale.z.toFixed(3)
         function update (f)  { transformScale.scale = Qt.vector3d(transformScale.scale.x, transformScale.scale.y, f); }
-        Keys.onTabPressed:   { updateMe(); focus = false; posX.focus = true; }
+        onNext: { updateMe(); focus = false; posX.focus = true; }
+        onPrev: { updateMe(); focus = false; scaleY.focus = true; }
     }
-
 }
