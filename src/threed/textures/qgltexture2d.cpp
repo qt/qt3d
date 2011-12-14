@@ -47,6 +47,7 @@
 #include "qabstractdownloadmanager.h"
 #include "qdownloadmanager.h"
 #include "qthreadeddownloadmanager.h"
+#include "qopenglfunctions.h"
 
 #include <QtCore/qfile.h>
 #include <QtCore/qfileinfo.h>
@@ -92,6 +93,8 @@ QT_BEGIN_NAMESPACE
 
 Q_GLOBAL_STATIC(QSize, getMaxImageSize)
 
+QGLTexture2DPrivate::ForcePowerOfTwo QGLTexture2DPrivate::forcePowerOfTwo = QGLTexture2DPrivate::ForcePowerOfTwoUndefined;
+
 QGLTexture2DPrivate::QGLTexture2DPrivate()
 {
     horizontalWrap = QGL::Repeat;
@@ -105,6 +108,13 @@ QGLTexture2DPrivate::QGLTexture2DPrivate()
     parameterGeneration = 0;
     infos = 0;
     downloadManager = 0;
+
+    if (forcePowerOfTwo == ForcePowerOfTwoUndefined) {
+        if (qgetenv("NPOT_MIPMAP_UNSUPPORTED").toInt() == 1)
+            forcePowerOfTwo = ForcePowerOfTwoTrue;
+        else
+            forcePowerOfTwo = ForcePowerOfTwoFalse;
+    }
 }
 
 QGLTexture2DPrivate::~QGLTexture2DPrivate()
@@ -606,6 +616,15 @@ bool QGLTexture2DPrivate::bind(GLenum target)
     if (!ctx)
         return false;
 
+    QOpenGLFunctions glFuncs(ctx);
+    if (!glFuncs.hasOpenGLFeature(QOpenGLFunctions::NPOTTextures))
+    {
+        QSize oldSize = size;
+        size = QGL::nextPowerOfTwo(size);
+        if (size != oldSize)
+            ++imageGeneration;
+    }
+
     // Find the information block for the context, or create one.
     QGLTexture2DTextureInfo *info = infos;
     QGLTexture2DTextureInfo *prev = 0;
@@ -664,6 +683,10 @@ void QGLTexture2DPrivate::bindImages(QGLTexture2DTextureInfo *info)
         scaledSize = QGL::nextPowerOfTwo(scaledSize);
     }
 #endif
+
+    if (forcePowerOfTwo == ForcePowerOfTwoTrue)
+        scaledSize = QGL::nextPowerOfTwo(scaledSize);
+
     if (!image.isNull())
         info->tex.uploadFace(GL_TEXTURE_2D, image, scaledSize);
     else if (size.isValid())

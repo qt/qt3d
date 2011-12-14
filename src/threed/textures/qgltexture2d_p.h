@@ -109,6 +109,14 @@ public:
     QGLTexture2DTextureInfo *infos;
     QAbstractDownloadManager *downloadManager;
 
+    enum ForcePowerOfTwo {
+        ForcePowerOfTwoUndefined = -1,
+        ForcePowerOfTwoFalse = 0,
+        ForcePowerOfTwoTrue = 1
+    };
+
+    static ForcePowerOfTwo forcePowerOfTwo;
+
     bool bind(GLenum target);
     virtual void bindImages(QGLTexture2DTextureInfo *info);
 };
