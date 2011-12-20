@@ -152,10 +152,18 @@ public:
     void removeNode(QGLSceneNode *node);
     void removeNodes(const QList<QGLSceneNode *> &nodes);
 
+    QGLSceneNode *findSceneNode(QString &nodePath);
+    QGLSceneNode *findSceneNode(QStringList &nodePath);
+
     virtual void draw(QGLPainter *painter);
 
     QGLPickNode *pickNode() const;
     void setPickNode(QGLPickNode *node);
+
+    Q_INVOKABLE QGLSceneNode *get(const QString &name, QObject *parent = 0, bool forceCopy = false) ;
+    Q_INVOKABLE QGLSceneNode *get(const QStringList &names, QObject *parent = 0, bool forceCopy = false) ;
+    Q_INVOKABLE QGLSceneNode *except(const QString &name, QObject *parent = 0) ;
+    Q_INVOKABLE QGLSceneNode *except(const QStringList &names, QObject *parent = 0) ;
 
     Q_INVOKABLE QGLSceneNode *clone(QObject *parent = 0) const;
     Q_INVOKABLE QGLSceneNode *cloneNoChildren(QObject *parent = 0) const;

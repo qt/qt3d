@@ -1461,6 +1461,288 @@ void QGLSceneNode::setPickNode(QGLPickNode *node)
 }
 
 /*!
+    Return a specific scene node based on a unqiue path specified by
+    \a nodePath.  This path contains the names of the nodes in the
+    scene-graph from the root node through to a specific target node.
+
+    Individual node names are separated by a double colon "::".
+
+    For example, given the following scene graph:
+
+          Item2
+         /
+    Item1
+         \
+          Item3 - Item4
+
+    We could get the QGLSceneNode for "Item4" using the following function
+    call:
+
+    \code
+    QString searchPath("Item1::Item3::Item4");
+    QGLSceneNode * targetNode = findSceneNode(searchPath);
+    \endcode
+
+    The function will automatically skip unnamed nodes.  For example, consider
+    this scene graph:
+
+                      Item2
+                     /
+    <unnamed> - Item1
+                     \
+                      Item3 - <unnamed> - Item4
+
+
+    The function \a nodePath will return the QGLSceneNode for node "Item4".
+
+    \code
+    "Item1::Item3::Item4"
+    \endcode
+
+    This is because the unnamed nodes are skipped.  Likewise blank or unnamed
+    nodes in the search path will be ignored, so the following string will
+    give the same result as the previous example:
+
+    \code
+    "::Item1::Item3::::Item4"
+    \endcode
+
+    The function assumes that there are no repeated instances of the same
+    name at any given ply of the scenegraph.  For example, the following
+    scenegraph is invalid because of the repeat of Sphere1 in the same layer
+    of the graph:
+
+          Sphere1
+         /
+    Cube1
+         \
+          Sphere1
+
+    The function also assumes that the names of nodes do not contain
+    double colons.  For example, a node with the name: "Sphere::1" would
+    result in an invalid graph.
+
+    If a third party model contains such names it is still possible to retrieve
+    the nodes by using the variant of findSceneNode() which takes a list
+    of node-names rather than the double-colon separated string in \a nodePath.
+
+    \sa findSceneNode()
+*/
+QGLSceneNode *QGLSceneNode::findSceneNode(QString &nodePath)
+{
+    QRegExp splitExpression("::");
+    QStringList nodePathList = nodePath.split(splitExpression);
+    return findSceneNode(nodePathList);
+}
+
+/*!
+    This functions exactly the same way as the previous findSceneNode
+    function except in this case the \a nodePath is specified as
+    a QStringList composed of the individual nodes along the path
+    to the target node.
+
+    The other findSceneNode function acts by splitting its nodePath
+    into a QStringList wherever a double colon (::) is found and
+    passing the result to this function.
+
+    \sa findSceneNode()
+*/
+QGLSceneNode *QGLSceneNode::findSceneNode(QStringList &nodePath)
+{
+    //Skip objects with blank names
+    if (objectName()!="")
+    {
+        //If nodePath list's head is empty, delete it
+        while (nodePath.first()=="")
+            nodePath.removeFirst();
+        //If nodePath list is empty, fail test (return null)
+        if (nodePath.isEmpty())
+            return 0;
+        //If nodePath's head matches this node...
+        if (nodePath.first()==objectName())
+        {
+            //If nodePath's tail is empty, return this node (success)
+            nodePath.removeFirst();
+            if (nodePath.isEmpty()) {
+                return this;
+            }
+        } else {
+            //If there is no match, return a failure.
+            return 0;
+        }
+    }
+
+    //Otherwise check child nodes against the remainder of nodePath
+    QList<QGLSceneNode*>childNodes = children();
+    for (int i=0; i<childNodes.count(); i++) {
+       QGLSceneNode *result = childNodes.at(i)->findSceneNode(nodePath);
+       if (result)
+           return result;
+    }
+
+    //If we reach this point we've failed to find a matching node - return failure.
+    return 0;
+}
+
+/*!
+    This function retrieve a sub-branch of the scenegraph with its root at the
+    current node.  The exact node to retrieve is specified by the double-colon
+    separated path described by \a name.
+
+    This node will be located using the method described by findSceneNode() and
+    will be copied using the clone() function.
+
+    If a \a parent is specified then the sub-node will have that parent added to
+    it.
+
+    If the user sets the \a forceCopy parameter to true then the cloneWithChildren()
+    function shall be used instead of the clone() function while copying.  This
+    will result in all of the child-nodes being forcibly copied as well resulting
+    in less efficient memory usage, though allowing the modification of the newly
+    created branch without altering the original in any way.
+
+    The inverse of this function, except(), can be used to get everything except
+    a specific sub-branch.
+
+    \sa findSceneNode(), clone(), cloneWithChildren(), get(), except()
+*/
+QGLSceneNode *QGLSceneNode::get(const QString &name, QObject *parent, bool forceCopy)
+{
+    //function stub only - not for use; api review only
+    return 0;
+}
+
+/*!
+    This function is similar to the previous instance of the get() function.  In
+    this case, however, the user can specify multiple node-paths to get.
+
+    These nodes will be cloned in an identical way to the single-node instance of
+    get, using the \a parent and \a forceCopy parameters in the same way.
+
+    The resulting set of branches will then be added to a newly created root node,
+    creating a composite branch.  For example, consider the simple scenegraph below:
+
+         Node 1 - Node 2 - Node 3
+        /
+    Root
+        \
+         Node 4 - Node 5 - Node 6
+
+    If we now call the get() function with the following code.
+
+    \code
+    QString branch1("Root::Node 1::Node 2");
+    QString branch2("Root::Node 4::Node 5");
+    QStringList branchList;
+    branchList << branch1 << branch2;
+    QGLSceneNode *newBranch = get(branchList);
+    \endcode
+
+    In this case the function will create a new root node for the output, and
+    graft the two branches onto it, as follows:
+
+             Node 2 - Node 3
+            /
+    New-Root
+            \
+             Node 5 - Node 6
+
+    \sa findSceneNode(), clone(), cloneWithChildren(), get(), except()
+*/
+QGLSceneNode *QGLSceneNode::get(const QStringList &names, QObject *parent, bool forceCopy)
+{
+    //function stub only - not for use; api review only
+    return 0;
+}
+
+/*!
+    This function creates a copy of the scenegraph with its root at the
+    current node, with a specific sub-branch specified by \a name removed from
+    it.  The exact node from which to prune is specified by the double-colon
+    separated path described by \a name.
+
+    The function will create a copy of the scenegraph using the cloneWithChildren()
+    method, from which the specified sub-branch shall be removed.
+
+    If a \a parent is specified then the sub-node will have that parent added to
+    it.
+
+    The inverse of this function, get(), will return only the sub-branch, leaving
+    the current scengraph intact.
+
+    For example, consider the following scenegraph:
+
+         Node 1 - Node 2
+        /
+    Root
+        \
+         Node 3 - Node 4
+
+    By using the following code:
+
+    \code
+    QString branch("Root::Node1");
+    QGLSceneNode *newGraph = except(branch);
+    \endcode
+
+    We can create a copy of the scenegraph with the branch pruned, as shown below:
+
+    Root
+        \
+         Node 3 - Node 4
+
+    \sa findSceneNode(), clone(), cloneWithChildren(), get()
+*/
+QGLSceneNode *QGLSceneNode::except(const QString &name, QObject *parent)
+{
+    //function stub only - not for use; api review only
+    return 0;
+}
+
+/*!
+    Like the previous version of except, this creates a copy of the scenegraph
+    with its root at the current node.  However, this version allows users to
+    prune multiple sub-branches using the list of sub-branches specified by
+    the \a names list.
+
+    Thus for the scenegraph:
+
+         Node 1 - Node 2 - Node 3
+        /
+    Root
+        \
+         Node 4 - Node 5 - Node 6
+
+    The code:
+
+    \code
+    QString branch1("Root::Node1::Node2");
+    QString branch2("Root::Node4::Node5}");
+    QStringList branchList;
+    branchList << branch1 << branch2;
+    QGLSceneNode *newGraph = except(branchList);
+    \endcode
+
+    Would yield the scenegraph:
+
+         Node 1
+        /
+    Root
+        \
+         Node 4
+
+    Once again, this copy will be reparented with the parameter \a parent if it
+    exists.
+
+    \sa findSceneNode(), clone(), cloneWithChildren(), get()
+*/
+QGLSceneNode *QGLSceneNode::except(const QStringList &names, QObject *parent)
+{
+    //function stub only - not for use; api review only
+    return 0;
+}
+
+/*!
     Creates a new QGLSceneNode that is a copy of this scene node, with
     \a parent as the parent of the new copy.  If parent is NULL then parent
     is set to this nodes parent.
@@ -1527,6 +1809,17 @@ QGLSceneNode *QGLSceneNode::allExcept(const QString &name, QObject *parent) cons
     }
     return node;
 }
+
+/*!
+    Get a new QGLSceneNode that is a copy of this scene node with the \a parent as a
+    parent of the new copy.  If the parent is NULL then the parent is set to this node's
+    parent.
+
+    The copy will reference the same underlying geometry.
+*/
+
+
+
 
 /*!
     Creates a new QGLSceneNode that is a copy of this scene node, with

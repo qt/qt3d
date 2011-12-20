@@ -69,6 +69,7 @@ private slots:
     void boundingBox_data();
     void boundingBox();
     void position_QTBUG_17279();
+    void findSceneNode();
 };
 
 // Check that all properties have their expected defaults.
@@ -773,6 +774,56 @@ void tst_QGLSceneNode::position_QTBUG_17279()
     QCOMPARE(node2->transformMatrix(1, 3), -1.0);
     QCOMPARE(node2->resultingModelView(2, 3), -15.0);
     QCOMPARE(node2->transformMatrix(2, 3), -5.0);
+}
+
+void tst_QGLSceneNode::findSceneNode()
+{
+    //Create the following scenegraph
+    //    ""--+--"Item1"
+    //        |
+    //        +--"Item2"--""--"Item1"--"Item3"
+    QGeometryData geom;
+    geom.appendVertex(QVector3D(0, 0, 0),
+                      QVector3D(1.414, 1.414, 0),
+                      QVector3D(2, 0, 0));
+
+    QGLBuilder builder;
+    QGLSceneNode * root = builder.currentNode();
+
+    builder.pushNode()->setObjectName(QLatin1String("Item1"));
+    builder.currentNode()->setGeometry(geom);
+    QGLSceneNode *Item1Node1 = builder.currentNode();
+
+    builder.newNode()->setObjectName(QLatin1String("Item2"));
+    builder.currentNode()->setGeometry(geom);
+
+    builder.pushNode();
+    builder.currentNode()->setGeometry(geom);
+
+    builder.pushNode()->setObjectName(QLatin1String("Item1"));
+    builder.currentNode()->setGeometry(geom);
+    QGLSceneNode *Item1Node2 = builder.currentNode();
+
+    builder.pushNode()->setObjectName(QLatin1String("Item3"));
+    builder.currentNode()->setGeometry(geom);
+
+    //Test various combinations of node finding
+    QString test1Str("Item1");
+    QString test2Str("Item3");
+    QString test3Str("Item2::Item1");
+    QString test4Str("Item2::::Item1");
+    QString test5Str("Item1::Item1");
+    QString test6Str("Item4");
+    QGLSceneNode *nullNode = 0;
+
+    QCOMPARE(root->findSceneNode(test1Str), Item1Node1);
+    QCOMPARE(root->findSceneNode(test2Str), nullNode);
+    QCOMPARE(root->findSceneNode(test3Str), Item1Node2);
+    QCOMPARE(root->findSceneNode(test4Str), Item1Node2);
+    QCOMPARE(root->findSceneNode(test5Str), nullNode);
+    QCOMPARE(root->findSceneNode(test6Str) , nullNode);
+
+    builder.finalizedSceneNode();
 }
 
 QTEST_MAIN(tst_QGLSceneNode)
