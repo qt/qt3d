@@ -578,6 +578,29 @@ bool QGLTexture2DPrivate::bind(GLenum target)
     if (!ctx)
         return false;
 
+    if (ctx)
+    {
+        QGLPainter painter(ctx);
+        if (!painter.hasOpenGLFeature(QOpenGLFunctions::NPOTTextures))
+        {
+            QSize oldSize = size;
+            size = QGL::nextPowerOfTwo(size);
+            if (size != oldSize)
+                ++imageGeneration;
+        }
+    }
+
+    if ((bindOptions & QGLContext::MipmapBindOption) ||
+            horizontalWrap != QGL::ClampToEdge ||
+            verticalWrap != QGL::ClampToEdge) {
+        // This accounts for the broken Intel HD 3000 graphics support at least
+        // under OSX which claims to support POTT, but actually doesn't.
+        QSize oldSize = size;
+        size = QGL::nextPowerOfTwo(size);
+        if (size != oldSize)
+            ++imageGeneration;
+    }
+
     // Find the information block for the context, or create one.
     QGLTexture2DTextureInfo *info = infos;
     QGLTexture2DTextureInfo *prev = 0;
