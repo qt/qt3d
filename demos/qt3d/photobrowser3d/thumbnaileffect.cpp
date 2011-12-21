@@ -41,7 +41,7 @@
 
 #include "thumbnaileffect.h"
 
-#include <QtOpenGL/qglshaderprogram.h>
+#include <QOpenGLShaderProgram>
 
 class ThumbnailEffectPrivate
 {
@@ -56,7 +56,7 @@ public:
     }
     ~ThumbnailEffectPrivate() { delete program; }
 
-    QGLShaderProgram *program;
+    QOpenGLShaderProgram *program;
     int matrixUniform;
     int thumbnailUniform;
     int colorUniform;
@@ -103,9 +103,9 @@ void ThumbnailEffect::setActive(QGLPainter *painter, bool flag)
     if (!d->program) {
         if (!flag)
             return;
-        d->program = new QGLShaderProgram();
-        d->program->addShaderFromSourceFile(QGLShader::Vertex, ":/shaders/replace_texture.vsh");
-        d->program->addShaderFromSourceFile(QGLShader::Fragment, ":/shaders/replace_texture.fsh");
+        d->program = new QOpenGLShaderProgram();
+        d->program->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/replace_texture.vsh");
+        d->program->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/replace_texture.fsh");
         d->program->bindAttributeLocation("vertex", QGL::Position);
         d->program->bindAttributeLocation("texcoord", QGL::TextureCoord0);
         d->program->bindAttributeLocation("thumbcoord", QGL::TextureCoord1);

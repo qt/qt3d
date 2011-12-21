@@ -40,21 +40,23 @@
 ****************************************************************************/
 
 #include "qglview.h"
-#include "qglframebufferobject.h"
 #include "qglsubsurface.h"
 #include "qglmaskedsurface_p.h"
 #include "qglwindowsurface.h"
 #include "qgldrawbuffersurface_p.h"
 #include "qray3d.h"
-#include <QtGui/qevent.h>
-#include <QtCore/qmap.h>
-#include <QtWidgets/qapplication.h>
-#include <QtCore/qtimer.h>
-#include <QtCore/qdatetime.h>
-#include <QtCore/qdebug.h>
 
-#include <QtGui/QOpenGLContext>
-#include <QtGui/QSurfaceFormat>
+#include <QOpenGLFramebufferObject>
+#include <QEvent>
+#include <QMap>
+#include <QGuiApplication>
+#include <QTimer>
+#include <QDateTime>
+#include <QDebug>
+#include <QResizeEvent>
+#include <QExposeEvent>
+#include <QOpenGLContext>
+#include <QSurfaceFormat>
 
 QT_BEGIN_NAMESPACE
 
@@ -270,7 +272,7 @@ public:
     QRect viewport;
     QGLView::Options options;
     QGLView::StereoType stereoType;
-    QGLFramebufferObject *fbo;
+    QOpenGLFramebufferObject *fbo;
     QGLWindowSurface mainSurface;
     bool visible;
     QGLAbstractSurface *leftSurface;
@@ -357,7 +359,7 @@ inline void QGLViewPrivate::ensureContext()
 
 static QString qt_gl_stereo_arg()
 {
-    QStringList args = QApplication::arguments();
+    QStringList args = QGuiApplication::arguments();
     foreach (QString arg, args) {
         if (arg.startsWith(QLatin1String("-stereo-")))
             return arg;
@@ -966,7 +968,7 @@ void QGLView::update()
     if (!d->updateQueued)
     {
         d->updateQueued = true;
-        QApplication::postEvent(this, new QExposeEvent(geometry()));
+        QGuiApplication::postEvent(this, new QExposeEvent(geometry()));
     }
 }
 
@@ -1294,7 +1296,7 @@ void QGLView::keyPressEvent(QKeyEvent *e)
 class QGLViewPickSurface : public QGLAbstractSurface
 {
 public:
-    QGLViewPickSurface(QGLView *view, QGLFramebufferObject *fbo,
+    QGLViewPickSurface(QGLView *view, QOpenGLFramebufferObject *fbo,
                        const QSize &areaSize);
 
     QPaintDevice *device() const;
@@ -1304,12 +1306,12 @@ public:
 
 private:
     QGLView *m_view;
-    QGLFramebufferObject *m_fbo;
+    QOpenGLFramebufferObject *m_fbo;
     QRect m_viewportGL;
 };
 
 QGLViewPickSurface::QGLViewPickSurface
-        (QGLView *view, QGLFramebufferObject *fbo, const QSize &areaSize)
+        (QGLView *view, QOpenGLFramebufferObject *fbo, const QSize &areaSize)
     : QGLAbstractSurface(504)
     , m_view(view)
     , m_fbo(fbo)
@@ -1404,10 +1406,10 @@ QObject *QGLView::objectForPoint(const QPoint &point)
         if (!useBackBuffer) {
             QSize fbosize = QGL::nextPowerOfTwo(areaSize);
             if (!d->fbo) {
-                d->fbo = new QGLFramebufferObject(fbosize, QGLFramebufferObject::CombinedDepthStencil);
+                d->fbo = new QOpenGLFramebufferObject(fbosize, QOpenGLFramebufferObject::CombinedDepthStencil);
             } else if (d->fbo->size() != fbosize) {
                 delete d->fbo;
-                d->fbo = new QGLFramebufferObject(fbosize, QGLFramebufferObject::CombinedDepthStencil);
+                d->fbo = new QOpenGLFramebufferObject(fbosize, QOpenGLFramebufferObject::CombinedDepthStencil);
             }
         }
 

@@ -44,7 +44,7 @@
 #include <QtOpenGL/qgl.h>
 #include <QtOpenGL/qglpixelbuffer.h>
 #include <QtOpenGL/qglframebufferobject.h>
-#include <QtOpenGL/qglshaderprogram.h>
+#include <QOpenGLShaderProgram>
 
 #include <QtCore/qtimer.h>
 #include <QtCore/qdatetime.h>
@@ -224,10 +224,10 @@ QString QGLInfo::reportQtGLFeatures() const
     d += printBool("QGLFormat::hasOpenGL: ", QGLFormat::hasOpenGL());
     d += printBool("QGLFormat::hasOpenGLOverlays: ", QGLFormat::hasOpenGLOverlays());
     d += printBool("QGLPixelBuffer::hasOpenGLPbuffers: ", QGLPixelBuffer::hasOpenGLPbuffers());
-    d += printBool("QGLFramebufferObject::hasOpenGLFramebufferObjects: ",
-              QGLFramebufferObject::hasOpenGLFramebufferObjects());
-    d += printBool("QGLFramebufferObject::hasOpenGLFramebufferBlit: ",
-              QGLFramebufferObject::hasOpenGLFramebufferBlit());
+    d += printBool("QOpenGLFramebufferObject::hasOpenGLFramebufferObjects: ",
+              QOpenGLFramebufferObject::hasOpenGLFramebufferObjects());
+    d += printBool("QOpenGLFramebufferObject::hasOpenGLFramebufferBlit: ",
+              QOpenGLFramebufferObject::hasOpenGLFramebufferBlit());
     d += printBool("QGLShaderProgram::hasOpenGLShaderPrograms: ",
               QGLShaderProgram::hasOpenGLShaderPrograms());
     return d;

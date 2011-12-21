@@ -117,7 +117,7 @@ public:
     QColor color;
     QGLPainter::Updates updates;
     QGLPainterPickPrivate *pick;
-    QMap<QString, QGLShaderProgram *> cachedPrograms;
+    QMap<QString, QOpenGLShaderProgram *> cachedPrograms;
     QStack<QGLPainterSurfaceInfo> surfaceStack;
     GLuint boundVertexBuffer;
     GLuint boundIndexBuffer;

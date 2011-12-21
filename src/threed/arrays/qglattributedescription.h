@@ -42,9 +42,10 @@
 #ifndef QGLATTRIBUTEDESCRIPTION_H
 #define QGLATTRIBUTEDESCRIPTION_H
 
-#include <QtOpenGL/qgl.h>
 #include "qt3dglobal.h"
 #include "qglnamespace.h"
+
+#include <QOpenGLBuffer>
 
 QT_BEGIN_HEADER
 

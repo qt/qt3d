@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Forest
-Icon=icon-l-qtquick3d
-Exec=/usr/bin/forest -fullscreen
-OnlyShowIn=X-MeeGo;
-X-MeeGo-Logical-Id=qtn_comm_appname_forest
-X-MeeGo-Translation-Catalog=essentials

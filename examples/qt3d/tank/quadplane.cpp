@@ -41,6 +41,9 @@
 #include "quadplane.h"
 #include "qgraphicsrotation3d.h"
 
+#include <QImage>
+#include <QPainter>
+
 QGLMaterial *qCreateFloor()
 {
     quint32 sz = 512;

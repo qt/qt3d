@@ -55,8 +55,8 @@ typedef void (QOPENGLF_APIENTRYP q_PFNGLCLIENTACTIVETEXTUREPROC) (GLenum);
 class QGLMultiTextureExtensions : public QOpenGLSharedResource
 {
 public:
-    QGLMultiTextureExtensions(const QGLContext *ctx)
-        : QOpenGLSharedResource(ctx ? ctx->contextHandle()->shareGroup() : 0)
+    QGLMultiTextureExtensions(const QOpenGLContext *ctx)
+        : QOpenGLSharedResource(ctx ? ctx->shareGroup() : 0)
     {
 
         clientActiveTexture = 0;
@@ -80,19 +80,21 @@ QGLMultiTextureExtensions::~QGLMultiTextureExtensions()
 }
 
 static QGLMultiTextureExtensions *resolveMultiTextureExtensions
-    (const QGLContext *ctx)
+    (const QOpenGLContext *ctx)
 {
     if (!qt_multitexture_funcs)
         qt_multitexture_funcs = new QGLMultiTextureExtensions(ctx);
     if (!(qt_multitexture_funcs->multiTextureResolved)) {
         qt_multitexture_funcs->multiTextureResolved = true;
         if (!qt_multitexture_funcs->clientActiveTexture) {
+            QOpenGLContext *vctx = const_cast<QOpenGLContext*>(ctx);
             qt_multitexture_funcs->clientActiveTexture = (q_PFNGLCLIENTACTIVETEXTUREPROC)
-                ctx->getProcAddress(QLatin1String("glClientActiveTexture"));
+                vctx->getProcAddress("glClientActiveTexture");
         }
         if (!qt_multitexture_funcs->clientActiveTexture) {
+            QOpenGLContext *vctx = const_cast<QOpenGLContext*>(ctx);
             qt_multitexture_funcs->clientActiveTexture = (q_PFNGLCLIENTACTIVETEXTUREPROC)
-                ctx->getProcAddress(QLatin1String("glClientActiveTextureARB"));
+                vctx->getProcAddress("glClientActiveTextureARB");
         }
     }
     return qt_multitexture_funcs;
@@ -100,7 +102,7 @@ static QGLMultiTextureExtensions *resolveMultiTextureExtensions
 
 void qt_gl_ClientActiveTexture(GLenum texture)
 {
-    const QGLContext *ctx = QGLContext::currentContext();
+    const QOpenGLContext *ctx = QOpenGLContext::currentContext();
     if (!ctx)
         return;
     QGLMultiTextureExtensions *extn = resolveMultiTextureExtensions(ctx);

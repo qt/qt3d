@@ -42,7 +42,9 @@
 #ifndef PAGEFLIPMATH_P_H
 #define PAGEFLIPMATH_P_H
 
-#include <QtOpenGL/qgl.h>
+#include <QtGlobal>
+#include <QRect>
+#include <QOpenGLBuffer>
 
 QT_BEGIN_NAMESPACE
 

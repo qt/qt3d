@@ -193,7 +193,7 @@ class QGLVertexBundlePrivate
 public:
     QGLVertexBundlePrivate()
         : ref(1),
-          buffer(QGLBuffer::VertexBuffer),
+          buffer(QOpenGLBuffer::VertexBuffer),
           vertexCount(0)
     { }
     ~QGLVertexBundlePrivate()
@@ -202,7 +202,7 @@ public:
     }
 
     QAtomicInt ref;
-    QGLBuffer buffer;
+    QOpenGLBuffer buffer;
     QList<QGLVertexBundleAttribute *> attributes;
     int vertexCount;
     QGLAttributeSet attributeSet;

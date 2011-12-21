@@ -42,8 +42,8 @@
 #ifndef QGLINDEXBUFFER_H
 #define QGLINDEXBUFFER_H
 
-#include <QtOpenGL/qgl.h>
-#include <QtOpenGL/qglbuffer.h>
+#include <QOpenGLBuffer>
+
 #include "qglnamespace.h"
 #include "qarray.h"
 
@@ -65,8 +65,8 @@ public:
 
     QGLIndexBuffer& operator=(const QGLIndexBuffer& other);
 
-    QGLBuffer::UsagePattern usagePattern() const;
-    void setUsagePattern(QGLBuffer::UsagePattern value);
+    QOpenGLBuffer::UsagePattern usagePattern() const;
+    void setUsagePattern(QOpenGLBuffer::UsagePattern value);
 
     QArray<ushort> indexesUShort() const;
     QArray<uint> indexesUInt() const;
@@ -85,7 +85,7 @@ public:
     bool upload();
     bool isUploaded() const;
 
-    QGLBuffer buffer() const;
+    QOpenGLBuffer buffer() const;
 
     bool bind();
     void release();

@@ -39,9 +39,7 @@
 ****************************************************************************/
 
 #include <QApplication>
-#include <QtOpenGL/qgl.h>
-#include <QtCore/qmath.h>
-#include <QtCore/qdatetime.h>
+
 #include "view.h"
 
 int main(int argc, char *argv[])

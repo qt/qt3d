@@ -656,7 +656,7 @@ void QGL3dsMesh::checkTextures(int material)
         // all texture coordinates from 3ds have to be flipped because
         // 3ds uses the correct coordinate system, whilst qt uses
         // upside-down coordinates
-        m_texFlip = (tex->bindOptions() & QGLContext::InvertedYBindOption) == 0;
+        m_texFlip = (tex->bindOptions() & QGLTexture2D::InvertedYBindOption) == 0;
     }
 }
 

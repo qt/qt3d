@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#include <QtWidgets/QApplication>
-#include <QtCore/QThread>
+#include <QGuiApplication>
+#include <QThread>
 
 #include "photobrowser3dview.h"
 
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 {
     Q_INIT_RESOURCE(photobrowser3d);
 
-    QApplication app(argc, argv);
+    QGuiApplication app(argc, argv);
 
     // for QSettings
     QCoreApplication::setOrganizationName("Nokia");

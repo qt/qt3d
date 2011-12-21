@@ -42,8 +42,9 @@
 #include "qgllitmaterialeffect_p.h"
 #include "qglabstracteffect_p.h"
 #include "qglext_p.h"
-#include <QtOpenGL/qglshaderprogram.h>
-#include <QtCore/qfile.h>
+
+#include <QOpenGLShaderProgram>
+#include <QFile>
 
 QT_BEGIN_NAMESPACE
 
@@ -319,7 +320,7 @@ public:
     {
     }
 
-    QGLShaderProgram *program;
+    QOpenGLShaderProgram *program;
     int matrixUniform;
     int modelViewUniform;
     int normalMatrixUniform;
@@ -421,14 +422,14 @@ void QGLLitMaterialEffect::setActive(QGLPainter *painter, bool flag)
         return;
     }
 #endif
-    QGLShaderProgram *program = painter->cachedProgram(d->programName);
+    QOpenGLShaderProgram *program = painter->cachedProgram(d->programName);
     d->program = program;
     if (!program) {
         if (!flag)
             return;
-        program = new QGLShaderProgram();
-        program->addShaderFromSourceCode(QGLShader::Vertex, createVertexSource(litMaterialLightingShader, d->vertexShader));
-        program->addShaderFromSourceCode(QGLShader::Fragment, d->fragmentShader);
+        program = new QOpenGLShaderProgram;
+        program->addShaderFromSourceCode(QOpenGLShader::Vertex, createVertexSource(litMaterialLightingShader, d->vertexShader));
+        program->addShaderFromSourceCode(QOpenGLShader::Fragment, d->fragmentShader);
         program->bindAttributeLocation("vertex", QGL::Position);
         program->bindAttributeLocation("normal", QGL::Normal);
         if (d->textureMode != 0)
@@ -494,7 +495,7 @@ void QGLLitMaterialEffect::update
         return;
     }
 #endif
-    QGLShaderProgram *program = d->program;
+    QOpenGLShaderProgram *program = d->program;
     if ((updates & QGLPainter::UpdateMatrices) != 0) {
         program->setUniformValue(d->matrixUniform, painter->combinedMatrix());
         program->setUniformValue(d->modelViewUniform, painter->modelViewMatrix());

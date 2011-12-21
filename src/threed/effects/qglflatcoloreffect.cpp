@@ -41,7 +41,8 @@
 
 #include "qglflatcoloreffect_p.h"
 #include "qglabstracteffect_p.h"
-#include <QtOpenGL/qglshaderprogram.h>
+
+#include <QOpenGLShaderProgram>
 
 QT_BEGIN_NAMESPACE
 
@@ -74,7 +75,7 @@ public:
     {
     }
 
-    QGLShaderProgram *program;
+    QOpenGLShaderProgram *program;
     int matrixUniform;
     int colorUniform;
     bool isFixedFunction;
@@ -142,15 +143,15 @@ void QGLFlatColorEffect::setActive(QGLPainter *painter, bool flag)
         "    gl_FragColor = color;\n"
         "}\n";
 
-    QGLShaderProgram *program =
+    QOpenGLShaderProgram *program =
         painter->cachedProgram(QLatin1String("qt.color.flat"));
     d->program = program;
     if (!program) {
         if (!flag)
             return;
-        program = new QGLShaderProgram();
-        program->addShaderFromSourceCode(QGLShader::Vertex, flatColorVertexShader);
-        program->addShaderFromSourceCode(QGLShader::Fragment, flatColorFragmentShader);
+        program = new QOpenGLShaderProgram;
+        program->addShaderFromSourceCode(QOpenGLShader::Vertex, flatColorVertexShader);
+        program->addShaderFromSourceCode(QOpenGLShader::Fragment, flatColorFragmentShader);
         program->bindAttributeLocation("vertex", QGL::Position);
         if (!program->link()) {
             qWarning("QGLFlatColorEffect::setActive(): could not link shader program");
@@ -219,7 +220,7 @@ public:
     {
     }
 
-    QGLShaderProgram *program;
+    QOpenGLShaderProgram *program;
     int matrixUniform;
     bool isFixedFunction;
 };
@@ -287,15 +288,15 @@ void QGLPerVertexColorEffect::setActive(QGLPainter *painter, bool flag)
         "    gl_FragColor = qColor;\n"
         "}\n";
 
-    QGLShaderProgram *program =
+    QOpenGLShaderProgram *program =
         painter->cachedProgram(QLatin1String("qt.color.pervertex"));
     d->program = program;
     if (!program) {
         if (!flag)
             return;
-        program = new QGLShaderProgram();
-        program->addShaderFromSourceCode(QGLShader::Vertex, pvColorVertexShader);
-        program->addShaderFromSourceCode(QGLShader::Fragment, pvColorFragmentShader);
+        program = new QOpenGLShaderProgram();
+        program->addShaderFromSourceCode(QOpenGLShader::Vertex, pvColorVertexShader);
+        program->addShaderFromSourceCode(QOpenGLShader::Fragment, pvColorFragmentShader);
         program->bindAttributeLocation("vertex", QGL::Position);
         program->bindAttributeLocation("color", QGL::Color);
         if (!program->link()) {

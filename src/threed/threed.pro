@@ -2,7 +2,7 @@ load(qt_module)
 
 TARGET     = Qt3D
 MODULE     = qt3d
-QT         = core-private gui-private opengl network widgets
+QT         = core-private gui-private network
 
 CONFIG += module
 MODULE_PRI = ../../modules/qt_qt3d.pri
@@ -24,3 +24,9 @@ HEADERS += $$PRIVATE_HEADERS
 DEFINES += QT_BUILD_QT3D_LIB
 
 !contains(QT_CONFIG, egl):DEFINES += QT_NO_EGL
+
+# This is the *desktop* opengl library, which is not supported on some
+# smaller footprint systems.  If this is turned off, then (for example)
+# pixel-buffer objects are not supported.
+!isEmpty(QT.opengl.name): QT += opengl
+!isEmpty(QT.widgets.name): QT += widgets

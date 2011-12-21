@@ -40,6 +40,8 @@
 ****************************************************************************/
 
 #include <QtTest/QtTest>
+
+#include "qglview.h"
 #include "qglvertexbundle.h"
 #include "qvector2darray.h"
 #include "qvector3darray.h"
@@ -62,7 +64,6 @@ private slots:
 
 void tst_QGLVertexBundle::interleaved()
 {
-    QSKIP("QWidget: Cannot create a QWidget when no GUI is being used");
     // Interleave 4 positions and texture co-ordinates, which will
     // result in the numbers 1..20 ending up in the GL server's buffer.
     QVector3DArray positions;
@@ -99,8 +100,11 @@ void tst_QGLVertexBundle::interleaved()
     // with data before doing this to ensure that the client-side part of
     // the buffers can be created at application startup time before an
     // actual OpenGL context exists.
-    QGLWidget glw;
-    glw.makeCurrent();
+    QGLView view;
+    view.show();
+    QOpenGLContext *ctx = view.context();
+    if (!ctx || !ctx->makeCurrent(&view))
+        QSKIP("Could not create an OpenGL context");
 
     // Upload the bundle and bail out if we couldn't upload it
     // (i.e. vertex buffers are not supported in the GL server).
@@ -117,7 +121,7 @@ void tst_QGLVertexBundle::interleaved()
     QVERIFY(bundle.bind());
     QCOMPARE(bundle.buffer().size(), int(sizeof(float) * 20));
     float *mapped = reinterpret_cast<float *>
-        (bundle.buffer().map(QGLBuffer::ReadOnly));
+        (bundle.buffer().map(QOpenGLBuffer::ReadOnly));
     if (mapped) {
         for (int index = 0; index < 20; ++index)
             QCOMPARE(mapped[index], float(index + 1));
@@ -148,8 +152,11 @@ void tst_QGLVertexBundle::singleAttribute()
     QVERIFY(!bundle.isUploaded());
     QCOMPARE(bundle.vertexCount(), 4);
 
-    QGLWidget glw;
-    glw.makeCurrent();
+    QGLView view;
+    view.show();
+    QOpenGLContext *ctx = view.context();
+    if (!ctx || !ctx->makeCurrent(&view))
+        QSKIP("Could not create an OpenGL context");
 
     if (!bundle.upload()) {
         QVERIFY(!bundle.isUploaded());
@@ -160,7 +167,7 @@ void tst_QGLVertexBundle::singleAttribute()
     QVERIFY(bundle.bind());
     QCOMPARE(bundle.buffer().size(), int(sizeof(float) * 12));
     float *mapped = reinterpret_cast<float *>
-        (bundle.buffer().map(QGLBuffer::ReadOnly));
+        (bundle.buffer().map(QOpenGLBuffer::ReadOnly));
     if (mapped) {
         for (int index = 0; index < 12; ++index)
             QCOMPARE(mapped[index], float(index + 1));
@@ -176,8 +183,13 @@ void tst_QGLVertexBundle::large()
         positions.append(index * 5, index * 5 + 1, index * 5 + 2);
         texCoords.append(index * 5 + 3, index * 5 + 4);
     }
-    QGLWidget glw;
-    glw.makeCurrent();
+
+    QGLView view;
+    view.show();
+    QOpenGLContext *ctx = view.context();
+    if (!ctx || !ctx->makeCurrent(&view))
+        QSKIP("Could not create an OpenGL context");
+
     QGLVertexBundle bundle;
     bundle.addAttribute(QGL::Position, positions);
     bundle.addAttribute(QGL::TextureCoord0, texCoords);
@@ -189,7 +201,7 @@ void tst_QGLVertexBundle::large()
     QVERIFY(bundle.bind());
     QCOMPARE(bundle.buffer().size(), int(sizeof(float) * 2048 * 5));
     float *mapped = reinterpret_cast<float *>
-        (bundle.buffer().map(QGLBuffer::ReadOnly));
+        (bundle.buffer().map(QOpenGLBuffer::ReadOnly));
     if (mapped) {
         for (int index = 0; index < 2048 * 5; ++index)
             QCOMPARE(mapped[index], float(index));
@@ -211,8 +223,11 @@ void tst_QGLVertexBundle::otherAttributes()
     texCoords.append(15.0f);
     texCoords.append(20.0f);
 
-    QGLWidget glw;
-    glw.makeCurrent();
+    QGLView view;
+    view.show();
+    QOpenGLContext *ctx = view.context();
+    if (!ctx || !ctx->makeCurrent(&view))
+        QSKIP("Could not create an OpenGL context");
 
     QGLVertexBundle bundle;
     bundle.addAttribute(QGL::Position, positions);
@@ -225,7 +240,7 @@ void tst_QGLVertexBundle::otherAttributes()
     QVERIFY(bundle.bind());
     QCOMPARE(bundle.buffer().size(), int(sizeof(float) * 20));
     float *mapped = reinterpret_cast<float *>
-        (bundle.buffer().map(QGLBuffer::ReadOnly));
+        (bundle.buffer().map(QOpenGLBuffer::ReadOnly));
     if (mapped) {
         for (int index = 0; index < 20; ++index)
             QCOMPARE(mapped[index], float(index + 1));
@@ -249,7 +264,7 @@ void tst_QGLVertexBundle::otherAttributes()
     QVERIFY(bundle.bind());
     QCOMPARE(bundle.buffer().size(), int(sizeof(uchar) * 256));
     uchar *mapuchar = reinterpret_cast<uchar *>
-        (bundle.buffer().map(QGLBuffer::ReadOnly));
+        (bundle.buffer().map(QOpenGLBuffer::ReadOnly));
     if (mapuchar) {
         for (int index = 0; index < 256; ++index)
             QCOMPARE(mapuchar[index], uchar(index));
@@ -269,7 +284,7 @@ void tst_QGLVertexBundle::otherAttributes()
     QVERIFY(bundle.bind());
     QCOMPARE(bundle.buffer().size(), int(sizeof(float) * 4));
     mapped = reinterpret_cast<float *>
-        (bundle.buffer().map(QGLBuffer::ReadOnly));
+        (bundle.buffer().map(QOpenGLBuffer::ReadOnly));
     if (mapped) {
         for (int index = 0; index < 4; ++index)
             QCOMPARE(mapped[index], float((index + 1) * 5));

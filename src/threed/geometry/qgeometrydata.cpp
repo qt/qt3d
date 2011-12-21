@@ -43,8 +43,7 @@
 #include "qlogicalvertex.h"
 #include "qglpainter.h"
 
-#include <QtOpenGL/qgl.h>
-#include <QtCore/qdebug.h>
+#include <QDebug>
 
 QT_BEGIN_NAMESPACE
 

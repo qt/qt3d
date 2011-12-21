@@ -43,8 +43,8 @@
 #include "qglpainter.h"
 #include "qglpainter_p.h"
 #include "qglext_p.h"
-#include <QtOpenGL/qgl.h>
-#include <QtCore/qatomic.h>
+
+#include <QAtomicInt>
 
 QT_BEGIN_NAMESPACE
 
@@ -79,7 +79,7 @@ public:
         : ref(1)
         , indexCount(0)
         , elementType(GL_UNSIGNED_SHORT)
-        , buffer(QGLBuffer::IndexBuffer)
+        , buffer(QOpenGLBuffer::IndexBuffer)
 #ifdef QT_OPENGL_ES
         , hasIntBuffers(qt_has_uint_buffers())
 #else
@@ -92,7 +92,7 @@ public:
     QArray<ushort> indexesShort;
     QArray<uint> indexesInt;
     GLenum elementType;
-    QGLBuffer buffer;
+    QOpenGLBuffer buffer;
     bool hasIntBuffers;
 
     void append(const QGLIndexBufferPrivate *other, uint offset, int start);
@@ -170,11 +170,11 @@ QArray<uint> QGLIndexBuffer::indexesUInt() const
 
 /*!
     Returns the usage pattern for this index buffer.
-    The default value is QGLBuffer::StaticDraw.
+    The default value is QOpenGLBuffer::StaticDraw.
 
     \sa setUsagePattern()
 */
-QGLBuffer::UsagePattern QGLIndexBuffer::usagePattern() const
+QOpenGLBuffer::UsagePattern QGLIndexBuffer::usagePattern() const
 {
     Q_D(const QGLIndexBuffer);
     return d->buffer.usagePattern();
@@ -187,7 +187,7 @@ QGLBuffer::UsagePattern QGLIndexBuffer::usagePattern() const
 
     \sa usagePattern(), upload()
 */
-void QGLIndexBuffer::setUsagePattern(QGLBuffer::UsagePattern value)
+void QGLIndexBuffer::setUsagePattern(QOpenGLBuffer::UsagePattern value)
 {
     Q_D(QGLIndexBuffer);
     d->buffer.setUsagePattern(value);
@@ -440,12 +440,12 @@ bool QGLIndexBuffer::isUploaded() const
 }
 
 /*!
-    Returns the QGLBuffer in use by this index buffer object,
+    Returns the QOpenGLBuffer in use by this index buffer object,
     so that its properties or contents can be modified directly.
 
     \sa isUploaded()
 */
-QGLBuffer QGLIndexBuffer::buffer() const
+QOpenGLBuffer QGLIndexBuffer::buffer() const
 {
     Q_D(const QGLIndexBuffer);
     return d->buffer;
@@ -455,8 +455,8 @@ QGLBuffer QGLIndexBuffer::buffer() const
     Binds this index buffer to the current GL context.  Returns false if
     binding was not possible, usually because upload() has not been called.
 
-    The buffer must be bound to the same QGLContext current when upload()
-    was called, or to another QGLContext that is sharing with it.
+    The buffer must be bound to the same QOpenGLContext current when upload()
+    was called, or to another QOpenGLContext that is sharing with it.
     Otherwise, false will be returned from this function.
 
     \sa release(), upload()
@@ -470,7 +470,7 @@ bool QGLIndexBuffer::bind()
 /*!
     Releases this index buffer from the current GL context.
 
-    This function must be called with the same QGLContext current
+    This function must be called with the same QOpenGLContext current
     as when bind() was called on the index buffer.
 
     \sa bind()
@@ -715,7 +715,7 @@ void QGLPainter::draw(QGL::DrawingMode mode, const QGLIndexBuffer& indexes)
         if (id)
             d->buffer.bind();
         else
-            QGLBuffer::release(QGLBuffer::IndexBuffer);
+            QOpenGLBuffer::release(QOpenGLBuffer::IndexBuffer);
         d_ptr->boundIndexBuffer = id;
     }
     if (id) {
@@ -753,7 +753,7 @@ void QGLPainter::draw(QGL::DrawingMode mode, const QGLIndexBuffer& indexes, int 
         if (id)
             d->buffer.bind();
         else
-            QGLBuffer::release(QGLBuffer::IndexBuffer);
+            QOpenGLBuffer::release(QOpenGLBuffer::IndexBuffer);
         d_ptr->boundIndexBuffer = id;
     }
     if (id) {

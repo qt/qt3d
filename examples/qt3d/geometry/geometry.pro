@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = geometry
 CONFIG += qt warn_on
-QT += widgets qt3d
+QT += qt3d
 
 SOURCES = geometryview.cpp \
     main.cpp \
@@ -11,9 +11,6 @@ HEADERS = geometryview.h \
     geometry.h \
     quadplane.h
 RESOURCES = geometry.qrc
-
-CONFIG += qt3d_deploy_pkg
-include(../../../pkg.pri)
 
 OTHER_FILES += \
     geometry.rc

@@ -41,7 +41,8 @@
 
 #include <QtTest/QtTest>
 #include "qglindexbuffer.h"
-#include "qopenglfunctions.h"
+
+#include <QOpenGLFunctions>
 
 class tst_QGLIndexBuffer : public QObject
 {
@@ -79,7 +80,7 @@ void tst_QGLIndexBuffer::initTestCase()
 void tst_QGLIndexBuffer::create()
 {
     QGLIndexBuffer buf1;
-    QVERIFY(buf1.usagePattern() == QGLBuffer::StaticDraw);
+    QVERIFY(buf1.usagePattern() == QOpenGLBuffer::StaticDraw);
     QVERIFY(buf1.elementType() == GL_UNSIGNED_SHORT);
     QVERIFY(buf1.indexesUShort().isEmpty());
     QVERIFY(buf1.indexesUInt().isEmpty());
@@ -90,7 +91,7 @@ void tst_QGLIndexBuffer::create()
 
     // Setting an index array as ushort must stay ushort.
     buf1.setIndexes(indexesUShort1024);
-    QVERIFY(buf1.usagePattern() == QGLBuffer::StaticDraw);
+    QVERIFY(buf1.usagePattern() == QOpenGLBuffer::StaticDraw);
     QVERIFY(buf1.elementType() == GL_UNSIGNED_SHORT);
     QVERIFY(buf1.indexesUShort() == indexesUShort1024);
     QVERIFY(buf1.indexesUInt().isEmpty());
@@ -102,7 +103,7 @@ void tst_QGLIndexBuffer::create()
     // Setting an index array as uint may convert to ushort on
     // embedded systems that don't have GL_OES_element_index_uint.
     buf1.setIndexes(indexesUInt1024);
-    QVERIFY(buf1.usagePattern() == QGLBuffer::StaticDraw);
+    QVERIFY(buf1.usagePattern() == QOpenGLBuffer::StaticDraw);
     if (buf1.elementType() == GL_UNSIGNED_SHORT) {
         QVERIFY(buf1.elementType() == GL_UNSIGNED_SHORT);
         QVERIFY(buf1.indexesUShort() == indexesUShort1024);
@@ -119,7 +120,7 @@ void tst_QGLIndexBuffer::create()
 
     // Set back to ushort again.
     buf1.setIndexes(indexesUShort1024);
-    QVERIFY(buf1.usagePattern() == QGLBuffer::StaticDraw);
+    QVERIFY(buf1.usagePattern() == QOpenGLBuffer::StaticDraw);
     QVERIFY(buf1.elementType() == GL_UNSIGNED_SHORT);
     QVERIFY(buf1.indexesUShort() == indexesUShort1024);
     QVERIFY(buf1.indexesUInt().isEmpty());

@@ -12,4 +12,5 @@ SOURCES += \
     qgltextureutils.cpp
 PRIVATE_HEADERS += \
     qglsharedresource_p.h \
-    qgltexture2d_p.h
+    qgltexture2d_p.h \
+    qgltextureutils_p.h

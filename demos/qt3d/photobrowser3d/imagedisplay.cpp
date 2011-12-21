@@ -51,8 +51,9 @@
 #include "qphotobrowser3dscene.h"
 #include "photobrowser3dview.h"
 
-#include <QApplication>
+#include <QGuiApplication>
 #include <QChildEvent>
+#include <QCloseEvent>
 #include <QUrl>
 #include <QImage>
 
@@ -156,7 +157,7 @@ ImageDisplay::ImageDisplay(QObject *parent, QGLMaterialCollection *materials, qr
     m_frameImage = qMakeFrameImage();
     mat = new QGLMaterial();
     tex = new QGLTexture2D(mat);
-    tex->setHorizontalWrap(QGL::Clamp);
+    tex->setHorizontalWrap(QGL::ClampToEdge);
     tex->setImage(m_frameImage);
     mat->setTexture(tex);
     mat->setObjectName("loading image material - default");

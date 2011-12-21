@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=GraphicsView
-Icon=icon-l-qt3d
-Exec=/usr/bin/graphicsview -fullscreen
-OnlyShowIn=X-MeeGo;
-X-MeeGo-Logical-Id=qtn_comm_appname_graphicsview
-X-MeeGo-Translation-Catalog=essentials

@@ -45,9 +45,8 @@
 #include <QVector>
 #include <QXmlStreamReader>
 #include <QDir>
-#include "qgl.h"
-#include "qgltexture2d.h"
 
+#include "qgltexture2d.h"
 #include "qglcolladafxeffect.h"
 
 Q_DECLARE_METATYPE(QArray<float>)

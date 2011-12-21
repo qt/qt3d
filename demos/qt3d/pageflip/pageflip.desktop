@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Pageflip
-Icon=icon-l-qt3d
-Exec=/usr/bin/pageflip -fullscreen
-OnlyShowIn=X-MeeGo;
-X-MeeGo-Logical-Id=qtn_comm_appname_pageflip
-X-MeeGo-Translation-Catalog=essentials

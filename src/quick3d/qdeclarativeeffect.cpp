@@ -315,8 +315,8 @@ void QDeclarativeEffect::setTextureImage(const QImage& value)
     tex->setImage(value);
     
     // prevents artifacts due to texture smoothing wrapping around edges of texture 
-    tex->setHorizontalWrap(QGL::Clamp);
-    tex->setVerticalWrap(QGL::Clamp);
+    tex->setHorizontalWrap(QGL::ClampToEdge);
+    tex->setVerticalWrap(QGL::ClampToEdge);
     
     emit effectChanged();
 }

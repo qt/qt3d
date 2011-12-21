@@ -41,7 +41,8 @@
 
 #include <QFile>
 #include "projectivetextureeffect.h"
-#include <QtOpenGL/qglshaderprogram.h>
+
+#include <QOpenGLShaderProgram>
 
 static const QMatrix4x4 biasMatrix = QMatrix4x4(0.5, 0.0, 0.0, 0.5,
                                          0.0, 0.5, 0.0, 0.5,

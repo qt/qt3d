@@ -41,9 +41,10 @@
 
 #include <QtTest/QtTest>
 #include "qglcolladafxeffectfactory.h"
+
 #include <QXmlStreamReader>
 #include <QColor>
-#include "qgl.h"
+#include <QOpenGLBuffer>
 
 QT_BEGIN_NAMESPACE
 class QGLColladaFxEffect;

@@ -38,12 +38,13 @@
 **
 ****************************************************************************/
 
-#include <QApplication>
+#include <QGuiApplication>
+
 #include "cylinderview.h"
 
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
+    QGuiApplication app(argc, argv);
     CylinderView view;
 
     if (view.stereoType() != QGLView::RedCyanAnaglyph)

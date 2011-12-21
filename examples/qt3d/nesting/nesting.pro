@@ -1,14 +1,11 @@
 TEMPLATE = app
 TARGET = nesting
 CONFIG += qt warn_on
-QT += widgets qt3d
+QT += qt3d
 
 SOURCES = cubeview.cpp main.cpp
 HEADERS = cubeview.h
 RESOURCES = nesting.qrc
-
-CONFIG += qt3d_deploy_pkg
-include(../../../pkg.pri)
 
 OTHER_FILES += \
     nesting.rc

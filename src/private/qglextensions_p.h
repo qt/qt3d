@@ -732,151 +732,151 @@ struct QGLExtensionFuncs
 #endif
 
 #if !defined(QT_OPENGL_ES_2)
-#define glProgramStringARB QGLContextPrivate::extensionFuncs(ctx).qt_glProgramStringARB
-#define glBindProgramARB QGLContextPrivate::extensionFuncs(ctx).qt_glBindProgramARB
-#define glDeleteProgramsARB QGLContextPrivate::extensionFuncs(ctx).qt_glDeleteProgramsARB
-#define glGenProgramsARB QGLContextPrivate::extensionFuncs(ctx).qt_glGenProgramsARB
-#define glProgramLocalParameter4fvARB QGLContextPrivate::extensionFuncs(ctx).qt_glProgramLocalParameter4fvARB
+#define glProgramStringARB QOpenGLContextPrivate::extensionFuncs(ctx).qt_glProgramStringARB
+#define glBindProgramARB QOpenGLContextPrivate::extensionFuncs(ctx).qt_glBindProgramARB
+#define glDeleteProgramsARB QOpenGLContextPrivate::extensionFuncs(ctx).qt_glDeleteProgramsARB
+#define glGenProgramsARB QOpenGLContextPrivate::extensionFuncs(ctx).qt_glGenProgramsARB
+#define glProgramLocalParameter4fvARB QOpenGLContextPrivate::extensionFuncs(ctx).qt_glProgramLocalParameter4fvARB
 
-#define glActiveStencilFaceEXT QGLContextPrivate::extensionFuncs(ctx).qt_glActiveStencilFaceEXT
+#define glActiveStencilFaceEXT QOpenGLContextPrivate::extensionFuncs(ctx).qt_glActiveStencilFaceEXT
 
-#define glMultiTexCoord4f QGLContextPrivate::extensionFuncs(ctx).qt_glMultiTexCoord4f
+#define glMultiTexCoord4f QOpenGLContextPrivate::extensionFuncs(ctx).qt_glMultiTexCoord4f
 
-#define glActiveTexture QGLContextPrivate::extensionFuncs(ctx).qt_glActiveTexture
+#define glActiveTexture QOpenGLContextPrivate::extensionFuncs(ctx).qt_glActiveTexture
 #endif // !defined(QT_OPENGL_ES_2)
 
 
 // FBOs
 #if !defined(QT_OPENGL_ES_2)
-#define glIsRenderbuffer QGLContextPrivate::extensionFuncs(ctx).qt_glIsRenderbuffer
-#define glBindRenderbuffer QGLContextPrivate::extensionFuncs(ctx).qt_glBindRenderbuffer
-#define glDeleteRenderbuffers QGLContextPrivate::extensionFuncs(ctx).qt_glDeleteRenderbuffers
-#define glGenRenderbuffers QGLContextPrivate::extensionFuncs(ctx).qt_glGenRenderbuffers
-#define glRenderbufferStorage QGLContextPrivate::extensionFuncs(ctx).qt_glRenderbufferStorage
-#define glGetRenderbufferParameteriv QGLContextPrivate::extensionFuncs(ctx).qt_glGetRenderbufferParameteriv
-#define glIsFramebuffer QGLContextPrivate::extensionFuncs(ctx).qt_glIsFramebuffer
-#define glBindFramebuffer QGLContextPrivate::extensionFuncs(ctx).qt_glBindFramebuffer
-#define glDeleteFramebuffers QGLContextPrivate::extensionFuncs(ctx).qt_glDeleteFramebuffers
-#define glGenFramebuffers QGLContextPrivate::extensionFuncs(ctx).qt_glGenFramebuffers
-#define glCheckFramebufferStatus QGLContextPrivate::extensionFuncs(ctx).qt_glCheckFramebufferStatus
-#define glFramebufferTexture2D QGLContextPrivate::extensionFuncs(ctx).qt_glFramebufferTexture2D
-#define glFramebufferRenderbuffer QGLContextPrivate::extensionFuncs(ctx).qt_glFramebufferRenderbuffer
-#define glGetFramebufferAttachmentParameteriv QGLContextPrivate::extensionFuncs(ctx).qt_glGetFramebufferAttachmentParameteriv
-#define glGenerateMipmap QGLContextPrivate::extensionFuncs(ctx).qt_glGenerateMipmap
+#define glIsRenderbuffer QOpenGLContextPrivate::extensionFuncs(ctx).qt_glIsRenderbuffer
+#define glBindRenderbuffer QOpenGLContextPrivate::extensionFuncs(ctx).qt_glBindRenderbuffer
+#define glDeleteRenderbuffers QOpenGLContextPrivate::extensionFuncs(ctx).qt_glDeleteRenderbuffers
+#define glGenRenderbuffers QOpenGLContextPrivate::extensionFuncs(ctx).qt_glGenRenderbuffers
+#define glRenderbufferStorage QOpenGLContextPrivate::extensionFuncs(ctx).qt_glRenderbufferStorage
+#define glGetRenderbufferParameteriv QOpenGLContextPrivate::extensionFuncs(ctx).qt_glGetRenderbufferParameteriv
+#define glIsFramebuffer QOpenGLContextPrivate::extensionFuncs(ctx).qt_glIsFramebuffer
+#define glBindFramebuffer QOpenGLContextPrivate::extensionFuncs(ctx).qt_glBindFramebuffer
+#define glDeleteFramebuffers QOpenGLContextPrivate::extensionFuncs(ctx).qt_glDeleteFramebuffers
+#define glGenFramebuffers QOpenGLContextPrivate::extensionFuncs(ctx).qt_glGenFramebuffers
+#define glCheckFramebufferStatus QOpenGLContextPrivate::extensionFuncs(ctx).qt_glCheckFramebufferStatus
+#define glFramebufferTexture2D QOpenGLContextPrivate::extensionFuncs(ctx).qt_glFramebufferTexture2D
+#define glFramebufferRenderbuffer QOpenGLContextPrivate::extensionFuncs(ctx).qt_glFramebufferRenderbuffer
+#define glGetFramebufferAttachmentParameteriv QOpenGLContextPrivate::extensionFuncs(ctx).qt_glGetFramebufferAttachmentParameteriv
+#define glGenerateMipmap QOpenGLContextPrivate::extensionFuncs(ctx).qt_glGenerateMipmap
 #endif // QT_OPENGL_ES_2
-#define glBlitFramebufferEXT QGLContextPrivate::extensionFuncs(ctx).qt_glBlitFramebufferEXT
-#define glRenderbufferStorageMultisampleEXT QGLContextPrivate::extensionFuncs(ctx).qt_glRenderbufferStorageMultisampleEXT
+#define glBlitFramebufferEXT QOpenGLContextPrivate::extensionFuncs(ctx).qt_glBlitFramebufferEXT
+#define glRenderbufferStorageMultisampleEXT QOpenGLContextPrivate::extensionFuncs(ctx).qt_glRenderbufferStorageMultisampleEXT
 
 
 // Buffer objects
 #if defined(QGL_RESOLVE_BUFFER_FUNCS)
-#define glBindBuffer QGLContextPrivate::extensionFuncs(ctx).qt_glBindBuffer
-#define glDeleteBuffers QGLContextPrivate::extensionFuncs(ctx).qt_glDeleteBuffers
-#define glGenBuffers QGLContextPrivate::extensionFuncs(ctx).qt_glGenBuffers
-#define glBufferData QGLContextPrivate::extensionFuncs(ctx).qt_glBufferData
-#define glBufferSubData QGLContextPrivate::extensionFuncs(ctx).qt_glBufferSubData
-#define glGetBufferSubData QGLContextPrivate::extensionFuncs(ctx).qt_glGetBufferSubData
-#define glGetBufferParameteriv QGLContextPrivate::extensionFuncs(ctx).qt_glGetBufferParameteriv
+#define glBindBuffer QOpenGLContextPrivate::extensionFuncs(ctx).qt_glBindBuffer
+#define glDeleteBuffers QOpenGLContextPrivate::extensionFuncs(ctx).qt_glDeleteBuffers
+#define glGenBuffers QOpenGLContextPrivate::extensionFuncs(ctx).qt_glGenBuffers
+#define glBufferData QOpenGLContextPrivate::extensionFuncs(ctx).qt_glBufferData
+#define glBufferSubData QOpenGLContextPrivate::extensionFuncs(ctx).qt_glBufferSubData
+#define glGetBufferSubData QOpenGLContextPrivate::extensionFuncs(ctx).qt_glGetBufferSubData
+#define glGetBufferParameteriv QOpenGLContextPrivate::extensionFuncs(ctx).qt_glGetBufferParameteriv
 #endif
-#define glMapBufferARB QGLContextPrivate::extensionFuncs(ctx).qt_glMapBufferARB
-#define glUnmapBufferARB QGLContextPrivate::extensionFuncs(ctx).qt_glUnmapBufferARB
+#define glMapBufferARB QOpenGLContextPrivate::extensionFuncs(ctx).qt_glMapBufferARB
+#define glUnmapBufferARB QOpenGLContextPrivate::extensionFuncs(ctx).qt_glUnmapBufferARB
 
 
 // GLSL
 #if !defined(QT_OPENGL_ES_2)
 
-#define glCreateShader QGLContextPrivate::extensionFuncs(ctx).qt_glCreateShader
-#define glShaderSource QGLContextPrivate::extensionFuncs(ctx).qt_glShaderSource
-#define glShaderBinary QGLContextPrivate::extensionFuncs(ctx).qt_glShaderBinary
-#define glCompileShader QGLContextPrivate::extensionFuncs(ctx).qt_glCompileShader
-#define glDeleteShader QGLContextPrivate::extensionFuncs(ctx).qt_glDeleteShader
-#define glIsShader QGLContextPrivate::extensionFuncs(ctx).qt_glIsShader
+#define glCreateShader QOpenGLContextPrivate::extensionFuncs(ctx).qt_glCreateShader
+#define glShaderSource QOpenGLContextPrivate::extensionFuncs(ctx).qt_glShaderSource
+#define glShaderBinary QOpenGLContextPrivate::extensionFuncs(ctx).qt_glShaderBinary
+#define glCompileShader QOpenGLContextPrivate::extensionFuncs(ctx).qt_glCompileShader
+#define glDeleteShader QOpenGLContextPrivate::extensionFuncs(ctx).qt_glDeleteShader
+#define glIsShader QOpenGLContextPrivate::extensionFuncs(ctx).qt_glIsShader
 
-#define glCreateProgram QGLContextPrivate::extensionFuncs(ctx).qt_glCreateProgram
-#define glAttachShader QGLContextPrivate::extensionFuncs(ctx).qt_glAttachShader
-#define glDetachShader QGLContextPrivate::extensionFuncs(ctx).qt_glDetachShader
-#define glLinkProgram QGLContextPrivate::extensionFuncs(ctx).qt_glLinkProgram
-#define glUseProgram QGLContextPrivate::extensionFuncs(ctx).qt_glUseProgram
-#define glDeleteProgram QGLContextPrivate::extensionFuncs(ctx).qt_glDeleteProgram
-#define glIsProgram QGLContextPrivate::extensionFuncs(ctx).qt_glIsProgram
+#define glCreateProgram QOpenGLContextPrivate::extensionFuncs(ctx).qt_glCreateProgram
+#define glAttachShader QOpenGLContextPrivate::extensionFuncs(ctx).qt_glAttachShader
+#define glDetachShader QOpenGLContextPrivate::extensionFuncs(ctx).qt_glDetachShader
+#define glLinkProgram QOpenGLContextPrivate::extensionFuncs(ctx).qt_glLinkProgram
+#define glUseProgram QOpenGLContextPrivate::extensionFuncs(ctx).qt_glUseProgram
+#define glDeleteProgram QOpenGLContextPrivate::extensionFuncs(ctx).qt_glDeleteProgram
+#define glIsProgram QOpenGLContextPrivate::extensionFuncs(ctx).qt_glIsProgram
 
-#define glGetShaderInfoLog QGLContextPrivate::extensionFuncs(ctx).qt_glGetShaderInfoLog
-#define glGetShaderiv QGLContextPrivate::extensionFuncs(ctx).qt_glGetShaderiv
-#define glGetShaderSource QGLContextPrivate::extensionFuncs(ctx).qt_glGetShaderSource
-#define glGetProgramiv QGLContextPrivate::extensionFuncs(ctx).qt_glGetProgramiv
-#define glGetProgramInfoLog QGLContextPrivate::extensionFuncs(ctx).qt_glGetProgramInfoLog
+#define glGetShaderInfoLog QOpenGLContextPrivate::extensionFuncs(ctx).qt_glGetShaderInfoLog
+#define glGetShaderiv QOpenGLContextPrivate::extensionFuncs(ctx).qt_glGetShaderiv
+#define glGetShaderSource QOpenGLContextPrivate::extensionFuncs(ctx).qt_glGetShaderSource
+#define glGetProgramiv QOpenGLContextPrivate::extensionFuncs(ctx).qt_glGetProgramiv
+#define glGetProgramInfoLog QOpenGLContextPrivate::extensionFuncs(ctx).qt_glGetProgramInfoLog
 
-#define glGetUniformLocation QGLContextPrivate::extensionFuncs(ctx).qt_glGetUniformLocation
-#define glUniform4fv QGLContextPrivate::extensionFuncs(ctx).qt_glUniform4fv
-#define glUniform3fv QGLContextPrivate::extensionFuncs(ctx).qt_glUniform3fv
-#define glUniform2fv QGLContextPrivate::extensionFuncs(ctx).qt_glUniform2fv
-#define glUniform1fv QGLContextPrivate::extensionFuncs(ctx).qt_glUniform1fv
-#define glUniform1i QGLContextPrivate::extensionFuncs(ctx).qt_glUniform1i
-#define glUniform1iv QGLContextPrivate::extensionFuncs(ctx).qt_glUniform1iv
-#define glUniformMatrix2fv QGLContextPrivate::extensionFuncs(ctx).qt_glUniformMatrix2fv
-#define glUniformMatrix3fv QGLContextPrivate::extensionFuncs(ctx).qt_glUniformMatrix3fv
-#define glUniformMatrix4fv QGLContextPrivate::extensionFuncs(ctx).qt_glUniformMatrix4fv
-#define glUniformMatrix2x3fv QGLContextPrivate::extensionFuncs(ctx).qt_glUniformMatrix2x3fv
-#define glUniformMatrix2x4fv QGLContextPrivate::extensionFuncs(ctx).qt_glUniformMatrix2x4fv
-#define glUniformMatrix3x2fv QGLContextPrivate::extensionFuncs(ctx).qt_glUniformMatrix3x2fv
-#define glUniformMatrix3x4fv QGLContextPrivate::extensionFuncs(ctx).qt_glUniformMatrix3x4fv
-#define glUniformMatrix4x2fv QGLContextPrivate::extensionFuncs(ctx).qt_glUniformMatrix4x2fv
-#define glUniformMatrix4x3fv QGLContextPrivate::extensionFuncs(ctx).qt_glUniformMatrix4x3fv
+#define glGetUniformLocation QOpenGLContextPrivate::extensionFuncs(ctx).qt_glGetUniformLocation
+#define glUniform4fv QOpenGLContextPrivate::extensionFuncs(ctx).qt_glUniform4fv
+#define glUniform3fv QOpenGLContextPrivate::extensionFuncs(ctx).qt_glUniform3fv
+#define glUniform2fv QOpenGLContextPrivate::extensionFuncs(ctx).qt_glUniform2fv
+#define glUniform1fv QOpenGLContextPrivate::extensionFuncs(ctx).qt_glUniform1fv
+#define glUniform1i QOpenGLContextPrivate::extensionFuncs(ctx).qt_glUniform1i
+#define glUniform1iv QOpenGLContextPrivate::extensionFuncs(ctx).qt_glUniform1iv
+#define glUniformMatrix2fv QOpenGLContextPrivate::extensionFuncs(ctx).qt_glUniformMatrix2fv
+#define glUniformMatrix3fv QOpenGLContextPrivate::extensionFuncs(ctx).qt_glUniformMatrix3fv
+#define glUniformMatrix4fv QOpenGLContextPrivate::extensionFuncs(ctx).qt_glUniformMatrix4fv
+#define glUniformMatrix2x3fv QOpenGLContextPrivate::extensionFuncs(ctx).qt_glUniformMatrix2x3fv
+#define glUniformMatrix2x4fv QOpenGLContextPrivate::extensionFuncs(ctx).qt_glUniformMatrix2x4fv
+#define glUniformMatrix3x2fv QOpenGLContextPrivate::extensionFuncs(ctx).qt_glUniformMatrix3x2fv
+#define glUniformMatrix3x4fv QOpenGLContextPrivate::extensionFuncs(ctx).qt_glUniformMatrix3x4fv
+#define glUniformMatrix4x2fv QOpenGLContextPrivate::extensionFuncs(ctx).qt_glUniformMatrix4x2fv
+#define glUniformMatrix4x3fv QOpenGLContextPrivate::extensionFuncs(ctx).qt_glUniformMatrix4x3fv
 
-#define glBindAttribLocation QGLContextPrivate::extensionFuncs(ctx).qt_glBindAttribLocation
-#define glGetAttribLocation QGLContextPrivate::extensionFuncs(ctx).qt_glGetAttribLocation
-#define glVertexAttrib1fv QGLContextPrivate::extensionFuncs(ctx).qt_glVertexAttrib1fv
-#define glVertexAttrib2fv QGLContextPrivate::extensionFuncs(ctx).qt_glVertexAttrib2fv
-#define glVertexAttrib3fv QGLContextPrivate::extensionFuncs(ctx).qt_glVertexAttrib3fv
-#define glVertexAttrib4fv QGLContextPrivate::extensionFuncs(ctx).qt_glVertexAttrib4fv
-#define glVertexAttribPointer QGLContextPrivate::extensionFuncs(ctx).qt_glVertexAttribPointer
-#define glDisableVertexAttribArray QGLContextPrivate::extensionFuncs(ctx).qt_glDisableVertexAttribArray
-#define glEnableVertexAttribArray QGLContextPrivate::extensionFuncs(ctx).qt_glEnableVertexAttribArray
+#define glBindAttribLocation QOpenGLContextPrivate::extensionFuncs(ctx).qt_glBindAttribLocation
+#define glGetAttribLocation QOpenGLContextPrivate::extensionFuncs(ctx).qt_glGetAttribLocation
+#define glVertexAttrib1fv QOpenGLContextPrivate::extensionFuncs(ctx).qt_glVertexAttrib1fv
+#define glVertexAttrib2fv QOpenGLContextPrivate::extensionFuncs(ctx).qt_glVertexAttrib2fv
+#define glVertexAttrib3fv QOpenGLContextPrivate::extensionFuncs(ctx).qt_glVertexAttrib3fv
+#define glVertexAttrib4fv QOpenGLContextPrivate::extensionFuncs(ctx).qt_glVertexAttrib4fv
+#define glVertexAttribPointer QOpenGLContextPrivate::extensionFuncs(ctx).qt_glVertexAttribPointer
+#define glDisableVertexAttribArray QOpenGLContextPrivate::extensionFuncs(ctx).qt_glDisableVertexAttribArray
+#define glEnableVertexAttribArray QOpenGLContextPrivate::extensionFuncs(ctx).qt_glEnableVertexAttribArray
 
 #else // QT_OPENGL_ES_2
 
-#define glGetProgramBinaryOES QGLContextPrivate::extensionFuncs(ctx).qt_glGetProgramBinaryOES
-#define glProgramBinaryOES QGLContextPrivate::extensionFuncs(ctx).qt_glProgramBinaryOES
+#define glGetProgramBinaryOES QOpenGLContextPrivate::extensionFuncs(ctx).qt_glGetProgramBinaryOES
+#define glProgramBinaryOES QOpenGLContextPrivate::extensionFuncs(ctx).qt_glProgramBinaryOES
 
 #endif // QT_OPENGL_ES_2
 
 
 #if !defined(QT_OPENGL_ES_2)
-#define glStencilOpSeparate QGLContextPrivate::extensionFuncs(ctx).qt_glStencilOpSeparate
-#define glBlendColor QGLContextPrivate::extensionFuncs(ctx).qt_glBlendColor
+#define glStencilOpSeparate QOpenGLContextPrivate::extensionFuncs(ctx).qt_glStencilOpSeparate
+#define glBlendColor QOpenGLContextPrivate::extensionFuncs(ctx).qt_glBlendColor
 #endif
 
 #if defined(QT_OPENGL_ES_2)
 #define glClearDepth glClearDepthf
 #endif
 
-#define glProgramParameteriEXT QGLContextPrivate::extensionFuncs(ctx).qt_glProgramParameteriEXT
-#define glFramebufferTextureEXT QGLContextPrivate::extensionFuncs(ctx).qt_glFramebufferTextureEXT
-#define glFramebufferTextureLayerEXT QGLContextPrivate::extensionFuncs(ctx).qt_glFramebufferTextureLayerEXT
-#define glFramebufferTextureFaceEXT QGLContextPrivate::extensionFuncs(ctx).qt_glFramebufferTextureFaceEXT
+#define glProgramParameteriEXT QOpenGLContextPrivate::extensionFuncs(ctx).qt_glProgramParameteriEXT
+#define glFramebufferTextureEXT QOpenGLContextPrivate::extensionFuncs(ctx).qt_glFramebufferTextureEXT
+#define glFramebufferTextureLayerEXT QOpenGLContextPrivate::extensionFuncs(ctx).qt_glFramebufferTextureLayerEXT
+#define glFramebufferTextureFaceEXT QOpenGLContextPrivate::extensionFuncs(ctx).qt_glFramebufferTextureFaceEXT
 
 #if !defined(QT_OPENGL_ES)
-#define glCompressedTexImage2D QGLContextPrivate::extensionFuncs(ctx).qt_glCompressedTexImage2DARB
+#define glCompressedTexImage2D QOpenGLContextPrivate::extensionFuncs(ctx).qt_glCompressedTexImage2DARB
 #endif
 
 #ifndef QT_NO_EGL
 // OES_EGL_image
-#define glEGLImageTargetTexture2DOES QGLContextPrivate::extensionFuncs(ctx).qt_glEGLImageTargetTexture2DOES
-#define glEGLImageTargetRenderbufferStorageOES QGLContextPrivate::extensionFuncs(ctx).qt_glEGLImageTargetRenderbufferStorageOES
+#define glEGLImageTargetTexture2DOES QOpenGLContextPrivate::extensionFuncs(ctx).qt_glEGLImageTargetTexture2DOES
+#define glEGLImageTargetRenderbufferStorageOES QOpenGLContextPrivate::extensionFuncs(ctx).qt_glEGLImageTargetRenderbufferStorageOES
 #endif
 
-extern bool qt_resolve_framebufferobject_extensions(QGLContext *ctx);
-bool qt_resolve_buffer_extensions(QGLContext *ctx);
+extern bool qt_resolve_framebufferobject_extensions(QOpenGLContext *ctx);
+bool qt_resolve_buffer_extensions(QOpenGLContext *ctx);
 
-bool qt_resolve_version_1_3_functions(QGLContext *ctx);
-bool qt_resolve_version_2_0_functions(QGLContext *ctx);
-bool qt_resolve_stencil_face_extension(QGLContext *ctx);
-bool qt_resolve_frag_program_extensions(QGLContext *ctx);
+bool qt_resolve_version_1_3_functions(QOpenGLContext *ctx);
+bool qt_resolve_version_2_0_functions(QOpenGLContext *ctx);
+bool qt_resolve_stencil_face_extension(QOpenGLContext *ctx);
+bool qt_resolve_frag_program_extensions(QOpenGLContext *ctx);
 
-bool qt_resolve_glsl_extensions(QGLContext *ctx);
+bool qt_resolve_glsl_extensions(QOpenGLContext *ctx);
 
 #ifndef QT_NO_EGL
-Q_OPENGL_EXPORT bool qt_resolve_eglimage_gl_extensions(QGLContext *ctx);
+Q_OPENGL_EXPORT bool qt_resolve_eglimage_gl_extensions(QOpenGLContext *ctx);
 #endif
 
 QT_END_NAMESPACE

@@ -41,6 +41,8 @@
 
 #include "qglmaskedsurface_p.h"
 
+#include <QOpenGLBuffer>
+
 QT_BEGIN_NAMESPACE
 
 /*!

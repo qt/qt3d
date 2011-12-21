@@ -45,11 +45,9 @@
 #include <QTime>
 #include <QDir>
 #include "qgltexture2d.h"
-#include "qgl.h"
 
 #include "qglcolladafxeffect.h"
 #include "qglcolladafxeffectfactory.h"
-//#include "qglcolladafxeffectfactory_p.h"
 #include "qglcolladafxeffect_p.h"
 
 QT_BEGIN_NAMESPACE

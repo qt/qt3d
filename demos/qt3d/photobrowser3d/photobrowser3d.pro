@@ -1,10 +1,8 @@
 TEMPLATE = app
 TARGET = photobrowser3d
 CONFIG += qt warn_on
-QT += widgets
 
-include(../../../pkg.pri)
-QT += qt3d opengl
+QT += qt3d
 
 SOURCES += main.cpp\
     photobrowser3dview.cpp \
@@ -55,9 +53,6 @@ RESOURCES += \
 OTHER_FILES += \
     shaders/replace_texture.fsh \
     shaders/replace_texture.vsh
-
-CONFIG += qt3d_deploy_pkg
-include(../../../pkg.pri)
 
 OTHER_FILES += \
     photobrowser.rc

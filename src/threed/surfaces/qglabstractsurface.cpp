@@ -42,16 +42,19 @@
 #include "qglabstractsurface.h"
 #include "qglcontextsurface_p.h"
 #include "qglframebufferobjectsurface.h"
-#include "qglpixelbuffersurface.h"
 #include "qglsubsurface.h"
 #include "qglwindowsurface.h"
 
-#include <QtCore/QtDebug>
-#include <QtGui/QWindow>
-#include <QtGui/QOpenGLFramebufferObject>
-#include <QtOpenGL/QGLPixelBuffer>
-#include <QtGui/QOpenGLContext>
-#include <QtGui/QSurface>
+#include <QDebug>
+#include <QWindow>
+#include <QOpenGLFramebufferObject>
+#include <QOpenGLContext>
+#include <QSurface>
+
+#ifdef QT_OPENGL_LIB
+#include <QGLPixelBuffer>
+#include "qglpixelbuffersurface.h"
+#endif
 
 QT_BEGIN_NAMESPACE
 
@@ -69,9 +72,12 @@ QT_BEGIN_NAMESPACE
     of a subsurface may be the left or right eye image of a stereoscopic
     pair that is rendered into the two halves of a window.
 
+    Note that pixelbuffers are only supported when Qt is built with the
+    OpenGL library.
+
     Activating a surface for OpenGL drawing, and deactivating it afterwards
     can be quite varied across surface types.  Sometimes it is enough
-    to just make a QGLContext current and set the \c{glViewport()}.
+    to just make a QOpenGLContext current and set the \c{glViewport()}.
     Other times a context must be made current, followed by binding a
     framebuffer object, and finally setting the \c{glViewport()}.
 
@@ -126,7 +132,9 @@ QGLAbstractSurface::QGLAbstractSurface(int surfaceType)
     : m_context(0)
     , m_window(0)
     , m_fbo(0)
+#ifdef QT_OPENGL_LIB
     , m_pb(0)
+#endif
     , m_type(surfaceType)
 {
 }
@@ -222,11 +230,13 @@ QRect QGLAbstractSurface::viewportRect() const
         Q_ASSERT(m_fbo);
         height = m_fbo->size().height();
     }
+#ifdef QT_OPENGL_LIB
     else if (m_type == PixelBuffer)
     {
         Q_ASSERT(m_pb);
         height = m_pb->size().height();
     }
+#endif
 
     return QRect(view.x(), height - (view.y() + view.height()),
                  view.width(), view.height());

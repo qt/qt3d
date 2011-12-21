@@ -38,12 +38,13 @@
 **
 ****************************************************************************/
 
-#include <QApplication>
+#include <QGuiApplication>
+
 #include "geometryview.h"
 
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
+    QGuiApplication app(argc, argv);
     GeometryView view;
 
     if (view.stereoType() != QGLView::RedCyanAnaglyph)

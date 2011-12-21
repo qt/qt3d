@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Matrix
-Icon=icon-l-qtquick3d
-Exec=/usr/bin/matrix_animation -fullscreen
-OnlyShowIn=X-MeeGo;
-X-MeeGo-Logical-Id=qtn_comm_appname_matrix_animation
-X-MeeGo-Translation-Catalog=essentials

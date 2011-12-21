@@ -41,12 +41,14 @@
 
 #include "qgraphicsembedscene.h"
 #include "qglnamespace.h"
-#include <QtOpenGL/qglframebufferobject.h>
-#include <QtWidgets/qapplication.h>
-#include <QtGui/qpainter.h>
-#include <QtGui/qevent.h>
-#include <QtWidgets/qgraphicssceneevent.h>
-#include <QtCore/qdebug.h>
+
+#include <QGLFramebufferObject>
+#include <QGuiApplication>
+#include <QPainter>
+#include <QEvent>
+#include <QMouseEvent>
+#include <QGraphicsSceneEvent>
+#include <QDebug>
 
 QT_BEGIN_NAMESPACE
 
@@ -368,7 +370,7 @@ void QGraphicsEmbedScene::deliverEvent(QEvent *event, const QPointF &texCoord)
         e.setButton(ev->button());
         e.setModifiers(ev->modifiers());
         e.setAccepted(false);
-        QApplication::sendEvent(this, &e);
+        QGuiApplication::sendEvent(this, &e);
     }
     break;
 
@@ -385,7 +387,7 @@ void QGraphicsEmbedScene::deliverEvent(QEvent *event, const QPointF &texCoord)
         e.setDelta(ev->delta());
         e.setOrientation(ev->orientation());
         e.setAccepted(false);
-        QApplication::sendEvent(this, &e);
+        QGuiApplication::sendEvent(this, &e);
     }
     break;
 #endif
@@ -416,7 +418,7 @@ void QGraphicsEmbedScene::deliverEvent(QEvent *event, const QPointF &texCoord)
         e.setButton(ev->button());
         e.setModifiers(ev->modifiers());
         e.setAccepted(false);
-        QApplication::sendEvent(this, &e);
+        QGuiApplication::sendEvent(this, &e);
     }
     break;
 
@@ -432,7 +434,7 @@ void QGraphicsEmbedScene::deliverEvent(QEvent *event, const QPointF &texCoord)
         e.setDelta(ev->delta());
         e.setOrientation(ev->orientation());
         e.setAccepted(false);
-        QApplication::sendEvent(this, &e);
+        QGuiApplication::sendEvent(this, &e);
     }
     break;
 #endif
@@ -440,7 +442,7 @@ void QGraphicsEmbedScene::deliverEvent(QEvent *event, const QPointF &texCoord)
     default: {
         // Send the event directly without any conversion.
         // Typically used for keyboard, focus, and enter/leave events.
-        QApplication::sendEvent(this, event);
+        QGuiApplication::sendEvent(this, event);
     }
     break;
 

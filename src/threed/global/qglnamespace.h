@@ -102,10 +102,7 @@ namespace QGL
     enum TextureWrap
     {
         Repeat                      = 0x2901,   // GL_REPEAT
-        Clamp                       = 0x2900,   // GL_CLAMP
-        ClampToBorder               = 0x812D,   // GL_CLAMP_TO_BORDER
-        ClampToEdge                 = 0x812F,   // GL_CLAMP_TO_EDGE
-        MirroredRepeat              = 0x8370    // GL_MIRRORED_REPEAT
+        ClampToEdge                 = 0x812F    // GL_CLAMP_TO_EDGE
     };
 
     enum Eye

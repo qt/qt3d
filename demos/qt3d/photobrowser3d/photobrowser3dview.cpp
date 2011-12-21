@@ -53,8 +53,7 @@
 #include "pancontroller.h"
 #include "thumbnailnode.h"
 
-#include <QApplication>
-#include <QDesktopWidget>
+#include <QGuiApplication>
 #include <QWheelEvent>
 #include <QDir>
 #include <QTimer>
@@ -328,7 +327,7 @@ void PhotoBrowser3DView::waitForExit()
     }
 }
 
-void PhotoBrowser3DView::closeEvent(QCloseEvent *e)
+void PhotoBrowser3DView::hideEvent(QHideEvent *e)
 {
     if (m_images)
     {

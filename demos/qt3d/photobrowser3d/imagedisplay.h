@@ -46,6 +46,7 @@
 #include "qglmaterialcollection.h"
 
 #include <QString>
+#include <QImage>
 
 QT_BEGIN_NAMESPACE
 class QGLBuilder;

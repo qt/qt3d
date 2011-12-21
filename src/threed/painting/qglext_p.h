@@ -53,7 +53,10 @@
 // We mean it.
 //
 
-#include <QtOpenGL/qgl.h>
+#include <QOpenGLBuffer>
+#include <QtGlobal>
+#include <QByteArray>
+
 #include "qt3dglobal.h"
 
 QT_BEGIN_HEADER
@@ -109,66 +112,6 @@ private:
 
 // Copy of some definitions from <QtOpenGL/private/qgl_p.h> so that
 // we can avoid a direct dependency upon private headers in Qt.
-
-#if QT_VERSION >= 0x040800
-#else
-
-#if !defined(QGL_P_H)
-
-class Q_OPENGL_EXPORT QGLContextResource
-{
-public:
-    typedef void (*FreeFunc)(void *);
-    QGLContextResource(FreeFunc f);
-    ~QGLContextResource();
-    void insert(const QGLContext *key, void *value);
-    void *value(const QGLContext *key);
-    void cleanup(const QGLContext *ctx, void *value);
-private:
-    FreeFunc free;
-    QAtomicInt active;
-};
-
-#endif
-
-template <class T>
-class QGLResource : public QGLContextResource
-{
-public:
-    static void freeResource(void *resource) {
-        delete reinterpret_cast<T *>(resource);
-    }
-
-    QGLResource() : QGLContextResource(freeResource) {}
-
-    T *value(const QGLContext *context) {
-        T *resource = reinterpret_cast<T *>(QGLContextResource::value(context));
-        if (!resource) {
-            resource = new T(context);
-            insert(context, resource);
-        }
-        return resource;
-    }
-};
-
-#endif
-
-#if !defined(QGL_P_H) && !defined(Q_MOC_RUN)
-
-class Q_OPENGL_EXPORT QGLSignalProxy : public QObject
-{
-    Q_OBJECT
-public:
-    QGLSignalProxy() : QObject() {}
-    void emitAboutToDestroyContext(const QGLContext *context) {
-        emit aboutToDestroyContext(context);
-    }
-    static QGLSignalProxy *instance();
-Q_SIGNALS:
-    void aboutToDestroyContext(const QGLContext *context);
-};
-
-#endif
 
 QT_END_NAMESPACE
 

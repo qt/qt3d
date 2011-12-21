@@ -49,7 +49,7 @@ QT_BEGIN_HEADER
 QT_BEGIN_NAMESPACE
 
 class QGLShaderProgramEffectPrivate;
-class QGLShaderProgram;
+class QOpenGLShaderProgram;
 
 class Q_QT3D_EXPORT QGLShaderProgramEffect : public QGLAbstractEffect
 {
@@ -80,7 +80,7 @@ public:
     int maximumLights() const;
     void setMaximumLights(int value);
 
-    QGLShaderProgram *program() const;
+    QOpenGLShaderProgram *program() const;
 
 protected:
     virtual bool beforeLink();

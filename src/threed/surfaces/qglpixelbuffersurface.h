@@ -43,7 +43,8 @@
 #define QGLPIXELBUFFERSURFACE_H
 
 #include "qglabstractsurface.h"
-#include <QtOpenGL/qglpixelbuffer.h>
+
+#include <QGLPixelBuffer>
 
 QT_BEGIN_HEADER
 

@@ -43,7 +43,9 @@
 #define QGLTEXTURECUBEMAP_H
 
 #include "qglnamespace.h"
-#include <QtOpenGL/qgl.h>
+#include "qgltexture2d.h"
+
+#include <QOpenGLBuffer>
 
 QT_BEGIN_HEADER
 
@@ -82,8 +84,8 @@ public:
 
     void copyImage(QGLTextureCube::Face face, const QImage& image, const QPoint& offset = QPoint(0, 0));
 
-    QGLContext::BindOptions bindOptions() const;
-    void setBindOptions(QGLContext::BindOptions options);
+    QGLTexture2D::BindOptions bindOptions() const;
+    void setBindOptions(QGLTexture2D::BindOptions options);
 
     QGL::TextureWrap horizontalWrap() const;
     void setHorizontalWrap(QGL::TextureWrap value);

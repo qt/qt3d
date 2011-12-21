@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=RoboBounce
-Icon=icon-l-qtquick3d
-Exec=/usr/bin/robo_bounce -fullscreen
-OnlyShowIn=X-MeeGo;
-X-MeeGo-Logical-Id=qtn_comm_appname_robo_bounce
-X-MeeGo-Translation-Catalog=essentials

@@ -53,14 +53,15 @@
 // We mean it.
 //
 
-#include <QtOpenGL/qgl.h>
+#include <QOpenGLBuffer>
 
 QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
-class QGLContextManager;
-class QGLContextInfo;
+class QOpenGLContextManager;
+class QOpenGLContextInfo;
+class QOpenGLContext;
 
 class QGLSharedResource
 {
@@ -71,22 +72,22 @@ public:
         , m_next(0), m_prev(0) {}
     ~QGLSharedResource() { destroy(); }
 
-    const QGLContext *context() const;
+    QOpenGLContext *context() const;
     GLuint id() const { return m_id; }
     void clearId() { m_id = 0; }
 
-    void attach(const QGLContext *context, GLuint id);
+    void attach(QOpenGLContext *context, GLuint id);
     void destroy();
 
 private:
     DestroyResourceFunc m_destroyFunc;
-    QGLContextInfo *m_contextInfo;
+    QOpenGLContextInfo *m_contextInfo;
     GLuint m_id;
     QGLSharedResource *m_next;
     QGLSharedResource *m_prev;
 
-    friend class QGLContextManager;
-    friend class QGLContextInfo;
+    friend class QOpenGLContextManager;
+    friend class QOpenGLContextInfo;
 };
 
 QT_END_NAMESPACE

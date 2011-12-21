@@ -5,14 +5,27 @@ QT += declarative quick
 
 SOURCES += main.cpp
 
-INSTALL_DIRS = qml
-mt: INSTALL_FILES = mt.qml
+ICON_FILE = ../icon.png
 
-CONFIG += qt3d_deploy_qml
+QML_FILES = \
+    qml/desktop.qml \
+    qml/Monkeygod.qml \
+    qml/Penguin.qml
+
+QML_INFRA_FILES = \
+    $$QML_FILES \
+    qml/marble.png
+
+QML_MESHES_FILES = \
+    qml/meshes/monkey.3ds \
+    qml/meshes/penguin.3ds
+
+CATEGORY = examples
 include(../../../pkg.pri)
-qtcAddDeployment()
 
 OTHER_FILES += \
+    mt.qml \
+    $$QML_INFRA_FILES \
     monkeygod.rc
 
 RC_FILE = monkeygod.rc

@@ -44,7 +44,7 @@
 #include "qglabstracteffect.h"
 #include <QtCore/qlist.h>
 #include <QtCore/qatomic.h>
-#include <QtOpenGL/qglshaderprogram.h>
+#include <QOpenGLShaderProgram>
 
 QT_BEGIN_NAMESPACE
 
@@ -62,7 +62,7 @@ QT_BEGIN_NAMESPACE
     they may be repacked for greater drawing efficiency.
 
     For general-purpose vertex buffers that can be allocated and modified
-    in-place, use QGLBuffer instead.
+    in-place, use QOpenGLBuffer instead.
 */
 
 /*!
@@ -384,7 +384,7 @@ bool QGLVertexBundle::upload()
     // Determine how to upload the data, using a map if possible.
     // Interleave the data into the final buffer.  We do it in
     // sections so as to keep locality problems to a minimum.
-    void *mapped = d->buffer.map(QGLBuffer::WriteOnly);
+    void *mapped = d->buffer.map(QOpenGLBuffer::WriteOnly);
     int offset = 0;
     QArray<float> temp;
     float *dst;
@@ -449,12 +449,12 @@ bool QGLVertexBundle::isUploaded() const
 }
 
 /*!
-    Returns the QGLBuffer in use by this vertex bundle object,
+    Returns the QOpenGLBuffer in use by this vertex bundle object,
     so that its properties or contents can be modified directly.
 
     \sa isUploaded()
 */
-QGLBuffer QGLVertexBundle::buffer() const
+QOpenGLBuffer QGLVertexBundle::buffer() const
 {
     Q_D(const QGLVertexBundle);
     return d->buffer;
@@ -465,8 +465,8 @@ QGLBuffer QGLVertexBundle::buffer() const
     context.  Returns false if binding was not possible, usually because
     upload() has not been called.
 
-    The buffer must be bound to the same QGLContext current when upload()
-    was called, or to another QGLContext that is sharing with it.
+    The buffer must be bound to the same QOpenGLContext current when upload()
+    was called, or to another QOpenGLContext that is sharing with it.
     Otherwise, false will be returned from this function.
 
     \sa release(), upload()
@@ -481,7 +481,7 @@ bool QGLVertexBundle::bind()
     Releases the vertex buffer associated with this bundle from the
     current GL context.
 
-    This function must be called with the same QGLContext current
+    This function must be called with the same QOpenGLContext current
     as when bind() was called on the vertex buffer.
 
     \sa bind()

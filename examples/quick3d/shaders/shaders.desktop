@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Shaders
-Icon=icon-l-qtquick3d
-Exec=/usr/bin/shaders -fullscreen
-OnlyShowIn=X-MeeGo;
-X-MeeGo-Logical-Id=qtn_comm_appname_shaders
-X-MeeGo-Translation-Catalog=essentials

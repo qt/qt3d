@@ -41,8 +41,9 @@
 
 #include "qglshaderprogrameffect.h"
 #include "qglabstracteffect_p.h"
-#include <QtOpenGL/qglshaderprogram.h>
-#include <QtCore/qfile.h>
+
+#include <QOpenGLShaderProgram>
+#include <QFile>
 
 QT_BEGIN_NAMESPACE
 
@@ -477,7 +478,7 @@ public:
     bool regenerate;
     bool fixedFunction;
 #if !defined(QGL_FIXED_FUNCTION_ONLY)
-    QGLShaderProgram *program;
+    QOpenGLShaderProgram *program;
     int matrix;
     int mvMatrix;
     int projMatrix;
@@ -641,9 +642,9 @@ void QGLShaderProgramEffectPrivate::setMaterial
     Constructs a new shader program effect.  This constructor is typically
     followed by calls to setVertexShader() and setFragmentShader().
 
-    Note that a shader program effect will be bound to the QGLContext that
+    Note that a shader program effect will be bound to the QOpenGLContext that
     is current when setActive() is called for the first time.  After that,
-    the effect can only be used with that context or any other QGLContext
+    the effect can only be used with that context or any other QOpenGLContext
     that shares with it.
 */
 QGLShaderProgramEffect::QGLShaderProgramEffect()
@@ -702,15 +703,15 @@ void QGLShaderProgramEffect::setActive(QGLPainter *painter, bool flag)
             return;
         Q_ASSERT(!d->vertexShader.isEmpty());
         Q_ASSERT(!d->fragmentShader.isEmpty());
-        d->program = new QGLShaderProgram();
+        d->program = new QOpenGLShaderProgram;
         d->program->addShaderFromSourceCode
-            (QGLShader::Vertex, d->vertexShader);
+            (QOpenGLShader::Vertex, d->vertexShader);
         d->program->addShaderFromSourceCode
-            (QGLShader::Fragment, d->fragmentShader);
+            (QOpenGLShader::Fragment, d->fragmentShader);
         if (!d->geometryShader.isEmpty())
         {
             d->program->addShaderFromSourceCode
-                (QGLShader::Geometry, d->geometryShader);
+                (QOpenGLShader::Geometry, d->geometryShader);
             d->program->setGeometryInputType(d->geometryInputType);
             d->program->setGeometryOutputType(d->geometryOutputType);
 
@@ -1081,7 +1082,7 @@ void QGLShaderProgramEffect::setMaximumLights(int value)
     effect->program()->setUniformValue("springiness", GLfloat(0.5f));
     \endcode
 */
-QGLShaderProgram *QGLShaderProgramEffect::program() const
+QOpenGLShaderProgram *QGLShaderProgramEffect::program() const
 {
 #if !defined(QGL_FIXED_FUNCTION_ONLY)
     Q_D(const QGLShaderProgramEffect);

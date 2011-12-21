@@ -42,7 +42,8 @@
 #include "qglflattextureeffect_p.h"
 #include "qglabstracteffect_p.h"
 #include "qglext_p.h"
-#include <QtOpenGL/qglshaderprogram.h>
+
+#include <QOpenGLShaderProgram>
 
 QT_BEGIN_NAMESPACE
 
@@ -74,7 +75,7 @@ public:
     {
     }
 
-    QGLShaderProgram *program;
+    QOpenGLShaderProgram *program;
     int matrixUniform;
     bool isFixedFunction;
 };
@@ -167,15 +168,15 @@ void QGLFlatTextureEffect::setActive(QGLPainter *painter, bool flag)
         return;
     }
 #endif
-    QGLShaderProgram *program =
+    QOpenGLShaderProgram *program =
         painter->cachedProgram(QLatin1String("qt.texture.flat.replace"));
     d->program = program;
     if (!program) {
         if (!flag)
             return;
-        program = new QGLShaderProgram();
-        program->addShaderFromSourceCode(QGLShader::Vertex, flatTexVertexShader);
-        program->addShaderFromSourceCode(QGLShader::Fragment, flatTexFragmentShader);
+        program = new QOpenGLShaderProgram();
+        program->addShaderFromSourceCode(QOpenGLShader::Vertex, flatTexVertexShader);
+        program->addShaderFromSourceCode(QOpenGLShader::Fragment, flatTexFragmentShader);
         program->bindAttributeLocation("vertex", QGL::Position);
         program->bindAttributeLocation("texcoord", QGL::TextureCoord0);
         if (!program->link()) {
@@ -240,7 +241,7 @@ public:
     {
     }
 
-    QGLShaderProgram *program;
+    QOpenGLShaderProgram *program;
     int matrixUniform;
     int colorUniform;
     bool isFixedFunction;
@@ -300,15 +301,15 @@ void QGLFlatDecalTextureEffect::setActive(QGLPainter *painter, bool flag)
         }
     }
 #endif
-    QGLShaderProgram *program =
+    QOpenGLShaderProgram *program =
         painter->cachedProgram(QLatin1String("qt.texture.flat.decal"));
     d->program = program;
     if (!program) {
         if (!flag)
             return;
-        program = new QGLShaderProgram();
-        program->addShaderFromSourceCode(QGLShader::Vertex, flatTexVertexShader);
-        program->addShaderFromSourceCode(QGLShader::Fragment, flatDecalFragmentShader);
+        program = new QOpenGLShaderProgram();
+        program->addShaderFromSourceCode(QOpenGLShader::Vertex, flatTexVertexShader);
+        program->addShaderFromSourceCode(QOpenGLShader::Fragment, flatDecalFragmentShader);
         program->bindAttributeLocation("vertex", QGL::Position);
         program->bindAttributeLocation("texcoord", QGL::TextureCoord0);
         if (!program->link()) {

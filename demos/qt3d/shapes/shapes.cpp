@@ -46,15 +46,16 @@
 #include "qglcamera.h"
 #include "qgltexture2d.h"
 #include "qglsubsurface.h"
-#include <QApplication>
+
+#include <QGuiApplication>
 #include <QImage>
 #include <QPainter>
 #include <QDebug>
 #include <QtGui/QFontDatabase>
 
-#include <QtGui/QWindow>
-#include <QtGui/QOpenGLContext>
-#include <QtGui/QSurfaceFormat>
+#include <QWindow>
+#include <QOpenGLContext>
+#include <QSurfaceFormat>
 
 class ShapesWidget : public QWindow
 {
@@ -412,7 +413,7 @@ void ShapesWidget::paintTeapot(QGLPainter *painter, const QRect& rect)
 void ShapesWidget::drawText
         (QGLPainter *painter, const QRect& posn, const QString& str)
 {
-    QFont f = QApplication::font();
+    QFont f = QGuiApplication::font();
     QFontMetrics metrics(f);
     QRect rect = metrics.boundingRect(str);
     rect.adjust(0, 0, 1, 1);
@@ -483,7 +484,7 @@ void ShapesWidget::ensureContext()
 
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
+    QGuiApplication app(argc, argv);
     ShapesWidget view;
 
     QStringList args = QCoreApplication::arguments();

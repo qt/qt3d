@@ -44,7 +44,7 @@
 #include <QFile>
 #include <QDebug>
 #include <QImage>
-#include "qgl.h"
+
 #include "qgltexture2d.h"
 #include "qglcolladafxeffect.h"
 #include "qglcolladafxeffect_p.h"
@@ -138,7 +138,7 @@ inline void QGLColladaFxEffectPrivate::updateMaterialChannelSnippets(QString cha
 
 
 
-inline void QGLColladaFxEffectPrivate::setTextureUniform(QGLShaderProgram *program, QGLPainter* painter, QString channelName, QGLTexture2D* texture, int* textureUnit, QColor fallbackColor)
+inline void QGLColladaFxEffectPrivate::setTextureUniform(QOpenGLShaderProgram *program, QGLPainter* painter, QString channelName, QGLTexture2D* texture, int* textureUnit, QColor fallbackColor)
 {
     QString qVariableName = QLatin1String("q") + channelName;
 

@@ -42,11 +42,12 @@
 #ifndef QGLVERTEXBUNDLE_H
 #define QGLVERTEXBUNDLE_H
 
-#include <QtOpenGL/qglbuffer.h>
+#include <QOpenGLBuffer>
+#include <QList>
+
 #include "qcustomdataarray.h"
 #include "qglattributevalue.h"
 #include "qglattributeset.h"
-#include <QtCore/qlist.h>
 
 QT_BEGIN_HEADER
 
@@ -57,7 +58,7 @@ QT_MODULE(Qt3D)
 class QGLVertexBundlePrivate;
 class QGLPainter;
 class QGLAbstractEffect;
-class QGLShaderProgram;
+class QOpenGLShaderProgram;
 
 class Q_QT3D_EXPORT QGLVertexBundle
 {
@@ -91,7 +92,7 @@ public:
     bool upload();
     bool isUploaded() const;
 
-    QGLBuffer buffer() const;
+    QOpenGLBuffer buffer() const;
 
     bool bind();
     void release();

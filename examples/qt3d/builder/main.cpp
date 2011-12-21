@@ -38,13 +38,13 @@
 **
 ****************************************************************************/
 
-#include <QApplication>
+#include <QGuiApplication>
 
 #include "builder.h"
 
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
+    QGuiApplication app(argc, argv);
     BuilderView view;
 
     if (view.stereoType() != QGLView::RedCyanAnaglyph)

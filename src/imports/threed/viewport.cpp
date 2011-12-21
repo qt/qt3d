@@ -51,20 +51,17 @@
 #include "qglframebufferobjectsurface.h"
 #include "skybox.h"
 
-#include <QtGui/QOpenGLContext>
-#include <QtGui/QOpenGLFramebufferObject>
+#include <QOpenGLContext>
+#include <QOpenGLFramebufferObject>
 
-#include <QtGui/qpainter.h>
-#include <QtWidgets/qgraphicsview.h>
-#include <QtWidgets/qgraphicsscene.h>
-#include <QtWidgets/qgraphicssceneevent.h>
-#include <QtGui/qevent.h>
-#include <QtCore/qtimer.h>
-#include <QtCore/qcoreapplication.h>
-#include <QtDeclarative/qdeclarativeinfo.h>
-#include <QtQuick/QQuickCanvas>
-#include <QtQuick/QSGEngine>
-#include <QtOpenGL/qglbuffer.h>
+#include <QPainter>
+#include <QEvent>
+#include <QTimer>
+#include <QCoreApplication>
+#include <QDeclarativeInfo>
+#include <QQuickCanvas>
+#include <QSGEngine>
+#include <QOpenGLBuffer>
 #include <QtCore/qthread.h>
 #include <QtCore/qmutex.h>
 #include <QtCore/qmath.h>

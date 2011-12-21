@@ -44,7 +44,8 @@
 
 #include <QStack>
 #include <QList>
-#include <QGLShaderProgram>
+#include <QOpenGLShaderProgram>
+
 #include "qglshaderprogrameffect.h"
 
 QT_BEGIN_NAMESPACE

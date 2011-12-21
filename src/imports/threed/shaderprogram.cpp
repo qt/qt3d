@@ -42,12 +42,13 @@
 #include "shaderprogram.h"
 #include "shaderprogram_p.h"
 #include "qglabstracteffect.h"
-#include <QtOpenGL/qglshaderprogram.h>
-#include <QWeakPointer>
+#include <QOpenGLShaderProgram>
+#include "qglscenenode.h"
 
+#include <QWeakPointer>
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
-#include "qglscenenode.h"
+
 /*!
     \qmlclass ShaderProgram ShaderProgram
     \brief The ShaderProgram item is derivative class of the more general Effect class in QML/3d.
@@ -258,7 +259,7 @@ ShaderProgramEffect::~ShaderProgramEffect()
 bool ShaderProgramEffect::create
     (const QString& vertexShader, const QString& fragmentShader)
 {
-    if (!QGLShaderProgram::hasOpenGLShaderPrograms())
+    if (!QOpenGLShaderProgram::hasOpenGLShaderPrograms())
         return false;
 
     setVertexShader(vertexShader.toLatin1());
@@ -330,7 +331,7 @@ void ShaderProgramEffect::afterLink()
   \internal
   Precondition: list is a list of floats
  */
-static inline void setUniformFromFloatList(QGLShaderProgram *program, int uniformLocation, QList<QVariant> list)
+static inline void setUniformFromFloatList(QOpenGLShaderProgram *program, int uniformLocation, QList<QVariant> list)
 {
     switch(list.length())
     {
@@ -450,7 +451,7 @@ inline QGLTexture2D* ShaderProgramEffect::textureForUniformValue(int uniformLoca
 
 inline bool ShaderProgramEffect::setUniformForPropertyIndex(int propertyIndex, QGLPainter *painter)
 {
-    QGLShaderProgram *program = this->program();
+    QOpenGLShaderProgram *program = this->program();
     int uniformLocation = propertyIdsToUniformLocations[propertyIndex];
 
     QVariant value =

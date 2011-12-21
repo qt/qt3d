@@ -1,16 +1,13 @@
 TEMPLATE = app
 TARGET = solarsystem
 CONFIG += qt warn_on
-QT += widgets qt3d
+QT += qt3d
 
 SOURCES = solarsystem.cpp \
     main.cpp
 HEADERS = solarsystem.h
 RESOURCES += solarsystem.qrc
 DEPENDPATH += resources
-
-CONFIG += qt3d_deploy_pkg
-include(../../../pkg.pri)
 
 OTHER_FILES += \
     resources/moon-texture.jpg \

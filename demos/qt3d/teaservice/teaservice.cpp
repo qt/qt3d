@@ -39,14 +39,10 @@
 **
 ****************************************************************************/
 
-#include <QApplication>
-#include <QMainWindow>
-#include <QMenu>
-#include <QMenuBar>
+#include <QGuiApplication>
 #include <QKeyEvent>
-#include <QAction>
 #include <QDebug>
-#include <QtCore/QTimer>
+#include <QTimer>
 
 #include "qglview.h"
 #include "meshobject.h"
@@ -347,10 +343,10 @@ void TeaServiceView::keyPressEvent(QKeyEvent *e)
 
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
+    QGuiApplication app(argc, argv);
 
     TeaServiceView view;
-    QStringList args = QCoreApplication::arguments();
+    QStringList args = QGuiApplication::arguments();
     int w_pos = args.indexOf("-width");
     int h_pos = args.indexOf("-height");
     if (w_pos >= 0 && h_pos >= 0)

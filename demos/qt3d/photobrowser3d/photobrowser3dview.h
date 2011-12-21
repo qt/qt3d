@@ -79,7 +79,7 @@ protected:
     void resizeGL(int w, int h);
     void wheelEvent(QWheelEvent *e);
     void keyPressEvent(QKeyEvent *e);
-    void closeEvent(QCloseEvent *e);
+    void hideEvent(QHideEvent *e);
     void mousePressEvent(QMouseEvent *e);
 private slots:
     void initialise();

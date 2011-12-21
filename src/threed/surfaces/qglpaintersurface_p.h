@@ -55,6 +55,8 @@
 
 #include "qglabstractsurface.h"
 
+#include <QPainter>
+
 QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE

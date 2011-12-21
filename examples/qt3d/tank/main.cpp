@@ -38,7 +38,7 @@
 **
 ****************************************************************************/
 
-#include <QtWidgets/QApplication>
+#include <QGuiApplication>
 
 #include <time.h>
 
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 {
     qsrand(time(0));
 
-    QApplication a(argc, argv);
+    QGuiApplication a(argc, argv);
     TankView view;
 
     if (view.stereoType() != QGLView::RedCyanAnaglyph)

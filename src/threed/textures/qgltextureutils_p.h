@@ -53,11 +53,14 @@
 // We mean it.
 //
 
-#include <QtOpenGL/qgl.h>
-#include <QtCore/qdatetime.h>
+#include <QOpenGLBuffer>
+#include <QDateTime>
+#include <QSize>
+
 #include "qglnamespace.h"
 #include "qopenglfunctions.h"
 #include "qglsharedresource_p.h"
+#include "qgltexture2d.h"
 
 #include <private/qopenglcontext_p.h>
 
@@ -95,16 +98,13 @@ QT_BEGIN_NAMESPACE
         glTexParameterf((target), (name), GLfloat(int(value)))
 #endif
 
-// Modify a wrapping mode to account for platform differences.
-QGL::TextureWrap qt_gl_modify_texture_wrap(QGL::TextureWrap value);
-
 typedef void (QOPENGLF_APIENTRYP q_glCompressedTexImage2DARB)
     (GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLsizei, const GLvoid *);
 
 class QGLTextureExtensions : public QOpenGLSharedResource
 {
 public:
-    QGLTextureExtensions(const QGLContext *ctx);
+    QGLTextureExtensions(QOpenGLContext *ctx);
     ~QGLTextureExtensions();
 
     int npotTextures : 1;
@@ -128,20 +128,20 @@ public:
     QGLBoundTexture();
     ~QGLBoundTexture();
 
-    const QGLContext *context() const { return m_resource.context(); }
+    const QOpenGLContext *context() const { return m_resource.context(); }
 
     GLuint textureId() const { return m_resource.id(); }
-    void setTextureId(const QGLContext *ctx, GLuint id)
+    void setTextureId(QOpenGLContext *ctx, GLuint id)
         { m_resource.attach(ctx, id); }
     void clearId() { m_resource.clearId(); }
 
-    QGLContext::BindOptions options() const { return m_options; }
-    void setOptions(QGLContext::BindOptions options) { m_options = options; }
+    QGLTexture2D::BindOptions options() const { return m_options; }
+    void setOptions(QGLTexture2D::BindOptions options) { m_options = options; }
 
     QSize size() const { return m_size; }
     bool hasAlpha() const { return m_hasAlpha; }
 
-    void startUpload(const QGLContext *ctx, GLenum target, const QSize &imageSize);
+    void startUpload(QOpenGLContext *ctx, GLenum target, const QSize &imageSize);
     void uploadFace(GLenum target, const QImage &image, const QSize &scaleSize,
                     GLenum format = GL_RGBA);
     void createFace(GLenum target, const QSize &size, GLenum format = GL_RGBA);
@@ -159,7 +159,7 @@ public:
 
 private:
     QGLSharedResource m_resource;
-    QGLContext::BindOptions m_options;
+    QGLTexture2D::BindOptions m_options;
     QSize m_size;
     bool m_hasAlpha;
     QTime time;

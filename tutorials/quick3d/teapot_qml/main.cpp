@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#include <QtGui/QGuiApplication>
-#include <QtDeclarative/qquickview.h>
+#include <QGuiApplication>
+#include <QQuickView>
 
 #include "../qmlres.h"
 

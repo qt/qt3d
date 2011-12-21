@@ -11,7 +11,7 @@ QT.qt3d.sources = $$QT_MODULE_BASE/src/threed
 QT.qt3d.libs = $$QT_MODULE_LIB_BASE
 QT.qt3d.plugins = $$QT_MODULE_PLUGIN_BASE
 QT.qt3d.imports = $$QT_MODULE_IMPORT_BASE
-QT.qt3d.depends = gui opengl
+QT.qt3d.depends = gui
 QT.qt3d.DEFINES = QT_QT3D_LIB
 
 QT_CONFIG += qt3d

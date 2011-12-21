@@ -55,6 +55,8 @@
 
 #include "qglabstractsurface.h"
 
+#include <QOpenGLBuffer>
+
 QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
@@ -67,7 +69,6 @@ public:
         , m_surface(surface), m_buffer(buffer) {}
     ~QGLDrawBufferSurface() {}
 
-    QPaintDevice *device() const;
     bool activate(QGLAbstractSurface *prevSurface);
     void deactivate(QGLAbstractSurface *nextSurface);
     QRect viewportGL() const;

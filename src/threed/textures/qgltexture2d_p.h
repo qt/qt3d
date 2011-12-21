@@ -57,7 +57,8 @@
 #include "qgltextureutils_p.h"
 #include "qurl.h"
 
-#include <QtCore/qatomic.h>
+#include <QAtomicInt>
+#include <QImage>
 
 QT_BEGIN_NAMESPACE
 
@@ -65,7 +66,7 @@ class QGLTexture2DTextureInfo
 {
 public:
     QGLTexture2DTextureInfo
-            (const QGLContext *context, GLuint textureId, uint imageGeneration,
+            (QOpenGLContext *context, GLuint textureId, uint imageGeneration,
              uint parameterGeneration, bool isLiteral = false)
     {
         if (textureId)
@@ -96,7 +97,7 @@ public:
     QImage image;
     QUrl url;
     QByteArray compressedData;
-    QGLContext::BindOptions bindOptions;
+    QGLTexture2D::BindOptions bindOptions;
     QGL::TextureWrap horizontalWrap;
     QGL::TextureWrap verticalWrap;
 #if !defined(QT_OPENGL_ES)

@@ -45,7 +45,7 @@
 #include "qglpainter.h"
 #include "qglcamera.h"
 
-#include <QtGui/QWindow>
+#include <QWindow>
 
 QT_BEGIN_HEADER
 

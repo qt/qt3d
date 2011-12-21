@@ -38,13 +38,14 @@
 **
 ****************************************************************************/
 
-#include <QApplication>
+#include <QGuiApplication>
+
 #include "teapotview.h"
 
 //! [main]
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
+    QGuiApplication app(argc, argv);
     TeapotView view;
 //! [main-args]
 

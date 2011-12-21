@@ -1,10 +1,7 @@
 TEMPLATE = app
 TARGET = cubehouse
 CONFIG += qt warn_on
-QT += widgets qt3d
-
-CONFIG += qt3d_deploy_pkg
-include(../../../pkg.pri)
+QT += qt3d
 
 SOURCES = cubeview.cpp main.cpp projectivetextureeffect.cpp
 HEADERS = cubeview.h projectivetextureeffect.h

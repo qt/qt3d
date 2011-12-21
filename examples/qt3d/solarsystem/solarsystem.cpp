@@ -38,7 +38,6 @@
 **
 ****************************************************************************/
 
-#include <QPropertyAnimation>
 #include "solarsystem.h"
 #include "qglbuilder.h"
 #include "qglmaterialcollection.h"
@@ -50,11 +49,11 @@
 #include "qgraphicsrotation3d.h"
 #include "qgraphicstranslation3d.h"
 #include "qglshaderprogrameffect.h"
-#include "qglshaderprogram.h"
 
-#include <QtGui/qmatrix4x4.h>
-
-#include <QtCore/qmath.h>
+#include <QPropertyAnimation>
+#include <QOpenGLShaderProgram>
+#include <QMatrix4x4>
+#include <qmath.h>
 
 SolarSystemView::SolarSystemView(QWindow *parent)
     : QGLView(parent)

@@ -58,8 +58,7 @@
 #include "qbox3d.h"
 #include "qglnamespace.h"
 
-#include <QtOpenGL/qgl.h>
-#include <QtGui/qmatrix4x4.h>
+#include <QMatrix4x4>
 
 QT_BEGIN_NAMESPACE
 

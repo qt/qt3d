@@ -43,7 +43,7 @@
 #define SHADERPROGRAM_P_H
 
 #include <QtCore/qsharedpointer.h>
-#include <QtOpenGL/qglshaderprogram.h>
+#include <QOpenGLShaderProgram>
 
 #include "qdeclarativeeffect.h"
 #include "qglshaderprogrameffect.h"

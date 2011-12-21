@@ -62,7 +62,7 @@
 QT_BEGIN_NAMESPACE
 
 class QGLPainter;
-class QGLShaderProgram;
+class QOpenGLShaderProgram;
 class QGLMaterial;
 
 class QGLColladaFxEffectPrivate
@@ -74,7 +74,7 @@ public:
 
     void addMaterialChannelsToShaderSnippets(const QGLMaterial *material);
     void resetGlueSnippets();
-    void setTextureUniform(QGLShaderProgram *program, QGLPainter* painter, QString channelName, QGLTexture2D* texture, int* textureUnit, QColor fallbackColor);
+    void setTextureUniform(QOpenGLShaderProgram *program, QGLPainter* painter, QString channelName, QGLTexture2D* texture, int* textureUnit, QColor fallbackColor);
     void updateMaterialChannelSnippets(QString channelName, QGLTexture2D* texture, int* textureUnit, QColor fallbackColor);
 
     QString id;

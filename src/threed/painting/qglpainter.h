@@ -42,12 +42,14 @@
 #ifndef QGLPAINTER_H
 #define QGLPAINTER_H
 
-#include <QtOpenGL/qgl.h>
 #include "qglnamespace.h"
-#include <QtGui/qvector2d.h>
-#include <QtGui/qvector3d.h>
-#include <QtGui/qvector4d.h>
-#include <QtGui/qmatrix4x4.h>
+
+#include <QVector2D>
+#include <QVector3D>
+#include <QVector4D>
+#include <QMatrix4x4>
+#include <QPainter>
+
 #include "qbox3d.h"
 #include "qopenglfunctions.h"
 #include "qglvertexbundle.h"
@@ -73,8 +75,8 @@ class QGLPainterPrivate;
 class QGLTexture2D;
 class QGLTextureCube;
 class QGeometryData;
-class QGLShaderProgram;
-class QGLFramebufferObject;
+class QOpenGLShaderProgram;
+class QOpenGLFramebufferObject;
 class QGLSceneNode;
 class QGLRenderSequencer;
 class QGLAbstractSurface;
@@ -145,8 +147,8 @@ public:
 
     void disableEffect();
 
-    QGLShaderProgram *cachedProgram(const QString& name) const;
-    void setCachedProgram(const QString& name, QGLShaderProgram *program);
+    QOpenGLShaderProgram *cachedProgram(const QString& name) const;
+    void setCachedProgram(const QString& name, QOpenGLShaderProgram *program);
 
     QColor color() const;
     void setColor(const QColor& color);

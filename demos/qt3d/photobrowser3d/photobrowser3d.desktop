@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Photobrowser 3D
-Icon=icon-l-qt3d
-Exec=/usr/bin/photobrowser3d -fullscreen
-OnlyShowIn=X-MeeGo;
-X-MeeGo-Logical-Id=qtn_comm_appname_photobrowser3d
-X-MeeGo-Translation-Catalog=essentials

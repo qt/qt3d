@@ -43,7 +43,11 @@
 #include "qglabstractsurface.h"
 #include "qglwindowsurface.h"
 #include "qglframebufferobjectsurface.h"
+
+#ifdef QT_OPENGL_LIB
 #include "qglpixelbuffersurface.h"
+#endif
+
 #include "qglsubsurface.h"
 #include "qopenglfunctions.h"
 
@@ -105,7 +109,9 @@ void tst_QGLAbstractSurface::glWindowSurface()
     QOpenGLContext ctx;
     ensureContext(glw, ctx);
     if (!ctx.isValid())
+    {
         QSKIP("GL Implementation not valid");
+    }
 
     QGLWindowSurface surface1;
     QVERIFY(surface1.surfaceType() == QGLAbstractSurface::Window);
@@ -256,25 +262,25 @@ void tst_QGLAbstractSurface::pbufferSurface()
     QVERIFY(surface2.device() == &pbuffer1);
 
     QVERIFY(surface2.activate());
-    QVERIFY(QGLContext::currentContext() != glw.context());
-    const QGLContext *surface2ctx = QGLContext::currentContext();
+    QVERIFY(QOpenGLContext::currentContext() != glw.context());
+    const QOpenGLContext *surface2ctx = QOpenGLContext::currentContext();
     QCOMPARE(surface2.viewportGL(), QRect(QPoint(0, 0), pbuffer1.size()));
 
     surface2.deactivate();
-    QVERIFY(QGLContext::currentContext() == surface2ctx); // Left current.
+    QVERIFY(QOpenGLContext::currentContext() == surface2ctx); // Left current.
 
     QGLWidget glw2;
     QGLWindowSurface surface3(&glw2);
     QVERIFY(surface3.activate());
-    QVERIFY(QGLContext::currentContext() == glw2.context());
+    QVERIFY(QOpenGLContext::currentContext() == glw2.context());
     QCOMPARE(surface3.viewportGL(), QRect(0, 0, glw2.width(), glw2.height()));
 
     QVERIFY(surface3.switchTo(&surface2));
-    QVERIFY(QGLContext::currentContext() == surface2ctx);
+    QVERIFY(QOpenGLContext::currentContext() == surface2ctx);
     QCOMPARE(surface2.viewportGL(), QRect(QPoint(0, 0), pbuffer1.size()));
 
     QVERIFY(surface2.switchTo(&surface3));
-    QVERIFY(QGLContext::currentContext() == glw2.context());
+    QVERIFY(QOpenGLContext::currentContext() == glw2.context());
     QCOMPARE(surface3.viewportGL(), QRect(0, 0, glw2.width(), glw2.height()));
 
     surface3.deactivate();
@@ -296,21 +302,21 @@ void tst_QGLAbstractSurface::pbufferSurface()
     QVERIFY(surface4.device() == &pbuffer2);
 
     QVERIFY(surface1.switchTo(&surface2));
-    QVERIFY(QGLContext::currentContext() == surface2ctx);
+    QVERIFY(QOpenGLContext::currentContext() == surface2ctx);
     QCOMPARE(surface2.viewportGL(), QRect(QPoint(0, 0), pbuffer1.size()));
 
     QVERIFY(surface2.switchTo(&surface4));
-    const QGLContext *surface4ctx = QGLContext::currentContext();
+    const QOpenGLContext *surface4ctx = QOpenGLContext::currentContext();
     QVERIFY(surface4ctx != glw.context());
     QVERIFY(surface4ctx != surface2ctx);
     QCOMPARE(surface4.viewportGL(), QRect(QPoint(0, 0), pbuffer2.size()));
 
     QVERIFY(surface4.switchTo(&surface2));
-    QVERIFY(QGLContext::currentContext() == surface2ctx);
+    QVERIFY(QOpenGLContext::currentContext() == surface2ctx);
     QCOMPARE(surface2.viewportGL(), QRect(QPoint(0, 0), pbuffer1.size()));
 
     QVERIFY(surface2.switchTo(&surface1));
-    QVERIFY(QGLContext::currentContext() == glw.context());
+    QVERIFY(QOpenGLContext::currentContext() == glw.context());
     QCOMPARE(surface1.viewportGL(), QRect(0, 0, glw.width(), glw.height()));
 }
 */

@@ -42,10 +42,9 @@
 #ifndef QGLBuilder_H
 #define QGLBuilder_H
 
-#include <QtCore/qvector.h>
-#include <QtCore/qlist.h>
-#include <QtGui/qvector3d.h>
-#include <QtOpenGL/qgl.h>
+#include <QVector>
+#include <QList>
+#include <QVector3D>
 
 #include "qglnamespace.h"
 #include "qglscenenode.h"

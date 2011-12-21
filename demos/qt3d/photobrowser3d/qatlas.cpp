@@ -51,8 +51,8 @@
 
 #include <QImage>
 #include <QThread>
-#include <QGLFramebufferObject>
-#include <QGLFramebufferObjectFormat>
+#include <QOpenGLFramebufferObject>
+#include <QOpenGLFramebufferObjectFormat>
 #include <QCoreApplication>
 
 #ifndef GL_MULTISAMPLE

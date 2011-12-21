@@ -40,40 +40,24 @@
 ****************************************************************************/
 
 #include "qglsharedresource_p.h"
-#include <QtCore/qmutex.h>
-#include <QtCore/qcoreapplication.h>
-#include <qopenglcontext.h>
+
+#include <QMutex>
+#include <QGuiApplication>
+#include <QOpenGLContext>
 
 QT_BEGIN_NAMESPACE
 
-#if !defined(Q_MOC_RUN)
-
-class Q_OPENGL_EXPORT QGLSignalProxy : public QObject
-{
-    Q_OBJECT
-public:
-    QGLSignalProxy() : QObject() {}
-    void emitAboutToDestroyContext(const QGLContext *context) {
-        emit aboutToDestroyContext(context);
-    }
-    static QGLSignalProxy *instance();
-Q_SIGNALS:
-    void aboutToDestroyContext(const QGLContext *context);
-};
-
-#endif
-
-class QGLContextInfo
+class QOpenGLContextInfo
 {
 public:
-    QGLContextInfo(const QGLContext *ctx) : m_context(ctx), m_resources(0) {}
-    ~QGLContextInfo();
+    QOpenGLContextInfo(QOpenGLContext *ctx) : m_context(ctx), m_resources(0) {}
+    ~QOpenGLContextInfo();
 
-    const QGLContext *m_context;
+    QOpenGLContext *m_context;
     QGLSharedResource *m_resources;
 };
 
-QGLContextInfo::~QGLContextInfo()
+QOpenGLContextInfo::~QOpenGLContextInfo()
 {
     // Detach this information block from all of the shared resources
     // that used to be owned by it.
@@ -85,74 +69,70 @@ QGLContextInfo::~QGLContextInfo()
     }
 }
 
-class QGLContextManager : public QObject
+class QOpenGLContextManager : public QObject
 {
     Q_OBJECT
 public:
-    QGLContextManager(QObject *parent = 0);
-    ~QGLContextManager();
+    QOpenGLContextManager(QObject *parent = 0);
+    ~QOpenGLContextManager();
 
     QMutex managerLock;
 
-    QGLContextInfo *contextInfo(const QGLContext *ctx);
+    QOpenGLContextInfo *contextInfo(QOpenGLContext *ctx);
 
 private Q_SLOTS:
-    void aboutToDestroyContext(const QGLContext *ctx);
+    void aboutToDestroyContext();
 
 private:
-    QList<QGLContextInfo *> m_contexts;
+    QList<QOpenGLContextInfo *> m_contexts;
 };
 
-Q_GLOBAL_STATIC(QGLContextManager, qt_gl_context_manager)
+Q_GLOBAL_STATIC(QOpenGLContextManager, qt_gl_context_manager)
 
-QGLContextManager::QGLContextManager(QObject *parent)
+QOpenGLContextManager::QOpenGLContextManager(QObject *parent)
     : QObject(parent)
 {
-    QGLSignalProxy *proxy = QGLSignalProxy::instance();
-    QThread *mainThread = qApp->thread();
-    if (thread() != mainThread) {
-        // The manager and signal proxy have been created for the first
-        // time in a background thread.  For safety, move both objects
-        // to the main thread.
-        moveToThread(mainThread);
-        proxy->moveToThread(mainThread);
-    }
-    connect(proxy, SIGNAL(aboutToDestroyContext(const QGLContext *)),
-            this, SLOT(aboutToDestroyContext(const QGLContext *)));
 }
 
-QGLContextManager::~QGLContextManager()
+QOpenGLContextManager::~QOpenGLContextManager()
 {
     QMutexLocker locker(&managerLock);
     qDeleteAll(m_contexts);
 }
 
-QGLContextInfo *QGLContextManager::contextInfo(const QGLContext *ctx)
+QOpenGLContextInfo *QOpenGLContextManager::contextInfo(QOpenGLContext *ctx)
 {
-    QGLContextInfo *info;
-    for (int index = 0; index < m_contexts.size(); ++index) {
-        info = m_contexts[index];
-        if (info->m_context == ctx)
-            return info;
+    QOpenGLContextInfo *info = 0;
+    if (ctx)
+    {
+        for (int index = 0; index < m_contexts.size(); ++index)
+        {
+            info = m_contexts[index];
+            if (info->m_context == ctx)
+                return info;
+        }
+        info = new QOpenGLContextInfo(ctx);
+        m_contexts.append(info);
+        connect(ctx, SIGNAL(destroyed()), this, SLOT(aboutToDestroyContext()));
     }
-    info = new QGLContextInfo(ctx);
-    m_contexts.append(info);
     return info;
 }
 
-void QGLContextManager::aboutToDestroyContext(const QGLContext *ctx)
+void QOpenGLContextManager::aboutToDestroyContext()
 {
+    QOpenGLContext *ctx = qobject_cast<QOpenGLContext *>(sender());
+    Q_ASSERT_X(ctx, Q_FUNC_INFO, "aboutToDestroy signal not from context");
     QMutexLocker locker(&managerLock);
     int index = 0;
     while (index < m_contexts.size()) {
-        QGLContextInfo *info = m_contexts[index];
+        QOpenGLContextInfo *info = m_contexts[index];
         if (info->m_context == ctx) {
-            QOpenGLContext *transfer = ctx->contextHandle()->shareContext();
+            QOpenGLContext *transfer = ctx->shareContext();
             if (transfer) {
                 // Transfer ownership to another context in the same sharing
-                // group.  This may result in multiple QGLContextInfo objects
+                // group.  This may result in multiple QOpenGLContextInfo objects
                 // for the same context, which is ok.
-                info->m_context = QGLContext::fromOpenGLContext(transfer);
+                info->m_context = transfer;
             } else {
                 // All contexts in the sharing group have been deleted,
                 // so detach all of the shared resources.
@@ -165,17 +145,17 @@ void QGLContextManager::aboutToDestroyContext(const QGLContext *ctx)
     }
 }
 
-const QGLContext *QGLSharedResource::context() const
+QOpenGLContext *QGLSharedResource::context() const
 {
     // Hope that the context will not be destroyed in another thread
     // while we are doing this so we don't have to acquire the lock.
     return m_contextInfo ? m_contextInfo->m_context : 0;
 }
 
-void QGLSharedResource::attach(const QGLContext *context, GLuint id)
+void QGLSharedResource::attach(QOpenGLContext *context, GLuint id)
 {
     Q_ASSERT(!m_contextInfo);
-    QGLContextManager *manager = qt_gl_context_manager();
+    QOpenGLContextManager *manager = qt_gl_context_manager();
     QMutexLocker locker(&(manager->managerLock));
     m_contextInfo = manager->contextInfo(context);
     m_id = id;
@@ -189,8 +169,8 @@ void QGLSharedResource::attach(const QGLContext *context, GLuint id)
 void QGLSharedResource::destroy()
 {
     // Detach this resource from the context information block.
-    QGLContextManager *manager = qt_gl_context_manager();
-    const QGLContext *owner = 0;
+    QOpenGLContextManager *manager = qt_gl_context_manager();
+    QOpenGLContext *owner = 0;
     GLuint id = 0;
     manager->managerLock.lock();
     if (m_contextInfo) {
@@ -211,20 +191,22 @@ void QGLSharedResource::destroy()
 
     // Switch back to the owning context temporarily and delete the id.
     if (owner && id) {
-        QGLContext *currentContext = const_cast<QGLContext *>(QGLContext::currentContext());
-        QGLContext *oldContext;
-        QGLContext *doneContext;
-        if (currentContext != owner && !QGLContext::areSharing(owner, currentContext)) {
+        QOpenGLContext *currentContext = QOpenGLContext::currentContext();
+        QSurface *surf = currentContext->surface();
+        QOpenGLContext *oldContext;
+        QOpenGLContext *doneContext;
+        if (currentContext != owner && !QOpenGLContext::areSharing
+                (const_cast<QOpenGLContext *>(owner), currentContext)) {
             oldContext = currentContext;
-            doneContext = const_cast<QGLContext *>(owner);
-            doneContext->makeCurrent();
+            doneContext = owner;
+            doneContext->makeCurrent(surf);
         } else {
             oldContext = 0;
             doneContext = 0;
         }
         m_destroyFunc(id);
         if (oldContext)
-            oldContext->makeCurrent();
+            oldContext->makeCurrent(surf);
         else if (!currentContext && doneContext)
             doneContext->doneCurrent();
     }

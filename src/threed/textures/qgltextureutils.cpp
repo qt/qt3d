@@ -41,55 +41,20 @@
 
 #include "qgltextureutils_p.h"
 #include "qglext_p.h"
-#include <QtCore/qfile.h>
-#include <private/qopenglcontext_p.h>
+
+#include <QFile>
+#include <QImage>
 
 QT_BEGIN_NAMESPACE
 
-QGL::TextureWrap qt_gl_modify_texture_wrap(QGL::TextureWrap value)
+inline static bool isPowerOfTwo(int x)
 {
-    switch (value) {
-#if defined(QT_OPENGL_ES)
-    case QGL::Clamp:
-        value = QGL::ClampToEdge;
-        break;
-#endif
-#if !defined(QT_OPENGL_ES)
-    case QGL::ClampToBorder:
-        if ((QGLFormat::openGLVersionFlags() & QGLFormat::OpenGL_Version_1_3)
-                == 0)
-            value = QGL::Clamp;
-        break;
-#else
-    case QGL::ClampToBorder:
-        value = QGL::ClampToEdge;
-        break;
-#endif
-#if !defined(QT_OPENGL_ES)
-    case QGL::ClampToEdge:
-        if ((QGLFormat::openGLVersionFlags() & QGLFormat::OpenGL_Version_1_2)
-                == 0)
-            value = QGL::Clamp;
-        break;
-#endif
-#if !defined(QT_OPENGL_ES)
-    case QGL::MirroredRepeat:
-        if ((QGLFormat::openGLVersionFlags() & QGLFormat::OpenGL_Version_1_4)
-                == 0)
-            value = QGL::Repeat;
-        break;
-#elif !defined(QT_OPENGL_ES_2)
-    case QGL::MirroredRepeat:
-        value = QGL::Repeat;
-        break;
-#endif
-    default: break;
-    }
-    return value;
+    // Assumption: x >= 1
+    return x == (x & -x);
 }
 
-QGLTextureExtensions::QGLTextureExtensions(const QGLContext *ctx)
-    : QOpenGLSharedResource(ctx->contextHandle()->shareGroup())
+QGLTextureExtensions::QGLTextureExtensions(QOpenGLContext *ctx)
+    : QOpenGLSharedResource(ctx->shareGroup())
     , npotTextures(false)
     , generateMipmap(false)
     , bgraTextureFormat(false)
@@ -119,7 +84,7 @@ QGLTextureExtensions::QGLTextureExtensions(const QGLContext *ctx)
 #if !defined(QT_OPENGL_ES)
     if (extensions.match("GL_ARB_texture_compression")) {
         compressedTexImage2D = (q_glCompressedTexImage2DARB)
-            ctx->getProcAddress(QLatin1String("glCompressedTexImage2DARB"));
+            ctx->getProcAddress("glCompressedTexImage2DARB");
     }
 #else
     compressedTexImage2D = glCompressedTexImage2D;
@@ -127,23 +92,25 @@ QGLTextureExtensions::QGLTextureExtensions(const QGLContext *ctx)
 
 }
 
-static QGLTextureExtensions *qt_gl_texture_extensions;
+struct QGLTEHelper
+{
+    QGLTextureExtensions *d;
+};
+
+Q_GLOBAL_STATIC(QGLTEHelper, qt_qgltehelper)
 
 QGLTextureExtensions::~QGLTextureExtensions()
 {
-    qt_gl_texture_extensions = 0;
 }
-
-
 
 QGLTextureExtensions *QGLTextureExtensions::extensions()
 {
-    const QGLContext *ctx = QGLContext::currentContext();
+    QOpenGLContext *ctx = QOpenGLContext::currentContext();
     if (!ctx)
         return 0;
-    if (!qt_gl_texture_extensions)
-        qt_gl_texture_extensions = new QGLTextureExtensions(ctx);
-    return qt_gl_texture_extensions;
+    if (!qt_qgltehelper()->d)
+        qt_qgltehelper()->d = new QGLTextureExtensions(ctx);
+    return qt_qgltehelper()->d;
 }
 
 static void qt_gl_destroyTextureId(GLuint id)
@@ -153,7 +120,7 @@ static void qt_gl_destroyTextureId(GLuint id)
 
 QGLBoundTexture::QGLBoundTexture()
     : m_resource(qt_gl_destroyTextureId)
-    , m_options(QGLContext::DefaultBindOption)
+    , m_options(QGLTexture2D::DefaultBindOption)
     , m_hasAlpha(false)
 {
 }
@@ -164,7 +131,7 @@ QGLBoundTexture::~QGLBoundTexture()
 
 // #define QGL_BIND_TEXTURE_DEBUG
 
-void QGLBoundTexture::startUpload(const QGLContext *ctx, GLenum target, const QSize &imageSize)
+void QGLBoundTexture::startUpload(QOpenGLContext *ctx, GLenum target, const QSize &imageSize)
 {
     Q_UNUSED(imageSize);
 
@@ -195,16 +162,14 @@ void QGLBoundTexture::startUpload(const QGLContext *ctx, GLenum target, const QS
     glBindTexture(target, id);
     m_resource.attach(ctx, id);
 
-    GLuint filtering = m_options & QGLContext::LinearFilteringBindOption ? GL_LINEAR : GL_NEAREST;
+    GLuint filtering = m_options & QGLTexture2D::LinearFilteringBindOption ? GL_LINEAR : GL_NEAREST;
 
 #ifdef QGL_BIND_TEXTURE_DEBUG
     printf(" - setting options (%d ms)\n", time.elapsed());
 #endif
     q_glTexParameteri(target, GL_TEXTURE_MAG_FILTER, filtering);
 
-    if (QGLContext::currentContext()->format().directRendering()
-        && extensions->generateMipmap
-        && (m_options & QGLContext::MipmapBindOption))
+    if (extensions->generateMipmap && (m_options & QGLTexture2D::MipmapBindOption))
     {
 #if !defined(QT_OPENGL_ES_2)
         glHint(GL_GENERATE_MIPMAP_HINT_SGIS, GL_NICEST);
@@ -213,11 +178,11 @@ void QGLBoundTexture::startUpload(const QGLContext *ctx, GLenum target, const QS
         glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);
 #endif
         q_glTexParameteri(target, GL_TEXTURE_MIN_FILTER,
-                m_options & QGLContext::LinearFilteringBindOption
+                m_options & QGLTexture2D::LinearFilteringBindOption
                         ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST_MIPMAP_NEAREST);
     } else {
         q_glTexParameteri(target, GL_TEXTURE_MIN_FILTER, filtering);
-        m_options &= ~QGLContext::MipmapBindOption;
+        m_options &= ~QGLTexture2D::MipmapBindOption;
     }
 }
 
@@ -270,18 +235,19 @@ void QGLBoundTexture::uploadFace
     m_size = size;
 
     QImage::Format target_format = img.format();
-    bool premul = m_options & QGLContext::PremultipliedAlphaBindOption;
+    bool premul = m_options & QGLTexture2D::PremultipliedAlphaBindOption;
     GLenum externalFormat;
-    GLuint pixel_type;
+    GLuint pixel_type = GL_UNSIGNED_BYTE;
     if (extensions->bgraTextureFormat) {
         externalFormat = GL_BGRA;
-        if (QGLFormat::openGLVersionFlags() & QGLFormat::OpenGL_Version_1_2)
-            pixel_type = GL_UNSIGNED_INT_8_8_8_8_REV;
-        else
-            pixel_type = GL_UNSIGNED_BYTE;
+        // under OpenGL 1.2 with this extension apparently the pixel format might be
+        // some GL_UNSIGNED_INT_8_8_8_8_REV - that is 5 years plus out of date, so
+        // don't do that.
+#ifdef QGL_BIND_TEXTURE_DEBUG
+        qWarning("Checking for old image formats now not supported");
+#endif
     } else {
         externalFormat = GL_RGBA;
-        pixel_type = GL_UNSIGNED_BYTE;
     }
 
     switch (target_format) {
@@ -324,7 +290,7 @@ void QGLBoundTexture::uploadFace
         }
     }
 
-    if (m_options & QGLContext::InvertedYBindOption) {
+    if (m_options & QGLTexture2D::InvertedYBindOption) {
 #ifdef QGL_BIND_TEXTURE_DEBUG
             printf(" - flipping bits over y (%d ms)\n", time.elapsed());
 #endif
@@ -388,7 +354,7 @@ void QGLBoundTexture::finishUpload(GLenum target)
 #if defined(QT_OPENGL_ES_2)
     // OpenGL/ES 2.0 needs to generate mipmaps after all cubemap faces
     // have been uploaded.
-    if (m_options & QGLContext::MipmapBindOption) {
+    if (m_options & QOpenGLContext::MipmapBindOption) {
 #ifdef QGL_BIND_TEXTURE_DEBUG
         printf(" - generating mipmaps (%d ms)\n", time.elapsed());
 #endif
@@ -546,7 +512,7 @@ bool QGLBoundTexture::bindCompressedTexture
     if (!extensions)
         return false;
     if (!extensions->compressedTexImage2D) {
-        qWarning("QGLContext::bindTexture(): The GL implementation does "
+        qWarning("QOpenGLContext::bindTexture(): The GL implementation does "
                  "not support texture compression extensions.");
         return false;
     }
@@ -632,7 +598,7 @@ bool QGLBoundTexture::bindCompressedTextureDDS(const char *buf, int len)
     glBindTexture(GL_TEXTURE_2D, id);
     q_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     q_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    m_resource.attach(QGLContext::currentContext(), id);
+    m_resource.attach(QOpenGLContext::currentContext(), id);
 
     int size;
     int offset = 0;
@@ -659,7 +625,7 @@ bool QGLBoundTexture::bindCompressedTextureDDS(const char *buf, int len)
     }
 
     // DDS images are not inverted.
-    m_options &= ~QGLContext::InvertedYBindOption;
+    m_options &= ~QGLTexture2D::InvertedYBindOption;
 
     m_size = QSize(ddsHeader->dwWidth, ddsHeader->dwHeight);
     m_hasAlpha = false;
@@ -736,16 +702,16 @@ bool QGLBoundTexture::bindCompressedTexturePVR(const char *buf, int len)
     id = 0;
     glGenTextures(1, &id);
     glBindTexture(GL_TEXTURE_2D, id);
-    m_resource.attach(QGLContext::currentContext(), id);
+    m_resource.attach(QOpenGLContext::currentContext(), id);
     if (pvrHeader->mipMapCount) {
-        if ((m_options & QGLContext::LinearFilteringBindOption) != 0) {
+        if ((m_options & QGLTexture2D::LinearFilteringBindOption) != 0) {
             glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         } else {
             glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
         }
-    } else if ((m_options & QGLContext::LinearFilteringBindOption) != 0) {
+    } else if ((m_options & QGLTexture2D::LinearFilteringBindOption) != 0) {
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     } else {
@@ -781,9 +747,9 @@ bool QGLBoundTexture::bindCompressedTexturePVR(const char *buf, int len)
     // Set the invert flag for the texture.  The "vertical flip"
     // flag in PVR is the opposite sense to our sense of inversion.
     if ((pvrHeader->flags & PVR_VERTICAL_FLIP) != 0)
-        m_options &= ~QGLContext::InvertedYBindOption;
+        m_options &= ~QGLTexture2D::InvertedYBindOption;
     else
-        m_options |= QGLContext::InvertedYBindOption;
+        m_options |= QGLTexture2D::InvertedYBindOption;
 
     m_size = QSize(pvrHeader->width, pvrHeader->height);
     m_hasAlpha = (pvrHeader->alphaMask != 0);

@@ -5,6 +5,5 @@ QT += testlib qt3d
 CONFIG += warn_on
 
 SOURCES += tst_qglrender.cpp
-QT+=widgets
 
 CONFIG+=insignificant_test

@@ -39,16 +39,18 @@
 **
 ****************************************************************************/
 
-#include <QApplication>
+#include <QGuiApplication>
 #include <QTimer>
 #include <QMouseEvent>
 #include <QWindow>
+#include <QOpenGLContext>
+#include <QOpenGLShaderProgram>
+
 #include "qglpainter.h"
 #include "qglabstracteffect.h"
 #include "qgltexture2d.h"
 #include "qglshaderprogrameffect.h"
-#include <QtGui/QOpenGLContext>
-#include <QtOpenGL/qglshaderprogram.h>
+
 #include "pageflipmath_p.h"
 
 class PageFlipGradientEffect;
@@ -359,7 +361,7 @@ void PageFlipView::update()
     if (!updateQueued)
     {
         updateQueued = true;
-        QApplication::postEvent(this, new QExposeEvent(geometry()));
+        QGuiApplication::postEvent(this, new QExposeEvent(geometry()));
     }
 }
 
@@ -435,7 +437,7 @@ inline void PageFlipView::ensureContext()
 
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
+    QGuiApplication app(argc, argv);
     PageFlipView view;
 
     QStringList args = QCoreApplication::arguments();

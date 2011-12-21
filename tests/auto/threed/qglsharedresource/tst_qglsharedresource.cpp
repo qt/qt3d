@@ -40,6 +40,9 @@
 ****************************************************************************/
 
 #include <QtTest/QtTest>
+#include <QPlatformOpenGLContext>
+
+#include "qglview.h"
 #include "qglsharedresource_p.h"
 
 class tst_QGLSharedResource : public QObject
@@ -59,56 +62,65 @@ static int dummyDestroyCount = 0;
 static void destroyDummyResource(GLuint id)
 {
     QVERIFY(id != 0);
-    QVERIFY(QGLContext::currentContext() != 0);
+    QVERIFY(QOpenGLContext::currentContext() != 0);
     ++dummyDestroyCount;
 }
 
 void tst_QGLSharedResource::resourceSharing()
 {
-    QSKIP("failing since refactor changes");
     dummyDestroyCount = 0;
 
     // Create a context.
-    QGLWidget *glw1 = new QGLWidget();
-    glw1->makeCurrent();
+    QGLView *view = new QGLView;
+    view->show();
+    QOpenGLContext *ctx = view->context();
+    bool ok;
+    ok = ctx->makeCurrent(view);
+    if (!ok)
+        QSKIP("Could not create an OpenGL context");
 
     // Nothing should be sharing with glw1's context yet.
-    QVERIFY(!glw1->isSharing());
+    QVERIFY(!ctx->handle()->isSharing());
 
     // Create a guard for the first context.
     QGLSharedResource guard(destroyDummyResource);
     QVERIFY(guard.context() == 0);
     QVERIFY(guard.id() == 0);
-    guard.attach(glw1->context(), 3);
-    QVERIFY(guard.context() == glw1->context());
+    guard.attach(ctx, 3);
+    QVERIFY(guard.context() == ctx);
     QVERIFY(guard.id() == 3);
 
     // Create another context that shares with the first.
-    QVERIFY(!glw1->isSharing());
-    QGLWidget *glw2 = new QGLWidget(0, glw1);
-    if (!glw2->isSharing()) {
-        delete glw2;
-        delete glw1;
+    QVERIFY(!ctx->handle()->isSharing());
+
+    // Create a context.
+    QGLView *view2 = new QGLView;
+    view2->show();
+    QOpenGLContext *ctx2 = view2->context();
+    if (!ctx2 || !ctx2->makeCurrent(view2))
+        QSKIP("Could not create an OpenGL context");
+
+    if (!ctx2->handle()->isSharing()) {
         QSKIP("Context sharing is not supported");
     }
-    QVERIFY(glw1->isSharing());
-    QVERIFY(glw1->context() != glw2->context());
+    QVERIFY(ctx->handle()->isSharing());
+    QVERIFY(ctx != ctx2);
 
     // Guard should still be the same.
-    QVERIFY(guard.context() == glw1->context());
+    QVERIFY(guard.context() == ctx);
     QVERIFY(guard.id() == 3);
 
     // Create some guards and then destroy them while the context is active.
     {
         QGLSharedResource guard2(destroyDummyResource);
-        guard2.attach(glw1->context(), 4);
-        QVERIFY(guard2.context() == glw1->context());
+        guard2.attach(ctx, 4);
+        QVERIFY(guard2.context() == ctx);
         QVERIFY(guard2.id() == 4);
     }
     QCOMPARE(dummyDestroyCount, 1);
     QGLSharedResource guard3(destroyDummyResource);
-    guard3.attach(glw1->context(), 6);
-    QVERIFY(guard3.context() == glw1->context());
+    guard3.attach(ctx, 6);
+    QVERIFY(guard3.context() == ctx);
     QVERIFY(guard3.id() == 6);
     guard3.destroy();
     QVERIFY(guard3.context() == 0);
@@ -116,34 +128,39 @@ void tst_QGLSharedResource::resourceSharing()
     QCOMPARE(dummyDestroyCount, 2);
 
     // Create a third context, not sharing with the others.
-    QGLWidget *glw3 = new QGLWidget();
-    QVERIFY(!glw3->isSharing());
+    // Create a context.
+    QGLView *view3 = new QGLView;
+    view3->show();
+    QOpenGLContext *ctx3 = view3->context();
+    if (!ctx3 || !ctx3->makeCurrent(view3))
+        QSKIP("Could not create an OpenGL context");
+    QVERIFY(!ctx3->handle()->isSharing());
 
     // Create a guard on the standalone context.
     QGLSharedResource guard4(destroyDummyResource);
-    guard4.attach(glw3->context(), 5);
-    QVERIFY(guard4.context() == glw3->context());
+    guard4.attach(ctx3, 5);
+    QVERIFY(guard4.context() == ctx3);
     QVERIFY(guard4.id() == 5);
 
     // Shared guard should still be the same.
-    QVERIFY(guard.context() == glw1->context());
+    QVERIFY(guard.context() == ctx);
     QVERIFY(guard.id() == 3);
 
     // Delete the first context.
-    delete glw1;
+    delete view;
 
     // The second context should no longer register as sharing.
-    QVERIFY(!glw2->isSharing());
+    QVERIFY(!ctx2->handle()->isSharing());
 
     // Shared guard should now be the second context, with the id the same.
-    QVERIFY(guard.context() == glw2->context());
+    QVERIFY(guard.context() == ctx2);
     QVERIFY(guard.id() == 3);
-    QVERIFY(guard4.context() == glw3->context());
+    QVERIFY(guard4.context() == ctx);
     QVERIFY(guard4.id() == 5);
 
     // Clean up the other contexts.
-    delete glw2;
-    delete glw3;
+    delete view2;
+    delete view3;
 
     // Guards should now be null and the id zero, but no extra calls to
     // the dummy destroy function.

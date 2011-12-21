@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Teapot
-Icon=icon-l-qtquick3d
-Exec=/usr/bin/teapot_qml -fullscreen
-OnlyShowIn=X-MeeGo;
-X-MeeGo-Logical-Id=qtn_comm_appname_teapot_qml
-X-MeeGo-Translation-Catalog=essentials

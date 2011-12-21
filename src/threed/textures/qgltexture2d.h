@@ -43,8 +43,11 @@
 #define QGLTEXTURE2D_H
 
 #include "qglnamespace.h"
-#include <QtOpenGL/qgl.h>
-#include <QtCore/qscopedpointer.h>
+
+#include <QOpenGLBuffer>
+#include <QScopedPointer>
+#include <QPoint>
+#include <QObject>
 
 QT_BEGIN_HEADER
 
@@ -58,6 +61,18 @@ class Q_QT3D_EXPORT QGLTexture2D : public QObject
 {
     Q_OBJECT
 public:
+    enum BindOption
+    {
+        NoBindOption                            = 0x0000,
+        InvertedYBindOption                     = 0x0001,
+        MipmapBindOption                        = 0x0002,
+        PremultipliedAlphaBindOption            = 0x0004,
+        LinearFilteringBindOption               = 0x0008,
+        DefaultBindOption                       =  LinearFilteringBindOption
+                                                    | InvertedYBindOption | MipmapBindOption
+    };
+    Q_DECLARE_FLAGS(BindOptions, BindOption)
+
     QGLTexture2D(QObject *parent = 0);
     ~QGLTexture2D();
 
@@ -80,8 +95,8 @@ public:
 
     void copyImage(const QImage& image, const QPoint& offset = QPoint(0, 0));
 
-    QGLContext::BindOptions bindOptions() const;
-    void setBindOptions(QGLContext::BindOptions options);
+    BindOptions bindOptions() const;
+    void setBindOptions(BindOptions options);
 
     QGL::TextureWrap horizontalWrap() const;
     void setHorizontalWrap(QGL::TextureWrap value);
@@ -102,6 +117,8 @@ private:
     Q_DISABLE_COPY(QGLTexture2D)
     Q_DECLARE_PRIVATE(QGLTexture2D)
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(QGLTexture2D::BindOptions)
 
 QT_END_NAMESPACE
 

@@ -49,6 +49,7 @@
 #include <QUrl>
 #include <QFile>
 #include <QCoreApplication>
+#include <QPainter>
 
 ByteReader::ByteReader()
     : m_stop(0), m_loading(0)

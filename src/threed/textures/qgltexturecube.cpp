@@ -44,6 +44,13 @@
 #include "qgltextureutils_p.h"
 #include "qglpainter_p.h"
 
+#include <QOpenGLBuffer>
+#include <QOpenGLContext>
+
+#ifdef QT_OPENGL_LIB
+#include <QGLWidget>
+#endif
+
 QT_BEGIN_NAMESPACE
 
 /*!
@@ -117,7 +124,7 @@ void QGLTextureCubePrivate::bindImages(QGLTexture2DTextureInfo *info)
 {
     QSize scaledSize(size);
 #if defined(QT_OPENGL_ES_2)
-    if ((bindOptions & QGLContext::MipmapBindOption) ||
+    if ((bindOptions & QGLTexture2D::MipmapBindOption) ||
             horizontalWrap != QGL::ClampToEdge ||
             verticalWrap != QGL::ClampToEdge) {
         // ES 2.0 does not support NPOT textures when mipmaps are in use,
@@ -223,11 +230,7 @@ void QGLTextureCube::setSize(const QSize& value)
     Q_D(QGLTextureCube);
     if (d->requestedSize == value)
         return;
-    if (!(QGLFormat::openGLVersionFlags() & QGLFormat::OpenGL_Version_2_0) &&
-        !(QGLFormat::openGLVersionFlags() & QGLFormat::OpenGL_ES_Version_2_0))
-        d->size = QGL::nextPowerOfTwo(value);
-    else
-        d->size = value;
+    d->size = value;
     d->requestedSize = value;
     ++(d->imageGeneration);
 }
@@ -344,11 +347,16 @@ void QGLTextureCube::clearImage(QGLTextureCube::Face face)
     If the texture has been created in multiple contexts, only the
     texture identifier for the current context will be updated.
 
+    This function is only available if Qt has been compiled with the
+    OpenGL library.  If that library is not present, then this function
+    does nothing.
+
     \sa setImage(), bind()
 */
 void QGLTextureCube::copyImage
     (QGLTextureCube::Face face, const QImage& image, const QPoint& offset)
 {
+#ifdef QT_OPENGL_LIB
     if (uint(face) >= 6)
         return; // Invalid face number.
     QImage img = QGLWidget::convertToGLFormat(image);
@@ -358,20 +366,25 @@ void QGLTextureCube::copyImage
                     GL_UNSIGNED_BYTE, img.bits());
 #if defined(QT_OPENGL_ES_2)
     Q_D(QGLTextureCube);
-    if (d->bindOptions & QGLContext::MipmapBindOption)
+    if (d->bindOptions & QGLTexture2D::MipmapBindOption)
         glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+#endif
+#else
+    Q_UNUSED(face);
+    Q_UNUSED(image);
+    Q_UNUSED(offset);
 #endif
 }
 
 /*!
     Returns the options to use when binding the image() to an OpenGL
     context for the first time.  The default options are
-    QGLContext::LinearFilteringBindOption |
-    QGLContext::InvertedYBindOption | QGLContext::MipmapBindOption.
+    QGLTexture2D::LinearFilteringBindOption |
+    QGLTexture2D::InvertedYBindOption | QGLTexture2D::MipmapBindOption.
 
     \sa setBindOptions()
 */
-QGLContext::BindOptions QGLTextureCube::bindOptions() const
+QGLTexture2D::BindOptions QGLTextureCube::bindOptions() const
 {
     Q_D(const QGLTextureCube);
     return d->bindOptions;
@@ -385,7 +398,7 @@ QGLContext::BindOptions QGLTextureCube::bindOptions() const
 
     \sa bindOptions(), bind()
 */
-void QGLTextureCube::setBindOptions(QGLContext::BindOptions options)
+void QGLTextureCube::setBindOptions(QGLTexture2D::BindOptions options)
 {
     Q_D(QGLTextureCube);
     if (d->bindOptions != options) {
@@ -422,7 +435,6 @@ QGL::TextureWrap QGLTextureCube::horizontalWrap() const
 void QGLTextureCube::setHorizontalWrap(QGL::TextureWrap value)
 {
     Q_D(QGLTextureCube);
-    value = qt_gl_modify_texture_wrap(value);
     if (d->horizontalWrap != value) {
         d->horizontalWrap = value;
         ++(d->parameterGeneration);
@@ -457,7 +469,7 @@ QGL::TextureWrap QGLTextureCube::verticalWrap() const
 void QGLTextureCube::setVerticalWrap(QGL::TextureWrap value)
 {
     Q_D(QGLTextureCube);
-    value = qt_gl_modify_texture_wrap(value);
+
     if (d->verticalWrap != value) {
         d->verticalWrap = value;
         ++(d->parameterGeneration);
@@ -507,7 +519,7 @@ void QGLTextureCube::release()
 GLuint QGLTextureCube::textureId() const
 {
     Q_D(const QGLTextureCube);
-    const QGLContext *ctx = QGLContext::currentContext();
+    const QOpenGLContext *ctx = QOpenGLContext::currentContext();
     if (!ctx)
         return 0;
     QGLTexture2DTextureInfo *info = d->infos;
@@ -532,7 +544,7 @@ GLuint QGLTextureCube::textureId() const
 */
 QGLTextureCube *QGLTextureCube::fromTextureId(GLuint id, const QSize& size)
 {
-    const QGLContext *ctx = QGLContext::currentContext();
+    QOpenGLContext *ctx = QOpenGLContext::currentContext();
     if (!id || !ctx)
         return 0;
 

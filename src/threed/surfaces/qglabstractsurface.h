@@ -44,7 +44,7 @@
 
 #include "qt3dglobal.h"
 
-#include <QtOpenGL/qgl.h>
+#include <QRect>
 
 QT_BEGIN_HEADER
 
@@ -54,7 +54,10 @@ QT_MODULE(Qt3D)
 
 class QWindow;
 class QOpenGLFramebufferObject;
+#ifdef QT_OPENGL_LIB
 class QGLPixelBuffer;
+#endif
+class QOpenGLContext;
 
 class Q_QT3D_EXPORT QGLAbstractSurface
 {
@@ -65,7 +68,9 @@ public:
     {
         Window,
         FramebufferObject,
+#ifdef QT_OPENGL_LIB
         PixelBuffer,
+#endif
         Subsurface,
         User = 1000
     };
@@ -99,7 +104,9 @@ protected:
     QOpenGLContext *m_context;
     QWindow *m_window;
     QOpenGLFramebufferObject *m_fbo;
+#ifdef QT_OPENGL_LIB
     QGLPixelBuffer *m_pb;
+#endif
 
 private:
     int m_type;

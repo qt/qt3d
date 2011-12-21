@@ -45,8 +45,12 @@
 #include "qglpainter_p.h"
 #include "qglext_p.h"
 
-#include <QtCore/qfile.h>
-#include <QtCore/qfileinfo.h>
+#include <QFile>
+#include <QFileInfo>
+
+#ifdef QT_OPENGL_LIB
+#include <QGLWidget>
+#endif
 
 QT_BEGIN_NAMESPACE
 
@@ -90,7 +94,7 @@ QGLTexture2DPrivate::QGLTexture2DPrivate()
 {
     horizontalWrap = QGL::Repeat;
     verticalWrap = QGL::Repeat;
-    bindOptions = QGLContext::DefaultBindOption;
+    bindOptions = QGLTexture2D::DefaultBindOption;
 #if !defined(QT_OPENGL_ES)
     mipmapSupported = false;
     mipmapSupportedKnown = false;
@@ -103,11 +107,14 @@ QGLTexture2DPrivate::QGLTexture2DPrivate()
 QGLTexture2DPrivate::~QGLTexture2DPrivate()
 {
     // Destroy the texture id's in the GL server in their original contexts.
+    // TODO: XXXXXXX
+    // This probably does not work at all in multi-threaded OpenGL environments
+    // like the QML SceneGraph
     QGLTexture2DTextureInfo *current = infos;
     QGLTexture2DTextureInfo *next;
-    const QGLContext *currentContext =
-        const_cast<QGLContext *>(QGLContext::currentContext());
-    const QGLContext *firstContext = currentContext;
+    QOpenGLContext *currentContext = QOpenGLContext::currentContext();
+    QOpenGLContext *firstContext = currentContext;
+    QSurface *surface = currentContext->surface();
     while (current != 0) {
         next = current->next;
         if (current->isLiteral)
@@ -117,9 +124,9 @@ QGLTexture2DPrivate::~QGLTexture2DPrivate()
     }
     if (firstContext != currentContext) {
         if (firstContext)
-            const_cast<QGLContext *>(firstContext)->makeCurrent();
+            const_cast<QOpenGLContext *>(firstContext)->makeCurrent(surface);
         else if (currentContext)
-            const_cast<QGLContext *>(currentContext)->doneCurrent();
+            const_cast<QOpenGLContext *>(currentContext)->doneCurrent();
     }
 }
 
@@ -182,12 +189,17 @@ QSize QGLTexture2D::size() const
 }
 
 /*!
-    Sets the size of this texture to \a value.  If the underlying
-    OpenGL implementation requires texture sizes to be a power of
-    two, then requestedSize() will be set to \a value, and the
-    actual size will be set to the next power of two equal
-    to or greater than \a value.  Otherwise both size() and
-    requestedSize() will be set to \a value.
+    Sets the size of this texture to \a value.  Also sets the
+    requestedSize to \a value.
+
+    Note that the underlying OpenGL implementation may require texture sizes
+    to be a power of two.  If that is the case, then \b{when the texture is bound}
+    this will be detected, and while requestedSize() will remain at \a value,
+    the size() will be set to the next power of two equal to or greater than
+    \a value.
+
+    For this reason to get a definitive value of the actual size of the underlying
+    texture, query the size after bind() has been done.
 
     \sa size(), requestedSize()
 */
@@ -196,11 +208,7 @@ void QGLTexture2D::setSize(const QSize& value)
     Q_D(QGLTexture2D);
     if (d->requestedSize == value)
         return;
-    if (!(QGLFormat::openGLVersionFlags() & QGLFormat::OpenGL_Version_2_0)
-        && !(QGLFormat::openGLVersionFlags() & QGLFormat::OpenGL_ES_Version_2_0))
-        d->size = QGL::nextPowerOfTwo(value);
-    else
-        d->size = value;
+    d->size = value;
     d->requestedSize = value;
     ++(d->imageGeneration);
 }
@@ -345,9 +353,9 @@ bool QGLTexture2D::setCompressedFile(const QString &path)
 
     // The 3DS loader expects the flip state to be set before bind().
     if (isFlipped)
-        d->bindOptions &= ~QGLContext::InvertedYBindOption;
+        d->bindOptions &= ~QGLTexture2D::InvertedYBindOption;
     else
-        d->bindOptions |= QGLContext::InvertedYBindOption;
+        d->bindOptions |= QGLTexture2D::InvertedYBindOption;
 
     d->compressedData = data;
     ++(d->imageGeneration);
@@ -434,30 +442,39 @@ void QGLTexture2D::setUrl(const QUrl &url)
     If the texture has been created in multiple contexts, only the
     texture identifier for the current context will be updated.
 
+    This function is only available if Qt has been compiled with the
+    OpenGL library.  If that library is not present, then this function
+    does nothing.
+
     \sa setImage(), bind()
 */
 void QGLTexture2D::copyImage(const QImage& image, const QPoint& offset)
 {
+#ifdef QT_OPENGL_LIB
     QImage img = QGLWidget::convertToGLFormat(image);
     glTexSubImage2D(GL_TEXTURE_2D, 0, offset.x(), offset.y(),
                     img.width(), img.height(), GL_RGBA,
                     GL_UNSIGNED_BYTE, img.bits());
 #if defined(QT_OPENGL_ES_2)
     Q_D(QGLTexture2D);
-    if (d->bindOptions & QGLContext::MipmapBindOption)
+    if (d->bindOptions & QGLTexture2D::MipmapBindOption)
         glGenerateMipmap(GL_TEXTURE_2D);
+#endif
+#else
+    Q_UNUSED(image);
+    Q_UNUSED(offset);
 #endif
 }
 
 /*!
     Returns the options to use when binding the image() to an OpenGL
     context for the first time.  The default options are
-    QGLContext::LinearFilteringBindOption |
-    QGLContext::InvertedYBindOption | QGLContext::MipmapBindOption.
+    QGLTexture2D::LinearFilteringBindOption |
+    QGLTexture2D::InvertedYBindOption | QGLTexture2D::MipmapBindOption.
 
     \sa setBindOptions()
 */
-QGLContext::BindOptions QGLTexture2D::bindOptions() const
+QGLTexture2D::BindOptions QGLTexture2D::bindOptions() const
 {
     Q_D(const QGLTexture2D);
     return d->bindOptions;
@@ -471,7 +488,7 @@ QGLContext::BindOptions QGLTexture2D::bindOptions() const
 
     \sa bindOptions(), bind()
 */
-void QGLTexture2D::setBindOptions(QGLContext::BindOptions options)
+void QGLTexture2D::setBindOptions(QGLTexture2D::BindOptions options)
 {
     Q_D(QGLTexture2D);
     if (d->bindOptions != options) {
@@ -495,11 +512,6 @@ QGL::TextureWrap QGLTexture2D::horizontalWrap() const
 /*!
     Sets the wrapping mode for horizontal texture co-ordinates to \a value.
 
-    If \a value is not supported by the OpenGL implementation, it will be
-    replaced with a value that is supported.  If the application desires a
-    very specific \a value, it can call horizontalWrap() to check that
-    the specific value was actually set.
-
     The \a value will not be applied to the texture in the GL
     server until the next call to bind().
 
@@ -508,7 +520,6 @@ QGL::TextureWrap QGLTexture2D::horizontalWrap() const
 void QGLTexture2D::setHorizontalWrap(QGL::TextureWrap value)
 {
     Q_D(QGLTexture2D);
-    value = qt_gl_modify_texture_wrap(value);
     if (d->horizontalWrap != value) {
         d->horizontalWrap = value;
         ++(d->parameterGeneration);
@@ -543,7 +554,6 @@ QGL::TextureWrap QGLTexture2D::verticalWrap() const
 void QGLTexture2D::setVerticalWrap(QGL::TextureWrap value)
 {
     Q_D(QGLTexture2D);
-    value = qt_gl_modify_texture_wrap(value);
     if (d->verticalWrap != value) {
         d->verticalWrap = value;
         ++(d->parameterGeneration);
@@ -574,7 +584,7 @@ bool QGLTexture2DPrivate::bind(GLenum target)
 {
     // Get the current context.  If we don't have one, then we
     // cannot bind the texture.
-    const QGLContext *ctx = QGLContext::currentContext();
+    QOpenGLContext *ctx = QOpenGLContext::currentContext();
     if (!ctx)
         return false;
 
@@ -590,7 +600,7 @@ bool QGLTexture2DPrivate::bind(GLenum target)
         }
     }
 
-    if ((bindOptions & QGLContext::MipmapBindOption) ||
+    if ((bindOptions & QGLTexture2D::MipmapBindOption) ||
             horizontalWrap != QGL::ClampToEdge ||
             verticalWrap != QGL::ClampToEdge) {
         // This accounts for the broken Intel HD 3000 graphics support at least
@@ -604,7 +614,8 @@ bool QGLTexture2DPrivate::bind(GLenum target)
     // Find the information block for the context, or create one.
     QGLTexture2DTextureInfo *info = infos;
     QGLTexture2DTextureInfo *prev = 0;
-    while (info != 0 && !QGLContext::areSharing(info->tex.context(), ctx)) {
+    QOpenGLContext *ictx = const_cast<QOpenGLContext*>(info->tex.context());
+    while (info != 0 && !QOpenGLContext::areSharing(ictx, ctx)) {
         if (info->isLiteral)
             return false; // Cannot create extra texture id's for literals.
         prev = info;
@@ -651,7 +662,7 @@ void QGLTexture2DPrivate::bindImages(QGLTexture2DTextureInfo *info)
 {
     QSize scaledSize(size);
 #if defined(QT_OPENGL_ES_2)
-    if ((bindOptions & QGLContext::MipmapBindOption) ||
+    if ((bindOptions & QGLTexture2D::MipmapBindOption) ||
             horizontalWrap != QGL::ClampToEdge ||
             verticalWrap != QGL::ClampToEdge) {
         // ES 2.0 does not support NPOT textures when mipmaps are in use,
@@ -688,11 +699,12 @@ void QGLTexture2D::release() const
 GLuint QGLTexture2D::textureId() const
 {
     Q_D(const QGLTexture2D);
-    const QGLContext *ctx = QGLContext::currentContext();
+    QOpenGLContext *ctx = QOpenGLContext::currentContext();
     if (!ctx)
         return 0;
     QGLTexture2DTextureInfo *info = d->infos;
-    while (info != 0 && !QGLContext::areSharing(info->tex.context(), ctx))
+    QOpenGLContext *ictx = const_cast<QOpenGLContext*>(info->tex.context());
+    while (info != 0 && !QOpenGLContext::areSharing(ictx, ctx))
         info = info->next;
     return info ? info->tex.textureId() : 0;
 }
@@ -713,7 +725,7 @@ GLuint QGLTexture2D::textureId() const
 */
 QGLTexture2D *QGLTexture2D::fromTextureId(GLuint id, const QSize& size)
 {
-    const QGLContext *ctx = QGLContext::currentContext();
+    QOpenGLContext *ctx = QOpenGLContext::currentContext();
     if (!id || !ctx)
         return 0;
 

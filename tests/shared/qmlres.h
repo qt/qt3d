@@ -43,11 +43,11 @@
 #ifndef QMLRES_H
 #define QMLRES_H
 
-#include <QtCore/qdir.h>
-#include <QtGui/QGuiApplication>
-#include <QtDeclarative/QQuickView>
+#include <QDir>
+#include <QGuiApplication>
+#include <QQuickView>
 
-#include <QtCore/qdebug.h>
+#include <QDebug>
 
 #define internal_xstr(s) internal_str(s)
 #define internal_str(s) #s

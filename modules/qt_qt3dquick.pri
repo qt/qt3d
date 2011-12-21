@@ -11,7 +11,7 @@ QT.qt3dquick.sources = $$QT_MODULE_BASE/src/quick3d
 QT.qt3dquick.libs = $$QT_MODULE_LIB_BASE
 QT.qt3dquick.plugins = $$QT_MODULE_PLUGIN_BASE
 QT.qt3dquick.imports = $$QT_MODULE_IMPORT_BASE
-QT.qt3dquick.depends = gui opengl declarative quick network
+QT.qt3dquick.depends = gui quick declarative network
 QT.qt3dquick.DEFINES = QT_QT3DQUICK_LIB
 
 QT_CONFIG += qt3dquick

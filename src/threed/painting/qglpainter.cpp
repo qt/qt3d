@@ -43,19 +43,25 @@
 #include "qglpainter_p.h"
 #include "qglabstracteffect.h"
 #include "qglext_p.h"
-#include <QtGui/QOpenGLContext>
 
-#include <QtOpenGL/qglpixelbuffer.h>
-#include <QtOpenGL/qglshaderprogram.h>
-#include <QtOpenGL/qglframebufferobject.h>
-#include <QtGui/qpainter.h>
-#include <QtGui/qpaintengine.h>
-#include <QtCore/qvarlengtharray.h>
-#include <QtCore/qmap.h>
-#if !defined(QT_NO_THREAD)
-#include <QtCore/qthreadstorage.h>
-#include <QtCore/QThread>
+#include <QOpenGLContext>
+#include <QOpenGLShaderProgram>
+#include <QOpenGLFramebufferObject>
+#include <QPainter>
+#include <QPaintEngine>
+#include <QVarLengthArray>
+#include <QMap>
+
+#ifdef QT_OPENGL_LIB
+#include <QGLPixelBuffer>
+#include "qglpixelbuffersurface.h"
 #endif
+
+#if !defined(QT_NO_THREAD)
+#include <QThreadStorage>
+#include <QThread>
+#endif
+
 #include "qglflatcoloreffect_p.h"
 #include "qglflattextureeffect_p.h"
 #include "qgllitmaterialeffect_p.h"
@@ -67,7 +73,6 @@
 #include "qglvertexbundle_p.h"
 #include "qmatrix4x4stack_p.h"
 #include "qglwindowsurface.h"
-#include "qglpixelbuffersurface.h"
 #include "qglpaintersurface_p.h"
 
 #undef glActiveTexture
@@ -166,7 +171,7 @@ QGLPainterPickPrivate::~QGLPainterPickPrivate()
 
 #if !defined(QT_NO_THREAD)
 
-// QGLContext's are thread-specific, so QGLPainterPrivateCache should be too.
+// QOpenGLContext's are thread-specific, so QGLPainterPrivateCache should be too.
 
 typedef QThreadStorage<QGLPainterPrivateCache *> QGLPainterPrivateStorage;
 Q_GLOBAL_STATIC(QGLPainterPrivateStorage, painterPrivateStorage)
@@ -464,7 +469,7 @@ bool QGLPainter::begin(QGLAbstractSurface *surface)
     false if this painter was not bound to a GL context.
 
     The GL context that was bound to this painter will not have
-    QGLContext::doneCurrent() called on it.  It is the responsibility
+    QOpenGLContext::doneCurrent() called on it.  It is the responsibility
     of the caller to terminate context operations.
 
     The effect() will be left active in the GL context and will be
@@ -485,11 +490,11 @@ bool QGLPainter::end()
 
     // Unbind the current vertex and index buffers.
     if (d->boundVertexBuffer) {
-        QGLBuffer::release(QGLBuffer::VertexBuffer);
+        QOpenGLBuffer::release(QOpenGLBuffer::VertexBuffer);
         d->boundVertexBuffer = 0;
     }
     if (d->boundIndexBuffer) {
-        QGLBuffer::release(QGLBuffer::IndexBuffer);
+        QOpenGLBuffer::release(QOpenGLBuffer::IndexBuffer);
         d->boundIndexBuffer = 0;
     }
 
@@ -1018,7 +1023,7 @@ void QGLPainter::disableEffect()
 
     \sa setCachedProgram()
 */
-QGLShaderProgram *QGLPainter::cachedProgram(const QString& name) const
+QOpenGLShaderProgram *QGLPainter::cachedProgram(const QString& name) const
 {
     Q_D(const QGLPainter);
     QGLPAINTER_CHECK_PRIVATE();
@@ -1043,11 +1048,11 @@ QGLShaderProgram *QGLPainter::cachedProgram(const QString& name) const
     \sa cachedProgram()
 */
 void QGLPainter::setCachedProgram
-    (const QString& name, QGLShaderProgram *program)
+    (const QString& name, QOpenGLShaderProgram *program)
 {
     Q_D(QGLPainter);
     QGLPAINTER_CHECK_PRIVATE();
-    QGLShaderProgram *current = d->cachedPrograms.value(name, 0);
+    QOpenGLShaderProgram *current = d->cachedPrograms.value(name, 0);
     if (current != program) {
         if (program)
             d->cachedPrograms[name] = program;
@@ -1264,7 +1269,7 @@ void QGLPainter::setVertexAttribute
     QGLPAINTER_CHECK_PRIVATE();
     d->ensureEffect(this);
     if (d->boundVertexBuffer) {
-        QGLBuffer::release(QGLBuffer::VertexBuffer);
+        QOpenGLBuffer::release(QOpenGLBuffer::VertexBuffer);
         d->boundVertexBuffer = 0;
     }
     if (d->isFixedFunction) {
@@ -1308,7 +1313,7 @@ void QGLPainter::setVertexBundle(const QGLVertexBundle& buffer)
             d->boundVertexBuffer = id;
         }
     } else if (d->boundVertexBuffer) {
-        QGLBuffer::release(QGLBuffer::VertexBuffer);
+        QOpenGLBuffer::release(QOpenGLBuffer::VertexBuffer);
         d->boundVertexBuffer = 0;
     }
     for (int index = 0; index < bd->attributes.size(); ++index) {
@@ -1619,7 +1624,7 @@ void QGLPainter::draw(QGL::DrawingMode mode, const ushort *indices, int count)
     QGLPAINTER_CHECK_PRIVATE();
     update();
     if (d->boundIndexBuffer) {
-        QGLBuffer::release(QGLBuffer::IndexBuffer);
+        QOpenGLBuffer::release(QOpenGLBuffer::IndexBuffer);
         d->boundIndexBuffer = 0;
     }
     glDrawElements(GLenum(mode), count, GL_UNSIGNED_SHORT, indices);

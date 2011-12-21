@@ -2,7 +2,6 @@ TARGET = tst_qglcolladafxeffectfactory
 CONFIG += testcase
 TEMPLATE = app
 QT += testlib qt3d
-QT += opengl
 
 CONFIG += warn_on
 

@@ -55,6 +55,8 @@
 
 #include "qglabstractsurface.h"
 
+#include <QScopedPointer>
+
 QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
