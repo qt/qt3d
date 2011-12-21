@@ -63,7 +63,7 @@ namespace QTest {
     char *toString(const QVector4D &v)
     {
         char *msg = new char[128];
-        qt_snprintf(msg, 128, "(%0.4f, %0.4f, %0.4f, %0.4f)",
+        qsnprintf(msg, 128, "(%0.4f, %0.4f, %0.4f, %0.4f)",
                     v.x(), v.y(), v.z(), v.w());
         return msg;
     }
@@ -71,21 +71,21 @@ namespace QTest {
     char *toString(const QVector3D &v)
     {
         char *msg = new char[128];
-        qt_snprintf(msg, 128, "(%0.4f, %0.4f, %0.4f)", v.x(), v.y(), v.z());
+        qsnprintf(msg, 128, "(%0.4f, %0.4f, %0.4f)", v.x(), v.y(), v.z());
         return msg;
     }
 
     char *toString(const QVector2D &v)
     {
         char *msg = new char[128];
-        qt_snprintf(msg, 128, "(%0.4f, %0.4f)", v.x(), v.y());
+        qsnprintf(msg, 128, "(%0.4f, %0.4f)", v.x(), v.y());
         return msg;
     }
 
     char *toString(const QColor4ub &c)
     {
         char *msg = new char[128];
-        qt_snprintf(msg, 128, "R: %0.2f, G: %0.2f, B: %0.2f, A: %0.2)",
+        qsnprintf(msg, 128, "R: %0.2f, G: %0.2f, B: %0.2f, A: %0.2)",
                     c.redF(), c.greenF(), c.blueF(), c.alphaF());
         return msg;
     }
