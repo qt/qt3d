@@ -59,6 +59,8 @@
 #include <QtGui/qvector2d.h>
 #include "qcolor4ub.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace QTest {
     char *toString(const QVector4D &v)
     {
@@ -151,5 +153,7 @@ namespace QTest {
     }
 
 };
+
+QT_END_NAMESPACE
 
 #endif // QTEST_HELPERS_H

@@ -50,12 +50,14 @@
 
 #include "qglcolladafxeffect.h"
 
+Q_DECLARE_METATYPE(QArray<float>)
+
+QT_BEGIN_NAMESPACE
+
 class QGLColladaFxEffect;
 class QGLColladaImageParam;
 class QGLColladaSurfaceParam;
 class QGLColladaSampler2DParam;
-
-Q_DECLARE_METATYPE(QArray<float>)
 
 typedef struct _ResultState
 {
@@ -210,5 +212,7 @@ protected:
     QImage mImage;
     QString mName;
 };
+
+QT_END_NAMESPACE
 
 #endif // QGLCOLLADAFXEFFECTFACTORY_H

@@ -47,6 +47,8 @@
 
 #include <QtCore/qstack.h>
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QGLRenderSequencer
     \brief The QGLRenderSequencer class orders the rendering of QGLSceneNode instances.
@@ -363,3 +365,5 @@ void QGLRenderSequencer::setComparator(QGLRenderOrderComparator *comparator)
     delete d->compare;
     d->compare = comparator;
 }
+
+QT_END_NAMESPACE

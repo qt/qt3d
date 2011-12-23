@@ -48,8 +48,10 @@
 #include "qglpainter.h"
 #include "qglabstractscene.h"
 
+QT_BEGIN_NAMESPACE
 class QGLView;
 class QGLSceneNode;
+QT_END_NAMESPACE
 
 class MeshObject : public QObject
 {

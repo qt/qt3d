@@ -49,6 +49,8 @@
 
 //Q_DECLARE_METATYPE(QGLColladaFxEffect)
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QGLColladaFxEffectLoader
     \brief The QGLColladaFxEffectLoader class is a convenient way to load
@@ -184,3 +186,5 @@ QGLColladaFxEffect *QGLColladaFxEffectLoader::operator[](int i)
 
     return d->effects.at(i);
 }
+
+QT_END_NAMESPACE

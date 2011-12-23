@@ -42,10 +42,13 @@
 #ifndef AILOADERIOSTREAM_H
 #define AILOADERIOSTREAM_H
 
+#include <QtGlobal>
 #include "IOStream.h"
 #include "IOSystem.h"
 
+QT_BEGIN_NAMESPACE
 class QIODevice;
+QT_END_NAMESPACE
 
 class AiLoaderIOStream : public Assimp::IOStream
 {

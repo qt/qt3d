@@ -44,8 +44,11 @@
 
 #include <QObject>
 
-class ThumbnailableImage;
+QT_BEGIN_NAMESPACE
 class QUrl;
+QT_END_NAMESPACE
+
+class ThumbnailableImage;
 
 class ByteReader : public QObject
 {

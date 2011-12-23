@@ -45,7 +45,9 @@
 #include <QColor>
 #include "qgl.h"
 
+QT_BEGIN_NAMESPACE
 class QGLColladaFxEffect;
+QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(QGLColladaFxEffect*)
 

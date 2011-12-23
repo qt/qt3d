@@ -85,9 +85,9 @@ private:
     QScopedPointer<CylinderMeshPrivate> d_ptr;
 };
 
-QML_DECLARE_TYPE(CylinderMesh)
-
 QT_END_NAMESPACE
+
+QML_DECLARE_TYPE(CylinderMesh)
 
 QT_END_HEADER
 

@@ -413,3 +413,5 @@ void QGLMaterialCollection::materialDeleted()
 {
     removeMaterial(qobject_cast<QGLMaterial *>(sender()));
 }
+
+QT_END_NAMESPACE

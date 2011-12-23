@@ -48,6 +48,8 @@
 #include <QtCore/qscopedpointer.h>
 #include "qt3dglobal.h"
 
+QT_BEGIN_NAMESPACE
+
 class QGLColladaFxEffect;
 class QGLColladaFxEffectLoaderPrivate;
 
@@ -65,5 +67,7 @@ private:
     Q_DECLARE_PRIVATE(QGLColladaFxEffectLoader);
     QScopedPointer<QGLColladaFxEffectLoaderPrivate> d_ptr;
 };
+
+QT_END_NAMESPACE
 
 #endif // QGLCOLLADAFXEFFECTLOADER_H

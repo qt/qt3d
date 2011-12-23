@@ -90,9 +90,9 @@ private:
     QScopedPointer<SphereMeshPrivate> d_ptr;
 };
 
-QML_DECLARE_TYPE(SphereMesh)
-
 QT_END_NAMESPACE
+
+QML_DECLARE_TYPE(SphereMesh)
 
 QT_END_HEADER
 

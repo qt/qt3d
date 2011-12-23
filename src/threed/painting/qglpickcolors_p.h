@@ -61,4 +61,6 @@ QT_BEGIN_NAMESPACE
 QRgb qt_qgl_pick_color(int index);
 QRgb qt_qgl_normalize_pick_color(QRgb color, bool is444 = false);
 
+QT_END_NAMESPACE
+
 #endif

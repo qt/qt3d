@@ -47,9 +47,12 @@
 
 #include <QString>
 
+QT_BEGIN_NAMESPACE
 class QGLBuilder;
 class QGLTexture2D;
 class QGLPainter;
+QT_END_NAMESPACE
+
 class ThumbnailNode;
 
 class ImageDisplay : public QGLSceneNode

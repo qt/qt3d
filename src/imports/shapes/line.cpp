@@ -42,8 +42,6 @@
 #include "line.h"
 #include "qglbuilder.h"
 
-QT_BEGIN_NAMESPACE
-
 /*!
     \qmlclass Line Line
     \brief The Line item represents a geometric line drawn in 3D space.

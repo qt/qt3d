@@ -215,11 +215,11 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QDeclarativeItem3D::CullFaces)
 
-QML_DECLARE_TYPE(QDeclarativeItem3D)
-
 Q_QT3D_QUICK_EXPORT void qDumpItem(QDeclarativeItem3D *item, bool detailed = true, int indent = 0);
 
 QT_END_NAMESPACE
+
+QML_DECLARE_TYPE(QDeclarativeItem3D)
 
 QT_END_HEADER
 

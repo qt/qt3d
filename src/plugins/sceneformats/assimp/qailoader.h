@@ -50,11 +50,14 @@
 
 #include "qglbuilder.h"
 
+class aiMaterial;
+
+QT_BEGIN_NAMESPACE
+
 class QAiMesh;
 class QGLSceneNode;
 class QAiSceneHandler;
 class QGLMaterial;
-class aiMaterial;
 class QAiScene;
 class QAiLoader
 {
@@ -86,5 +89,7 @@ private:
     bool m_hasLitMaterials;
     QGLBuilder m_builder;
 };
+
+QT_END_NAMESPACE
 
 #endif // QGL3DSLOADER_H

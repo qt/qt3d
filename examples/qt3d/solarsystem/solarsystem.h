@@ -44,9 +44,11 @@
 #include "qglview.h"
 #include "qgraphicsrotation3d.h"
 
+QT_BEGIN_NAMESPACE
 class QGLSceneNode;
 class QGLBuilder;
 class QGLShaderProgramEffect;
+QT_END_NAMESPACE
 
 class SolarSystemView : public QGLView
 {

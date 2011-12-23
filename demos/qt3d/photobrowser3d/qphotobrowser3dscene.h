@@ -44,7 +44,9 @@
 
 #include "qglabstractscene.h"
 
+QT_BEGIN_NAMESPACE
 class QGLSceneNode;
+QT_END_NAMESPACE
 
 class QPhotoBrowser3DScene : public QGLAbstractScene
 {

@@ -116,9 +116,9 @@ private:
     QDeclarativeEffectPrivate *d;
 };
 
-QML_DECLARE_TYPE(QDeclarativeEffect)
-
 QT_END_NAMESPACE
+
+QML_DECLARE_TYPE(QDeclarativeEffect)
 
 QT_END_HEADER
 

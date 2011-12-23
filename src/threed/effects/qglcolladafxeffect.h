@@ -47,6 +47,8 @@
 #include <QGLShaderProgram>
 #include "qglshaderprogrameffect.h"
 
+QT_BEGIN_NAMESPACE
+
 class QXmlStreamReader;
 class QGLColladaParam;
 class QGLColladaFxEffectPrivate;
@@ -90,5 +92,7 @@ private:
     QGLColladaFxEffect(const QGLColladaFxEffect&);
     QGLColladaFxEffectPrivate* d;
 };
+
+QT_END_NAMESPACE
 
 #endif // QGLCOLLADAEFFECT_H

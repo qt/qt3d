@@ -52,6 +52,8 @@
 //#include "qglcolladafxeffectfactory_p.h"
 #include "qglcolladafxeffect_p.h"
 
+QT_BEGIN_NAMESPACE
+
 // The QGLColladaFxFactory class creates a list of QGLColladaFx objects from
 // COLLADA FX information according to the 1.4.1 March 2008 Release from
 // http://www.khronos.org/collada/
@@ -1283,9 +1285,11 @@ bool QGLColladaFxEffectFactory::resolveTexture2DImage(QGLTexture2D *texture, Res
 }
 
 
-
+QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(QGLTexture2D*);
+
+QT_BEGIN_NAMESPACE
 /*!
     \internal
     Parses and consumes a texture collada element from \a xml.
@@ -1686,3 +1690,5 @@ void QGLColladaFxEffectFactory::processProgramElement( QXmlStreamReader& xml, Re
     findEndTag(xml, QLatin1String("program"));
     return;
 }
+
+QT_END_NAMESPACE

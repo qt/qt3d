@@ -45,8 +45,11 @@
 #include <QObject>
 #include <Qt>
 
-class PanControllerPrivate;
+QT_BEGIN_NAMESPACE
 class QGLView;
+QT_END_NAMESPACE
+
+class PanControllerPrivate;
 
 class PanController : public QObject
 {

@@ -41,8 +41,6 @@
 
 #include "perpixeleffect.h"
 
-QT_BEGIN_NAMESPACE
-
 PerPixelEffect::PerPixelEffect()
 {
     setVertexShaderFromFile(":per_pixel_lighting.vsh");
@@ -52,5 +50,3 @@ PerPixelEffect::PerPixelEffect()
 PerPixelEffect::~PerPixelEffect()
 {
 }
-
-QT_END_NAMESPACE

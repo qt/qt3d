@@ -102,9 +102,9 @@ private:
     QGLCamera *m_camera;
 };
 
-QML_DECLARE_TYPE(Skybox)
-
 QT_END_NAMESPACE
+
+QML_DECLARE_TYPE(Skybox)
 
 QT_END_HEADER
 

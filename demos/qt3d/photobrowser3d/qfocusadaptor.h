@@ -44,8 +44,11 @@
 
 #include <QObject>
 
+QT_BEGIN_NAMESPACE
 class QGLView;
 class QGLSceneNode;
+QT_END_NAMESPACE
+
 class QFocusAdaptorPrivate;
 
 class QFocusAdaptor : public QObject

@@ -45,7 +45,9 @@
 
 #include <QImage>
 
+QT_BEGIN_NAMESPACE
 class QGLTexture2D;
+QT_END_NAMESPACE
 
 class Geometry : public QGLSceneNode
 {

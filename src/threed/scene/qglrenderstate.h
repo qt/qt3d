@@ -48,6 +48,8 @@
 
 #include <QtCore/qshareddata.h>
 
+QT_BEGIN_NAMESPACE
+
 class QGLAbstractEffect;
 class QGLMaterial;
 
@@ -97,5 +99,7 @@ inline uint qHash(const QGLRenderState &s)
 #include <QtCore/qdebug.h>
 Q_QT3D_EXPORT QDebug operator<<(QDebug dbg, const QGLRenderState &order);
 #endif
+
+QT_END_NAMESPACE
 
 #endif // QGLRENDERSTATE_H

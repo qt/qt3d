@@ -45,7 +45,9 @@
 #include "qglbuilder.h"
 #include "qray3d.h"
 
+QT_BEGIN_NAMESPACE
 class QGraphicsEmbedScene;
+QT_END_NAMESPACE
 
 class ModelItem : public QObject, public QGLGraphicsViewportItem
 {

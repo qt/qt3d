@@ -441,3 +441,5 @@ QGLBuilder& operator<<(QGLBuilder& builder, const QGLCylinder& cylinder)
 
     return builder;
 }
+
+QT_END_NAMESPACE

@@ -43,8 +43,10 @@
 
 #include "qglview.h"
 
+QT_BEGIN_NAMESPACE
 class QGLSceneNode;
 class QGLBuilder;
+QT_END_NAMESPACE
 
 class BuilderView : public QGLView
 {

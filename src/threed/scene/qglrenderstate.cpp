@@ -41,6 +41,8 @@
 
 #include "qglrenderstate.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QGLRenderState
     \brief The QGLRenderState class encapsulates the states of a rendering pass.
@@ -314,3 +316,5 @@ Q_QT3D_EXPORT QDebug operator<<(QDebug dbg, const QGLRenderState &order)
 }
 
 #endif
+
+QT_END_NAMESPACE

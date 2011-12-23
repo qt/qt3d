@@ -85,9 +85,9 @@ private:
     QScopedPointer<CapsuleMeshPrivate> d_ptr;
 };
 
-QML_DECLARE_TYPE(CapsuleMesh)
-
 QT_END_NAMESPACE
+
+QML_DECLARE_TYPE(CapsuleMesh)
 
 QT_END_HEADER
 

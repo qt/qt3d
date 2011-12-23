@@ -44,7 +44,9 @@
 
 #include <QtOpenGL/qgl.h>
 
+QT_BEGIN_NAMESPACE
 class QEventLoop;
+QT_END_NAMESPACE
 
 class QGLTestWidget : public QGLWidget
 {

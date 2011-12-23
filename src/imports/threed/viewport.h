@@ -149,9 +149,9 @@ private:
     QPointF viewDelta(qreal deltax, qreal deltay);
 };
 
-QML_DECLARE_TYPE(Viewport)
-
 QT_END_NAMESPACE
+
+QML_DECLARE_TYPE(Viewport)
 
 QT_END_HEADER
 

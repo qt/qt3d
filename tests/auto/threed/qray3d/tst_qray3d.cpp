@@ -41,6 +41,7 @@
 
 #include <QtTest/QtTest>
 #include "qray3d.h"
+#include "../../../shared/qtest_helpers.h"
 
 class tst_QRay3D : public QObject
 {
@@ -98,18 +99,6 @@ static inline bool fuzzyCompare(const QVector3D &lhs, const QVector3D &rhs)
 #endif
     return false;
 }
-
-// make failed QCOMPARE messages more detailed than "Compared values are not
-// the same"
-namespace QTest {
-
-template <>
-inline char *toString(const QVector3D& vec)
-{
-    return qstrdup(qPrintable(QString::fromLatin1("(%1, %2, %3)").arg(vec.x()).arg(vec.y()).arg(vec.z())));
-}
-
-};
 
 void tst_QRay3D::create_data()
 {

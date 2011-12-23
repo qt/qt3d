@@ -49,6 +49,8 @@
 #include "qglcolladafxeffect.h"
 #include "qglcolladafxeffect_p.h"
 
+QT_BEGIN_NAMESPACE
+
 QGLColladaFxEffect::QGLColladaFxEffect() : QGLShaderProgramEffect()
         , d( new QGLColladaFxEffectPrivate )
 {
@@ -404,3 +406,5 @@ void QGLColladaFxEffect::setActive(QGLPainter *painter, bool flag)
                          !fragmentShader().isEmpty();
     QGLShaderProgramEffect::setActive(painter, d->currentlyActive);
 }
+
+QT_END_NAMESPACE

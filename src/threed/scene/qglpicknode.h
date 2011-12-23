@@ -45,6 +45,8 @@
 #include <QtCore/qobject.h>
 #include "qt3dglobal.h"
 
+QT_BEGIN_NAMESPACE
+
 class QGLAbstractScene;
 class QGLSceneNode;
 class QEvent;
@@ -74,5 +76,7 @@ protected:
     int m_id;
     QGLSceneNode *m_target;
 };
+
+QT_END_NAMESPACE
 
 #endif // QGLPICKNODE_H

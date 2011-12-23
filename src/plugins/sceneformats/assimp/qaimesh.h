@@ -45,11 +45,14 @@
 #include "qaiscenehandler.h"
 #include "qgeometrydata.h"
 
+class aiMesh;
+
+QT_BEGIN_NAMESPACE
+
 class QGLMaterialCollection;
 class QGLSceneNode;
 class QGLBuilder;
 class QAiLoader;
-class aiMesh;
 
 class QAiMesh
 {
@@ -63,5 +66,7 @@ private:
 
     aiMesh *m_mesh;
 };
+
+QT_END_NAMESPACE
 
 #endif // QGL3DSMESH_H

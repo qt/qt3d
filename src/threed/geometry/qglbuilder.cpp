@@ -51,6 +51,8 @@
 
 #include <QtCore/qdebug.h>
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \class QGLBuilder
     \brief The QGLBuilder class constructs geometry for efficient display.
@@ -1376,3 +1378,5 @@ QGLBuilder& operator<<(QGLBuilder& builder, const QGeometryData& triangles)
     builder.addTriangles(triangles);
     return builder;
 }
+
+QT_END_NAMESPACE
