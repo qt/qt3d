@@ -614,14 +614,16 @@ bool QGLTexture2DPrivate::bind(GLenum target)
     // Find the information block for the context, or create one.
     QGLTexture2DTextureInfo *info = infos;
     QGLTexture2DTextureInfo *prev = 0;
-    QOpenGLContext *ictx = const_cast<QOpenGLContext*>(info->tex.context());
-    while (info != 0 && !QOpenGLContext::areSharing(ictx, ctx)) {
-        if (info->isLiteral)
-            return false; // Cannot create extra texture id's for literals.
-        prev = info;
-        info = info->next;
-    }
-    if (!info) {
+
+    if (info) {
+        QOpenGLContext *ictx = const_cast<QOpenGLContext*>(info->tex.context());
+        while (info != 0 && !QOpenGLContext::areSharing(ictx, ctx)) {
+            if (info->isLiteral)
+                return false; // Cannot create extra texture id's for literals.
+            prev = info;
+            info = info->next;
+        }
+    } else {
         info = new QGLTexture2DTextureInfo
             (ctx, 0, imageGeneration - 1, parameterGeneration - 1);
         if (prev)
