@@ -35,8 +35,8 @@ Now build Qt5, which will also build QtQuick3D as a module:
     cd ~/build
     mkdir qt5
     cd qt5
-    ~/depot/qt5/configure -nokia-developer -no-webkit -no-phonon -nomake tests \
-        -nomake demos -nomake examples -declarative -opengl -svg && make -j 4
+    ~/depot/qt5/configure -developer-build -opensource -confirm-license -no-webkit -no-phonon -nomake tests \
+        -nomake examples -declarative -opengl -svg && make -j 4
 
 
 Whats in QtQuick3D
