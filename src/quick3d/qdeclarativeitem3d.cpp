@@ -866,11 +866,11 @@ void QDeclarativeItem3D::setEffect(QDeclarativeEffect *value)
     if (d->effect == value)
         return;
     if (d->effect)
-        disconnect(d->effect, SIGNAL(effectChanged()), this, SLOT(update()));
+        disconnect(d->effect, SIGNAL(effectChanged()), this, SLOT(handleEffectChanged()));
     d->effect = value;
     if (d->effect)
     {
-        connect(d->effect, SIGNAL(effectChanged()), this, SLOT(update()));
+        connect(d->effect, SIGNAL(effectChanged()), this, SLOT(handleEffectChanged()));
         d->requireBlockingEffectsCheck = true;
     }
     emit effectChanged();
@@ -1505,6 +1505,12 @@ bool QDeclarativeItem3D::event(QEvent *e)
         emit hoverLeave();
     }
     return QObject::event(e);
+}
+
+void QDeclarativeItem3D::handleEffectChanged()
+{
+    d->requireBlockingEffectsCheck = true;
+    update();
 }
 
 /*!
