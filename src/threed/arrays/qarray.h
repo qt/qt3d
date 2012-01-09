@@ -372,7 +372,7 @@ Q_INLINE_TEMPLATE void QArray<T, PreallocSize>::copyReplace(T *dst, const T *src
 
 // Make a copy of m_data, while remaining exception-safe.
 template <typename T, int PreallocSize>
-Q_INLINE_TEMPLATE Q_TYPENAME QArray<T, PreallocSize>::Data *QArray<T, PreallocSize>::copyData(const T *src, int size, int capacity)
+Q_INLINE_TEMPLATE typename QArray<T, PreallocSize>::Data *QArray<T, PreallocSize>::copyData(const T *src, int size, int capacity)
 {
     Data *data = reinterpret_cast<Data *>
         (qMalloc(sizeof(Data) + sizeof(T) * (capacity - 1)));
@@ -780,7 +780,7 @@ Q_INLINE_TEMPLATE void QArray<T, PreallocSize>::insert(int index, int count, con
 }
 
 template <typename T, int PreallocSize>
-Q_OUTOFLINE_TEMPLATE Q_TYPENAME QArray<T, PreallocSize>::iterator QArray<T, PreallocSize>::insert(iterator before, int count, const T &value)
+Q_OUTOFLINE_TEMPLATE typename QArray<T, PreallocSize>::iterator QArray<T, PreallocSize>::insert(iterator before, int count, const T &value)
 {
     // Check the parameters.
     int size = this->size();
@@ -826,7 +826,7 @@ Q_OUTOFLINE_TEMPLATE Q_TYPENAME QArray<T, PreallocSize>::iterator QArray<T, Prea
 }
 
 template <typename T, int PreallocSize>
-Q_INLINE_TEMPLATE Q_TYPENAME QArray<T, PreallocSize>::iterator QArray<T, PreallocSize>::insert(iterator before, const T &value)
+Q_INLINE_TEMPLATE typename QArray<T, PreallocSize>::iterator QArray<T, PreallocSize>::insert(iterator before, const T &value)
 {
     return insert(before, 1, value);
 }
@@ -882,7 +882,7 @@ Q_OUTOFLINE_TEMPLATE void QArray<T, PreallocSize>::remove(int index, int count)
 }
 
 template <typename T, int PreallocSize>
-Q_INLINE_TEMPLATE Q_TYPENAME QArray<T, PreallocSize>::iterator QArray<T, PreallocSize>::erase(iterator begin, iterator end)
+Q_INLINE_TEMPLATE typename QArray<T, PreallocSize>::iterator QArray<T, PreallocSize>::erase(iterator begin, iterator end)
 {
     int index = begin - m_start;
     remove(index, end - begin);
@@ -890,7 +890,7 @@ Q_INLINE_TEMPLATE Q_TYPENAME QArray<T, PreallocSize>::iterator QArray<T, Preallo
 }
 
 template <typename T, int PreallocSize>
-Q_INLINE_TEMPLATE Q_TYPENAME QArray<T, PreallocSize>::iterator QArray<T, PreallocSize>::erase(iterator pos)
+Q_INLINE_TEMPLATE typename QArray<T, PreallocSize>::iterator QArray<T, PreallocSize>::erase(iterator pos)
 {
     int index = pos - m_start;
     remove(index, 1);

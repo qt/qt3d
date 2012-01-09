@@ -60,7 +60,6 @@ Cpp.ignoretokens        = QAXFACTORY_EXPORT \
                           Q_SCRIPT_EXPORT \
                           Q_SCRIPTTOOLS_EXPORT \
                           Q_TESTLIB_EXPORT \
-                          Q_TYPENAME \
                           Q_XML_EXPORT \
                           Q_XMLSTREAM_EXPORT \
                           Q_XMLPATTERNS_EXPORT \
