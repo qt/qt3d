@@ -354,7 +354,7 @@ void QGLBoundTexture::finishUpload(GLenum target)
 #if defined(QT_OPENGL_ES_2)
     // OpenGL/ES 2.0 needs to generate mipmaps after all cubemap faces
     // have been uploaded.
-    if (m_options & QOpenGLContext::MipmapBindOption) {
+    if (m_options & QGLTexture2D::MipmapBindOption) {
 #ifdef QGL_BIND_TEXTURE_DEBUG
         printf(" - generating mipmaps (%d ms)\n", time.elapsed());
 #endif
