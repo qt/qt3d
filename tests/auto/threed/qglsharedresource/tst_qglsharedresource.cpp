@@ -74,10 +74,11 @@ void tst_QGLSharedResource::resourceSharing()
     QGLView *view = new QGLView;
     view->show();
     QOpenGLContext *ctx = view->context();
-    bool ok;
-    ok = ctx->makeCurrent(view);
-    if (!ok)
+    if (!ctx)
         QSKIP("Could not create an OpenGL context");
+    bool ok = ctx->makeCurrent(view);
+    if (!ok)
+        QSKIP("Could not make the OpenGL context current");
 
     // Nothing should be sharing with glw1's context yet.
     QVERIFY(!ctx->handle()->isSharing());
