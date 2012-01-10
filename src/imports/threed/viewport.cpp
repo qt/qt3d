@@ -59,8 +59,8 @@
 #include <QTimer>
 #include <QCoreApplication>
 #include <QDeclarativeInfo>
-#include <QQuickCanvas>
-#include <QSGEngine>
+#include <QtQuick/QQuickCanvas>
+#include <QtQuick/QSGEngine>
 #include <QOpenGLBuffer>
 #include <QtCore/qthread.h>
 #include <QtCore/qmutex.h>
