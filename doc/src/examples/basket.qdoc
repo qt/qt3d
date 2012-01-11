@@ -4,7 +4,7 @@
 ** All rights reserved.
 ** Contact: Nokia Corporation (qt-info@nokia.com)
 **
-** This file is part of the QtQuick3D documentation of the Qt Toolkit.
+** This file is part of the Qt3D documentation of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:FDL$
 ** GNU Free Documentation License
@@ -29,9 +29,9 @@
     \example quick3d/basket
     \title Basket Example
 
-    \section2 Basket in QtQuick3D
+    \section2 Basket in QML
 
-    The QtQuick3D version of the basket example is very similar in
+    The QML version of the basket example is very similar in
     structure to the C++ version above, but much simpler.
     We start by defining a viewport with a specific camera position:
 

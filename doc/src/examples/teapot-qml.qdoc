@@ -4,7 +4,7 @@
 ** All rights reserved.
 ** Contact: Nokia Corporation (qt-info@nokia.com)
 **
-** This file is part of the QtQuick3D documentation of the Qt Toolkit.
+** This file is part of the Qt3D documentation of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:FDL$
 ** GNU Free Documentation License
@@ -27,9 +27,9 @@
 
 /*!
     \example quick3d/teapot_qml
-    \title Teapot Example in QtQuick3D
+    \title Teapot Example in QML
 
-    This example shows to use QtQuick3D to display a teapot on
+    This example shows to use QML in Qt3D to display a teapot on
     the screen.  The QML is fairly simple:
 
     \snippet quick3d/teapot_qml/qml/teapot.qml 1

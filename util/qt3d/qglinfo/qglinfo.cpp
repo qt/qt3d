@@ -92,9 +92,9 @@ void QGLInfo::initialize()
         QSettings freshStart;
         if (!freshStart.contains(QLatin1String("new_install")))
         {
-            welcome = QLatin1String("<h1>Welcome to QtQuick 3D!</h1>"
+            welcome = QLatin1String("<h1>Welcome to Qt3D!</h1>"
                                     "<p>Try running the FPS test from the "
-                                    "View menu above to confirm that Qt3Quick 3D "
+                                    "View menu above to confirm that Qt3D "
                                     "is installed correctly.</p><hr>");
         }
         freshStart.setValue(QLatin1String("new_install"), true);

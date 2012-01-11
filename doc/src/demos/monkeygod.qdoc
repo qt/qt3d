@@ -4,7 +4,7 @@
 ** All rights reserved.
 ** Contact: Nokia Corporation (qt-info@nokia.com)
 **
-** This file is part of the QtQuick3D documentation of the Qt Toolkit.
+** This file is part of the Qt3D documentation of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:FDL$
 ** GNU Free Documentation License
@@ -29,7 +29,7 @@
     \example quick3d/monkeygod
     \title Monkey God in QML
 
-    The Monkey God demo in QML shows how QML/3D can be used to build
+    The Monkey God demo in QML shows how QML/Qt3D can be used to build
     up complex 3D scenes including materials and animations.
 
     \image monkeygod-screenshot.png

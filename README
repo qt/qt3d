@@ -1,9 +1,9 @@
 This directory contains the Qt3D project for Qt5:
-   * QtQuick3D QML bindings and
+   * Qt3D QML bindings and
    * Qt3D C++ APIs
 
 
-Building QtQuick3D
+Building Qt3D
 ==================
 
 Qt5 is a rapidly changing bleeding edge environment.  This branch is our initial
@@ -15,22 +15,22 @@ advanced use only.
 No guarantees about API stability or even if this works at all are supplied, use
 at your own risk.
 
-First fetch the Qt5 source tree and QtQuick3D qml2 branch:
+First fetch the Qt5 source tree and Qt3D master branch:
 
     cd ~/depot
     git clone ssh://codereview.qt-project.org:29418/qt/qt5.git
     cd qt5
     ./init-repository --codereview-username <username> \
-        --module-subset=qtbase,qtsvg,qtdeclarative,qttools,qtxmlpatterns,qtdoc,qlalr,qtrepotools,qtqa,qtlocation,qtquick3d
+        --module-subset=qtbase,qtsvg,qtdeclarative,qttools,qtxmlpatterns,qtdoc,qlalr,qtrepotools,qtqa,qtlocation,qt3d
     git submodule foreach "git fetch gerrit && git reset --hard gerrit/master"
-    cd qtquick3d
+    cd qt3d
     scp -p -P 29418 codereview.qt-project.org:hooks/commit-msg .git/hooks/
     git fetch gerrit
-    git checkout --track -b qml2 gerrit/qml2
+    git checkout --track -b master gerrit/master
 
 If you are reading this file then somehow you probably already got this far anyway.
 
-Now build Qt5, which will also build QtQuick3D as a module:
+Now build Qt5, which will also build Qt3D as a module:
 
     cd ~/build
     mkdir qt5
@@ -39,7 +39,7 @@ Now build Qt5, which will also build QtQuick3D as a module:
         -nomake examples -declarative -opengl -svg && make -j 4
 
 
-Whats in QtQuick3D
+What's in Qt3D
 ==================
 
 Directory structure:
@@ -54,13 +54,13 @@ src/imports/
 util/
     Various utilities that are useful when working with Qt3D.
 examples/
-    Some examples of using QtQuiick3D (QML bindings) and Qt3D (C++ API).
+    Some examples of using Qt3D QML bindings and Qt3D C++ API.
 demos/
-    Some more complex demos of using QtQuiick3D (QML bindings) and Qt3D (C++ API).
+    Some more complex demos of using Qt3D QML bindings and Qt3D C++ API.
 tests/auto/qml3d/
-    Unit tests for the QtQuick3D bindings.
+    Unit tests for the QML bindings.
 tests/auto/threed/
-    Unit tests for the Qt3D C++ API
+    Unit tests for the C++ API
 doc/
     Documentation.
 devices/symbian/
@@ -77,11 +77,11 @@ into "doc/html" in the build directory.
 Packages
 ========
 
-This section is only for those developing QtQuick3D.  Read on to discover how
+This section is only for those developing Qt3D.  Read on to discover how
 the building of packages works.  This section is also important if you want to
-change how the structure of the QtQuick3D pro files work.
+change how the structure of the Qt3D pro files work.
 
-QtQuick3D is intended to be built in one of two ways:
+Qt3D is intended to be built in one of two ways:
 
 1) Normal developer way:
         qmake && make
@@ -89,15 +89,15 @@ QtQuick3D is intended to be built in one of two ways:
         qmake CONFIG+=package && INSTALL_ROOT=tmp make install
 
 In 1) the .pro files will cause the toolchain to place the libraries, plugins
-header files and other components of QtQuick3D directly into place, as part of
+header files and other components of Qt3D directly into place, as part of
 the compile process.  What does "in place" mean?  Run "qmake -query" to see
 the paths where the files are placed - QML plugins go in $$[QT_INSTALL_IMPORTS]
 for example.  In this mode, there is no need to run "make install" because the
 files are already in their target destination.  Here the "target destination"
 means the Qt which is being built against.
 
-First note that QtQuick3D has to be installed into the target Qt.  This is because
-QtQuick3D has QML plugins and resources, as well as shared libraries, all of which
+First note that Qt3D has to be installed into the target Qt.  This is because
+Qt3D has QML plugins and resources, as well as shared libraries, all of which
 must be resolved by the QMLViewer of the target Qt at runtime.  Here where "qmake"
 is referred to it means the qmake inside the target Qt.  Since QtDeclarative
 recommends using QMLViewer when developing and debugging QML Apps, in the developer
@@ -106,7 +106,7 @@ case - which is what Qt3D is for - it has to install directly into the target Qt
 In this mode 1) after the main library is compiled subsequent targets can simply
 resolve includes and link time dependencies by use of qt3d.prf and qtquick3d.prf.
 These two files are installed into the target Qt's makespecs/features directory
-during the processing of the quick3d.pro file.
+during the processing of the qt3d.pro file.
 
 In 2) the libraries, plugins and so on are sitting inside the build tree after
 the compile step.  As a result in order to resolve includes and dependencies

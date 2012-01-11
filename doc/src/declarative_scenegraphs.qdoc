@@ -4,7 +4,7 @@
 ** All rights reserved.
 ** Contact: Nokia Corporation (qt-info@nokia.com)
 **
-** This file is part of the QtQuick3D documentation of the Qt Toolkit.
+** This file is part of the Qt3D documentation of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:FDL$
 ** GNU Free Documentation License
@@ -32,7 +32,7 @@
     \title Declarative Scenegraph Creation
     \page qt3d-declarative-scenegraph.html
     \keyword Declarative Scenegraph Scene QML Quick
-    \brief Basics of scene construction in Qt Quick 3D (QML)
+    \brief Basics of scene construction in Qt3D (QML)
 
     Qt3D implements a scene-graph to make rendering more efficient in terms of
     both computation and space requirements.  Loosely defined, a scene-graph is
@@ -107,7 +107,7 @@
     optimisations reduce the amount of context switching required by OpenGL when drawing,
     and can substantially improve performance in complicated scenes.
 
-    \section1 Scene Graphs in Qt Quick 3D for Qt 4.x
+    \section1 QML 3D Scene Graphs in Qt3D for Qt 4.x
 
     While C++ allows users to manually construct and manipulate scene-graphs, Qt3D's
     extension into QtQuick does not currently allow the same degree of flexibility.
@@ -128,9 +128,9 @@
 
     These problems are addressed in Qt5.
 
-    \section1 Scene Graphs in Qt Quick 3D for Qt 5
+    \section1 QML 3D Scene Graphs in Qt3D for Qt 5
 
-    In Qt5 the Quick 3D implementation of Qt3D substantially improves this situation.  Instead
+    In Qt5 the QML implementation of Qt3D substantially improves this situation.  Instead
     of creating individual scene-graphs for each Mesh/Item3D, the user now creates a single
     holistic scenegraph for each viewport.  Addition of Item3D elements to a scene creates a
     hierarchy of scene-graph branches which are then optimised and drawn in a single call for

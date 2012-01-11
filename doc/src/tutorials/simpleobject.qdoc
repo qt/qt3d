@@ -4,7 +4,7 @@
 ** All rights reserved.
 ** Contact: Nokia Corporation (qt-info@nokia.com)
 **
-** This file is part of the QtQuick3D documentation of the Qt Toolkit.
+** This file is part of the Qt3D documentation of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:FDL$
 ** GNU Free Documentation License
@@ -34,15 +34,15 @@
     simple cube object to demonstrate how to modify the QGLPainter
     state to achieve different effects.
 
-    \section2 Cube in QtQuick3D
+    \section2 Cube in QML
 
-    It is quite simple to achieve these effects in QtQuick3D:
+    It is quite simple to achieve these effects in Qt3D:
 
     \snippet quick3d/cube/qml/cube.qml 1
 
-    \section2 Cube in Qt3D
+    \section2 Cube in C++
 
-    In the C++ world we start by declaring a view class to show our cube
+    In the C++ side of Qt3D we start by declaring a view class to show our cube
     on the screen:
 
     \snippet qt3d/cube1/cubeview.h 1

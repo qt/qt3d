@@ -4,7 +4,7 @@
 ** All rights reserved.
 ** Contact: Nokia Corporation (qt-info@nokia.com)
 **
-** This file is part of the QtQuick3D documentation of the Qt Toolkit.
+** This file is part of the Qt3D documentation of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:FDL$
 ** GNU Free Documentation License
@@ -31,7 +31,7 @@
     \keyword Acceptance
 
     As described in the \l{index.html}{Introduction} Qt3D is the C++ framework
-    that underlies QtQuick3D.
+    that underlies Qt3D.
 
     This section of the documentation contains some recommended
     acceptance tests for use when verifying that Qt3D has been
@@ -90,7 +90,7 @@
 
     A pre-requisite for the acceptance tests is that Qt and Qt3D have
     been built and installed in accordance with the
-    \l{Building QtQuick3D}{build instructions}.  In particular, Qt must
+    \l{Building Qt3D}{build instructions}.  In particular, Qt must
     be configured with OpenGL support and QGLWidget must be working.
 
     First, run all unit tests on the platform or device and verify that
@@ -188,10 +188,10 @@
     \c{QT_DEBUG_PLUGINS} environment variable to 1 to get extra
     information about why the plug-in could not be loaded.
 
-    \section1 QtQuick3D Verification
+    \section1 Qt3D Verification
 
-    Run the QtQuick3D version of the bouncing
-    \l{Teapot Example in QtQuick3D}{Teapot Example} using
+    Run the Qt3D version of the bouncing
+    \l{Teapot Example in QML}{Teapot Example} using
     "qmlviewer -opengl teapot-bounce.qml".  The teapot should have a
     shiny appearence (compared to the grey teapot above) and bounce
     up and down:
@@ -201,13 +201,13 @@
     It should be possible to rotate the teapot using the mouse
     and keyboard.
 
-    Note that when running QtQuick3D examples on a device that both the
+    Note that when running Qt3D examples on a device that both the
     QML files and the model files must be copied to the device (the model
     file is "teapot.bez" in the case of the bouncing teapot example).
 
     \section1 Object picking
 
-    Run the QtQuick3D \l{Tea Service Demo in QML}{Tea Service} demo
+    Run the Qt3D \l{Tea Service Demo in QML}{Tea Service} demo
     with "qmlviewer -opengl teaservice.qml".  Click on the teapot, teacups,
     and teaspoons to make them jump up, and click on the teapot
     spout and handle for other effects.  This example tests object

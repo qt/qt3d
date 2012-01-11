@@ -4,7 +4,7 @@
 ** All rights reserved.
 ** Contact: Nokia Corporation (qt-info@nokia.com)
 **
-** This file is part of the QtQuick3D documentation of the Qt Toolkit.
+** This file is part of the Qt3D documentation of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:FDL$
 ** GNU Free Documentation License
@@ -27,24 +27,24 @@
 
 /*!
 \group qt3d::qml3d
-\title QtQuick3D for Scripting 3D Apps in QML
-\keyword QtQuick3D QML
+\title Qt3D for Scripting 3D Apps in QML
+\keyword Qt3D QML
 
 The following QML elements are provided by the \c{Qt3D} namespace
 for importing 3D elements into QML applications:
 
 \generatelist{related}
 
-See the \l{Teapot Example in QtQuick3D}{Teapot} example for an introduction
+See the \l{Teapot Example in QML Qt3D}{Teapot} example for an introduction
 to using these elements.
 
-QtQuick3D also provides some \l{Stock Shapes for QtQuick3D}{stock shapes}
+Qt3D also provides some \l{Stock Shapes for QML}{stock shapes}
 in the \c{Qt3D.Shapes} namespace as convenience elements.
 */
 
 /*!
 \group qt3d::qml3d::shapes
-\title Stock Shapes for QtQuick3D
+\title Stock Shapes for QML
 
 The following QML elements are provided by the \c{Qt3D.Shapes} namespace
 as convenience elements:

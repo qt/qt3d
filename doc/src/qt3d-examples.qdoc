@@ -4,7 +4,7 @@
 ** All rights reserved.
 ** Contact: Nokia Corporation (qt-info@nokia.com)
 **
-** This file is part of the QtQuick3D documentation of the Qt Toolkit.
+** This file is part of the Qt3D documentation of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:FDL$
 ** GNU Free Documentation License
@@ -30,22 +30,22 @@
     \title Tutorials and Examples
     \keyword Tutorials and Examples
 
-    Building 3D applications in QML with QtQuick3D:
+    Building 3D applications in QML with Qt3D:
 
     \list
-    \o \l{Teapot Example in QtQuick3D}{Hello Teapot} in QtQuick3D
-    \o \l{quick3d/basket#Basket in QtQuick3D}{Basket} in QtQuick3D
-    \o \l{Object Effects}{Cube} in QtQuick3D
-    \o \l{Monkey God in QML}{Monkey God} in QtQuick3D
-    \o \l{Tea Service Demo in QML}{Tea Service} in QtQuick3D
-    \o \l{Using GLSL shaders in QtQuick3D}
+    \o \l{Teapot Example in QML}{Hello Teapot} in Qt3D
+    \o \l{qt3d/basket#Basket in QML}{Basket} in Qt3D
+    \o \l{Object Effects}{Cube} in Qt3D
+    \o \l{Monkey God in QML}{Monkey God} in Qt3D
+    \o \l{Tea Service Demo in QML}{Tea Service} in Qt3D
+    \o \l{Using GLSL shaders in QML}
     \endlist
 
-    Using C++ to extend QtQuick3D and to build applications with Qt3D:
+    Using C++ to extend QML Qt3D and to build applications with Qt3D:
 
     \list
     \o \l{Teapot Example}{Hello Teapot} - drawing a basic object in 3D.
-    \o \l{Object Effects#Cube in Qt3D}{Cube in C++} - applying transformations and materials to objects.
+    \o \l{Object Effects#Cube in QML}{Cube in C++} - applying transformations and materials to objects.
     \o \l{qt3d/nesting}{Nesting} - drawing into framebuffer objects.
     \o \l{Loading a 3DS model with Qt3D}{Penguin} - loading a 3DS model with Qt3D.
     \o \l{qt3d/pageflip}{Page Flip} - using shaders to combine textures.

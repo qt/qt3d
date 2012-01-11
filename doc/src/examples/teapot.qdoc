@@ -4,7 +4,7 @@
 ** All rights reserved.
 ** Contact: Nokia Corporation (qt-info@nokia.com)
 **
-** This file is part of the QtQuick3D documentation of the Qt Toolkit.
+** This file is part of the Qt3D documentation of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:FDL$
 ** GNU Free Documentation License
@@ -31,7 +31,7 @@
 
     The Teapot example shows how Qt3D can be used to draw a simple
     teapot object with a perspective camera view in C++.  There is
-    also a \l{Teapot Example in QtQuick3D}{QtQuick3D version} of the teapot
+    also a \l{Teapot Example in QML}{QML version} of the teapot
     example.
 
     We start by defining a class that inherits from QGLView, which
