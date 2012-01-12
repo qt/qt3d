@@ -45,7 +45,7 @@
     our source repository.
 
     The source for Qt3D is hosted on Gitorious as the git repository
-    \l{http://qt.gitorious.org/qt/qt-quick3d}{\c{qt/qt-quick3d.git}}.
+    \l{http://qt.gitorious.org/qt/qt3d}{\c{qt/qt3d.git}}.
     It can be cloned as follows:
 
     \code
@@ -60,24 +60,14 @@
 
     \section1 Building Qt3D
 
-    Qt3D requires Qt 4.7.  The QtSDK currently ships with Qt 4.7 so if
-    you're using the SDK you should be fine.  Alternatively you can build
-    against a Qt that you have compiled from source.  Just make sure that
-    when you build Qt, that you use the -developer-build option, and do not
-    do a \c{make install} as root.  The reason for this is when Qt3D builds in
-    it will place the libraries, headers and plugins into the correct position
-    in the hosted Qt library, so that will need to be writable.
+    Qt3D requires Qt 5.0.  The QtSDK currently ships with Qt 4.8 so you will need
+    to \l{http://developer.qt.nokia.com/wiki/Building_Qt_5_from_Git}{build from Git}.
 
-    Here's an example configure line you can use:
-    \code
-    mkdir -p $HOME/build/qt/4.7 && cd $HOME/build/qt/4.7
-    /path/to/qt/configure -developer-build -no-qt3support -no-webkit -no-xmlpatterns \
-         -no-phonon -opengl -declarative -nomake demos -nomake examples
-    make
-    \endcode
-    ...this line turns off many features that aren't needed for Qt3D, and
-    it also explicitly asks for declarative and opengl (even though those are
-    on by default) so that an error will be generated if OpenGL is not available.
+    Just make sure that when you build Qt, that you use the
+    -developer-build option, and do not do a \c{make install} as root.
+    The reason for this is when Qt3D builds in it will place the libraries,
+    headers and plugins into the correct position in the hosted Qt library,
+    so that will need to be writable.
 
     \section1 Building Qt3D Using QtCreator / QtSDK
 
@@ -86,12 +76,6 @@
     QtCreator is the development environment for the QtSDK.  Here we're using
     version 2.0 on Mac OSX, but other operating systems and versions should
     look similar.  Always use the latest release of QtCreator if possible.
-
-    \bold{Special note: Harmattan SDK.}  When using the Harmattan support in the Qt SDK:
-    \list
-        \o in Step 2 below ensure you choose the appropriate Qt Build eg \c{Meego 1.2 Harmattan API}; and
-        \o in Step 3 under \c{Build Steps > QMake > Additional arguments} add in \c{CONFIG += qtc_harmattan}
-    \endlist
 
     \image build-qt3d-qtcreator-1.png
 
@@ -106,14 +90,10 @@
 
     \image build-qt3d-qtcreator-4.png
 
-    Set the Qt build to use, making sure it has OpenGL and QtDeclarative.  In this
-    situation where I have a large number of Qt versions to choose from it is
+    Set the Qt5 build that you created above.  In this screenshot there is a
+    situation where I have a large number of Qt versions to choose from, so it is
     easiest to use the "Uncheck All" button, then check the one I want - which is the
-    Qt that ships with the QtSDK.
-
-    If you can't tell from the screen above which is the right Qt to use, just
-    choose a safe looking one, perhaps the default, as you can change it easily
-    below.
+    Qt created above.  You'll need to add it using the "Manage" button first.
 
     \image build-qt3d-qtcreator-3.png
 
@@ -211,13 +191,12 @@
 
     \section1 Building from the Command Line
 
-    On Linux assuming that you have built Qt 4.7 in
-    \c{$HOME/build/qt/4.7}, you would configure and build Qt3D as follows:
+    On Linux assuming that you have built Qt 5 in
+    \c{$HOME/build/qt5}, you would configure and build Qt3D as follows:
 
     \code
-    $ mkdir -p $HOME/build/qt/qt3d
-    $ cd $HOME/build/qt/qt3d
-    $ $HOME/build/qt/4.7/bin/qmake $HOME/depot/qt/qt3d/qt3d.pro
+    $ cd $HOME/build/qt5
+    $ make module-qt3d
     $ make -j 4
     $ bin/moon
     \endcode
@@ -230,33 +209,19 @@
     On Windows (with Visual Studio) those commands look like this:
 
     \code
-    mkdir \build\qt\qt3d
-    cd \build\qt\qt3d
-    qmake \depot\qt\qt3d\qt3d.pro
-    nmake
+    cd \build\qt5
+    nmake module-qt3d
     bin\moon
     \endcode
 
-    These commands for Windows assume that your Qt build for Qt 4.7 is in
+    These commands for Windows assume that your Qt build for Qt5 is in
     the current PATH - so that the qmake invoked above is actually going to
-    be the Qt 4.7 qmake.
-
-    On Symbian (with RVCT) those commands look like this:
-
-    \code
-    mkdir C:\depot\qt\qt3d
-    cd C:\depot\qt\qt3d
-    qmake CONFIG+=old_importer
-    sbs -c armv5_urel
-    cd devices\symbian
-    createpackage Qt3D_template.pkg release-armv5
-    runonphone --sis QtQuick3D.sis
-    \endcode
+    be the Qt5 qmake.
 
     Once you have built Qt3D, you can run the "teapot" example:
 
     \code
-    $ cd $HOME/build/qt/quick3d
+    $ cd $HOME/build/qt5/qt3d
     $ bin/teapot
     \endcode
 
