@@ -67,7 +67,7 @@ Viewport {
     Component {
         id: paneComponent
         PhotoPane {
-            layer: index
+            pictureLayer: index
             image: model.image
             // Items end up with the default value defined in PhotoPane if you
             // try and assign an undefined value, but this logic avoids a
@@ -100,7 +100,7 @@ Viewport {
     Component {
         id: exampleDelegate
         PhotoPane {
-            layer: index
+            pictureLayer: index
             image: model.image
             // If you intend on removing elements from the model,
             // include this line:

@@ -44,14 +44,14 @@ import Qt3D 1.0
 Item3D {
     id: photo
 
-    property real layer
+    property real pictureLayer
     property variant image
     property bool bounce: false
     property string color: "#ffffff"
 
     mesh: Mesh { source: "photopane.obj" }
 
-    position: Qt.vector3d(0, 0, -layer)
+    position: Qt.vector3d(0, 0, -pictureLayer)
     effect: Effect { decal: true; texture: image; color: photo.color }
 
     onClicked: {
@@ -104,7 +104,7 @@ Item3D {
             }
             PropertyChanges {
                 target: photo
-                z: -layer
+                z: -pictureLayer
             }
             PropertyChanges {
                 target: viewport
