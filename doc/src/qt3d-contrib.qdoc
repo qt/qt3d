@@ -30,12 +30,7 @@
     \title Contributing to Qt3D
     \keyword Contributing to Qt3D
 
-    Qt3D is developed primarily in the Brisbane office of Qt
-    Development Frameworks, but anyone is welcome to join the effort with
-    patches, new examples, and major feature development.
-
-    Qt3D research may be a better place to contribute as the main repository has a strong
-    product focus.  Check the Qt3D \l{http://doc.qt.nokia.com/qt3d-snapshot/qt3d-contrib.html}{contributions page}.
+    Qt3D is developed primarily in the Brisbane office of Qt Development Frameworks, but anyone is welcome to join the effort withpatches, new examples, and major feature development.
 
     Jump on the IRC channel at #qt-3d on irc.freenode.net, or join our qt3d
     mailing list at \l{http://lists.qt.nokia.com/mailman/listinfo/qt-3d}.
@@ -44,11 +39,10 @@
     \l{http://qt.gitorious.org/qt/pages/QtContributionGuidelines}{Qt Contribution Model Guidelines}.
 
     The source for the main repository of Qt3D is hosted on Gitorious at
-    \l{http://qt.gitorious.org/qt-labs/quick3d}.
+    \l{http://qt.gitorious.org/qt/qt3d}.
 
     Bugs can be reported against the "Qt3D" component of the "Qt" project
     at \l{http://bugreports.qt.nokia.com/}.
-
 
     \l{index.html}{Return to the main Qt3D page}.
 */

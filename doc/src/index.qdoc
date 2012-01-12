@@ -81,6 +81,7 @@
         <tr>
         <td valign="top">
         <ul>
+        <li><a href="qt3d-overview.html">Introduction and Overview</a></li>
         <li><a href="qt3d-building.html">Building</a></li>
         <li><a href="qt3d-examples.html">Tutorials and Examples</a></li>
         <li><a href="sceneformats-obj.html">Scene format plug-ins</a></li>
