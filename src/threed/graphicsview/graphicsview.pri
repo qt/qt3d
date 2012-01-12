@@ -15,13 +15,3 @@ SOURCES += \
     qgraphicsscale3d.cpp \
     qgraphicstransform3d.cpp \
     qgraphicstranslation3d.cpp
-
-# This requires desktop stuff
-!isEmpty(QT.widgets.name): !isEmpty(QT.opengl.name) {
-    HEADERS += \
-        graphicsview/qglgraphicsviewportitem.h \
-        graphicsview/qgraphicsembedscene.h
-    SOURCES += \
-        qglgraphicsviewportitem.cpp \
-        qgraphicsembedscene.cpp
-}
