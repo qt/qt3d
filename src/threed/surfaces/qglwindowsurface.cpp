@@ -140,7 +140,13 @@ bool QGLWindowSurface::activate(QGLAbstractSurface *prevSurface)
     if (!m_context->surface() || m_context->surface()->surfaceType() != QSurface::Window)
         qWarning() << "Attempt to activate GL window surface on bad context";
     if (!isValid())
+    {
         qWarning() << "Attempt to activate invalid window surface";
+        if (m_window && !m_window->geometry().isValid())
+        {
+            qWarning() << "Maybe set the window size, eg view.resize(800, 600)..?";
+        }
+    }
 #endif
     return isValid();
 }
