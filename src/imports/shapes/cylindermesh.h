@@ -1,10 +1,10 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies).
 ** All rights reserved.
 ** Contact: Nokia Corporation (qt-info@nokia.com)
 **
-** This file is part of the Qt3D module of the Qt Toolkit.
+** This file is part of the QtQuick3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
 ** GNU Lesser General Public License Usage
@@ -39,49 +39,56 @@
 **
 ****************************************************************************/
 
-#ifndef SPHEREMESH_P_H
-#define SPHEREMESH_P_H
+#ifndef CYLINDER_H
+#define CYLINDER_H
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists purely as an
-// implementation detail.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <QtCore/QMap>
+#include "qdeclarativemesh.h"
+#include "cylindermesh_p.h"
 
 QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
-class QGraphicsRotation3D;
-class QGraphicsScale3D;
-class QGLSceneNode;
-
-class SphereMeshPrivate
+class CylinderMesh : public QDeclarativeMesh
 {
-public:
-    SphereMeshPrivate();
-    ~SphereMeshPrivate();
+    Q_OBJECT
+    Q_PROPERTY(qreal radius READ radius WRITE setRadius NOTIFY radiusChanged)
+    Q_PROPERTY(qreal length READ length WRITE setLength NOTIFY lengthChanged)
+    Q_PROPERTY(int levelOfDetail READ levelOfDetail WRITE setLevelOfDetail NOTIFY levelOfDetailChanged)
 
-    QMap<int, QGLSceneNode *> lodGeometry;
-    QGLSceneNode *topNode;
-    QGLSceneNode *currentSphere;
-    QGraphicsRotation3D *rot;
-    QGraphicsScale3D *scale;
-    qreal radius;
-    int lod;
-    Qt::Axis axis;
-    bool sceneSet;
+public:
+    explicit CylinderMesh(QObject *parent = 0);
+    ~CylinderMesh() {}
+
+    qreal radius() const;
+    void setRadius(qreal radius);
+
+    qreal length() const;
+    void setLength(qreal length);
+
+    int levelOfDetail() const;
+    void setLevelOfDetail(int lod);
+
+    void draw(QGLPainter *painter, int branchId);
+
+Q_SIGNALS:
+    void radiusChanged();
+    void lengthChanged();
+    void levelOfDetailChanged();
+
+private:
+    void createGeometry();
+
+    Q_DISABLE_COPY(CylinderMesh)
+    Q_DECLARE_PRIVATE(CylinderMesh)
+
+    QScopedPointer<CylinderMeshPrivate> d_ptr;
 };
 
 QT_END_NAMESPACE
 
+QML_DECLARE_TYPE(CylinderMesh)
+
 QT_END_HEADER
 
-#endif // SPHEREMESH_P_H
+#endif // CYLINDER_H

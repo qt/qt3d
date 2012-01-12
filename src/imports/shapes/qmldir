@@ -3,3 +3,5 @@ Cube 1.0 Cube.qml
 Teapot 1.0 Teapot.qml
 Quad 1.0 Quad.qml
 Sphere 1.0 Sphere.qml
+Capsule 1.0 Capsule.qml
+Cylinder 1.0 Cylinder.qml

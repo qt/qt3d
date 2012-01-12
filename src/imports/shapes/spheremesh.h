@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef SPHERE_H
-#define SPHERE_H
+#ifndef SPHEREMESH_H
+#define SPHEREMESH_H
 
 #include "qglscenenode.h"
 #include "qdeclarativemesh.h"
@@ -72,6 +72,8 @@ public:
     Qt::Axis axis() const;
     void setAxis(Qt::Axis axis);
 
+    void draw(QGLPainter *painter, int branchId);
+
 Q_SIGNALS:
     void radiusChanged();
     void levelOfDetailChanged();
@@ -92,4 +94,4 @@ QML_DECLARE_TYPE(SphereMesh)
 
 QT_END_HEADER
 
-#endif
+#endif   // SPHEREMESH_H

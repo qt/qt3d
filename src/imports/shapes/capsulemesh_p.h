@@ -1,10 +1,10 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies).
 ** All rights reserved.
 ** Contact: Nokia Corporation (qt-info@nokia.com)
 **
-** This file is part of the Qt3D module of the Qt Toolkit.
+** This file is part of the QtQuick3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
 ** GNU Lesser General Public License Usage
@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef SPHEREMESH_P_H
-#define SPHEREMESH_P_H
+#ifndef CAPSULEMESH_P_H
+#define CAPSULEMESH_P_H
 
 //
 //  W A R N I N G
@@ -59,24 +59,20 @@ QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
-class QGraphicsRotation3D;
-class QGraphicsScale3D;
 class QGLSceneNode;
 
-class SphereMeshPrivate
+class CapsuleMeshPrivate
 {
 public:
-    SphereMeshPrivate();
-    ~SphereMeshPrivate();
+    CapsuleMeshPrivate();
+    ~CapsuleMeshPrivate();
 
     QMap<int, QGLSceneNode *> lodGeometry;
     QGLSceneNode *topNode;
-    QGLSceneNode *currentSphere;
-    QGraphicsRotation3D *rot;
-    QGraphicsScale3D *scale;
+    QGLSceneNode *currentCapsule;
     qreal radius;
+    qreal length;
     int lod;
-    Qt::Axis axis;
     bool sceneSet;
 };
 
@@ -84,4 +80,4 @@ QT_END_NAMESPACE
 
 QT_END_HEADER
 
-#endif // SPHEREMESH_P_H
+#endif // CAPSULEMESH_P_H

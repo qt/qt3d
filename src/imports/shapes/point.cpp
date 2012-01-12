@@ -42,6 +42,8 @@
 #include "point.h"
 #include "qglbuilder.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \qmlclass Point Point
     \brief The Point item represents a geometric point drawn in 3D space.
@@ -159,3 +161,7 @@ void Point::drawItem(QGLPainter *painter)
     // Draw the geometry.
     m_geometry->draw(painter);
 }
+
+QT_END_NAMESPACE
+
+

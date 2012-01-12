@@ -42,6 +42,8 @@
 #include "line.h"
 #include "qglbuilder.h"
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \qmlclass Line Line
     \brief The Line item represents a geometric line drawn in 3D space.
@@ -160,3 +162,6 @@ void Line::drawItem(QGLPainter *painter)
     // Draw the geometry.
     m_geometry->draw(painter);
 }
+
+QT_END_NAMESPACE
+

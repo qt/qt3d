@@ -11,4 +11,5 @@ SUBDIRS +=  displaymodel \
             qrc \
             basic \
             background \
-            fullreferencing
+            fullreferencing \
+            shapes

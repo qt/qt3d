@@ -41,9 +41,10 @@
 
 import QtQuick 1.0
 import Qt3D 1.0
+import Qt3D.Shapes 1.0
 
 Item3D {
-    id: cube
+    id: sphere
     property alias name: sphereMesh.objectName
     property alias radius: sphereMesh.radius
     property alias levelOfDetail: sphereMesh.levelOfDetail

@@ -10,24 +10,28 @@ INSTALLS += target
 
 SOURCES += \
     shapes.cpp \
-    cylinder.cpp \
-    capsule.cpp \
     line.cpp \
     point.cpp \
-    spheremesh.cpp
+    spheremesh.cpp \
+    capsulemesh.cpp \
+    cylindermesh.cpp
 HEADERS += \
-    cylinder.h \
-    capsule.h \
     line.h \
     point.h \
     spheremesh.h \
-    spheremesh_p.h
+    spheremesh_p.h \
+    capsulemesh.h \
+    cylindermesh.h \
+    capsulemesh_p.h \
+    cylindermesh_p.h
 
 QML_FILES = \
     Cube.qml \
     Sphere.qml \
     Quad.qml \
-    Teapot.qml
+    Teapot.qml \
+    Capsule.qml \
+    Cylinder.qml
 
 QML_INFRA_FILES += \
     $$QML_FILES \
@@ -57,6 +61,16 @@ OTHER_FILES += \
     README.library_xml
 
 OTHER_FILES += $$QML_FILES
+
+
+
+
+
+
+
+
+
+
 
 
 

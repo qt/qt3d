@@ -1,10 +1,10 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies).
 ** All rights reserved.
 ** Contact: Nokia Corporation (qt-info@nokia.com)
 **
-** This file is part of the Qt3D module of the Qt Toolkit.
+** This file is part of the QtQuick3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
 ** GNU Lesser General Public License Usage
@@ -39,49 +39,17 @@
 **
 ****************************************************************************/
 
-#ifndef SPHEREMESH_P_H
-#define SPHEREMESH_P_H
+import QtQuick 1.0
+import Qt3D 1.0
+import Qt3D.Shapes 1.0
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists purely as an
-// implementation detail.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <QtCore/QMap>
-
-QT_BEGIN_HEADER
-
-QT_BEGIN_NAMESPACE
-
-class QGraphicsRotation3D;
-class QGraphicsScale3D;
-class QGLSceneNode;
-
-class SphereMeshPrivate
-{
-public:
-    SphereMeshPrivate();
-    ~SphereMeshPrivate();
-
-    QMap<int, QGLSceneNode *> lodGeometry;
-    QGLSceneNode *topNode;
-    QGLSceneNode *currentSphere;
-    QGraphicsRotation3D *rot;
-    QGraphicsScale3D *scale;
-    qreal radius;
-    int lod;
-    Qt::Axis axis;
-    bool sceneSet;
-};
-
-QT_END_NAMESPACE
-
-QT_END_HEADER
-
-#endif // SPHEREMESH_P_H
+Item3D {
+    id: cylinder
+    property alias name: cylinderMesh.objectName
+    property alias radius: cylinderMesh.radius
+    property alias length: cylinderMesh.length
+    property alias levelOfDetail: cylinderMesh.levelOfDetail
+    mesh: CylinderMesh {
+        id: cylinderMesh
+    }
+}
