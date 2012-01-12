@@ -466,18 +466,15 @@ void Viewport::setRenderMode(Viewport::RenderMode mode)
     Q_ASSERT(mode != UnknownRender);
     if (d->renderMode != mode)
     {
-        QSGEngine* engine = 0;
-        if (d->canvas)
-            engine =  d->canvas->sceneGraphEngine();
         d->renderMode = mode;
         if (d->renderMode == BufferedRender)
         {
             setRenderTarget(QQuickPaintedItem::InvertedYFramebufferObject);
-            if (engine)
+            if (d->canvas)
             {
-                disconnect(engine, SIGNAL(beforeRendering()),
+                disconnect(d->canvas, SIGNAL(beforeRendering()),
                            this, SLOT(beforeRendering()));
-                engine->setClearBeforeRendering(true);
+                d->canvas->setClearBeforeRendering(true);
                 d->directRenderInitialized = false;
             }
         }
@@ -485,11 +482,11 @@ void Viewport::setRenderMode(Viewport::RenderMode mode)
         {
             // If there is no engine at this point the setup will
             // be done in the sceneGraphInitialized handler
-            if (engine)
+            if (d->canvas)
             {
-                connect(engine, SIGNAL(beforeRendering()),
+                connect(d->canvas, SIGNAL(beforeRendering()),
                         this, SLOT(beforeRendering()), Qt::DirectConnection);
-                engine->setClearBeforeRendering(false);
+                d->canvas->setClearBeforeRendering(false);
                 d->directRenderInitialized = true;
             }
         }
@@ -550,25 +547,17 @@ void Viewport::setPicking(bool value)
     if (value != d->picking)
     {
         d->picking = value;
-        QSGEngine* engine = 0;
-        if (d->canvas)
-            engine = d->canvas->sceneGraphEngine();
-        // If there is no engine at this point the setup will
-        // be done in the sceneGraphInitialized handler
-        if (engine)
+        if (d->picking)
         {
-            if (d->picking)
-            {
-                connect(engine, SIGNAL(beforeRendering()),
-                        this, SLOT(objectForPoint()), Qt::DirectConnection);
-                d->pickingRenderInitialized = true;
-            }
-            else
-            {
-                disconnect(engine, SIGNAL(beforeRendering()),
-                        this, SLOT(objectForPoint()));
-                d->pickingRenderInitialized = false;
-            }
+            connect(d->canvas, SIGNAL(beforeRendering()),
+                    this, SLOT(objectForPoint()), Qt::DirectConnection);
+            d->pickingRenderInitialized = true;
+        }
+        else
+        {
+            disconnect(d->canvas, SIGNAL(beforeRendering()),
+                       this, SLOT(objectForPoint()));
+            d->pickingRenderInitialized = false;
         }
         emit viewportChanged();
     }
@@ -778,9 +767,14 @@ void Viewport::setLightModel(QGLLightModel *value)
 class ViewportSubsurface : public QGLSubsurface
 {
 public:
-    ViewportSubsurface(QGLAbstractSurface *surface, const QRect &region,
-                       qreal adjust)
-        : QGLSubsurface(surface, region), m_adjust(adjust) {}
+    ViewportSubsurface(QGLAbstractSurface *surface, const QRect &region, qreal adjust)
+        : QGLSubsurface(surface, region)
+        , m_adjust(adjust)
+    {
+    }
+    ~ViewportSubsurface()
+    {
+    }
 
     qreal aspectRatio() const;
 
@@ -1831,10 +1825,9 @@ void Viewport::itemChange(QQuickItem::ItemChange change, const ItemChangeData &v
     }
     if (change == ItemSceneChange && value.canvas != d->canvas)
     {
-        if (d->canvas && d->canvas->sceneGraphEngine())
+        if (d->canvas)
         {
             d->canvas->disconnect(this);
-            d->canvas->sceneGraphEngine()->disconnect(this);
         }
         d->canvas = value.canvas;
         d->directRenderInitialized = false;
@@ -1882,11 +1875,13 @@ void Viewport::sceneGraphInitialized()
     {
         if (d->canvas->rootItem() != parentItem())
         {
+#ifdef Q_DEBUG_VIEWPORT
             qWarning() << "Viewport not the top level item - has parent %1:"
                        << parentItem()->metaObject()->className()
                        << "- so switching to FBO composition.  For direct \'GL Under\' "
                           "rendering make this viewport the top-level item or explicitly "
                           "set the renderMode property.";
+#endif
             setRenderMode(BufferedRender);
         }
         else
@@ -1894,28 +1889,20 @@ void Viewport::sceneGraphInitialized()
             setRenderMode(DirectRender);
         }
     }
-    QSGEngine* engine = d->canvas->sceneGraphEngine();
-    if (engine)
+    if (!d->directRenderInitialized && renderMode() == DirectRender)
     {
-        if (!d->directRenderInitialized && renderMode() == DirectRender)
-        {
-            // this could happen if the call to setRenderMode occurred when there
-            // was no canvas or engine
-            connect((QObject*)engine, SIGNAL(beforeRendering()),
-                    this, SLOT(beforeRendering()), Qt::DirectConnection);
-            engine->setClearBeforeRendering(false);
-            d->directRenderInitialized = true;
-        }
-        if (!d->pickingRenderInitialized && d->picking)
-        {
-            connect(engine, SIGNAL(beforeRendering()),
-                    this, SLOT(objectForPoint()), Qt::DirectConnection);
-            d->pickingRenderInitialized = true;
-        }
+        // this could happen if the call to setRenderMode occurred when there
+        // was no canvas or engine
+        connect(d->canvas, SIGNAL(beforeRendering()),
+                this, SLOT(beforeRendering()), Qt::DirectConnection);
+        d->canvas->setClearBeforeRendering(false);
+        d->directRenderInitialized = true;
     }
-    else
+    if (!d->pickingRenderInitialized && d->picking)
     {
-        qmlInfo(this) << tr("Unable to paint 3D items!");
+        connect(d->canvas, SIGNAL(beforeRendering()),
+                this, SLOT(objectForPoint()), Qt::DirectConnection);
+        d->pickingRenderInitialized = true;
     }
 }
 
