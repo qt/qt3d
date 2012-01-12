@@ -102,6 +102,7 @@ QGLTexture2DPrivate::QGLTexture2DPrivate()
     imageGeneration = 0;
     parameterGeneration = 0;
     infos = 0;
+    sizeAdjusted = false;
 }
 
 QGLTexture2DPrivate::~QGLTexture2DPrivate()
@@ -177,15 +178,35 @@ bool QGLTexture2D::hasAlphaChannel() const
 /*!
     Returns the size of this texture.  If the underlying OpenGL
     implementation requires texture sizes to be a power of two,
-    then this function will return the next power of two equal
+    then this function may return the next power of two equal
     to or greater than requestedSize()
+
+    The adjustment to the next power of two will only occur when
+    an OpenGL context is available, so if the actual texture size
+    is needed call this function when a context is available.
 
     \sa setSize(), requestedSize()
 */
 QSize QGLTexture2D::size() const
 {
     Q_D(const QGLTexture2D);
+    if (!d->sizeAdjusted)
+    {
+        QGLTexture2DPrivate *that = const_cast<QGLTexture2DPrivate*>(d);
+        that->adjustForNPOTTextureSize();
+    }
     return d->size;
+}
+
+void QGLTexture2DPrivate::adjustForNPOTTextureSize()
+{
+    if (QGLContext::currentContext() && !sizeAdjusted)
+    {
+        if (!(QGLFormat::openGLVersionFlags() & QGLFormat::OpenGL_Version_2_0)
+                && !(QGLFormat::openGLVersionFlags() & QGLFormat::OpenGL_ES_Version_2_0))
+            size = QGL::nextPowerOfTwo(size);
+        sizeAdjusted = true;
+    }
 }
 
 /*!
@@ -209,6 +230,8 @@ void QGLTexture2D::setSize(const QSize& value)
     if (d->requestedSize == value)
         return;
     d->size = value;
+    d->sizeAdjusted = false;
+    d->adjustForNPOTTextureSize();
     d->requestedSize = value;
     ++(d->imageGeneration);
 }
@@ -610,6 +633,8 @@ bool QGLTexture2DPrivate::bind(GLenum target)
         if (size != oldSize)
             ++imageGeneration;
     }
+
+    adjustForNPOTTextureSize();
 
     // Find the information block for the context, or create one.
     QGLTexture2DTextureInfo *info = infos;

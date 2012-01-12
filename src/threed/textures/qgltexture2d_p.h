@@ -107,9 +107,11 @@ public:
     uint imageGeneration;
     uint parameterGeneration;
     QGLTexture2DTextureInfo *infos;
+    bool sizeAdjusted;
 
     bool bind(GLenum target);
     virtual void bindImages(QGLTexture2DTextureInfo *info);
+    void adjustForNPOTTextureSize();
 };
 
 QT_END_NAMESPACE
