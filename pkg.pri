@@ -30,10 +30,12 @@ mt {
             target_dir = $$DESTDIR/$${TARGET}.app/Contents/Resources/qml
         } else {
             target_dir = $$DESTDIR/resources/$$CATEGORY/$${TARGET}/qml
+            target_dir ~= s,/,$$QMAKE_DIR_SEP,
         }
         copyqmlinfra.input = QML_INFRA_FILES
         copyqmlinfra.output = $$target_dir/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
-        copyqmlinfra.commands = $(MKDIR) $$target_dir && $$QMAKE_COPY ${QMAKE_FILE_IN} ${QMAKE_FILE_OUT}
+        win32: copyqmlinfra.commands = $$QMAKE_CHK_DIR_EXISTS $$target_dir
+        copyqmlinfra.commands += $(MKDIR) $$target_dir && $$QMAKE_COPY ${QMAKE_FILE_IN} ${QMAKE_FILE_OUT}
         copyqmlinfra.CONFIG += no_link_no_clean
         copyqmlinfra.variable_out = POST_TARGETDEPS
         QMAKE_EXTRA_COMPILERS += copyqmlinfra
@@ -59,10 +61,12 @@ mt {
             target_dir = $$DESTDIR/$${TARGET}.app/Contents/Resources/qml/meshes
         } else {
             target_dir = $$DESTDIR/resources/$$CATEGORY/$${TARGET}/qml/meshes
+            target_dir ~= s,/,$$QMAKE_DIR_SEP,
         }
         copyqmlmeshes.input = QML_MESHES_FILES
         copyqmlmeshes.output = $$target_dir/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
-        copyqmlmeshes.commands = $(MKDIR) $$target_dir && $$QMAKE_COPY ${QMAKE_FILE_IN} ${QMAKE_FILE_OUT}
+        win32: copyqmlmeshes.commands = $$QMAKE_CHK_DIR_EXISTS $$target_dir
+        copyqmlmeshes.commands += $(MKDIR) $$target_dir && $$QMAKE_COPY ${QMAKE_FILE_IN} ${QMAKE_FILE_OUT}
         copyqmlmeshes.CONFIG += no_link_no_cle:qan
         copyqmlmeshes.variable_out = POST_TARGETDEPS
         QMAKE_EXTRA_COMPILERS += copyqmlmeshes
