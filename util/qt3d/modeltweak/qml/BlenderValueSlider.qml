@@ -12,6 +12,7 @@ Item {
     property double min: -1;
     property bool limitMax: false;
     property bool limitMin: false;
+    property bool locked: false
 
     width: rect.width
     height: 20
@@ -21,6 +22,7 @@ Item {
     signal next
     signal prev
     signal gotFocus
+    signal fail
 
     Rectangle {
         id: rect
@@ -45,8 +47,10 @@ Item {
             visible: true
         }
 
+
         TextInput {
             id: textInput
+            readOnly: valueSlider.locked
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             horizontalAlignment: TextInput.AlignHCenter
@@ -91,12 +95,17 @@ Item {
             onExited: parent.color = "#B4B4B4"
             hoverEnabled: true
             onClicked: {
-                if (mouse.x<width/3)
-                    decDelta();
-                else if (mouse.x>width/3*2)
-                    incDelta();
-                else {
-                    valueSlider.gotFocus()
+                if (!valueSlider.locked)
+                {
+                    if (mouse.x<width/3)
+                        decDelta();
+                    else if (mouse.x>width/3*2)
+                        incDelta();
+                    else {
+                        valueSlider.gotFocus()
+                    }
+                } else {
+                    valueSlider.fail();
                 }
 
             }
@@ -109,14 +118,14 @@ Item {
         interval: 100;
         running: mouseArea.pressedButtons & Qt.LeftButton && (mouseArea.mouseX > valueSlider.width/3*2)
         repeat: true
-        onTriggered: incDelta()
+        onTriggered:  if (!valueSlider.locked) incDelta()
     }
 
     Timer {
         interval: 100;
         running: mouseArea.pressedButtons & Qt.LeftButton && (mouseArea.mouseX < valueSlider.width/3)
         repeat: true
-        onTriggered: decDelta()
+        onTriggered:  if (!valueSlider.locked) decDelta()
     }
 
     function updateMe() {
@@ -149,7 +158,16 @@ Item {
 
     onFocusChanged: if (focus) valueSlider.gotFocus()
 
-    Keys.onUpPressed: incDelta()
-    Keys.onDownPressed: decDelta()
-    Keys.onReturnPressed: updateMe()
+    Keys.onUpPressed: {
+        if (!valueSlider.locked) incDelta();
+        else valueSlider.fail();
+    }
+    Keys.onDownPressed: {
+        if (!valueSlider.locked) decDelta();
+        else valueSlider.fail();
+    }
+    Keys.onReturnPressed: {
+        if (!valueSlider.locked) updateMe();
+        else valueSlider.fail();
+    }
 }

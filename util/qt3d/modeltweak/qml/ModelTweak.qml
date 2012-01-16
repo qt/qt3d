@@ -76,15 +76,15 @@ Rectangle {
 
         property alias position: transformTranslate.translate;
 
-        onMouseTranslateX: position = Qt.vector3d(position.x, position.y, translate.z + (down.x - mouse.x)/translateSensitivity)
-        onMouseTranslateY: position = Qt.vector3d(position.x, translate.y + (down.y - mouse.y)/translateSensitivity, position.z)
-        onMouseRotateX: transformRotateY.angle = rotate.y - (down.x - mouse.x)/rotateSensitivity
-        onMouseRotateY: transformRotateZ.angle = rotate.z - (down.y - mouse.y)/rotateSensitivity
-        onMouseScaleX: {
+        onMouseTranslateX: if (!modelPropertiesPane.translateLocked) position = Qt.vector3d(position.x, position.y, translate.z + (down.x - mouse.x)/translateSensitivity)
+        onMouseTranslateY: if (!modelPropertiesPane.translateLocked)position = Qt.vector3d(position.x, translate.y + (down.y - mouse.y)/translateSensitivity, position.z)
+        onMouseRotateX: if (!modelPropertiesPane.rotateLocked)transformRotateY.angle = rotate.y - (down.x - mouse.x)/rotateSensitivity
+        onMouseRotateY: if (!modelPropertiesPane.rotateLocked)transformRotateZ.angle = rotate.z - (down.y - mouse.y)/rotateSensitivity
+        onMouseScaleX: if (!modelPropertiesPane.scaleLocked) {
             var s = scale3d.z - (down.x - mouse.x)/scaleSensitivity;
             transformScale.scale = Qt.vector3d(transformScale.scale.x, transformScale.scale.y, s<0 ? 0 : s)
         }
-        onMouseScaleY: {
+        onMouseScaleY: if (!modelPropertiesPane.scaleLocked) {
             var s = scale3d.y + (down.y - mouse.y)/scaleSensitivity;
             transformScale.scale = Qt.vector3d(transformScale.scale.x, s<0 ? 0 : s, transformScale.scale.z)
         }
@@ -100,15 +100,15 @@ Rectangle {
 
         property alias position: transformTranslate.translate;
 
-        onMouseTranslateX: position = Qt.vector3d(translate.x - (down.x - mouse.x)/translateSensitivity, position.y, position.z)
-        onMouseTranslateY: position = Qt.vector3d(position.x, translate.y + (down.y - mouse.y)/translateSensitivity, position.z)
-        onMouseRotateX: transformRotateY.angle = rotate.y - (down.x - mouse.x)/rotateSensitivity
-        onMouseRotateY: transformRotateX.angle = rotate.x - (down.y - mouse.y)/rotateSensitivity
-        onMouseScaleX: {
+        onMouseTranslateX: if (!modelPropertiesPane.translateLocked)position = Qt.vector3d(translate.x - (down.x - mouse.x)/translateSensitivity, position.y, position.z)
+        onMouseTranslateY: if (!modelPropertiesPane.translateLocked)position = Qt.vector3d(position.x, translate.y + (down.y - mouse.y)/translateSensitivity, position.z)
+        onMouseRotateX: if (!modelPropertiesPane.rotateLocked) transformRotateY.angle = rotate.y - (down.x - mouse.x)/rotateSensitivity
+        onMouseRotateY: if (!modelPropertiesPane.rotateLocked) transformRotateX.angle = rotate.x - (down.y - mouse.y)/rotateSensitivity
+        onMouseScaleX: if (!modelPropertiesPane.scaleLocked) {
             var s = scale3d.x - (down.x - mouse.x)/scaleSensitivity
             transformScale.scale = Qt.vector3d(s<0 ? 0 : s, transformScale.scale.y, transformScale.scale.z)
         }
-        onMouseScaleY: {
+        onMouseScaleY: if (!modelPropertiesPane.scaleLocked) {
             var s = scale3d.y + (down.y - mouse.y)/scaleSensitivity
             transformScale.scale = Qt.vector3d(transformScale.scale.x, s<0 ? 0 : s, transformScale.scale.z)
         }
@@ -125,15 +125,15 @@ Rectangle {
 
         property alias position: transformTranslate.translate;
 
-        onMouseTranslateX: position = Qt.vector3d(translate.x - (down.x - mouse.x)/translateSensitivity, position.y, position.z)
-        onMouseTranslateY: position = Qt.vector3d(position.x, position.y, translate.z - (down.y - mouse.y)/translateSensitivity)
-        onMouseRotateX: transformRotateZ.angle = rotate.z + (down.x - mouse.x)/rotateSensitivity
-        onMouseRotateY: transformRotateX.angle = rotate.x - (down.y - mouse.y)/rotateSensitivity
-        onMouseScaleX: {
+        onMouseTranslateX: if (!modelPropertiesPane.translateLocked)position = Qt.vector3d(translate.x - (down.x - mouse.x)/translateSensitivity, position.y, position.z)
+        onMouseTranslateY: if (!modelPropertiesPane.translateLocked)position = Qt.vector3d(position.x, position.y, translate.z - (down.y - mouse.y)/translateSensitivity)
+        onMouseRotateX: if (!modelPropertiesPane.rotateLocked)transformRotateZ.angle = rotate.z + (down.x - mouse.x)/rotateSensitivity
+        onMouseRotateY: if (!modelPropertiesPane.rotateLocked)transformRotateX.angle = rotate.x - (down.y - mouse.y)/rotateSensitivity
+        onMouseScaleX: if (!modelPropertiesPane.scaleLocked) {
             var s = scale3d.x - (down.x - mouse.x)/scaleSensitivity;
             transformScale.scale = Qt.vector3d(s<0 ? 0 : s, transformScale.scale.y, transformScale.scale.z)
         }
-        onMouseScaleY: {
+        onMouseScaleY: if (!modelPropertiesPane.scaleLocked) {
             var s = scale3d.z + (down.y - mouse.y)/scaleSensitivity;
             transformScale.scale = Qt.vector3d(transformScale.scale.x, transformScale.scale.y, s<0 ? 0 : s)
         }
