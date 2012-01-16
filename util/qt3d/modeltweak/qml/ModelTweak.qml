@@ -42,11 +42,17 @@ import QtQuick 1.0
 import Qt3D 1.0
 import ModelTweak 1.0
 import "fileHandling.js" as FileHandler
+import "Widgets"
+import "ColorUtils.js" as ColorUtils
 
 Rectangle {
     id: outerWindow;
     width: 1024
     height: 768
+    property alias modelEffect: customEffect
+    property alias modelMaterial: customMaterial
+    property bool useCustomEffect: false
+    property bool useCustomMaterial: false
 
     property bool changed: false
     Component.onCompleted: {
@@ -95,6 +101,11 @@ Rectangle {
             filename: "meshes/penguin.3ds"
         }
 
+        QuickFile {
+            id: textureFile
+            filename: ""
+        }
+
         Mesh {
             id: source_mesh
             source: quickFile.filename
@@ -105,6 +116,30 @@ Rectangle {
         Rotation3D    { id: transformRotateY;   axis: Qt.vector3d(0, 1, 0);      angle: 0; }
         Rotation3D    { id: transformRotateZ;   axis: Qt.vector3d(0, 0, 1);      angle: 0; }
         Scale3D       { id: transformScale;     scale: Qt.vector3d(1, 1, 1);               }
+
+        Effect {
+            id: customEffect;
+            property alias hsv: hsvColor
+            material: useCustomMaterial ? customMaterial : null;
+            color: hsv.color
+            blending: (hsv.alpha < 1.0)
+                      || (useCustomMaterial && (hsvAmbColor.alpha*hsvDifColor.alpha*hsvSpecColor.alpha < 1.0))
+            texture: textureFile.filename
+        }
+        Material {
+            id: customMaterial
+            property alias amb_hsv: hsvAmbColor
+            property alias dif_hsv: hsvDifColor
+            property alias spec_hsv: hsvSpecColor
+            ambientColor: hsvAmbColor.color
+            diffuseColor: hsvDifColor.color
+            specularColor: hsvSpecColor.color
+            textureUrl: textureFile.filename
+        }
+        HSVColor { id: hsvColor }
+        HSVColor { id: hsvAmbColor }
+        HSVColor { id: hsvDifColor }
+        HSVColor { id: hsvSpecColor }
 
         ModelViewport {
             id: mvpZY
@@ -212,6 +247,11 @@ Rectangle {
             x: 16;
             y: parent.height / 2 + 16
             onChanged: {outerWindow.changed=true}
+        }
+
+        ColorPicker {
+            id: colorPicker
+            visible: false
         }
 
         HelpOverlay {

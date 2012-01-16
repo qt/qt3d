@@ -1,5 +1,30 @@
 function save_qml(closePrompt) {
 
+    var effectData = "";
+    if (useCustomEffect) {
+        effectData +=
+                "    effect: Effect {\n" +
+                "        decal: " + customEffect.decal + "\n" +
+                "        blending: " + customEffect.blending + "\n";
+
+        if (useCustomMaterial) {
+            effectData +=
+                    "        material: Material {\n" +
+                    "            ambientColor: \"" + modelMaterial.ambientColor + "\"\n" +
+                    "            diffuseColor: \"" + modelMaterial.diffuseColor + "\"\n" +
+                    "            specularColor: \"" + modelMaterial.specularColor + "\"\n" +
+                    "            shininess: " + modelMaterial.shininess + "\n" +
+                    "            textureUrl: \"" + modelMaterial.textureUrl + "\"\n" +
+                    "        }\n"
+        } else {
+            effectData +=
+                    "        color: \"" + modelEffect.color + "\"\n" +
+                    "        texture: \"" + modelEffect.texture + "\"\n"
+        }
+
+        effectData += "    }\n"
+    }
+
     var saveData =
             "//                 --------|  WARNING  |--------!!\n" +
             "// This is a generated file.  Modifying the text or layout of \n" +
@@ -58,6 +83,7 @@ function save_qml(closePrompt) {
             "        transformRotateZ,\n" +
             "        transformTranslate,\n" +
             "    ]\n" +
+            effectData +
             "}\n";
 
     quickFile.filename = source_mesh.source

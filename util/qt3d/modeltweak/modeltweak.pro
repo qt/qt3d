@@ -23,10 +23,3 @@ RC_FILE = modeltweak.rc
 
 HEADERS += \
     quickfile.h
-
-
-
-
-
-
-

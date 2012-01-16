@@ -80,6 +80,7 @@ Rectangle {
                 transformRotateZ,
                 transformTranslate,
             ]
+            effect: useCustomEffect ? modelEffect : null;
         }
 
         Effect {

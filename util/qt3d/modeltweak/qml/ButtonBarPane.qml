@@ -32,8 +32,10 @@ Flow {
             {
                 FileHandler.save_qml(true);
             }
-
-            quickFile.load()
+            var useEffect = useCustomEffect;
+            useCustomEffect = false;
+            quickFile.load();
+            useCustomEffect = useEffect;
         }
         buttonText: "Load Asset"
         imageSrc: "images/model.png"

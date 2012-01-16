@@ -13,6 +13,7 @@ Rectangle {
 
     property alias buttonText: text.text
     property alias imageSrc: img.source
+    property alias textColor: text.color
 
     signal clicked
 
