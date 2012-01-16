@@ -77,6 +77,8 @@ int main(int argc, char *argv[])
         }
     }
 
+    view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
+
 #ifdef Q_OS_SYMBIAN
     view.setAttribute(Qt::WA_LockLandscapeOrientation, true);
     view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
