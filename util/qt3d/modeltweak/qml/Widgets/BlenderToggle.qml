@@ -3,7 +3,8 @@ import Qt3D 1.0
 import ModelTweak 1.0
 
 Rectangle {
-    anchors.topMargin: 8
+    anchors.topMargin: 15
+    anchors.leftMargin: 15
     border.width: 1
     border.color: "#191919"
     radius: 8
@@ -11,13 +12,24 @@ Rectangle {
     color: "#999999"
 
     property alias buttonText: text.text
+    property alias imageSrc: img.source
 
     signal clicked
+
+
+    Image {
+        id: img
+        anchors.left: parent.left
+        anchors.leftMargin: 5
+        anchors.verticalCenter: parent.verticalCenter
+    }
 
     Text {
         id: text
         anchors.fill: parent
         font.pixelSize: 12
+        anchors.left: img.left
+        anchors.leftMargin: 5
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
     }

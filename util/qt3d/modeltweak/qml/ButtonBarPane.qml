@@ -1,28 +1,49 @@
 import QtQuick 1.0
 import Qt3D 1.0
 import ModelTweak 1.0
+import "fileHandling.js" as FileHandler
 import "Widgets"
 
 Flow {
+    id: menu
+    anchors.left: parent.left
+    anchors.leftMargin: 2
+    anchors.top: parent.top
+    anchors.topMargin: 2
     width: buttonWidth * 4 + spacing * 3
-    spacing: 8
+    height: parent.height
+    spacing: 5
 
-    property double buttonWidth: 80
+    property double buttonWidth: 105
 
     SaveButton {
+        id: save
         width: buttonWidth
-        buttonText: "Save!"
+        buttonText: "Save QML"
+        imageSrc: "images/save.png"
     }
 
     BlenderToggle {
+        id: load
         width: buttonWidth
-        buttonText: "Load!"
-        onClicked: quickFile.load()
+        onClicked:
+        {
+            if (outerWindow.changed)
+            {
+                FileHandler.save_qml(true);
+            }
+
+            quickFile.load()
+        }
+        buttonText: "Load Asset"
+        imageSrc: "images/model.png"
     }
 
     BlenderToggle {
+        id: help
         width: buttonWidth
-        buttonText: "Help!"
         onClicked: helpOverlay.visible = true
+        buttonText: "Help!"
+        imageSrc: "images/help.png"
     }
 }

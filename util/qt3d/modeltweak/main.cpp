@@ -60,6 +60,9 @@ int main(int argc, char *argv[])
     QString qml = q_get_qmldir(QLatin1String("qml/ModelTweak.qml"));
     view.setSource(QUrl::fromLocalFile(qml));
 
+    //disable close button
+   // view.setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowMaximizeButtonHint | Qt::WindowMinimizeButtonHint);
+
     QString fn;
     QStringList args = QApplication::arguments();
     for (int i = 0; i < args.size(); ++i)

@@ -24,11 +24,11 @@ public:
 
     Q_INVOKABLE QString save() const;
     Q_INVOKABLE void load();
+    Q_INVOKABLE QString promptSave() const;
 
 signals:
     void filenameChanged(const QString newFilename);
     void dataChanged(const QString newData);
-
 };
 
 #endif // QUICKFILE_H

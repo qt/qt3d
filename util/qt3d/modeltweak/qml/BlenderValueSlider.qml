@@ -23,6 +23,7 @@ Item {
     signal prev
     signal gotFocus
     signal fail
+    signal changed
 
     Rectangle {
         id: rect
@@ -45,6 +46,7 @@ Item {
             verticalAlignment: Text.AlignVCenter
             text: valueSlider.label + " " + textInput.text
             visible: true
+            onTextChanged: changed();
         }
 
 

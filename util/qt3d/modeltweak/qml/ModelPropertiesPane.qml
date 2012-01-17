@@ -3,6 +3,7 @@ import Qt3D 1.0
 import ModelTweak 1.0
 
 Column {
+    id: properties
     width: posX.width
     height: parent.height
     spacing: 4
@@ -10,6 +11,8 @@ Column {
     property alias rotateLocked: imageR.isLocked
     property alias scaleLocked: imageS.isLocked
     property alias translateLocked: imageP.isLocked;
+
+    signal changed;
 
     // POSITION
     Item {
@@ -74,12 +77,13 @@ Column {
         label: "X:"
         locked: imageP.isLocked
         value: transformTranslate.translate.x.toFixed(3)
-        function update (f)  {
+        function update (f) {
             transformTranslate.translate = Qt.vector3d(f, transformTranslate.translate.y, transformTranslate.translate.z);
         }
         onNext: { updateMe(); focus = false; posY.focus = true; }
         onPrev: { updateMe(); focus = false; scaleZ.focus = true; }
         onFail: { imageP.bounce=true; }
+        onChanged: { properties.changed(); }
     }
     BlenderValueSlider {
         id: posY
@@ -92,6 +96,7 @@ Column {
         onNext: { updateMe(); focus = false; posZ.focus = true; }
         onPrev: { updateMe(); focus = false; posX.focus = true; }
         onFail: { imageP.bounce=true; }
+        onChanged: { properties.changed(); }
     }
     BlenderValueSlider {
         id: posZ
@@ -104,6 +109,7 @@ Column {
         onNext: { updateMe(); focus = false; rotX.focus = true; }
         onPrev: { updateMe(); focus = false; posY.focus = true; }
         onFail: { imageP.bounce=true; }
+        onChanged: { properties.changed(); }
     }
 
     // ROTATE
@@ -111,6 +117,7 @@ Column {
         id: rotationPanel
         width: parent.width
         height: imageR.height
+        property bool dirty: false
 
         Text {
             anchors.left: parent.left
@@ -175,6 +182,7 @@ Column {
         onNext: { updateMe(); focus = false; rotY.focus = true; }
         onPrev: { updateMe(); focus = false; posZ.focus = true; }
         onFail: { imageR.bounce=true; }
+        onChanged: { properties.changed(); }
     }
     BlenderValueSlider {
         id: rotY
@@ -188,6 +196,7 @@ Column {
         onNext: { updateMe(); focus = false; rotZ.focus = true; }
         onPrev: { updateMe(); focus = false; rotX.focus = true; }
         onFail: { imageR.bounce=true; }
+        onChanged: { properties.changed(); }
     }
     BlenderValueSlider {
         id: rotZ
@@ -201,6 +210,7 @@ Column {
         onNext: { updateMe(); focus = false; scaleX.focus = true; }
         onPrev: { updateMe(); focus = false; rotY.focus = true; }
         onFail: { imageR.bounce=true; }
+        onChanged: { properties.changed(); }
     }
 
     // SCALE
@@ -208,6 +218,7 @@ Column {
         id: scalePanel
         width: parent.width
         height: imageS.height
+        property bool dirty: false
 
         Text {
             anchors.left: parent.left
@@ -270,6 +281,7 @@ Column {
         onNext: { updateMe(); focus = false; scaleY.focus = true; }
         onPrev: { updateMe(); focus = false; rotZ.focus = true; }
         onFail: { imageS.bounce=true; }
+        onChanged: { properties.changed(); }
     }
     BlenderValueSlider {
         id: scaleY
@@ -281,6 +293,7 @@ Column {
         onNext: { updateMe(); focus = false; scaleZ.focus = true; }
         onPrev: { updateMe(); focus = false; scaleX.focus = true; }
         onFail: { imageS.bounce=true; }
+        onChanged: { properties.changed();    }
     }
     BlenderValueSlider {
         id: scaleZ
@@ -292,5 +305,6 @@ Column {
         onNext: { updateMe(); focus = false; posX.focus = true; }
         onPrev: { updateMe(); focus = false; scaleY.focus = true; }
         onFail: { imageS.bounce=true; }
+        onChanged: { properties.changed(); }
     }
 }
