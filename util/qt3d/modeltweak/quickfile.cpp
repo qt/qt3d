@@ -45,10 +45,31 @@ QString QuickFile::save() const
     if (!filename.endsWith(".qml"))
         filename.append(".qml");
 
-    QString modelFilename = QUrl(_filename).toLocalFile();
-
     QDir outputDir = QFileInfo(filename).absoluteDir();
-    QString relativeFilename = outputDir.relativeFilePath(modelFilename);
+
+    QString modelFilename = QUrl(_filename).toLocalFile();
+    QString modelFN = QFileInfo(modelFilename).fileName();
+
+    QString dstModelLocation = outputDir.path() + QDir::separator() + modelFN;
+    if (dstModelLocation.compare(modelFilename,Qt::CaseInsensitive) != 0) {
+        // src and dst model paths are different.
+        // Copy model file over.
+        qDebug("Attempting to copy:");
+        qDebug("  from: %s",modelFilename.toAscii().constData());
+        qDebug("  to  : %s",dstModelLocation.toAscii().constData());
+        QFile dstModelFile(dstModelLocation);
+        if (dstModelFile.exists()) {
+            if (!dstModelFile.remove()) {
+                qDebug("  failed to remove dst file!");
+            }
+        }
+        QFile srcModelFile(modelFilename);
+        if (srcModelFile.copy(dstModelLocation)) {
+            qDebug("  Model was copied successfully.");
+        } else {
+            qDebug("  failed to copy model file !");
+        }
+    }
 
     QFile file(filename);
 
@@ -57,7 +78,7 @@ QString QuickFile::save() const
     if (!file.open(QFile::WriteOnly))
         return file.errorString();
 
-    QString dataToWrite = _data.arg(relativeFilename);
+    QString dataToWrite = _data.arg(modelFN);
 
     file.write(dataToWrite.toUtf8());
 
