@@ -74,6 +74,9 @@ Rectangle {
         stateName: "ZYMaximised"
         viewportName: "Z,Y axis (right)"
 
+        rightVector: Qt.vector3d(0, 0, -1)
+        upVector: Qt.vector3d(0, 1, 0)
+
         property alias position: transformTranslate.translate;
 
         onMouseTranslateX: if (!modelPropertiesPane.translateLocked) position = Qt.vector3d(position.x, position.y, translate.z + (down.x - mouse.x)/translateSensitivity)
@@ -97,6 +100,9 @@ Rectangle {
         camera.eye: Qt.vector3d(0, 0, 20);
         stateName: "XYMaximised"
         viewportName: "X,Y axis (front)"
+
+        rightVector: Qt.vector3d(1, 0, 0)
+        upVector: Qt.vector3d(0, 1, 0)
 
         property alias position: transformTranslate.translate;
 
@@ -122,6 +128,9 @@ Rectangle {
         camera.upVector: Qt.vector3d(0, 0, -1);
         stateName: "XZMaximised"
         viewportName: "X,Z axis (top)"
+
+        rightVector: Qt.vector3d(1, 0, 0)
+        upVector: Qt.vector3d(0, 0, -1)
 
         property alias position: transformTranslate.translate;
 

@@ -84,6 +84,7 @@
 Line::Line(QObject *parent) :
     QDeclarativeItem3D(parent)
         ,m_width(3.0)
+        ,m_geometry(0)
         ,m_changeFlag(false)
 {
     //meh
@@ -142,13 +143,11 @@ void Line::drawItem(QGLPainter *painter)
     if (m_changeFlag || !m_geometry) {
         if (m_geometry) delete m_geometry;
 
-        QGLBuilder builder;
-
         QGeometryData lineCollection;
-        builder.newSection();
-
         lineCollection.appendVertexArray(m_vertexArray);
 
+        QGLBuilder builder;
+        builder.newSection();
         builder.addTriangles(lineCollection);
         builder.currentNode()->setDrawingMode(QGL::LineStrip);
         builder.currentNode()->setDrawingWidth(m_width);
