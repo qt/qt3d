@@ -263,20 +263,20 @@ struct Face : public aiFace
 {
     //! Default construction
     Face()
-        : surfaceIndex (0)
-        , smoothGroup (0)
-        , type   (AI_LWO_FACE)
+        : surfaceIndex    (0)
+        , smoothGroup    (0)
+        , type            (AI_LWO_FACE)
     {}
 
     //! Construction from given type
     Face(uint32_t _type)
-        : surfaceIndex (0)
-        , smoothGroup (0)
-        , type   (_type)
+        : surfaceIndex    (0)
+        , smoothGroup    (0)
+        , type            (_type)
     {}
 
     //! Copy construction
-    Face(const Face& f) : aiFace() {
+    Face(const Face& f)    {
         *this = f;
     }
 
@@ -291,10 +291,10 @@ struct Face : public aiFace
 
 
     //! Assignment operator
-    Face& operator=(const LWO::Face& f) {
+    Face& operator=(const LWO::Face& f)    {
         aiFace::operator =(f);
-        surfaceIndex = f.surfaceIndex;
-        smoothGroup  = f.smoothGroup;
+        surfaceIndex    = f.surfaceIndex;
+        smoothGroup        = f.smoothGroup;
         type            = f.type;
         return *this;
     }
@@ -395,56 +395,56 @@ struct Texture
     // we write the enum values out here to make debugging easier ...
     enum BlendType
     {
-        Normal   = 0,
-        Subtractive  = 1,
-        Difference  = 2,
-        Multiply  = 3,
-        Divide   = 4,
-        Alpha   = 5,
-        TextureDispl = 6,
-        Additive  = 7
+        Normal            = 0,
+        Subtractive        = 1,
+        Difference        = 2,
+        Multiply        = 3,
+        Divide            = 4,
+        Alpha            = 5,
+        TextureDispl    = 6,
+        Additive        = 7
     };
 
     enum MappingMode
     {
-        Planar   = 0,
-        Cylindrical  = 1,
-        Spherical  = 2,
-        Cubic   = 3,
-        FrontProjection = 4,
-        UV    = 5
+        Planar            = 0,
+        Cylindrical        = 1,
+        Spherical        = 2,
+        Cubic            = 3,
+        FrontProjection    = 4,
+        UV                = 5
     };
 
     enum Axes
     {
-        AXIS_X   = 0,
-        AXIS_Y   = 1,
-        AXIS_Z   = 2
+        AXIS_X            = 0,
+        AXIS_Y            = 1,
+        AXIS_Z            = 2
     };
 
     enum Wrap
     {
-        RESET   = 0,
-        REPEAT   = 1,
-        MIRROR   = 2,
-        EDGE   = 3
+        RESET            = 0,
+        REPEAT            = 1,
+        MIRROR            = 2,
+        EDGE            = 3
     };
 
     Texture()
         : mClipIdx(0xffffffff)
-        , mStrength   (1.0f)
-        , mUVChannelIndex ("unknown")
-        , mRealUVIndex  (0xffffffff)
-        , enabled   (true)
-        , blendType   (Additive)
-        , bCanUse   (true)
-        , mapMode   (UV)
-        , majorAxis   (AXIS_X)
-        , wrapAmountH  (1.0f)
-        , wrapAmountW  (1.0f)
-        , wrapModeWidth  (REPEAT)
-        , wrapModeHeight (REPEAT)
-        , ordinal   ("\x00")
+        , mStrength            (1.0f)
+        , mUVChannelIndex    ("unknown")
+        , mRealUVIndex        (0xffffffff)
+        , enabled            (true)
+        , blendType            (Additive)
+        , bCanUse            (true)
+        , mapMode            (UV)
+        , majorAxis            (AXIS_X)
+        , wrapAmountH        (1.0f)
+        , wrapAmountW        (1.0f)
+        , wrapModeWidth        (REPEAT)
+        , wrapModeHeight    (REPEAT)
+        , ordinal            ("\x00")
     {}
 
     //! File name of the texture
@@ -498,8 +498,8 @@ struct Clip
     } type;
 
     Clip()
-        : type  (UNSUPPORTED)
-        , idx  (0)
+        : type     (UNSUPPORTED)
+        , idx     (0)
         , negate (false)
     {}
 
@@ -525,9 +525,9 @@ struct Clip
 struct Shader
 {
     Shader()
-        : ordinal   ("\x00")
-        , functionName ("unknown")
-        , enabled   (true)
+        :    ordinal            ("\x00")
+        ,    functionName    ("unknown")
+        ,    enabled            (true)
     {}
 
     std::string ordinal;
@@ -535,8 +535,8 @@ struct Shader
     bool enabled;
 };
 
-typedef std::list < Texture >  TextureList;
-typedef std::list < Shader >  ShaderList;
+typedef std::list < Texture >        TextureList;
+typedef std::list < Shader >        ShaderList;
 
 // ---------------------------------------------------------------------------
 /** \brief Data structure for a LWO file surface (= material)
@@ -544,20 +544,20 @@ typedef std::list < Shader >  ShaderList;
 struct Surface
 {
     Surface()
-        : mColor    (0.78431f,0.78431f,0.78431f)
-        , bDoubleSided   (false)
-        , mDiffuseValue   (1.f)
-        , mSpecularValue  (0.f)
-        , mTransparency   (0.f)
-        , mGlossiness   (0.4f)
-        , mLuminosity   (0.f)
-        , mColorHighlights  (0.f)
-        , mMaximumSmoothAngle (0.f) // 0 == not specified, no smoothing
-        , mVCMap    ("")
-        , mVCMapType   (AI_LWO_RGBA)
-        , mIOR     (1.f) // vakuum
-        , mBumpIntensity  (1.f)
-        , mWireframe   (false)
+        : mColor                (0.78431f,0.78431f,0.78431f)
+        , bDoubleSided            (false)
+        , mDiffuseValue            (1.f)
+        , mSpecularValue        (0.f)
+        , mTransparency            (0.f)
+        , mGlossiness            (0.4f)
+        , mLuminosity            (0.f)
+        , mColorHighlights        (0.f)
+        , mMaximumSmoothAngle    (0.f) // 0 == not specified, no smoothing
+        , mVCMap                ("")
+        , mVCMapType            (AI_LWO_RGBA)
+        , mIOR                    (1.f) // vakuum
+        , mBumpIntensity        (1.f)
+        , mWireframe            (false)
         , mAdditiveTransparency (0.f)
     {}
 
@@ -615,17 +615,17 @@ struct Surface
 
 
 // some typedefs ... to make life with loader monsters like this easier
-typedef std::vector < aiVector3D  > PointList;
-typedef std::vector < LWO::Face  > FaceList;
-typedef std::vector < LWO::Surface > SurfaceList;
-typedef std::vector < std::string  > TagList;
-typedef std::vector < unsigned int > TagMappingTable;
-typedef std::vector < unsigned int > ReferrerList;
-typedef std::vector < WeightChannel > WeightChannelList;
-typedef std::vector < VColorChannel > VColorChannelList;
-typedef std::vector < UVChannel  > UVChannelList;
-typedef std::vector < Clip   > ClipList;
-typedef std::vector < Envelope  > EnvelopeList;
+typedef std::vector    <    aiVector3D        >    PointList;
+typedef std::vector    <    LWO::Face        >    FaceList;
+typedef std::vector    <    LWO::Surface    >    SurfaceList;
+typedef std::vector    <    std::string        >    TagList;
+typedef std::vector    <    unsigned int    >    TagMappingTable;
+typedef std::vector    <    unsigned int    >    ReferrerList;
+typedef std::vector    <    WeightChannel    >    WeightChannelList;
+typedef std::vector    <    VColorChannel    >    VColorChannelList;
+typedef std::vector    <    UVChannel        >    UVChannelList;
+typedef std::vector    <    Clip            >    ClipList;
+typedef std::vector    <    Envelope        >    EnvelopeList;
 typedef std::vector <   unsigned int    >   SortedRep;
 
 // ---------------------------------------------------------------------------
@@ -634,11 +634,11 @@ typedef std::vector <   unsigned int    >   SortedRep;
 struct Layer
 {
     Layer()
-        : mFaceIDXOfs (0)
-        , mPointIDXOfs (0)
-        , mParent  (0x0)
-        , mIndex  (0xffff)
-        , skip   (false)
+        : mFaceIDXOfs    (0)
+        , mPointIDXOfs    (0)
+        , mParent        (0x0)
+        , mIndex        (0xffff)
+        , skip            (false)
     {}
 
     /** Temporary point list from the file */
@@ -689,7 +689,7 @@ struct Layer
     bool skip;
 };
 
-typedef std::list<LWO::Layer>  LayerList;
+typedef std::list<LWO::Layer>        LayerList;
 
 
 }}

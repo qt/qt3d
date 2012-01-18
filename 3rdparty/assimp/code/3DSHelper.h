@@ -47,8 +47,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "SpatialSort.h"
 #include "SmoothingGroups.h"
 
-namespace Assimp {
-namespace D3DS {
+namespace Assimp    {
+namespace D3DS    {
 
 #include "./../include/Compiler/pushpack1.h"
 
@@ -66,8 +66,8 @@ public:
     //! data structure for a single chunk in a .3ds file
     struct Chunk
     {
-        uint16_t Flag;
-        uint32_t Size;
+        uint16_t    Flag;
+        uint32_t    Size;
     } PACK_STRUCT;
 
 
@@ -112,16 +112,16 @@ public:
 
         // ********************************************************************
         // Basic chunks which can be found everywhere in the file
-        CHUNK_VERSION = 0x0002,
-        CHUNK_RGBF      = 0x0010,  // float4 R; float4 G; float4 B
-        CHUNK_RGBB      = 0x0011,  // int1 R; int1 G; int B
+        CHUNK_VERSION    = 0x0002,
+        CHUNK_RGBF      = 0x0010,        // float4 R; float4 G; float4 B
+        CHUNK_RGBB      = 0x0011,        // int1 R; int1 G; int B
 
         // Linear color values (gamma = 2.2?)
-        CHUNK_LINRGBF      = 0x0013, // float4 R; float4 G; float4 B
-        CHUNK_LINRGBB      = 0x0012, // int1 R; int1 G; int B
+        CHUNK_LINRGBF      = 0x0013,    // float4 R; float4 G; float4 B
+        CHUNK_LINRGBB      = 0x0012,    // int1 R; int1 G; int B
 
-        CHUNK_PERCENTW = 0x0030,  // int2   percentage
-        CHUNK_PERCENTF = 0x0031,  // float4  percentage
+        CHUNK_PERCENTW    = 0x0030,        // int2   percentage
+        CHUNK_PERCENTF    = 0x0031,        // float4  percentage
         // ********************************************************************
 
         // Prj master chunk
@@ -209,7 +209,7 @@ public:
             // followed by percentage chunk (?)
             CHUNK_MAT_SELF_ILLUM = 0xA080,
 
-            // Always followed by percentage chunk (?)
+            // Always followed by percentage chunk    (?)
             CHUNK_MAT_SELF_ILPCT = 0xA084,
 
             // Always followed by percentage chunk
@@ -242,14 +242,14 @@ public:
             // Scaling in U/V direction.
             // (need to gen separate UV coordinate set
             // and do this by hand)
-            CHUNK_MAT_MAP_USCALE    = 0xA354,
-            CHUNK_MAT_MAP_VSCALE    = 0xA356,
+            CHUNK_MAT_MAP_USCALE       = 0xA354,
+            CHUNK_MAT_MAP_VSCALE       = 0xA356,
 
             // Translation in U/V direction.
             // (need to gen separate UV coordinate set
             // and do this by hand)
-            CHUNK_MAT_MAP_UOFFSET    = 0xA358,
-            CHUNK_MAT_MAP_VOFFSET    = 0xA35a,
+            CHUNK_MAT_MAP_UOFFSET       = 0xA358,
+            CHUNK_MAT_MAP_VOFFSET       = 0xA35a,
 
             // UV-coordinates rotation around the z-axis
             // Assumed to be in radians.
@@ -266,10 +266,10 @@ public:
         // ********************************************************************
 
         // Main keyframer chunk. Contains translation/rotation/scaling data
-        CHUNK_KEYFRAMER  = 0xB000,
+        CHUNK_KEYFRAMER        = 0xB000,
 
         // Supported sub chunks
-        CHUNK_TRACKINFO  = 0xB002,
+        CHUNK_TRACKINFO        = 0xB002,
         CHUNK_TRACKOBJNAME  = 0xB010,
         CHUNK_TRACKDUMMYOBJNAME  = 0xB011,
         CHUNK_TRACKPIVOT    = 0xB013,
@@ -284,14 +284,14 @@ public:
         CHUNK_TRACKMORPH    = 0xB026,
         CHUNK_TRACKHIDE     = 0xB029,
         CHUNK_OBJNUMBER     = 0xB030,
-        CHUNK_TRACKCAMERA = 0xB003,
-        CHUNK_TRACKFOV  = 0xB023,
-        CHUNK_TRACKROLL  = 0xB024,
-        CHUNK_TRACKCAMTGT = 0xB004,
-        CHUNK_TRACKLIGHT = 0xB005,
-        CHUNK_TRACKLIGTGT = 0xB006,
-        CHUNK_TRACKSPOTL = 0xB007,
-        CHUNK_FRAMES  = 0xB008,
+        CHUNK_TRACKCAMERA    = 0xB003,
+        CHUNK_TRACKFOV        = 0xB023,
+        CHUNK_TRACKROLL        = 0xB024,
+        CHUNK_TRACKCAMTGT    = 0xB004,
+        CHUNK_TRACKLIGHT    = 0xB005,
+        CHUNK_TRACKLIGTGT    = 0xB006,
+        CHUNK_TRACKSPOTL    = 0xB007,
+        CHUNK_FRAMES        = 0xB008,
         // ********************************************************************
 
         // light sub-chunks
@@ -320,13 +320,13 @@ struct Texture
 {
     //! Default constructor
     Texture()
-        : mOffsetU (0.0f)
-        , mOffsetV (0.0f)
-        , mScaleU (1.0f)
-        , mScaleV (1.0f)
-        , mRotation (0.0f)
-        , mMapMode (aiTextureMapMode_Wrap)
-        , iUVSrc (0)
+        : mOffsetU    (0.0f)
+        , mOffsetV    (0.0f)
+        , mScaleU    (1.0f)
+        , mScaleV    (1.0f)
+        , mRotation    (0.0f)
+        , mMapMode    (aiTextureMapMode_Wrap)
+        , iUVSrc    (0)
     {
         mTextureBlend = get_qnan();
     }
@@ -361,13 +361,13 @@ struct Material
     //! Default constructor. Builds a default name for the material
     Material()
         :
-    mDiffuse   (0.6f,0.6f,0.6f), // FIX ... we won't want object to be black
-    mSpecularExponent (0.0f),
-    mShininessStrength (1.0f),
+    mDiffuse            (0.6f,0.6f,0.6f), // FIX ... we won't want object to be black
+    mSpecularExponent    (0.0f),
+    mShininessStrength    (1.0f),
     mShading(Discreet3DS::Gouraud),
-    mTransparency  (1.0f),
-    mBumpHeight   (1.0f),
-    mTwoSided   (false)
+    mTransparency        (1.0f),
+    mBumpHeight            (1.0f),
+    mTwoSided            (false)
     {
         static int iCnt = 0;
 
@@ -451,7 +451,7 @@ struct Mesh : public MeshWithSmoothingGroups<D3DS::Face>
 struct aiFloatKey
 {
     double mTime;      ///< The time of this key
-    float mValue; ///< The value of this key
+    float mValue;    ///< The value of this key
 
 #ifdef __cplusplus
 
@@ -479,8 +479,8 @@ struct Node
 {
     Node()
 
-        : mHierarchyPos  (0)
-        , mHierarchyIndex  (0)
+        :    mHierarchyPos        (0)
+        ,    mHierarchyIndex        (0)
 
     {
         static int iCnt = 0;

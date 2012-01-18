@@ -51,23 +51,23 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "./../include/Compiler/pushpack1.h"
 
-namespace Assimp {
-namespace MD2 {
+namespace Assimp    {
+namespace MD2    {
 
 // to make it easier for us, we test the magic word against both "endianesses"
-#define AI_MD2_MAGIC_NUMBER_BE AI_MAKE_MAGIC("IDP2")
-#define AI_MD2_MAGIC_NUMBER_LE AI_MAKE_MAGIC("2PDI")
+#define AI_MD2_MAGIC_NUMBER_BE    AI_MAKE_MAGIC("IDP2")
+#define AI_MD2_MAGIC_NUMBER_LE    AI_MAKE_MAGIC("2PDI")
 
 // common limitations
-#define AI_MD2_VERSION   15
-#define AI_MD2_MAXQPATH   64
-#define AI_MD2_MAX_FRAMES  512
-#define AI_MD2_MAX_SKINS  32
-#define AI_MD2_MAX_VERTS  2048
-#define AI_MD2_MAX_TRIANGLES 4096
+#define AI_MD2_VERSION            15
+#define AI_MD2_MAXQPATH            64
+#define AI_MD2_MAX_FRAMES        512
+#define AI_MD2_MAX_SKINS        32
+#define AI_MD2_MAX_VERTS        2048
+#define AI_MD2_MAX_TRIANGLES    4096
 
 // ---------------------------------------------------------------------------
-/** \brief Data structure for the MD2 main header
+/**    \brief Data structure for the MD2 main header
  */
 struct Header
 {
@@ -92,7 +92,7 @@ struct Header
 } PACK_STRUCT;
 
 // ---------------------------------------------------------------------------
-/** \brief Data structure for a MD2 OpenGl draw command
+/**    \brief Data structure for a MD2 OpenGl draw command
  */
 struct GLCommand
 {
@@ -101,7 +101,7 @@ struct GLCommand
 } PACK_STRUCT;
 
 // ---------------------------------------------------------------------------
-/** \brief Data structure for a MD2 triangle
+/**    \brief Data structure for a MD2 triangle
  */
 struct Triangle
 {
@@ -110,7 +110,7 @@ struct Triangle
 } PACK_STRUCT;
 
 // ---------------------------------------------------------------------------
-/** \brief Data structure for a MD2 vertex
+/**    \brief Data structure for a MD2 vertex
  */
 struct Vertex
 {
@@ -119,7 +119,7 @@ struct Vertex
 } PACK_STRUCT;
 
 // ---------------------------------------------------------------------------
-/** \brief Data structure for a MD2 frame
+/**    \brief Data structure for a MD2 frame
  */
 struct Frame
 {
@@ -130,7 +130,7 @@ struct Frame
 } PACK_STRUCT;
 
 // ---------------------------------------------------------------------------
-/** \brief Data structure for a MD2 texture coordinate
+/**    \brief Data structure for a MD2 texture coordinate
  */
 struct TexCoord
 {
@@ -139,7 +139,7 @@ struct TexCoord
 } PACK_STRUCT;
 
 // ---------------------------------------------------------------------------
-/** \brief Data structure for a MD2 skin
+/**    \brief Data structure for a MD2 skin
  */
 struct Skin
 {

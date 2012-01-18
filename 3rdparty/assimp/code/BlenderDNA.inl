@@ -45,7 +45,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef INCLUDED_AI_BLEND_DNA_INL
 #define INCLUDED_AI_BLEND_DNA_INL
 
-namespace Assimp {
+namespace Assimp    {
     namespace Blender {
 
 //--------------------------------------------------------------------------------

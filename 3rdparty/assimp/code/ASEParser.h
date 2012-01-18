@@ -60,8 +60,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // ASE is quite similar to 3ds. We can reuse some structures
 #include "3DSLoader.h"
 
-namespace Assimp {
-namespace ASE {
+namespace Assimp    {
+namespace ASE    {
 
 using namespace D3DS;
 
@@ -139,7 +139,7 @@ struct Bone
 
     //! Construction from an existing name
     Bone( const std::string& name)
-        : mName (name)
+        :    mName    (name)
     {}
 
     //! Name of the bone
@@ -167,13 +167,13 @@ struct Animation
     {
         TRACK   = 0x0,
         BEZIER  = 0x1,
-        TCB  = 0x2
+        TCB        = 0x2
     } mRotationType, mScalingType, mPositionType;
 
     Animation()
-        : mRotationType (TRACK)
-        , mScalingType (TRACK)
-        , mPositionType (TRACK)
+        :    mRotationType    (TRACK)
+        ,    mScalingType    (TRACK)
+        ,    mPositionType    (TRACK)
     {}
 
     //! List of track rotation keyframes
@@ -217,8 +217,8 @@ struct BaseNode
 
     //! Constructor. Creates a default name for the node
     BaseNode(Type _mType)
-        : mType   (_mType)
-        , mProcessed (false)
+        : mType            (_mType)
+        , mProcessed    (false)
     {
         // generate a default name for the  node
         static int iCnt = 0;
@@ -264,8 +264,8 @@ struct Mesh : public MeshWithSmoothingGroups<ASE::Face>, public BaseNode
 {
     //! Constructor.
     Mesh()
-        : BaseNode (BaseNode::Mesh)
-        , bSkip  (false)
+        : BaseNode    (BaseNode::Mesh)
+        , bSkip        (false)
     {
         // use 2 texture vertex components by default
         for (unsigned int c = 0; c < AI_MAX_NUMBER_OF_TEXTURECOORDS;++c)
@@ -311,12 +311,12 @@ struct Light : public BaseNode
 
     //! Constructor.
     Light()
-        : BaseNode  (BaseNode::Light)
+        : BaseNode     (BaseNode::Light)
         , mLightType (OMNI)
-        , mColor  (1.f,1.f,1.f)
+        , mColor     (1.f,1.f,1.f)
         , mIntensity (1.f) // light is white by default
-        , mAngle  (45.f)
-        , mFalloff  (0.f)
+        , mAngle     (45.f)
+        , mFalloff     (0.f)
     {
     }
 
@@ -339,7 +339,7 @@ struct Camera : public BaseNode
 
     //! Constructor
     Camera()
-        : BaseNode   (BaseNode::Camera)
+        : BaseNode      (BaseNode::Camera)
         , mFOV        (0.75f)   // in radians
         , mNear       (0.1f)
         , mFar        (1000.f)  // could be zero
@@ -357,7 +357,7 @@ struct Dummy : public BaseNode
 {
     //! Constructor
     Dummy()
-        : BaseNode (BaseNode::Dummy)
+        : BaseNode    (BaseNode::Dummy)
     {
     }
 };
@@ -367,8 +367,8 @@ struct Dummy : public BaseNode
 #define AI_ASE_OLD_FILE_FORMAT 110
 
 // Internally we're a little bit more tolerant
-#define AI_ASE_IS_NEW_FILE_FORMAT() (iFileFormat >= 200)
-#define AI_ASE_IS_OLD_FILE_FORMAT() (iFileFormat < 200)
+#define AI_ASE_IS_NEW_FILE_FORMAT()    (iFileFormat >= 200)
+#define AI_ASE_IS_OLD_FILE_FORMAT()    (iFileFormat < 200)
 
 // -------------------------------------------------------------------------------
 /** \brief Class to parse ASE files

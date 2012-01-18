@@ -92,7 +92,7 @@ void TriangulateProcess::Execute( aiScene* pScene)
     bool bHas = false;
     for ( unsigned int a = 0; a < pScene->mNumMeshes; a++)
     {
-        if ( TriangulateMesh( pScene->mMeshes[a]))
+        if (    TriangulateMesh( pScene->mMeshes[a]))
             bHas = true;
     }
     if (bHas)DefaultLogger::get()->info ("TriangulateProcess finished. All polygons have been triangulated.");
@@ -133,13 +133,13 @@ inline bool PointInTriangle2D(const aiVector2D& p0, const aiVector2D& p1,const a
 bool TriangulateProcess::TriangulateMesh( aiMesh* pMesh)
 {
     // Now we have aiMesh::mPrimitiveTypes, so this is only here for test cases
-    if (!pMesh->mPrimitiveTypes) {
+    if (!pMesh->mPrimitiveTypes)    {
         bool bNeed = false;
 
-        for ( unsigned int a = 0; a < pMesh->mNumFaces; a++) {
+        for ( unsigned int a = 0; a < pMesh->mNumFaces; a++)    {
             const aiFace& face = pMesh->mFaces[a];
 
-            if ( face.mNumIndices != 3) {
+            if ( face.mNumIndices != 3)    {
                 bNeed = true;
             }
         }
@@ -156,7 +156,7 @@ bool TriangulateProcess::TriangulateMesh( aiMesh* pMesh)
 
     // Find out how many output faces we'll get
     unsigned int numOut = 0, max_out = 0;
-    for ( unsigned int a = 0; a < pMesh->mNumFaces; a++) {
+    for ( unsigned int a = 0; a < pMesh->mNumFaces; a++)    {
         aiFace& face = pMesh->mFaces[a];
         if ( face.mNumIndices <= 3)
             numOut++;
@@ -190,7 +190,7 @@ bool TriangulateProcess::TriangulateMesh( aiMesh* pMesh)
 
     // use boost::scoped_array to avoid slow std::vector<bool> specialiations
     boost::scoped_array<bool> done(new bool[max_out]);
-    for ( unsigned int a = 0; a < pMesh->mNumFaces; a++) {
+    for ( unsigned int a = 0; a < pMesh->mNumFaces; a++)    {
         aiFace& face = pMesh->mFaces[a];
 
         unsigned int* idx = face.mIndices;
@@ -284,14 +284,14 @@ bool TriangulateProcess::TriangulateMesh( aiMesh* pMesh)
             //
             // FIXME: currently this is the slow O(kn) variant with a worst case
             // complexity of O(n^2) (I think). Can be done in O(n).
-            while (num > 3) {
+            while (num > 3)    {
 
                 // Find the next ear of the polygon
                 int num_found = 0;
                 for (ear = next;;prev = ear,ear = next) {
 
                     // break after we looped two times without a positive match
-                    for (next=ear+1;done[(next>max-1?next=0:next)];++next) {};
+                    for (next=ear+1;done[(next>max-1?next=0:next)];++next);
                     if (next < ear) {
                         if (++num_found == 2) {
                             break;
@@ -376,13 +376,13 @@ bool TriangulateProcess::TriangulateMesh( aiMesh* pMesh)
                 nface.mNumIndices = 3;
                 nface.mIndices = face.mIndices;
 
-                for (tmp = 0; done[tmp]; ++tmp) {};
+                for (tmp = 0; done[tmp]; ++tmp);
                 idx[0] = idx[tmp];
 
-                for (++tmp; done[tmp]; ++tmp) {};
+                for (++tmp; done[tmp]; ++tmp);
                 idx[1] = idx[tmp];
 
-                for (++tmp; done[tmp]; ++tmp) {};
+                for (++tmp; done[tmp]; ++tmp);
                 idx[2] = idx[tmp];
             }
         }

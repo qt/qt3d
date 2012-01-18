@@ -50,7 +50,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 struct aiMesh;
 class OptimizeGraphProcessTest;
-namespace Assimp {
+namespace Assimp    {
 
 // -----------------------------------------------------------------------------
 /** @brief Postprocessing step to optimize the scenegraph

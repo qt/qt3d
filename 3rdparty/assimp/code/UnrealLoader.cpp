@@ -61,8 +61,8 @@ using namespace Assimp;
 // ------------------------------------------------------------------------------------------------
 // Constructor to be privately used by Importer
 UnrealImporter::UnrealImporter()
-: configFrameID (0)
-, configHandleFlags (true)
+:    configFrameID    (0)
+,    configHandleFlags (true)
 {}
 
 // ------------------------------------------------------------------------------------------------
@@ -72,7 +72,7 @@ UnrealImporter::~UnrealImporter()
 
 // ------------------------------------------------------------------------------------------------
 // Returns whether the class can handle the format of the given file.
-bool UnrealImporter::CanRead( const std::string& pFile, IOSystem* /*pIOHandler*/, bool /*checkSig*/) const
+bool UnrealImporter::CanRead( const std::string& pFile, IOSystem* pIOHandler, bool checkSig) const
 {
     return  SimpleExtensionCheck(pFile,"3d","uc");
 }
@@ -93,7 +93,7 @@ void UnrealImporter::SetupProperties(const Importer* pImp)
     // AI_CONFIG_IMPORT_UNREAL_KEYFRAME option overrides the
     // AI_CONFIG_IMPORT_GLOBAL_KEYFRAME option.
     configFrameID = pImp->GetPropertyInteger(AI_CONFIG_IMPORT_UNREAL_KEYFRAME,0xffffffff);
-    if (0xffffffff == configFrameID) {
+    if (0xffffffff == configFrameID)    {
         configFrameID = pImp->GetPropertyInteger(AI_CONFIG_IMPORT_GLOBAL_KEYFRAME,0);
     }
 
@@ -112,7 +112,7 @@ void UnrealImporter::InternReadFile( const std::string& pFile,
     std::string extension = GetExtension(pFile);
 
     std::string d_path,a_path,uc_path;
-    if (extension == "3d")  {
+    if (extension == "3d")        {
         // jjjj_d.3d
         // jjjj_a.3d
         pos = pFile.find_last_of('_');
@@ -151,13 +151,13 @@ void UnrealImporter::InternReadFile( const std::string& pFile,
 
     // collect triangles
     std::vector<Unreal::Triangle> triangles(numTris);
-    for (std::vector<Unreal::Triangle>::iterator it = triangles.begin(), end = triangles.end();it != end; ++it) {
+    for (std::vector<Unreal::Triangle>::iterator it = triangles.begin(), end = triangles.end();it != end; ++it)    {
         Unreal::Triangle& tri = *it;
 
-        for (unsigned int i = 0; i < 3;++i) {
+        for (unsigned int i = 0; i < 3;++i)    {
 
             tri.mVertex[i] = d_reader.GetI2();
-            if (tri.mVertex[i] >= numTris) {
+            if (tri.mVertex[i] >= numTris)    {
                 DefaultLogger::get()->warn("UNREAL: vertex index out of range");
                 tri.mVertex[i] = 0;
             }
@@ -194,7 +194,7 @@ void UnrealImporter::InternReadFile( const std::string& pFile,
         throw DeadlyImportError("UNREAL: The requested frame does not exist");
 
     uint32_t st = a_reader.GetI2();
-    if (st != numVert*4u)
+    if (st != numVert*4)
         throw DeadlyImportError("UNREAL: Unexpected aniv file length");
 
     // skip to our frame
@@ -202,7 +202,7 @@ void UnrealImporter::InternReadFile( const std::string& pFile,
 
     // collect vertices
     std::vector<aiVector3D> vertices(numVert);
-    for (std::vector<aiVector3D>::iterator it = vertices.begin(), end = vertices.end(); it != end; ++it) {
+    for (std::vector<aiVector3D>::iterator it = vertices.begin(), end = vertices.end(); it != end; ++it)    {
         int32_t val = a_reader.GetI4();
         Unreal::DecompressVertex(*it,val);
     }
@@ -216,7 +216,7 @@ void UnrealImporter::InternReadFile( const std::string& pFile,
 
     // we can live without the uc file if necessary
     boost::scoped_ptr<IOStream> pb (pIOHandler->Open(uc_path));
-    if (pb.get()) {
+    if (pb.get())    {
 
         std::vector<char> _data;
         TextFileToBuffer(pb.get(),_data);
@@ -225,26 +225,26 @@ void UnrealImporter::InternReadFile( const std::string& pFile,
         std::vector< std::pair< std::string,std::string > > tempTextures;
 
         // do a quick search in the UC file for some known, usually texture-related, tags
-        for (;*data;++data) {
-            if (TokenMatchI(data,"#exec",5)) {
+        for (;*data;++data)    {
+            if (TokenMatchI(data,"#exec",5))    {
                 SkipSpacesAndLineEnd(&data);
 
                 // #exec TEXTURE IMPORT [...] NAME=jjjjj [...] FILE=jjjj.pcx [...]
-                if (TokenMatchI(data,"TEXTURE",7)) {
+                if (TokenMatchI(data,"TEXTURE",7))    {
                     SkipSpacesAndLineEnd(&data);
 
-                    if (TokenMatchI(data,"IMPORT",6)) {
+                    if (TokenMatchI(data,"IMPORT",6))    {
                         tempTextures.push_back(std::pair< std::string,std::string >());
                         std::pair< std::string,std::string >& me = tempTextures.back();
-                        for (;!IsLineEnd(*data);++data) {
-                            if (!::ASSIMP_strincmp(data,"NAME=",5)) {
+                        for (;!IsLineEnd(*data);++data)    {
+                            if (!::ASSIMP_strincmp(data,"NAME=",5))    {
                                 const char *d = data+=5;
-                                for (;!IsSpaceOrNewLine(*data);++data) {};
+                                for (;!IsSpaceOrNewLine(*data);++data);
                                 me.first = std::string(d,(size_t)(data-d));
                             }
-                            else if (!::ASSIMP_strincmp(data,"FILE=",5)) {
+                            else if (!::ASSIMP_strincmp(data,"FILE=",5))    {
                                 const char *d = data+=5;
-                                for (;!IsSpaceOrNewLine(*data);++data) {};
+                                for (;!IsSpaceOrNewLine(*data);++data);
                                 me.second = std::string(d,(size_t)(data-d));
                             }
                         }
@@ -262,21 +262,21 @@ void UnrealImporter::InternReadFile( const std::string& pFile,
                         textures.push_back(std::pair<unsigned int, std::string>());
                         std::pair<unsigned int, std::string>& me = textures.back();
 
-                        for (;!IsLineEnd(*data);++data) {
-                            if (!::ASSIMP_strincmp(data,"NUM=",4)) {
+                        for (;!IsLineEnd(*data);++data)    {
+                            if (!::ASSIMP_strincmp(data,"NUM=",4))    {
                                 data += 4;
                                 me.first = strtol10(data,&data);
                             }
-                            else if (!::ASSIMP_strincmp(data,"TEXTURE=",8)) {
+                            else if (!::ASSIMP_strincmp(data,"TEXTURE=",8))    {
                                 data += 8;
                                 const char *d = data;
-                                for (;!IsSpaceOrNewLine(*data);++data) {};
+                                for (;!IsSpaceOrNewLine(*data);++data);
                                 me.second = std::string(d,(size_t)(data-d));
 
                                 // try to find matching path names, doesn't care if we don't find them
                                 for (std::vector< std::pair< std::string,std::string > >::const_iterator it = tempTextures.begin();
-                                     it != tempTextures.end(); ++it) {
-                                    if ((*it).first == me.second) {
+                                     it != tempTextures.end(); ++it)    {
+                                    if ((*it).first == me.second)    {
                                         me.second = (*it).second;
                                         break;
                                     }
@@ -286,14 +286,14 @@ void UnrealImporter::InternReadFile( const std::string& pFile,
                     }
                     else if (TokenMatchI(data,"SCALE",5)) {
 
-                        for (;!IsLineEnd(*data);++data) {
-                            if (data[0] == 'X' && data[1] == '=') {
+                        for (;!IsLineEnd(*data);++data)    {
+                            if (data[0] == 'X' && data[1] == '=')    {
                                 data = fast_atof_move(data+2,(float&)nd->mTransformation.a1);
                             }
-                            else if (data[0] == 'Y' && data[1] == '=') {
+                            else if (data[0] == 'Y' && data[1] == '=')    {
                                 data = fast_atof_move(data+2,(float&)nd->mTransformation.b2);
                             }
-                            else if (data[0] == 'Z' && data[1] == '=') {
+                            else if (data[0] == 'Z' && data[1] == '=')    {
                                 data = fast_atof_move(data+2,(float&)nd->mTransformation.c3);
                             }
                         }
@@ -302,7 +302,7 @@ void UnrealImporter::InternReadFile( const std::string& pFile,
             }
         }
     }
-    else {
+    else    {
         DefaultLogger::get()->error("Unable to open .uc file");
     }
 
@@ -310,7 +310,7 @@ void UnrealImporter::InternReadFile( const std::string& pFile,
     materials.reserve(textures.size()*2+5);
 
     // find out how many output meshes and materials we'll have and build material indices
-    for (std::vector<Unreal::Triangle>::iterator it = triangles.begin(), end = triangles.end();it != end; ++it) {
+    for (std::vector<Unreal::Triangle>::iterator it = triangles.begin(), end = triangles.end();it != end; ++it)    {
         Unreal::Triangle& tri = *it;
         Unreal::TempMat mat(tri);
         std::vector<Unreal::TempMat>::iterator nt = std::find(materials.begin(),materials.end(),mat);
@@ -368,7 +368,7 @@ void UnrealImporter::InternReadFile( const std::string& pFile,
         else ::strcat(s.data,"os_");
 
         // make TRANS faces 90% opaque that RemRedundantMaterials won't catch us
-        if (materials[i].type == Unreal::MF_NORMAL_TRANS_TS) {
+        if (materials[i].type == Unreal::MF_NORMAL_TRANS_TS)    {
             const float opac = 0.9f;
             mat->AddProperty(&opac,1,AI_MATKEY_OPACITY);
             ::strcat(s.data,"tran_");
@@ -376,7 +376,7 @@ void UnrealImporter::InternReadFile( const std::string& pFile,
         else ::strcat(s.data,"opaq_");
 
         // a special name for the weapon attachment point
-        if (materials[i].type == Unreal::MF_WEAPON_PLACEHOLDER) {
+        if (materials[i].type == Unreal::MF_WEAPON_PLACEHOLDER)    {
             s.length = ::sprintf(s.data,"$WeaponTag$");
             color = aiColor3D(0.f,0.f,0.f);
         }
@@ -388,8 +388,8 @@ void UnrealImporter::InternReadFile( const std::string& pFile,
 
         // set texture, if any
         const unsigned int tex = materials[i].tex;
-        for (std::vector< std::pair< unsigned int, std::string > >::const_iterator it = textures.begin();it != textures.end();++it) {
-            if ((*it).first == tex) {
+        for (std::vector< std::pair< unsigned int, std::string > >::const_iterator it = textures.begin();it != textures.end();++it)    {
+            if ((*it).first == tex)    {
                 s.Set((*it).second);
                 mat->AddProperty(&s,AI_MATKEY_TEXTURE_DIFFUSE(0));
                 break;
@@ -398,7 +398,7 @@ void UnrealImporter::InternReadFile( const std::string& pFile,
     }
 
     // fill them.
-    for (std::vector<Unreal::Triangle>::iterator it = triangles.begin(), end = triangles.end();it != end; ++it) {
+    for (std::vector<Unreal::Triangle>::iterator it = triangles.begin(), end = triangles.end();it != end; ++it)    {
         Unreal::Triangle& tri = *it;
         Unreal::TempMat mat(tri);
         std::vector<Unreal::TempMat>::iterator nt = std::find(materials.begin(),materials.end(),mat);

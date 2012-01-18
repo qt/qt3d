@@ -19,22 +19,12 @@
 
 //#include <boost/config.hpp>
 #include <ctime>
-#include <time.h>
 //#include <boost/limits.hpp>
 
 # ifdef BOOST_NO_STDC_NAMESPACE
     namespace std { using ::clock_t; using ::clock; }
 # endif
 
-//symbian workarounds for CLOCKS_PER_SEC
-#ifndef CLOCKS_PER_SEC
-#ifndef __CLK_TCK
-#  warning CLOCKS_PER_SEC is undefined... defaulting to 100 (as per RVCT time.h)
-#  define CLOCKS_PER_SEC  100
-#else
-#  define CLOCKS_PER_SEC  __CLK_TCK
-#endif
-#endif
 
 namespace boost {
 

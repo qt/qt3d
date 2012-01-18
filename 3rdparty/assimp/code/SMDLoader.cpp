@@ -65,7 +65,7 @@ SMDImporter::~SMDImporter()
 
 // ------------------------------------------------------------------------------------------------
 // Returns whether the class can handle the format of the given file.
-bool SMDImporter::CanRead( const std::string& pFile, IOSystem* /*pIOHandler*/, bool) const
+bool SMDImporter::CanRead( const std::string& pFile, IOSystem* pIOHandler, bool) const
 {
     // fixme: auto format detection
     return SimpleExtensionCheck(pFile,"smd","vta");
@@ -87,7 +87,7 @@ void SMDImporter::SetupProperties(const Importer* pImp)
     // AI_CONFIG_IMPORT_SMD_KEYFRAME option overrides the
     // AI_CONFIG_IMPORT_GLOBAL_KEYFRAME option.
     configFrameID = pImp->GetPropertyInteger(AI_CONFIG_IMPORT_SMD_KEYFRAME,0xffffffff);
-    if (0xffffffff == configFrameID) {
+    if(0xffffffff == configFrameID)    {
         configFrameID = pImp->GetPropertyInteger(AI_CONFIG_IMPORT_GLOBAL_KEYFRAME,0);
     }
 }
@@ -100,7 +100,7 @@ void SMDImporter::InternReadFile(
     boost::scoped_ptr<IOStream> file( pIOHandler->Open( pFile, "rb"));
 
     // Check whether we can read from the file
-    if ( file.get() == NULL) {
+    if( file.get() == NULL)    {
         throw DeadlyImportError( "Failed to open SMD/VTA file " + pFile + ".");
     }
 
@@ -163,7 +163,7 @@ void SMDImporter::InternReadFile(
         FixTimeValues();
 
         // compute absolute bone transformation matrices
-    // ComputeAbsoluteBoneTransformations();
+    //    ComputeAbsoluteBoneTransformations();
     }
 
     if (!(pScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE))
@@ -674,12 +674,12 @@ void SMDImporter::ParseFile()
     // read line per line ...
     while (true)
     {
-        if (!SkipSpacesAndLineEnd(szCurrent,&szCurrent)) break;
+        if(!SkipSpacesAndLineEnd(szCurrent,&szCurrent)) break;
 
-        // "version <n> \n", <n> should be 1 for hl and hl SMD files
+        // "version <n> \n", <n> should be 1 for hl and hl² SMD files
         if (TokenMatch(szCurrent,"version",7))
         {
-            if (!SkipSpaces(szCurrent,&szCurrent)) break;
+            if(!SkipSpaces(szCurrent,&szCurrent)) break;
             if (1 != strtol10(szCurrent,&szCurrent))
             {
                 DefaultLogger::get()->warn("SMD.version is not 1. This "
@@ -762,7 +762,7 @@ void SMDImporter::ParseTrianglesSection(const char* szCurrent,
     // and so on until we reach a token that looks quite similar to "end"
     while (true)
     {
-        if (!SkipSpacesAndLineEnd(szCurrent,&szCurrent)) break;
+        if(!SkipSpacesAndLineEnd(szCurrent,&szCurrent)) break;
 
         // "end\n" - Ends the triangles section
         if (TokenMatch(szCurrent,"end",3))
@@ -780,7 +780,7 @@ void SMDImporter::ParseVASection(const char* szCurrent,
     unsigned int iCurIndex = 0;
     while (true)
     {
-        if (!SkipSpacesAndLineEnd(szCurrent,&szCurrent)) break;
+        if(!SkipSpacesAndLineEnd(szCurrent,&szCurrent)) break;
 
         // "end\n" - Ends the "vertexanimation" section
         if (TokenMatch(szCurrent,"end",3))
@@ -792,12 +792,12 @@ void SMDImporter::ParseVASection(const char* szCurrent,
             // NOTE: The doc says that time values COULD be negative ...
             // NOTE2: this is the shape key -> valve docs
             int iTime = 0;
-            if (!ParseSignedInt(szCurrent,&szCurrent,iTime) || configFrameID != (unsigned int)iTime)break;
+            if(!ParseSignedInt(szCurrent,&szCurrent,iTime) || configFrameID != (unsigned int)iTime)break;
             SkipLine(szCurrent,&szCurrent);
         }
         else
         {
-            if (0 == iCurIndex)
+            if(0 == iCurIndex)
             {
                 asTriangles.push_back(SMD::Face());
             }
@@ -823,7 +823,7 @@ void SMDImporter::ParseSkeletonSection(const char* szCurrent,
     int iTime = 0;
     while (true)
     {
-        if (!SkipSpacesAndLineEnd(szCurrent,&szCurrent)) break;
+        if(!SkipSpacesAndLineEnd(szCurrent,&szCurrent)) break;
 
         // "end\n" - Ends the skeleton section
         if (TokenMatch(szCurrent,"end",3))
@@ -833,7 +833,7 @@ void SMDImporter::ParseSkeletonSection(const char* szCurrent,
         else if (TokenMatch(szCurrent,"time",4))
         {
             // NOTE: The doc says that time values COULD be negative ...
-            if (!ParseSignedInt(szCurrent,&szCurrent,iTime))break;
+            if(!ParseSignedInt(szCurrent,&szCurrent,iTime))break;
 
             iSmallestFrame = std::min(iSmallestFrame,iTime);
             SkipLine(szCurrent,&szCurrent);
@@ -856,7 +856,7 @@ void SMDImporter::ParseNodeInfo(const char* szCurrent,
 {
     unsigned int iBone  = 0;
     SkipSpacesAndLineEnd(szCurrent,&szCurrent);
-    if (!ParseUnsignedInt(szCurrent,&szCurrent,iBone) || !SkipSpaces(szCurrent,&szCurrent))
+    if(!ParseUnsignedInt(szCurrent,&szCurrent,iBone) || !SkipSpaces(szCurrent,&szCurrent))
     {
         LogErrorNoThrow("Unexpected EOF/EOL while parsing bone index");
         SMDI_PARSE_RETURN;
@@ -899,7 +899,7 @@ void SMDImporter::ParseNodeInfo(const char* szCurrent,
     szCurrent = szEnd;
 
     // the only negative bone parent index that could occur is -1 AFAIK
-    if (!ParseSignedInt(szCurrent,&szCurrent,(int&)bone.iParent))
+    if(!ParseSignedInt(szCurrent,&szCurrent,(int&)bone.iParent))
     {
         LogErrorNoThrow("Unexpected EOF/EOL while parsing bone parent index. Assuming -1");
         SMDI_PARSE_RETURN;
@@ -918,7 +918,7 @@ void SMDImporter::ParseSkeletonElement(const char* szCurrent,
     aiVector3D vRot;
 
     unsigned int iBone  = 0;
-    if (!ParseUnsignedInt(szCurrent,&szCurrent,iBone))
+    if(!ParseUnsignedInt(szCurrent,&szCurrent,iBone))
     {
         DefaultLogger::get()->error("Unexpected EOF/EOL while parsing bone index");
         SMDI_PARSE_RETURN;
@@ -934,32 +934,32 @@ void SMDImporter::ParseSkeletonElement(const char* szCurrent,
     SMD::Bone::Animation::MatrixKey& key = bone.sAnim.asKeys.back();
 
     key.dTime = (double)iTime;
-    if (!ParseFloat(szCurrent,&szCurrent,(float&)vPos.x))
+    if(!ParseFloat(szCurrent,&szCurrent,(float&)vPos.x))
     {
         LogErrorNoThrow("Unexpected EOF/EOL while parsing bone.pos.x");
         SMDI_PARSE_RETURN;
     }
-    if (!ParseFloat(szCurrent,&szCurrent,(float&)vPos.y))
+    if(!ParseFloat(szCurrent,&szCurrent,(float&)vPos.y))
     {
         LogErrorNoThrow("Unexpected EOF/EOL while parsing bone.pos.y");
         SMDI_PARSE_RETURN;
     }
-    if (!ParseFloat(szCurrent,&szCurrent,(float&)vPos.z))
+    if(!ParseFloat(szCurrent,&szCurrent,(float&)vPos.z))
     {
         LogErrorNoThrow("Unexpected EOF/EOL while parsing bone.pos.z");
         SMDI_PARSE_RETURN;
     }
-    if (!ParseFloat(szCurrent,&szCurrent,(float&)vRot.x))
+    if(!ParseFloat(szCurrent,&szCurrent,(float&)vRot.x))
     {
         LogErrorNoThrow("Unexpected EOF/EOL while parsing bone.rot.x");
         SMDI_PARSE_RETURN;
     }
-    if (!ParseFloat(szCurrent,&szCurrent,(float&)vRot.y))
+    if(!ParseFloat(szCurrent,&szCurrent,(float&)vRot.y))
     {
         LogErrorNoThrow("Unexpected EOF/EOL while parsing bone.rot.y");
         SMDI_PARSE_RETURN;
     }
-    if (!ParseFloat(szCurrent,&szCurrent,(float&)vRot.z))
+    if(!ParseFloat(szCurrent,&szCurrent,(float&)vRot.z))
     {
         LogErrorNoThrow("Unexpected EOF/EOL while parsing bone.rot.z");
         SMDI_PARSE_RETURN;
@@ -986,7 +986,7 @@ void SMDImporter::ParseTriangle(const char* szCurrent,
     asTriangles.push_back(SMD::Face());
     SMD::Face& face = asTriangles.back();
 
-    if (!SkipSpaces(szCurrent,&szCurrent))
+    if(!SkipSpaces(szCurrent,&szCurrent))
     {
         LogErrorNoThrow("Unexpected EOF/EOL while parsing a triangle");
         return;
@@ -994,7 +994,7 @@ void SMDImporter::ParseTriangle(const char* szCurrent,
 
     // read the texture file name
     const char* szLast = szCurrent;
-    while (!IsSpaceOrNewLine(*szCurrent++)) {};
+    while (!IsSpaceOrNewLine(*szCurrent++));
 
     // ... and get the index that belongs to this file name
     face.iTexture = GetTextureIndex(std::string(szLast,(uintptr_t)szCurrent-(uintptr_t)szLast));
@@ -1015,7 +1015,7 @@ void SMDImporter::ParseTriangle(const char* szCurrent,
 bool SMDImporter::ParseFloat(const char* szCurrent,
     const char** szCurrentOut, float& out)
 {
-    if (!SkipSpaces(&szCurrent))
+    if(!SkipSpaces(&szCurrent))
         return false;
 
     *szCurrentOut = fast_atof_move(szCurrent,out);
@@ -1027,7 +1027,7 @@ bool SMDImporter::ParseFloat(const char* szCurrent,
 bool SMDImporter::ParseUnsignedInt(const char* szCurrent,
     const char** szCurrentOut, unsigned int& out)
 {
-    if (!SkipSpaces(&szCurrent))
+    if(!SkipSpaces(&szCurrent))
         return false;
 
     out = strtol10(szCurrent,szCurrentOut);
@@ -1039,7 +1039,7 @@ bool SMDImporter::ParseUnsignedInt(const char* szCurrent,
 bool SMDImporter::ParseSignedInt(const char* szCurrent,
     const char** szCurrentOut, int& out)
 {
-    if (!SkipSpaces(&szCurrent))
+    if(!SkipSpaces(&szCurrent))
         return false;
 
     out = strtol10s(szCurrent,szCurrentOut);
@@ -1057,37 +1057,37 @@ void SMDImporter::ParseVertex(const char* szCurrent,
         SkipSpacesAndLineEnd(szCurrent,&szCurrent);
         return ParseVertex(szCurrent,szCurrentOut,vertex,bVASection);
     }
-    if (!ParseSignedInt(szCurrent,&szCurrent,(int&)vertex.iParentNode))
+    if(!ParseSignedInt(szCurrent,&szCurrent,(int&)vertex.iParentNode))
     {
         LogErrorNoThrow("Unexpected EOF/EOL while parsing vertex.parent");
         SMDI_PARSE_RETURN;
     }
-    if (!ParseFloat(szCurrent,&szCurrent,(float&)vertex.pos.x))
+    if(!ParseFloat(szCurrent,&szCurrent,(float&)vertex.pos.x))
     {
         LogErrorNoThrow("Unexpected EOF/EOL while parsing vertex.pos.x");
         SMDI_PARSE_RETURN;
     }
-    if (!ParseFloat(szCurrent,&szCurrent,(float&)vertex.pos.y))
+    if(!ParseFloat(szCurrent,&szCurrent,(float&)vertex.pos.y))
     {
         LogErrorNoThrow("Unexpected EOF/EOL while parsing vertex.pos.y");
         SMDI_PARSE_RETURN;
     }
-    if (!ParseFloat(szCurrent,&szCurrent,(float&)vertex.pos.z))
+    if(!ParseFloat(szCurrent,&szCurrent,(float&)vertex.pos.z))
     {
         LogErrorNoThrow("Unexpected EOF/EOL while parsing vertex.pos.z");
         SMDI_PARSE_RETURN;
     }
-    if (!ParseFloat(szCurrent,&szCurrent,(float&)vertex.nor.x))
+    if(!ParseFloat(szCurrent,&szCurrent,(float&)vertex.nor.x))
     {
         LogErrorNoThrow("Unexpected EOF/EOL while parsing vertex.nor.x");
         SMDI_PARSE_RETURN;
     }
-    if (!ParseFloat(szCurrent,&szCurrent,(float&)vertex.nor.y))
+    if(!ParseFloat(szCurrent,&szCurrent,(float&)vertex.nor.y))
     {
         LogErrorNoThrow("Unexpected EOF/EOL while parsing vertex.nor.y");
         SMDI_PARSE_RETURN;
     }
-    if (!ParseFloat(szCurrent,&szCurrent,(float&)vertex.nor.z))
+    if(!ParseFloat(szCurrent,&szCurrent,(float&)vertex.nor.z))
     {
         LogErrorNoThrow("Unexpected EOF/EOL while parsing vertex.nor.z");
         SMDI_PARSE_RETURN;
@@ -1095,12 +1095,12 @@ void SMDImporter::ParseVertex(const char* szCurrent,
 
     if (bVASection)SMDI_PARSE_RETURN;
 
-    if (!ParseFloat(szCurrent,&szCurrent,(float&)vertex.uv.x))
+    if(!ParseFloat(szCurrent,&szCurrent,(float&)vertex.uv.x))
     {
         LogErrorNoThrow("Unexpected EOF/EOL while parsing vertex.uv.x");
         SMDI_PARSE_RETURN;
     }
-    if (!ParseFloat(szCurrent,&szCurrent,(float&)vertex.uv.y))
+    if(!ParseFloat(szCurrent,&szCurrent,(float&)vertex.uv.y))
     {
         LogErrorNoThrow("Unexpected EOF/EOL while parsing vertex.uv.y");
         SMDI_PARSE_RETURN;
@@ -1109,16 +1109,16 @@ void SMDImporter::ParseVertex(const char* szCurrent,
     // now read the number of bones affecting this vertex
     // all elements from now are fully optional, we don't need them
     unsigned int iSize = 0;
-    if (!ParseUnsignedInt(szCurrent,&szCurrent,iSize))SMDI_PARSE_RETURN;
+    if(!ParseUnsignedInt(szCurrent,&szCurrent,iSize))SMDI_PARSE_RETURN;
     vertex.aiBoneLinks.resize(iSize,std::pair<unsigned int, float>(0,0.0f));
 
     for (std::vector<std::pair<unsigned int, float> >::iterator
         i =  vertex.aiBoneLinks.begin();
         i != vertex.aiBoneLinks.end();++i)
     {
-        if (!ParseUnsignedInt(szCurrent,&szCurrent,(*i).first))
+        if(!ParseUnsignedInt(szCurrent,&szCurrent,(*i).first))
             SMDI_PARSE_RETURN;
-        if (!ParseFloat(szCurrent,&szCurrent,(*i).second))
+        if(!ParseFloat(szCurrent,&szCurrent,(*i).second))
             SMDI_PARSE_RETURN;
     }
 

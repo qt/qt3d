@@ -74,7 +74,7 @@ struct aiMatrix4x4
     {}
 
         // from single values
-    aiMatrix4x4 ( float _a1, float _a2, float _a3, float _a4,
+    aiMatrix4x4 (    float _a1, float _a2, float _a3, float _a4,
                     float _b1, float _b2, float _b3, float _b4,
                     float _c1, float _c2, float _c3, float _c4,
                     float _d1, float _d2, float _d3, float _d4) :
@@ -213,7 +213,7 @@ public:
      *  vector called "from" into another vector called "to".
      * Input : from[3], to[3] which both must be *normalized* non-zero vectors
      * Output: mtx[3][3] -- a 3x3 matrix in colum-major form
-     * Authors: Tomas Mller, John Hughes
+     * Authors: Tomas Möller, John Hughes
      *          "Efficiently Building a Matrix to Rotate One Vector to Another"
      *          Journal of Graphics Tools, 4(4):1-4, 1999
      */

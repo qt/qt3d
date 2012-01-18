@@ -68,7 +68,7 @@ namespace Ogre
 
 aiMaterial* OgreImporter::LoadMaterial(const std::string MaterialName) const
 {
-    // const aiScene* const m_CurrentScene=this->m_CurrentScene;//make sure, that we can access but not change the scene
+    const aiScene* const m_CurrentScene=this->m_CurrentScene;//make sure, that we can access but not change the scene
 
     MaterialHelper *NewMaterial=new MaterialHelper();
 
@@ -126,7 +126,7 @@ aiMaterial* OgreImporter::LoadMaterial(const std::string MaterialName) const
 
     string Line;
     ss >> Line;
-// unsigned int Level=0;//Hierarchielevels in the material file, like { } blocks into another
+//    unsigned int Level=0;//Hierarchielevels in the material file, like { } blocks into another
     while (!ss.eof())
     {
         if (Line=="material")

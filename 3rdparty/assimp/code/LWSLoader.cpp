@@ -241,7 +241,7 @@ void LWSImporter::ReadEnvelope_Old(
     std::list< LWS::Element >::const_iterator& it,
     const std::list< LWS::Element >::const_iterator& end,
     LWS::NodeDesc& nodes,
-    unsigned int /*version*/)
+    unsigned int version)
 {
     unsigned int num,sub_num;
     if (++it == end)goto unexpected_end;
@@ -287,7 +287,7 @@ void LWSImporter::SetupNodeName(aiNode* nd, LWS::NodeDesc& src)
 
     // the name depends on the type. We break LWS's strange naming convention
     // and return human-readable, but still machine-parsable and unique, strings.
-    if (src.type == LWS::NodeDesc::OBJECT) {
+    if (src.type == LWS::NodeDesc::OBJECT)    {
 
         if (src.path.length()) {
             std::string::size_type s = src.path.find_last_of("\\/");
@@ -484,7 +484,7 @@ void LWSImporter::InternReadFile( const std::string& pFile, aiScene* pScene,
 
     // Construct a Batchimporter to read more files recursively
     BatchLoader batch(pIOHandler);
-// batch.SetBasePath(pFile);
+//    batch.SetBasePath(pFile);
 
     // Construct an array to receive the flat output graph
     std::list<LWS::NodeDesc> nodes;

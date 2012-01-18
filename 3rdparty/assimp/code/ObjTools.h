@@ -38,8 +38,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ----------------------------------------------------------------------
 */
 
-/** @file ObjTools.h
- * @brief Some helpful templates for text parsing
+/**    @file    ObjTools.h
+ *    @brief    Some helpful templates for text parsing
  */
 #ifndef OBJ_TOOLS_H_INC
 #define OBJ_TOOLS_H_INC
@@ -49,10 +49,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace Assimp
 {
 
-/** @brief Returns true, if the last entry of the buffer is reached.
- * @param it Iterator of current position.
- * @param end Iterator with end of buffer.
- * @return true, if the end of the buffer is reached.
+/**    @brief    Returns true, if the last entry of the buffer is reached.
+ *    @param    it    Iterator of current position.
+ *    @param    end    Iterator with end of buffer.
+ *    @return    true, if the end of the buffer is reached.
  */
 template<class char_t>
 inline bool isEndOfBuffer(  char_t it, char_t end )
@@ -68,9 +68,9 @@ inline bool isEndOfBuffer(  char_t it, char_t end )
     return ( it == end );
 }
 
-/** @brief Returns true, if token is a space on any supported platform
-* @param token Token to search in
-* @return true, if token is a space
+/** @brief    Returns true, if token is a space on any supported platform
+*    @param    token    Token to search in
+*    @return    true, if token is a space
 */
 inline bool isSeparator( char token )
 {
@@ -81,19 +81,19 @@ inline bool isSeparator( char token )
             token == '\t' );
 }
 
-/** @brief Returns true, fi token id a new line marking token.
- * @param token Token to search in
- * @return true, if token is a newline token.
+/**    @brief    Returns true, fi token id a new line marking token.
+ *    @param    token    Token to search in
+ *    @return    true, if token is a newline token.
  */
 inline bool isNewLine( char token )
 {
     return ( token == '\n' || token == '\f' || token == '\r' );
 }
 
-/** @brief Returns next word separated by a space
- * @param pBuffer Pointer to data buffer
- * @param pEnd Pointer to end of buffer
- * @return Pointer to next space
+/**    @brief    Returns next word separated by a space
+ *    @param    pBuffer    Pointer to data buffer
+ *    @param    pEnd    Pointer to end of buffer
+ *    @return    Pointer to next space
  */
 template<class Char_T>
 inline Char_T getNextWord( Char_T pBuffer, Char_T pEnd )
@@ -107,10 +107,10 @@ inline Char_T getNextWord( Char_T pBuffer, Char_T pEnd )
     return pBuffer;
 }
 
-/** @brief Returns ponter a next token
- * @param pBuffer Pointer to data buffer
- * @param pEnd Pointer to end of buffer
- * @return Pointer to next token
+/**    @brief    Returns ponter a next token
+ *    @param    pBuffer    Pointer to data buffer
+ *    @param    pEnd    Pointer to end of buffer
+ *    @return    Pointer to next token
  */
 template<class Char_T>
 inline Char_T getNextToken( Char_T pBuffer, Char_T pEnd )
@@ -124,11 +124,11 @@ inline Char_T getNextToken( Char_T pBuffer, Char_T pEnd )
     return getNextWord( pBuffer, pEnd );
 }
 
-/** @brief Skips a line
- * @param it  Iterator set to current position
- * @param end  Iterator set to end of scratch buffer for readout
- * @param uiLine Current linenumber in format
- * @return Current-iterator with new position
+/**    @brief    Skips a line
+ *    @param    it        Iterator set to current position
+ *    @param    end        Iterator set to end of scratch buffer for readout
+ *    @param    uiLine    Current linenumber in format
+ *    @return    Current-iterator with new position
  */
 template<class char_t>
 inline char_t skipLine( char_t it, char_t end, unsigned int &uiLine )
@@ -146,11 +146,11 @@ inline char_t skipLine( char_t it, char_t end, unsigned int &uiLine )
     return it;
 }
 
-/** @brief Get a name, must be separated with a blank.
- * @param it  set to current position
- * @param end  set to end of scratch buffer for readout
- * @param name Separated name
- * @return Current-iterator with new position
+/**    @brief    Get a name, must be separated with a blank.
+ *    @param    it        set to current position
+ *    @param    end        set to end of scratch buffer for readout
+ *    @param    name    Separated name
+ *    @return    Current-iterator with new position
  */
 template<class char_t>
 inline char_t getName( char_t it, char_t end, std::string &name )
@@ -174,12 +174,12 @@ inline char_t getName( char_t it, char_t end, std::string &name )
     return it;
 }
 
-/** @brief Get next word from given line
- * @param it  set to current position
- * @param end  set to end of scratch buffer for readout
- * @param pBuffer Buffer for next word
- * @param length Buffer length
- * @return Current-iterator with new position
+/**    @brief    Get next word from given line
+ *    @param    it        set to current position
+ *    @param    end        set to end of scratch buffer for readout
+ *    @param    pBuffer    Buffer for next word
+ *    @param    length    Buffer length
+ *    @return    Current-iterator with new position
  */
 template<class char_t>
 inline char_t CopyNextWord( char_t it, char_t end, char *pBuffer, size_t length )
@@ -198,11 +198,11 @@ inline char_t CopyNextWord( char_t it, char_t end, char *pBuffer, size_t length 
     return it;
 }
 
-/** @brief Get next float from given line
- * @param it  set to current position
- * @param end  set to end of scratch buffer for readout
- * @param value Separated float value.
- * @return Current-iterator with new position
+/**    @brief    Get next float from given line
+ *    @param    it        set to current position
+ *    @param    end        set to end of scratch buffer for readout
+ *    @param    value    Separated float value.
+ *    @return    Current-iterator with new position
  */
 template<class char_t>
 inline char_t getFloat( char_t it, char_t end, float &value )

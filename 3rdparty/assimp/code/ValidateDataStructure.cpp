@@ -111,7 +111,7 @@ void ValidateDSProcess::ReportWarning(const char* msg,...)
 inline int HasNameMatch(const aiString& in, aiNode* node)
 {
     int result = (node->mName == in ? 1 : 0 );
-    for (unsigned int i = 0; i < node->mNumChildren;++i) {
+    for (unsigned int i = 0; i < node->mNumChildren;++i)    {
         result += HasNameMatch(in,node->mChildren[i]);
     }
     return result;
@@ -150,7 +150,7 @@ inline void ValidateDSProcess::DoValidationEx(T** parray, unsigned int size,
     // validate all entries
     if (size)
     {
-        if (!parray) {
+        if (!parray)    {
             ReportError("aiScene::%s is NULL (aiScene::%s is %i)",
                 firstName, secondName, size);
         }
@@ -188,11 +188,11 @@ inline void ValidateDSProcess::DoValidationWithNameCheck(T** array,
     for (unsigned int i = 0; i < size;++i)
     {
         int res = HasNameMatch(array[i]->mName,mScene->mRootNode);
-        if (!res) {
+        if (!res)    {
             ReportError("aiScene::%s[%i] has no corresponding node in the scene graph (%s)",
                 firstName,i,array[i]->mName.data);
         }
-        else if (1 != res) {
+        else if (1 != res)    {
             ReportError("aiScene::%s[%i]: there are more than one nodes with %s as name",
                 firstName,i,array[i]->mName.data);
         }
@@ -213,10 +213,10 @@ void ValidateDSProcess::Execute( aiScene* pScene)
     if (pScene->mNumMeshes) {
         DoValidation(pScene->mMeshes,pScene->mNumMeshes,"mMeshes","mNumMeshes");
     }
-    else if (!(mScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE)) {
+    else if (!(mScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE))    {
         ReportError("aiScene::mNumMeshes is 0. At least one mesh must be there");
     }
-    else if (pScene->mMeshes) {
+    else if (pScene->mMeshes)    {
         ReportError("aiScene::mMeshes is non-null although there are no meshes");
     }
 
@@ -225,7 +225,7 @@ void ValidateDSProcess::Execute( aiScene* pScene)
         DoValidation(pScene->mAnimations,pScene->mNumAnimations,
             "mAnimations","mNumAnimations");
     }
-    else if (pScene->mAnimations) {
+    else if (pScene->mAnimations)    {
         ReportError("aiScene::mAnimations is non-null although there are no animations");
     }
 
@@ -234,7 +234,7 @@ void ValidateDSProcess::Execute( aiScene* pScene)
         DoValidationWithNameCheck(pScene->mCameras,pScene->mNumCameras,
             "mCameras","mNumCameras");
     }
-    else if (pScene->mCameras) {
+    else if (pScene->mCameras)    {
         ReportError("aiScene::mCameras is non-null although there are no cameras");
     }
 
@@ -243,7 +243,7 @@ void ValidateDSProcess::Execute( aiScene* pScene)
         DoValidationWithNameCheck(pScene->mLights,pScene->mNumLights,
             "mLights","mNumLights");
     }
-    else if (pScene->mLights) {
+    else if (pScene->mLights)    {
         ReportError("aiScene::mLights is non-null although there are no lights");
     }
 
@@ -252,7 +252,7 @@ void ValidateDSProcess::Execute( aiScene* pScene)
         DoValidation(pScene->mTextures,pScene->mNumTextures,
             "mTextures","mNumTextures");
     }
-    else if (pScene->mTextures) {
+    else if (pScene->mTextures)    {
         ReportError("aiScene::mTextures is non-null although there are no textures");
     }
 
@@ -262,15 +262,15 @@ void ValidateDSProcess::Execute( aiScene* pScene)
     }
 #if 0
     // NOTE: ScenePreprocessor generates a default material if none is there
-    else if (!(mScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE)) {
+    else if (!(mScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE))    {
         ReportError("aiScene::mNumMaterials is 0. At least one material must be there");
     }
 #endif
-    else if (pScene->mMaterials) {
+    else if (pScene->mMaterials)    {
         ReportError("aiScene::mMaterials is non-null although there are no materials");
     }
 
-// if (!has)ReportError("The aiScene data structure is empty");
+//    if (!has)ReportError("The aiScene data structure is empty");
     DefaultLogger::get()->debug("ValidateDataStructureProcess end");
 }
 
@@ -282,7 +282,7 @@ void ValidateDSProcess::Validate( const aiLight* pLight)
 
     if (!pLight->mAttenuationConstant &&
         !pLight->mAttenuationLinear   &&
-        !pLight->mAttenuationQuadratic) {
+        !pLight->mAttenuationQuadratic)    {
         ReportWarning("aiLight::mAttenuationXXX - all are zero");
     }
 
@@ -366,7 +366,7 @@ void ValidateDSProcess::Validate( const aiMesh* pMesh)
     }
 
     // positions must always be there ...
-    if (!pMesh->mNumVertices || (!pMesh->mVertices && !mScene->mFlags)) {
+    if (!pMesh->mNumVertices || (!pMesh->mVertices && !mScene->mFlags))    {
         ReportError("The mesh contains no vertices");
     }
 
@@ -378,12 +378,12 @@ void ValidateDSProcess::Validate( const aiMesh* pMesh)
     }
 
     // if tangents are there there must also be bitangent vectors ...
-    if ((pMesh->mTangents != NULL) != (pMesh->mBitangents != NULL)) {
+    if ((pMesh->mTangents != NULL) != (pMesh->mBitangents != NULL))    {
         ReportError("If there are tangents, bitangent vectors must be present as well");
     }
 
     // faces, too
-    if (!pMesh->mNumFaces || (!pMesh->mFaces && !mScene->mFlags)) {
+    if (!pMesh->mNumFaces || (!pMesh->mFaces && !mScene->mFlags))    {
         ReportError("Mesh contains no faces");
     }
 
@@ -400,7 +400,7 @@ void ValidateDSProcess::Validate( const aiMesh* pMesh)
 
         for (unsigned int a = 0; a < face.mNumIndices;++a)
         {
-            if (face.mIndices[a] >= pMesh->mNumVertices) {
+            if (face.mIndices[a] >= pMesh->mNumVertices)    {
                 ReportError("aiMesh::mFaces[%i]::mIndices[%i] is out of range",i,a);
             }
             // the MSB flag is temporarily used by the extra verbose
@@ -417,7 +417,7 @@ void ValidateDSProcess::Validate( const aiMesh* pMesh)
 
     // check whether there are vertices that aren't referenced by a face
     bool b = false;
-    for (unsigned int i = 0; i < pMesh->mNumVertices;++i) {
+    for (unsigned int i = 0; i < pMesh->mNumVertices;++i)    {
         if (!abRefList[i])b = true;
     }
     abRefList.clear();
@@ -496,7 +496,7 @@ void ValidateDSProcess::Validate( const aiMesh* pMesh)
         // check whether all bone weights for a vertex sum to 1.0 ...
         for (unsigned int i = 0; i < pMesh->mNumVertices;++i)
         {
-            if (afSum[i] && (afSum[i] <= 0.94 || afSum[i] >= 1.05)) {
+            if (afSum[i] && (afSum[i] <= 0.94 || afSum[i] >= 1.05))    {
                 ReportWarning("aiMesh::mVertices[%i]: bone weight sum != 1.0 (sum is %f)",i,afSum[i]);
             }
         }
@@ -513,17 +513,17 @@ void ValidateDSProcess::Validate( const aiMesh* pMesh,
 {
     this->Validate(&pBone->mName);
 
-       if (!pBone->mNumWeights) {
+       if (!pBone->mNumWeights)    {
         ReportError("aiBone::mNumWeights is zero");
     }
 
     // check whether all vertices affected by this bone are valid
     for (unsigned int i = 0; i < pBone->mNumWeights;++i)
     {
-        if (pBone->mWeights[i].mVertexId >= pMesh->mNumVertices) {
+        if (pBone->mWeights[i].mVertexId >= pMesh->mNumVertices)    {
             ReportError("aiBone::mWeights[%i].mVertexId is out of range",i);
         }
-        else if (!pBone->mWeights[i].mWeight || pBone->mWeights[i].mWeight > 1.0f) {
+        else if (!pBone->mWeights[i].mWeight || pBone->mWeights[i].mWeight > 1.0f)    {
             ReportWarning("aiBone::mWeights[%i].mWeight has an invalid value",i);
         }
         afSum[pBone->mWeights[i].mVertexId] += pBone->mWeights[i].mWeight;
@@ -538,7 +538,7 @@ void ValidateDSProcess::Validate( const aiAnimation* pAnimation)
     // validate all materials
     if (pAnimation->mNumChannels)
     {
-        if (!pAnimation->mChannels) {
+        if (!pAnimation->mChannels)    {
             ReportError("aiAnimation::mChannels is NULL (aiAnimation::mNumChannels is %i)",
                 pAnimation->mNumChannels);
         }
@@ -575,7 +575,7 @@ void ValidateDSProcess::SearchForInvalidTextures(const aiMaterial* pMaterial,
     for (unsigned int i = 0; i < pMaterial->mNumProperties;++i)
     {
         aiMaterialProperty* prop = pMaterial->mProperties[i];
-        if (!::strcmp(prop->mKey.data,"$tex.file") && prop->mSemantic == type) {
+        if (!::strcmp(prop->mKey.data,"$tex.file") && prop->mSemantic == type)    {
             iIndex = std::max(iIndex, (int) prop->mIndex);
             ++iNumIndices;
 
@@ -583,7 +583,7 @@ void ValidateDSProcess::SearchForInvalidTextures(const aiMaterial* pMaterial,
                 ReportError("Material property %s is expected to be a string",prop->mKey.data);
         }
     }
-    if (iIndex +1 != iNumIndices) {
+    if (iIndex +1 != iNumIndices)    {
         ReportError("%s #%i is set, but there are only %i %s textures",
             szType,iIndex,iNumIndices,szType);
     }
@@ -604,7 +604,7 @@ void ValidateDSProcess::SearchForInvalidTextures(const aiMaterial* pMaterial,
                 prop->mIndex, iNumIndices, szType);
         }
 
-        if (!::strcmp(prop->mKey.data,"$tex.mapping")) {
+        if (!::strcmp(prop->mKey.data,"$tex.mapping"))    {
             if (aiPTI_Integer != prop->mType || prop->mDataLength < sizeof(aiTextureMapping))
             {
                 ReportError("Material property %s%i is expected to be an integer (size is %i)",
@@ -612,7 +612,7 @@ void ValidateDSProcess::SearchForInvalidTextures(const aiMaterial* pMaterial,
             }
             mappings[prop->mIndex] = *((aiTextureMapping*)prop->mData);
         }
-        else if (!::strcmp(prop->mKey.data,"$tex.uvtrafo")) {
+        else if (!::strcmp(prop->mKey.data,"$tex.uvtrafo"))    {
             if (aiPTI_Float != prop->mType || prop->mDataLength < sizeof(aiUVTransform))
             {
                 ReportError("Material property %s%i is expected to be 5 floats large (size is %i)",
@@ -677,20 +677,20 @@ void ValidateDSProcess::Validate( const aiMaterial* pMaterial)
     for (unsigned int i = 0; i < pMaterial->mNumProperties;++i)
     {
         const aiMaterialProperty* prop = pMaterial->mProperties[i];
-        if (!prop) {
+        if (!prop)    {
             ReportError("aiMaterial::mProperties[%i] is NULL (aiMaterial::mNumProperties is %i)",
                 i,pMaterial->mNumProperties);
         }
-        if (!prop->mDataLength || !prop->mData) {
+        if (!prop->mDataLength || !prop->mData)    {
             ReportError("aiMaterial::mProperties[%i].mDataLength or "
                 "aiMaterial::mProperties[%i].mData is 0",i,i);
         }
         // check all predefined types
-        if (aiPTI_String == prop->mType) {
+        if (aiPTI_String == prop->mType)    {
             // FIX: strings are now stored in a less expensive way, but we can't use the
             // validation routine for 'normal' aiStrings
             uint32_t len;
-            if (prop->mDataLength < 5 || prop->mDataLength < 4 + (len=*reinterpret_cast<uint32_t*>(prop->mData)) + 1) {
+            if (prop->mDataLength < 5 || prop->mDataLength < 4 + (len=*reinterpret_cast<uint32_t*>(prop->mData)) + 1)    {
                 ReportError("aiMaterial::mProperties[%i].mDataLength is "
                     "too small to contain a string (%i, needed: %i)",
                     i,prop->mDataLength,sizeof(aiString));
@@ -698,17 +698,17 @@ void ValidateDSProcess::Validate( const aiMaterial* pMaterial)
             if (prop->mData[prop->mDataLength-1]) {
                 ReportError("Missing null-terminator in string material property");
             }
-        // Validate((const aiString*)prop->mData);
+        //    Validate((const aiString*)prop->mData);
         }
-        else if (aiPTI_Float == prop->mType) {
-            if (prop->mDataLength < sizeof(float)) {
+        else if (aiPTI_Float == prop->mType)    {
+            if (prop->mDataLength < sizeof(float))    {
                 ReportError("aiMaterial::mProperties[%i].mDataLength is "
                     "too small to contain a float (%i, needed: %i)",
                     i,prop->mDataLength,sizeof(float));
             }
         }
-        else if (aiPTI_Integer == prop->mType) {
-            if (prop->mDataLength < sizeof(int)) {
+        else if (aiPTI_Integer == prop->mType)    {
+            if (prop->mDataLength < sizeof(int))    {
                 ReportError("aiMaterial::mProperties[%i].mDataLength is "
                     "too small to contain an integer (%i, needed: %i)",
                     i,prop->mDataLength,sizeof(int));
@@ -720,18 +720,18 @@ void ValidateDSProcess::Validate( const aiMaterial* pMaterial)
     // make some more specific tests
     float fTemp;
     int iShading;
-    if (AI_SUCCESS == aiGetMaterialInteger( pMaterial,AI_MATKEY_SHADING_MODEL,&iShading)) {
+    if (AI_SUCCESS == aiGetMaterialInteger( pMaterial,AI_MATKEY_SHADING_MODEL,&iShading))    {
         switch ((aiShadingMode)iShading)
         {
         case aiShadingMode_Blinn:
         case aiShadingMode_CookTorrance:
         case aiShadingMode_Phong:
 
-            if (AI_SUCCESS != aiGetMaterialFloat(pMaterial,AI_MATKEY_SHININESS,&fTemp)) {
+            if (AI_SUCCESS != aiGetMaterialFloat(pMaterial,AI_MATKEY_SHININESS,&fTemp))    {
                 ReportWarning("A specular shading model is specified but there is no "
                     "AI_MATKEY_SHININESS key");
             }
-            if (AI_SUCCESS == aiGetMaterialFloat(pMaterial,AI_MATKEY_SHININESS_STRENGTH,&fTemp) && !fTemp) {
+            if (AI_SUCCESS == aiGetMaterialFloat(pMaterial,AI_MATKEY_SHININESS_STRENGTH,&fTemp) && !fTemp)    {
                 ReportWarning("A specular shading model is specified but the value of the "
                     "AI_MATKEY_SHININESS_STRENGTH key is 0.0");
             }
@@ -740,7 +740,7 @@ void ValidateDSProcess::Validate( const aiMaterial* pMaterial)
         };
     }
 
-    if (AI_SUCCESS == aiGetMaterialFloat( pMaterial,AI_MATKEY_OPACITY,&fTemp) && (!fTemp || fTemp > 1.01f)) {
+    if (AI_SUCCESS == aiGetMaterialFloat( pMaterial,AI_MATKEY_OPACITY,&fTemp) && (!fTemp || fTemp > 1.01f))    {
         ReportWarning("Invalid opacity value (must be 0 < opacity < 1.0)");
     }
 
@@ -764,7 +764,7 @@ void ValidateDSProcess::Validate( const aiMaterial* pMaterial)
 void ValidateDSProcess::Validate( const aiTexture* pTexture)
 {
     // the data section may NEVER be NULL
-    if (!pTexture->pcData) {
+    if (!pTexture->pcData)    {
         ReportError("aiTexture::pcData is NULL");
     }
     if (pTexture->mHeight)
@@ -780,7 +780,7 @@ void ValidateDSProcess::Validate( const aiTexture* pTexture)
         if ('\0' != pTexture->achFormatHint[3]) {
             ReportWarning("aiTexture::achFormatHint must be zero-terminated");
         }
-        else if ('.'  == pTexture->achFormatHint[0]) {
+        else if ('.'  == pTexture->achFormatHint[0])    {
             ReportWarning("aiTexture::achFormatHint should contain a file extension "
                 "without a leading dot (format hint: %s).",pTexture->achFormatHint);
         }
@@ -790,7 +790,7 @@ void ValidateDSProcess::Validate( const aiTexture* pTexture)
      if ((sz[0] >= 'A' && sz[0] <= 'Z') ||
         (sz[1] >= 'A' && sz[1] <= 'Z') ||
         (sz[2] >= 'A' && sz[2] <= 'Z') ||
-        (sz[3] >= 'A' && sz[3] <= 'Z')) {
+        (sz[3] >= 'A' && sz[3] <= 'Z'))    {
         ReportError("aiTexture::achFormatHint contains non-lowercase letters");
     }
 }
@@ -866,7 +866,7 @@ void ValidateDSProcess::Validate( const aiAnimation* pAnimation,
     // scaling keys
     if (pNodeAnim->mNumScalingKeys)
     {
-        if (!pNodeAnim->mScalingKeys) {
+        if (!pNodeAnim->mScalingKeys)    {
             ReportError("aiNodeAnim::mScalingKeys is NULL (aiNodeAnim::mNumScalingKeys is %i)",
                 pNodeAnim->mNumScalingKeys);
         }
@@ -934,11 +934,11 @@ void ValidateDSProcess::Validate( const aiNode* pNode)
     }
     if (pNode->mNumChildren)
     {
-        if (!pNode->mChildren) {
+        if (!pNode->mChildren)    {
             ReportError("aiNode::mChildren is NULL (aiNode::mNumChildren is %i)",
                 pNode->mNumChildren);
         }
-        for (unsigned int i = 0; i < pNode->mNumChildren;++i) {
+        for (unsigned int i = 0; i < pNode->mNumChildren;++i)    {
             Validate(pNode->mChildren[i]);
         }
     }

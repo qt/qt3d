@@ -4,8 +4,8 @@
 #ifndef BOOST_TUPLE_INCLUDED
 #define BOOST_TUPLE_INCLUDED
 
-namespace boost {
-    namespace detail {
+namespace boost    {
+    namespace detail    {
 
         // Represents an empty tuple slot (up to 5 supported)
         struct nulltype {};
@@ -29,13 +29,13 @@ namespace boost {
 
         // Helper to obtain the type of a tuple element
         template <typename T, unsigned NIDX, typename TNEXT, unsigned N /*= 0*/>
-        struct type_getter {
+        struct type_getter    {
             typedef type_getter<typename TNEXT::type,NIDX+1,typename TNEXT::next_type,N> next_elem_getter;
             typedef typename next_elem_getter::type type;
         };
 
         template <typename T, unsigned NIDX, typename TNEXT >
-        struct type_getter <T,NIDX,TNEXT,NIDX> {
+        struct type_getter <T,NIDX,TNEXT,NIDX>    {
             typedef T type;
         };
 
@@ -74,7 +74,7 @@ namespace boost {
 
             // Explicit cast
             template <typename T2, typename TNEXT2 >
-            operator list_elem<T2,NIDX,TNEXT2> () const {
+            operator list_elem<T2,NIDX,TNEXT2> () const    {
                 list_elem<T2,NIDX,TNEXT2> ret;
                 ret.me   = (T2)me;
                 ret.next = next;
@@ -82,7 +82,7 @@ namespace boost {
             }
 
             // Recursively compare two elements (last element returns always true)
-            bool operator == (const list_elem& s) const {
+            bool operator == (const list_elem& s) const    {
                 return (me == s.me && next == s.next);
             }
         };
@@ -90,7 +90,7 @@ namespace boost {
         // Represents a non-used tuple element - the very last element processed
         template <typename TNEXT, unsigned NIDX  >
         struct list_elem<nulltype,NIDX,TNEXT> : list_elem_base<nulltype,NIDX,TNEXT> {
-            template <unsigned N, bool IS_CONST = true> struct value_getter  {
+            template <unsigned N, bool IS_CONST = true> struct value_getter        {
                 /* just dummy members to produce readable error messages */
                 tuple_component_idx_out_of_bounds operator () (typename ConstIf<IS_CONST,list_elem>::t& me);
             };
@@ -100,12 +100,12 @@ namespace boost {
             };
 
             // dummy
-            list_elem& operator = (const list_elem& other) {
+            list_elem& operator = (const list_elem& other)    {
                 return *this;
             }
 
             // dummy
-            bool operator == (const list_elem& other) {
+            bool operator == (const list_elem& other)    {
                 return true;
             }
         };
@@ -117,7 +117,7 @@ namespace boost {
         // NOTE: This can't be a nested class as the compiler won't accept a full or
         // partial specialization of a nested class of a non-specialized template
         template <typename T, unsigned NIDX, typename TNEXT, bool IS_CONST, unsigned N>
-        struct value_getter  {
+        struct value_getter     {
 
             // calling list_elem
             typedef list_elem<T,NIDX,TNEXT> outer_elem;
@@ -135,7 +135,7 @@ namespace boost {
         };
 
         template <typename T, unsigned NIDX, typename TNEXT, bool IS_CONST>
-        struct value_getter <T,NIDX,TNEXT,IS_CONST,NIDX> {
+        struct value_getter <T,NIDX,TNEXT,IS_CONST,NIDX>    {
             typedef list_elem<T,NIDX,TNEXT> outer_elem;
 
             typename ConstIf<IS_CONST,T>::t& operator () (typename ConstIf<IS_CONST,outer_elem >::t& me) {
@@ -150,7 +150,7 @@ namespace boost {
               typename T2  = detail::nulltype,
               typename T3  = detail::nulltype,
               typename T4  = detail::nulltype>
-    class tuple {
+    class tuple    {
 
         template <typename T0b,
               typename T1b,
@@ -174,29 +174,29 @@ namespace boost {
 
         // Get a specific tuple element
         template <unsigned N>
-        typename detail::type_getter<T0,0,typename very_long::next_type, N>::type& get () {
+        typename detail::type_getter<T0,0,typename very_long::next_type, N>::type& get ()    {
             return m.get<N>();
         }
 
         // ... and the const version
         template <unsigned N>
-        typename const detail::type_getter<T0,0,typename very_long::next_type, N>::type& get () const {
+        typename const detail::type_getter<T0,0,typename very_long::next_type, N>::type& get () const    {
             return m.get<N>();
         }
 
 
         // comparison operators
-        bool operator== (const tuple& other) const {
+        bool operator== (const tuple& other) const    {
             return m == other.m;
         }
 
         // ... and the other way round
-        bool operator!= (const tuple& other) const {
+        bool operator!= (const tuple& other) const    {
             return !(m == other.m);
         }
 
         // cast to another tuple - all single elements must be convertible
-        template < typename T0, typename T1,typename T2,
+        template <    typename T0, typename T1,typename T2,
                     typename T3, typename T4>
 
         operator tuple <T0,T1,T2,T3,T4> () const {
@@ -209,14 +209,14 @@ namespace boost {
     // Another way to access an element ...
     template <unsigned N,typename T0,typename T1,typename T2,typename T3,typename T4>
     inline typename tuple<T0,T1,T2,T3,T4>::very_long::type_getter<N>::type& get (
-            tuple<T0,T1,T2,T3,T4>& m) {
+            tuple<T0,T1,T2,T3,T4>& m)    {
             return m.get<N>();
         }
 
     // ... and the const version
     template <unsigned N,typename T0,typename T1,typename T2,typename T3,typename T4>
     inline const typename tuple<T0,T1,T2,T3,T4>::very_long::type_getter<N>::type& get (
-            const tuple<T0,T1,T2,T3,T4>& m) {
+            const tuple<T0,T1,T2,T3,T4>& m)    {
             return m.get<N>();
         }
 

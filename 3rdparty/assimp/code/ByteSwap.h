@@ -50,7 +50,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdlib.h>
 #endif
 
-namespace Assimp {
+namespace Assimp    {
 // --------------------------------------------------------------------------------------
 /** Defines some useful byte order swap routines.
  *
@@ -205,39 +205,39 @@ template <typename T> struct ByteSwap::_swapper<T,8> {
 // ByteSwap macros for BigEndian/LittleEndian support
 // --------------------------------------------------------------------------------------
 #if (defined AI_BUILD_BIG_ENDIAN)
-# define AI_LE(t) (t)
-# define AI_BE(t) ByteSwap::Swapped(t)
-# define AI_LSWAP2(p)
-# define AI_LSWAP4(p)
-# define AI_LSWAP8(p)
-# define AI_LSWAP2P(p)
-# define AI_LSWAP4P(p)
-# define AI_LSWAP8P(p)
-# define LE_NCONST const
-# define AI_SWAP2(p) ByteSwap::Swap2(&(p))
-# define AI_SWAP4(p) ByteSwap::Swap4(&(p))
-# define AI_SWAP8(p) ByteSwap::Swap8(&(p))
-# define AI_SWAP2P(p) ByteSwap::Swap2((p))
-# define AI_SWAP4P(p) ByteSwap::Swap4((p))
-# define AI_SWAP8P(p) ByteSwap::Swap8((p))
-# define BE_NCONST
+#    define AI_LE(t)    (t)
+#    define AI_BE(t) ByteSwap::Swapped(t)
+#    define AI_LSWAP2(p)
+#    define AI_LSWAP4(p)
+#    define AI_LSWAP8(p)
+#    define AI_LSWAP2P(p)
+#    define AI_LSWAP4P(p)
+#    define AI_LSWAP8P(p)
+#    define LE_NCONST const
+#    define AI_SWAP2(p) ByteSwap::Swap2(&(p))
+#    define AI_SWAP4(p) ByteSwap::Swap4(&(p))
+#    define AI_SWAP8(p) ByteSwap::Swap8(&(p))
+#    define AI_SWAP2P(p) ByteSwap::Swap2((p))
+#    define AI_SWAP4P(p) ByteSwap::Swap4((p))
+#    define AI_SWAP8P(p) ByteSwap::Swap8((p))
+#    define BE_NCONST
 #else
-# define AI_BE(t) (t)
-# define AI_LE(t) ByteSwap::Swapped(t)
-# define AI_SWAP2(p)
-# define AI_SWAP4(p)
-# define AI_SWAP8(p)
-# define AI_SWAP2P(p)
-# define AI_SWAP4P(p)
-# define AI_SWAP8P(p)
-# define BE_NCONST const
-# define AI_LSWAP2(p)  ByteSwap::Swap2(&(p))
-# define AI_LSWAP4(p)  ByteSwap::Swap4(&(p))
-# define AI_LSWAP8(p)  ByteSwap::Swap8(&(p))
-# define AI_LSWAP2P(p) ByteSwap::Swap2((p))
-# define AI_LSWAP4P(p) ByteSwap::Swap4((p))
-# define AI_LSWAP8P(p) ByteSwap::Swap8((p))
-# define LE_NCONST
+#    define AI_BE(t)    (t)
+#    define AI_LE(t) ByteSwap::Swapped(t)
+#    define AI_SWAP2(p)
+#    define AI_SWAP4(p)
+#    define AI_SWAP8(p)
+#    define AI_SWAP2P(p)
+#    define AI_SWAP4P(p)
+#    define AI_SWAP8P(p)
+#    define BE_NCONST const
+#    define AI_LSWAP2(p)        ByteSwap::Swap2(&(p))
+#    define AI_LSWAP4(p)        ByteSwap::Swap4(&(p))
+#    define AI_LSWAP8(p)        ByteSwap::Swap8(&(p))
+#    define AI_LSWAP2P(p)    ByteSwap::Swap2((p))
+#    define AI_LSWAP4P(p)    ByteSwap::Swap4((p))
+#    define AI_LSWAP8P(p)    ByteSwap::Swap8((p))
+#    define LE_NCONST
 #endif
 
 

@@ -90,7 +90,7 @@ bool LWOImporter::HandleTextures(MaterialHelper* pcMat, const TextureList& in, a
     aiString s;
     bool ret = false;
 
-    for (TextureList::const_iterator it = in.begin(), end = in.end();it != end;++it) {
+    for (TextureList::const_iterator it = in.begin(), end = in.end();it != end;++it)    {
         if (!(*it).enabled || !(*it).bCanUse)
             continue;
         ret = true;
@@ -120,7 +120,7 @@ bool LWOImporter::HandleTextures(MaterialHelper* pcMat, const TextureList& in, a
                 break;
             case LWO::Texture::UV:
                 {
-                    if ( 0xffffffff == (*it).mRealUVIndex ) {
+                    if( 0xffffffff == (*it).mRealUVIndex )    {
                         // We have no UV index for this texture, so we can't display it
                         continue;
                     }
@@ -136,10 +136,10 @@ bool LWOImporter::HandleTextures(MaterialHelper* pcMat, const TextureList& in, a
                 ai_assert(false);
         };
 
-        if (mapping != aiTextureMapping_UV) {
+        if (mapping != aiTextureMapping_UV)    {
             // Setup the main axis
             aiVector3D v;
-            switch ((*it).majorAxis) {
+            switch ((*it).majorAxis)    {
                 case Texture::AXIS_X:
                     v = aiVector3D(1.f,0.f,0.f);
                     break;
@@ -154,7 +154,7 @@ bool LWOImporter::HandleTextures(MaterialHelper* pcMat, const TextureList& in, a
             pcMat->AddProperty(&v,1,AI_MATKEY_TEXMAP_AXIS(type,cur));
 
             // Setup UV scalings for cylindric and spherical projections
-            if (mapping == aiTextureMapping_CYLINDER || mapping == aiTextureMapping_SPHERE) {
+            if (mapping == aiTextureMapping_CYLINDER || mapping == aiTextureMapping_SPHERE)    {
                 aiUVTransform trafo;
                 trafo.mScaling.x = (*it).wrapAmountW;
                 trafo.mScaling.y = (*it).wrapAmountH;
@@ -167,16 +167,16 @@ bool LWOImporter::HandleTextures(MaterialHelper* pcMat, const TextureList& in, a
 
         // The older LWOB format does not use indirect references to clips.
         // The file name of a texture is directly specified in the tex chunk.
-        if (mIsLWO2) {
+        if (mIsLWO2)    {
             // find the corresponding clip
             ClipList::iterator clip = mClips.begin();
             temp = (*it).mClipIdx;
-            for (ClipList::iterator end = mClips.end(); clip != end; ++clip) {
+            for (ClipList::iterator end = mClips.end(); clip != end; ++clip)    {
                 if ((*clip).idx == temp)
                     break;
 
             }
-            if (mClips.end() == clip) {
+            if (mClips.end() == clip)    {
                 DefaultLogger::get()->error("LWO2: Clip index is out of bounds");
                 temp = 0;
 
@@ -189,7 +189,7 @@ bool LWOImporter::HandleTextures(MaterialHelper* pcMat, const TextureList& in, a
                 //continue;
             }
             else {
-                if (Clip::UNSUPPORTED == (*clip).type) {
+                if (Clip::UNSUPPORTED == (*clip).type)    {
                     DefaultLogger::get()->error("LWO2: Clip type is not supported");
                     continue;
                 }
@@ -283,7 +283,7 @@ void LWOImporter::ConvertMaterial(const LWO::Surface& surf,MaterialHelper* pcMat
     if (surf.mSpecularValue && surf.mGlossiness)
     {
         float fGloss;
-        if (mIsLWO2) {
+        if (mIsLWO2)    {
             fGloss = pow( surf.mGlossiness*10.0f+2.0f, 2.0f);
         }
         else
@@ -314,14 +314,14 @@ void LWOImporter::ConvertMaterial(const LWO::Surface& surf,MaterialHelper* pcMat
     pcMat->AddProperty<aiColor3D>(&clr,1,AI_MATKEY_COLOR_EMISSIVE);
 
     // opacity ... either additive or default-blended, please
-    if (0.f != surf.mAdditiveTransparency) {
+    if (0.f != surf.mAdditiveTransparency)    {
 
         const int add = aiBlendMode_Additive;
         pcMat->AddProperty(&surf.mAdditiveTransparency,1,AI_MATKEY_OPACITY);
         pcMat->AddProperty(&add,1,AI_MATKEY_BLEND_FUNC);
     }
 
-    else if (10e10f != surf.mTransparency) {
+    else if (10e10f != surf.mTransparency)    {
         const int def = aiBlendMode_Default;
         const float f = 1.0f-surf.mTransparency;
         pcMat->AddProperty(&f,1,AI_MATKEY_OPACITY);
@@ -341,16 +341,16 @@ void LWOImporter::ConvertMaterial(const LWO::Surface& surf,MaterialHelper* pcMat
 
     // Now we need to know which shader to use .. iterate through the shader list of
     // the surface and  search for a name which we know ...
-    for (ShaderList::const_iterator it = surf.mShaders.begin(), end = surf.mShaders.end();it != end;++it) {
+    for (ShaderList::const_iterator it = surf.mShaders.begin(), end = surf.mShaders.end();it != end;++it)    {
         //if (!(*it).enabled)continue;
 
-        if ((*it).functionName == "LW_SuperCelShader" || (*it).functionName == "AH_CelShader") {
+        if ((*it).functionName == "LW_SuperCelShader" || (*it).functionName == "AH_CelShader")    {
             DefaultLogger::get()->info("LWO2: Mapping LW_SuperCelShader/AH_CelShader to aiShadingMode_Toon");
 
             m = aiShadingMode_Toon;
             break;
         }
-        else if ((*it).functionName == "LW_RealFresnel" || (*it).functionName == "LW_FastFresnel") {
+        else if ((*it).functionName == "LW_RealFresnel" || (*it).functionName == "LW_FastFresnel")    {
             DefaultLogger::get()->info("LWO2: Mapping LW_RealFresnel/LW_FastFresnel to aiShadingMode_Fresnel");
 
             m = aiShadingMode_Fresnel;
@@ -376,13 +376,13 @@ void LWOImporter::ConvertMaterial(const LWO::Surface& surf,MaterialHelper* pcMat
 
 // ------------------------------------------------------------------------------------------------
 char LWOImporter::FindUVChannels(LWO::TextureList& list,
-    LWO::Layer& /*layer*/,LWO::UVChannel& uv, unsigned int next)
+    LWO::Layer& layer,LWO::UVChannel& uv, unsigned int next)
 {
     char ret = 0;
-    for (TextureList::iterator it = list.begin(), end = list.end();it != end;++it) {
+    for (TextureList::iterator it = list.begin(), end = list.end();it != end;++it)    {
 
         // Ignore textures with non-UV mappings for the moment.
-        if (!(*it).enabled || !(*it).bCanUse || (*it).mapMode != LWO::Texture::UV) {
+        if (!(*it).enabled || !(*it).bCanUse || (*it).mapMode != LWO::Texture::UV)    {
             continue;
         }
 
@@ -413,10 +413,10 @@ void LWOImporter::FindUVChannels(LWO::Surface& surf,
     unsigned int next = 0, extra = 0, num_extra = 0;
 
     // Check whether we have an UV entry != 0 for one of the faces in 'sorted'
-    for (unsigned int i = 0; i < layer.mUVChannels.size();++i) {
+    for (unsigned int i = 0; i < layer.mUVChannels.size();++i)    {
         LWO::UVChannel& uv = layer.mUVChannels[i];
 
-        for (LWO::SortedRep::const_iterator it = sorted.begin(); it != sorted.end(); ++it) {
+        for (LWO::SortedRep::const_iterator it = sorted.begin(); it != sorted.end(); ++it)    {
 
             LWO::Face& face = layer.mFaces[*it];
 
@@ -456,7 +456,7 @@ void LWOImporter::FindUVChannels(LWO::Surface& surf,
                         }
                         else {
 
-                            // Bh ... seems not to be used at all. Push to end if enough space is available.
+                            // Bäh ... seems not to be used at all. Push to end if enough space is available.
                             out[extra++] = i;
                             ++num_extra;
                         }
@@ -479,7 +479,7 @@ void LWOImporter::FindVCChannels(const LWO::Surface& surf, LWO::SortedRep& sorte
     unsigned int next = 0;
 
     // Check whether we have an vc entry != 0 for one of the faces in 'sorted'
-    for (unsigned int i = 0; i < layer.mVColorChannels.size();++i) {
+    for (unsigned int i = 0; i < layer.mVColorChannels.size();++i)    {
         const LWO::VColorChannel& vc = layer.mVColorChannels[i];
 
         if (surf.mVCMap == vc.name) {
@@ -492,7 +492,7 @@ void LWOImporter::FindVCChannels(const LWO::Surface& surf, LWO::SortedRep& sorte
         }
         else {
 
-            for (LWO::SortedRep::iterator it = sorted.begin(); it != sorted.end(); ++it) {
+            for (LWO::SortedRep::iterator it = sorted.begin(); it != sorted.end(); ++it)    {
                 const LWO::Face& face = layer.mFaces[*it];
 
                 for (unsigned int n = 0; n < face.mNumIndices; ++n) {
@@ -563,7 +563,7 @@ void LWOImporter::LoadLWO2ImageMap(unsigned int size, LWO::Texture& tex )
 }
 
 // ------------------------------------------------------------------------------------------------
-void LWOImporter::LoadLWO2Procedural(unsigned int /*size*/, LWO::Texture& tex )
+void LWOImporter::LoadLWO2Procedural(unsigned int size, LWO::Texture& tex )
 {
     // --- not supported at the moment
     DefaultLogger::get()->error("LWO2: Found procedural texture, this is not supported");
@@ -571,7 +571,7 @@ void LWOImporter::LoadLWO2Procedural(unsigned int /*size*/, LWO::Texture& tex )
 }
 
 // ------------------------------------------------------------------------------------------------
-void LWOImporter::LoadLWO2Gradient(unsigned int /*size*/, LWO::Texture& tex  )
+void LWOImporter::LoadLWO2Gradient(unsigned int size, LWO::Texture& tex  )
 {
     // --- not supported at the moment
     DefaultLogger::get()->error("LWO2: Found gradient texture, this is not supported");
@@ -666,8 +666,8 @@ void LWOImporter::LoadLWO2TextureBlock(LE_NCONST IFF::SubChunkHeader* head, unsi
     }
 
     // now attach the texture to the parent surface - sort by ordinal string
-    for (TextureList::iterator it = listRef->begin();it != listRef->end(); ++it) {
-        if (::strcmp(tex.ordinal.c_str(),(*it).ordinal.c_str()) < 0) {
+    for (TextureList::iterator it = listRef->begin();it != listRef->end(); ++it)    {
+        if (::strcmp(tex.ordinal.c_str(),(*it).ordinal.c_str()) < 0)    {
             listRef->insert(it,tex);
             return;
         }
@@ -676,7 +676,7 @@ void LWOImporter::LoadLWO2TextureBlock(LE_NCONST IFF::SubChunkHeader* head, unsi
 }
 
 // ------------------------------------------------------------------------------------------------
-void LWOImporter::LoadLWO2ShaderBlock(LE_NCONST IFF::SubChunkHeader* /*head*/, unsigned int size )
+void LWOImporter::LoadLWO2ShaderBlock(LE_NCONST IFF::SubChunkHeader* head, unsigned int size )
 {
     LE_NCONST uint8_t* const end = mFileBuffer + size;
 
@@ -717,8 +717,8 @@ void LWOImporter::LoadLWO2ShaderBlock(LE_NCONST IFF::SubChunkHeader* /*head*/, u
     }
 
     // now attach the shader to the parent surface - sort by ordinal string
-    for (ShaderList::iterator it = surf.mShaders.begin();it != surf.mShaders.end(); ++it) {
-        if (::strcmp(shader.ordinal.c_str(),(*it).ordinal.c_str()) < 0) {
+    for (ShaderList::iterator it = surf.mShaders.begin();it != surf.mShaders.end(); ++it)    {
+        if (::strcmp(shader.ordinal.c_str(),(*it).ordinal.c_str()) < 0)    {
             surf.mShaders.insert(it,shader);
             return;
         }
@@ -739,10 +739,10 @@ void LWOImporter::LoadLWO2Surface(unsigned int size)
     // check whether this surface was derived from any other surface
     std::string derived;
     GetS0(derived,(unsigned int)(end - mFileBuffer));
-    if (derived.length()) {
+    if (derived.length())    {
         // yes, find this surface
-        for (SurfaceList::iterator it = mSurfaces->begin(), end = mSurfaces->end()-1; it != end; ++it) {
-            if ((*it).mName == derived) {
+        for (SurfaceList::iterator it = mSurfaces->begin(), end = mSurfaces->end()-1; it != end; ++it)    {
+            if ((*it).mName == derived)    {
                 // we have it ...
                 surf = *it;
                 derived.clear();break;
@@ -859,9 +859,9 @@ void LWOImporter::LoadLWO2Surface(unsigned int size)
         case AI_LWO_VCOL:
             {
                 AI_LWO_VALIDATE_CHUNK_LENGTH(head->length,VCOL,12);
-                surf.mDiffuseValue *= GetF4();    // strength
+                surf.mDiffuseValue *= GetF4();                // strength
                 ReadVSizedIntLWO2(mFileBuffer);             // skip envelope
-                surf.mVCMapType = GetU4();     // type of the channel
+                surf.mVCMapType = GetU4();                    // type of the channel
 
                 // name of the channel
                 GetS0(surf.mVCMap, (unsigned int) (next - mFileBuffer ));

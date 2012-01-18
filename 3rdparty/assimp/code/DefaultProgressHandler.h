@@ -45,15 +45,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define INCLUDED_AI_DEFAULTPROGRESSHANDLER_H
 
 #include "../include/ProgressHandler.h"
-namespace Assimp {
+namespace Assimp    {
 
 // ------------------------------------------------------------------------------------
 /** @brief Internal default implementation of the #ProgressHandler interface. */
 class ASSIMP_API DefaultProgressHandler
-    : public ProgressHandler {
+    : public ProgressHandler    {
 
 
-    virtual bool Update(float /*percentage*/) {
+    virtual bool Update(float percentage) {
         return false;
     }
 

@@ -86,7 +86,7 @@ public:
      * with std::(w)string or const (w)char* arguments because the
      * conversion c'tor is called implicitly. */
     template <typename TT>
-    basic_formatter(const TT& sin) {
+    basic_formatter(const TT& sin)    {
         underlying << sin;
     }
 

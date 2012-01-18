@@ -48,7 +48,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "../include/IOSystem.h"
 #include "fast_atof.h"
 #include "ParsingUtils.h"
-namespace Assimp {
+namespace Assimp    {
 
 // ---------------------------------------------------------------------------
 /** File system filter
@@ -66,12 +66,12 @@ public:
         // Determine base directory
         base = src_file;
         std::string::size_type ss2;
-        if (std::string::npos != (ss2 = base.find_last_of("\\/"))) {
+        if (std::string::npos != (ss2 = base.find_last_of("\\/")))    {
             base.erase(ss2,base.length()-ss2);
         }
         else {
             base = "";
-        // return;
+        //    return;
         }
 
         // make sure the directory is terminated properly
@@ -100,7 +100,7 @@ public:
         std::string tmp = pFile;
 
         // Currently this IOSystem is also used to open THE ONE FILE.
-        if (tmp != src_file) {
+        if (tmp != src_file)    {
             BuildPath(tmp);
             Cleanup(tmp);
         }
@@ -125,7 +125,7 @@ public:
         // First try the unchanged path
         IOStream* s = wrapped->Open(pFile,pMode);
 
-        if (!s) {
+        if (!s)    {
             std::string tmp = pFile;
 
             // Try to convert between absolute and relative paths

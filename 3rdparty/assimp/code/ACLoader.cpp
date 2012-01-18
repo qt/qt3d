@@ -655,7 +655,7 @@ aiNode* AC3DImporter::ConvertObjectSection(Object& object,
             // Now apply catmull clark subdivision if necessary. We split meshes into
             // materials which is not done by AC3D during smoothing, so we need to
             // collect all meshes using the same material group.
-            if (object.subDiv) {
+            if (object.subDiv)    {
                 if (configEvalSubdivision) {
                     boost::scoped_ptr<Subdivider> div(Subdivider::Create(Subdivider::CATMULL_CLARKE));
                     DefaultLogger::get()->info("AC3D: Evaluating subdivision surface: "+object.name);

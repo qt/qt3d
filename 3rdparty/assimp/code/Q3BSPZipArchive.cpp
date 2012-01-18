@@ -49,7 +49,7 @@ namespace Q3BSP
 {
 
 // ------------------------------------------------------------------------------------------------
-// Constructor.
+//    Constructor.
 Q3BSPZipArchive::Q3BSPZipArchive( const std::string& rFile ) :
     m_ZipFileHandle( NULL ),
     m_FileList(),
@@ -66,7 +66,7 @@ Q3BSPZipArchive::Q3BSPZipArchive( const std::string& rFile ) :
 }
 
 // ------------------------------------------------------------------------------------------------
-// Destructor.
+//    Destructor.
 Q3BSPZipArchive::~Q3BSPZipArchive()
 {
     if ( NULL != m_ZipFileHandle )
@@ -78,14 +78,14 @@ Q3BSPZipArchive::~Q3BSPZipArchive()
 }
 
 // ------------------------------------------------------------------------------------------------
-// Returns true, if the archive is already open.
+//    Returns true, if the archive is already open.
 bool Q3BSPZipArchive::isOpen() const
 {
     return ( NULL != m_ZipFileHandle );
 }
 
 // ------------------------------------------------------------------------------------------------
-// Returns true, if the filename is part of the archive.
+//    Returns true, if the filename is part of the archive.
 bool Q3BSPZipArchive::Exists( const char* pFile ) const
 {
     ai_assert( NULL != pFile );
@@ -105,15 +105,15 @@ bool Q3BSPZipArchive::Exists( const char* pFile ) const
 }
 
 // ------------------------------------------------------------------------------------------------
-// Returns the separator delimiter.
+//    Returns the separator delimiter.
 char Q3BSPZipArchive::getOsSeparator() const
 {
     return '/';
 }
 
 // ------------------------------------------------------------------------------------------------
-// Opens a file, which is part of the archive.
-IOStream *Q3BSPZipArchive::Open( const char* pFile, const char* /*pMode*/ )
+//    Opens a file, which is part of the archive.
+IOStream *Q3BSPZipArchive::Open( const char* pFile, const char* pMode )
 {
     ai_assert( NULL != pFile );
 
@@ -129,7 +129,7 @@ IOStream *Q3BSPZipArchive::Open( const char* pFile, const char* /*pMode*/ )
 }
 
 // ------------------------------------------------------------------------------------------------
-// Close a filestream.
+//    Close a filestream.
 void Q3BSPZipArchive::Close( IOStream *pFile )
 {
     ai_assert( NULL != pFile );
@@ -147,14 +147,14 @@ void Q3BSPZipArchive::Close( IOStream *pFile )
     }
 }
 // ------------------------------------------------------------------------------------------------
-// Returns the file-list of the archive.
+//    Returns the file-list of the archive.
 void Q3BSPZipArchive::getFileList( std::vector<std::string> &rFileList )
 {
     rFileList = m_FileList;
 }
 
 // ------------------------------------------------------------------------------------------------
-// Maps the archive content.
+//    Maps the archive content.
 bool Q3BSPZipArchive::mapArchive()
 {
     if ( NULL == m_ZipFileHandle )
@@ -166,7 +166,7 @@ bool Q3BSPZipArchive::mapArchive()
     if ( !m_FileList.empty() )
         m_FileList.resize( 0 );
 
-    // At first ensure file is already open
+    //    At first ensure file is already open
     if ( UNZ_OK == unzGoToFirstFile( m_ZipFileHandle ) )
     {
         char filename[ FileNameSize ];

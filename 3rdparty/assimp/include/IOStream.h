@@ -48,11 +48,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "aiTypes.h"
 
 #ifndef __cplusplus
-# error This header requires C++ to be used. aiFileIO.h is the \
+#    error This header requires C++ to be used. aiFileIO.h is the \
     corresponding C interface.
 #endif
 
-namespace Assimp {
+namespace Assimp    {
 
 // ----------------------------------------------------------------------------------
 /** @brief CPP-API: Class to handle file I/O for C++
@@ -107,13 +107,13 @@ public:
     virtual size_t Tell() const = 0;
 
     // -------------------------------------------------------------------
-    /** @brief Returns filesize
-     * Returns the filesize. */
+    /**    @brief Returns filesize
+     *    Returns the filesize. */
     virtual size_t FileSize() const = 0;
 
     // -------------------------------------------------------------------
-    /** @brief Flush the contents of the file buffer (for writers)
-     * See fflush() for more details.
+    /**    @brief Flush the contents of the file buffer (for writers)
+     *    See fflush() for more details.
      */
     virtual void Flush() = 0;
 }; //! class IOStream

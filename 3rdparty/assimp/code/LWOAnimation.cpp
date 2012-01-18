@@ -334,7 +334,7 @@ void AnimResolver::SubsampleAnimTrack(std::vector<aiVectorKey>& /*out*/,
     //ai_assert(out.empty() && sample_delta);
 
     //const double time_start = out.back().mTime;
-// for ()
+//    for ()
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -481,7 +481,7 @@ void AnimResolver::GetKeys(std::vector<aiVectorKey>& out,
                 InterpolateTrack(out,fill,(*cur_x).time);
             }
         }
-        else if ((*cur_z).time <= (*cur_y).time && !end_z) {
+        else if ((*cur_z).time <= (*cur_y).time && !end_z)    {
             InterpolateTrack(out,fill,(*cur_z).time);
         }
         else if (!end_y) {
@@ -516,7 +516,7 @@ void AnimResolver::GetKeys(std::vector<aiVectorKey>& out,
 
 // ------------------------------------------------------------------------------------------------
 // Extract animation channel
-void AnimResolver::ExtractAnimChannel(aiNodeAnim** out, unsigned int /*flags = 0*/)
+void AnimResolver::ExtractAnimChannel(aiNodeAnim** out, unsigned int flags /*= 0*/)
 {
     *out = NULL;
 

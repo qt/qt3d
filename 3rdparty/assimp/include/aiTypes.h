@@ -63,12 +63,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "aiQuaternion.h"
 
 #ifdef __cplusplus
-#include <new>  // for std::nothrow_t
-#include <string> // for aiString::Set(const std::string&)
+#include <new>        // for std::nothrow_t
+#include <string>    // for aiString::Set(const std::string&)
 
-namespace Assimp {
+namespace Assimp    {
     //! @cond never
-namespace Intern  {
+namespace Intern        {
     // --------------------------------------------------------------------
     /** @brief Internal helper class to utilize our internal new/delete
      *    routines for allocating object of this and derived classes.
@@ -83,7 +83,7 @@ namespace Intern  {
      */
     // --------------------------------------------------------------------
 #ifndef SWIG
-    struct ASSIMP_API AllocateFromAssimpHeap {
+    struct ASSIMP_API AllocateFromAssimpHeap    {
         // http://www.gotw.ca/publications/mill15.htm
 
         // new/delete overload
@@ -109,7 +109,7 @@ extern "C" {
 #ifdef __cplusplus
 const size_t MAXLEN = 1024;
 #else
-# define MAXLEN 1024
+#    define MAXLEN 1024
 #endif
 
 #include "./Compiler/pushpack1.h"
@@ -313,7 +313,7 @@ struct aiString
     }
 
     /** Append a string to the string */
-    void Append (const char* app) {
+    void Append (const char* app)    {
         const size_t len = ::strlen(app);
         if (!len) {
             return;
@@ -327,7 +327,7 @@ struct aiString
     }
 
     /** Clear the string - reset its length to zero */
-    void Clear () {
+    void Clear ()    {
         length  = 0;
         data[0] = '\0';
 
@@ -350,7 +350,7 @@ struct aiString
 
 
 // ----------------------------------------------------------------------------------
-/** Standard return type for some library functions.
+/**    Standard return type for some library functions.
  * Rarely used, and if, mostly in the C API.
  */
 enum aiReturn
@@ -448,8 +448,8 @@ struct aiMemoryInfo
         , meshes     (0)
         , nodes      (0)
         , animations (0)
-        , cameras  (0)
-        , lights  (0)
+        , cameras     (0)
+        , lights     (0)
         , total      (0)
     {}
 

@@ -50,12 +50,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // enable verbose log output. really verbose, so be careful.
 #ifdef _DEBUG
-# define ASSIMP_BUILD_BLENDER_DEBUG
+#    define ASSIMP_BUILD_BLENDER_DEBUG
 #endif
 
 // #define ASSIMP_BUILD_BLENDER_NO_STATS
 
-namespace Assimp {
+namespace Assimp    {
     template <bool,bool> class StreamReader;
     typedef StreamReader<true,true> StreamReaderAny;
 
@@ -186,7 +186,7 @@ enum ErrorPolicy
 };
 
 #ifdef ASSIMP_BUILD_BLENDER_DEBUG
-# define ErrorPolicy_Igno ErrorPolicy_Warn
+#    define ErrorPolicy_Igno ErrorPolicy_Warn
 #endif
 
 // -------------------------------------------------------------------------------
@@ -204,7 +204,7 @@ class Structure
 public:
 
     Structure()
-        : cache_idx(-1)
+        :    cache_idx(-1)
     {}
 
 public:
@@ -376,12 +376,20 @@ template <>  struct Structure :: _defaultInitializer<ErrorPolicy_Warn> {
 template <> struct Structure :: _defaultInitializer<ErrorPolicy_Fail> {
 
     template <typename T>
-    void operator ()(T& /*out*/,const char* = "") {
+    void operator ()(T& out,const char* = "") {
         // obviously, it is crucial that _DefaultInitializer is used
         // only from within a catch clause.
         throw;
     }
 };
+
+// -------------------------------------------------------------------------------------------------------
+template <> inline void Structure :: ResolvePointer<boost::shared_ptr,ElemBase>(boost::shared_ptr<ElemBase>& out,
+    const Pointer & ptrval,
+    const FileDatabase& db,
+    const Field& f
+    ) const;
+
 
 // -------------------------------------------------------------------------------
 /** Represents the full data structure information for a single BLEND file.
@@ -487,12 +495,12 @@ public:
 };
 
 // special converters for primitive types
-template <> inline void Structure :: Convert<int>  (int& dest,const FileDatabase& db) const;
-template <> inline void Structure :: Convert<short>  (short& dest,const FileDatabase& db) const;
-template <> inline void Structure :: Convert<char>  (char& dest,const FileDatabase& db) const;
-template <> inline void Structure :: Convert<float>  (float& dest,const FileDatabase& db) const;
-template <> inline void Structure :: Convert<double> (double& dest,const FileDatabase& db) const;
-template <> inline void Structure :: Convert<Pointer> (Pointer& dest,const FileDatabase& db) const;
+template <> inline void Structure :: Convert<int>        (int& dest,const FileDatabase& db) const;
+template <> inline void Structure :: Convert<short>        (short& dest,const FileDatabase& db) const;
+template <> inline void Structure :: Convert<char>        (char& dest,const FileDatabase& db) const;
+template <> inline void Structure :: Convert<float>        (float& dest,const FileDatabase& db) const;
+template <> inline void Structure :: Convert<double>    (double& dest,const FileDatabase& db) const;
+template <> inline void Structure :: Convert<Pointer>    (Pointer& dest,const FileDatabase& db) const;
 
 // -------------------------------------------------------------------------------
 /** Describes a master file block header. Each master file sections holds n
@@ -584,11 +592,11 @@ class Statistics {
 public:
 
     Statistics ()
-        : fields_read  ()
-        , pointers_resolved ()
-        , cache_hits  ()
-//  , blocks_read  ()
-        , cached_objects ()
+        : fields_read        ()
+        , pointers_resolved    ()
+        , cache_hits        ()
+//        , blocks_read        ()
+        , cached_objects    ()
     {}
 
 public:
@@ -673,12 +681,12 @@ public:
 
     ObjectCache(const FileDatabase&) {}
 
-    template <typename T> void get(const Structure&, vector<T>& /*t*/, const Pointer&) {}
+    template <typename T> void get(const Structure&, vector<T>&t, const Pointer&) {}
     template <typename T> void set(const Structure&, const vector<T>&, const Pointer&) {}
 };
 
 #ifdef _MSC_VER
-# pragma warning(disable:4355)
+#    pragma warning(disable:4355)
 #endif
 
 // -------------------------------------------------------------------------------
@@ -693,9 +701,9 @@ public:
 
 
     FileDatabase()
-        : _cacheArrays(*this)
+        : next_cache_idx()
+        , _cacheArrays(*this)
         , _cache(*this)
-        , next_cache_idx()
     {}
 
 public:
@@ -719,12 +727,12 @@ public:
     // arrays of objects are never cached because we can't easily
     // ensure their proper destruction.
     template <typename T>
-    ObjectCache<boost::shared_ptr>& cache(boost::shared_ptr<T>& /* in */) const {
+    ObjectCache<boost::shared_ptr>& cache(boost::shared_ptr<T>& in) const {
         return _cache;
     }
 
     template <typename T>
-    ObjectCache<vector>& cache(vector<T>& /*in*/) const {
+    ObjectCache<vector>& cache(vector<T>& in) const {
         return _cacheArrays;
     }
 
@@ -742,7 +750,7 @@ private:
 };
 
 #ifdef _MSC_VER
-# pragma warning(default:4355)
+#    pragma warning(default:4355)
 #endif
 
 // -------------------------------------------------------------------------------
@@ -782,11 +790,11 @@ private:
     FileDatabase& db;
 };
 
-// -------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------
 template <> inline void Structure :: ResolvePointer<boost::shared_ptr,ElemBase>(boost::shared_ptr<ElemBase>& out,
     const Pointer & ptrval,
     const FileDatabase& db,
-    const Field& /*  f  */
+    const Field& /* f */
     ) const
 {
     // Special case when the data type needs to be determined at runtime.

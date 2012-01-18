@@ -51,7 +51,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "../include/aiTypes.h"
 
-namespace Assimp {
+namespace Assimp    {
 
 class IOStream;
 using namespace Assimp::MD5;

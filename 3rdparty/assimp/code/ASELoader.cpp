@@ -127,7 +127,7 @@ void ASEImporter::InternReadFile( const std::string& pFile,
     // ------------------------------------------------------------------
     unsigned int defaultFormat;
     std::string::size_type s = pFile.length()-1;
-    switch (pFile.c_str()[s]) {
+    switch (pFile.c_str()[s])    {
 
     case 'C':
     case 'c':
@@ -146,7 +146,7 @@ void ASEImporter::InternReadFile( const std::string& pFile,
     // Check whether we god at least one mesh. If we did - generate
     // materials and copy meshes.
     // ------------------------------------------------------------------
-    if ( !mParser->m_vMeshes.empty()) {
+    if ( !mParser->m_vMeshes.empty())    {
 
         // If absolutely no material has been loaded from the file
         // we need to generate a default material
@@ -156,7 +156,7 @@ void ASEImporter::InternReadFile( const std::string& pFile,
         bool tookNormals = false;
         std::vector<aiMesh*> avOutMeshes;
         avOutMeshes.reserve(mParser->m_vMeshes.size()*2);
-        for (std::vector<ASE::Mesh>::iterator i =  mParser->m_vMeshes.begin();i != mParser->m_vMeshes.end();++i) {
+        for (std::vector<ASE::Mesh>::iterator i =  mParser->m_vMeshes.begin();i != mParser->m_vMeshes.end();++i)    {
             if ((*i).bSkip) {
                 continue;
             }
@@ -170,7 +170,7 @@ void ASEImporter::InternReadFile( const std::string& pFile,
             // Convert all meshes to aiMesh objects
             ConvertMeshes(*i,avOutMeshes);
         }
-        if (tookNormals) {
+        if (tookNormals)    {
             DefaultLogger::get()->debug("ASE: Taking normals from the file. Use "
                 "the AI_CONFIG_IMPORT_ASE_RECONSTRUCT_NORMALS setting if you "
                 "experience problems");
@@ -230,7 +230,7 @@ void ASEImporter::InternReadFile( const std::string& pFile,
     // to build a mesh for the animation skeleton
     // FIXME: very strange results
     // ------------------------------------------------------------------
-    if (!pScene->mNumMeshes) {
+    if (!pScene->mNumMeshes)    {
         pScene->mFlags |= AI_SCENE_FLAGS_INCOMPLETE;
         SkeletonMeshBuilder skeleton(pScene);
     }
@@ -243,12 +243,12 @@ void ASEImporter::GenerateDefaultMaterial()
     bool bHas = false;
     for (std::vector<ASE::Mesh>::iterator i =  mParser->m_vMeshes.begin();i != mParser->m_vMeshes.end();++i) {
         if ((*i).bSkip)continue;
-        if (ASE::Face::DEFAULT_MATINDEX == (*i).iMaterialIndex) {
+        if (ASE::Face::DEFAULT_MATINDEX == (*i).iMaterialIndex)    {
             (*i).iMaterialIndex = (unsigned int)mParser->m_vMaterials.size();
             bHas = true;
         }
     }
-    if (bHas || mParser->m_vMaterials.empty()) {
+    if (bHas || mParser->m_vMaterials.empty())    {
         // add a simple material without submaterials to the parser's list
         mParser->m_vMaterials.push_back ( ASE::Material() );
         ASE::Material& mat = mParser->m_vMaterials.back();
@@ -267,18 +267,18 @@ void ASEImporter::BuildAnimations(const std::vector<BaseNode*>& nodes)
     // check whether we have at least one mesh which has animations
     std::vector<ASE::BaseNode*>::const_iterator i =  nodes.begin();
     unsigned int iNum = 0;
-    for (;i != nodes.end();++i) {
+    for (;i != nodes.end();++i)    {
 
         // TODO: Implement Bezier & TCB support
-        if ((*i)->mAnim.mPositionType != ASE::Animation::TRACK) {
+        if ((*i)->mAnim.mPositionType != ASE::Animation::TRACK)    {
             DefaultLogger::get()->warn("ASE: Position controller uses Bezier/TCB keys. "
                 "This is not supported.");
         }
-        if ((*i)->mAnim.mRotationType != ASE::Animation::TRACK) {
+        if ((*i)->mAnim.mRotationType != ASE::Animation::TRACK)    {
             DefaultLogger::get()->warn("ASE: Rotation controller uses Bezier/TCB keys. "
                 "This is not supported.");
         }
-        if ((*i)->mAnim.mScalingType != ASE::Animation::TRACK) {
+        if ((*i)->mAnim.mScalingType != ASE::Animation::TRACK)    {
             DefaultLogger::get()->warn("ASE: Position controller uses Bezier/TCB keys. "
                 "This is not supported.");
         }
@@ -293,7 +293,7 @@ void ASEImporter::BuildAnimations(const std::vector<BaseNode*>& nodes)
             ++iNum;
         }
     }
-    if (iNum) {
+    if (iNum)    {
         // Generate a new animation channel and setup everything for it
         pcScene->mNumAnimations = 1;
         pcScene->mAnimations    = new aiAnimation*[1];
@@ -305,10 +305,10 @@ void ASEImporter::BuildAnimations(const std::vector<BaseNode*>& nodes)
         iNum = 0;
 
         // Now iterate through all meshes and collect all data we can find
-        for (i =  nodes.begin();i != nodes.end();++i) {
+        for (i =  nodes.begin();i != nodes.end();++i)    {
 
             ASE::BaseNode* me = *i;
-            if ( me->mTargetAnim.akeyPositions.size() > 1 && is_not_qnan( me->mTargetPosition.x )) {
+            if ( me->mTargetAnim.akeyPositions.size() > 1 && is_not_qnan( me->mTargetPosition.x ))    {
                 // Generate an extra channel for the camera/light target.
                 // BuildNodes() does also generate an extra node, named
                 // <baseName>.Target.
@@ -338,7 +338,7 @@ void ASEImporter::BuildAnimations(const std::vector<BaseNode*>& nodes)
                     nd->mNumPositionKeys * sizeof(aiVectorKey));
             }
 
-            if (me->mAnim.akeyPositions.size() > 1 || me->mAnim.akeyRotations.size() > 1 || me->mAnim.akeyScaling.size() > 1) {
+            if (me->mAnim.akeyPositions.size() > 1 || me->mAnim.akeyRotations.size() > 1 || me->mAnim.akeyScaling.size() > 1)    {
                 // Begin a new node animation channel for this node
                 aiNodeAnim* nd = pcAnim->mChannels[iNum++] = new aiNodeAnim();
                 nd->mNodeName.Set(me->mName);
@@ -354,7 +354,7 @@ void ASEImporter::BuildAnimations(const std::vector<BaseNode*>& nodes)
                         nd->mNumPositionKeys * sizeof(aiVectorKey));
                 }
                 // copy rotation keys
-                if (me->mAnim.akeyRotations.size() > 1 ) {
+                if (me->mAnim.akeyRotations.size() > 1 )    {
                     // Allocate the key array and fill it
                     nd->mNumRotationKeys = (unsigned int) me->mAnim.akeyRotations.size();
                     nd->mRotationKeys = new aiQuatKey[nd->mNumRotationKeys];
@@ -369,10 +369,10 @@ void ASEImporter::BuildAnimations(const std::vector<BaseNode*>& nodes)
                     // --------------------------------------------------------------------
 
                     aiQuaternion cur;
-                    for (unsigned int a = 0; a < nd->mNumRotationKeys;++a) {
+                    for (unsigned int a = 0; a < nd->mNumRotationKeys;++a)    {
                         aiQuatKey q = me->mAnim.akeyRotations[a];
 
-                        if (mParser->iFileFormat > 110) {
+                        if (mParser->iFileFormat > 110)    {
                             cur = (a ? cur*q.mValue : q.mValue);
                             q.mValue = cur.Normalize();
                         }
@@ -383,7 +383,7 @@ void ASEImporter::BuildAnimations(const std::vector<BaseNode*>& nodes)
                     }
                 }
                 // copy scaling keys
-                if (me->mAnim.akeyScaling.size() > 1 ) {
+                if (me->mAnim.akeyScaling.size() > 1 )    {
                     // Allocate the key array and fill it
                     nd->mNumScalingKeys = (unsigned int) me->mAnim.akeyScaling.size();
                     nd->mScalingKeys = new aiVectorKey[nd->mNumScalingKeys];
@@ -400,11 +400,11 @@ void ASEImporter::BuildAnimations(const std::vector<BaseNode*>& nodes)
 // Build output cameras
 void ASEImporter::BuildCameras()
 {
-    if (!mParser->m_vCameras.empty()) {
+    if (!mParser->m_vCameras.empty())    {
         pcScene->mNumCameras = (unsigned int)mParser->m_vCameras.size();
         pcScene->mCameras = new aiCamera*[pcScene->mNumCameras];
 
-        for (unsigned int i = 0; i < pcScene->mNumCameras;++i) {
+        for (unsigned int i = 0; i < pcScene->mNumCameras;++i)    {
             aiCamera* out = pcScene->mCameras[i] = new aiCamera();
             ASE::Camera& in = mParser->m_vCameras[i];
 
@@ -422,11 +422,11 @@ void ASEImporter::BuildCameras()
 // Build output lights
 void ASEImporter::BuildLights()
 {
-    if (!mParser->m_vLights.empty()) {
+    if (!mParser->m_vLights.empty())    {
         pcScene->mNumLights = (unsigned int)mParser->m_vLights.size();
         pcScene->mLights    = new aiLight*[pcScene->mNumLights];
 
-        for (unsigned int i = 0; i < pcScene->mNumLights;++i) {
+        for (unsigned int i = 0; i < pcScene->mNumLights;++i)    {
             aiLight* out = pcScene->mLights[i] = new aiLight();
             ASE::Light& in = mParser->m_vLights[i];
 
@@ -470,7 +470,7 @@ void ASEImporter::AddNodes(const std::vector<BaseNode*>& nodes,
 // Add meshes to a given node
 void ASEImporter::AddMeshes(const ASE::BaseNode* snode,aiNode* node)
 {
-    for (unsigned int i = 0; i < pcScene->mNumMeshes;++i) {
+    for (unsigned int i = 0; i < pcScene->mNumMeshes;++i)    {
         // Get the name of the mesh (the mesh instance has been temporarily stored in the third vertex color)
         const aiMesh* pcMesh  = pcScene->mMeshes[i];
         const ASE::Mesh* mesh = (const ASE::Mesh*)pcMesh->mColors[2];
@@ -480,13 +480,13 @@ void ASEImporter::AddMeshes(const ASE::BaseNode* snode,aiNode* node)
         }
     }
 
-    if (node->mNumMeshes) {
+    if (node->mNumMeshes)    {
         node->mMeshes = new unsigned int[node->mNumMeshes];
-        for (unsigned int i = 0, p = 0; i < pcScene->mNumMeshes;++i) {
+        for (unsigned int i = 0, p = 0; i < pcScene->mNumMeshes;++i)    {
 
             const aiMesh* pcMesh  = pcScene->mMeshes[i];
             const ASE::Mesh* mesh = (const ASE::Mesh*)pcMesh->mColors[2];
-            if (mesh == snode) {
+            if (mesh == snode)    {
                 node->mMeshes[p++] = i;
 
                 // Transform all vertices of the mesh back into their local space ->
@@ -496,20 +496,20 @@ void ASEImporter::AddMeshes(const ASE::BaseNode* snode,aiNode* node)
 
                 aiVector3D* pvCurPtr = pcMesh->mVertices;
                 const aiVector3D* pvEndPtr = pvCurPtr + pcMesh->mNumVertices;
-                while (pvCurPtr != pvEndPtr) {
+                while (pvCurPtr != pvEndPtr)    {
                     *pvCurPtr = m * (*pvCurPtr);
                     pvCurPtr++;
                 }
 
                 // Do the same for the normal vectors, if we have them.
                 // As always, inverse transpose.
-                if (pcMesh->mNormals) {
+                if (pcMesh->mNormals)    {
                     aiMatrix3x3 m3 = aiMatrix3x3( mesh->mTransform );
                     m3.Transpose();
 
                     pvCurPtr = pcMesh->mNormals;
                     pvEndPtr = pvCurPtr + pcMesh->mNumVertices;
-                    while (pvCurPtr != pvEndPtr) {
+                    while (pvCurPtr != pvEndPtr)    {
                         *pvCurPtr = m3 * (*pvCurPtr);
                         pvCurPtr++;
                     }
@@ -535,7 +535,7 @@ void ASEImporter::AddNodes (const std::vector<BaseNode*>& nodes,
     // which has *us* as parent.
     for (std::vector<BaseNode*>::const_iterator it = nodes.begin(), end = nodes.end(); it != end; ++it) {
         const BaseNode* snode = *it;
-        if (szName) {
+        if (szName)    {
             if (len != snode->mParent.length() || ::strcmp(szName,snode->mParent.c_str()))
                 continue;
         }
@@ -562,7 +562,7 @@ void ASEImporter::AddNodes (const std::vector<BaseNode*>& nodes,
         }
 
         // Further processing depends on the type of the node
-        if (snode->mType == ASE::BaseNode::Mesh) {
+        if (snode->mType == ASE::BaseNode::Mesh)    {
             // If the type of this node is "Mesh" we need to search
             // the list of output meshes in the data structure for
             // all those that belonged to this node once. This is
@@ -570,13 +570,13 @@ void ASEImporter::AddNodes (const std::vector<BaseNode*>& nodes,
             // be used when this code is refactored next.
             AddMeshes(snode,node);
         }
-        else if (is_not_qnan( snode->mTargetPosition.x )) {
+        else if (is_not_qnan( snode->mTargetPosition.x ))    {
             // If this is a target camera or light we generate a small
             // child node which marks the position of the camera
             // target (the direction information is contained in *this*
             // node's animation track but the exact target position
             // would be lost otherwise)
-            if (!node->mNumChildren) {
+            if (!node->mNumChildren)    {
                 node->mChildren = new aiNode*[1];
             }
 
@@ -605,7 +605,7 @@ void ASEImporter::AddNodes (const std::vector<BaseNode*>& nodes,
     // Allocate enough space for the child nodes
     // We allocate one slot more  in case this is a target camera/light
     pcParent->mNumChildren = (unsigned int)apcNodes.size();
-    if (pcParent->mNumChildren) {
+    if (pcParent->mNumChildren)    {
         pcParent->mChildren = new aiNode*[apcNodes.size()+1 /* PLUS ONE !!! */];
 
         // now build all nodes for our nice new children
@@ -617,7 +617,7 @@ void ASEImporter::AddNodes (const std::vector<BaseNode*>& nodes,
 
 // ------------------------------------------------------------------------------------------------
 // Build the output node graph
-void ASEImporter::BuildNodes(std::vector<BaseNode*>& nodes) {
+void ASEImporter::BuildNodes(std::vector<BaseNode*>& nodes)    {
     ai_assert(NULL != pcScene);
 
     // allocate the one and only root node
@@ -631,7 +631,7 @@ void ASEImporter::BuildNodes(std::vector<BaseNode*>& nodes) {
     ch->mParent = root;
 
     // Change the transformation matrix of all nodes
-    for (std::vector<BaseNode*>::iterator it = nodes.begin(), end = nodes.end();it != end; ++it) {
+    for (std::vector<BaseNode*>::iterator it = nodes.begin(), end = nodes.end();it != end; ++it)    {
         aiMatrix4x4& m = (*it)->mTransform;
         m.Transpose(); // row-order vs column-order
     }
@@ -642,7 +642,7 @@ void ASEImporter::BuildNodes(std::vector<BaseNode*>& nodes) {
     // now iterate through al nodes and find those that have not yet
     // been added to the nodegraph (= their parent could not be recognized)
     std::vector<const BaseNode*> aiList;
-    for (std::vector<BaseNode*>::iterator it = nodes.begin(), end = nodes.end();it != end; ++it) {
+    for (std::vector<BaseNode*>::iterator it = nodes.begin(), end = nodes.end();it != end; ++it)    {
         if ((*it)->mProcessed) {
             continue;
         }
@@ -657,18 +657,18 @@ void ASEImporter::BuildNodes(std::vector<BaseNode*>& nodes) {
                 continue;
             }
 
-            if ((*it2)->mName == (*it)->mParent) {
+            if ((*it2)->mName == (*it)->mParent)    {
                 bKnowParent = true;
                 break;
             }
         }
-        if (!bKnowParent) {
+        if (!bKnowParent)    {
             aiList.push_back(*it);
         }
     }
 
     // Are there ane orphaned nodes?
-    if (!aiList.empty()) {
+    if (!aiList.empty())    {
         std::vector<aiNode*> apcNodes;
         apcNodes.reserve(aiList.size() + pcScene->mRootNode->mNumChildren);
 
@@ -676,7 +676,7 @@ void ASEImporter::BuildNodes(std::vector<BaseNode*>& nodes) {
             apcNodes.push_back(pcScene->mRootNode->mChildren[i]);
 
         delete[] pcScene->mRootNode->mChildren;
-        for (std::vector<const BaseNode*>::/*const_*/iterator i =  aiList.begin();i != aiList.end();++i) {
+        for (std::vector<const BaseNode*>::/*const_*/iterator i =  aiList.begin();i != aiList.end();++i)    {
             const ASE::BaseNode* src = *i;
 
             // The parent is not known, so we can assume that we must add
@@ -713,7 +713,7 @@ void ASEImporter::BuildNodes(std::vector<BaseNode*>& nodes) {
 
 // ------------------------------------------------------------------------------------------------
 // Convert the imported data to the internal verbose representation
-void ASEImporter::BuildUniqueRepresentation(ASE::Mesh& mesh) {
+void ASEImporter::BuildUniqueRepresentation(ASE::Mesh& mesh)    {
     // allocate output storage
     std::vector<aiVector3D> mPositions;
     std::vector<aiVector3D> amTexCoords[AI_MAX_NUMBER_OF_TEXTURECOORDS];
@@ -725,49 +725,49 @@ void ASEImporter::BuildUniqueRepresentation(ASE::Mesh& mesh) {
     mPositions.resize(iSize);
 
     // optional texture coordinates
-    for (unsigned int i = 0; i < AI_MAX_NUMBER_OF_TEXTURECOORDS;++i) {
-        if (!mesh.amTexCoords[i].empty()) {
+    for (unsigned int i = 0; i < AI_MAX_NUMBER_OF_TEXTURECOORDS;++i)    {
+        if (!mesh.amTexCoords[i].empty())    {
             amTexCoords[i].resize(iSize);
         }
     }
     // optional vertex colors
-    if (!mesh.mVertexColors.empty()) {
+    if (!mesh.mVertexColors.empty())    {
         mVertexColors.resize(iSize);
     }
 
     // optional vertex normals (vertex normals can simply be copied)
-    if (!mesh.mNormals.empty()) {
+    if (!mesh.mNormals.empty())    {
         mNormals.resize(iSize);
     }
     // bone vertices. There is no need to change the bone list
-    if (!mesh.mBoneVertices.empty()) {
+    if (!mesh.mBoneVertices.empty())    {
         mBoneVertices.resize(iSize);
     }
 
     // iterate through all faces in the mesh
     unsigned int iCurrent = 0, fi = 0;
-    for (std::vector<ASE::Face>::iterator i =  mesh.mFaces.begin();i != mesh.mFaces.end();++i,++fi) {
+    for (std::vector<ASE::Face>::iterator i =  mesh.mFaces.begin();i != mesh.mFaces.end();++i,++fi)    {
         for (unsigned int n = 0; n < 3;++n,++iCurrent)
         {
             mPositions[iCurrent] = mesh.mPositions[(*i).mIndices[n]];
 
             // add texture coordinates
-            for (unsigned int c = 0; c < AI_MAX_NUMBER_OF_TEXTURECOORDS;++c) {
+            for (unsigned int c = 0; c < AI_MAX_NUMBER_OF_TEXTURECOORDS;++c)    {
                 if (mesh.amTexCoords[c].empty())break;
                 amTexCoords[c][iCurrent] = mesh.amTexCoords[c][(*i).amUVIndices[c][n]];
             }
             // add vertex colors
-            if (!mesh.mVertexColors.empty()) {
+            if (!mesh.mVertexColors.empty())    {
                 mVertexColors[iCurrent] = mesh.mVertexColors[(*i).mColorIndices[n]];
             }
             // add normal vectors
-            if (!mesh.mNormals.empty()) {
+            if (!mesh.mNormals.empty())    {
                 mNormals[iCurrent] = mesh.mNormals[fi*3+n];
                 mNormals[iCurrent].Normalize();
             }
 
             // handle bone vertices
-            if ((*i).mIndices[n] < mesh.mBoneVertices.size()) {
+            if ((*i).mIndices[n] < mesh.mBoneVertices.size())    {
                 // (sometimes this will cause bone verts to be duplicated
                 //  however, I' quite sure Schrompf' JoinVerticesStep
                 //  will fix that again ...)
@@ -813,7 +813,7 @@ void ASEImporter::ConvertMaterial(ASE::Material& mat)
     mat.pcInstance = new MaterialHelper();
 
     // At first add the base ambient color of the
-    // scene to the material
+    // scene to    the material
     mat.mAmbient.r += mParser->m_clrAmbient.r;
     mat.mAmbient.g += mParser->m_clrAmbient.g;
     mat.mAmbient.b += mParser->m_clrAmbient.b;
@@ -907,7 +907,7 @@ void ASEImporter::ConvertMaterial(ASE::Material& mat)
         CopyASETexture(*mat.pcInstance,mat.sTexShininess, aiTextureType_SHININESS);
 
     // store the name of the material itself, too
-    if ( mat.mName.length() > 0) {
+    if ( mat.mName.length() > 0)    {
         aiString tex;tex.Set( mat.mName);
         mat.pcInstance->AddProperty( &tex, AI_MATKEY_NAME);
     }
@@ -919,20 +919,20 @@ void ASEImporter::ConvertMaterial(ASE::Material& mat)
 void ASEImporter::ConvertMeshes(ASE::Mesh& mesh, std::vector<aiMesh*>& avOutMeshes)
 {
     // validate the material index of the mesh
-    if (mesh.iMaterialIndex >= mParser->m_vMaterials.size()) {
+    if (mesh.iMaterialIndex >= mParser->m_vMaterials.size())    {
         mesh.iMaterialIndex = (unsigned int)mParser->m_vMaterials.size()-1;
         DefaultLogger::get()->warn("Material index is out of range");
     }
 
     // If the material the mesh is assigned to is consisting of submeshes, split it
-    if (!mParser->m_vMaterials[mesh.iMaterialIndex].avSubMaterials.empty()) {
+    if (!mParser->m_vMaterials[mesh.iMaterialIndex].avSubMaterials.empty())    {
         std::vector<ASE::Material> vSubMaterials = mParser->
             m_vMaterials[mesh.iMaterialIndex].avSubMaterials;
 
         std::vector<unsigned int>* aiSplit = new std::vector<unsigned int>[vSubMaterials.size()];
 
         // build a list of all faces per submaterial
-        for (unsigned int i = 0; i < mesh.mFaces.size();++i) {
+        for (unsigned int i = 0; i < mesh.mFaces.size();++i)    {
             // check range
             if (mesh.mFaces[i].iMaterial >= vSubMaterials.size()) {
                 DefaultLogger::get()->warn("Submaterial index is out of range");
@@ -944,8 +944,8 @@ void ASEImporter::ConvertMeshes(ASE::Mesh& mesh, std::vector<aiMesh*>& avOutMesh
         }
 
         // now generate submeshes
-        for (unsigned int p = 0; p < vSubMaterials.size();++p) {
-            if (!aiSplit[p].empty()) {
+        for (unsigned int p = 0; p < vSubMaterials.size();++p)    {
+            if (!aiSplit[p].empty())    {
 
                 aiMesh* p_pcOut = new aiMesh();
                 p_pcOut->mPrimitiveTypes = aiPrimitiveType_TRIANGLE;
@@ -969,7 +969,7 @@ void ASEImporter::ConvertMeshes(ASE::Mesh& mesh, std::vector<aiMesh*>& avOutMesh
 
                 // receive output vertex weights
                 std::vector<std::pair<unsigned int, float> > *avOutputBones = NULL;
-                if (!mesh.mBones.empty()) {
+                if (!mesh.mBones.empty())    {
                     avOutputBones = new std::vector<std::pair<unsigned int, float> >[mesh.mBones.size()];
                 }
 
@@ -977,17 +977,17 @@ void ASEImporter::ConvertMeshes(ASE::Mesh& mesh, std::vector<aiMesh*>& avOutMesh
                 p_pcOut->mFaces = new aiFace[p_pcOut->mNumFaces];
 
                 unsigned int iBase = 0,iIndex;
-                if (p_pcOut->mNumVertices) {
+                if (p_pcOut->mNumVertices)    {
                     p_pcOut->mVertices = new aiVector3D[p_pcOut->mNumVertices];
                     p_pcOut->mNormals  = new aiVector3D[p_pcOut->mNumVertices];
-                    for (unsigned int q = 0; q < aiSplit[p].size();++q) {
+                    for (unsigned int q = 0; q < aiSplit[p].size();++q)    {
 
                         iIndex = aiSplit[p][q];
 
                         p_pcOut->mFaces[q].mIndices = new unsigned int[3];
                         p_pcOut->mFaces[q].mNumIndices = 3;
 
-                        for (unsigned int t = 0; t < 3;++t, ++iBase) {
+                        for (unsigned int t = 0; t < 3;++t, ++iBase)    {
                             const uint32_t iIndex2 = mesh.mFaces[iIndex].mIndices[t];
 
                             p_pcOut->mVertices[iBase] = mesh.mPositions [iIndex2];
@@ -996,11 +996,11 @@ void ASEImporter::ConvertMeshes(ASE::Mesh& mesh, std::vector<aiMesh*>& avOutMesh
                             // convert bones, if existing
                             if (!mesh.mBones.empty()) {
                                 // check whether there is a vertex weight for this vertex index
-                                if (iIndex2 < mesh.mBoneVertices.size()) {
+                                if (iIndex2 < mesh.mBoneVertices.size())    {
 
                                     for (std::vector<std::pair<int,float> >::const_iterator
                                         blubb =  mesh.mBoneVertices[iIndex2].mBoneWeights.begin();
-                                        blubb != mesh.mBoneVertices[iIndex2].mBoneWeights.end();++blubb) {
+                                        blubb != mesh.mBoneVertices[iIndex2].mBoneWeights.end();++blubb)    {
 
                                         // NOTE: illegal cases have already been filtered out
                                         avOutputBones[(*blubb).first].push_back(std::pair<unsigned int, float>(
@@ -1018,9 +1018,9 @@ void ASEImporter::ConvertMeshes(ASE::Mesh& mesh, std::vector<aiMesh*>& avOutMesh
                     {
                         p_pcOut->mTextureCoords[c] = new aiVector3D[p_pcOut->mNumVertices];
                         iBase = 0;
-                        for (unsigned int q = 0; q < aiSplit[p].size();++q) {
+                        for (unsigned int q = 0; q < aiSplit[p].size();++q)    {
                             iIndex = aiSplit[p][q];
-                            for (unsigned int t = 0; t < 3;++t) {
+                            for (unsigned int t = 0; t < 3;++t)    {
                                 p_pcOut->mTextureCoords[c][iBase++] = mesh.amTexCoords[c][mesh.mFaces[iIndex].mIndices[t]];
                             }
                         }
@@ -1033,15 +1033,15 @@ void ASEImporter::ConvertMeshes(ASE::Mesh& mesh, std::vector<aiMesh*>& avOutMesh
                 if (!mesh.mVertexColors.empty()){
                     p_pcOut->mColors[0] = new aiColor4D[p_pcOut->mNumVertices];
                     iBase = 0;
-                    for (unsigned int q = 0; q < aiSplit[p].size();++q) {
+                    for (unsigned int q = 0; q < aiSplit[p].size();++q)    {
                         iIndex = aiSplit[p][q];
-                        for (unsigned int t = 0; t < 3;++t) {
+                        for (unsigned int t = 0; t < 3;++t)    {
                             p_pcOut->mColors[0][iBase++] = mesh.mVertexColors[mesh.mFaces[iIndex].mIndices[t]];
                         }
                     }
                 }
                 // Copy bones
-                if (!mesh.mBones.empty()) {
+                if (!mesh.mBones.empty())    {
                     p_pcOut->mNumBones = 0;
                     for (unsigned int mrspock = 0; mrspock < mesh.mBones.size();++mrspock)
                         if (!avOutputBones[mrspock].empty())p_pcOut->mNumBones++;
@@ -1050,7 +1050,7 @@ void ASEImporter::ConvertMeshes(ASE::Mesh& mesh, std::vector<aiMesh*>& avOutMesh
                     aiBone** pcBone = p_pcOut->mBones;
                     for (unsigned int mrspock = 0; mrspock < mesh.mBones.size();++mrspock)
                     {
-                        if (!avOutputBones[mrspock].empty()) {
+                        if (!avOutputBones[mrspock].empty())    {
                             // we will need this bone. add it to the output mesh and
                             // add all per-vertex weights
                             aiBone* pc = *pcBone = new aiBone();
@@ -1100,7 +1100,7 @@ void ASEImporter::ConvertMeshes(ASE::Mesh& mesh, std::vector<aiMesh*>& avOutMesh
         // If the mesh hasn't faces or vertices, there are two cases
         // possible: 1. the model is invalid. 2. This is a dummy
         // helper object which we are going to remove later ...
-        if (mesh.mFaces.empty() || mesh.mPositions.empty()) {
+        if (mesh.mFaces.empty() || mesh.mPositions.empty())    {
             return;
         }
 
@@ -1122,8 +1122,8 @@ void ASEImporter::ConvertMeshes(ASE::Mesh& mesh, std::vector<aiMesh*>& avOutMesh
             mesh.mNormals.size() * sizeof(aiVector3D));
 
         // copy texture coordinates
-        for (unsigned int c = 0; c < AI_MAX_NUMBER_OF_TEXTURECOORDS;++c) {
-            if (!mesh.amTexCoords[c].empty()) {
+        for (unsigned int c = 0; c < AI_MAX_NUMBER_OF_TEXTURECOORDS;++c)    {
+            if (!mesh.amTexCoords[c].empty())    {
                 p_pcOut->mTextureCoords[c] = new aiVector3D[mesh.amTexCoords[c].size()];
                 memcpy(p_pcOut->mTextureCoords[c],&mesh.amTexCoords[c][0],
                     mesh.amTexCoords[c].size() * sizeof(aiVector3D));
@@ -1134,14 +1134,14 @@ void ASEImporter::ConvertMeshes(ASE::Mesh& mesh, std::vector<aiMesh*>& avOutMesh
         }
 
         // copy vertex colors
-        if (!mesh.mVertexColors.empty()) {
+        if (!mesh.mVertexColors.empty())    {
             p_pcOut->mColors[0] = new aiColor4D[mesh.mVertexColors.size()];
             memcpy(p_pcOut->mColors[0],&mesh.mVertexColors[0],
                 mesh.mVertexColors.size() * sizeof(aiColor4D));
         }
 
         // copy faces
-        for (unsigned int iFace = 0; iFace < p_pcOut->mNumFaces;++iFace) {
+        for (unsigned int iFace = 0; iFace < p_pcOut->mNumFaces;++iFace)    {
             p_pcOut->mFaces[iFace].mNumIndices = 3;
             p_pcOut->mFaces[iFace].mIndices = new unsigned int[3];
 
@@ -1152,13 +1152,13 @@ void ASEImporter::ConvertMeshes(ASE::Mesh& mesh, std::vector<aiMesh*>& avOutMesh
         }
 
         // copy vertex bones
-        if (!mesh.mBones.empty() && !mesh.mBoneVertices.empty()) {
+        if (!mesh.mBones.empty() && !mesh.mBoneVertices.empty())    {
             std::vector<aiVertexWeight>* avBonesOut = new std::vector<aiVertexWeight>[mesh.mBones.size()];
 
             // find all vertex weights for this bone
             unsigned int quak = 0;
             for (std::vector<BoneVertex>::const_iterator harrypotter =  mesh.mBoneVertices.begin();
-                harrypotter != mesh.mBoneVertices.end();++harrypotter,++quak) {
+                harrypotter != mesh.mBoneVertices.end();++harrypotter,++quak)    {
 
                 for (std::vector<std::pair<int,float> >::const_iterator
                     ronaldweasley  = (*harrypotter).mBoneWeights.begin();
@@ -1178,8 +1178,8 @@ void ASEImporter::ConvertMeshes(ASE::Mesh& mesh, std::vector<aiMesh*>& avOutMesh
 
             p_pcOut->mBones = new aiBone*[p_pcOut->mNumBones];
             aiBone** pcBone = p_pcOut->mBones;
-            for (unsigned int jfkennedy = 0; jfkennedy < mesh.mBones.size();++jfkennedy) {
-                if (!avBonesOut[jfkennedy].empty()) {
+            for (unsigned int jfkennedy = 0; jfkennedy < mesh.mBones.size();++jfkennedy)    {
+                if (!avBonesOut[jfkennedy].empty())    {
                     aiBone* pc = *pcBone = new aiBone();
                     pc->mName.Set(mesh.mBones[jfkennedy].mName);
                     pc->mNumWeights = (unsigned int)avBonesOut[jfkennedy].size();
@@ -1206,7 +1206,7 @@ void ASEImporter::BuildMaterialIndices()
     for (unsigned int iMat = 0; iMat < mParser->m_vMaterials.size();++iMat)
     {
         ASE::Material& mat = mParser->m_vMaterials[iMat];
-        if (mat.bNeed) {
+        if (mat.bNeed)    {
             // Convert it to the aiMaterial layout
             ConvertMaterial(mat);
             ++pcScene->mNumMaterials;
@@ -1214,7 +1214,7 @@ void ASEImporter::BuildMaterialIndices()
         for (unsigned int iSubMat = 0; iSubMat < mat.avSubMaterials.size();++iSubMat)
         {
             ASE::Material& submat = mat.avSubMaterials[iSubMat];
-            if (submat.bNeed) {
+            if (submat.bNeed)    {
                 // Convert it to the aiMaterial layout
                 ConvertMaterial(submat);
                 ++pcScene->mNumMaterials;
@@ -1251,9 +1251,9 @@ void ASEImporter::BuildMaterialIndices()
             }
             iNum++;
         }
-        for (unsigned int iSubMat = 0; iSubMat < mat.avSubMaterials.size();++iSubMat) {
+        for (unsigned int iSubMat = 0; iSubMat < mat.avSubMaterials.size();++iSubMat)    {
             ASE::Material& submat = mat.avSubMaterials[iSubMat];
-            if (submat.bNeed) {
+            if (submat.bNeed)    {
                 ai_assert(NULL != submat.pcInstance);
                 pcScene->mMaterials[iNum] = submat.pcInstance;
 
@@ -1262,10 +1262,10 @@ void ASEImporter::BuildMaterialIndices()
 
                 // Iterate through all meshes and search for one which is using
                 // this sub-level material index
-                for (unsigned int iMesh = 0; iMesh < pcScene->mNumMeshes;++iMesh) {
+                for (unsigned int iMesh = 0; iMesh < pcScene->mNumMeshes;++iMesh)    {
                     aiMesh* mesh = pcScene->mMeshes[iMesh];
 
-                    if (iSubMat == mesh->mMaterialIndex && iMat == (uintptr_t)mesh->mColors[3]) {
+                    if (iSubMat == mesh->mMaterialIndex && iMat == (uintptr_t)mesh->mColors[3])    {
                         mesh->mMaterialIndex = iNum;
                         mesh->mColors[3]     = NULL;
                     }
@@ -1281,7 +1281,7 @@ void ASEImporter::BuildMaterialIndices()
 
 // ------------------------------------------------------------------------------------------------
 // Generate normal vectors basing on smoothing groups
-bool ASEImporter::GenerateNormals(ASE::Mesh& mesh) {
+bool ASEImporter::GenerateNormals(ASE::Mesh& mesh)    {
 
     if (!mesh.mNormals.empty() && !configRecomputeNormals)
     {

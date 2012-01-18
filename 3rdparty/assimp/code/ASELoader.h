@@ -57,7 +57,7 @@ class MaterialHelper;
 /** Importer class for the 3DS ASE ASCII format.
  *
  */
-class ASEImporter : public BaseImporter {
+class ASEImporter : public BaseImporter    {
     friend class Importer;
 
 protected:

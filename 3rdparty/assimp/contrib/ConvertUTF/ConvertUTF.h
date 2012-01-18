@@ -88,10 +88,10 @@
     bit mask & shift operations.
 ------------------------------------------------------------------------ */
 
-typedef unsigned long UTF32; /* at least 32 bits */
-typedef unsigned short UTF16; /* at least 16 bits */
-typedef unsigned char UTF8; /* typically 8 bits */
-typedef unsigned char Boolean; /* 0 or 1 */
+typedef unsigned long    UTF32;    /* at least 32 bits */
+typedef unsigned short    UTF16;    /* at least 16 bits */
+typedef unsigned char    UTF8;    /* typically 8 bits */
+typedef unsigned char    Boolean; /* 0 or 1 */
 
 /* Some fundamental constants */
 #define UNI_REPLACEMENT_CHAR (UTF32)0x0000FFFD
@@ -101,10 +101,10 @@ typedef unsigned char Boolean; /* 0 or 1 */
 #define UNI_MAX_LEGAL_UTF32 (UTF32)0x0010FFFF
 
 typedef enum {
-    conversionOK,   /* conversion successful */
-    sourceExhausted, /* partial character in source, but hit end */
-    targetExhausted, /* insuff. room in target for conversion */
-    sourceIllegal  /* source sequence is illegal/malformed */
+    conversionOK,         /* conversion successful */
+    sourceExhausted,    /* partial character in source, but hit end */
+    targetExhausted,    /* insuff. room in target for conversion */
+    sourceIllegal        /* source sequence is illegal/malformed */
 } ConversionResult;
 
 typedef enum {

@@ -59,10 +59,10 @@ struct aiNode;
 // STL headers
 #include <vector>
 
-namespace Assimp {
+namespace Assimp    {
 class MaterialHelper;
 
-namespace SMD {
+namespace SMD    {
 
 // ---------------------------------------------------------------------------
 /** Data structure for a vertex in a SMD file

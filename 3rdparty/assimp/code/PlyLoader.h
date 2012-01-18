@@ -51,7 +51,7 @@ struct aiNode;
 
 #include "PlyParser.h"
 
-namespace Assimp {
+namespace Assimp    {
 class MaterialHelper;
 
 using namespace PLY;

@@ -391,10 +391,10 @@ void MD3Importer::ValidateSurfaceHeaderOffsets(const MD3::Surface* pcSurf)
     const int32_t ofs = int32_t((const unsigned char*)pcSurf-this->mBuffer);
 
     // Check whether all data chunks are inside the valid range
-    if (pcSurf->OFS_TRIANGLES + ofs + pcSurf->NUM_TRIANGLES * sizeof(MD3::Triangle) > fileSize  ||
+    if (pcSurf->OFS_TRIANGLES + ofs + pcSurf->NUM_TRIANGLES * sizeof(MD3::Triangle)    > fileSize  ||
         pcSurf->OFS_SHADERS + ofs + pcSurf->NUM_SHADER * sizeof(MD3::Shader) > fileSize         ||
         pcSurf->OFS_ST + ofs + pcSurf->NUM_VERTICES * sizeof(MD3::TexCoord) > fileSize          ||
-        pcSurf->OFS_XYZNORMAL + ofs + pcSurf->NUM_VERTICES * sizeof(MD3::Vertex) > fileSize) {
+        pcSurf->OFS_XYZNORMAL + ofs + pcSurf->NUM_VERTICES * sizeof(MD3::Vertex) > fileSize)    {
 
         throw DeadlyImportError("Invalid MD3 surface header: some offsets are outside the file");
     }
@@ -655,7 +655,7 @@ void MD3Importer::ConvertPath(const char* texture_name, const char* header_name,
     // HACK: If the paths starts with "models", ignore the
     // next two hierarchy levels, it specifies just the model name.
     // Ignored by Q3, it might be not equal to the real model location.
-    if (end2) {
+    if (end2)    {
 
         size_t len2;
         const size_t len1 = (size_t)(end1 - header_name);
@@ -783,7 +783,7 @@ void MD3Importer::InternReadFile( const std::string& pFile,
     // Read all surfaces from the file
     unsigned int iNum = pcHeader->NUM_SURFACES;
     unsigned int iNumMaterials = 0;
-    while (iNum-- > 0) {
+    while (iNum-- > 0)    {
 
         // Ensure correct endianess
 #ifdef AI_BUILD_BIG_ENDIAN
@@ -847,7 +847,7 @@ void MD3Importer::InternReadFile( const std::string& pFile,
         }
 
         // Get the first shader (= texture?) assigned to the surface
-        if (!texture_name && pcSurfaces->NUM_SHADER) {
+        if (!texture_name && pcSurfaces->NUM_SHADER)    {
             texture_name = pcShaders->NAME;
         }
 
@@ -898,10 +898,10 @@ void MD3Importer::InternReadFile( const std::string& pFile,
         if (!shader) {
             // Setup dummy texture file name to ensure UV coordinates are kept during postprocessing
             aiString szString;
-            if (convertedPath.length()) {
+            if (convertedPath.length())    {
                 szString.Set(convertedPath);
             }
-            else {
+            else    {
                 DefaultLogger::get()->warn("Texture file name has zero length. Using default name");
                 szString.Set("dummy_texture.bmp");
             }
@@ -921,7 +921,7 @@ void MD3Importer::InternReadFile( const std::string& pFile,
             // Ensure correct endianess
 #ifdef AI_BUILD_BIG_ENDIAN
 
-        for (uint32_t i = 0; i < pcSurfaces->NUM_VERTICES;++i) {
+        for (uint32_t i = 0; i < pcSurfaces->NUM_VERTICES;++i)    {
             AI_SWAP2( pcVertices[i].NORMAL );
             AI_SWAP2( pcVertices[i].X );
             AI_SWAP2( pcVertices[i].Y );
@@ -930,7 +930,7 @@ void MD3Importer::InternReadFile( const std::string& pFile,
             AI_SWAP4( pcUVs[i].U );
             AI_SWAP4( pcUVs[i].U );
         }
-        for (uint32_t i = 0; i < pcSurfaces->NUM_TRIANGLES;++i) {
+        for (uint32_t i = 0; i < pcSurfaces->NUM_TRIANGLES;++i)    {
             AI_SWAP4(pcTriangles[i].INDEXES[0]);
             AI_SWAP4(pcTriangles[i].INDEXES[1]);
             AI_SWAP4(pcTriangles[i].INDEXES[2]);
@@ -941,22 +941,22 @@ void MD3Importer::InternReadFile( const std::string& pFile,
         // Fill mesh information
         pcMesh->mPrimitiveTypes = aiPrimitiveType_TRIANGLE;
 
-        pcMesh->mNumVertices  = pcSurfaces->NUM_TRIANGLES*3;
-        pcMesh->mNumFaces   = pcSurfaces->NUM_TRIANGLES;
-        pcMesh->mFaces    = new aiFace[pcSurfaces->NUM_TRIANGLES];
-        pcMesh->mNormals   = new aiVector3D[pcMesh->mNumVertices];
-        pcMesh->mVertices   = new aiVector3D[pcMesh->mNumVertices];
-        pcMesh->mTextureCoords[0] = new aiVector3D[pcMesh->mNumVertices];
+        pcMesh->mNumVertices        = pcSurfaces->NUM_TRIANGLES*3;
+        pcMesh->mNumFaces            = pcSurfaces->NUM_TRIANGLES;
+        pcMesh->mFaces                = new aiFace[pcSurfaces->NUM_TRIANGLES];
+        pcMesh->mNormals            = new aiVector3D[pcMesh->mNumVertices];
+        pcMesh->mVertices            = new aiVector3D[pcMesh->mNumVertices];
+        pcMesh->mTextureCoords[0]    = new aiVector3D[pcMesh->mNumVertices];
         pcMesh->mNumUVComponents[0] = 2;
 
         // Fill in all triangles
         unsigned int iCurrent = 0;
-        for (unsigned int i = 0; i < (unsigned int)pcSurfaces->NUM_TRIANGLES;++i) {
+        for (unsigned int i = 0; i < (unsigned int)pcSurfaces->NUM_TRIANGLES;++i)    {
             pcMesh->mFaces[i].mIndices = new unsigned int[3];
             pcMesh->mFaces[i].mNumIndices = 3;
 
             //unsigned int iTemp = iCurrent;
-            for (unsigned int c = 0; c < 3;++c,++iCurrent) {
+            for (unsigned int c = 0; c < 3;++c,++iCurrent)    {
                 pcMesh->mFaces[i].mIndices[c] = iCurrent;
 
                 // Read vertices

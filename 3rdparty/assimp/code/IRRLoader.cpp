@@ -109,7 +109,7 @@ void IRRImporter::SetupProperties(const Importer* pImp)
 {
     // read the output frame rate of all node animation channels
     fps = pImp->GetPropertyInteger(AI_CONFIG_IMPORT_IRR_ANIM_FPS,100);
-    if (fps < 10.) {
+    if (fps < 10.)    {
         DefaultLogger::get()->error("IRR: Invalid FPS configuration");
         fps = 100;
     }
@@ -169,7 +169,7 @@ aiMesh* IRRImporter::BuildSingleQuadMesh(const SkyboxVertex& v1,
 void IRRImporter::BuildSkybox(std::vector<aiMesh*>& meshes, std::vector<aiMaterial*> materials)
 {
     // Update the material of the skybox - replace the name and disable shading for skyboxes.
-    for (unsigned int i = 0; i < 6;++i) {
+    for (unsigned int i = 0; i < 6;++i)    {
         MaterialHelper* out = ( MaterialHelper* ) (*(materials.end()-(6-i)));
 
         aiString s;
@@ -241,7 +241,7 @@ void IRRImporter::CopyMaterial(std::vector<aiMaterial*>& materials,
     unsigned int& defMatIdx,
     aiMesh* mesh)
 {
-    if (inmaterials.empty()) {
+    if (inmaterials.empty())    {
         // Do we have a default material? If not we need to create one
         if (0xffffffff == defMatIdx)
         {
@@ -258,7 +258,7 @@ void IRRImporter::CopyMaterial(std::vector<aiMaterial*>& materials,
         mesh->mMaterialIndex = defMatIdx;
         return;
     }
-    else if (inmaterials.size() > 1) {
+    else if (inmaterials.size() > 1)    {
         DefaultLogger::get()->info("IRR: Skipping additional materials");
     }
 
@@ -298,15 +298,15 @@ void IRRImporter::ComputeAnimations(Node* root, aiNode* real, std::vector<aiNode
         return;
     }
     unsigned int total = 0;
-    for (std::list<Animator>::iterator it = root->animators.begin();it != root->animators.end(); ++it) {
-        if ((*it).type == Animator::UNKNOWN || (*it).type == Animator::OTHER) {
+    for (std::list<Animator>::iterator it = root->animators.begin();it != root->animators.end(); ++it)    {
+        if ((*it).type == Animator::UNKNOWN || (*it).type == Animator::OTHER)    {
             DefaultLogger::get()->warn("IRR: Skipping unknown or unsupported animator");
             continue;
         }
         ++total;
     }
     if (!total)return;
-    else if (1 == total) {
+    else if (1 == total)    {
         DefaultLogger::get()->warn("IRR: Adding dummy nodes to simulate multiple animators");
     }
 
@@ -321,7 +321,7 @@ void IRRImporter::ComputeAnimations(Node* root, aiNode* real, std::vector<aiNode
         Animator& in = *it ;
         aiNodeAnim* anim = new aiNodeAnim();
 
-        if (cur != total-1) {
+        if (cur != total-1)    {
             // Build a new name - a prefix instead of a suffix because it is
             // easier to check against
             anim->mNodeName.length = ::sprintf(anim->mNodeName.data,
@@ -349,7 +349,7 @@ void IRRImporter::ComputeAnimations(Node* root, aiNode* real, std::vector<aiNode
         else anim->mNodeName.Set(root->name);
         ++cur;
 
-        switch (in.type) {
+        switch (in.type)    {
         case Animator::ROTATION:
             {
                 // -----------------------------------------------------
@@ -444,7 +444,7 @@ void IRRImporter::ComputeAnimations(Node* root, aiNode* real, std::vector<aiNode
 
                 // from Irrlicht, what else should we do than copying it?
                 aiVector3D vecU,vecV;
-                if (in.direction.y) {
+                if (in.direction.y)    {
                     vecV = aiVector3D(50,0,0) ^ in.direction;
                 }
                 else vecV = aiVector3D(0,50,00) ^ in.direction;
@@ -452,7 +452,7 @@ void IRRImporter::ComputeAnimations(Node* root, aiNode* real, std::vector<aiNode
                 vecU = (vecV ^ in.direction).Normalize();
 
                 // build the output keys
-                for (unsigned int i = 0; i < anim->mNumPositionKeys;++i) {
+                for (unsigned int i = 0; i < anim->mNumPositionKeys;++i)    {
                     aiVectorKey& key = anim->mPositionKeys[i];
                     key.mTime = i * tdelta;
 
@@ -481,7 +481,7 @@ void IRRImporter::ComputeAnimations(Node* root, aiNode* real, std::vector<aiNode
                 const double timeFactor = lengthOfWay / in.timeForWay;
 
                 // build the output keys
-                for (unsigned int i = 0; i < anim->mNumPositionKeys;++i) {
+                for (unsigned int i = 0; i < anim->mNumPositionKeys;++i)    {
                     aiVectorKey& key = anim->mPositionKeys[i];
                     key.mTime = i * tdelta;
                     key.mValue = in.circleCenter + diff * float(timeFactor * key.mTime);
@@ -494,14 +494,14 @@ void IRRImporter::ComputeAnimations(Node* root, aiNode* real, std::vector<aiNode
                 // repeat outside the defined time range
                 anim->mPostState = anim->mPreState = aiAnimBehaviour_REPEAT;
                 const int size = (int)in.splineKeys.size();
-                if (!size) {
+                if (!size)    {
                     // We have no point in the spline. That's bad. Really bad.
                     DefaultLogger::get()->warn("IRR: Spline animators with no points defined");
 
                     delete anim;anim = NULL;
                     break;
                 }
-                else if (size == 1) {
+                else if (size == 1)    {
                     // We have just one point in the spline so we don't need the full calculation
                     anim->mNumPositionKeys = 1;
                     anim->mPositionKeys = new aiVectorKey[anim->mNumPositionKeys];
@@ -555,7 +555,7 @@ void IRRImporter::ComputeAnimations(Node* root, aiNode* real, std::vector<aiNode
             // UNKNOWN , OTHER
             break;
         };
-        if (anim) {
+        if (anim)    {
             anims.push_back(anim);
             ++total;
         }
@@ -576,7 +576,7 @@ void SetupMapping (MaterialHelper* mat, aiTextureMapping mode, const aiVector3D&
     for (unsigned int i = 0; i < mat->mNumProperties;++i)
     {
         aiMaterialProperty* prop = mat->mProperties[i];
-        if (!::strcmp( prop->mKey.data, "$tex.file")) {
+        if (!::strcmp( prop->mKey.data, "$tex.file"))    {
             // Setup the mapping key
             aiMaterialProperty* m = new aiMaterialProperty();
             m->mKey.Set("$tex.mapping");
@@ -592,7 +592,7 @@ void SetupMapping (MaterialHelper* mat, aiTextureMapping mode, const aiVector3D&
             p.push_back(m);
 
             // Setup the mapping axis
-            if (mode == aiTextureMapping_CYLINDER || mode == aiTextureMapping_PLANE || mode == aiTextureMapping_SPHERE) {
+            if (mode == aiTextureMapping_CYLINDER || mode == aiTextureMapping_PLANE || mode == aiTextureMapping_SPHERE)    {
                 m = new aiMaterialProperty();
                 m->mKey.Set("$tex.mapaxis");
                 m->mIndex    = prop->mIndex;
@@ -605,7 +605,7 @@ void SetupMapping (MaterialHelper* mat, aiTextureMapping mode, const aiVector3D&
                 p.push_back(m);
             }
         }
-        else if (! ::strcmp( prop->mKey.data, "$tex.uvwsrc")) {
+        else if (! ::strcmp( prop->mKey.data, "$tex.uvwsrc"))    {
             delete mat->mProperties[i];
         }
         else p.push_back(prop);
@@ -614,7 +614,7 @@ void SetupMapping (MaterialHelper* mat, aiTextureMapping mode, const aiVector3D&
     if (p.empty())return;
 
     // rebuild the output array
-    if (p.size() > mat->mNumAllocated) {
+    if (p.size() > mat->mNumAllocated)    {
         delete[] mat->mProperties;
         mat->mProperties = new aiMaterialProperty*[p.size()*2];
 
@@ -630,8 +630,8 @@ void IRRImporter::GenerateGraph(Node* root,aiNode* rootOut ,aiScene* scene,
     std::vector<aiMesh*>&        meshes,
     std::vector<aiNodeAnim*>&    anims,
     std::vector<AttachmentInfo>& attach,
-    std::vector<aiMaterial*>&  materials,
-    unsigned int&     defMatIdx)
+    std::vector<aiMaterial*>&     materials,
+    unsigned int&                 defMatIdx)
 {
     unsigned int oldMeshSize = (unsigned int)meshes.size();
     //unsigned int meshTrafoAssign = 0;
@@ -649,7 +649,7 @@ void IRRImporter::GenerateGraph(Node* root,aiNode* rootOut ,aiScene* scene,
             // the list of all scenes to be attached to the
             // graph we're currently building
             aiScene* scene = batch.GetImport(root->id);
-            if (!scene) {
+            if (!scene)    {
                 DefaultLogger::get()->error("IRR: Unable to load external file: " + root->meshPath);
                 break;
             }
@@ -660,13 +660,13 @@ void IRRImporter::GenerateGraph(Node* root,aiNode* rootOut ,aiScene* scene,
             // don't execute any pp-steps on the file, the numbers
             // should be equal. If they are not, we can impossibly
             // do this  ...
-            if (root->materials.size() != (unsigned int)scene->mNumMaterials) {
+            if (root->materials.size() != (unsigned int)scene->mNumMaterials)    {
                 DefaultLogger::get()->warn("IRR: Failed to match imported materials "
                     "with the materials found in the IRR scene file");
 
                 break;
             }
-            for (unsigned int i = 0; i < scene->mNumMaterials;++i) {
+            for (unsigned int i = 0; i < scene->mNumMaterials;++i)    {
                 // Delete the old material, we don't need it anymore
                 delete scene->mMaterials[i];
 
@@ -677,7 +677,7 @@ void IRRImporter::GenerateGraph(Node* root,aiNode* rootOut ,aiScene* scene,
             // NOTE: Each mesh should have exactly one material assigned,
             // but we do it in a separate loop if this behaviour changes
             // in future.
-            for (unsigned int i = 0; i < scene->mNumMeshes;++i) {
+            for (unsigned int i = 0; i < scene->mNumMeshes;++i)    {
                 // Process material flags
                 aiMesh* mesh = scene->mMeshes[i];
 
@@ -692,14 +692,14 @@ void IRRImporter::GenerateGraph(Node* root,aiNode* rootOut ,aiScene* scene,
                 if (mesh->HasVertexColors(0) && src.second & AI_IRRMESH_MAT_trans_vertex_alpha)
                 {
                     bool bdo = true;
-                    for (unsigned int a = 1; a < mesh->mNumVertices;++a) {
+                    for (unsigned int a = 1; a < mesh->mNumVertices;++a)    {
 
-                        if (mesh->mColors[0][a].a != mesh->mColors[0][a-1].a) {
+                        if (mesh->mColors[0][a].a != mesh->mColors[0][a-1].a)    {
                             bdo = false;
                             break;
                         }
                     }
-                    if (bdo) {
+                    if (bdo)    {
                         DefaultLogger::get()->info("IRR: Replacing mesh vertex alpha with common opacity");
 
                         for (unsigned int a = 0; a < mesh->mNumVertices;++a)
@@ -713,13 +713,13 @@ void IRRImporter::GenerateGraph(Node* root,aiNode* rootOut ,aiScene* scene,
                 // (either lightmap, normalmap, 2layered material) we need to
                 // setup the correct UV index for it. The texture can either
                 // be diffuse (lightmap & 2layer) or a normal map (normal & parallax)
-                if (mesh->HasTextureCoords(1)) {
+                if (mesh->HasTextureCoords(1))    {
 
                     int idx = 1;
-                    if (src.second & (AI_IRRMESH_MAT_solid_2layer | AI_IRRMESH_MAT_lightmap)) {
+                    if (src.second & (AI_IRRMESH_MAT_solid_2layer | AI_IRRMESH_MAT_lightmap))    {
                         mat->AddProperty(&idx,1,AI_MATKEY_UVWSRC_DIFFUSE(0));
                     }
-                    else if (src.second & AI_IRRMESH_MAT_normalmap_solid) {
+                    else if (src.second & AI_IRRMESH_MAT_normalmap_solid)    {
                         mat->AddProperty(&idx,1,AI_MATKEY_UVWSRC_NORMALS(0));
                     }
                 }
@@ -819,12 +819,12 @@ void IRRImporter::GenerateGraph(Node* root,aiNode* rootOut ,aiScene* scene,
 
     // Check whether we added a mesh (or more than one ...). In this case
     // we'll also need to attach it to the node
-    if (oldMeshSize != (unsigned int) meshes.size()) {
+    if (oldMeshSize != (unsigned int) meshes.size())    {
 
         rootOut->mNumMeshes = (unsigned int)meshes.size() - oldMeshSize;
         rootOut->mMeshes    = new unsigned int[rootOut->mNumMeshes];
 
-        for (unsigned int a = 0; a  < rootOut->mNumMeshes;++a) {
+        for (unsigned int a = 0; a  < rootOut->mNumMeshes;++a)    {
             rootOut->mMeshes[a] = oldMeshSize+a;
         }
     }
@@ -861,10 +861,10 @@ void IRRImporter::GenerateGraph(Node* root,aiNode* rootOut ,aiScene* scene,
     // Add all children recursively. First allocate enough storage
     // for them, then call us again
     rootOut->mNumChildren = (unsigned int)root->children.size();
-    if (rootOut->mNumChildren) {
+    if (rootOut->mNumChildren)    {
 
         rootOut->mChildren = new aiNode*[rootOut->mNumChildren];
-        for (unsigned int i = 0; i < rootOut->mNumChildren;++i) {
+        for (unsigned int i = 0; i < rootOut->mNumChildren;++i)    {
 
             aiNode* node = rootOut->mChildren[i] =  new aiNode();
             node->mParent = rootOut;
@@ -908,7 +908,7 @@ void IRRImporter::InternReadFile( const std::string& pFile,
 
     // Batch loader used to load external models
     BatchLoader batch(pIOHandler);
-// batch.SetBasePath(pFile);
+//    batch.SetBasePath(pFile);
 
     cameras.reserve(5);
     lights.reserve(5);
@@ -917,11 +917,11 @@ void IRRImporter::InternReadFile( const std::string& pFile,
     unsigned int guessedAnimCnt = 0, guessedMeshCnt = 0, guessedMatCnt = 0;
 
     // Parse the XML file
-    while (reader->read()) {
-        switch (reader->getNodeType()) {
+    while (reader->read())    {
+        switch (reader->getNodeType())    {
         case EXN_ELEMENT:
 
-            if (!ASSIMP_stricmp(reader->getNodeName(),"node")) {
+            if (!ASSIMP_stricmp(reader->getNodeName(),"node"))    {
                 // ***********************************************************************
                 /*  What we're going to do with the node depends
                  *  on its type:
@@ -944,20 +944,20 @@ void IRRImporter::InternReadFile( const std::string& pFile,
                 // ***********************************************************************
                 const char* sz = reader->getAttributeValueSafe("type");
                 Node* nd;
-                if (!ASSIMP_stricmp(sz,"mesh") || !ASSIMP_stricmp(sz,"octTree")) {
+                if (!ASSIMP_stricmp(sz,"mesh") || !ASSIMP_stricmp(sz,"octTree"))    {
                     // OctTree's and meshes are treated equally
                     nd = new Node(Node::MESH);
                 }
-                else if (!ASSIMP_stricmp(sz,"cube")) {
+                else if (!ASSIMP_stricmp(sz,"cube"))    {
                     nd = new Node(Node::CUBE);
                     ++guessedMeshCnt;
                     // meshes.push_back(StandardShapes::MakeMesh(&StandardShapes::MakeHexahedron));
                 }
-                else if (!ASSIMP_stricmp(sz,"skybox")) {
+                else if (!ASSIMP_stricmp(sz,"skybox"))    {
                     nd = new Node(Node::SKYBOX);
                     guessedMeshCnt += 6;
                 }
-                else if (!ASSIMP_stricmp(sz,"camera")) {
+                else if (!ASSIMP_stricmp(sz,"camera"))    {
                     nd = new Node(Node::CAMERA);
 
                     // Setup a temporary name for the camera
@@ -965,7 +965,7 @@ void IRRImporter::InternReadFile( const std::string& pFile,
                     cam->mName.Set( nd->name );
                     cameras.push_back(cam);
                 }
-                else if (!ASSIMP_stricmp(sz,"light")) {
+                else if (!ASSIMP_stricmp(sz,"light"))    {
                     nd = new Node(Node::LIGHT);
 
                     // Setup a temporary name for the light
@@ -973,25 +973,25 @@ void IRRImporter::InternReadFile( const std::string& pFile,
                     cam->mName.Set( nd->name );
                     lights.push_back(cam);
                 }
-                else if (!ASSIMP_stricmp(sz,"sphere")) {
+                else if (!ASSIMP_stricmp(sz,"sphere"))    {
                     nd = new Node(Node::SPHERE);
                     ++guessedMeshCnt;
                 }
-                else if (!ASSIMP_stricmp(sz,"animatedMesh")) {
+                else if (!ASSIMP_stricmp(sz,"animatedMesh"))    {
                     nd = new Node(Node::ANIMMESH);
                 }
-                else if (!ASSIMP_stricmp(sz,"empty")) {
+                else if (!ASSIMP_stricmp(sz,"empty"))    {
                     nd = new Node(Node::DUMMY);
                 }
-                else if (!ASSIMP_stricmp(sz,"terrain")) {
+                else if (!ASSIMP_stricmp(sz,"terrain"))    {
                     nd = new Node(Node::TERRAIN);
                 }
-                else if (!ASSIMP_stricmp(sz,"billBoard")) {
+                else if (!ASSIMP_stricmp(sz,"billBoard"))    {
                     // We don't support billboards, so ignore them
                     DefaultLogger::get()->error("IRR: Billboards are not supported by Assimp");
                     nd = new Node(Node::DUMMY);
                 }
-                else {
+                else    {
                     DefaultLogger::get()->warn("IRR: Found unknown node: " + std::string(sz));
 
                     /*  We skip the contents of nodes we don't know.
@@ -1007,17 +1007,17 @@ void IRRImporter::InternReadFile( const std::string& pFile,
                 nd->parent = curParent;
                 curParent->children.push_back(nd);
             }
-            else if (!ASSIMP_stricmp(reader->getNodeName(),"materials")) {
+            else if (!ASSIMP_stricmp(reader->getNodeName(),"materials"))    {
                 inMaterials = true;
             }
-            else if (!ASSIMP_stricmp(reader->getNodeName(),"animators")) {
+            else if (!ASSIMP_stricmp(reader->getNodeName(),"animators"))    {
                 inAnimator = true;
             }
-            else if (!ASSIMP_stricmp(reader->getNodeName(),"attributes")) {
+            else if (!ASSIMP_stricmp(reader->getNodeName(),"attributes"))    {
                 /*  We should have a valid node here
                  *  FIX: no ... the scene root node is also contained in an attributes block
                  */
-                if (!curNode) {
+                if (!curNode)    {
 #if 0
                     DefaultLogger::get()->error("IRR: Encountered <attributes> element, but "
                         "there is no node active");
@@ -1028,7 +1028,7 @@ void IRRImporter::InternReadFile( const std::string& pFile,
                 Animator* curAnim = NULL;
 
                 // Materials can occur for nearly any type of node
-                if (inMaterials && curNode->type != Node::DUMMY) {
+                if (inMaterials && curNode->type != Node::DUMMY)    {
                     /*  This is a material description - parse it!
                      */
                     curNode->materials.push_back(std::pair< aiMaterial*, unsigned int > () );
@@ -1039,7 +1039,7 @@ void IRRImporter::InternReadFile( const std::string& pFile,
                     ++guessedMatCnt;
                     continue;
                 }
-                else if (inAnimator) {
+                else if (inAnimator)    {
                     /*  This is an animation path - add a new animator
                      *  to the list.
                      */
@@ -1052,21 +1052,21 @@ void IRRImporter::InternReadFile( const std::string& pFile,
                 /*  Parse all elements in the attributes block
                  *  and process them.
                  */
-                while (reader->read()) {
-                    if (reader->getNodeType() == EXN_ELEMENT) {
-                        if (!ASSIMP_stricmp(reader->getNodeName(),"vector3d")) {
+                while (reader->read())    {
+                    if (reader->getNodeType() == EXN_ELEMENT)    {
+                        if (!ASSIMP_stricmp(reader->getNodeName(),"vector3d"))    {
                             VectorProperty prop;
                             ReadVectorProperty(prop);
 
-                            if (inAnimator) {
-                                if (curAnim->type == Animator::ROTATION && prop.name == "Rotation") {
+                            if (inAnimator)    {
+                                if (curAnim->type == Animator::ROTATION && prop.name == "Rotation")    {
                                     // We store the rotation euler angles in 'direction'
                                     curAnim->direction = prop.value;
                                 }
-                                else if (curAnim->type == Animator::FOLLOW_SPLINE) {
+                                else if (curAnim->type == Animator::FOLLOW_SPLINE)    {
                                     // Check whether the vector follows the PointN naming scheme,
                                     // here N is the ONE-based index of the point
-                                    if (prop.name.length() >= 6 && prop.name.substr(0,5) == "Point") {
+                                    if (prop.name.length() >= 6 && prop.name.substr(0,5) == "Point")    {
                                         // Add a new key to the list
                                         curAnim->splineKeys.push_back(aiVectorKey());
                                         aiVectorKey& key = curAnim->splineKeys.back();
@@ -1076,158 +1076,158 @@ void IRRImporter::InternReadFile( const std::string& pFile,
                                         key.mTime  = strtol10(&prop.name[5]);
                                     }
                                 }
-                                else if (curAnim->type == Animator::FLY_CIRCLE) {
-                                    if (prop.name == "Center") {
+                                else if (curAnim->type == Animator::FLY_CIRCLE)    {
+                                    if (prop.name == "Center")    {
                                         curAnim->circleCenter = prop.value;
                                     }
-                                    else if (prop.name == "Direction") {
+                                    else if (prop.name == "Direction")    {
                                         curAnim->direction = prop.value;
 
                                         // From Irrlicht's source - a workaround for backward compatibility with Irrlicht 1.1
-                                        if (curAnim->direction == aiVector3D()) {
+                                        if (curAnim->direction == aiVector3D())    {
                                             curAnim->direction = aiVector3D(0.f,1.f,0.f);
                                         }
                                         else curAnim->direction.Normalize();
                                     }
                                 }
-                                else if (curAnim->type == Animator::FLY_STRAIGHT) {
-                                    if (prop.name == "Start") {
+                                else if (curAnim->type == Animator::FLY_STRAIGHT)    {
+                                    if (prop.name == "Start")    {
                                         // We reuse the field here
                                         curAnim->circleCenter = prop.value;
                                     }
-                                    else if (prop.name == "End") {
+                                    else if (prop.name == "End")    {
                                         // We reuse the field here
                                         curAnim->direction = prop.value;
                                     }
                                 }
                             }
-                            else {
-                                if (prop.name == "Position") {
+                            else    {
+                                if (prop.name == "Position")    {
                                     curNode->position = prop.value;
                                 }
-                                else if (prop.name == "Rotation") {
+                                else if (prop.name == "Rotation")    {
                                     curNode->rotation = prop.value;
                                 }
-                                else if (prop.name == "Scale") {
+                                else if (prop.name == "Scale")    {
                                     curNode->scaling = prop.value;
                                 }
                                 else if (Node::CAMERA == curNode->type)
                                 {
                                     aiCamera* cam = cameras.back();
-                                    if (prop.name == "Target") {
+                                    if (prop.name == "Target")    {
                                         cam->mLookAt = prop.value;
                                     }
-                                    else if (prop.name == "UpVector") {
+                                    else if (prop.name == "UpVector")    {
                                         cam->mUp = prop.value;
                                     }
                                 }
                             }
                         }
-                        else if (!ASSIMP_stricmp(reader->getNodeName(),"bool")) {
+                        else if (!ASSIMP_stricmp(reader->getNodeName(),"bool"))    {
                             BoolProperty prop;
                             ReadBoolProperty(prop);
 
-                            if (inAnimator && curAnim->type == Animator::FLY_CIRCLE && prop.name == "Loop") {
+                            if (inAnimator && curAnim->type == Animator::FLY_CIRCLE && prop.name == "Loop")    {
                                 curAnim->loop = prop.value;
                             }
                         }
-                        else if (!ASSIMP_stricmp(reader->getNodeName(),"float")) {
+                        else if (!ASSIMP_stricmp(reader->getNodeName(),"float"))    {
                             FloatProperty prop;
                             ReadFloatProperty(prop);
 
-                            if (inAnimator) {
+                            if (inAnimator)    {
                                 // The speed property exists for several animators
-                                if (prop.name == "Speed") {
+                                if (prop.name == "Speed")    {
                                     curAnim->speed = prop.value;
                                 }
-                                else if (curAnim->type == Animator::FLY_CIRCLE && prop.name == "Radius") {
+                                else if (curAnim->type == Animator::FLY_CIRCLE && prop.name == "Radius")    {
                                     curAnim->circleRadius = prop.value;
                                 }
-                                else if (curAnim->type == Animator::FOLLOW_SPLINE && prop.name == "Tightness") {
+                                else if (curAnim->type == Animator::FOLLOW_SPLINE && prop.name == "Tightness")    {
                                     curAnim->tightness = prop.value;
                                 }
                             }
-                            else {
-                                if (prop.name == "FramesPerSecond" && Node::ANIMMESH == curNode->type) {
+                            else    {
+                                if (prop.name == "FramesPerSecond" && Node::ANIMMESH == curNode->type)    {
                                     curNode->framesPerSecond = prop.value;
                                 }
-                                else if (Node::CAMERA == curNode->type) {
+                                else if (Node::CAMERA == curNode->type)    {
                                     /*  This is the vertical, not the horizontal FOV.
                                     *  We need to compute the right FOV from the
                                     *  screen aspect which we don't know yet.
                                     */
-                                    if (prop.name == "Fovy") {
+                                    if (prop.name == "Fovy")    {
                                         cameras.back()->mHorizontalFOV  = prop.value;
                                     }
-                                    else if (prop.name == "Aspect") {
+                                    else if (prop.name == "Aspect")    {
                                         cameras.back()->mAspect = prop.value;
                                     }
-                                    else if (prop.name == "ZNear") {
+                                    else if (prop.name == "ZNear")    {
                                         cameras.back()->mClipPlaneNear = prop.value;
                                     }
-                                    else if (prop.name == "ZFar") {
+                                    else if (prop.name == "ZFar")    {
                                         cameras.back()->mClipPlaneFar = prop.value;
                                     }
                                 }
-                                else if (Node::LIGHT == curNode->type) {
+                                else if (Node::LIGHT == curNode->type)    {
                                     /*  Additional light information
                                      */
-                                    if (prop.name == "Attenuation") {
+                                    if (prop.name == "Attenuation")    {
                                         lights.back()->mAttenuationLinear  = prop.value;
                                     }
-                                    else if (prop.name == "OuterCone") {
+                                    else if (prop.name == "OuterCone")    {
                                         lights.back()->mAngleOuterCone =  AI_DEG_TO_RAD( prop.value );
                                     }
-                                    else if (prop.name == "InnerCone") {
+                                    else if (prop.name == "InnerCone")    {
                                         lights.back()->mAngleInnerCone =  AI_DEG_TO_RAD( prop.value );
                                     }
                                 }
                                 // radius of the sphere to be generated -
                                 // or alternatively, size of the cube
                                 else if ((Node::SPHERE == curNode->type && prop.name == "Radius")
-                                    || (Node::CUBE == curNode->type   && prop.name == "Size" )) {
+                                    || (Node::CUBE == curNode->type   && prop.name == "Size" ))    {
 
                                         curNode->sphereRadius = prop.value;
                                 }
                             }
                         }
-                        else if (!ASSIMP_stricmp(reader->getNodeName(),"int")) {
+                        else if (!ASSIMP_stricmp(reader->getNodeName(),"int"))    {
                             IntProperty prop;
                             ReadIntProperty(prop);
 
-                            if (inAnimator) {
-                                if (curAnim->type == Animator::FLY_STRAIGHT && prop.name == "TimeForWay") {
+                            if (inAnimator)    {
+                                if (curAnim->type == Animator::FLY_STRAIGHT && prop.name == "TimeForWay")    {
                                     curAnim->timeForWay = prop.value;
                                 }
                             }
-                            else {
+                            else    {
                                 // sphere polgon numbers in each direction
-                                if (Node::SPHERE == curNode->type) {
+                                if (Node::SPHERE == curNode->type)    {
 
-                                    if (prop.name == "PolyCountX") {
+                                    if (prop.name == "PolyCountX")    {
                                         curNode->spherePolyCountX = prop.value;
                                     }
-                                    else if (prop.name == "PolyCountY") {
+                                    else if (prop.name == "PolyCountY")    {
                                         curNode->spherePolyCountY = prop.value;
                                     }
                                 }
                             }
                         }
-                        else if (!ASSIMP_stricmp(reader->getNodeName(),"string") ||!ASSIMP_stricmp(reader->getNodeName(),"enum")) {
+                        else if (!ASSIMP_stricmp(reader->getNodeName(),"string") ||!ASSIMP_stricmp(reader->getNodeName(),"enum"))    {
                             StringProperty prop;
                             ReadStringProperty(prop);
-                            if (prop.value.length()) {
-                                if (prop.name == "Name") {
+                            if (prop.value.length())    {
+                                if (prop.name == "Name")    {
                                     curNode->name = prop.value;
 
                                     /*  If we're either a camera or a light source
                                      *  we need to update the name in the aiLight/
                                      *  aiCamera structure, too.
                                      */
-                                    if (Node::CAMERA == curNode->type) {
+                                    if (Node::CAMERA == curNode->type)    {
                                         cameras.back()->mName.Set(prop.value);
                                     }
-                                    else if (Node::LIGHT == curNode->type) {
+                                    else if (Node::LIGHT == curNode->type)    {
                                         lights.back()->mName.Set(prop.value);
                                     }
                                 }
@@ -1262,7 +1262,7 @@ void IRRImporter::InternReadFile( const std::string& pFile,
 
                                     /* If the mesh is a static one remove all animations from the impor data
                                      */
-                                    if (Node::ANIMMESH != curNode->type) {
+                                    if (Node::ANIMMESH != curNode->type)    {
                                         pp |= aiProcess_RemoveComponent;
                                         SetGenericProperty<int>(map.ints,AI_CONFIG_PP_RVC_FLAGS,
                                             aiComponent_ANIMATIONS | aiComponent_BONEWEIGHTS);
@@ -1276,7 +1276,7 @@ void IRRImporter::InternReadFile( const std::string& pFile,
                                     */
 
                                     const std::string extension = GetExtension(prop.value);
-                                    if ("irr" == extension) {
+                                    if ("irr" == extension)    {
                                         DefaultLogger::get()->error("IRR: Can't load another IRR file recursively");
                                     }
                                     else
@@ -1288,19 +1288,19 @@ void IRRImporter::InternReadFile( const std::string& pFile,
                                 else if (inAnimator && prop.name == "Type")
                                 {
                                     // type of the animator
-                                    if (prop.value == "rotation") {
+                                    if (prop.value == "rotation")    {
                                         curAnim->type = Animator::ROTATION;
                                     }
-                                    else if (prop.value == "flyCircle") {
+                                    else if (prop.value == "flyCircle")    {
                                         curAnim->type = Animator::FLY_CIRCLE;
                                     }
-                                    else if (prop.value == "flyStraight") {
+                                    else if (prop.value == "flyStraight")    {
                                         curAnim->type = Animator::FLY_CIRCLE;
                                     }
-                                    else if (prop.value == "followSpline") {
+                                    else if (prop.value == "followSpline")    {
                                         curAnim->type = Animator::FOLLOW_SPLINE;
                                     }
-                                    else {
+                                    else    {
                                         DefaultLogger::get()->warn("IRR: Ignoring unknown animator: "
                                             + prop.value);
 
@@ -1310,7 +1310,7 @@ void IRRImporter::InternReadFile( const std::string& pFile,
                             }
                         }
                     }
-                    else if (reader->getNodeType() == EXN_ELEMENT_END && !ASSIMP_stricmp(reader->getNodeName(),"attributes")) {
+                    else if (reader->getNodeType() == EXN_ELEMENT_END && !ASSIMP_stricmp(reader->getNodeName(),"attributes"))    {
                         break;
                     }
                 }
@@ -1320,11 +1320,11 @@ void IRRImporter::InternReadFile( const std::string& pFile,
         case EXN_ELEMENT_END:
 
             // If we reached the end of a node, we need to continue processing its parent
-            if (!ASSIMP_stricmp(reader->getNodeName(),"node")) {
-                if (!curNode) {
+            if (!ASSIMP_stricmp(reader->getNodeName(),"node"))    {
+                if (!curNode)    {
                     // currently is no node set. We need to go
                     // back in the node hierarchy
-                    if (!curParent) {
+                    if (!curParent)    {
                         curParent = root;
                         DefaultLogger::get()->error("IRR: Too many closing <node> elements");
                     }
@@ -1333,10 +1333,10 @@ void IRRImporter::InternReadFile( const std::string& pFile,
                 else curNode = NULL;
             }
             // clear all flags
-            else if (!ASSIMP_stricmp(reader->getNodeName(),"materials")) {
+            else if (!ASSIMP_stricmp(reader->getNodeName(),"materials"))    {
                 inMaterials = false;
             }
-            else if (!ASSIMP_stricmp(reader->getNodeName(),"animators")) {
+            else if (!ASSIMP_stricmp(reader->getNodeName(),"animators"))    {
                 inAnimator = false;
             }
             break;
@@ -1349,11 +1349,11 @@ void IRRImporter::InternReadFile( const std::string& pFile,
 
     /*  Now iterate through all cameras and compute their final (horizontal) FOV
      */
-    for (std::vector<aiCamera*>::iterator it = cameras.begin(), end = cameras.end();it != end; ++it) {
+    for (std::vector<aiCamera*>::iterator it = cameras.begin(), end = cameras.end();it != end; ++it)    {
         aiCamera* cam = *it;
 
         // screen aspect could be missing
-        if (cam->mAspect) {
+        if (cam->mAspect)    {
             cam->mHorizontalFOV *= cam->mAspect;
         }
         else DefaultLogger::get()->warn("IRR: Camera aspect is not given, can't compute horizontal FOV");
@@ -1369,7 +1369,7 @@ void IRRImporter::InternReadFile( const std::string& pFile,
 
     /* Copy the cameras to the output array
      */
-    if (!cameras.empty()) {
+    if (!cameras.empty())    {
         tempScene->mNumCameras = (unsigned int)cameras.size();
         tempScene->mCameras = new aiCamera*[tempScene->mNumCameras];
         ::memcpy(tempScene->mCameras,&cameras[0],sizeof(void*)*tempScene->mNumCameras);
@@ -1377,17 +1377,17 @@ void IRRImporter::InternReadFile( const std::string& pFile,
 
     /* Copy the light sources to the output array
      */
-    if (!lights.empty()) {
+    if (!lights.empty())    {
         tempScene->mNumLights = (unsigned int)lights.size();
         tempScene->mLights = new aiLight*[tempScene->mNumLights];
         ::memcpy(tempScene->mLights,&lights[0],sizeof(void*)*tempScene->mNumLights);
     }
 
     // temporary data
-    std::vector< aiNodeAnim*>  anims;
-    std::vector< aiMaterial*>  materials;
-    std::vector< AttachmentInfo > attach;
-    std::vector<aiMesh*>   meshes;
+    std::vector< aiNodeAnim*>        anims;
+    std::vector< aiMaterial*>        materials;
+    std::vector< AttachmentInfo >    attach;
+    std::vector<aiMesh*>            meshes;
 
     // try to guess how much storage we'll need
     anims.reserve     (guessedAnimCnt + (guessedAnimCnt >> 2));
@@ -1421,7 +1421,7 @@ void IRRImporter::InternReadFile( const std::string& pFile,
         an->mChannels = new aiNodeAnim*[an->mNumChannels];
         ::memcpy(an->mChannels, & anims [0], sizeof(void*)*an->mNumChannels);
     }
-    if (!meshes.empty()) {
+    if (!meshes.empty())    {
         // copy all meshes to the temporary scene
         tempScene->mNumMeshes = (unsigned int)meshes.size();
         tempScene->mMeshes = new aiMesh*[tempScene->mNumMeshes];
@@ -1431,7 +1431,7 @@ void IRRImporter::InternReadFile( const std::string& pFile,
 
     /* Copy all materials to the output array
      */
-    if (!materials.empty()) {
+    if (!materials.empty())    {
         tempScene->mNumMaterials = (unsigned int)materials.size();
         tempScene->mMaterials = new aiMaterial*[tempScene->mNumMaterials];
         ::memcpy(tempScene->mMaterials,&materials[0],sizeof(void*)*
@@ -1450,7 +1450,7 @@ void IRRImporter::InternReadFile( const std::string& pFile,
      *  scene flag. This is necessary if we failed to load all
      *  models from external files
      */
-    if (!pScene->mNumMeshes || !pScene->mNumMaterials) {
+    if (!pScene->mNumMeshes || !pScene->mNumMaterials)    {
         DefaultLogger::get()->warn("IRR: No meshes loaded, setting AI_SCENE_FLAGS_INCOMPLETE");
         pScene->mFlags |= AI_SCENE_FLAGS_INCOMPLETE;
     }

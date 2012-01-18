@@ -49,7 +49,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "../include/aiTypes.h"
 
-namespace Assimp {
+namespace Assimp    {
 
 // ----------------------------------------------------------------------------------
 /** NFF (Neutral File Format) Importer class.
@@ -104,13 +104,13 @@ private:
             , diffuse   (1.f,1.f,1.f)
             , specular  (1.f,1.f,1.f)
             , ambient   (0.f,0.f,0.f)
-            , emissive (0.f,0.f,0.f)
+            , emissive    (0.f,0.f,0.f)
             , refracti  (1.f)
             , twoSided  (false) // for NFF2
             , shaded    (true)  // for NFF2
-            , opacity (1.f)
-            , shininess (0.f)
-            , mapping (aiTextureMapping_UV)
+            , opacity    (1.f)
+            , shininess    (0.f)
+            , mapping    (aiTextureMapping_UV)
         {}
 
         aiColor3D color,diffuse,specular,ambient,emissive;
@@ -133,10 +133,10 @@ private:
         // shininess is ignored for the moment
         bool operator == (const ShadingInfo& other) const
         {
-            return color == other.color  &&
-                diffuse  == other.diffuse &&
-                specular == other.specular &&
-                ambient  == other.ambient &&
+            return color == other.color        &&
+                diffuse  == other.diffuse    &&
+                specular == other.specular    &&
+                ambient  == other.ambient    &&
                 refracti == other.refracti  &&
                 texFile  == other.texFile   &&
                 twoSided == other.twoSided  &&
@@ -151,8 +151,8 @@ private:
     struct Light
     {
         Light()
-            : intensity (1.f)
-            , color  (1.f,1.f,1.f)
+            : intensity    (1.f)
+            , color        (1.f,1.f,1.f)
         {}
 
         aiVector3D position;
@@ -173,8 +173,8 @@ private:
         MeshInfo(PatchType _pType, bool bL = false)
             : pType     (_pType)
             , bLocked   (bL)
-            , radius (1.f,1.f,1.f)
-            , dir  (0.f,1.f,0.f)
+            , radius    (1.f,1.f,1.f)
+            , dir        (0.f,1.f,0.f)
             , matIndex  (0)
         {
             name[0] = '\0'; // by default meshes are unnamed

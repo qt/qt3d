@@ -164,9 +164,9 @@ void SplitLargeMeshesProcess_Triangle::SplitMesh(
         // now generate all submeshes
         for (unsigned int i = 0; i < iSubMeshes;++i)
         {
-            aiMesh* pcMesh   = new aiMesh;
-            pcMesh->mNumFaces  = iOutFaceNum;
-            pcMesh->mMaterialIndex = pMesh->mMaterialIndex;
+            aiMesh* pcMesh            = new aiMesh;
+            pcMesh->mNumFaces        = iOutFaceNum;
+            pcMesh->mMaterialIndex    = pMesh->mMaterialIndex;
 
             // the name carries the adjacency information between the meshes
             pcMesh->mName = pMesh->mName;
@@ -441,9 +441,9 @@ void SplitLargeMeshesProcess_Vertex::SplitMesh(
         {
             const unsigned int iOutVertexNum = SplitLargeMeshesProcess_Vertex::LIMIT;
 
-            aiMesh* pcMesh   = new aiMesh;
-            pcMesh->mNumVertices = 0;
-            pcMesh->mMaterialIndex = pMesh->mMaterialIndex;
+            aiMesh* pcMesh            = new aiMesh;
+            pcMesh->mNumVertices    = 0;
+            pcMesh->mMaterialIndex    = pMesh->mMaterialIndex;
 
             // the name carries the adjacency information between the meshes
             pcMesh->mName = pMesh->mName;

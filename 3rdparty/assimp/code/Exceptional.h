@@ -45,7 +45,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using std::runtime_error;
 
 #ifdef _MSC_VER
-# pragma warning(disable : 4275)
+#    pragma warning(disable : 4275)
 #endif
 
 // ---------------------------------------------------------------------------
@@ -66,12 +66,12 @@ private:
 };
 
 #ifdef _MSC_VER
-# pragma warning(default : 4275)
+#    pragma warning(default : 4275)
 #endif
 
 // ---------------------------------------------------------------------------
 template <typename T>
-struct ExceptionSwallower {
+struct ExceptionSwallower    {
     T operator ()() const {
         return T();
     }
@@ -79,7 +79,7 @@ struct ExceptionSwallower {
 
 // ---------------------------------------------------------------------------
 template <typename T>
-struct ExceptionSwallower<T*> {
+struct ExceptionSwallower<T*>    {
     T* operator ()() const {
         return NULL;
     }
@@ -87,7 +87,7 @@ struct ExceptionSwallower<T*> {
 
 // ---------------------------------------------------------------------------
 template <>
-struct ExceptionSwallower<aiReturn> {
+struct ExceptionSwallower<aiReturn>    {
     aiReturn operator ()() const {
         try {
             throw;
@@ -103,7 +103,7 @@ struct ExceptionSwallower<aiReturn> {
 
 // ---------------------------------------------------------------------------
 template <>
-struct ExceptionSwallower<void> {
+struct ExceptionSwallower<void>    {
     void operator ()() const {
         return;
     }

@@ -50,10 +50,10 @@ namespace Q3BSP
 static const unsigned int CE_BSP_LIGHTMAPWIDTH = 128;
 static const unsigned int CE_BSP_LIGHTMAPHEIGHT = 128;
 
-static const unsigned int CE_BSP_LIGHTMAPSIZE = 128*128*3; ///< = 128( width ) * 128 ( height ) * 3 ( channels / RGB ).
-static const int VERION_Q3LEVEL = 46;      ///< Supported version.
+static const unsigned int CE_BSP_LIGHTMAPSIZE = 128*128*3;    ///< = 128( width ) * 128 ( height ) * 3 ( channels / RGB ).
+static const int VERION_Q3LEVEL = 46;                        ///< Supported version.
 
-/// Geometric type enumeration
+///    Geometric type enumeration
 enum Q3BSPGeoType
 {
     Polygon = 1,
@@ -62,7 +62,7 @@ enum Q3BSPGeoType
     Billboard
 };
 
-/// Integer vector.
+///    Integer vector.
 struct ceVec3i
 {
     int x, y, z;
@@ -70,18 +70,18 @@ struct ceVec3i
     ceVec3i( int iX, int iY=0, int iZ=0) : x( iX ), y( iY ), z( iZ ) { /* empty */ }
 };
 
-/// Fileheader
+///    Fileheader
 struct sQ3BSPHeader
 {
-    char strID[ 4 ]; //!< Should be "IBSP"
-    int iVersion; //!< 46 for standard levels
+    char strID[ 4 ];    //!< Should be "IBSP"
+    int iVersion;    //!< 46 for standard levels
 };
 
-/// Descripes an entry.
+///    Descripes an entry.
 struct sQ3BSPLump
 {
-    int iOffset; ///< Offset from startpointer of file
-    int iSize;  ///< Size fo part
+    int iOffset;    ///< Offset from startpointer of file
+    int iSize;        ///< Size fo part
 };
 
 struct vec2f
@@ -94,44 +94,44 @@ struct vec3f
     float x, y, z;
 };
 
-/// Vertex of a Q3 level
+///    Vertex of a Q3 level
 struct sQ3BSPVertex
 {
-    vec3f vPosition; ///< Position of vertex
-    vec2f vTexCoord; ///< (u,v) Texturecoordinate of detailtexture
-    vec2f vLightmap; ///< (u,v) Texturecoordinate of lightmap
-    vec3f vNormal;  ///< vertex normale
-    unsigned char bColor[ 4 ];   ///< Color in RGBA
+    vec3f vPosition;    ///< Position of vertex
+    vec2f vTexCoord;    ///< (u,v) Texturecoordinate of detailtexture
+    vec2f vLightmap;    ///< (u,v) Texturecoordinate of lightmap
+    vec3f vNormal;        ///< vertex normale
+    unsigned char bColor[ 4 ];            ///< Color in RGBA
 };
 
-/// A face in bsp format info
+///    A face in bsp format info
 struct sQ3BSPFace
 {
-    int iTextureID;     ///< Index in texture array
-    int iEffect;     ///< Index in effectarray (-1 = no effect)
-    int iType;      ///< 1=Polygon, 2=Patch, 3=Mesh, 4=Billboard
-    int iVertexIndex;    ///< Start index of polygon
-    int iNumOfVerts;    ///< Number of vertices
-    int iFaceVertexIndex;   ///< Index of first mesh vertex
-    int iNumOfFaceVerts;   ///< Anzahl der Meshvertices
-    int iLightmapID;    ///< Index to the lightmap array
-    int iLMapCorner[ 2 ];   ///< Die Ecke der Lightmap in der Textur
-    int iLMapSize[ 2 ];    ///< Size of the lightmap stored on the texture
-    vec3f vLMapPos;     ///< 3D-Ursprung der Lightmap
-    vec3f vLMapVecs[ 2 ];   ///< 3D-s-t-Vektoren
-    vec3f vNormal;     ///< Polygonnormale
-    int patchWidth, patchHeight; ///< bezier patch
+    int iTextureID;                    ///< Index in texture array
+    int iEffect;                    ///< Index in effectarray (-1 = no effect)
+    int iType;                        ///< 1=Polygon, 2=Patch, 3=Mesh, 4=Billboard
+    int iVertexIndex;                ///< Start index of polygon
+    int iNumOfVerts;                ///< Number of vertices
+    int    iFaceVertexIndex;            ///< Index of first mesh vertex
+    int iNumOfFaceVerts;            ///< Anzahl der Meshvertices
+    int iLightmapID;                ///< Index to the lightmap array
+    int iLMapCorner[ 2 ];            ///< Die Ecke der Lightmap in der Textur
+    int iLMapSize[ 2 ];                ///< Size of the lightmap stored on the texture
+    vec3f vLMapPos;                    ///< 3D-Ursprung der Lightmap
+    vec3f vLMapVecs[ 2 ];            ///< 3D-s-t-Vektoren
+    vec3f vNormal;                    ///< Polygonnormale
+    int patchWidth, patchHeight;    ///< bezier patch
 };
 
 /// A quake3 texture name.
 struct sQ3BSPTexture
 {
-    char strName[ 64 ];  ///< Name of the texture without extention
-    int iFlags;    ///< Not used
-    int iContents;   ///< Not used
+    char strName[ 64 ];        ///< Name of the texture without extention
+    int iFlags;                ///< Not used
+    int iContents;            ///< Not used
 };
 
-/// A lightmap of the level, size 128 x 128, RGB components.
+///    A lightmap of the level, size 128 x 128, RGB components.
 struct sQ3BSPLightmap
 {
     unsigned char bLMapData[ CE_BSP_LIGHTMAPSIZE ];

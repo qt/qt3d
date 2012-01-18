@@ -51,7 +51,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 struct aiNode;
 #include "3DSHelper.h"
 
-namespace Assimp {
+namespace Assimp    {
 class MaterialHelper;
 
 using namespace D3DS;

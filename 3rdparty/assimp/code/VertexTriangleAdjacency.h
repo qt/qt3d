@@ -47,7 +47,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "../include/aiAssert.h"
 
 struct aiMesh;
-namespace Assimp {
+namespace Assimp    {
 
 // --------------------------------------------------------------------------------------------
 /** @brief The VertexTriangleAdjacency class computes a vertex-triangle

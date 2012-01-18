@@ -128,7 +128,7 @@ inline aiMatrix4x4& aiMatrix4x4::Inverse()
 {
     // Compute the reciprocal determinant
     float det = Determinant();
-    if (det == 0.0f)
+    if(det == 0.0f)
     {
         // Matrix not invertible. Setting all elements to nan is not really
         // correct in a mathematical sense but it is easy to debug for the
@@ -218,15 +218,15 @@ inline void aiMatrix4x4::Decompose (aiVector3D& scaling, aiQuaternion& rotation,
     scaling.z = vRows[2].Length();
 
     // and remove all scaling from the matrix
-    if (scaling.x)
+    if(scaling.x)
     {
         vRows[0] /= scaling.x;
     }
-    if (scaling.y)
+    if(scaling.y)
     {
         vRows[1] /= scaling.y;
     }
-    if (scaling.z)
+    if(scaling.z)
     {
         vRows[2] /= scaling.z;
     }
@@ -322,7 +322,7 @@ inline aiMatrix4x4& aiMatrix4x4::RotationX(float a, aiMatrix4x4& out)
          |  1  0       0       0 |
      M = |  0  cos(A) -sin(A)  0 |
          |  0  sin(A)  cos(A)  0 |
-         |  0  0       0       1 | */
+         |  0  0       0       1 |    */
     out = aiMatrix4x4();
     out.b2 = out.c3 = cos(a);
     out.b3 = -(out.c2 = sin(a));
@@ -351,7 +351,7 @@ inline aiMatrix4x4& aiMatrix4x4::RotationZ(float a, aiMatrix4x4& out)
          |  cos(A)  -sin(A)   0   0 |
      M = |  sin(A)   cos(A)   0   0 |
          |  0        0        1   0 |
-         |  0        0        0   1 | */
+         |  0        0        0   1 |    */
     out = aiMatrix4x4();
     out.a1 = out.b2 = cos(a);
     out.a2 = -(out.b1 = sin(a));
@@ -401,7 +401,7 @@ inline aiMatrix4x4& aiMatrix4x4::Scaling( const aiVector3D& v, aiMatrix4x4& out)
  * "from" into another vector called "to".
  * Input : from[3], to[3] which both must be *normalized* non-zero vectors
  * Output: mtx[3][3] -- a 3x3 matrix in colum-major form
- * Authors: Tomas Mller, John Hughes
+ * Authors: Tomas Möller, John Hughes
  *          "Efficiently Building a Matrix to Rotate One Vector to Another"
  *          Journal of Graphics Tools, 4(4):1-4, 1999
  */

@@ -13,7 +13,7 @@ namespace irr
 namespace core
 {
 
-//! Self reallocating template array (like stl vector) with additional features.
+//!    Self reallocating template array (like stl vector) with additional features.
 /** Some features are: Heap sorting, binary search methods, easier debugging.
 */
 template <class T>
@@ -32,7 +32,7 @@ public:
     //! \param start_count: Amount of elements to allocate.
     array(u32 start_count)
         : data(0), allocated(0), used(0),
-            free_when_destroyed(true), is_sorted(true)
+            free_when_destroyed(true),    is_sorted(true)
     {
         reallocate(start_count);
     }

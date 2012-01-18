@@ -290,7 +290,7 @@ void BVHLoader::ReadNodeChannels( BVHLoader::Node& pNode)
 
 // ------------------------------------------------------------------------------------------------
 // Reads the motion data
-void BVHLoader::ReadMotion( aiScene* /* pScene */)
+void BVHLoader::ReadMotion( aiScene* pScene)
 {
     // Read number of frames
     std::string tokenFrames = GetNextToken();
@@ -480,7 +480,7 @@ void BVHLoader::CreateAnimation( aiScene* pScene)
                     switch (node.mChannels[rotOffset+channel])
                     {
                     case Channel_RotationX: aiMatrix4x4::RotationX( angle, temp); rotMatrix *= aiMatrix3x3( temp); break;
-                    case Channel_RotationY: aiMatrix4x4::RotationY( angle, temp); rotMatrix *= aiMatrix3x3( temp); break;
+                    case Channel_RotationY: aiMatrix4x4::RotationY( angle, temp); rotMatrix *= aiMatrix3x3( temp);    break;
                     case Channel_RotationZ: aiMatrix4x4::RotationZ( angle, temp); rotMatrix *= aiMatrix3x3( temp); break;
                     default: throw DeadlyImportError( "Unexpected animation channel setup at node " + nodeName );
                     }

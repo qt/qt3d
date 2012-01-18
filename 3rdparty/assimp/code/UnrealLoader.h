@@ -45,7 +45,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define INCLUDED_AI_3D_LOADER_H
 
 #include "BaseImporter.h"
-namespace Assimp {
+namespace Assimp    {
 namespace Unreal {
 
     /*
@@ -67,7 +67,7 @@ enum MeshFlags {
 
     // a single triangle
 struct Triangle {
-   uint16_t mVertex[3];    // Vertex indices
+   uint16_t mVertex[3];          // Vertex indices
    char mType;                // James' Mesh Type
    char mColor;               // Color for flat and Gourand Shaded
    unsigned char mTex[3][2];  // Texture UV coordinates
@@ -78,15 +78,15 @@ struct Triangle {
 };
 
 // temporary representation for a material
-struct TempMat {
+struct TempMat    {
     TempMat()
-        : numFaces (0)
+        :    numFaces    (0)
     {}
 
     TempMat(const Triangle& in)
-        : type  ((Unreal::MeshFlags)in.mType)
-        , tex   (in.mTextureNum)
-        , numFaces (0)
+        :    type        ((Unreal::MeshFlags)in.mType)
+        ,    tex            (in.mTextureNum)
+        ,    numFaces    (0)
     {}
 
     // type of mesh
@@ -99,7 +99,7 @@ struct TempMat {
     unsigned int numFaces;
 
     // for std::find
-    bool operator == (const TempMat& o ) {
+    bool operator == (const TempMat& o )    {
         return (tex == o.tex && type == o.type);
     }
 };

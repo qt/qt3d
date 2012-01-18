@@ -107,7 +107,7 @@ enum PrePostBehaviour
 struct Key
 {
     Key()
-        : inter (IT_LINE)
+        :    inter    (IT_LINE)
     {}
 
     //! Current time
@@ -135,12 +135,12 @@ struct Key
 struct Envelope
 {
     Envelope()
-        : type (EnvelopeType_Unknown)
-        , pre  (PrePostBehaviour_Constant)
-        , post (PrePostBehaviour_Constant)
+        :    type    (EnvelopeType_Unknown)
+        ,    pre        (PrePostBehaviour_Constant)
+        ,    post    (PrePostBehaviour_Constant)
 
-        , old_first (0)
-        , old_last  (0)
+        ,    old_first (0)
+        ,    old_last  (0)
     {}
 
     //! Index of this envelope

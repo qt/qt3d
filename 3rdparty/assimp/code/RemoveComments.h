@@ -46,7 +46,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "../include/aiAssert.h"
 
-namespace Assimp {
+namespace Assimp    {
 
 // ---------------------------------------------------------------------------
 /** \brief Helper class to remove single and multi line comments from a file

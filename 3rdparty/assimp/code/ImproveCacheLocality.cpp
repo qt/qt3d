@@ -126,7 +126,7 @@ float ImproveCacheLocalityProcess::ProcessMesh( aiMesh* pMesh, unsigned int mesh
     if (!pMesh->HasFaces() || !pMesh->HasPositions())
         return 0.f;
 
-    if (pMesh->mPrimitiveTypes != aiPrimitiveType_TRIANGLE) {
+    if (pMesh->mPrimitiveTypes != aiPrimitiveType_TRIANGLE)    {
         DefaultLogger::get()->error("This algorithm works on triangle meshes only");
         return 0.f;
     }
@@ -135,7 +135,7 @@ float ImproveCacheLocalityProcess::ProcessMesh( aiMesh* pMesh, unsigned int mesh
     const aiFace* const pcEnd = pMesh->mFaces+pMesh->mNumFaces;
 
     // Input ACMR is for logging purposes only
-    if (!DefaultLogger::isNullLogger())  {
+    if (!DefaultLogger::isNullLogger())        {
 
         unsigned int* piFIFOStack = new unsigned int[configCacheDepth];
         memset(piFIFOStack,0xff,configCacheDepth*sizeof(unsigned int));
@@ -144,19 +144,19 @@ float ImproveCacheLocalityProcess::ProcessMesh( aiMesh* pMesh, unsigned int mesh
 
         // count the number of cache misses
         unsigned int iCacheMisses = 0;
-        for (const aiFace* pcFace = pMesh->mFaces;pcFace != pcEnd;++pcFace) {
+        for (const aiFace* pcFace = pMesh->mFaces;pcFace != pcEnd;++pcFace)    {
 
             for (unsigned int qq = 0; qq < 3;++qq) {
                 bool bInCache = false;
 
-                for (unsigned int* pp = piFIFOStack;pp < piCurEnd;++pp) {
-                    if (*pp == pcFace->mIndices[qq]) {
+                for (unsigned int* pp = piFIFOStack;pp < piCurEnd;++pp)    {
+                    if (*pp == pcFace->mIndices[qq])    {
                         // the vertex is in cache
                         bInCache = true;
                         break;
                     }
                 }
-                if (!bInCache) {
+                if (!bInCache)    {
                     ++iCacheMisses;
                     if (piCurEnd == piCur) {
                         piCur = piFIFOStack;
@@ -167,7 +167,7 @@ float ImproveCacheLocalityProcess::ProcessMesh( aiMesh* pMesh, unsigned int mesh
         }
         delete[] piFIFOStack;
         fACMR = (float)iCacheMisses / pMesh->mNumFaces;
-        if (3.0 == fACMR) {
+        if (3.0 == fACMR)    {
             char szBuff[128]; // should be sufficiently large in every case
 
             // the JoinIdenticalVertices process has not been executed on this
@@ -250,22 +250,22 @@ float ImproveCacheLocalityProcess::ProcessMesh( aiMesh* pMesh, unsigned int mesh
     int ivdx = 0;
     int ics = 1;
     int iStampCnt = configCacheDepth+1;
-    while (ivdx >= 0) {
+    while (ivdx >= 0)    {
 
         unsigned int icnt = piNumTriPtrNoModify[ivdx];
         unsigned int* piList = adj.GetAdjacentTriangles(ivdx);
         unsigned int* piCurCandidate = piCandidates;
 
         // get all triangles in the neighborhood
-        for (unsigned int tri = 0; tri < icnt;++tri) {
+        for (unsigned int tri = 0; tri < icnt;++tri)    {
 
             // if they have not yet been emitted, add them to the output IB
             const unsigned int fidx = *piList++;
-            if (!abEmitted[fidx]) {
+            if (!abEmitted[fidx])    {
 
                 // so iterate through all vertices of the current triangle
                 const aiFace* pcFace = &pMesh->mFaces[ fidx ];
-                for (unsigned int* p = pcFace->mIndices, *p2 = pcFace->mIndices+3;p != p2;++p) {
+                for (unsigned int* p = pcFace->mIndices, *p2 = pcFace->mIndices+3;p != p2;++p)    {
                     const unsigned int dp = *p;
 
                     // the current vertex won't have any free triangles after this step
@@ -300,11 +300,11 @@ float ImproveCacheLocalityProcess::ProcessMesh( aiMesh* pMesh, unsigned int mesh
         // get next fanning vertex
         ivdx = -1;
         int max_priority = -1;
-        for (unsigned int* piCur = piCandidates;piCur != piCurCandidate;++piCur) {
+        for (unsigned int* piCur = piCandidates;piCur != piCurCandidate;++piCur)    {
             register const unsigned int dp = *piCur;
 
             // must have live triangles
-            if (piNumTriPtr[dp] > 0) {
+            if (piNumTriPtr[dp] > 0)    {
                 int priority = 0;
 
                 // will the vertex be in cache, even after fanning occurs?
@@ -321,24 +321,24 @@ float ImproveCacheLocalityProcess::ProcessMesh( aiMesh* pMesh, unsigned int mesh
             }
         }
         // did we reach a dead end?
-        if (-1 == ivdx) {
+        if (-1 == ivdx)    {
             // need to get a non-local vertex for which we have a good chance that it is still
             // in the cache ...
-            while (!sDeadEndVStack.empty()) {
+            while (!sDeadEndVStack.empty())    {
                 unsigned int iCachedIdx = sDeadEndVStack.top();
                 sDeadEndVStack.pop();
-                if (piNumTriPtr[ iCachedIdx ] > 0) {
+                if (piNumTriPtr[ iCachedIdx ] > 0)    {
                     ivdx = iCachedIdx;
                     break;
                 }
             }
 
-            if (-1 == ivdx) {
+            if (-1 == ivdx)    {
                 // well, there isn't such a vertex. Simply get the next vertex in input order and
                 // hope it is not too bad ...
-                while (ics < (int)pMesh->mNumVertices) {
+                while (ics < (int)pMesh->mNumVertices)    {
                     ++ics;
-                    if (piNumTriPtr[ics] > 0) {
+                    if (piNumTriPtr[ics] > 0)    {
                         ivdx = ics;
                         break;
                     }
@@ -363,7 +363,7 @@ float ImproveCacheLocalityProcess::ProcessMesh( aiMesh* pMesh, unsigned int mesh
     }
     // sort the output index buffer back to the input array
     piCSIter = piIBOutput;
-    for (aiFace* pcFace = pMesh->mFaces; pcFace != pcEnd;++pcFace) {
+    for (aiFace* pcFace = pMesh->mFaces; pcFace != pcEnd;++pcFace)    {
         pcFace->mIndices[0] = *piCSIter++;
         pcFace->mIndices[1] = *piCSIter++;
         pcFace->mIndices[2] = *piCSIter++;

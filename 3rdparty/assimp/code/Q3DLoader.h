@@ -48,7 +48,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "../include/aiTypes.h"
 #include <vector>
 
-namespace Assimp {
+namespace Assimp    {
 
 // ---------------------------------------------------------------------------
 /** Importer class for the Quick3D Object and Scene formats.
@@ -68,7 +68,7 @@ public:
 
     // -------------------------------------------------------------------
     /** Returns whether the class can handle the format of the given file.
-    * See BaseImporter::CanRead() for details. */
+    * See BaseImporter::CanRead() for details.    */
     bool CanRead( const std::string& pFile, IOSystem* pIOHandler,
         bool checkSig) const;
 
@@ -92,9 +92,9 @@ private:
     struct Material
     {
         Material()
-            : diffuse   (0.6f,0.6f,0.6f)
-            , transparency (0.f)
-            , texIdx   (0xffffffff)
+            :    diffuse            (0.6f,0.6f,0.6f)
+            ,    transparency    (0.f)
+            ,    texIdx            (0xffffffff)
         {}
 
         aiString name;
@@ -107,9 +107,9 @@ private:
     struct Face
     {
         Face(unsigned int s)
-            : indices   (s)
-            , uvindices (s)
-            , mat    (0)
+            :    indices      (s)
+            ,    uvindices (s)
+            ,    mat          (0)
         {
         }
 

@@ -111,7 +111,7 @@ public:
 
     // automatic destruction of the wrapped object when all
     // references are freed.
-    ~shared_array() {
+    ~shared_array()    {
         if (ctr) {
             ctr = ctr->decref(ptr);
         }
@@ -143,11 +143,11 @@ public:
     }
 
     // pointer access
-    inline operator T*() {
+    inline operator T*()    {
         return ptr;
     }
 
-    inline T* operator-> () const {
+    inline T* operator-> () const    {
         return ptr;
     }
 
@@ -160,7 +160,7 @@ public:
         return ptr[index];
     }
 
-    inline const T* get() const {
+    inline const T* get() const    {
         return ptr;
     }
 
@@ -176,7 +176,7 @@ public:
         return ctr->get();
     }
 
-    inline void reset (T* t = 0) {
+    inline void reset (T* t = 0)    {
         if (ctr) {
             ctr->decref(ptr);
         }
@@ -184,7 +184,7 @@ public:
         ctr = ptr?new array_detail::controller():NULL;
     }
 
-    void swap(shared_array & b) {
+    void swap(shared_array & b)    {
         std::swap(ptr, b.ptr);
         std::swap(ctr, b.ctr);
     }
@@ -223,6 +223,6 @@ bool operator< (const shared_array<T>& a, const shared_array<T>& b) {
 } // end of namespace boost
 
 #else
-# error "shared_array.h was already included"
+#    error "shared_array.h was already included"
 #endif
 #endif // INCLUDED_AI_BOOST_SHARED_ARRAY

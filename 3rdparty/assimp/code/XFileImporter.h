@@ -53,7 +53,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 struct aiNode;
 
-namespace Assimp {
+namespace Assimp    {
 
 namespace XFile {
 struct Scene;
@@ -78,7 +78,7 @@ protected:
 public:
     // -------------------------------------------------------------------
     /** Returns whether the class can handle the format of the given file.
-     * See BaseImporter::CanRead() for details. */
+     * See BaseImporter::CanRead() for details.    */
     bool CanRead( const std::string& pFile, IOSystem* pIOHandler,
         bool CheckSig) const;
 

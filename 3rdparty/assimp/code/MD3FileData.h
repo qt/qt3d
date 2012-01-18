@@ -56,26 +56,26 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "./../include/Compiler/pushpack1.h"
 
-namespace Assimp {
-namespace MD3 {
+namespace Assimp    {
+namespace MD3    {
 
 // to make it easier for us, we test the magic word against both "endianesses"
-#define AI_MD3_MAGIC_NUMBER_BE AI_MAKE_MAGIC("IDP3")
-#define AI_MD3_MAGIC_NUMBER_LE AI_MAKE_MAGIC("3PDI")
+#define AI_MD3_MAGIC_NUMBER_BE    AI_MAKE_MAGIC("IDP3")
+#define AI_MD3_MAGIC_NUMBER_LE    AI_MAKE_MAGIC("3PDI")
 
 // common limitations
-#define AI_MD3_VERSION   15
-#define AI_MD3_MAXQPATH   64
-#define AI_MD3_MAXFRAME   16
-#define AI_MD3_MAX_FRAMES  1024
-#define AI_MD3_MAX_TAGS   16
-#define AI_MD3_MAX_SURFACES  32
-#define AI_MD3_MAX_SHADERS  256
-#define AI_MD3_MAX_VERTS  4096
-#define AI_MD3_MAX_TRIANGLES 8192
+#define AI_MD3_VERSION            15
+#define AI_MD3_MAXQPATH            64
+#define AI_MD3_MAXFRAME            16
+#define AI_MD3_MAX_FRAMES        1024
+#define AI_MD3_MAX_TAGS            16
+#define AI_MD3_MAX_SURFACES        32
+#define AI_MD3_MAX_SHADERS        256
+#define AI_MD3_MAX_VERTS        4096
+#define AI_MD3_MAX_TRIANGLES    8192
 
 // master scale factor for all vertices in a MD3 model
-#define AI_MD3_XYZ_SCALE  (1.0f/64.0f)
+#define AI_MD3_XYZ_SCALE        (1.0f/64.0f)
 
 // -------------------------------------------------------------------------------
 /** @brief Data structure for the MD3 main header
@@ -249,12 +249,12 @@ struct Vertex
 #include "./../include/Compiler/poppack1.h"
 
 // -------------------------------------------------------------------------------
-/** @brief Unpack a Q3 16 bit vector to its full float3 representation
+/**    @brief Unpack a Q3 16 bit vector to its full float3 representation
  *
- * @param p_iNormal Input normal vector in latitude/longitude form
- * @param p_afOut Pointer to an array of three floats to receive the result
+ *    @param p_iNormal Input normal vector in latitude/longitude form
+ *    @param p_afOut Pointer to an array of three floats to receive the result
  *
- * @note This has been taken from q3 source (misc_model.c)
+ *    @note This has been taken from q3 source (misc_model.c)
  */
 inline void LatLngNormalToVec3(uint16_t p_iNormal, float* p_afOut)
 {
@@ -271,11 +271,11 @@ inline void LatLngNormalToVec3(uint16_t p_iNormal, float* p_afOut)
 
 
 // -------------------------------------------------------------------------------
-/** @brief Pack a Q3 normal into 16bit latitute/longitude representation
- * @param p_vIn Input vector
- * @param p_iOut Output normal
+/**    @brief Pack a Q3 normal into 16bit latitute/longitude representation
+ *    @param p_vIn Input vector
+ *    @param p_iOut Output normal
  *
- * @note This has been taken from q3 source (mathlib.c)
+ *    @note This has been taken from q3 source (mathlib.c)
  */
 inline void Vec3NormalToLatLng( const aiVector3D& p_vIn, uint16_t& p_iOut )
 {
@@ -285,17 +285,17 @@ inline void Vec3NormalToLatLng( const aiVector3D& p_vIn, uint16_t& p_iOut )
         if ( p_vIn[2] > 0.0f )
         {
             ((unsigned char*)&p_iOut)[0] = 0;
-            ((unsigned char*)&p_iOut)[1] = 0;  // lat = 0, long = 0
+            ((unsigned char*)&p_iOut)[1] = 0;        // lat = 0, long = 0
         }
         else
         {
             ((unsigned char*)&p_iOut)[0] = 128;
-            ((unsigned char*)&p_iOut)[1] = 0;  // lat = 0, long = 128
+            ((unsigned char*)&p_iOut)[1] = 0;        // lat = 0, long = 128
         }
     }
     else
     {
-        int a, b;
+        int    a, b;
 
         a = int(57.2957795f * ( atan2f( p_vIn[1], p_vIn[0] ) ) * (255.0f / 360.0f ));
         a &= 0xff;
@@ -303,8 +303,8 @@ inline void Vec3NormalToLatLng( const aiVector3D& p_vIn, uint16_t& p_iOut )
         b = int(57.2957795f * ( acosf( p_vIn[2] ) ) * ( 255.0f / 360.0f ));
         b &= 0xff;
 
-        ((unsigned char*)&p_iOut)[0] = b; // longitude
-        ((unsigned char*)&p_iOut)[1] = a; // lattitude
+        ((unsigned char*)&p_iOut)[0] = b;    // longitude
+        ((unsigned char*)&p_iOut)[1] = a;    // lattitude
     }
 }
 

@@ -57,20 +57,21 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // zlib is needed for compressed blend files
 #ifndef ASSIMP_BUILD_NO_COMPRESSED_BLEND
-# ifdef ASSIMP_BUILD_NO_OWN_ZLIB
-#  include <zlib.h>
-# else
-#  include "../contrib/zlib/zlib.h"
-# endif
+#    ifdef ASSIMP_BUILD_NO_OWN_ZLIB
+#        include <zlib.h>
+#    else
+#        include "../contrib/zlib/zlib.h"
+#    endif
 #endif
 
 using namespace Assimp;
 using namespace Assimp::Blender;
 using namespace Assimp::Formatter;
 
+
 static const aiLoaderDesc blenderDesc = {
     "Blender 3D Importer \nhttp://www.blender3d.org",
-    "Alexander Gessler <alexander.gessler@gmx.net>",
+    "Assimp Team",
     "",
     "",
     aiLoaderFlags_SupportBinaryFlavour | aiLoaderFlags_Experimental,
@@ -79,6 +80,7 @@ static const aiLoaderDesc blenderDesc = {
     2,
     50
 };
+
 
 // ------------------------------------------------------------------------------------------------
 // Constructor to be privately used by Importer
@@ -102,7 +104,7 @@ bool BlenderImporter::CanRead( const std::string& pFile, IOSystem* pIOHandler, b
         return true;
     }
 
-    else if ((!extension.length() || checkSig) && pIOHandler) {
+    else if ((!extension.length() || checkSig) && pIOHandler)    {
         // note: this won't catch compressed files
         const char* tokens[] = {"BLENDER"};
         return SearchFileHeaderForToken(pIOHandler,pFile,tokens,1);
@@ -126,7 +128,7 @@ const aiLoaderDesc& BlenderImporter::GetInfo () const
 
 // ------------------------------------------------------------------------------------------------
 // Setup configuration properties for the loader
-void BlenderImporter::SetupProperties(const Importer* /* pImp */)
+void BlenderImporter::SetupProperties(const Importer* pImp)
 {
     // nothing to be done for the moment
 }
@@ -309,10 +311,10 @@ void BlenderImporter::ExtractScene(Scene& out, const FileDatabase& file)
 
 #ifndef ASSIMP_BUILD_BLENDER_NO_STATS
     DefaultLogger::get()->info((format(),
-        "(Stats) Fields read: " ,file.stats().fields_read,
-        ", pointers resolved: " ,file.stats().pointers_resolved,
+        "(Stats) Fields read: "    ,file.stats().fields_read,
+        ", pointers resolved: "    ,file.stats().pointers_resolved,
         ", cache hits: "        ,file.stats().cache_hits,
-        ", cached objects: " ,file.stats().cached_objects
+        ", cached objects: "    ,file.stats().cached_objects
     ));
 #endif
 }
@@ -397,9 +399,9 @@ void BlenderImporter::ConvertBlendFile(aiScene* out, const Scene& in,const FileD
 }
 
 // ------------------------------------------------------------------------------------------------
-void BlenderImporter::ResolveImage(MaterialHelper* out, const Material* /* mat */, const MTex* /*tex*/, const Image* img, ConversionData& conv_data)
+void BlenderImporter::ResolveImage(MaterialHelper* out, const Material* mat, const MTex* tex, const Image* img, ConversionData& conv_data)
 {
-    // mat; tex; conv_data;
+    mat; tex; conv_data;
     aiString name;
 
     // check if the file contents are bundled with the BLEND file
@@ -442,9 +444,9 @@ void BlenderImporter::ResolveImage(MaterialHelper* out, const Material* /* mat *
 }
 
 // ------------------------------------------------------------------------------------------------
-void BlenderImporter::AddSentinelTexture(MaterialHelper* out, const Material* /*mat*/, const MTex* tex, ConversionData& conv_data)
+void BlenderImporter::AddSentinelTexture(MaterialHelper* out, const Material* mat, const MTex* tex, ConversionData& conv_data)
 {
-    // mat; tex; conv_data;
+    mat; tex; conv_data;
 
     aiString name;
     name.length = sprintf(name.data, "Procedural,num=%i,type=%s",conv_data.sentinel_cnt++,
@@ -469,28 +471,28 @@ void BlenderImporter::ResolveTexture(MaterialHelper* out, const Material* mat, c
     switch( rtex->type )
     {
             // these are listed in blender's UI
-        case Tex::Type_CLOUDS  :
-        case Tex::Type_WOOD   :
-        case Tex::Type_MARBLE  :
-        case Tex::Type_MAGIC  :
-        case Tex::Type_BLEND  :
-        case Tex::Type_STUCCI  :
-        case Tex::Type_NOISE  :
-        case Tex::Type_PLUGIN  :
-        case Tex::Type_MUSGRAVE  :
-        case Tex::Type_VORONOI  :
-        case Tex::Type_DISTNOISE :
-        case Tex::Type_ENVMAP  :
+        case Tex::Type_CLOUDS        :
+        case Tex::Type_WOOD            :
+        case Tex::Type_MARBLE        :
+        case Tex::Type_MAGIC        :
+        case Tex::Type_BLEND        :
+        case Tex::Type_STUCCI        :
+        case Tex::Type_NOISE        :
+        case Tex::Type_PLUGIN        :
+        case Tex::Type_MUSGRAVE        :
+        case Tex::Type_VORONOI        :
+        case Tex::Type_DISTNOISE    :
+        case Tex::Type_ENVMAP        :
 
             // these do no appear in the UI, why?
-        case Tex::Type_POINTDENSITY :
-        case Tex::Type_VOXELDATA :
+        case Tex::Type_POINTDENSITY    :
+        case Tex::Type_VOXELDATA    :
 
             LogWarn(std::string("Encountered a texture with an unsupported type: ")+dispnam);
             AddSentinelTexture(out, mat, tex, conv_data);
             break;
 
-        case Tex::Type_IMAGE  :
+        case Tex::Type_IMAGE        :
             if (!rtex->ima) {
                 LogError("A texture claims to be an Image, but no image reference is given");
                 break;
@@ -599,7 +601,7 @@ void BlenderImporter::NotSupportedObjectType(const Object* obj, const char* type
 }
 
 // ------------------------------------------------------------------------------------------------
-void BlenderImporter::ConvertMesh(const Scene& /* in */, const Object* /* obj */, const Mesh* mesh,
+void BlenderImporter::ConvertMesh(const Scene& in, const Object* obj, const Mesh* mesh,
     ConversionData& conv_data, TempArray<std::vector,aiMesh>&  temp
     )
 {
@@ -705,7 +707,7 @@ void BlenderImporter::ConvertMesh(const Scene& /* in */, const Object* /* obj */
         ++vo;
         ++vn;
 
-        // if (f.mNumIndices >= 2) {
+        //    if (f.mNumIndices >= 2) {
         if (mf.v2 >= mesh->totvert) {
             ThrowException("Vertex index v2 out of range");
         }
@@ -723,7 +725,7 @@ void BlenderImporter::ConvertMesh(const Scene& /* in */, const Object* /* obj */
         if (mf.v3 >= mesh->totvert) {
             ThrowException("Vertex index v3 out of range");
         }
-        // if (f.mNumIndices >= 3) {
+        //    if (f.mNumIndices >= 3) {
         v = &mesh->mvert[mf.v3];
         vo->x = v->co[0];
         vo->y = v->co[1];
@@ -738,7 +740,7 @@ void BlenderImporter::ConvertMesh(const Scene& /* in */, const Object* /* obj */
         if (mf.v4 >= mesh->totvert) {
             ThrowException("Vertex index v4 out of range");
         }
-        // if (f.mNumIndices >= 4) {
+        //    if (f.mNumIndices >= 4) {
         if (mf.v4) {
             v = &mesh->mvert[mf.v4];
             vo->x = v->co[0];
@@ -755,9 +757,9 @@ void BlenderImporter::ConvertMesh(const Scene& /* in */, const Object* /* obj */
         }
         else out->mPrimitiveTypes |= aiPrimitiveType_TRIANGLE;
 
-        // }
-        // }
-        // }
+        //    }
+        //    }
+        //    }
     }
 
     // collect texture coordinates, they're stored in a separate per-face buffer
@@ -838,7 +840,7 @@ void BlenderImporter::ConvertMesh(const Scene& /* in */, const Object* /* obj */
                 vo->b = col->b;
                 vo->a = col->a;
             }
-            for (unsigned int n = f.mNumIndices; n < 4; ++n) {};
+            for (unsigned int n = f.mNumIndices; n < 4; ++n);
         }
     }
 
@@ -846,7 +848,7 @@ void BlenderImporter::ConvertMesh(const Scene& /* in */, const Object* /* obj */
 }
 
 // ------------------------------------------------------------------------------------------------
-aiCamera* BlenderImporter::ConvertCamera(const Scene& /* in */, const Object* /* obj */, const Camera* /* mesh */, ConversionData& /* conv_data */)
+aiCamera* BlenderImporter::ConvertCamera(const Scene& in, const Object* obj, const Camera* mesh, ConversionData& conv_data)
 {
     ScopeGuard<aiCamera> out(new aiCamera());
 
@@ -854,7 +856,7 @@ aiCamera* BlenderImporter::ConvertCamera(const Scene& /* in */, const Object* /*
 }
 
 // ------------------------------------------------------------------------------------------------
-aiLight* BlenderImporter::ConvertLight(const Scene& /* in */, const Object* /* obj */, const Lamp* /* mesh */, ConversionData& /* conv_data */)
+aiLight* BlenderImporter::ConvertLight(const Scene& in, const Object* obj, const Lamp* mesh, ConversionData& conv_data)
 {
     ScopeGuard<aiLight> out(new aiLight());
 
@@ -981,22 +983,22 @@ aiNode* BlenderImporter::ConvertNode(const Scene& in, const Object* obj, Convers
 }
 
 // ------------------------------------------------------------------------------------------------
-/*static*/ void BlenderImporter::LogWarn(const Formatter::format& message) {
+/*static*/ void BlenderImporter::LogWarn(const Formatter::format& message)    {
     DefaultLogger::get()->warn(std::string("BLEND: ")+=message);
 }
 
 // ------------------------------------------------------------------------------------------------
-/*static*/ void BlenderImporter::LogError(const Formatter::format& message) {
+/*static*/ void BlenderImporter::LogError(const Formatter::format& message)    {
     DefaultLogger::get()->error(std::string("BLEND: ")+=message);
 }
 
 // ------------------------------------------------------------------------------------------------
-/*static*/ void BlenderImporter::LogInfo(const Formatter::format& message) {
+/*static*/ void BlenderImporter::LogInfo(const Formatter::format& message)    {
     DefaultLogger::get()->info(std::string("BLEND: ")+=message);
 }
 
 // ------------------------------------------------------------------------------------------------
-/*static*/ void BlenderImporter::LogDebug(const Formatter::format& message) {
+/*static*/ void BlenderImporter::LogDebug(const Formatter::format& message)    {
     DefaultLogger::get()->debug(std::string("BLEND: ")+=message);
 }
 

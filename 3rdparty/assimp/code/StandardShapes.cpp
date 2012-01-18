@@ -48,7 +48,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "AssimpPCH.h"
 #include "StandardShapes.h"
 
-namespace Assimp {
+namespace Assimp    {
 
 
 # define ADD_TRIANGLE(n0,n1,n2) \
@@ -56,7 +56,7 @@ namespace Assimp {
     positions.push_back(n1); \
     positions.push_back(n2);
 
-# define ADD_PENTAGON(n0,n1,n2,n3,n4) \
+#    define ADD_PENTAGON(n0,n1,n2,n3,n4) \
     if (polygons) \
     { \
         positions.push_back(n0); \
@@ -72,7 +72,7 @@ namespace Assimp {
         ADD_TRIANGLE(n0, n3, n4) \
     }
 
-# define ADD_QUAD(n0,n1,n2,n3) \
+#    define ADD_QUAD(n0,n1,n2,n3) \
     if (polygons) \
     { \
         positions.push_back(n0); \
@@ -361,7 +361,7 @@ unsigned int StandardShapes::MakeHexahedron(std::vector<aiVector3D>& positions,
 
 // ------------------------------------------------------------------------------------------------
 // Create a subdivision sphere
-void StandardShapes::MakeSphere(unsigned int tess,
+void StandardShapes::MakeSphere(unsigned int    tess,
     std::vector<aiVector3D>& positions)
 {
     // Reserve enough storage. Every subdivision

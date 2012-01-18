@@ -46,7 +46,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include "../include/aiTypes.h"
 
-namespace Assimp {
+namespace Assimp    {
 
 // ----------------------------------------------------------------------------------
 /** Specialized version of SpatialSort to support smoothing groups
@@ -113,10 +113,10 @@ protected:
     // -------------------------------------------------------------------
     struct Entry
     {
-        unsigned int mIndex; ///< The vertex referred by this entry
-        aiVector3D mPosition; ///< Position
+        unsigned int mIndex;    ///< The vertex referred by this entry
+        aiVector3D mPosition;    ///< Position
         uint32_t mSmoothGroups;
-        float mDistance;  ///< Distance of this vertex to the sorting plane
+        float mDistance;        ///< Distance of this vertex to the sorting plane
 
         Entry() { /** intentionally not initialized.*/ }
         Entry( unsigned int pIndex, const aiVector3D& pPosition, float pDistance,uint32_t pSG)
@@ -125,7 +125,7 @@ protected:
             mPosition( pPosition),
             mSmoothGroups (pSG),
             mDistance( pDistance)
-            {  }
+            {     }
 
         bool operator < (const Entry& e) const { return mDistance < e.mDistance; }
     };

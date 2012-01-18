@@ -49,7 +49,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 struct aiScene;
 
-namespace Assimp {
+namespace Assimp    {
 
 class Importer;
 
@@ -161,17 +161,17 @@ public:
     }
 
     //! Remove a property of a specific type
-    void RemoveProperty( const char* name) {
+    void RemoveProperty( const char* name)    {
         SetGenericPropertyPtr<Base>(pmap,name,NULL);
     }
 
 private:
 
-    void AddProperty( const char* name, Base* data) {
+    void AddProperty( const char* name, Base* data)    {
         SetGenericPropertyPtr<Base>(pmap,name,data);
     }
 
-    Base* GetPropertyInternal( const char* name) const {
+    Base* GetPropertyInternal( const char* name) const    {
         return GetGenericProperty<Base*>(pmap,name,NULL);
     }
 
@@ -263,14 +263,14 @@ public:
      *  allows multiple postprocess steps to share data.
      * @param sh May be NULL
     */
-    inline void SetSharedData(SharedPostProcessInfo* sh) {
+    inline void SetSharedData(SharedPostProcessInfo* sh)    {
         shared = sh;
     }
 
     // -------------------------------------------------------------------
     /** Get the shared data that is assigned to the step.
     */
-    inline SharedPostProcessInfo* GetSharedData() {
+    inline SharedPostProcessInfo* GetSharedData()    {
         return shared;
     }
 

@@ -65,7 +65,7 @@ NFFImporter::~NFFImporter()
 
 // ------------------------------------------------------------------------------------------------
 // Returns whether the class can handle the format of the given file.
-bool NFFImporter::CanRead( const std::string& pFile, IOSystem* /*pIOHandler*/, bool /*checkSig*/) const
+bool NFFImporter::CanRead( const std::string& pFile, IOSystem* pIOHandler, bool checkSig) const
 {
     return SimpleExtensionCheck(pFile,"nff","enff");
 }
@@ -118,7 +118,7 @@ void NFFImporter::LoadNFF2MaterialTable(std::vector<ShadingInfo>& output,
     boost::scoped_ptr<IOStream> file( pIOHandler->Open( path, "rb"));
 
     // Check whether we can read from the file
-    if ( !file.get()) {
+    if ( !file.get())    {
         DefaultLogger::get()->error("NFF2: Unable to open material library " + path + ".");
         return;
     }
@@ -136,7 +136,7 @@ void NFFImporter::LoadNFF2MaterialTable(std::vector<ShadingInfo>& output,
     CommentRemover::RemoveLineComments("//",&mBuffer2[0]);
 
     // The file should start with the magic sequence "mat"
-    if (!TokenMatch(buffer,"mat",3)) {
+    if (!TokenMatch(buffer,"mat",3))    {
         DefaultLogger::get()->error("NFF2: Not a valid material library " + path + ".");
         return;
     }
@@ -257,14 +257,14 @@ void NFFImporter::InternReadFile( const std::string& pFile,
     unsigned int iTesselation = 4;
 
     // some temporary variables we need to parse the file
-    unsigned int sphere  = 0,
-        cylinder   = 0,
-        cone    = 0,
-        numNamed   = 0,
-        dodecahedron  = 0,
-        octahedron   = 0,
-        tetrahedron   = 0,
-        hexahedron   = 0;
+    unsigned int sphere        = 0,
+        cylinder            = 0,
+        cone                = 0,
+        numNamed            = 0,
+        dodecahedron        = 0,
+        octahedron            = 0,
+        tetrahedron            = 0,
+        hexahedron            = 0;
 
     // lights imported from the file
     std::vector<Light> lights;
@@ -1075,13 +1075,13 @@ void NFFImporter::InternReadFile( const std::string& pFile,
 
         c->mName = nd->mName; // make sure the names are identical
         c->mHorizontalFOV = AI_DEG_TO_RAD( angle );
-        c->mLookAt  = camLookAt - camPos;
-        c->mPosition = camPos;
-        c->mUp   = camUp;
+        c->mLookAt        = camLookAt - camPos;
+        c->mPosition    = camPos;
+        c->mUp            = camUp;
 
         // If the resolution is not specified in the file, we
         // need to set 1.0 as aspect.
-        c->mAspect  = (!resolution.y ? 0.f : resolution.x / resolution.y);
+        c->mAspect        = (!resolution.y ? 0.f : resolution.x / resolution.y);
         ++ppcChildren;
     }
 

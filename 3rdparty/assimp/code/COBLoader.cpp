@@ -91,7 +91,7 @@ bool COBImporter::CanRead( const std::string& pFile, IOSystem* pIOHandler, bool 
         return true;
     }
 
-    else if ((!extension.length() || checkSig) && pIOHandler) {
+    else if ((!extension.length() || checkSig) && pIOHandler)    {
         const char* tokens[] = {"Caligary"};
         return SearchFileHeaderForToken(pIOHandler,pFile,tokens,1);
     }
@@ -108,7 +108,7 @@ void COBImporter::GetExtensionList(std::set<std::string>& app)
 
 // ------------------------------------------------------------------------------------------------
 // Setup configuration properties for the loader
-void COBImporter::SetupProperties(const Importer* /*pImp*/)
+void COBImporter::SetupProperties(const Importer* pImp)
 {
     // nothing to be done for the moment
 }
@@ -229,7 +229,7 @@ aiNode* COBImporter::BuildNodes(const Node& root,const Scene& scin,aiScene* fill
 
             typedef std::pair<unsigned int,Mesh::FaceRefList> Entry;
             for_each(const Entry& reflist,ndmesh.temp_map) {
-                { // create mesh
+                {    // create mesh
                     size_t n = 0;
                     for_each(Face* f, reflist.second) {
                         n += f->indices.size();
@@ -270,7 +270,7 @@ aiNode* COBImporter::BuildNodes(const Node& root,const Scene& scin,aiScene* fill
                         }
                     }
                     outmesh->mMaterialIndex = fill->mNumMaterials;
-                }{ // create material
+                }{    // create material
                     const Material* min = NULL;
                     for_each(const Material& m, scin.materials) {
                         if (m.parent_id == ndmesh.id && m.matnum == reflist.first) {
@@ -296,7 +296,7 @@ aiNode* COBImporter::BuildNodes(const Node& root,const Scene& scin,aiScene* fill
                         mat->AddProperty(&tmp,1,AI_MATKEY_ENABLE_WIREFRAME);
                     }
 
-                    { int shader;
+                    {    int shader;
                         switch(min->shader)
                         {
                         case Material::FLAT:
@@ -439,7 +439,7 @@ void COBImporter::ReadChunkInfo_Ascii(ChunkInfo& out, const LineSplitter& splitt
     splitter.get_tokens(all_tokens);
 
     out.version = (all_tokens[1][1]-'0')*100+(all_tokens[1][3]-'0')*10+(all_tokens[1][4]-'0');
-    out.id = strtol10(all_tokens[3]);
+    out.id    = strtol10(all_tokens[3]);
     out.parent_id = strtol10(all_tokens[5]);
     out.size = strtol10s(all_tokens[7]);
 }
@@ -465,47 +465,47 @@ void COBImporter::UnsupportedChunk_Ascii(LineSplitter& splitter, const ChunkInfo
 }
 
 // ------------------------------------------------------------------------------------------------
-void COBImporter::LogWarn_Ascii(const LineSplitter& splitter, const format& message) {
+void COBImporter::LogWarn_Ascii(const LineSplitter& splitter, const format& message)    {
     LogWarn_Ascii(message << " [at line "<< splitter.get_index()<<"]");
 }
 
 // ------------------------------------------------------------------------------------------------
-void COBImporter::LogError_Ascii(const LineSplitter& splitter, const format& message) {
+void COBImporter::LogError_Ascii(const LineSplitter& splitter, const format& message)    {
     LogError_Ascii(message << " [at line "<< splitter.get_index()<<"]");
 }
 
 // ------------------------------------------------------------------------------------------------
-void COBImporter::LogInfo_Ascii(const LineSplitter& splitter, const format& message) {
+void COBImporter::LogInfo_Ascii(const LineSplitter& splitter, const format& message)    {
     LogInfo_Ascii(message << " [at line "<< splitter.get_index()<<"]");
 }
 
 // ------------------------------------------------------------------------------------------------
-void COBImporter::LogDebug_Ascii(const LineSplitter& splitter, const format& message) {
+void COBImporter::LogDebug_Ascii(const LineSplitter& splitter, const format& message)    {
     LogDebug_Ascii(message << " [at line "<< splitter.get_index()<<"]");
 }
 
 // ------------------------------------------------------------------------------------------------
-void COBImporter::LogWarn_Ascii(const Formatter::format& message) {
+void COBImporter::LogWarn_Ascii(const Formatter::format& message)    {
     DefaultLogger::get()->warn(std::string("COB: ")+=message);
 }
 
 // ------------------------------------------------------------------------------------------------
-void COBImporter::LogError_Ascii(const Formatter::format& message) {
+void COBImporter::LogError_Ascii(const Formatter::format& message)    {
     DefaultLogger::get()->error(std::string("COB: ")+=message);
 }
 
 // ------------------------------------------------------------------------------------------------
-void COBImporter::LogInfo_Ascii(const Formatter::format& message) {
+void COBImporter::LogInfo_Ascii(const Formatter::format& message)    {
     DefaultLogger::get()->info(std::string("COB: ")+=message);
 }
 
 // ------------------------------------------------------------------------------------------------
-void COBImporter::LogDebug_Ascii(const Formatter::format& message) {
+void COBImporter::LogDebug_Ascii(const Formatter::format& message)    {
     DefaultLogger::get()->debug(std::string("COB: ")+=message);
 }
 
 // ------------------------------------------------------------------------------------------------
-void COBImporter::ReadBasicNodeInfo_Ascii(Node& msh, LineSplitter& splitter, const ChunkInfo& /*nfo*/)
+void COBImporter::ReadBasicNodeInfo_Ascii(Node& msh, LineSplitter& splitter, const ChunkInfo& nfo)
 {
     for (;splitter;++splitter) {
         if (splitter.match_start("Name")) {
@@ -602,11 +602,11 @@ void COBImporter::ReadMat1_Ascii(Scene& out, LineSplitter& splitter, const Chunk
     const char* tokens[10];
     splitter.get_tokens(tokens);
 
-    mat.alpha = fast_atof( tokens[1] );
-    mat.ka  = fast_atof( tokens[3] );
-    mat.ks  = fast_atof( tokens[5] );
-    mat.exp  = fast_atof( tokens[7] );
-    mat.ior  = fast_atof( tokens[9] );
+    mat.alpha    = fast_atof( tokens[1] );
+    mat.ka        = fast_atof( tokens[3] );
+    mat.ks        = fast_atof( tokens[5] );
+    mat.exp        = fast_atof( tokens[7] );
+    mat.ior        = fast_atof( tokens[9] );
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -639,7 +639,7 @@ void COBImporter::ReadUnit_Ascii(Scene& out, LineSplitter& splitter, const Chunk
 }
 
 // ------------------------------------------------------------------------------------------------
-void COBImporter::ReadChan_Ascii(Scene& /*out*/, LineSplitter& splitter, const ChunkInfo& nfo)
+void COBImporter::ReadChan_Ascii(Scene& out, LineSplitter& splitter, const ChunkInfo& nfo)
 {
     if (nfo.version > 8) {
         return UnsupportedChunk_Ascii(splitter,nfo,"Chan");
@@ -850,7 +850,7 @@ void COBImporter::ReadPolH_Ascii(Scene& out, LineSplitter& splitter, const Chunk
 }
 
 // ------------------------------------------------------------------------------------------------
-void COBImporter::ReadBitM_Ascii(Scene& /*out*/, LineSplitter& splitter, const ChunkInfo& nfo)
+void COBImporter::ReadBitM_Ascii(Scene& out, LineSplitter& splitter, const ChunkInfo& nfo)
 {
     if (nfo.version > 1) {
         return UnsupportedChunk_Ascii(splitter,nfo,"BitM");
@@ -873,7 +873,7 @@ void COBImporter::ReadBitM_Ascii(Scene& /*out*/, LineSplitter& splitter, const C
         Bitmap::BitmapHeader data;
         char opaq[sizeof Bitmap::BitmapHeader()];
     };*/
-// ReadHexOctets(opaq,head,(++splitter)[1]);
+//    ReadHexOctets(opaq,head,(++splitter)[1]);
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -886,7 +886,7 @@ void COBImporter::ReadString_Binary(std::string& out, StreamReaderLE& reader)
 }
 
 // ------------------------------------------------------------------------------------------------
-void COBImporter::ReadBasicNodeInfo_Binary(Node& msh, StreamReaderLE& reader, const ChunkInfo& /*nfo*/)
+void COBImporter::ReadBasicNodeInfo_Binary(Node& msh, StreamReaderLE& reader, const ChunkInfo& nfo)
 {
     const unsigned int dupes = reader.GetI2();
     ReadString_Binary(msh.name,reader);
@@ -982,7 +982,7 @@ void COBImporter::ReadBinaryFile(Scene& out, StreamReaderLE* reader)
         else if (type == "Mat1") {
             ReadMat1_Binary(out,*reader,nfo);
         }
-    /* else if (type == "Bone") {
+    /*    else if (type == "Bone") {
             ReadBone_Binary(out,*reader,nfo);
         }
         else if (type == "Chan") {
@@ -1077,7 +1077,7 @@ void COBImporter::ReadPolH_Binary(COB::Scene& out, StreamReaderLE& reader, const
 }
 
 // ------------------------------------------------------------------------------------------------
-void COBImporter::ReadBitM_Binary(COB::Scene& /*out*/, StreamReaderLE& reader, const ChunkInfo& nfo)
+void COBImporter::ReadBitM_Binary(COB::Scene& out, StreamReaderLE& reader, const ChunkInfo& nfo)
 {
     if (nfo.version > 1) {
         return UnsupportedChunk_Binary(reader,nfo,"BitM");

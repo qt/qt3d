@@ -78,7 +78,7 @@ bool MS3DImporter::CanRead( const std::string& pFile, IOSystem* pIOHandler, bool
     }
 
     // second call - check for magic identifiers
-    else if (!extension.length() || checkSig) {
+    else if (!extension.length() || checkSig)    {
         if (!pIOHandler) {
             return true;
         }
@@ -327,8 +327,8 @@ void MS3DImporter::InternReadFile( const std::string& pFile,
         stream.CopyAndAdvance(j.parentName,32);
         j.parentName[32] = '\0';
 
-    // DefaultLogger::get()->debug(j.name);
-    // DefaultLogger::get()->debug(j.parentName);
+    //    DefaultLogger::get()->debug(j.name);
+    //    DefaultLogger::get()->debug(j.parentName);
 
         ReadVector(stream,j.rotation);
         ReadVector(stream,j.position);
@@ -364,7 +364,6 @@ void MS3DImporter::InternReadFile( const std::string& pFile,
                 }
 
                 const std::string& s = std::string(reinterpret_cast<char*>(stream.GetPtr()),len);
-                DefaultLogger::get()->info(s);
             }
 
             if (stream.GetRemainingSize() > 4 && inrange((stream >> subversion,subversion),1u,3u)) {

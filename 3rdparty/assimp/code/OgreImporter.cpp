@@ -407,7 +407,7 @@ void OgreImporter::ReadSubMesh(SubMesh &theSubMesh, XmlReader *Reader)
 
 aiMesh* OgreImporter::CreateAssimpSubMesh(const SubMesh& theSubMesh, const vector<Bone>& Bones) const
 {
-    // const aiScene* const m_CurrentScene=this->m_CurrentScene;//make sure, that we can access but not change the scene
+    const aiScene* const m_CurrentScene=this->m_CurrentScene;//make sure, that we can access but not change the scene
 
     aiMesh* NewAiMesh=new aiMesh();
 
@@ -499,7 +499,7 @@ aiMesh* OgreImporter::CreateAssimpSubMesh(const SubMesh& theSubMesh, const vecto
 
 void OgreImporter::LoadSkeleton(std::string FileName, vector<Bone> &Bones, vector<Animation> &Animations) const
 {
-    //const aiScene* const m_CurrentScene=this->m_CurrentScene;//make sure, that we can access but not change the scene
+    const aiScene* const m_CurrentScene=this->m_CurrentScene;//make sure, that we can access but not change the scene
 
 
     //most likely the skeleton file will only end with .skeleton
@@ -705,7 +705,7 @@ void OgreImporter::LoadSkeleton(std::string FileName, vector<Bone> &Bones, vecto
 }
 
 
-void OgreImporter::CreateAssimpSkeleton(const std::vector<Bone> &Bones, const std::vector<Animation> &/*Animations*/)
+void OgreImporter::CreateAssimpSkeleton(const std::vector<Bone> &Bones, const std::vector<Animation> &Animations)
 {
     if (!m_CurrentScene->mRootNode)
         throw DeadlyImportError("No root node exists!!");
@@ -724,9 +724,12 @@ void OgreImporter::CreateAssimpSkeleton(const std::vector<Bone> &Bones, const st
             RootBoneNodes.push_back(CreateAiNodeFromBone(theBone.Id, Bones, m_CurrentScene->mRootNode));//which will recursily add all other nodes
         }
     }
-    m_CurrentScene->mRootNode->mNumChildren=RootBoneNodes.size();
-    m_CurrentScene->mRootNode->mChildren=new aiNode*[RootBoneNodes.size()];
-    memcpy(m_CurrentScene->mRootNode->mChildren, &RootBoneNodes[0], sizeof(aiNode*)*RootBoneNodes.size());
+
+    if (RootBoneNodes.size()) {
+        m_CurrentScene->mRootNode->mNumChildren=RootBoneNodes.size();
+        m_CurrentScene->mRootNode->mChildren=new aiNode*[RootBoneNodes.size()];
+        memcpy(m_CurrentScene->mRootNode->mChildren, &RootBoneNodes[0], sizeof(aiNode*)*RootBoneNodes.size());
+    }
 }
 
 
@@ -774,9 +777,9 @@ void OgreImporter::PutAnimationsInScene(const std::vector<Bone> &Bones, const st
                     aiMatrix4x4 t2, t3;
 
                 //Create a matrix to transfrom a vector from the bones default pose to the bone bones in this animation key
-                aiMatrix4x4 PoseToKey=aiMatrix4x4::Scaling(Animations[i].Tracks[j].Keyframes[k].Scaling, t2) //scale
-                                * aiMatrix4x4(Animations[i].Tracks[j].Keyframes[k].Rotation.GetMatrix())  //rot
-                                * aiMatrix4x4::Translation(Animations[i].Tracks[j].Keyframes[k].Position, t3); //pos
+                aiMatrix4x4 PoseToKey=aiMatrix4x4::Scaling(Animations[i].Tracks[j].Keyframes[k].Scaling, t2)    //scale
+                                * aiMatrix4x4(Animations[i].Tracks[j].Keyframes[k].Rotation.GetMatrix())        //rot
+                                * aiMatrix4x4::Translation(Animations[i].Tracks[j].Keyframes[k].Position, t3);    //pos
 
 
                     //calculate the complete transformation from world space to bone space
@@ -814,7 +817,7 @@ void OgreImporter::PutAnimationsInScene(const std::vector<Bone> &Bones, const st
 
 aiNode* OgreImporter::CreateAiNodeFromBone(int BoneId, const std::vector<Bone> &Bones, aiNode* ParentNode) const
 {
-    //const aiScene* const m_CurrentScene=this->m_CurrentScene;//make sure, that we can access but not change the scene
+    const aiScene* const m_CurrentScene=this->m_CurrentScene;//make sure, that we can access but not change the scene
 
     //----Create the node for this bone and set its values-----
     aiNode* NewNode=new aiNode(Bones[BoneId].Name);
@@ -823,7 +826,7 @@ aiNode* OgreImporter::CreateAiNodeFromBone(int BoneId, const std::vector<Bone> &
     aiMatrix4x4 t0,t1;
     //create a matrix from the transformation values of the ogre bone
     NewNode->mTransformation=aiMatrix4x4::Rotation(Bones[BoneId].RotationAngle, Bones[BoneId].RotationAxis, t1)
-                            * aiMatrix4x4::Translation(Bones[BoneId].Position, t0)
+                            *    aiMatrix4x4::Translation(Bones[BoneId].Position, t0)
 
                             ;
     //__________________________________________________________

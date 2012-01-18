@@ -384,8 +384,8 @@ void HMPImporter::CreateOutputFaceList(unsigned int width,unsigned int height)
 
     // Build the terrain square
     unsigned int iCurrent = 0;
-    for (unsigned int y = 0; y < height-1;++y) {
-        for (unsigned int x = 0; x < width-1;++x,++pcFaceOut) {
+    for (unsigned int y = 0; y < height-1;++y)    {
+        for (unsigned int x = 0; x < width-1;++x,++pcFaceOut)    {
             pcFaceOut->mNumIndices = 4;
             pcFaceOut->mIndices = new unsigned int[4];
 
@@ -485,8 +485,8 @@ void HMPImporter::GenerateTextureCoords(
     const float fY = (1.0f / height) + (1.0f / height) / (height-1);
     const float fX = (1.0f / width) + (1.0f / width) / (width-1);
 
-    for (unsigned int y = 0; y < height;++y) {
-        for (unsigned int x = 0; x < width;++x,++uv) {
+    for (unsigned int y = 0; y < height;++y)    {
+        for (unsigned int x = 0; x < width;++x,++uv)    {
             uv->y = fY*y;
             uv->x = fX*x;
             uv->z = 0.0f;

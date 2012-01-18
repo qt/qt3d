@@ -45,7 +45,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define AI_MS3DLOADER_H_INCLUDED
 
 #include "BaseImporter.h"
-namespace Assimp {
+namespace Assimp    {
 
 // ----------------------------------------------------------------------------------------------
 /** Milkshape 3D importer implementation */
@@ -64,7 +64,7 @@ public:
 
     // -------------------------------------------------------------------
     /** Returns whether the class can handle the format of the given file.
-    * See BaseImporter::CanRead() for details. */
+    * See BaseImporter::CanRead() for details.    */
     bool CanRead( const std::string& pFile, IOSystem* pIOHandler,
         bool checkSig) const;
 
@@ -150,7 +150,7 @@ private:
     };
 
     //struct TempModel {
-    // std::string comment;
+    //    std::string comment;
     //};
 };
 

@@ -67,7 +67,7 @@ GenFaceNormalsProcess::~GenFaceNormalsProcess()
 // Returns whether the processing step is present in the given flag field.
 bool GenFaceNormalsProcess::IsActive( unsigned int pFlags) const
 {
-    return (pFlags & aiProcess_GenNormals) != 0;
+    return    (pFlags & aiProcess_GenNormals) != 0;
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -81,12 +81,12 @@ void GenFaceNormalsProcess::Execute( aiScene* pScene)
     }
 
     bool bHas = false;
-    for ( unsigned int a = 0; a < pScene->mNumMeshes; a++) {
+    for ( unsigned int a = 0; a < pScene->mNumMeshes; a++)    {
         if (this->GenMeshFaceNormals( pScene->mMeshes[a])) {
             bHas = true;
         }
     }
-    if (bHas) {
+    if (bHas)    {
         DefaultLogger::get()->info("GenFaceNormalsProcess finished. "
             "Face normals have been calculated");
     }
@@ -105,7 +105,7 @@ bool GenFaceNormalsProcess::GenMeshFaceNormals (aiMesh* pMesh)
     // If the mesh consists of lines and/or points but not of
     // triangles or higher-order polygons the normal vectors
     // are undefined.
-    if (!(pMesh->mPrimitiveTypes & (aiPrimitiveType_TRIANGLE | aiPrimitiveType_POLYGON))) {
+    if (!(pMesh->mPrimitiveTypes & (aiPrimitiveType_TRIANGLE | aiPrimitiveType_POLYGON)))    {
         DefaultLogger::get()->info("Normal vectors are undefined for line and point meshes");
         return false;
     }
@@ -115,9 +115,9 @@ bool GenFaceNormalsProcess::GenMeshFaceNormals (aiMesh* pMesh)
     const float qnan = get_qnan();
 
     // iterate through all faces and compute per-face normals but store them per-vertex.
-    for ( unsigned int a = 0; a < pMesh->mNumFaces; a++) {
+    for ( unsigned int a = 0; a < pMesh->mNumFaces; a++)    {
         const aiFace& face = pMesh->mFaces[a];
-        if (face.mNumIndices < 3) {
+        if (face.mNumIndices < 3)    {
             // either a point or a line -> no well-defined normal vector
             for (unsigned int i = 0;i < face.mNumIndices;++i) {
                 pMesh->mNormals[face.mIndices[i]] = qnan;

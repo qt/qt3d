@@ -81,56 +81,56 @@ AI_FORCE_INLINE bool aiColor4D::operator!= (const aiColor4D& other) const {
     return r != other.r || g != other.g || b != other.b || a != other.a;
 }
 // ------------------------------------------------------------------------------------------------
-AI_FORCE_INLINE aiColor4D operator + (const aiColor4D& v1, const aiColor4D& v2) {
+AI_FORCE_INLINE aiColor4D operator + (const aiColor4D& v1, const aiColor4D& v2)    {
     return aiColor4D( v1.r + v2.r, v1.g + v2.g, v1.b + v2.b, v1.a + v2.a);
 }
 // ------------------------------------------------------------------------------------------------
-AI_FORCE_INLINE aiColor4D operator - (const aiColor4D& v1, const aiColor4D& v2) {
+AI_FORCE_INLINE aiColor4D operator - (const aiColor4D& v1, const aiColor4D& v2)    {
     return aiColor4D( v1.r - v2.r, v1.g - v2.g, v1.b - v2.b, v1.a - v2.a);
 }
 // ------------------------------------------------------------------------------------------------
-AI_FORCE_INLINE aiColor4D operator * (const aiColor4D& v1, const aiColor4D& v2) {
+AI_FORCE_INLINE aiColor4D operator * (const aiColor4D& v1, const aiColor4D& v2)    {
     return aiColor4D( v1.r * v2.r, v1.g * v2.g, v1.b * v2.b, v1.a * v2.a);
 }
 // ------------------------------------------------------------------------------------------------
-AI_FORCE_INLINE aiColor4D operator / (const aiColor4D& v1, const aiColor4D& v2) {
+AI_FORCE_INLINE aiColor4D operator / (const aiColor4D& v1, const aiColor4D& v2)    {
     return aiColor4D( v1.r / v2.r, v1.g / v2.g, v1.b / v2.b, v1.a / v2.a);
 }
 // ------------------------------------------------------------------------------------------------
-AI_FORCE_INLINE aiColor4D operator * ( float f, const aiColor4D& v) {
+AI_FORCE_INLINE aiColor4D operator * ( float f, const aiColor4D& v)    {
     return aiColor4D( f*v.r, f*v.g, f*v.b, f*v.a);
 }
 // ------------------------------------------------------------------------------------------------
-AI_FORCE_INLINE  aiColor4D operator * ( const aiColor4D& v, float f) {
+AI_FORCE_INLINE  aiColor4D operator * ( const aiColor4D& v, float f)    {
     return aiColor4D( f*v.r, f*v.g, f*v.b, f*v.a);
 }
 // ------------------------------------------------------------------------------------------------
-AI_FORCE_INLINE  aiColor4D operator / ( const aiColor4D& v, float f) {
+AI_FORCE_INLINE  aiColor4D operator / ( const aiColor4D& v, float f)    {
     return v * (1/f);
 }
 // ------------------------------------------------------------------------------------------------
-AI_FORCE_INLINE  aiColor4D operator / ( float f,const aiColor4D& v) {
+AI_FORCE_INLINE  aiColor4D operator / ( float f,const aiColor4D& v)    {
     return aiColor4D(f,f,f,f)/v;
 }
 // ------------------------------------------------------------------------------------------------
-AI_FORCE_INLINE  aiColor4D operator + ( const aiColor4D& v, float f) {
+AI_FORCE_INLINE  aiColor4D operator + ( const aiColor4D& v, float f)    {
     return aiColor4D( f+v.r, f+v.g, f+v.b, f+v.a);
 }
 // ------------------------------------------------------------------------------------------------
-AI_FORCE_INLINE  aiColor4D operator - ( const aiColor4D& v, float f) {
+AI_FORCE_INLINE  aiColor4D operator - ( const aiColor4D& v, float f)    {
     return aiColor4D( v.r-f, v.g-f, v.b-f, v.a-f);
 }
 // ------------------------------------------------------------------------------------------------
-AI_FORCE_INLINE  aiColor4D operator + ( float f, const aiColor4D& v) {
+AI_FORCE_INLINE  aiColor4D operator + ( float f, const aiColor4D& v)    {
     return aiColor4D( f+v.r, f+v.g, f+v.b, f+v.a);
 }
 // ------------------------------------------------------------------------------------------------
-AI_FORCE_INLINE  aiColor4D operator - ( float f, const aiColor4D& v) {
+AI_FORCE_INLINE  aiColor4D operator - ( float f, const aiColor4D& v)    {
     return aiColor4D( f-v.r, f-v.g, f-v.b, f-v.a);
 }
 
 // ------------------------------------------------------------------------------------------------
-inline bool aiColor4D :: IsBlack() const {
+inline bool aiColor4D :: IsBlack() const    {
     // The alpha component doesn't care here. black is black.
     static const float epsilon = 10e-3f;
     return fabs( r ) < epsilon && fabs( g ) < epsilon && fabs( b ) < epsilon;

@@ -46,7 +46,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "BaseImporter.h"
 
-namespace Assimp {
+namespace Assimp    {
 
 // ---------------------------------------------------------------------------
 /** DXF importer class
@@ -86,7 +86,7 @@ public:
 
     // -------------------------------------------------------------------
     /** Returns whether the class can handle the format of the given file.
-    * See BaseImporter::CanRead() for details. */
+    * See BaseImporter::CanRead() for details.    */
     bool CanRead( const std::string& pFile, IOSystem* pIOHandler,
         bool checkSig) const;
 

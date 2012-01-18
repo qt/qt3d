@@ -131,47 +131,47 @@ AI_FORCE_INLINE const aiVector3D aiVector3D::SymMul(const aiVector3D& o) {
 }
 // ------------------------------------------------------------------------------------------------
 // symmetric addition
-AI_FORCE_INLINE aiVector3D operator + (const aiVector3D& v1, const aiVector3D& v2) {
+AI_FORCE_INLINE aiVector3D operator + (const aiVector3D& v1, const aiVector3D& v2)    {
     return aiVector3D( v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
 }
 // ------------------------------------------------------------------------------------------------
 // symmetric subtraction
-AI_FORCE_INLINE aiVector3D operator - (const aiVector3D& v1, const aiVector3D& v2) {
+AI_FORCE_INLINE aiVector3D operator - (const aiVector3D& v1, const aiVector3D& v2)    {
     return aiVector3D( v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
 }
 // ------------------------------------------------------------------------------------------------
 // scalar product
-AI_FORCE_INLINE float operator * (const aiVector3D& v1, const aiVector3D& v2) {
+AI_FORCE_INLINE float operator * (const aiVector3D& v1, const aiVector3D& v2)    {
     return v1.x*v2.x + v1.y*v2.y + v1.z*v2.z;
 }
 // ------------------------------------------------------------------------------------------------
 // scalar multiplication
-AI_FORCE_INLINE aiVector3D operator * ( float f, const aiVector3D& v) {
+AI_FORCE_INLINE aiVector3D operator * ( float f, const aiVector3D& v)    {
     return aiVector3D( f*v.x, f*v.y, f*v.z);
 }
 // ------------------------------------------------------------------------------------------------
 // and the other way around
-AI_FORCE_INLINE  aiVector3D operator * ( const aiVector3D& v, float f) {
+AI_FORCE_INLINE  aiVector3D operator * ( const aiVector3D& v, float f)    {
     return aiVector3D( f*v.x, f*v.y, f*v.z);
 }
 // ------------------------------------------------------------------------------------------------
 // scalar division
-AI_FORCE_INLINE  aiVector3D operator / ( const aiVector3D& v, float f) {
+AI_FORCE_INLINE  aiVector3D operator / ( const aiVector3D& v, float f)    {
     return v * (1/f);
 }
 // ------------------------------------------------------------------------------------------------
 // vector division
-AI_FORCE_INLINE  aiVector3D operator / ( const aiVector3D& v, const aiVector3D& v2) {
+AI_FORCE_INLINE  aiVector3D operator / ( const aiVector3D& v, const aiVector3D& v2)    {
     return aiVector3D(v.x / v2.x,v.y / v2.y,v.z / v2.z);
 }
 // ------------------------------------------------------------------------------------------------
 // cross product
-AI_FORCE_INLINE  aiVector3D operator ^ ( const aiVector3D& v1, const aiVector3D& v2) {
+AI_FORCE_INLINE  aiVector3D operator ^ ( const aiVector3D& v1, const aiVector3D& v2)    {
     return aiVector3D( v1.y*v2.z - v1.z*v2.y, v1.z*v2.x - v1.x*v2.z, v1.x*v2.y - v1.y*v2.x);
 }
 // ------------------------------------------------------------------------------------------------
 // vector inversion
-AI_FORCE_INLINE  aiVector3D operator - ( const aiVector3D& v) {
+AI_FORCE_INLINE  aiVector3D operator - ( const aiVector3D& v)    {
     return aiVector3D( -v.x, -v.y, -v.z);
 }
 

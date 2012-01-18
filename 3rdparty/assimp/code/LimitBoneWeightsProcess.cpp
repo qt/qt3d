@@ -137,7 +137,7 @@ void LimitBoneWeightsProcess::ProcessMesh( aiMesh* pMesh)
             it->mWeight /= sum;
     }
 
-    if (bChanged) {
+    if (bChanged)    {
         // rebuild the vertex weight array for all bones
         typedef std::vector< std::vector< aiVertexWeight > > WeightsPerBone;
         WeightsPerBone boneWeights( pMesh->mNumBones);
@@ -164,7 +164,7 @@ void LimitBoneWeightsProcess::ProcessMesh( aiMesh* pMesh)
             // the number of weights did not change, but the weight values did.
 
             // if ( bw.size() == bone->mNumWeights)
-            // continue;
+            //    continue;
 
             // FIX (Aramis, 07|21|08)
             // It is possible that all weights of a bone have been removed.
@@ -181,12 +181,12 @@ void LimitBoneWeightsProcess::ProcessMesh( aiMesh* pMesh)
             ::memcpy( bone->mWeights, &bw[0], bw.size() * sizeof( aiVertexWeight));
         }
 
-        if (bChanged) {
+        if (bChanged)    {
             // the number of new bones is smaller than before, so we can reuse the old array
             aiBone** ppcCur = pMesh->mBones;aiBone** ppcSrc = ppcCur;
 
-            for (std::vector<bool>::const_iterator iter  = abNoNeed.begin();iter != abNoNeed.end()  ;++iter) {
-                if (*iter) {
+            for (std::vector<bool>::const_iterator iter  = abNoNeed.begin();iter != abNoNeed.end()  ;++iter)    {
+                if (*iter)    {
                     delete *ppcSrc;
                     --pMesh->mNumBones;
                 }

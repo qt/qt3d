@@ -6,45 +6,45 @@
 #include "../include/LogStream.h"
 #include "Windows.h"
 
-namespace Assimp {
+namespace Assimp    {
 
 // ---------------------------------------------------------------------------
-/** @class Win32DebugLogStream
- * @brief Logs into the debug stream from win32.
+/**    @class    Win32DebugLogStream
+ *    @brief    Logs into the debug stream from win32.
  */
 class Win32DebugLogStream :
     public LogStream
 {
 public:
-    /** @brief Default constructor */
+    /**    @brief    Default constructor    */
     Win32DebugLogStream();
 
-    /** @brief Destructor */
+    /**    @brief    Destructor    */
     ~Win32DebugLogStream();
 
-    /** @brief Writer */
+    /**    @brief    Writer    */
     void write(const char* messgae);
 };
 
 // ---------------------------------------------------------------------------
-// Default constructor
+//    Default constructor
 inline Win32DebugLogStream::Win32DebugLogStream()
 {}
 
 // ---------------------------------------------------------------------------
-// Default constructor
+//    Default constructor
 inline Win32DebugLogStream::~Win32DebugLogStream()
 {}
 
 // ---------------------------------------------------------------------------
-// Write method
+//    Write method
 inline void Win32DebugLogStream::write(const char* message)
 {
     OutputDebugStringA( message);
 }
 
 // ---------------------------------------------------------------------------
-} // Namespace Assimp
+}    // Namespace Assimp
 
 #endif // ! WIN32
 #endif // guard

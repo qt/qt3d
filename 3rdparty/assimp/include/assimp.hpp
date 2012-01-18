@@ -46,7 +46,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define INCLUDED_AI_ASSIMP_HPP
 
 #ifndef __cplusplus
-# error This header requires C++ to be used. Use assimp.h for plain C.
+#    error This header requires C++ to be used. Use assimp.h for plain C.
 #endif
 
 // Public ASSIMP data structures
@@ -54,7 +54,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "aiConfig.h"
 #include "aiAssert.h"
 
-namespace Assimp {
+namespace Assimp    {
     // =======================================================================
     // Public interface to Assimp
     class Importer;
@@ -87,7 +87,7 @@ extern "C" ASSIMP_API const aiScene* aiImportFileFromMemory( const char*,
     unsigned int,unsigned int,const char*);
 
 /** @namespace Assimp Assimp's CPP-API and all internal APIs */
-namespace Assimp {
+namespace Assimp    {
 
 // ----------------------------------------------------------------------------------
 /** CPP-API: The Importer class forms an C++ interface to the functionality of the
@@ -113,7 +113,7 @@ namespace Assimp {
 * @note One Importer instance is not thread-safe. If you use multiple
 * threads for loading, each thread should maintain its own Importer instance.
 */
-class ASSIMP_API Importer {
+class ASSIMP_API Importer    {
 
     // for internal use
     friend class BaseProcess;
@@ -219,7 +219,7 @@ public:
      *  #GetPropertyBool and vice versa.
      * @see SetPropertyInteger()
      */
-    void SetPropertyBool(const char* szName, bool value, bool*) {
+    void SetPropertyBool(const char* szName, bool value, bool* bWasExisting = NULL)    {
         SetPropertyInteger(szName,value);
     }
 
@@ -595,13 +595,13 @@ AI_FORCE_INLINE const aiScene* Importer::ReadFile( const std::string& pFile,unsi
     return ReadFile(pFile.c_str(),pFlags);
 }
 // ----------------------------------------------------------------------------
-AI_FORCE_INLINE void Importer::GetExtensionList(std::string& szOut) const {
+AI_FORCE_INLINE void Importer::GetExtensionList(std::string& szOut) const    {
     aiString s;
     GetExtensionList(s);
     szOut = s.data;
 }
 // ----------------------------------------------------------------------------
-AI_FORCE_INLINE bool Importer::IsExtensionSupported(const std::string& szExtension) const {
+AI_FORCE_INLINE bool Importer::IsExtensionSupported(const std::string& szExtension) const    {
     return IsExtensionSupported(szExtension.c_str());
 }
 

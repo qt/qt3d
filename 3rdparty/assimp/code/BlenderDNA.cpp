@@ -92,7 +92,7 @@ void DNAParser :: Parse ()
     }
 
     // type dictionary
-    for (;stream.GetCurrentPos() & 0x3; stream.GetI1()) {};
+    for (;stream.GetCurrentPos() & 0x3; stream.GetI1());
     if (!match4(stream,"TYPE")) {
         throw DeadlyImportError("BlenderDNA: Expected TYPE field");
     }
@@ -105,7 +105,7 @@ void DNAParser :: Parse ()
     }
 
     // type length dictionary
-    for (;stream.GetCurrentPos() & 0x3; stream.GetI1()) {};
+    for (;stream.GetCurrentPos() & 0x3; stream.GetI1());
     if (!match4(stream,"TLEN")) {
         throw DeadlyImportError("BlenderDNA: Expected TLEN field");
     }
@@ -115,7 +115,7 @@ void DNAParser :: Parse ()
     }
 
     // structures dictionary
-    for (;stream.GetCurrentPos() & 0x3; stream.GetI1()) {};
+    for (;stream.GetCurrentPos() & 0x3; stream.GetI1());
     if (!match4(stream,"STRC")) {
         throw DeadlyImportError("BlenderDNA: Expected STRC field");
     }
@@ -288,7 +288,7 @@ boost::shared_ptr< ElemBase > DNA :: ConvertBlobToStructure(
 // ------------------------------------------------------------------------------------------------
 DNA::FactoryPair DNA :: GetBlobToStructureConverter(
     const Structure& structure,
-    const FileDatabase& /* db */
+    const FileDatabase& db
 ) const
 {
     std::map<std::string,  FactoryPair>::const_iterator it = converters.find(structure.name);

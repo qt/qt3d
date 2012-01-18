@@ -105,7 +105,7 @@ void PLYImporter::InternReadFile( const std::string& pFile,
     // the beginning of the file must be PLY - magic, magic
     if ((mBuffer[0] != 'P' && mBuffer[0] != 'p') ||
         (mBuffer[1] != 'L' && mBuffer[1] != 'l') ||
-        (mBuffer[2] != 'Y' && mBuffer[2] != 'y')) {
+        (mBuffer[2] != 'Y' && mBuffer[2] != 'y'))    {
         throw DeadlyImportError( "Invalid .ply file: Magic number \'ply\' is no there");
     }
 
@@ -237,11 +237,11 @@ void PLYImporter::InternReadFile( const std::string& pFile,
 // ------------------------------------------------------------------------------------------------
 // Split meshes by material IDs
 void PLYImporter::ConvertMeshes(std::vector<PLY::Face>* avFaces,
-    const std::vector<aiVector3D>*   avPositions,
-    const std::vector<aiVector3D>*   avNormals,
-    const std::vector<aiColor4D>*   avColors,
-    const std::vector<aiVector2D>*   avTexCoords,
-    const std::vector<MaterialHelper*>*  avMaterials,
+    const std::vector<aiVector3D>*            avPositions,
+    const std::vector<aiVector3D>*            avNormals,
+    const std::vector<aiColor4D>*            avColors,
+    const std::vector<aiVector2D>*            avTexCoords,
+    const std::vector<MaterialHelper*>*        avMaterials,
     std::vector<aiMesh*>* avOut)
 {
     ai_assert(NULL != avFaces);
@@ -331,18 +331,18 @@ void PLYImporter::ReplaceDefaultMaterial(std::vector<PLY::Face>* avFaces,
 {
     bool bNeedDefaultMat = false;
 
-    for (std::vector<PLY::Face>::iterator i =  avFaces->begin();i != avFaces->end();++i) {
-        if (0xFFFFFFFF == (*i).iMaterialIndex) {
+    for (std::vector<PLY::Face>::iterator i =  avFaces->begin();i != avFaces->end();++i)    {
+        if (0xFFFFFFFF == (*i).iMaterialIndex)    {
             bNeedDefaultMat = true;
             (*i).iMaterialIndex = (unsigned int)avMaterials->size();
         }
-        else if ((*i).iMaterialIndex >= avMaterials->size() ) {
+        else if ((*i).iMaterialIndex >= avMaterials->size() )    {
             // clamp the index
             (*i).iMaterialIndex = (unsigned int)avMaterials->size()-1;
         }
     }
 
-    if (bNeedDefaultMat) {
+    if (bNeedDefaultMat)    {
         // generate a default material
         MaterialHelper* pcHelper = new MaterialHelper();
 
@@ -713,16 +713,16 @@ void PLYImporter::LoadFaces(std::vector<PLY::Face>* pvOut)
                 {
                     // must be a dynamic list!
                     if (!(*a).bIsList)continue;
-                    iProperty = _a;
-                    bOne  = true;
-                    eType  = (*a).eType;
+                    iProperty    = _a;
+                    bOne        = true;
+                    eType        = (*a).eType;
                 }
                 else if (PLY::EST_MaterialIndex == (*a).Semantic)
                 {
                     if ((*a).bIsList)continue;
-                    iMaterialIndex = _a;
-                    bOne   = true;
-                    eType2  = (*a).eType;
+                    iMaterialIndex    = _a;
+                    bOne            = true;
+                    eType2        = (*a).eType;
                 }
             }
             break;
@@ -739,10 +739,10 @@ void PLYImporter::LoadFaces(std::vector<PLY::Face>* pvOut)
             {
                 // must be a dynamic list!
                 if (!(*a).bIsList)continue;
-                iProperty = _a;
-                bOne  = true;
-                bIsTristrip = true;
-                eType  = (*a).eType;
+                iProperty    = _a;
+                bOne        = true;
+                bIsTristrip    = true;
+                eType        = (*a).eType;
                 break;
             }
             break;
@@ -793,10 +793,10 @@ void PLYImporter::LoadFaces(std::vector<PLY::Face>* pvOut)
                 pvOut->reserve(pvOut->size() + quak.size() + (quak.size()>>2u));
 
                 int aiTable[2] = {-1,-1};
-                for (std::vector<PLY::PropertyInstance::ValueUnion>::const_iterator a =  quak.begin();a != quak.end();++a) {
+                for (std::vector<PLY::PropertyInstance::ValueUnion>::const_iterator a =  quak.begin();a != quak.end();++a)    {
                     const int p = PLY::PropertyInstance::ConvertTo<int>(*a,eType);
 
-                    if (-1 == p) {
+                    if (-1 == p)    {
                         // restart the strip ...
                         aiTable[0] = aiTable[1] = -1;
                         flip = false;
@@ -915,87 +915,87 @@ void PLYImporter::LoadMaterial(std::vector<MaterialHelper*>* pvOut)
                 // pohng specularity      -----------------------------------
                 if (PLY::EST_PhongPower == (*a).Semantic)
                 {
-                    iPhong  = _a;
-                    ePhong  = (*a).eType;
+                    iPhong        = _a;
+                    ePhong        = (*a).eType;
                 }
 
                 // general opacity        -----------------------------------
                 if (PLY::EST_Opacity == (*a).Semantic)
                 {
-                    iOpacity  = _a;
-                    eOpacity  = (*a).eType;
+                    iOpacity        = _a;
+                    eOpacity        = (*a).eType;
                 }
 
                 // diffuse color channels -----------------------------------
                 if (PLY::EST_DiffuseRed == (*a).Semantic)
                 {
-                    aaiPositions[0][0] = _a;
-                    aaiTypes[0][0]  = (*a).eType;
+                    aaiPositions[0][0]    = _a;
+                    aaiTypes[0][0]        = (*a).eType;
                 }
                 else if (PLY::EST_DiffuseGreen == (*a).Semantic)
                 {
-                    aaiPositions[0][1] = _a;
-                    aaiTypes[0][1]  = (*a).eType;
+                    aaiPositions[0][1]    = _a;
+                    aaiTypes[0][1]        = (*a).eType;
                 }
                 else if (PLY::EST_DiffuseBlue == (*a).Semantic)
                 {
-                    aaiPositions[0][2] = _a;
-                    aaiTypes[0][2]  = (*a).eType;
+                    aaiPositions[0][2]    = _a;
+                    aaiTypes[0][2]        = (*a).eType;
                 }
                 else if (PLY::EST_DiffuseAlpha == (*a).Semantic)
                 {
-                    aaiPositions[0][3] = _a;
-                    aaiTypes[0][3]  = (*a).eType;
+                    aaiPositions[0][3]    = _a;
+                    aaiTypes[0][3]        = (*a).eType;
                 }
                 // specular color channels -----------------------------------
                 else if (PLY::EST_SpecularRed == (*a).Semantic)
                 {
-                    aaiPositions[1][0] = _a;
-                    aaiTypes[1][0]  = (*a).eType;
+                    aaiPositions[1][0]    = _a;
+                    aaiTypes[1][0]        = (*a).eType;
                 }
                 else if (PLY::EST_SpecularGreen == (*a).Semantic)
                 {
-                    aaiPositions[1][1] = _a;
-                    aaiTypes[1][1]  = (*a).eType;
+                    aaiPositions[1][1]    = _a;
+                    aaiTypes[1][1]        = (*a).eType;
                 }
                 else if (PLY::EST_SpecularBlue == (*a).Semantic)
                 {
-                    aaiPositions[1][2] = _a;
-                    aaiTypes[1][2]  = (*a).eType;
+                    aaiPositions[1][2]    = _a;
+                    aaiTypes[1][2]        = (*a).eType;
                 }
                 else if (PLY::EST_SpecularAlpha == (*a).Semantic)
                 {
-                    aaiPositions[1][3] = _a;
-                    aaiTypes[1][3]  = (*a).eType;
+                    aaiPositions[1][3]    = _a;
+                    aaiTypes[1][3]        = (*a).eType;
                 }
                 // ambient color channels -----------------------------------
                 else if (PLY::EST_AmbientRed == (*a).Semantic)
                 {
-                    aaiPositions[2][0] = _a;
-                    aaiTypes[2][0]  = (*a).eType;
+                    aaiPositions[2][0]    = _a;
+                    aaiTypes[2][0]        = (*a).eType;
                 }
                 else if (PLY::EST_AmbientGreen == (*a).Semantic)
                 {
-                    aaiPositions[2][1] = _a;
-                    aaiTypes[2][1]  = (*a).eType;
+                    aaiPositions[2][1]    = _a;
+                    aaiTypes[2][1]        = (*a).eType;
                 }
                 else if (PLY::EST_AmbientBlue == (*a).Semantic)
                 {
-                    aaiPositions[2][2] = _a;
-                    aaiTypes[2][2]  = (*a).eType;
+                    aaiPositions[2][2]    = _a;
+                    aaiTypes[2][2]        = (*a).eType;
                 }
                 else if (PLY::EST_AmbientAlpha == (*a).Semantic)
                 {
-                    aaiPositions[2][3] = _a;
-                    aaiTypes[2][3]  = (*a).eType;
+                    aaiPositions[2][3]    = _a;
+                    aaiTypes[2][3]        = (*a).eType;
                 }
             }
             break;
         }
     }
     // check whether we have a valid source for the material data
-    if (NULL != pcList) {
-        for (std::vector<ElementInstance>::const_iterator i =  pcList->alInstances.begin();i != pcList->alInstances.end();++i) {
+    if (NULL != pcList)    {
+        for (std::vector<ElementInstance>::const_iterator i =  pcList->alInstances.begin();i != pcList->alInstances.end();++i)    {
             aiColor4D clrOut;
             MaterialHelper* pcHelper = new MaterialHelper();
 
@@ -1013,12 +1013,12 @@ void PLYImporter::LoadMaterial(std::vector<MaterialHelper*>* pvOut)
 
             // handle phong power and shading mode
             int iMode;
-            if (0xFFFFFFFF != iPhong) {
+            if (0xFFFFFFFF != iPhong)    {
                 float fSpec = PLY::PropertyInstance::ConvertTo<float>((*i).alProperties[iPhong].avList.front(),ePhong);
 
                 // if shininess is 0 (and the pow() calculation would therefore always
                 // become 1, not depending on the angle), use gouraud lighting
-                if (fSpec) {
+                if (fSpec)    {
                     // scale this with 15 ... hopefully this is correct
                     fSpec *= 15;
                     pcHelper->AddProperty<float>(&fSpec, 1, AI_MATKEY_SHININESS);
@@ -1031,7 +1031,7 @@ void PLYImporter::LoadMaterial(std::vector<MaterialHelper*>* pvOut)
             pcHelper->AddProperty<int>(&iMode, 1, AI_MATKEY_SHADING_MODEL);
 
             // handle opacity
-            if (0xFFFFFFFF != iOpacity) {
+            if (0xFFFFFFFF != iOpacity)    {
                 float fOpacity = PLY::PropertyInstance::ConvertTo<float>((*i).alProperties[iPhong].avList.front(),eOpacity);
                 pcHelper->AddProperty<float>(&fOpacity, 1, AI_MATKEY_OPACITY);
             }

@@ -66,7 +66,7 @@ void MakeVerboseFormatProcess::Execute( aiScene* pScene)
     bool bHas = false;
     for ( unsigned int a = 0; a < pScene->mNumMeshes; a++)
     {
-        if ( MakeVerboseFormat( pScene->mMeshes[a]))
+        if (    MakeVerboseFormat( pScene->mMeshes[a]))
             bHas = true;
     }
     if (bHas) DefaultLogger::get()->info("MakeVerboseFormatProcess finished. There was much work to do ...");

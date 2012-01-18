@@ -12,14 +12,14 @@ namespace irr
 namespace core
 {
 
-//! Very simple string class with some useful features.
-/** string<c8> and string<wchar_t> work both with unicode AND ascii,
+//!    Very simple string class with some useful features.
+/**    string<c8> and string<wchar_t> work both with unicode AND ascii,
 so you can assign unicode to string<c8> and ascii to string<wchar_t>
 (and the other way round) if your ever would want to.
 Note that the conversation between both is not done using an encoding.
 
 Known bugs:
-Special characters like '', '' and '' are ignored in the
+Special characters like 'Ä', 'Ü' and 'Ö' are ignored in the
 methods make_upper, make_lower and equals_ignore_case.
 */
 template <class T>
@@ -75,7 +75,7 @@ public:
 
         // add numbers
 
-        while (number && idx)
+        while(number && idx)
         {
             idx--;
             tmpbuf[idx] = (c8)('0' + (number % 10));
@@ -172,7 +172,7 @@ public:
 
         s32 len = 0;
         const B* p = c;
-        while (*p)
+        while(*p)
         {
             ++len;
             ++p;
@@ -226,7 +226,7 @@ public:
     bool operator ==(const T* str) const
     {
         int i;
-        for (i=0; array[i] && str[i]; ++i)
+        for(i=0; array[i] && str[i]; ++i)
             if (array[i] != str[i])
                 return false;
 
@@ -238,7 +238,7 @@ public:
     //! Comparison operator
     bool operator ==(const string<T>& other) const
     {
-        for (s32 i=0; array[i] && other.array[i]; ++i)
+        for(s32 i=0; array[i] && other.array[i]; ++i)
             if (array[i] != other.array[i])
                 return false;
 
@@ -250,7 +250,7 @@ public:
     //! Is smaller operator
     bool operator <(const string<T>& other) const
     {
-        for (s32 i=0; array[i] && other.array[i]; ++i)
+        for(s32 i=0; array[i] && other.array[i]; ++i)
             if (array[i] != other.array[i])
                 return (array[i] < other.array[i]);
 
@@ -322,7 +322,7 @@ public:
     \return Returns true if the string are equal ignoring case. */
     bool equals_ignore_case(const string<T>& other) const
     {
-        for (s32 i=0; array[i] && other[i]; ++i)
+        for(s32 i=0; array[i] && other[i]; ++i)
             if (toLower(array[i]) != toLower(other[i]))
                 return false;
 
@@ -334,7 +334,7 @@ public:
     bool equalsn(const string<T>& other, int len)
     {
         int i;
-        for (i=0; array[i] && other[i] && i < len; ++i)
+        for(i=0; array[i] && other[i] && i < len; ++i)
             if (array[i] != other[i])
                 return false;
 
@@ -348,7 +348,7 @@ public:
     bool equalsn(const T* str, int len)
     {
         int i;
-        for (i=0; array[i] && str[i] && i < len; ++i)
+        for(i=0; array[i] && str[i] && i < len; ++i)
             if (array[i] != str[i])
                 return false;
 

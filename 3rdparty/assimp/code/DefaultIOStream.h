@@ -45,11 +45,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdio.h>
 #include "../include/IOStream.h"
 
-namespace Assimp {
+namespace Assimp    {
 
 // ----------------------------------------------------------------------------------
-//! @class DefaultIOStream
-//! @brief Default IO implementation, use standard IO operations
+//!    @class    DefaultIOStream
+//!    @brief    Default IO implementation, use standard IO operations
 //! @note   An instance of this class can exist without a valid file handle
 //!         attached to it. All calls fail, but the instance can nevertheless be
 //!         used with no restrictions.
@@ -96,10 +96,10 @@ public:
     void Flush();
 
 private:
-    //! File datastructure, using clib
+    //!    File datastructure, using clib
     FILE* mFile;
-    //! Filename
-    std::string mFilename;
+    //!    Filename
+    std::string    mFilename;
 
     //! Cached file size
     mutable size_t cachedSize;
@@ -108,9 +108,9 @@ private:
 
 // ----------------------------------------------------------------------------------
 inline DefaultIOStream::DefaultIOStream () :
-    mFile  (NULL),
-    mFilename (""),
-    cachedSize (0xffffffff)
+    mFile        (NULL),
+    mFilename    (""),
+    cachedSize    (0xffffffff)
 {
     // empty
 }
@@ -121,7 +121,7 @@ inline DefaultIOStream::DefaultIOStream (FILE* pFile,
         const std::string &strFilename) :
     mFile(pFile),
     mFilename(strFilename),
-    cachedSize (0xffffffff)
+    cachedSize    (0xffffffff)
 {
     // empty
 }

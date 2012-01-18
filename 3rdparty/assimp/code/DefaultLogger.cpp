@@ -52,13 +52,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "FileLogStream.h"
 
 #ifndef ASSIMP_BUILD_SINGLETHREADED
-# include <boost/thread/thread.hpp>
-# include <boost/thread/mutex.hpp>
+#    include <boost/thread/thread.hpp>
+#    include <boost/thread/mutex.hpp>
 
 boost::mutex loggerMutex;
 #endif
 
-namespace Assimp {
+namespace Assimp    {
 
 // ----------------------------------------------------------------------------------
 NullLogger DefaultLogger::s_pNullLogger;
@@ -88,9 +88,9 @@ struct LogStreamInfo
 
 // ----------------------------------------------------------------------------------
 // Construct a default log stream
-LogStream* LogStream::createDefaultStream(aiDefaultLogStream streams,
+LogStream* LogStream::createDefaultStream(aiDefaultLogStream    streams,
     const char* name /*= "AssimpLog.txt"*/,
-    IOSystem* io      /*= NULL*/)
+    IOSystem* io            /*= NULL*/)
 {
     switch (streams)
     {
@@ -120,11 +120,11 @@ LogStream* LogStream::createDefaultStream(aiDefaultLogStream streams,
 }
 
 // ----------------------------------------------------------------------------------
-// Creates the only singleton instance
+//    Creates the only singleton instance
 Logger *DefaultLogger::create(const char* name /*= "AssimpLog.txt"*/,
     LogSeverity severity                       /*= NORMAL*/,
     unsigned int defStreams                    /*= aiDefaultLogStream_DEBUGGER | aiDefaultLogStream_FILE*/,
-    IOSystem* io                         /*= NULL*/)
+    IOSystem* io                               /*= NULL*/)
 {
     // enter the mutex here to avoid concurrency problems
 #ifndef ASSIMP_BUILD_SINGLETHREADED
@@ -157,7 +157,7 @@ Logger *DefaultLogger::create(const char* name /*= "AssimpLog.txt"*/,
 }
 
 // ----------------------------------------------------------------------------------
-void Logger::debug(const std::string &message) {
+void Logger::debug(const std::string &message)    {
 
     // SECURITY FIX: otherwise it's easy to produce overruns ...
     if (message.length()>MAX_LOG_MESSAGE_LENGTH) {
@@ -168,7 +168,7 @@ void Logger::debug(const std::string &message) {
 }
 
 // ----------------------------------------------------------------------------------
-void Logger::info(const std::string &message) {
+void Logger::info(const std::string &message)    {
 
     // SECURITY FIX: otherwise it's easy to produce overruns ...
     if (message.length()>MAX_LOG_MESSAGE_LENGTH) {
@@ -179,7 +179,7 @@ void Logger::info(const std::string &message) {
 }
 
 // ----------------------------------------------------------------------------------
-void Logger::warn(const std::string &message) {
+void Logger::warn(const std::string &message)    {
 
     // SECURITY FIX: otherwise it's easy to produce overruns ...
     if (message.length()>MAX_LOG_MESSAGE_LENGTH) {
@@ -190,7 +190,7 @@ void Logger::warn(const std::string &message) {
 }
 
 // ----------------------------------------------------------------------------------
-void Logger::error(const std::string &message) {
+void Logger::error(const std::string &message)    {
 
     // SECURITY FIX: otherwise it's easy to produce overruns ...
     if (message.length()>MAX_LOG_MESSAGE_LENGTH) {
@@ -222,14 +222,14 @@ bool DefaultLogger::isNullLogger()
 }
 
 // ----------------------------------------------------------------------------------
-// Singleton getter
+//    Singleton getter
 Logger *DefaultLogger::get()
 {
     return m_pLogger;
 }
 
 // ----------------------------------------------------------------------------------
-// Kills the only instance
+//    Kills the only instance
 void DefaultLogger::kill()
 {
     // enter the mutex here to avoid concurrency problems
@@ -243,7 +243,7 @@ void DefaultLogger::kill()
 }
 
 // ----------------------------------------------------------------------------------
-// Debug message
+//    Debug message
 void DefaultLogger::OnDebug( const char* message )
 {
     if ( m_Severity == Logger::NORMAL )
@@ -256,7 +256,7 @@ void DefaultLogger::OnDebug( const char* message )
 }
 
 // ----------------------------------------------------------------------------------
-// Logs an info
+//    Logs an info
 void DefaultLogger::OnInfo( const char* message )
 {
     char msg[MAX_LOG_MESSAGE_LENGTH*2];
@@ -266,7 +266,7 @@ void DefaultLogger::OnInfo( const char* message )
 }
 
 // ----------------------------------------------------------------------------------
-// Logs a warning
+//    Logs a warning
 void DefaultLogger::OnWarn( const char* message )
 {
     char msg[MAX_LOG_MESSAGE_LENGTH*2];
@@ -276,7 +276,7 @@ void DefaultLogger::OnWarn( const char* message )
 }
 
 // ----------------------------------------------------------------------------------
-// Logs an error
+//    Logs an error
 void DefaultLogger::OnError( const char* message )
 {
     char msg[MAX_LOG_MESSAGE_LENGTH*2];
@@ -286,13 +286,13 @@ void DefaultLogger::OnError( const char* message )
 }
 
 // ----------------------------------------------------------------------------------
-// Attachs a new stream
+//    Attachs a new stream
 bool DefaultLogger::attachStream( LogStream *pStream, unsigned int severity )
 {
     if (!pStream)
         return false;
 
-    if (0 == severity) {
+    if (0 == severity)    {
         severity = Logger::INFO | Logger::ERR | Logger::WARN | Logger::DEBUGGING;
     }
 
@@ -313,13 +313,13 @@ bool DefaultLogger::attachStream( LogStream *pStream, unsigned int severity )
 }
 
 // ----------------------------------------------------------------------------------
-// Detatch a stream
+//    Detatch a stream
 bool DefaultLogger::detatchStream( LogStream *pStream, unsigned int severity )
 {
     if (!pStream)
         return false;
 
-    if (0 == severity) {
+    if (0 == severity)    {
         severity = Logger::INFO | Logger::ERR | Logger::WARN | Logger::DEBUGGING;
     }
 
@@ -345,18 +345,18 @@ bool DefaultLogger::detatchStream( LogStream *pStream, unsigned int severity )
 }
 
 // ----------------------------------------------------------------------------------
-// Constructor
+//    Constructor
 DefaultLogger::DefaultLogger(LogSeverity severity)
 
-    : Logger ( severity )
-    , noRepeatMsg (false)
-    , lastLen( 0 )
+    :    Logger    ( severity )
+    ,    noRepeatMsg    (false)
+    ,    lastLen( 0 )
 {
     lastMsg[0] = '\0';
 }
 
 // ----------------------------------------------------------------------------------
-// Destructor
+//    Destructor
 DefaultLogger::~DefaultLogger()
 {
     for ( StreamIt it = m_StreamArray.begin(); it != m_StreamArray.end(); ++it ) {
@@ -366,7 +366,7 @@ DefaultLogger::~DefaultLogger()
 }
 
 // ----------------------------------------------------------------------------------
-// Writes message to stream
+//    Writes message to stream
 void DefaultLogger::WriteToStreams(const char *message,
     ErrorSeverity ErrorSev )
 {
@@ -403,7 +403,7 @@ void DefaultLogger::WriteToStreams(const char *message,
 }
 
 // ----------------------------------------------------------------------------------
-// Returns thread id, if not supported only a zero will be returned.
+//    Returns thread id, if not supported only a zero will be returned.
 unsigned int DefaultLogger::GetThreadID()
 {
     // fixme: we can get this value via boost::threads

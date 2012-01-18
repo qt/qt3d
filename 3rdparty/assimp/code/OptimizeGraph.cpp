@@ -58,11 +58,11 @@ using namespace Assimp;
  */
 #ifdef AI_OG_USE_HASHING
     // Use our standard hashing function to compute the hash
-# define AI_OG_GETKEY(str) SuperFastHash(str.data,str.length)
+#    define AI_OG_GETKEY(str) SuperFastHash(str.data,str.length)
 #else
     // Otherwise hope that std::string will utilize a static buffer
     // for shorter node names. This would avoid endless heap copying.
-# define AI_OG_GETKEY(str) std::string(str.data)
+#    define AI_OG_GETKEY(str) std::string(str.data)
 #endif
 
 // ------------------------------------------------------------------------------------------------
@@ -139,7 +139,7 @@ void OptimizeGraphProcess::CollectNewChildren(aiNode* nd, std::list<aiNode*>& no
         const LockedSetType::const_iterator end = locked.end();
 
         std::list<aiNode*> join;
-        for (std::list<aiNode*>::iterator it = child_nodes.begin(); it != child_nodes.end();) {
+        for (std::list<aiNode*>::iterator it = child_nodes.begin(); it != child_nodes.end();)    {
             aiNode* child = *it;
             if (child->mNumChildren == 0 && locked.find(AI_OG_GETKEY(child->mName)) == end) {
 

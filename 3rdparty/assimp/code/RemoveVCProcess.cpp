@@ -208,7 +208,7 @@ void RemoveVCProcess::Execute( aiScene* pScene)
     {
         for ( unsigned int a = 0; a < pScene->mNumMeshes; a++)
         {
-            if ( ProcessMesh( pScene->mMeshes[a]))
+            if (    ProcessMesh( pScene->mMeshes[a]))
                 bHas = true;
         }
     }

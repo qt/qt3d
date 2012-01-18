@@ -70,6 +70,10 @@
 
 QT_BEGIN_NAMESPACE
 
+#ifdef _DEBUG
+void DumpScene(const aiScene* pScene);
+#endif
+
 QAiSceneHandler::QAiSceneHandler()
     : m_options(qAiPostProcessPreset)
     , m_showWarnings(false)
@@ -248,8 +252,8 @@ QGLAbstractScene *QAiSceneHandler::read()
 
     m_importer.SetPropertyInteger(AI_CONFIG_PP_RVC_FLAGS, m_removeComponentFlags);
     m_importer.SetPropertyInteger(AI_CONFIG_PP_SBP_REMOVE, m_removeSortFlags);
-    m_importer.SetPropertyInteger(AI_CONFIG_PP_SLM_VERTEX_LIMIT, m_meshSplitVertexLimit);
-    m_importer.SetPropertyInteger(AI_CONFIG_PP_SLM_TRIANGLE_LIMIT, m_meshSplitTriangleLimit);
+    //m_importer.SetPropertyInteger(AI_CONFIG_PP_SLM_VERTEX_LIMIT, m_meshSplitVertexLimit);
+    //m_importer.SetPropertyInteger(AI_CONFIG_PP_SLM_TRIANGLE_LIMIT, m_meshSplitTriangleLimit);
 
     // force this on, and provide no way to turn it off.  Its set by the
     // aiProcessPreset_TargetRealtime_Quality option in the constructor.
@@ -278,6 +282,11 @@ QGLAbstractScene *QAiSceneHandler::read()
         finalize();
         return 0;
     }
+#ifdef _DEBUG
+    else {
+        DumpScene(scene);
+    }
+#endif
 
     QAiScene *qscene = new QAiScene(scene, this);
 
@@ -364,16 +373,81 @@ void QAiSceneHandler::downloadComplete(QByteArray sceneData)
         qWarning("Asset importer error: %s\n", m_importer.GetErrorString());
         if (log)
             qWarning("For details check log: %s/AssimpLog.txt\n", qPrintable(c));
-    } else {
+    }
+#ifdef _DEBUG
+    else {
+        DumpScene(scene);
         //If we have reached this point everything has proceeded correctly,
         //load the scene.
         QAiScene *theScene = qobject_cast<QAiScene*>(getScene());
         theScene->loadScene(scene);
     }
+#endif
 
     Assimp::DefaultLogger::kill();
 
     finalize();
 }
+
+#ifdef _DEBUG
+void LogPrint(const char* pFormat, ...)
+{
+    static char buff[1024];
+    buff[0] = '\0';
+    va_list args;
+    va_start(args, pFormat);
+    vsnprintf( buff, sizeof(buff) - 1, pFormat, args);
+    qDebug() << buff;
+}
+
+void DumpAnimation(int i, const aiAnimation* pAnimation, const aiScene* pScene)
+{
+    Q_UNUSED(pScene);
+    LogPrint("  Animation %d",i);
+    LogPrint("    name = '%s'",pAnimation->mName.data);
+    LogPrint("    ticks =         %f",pAnimation->mDuration);
+    LogPrint("    ticks per sec = %f",pAnimation->mTicksPerSecond);
+    for (unsigned int i=0; i<pAnimation->mNumChannels; ++i) {
+        const aiNodeAnim* pNodeAnim = pAnimation->mChannels[i];
+        LogPrint("    channel %d affects: '%s'", i, pNodeAnim->mNodeName.data);
+    }
+}
+
+void DumpMesh(int i, const aiMesh* pMesh, const aiScene* pScene)
+{
+    Q_UNUSED(pScene);
+    LogPrint("  Mesh %d",i);
+    LogPrint("    name = '%s'",pMesh->mName.data);
+    LogPrint("    has bones: %s (%d)",pMesh->HasBones()?"YES":"no ",pMesh->mNumBones);
+}
+void DumpNodeRecursive(int level, const aiNode* pNode, const aiScene* pScene)
+{
+    if (level > 100)
+        level = 100;
+    char Prefix[256];
+    memset(Prefix,' ',level*2);
+    Prefix[level*2] = '\0';
+    LogPrint("  %sNode, name='%s', nMeshes=%d",Prefix,pNode->mName.data,pNode->mNumMeshes);
+    for (unsigned int i=0; i<pNode->mNumChildren; ++i) {
+        DumpNodeRecursive(level+1, pNode->mChildren[i], pScene);
+    }
+}
+
+void DumpScene(const aiScene* pScene)
+{
+    LogPrint("DumpScene(%p)",pScene);
+    if (pScene) {
+        LogPrint("  has animations: %s (%d)",pScene->HasAnimations()?"YES":"no ",pScene->mNumAnimations);
+        LogPrint("  has meshes:     %s (%d)",pScene->HasMeshes()?"YES":"no ",pScene->mNumMeshes);
+        for (unsigned int i=0; i<pScene->mNumAnimations; ++i) {
+            DumpAnimation(i,pScene->mAnimations[i],pScene);
+        }
+        for (unsigned int i=0; i<pScene->mNumMeshes; ++i) {
+            DumpMesh(i,pScene->mMeshes[i],pScene);
+        }
+        DumpNodeRecursive(0,pScene->mRootNode,pScene);
+    }
+}
+#endif
 
 QT_END_NAMESPACE

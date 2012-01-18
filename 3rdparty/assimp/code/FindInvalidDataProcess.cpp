@@ -85,18 +85,18 @@ void FindInvalidDataProcess::SetupProperties(const Importer* pImp)
 // Update mesh references in the node graph
 void UpdateMeshReferences(aiNode* node, const std::vector<unsigned int>& meshMapping)
 {
-    if (node->mNumMeshes) {
+    if (node->mNumMeshes)    {
         unsigned int out = 0;
-        for (unsigned int a = 0; a < node->mNumMeshes;++a) {
+        for (unsigned int a = 0; a < node->mNumMeshes;++a)    {
 
             register unsigned int ref = node->mMeshes[a];
-            if (0xffffffff != (ref = meshMapping[ref])) {
+            if (0xffffffff != (ref = meshMapping[ref]))    {
                 node->mMeshes[out++] = ref;
             }
         }
         // just let the members that are unused, that's much cheaper
         // than a full array realloc'n'copy party ...
-        if (!(node->mNumMeshes = out)) {
+        if (!(node->mNumMeshes = out))    {
 
             delete[] node->mMeshes;
             node->mMeshes = NULL;
@@ -119,13 +119,13 @@ void FindInvalidDataProcess::Execute( aiScene* pScene)
     unsigned int real = 0;
 
     // Process meshes
-    for ( unsigned int a = 0; a < pScene->mNumMeshes; a++) {
+    for ( unsigned int a = 0; a < pScene->mNumMeshes; a++)    {
 
         int result;
-        if ((result = ProcessMesh( pScene->mMeshes[a]))) {
+        if ((result = ProcessMesh( pScene->mMeshes[a])))    {
             out = true;
 
-            if (2 == result) {
+            if (2 == result)    {
                 // remove this mesh
                 delete pScene->mMeshes[a];
                 AI_DEBUG_INVALIDATE_PTR(pScene->mMeshes[a]);
@@ -144,8 +144,8 @@ void FindInvalidDataProcess::Execute( aiScene* pScene)
     }
 
 
-    if (out) {
-        if ( real != pScene->mNumMeshes) {
+    if (out)    {
+        if ( real != pScene->mNumMeshes)    {
             if (!real) {
                 throw DeadlyImportError("No meshes remaining");
             }
@@ -177,7 +177,7 @@ inline const char* ValidateArrayContents<aiVector3D>(const aiVector3D* arr, unsi
 {
     bool b = false;
     unsigned int cnt = 0;
-    for (unsigned int i = 0; i < size;++i) {
+    for (unsigned int i = 0; i < size;++i)    {
 
         if (dirtyMask.size() && dirtyMask[i]) {
             continue;
@@ -185,10 +185,10 @@ inline const char* ValidateArrayContents<aiVector3D>(const aiVector3D* arr, unsi
         ++cnt;
 
         const aiVector3D& v = arr[i];
-        if (is_special_float(v.x) || is_special_float(v.y) || is_special_float(v.z)) {
+        if (is_special_float(v.x) || is_special_float(v.y) || is_special_float(v.z))    {
             return "INF/NAN was found in a vector component";
         }
-        if (!mayBeZero && !v.x && !v.y && !v.z ) {
+        if (!mayBeZero && !v.x && !v.y && !v.z )    {
             return "Found zero-length vector";
         }
         if (i && v != arr[i-1])b = true;
@@ -205,7 +205,7 @@ inline bool ProcessArray(T*& in, unsigned int num,const char* name,
     const std::vector<bool>& dirtyMask, bool mayBeIdentical = false, bool mayBeZero = true)
 {
     const char* err = ValidateArrayContents(in,num,dirtyMask,mayBeIdentical,mayBeZero);
-    if (err) {
+    if (err)    {
         DefaultLogger::get()->error(std::string("FindInvalidDataProcess fails on mesh ") + name + ": " + err);
 
         delete[] in;
@@ -226,7 +226,7 @@ AI_FORCE_INLINE bool EpsilonCompare(float n, float s, float epsilon) {
 
 // ------------------------------------------------------------------------------------------------
 template <>
-bool EpsilonCompare<aiVectorKey>(const aiVectorKey& n, const aiVectorKey& s, float epsilon) {
+bool EpsilonCompare<aiVectorKey>(const aiVectorKey& n, const aiVectorKey& s, float epsilon)    {
     return
         EpsilonCompare(n.mValue.x,s.mValue.x,epsilon) &&
         EpsilonCompare(n.mValue.y,s.mValue.y,epsilon) &&
@@ -235,7 +235,7 @@ bool EpsilonCompare<aiVectorKey>(const aiVectorKey& n, const aiVectorKey& s, flo
 
 // ------------------------------------------------------------------------------------------------
 template <>
-bool EpsilonCompare<aiQuatKey>(const aiQuatKey& n, const aiQuatKey& s, float epsilon) {
+bool EpsilonCompare<aiQuatKey>(const aiQuatKey& n, const aiQuatKey& s, float epsilon)    {
     return
         EpsilonCompare(n.mValue.x,s.mValue.x,epsilon) &&
         EpsilonCompare(n.mValue.y,s.mValue.y,epsilon) &&
@@ -338,7 +338,7 @@ int FindInvalidDataProcess::ProcessMesh (aiMesh* pMesh)
 
     // Ignore elements that are not referenced by vertices.
     // (they are, for example, caused by the FindDegenerates step)
-    for (unsigned int m = 0; m < pMesh->mNumFaces;++m) {
+    for (unsigned int m = 0; m < pMesh->mNumFaces;++m)    {
         const aiFace& f = pMesh->mFaces[m];
 
         for (unsigned int i = 0; i < f.mNumIndices;++i) {
@@ -347,17 +347,17 @@ int FindInvalidDataProcess::ProcessMesh (aiMesh* pMesh)
     }
 
     // Process vertex positions
-    if (pMesh->mVertices && ProcessArray(pMesh->mVertices,pMesh->mNumVertices,"positions",dirtyMask)) {
+    if (pMesh->mVertices && ProcessArray(pMesh->mVertices,pMesh->mNumVertices,"positions",dirtyMask))    {
         DefaultLogger::get()->error("Deleting mesh: Unable to continue without vertex positions");
         return 2;
     }
 
     // process texture coordinates
-    for (unsigned int i = 0; i < AI_MAX_NUMBER_OF_TEXTURECOORDS && pMesh->mTextureCoords[i];++i) {
-        if (ProcessArray(pMesh->mTextureCoords[i],pMesh->mNumVertices,"uvcoords",dirtyMask)) {
+    for (unsigned int i = 0; i < AI_MAX_NUMBER_OF_TEXTURECOORDS && pMesh->mTextureCoords[i];++i)    {
+        if (ProcessArray(pMesh->mTextureCoords[i],pMesh->mNumVertices,"uvcoords",dirtyMask))    {
 
             // delete all subsequent texture coordinate sets.
-            for (unsigned int a = i+1; a < AI_MAX_NUMBER_OF_TEXTURECOORDS;++a) {
+            for (unsigned int a = i+1; a < AI_MAX_NUMBER_OF_TEXTURECOORDS;++a)    {
                 delete[] pMesh->mTextureCoords[a]; pMesh->mTextureCoords[a] = NULL;
             }
             ret = true;
@@ -368,7 +368,7 @@ int FindInvalidDataProcess::ProcessMesh (aiMesh* pMesh)
     // they are invalid or not.
 
     // Normals and tangents are undefined for point and line faces.
-    if (pMesh->mNormals || pMesh->mTangents) {
+    if (pMesh->mNormals || pMesh->mTangents)    {
 
         if (aiPrimitiveType_POINT & pMesh->mPrimitiveTypes ||
             aiPrimitiveType_LINE  & pMesh->mPrimitiveTypes)
@@ -381,7 +381,7 @@ int FindInvalidDataProcess::ProcessMesh (aiMesh* pMesh)
                 {
                     const aiFace& f = pMesh->mFaces[m];
 
-                    if (f.mNumIndices < 3) {
+                    if (f.mNumIndices < 3)    {
                         dirtyMask[f.mIndices[0]] = true;
 
                         if (f.mNumIndices == 2) {
@@ -401,13 +401,13 @@ int FindInvalidDataProcess::ProcessMesh (aiMesh* pMesh)
             ret = true;
 
         // Process mesh tangents
-        if (pMesh->mTangents && ProcessArray(pMesh->mTangents,pMesh->mNumVertices,"tangents",dirtyMask)) {
+        if (pMesh->mTangents && ProcessArray(pMesh->mTangents,pMesh->mNumVertices,"tangents",dirtyMask))    {
             delete[] pMesh->mBitangents; pMesh->mBitangents = NULL;
             ret = true;
         }
 
         // Process mesh bitangents
-        if (pMesh->mBitangents && ProcessArray(pMesh->mBitangents,pMesh->mNumVertices,"bitangents",dirtyMask)) {
+        if (pMesh->mBitangents && ProcessArray(pMesh->mBitangents,pMesh->mNumVertices,"bitangents",dirtyMask))    {
             delete[] pMesh->mTangents; pMesh->mTangents = NULL;
             ret = true;
         }
