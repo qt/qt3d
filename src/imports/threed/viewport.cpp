@@ -60,7 +60,6 @@
 #include <QCoreApplication>
 #include <QDeclarativeInfo>
 #include <QtQuick/QQuickCanvas>
-#include <QtQuick/QSGEngine>
 #include <QOpenGLBuffer>
 #include <QtCore/qthread.h>
 #include <QtCore/qmutex.h>
