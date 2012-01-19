@@ -59,7 +59,6 @@
 
 #include "qglnamespace.h"
 #include "qopenglfunctions.h"
-#include "qglsharedresource_p.h"
 #include "qgltexture2d.h"
 
 #include <private/qopenglcontext_p.h>
@@ -101,7 +100,7 @@ QT_BEGIN_NAMESPACE
 typedef void (QOPENGLF_APIENTRYP q_glCompressedTexImage2DARB)
     (GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLsizei, const GLvoid *);
 
-class QGLTextureExtensions : public QOpenGLSharedResource
+class QGLTextureExtensions
 {
 public:
     QGLTextureExtensions(QOpenGLContext *ctx);
@@ -116,10 +115,6 @@ public:
     q_glCompressedTexImage2DARB compressedTexImage2D;
 
     static QGLTextureExtensions *extensions();
-
-    void invalidateResource() {}
-    void freeResource(QOpenGLContext *) {}
-
 };
 
 class QGLBoundTexture
@@ -128,12 +123,16 @@ public:
     QGLBoundTexture();
     ~QGLBoundTexture();
 
-    const QOpenGLContext *context() const { return m_resource.context(); }
+    QOpenGLContext *context() const {
+        return m_context;
+    }
 
-    GLuint textureId() const { return m_resource.id(); }
+    GLuint textureId() const { return m_resourceId; }
     void setTextureId(QOpenGLContext *ctx, GLuint id)
-        { m_resource.attach(ctx, id); }
-    void clearId() { m_resource.clearId(); }
+    {
+        m_context = ctx; m_resourceId = id;
+    }
+    void clearId() { m_resourceId = 0; m_context = 0; }
 
     QGLTexture2D::BindOptions options() const { return m_options; }
     void setOptions(QGLTexture2D::BindOptions options) { m_options = options; }
@@ -158,11 +157,12 @@ public:
     bool bindCompressedTexturePVR(const char *buf, int len);
 
 private:
-    QGLSharedResource m_resource;
     QGLTexture2D::BindOptions m_options;
     QSize m_size;
     bool m_hasAlpha;
     QTime time;
+    QOpenGLContext *m_context;
+    GLuint m_resourceId;
 };
 
 QT_END_NAMESPACE

@@ -41,7 +41,6 @@
 
 #include "qgltexture2d.h"
 #include "qgltexture2d_p.h"
-#include "qgltextureutils_p.h"
 #include "qglpainter_p.h"
 #include "qglext_p.h"
 
@@ -613,8 +612,8 @@ bool QGLTexture2DPrivate::bind(GLenum target)
 
     if (ctx)
     {
-        QGLPainter painter(ctx);
-        if (!painter.hasOpenGLFeature(QOpenGLFunctions::NPOTTextures))
+        QOpenGLFunctions functions(ctx);
+        if (!functions.hasOpenGLFeature(QOpenGLFunctions::NPOTTextures))
         {
             QSize oldSize = size;
             size = QGL::nextPowerOfTwo(size);
@@ -648,9 +647,10 @@ bool QGLTexture2DPrivate::bind(GLenum target)
             prev = info;
             info = info->next;
         }
-    } else {
+    }
+    if (!info) {
         info = new QGLTexture2DTextureInfo
-            (ctx, 0, imageGeneration - 1, parameterGeneration - 1);
+            (0, 0, imageGeneration - 1, parameterGeneration - 1);
         if (prev)
             prev->next = info;
         else

@@ -56,6 +56,7 @@
 #include "qgltexture2d.h"
 #include "qgltextureutils_p.h"
 #include "qurl.h"
+#include <QDebug>
 
 #include <QAtomicInt>
 #include <QImage>
@@ -66,15 +67,15 @@ class QGLTexture2DTextureInfo
 {
 public:
     QGLTexture2DTextureInfo
-            (QOpenGLContext *context, GLuint textureId, uint imageGeneration,
-             uint parameterGeneration, bool isLiteral = false)
+            (QOpenGLContext *context, GLuint textureId, uint _imageGeneration,
+             uint _parameterGeneration, bool _isLiteral = false)
+        : imageGeneration(_imageGeneration)
+        , parameterGeneration(_parameterGeneration)
+        , isLiteral(_isLiteral)
+        , next(0)
     {
         if (textureId)
             tex.setTextureId(context, textureId);
-        this->imageGeneration = imageGeneration;
-        this->parameterGeneration = parameterGeneration;
-        this->isLiteral = isLiteral;
-        this->next = 0;
     }
 
     QGLBoundTexture tex;

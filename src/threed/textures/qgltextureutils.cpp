@@ -54,8 +54,7 @@ inline static bool isPowerOfTwo(int x)
 }
 
 QGLTextureExtensions::QGLTextureExtensions(QOpenGLContext *ctx)
-    : QOpenGLSharedResource(ctx->shareGroup())
-    , npotTextures(false)
+    : npotTextures(false)
     , generateMipmap(false)
     , bgraTextureFormat(false)
     , ddsTextureCompression(false)
@@ -95,6 +94,7 @@ QGLTextureExtensions::QGLTextureExtensions(QOpenGLContext *ctx)
 struct QGLTEHelper
 {
     QGLTextureExtensions *d;
+//    QGLTEHelper():d(0){qWarning("INITIALISE");}
 };
 
 Q_GLOBAL_STATIC(QGLTEHelper, qt_qgltehelper)
@@ -119,9 +119,10 @@ static void qt_gl_destroyTextureId(GLuint id)
 }
 
 QGLBoundTexture::QGLBoundTexture()
-    : m_resource(qt_gl_destroyTextureId)
-    , m_options(QGLTexture2D::DefaultBindOption)
+    : m_options(QGLTexture2D::DefaultBindOption)
     , m_hasAlpha(false)
+    , m_context(0)
+    , m_resourceId(0)
 {
 }
 
@@ -129,7 +130,7 @@ QGLBoundTexture::~QGLBoundTexture()
 {
 }
 
-// #define QGL_BIND_TEXTURE_DEBUG
+//#define QGL_BIND_TEXTURE_DEBUG
 
 void QGLBoundTexture::startUpload(QOpenGLContext *ctx, GLenum target, const QSize &imageSize)
 {
@@ -152,15 +153,14 @@ void QGLBoundTexture::startUpload(QOpenGLContext *ctx, GLenum target, const QSiz
 
     // Create the texture id for the target, which should be one of
     // GL_TEXTURE_2D or GL_TEXTURE_CUBE_MAP.
-    GLuint id = m_resource.id();
-    if (id) {
+    if (m_resourceId) {
         glBindTexture(target, 0);   // Just in case texture is bound.
-        m_resource.destroy();
+        glDeleteTextures(1, &m_resourceId);
     }
-    id = 0;
-    glGenTextures(1, &id);
-    glBindTexture(target, id);
-    m_resource.attach(ctx, id);
+    m_resourceId = 0;
+    glGenTextures(1, &m_resourceId);
+    glBindTexture(target, m_resourceId);
+    m_context = ctx;
 
     GLuint filtering = m_options & QGLTexture2D::LinearFilteringBindOption ? GL_LINEAR : GL_NEAREST;
 
@@ -588,17 +588,15 @@ bool QGLBoundTexture::bindCompressedTextureDDS(const char *buf, int len)
     const GLubyte *pixels =
         reinterpret_cast<const GLubyte *>(buf + ddsHeader->dwSize + 4);
 
-    GLuint id = m_resource.id();
-    if (id) {
+    if (m_resourceId) {
         glBindTexture(GL_TEXTURE_2D, 0);    // Just in case it is bound.
-        m_resource.destroy();
+        glDeleteTextures(1, &m_resourceId);
     }
-    id = 0;
-    glGenTextures(1, &id);
-    glBindTexture(GL_TEXTURE_2D, id);
     q_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     q_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    m_resource.attach(QOpenGLContext::currentContext(), id);
+    m_resourceId = 0;
+    glGenTextures(1, &m_resourceId);
+    glBindTexture(GL_TEXTURE_2D, m_resourceId);
 
     int size;
     int offset = 0;
@@ -694,15 +692,13 @@ bool QGLBoundTexture::bindCompressedTexturePVR(const char *buf, int len)
 
     // Create the texture.
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    GLuint id = m_resource.id();
-    if (id) {
+    if (m_resourceId) {
         glBindTexture(GL_TEXTURE_2D, 0);    // Just in case it is bound.
-        m_resource.destroy();
+        glDeleteTextures(1, &m_resourceId);
     }
-    id = 0;
-    glGenTextures(1, &id);
-    glBindTexture(GL_TEXTURE_2D, id);
-    m_resource.attach(QOpenGLContext::currentContext(), id);
+    m_resourceId = 0;
+    glGenTextures(1, &m_resourceId);
+    glBindTexture(GL_TEXTURE_2D, m_resourceId);
     if (pvrHeader->mipMapCount) {
         if ((m_options & QGLTexture2D::LinearFilteringBindOption) != 0) {
             glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

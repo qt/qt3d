@@ -885,8 +885,7 @@ void Viewport::render(QGLPainter *painter)
     // boundingRect is in local coordinates. We need to map it to the scene coordinates
     // in order to render to correct area.
     QRect viewport = mapRectToScene(boundingRect()).toRect();
-    qreal adjust = 1.0f;
-    ViewportSubsurface surface(painter->currentSurface(), viewport, adjust);
+    QGLSubsurface surface (painter->currentSurface(), viewport);
     painter->pushSurface(&surface);
 
     // Perform early drawing operations.
