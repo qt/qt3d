@@ -5,7 +5,7 @@ This work was packaged for Debian by:
 Copyright:
 
  The Qt GUI Toolkit is Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
- Contact: Nokia Corporation (qt-info@nokia.com)
+ Contact: http://www.qt-project.org/
 
 
 License:
@@ -31,7 +31,7 @@ License:
 The Debian packaging is:
 
  The Qt GUI Toolkit is Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
- Contact: Nokia Corporation (qt-info@nokia.com)
+ Contact: http://www.qt-project.org/
 
 and is licensed under the GNU Lesser General Public License version
 2.1, which is displayed above.
