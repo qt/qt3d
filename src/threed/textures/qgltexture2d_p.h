@@ -72,7 +72,6 @@ public:
         : imageGeneration(_imageGeneration)
         , parameterGeneration(_parameterGeneration)
         , isLiteral(_isLiteral)
-        , next(0)
     {
         if (textureId)
             tex.setTextureId(context, textureId);
@@ -82,7 +81,6 @@ public:
     uint imageGeneration;
     uint parameterGeneration;
     bool isLiteral;
-    QGLTexture2DTextureInfo *next;
 };
 
 class DDSFormat;
@@ -107,7 +105,7 @@ public:
 #endif
     uint imageGeneration;
     uint parameterGeneration;
-    QGLTexture2DTextureInfo *infos;
+    QList<QGLTexture2DTextureInfo*>  textureInfo;
     bool sizeAdjusted;
 
     bool bind(GLenum target);

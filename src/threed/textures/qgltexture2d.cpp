@@ -100,7 +100,6 @@ QGLTexture2DPrivate::QGLTexture2DPrivate()
 #endif
     imageGeneration = 0;
     parameterGeneration = 0;
-    infos = 0;
     sizeAdjusted = false;
 }
 
@@ -110,23 +109,20 @@ QGLTexture2DPrivate::~QGLTexture2DPrivate()
     // TODO: XXXXXXX
     // This probably does not work at all in multi-threaded OpenGL environments
     // like the QML SceneGraph
-    QGLTexture2DTextureInfo *current = infos;
-    QGLTexture2DTextureInfo *next;
     QOpenGLContext *currentContext = QOpenGLContext::currentContext();
     QOpenGLContext *firstContext = currentContext;
     QSurface *surface = currentContext->surface();
-    while (current != 0) {
-        next = current->next;
-        if (current->isLiteral)
-            current->tex.clearId(); // Don't delete literal id's.
-        delete current;
-        current = next;
-    }
+
     if (firstContext != currentContext) {
         if (firstContext)
             const_cast<QOpenGLContext *>(firstContext)->makeCurrent(surface);
         else if (currentContext)
             const_cast<QOpenGLContext *>(currentContext)->doneCurrent();
+    }
+
+    for (int i=0; i<textureInfo.size(); i++) {
+        if (textureInfo.at(i)->isLiteral) textureInfo.at(i)->tex.clearId();
+        delete textureInfo.at(i);
     }
 }
 
@@ -156,7 +152,7 @@ QGLTexture2D::~QGLTexture2D()
 bool QGLTexture2D::isNull() const
 {
     Q_D(const QGLTexture2D);
-    return d->image.isNull() && !d->infos;
+    return d->image.isNull() && !d->textureInfo.isEmpty();
 }
 
 /*!
@@ -168,9 +164,12 @@ bool QGLTexture2D::hasAlphaChannel() const
     Q_D(const QGLTexture2D);
     if (!d->image.isNull())
         return d->image.hasAlphaChannel();
-    QGLTexture2DTextureInfo *info = d->infos;
-    if (info)
+
+    if (!d->textureInfo.isEmpty())
+    {
+        QGLTexture2DTextureInfo *info = d->textureInfo.first();
         return info->tex.hasAlpha();
+    }
     return false;
 }
 
@@ -412,7 +411,7 @@ void QGLTexture2D::setUrl(const QUrl &url)
         if (url.scheme() == QLatin1String("file") || url.scheme().toLower() == QLatin1String("qrc"))
         {
             QString fileName = url.toLocalFile();
-            
+
             // slight hack since there doesn't appear to be a QUrl::toResourcePath() function
             // to convert qrc:///foo into :/foo
             if (url.scheme().toLower() == QLatin1String("qrc")) {
@@ -421,7 +420,7 @@ void QGLTexture2D::setUrl(const QUrl &url)
                 tempUrl.setScheme(QString());
                 fileName = QLatin1Char(':')+tempUrl.toString();
             }
-            
+
             if (fileName.endsWith(QLatin1String(".dds"), Qt::CaseInsensitive))
             {
                 setCompressedFile(fileName);
@@ -635,48 +634,52 @@ bool QGLTexture2DPrivate::bind(GLenum target)
 
     adjustForNPOTTextureSize();
 
-    // Find the information block for the context, or create one.
-    QGLTexture2DTextureInfo *info = infos;
-    QGLTexture2DTextureInfo *prev = 0;
-
-    if (info) {
-        QOpenGLContext *ictx = const_cast<QOpenGLContext*>(info->tex.context());
-        while (info != 0 && !QOpenGLContext::areSharing(ictx, ctx)) {
-            if (info->isLiteral)
-                return false; // Cannot create extra texture id's for literals.
-            prev = info;
-            info = info->next;
-        }
+    //Find information for the block...
+    QGLTexture2DTextureInfo *texInfo = 0;
+    if (!textureInfo.isEmpty()) {
+        int i=0;
+        QOpenGLContext *ictx=0;
+        do {
+            if (i>=textureInfo.size()) {
+                texInfo = 0;
+                ictx = 0;
+            } else {
+                texInfo = textureInfo.at(i);
+                ictx = const_cast<QOpenGLContext*>(textureInfo.at(i)->tex.context());
+                if (texInfo->isLiteral)
+                    return false;
+            }
+            i++;
+        } while (texInfo!=0 && !QOpenGLContext::areSharing(ictx, ctx));
     }
-    if (!info) {
-        info = new QGLTexture2DTextureInfo
+
+    //If texInfo is 0, we need to create a new info block.
+    if (!texInfo) {
+        texInfo = new QGLTexture2DTextureInfo
             (0, 0, imageGeneration - 1, parameterGeneration - 1);
-        if (prev)
-            prev->next = info;
-        else
-            infos = info;
+        textureInfo.push_back(texInfo);
     }
 
-    if (!info->tex.textureId() || imageGeneration != info->imageGeneration) {
+    if (!texInfo->tex.textureId() || imageGeneration != texInfo->imageGeneration) {
         // Create the texture contents and upload a new image.
-        info->tex.setOptions(bindOptions);
+        texInfo->tex.setOptions(bindOptions);
         if (!compressedData.isEmpty()) {
-            info->tex.bindCompressedTexture
+            texInfo->tex.bindCompressedTexture
                 (compressedData.constData(), compressedData.size());
         } else {
-            info->tex.startUpload(ctx, target, image.size());
-            bindImages(info);
-            info->tex.finishUpload(target);
+            texInfo->tex.startUpload(ctx, target, image.size());
+            bindImages(texInfo);
+            texInfo->tex.finishUpload(target);
         }
-        info->imageGeneration = imageGeneration;
+        texInfo->imageGeneration = imageGeneration;
     } else {
         // Bind the existing texture to the texture target.
-        glBindTexture(target, info->tex.textureId());
+        glBindTexture(target, texInfo->tex.textureId());
     }
 
     // If the parameter generation has changed, then alter the parameters.
-    if (parameterGeneration != info->parameterGeneration) {
-        info->parameterGeneration = parameterGeneration;
+    if (parameterGeneration != texInfo->parameterGeneration) {
+        texInfo->parameterGeneration = parameterGeneration;
         q_glTexParameteri(target, GL_TEXTURE_WRAP_S, horizontalWrap);
         q_glTexParameteri(target, GL_TEXTURE_WRAP_T, verticalWrap);
     }
@@ -729,10 +732,22 @@ GLuint QGLTexture2D::textureId() const
     QOpenGLContext *ctx = QOpenGLContext::currentContext();
     if (!ctx)
         return 0;
-    QGLTexture2DTextureInfo *info = d->infos;
-    QOpenGLContext *ictx = const_cast<QOpenGLContext*>(info->tex.context());
-    while (info != 0 && !QOpenGLContext::areSharing(ictx, ctx))
-        info = info->next;
+
+    QGLTexture2DTextureInfo *info = 0;
+    if (!d->textureInfo.isEmpty()) {
+        int i=0;
+        QOpenGLContext *ictx = 0;
+        do {
+            if (i>d->textureInfo.size()){
+                info = 0;
+                ictx = 0;
+            } else {
+                info = d->textureInfo.at(i);
+                ictx = const_cast<QOpenGLContext*>(info->tex.context());
+            }
+            i++;
+        } while (info != 0 && !QOpenGLContext::areSharing(ictx, ctx));
+    }
     return info ? info->tex.textureId() : 0;
 }
 
@@ -759,10 +774,11 @@ QGLTexture2D *QGLTexture2D::fromTextureId(GLuint id, const QSize& size)
     QGLTexture2D *texture = new QGLTexture2D();
     if (!size.isNull())
         texture->setSize(size);
+
     QGLTexture2DTextureInfo *info = new QGLTexture2DTextureInfo
         (ctx, id, texture->d_ptr->imageGeneration,
          texture->d_ptr->parameterGeneration, true);
-    texture->d_ptr->infos = info;
+    texture->d_ptr->textureInfo.push_back(info);
     return texture;
 }
 

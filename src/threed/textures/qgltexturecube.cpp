@@ -177,7 +177,7 @@ bool QGLTextureCube::isNull() const
 {
     // TODO
     Q_D(const QGLTextureCube);
-    return !d->infos;
+    return !d->textureInfo.isEmpty();
 }
 
 /*!
@@ -195,9 +195,11 @@ bool QGLTextureCube::hasAlphaChannel() const
                 return true;
         }
     }
-    QGLTexture2DTextureInfo *info = d->infos;
-    if (info)
+    if (!d->textureInfo.isEmpty())
+    {
+        QGLTexture2DTextureInfo *info = d->textureInfo.first();
         return info->tex.hasAlpha();
+    }
     return false;
 }
 
@@ -522,9 +524,18 @@ GLuint QGLTextureCube::textureId() const
     const QOpenGLContext *ctx = QOpenGLContext::currentContext();
     if (!ctx)
         return 0;
-    QGLTexture2DTextureInfo *info = d->infos;
-    while (info != 0 && info->tex.context() != ctx)
-        info = info->next;
+
+    QGLTexture2DTextureInfo *info = 0;
+    if (!d->textureInfo.isEmpty()) {
+        int i=0;
+        do {
+            if (i>d->textureInfo.size())
+                info = 0;
+            else
+                info = d->textureInfo.at(i);
+            i++;
+        } while (info != 0 && (info->tex.context() != ctx));
+    }
     return info ? info->tex.textureId() : 0;
 }
 
@@ -554,7 +565,7 @@ QGLTextureCube *QGLTextureCube::fromTextureId(GLuint id, const QSize& size)
     QGLTexture2DTextureInfo *info = new QGLTexture2DTextureInfo
         (ctx, id, texture->d_ptr->imageGeneration,
          texture->d_ptr->parameterGeneration, true);
-    texture->d_ptr->infos = info;
+    texture->d_ptr->textureInfo.push_back(info);
     return texture;
 }
 
