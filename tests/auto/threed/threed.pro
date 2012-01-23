@@ -25,7 +25,6 @@ SUBDIRS = \
     qglrender \
     qglscenenode \
     qglsection \
-    qglsharedresource \
     qglsphere \
     qglvertexbundle \
     qgraphicstransform3d \
