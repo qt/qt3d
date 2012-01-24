@@ -105,25 +105,7 @@ QGLTexture2DPrivate::QGLTexture2DPrivate()
 
 QGLTexture2DPrivate::~QGLTexture2DPrivate()
 {
-    // Destroy the texture id's in the GL server in their original contexts.
-    // TODO: XXXXXXX
-    // This probably does not work at all in multi-threaded OpenGL environments
-    // like the QML SceneGraph
-    QOpenGLContext *currentContext = QOpenGLContext::currentContext();
-    QOpenGLContext *firstContext = currentContext;
-    QSurface *surface = currentContext->surface();
-
-    if (firstContext != currentContext) {
-        if (firstContext)
-            const_cast<QOpenGLContext *>(firstContext)->makeCurrent(surface);
-        else if (currentContext)
-            const_cast<QOpenGLContext *>(currentContext)->doneCurrent();
-    }
-
-    for (int i=0; i<textureInfo.size(); i++) {
-        if (textureInfo.at(i)->isLiteral) textureInfo.at(i)->tex.clearId();
-        delete textureInfo.at(i);
-    }
+    qDeleteAll(textureInfo);
 }
 
 /*!
