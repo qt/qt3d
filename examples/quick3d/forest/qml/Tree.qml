@@ -44,7 +44,7 @@ import Qt3D 1.0
 
 BillboardItem3D {
     id: tree
-    mesh: Mesh { source: "tree.obj" }
+    mesh: Mesh { source: "meshes/tree.obj" }
     effect: Effect {
         blending: true
         texture: "tree.png"

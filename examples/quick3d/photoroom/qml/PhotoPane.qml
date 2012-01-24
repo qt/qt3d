@@ -49,7 +49,7 @@ Item3D {
     property bool bounce: false
     property string color: "#ffffff"
 
-    mesh: Mesh { source: "photopane.obj" }
+    mesh: Mesh { source: "meshes/photopane.obj" }
 
     position: Qt.vector3d(0, 0, -pictureLayer)
     effect: Effect { decal: true; texture: image; color: photo.color }

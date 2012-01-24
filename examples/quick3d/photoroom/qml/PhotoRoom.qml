@@ -57,11 +57,11 @@ Viewport {
 
     ListModel {
         id: imagesModelLeft
-        ListElement { image: "textures/woman.jpg"; }
-        ListElement { image: "textures/niagara_falls.jpg"; }
-        ListElement { image: "textures/place.jpg"; }
-        ListElement { image: "textures/basket.jpg"; }
-        ListElement { image: "textures/qtlogo.png"; color: "#006090" }
+        ListElement { image: "woman.jpg"; }
+        ListElement { image: "niagara_falls.jpg"; }
+        ListElement { image: "place.jpg"; }
+        ListElement { image: "basket.jpg"; }
+        ListElement { image: "qtlogo.png"; color: "#006090" }
     }
 
     Component {
@@ -88,11 +88,11 @@ Viewport {
     //! [0]
     ListModel {
         id: exampleModel
-        ListElement { image: "textures/niagara_falls.jpg" }
-        ListElement { image: "textures/place.jpg" }
-        ListElement { image: "textures/background.jpg" }
-        ListElement { image: "textures/basket.jpg" }
-        ListElement { image: "textures/woman.jpg" }
+        ListElement { image: "niagara_falls.jpg" }
+        ListElement { image: "place.jpg" }
+        ListElement { image: "background.jpg" }
+        ListElement { image: "basket.jpg" }
+        ListElement { image: "woman.jpg" }
     }
     //! [0]
 

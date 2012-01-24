@@ -43,7 +43,7 @@ import Qt3D 1.0
 
 Viewport {
     property string name: "Interpolate Shader"
-    property string icon: "images/teapot-logo.png"
+    property string icon: "teapot-logo.png"
 
     width: 640; height: 480
 
@@ -64,8 +64,8 @@ Viewport {
 
         ShaderProgram {
             id: program
-            texture: "images/basket.jpg"
-            property variant texture2 : "images/qtlogo.png"
+            texture: "basket.jpg"
+            property variant texture2 : "qtlogo.png"
             property real interpolationFactor : 0.0
 
             SequentialAnimation on interpolationFactor {

@@ -43,7 +43,7 @@ import Qt3D 1.0
 
 Rectangle {
     property string name: "Images Shader"
-    property string icon: "images/teapot-logo.png"
+    property string icon: "teapot-logo.png"
 
     width: 640; height: 480
     id: top
@@ -52,8 +52,8 @@ Rectangle {
     property bool flag : true
 
     property string imageUrl: flag ?
-            "images/qtlogo.png" :
-            "images/basket.jpg"
+            "qtlogo.png" :
+            "basket.jpg"
 
     Image {
         id: myChangingImage
@@ -94,7 +94,7 @@ Rectangle {
 
             // Default texture that the shaderprogram will get until something else
             // is bound:
-            texture: "images/qtlogo.png"
+            texture: "qtlogo.png"
 
             // This property is automatically hooked up to the image uniform
             // in the shader program below.

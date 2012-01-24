@@ -1,10 +1,10 @@
 <RCC>
     <qresource prefix="/">
-        <file>qml/ground.obj</file>
-        <file>qml/tree.obj</file>
         <file>qml/tree.png</file>
         <file>qml/Tree.qml</file>
         <file>qml/Forest.qml</file>
         <file>qml/desktop.qml</file>
+        <file>qml/meshes/ground.obj</file>
+        <file>qml/meshes/tree.obj</file>
     </qresource>
 </RCC>

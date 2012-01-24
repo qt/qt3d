@@ -44,6 +44,7 @@ import Qt3D.Shapes 1.0
 
 Viewport {
     width: parent.width; height: parent.height
+    renderMode: Viewport.DirectRender
 
     Item3D {
         effect: Effect { color: "#aaca00" }

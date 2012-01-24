@@ -55,7 +55,7 @@ Viewport {
 
     Item3D {
         id: ground
-        mesh: Mesh { source: "ground.obj" }
+        mesh: Mesh { source: "meshes/ground.obj" }
         effect: Effect {
             color: "#604000"
             useLighting: false

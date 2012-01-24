@@ -45,7 +45,7 @@ Viewport {
     width: 640; height: 480
 
     property string name: "Animation Shader"
-    property string icon: "images/teapot-logo.png"
+    property string icon: "teapot-logo.png"
     property bool run: true
 
     Item3D {
@@ -75,7 +75,7 @@ Viewport {
                 NumberAnimation { from: 0.001; to: 1.0; duration: 1500; easing.type:"OutBounce" }
             }
 
-            texture: "images/qtlogo.png"
+            texture: "qtlogo.png"
 
             SequentialAnimation on color {
                 running: run

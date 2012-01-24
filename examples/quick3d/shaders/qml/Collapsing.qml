@@ -43,7 +43,7 @@ import Qt3D 1.0
 
 Viewport {
     property string name: "Collapsing Shader"
-    property string icon: "images/teapot-logo.png"
+    property string icon: "teapot-logo.png"
 
     width: 640; height: 480
 
@@ -74,7 +74,7 @@ Viewport {
                 PauseAnimation { duration: 700 }
                 NumberAnimation { from: 1.0; to: 0.0; duration: 1500; easing.type:"OutBounce" }
             }
-            texture: "images/qtlogo.png"
+            texture: "qtlogo.png"
 
             SequentialAnimation on color{
                 running: true

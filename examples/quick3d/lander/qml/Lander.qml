@@ -60,6 +60,7 @@ Image {
         anchors.fill: parent
         visible: false
         navigation: false
+        renderMode: Viewport.BufferedRender
 
         camera: Camera {
             eye.x: cameraTarget.x
@@ -191,7 +192,10 @@ Image {
 
         MouseArea {
             id: gameInputPad
-            anchors.fill: parent
+            // TODO: Fix anchors.fill for children of Viewport
+            // HACK. Setting width and height temporarily fixes this problem
+            width: 720
+            height: 480
             enabled: false
 
             onMouseYChanged: {

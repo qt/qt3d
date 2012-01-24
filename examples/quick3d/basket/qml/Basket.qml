@@ -54,7 +54,7 @@ Viewport {
 
 //! [2]
     Item3D {
-        mesh: Mesh { source: "basket.bez" }
+        mesh: Mesh { source: "meshes/basket.bez" }
         effect: Effect { texture: "basket.jpg" }
 //! [2]
 //! [3]

@@ -45,6 +45,7 @@ Viewport {
     width: parent.width
     height: parent.height
     id: viewPort
+    renderMode: Viewport.DirectRender
 
     MouseArea {
         anchors.fill: parent
@@ -52,7 +53,7 @@ Viewport {
     }
 
     Item3D {
-        mesh: Mesh { source: "teapot.bez" }
+        mesh: Mesh { source: "meshes/teapot.bez" }
         effect: program
 
 
