@@ -27,8 +27,8 @@ QML_MESHES_FILES = \
 CATEGORY = examples
 include(../../../pkg.pri)
 
-#INSTALL_DIRS = qml
-#mt: INSTALL_FILES = mt.qml
+INSTALL_DIRS = qml
+mt: INSTALL_FILES = mt.qml
 
 OTHER_FILES += \
     photoroom.rc \
