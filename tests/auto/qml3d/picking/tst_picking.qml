@@ -1,8 +1,8 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies).
 ** All rights reserved.
-** Contact: http://www.qt-project.org/
+** Contact: Nokia Corporation (qt-info@nokia.com)
 **
 ** This file is part of the QtQuick3D module of the Qt Toolkit.
 **
@@ -39,10 +39,10 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.0
+import Qt 4.7
 import Qt3D 1.0
-import QtTest 1.0
 import Qt3D.Shapes 1.0
+import QtQuickTest 1.0
 
 Rectangle
 {
@@ -54,6 +54,9 @@ Rectangle
         width: 480; height: 480
         picking: true
 
+        // Result of manual click
+        property color clickedColor: "#000000"
+
         Quad {
             id: fullScreenQuad
 
@@ -63,8 +66,8 @@ Rectangle
                     angle: 90
                 },
                 Scale3D {
-                    // a scale 2 quad will fill a square viewport
-                    scale: 2
+                    // a scale 4 quad will fill a square viewport
+                    scale: 4
                 }
             ]
             position: Qt.vector3d(0, 0, 0)
@@ -72,6 +75,10 @@ Rectangle
 
             effect: Effect {
                 color: fullScreenQuad.color
+            }
+
+            onClicked: {
+                viewport.clickedColor = fullScreenQuad.color
             }
         }
 
@@ -92,6 +99,10 @@ Rectangle
 
             effect: Effect {
                 color: smallerQuad.color
+            }
+
+            onClicked: {
+                viewport.clickedColor = smallerQuad.color
             }
         }
 
@@ -137,8 +148,8 @@ Rectangle
                 var y = viewport.height / 2;
                 // Usually succeeds on the first run
 //                console.log("objectForPoint(" + x + "," + y + "): " + viewport.objectForPoint(x,y)  );
-                //if (viewport.objectForPoint(x,y) != null)
-                //    pickingTestCase.when = true;
+                if (viewport.objectForPoint(x,y) != null)
+                    pickingTestCase.when = true;
             }
         }
 
@@ -163,8 +174,7 @@ Rectangle
             property int midX : viewport.width / 2;
             property int midY : viewport.height / 2;
             function test_picking() {
-                skip("picking test need porting");
-                /*
+                verify(!timedOut, "timed out");
                 verify(viewport.objectForPoint(0,0) == fullScreenQuad,
                        "Didn't find full screen quad in top left corner");
                 verify(viewport.objectForPoint(midX,midY) == smallerQuad,
@@ -177,7 +187,6 @@ Rectangle
                 pickTestModel.append({"color":"#ff00ff"});
                 verify(viewport.objectForPoint(midX,midY).color == "#ff00ff",
                        "Didn't find second modelview quad at midpoint");
-                       */
             }
         }
     }
