@@ -1904,8 +1904,9 @@ void Viewport::sceneGraphInitialized()
     }
 }
 
-void Viewport::geometryChanged(const QRectF &newGeometry, const QRectF & /*oldGeometry*/)
+void Viewport::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
 {
+    QQuickItem::geometryChanged(newGeometry, oldGeometry);
     setSize(newGeometry.size());
 }
 
