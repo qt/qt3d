@@ -66,8 +66,8 @@ Rectangle
                     angle: 90
                 },
                 Scale3D {
-                    // a scale 2 quad will fill a square viewport
-                    scale: 2
+                    // a scale 4 quad will fill a square viewport
+                    scale: 4
                 }
             ]
             position: Qt.vector3d(0, 0, 0)

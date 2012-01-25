@@ -93,44 +93,75 @@ QT_BEGIN_NAMESPACE
 static const int vertexDataLen = 6 * 4 * 3;
 
 static const float vertexData[vertexDataLen] = {
+    // +X
+    0.5f, 0.5f, -0.5f,
+    0.5f, 0.5f, 0.5f,
+    0.5f, -0.5f, 0.5f,
+    0.5f, -0.5f, -0.5f,
+    // -X
     -0.5f, -0.5f, -0.5f,
     -0.5f, -0.5f, 0.5f,
     -0.5f, 0.5f, 0.5f,
     -0.5f, 0.5f, -0.5f,
 
+    // +Y
     -0.5f, 0.5f, -0.5f,
     -0.5f, 0.5f, 0.5f,
     0.5f, 0.5f, 0.5f,
     0.5f, 0.5f, -0.5f,
-
-    0.5f, 0.5f, -0.5f,
-    0.5f, 0.5f, 0.5f,
-    0.5f, -0.5f, 0.5f,
-    0.5f, -0.5f, -0.5f,
-
+    // -Y
     0.5f, -0.5f, -0.5f,
     0.5f, -0.5f, 0.5f,
     -0.5f, -0.5f, 0.5f,
     -0.5f, -0.5f, -0.5f,
 
+    // +Z
     0.5f, -0.5f, 0.5f,
     0.5f, 0.5f, 0.5f,
     -0.5f, 0.5f, 0.5f,
     -0.5f, -0.5f, 0.5f,
-
+    // -Z
     0.5f, 0.5f, -0.5f,
     0.5f, -0.5f, -0.5f,
     -0.5f, -0.5f, -0.5f,
     -0.5f, 0.5f, -0.5f
 };
 
-static const int texCoordDataLen = 4 * 2;
+static const int texCoordDataLen = 6 * 4 * 2;
 
 static const float texCoordData[texCoordDataLen] = {
+    // +X
+    1.0f, 1.0f,
+    0.0f, 1.0f,
+    0.0f, 0.0f,
+    1.0f, 0.0f,
+    // -X
+    0.0f, 0.0f,
     1.0f, 0.0f,
     1.0f, 1.0f,
     0.0f, 1.0f,
-    0.0f, 0.0f
+
+    // +Y
+    0.0f, 1.0f,
+    0.0f, 0.0f,
+    1.0f, 0.0f,
+    1.0f, 1.0f,
+    // -Y
+    1.0f, 0.0f,
+    1.0f, 1.0f,
+    0.0f, 1.0f,
+    0.0f, 0.0f,
+
+    // +Z
+    1.0f, 0.0f,
+    1.0f, 1.0f,
+    0.0f, 1.0f,
+    0.0f, 0.0f,
+    // -Z
+    0.0f, 1.0f,
+    0.0f, 0.0f,
+    1.0f, 0.0f,
+    1.0f, 1.0f,
 };
 
 /*!
@@ -158,8 +189,7 @@ QGLBuilder& operator<<(QGLBuilder& builder, const QGLCube& cube)
     QVector2DArray texx = QVector2DArray::fromRawData(
             reinterpret_cast<const QVector2D *>(texCoordData), texCoordDataLen / 2);
 
-    for (int i = 0; i < 6; ++i)
-        op.appendTexCoordArray(texx);
+    op.appendTexCoordArray(texx);
 
     builder.addQuads(op);
     return builder;
