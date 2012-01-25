@@ -63,7 +63,7 @@
     hardware, but out-of-the-box Qt3D works just fine on regular non-stereo displays
     and does not require special glasses or displays to use it.
 
-    See the \l{Tutorials and Examples} for an introduction to using Qt3D in C++ and QML.
+    See the \l{Qt3D Tutorials and Examples} for an introduction to using Qt3D in C++ and QML.
 
     \raw HTML
         <table cellpadding="2" cellspacing="1" border="0" width="100%" class="indextable">

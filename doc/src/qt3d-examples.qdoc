@@ -27,8 +27,8 @@
 
 /*!
     \page qt3d-examples.html
-    \title Tutorials and Examples
-    \keyword Tutorials and Examples
+    \title Qt3D Tutorials and Examples
+    \keyword Qt3D Tutorials and Examples
 
     Building 3D applications in QML with Qt3D:
 
@@ -62,9 +62,9 @@
 */
 
 /*!
-    \page qt-examples-placeholder.html
-    \title Qt Examples
-    \keyword Qt Examples
+    \page qt3d-examples-placeholder.html
+    \title Qt3D Examples
+    \keyword Qt3D Examples
 
     Check the \l{http://doc.qt.nokia.com/4.7/all-examples.html}{Qt Examples for sample code specific to Qt itself.}
 
