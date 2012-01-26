@@ -313,19 +313,27 @@ Rectangle {
         font.pixelSize: 16
     }
 
+    // --------- grid text begin ---------
+
+    property bool bTall: view.width<view.height;
+    property int minimalDimension: (bTall) ? view.width : view.height;
+    property int textStep: minimalDimension/8;
+
+    // horizontal
 
     Text {
         id: h_minus100
         text: -1.0*cameraZoom
-        x: (view.width/10) - 6
+        x: view.width/2 - 4*textStep - 10
         y: (view.height/2) - 14
         color: "white"
         font.pixelSize: 12
+        visible: bTall==false
     }
     Text {
         id: h_minus075
         text: -0.75*cameraZoom
-        x: 2*(view.width/10) - 7
+        x: view.width/2 - 3*textStep - 10
         y: (view.height/2) - 14
         color: "white"
         font.pixelSize: 12
@@ -333,7 +341,7 @@ Rectangle {
     Text {
         id: h_minus050
         text: -0.5*cameraZoom
-        x: 3*(view.width/10) - 8
+        x: view.width/2 - 2*textStep - 10
         y: (view.height/2) - 14
         color: "white"
         font.pixelSize: 12
@@ -341,7 +349,7 @@ Rectangle {
     Text {
         id: h_minus025
         text: -0.25*cameraZoom
-        x: 4*(view.width/10) - 9
+        x: view.width/2 - textStep - 10
         y: (view.height/2) - 14
         color: "white"
         font.pixelSize: 12
@@ -357,7 +365,7 @@ Rectangle {
     Text {
         id: h_plus025
         text: 0.25*cameraZoom
-        x: 6*(view.width/10) - 11
+        x: view.width/2 + textStep - 5
         y: (view.height/2) - 14
         color: "white"
         font.pixelSize: 12
@@ -365,7 +373,7 @@ Rectangle {
     Text {
         id: h_plus050
         text: 0.5*cameraZoom
-        x: 7*(view.width/10) - 12
+        x: view.width/2 + 2*textStep - 5
         y: (view.height/2) - 14
         color: "white"
         font.pixelSize: 12
@@ -373,7 +381,7 @@ Rectangle {
     Text {
         id: h_plus075
         text: 0.75*cameraZoom
-        x: 8*(view.width/10) - 13
+        x: view.width/2 + 3*textStep - 5
         y: (view.height/2) - 14
         color: "white"
         font.pixelSize: 12
@@ -381,17 +389,20 @@ Rectangle {
     Text {
         id: h_plus100
         text: 1.0*cameraZoom
-        x: 9*(view.width/10) - 14
+        x: view.width/2 + 4*textStep
         y: (view.height/2) - 14
         color: "white"
         font.pixelSize: 12
+        visible: bTall==false
     }
+
+    // vertical
 
     Text {
         id: v_minus075
         text: -0.75*cameraZoom
         x: (view.width/2)
-        y: (view.height/8) - 12
+        y: view.height/2 - 3*textStep - 5
         color: "white"
         font.pixelSize: 12
     }
@@ -399,7 +410,7 @@ Rectangle {
         id: v_minus050
         text: -0.5*cameraZoom
         x: (view.width/2)
-        y: 2*(view.height/8) - 12
+        y: view.height/2 - 2*textStep - 6
         color: "white"
         font.pixelSize: 12
     }
@@ -407,7 +418,7 @@ Rectangle {
         id: v_minus025
         text: -0.25*cameraZoom
         x: (view.width/2)
-        y: 3*(view.height/8) - 12
+        y: view.height/2 - textStep - 7
         color: "white"
         font.pixelSize: 12
     }
@@ -415,7 +426,7 @@ Rectangle {
         id: v_plus025
         text: 0.25*cameraZoom
         x: (view.width/2)
-        y: 5*(view.height/8) - 12
+        y: view.height/2 + textStep - 8
         color: "white"
         font.pixelSize: 12
     }
@@ -423,7 +434,7 @@ Rectangle {
         id: v_plus050
         text: 0.5*cameraZoom
         x: (view.width/2)
-        y: 6*(view.height/8) - 12
+        y: view.height/2 + 2*textStep - 9
         color: "white"
         font.pixelSize: 12
     }
@@ -431,8 +442,10 @@ Rectangle {
         id: v_plus075
         text: 0.75*cameraZoom
         x: (view.width/2)
-        y: 7*(view.height/8) - 12
+        y: view.height/2 + 3*textStep - 10
         color: "white"
         font.pixelSize: 12
     }
+
+    // --------- grid text end ---------
 }
