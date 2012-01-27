@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies).
 ** All rights reserved.
 ** Contact: http://www.qt-project.org/
 **
@@ -26,92 +26,156 @@
 ****************************************************************************/
 
 /*!
-    \page index.html
-    \title Qt3D Reference Documentation
-    \keyword Qt3D Reference Documentation
+    \page qt3d-overview.html
+    \title Qt3D Introduction and Overview Documentation
+    \keyword Qt3D Introduction Overview Documentation
 
-    \image qt3d-logo.png
 
-    Qt3D adds 3D content to \l{http://qt.nokia.com/qtquick/}{Qt Quick's} cross-platform ability and coding power.
-    Developers of fluid user interfaces can now enhance their applications with 3D
-    content in the same way icons and pixmaps would be used in a 2D application.
+    \section1 What is Qt 3D?
+    The Qt 3D module provides a set of APIs to make 3D graphics programming easy and declarative. Seamless integration
+    with the Qt Quick module allows for developers to add 3D contents to any Qt application in the same way icons and
+    pixmaps are used in a regular Qt application. At the same time, Qt 3D is powerful enough for creating full scale
+    3D applications or games. To guarantee the graphics performance on various platforms, Qt 3D is hardware accelerated
+    using GPU. For more direct and low-level access to 3D graphics hardware, please see OpenGL ES APIs [link to OpenGL ES doc].
 
-    Qt3D is a product resulting from the \l{http://doc.qt.nokia.com/qt3d-snapshot}{Qt3D project}.  Qt3D is a set of powerful
-    cross-platform C++ API's for 3D programming using OpenGL.
 
-    Qt3D is made up of the QML bindings for Qt3D plus Qt Creator integration, and other
-    supporting tools.  Qt3D may be used to extend these QML bindings by creating new user-defined QML Qt3D items using C++.
+    \section1 Common Use Cases
+    \list
+    \o Adding 3D models to 2D applications – Qt 3D’s ViewPort item that defines the logical viewport for a 3D scene can be
+    placed in any 2D application. For example, it is possible to place a 3D avatar on a 2D contacts application.
+    \o 3D User Interface Elements – Qt 3D handles external inputs such as touch or key events so that it is possible to
+    interact with any Qt 3D items on the screen.
+    \o 3D Visualizations in media player – Qt 3D’s QML API supports regular QML features such as property bindings and QML
+    animation framework. Therefore, developers can create a 3D visualization application with less code.
+    \o Casual games – Combining Qt 3D features with other Qt modules such as Qt Sensors allows developers to create interactive
+    3D games easily.
+    \endlist
 
-    OpenGL hardware was designed for 3D acceleration and Qt3D allows applications
-    to utilise that 3D hardware fully.
 
-    Qt3D's QML bindings are the Qt Quick product for scripting 3D applications in QML. Apps can be
-    2D QML applications with a small amount of simple 3D content; through to complex
-    3D scenes, containing 3D assets - such as complex 3D models, and shader effects.
+    \section1 C++ and QML APIs
+    Qt 3D consists of two libraries which support the same features in C++ interface and QML respectively. Both libraries
+    share the same primary goal which is to make the 3D graphics programming easy. Qt 3D’s C++ API  is originally developed
+    to make the OpenGL programming as cross-platform as possible.  Traditionally porting between desktop and embedded OpenGL
+    variants has been difficult due to differing function names, as well as a shader-based versus fixed function rendering
+    pipeline.  The C++ API for Qt3D eases this difficulty by abstracting these differences away beneath a Qt like API layer.
 
-    In Qt3D scripts are written in QML, and rendered with the power of Qt & the Qt3D C++ API.
+    The QML bindings for Qt 3D takes this further and make the 3D programming declarative. To use Qt 3D in your QML application
+    you need the following import statement.
 
-    Qt3D research continues and if the features you're looking for are not available in QML
-    yet you may find them in the \l{http://doc.qt.nokia.com/qt3d-snapshot/index.html}{Qt3D research project}.
+    \code
+    import Qt3D 1.0
+    \endcode
 
-    Check the Qt3D research project for upcoming features like \bold{stereoscopic support},
-    which will enable your programs to take advantage of special hardware that displays a different image to each eye.
-    We are readying QML Qt3D for stereo support and in some places you may see references to it,
-    however it is \bold{not supported yet}.
+    Asset loading, built-in shapes, shaders and texture management are the main features and they are explained below in
+    details. Developers may choose a suitable interface depending on requirements or preference.
 
-    Qt3D displays \bold{3D content} that is \bold{ready to be enhanced} by stereoscopic
-    hardware, but out-of-the-box Qt3D works just fine on regular non-stereo displays
-    and does not require special glasses or displays to use it.
 
-    See the \l{Qt3D Tutorials and Examples} for an introduction to using Qt3D in C++ and QML.
+    \section1 Asset Loading
+    Using Qt 3D it is easy to load 3D content from a standard interchange file format into your application. Currently
+    supported formats are:
 
-    \raw HTML
-        <table cellpadding="2" cellspacing="1" border="0" width="100%" class="indextable">
-        <tr>
-        <th class="titleheader" width="33%">
-        Getting Started
-        </th>
-        <th class="titleheader" width="33%">
-        Functionality Areas
-        </th>
-        <th class="titleheader" width="33%">
-        API Reference
-        </th>
-        </tr>
-        <tr>
-        <td valign="top">
-        <ul>
-        <li><a href="qt3d-overview.html">Introduction and Overview</a></li>
-        <li><a href="qt3d-building.html">Building</a></li>
-        <li><a href="qt3d-examples.html">Tutorials and Examples</a></li>
-        <li><a href="sceneformats-obj.html">Scene format plug-ins</a></li>
-        <li><a href="qt3d-contrib.html">Contributing</a></li>
-        <li><a href="qt3d-acceptance.html">Acceptance tests</a></li>
-        <li><a href="qt3d-troubleshooting.html">Troubleshooting Qt3D</a></li>
-        </ul>
-        </td>
-        <td valign="top">
-        <ul>
-        <li><a href="qt3d-arrays.html">Arrays and Vertex Buffers</a></li>
-        <li><a href="qt3d-geometry.html">Geometry Building</a></li>
-        <li><a href="qt3d-graphicsview.html">Graphics View Integration</a></li>
-        <li><a href="qt3d-materials.html">Materials</a></li>
-        <li><a href="qt3d-math.html">Mathematical Primitives</a></li>
-        <li><a href="qt3d-painting.html">Painting in 3D</a></li>
-        <li><a href="qt3d-scene.html">Scene Management</a></li>
-        <li><a href="qt3d-textures.html">Texture Management</a></li>
-        <li><a href="qt3d-viewing.html">Viewing Widgets</a></li>
-        </ul>
-        </td>
-        <td valign="top">
-        <ul>
-        <li><a href="qt3d-all-classes.html">All Classes</a></li>
-        <li><a href="qgl.html">QGL Namespace</a></li>
-        <li><a href="qt3d-qml3d.html">Qt3D Elements</a></li>
-        <li><a href="qt3d-qml3d-shapes.html">QML Qt3D Stock Shapes</a></li>
-        </ul>
-        </td>
-        </tr>
-        </table>
-    \endraw
+    \table
+    \header
+        \o \bold {Developed by}
+        \o \bold {File Extension}
+        \o \bold {Description}
+    \row
+        \o Waterfront Technologies
+        \o .obj
+        \o Originally developed for Advanced Visualizer by Waterfront Technologies. The OBJ file format that represents 3D geometry is open and widely adopted.
+    \row
+        \o Autodesk
+        \o .3ds
+        \o Format used in 3D Studio MAX. This format is popular among video game developers.
+    \row
+        \o COLLADA
+        \o .dae
+        \o COLLADA(COLLAborative Design Activity) is managed by Chronos Group.
+    \row
+        \o id Software
+        \o .MD2
+        \o Format used by Quake II and many other games.
+    \row
+        \o Inivis
+        \o .ac
+        \o Popular format for games and simulations.
+    \row
+        \o N/A
+        \o .bez
+        \o Bezier Surface File specifices collection of bezier patches.
+    \endtable
+
+    A QML Example that loads a teapot shaped 3D model:
+
+    \code
+    import QtQuick 2.0
+    import Qt3D 1.0
+
+    Viewport {
+        width: 640; height: 480
+        Item3D {
+            id: teapot
+            mesh: Mesh { source: "teapot.bez" }
+            effect: Effect {}
+        }
+    }
+    \endcode
+
+
+    \section1 Built-in Shapes
+    Qt 3D comes with a number of built-in primitive shapes. To use these shapes in your application you need the following import statement in your QML application.
+    import Qt3D.Shapes 1.0
+
+    \image sampleshapes.png
+
+
+    \section1 Shader and Textures
+    Both external 3D models and built-in shapes can be decorated using ShaderProgram and Effect element. The ShaderProgram item is derivative class of the more general Effect class in QML Qt 3D. Whereas the Effect class provides support for standard effects under OpenGL, the ShaderProgram supports effects based on custom shader programs for the GPU.
+
+
+    \section1 Model Viewer
+    Qt 3D comes with a 3D model viewer application which helps the developer to visually scale, rotate, and position a 3D model before adding it to a viewport. The application can then auto create a QML file that can later be used as a component in a QML application. Model viewer is launched from Qt Creator as an external application by clicking Tools and External options from the menu tab.
+
+
+    \section1 Getting Started
+    \list
+    \o \l {qt3d-building.html}{Building}
+    \o \l {qt3d-examples.html}{Tutorials and Examples}
+    \o \l {sceneformats-obj.html}{Scene format plug-ins}
+    \o \l {qgl.html}{QGL Namespace}
+    \o \l {qt3d-acceptance.html}{Acceptance tests}
+    \o \l {qt3d-troubleshooting.html}{Troubleshooting Qt3D}
+    \endlist
+
+    \section1 Qt3D Core Concepts
+    \list
+    \o \l {qt3d-arrays.html}{Arrays and Vertex Buffers}
+    \o \l {qt3d-geometry.html}{Geometry Building}
+    \o \l {qt3d-graphicsview.html}{Graphics View Integration}
+    \o \l {qt3d-materials.html}{Materials}
+    \o \l {qt3d-math.html}{Mathematical Primitives}
+    \o \l {qt3d-painting.html}{Painting in 3D}
+    \o \l {qt3d-scene.html}{Scene Management}
+    \o \l {qt3d-textures.html}{Texture Management}
+    \o \l {qt3d-viewing.html}{Viewing Widgets}
+    \endlist
+
+    \section1 API Reference documentation
+    \list
+    \o \l {qt3d-all-classes.html}{C++ APIs}
+    \o \l {qt3d-qml3d.html}{QML APIs}
+    \endlist
+
+    \section1 Extending Qt 3D
+    Adding new 3D file format – Qt 3D has a plugin based system so that new format can be supported easily.
+
+    Physics Integration – Physics integration is not officially supported yet, but you can integrate the commonly used Bullet physics engine with C++ Qt3D.
+
+
+    \section1 Future Roadmap & Contributions
+    Please visit \l{http://bugreports.qt.nokia.com}{Qt bugreports system, JIRA}, to see our future roadmap.
+
+    For more information on contributions please visit the Qt3D \l{qt3d-contrib.html}{contributions page}.
+
+    We would like to hear your feedback and accept any contributions in forms of code, documentation, examples and bugs reports. Please contact us on the \l{http://lists.qt.nokia.com/mailman/listinfo/qt-3d}{Qt3D mailing list}.
 */
