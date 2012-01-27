@@ -99,11 +99,15 @@ Rectangle {
         QuickFile {
             id: quickFile
             filename: "meshes/penguin.3ds"
+            title: "Open 3D Asset File"
+            filter: "Asset files (*.*)"
         }
 
         QuickFile {
             id: textureFile
             filename: ""
+            title: "Open Texture File"
+            filter: "Images (*.gif *.png *.jpg *.tif *.bmp)"
         }
 
         Mesh {
@@ -238,7 +242,7 @@ Rectangle {
             Text {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
-                text: source_mesh.source
+                text: "Hold left mouse button to move, middle button to scale, and right button to rotate the asset."
             }
         }
 

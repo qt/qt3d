@@ -27,7 +27,8 @@ Row {
                 anchors.left: parent.left
                 anchors.leftMargin: 8
                 text: "Position";
-                color: "#FFFFFF"
+                color: "#FFFFFF";
+                font.bold: true;
             }
             Image {
                 id: imageP
@@ -124,8 +125,9 @@ Row {
             Text {
                 anchors.left: parent.left
                 anchors.leftMargin: 8
-                text: "Scale";
+                text: "Rotation";
                 color: "#FFFFFF"
+                font.bold: true
             }
 
             Image {
@@ -225,12 +227,12 @@ Row {
 
             Item {
                 width: parent.width
-                height: effectText.height
+                height: scaleText.height
                 Text {
-                    id: effectText
+                    id: scaleText
                     anchors.left: parent.left
                     anchors.leftMargin: 8
-                    text: "Effect";
+                    text: "Scale";
                     color: "#FFFFFF"
                     font.bold: true
                 }
@@ -323,6 +325,27 @@ Row {
     Column {
         width: 150
         spacing: 5
+        Item {
+            id: effectPanel
+            width: parent.width
+            height: imageS.height
+            property bool dirty: false
+
+            Item {
+                width: parent.width
+                height: effectText.height
+                Text {
+                    id: effectText
+                    anchors.left: parent.left
+                    anchors.leftMargin: 8
+                    text: "Effect";
+                    color: "#FFFFFF"
+                    font.bold: true
+                }
+            }
+        }
+
+
         CheckBox {
             id: fromMesh
             width: parent.width
@@ -372,7 +395,7 @@ Row {
                     id: colorText
                     anchors.left: parent.left
                     anchors.leftMargin: 8
-                    text: "Color";
+                    text: "- Color";
                     color: "#FFFFFF"
                     font.bold: true
                 }
@@ -485,7 +508,7 @@ Row {
                     id: textureText
                     anchors.left: parent.left
                     anchors.leftMargin: 8
-                    text: "Texture";
+                    text: "- Texture";
                     color: "#FFFFFF"
                     font.bold: true
                 }

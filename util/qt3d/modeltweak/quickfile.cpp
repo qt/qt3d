@@ -116,8 +116,7 @@ QString QuickFile::promptSave() const
 */
 void QuickFile::load()
 {
-    QString qmlFilename = QFileDialog::getOpenFileName(0, tr("Load File"), "",tr("Model Files (*.*)"));
-
+    QString qmlFilename = QFileDialog::getOpenFileName(0, _title, "", _filter);
     setFilename(qmlFilename);
 }
 
@@ -130,6 +129,26 @@ void QuickFile::setFilename(const QString filename) {
     if (_filename != filename)
         _filename = filename;
     emit filenameChanged(filename);
+}
+
+QString QuickFile::title() const {
+    return _title;
+}
+
+void QuickFile::setTitle(const QString title) {
+    if (_title != title)
+        _title = title;
+    emit titleChanged(title);
+}
+
+QString QuickFile::filter() const {
+    return _filter;
+}
+
+void QuickFile::setFilter(const QString filter) {
+    if (_filter != filter)
+        _filter = filter;
+    emit filterChanged(filter);
 }
 
 QString QuickFile::data() const {

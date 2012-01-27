@@ -86,7 +86,7 @@ testcase = {
             | *Step* | *Verification* |
             | Launch the basket_qml example | the application starts and showss animation of a rotating basket with textures |
             | Use the mouse or touch pad to rotate the view | the view rotates fine, user can view the basket from all angles |
-            | Maximize/minimize/resize the view | the animation doesn't change size with the viewport, shows fine with no crash |
+            | Maximize/minimize/resize the view | the animation does not change size with the viewport, shows fine with no crash |
             | Close the application | application closes without warning or errors |
         '));
     },
@@ -181,7 +181,7 @@ testcase = {
             | *Step* | *Verification* |
             | Launch the cube qml example | the application starts and show a cube with Qt logo textures on each face |
             | Use the mouse or touch pad to rotate the view | the cube rotates fine, user can view all faces of the cube |
-            | Maximize/minimize/resize the view | the cube doesn't change in size |
+            | Maximize/minimize/resize the view | the cube does not change in size |
             | Close the application | application closes without warning or errors |
         '));
     },
@@ -556,13 +556,13 @@ testcase = {
             | Click on menu File - Save as | the displayed information can be saved as a text file |
             | Click on menu Edit - Copy | the information are copied to the clipboard |
             | Click on menu View - Run FPS Test | a test window pops up with a green cube rotating |
-            | Close the test window | a frame per second number is shown in the main window's status bar |
+            | Close the test window | a frame per second number is shown in the main windows status bar |
             | Click on menu Help - About | correct about information are displayed |
             | Close the application | application closes without warning or errors |
         '));
     },
 
-    qt3d/tutorials/penguin_advanced_test: function()
+    penguin_advanced_test: function()
     {
         //test meta data
         testTitle = "Qt3D - Penguin Advanced";
@@ -850,7 +850,7 @@ testcase = {
             | *Step* | *Verification* |
             | Launch the tea service qml example | the application starts and shows a set of tea stuff |
             | Click on the tepot and cups | the object clicked will bounce up in response |
-            | Maximize/minimize/resize the view | the teapot doesn't resize with the viewport, shows fine, no crash |
+            | Maximize/minimize/resize the view | the teapot does not resize with the viewport, shows fine, no crash |
             | Close the application | application closes without warning or errors |
         '));
     },
@@ -947,7 +947,7 @@ testcase = {
             | *Step* | *Verification* |
             | Launch the tst_navigation1 test | two scenes are created with a dark gray monkey head in each |
             | Rotate the monkey heads with mouse/tap | the models rotates properly |
-            | Zoom in using mouse wheel/multi-touch | the model on the left get culled when zoomed in to a certain level, the model on the right doesn't, as described |
+            | Zoom in using mouse wheel/multi-touch | the model on the left get culled when zoomed in to a certain level, the model on the right does not, as described |
             | Close the application | application closes without warning or errors |
         '));
     },
