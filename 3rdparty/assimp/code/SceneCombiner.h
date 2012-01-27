@@ -46,7 +46,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "../include/aiAssert.h"
 
-namespace Assimp {
+namespace Assimp    {
 
 // ---------------------------------------------------------------------------
 /** \brief Helper data structure for SceneCombiner.
@@ -56,13 +56,13 @@ namespace Assimp {
 struct AttachmentInfo
 {
     AttachmentInfo()
-        : scene   (NULL)
-        , attachToNode (NULL)
+        :    scene            (NULL)
+        ,    attachToNode    (NULL)
     {}
 
     AttachmentInfo(aiScene* _scene, aiNode* _attachToNode)
-        : scene   (_scene)
-        , attachToNode (_attachToNode)
+        :    scene            (_scene)
+        ,    attachToNode    (_attachToNode)
     {}
 
     aiScene* scene;
@@ -73,17 +73,17 @@ struct AttachmentInfo
 struct NodeAttachmentInfo
 {
     NodeAttachmentInfo()
-        : node   (NULL)
-        , attachToNode (NULL)
-        , resolved  (false)
-        , src_idx   (0xffffffff)
+        :    node            (NULL)
+        ,    attachToNode    (NULL)
+        ,    resolved        (false)
+        ,    src_idx            (0xffffffff)
     {}
 
     NodeAttachmentInfo(aiNode* _scene, aiNode* _attachToNode,size_t idx)
-        : node   (_scene)
-        , attachToNode (_attachToNode)
-        , resolved  (false)
-        , src_idx   (idx)
+        :    node            (_scene)
+        ,    attachToNode    (_attachToNode)
+        ,    resolved        (false)
+        ,    src_idx            (idx)
     {}
 
     aiNode*  node;
@@ -128,7 +128,7 @@ typedef std::pair<aiBone*,unsigned int> BoneSrcIndex;
 // ---------------------------------------------------------------------------
 /** @brief Helper data structure for SceneCombiner::MergeBones.
  */
-struct BoneWithHash : public std::pair<uint32_t,aiString*> {
+struct BoneWithHash : public std::pair<uint32_t,aiString*>    {
     std::vector<BoneSrcIndex> pSrcBones;
 };
 
@@ -139,15 +139,15 @@ struct BoneWithHash : public std::pair<uint32_t,aiString*> {
 struct SceneHelper
 {
     SceneHelper ()
-        : scene  (NULL)
-        , idlen  (0)
+        : scene        (NULL)
+        , idlen        (0)
     {
         id[0] = 0;
     }
 
     SceneHelper (aiScene* _scene)
-        : scene  (_scene)
-        , idlen  (0)
+        : scene        (_scene)
+        , idlen        (0)
     {
         id[0] = 0;
     }

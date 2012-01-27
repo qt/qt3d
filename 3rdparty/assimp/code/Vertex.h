@@ -40,7 +40,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /** @file Defines a helper class to represent an interleaved vertex */
 #ifndef AI_VERTEX_H_INC
 #define AI_VERTEX_H_INC
-namespace Assimp {
+namespace Assimp    {
 
     ///////////////////////////////////////////////////////////////////////////
     // std::plus-family operates on operands with identical types - we need to

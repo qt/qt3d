@@ -45,34 +45,34 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define INCLUDED_AI_LOGGER_H
 
 #include "aiTypes.h"
-namespace Assimp {
+namespace Assimp    {
 class LogStream;
 
 // Maximum length of a log message. Longer messages are rejected.
 #define MAX_LOG_MESSAGE_LENGTH 1024u
 
 // ----------------------------------------------------------------------------------
-/** @brief CPP-API: Abstract interface for logger implementations.
+/**    @brief CPP-API: Abstract interface for logger implementations.
  *  Assimp provides a default implementation and uses it for almost all
  *  logging stuff ('DefaultLogger'). This class defines just basic logging
  *  behaviour and is not of interest for you. Instead, take a look at #DefaultLogger. */
 class ASSIMP_API Logger
-    : public Intern::AllocateFromAssimpHeap {
+    : public Intern::AllocateFromAssimpHeap    {
 public:
 
     // ----------------------------------------------------------------------
-    /** @enum LogSeverity
-     * @brief Log severity to describe the granularity of logging.
+    /**    @enum    LogSeverity
+     *    @brief    Log severity to describe the granularity of logging.
      */
     enum LogSeverity
     {
-        NORMAL,  //!< Normal granularity of logging
-        VERBOSE  //!< Debug infos will be logged, too
+        NORMAL,        //!< Normal granularity of logging
+        VERBOSE        //!< Debug infos will be logged, too
     };
 
     // ----------------------------------------------------------------------
-    /** @enum ErrorSeverity
-     * @brief Description for severity of a log message.
+    /**    @enum    ErrorSeverity
+     *    @brief    Description for severity of a log message.
      *
      *  Every LogStream has a bitwise combination of these flags.
      *  A LogStream doesn't receive any messages of a specific type
@@ -80,40 +80,40 @@ public:
      */
     enum ErrorSeverity
     {
-        DEBUGGING = 1, //!< Debug log message
-        INFO  = 2,  //!< Info log message
-        WARN  = 4, //!< Warn log message
-        ERR   = 8  //!< Error log message
+        DEBUGGING    = 1,    //!< Debug log message
+        INFO        = 2,     //!< Info log message
+        WARN        = 4,    //!< Warn log message
+        ERR            = 8        //!< Error log message
     };
 
 public:
 
-    /** @brief Virtual destructor */
+    /** @brief    Virtual destructor */
     virtual ~Logger();
 
     // ----------------------------------------------------------------------
-    /** @brief Writes a debug message
-     *  @param message Debug message*/
+    /** @brief    Writes a debug message
+     *     @param    message    Debug message*/
     void debug(const std::string &message);
 
     // ----------------------------------------------------------------------
-    /** @brief Writes a info message
-     * @param message Info message*/
+    /** @brief    Writes a info message
+     *    @param    message Info message*/
     void info(const std::string &message);
 
     // ----------------------------------------------------------------------
-    /** @brief Writes a warning message
-     * @param message Warn message*/
+    /** @brief    Writes a warning message
+     *    @param    message Warn message*/
     void warn(const std::string &message);
 
     // ----------------------------------------------------------------------
-    /** @brief Writes an error message
-     * @param message Error message*/
+    /** @brief    Writes an error message
+     *    @param    message    Error message*/
     void error(const std::string &message);
 
     // ----------------------------------------------------------------------
-    /** @brief Set a new log severity.
-     * @param log_severity New severity for logging*/
+    /** @brief    Set a new log severity.
+     *    @param    log_severity New severity for logging*/
     void setLogSeverity(LogSeverity log_severity);
 
     // ----------------------------------------------------------------------
@@ -121,13 +121,13 @@ public:
     LogSeverity getLogSeverity() const;
 
     // ----------------------------------------------------------------------
-    /** @brief Attach a new logstream
+    /** @brief    Attach a new logstream
      *
      *  The logger takes ownership of the stream and is responsible
      *  for its destruction (which is done using ::delete when the logger
      *  itself is destroyed). Call detachStream to detach a stream and to
      *  gain ownership of it again.
-     *  @param pStream  Logstream to attach
+     *     @param    pStream     Logstream to attach
      *  @param severity  Message filter, specified which types of log
      *    messages are dispatched to the stream. Provide a bitwise
      *    combination of the ErrorSeverity flags.
@@ -136,9 +136,9 @@ public:
         unsigned int severity = DEBUGGING | ERR | WARN | INFO) = 0;
 
     // ----------------------------------------------------------------------
-    /** @brief Detach a still attached stream from the logger (or
+    /** @brief    Detach a still attached stream from the logger (or
      *          modify the filter flags bits)
-     *  @param pStream Logstream instance for detaching
+     *     @param    pStream    Logstream instance for detaching
      *  @param severity Provide a bitwise combination of the ErrorSeverity
      *    flags. This value is &~ed with the current flags of the stream,
      *    if the result is 0 the stream is detached from the Logger and
@@ -157,7 +157,7 @@ protected:
 
     // ----------------------------------------------------------------------
     /** @brief Called as a request to write a specific debug message
-     * @param message Debug message. Never longer than
+     *    @param    message    Debug message. Never longer than
      *    MAX_LOG_MESSAGE_LENGTH characters (exluding the '0').
      *  @note  The message string is only valid until the scope of
      *    the function is left.
@@ -166,7 +166,7 @@ protected:
 
     // ----------------------------------------------------------------------
     /** @brief Called as a request to write a specific info message
-     * @param message Info message. Never longer than
+     *    @param    message    Info message. Never longer than
      *    MAX_LOG_MESSAGE_LENGTH characters (exluding the '0').
      *  @note  The message string is only valid until the scope of
      *    the function is left.
@@ -175,7 +175,7 @@ protected:
 
     // ----------------------------------------------------------------------
     /** @brief Called as a request to write a specific warn message
-     * @param message Warn message. Never longer than
+     *    @param    message    Warn message. Never longer than
      *    MAX_LOG_MESSAGE_LENGTH characters (exluding the '0').
      *  @note  The message string is only valid until the scope of
      *    the function is left.
@@ -184,7 +184,7 @@ protected:
 
     // ----------------------------------------------------------------------
     /** @brief Called as a request to write a specific error message
-     * @param message Error message. Never longer than
+     *    @param    message Error message. Never longer than
      *    MAX_LOG_MESSAGE_LENGTH characters (exluding the '0').
      *  @note  The message string is only valid until the scope of
      *    the function is left.
@@ -193,25 +193,25 @@ protected:
 
 protected:
 
-    //! Logger severity
+    //!    Logger severity
     LogSeverity m_Severity;
 };
 
 // ----------------------------------------------------------------------------------
-// Default constructor
-inline Logger::Logger() {
+//    Default constructor
+inline Logger::Logger()    {
     setLogSeverity(NORMAL);
 }
 
 // ----------------------------------------------------------------------------------
-// Virtual destructor
+//    Virtual destructor
 inline  Logger::~Logger()
 {
 }
 
 // ----------------------------------------------------------------------------------
 // Construction with given logging severity
-inline Logger::Logger(LogSeverity severity) {
+inline Logger::Logger(LogSeverity severity)    {
     setLogSeverity(severity);
 }
 

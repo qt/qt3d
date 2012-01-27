@@ -50,7 +50,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 struct aiNode;
 #include "MD2FileData.h"
 
-namespace Assimp {
+namespace Assimp    {
 class MaterialHelper;
 
 using namespace MD2;
@@ -73,7 +73,7 @@ public:
 
     // -------------------------------------------------------------------
     /** Returns whether the class can handle the format of the given file.
-    * See BaseImporter::CanRead() for details. */
+    * See BaseImporter::CanRead() for details.    */
     bool CanRead( const std::string& pFile, IOSystem* pIOHandler,
         bool checkSig) const;
 

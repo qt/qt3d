@@ -47,12 +47,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ObjFileParser.h"
 #include "ObjFileData.h"
 
-namespace Assimp {
+namespace Assimp    {
 
 using namespace std;
 
 // ------------------------------------------------------------------------------------------------
-// Default constructor
+//    Default constructor
 ObjFileImporter::ObjFileImporter() :
     m_Buffer(),
     m_pRootObject( NULL ),
@@ -63,7 +63,7 @@ ObjFileImporter::ObjFileImporter() :
 }
 
 // ------------------------------------------------------------------------------------------------
-// Destructor.
+//    Destructor.
 ObjFileImporter::~ObjFileImporter()
 {
     // Release root object instance
@@ -75,7 +75,7 @@ ObjFileImporter::~ObjFileImporter()
 }
 
 // ------------------------------------------------------------------------------------------------
-// Returns true, if file is an obj file.
+//    Returns true, if file is an obj file.
 bool ObjFileImporter::CanRead( const std::string& pFile, IOSystem*  pIOHandler , bool checkSig ) const
 {
     if (!checkSig) //Check File Extension
@@ -90,7 +90,7 @@ bool ObjFileImporter::CanRead( const std::string& pFile, IOSystem*  pIOHandler ,
 }
 
 // ------------------------------------------------------------------------------------------------
-// Obj-file import implementation
+//    Obj-file import implementation
 void ObjFileImporter::InternReadFile( const std::string& pFile, aiScene* pScene, IOSystem* pIOHandler)
 {
     DefaultIOSystem io;
@@ -132,7 +132,7 @@ void ObjFileImporter::InternReadFile( const std::string& pFile, aiScene* pScene,
 }
 
 // ------------------------------------------------------------------------------------------------
-// Create the data from parsed obj-file
+//    Create the data from parsed obj-file
 void ObjFileImporter::CreateDataFromImport(const ObjFile::Model* pModel, aiScene* pScene)
 {
     if (0L == pModel)
@@ -173,9 +173,9 @@ void ObjFileImporter::CreateDataFromImport(const ObjFile::Model* pModel, aiScene
 }
 
 // ------------------------------------------------------------------------------------------------
-// Creates all nodes of the model
+//    Creates all nodes of the model
 aiNode *ObjFileImporter::createNodes(const ObjFile::Model* pModel, const ObjFile::Object* pObject,
-                                     unsigned int /*uiMeshIndex*/,
+                                     unsigned int uiMeshIndex,
                                      aiNode *pParent, aiScene* pScene,
                                      std::vector<aiMesh*> &MeshArray )
 {
@@ -236,7 +236,7 @@ aiNode *ObjFileImporter::createNodes(const ObjFile::Model* pModel, const ObjFile
 }
 
 // ------------------------------------------------------------------------------------------------
-// Create topology data
+//    Create topology data
 void ObjFileImporter::createTopology(const ObjFile::Model* pModel,
                                      const ObjFile::Object* pData,
                                      unsigned int uiMeshIndex,
@@ -287,7 +287,7 @@ void ObjFileImporter::createTopology(const ObjFile::Model* pModel,
 }
 
 // ------------------------------------------------------------------------------------------------
-// Creates a vertex array
+//    Creates a vertex array
 void ObjFileImporter::createVertexArray(const ObjFile::Model* pModel,
                                         const ObjFile::Object* pCurrentObject,
                                         unsigned int uiMeshIndex,
@@ -371,7 +371,7 @@ void ObjFileImporter::createVertexArray(const ObjFile::Model* pModel,
 }
 
 // ------------------------------------------------------------------------------------------------
-// Counts all stored meshes
+//    Counts all stored meshes
 void ObjFileImporter::countObjects(const std::vector<ObjFile::Object*> &rObjects, int &iNumMeshes)
 {
     iNumMeshes = 0;
@@ -391,7 +391,7 @@ void ObjFileImporter::countObjects(const std::vector<ObjFile::Object*> &rObjects
 }
 
 // ------------------------------------------------------------------------------------------------
-// Creates the material
+//    Creates the material
 void ObjFileImporter::createMaterials(const ObjFile::Model* pModel, aiScene* pScene )
 {
     ai_assert( NULL != pScene );
@@ -480,7 +480,7 @@ void ObjFileImporter::createMaterials(const ObjFile::Model* pModel, aiScene* pSc
 }
 
 // ------------------------------------------------------------------------------------------------
-// Appends this node to the parent node
+//    Appends this node to the parent node
 void ObjFileImporter::appendChildToParentNode(aiNode *pParent, aiNode *pChild)
 {
     // Checking preconditions
@@ -516,6 +516,6 @@ void ObjFileImporter::appendChildToParentNode(aiNode *pParent, aiNode *pChild)
 
 // ------------------------------------------------------------------------------------------------
 
-} // Namespace Assimp
+}    // Namespace Assimp
 
 #endif // !! ASSIMP_BUILD_NO_OBJ_IMPORTER

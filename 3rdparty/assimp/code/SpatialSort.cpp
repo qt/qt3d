@@ -48,7 +48,7 @@ using namespace Assimp;
 
 // CHAR_BIT seems to be defined under MVSC, but not under GCC. Pray that the correct value is 8.
 #ifndef CHAR_BIT
-# define CHAR_BIT 8
+#    define CHAR_BIT 8
 #endif
 
 // ------------------------------------------------------------------------------------------------
@@ -108,6 +108,11 @@ void SpatialSort::Append( const aiVector3D* pPositions, unsigned int pNumPositio
 
         // store position by index and distance
         float distance = *vec * mPlaneNormal;
+
+        // UGLY HACK !!!
+        // TODO: fix it
+        volatile int KillOptimisation = *((int*)&distance);
+
         mPositions.push_back( Entry( a+initial, *vec, distance));
     }
 
@@ -177,11 +182,11 @@ namespace {
 
     // Binary, signed-integer representation of a single-precision floating-point value.
     // IEEE 754 says: "If two floating-point numbers in the same format are ordered then they are
-    // ordered the same way when their bits are reinterpreted as sign-magnitude integers."
+    //    ordered the same way when their bits are reinterpreted as sign-magnitude integers."
     // This allows us to convert all floating-point numbers to signed integers of arbitrary size
-    // and then use them to work with ULPs (Units in the Last Place, for high-precision
-    // computations) or to compare them (integer comparisons are faster than floating-point
-    // comparisons on many platforms).
+    //    and then use them to work with ULPs (Units in the Last Place, for high-precision
+    //    computations) or to compare them (integer comparisons are faster than floating-point
+    //    comparisons on many platforms).
     typedef signed int BinFloat;
 
     // --------------------------------------------------------------------------------------------
@@ -189,15 +194,15 @@ namespace {
     BinFloat ToBinary( const float & pValue) {
 
         // If this assertion fails, signed int is not big enough to store a float on your platform.
-        // Please correct the declaration of BinFloat a few lines above - but do it in a portable,
-        // #ifdef'd manner!
+        //    Please correct the declaration of BinFloat a few lines above - but do it in a portable,
+        //    #ifdef'd manner!
         BOOST_STATIC_ASSERT( sizeof(BinFloat) >= sizeof(float));
 
         #if defined( _MSC_VER)
             // If this assertion fails, Visual C++ has finally moved to ILP64. This means that this
-            // code has just become legacy code! Find out the current value of _MSC_VER and modify
-            // the #if above so it evaluates false on the current and all upcoming VC versions (or
-            // on the current platform, if LP64 or LLP64 are still used on other platforms).
+            //    code has just become legacy code! Find out the current value of _MSC_VER and modify
+            //    the #if above so it evaluates false on the current and all upcoming VC versions (or
+            //    on the current platform, if LP64 or LLP64 are still used on other platforms).
             BOOST_STATIC_ASSERT( sizeof(BinFloat) == sizeof(float));
 
             // This works best on Visual C++, but other compilers have their problems with it.
@@ -206,16 +211,16 @@ namespace {
             // On many compilers, reinterpreting a float address as an integer causes aliasing
             // problems. This is an ugly but more or less safe way of doing it.
             union {
-                float  asFloat;
-                BinFloat asBin;
+                float        asFloat;
+                BinFloat    asBin;
             } conversion;
-            conversion.asBin = 0; // zero empty space in case sizeof(BinFloat) > sizeof(float)
-            conversion.asFloat = pValue;
+            conversion.asBin    = 0; // zero empty space in case sizeof(BinFloat) > sizeof(float)
+            conversion.asFloat    = pValue;
             const BinFloat binValue = conversion.asBin;
         #endif
 
         // floating-point numbers are of sign-magnitude format, so find out what signed number
-        // representation we must convert negative values to.
+        //    representation we must convert negative values to.
         // See http://en.wikipedia.org/wiki/Signed_number_representations.
 
         // Two's complement?
@@ -240,30 +245,30 @@ void SpatialSort::FindIdenticalPositions( const aiVector3D& pPosition,
     std::vector<unsigned int>& poResults) const
 {
     // Epsilons have a huge disadvantage: they are of constant precision, while floating-point
-    // values are of log2 precision. If you apply e=0.01 to 100, the epsilon is rather small, but
-    // if you apply it to 0.001, it is enormous.
+    //    values are of log2 precision. If you apply e=0.01 to 100, the epsilon is rather small, but
+    //    if you apply it to 0.001, it is enormous.
 
     // The best way to overcome this is the unit in the last place (ULP). A precision of 2 ULPs
-    // tells us that a float does not differ more than 2 bits from the "real" value. ULPs are of
-    // logarithmic precision - around 1, they are 1(2^24) and around 10000, they are 0.00125.
+    //    tells us that a float does not differ more than 2 bits from the "real" value. ULPs are of
+    //    logarithmic precision - around 1, they are 1÷(2^24) and around 10000, they are 0.00125.
 
     // For standard C math, we can assume a precision of 0.5 ULPs according to IEEE 754. The
-    // incoming vertex positions might have already been transformed, probably using rather
-    // inaccurate SSE instructions, so we assume a tolerance of 4 ULPs to safely identify
-    // identical vertex positions.
+    //    incoming vertex positions might have already been transformed, probably using rather
+    //    inaccurate SSE instructions, so we assume a tolerance of 4 ULPs to safely identify
+    //    identical vertex positions.
     static const int toleranceInULPs = 4;
     // An interesting point is that the inaccuracy grows linear with the number of operations:
-    // multiplying to numbers, each inaccurate to four ULPs, results in an inaccuracy of four ULPs
-    // plus 0.5 ULPs for the multiplication.
+    //    multiplying to numbers, each inaccurate to four ULPs, results in an inaccuracy of four ULPs
+    //    plus 0.5 ULPs for the multiplication.
     // To compute the distance to the plane, a dot product is needed - that is a multiplication and
-    // an addition on each number.
+    //    an addition on each number.
     static const int distanceToleranceInULPs = toleranceInULPs + 1;
     // The squared distance between two 3D vectors is computed the same way, but with an additional
-    // subtraction.
+    //    subtraction.
     static const int distance3DToleranceInULPs = distanceToleranceInULPs + 1;
 
     // Convert the plane distance to its signed integer representation so the ULPs tolerance can be
-    // applied. For some reason, VC won't optimize two calls of the bit pattern conversion.
+    //    applied. For some reason, VC won't optimize two calls of the bit pattern conversion.
     const BinFloat minDistBinary = ToBinary( pPosition * mPlaneNormal) - distanceToleranceInULPs;
     const BinFloat maxDistBinary = minDistBinary + 2 * distanceToleranceInULPs;
 

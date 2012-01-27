@@ -41,7 +41,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /** @file Defines a helper class to evaluate subdivision surfaces.*/
 #ifndef AI_SUBDISIVION_H_INC
 #define AI_SUBDISIVION_H_INC
-namespace Assimp {
+namespace Assimp    {
 
 // ------------------------------------------------------------------------------
 /** Helper class to evaluate subdivision surfaces. Different algorithms
@@ -52,7 +52,7 @@ class ASSIMP_API Subdivider
 public:
 
     /** Enumerates all supported subvidision algorithms */
-    enum Algorithm {
+    enum Algorithm    {
         CATMULL_CLARKE = 0x1
     };
 

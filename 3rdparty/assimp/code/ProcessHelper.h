@@ -55,62 +55,62 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace std {
 
     // std::min for aiVector3D
-    inline ::aiVector3D min (const ::aiVector3D& a, const ::aiVector3D& b) {
+    inline ::aiVector3D min (const ::aiVector3D& a, const ::aiVector3D& b)    {
         return ::aiVector3D (min(a.x,b.x),min(a.y,b.y),min(a.z,b.z));
     }
 
     // std::max for aiVector3D
-    inline ::aiVector3D max (const ::aiVector3D& a, const ::aiVector3D& b) {
+    inline ::aiVector3D max (const ::aiVector3D& a, const ::aiVector3D& b)    {
         return ::aiVector3D (max(a.x,b.x),max(a.y,b.y),max(a.z,b.z));
     }
 
     // std::min for aiColor4D
-    inline ::aiColor4D min (const ::aiColor4D& a, const ::aiColor4D& b) {
+    inline ::aiColor4D min (const ::aiColor4D& a, const ::aiColor4D& b)    {
         return ::aiColor4D (min(a.r,b.r),min(a.g,b.g),min(a.b,b.b),min(a.a,b.a));
     }
 
     // std::max for aiColor4D
-    inline ::aiColor4D max (const ::aiColor4D& a, const ::aiColor4D& b) {
+    inline ::aiColor4D max (const ::aiColor4D& a, const ::aiColor4D& b)    {
         return ::aiColor4D (max(a.r,b.r),max(a.g,b.g),max(a.b,b.b),max(a.a,b.a));
     }
 
     // std::min for aiQuaternion
-    inline ::aiQuaternion min (const ::aiQuaternion& a, const ::aiQuaternion& b) {
+    inline ::aiQuaternion min (const ::aiQuaternion& a, const ::aiQuaternion& b)    {
         return ::aiQuaternion (min(a.w,b.w),min(a.x,b.x),min(a.y,b.y),min(a.z,b.z));
     }
 
     // std::max for aiQuaternion
-    inline ::aiQuaternion max (const ::aiQuaternion& a, const ::aiQuaternion& b) {
+    inline ::aiQuaternion max (const ::aiQuaternion& a, const ::aiQuaternion& b)    {
         return ::aiQuaternion (max(a.w,b.w),max(a.x,b.x),max(a.y,b.y),max(a.z,b.z));
     }
 
     // std::min for aiVectorKey
-    inline ::aiVectorKey min (const ::aiVectorKey& a, const ::aiVectorKey& b) {
+    inline ::aiVectorKey min (const ::aiVectorKey& a, const ::aiVectorKey& b)    {
         return ::aiVectorKey (min(a.mTime,b.mTime),min(a.mValue,b.mValue));
     }
 
     // std::max for aiVectorKey
-    inline ::aiVectorKey max (const ::aiVectorKey& a, const ::aiVectorKey& b) {
+    inline ::aiVectorKey max (const ::aiVectorKey& a, const ::aiVectorKey& b)    {
         return ::aiVectorKey (max(a.mTime,b.mTime),max(a.mValue,b.mValue));
     }
 
     // std::min for aiQuatKey
-    inline ::aiQuatKey min (const ::aiQuatKey& a, const ::aiQuatKey& b) {
+    inline ::aiQuatKey min (const ::aiQuatKey& a, const ::aiQuatKey& b)    {
         return ::aiQuatKey (min(a.mTime,b.mTime),min(a.mValue,b.mValue));
     }
 
     // std::max for aiQuatKey
-    inline ::aiQuatKey max (const ::aiQuatKey& a, const ::aiQuatKey& b) {
+    inline ::aiQuatKey max (const ::aiQuatKey& a, const ::aiQuatKey& b)    {
         return ::aiQuatKey (max(a.mTime,b.mTime),max(a.mValue,b.mValue));
     }
 
     // std::min for aiVertexWeight
-    inline ::aiVertexWeight min (const ::aiVertexWeight& a, const ::aiVertexWeight& b) {
+    inline ::aiVertexWeight min (const ::aiVertexWeight& a, const ::aiVertexWeight& b)    {
         return ::aiVertexWeight (min(a.mVertexId,b.mVertexId),min(a.mWeight,b.mWeight));
     }
 
     // std::max for aiVertexWeight
-    inline ::aiVertexWeight max (const ::aiVertexWeight& a, const ::aiVertexWeight& b) {
+    inline ::aiVertexWeight max (const ::aiVertexWeight& a, const ::aiVertexWeight& b)    {
         return ::aiVertexWeight (max(a.mVertexId,b.mVertexId),max(a.mWeight,b.mWeight));
     }
 
@@ -431,7 +431,7 @@ inline unsigned int GetMeshVFormatUnique(aiMesh* pcMesh)
 }
 
 typedef std::pair <unsigned int,float> PerVertexWeight;
-typedef std::vector <PerVertexWeight> VertexWeightTable;
+typedef std::vector    <PerVertexWeight> VertexWeightTable;
 
 // -------------------------------------------------------------------------------
 // Compute a per-vertex bone weight table
@@ -445,7 +445,7 @@ inline VertexWeightTable* ComputeVertexBoneWeightTable(aiMesh* pMesh)
     for (unsigned int i = 0; i < pMesh->mNumBones;++i)
     {
         aiBone* bone = pMesh->mBones[i];
-        for (unsigned int a = 0; a < bone->mNumWeights;++a) {
+        for (unsigned int a = 0; a < bone->mNumWeights;++a)    {
             const aiVertexWeight& weight = bone->mWeights[a];
             avPerVertexWeights[weight.mVertexId].push_back(
                 std::pair<unsigned int,float>(i,weight.mWeight));
@@ -533,7 +533,7 @@ class ComputeSpatialSortProcess : public BaseProcess
         std::vector<_Type>* p = new std::vector<_Type>(pScene->mNumMeshes);
         std::vector<_Type>::iterator it = p->begin();
 
-        for (unsigned int i = 0; i < pScene->mNumMeshes; ++i, ++it) {
+        for (unsigned int i = 0; i < pScene->mNumMeshes; ++i, ++it)    {
             aiMesh* mesh = pScene->mMeshes[i];
             _Type& blubb = *it;
             blubb.first.Fill(mesh->mVertices,mesh->mNumVertices,sizeof(aiVector3D));
@@ -554,7 +554,7 @@ class DestroySpatialSortProcess : public BaseProcess
             aiProcess_GenNormals | aiProcess_JoinIdenticalVertices));
     }
 
-    void Execute( aiScene* /*pScene*/)
+    void Execute( aiScene* pScene)
     {
         shared->RemoveProperty(AI_SPP_SPATIAL_SORT);
     }

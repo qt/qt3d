@@ -44,7 +44,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef INCLUDED_AI_PROGRESSHANDLER_H
 #define INCLUDED_AI_PROGRESSHANDLER_H
 #include "aiTypes.h"
-namespace Assimp {
+namespace Assimp    {
 
 // ------------------------------------------------------------------------------------
 /** @brief CPP-API: Abstract interface for custom progress report receivers.
@@ -52,13 +52,13 @@ namespace Assimp {
  *  Each #Importer instance maintains its own #ProgressHandler. The default
  *  implementation provided by Assimp doesn't do anything at all. */
 class ASSIMP_API ProgressHandler
-    : public Intern::AllocateFromAssimpHeap {
+    : public Intern::AllocateFromAssimpHeap    {
 protected:
-    /** @brief Default constructor */
+    /** @brief    Default constructor    */
     ProgressHandler () {
     }
 public:
-    /** @brief Virtual destructor */
+    /** @brief    Virtual destructor    */
     virtual ~ProgressHandler () {
     }
 

@@ -870,7 +870,7 @@ void ColladaParser::ReadLightLibrary()
                 SkipElement();
             }
         }
-        else if ( mReader->getNodeType() == irr::io::EXN_ELEMENT_END) {
+        else if ( mReader->getNodeType() == irr::io::EXN_ELEMENT_END)    {
             if ( strcmp( mReader->getNodeName(), "library_lights") != 0)
                 ThrowException( "Expected end of \"library_lights\" element.");
 
@@ -909,7 +909,7 @@ void ColladaParser::ReadCameraLibrary()
                 SkipElement();
             }
         }
-        else if ( mReader->getNodeType() == irr::io::EXN_ELEMENT_END) {
+        else if ( mReader->getNodeType() == irr::io::EXN_ELEMENT_END)    {
             if ( strcmp( mReader->getNodeName(), "library_cameras") != 0)
                 ThrowException( "Expected end of \"library_cameras\" element.");
 
@@ -1146,7 +1146,7 @@ void ColladaParser::ReadEffectProfileCommon( Collada::Effect& pEffect)
     {
         if ( mReader->getNodeType() == irr::io::EXN_ELEMENT)
         {
-            if ( IsElement( "newparam")) {
+            if ( IsElement( "newparam"))    {
                 // save ID
                 int attrSID = GetAttribute( "sid");
                 std::string sid = mReader->getAttributeValue( attrSID);
@@ -1208,11 +1208,11 @@ void ColladaParser::ReadEffectProfileCommon( Collada::Effect& pEffect)
 
             // MAX3D extensions
             // -------------------------------------------------------
-            else if ( IsElement( "wireframe")) {
+            else if ( IsElement( "wireframe"))    {
                 pEffect.mWireframe = ReadBoolFromTextContent();
                 TestClosing( "wireframe");
             }
-            else if ( IsElement( "faceted")) {
+            else if ( IsElement( "faceted"))    {
                 pEffect.mFaceted = ReadBoolFromTextContent();
                 TestClosing( "faceted");
             }
@@ -1245,43 +1245,43 @@ void ColladaParser::ReadSamplerProperties( Sampler& out )
 
             // MAYA extensions
             // -------------------------------------------------------
-            if ( IsElement( "wrapU"))  {
+            if ( IsElement( "wrapU"))        {
                 out.mWrapU = ReadBoolFromTextContent();
                 TestClosing( "wrapU");
             }
-            else if ( IsElement( "wrapV")) {
+            else if ( IsElement( "wrapV"))    {
                 out.mWrapU = ReadBoolFromTextContent();
                 TestClosing( "wrapV");
             }
-            else if ( IsElement( "mirrorU"))  {
+            else if ( IsElement( "mirrorU"))        {
                 out.mMirrorU = ReadBoolFromTextContent();
                 TestClosing( "mirrorU");
             }
-            else if ( IsElement( "mirrorV")) {
+            else if ( IsElement( "mirrorV"))    {
                 out.mMirrorU = ReadBoolFromTextContent();
                 TestClosing( "mirrorV");
             }
-            else if ( IsElement( "repeatU")) {
+            else if ( IsElement( "repeatU"))    {
                 out.mTransform.mScaling.x = ReadFloatFromTextContent();
                 TestClosing( "repeatU");
             }
-            else if ( IsElement( "repeatV")) {
+            else if ( IsElement( "repeatV"))    {
                 out.mTransform.mScaling.y = ReadFloatFromTextContent();
                 TestClosing( "repeatV");
             }
-            else if ( IsElement( "offsetU")) {
+            else if ( IsElement( "offsetU"))    {
                 out.mTransform.mTranslation.x = ReadFloatFromTextContent();
                 TestClosing( "offsetU");
             }
-            else if ( IsElement( "offsetV")) {
+            else if ( IsElement( "offsetV"))    {
                 out.mTransform.mTranslation.x = ReadFloatFromTextContent();
                 TestClosing( "offsetV");
             }
-            else if ( IsElement( "rotateUV")) {
+            else if ( IsElement( "rotateUV"))    {
                 out.mTransform.mRotation = ReadFloatFromTextContent();
                 TestClosing( "rotateUV");
             }
-            else if ( IsElement( "blend_mode")) {
+            else if ( IsElement( "blend_mode"))    {
 
                 const char* sz = GetTextContent();
                 // http://www.feelingsoftware.com/content/view/55/72/lang,en/
@@ -1302,17 +1302,17 @@ void ColladaParser::ReadSamplerProperties( Sampler& out )
             }
             // OKINO extensions
             // -------------------------------------------------------
-            else if ( IsElement( "weighting")) {
+            else if ( IsElement( "weighting"))    {
                 out.mWeighting = ReadFloatFromTextContent();
                 TestClosing( "weighting");
             }
-            else if ( IsElement( "mix_with_previous_layer")) {
+            else if ( IsElement( "mix_with_previous_layer"))    {
                 out.mMixWithPrevious = ReadFloatFromTextContent();
                 TestClosing( "mix_with_previous_layer");
             }
             // MAX3D extensions
             // -------------------------------------------------------
-            else if ( IsElement( "amount")) {
+            else if ( IsElement( "amount"))    {
                 out.mWeighting = ReadFloatFromTextContent();
                 TestClosing( "amount");
             }
@@ -1753,14 +1753,14 @@ void ColladaParser::ReadAccessor( const std::string& pID)
                     else if ( name == "S") acc.mSubOffset[0] = acc.mParams.size();
                     else if ( name == "T") acc.mSubOffset[1] = acc.mParams.size();
                     else if ( name == "P") acc.mSubOffset[2] = acc.mParams.size();
-                // else if ( name == "Q") acc.mSubOffset[3] = acc.mParams.size();
+                //    else if ( name == "Q") acc.mSubOffset[3] = acc.mParams.size();
                     /* 4D uv coordinates are not supported in Assimp */
 
                     /* Generic extra data, interpreted as UV data, too*/
                     else if ( name == "U") acc.mSubOffset[0] = acc.mParams.size();
                     else if ( name == "V") acc.mSubOffset[1] = acc.mParams.size();
                     //else
-                    // DefaultLogger::get()->warn( boost::str( boost::format( "Unknown accessor parameter \"%s\". Ignoring data channel.") % name));
+                    //    DefaultLogger::get()->warn( boost::str( boost::format( "Unknown accessor parameter \"%s\". Ignoring data channel.") % name));
                 }
 
                 // read data type
@@ -2198,7 +2198,7 @@ void ColladaParser::ExtractDataObjectFromChannel( const InputChannel& pInput, si
                 pMesh->mTexCoords[pInput.mIndex].push_back( aiVector3D( obj[0], obj[1], obj[2]));
                 if (0 != acc.mSubOffset[2] || 0 != acc.mSubOffset[3]) /* hack ... consider cleaner solution */
                     pMesh->mNumUVComponents[pInput.mIndex]=3;
-            } else
+            }    else
       {
                 DefaultLogger::get()->error("Collada: too many texture coordinate sets. Skipping.");
       }
@@ -2457,7 +2457,7 @@ void ColladaParser::ReadMaterialVertexInputBinding( Collada::SemanticMappingTabl
 {
     while ( mReader->read())
     {
-        if ( mReader->getNodeType() == irr::io::EXN_ELEMENT) {
+        if ( mReader->getNodeType() == irr::io::EXN_ELEMENT)    {
             if ( IsElement( "bind_vertex_input"))
             {
                 Collada::InputSemanticMapEntry vn;
@@ -2481,7 +2481,7 @@ void ColladaParser::ReadMaterialVertexInputBinding( Collada::SemanticMappingTabl
                 DefaultLogger::get()->warn("Collada: Found unsupported <bind> element");
             }
         }
-        else if ( mReader->getNodeType() == irr::io::EXN_ELEMENT_END) {
+        else if ( mReader->getNodeType() == irr::io::EXN_ELEMENT_END)    {
             if ( strcmp( mReader->getNodeName(), "instance_material") == 0)
                 break;
         }
@@ -2551,7 +2551,7 @@ void ColladaParser::ReadScene()
 
     while ( mReader->read())
     {
-        if ( mReader->getNodeType() == irr::io::EXN_ELEMENT) {
+        if ( mReader->getNodeType() == irr::io::EXN_ELEMENT)    {
             if ( IsElement( "instance_visual_scene"))
             {
                 // should be the first and only occurence
@@ -2569,7 +2569,7 @@ void ColladaParser::ReadScene()
                 if ( sit == mNodeLibrary.end())
                     ThrowException( "Unable to resolve visual_scene reference \"" + std::string(url) + "\".");
                 mRootNode = sit->second;
-            } else {
+            } else    {
                 SkipElement();
             }
         }
@@ -2633,7 +2633,11 @@ void ColladaParser::TestOpening( const char* pName)
 // Tests for the closing tag of the given element, throws an exception if not found
 void ColladaParser::TestClosing( const char* pName)
 {
-    // read closing tag
+    // check if we're already on the closing tag and return right away
+    if ( mReader->getNodeType() == irr::io::EXN_ELEMENT_END && strcmp( mReader->getNodeName(), pName) == 0)
+        return;
+
+    // if not, read some more
     if ( !mReader->read())
         ThrowException( boost::str( boost::format( "Unexpected end of file while reading end of \"%s\" element.") % pName));
     // whitespace in front is ok, just read again if found
@@ -2641,6 +2645,7 @@ void ColladaParser::TestClosing( const char* pName)
         if ( !mReader->read())
             ThrowException( boost::str( boost::format( "Unexpected end of file while reading end of \"%s\" element.") % pName));
 
+    // but this has the be the closing tag, or we're lost
     if ( mReader->getNodeType() != irr::io::EXN_ELEMENT_END || strcmp( mReader->getNodeName(), pName) != 0)
         ThrowException( boost::str( boost::format( "Expected end of \"%s\" element.") % pName));
 }

@@ -51,12 +51,12 @@ KeyIterator::KeyIterator(const std::vector<aiVectorKey>* _objPos,
     const aiVector3D*  defaultObjectPos /*= NULL*/,
     const aiVector3D*  defaultTargetPos /*= NULL*/)
 
-        : reachedEnd  (false)
-        , curTime   (-1.)
-        , objPos   (_objPos)
-        , targetObjPos (_targetObjPos)
-        , nextObjPos  (0)
-        , nextTargetObjPos(0)
+        :    reachedEnd        (false)
+        ,    curTime            (-1.)
+        ,    objPos            (_objPos)
+        ,    targetObjPos    (_targetObjPos)
+        ,    nextObjPos        (0)
+        ,    nextTargetObjPos(0)
 {
     // Generate default transformation tracks if necessary
     if (!objPos || objPos->empty())
@@ -126,7 +126,7 @@ void KeyIterator::operator ++()
         curTime = d0;
 
         // interpolate the other
-        if (1 == targetObjPos->size() || !nextTargetObjPos) {
+        if (1 == targetObjPos->size() || !nextTargetObjPos)    {
             curTargetPosition = targetObjPos->at(0).mValue;
         }
         else
@@ -147,7 +147,7 @@ void KeyIterator::operator ++()
         curTime = d1;
 
         // interpolate the other
-        if (1 == objPos->size() || !nextObjPos) {
+        if (1 == objPos->size() || !nextObjPos)    {
             curPosition = objPos->at(0).mValue;
         }
         else

@@ -61,17 +61,17 @@ namespace MDC {
 
 
 // to make it easier for us, we test the magic word against both "endianesses"
-#define AI_MDC_MAGIC_NUMBER_BE AI_MAKE_MAGIC("CPDI")
-#define AI_MDC_MAGIC_NUMBER_LE AI_MAKE_MAGIC("IDPC")
+#define AI_MDC_MAGIC_NUMBER_BE    AI_MAKE_MAGIC("CPDI")
+#define AI_MDC_MAGIC_NUMBER_LE    AI_MAKE_MAGIC("IDPC")
 
 // common limitations
-#define AI_MDC_VERSION   2
-#define AI_MDC_MAXQPATH   64
-#define AI_MDC_MAX_BONES  128
+#define AI_MDC_VERSION            2
+#define AI_MDC_MAXQPATH            64
+#define    AI_MDC_MAX_BONES        128
 
-#define AI_MDC_CVERT_BIAS  127.0f
-#define AI_MDC_DELTA_SCALING 4.0f
-#define AI_MDC_BASE_SCALING  (1.0f / 64.0f)
+#define AI_MDC_CVERT_BIAS        127.0f
+#define    AI_MDC_DELTA_SCALING    4.0f
+#define    AI_MDC_BASE_SCALING        (1.0f / 64.0f)
 
 
 // ---------------------------------------------------------------------------

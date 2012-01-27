@@ -49,7 +49,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "../include/aiMesh.h"
 
 class PretransformVerticesTest;
-namespace Assimp {
+namespace Assimp    {
 
 // ---------------------------------------------------------------------------
 /** The PretransformVertices pretransforms all vertices in the nodegraph

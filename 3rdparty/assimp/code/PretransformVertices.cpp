@@ -57,7 +57,7 @@ using namespace Assimp;
 // ------------------------------------------------------------------------------------------------
 // Constructor to be privately used by Importer
 PretransformVertices::PretransformVertices()
-: configKeepHierarchy (false)
+:    configKeepHierarchy (false)
 {
 }
 
@@ -72,7 +72,7 @@ PretransformVertices::~PretransformVertices()
 // Returns whether the processing step is present in the given flag field.
 bool PretransformVertices::IsActive( unsigned int pFlags) const
 {
-    return (pFlags & aiProcess_PreTransformVertices) != 0;
+    return    (pFlags & aiProcess_PreTransformVertices) != 0;
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -155,7 +155,7 @@ void PretransformVertices::CollectData( aiScene* pcScene, aiNode* pcNode, unsign
             ai_assert(0 != num_ref);
             --num_ref;
 
-            if (identity) {
+            if (identity)    {
                 // copy positions without modifying them
                 ::memcpy(pcMeshOut->mVertices + aiCurrent[AI_PTVS_VERTEX],
                     pcMesh->mVertices,
@@ -182,7 +182,7 @@ void PretransformVertices::CollectData( aiScene* pcScene, aiNode* pcNode, unsign
             else
             {
                 // copy positions, transform them to worldspace
-                for (unsigned int n = 0; n < pcMesh->mNumVertices;++n) {
+                for (unsigned int n = 0; n < pcMesh->mNumVertices;++n)    {
                     pcMeshOut->mVertices[aiCurrent[AI_PTVS_VERTEX]+n] = pcNode->mTransformation * pcMesh->mVertices[n];
                 }
                 aiMatrix4x4 mWorldIT = pcNode->mTransformation;
@@ -194,7 +194,7 @@ void PretransformVertices::CollectData( aiScene* pcScene, aiNode* pcNode, unsign
                 if (iVFormat & 0x2)
                 {
                     // copy normals, transform them to worldspace
-                    for (unsigned int n = 0; n < pcMesh->mNumVertices;++n) {
+                    for (unsigned int n = 0; n < pcMesh->mNumVertices;++n)    {
                         pcMeshOut->mNormals[aiCurrent[AI_PTVS_VERTEX]+n] =
                             m * pcMesh->mNormals[n];
                     }
@@ -202,7 +202,7 @@ void PretransformVertices::CollectData( aiScene* pcScene, aiNode* pcNode, unsign
                 if (iVFormat & 0x4)
                 {
                     // copy tangents and bitangents, transform them to worldspace
-                    for (unsigned int n = 0; n < pcMesh->mNumVertices;++n) {
+                    for (unsigned int n = 0; n < pcMesh->mNumVertices;++n)    {
                         pcMeshOut->mTangents  [aiCurrent[AI_PTVS_VERTEX]+n] = m * pcMesh->mTangents[n];
                         pcMeshOut->mBitangents[aiCurrent[AI_PTVS_VERTEX]+n] = m * pcMesh->mBitangents[n];
                     }
@@ -294,7 +294,7 @@ void PretransformVertices::GetVFormatList( aiScene* pcScene, unsigned int iMat,
     for (unsigned int i = 0; i < pcScene->mNumMeshes;++i)
     {
         aiMesh* pcMesh = pcScene->mMeshes[ i ];
-        if (iMat == pcMesh->mMaterialIndex) {
+        if (iMat == pcMesh->mMaterialIndex)    {
             aiOut.push_back(GetMeshVFormat(pcMesh));
         }
     }
@@ -304,11 +304,11 @@ void PretransformVertices::GetVFormatList( aiScene* pcScene, unsigned int iMat,
 // Compute the absolute transformation matrices of each node
 void PretransformVertices::ComputeAbsoluteTransform( aiNode* pcNode )
 {
-    if (pcNode->mParent) {
+    if (pcNode->mParent)    {
         pcNode->mTransformation = pcNode->mParent->mTransformation*pcNode->mTransformation;
     }
 
-    for (unsigned int i = 0;i < pcNode->mNumChildren;++i) {
+    for (unsigned int i = 0;i < pcNode->mNumChildren;++i)    {
         ComputeAbsoluteTransform(pcNode->mChildren[i]);
     }
 }
@@ -443,7 +443,7 @@ void PretransformVertices::Execute( aiScene* pScene)
     // Delete aiMesh::mBones for all meshes. The bones are
     // removed during this step and we need the pointer as
     // temporary storage
-    for (unsigned int i = 0; i < pScene->mNumMeshes;++i) {
+    for (unsigned int i = 0; i < pScene->mNumMeshes;++i)    {
         aiMesh* mesh = pScene->mMeshes[i];
 
         for (unsigned int a = 0; a < mesh->mNumBones;++a)
@@ -493,13 +493,13 @@ void PretransformVertices::Execute( aiScene* pScene)
         std::vector<unsigned int> s(pScene->mNumMeshes,0);
         BuildMeshRefCountArray(pScene->mRootNode,&s[0]);
 
-        for (unsigned int i = 0; i < pScene->mNumMaterials;++i)  {
+        for (unsigned int i = 0; i < pScene->mNumMaterials;++i)        {
             // get the list of all vertex formats for this material
             aiVFormats.clear();
             GetVFormatList(pScene,i,aiVFormats);
             aiVFormats.sort();
             aiVFormats.unique();
-            for (std::list<unsigned int>::const_iterator j =  aiVFormats.begin();j != aiVFormats.end();++j) {
+            for (std::list<unsigned int>::const_iterator j =  aiVFormats.begin();j != aiVFormats.end();++j)    {
                 unsigned int iVertices = 0;
                 unsigned int iFaces = 0;
                 CountVerticesAndFaces(pScene,pScene->mRootNode,i,*j,&iFaces,&iVertices);
@@ -561,7 +561,7 @@ void PretransformVertices::Execute( aiScene* pScene)
         }
 
         // If no meshes are referenced in the node graph it is possible that we get no output meshes.
-        if (apcOutMeshes.empty()) {
+        if (apcOutMeshes.empty())    {
             throw DeadlyImportError("No output meshes: all meshes are orphaned and are not referenced by nodes");
         }
         else

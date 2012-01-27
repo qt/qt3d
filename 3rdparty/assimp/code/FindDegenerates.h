@@ -47,7 +47,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "../include/aiMesh.h"
 
 class FindDegeneratesProcessTest;
-namespace Assimp {
+namespace Assimp    {
 
 
 // ---------------------------------------------------------------------------

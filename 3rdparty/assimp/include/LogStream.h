@@ -44,7 +44,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef INCLUDED_AI_LOGSTREAM_H
 #define INCLUDED_AI_LOGSTREAM_H
 #include "aiTypes.h"
-namespace Assimp {
+namespace Assimp    {
 class IOSystem;
 
 // ------------------------------------------------------------------------------------
@@ -54,18 +54,18 @@ class IOSystem;
  *  details. Writing your own implementation of LogStream is just necessary if these
  *  are not enough for your purpose. */
 class ASSIMP_API LogStream
-    : public Intern::AllocateFromAssimpHeap {
+    : public Intern::AllocateFromAssimpHeap    {
 protected:
-    /** @brief Default constructor */
+    /** @brief    Default constructor    */
     LogStream() {
     }
 public:
-    /** @brief Virtual destructor */
+    /** @brief    Virtual destructor    */
     virtual ~LogStream() {
     }
 
     // -------------------------------------------------------------------
-    /** @brief Overwrite this for your own output methods
+    /** @brief    Overwrite this for your own output methods
      *
      *  Log messages *may* consist of multiple lines and you shouldn't
      *  expect a consistent formatting. If you want custom formatting

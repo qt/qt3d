@@ -73,7 +73,7 @@ inline void swap(scoped_array<T> & a, scoped_array<T> & b)
 } // end of namespace boost
 
 #else
-# error "scoped_array.h was already included"
+#    error "scoped_array.h was already included"
 #endif
 #endif // __AI_BOOST_SCOPED_ARRAY_INCLUDED
 

@@ -52,11 +52,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 inline aiReturn aiMaterial::GetTexture( aiTextureType type,
    unsigned int  index,
    C_STRUCT aiString* path,
-   aiTextureMapping* mapping /*= NULL*/,
-   unsigned int* uvindex  /*= NULL*/,
-   float* blend       /*= NULL*/,
-   aiTextureOp* op    /*= NULL*/,
-   aiTextureMapMode* mapmode /*= NULL*/) const
+   aiTextureMapping* mapping    /*= NULL*/,
+   unsigned int* uvindex        /*= NULL*/,
+   float* blend                   /*= NULL*/,
+   aiTextureOp* op                /*= NULL*/,
+   aiTextureMapMode* mapmode    /*= NULL*/) const
 {
     return ::aiGetMaterialTexture(this,type,index,path,mapping,uvindex,blend,op,mapmode);
 }
@@ -78,14 +78,14 @@ inline aiReturn aiMaterial::Get(const char* pKey,unsigned int type,
     const aiMaterialProperty* prop;
     const aiReturn ret = ::aiGetMaterialProperty(this,pKey,type,idx,
         (const aiMaterialProperty**)&prop);
-    if ( AI_SUCCESS == ret ) {
+    if ( AI_SUCCESS == ret )    {
 
         if (prop->mDataLength < sizeof(Type)*iNum) {
             return AI_FAILURE;
         }
 
-    // if (::strcmp(prop->mData,(char*)aiPTI_Buffer)!=0)
-    //  return AI_FAILURE;
+    //    if (::strcmp(prop->mData,(char*)aiPTI_Buffer)!=0)
+    //        return AI_FAILURE;
 
         iNum = std::min((size_t)iNum,prop->mDataLength / sizeof(Type));
         memcpy(pOut,prop->mData,iNum * sizeof(Type));
@@ -104,17 +104,32 @@ inline aiReturn aiMaterial::Get(const char* pKey,unsigned int type,
     const aiMaterialProperty* prop;
     const aiReturn ret = ::aiGetMaterialProperty(this,pKey,type,idx,
         (const aiMaterialProperty**)&prop);
-    if ( AI_SUCCESS == ret ) {
+    if ( AI_SUCCESS == ret )    {
 
+        /*
         if (prop->mDataLength < sizeof(Type)) {
             return AI_FAILURE;
         }
 
+        if (strcmp(prop->mData,(char*)aiPTI_Buffer)!=0) {
+            return AI_FAILURE;
+        }
+
         memcpy(&pOut,prop->mData,sizeof(Type));
+        */
+
+        if (prop->mType == aiPTI_Buffer) {
+            return AI_FAILURE;
+        } else {
+            if (prop->mDataLength < sizeof(Type)) {
+                return AI_FAILURE;
+            } else {
+                memcpy(&pOut,prop->mData,sizeof(Type));
+            }
+        }
     }
     return ret;
 }
-
 // ---------------------------------------------------------------------------
 template <>
 inline aiReturn aiMaterial::Get<float>(const char* pKey,unsigned int type,
@@ -131,6 +146,7 @@ inline aiReturn aiMaterial::Get<int>(const char* pKey,unsigned int type,
 {
     return ::aiGetMaterialIntegerArray(this,pKey,type,idx,pOut,pMax);
 }
+
 // ---------------------------------------------------------------------------
 template <>
 inline aiReturn aiMaterial::Get<float>(const char* pKey,unsigned int type,

@@ -77,7 +77,7 @@ bool ColladaLoader::CanRead( const std::string& pFile, IOSystem* pIOHandler, boo
         return true;
 
     // XML - too generic, we need to open the file and search for typical keywords
-    if ( extension == "xml" || !extension.length() || checkSig) {
+    if ( extension == "xml" || !extension.length() || checkSig)    {
         /*  If CanRead() is called in order to check whether we
          *  support a specific file extension in general pIOHandler
          *  might be NULL and it's our duty to return true here.
@@ -242,7 +242,7 @@ void ColladaLoader::ResolveNodeInstances( const ColladaParser& pParser, const Co
             DefaultLogger::get()->error("Collada: Unable to resolve reference to instanced node " + (*it).mNode);
 
         else {
-            // attach this node to the list of children
+            //    attach this node to the list of children
             resolved.push_back(nd);
         }
     }
@@ -370,7 +370,7 @@ void ColladaLoader::BuildCamerasForNode( const ColladaParser& pParser, const Col
                     tan(AI_DEG_TO_RAD(srcCamera->mVerFov));
             }
         }
-        else if (srcCamera->mAspect != 10e10f && srcCamera->mVerFov != 10e10f) {
+        else if (srcCamera->mAspect != 10e10f && srcCamera->mVerFov != 10e10f)    {
             out->mHorizontalFOV = 2.0f * AI_RAD_TO_DEG(atan(srcCamera->mAspect *
                 tan(AI_DEG_TO_RAD(srcCamera->mVerFov) * 0.5f)));
         }
@@ -431,16 +431,21 @@ void ColladaLoader::BuildMeshesForNode( const ColladaParser& pParser, const Coll
                 continue;
 
             // find material assigned to this submesh
+            std::string meshMaterial;
             std::map<std::string, Collada::SemanticMappingTable >::const_iterator meshMatIt = mid.mMaterials.find( submesh.mMaterial);
 
-            const Collada::SemanticMappingTable* table;
+            const Collada::SemanticMappingTable* table = NULL;
             if ( meshMatIt != mid.mMaterials.end())
+            {
                 table = &meshMatIt->second;
-            else {
-                table = NULL;
-                DefaultLogger::get()->warn( boost::str( boost::format( "Collada: No material specified for subgroup \"%s\" in geometry \"%s\".") % submesh.mMaterial % mid.mMeshOrController));
+                meshMaterial = table->mMatName;
             }
-            const std::string& meshMaterial = table ? table->mMatName : "";
+            else
+            {
+                DefaultLogger::get()->warn( boost::str( boost::format( "Collada: No material specified for subgroup \"%s\" in geometry \"%s\".") % submesh.mMaterial % mid.mMeshOrController));
+                if ( !mid.mMaterials.empty() )
+                    meshMaterial = mid.mMaterials.begin()->second.mMatName;
+            }
 
             // OK ... here the *real* fun starts ... we have the vertex-input-to-effect-semantic-table
             // given. The only mapping stuff which we do actually support is the UV channel.
@@ -469,7 +474,7 @@ void ColladaLoader::BuildMeshesForNode( const ColladaParser& pParser, const Coll
 
             // if we already have the mesh at the library, just add its index to the node's array
             std::map<ColladaMeshIndex, size_t>::const_iterator dstMeshIt = mMeshIndexByID.find( index);
-            if ( dstMeshIt != mMeshIndexByID.end()) {
+            if ( dstMeshIt != mMeshIndexByID.end())    {
                 newMeshRefs.push_back( dstMeshIt->second);
             }
             else
@@ -585,8 +590,8 @@ aiMesh* ColladaLoader::CreateMesh( const ColladaParser& pParser, const Collada::
     if ( pSrcController)
     {
         // refuse if the vertex count does not match
-//  if ( pSrcController->mWeightCounts.size() != dstMesh->mNumVertices)
-//   throw DeadlyImportError( "Joint Controller vertex count does not match mesh vertex count");
+//        if ( pSrcController->mWeightCounts.size() != dstMesh->mNumVertices)
+//            throw DeadlyImportError( "Joint Controller vertex count does not match mesh vertex count");
 
         // resolve references - joint names
         const Collada::Accessor& jointNamesAcc = pParser.ResolveLibraryReference( pParser.mAccessorLibrary, pSrcController->mJointNameSource);
@@ -639,14 +644,14 @@ aiMesh* ColladaLoader::CreateMesh( const ColladaParser& pParser, const Collada::
 
                 float weight = ReadFloat( weightsAcc, weights, vertexIndex, 0);
 
-        // one day I gonna kill that XSI Collada exporter
-        if ( weight > 0.0f)
-        {
-                  aiVertexWeight w;
-                  w.mVertexId = a - pStartVertex;
-                  w.mWeight = weight;
-                  dstBones[jointIndex].push_back( w);
-        }
+                // one day I gonna kill that XSI Collada exporter
+                if ( weight > 0.0f)
+                {
+                    aiVertexWeight w;
+                    w.mVertexId = a - pStartVertex;
+                    w.mWeight = weight;
+                    dstBones[jointIndex].push_back( w);
+                }
             }
         }
 
@@ -685,41 +690,41 @@ aiMesh* ColladaLoader::CreateMesh( const ColladaParser& pParser, const Collada::
             bone->mWeights = new aiVertexWeight[bone->mNumWeights];
             std::copy( dstBones[a].begin(), dstBones[a].end(), bone->mWeights);
 
-      // apply bind shape matrix to offset matrix
-      aiMatrix4x4 bindShapeMatrix;
-      bindShapeMatrix.a1 = pSrcController->mBindShapeMatrix[0];
-      bindShapeMatrix.a2 = pSrcController->mBindShapeMatrix[1];
-      bindShapeMatrix.a3 = pSrcController->mBindShapeMatrix[2];
-      bindShapeMatrix.a4 = pSrcController->mBindShapeMatrix[3];
-      bindShapeMatrix.b1 = pSrcController->mBindShapeMatrix[4];
-      bindShapeMatrix.b2 = pSrcController->mBindShapeMatrix[5];
-      bindShapeMatrix.b3 = pSrcController->mBindShapeMatrix[6];
-      bindShapeMatrix.b4 = pSrcController->mBindShapeMatrix[7];
-      bindShapeMatrix.c1 = pSrcController->mBindShapeMatrix[8];
-      bindShapeMatrix.c2 = pSrcController->mBindShapeMatrix[9];
-      bindShapeMatrix.c3 = pSrcController->mBindShapeMatrix[10];
-      bindShapeMatrix.c4 = pSrcController->mBindShapeMatrix[11];
-      bindShapeMatrix.d1 = pSrcController->mBindShapeMatrix[12];
-      bindShapeMatrix.d2 = pSrcController->mBindShapeMatrix[13];
-      bindShapeMatrix.d3 = pSrcController->mBindShapeMatrix[14];
-      bindShapeMatrix.d4 = pSrcController->mBindShapeMatrix[15];
-      bone->mOffsetMatrix *= bindShapeMatrix;
+            // apply bind shape matrix to offset matrix
+            aiMatrix4x4 bindShapeMatrix;
+            bindShapeMatrix.a1 = pSrcController->mBindShapeMatrix[0];
+            bindShapeMatrix.a2 = pSrcController->mBindShapeMatrix[1];
+            bindShapeMatrix.a3 = pSrcController->mBindShapeMatrix[2];
+            bindShapeMatrix.a4 = pSrcController->mBindShapeMatrix[3];
+            bindShapeMatrix.b1 = pSrcController->mBindShapeMatrix[4];
+            bindShapeMatrix.b2 = pSrcController->mBindShapeMatrix[5];
+            bindShapeMatrix.b3 = pSrcController->mBindShapeMatrix[6];
+            bindShapeMatrix.b4 = pSrcController->mBindShapeMatrix[7];
+            bindShapeMatrix.c1 = pSrcController->mBindShapeMatrix[8];
+            bindShapeMatrix.c2 = pSrcController->mBindShapeMatrix[9];
+            bindShapeMatrix.c3 = pSrcController->mBindShapeMatrix[10];
+            bindShapeMatrix.c4 = pSrcController->mBindShapeMatrix[11];
+            bindShapeMatrix.d1 = pSrcController->mBindShapeMatrix[12];
+            bindShapeMatrix.d2 = pSrcController->mBindShapeMatrix[13];
+            bindShapeMatrix.d3 = pSrcController->mBindShapeMatrix[14];
+            bindShapeMatrix.d4 = pSrcController->mBindShapeMatrix[15];
+            bone->mOffsetMatrix *= bindShapeMatrix;
 
-      // HACK: (thom) Some exporters address the bone nodes by SID, others address them by ID or even name.
-      // Therefore I added a little name replacement here: I search for the bone's node by either name, ID or SID,
-      // and replace the bone's name by the node's name so that the user can use the standard
-      // find-by-name method to associate nodes with bones.
-      const Collada::Node* bnode = FindNode( pParser.mRootNode, bone->mName.data);
-      if ( !bnode)
-        bnode = FindNodeBySID( pParser.mRootNode, bone->mName.data);
+            // HACK: (thom) Some exporters address the bone nodes by SID, others address them by ID or even name.
+            // Therefore I added a little name replacement here: I search for the bone's node by either name, ID or SID,
+            // and replace the bone's name by the node's name so that the user can use the standard
+            // find-by-name method to associate nodes with bones.
+            const Collada::Node* bnode = FindNode( pParser.mRootNode, bone->mName.data);
+            if ( !bnode)
+                bnode = FindNodeBySID( pParser.mRootNode, bone->mName.data);
 
-      // assign the name that we would have assigned for the source node
-      if ( bnode)
-        bone->mName.Set( FindNameForNode( bnode));
-      else
-        DefaultLogger::get()->warn( boost::str( boost::format( "ColladaLoader::CreateMesh(): could not find corresponding node for joint \"%s\".") % bone->mName.data));
+            // assign the name that we would have assigned for the source node
+            if ( bnode)
+                bone->mName.Set( FindNameForNode( bnode));
+            else
+                DefaultLogger::get()->warn( boost::str( boost::format( "ColladaLoader::CreateMesh(): could not find corresponding node for joint \"%s\".") % bone->mName.data));
 
-      // and insert bone
+            // and insert bone
             dstMesh->mBones[boneCount++] = bone;
         }
     }
@@ -894,7 +899,7 @@ void ColladaLoader::CreateAnimation( aiScene* pScene, const ColladaParser& pPars
 
         // find the collada node corresponding to the aiNode
         const Collada::Node* srcNode = FindNode( pParser.mRootNode, nodeName);
-//  ai_assert( srcNode != NULL);
+//        ai_assert( srcNode != NULL);
         if ( !srcNode)
             continue;
 
@@ -1174,7 +1179,7 @@ void ColladaLoader::AddTexture ( Assimp::MaterialHelper& mat, const ColladaParse
 
 // ------------------------------------------------------------------------------------------------
 // Fills materials from the collada material definitions
-void ColladaLoader::FillMaterials( const ColladaParser& pParser, aiScene* /*pScene*/)
+void ColladaLoader::FillMaterials( const ColladaParser& pParser, aiScene* pScene)
 {
     for (std::vector<std::pair<Collada::Effect*, aiMaterial*> >::iterator it = newMats.begin(),
         end = newMats.end(); it != end; ++it)
@@ -1222,7 +1227,7 @@ void ColladaLoader::FillMaterials( const ColladaParser& pParser, aiScene* /*pSce
         mat.AddProperty( &effect.mAmbient, 1,AI_MATKEY_COLOR_AMBIENT);
         mat.AddProperty( &effect.mDiffuse, 1, AI_MATKEY_COLOR_DIFFUSE);
         mat.AddProperty( &effect.mSpecular, 1,AI_MATKEY_COLOR_SPECULAR);
-        mat.AddProperty( &effect.mEmissive, 1, AI_MATKEY_COLOR_EMISSIVE);
+        mat.AddProperty( &effect.mEmissive, 1,    AI_MATKEY_COLOR_EMISSIVE);
         mat.AddProperty( &effect.mTransparent, 1, AI_MATKEY_COLOR_TRANSPARENT);
         mat.AddProperty( &effect.mReflective, 1, AI_MATKEY_COLOR_REFLECTIVE);
 
@@ -1266,7 +1271,7 @@ void ColladaLoader::FillMaterials( const ColladaParser& pParser, aiScene* /*pSce
 
 // ------------------------------------------------------------------------------------------------
 // Constructs materials from the collada material definitions
-void ColladaLoader::BuildMaterials( const ColladaParser& pParser, aiScene* /*pScene*/)
+void ColladaLoader::BuildMaterials( const ColladaParser& pParser, aiScene* pScene)
 {
     newMats.reserve(pParser.mMaterialLibrary.size());
 

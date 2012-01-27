@@ -50,8 +50,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // ------------------------------------------------------------------------------------------------
 #ifdef AI_C_THREADSAFE
-# include <boost/thread/thread.hpp>
-# include <boost/thread/mutex.hpp>
+#    include <boost/thread/thread.hpp>
+#    include <boost/thread/mutex.hpp>
 #endif
 // ------------------------------------------------------------------------------------------------
 using namespace Assimp;
@@ -91,7 +91,7 @@ namespace Assimp
 /** Configuration properties */
 static ImporterPimpl::IntPropertyMap gIntProperties;
 static ImporterPimpl::FloatPropertyMap gFloatProperties;
-static ImporterPimpl::StringPropertyMap gStringProperties;
+static ImporterPimpl::StringPropertyMap    gStringProperties;
 
 #ifdef AI_C_THREADSAFE
 /** Global mutex to manage the access to the importer map */
@@ -146,7 +146,7 @@ public:
     }
 
     // ...................................................................
-    size_t FileSize() const {
+    size_t    FileSize() const {
         return mFile->FileSizeProc(mFile);
     }
 
@@ -215,11 +215,11 @@ class LogToCallbackRedirector : public LogStream
 {
 public:
     LogToCallbackRedirector(const aiLogStream& s)
-        : stream (s) {
+        : stream (s)    {
             ai_assert(NULL != s.callback);
     }
 
-    ~LogToCallbackRedirector() {
+    ~LogToCallbackRedirector()    {
 #ifdef AI_C_THREADSAFE
         boost::mutex::scoped_lock lock(gLogStreamMutex);
 #endif
@@ -238,7 +238,7 @@ public:
     }
 
     /** @copydoc LogStream::write */
-    void write(const char* message) {
+    void write(const char* message)    {
         stream.callback(message,stream.user);
     }
 
@@ -287,7 +287,7 @@ const aiScene* aiImportFileEx( const char* pFile, unsigned int pFlags,
 #endif
 
     // setup a custom IO system if necessary
-    if (pFS) {
+    if (pFS)    {
         imp->SetIOHandler( new CIOSystemWrapper (pFS) );
     }
 
@@ -295,13 +295,13 @@ const aiScene* aiImportFileEx( const char* pFile, unsigned int pFlags,
     scene = imp->ReadFile( pFile, pFlags);
 
     // if succeeded, place it in the collection of active processes
-    if ( scene) {
+    if ( scene)    {
 #ifdef AI_C_THREADSAFE
         lock.lock();
 #endif
         gActiveImports[scene] = imp;
     }
-    else {
+    else    {
         // if failed, extract error code and destroy the import
         gLastErrorString = imp->GetErrorString();
         delete imp;
@@ -343,13 +343,13 @@ const aiScene* aiImportFileFromMemory(
     scene = imp->ReadFileFromMemory( pBuffer, pLength, pFlags,pHint);
 
     // if succeeded, place it in the collection of active processes
-    if ( scene) {
+    if ( scene)    {
 #ifdef AI_C_THREADSAFE
         lock.lock();
 #endif
         gActiveImports[scene] = imp;
     }
-    else {
+    else    {
         // if failed, extract error code and destroy the import
         gLastErrorString = imp->GetErrorString();
         delete imp;
@@ -376,7 +376,7 @@ void aiReleaseImport( const aiScene* pScene)
     // find the importer associated with this data
     ImporterMap::iterator it = gActiveImports.find( pScene);
     // it should be there... else the user is playing fools with us
-    if ( it == gActiveImports.end()) {
+    if ( it == gActiveImports.end())    {
         ReportSceneNotFoundError();
         return;
     }
@@ -402,7 +402,7 @@ ASSIMP_API const aiScene* aiApplyPostProcessing(const aiScene* pScene,
     // find the importer associated with this data
     ImporterMap::iterator it = gActiveImports.find( pScene);
     // it should be there... else the user is playing fools with us
-    if ( it == gActiveImports.end()) {
+    if ( it == gActiveImports.end())    {
         ReportSceneNotFoundError();
         return NULL;
     }
@@ -483,7 +483,7 @@ ASSIMP_API aiReturn aiDetachLogStream( const aiLogStream* stream)
     // find the logstream associated with this data
     LogStreamMap::iterator it = gActiveLogStreams.find( *stream);
     // it should be there... else the user is playing fools with us
-    if ( it == gActiveLogStreams.end()) {
+    if ( it == gActiveLogStreams.end())    {
         return AI_FAILURE;
     }
     DefaultLogger::get()->detatchStream( it->second );
@@ -542,7 +542,7 @@ aiBool aiIsExtensionSupported(const char* szExtension)
     boost::mutex::scoped_lock lock(gMutex);
 #endif
 
-    if (!gActiveImports.empty()) {
+    if (!gActiveImports.empty())    {
         return ((*(gActiveImports.begin())).second->IsExtensionSupported( szExtension )) ? AI_TRUE : AI_FALSE;
     }
 
@@ -589,7 +589,7 @@ void aiGetMemoryRequirements(const C_STRUCT aiScene* pIn,
     // find the importer associated with this data
     ImporterMap::iterator it = gActiveImports.find( pIn);
     // it should be there... else the user is playing fools with us
-    if ( it == gActiveImports.end()) {
+    if ( it == gActiveImports.end())    {
         ReportSceneNotFoundError();
         return;
     }

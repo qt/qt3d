@@ -52,7 +52,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 struct aiTexture;
 struct aiNode;
 
-namespace Assimp {
+namespace Assimp    {
 using namespace LWO;
 
 // ---------------------------------------------------------------------------

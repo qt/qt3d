@@ -12,14 +12,14 @@ namespace irr
 namespace core
 {
 
-//! Very simple string class with some useful features.
-/** string<c8> and string<wchar_t> work both with unicode AND ascii,
+//!    Very simple string class with some useful features.
+/**    string<c8> and string<wchar_t> work both with unicode AND ascii,
 so you can assign unicode to string<c8> and ascii to string<wchar_t>
 (and the other way round) if your ever would want to.
 Note that the conversation between both is not done using an encoding.
 
 Known bugs:
-Special characters like '', '' and '' are ignored in the
+Special characters like 'Ä', 'Ü' and 'Ö' are ignored in the
 methods make_upper, make_lower and equals_ignore_case.
 */
 template <class T>
@@ -636,10 +636,7 @@ private:
         for (s32 i=0; i<amount; ++i)
             array[i] = old_array[i];
 
-        _IRR_DEBUG_BREAK_IF(allocated<0);
-        _IRR_DEBUG_BREAK_IF(used<0);
-
-        if ((u32)allocated < (u32)used)
+        if (allocated < used)
             used = allocated;
 
         delete [] old_array;

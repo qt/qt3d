@@ -47,10 +47,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ObjFileData.h"
 #include "fast_atof.h"
 
-namespace Assimp {
+namespace Assimp    {
 
 // -------------------------------------------------------------------
-// Constructor
+//    Constructor
 ObjFileMtlImporter::ObjFileMtlImporter( std::vector<char> &buffer,
                                        const std::string & /*strAbsPath*/,
                                        ObjFile::Model *pModel ) :
@@ -69,28 +69,28 @@ ObjFileMtlImporter::ObjFileMtlImporter( std::vector<char> &buffer,
 }
 
 // -------------------------------------------------------------------
-// Destructor
+//    Destructor
 ObjFileMtlImporter::~ObjFileMtlImporter()
 {
     // empty
 }
 
 // -------------------------------------------------------------------
-// Private copy constructor
+//    Private copy constructor
 ObjFileMtlImporter::ObjFileMtlImporter(const ObjFileMtlImporter & /* rOther */ )
 {
     // empty
 }
 
 // -------------------------------------------------------------------
-// Private copy constructor
+//    Private copy constructor
 ObjFileMtlImporter &ObjFileMtlImporter::operator = ( const ObjFileMtlImporter & /*rOther */ )
 {
     return *this;
 }
 
 // -------------------------------------------------------------------
-// Loads the material description
+//    Loads the material description
 void ObjFileMtlImporter::load()
 {
     if ( m_DataIt == m_DataItEnd )
@@ -108,7 +108,7 @@ void ObjFileMtlImporter::load()
                     ++m_DataIt;
                     getColorRGBA( &m_pModel->m_pCurrentMaterial->ambient );
                 }
-                else if (*m_DataIt == 'd') // Diffuse color
+                else if (*m_DataIt == 'd')    // Diffuse color
                 {
                     ++m_DataIt;
                     getColorRGBA( &m_pModel->m_pCurrentMaterial->diffuse );
@@ -122,7 +122,7 @@ void ObjFileMtlImporter::load()
             }
             break;
 
-        case 'd': // Alpha value
+        case 'd':    // Alpha value
             {
                 ++m_DataIt;
                 getFloatValue( m_pModel->m_pCurrentMaterial->alpha );
@@ -130,7 +130,7 @@ void ObjFileMtlImporter::load()
             }
             break;
 
-        case 'N': // Shineness
+        case 'N':    // Shineness
             {
                 ++m_DataIt;
                 switch(*m_DataIt)
@@ -150,7 +150,7 @@ void ObjFileMtlImporter::load()
             break;
 
 
-        case 'm': // Texture
+        case 'm':    // Texture
         case 'b':   // quick'n'dirty - for 'bump' sections
             {
                 getTexture();
@@ -158,14 +158,14 @@ void ObjFileMtlImporter::load()
             }
             break;
 
-        case 'n': // New material name
+        case 'n':    // New material name
             {
                 createMaterial();
                 m_DataIt = skipLine<DataArrayIt>( m_DataIt, m_DataItEnd, m_uiLine );
             }
             break;
 
-        case 'i': // Illumination model
+        case 'i':    // Illumination model
             {
                 m_DataIt = getNextToken<DataArrayIt>(m_DataIt, m_DataItEnd);
                 getIlluminationModel( m_pModel->m_pCurrentMaterial->illumination_model );
@@ -183,7 +183,7 @@ void ObjFileMtlImporter::load()
 }
 
 // -------------------------------------------------------------------
-// Loads a color definition
+//    Loads a color definition
 void ObjFileMtlImporter::getColorRGBA( aiColor3D *pColor )
 {
     ai_assert( NULL != pColor );
@@ -200,7 +200,7 @@ void ObjFileMtlImporter::getColorRGBA( aiColor3D *pColor )
 }
 
 // -------------------------------------------------------------------
-// Loads the kind of illumination model.
+//    Loads the kind of illumination model.
 void ObjFileMtlImporter::getIlluminationModel( int &illum_model )
 {
     m_DataIt = CopyNextWord<DataArrayIt>( m_DataIt, m_DataItEnd, m_buffer, BUFFERSIZE );
@@ -208,7 +208,7 @@ void ObjFileMtlImporter::getIlluminationModel( int &illum_model )
 }
 
 // -------------------------------------------------------------------
-// Loads a single float value.
+//    Loads a single float value.
 void ObjFileMtlImporter::getFloatValue( float &value )
 {
     m_DataIt = CopyNextWord<DataArrayIt>( m_DataIt, m_DataItEnd, m_buffer, BUFFERSIZE );
@@ -216,7 +216,7 @@ void ObjFileMtlImporter::getFloatValue( float &value )
 }
 
 // -------------------------------------------------------------------
-// Creates a material from loaded data.
+//    Creates a material from loaded data.
 void ObjFileMtlImporter::createMaterial()
 {
     std::string strName( "" );
@@ -241,7 +241,7 @@ void ObjFileMtlImporter::createMaterial()
 }
 
 // -------------------------------------------------------------------
-// Gets a texture name from data.
+//    Gets a texture name from data.
 void ObjFileMtlImporter::getTexture()
 {
     aiString *out = NULL;

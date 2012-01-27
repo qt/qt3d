@@ -173,10 +173,10 @@ void tst_LoadModel::create()
     QFETCH(int, expected_vertices);
     QFETCH(int, expected_indices);
 
-    if (model == QLatin1String("wave.obj"))
-    {
-        QSKIP("Fails on Qt5");
-    }
+//    if (model == QLatin1String("wave.obj"))
+//    {
+//        QSKIP("Fails on Qt5");
+//    }
 
     QGLAbstractScene *scene = 0;
     QString model_path(QLatin1String(":/data/models/%1"));

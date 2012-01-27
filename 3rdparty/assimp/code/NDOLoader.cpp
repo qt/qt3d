@@ -86,7 +86,7 @@ void NDOImporter::GetExtensionList(std::set<std::string>& extensions)
 
 // ------------------------------------------------------------------------------------------------
 // Setup configuration properties for the loader
-void NDOImporter::SetupProperties(const Importer* /*pImp*/)
+void NDOImporter::SetupProperties(const Importer* pImp)
 {
     // nothing to be done for the moment
 }
@@ -135,12 +135,12 @@ void NDOImporter::InternReadFile( const std::string& pFile,
     // read all objects
     for (unsigned int o = 0; o < objects.size(); ++o) {
 
-//  if (file_format < 12) {
+//        if (file_format < 12) {
             if (!reader.GetI1()) {
                 continue; /* skip over empty object */
             }
-        // reader.GetI2();
-//  }
+        //    reader.GetI2();
+//        }
         Object& obj = objects[o];
 
         temp = file_format >= 12 ? reader.GetU4() : reader.GetU2();

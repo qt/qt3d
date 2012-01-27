@@ -73,7 +73,7 @@ inline void swap(scoped_ptr<T> & a, scoped_ptr<T> & b)
 } // end of namespace boost
 
 #else
-# error "scoped_ptr.h was already included"
+#    error "scoped_ptr.h was already included"
 #endif
 #endif // __AI_BOOST_SCOPED_PTR_INCLUDED
 

@@ -45,7 +45,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define INCLUDED_AI_COB_LOADER_H
 
 #include "BaseImporter.h"
-namespace Assimp {
+namespace Assimp    {
     class LineSplitter;
 
     // TinyFormatter.h

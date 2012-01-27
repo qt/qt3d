@@ -59,7 +59,7 @@ namespace Blender {
     /** Mini smart-array to avoid pulling in even more boost stuff. usable with vector and deque */
     // --------------------------------------------------------------------
     template <template <typename,typename> class TCLASS, typename T>
-    struct TempArray {
+    struct TempArray    {
         typedef TCLASS< T*,std::allocator<T*> > mywrap;
 
         TempArray() {
@@ -116,7 +116,7 @@ namespace Blender {
     };
 
 #ifdef _MSC_VER
-# pragma warning(disable:4351)
+#    pragma warning(disable:4351)
 #endif
     // --------------------------------------------------------------------
     /** ConversionData acts as intermediate storage location for
@@ -151,26 +151,26 @@ namespace Blender {
         const FileDatabase& db;
     };
 #ifdef _MSC_VER
-# pragma warning(default:4351)
+#    pragma warning(default:4351)
 #endif
 
 // ------------------------------------------------------------------------------------------------
 inline const char* GetTextureTypeDisplayString(Tex::Type t)
 {
-    switch (t) {
-    case Tex::Type_CLOUDS  :  return  "Clouds";
-    case Tex::Type_WOOD   :  return  "Wood";
-    case Tex::Type_MARBLE  :  return  "Marble";
-    case Tex::Type_MAGIC  :  return  "Magic";
-    case Tex::Type_BLEND  :  return  "Blend";
-    case Tex::Type_STUCCI  :  return  "Stucci";
-    case Tex::Type_NOISE  :  return  "Noise";
-    case Tex::Type_PLUGIN  :  return  "Plugin";
-    case Tex::Type_MUSGRAVE  :  return  "Musgrave";
-    case Tex::Type_VORONOI  :  return  "Voronoi";
-    case Tex::Type_DISTNOISE :  return  "DistortedNoise";
-    case Tex::Type_ENVMAP  :  return  "EnvMap";
-    case Tex::Type_IMAGE  :  return  "Image";
+    switch (t)    {
+    case Tex::Type_CLOUDS        :  return  "Clouds";
+    case Tex::Type_WOOD            :  return  "Wood";
+    case Tex::Type_MARBLE        :  return  "Marble";
+    case Tex::Type_MAGIC        :  return  "Magic";
+    case Tex::Type_BLEND        :  return  "Blend";
+    case Tex::Type_STUCCI        :  return  "Stucci";
+    case Tex::Type_NOISE        :  return  "Noise";
+    case Tex::Type_PLUGIN        :  return  "Plugin";
+    case Tex::Type_MUSGRAVE        :  return  "Musgrave";
+    case Tex::Type_VORONOI        :  return  "Voronoi";
+    case Tex::Type_DISTNOISE    :  return  "DistortedNoise";
+    case Tex::Type_ENVMAP        :  return  "EnvMap";
+    case Tex::Type_IMAGE        :  return  "Image";
     default:
         break;
     }

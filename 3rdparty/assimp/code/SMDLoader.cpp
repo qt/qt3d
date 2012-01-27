@@ -65,7 +65,7 @@ SMDImporter::~SMDImporter()
 
 // ------------------------------------------------------------------------------------------------
 // Returns whether the class can handle the format of the given file.
-bool SMDImporter::CanRead( const std::string& pFile, IOSystem* /*pIOHandler*/, bool) const
+bool SMDImporter::CanRead( const std::string& pFile, IOSystem* pIOHandler, bool) const
 {
     // fixme: auto format detection
     return SimpleExtensionCheck(pFile,"smd","vta");
@@ -87,7 +87,7 @@ void SMDImporter::SetupProperties(const Importer* pImp)
     // AI_CONFIG_IMPORT_SMD_KEYFRAME option overrides the
     // AI_CONFIG_IMPORT_GLOBAL_KEYFRAME option.
     configFrameID = pImp->GetPropertyInteger(AI_CONFIG_IMPORT_SMD_KEYFRAME,0xffffffff);
-    if (0xffffffff == configFrameID) {
+    if (0xffffffff == configFrameID)    {
         configFrameID = pImp->GetPropertyInteger(AI_CONFIG_IMPORT_GLOBAL_KEYFRAME,0);
     }
 }
@@ -100,7 +100,7 @@ void SMDImporter::InternReadFile(
     boost::scoped_ptr<IOStream> file( pIOHandler->Open( pFile, "rb"));
 
     // Check whether we can read from the file
-    if ( file.get() == NULL) {
+    if ( file.get() == NULL)    {
         throw DeadlyImportError( "Failed to open SMD/VTA file " + pFile + ".");
     }
 
@@ -163,7 +163,7 @@ void SMDImporter::InternReadFile(
         FixTimeValues();
 
         // compute absolute bone transformation matrices
-    // ComputeAbsoluteBoneTransformations();
+    //    ComputeAbsoluteBoneTransformations();
     }
 
     if (!(pScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE))
@@ -676,7 +676,7 @@ void SMDImporter::ParseFile()
     {
         if (!SkipSpacesAndLineEnd(szCurrent,&szCurrent)) break;
 
-        // "version <n> \n", <n> should be 1 for hl and hl SMD files
+        // "version <n> \n", <n> should be 1 for hl and hl² SMD files
         if (TokenMatch(szCurrent,"version",7))
         {
             if (!SkipSpaces(szCurrent,&szCurrent)) break;
@@ -994,7 +994,7 @@ void SMDImporter::ParseTriangle(const char* szCurrent,
 
     // read the texture file name
     const char* szLast = szCurrent;
-    while (!IsSpaceOrNewLine(*szCurrent++)) {};
+    while (!IsSpaceOrNewLine(*szCurrent++));
 
     // ... and get the index that belongs to this file name
     face.iTexture = GetTextureIndex(std::string(szLast,(uintptr_t)szCurrent-(uintptr_t)szLast));

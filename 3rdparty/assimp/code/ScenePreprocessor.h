@@ -44,7 +44,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define AI_SCENE_PREPROCESSOR_H_INC
 
 class ScenePreprocessorTest;
-namespace Assimp {
+namespace Assimp    {
 
 // ----------------------------------------------------------------------------------
 /** ScenePreprocessor: Preprocess a scene before any post-processing
@@ -64,13 +64,13 @@ public:
     /** Default c'tpr. Use SetScene() to assign a scene to the object.
      */
     ScenePreprocessor()
-        : scene (NULL)
+        :    scene    (NULL)
     {}
 
     /** Constructs the object and assigns a specific scene to it
      */
     ScenePreprocessor(aiScene* _scene)
-        : scene (_scene)
+        :    scene    (_scene)
     {}
 
     // ----------------------------------------------------------------
@@ -80,7 +80,7 @@ public:
      *  Call ProcessScene to have the scene preprocessed.
      *  @param sc Scene to be processed.
      */
-    void SetScene (aiScene* sc) {
+    void SetScene (aiScene* sc)    {
         scene = sc;
     }
 

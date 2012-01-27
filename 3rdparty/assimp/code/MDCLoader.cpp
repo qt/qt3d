@@ -168,13 +168,13 @@ void MDCImporter::ValidateSurfaceHeader(BE_NCONST MDC::Surface* pcSurf)
 
     const unsigned int iMax = this->fileSize - (unsigned int)((int8_t*)pcSurf-(int8_t*)pcHeader);
 
-    if (pcSurf->ulOffsetBaseVerts + pcSurf->ulNumVertices * sizeof(MDC::BaseVertex)   > iMax ||
-        (pcSurf->ulNumCompFrames && pcSurf->ulOffsetCompVerts + pcSurf->ulNumVertices * sizeof(MDC::CompressedVertex) > iMax) ||
-        pcSurf->ulOffsetTriangles + pcSurf->ulNumTriangles * sizeof(MDC::Triangle)   > iMax ||
-        pcSurf->ulOffsetTexCoords + pcSurf->ulNumVertices * sizeof(MDC::TexturCoord)  > iMax ||
-        pcSurf->ulOffsetShaders + pcSurf->ulNumShaders * sizeof(MDC::Shader)    > iMax ||
-        pcSurf->ulOffsetFrameBaseFrames + pcSurf->ulNumBaseFrames * 2      > iMax ||
-        (pcSurf->ulNumCompFrames && pcSurf->ulOffsetFrameCompFrames + pcSurf->ulNumCompFrames * 2 > iMax))
+    if (pcSurf->ulOffsetBaseVerts + pcSurf->ulNumVertices * sizeof(MDC::BaseVertex)            > iMax ||
+        (pcSurf->ulNumCompFrames && pcSurf->ulOffsetCompVerts + pcSurf->ulNumVertices * sizeof(MDC::CompressedVertex)    > iMax) ||
+        pcSurf->ulOffsetTriangles + pcSurf->ulNumTriangles * sizeof(MDC::Triangle)            > iMax ||
+        pcSurf->ulOffsetTexCoords + pcSurf->ulNumVertices * sizeof(MDC::TexturCoord)        > iMax ||
+        pcSurf->ulOffsetShaders + pcSurf->ulNumShaders * sizeof(MDC::Shader)                > iMax ||
+        pcSurf->ulOffsetFrameBaseFrames + pcSurf->ulNumBaseFrames * 2                        > iMax ||
+        (pcSurf->ulNumCompFrames && pcSurf->ulOffsetFrameCompFrames + pcSurf->ulNumCompFrames * 2    > iMax))
     {
         throw DeadlyImportError("Some of the offset values in the MDC surface header "
             "are invalid and point somewhere behind the file.");
@@ -285,10 +285,10 @@ void MDCImporter::InternReadFile(
         else pcMesh->mMaterialIndex = iDefaultMatIndex;
 
         // allocate output storage for the mesh
-        aiVector3D* pcVertCur = pcMesh->mVertices   = new aiVector3D[pcMesh->mNumVertices];
-        aiVector3D* pcNorCur = pcMesh->mNormals   = new aiVector3D[pcMesh->mNumVertices];
-        aiVector3D* pcUVCur  = pcMesh->mTextureCoords[0] = new aiVector3D[pcMesh->mNumVertices];
-        aiFace* pcFaceCur  = pcMesh->mFaces   = new aiFace[pcMesh->mNumFaces];
+        aiVector3D* pcVertCur    = pcMesh->mVertices            = new aiVector3D[pcMesh->mNumVertices];
+        aiVector3D* pcNorCur    = pcMesh->mNormals            = new aiVector3D[pcMesh->mNumVertices];
+        aiVector3D* pcUVCur        = pcMesh->mTextureCoords[0] = new aiVector3D[pcMesh->mNumVertices];
+        aiFace* pcFaceCur        = pcMesh->mFaces            = new aiFace[pcMesh->mNumFaces];
 
         // create all vertices/faces
         BE_NCONST MDC::Triangle* pcTriangle = (BE_NCONST MDC::Triangle*)

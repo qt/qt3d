@@ -57,9 +57,9 @@ VertexTriangleAdjacency::VertexTriangleAdjacency(aiFace *pcFaces,
 {
     // compute the number of referenced vertices if it wasn't specified by the caller
     const aiFace* const pcFaceEnd = pcFaces + iNumFaces;
-    if (!iNumVertices) {
+    if (!iNumVertices)    {
 
-        for (aiFace* pcFace = pcFaces; pcFace != pcFaceEnd; ++pcFace) {
+        for (aiFace* pcFace = pcFaces; pcFace != pcFaceEnd; ++pcFace)    {
             ai_assert(3 == pcFace->mNumIndices);
             iNumVertices = std::max(iNumVertices,pcFace->mIndices[0]);
             iNumVertices = std::max(iNumVertices,pcFace->mIndices[1]);
@@ -69,7 +69,7 @@ VertexTriangleAdjacency::VertexTriangleAdjacency(aiFace *pcFaces,
     unsigned int* pi;
 
     // allocate storage
-    if (bComputeNumTriangles) {
+    if (bComputeNumTriangles)    {
         pi = mLiveTriangles = new unsigned int[iNumVertices+1];
         memset(mLiveTriangles,0,sizeof(unsigned int)*(iNumVertices+1));
         mOffsetTable = new unsigned int[iNumVertices+2]+1;
@@ -95,7 +95,7 @@ VertexTriangleAdjacency::VertexTriangleAdjacency(aiFace *pcFaces,
     // second pass: compute the final offset table
     unsigned int iSum = 0;
     unsigned int* piCurOut = this->mOffsetTable;
-    for (unsigned int* piCur = pi; piCur != piEnd;++piCur,++piCurOut) {
+    for (unsigned int* piCur = pi; piCur != piEnd;++piCur,++piCurOut)    {
 
         unsigned int iLastSum = iSum;
         iSum += *piCur;
@@ -106,7 +106,7 @@ VertexTriangleAdjacency::VertexTriangleAdjacency(aiFace *pcFaces,
     // third pass: compute the final table
     this->mAdjacencyTable = new unsigned int[iSum];
     iSum = 0;
-    for (aiFace* pcFace = pcFaces; pcFace != pcFaceEnd; ++pcFace,++iSum) {
+    for (aiFace* pcFace = pcFaces; pcFace != pcFaceEnd; ++pcFace,++iSum)    {
 
         unsigned int idx = pcFace->mIndices[0];
         mAdjacencyTable[pi[idx]++] = iSum;

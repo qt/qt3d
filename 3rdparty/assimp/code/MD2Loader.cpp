@@ -54,7 +54,7 @@ using namespace Assimp::MD2;
 
 // helper macro to determine the size of an array
 #if (!defined ARRAYSIZE)
-# define ARRAYSIZE(_array) (int(sizeof(_array) / sizeof(_array[0])))
+#    define ARRAYSIZE(_array) (int(sizeof(_array) / sizeof(_array[0])))
 #endif
 
 // ------------------------------------------------------------------------------------------------
@@ -62,7 +62,7 @@ using namespace Assimp::MD2;
 void MD2::LookupNormalIndex(uint8_t iNormalIndex,aiVector3D& vOut)
 {
     // make sure the normal index has a valid value
-    if (iNormalIndex >= ARRAYSIZE(g_avNormals)) {
+    if (iNormalIndex >= ARRAYSIZE(g_avNormals))    {
         DefaultLogger::get()->warn("Index overflow in Quake II normal vector list");
         iNormalIndex = ARRAYSIZE(g_avNormals) - 1;
     }
@@ -146,11 +146,11 @@ void MD2Importer::ValidateHeader( )
     if (m_pcHeader->offsetEnd > (uint32_t)fileSize)
         throw DeadlyImportError( "Invalid md2 file: File is too small");
 
-    if (m_pcHeader->offsetSkins  + m_pcHeader->numSkins * sizeof (MD2::Skin)   >= fileSize ||
-        m_pcHeader->offsetTexCoords + m_pcHeader->numTexCoords * sizeof (MD2::TexCoord) >= fileSize ||
-        m_pcHeader->offsetTriangles + m_pcHeader->numTriangles * sizeof (MD2::Triangle) >= fileSize ||
-        m_pcHeader->offsetFrames  + m_pcHeader->numFrames * sizeof (MD2::Frame)   >= fileSize ||
-        m_pcHeader->offsetEnd   > fileSize)
+    if (m_pcHeader->offsetSkins        + m_pcHeader->numSkins * sizeof (MD2::Skin)            >= fileSize ||
+        m_pcHeader->offsetTexCoords    + m_pcHeader->numTexCoords * sizeof (MD2::TexCoord)    >= fileSize ||
+        m_pcHeader->offsetTriangles    + m_pcHeader->numTriangles * sizeof (MD2::Triangle)    >= fileSize ||
+        m_pcHeader->offsetFrames        + m_pcHeader->numFrames * sizeof (MD2::Frame)            >= fileSize ||
+        m_pcHeader->offsetEnd            > fileSize)
     {
         throw DeadlyImportError("Invalid MD2 header: some offsets are outside the file");
     }
@@ -310,7 +310,7 @@ void MD2Importer::InternReadFile( const std::string& pFile,
             DefaultLogger::get()->warn("Texture file name has zero length. It will be skipped.");
         }
     }
-    else {
+    else    {
         // apply a default material
         aiColor3D clr;
         clr.b = clr.g = clr.r = 0.6f;
@@ -337,14 +337,14 @@ void MD2Importer::InternReadFile( const std::string& pFile,
     unsigned int iCurrent = 0;
 
     float fDivisorU = 1.0f,fDivisorV = 1.0f;
-    if (m_pcHeader->numTexCoords) {
+    if (m_pcHeader->numTexCoords)    {
         // allocate storage for texture coordinates, too
         pcMesh->mTextureCoords[0] = new aiVector3D[pcMesh->mNumVertices];
         pcMesh->mNumUVComponents[0] = 2;
 
         // check whether the skin width or height are zero (this would
         // cause a division through zero)
-        if (!m_pcHeader->skinWidth) {
+        if (!m_pcHeader->skinWidth)    {
             DefaultLogger::get()->error("MD2: No valid skin width given");
         }
         else fDivisorU = (float)m_pcHeader->skinWidth;
@@ -354,7 +354,7 @@ void MD2Importer::InternReadFile( const std::string& pFile,
         else fDivisorV = (float)m_pcHeader->skinHeight;
     }
 
-    for (unsigned int i = 0; i < (unsigned int)m_pcHeader->numTriangles;++i) {
+    for (unsigned int i = 0; i < (unsigned int)m_pcHeader->numTriangles;++i)    {
         // Allocate the face
         pScene->mMeshes[0]->mFaces[i].mIndices = new unsigned int[3];
         pScene->mMeshes[0]->mFaces[i].mNumIndices = 3;
@@ -362,11 +362,11 @@ void MD2Importer::InternReadFile( const std::string& pFile,
         // copy texture coordinates
         // check whether they are different from the previous value at this index.
         // In this case, create a full separate set of vertices/normals/texcoords
-        for (unsigned int c = 0; c < 3;++c,++iCurrent) {
+        for (unsigned int c = 0; c < 3;++c,++iCurrent)    {
 
             // validate vertex indices
             register unsigned int iIndex = (unsigned int)pcTriangles[i].vertexIndices[c];
-            if (iIndex >= m_pcHeader->numVertices) {
+            if (iIndex >= m_pcHeader->numVertices)    {
                 DefaultLogger::get()->error("MD2: Vertex index is outside the allowed range");
                 iIndex = m_pcHeader->numVertices-1;
             }
@@ -391,10 +391,10 @@ void MD2Importer::InternReadFile( const std::string& pFile,
             std::swap((float&)vNormal.z,(float&)vNormal.y);
             std::swap((float&)vec.z,(float&)vec.y);
 
-            if (m_pcHeader->numTexCoords) {
+            if (m_pcHeader->numTexCoords)    {
                 // validate texture coordinates
                 iIndex = pcTriangles[i].textureIndices[c];
-                if (iIndex >= m_pcHeader->numTexCoords) {
+                if (iIndex >= m_pcHeader->numTexCoords)    {
                     DefaultLogger::get()->error("MD2: UV index is outside the allowed range");
                     iIndex = m_pcHeader->numTexCoords-1;
                 }

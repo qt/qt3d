@@ -59,7 +59,7 @@ namespace Assimp
 // **********************************************************
 
 #if (!defined AI_LMW_MAX_WEIGHTS)
-# define AI_LMW_MAX_WEIGHTS 0x4
+#    define AI_LMW_MAX_WEIGHTS    0x4
 #endif // !! AI_LMW_MAX_WEIGHTS
 
 // ---------------------------------------------------------------------------

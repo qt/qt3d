@@ -4,11 +4,11 @@
 #include "../include/LogStream.h"
 #include "../include/IOStream.h"
 
-namespace Assimp {
+namespace Assimp    {
 
 // ----------------------------------------------------------------------------------
-/** @class FileLogStream
- * @brief Logstream to write into a file.
+/**    @class    FileLogStream
+ *    @brief    Logstream to write into a file.
  */
 class FileLogStream :
     public LogStream
@@ -23,7 +23,7 @@ private:
 };
 
 // ----------------------------------------------------------------------------------
-// Constructor
+//    Constructor
 inline FileLogStream::FileLogStream( const char* file, IOSystem* io ) :
     m_pStream(NULL)
 {
@@ -40,7 +40,7 @@ inline FileLogStream::FileLogStream( const char* file, IOSystem* io ) :
 }
 
 // ----------------------------------------------------------------------------------
-// Destructor
+//    Destructor
 inline FileLogStream::~FileLogStream()
 {
     // The virtual d'tor should destroy the underlying file
@@ -48,7 +48,7 @@ inline FileLogStream::~FileLogStream()
 }
 
 // ----------------------------------------------------------------------------------
-// Write method
+//    Write method
 inline void FileLogStream::write( const char* message )
 {
     if (m_pStream != NULL)

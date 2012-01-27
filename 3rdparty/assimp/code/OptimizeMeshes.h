@@ -49,7 +49,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 struct aiMesh;
 class OptimizeMeshesProcessTest;
-namespace Assimp {
+namespace Assimp    {
 
 // ---------------------------------------------------------------------------
 /** @brief Postprocessing step to optimize mesh usage
@@ -77,9 +77,9 @@ protected:
     struct MeshInfo
     {
         MeshInfo()
-            : instance_cnt  (0)
-            , vertex_format (0)
-            , output_id   (0xffffffff)
+            :    instance_cnt  (0)
+            ,    vertex_format (0)
+            ,    output_id      (0xffffffff)
         {}
 
         //! Number of times this mesh is referenced

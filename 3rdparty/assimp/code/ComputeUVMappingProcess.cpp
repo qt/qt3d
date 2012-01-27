@@ -73,7 +73,7 @@ ComputeUVMappingProcess::~ComputeUVMappingProcess()
 // Returns whether the processing step is present in the given flag field.
 bool ComputeUVMappingProcess::IsActive( unsigned int pFlags) const
 {
-    return (pFlags & aiProcess_GenUVCoords) != 0;
+    return    (pFlags & aiProcess_GenUVCoords) != 0;
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -190,7 +190,7 @@ void ComputeUVMappingProcess::ComputeSphereMapping(aiMesh* mesh,const aiVector3D
     // currently the mapping axis will always be one of x,y,z, except if the
     // PretransformVertices step is used (it transforms the meshes into worldspace,
     // thus changing the mapping axis)
-    if (axis * base_axis_x >= angle_epsilon) {
+    if (axis * base_axis_x >= angle_epsilon)    {
 
         // For each point get a normalized projection vector in the sphere,
         // get its longitude and latitude and map them to their respective
@@ -204,35 +204,35 @@ void ComputeUVMappingProcess::ComputeSphereMapping(aiMesh* mesh,const aiVector3D
         // Thus we can derive:
         // lat  = arcsin (z)
         // lon  = arctan (y/x)
-        for (unsigned int pnt = 0; pnt < mesh->mNumVertices;++pnt) {
+        for (unsigned int pnt = 0; pnt < mesh->mNumVertices;++pnt)    {
             const aiVector3D diff = (mesh->mVertices[pnt]-center).Normalize();
             out[pnt] = aiVector3D((atan2 (diff.z, diff.y) + AI_MATH_PI_F ) / AI_MATH_TWO_PI_F,
                 (asin  (diff.x) + AI_MATH_HALF_PI_F) / AI_MATH_PI_F, 0.f);
         }
     }
-    else if (axis * base_axis_y >= angle_epsilon) {
+    else if (axis * base_axis_y >= angle_epsilon)    {
         // ... just the same again
-        for (unsigned int pnt = 0; pnt < mesh->mNumVertices;++pnt) {
+        for (unsigned int pnt = 0; pnt < mesh->mNumVertices;++pnt)    {
             const aiVector3D diff = (mesh->mVertices[pnt]-center).Normalize();
             out[pnt] = aiVector3D((atan2 (diff.x, diff.z) + AI_MATH_PI_F ) / AI_MATH_TWO_PI_F,
                 (asin  (diff.y) + AI_MATH_HALF_PI_F) / AI_MATH_PI_F, 0.f);
         }
     }
-    else if (axis * base_axis_z >= angle_epsilon) {
+    else if (axis * base_axis_z >= angle_epsilon)    {
         // ... just the same again
-        for (unsigned int pnt = 0; pnt < mesh->mNumVertices;++pnt) {
+        for (unsigned int pnt = 0; pnt < mesh->mNumVertices;++pnt)    {
             const aiVector3D diff = (mesh->mVertices[pnt]-center).Normalize();
             out[pnt] = aiVector3D((atan2 (diff.y, diff.x) + AI_MATH_PI_F ) / AI_MATH_TWO_PI_F,
                 (asin  (diff.z) + AI_MATH_HALF_PI_F) / AI_MATH_PI_F, 0.f);
         }
     }
     // slower code path in case the mapping axis is not one of the coordinate system axes
-    else {
+    else    {
         aiMatrix4x4 mTrafo;
         aiMatrix4x4::FromToMatrix(axis,base_axis_y,mTrafo);
 
         // again the same, except we're applying a transformation now
-        for (unsigned int pnt = 0; pnt < mesh->mNumVertices;++pnt) {
+        for (unsigned int pnt = 0; pnt < mesh->mNumVertices;++pnt)    {
             const aiVector3D diff = ((mTrafo*mesh->mVertices[pnt])-center).Normalize();
             out[pnt] = aiVector3D((atan2 (diff.y, diff.x) + AI_MATH_PI_F ) / AI_MATH_TWO_PI_F,
                 (asin  (diff.z) + AI_MATH_HALF_PI_F) / AI_MATH_PI_F, 0.f);
@@ -255,7 +255,7 @@ void ComputeUVMappingProcess::ComputeCylinderMapping(aiMesh* mesh,const aiVector
     // currently the mapping axis will always be one of x,y,z, except if the
     // PretransformVertices step is used (it transforms the meshes into worldspace,
     // thus changing the mapping axis)
-    if (axis * base_axis_x >= angle_epsilon) {
+    if (axis * base_axis_x >= angle_epsilon)    {
         FindMeshCenter(mesh, center, min, max);
         const float diff = max.x - min.x;
 
@@ -263,7 +263,7 @@ void ComputeUVMappingProcess::ComputeCylinderMapping(aiMesh* mesh,const aiVector
         // directly to the texture V axis. The other axis is derived from
         // the angle between ( p.x - c.x, p.y - c.y ) and (1,0), where
         // 'c' is the center point of the mesh.
-        for (unsigned int pnt = 0; pnt < mesh->mNumVertices;++pnt) {
+        for (unsigned int pnt = 0; pnt < mesh->mNumVertices;++pnt)    {
             const aiVector3D& pos = mesh->mVertices[pnt];
             aiVector3D& uv  = out[pnt];
 
@@ -271,12 +271,12 @@ void ComputeUVMappingProcess::ComputeCylinderMapping(aiMesh* mesh,const aiVector
             uv.x = (atan2 ( pos.z - center.z, pos.y - center.y) +(float)AI_MATH_PI ) / (float)AI_MATH_TWO_PI;
         }
     }
-    else if (axis * base_axis_y >= angle_epsilon) {
+    else if (axis * base_axis_y >= angle_epsilon)    {
         FindMeshCenter(mesh, center, min, max);
         const float diff = max.y - min.y;
 
         // just the same ...
-        for (unsigned int pnt = 0; pnt < mesh->mNumVertices;++pnt) {
+        for (unsigned int pnt = 0; pnt < mesh->mNumVertices;++pnt)    {
             const aiVector3D& pos = mesh->mVertices[pnt];
             aiVector3D& uv  = out[pnt];
 
@@ -284,12 +284,12 @@ void ComputeUVMappingProcess::ComputeCylinderMapping(aiMesh* mesh,const aiVector
             uv.x = (atan2 ( pos.x - center.x, pos.z - center.z) +(float)AI_MATH_PI ) / (float)AI_MATH_TWO_PI;
         }
     }
-    else if (axis * base_axis_z >= angle_epsilon) {
+    else if (axis * base_axis_z >= angle_epsilon)    {
         FindMeshCenter(mesh, center, min, max);
         const float diff = max.z - min.z;
 
         // just the same ...
-        for (unsigned int pnt = 0; pnt < mesh->mNumVertices;++pnt) {
+        for (unsigned int pnt = 0; pnt < mesh->mNumVertices;++pnt)    {
             const aiVector3D& pos = mesh->mVertices[pnt];
             aiVector3D& uv  = out[pnt];
 
@@ -330,32 +330,32 @@ void ComputeUVMappingProcess::ComputePlaneMapping(aiMesh* mesh,const aiVector3D&
     // currently the mapping axis will always be one of x,y,z, except if the
     // PretransformVertices step is used (it transforms the meshes into worldspace,
     // thus changing the mapping axis)
-    if (axis * base_axis_x >= angle_epsilon) {
+    if (axis * base_axis_x >= angle_epsilon)    {
         FindMeshCenter(mesh, center, min, max);
         diffu = max.z - min.z;
         diffv = max.y - min.y;
 
-        for (unsigned int pnt = 0; pnt < mesh->mNumVertices;++pnt) {
+        for (unsigned int pnt = 0; pnt < mesh->mNumVertices;++pnt)    {
             const aiVector3D& pos = mesh->mVertices[pnt];
             out[pnt].Set((pos.z - min.z) / diffu,(pos.y - min.y) / diffv);
         }
     }
-    else if (axis * base_axis_y >= angle_epsilon) {
+    else if (axis * base_axis_y >= angle_epsilon)    {
         FindMeshCenter(mesh, center, min, max);
         diffu = max.x - min.x;
         diffv = max.z - min.z;
 
-        for (unsigned int pnt = 0; pnt < mesh->mNumVertices;++pnt) {
+        for (unsigned int pnt = 0; pnt < mesh->mNumVertices;++pnt)    {
             const aiVector3D& pos = mesh->mVertices[pnt];
             out[pnt].Set((pos.x - min.x) / diffu,(pos.z - min.z) / diffv);
         }
     }
-    else if (axis * base_axis_z >= angle_epsilon) {
+    else if (axis * base_axis_z >= angle_epsilon)    {
         FindMeshCenter(mesh, center, min, max);
         diffu = max.y - min.y;
         diffv = max.z - min.z;
 
-        for (unsigned int pnt = 0; pnt < mesh->mNumVertices;++pnt) {
+        for (unsigned int pnt = 0; pnt < mesh->mNumVertices;++pnt)    {
             const aiVector3D& pos = mesh->mVertices[pnt];
             out[pnt].Set((pos.y - min.y) / diffu,(pos.x - min.x) / diffv);
         }
@@ -370,7 +370,7 @@ void ComputeUVMappingProcess::ComputePlaneMapping(aiMesh* mesh,const aiVector3D&
         diffv = max.z - min.z;
 
         // again the same, except we're applying a transformation now
-        for (unsigned int pnt = 0; pnt < mesh->mNumVertices;++pnt) {
+        for (unsigned int pnt = 0; pnt < mesh->mNumVertices;++pnt)    {
             const aiVector3D pos = mTrafo * mesh->mVertices[pnt];
             out[pnt].Set((pos.x - min.x) / diffu,(pos.z - min.z) / diffv);
         }
@@ -380,7 +380,7 @@ void ComputeUVMappingProcess::ComputePlaneMapping(aiMesh* mesh,const aiVector3D&
 }
 
 // ------------------------------------------------------------------------------------------------
-void ComputeUVMappingProcess::ComputeBoxMapping(aiMesh* /*mesh*/, aiVector3D* /*out*/)
+void ComputeUVMappingProcess::ComputeBoxMapping(aiMesh* mesh, aiVector3D* out)
 {
     DefaultLogger::get()->error("Mapping type currently not implemented");
 }
@@ -431,7 +431,7 @@ void ComputeUVMappingProcess::Execute( aiScene* pScene)
                         if (prop2->mSemantic != prop->mSemantic || prop2->mIndex != prop->mIndex)
                             continue;
 
-                        if ( !::strcmp( prop2->mKey.data, "$tex.mapaxis")) {
+                        if ( !::strcmp( prop2->mKey.data, "$tex.mapaxis"))    {
                             info.axis = *((aiVector3D*)prop2->mData);
                             break;
                         }

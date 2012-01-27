@@ -75,7 +75,7 @@ namespace boost
 
 
 #else
-# error "format.h was already included"
+#    error "format.h was already included"
 #endif //
 #endif // !! AI_BOOST_FORMAT_DUMMY_INCLUDED
 

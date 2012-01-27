@@ -300,7 +300,7 @@ void CatmullClarkSubdivider::InternSubdivide (
     for (size_t t = 0; t < nmesh; ++t) {
         const aiMesh* mesh = smesh[t];
 
-        for (unsigned int i = 0; i < mesh->mNumFaces;++i) {
+        for (unsigned int i = 0; i < mesh->mNumFaces;++i)    {
             const aiFace& face = mesh->mFaces[i];
 
             for (unsigned int p =0; p< face.mNumIndices; ++p) {
@@ -457,10 +457,10 @@ void CatmullClarkSubdivider::InternSubdivide (
         }
 
         mout->mNumVertices = mout->mNumFaces<<2u;
-        for (unsigned int i = 0, v = 0, n = 0; i < minp->mNumFaces;++i) {
+        for (unsigned int i = 0, v = 0, n = 0; i < minp->mNumFaces;++i)    {
 
             const aiFace& face = minp->mFaces[i];
-            for (unsigned int a = 0; a < face.mNumIndices;++a) {
+            for (unsigned int a = 0; a < face.mNumIndices;++a)    {
 
                 // Get a clean new face.
                 aiFace& faceOut = mout->mFaces[n++];
@@ -530,9 +530,9 @@ void CatmullClarkSubdivider::InternSubdivide (
 
                             ai_assert(adj[o]-moffsets[nidx].first < mp->mNumFaces);
                             const aiFace& f = mp->mFaces[adj[o]-moffsets[nidx].first];
-#    ifdef _DEBUG
+#                ifdef _DEBUG
                             bool haveit = false;
-#    endif
+#                endif
 
                             // find our original point in the face
                             for (unsigned int m = 0; m < f.mNumIndices; ++m) {
@@ -553,17 +553,15 @@ void CatmullClarkSubdivider::InternSubdivide (
                                     // fixme: replace with mod face.mNumIndices?
                                     R += c0.midpoint+c1.midpoint;
 
-#      ifdef _DEBUG
+#                        ifdef _DEBUG
                                     haveit = true;
-#      endif
+#                        endif
                                     break;
                                 }
                             }
 
                             // this invariant *must* hold if the vertex-to-face adjacency table is valid
-#ifdef _DEBUG
                             ai_assert(haveit);
-#endif
                         }
 
                         const float div = static_cast<float>(cnt), divsq = 1.f/(div*div);

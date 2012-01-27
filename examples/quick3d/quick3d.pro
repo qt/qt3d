@@ -9,4 +9,5 @@ SUBDIRS += \
     moon \
     photoroom \
     shaders \
-    sphere
+    sphere \
+    animations

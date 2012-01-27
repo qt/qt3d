@@ -54,10 +54,10 @@ namespace Q3BSP
 {
 
 // ------------------------------------------------------------------------------------------------
-/// \class  ZipFile
-/// \ingroup Assimp::Q3BSP
+///    \class        ZipFile
+///    \ingroup    Assimp::Q3BSP
 ///
-/// \brief
+///    \brief
 // ------------------------------------------------------------------------------------------------
 class ZipFile : public IOStream
 {
@@ -94,17 +94,17 @@ public:
             // another character
             unzOpenCurrentFile( m_zipFile );
             bytes_read = unzReadCurrentFile( m_zipFile, pvBuffer, fileInfo.uncompressed_size);
-            if ( /*bytes_read < 0 ||*/ bytes_read != static_cast<size_t>( fileInfo.uncompressed_size ) )
+            if ( bytes_read < 0 || bytes_read != static_cast<size_t>( fileInfo.uncompressed_size ) )
             {
                 return 0;
             }
-            //size_t filesize = fileInfo.uncompressed_size;
+            size_t filesize = fileInfo.uncompressed_size;
             unzCloseCurrentFile( m_zipFile );
         }
         return bytes_read;
     }
 
-    size_t Write(const void* /*pvBuffer*/, size_t /*pSize*/, size_t /*pCount*/)
+    size_t Write(const void* pvBuffer, size_t pSize, size_t pCount)
     {
         return 0;
     }
@@ -122,7 +122,7 @@ public:
         return 0;
     }
 
-    aiReturn Seek(size_t /*pOffset*/, aiOrigin /*pOrigin*/)
+    aiReturn Seek(size_t pOffset, aiOrigin pOrigin)
     {
         return aiReturn_FAILURE;
     }
@@ -143,11 +143,11 @@ private:
 };
 
 // ------------------------------------------------------------------------------------------------
-/// \class  Q3BSPZipArchive
-/// \ingroup Assimp::Q3BSP
+///    \class        Q3BSPZipArchive
+///    \ingroup    Assimp::Q3BSP
 ///
-/// \brief IMplements a zip archive like the WinZip archives. Will be also used to import data
-/// from a P3K archive ( Quake level format ).
+///    \brief    IMplements a zip archive like the WinZip archives. Will be also used to import data
+///    from a P3K archive ( Quake level format ).
 // ------------------------------------------------------------------------------------------------
 class Q3BSPZipArchive : public Assimp::IOSystem
 {

@@ -58,8 +58,8 @@ struct Model;
 }
 
 // ------------------------------------------------------------------------------------------------
-/// \class ObjFileImporter
-/// \brief Imports a waveform obj file
+///    \class    ObjFileImporter
+///    \brief    Imports a waveform obj file
 // ------------------------------------------------------------------------------------------------
 class ObjFileImporter :
     BaseImporter
@@ -67,58 +67,58 @@ class ObjFileImporter :
     friend class Importer;
 
 protected:
-    /// \brief Default constructor
+    ///    \brief    Default constructor
     ObjFileImporter();
 
-    /// \brief Destructor
+    ///    \brief    Destructor
     ~ObjFileImporter();
 
 public:
-    /// \brief Returns whether the class can handle the format of the given file.
-    /// \remark See BaseImporter::CanRead() for details.
+    /// \brief    Returns whether the class can handle the format of the given file.
+    /// \remark    See BaseImporter::CanRead() for details.
     bool CanRead( const std::string& pFile, IOSystem* pIOHandler, bool checkSig) const;
 
 private:
 
-    //! \brief Appends the supported extention.
+    //! \brief    Appends the supported extention.
     void GetExtensionList(std::set<std::string>& extensions);
 
-    //! \brief File import implementation.
+    //!    \brief    File import implementation.
     void InternReadFile(const std::string& pFile, aiScene* pScene, IOSystem* pIOHandler);
 
-    //! \brief Create the data from imported content.
+    //!    \brief    Create the data from imported content.
     void CreateDataFromImport(const ObjFile::Model* pModel, aiScene* pScene);
 
-    //! \brief Creates all nodes stored in imported content.
+    //!    \brief    Creates all nodes stored in imported content.
     aiNode *createNodes(const ObjFile::Model* pModel, const ObjFile::Object* pData, unsigned int uiMeshIndex,
         aiNode *pParent, aiScene* pScene, std::vector<aiMesh*> &MeshArray);
 
-    //! \brief Creates topology data like faces and meshes for the geometry.
+    //!    \brief    Creates topology data like faces and meshes for the geometry.
     void createTopology(const ObjFile::Model* pModel, const ObjFile::Object* pData,
         unsigned int uiMeshIndex, aiMesh* pMesh);
 
-    //! \brief Creates vertices from model.
+    //!    \brief    Creates vertices from model.
     void createVertexArray(const ObjFile::Model* pModel, const ObjFile::Object* pCurrentObject,
         unsigned int uiMeshIndex, aiMesh* pMesh);
 
-    //! \brief Object counter helper method.
+    //!    \brief    Object counter helper method.
     void countObjects(const std::vector<ObjFile::Object*> &rObjects, int &iNumMeshes);
 
-    //! \brief Material creation.
+    //!    \brief    Material creation.
     void createMaterials(const ObjFile::Model* pModel, aiScene* pScene);
 
-    //! \brief Appends a child node to a parentnode and updates the datastructures.
+    //!    \brief    Appends a child node to a parentnode and updates the datastructures.
     void appendChildToParentNode(aiNode *pParent, aiNode *pChild);
 
-    //! \brief TODO!
+    //!    \brief TODO!
     void createAnimations();
 
 private:
-    //! Data buffer
+    //!    Data buffer
     std::vector<char> m_Buffer;
-    //! Pointer to root object instance
+    //!    Pointer to root object instance
     ObjFile::Object *m_pRootObject;
-    //! Absolute pathname of model in filesystem
+    //!    Absolute pathname of model in filesystem
     std::string m_strAbsPath;
 };
 

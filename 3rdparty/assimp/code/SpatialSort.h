@@ -156,7 +156,7 @@ protected:
         Entry() { /** intentionally not initialized.*/ }
         Entry( unsigned int pIndex, const aiVector3D& pPosition, float pDistance)
             : mIndex( pIndex), mPosition( pPosition), mDistance( pDistance)
-        {  }
+        {     }
 
         bool operator < (const Entry& e) const { return mDistance < e.mDistance; }
     };

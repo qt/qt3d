@@ -44,7 +44,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef INCLUDED_AI_BLEND_SCENE_H
 #define INCLUDED_AI_BLEND_SCENE_H
 
-namespace Assimp {
+namespace Assimp    {
     namespace Blender {
 
 // Minor parts of this file are extracts from blender data structures,
@@ -63,7 +63,7 @@ namespace Assimp {
 //
 // * Structures may include the primitive types char, int, short,
 //   float, double. Signedness specifiers are not allowed on
-//  integers. Enum types are allowed, but they must have been
+//     integers. Enum types are allowed, but they must have been
 //   defined in this header.
 //
 // * Structures may aggregate other structures, unless not defined
@@ -262,8 +262,8 @@ struct Library : ElemBase {
 // -------------------------------------------------------------------------------
 struct Camera : ElemBase {
     enum Type {
-          Type_PERSP = 0
-         ,Type_ORTHO = 1
+          Type_PERSP    =    0
+         ,Type_ORTHO    =    1
     };
 
     ID id FAIL;
@@ -287,20 +287,20 @@ struct Camera : ElemBase {
 struct Lamp : ElemBase {
 
     enum FalloffType {
-         FalloffType_Constant = 0x0
-        ,FalloffType_InvLinear = 0x1
-        ,FalloffType_InvSquare = 0x2
-        //,FalloffType_Curve = 0x3
-        //,FalloffType_Sliders = 0x4
+         FalloffType_Constant    = 0x0
+        ,FalloffType_InvLinear    = 0x1
+        ,FalloffType_InvSquare    = 0x2
+        //,FalloffType_Curve    = 0x3
+        //,FalloffType_Sliders    = 0x4
     };
 
     enum Type {
-         Type_Local   = 0x0
-        ,Type_Sun   = 0x1
-        ,Type_Spot   = 0x2
-        ,Type_Hemi   = 0x3
-        ,Type_Area   = 0x4
-        //,Type_YFPhoton = 0x5
+         Type_Local            = 0x0
+        ,Type_Sun            = 0x1
+        ,Type_Spot            = 0x2
+        ,Type_Hemi            = 0x3
+        ,Type_Area            = 0x4
+        //,Type_YFPhoton    = 0x5
     };
 
       ID id FAIL;
@@ -422,7 +422,7 @@ struct SubsurfModifierData : ElemBase  {
 
     enum Flags {
         // some ommitted
-        FLAGS_SubsurfUV  =1<<3
+        FLAGS_SubsurfUV        =1<<3
     };
 
     ModifierData modifier FAIL;
@@ -457,18 +457,18 @@ struct Object : ElemBase  {
     ID id FAIL;
 
     enum Type {
-         Type_EMPTY  = 0
-        ,Type_MESH  = 1
-        ,Type_CURVE  = 2
-        ,Type_SURF  =   3
-        ,Type_FONT  =   4
-        ,Type_MBALL  = 5
+         Type_EMPTY        =    0
+        ,Type_MESH        =    1
+        ,Type_CURVE        =    2
+        ,Type_SURF        =   3
+        ,Type_FONT        =   4
+        ,Type_MBALL        =    5
 
-        ,Type_LAMP  = 10
-        ,Type_CAMERA =   11
+        ,Type_LAMP        =    10
+        ,Type_CAMERA    =   11
 
-        ,Type_WAVE  =   21
-        ,Type_LATTICE =   22
+        ,Type_WAVE        =   21
+        ,Type_LATTICE    =   22
     };
 
     Type type FAIL;
@@ -539,21 +539,21 @@ struct Tex : ElemBase {
 
     // actually, the only texture type we support is Type_IMAGE
     enum Type {
-         Type_CLOUDS  = 1
-        ,Type_WOOD   = 2
-        ,Type_MARBLE  = 3
-        ,Type_MAGIC   = 4
-        ,Type_BLEND   = 5
-        ,Type_STUCCI  = 6
-        ,Type_NOISE   = 7
-        ,Type_IMAGE   = 8
-        ,Type_PLUGIN  = 9
-        ,Type_ENVMAP  = 10
-        ,Type_MUSGRAVE  = 11
-        ,Type_VORONOI  = 12
-        ,Type_DISTNOISE  = 13
-        ,Type_POINTDENSITY = 14
-        ,Type_VOXELDATA  = 15
+         Type_CLOUDS        = 1
+        ,Type_WOOD            = 2
+        ,Type_MARBLE        = 3
+        ,Type_MAGIC            = 4
+        ,Type_BLEND            = 5
+        ,Type_STUCCI        = 6
+        ,Type_NOISE            = 7
+        ,Type_IMAGE            = 8
+        ,Type_PLUGIN        = 9
+        ,Type_ENVMAP        = 10
+        ,Type_MUSGRAVE        = 11
+        ,Type_VORONOI        = 12
+        ,Type_DISTNOISE        = 13
+        ,Type_POINTDENSITY    = 14
+        ,Type_VOXELDATA        = 15
     };
 
     ID id FAIL;
@@ -619,28 +619,28 @@ struct MTex : ElemBase {
     };
 
     enum Flag {
-         Flag_RGBTOINT  = 0x1
-        ,Flag_STENCIL  = 0x2
-        ,Flag_NEGATIVE  = 0x4
-        ,Flag_ALPHAMIX  = 0x8
-        ,Flag_VIEWSPACE  = 0x10
+         Flag_RGBTOINT        = 0x1
+        ,Flag_STENCIL        = 0x2
+        ,Flag_NEGATIVE        = 0x4
+        ,Flag_ALPHAMIX        = 0x8
+        ,Flag_VIEWSPACE        = 0x10
     };
 
     enum BlendType {
-         BlendType_BLEND   = 0
-        ,BlendType_MUL    = 1
-        ,BlendType_ADD    = 2
-        ,BlendType_SUB    = 3
-        ,BlendType_DIV    = 4
-        ,BlendType_DARK    = 5
-        ,BlendType_DIFF    = 6
-        ,BlendType_LIGHT   = 7
-        ,BlendType_SCREEN   = 8
-        ,BlendType_OVERLAY   = 9
-        ,BlendType_BLEND_HUE  = 10
-        ,BlendType_BLEND_SAT  = 11
-        ,BlendType_BLEND_VAL  = 12
-        ,BlendType_BLEND_COLOR  = 13
+         BlendType_BLEND            = 0
+        ,BlendType_MUL                = 1
+        ,BlendType_ADD                = 2
+        ,BlendType_SUB                = 3
+        ,BlendType_DIV                = 4
+        ,BlendType_DARK                = 5
+        ,BlendType_DIFF                = 6
+        ,BlendType_LIGHT            = 7
+        ,BlendType_SCREEN            = 8
+        ,BlendType_OVERLAY            = 9
+        ,BlendType_BLEND_HUE        = 10
+        ,BlendType_BLEND_SAT        = 11
+        ,BlendType_BLEND_VAL        = 12
+        ,BlendType_BLEND_COLOR        = 13
     };
 
     // short texco, mapto, maptoneg;

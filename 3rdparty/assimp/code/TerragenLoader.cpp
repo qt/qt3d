@@ -69,7 +69,7 @@ bool TerragenImporter::CanRead( const std::string& pFile, IOSystem* pIOHandler, 
     if ( extension == "ter")
         return true;
 
-    if (  !extension.length() || checkSig) {
+    if (  !extension.length() || checkSig)    {
         /*  If CanRead() is called in order to check whether we
          *  support a specific file extension in general pIOHandler
          *  might be NULL and it's our duty to return true here.
@@ -120,6 +120,8 @@ void TerragenImporter::InternReadFile( const std::string& pFile,
         throw DeadlyImportError( "TER: Magic string \'TERRAIN\' not found" );
 
     unsigned int x = 0,y = 0,mode = 0;
+    float rad  = 6370.f;
+
 
     aiNode* root = pScene->mRootNode = new aiNode();
     root->mName.Set("<TERRAGEN.TERRAIN>");
@@ -163,7 +165,7 @@ void TerragenImporter::InternReadFile( const std::string& pFile,
         // mapping == 1: earth radius
         else if (!::strncmp(head,AI_TERR_CHUNK_CRAD,4))
         {
-            reader.GetF4();
+            rad = reader.GetF4();
         }
         // mapping mode
         else if (!::strncmp(head,AI_TERR_CHUNK_CRVM,4))
@@ -204,8 +206,8 @@ void TerragenImporter::InternReadFile( const std::string& pFile,
             }
             const int16_t* data = (const int16_t*)reader.GetPtr();
 
-            for (unsigned int yy = 0, t = 0; yy < y-1;++yy) {
-                for (unsigned int xx = 0; xx < x-1;++xx,++f) {
+            for (unsigned int yy = 0, t = 0; yy < y-1;++yy)    {
+                for (unsigned int xx = 0; xx < x-1;++xx,++f)    {
 
                     // make verts
                     const float fy = (float)yy, fx = (float)xx;

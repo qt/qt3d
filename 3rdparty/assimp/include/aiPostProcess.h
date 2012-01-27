@@ -171,7 +171,7 @@ enum aiPostProcessSteps
     * <tt>#AI_CONFIG_PP_GSN_MAX_SMOOTHING_ANGLE</tt> which allows you to specify
     * an angle maximum for the normal smoothing algorithm. Normals exceeding
     * this limit are not smoothed, resulting in a a 'hard' seam between two faces.
-    * Using a decent angle here (e.g. 80) results in very good visual
+    * Using a decent angle here (e.g. 80°) results in very good visual
     * appearance.
     */
     aiProcess_GenSmoothNormals = 0x40,
@@ -535,10 +535,10 @@ enum aiPostProcessSteps
  *  use for you so it might be better to not specify them.
  */
 #define aiProcessPreset_TargetRealtime_Fast ( \
-    aiProcess_CalcTangentSpace  |  \
-    aiProcess_GenNormals   |  \
+    aiProcess_CalcTangentSpace        |  \
+    aiProcess_GenNormals            |  \
     aiProcess_JoinIdenticalVertices |  \
-    aiProcess_Triangulate   |  \
+    aiProcess_Triangulate            |  \
     aiProcess_GenUVCoords           |  \
     aiProcess_SortByPType           |  \
     0 )
@@ -560,14 +560,14 @@ enum aiPostProcessSteps
   *  use for you so it might be better to not specify them.
   */
 #define aiProcessPreset_TargetRealtime_Quality ( \
-    aiProcess_CalcTangentSpace    |  \
-    aiProcess_GenSmoothNormals    |  \
-    aiProcess_JoinIdenticalVertices   |  \
-    aiProcess_ImproveCacheLocality   |  \
-    aiProcess_LimitBoneWeights    |  \
+    aiProcess_CalcTangentSpace                |  \
+    aiProcess_GenSmoothNormals                |  \
+    aiProcess_JoinIdenticalVertices            |  \
+    aiProcess_ImproveCacheLocality            |  \
+    aiProcess_LimitBoneWeights                |  \
     aiProcess_RemoveRedundantMaterials      |  \
-    aiProcess_SplitLargeMeshes    |  \
-    aiProcess_Triangulate     |  \
+    aiProcess_SplitLargeMeshes                |  \
+    aiProcess_Triangulate                    |  \
     aiProcess_GenUVCoords                   |  \
     aiProcess_SortByPType                   |  \
     aiProcess_FindDegenerates               |  \

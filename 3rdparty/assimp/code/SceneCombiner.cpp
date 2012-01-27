@@ -52,7 +52,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Hash.h"
 #include "time.h"
 
-namespace Assimp {
+namespace Assimp    {
 
 // ------------------------------------------------------------------------------------------------
 // Add a prefix to a string
@@ -179,7 +179,7 @@ void SceneCombiner::MergeScenes(aiScene** _dest,std::vector<aiScene*>& src,
     master->mRootNode->mName.Set("<MergeRoot>");
 
     std::vector<AttachmentInfo> srcList (src.size());
-    for (unsigned int i = 0; i < srcList.size();++i) {
+    for (unsigned int i = 0; i < srcList.size();++i)    {
         srcList[i] = AttachmentInfo(src[i],master->mRootNode);
     }
 
@@ -202,9 +202,9 @@ void SceneCombiner::AttachToGraph (aiNode* attach, std::vector<NodeAttachmentInf
             ++cnt;
     }
 
-    if (cnt) {
+    if (cnt)    {
         aiNode** n = new aiNode*[cnt+attach->mNumChildren];
-        if (attach->mNumChildren) {
+        if (attach->mNumChildren)    {
             ::memcpy(n,attach->mChildren,sizeof(void*)*attach->mNumChildren);
             delete[] attach->mChildren;
         }
@@ -213,9 +213,9 @@ void SceneCombiner::AttachToGraph (aiNode* attach, std::vector<NodeAttachmentInf
         n += attach->mNumChildren;
         attach->mNumChildren += cnt;
 
-        for (unsigned int i = 0; i < srcList.size();++i) {
+        for (unsigned int i = 0; i < srcList.size();++i)    {
             NodeAttachmentInfo& att = srcList[i];
-            if (att.attachToNode == attach && !att.resolved) {
+            if (att.attachToNode == attach && !att.resolved)    {
                 *n = att.node;
                 (**n).mParent = attach;
                 ++n;
@@ -260,7 +260,7 @@ void SceneCombiner::MergeScenes(aiScene** _dest, aiScene* master,
 
     std::vector<SceneHelper> src (srcList.size()+1);
     src[0].scene = master;
-    for (unsigned int i = 0; i < srcList.size();++i) {
+    for (unsigned int i = 0; i < srcList.size();++i)    {
         src[i+1] = SceneHelper( srcList[i].scene );
     }
 
@@ -295,11 +295,11 @@ void SceneCombiner::MergeScenes(aiScene** _dest, aiScene* master,
         {
             //if (i != duplicates[i])
             //{
-            // // duplicate scenes share the same UID
-            // ::strcpy( src[i].id, src[duplicates[i]].id );
-            // src[i].idlen = src[duplicates[i]].idlen;
+            //    // duplicate scenes share the same UID
+            //    ::strcpy( src[i].id, src[duplicates[i]].id );
+            //    src[i].idlen = src[duplicates[i]].idlen;
 
-            // continue;
+            //    continue;
             //}
 
             src[i].idlen = ::sprintf(src[i].id,"$%.6X$_",i);
@@ -327,7 +327,7 @@ void SceneCombiner::MergeScenes(aiScene** _dest, aiScene* master,
     {
         SceneHelper* cur = &src[n];
 
-        if (n == duplicates[n] || flags & AI_INT_MERGE_SCENE_DUPLICATES_DEEP_CPY) {
+        if (n == duplicates[n] || flags & AI_INT_MERGE_SCENE_DUPLICATES_DEEP_CPY)    {
             dest->mNumTextures   += (*cur)->mNumTextures;
             dest->mNumMaterials  += (*cur)->mNumMaterials;
             dest->mNumMeshes     += (*cur)->mNumMeshes;
@@ -376,7 +376,7 @@ void SceneCombiner::MergeScenes(aiScene** _dest, aiScene* master,
     {
         aiMaterial** pip = dest->mMaterials = new aiMaterial*[dest->mNumMaterials];
         cnt = 0;
-        for ( unsigned int n = 0; n < src.size();++n ) {
+        for ( unsigned int n = 0; n < src.size();++n )    {
             SceneHelper* cur = &src[n];
             for (unsigned int i = 0; i < (*cur)->mNumMaterials;++i)
             {
@@ -389,7 +389,7 @@ void SceneCombiner::MergeScenes(aiScene** _dest, aiScene* master,
                 }
                 else *pip = (*cur)->mMaterials[i];
 
-                if ((*cur)->mNumTextures != dest->mNumTextures)  {
+                if ((*cur)->mNumTextures != dest->mNumTextures)        {
                     // We need to update all texture indices of the mesh. So we need to search for
                     // a material property called '$tex.file'
 
@@ -402,7 +402,7 @@ void SceneCombiner::MergeScenes(aiScene** _dest, aiScene* master,
                             // In this case the property looks like this: *<n>,
                             // where n is the index of the texture.
                             aiString& s = *((aiString*)prop->mData);
-                            if ('*' == s.data[0]) {
+                            if ('*' == s.data[0])    {
                                 // Offset the index and write it back ..
                                 const unsigned int idx = strtol10(&s.data[1]) + offset[n];
                                 ASSIMP_itoa10(&s.data[1],sizeof(s.data)-1,idx);
@@ -435,7 +435,7 @@ void SceneCombiner::MergeScenes(aiScene** _dest, aiScene* master,
             SceneHelper* cur = &src[n];
             for (unsigned int i = 0; i < (*cur)->mNumMeshes;++i)
             {
-                if (n != duplicates[n]) {
+                if (n != duplicates[n])    {
                     if ( flags & AI_INT_MERGE_SCENE_DUPLICATES_DEEP_CPY)
                         Copy(pip, (*cur)->mMeshes[i]);
 
@@ -488,7 +488,7 @@ void SceneCombiner::MergeScenes(aiScene** _dest, aiScene* master,
             Copy( &node, (*cur)->mRootNode );
             OffsetNodeMeshIndices(node,offset[duplicates[n]]);
 
-            if (flags & AI_INT_MERGE_SCENE_DUPLICATES_DEEP_CPY) {
+            if (flags & AI_INT_MERGE_SCENE_DUPLICATES_DEEP_CPY)    {
                 // (note:) they are already 'offseted' by offset[duplicates[n]]
                 OffsetNodeMeshIndices(node,offset[n] - offset[duplicates[n]]);
             }
@@ -511,11 +511,11 @@ void SceneCombiner::MergeScenes(aiScene** _dest, aiScene* master,
             else AddNodePrefixes(node,(*cur).id,(*cur).idlen);
 
             // meshes
-            for (unsigned int i = 0; i < (*cur)->mNumMeshes;++i) {
+            for (unsigned int i = 0; i < (*cur)->mNumMeshes;++i)    {
                 aiMesh* mesh = (*cur)->mMeshes[i];
 
                 // rename all bones
-                for (unsigned int a = 0; a < mesh->mNumBones;++a) {
+                for (unsigned int a = 0; a < mesh->mNumBones;++a)    {
                     if (flags & AI_INT_MERGE_SCENE_GEN_UNIQUE_NAMES_IF_NECESSARY) {
                         if (!FindNameMatch(mesh->mBones[a]->mName,src,n))
                             continue;
@@ -549,7 +549,7 @@ void SceneCombiner::MergeScenes(aiScene** _dest, aiScene* master,
 
         // --------------------------------------------------------------------
         // Copy cameras
-        for (unsigned int i = 0; i < (*cur)->mNumCameras;++i,++ppCameras) {
+        for (unsigned int i = 0; i < (*cur)->mNumCameras;++i,++ppCameras)    {
             if (n != (int)duplicates[n]) // duplicate scene?
             {
                 Copy(ppCameras, (*cur)->mCameras[i]);
@@ -569,7 +569,7 @@ void SceneCombiner::MergeScenes(aiScene** _dest, aiScene* master,
 
         // --------------------------------------------------------------------
         // Copy animations
-        for (unsigned int i = 0; i < (*cur)->mNumAnimations;++i,++ppAnims) {
+        for (unsigned int i = 0; i < (*cur)->mNumAnimations;++i,++ppAnims)    {
             if (n != (int)duplicates[n]) // duplicate scene?
             {
                 Copy(ppAnims, (*cur)->mAnimations[i]);
@@ -626,7 +626,7 @@ void SceneCombiner::MergeScenes(aiScene** _dest, aiScene* master,
 
     // now delete all input scenes. Make sure duplicate scenes aren't
     // deleted more than one time
-    for ( unsigned int n = 0; n < src.size();++n ) {
+    for ( unsigned int n = 0; n < src.size();++n )    {
         if (n != duplicates[n]) // duplicate scene?
             continue;
 
@@ -661,21 +661,21 @@ void SceneCombiner::BuildUniqueBoneList(std::list<BoneWithHash>& asBones,
     std::vector<aiMesh*>::const_iterator end)
 {
     unsigned int iOffset = 0;
-    for (; it != end;++it) {
-        for (unsigned int l = 0; l < (*it)->mNumBones;++l) {
+    for (; it != end;++it)    {
+        for (unsigned int l = 0; l < (*it)->mNumBones;++l)    {
             aiBone* p = (*it)->mBones[l];
             uint32_t itml = SuperFastHash(p->mName.data,(unsigned int)p->mName.length);
 
             std::list<BoneWithHash>::iterator it2  = asBones.begin();
             std::list<BoneWithHash>::iterator end2 = asBones.end();
 
-            for (;it2 != end2;++it2) {
-                if ((*it2).first == itml) {
+            for (;it2 != end2;++it2)    {
+                if ((*it2).first == itml)    {
                     (*it2).pSrcBones.push_back(BoneSrcIndex(p,iOffset));
                     break;
                 }
             }
-            if (end2 == it2) {
+            if (end2 == it2)    {
                 // need to begin a new bone entry
                 asBones.push_back(BoneWithHash());
                 BoneWithHash& btz = asBones.back();
@@ -707,7 +707,7 @@ void SceneCombiner::MergeBones(aiMesh* out,std::vector<aiMesh*>::const_iterator 
     out->mNumBones = 0;
     out->mBones = new aiBone*[asBones.size()];
 
-    for (std::list<BoneWithHash>::const_iterator it = asBones.begin(),end = asBones.end(); it != end;++it) {
+    for (std::list<BoneWithHash>::const_iterator it = asBones.begin(),end = asBones.end(); it != end;++it)    {
         // Allocate a bone and setup it's name
         aiBone* pc = out->mBones[out->mNumBones++] = new aiBone();
         pc->mName = aiString( *((*it).second ));
@@ -715,12 +715,12 @@ void SceneCombiner::MergeBones(aiMesh* out,std::vector<aiMesh*>::const_iterator 
         std::vector< BoneSrcIndex >::const_iterator wend = (*it).pSrcBones.end();
 
         // Loop through all bones to be joined for this bone
-        for (std::vector< BoneSrcIndex >::const_iterator wmit = (*it).pSrcBones.begin(); wmit != wend; ++wmit) {
+        for (std::vector< BoneSrcIndex >::const_iterator wmit = (*it).pSrcBones.begin(); wmit != wend; ++wmit)    {
             pc->mNumWeights += (*wmit).first->mNumWeights;
 
             // NOTE: different offset matrices for bones with equal names
             // are - at the moment - not handled correctly.
-            if (wmit != (*it).pSrcBones.begin() && pc->mOffsetMatrix != (*wmit).first->mOffsetMatrix) {
+            if (wmit != (*it).pSrcBones.begin() && pc->mOffsetMatrix != (*wmit).first->mOffsetMatrix)    {
                 DefaultLogger::get()->warn("Bones with equal names but different offset matrices can't be joined at the moment");
                 continue;
             }
@@ -732,9 +732,9 @@ void SceneCombiner::MergeBones(aiMesh* out,std::vector<aiMesh*>::const_iterator 
 
         // And copy the final weights - adjust the vertex IDs by the
         // face index offset of the coresponding mesh.
-        for (std::vector< BoneSrcIndex >::const_iterator wmit = (*it).pSrcBones.begin(); wmit != wend; ++wmit) {
+        for (std::vector< BoneSrcIndex >::const_iterator wmit = (*it).pSrcBones.begin(); wmit != wend; ++wmit)    {
             aiBone* pip = (*wmit).first;
-            for (unsigned int mp = 0; mp < pip->mNumWeights;++mp,++avw) {
+            for (unsigned int mp = 0; mp < pip->mNumWeights;++mp,++avw)    {
                 const aiVertexWeight& vfi = pip->mWeights[mp];
                 avw->mWeight = vfi.mWeight;
                 avw->mVertexId = vfi.mVertexId + (*wmit).second;
@@ -745,13 +745,13 @@ void SceneCombiner::MergeBones(aiMesh* out,std::vector<aiMesh*>::const_iterator 
 
 // ------------------------------------------------------------------------------------------------
 // Merge a list of meshes
-void SceneCombiner::MergeMeshes(aiMesh** _out,unsigned int /*flags*/,
+void SceneCombiner::MergeMeshes(aiMesh** _out,unsigned int flags,
     std::vector<aiMesh*>::const_iterator begin,
     std::vector<aiMesh*>::const_iterator end)
 {
     ai_assert(NULL != _out);
 
-    if (begin == end) {
+    if (begin == end)    {
         *_out = NULL; // no meshes ...
         return;
     }
@@ -761,10 +761,10 @@ void SceneCombiner::MergeMeshes(aiMesh** _out,unsigned int /*flags*/,
     out->mMaterialIndex = (*begin)->mMaterialIndex;
 
     // Find out how much output storage we'll need
-    for (std::vector<aiMesh*>::const_iterator it = begin; it != end;++it) {
-        out->mNumVertices += (*it)->mNumVertices;
-        out->mNumFaces  += (*it)->mNumFaces;
-        out->mNumBones  += (*it)->mNumBones;
+    for (std::vector<aiMesh*>::const_iterator it = begin; it != end;++it)    {
+        out->mNumVertices    += (*it)->mNumVertices;
+        out->mNumFaces        += (*it)->mNumFaces;
+        out->mNumBones        += (*it)->mNumBones;
 
         // combine primitive type flags
         out->mPrimitiveTypes |= (*it)->mPrimitiveTypes;
@@ -774,11 +774,11 @@ void SceneCombiner::MergeMeshes(aiMesh** _out,unsigned int /*flags*/,
         aiVector3D* pv2;
 
         // copy vertex positions
-        if ((**begin).HasPositions()) {
+        if ((**begin).HasPositions())    {
 
             pv2 = out->mVertices = new aiVector3D[out->mNumVertices];
-            for (std::vector<aiMesh*>::const_iterator it = begin; it != end;++it) {
-                if ((*it)->mVertices) {
+            for (std::vector<aiMesh*>::const_iterator it = begin; it != end;++it)    {
+                if ((*it)->mVertices)    {
                     ::memcpy(pv2,(*it)->mVertices,(*it)->mNumVertices*sizeof(aiVector3D));
                 }
                 else DefaultLogger::get()->warn("JoinMeshes: Positions expected but input mesh contains no positions");
@@ -786,11 +786,11 @@ void SceneCombiner::MergeMeshes(aiMesh** _out,unsigned int /*flags*/,
             }
         }
         // copy normals
-        if ((**begin).HasNormals()) {
+        if ((**begin).HasNormals())    {
 
             pv2 = out->mNormals = new aiVector3D[out->mNumVertices];
-            for (std::vector<aiMesh*>::const_iterator it = begin; it != end;++it) {
-                if ((*it)->mNormals) {
+            for (std::vector<aiMesh*>::const_iterator it = begin; it != end;++it)    {
+                if ((*it)->mNormals)    {
                     ::memcpy(pv2,(*it)->mNormals,(*it)->mNumVertices*sizeof(aiVector3D));
                 }
                 else DefaultLogger::get()->warn("JoinMeshes: Normals expected but input mesh contains no normals");
@@ -798,14 +798,14 @@ void SceneCombiner::MergeMeshes(aiMesh** _out,unsigned int /*flags*/,
             }
         }
         // copy tangents and bitangents
-        if ((**begin).HasTangentsAndBitangents()) {
+        if ((**begin).HasTangentsAndBitangents())    {
 
             pv2 = out->mTangents = new aiVector3D[out->mNumVertices];
             aiVector3D* pv2b = out->mBitangents = new aiVector3D[out->mNumVertices];
 
-            for (std::vector<aiMesh*>::const_iterator it = begin; it != end;++it) {
-                if ((*it)->mTangents) {
-                    ::memcpy(pv2, (*it)->mTangents,  (*it)->mNumVertices*sizeof(aiVector3D));
+            for (std::vector<aiMesh*>::const_iterator it = begin; it != end;++it)    {
+                if ((*it)->mTangents)    {
+                    ::memcpy(pv2, (*it)->mTangents,     (*it)->mNumVertices*sizeof(aiVector3D));
                     ::memcpy(pv2b,(*it)->mBitangents,(*it)->mNumVertices*sizeof(aiVector3D));
                 }
                 else DefaultLogger::get()->warn("JoinMeshes: Tangents expected but input mesh contains no tangents");
@@ -815,13 +815,13 @@ void SceneCombiner::MergeMeshes(aiMesh** _out,unsigned int /*flags*/,
         }
         // copy texture coordinates
         unsigned int n = 0;
-        while ((**begin).HasTextureCoords(n)) {
+        while ((**begin).HasTextureCoords(n))    {
             out->mNumUVComponents[n] = (*begin)->mNumUVComponents[n];
 
             pv2 = out->mTextureCoords[n] = new aiVector3D[out->mNumVertices];
-            for (std::vector<aiMesh*>::const_iterator it = begin; it != end;++it) {
+            for (std::vector<aiMesh*>::const_iterator it = begin; it != end;++it)    {
 
-                if ((*it)->mTextureCoords[n]) {
+                if ((*it)->mTextureCoords[n])    {
                     ::memcpy(pv2,(*it)->mTextureCoords[n],(*it)->mNumVertices*sizeof(aiVector3D));
                 }
                 else DefaultLogger::get()->warn("JoinMeshes: UVs expected but input mesh contains no UVs");
@@ -831,11 +831,11 @@ void SceneCombiner::MergeMeshes(aiMesh** _out,unsigned int /*flags*/,
         }
         // copy vertex colors
         n = 0;
-        while ((**begin).HasVertexColors(n)) {
+        while ((**begin).HasVertexColors(n))    {
             aiColor4D* pv2 = out->mColors[n] = new aiColor4D[out->mNumVertices];
-            for (std::vector<aiMesh*>::const_iterator it = begin; it != end;++it) {
+            for (std::vector<aiMesh*>::const_iterator it = begin; it != end;++it)    {
 
-                if ((*it)->mColors[n]) {
+                if ((*it)->mColors[n])    {
                     ::memcpy(pv2,(*it)->mColors[n],(*it)->mNumVertices*sizeof(aiColor4D));
                 }
                 else DefaultLogger::get()->warn("JoinMeshes: VCs expected but input mesh contains no VCs");
@@ -852,13 +852,13 @@ void SceneCombiner::MergeMeshes(aiMesh** _out,unsigned int /*flags*/,
         aiFace* pf2 = out->mFaces;
 
         unsigned int ofs = 0;
-        for (std::vector<aiMesh*>::const_iterator it = begin; it != end;++it) {
-            for (unsigned int m = 0; m < (*it)->mNumFaces;++m,++pf2) {
+        for (std::vector<aiMesh*>::const_iterator it = begin; it != end;++it)    {
+            for (unsigned int m = 0; m < (*it)->mNumFaces;++m,++pf2)    {
                 aiFace& face = (*it)->mFaces[m];
                 pf2->mNumIndices = face.mNumIndices;
                 pf2->mIndices = face.mIndices;
 
-                if (ofs) {
+                if (ofs)    {
                     // add the offset to the vertex
                     for (unsigned int q = 0; q < face.mNumIndices; ++q)
                         face.mIndices[q] += ofs;
@@ -1015,7 +1015,7 @@ void SceneCombiner::Copy (aiMaterial** _dest, const aiMaterial* src)
         prop->mIndex    = sprop->mIndex;
         prop->mSemantic = sprop->mSemantic;
         prop->mKey      = sprop->mKey;
-        prop->mType  = sprop->mType;
+        prop->mType        = sprop->mType;
     }
 }
 

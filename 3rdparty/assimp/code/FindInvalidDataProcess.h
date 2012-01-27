@@ -48,7 +48,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 struct aiMesh;
 class FindInvalidDataProcessTest;
-namespace Assimp {
+namespace Assimp    {
 
 // ---------------------------------------------------------------------------
 /** The FindInvalidData postprocessing step. It searches the mesh data

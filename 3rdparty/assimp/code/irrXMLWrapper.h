@@ -44,7 +44,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // some long includes ....
 #include "./../contrib/irrXML/irrXML.h"
 #include "./../include/IOStream.h"
-namespace Assimp {
+namespace Assimp    {
 
 // ---------------------------------------------------------------------------------
 /** @brief Utility class to make IrrXML work together with our custom IO system
@@ -55,7 +55,7 @@ namespace Assimp {
  * // open the file
  * boost::scoped_ptr<IOStream> file( pIOHandler->Open( pFile));
  * if ( file.get() == NULL) {
- *   throw DeadlyImportError( "Failed to open file " + pFile + ".");
+ *      throw DeadlyImportError( "Failed to open file " + pFile + ".");
  * }
  *
  * // generate a XML reader for it
@@ -99,7 +99,7 @@ public:
     /**  @param buffer:       Pointer to output buffer.
      *   @param sizeToRead:   Amount of bytes to read
      *   @return              Returns how much bytes were read.  */
-    virtual int read(void* buffer, int sizeToRead) {
+    virtual int read(void* buffer, int sizeToRead)    {
         if (sizeToRead<0) {
             return 0;
         }
@@ -115,7 +115,7 @@ public:
 
     // ----------------------------------------------------------------------------------
     //! Returns size of file in bytes
-    virtual int getSize() {
+    virtual int getSize()    {
         return (int)data.size();
     }
 

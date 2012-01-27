@@ -46,7 +46,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "RemoveComments.h"
 #include "ParsingUtils.h"
 
-namespace Assimp {
+namespace Assimp    {
 
 // ------------------------------------------------------------------------------------------------
 // Remove line comments from a file
@@ -57,11 +57,11 @@ void CommentRemover::RemoveLineComments(const char* szComment,
     ai_assert(NULL != szComment && NULL != szBuffer && *szComment);
 
     const size_t len = strlen(szComment);
-    while (*szBuffer) {
+    while (*szBuffer)    {
 
         // skip over quotes
         if (*szBuffer == '\"' || *szBuffer == '\'')
-            while (*szBuffer++ && *szBuffer != '\"' && *szBuffer != '\'') {};
+            while (*szBuffer++ && *szBuffer != '\"' && *szBuffer != '\'');
 
         if (!strncmp(szBuffer,szComment,len)) {
             while (!IsLineEnd(*szBuffer))
@@ -84,10 +84,10 @@ void CommentRemover::RemoveMultiLineComments(const char* szCommentStart,
     const size_t len  = strlen(szCommentEnd);
     const size_t len2 = strlen(szCommentStart);
 
-    while (*szBuffer) {
+    while (*szBuffer)    {
         // skip over quotes
         if (*szBuffer == '\"' || *szBuffer == '\'')
-            while (*szBuffer++ && *szBuffer != '\"' && *szBuffer != '\'') {};
+            while (*szBuffer++ && *szBuffer != '\"' && *szBuffer != '\'');
 
         if (!strncmp(szBuffer,szCommentStart,len2))  {
             while (*szBuffer) {

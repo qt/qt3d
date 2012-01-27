@@ -47,8 +47,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "LWOFileData.h"
 #include "SceneCombiner.h"
 
-namespace Assimp {
-    namespace LWS {
+namespace Assimp    {
+    namespace LWS    {
 
 // ---------------------------------------------------------------------------
 /** Represents an element in a LWS file.
@@ -78,15 +78,15 @@ public:
 struct NodeDesc
 {
     NodeDesc()
-        : number (0)
-        , parent (0)
-        , name ("")
-        , lightColor (1.f,1.f,1.f)
-        , lightIntensity (1.f)
-        , lightType (0)
-        , lightFalloffType (0)
-        , lightConeAngle (45.f)
-        , parent_resolved (NULL)
+        :    number    (0)
+        ,    parent    (0)
+        ,    name    ("")
+        ,    lightColor (1.f,1.f,1.f)
+        ,    lightIntensity (1.f)
+        ,    lightType (0)
+        ,    lightFalloffType (0)
+        ,    lightConeAngle (45.f)
+        ,    parent_resolved (NULL)
     {}
 
     enum {

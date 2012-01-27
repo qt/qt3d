@@ -69,7 +69,7 @@ SortByPTypeProcess::~SortByPTypeProcess()
 // Returns whether the processing step is present in the given flag field.
 bool SortByPTypeProcess::IsActive( unsigned int pFlags) const
 {
-    return (pFlags & aiProcess_SortByPType) != 0;
+    return    (pFlags & aiProcess_SortByPType) != 0;
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -82,7 +82,7 @@ void SortByPTypeProcess::SetupProperties(const Importer* pImp)
 // Update changed meshes in all nodes
 void UpdateNodes(const std::vector<unsigned int>& replaceMeshIndex, aiNode* node)
 {
-// std::vector<unsigned int>::const_iterator it;
+//    std::vector<unsigned int>::const_iterator it;
 
     if (node->mNumMeshes)
     {

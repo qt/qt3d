@@ -56,13 +56,13 @@ using namespace std;
 
 // (fixme, Aramis) quick workaround to get rid of all those signed to unsigned warnings
 #ifdef _MSC_VER
-# pragma warning (disable: 4018)
+#    pragma warning (disable: 4018)
 #endif
 
 //#define DEBUG_B3D
 
 // ------------------------------------------------------------------------------------------------
-bool B3DImporter::CanRead( const std::string& pFile, IOSystem* /* pIOHandler */, bool /* checkSig */) const{
+bool B3DImporter::CanRead( const std::string& pFile, IOSystem* pIOHandler, bool checkSig) const{
 
     size_t pos=pFile.find_last_of( '.' );
     if ( pos==string::npos ) return false;
@@ -197,7 +197,7 @@ string B3DImporter::ReadChunk(){
         tag+=char( ReadByte() );
     }
 #ifdef DEBUG_B3D
-// cout<<"ReadChunk:"<<tag<<endl;
+//    cout<<"ReadChunk:"<<tag<<endl;
 #endif
     unsigned sz=(unsigned)ReadInt();
     _stack.push_back( _pos+sz );
@@ -320,7 +320,7 @@ void B3DImporter::ReadVRTS(){
 
         if ( _vflags & 1 ) v.normal=ReadVec3();
 
-        if ( _vflags & 2 ) ReadQuat(); //skip v 4bytes...
+        if ( _vflags & 2 ) ReadQuat();    //skip v 4bytes...
 
         for ( int i=0;i<_tcsets;++i ){
             float t[4]={0,0,0,0};

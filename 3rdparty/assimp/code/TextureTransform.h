@@ -47,13 +47,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 struct aiNode;
 
-namespace Assimp {
+namespace Assimp    {
 
-#define AI_TT_UV_IDX_LOCK_TBD 0xffffffff
-#define AI_TT_UV_IDX_LOCK_NONE 0xeeeeeeee
+#define AI_TT_UV_IDX_LOCK_TBD    0xffffffff
+#define AI_TT_UV_IDX_LOCK_NONE    0xeeeeeeee
 
 
-#define AI_TT_ROTATION_EPSILON ((float)AI_DEG_TO_RAD(0.5))
+#define AI_TT_ROTATION_EPSILON    ((float)AI_DEG_TO_RAD(0.5))
 
 // ---------------------------------------------------------------------------
 /** Small helper structure representing a shortcut into the material list
@@ -62,10 +62,10 @@ namespace Assimp {
 struct TTUpdateInfo
 {
     TTUpdateInfo() :
-            directShortcut (NULL)
-        , mat    (NULL)
-        , semantic  (0)
-        , index   (0)
+            directShortcut    (NULL)
+        ,    mat                (NULL)
+        ,    semantic        (0)
+        ,    index            (0)
     {}
 
     //! Direct shortcut, if available
@@ -86,10 +86,10 @@ struct STransformVecInfo : public aiUVTransform
 {
 
     STransformVecInfo()
-        : uvIndex  (0)
-        , mapU  (aiTextureMapMode_Wrap)
-        , mapV  (aiTextureMapMode_Wrap)
-        , lockedPos (AI_TT_UV_IDX_LOCK_NONE)
+        :    uvIndex        (0)
+        ,    mapU        (aiTextureMapMode_Wrap)
+        ,    mapV        (aiTextureMapMode_Wrap)
+        ,    lockedPos    (AI_TT_UV_IDX_LOCK_NONE)
     {}
 
     //! Source texture coordinate index

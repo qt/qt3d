@@ -49,7 +49,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "IRRShared.h"
 #include "SceneCombiner.h"
 
-namespace Assimp {
+namespace Assimp    {
 
 
 // ---------------------------------------------------------------------------
@@ -106,7 +106,7 @@ private:
         // Type of the animator
         enum AT
         {
-            UNKNOWN    = 0x0,
+            UNKNOWN          = 0x0,
             ROTATION      = 0x1,
             FLY_CIRCLE    = 0x2,
             FLY_STRAIGHT  = 0x3,
@@ -116,13 +116,13 @@ private:
         } type;
 
         Animator(AT t = UNKNOWN)
-            : type    (t)
-            , speed    (0.001f)
-            , direction   (0.f,1.f,0.f)
-            , circleRadius  (1.f)
-            , tightness   (0.5f)
-            , loop    (true)
-            , timeForWay  (100)
+            : type                (t)
+            , speed                (0.001f)
+            , direction            (0.f,1.f,0.f)
+            , circleRadius        (1.f)
+            , tightness            (0.5f)
+            , loop                (true)
+            , timeForWay        (100)
         {
         }
 
@@ -166,12 +166,12 @@ private:
         } type;
 
         Node(ET t)
-            : type    (t)
-            , scaling    (1.f,1.f,1.f) // assume uniform scaling by default
-            , framesPerSecond  (0.f)
-            , sphereRadius  (1.f)
-            , spherePolyCountX (100)
-            , spherePolyCountY (100)
+            :    type                (t)
+            ,    scaling                (1.f,1.f,1.f) // assume uniform scaling by default
+            ,    framesPerSecond        (0.f)
+            ,    sphereRadius        (1.f)
+            ,    spherePolyCountX    (100)
+            ,    spherePolyCountY    (100)
         {
 
             // Generate a default name for the node
@@ -233,9 +233,9 @@ private:
             float nx, float ny, float nz,
             float uvx, float uvy)
 
-            : position (px,py,pz)
-            , normal  (nx,ny,nz)
-            , uv   (uvx,uvy,0.f)
+            :    position    (px,py,pz)
+            ,    normal        (nx,ny,nz)
+            ,    uv            (uvx,uvy,0.f)
         {}
 
         aiVector3D position, normal, uv;
@@ -282,7 +282,7 @@ private:
      *  @param defMatIdx Default material index - 0xffffffff if not there
      *  @param mesh Mesh to work on
      */
-    void CopyMaterial(std::vector<aiMaterial*>&  materials,
+    void CopyMaterial(std::vector<aiMaterial*>&     materials,
         std::vector< std::pair<aiMaterial*, unsigned int> >& inmaterials,
         unsigned int& defMatIdx,
         aiMesh* mesh);

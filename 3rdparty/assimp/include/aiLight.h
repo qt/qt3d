@@ -213,12 +213,12 @@ struct aiLight
 #ifdef __cplusplus
 
     aiLight()
-        : mType                 (aiLightSource_UNDEFINED)
-        , mAttenuationConstant  (0.f)
+        :    mType                 (aiLightSource_UNDEFINED)
+        ,    mAttenuationConstant  (0.f)
         ,   mAttenuationLinear    (1.f)
         ,   mAttenuationQuadratic (0.f)
-        , mAngleInnerCone       ((float)AI_MATH_TWO_PI)
-        , mAngleOuterCone       ((float)AI_MATH_TWO_PI)
+        ,    mAngleInnerCone       ((float)AI_MATH_TWO_PI)
+        ,    mAngleOuterCone       ((float)AI_MATH_TWO_PI)
     {
     }
 

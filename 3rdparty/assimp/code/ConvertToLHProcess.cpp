@@ -167,11 +167,11 @@ void MakeLeftHandedProcess::ProcessMesh( aiMesh* pMesh)
 void MakeLeftHandedProcess::ProcessMaterial( aiMaterial* _mat)
 {
     MaterialHelper* mat = (MaterialHelper*)_mat;
-    for (unsigned int a = 0; a < mat->mNumProperties;++a) {
+    for (unsigned int a = 0; a < mat->mNumProperties;++a)    {
         aiMaterialProperty* prop = mat->mProperties[a];
 
         // Mapping axis for UV mappings?
-        if (!::strcmp( prop->mKey.data, "$tex.mapaxis")) {
+        if (!::strcmp( prop->mKey.data, "$tex.mapaxis"))    {
             ai_assert( prop->mDataLength >= sizeof(aiVector3D)); /* something is wrong with the validation if we end up here */
             aiVector3D* pff = (aiVector3D*)prop->mData;
 
@@ -242,11 +242,11 @@ void FlipUVsProcess::Execute( aiScene* pScene)
 void FlipUVsProcess::ProcessMaterial (aiMaterial* _mat)
 {
     MaterialHelper* mat = (MaterialHelper*)_mat;
-    for (unsigned int a = 0; a < mat->mNumProperties;++a) {
+    for (unsigned int a = 0; a < mat->mNumProperties;++a)    {
         aiMaterialProperty* prop = mat->mProperties[a];
 
         // UV transformation key?
-        if (!::strcmp( prop->mKey.data, "$tex.uvtrafo")) {
+        if (!::strcmp( prop->mKey.data, "$tex.uvtrafo"))    {
             ai_assert( prop->mDataLength >= sizeof(aiUVTransform));  /* something is wrong with the validation if we end up here */
             aiUVTransform* uv = (aiUVTransform*)prop->mData;
 
@@ -262,7 +262,7 @@ void FlipUVsProcess::ProcessMaterial (aiMaterial* _mat)
 void FlipUVsProcess::ProcessMesh( aiMesh* pMesh)
 {
     // mirror texture y coordinate
-    for ( unsigned int a = 0; a < AI_MAX_NUMBER_OF_TEXTURECOORDS; a++) {
+    for ( unsigned int a = 0; a < AI_MAX_NUMBER_OF_TEXTURECOORDS; a++)    {
         if ( !pMesh->HasTextureCoords( a))
             break;
 

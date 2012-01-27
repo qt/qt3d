@@ -181,7 +181,7 @@ enum ESemantic
 enum EElementSemantic
 {
     //! The element is a vertex
-    EEST_Vertex = 0x0u,
+    EEST_Vertex    = 0x0u,
 
     //! The element is a face description (index table)
     EEST_Face,
@@ -213,17 +213,17 @@ public:
         : eType (EDT_Int), bIsList(false), eFirstType(EDT_UChar)
     {}
 
-    //! Data type of the property
+    //!    Data type of the property
     EDataType eType;
 
-    //! Semantical meaning of the property
+    //!    Semantical meaning of the property
     ESemantic Semantic;
 
     //! Of the semantic of the property could not be parsed:
     //! Contains the semantic specified in the file
     std::string szName;
 
-    //! Specifies whether the data type is a list where
+    //!    Specifies whether the data type is a list where
     //! the first element specifies the size of the list
     bool bIsList;
     EDataType eFirstType;
@@ -257,8 +257,8 @@ public:
 
     //! Default constructor
     Element()
-        : eSemantic (EEST_INVALID)
-        , NumOccur(0)
+        :    eSemantic (EEST_INVALID)
+        ,    NumOccur(0)
     {}
 
     //! List of properties assigned to the element

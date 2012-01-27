@@ -16,16 +16,16 @@ namespace core
 template<class T>
 inline void heapsink(T*array, s32 element, s32 max)
 {
-    while ((element<<1) < max) // there is a left child
+    while ((element<<1) < max)    // there is a left child
     {
         s32 j = (element<<1);
 
         if (j+1 < max && array[j] < array[j+1])
-            j = j+1;       // take right child
+            j = j+1;                            // take right child
 
         if (array[element] < array[j])
         {
-            T t = array[j];      // swap elements
+            T t = array[j];                        // swap elements
             array[j] = array[element];
             array[element] = t;
             element = j;

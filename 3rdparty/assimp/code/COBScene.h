@@ -47,7 +47,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <boost/shared_ptr.hpp>
 #include "BaseImporter.h"
 
-namespace Assimp {
+namespace Assimp    {
     namespace COB {
 
 // ------------------
@@ -74,10 +74,10 @@ struct ChunkInfo
     enum {NO_SIZE=0xffffffff};
 
     ChunkInfo ()
-        : id        (0)
-        , parent_id (0)
-        , version   (0)
-        , size   (NO_SIZE)
+        :    id        (0)
+        ,    parent_id (0)
+        ,    version      (0)
+        ,    size      (NO_SIZE)
     {}
 
     // Id of this chunk, unique within file
@@ -92,18 +92,6 @@ struct ChunkInfo
     // chunk size in bytes, only relevant for binary files
     // NO_SIZE is also valid.
     unsigned int size;
-/*
-    ChunkInfo& ChunkInfo::operator=(const ChunkInfo &rhs) {
-        // Only do assignment if RHS is a different object from this.
-        if (this != &rhs) {
-          this->id=rhs.id;
-          this->parent_id=rhs.parent_id;
-          this->version=rhs.version;
-          this->size=rhs.size;
-        }
-
-        return *this;
-    }*/
 };
 
 // ------------------

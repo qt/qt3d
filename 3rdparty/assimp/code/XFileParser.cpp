@@ -53,11 +53,11 @@ using namespace Assimp::XFile;
 
 #ifndef ASSIMP_BUILD_NO_COMPRESSED_X
 
-# ifdef ASSIMP_BUILD_NO_OWN_ZLIB
-#  include <zlib.h>
-# else
-#  include "../contrib/zlib/zlib.h"
-# endif
+#    ifdef ASSIMP_BUILD_NO_OWN_ZLIB
+#        include <zlib.h>
+#    else
+#        include "../contrib/zlib/zlib.h"
+#    endif
 
 // Magic identifier for MSZIP compressed data
 #define MSZIP_MAGIC 0x4B43
@@ -65,11 +65,11 @@ using namespace Assimp::XFile;
 
 // ------------------------------------------------------------------------------------------------
 // Dummy memory wrappers for use with zlib
-static void* dummy_alloc (void* /*opaque*/, unsigned int items, unsigned int size) {
+static void* dummy_alloc (void* /*opaque*/, unsigned int items, unsigned int size)    {
     return ::operator new(items*size);
 }
 
-static void  dummy_free  (void* /*opaque*/, void* address) {
+static void  dummy_free  (void* /*opaque*/, void* address)    {
     return ::operator delete(address);
 }
 
@@ -1171,7 +1171,7 @@ void XFileParser::FindNextNoneWhiteSpace()
             return;
 
         // check if this is a comment
-        if ( (P[0] == '/' && P[1] == '/') || P[0] == '#')
+        if ( (P[0] == '/' && P[1] == '/') ||    P[0] == '#')
             ReadUntilEndOfLine();
         else
             break;

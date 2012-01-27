@@ -66,7 +66,7 @@ extern "C" {
  *  (zero-based, in the aiScene::mTextures array)
  */
 #if (!defined AI_MAKE_EMBEDDED_TEXNAME)
-# define AI_MAKE_EMBEDDED_TEXNAME(_n_) "*" # _n_
+#    define AI_MAKE_EMBEDDED_TEXNAME(_n_) "*" # _n_
 #endif
 
 

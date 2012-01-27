@@ -53,8 +53,8 @@ static const UTF32 halfMask = 0x3FFUL;
 #define UNI_SUR_HIGH_END    (UTF32)0xDBFF
 #define UNI_SUR_LOW_START   (UTF32)0xDC00
 #define UNI_SUR_LOW_END     (UTF32)0xDFFF
-#define false    0
-#define true     1
+#define false       0
+#define true        1
 
 /* --------------------------------------------------------------------- */
 
@@ -253,11 +253,11 @@ ConversionResult ConvertUTF16toUTF8 (
         }
     }
     /* Figure out how many bytes the result will require */
-    if (ch < (UTF32)0x80) {      bytesToWrite = 1;
+    if (ch < (UTF32)0x80) {         bytesToWrite = 1;
     } else if (ch < (UTF32)0x800) {     bytesToWrite = 2;
     } else if (ch < (UTF32)0x10000) {   bytesToWrite = 3;
     } else if (ch < (UTF32)0x110000) {  bytesToWrite = 4;
-    } else {       bytesToWrite = 3;
+    } else {                bytesToWrite = 3;
                         ch = UNI_REPLACEMENT_CHAR;
     }
 
@@ -430,11 +430,11 @@ ConversionResult ConvertUTF32toUTF8 (
      * Figure out how many bytes the result will require. Turn any
      * illegally large UTF32 things (> Plane 17) into replacement chars.
      */
-    if (ch < (UTF32)0x80) {      bytesToWrite = 1;
+    if (ch < (UTF32)0x80) {         bytesToWrite = 1;
     } else if (ch < (UTF32)0x800) {     bytesToWrite = 2;
     } else if (ch < (UTF32)0x10000) {   bytesToWrite = 3;
     } else if (ch <= UNI_MAX_LEGAL_UTF32) {  bytesToWrite = 4;
-    } else {       bytesToWrite = 3;
+    } else {                bytesToWrite = 3;
                         ch = UNI_REPLACEMENT_CHAR;
                         result = sourceIllegal;
     }

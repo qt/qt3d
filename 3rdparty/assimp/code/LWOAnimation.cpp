@@ -334,7 +334,7 @@ void AnimResolver::SubsampleAnimTrack(std::vector<aiVectorKey>& /*out*/,
     //ai_assert(out.empty() && sample_delta);
 
     //const double time_start = out.back().mTime;
-// for ()
+//    for ()
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -434,6 +434,8 @@ void AnimResolver::GetKeys(std::vector<aiVectorKey>& out,
 
     // Iterate through all three arrays at once - it's tricky, but
     // rather interesting to implement.
+    double lasttime = std::min(envl_x->keys[0].time,std::min(envl_y->keys[0].time,envl_z->keys[0].time));
+
     cur_x = envl_x->keys.begin();
     cur_y = envl_y->keys.begin();
     cur_z = envl_z->keys.begin();
@@ -479,7 +481,7 @@ void AnimResolver::GetKeys(std::vector<aiVectorKey>& out,
                 InterpolateTrack(out,fill,(*cur_x).time);
             }
         }
-        else if ((*cur_z).time <= (*cur_y).time && !end_z) {
+        else if ((*cur_z).time <= (*cur_y).time && !end_z)    {
             InterpolateTrack(out,fill,(*cur_z).time);
         }
         else if (!end_y) {
@@ -499,6 +501,7 @@ void AnimResolver::GetKeys(std::vector<aiVectorKey>& out,
                 InterpolateTrack(out,fill,(end_y ? (*cur_x) : (*cur_y)).time);
             }
         }
+        lasttime = fill.mTime;
         out.push_back(fill);
 
         if ( end_x && end_y && end_z ) /* finished? */
@@ -513,7 +516,7 @@ void AnimResolver::GetKeys(std::vector<aiVectorKey>& out,
 
 // ------------------------------------------------------------------------------------------------
 // Extract animation channel
-void AnimResolver::ExtractAnimChannel(aiNodeAnim** out, unsigned int /*flags = 0*/)
+void AnimResolver::ExtractAnimChannel(aiNodeAnim** out, unsigned int flags /*= 0*/)
 {
     *out = NULL;
 

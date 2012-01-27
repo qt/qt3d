@@ -43,7 +43,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * for all imported meshes
  */
 
-#include <QtCore/qdebug.h>
 #include "AssimpPCH.h"
 #ifndef ASSIMP_BUILD_NO_JOINVERTICES_PROCESS
 
@@ -57,7 +56,7 @@ using namespace Assimp;
 // Constructor to be privately used by Importer
 JoinVerticesProcess::JoinVerticesProcess()
 {
-    // nothing to do here    
+    // nothing to do here
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -82,14 +81,15 @@ void JoinVerticesProcess::Execute( aiScene* pScene)
     // get the total number of vertices BEFORE the step is executed
     int iNumOldVertices = 0;
     if (!DefaultLogger::isNullLogger()) {
-        for ( unsigned int a = 0; a < pScene->mNumMeshes; a++) {
-            iNumOldVertices += pScene->mMeshes[a]->mNumVertices;
+        for ( unsigned int a = 0; a < pScene->mNumMeshes; a++)    {
+            iNumOldVertices +=    pScene->mMeshes[a]->mNumVertices;
         }
     }
+
     // execute the step
     int iNumVertices = 0;
     for ( unsigned int a = 0; a < pScene->mNumMeshes; a++)
-        iNumVertices += ProcessMesh( pScene->mMeshes[a],a);
+        iNumVertices +=    ProcessMesh( pScene->mMeshes[a],a);
 
     // if logging is active, print detailed statistics
     if (!DefaultLogger::isNullLogger())
@@ -125,45 +125,38 @@ int JoinVerticesProcess::ProcessMesh( aiMesh* pMesh, unsigned int meshIndex)
 
     // We'll never have more vertices afterwards.
     std::vector<Vertex> uniqueVertices;
-
-#ifndef __GCCE__
-#ifndef __arm__
-    try {
-        uniqueVertices.reserve( pMesh->mNumVertices);
-    } catch (...) {
-        qWarning("Unable to reserve vertex space");
-        return 0;
-    }
-#endif
-#endif
+    uniqueVertices.reserve( pMesh->mNumVertices);
 
     // For each vertex the index of the vertex it was replaced by.
     // Since the maximal number of vertices is 2^31-1, the most significand bit can be used to mark
-    // whether a new vertex was created for the index (true) or if it was replaced by an existing
-    // unique vertex (false). This saves an additional std::vector<bool> and greatly enhances
-    // branching performance.
+    //    whether a new vertex was created for the index (true) or if it was replaced by an existing
+    //    unique vertex (false). This saves an additional std::vector<bool> and greatly enhances
+    //    branching performance.
     BOOST_STATIC_ASSERT(AI_MAX_VERTICES == 0x7fffffff);
     std::vector<unsigned int> replaceIndex( pMesh->mNumVertices, 0xffffffff);
 
     // A little helper to find locally close vertices faster.
     // Try to reuse the lookup table from the last step.
     const static float epsilon = 1e-5f;
+    float posEpsilonSqr;
     SpatialSort* vertexFinder = NULL;
     SpatialSort _vertexFinder;
 
     typedef std::pair<SpatialSort,float> SpatPair;
-    if (shared) {
+    if (shared)    {
         std::vector<SpatPair >* avf;
         shared->GetProperty(AI_SPP_SPATIAL_SORT,avf);
-        if (avf) {
+        if (avf)    {
             SpatPair& blubb = (*avf)[meshIndex];
             vertexFinder  = &blubb.first;
+            posEpsilonSqr = blubb.second;
         }
     }
-    if (!vertexFinder) {
+    if (!vertexFinder)    {
         // bad, need to compute it.
         _vertexFinder.Fill(pMesh->mVertices, pMesh->mNumVertices, sizeof( aiVector3D));
         vertexFinder = &_vertexFinder;
+        posEpsilonSqr = ComputePositionEpsilon(pMesh);
     }
 
     // Squared because we check against squared length of the vector difference
@@ -176,16 +169,16 @@ int JoinVerticesProcess::ProcessMesh( aiMesh* pMesh, unsigned int meshIndex)
     // Run an optimized code path if we don't have multiple UVs or vertex colors.
     // This should yield false in more than 99% of all imports ...
     const bool complex = (
-        pMesh->mTextureCoords[1] ||
-        pMesh->mTextureCoords[2] ||
-        pMesh->mTextureCoords[3] ||
-        pMesh->mColors[0]   ||
-        pMesh->mColors[1]   ||
-        pMesh->mColors[2]   ||
+        pMesh->mTextureCoords[1]    ||
+        pMesh->mTextureCoords[2]    ||
+        pMesh->mTextureCoords[3]    ||
+        pMesh->mColors[0]            ||
+        pMesh->mColors[1]            ||
+        pMesh->mColors[2]            ||
         pMesh->mColors[3] );
 
     // Now check each vertex if it brings something new to the table
-    for ( unsigned int a = 0; a < pMesh->mNumVertices; a++) {
+    for ( unsigned int a = 0; a < pMesh->mNumVertices; a++)    {
         // collect the vertex data
         Vertex v(pMesh,a);
 
@@ -194,7 +187,8 @@ int JoinVerticesProcess::ProcessMesh( aiMesh* pMesh, unsigned int meshIndex)
         unsigned int matchIndex = 0xffffffff;
 
         // check all unique vertices close to the position if this vertex is already present among them
-        for ( unsigned int b = 0; b < verticesFound.size(); b++) {
+        for ( unsigned int b = 0; b < verticesFound.size(); b++)    {
+
             const unsigned int vidx = verticesFound[b];
             const unsigned int uidx = replaceIndex[ vidx];
             if ( uidx & 0x80000000)
@@ -257,7 +251,7 @@ int JoinVerticesProcess::ProcessMesh( aiMesh* pMesh, unsigned int meshIndex)
         }
     }
 
-    if (!DefaultLogger::isNullLogger() && DefaultLogger::get()->getLogSeverity() == Logger::VERBOSE) {
+    if (!DefaultLogger::isNullLogger() && DefaultLogger::get()->getLogSeverity() == Logger::VERBOSE)    {
         DefaultLogger::get()->debug((Formatter::format(),
             "Mesh ",meshIndex,
             " (",
@@ -336,7 +330,7 @@ int JoinVerticesProcess::ProcessMesh( aiMesh* pMesh, unsigned int meshIndex)
     for ( unsigned int a = 0; a < pMesh->mNumFaces; a++)
     {
         aiFace& face = pMesh->mFaces[a];
-        for ( unsigned int b = 0; b < face.mNumIndices; b++) {
+        for ( unsigned int b = 0; b < face.mNumIndices; b++)    {
             face.mIndices[b] = replaceIndex[face.mIndices[b]] & ~0x80000000;
         }
     }

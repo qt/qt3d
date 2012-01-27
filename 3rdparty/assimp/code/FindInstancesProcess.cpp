@@ -51,7 +51,7 @@ using namespace Assimp;
 // ------------------------------------------------------------------------------------------------
 // Constructor to be privately used by Importer
 FindInstancesProcess::FindInstancesProcess()
-: configSpeedFlag (false)
+:    configSpeedFlag (false)
 {}
 
 // ------------------------------------------------------------------------------------------------

@@ -53,7 +53,7 @@ inline void SetGenericProperty(std::map< unsigned int, T >& list,
     const uint32_t hash = SuperFastHash(szName);
 
     typename std::map<unsigned int, T>::iterator it = list.find(hash);
-    if (it == list.end()) {
+    if (it == list.end())    {
         if (bWasExisting)
             *bWasExisting = false;
         list.insert(std::pair<unsigned int, T>( hash, value ));
@@ -90,18 +90,18 @@ inline void SetGenericPropertyPtr(std::map< unsigned int, T* >& list,
     const uint32_t hash = SuperFastHash(szName);
 
     typename std::map<unsigned int, T*>::iterator it = list.find(hash);
-    if (it == list.end()) {
+    if (it == list.end())    {
         if (bWasExisting)
             *bWasExisting = false;
 
         list.insert(std::pair<unsigned int,T*>( hash, value ));
         return;
     }
-    if ((*it).second != value) {
+    if ((*it).second != value)    {
         delete (*it).second;
         (*it).second = value;
     }
-    if (!value) {
+    if (!value)    {
         list.erase(it);
     }
     if (bWasExisting)

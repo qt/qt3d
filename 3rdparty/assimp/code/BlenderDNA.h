@@ -50,12 +50,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // enable verbose log output. really verbose, so be careful.
 #ifdef _DEBUG
-# define ASSIMP_BUILD_BLENDER_DEBUG
+#    define ASSIMP_BUILD_BLENDER_DEBUG
 #endif
 
 // #define ASSIMP_BUILD_BLENDER_NO_STATS
 
-namespace Assimp {
+namespace Assimp    {
     template <bool,bool> class StreamReader;
     typedef StreamReader<true,true> StreamReaderAny;
 
@@ -186,7 +186,7 @@ enum ErrorPolicy
 };
 
 #ifdef ASSIMP_BUILD_BLENDER_DEBUG
-# define ErrorPolicy_Igno ErrorPolicy_Warn
+#    define ErrorPolicy_Igno ErrorPolicy_Warn
 #endif
 
 // -------------------------------------------------------------------------------
@@ -204,7 +204,7 @@ class Structure
 public:
 
     Structure()
-        : cache_idx(-1)
+        :    cache_idx(-1)
     {}
 
 public:
@@ -376,7 +376,7 @@ template <>  struct Structure :: _defaultInitializer<ErrorPolicy_Warn> {
 template <> struct Structure :: _defaultInitializer<ErrorPolicy_Fail> {
 
     template <typename T>
-    void operator ()(T& /*out*/,const char* = "") {
+    void operator ()(T& out,const char* = "") {
         // obviously, it is crucial that _DefaultInitializer is used
         // only from within a catch clause.
         throw;
@@ -495,12 +495,12 @@ public:
 };
 
 // special converters for primitive types
-template <> inline void Structure :: Convert<int>  (int& dest,const FileDatabase& db) const;
-template <> inline void Structure :: Convert<short>  (short& dest,const FileDatabase& db) const;
-template <> inline void Structure :: Convert<char>  (char& dest,const FileDatabase& db) const;
-template <> inline void Structure :: Convert<float>  (float& dest,const FileDatabase& db) const;
-template <> inline void Structure :: Convert<double> (double& dest,const FileDatabase& db) const;
-template <> inline void Structure :: Convert<Pointer> (Pointer& dest,const FileDatabase& db) const;
+template <> inline void Structure :: Convert<int>        (int& dest,const FileDatabase& db) const;
+template <> inline void Structure :: Convert<short>        (short& dest,const FileDatabase& db) const;
+template <> inline void Structure :: Convert<char>        (char& dest,const FileDatabase& db) const;
+template <> inline void Structure :: Convert<float>        (float& dest,const FileDatabase& db) const;
+template <> inline void Structure :: Convert<double>    (double& dest,const FileDatabase& db) const;
+template <> inline void Structure :: Convert<Pointer>    (Pointer& dest,const FileDatabase& db) const;
 
 // -------------------------------------------------------------------------------
 /** Describes a master file block header. Each master file sections holds n
@@ -592,11 +592,11 @@ class Statistics {
 public:
 
     Statistics ()
-        : fields_read  ()
-        , pointers_resolved ()
-        , cache_hits  ()
-//  , blocks_read  ()
-        , cached_objects ()
+        : fields_read        ()
+        , pointers_resolved    ()
+        , cache_hits        ()
+//        , blocks_read        ()
+        , cached_objects    ()
     {}
 
 public:
@@ -681,12 +681,12 @@ public:
 
     ObjectCache(const FileDatabase&) {}
 
-    template <typename T> void get(const Structure&, vector<T>& /*t*/, const Pointer&) {}
+    template <typename T> void get(const Structure&, vector<T>&t, const Pointer&) {}
     template <typename T> void set(const Structure&, const vector<T>&, const Pointer&) {}
 };
 
 #ifdef _MSC_VER
-# pragma warning(disable:4355)
+#    pragma warning(disable:4355)
 #endif
 
 // -------------------------------------------------------------------------------
@@ -701,9 +701,9 @@ public:
 
 
     FileDatabase()
-        : _cacheArrays(*this)
+        : next_cache_idx()
+        , _cacheArrays(*this)
         , _cache(*this)
-        , next_cache_idx()
     {}
 
 public:
@@ -727,12 +727,12 @@ public:
     // arrays of objects are never cached because we can't easily
     // ensure their proper destruction.
     template <typename T>
-    ObjectCache<boost::shared_ptr>& cache(boost::shared_ptr<T>& /* in */) const {
+    ObjectCache<boost::shared_ptr>& cache(boost::shared_ptr<T>& in) const {
         return _cache;
     }
 
     template <typename T>
-    ObjectCache<vector>& cache(vector<T>& /*in*/) const {
+    ObjectCache<vector>& cache(vector<T>& in) const {
         return _cacheArrays;
     }
 
@@ -750,7 +750,7 @@ private:
 };
 
 #ifdef _MSC_VER
-# pragma warning(default:4355)
+#    pragma warning(default:4355)
 #endif
 
 // -------------------------------------------------------------------------------
@@ -789,6 +789,74 @@ private:
 
     FileDatabase& db;
 };
+
+//--------------------------------------------------------------------------------
+template <> inline void Structure :: ResolvePointer<boost::shared_ptr,ElemBase>(boost::shared_ptr<ElemBase>& out,
+    const Pointer & ptrval,
+    const FileDatabase& db,
+    const Field& /* f */
+    ) const
+{
+    // Special case when the data type needs to be determined at runtime.
+    // Less secure than in the `strongly-typed` case.
+
+    out.reset();
+    if (!ptrval.val) {
+        return;
+    }
+
+    // find the file block the pointer is pointing to
+    const FileBlockHead* block = LocateFileBlockForAddress(ptrval,db);
+
+    // determine the target type from the block header
+    const Structure& s = db.dna[block->dna_index];
+
+    // try to retrieve the object from the cache
+    db.cache(out).get(s,out,ptrval);
+    if (out) {
+        return;
+    }
+
+    // seek to this location, but save the previous stream pointer.
+    const StreamReaderAny::pos pold = db.reader->GetCurrentPos();
+    db.reader->SetCurrentPos(block->start+ static_cast<size_t>((ptrval.val - block->address.val) ));
+    // FIXME: basically, this could cause problems with 64 bit pointers on 32 bit systems.
+    // I really ought to improve StreamReader to work with 64 bit indices exclusively.
+
+    // continue conversion after allocating the required storage
+    DNA::FactoryPair builders = db.dna.GetBlobToStructureConverter(s,db);
+    if (!builders.first) {
+        // this might happen if DNA::RegisterConverters hasn't been called so far
+        // or if the target type is not contained in `our` DNA.
+        out.reset();
+        DefaultLogger::get()->warn((Formatter::format(),
+            "Failed to find a converter for the `",s.name,"` structure"
+            ));
+        return;
+    }
+
+    // allocate the object hull
+    out = (s.*builders.first)();
+
+    // cache the object immediately to prevent infinite recursion in a
+    // circular list with a single element (i.e. a self-referencing element).
+    db.cache(out).set(s,out,ptrval);
+
+    // and do the actual conversion
+    (s.*builders.second)(out,db);
+    db.reader->SetCurrentPos(pold);
+
+    // store a pointer to the name string of the actual type
+    // in the object itself. This allows the conversion code
+    // to perform additional type checking.
+    out->dna_type = s.name.c_str();
+
+
+
+#ifndef ASSIMP_BUILD_BLENDER_NO_STATS
+    ++db.stats().pointers_resolved;
+#endif
+}
 
     } // end Blend
 } // end Assimp

@@ -45,7 +45,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define AI_MAKEVERBOSEFORMAT_H_INC
 
 #include "BaseProcess.h"
-namespace Assimp {
+namespace Assimp    {
 
 // ---------------------------------------------------------------------------
 /** MakeVerboseFormatProcess: Class to convert an asset to the verbose

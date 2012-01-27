@@ -46,19 +46,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define AI_STREAMREADER_H_INCLUDED
 
 #include "ByteSwap.h"
-namespace Assimp {
+namespace Assimp    {
     namespace Intern {
 
 // --------------------------------------------------------------------------------------------
 template <typename T, bool doit>
-struct ByteSwapper {
+struct ByteSwapper    {
     void operator() (T* inout) {
         ByteSwap::Swap(inout);
     }
 };
 
 template <typename T>
-struct ByteSwapper<T,false> {
+struct ByteSwapper<T,false>    {
     void operator() (T*) {
     }
 };
@@ -81,7 +81,7 @@ struct Getter {
 
 template <bool SwapEndianess, typename T>
 struct Getter<SwapEndianess,T,false> {
-    void operator() (T* inout, bool /* le */) {
+    void operator() (T* inout, bool le) {
 
         // static branch
         ByteSwapper<T,(SwapEndianess && sizeof(T)>1)> () (inout);
@@ -159,55 +159,55 @@ public:
 
     // ---------------------------------------------------------------------
     /** Read a double from the stream  */
-    double GetF8() {
+    double GetF8()    {
         return Get<double>();
     }
 
     // ---------------------------------------------------------------------
     /** Read a signed 16 bit integer from the stream */
-    int16_t GetI2() {
+    int16_t GetI2()    {
         return Get<int16_t>();
     }
 
     // ---------------------------------------------------------------------
     /** Read a signed 8 bit integer from the stream */
-    int8_t GetI1() {
+    int8_t GetI1()    {
         return Get<int8_t>();
     }
 
     // ---------------------------------------------------------------------
     /** Read an signed 32 bit integer from the stream */
-    int32_t GetI4() {
+    int32_t GetI4()    {
         return Get<int32_t>();
     }
 
     // ---------------------------------------------------------------------
     /** Read a signed 64 bit integer from the stream */
-    int64_t GetI8() {
+    int64_t GetI8()    {
         return Get<int64_t>();
     }
 
     // ---------------------------------------------------------------------
     /** Read a unsigned 16 bit integer from the stream */
-    uint16_t GetU2() {
+    uint16_t GetU2()    {
         return Get<uint16_t>();
     }
 
     // ---------------------------------------------------------------------
     /** Read a unsigned 8 bit integer from the stream */
-    uint8_t GetU1() {
+    uint8_t GetU1()    {
         return Get<uint8_t>();
     }
 
     // ---------------------------------------------------------------------
     /** Read an unsigned 32 bit integer from the stream */
-    uint32_t GetU4() {
+    uint32_t GetU4()    {
         return Get<uint32_t>();
     }
 
     // ---------------------------------------------------------------------
     /** Read a unsigned 64 bit integer from the stream */
-    uint64_t GetU8() {
+    uint64_t GetU8()    {
         return Get<uint64_t>();
     }
 
@@ -231,7 +231,7 @@ public:
 
     // ---------------------------------------------------------------------
     /** Increase the file pointer (relative seeking)  */
-    void IncPtr(int plus) {
+    void IncPtr(int plus)    {
         current += plus;
         if (current > limit) {
             throw DeadlyImportError("End of file or read limit was reached");
@@ -240,7 +240,7 @@ public:
 
     // ---------------------------------------------------------------------
     /** Get the current file pointer */
-    int8_t* GetPtr() const {
+    int8_t* GetPtr() const    {
         return current;
     }
 
@@ -251,7 +251,7 @@ public:
      *  large chunks of data at once.
      *  @param p The new pointer, which is validated against the size
      *    limit and buffer boundaries. */
-    void SetPtr(int8_t* p) {
+    void SetPtr(int8_t* p)    {
 
         current = p;
         if (current > limit || current < buffer) {
@@ -263,7 +263,7 @@ public:
     /** Copy n bytes to an external buffer
      *  @param out Destination for copying
      *  @param bytes Number of bytes to copy */
-    void CopyAndAdvance(void* out, size_t bytes) {
+    void CopyAndAdvance(void* out, size_t bytes)    {
 
         int8_t* ur = GetPtr();
         SetPtr(ur+bytes); // fire exception if eof
@@ -274,7 +274,7 @@ public:
 
     // ---------------------------------------------------------------------
     /** Get the current offset from the beginning of the file */
-    int GetCurrentPos() const {
+    int GetCurrentPos() const    {
         return (unsigned int)(current - buffer);
     }
 
@@ -288,7 +288,7 @@ public:
      *  @param limit Maximum number of bytes to be read from
      *    the beginning of the file. Passing 0xffffffff
      *    resets the limit to the original end of the stream. */
-    void SetReadLimit(unsigned int _limit) {
+    void SetReadLimit(unsigned int _limit)    {
 
         if (0xffffffff == _limit) {
             limit = end;
@@ -304,14 +304,14 @@ public:
     // ---------------------------------------------------------------------
     /** Get the current read limit in bytes. Reading over this limit
      *  accidentially raises an exception.  */
-    int GetReadLimit() const {
+    int GetReadLimit() const    {
         return (unsigned int)(limit - buffer);
     }
 
     // ---------------------------------------------------------------------
     /** Skip to the read limit in bytes. Reading over this limit
      *  accidentially raises an exception. */
-    void SkipToReadLimit() {
+    void SkipToReadLimit()    {
         current = limit;
     }
 
@@ -328,13 +328,12 @@ private:
     // ---------------------------------------------------------------------
     /** Generic read method. ByteSwap::Swap(T*) *must* be defined */
     template <typename T>
-    T Get() {
+    T Get()    {
         if (current + sizeof(T) > limit) {
             throw DeadlyImportError("End of file or stream limit was reached");
         }
 
-        T f;
-        memcpy(&f, current, sizeof(T));
+        T f = *((const T*)current);
         Intern :: Getter<SwapEndianess,T,RuntimeSwitch>() (&f,le);
 
         current += sizeof(T);

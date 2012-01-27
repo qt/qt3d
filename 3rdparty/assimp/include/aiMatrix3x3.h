@@ -68,7 +68,7 @@ struct aiMatrix3x3
         b1(0.0f), b2(1.0f), b3(0.0f),
         c1(0.0f), c2(0.0f), c3(1.0f) {}
 
-    aiMatrix3x3 ( float _a1, float _a2, float _a3,
+    aiMatrix3x3 (    float _a1, float _a2, float _a3,
                     float _b1, float _b2, float _b3,
                     float _c1, float _c2, float _c3) :
         a1(_a1), a2(_a2), a3(_a3),
@@ -144,7 +144,7 @@ public:
      *  vector called "from" into another vector called "to".
      * Input : from[3], to[3] which both must be *normalized* non-zero vectors
      * Output: mtx[3][3] -- a 3x3 matrix in colum-major form
-     * Authors: Tomas Mller, John Hughes
+     * Authors: Tomas Möller, John Hughes
      *          "Efficiently Building a Matrix to Rotate One Vector to Another"
      *          Journal of Graphics Tools, 4(4):1-4, 1999
      */

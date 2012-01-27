@@ -115,7 +115,7 @@ public:
 
     // automatic destruction of the wrapped object when all
     // references are freed.
-    ~shared_ptr() {
+    ~shared_ptr()    {
         if (ctr) {
             ctr = ctr->decref(ptr);
         }
@@ -147,11 +147,11 @@ public:
     }
 
     // pointer access
-    inline operator T*() {
+    inline operator T*()    {
         return ptr;
     }
 
-    inline T* operator-> () const {
+    inline T* operator-> () const    {
         return ptr;
     }
 
@@ -160,7 +160,7 @@ public:
         return ptr;
     }
 
-    inline const T* get() const {
+    inline const T* get() const    {
         return ptr;
     }
 
@@ -176,7 +176,7 @@ public:
         return ctr->get();
     }
 
-    inline void reset (T* t = 0) {
+    inline void reset (T* t = 0)    {
         if (ctr) {
             ctr->decref(ptr);
         }
@@ -184,7 +184,7 @@ public:
         ctr = ptr?new detail::controller():NULL;
     }
 
-    void swap(shared_ptr & b) {
+    void swap(shared_ptr & b)    {
         std::swap(ptr, b.ptr);
         std::swap(ctr, b.ctr);
     }
@@ -252,6 +252,6 @@ inline shared_ptr<T> const_pointer_cast( shared_ptr<U> ptr)
 } // end of namespace boost
 
 #else
-# error "shared_ptr.h was already included"
+#    error "shared_ptr.h was already included"
 #endif
 #endif // INCLUDED_AI_BOOST_SCOPED_PTR

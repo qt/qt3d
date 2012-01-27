@@ -44,7 +44,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef INCLUDED_AI_BLEND_SCENEGEN_H
 #define INCLUDED_AI_BLEND_SCENEGEN_H
 
-namespace Assimp {
+namespace Assimp    {
     namespace Blender {
 
 

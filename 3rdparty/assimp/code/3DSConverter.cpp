@@ -75,11 +75,11 @@ void Discreet3DSImporter::ReplaceDefaultMaterial()
             mScene->mMaterials[i].mDiffuse.r !=
             mScene->mMaterials[i].mDiffuse.b)continue;
 
-        if (mScene->mMaterials[i].sTexDiffuse.mMapName.length()   != 0 ||
-            mScene->mMaterials[i].sTexBump.mMapName.length()      != 0 ||
-            mScene->mMaterials[i].sTexOpacity.mMapName.length()   != 0 ||
-            mScene->mMaterials[i].sTexEmissive.mMapName.length()  != 0 ||
-            mScene->mMaterials[i].sTexSpecular.mMapName.length()  != 0 ||
+        if (mScene->mMaterials[i].sTexDiffuse.mMapName.length()   != 0    ||
+            mScene->mMaterials[i].sTexBump.mMapName.length()      != 0    ||
+            mScene->mMaterials[i].sTexOpacity.mMapName.length()   != 0    ||
+            mScene->mMaterials[i].sTexEmissive.mMapName.length()  != 0    ||
+            mScene->mMaterials[i].sTexSpecular.mMapName.length()  != 0    ||
             mScene->mMaterials[i].sTexShininess.mMapName.length() != 0 )
         {
             continue;
@@ -334,7 +334,7 @@ void Discreet3DSImporter::ConvertMaterial(D3DS::Material& oldMat,
         CopyTexture(mat,oldMat.sTexReflective, aiTextureType_REFLECTION);
 
     // Store the name of the material itself, too
-    if ( oldMat.mName.length()) {
+    if ( oldMat.mName.length())    {
         aiString tex;
         tex.Set( oldMat.mName);
         mat.AddProperty( &tex, AI_MATKEY_NAME);
@@ -352,7 +352,7 @@ void Discreet3DSImporter::ConvertMeshes(aiScene* pcOut)
     aiString name;
 
     // we need to split all meshes by their materials
-    for (std::vector<D3DS::Mesh>::iterator i =  mScene->mMeshes.begin(); i != mScene->mMeshes.end();++i) {
+    for (std::vector<D3DS::Mesh>::iterator i =  mScene->mMeshes.begin(); i != mScene->mMeshes.end();++i)    {
         boost::scoped_array< std::vector<unsigned int> > aiSplit(new std::vector<unsigned int>[mScene->mMaterials.size()]);
 
         name.length = ASSIMP_itoa10(name.data,num++);
@@ -366,7 +366,7 @@ void Discreet3DSImporter::ConvertMeshes(aiScene* pcOut)
         // now generate submeshes
         for (unsigned int p = 0; p < mScene->mMaterials.size();++p)
         {
-            if (aiSplit[p].empty()) {
+            if (aiSplit[p].empty())    {
                 continue;
             }
             aiMesh* meshOut = new aiMesh();
@@ -374,8 +374,8 @@ void Discreet3DSImporter::ConvertMeshes(aiScene* pcOut)
             std::string name_parts((*i).mName);
             name_parts.append("::");
             name_parts.append(mScene->mMaterials.at(p).mName);
-
             meshOut->mName.Set(name_parts);
+
             meshOut->mPrimitiveTypes = aiPrimitiveType_TRIANGLE;
 
             // be sure to setup the correct material index
@@ -438,7 +438,7 @@ void Discreet3DSImporter::ConvertMeshes(aiScene* pcOut)
 // ------------------------------------------------------------------------------------------------
 // Add a node to the scenegraph and setup its final transformation
 void Discreet3DSImporter::AddNodeToGraph(aiScene* pcSOut,aiNode* pcOut,
-    D3DS::Node* pcIn, aiMatrix4x4& /* absTrafo */)
+    D3DS::Node* pcIn, aiMatrix4x4& absTrafo)
 {
     std::vector<unsigned int> iArray;
     iArray.reserve(3);
@@ -468,7 +468,7 @@ void Discreet3DSImporter::AddNodeToGraph(aiScene* pcSOut,aiNode* pcOut,
 
         pcOut->mNumMeshes = (unsigned int)iArray.size();
         pcOut->mMeshes = new unsigned int[iArray.size()];
-        for (unsigned int i = 0;i < iArray.size();++i) {
+        for (unsigned int i = 0;i < iArray.size();++i)    {
             const unsigned int iIndex = iArray[i];
             aiMesh* const mesh = pcSOut->mMeshes[iIndex];
 
@@ -496,7 +496,7 @@ void Discreet3DSImporter::AddNodeToGraph(aiScene* pcSOut,aiNode* pcOut,
             // Handle pivot point
             if (pivot.x || pivot.y || pivot.z)
             {
-                for (pvCurrent = mesh->mVertices;pvCurrent != pvEnd;++pvCurrent) {
+                for (pvCurrent = mesh->mVertices;pvCurrent != pvEnd;++pvCurrent)    {
                     *pvCurrent -= pivot;
                 }
             }
@@ -615,12 +615,12 @@ void Discreet3DSImporter::AddNodeToGraph(aiScene* pcSOut,aiNode* pcOut,
         // Cameras or lights define their transformation in their parent node and in the
         // corresponding light or camera chunks. However, we read and process the latter
         // to to be able to return valid cameras/lights even if no scenegraph is given.
-        for (unsigned int n = 0; n < pcSOut->mNumCameras;++n) {
+        for (unsigned int n = 0; n < pcSOut->mNumCameras;++n)    {
             if (pcSOut->mCameras[n]->mName == pcOut->mName) {
                 pcSOut->mCameras[n]->mLookAt = aiVector3D(0.f,0.f,1.f);
             }
         }
-        for (unsigned int n = 0; n < pcSOut->mNumLights;++n) {
+        for (unsigned int n = 0; n < pcSOut->mNumLights;++n)    {
             if (pcSOut->mLights[n]->mName == pcOut->mName) {
                 pcSOut->mLights[n]->mDirection = aiVector3D(0.f,0.f,1.f);
             }
@@ -741,7 +741,6 @@ void Discreet3DSImporter::GenerateNodeGraph(aiScene* pcOut)
 
             // Build a name for the node
             pcNode->mName.length = sprintf(pcNode->mName.data,"3DSMesh_%i",i);
-            //fprintf(stderr, "XXXX created dummy node: %s\n", pcNode->mName.data);
         }
 
         // Build dummy nodes for all cameras

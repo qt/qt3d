@@ -48,7 +48,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ProcessHelper.h"
 
 class FindInstancesProcessTest;
-namespace Assimp {
+namespace Assimp    {
 
 // -------------------------------------------------------------------------------
 /** @brief Get a pseudo(!)-hash representing a mesh.

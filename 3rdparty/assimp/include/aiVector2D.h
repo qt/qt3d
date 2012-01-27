@@ -108,7 +108,7 @@ struct aiVector2D
         return x != other.x || y != other.y;
     }
 
-    aiVector2D& operator= (float f) {
+    aiVector2D& operator= (float f)    {
         x = y = f;return *this;
     }
 

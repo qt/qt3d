@@ -50,7 +50,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef INCLUDED_AI_STRING_WORKERS_H
 #define INCLUDED_AI_STRING_WORKERS_H
 
-namespace Assimp {
+namespace Assimp    {
 
 // -------------------------------------------------------------------------------
 /** @brief itoa with a fixed base 10
@@ -69,7 +69,7 @@ inline unsigned int ASSIMP_itoa10( char* out, unsigned int max, int32_t number)
 
     // write the unary minus to indicate we have a negative number
     unsigned int written = 1u;
-    if (number < 0 && written < max) {
+    if (number < 0 && written < max)    {
         *out++ = '-';
         ++written;
         number = -number;
@@ -78,10 +78,10 @@ inline unsigned int ASSIMP_itoa10( char* out, unsigned int max, int32_t number)
     // We begin with the largest number that is not zero.
     int32_t cur = 1000000000; // 2147483648
     bool mustPrint = false;
-    while (written < max) {
+    while (written < max)    {
 
         const unsigned int digit = number / cur;
-        if (mustPrint || digit > 0 || 1 == cur) {
+        if (mustPrint || digit > 0 || 1 == cur)    {
             // print all future zeroes from now
             mustPrint = true;
 
@@ -136,7 +136,7 @@ inline int ASSIMP_stricmp(const char *s1, const char *s2)
 #else
 
     register char c1, c2;
-    do {
+    do    {
         c1 = tolower(*s1++);
         c2 = tolower(*s2++);
     }

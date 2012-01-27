@@ -4,8 +4,8 @@
 #define BOOST_MATH_COMMON_FACTOR_RT_HPP
 
 
-namespace boost {
-namespace math {
+namespace boost    {
+namespace math    {
 
 // TODO: use binary GCD for unsigned integers ....
 template < typename IntegerType >

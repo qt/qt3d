@@ -85,7 +85,7 @@ aiScene* BaseImporter::ReadFile(const Importer* pImp, const std::string& pFile, 
     {
         InternReadFile( pFile, sc, &filter);
 
-    } catch( const std::exception& err ) {
+    } catch( const std::exception& err )    {
         // extract error description
         mErrorText = err.what();
         DefaultLogger::get()->error(mErrorText);
@@ -98,24 +98,24 @@ aiScene* BaseImporter::ReadFile(const Importer* pImp, const std::string& pFile, 
 }
 
 // ------------------------------------------------------------------------------------------------
-void BaseImporter::SetupProperties(const Importer* /* pImp */)
+void BaseImporter::SetupProperties(const Importer* pImp)
 {
     // the default implementation does nothing
 }
 
 // ------------------------------------------------------------------------------------------------
 /*static*/ bool BaseImporter::SearchFileHeaderForToken(IOSystem* pIOHandler,
-    const std::string& pFile,
-    const char**  tokens,
-    unsigned int  numTokens,
-    unsigned int  searchBytes /* = 200 */)
+    const std::string&    pFile,
+    const char**        tokens,
+    unsigned int        numTokens,
+    unsigned int        searchBytes /* = 200 */)
 {
     ai_assert(NULL != tokens && 0 != numTokens && 0 != searchBytes);
     if (!pIOHandler)
         return false;
 
     boost::scoped_ptr<IOStream> pStream (pIOHandler->Open(pFile));
-    if (pStream.get() ) {
+    if (pStream.get() )    {
         // read 200 characters from the file
         boost::scoped_array<char> _buffer (new char[searchBytes+1 /* for the '\0' */]);
         char* buffer = _buffer.get();
@@ -130,17 +130,17 @@ void BaseImporter::SetupProperties(const Importer* /* pImp */)
         // It is not a proper handling of unicode files here ...
         // ehm ... but it works in most cases.
         char* cur = buffer,*cur2 = buffer,*end = &buffer[read];
-        while (cur != end) {
+        while (cur != end)    {
             if (*cur)
                 *cur2++ = *cur;
             ++cur;
         }
         *cur2 = '\0';
 
-        for (unsigned int i = 0; i < numTokens;++i) {
+        for (unsigned int i = 0; i < numTokens;++i)    {
             ai_assert(NULL != tokens[i]);
 
-            if (::strstr(buffer,tokens[i])) {
+            if (::strstr(buffer,tokens[i]))    {
                 DefaultLogger::get()->debug(std::string("Found positive match for header keyword: ") + tokens[i]);
                 return true;
             }
@@ -208,7 +208,7 @@ void BaseImporter::SetupProperties(const Importer* /* pImp */)
     };
     magic = reinterpret_cast<const char*>(_magic);
     boost::scoped_ptr<IOStream> pStream (pIOHandler->Open(pFile));
-    if (pStream.get() ) {
+    if (pStream.get() )    {
 
         // skip to offset
         pStream->Seek(offset,aiOrigin_SET);
@@ -402,7 +402,7 @@ namespace Assimp
 struct Assimp::BatchData
 {
     BatchData()
-        : next_id(0xffff)
+        :    next_id(0xffff)
     {}
 
     // IO system to be used for all imports
@@ -437,7 +437,7 @@ BatchLoader::BatchLoader(IOSystem* pIO)
 BatchLoader::~BatchLoader()
 {
     // delete all scenes wthat have not been polled by the user
-    for (std::list<LoadRequest>::iterator it = data->requests.begin();it != data->requests.end(); ++it) {
+    for (std::list<LoadRequest>::iterator it = data->requests.begin();it != data->requests.end(); ++it)    {
 
         delete (*it).scene;
     }
@@ -448,17 +448,17 @@ BatchLoader::~BatchLoader()
 
 
 // ------------------------------------------------------------------------------------------------
-unsigned int BatchLoader::AddLoadRequest (const std::string& file,
+unsigned int BatchLoader::AddLoadRequest    (const std::string& file,
     unsigned int steps /*= 0*/, const PropertyMap* map /*= NULL*/)
 {
     ai_assert(!file.empty());
 
     // check whether we have this loading request already
     std::list<LoadRequest>::iterator it;
-    for (it = data->requests.begin();it != data->requests.end(); ++it) {
+    for (it = data->requests.begin();it != data->requests.end(); ++it)    {
 
         // Call IOSystem's path comparison function here
-        if (data->pIOSystem->ComparePaths((*it).file,file)) {
+        if (data->pIOSystem->ComparePaths((*it).file,file))    {
 
             if (map) {
                 if (!((*it).map == *map))
@@ -478,14 +478,14 @@ unsigned int BatchLoader::AddLoadRequest (const std::string& file,
 }
 
 // ------------------------------------------------------------------------------------------------
-aiScene* BatchLoader::GetImport  (unsigned int which)
+aiScene* BatchLoader::GetImport        (unsigned int which)
 {
-    for (std::list<LoadRequest>::iterator it = data->requests.begin();it != data->requests.end(); ++it) {
+    for (std::list<LoadRequest>::iterator it = data->requests.begin();it != data->requests.end(); ++it)    {
 
-        if ((*it).id == which && (*it).loaded) {
+        if ((*it).id == which && (*it).loaded)    {
 
             aiScene* sc = (*it).scene;
-            if (!(--(*it).refCnt)) {
+            if (!(--(*it).refCnt))    {
                 data->requests.erase(it);
             }
             return sc;
@@ -498,7 +498,7 @@ aiScene* BatchLoader::GetImport  (unsigned int which)
 void BatchLoader::LoadAll()
 {
     // no threaded implementation for the moment
-    for (std::list<LoadRequest>::iterator it = data->requests.begin();it != data->requests.end(); ++it) {
+    for (std::list<LoadRequest>::iterator it = data->requests.begin();it != data->requests.end(); ++it)    {
         // force validation in debug builds
         unsigned int pp = (*it).flags;
 #ifdef _DEBUG

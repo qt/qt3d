@@ -50,7 +50,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "../include/aiTypes.h"
 
 #include "MD3FileData.h"
-namespace Assimp {
+namespace Assimp    {
 class MaterialHelper;
 
 using namespace MD3;
@@ -120,9 +120,9 @@ enum AlphaTestFunc
 struct ShaderMapBlock
 {
     ShaderMapBlock()
-         : blend_src (BLEND_NONE)
-         , blend_dest (BLEND_NONE)
-         , alpha_test (AT_NONE)
+         :    blend_src    (BLEND_NONE)
+         ,    blend_dest    (BLEND_NONE)
+         ,    alpha_test    (AT_NONE)
     {}
 
     //! Name of referenced map
@@ -145,7 +145,7 @@ struct ShaderMapBlock
 struct ShaderDataBlock
 {
     ShaderDataBlock()
-        : cull (CULL_CW)
+        :    cull    (CULL_CW)
     {}
 
     //! Name of referenced data element
@@ -224,7 +224,7 @@ public:
 
     // -------------------------------------------------------------------
     /** Returns whether the class can handle the format of the given file.
-    * See BaseImporter::CanRead() for details. */
+    * See BaseImporter::CanRead() for details.    */
     bool CanRead( const std::string& pFile, IOSystem* pIOHandler,
         bool checkSig) const;
 

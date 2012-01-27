@@ -173,14 +173,14 @@ struct aiNode
  * of animation skeletons, material libraries or camera animation paths
  * using Assimp. Most applications won't support such data.
  */
-#define AI_SCENE_FLAGS_INCOMPLETE 0x1
+#define AI_SCENE_FLAGS_INCOMPLETE    0x1
 
 /** @def AI_SCENE_FLAGS_VALIDATED
  * This flag is set by the validation postprocess-step (aiPostProcess_ValidateDS)
  * if the validation is successful. In a validated scene you can be sure that
  * any cross references in the data structure (e.g. vertex indices) are valid.
  */
-#define AI_SCENE_FLAGS_VALIDATED 0x2
+#define AI_SCENE_FLAGS_VALIDATED    0x2
 
 /** @def AI_SCENE_FLAGS_VALIDATION_WARNING
  * This flag is set by the validation postprocess-step (aiPostProcess_ValidateDS)
@@ -190,7 +190,7 @@ struct aiNode
  * In most cases you should still be able to use the import. This flag could
  * be useful for applications which don't capture Assimp's log output.
  */
-#define AI_SCENE_FLAGS_VALIDATION_WARNING   0x4
+#define AI_SCENE_FLAGS_VALIDATION_WARNING      0x4
 
 /** @def AI_SCENE_FLAGS_NON_VERBOSE_FORMAT
  * This flag is currently only set by the aiProcess_JoinIdenticalVertices step.
@@ -198,7 +198,7 @@ struct aiNode
  * verbose format anymore. In the verbose format all vertices are unique,
  * no vertex is ever referenced by more than one face.
  */
-#define AI_SCENE_FLAGS_NON_VERBOSE_FORMAT   0x8
+#define AI_SCENE_FLAGS_NON_VERBOSE_FORMAT      0x8
 
  /** @def AI_SCENE_FLAGS_TERRAIN
  * Denotes pure height-map terrain data. Pure terrains usually consist of quads,

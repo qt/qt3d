@@ -51,8 +51,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 struct aiFace;
 
-namespace Assimp {
-namespace MD5   {
+namespace Assimp    {
+namespace MD5            {
 
 // ---------------------------------------------------------------------------
 /** Represents a single element in a MD5 file
@@ -191,8 +191,8 @@ typedef std::vector< FrameDesc > FrameList;
 struct VertexDesc
 {
     VertexDesc()
-        : mFirstWeight (0)
-        , mNumWeights (0)
+        : mFirstWeight    (0)
+        , mNumWeights    (0)
     {}
 
     //! UV cordinate of the vertex
@@ -425,10 +425,10 @@ private:
     {
         bool bHad = false;
         bool running = true;
-        while (running) {
-            if ( *in == '\r' || *in == '\n') {
+        while (running)    {
+            if ( *in == '\r' || *in == '\n')    {
                  // we open files in binary mode, so there could be \r\n sequences ...
-                if (!bHad) {
+                if (!bHad)    {
                     bHad = true;
                     ++lineNumber;
                 }

@@ -44,7 +44,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define AI_TARGET_ANIMATION_H_INC
 
 
-namespace Assimp {
+namespace Assimp    {
 
 
 
@@ -65,9 +65,9 @@ public:
      *  @param _objPos Object position track. May be NULL.
      *  @param _targetObjPos Target object position track. May be NULL.
      *  @param defaultObjectPos Default object position to be used if
-     *   no animated track is available. May be NULL.
+     *      no animated track is available. May be NULL.
      *  @param defaultTargetPos Default target position to be used if
-     *   no animated track is available. May be NULL.
+     *      no animated track is available. May be NULL.
      */
     KeyIterator(const std::vector<aiVectorKey>* _objPos,
         const std::vector<aiVectorKey>* _targetObjPos,
@@ -131,8 +131,8 @@ class ASSIMP_API TargetAnimationHelper
 public:
 
     TargetAnimationHelper()
-        : targetPositions  (NULL)
-        , objectPositions  (NULL)
+        :    targetPositions        (NULL)
+        ,    objectPositions        (NULL)
     {}
 
 

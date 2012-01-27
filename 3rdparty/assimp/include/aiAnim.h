@@ -70,8 +70,8 @@ struct aiVectorKey
 
     //! Construction from a given time and key value
     aiVectorKey(double time, const aiVector3D& value)
-        : mTime (time)
-        , mValue (value)
+        :    mTime    (time)
+        ,    mValue    (value)
     {}
 
 
@@ -112,8 +112,8 @@ struct aiQuatKey
 
     /** Construction from a given time and key value */
     aiQuatKey(double time, const aiQuaternion& value)
-        : mTime (time)
-        , mValue (value)
+        :    mTime    (time)
+        ,    mValue    (value)
     {}
 
     typedef aiQuaternion elem_type;
@@ -156,8 +156,8 @@ struct aiMeshKey
 
     /** Construction from a given time and key value */
     aiMeshKey(double time, const unsigned int value)
-        : mTime (time)
-        , mValue (value)
+        :    mTime    (time)
+        ,    mValue    (value)
     {}
 
     typedef unsigned int elem_type;
@@ -381,14 +381,14 @@ struct aiAnimation
     ~aiAnimation()
     {
         // DO NOT REMOVE THIS ADDITIONAL CHECK
-        if (mNumChannels && mChannels) {
+        if (mNumChannels && mChannels)    {
             for ( unsigned int a = 0; a < mNumChannels; a++) {
                 delete mChannels[a];
             }
 
         delete [] mChannels;
         }
-        if (mNumMeshChannels && mMeshChannels) {
+        if (mNumMeshChannels && mMeshChannels)    {
             for ( unsigned int a = 0; a < mNumMeshChannels; a++) {
                 delete mMeshChannels[a];
             }
@@ -428,7 +428,7 @@ struct Interpolator
 //! @cond Never
 
 template <>
-struct Interpolator <aiQuaternion> {
+struct Interpolator    <aiQuaternion>    {
     void operator () (aiQuaternion& out,const aiQuaternion& a,
         const aiQuaternion& b, float d) const
     {
@@ -437,7 +437,7 @@ struct Interpolator <aiQuaternion> {
 }; // ! Interpolator <aiQuaternion>
 
 template <>
-struct Interpolator <unsigned int> {
+struct Interpolator    <unsigned int>    {
     void operator () (unsigned int& out,unsigned int a,
         unsigned int b, float d) const
     {
@@ -446,7 +446,7 @@ struct Interpolator <unsigned int> {
 }; // ! Interpolator <aiQuaternion>
 
 template <>
-struct Interpolator  <aiVectorKey> {
+struct Interpolator     <aiVectorKey>    {
     void operator () (aiVector3D& out,const aiVectorKey& a,
         const aiVectorKey& b, float d) const
     {
@@ -456,7 +456,7 @@ struct Interpolator  <aiVectorKey> {
 }; // ! Interpolator <aiVectorKey>
 
 template <>
-struct Interpolator <aiQuatKey>  {
+struct Interpolator <aiQuatKey>        {
     void operator () (aiQuaternion& out, const aiQuatKey a,
         const aiQuatKey& b, float d) const
     {
@@ -466,7 +466,7 @@ struct Interpolator <aiQuatKey>  {
 }; // ! Interpolator <aiQuatKey>
 
 template <>
-struct Interpolator <aiMeshKey>  {
+struct Interpolator <aiMeshKey>        {
     void operator () (unsigned int& out, const aiMeshKey a,
         const aiMeshKey& b, float d) const
     {

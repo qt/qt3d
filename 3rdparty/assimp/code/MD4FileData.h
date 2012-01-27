@@ -50,13 +50,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "../include/aiMesh.h"
 #include "../include/aiAnim.h"
 
-#if defined(_MSC_VER) ||  defined(__BORLANDC__) || defined (__BCPLUSPLUS__)
-# pragma pack(push,1)
-# define PACK_STRUCT
+#if defined(_MSC_VER) ||  defined(__BORLANDC__) ||    defined (__BCPLUSPLUS__)
+#    pragma pack(push,1)
+#    define PACK_STRUCT
 #elif defined( __GNUC__ )
-# define PACK_STRUCT __attribute__((packed))
+#    define PACK_STRUCT    __attribute__((packed))
 #else
-# error Compiler not supported
+#    error Compiler not supported
 #endif
 
 
@@ -66,17 +66,17 @@ namespace Assimp
 namespace MD4
 {
 
-#define AI_MD4_MAGIC_NUMBER_BE 'IDP4'
-#define AI_MD4_MAGIC_NUMBER_LE '4PDI'
+#define AI_MD4_MAGIC_NUMBER_BE    'IDP4'
+#define AI_MD4_MAGIC_NUMBER_LE    '4PDI'
 
 // common limitations
-#define AI_MD4_VERSION   4
-#define AI_MD4_MAXQPATH   64
-#define AI_MD4_MAX_FRAMES  2028
-#define AI_MD4_MAX_SURFACES  32
-#define AI_MD4_MAX_BONES  256
-#define AI_MD4_MAX_VERTS  4096
-#define AI_MD4_MAX_TRIANGLES 8192
+#define AI_MD4_VERSION            4
+#define AI_MD4_MAXQPATH            64
+#define AI_MD4_MAX_FRAMES        2028
+#define AI_MD4_MAX_SURFACES        32
+#define AI_MD4_MAX_BONES        256
+#define AI_MD4_MAX_VERTS        4096
+#define AI_MD4_MAX_TRIANGLES    8192
 
 // ---------------------------------------------------------------------------
 /** \brief Data structure for the MD4 main header
@@ -207,7 +207,7 @@ struct Frame
 
 // reset packing to the original value
 #if defined(_MSC_VER) ||  defined(__BORLANDC__) || defined (__BCPLUSPLUS__)
-# pragma pack( pop )
+#    pragma pack( pop )
 #endif
 #undef PACK_STRUCT
 

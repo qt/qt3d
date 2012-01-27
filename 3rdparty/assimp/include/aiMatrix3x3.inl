@@ -90,7 +90,7 @@ inline aiMatrix3x3& aiMatrix3x3::Inverse()
 {
     // Compute the reciprocal determinant
     float det = Determinant();
-    if (det == 0.0f)
+    if(det == 0.0f)
     {
         // Matrix not invertible. Setting all elements to nan is not really
         // correct in a mathematical sense but it is easy to debug for the
@@ -160,7 +160,7 @@ inline aiMatrix3x3& aiMatrix3x3::Translation( const aiVector2D& v, aiMatrix3x3& 
  * "from" into another vector called "to".
  * Input : from[3], to[3] which both must be *normalized* non-zero vectors
  * Output: mtx[3][3] -- a 3x3 matrix in colum-major form
- * Authors: Tomas Mller, John Hughes
+ * Authors: Tomas Möller, John Hughes
  *          "Efficiently Building a Matrix to Rotate One Vector to Another"
  *          Journal of Graphics Tools, 4(4):1-4, 1999
  */

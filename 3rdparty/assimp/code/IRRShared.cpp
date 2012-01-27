@@ -367,7 +367,7 @@ aiMaterial* IrrlichtBase::ParseMaterial(unsigned int& matFlags)
                     else if (prop.name == "Texture2" && cnt == 1)
                     {
                         // 2-layer material lightmapped?
-                        if (matFlags & AI_IRRMESH_MAT_lightmap) {
+                        if (matFlags & AI_IRRMESH_MAT_lightmap)    {
                             ++cnt;
                             s.Set(prop.value);
                             mat->AddProperty(&s,AI_MATKEY_TEXTURE_LIGHTMAP(0));
@@ -376,7 +376,7 @@ aiMaterial* IrrlichtBase::ParseMaterial(unsigned int& matFlags)
                             matFlags |= AI_IRRMESH_EXTRA_2ND_TEXTURE;
                         }
                         // alternatively: normal or parallax mapping
-                        else if (matFlags & AI_IRRMESH_MAT_normalmap_solid) {
+                        else if (matFlags & AI_IRRMESH_MAT_normalmap_solid)    {
                             ++cnt;
                             s.Set(prop.value);
                             mat->AddProperty(&s,AI_MATKEY_TEXTURE_NORMALS(0));
@@ -385,7 +385,7 @@ aiMaterial* IrrlichtBase::ParseMaterial(unsigned int& matFlags)
                             matFlags |= AI_IRRMESH_EXTRA_2ND_TEXTURE;
                         }
                         // or just as second diffuse texture
-                        else if (matFlags & AI_IRRMESH_MAT_solid_2layer) {
+                        else if (matFlags & AI_IRRMESH_MAT_solid_2layer)    {
                             ++cnt;
                             s.Set(prop.value);
                             mat->AddProperty(&s,AI_MATKEY_TEXTURE_DIFFUSE(1));

@@ -77,7 +77,7 @@ void BaseProcess::ExecuteOnScene( Importer* pImp)
     {
         Execute(pImp->pimpl->mScene);
 
-    } catch( const std::exception& err ) {
+    } catch( const std::exception& err )    {
 
         // extract error description
         pImp->pimpl->mErrorString = err.what();
@@ -90,7 +90,7 @@ void BaseProcess::ExecuteOnScene( Importer* pImp)
 }
 
 // ------------------------------------------------------------------------------------------------
-void BaseProcess::SetupProperties(const Importer* /* pImp */)
+void BaseProcess::SetupProperties(const Importer* pImp)
 {
     // the default implementation does nothing
 }

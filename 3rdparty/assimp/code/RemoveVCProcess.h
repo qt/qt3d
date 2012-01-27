@@ -46,7 +46,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "../include/aiMesh.h"
 
 class RemoveVCProcessTest;
-namespace Assimp {
+namespace Assimp    {
 
 // ---------------------------------------------------------------------------
 /** RemoveVCProcess: Class to exclude specific parts of the data structure

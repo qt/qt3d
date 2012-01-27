@@ -56,7 +56,7 @@ struct aiMaterial;
 struct aiNode;
 struct aiString;
 
-namespace Assimp {
+namespace Assimp    {
 
 // --------------------------------------------------------------------------------------
 /** Validates the whole ASSIMP scene data structure for correctness.

@@ -49,7 +49,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "BaseImporter.h"
 #include "../include/aiTypes.h"
 
-namespace Assimp {
+namespace Assimp    {
 
 // ---------------------------------------------------------------------------
 /** AC3D (*.ac) importer class
@@ -70,10 +70,10 @@ protected:
     struct Material
     {
         Material()
-            : rgb  (0.6f,0.6f,0.6f)
-            , spec (1.f,1.f,1.f)
-            , shin (0.f)
-            , trans (0.f)
+            :    rgb        (0.6f,0.6f,0.6f)
+            ,    spec    (1.f,1.f,1.f)
+            ,    shin    (0.f)
+            ,    trans    (0.f)
         {}
 
         // base color of the material
@@ -102,8 +102,8 @@ protected:
     struct Surface
     {
         Surface()
-            : mat  (0)
-            , flags (0)
+            :    mat        (0)
+            ,    flags    (0)
         {}
 
         unsigned int mat,flags;
@@ -116,18 +116,18 @@ protected:
     struct Object
     {
         Object()
-            : type (World)
-            , name( "" )
-            , children()
-            , texture( "" )
-            , texRepeat( 1.f, 1.f )
-            , texOffset( 0.0f, 0.0f )
-            , rotation()
-            , translation()
-            , vertices()
-            , surfaces()
-            , numRefs (0)
-            , subDiv (0)
+            :    type    (World)
+            ,    name( "" )
+            ,    children()
+            ,    texture( "" )
+            ,    texRepeat( 1.f, 1.f )
+            ,    texOffset( 0.0f, 0.0f )
+            ,    rotation()
+            ,    translation()
+            ,    vertices()
+            ,    surfaces()
+            ,    numRefs (0)
+            ,    subDiv    (0)
         {}
 
         // Type description

@@ -48,12 +48,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define AI_IOSYSTEM_H_INC
 
 #ifndef __cplusplus
-# error This header requires C++ to be used. aiFileIO.h is the \
+#    error This header requires C++ to be used. aiFileIO.h is the \
     corresponding C interface.
 #endif
 
 #include "aiTypes.h"
-namespace Assimp {
+namespace Assimp    {
 class IOStream;
 
 // ---------------------------------------------------------------------------
@@ -105,8 +105,8 @@ public:
 
 
     // -------------------------------------------------------------------
-    /** @brief Returns the system specific directory separator
-     * @return System specific directory separator
+    /**    @brief Returns the system specific directory separator
+     *    @return    System specific directory separator
      */
     virtual char getOsSeparator() const = 0;
 

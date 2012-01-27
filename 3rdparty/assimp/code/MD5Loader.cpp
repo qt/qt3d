@@ -78,7 +78,7 @@ bool MD5Importer::CanRead( const std::string& pFile, IOSystem* pIOHandler, bool 
 
     if (extension == "md5anim" || extension == "md5mesh" || extension == "md5camera")
         return true;
-    else if (!extension.length() || checkSig) {
+    else if (!extension.length() || checkSig)    {
         if (!pIOHandler)
             return true;
         const char* tokens[] = {"MD5Version"};
@@ -210,7 +210,7 @@ void MD5Importer::MakeDataUnique (MD5::MeshDesc& meshSrc)
             if (face.mIndices[0] >= meshSrc.mVertices.size())
                 throw DeadlyImportError("MD5MESH: Invalid vertex index");
 
-            if (abHad[face.mIndices[i]]) {
+            if (abHad[face.mIndices[i]])    {
                 // generate a new vertex
                 meshSrc.mVertices[iNewIndex] = meshSrc.mVertices[face.mIndices[i]];
                 face.mIndices[i] = iNewIndex++;
@@ -229,16 +229,16 @@ void MD5Importer::AttachChilds_Mesh(int iParentID,aiNode* piParent, BoneList& bo
     ai_assert(NULL != piParent && !piParent->mNumChildren);
 
     // First find out how many children we'll have
-    for (int i = 0; i < (int)bones.size();++i) {
-        if (iParentID != i && bones[i].mParentIndex == iParentID) {
+    for (int i = 0; i < (int)bones.size();++i)    {
+        if (iParentID != i && bones[i].mParentIndex == iParentID)    {
             ++piParent->mNumChildren;
         }
     }
-    if (piParent->mNumChildren) {
+    if (piParent->mNumChildren)    {
         piParent->mChildren = new aiNode*[piParent->mNumChildren];
-        for (int i = 0; i < (int)bones.size();++i) {
+        for (int i = 0; i < (int)bones.size();++i)    {
             // (avoid infinite recursion)
-            if (iParentID != i && bones[i].mParentIndex == iParentID) {
+            if (iParentID != i && bones[i].mParentIndex == iParentID)    {
                 aiNode* pc;
                 // setup a new node
                 *piParent->mChildren++ = pc = new aiNode();
@@ -263,7 +263,7 @@ void MD5Importer::AttachChilds_Mesh(int iParentID,aiNode* piParent, BoneList& bo
 
                 // the transformations for each bone are absolute, so we need to multiply them
                 // with the inverse of the absolute matrix of the parent joint
-                if (-1 != iParentID) {
+                if (-1 != iParentID)    {
                     pc->mTransformation = bones[iParentID].mInvTransform * pc->mTransformation;
                 }
 
@@ -283,14 +283,14 @@ void MD5Importer::AttachChilds_Anim(int iParentID,aiNode* piParent, AnimBoneList
     ai_assert(NULL != piParent && !piParent->mNumChildren);
 
     // First find out how many children we'll have
-    for (int i = 0; i < (int)bones.size();++i) {
-        if (iParentID != i && bones[i].mParentIndex == iParentID) {
+    for (int i = 0; i < (int)bones.size();++i)    {
+        if (iParentID != i && bones[i].mParentIndex == iParentID)    {
             ++piParent->mNumChildren;
         }
     }
-    if (piParent->mNumChildren) {
+    if (piParent->mNumChildren)    {
         piParent->mChildren = new aiNode*[piParent->mNumChildren];
-        for (int i = 0; i < (int)bones.size();++i) {
+        for (int i = 0; i < (int)bones.size();++i)    {
             // (avoid infinite recursion)
             if (iParentID != i && bones[i].mParentIndex == iParentID)
             {
@@ -324,7 +324,7 @@ void MD5Importer::LoadMD5MeshFile ()
     boost::scoped_ptr<IOStream> file( pIOHandler->Open( pFile, "rb"));
 
     // Check whether we can read from the file
-    if ( file.get() == NULL) {
+    if ( file.get() == NULL)    {
         DefaultLogger::get()->warn("Failed to read MD5MESH file: " + pFile);
         return;
     }
@@ -356,6 +356,8 @@ void MD5Importer::LoadMD5MeshFile ()
     if (pScene->mRootNode->mChildren[1]->mNumChildren) /* start at the right hierarchy level */
         SkeletonMeshBuilder skeleton_maker(pScene,pScene->mRootNode->mChildren[1]->mChildren[0]);
 #else
+    std::vector<MD5::MeshDesc>::const_iterator end = meshParser.mMeshes.end();
+
     // FIX: MD5 files exported from Blender can have empty meshes
     for (std::vector<MD5::MeshDesc>::const_iterator it  = meshParser.mMeshes.begin(),end = meshParser.mMeshes.end(); it != end;++it) {
         if (!(*it).mFaces.empty() && !(*it).mVertices.empty())
@@ -452,7 +454,7 @@ void MD5Importer::LoadMD5MeshFile ()
                 }
 
                 // process bone weights
-                for (unsigned int jub = (*iter).mFirstWeight, w = jub; w < jub + (*iter).mNumWeights;++w) {
+                for (unsigned int jub = (*iter).mFirstWeight, w = jub; w < jub + (*iter).mNumWeights;++w)    {
                     if (w >= meshSrc.mWeights.size())
                         throw DeadlyImportError("MD5MESH: Invalid weight index");
 
@@ -486,7 +488,7 @@ void MD5Importer::LoadMD5MeshFile ()
         // (however, take care that the aiFace destructor doesn't delete the mIndices array)
         mesh->mNumFaces = (unsigned int)meshSrc.mFaces.size();
         mesh->mFaces = new aiFace[mesh->mNumFaces];
-        for (unsigned int c = 0; c < mesh->mNumFaces;++c) {
+        for (unsigned int c = 0; c < mesh->mNumFaces;++c)    {
             mesh->mFaces[c].mNumIndices = 3;
             mesh->mFaces[c].mIndices = meshSrc.mFaces[c].mIndices;
             meshSrc.mFaces[c].mIndices = NULL;
@@ -538,7 +540,7 @@ void MD5Importer::LoadMD5AnimFile ()
     boost::scoped_ptr<IOStream> file( pIOHandler->Open( pFile, "rb"));
 
     // Check whether we can read from the file
-    if ( file.get() == NULL) {
+    if ( file.get() == NULL)    {
         DefaultLogger::get()->warn("Failed to read MD5ANIM file: " + pFile);
         return;
     }
@@ -552,7 +554,7 @@ void MD5Importer::LoadMD5AnimFile ()
 
     // generate and fill the output animation
     if (animParser.mAnimatedBones.empty() || animParser.mFrames.empty() ||
-        animParser.mBaseFrames.size() != animParser.mAnimatedBones.size()) {
+        animParser.mBaseFrames.size() != animParser.mAnimatedBones.size())    {
 
         DefaultLogger::get()->error("MD5ANIM: No frames or animated bones loaded");
     }
@@ -563,7 +565,7 @@ void MD5Importer::LoadMD5AnimFile ()
         aiAnimation* anim = pScene->mAnimations[0] = new aiAnimation();
         anim->mNumChannels = (unsigned int)animParser.mAnimatedBones.size();
         anim->mChannels = new aiNodeAnim*[anim->mNumChannels];
-        for (unsigned int i = 0; i < anim->mNumChannels;++i) {
+        for (unsigned int i = 0; i < anim->mNumChannels;++i)    {
             aiNodeAnim* node = anim->mChannels[i] = new aiNodeAnim();
             node->mNodeName = aiString( animParser.mAnimatedBones[i].mName );
 
@@ -582,7 +584,7 @@ void MD5Importer::LoadMD5AnimFile ()
             {
                 // now process all values in there ... read all joints
                 MD5::BaseFrameDesc* pcBaseFrame = &animParser.mBaseFrames[0];
-                for (AnimBoneList::const_iterator iter2 = animParser.mAnimatedBones.begin(); iter2 != animParser.mAnimatedBones.end();++iter2,
+                for (AnimBoneList::const_iterator iter2    = animParser.mAnimatedBones.begin(); iter2 != animParser.mAnimatedBones.end();++iter2,
                     ++pcAnimNode,++pcBaseFrame)
                 {
                     if ((*iter2).iFirstKeyIndex >= (*iter).mValues.size()) {
@@ -653,7 +655,7 @@ void MD5Importer::LoadMD5CameraFile ()
     boost::scoped_ptr<IOStream> file( pIOHandler->Open( pFile, "rb"));
 
     // Check whether we can read from the file
-    if ( file.get() == NULL) {
+    if ( file.get() == NULL)    {
         throw DeadlyImportError("Failed to read MD5CAMERA file: " + pFile);
     }
     bHadMD5Camera = true;

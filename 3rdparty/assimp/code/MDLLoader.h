@@ -52,7 +52,7 @@ struct aiNode;
 #include "MDLFileData.h"
 #include "HalfLifeFileData.h"
 
-namespace Assimp {
+namespace Assimp    {
 class MaterialHelper;
 
 using namespace MDL;
@@ -60,9 +60,9 @@ using namespace MDL;
 // --------------------------------------------------------------------------------------
 // Include file/line information in debug builds
 #ifdef ASSIMP_BUILD_DEBUG
-# define VALIDATE_FILE_SIZE(msg) SizeCheck(msg,__FILE__,__LINE__)
+#    define VALIDATE_FILE_SIZE(msg) SizeCheck(msg,__FILE__,__LINE__)
 #else
-# define VALIDATE_FILE_SIZE(msg) SizeCheck(msg)
+#    define VALIDATE_FILE_SIZE(msg) SizeCheck(msg)
 #endif
 
 // --------------------------------------------------------------------------------------
@@ -95,7 +95,7 @@ public:
 
     // -------------------------------------------------------------------
     /** Returns whether the class can handle the format of the given file.
-    * See BaseImporter::CanRead() for details. */
+    * See BaseImporter::CanRead() for details.    */
     bool CanRead( const std::string& pFile, IOSystem* pIOHandler,
         bool checkSig) const;
 

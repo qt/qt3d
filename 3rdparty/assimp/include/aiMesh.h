@@ -62,42 +62,42 @@ extern "C" {
  *  Maximum number of indices per face (polygon). */
 
 #ifndef AI_MAX_FACE_INDICES
-# define AI_MAX_FACE_INDICES 0x7fff
+#    define AI_MAX_FACE_INDICES 0x7fff
 #endif
 
 /** @def AI_MAX_BONE_WEIGHTS
  *  Maximum number of indices per face (polygon). */
 
 #ifndef AI_MAX_BONE_WEIGHTS
-# define AI_MAX_BONE_WEIGHTS 0x7fffffff
+#    define AI_MAX_BONE_WEIGHTS 0x7fffffff
 #endif
 
 /** @def AI_MAX_VERTICES
  *  Maximum number of vertices per mesh.  */
 
 #ifndef AI_MAX_VERTICES
-# define AI_MAX_VERTICES 0x7fffffff
+#    define AI_MAX_VERTICES 0x7fffffff
 #endif
 
 /** @def AI_MAX_FACES
  *  Maximum number of faces per mesh. */
 
 #ifndef AI_MAX_FACES
-# define AI_MAX_FACES 0x7fffffff
+#    define AI_MAX_FACES 0x7fffffff
 #endif
 
 /** @def AI_MAX_NUMBER_OF_COLOR_SETS
  *  Supported number of vertex color sets per mesh. */
 
 #ifndef AI_MAX_NUMBER_OF_COLOR_SETS
-# define AI_MAX_NUMBER_OF_COLOR_SETS 0x4
+#    define AI_MAX_NUMBER_OF_COLOR_SETS 0x4
 #endif // !! AI_MAX_NUMBER_OF_COLOR_SETS
 
 /** @def AI_MAX_NUMBER_OF_TEXTURECOORDS
  *  Supported number of texture coord sets (UV(W) channels) per mesh */
 
 #ifndef AI_MAX_NUMBER_OF_TEXTURECOORDS
-# define AI_MAX_NUMBER_OF_TEXTURECOORDS 0x4
+#    define AI_MAX_NUMBER_OF_TEXTURECOORDS 0x4
 #endif // !! AI_MAX_NUMBER_OF_TEXTURECOORDS
 
 // ---------------------------------------------------------------------------
@@ -323,8 +323,9 @@ enum aiPrimitiveType
     ((n) > 3 ? aiPrimitiveType_POLYGON : (aiPrimitiveType)(1u << ((n)-1)))
 
 
+
 // ---------------------------------------------------------------------------
-/** @brief An AnimMesh is an attachment to an #aiMesh stores per-vertex
+/** @brief NOT CURRENTLY IN USE. An AnimMesh is an attachment to an #aiMesh stores per-vertex
  *  animations for a particular frame.
  *
  *  You may think of an #aiAnimMesh as a `patch` for the host mesh, which
@@ -422,19 +423,20 @@ struct aiAnimMesh
     /** Check whether the anim mesh overrides a particular
      * set of vertex colors on his host mesh.
      *  @param pIndex 0<index<AI_MAX_NUMBER_OF_COLOR_SETS */
-    bool HasVertexColors( unsigned int pIndex) const {
+    bool HasVertexColors( unsigned int pIndex) const    {
         return pIndex >= AI_MAX_NUMBER_OF_COLOR_SETS ? false : mColors[pIndex] != NULL;
     }
 
     /** Check whether the anim mesh overrides a particular
      * set of texture coordinates on his host mesh.
      *  @param pIndex 0<index<AI_MAX_NUMBER_OF_TEXTURECOORDS */
-    bool HasTextureCoords( unsigned int pIndex) const {
+    bool HasTextureCoords( unsigned int pIndex) const    {
         return pIndex >= AI_MAX_NUMBER_OF_TEXTURECOORDS ? false : mTextureCoords[pIndex] != NULL;
     }
 
 #endif
 };
+
 
 // ---------------------------------------------------------------------------
 /** @brief A mesh represents a geometry or model with a single material.
@@ -589,13 +591,15 @@ struct aiMesh
      **/
     C_STRUCT aiString mName;
 
-    /** The number of attachment meshes */
+
+    /** NOT CURRENTLY IN USE. The number of attachment meshes */
     unsigned int mNumAnimMeshes;
 
-    /** Attachment meshes for this mesh, for vertex-based animation.
+    /** NOT CURRENTLY IN USE. Attachment meshes for this mesh, for vertex-based animation.
      *  Attachment meshes carry replacement data for some of the
      *  mesh'es vertex components (usually positions, normals). */
     C_STRUCT aiAnimMesh** mAnimMeshes;
+
 
 #ifdef __cplusplus
 
@@ -604,12 +608,15 @@ struct aiMesh
     {
         mNumVertices    = 0;
         mNumFaces       = 0;
+
         mNumAnimMeshes = 0;
+
         mPrimitiveTypes = 0;
         mVertices = NULL; mFaces    = NULL;
         mNormals  = NULL; mTangents = NULL;
         mBitangents = NULL;
         mAnimMeshes = NULL;
+
         for ( unsigned int a = 0; a < AI_MAX_NUMBER_OF_TEXTURECOORDS; a++)
         {
             mNumUVComponents[a] = 0;
@@ -636,17 +643,18 @@ struct aiMesh
         }
 
         // DO NOT REMOVE THIS ADDITIONAL CHECK
-        if (mNumBones && mBones) {
+        if (mNumBones && mBones)    {
             for ( unsigned int a = 0; a < mNumBones; a++) {
                 delete mBones[a];
             }
             delete [] mBones;
         }
-        if (mNumAnimMeshes && mAnimMeshes) {
+
+        if (mNumAnimMeshes && mAnimMeshes)    {
             for ( unsigned int a = 0; a < mNumAnimMeshes; a++) {
                 delete mAnimMeshes[a];
             }
-            delete [] mBones;
+            delete [] mAnimMeshes;
         }
 
         delete [] mFaces;

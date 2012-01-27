@@ -51,7 +51,7 @@ AI_WONT_RETURN void Assimp::aiAssert (const std::string &message, unsigned int u
 {
   // moved expression testing out of the function and into the macro to avoid constructing
   // two std::string on every single ai_assert test
-// if (!expression)
+//    if (!expression)
   {
     // FIX (Aramis): changed std::cerr to std::cout that the message appears in VS' output window ...
       std::cout << "File :" << file << ", line " << uiLine << " : " << message << std::endl;

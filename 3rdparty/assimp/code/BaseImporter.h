@@ -51,7 +51,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 struct aiScene;
 
-namespace Assimp {
+namespace Assimp    {
 
 class IOSystem;
 class Importer;
@@ -327,7 +327,7 @@ public: // static utilities
      */
     static bool SearchFileHeaderForToken(
         IOSystem* pIOSystem,
-        const std::string& file,
+        const std::string&    file,
         const char** tokens,
         unsigned int numTokens,
         unsigned int searchBytes = 200);
@@ -462,7 +462,7 @@ public:
      *  @return 'Load request channel' - an unique ID that can later
      *    be used to access the imported file data.
      *  @see GetImport */
-    unsigned int AddLoadRequest (
+    unsigned int AddLoadRequest    (
         const std::string& file,
         unsigned int steps = 0,
         const PropertyMap* map = NULL

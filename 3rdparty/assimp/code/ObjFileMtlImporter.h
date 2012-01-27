@@ -56,8 +56,8 @@ struct Material;
 
 
 /**
- * @class ObjFileMtlImporter
- * @brief Loads the material description from a mtl file.
+ *    @class    ObjFileMtlImporter
+ *    @brief    Loads the material description from a mtl file.
  */
 class ObjFileMtlImporter
 {
@@ -68,43 +68,43 @@ public:
     typedef std::vector<char>::const_iterator ConstDataArrayIt;
 
 public:
-    //! \brief Default constructor
+    //!    \brief    Default constructor
     ObjFileMtlImporter( std::vector<char> &buffer, const std::string &strAbsPath,
         ObjFile::Model *pModel );
 
-    //! \brief DEstructor
+    //!    \brief    DEstructor
     ~ObjFileMtlImporter();
 
 private:
-    /// Copy constructor, empty.
+    ///    Copy constructor, empty.
     ObjFileMtlImporter(const ObjFileMtlImporter &rOther);
-    /// \brief Assignment operator, returns only a reference of this instance.
+    ///    \brief    Assignment operator, returns only a reference of this instance.
     ObjFileMtlImporter &operator = (const ObjFileMtlImporter &rOther);
-    /// Load the whole material description
+    ///    Load the whole material description
     void load();
-    /// Get color data.
+    ///    Get color data.
     void getColorRGBA( aiColor3D *pColor);
-    /// Get illumination model from loaded data
+    ///    Get illumination model from loaded data
     void getIlluminationModel( int &illum_model );
-    /// Gets a float value from data.
+    ///    Gets a float value from data.
     void getFloatValue( float &value );
-    /// Creates a new material from loaded data.
+    ///    Creates a new material from loaded data.
     void createMaterial();
-    /// Get texture name from loaded data.
+    ///    Get texture name from loaded data.
     void getTexture();
 
 private:
-    //! Absolute pathname
+    //!    Absolute pathname
     std::string m_strAbsPath;
-    //! Data iterator showing to the current position in data buffer
+    //!    Data iterator showing to the current position in data buffer
     DataArrayIt m_DataIt;
-    //! Data iterator to end of buffer
+    //!    Data iterator to end of buffer
     DataArrayIt m_DataItEnd;
-    //! USed model instance
+    //!    USed model instance
     ObjFile::Model *m_pModel;
-    //! Current line in file
+    //!    Current line in file
     unsigned int m_uiLine;
-    //! Helper buffer
+    //!    Helper buffer
     char m_buffer[BUFFERSIZE];
 };
 

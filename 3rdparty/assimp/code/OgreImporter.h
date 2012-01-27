@@ -11,17 +11,13 @@ namespace Ogre
 {
 
 
-//
+//Forward declarations:
+struct SubMesh;
+
 ///For the moment just triangles, no other polygon types!
 struct Face
 {
     unsigned int VertexIndices[3];
-};
-
-struct BoneAssignment
-{
-    unsigned int BoneId;//this is, what we get from ogre
-    std::string BoneName;//this is, what we need for assimp
 };
 
 ///for a vertex->bone structur
@@ -83,25 +79,6 @@ struct Animation
     std::vector<Track> Tracks;
 };
 
-///A submesh from Ogre
-struct SubMesh
-{
-    std::string Name;
-    std::string MaterialName;
-    std::vector<Face> FaceList;
-    std::vector<aiVector3D> Positions;
-    bool HasPositions;
-    std::vector<aiVector3D> Normals;
-    bool HasNormals;
-    std::vector<aiVector3D> Uvs;
-    unsigned int NumUvs;//nearly always 2d, but assimp has always 3d texcoords
-    std::vector< std::vector<Weight> > Weights;//a list of bones for each vertex
-    int MaterialIndex;///< The Index in the Assimp Materialarray from the material witch is attached to this submesh
-    unsigned int BonesUsed;//the highest index of a bone from a bone weight, this is needed to create the assimp bone structur (converting from Vertex-Bones to Bone-Vertices)
-
-    SubMesh(): HasPositions(false), HasNormals(false), NumUvs(0), MaterialIndex(-1), BonesUsed(0) {}//initialize everything
-};
-
 ///The Main Ogre Importer Class
 class OgreImporter : public BaseImporter
 {
@@ -137,6 +114,28 @@ private:
     std::string m_MaterialLibFilename;
     IOSystem* m_CurrentIOHandler;
     aiScene *m_CurrentScene;
+};
+
+///A submesh from Ogre
+struct SubMesh
+{
+    std::string Name;
+    std::string MaterialName;
+    std::vector<Face> FaceList;
+    std::vector<aiVector3D> Positions; bool HasPositions;
+    std::vector<aiVector3D> Normals; bool HasNormals;
+    std::vector<aiVector3D> Uvs; unsigned int NumUvs;//nearly always 2d, but assimp has always 3d texcoords
+    std::vector< std::vector<Weight> > Weights;//a list of bones for each vertex
+    int MaterialIndex;///< The Index in the Assimp Materialarray from the material witch is attached to this submesh
+    unsigned int BonesUsed;//the highest index of a bone from a bone weight, this is needed to create the assimp bone structur (converting from Vertex-Bones to Bone-Vertices)
+
+    SubMesh(): HasPositions(false), HasNormals(false), NumUvs(0), MaterialIndex(-1), BonesUsed(0) {}//initialize everything
+};
+
+struct BoneAssignment
+{
+    unsigned int BoneId;//this is, what we get from ogre
+    std::string BoneName;//this is, what we need for assimp
 };
 
 }//namespace Ogre

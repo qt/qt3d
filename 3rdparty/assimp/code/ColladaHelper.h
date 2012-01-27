@@ -43,8 +43,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef AI_COLLADAHELPER_H_INC
 #define AI_COLLADAHELPER_H_INC
 
-namespace Assimp {
-namespace Collada  {
+namespace Assimp    {
+namespace Collada        {
 
 /** Collada file versions which evolved during the years ... */
 enum FormatVersion
@@ -91,12 +91,12 @@ struct Transform
 struct Camera
 {
     Camera()
-        : mOrtho  (false)
-        , mHorFov (10e10f)
-        , mVerFov (10e10f)
-        , mAspect (10e10f)
-        , mZNear  (0.1f)
-        , mZFar   (1000.f)
+        :    mOrtho  (false)
+        ,    mHorFov (10e10f)
+        ,    mVerFov (10e10f)
+        ,    mAspect (10e10f)
+        ,    mZNear  (0.1f)
+        ,    mZFar   (1000.f)
     {}
 
     // Name of camera
@@ -124,14 +124,14 @@ struct Camera
 struct Light
 {
     Light()
-        : mAttConstant     (1.f)
-        , mAttLinear       (0.f)
-        , mAttQuadratic    (0.f)
-        , mFalloffAngle    (180.f)
-        , mFalloffExponent (0.f)
-        , mPenumbraAngle  (10e10f)
-        , mOuterAngle   (10e10f)
-        , mIntensity   (1.f)
+        :    mAttConstant     (1.f)
+        ,    mAttLinear       (0.f)
+        ,    mAttQuadratic    (0.f)
+        ,    mFalloffAngle    (180.f)
+        ,    mFalloffExponent (0.f)
+        ,    mPenumbraAngle     (10e10f)
+        ,    mOuterAngle         (10e10f)
+        ,    mIntensity         (1.f)
     {}
 
     //! Type of the light source aiLightSourceType + ambient
@@ -162,7 +162,7 @@ struct Light
 struct InputSemanticMapEntry
 {
     InputSemanticMapEntry()
-        : mSet (0)
+        :    mSet    (0)
     {}
 
     //! Index of set, optional
@@ -297,7 +297,7 @@ struct Face
 struct InputChannel
 {
     InputType mType;      // Type of the data
-    size_t mIndex;    // Optional index, if multiple sets of the same data type are given
+    size_t mIndex;          // Optional index, if multiple sets of the same data type are given
     size_t mOffset;       // Index offset in the indices array of per-face indices. Don't ask, can't explain that any better.
     std::string mAccessor; // ID of the accessor where to read the actual values from.
     mutable const Accessor* mResolved; // Pointer to the accessor, if resolved. NULL else
@@ -424,14 +424,14 @@ enum ShadeType
 struct Sampler
 {
     Sampler()
-        : mWrapU  (true)
-        , mWrapV  (true)
-        , mMirrorU ()
-        , mMirrorV ()
-        , mOp   (aiTextureOp_Multiply)
-        , mUVId  (0xffffffff)
-        , mWeighting  (1.f)
-        , mMixWithPrevious (1.f)
+        :    mWrapU        (true)
+        ,    mWrapV        (true)
+        ,    mMirrorU    ()
+        ,    mMirrorV    ()
+        ,    mOp            (aiTextureOp_Multiply)
+        ,    mUVId        (0xffffffff)
+        ,    mWeighting  (1.f)
+        ,    mMixWithPrevious (1.f)
     {}
 
     /** Name of image reference
@@ -512,16 +512,16 @@ struct Effect
 
     Effect()
         : mShadeType    (Shade_Phong)
-        , mEmissive  ( 0, 0, 0, 1)
-        , mAmbient  ( 0.1f, 0.1f, 0.1f, 1)
-        , mDiffuse  ( 0.6f, 0.6f, 0.6f, 1)
-        , mSpecular  ( 0.4f, 0.4f, 0.4f, 1)
-        , mTransparent ( 0, 0, 0, 1)
+        , mEmissive        ( 0, 0, 0, 1)
+        , mAmbient        ( 0.1f, 0.1f, 0.1f, 1)
+        , mDiffuse        ( 0.6f, 0.6f, 0.6f, 1)
+        , mSpecular        ( 0.4f, 0.4f, 0.4f, 1)
+        , mTransparent    ( 0, 0, 0, 1)
         , mShininess    (10.0f)
         , mRefractIndex (1.f)
         , mReflectivity (1.f)
         , mTransparency (0.f)
-        , mDoubleSided (false)
+        , mDoubleSided    (false)
         , mWireframe    (false)
         , mFaceted      (false)
     {

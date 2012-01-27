@@ -108,8 +108,8 @@ void LWOImporter::LoadLWOBFile()
 void LWOImporter::LoadLWOBPolygons(unsigned int length)
 {
     // first find out how many faces and vertices we'll finally need
-    LE_NCONST uint16_t* const end = (LE_NCONST uint16_t*)(mFileBuffer+length);
-    LE_NCONST uint16_t* cursor  = (LE_NCONST uint16_t*)mFileBuffer;
+    LE_NCONST uint16_t* const end    = (LE_NCONST uint16_t*)(mFileBuffer+length);
+    LE_NCONST uint16_t* cursor        = (LE_NCONST uint16_t*)mFileBuffer;
 
     // perform endianess conversions
 #ifndef AI_BUILD_BIG_ENDIAN
@@ -231,7 +231,7 @@ void LWOImporter::LoadLWOBSurface(unsigned int size)
 
     GetS0(surf.mName,size);
     bool runnning = true;
-    while (runnning) {
+    while (runnning)    {
         if (mFileBuffer + 6 >= end)
             break;
 
@@ -351,7 +351,7 @@ void LWOImporter::LoadLWOBSurface(unsigned int size)
         // texture path
         case AI_LWO_TIMG:
             {
-                if (pTex) {
+                if (pTex)    {
                     GetS0(pTex->mFileName,head->length);
                 }
                 else DefaultLogger::get()->warn("LWOB: Unexpected TIMG chunk");
@@ -361,7 +361,7 @@ void LWOImporter::LoadLWOBSurface(unsigned int size)
         case AI_LWO_TVAL:
             {
                 AI_LWO_VALIDATE_CHUNK_LENGTH(head->length,TVAL,1);
-                if (pTex) {
+                if (pTex)    {
                     pTex->mStrength = (float)GetU1()/ 255.f;
                 }
                 else DefaultLogger::get()->warn("LWOB: Unexpected TVAL chunk");

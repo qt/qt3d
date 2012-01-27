@@ -9,8 +9,8 @@
 
 #include "ByteSwap.h"
 
-namespace Assimp {
-namespace IFF  {
+namespace Assimp    {
+namespace IFF        {
 
 #include "./../include/Compiler/pushpack1.h"
 

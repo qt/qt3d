@@ -47,7 +47,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 
 
-namespace Assimp {
+namespace Assimp    {
 
 // ---------------------------------------------------------------------------
 /** \brief Helper class to generate vertex buffers for standard geometric
@@ -157,7 +157,7 @@ public:
      *       /     \          | height        |
      *      /       \         |               Y
      *     /         \        |
-     *    /           \       |
+     *    /              \       |
      *   /______x______\   <- ] <- end cap
      *
      *   |-------------|   <- radius 2
