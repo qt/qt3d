@@ -1,6 +1,6 @@
 import QtQuick 1.0
 import Qt3D 1.0
-import ModelTweak 1.0
+import AssetViewer 1.0
 
 Rectangle {
     anchors.fill: parent
@@ -20,7 +20,7 @@ Rectangle {
         Text {
             id: header
             font { pixelSize: 32; italic: true }
-            text: "ModelTweaker Help"
+            text: "3D Asset Viewer Help"
             anchors.top: parent.top
             anchors.topMargin: 16
             anchors.horizontalCenter: parent.horizontalCenter

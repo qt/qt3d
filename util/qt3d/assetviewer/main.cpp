@@ -52,13 +52,14 @@ QString filename;
 
 int main(int argc, char *argv[])
 {
-    qmlRegisterType<QuickFile>("ModelTweak", 1, 0, "QuickFile");
+    qmlRegisterType<QuickFile>("AssetViewer", 1, 0, "QuickFile");
 
     QApplication app(argc, argv);
     QDeclarativeView3D view;
 
-    QString qml = q_get_qmldir(QLatin1String("qml/ModelTweak.qml"));
+    QString qml = q_get_qmldir(QLatin1String("qml/AssetViewer.qml"));
     view.setSource(QUrl::fromLocalFile(qml));
+    view.setWindowTitle(QString("3D Asset Viewer"));
 
     //disable close button
    // view.setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowMaximizeButtonHint | Qt::WindowMinimizeButtonHint);

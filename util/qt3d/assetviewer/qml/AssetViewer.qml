@@ -40,7 +40,7 @@
 
 import QtQuick 1.0
 import Qt3D 1.0
-import ModelTweak 1.0
+import AssetViewer 1.0
 import "fileHandling.js" as FileHandler
 import "Widgets"
 import "ColorUtils.js" as ColorUtils

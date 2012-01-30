@@ -1,5 +1,5 @@
 TEMPLATE = app
-TARGET = modeltweak
+TARGET = assetviewer
 CONFIG += qt warn_on
 
 INSTALL_DIRS = qml
@@ -17,9 +17,9 @@ symbian {
 }
 
 OTHER_FILES += \
-    modeltweak.rc
+    assetviewer.rc
 
-RC_FILE = modeltweak.rc
+RC_FILE = assetviewer.rc
 
 HEADERS += \
     quickfile.h

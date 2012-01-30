@@ -28,7 +28,7 @@ function save_qml(closePrompt) {
     var saveData =
         "//                 --------|  WARNING  |--------!!\n" +
         "// This is a generated file.  Modifying the text or layout of \n" +
-        "// this file will mean that the Model-Tweaker application will no \n" +
+        "// this file will mean that the 3D Asset Viewer application will no \n" +
         "// longer be able to read it. \n\n" +
         "// Changing numeric values is allowable, though care should be taken\n" +
         "// not to inadvertantly change the file structure.\n\n" +
