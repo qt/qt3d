@@ -219,7 +219,7 @@ public:
      *  #GetPropertyBool and vice versa.
      * @see SetPropertyInteger()
      */
-    void SetPropertyBool(const char* szName, bool value, bool* bWasExisting = NULL)    {
+    void SetPropertyBool(const char* szName, bool value, bool* /* bWasExisting */ = NULL)    {
         SetPropertyInteger(szName,value);
     }
 

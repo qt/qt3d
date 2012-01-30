@@ -68,8 +68,6 @@ namespace Ogre
 
 aiMaterial* OgreImporter::LoadMaterial(const std::string MaterialName) const
 {
-    const aiScene* const m_CurrentScene=this->m_CurrentScene;//make sure, that we can access but not change the scene
-
     MaterialHelper *NewMaterial=new MaterialHelper();
 
     aiString ts(MaterialName.c_str());

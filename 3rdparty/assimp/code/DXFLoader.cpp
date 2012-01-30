@@ -94,7 +94,7 @@ DXFImporter::~DXFImporter()
 
 // ------------------------------------------------------------------------------------------------
 // Returns whether the class can handle the format of the given file.
-bool DXFImporter::CanRead( const std::string& pFile, IOSystem* pIOHandler, bool checkSig) const
+bool DXFImporter::CanRead( const std::string& pFile, IOSystem*, bool) const
 {
     return SimpleExtensionCheck(pFile,"dxf");
 }

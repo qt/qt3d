@@ -128,7 +128,7 @@ const aiLoaderDesc& BlenderImporter::GetInfo () const
 
 // ------------------------------------------------------------------------------------------------
 // Setup configuration properties for the loader
-void BlenderImporter::SetupProperties(const Importer* pImp)
+void BlenderImporter::SetupProperties(const Importer* /* pImp */)
 {
     // nothing to be done for the moment
 }
@@ -601,7 +601,7 @@ void BlenderImporter::NotSupportedObjectType(const Object* obj, const char* type
 }
 
 // ------------------------------------------------------------------------------------------------
-void BlenderImporter::ConvertMesh(const Scene& in, const Object* obj, const Mesh* mesh,
+void BlenderImporter::ConvertMesh(const Scene&, const Object*, const Mesh* mesh,
     ConversionData& conv_data, TempArray<std::vector,aiMesh>&  temp
     )
 {
@@ -848,7 +848,7 @@ void BlenderImporter::ConvertMesh(const Scene& in, const Object* obj, const Mesh
 }
 
 // ------------------------------------------------------------------------------------------------
-aiCamera* BlenderImporter::ConvertCamera(const Scene& in, const Object* obj, const Camera* mesh, ConversionData& conv_data)
+aiCamera* BlenderImporter::ConvertCamera(const Scene&, const Object*, const Camera* , ConversionData&)
 {
     ScopeGuard<aiCamera> out(new aiCamera());
 
@@ -856,7 +856,7 @@ aiCamera* BlenderImporter::ConvertCamera(const Scene& in, const Object* obj, con
 }
 
 // ------------------------------------------------------------------------------------------------
-aiLight* BlenderImporter::ConvertLight(const Scene& in, const Object* obj, const Lamp* mesh, ConversionData& conv_data)
+aiLight* BlenderImporter::ConvertLight(const Scene&, const Object*, const Lamp*, ConversionData&)
 {
     ScopeGuard<aiLight> out(new aiLight());
 

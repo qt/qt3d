@@ -98,13 +98,12 @@ public:
             {
                 return 0;
             }
-            size_t filesize = fileInfo.uncompressed_size;
             unzCloseCurrentFile( m_zipFile );
         }
         return bytes_read;
     }
 
-    size_t Write(const void* pvBuffer, size_t pSize, size_t pCount)
+    size_t Write(const void* /* pvBuffer */, size_t /* pSize */, size_t /* pCount */)
     {
         return 0;
     }
@@ -122,7 +121,7 @@ public:
         return 0;
     }
 
-    aiReturn Seek(size_t pOffset, aiOrigin pOrigin)
+    aiReturn Seek(size_t /* pOffset */, aiOrigin /* pOrigin */)
     {
         return aiReturn_FAILURE;
     }

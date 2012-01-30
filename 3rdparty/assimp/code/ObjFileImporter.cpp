@@ -175,7 +175,7 @@ void ObjFileImporter::CreateDataFromImport(const ObjFile::Model* pModel, aiScene
 // ------------------------------------------------------------------------------------------------
 //    Creates all nodes of the model
 aiNode *ObjFileImporter::createNodes(const ObjFile::Model* pModel, const ObjFile::Object* pObject,
-                                     unsigned int uiMeshIndex,
+                                     unsigned int /* uiMeshIndex */,
                                      aiNode *pParent, aiScene* pScene,
                                      std::vector<aiMesh*> &MeshArray )
 {

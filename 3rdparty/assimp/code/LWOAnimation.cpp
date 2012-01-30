@@ -516,7 +516,7 @@ void AnimResolver::GetKeys(std::vector<aiVectorKey>& out,
 
 // ------------------------------------------------------------------------------------------------
 // Extract animation channel
-void AnimResolver::ExtractAnimChannel(aiNodeAnim** out, unsigned int flags /*= 0*/)
+void AnimResolver::ExtractAnimChannel(aiNodeAnim** out, unsigned int /* flags = 0 */)
 {
     *out = NULL;
 

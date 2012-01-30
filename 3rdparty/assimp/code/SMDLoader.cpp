@@ -65,7 +65,7 @@ SMDImporter::~SMDImporter()
 
 // ------------------------------------------------------------------------------------------------
 // Returns whether the class can handle the format of the given file.
-bool SMDImporter::CanRead( const std::string& pFile, IOSystem* pIOHandler, bool) const
+bool SMDImporter::CanRead( const std::string& pFile, IOSystem*, bool) const
 {
     // fixme: auto format detection
     return SimpleExtensionCheck(pFile,"smd","vta");
@@ -191,6 +191,7 @@ void SMDImporter::InternReadFile(
 void SMDImporter::LogErrorNoThrow(const char* msg)
 {
     char szTemp[1024];
+    ai_assert(strlen(msg) < 1000);
     sprintf(szTemp,"Line %i: %s",iLineNumber,msg);
     DefaultLogger::get()->error(szTemp);
 }
@@ -201,6 +202,7 @@ void SMDImporter::LogWarning(const char* msg)
 {
     char szTemp[1024];
     ai_assert(strlen(msg) < 1000);
+    sprintf(szTemp,"Line %i: %s",iLineNumber,msg);
     DefaultLogger::get()->warn(szTemp);
 }
 

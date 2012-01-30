@@ -362,8 +362,6 @@ void MS3DImporter::InternReadFile( const std::string& pFile,
                 if (len > stream.GetRemainingSize()) {
                     throw DeadlyImportError("MS3D: Model comment is too long");
                 }
-
-                const std::string& s = std::string(reinterpret_cast<char*>(stream.GetPtr()),len);
             }
 
             if (stream.GetRemainingSize() > 4 && inrange((stream >> subversion,subversion),1u,3u)) {

@@ -98,7 +98,7 @@ aiScene* BaseImporter::ReadFile(const Importer* pImp, const std::string& pFile, 
 }
 
 // ------------------------------------------------------------------------------------------------
-void BaseImporter::SetupProperties(const Importer* pImp)
+void BaseImporter::SetupProperties(const Importer*)
 {
     // the default implementation does nothing
 }
