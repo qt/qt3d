@@ -94,7 +94,7 @@ QGLTextureExtensions::QGLTextureExtensions(QOpenGLContext *ctx)
 struct QGLTEHelper
 {
     QGLTextureExtensions *d;
-//    QGLTEHelper():d(0){qWarning("INITIALISE");}
+    QGLTEHelper() : d(0) {}
 };
 
 Q_GLOBAL_STATIC(QGLTEHelper, qt_qgltehelper)
