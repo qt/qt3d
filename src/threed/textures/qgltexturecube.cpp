@@ -47,10 +47,6 @@
 #include <QOpenGLBuffer>
 #include <QOpenGLContext>
 
-#ifdef QT_OPENGL_LIB
-#include <QGLWidget>
-#endif
-
 QT_BEGIN_NAMESPACE
 
 /*!
@@ -278,7 +274,7 @@ QImage QGLTextureCube::image(QGLTextureCube::Face face) const
 
     If \a image is null, then this function is equivalent to clearImage().
 
-    \sa image(), setSize(), copyImage()
+    \sa image(), setSize()
 */
 void QGLTextureCube::setImage
         (QGLTextureCube::Face face, const QImage& image)
@@ -332,50 +328,6 @@ void QGLTextureCube::clearImage(QGLTextureCube::Face face)
         d->image = QImage();
     else
         d->otherImages[face - 1] = QImage();
-}
-
-/*!
-    Copies the contents of \a image to \a offset in this texture
-    within the current GL context.  The \a face parameter indicates
-    which face of the cube map should be altered.
-
-    Unlike setImage(), this function copies the image data to the
-    GL server immediately using \c{glTexSubImage2D()}.  This is typically
-    used to update the contents of a texture after it has been created.
-
-    It is assumed that the application has already called bind() on
-    this texture to bind it to the current GL context.
-
-    If the texture has been created in multiple contexts, only the
-    texture identifier for the current context will be updated.
-
-    This function is only available if Qt has been compiled with the
-    OpenGL library.  If that library is not present, then this function
-    does nothing.
-
-    \sa setImage(), bind()
-*/
-void QGLTextureCube::copyImage
-    (QGLTextureCube::Face face, const QImage& image, const QPoint& offset)
-{
-#ifdef QT_OPENGL_LIB
-    if (uint(face) >= 6)
-        return; // Invalid face number.
-    QImage img = QGLWidget::convertToGLFormat(image);
-    glTexSubImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + int(face),
-                    0, offset.x(), offset.y(),
-                    img.width(), img.height(), GL_RGBA,
-                    GL_UNSIGNED_BYTE, img.bits());
-#if defined(QT_OPENGL_ES_2)
-    Q_D(QGLTextureCube);
-    if (d->bindOptions & QGLTexture2D::MipmapBindOption)
-        glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
-#endif
-#else
-    Q_UNUSED(face);
-    Q_UNUSED(image);
-    Q_UNUSED(offset);
-#endif
 }
 
 /*!

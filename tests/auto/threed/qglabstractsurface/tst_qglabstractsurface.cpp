@@ -44,10 +44,6 @@
 #include "qglwindowsurface.h"
 #include "qglframebufferobjectsurface.h"
 
-#ifdef QT_OPENGL_LIB
-#include "qglpixelbuffersurface.h"
-#endif
-
 #include "qglsubsurface.h"
 #include "qopenglfunctions.h"
 

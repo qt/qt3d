@@ -47,10 +47,6 @@
 #include <QFile>
 #include <QFileInfo>
 
-#ifdef QT_OPENGL_LIB
-#include <QGLWidget>
-#endif
-
 QT_BEGIN_NAMESPACE
 
 /*!
@@ -180,11 +176,21 @@ QSize QGLTexture2D::size() const
 
 void QGLTexture2DPrivate::adjustForNPOTTextureSize()
 {
-    if (QGLContext::currentContext() && !sizeAdjusted)
+    if (QOpenGLContext::currentContext() && !sizeAdjusted)
     {
-        if (!(QGLFormat::openGLVersionFlags() & QGLFormat::OpenGL_Version_2_0)
-                && !(QGLFormat::openGLVersionFlags() & QGLFormat::OpenGL_ES_Version_2_0))
+        bool ok = false;
+        QByteArray verString(reinterpret_cast<const char *>(glGetString(GL_VERSION)));
+        QByteArray verStringCleaned;
+        QByteArray numChars("0123456789.");
+        for (int c = 0; c < verString.size() && numChars.contains(verString.at(c)); ++c)
+            verStringCleaned.append(verString.at(c));
+        float verNum = verStringCleaned.toFloat(&ok);
+        if (!ok || verNum < 2.0)
+        {
+            if (!ok)
+                qWarning() << "Could not read GL_VERSION - string was:" << verString << "- assuming no NPOT support";
             size = QGL::nextPowerOfTwo(size);
+        }
         sizeAdjusted = true;
     }
 }
@@ -250,7 +256,7 @@ QImage QGLTexture2D::image() const
 
     If \a image is null, then this function is equivalent to clearImage().
 
-    \sa image(), setSize(), copyImage(), setPixmap()
+    \sa image(), setSize(), setPixmap()
 */
 void QGLTexture2D::setImage(const QImage& image)
 {
@@ -429,44 +435,6 @@ void QGLTexture2D::setUrl(const QUrl &url)
                              */
         }
     }
-}
-
-/*!
-    Copies the contents of \a image to \a offset in this texture
-    within the current GL context.
-
-    Unlike setImage(), this function copies the image data to the
-    GL server immediately using \c{glTexSubImage2D()}.  This is typically
-    used to update the contents of a texture after it has been created.
-
-    It is assumed that the application has already called bind() on
-    this texture to bind it to the current GL context.
-
-    If the texture has been created in multiple contexts, only the
-    texture identifier for the current context will be updated.
-
-    This function is only available if Qt has been compiled with the
-    OpenGL library.  If that library is not present, then this function
-    does nothing.
-
-    \sa setImage(), bind()
-*/
-void QGLTexture2D::copyImage(const QImage& image, const QPoint& offset)
-{
-#ifdef QT_OPENGL_LIB
-    QImage img = QGLWidget::convertToGLFormat(image);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, offset.x(), offset.y(),
-                    img.width(), img.height(), GL_RGBA,
-                    GL_UNSIGNED_BYTE, img.bits());
-#if defined(QT_OPENGL_ES_2)
-    Q_D(QGLTexture2D);
-    if (d->bindOptions & QGLTexture2D::MipmapBindOption)
-        glGenerateMipmap(GL_TEXTURE_2D);
-#endif
-#else
-    Q_UNUSED(image);
-    Q_UNUSED(offset);
-#endif
 }
 
 /*!

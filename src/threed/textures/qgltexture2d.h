@@ -93,8 +93,6 @@ public:
 
     void clearImage();
 
-    void copyImage(const QImage& image, const QPoint& offset = QPoint(0, 0));
-
     BindOptions bindOptions() const;
     void setBindOptions(BindOptions options);
 

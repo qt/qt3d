@@ -52,11 +52,6 @@
 #include <QVarLengthArray>
 #include <QMap>
 
-#ifdef QT_OPENGL_LIB
-#include <QGLPixelBuffer>
-#include "qglpixelbuffersurface.h"
-#endif
-
 #if !defined(QT_NO_THREAD)
 #include <QThreadStorage>
 #include <QThread>

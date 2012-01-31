@@ -82,8 +82,6 @@ public:
     void setImage(QGLTextureCube::Face face, const QImage& image);
     void clearImage(QGLTextureCube::Face face);
 
-    void copyImage(QGLTextureCube::Face face, const QImage& image, const QPoint& offset = QPoint(0, 0));
-
     QGLTexture2D::BindOptions bindOptions() const;
     void setBindOptions(QGLTexture2D::BindOptions options);
 
