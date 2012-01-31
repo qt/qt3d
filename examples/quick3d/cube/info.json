@@ -9,7 +9,7 @@
         "Version": "1.0",
         "Identifier": "com.nokia.qtquick3d.cube_qml",
         "Depends": {
-            "com.nokia.components": "1.0",
+            "com.nokia.components": "1.0"
         },
         "Summary": "Cube QML Demo"
     }

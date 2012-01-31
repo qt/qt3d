@@ -9,7 +9,7 @@
         "Version": "1.0",
         "Identifier": "com.nokia.qtquick3d.moon",
         "Depends": {
-            "com.nokia.components": "1.0",
+            "com.nokia.components": "1.0"
         },
         "Summary": "Moon QML Demo"
     }
