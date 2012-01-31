@@ -125,6 +125,7 @@ public:
     void *value(const QGLContext *context);
     void cleanup(const QGLContext *context, void *value);
     virtual void freeResource(void *value) = 0;
+    virtual void contextDeleted(const QGLContext *) {}
 
 protected:
     QList<QGLContextGroup *> m_groups;
