@@ -1,2 +1,2 @@
 TEMPLATE = subdirs
-SUBDIRS = sceneformats imageformats
+SUBDIRS = sceneformats
