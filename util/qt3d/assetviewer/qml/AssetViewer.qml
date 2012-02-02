@@ -258,11 +258,6 @@ Rectangle {
             visible: false
         }
 
-        HelpOverlay {
-            id: helpOverlay
-            visible: false
-        }
-
         states: [
             State {
                 name: "3Views"

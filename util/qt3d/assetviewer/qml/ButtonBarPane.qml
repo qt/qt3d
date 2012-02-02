@@ -44,7 +44,7 @@ Flow {
     BlenderToggle {
         id: help
         width: buttonWidth
-        onClicked: helpOverlay.visible = true
+        onClicked: Qt.openUrlExternally("assetviewer.html");
         buttonText: "Help!"
         imageSrc: "images/help.png"
     }
