@@ -110,9 +110,6 @@ private:
     int gl_extensions_length;
 };
 
-// Copy of some definitions from <QtOpenGL/private/qgl_p.h> so that
-// we can avoid a direct dependency upon private headers in Qt.
-
 QT_END_NAMESPACE
 
 QT_END_HEADER
