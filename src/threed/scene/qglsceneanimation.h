@@ -39,12 +39,11 @@
 **
 ****************************************************************************/
 
-#ifndef QGL3DSSCENE_H
-#define QGL3DSSCENE_H
+#ifndef QGLSCENEANIMATION_H
+#define QGLSCENEANIMATION_H
 
-#include "qglabstractscene.h"
-
-#include "aiScene.h"
+#include "qt3dglobal.h"
+#include <QtCore/qobject.h>
 
 QT_BEGIN_HEADER
 
@@ -52,28 +51,29 @@ QT_BEGIN_NAMESPACE
 
 QT_MODULE(Qt3D)
 
-#include <QtCore/qurl.h>
+class QGLSceneAnimationPrivate;
 
-class QGLSceneNode;
-class QAiSceneHandler;
-
-class QAiScene : public QGLAbstractScene
+class Q_QT3D_EXPORT QGLSceneAnimation : public QObject
 {
     Q_OBJECT
-public:
-    explicit QAiScene(const aiScene *scene, QAiSceneHandler *handler);
-    virtual ~QAiScene();
+    Q_DECLARE_PRIVATE(QGLSceneAnimation)
 
-    QList<QObject *> objects() const;
-    QGLSceneNode *mainNode() const;
-    QList<QGLSceneAnimation *> animations() const;
+    Q_PROPERTY(QString name READ name DESIGNABLE false)
+
+public:
+    explicit QGLSceneAnimation(QObject *parent = 0);
+    explicit QGLSceneAnimation(const QString &name, QObject *parent = 0);
+    virtual ~QGLSceneAnimation();
+
+    QString name() const;
+
 private:
-    QGLSceneNode *m_root;
-    QList<QGLSceneAnimation *> m_animations;
+    Q_DISABLE_COPY(QGLSceneAnimation)
+    QScopedPointer<QGLSceneAnimationPrivate> d_ptr;
 };
 
 QT_END_NAMESPACE
 
 QT_END_HEADER
 
-#endif
+#endif // QGLSCENEANIMATION_H

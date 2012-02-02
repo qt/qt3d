@@ -44,6 +44,7 @@
 
 #include "qt3dglobal.h"
 #include "qglscenenode.h"
+#include "qglsceneanimation.h"
 
 #include <QtCore/qstringlist.h>
 #include <QtCore/qurl.h>
@@ -58,6 +59,7 @@ QT_MODULE(Qt3D)
 class QGLAbstractScenePrivate;
 class QIODevice;
 class QGLPickNode;
+class QGLSceneAnimation;
 
 class Q_QT3D_EXPORT QGLAbstractScene : public QObject
 {
@@ -76,6 +78,8 @@ public:
     virtual QStringList objectNames() const;
     virtual QObject *object(const QString& name) const;
     virtual QGLSceneNode *mainNode() const = 0;
+
+    virtual QList<QGLSceneAnimation *> animations() const;
 
     static QGLAbstractScene *loadScene
         (QIODevice *device, const QUrl& url, const QString& format = QString(),

@@ -50,6 +50,7 @@
 
 #include <QtQuick/qquickitem.h>
 
+#include "qdeclarativeanimation3d.h"
 #include "qglscenenode.h"
 #include "qglpainter.h"
 #include "qgraphicstransform3d.h"
@@ -87,6 +88,7 @@ class Q_QT3D_QUICK_EXPORT QDeclarativeItem3D : public QQuickItem
     Q_PROPERTY(QString meshNode READ meshNode WRITE setMeshNode NOTIFY meshNodeChanged)
     Q_PROPERTY(bool inheritEvents READ inheritEvents WRITE setInheritEvents NOTIFY inheritEventsChanged)
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
+    Q_PROPERTY(QDeclarativeListProperty<QDeclarativeAnimation3D> animations READ animations NOTIFY animationsChanged DESIGNABLE false)
     Q_CLASSINFO("DefaultProperty", "data")
 public:
     QDeclarativeItem3D(QObject *parent = 0);
@@ -151,6 +153,8 @@ public:
     bool isEnabled() const;
     void setEnabled(bool value);
 
+    QDeclarativeListProperty<QDeclarativeAnimation3D> animations();
+
     virtual void draw(QGLPainter *painter);
     virtual void initialize(QGLPainter *painter);
     bool isInitialized() const;
@@ -164,6 +168,7 @@ public:
 
 public Q_SLOTS:
     void update();
+    void updateAnimations();
 
 protected:
     virtual void drawLightingSetup(QGLPainter *painter, const QGLLightParameters *currentLight, QMatrix4x4 &currentLightTransform);
@@ -203,6 +208,7 @@ Q_SIGNALS:
     void inheritEventsChanged();
     void enabledChanged();
     void sortChildrenChanged();
+    void animationsChanged();
 
 private:
     QDeclarativeItem3DPrivate *d;

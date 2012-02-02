@@ -57,6 +57,7 @@ QT_BEGIN_NAMESPACE
 class QAiMesh;
 class QGLSceneNode;
 class QAiSceneHandler;
+class QGLSceneAnimation;
 class QGLMaterial;
 
 class QAiLoader
@@ -65,6 +66,7 @@ public:
     QAiLoader(const aiScene *scene, QAiSceneHandler* handler);
     ~QAiLoader();
     QGLSceneNode *loadMeshes();
+    QList<QGLSceneAnimation *> loadAnimations();
 
 private:
     void loadMesh(aiMesh *);
@@ -84,6 +86,7 @@ private:
     QList<QGLSceneNode *> m_meshes;
     QMap<aiNode *, QGLSceneNode *> m_nodeMap;
     QMap<QGLSceneNode *, int> m_refCounts;
+    QList<QGLSceneAnimation *> m_animations;
     bool m_hasTextures;
     bool m_hasLitMaterials;
     QGLBuilder m_builder;

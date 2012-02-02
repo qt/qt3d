@@ -69,6 +69,7 @@ QAiScene::QAiScene(const aiScene *scene, QAiSceneHandler *handler)
     Q_ASSERT(scene);
     QAiLoader loader(scene, handler);
     m_root = loader.loadMeshes();
+    m_animations = loader.loadAnimations();
 }
 
 /*!
@@ -107,6 +108,11 @@ QList<QObject *> QAiScene::objects() const
 QGLSceneNode *QAiScene::mainNode() const
 {
     return m_root;
+}
+
+QList<QGLSceneAnimation *> QAiScene::animations() const
+{
+    return m_animations;
 }
 
 QT_END_NAMESPACE

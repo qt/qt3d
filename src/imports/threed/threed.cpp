@@ -46,6 +46,7 @@
 
 #include "qdeclarativeitem3d.h"
 #include "qdeclarativemesh.h"
+#include "qdeclarativeanimation3d.h"
 #include "viewport.h"
 #include "qdeclarativeeffect.h"
 #include "scale3d.h"
@@ -88,6 +89,7 @@ public:
         qmlRegisterType<QDeclarativeEffect>(uri,1,0,"Effect");
         qmlRegisterType<QDeclarativeMesh>(uri,1,0,"Mesh");
         qmlRegisterType<QDeclarativeItem3D>(uri,1,0,"Item3D");
+        qmlRegisterType<QDeclarativeAnimation3D>(uri,1,0,"Animation3D");
         qmlRegisterType<QGLLightModel>(uri,1,0,"LightModel");
         qmlRegisterType<QGLLightParameters>(uri,1,0,"Light");
         qmlRegisterType<QGLCamera>(uri,1,0,"Camera");

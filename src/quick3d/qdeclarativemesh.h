@@ -62,6 +62,7 @@ QT_MODULE(QtQuick3D)
 class QDeclarativeMeshPrivate;
 class QGLAbstractScene;
 class QGLMaterial;
+class QGLSceneAnimation;
 
 class Q_QT3D_QUICK_EXPORT QDeclarativeMesh : public QObject, public QDeclarativeParserStatus
 {
@@ -95,9 +96,11 @@ public:
     //respective objects, and acessing these nodes.
     void setScene(QGLAbstractScene *scene);
     void initSceneObjectList();
+    void initAnimations();
     QStringList getSceneObjectNames();
     QGLSceneNode *getSceneObject();
     QGLSceneNode *getSceneObject(const QString &name);
+    QList<QGLSceneAnimation *> getAnimations();
 
     //The following functions relate to splitting the main scene into sub-branches
     int nextSceneBranchId() const;
@@ -118,6 +121,7 @@ public:
 
 Q_SIGNALS:
     void dataChanged();
+    void animationsChanged();
     void loaded();
     void optionsChanged();
     void dumpInfoChanged();

@@ -39,41 +39,60 @@
 **
 ****************************************************************************/
 
-#ifndef QGL3DSSCENE_H
-#define QGL3DSSCENE_H
-
-#include "qglabstractscene.h"
-
-#include "aiScene.h"
-
-QT_BEGIN_HEADER
+#include "qdeclarativeanimation3d.h"
+#include "qglsceneanimation.h"
 
 QT_BEGIN_NAMESPACE
 
-QT_MODULE(Qt3D)
+// -------------------------------------------------------------------------------------------------------------
 
-#include <QtCore/qurl.h>
-
-class QGLSceneNode;
-class QAiSceneHandler;
-
-class QAiScene : public QGLAbstractScene
+class QDeclarativeAnimation3DPrivate
 {
-    Q_OBJECT
 public:
-    explicit QAiScene(const aiScene *scene, QAiSceneHandler *handler);
-    virtual ~QAiScene();
-
-    QList<QObject *> objects() const;
-    QGLSceneNode *mainNode() const;
-    QList<QGLSceneAnimation *> animations() const;
-private:
-    QGLSceneNode *m_root;
-    QList<QGLSceneAnimation *> m_animations;
+    QDeclarativeAnimation3DPrivate(QDeclarativeAnimation3D *pParent, QGLSceneAnimation* pAnim) :
+        m_pParent(pParent)
+        ,m_pAnim(pAnim)
+    {
+        Q_ASSERT(m_pParent);
+    }
+    ~QDeclarativeAnimation3DPrivate()
+    {
+    }
+    QDeclarativeAnimation3D*    m_pParent;
+    QGLSceneAnimation*          m_pAnim;
 };
+
+// -------------------------------------------------------------------------------------------------------------
+
+QDeclarativeAnimation3D::QDeclarativeAnimation3D(QObject *parent) :
+    QObject(parent)
+    ,d(new QDeclarativeAnimation3DPrivate(this,0))
+{
+}
+
+QDeclarativeAnimation3D::QDeclarativeAnimation3D(QGLSceneAnimation* pAnim, QObject *parent) :
+    QObject(parent)
+    ,d(new QDeclarativeAnimation3DPrivate(this,pAnim))
+{
+    Q_ASSERT(pAnim);
+    emit nameChanged();
+}
+
+QDeclarativeAnimation3D::~QDeclarativeAnimation3D()
+{
+    delete d;
+    d = 0;
+}
+
+QString QDeclarativeAnimation3D::name() const
+{
+    Q_ASSERT(d);
+    if (d->m_pAnim) {
+        return d->m_pAnim->name();
+    } else {
+        return QString();
+    }
+}
 
 QT_END_NAMESPACE
 
-QT_END_HEADER
-
-#endif

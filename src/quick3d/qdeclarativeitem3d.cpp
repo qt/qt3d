@@ -325,6 +325,13 @@ public:
     static void pretransform_clear(QDeclarativeListProperty<QGraphicsTransform3D> *list);
     QList<QGraphicsTransform3D *> pretransforms;
 
+    // animations property
+    static int animations_count(QDeclarativeListProperty<QDeclarativeAnimation3D> *list);
+    static void animations_append(QDeclarativeListProperty<QDeclarativeAnimation3D> *list, QDeclarativeAnimation3D *);
+    static QDeclarativeAnimation3D *animations_at(QDeclarativeListProperty<QDeclarativeAnimation3D> *list, int);
+    static void animations_clear(QDeclarativeListProperty<QDeclarativeAnimation3D> *list);
+    QList<QDeclarativeAnimation3D *> animations;
+
     // transform convenience functions
     QMatrix4x4 localTransforms() const;
     QMatrix4x4 localToWorldMatrix() const;
@@ -442,6 +449,54 @@ void QDeclarativeItem3DPrivate::pretransform_clear(QDeclarativeListProperty<QGra
     }
     else
         qWarning()<<"Warning: could not find Item3D to clear of transformations";
+}
+
+int QDeclarativeItem3DPrivate::animations_count(QDeclarativeListProperty<QDeclarativeAnimation3D> *list)
+{
+    QDeclarativeItem3D *object = qobject_cast<QDeclarativeItem3D *>(list->object);
+    if (object) {
+        return object->d->animations.count();
+    } else {
+        qWarning()<<"Warning: could not find Item3D to query for animations count.";
+        return 0;
+    }
+}
+
+void QDeclarativeItem3DPrivate::animations_append(QDeclarativeListProperty<QDeclarativeAnimation3D> *list, QDeclarativeAnimation3D *item)
+{
+    QDeclarativeItem3D *object = qobject_cast<QDeclarativeItem3D *>(list->object);
+    QList<QDeclarativeAnimation3D *> *panim;
+    if (object)
+    {
+        panim = &object->d->animations;
+        if (!panim->contains(item)) {
+            panim->append(item);
+        }
+    }
+    else
+        qWarning()<<"Warning: could not find Item3D to add animation to.";
+}
+
+QDeclarativeAnimation3D* QDeclarativeItem3DPrivate::animations_at(QDeclarativeListProperty<QDeclarativeAnimation3D> *list, int idx)
+{
+    QDeclarativeItem3D *object = qobject_cast<QDeclarativeItem3D *>(list->object);
+    if (object) {
+        return object->d->animations.at(idx);
+    } else {
+        qWarning()<<"Warning: could not find Item3D to query for animations";
+        return 0;
+    }
+    return 0;
+}
+
+void QDeclarativeItem3DPrivate::animations_clear(QDeclarativeListProperty<QDeclarativeAnimation3D> *list)
+{
+    QDeclarativeItem3D *object = qobject_cast<QDeclarativeItem3D *>(list->object);
+    if (object) {
+        object->d->animations.clear();
+    }
+    else
+        qWarning()<<"Warning: could not find Item3D to clear of animations";
 }
 
 
@@ -834,12 +889,14 @@ void QDeclarativeItem3D::setMesh(QDeclarativeMesh *value)
             d->mesh->ref();
             connect(value, SIGNAL(dataChanged()), this, SIGNAL(meshChanged()));
             connect(value, SIGNAL(dataChanged()), this, SLOT(update()));
+            connect(value, SIGNAL(animationsChanged()), this, SLOT(updateAnimations()));
             d->requireBlockingEffectsCheck = true;
         }
 
         emit meshChanged();
 
         update();
+        updateAnimations();
     }
 }
 
@@ -1341,7 +1398,7 @@ void QDeclarativeItem3D::componentComplete()
             d->mainBranchId = branchNumber;
         }
         else {
-            qWarning()<< "3D item initialization failed: unable to find the specified mesh-node. Defaulting to default node.";
+            qWarning()<< "3D item initialization failed: unable to find the specified mesh-node. Defaulting to root node.";
             d->mainBranchId = 0;
         }
     }
@@ -1566,32 +1623,38 @@ void QDeclarativeItem3D::update()
                     qWarning() << "QGLSceneNode" << k.at(i)->objectName() << "from" << d->mesh->source() << "is missing texture coordinates.  Dummy coordinates are being generated, which may take some time.";
                     k.at(i)->geometry().generateTextureCoordinates();
                 }
+            }
 
-                QGLSceneNode* sceneObject;
-                if (!this->meshNode().isEmpty())
+            if (this->effect())
+            {
+                for (int i = 0; i < k.size(); ++i)
                 {
-                    sceneObject = d->mesh->getSceneObject(meshNode());
-                } else
-                    sceneObject = d->mesh->getSceneObject();
-
-                if (sceneObject)
-                {
-                    QList<QGLSceneNode*> k = n->allChildren();
-                    k.prepend(n);
-                    if (this->effect())
-                    {
-                        for (int i = 0; i < k.size(); ++i)
-                        {
-                            this->effect()->applyTo(k.at(i));
-                        }
-                    }
+                    this->effect()->applyTo(k.at(i));
                 }
             }
+
         }
         d->requireBlockingEffectsCheck = false;
     }
     if (d->viewport)
         d->viewport->update3d();
+}
+
+/*!
+    \internal
+    Update the animations property.
+    //TODO
+*/
+void QDeclarativeItem3D::updateAnimations()
+{
+    d->animations.clear();
+    if (d->mesh) {
+        const QList<QGLSceneAnimation *>& rSrcList = d->mesh->getAnimations();
+        for (int i=0; i<rSrcList.count(); ++i) {
+            d->animations.append(new QDeclarativeAnimation3D(rSrcList.at(i),0));
+        }
+    }
+    emit animationsChanged();
 }
 
 /*!
@@ -1614,6 +1677,14 @@ void QDeclarativeItem3D::setEnabled(bool value)
         d->isEnabled = value;
         emit enabledChanged();
     }
+}
+
+/*!
+    //TODO
+*/
+QDeclarativeListProperty<QDeclarativeAnimation3D> QDeclarativeItem3D::animations()
+{
+    return QDeclarativeListProperty<QDeclarativeAnimation3D>(this, 0, d->animations_append, d->animations_count, d->animations_at, d->animations_clear);
 }
 
 /*!

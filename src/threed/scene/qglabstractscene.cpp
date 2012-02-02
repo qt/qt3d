@@ -307,6 +307,15 @@ QObject *QGLAbstractScene::object(const QString& name) const
     return 0;
 }
 
+/*!
+    Returns a list of animations.
+
+    The default implementation returns empty list.
+*/
+QList<QGLSceneAnimation *> QGLAbstractScene::animations() const
+{
+    return QList<QGLSceneAnimation *>();
+}
 
 /*!
     \fn QGLSceneNode *QGLAbstractScene::mainNode() const

@@ -135,6 +135,7 @@ public:
     bool loaded;
     QString options;
     bool dumpInfo;
+    QList<QGLSceneAnimation *> originalAnimations;
 };
 
 /*!
@@ -318,6 +319,20 @@ void QDeclarativeMesh::initSceneObjectList()
 }
 
 /*!
+    \internal
+    //TODO
+*/
+void QDeclarativeMesh::initAnimations()
+{
+    qDebug("QDeclarativeMesh::initAnimations()");
+    d->originalAnimations.clear();
+    if (d->scene) {
+        const QList<QGLSceneAnimation *>& rSrcList = d->scene->animations();
+        d->originalAnimations = rSrcList;
+    }
+}
+
+/*!
     \qmlproperty QGLSceneNode Mesh::getSceneObject
 
     Get the main scene node for the \l QGLAbstractScene associated with this mesh.
@@ -351,6 +366,15 @@ QGLSceneNode *QDeclarativeMesh::getSceneObject(const QString &name)
     }
 
     return NULL;
+}
+
+/*!
+    \internal
+    //TODO
+*/
+QList<QGLSceneAnimation *> QDeclarativeMesh::getAnimations()
+{
+    return d->originalAnimations;
 }
 
 /*!
@@ -425,6 +449,7 @@ void QDeclarativeMesh::setScene(QGLAbstractScene *scene)
     else {
         QGLSceneNode *insertObject;
         initSceneObjectList();
+        initAnimations();
         if (d->meshName.isEmpty())
             insertObject = getSceneObject();
         else
@@ -451,6 +476,7 @@ void QDeclarativeMesh::setScene(QGLAbstractScene *scene)
 #endif
     }
     emit dataChanged();
+    emit animationsChanged();
     d->loaded = true;
     if (d->completed)
         emit loaded();

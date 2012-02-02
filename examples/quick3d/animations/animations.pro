@@ -14,8 +14,8 @@ QML_FILES = \
 QML_INFRA_FILES = \
     $$QML_FILES \
     qml/qtlogo.png \
-    qml/cube_rotated.dae \
-    qml/stonewal.jpg
+    qml/stonewal.jpg \
+    qml/cube_rotated.dae
 
 CATEGORY = examples
 include(../../../pkg.pri)

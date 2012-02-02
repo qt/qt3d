@@ -324,6 +324,9 @@ void DumpMesh(int i, const aiMesh* pMesh, const aiScene* pScene)
     LogPrint("  Mesh %d",i);
     LogPrint("    name = '%s'",pMesh->mName.data);
     LogPrint("    has bones: %s (%d)",pMesh->HasBones()?"YES":"no ",pMesh->mNumBones);
+    for (unsigned int i=0; i<pMesh->mNumBones; ++i) {
+        LogPrint("      bone(%02d): '%s'", i, pMesh->mBones[i]->mName.data);
+    }
 }
 void DumpNodeRecursive(int level, const aiNode* pNode, const aiScene* pScene)
 {

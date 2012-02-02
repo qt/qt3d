@@ -39,41 +39,47 @@
 **
 ****************************************************************************/
 
-#ifndef QGL3DSSCENE_H
-#define QGL3DSSCENE_H
+#ifndef QDECLARATIVEANIMATION3D_H
+#define QDECLARATIVEANIMATION3D_H
 
-#include "qglabstractscene.h"
+#include "qt3dquickglobal.h"
 
-#include "aiScene.h"
+#include <qdeclarative.h>
+#include <QtCore/qobject.h>
 
 QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
-QT_MODULE(Qt3D)
+QT_MODULE(QtQuick3D)
 
-#include <QtCore/qurl.h>
+class QDeclarativeAnimation3DPrivate;
+class QGLSceneAnimation;
 
-class QGLSceneNode;
-class QAiSceneHandler;
-
-class QAiScene : public QGLAbstractScene
+class Q_QT3D_QUICK_EXPORT QDeclarativeAnimation3D : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QString name READ name NOTIFY nameChanged DESIGNABLE false )
 public:
-    explicit QAiScene(const aiScene *scene, QAiSceneHandler *handler);
-    virtual ~QAiScene();
+    explicit QDeclarativeAnimation3D(QObject *parent = 0);
+    explicit QDeclarativeAnimation3D(QGLSceneAnimation* pAnim, QObject *parent = 0);
+    ~QDeclarativeAnimation3D();
 
-    QList<QObject *> objects() const;
-    QGLSceneNode *mainNode() const;
-    QList<QGLSceneAnimation *> animations() const;
+    QString name() const;
+
+public Q_SLOTS:
+
+Q_SIGNALS:
+    void nameChanged();
+
 private:
-    QGLSceneNode *m_root;
-    QList<QGLSceneAnimation *> m_animations;
+    QDeclarativeAnimation3DPrivate *d;
 };
 
 QT_END_NAMESPACE
 
+QML_DECLARE_TYPE(QDeclarativeAnimation3D)
+
 QT_END_HEADER
 
-#endif
+#endif // QDECLARATIVEANIMATION3D_H

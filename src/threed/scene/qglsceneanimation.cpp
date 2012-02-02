@@ -39,41 +39,55 @@
 **
 ****************************************************************************/
 
-#ifndef QGL3DSSCENE_H
-#define QGL3DSSCENE_H
-
 #include "qglabstractscene.h"
-
-#include "aiScene.h"
-
-QT_BEGIN_HEADER
+#include "qglsceneanimation.h"
 
 QT_BEGIN_NAMESPACE
 
-QT_MODULE(Qt3D)
+// ------------------------------------------------------------------------------------------------------------------------------
 
-#include <QtCore/qurl.h>
-
-class QGLSceneNode;
-class QAiSceneHandler;
-
-class QAiScene : public QGLAbstractScene
+class QGLSceneAnimationPrivate
 {
-    Q_OBJECT
 public:
-    explicit QAiScene(const aiScene *scene, QAiSceneHandler *handler);
-    virtual ~QAiScene();
+    QGLSceneAnimationPrivate();
+    ~QGLSceneAnimationPrivate();
 
-    QList<QObject *> objects() const;
-    QGLSceneNode *mainNode() const;
-    QList<QGLSceneAnimation *> animations() const;
-private:
-    QGLSceneNode *m_root;
-    QList<QGLSceneAnimation *> m_animations;
+    QString m_name;
 };
 
+QGLSceneAnimationPrivate::QGLSceneAnimationPrivate() :
+    m_name("unnamed")
+{
+}
+
+QGLSceneAnimationPrivate::~QGLSceneAnimationPrivate()
+{
+}
+
+// ------------------------------------------------------------------------------------------------------------------------------
+
+QGLSceneAnimation::QGLSceneAnimation(QObject *parent) :
+    QObject(parent)
+    ,d_ptr(new QGLSceneAnimationPrivate())
+{
+}
+
+QGLSceneAnimation::QGLSceneAnimation(const QString &name, QObject *parent) :
+    QObject(parent)
+    ,d_ptr(new QGLSceneAnimationPrivate())
+{
+    Q_D(QGLSceneAnimation);
+    d->m_name = name;
+}
+
+QGLSceneAnimation::~QGLSceneAnimation()
+{
+}
+
+QString QGLSceneAnimation::name() const
+{
+    Q_D(const QGLSceneAnimation);
+    return d->m_name;
+}
+
 QT_END_NAMESPACE
-
-QT_END_HEADER
-
-#endif

@@ -308,6 +308,21 @@ QGLSceneNode *QAiLoader::loadMeshes()
 }
 
 /*!
+    TODO: docs
+ */
+QList<QGLSceneAnimation *> QAiLoader::loadAnimations()
+{
+    Q_ASSERT(m_scene);
+    m_animations.clear();
+
+    for (unsigned int i=0; i<m_scene->mNumAnimations; ++i) {
+        m_animations.append( new QGLSceneAnimation( QString(m_scene->mAnimations[i]->mName.data), 0 ) );
+    }
+
+    return m_animations;
+}
+
+/*!
     \internal
     Search for a resource based on the given \a path.
 

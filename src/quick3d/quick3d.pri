@@ -6,11 +6,13 @@ HEADERS += \
     qdeclarativeitem3d.h \
     qdeclarativeeffect.h \
     qdeclarativemesh.h \
-    qdeclarativeviewport.h
+    qdeclarativeviewport.h \
+    qdeclarativeanimation3d.h
 
 
 SOURCES += \
     qdeclarativeeffect.cpp \
     qdeclarativeitem3d.cpp \
-    qdeclarativemesh.cpp
+    qdeclarativemesh.cpp \
+    qdeclarativeanimation3d.cpp
 

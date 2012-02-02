@@ -37,7 +37,7 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-//! [1]
+
 import QtQuick 2.0
 import Qt3D 1.0
 
@@ -48,13 +48,84 @@ Viewport {
     fillColor: "darkblue"
     objectName: "anim viewport"
 
-    camera: Camera {
-        eye: Qt.vector3d(0, 80, 200)
+    Camera {
+        id: ccc
+        eye: Qt.vector3d(0, 0, 200)
+    }
+    camera: ccc
+
+    Effect {
+        id: eee
+        texture: "stonewal.jpg"
+    }
+
+    Mesh {
+        id: test_mesh
+        source: "cube_rotated.dae"
     }
 
     Item3D {
-        mesh: Mesh { source: "cube_rotated.dae" }
-        effect: Effect { texture: "stonewal.jpg" }
+        id: test_item
+        effect: eee
+        mesh: test_mesh
+    }
+
+    Rectangle {
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.margins: 5
+        width: 200
+        height: 150
+        radius: 5
+        Text {
+            anchors.top: parent.top
+            anchors.topMargin: 5
+            anchors.left: parent.left
+            anchors.leftMargin: 5
+            text: test_item.animations.length + ( (test_item.animations.length==1)?" animation:":" animations:" )
+        }
+        Rectangle {
+            anchors.fill: parent
+            anchors.topMargin: 23
+            anchors.leftMargin: 5
+            anchors.rightMargin: 5
+            anchors.bottomMargin: 5
+            border.color: "black"
+            Item {
+                anchors.fill: parent
+                anchors.topMargin: 2
+                anchors.leftMargin: 2
+                anchors.rightMargin: 2
+                anchors.bottomMargin: 2
+                ListView {
+                    width: parent.width
+                    height: parent.height
+                    model: test_item.animations
+                    clip: true
+                    delegate: Item {
+                        width: parent.width
+                        height: 25
+                        clip: true
+                        Rectangle {
+                            anchors.fill: parent
+                            anchors.topMargin: 1
+                            anchors.leftMargin: 1
+                            anchors.rightMargin: 1
+                            anchors.bottomMargin: 1
+                            border.color: "black"
+                            color: "lightgreen"
+                            Text {
+                                anchors.top: parent.top
+                                anchors.topMargin: 1
+                                anchors.left: parent.left
+                                anchors.leftMargin: 1
+                                text: name
+                                font.pixelSize:18
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
-//! [3]
