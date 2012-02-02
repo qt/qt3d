@@ -62,9 +62,6 @@ public:
         (QOpenGLFramebufferObject *fbo, QOpenGLContext *context = 0);
     ~QGLFramebufferObjectSurface();
 
-    QOpenGLFramebufferObject *framebufferObject() const;
-    void setFramebufferObject(QOpenGLFramebufferObject *fbo);
-
     bool activate(QGLAbstractSurface *prevSurface = 0);
     void deactivate(QGLAbstractSurface *nextSurface = 0);
     QRect viewportGL() const;

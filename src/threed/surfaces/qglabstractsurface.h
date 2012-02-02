@@ -45,6 +45,7 @@
 #include "qt3dglobal.h"
 
 #include <QRect>
+#include <QScopedPointer>
 
 QT_BEGIN_HEADER
 
@@ -55,6 +56,7 @@ QT_MODULE(Qt3D)
 class QWindow;
 class QOpenGLFramebufferObject;
 class QOpenGLContext;
+class QGLAbstractSurfacePrivate;
 
 class Q_QT3D_EXPORT QGLAbstractSurface
 {
@@ -69,17 +71,14 @@ public:
         User = 1000
     };
 
-    int surfaceType() const { return m_type; }
+    int surfaceType() const;
 
-    QOpenGLContext *context() const
-    {
-        return m_context;
-    }
-
-    void setContext(QOpenGLContext *context)
-    {
-        m_context = context;
-    }
+    QOpenGLContext *context() const;
+    void setContext(QOpenGLContext *context);
+    QWindow *window() const;
+    void setWindow(QWindow *window);
+    QOpenGLFramebufferObject *framebufferObject() const;
+    void setFramebufferObject(QOpenGLFramebufferObject *framebufferObject);
 
     virtual bool activate(QGLAbstractSurface *prevSurface = 0) = 0;
     virtual void deactivate(QGLAbstractSurface *nextSurface = 0) = 0;
@@ -95,13 +94,10 @@ public:
 protected:
     QGLAbstractSurface(int surfaceType);
 
-    QOpenGLContext *m_context;
-    QWindow *m_window;
-    QOpenGLFramebufferObject *m_fbo;
-
 private:
-    int m_type;
+    QScopedPointer<QGLAbstractSurfacePrivate> d_ptr;
 
+    Q_DECLARE_PRIVATE(QGLAbstractSurface);
     Q_DISABLE_COPY(QGLAbstractSurface)
 };
 

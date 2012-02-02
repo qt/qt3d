@@ -67,7 +67,7 @@ public:
     explicit QGLContextSurface(QOpenGLContext *context)
         : QGLAbstractSurface(QGLCONTEXT_SURFACE_ID)
     {
-        m_context = context;
+        setContext(context);
     }
     ~QGLContextSurface() {}
 

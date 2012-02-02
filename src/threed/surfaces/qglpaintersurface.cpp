@@ -47,18 +47,18 @@ QT_BEGIN_NAMESPACE
 
 bool QGLPainterSurface::activate(QGLAbstractSurface *prevSurface)
 {
-    Q_ASSERT_X(QOpenGLContext::currentContext() || m_context, Q_FUNC_INFO,
+    Q_ASSERT_X(QOpenGLContext::currentContext() || context(), Q_FUNC_INFO,
                "Activating GL painter surface without GL context");
-    if (m_context)
+    if (context())
     {
-        if (m_context != QOpenGLContext::currentContext())
+        if (context() != QOpenGLContext::currentContext())
         {
-            m_context->makeCurrent(m_context->surface());
+            context()->makeCurrent(context()->surface());
         }
     }
     else
     {
-        m_context = QOpenGLContext::currentContext();
+        setContext(QOpenGLContext::currentContext());
     }
     if (!prevSurface)
         m_painter->beginNativePainting();

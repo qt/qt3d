@@ -84,8 +84,8 @@ QGLFramebufferObjectSurface::QGLFramebufferObjectSurface
     : QGLAbstractSurface(QGLAbstractSurface::FramebufferObject)
     , d_ptr(new QGLFramebufferObjectSurfacePrivate)
 {
-    m_fbo = fbo;
-    m_context = context;
+    setFramebufferObject(fbo);
+    setContext(context);
 }
 
 /*!
@@ -96,46 +96,24 @@ QGLFramebufferObjectSurface::~QGLFramebufferObjectSurface()
 }
 
 /*!
-    Returns the framebuffer object for this surface, or null if
-    it has not been set yet.
-
-    \sa setFramebufferObject()
-*/
-QOpenGLFramebufferObject *QGLFramebufferObjectSurface::framebufferObject() const
-{
-    return m_fbo;
-}
-
-/*!
-    Sets the framebuffer object for this surface to \a fbo.
-
-    \sa framebufferObject()
-*/
-void QGLFramebufferObjectSurface::setFramebufferObject
-        (QOpenGLFramebufferObject *fbo)
-{
-    m_fbo = fbo;
-}
-
-/*!
     \reimp
 */
 bool QGLFramebufferObjectSurface::activate(QGLAbstractSurface *prevSurface)
 {
     Q_UNUSED(prevSurface);
     bool success = false;
-    if (m_context) {
-        if (!QOpenGLContext::areSharing(QOpenGLContext::currentContext(), m_context))
+    if (context()) {
+        if (!QOpenGLContext::areSharing(QOpenGLContext::currentContext(), context()))
         {
-            m_context->makeCurrent(m_context->surface());
+            context()->makeCurrent(context()->surface());
         }
     } else {
-        m_context = QOpenGLContext::currentContext();
+        setContext(QOpenGLContext::currentContext());
     }
 
     if (isValid())
     {
-        success = m_fbo->bind();
+        success = framebufferObject()->bind();
     }
 #ifndef QT_NO_DEBUG_STREAM
     else
@@ -151,16 +129,16 @@ bool QGLFramebufferObjectSurface::activate(QGLAbstractSurface *prevSurface)
 */
 void QGLFramebufferObjectSurface::deactivate(QGLAbstractSurface *nextSurface)
 {
-    if (m_fbo) {
+    if (framebufferObject()) {
         if (nextSurface && nextSurface->surfaceType() == FramebufferObject) {
             // If we are about to switch to another fbo that is on the
             // same context, then don't bother doing the release().
             // This saves an unnecessary glBindFramebuffer(0) call.
             if (static_cast<QGLFramebufferObjectSurface *>(nextSurface)
-                    ->context() == m_context)
+                    ->context() == context())
                 return;
         }
-        m_fbo->release();
+        framebufferObject()->release();
     }
 }
 
@@ -169,8 +147,8 @@ void QGLFramebufferObjectSurface::deactivate(QGLAbstractSurface *nextSurface)
 */
 QRect QGLFramebufferObjectSurface::viewportGL() const
 {
-    if (m_fbo)
-        return QRect(QPoint(0, 0), m_fbo->size());
+    if (framebufferObject())
+        return QRect(QPoint(0, 0), framebufferObject()->size());
     else
         return QRect();
 }
@@ -180,7 +158,7 @@ QRect QGLFramebufferObjectSurface::viewportGL() const
 */
 bool QGLFramebufferObjectSurface::isValid() const
 {
-    return QGLAbstractSurface::isValid() && m_fbo && m_context;
+    return QGLAbstractSurface::isValid() && framebufferObject() && context();
 }
 
 QT_END_NAMESPACE

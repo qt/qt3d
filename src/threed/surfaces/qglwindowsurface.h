@@ -59,9 +59,6 @@ public:
     explicit QGLWindowSurface(QWindow *window);
     ~QGLWindowSurface();
 
-    QWindow *window() const;
-    void setWindow(QWindow *window);
-
     bool activate(QGLAbstractSurface *prevSurface = 0);
     void deactivate(QGLAbstractSurface *nextSurface = 0);
     QRect viewportGL() const;

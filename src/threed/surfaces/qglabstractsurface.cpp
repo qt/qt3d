@@ -50,6 +50,7 @@
 #include <QOpenGLFramebufferObject>
 #include <QOpenGLContext>
 #include <QSurface>
+#include <qglobal.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -107,6 +108,32 @@ QT_BEGIN_NAMESPACE
     \sa QGLPixelBufferSurface, QGLPainter::pushSurface()
 */
 
+class QGLAbstractSurfacePrivate
+{
+public:
+    QGLAbstractSurfacePrivate(QGLAbstractSurface::SurfaceType surfaceType);
+    ~QGLAbstractSurfacePrivate();
+
+    QOpenGLContext *context;
+    QWindow *window;
+    QOpenGLFramebufferObject *fbo;
+    int type;
+};
+
+QGLAbstractSurfacePrivate::QGLAbstractSurfacePrivate(QGLAbstractSurface::SurfaceType surfaceType)
+    : context(0)
+    , window(0)
+    , fbo(0)
+    , type(surfaceType)
+{
+    // nothing to do here
+}
+
+QGLAbstractSurfacePrivate::~QGLAbstractSurfacePrivate()
+{
+    // nothing to do here - objects are not owned by us
+}
+
 /*!
     \enum QGLAbstractSurface::SurfaceType
     This enum defines the type of a QGLAbstractSurface.
@@ -124,11 +151,9 @@ QT_BEGIN_NAMESPACE
     Constructs an OpenGL drawing surface of the specified \a surfaceType.
 */
 QGLAbstractSurface::QGLAbstractSurface(int surfaceType)
-    : m_context(0)
-    , m_window(0)
-    , m_fbo(0)
-    , m_type(surfaceType)
+    : d_ptr(new QGLAbstractSurfacePrivate((QGLAbstractSurface::SurfaceType)surfaceType))
 {
+    Q_ASSERT(surfaceType >= Window);
 }
 
 /*!
@@ -136,17 +161,19 @@ QGLAbstractSurface::QGLAbstractSurface(int surfaceType)
 */
 QGLAbstractSurface::~QGLAbstractSurface()
 {
+    // nothing to do - the scoped pointer will delete the d_ptr
 }
 
 /*!
-    \fn int QGLAbstractSurface::surfaceType() const
-
     Returns the type of this surface.
 */
+int QGLAbstractSurface::surfaceType() const
+{
+    Q_D(const QGLAbstractSurface);
+    return d->type;
+}
 
 /*!
-    \fn QOpenGLContext *context() const
-
     Returns the OpenGL context which is associated with this surface, if any.
     When this surface is first activated, if this value is null then it will be
     set to the context current at that time.
@@ -155,16 +182,70 @@ QGLAbstractSurface::~QGLAbstractSurface()
 
     \sa setContext()
 */
+QOpenGLContext *QGLAbstractSurface::context() const
+{
+    Q_D(const QGLAbstractSurface);
+    return d->context;
+}
 
 /*!
-    \fn void context(QOpenGLContext *context)
-
     Sets the OpenGL context which is to be associated with this surface.
     When this surface is first activated, if this value is null then it will be
     set to the context current at that time.
 
     \sa context()
 */
+void QGLAbstractSurface::setContext(QOpenGLContext *context)
+{
+    Q_D(QGLAbstractSurface);
+    d->context = context;
+}
+
+/*!
+    Returns the QWindow which is associated with this surface if any.
+    The default value is null.
+
+    \sa setWindow()
+*/
+QWindow *QGLAbstractSurface::window() const
+{
+    Q_D(const QGLAbstractSurface);
+    return d->window;
+}
+
+/*!
+    Sets the QWindow which is to be associated with this surface to be \a window.
+
+    \sa window()
+*/
+void QGLAbstractSurface::setWindow(QWindow *window)
+{
+    Q_D(QGLAbstractSurface);
+    d->window = window;
+}
+
+/*!
+    Returns the QOpenGLFramebufferObject which is associated with this surface if any.
+    The default value is null.
+
+    \sa setFramebufferObject()
+*/
+QOpenGLFramebufferObject *QGLAbstractSurface::framebufferObject() const
+{
+    Q_D(const QGLAbstractSurface);
+    return d->fbo;
+}
+
+/*!
+    Sets the QOpenGLFramebufferObject which is to be associated with this surface to be \a framebufferObject.
+
+    \sa framebufferObject()
+*/
+void QGLAbstractSurface::setFramebufferObject(QOpenGLFramebufferObject *framebufferObject)
+{
+    Q_D(QGLAbstractSurface);
+    d->fbo = framebufferObject;
+}
 
 /*!
     \fn void QGLAbstractSurface::activate(QGLAbstractSurface *prevSurface)
@@ -212,15 +293,15 @@ QRect QGLAbstractSurface::viewportRect() const
 
     QRect view = viewportGL();
     int height = 0;
-    if (m_type == Window)
+    if (surfaceType() == Window)
     {
-        Q_ASSERT(m_window);
-        height = m_window->height();
+        Q_ASSERT(window());
+        height = window()->height();
     }
-    else if (m_type == FramebufferObject)
+    else if (surfaceType() == FramebufferObject)
     {
-        Q_ASSERT(m_fbo);
-        height = m_fbo->size().height();
+        Q_ASSERT(framebufferObject());
+        height = framebufferObject()->size().height();
     }
 
     return QRect(view.x(), height - (view.y() + view.height()),

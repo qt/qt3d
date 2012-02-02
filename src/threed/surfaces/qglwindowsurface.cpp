@@ -84,65 +84,42 @@ QGLWindowSurface::~QGLWindowSurface()
 }
 
 /*!
-    Returns the window that is underlying this surface.  By default this
-    value is null.
-
-    \sa setWindow()
-*/
-QWindow *QGLWindowSurface::window() const
-{
-    return m_window;
-}
-
-/*!
-    Sets the \a window that is underlying this surface. If \a window is null,
-    then this surface is invalid, that is isValid() will return null.
-
-    The window should have a surfaceType() of QWindow::OpenGLSurface.
-    \sa window()
-*/
-void QGLWindowSurface::setWindow(QWindow *window)
-{
-    m_window = window;
-}
-
-/*!
     \reimp
 */
 bool QGLWindowSurface::activate(QGLAbstractSurface *prevSurface)
 {
     Q_UNUSED(prevSurface);
-    Q_ASSERT_X(QOpenGLContext::currentContext() || m_context, Q_FUNC_INFO,
+    Q_ASSERT_X(QOpenGLContext::currentContext() || context(), Q_FUNC_INFO,
                "Activating GL window surface without GL context");
-    if (m_context)
+    if (context())
     {
-        if (m_context != QOpenGLContext::currentContext())
+        if (context() != QOpenGLContext::currentContext())
         {
-            m_context->makeCurrent(m_window);
+            context()->makeCurrent(window());
         }
     }
     else
     {
-        m_context = QOpenGLContext::currentContext();
+        setContext(QOpenGLContext::currentContext());
     }
-    if (m_window)
+    if (window())
     {
 #ifndef QT_NO_DEBUG_STREAM
-        if (m_context->surface() != m_window)
+        if (context()->surface() != window())
             qWarning() << "Attempt to activate GL window surface on wrong context";
 #endif
     }
     else
     {
-        m_window = static_cast<QWindow*>(m_context->surface());
+        setWindow(static_cast<QWindow*>(context()->surface()));
     }
 #ifndef QT_NO_DEBUG_STREAM
-    if (!m_context->surface() || m_context->surface()->surfaceType() != QSurface::Window)
+    if (!context()->surface() || context()->surface()->surfaceType() != QSurface::Window)
         qWarning() << "Attempt to activate GL window surface on bad context";
     if (!isValid())
     {
         qWarning() << "Attempt to activate invalid window surface";
-        if (m_window && !m_window->geometry().isValid())
+        if (window() && !window()->geometry().isValid())
         {
             qWarning() << "Maybe set the window size, eg view.resize(800, 600)..?";
         }
@@ -165,8 +142,8 @@ void QGLWindowSurface::deactivate(QGLAbstractSurface *nextSurface)
 */
 QRect QGLWindowSurface::viewportGL() const
 {
-    if (m_window)
-        return m_window->geometry();    // Origin assumed to be (0, 0).
+    if (window())
+        return window()->geometry();    // Origin assumed to be (0, 0).
     else
         return QRect();
 }
@@ -176,7 +153,7 @@ QRect QGLWindowSurface::viewportGL() const
 */
 bool QGLWindowSurface::isValid() const
 {
-    return QGLAbstractSurface::isValid() && m_window;
+    return QGLAbstractSurface::isValid() && window();
 }
 
 QT_END_NAMESPACE

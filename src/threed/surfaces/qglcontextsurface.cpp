@@ -50,35 +50,35 @@ QT_BEGIN_NAMESPACE
 bool QGLContextSurface::activate(QGLAbstractSurface *prevSurface)
 {
     Q_UNUSED(prevSurface);
-    Q_ASSERT_X(QOpenGLContext::currentContext() || m_context,
+    Q_ASSERT_X(QOpenGLContext::currentContext() || context(),
                Q_FUNC_INFO,
                "Activating GL contex surface without GL context");
-    if (m_context)
+    if (context())
     {
-        if (m_context != QOpenGLContext::currentContext())
+        if (context() != QOpenGLContext::currentContext())
         {
-            m_context->makeCurrent(m_window);
+            context()->makeCurrent(window());
         }
     }
     else
     {
-        m_context = QOpenGLContext::currentContext();
+        setContext(QOpenGLContext::currentContext());
     }
     // Once we have used this context with a window remember that window and
     // complain if it is used with another window, since that will affect the
     // viewport and other rendering assumptions.
-    if (!m_window)
+    if (!window())
     {
 #ifndef QT_NO_DEBUG_STREAM
-        if (!m_context->surface() || m_context->surface()->surfaceType() == QSurface::Window)
+        if (!context()->surface() || context()->surface()->surfaceType() == QSurface::Window)
             qWarning() << "Attempt to access context without GL window";
 #endif
-        m_window = static_cast<QWindow*>(m_context->surface());
+        setWindow(static_cast<QWindow*>(context()->surface()));
     }
 #ifndef QT_NO_DEBUG_STREAM
     else
     {
-        if (m_context->surface() != m_window)
+        if (context()->surface() != window())
             qWarning() << "Attempt to render in wrong window for context";
     }
 #endif
@@ -93,9 +93,9 @@ void QGLContextSurface::deactivate(QGLAbstractSurface *nextSurface)
 QRect QGLContextSurface::viewportGL() const
 {
     QRect r;
-    if (m_window)
+    if (window())
     {
-        r = m_window->geometry();
+        r = window()->geometry();
     }
 #ifndef QT_NO_DEBUG_STREAM
     else
@@ -110,8 +110,8 @@ QRect QGLContextSurface::viewportGL() const
 bool QGLContextSurface::isValid() const
 {
     bool winOK = true;
-    if (m_window)
-        winOK = m_window->surfaceType() == QWindow::OpenGLSurface;
+    if (window())
+        winOK = window()->surfaceType() == QWindow::OpenGLSurface;
     return isValid() && winOK;
 }
 
