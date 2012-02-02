@@ -8,9 +8,6 @@
         "MainQML": "mt.qml",
         "Version": "1.0",
         "Identifier": "com.nokia.qtquick3d.monkeygod",
-        "Depends": {
-            "com.nokia.components": "1.0"
-        },
         "Summary": "MonkeyGod QML Demo"
     }
 }

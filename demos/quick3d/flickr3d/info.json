@@ -8,9 +8,6 @@
         "MainQML": "mt.qml",
         "Version": "1.0",
         "Identifier": "com.nokia.qtquick3d.flickr3d",
-        "Depends": {
-            "com.nokia.components": "1.0"
-        },
         "Summary": "Flickr3d QML Demo"
     }
 }

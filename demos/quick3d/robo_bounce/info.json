@@ -8,9 +8,6 @@
         "MainQML": "mt.qml",
         "Version": "1.0",
         "Identifier": "com.nokia.qtquick3d.robobounce",
-        "Depends": {
-            "com.nokia.components": "1.0"
-        },
         "Summary": "Robo Bounce QML Demo"
     }
 }
