@@ -1550,10 +1550,10 @@ QGLSceneNode *QGLSceneNode::findSceneNode(QString &nodePath)
 QGLSceneNode *QGLSceneNode::findSceneNode(QStringList &nodePath)
 {
     //Skip objects with blank names
-    if (objectName()!="")
+    if (!objectName().isEmpty())
     {
         //If nodePath list's head is empty, delete it
-        while (nodePath.first()=="")
+        while (nodePath.first().isEmpty())
             nodePath.removeFirst();
         //If nodePath list is empty, fail test (return null)
         if (nodePath.isEmpty())
@@ -1609,6 +1609,9 @@ QGLSceneNode *QGLSceneNode::findSceneNode(QStringList &nodePath)
 QGLSceneNode *QGLSceneNode::get(const QString &name, QObject *parent, bool forceCopy)
 {
     //function stub only - not for use; api review only
+    Q_UNUSED(name);
+    Q_UNUSED(parent);
+    Q_UNUSED(forceCopy);
     return 0;
 }
 
@@ -1652,6 +1655,9 @@ QGLSceneNode *QGLSceneNode::get(const QString &name, QObject *parent, bool force
 QGLSceneNode *QGLSceneNode::get(const QStringList &names, QObject *parent, bool forceCopy)
 {
     //function stub only - not for use; api review only
+    Q_UNUSED(names);
+    Q_UNUSED(parent);
+    Q_UNUSED(forceCopy);
     return 0;
 }
 
@@ -1696,6 +1702,8 @@ QGLSceneNode *QGLSceneNode::get(const QStringList &names, QObject *parent, bool 
 QGLSceneNode *QGLSceneNode::except(const QString &name, QObject *parent)
 {
     //function stub only - not for use; api review only
+    Q_UNUSED(name);
+    Q_UNUSED(parent);
     return 0;
 }
 
@@ -1739,6 +1747,8 @@ QGLSceneNode *QGLSceneNode::except(const QString &name, QObject *parent)
 QGLSceneNode *QGLSceneNode::except(const QStringList &names, QObject *parent)
 {
     //function stub only - not for use; api review only
+    Q_UNUSED(names);
+    Q_UNUSED(parent);
     return 0;
 }
 

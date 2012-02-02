@@ -113,11 +113,6 @@ QGLTextureExtensions *QGLTextureExtensions::extensions()
     return qt_qgltehelper()->d;
 }
 
-static void qt_gl_destroyTextureId(GLuint id)
-{
-    glDeleteTextures(1, &id);
-}
-
 QGLBoundTexture::QGLBoundTexture()
     : m_options(QGLTexture2D::DefaultBindOption)
     , m_hasAlpha(false)
