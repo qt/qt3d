@@ -174,6 +174,11 @@ QSize QGLTexture2D::size() const
     return d->size;
 }
 
+static inline bool isFloatChar(char c)
+{
+    return c == '.' || (c >= '0' && c <= '9');
+}
+
 void QGLTexture2DPrivate::adjustForNPOTTextureSize()
 {
     if (QOpenGLContext::currentContext() && !sizeAdjusted)
@@ -181,15 +186,22 @@ void QGLTexture2DPrivate::adjustForNPOTTextureSize()
         bool ok = false;
         QByteArray verString(reinterpret_cast<const char *>(glGetString(GL_VERSION)));
         QByteArray verStringCleaned;
-        QByteArray numChars("0123456789.");
-        for (int c = 0; c < verString.size() && numChars.contains(verString.at(c)); ++c)
+
+        // the strings look like "2.1 some random vendor chars" - and toFloat does not deal with junk so clean it first
+        for (int c = 0; c < verString.size() && isFloatChar(verString.at(c)); ++c)
             verStringCleaned.append(verString.at(c));
         float verNum = verStringCleaned.toFloat(&ok);
+
+        // With OpenGL 2.0 support for NPOT textures is mandatory - before that it was only by extension.
         if (!ok || verNum < 2.0)
         {
-            if (!ok)
-                qWarning() << "Could not read GL_VERSION - string was:" << verString << "- assuming no NPOT support";
-            size = QGL::nextPowerOfTwo(size);
+            QGLTextureExtensions *te = QGLTextureExtensions::extensions();
+            if (!te->npotTextures)
+            {
+                if (!ok)
+                    qWarning() << "Could not read GL_VERSION - string was:" << verString << "- assuming no NPOT support";
+                size = QGL::nextPowerOfTwo(size);
+            }
         }
         sizeAdjusted = true;
     }
