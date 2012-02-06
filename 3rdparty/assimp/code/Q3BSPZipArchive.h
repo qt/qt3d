@@ -94,7 +94,7 @@ public:
             // another character
             unzOpenCurrentFile( m_zipFile );
             bytes_read = unzReadCurrentFile( m_zipFile, pvBuffer, fileInfo.uncompressed_size);
-            if ( bytes_read < 0 || bytes_read != static_cast<size_t>( fileInfo.uncompressed_size ) )
+            if ( bytes_read != static_cast<size_t>( fileInfo.uncompressed_size ) )
             {
                 return 0;
             }

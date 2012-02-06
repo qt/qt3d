@@ -293,7 +293,7 @@ void Q3DImporter::InternReadFile( const std::string& pFile,
                 aiTexture* tex = pScene->mTextures[i] = new aiTexture();
 
                 // skip the texture name
-                while (stream.GetI1());
+                while (stream.GetI1()) {}
 
                 // read texture width and height
                 tex->mWidth  = (unsigned int)stream.GetI4();
@@ -372,7 +372,7 @@ void Q3DImporter::InternReadFile( const std::string& pFile,
                 unsigned int temp = (unsigned int)(stream.GetI4() * stream.GetI4());
 
                 // skip the background file name
-                while (stream.GetI1());
+                while (stream.GetI1()) {}
 
                 // skip background texture data + the remaining fields
                 stream.IncPtr(temp*3 + 20); // 4 bytes of unknown data here

@@ -191,7 +191,7 @@ void MDLImporter::InternReadFile( const std::string& pFile,
         iGSFileVersion = 7;
         InternReadFile_3DGS_MDL7();
     }
-    // IDST/IDSQ Format (CS:S/HL², etc ...)
+    // IDST/IDSQ Format (CS:S/HL, etc ...)
     else if (AI_MDL_MAGIC_NUMBER_BE_HL2a == iMagicWord || AI_MDL_MAGIC_NUMBER_LE_HL2a == iMagicWord ||
         AI_MDL_MAGIC_NUMBER_BE_HL2b == iMagicWord || AI_MDL_MAGIC_NUMBER_LE_HL2b == iMagicWord)
     {

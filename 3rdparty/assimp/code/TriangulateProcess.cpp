@@ -291,7 +291,7 @@ bool TriangulateProcess::TriangulateMesh( aiMesh* pMesh)
                 for (ear = next;;prev = ear,ear = next) {
 
                     // break after we looped two times without a positive match
-                    for (next=ear+1;done[(next>max-1?next=0:next)];++next);
+                    for (next=ear+1;done[(next>max-1?next=0:next)];++next) {}
                     if (next < ear) {
                         if (++num_found == 2) {
                             break;
@@ -376,13 +376,13 @@ bool TriangulateProcess::TriangulateMesh( aiMesh* pMesh)
                 nface.mNumIndices = 3;
                 nface.mIndices = face.mIndices;
 
-                for (tmp = 0; done[tmp]; ++tmp);
+                for (tmp = 0; done[tmp]; ++tmp) {}
                 idx[0] = idx[tmp];
 
-                for (++tmp; done[tmp]; ++tmp);
+                for (++tmp; done[tmp]; ++tmp) {}
                 idx[1] = idx[tmp];
 
-                for (++tmp; done[tmp]; ++tmp);
+                for (++tmp; done[tmp]; ++tmp) {}
                 idx[2] = idx[tmp];
             }
         }

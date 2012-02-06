@@ -109,7 +109,7 @@ public:
         cur.clear(); // I will kill you if you deallocate.
         while (stream.GetRemainingSize() && (s = stream.GetI1(),1)) {
             if (s == '\n' || s == '\r') {
-                    while (stream.GetRemainingSize() && ((s = stream.GetI1()) == ' ' || s == '\r' || s == '\n'));
+                    while (stream.GetRemainingSize() && ((s = stream.GetI1()) == ' ' || s == '\r' || s == '\n')) {}
                     if (stream.GetRemainingSize()) {
                         stream.IncPtr(-1);
                     }
@@ -153,7 +153,7 @@ public:
             }
             tokens[i] = s;
 
-            for (;*s && !IsSpace(*s); ++s);
+            for (;*s && !IsSpace(*s); ++s) {}
             SkipSpaces(&s);
         }
     }

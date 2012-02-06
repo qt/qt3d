@@ -1188,7 +1188,7 @@ BaseImporter* Importer::FindLoader (const char* szExtension) const
     ASSIMP_BEGIN_EXCEPTION_REGION();
 
     // skip over wildcard and dot characters at string head --
-    for (;*szExtension == '*' || *szExtension == '.'; ++szExtension);
+    for (;*szExtension == '*' || *szExtension == '.'; ++szExtension) {}
 
     std::string ext(szExtension);
     if (ext.empty()) {

@@ -38,6 +38,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ----------------------------------------------------------------------
 */
 
+#include <QtGlobal>
+
 /** @file  BlenderLoader.cpp
  *  @brief Implementation of the Blender3D importer class.
  */
@@ -401,7 +403,8 @@ void BlenderImporter::ConvertBlendFile(aiScene* out, const Scene& in,const FileD
 // ------------------------------------------------------------------------------------------------
 void BlenderImporter::ResolveImage(MaterialHelper* out, const Material* mat, const MTex* tex, const Image* img, ConversionData& conv_data)
 {
-    mat; tex; conv_data;
+    Q_UNUSED(mat);
+    Q_UNUSED(tex);
     aiString name;
 
     // check if the file contents are bundled with the BLEND file
@@ -446,8 +449,7 @@ void BlenderImporter::ResolveImage(MaterialHelper* out, const Material* mat, con
 // ------------------------------------------------------------------------------------------------
 void BlenderImporter::AddSentinelTexture(MaterialHelper* out, const Material* mat, const MTex* tex, ConversionData& conv_data)
 {
-    mat; tex; conv_data;
-
+    Q_UNUSED(mat);
     aiString name;
     name.length = sprintf(name.data, "Procedural,num=%i,type=%s",conv_data.sentinel_cnt++,
         GetTextureTypeDisplayString(tex->tex->type)
@@ -840,7 +842,7 @@ void BlenderImporter::ConvertMesh(const Scene&, const Object*, const Mesh* mesh,
                 vo->b = col->b;
                 vo->a = col->a;
             }
-            for (unsigned int n = f.mNumIndices; n < 4; ++n);
+            for (unsigned int n = f.mNumIndices; n < 4; ++n) {}
         }
     }
 

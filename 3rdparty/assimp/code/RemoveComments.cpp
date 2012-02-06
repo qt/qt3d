@@ -61,7 +61,7 @@ void CommentRemover::RemoveLineComments(const char* szComment,
 
         // skip over quotes
         if (*szBuffer == '\"' || *szBuffer == '\'')
-            while (*szBuffer++ && *szBuffer != '\"' && *szBuffer != '\'');
+            while (*szBuffer++ && *szBuffer != '\"' && *szBuffer != '\'') {}
 
         if (!strncmp(szBuffer,szComment,len)) {
             while (!IsLineEnd(*szBuffer))
@@ -87,7 +87,7 @@ void CommentRemover::RemoveMultiLineComments(const char* szCommentStart,
     while (*szBuffer)    {
         // skip over quotes
         if (*szBuffer == '\"' || *szBuffer == '\'')
-            while (*szBuffer++ && *szBuffer != '\"' && *szBuffer != '\'');
+            while (*szBuffer++ && *szBuffer != '\"' && *szBuffer != '\'') {}
 
         if (!strncmp(szBuffer,szCommentStart,len2))  {
             while (*szBuffer) {

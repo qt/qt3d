@@ -743,10 +743,10 @@ private:
     mutable Statistics _stats;
 #endif
 
+    mutable size_t next_cache_idx;
+
     mutable ObjectCache<vector> _cacheArrays;
     mutable ObjectCache<boost::shared_ptr> _cache;
-
-    mutable size_t next_cache_idx;
 };
 
 #ifdef _MSC_VER

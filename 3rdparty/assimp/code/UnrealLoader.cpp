@@ -193,7 +193,7 @@ void UnrealImporter::InternReadFile( const std::string& pFile,
     if (configFrameID >= numFrames)
         throw DeadlyImportError("UNREAL: The requested frame does not exist");
 
-    uint32_t st = a_reader.GetI2();
+    int16_t st = a_reader.GetI2();
     if (st != numVert*4)
         throw DeadlyImportError("UNREAL: Unexpected aniv file length");
 
@@ -239,12 +239,12 @@ void UnrealImporter::InternReadFile( const std::string& pFile,
                         for (;!IsLineEnd(*data);++data)    {
                             if (!::ASSIMP_strincmp(data,"NAME=",5))    {
                                 const char *d = data+=5;
-                                for (;!IsSpaceOrNewLine(*data);++data);
+                                for (;!IsSpaceOrNewLine(*data);++data) {}
                                 me.first = std::string(d,(size_t)(data-d));
                             }
                             else if (!::ASSIMP_strincmp(data,"FILE=",5))    {
                                 const char *d = data+=5;
-                                for (;!IsSpaceOrNewLine(*data);++data);
+                                for (;!IsSpaceOrNewLine(*data);++data) {}
                                 me.second = std::string(d,(size_t)(data-d));
                             }
                         }
@@ -270,7 +270,7 @@ void UnrealImporter::InternReadFile( const std::string& pFile,
                             else if (!::ASSIMP_strincmp(data,"TEXTURE=",8))    {
                                 data += 8;
                                 const char *d = data;
-                                for (;!IsSpaceOrNewLine(*data);++data);
+                                for (;!IsSpaceOrNewLine(*data);++data) {}
                                 me.second = std::string(d,(size_t)(data-d));
 
                                 // try to find matching path names, doesn't care if we don't find them

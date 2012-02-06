@@ -46,6 +46,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "AssimpPCH.h"
 #include "FindInstancesProcess.h"
 
+#include <QtGlobal>
+
 using namespace Assimp;
 
 // ------------------------------------------------------------------------------------------------
@@ -175,7 +177,7 @@ void FindInstancesProcess::Execute( aiScene* pScene)
                     // use a constant epsilon for colors and UV coordinates
                     static const float uvEpsilon = 10e-4f;
 
-                    BOOST_STATIC_ASSERT(4 == AI_MAX_NUMBER_OF_COLOR_SETS);
+                    Q_ASSERT(4 == AI_MAX_NUMBER_OF_COLOR_SETS);
 
                     // as in JIV: manually unrolled as continue wouldn't work as desired in inner loops
                     if (orig->mTextureCoords[0]) {
@@ -195,7 +197,7 @@ void FindInstancesProcess::Execute( aiScene* pScene)
                         }
                     }
 
-                    BOOST_STATIC_ASSERT(4 == AI_MAX_NUMBER_OF_COLOR_SETS);
+                    Q_ASSERT(4 == AI_MAX_NUMBER_OF_COLOR_SETS);
 
                     // and the same nasty stuff for vertex colors ...
                     if (orig->mColors[0]) {

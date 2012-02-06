@@ -51,6 +51,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Vertex.h"
 #include "TinyFormatter.h"
 
+#include <QtGlobal>
+
 using namespace Assimp;
 // ------------------------------------------------------------------------------------------------
 // Constructor to be privately used by Importer
@@ -115,8 +117,8 @@ void JoinVerticesProcess::Execute( aiScene* pScene)
 // Unites identical vertices in the given mesh
 int JoinVerticesProcess::ProcessMesh( aiMesh* pMesh, unsigned int meshIndex)
 {
-    BOOST_STATIC_ASSERT( AI_MAX_NUMBER_OF_COLOR_SETS    == 4);
-    BOOST_STATIC_ASSERT( AI_MAX_NUMBER_OF_TEXTURECOORDS == 4);
+    Q_ASSERT( AI_MAX_NUMBER_OF_COLOR_SETS    == 4);
+    Q_ASSERT( AI_MAX_NUMBER_OF_TEXTURECOORDS == 4);
 
     // Return early if we don't have any positions
     if (!pMesh->HasPositions() || !pMesh->HasFaces()) {
@@ -132,7 +134,7 @@ int JoinVerticesProcess::ProcessMesh( aiMesh* pMesh, unsigned int meshIndex)
     //    whether a new vertex was created for the index (true) or if it was replaced by an existing
     //    unique vertex (false). This saves an additional std::vector<bool> and greatly enhances
     //    branching performance.
-    BOOST_STATIC_ASSERT(AI_MAX_VERTICES == 0x7fffffff);
+    Q_ASSERT(AI_MAX_VERTICES == 0x7fffffff);
     std::vector<unsigned int> replaceIndex( pMesh->mNumVertices, 0xffffffff);
 
     // A little helper to find locally close vertices faster.

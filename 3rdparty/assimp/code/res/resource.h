@@ -2,7 +2,7 @@
 // Microsoft Visual C++ generated include file.
 // Used by assimp.rc
 
-// Nächste Standardwerte für neue Objekte
+// Nchste Standardwerte fr neue Objekte
 //
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS

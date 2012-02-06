@@ -57,6 +57,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "../include/aiMesh.h"
 #include <vector>
 
+#include <QtGlobal>
+
 namespace Assimp
 {
 
@@ -655,8 +657,10 @@ bool Q3BSPFileImporter::importTextureFromArchive( const Q3BSP::Q3BSPModel *pMode
             pTexture->mHeight = 0;
             pTexture->mWidth = texSize;
             unsigned char *pData = new unsigned char[ pTexture->mWidth ];
+#ifndef QT_NO_DEBUG
             const size_t readSize = pTextureStream->Read( pData, sizeof( unsigned char ), pTexture->mWidth );
-            ai_assert( readSize == pTexture->mWidth );
+            Q_ASSERT( readSize == pTexture->mWidth );
+#endif
             pTexture->pcData = reinterpret_cast<aiTexel*>( pData );
             pTexture->achFormatHint[ 0 ] = 'j';
             pTexture->achFormatHint[ 1 ] = 'p';

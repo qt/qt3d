@@ -50,6 +50,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "MaterialSystem.h"
 #include "ByteSwap.h"
 
+#include <QtGlobal>
+
 using namespace Assimp;
 
 // ------------------------------------------------------------------------------------------------
@@ -159,7 +161,7 @@ bool LWOImporter::HandleTextures(MaterialHelper* pcMat, const TextureList& in, a
                 trafo.mScaling.x = (*it).wrapAmountW;
                 trafo.mScaling.y = (*it).wrapAmountH;
 
-                BOOST_STATIC_ASSERT(sizeof(aiUVTransform)/sizeof(float) == 5);
+                Q_ASSERT(sizeof(aiUVTransform)/sizeof(float) == 5);
                 pcMat->AddProperty(&trafo,1,AI_MATKEY_UVTRANSFORM(type,cur));
             }
             DefaultLogger::get()->debug("LWO2: Setting up non-UV mapping");
@@ -456,7 +458,7 @@ void LWOImporter::FindUVChannels(LWO::Surface& surf,
                         }
                         else {
 
-                            // Bäh ... seems not to be used at all. Push to end if enough space is available.
+                            // Seems not to be used at all. Push to end if enough space is available.
                             out[extra++] = i;
                             ++num_extra;
                         }
@@ -895,4 +897,4 @@ void LWOImporter::LoadLWO2Surface(unsigned int size)
     }
 }
 
-#endif // !! ASSIMP_BUILD_NO_X_IMPORTER
+#endif // ASSIMP_BUILD_NO_X_IMPORTER
