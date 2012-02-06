@@ -52,13 +52,11 @@ QT_BEGIN_NAMESPACE
 
 typedef void (QOPENGLF_APIENTRYP q_PFNGLCLIENTACTIVETEXTUREPROC) (GLenum);
 
-class QGLMultiTextureExtensions : public QOpenGLSharedResource
+class QGLMultiTextureExtensions
 {
 public:
-    QGLMultiTextureExtensions(const QOpenGLContext *ctx)
-        : QOpenGLSharedResource(ctx ? ctx->shareGroup() : 0)
+    QGLMultiTextureExtensions()
     {
-
         clientActiveTexture = 0;
         multiTextureResolved = false;
     }
@@ -72,7 +70,7 @@ public:
 };
 
 
-static QGLMultiTextureExtensions *qt_multitexture_funcs;
+static QGLMultiTextureExtensions *qt_multitexture_funcs = 0;
 
 QGLMultiTextureExtensions::~QGLMultiTextureExtensions()
 {
@@ -83,7 +81,7 @@ static QGLMultiTextureExtensions *resolveMultiTextureExtensions
     (const QOpenGLContext *ctx)
 {
     if (!qt_multitexture_funcs)
-        qt_multitexture_funcs = new QGLMultiTextureExtensions(ctx);
+        qt_multitexture_funcs = new QGLMultiTextureExtensions();
     if (!(qt_multitexture_funcs->multiTextureResolved)) {
         qt_multitexture_funcs->multiTextureResolved = true;
         if (!qt_multitexture_funcs->clientActiveTexture) {
