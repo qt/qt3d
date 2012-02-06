@@ -409,7 +409,7 @@ QGLAbstractSurface *QGLAbstractSurface::createSurfaceForContext(QOpenGLContext *
 {
     Q_ASSERT(context);
 #ifndef QT_NO_DEBUG_STREAM
-    if (context->surface() && context->surface()->surfaceType() != QSurface::Window)
+    if (context->surface() && context->surface()->surfaceClass() != QSurface::Window)
         qWarning() << "Attempt to cast non-window surface";
 #endif
     QWindow *win = static_cast<QWindow*>(context->surface());

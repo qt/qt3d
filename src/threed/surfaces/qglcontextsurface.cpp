@@ -70,7 +70,7 @@ bool QGLContextSurface::activate(QGLAbstractSurface *prevSurface)
     if (!window())
     {
 #ifndef QT_NO_DEBUG_STREAM
-        if (!context()->surface() || context()->surface()->surfaceType() == QSurface::Window)
+        if (!context()->surface() || context()->surface()->surfaceClass() == QSurface::Window)
             qWarning() << "Attempt to access context without GL window";
 #endif
         setWindow(static_cast<QWindow*>(context()->surface()));

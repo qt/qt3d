@@ -114,7 +114,7 @@ bool QGLWindowSurface::activate(QGLAbstractSurface *prevSurface)
         setWindow(static_cast<QWindow*>(context()->surface()));
     }
 #ifndef QT_NO_DEBUG_STREAM
-    if (!context()->surface() || context()->surface()->surfaceType() != QSurface::Window)
+    if (!context()->surface() || context()->surface()->surfaceClass() != QSurface::Window)
         qWarning() << "Attempt to activate GL window surface on bad context";
     if (!isValid())
     {
