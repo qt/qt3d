@@ -42,8 +42,6 @@
 #include "qglext_p.h"
 #include <qopenglfunctions.h>
 
-// copied private header
-#include "qglextensions_p.h"
 #include <private/qopenglcontext_p.h>
 
 QT_BEGIN_NAMESPACE
