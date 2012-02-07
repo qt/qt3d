@@ -53,15 +53,14 @@ typedef void (QOPENGLF_APIENTRYP q_PFNGLCLIENTACTIVETEXTUREPROC) (GLenum);
 class QGLMultiTextureExtensions
 {
 public:
-    QGLMultiTextureExtensions()
+    QGLMultiTextureExtensions() :
+        clientActiveTexture(0),
+        multiTextureResolved(false)
     {
-        clientActiveTexture = 0;
-        multiTextureResolved = false;
     }
     ~QGLMultiTextureExtensions();
 
-    void invalidateResource() {}
-    void freeResource(QOpenGLContext *) {}
+    void invalidateExtension();
 
     q_PFNGLCLIENTACTIVETEXTUREPROC clientActiveTexture;
     bool multiTextureResolved;
@@ -75,9 +74,15 @@ QGLMultiTextureExtensions::~QGLMultiTextureExtensions()
     qt_multitexture_funcs = 0;
 }
 
+void QGLMultiTextureExtensions::invalidateExtension()
+{
+    qt_multitexture_funcs = 0;
+}
+
 static QGLMultiTextureExtensions *resolveMultiTextureExtensions
     (const QOpenGLContext *ctx)
 {
+    Q_ASSERT(ctx);
     if (!qt_multitexture_funcs)
         qt_multitexture_funcs = new QGLMultiTextureExtensions();
     if (!(qt_multitexture_funcs->multiTextureResolved)) {
