@@ -6,4 +6,3 @@ SOURCES = modelview.cpp \
     main.cpp
 HEADERS = modelview.h
 RESOURCES = model.qrc
-DESTDIR = $$QT.qt3d.bins/qt3d/tutorials
