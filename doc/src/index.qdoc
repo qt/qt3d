@@ -27,8 +27,8 @@
 
 /*!
     \page index.html
-    \title Qt3D Introduction and Overview Documentation
-    \keyword Qt3D Introduction Overview Documentation
+    \title Qt3D Introduction and Overview
+    \keyword Qt3D Introduction Overview
 
 
     \section1 What is Qt 3D?
@@ -36,7 +36,7 @@
     with the Qt Quick module allows for developers to add 3D contents to any Qt application in the same way icons and
     pixmaps are used in a regular Qt application. At the same time, Qt 3D is powerful enough for creating full scale
     3D applications or games. To guarantee the graphics performance on various platforms, Qt 3D is hardware accelerated
-    using GPU. For more direct and low-level access to 3D graphics hardware, please see OpenGL ES APIs [link to OpenGL ES doc].
+    using GPU. For more direct and low-level access to 3D graphics hardware, please see OpenGL ES APIs.
 
 
     \section1 Common Use Cases
@@ -57,10 +57,15 @@
     share the same primary goal which is to make the 3D graphics programming easy. Qt 3D’s C++ API  is originally developed
     to make the OpenGL programming as cross-platform as possible.  Traditionally porting between desktop and embedded OpenGL
     variants has been difficult due to differing function names, as well as a shader-based versus fixed function rendering
-    pipeline.  The C++ API for Qt3D eases this difficulty by abstracting these differences away beneath a Qt like API layer.
+    pipeline.  The C++ API for Qt3D eases this difficulty by abstracting these differences away beneath a Qt like API layer. The QML bindings for Qt 3D takes this further and make the 3D programming declarative.
 
-    The QML bindings for Qt 3D takes this further and make the 3D programming declarative. To use Qt 3D in your QML application
-    you need the following import statement.
+    To use the C++ library in your application, add the following configuration option to your .pro file.
+
+    \code
+    QT += qt3d
+    \endcode
+
+    To use Qt 3D in your QML application you need the following import statement in your qml file.
 
     \code
     import Qt3D 1.0
@@ -124,7 +129,10 @@
 
     \section1 Built-in Shapes
     Qt 3D comes with a number of built-in primitive shapes. To use these shapes in your application you need the following import statement in your QML application.
+
+    \code
     import Qt3D.Shapes 1.0
+    \endcode
 
     \image sampleshapes.png
 
@@ -133,8 +141,8 @@
     Both external 3D models and built-in shapes can be decorated using ShaderProgram and Effect element. The ShaderProgram item is derivative class of the more general Effect class in QML Qt 3D. Whereas the Effect class provides support for standard effects under OpenGL, the ShaderProgram supports effects based on custom shader programs for the GPU.
 
 
-    \section1 Model Viewer
-    Qt 3D comes with a 3D model viewer application which helps the developer to visually scale, rotate, and position a 3D model before adding it to a viewport. The application can then auto create a QML file that can later be used as a component in a QML application. Model viewer is launched from Qt Creator as an external application by clicking Tools and External options from the menu tab.
+    \section1 3D Asset Viewer
+    Qt 3D comes with a 3D Asset Viewer application which helps the developer to visually scale, rotate, and position a 3D model before adding it to a viewport. The application can then auto create a QML file that can later be used as a component in a QML application. 3D Asset Viewer is launched from Qt Creator as an external application by clicking Tools and External options from the menu tab.
 
 
     \section1 Getting Started
