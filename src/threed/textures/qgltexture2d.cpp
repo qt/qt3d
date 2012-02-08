@@ -101,6 +101,27 @@ QGLTexture2DPrivate::QGLTexture2DPrivate()
 
 QGLTexture2DPrivate::~QGLTexture2DPrivate()
 {
+    if (!textureInfo.empty()) {
+        bool bSomethingLeft = false;
+        for (QList<QGLTexture2DTextureInfo*>::iterator It=textureInfo.begin(); It!=textureInfo.end(); ++It) {
+            if ((*It)->tex.textureId()) {
+                bSomethingLeft = true;
+                break;
+            }
+        }
+        if (bSomethingLeft) {
+            if (url.isEmpty()) {
+                qWarning("On destruction, texture(created from Image) has non-released resources:");
+            } else {
+                qWarning("On destruction, texture '%s' has non-released resources:", url.toString().toAscii().constData());
+            }
+            for (QList<QGLTexture2DTextureInfo*>::iterator It=textureInfo.begin(); It!=textureInfo.end(); ++It) {
+                if ((*It)->tex.textureId()) {
+                    qWarning("  id = %u",(*It)->tex.textureId());
+                }
+            }
+        }
+    }
     qDeleteAll(textureInfo);
 }
 
@@ -650,6 +671,34 @@ bool QGLTexture2DPrivate::bind(GLenum target)
     return true;
 }
 
+void QGLTexture2DPrivate::cleanupResources()
+{
+    if (!textureInfo.empty()) {
+        QOpenGLContext *ctx = QOpenGLContext::currentContext();
+        for (QList<QGLTexture2DTextureInfo*>::iterator It=textureInfo.begin(); It!=textureInfo.end();) {
+            QGLTexture2DTextureInfo *texInfo = *It;
+            QOpenGLContext *ictx = const_cast<QOpenGLContext*>(texInfo->tex.context());
+            if (QOpenGLContext::areSharing(ictx, ctx)) {
+                if (texInfo->tex.textureId()) {
+                    GLuint id = texInfo->tex.textureId();
+                    glDeleteTextures(1, &id);
+                    texInfo->tex.clearId();
+                }
+                It = textureInfo.erase(It);
+            } else {
+                ++It;
+            }
+        }
+    }
+    if (!textureInfo.empty()) {
+        if (!url.isEmpty())
+            qWarning("Texture '%s':",url.toString().toLatin1().constData());
+        else
+            qWarning("Texture (created from Image):");
+        qWarning("  cleanupResources() was called from wrong context. Some OpenGL resources are not released.");
+    }
+}
+
 void QGLTexture2DPrivate::bindImages(QGLTexture2DTextureInfo *info)
 {
     QSize scaledSize(size);
@@ -711,6 +760,20 @@ GLuint QGLTexture2D::textureId() const
         } while (info != 0 && !QOpenGLContext::areSharing(ictx, ctx));
     }
     return info ? info->tex.textureId() : 0;
+}
+
+/*!
+    Releases the texture associated with the 2D texture target,
+    and destroys related opengl resources.
+
+    \sa bind()
+    \sa release()
+*/
+void QGLTexture2D::cleanupResources()
+{
+    Q_D(QGLTexture2D);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    d->cleanupResources();
 }
 
 /*!

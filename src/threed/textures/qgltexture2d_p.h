@@ -111,6 +111,8 @@ public:
     bool bind(GLenum target);
     virtual void bindImages(QGLTexture2DTextureInfo *info);
     void adjustForNPOTTextureSize();
+
+    void cleanupResources();
 };
 
 QT_END_NAMESPACE
