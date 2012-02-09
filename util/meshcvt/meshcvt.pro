@@ -1,6 +1,6 @@
 TARGET = meshcvt
 
-QT += qt3d
+QT += 3d
 
 SOURCES += \
     meshcvt.cpp \

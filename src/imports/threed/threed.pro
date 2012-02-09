@@ -2,9 +2,9 @@ TEMPLATE = lib
 TARGET  = qthreedqmlplugin
 CONFIG += qt plugin
 
-QT += quick declarative qt3d qt3dquick
+QT += quick declarative 3d 3dquick
 
-DESTDIR = $$QT.qt3dquick.imports/Qt3D
+DESTDIR = $$QT.3dquick.imports/Qt3D
 target.path = $$[QT_INSTALL_IMPORTS]/Qt3D
 INSTALLS += target
 

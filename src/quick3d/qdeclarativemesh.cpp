@@ -64,7 +64,7 @@
     QML/3d Mesh objects are a QML enabled means of representing any scene class based
     on the \l QGLAbstractScene class.
 
-    In cases where the scene is composed of multiple nodes (for example, in a \i .3ds file)
+    In cases where the scene is composed of multiple nodes (for example, in a \e .3ds file)
     the mesh allows users to split away branches of the tree and manipulate them in
     isolation from the original scene graph.
 
@@ -164,9 +164,9 @@ QDeclarativeMesh::~QDeclarativeMesh()
     specified via the source property.
 
     Source files can be of any type supported by Qt3D.  The types of file currently
-    supported can be found in the \c sceneFormat plugins, with \i .3ds, \i .bez, \i. obj
+    supported can be found in the \c sceneFormat plugins, with \e .3ds, \e .bez, \e .obj
     files currently being supported.
-    
+
     Meshes can also be stored within QRC files and loaded via the standard resource
     mechanisms, however there may be issues with some esoteric remote resource loading
     requirements within the different file types.

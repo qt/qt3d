@@ -2,9 +2,9 @@ TEMPLATE = lib
 TARGET  = qshapesqmlplugin
 CONFIG += qt plugin
 
-QT += declarative quick qt3d qt3dquick
+QT += declarative quick 3d 3dquick
 
-DESTDIR = $$QT.qt3dquick.imports/Qt3D/Shapes
+DESTDIR = $$QT.3dquick.imports/Qt3D/Shapes
 target.path = $$[QT_INSTALL_IMPORTS]/Qt3D/Shapes
 INSTALLS += target
 

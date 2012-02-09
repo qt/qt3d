@@ -1,7 +1,7 @@
 TARGET = tst_qglcamera
 CONFIG += testcase
 TEMPLATE=app
-QT += testlib qt3d
+QT += testlib 3d
 CONFIG += warn_on
 
 INCLUDEPATH += ../../../../threed/viewing

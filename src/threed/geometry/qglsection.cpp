@@ -79,7 +79,7 @@ QT_BEGIN_NAMESPACE
     indexes created to reference the fewest possible copies of the vertex
     data.  For example, in smooth geometry all copies of a vertex are
     coalesced into one, and referenced by indices - except in the case
-    where texture data forms a \i seam and a copy must be created to carry
+    where texture data forms a \e seam and a copy must be created to carry
     the two texture coordinates of the seam.
 
     This is handled automatically by QGLSection, to pack data into the

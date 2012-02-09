@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = penguin_advanced
 CONFIG += qt warn_on
-QT += qt3d
+QT += 3d
 SOURCES = modelview.cpp \
     main.cpp
 HEADERS = modelview.h

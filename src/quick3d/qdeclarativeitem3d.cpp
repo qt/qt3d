@@ -80,7 +80,7 @@
     }
     \endcode
 
-    This simple code will create a 3D item based on the \i teapot.bez mesh using
+    This simple code will create a 3D item based on the \e teapot.bez mesh using
     back-face culling.
 
     Notice that in this case the effect and mesh are defined within the body of
@@ -110,7 +110,7 @@
     \endcode
 
     This demonstrates the capability of embedding one Item3D within another.  In
-    this case the \i saucer item is a child of the \i cup item.
+    this case the \e saucer item is a child of the \e cup item.
 
     All transformations applied to the parent item are also applied to the child,
     so in this case both the cup and saucer will be translated based on the
@@ -197,7 +197,7 @@
     \endcode
 
     Obviously this example is much more complex both in structure and behaviour. In
-    this case the mesh describes a \i .3ds file of a helicoptor, which is broken down
+    this case the mesh describes a \e .3ds file of a helicoptor, which is broken down
     discrete sub-components (engine nacelles, rotor, rotor hub, etc), which the user
     may wish to modify or animate individually.
 
@@ -207,14 +207,14 @@
 
     All transformations carried out on the parent item will also be applied to the child.
 
-    Child items can, as shown here, have their own \i local transformations and user
+    Child items can, as shown here, have their own \e local transformations and user
     interactions applied.  These will be applied only to the node of the mesh which
     is defined for that item.  In cases where the mesh is defined heirarchically as a
     tree of nodes, this transformation will therefore be applied to all items in that
     tree which are children of the defined node.
 
     Likewise if the user explicitly declares a child item, such as has been done here with
-    the \i rotorHubNode, then the transformations will apply to this item as well (and
+    the \e rotorHubNode, then the transformations will apply to this item as well (and
     its children, and so on).
 
     It should be noted that no support is currently provided for skeleton animation or
@@ -233,21 +233,21 @@
     that Item3D based delegates hide themselves when their index is
     -1 as shown in the photoroom example:
 
-    \snippet quick3d/photoroom/qml/photoroom.qml 1
+    \snippet ../../examples/quick3d/photoroom/qml/photoroom.qml 1
 
     However Item3D does not use the width or height properties, so most
     positioners and views will not work.  Use a
     \l{http://doc.qt.nokia.com/4.7/qml-repeater.html}{Repeater} element to
     generate Item3Ds from model data.  For example:
 
-    \snippet quick3d/photoroom/qml/photoroom.qml 2
+    \snippet ../../examples/quick3d/photoroom/qml/photoroom.qml 2
 
     Models can be used normally, so
 \l{http://doc.qt.nokia.com/4.7/qdeclarativemodels.html#listmodel}{ListModel},
 \l{http://doc.qt.nokia.com/4.7/qdeclarativemodels.html#qstringlist}{QStringList}
     etc. work just like they would with two dimensional Items.  For example:
 
-    \snippet quick3d/photoroom/qml/photoroom.qml 0
+    \snippet ../../examples/quick3d/photoroom/qml/photoroom.qml 0
 
     \sa{http://doc.qt.nokia.com/4.7/qdeclarativemodels.html#qml-data-models}{QML Data Models}
 */
@@ -855,8 +855,8 @@ void QDeclarativeItem3D::setInheritEvents(bool inherit)
 
     Objects in most 3D environments are almost invariably defined as meshes - sets of
     vertices which when linked as polygons form a recognisable 3D object.  Qt3D currently
-    supports a number of these \i {scene formats}, including \i {.obj} file, bezier patches
-    \i {(.bez)}, and \i {.3ds} files.
+    supports a number of these \e {scene formats}, including \e {.obj} file, bezier patches
+    \e {(.bez)}, and \e {.3ds} files.
 
     These meshes are abstracted into the \l Mesh class, which is defined for
     an \l Item3D through this property.
@@ -1263,13 +1263,13 @@ void QDeclarativeItem3D::drawChildren(QGLPainter *painter)
     graphics libraries.  Essentially it is a stepwise progress through the following stages:
 
     \list
-    \i 1. Iterate through the child objects of the item and set all lighting parameters found.
-    \i 2. Set up culling mode in the painter.
-    \i 3. Set effects if they exist.
-    \i 4. Set all local model view transformations for this item.
-    \i 5. Draw this item.
-    \i 6. Iterate through the child objects of the item and draw all child items.
-    \i 7. Unset the appropriate parameters and states.
+    \o 1. Iterate through the child objects of the item and set all lighting parameters found.
+    \o 2. Set up culling mode in the painter.
+    \o 3. Set effects if they exist.
+    \o 4. Set all local model view transformations for this item.
+    \o 5. Draw this item.
+    \o 6. Iterate through the child objects of the item and draw all child items.
+    \o 7. Unset the appropriate parameters and states.
     \endlist
 
 
@@ -1326,7 +1326,7 @@ void QDeclarativeViewport::setItemViewport(QDeclarativeItem3D *item)
     The process of initialising an /l Object3d is a critical step, particularly in
     complex scenes.  This function initialises the item in \a viewport, and using \a painter.
 
-    During the initialisation process objects are registered as being \i pickable (ie. able
+    During the initialisation process objects are registered as being \e pickable (ie. able
     to be clicked on with the mouse.
 
     Additionally, in the case of \l Item3D objects which refer to sub-nodes of a mesh, this

@@ -34,7 +34,7 @@
 
     \list
     \o \l{Teapot Example in QML}{Hello Teapot} in Qt3D
-    \o \l{qt3d/basket#Basket in QML}{Basket} in Qt3D
+    \o \l{Basket Example#Basket in QML}{Basket} in Qt3D
     \o \l{Object Effects}{Cube} in Qt3D
     \o \l{Monkey God in QML}{Monkey God} in Qt3D
     \o \l{Tea Service Demo in QML}{Tea Service} in Qt3D
