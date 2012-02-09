@@ -43,7 +43,7 @@
     We start by declaring an instance of QGLSceneFormatPlugin and
     arranging for it to be registered with the Qt plug-in system:
 
-    \snippet sceneformats/obj/main.cpp 1
+    \snippet ../../esceneformats/obj/main.cpp 1
     \snippet sceneformats/obj/main.cpp 4
 
     The two functions we need to implement are

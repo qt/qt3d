@@ -57,11 +57,11 @@
 
     But there are important differences between points and vectors:
     \list
-    \o a point \bold P is a 3D \i location, and makes sense in terms of a 3D cartesian
+    \o a point \bold P is a 3D \e location, and makes sense in terms of a 3D cartesian
         coordinate system.  A real-world example is a map-location given in terms
         of a map cross-reference.  The location has no inherent magnitude, unless you
         provide another location and find the distance between the two.
-    \o a vector \bold v is a 3D \i direction and magnitude.  It makes no sense to talk
+    \o a vector \bold v is a 3D \e direction and magnitude.  It makes no sense to talk
         about a vector being located somewhere.  A vector can represent for example
         some directions like "go 3 north-west 3 kilometers", but this can be done from
         \bold {anywhere on the map} - it is not anchored like the point is.
@@ -120,7 +120,7 @@
     Vectors used for 3D normals are usually normalized to unit length.  Confusingly
     enough, since that is two different uses of the word "normal".
 
-    A \i normal is simply a vector perpendicular to something.  For example a plane normal is
+    A \e normal is simply a vector perpendicular to something.  For example a plane normal is
     perpendicular to the plane.
 
     Typically a normal vector is unit length, for convenience in 3D applications (but
@@ -136,14 +136,14 @@
     \list
     \o QVector3D::crossProduct(const QVector3D &, const QVector3D &)
         \list
-        \o The cross-product of two vectors produces a \i vector as a result and is
+        \o The cross-product of two vectors produces a \e vector as a result and is
         written \bold w = \bold u x \bold v. The result \bold w is perpendicular to both
         \bold u and \bold v.  Consider a plane N containing point P, with the tails of \bold u
         and \bold v at P, and both lying in N, then \bold u x \bold v is a normal to N.
         \endlist
     \o QVector3D::dotProduct(const QVector3D &, const QVector3D &)
         \list
-        \o The dot-product of two vectors produces a \i scalar as a result and is written
+        \o The dot-product of two vectors produces a \e scalar as a result and is written
         \c{t = \bold u . \bold v}.  The result t = |u| |v| cos(A), where A is the angle
         between u and v.  When \bold u and \bold v have magnitude 1, they are called
         unit vectors, and \bold u . \bold v = cos(A).

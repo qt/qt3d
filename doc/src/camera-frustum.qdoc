@@ -88,7 +88,7 @@
 
     This screen capture from a 3D modelling program shows how this camera is
     set up in a scene, where its viewing a cube.  The image shows a purple area
-    which indicates the \i{view frustum}, which you can think of for
+    which indicates the \e{view frustum}, which you can think of for
     now as the area captured by the camera.  Actually its more correct to think
     of the volume captured by the camera, and imagine that the purple indication
     in the image is the shadow cast by this volume.

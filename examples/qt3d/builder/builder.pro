@@ -2,7 +2,7 @@ TEMPLATE = app
 TARGET = builder
 CONFIG += qt warn_on
 
-QT += qt3d
+QT += 3d
 
 include(../../../pkg.pri)
 

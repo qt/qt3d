@@ -27,9 +27,13 @@
 
 /*!
     \page index.html
-    \title Qt3D Introduction and Overview
-    \keyword Qt3D Introduction Overview
+    \title Qt3D
+    \keyword Qt3D Introduction Overview Documentation
+    \brief The Qt 3D module provides a set of APIs to make 3D graphics programming easy and declarative.
 
+    \ingroup technology-apis
+
+    \section1 Overview
 
     \section1 What is Qt 3D?
     The Qt 3D module provides a set of APIs to make 3D graphics programming easy and declarative. Seamless integration
@@ -149,29 +153,29 @@
     \list
     \o \l {qt3d-building.html}{Building}
     \o \l {qt3d-examples.html}{Tutorials and Examples}
-    \o \l {sceneformats-obj.html}{Scene format plug-ins}
-    \o \l {qgl.html}{QGL Namespace}
+    \o \l {Writing a scene format plug-in for Qt3D}{Scene format plug-ins}
+    \o \l {QGL}{QGL Namespace}
     \o \l {qt3d-acceptance.html}{Acceptance tests}
     \o \l {qt3d-troubleshooting.html}{Troubleshooting Qt3D}
     \endlist
 
     \section1 Qt3D Core Concepts
     \list
-    \o \l {qt3d-arrays.html}{Arrays and Vertex Buffers}
-    \o \l {qt3d-geometry.html}{Geometry Building}
-    \o \l {qt3d-graphicsview.html}{Graphics View Integration}
-    \o \l {qt3d-materials.html}{Materials}
-    \o \l {qt3d-math.html}{Mathematical Primitives}
-    \o \l {qt3d-painting.html}{Painting in 3D}
-    \o \l {qt3d-scene.html}{Scene Management}
-    \o \l {qt3d-textures.html}{Texture Management}
-    \o \l {qt3d-viewing.html}{Viewing Widgets}
+    \o \l {Qt3D Arrays and Vertex Buffers}{Arrays and Vertex Buffers}
+    \o \l {Qt3D Geometry}{Geometry Building}
+    \o \l {Qt3D Graphics View Integration}{Graphics View Integration}
+    \o \l {Qt3D Materials}{Materials}
+    \o \l {Qt3D Math}{Mathematical Primitives}
+    \o \l {Qt3D Painting}{Painting in 3D}
+    \o \l {Qt3D Scene Management}{Scene Management}
+    \o \l {Qt3D Texture Handling}{Texture Management}
+    \o \l {Qt3D Viewing}{Viewing Widgets}
     \endlist
 
     \section1 API Reference documentation
     \list
-    \o \l {qt3d-all-classes.html}{C++ APIs}
-    \o \l {qt3d-qml3d.html}{QML APIs}
+    \o \l {Qt3D Classes}{C++ APIs}
+    \o \l {Qt3D for Scripting 3D Apps in QML}{QML APIs}
     \endlist
 
     \section1 Extending Qt 3D

@@ -10,9 +10,9 @@ SOURCES += main.cpp \
     qgl3dsscenehandler.cpp \
     qgl3dsmesh.cpp
 
-QT += qt3d
+QT += 3d
 
-DESTDIR = $$QT.qt3d.plugins/sceneformats
+DESTDIR = $$QT.3d.plugins/sceneformats
 target.path = $$[QT_INSTALL_PLUGINS]/sceneformats
 INSTALLS += target
 

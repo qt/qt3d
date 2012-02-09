@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = cube
 CONFIG += qt warn_on
-QT += qt3d
+QT += 3d
 
 include(../../../pkg.pri)
 

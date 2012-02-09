@@ -1,5 +1,5 @@
 TARGET = qglinfo
-QT += qt3d
+QT += 3d
 
 SOURCES += main.cpp \
     qglinfowindow.cpp \
@@ -22,6 +22,6 @@ OTHER_FILES += \
 
 RC_FILE = qglinfo.rc
 
-DESTDIR = $$QT.qt3d.bins
+DESTDIR = $$QT.3d.bins
 target.path = $$[QT_INSTALL_BINS]
 INSTALLS += target

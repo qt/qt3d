@@ -1,7 +1,7 @@
 load(qt_module)
 
 TARGET     = Qt3D
-MODULE     = qt3d
+MODULE     = 3d
 QT         = core-private gui-private network
 
 CONFIG += module

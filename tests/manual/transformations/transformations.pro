@@ -2,7 +2,7 @@ TEMPLATE = app
 TARGET = tst_transformations
 CONFIG += qt warn_on
 
-QT += qt3d quick
+QT += 3d quick
 
 SOURCES += main.cpp
 

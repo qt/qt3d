@@ -358,7 +358,7 @@ QT_BEGIN_NAMESPACE
     coalesced into one, and referenced by indices.
 
     One of the few exceptions to this is the case where texture data forms
-    a \i seam and a copy of a vertex must be created to carry the two
+    a \e seam and a copy of a vertex must be created to carry the two
     texture coordinates either side of the seam.
 
     \image texture-seam.png
