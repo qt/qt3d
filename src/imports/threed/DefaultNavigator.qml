@@ -38,7 +38,6 @@
 **
 ****************************************************************************/
 
-import Qt 4.7
 import Qt3D 1.0
 
 // This is an example of how to implement a custom navigation strategy
