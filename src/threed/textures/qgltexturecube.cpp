@@ -431,6 +431,39 @@ void QGLTextureCube::setVerticalWrap(QGL::TextureWrap value)
 }
 
 /*!
+    Cleans up the resources associated with the QGLTextureCube.
+
+    Calling this function to clean up resources must be done manually within
+    the users' code.  Cleanup should be undertaken on application close, or
+    when the QOpenGLContext associated with these resources is otherwise being
+    destroyed.
+
+    The user must ensure that the current thread in "owns" the associated
+    QOpenGLContext, and that this context has been made current prior to cleanup.
+    If these conditions are satisfied the user may simply call the cleanupResources()
+    function.
+
+    In multi-threaded applications where the user cannot ensure the context exists in
+    the current thread, or that the context can be made current, the relevant context is
+    generally available from within paint function, so the cleanupResources function
+    should be called at the start of painting.  An example of an application where
+    scenario arises is in multi-threaded QML2 application which uses a separate thread
+    for rendering.
+
+    If the context is not current or available the function will generate a
+    warning and fail to cleanup the resources associated with that context.
+
+    \sa bind()
+    \sa release()
+*/
+bool QGLTextureCube::cleanupResources()
+{
+    Q_D(QGLTexture2D);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    return d->cleanupResources();
+}
+
+/*!
     Binds this texture to the cube map texture target.
 
     If this texture object is not associated with an identifier in

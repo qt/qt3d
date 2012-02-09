@@ -112,7 +112,7 @@ public:
     virtual void bindImages(QGLTexture2DTextureInfo *info);
     void adjustForNPOTTextureSize();
 
-    void cleanupResources();
+    bool cleanupResources();
 };
 
 QT_END_NAMESPACE

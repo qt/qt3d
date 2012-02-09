@@ -91,6 +91,7 @@ public:
     QGL::TextureWrap verticalWrap() const;
     void setVerticalWrap(QGL::TextureWrap value);
 
+    bool cleanupResources();
     bool bind() const;
     static void release();
 

@@ -107,7 +107,7 @@ public:
 
     GLuint textureId() const;
 
-    void cleanupResources();
+    bool cleanupResources();
 
     static QGLTexture2D *fromTextureId(GLuint id, const QSize& size);
 

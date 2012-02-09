@@ -671,7 +671,7 @@ bool QGLTexture2DPrivate::bind(GLenum target)
     return true;
 }
 
-void QGLTexture2DPrivate::cleanupResources()
+bool QGLTexture2DPrivate::cleanupResources()
 {
     if (!textureInfo.empty()) {
         QOpenGLContext *ctx = QOpenGLContext::currentContext();
@@ -696,7 +696,9 @@ void QGLTexture2DPrivate::cleanupResources()
         else
             qWarning("Texture (created from Image):");
         qWarning("  cleanupResources() was called from wrong context. Some OpenGL resources are not released.");
+        return false;
     }
+    return true;
 }
 
 void QGLTexture2DPrivate::bindImages(QGLTexture2DTextureInfo *info)
@@ -763,17 +765,36 @@ GLuint QGLTexture2D::textureId() const
 }
 
 /*!
-    Releases the texture associated with the 2D texture target,
-    and destroys related opengl resources.
+    Cleans up the resources associated with the QGLTexture2D.
+
+    Calling this function to clean up resources must be done manually within
+    the users' code.  Cleanup should be undertaken on application close, or
+    when the QOpenGLContext associated with these resources is otherwise being
+    destroyed.
+
+    The user must ensure that the current thread in "owns" the associated
+    QOpenGLContext, and that this context has been made current prior to cleanup.
+    If these conditions are satisfied the user may simply call the cleanupResources()
+    function.
+
+    In multi-threaded applications where the user cannot ensure the context exists in
+    the current thread, or that the context can be made current, the relevant context is
+    generally available from within paint function, so the cleanupResources function
+    should be called at the start of painting.  An example of an application where
+    scenario arises is in multi-threaded QML2 application which uses a separate thread
+    for rendering.
+
+    If the context is not current or available the function will generate a
+    warning and fail to cleanup the resources associated with that context.
 
     \sa bind()
     \sa release()
 */
-void QGLTexture2D::cleanupResources()
+bool QGLTexture2D::cleanupResources()
 {
     Q_D(QGLTexture2D);
     glBindTexture(GL_TEXTURE_2D, 0);
-    d->cleanupResources();
+    return d->cleanupResources();
 }
 
 /*!
