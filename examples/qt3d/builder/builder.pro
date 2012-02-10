@@ -4,6 +4,8 @@ CONFIG += qt warn_on
 
 QT += qt3d
 
+include(../../../pkg.pri)
+
 SOURCES = builder.cpp \
     main.cpp
 HEADERS = builder.h

@@ -3,6 +3,8 @@ TARGET = solarsystem
 CONFIG += qt warn_on
 QT += qt3d
 
+include(../../../pkg.pri)
+
 SOURCES = solarsystem.cpp \
     main.cpp
 HEADERS = solarsystem.h

@@ -3,6 +3,8 @@ TARGET = geometry
 CONFIG += qt warn_on
 QT += qt3d
 
+include(../../../pkg.pri)
+
 SOURCES = geometryview.cpp \
     main.cpp \
     geometry.cpp \
