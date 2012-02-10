@@ -97,24 +97,24 @@ public:
 
     ~QDeclarativeEffectPrivate()
     {
-        delete palette;
+        palette.clear();
     }
 
     QColor color;
     bool useLighting;
     bool decal;
     bool blending;
-    QGLMaterialCollection *palette;
+    QSharedPointer<QGLMaterialCollection> palette;
     int materialIndex;
     qreal progress;
     inline void ensureMaterial() {
         if (!palette)
         {
-            palette = new QGLMaterialCollection();
+            palette = QSharedPointer<QGLMaterialCollection>(new QGLMaterialCollection());
         }
         if (materialIndex == -1)
         {
-            materialIndex = palette->addMaterial(new QGLMaterial(palette));
+            materialIndex = palette->addMaterial(new QGLMaterial(palette.data()));
             palette->material(materialIndex)->setColor(color);
         }
         // TODO: decal & blending

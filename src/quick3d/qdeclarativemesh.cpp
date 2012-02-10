@@ -144,9 +144,8 @@ public:
 */
 QDeclarativeMesh::QDeclarativeMesh(QObject *parent)
     : QObject(parent)
-{
-    d = new QDeclarativeMeshPrivate();
-}
+    ,d(new QDeclarativeMeshPrivate())
+{}
 
 /*!
     \internal
@@ -324,7 +323,7 @@ void QDeclarativeMesh::initSceneObjectList()
 */
 void QDeclarativeMesh::initAnimations()
 {
-    qDebug("QDeclarativeMesh::initAnimations()");
+    //qDebug("QDeclarativeMesh::initAnimations()");
     d->originalAnimations.clear();
     if (d->scene) {
         const QList<QGLSceneAnimation *>& rSrcList = d->scene->animations();
@@ -506,7 +505,7 @@ int QDeclarativeMesh::nextSceneBranchId() const
     destruction rules apply, however this \a parent parameter gives the user extra flexibility if
     required.
 */
-int QDeclarativeMesh::createSceneBranch(QString nodeName, QObject *parent)
+int QDeclarativeMesh::createSceneBranch(QString nodeName)
 {
     if (!d->scene) {
         qWarning() << "Unable to split mesh: no scene initialised - attempt to add scene object failed.";
@@ -525,9 +524,7 @@ int QDeclarativeMesh::createSceneBranch(QString nodeName, QObject *parent)
             if (parentNode)
                 parentNode->removeNode(sceneNode);  //this becomes irrelevant.
 
-            //sceneNode->setParent(d->scene);     //TODO: currently this fails as sceneNode changes make problems.
-            //If no specific parent is nominated, use the scene specified by the mesh
-            parent ? sceneNode->setParent(parent)  : sceneNode->setParent(d->scene);
+            sceneNode->setParent(d->scene);
             addSceneBranch(sceneNode, prevParent);
 
             return branchId;
@@ -688,7 +685,7 @@ QObject *QDeclarativeMesh::material(const QString& nodeName, const QString& mate
 
     QGLSceneNode *node = qobject_cast<QGLSceneNode *>(sceneObject);
 
-    QGLMaterialCollection *p = node->palette();
+    QGLMaterialCollection *p = node->palette().data();
 
     QGLMaterial *params =  p->material(materialName);
     if (params && !d->connected.contains(params)) {

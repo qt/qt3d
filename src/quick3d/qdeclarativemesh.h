@@ -104,7 +104,7 @@ public:
 
     //The following functions relate to splitting the main scene into sub-branches
     int nextSceneBranchId() const;
-    int createSceneBranch(QString nodeName, QObject *parent = 0);
+    int createSceneBranch(QString nodeName);
     int addSceneBranch(QGLSceneNode *rootSceneObject, QObject *previousParent=NULL);
     void restoreSceneBranch(int branchId);
     void resetSceneBranches();

@@ -441,7 +441,16 @@ QGLBuilder::QGLBuilder(QGLMaterialCollection *materials)
 {
     dptr->rootNode = new QGLSceneNode;
     if (!materials)
-        materials = new QGLMaterialCollection(dptr->rootNode);
+        materials = new QGLMaterialCollection();
+    dptr->rootNode->setPalette(QSharedPointer<QGLMaterialCollection>(materials));
+}
+
+QGLBuilder::QGLBuilder(QSharedPointer<QGLMaterialCollection> materials)
+    : dptr(new QGLBuilderPrivate(this))
+{
+    dptr->rootNode = new QGLSceneNode;
+    if (materials.isNull())
+        materials = QSharedPointer<QGLMaterialCollection>(new QGLMaterialCollection());
     dptr->rootNode->setPalette(materials);
 }
 
@@ -1344,7 +1353,7 @@ QGLSceneNode *QGLBuilder::popNode()
 
     \sa sceneNode()
 */
-QGLMaterialCollection *QGLBuilder::palette()
+QSharedPointer<QGLMaterialCollection> QGLBuilder::palette()
 {
     return dptr->rootNode->palette();
 }

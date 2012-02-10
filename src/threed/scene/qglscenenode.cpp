@@ -954,7 +954,7 @@ void QGLSceneNode::setMaterial(QGLMaterial *material)
 {
     Q_D(QGLSceneNode);
     if (!d->palette)
-        d->palette = new QGLMaterialCollection(this);
+        d->palette = QSharedPointer<QGLMaterialCollection>(new QGLMaterialCollection(this));
     int ix = d->palette->indexOf(material);
     if (ix == -1)
         ix = d->palette->addMaterial(material);
@@ -997,7 +997,7 @@ void QGLSceneNode::setBackMaterial(QGLMaterial *material)
 {
     Q_D(QGLSceneNode);
     if (!d->palette)
-        d->palette = new QGLMaterialCollection(this);
+        d->palette = QSharedPointer<QGLMaterialCollection>(new QGLMaterialCollection(this));
     int ix = d->palette->indexOf(material);
     if (ix == -1)
         ix = d->palette->addMaterial(material);
@@ -1009,7 +1009,7 @@ void QGLSceneNode::setBackMaterial(QGLMaterial *material)
 
     \sa setPalette()
 */
-QGLMaterialCollection *QGLSceneNode::palette() const
+QSharedPointer<QGLMaterialCollection> QGLSceneNode::palette() const
 {
     Q_D(const QGLSceneNode);
     return d->palette;
@@ -1020,10 +1020,10 @@ QGLMaterialCollection *QGLSceneNode::palette() const
 
     \sa palette()
 */
-void QGLSceneNode::setPalette(QGLMaterialCollection *palette)
+void QGLSceneNode::setPalette(QSharedPointer<QGLMaterialCollection> palette)
 {
     Q_D(QGLSceneNode);
-    if (d->palette != palette) {
+    if (d->palette.data() != palette.data()) {
         d->palette = palette;
         emit updated();
     }
@@ -2056,7 +2056,7 @@ void qDumpScene(QGLSceneNode *node, bool detailed, int indent, const QSet<QGLSce
     {
         qDebug("%s material: %d", qPrintable(ind), node->materialIndex());
         QGLMaterial *mat = node->material();
-        QGLMaterialCollection *pal = node->palette();
+        QGLMaterialCollection *pal = node->palette().data();
         if (pal)
             qDebug("%s palette: %p", qPrintable(ind), pal);
         else

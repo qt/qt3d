@@ -69,9 +69,9 @@ void tst_QGLRender::create()
 {
     QGLSceneNode node;
     QGLSceneNode node2;
-    QGLMaterialCollection pal;
-    node.setPalette(&pal);
-    node2.setPalette(&pal);
+    QSharedPointer<QGLMaterialCollection> pal(new QGLMaterialCollection());
+    node.setPalette(pal);
+    node2.setPalette(pal);
 
     QGLRenderState s;
     QGLRenderOrder order(&node, s);
@@ -95,9 +95,9 @@ void tst_QGLRender::values()
 {
     QGLSceneNode node;   // by default has QGL::FlatColor
     QGLSceneNode node2;
-    QGLMaterialCollection pal;
-    node.setPalette(&pal);
-    node2.setPalette(&pal);
+    QSharedPointer<QGLMaterialCollection> pal(new QGLMaterialCollection());
+    node.setPalette(pal);
+    node2.setPalette(pal);
     node2.setEffect(QGL::LitMaterial);
 
     QGLRenderState s;
@@ -110,9 +110,9 @@ void tst_QGLRender::values()
     QGLRenderState state;
     QGLMaterial *mat = new QGLMaterial;
     mat->setAmbientColor(Qt::blue);
-    int ix = pal.addMaterial(mat);
+    int ix = pal->addMaterial(mat);
     QGLSceneNode node3;
-    node3.setPalette(&pal);
+    node3.setPalette(pal);
     node3.setMaterialIndex(ix);
     node3.setEffect(QGL::LitMaterial);
     state.updateFrom(&node3);
@@ -129,9 +129,9 @@ void tst_QGLRender::repo()
 {
     QGLSceneNode node;   // by default has QGL::FlatColor
     QGLSceneNode node2;
-    QGLMaterialCollection pal;
-    node.setPalette(&pal);
-    node2.setPalette(&pal);
+    QSharedPointer<QGLMaterialCollection> pal(new QGLMaterialCollection());
+    node.setPalette(pal);
+    node2.setPalette(pal);
     node2.setEffect(QGL::LitDecalTexture2D);
 
     QGLRenderState s;
@@ -182,7 +182,7 @@ private:
 void tst_QGLRender::sequence()
 {
     QSKIP("QWidget: Cannot create a QWidget when no GUI is being used");
-    QGLMaterialCollection *palette = new QGLMaterialCollection;
+    QSharedPointer<QGLMaterialCollection> palette(new QGLMaterialCollection());
 
     // create a yellow lit material
     QGLMaterial *mat = new QGLMaterial;

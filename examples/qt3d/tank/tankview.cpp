@@ -54,7 +54,7 @@ TankView::TankView(QWindow *parent)
     , m_count(0)
 {
     m_tankScene->setParent(this);
-    m_tankScene->setPalette(new QGLMaterialCollection(this));
+    m_tankScene->setPalette(QSharedPointer<QGLMaterialCollection>(new QGLMaterialCollection(this)));
     m_tankScene->setEffect(QGL::LitDecalTexture2D);
     m_tankScene->addNode(new QuadPlane(0, QSizeF(25, 25)));
     Tank *tank = addTank();

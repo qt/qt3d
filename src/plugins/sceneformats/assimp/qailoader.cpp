@@ -481,7 +481,6 @@ void QAiLoader::loadTextures(aiMaterial *ma, QGLMaterial *mq)
 */
 void QAiLoader::loadMaterial(aiMaterial *ma)
 {
-    QGLMaterialCollection *palette = m_builder.palette();
     QGLMaterial *mq = new QGLMaterial;
     mq->setObjectName("___DEFAULT_NAME___");
 
@@ -548,7 +547,7 @@ void QAiLoader::loadMaterial(aiMaterial *ma)
     //
     // executive summary: don't muck around with the palettte outside of this call
 
-    int k = palette->addMaterial(mq);
+    int k = m_builder.palette()->addMaterial(mq);
 
     Q_UNUSED(k);
     //qDebug() << "loaded material" << k << mq;

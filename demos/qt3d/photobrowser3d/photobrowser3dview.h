@@ -98,7 +98,7 @@ private:
     ImageManager *m_images;
     Buttons *m_buttons;
     SkyBox *m_skybox;
-    QGLMaterialCollection *m_palette;
+    QSharedPointer<QGLMaterialCollection> m_palette;
     QStateMachine *m_state;
     QState *m_app;
     QState *m_zoomed;

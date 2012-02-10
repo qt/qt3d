@@ -69,6 +69,7 @@ QAiScene::QAiScene(const aiScene *scene, QAiSceneHandler *handler)
     Q_ASSERT(scene);
     QAiLoader loader(scene, handler);
     m_root = loader.loadMeshes();
+    m_root->setParent(this);
     m_animations = loader.loadAnimations();
 }
 

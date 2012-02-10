@@ -215,9 +215,6 @@ void QAiSceneHandler::decodeOptions(const QString &options)
 
 QGLAbstractScene *QAiSceneHandler::read()
 {
-    qDebug() << "QAiSceneHandler::read()";
-
-
     AiLoaderIOSystem *ios = new AiLoaderIOSystem(device(), url());
     m_importer.SetIOHandler(ios);
 

@@ -52,7 +52,7 @@ QT_END_NAMESPACE
 class Geometry : public QGLSceneNode
 {
 public:
-    Geometry(QObject *parent = 0, QGLMaterialCollection *materials = 0);
+    Geometry(QObject *parent, QSharedPointer<QGLMaterialCollection> materials);
 };
 
 #endif // GEOMETRY_H

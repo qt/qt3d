@@ -141,8 +141,8 @@ public:
     QGLMaterial *backMaterial() const;
     void setBackMaterial(QGLMaterial *material);
 
-    QGLMaterialCollection *palette() const;
-    void setPalette(QGLMaterialCollection *palette);
+    QSharedPointer<QGLMaterialCollection> palette() const;
+    void setPalette(QSharedPointer<QGLMaterialCollection> palette);
 
     QList<QGLSceneNode*> allChildren() const;
     QList<QGLSceneNode *> children() const;

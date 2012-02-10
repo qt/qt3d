@@ -60,7 +60,7 @@ ThumbnailNode::ThumbnailNode(QObject *parent)
     , m_manager(0)
     , m_lastDistance(ThumbnailNode::Unknown)
 {
-    setPalette(new QGLMaterialCollection(this));
+    setPalette(QSharedPointer<QGLMaterialCollection>(new QGLMaterialCollection(this)));
 }
 
 ThumbnailNode::~ThumbnailNode()
@@ -139,13 +139,12 @@ void ThumbnailNode::loadFullImage()
             m_full->materialIndex() == m_defaultMaterial)
     {
         QGLMaterial *mat = new QGLMaterial;
-        QGLTexture2D *tex = new QGLTexture2D;
+        QGLTexture2D *tex = new QGLTexture2D(mat);
         tex->setImage(m_image.data());
         mat->setTexture(tex);
         mat->setObjectName(m_image.url().path());
         int ix = palette()->addMaterial(mat);
         m_full->setMaterialIndex(ix);
-        mat->setParent(m_full);
     }
 }
 

@@ -104,19 +104,19 @@ QGLTexture2DPrivate::~QGLTexture2DPrivate()
     if (!textureInfo.empty()) {
         bool bSomethingLeft = false;
         for (QList<QGLTexture2DTextureInfo*>::iterator It=textureInfo.begin(); It!=textureInfo.end(); ++It) {
-            if ((*It)->tex.textureId()) {
+            if ((*It)->isLiteral==false && (*It)->tex.textureId()) {
                 bSomethingLeft = true;
                 break;
             }
         }
         if (bSomethingLeft) {
             if (url.isEmpty()) {
-                qWarning("On destruction, texture(created from Image) has non-released resources:");
+                qWarning("OPENGL RESOURCE LEAK: texture(created from Image) has non-released resources:");
             } else {
-                qWarning("On destruction, texture '%s' has non-released resources:", url.toString().toAscii().constData());
+                qWarning("OPENGL RESOURCE LEAK: texture '%s' has non-released resources:", url.toString().toAscii().constData());
             }
             for (QList<QGLTexture2DTextureInfo*>::iterator It=textureInfo.begin(); It!=textureInfo.end(); ++It) {
-                if ((*It)->tex.textureId()) {
+                if ((*It)->isLiteral==false && (*It)->tex.textureId()) {
                     qWarning("  id = %u",(*It)->tex.textureId());
                 }
             }
@@ -679,7 +679,7 @@ bool QGLTexture2DPrivate::cleanupResources()
             QGLTexture2DTextureInfo *texInfo = *It;
             QOpenGLContext *ictx = const_cast<QOpenGLContext*>(texInfo->tex.context());
             if (QOpenGLContext::areSharing(ictx, ctx)) {
-                if (texInfo->tex.textureId()) {
+                if (!texInfo->isLiteral && texInfo->tex.textureId()) {
                     GLuint id = texInfo->tex.textureId();
                     glDeleteTextures(1, &id);
                     texInfo->tex.clearId();

@@ -66,6 +66,7 @@ class Q_QT3D_EXPORT QGLBuilder
 {
 public:
     explicit QGLBuilder(QGLMaterialCollection *materials = 0);
+    explicit QGLBuilder(QSharedPointer<QGLMaterialCollection> materials);
     virtual ~QGLBuilder();
 
     // section management
@@ -77,7 +78,7 @@ public:
     QGLSceneNode *newNode();
     QGLSceneNode *pushNode();
     QGLSceneNode *popNode();
-    QGLMaterialCollection *palette();
+    QSharedPointer<QGLMaterialCollection> palette();
     QGLSceneNode *finalizedSceneNode();
 
     // geometry building by primitive

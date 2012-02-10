@@ -49,7 +49,8 @@
 #include <QFileInfo>
 
 SkyBox::SkyBox(QGLView *view, const QString &imagePath)
-    : m_scene(0)
+    : QObject(view)
+    , m_scene(0)
     , m_view(view)
     , m_camera(new QGLCamera(this))
 {

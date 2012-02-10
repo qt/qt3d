@@ -50,7 +50,7 @@
 // http://en.wikipedia.org/wiki/Icosahedron#Cartesian_coordinates
 const float phi = 1.618033988749894848f;
 
-Geometry::Geometry(QObject *parent, QGLMaterialCollection *materials)
+Geometry::Geometry(QObject *parent, QSharedPointer<QGLMaterialCollection> materials)
     : QGLSceneNode(parent)
 {
     setPalette(materials);

@@ -62,6 +62,8 @@
 #include <QtCore/qstringlist.h>
 #include <QtCore/qset.h>
 
+#include <QSharedPointer>
+
 QT_BEGIN_NAMESPACE
 
 class QGLAbstractEffect;
@@ -118,7 +120,7 @@ public:
     }
 
     QGeometryData geometry;
-    QGLMaterialCollection *palette;
+    QSharedPointer<QGLMaterialCollection> palette;
     QMatrix4x4 localTransform;
     QVector3D translate;
     QList<QGraphicsTransform3D *> transforms;

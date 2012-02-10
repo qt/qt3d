@@ -50,7 +50,7 @@ class Buttons : public QGLSceneNode
 {
     Q_OBJECT
 public:
-    explicit Buttons(QObject *parent, QGLMaterialCollection *palette);
+    explicit Buttons(QObject *parent, QSharedPointer<QGLMaterialCollection> palette);
     void draw(QGLPainter *painter);
     void clearPositions();
 private:

@@ -139,7 +139,7 @@ void CubeView::initializeGL(QGLPainter *painter)
     builder.popNode();
 
     int index;
-    QGLMaterialCollection *palette = builder.sceneNode()->palette();
+    QSharedPointer<QGLMaterialCollection> palette = builder.sceneNode()->palette();
 
     QGLMaterial *mat1 = new QGLMaterial();
     mat1->setDiffuseColor(QColor(128, 100, 0));

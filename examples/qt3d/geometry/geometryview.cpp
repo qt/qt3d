@@ -65,7 +65,7 @@ GeometryView::GeometryView(QWindow *parent)
     lp->setSpotExponent(24);
     lp->setSpotDirection(QVector3D(0.0, -1.0, -2.0));
 
-    palette = new QGLMaterialCollection(this);
+    QSharedPointer<QGLMaterialCollection> palette(new QGLMaterialCollection());
 
     // first set up the geometry - an icosahedron
     // this one handles all its own colors and textures

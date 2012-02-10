@@ -42,7 +42,7 @@
 #include "buttons.h"
 #include "qglpainter.h"
 
-Buttons::Buttons(QObject *parent, QGLMaterialCollection *palette)
+Buttons::Buttons(QObject *parent, QSharedPointer<QGLMaterialCollection> palette)
     : QGLSceneNode(parent)
 {
     setObjectName("Buttons");
