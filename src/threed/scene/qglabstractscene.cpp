@@ -364,6 +364,10 @@ Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader,
     Returns the scene object, or null if the scene could not be loaded
     or the \a format was not supported by any of the plugins.
 
+    To debug scene loading export the environment variable QT3D_DEBUG_MODEL,
+    and (depending on backend implementation) the loader can produce useful
+    debugging information on the console.
+
     \sa QGLSceneFormatPlugin
 */
 QGLAbstractScene *QGLAbstractScene::loadScene
