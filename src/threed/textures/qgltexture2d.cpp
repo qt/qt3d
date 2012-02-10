@@ -61,6 +61,11 @@ QT_BEGIN_NAMESPACE
     information is uploaded to the GL server if it has changed since
     the last time bind() was called.
 
+    To enable a texture so that it will be used in the next draw call,
+    use bind().  To disable the texture so that it will no longer be
+    used in drawing call release().  To remove the texture from the
+    GL server altogether call cleanupResources().
+
     Once a QGLTexture2D object is created, it can be bound to multiple
     GL contexts.  Internally, a separate texture identifier is created
     for each context.  This makes QGLTexture2D easier to use than
@@ -68,16 +73,26 @@ QT_BEGIN_NAMESPACE
     to be as concerned with whether the texture identifier is valid
     in the current context.  The application merely calls bind() and
     QGLTexture2D will create a new texture identifier for the context
-    if necessary.
+    if necessary.  When cleanupResources() is called the texture will
+    be removed from the GL server, and will no longer be available to
+    any of the multiple contexts.
 
     QGLTexture2D internally points to a reference-counted object that
     represents the current texture state.  If the QGLTexture2D is copied,
     the internal pointer is the same.  Modifications to one QGLTexture2D
     copy will affect all of the other copies in the system.
 
-    The texture identifiers will be destroyed when the last QGLTexture2D
-    reference is destroyed, or when a context is destroyed that contained a
-    texture identifier that was created by QGLTexture2D.
+    When the QGLTexture2D object is deleted, no attempt is made to remove
+    the texture resources from the GL server.  The application programmer
+    must call cleanupResources().  The reason is that the relevant GL
+    context must be current (or be made current) for GL resources to be
+    removed, but the context is likely to be in a different thread.
+
+    The application programmer thus has control over the life-cycle of the
+    GL resources, and has the option to keep the QGLTexture2D object around
+    with its attached image in heap memory; whilst not consuming resources
+    on the GPU.  This is useful in larger scenes, or when used with LOD
+    and higher-level culling.
 
     QGLTexture2D can also be used for uploading 1D textures into the
     GL server by specifying an image() with a height of 1.
@@ -136,9 +151,9 @@ QGLTexture2D::QGLTexture2D(QObject *parent)
 }
 
 /*!
-    Destroys this texture object.  If this object is the last
-    reference to the underlying GL texture, then the underlying
-    GL texture will also be deleted.
+    Destroys this texture object.  Call cleanupResources() before destroying the object
+    in order to remove GL resources from the server - this is not done automatically,
+    as destruction is not guaranteed to occur in the same thread as the context.
 */
 QGLTexture2D::~QGLTexture2D()
 {
@@ -571,6 +586,9 @@ void QGLTexture2D::setVerticalWrap(QGL::TextureWrap value)
     the current context, then a new identifier will be created,
     and image() uploaded into the GL server.
 
+    To remove the resources from the GL server when this texture is
+    no longer required, call cleanupResources().
+
     If setImage() or setSize() was called since the last upload,
     then image() will be re-uploaded to the GL server.
 
@@ -786,6 +804,9 @@ GLuint QGLTexture2D::textureId() const
 
     If the context is not current or available the function will generate a
     warning and fail to cleanup the resources associated with that context.
+
+    This does not remove any client side image that may be stored:
+    for that, see clearImage().
 
     \sa bind()
     \sa release()
