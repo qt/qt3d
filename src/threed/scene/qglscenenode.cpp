@@ -1779,6 +1779,36 @@ QGLSceneNode *QGLSceneNode::clone(QObject *parent) const
     \a parent as the parent of the new copy.  If parent is NULL then parent
     is set to this nodes parent.
 
+    The copy will reference the same underlying geometry, will create
+    clones of all of the child nodes, and have all effects, transforms and other
+    properties copied from this node.  The only property that is not copied is
+    pickNode().
+
+    \sa cloneNoChildren()
+*/
+QGLSceneNode * QGLSceneNode::cloneWithChildren(QObject *parent) const
+{
+    Q_D(const QGLSceneNode);
+
+    QGLSceneNode *node = new QGLSceneNode(new QGLSceneNodePrivate(d), parent?parent:this->parent());
+
+    for (int index = 0; index < d->transforms.size(); ++index)
+        node->addTransform(d->transforms.at(index)->clone(node));
+
+    int count = children().count();
+    for (int index = 0; index < count; ++index)
+    {
+        node->addNode(this->children().at(index)->cloneWithChildren());
+    }
+
+    return node;
+}
+
+/*!
+    Creates a new QGLSceneNode that is a copy of this scene node, with
+    \a parent as the parent of the new copy.  If parent is NULL then parent
+    is set to this nodes parent.
+
     The copy will reference the same underlying geometry, and
     have all effects, transforms and other properties copied from this node.
     The children() and pickNodes() are not cloned.

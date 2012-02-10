@@ -166,6 +166,7 @@ public:
     Q_INVOKABLE QGLSceneNode *except(const QStringList &names, QObject *parent = 0) ;
 
     Q_INVOKABLE QGLSceneNode *clone(QObject *parent = 0) const;
+    Q_INVOKABLE QGLSceneNode *cloneWithChildren(QObject *parent = 0) const;
     Q_INVOKABLE QGLSceneNode *cloneNoChildren(QObject *parent = 0) const;
     Q_INVOKABLE QGLSceneNode *allExcept(const QString &name, QObject *parent = 0) const;
     Q_INVOKABLE QGLSceneNode *only(const QString &name, QObject *parent = 0) const;
