@@ -1,8 +1,9 @@
 TEMPLATE = app
 TARGET = photobrowser3d
 CONFIG += qt warn_on
-
 QT += qt3d
+
+include (../../../pkg.pri)
 
 SOURCES += main.cpp\
     photobrowser3dview.cpp \

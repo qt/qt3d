@@ -3,6 +3,8 @@ TARGET = cubehouse
 CONFIG += qt warn_on
 QT += qt3d
 
+include (../../../pkg.pri)
+
 SOURCES = cubeview.cpp main.cpp projectivetextureeffect.cpp
 HEADERS = cubeview.h projectivetextureeffect.h
 win32:DEFINES+=_CRT_SECURE_NO_WARNINGS
