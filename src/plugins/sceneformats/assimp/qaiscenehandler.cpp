@@ -70,9 +70,7 @@
 
 QT_BEGIN_NAMESPACE
 
-#ifdef _DEBUG
 void DumpScene(const aiScene* pScene);
-#endif
 
 QAiSceneHandler::QAiSceneHandler()
     : m_options(qAiPostProcessPreset)
@@ -282,11 +280,10 @@ QGLAbstractScene *QAiSceneHandler::read()
         finalize();
         return 0;
     }
-#ifdef _DEBUG
     else {
-        DumpScene(scene);
+        if (!qgetenv("QT3D_DEBUG_MODEL").isEmpty())
+            DumpScene(scene);
     }
-#endif
 
     QAiScene *qscene = new QAiScene(scene, this);
 
@@ -374,22 +371,20 @@ void QAiSceneHandler::downloadComplete(QByteArray sceneData)
         if (log)
             qWarning("For details check log: %s/AssimpLog.txt\n", qPrintable(c));
     }
-#ifdef _DEBUG
     else {
-        DumpScene(scene);
+        if (!qgetenv("QT3D_DEBUG_MODEL").isEmpty())
+            DumpScene(scene);
         //If we have reached this point everything has proceeded correctly,
         //load the scene.
         QAiScene *theScene = qobject_cast<QAiScene*>(getScene());
         theScene->loadScene(scene);
     }
-#endif
 
     Assimp::DefaultLogger::kill();
 
     finalize();
 }
 
-#ifdef _DEBUG
 void LogPrint(const char* pFormat, ...)
 {
     static char buff[1024];
@@ -397,7 +392,9 @@ void LogPrint(const char* pFormat, ...)
     va_list args;
     va_start(args, pFormat);
     vsnprintf( buff, sizeof(buff) - 1, pFormat, args);
+#ifndef QT_NO_DEBUG_STREAM
     qDebug() << buff;
+#endif
 }
 
 void DumpAnimation(int i, const aiAnimation* pAnimation, const aiScene* pScene)
@@ -448,6 +445,5 @@ void DumpScene(const aiScene* pScene)
         DumpNodeRecursive(0,pScene->mRootNode,pScene);
     }
 }
-#endif
 
 QT_END_NAMESPACE
