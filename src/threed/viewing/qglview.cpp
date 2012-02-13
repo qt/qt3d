@@ -254,7 +254,7 @@ public:
 
         logTime.start();
         lastFrameTime.start();
-        QByteArray env = qgetenv("Quick3D_LOG_EVENTS");
+        QByteArray env = qgetenv("QT3D_LOG_EVENTS");
         if (env == "1")
             options |= QGLView::PaintingLog;
     }
@@ -364,7 +364,7 @@ static QString qt_gl_stereo_arg()
         if (arg.startsWith(QLatin1String("-stereo-")))
             return arg;
     }
-    QByteArray options(qgetenv("Quick3D_OPTIONS"));
+    QByteArray options(qgetenv("QT3D_OPTIONS"));
     args = QString::fromLocal8Bit
         (options.constData(), options.size()).split(QLatin1Char(' '));
     foreach (QString arg, args) {
