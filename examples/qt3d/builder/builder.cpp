@@ -53,6 +53,7 @@
 BuilderView::BuilderView(QWindow *parent)
     : QGLView(parent)
     , canScene(new QGLSceneNode(this))
+    , texture(0)
 {
     //! [0]
     QGLSceneNode *can = buildGeometry();
@@ -97,6 +98,7 @@ BuilderView::BuilderView(QWindow *parent)
 
 BuilderView::~BuilderView()
 {
+    texture->cleanupResources();
     delete canScene;
 }
 
@@ -132,6 +134,7 @@ QGLSceneNode *BuilderView::buildGeometry()
     url.setPath(QLatin1String(":/images/qt-soup.png"));
     url.setScheme(QLatin1String("file"));
     mat->setTextureUrl(url);
+    texture = mat->texture();
     int canMat = root->palette()->addMaterial(mat);
     root->setMaterialIndex(canMat);
     root->setEffect(QGL::LitMaterial);

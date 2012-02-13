@@ -55,7 +55,7 @@ class CubeView : public QGLView
     Q_PROPERTY(qreal cubeAngle READ cubeAngle WRITE setCubeAngle)
 public:
     CubeView(QWindow *parent = 0);
-    ~CubeView() {}
+    ~CubeView();
 
     void setShowFrameRate(bool value) { showFrameRate = value; }
     void setStereo(bool value) { stereo = value; }

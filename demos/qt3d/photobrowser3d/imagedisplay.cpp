@@ -128,6 +128,7 @@ ImageDisplay::ImageDisplay(QObject *parent, QSharedPointer<QGLMaterialCollection
     m_wall->setEffect(QGL::FlatReplaceTexture2D);
     QGLMaterial *mat = new QGLMaterial();
     QGLTexture2D *tex = new QGLTexture2D(mat);
+    m_LoadedTextures.push_back(tex);
     tex->setImage(QImage(":/res/images/girder.png"));
     mat->setTexture(tex);
     mat->setObjectName("girder material");
@@ -157,6 +158,7 @@ ImageDisplay::ImageDisplay(QObject *parent, QSharedPointer<QGLMaterialCollection
     m_frameImage = qMakeFrameImage();
     mat = new QGLMaterial();
     tex = new QGLTexture2D(mat);
+    m_LoadedTextures.push_back(tex);
     tex->setHorizontalWrap(QGL::ClampToEdge);
     tex->setImage(m_frameImage);
     mat->setTexture(tex);
@@ -173,6 +175,9 @@ ImageDisplay::ImageDisplay(QObject *parent, QSharedPointer<QGLMaterialCollection
 
 ImageDisplay::~ImageDisplay()
 {
+    for (int i=0; i<m_LoadedTextures.count(); ++i) {
+        m_LoadedTextures.at(i)->cleanupResources();
+    }
     delete m_effect;
 }
 

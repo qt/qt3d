@@ -453,6 +453,7 @@ void ShapesWidget::drawText
     painter->draw(QGL::TriangleFan, 4);
     painter->setStandardEffect(QGL::FlatColor);
     glBindTexture(GL_TEXTURE_2D, 0);
+    texture.cleanupResources();
 }
 
 void ShapesWidget::ensureContext()

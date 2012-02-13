@@ -58,6 +58,7 @@ Buttons::Buttons(QObject *parent, QSharedPointer<QGLMaterialCollection> palette)
     QImage im(":/controls/arrows-left.png");
     m_size = im.size();
     QGLTexture2D *tex = new QGLTexture2D(mat);
+    m_LoadedTextures.push_back(tex);
     tex->setImage(im);
     mat->setTexture(tex);
 
@@ -96,6 +97,13 @@ Buttons::Buttons(QObject *parent, QSharedPointer<QGLMaterialCollection> palette)
     m_right->setStart(6);
     m_right->setCount(6);
     m_left->setOption(QGLSceneNode::CullBoundingBox, false);
+}
+
+Buttons::~Buttons()
+{
+    for (int i=0; i<m_LoadedTextures.count(); ++i) {
+        m_LoadedTextures.at(i)->cleanupResources();
+    }
 }
 
 void Buttons::draw(QGLPainter *painter)

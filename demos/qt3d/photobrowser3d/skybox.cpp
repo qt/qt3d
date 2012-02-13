@@ -141,6 +141,12 @@ SkyBox::SkyBox(QGLView *view, const QString &imagePath)
     setImagePath(imagePath.isEmpty() ? resourceBase : imagePath);
 }
 
+SkyBox::~SkyBox()
+{
+    for (int i=0; i<6; ++i) {
+        m_faces[i]->material()->texture()->cleanupResources();
+    }
+}
 
 void SkyBox::setImagePath(const QString &imagePath)
 {

@@ -50,6 +50,10 @@ class QuadPlane : public QGLSceneNode
 public:
     QuadPlane(QObject *parent = 0,
               QSizeF size = QSizeF(100.0f, 100.0f), int level = 3);
+    ~QuadPlane();
+
+private:
+    QGLTexture2D *m_texture;
 };
 
 #endif // QUADPLANE_H

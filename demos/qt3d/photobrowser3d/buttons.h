@@ -51,12 +51,14 @@ class Buttons : public QGLSceneNode
     Q_OBJECT
 public:
     explicit Buttons(QObject *parent, QSharedPointer<QGLMaterialCollection> palette);
+    ~Buttons();
     void draw(QGLPainter *painter);
     void clearPositions();
 private:
     QGLSceneNode *m_left;
     QGLSceneNode *m_right;
     QSize m_size;
+    QList<QGLTexture2D*> m_LoadedTextures;
 };
 
 #endif // BUTTONS_H

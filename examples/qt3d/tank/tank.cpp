@@ -87,8 +87,9 @@ static QGLMaterial *qCreateFluid()
     return mat;
 }
 
-Tank::Tank(QObject *parent) :
-    QGLSceneNode(parent)
+Tank::Tank(QObject *parent)
+    : QGLSceneNode(parent)
+    , m_texture(0)
 {
     QSequentialAnimationGroup *seq = new QSequentialAnimationGroup(this);
     QGraphicsScale3D *scale = new QGraphicsScale3D(this);
@@ -110,7 +111,16 @@ Tank::Tank(QObject *parent) :
     seq->start();
 
     addNode(tankObject());
-    setMaterial(qCreateFluid());
+
+    QGLMaterial *mat = qCreateFluid();
+    m_texture = mat->texture();
+    setMaterial(mat);
+}
+
+Tank::~Tank()
+{
+    if (m_texture)
+        m_texture->cleanupResources();
 }
 
 QGLSceneNode *Tank::tankObject()

@@ -63,6 +63,7 @@ private:
     QGLSceneNode *buildGeometry();
 
     QGLSceneNode *canScene;
+    QGLTexture2D *texture;
 };
 
 #endif

@@ -60,6 +60,7 @@ CubeView::CubeView(QWindow *parent)
 
 CubeView::~CubeView()
 {
+    logo.cleanupResources();
     delete cube;
 }
 

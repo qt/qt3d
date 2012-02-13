@@ -147,6 +147,8 @@ void QAtlas::paint(QGLPainter *painter)
     painter->popSurface();
 
     glEnable(GL_DEPTH_TEST);
+
+    t.cleanupResources();
 }
 
 QRect QAtlas::allocate(const QSize &size, const QImage &image, const QGL::IndexArray &indices)

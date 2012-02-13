@@ -58,6 +58,7 @@ class SkyBox : public QObject
     Q_OBJECT
 public:
     SkyBox(QGLView *view, const QString &imagePath = QString());
+    ~SkyBox();
     QString imagePath() const { return m_imagePath; }
     void setImagePath(const QString &imagePath);
     void draw(QGLPainter *painter) const;

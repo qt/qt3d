@@ -80,6 +80,10 @@ BasketView::BasketView(QWindow *parent)
 
 BasketView::~BasketView()
 {
+    const QGLMaterialCollection* pPalette = basket->palette().data();
+    for (int i=0; i<pPalette->size(); ++i) {
+        pPalette->material(i)->texture()->cleanupResources();
+    }
     delete basket;
 }
 

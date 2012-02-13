@@ -48,12 +48,15 @@ class Tank : public QGLSceneNode
     Q_OBJECT
 public:
     explicit Tank(QObject *parent = 0);
+    ~Tank();
 
 signals:
 
 public slots:
 private:
     static QGLSceneNode *tankObject();
+
+    QGLTexture2D *m_texture;
 };
 
 #endif // TANK_H
