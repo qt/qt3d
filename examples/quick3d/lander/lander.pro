@@ -23,7 +23,6 @@ QML_INFRA_FILES = \
     qml/rusty.png
 
 QML_MESHES_FILES = \
-    qml/lunar-lander.3ds \
     qml/meshes/lunar-lander.3ds \
     qml/meshes/lunar-lander.obj \
     qml/meshes/lunar-landscape.3ds \
