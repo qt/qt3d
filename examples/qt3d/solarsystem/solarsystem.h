@@ -87,6 +87,7 @@ private:
     QGraphicsRotation3D *moonRotation;
     QGraphicsRotation3D *systemRotation;
     QGLSceneNode *spaceScene;
+    QList<QGLTexture2D*> m_LoadedTextures;
 
     QGLShaderProgramEffect* sunEffect;
 

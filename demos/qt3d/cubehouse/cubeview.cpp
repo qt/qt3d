@@ -83,6 +83,11 @@ CubeView::CubeView(QWindow *parent)
     time.start();
 }
 
+CubeView::~CubeView()
+{
+    texture.cleanupResources();
+}
+
 void CubeView::initializeGL(QGLPainter *painter)
 {
     QGLBuilder builder;

@@ -65,6 +65,9 @@ ThumbnailNode::ThumbnailNode(QObject *parent)
 
 ThumbnailNode::~ThumbnailNode()
 {
+    for (int i=0; i<m_LoadedTextures.count(); ++i) {
+        m_LoadedTextures.at(i)->cleanupResources();
+    }
     delete m_full;
 }
 
@@ -121,8 +124,12 @@ void ThumbnailNode::destroyFullNode()
     if (!m_full)
         return;
     QGLMaterial *mat = m_full->material();
-    if (m_full->materialIndex() != m_defaultMaterial)
+    if (m_full->materialIndex() != m_defaultMaterial) {
         m_full->palette()->removeMaterial(mat);
+        mat->texture()->cleanupResources();
+        m_LoadedTextures.removeAll(mat->texture());
+        delete mat;
+    }
     delete m_full;
     m_full = 0;
 }
@@ -140,6 +147,7 @@ void ThumbnailNode::loadFullImage()
     {
         QGLMaterial *mat = new QGLMaterial;
         QGLTexture2D *tex = new QGLTexture2D(mat);
+        m_LoadedTextures.push_back(tex);
         tex->setImage(m_image.data());
         mat->setTexture(tex);
         mat->setObjectName(m_image.url().path());

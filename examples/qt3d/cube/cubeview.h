@@ -59,6 +59,7 @@ protected:
 
 private:
     QGLSceneNode *cube;
+    QGLTexture2D *texture;
 };
 
 #endif

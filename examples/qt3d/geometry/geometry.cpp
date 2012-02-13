@@ -52,6 +52,7 @@ const float phi = 1.618033988749894848f;
 
 Geometry::Geometry(QObject *parent, QSharedPointer<QGLMaterialCollection> materials)
     : QGLSceneNode(parent)
+    , m_texture(0)
 {
     setPalette(materials);
 
@@ -198,8 +199,14 @@ Geometry::Geometry(QObject *parent, QSharedPointer<QGLMaterialCollection> materi
     QGLTexture2D *texture = new QGLTexture2D(mat);
     texture->setImage(uv);
     mat->setTexture(texture);
+    m_texture = texture;
 
     setMaterial(mat);
     QGLSceneNode *n = b.finalizedSceneNode();
     addNode(n);
+}
+
+Geometry::~Geometry()
+{
+    m_texture->cleanupResources();
 }

@@ -74,6 +74,7 @@ private:
     QGLSceneNode *m_currentWall;
     ThumbnailNode *m_currentFrame;
     QGLAbstractEffect *m_effect;
+    QList<QGLTexture2D*> m_LoadedTextures;
     bool m_imageSetToDefault;
     int m_count;
     qreal m_size;

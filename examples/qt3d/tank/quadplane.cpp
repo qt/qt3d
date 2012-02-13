@@ -70,6 +70,7 @@ QGLMaterial *qCreateFloor()
 
 QuadPlane::QuadPlane(QObject *parent, QSizeF size, int level)
     : QGLSceneNode(parent)
+    , m_texture(0)
 {
     setObjectName("QuadPlane");
     if (level > 8)
@@ -102,9 +103,18 @@ QuadPlane::QuadPlane(QObject *parent, QSizeF size, int level)
     }
     QGLSceneNode *n = builder.finalizedSceneNode();
     addNode(n);
-    n->setMaterial(qCreateFloor());
+    QGLMaterial *mat = qCreateFloor();
+    m_texture = mat->texture();
+    n->setMaterial(mat);
     QGraphicsRotation3D *rot = new QGraphicsRotation3D(n);
     rot->setAxis(QVector3D(1, 0, 0));
     rot->setAngle(90.0f);
     n->addTransform(rot);
 }
+
+QuadPlane::~QuadPlane()
+{
+    if (m_texture)
+        m_texture->cleanupResources();
+}
+

@@ -46,6 +46,8 @@
 
 CubeView::CubeView(QWindow *parent)
     : QGLView(parent)
+    , cube(0)
+    , texture(0)
 {
     QGLBuilder builder;
     builder << QGL::Faceted << QGLCube(1.5f);
@@ -57,6 +59,7 @@ CubeView::CubeView(QWindow *parent)
     url.setPath(QLatin1String(":/qtlogo.png"));
     url.setScheme(QLatin1String("file"));
     mat->setTextureUrl(url);
+    texture = mat->texture();
     cube->setMaterial(mat);
 
     cube->setEffect(QGL::LitDecalTexture2D);
@@ -64,6 +67,7 @@ CubeView::CubeView(QWindow *parent)
 
 CubeView::~CubeView()
 {
+    texture->cleanupResources();
     delete cube;
 }
 

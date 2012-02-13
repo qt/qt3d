@@ -93,6 +93,8 @@ ThumbnailableImagePrivate::ThumbnailableImagePrivate()
 
 ThumbnailableImagePrivate::~ThumbnailableImagePrivate()
 {
+    if (tex)
+        tex->cleanupResources();
 }
 
 ThumbnailableImage::ThumbnailableImage()

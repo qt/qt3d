@@ -57,6 +57,7 @@ CylinderView::CylinderView(QWindow *parent)
     urlLid.setPath(QLatin1String(":/latte.png"));
     urlLid.setScheme(QLatin1String("file"));
     matLid->setTextureUrl(urlLid);
+    m_LoadedTextures.push_back(matLid->texture());
 
     QGLMaterial *matSides = new QGLMaterial;
     matSides->setColor(QColor(170, 202, 0));
@@ -64,6 +65,7 @@ CylinderView::CylinderView(QWindow *parent)
     urlSides.setPath(QLatin1String(":/cupTexture.png"));
     urlSides.setScheme(QLatin1String("file"));
     matSides->setTextureUrl(urlSides);
+    m_LoadedTextures.push_back(matSides->texture());
 
     QGLSceneNode *root = builder.sceneNode();
 
@@ -89,6 +91,9 @@ CylinderView::CylinderView(QWindow *parent)
 
 CylinderView::~CylinderView()
 {
+    for (int i=0; i<m_LoadedTextures.count(); ++i) {
+        m_LoadedTextures.at(i)->cleanupResources();
+    }
     delete cylinder;
 }
 

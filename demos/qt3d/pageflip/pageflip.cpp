@@ -148,6 +148,11 @@ PageFlipView::PageFlipView(QWindow *parent)
 
 PageFlipView::~PageFlipView()
 {
+    textures[0].cleanupResources();
+    textures[1].cleanupResources();
+    textures[2].cleanupResources();
+    textures[3].cleanupResources();
+    gradientTexture.cleanupResources();
     delete effect;
 }
 

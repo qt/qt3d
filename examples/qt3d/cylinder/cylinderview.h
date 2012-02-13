@@ -59,6 +59,7 @@ protected:
 
 private:
     QGLSceneNode *cylinder;
+    QList<QGLTexture2D*> m_LoadedTextures;
 };
 
 #endif

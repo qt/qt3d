@@ -91,6 +91,8 @@ private:
     QSizeF m_max;
     QObject *m_manager;
     Distance m_lastDistance;
+
+    QList<QGLTexture2D*> m_LoadedTextures;
 };
 
 #endif // THUMBNAILNODE_H

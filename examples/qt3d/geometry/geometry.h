@@ -53,6 +53,10 @@ class Geometry : public QGLSceneNode
 {
 public:
     Geometry(QObject *parent, QSharedPointer<QGLMaterialCollection> materials);
+    ~Geometry();
+
+private:
+    QGLTexture2D *m_texture;
 };
 
 #endif // GEOMETRY_H

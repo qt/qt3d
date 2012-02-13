@@ -106,6 +106,9 @@ SolarSystemView::SolarSystemView(QWindow *parent)
 
 SolarSystemView::~SolarSystemView()
 {    
+    for (int i=0; i<m_LoadedTextures.count(); ++i) {
+        m_LoadedTextures.at(i)->cleanupResources();
+    }
     delete spaceScene;
     delete sunEffect;
 }
@@ -146,6 +149,8 @@ QGLSceneNode *SolarSystemView::createScene()
     url.setPath(QLatin1String(":/solar2.jpg"));
     url.setScheme(QLatin1String("file"));
     mat1->setTextureUrl(url, 1);
+    m_LoadedTextures.push_back(mat1->texture(0));
+    m_LoadedTextures.push_back(mat1->texture(1));
     //mat1->setEmittedLight(Qt::white);
     int sunMat = root->palette()->addMaterial(mat1);
 
@@ -154,6 +159,7 @@ QGLSceneNode *SolarSystemView::createScene()
     url.setPath(QLatin1String(":/planet.jpg"));
     url.setScheme(QLatin1String("file"));
     mat2->setTextureUrl(url);
+    m_LoadedTextures.push_back(mat2->texture());
     int planetMat = root->palette()->addMaterial(mat2);
 
     //moon surface
@@ -161,6 +167,7 @@ QGLSceneNode *SolarSystemView::createScene()
     url.setPath(QLatin1String(":/moon-texture.jpg"));
     url.setScheme(QLatin1String("file"));
     mat3->setTextureUrl(url);
+    m_LoadedTextures.push_back(mat3->texture());
     int moonMat = root->palette()->addMaterial(mat3);
 
     //Set the rotation of the solar-system

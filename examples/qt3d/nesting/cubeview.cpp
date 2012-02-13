@@ -101,6 +101,7 @@ CubeView::CubeView(QWindow *parent)
 
 CubeView::~CubeView()
 {
+    qtlogo.cleanupResources();
     delete fbo;
 }
 
