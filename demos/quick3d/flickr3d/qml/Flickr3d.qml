@@ -62,7 +62,7 @@ Viewport {
     }
 
     Skybox {
-        source: "skybox"
+        source: "./"
     }
 
     Cube {
