@@ -140,7 +140,7 @@ private:
 
 quint64 PickEvent::nextId = 0;
 
-/*!
+/*
     \internal
     Like QMutexLocker class, except only do anything if qmlThreadedRenderer
     is true.

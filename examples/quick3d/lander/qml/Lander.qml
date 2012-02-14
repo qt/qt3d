@@ -42,11 +42,13 @@ import QtQuick 2.0
 import Qt3D 1.0
 import Qt3D.Shapes 1.0
 
+//! [1]
 Image {
     id: screen
     source: "nebula.jpg"
     width: parent.width
     height: parent.height
+//! [1]
 
     // Joystix font available for free from Ray Larabie via
     // http://typodermicfonts.com/the-larabie-fonts-collection
@@ -54,6 +56,7 @@ Image {
     // source package.
     FontLoader { id: customFont; source: "JOYSTIX.TTF" }
 
+//! [2]
     Viewport  {
         id: viewport
         y: 30
@@ -61,6 +64,7 @@ Image {
         visible: false
         navigation: false
         renderMode: Viewport.BufferedRender
+//! [2]
 
         camera: Camera {
             eye.x: cameraTarget.x
@@ -78,6 +82,7 @@ Image {
             z: 0
         }
 
+//! [3]
         Item3D {
             // Landing pad must come before lander so that transparency on
             // the flames is in the correct order
@@ -96,6 +101,7 @@ Image {
             // It would be nice if there was API for this
             property real yMax : y + 3.6;
         }
+//! [3]
 
         Quad {
             // Simple drop shadow
@@ -106,6 +112,7 @@ Image {
             effect: Effect { texture: "dropshadow.png"; blending: true }
         }
 
+//! [4]
         Item3D {
             id: lander
             scale: 0.5
@@ -128,6 +135,7 @@ Image {
                     angle: gameLogic.fuel > 0 ? gameLogic.xBoostInput * 50 : 0
                 }
             ]
+//! [4]
 
             // HACK.  There should be API for this
             property real yMin: -0.37;
@@ -190,6 +198,7 @@ Image {
             }
         }
 
+//! [5]
         MouseArea {
             id: gameInputPad
             // TODO: Fix anchors.fill for children of Viewport
@@ -203,6 +212,7 @@ Image {
                 gameLogic.xBoostInput = (mouseX / viewport.width) - 0.5;
                 gameLogic.zBoostInput = (mouseY / viewport.height) - 0.5;
             }
+//! [5]
             onMouseXChanged: {
                 gameLogic.yboosting = true;
                 gameLogic.xBoostInput = (mouseX / viewport.width) - 0.5;

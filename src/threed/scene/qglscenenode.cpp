@@ -1851,17 +1851,6 @@ QGLSceneNode *QGLSceneNode::allExcept(const QString &name, QObject *parent) cons
 }
 
 /*!
-    Get a new QGLSceneNode that is a copy of this scene node with the \a parent as a
-    parent of the new copy.  If the parent is NULL then the parent is set to this node's
-    parent.
-
-    The copy will reference the same underlying geometry.
-*/
-
-
-
-
-/*!
     Creates a new QGLSceneNode that is a copy of this scene node, with
     \a parent as the parent of the new copy.  If parent is NULL then parent
     is set to this nodes parent.

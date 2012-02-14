@@ -341,13 +341,11 @@ QDebug operator<<(QDebug dbg, const QTriangle3D &triangle)
 #ifndef QT_NO_DATASTREAM
 
 /*!
-    \fn QDataStream &operator<<(QDataStream &stream, const QTriangle3D &triangle)
     \relates QTriangle3D
 
     Writes the given \a triangle to the given \a stream and returns a
     reference to the stream.
 */
-
 QDataStream &operator<<(QDataStream &stream, const QTriangle3D &triangle)
 {
     stream << triangle.p();
@@ -357,13 +355,11 @@ QDataStream &operator<<(QDataStream &stream, const QTriangle3D &triangle)
 }
 
 /*!
-    \fn QDataStream &operator>>(QDataStream &stream, QTriangle3D &triangle)
     \relates QTriangle3D
 
     Reads a 3D triangle from the given \a stream into the given \a triangle
     and returns a reference to the stream.
 */
-
 QDataStream &operator>>(QDataStream &stream, QTriangle3D &triangle)
 {
     QVector3D p, q, r;

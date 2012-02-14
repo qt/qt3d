@@ -27,7 +27,7 @@
 
 /*!
     \title Using GLSL shaders in QML
-    \example quick3d/shaders
+    \example quick3d/shadertut
 
 
     In this tutorial, we will show how to apply QML property animations to
@@ -42,7 +42,7 @@
         <table align="left" width="100%">
         <tr class="qt-code"><td>
     \endraw
-    \snippet quick3d/shaders/shader-tutorial.qml 1
+    \snippet quick3d/shadertut/shader-tutorial.qml 1
     \raw HTML
         </td><td align="right">
     \endraw
@@ -251,7 +251,7 @@
     the GL SL built in functions, selecting the higher of the two arguments as
     you might expect.
 
-    The \c foo.xyzw are called \i twiddles, and are
+    The \c foo.xyzw are called \c twiddles, and are
     convenient and efficient ways to pull out specific elements of vector
     areguments.  You can see in this example, that we use twiddles to get out
     the x, z, and w values from our original vector and substitute in our own

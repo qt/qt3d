@@ -48,6 +48,7 @@ Viewport {
     property string icon: "teapot-logo.png"
     property bool run: true
 
+//! [1]
     Item3D {
         mesh: Mesh { source: "meshes/teapot.bez" }
         effect: program
@@ -62,7 +63,9 @@ Viewport {
             }
             axis: Qt.vector3d(1, -0.3, 0)
         }
+//! [1]
 
+//! [2]
         ShaderProgram {
             id: program
             property real qt_Custom : 1.0
@@ -91,7 +94,8 @@ Viewport {
                     duration: 5000
                 }
             }
-
+//! [2]
+//! [3]
             vertexShader: "
                 attribute highp vec4 qt_Vertex;
                 attribute highp vec4 qt_MultiTexCoord0;
@@ -120,5 +124,6 @@ Viewport {
                 }
                 "
         }
+//! [3]
     }
 }

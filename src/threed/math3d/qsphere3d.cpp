@@ -347,13 +347,11 @@ QDebug operator<<(QDebug dbg, const QSphere3D &sphere)
 #ifndef QT_NO_DATASTREAM
 
 /*!
-    \fn QDataStream &operator<<(QDataStream &stream, const QSphere3D &sphere)
     \relates QSphere3D
 
     Writes the given \a sphere to the given \a stream and returns a
     reference to the stream.
 */
-
 QDataStream &operator<<(QDataStream &stream, const QSphere3D &sphere)
 {
     stream << sphere.center();
@@ -362,13 +360,11 @@ QDataStream &operator<<(QDataStream &stream, const QSphere3D &sphere)
 }
 
 /*!
-    \fn QDataStream &operator>>(QDataStream &stream, QSphere3D &sphere)
     \relates QSphere3D
 
     Reads a 3D sphere from the given \a stream into the given \a sphere
     and returns a reference to the stream.
 */
-
 QDataStream &operator>>(QDataStream &stream, QSphere3D &sphere)
 {
     QVector3D center;
