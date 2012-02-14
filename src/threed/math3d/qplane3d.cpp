@@ -266,13 +266,11 @@ QDebug operator<<(QDebug dbg, const QPlane3D &plane)
 #ifndef QT_NO_DATASTREAM
 
 /*!
-    \fn QDataStream &operator<<(QDataStream &stream, const QPlane3D &plane)
     \relates QPlane3D
 
     Writes the given \a plane to the given \a stream and returns a
     reference to the stream.
 */
-
 QDataStream &operator<<(QDataStream &stream, const QPlane3D &plane)
 {
     stream << plane.origin();
@@ -281,13 +279,11 @@ QDataStream &operator<<(QDataStream &stream, const QPlane3D &plane)
 }
 
 /*!
-    \fn QDataStream &operator>>(QDataStream &stream, QPlane3D &plane)
     \relates QPlane3D
 
     Reads a 3D plane from the given \a stream into the given \a plane
     and returns a reference to the stream.
 */
-
 QDataStream &operator>>(QDataStream &stream, QPlane3D &plane)
 {
     QVector3D origin, normal;

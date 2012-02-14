@@ -639,13 +639,11 @@ QDebug operator<<(QDebug dbg, const QBox3D &box)
 #ifndef QT_NO_DATASTREAM
 
 /*!
-    \fn QDataStream &operator<<(QDataStream &stream, const QBox3D &box)
     \relates QBox3D
 
     Writes the given \a box to the given \a stream and returns a
     reference to the stream.
 */
-
 QDataStream &operator<<(QDataStream &stream, const QBox3D &box)
 {
     if (box.isNull()) {
@@ -661,13 +659,11 @@ QDataStream &operator<<(QDataStream &stream, const QBox3D &box)
 }
 
 /*!
-    \fn QDataStream &operator>>(QDataStream &stream, QBox3D &box)
     \relates QBox3D
 
     Reads a 3D box from the given \a stream into the given \a box
     and returns a reference to the stream.
 */
-
 QDataStream &operator>>(QDataStream &stream, QBox3D &box)
 {
     int type;

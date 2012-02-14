@@ -74,6 +74,7 @@ QAiScene::QAiScene(const aiScene *scene, QAiSceneHandler *handler)
 }
 
 /*!
+    \internal
     \reimp
     Destroy this QAiScene, recovering all resources.
 */

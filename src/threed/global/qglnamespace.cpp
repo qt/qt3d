@@ -45,13 +45,6 @@
 QT_BEGIN_NAMESPACE
 
 /*!
-    \namespace QGL
-
-    \brief The QGL namespace contains miscellaneous identifiers
-    used throughout the Qt3D module.
-*/
-
-/*!
     \enum QGL::VertexAttribute
     \since 4.8
     This enum defines the type of vertex attribute to set on an effect with QGLPainter::setVertexAttribute()

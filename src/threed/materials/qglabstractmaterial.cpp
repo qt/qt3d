@@ -75,7 +75,7 @@ QT_BEGIN_NAMESPACE
     QGLMaterial provides the traditional ambient, diffuse, specular, etc
     parameters for lighting properties.
 
-    Materials are distinct from \i effects, which have the base class
+    Materials are distinct from \e effects, which have the base class
     QGLAbstractEffect.  Effects are typically shader programs that are
     used to render a specific type of material.  The material's bind()
     function will use QGLPainter::setStandardEffect() or

@@ -1,0 +1,73 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/
+**
+** This file is part of the Qt3D documentation of the Qt Toolkit.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Nokia.
+**
+**
+**
+**
+**
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \example quick3d/lander
+    \title Lunar Lander Example
+
+    \target Lunar Lander in QML
+    \section2 Lunar Lander in QML
+
+    This example demonstrates the basis for what could be a simple game.  To
+    create the game background we load an image of stars.
+
+    \snippet ../../examples/quick3d/lander/qml/lander.qml 1
+
+    Then inside the Image element our Viewport is constructed, and we tell it to fill
+    its parent.  Since the Viewport will be composited on top of the Image, we tell
+    the viewport to use a BufferedRender mode.  Generally Qt3D will detect the fact
+    that the Viewport is not the top level element and try to do the right thing, but
+    it does not hurt to make it specific.
+
+    \snippet ../../examples/quick3d/lander/qml/lander.qml 2
+
+    Now we load our lunar landscape which is an OBJ format model and scale & position
+    it to suit.  Note that our camera is set up to track our lander as it moves above
+    the landscape (see the source file for that detail).  Usually you can rely on the
+    default position of the camera which is pointing at (0, 0, 0).  Here we position
+    the landscape just below the origin.
+
+    \snippet ../../examples/quick3d/lander/qml/lander.qml 3
+
+    Next the lunar lander spacecraft is loaded, and a rusty texture applied to it. We
+    have created some transforms to capture the motion of the lander, and make it
+    behave appropriately when the UI causes a rocket boost to occur.
+
+    \snippet ../../examples/quick3d/lander/qml/lander.qml 4
+
+    To control the lander we create a UI element by installing a MouseArea.  This
+    snippet just shows the Y change handler, but there is a similar one for X.
+    Activating these causes the boost game logic to increment, and thus to have
+    the position of the lander changed, and the the jet animation fire.
+
+    \snippet ../../examples/quick3d/lander/qml/lander.qml 5
+
+    The rest of the game logic is added in using javascript.  See the source for
+    complete details.
+
+    \l{qt3d-examples.html}{Return to Examples}.
+*/

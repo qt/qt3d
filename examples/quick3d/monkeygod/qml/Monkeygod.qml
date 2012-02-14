@@ -42,82 +42,88 @@ import QtQuick 2.0
 import Qt3D 1.0
 import Qt3D.Shapes 1.0
 
-    Viewport  {
-        width: parent.width
-        height: parent.height
-        fillColor: "black"
+//! [1]
+Viewport  {
+    width: parent.width
+    height: parent.height
+    fillColor: "black"
 
-        camera: Camera { eye: Qt.vector3d(21,7,19)}
+    camera: Camera { eye: Qt.vector3d(21,7,19)}
+//! [1]
+
+//! [2]
+    Item3D {
+        transform: LookAt { subject: focalPenguin}
+        position: Qt.vector3d(0, 1.7, -6)
 
         Item3D {
-            transform: LookAt { subject: focalPenguin}
-            position: Qt.vector3d(0, 1.7, -6)
-
-            Item3D {
-                id: monkey
-                scale: 2
-                mesh: Mesh { source: "meshes/monkey.3ds"; options: "ForceSmooth"}
-                effect: Effect { material: gold}
-                transform: Rotation3D {angle: 90; axis: Qt.vector3d(1,0,0);}
-            }
-        }
-
-        Item3D
-        {
-            Penguin {position: Qt.vector3d(-1.5,0,1)}
-            Penguin {position: Qt.vector3d(1.5,0,1)}
-            Penguin {id: focalPenguin; position: Qt.vector3d(-0.5,0,2)}
-            Penguin {position: Qt.vector3d(0.5,0,2)}
-
-            transform: [
-                Rotation3D {id: swivel1; angle: -20; axis: Qt.vector3d(0,1,0)}
-            ]
-
-            SequentialAnimation {
-                running: true
-                loops: Animation.Infinite
-                NumberAnimation {target: swivel1; property: "angle"; to: 20; duration: 1200; easing.type: "OutQuad"}
-                NumberAnimation {target: swivel1; property: "angle"; to: -20; duration: 1200; easing.type: "OutQuad"}
-            }
-        }
-
-        Cube {
-            scale: 12.0
-            y: -6.5
-            z: -2
-
-            effect: Effect {
-                color: "#aaca00"
-                texture: "marble.png"
-                decal: true
-            }
-        }
-
-        Item3D
-        {
-            Penguin {position: Qt.vector3d(-2.5,0,2)}
-            Penguin {position: Qt.vector3d(2.5,0,2)}
-            Penguin {position: Qt.vector3d(-1.5,0,3)}
-            Penguin {position: Qt.vector3d(1.5,0,3)}
-            Penguin {position: Qt.vector3d(-0.5,0,3.5)}
-            Penguin {position: Qt.vector3d(0.5,0,3.5)}
-
-            transform: [
-                Rotation3D {id: swivel2; angle: 20; axis: Qt.vector3d(0,1,0)}
-            ]
-
-            SequentialAnimation {
-                running: true
-                loops: Animation.Infinite
-                NumberAnimation {target: swivel2; property: "angle"; to: -20; duration: 1200; easing.type: "OutQuad"}
-                NumberAnimation {target: swivel2; property: "angle"; to: 20; duration: 1200; easing.type: "OutQuad"}
-            }
-        }
-
-        Material {
-            id: gold
-            ambientColor: "#EEDD00"
-            specularColor: "#FFFFFF"
-            shininess: 200
+            id: monkey
+            scale: 2
+            mesh: Mesh { source: "meshes/monkey.3ds"; options: "ForceSmooth"}
+            effect: Effect { material: gold}
+            transform: Rotation3D {angle: 90; axis: Qt.vector3d(1,0,0);}
         }
     }
+//! [2]
+
+//! [3]
+    Item3D
+    {
+        Penguin {position: Qt.vector3d(-1.5,0,1)}
+        Penguin {position: Qt.vector3d(1.5,0,1)}
+        Penguin {id: focalPenguin; position: Qt.vector3d(-0.5,0,2)}
+        Penguin {position: Qt.vector3d(0.5,0,2)}
+
+        transform: [
+            Rotation3D {id: swivel1; angle: -20; axis: Qt.vector3d(0,1,0)}
+        ]
+
+        SequentialAnimation {
+            running: true
+            loops: Animation.Infinite
+            NumberAnimation {target: swivel1; property: "angle"; to: 20; duration: 1200; easing.type: "OutQuad"}
+            NumberAnimation {target: swivel1; property: "angle"; to: -20; duration: 1200; easing.type: "OutQuad"}
+        }
+    }
+//! [3]
+
+    Cube {
+        scale: 12.0
+        y: -6.5
+        z: -2
+
+        effect: Effect {
+            color: "#aaca00"
+            texture: "marble.png"
+            decal: true
+        }
+    }
+
+    Item3D
+    {
+        Penguin {position: Qt.vector3d(-2.5,0,2)}
+        Penguin {position: Qt.vector3d(2.5,0,2)}
+        Penguin {position: Qt.vector3d(-1.5,0,3)}
+        Penguin {position: Qt.vector3d(1.5,0,3)}
+        Penguin {position: Qt.vector3d(-0.5,0,3.5)}
+        Penguin {position: Qt.vector3d(0.5,0,3.5)}
+
+        transform: [
+            Rotation3D {id: swivel2; angle: 20; axis: Qt.vector3d(0,1,0)}
+        ]
+
+        SequentialAnimation {
+            running: true
+            loops: Animation.Infinite
+            NumberAnimation {target: swivel2; property: "angle"; to: -20; duration: 1200; easing.type: "OutQuad"}
+            NumberAnimation {target: swivel2; property: "angle"; to: 20; duration: 1200; easing.type: "OutQuad"}
+        }
+    }
+
+    Material {
+        id: gold
+        ambientColor: "#EEDD00"
+        specularColor: "#FFFFFF"
+        shininess: 200
+    }
+}

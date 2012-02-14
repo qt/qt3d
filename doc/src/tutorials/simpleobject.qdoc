@@ -45,7 +45,7 @@
     In the C++ side of Qt3D we start by declaring a view class to show our cube
     on the screen:
 
-    \snippet ../../examples/qt3d/cube1/cubeview.h 1
+    \snippet qt3d/cube1/cubeview.h 1
 
     QGLView provides most of the logic for initializing the view,
     setting the camera position, and handling navigation via
@@ -53,12 +53,12 @@
     QGLBuilder to create the geometry for the cube object that
     we will be using in later steps:
 
-    \snippet ../../examples/qt3d/cube1/cubeview.cpp 1
+    \snippet qt3d/cube1/cubeview.cpp 1
 
     Then it is a simple matter to draw the object in our \c{paintGL()}
     method:
 
-    \snippet ../../examples/qt3d/cube1/cubeview.cpp 2
+    \snippet qt3d/cube1/cubeview.cpp 2
 
     If we run the program now, we get the following output, which isn't
     very cube-like:
@@ -71,7 +71,7 @@
     matrix a little bit to apply a 45 degree rotation around the
     axis (1, 1, 1):
 
-    \snippet ../../examples/qt3d/cube2/cubeview.cpp 2
+    \snippet qt3d/cube2/cubeview.cpp 2
 
     Now the results are a little better:
 
@@ -83,7 +83,7 @@
     (white in this case).  So let's change to a lit material effect
     with a nice green color:
 
-    \snippet ../../examples/qt3d/cube3/cubeview.cpp 2
+    \snippet qt3d/cube3/cubeview.cpp 2
 
     That's much better; now it looks like a cube:
 
@@ -92,13 +92,13 @@
     To complete this tutorial, let's make the cube a little more
     interesting by adding a texture to the side:
 
-    \snippet ../../examples/qt3d/cube4/cubeview.h 1
+    \snippet qt3d/cube4/cubeview.h 1
     \dots
-    \snippet ../../examples/qt3d/cube4/cubeview.h 2
-    \snippet ../../examples/qt3d/cube4/cubeview.cpp 1
+    \snippet qt3d/cube4/cubeview.h 2
+    \snippet qt3d/cube4/cubeview.cpp 1
     \dots
-    \snippet ../../examples/qt3d/cube4/cubeview.cpp 2
-    \snippet ../../examples/qt3d/cube4/cubeview.cpp 3
+    \snippet qt3d/cube4/cubeview.cpp 2
+    \snippet qt3d/cube4/cubeview.cpp 3
 
     \image tutorials/cube4-screenshot.png
 

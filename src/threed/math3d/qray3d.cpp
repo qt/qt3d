@@ -265,13 +265,11 @@ QDebug operator<<(QDebug dbg, const QRay3D &ray)
 #ifndef QT_NO_DATASTREAM
 
 /*!
-    \fn QDataStream &operator<<(QDataStream &stream, const QRay3D &ray)
     \relates QRay3D
 
     Writes the given \a ray to the given \a stream and returns a
     reference to the stream.
 */
-
 QDataStream &operator<<(QDataStream &stream, const QRay3D &ray)
 {
     stream << ray.origin();
@@ -280,13 +278,11 @@ QDataStream &operator<<(QDataStream &stream, const QRay3D &ray)
 }
 
 /*!
-    \fn QDataStream &operator>>(QDataStream &stream, QRay3D &ray)
     \relates QRay3D
 
     Reads a 3D ray from the given \a stream into the given \a ray
     and returns a reference to the stream.
 */
-
 QDataStream &operator>>(QDataStream &stream, QRay3D &ray)
 {
     QVector3D origin, direction;

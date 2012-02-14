@@ -77,6 +77,7 @@ QGL3dsScene::QGL3dsScene(Lib3dsFile *file, QGL3dsSceneHandler *h)
 }
 
 /*!
+    \internal
     \reimp
     Destroy this QGL3dsScene, recovering all resources.
 
