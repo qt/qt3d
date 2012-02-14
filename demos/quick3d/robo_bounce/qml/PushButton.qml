@@ -45,7 +45,7 @@ import Qt3D 1.0
 Image {
     id: theButton
     property bool bounce: false
-    source: "../Assets/button.png"
+    source: "meshes/button.png"
     width: 40
     height: 40
 

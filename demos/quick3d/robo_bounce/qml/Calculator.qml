@@ -40,8 +40,7 @@
 ****************************************************************************/
 
 import QtQuick 2.0
-import "CalculatorCore"
-import "CalculatorCore/calculator.js" as CalcEngine
+import "calculator.js" as CalcEngine
 
 Rectangle {
     id: window
