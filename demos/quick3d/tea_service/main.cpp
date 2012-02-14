@@ -41,4 +41,4 @@
 
 #include "../qmlres.h"
 
-QUICK3D_EXAMPLE_MAIN("qml/desktop.qml")
+QUICK3D_MAIN("qml/desktop.qml")
