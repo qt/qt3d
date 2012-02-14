@@ -42,8 +42,6 @@
 import QtQuick 2.0
 import Qt3D 1.0
 import Qt3D.Shapes 1.0
-import "Calculator"
-import "RobotCore"
 
 Image {
     objectName: "tronscape image"
@@ -53,7 +51,7 @@ Image {
     id: theBackground
     width: parent.width
     height: parent.height
-    source: "Assets/tronscape.png"
+    source: "meshes/tronscape.png"
 
     focus: true
     Keys.onSpacePressed: {
@@ -219,7 +217,7 @@ Image {
                     radius: 5
                 }
                 PushButton {
-                    source: "Assets/rotateButton2.png"
+                    source: "meshes/rotateButton2.png"
                     x: buttonBox1.x+10
                     y: buttonBox1.y+10
                     onPressed: {
@@ -229,7 +227,7 @@ Image {
                     }
                 }
                 PushButton {
-                    source: "Assets/cubeButton.png"
+                    source: "meshes/cubeButton.png"
                     x: buttonBox1.x+60
                     y: buttonBox1.y+10
                     onPressed: {
@@ -239,7 +237,7 @@ Image {
                     }
                 }
                 PushButton {
-                    source: "Assets/infobutton.png"
+                    source: "meshes/infobutton.png"
                     x: buttonBox1.x+110
                     y: buttonBox1.y+10
                     onPressed: {
@@ -263,7 +261,7 @@ Image {
                 border.width: 2
                 radius: 5
                 Image {
-                    source: "Assets/roboInfo.png"
+                    source: "meshes/roboInfo.png"
                 }
 
                 SequentialAnimation {
@@ -281,7 +279,7 @@ Image {
 
             Image {
                 id: qt3dButton
-                source: "Assets/sQt3D_logo.png"
+                source: "meshes/sQt3D_logo.png"
                 property bool bounce: false
 
                 x: 10
@@ -551,14 +549,14 @@ Image {
                         Effect {
                             id: signEffect
                             color: "#aaca00"
-                            texture: "Assets/QML3DSign.png"
+                            texture: "meshes/QML3DSign.png"
                             decal: true
                         }
 
                         Effect {
                             id: calcEffect
                             color: "#aaca00"
-                            texture: "Assets/calculatorSign.png"
+                            texture: "meshes/calculatorSign.png"
                             decal: true
                         }
                     }
@@ -582,7 +580,7 @@ Image {
 
                         Item3D {
                             id: robotArms
-                            mesh: Mesh { source: "Assets/roboticArms.3ds"}
+                            mesh: Mesh { source: "meshes/roboticArms.3ds"}
                             transform: Rotation3D{id: armBend; angle: -90;axis: Qt.vector3d(0,1,0)}
                             position: Qt.vector3d(.18, 0,-5.4)
 
@@ -597,7 +595,7 @@ Image {
 
                         Item3D {
                             id: robotHead
-                            mesh: Mesh { source: "Assets/roboticHead.3ds" }
+                            mesh: Mesh { source: "meshes/roboticHead.3ds" }
                             position: Qt.vector3d(0,0,-9.1)
                             transform: [
                                 Rotation3D {id: headyaw; angle: 0; axis: Qt.vector3d(0,0,1)},

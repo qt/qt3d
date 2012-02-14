@@ -3,7 +3,7 @@
 ** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/
 **
-** This file is part of the Qt3D examples of the Qt Toolkit.
+** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
 ** GNU Lesser General Public License Usage
@@ -40,13 +40,58 @@
 ****************************************************************************/
 
 import QtQuick 2.0
-import Qt3D 1.0
 
-Item3D {
-    id: robot1
-    scale: 0.3
-    mesh: Mesh { id: roboMesh; source: "../Assets/roboticBody.3ds"; }
-    effect: Effect {}
+BorderImage {
+    id: button
+
+    property alias operation: buttonText.text
+    property string color: ""
+
+    signal clicked
+
+    source: "meshes/button-" + color + ".png"; clip: true
+    border { left: 10; top: 10; right: 10; bottom: 10 }
+
+    Rectangle {
+        id: shade
+        anchors.fill: button; radius: 10; color: "black"; opacity: 0
+    }
+
+    Text {
+        id: buttonText
+        anchors.centerIn: parent; anchors.verticalCenterOffset: -1
+        font.pixelSize: parent.width > parent.height ? parent.height * .5 : parent.width * .5
+        style: Text.Sunken; color: "white"; styleColor: "black"; smooth: true
+    }
+
+    MouseArea {
+        id: mouseArea
+        anchors.fill: parent
+        onClicked: {
+            doOp(operation)
+            button.clicked()
+        }
+    }
+
+    states: State {
+        name: "pressed"; when: mouseArea.pressed == true
+        PropertyChanges { target: shade; opacity: .4 }
+    }
+
+    transitions: [
+        Transition {
+            from: "*"
+            to: "pressed"
+            SequentialAnimation {
+                NumberAnimation {target: button; property: "scale"; to : 0.8; duration: 200; easing.type:"OutQuad" }
+            }
+        },
+        Transition {
+            from: "pressed"
+            to: "*"
+            SequentialAnimation {
+                NumberAnimation {target: button; property: "scale"; to : 1.0; duration: 200; easing.type:"OutQuad" }
+            }
+        }
+    ]
 }
-
-
