@@ -1097,8 +1097,10 @@ void Viewport::setupPickPaint(QGLPainter *painter, const QPointF &pt)
         else
             vh /= asp;
     }
-    qreal maxpect = vw / width();
-    Q_ASSERT(qFuzzyCompare(maxpect, (vh / height())));
+
+    // make sure that our viewport has the same aspect ratio as our
+    // camera viewsize
+    Q_ASSERT(qFuzzyCompare((vw / width()), (vh / height())));
 
     // shrink the camera view size down to the size of the FBO relative
     // to the viewports near plane size - note that the vw / width() and
@@ -1112,8 +1114,7 @@ void Viewport::setupPickPaint(QGLPainter *painter, const QPointF &pt)
     dx *= vw / width();
     dy *= vh / height();
     qreal dim = qMin(width(), height());
-    qreal vs = cam->viewSize().width();
-    Q_ASSERT(vs = cam->viewSize().height());  // viewsize is square
+    Q_ASSERT(cam->viewSize().width() == cam->viewSize().height());  // viewsize is square
 
     painter->setCamera(cam.data());
 
