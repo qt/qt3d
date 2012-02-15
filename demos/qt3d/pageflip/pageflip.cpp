@@ -166,8 +166,7 @@ void PageFlipView::exposeEvent(QExposeEvent *e)
 
     paintGL();
 
-    if (format.swapBehavior() == QSurfaceFormat::DoubleBuffer)
-        context->swapBuffers(this);
+    context->swapBuffers(this);
 }
 
 void PageFlipView::resizeGL(int width, int height)
