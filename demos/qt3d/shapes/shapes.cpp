@@ -133,8 +133,7 @@ void ShapesWidget::exposeEvent(QExposeEvent *e)
 
     paintGL();
 
-    if (format.swapBehavior() == QSurfaceFormat::DoubleBuffer)
-        context->swapBuffers(this);
+    context->swapBuffers(this);
 }
 
 void ShapesWidget::resizeGL(int w, int h)
