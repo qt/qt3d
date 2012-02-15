@@ -130,7 +130,7 @@ void QAiLoader::loadMesh(aiMesh *mesh)
         {
             QString error = QLatin1String("Bad primitive type in mesh %1 : %2");
             error = error.arg(name).arg(mesh->mPrimitiveTypes);
-            Assimp::DefaultLogger::get()->warn(error.toStdString());
+            Assimp::DefaultLogger::get()->warn(error.toAscii().constData());
         }
     }
 
@@ -148,7 +148,7 @@ void QAiLoader::loadMesh(aiMesh *mesh)
                                 "Found color information in mesh %1, channel %2"
                                 "- per vertex color not yet supported");
                     error = error.arg(name).arg(i);
-                    Assimp::DefaultLogger::get()->warn(error.toStdString());
+                    Assimp::DefaultLogger::get()->warn(error.toAscii().constData());
                     break;
                 }
             }
@@ -158,14 +158,14 @@ void QAiLoader::loadMesh(aiMesh *mesh)
             // TODO: Implement skeletal animation
             QString error = QLatin1String("Bones in mesh %1 not yet supported");
             error.arg(name);
-            Assimp::DefaultLogger::get()->warn(error.toStdString());
+            Assimp::DefaultLogger::get()->warn(error.toAscii().constData());
         }
         if (mesh->HasTangentsAndBitangents())
         {
             // TODO: Implement normal maps - here and in the texture import
             QString error = QLatin1String("Tangents for normal map in mesh %1 not yet supported");
             error.arg(name);
-            Assimp::DefaultLogger::get()->warn(error.toStdString());
+            Assimp::DefaultLogger::get()->warn(error.toAscii().constData());
         }
     }
 }
@@ -281,7 +281,7 @@ QGLSceneNode *QAiLoader::loadMeshes()
         QUrl url = m_handler->url();
         message = message.arg(url.toString()).arg(m_meshes.size())
                 .arg(m_nodes.size()).arg(m_root->palette()->size());
-        Assimp::DefaultLogger::get()->warn(message.toStdString());
+        Assimp::DefaultLogger::get()->warn(message.toAscii().constData());
     }
 
 //#define DEBUG_ME
@@ -424,7 +424,7 @@ void QAiLoader::loadTextures(aiMaterial *ma, QGLMaterial *mq)
             {
                 QString error = QLatin1String("Unsupported texture type \"%1\" in material \"%2\".");
                 error = error.arg(typeNames[i]).arg(mq->objectName());
-                Assimp::DefaultLogger::get()->warn(error.toStdString());
+                Assimp::DefaultLogger::get()->warn(error.toAscii().constData());
             }
         }
     }
@@ -437,7 +437,7 @@ void QAiLoader::loadTextures(aiMaterial *ma, QGLMaterial *mq)
         {
             QString error = QLatin1String("Multi-textures not supported: \"%1\" has %2");
             error.arg(mq->objectName()).arg(texCount);
-            Assimp::DefaultLogger::get()->warn(error.toStdString());
+            Assimp::DefaultLogger::get()->warn(error.toAscii().constData());
         }
         else
         {
@@ -451,7 +451,7 @@ void QAiLoader::loadTextures(aiMaterial *ma, QGLMaterial *mq)
                 {
                     QString error = QLatin1String("Could not load texture: %1 for material %2");
                     error.arg(url.toString()).arg(mq->objectName());
-                    Assimp::DefaultLogger::get()->warn(error.toStdString());
+                    Assimp::DefaultLogger::get()->warn(error.toAscii().constData());
                 }
             }
             else

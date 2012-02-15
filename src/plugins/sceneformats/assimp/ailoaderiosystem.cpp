@@ -141,7 +141,7 @@ Assimp::IOStream* AiLoaderIOSystem::Open(const char* pFile, const char* pMode)
     if (!res)
     {
         std::string err("Error: could not open subsequent file:");
-        err.append(pFile).append("--").append(f->errorString().toStdString());
+        err.append(pFile).append("--").append(qPrintable(f->errorString()));
         Assimp::DefaultLogger::get()->warn(err);
         delete f;
         return 0;

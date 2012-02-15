@@ -122,7 +122,7 @@ void QAiMesh::build(QGLBuilder &builder, bool showWarnings)
         {
             QString error = QLatin1String("Mesh %1 has zero vertex/face count");
             error.arg(name.isEmpty() ? QString(QLatin1String("<unnamed mesh>")) : name);
-            Assimp::DefaultLogger::get()->warn(error.toStdString());
+            Assimp::DefaultLogger::get()->warn(qPrintable(error));
         }
         return;
     }

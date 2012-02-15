@@ -262,7 +262,7 @@ QGLAbstractScene *QAiSceneHandler::read()
 
     // the importer owns the scene, so when the it goes out of scope on exiting
     // this function the scene will get destroyed
-    const aiScene* scene = m_importer.ReadFile(path.toStdString(), m_options);
+    const aiScene* scene = m_importer.ReadFile(path.toAscii().constData(), m_options);
 
     if (!scene)
     {
@@ -357,7 +357,7 @@ void QAiSceneHandler::downloadComplete(QByteArray sceneData)
         log = Assimp::DefaultLogger::create("AssimpLog.txt", severity, streams);
     }
 
-    const aiScene* scene = m_importer.ReadFile(path.toStdString(), m_options);
+    const aiScene* scene = m_importer.ReadFile(qPrintable(path), m_options);
     if (!scene)
     {
         // Notes on import success flags - according to assimp doco if validation
