@@ -26,7 +26,7 @@
 ****************************************************************************/
 
 /*!
-    \page index.html
+    \page qml-qt3d.html
     \title Qt3D
     \keyword Qt3D Introduction Overview Documentation
     \brief The Qt 3D module provides a set of APIs to make 3D graphics programming easy and declarative.
