@@ -118,6 +118,7 @@ public:
     void classBegin();
     void componentComplete();
 
+    void openglContextIsAboutToBeDestroyed();
 
 Q_SIGNALS:
     void dataChanged();

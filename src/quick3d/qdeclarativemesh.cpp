@@ -136,7 +136,39 @@ public:
     QString options;
     bool dumpInfo;
     QList<QGLSceneAnimation *> originalAnimations;
+
+    void cleanupResources();
 };
+
+inline void gatherTexturesRecursive(QGLSceneNode* pNode, QList<QGLTexture2D*>& foundTextures)
+{
+    if (pNode) {
+        QGLMaterialCollection* pPalette = pNode->palette().data();
+        if (pPalette) {
+            for (int i=0; i<pPalette->size(); ++i) {
+                QGLMaterial* pMat = pPalette->material(i);
+                for (int l=0; l<pMat->textureLayerCount(); ++l) {
+                    QGLTexture2D* pTex = pMat->texture(l);
+                    if (pTex && !foundTextures.contains(pTex))
+                        foundTextures.append(pTex);
+                }
+            }
+        }
+        QList<QGLSceneNode*> myChildren = pNode->children();
+        for (QList<QGLSceneNode*>::iterator It=myChildren.begin(); It!=myChildren.end(); ++It) {
+            gatherTexturesRecursive(*It, foundTextures);
+        }
+    }
+}
+
+void QDeclarativeMeshPrivate::cleanupResources()
+{
+    QList<QGLTexture2D*> textures;
+    gatherTexturesRecursive(scene->mainNode(),textures);
+    for (QList<QGLTexture2D*>::iterator It=textures.begin(); It!=textures.end(); ++It) {
+        (*It)->cleanupResources();
+    }
+}
 
 /*!
     \internal
@@ -717,6 +749,15 @@ void QDeclarativeMesh::componentComplete()
         emit loaded();
         emit nodeChanged();
     }
+}
+
+/*!
+    \internal
+    //TODO
+*/
+void QDeclarativeMesh::openglContextIsAboutToBeDestroyed()
+{
+    d->cleanupResources();
 }
 
 /*!

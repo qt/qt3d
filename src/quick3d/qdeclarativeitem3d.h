@@ -190,6 +190,7 @@ protected:
 
 private Q_SLOTS:
     void handleEffectChanged();
+    void handleOpenglContextIsAboutToBeDestroyed();
 
 Q_SIGNALS:
     void positionChanged();
