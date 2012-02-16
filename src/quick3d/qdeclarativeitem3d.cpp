@@ -52,6 +52,7 @@
 
 #include <QtGui/qevent.h>
 #include <QtDeclarative/qdeclarativecontext.h>
+#include <qquickcanvas.h>
 
 /*!
     \qmlclass Item3D QDeclarativeItem3D
@@ -278,6 +279,7 @@ public:
         , isInitialized(false)
         , mainBranchId(0)
         , componentComplete(false)
+        , bConnectedToOpenGLContextSignal(false)
     {
     }
     ~QDeclarativeItem3DPrivate();
@@ -337,6 +339,8 @@ public:
     QMatrix4x4 localToWorldMatrix() const;
     QMatrix4x4 worldToLocalMatrix() const;
     bool componentComplete;
+
+    bool bConnectedToOpenGLContextSignal;
 };
 
 QDeclarativeItem3DPrivate::~QDeclarativeItem3DPrivate()
@@ -1284,6 +1288,16 @@ void QDeclarativeItem3D::draw(QGLPainter *painter)
     if (!d->isInitialized)
         initialize(painter);
 
+    if (!d->bConnectedToOpenGLContextSignal) {
+        QQuickCanvas* pCanvas = canvas();
+        Q_ASSERT(pCanvas);
+        QOpenGLContext* pOpenGLContext = pCanvas->openglContext();
+        Q_ASSERT(pOpenGLContext);
+        bool Ok = QObject::connect(pOpenGLContext, SIGNAL(aboutToBeDestroyed()), this, SLOT(handleOpenglContextIsAboutToBeDestroyed()), Qt::DirectConnection);
+        Q_ASSERT(Ok);
+        d->bConnectedToOpenGLContextSignal = true;
+    }
+
     //Setup picking
     int prevId = painter->objectPickId();
     painter->setObjectPickId(d->objectPickId);
@@ -1568,6 +1582,16 @@ void QDeclarativeItem3D::handleEffectChanged()
 {
     d->requireBlockingEffectsCheck = true;
     update();
+}
+
+void QDeclarativeItem3D::handleOpenglContextIsAboutToBeDestroyed()
+{
+    if (d->mesh) {
+        d->mesh->openglContextIsAboutToBeDestroyed();
+    }
+    if (d->effect) {
+        d->effect->openglContextIsAboutToBeDestroyed();
+    }
 }
 
 /*!

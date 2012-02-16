@@ -119,7 +119,24 @@ public:
         }
         // TODO: decal & blending
     }
+
+    void cleanupResources();
 };
+
+void QDeclarativeEffectPrivate::cleanupResources()
+{
+    for (int i=0; i<palette->size(); ++i) {
+        QGLMaterial* pMat = palette->material(i);
+        if (pMat) {
+            for (int l=0; l<pMat->textureLayerCount(); ++l) {
+                QGLTexture2D* pTex = pMat->texture(l);
+                if (pTex) {
+                    pTex->cleanupResources();
+                }
+            }
+        }
+    }
+}
 
 /*!
     \internal
@@ -478,6 +495,11 @@ QGLTexture2D *QDeclarativeEffect::texture2D()
 qreal QDeclarativeEffect::progress()
 {
     return d->progress;
+}
+
+void QDeclarativeEffect::openglContextIsAboutToBeDestroyed()
+{
+    d->cleanupResources();
 }
 
 QT_END_NAMESPACE

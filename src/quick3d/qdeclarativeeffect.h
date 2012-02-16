@@ -105,6 +105,8 @@ public:
 
     virtual qreal progress();
 
+    void openglContextIsAboutToBeDestroyed();
+
 Q_SIGNALS:
     void effectChanged();
     void progressChanged(qreal progress);
