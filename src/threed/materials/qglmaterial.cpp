@@ -306,6 +306,8 @@ void QGLMaterial::setTexture(QGLTexture2D *value, int layer)
     Q_D(QGLMaterial);
     QGLTexture2D *prev = d->textures.value(layer, 0);
     if (prev != value) {
+        if (prev)
+            prev->cleanupResources();
         delete prev;
         d->textures[layer] = value;
         emit texturesChanged();
