@@ -320,7 +320,7 @@ void QDeclarativeEffect::setTextureImage(const QImage& value)
     if (!material()->texture())
     {
         // Should this texture be parented?
-        tex = new QGLTexture2D();
+        tex = new QGLTexture2D(material());
         material()->setTexture(tex);
     } else
     {
