@@ -26,12 +26,14 @@
 ****************************************************************************/
 
 /*!
-    \page qml-qt3d.html
-    \title Qt3D
-    \keyword Qt3D Introduction Overview Documentation
+    \page qt3d-reference.html
+    \title Qt3D Module
+    \ingroup technology-apis
+    \ingroup overviews
+    \ingroup qt-gui-concepts
+
     \brief The Qt 3D module provides a set of APIs to make 3D graphics programming easy and declarative.
 
-    \ingroup technology-apis
 
     \section1 Overview
 
