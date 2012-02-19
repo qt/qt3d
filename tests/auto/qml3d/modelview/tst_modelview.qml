@@ -105,10 +105,10 @@ Rectangle
         Component {
             id: paneComponentstringList
             Quad {
-                property real layer: index
-                property variant image : modelData
-                position: Qt.vector3d(0, 0, -layer)
-                effect: Effect { decal: true; texture: image }
+                property real qlayer: index
+                property variant qimage : modelData
+                position: Qt.vector3d(0, 0, -qlayer)
+                effect: Effect { decal: true; texture: qimage }
                 transform: Rotation3D { axis: Qt.vector3d(1,0,0); angle: 90 }
             }
         }
