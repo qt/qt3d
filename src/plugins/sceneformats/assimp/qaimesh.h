@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QGL3DSMESH_H
-#define QGL3DSMESH_H
+#ifndef QAIMESH_H
+#define QAIMESH_H
 
 #include "qaiscenehandler.h"
 #include "qgeometrydata.h"
@@ -69,4 +69,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QGL3DSMESH_H
+#endif // QAIMESH_H

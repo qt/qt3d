@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QGL3DSLOADER_H
-#define QGL3DSLOADER_H
+#ifndef QAILOADER_H
+#define QAILOADER_H
 
 #include <QtCore/qurl.h>
 #include <QtCore/qstring.h>
@@ -94,4 +94,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QGL3DSLOADER_H
+#endif // QAILOADER_H

@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QGL3DSSCENE_H
-#define QGL3DSSCENE_H
+#ifndef QAISCENE_H
+#define QAISCENE_H
 
 #include "qglabstractscene.h"
 

@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QGL3DSSCENEHANDLER_H
-#define QGL3DSSCENEHANDLER_H
+#ifndef QAISCENEHANDLER_H
+#define QAISCENEHANDLER_H
 
 #include "qglsceneformatplugin.h"
 

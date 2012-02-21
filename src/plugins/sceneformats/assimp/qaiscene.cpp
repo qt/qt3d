@@ -76,9 +76,6 @@ QAiScene::QAiScene(const aiScene *scene, QAiSceneHandler *handler)
 /*!
     \reimp
     Destroy this QAiScene, recovering all resources.
-
-    This method destroys the Lib3dsFile object the scene is based
-    on by calling the appropriate lib3ds function.
 */
 QAiScene::~QAiScene()
 {
