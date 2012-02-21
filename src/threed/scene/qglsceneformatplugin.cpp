@@ -50,6 +50,9 @@ QT_BEGIN_NAMESPACE
     \ingroup qt3d
     \ingroup qt3d::scene
 
+    This interface will be deprecated in an upcoming release.  For more details see the
+    \l{sceneformats-obj.html}{plug-in tutorial documentation}.
+
     \sa QGLSceneFormatPlugin
 */
 
@@ -183,6 +186,9 @@ void QGLSceneFormatHandler::decodeOptions(const QString &options)
     \brief The QGLSceneFormatPlugin class defines an interface for loading 3D object and scene formats.
     \ingroup qt3d
     \ingroup qt3d::scene
+
+    This class will be deprecated in an upcoming release.  For more details see the
+    \l{sceneformats-obj.html}{plug-in tutorial documentation}.
 
     \sa QGLSceneFormatHandler
 */
