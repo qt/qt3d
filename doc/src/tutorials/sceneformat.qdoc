@@ -30,6 +30,55 @@
     \keyword Scene Format Plugin
     \example sceneformats/obj
 
+    \section1 Plugin architecture for scene formats to be deprecated.
+
+    In the original design for Qt3D we considered loading of different
+    file formats to be analagous to loading different image formats, and
+    thus it was written following the pattern of the libpng, and libtiff
+    format that exists in QtBase.  This meant scanning the plugins
+    directory for a sceneformat loader plugin that supported the given
+    file type, and if one was found loading that and then reading the file.
+
+    However this is a poor match for the actual job and slows down the
+    loading of assets as the loader has to resolve a plugin before it can
+    actually start loading the asset.
+
+    With the support provided by Asset Importer a wide array of scene
+    formats is supported, and it makes most sense for new formats that
+    are not currently supported to be added and upstreamed to Asset
+    Importer.
+
+    Another consideration for the deprecation process is that our
+    QML bindings depend on a structured scene format.  Scene-nodes,
+    materials and effects must be included in the scene using a set and
+    known schema.  With the original plug-in API the idea was that plugins
+    would be free to do any kind of rendering or representation and thus
+    this schema is not able to be supported.  This means that plugins
+    would be created that could not be rendered or would be buggy and
+    inconsistent in QML.
+
+    With upcoming support for animations this problem becomes even more
+    pressing since animations formats in asset files must also be exposed
+    to our QML bindings.
+
+    The QGLAbstractScene class will stay, possibly with some modifications
+    but the plug-in apparatus will be dismantled and thus loading of
+    assets via a plugin architecture will removed in favour of a direct
+    loading functionality, probably kept in a seperate library linked
+    at compile time.  This should mean smaller code, faster loading and
+    better support for animations and future functionality.
+
+    The bezier plugin will be retained and we will look at contributing
+    it to Asset Importer if the format is general enough.
+
+    Since deprecation of the sceneformat plugin API is a considerable change
+    to our API's we will not do it lightly.  So far however we have had no
+    contributions to the sceneformats and no-one has asked about it, or used
+    it, despite this tutorial existing.  At present it will be marked
+    \bold deprecated and in our next release cycle it will be removed
+    altogether.
+
+    \section1 Sceneformat Tutorial
     Scene format plugins are used to load external 3D model file
     formats like \bold 3DS, \bold obj, and so on.  In this tutorial we will
     do a walk-through of the \bold obj scene format plugin to
