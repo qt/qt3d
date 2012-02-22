@@ -1,2 +1,4 @@
 TEMPLATE = subdirs
-SUBDIRS = model_viewer robo_bounce tea_service flickr3d
+SUBDIRS = robo_bounce tea_service flickr3d
+
+
