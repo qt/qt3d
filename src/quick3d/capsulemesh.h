@@ -1,9 +1,9 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/
 **
-** This file is part of the Qt3D module of the Qt Toolkit.
+** This file is part of the QtQuick3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
 ** GNU Lesser General Public License Usage
@@ -39,49 +39,57 @@
 **
 ****************************************************************************/
 
-#ifndef SPHEREMESH_P_H
-#define SPHEREMESH_P_H
+#ifndef CAPSULE_H
+#define CAPSULE_H
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists purely as an
-// implementation detail.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <QtCore/QMap>
+#include "qdeclarativemesh.h"
 
 QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
-class QGraphicsRotation3D;
-class QGraphicsScale3D;
-class QGLSceneNode;
+class CapsuleMeshPrivate;
 
-class SphereMeshPrivate
+class Q_QT3D_QUICK_EXPORT CapsuleMesh : public QDeclarativeMesh
 {
-public:
-    SphereMeshPrivate();
-    ~SphereMeshPrivate();
+    Q_OBJECT
+    Q_PROPERTY(qreal radius READ radius WRITE setRadius NOTIFY radiusChanged)
+    Q_PROPERTY(qreal length READ length WRITE setLength NOTIFY lengthChanged)
+    Q_PROPERTY(int levelOfDetail READ levelOfDetail WRITE setLevelOfDetail NOTIFY levelOfDetailChanged)
 
-    QMap<int, QGLSceneNode *> lodGeometry;
-    QGLSceneNode *topNode;
-    QGLSceneNode *currentSphere;
-    QGraphicsRotation3D *rot;
-    QGraphicsScale3D *scale;
-    qreal radius;
-    int lod;
-    Qt::Axis axis;
-    bool sceneSet;
+public:
+    explicit CapsuleMesh(QObject *parent = 0);
+    ~CapsuleMesh();
+
+    qreal radius() const;
+    void setRadius(qreal radius);
+
+    qreal length() const;
+    void setLength(qreal length);
+
+    int levelOfDetail() const;
+    void setLevelOfDetail(int lod);
+
+    void draw(QGLPainter *painter, int branchId);
+
+Q_SIGNALS:
+    void radiusChanged();
+    void lengthChanged();
+    void levelOfDetailChanged();
+
+private:
+    void createGeometry();
+
+    Q_DISABLE_COPY(CapsuleMesh)
+    Q_DECLARE_PRIVATE(CapsuleMesh)
+
+    CapsuleMeshPrivate *d;
 };
 
 QT_END_NAMESPACE
 
+QML_DECLARE_TYPE(CapsuleMesh)
+
 QT_END_HEADER
 
-#endif // SPHEREMESH_P_H
+#endif // CAPSULE_H

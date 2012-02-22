@@ -129,6 +129,21 @@ QT_BEGIN_NAMESPACE
     \sa Item3D, SphereMesh
 */
 
+class CapsuleMeshPrivate
+{
+public:
+    CapsuleMeshPrivate();
+    ~CapsuleMeshPrivate();
+
+    QMap<int, QGLSceneNode *> lodGeometry;
+    QGLSceneNode *topNode;
+    QGLSceneNode *currentCapsule;
+    qreal radius;
+    qreal length;
+    int lod;
+    bool sceneSet;
+};
+
 CapsuleMeshPrivate::CapsuleMeshPrivate()
     : topNode(new QGLSceneNode)
     , currentCapsule(0)
@@ -172,8 +187,16 @@ private:
 */
 CapsuleMesh::CapsuleMesh(QObject *parent)
     : QDeclarativeMesh(parent)
-    , d_ptr(new CapsuleMeshPrivate)
+    , d(new CapsuleMeshPrivate)
 {
+}
+
+/*!
+    \internal
+*/
+CapsuleMesh::~CapsuleMesh()
+{
+    delete d;
 }
 
 /*!
@@ -190,7 +213,6 @@ qreal CapsuleMesh::radius() const
 
 void CapsuleMesh::setRadius(qreal radius)
 {
-    Q_D(CapsuleMesh);
     if (qFuzzyCompare(radius, 1))
         radius = 1.0f;
     if (d->radius != radius) {
@@ -209,13 +231,11 @@ void CapsuleMesh::setRadius(qreal radius)
 */
 qreal CapsuleMesh::length() const
 {
-    Q_D(const CapsuleMesh);
     return d->length;
 }
 
 void CapsuleMesh::setLength(qreal length)
 {
-    Q_D(CapsuleMesh);
     if (qFuzzyCompare(length, 1))
         length = 1.0f;
     if (d->length != length) {
@@ -244,13 +264,11 @@ void CapsuleMesh::setLength(qreal length)
 */
 int CapsuleMesh::levelOfDetail() const
 {
-    Q_D(const CapsuleMesh);
     return d->lod;
 }
 
 void CapsuleMesh::setLevelOfDetail(int lod)
 {
-    Q_D(CapsuleMesh);
     lod = qBound(1, lod, 10);
     if (d->lod != lod) {
         d->lod = lod;
@@ -265,7 +283,6 @@ void CapsuleMesh::setLevelOfDetail(int lod)
 */
 void CapsuleMesh::draw(QGLPainter *painter, int branchId)
 {
-    Q_D(CapsuleMesh);
     if (!d->currentCapsule)
         createGeometry();
     QDeclarativeMesh::draw(painter, branchId);
@@ -276,8 +293,6 @@ void CapsuleMesh::draw(QGLPainter *painter, int branchId)
 */
 void CapsuleMesh::createGeometry()
 {
-    Q_D(CapsuleMesh);
-
     // Create a new geometry node for this level of detail if necessary.
     QGLSceneNode *geometry = d->lodGeometry.value(d->lod, 0);
     if (!geometry) {

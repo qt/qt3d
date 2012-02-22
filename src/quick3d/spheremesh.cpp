@@ -147,6 +147,23 @@ QT_BEGIN_NAMESPACE
     \sa Item3D
 */
 
+class SphereMeshPrivate
+{
+public:
+    SphereMeshPrivate();
+    ~SphereMeshPrivate();
+
+    QMap<int, QGLSceneNode *> lodGeometry;
+    QGLSceneNode *topNode;
+    QGLSceneNode *currentSphere;
+    QGraphicsRotation3D *rot;
+    QGraphicsScale3D *scale;
+    qreal radius;
+    int lod;
+    Qt::Axis axis;
+    bool sceneSet;
+};
+
 SphereMeshPrivate::SphereMeshPrivate()
     : topNode(new QGLSceneNode)
     , currentSphere(0)
@@ -192,8 +209,16 @@ private:
 */
 SphereMesh::SphereMesh(QObject *parent)
     : QDeclarativeMesh(parent)
-    , d_ptr(new SphereMeshPrivate)
+    , d(new SphereMeshPrivate)
 {
+}
+
+/*!
+    \internal
+*/
+SphereMesh::~SphereMesh()
+{
+    delete d;
 }
 
 /*!
@@ -204,13 +229,11 @@ SphereMesh::SphereMesh(QObject *parent)
 */
 qreal SphereMesh::radius() const
 {
-    Q_D(const SphereMesh);
     return d->radius;
 }
 
 void SphereMesh::setRadius(qreal radius)
 {
-    Q_D(SphereMesh);
     if (qFuzzyCompare(radius, 1))
         radius = 1.0f;
     if (d->radius != radius)
@@ -252,13 +275,11 @@ void SphereMesh::setRadius(qreal radius)
 */
 int SphereMesh::levelOfDetail() const
 {
-    Q_D(const SphereMesh);
     return d->lod;
 }
 
 void SphereMesh::setLevelOfDetail(int lod)
 {
-    Q_D(SphereMesh);
     lod = qBound(1, lod, 10);
     if (d->lod != lod)
     {
@@ -279,13 +300,11 @@ void SphereMesh::setLevelOfDetail(int lod)
 */
 Qt::Axis SphereMesh::axis() const
 {
-    Q_D(const SphereMesh);
     return d->axis;
 }
 
 void SphereMesh::setAxis(Qt::Axis axis)
 {
-    Q_D(SphereMesh);
     if (d->axis != axis)
     {
         d->axis = axis;
@@ -300,7 +319,6 @@ void SphereMesh::setAxis(Qt::Axis axis)
 */
 void SphereMesh::draw(QGLPainter *painter, int branchId)
 {
-    Q_D(SphereMesh);
     if (!d->currentSphere)
         createGeometry();
     QDeclarativeMesh::draw(painter, branchId);
@@ -311,8 +329,6 @@ void SphereMesh::draw(QGLPainter *painter, int branchId)
 */
 void SphereMesh::createGeometry()
 {
-    Q_D(SphereMesh);
-
     // We cache a maximum of 10 levels of detail for lod animations.
     // Create a new geometry node for this level of detail if necessary.
     QGLSceneNode *geometry = d->lodGeometry.value(d->lod, 0);

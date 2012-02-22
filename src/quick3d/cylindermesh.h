@@ -43,13 +43,14 @@
 #define CYLINDER_H
 
 #include "qdeclarativemesh.h"
-#include "cylindermesh_p.h"
 
 QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
-class CylinderMesh : public QDeclarativeMesh
+class CylinderMeshPrivate;
+
+class Q_QT3D_QUICK_EXPORT CylinderMesh : public QDeclarativeMesh
 {
     Q_OBJECT
     Q_PROPERTY(qreal radius READ radius WRITE setRadius NOTIFY radiusChanged)
@@ -58,7 +59,7 @@ class CylinderMesh : public QDeclarativeMesh
 
 public:
     explicit CylinderMesh(QObject *parent = 0);
-    ~CylinderMesh() {}
+    ~CylinderMesh();
 
     qreal radius() const;
     void setRadius(qreal radius);
@@ -82,7 +83,7 @@ private:
     Q_DISABLE_COPY(CylinderMesh)
     Q_DECLARE_PRIVATE(CylinderMesh)
 
-    QScopedPointer<CylinderMeshPrivate> d_ptr;
+    CylinderMeshPrivate *d;
 };
 
 QT_END_NAMESPACE

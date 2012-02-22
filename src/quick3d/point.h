@@ -49,7 +49,7 @@ QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
-class Point : public QDeclarativeItem3D
+class Q_QT3D_QUICK_EXPORT Point : public QDeclarativeItem3D
 {
     Q_OBJECT
     Q_PROPERTY(qreal pointSize READ pointSize WRITE setPointSize NOTIFY pointSizeChanged)
@@ -57,7 +57,7 @@ class Point : public QDeclarativeItem3D
 
 public:
     explicit Point(QObject *parent = 0);
-    ~Point() {}
+    ~Point();
 
     QVariant vertices() const;
     void setVertices(const QVariant &value);

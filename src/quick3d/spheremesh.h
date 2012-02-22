@@ -39,34 +39,61 @@
 **
 ****************************************************************************/
 
-#include <QtDeclarative/qdeclarativeextensionplugin.h>
+#ifndef SPHEREMESH_H
+#define SPHEREMESH_H
 
-#include "spheremesh.h"
-#include "cylindermesh.h"
-#include "capsulemesh.h"
-#include "line.h"
-#include "point.h"
+#include "qglscenenode.h"
+#include "qdeclarativemesh.h"
+//#include "spheremesh_p.h"
+
+#include <QtCore/qmap.h>
+#include <QtCore/qscopedpointer.h>
+
+QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
-class QShapesQmlModule : public QDeclarativeExtensionPlugin
+class SphereMeshPrivate;
+
+class Q_QT3D_QUICK_EXPORT SphereMesh : public QDeclarativeMesh
 {
     Q_OBJECT
+    Q_PROPERTY(qreal radius READ radius WRITE setRadius NOTIFY radiusChanged)
+    Q_PROPERTY(int levelOfDetail READ levelOfDetail WRITE setLevelOfDetail NOTIFY levelOfDetailChanged)
+    Q_PROPERTY(Qt::Axis axis READ axis WRITE setAxis NOTIFY axisChanged)
 public:
-    virtual void registerTypes(const char *uri)
-    {
-        Q_ASSERT(QLatin1String(uri) == QLatin1String("Qt3D.Shapes"));
-        qmlRegisterType<SphereMesh>(uri,1,0,"SphereMesh");
-        qmlRegisterType<CylinderMesh>(uri,1,0,"CylinderMesh");
-        qmlRegisterType<CapsuleMesh>(uri,1,0,"CapsuleMesh");
-        qmlRegisterType<Line>(uri,1,0,"Line");
-        qmlRegisterType<Point>(uri,1,0,"Point");
+    SphereMesh(QObject *parent = 0);
+    ~SphereMesh();
 
-    }
+    qreal radius() const;
+    void setRadius(qreal radius);
+
+    int levelOfDetail() const;
+    void setLevelOfDetail(int lod);
+
+    Qt::Axis axis() const;
+    void setAxis(Qt::Axis axis);
+
+    void draw(QGLPainter *painter, int branchId);
+
+Q_SIGNALS:
+    void radiusChanged();
+    void levelOfDetailChanged();
+    void axisChanged();
+
+private:
+    void createGeometry();
+
+    Q_DISABLE_COPY(SphereMesh)
+    Q_DECLARE_PRIVATE(SphereMesh)
+
+    SphereMeshPrivate *d;
 };
 
 QT_END_NAMESPACE
 
-#include "shapes.moc"
+QML_DECLARE_TYPE(SphereMesh)
 
-Q_EXPORT_PLUGIN2(qshapesqmlplugin, QT_PREPEND_NAMESPACE(QShapesQmlModule));
+QT_END_HEADER
+
+#endif   // SPHEREMESH_H

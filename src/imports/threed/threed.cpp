@@ -52,6 +52,12 @@
 #include "scale3d.h"
 #include "skybox.h"
 
+#include "point.h"
+#include "line.h"
+#include "capsulemesh.h"
+#include "cylindermesh.h"
+#include "spheremesh.h"
+
 #include "qgraphicsrotation3d.h"
 #include "qgraphicstranslation3d.h"
 #include "qgraphicsscale3d.h"
@@ -103,6 +109,12 @@ public:
         qmlRegisterType<ShaderProgram>(uri,1,0,"ShaderProgram");
         qmlRegisterType<Skybox>(uri, 1, 0, "Skybox");
         qmlRegisterType<BillboardItem3D>(uri, 1, 0, "BillboardItem3D");
+
+        qmlRegisterType<Point>(uri,1,0,"Point");
+        qmlRegisterType<Line>(uri,1,0,"Line");
+        qmlRegisterType<CapsuleMesh>(uri,1,0,"CapsuleMesh");
+        qmlRegisterType<CylinderMesh>(uri,1,0,"CylinderMesh");
+        qmlRegisterType<SphereMesh>(uri,1,0,"SphereMesh");
 
         qmlRegisterType<Viewport>(uri,1,0,"Viewport");
 

@@ -121,6 +121,22 @@ QT_BEGIN_NAMESPACE
     \sa Item3D, SphereMesh
 */
 
+class CylinderMeshPrivate
+{
+public:
+    CylinderMeshPrivate();
+    ~CylinderMeshPrivate();
+
+    QMap<int, QGLSceneNode *> lodGeometry;
+    QGLSceneNode *topNode;
+    QGLSceneNode *currentCylinder;
+    QGraphicsScale3D *scale;
+    qreal radius;
+    qreal length;
+    int lod;
+    bool sceneSet;
+};
+
 CylinderMeshPrivate::CylinderMeshPrivate()
     : topNode(new QGLSceneNode)
     , currentCylinder(0)
@@ -165,8 +181,16 @@ private:
 */
 CylinderMesh::CylinderMesh(QObject *parent)
     : QDeclarativeMesh(parent)
-    , d_ptr(new CylinderMeshPrivate)
+    , d(new CylinderMeshPrivate)
 {
+}
+
+/*!
+    \internal
+*/
+CylinderMesh::~CylinderMesh()
+{
+    delete d;
 }
 
 /*!
@@ -183,7 +207,6 @@ qreal CylinderMesh::radius() const
 
 void CylinderMesh::setRadius(qreal radius)
 {
-    Q_D(CylinderMesh);
     if (qFuzzyCompare(radius, 1))
         radius = 1.0f;
     if (d->radius != radius) {
@@ -202,13 +225,11 @@ void CylinderMesh::setRadius(qreal radius)
 */
 qreal CylinderMesh::length() const
 {
-    Q_D(const CylinderMesh);
     return d->length;
 }
 
 void CylinderMesh::setLength(qreal length)
 {
-    Q_D(CylinderMesh);
     if (qFuzzyCompare(length, 1))
         length = 1.0f;
     if (d->length != length) {
@@ -251,13 +272,11 @@ void CylinderMesh::setLength(qreal length)
 */
 int CylinderMesh::levelOfDetail() const
 {
-    Q_D(const CylinderMesh);
     return d->lod;
 }
 
 void CylinderMesh::setLevelOfDetail(int lod)
 {
-    Q_D(CylinderMesh);
     lod = qBound(1, lod, 10);
     if (d->lod != lod) {
         d->lod = lod;
@@ -272,7 +291,6 @@ void CylinderMesh::setLevelOfDetail(int lod)
 */
 void CylinderMesh::draw(QGLPainter *painter, int branchId)
 {
-    Q_D(CylinderMesh);
     if (!d->currentCylinder)
         createGeometry();
     QDeclarativeMesh::draw(painter, branchId);
@@ -283,8 +301,6 @@ void CylinderMesh::draw(QGLPainter *painter, int branchId)
 */
 void CylinderMesh::createGeometry()
 {
-    Q_D(CylinderMesh);
-
     int facets = 4 * 1 << d->lod;
     int layers = 1 << d->lod;
 

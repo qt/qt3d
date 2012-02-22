@@ -1,9 +1,9 @@
 /****************************************************************************
 **
-** Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/
 **
-** This file is part of the QtQuick3D module of the Qt Toolkit.
+** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
 ** GNU Lesser General Public License Usage
@@ -39,47 +39,51 @@
 **
 ****************************************************************************/
 
-#ifndef CYLINDERMESH_P_H
-#define CYLINDERMESH_P_H
+#ifndef LINE_H
+#define LINE_H
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists purely as an
-// implementation detail.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <QtCore/QMap>
+#include "qdeclarativeitem3d.h"
+#include "qglscenenode.h"
 
 QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
-class QGraphicsScale3D;
-class QGLSceneNode;
-
-class CylinderMeshPrivate
+class Q_QT3D_QUICK_EXPORT Line : public QDeclarativeItem3D
 {
-public:
-    CylinderMeshPrivate();
-    ~CylinderMeshPrivate();
+    Q_OBJECT
+    Q_PROPERTY(qreal width READ width WRITE setWidth NOTIFY widthChanged)
+    Q_PROPERTY(QVariant vertices READ vertices WRITE setVertices NOTIFY verticesChanged)
 
-    QMap<int, QGLSceneNode *> lodGeometry;
-    QGLSceneNode *topNode;
-    QGLSceneNode *currentCylinder;
-    QGraphicsScale3D *scale;
-    qreal radius;
-    qreal length;
-    int lod;
-    bool sceneSet;
+public:
+    explicit Line(QObject *parent = 0);
+    ~Line();
+
+    QVariant vertices() const;
+    void setVertices(const QVariant &value);
+
+    qreal width() const {return m_width;}
+    void setWidth(qreal width);
+
+Q_SIGNALS:
+    void verticesChanged();
+    void widthChanged();
+
+protected:
+    void drawItem(QGLPainter *painter);
+
+private:
+    qreal m_width;
+    QVariant m_vertices;
+    QVector3DArray m_vertexArray;
+    QGLSceneNode * m_geometry;
+    bool m_changeFlag;
 };
 
 QT_END_NAMESPACE
 
+QML_DECLARE_TYPE(Line)
+
 QT_END_HEADER
 
-#endif // CYLINDERMESH_P_H
+#endif // LINE_H

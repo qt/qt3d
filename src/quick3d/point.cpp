@@ -39,30 +39,28 @@
 **
 ****************************************************************************/
 
-#include "line.h"
+#include "point.h"
 #include "qglbuilder.h"
 
 QT_BEGIN_NAMESPACE
 
 /*!
-    \qmlclass Line Line
-    \brief The Line item represents a geometric line drawn in 3D space.
+    \qmlclass Point Point
+    \brief The Point item represents a geometric point drawn in 3D space.
     \since 4.8
     \ingroup qt3d::qml3d::shapes
     \inherits Item3D
 
-    The Line element in QML provides a means of drawing lines in a 3D
-    environment.  For example, the following QML code draws a line between
-    point (0,0,0), (1,1,1), then to (-1,-1,-1).
+    The Point element in QML provides a means of drawing points in a 3D
+    environment.  For example, the following QML code draws points (0,0,0),
+    (1,1,1), and (-1,-1,-1).
 
     \code
-
-    Line {
+    Point {
         vertices: [
            0, 0, 0,
-           0, 0, 1,
-           0, 1, 1
-
+           1, 1, 1,
+           -1, -1, -1
         ]
         effect: Effect {
             color: "#aaca00"
@@ -70,7 +68,7 @@ QT_BEGIN_NAMESPACE
     }
     \endcode
 
-    The Line element is part of the \c{Qt3D.Shapes} namespace,
+    The Point element is part of the \c{Qt3D.Shapes} namespace,
     so the following must appear at the top of any QML file that
     references it:
 
@@ -83,32 +81,42 @@ QT_BEGIN_NAMESPACE
 /*!
     \internal
 */
-Line::Line(QObject *parent) :
+Point::Point(QObject *parent) :
     QDeclarativeItem3D(parent)
-        ,m_width(3.0)
-        ,m_changeFlag(false)
+    , m_pointSize(1.0f)
+    , m_geometry(0)
+    , m_changeFlag(false)
 {
     //meh
 }
 
 /*!
-   \qmlproperty list<real> Line::vertices
+    \internal
+*/
+Point::~Point()
+{
+    delete m_geometry;
+}
 
-   This property defines the positions for all of the vertices in the
-   line strip.  Each vertex is given by three real values, defining
+
+/*!
+   \qmlproperty list<real> Point::vertices
+
+   This property defines the positions for all of the points to be drawn
+   Each vertex is given by three real values, defining
    the x, y, and z co-ordinates of the vertex.
 */
 
-QVariant Line::vertices() const
+QVariant Point::vertices() const
 {
    return m_vertices;
 }
 
-void Line::setVertices(const QVariant &value)
+void Point::setVertices(const QVariant &value)
 {
     m_vertices = value;
 
-    //Update the actual QVector3DArray containing the line points.
+    //Update the actual QVector3DArray containing the points.
     m_vertexArray.clear();
     QVariantList vertlist = m_vertices.toList();
     for (int index = 0; (index + 2) < vertlist.size(); index += 3) {
@@ -121,17 +129,17 @@ void Line::setVertices(const QVariant &value)
 
 
 /*!
-    \qmlproperty real Line::width
+    \qmlproperty qreal Point::pointSize
 
-    This property defines the width of the line.  The
+    This property defines the size of the point.  The
     default is 1.0
 */
-void Line::setWidth(qreal width)
+void Point::setPointSize(qreal pointSize)
 {
-    if (m_width != width) {
-        m_width = width;
+    if (m_pointSize != pointSize) {
+        m_pointSize = pointSize;
         m_changeFlag=true;
-        emit widthChanged();
+        emit pointSizeChanged();
         update();
     }
 }
@@ -139,21 +147,21 @@ void Line::setWidth(qreal width)
 /*!
     \internal
 */
-void Line::drawItem(QGLPainter *painter)
+void Point::drawItem(QGLPainter *painter)
 {
     if (m_changeFlag || !m_geometry) {
         if (m_geometry) delete m_geometry;
 
         QGLBuilder builder;
 
-        QGeometryData lineCollection;
+        QGeometryData pointCollection;
         builder.newSection();
 
-        lineCollection.appendVertexArray(m_vertexArray);
+        pointCollection.appendVertexArray(m_vertexArray);
 
-        builder.addTriangles(lineCollection);
-        builder.currentNode()->setDrawingMode(QGL::LineStrip);
-        builder.currentNode()->setDrawingWidth(m_width);
+        builder.addTriangles(pointCollection);
+        builder.currentNode()->setDrawingMode(QGL::Points);
+        builder.currentNode()->setDrawingWidth(m_pointSize);
         m_geometry = builder.finalizedSceneNode();
 
         m_changeFlag = false;
@@ -164,4 +172,5 @@ void Line::drawItem(QGLPainter *painter)
 }
 
 QT_END_NAMESPACE
+
 
