@@ -56,6 +56,7 @@ Viewport {
             target: rot;
             loops: Animation.Infinite
             property: "angle";
+            from: 0
             to: 360; duration: 2000
 
         }
