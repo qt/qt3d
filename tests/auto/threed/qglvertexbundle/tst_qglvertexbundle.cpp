@@ -40,13 +40,14 @@
 ****************************************************************************/
 
 #include <QtTest/QtTest>
+#include <QOpenGLContext>
 
-#include "qglview.h"
 #include "qglvertexbundle.h"
 #include "qvector2darray.h"
 #include "qvector3darray.h"
 #include "qvector4darray.h"
 #include "qcolor4ub.h"
+#include "qglmockview.h"
 
 class tst_QGLVertexBundle : public QObject
 {
@@ -100,10 +101,9 @@ void tst_QGLVertexBundle::interleaved()
     // with data before doing this to ensure that the client-side part of
     // the buffers can be created at application startup time before an
     // actual OpenGL context exists.
-    QGLView view;
-    view.show();
+    QGLMockView view;
     QOpenGLContext *ctx = view.context();
-    if (!ctx || !ctx->makeCurrent(&view))
+    if (!ctx || !view.isValid())
         QSKIP("Could not create an OpenGL context");
 
     // Upload the bundle and bail out if we couldn't upload it
@@ -152,8 +152,7 @@ void tst_QGLVertexBundle::singleAttribute()
     QVERIFY(!bundle.isUploaded());
     QCOMPARE(bundle.vertexCount(), 4);
 
-    QGLView view;
-    view.show();
+    QGLMockView view;
     QOpenGLContext *ctx = view.context();
     if (!ctx || !ctx->makeCurrent(&view))
         QSKIP("Could not create an OpenGL context");
@@ -184,10 +183,9 @@ void tst_QGLVertexBundle::large()
         texCoords.append(index * 5 + 3, index * 5 + 4);
     }
 
-    QGLView view;
-    view.show();
+    QGLMockView view;
     QOpenGLContext *ctx = view.context();
-    if (!ctx || !ctx->makeCurrent(&view))
+    if (!ctx || !view.isValid())
         QSKIP("Could not create an OpenGL context");
 
     QGLVertexBundle bundle;
@@ -223,10 +221,9 @@ void tst_QGLVertexBundle::otherAttributes()
     texCoords.append(15.0f);
     texCoords.append(20.0f);
 
-    QGLView view;
-    view.show();
+    QGLMockView view;
     QOpenGLContext *ctx = view.context();
-    if (!ctx || !ctx->makeCurrent(&view))
+    if (!ctx || !view.isValid())
         QSKIP("Could not create an OpenGL context");
 
     QGLVertexBundle bundle;

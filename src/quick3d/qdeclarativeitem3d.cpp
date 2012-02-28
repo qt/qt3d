@@ -1294,6 +1294,7 @@ void QDeclarativeItem3D::draw(QGLPainter *painter)
         QOpenGLContext* pOpenGLContext = pCanvas->openglContext();
         Q_ASSERT(pOpenGLContext);
         bool Ok = QObject::connect(pOpenGLContext, SIGNAL(aboutToBeDestroyed()), this, SLOT(handleOpenglContextIsAboutToBeDestroyed()), Qt::DirectConnection);
+        Q_UNUSED(Ok);  // quell compiler warning
         Q_ASSERT(Ok);
         d->bConnectedToOpenGLContextSignal = true;
     }

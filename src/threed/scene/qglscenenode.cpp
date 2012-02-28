@@ -1530,7 +1530,7 @@ void QGLSceneNode::setPickNode(QGLPickNode *node)
 */
 QGLSceneNode *QGLSceneNode::findSceneNode(QString &nodePath)
 {
-    QRegExp splitExpression("::");
+    QRegExp splitExpression(QLatin1String("::"));
     QStringList nodePathList = nodePath.split(splitExpression);
     return findSceneNode(nodePathList);
 }

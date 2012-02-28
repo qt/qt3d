@@ -118,6 +118,7 @@ TestWidget::TestWidget(QWindow *parent)
     , paintDone(false)
     , clearColor(Qt::black)
 {
+    setGeometry(QRect(0, 0, 100, 100));
     QVector3DArray positions;
     QVector3DArray normals;
     QVector2DArray texCoords;
@@ -236,8 +237,10 @@ void TestWidget::paintGL()
 
 void tst_QGLMaterial::initTestCase()
 {
-    QSKIP("QWidget: Cannot create a QWidget when no GUI is being used");
     widget = new TestWidget();
+    widget->show();
+    if (widget->context() == 0)
+        QSKIP("Could not create valid GL context");
 }
 
 void tst_QGLMaterial::cleanupTestCase()
@@ -702,6 +705,8 @@ static QColor litColor(const QGLMaterial &material)
 
 void tst_QGLMaterial::standardMaterialDraw()
 {
+    QSKIP("not currently working");
+
     if (!widget->context()->isValid())
         QSKIP("GL Implementation not valid");
 
@@ -712,6 +717,8 @@ void tst_QGLMaterial::standardMaterialDraw()
 
 void tst_QGLMaterial::colorMaterialDraw()
 {
+    QSKIP("not currently working");
+
     if (!widget->context()->isValid())
         QSKIP("GL Implementation not valid");
 

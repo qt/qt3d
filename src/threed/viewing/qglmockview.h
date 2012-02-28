@@ -39,55 +39,40 @@
 **
 ****************************************************************************/
 
-#include "qglabstractscene.h"
-#include "qglsceneanimation.h"
+#ifndef QGLMOCKVIEW_H
+#define QGLMOCKVIEW_H
+
+#include "qt3dglobal.h"
+
+#include <QWindow>
+#include <QSharedPointer>
+
+QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
-// ------------------------------------------------------------------------------------------------------------------------------
+QT_MODULE(Qt3D)
 
-class QGLSceneAnimationPrivate
+class QGLMockViewPrivate;
+
+class Q_QT3D_EXPORT QGLMockView : public QWindow
 {
+    Q_OBJECT
 public:
-    QGLSceneAnimationPrivate();
-    ~QGLSceneAnimationPrivate();
+    explicit QGLMockView(QWindow *parent = 0);
+    ~QGLMockView();
 
-    QString m_name;
+    bool isValid() const;
+    QOpenGLContext *context();
+
+private:
+    bool ensureContext();
+
+    QSharedPointer<QGLMockViewPrivate> dptr;
 };
 
-QGLSceneAnimationPrivate::QGLSceneAnimationPrivate() :
-    m_name(QLatin1String("unnamed"))
-{
-}
-
-QGLSceneAnimationPrivate::~QGLSceneAnimationPrivate()
-{
-}
-
-// ------------------------------------------------------------------------------------------------------------------------------
-
-QGLSceneAnimation::QGLSceneAnimation(QObject *parent) :
-    QObject(parent)
-    ,d_ptr(new QGLSceneAnimationPrivate())
-{
-}
-
-QGLSceneAnimation::QGLSceneAnimation(const QString &name, QObject *parent) :
-    QObject(parent)
-    ,d_ptr(new QGLSceneAnimationPrivate())
-{
-    Q_D(QGLSceneAnimation);
-    d->m_name = name;
-}
-
-QGLSceneAnimation::~QGLSceneAnimation()
-{
-}
-
-QString QGLSceneAnimation::name() const
-{
-    Q_D(const QGLSceneAnimation);
-    return d->m_name;
-}
-
 QT_END_NAMESPACE
+
+QT_END_HEADER
+
+#endif // QGLMOCKVIEW_H

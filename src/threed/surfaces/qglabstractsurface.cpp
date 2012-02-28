@@ -283,7 +283,7 @@ void QGLAbstractSurface::setFramebufferObject(QOpenGLFramebufferObject *framebuf
 
     This function calls viewportGL() and then flips the rectangle
     upside down using the height of device() so that the origin
-    is at the top-left instead of the bottom-right.
+    is at the top-left instead of the bottom-left.
 
     \sa viewportGL(), device()
 */
