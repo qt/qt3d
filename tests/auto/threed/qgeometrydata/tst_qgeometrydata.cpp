@@ -46,7 +46,7 @@
 #include "qvector_utils_p.h"
 #include "qtest_helpers.h"
 #include "qglpainter.h"
-#include "qglview.h"
+#include "qglmockview.h"
 
 #include <QtCore/qdebug.h>
 
@@ -564,7 +564,6 @@ void tst_QGeometryData::generateTextureCoordinates()
 
 void tst_QGeometryData::clear()
 {
-    QSKIP("QWidget: Cannot create a QWidget when no GUI is being used");
     QVector3D a(1.1, 1.2, 1.3);
     QVector3D b(2.1, 2.2, 2.3);
     QVector3D c(3.1, 3.2, 3.3);
@@ -606,7 +605,6 @@ void tst_QGeometryData::clear()
 
 void tst_QGeometryData::draw()
 {
-    QSKIP("QWidget: Cannot create a QWidget when no GUI is being used");
     QVector3D a(1.1, 1.2, 1.3);
     QVector3D b(2.1, 2.2, 2.3);
     QVector3D c(3.1, 3.2, 3.3);
@@ -620,7 +618,10 @@ void tst_QGeometryData::draw()
     data.appendVertex(a, b, c, d);
     data.appendNormal(an, bn, cn, dn);
 
-    QGLView w;
+    QGLMockView w;
+    if (!w.isValid())
+        QSKIP("Cannot create valid GL Context");
+
     QGLPainter p(&w);
     data.draw(&p, 0, 4);
 }

@@ -43,10 +43,9 @@
 #include "qglabstractsurface.h"
 #include "qglwindowsurface.h"
 #include "qglframebufferobjectsurface.h"
-
 #include "qglsubsurface.h"
 #include "qopenglfunctions.h"
-
+#include <qglmockview.h>
 #include <QtGui/QOpenGLContext>
 
 class tst_QGLAbstractSurface : public QObject
@@ -59,7 +58,6 @@ public:
 private slots:
     void glWindowSurface();
     void fboSurface();
-    //  TODO: void pbufferSurface();
     void subSurface();
 
 private:
@@ -78,83 +76,74 @@ bool tst_QGLAbstractSurface::isFboCurrent(QOpenGLFramebufferObject *fbo)
         return currentFbo == 0;
 }
 
-static void ensureContext(QWindow &win, QOpenGLContext &ctx)
-{
-    QSurfaceFormat format;
-    format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
-    ctx.setFormat(format);
-#ifndef QT_NO_DEBUG_STREAM
-    QSurfaceFormat oldFormat = format;
-#endif
-    ctx.create();
-    // TODO: is it possible that the platform will downgrade the actual
-    // format, or will it just fail if it can't deliver the actual format
-    format = ctx.format();
-#ifndef QT_NO_DEBUG_STREAM
-    if (oldFormat.swapBehavior() != format.swapBehavior())
-        qWarning() << "Could not create context for swap behavior"
-                   << oldFormat.swapBehavior();
-#endif
-    ctx.makeCurrent(&win);
-}
-
 void tst_QGLAbstractSurface::glWindowSurface()
 {
-    QWindow glw;
-    glw.setSurfaceType(QWindow::OpenGLSurface);
-    QOpenGLContext ctx;
-    ensureContext(glw, ctx);
-    if (!ctx.isValid())
-    {
-        QSKIP("GL Implementation not valid");
-    }
+    QGLMockView glw;
+    if (!glw.isValid())
+        QSKIP("GL is not supported on this platform");
+
+    QOpenGLContext *ctx = glw.context();
+    QVERIFY(ctx != 0);
 
     QGLWindowSurface surface1;
     QVERIFY(surface1.surfaceType() == QGLAbstractSurface::Window);
     QVERIFY(surface1.window() == 0);
     surface1.setWindow(&glw);
-    QVERIFY(surface1.window() == &glw);
-    QCOMPARE(surface1.viewportRect(), glw.geometry());
+    QCOMPARE(surface1.window(), &glw);
 
     QVERIFY(surface1.activate());
-    QVERIFY(QOpenGLContext::currentContext() == &ctx);
+    QVERIFY(QOpenGLContext::currentContext() == ctx);
+
+#ifndef Q_OS_WIN
+    // TODO: these geometry tests are buggy on Windows QPA due to frame
+    // geometry issues - FIXME: http://bugreports.qt-project.org/browse/QTBUG-24539
     QCOMPARE(surface1.viewportGL(), QRect(0, 0, glw.width(), glw.height()));
+#endif
 
     surface1.deactivate();
-    QVERIFY(QOpenGLContext::currentContext() == &ctx); // Left current.
+    QVERIFY(QOpenGLContext::currentContext() == ctx); // Left current.
 
-    QWindow glw2;
-    glw2.setSurfaceType(QWindow::OpenGLSurface);
-    QOpenGLContext ctx2;
-    ensureContext(glw2, ctx2);
+    QGLMockView glw2;
+    QOpenGLContext *ctx2 = glw2.context();
+
+    // This should have been made current by the QGLMockView constructor
+    QVERIFY(ctx2 != 0);
+    QVERIFY(ctx2 == QOpenGLContext::currentContext());
 
     QGLWindowSurface surface2(&glw2);
+    QVERIFY(surface2.activate());
     QVERIFY(surface2.surfaceType() == QGLAbstractSurface::Window);
     QVERIFY(surface2.window() == &glw2);
 
     QVERIFY(surface1.activate());
     QVERIFY(surface1.switchTo(&surface2));
 
-    QVERIFY(QOpenGLContext::currentContext() == &ctx2);
+    QVERIFY(QOpenGLContext::currentContext() == ctx2);
 
     QVERIFY(surface2.switchTo(&surface1));
-    QVERIFY(QOpenGLContext::currentContext() == &ctx);
+    QVERIFY(QOpenGLContext::currentContext() == ctx);
 }
 
 void tst_QGLAbstractSurface::fboSurface()
 {
+    QGLMockView glw;
+    if (!glw.isValid())
+        QSKIP("GL is not supported on this platform");
+
+    QOpenGLContext *ctx = glw.context();
+    QVERIFY(ctx != 0);
+
     if (!QOpenGLFramebufferObject::hasOpenGLFramebufferObjects())
         QSKIP("fbo's are not supported");
 
-    QWindow glw;
-    glw.setSurfaceType(QWindow::OpenGLSurface);
-    QOpenGLContext ctx;
-    ensureContext(glw, ctx);
-    if (!ctx.isValid())
-        QSKIP("GL Implementation not valid");
-
     QGLWindowSurface surface1(&glw);
     QVERIFY(surface1.activate());
+
+#ifdef Q_OS_WIN
+    // The geometry tests all thru this function will fail til this is fixed
+    QSKIP("Windows QPA bug http://bugreports.qt-project.org/browse/QTBUG-24539");
+#endif
+
     QCOMPARE(surface1.viewportGL(), QRect(0, 0, glw.width(), glw.height()));
 
     QOpenGLFramebufferObject fbo1(128, 128);
@@ -167,34 +156,33 @@ void tst_QGLAbstractSurface::fboSurface()
     QVERIFY(isFboCurrent(0));
 
     QVERIFY(surface2.activate());
-    QVERIFY(QOpenGLContext::currentContext() == &ctx);
+    QVERIFY(QOpenGLContext::currentContext() == ctx);
     QVERIFY(isFboCurrent(&fbo1));
+
     QCOMPARE(surface2.viewportGL(), QRect(QPoint(0, 0), fbo1.size()));
 
     surface2.deactivate();
     QVERIFY(isFboCurrent(0));
-    QVERIFY(QOpenGLContext::currentContext() == &ctx);
+    QVERIFY(QOpenGLContext::currentContext() == ctx);
 
-    surface2.setContext(&ctx);
+    surface2.setContext(ctx);
 
-    QWindow glw2;
-    glw2.setSurfaceType(QWindow::OpenGLSurface);
-    QOpenGLContext ctx2;
-    ensureContext(glw2, ctx2);
+    QGLMockView glw2;
+    QOpenGLContext *ctx2 = glw2.context();
 
     QGLWindowSurface surface3(&glw2);
     QVERIFY(surface3.activate());
-    QVERIFY(QOpenGLContext::currentContext() == &ctx2);
+    QVERIFY(QOpenGLContext::currentContext() == ctx2);
     QCOMPARE(surface3.viewportGL(), QRect(0, 0, glw2.width(), glw2.height()));
 
     QVERIFY(surface3.switchTo(&surface2));
     QVERIFY(isFboCurrent(&fbo1));
-    QVERIFY(QOpenGLContext::currentContext() == &ctx);
+    QVERIFY(QOpenGLContext::currentContext() == ctx);
     QCOMPARE(surface2.viewportGL(), QRect(QPoint(0, 0), fbo1.size()));
 
     QVERIFY(surface2.switchTo(&surface3));
     QVERIFY(isFboCurrent(0));
-    QVERIFY(QOpenGLContext::currentContext() == &ctx2);
+    QVERIFY(QOpenGLContext::currentContext() == ctx2);
     QCOMPARE(surface3.viewportGL(), QRect(0, 0, glw2.width(), glw2.height()));
 
     surface3.deactivate();
@@ -212,118 +200,37 @@ void tst_QGLAbstractSurface::fboSurface()
     QVERIFY(surface4.viewportGL().isNull());
     surface4.setFramebufferObject(&fbo2);
     QVERIFY(surface4.framebufferObject() == &fbo2);
-    surface4.setContext(&ctx);
+    surface4.setContext(ctx);
 
     QVERIFY(surface1.switchTo(&surface2));
-    QVERIFY(QOpenGLContext::currentContext() == &ctx);
+    QCOMPARE(QOpenGLContext::currentContext(), ctx);
     QVERIFY(isFboCurrent(&fbo1));
     QCOMPARE(surface2.viewportGL(), QRect(QPoint(0, 0), fbo1.size()));
 
     QVERIFY(surface2.switchTo(&surface4));
-    QVERIFY(QOpenGLContext::currentContext() == &ctx);
+    QVERIFY(QOpenGLContext::currentContext() == ctx);
     QVERIFY(isFboCurrent(&fbo2));
     QCOMPARE(surface4.viewportGL(), QRect(QPoint(0, 0), fbo2.size()));
 
     QVERIFY(surface3.switchTo(&surface2));
-    QVERIFY(QOpenGLContext::currentContext() == &ctx);
+    QVERIFY(QOpenGLContext::currentContext() == ctx);
     QVERIFY(isFboCurrent(&fbo1));
     QCOMPARE(surface2.viewportGL(), QRect(QPoint(0, 0), fbo1.size()));
 
     QVERIFY(surface2.switchTo(&surface1));
-    QVERIFY(QOpenGLContext::currentContext() == &ctx);
+    QVERIFY(QOpenGLContext::currentContext() == ctx);
     QVERIFY(isFboCurrent(0));
     QCOMPARE(surface1.viewportGL(), QRect(0, 0, glw.width(), glw.height()));
 }
 
-/*
-void tst_QGLAbstractSurface::pbufferSurface()
-{
-    if (!QGLPixelBuffer::hasOpenGLPbuffers())
-        QSKIP("pbuffer's are not supported");
-
-    QGLWidget glw;
-    if (!glw.isValid())
-        QSKIP("GL Implementation not valid");
-
-    QGLWindowSurface surface1(&glw);
-    QVERIFY(surface1.activate());
-    QCOMPARE(surface1.viewportGL(), QRect(0, 0, glw.width(), glw.height()));
-
-    QGLPixelBuffer pbuffer1(128, 128);
-    QVERIFY(pbuffer1.handle() != 0);
-
-    QGLPixelBufferSurface surface2(&pbuffer1);
-    QVERIFY(surface2.surfaceType() == QGLAbstractSurface::PixelBuffer);
-    QVERIFY(surface2.pixelBuffer() == &pbuffer1);
-    QVERIFY(surface2.device() == &pbuffer1);
-
-    QVERIFY(surface2.activate());
-    QVERIFY(QOpenGLContext::currentContext() != glw.context());
-    const QOpenGLContext *surface2ctx = QOpenGLContext::currentContext();
-    QCOMPARE(surface2.viewportGL(), QRect(QPoint(0, 0), pbuffer1.size()));
-
-    surface2.deactivate();
-    QVERIFY(QOpenGLContext::currentContext() == surface2ctx); // Left current.
-
-    QGLWidget glw2;
-    QGLWindowSurface surface3(&glw2);
-    QVERIFY(surface3.activate());
-    QVERIFY(QOpenGLContext::currentContext() == glw2.context());
-    QCOMPARE(surface3.viewportGL(), QRect(0, 0, glw2.width(), glw2.height()));
-
-    QVERIFY(surface3.switchTo(&surface2));
-    QVERIFY(QOpenGLContext::currentContext() == surface2ctx);
-    QCOMPARE(surface2.viewportGL(), QRect(QPoint(0, 0), pbuffer1.size()));
-
-    QVERIFY(surface2.switchTo(&surface3));
-    QVERIFY(QOpenGLContext::currentContext() == glw2.context());
-    QCOMPARE(surface3.viewportGL(), QRect(0, 0, glw2.width(), glw2.height()));
-
-    surface3.deactivate();
-
-    surface1.activate();
-    QCOMPARE(surface1.viewportGL(), QRect(0, 0, glw.width(), glw.height()));
-
-    QGLPixelBuffer pbuffer2(256, 256);
-    QVERIFY(pbuffer2.handle() != 0);
-
-    QGLPixelBufferSurface surface4;
-    QVERIFY(surface4.surfaceType() == QGLAbstractSurface::PixelBuffer);
-    QVERIFY(surface4.pixelBuffer() == 0);
-    QVERIFY(surface4.device() == 0);
-    QVERIFY(!surface4.activate(0));
-    QVERIFY(surface4.viewportGL().isNull());
-    surface4.setPixelBuffer(&pbuffer2);
-    QVERIFY(surface4.pixelBuffer() == &pbuffer2);
-    QVERIFY(surface4.device() == &pbuffer2);
-
-    QVERIFY(surface1.switchTo(&surface2));
-    QVERIFY(QOpenGLContext::currentContext() == surface2ctx);
-    QCOMPARE(surface2.viewportGL(), QRect(QPoint(0, 0), pbuffer1.size()));
-
-    QVERIFY(surface2.switchTo(&surface4));
-    const QOpenGLContext *surface4ctx = QOpenGLContext::currentContext();
-    QVERIFY(surface4ctx != glw.context());
-    QVERIFY(surface4ctx != surface2ctx);
-    QCOMPARE(surface4.viewportGL(), QRect(QPoint(0, 0), pbuffer2.size()));
-
-    QVERIFY(surface4.switchTo(&surface2));
-    QVERIFY(QOpenGLContext::currentContext() == surface2ctx);
-    QCOMPARE(surface2.viewportGL(), QRect(QPoint(0, 0), pbuffer1.size()));
-
-    QVERIFY(surface2.switchTo(&surface1));
-    QVERIFY(QOpenGLContext::currentContext() == glw.context());
-    QCOMPARE(surface1.viewportGL(), QRect(0, 0, glw.width(), glw.height()));
-}
-*/
 void tst_QGLAbstractSurface::subSurface()
 {
-    QWindow glw;
-    glw.setSurfaceType(QWindow::OpenGLSurface);
-    QOpenGLContext ctx;
-    ensureContext(glw, ctx);
-    if (!ctx.isValid())
-        QSKIP("GL Implementation not valid");
+    QGLMockView glw;
+    if (!glw.isValid())
+        QSKIP("GL is not supported on this platform");
+
+    QOpenGLContext *ctx = glw.context();
+    QVERIFY(ctx != 0);
 
     QGLWindowSurface surface1(&glw);
 
@@ -333,7 +240,13 @@ void tst_QGLAbstractSurface::subSurface()
     QCOMPARE(surface2.region(), QRect(0, 0, 32, 16));
 
     QVERIFY(surface2.activate());
-    QVERIFY(QOpenGLContext::currentContext() == &ctx);
+    QVERIFY(QOpenGLContext::currentContext() == ctx);
+
+#ifdef Q_OS_WIN
+    // The geometry tests all thru this function will fail til this is fixed
+    QSKIP("Windows QPA bug http://bugreports.qt-project.org/browse/QTBUG-24539");
+#endif
+
     QCOMPARE(surface2.viewportGL(), QRect(0, glw.height() - 16, 32, 16));
 
     QGLSubsurface surface3(&surface1, QRect(16, 8, 32, 16));
@@ -342,7 +255,7 @@ void tst_QGLAbstractSurface::subSurface()
     QCOMPARE(surface3.region(), QRect(16, 8, 32, 16));
 
     QVERIFY(surface2.switchTo(&surface3));
-    QVERIFY(QOpenGLContext::currentContext() == &ctx);
+    QVERIFY(QOpenGLContext::currentContext() == ctx);
     QCOMPARE(surface3.viewportGL(), QRect(16, glw.height() - (8 + 16), 32, 16));
 
     QGLSubsurface surface4;
@@ -357,7 +270,7 @@ void tst_QGLAbstractSurface::subSurface()
     QCOMPARE(surface4.region(), QRect(4, 6, 12, 8));
 
     QVERIFY(surface2.switchTo(&surface4));
-    QVERIFY(QOpenGLContext::currentContext() == &ctx);
+    QVERIFY(QOpenGLContext::currentContext() == ctx);
     QCOMPARE(surface4.viewportGL(), QRect(16 + 4, glw.height() - (6 + 8 + 8), 12, 8));
 }
 
