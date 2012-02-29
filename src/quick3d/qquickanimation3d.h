@@ -44,7 +44,7 @@
 
 #include "qt3dquickglobal.h"
 
-#include <qqml.h>
+#include <QtQml/qqml.h>
 #include <QtCore/qobject.h>
 
 QT_BEGIN_HEADER

@@ -1,6 +1,6 @@
 TEMPLATE = app
 TARGET = robo_bounce
-QT += qml quick
+QT += qml quick 3dquick
 
 SOURCES += main.cpp
 ICON_FILE = ../icon.png
@@ -46,16 +46,10 @@ QML_MESHES_FILES = \
 CATEGORY = demos
 include(../../../pkg.pri)
 
-INSTALL_DIRS = qml
-mt: INSTALL_FILES = mt.qml
-
 RC_FILE = robo_bounce.rc
 
 OTHER_FILES += \
+    mt.qml \
     robo_bounce.rc \
     $$QML_INFRA_FILES \
     $$RC_FILE
-
-RESOURCES += \
-    robo_bounce.qrc
-

@@ -44,11 +44,14 @@ import Qt3D 1.0
 import Qt3D.Shapes 1.0
 
 Image {
+    width: parent.width
+    height: parent.height
+
     source: "sky.png"
 
     Viewport  {
-        width: 640
-        height: 480
+        width: parent.width
+        height: parent.height
 
         camera: Camera {
             eye: Qt.vector3d(2,5,20);

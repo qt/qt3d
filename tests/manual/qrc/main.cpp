@@ -54,12 +54,12 @@ int main(int argc, char *argv[])
 
     QQuickView viewL(&root);
     viewL.setFormat(format);
-    viewL.setSource(QUrl("qrc:///qml/cube.qml"));
+    viewL.setSource(QUrl("qrc:///qml/tst_qrc.qml"));
     viewL.setGeometry(0, 0, 640, 480);
 
     QQuickView viewR(&root);
     viewR.setFormat(format);
-    viewR.setSource(QUrl("Qrc:/qml/cube.qml"));
+    viewR.setSource(QUrl("Qrc:///qml/tst_qrc.qml"));
     viewR.setGeometry(640, 0, 640, 480);
 
     root.show();

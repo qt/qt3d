@@ -17,6 +17,16 @@ gcov {
     CONFIG += dll warn_on
 }
 
+# Use this define to set a data directory into which QML resources
+# will be deployed and where qmlres.h will search for them
+# If not defined this defaults to /usr/share/qt5/qt3d for Qt5 and
+# to /usr/share/qt4/qt3d for Qt4.
+#
+# eg:    qmake CONFIG+=qt3d_qml_deploy_dir=/usr/local/share/qt3d
+qt3d_qml_deploy_dir {
+    DEFINES += QT3D_QML_DEPLOY_DIR=\\\"/usr/local/share/qt3d\\\"
+}
+
 include(quick3d.pri)
 
 PUBLIC_HEADERS = $$HEADERS

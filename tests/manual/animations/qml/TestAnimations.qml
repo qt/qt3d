@@ -46,8 +46,7 @@ import Qt3D.Shapes 1.0
 // QTBUG-18702
 Item {
     id: screen
-    width: aTestCase.defaultWidth * 3
-    height: aTestCase.defaultHeight * 3
+    width: parent.width; height: parent.height
 
     Flow {
         anchors.fill: parent
@@ -57,7 +56,7 @@ Item {
             text: "Rotation: Z axis\n(Rolling to the left)\nNumberAnimation"
             rotationAxis: Qt.vector3d(0,0,1)
             rotation: Rotation3D {
-                axis: rotationAxis
+                axis: aTestCase.rotationAxis
                 NumberAnimation on angle {
                     loops: Animation.Infinite
                     from: 0
@@ -65,13 +64,21 @@ Item {
                     duration: 1500
                 }
             }
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    aTestCase.visible = false
+                    bTestCase.visible = true
+                }
+            }
         }
 
         TestCase {
+            id: bTestCase
             text: "Rotation: Z axis\n(Rolling to the left)\nRotationAnimation"
             rotationAxis: Qt.vector3d(0,0,1)
             rotation: Rotation3D {
-                axis: rotationAxis
+                axis: bTestCase.rotationAxis
                 RotationAnimation on angle {
                     loops: Animation.Infinite
                     from: 0
@@ -80,13 +87,21 @@ Item {
                     direction: RotationAnimation.Clockwise
                 }
             }
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    bTestCase.visible = false
+                    cTestCase.visible = true
+                }
+            }
         }
 
         TestCase {
+            id: cTestCase
             text: "Rotation: Z axis\n(Rolling to the left)\nSmoothedAnimation"
             rotationAxis: Qt.vector3d(0,0,1)
             rotation: Rotation3D {
-                axis: rotationAxis
+                axis: cTestCase.rotationAxis
                 SmoothedAnimation on angle {
                     loops: Animation.Infinite
                     from: 0
@@ -95,13 +110,21 @@ Item {
                     velocity: 200
                 }
             }
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    cTestCase.visible = false
+                    dTestCase.visible = true
+                }
+            }
         }
 
         TestCase {
+            id: dTestCase
             text: "Rotation: Z axis\n(Rolling to the left)\nSpringAnimation"
             rotationAxis: Qt.vector3d(0,0,1)
             rotation: Rotation3D {
-                axis: rotationAxis
+                axis: dTestCase.rotationAxis
                 SpringAnimation on angle {
                     id: rotationAnimation
                     loops: Animation.Infinite
@@ -110,6 +133,12 @@ Item {
                     duration: 1500
                     spring: 2
                     damping: 0.2
+                }
+            }
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    Qt.quit()
                 }
             }
         }

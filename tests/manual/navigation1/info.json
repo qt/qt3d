@@ -3,11 +3,11 @@
     "dict": {
         "Category": "application",
         "Runtime": "qml",
-        "DisplayName": "Thing",
+        "DisplayName": "Navigation1 Test",
         "Subcategory": "utility",
         "MainQML": "mt.qml",
         "Version": "1.0",
-        "Identifier": "com.nokia.qt3d.thing",
-        "Summary": "Thing QML Demo"
+        "Identifier": "com.nokia.qt3d.navigation1test",
+        "Summary": "Navigation1 Test"
     }
 }

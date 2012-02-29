@@ -1,6 +1,6 @@
 TEMPLATE = app
 TARGET = forest_qml
-QT += qml quick
+QT += qml quick 3dquick
 CONFIG += qt warn_on
 
 SOURCES += main.cpp
@@ -23,14 +23,9 @@ QML_MESHES_FILES = \
 CATEGORY = examples
 include(../../../pkg.pri)
 
-INSTALL_DIRS = qml
-mt: INSTALL_FILES = mt.qml
-
 OTHER_FILES += \
+    mt.qml \
     forest.rc \
     $$QML_INFRA_FILES
 
 RC_FILE = forest.rc
-
-RESOURCES += \
-    forest.qrc

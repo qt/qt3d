@@ -3,7 +3,7 @@
 ** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/
 **
-** This file is part of the Qt3D examples of the Qt Toolkit.
+** This file is part of the QtQuick3D examples of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:BSD$
 ** You may use this file under the terms of the BSD license as follows:
@@ -40,37 +40,13 @@
 
 import QtQuick 2.0
 import Qt3D 1.0
+import Qt3D.Shapes 1.0
+import "qml"
 
-Viewport {
-    width: 640; height: 480
+Item {
+    width: 320
+    height: 480
 
-//! [1]
-    Item3D {
-        id: teapot
-        mesh: Mesh { source: "teapot.bez" }
-
-        effect: Effect {
-            material: china
-        }
-
-        Material {
-            id: china
-            ambientColor: "#c09680"
-            specularColor: "#3c3c3c"
-            shininess: 128
-        }
-//! [1]
-
-//! [3]
-        SequentialAnimation on y {
-            running: true
-            loops: Animation.Infinite
-            PauseAnimation { duration: 500 }
-            NumberAnimation { to : 1.0; duration: 300; easing.type: "OutQuad" }
-            NumberAnimation { to : 0.0; duration: 300; easing.type: "OutBounce" }
-        }
-//! [3]
-//! [2]
+    TestFullReferencing {
     }
-//! [2]
 }

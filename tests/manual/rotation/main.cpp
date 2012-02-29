@@ -39,6 +39,9 @@
 **
 ****************************************************************************/
 
-#include "../../shared/qmlres.h"
+#include <qmlres.h>
 
-QUICK3D_EXAMPLE_MAIN("qml/tst_rotation.qml")
+int main(int argc, char *argv[])
+{
+    return q_quick3d_main("qml/desktop.qml", "manual", argc, argv);
+}

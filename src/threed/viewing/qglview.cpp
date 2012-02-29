@@ -159,11 +159,11 @@ QT_BEGIN_NAMESPACE
     \row \li \c{-stereo-stretched-bt} \li StretchedBottomTop.
     \endtable
 
-    The option can also be supplied in the \c{Quick3D_OPTIONS} environment
+    The option can also be supplied in the \c{QT3D_OPTIONS} environment
     variable:
 
     \code
-    $ Quick3D_OPTIONS="-stereo-lr" ./cubehouse
+    $ QT3D_OPTIONS="-stereo-lr" ./cubehouse
     \endcode
 
     If the application sets the stereo type with setStereoType(),

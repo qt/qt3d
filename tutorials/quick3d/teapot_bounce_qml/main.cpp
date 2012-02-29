@@ -39,30 +39,9 @@
 **
 ****************************************************************************/
 
-#include <QGuiApplication>
-#include <QQuickView>
-
-#include "../qmlres.h"
+#include <qmlres.h>
 
 int main(int argc, char *argv[])
 {
-    QGuiApplication app(argc, argv);
-
-    QSurfaceFormat f;
-    f.setSamples(16);
-
-    QQuickView view;
-    view.setFormat(f);
-
-    QString qml = q_get_qmldir(QLatin1String("qml/bounce-teapot.qml"));
-    view.setSource(QUrl::fromLocalFile(qml));
-
-    if (QGuiApplication::arguments().contains(QLatin1String("-maximize")))
-        view.showMaximized();
-    else if (QGuiApplication::arguments().contains(QLatin1String("-fullscreen")))
-        view.showFullScreen();
-    else
-        view.show();
-
-    return app.exec();
+    return q_quick3d_main("qml/desktop.qml", "tutorials", argc, argv);
 }

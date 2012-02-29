@@ -12,8 +12,8 @@ HEADERS += \
     capsulemesh.h \
     point.h \
     cylindermesh.h \
-    spheremesh.h
-
+    spheremesh.h \
+    qmlres.h
 
 SOURCES += \
     qquickeffect.cpp \
@@ -24,5 +24,6 @@ SOURCES += \
     capsulemesh.cpp \
     point.cpp \
     cylindermesh.cpp \
-    spheremesh.cpp
+    spheremesh.cpp \
+    qmlres.cpp
 

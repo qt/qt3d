@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = basket_qml
 CONFIG += qt warn_on
-QT += qml quick
+QT += qml quick 3dquick
 
 SOURCES += main.cpp
 
@@ -21,16 +21,9 @@ QML_MESHES_FILES = \
 CATEGORY = examples
 include(../../../pkg.pri)
 
-INSTALL_DIRS = qml
-mt: INSTALL_FILES = mt.qml
-
 OTHER_FILES += \
     mt.qml \
     basket_qml.rc \
     $$QML_INFRA_FILES
 
 RC_FILE = basket_qml.rc
-
-RESOURCES += \
-    basket.qrc
-

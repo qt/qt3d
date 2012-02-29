@@ -1,6 +1,6 @@
 TEMPLATE = app
 TARGET = animations_qml
-QT += qml quick
+QT += qml quick 3dquick
 CONFIG += qt warn_on
 
 SOURCES += main.cpp
@@ -20,10 +20,8 @@ QML_INFRA_FILES = \
 CATEGORY = examples
 include(../../../pkg.pri)
 
-INSTALL_DIRS = qml
-mt: INSTALL_FILES = mt.qml
-
 OTHER_FILES += \
+    mt.qml \
     animations_qml.rc \
     $$QML_INFRA_FILES
 

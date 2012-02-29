@@ -38,6 +38,9 @@
 **
 ****************************************************************************/
 
-#include "../qmlres.h"
+#include <qmlres.h>
 
-QUICK3D_EXAMPLE_MAIN("qml/shader-tutorial.qml")
+int main(int argc, char *argv[])
+{
+    return q_quick3d_main("qml/desktop.qml", "tutorials", argc, argv);
+}

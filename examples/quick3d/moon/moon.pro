@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = moon
 CONFIG += qt warn_on
-QT += qml quick
+QT += qml quick 3dquick
 
 SOURCES += main.cpp
 
@@ -18,10 +18,8 @@ QML_INFRA_FILES = \
 CATEGORY = examples
 include(../../../pkg.pri)
 
-INSTALL_DIRS = qml
-mt: INSTALL_FILES = mt.qml
-
 OTHER_FILES += \
+    mt.qml \
     moon.rc \
     $$QML_INFRA_FILES
 

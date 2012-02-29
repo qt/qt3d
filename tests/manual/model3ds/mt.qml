@@ -47,6 +47,6 @@ Item {
     width: 320
     height: 480
 
-    Thing {
+    TestModel3ds {
     }
 }

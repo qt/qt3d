@@ -47,15 +47,13 @@ Rectangle {
     id: container
     property string text;
     property variant rotationAxis : Qt.vector3d(1,0,0)
-    property real defaultWidth: 220
-    property real defaultHeight: 150
     property variant rotation: Rotation3D {}
     
     border.width: 2
     border.color: "black"
     radius: 5
-    width: defaultWidth
-    height: defaultHeight
+    width: parent.width
+    height: parent.height
     Text {
         id: textItem
         wrapMode: "WordWrap"
@@ -76,7 +74,6 @@ Rectangle {
         Viewport {
             id: view
             anchors.fill: parent
-            picking: true
             camera: Camera { eye: Qt.vector3d(0,15,50)}
             Cube
             {
@@ -86,4 +83,5 @@ Rectangle {
             }
         }
     }
+    Component.onCompleted: container.visible = false;
 }

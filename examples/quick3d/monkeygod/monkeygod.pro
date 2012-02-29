@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = monkeygod
 CONFIG += qt warn_on
-QT += qml quick
+QT += qml quick 3dquick
 
 SOURCES += main.cpp
 

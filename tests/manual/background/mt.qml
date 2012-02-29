@@ -3,7 +3,7 @@
 ** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/
 **
-** This file is part of the Qt3D examples of the Qt Toolkit.
+** This file is part of the QtQuick3D examples of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:BSD$
 ** You may use this file under the terms of the BSD license as follows:
@@ -37,47 +37,16 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-//! [1]
+
 import QtQuick 2.0
 import Qt3D 1.0
+import Qt3D.Shapes 1.0
+import "qml"
 
-Viewport {
-    width: 640; height: 480
+Item {
+    width: 320
+    height: 480
 
-
-    TutorialTeapot {
-        id: teapot
-        effect: program
-        xRotation: 30
-    }
-
-    ShaderProgram {
-        id: program
-        texture: "textures/qtlogo.png"
-
-        vertexShader: "
-        attribute highp vec4 qt_Vertex;
-        uniform highp mat4 qt_ModelViewProjectionMatrix;
-
-        attribute highp vec4 qt_MultiTexCoord0;
-        varying highp vec4 texCoord;
-
-        void main(void)
-        {
-            texCoord = qt_MultiTexCoord0;
-            gl_Position = qt_ModelViewProjectionMatrix * qt_Vertex;
-        }
-        "
-        fragmentShader: "
-        varying highp vec4 texCoord;
-        uniform sampler2D qt_Texture0;
-
-        void main(void)
-        {
-            mediump vec4 textureColor = texture2D(qt_Texture0, texCoord.st);
-            gl_FragColor = textureColor;
-        }
-        "
+    TestBackground {
     }
 }
-//! [1]

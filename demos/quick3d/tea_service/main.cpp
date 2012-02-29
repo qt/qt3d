@@ -39,6 +39,9 @@
 **
 ****************************************************************************/
 
-#include "../qmlres.h"
+#include <qmlres.h>
 
-QUICK3D_MAIN("qml/desktop.qml")
+int main(int argc, char *argv[])
+{
+    return q_quick3d_main("qml/desktop.qml", "demos", argc, argv);
+}

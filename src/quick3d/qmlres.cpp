@@ -38,8 +38,7 @@
 **
 ****************************************************************************/
 
-#ifndef QMLRES_H
-#define QMLRES_H
+#include <qmlres.h>
 
 #include <QtCore/qdir.h>
 
@@ -48,6 +47,7 @@
 
 #include <QtCore/qdebug.h>
 
+// stringification hack
 #define internal_xstr(s) internal_str(s)
 #define internal_str(s) #s
 
@@ -57,20 +57,25 @@
     3D assets and textures.  The path depends on the platform, and (for
     some platforms) whether it was installed from a package or is being run
     in a development setting.
+
+    Note that currently this function is static to this file, is not exported
+    and should not be used or relied on anywhere else but in the examples
+    that ship with Qt3D.
 */
-static QString q_get_qmldir(const QString &name)
+static QString q_get_qmldir(const QString &name, const QString &category)
 {
     QString qml = name;
     // try for a Linux package install first
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
-#ifdef QT3D_USE_OPT
-    QDir pkgdir(QLatin1String("/opt/mt/applications/" internal_xstr(QT3D_USE_OPT)));
+#ifdef QT3D_QML_DEPLOY_DIR
+    QString pkgdirName(QLatin1String(internal_xstr(QT3D_QML_DEPLOY_DIR) ));
 #else
-    QDir pkgdir(QLatin1String("/usr/share/qt5/quick3d/examples"));
+    QString pkgdirName(QLatin1String("/usr/share/qt5/qt3d/"));
 #endif
 #else
-    QDir pkgdir(QLatin1String("/usr/share/qt4/quick3d/examples"));
+    QString pkgdirName(QLatin1String("/usr/share/qt4/qt3d/"));
 #endif
+    QDir pkgdir(pkgdirName.append(category));
     QString app = QCoreApplication::applicationFilePath();
     app = app.section(QDir::separator(), -1);
     if (pkgdir.cd(app) && pkgdir.exists())
@@ -101,7 +106,7 @@ static QString q_get_qmldir(const QString &name)
             {
                 app = QDir::toNativeSeparators(app);
                 //For windows platforms the "app" filepath should have the .exe extension removed.
-                const QString winExtension = ".exe";
+                const QString winExtension(QLatin1String(".exe"));
                 if (app.right(winExtension.length()) == winExtension) {
                     app = app.left(app.length() - winExtension.length());
                 }
@@ -109,16 +114,16 @@ static QString q_get_qmldir(const QString &name)
                 //Grab just the app name itself.
                 app = app.section(QDir::separator(), -1);
 
-                if (dir.cd(QLatin1String("examples")) && dir.cd(app) && dir.exists())
+                if (dir.cd(category) && dir.cd(app) && dir.exists())
                 {
                     qml = dir.filePath(qml);
                 }
                 else
                 {
-                    QString msg = QLatin1String("examples");
+                    QString msg = category;
                     msg += QDir::separator();
                     msg += app;
-                    qWarning("Expected %s directry with qml resources!", qPrintable(msg));
+                    qWarning("Expected %s directory with qml resources!", qPrintable(msg));
                 }
             }
         }
@@ -126,24 +131,32 @@ static QString q_get_qmldir(const QString &name)
     return qml;
 }
 
-#define QUICK3D_EXAMPLE_MAIN(file)                                                      \
-int main(int argc, char *argv[])                                                        \
-{                                                                                       \
-    QGuiApplication app(argc, argv);                                                    \
-    QSurfaceFormat f;                                                                   \
-    f.setSamples(16);                                                                   \
-    QQuickView view;                                                                       \
-    view.setFormat(f);                                                                  \
-    QString qml = q_get_qmldir(QLatin1String("qml/desktop.qml"));                       \
-    view.setSource(QUrl::fromLocalFile(qml));                                           \
-    if (QGuiApplication::arguments().contains(QLatin1String("-maximize")))              \
-        view.showMaximized();                                                           \
-    else if (QGuiApplication::arguments().contains(QLatin1String("-fullscreen")))       \
-        view.showFullScreen();                                                          \
-    else                                                                                \
-        view.show();                                                                    \
-    return app.exec();                                                                  \
-}                                                                                       \
+/*!
+    \internal
 
+    This is a standard main function for examples, demos and tutorials that
+    use a C++ wrapper for QML applications.  We do this because we cannot
+    use the standard wrapper from Qt Creator as we need to be sure we have a
+    suitable OpenGL render context.
 
-#endif // QMLRES_H
+    This is not for use outside the Qt3D project and will be removed once
+    the Qt5 is stable and deployment targets are better defined for Qt3D.
+*/
+int q_quick3d_main(const char *entryPointQmlFile, const char *category, int argc, char *argv[])
+{
+    QGuiApplication app(argc, argv);
+    QSurfaceFormat f;
+    f.setSamples(16);
+    QQuickView view;
+    view.setFormat(f);
+    QString qml = q_get_qmldir(QLatin1String(entryPointQmlFile), QLatin1String(category));
+    view.setSource(QUrl::fromLocalFile(qml));
+    if (QGuiApplication::arguments().contains(QLatin1String("-maximize")))
+        view.showMaximized();
+    else if (QGuiApplication::arguments().contains(QLatin1String("-fullscreen")))
+        view.showFullScreen();
+    else
+        view.show();
+    return app.exec();
+}
+

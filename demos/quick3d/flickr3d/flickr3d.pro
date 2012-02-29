@@ -1,6 +1,6 @@
 TEMPLATE = app
 TARGET = flickr3d
-QT += qml quick
+QT += qml quick 3dquick
 CONFIG += qt warn_on
 
 SOURCES += main.cpp
@@ -23,10 +23,8 @@ QML_INFRA_FILES = \
 CATEGORY = demos
 include(../../../pkg.pri)
 
-INSTALL_DIRS = qml
-mt: INSTALL_FILES = mt.qml
-
 OTHER_FILES += \
+    mt.qml \
     flickr3d.rc \
     $$QML_INFRA_FILES
 

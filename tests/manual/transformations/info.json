@@ -3,11 +3,11 @@
     "dict": {
         "Category": "application",
         "Runtime": "qml",
-        "DisplayName": "Thing",
+        "DisplayName": "Transformations",
         "Subcategory": "utility",
         "MainQML": "mt.qml",
         "Version": "1.0",
-        "Identifier": "com.nokia.qt3d.thing",
-        "Summary": "Thing QML Demo"
+        "Identifier": "com.nokia.qtquick3d.transformations",
+        "Summary": "Transformations QML Test"
     }
 }
