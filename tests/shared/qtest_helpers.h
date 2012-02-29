@@ -96,60 +96,32 @@ namespace QTest {
                                         const char *actual, const char *expected,
                                         const char *file, int line)
     {
-        if (t1 == t2)
-        {
-            return compare_helper(true, "COMPARE()", file, line);
-        }
-        else
-        {
-            return compare_helper(false, "Compared QVector4D values are not the same:",
-                                  toString(t1), toString(t2), actual, expected, file, line);
-        }
+        return compare_helper(t1 == t2, "Compared QVector4D values are not the same:",
+                              toString(t1), toString(t2), actual, expected, file, line);
     }
 
     template<> bool qCompare<QVector3D>(const QVector3D &t1, const QVector3D &t2,
                                         const char *actual, const char *expected,
                                         const char *file, int line)
     {
-        if (t1 == t2)
-        {
-            return compare_helper(true, "COMPARE()", file, line);
-        }
-        else
-        {
-            return compare_helper(false, "Compared QVector3D values are not the same:",
-                                  toString(t1), toString(t2), actual, expected, file, line);
-        }
+        return compare_helper(t1 == t2, "Compared QVector3D values are not the same:",
+                              toString(t1), toString(t2), actual, expected, file, line);
     }
 
     template<> bool qCompare<QVector2D>(const QVector2D &t1, const QVector2D &t2,
                                         const char *actual, const char *expected,
                                         const char *file, int line)
     {
-        if (t1 == t2)
-        {
-            return compare_helper(true, "COMPARE()", file, line);
-        }
-        else
-        {
-            return compare_helper(false, "Compared QVector2D values are not the same:",
-                                  toString(t1), toString(t2), actual, expected, file, line);
-        }
+        return compare_helper(t1 == t2, "Compared QVector2D values are not the same:",
+                              toString(t1), toString(t2), actual, expected, file, line);
     }
 
     template<> bool qCompare<QColor4ub>(const QColor4ub &t1, const QColor4ub &t2,
                                         const char *actual, const char *expected,
                                         const char *file, int line)
     {
-        if (t1 == t2)
-        {
-            return compare_helper(true, "COMPARE()", file, line);
-        }
-        else
-        {
-            return compare_helper(false, "Compared QColor4ub values are not the same:",
-                                  toString(t1), toString(t2), actual, expected, file, line);
-        }
+        return compare_helper(t1 == t2, "Compared QColor4ub values are not the same:",
+                              toString(t1), toString(t2), actual, expected, file, line);
     }
 
 };
