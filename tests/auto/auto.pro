@@ -1,3 +1,2 @@
 TEMPLATE = subdirs
-SUBDIRS = threed
-SUBDIRS += qml3d
+SUBDIRS = threed imports qml3d

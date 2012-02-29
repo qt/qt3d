@@ -148,7 +148,7 @@ CapsuleMeshPrivate::CapsuleMeshPrivate()
     : topNode(new QGLSceneNode)
     , currentCapsule(0)
     , radius(1.0f)
-    , length(1.0f)
+    , length(2.0f)
     , lod(5)
     , sceneSet(false)
 {
@@ -207,7 +207,6 @@ CapsuleMesh::~CapsuleMesh()
 */
 qreal CapsuleMesh::radius() const
 {
-    Q_D(const CapsuleMesh);
     return d->radius;
 }
 
@@ -217,7 +216,7 @@ void CapsuleMesh::setRadius(qreal radius)
         radius = 1.0f;
     if (d->radius != radius) {
         d->radius = radius;
-        createGeometry();
+        createGeometry(true);
         emit radiusChanged();
         emit dataChanged();
     }
@@ -240,7 +239,7 @@ void CapsuleMesh::setLength(qreal length)
         length = 1.0f;
     if (d->length != length) {
         d->length = length;
-        createGeometry();
+        createGeometry(true);
         emit lengthChanged();
         emit dataChanged();
     }
@@ -272,7 +271,7 @@ void CapsuleMesh::setLevelOfDetail(int lod)
     lod = qBound(1, lod, 10);
     if (d->lod != lod) {
         d->lod = lod;
-        createGeometry();
+        createGeometry(true);
         emit levelOfDetailChanged();
         emit dataChanged();
     }
@@ -291,16 +290,28 @@ void CapsuleMesh::draw(QGLPainter *painter, int branchId)
 /*!
     \internal
 */
-void CapsuleMesh::createGeometry()
+void CapsuleMesh::createGeometry(bool bForce)
 {
     // Create a new geometry node for this level of detail if necessary.
-    QGLSceneNode *geometry = d->lodGeometry.value(d->lod, 0);
+    QGLSceneNode *geometry = 0;
+    QMap<int, QGLSceneNode *>::iterator It = d->lodGeometry.find(d->lod);
+    if (It != d->lodGeometry.end())
+        geometry = *It;
+    if (geometry && bForce) {
+        if (d->currentCapsule)
+            d->topNode->removeNode(d->currentCapsule);
+        d->currentCapsule = 0;
+        d->lodGeometry.erase(It);
+        geometry->setParent(0);
+        delete geometry;
+        geometry = 0;
+    }
     if (!geometry) {
         QGLBuilder builder;
 
         // For the cylinder
-        int facets = 4 * 1 << d->lod;
-        int layers = 1 << d->lod;
+        int facets = 4 * (1 << d->lod);
+        int layers =     (1 << d->lod) - 1;
 
         // For the spheres
         int divisions = d->lod;
@@ -310,7 +321,7 @@ void CapsuleMesh::createGeometry()
         if (d->length < 2.0 * d->radius)
         {
             qWarning() << "Length of capsule must exceed its diameter"
-                          << " - correcting height.";
+                          << " - correcting length.";
             d->length = 2 * d->radius;
         }
 
@@ -344,6 +355,7 @@ void CapsuleMesh::createGeometry()
         builder.currentNode()->setLocalTransform(translateMatrix);
 
         geometry = builder.finalizedSceneNode();
+        geometry->setParent(this);
 
         d->lodGeometry.insert(d->lod, geometry);
     }

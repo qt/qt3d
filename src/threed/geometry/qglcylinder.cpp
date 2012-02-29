@@ -280,12 +280,11 @@ QT_BEGIN_NAMESPACE
 
 QGLBuilder& operator<<(QGLBuilder& builder, const QGLCylinder& cylinder)
 {
-  /*  ASSERT(cylinder.diameterBottom()>=0 &&
-           cylinder.diameterTop()>=0 &&
-           cylinder.height()>0);*/
+    int nCaps = (cylinder.topEnabled()?1:0) + (cylinder.baseEnabled()?1:0);
+    Q_ASSERT(cylinder.layers() >= 1 + nCaps);
 
     qreal numSlices = qreal(cylinder.slices());
-    qreal numLayers = qreal(cylinder.layers());
+    qreal numLayers = qreal(cylinder.layers() - nCaps); // minus top and base caps
     qreal topRadius = cylinder.diameterTop()/2.0;
     qreal bottomRadius = cylinder.diameterBottom()/2.0;
 
@@ -301,83 +300,90 @@ QGLBuilder& operator<<(QGLBuilder& builder, const QGLCylinder& cylinder)
 
     QGeometryData oldLayer;
 
-    //Generate vertices for the next layer of cylinder
-    for (int layerCount=0; layerCount<=cylinder.layers(); layerCount++) {
+    // layer 0: Top cap
+    {
         QGeometryData newLayer;
-
         //Generate a circle of vertices for this layer.
-        for (int i=0; i<cylinder.slices(); i++)
-        {
-            newLayer.appendVertex(QVector3D(radius * qCos(angle),
-                                            radius * qSin(angle),
-                                            height));
+        for (int i=0; i<cylinder.slices(); i++) {
+            newLayer.appendVertex(QVector3D(radius * qCos(angle), radius * qSin(angle), height));
             angle+=angleIncrement;
         }
         angle = 0;
+        QVector3D center = newLayer.center();
         // Generate texture coordinates (including an extra seam vertex for textures).
         newLayer.appendVertex(newLayer.vertex(0));
         newLayer.generateTextureCoordinates();
-        for (int i = 0; i < newLayer.count(); i++)  newLayer.texCoord(i).setY(textureHeight);
-
-        //Special cases for top end-cap
-        if (layerCount==0 && cylinder.topEnabled()) {
-            //Draw end-cap at top
+        for (int i = 0; i < newLayer.count(); ++i)
+            newLayer.texCoord(i).setY(textureHeight);
+        if (cylinder.topEnabled()) {
             QGeometryData top;
             builder.newSection();
             builder.currentNode()->setObjectName(QStringLiteral("Cylinder Top"));
-            top.appendVertex(newLayer.center());
+            top.appendVertex(center);
             top.appendVertexArray(newLayer.vertices());
             //Generate a circle of texture vertices for this layer.
             top.appendTexCoord(QVector2D(0.5,0.5));
-
-            for (int i=1; i<top.count(); i++)
-            {
+            for (int i=1; i<top.count(); i++) {
                 top.appendTexCoord(QVector2D(0.5*qCos(angle)+0.5, 0.5*qSin(angle)+0.5));
                 angle+=angleIncrement;
             }
             angle = 0;
             builder.addTriangulatedFace(top);
         }
-
-
-        //Add a new cylinder layer to the mesh
-        if (layerCount>0)
-        {
-            //If it's the first section, create a cylinder sides section
-            if (layerCount==1) {
-                builder.newSection();
-                builder.currentNode()->setObjectName(QStringLiteral("Cylinder Sides"));
-            }
-            builder.addQuadsInterleaved(oldLayer, newLayer);
-        }
-
-        //Special cases for bottom end-cap
-        if (layerCount==cylinder.layers()  && cylinder.baseEnabled()) {
-            //Draw end-cap at bottom
-            QGeometryData base;
-            builder.newSection();
-            builder.currentNode()->setObjectName(QStringLiteral("Cylinder Base"));
-            base.appendVertexArray(newLayer.vertices());
-            base.appendVertex(newLayer.center());
-            //Generate a circle of texture vertices for this layer.
-            for (int i=1; i<base.count(); i++)
-            {
-                base.appendTexCoord(QVector2D(0.5*qCos(angle)+0.5, 0.5*qSin(angle)+0.5));
-                angle+=angleIncrement;
-            }
-            base.appendTexCoord(QVector2D(0.5,0.5));
-            angle = 0;
-
-            //we need to reverse the above to draw it properly - windings!
-            builder.addTriangulatedFace(base.reversed());
-        }
-
-        //Keep the current layer for drawing the next segment of the cylinder
         oldLayer.clear();
         oldLayer.appendGeometry(newLayer);
+    }
+
+    // intermediate layers
+    for (int layerCount=0; layerCount<(cylinder.layers()-nCaps); ++layerCount) {
         radius+=radiusIncrement;
         height-=heightDecrement;
         textureHeight-=textureDecrement;
+        QGeometryData newLayer;
+        //Generate a circle of vertices for this layer.
+        for (int i=0; i<cylinder.slices(); ++i) {
+            newLayer.appendVertex(QVector3D(radius * qCos(angle), radius * qSin(angle), height));
+            angle+=angleIncrement;
+        }
+        angle = 0;
+        // Generate texture coordinates (including an extra seam vertex for textures).
+        newLayer.appendVertex(newLayer.vertex(0));
+        newLayer.generateTextureCoordinates();
+        for (int i = 0; i < newLayer.count(); ++i)
+            newLayer.texCoord(i).setY(textureHeight);
+
+        if (layerCount==0) {
+            builder.newSection();
+            builder.currentNode()->setObjectName(QStringLiteral("Cylinder Sides"));
+        }
+        builder.addQuadsInterleaved(oldLayer, newLayer);
+
+        oldLayer.clear();
+        oldLayer.appendGeometry(newLayer);
+    }
+
+    // last layer: Base cap
+    if (cylinder.baseEnabled()) {
+        builder.newSection();
+        builder.currentNode()->setObjectName(QStringLiteral("Cylinder Base"));
+        QGeometryData base;
+        {
+            QVector3DArray vvv = oldLayer.vertices();
+            for (int i=0; i<vvv.size()-1; ++i)
+                base.appendVertex(vvv.at(i));
+            QVector3D center = base.center();
+            base.appendVertex(vvv.at(0));
+            base.appendVertex(center);
+        }
+        //Generate a circle of texture vertices for this layer.
+        for (int i=1; i<base.count(); i++) {
+            base.appendTexCoord(QVector2D(0.5*qCos(angle)+0.5, 0.5*qSin(angle)+0.5));
+            angle+=angleIncrement;
+        }
+        base.appendTexCoord(QVector2D(0.5,0.5));
+        angle = 0;
+        //we need to reverse the above to draw it properly - windings!
+        builder.addTriangulatedFace(base.reversed());
     }
 
     return builder;

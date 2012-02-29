@@ -1,9 +1,9 @@
 /****************************************************************************
 **
-** Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/
 **
-** This file is part of the QtQuick3D module of the Qt Toolkit.
+** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
 ** GNU Lesser General Public License Usage
@@ -39,57 +39,59 @@
 **
 ****************************************************************************/
 
-#ifndef CAPSULE_H
-#define CAPSULE_H
+#include <QtTest/QtTest>
+#include <Qt3DQuick/point.h>
 
-#include "qdeclarativemesh.h"
-
-QT_BEGIN_HEADER
-
-QT_BEGIN_NAMESPACE
-
-class CapsuleMeshPrivate;
-
-class Q_QT3D_QUICK_EXPORT CapsuleMesh : public QDeclarativeMesh
+class tst_QPoint : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(qreal radius READ radius WRITE setRadius NOTIFY radiusChanged)
-    Q_PROPERTY(qreal length READ length WRITE setLength NOTIFY lengthChanged)
-    Q_PROPERTY(int levelOfDetail READ levelOfDetail WRITE setLevelOfDetail NOTIFY levelOfDetailChanged)
-
 public:
-    explicit CapsuleMesh(QObject *parent = 0);
-    ~CapsuleMesh();
+    tst_QPoint() {}
+    ~tst_QPoint() {}
 
-    qreal radius() const;
-    void setRadius(qreal radius);
-
-    qreal length() const;
-    void setLength(qreal length);
-
-    int levelOfDetail() const;
-    void setLevelOfDetail(int lod);
-
-    void draw(QGLPainter *painter, int branchId);
-
-Q_SIGNALS:
-    void radiusChanged();
-    void lengthChanged();
-    void levelOfDetailChanged();
-
-private:
-    void createGeometry(bool bForce = false);
-
-    Q_DISABLE_COPY(CapsuleMesh)
-    Q_DECLARE_PRIVATE(CapsuleMesh)
-
-    CapsuleMeshPrivate *d;
+private slots:
+    void test();
 };
 
-QT_END_NAMESPACE
+void tst_QPoint::test()
+{
+    Point point;
 
-QML_DECLARE_TYPE(CapsuleMesh)
+    {
+        QCOMPARE(point.pointSize(),1.0);
+        QCOMPARE(point.vertices().toList().count(),0);
+    }
 
-QT_END_HEADER
+    {
+        QSignalSpy spyPointSize(&point,SIGNAL(pointSizeChanged()));
+        point.setPointSize(5.0);
+        QCOMPARE(spyPointSize.size(), 1);
+        QCOMPARE(point.pointSize(),5.0);
+        point.setPointSize(5.0);
+        QCOMPARE(spyPointSize.size(), 1);
+    }
 
-#endif // CAPSULE_H
+    {
+        QSignalSpy spyVertices(&point,SIGNAL(verticesChanged()));
+        QVariantList vertices;
+        vertices.append(QVariant(qreal(1.0)));
+        vertices.append(QVariant(qreal(2.0)));
+        vertices.append(QVariant(qreal(3.0)));
+        point.setVertices(vertices);
+        QCOMPARE(spyVertices.size(), 1);
+
+        QVariantList readVertices = point.vertices().toList();
+        QCOMPARE(readVertices.count(),3);
+        QCOMPARE(readVertices.at(0).toReal(),1.0);
+        QCOMPARE(readVertices.at(1).toReal(),2.0);
+        QCOMPARE(readVertices.at(2).toReal(),3.0);
+
+        point.setVertices(vertices);
+        QCOMPARE(spyVertices.size(), 2);
+    }
+
+}
+
+QTEST_APPLESS_MAIN(tst_QPoint)
+
+#include "tst_qpoint.moc"

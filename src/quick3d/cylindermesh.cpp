@@ -201,7 +201,6 @@ CylinderMesh::~CylinderMesh()
 */
 qreal CylinderMesh::radius() const
 {
-    Q_D(const CylinderMesh);
     return d->radius;
 }
 
@@ -301,8 +300,8 @@ void CylinderMesh::draw(QGLPainter *painter, int branchId)
 */
 void CylinderMesh::createGeometry()
 {
-    int facets = 4 * 1 << d->lod;
-    int layers = 1 << d->lod;
+    int facets = 4 * (1 << d->lod);
+    int layers = 1 + (1 << d->lod);
 
     // Create a new geometry node for this level of detail if necessary.
     QGLSceneNode *geometry = d->lodGeometry.value(d->lod, 0);
