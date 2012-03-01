@@ -57,9 +57,9 @@ QT_BEGIN_NAMESPACE
     behavior of the class is undefined.
 
     A ray can be thought of as a one-dimensional co-ordinate system.
-    If the co-ordinate is \bold t then the origin() point is at
-    \bold t = 0, the point origin() + direction() is at \bold t = 1,
-    and the point origin() - direction() is at \bold t = -1.
+    If the co-ordinate is \b t then the origin() point is at
+    \b t = 0, the point origin() + direction() is at \b t = 1,
+    and the point origin() - direction() is at \b t = -1.
     The point() method can be used to obtain the position of a point
     within this one-dimensional co-ordinate system.  The fromPoint()
     method can be used to convert a point into a value in this

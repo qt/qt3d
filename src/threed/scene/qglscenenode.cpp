@@ -108,20 +108,20 @@ QT_BEGIN_NAMESPACE
     pointer based material functions are convenient and intuitive, saving the
     trouble of adding the material pointer to the correct palette:
     \list
-        \i material()
-        \i setMaterial()
-        \i backMaterial()
-        \i setBackMaterial()
+        \li material()
+        \li setMaterial()
+        \li backMaterial()
+        \li setBackMaterial()
     \endlist
 
     For more complex applications; for example building model loaders, or for
     larger scenes; where you need to explicitly manage materials via a palette,
     use the index based functions:
     \list
-        \i materialIndex()
-        \i setMaterialIndex()
-        \i backMaterialIndex()
-        \i setBackMaterialIndex()
+        \li materialIndex()
+        \li setMaterialIndex()
+        \li backMaterialIndex()
+        \li setBackMaterialIndex()
     \endlist
 
     The behaviour of both with respect to faces is the same - if a material()
@@ -279,10 +279,10 @@ QGLSceneNode::Options QGLSceneNode::options() const
     nodes in the mesh.
 
     \list
-    \o NoOptions Use no options.  This is the default.
-    \o CullBoundingBox Use the camera position to cull the whole node if possible.
-    \o ViewNormals Turn on normals debugging mode visually depict lighting normals.
-    \o ReportCulling Send a signal when an object is displayed or culled.
+    \li NoOptions Use no options.  This is the default.
+    \li CullBoundingBox Use the camera position to cull the whole node if possible.
+    \li ViewNormals Turn on normals debugging mode visually depict lighting normals.
+    \li ReportCulling Send a signal when an object is displayed or culled.
     \endlist
 */
 
@@ -934,7 +934,7 @@ void QGLSceneNode::setBackMaterialIndex(int material)
 
     If setting this property, when no palette exists one is created, as a
     convenience - but this is suitable only for experimental code and for
-    \bold{very small numbers of nodes}.  In debug mode a warning is
+    \b{very small numbers of nodes}.  In debug mode a warning is
     printed in this case.
 
     Generally one common palette should be created, and set on each node.  This
@@ -1272,7 +1272,7 @@ const QGLMaterial *QGLSceneNode::setPainterMaterial(int material, QGLPainter *pa
     draw function below.
 
     \list
-    \o calls draw(start, count) on this nodes geometry object (if any)
+    \li calls draw(start, count) on this nodes geometry object (if any)
     \endlist
 
     Override this function to perform special processing on this node,
@@ -1311,17 +1311,17 @@ void QGLSceneNode::drawGeometry(QGLPainter *painter)
 
     In detail this function:
     \list
-    \o ensures the effect specified by effect() is current on the painter
-    \o sets the nodes materials onto the painter, if valid materials are present
-    \o moves the model-view to the x, y, z position
-    \o applies any local transforms() that may be set for this node
-    \o calls draw() for all the child nodes
-    \o calls draw(start, count) on this nodes geometry object (if any)
-    \o restores the geometry's original materials if they were changed
-    \o restores the model-view matrix if any local transform was applied
+    \li ensures the effect specified by effect() is current on the painter
+    \li sets the nodes materials onto the painter, if valid materials are present
+    \li moves the model-view to the x, y, z position
+    \li applies any local transforms() that may be set for this node
+    \li calls draw() for all the child nodes
+    \li calls draw(start, count) on this nodes geometry object (if any)
+    \li restores the geometry's original materials if they were changed
+    \li restores the model-view matrix if any local transform was applied
     \endlist
 
-    Note that the draw() method does \bold not restore the effect.  If the first
+    Note that the draw() method does \b not restore the effect.  If the first
     step above results in a change to the current QGL::Standard effect then it
     will remain set to that effect.  In general any painting method should
     ensure the effect it requires is current.

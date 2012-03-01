@@ -33,29 +33,29 @@
     Building 3D applications in QML with Qt3D:
 
     \list
-    \o \l{Teapot Example in QML}{Hello Teapot} in Qt3D
-    \o \l{Basket Example#Basket in QML}{Basket} in Qt3D
-    \o \l{Object Effects}{Cube} in Qt3D
-    \o \l{Monkey God in QML}{Monkey God} in Qt3D
-    \o \l{Tea Service Demo in QML}{Tea Service} in Qt3D
-    \o \l{Using GLSL shaders in QML}
+    \li \l{Teapot Example in QML}{Hello Teapot} in Qt3D
+    \li \l{Basket Example#Basket in QML}{Basket} in Qt3D
+    \li \l{Object Effects}{Cube} in Qt3D
+    \li \l{Monkey God in QML}{Monkey God} in Qt3D
+    \li \l{Tea Service Demo in QML}{Tea Service} in Qt3D
+    \li \l{Using GLSL shaders in QML}
     \endlist
 
     Using C++ to extend QML Qt3D and to build applications with Qt3D:
 
     \list
-    \o \l{Teapot Example}{Hello Teapot} - drawing a basic object in 3D.
-    \o \l{Object Effects#Cube in QML}{Cube in C++} - applying transformations and materials to objects.
-    \o \l{qt3d/nesting}{Nesting} - drawing into framebuffer objects.
-    \o \l{Loading a 3DS model with Qt3D}{Penguin} - loading a 3DS model with Qt3D.
-    \o \l{qt3d/pageflip}{Page Flip} - using shaders to combine textures.
-    \o \l{qt3d/shapes}{Shapes} - paints all of the basic OpenGL shapes.
+    \li \l{Teapot Example}{Hello Teapot} - drawing a basic object in 3D.
+    \li \l{Object Effects#Cube in QML}{Cube in C++} - applying transformations and materials to objects.
+    \li \l{qt3d/nesting}{Nesting} - drawing into framebuffer objects.
+    \li \l{Loading a 3DS model with Qt3D}{Penguin} - loading a 3DS model with Qt3D.
+    \li \l{qt3d/pageflip}{Page Flip} - using shaders to combine textures.
+    \li \l{qt3d/shapes}{Shapes} - paints all of the basic OpenGL shapes.
     \endlist
 
     Other topics:
 
     \list
-    \o \l{Scene Format Plugin}{Writing a scene format plug-in for Qt3D}
+    \li \l{Scene Format Plugin}{Writing a scene format plug-in for Qt3D}
     \endlist
 
     \l{index.html}{Return to the main Qt3D page}.

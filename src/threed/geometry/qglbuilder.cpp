@@ -237,7 +237,7 @@ QT_BEGIN_NAMESPACE
     triangle data, without using any of QGLBuilder's processing.
 
     To do this ensure that indices are placed in the QGeometryData passed to
-    the addTriangles() function, and this will trigger \bold{raw triangle} mode.
+    the addTriangles() function, and this will trigger \b{raw triangle} mode.
 
     When adding triangles in this way ensure that all appropriate values
     have been correctly set, and that the normals, indices and other data
@@ -534,12 +534,12 @@ void QGLBuilderPrivate::addTriangle(int i, int j, int k,
     that triangle is skipped.  Supplying normals suppresses this behaviour
     (and means any degenerate triangles will be added to the geometry).
 
-    \bold{Raw Triangle Mode}
+    \b{Raw Triangle Mode}
 
     If \a triangles has indices specified then no processing of any kind is
     done and all the geometry is simply dumped in to the builder.
 
-    This \bold{raw triangle} mode is for advanced use, and it is assumed that
+    This \b{raw triangle} mode is for advanced use, and it is assumed that
     the user knows what they are doing, in particular that the indices
     supplied are correct, and normals are supplied and correct.
 
@@ -797,7 +797,7 @@ void QGLBuilder::addQuadStrip(const QGeometryData &strip)
     doing anything.
 
     This function provides functionality similar to the OpenGL mode GL_POLYGON,
-    except it divides the face into sub-faces around a \bold{central point}.
+    except it divides the face into sub-faces around a \b{central point}.
     The center and perimeter vertices must lie in the same plane (unlike
     triangle fan).  If they do not normals will be incorrectly calculated.
 
@@ -911,7 +911,7 @@ void QGLBuilder::addTriangulatedFace(const QGeometryData &face)
     builder.addTriangulatedFace(top);
     builder.addTriangulatedFace(bottom.reversed());
     \endcode
-    The \a bottom QGeometryData must be \bold{reversed} so that the correct
+    The \a bottom QGeometryData must be \b{reversed} so that the correct
     winding for an outward facing polygon is obtained.
 */
 void QGLBuilder::addQuadsInterleaved(const QGeometryData &top,
@@ -1074,7 +1074,7 @@ static inline void warnIgnore(int secCount, QGLSection *s, int vertCount, int no
 
     This method must be called exactly once after building the scene.
 
-    \bold{Calling code takes ownership of the scene.}  In particular take care
+    \b{Calling code takes ownership of the scene.}  In particular take care
     to either explicitly destroy the scene when it is no longer needed - as shown
     above.
 
@@ -1111,11 +1111,11 @@ static inline void warnIgnore(int secCount, QGLSection *s, int vertCount, int no
 
     This function does the following:
     \list
-        \o packs all geometry data from sections into QGLSceneNode instances
-        \o recalculates QGLSceneNode start() and count() for the scene
-        \o deletes all QGLBuilder's internal data structures
-        \o returns the top level scene node that references the geometry
-        \o sets the internal pointer to the top level scene node to NULL
+        \li packs all geometry data from sections into QGLSceneNode instances
+        \li recalculates QGLSceneNode start() and count() for the scene
+        \li deletes all QGLBuilder's internal data structures
+        \li returns the top level scene node that references the geometry
+        \li sets the internal pointer to the top level scene node to NULL
     \endlist
 
     \sa sceneNode()

@@ -80,18 +80,18 @@ QT_BEGIN_NAMESPACE
     of the following types:
 
     \list
-    \o Camera objects define a viewing position in world-coordinates and a
+    \li Camera objects define a viewing position in world-coordinates and a
        projection that maps 3D world co-ordinates to 2D screen co-ordinates.
        Camera objects should inherit from QGLCamera.
-    \o Main objects designate the major elements of the scene besides
+    \li Main objects designate the major elements of the scene besides
        cameras, lights, and effects.  Usually they inherit from QGLSceneNode.
-    \o Light objects define positions and parameters for lighting the scene.
+    \li Light objects define positions and parameters for lighting the scene.
        Light objects should inherit from QGLLightParameters.
-    \o Effect objects define materials, shaders, and textures for use in
+    \li Effect objects define materials, shaders, and textures for use in
        rendering the surface of objects.  Normally effects are activated
        automatically when main objects are drawn.  But effects can be used
        independently if the 3D format is acting as a library of effects.
-    \o Mesh objects define geometry information independently of effects.
+    \li Mesh objects define geometry information independently of effects.
        Normally meshes are drawn automatically with an appropriate effect
        when main objects are drawn.  But meshes can be used independently
        if the 3D format is acting as a library of meshes.  Mesh objects
@@ -342,11 +342,11 @@ Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader,
     and its meaning and format depend on the loader.  For example the
     format string for the .3ds loader accepts the following options:
     \list
-    \o ForceSmooth - average normals for a smooth appearance
-    \o ForceFaceted - per face normals for a faceted appearance
-    \o NativeIndices - map native indices for poorly smoothed models
-    \o CorrectNormals - fix inverted normals on models with bad windings
-    \o CorrectAcute - fix normals on models that smooth acute angles
+    \li ForceSmooth - average normals for a smooth appearance
+    \li ForceFaceted - per face normals for a faceted appearance
+    \li NativeIndices - map native indices for poorly smoothed models
+    \li CorrectNormals - fix inverted normals on models with bad windings
+    \li CorrectAcute - fix normals on models that smooth acute angles
     \endlist
 
     The options may be specified globally for the whole model, or just

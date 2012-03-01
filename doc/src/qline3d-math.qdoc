@@ -36,35 +36,35 @@
 
     The math classes provide basic operations in 3-space useful for graphics:
     \list
-    \o QLine3D
-    \o QLineSegment3D
-    \o QPlane3D
-    \o QTriangle3D
-    \o QBox3D
+    \li QLine3D
+    \li QLineSegment3D
+    \li QPlane3D
+    \li QTriangle3D
+    \li QBox3D
     \endlist
 
     This is a basic discussion of the mathematics behind these classes.
 
     \section1 Vectors and Points
 
-    There are two important building blocks in 3D: the \bold vector and the
-    \bold point in cartesian 3-space.
+    There are two important building blocks in 3D: the \b vector and the
+    \b point in cartesian 3-space.
 
-    Both are comprised by 3 values in \bold R, the real numbers.
+    Both are comprised by 3 values in \b R, the real numbers.
 
     So programatically in Qt both vectors and points are stored in a QVector3D instance,
     since that class can store 3 qreal values.
 
     But there are important differences between points and vectors:
     \list
-    \o a point \bold P is a 3D \e location, and makes sense in terms of a 3D cartesian
+    \li a point \b P is a 3D \e location, and makes sense in terms of a 3D cartesian
         coordinate system.  A real-world example is a map-location given in terms
         of a map cross-reference.  The location has no inherent magnitude, unless you
         provide another location and find the distance between the two.
-    \o a vector \bold v is a 3D \e direction and magnitude.  It makes no sense to talk
+    \li a vector \b v is a 3D \e direction and magnitude.  It makes no sense to talk
         about a vector being located somewhere.  A vector can represent for example
         some directions like "go 3 north-west 3 kilometers", but this can be done from
-        \bold {anywhere on the map} - it is not anchored like the point is.
+        \b {anywhere on the map} - it is not anchored like the point is.
     \endlist
 
     In 3D math points and vectors are represented by column vectors:
@@ -134,26 +134,26 @@
     The QVector3D class provides two very useful functions - the vector dot-product and the
     vector cross-product.  Here's a quick review of their uses:
     \list
-    \o QVector3D::crossProduct(const QVector3D &, const QVector3D &)
+    \li QVector3D::crossProduct(const QVector3D &, const QVector3D &)
         \list
-        \o The cross-product of two vectors produces a \e vector as a result and is
-        written \bold w = \bold u x \bold v. The result \bold w is perpendicular to both
-        \bold u and \bold v.  Consider a plane N containing point P, with the tails of \bold u
-        and \bold v at P, and both lying in N, then \bold u x \bold v is a normal to N.
+        \li The cross-product of two vectors produces a \e vector as a result and is
+        written \b w = \b u x \b v. The result \b w is perpendicular to both
+        \b u and \b v.  Consider a plane N containing point P, with the tails of \b u
+        and \b v at P, and both lying in N, then \b u x \b v is a normal to N.
         \endlist
-    \o QVector3D::dotProduct(const QVector3D &, const QVector3D &)
+    \li QVector3D::dotProduct(const QVector3D &, const QVector3D &)
         \list
-        \o The dot-product of two vectors produces a \e scalar as a result and is written
-        \c{t = \bold u . \bold v}.  The result t = |u| |v| cos(A), where A is the angle
-        between u and v.  When \bold u and \bold v have magnitude 1, they are called
-        unit vectors, and \bold u . \bold v = cos(A).
+        \li The dot-product of two vectors produces a \e scalar as a result and is written
+        \c{t = \b u . \b v}.  The result t = |u| |v| cos(A), where A is the angle
+        between u and v.  When \b u and \b v have magnitude 1, they are called
+        unit vectors, and \b u . \b v = cos(A).
         \endlist
     \endlist
 
     A vector has the following operations defined on it in 3-space
     \list
-    \o multiplication by a scalar, eg v' = s * \bold v
-    \o addition with another vector, eg \bold u = \bold v + \bold w
+    \li multiplication by a scalar, eg v' = s * \b v
+    \li addition with another vector, eg \b u = \b v + \b w
     \endlist
 
     Multiplying and dividing by vectors is not defined - these operations make no sense in
@@ -177,10 +177,10 @@
     This representation turns out to make many types of calculations required for 3D graphics
     very straight forward.
 
-    For example to find if a point P lies on a plane take the vector \bold p from the point to
-    the planes origin, and find the dot-product with the planes normal \bold n.
+    For example to find if a point P lies on a plane take the vector \b p from the point to
+    the planes origin, and find the dot-product with the planes normal \b n.
 
-    If \bold {p . n} is zero, then \bold p is perpendicular to \bold n, and P is on the plane.
+    If \b {p . n} is zero, then \b p is perpendicular to \b n, and P is on the plane.
 
     \target vector-and-point-arithmetic
     \section1 Vector and Point Arithmetic
@@ -193,14 +193,14 @@
 
     \image line-int-1.png
 
-    If the two lines intersect then P(t) == Q(s) and for some ordered pair \bold s, \bold t
+    If the two lines intersect then P(t) == Q(s) and for some ordered pair \b s, \b t
     is a solution to the equations for both lines.
 
-    The aim is to solve for \bold s and \bold t.
+    The aim is to solve for \b s and \b t.
 
     The equations can be rearranged algebraically as shown in the last line above.
 
-    But since dividing by a vector is not defined, tempting options such as dividing by \bold v
+    But since dividing by a vector is not defined, tempting options such as dividing by \b v
     to solve for t are not possible.  In the implementation the next step is breaking the points
     and vectors down into their x, y and z components giving 3 simultaneous equations:
 

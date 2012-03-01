@@ -35,14 +35,14 @@ been difficult.  The usual sequence of operations for a drawing request
 in OpenGL consists of:
 
 \list
-    \o Select an appropriate shader program, or fixed-function pipeline
+    \li Select an appropriate shader program, or fixed-function pipeline
        rendering options.
-    \o Set or adjust the current projection and modelview matrices.
-    \o Specify vertex, normal, texture co-ordinate, and other attribute arrays.
-    \o Specify textures, variables, and other rendering objects needed
+    \li Set or adjust the current projection and modelview matrices.
+    \li Specify vertex, normal, texture co-ordinate, and other attribute arrays.
+    \li Specify textures, variables, and other rendering objects needed
        by the shader program.
-    \o Draw fragments: triangles, triangle fans, quads, etc.
-    \o Disable the arrays, textures, and modes that were selected.
+    \li Draw fragments: triangles, triangle fans, quads, etc.
+    \li Disable the arrays, textures, and modes that were selected.
 \endlist
 
 Desktop OpenGL, OpenGL/ES 1.1, and OpenGL/ES 2.0 all posses functionality

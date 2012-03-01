@@ -89,24 +89,24 @@ QT_BEGIN_NAMESPACE
     attributes that can be provided via QGLPainter::setVertexBundle():
 
     \table
-    \header \o Shader Variable \o Mesh Attribute \o Purpose
-    \row \o \c qt_Vertex \o QGL::Position
-         \o The primary position of the vertex.
-    \row \o \c qt_Normal \o QGL::Normal
-         \o The normal at each vertex, for lit material effects.
-    \row \o \c qt_Color \o QGL::Color
-         \o The color at each vertex, for per-vertex color effects.
-    \row \o \c qt_MultiTexCoord0 \o QGL::TextureCoord0
-         \o The texture co-ordinate at each vertex for texture unit 0.
-    \row \o \c qt_MultiTexCoord1 \o QGL::TextureCoord1
-         \o Secondary texture co-ordinate at each vertex.
-    \row \o \c qt_MultiTexCoord2 \o QGL::TextureCoord2
-         \o Tertiary texture co-ordinate at each vertex.
-    \row \o \c qt_Custom0 \o QGL::CustomVertex0
-         \o First custom vertex attribute that can be used for any
+    \header \li Shader Variable \li Mesh Attribute \li Purpose
+    \row \li \c qt_Vertex \li QGL::Position
+         \li The primary position of the vertex.
+    \row \li \c qt_Normal \li QGL::Normal
+         \li The normal at each vertex, for lit material effects.
+    \row \li \c qt_Color \li QGL::Color
+         \li The color at each vertex, for per-vertex color effects.
+    \row \li \c qt_MultiTexCoord0 \li QGL::TextureCoord0
+         \li The texture co-ordinate at each vertex for texture unit 0.
+    \row \li \c qt_MultiTexCoord1 \li QGL::TextureCoord1
+         \li Secondary texture co-ordinate at each vertex.
+    \row \li \c qt_MultiTexCoord2 \li QGL::TextureCoord2
+         \li Tertiary texture co-ordinate at each vertex.
+    \row \li \c qt_Custom0 \li QGL::CustomVertex0
+         \li First custom vertex attribute that can be used for any
             user-defined purpose.
-    \row \o \c qt_Custom1 \o QGL::CustomVertex1
-         \o Second custom vertex attribute that can be used for any
+    \row \li \c qt_Custom1 \li QGL::CustomVertex1
+         \li Second custom vertex attribute that can be used for any
             user-defined purpose.
     \endtable
 
@@ -132,31 +132,31 @@ QT_BEGIN_NAMESPACE
     common values from the QGLPainter environment:
 
     \table
-    \header \o Shader Variable \o Purpose
-    \row \o \c qt_ModelViewProjectionMatrix
-         \o Combination of the modelview and projection matrices into a
+    \header \li Shader Variable \li Purpose
+    \row \li \c qt_ModelViewProjectionMatrix
+         \li Combination of the modelview and projection matrices into a
             single 4x4 matrix.
-    \row \o \c qt_ModelViewMatrix
-         \o Modelview matrix without the projection.  This is typically
+    \row \li \c qt_ModelViewMatrix
+         \li Modelview matrix without the projection.  This is typically
             used for performing calculations in eye co-ordinates.
-    \row \o \c qt_ProjectionMatrix
-         \o Projection matrix without the modelview.
-    \row \o \c qt_NormalMatrix
-         \o Normal matrix, which is the transpose of the inverse of the
+    \row \li \c qt_ProjectionMatrix
+         \li Projection matrix without the modelview.
+    \row \li \c qt_NormalMatrix
+         \li Normal matrix, which is the transpose of the inverse of the
             top-left 3x3 part of the modelview matrix.  This is typically
             used in lighting calcuations to transform \c qt_Normal.
-    \row \o \c qt_WorldMatrix
-         \o Modelview matrix without the eye position and orientation
+    \row \li \c qt_WorldMatrix
+         \li Modelview matrix without the eye position and orientation
             component.  See QGLPainter::worldMatrix() for further
             information.
-    \row \o \c qt_Texture0
-         \o Sampler corresponding to the texture on unit 0.
-    \row \o \c qt_Texture1
-         \o Sampler corresponding to the texture on unit 1.
-    \row \o \c qt_Texture2
-         \o Sampler corresponding to the texture on unit 2.
-    \row \o \c qt_Color
-         \o Set to the value of the QGLPainter::color() property.
+    \row \li \c qt_Texture0
+         \li Sampler corresponding to the texture on unit 0.
+    \row \li \c qt_Texture1
+         \li Sampler corresponding to the texture on unit 1.
+    \row \li \c qt_Texture2
+         \li Sampler corresponding to the texture on unit 2.
+    \row \li \c qt_Color
+         \li Set to the value of the QGLPainter::color() property.
             This is typically used for flat-color shaders that do
             not involve lighting.  Note that this is different from
             the \c qt_Color attribute, which provides per-vertex colors.
@@ -276,15 +276,15 @@ QT_BEGIN_NAMESPACE
     are recommended for texture co-ordinates:
 
     \table
-    \header \o Varying Variable \o Purpose
-    \row \o \c qt_TexCoord0
-         \o Texture coordinate for unit 0, copied from the \c qt_MultiTexCoord0
+    \header \li Varying Variable \li Purpose
+    \row \li \c qt_TexCoord0
+         \li Texture coordinate for unit 0, copied from the \c qt_MultiTexCoord0
             attribute.
-    \row \o \c qt_TexCoord1
-         \o Texture coordinate for unit 1, copied from the \c qt_MultiTexCoord1
+    \row \li \c qt_TexCoord1
+         \li Texture coordinate for unit 1, copied from the \c qt_MultiTexCoord1
             attribute.
-    \row \o \c qt_TexCoord2
-         \o Texture coordinate for unit 2, copied from the \c qt_MultiTexCoord2
+    \row \li \c qt_TexCoord2
+         \li Texture coordinate for unit 2, copied from the \c qt_MultiTexCoord2
             attribute.
     \endtable
 

@@ -60,32 +60,32 @@ QT_BEGIN_NAMESPACE
 
     \table
         \header
-            \o QGL::VertexAttribute
-            \o QGeometryData functions
+            \li QGL::VertexAttribute
+            \li QGeometryData functions
         \row
-            \o QGL::Position
-            \o appendVertex(), vertex(), vertices()
+            \li QGL::Position
+            \li appendVertex(), vertex(), vertices()
         \row
-            \o QGL::Normal
-            \o appendNormal(), normal(), normals()
+            \li QGL::Normal
+            \li appendNormal(), normal(), normals()
         \row
-            \o QGL::Color
-            \o appendColor(), colorRef(), colors()
+            \li QGL::Color
+            \li appendColor(), colorRef(), colors()
         \row
-            \o QGL::TextureCoord0 - QGL::TextureCoord3
-            \o appendTexCoord(), texCoordRef(), texCoords()
+            \li QGL::TextureCoord0 - QGL::TextureCoord3
+            \li appendTexCoord(), texCoordRef(), texCoords()
         \row
-            \o QGL::CustomVertex0 - QGL::CustomVertex1, QGL::UserVertex
-            \o appendAttribute(), vector3DAttribute(), attributes()
+            \li QGL::CustomVertex0 - QGL::CustomVertex1, QGL::UserVertex
+            \li appendAttribute(), vector3DAttribute(), attributes()
      \endtable
 
      Additionally the class provides the following features:
      \list
-        \o appendVertex() for adding a QLogicalVertex()
-        \o logicalVertexAt() for return the data at an index as a QLogicalVertex()
-        \o hasField() to find if a particular data type is present
-        \o normalizeNormals() to reduce all normal vectors to unit length
-        \o boundingBox() to find the bounds of the geometry
+        \li appendVertex() for adding a QLogicalVertex()
+        \li logicalVertexAt() for return the data at an index as a QLogicalVertex()
+        \li hasField() to find if a particular data type is present
+        \li normalizeNormals() to reduce all normal vectors to unit length
+        \li boundingBox() to find the bounds of the geometry
      \endlist
 
      It is up to the user of a QGeometryData instance to ensure that the

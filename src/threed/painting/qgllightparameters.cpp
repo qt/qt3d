@@ -59,9 +59,9 @@ QT_BEGIN_NAMESPACE
     The ambient, diffuse and specular components of the light can be controlled for by
     colour, and are set by the following functions:
     \list
-    \o setAmbientColor()
-    \o setDiffuseColor()
-    \o setSpecularColor()
+    \li setAmbientColor()
+    \li setDiffuseColor()
+    \li setSpecularColor()
     \endlist
     Other than changing intensity by using darker color values, see below for how to
     change the intensity of the light with distance from the lit object.
@@ -70,7 +70,7 @@ QT_BEGIN_NAMESPACE
     enumeration QGLLightParameters::LightType.  By default a light source is directional.
 
     A directional light source is infinitely distant, such that its rays are all
-    parallel, to a direction \bold vector.  This vector is set by the setDirection()
+    parallel, to a direction \b vector.  This vector is set by the setDirection()
     function.  If the light source is not directional when setDirection() is called, its
     type is changed to Directional.  Directional light sources model real world light
     sources like the sun.  Such light sources are not located at any particular point
@@ -82,7 +82,7 @@ QT_BEGIN_NAMESPACE
     See \l {3D Math Basis} for a fuller explanation of this.
 
     Calling the setPosition() function defines the light source to be located at a given
-    \bold point, a finite distance from the lit object.  If the light source is not
+    \b point, a finite distance from the lit object.  If the light source is not
     positional when this function is called its type is changed to Positional.
 
     A positional light source models a real world lamp, such as a light-bulb or
@@ -107,15 +107,15 @@ QT_BEGIN_NAMESPACE
     factor which is a multiplier of the light source, determining its intensity at the
     lit object.  The terms in the denominator are:
     \list
-    \o constantAttenuation() - default 1.0
+    \li constantAttenuation() - default 1.0
     \raw HTML
     k<sub>c</sub>
     \endraw
-    \o linearAttenuation() - default 0.0
+    \li linearAttenuation() - default 0.0
     \raw HTML
     k<sub>l</sub>
     \endraw
-    \o quadraticAttenuation() - default 0.0
+    \li quadraticAttenuation() - default 0.0
     \raw HTML
     k<sub>q</sub>
     \endraw

@@ -131,7 +131,7 @@
     into a tree like structure.  In this case they may wish to interact with,
     animate, or otherwise modify individual sub-nodes of a mesh.
 
-    Item3D leverages the existing \bold {Qt Object Model} in order to allow QML/3d users
+    Item3D leverages the existing \b {Qt Object Model} in order to allow QML/3d users
     this type of control over their 3D items.
 
     Consider the following QML script:
@@ -1022,11 +1022,11 @@ QDeclarativeListProperty<QObject> QDeclarativeItem3D::data()
     carried out in a number of ways:
 
     \list
-    \o CullDisabled Do not use culling.  This is the default value.
-    \o CullFrontFaces Cull the front faces of the object.
-    \o CullBackFaces Cull the back faces of the object.
-    \o CullAllFaces Cull all faces of the object.
-    \o CullClockwise Cull faces based on clockwise winding of vertices.
+    \li CullDisabled Do not use culling.  This is the default value.
+    \li CullFrontFaces Cull the front faces of the object.
+    \li CullBackFaces Cull the back faces of the object.
+    \li CullAllFaces Cull all faces of the object.
+    \li CullClockwise Cull faces based on clockwise winding of vertices.
     \endlist
 */
 QDeclarativeItem3D::CullFaces QDeclarativeItem3D::cullFaces() const
@@ -1049,11 +1049,11 @@ void QDeclarativeItem3D::setCullFaces(QDeclarativeItem3D::CullFaces value)
     elements when they are drawn.
 
     \list
-    \o DefaultSorting No explicit sorting of the children - draw them in
+    \li DefaultSorting No explicit sorting of the children - draw them in
        whatever order is convenient for the system.  The system may apply
        its own sorting, grouping similar materials to improve performance.
        This is the default.
-    \o BackToFront Sort the children to draw them in back-to-front
+    \li BackToFront Sort the children to draw them in back-to-front
        order of their \l position, overriding any system-supplied sorting.
        BackToFront is useful when the children are partially transparent
        and must be drawn in back-to-front order for correct rendering.
@@ -1267,13 +1267,13 @@ void QDeclarativeItem3D::drawChildren(QGLPainter *painter)
     graphics libraries.  Essentially it is a stepwise progress through the following stages:
 
     \list
-    \o 1. Iterate through the child objects of the item and set all lighting parameters found.
-    \o 2. Set up culling mode in the painter.
-    \o 3. Set effects if they exist.
-    \o 4. Set all local model view transformations for this item.
-    \o 5. Draw this item.
-    \o 6. Iterate through the child objects of the item and draw all child items.
-    \o 7. Unset the appropriate parameters and states.
+    \li 1. Iterate through the child objects of the item and set all lighting parameters found.
+    \li 2. Set up culling mode in the painter.
+    \li 3. Set effects if they exist.
+    \li 4. Set all local model view transformations for this item.
+    \li 5. Draw this item.
+    \li 6. Iterate through the child objects of the item and draw all child items.
+    \li 7. Unset the appropriate parameters and states.
     \endlist
 
 

@@ -59,7 +59,7 @@ QT_BEGIN_NAMESPACE
     Custom render orders may be created by sub-classing QGLRenderOrderComparator
     and reimplementing the following method:
     \list
-        \i bool operator()(const QGLRenderOrder &lhs, const QGLRenderOrder &rhs)
+        \li bool operator()(const QGLRenderOrder &lhs, const QGLRenderOrder &rhs)
     \endlist
 
     Then set an instance of your class onto QGLPainter:

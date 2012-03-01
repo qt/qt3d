@@ -53,19 +53,19 @@
 
     For Linux & Mac:
     \list
-    \o Run the application within QtCreator - the warning messages will be
+    \li Run the application within QtCreator - the warning messages will be
     visible in the Application Output pane.
-    \o Run the application from the command line - the warning messages
+    \li Run the application from the command line - the warning messages
     will now be displayed directly in the terminal window.
     \endlist
 
     For Windows
     \list
-    \o Run the application within QtCreator - the warning messages will be
+    \li Run the application within QtCreator - the warning messages will be
     visible in the Application Output pane.
-    \o Run the application from within Visual Studio - the warning messages
+    \li Run the application from within Visual Studio - the warning messages
     will be visible in the Output window.
-    \o Use an application such as Windows Sysinternals' "DebugView.exe" to
+    \li Use an application such as Windows Sysinternals' "DebugView.exe" to
     capture warning and error messages from your QML application.
     \endlist
 
@@ -152,7 +152,7 @@
     match the expected directory used by the Qt3D binary installer, but still installs
     without apparent error due to Windows tolerance for case error.
 
-    For example you install Qt applications into \bold{C:\\qt} such as Qt Creator
+    For example you install Qt applications into \b{C:\\qt} such as Qt Creator
     but then when you install Qt 4.7.3 you accept the default install location
     of "C:\\Qt" - this succeeds, even though the case preserved name of the
     directory is "C:\\qt".  When Qt Declarative's case checking code parses the
@@ -201,16 +201,16 @@
     files that should be found are:
 
     \list
-    \o Qt3D.dll
-    \o Qt3DQuick.dll
+    \li Qt3D.dll
+    \li Qt3DQuick.dll
     \endlist
 
     There are three ways to make these files available to your application:
 
     \list
-    \o 1.  Copy these files into the same directory as your application executable.
-    \o 2.  Add the current location of these files to your PATH environment variable.
-    \o 3.  Copy these files into the Qt binaries directory.
+    \li 1.  Copy these files into the same directory as your application executable.
+    \li 2.  Add the current location of these files to your PATH environment variable.
+    \li 3.  Copy these files into the Qt binaries directory.
     \endlist
 
     The Qt binaries directory is:
@@ -236,8 +236,8 @@
     This should contain the following files:
 
     \list
-    \o qsceneai4.dll
-    \o qscenebezier4.dll
+    \li qsceneai4.dll
+    \li qscenebezier4.dll
     \endlist
 
     Additional Qt3D image format plugins (which are responsible for loading some
@@ -250,7 +250,7 @@
     This should contain the following files:
 
     \list
-    \o qtga4.dll
+    \li qtga4.dll
     \endlist
 
     If these files are not in the correct locations copy them manually into the
@@ -265,10 +265,10 @@
     This may be resolved by trying each of the following:
 
     \list
-    \o Ensure that the Qt and Qt3D libraries use the same toolchain/compiler.
-    \o Ensure that the Qt Configuration used to build Qt3D matches that used in
+    \li Ensure that the Qt and Qt3D libraries use the same toolchain/compiler.
+    \li Ensure that the Qt Configuration used to build Qt3D matches that used in
         your runtime Qt libraries.
-    \o Ensure that the Qt used to build Qt3D and the Qt runtimes are both either
+    \li Ensure that the Qt used to build Qt3D and the Qt runtimes are both either
         Debug or Release, not a mixture of both.
     \endlist
 

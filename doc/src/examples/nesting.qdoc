@@ -35,8 +35,8 @@
     is already familar with the following examples:
 
     \list
-    \o \l{Teapot Example}{Hello Teapot} - drawing a basic object in 3D.
-    \o \l{Object Effects}{Cube} - applying transformations and materials to objects.
+    \li \l{Teapot Example}{Hello Teapot} - drawing a basic object in 3D.
+    \li \l{Object Effects}{Cube} - applying transformations and materials to objects.
     \endlist
 
     In this example we are going to draw two rotating and transparent

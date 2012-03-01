@@ -47,13 +47,13 @@
 
     \section1 Common Use Cases
     \list
-    \o Adding 3D models to 2D applications – Qt 3D’s ViewPort item that defines the logical viewport for a 3D scene can be
+    \li Adding 3D models to 2D applications – Qt 3D’s ViewPort item that defines the logical viewport for a 3D scene can be
     placed in any 2D application. For example, it is possible to place a 3D avatar on a 2D contacts application.
-    \o 3D User Interface Elements – Qt 3D handles external inputs such as touch or key events so that it is possible to
+    \li 3D User Interface Elements – Qt 3D handles external inputs such as touch or key events so that it is possible to
     interact with any Qt 3D items on the screen.
-    \o 3D Visualizations in media player – Qt 3D’s QML API supports regular QML features such as property bindings and QML
+    \li 3D Visualizations in media player – Qt 3D’s QML API supports regular QML features such as property bindings and QML
     animation framework. Therefore, developers can create a 3D visualization application with less code.
-    \o Casual games – Combining Qt 3D features with other Qt modules such as Qt Sensors allows developers to create interactive
+    \li Casual games – Combining Qt 3D features with other Qt modules such as Qt Sensors allows developers to create interactive
     3D games easily.
     \endlist
 
@@ -87,33 +87,33 @@
 
     \table
     \header
-        \o \bold {Developed by}
-        \o \bold {File Extension}
-        \o \bold {Description}
+        \li \b {Developed by}
+        \li \b {File Extension}
+        \li \b {Description}
     \row
-        \o Waterfront Technologies
-        \o .obj
-        \o Originally developed for Advanced Visualizer by Waterfront Technologies. The OBJ file format that represents 3D geometry is open and widely adopted.
+        \li Waterfront Technologies
+        \li .obj
+        \li Originally developed for Advanced Visualizer by Waterfront Technologies. The OBJ file format that represents 3D geometry is open and widely adopted.
     \row
-        \o Autodesk
-        \o .3ds
-        \o Format used in 3D Studio MAX. This format is popular among video game developers.
+        \li Autodesk
+        \li .3ds
+        \li Format used in 3D Studio MAX. This format is popular among video game developers.
     \row
-        \o COLLADA
-        \o .dae
-        \o COLLADA(COLLAborative Design Activity) is managed by Khronos Group.
+        \li COLLADA
+        \li .dae
+        \li COLLADA(COLLAborative Design Activity) is managed by Khronos Group.
     \row
-        \o id Software
-        \o .MD2
-        \o Format used by Quake II and many other games.
+        \li id Software
+        \li .MD2
+        \li Format used by Quake II and many other games.
     \row
-        \o Inivis
-        \o .ac
-        \o Popular format for games and simulations.
+        \li Inivis
+        \li .ac
+        \li Popular format for games and simulations.
     \row
-        \o N/A
-        \o .bez
-        \o Bezier Surface File specifices collection of bezier patches.
+        \li N/A
+        \li .bez
+        \li Bezier Surface File specifices collection of bezier patches.
     \endtable
 
     A QML Example that loads a teapot shaped 3D model:
@@ -153,31 +153,31 @@
 
     \section1 Getting Started
     \list
-    \o \l {qt3d-building.html}{Building}
-    \o \l {qt3d-examples.html}{Tutorials and Examples}
-    \o \l {Writing a scene format plug-in for Qt3D}{Scene format plug-ins}
-    \o \l {QGL}{QGL Namespace}
-    \o \l {qt3d-acceptance.html}{Acceptance tests}
-    \o \l {qt3d-troubleshooting.html}{Troubleshooting Qt3D}
+    \li \l {qt3d-building.html}{Building}
+    \li \l {qt3d-examples.html}{Tutorials and Examples}
+    \li \l {Writing a scene format plug-in for Qt3D}{Scene format plug-ins}
+    \li \l {QGL}{QGL Namespace}
+    \li \l {qt3d-acceptance.html}{Acceptance tests}
+    \li \l {qt3d-troubleshooting.html}{Troubleshooting Qt3D}
     \endlist
 
     \section1 Qt3D Core Concepts
     \list
-    \o \l {Qt3D Arrays and Vertex Buffers}{Arrays and Vertex Buffers}
-    \o \l {Qt3D Geometry}{Geometry Building}
-    \o \l {Qt3D Graphics View Integration}{Graphics View Integration}
-    \o \l {Qt3D Materials}{Materials}
-    \o \l {Qt3D Math}{Mathematical Primitives}
-    \o \l {Qt3D Painting}{Painting in 3D}
-    \o \l {Qt3D Scene Management}{Scene Management}
-    \o \l {Qt3D Texture Handling}{Texture Management}
-    \o \l {Qt3D Viewing}{Viewing Widgets}
+    \li \l {Qt3D Arrays and Vertex Buffers}{Arrays and Vertex Buffers}
+    \li \l {Qt3D Geometry}{Geometry Building}
+    \li \l {Qt3D Graphics View Integration}{Graphics View Integration}
+    \li \l {Qt3D Materials}{Materials}
+    \li \l {Qt3D Math}{Mathematical Primitives}
+    \li \l {Qt3D Painting}{Painting in 3D}
+    \li \l {Qt3D Scene Management}{Scene Management}
+    \li \l {Qt3D Texture Handling}{Texture Management}
+    \li \l {Qt3D Viewing}{Viewing Widgets}
     \endlist
 
     \section1 API Reference documentation
     \list
-    \o \l {Qt3D Classes}{C++ APIs}
-    \o \l {Qt3D for Scripting 3D Apps in QML}{QML APIs}
+    \li \l {Qt3D Classes}{C++ APIs}
+    \li \l {Qt3D for Scripting 3D Apps in QML}{QML APIs}
     \endlist
 
     \section1 Extending Qt 3D

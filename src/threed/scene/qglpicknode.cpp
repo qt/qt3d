@@ -58,8 +58,8 @@
 
     QGLSceneObjects wanting to support picking, should implement the methods
     \list
-    \o QGLSceneNode::pickNode()
-    \o QGLSceneNode::setPickNode()
+    \li QGLSceneNode::pickNode()
+    \li QGLSceneNode::setPickNode()
     \endlist
     and also implement rendering such that the QGLPainter has the relevant
     \l{QGLPainter::setObjectPickId()}{pick id function} called.

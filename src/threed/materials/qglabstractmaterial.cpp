@@ -55,14 +55,14 @@ QT_BEGIN_NAMESPACE
     almost endless variety of parameters:
 
     \list
-    \o Properties of the material under various lighting conditions;
+    \li Properties of the material under various lighting conditions;
        i.e., the traditional parameters for ambient, diffuse, specular, etc.
-    \o Textures in multiple layers, with different combination modes;
+    \li Textures in multiple layers, with different combination modes;
        decal, modulate, replace, etc.
-    \o Environmental conditions such as fogging.
-    \o Alpha values for opacity and blending.
-    \o Interpolation factors for animated surface effects.
-    \o etc
+    \li Environmental conditions such as fogging.
+    \li Alpha values for opacity and blending.
+    \li Interpolation factors for animated surface effects.
+    \li etc
     \endlist
 
     QGLAbstractMaterial is the base class for all such materials.

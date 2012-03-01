@@ -133,11 +133,11 @@ QT_BEGIN_NAMESPACE
     of rotation you want to perform:
 
     \list
-    \i Tilting or panning a fixed eye to reveal the scene in different
+    \li Tilting or panning a fixed eye to reveal the scene in different
        directions and orientations.  This is equivalent to mounting a camera
        on a fixed tripod and then adjusting the direction of view and
        orientation with the tripod controls.
-    \i Rotating a moving viewer about the object of interest.  This is
+    \li Rotating a moving viewer about the object of interest.  This is
        equivalent to moving the viewer around the object at a fixed distance,
        but with the viewer always pointing at the object.
     \endlist
@@ -456,8 +456,8 @@ QGLCamera::~QGLCamera()
     The projection type for this camera, which is one of:
 
     \list
-    \o Perspective Use a perspective view.  This is the default.
-    \o Orthographic Use an orthographic view.
+    \li Perspective Use a perspective view.  This is the default.
+    \li Orthographic Use an orthographic view.
     \endlist
 */
 

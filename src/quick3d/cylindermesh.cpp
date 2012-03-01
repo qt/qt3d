@@ -257,17 +257,17 @@ void CylinderMesh::setLength(qreal length)
     values
 
     \table
-    \header \o Level of Detail \o Facets \o Layers
-    \row \o 1 \o 8 \o 2
-    \row \o 2 \o 16 \o 4
-    \row \o 3 \o 32 \o 8
-    \row \o 4 \o 64 \o 16
-    \row \o 5 \o 128 \o 32
-    \row \o 6 \o 256 \o 64
-    \row \o 7 \o 512 \o 128
-    \row \o 8 \o 1024 \o 256
-    \row \o 9 \o 2048 \o 512
-    \row \o 10 \o 4096 \o 1024
+    \header \li Level of Detail \li Facets \li Layers
+    \row \li 1 \li 8 \li 2
+    \row \li 2 \li 16 \li 4
+    \row \li 3 \li 32 \li 8
+    \row \li 4 \li 64 \li 16
+    \row \li 5 \li 128 \li 32
+    \row \li 6 \li 256 \li 64
+    \row \li 7 \li 512 \li 128
+    \row \li 8 \li 1024 \li 256
+    \row \li 9 \li 2048 \li 512
+    \row \li 10 \li 4096 \li 1024
     \endtable
 */
 int CylinderMesh::levelOfDetail() const

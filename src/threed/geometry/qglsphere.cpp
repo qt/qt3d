@@ -125,17 +125,17 @@ QGLSphere::~QGLSphere()
     \image sphere-detail.png
 
     \table
-    \header \o Level of Detail \o Number of Triangles
-    \row \o 1 \o 64
-    \row \o 2 \o 128
-    \row \o 3 \o 256
-    \row \o 4 \o 512
-    \row \o 5 \o 1024
-    \row \o 6 \o 2048
-    \row \o 7 \o 4096
-    \row \o 8 \o 8192
-    \row \o 9 \o 16384
-    \row \o 10 \o 32768
+    \header \li Level of Detail \li Number of Triangles
+    \row \li 1 \li 64
+    \row \li 2 \li 128
+    \row \li 3 \li 256
+    \row \li 4 \li 512
+    \row \li 5 \li 1024
+    \row \li 6 \li 2048
+    \row \li 7 \li 4096
+    \row \li 8 \li 8192
+    \row \li 9 \li 16384
+    \row \li 10 \li 32768
     \endtable
 
     \sa setSubdivisionDepth()

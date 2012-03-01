@@ -75,13 +75,13 @@
     to our API's we will not do it lightly.  So far however we have had no
     contributions to the sceneformats and no-one has asked about it, or used
     it, despite this tutorial existing.  At present it will be marked
-    \bold deprecated and in our next release cycle it will be removed
+    \b deprecated and in our next release cycle it will be removed
     altogether.
 
     \section1 Sceneformat Tutorial
     Scene format plugins are used to load external 3D model file
-    formats like \bold 3DS, \bold obj, and so on.  In this tutorial we will
-    do a walk-through of the \bold obj scene format plugin to
+    formats like \b 3DS, \b obj, and so on.  In this tutorial we will
+    do a walk-through of the \b obj scene format plugin to
     demonstrate what is required to add a new format to Qt3D.
 
     Models are loaded by QGLAbstractScene::loadScene(), which locates

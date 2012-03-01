@@ -175,8 +175,8 @@ bool QPlane3D::intersects(const QRay3D &ray) const
     There are two failure cases where no single intersection point exists:
 
     \list
-    \o when the ray is parallel to the plane (but does not lie on it)
-    \o the ray lies entirely in the plane (thus every point "intersects")
+    \li when the ray is parallel to the plane (but does not lie on it)
+    \li the ray lies entirely in the plane (thus every point "intersects")
     \endlist
 
     This method does not distinguish between these two failure cases and

@@ -268,12 +268,12 @@ void Skybox::scanLocalDir(const QString &imagePath)
     in any image format that Qt can load, but must have names that contain the following
     strings:
     \list
-        \o "_up"
-        \o "_down"
-        \o "_west"
-        \o "_east"
-        \o "_north"
-        \o "_south"
+        \li "_up"
+        \li "_down"
+        \li "_west"
+        \li "_east"
+        \li "_north"
+        \li "_south"
     \endlist
     These textures are then attached to the appropriate faces of the skybox.
 */

@@ -218,10 +218,10 @@
     smoothly across the shape:
     \table
     \row
-    \o \code gl_FragColor = vec4(mod(texCoord.x, 1.0),
+    \li \code gl_FragColor = vec4(mod(texCoord.x, 1.0),
         mod(texCoord.y, 1.0), 0.0, 1.0);  \endcode
-    \o
-    \o \image tutorials/shader-tutorial-varying.png
+    \li
+    \li \image tutorials/shader-tutorial-varying.png
     \endtable
 
 

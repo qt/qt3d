@@ -79,14 +79,14 @@
 
     \image build-qt3d-qtcreator-1.png
 
-    \bold{Step 1} - Open the Qt3D project.
+    \b{Step 1} - Open the Qt3D project.
 
     Choose \c{Open} from the \c{File} menu and navigate to the qt3d.pro project
     file \c {$HOME/depot/qt/qt3d/qt3d.pro}.  Click \c{Open}.
 
     \image build-qt3d-qtcreator-2.png
 
-    \bold{Step 2} - Select the Qt and load Qt3D.
+    \b{Step 2} - Select the Qt and load Qt3D.
 
     \image build-qt3d-qtcreator-4.png
 
@@ -100,7 +100,7 @@
     After a short time QtCreator will have loaded up the Qt3D project, read all its
     project files and display the source tree as shown just above.
 
-    \bold{Step 2a} - Useful Options
+    \b{Step 2a} - Useful Options
 
     Use \c{QtCreator} -> \c{Preferences...} to bring up QtCreators options and settings.
     On Windows its \c{Tools} -> \c{Options...}.
@@ -111,7 +111,7 @@
 
     \image build-qt3d-qtcreator-7.png
 
-    \bold{Step 3} - Set up for Building.
+    \b{Step 3} - Set up for Building.
 
     \image build-qt3d-qtcreator-5.png
 
@@ -138,7 +138,7 @@
 
     \image build-qt3d-qtcreator-set-to-release.png
 
-    \bold{Special note for Windows} - make sure that the type of build matches the
+    \b{Special note for Windows} - make sure that the type of build matches the
     Qt that you are building against.  In the case of binary packages, and the Qt
     that ships with the SDK these are binary release builds - so in those cases set
     your Qt3D to a release build also.  One way to tell that this has gone wrong is
@@ -147,9 +147,9 @@
 
     By default the Qt build system used by QtCreator will build Qt3D in debug mode.
 
-    Ok, \bold{now} hit the build button.
+    Ok, \b{now} hit the build button.
 
-    \bold{Step 4} - Build Qt3D and run a test App.
+    \b{Step 4} - Build Qt3D and run a test App.
 
     Qt3D will go ahead and compile all its libraries, plugins and QML imports.
 

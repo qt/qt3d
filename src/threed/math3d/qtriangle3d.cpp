@@ -155,12 +155,12 @@ QT_BEGIN_NAMESPACE
     Returns true if this triangle contains \a point; false otherwise.
     To contain the \a point means that:
     \list
-    \o the point lies on the same plane as the triangle, and
-    \o the point
+    \li the point lies on the same plane as the triangle, and
+    \li the point
         \list
-        \o lies either wholly within the triangle, or
-        \o lies on one of the sides, or
-        \o coincides with one of the 3 vertices
+        \li lies either wholly within the triangle, or
+        \li lies on one of the sides, or
+        \li coincides with one of the 3 vertices
         \endlist
     \endlist
 

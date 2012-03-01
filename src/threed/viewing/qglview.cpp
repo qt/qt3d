@@ -149,15 +149,15 @@ QT_BEGIN_NAMESPACE
     need to select the mode itself:
 
     \table
-    \row \o \c{-stereo-hw} \o \l Hardware.
-    \row \o \c{-stereo-lr} \o LeftRight.
-    \row \o \c{-stereo-rl} \o RightLeft.
-    \row \o \c{-stereo-tb} \o TopBottom.
-    \row \o \c{-stereo-bt} \o BottomTop.
-    \row \o \c{-stereo-stretched-lr} \o StretchedLeftRight.
-    \row \o \c{-stereo-stretched-rl} \o StretchedRightLeft.
-    \row \o \c{-stereo-stretched-tb} \o StretchedTopBottom.
-    \row \o \c{-stereo-stretched-bt} \o StretchedBottomTop.
+    \row \li \c{-stereo-hw} \li \l Hardware.
+    \row \li \c{-stereo-lr} \li LeftRight.
+    \row \li \c{-stereo-rl} \li RightLeft.
+    \row \li \c{-stereo-tb} \li TopBottom.
+    \row \li \c{-stereo-bt} \li BottomTop.
+    \row \li \c{-stereo-stretched-lr} \li StretchedLeftRight.
+    \row \li \c{-stereo-stretched-rl} \li StretchedRightLeft.
+    \row \li \c{-stereo-stretched-tb} \li StretchedTopBottom.
+    \row \li \c{-stereo-stretched-bt} \li StretchedBottomTop.
     \endtable
 
     The option can also be supplied in the \c{Quick3D_OPTIONS} environment

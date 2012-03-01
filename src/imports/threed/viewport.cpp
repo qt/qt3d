@@ -450,9 +450,9 @@ Viewport::~Viewport()
     where the 3D components of the scene occupies most or all of the screen.
 
     \list
-        \o UnknownRender  The mode is not specified.
-        \o DirectRender  Render to the GL context directly.  This is the default for top-level viewports.
-        \o BufferedRender  Render to an offscreen buffer.  This is the default for a viewport that is a child.
+        \li UnknownRender  The mode is not specified.
+        \li DirectRender  Render to the GL context directly.  This is the default for top-level viewports.
+        \li BufferedRender  Render to an offscreen buffer.  This is the default for a viewport that is a child.
     \endlist
     */
 Viewport::RenderMode Viewport::renderMode() const

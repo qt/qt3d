@@ -75,8 +75,8 @@ QT_BEGIN_NAMESPACE
     Custom render orders may be created by sub-classing QGLRenderOrderComparator
     and reimplementing the following methods:
     \list
-        \o isEqualTo()
-        \o isLessThan()
+        \li isEqualTo()
+        \li isLessThan()
     \endlist
 
     By default all nodes which have the same effect type are rendered together,
@@ -168,9 +168,9 @@ bool QGLRenderOrder::isEqual(const QGLRenderOrder &rhs) const
     Sorting by effect is based on the following order, from lowest to
     highest:
     \list
-        \o No effect - hasEffect() == true
-        \o Standard effect - ordered by numerical value, eg QGL::FlatColor < QGL::LitMaterial
-        \o User effect - ordered by pointer comparison
+        \li No effect - hasEffect() == true
+        \li Standard effect - ordered by numerical value, eg QGL::FlatColor < QGL::LitMaterial
+        \li User effect - ordered by pointer comparison
     \endlist
     So a node with \c{hasEffect() == false} node is \e{less than} a node with
     a custom user effect, for example.
