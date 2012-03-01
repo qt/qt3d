@@ -121,7 +121,7 @@ union QArrayAlignedPrealloc
 #endif
 
 template <typename T, int PreallocSize>
-class QArrayData
+class QtArrayData
 {
 public:
 #if defined(Q_ALIGNOF)
@@ -142,7 +142,7 @@ public:
 };
 
 template <typename T>
-class QArrayData<T, 0>
+class QtArrayData<T, 0>
 {
 public:
 
@@ -156,7 +156,7 @@ public:
 };
 
 template <typename T, int PreallocSize = 8>
-class QArray : private QArrayData<T, PreallocSize>
+class QArray : private QtArrayData<T, PreallocSize>
 {
 public:
     QArray();
@@ -315,7 +315,7 @@ private:
 
     inline void initPrealloc()
     {
-        m_end = m_start = QArrayData<T, PreallocSize>::prealloc();
+        m_end = m_start = QtArrayData<T, PreallocSize>::prealloc();
         m_limit = m_start + PreallocSize;
     }
 
