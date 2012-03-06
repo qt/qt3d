@@ -45,7 +45,6 @@ import Qt3D.Shapes 1.0
 Viewport {
     width: parent.width
     height: parent.height
-    renderMode: Viewport.DirectRender
     Sphere {
         effect: Effect {
             texture: "moon-texture.jpg"

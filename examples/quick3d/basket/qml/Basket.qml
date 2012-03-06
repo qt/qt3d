@@ -44,7 +44,6 @@ import Qt3D 1.0
 
 Viewport {
     width: parent.width; height: parent.height
-    renderMode: "DirectRender"
     fillColor: "#000000"
 
     camera: Camera {

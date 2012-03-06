@@ -45,7 +45,6 @@ Viewport {
     width: parent.width
     height: parent.height
     id: viewPort
-    renderMode: Viewport.DirectRender
 
     MouseArea {
         anchors.fill: parent

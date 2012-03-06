@@ -44,7 +44,6 @@ import Qt3D.Shapes 1.0
 
 Viewport {
     width: parent.width; height: parent.height
-    renderMode: "DirectRender"
     fillColor: "darkblue"
     objectName: "cube viewport"
 

@@ -45,7 +45,6 @@ Viewport {
     id: viewport
     width: parent.width; height: parent.height
     picking: true
-    renderMode: "DirectRender"
     //navigation: false
     //showPicking: true
 
