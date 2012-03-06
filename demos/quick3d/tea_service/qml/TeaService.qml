@@ -47,7 +47,6 @@ Viewport {
     width: parent.width
     height: parent.height
     picking: true
-    renderMode: "DirectRender"
 
     camera: Camera {
         eye: Qt.vector3d(0, 3, 10)
