@@ -100,6 +100,11 @@ protected:
 private:
     QScopedPointer<QGLAbstractScenePrivate> d_ptr;
 
+    static void checkSupportedFormats();
+    static bool m_bFormatListReady;
+    static QStringList m_Formats;
+    static QStringList m_FormatsFilter;
+
     Q_DISABLE_COPY(QGLAbstractScene)
     Q_DECLARE_PRIVATE(QGLAbstractScene)
 };

@@ -1,20 +1,29 @@
 TARGET = qsceneai
+QT += 3d
+
+load(qt_plugin)
+
 include(../../qpluginbase.pri)
 HEADERS += qailoader.h \
     qaiscene.h \
     qaiscenehandler.h \
     qaimesh.h \
     ailoaderiostream.h \
-    ailoaderiosystem.h
-SOURCES += main.cpp \
+    ailoaderiosystem.h \
+    ai_plugin.h
+SOURCES += \
     qailoader.cpp \
     qaiscene.cpp \
     qaiscenehandler.cpp \
     qaimesh.cpp \
     ailoaderiostream.cpp \
-    ailoaderiosystem.cpp
+    ailoaderiosystem.cpp \
+    ai_plugin.cpp
 
-QT += 3d
+OTHER_FILES += \
+    ai_scene_plugin.json
+
+
 
 DESTDIR = $$QT.3d.plugins/sceneformats
 target.path = $$[QT_INSTALL_PLUGINS]/sceneformats

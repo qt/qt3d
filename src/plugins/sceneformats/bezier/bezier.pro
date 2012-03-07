@@ -1,13 +1,20 @@
 TARGET  = qscenebezier
+QT += 3d
+
+load(qt_plugin)
+
 include(../../qpluginbase.pri)
 
 HEADERS += qglbezierscene.h \
-           qglbezierscenehandler.h
-SOURCES += main.cpp \
+           qglbezierscenehandler.h \
+           bezier_plugin.h
+SOURCES += \
            qglbezierscene.cpp \
-           qglbezierscenehandler.cpp
+           qglbezierscenehandler.cpp \
+           bezier_plugin.cpp
 
-QT += 3d
+OTHER_FILES += \
+            bezier_scene_plugin.json
 
 DESTDIR = $$QT.3d.plugins/sceneformats
 target.path = $$[QT_INSTALL_PLUGINS]/sceneformats

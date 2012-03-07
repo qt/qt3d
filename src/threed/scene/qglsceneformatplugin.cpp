@@ -52,8 +52,6 @@ QT_BEGIN_NAMESPACE
 
     This interface will be deprecated in an upcoming release.  For more details see the
     \l{sceneformats-obj.html}{plug-in tutorial documentation}.
-
-    \sa QGLSceneFormatPlugin
 */
 
 class QGLSceneFormatHandlerPrivate
@@ -177,58 +175,8 @@ void QGLSceneFormatHandler::decodeOptions(const QString &options)
 
 /*!
     \class QGLSceneFormatFactoryInterface
-    \brief The QGLSceneFormatFactoryInterface class provides the factory interface for QGLSceneFormatPlugin.
+    \brief The QGLSceneFormatFactoryInterface class provides the factory interface for scene plugins.
     \internal
-*/
-
-/*!
-    \class QGLSceneFormatPlugin
-    \brief The QGLSceneFormatPlugin class defines an interface for loading 3D object and scene formats.
-    \ingroup qt3d
-    \ingroup qt3d::scene
-
-    This class will be deprecated in an upcoming release.  For more details see the
-    \l{sceneformats-obj.html}{plug-in tutorial documentation}.
-
-    \sa QGLSceneFormatHandler
-*/
-
-/*!
-    Constructs a 3D scene format plugin with the given \a parent.  This is
-    invoked automatically by the Q_EXPORT_PLUGIN2() macro.
-*/
-QGLSceneFormatPlugin::QGLSceneFormatPlugin(QObject *parent)
-    : QObject(parent)
-{
-}
-
-/*!
-    Destroys this 3D scene format plugin.  This is invoked automatically
-    when the plugin is unloaded.
-*/
-QGLSceneFormatPlugin::~QGLSceneFormatPlugin()
-{
-}
-
-/*!
-    \fn QStringList QGLSceneFormatPlugin::keys() const
-
-    Returns the list of format keys this plugin supports.  These keys
-    are usually the names of the 3D scene formats that are implemented in
-    the plugin (e.g., "3ds", "obj", etc).  The returned elements must
-    be in lower case.
-
-    \sa create()
-*/
-
-/*!
-    \fn QGLSceneFormatHandler *QGLSceneFormatPlugin::create(QIODevice *device, const QUrl& url, const QString &format) const
-
-    Creates and returns a QGLSceneFormatHandler for handling the data in
-    \a device according to \a format.  The \a url specifies the original
-    location of the data for resolving relative resource references.
-
-    \sa keys()
 */
 
 QT_END_NAMESPACE

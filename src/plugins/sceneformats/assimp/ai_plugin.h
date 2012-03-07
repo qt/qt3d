@@ -39,37 +39,24 @@
 **
 ****************************************************************************/
 
-#ifndef QGLOBJSCENEHANDLER_H
-#define QGLOBJSCENEHANDLER_H
+#ifndef AI_PLUGIN_H
+#define AI_PLUGIN_H
 
 #include "qglsceneformatplugin.h"
-#include "qglmaterialcollection.h"
-#include <QtCore/qmap.h>
-#include <QtCore/qset.h>
 
 QT_BEGIN_NAMESPACE
 
-//! [1]
-class QGLObjSceneHandler : public QGLSceneFormatHandler
+class QAiScenePlugin : public QObject, public QGLSceneFormatFactoryInterface
 {
+    Q_OBJECT
+    Q_INTERFACES(QGLSceneFormatFactoryInterface)
+    Q_PLUGIN_METADATA(IID "com.trolltech.Qt.QGLSceneFormatFactoryInterface" FILE "ai_scene_plugin.json")
 public:
-    QGLObjSceneHandler();
-    QGLAbstractScene *read();
-//! [1]
-    void decodeOptions(const QString &options);
-
-private:
-    void loadMaterialLibrary(const QString& name);
-    void loadMaterials(QIODevice *device);
-    QGLTexture2D *loadTexture(const QString& name);
-
-    QSharedPointer<QGLMaterialCollection> palette;
-    QGL::Smoothing smoothing;
-    bool smoothingForced;
-//! [2]
+    QAiScenePlugin();
+    ~QAiScenePlugin();
+    virtual QGLSceneFormatHandler *create(QIODevice *device, const QUrl& url, const QString &format) const;
 };
-//! [2]
 
 QT_END_NAMESPACE
 
-#endif
+#endif // AI_PLUGIN_H

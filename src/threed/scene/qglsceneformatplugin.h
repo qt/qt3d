@@ -79,26 +79,13 @@ private:
     QGLSceneFormatHandlerPrivate *d_ptr;
 };
 
-struct Q_QT3D_EXPORT QGLSceneFormatFactoryInterface : public QFactoryInterface
+class Q_QT3D_EXPORT QGLSceneFormatFactoryInterface
 {
-    virtual QGLSceneFormatHandler *create(QIODevice *device, const QUrl& url, const QString &format = QString()) const = 0;
-};
-
-#define QGLSceneFormatFactoryInterface_iid \
-        "com.trolltech.Qt.QGLSceneFormatFactoryInterface"
-Q_DECLARE_INTERFACE(QGLSceneFormatFactoryInterface, QGLSceneFormatFactoryInterface_iid)
-
-class Q_QT3D_EXPORT QGLSceneFormatPlugin : public QObject, public QGLSceneFormatFactoryInterface
-{
-    Q_OBJECT
-    Q_INTERFACES(QGLSceneFormatFactoryInterface:QFactoryInterface)
 public:
-    explicit QGLSceneFormatPlugin(QObject *parent = 0);
-    virtual ~QGLSceneFormatPlugin();
-
-    virtual QStringList keys() const = 0;
     virtual QGLSceneFormatHandler *create(QIODevice *device, const QUrl& url, const QString &format = QString()) const = 0;
 };
+
+Q_DECLARE_INTERFACE(QGLSceneFormatFactoryInterface, "com.trolltech.Qt.QGLSceneFormatFactoryInterface")
 
 QT_END_NAMESPACE
 

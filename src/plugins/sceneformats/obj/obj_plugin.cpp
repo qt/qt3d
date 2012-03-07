@@ -39,37 +39,20 @@
 **
 ****************************************************************************/
 
-#ifndef QGLOBJSCENEHANDLER_H
-#define QGLOBJSCENEHANDLER_H
-
-#include "qglsceneformatplugin.h"
-#include "qglmaterialcollection.h"
-#include <QtCore/qmap.h>
-#include <QtCore/qset.h>
+#include "obj_plugin.h"
+#include "qglobjscenehandler.h"
 
 QT_BEGIN_NAMESPACE
 
-//! [1]
-class QGLObjSceneHandler : public QGLSceneFormatHandler
+QGLObjScenePlugin::QGLObjScenePlugin() {}
+QGLObjScenePlugin::~QGLObjScenePlugin() {}
+
+QGLSceneFormatHandler *QGLObjScenePlugin::create(QIODevice *device, const QUrl& url, const QString &format) const
 {
-public:
-    QGLObjSceneHandler();
-    QGLAbstractScene *read();
-//! [1]
-    void decodeOptions(const QString &options);
-
-private:
-    void loadMaterialLibrary(const QString& name);
-    void loadMaterials(QIODevice *device);
-    QGLTexture2D *loadTexture(const QString& name);
-
-    QSharedPointer<QGLMaterialCollection> palette;
-    QGL::Smoothing smoothing;
-    bool smoothingForced;
-//! [2]
-};
-//! [2]
+    Q_UNUSED(device);
+    Q_UNUSED(url);
+    Q_UNUSED(format);
+    return new QGLObjSceneHandler;
+}
 
 QT_END_NAMESPACE
-
-#endif

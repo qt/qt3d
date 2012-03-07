@@ -39,40 +39,24 @@
 **
 ****************************************************************************/
 
+#ifndef BEZIER_PLUGIN_H
+#define BEZIER_PLUGIN_H
+
 #include "qglsceneformatplugin.h"
-#include "qglobjscenehandler.h"
 
 QT_BEGIN_NAMESPACE
 
-//! [1]
-class QGLObjScenePlugin : public QGLSceneFormatPlugin
+class QGLBezierScenePlugin : public QObject, public QGLSceneFormatFactoryInterface
 {
+    Q_OBJECT
+    Q_INTERFACES(QGLSceneFormatFactoryInterface)
+    Q_PLUGIN_METADATA(IID "com.trolltech.Qt.QGLSceneFormatFactoryInterface" FILE "bezier_scene_plugin.json")
 public:
-    QStringList keys() const;
+    QGLBezierScenePlugin();
+    ~QGLBezierScenePlugin();
     virtual QGLSceneFormatHandler *create(QIODevice *device, const QUrl& url, const QString &format) const;
 };
-//! [1]
-
-//! [2]
-QStringList QGLObjScenePlugin::keys() const
-{
-    return QStringList() << QLatin1String("obj") << QLatin1String("model/obj");
-}
-//! [2]
-
-//! [3]
-QGLSceneFormatHandler *QGLObjScenePlugin::create(QIODevice *device, const QUrl& url, const QString &format) const
-{
-    Q_UNUSED(device);
-    Q_UNUSED(url);
-    Q_UNUSED(format);
-    return new QGLObjSceneHandler;
-}
-//! [3]
-
-//! [4]
-Q_EXPORT_STATIC_PLUGIN(QGLObjScenePlugin)
-Q_EXPORT_PLUGIN2(qsceneobj, QGLObjScenePlugin)
-//! [4]
 
 QT_END_NAMESPACE
+
+#endif // BEZIER_PLUGIN_H

@@ -136,6 +136,10 @@ public:
     bool pickNodesDirty;
 };
 
+bool QGLAbstractScene::m_bFormatListReady = false;
+QStringList QGLAbstractScene::m_Formats;
+QStringList QGLAbstractScene::m_FormatsFilter;
+
 /*!
     Constructs a 3D scene and attaches it to \a parent.
 */
@@ -328,7 +332,8 @@ QList<QGLSceneAnimation *> QGLAbstractScene::animations() const
 
 #if !defined (QT_NO_LIBRARY) && !defined(QT_NO_SETTINGS)
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader,
-    (QGLSceneFormatFactoryInterface_iid, QLatin1String("/sceneformats")))
+    ("com.trolltech.Qt.QGLSceneFormatFactoryInterface",
+     QLatin1String("/sceneformats")))
 #endif
 
 /*!
@@ -377,8 +382,10 @@ QGLAbstractScene *QGLAbstractScene::loadScene
     if (!device)
         return 0;
 
+    checkSupportedFormats();
+    QStringList keys = m_Formats;
+
     QFactoryLoader *l = loader();
-    QStringList keys = l->keys();
 
     // If the format is not specified, then use the filename/url extension.
     QString fmt = format;
@@ -495,48 +502,28 @@ QGLAbstractScene *QGLAbstractScene::loadScene
 */
 QStringList QGLAbstractScene::supportedFormats(QGLAbstractScene::FormatListType t)
 {
-    QStringList formats;
-    QSet<QString> formatSet;
-    QSet<QString> dirSet;
-    QStringList pluginPaths = QCoreApplication::libraryPaths();
-    QStringList::const_iterator it = pluginPaths.constBegin();
-    for ( ; it != pluginPaths.constEnd(); ++it)
-    {
-        QString path = *it;
-        QDir sceneformatDir(path + QLatin1String("/sceneformats"));
-        path = sceneformatDir.absolutePath();
-        if (!sceneformatDir.exists() || dirSet.contains(path))
-            continue;
-        dirSet.insert(path);
-        sceneformatDir.setFilter(QDir::Files);
-        QStringList entries = sceneformatDir.entryList();
-        QStringList::const_iterator fit = entries.constBegin();
-        for ( ; fit != entries.constEnd(); ++fit)
-        {
-            QString fi = *fit;
-            QPluginLoader loader(sceneformatDir.absoluteFilePath(fi));
-            QObject *inst = loader.instance();
-            QGLSceneFormatFactoryInterface *iface = qobject_cast<QGLSceneFormatFactoryInterface*>(inst);
-            if (iface)
-            {
-                QStringList formatKeys = iface->keys();
-                QStringList::const_iterator kit = formatKeys.constBegin();
-                for ( ; kit != formatKeys.constEnd(); ++kit)
-                {
-                    QString k = *kit;
-                    if (!formatSet.contains(k) && !k.contains(QLatin1Char('/'))) // dont add mime-type keys
-                    {
-                        if (t == AsFilter)
-                            k.prepend(QLatin1String("*."));
-                        formatSet.insert(k);
-                        formats.append(k);
-                    }
-                }
-            }
-        }
-    }
-    return formats;
+    checkSupportedFormats();
+    if (t == AsFilter)
+        return m_FormatsFilter;
+    else
+        return m_Formats;
 }
 
+/*!
+    \internal
+*/
+
+void QGLAbstractScene::checkSupportedFormats()
+{
+    if (!m_bFormatListReady) {
+        QFactoryLoader *l = loader();
+        m_Formats = l->keys();
+        m_FormatsFilter.clear();
+        foreach (QString f, m_Formats) {
+            m_FormatsFilter.append(f.prepend("*."));
+        }
+        m_bFormatListReady = true;
+    }
+}
 
 QT_END_NAMESPACE

@@ -39,22 +39,13 @@
 **
 ****************************************************************************/
 
-#include "qglsceneformatplugin.h"
+#include "bezier_plugin.h"
 #include "qglbezierscenehandler.h"
 
 QT_BEGIN_NAMESPACE
 
-class QGLBezierScenePlugin : public QGLSceneFormatPlugin
-{
-public:
-    QStringList keys() const;
-    virtual QGLSceneFormatHandler *create(QIODevice *device, const QUrl& url, const QString &format) const;
-};
-
-QStringList QGLBezierScenePlugin::keys() const
-{
-    return QStringList() << QLatin1String("bezier") << QLatin1String("bez");
-}
+QGLBezierScenePlugin::QGLBezierScenePlugin() {}
+QGLBezierScenePlugin::~QGLBezierScenePlugin() {}
 
 QGLSceneFormatHandler *QGLBezierScenePlugin::create(QIODevice *device, const QUrl& url, const QString &format) const
 {
@@ -64,7 +55,6 @@ QGLSceneFormatHandler *QGLBezierScenePlugin::create(QIODevice *device, const QUr
     return new QGLBezierSceneHandler;
 }
 
-Q_EXPORT_STATIC_PLUGIN(QGLBezierScenePlugin)
-Q_EXPORT_PLUGIN2(qscenebezier, QGLBezierScenePlugin)
-
 QT_END_NAMESPACE
+
+

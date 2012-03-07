@@ -53,7 +53,6 @@ QT_BEGIN_NAMESPACE
 
 QGLObjSceneHandler::QGLObjSceneHandler()
     : QGLSceneFormatHandler()
-    , palette(0)
     , smoothing(QGL::Faceted)
     , smoothingForced(false)
 {

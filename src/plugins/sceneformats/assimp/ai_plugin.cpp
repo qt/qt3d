@@ -39,52 +39,13 @@
 **
 ****************************************************************************/
 
-#include "qglsceneformatplugin.h"
+#include "ai_plugin.h"
 #include "qaiscenehandler.h"
-
-#include "assimp.hpp"
-
-#include <QtCore/qmap.h>
-#include <QtCore/qdebug.h>
 
 QT_BEGIN_NAMESPACE
 
-class QAiScenePlugin : public QGLSceneFormatPlugin
-{
-public:
-    QStringList keys() const;
-    virtual QGLSceneFormatHandler *create(QIODevice *device, const QUrl& url, const QString &format) const;
-};
-
-QStringList QAiScenePlugin::keys() const
-{
-    static QMultiMap<QString, QString> mimetypes;
-    if (mimetypes.size() == 0)
-    {
-        mimetypes.insertMulti("3ds", "application/x-3ds");
-        mimetypes.insertMulti("3ds", "image/x-3ds");
-        mimetypes.insertMulti("dae", "model/x3d+binary");
-        mimetypes.insertMulti("dxf", "application/x-dxf");
-    }
-    QStringList result;
-    Assimp::Importer importer;
-    aiString extns;
-    importer.GetExtensionList(extns);
-    QString qextns = QString::fromUtf8(extns.data, extns.length);
-    QStringList extnList = qextns.split(';');
-    for (int i = 0; i < extnList.size(); ++i)
-    {
-        QString xt = extnList.at(i);
-        xt = xt.simplified();
-        if (xt.startsWith(QLatin1String("*.")))
-            xt = xt.mid(2);
-        result << xt;
-        QMap<QString, QString>::const_iterator it = mimetypes.constFind(xt);
-        for ( ; it != mimetypes.constEnd(); ++it)
-            result << it.value();
-    }
-    return result;
-}
+QAiScenePlugin::QAiScenePlugin() {}
+QAiScenePlugin::~QAiScenePlugin() {}
 
 QGLSceneFormatHandler *QAiScenePlugin::create(QIODevice *device, const QUrl& url, const QString &format) const
 {
@@ -94,7 +55,6 @@ QGLSceneFormatHandler *QAiScenePlugin::create(QIODevice *device, const QUrl& url
     return new QAiSceneHandler;
 }
 
-Q_EXPORT_STATIC_PLUGIN(QAiScenePlugin)
-Q_EXPORT_PLUGIN2(qsceneai, QAiScenePlugin)
-
 QT_END_NAMESPACE
+
+
