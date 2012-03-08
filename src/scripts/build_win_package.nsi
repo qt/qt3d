@@ -1,10 +1,10 @@
 !include LogicLib.nsh
 !include nsDialogs.nsh
 
-!define PRODUCT_NAME "QtQuick3D"
-!define PRODUCT_VERSION "1.0-tp1"
+!define PRODUCT_NAME "Qt3D"
+!define PRODUCT_VERSION "1.0"
 !define PRODUCT_PUBLISHER "Nokia"
-!define PRODUCT_WEB_SITE "http://doc.qt.nokia.com/qt-quick3d-snapshot/"
+!define PRODUCT_WEB_SITE "http://doc.qt.nokia.com/qt-qt3d-snapshot/"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\qglinfo.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
@@ -32,10 +32,10 @@
 !define MUI_FINISHPAGE_NOAUTOCLOSE
 ; Finish page
 Page custom DisplayWelcomeMessage
-!define MUI_FINISHPAGE_RUN $INSTDIR\quick3d\bin\run_start_program.bat
-!define MUI_FINISHPAGE_RUN_TEXT "Run QtQuick3D QGLInfo program"
-!define MUI_FINISHPAGE_LINK "QtQuick3D documentation"
-!define MUI_FINISHPAGE_LINK_LOCATION $INSTDIR\quick3d\doc\html\index.html
+!define MUI_FINISHPAGE_RUN $INSTDIR\qt3d\bin\run_start_program.bat
+!define MUI_FINISHPAGE_RUN_TEXT "Run Qt3D QGLInfo program"
+!define MUI_FINISHPAGE_LINK "Qt3D documentation"
+!define MUI_FINISHPAGE_LINK_LOCATION $INSTDIR\qt3d\doc\html\index.html
 
 !insertmacro MUI_PAGE_FINISH
 
@@ -52,7 +52,7 @@ Page custom DisplayWelcomeMessage
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 OutFile "${PRODUCT_NAME}-${PRODUCT_VERSION}.exe"
-InstallDir "$PROGRAMFILES\Qt\${PRODUCT_VERSION}\quick3d"
+InstallDir "$PROGRAMFILES\Qt\${PRODUCT_VERSION}\qt3d"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
 ShowUnInstDetails show
@@ -61,7 +61,7 @@ ShowUnInstDetails show
 ; HKCU\Software\Trolltech\Versions\${QT_VERSION}\InstallDir REG_SZ "C:\Qt\${QT_VERSION}"
 
 Function .onInit
-  LogSet on
+  ;LogSet on
   ReadRegStr $0 HKCU "Software\Trolltech\Versions\${QT_VERSION}" "InstallDir"
   ${If} $0 == ""
     MessageBox MB_ICONEXCLAMATION "Please install Qt v${QT_VERSION} MSVC from http:\\qt.nokia.com\downloads before installing ${PRODUCT_NAME} ${PRODUCT_VERSION}"
@@ -91,53 +91,51 @@ FunctionEnd
 
 Section "MainSection" SEC01
   SetOverwrite try
-  CreateDirectory "$SMPROGRAMS\QtQuick3D"
-  CreateDirectory "$SMPROGRAMS\QtQuick3D\Examples"
-  CreateDirectory "$SMPROGRAMS\QtQuick3D\Demos"
+  CreateDirectory "$SMPROGRAMS\Qt3D"
+  CreateDirectory "$SMPROGRAMS\Qt3D\Examples"
+  CreateDirectory "$SMPROGRAMS\Qt3D\Demos"
 
   ; For the CreateShortCut command, the outpath is actually used for the working directory.
   ; By setting $INSTDIR\bin to the working directory all these lnk targets should be able
   ; to find their dependent dll's without needing to set the path
   SetOutPath "$INSTDIR\bin"
-  CreateShortCut "$SMPROGRAMS\QtQuick3D\QtQuick3D.lnk" "$INSTDIR\quick3d\bin\qglinfo.exe"
-  CreateShortCut "$DESKTOP\QtQuick3D.lnk" "$INSTDIR\quick3d\bin\qglinfo.exe"
-  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Basket.lnk" "$INSTDIR\quick3d\bin\basket_qml.exe"
-  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Cube.lnk" "$INSTDIR\quick3d\bin\cube_qml.exe"
-  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Forest.lnk" "$INSTDIR\quick3d\bin\forest_qml.exe"
-  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Lander.lnk" "$INSTDIR\quick3d\bin\lander.exe"
-  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Matrix Animation.lnk" "$INSTDIR\quick3d\bin\matrix_animation.exe"
-  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Monkey God.lnk" "$INSTDIR\quick3d\bin\monkeygod.exe"
-  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Moon.lnk" "$INSTDIR\quick3d\bin\moon.exe"
-  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Photo Room.lnk" "$INSTDIR\quick3d\bin\photoroom.exe"
-  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Shaders.lnk" "$INSTDIR\quick3d\bin\shaders.exe"
-  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Sphere.lnk" "$INSTDIR\quick3d\bin\sphere.exe"
-  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Teapot.lnk" "$INSTDIR\quick3d\bin\teapot_qml.exe"
-  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Teapot Bounce.lnk" "$INSTDIR\quick3d\bin\teapot_bounce_qml.exe"
-  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Basket (C++).lnk" "$INSTDIR\quick3d\bin\basket.exe"
-  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Builder.lnk" "$INSTDIR\quick3d\bin\builder.exe"
-  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Cube (C++).lnk" "$INSTDIR\quick3d\bin\cube.exe"
-  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Cylinder.lnk" "$INSTDIR\quick3d\bin\cylinder.exe"
-  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Geometry.lnk" "$INSTDIR\quick3d\bin\geometry.exe"
-  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Graphicsview.lnk" "$INSTDIR\quick3d\bin\graphicsview.exe"
-  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Nesting.lnk" "$INSTDIR\quick3d\bin\nesting.exe"
-  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Tank.lnk" "$INSTDIR\quick3d\bin\tank.exe"
-  CreateShortCut "$SMPROGRAMS\QtQuick3D\Examples\Teapot (C++).lnk" "$INSTDIR\quick3d\bin\teapot.exe"
-  CreateShortCut "$SMPROGRAMS\QtQuick3D\Demos\Model Viewer.lnk" "$INSTDIR\quick3d\bin\model_viewer.exe"
-  CreateShortCut "$SMPROGRAMS\QtQuick3D\Demos\Robo Bounce.lnk" "$INSTDIR\quick3d\bin\robo_bounce.exe"
-  CreateShortCut "$SMPROGRAMS\QtQuick3D\Demos\Tea Service.lnk" "$INSTDIR\quick3d\bin\tea_service.exe"
-  CreateShortCut "$SMPROGRAMS\QtQuick3D\Demos\Cube House.lnk" "$INSTDIR\quick3d\bin\cubehouse.exe"
-  CreateShortCut "$SMPROGRAMS\QtQuick3D\Demos\Page Flip.lnk" "$INSTDIR\quick3d\bin\pageflip.exe"
-  CreateShortCut "$SMPROGRAMS\QtQuick3D\Demos\Photo-browser 3D.lnk" "$INSTDIR\quick3d\bin\photobrowser3d.exe"
-  CreateShortCut "$SMPROGRAMS\QtQuick3D\Demos\Shapes.lnk" "$INSTDIR\quick3d\bin\shapes.exe"
-  CreateShortCut "$SMPROGRAMS\QtQuick3D\Demos\Tea Service (C++).lnk" "$INSTDIR\quick3d\bin\teaservice.exe"
+  CreateShortCut "$SMPROGRAMS\Qt3D\Qt3D.lnk" "$INSTDIR\qt3d\bin\qglinfo.exe"
+  CreateShortCut "$DESKTOP\Qt3D.lnk" "$INSTDIR\qt3d\bin\qglinfo.exe"
+  CreateShortCut "$SMPROGRAMS\Qt3D\Examples\Basket.lnk" "$INSTDIR\qt3d\bin\basket_qml.exe"
+  CreateShortCut "$SMPROGRAMS\Qt3D\Examples\Cube.lnk" "$INSTDIR\qt3d\bin\cube_qml.exe"
+  CreateShortCut "$SMPROGRAMS\Qt3D\Examples\Forest.lnk" "$INSTDIR\qt3d\bin\forest_qml.exe"
+  CreateShortCut "$SMPROGRAMS\Qt3D\Examples\Lander.lnk" "$INSTDIR\qt3d\bin\lander.exe"
+  CreateShortCut "$SMPROGRAMS\Qt3D\Examples\Matrix Animation.lnk" "$INSTDIR\qt3d\bin\matrix_animation.exe"
+  CreateShortCut "$SMPROGRAMS\Qt3D\Examples\Monkey God.lnk" "$INSTDIR\qt3d\bin\monkeygod.exe"
+  CreateShortCut "$SMPROGRAMS\Qt3D\Examples\Moon.lnk" "$INSTDIR\qt3d\bin\moon.exe"
+  CreateShortCut "$SMPROGRAMS\Qt3D\Examples\Photo Room.lnk" "$INSTDIR\qt3d\bin\photoroom.exe"
+  CreateShortCut "$SMPROGRAMS\Qt3D\Examples\Shaders.lnk" "$INSTDIR\qt3d\bin\shaders.exe"
+  CreateShortCut "$SMPROGRAMS\Qt3D\Examples\Sphere.lnk" "$INSTDIR\qt3d\bin\sphere.exe"
+  CreateShortCut "$SMPROGRAMS\Qt3D\Examples\Basket (C++).lnk" "$INSTDIR\qt3d\bin\basket.exe"
+  CreateShortCut "$SMPROGRAMS\Qt3D\Examples\Builder.lnk" "$INSTDIR\qt3d\bin\builder.exe"
+  CreateShortCut "$SMPROGRAMS\Qt3D\Examples\Cube (C++).lnk" "$INSTDIR\qt3d\bin\cube.exe"
+  CreateShortCut "$SMPROGRAMS\Qt3D\Examples\Cylinder.lnk" "$INSTDIR\qt3d\bin\cylinder.exe"
+  CreateShortCut "$SMPROGRAMS\Qt3D\Examples\Geometry.lnk" "$INSTDIR\qt3d\bin\geometry.exe"
+  CreateShortCut "$SMPROGRAMS\Qt3D\Examples\Graphicsview.lnk" "$INSTDIR\qt3d\bin\graphicsview.exe"
+  CreateShortCut "$SMPROGRAMS\Qt3D\Examples\Nesting.lnk" "$INSTDIR\qt3d\bin\nesting.exe"
+  CreateShortCut "$SMPROGRAMS\Qt3D\Examples\Tank.lnk" "$INSTDIR\qt3d\bin\tank.exe"
+  CreateShortCut "$SMPROGRAMS\Qt3D\Examples\Teapot (C++).lnk" "$INSTDIR\qt3d\bin\teapot.exe"
+  CreateShortCut "$SMPROGRAMS\Qt3D\Demos\Model Viewer.lnk" "$INSTDIR\qt3d\bin\model_viewer.exe"
+  CreateShortCut "$SMPROGRAMS\Qt3D\Demos\Robo Bounce.lnk" "$INSTDIR\qt3d\bin\robo_bounce.exe"
+  CreateShortCut "$SMPROGRAMS\Qt3D\Demos\Tea Service.lnk" "$INSTDIR\qt3d\bin\tea_service.exe"
+  CreateShortCut "$SMPROGRAMS\Qt3D\Demos\Cube House.lnk" "$INSTDIR\qt3d\bin\cubehouse.exe"
+  CreateShortCut "$SMPROGRAMS\Qt3D\Demos\Page Flip.lnk" "$INSTDIR\qt3d\bin\pageflip.exe"
+  CreateShortCut "$SMPROGRAMS\Qt3D\Demos\Photo-browser 3D.lnk" "$INSTDIR\qt3d\bin\photobrowser3d.exe"
+  CreateShortCut "$SMPROGRAMS\Qt3D\Demos\Shapes.lnk" "$INSTDIR\qt3d\bin\shapes.exe"
+  CreateShortCut "$SMPROGRAMS\Qt3D\Demos\Tea Service (C++).lnk" "$INSTDIR\qt3d\bin\teaservice.exe"
 
-  ; bin imports include lib mkspecs plugins quick3d
-  SetOutPath "$INSTDIR\quick3d\bin"
+  ; bin imports include lib mkspecs plugins qt3d
+  SetOutPath "$INSTDIR\qt3d\bin"
   File "${MK_INST_ROOT}${QT_PREFIX_PATH}\bin\*.exe"
   File /r "${MK_INST_ROOT}${QT_PREFIX_PATH}\quick3d\resources"
   SetOutPath "$INSTDIR\lib"
   File "${MK_INST_ROOT}${QT_PREFIX_PATH}\bin\*.lib"
-  SetOutPath "$INSTDIR\quick3d\doc"
+  SetOutPath "$INSTDIR\qt3d\doc"
   File /r "doc\html"
   SetOutPath "$INSTDIR\bin"
   File "${MK_INST_ROOT}${QT_PREFIX_PATH}\bin\*.dll"
@@ -148,9 +146,9 @@ Section "MainSection" SEC01
   File /r "${MK_INST_ROOT}${QT_PREFIX_PATH}\plugins"
 
   ClearErrors
-  FileOpen $0 $INSTDIR\quick3d\bin\run_start_program.bat w
+  FileOpen $0 $INSTDIR\qt3d\bin\run_start_program.bat w
   IfErrors done
-  FileWrite $0 "start /D $INSTDIR\bin $INSTDIR\quick3d\bin\qglinfo.exe"
+  FileWrite $0 "start /D $INSTDIR\bin $INSTDIR\qt3d\bin\qglinfo.exe"
   FileClose $0
   done:
 SectionEnd
@@ -158,16 +156,16 @@ SectionEnd
 Section -AdditionalIcons
   SetOutPath $INSTDIR
   WriteIniStr "$INSTDIR\${PRODUCT_NAME}.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
-  CreateShortCut "$SMPROGRAMS\QtQuick3D\Website.lnk" "$INSTDIR\${PRODUCT_NAME}.url"
-  CreateShortCut "$SMPROGRAMS\QtQuick3D\Uninstall.lnk" "$INSTDIR\quick3d\uninst.exe"
+  CreateShortCut "$SMPROGRAMS\Qt3D\Website.lnk" "$INSTDIR\${PRODUCT_NAME}.url"
+  CreateShortCut "$SMPROGRAMS\Qt3D\Uninstall.lnk" "$INSTDIR\qt3d\uninst.exe"
 SectionEnd
 
 Section -Post
-  WriteUninstaller "$INSTDIR\quick3d\uninst.exe"
-  WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\quick3d\bin\qglinfo.exe"
+  WriteUninstaller "$INSTDIR\qt3d\uninst.exe"
+  WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\qt3d\bin\qglinfo.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\quick3d\uninst.exe"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\quick3d\bin\qglinfo.exe"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\qt3d\uninst.exe"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\qt3d\bin\qglinfo.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
@@ -190,27 +188,27 @@ FunctionEnd
 
 Section Uninstall
   Delete "$INSTDIR\${PRODUCT_NAME}.url"
-  Delete "$INSTDIR\quick3d\uninst.exe"
+  Delete "$INSTDIR\qt3d\uninst.exe"
   RMDir /r "$INSTDIR\plugins\sceneformats"
   Delete "$INSTDIR\plugins\imageformats\qtga4.dll"
   Delete "$INSTDIR\mkspecs\features\qt3dquick.prf"
   Delete "$INSTDIR\mkspecs\features\qt3d.prf"
-  Delete "$INSTDIR\lib\Qt3DQuick.*"
-  Delete "$INSTDIR\lib\Qt3DQuickd.*"
   Delete "$INSTDIR\lib\Qt3D.*"
   Delete "$INSTDIR\lib\Qt3Dd.*"
-  Delete "$INSTDIR\bin\Qt3DQuick.*"
-  Delete "$INSTDIR\bin\Qt3DQuickd.*"
+  Delete "$INSTDIR\lib\Qt3D.*"
+  Delete "$INSTDIR\lib\Qt3Dd.*"
+  Delete "$INSTDIR\bin\Qt3D.*"
+  Delete "$INSTDIR\bin\Qt3Dd.*"
   Delete "$INSTDIR\bin\Qt3D.*"
   Delete "$INSTDIR\bin\Qt3Dd.*"
   RMDir /r "$INSTDIR\include\Qt3D"
-  RMDir /r "$INSTDIR\include\Qt3DQuick"
+  RMDir /r "$INSTDIR\include\Qt3D"
   RMDir /r "$INSTDIR\imports\Qt3D"
-  RMDir /r "$INSTDIR\quick3d"
+  RMDir /r "$INSTDIR\qt3d"
 
-  Delete "$DESKTOP\QtQuick3D.lnk"
-  RMDir /r "$SMPROGRAMS\QtQuick3D"
-  RMDir /r "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\QtQuick3D"
+  Delete "$DESKTOP\Qt3D.lnk"
+  RMDir /r "$SMPROGRAMS\Qt3D"
+  RMDir /r "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Qt3D"
 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
