@@ -76,7 +76,7 @@ class Q_QT3D_QUICK_EXPORT QDeclarativeEffect : public QObject
     Q_PROPERTY(qreal progress READ progress NOTIFY progressChanged)
 public:
     QDeclarativeEffect(QObject *parent = 0);
-    ~QDeclarativeEffect();
+    virtual ~QDeclarativeEffect();
 
     virtual QColor color() const;
     virtual void setColor(const QColor& value);
