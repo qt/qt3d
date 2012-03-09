@@ -87,7 +87,7 @@ namespace QTest {
     char *toString(const QColor4ub &c)
     {
         char *msg = new char[128];
-        qsnprintf(msg, 128, "R: %0.2f, G: %0.2f, B: %0.2f, A: %0.2)",
+        qsnprintf(msg, 128, "R: %0.2f, G: %0.2f, B: %0.2f, A: %0.2f)",
                     c.redF(), c.greenF(), c.blueF(), c.alphaF());
         return msg;
     }
