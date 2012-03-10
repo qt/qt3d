@@ -146,7 +146,7 @@ CylinderMeshPrivate::CylinderMeshPrivate()
     , lod(5)
     , sceneSet(false)
 {
-    topNode->setObjectName("CylinderMesh");
+    topNode->setObjectName(QLatin1String("CylinderMesh"));
 }
 
 CylinderMeshPrivate::~CylinderMeshPrivate()

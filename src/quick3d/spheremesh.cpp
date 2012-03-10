@@ -174,7 +174,7 @@ SphereMeshPrivate::SphereMeshPrivate()
     , axis(Qt::ZAxis)
     , sceneSet(false)
 {
-    topNode->setObjectName("SphereMesh");
+    topNode->setObjectName(QLatin1String("SphereMesh"));
 }
 
 SphereMeshPrivate::~SphereMeshPrivate()

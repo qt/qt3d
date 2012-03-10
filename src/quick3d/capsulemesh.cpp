@@ -152,7 +152,7 @@ CapsuleMeshPrivate::CapsuleMeshPrivate()
     , lod(5)
     , sceneSet(false)
 {
-    topNode->setObjectName("CapsuleMesh");
+    topNode->setObjectName(QLatin1String("CapsuleMesh"));
 }
 
 CapsuleMeshPrivate::~CapsuleMeshPrivate()
@@ -332,7 +332,7 @@ void CapsuleMesh::createGeometry(bool bForce)
         builder << QGL::Faceted;
         QGLSceneNode *s = 0;
         s = builder.newNode();
-        s->setObjectName("Cylinder");
+        s->setObjectName(QLatin1String("Cylinder"));
         builder << QGLCylinder(diameter, diameter, cylinderHeight,
                                facets, layers, false, false);
         QMatrix4x4 translateMatrix;
@@ -340,7 +340,7 @@ void CapsuleMesh::createGeometry(bool bForce)
         builder.currentNode()->setLocalTransform(translateMatrix);
 
         s = builder.newNode();
-        s->setObjectName("LeftEndCap");
+        s->setObjectName(QLatin1String("LeftEndCap"));
         builder << QGLDome(diameter, divisions, false);
         translateMatrix.setToIdentity();
         translateMatrix.rotate(180, 0, 1,0);
@@ -348,7 +348,7 @@ void CapsuleMesh::createGeometry(bool bForce)
         builder.currentNode()->setLocalTransform(translateMatrix);
 
         s = builder.newNode();
-        s->setObjectName("RightEndCap");
+        s->setObjectName(QLatin1String("RightEndCap"));
         builder << QGLDome(diameter, divisions, false);
         translateMatrix.setToIdentity();
         translateMatrix.translate(0, 0, offset);
