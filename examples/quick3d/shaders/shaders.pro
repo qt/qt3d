@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = shaders
 CONFIG += qt warn_on
-QT += declarative quick
+QT += qml quick
 
 SOURCES += main.cpp
 

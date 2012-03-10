@@ -58,7 +58,7 @@
 #include <QEvent>
 #include <QTimer>
 #include <QCoreApplication>
-#include <QDeclarativeInfo>
+#include <QQmlInfo>
 #include <QtQuick/QQuickCanvas>
 #include <QOpenGLBuffer>
 #include <QtCore/qthread.h>
@@ -95,7 +95,7 @@
 
 QT_BEGIN_NAMESPACE
 
-// copied from the top of qsgcanvas.cpp and qdeclarativeglobal_p.h
+// copied from the top of qsgcanvas.cpp and qqmlglobal_p.h
 static bool qmlNoThreadedRenderer()
 {
     static enum { Yes, No, Unknown } status = Unknown;

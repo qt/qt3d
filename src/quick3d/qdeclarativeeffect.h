@@ -48,7 +48,7 @@
 #include <QtCore/qurl.h>
 #include <QtGui/qcolor.h>
 #include <QtGui/qimage.h>
-#include <QtDeclarative/qdeclarative.h>
+#include <QtQml/qqml.h>
 
 #include "qgltexture2d.h"
 

@@ -47,9 +47,9 @@
 #include <QtNetwork/QNetworkRequest>
 #include <QtNetwork/QNetworkReply>
 
-#include <QtDeclarative/qdeclarativeengine.h>
+#include <QtQml/qqmlengine.h>
 
-#include <QtDeclarative/qdeclarativeinfo.h>
+#include <QtQml/qqmlinfo.h>
 #include "qglscenenode.h"
 
 /*!

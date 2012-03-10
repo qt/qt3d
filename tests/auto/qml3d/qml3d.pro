@@ -2,7 +2,7 @@ load(qmltestcase.prf)
 TEMPLATE=app
 TARGET=tst_qml3d
 CONFIG += warn_on
-QT += declarative opengl
+QT += qml opengl
 QT += qtquick1
 SOURCES += tst_qml3d.cpp
 

@@ -51,7 +51,7 @@
 #include "qgraphicstransform3d.h"
 
 #include <QtGui/qevent.h>
-#include <QtDeclarative/qdeclarativecontext.h>
+#include <QtQml/qqmlcontext.h>
 #include <qquickcanvas.h>
 
 /*!
@@ -305,33 +305,33 @@ public:
     QString meshNode;
 
     // data property
-    static void data_append(QDeclarativeListProperty<QObject> *, QObject *);
+    static void data_append(QQmlListProperty<QObject> *, QObject *);
 
     // resources property
-    static QObject *resources_at(QDeclarativeListProperty<QObject> *, int);
-    static void resources_append(QDeclarativeListProperty<QObject> *, QObject *);
-    static int resources_count(QDeclarativeListProperty<QObject> *);
+    static QObject *resources_at(QQmlListProperty<QObject> *, int);
+    static void resources_append(QQmlListProperty<QObject> *, QObject *);
+    static int resources_count(QQmlListProperty<QObject> *);
 
     // transform property
-    static int transform_count(QDeclarativeListProperty<QGraphicsTransform3D> *list);
-    static void transform_append(QDeclarativeListProperty<QGraphicsTransform3D> *list, QGraphicsTransform3D *);
-    static QGraphicsTransform3D *transform_at(QDeclarativeListProperty<QGraphicsTransform3D> *list, int);
-    static void transform_clear(QDeclarativeListProperty<QGraphicsTransform3D> *list);
+    static int transform_count(QQmlListProperty<QGraphicsTransform3D> *list);
+    static void transform_append(QQmlListProperty<QGraphicsTransform3D> *list, QGraphicsTransform3D *);
+    static QGraphicsTransform3D *transform_at(QQmlListProperty<QGraphicsTransform3D> *list, int);
+    static void transform_clear(QQmlListProperty<QGraphicsTransform3D> *list);
     QList<QGraphicsTransform3D *> transforms;
 
 
     // pretransform property
-    static int pretransform_count(QDeclarativeListProperty<QGraphicsTransform3D> *list);
-    static void pretransform_append(QDeclarativeListProperty<QGraphicsTransform3D> *list, QGraphicsTransform3D *);
-    static QGraphicsTransform3D *pretransform_at(QDeclarativeListProperty<QGraphicsTransform3D> *list, int);
-    static void pretransform_clear(QDeclarativeListProperty<QGraphicsTransform3D> *list);
+    static int pretransform_count(QQmlListProperty<QGraphicsTransform3D> *list);
+    static void pretransform_append(QQmlListProperty<QGraphicsTransform3D> *list, QGraphicsTransform3D *);
+    static QGraphicsTransform3D *pretransform_at(QQmlListProperty<QGraphicsTransform3D> *list, int);
+    static void pretransform_clear(QQmlListProperty<QGraphicsTransform3D> *list);
     QList<QGraphicsTransform3D *> pretransforms;
 
     // animations property
-    static int animations_count(QDeclarativeListProperty<QDeclarativeAnimation3D> *list);
-    static void animations_append(QDeclarativeListProperty<QDeclarativeAnimation3D> *list, QDeclarativeAnimation3D *);
-    static QDeclarativeAnimation3D *animations_at(QDeclarativeListProperty<QDeclarativeAnimation3D> *list, int);
-    static void animations_clear(QDeclarativeListProperty<QDeclarativeAnimation3D> *list);
+    static int animations_count(QQmlListProperty<QDeclarativeAnimation3D> *list);
+    static void animations_append(QQmlListProperty<QDeclarativeAnimation3D> *list, QDeclarativeAnimation3D *);
+    static QDeclarativeAnimation3D *animations_at(QQmlListProperty<QDeclarativeAnimation3D> *list, int);
+    static void animations_clear(QQmlListProperty<QDeclarativeAnimation3D> *list);
     QList<QDeclarativeAnimation3D *> animations;
 
     // transform convenience functions
@@ -347,7 +347,7 @@ QDeclarativeItem3DPrivate::~QDeclarativeItem3DPrivate()
 {
 }
 
-int QDeclarativeItem3DPrivate::transform_count(QDeclarativeListProperty<QGraphicsTransform3D> *list)
+int QDeclarativeItem3DPrivate::transform_count(QQmlListProperty<QGraphicsTransform3D> *list)
 {
     QDeclarativeItem3D *object = qobject_cast<QDeclarativeItem3D *>(list->object);
     if (object) {
@@ -358,7 +358,7 @@ int QDeclarativeItem3DPrivate::transform_count(QDeclarativeListProperty<QGraphic
     }
 }
 
-void QDeclarativeItem3DPrivate::transform_append(QDeclarativeListProperty<QGraphicsTransform3D> *list, QGraphicsTransform3D *item)
+void QDeclarativeItem3DPrivate::transform_append(QQmlListProperty<QGraphicsTransform3D> *list, QGraphicsTransform3D *item)
 {
     QDeclarativeItem3D *object = qobject_cast<QDeclarativeItem3D *>(list->object);
     QList<QGraphicsTransform3D *> *ptrans;
@@ -377,7 +377,7 @@ void QDeclarativeItem3DPrivate::transform_append(QDeclarativeListProperty<QGraph
         qWarning()<<"Warning: could not find Item3D to add transformation to.";
 }
 
-QGraphicsTransform3D *QDeclarativeItem3DPrivate::transform_at(QDeclarativeListProperty<QGraphicsTransform3D> *list, int idx)
+QGraphicsTransform3D *QDeclarativeItem3DPrivate::transform_at(QQmlListProperty<QGraphicsTransform3D> *list, int idx)
 {
    QDeclarativeItem3D *object = qobject_cast<QDeclarativeItem3D *>(list->object);
     if (object) {
@@ -389,7 +389,7 @@ QGraphicsTransform3D *QDeclarativeItem3DPrivate::transform_at(QDeclarativeListPr
     return 0;
 }
 
-void QDeclarativeItem3DPrivate::transform_clear(QDeclarativeListProperty<QGraphicsTransform3D> *list)
+void QDeclarativeItem3DPrivate::transform_clear(QQmlListProperty<QGraphicsTransform3D> *list)
 {
 
     QDeclarativeItem3D *object = qobject_cast<QDeclarativeItem3D *>(list->object);
@@ -401,7 +401,7 @@ void QDeclarativeItem3DPrivate::transform_clear(QDeclarativeListProperty<QGraphi
         qWarning()<<"Warning: could not find Item3D to clear of transformations";
 }
 
-int QDeclarativeItem3DPrivate::pretransform_count(QDeclarativeListProperty<QGraphicsTransform3D> *list)
+int QDeclarativeItem3DPrivate::pretransform_count(QQmlListProperty<QGraphicsTransform3D> *list)
 {
     QDeclarativeItem3D *object = qobject_cast<QDeclarativeItem3D *>(list->object);
     if (object) {
@@ -412,7 +412,7 @@ int QDeclarativeItem3DPrivate::pretransform_count(QDeclarativeListProperty<QGrap
     }
 }
 
-void QDeclarativeItem3DPrivate::pretransform_append(QDeclarativeListProperty<QGraphicsTransform3D> *list, QGraphicsTransform3D *item)
+void QDeclarativeItem3DPrivate::pretransform_append(QQmlListProperty<QGraphicsTransform3D> *list, QGraphicsTransform3D *item)
 {
     QDeclarativeItem3D *object = qobject_cast<QDeclarativeItem3D *>(list->object);
     QList<QGraphicsTransform3D *> *ptrans;
@@ -431,7 +431,7 @@ void QDeclarativeItem3DPrivate::pretransform_append(QDeclarativeListProperty<QGr
         qWarning()<<"Warning: could not find Item3D to add transformation to.";
 }
 
-QGraphicsTransform3D *QDeclarativeItem3DPrivate::pretransform_at(QDeclarativeListProperty<QGraphicsTransform3D> *list, int idx)
+QGraphicsTransform3D *QDeclarativeItem3DPrivate::pretransform_at(QQmlListProperty<QGraphicsTransform3D> *list, int idx)
 {
    QDeclarativeItem3D *object = qobject_cast<QDeclarativeItem3D *>(list->object);
     if (object) {
@@ -443,7 +443,7 @@ QGraphicsTransform3D *QDeclarativeItem3DPrivate::pretransform_at(QDeclarativeLis
     return 0;
 }
 
-void QDeclarativeItem3DPrivate::pretransform_clear(QDeclarativeListProperty<QGraphicsTransform3D> *list)
+void QDeclarativeItem3DPrivate::pretransform_clear(QQmlListProperty<QGraphicsTransform3D> *list)
 {
 
     QDeclarativeItem3D *object = qobject_cast<QDeclarativeItem3D *>(list->object);
@@ -455,7 +455,7 @@ void QDeclarativeItem3DPrivate::pretransform_clear(QDeclarativeListProperty<QGra
         qWarning()<<"Warning: could not find Item3D to clear of transformations";
 }
 
-int QDeclarativeItem3DPrivate::animations_count(QDeclarativeListProperty<QDeclarativeAnimation3D> *list)
+int QDeclarativeItem3DPrivate::animations_count(QQmlListProperty<QDeclarativeAnimation3D> *list)
 {
     QDeclarativeItem3D *object = qobject_cast<QDeclarativeItem3D *>(list->object);
     if (object) {
@@ -466,7 +466,7 @@ int QDeclarativeItem3DPrivate::animations_count(QDeclarativeListProperty<QDeclar
     }
 }
 
-void QDeclarativeItem3DPrivate::animations_append(QDeclarativeListProperty<QDeclarativeAnimation3D> *list, QDeclarativeAnimation3D *item)
+void QDeclarativeItem3DPrivate::animations_append(QQmlListProperty<QDeclarativeAnimation3D> *list, QDeclarativeAnimation3D *item)
 {
     QDeclarativeItem3D *object = qobject_cast<QDeclarativeItem3D *>(list->object);
     QList<QDeclarativeAnimation3D *> *panim;
@@ -481,7 +481,7 @@ void QDeclarativeItem3DPrivate::animations_append(QDeclarativeListProperty<QDecl
         qWarning()<<"Warning: could not find Item3D to add animation to.";
 }
 
-QDeclarativeAnimation3D* QDeclarativeItem3DPrivate::animations_at(QDeclarativeListProperty<QDeclarativeAnimation3D> *list, int idx)
+QDeclarativeAnimation3D* QDeclarativeItem3DPrivate::animations_at(QQmlListProperty<QDeclarativeAnimation3D> *list, int idx)
 {
     QDeclarativeItem3D *object = qobject_cast<QDeclarativeItem3D *>(list->object);
     if (object) {
@@ -493,7 +493,7 @@ QDeclarativeAnimation3D* QDeclarativeItem3DPrivate::animations_at(QDeclarativeLi
     return 0;
 }
 
-void QDeclarativeItem3DPrivate::animations_clear(QDeclarativeListProperty<QDeclarativeAnimation3D> *list)
+void QDeclarativeItem3DPrivate::animations_clear(QQmlListProperty<QDeclarativeAnimation3D> *list)
 {
     QDeclarativeItem3D *object = qobject_cast<QDeclarativeItem3D *>(list->object);
     if (object) {
@@ -505,7 +505,7 @@ void QDeclarativeItem3DPrivate::animations_clear(QDeclarativeListProperty<QDecla
 
 
 
-void QDeclarativeItem3DPrivate::data_append(QDeclarativeListProperty<QObject> *prop, QObject *o)
+void QDeclarativeItem3DPrivate::data_append(QQmlListProperty<QObject> *prop, QObject *o)
 {
     // This function is called by the QML runtime to assign children to
     // an item3d.  The object 'o' is the new child, and prop->object is the
@@ -531,7 +531,7 @@ void QDeclarativeItem3DPrivate::data_append(QDeclarativeListProperty<QObject> *p
 }
 
 
-QObject *QDeclarativeItem3DPrivate::resources_at(QDeclarativeListProperty<QObject> *prop, int index)
+QObject *QDeclarativeItem3DPrivate::resources_at(QQmlListProperty<QObject> *prop, int index)
 {
     QObjectList children = prop->object->children();
     if (index < children.count())
@@ -540,12 +540,12 @@ QObject *QDeclarativeItem3DPrivate::resources_at(QDeclarativeListProperty<QObjec
         return 0;
 }
 
-void QDeclarativeItem3DPrivate::resources_append(QDeclarativeListProperty<QObject> *prop, QObject *o)
+void QDeclarativeItem3DPrivate::resources_append(QQmlListProperty<QObject> *prop, QObject *o)
 {
     o->setParent(prop->object);
 }
 
-int QDeclarativeItem3DPrivate::resources_count(QDeclarativeListProperty<QObject> *prop)
+int QDeclarativeItem3DPrivate::resources_count(QQmlListProperty<QObject> *prop)
 {
     return prop->object->children().count();
 }
@@ -755,9 +755,9 @@ void QDeclarativeItem3D::setScale(qreal value)
 */
 
 
-QDeclarativeListProperty<QGraphicsTransform3D> QDeclarativeItem3D::transform()
+QQmlListProperty<QGraphicsTransform3D> QDeclarativeItem3D::transform()
 {
-    return QDeclarativeListProperty<QGraphicsTransform3D>(this, 0, d->transform_append, d->transform_count,
+    return QQmlListProperty<QGraphicsTransform3D>(this, 0, d->transform_append, d->transform_count,
                                                d->transform_at, d->transform_clear);
 }
 
@@ -781,9 +781,9 @@ QDeclarativeListProperty<QGraphicsTransform3D> QDeclarativeItem3D::transform()
     \sa transform, scale, position
 */
 
-QDeclarativeListProperty<QGraphicsTransform3D> QDeclarativeItem3D::pretransform()
+QQmlListProperty<QGraphicsTransform3D> QDeclarativeItem3D::pretransform()
 {
-    return QDeclarativeListProperty<QGraphicsTransform3D>(this, 0, d->pretransform_append, d->pretransform_count,
+    return QQmlListProperty<QGraphicsTransform3D>(this, 0, d->pretransform_append, d->pretransform_count,
                                                d->pretransform_at, d->pretransform_clear);
 }
 
@@ -993,9 +993,9 @@ void QDeclarativeItem3D::setLight(QGLLightParameters *value)
     \sa transform
 */
 
-QDeclarativeListProperty<QObject> QDeclarativeItem3D::resources()
+QQmlListProperty<QObject> QDeclarativeItem3D::resources()
 {
-    return QDeclarativeListProperty<QObject>(this, 0, QDeclarativeItem3DPrivate::resources_append,
+    return QQmlListProperty<QObject>(this, 0, QDeclarativeItem3DPrivate::resources_append,
                                              QDeclarativeItem3DPrivate::resources_count,
                                              QDeclarativeItem3DPrivate::resources_at);
 }
@@ -1009,9 +1009,9 @@ QDeclarativeListProperty<QObject> QDeclarativeItem3D::resources()
     include additional data and resources.  Currently there is no underlying
     implementation for this.
 */
-QDeclarativeListProperty<QObject> QDeclarativeItem3D::data()
+QQmlListProperty<QObject> QDeclarativeItem3D::data()
 {
-    return QDeclarativeListProperty<QObject>(this, 0, QDeclarativeItem3DPrivate::data_append);
+    return QQmlListProperty<QObject>(this, 0, QDeclarativeItem3DPrivate::data_append);
 }
 
 /*!
@@ -1423,9 +1423,9 @@ void QDeclarativeItem3D::componentComplete()
     {
         if (!d->viewport)
         {
-            QDeclarativeContext *ctx = QDeclarativeEngine::contextForObject(this);
-            QDeclarativeEngine *engine = ctx->engine();
-            QDeclarativeComponent vp(engine);
+            QQmlContext *ctx = QQmlEngine::contextForObject(this);
+            QQmlEngine *engine = ctx->engine();
+            QQmlComponent vp(engine);
             vp.setData(QByteArray(
                            "import QtQuick 2.0\n"
                            "import Qt3D 1.0\n"
@@ -1707,9 +1707,9 @@ void QDeclarativeItem3D::setEnabled(bool value)
 /*!
     //TODO
 */
-QDeclarativeListProperty<QDeclarativeAnimation3D> QDeclarativeItem3D::animations()
+QQmlListProperty<QDeclarativeAnimation3D> QDeclarativeItem3D::animations()
 {
-    return QDeclarativeListProperty<QDeclarativeAnimation3D>(this, 0, d->animations_append, d->animations_count, d->animations_at, d->animations_clear);
+    return QQmlListProperty<QDeclarativeAnimation3D>(this, 0, d->animations_append, d->animations_count, d->animations_at, d->animations_clear);
 }
 
 /*!

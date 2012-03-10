@@ -59,7 +59,7 @@ Module {
     Component {
         name: "QDeclarativeItem3D"
         defaultProperty: "data"
-        prototype: "QDeclarativeItem"
+        prototype: "QQuickItem"
         Enum {
             name: "CullFace"
             values: {

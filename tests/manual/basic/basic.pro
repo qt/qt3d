@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = tst_basic
 CONFIG += qt warn_on
-QT += declarative quick
+QT += qml quick
 
 SOURCES += main.cpp
 

@@ -46,9 +46,9 @@
 
 #include <QtCore/qobject.h>
 #include <QtCore/qurl.h>
-#include <QtDeclarative/qdeclarative.h>
-#include <QtDeclarative/qdeclarativeengine.h>
-#include <QtDeclarative/qdeclarativeparserstatus.h>
+#include <QtQml/qqml.h>
+#include <QtQml/qqmlengine.h>
+#include <QtQml/qqmlparserstatus.h>
 
 #include "qglscenenode.h"
 #include "qglpainter.h"
@@ -64,10 +64,10 @@ class QGLAbstractScene;
 class QGLMaterial;
 class QGLSceneAnimation;
 
-class Q_QT3D_QUICK_EXPORT QDeclarativeMesh : public QObject, public QDeclarativeParserStatus
+class Q_QT3D_QUICK_EXPORT QDeclarativeMesh : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
-    Q_INTERFACES(QDeclarativeParserStatus)
+    Q_INTERFACES(QQmlParserStatus)
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY dataChanged)
     Q_PROPERTY(QString meshName READ meshName WRITE setMeshName NOTIFY dataChanged)
     Q_PROPERTY(QString options READ options WRITE setOptions NOTIFY optionsChanged)

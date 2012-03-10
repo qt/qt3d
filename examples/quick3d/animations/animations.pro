@@ -1,6 +1,6 @@
 TEMPLATE = app
 TARGET = animations_qml
-QT += declarative quick
+QT += qml quick
 CONFIG += qt warn_on
 
 SOURCES += main.cpp

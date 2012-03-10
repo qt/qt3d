@@ -46,8 +46,8 @@
 #include "qglscenenode.h"
 
 #include <QWeakPointer>
-#include <QDeclarativeEngine>
-#include <QDeclarativeContext>
+#include <QQmlEngine>
+#include <QQmlContext>
 
 /*!
     \qmlclass ShaderProgram ShaderProgram
@@ -619,8 +619,8 @@ void ShaderProgramEffect::processTextureUrl(int uniformLocation, QString urlStri
     if (url.isRelative())
     {
         // Get the baseUrl from the declarative engine
-        QDeclarativeContext *context =
-                QDeclarativeEngine::contextForObject(parent.data());
+        QQmlContext *context =
+                QQmlEngine::contextForObject(parent.data());
 
         if (context)
         {
@@ -646,7 +646,7 @@ void ShaderProgramEffect::processTextureUrl(int uniformLocation, QString urlStri
             // the Qt3D 1.1 release and there is no point in implementing it until for example
             // model loading and all other parts of Qt3D support it.  Also when it is implemented
             // it has to be done with a facility that does not depend on private headers in
-            // QtDeclarative which can change within minor dot-point releases.
+            // QtQml which can change within minor dot-point releases.
             qWarning("Network URL's not yet supported - %s", qPrintable(urlString));
         }
         else

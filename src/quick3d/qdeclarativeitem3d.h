@@ -67,7 +67,7 @@ class QDeclarativeViewport;
 class Q_QT3D_QUICK_EXPORT QDeclarativeItem3D : public QQuickItem
 {
     Q_OBJECT
-    Q_INTERFACES(QDeclarativeParserStatus)
+    Q_INTERFACES(QQmlParserStatus)
     Q_ENUMS(SortMode)
     Q_ENUMS(CullFace)
     Q_FLAGS(CullFaces)
@@ -76,19 +76,19 @@ class Q_QT3D_QUICK_EXPORT QDeclarativeItem3D : public QQuickItem
     Q_PROPERTY(qreal y READ y WRITE setY NOTIFY positionChanged)
     Q_PROPERTY(qreal z READ z WRITE setZ NOTIFY positionChanged)
     Q_PROPERTY(qreal scale READ scale WRITE setScale NOTIFY scaleChanged)
-    Q_PROPERTY(QDeclarativeListProperty<QGraphicsTransform3D> transform READ transform DESIGNABLE false FINAL)
-    Q_PROPERTY(QDeclarativeListProperty<QGraphicsTransform3D> pretransform READ pretransform DESIGNABLE false FINAL)
+    Q_PROPERTY(QQmlListProperty<QGraphicsTransform3D> transform READ transform DESIGNABLE false FINAL)
+    Q_PROPERTY(QQmlListProperty<QGraphicsTransform3D> pretransform READ pretransform DESIGNABLE false FINAL)
     Q_PROPERTY(QDeclarativeMesh *mesh READ mesh WRITE setMesh NOTIFY meshChanged)
     Q_PROPERTY(QDeclarativeEffect *effect READ effect WRITE setEffect NOTIFY effectChanged)
     Q_PROPERTY(QGLLightParameters *light READ light WRITE setLight NOTIFY lightChanged)
-    Q_PROPERTY(QDeclarativeListProperty<QObject> resources READ resources DESIGNABLE false)
-    Q_PROPERTY(QDeclarativeListProperty<QObject> data READ data DESIGNABLE false)
+    Q_PROPERTY(QQmlListProperty<QObject> resources READ resources DESIGNABLE false)
+    Q_PROPERTY(QQmlListProperty<QObject> data READ data DESIGNABLE false)
     Q_PROPERTY(CullFaces cullFaces READ cullFaces WRITE setCullFaces NOTIFY meshChanged)
     Q_PROPERTY(SortMode sortChildren READ sortChildren WRITE setSortChildren NOTIFY sortChildrenChanged)
     Q_PROPERTY(QString meshNode READ meshNode WRITE setMeshNode NOTIFY meshNodeChanged)
     Q_PROPERTY(bool inheritEvents READ inheritEvents WRITE setInheritEvents NOTIFY inheritEventsChanged)
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
-    Q_PROPERTY(QDeclarativeListProperty<QDeclarativeAnimation3D> animations READ animations NOTIFY animationsChanged DESIGNABLE false)
+    Q_PROPERTY(QQmlListProperty<QDeclarativeAnimation3D> animations READ animations NOTIFY animationsChanged DESIGNABLE false)
     Q_CLASSINFO("DefaultProperty", "data")
 public:
     QDeclarativeItem3D(QObject *parent = 0);
@@ -135,11 +135,11 @@ public:
     QGLLightParameters *light() const;
     void setLight(QGLLightParameters *value);
 
-    QDeclarativeListProperty<QObject> data();
-    QDeclarativeListProperty<QObject> resources();
+    QQmlListProperty<QObject> data();
+    QQmlListProperty<QObject> resources();
 
-    QDeclarativeListProperty<QGraphicsTransform3D> transform();
-    QDeclarativeListProperty<QGraphicsTransform3D> pretransform();
+    QQmlListProperty<QGraphicsTransform3D> transform();
+    QQmlListProperty<QGraphicsTransform3D> pretransform();
 
     CullFaces cullFaces() const;
     void setCullFaces(CullFaces value);
@@ -153,7 +153,7 @@ public:
     bool isEnabled() const;
     void setEnabled(bool value);
 
-    QDeclarativeListProperty<QDeclarativeAnimation3D> animations();
+    QQmlListProperty<QDeclarativeAnimation3D> animations();
 
     virtual void draw(QGLPainter *painter);
     virtual void initialize(QGLPainter *painter);

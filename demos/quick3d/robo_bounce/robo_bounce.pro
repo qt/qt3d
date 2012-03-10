@@ -1,6 +1,6 @@
 TEMPLATE = app
 TARGET = robo_bounce
-QT += declarative quick
+QT += qml quick
 
 SOURCES += main.cpp
 ICON_FILE = ../icon.png

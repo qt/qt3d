@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = basket_qml
 CONFIG += qt warn_on
-QT += declarative quick
+QT += qml quick
 
 SOURCES += main.cpp
 

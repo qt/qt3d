@@ -48,7 +48,7 @@
 
 #include <QNetworkRequest>
 #include <QNetworkReply>
-#include <QtDeclarative/qdeclarativeengine.h>
+#include <QtQml/qqmlengine.h>
 #include <QtCore/qlist.h>
 
 /*!

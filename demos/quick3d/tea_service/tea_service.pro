@@ -1,6 +1,6 @@
 TEMPLATE = app
 TARGET = tea_service
-QT += declarative quick
+QT += qml quick
 CONFIG += qt warn_on
 
 SOURCES += main.cpp

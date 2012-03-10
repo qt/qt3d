@@ -40,8 +40,8 @@
 ****************************************************************************/
 
 #include <QtTest/QtTest>
-#include <QDeclarativeEngine>
-#include <QDeclarativeComponent>
+#include <QQmlEngine>
+#include <QQmlComponent>
 
 class tst_matrix_properties : public QObject
 {
@@ -88,8 +88,8 @@ void tst_matrix_properties::create_data()
 void tst_matrix_properties::create()
 {
     QFETCH(QString, methodName);
-    QDeclarativeEngine engine;
-    QDeclarativeComponent component(&engine, TEST_FILE("matrix_component.qml"));
+    QQmlEngine engine;
+    QQmlComponent component(&engine, TEST_FILE("matrix_component.qml"));
     QObject *item = component.create();
 
     QVERIFY(item != 0);
@@ -119,8 +119,8 @@ void tst_matrix_properties::modify()
 {
     QFETCH(QString, initMethodName);
     QFETCH(QString, methodName);
-    QDeclarativeEngine engine;
-    QDeclarativeComponent component(&engine, TEST_FILE("matrix_component.qml"));
+    QQmlEngine engine;
+    QQmlComponent component(&engine, TEST_FILE("matrix_component.qml"));
     QObject *item = component.create();
 
     QVERIFY(item != 0);
@@ -156,8 +156,8 @@ void tst_matrix_properties::boundVariableChange_data()
 void tst_matrix_properties::boundVariableChange()
 {
     QFETCH(QString, propertyName);
-    QDeclarativeEngine engine;
-    QDeclarativeComponent component(&engine, TEST_FILE("matrix_component.qml"));
+    QQmlEngine engine;
+    QQmlComponent component(&engine, TEST_FILE("matrix_component.qml"));
     QObject *item = component.create();
 
     QVERIFY(item != 0);

@@ -45,7 +45,7 @@
 #include "qgraphicsscale3d.h"
 
 #include <QtCore/qvariant.h>
-#include <QtDeclarative/qdeclarative.h>
+#include <QtQml/qqml.h>
 
 QT_BEGIN_HEADER
 

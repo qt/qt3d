@@ -17,7 +17,7 @@
             <param name="progress" type="qreal" />
         </signal>
     </type>
-    <type name="QDeclarativeItem3D" defaultProperty="data" extends="QDeclarativeItem">
+    <type name="QDeclarativeItem3D" defaultProperty="data" extends="QQuickItem">
         <exports>
             <export module="Qt3D" version="1.0" type="Item3D" />
         </exports>
@@ -357,7 +357,7 @@
             <param name="property" type="int" />
         </method>
     </type>
-    <type name="Viewport" defaultProperty="data" extends="QDeclarativeItem">
+    <type name="Viewport" defaultProperty="data" extends="QQuickItem">
         <exports>
             <export module="Qt3D" version="1.0" type="Viewport" />
         </exports>

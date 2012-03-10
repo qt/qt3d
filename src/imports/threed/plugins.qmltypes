@@ -27,7 +27,7 @@ Module {
     Component {
         name: "QDeclarativeItem3D"
         defaultProperty: "data"
-        prototype: "QDeclarativeItem"
+        prototype: "QQuickItem"
         exports: [
             "Item3D 1.0"
         ]
@@ -476,7 +476,7 @@ Module {
     Component {
         name: "Viewport"
         defaultProperty: "data"
-        prototype: "QDeclarativeItem"
+        prototype: "QQuickItem"
         exports: [
             "Viewport 1.0"
         ]

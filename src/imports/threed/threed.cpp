@@ -39,10 +39,10 @@
 **
 ****************************************************************************/
 
-#include <QtDeclarative/qdeclarativeextensionplugin.h>
-#include <QtDeclarative/qdeclarativeengine.h>
-#include <QtDeclarative/qdeclarativecontext.h>
-#include <QtDeclarative/qdeclarative.h>
+#include <QtQml/qqmlextensionplugin.h>
+#include <QtQml/qqmlengine.h>
+#include <QtQml/qqmlcontext.h>
+#include <QtQml/qqml.h>
 
 #include "qdeclarativeitem3d.h"
 #include "qdeclarativemesh.h"
@@ -84,7 +84,7 @@ QML_DECLARE_TYPE(QGLCamera)
 
 QT_BEGIN_NAMESPACE
 
-class QThreedQmlModule : public QDeclarativeExtensionPlugin
+class QThreedQmlModule : public QQmlExtensionPlugin
 {
     Q_OBJECT
 public:
@@ -118,14 +118,14 @@ public:
 
         qmlRegisterType<Viewport>(uri,1,0,"Viewport");
 
-        // Needed to make QDeclarativeListProperty<QGraphicsTransform3D> work.
+        // Needed to make QQmlListProperty<QGraphicsTransform3D> work.
         qmlRegisterType<QGraphicsTransform3D>();
         qmlRegisterType<QGraphicsScale3D>();
     }
-    void initializeEngine(QDeclarativeEngine *engine, const char *uri)
+    void initializeEngine(QQmlEngine *engine, const char *uri)
     {
         Q_UNUSED(uri);
-        QDeclarativeContext *context = engine->rootContext();
+        QQmlContext *context = engine->rootContext();
         context->setContextProperty(QLatin1String("Qt3D"), new Qt3DNamespace);
     }
 };

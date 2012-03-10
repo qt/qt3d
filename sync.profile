@@ -11,7 +11,7 @@
     "core" => "#include <QtCore/QtCore>\n",
     "gui" => "#include <QtGui/QtGui>\n",
     "opengl" => "#include <QtOpenGL/QtOpenGL>\n",
-    "declarative" => "#include <QtDeclarative/QDeclarative>\n",
+    "declarative" => "#include <QtQml/QDeclarative>\n",
     "quick" => "#include <QtQuick/QQuick>\n",
     "network" => "#include <QtNetwork/QtNetwork>\n"
 );

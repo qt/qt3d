@@ -46,9 +46,9 @@
 #include <QObject>
 #include <QtCore/qobject.h>
 #include <QtCore/qurl.h>
-#include <QtDeclarative/qdeclarative.h>
-#include <QtDeclarative/qdeclarativeengine.h>
-#include <QtDeclarative/qdeclarativeparserstatus.h>
+#include <QtQml/qqml.h>
+#include <QtQml/qqmlengine.h>
+#include <QtQml/qqmlparserstatus.h>
 
 QT_BEGIN_HEADER
 
@@ -60,10 +60,10 @@ class QGLView;
 class QGLCamera;
 class Viewport;
 
-class Skybox : public QObject, public QDeclarativeParserStatus
+class Skybox : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
-    Q_INTERFACES(QDeclarativeParserStatus)
+    Q_INTERFACES(QQmlParserStatus)
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
     Q_PROPERTY(Viewport *viewport READ viewport WRITE setViewport NOTIFY viewportChanged)
 public:

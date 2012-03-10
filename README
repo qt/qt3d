@@ -99,7 +99,7 @@ means the Qt which is being built against.
 First note that Qt3D has to be installed into the target Qt.  This is because
 Qt3D has QML plugins and resources, as well as shared libraries, all of which
 must be resolved by the QMLViewer of the target Qt at runtime.  Here where "qmake"
-is referred to it means the qmake inside the target Qt.  Since QtDeclarative
+is referred to it means the qmake inside the target Qt.  Since QtQml
 recommends using QMLViewer when developing and debugging QML Apps, in the developer
 case - which is what Qt3D is for - it has to install directly into the target Qt.
 
