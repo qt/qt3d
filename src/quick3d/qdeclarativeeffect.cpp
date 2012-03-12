@@ -282,6 +282,15 @@ void QDeclarativeEffect::setTexture(const QUrl& value)
 
     Textures can also be defined based on a URL using the texture property.
 
+      \note Any application that uses this property should periodically invoke garbage collection from QML/javascript, because the QImage data cannot be freed while javascript retains a reference to it.  The simplest (but slowest) approach is to trigger it every time the image is changed:
+\code
+    Effect {
+        id: myTextureEffect
+        textureImage: myImage
+        onTextureImageChanged: gc()
+    }
+\endcode
+
     \sa texture
 */
 QImage QDeclarativeEffect::textureImage() const
@@ -302,8 +311,7 @@ void QDeclarativeEffect::setTextureImage(const QImage& value)
     d->ensureMaterial();
     if (!material()->texture())
     {
-        // Should this texture be parented?
-        tex = new QGLTexture2D();
+        tex = new QGLTexture2D(material());
         material()->setTexture(tex);
     } else
     {

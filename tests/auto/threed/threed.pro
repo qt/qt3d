@@ -5,6 +5,7 @@ SUBDIRS = \
     qbox3d \
     qcolor4ub \
     qcustomdataarray \
+    qdeclarativeeffect \
     qgeometrydata \
     qglabstractsurface \
     qglattributedescription \
