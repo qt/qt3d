@@ -79,7 +79,7 @@ set QT_PREFIX_PATH=%QT_PREFIX:~2%
 :: to debug the installer scripts, and do something odd.
 del %QTDIR%\mkspecs\features\qt3d*
 
-qmake.exe quick3d.pro -spec win32-msvc2008 CONFIG+=release CONFIG+=package
+qmake.exe qt3d.pro -spec win32-msvc2008 CONFIG+=release CONFIG+=package
 
 :: This has to be the full path, but without the drive letter...
 set INSTALL_ROOT=%CD:~2%\tmp

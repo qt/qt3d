@@ -54,7 +54,7 @@ DEB_MAKE_INVOKE := $(MAKE) $(PARALLEL_MAKEFLAGS)
 configure: configure-stamp
 configure-stamp:
 	dh_testdir
-	qmake -spec linux-g++-maemo quick3d.pro CONFIG+=qtc_harmattan # Uncomment this line for use without Qt Creator
+	qmake -spec linux-g++-maemo qt3d.pro CONFIG+=qtc_harmattan # Uncomment this line for use without Qt Creator
 	touch configure-stamp
 
 build: build-stamp

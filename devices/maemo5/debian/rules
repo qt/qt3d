@@ -36,7 +36,7 @@ DEB_MAKE_INSTALL_TARGET := INSTALL_ROOT=$(DEB_DESTDIR) install
 DEB_DH_INSTALL_SOURCEDIR := debian/tmp
 
 common-configure-arch::
-	qmake -spec linux-g++-maemo5 quick3d.pro CONFIG+=maemo CONFIG+=package
+	qmake -spec linux-g++-maemo5 qt3d.pro CONFIG+=maemo CONFIG+=package
 
 common-install-arch:: install-desktop-items
 

@@ -77,7 +77,7 @@ case - which is what Qt3D is for - it has to install directly into the target Qt
 In this mode 1) after the main library is compiled subsequent targets can simply
 resolve includes and link time dependencies by use of qt3d.prf and qtquick3d.prf.
 These two files are installed into the target Qt's makespecs/features directory
-during the processing of the quick3d.pro file.
+during the processing of the qt3d.pro file.
 
 In 2) the libraries, plugins and so on are sitting inside the build tree after
 the compile step.  As a result in order to resolve includes and dependencies

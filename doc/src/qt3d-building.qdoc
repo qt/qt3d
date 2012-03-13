@@ -97,8 +97,8 @@
 
     \bold{Step 1} - Open the QtQuick3D project.
 
-    Choose \c{Open} from the \c{File} menu and navigate to the quick3d.pro project
-    file \c {$HOME/depot/qt/quick3d/quick3d.pro}.  Click \c{Open}.
+    Choose \c{Open} from the \c{File} menu and navigate to the qt3d.pro project
+    file \c {$HOME/depot/qt/quick3d/qt3d.pro}.  Click \c{Open}.
 
     \image build-qt3d-qtcreator-2.png
 
@@ -217,7 +217,7 @@
     \code
     $ mkdir -p $HOME/build/qt/quick3d
     $ cd $HOME/build/qt/quick3d
-    $ $HOME/build/qt/4.7/bin/qmake $HOME/depot/qt/quick3d/quick3d.pro
+    $ $HOME/build/qt/4.7/bin/qmake $HOME/depot/qt/quick3d/qt3d.pro
     $ make -j 4
     $ bin/moon
     \endcode
@@ -232,7 +232,7 @@
     \code
     mkdir \build\qt\quick3d
     cd \build\qt\quick3d
-    qmake \depot\qt\quick3d\quick3d.pro
+    qmake \depot\qt\quick3d\qt3d.pro
     nmake
     bin\moon
     \endcode

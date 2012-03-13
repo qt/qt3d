@@ -41,7 +41,7 @@ DEB_MAKE_INSTALL_TARGET := INSTALL_ROOT=$(DEB_DESTDIR) install
 DEB_DH_INSTALL_SOURCEDIR := debian/tmp
 
 common-configure-arch::
-	qmake $(QMAKE_CONF_MKSPEC) quick3d.pro $(QMAKE_CONF_OPTS) CONFIG+=package
+	qmake $(QMAKE_CONF_MKSPEC) qt3d.pro $(QMAKE_CONF_OPTS) CONFIG+=package
 
 common-install-arch:: install-desktops
 

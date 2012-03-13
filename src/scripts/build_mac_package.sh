@@ -44,7 +44,7 @@ set -e
 
 APP=QtQuick3D
 
-PRO=quick3d.pro
+PRO=qt3d.pro
 
 if [[ -z "$1" ]]; then
     echo "Usage: build_bundle.sh 1.2.3"
@@ -52,8 +52,8 @@ if [[ -z "$1" ]]; then
     exit 1;
 fi
 
-if [[ ! -f ./quick3d.pro ]]; then
-    echo "Could not find quick3d.pro in current directory."
+if [[ ! -f ./qt3d.pro ]]; then
+    echo "Could not find qt3d.pro in current directory."
     echo "This script should be run from the root of a Qt3D source tree."
     exit 1;
 fi
@@ -61,7 +61,7 @@ fi
 VER=$1
 
 echo "Building ${APP}..."
-qmake -makefile -spec macx-g++ -r CONFIG+=release CONFIG+=package quick3d.pro
+qmake -makefile -spec macx-g++ -r CONFIG+=release CONFIG+=package qt3d.pro
 make $(JOBS)
 
 DIST=dist
