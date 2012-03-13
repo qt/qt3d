@@ -257,6 +257,8 @@ QGLSceneNode *QAiLoader::loadMeshes()
         loadNodes(m_scene->mRootNode, m_root);
     }
 
+    setEffectRecursive(m_root);
+
     if (m_hasTextures) // make textures the default
     {
         m_root->setEffect(QGL::LitModulateTexture2D);
@@ -551,4 +553,25 @@ void QAiLoader::loadMaterial(aiMaterial *ma)
 
     Q_UNUSED(k);
     //qDebug() << "loaded material" << k << mq;
+}
+
+/*!
+  set effects for all nodes
+*/
+void QAiLoader::setEffectRecursive(QGLSceneNode *node)
+{
+    if (node!=0) {
+        if (node->count()>0) {
+            if (qHasTextures(node)) {
+                node->setEffect(QGL::LitModulateTexture2D);
+            } else {
+                node->setEffect(QGL::LitMaterial);
+            }
+
+        }
+        QList<QGLSceneNode *> nodeChildren = node->children();
+        foreach (QGLSceneNode *ch, nodeChildren) {
+            setEffectRecursive(ch);
+        }
+    }
 }

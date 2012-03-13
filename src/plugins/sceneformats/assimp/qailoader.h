@@ -77,6 +77,7 @@ private:
     void optimizeData();
     void optimizeNodes(QGLSceneNode *node = 0, QGLSceneNode *parent = 0);
     void countChildNodeReferences();
+    void setEffectRecursive(QGLSceneNode *node);
 
     const aiScene *m_scene;
     QGLSceneNode *m_root;
