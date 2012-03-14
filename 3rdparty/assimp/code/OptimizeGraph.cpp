@@ -46,6 +46,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "AssimpPCH.h"
 #ifndef ASSIMP_BUILD_NO_OPTIMIZEGRAPH_PROCESS
 
+#if defined(__QNXNTO__)
+#include <stdio.h>
+#endif
+
 using namespace Assimp;
 #include "OptimizeGraph.h"
 #include "ProcessHelper.h"

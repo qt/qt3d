@@ -45,6 +45,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ComputeUVMappingProcess.h"
 #include "ProcessHelper.h"
 
+#if defined(__QNXNTO__)
+#include <stdio.h>
+#endif
+
 using namespace Assimp;
 
 namespace {

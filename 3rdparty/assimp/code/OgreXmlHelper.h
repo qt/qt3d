@@ -2,6 +2,10 @@
 #include "irrXMLWrapper.h"
 #include "fast_atof.h"
 
+#if defined(__QNXNTO__)
+#include <stdlib.h>
+#endif
+
 namespace Assimp
 {
 namespace Ogre

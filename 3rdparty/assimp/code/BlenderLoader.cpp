@@ -66,6 +66,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #    endif
 #endif
 
+#if defined(__QNXNTO__)
+#include <stdio.h>
+#include <stdlib.h>
+#endif
+
 using namespace Assimp;
 using namespace Assimp::Blender;
 using namespace Assimp::Formatter;

@@ -52,6 +52,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Hash.h"
 #include "time.h"
 
+#if defined(__QNXNTO__)
+#include <stdio.h>
+#endif
+
 namespace Assimp    {
 
 // ------------------------------------------------------------------------------------------------

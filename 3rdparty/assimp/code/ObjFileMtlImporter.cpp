@@ -47,6 +47,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ObjFileData.h"
 #include "fast_atof.h"
 
+#if defined(__QNXNTO__)
+#include <stdlib.h>
+#endif
+
 namespace Assimp    {
 
 // -------------------------------------------------------------------

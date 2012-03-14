@@ -47,6 +47,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "SpatialSort.h"
 #include "SmoothingGroups.h"
 
+#if defined(__QNXNTO__)
+#include <stdio.h>
+#endif
+
 namespace Assimp    {
 namespace D3DS    {
 

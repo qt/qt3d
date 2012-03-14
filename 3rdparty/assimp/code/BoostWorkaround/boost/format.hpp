@@ -14,6 +14,10 @@
 #include <string>
 #include <vector>
 
+#if defined(__QNXNTO__)
+#include <unistd.h>
+#endif
+
 namespace boost
 {
 

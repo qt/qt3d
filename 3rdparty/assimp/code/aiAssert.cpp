@@ -45,6 +45,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif // ndef gcc
 #endif // _WIN32
 
+#if defined(__QNXNTO__)
+#include <stdlib.h>
+#endif
+
 // Set a breakpoint using win32, else line, file and message will be returned and progam ends with
 // errrocode = 1
 AI_WONT_RETURN void Assimp::aiAssert (const std::string &message, unsigned int uiLine, const std::string &file)

@@ -54,6 +54,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "fast_atof.h"
 #include "SkeletonMeshBuilder.h"
 
+#if defined(__QNXNTO__)
+#include <stdio.h>
+#endif
+
 using namespace Assimp;
 
 // Minimum weight value. Weights inside [-n ... n] are ignored

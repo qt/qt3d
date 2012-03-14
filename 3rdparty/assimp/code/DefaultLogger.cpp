@@ -58,6 +58,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 boost::mutex loggerMutex;
 #endif
 
+#if defined(__QNXNTO__)
+#include <stdio.h>
+#endif
+
 namespace Assimp    {
 
 // ----------------------------------------------------------------------------------
