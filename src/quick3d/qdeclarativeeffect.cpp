@@ -125,6 +125,9 @@ public:
 
 void QDeclarativeEffectPrivate::cleanupResources()
 {
+    if (!palette)
+        return;
+
     for (int i=0; i<palette->size(); ++i) {
         QGLMaterial* pMat = palette->material(i);
         if (pMat) {
