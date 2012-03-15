@@ -44,7 +44,10 @@
 #include "qglpainter_p.h"
 #include "qglext_p.h"
 
-#include <QAtomicInt>
+#ifndef QT_NO_THREAD
+#include <QMutex>
+#include <QMutexLocker>
+#endif
 
 QT_BEGIN_NAMESPACE
 
@@ -58,16 +61,30 @@ QT_BEGIN_NAMESPACE
 
 #ifdef QT_OPENGL_ES
 
+struct uint_buffer_info {
+    uint_buffer_info() : done(false), answer(false) {}
+#ifndef QT_NO_THREAD
+    QMutex ubi_lock;
+#endif
+    bool done;
+    bool answer;
+};
+
 static bool qt_has_uint_buffers()
 {
-    static bool done = false;
-    static bool answer = false;
-    if (!done) {
-        QGLExtensionChecker extensions(reinterpret_cast<const char *>(glGetString(GL_EXTENSIONS)));
-        answer = extensions.match("GL_OES_element_index_uint");
-        done = true;
+    static uint_buffer_info ubi;
+    {
+#ifndef QT_NO_THREAD
+        QMutexLocker lkr(&ubi.ubi_lock);
+#endif
+        if (!ubi.done)
+        {
+            QGLExtensionChecker extensions(reinterpret_cast<const char *>(glGetString(GL_EXTENSIONS)));
+            ubi.answer = extensions.match("GL_OES_element_index_uint");
+            ubi.done = true;
+        }
     }
-    return answer;
+    return ubi.answer;
 }
 
 #endif
@@ -81,7 +98,7 @@ public:
         , elementType(GL_UNSIGNED_SHORT)
         , buffer(QOpenGLBuffer::IndexBuffer)
 #ifdef QT_OPENGL_ES
-        , hasIntBuffers(qt_has_uint_buffers())
+        , hasIntBuffers(false)
 #else
         , hasIntBuffers(true)
 #endif
@@ -464,7 +481,29 @@ QOpenGLBuffer QGLIndexBuffer::buffer() const
 bool QGLIndexBuffer::bind()
 {
     Q_D(QGLIndexBuffer);
-    return d->buffer.bind();
+
+    if (QOpenGLContext::currentContext() != 0)
+    {
+#ifdef QT_OPENGL_ES
+        bool hadIntBuffers = d->hasIntBuffers;
+        d->hasIntBuffers = qt_has_uint_buffers();
+        if (hadIntBuffers != d->hasIntBuffers)
+        {
+            if (hadIntBuffers)
+            {
+                setIndexes(indexesUInt());
+            }
+            else
+            {
+                setIndexes(indexesUShort());
+            }
+        }
+#endif
+    }
+
+    const bool ok = d->buffer.bind();
+
+    return ok;
 }
 
 /*!
