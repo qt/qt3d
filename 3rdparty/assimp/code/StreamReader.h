@@ -45,6 +45,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef AI_STREAMREADER_H_INCLUDED
 #define AI_STREAMREADER_H_INCLUDED
 
+#include <cstdio>
+
 #include "ByteSwap.h"
 namespace Assimp    {
     namespace Intern {
@@ -333,7 +335,8 @@ private:
             throw DeadlyImportError("End of file or stream limit was reached");
         }
 
-        T f = *((const T*)current);
+        T f;
+        memcpy(&f, current, sizeof(T));
         Intern :: Getter<SwapEndianess,T,RuntimeSwitch>() (&f,le);
 
         current += sizeof(T);
