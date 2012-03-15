@@ -179,20 +179,20 @@ void tst_QGLCylinder::modify()
 // top and bottom diameters for the cylinder.
 bool tst_QGLCylinder::validateCylinder(QGLSceneNode *node, qreal topDiameter, qreal baseDiameter, qreal height, bool topAttached, bool baseAttached)
 {
-    QGLSceneNode *lid = node->findChild<QGLSceneNode *>("Cylinder Top");
+    QGLSceneNode *top = node->findChild<QGLSceneNode *>("Cylinder Top");
     QGLSceneNode *sides = node->findChild<QGLSceneNode *>("Cylinder Sides");
     QGLSceneNode *base = node->findChild<QGLSceneNode *>("Cylinder Base");
 
     //Top of the cylinder - test the normals and vertical position
     if (topAttached)
     {
-        if (!lid) {
+        if (!top) {
             return false;
         }
 
-        QGeometryData dataTop = lid->geometry();
-        int start = lid->start();
-        int count = lid->count();
+        QGeometryData dataTop = top->geometry();
+        int start = top->start();
+        int count = top->count();
 
         if (count <= 0) {
             return false;
@@ -202,7 +202,7 @@ bool tst_QGLCylinder::validateCylinder(QGLSceneNode *node, qreal topDiameter, qr
         for (int index = 0; index < count; ++index) {
             QVector3D v = dataTop.vertexAt(indices.at(index + start));
             QVector3D n = dataTop.normalAt(indices.at(index + start));
-            if (v.z()!=height) {
+            if (v.z()!=0.5*height) {
                 return false;
             }
             QVector2D p(v.x(), v.y());
@@ -218,17 +218,22 @@ bool tst_QGLCylinder::validateCylinder(QGLSceneNode *node, qreal topDiameter, qr
     //Base of the cylinder - test the normals and vertical position
     if (baseAttached)
     {
-        if (!base)
+        if (!base) {
             return false;
-        QGeometryData dataBase = sides->geometry();
-        int start = sides->start();
-        int count = sides->count();
-        if (count <= 0)
+        }
+        QGeometryData dataBase = base->geometry();
+        int start = base->start();
+        int count = base->count();
+        if (count <= 0) {
             return false;
+        }
         QGL::IndexArray indices = dataBase.indices();
         for (int index = 0; index < count; ++index) {
             QVector3D v = dataBase.vertexAt(indices.at(index + start));
             QVector3D n = dataBase.normalAt(indices.at(index + start));
+            if (v.z()!=-0.5*height) {
+                return false;
+            }
             QVector2D p(v.x(), v.y());
             if (qAbs(p.length())>(baseDiameter/2.0)) {
                 return false;

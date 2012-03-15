@@ -58,7 +58,7 @@ void tst_QSphereMesh::testSignalsAndProperties()
 {
     SphereMesh sphere;
     {
-        QCOMPARE(sphere.radius(),1.0);
+        QCOMPARE(sphere.radius(),0.5);
         QCOMPARE(sphere.levelOfDetail(),5);
         QCOMPARE(sphere.axis(),Qt::ZAxis);
     }
