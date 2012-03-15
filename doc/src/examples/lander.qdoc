@@ -69,5 +69,7 @@
     The rest of the game logic is added in using javascript.  See the source for
     complete details.
 
+    \image lander-screenshot.png
+
     \l{qt3d-examples.html}{Return to Examples}.
 */
