@@ -47,20 +47,20 @@
 
     \section1 Common Use Cases
     \list
-    \li Adding 3D models to 2D applications – Qt 3D’s ViewPort item that defines the logical viewport for a 3D scene can be
+    \li Adding 3D models to 2D applications - Qt 3D's ViewPort item that defines the logical viewport for a 3D scene can be
     placed in any 2D application. For example, it is possible to place a 3D avatar on a 2D contacts application.
-    \li 3D User Interface Elements – Qt 3D handles external inputs such as touch or key events so that it is possible to
+    \li 3D User Interface Elements - Qt 3D handles external inputs such as touch or key events so that it is possible to
     interact with any Qt 3D items on the screen.
-    \li 3D Visualizations in media player – Qt 3D’s QML API supports regular QML features such as property bindings and QML
+    \li 3D Visualizations in media player - Qt 3D's QML API supports regular QML features such as property bindings and QML
     animation framework. Therefore, developers can create a 3D visualization application with less code.
-    \li Casual games – Combining Qt 3D features with other Qt modules such as Qt Sensors allows developers to create interactive
+    \li Casual games - Combining Qt 3D features with other Qt modules such as Qt Sensors allows developers to create interactive
     3D games easily.
     \endlist
 
 
     \section1 C++ and QML APIs
     Qt 3D consists of two libraries which support the same features in C++ interface and QML respectively. Both libraries
-    share the same primary goal which is to make the 3D graphics programming easy. Qt 3D’s C++ API  is originally developed
+    share the same primary goal which is to make the 3D graphics programming easy. Qt 3D's C++ API  is originally developed
     to make the OpenGL programming as cross-platform as possible.  Traditionally porting between desktop and embedded OpenGL
     variants has been difficult due to differing function names, as well as a shader-based versus fixed function rendering
     pipeline.  The C++ API for Qt3D eases this difficulty by abstracting these differences away beneath a Qt like API layer. The QML bindings for Qt 3D takes this further and make the 3D programming declarative.
@@ -181,9 +181,9 @@
     \endlist
 
     \section1 Extending Qt 3D
-    Adding new 3D file format – Qt 3D has a plugin based system so that new format can be supported easily.
+    Adding new 3D file format - Qt 3D has a plugin based system so that new format can be supported easily.
 
-    Physics Integration – Physics integration is not officially supported yet, but you can integrate the commonly used Bullet physics engine with C++ Qt3D.
+    Physics Integration - Physics integration is not officially supported yet, but you can integrate the commonly used Bullet physics engine with C++ Qt3D.
 
 
     \section1 Future Roadmap & Contributions
