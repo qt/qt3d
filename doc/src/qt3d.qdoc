@@ -68,7 +68,7 @@
     To use the C++ library in your application, add the following configuration option to your .pro file.
 
     \code
-    QT += qt3d
+    QT += 3d
     \endcode
 
     To use Qt 3D in your QML application you need the following import statement in your qml file.
