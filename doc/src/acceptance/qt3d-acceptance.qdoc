@@ -108,17 +108,11 @@
     Verify that there is no horizontal or vertical distortion,
     as shown in the following pictures:
 
-    \raw HTML
-    <center><table><tr><td>
-    \endraw
-    \image teapot-distortion.png
-    \raw HTML
-    </td><td>
-    \endraw
-    \image teapot-distortion2.png
-    \raw HTML
-    </td></tr></table></center>
-    \endraw
+    \table
+    \row
+        \li \image teapot-distortion.png
+        \li \image teapot-distortion2.png
+    \endtable
 
     Resize the window if possible.  The teapot should change scale but
     keep its relative horizontal and vertical size without distortion.
