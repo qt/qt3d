@@ -38,7 +38,7 @@
 
     It is quite simple to achieve these effects in Qt3D:
 
-    \snippet ../../examples/quick3d/cube/qml/cube.qml 1
+    \snippet quick3d/cube/qml/cube.qml 1
 
     \section2 Cube in C++
 
