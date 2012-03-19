@@ -354,6 +354,7 @@ QGLBuilder& operator<<(QGLBuilder& builder, const QGLCylinder& cylinder)
     qreal radiusIncrement = qreal(bottomRadius-topRadius)/ numLayers;
     qreal height = qreal(cylinder.height());
     qreal heightDecrement = height/numLayers;
+    height *= 0.5;
 
     qreal textureHeight = 1.0;
     qreal textureDecrement = 1.0/numLayers;

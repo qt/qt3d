@@ -132,8 +132,8 @@ QT_BEGIN_NAMESPACE
 CapsuleMeshPrivate::CapsuleMeshPrivate()
     : topNode(new QGLSceneNode)
     , currentCapsule(0)
-    , radius(1.0f)
-    , length(1.0f)
+    , radius(0.5f)
+    , length(2.0f)
     , lod(5)
     , sceneSet(false)
 {
@@ -309,13 +309,11 @@ void CapsuleMesh::createGeometry()
         s->setObjectName("Cylinder");
         builder << QGLCylinder(diameter, diameter, cylinderHeight,
                                facets, layers, false, false);
-        QMatrix4x4 translateMatrix;
-        translateMatrix.translate(0, 0, -offset);
-        builder.currentNode()->setLocalTransform(translateMatrix);
 
         s = builder.newNode();
         s->setObjectName("LeftEndCap");
         builder << QGLDome(diameter, divisions, false);
+        QMatrix4x4 translateMatrix;
         translateMatrix.setToIdentity();
         translateMatrix.rotate(180, 0, 1,0);
         translateMatrix.translate(0, 0, offset);
