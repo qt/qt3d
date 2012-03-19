@@ -44,8 +44,8 @@
 
 #include <QtQuick/qquickpainteditem.h>
 
-#include "qdeclarativeitem3d.h"
-#include "qdeclarativeviewport.h"
+#include "qquickitem3d.h"
+#include "qquickviewport.h"
 
 QT_BEGIN_HEADER
 
@@ -55,10 +55,10 @@ class ViewportPrivate;
 class QGLCamera;
 class QGLLightModel;
 class QGLLightParameters;
-class QDeclarativeEffect;
+class QQuickEffect;
 class PickEvent;
 
-class Viewport : public QQuickPaintedItem, public QDeclarativeViewport
+class Viewport : public QQuickPaintedItem, public QQuickViewport
 {
     Q_OBJECT
     Q_ENUMS(RenderMode)

@@ -146,7 +146,7 @@ public:
     Construct a 3D scale transform and attach it to \a parent.
 */
 QGraphicsScale3D::QGraphicsScale3D(QObject *parent)
-    : QGraphicsTransform3D(parent), d_ptr(new QGraphicsScale3DPrivate)
+    : QQuickQGraphicsTransform3D(parent), d_ptr(new QGraphicsScale3DPrivate)
 {
 }
 
@@ -315,7 +315,7 @@ void QGraphicsScale3D::applyTo(QMatrix4x4 *matrix) const
 /*!
     \internal
 */
-QGraphicsTransform3D *QGraphicsScale3D::clone(QObject *parent) const
+QQuickQGraphicsTransform3D *QGraphicsScale3D::clone(QObject *parent) const
 {
     Q_D(const QGraphicsScale3D);
     QGraphicsScale3D *copy = new QGraphicsScale3D(parent);

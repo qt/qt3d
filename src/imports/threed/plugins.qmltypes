@@ -5,7 +5,7 @@ import QtQuick.tooling 1.0
 
 Module {
     Component {
-        name: "QDeclarativeEffect"
+        name: "QQuickEffect"
         prototype: "QObject"
         exports: [
             "Effect 1.0"
@@ -25,7 +25,7 @@ Module {
         }
     }
     Component {
-        name: "QDeclarativeItem3D"
+        name: "QQuickItem3D"
         defaultProperty: "data"
         prototype: "QQuickItem"
         exports: [
@@ -63,20 +63,20 @@ Module {
         Property { name: "y"; type: "qreal" }
         Property { name: "z"; type: "qreal" }
         Property { name: "scale"; type: "qreal" }
-        Property { name: "transform"; type: "QGraphicsTransform3D"; isList: true; isReadonly: true }
-        Property { name: "pretransform"; type: "QGraphicsTransform3D"; isList: true; isReadonly: true }
-        Property { name: "mesh"; type: "QDeclarativeMesh"; isPointer: true }
-        Property { name: "effect"; type: "QDeclarativeEffect"; isPointer: true }
+        Property { name: "transform"; type: "QQuickQGraphicsTransform3D"; isList: true; isReadonly: true }
+        Property { name: "pretransform"; type: "QQuickQGraphicsTransform3D"; isList: true; isReadonly: true }
+        Property { name: "mesh"; type: "QQuickMesh"; isPointer: true }
+        Property { name: "effect"; type: "QQuickEffect"; isPointer: true }
         Property { name: "light"; type: "QGLLightParameters"; isPointer: true }
         Property { name: "resources"; type: "QObject"; isList: true; isReadonly: true }
         Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
-        Property { name: "children"; type: "QDeclarativeItem3D"; isList: true; isReadonly: true }
+        Property { name: "children"; type: "QQuickItem3D"; isList: true; isReadonly: true }
         Property { name: "cullFaces"; type: "CullFaces" }
         Property { name: "sortChildren"; type: "SortMode" }
         Property { name: "meshNode"; type: "string" }
         Property { name: "inheritEvents"; type: "bool" }
         Property { name: "enabled"; type: "bool" }
-        Property { name: "parent"; type: "QDeclarativeItem3D"; isPointer: true }
+        Property { name: "parent"; type: "QQuickItem3D"; isPointer: true }
         Signal { name: "positionChanged" }
         Signal { name: "scaleChanged" }
         Signal { name: "rotationChanged" }
@@ -114,7 +114,7 @@ Module {
         Method { name: "worldToLocal"; type: "QVector3D" }
     }
     Component {
-        name: "QDeclarativeMesh"
+        name: "QQuickMesh"
         prototype: "QObject"
         exports: [
             "Mesh 1.0"
@@ -393,7 +393,7 @@ Module {
     }
     Component {
         name: "QGraphicsBillboardTransform"
-        prototype: "QGraphicsTransform3D"
+        prototype: "QQuickQGraphicsTransform3D"
         exports: [
             "BillboardTransform 1.0"
         ]
@@ -402,18 +402,18 @@ Module {
     }
     Component {
         name: "QGraphicsLookAtTransform"
-        prototype: "QGraphicsTransform3D"
+        prototype: "QQuickQGraphicsTransform3D"
         exports: [
             "LookAt 1.0"
         ]
         Property { name: "preserveUpVector"; type: "bool" }
-        Property { name: "subject"; type: "QDeclarativeItem3D"; isPointer: true }
+        Property { name: "subject"; type: "QQuickItem3D"; isPointer: true }
         Signal { name: "preserveUpVectorChanged" }
         Signal { name: "subjectChanged" }
     }
     Component {
         name: "QGraphicsRotation3D"
-        prototype: "QGraphicsTransform3D"
+        prototype: "QQuickQGraphicsTransform3D"
         exports: [
             "Rotation3D 1.0"
         ]
@@ -426,20 +426,20 @@ Module {
     }
     Component {
         name: "QGraphicsScale3D"
-        prototype: "QGraphicsTransform3D"
+        prototype: "QQuickQGraphicsTransform3D"
         Property { name: "origin"; type: "QVector3D" }
         Property { name: "scale"; type: "QVector3D" }
         Signal { name: "originChanged" }
         Signal { name: "scaleChanged" }
     }
     Component {
-        name: "QGraphicsTransform3D"
+        name: "QQuickQGraphicsTransform3D"
         prototype: "QObject"
         Signal { name: "transformChanged" }
     }
     Component {
         name: "QGraphicsTranslation3D"
-        prototype: "QGraphicsTransform3D"
+        prototype: "QQuickQGraphicsTransform3D"
         exports: [
             "Translation3D 1.0"
         ]
@@ -459,7 +459,7 @@ Module {
     }
     Component {
         name: "ShaderProgram"
-        prototype: "QDeclarativeEffect"
+        prototype: "QQuickEffect"
         exports: [
             "ShaderProgram 1.0"
         ]

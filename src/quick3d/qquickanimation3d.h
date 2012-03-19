@@ -39,60 +39,47 @@
 **
 ****************************************************************************/
 
-#include "qdeclarativeanimation3d.h"
-#include "qglsceneanimation.h"
+#ifndef QQUICKANIMATION3D_H
+#define QQUICKANIMATION3D_H
+
+#include "qt3dquickglobal.h"
+
+#include <qqml.h>
+#include <QtCore/qobject.h>
+
+QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
-// -------------------------------------------------------------------------------------------------------------
+QT_MODULE(QtQuick3D)
 
-class QDeclarativeAnimation3DPrivate
+class QQuickAnimation3DPrivate;
+class QGLSceneAnimation;
+
+class Q_QT3D_QUICK_EXPORT QQuickAnimation3D : public QObject
 {
+    Q_OBJECT
+    Q_PROPERTY(QString name READ name NOTIFY nameChanged DESIGNABLE false )
 public:
-    QDeclarativeAnimation3DPrivate(QDeclarativeAnimation3D *pParent, QGLSceneAnimation* pAnim) :
-        m_pParent(pParent)
-        ,m_pAnim(pAnim)
-    {
-        Q_ASSERT(m_pParent);
-    }
-    ~QDeclarativeAnimation3DPrivate()
-    {
-    }
-    QDeclarativeAnimation3D*    m_pParent;
-    QGLSceneAnimation*          m_pAnim;
+    explicit QQuickAnimation3D(QObject *parent = 0);
+    explicit QQuickAnimation3D(QGLSceneAnimation* pAnim, QObject *parent = 0);
+    ~QQuickAnimation3D();
+
+    QString name() const;
+
+public Q_SLOTS:
+
+Q_SIGNALS:
+    void nameChanged();
+
+private:
+    QQuickAnimation3DPrivate *d;
 };
-
-// -------------------------------------------------------------------------------------------------------------
-
-QDeclarativeAnimation3D::QDeclarativeAnimation3D(QObject *parent) :
-    QObject(parent)
-    ,d(new QDeclarativeAnimation3DPrivate(this,0))
-{
-}
-
-QDeclarativeAnimation3D::QDeclarativeAnimation3D(QGLSceneAnimation* pAnim, QObject *parent) :
-    QObject(parent)
-    ,d(new QDeclarativeAnimation3DPrivate(this,pAnim))
-{
-    Q_ASSERT(pAnim);
-    emit nameChanged();
-}
-
-QDeclarativeAnimation3D::~QDeclarativeAnimation3D()
-{
-    delete d;
-    d = 0;
-}
-
-QString QDeclarativeAnimation3D::name() const
-{
-    Q_ASSERT(d);
-    if (d->m_pAnim) {
-        return d->m_pAnim->name();
-    } else {
-        return QString();
-    }
-}
 
 QT_END_NAMESPACE
 
+QML_DECLARE_TYPE(QQuickAnimation3D)
+
+QT_END_HEADER
+
+#endif // QQUICKANIMATION3D_H

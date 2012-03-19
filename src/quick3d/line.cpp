@@ -84,7 +84,7 @@ QT_BEGIN_NAMESPACE
     \internal
 */
 Line::Line(QObject *parent) :
-    QDeclarativeItem3D(parent)
+    QQuickItem3D(parent)
     ,m_width(3.0)
     ,m_geometry(0)
     ,m_changeFlag(false)

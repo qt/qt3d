@@ -88,7 +88,7 @@
     \internal
 */
 Capsule::Capsule(QObject *parent) :
-    QDeclarativeItem3D(parent)
+    QQuickItem3D(parent)
     , m_radius(1.0)
     , m_length(4.0)
     , m_lod(1)

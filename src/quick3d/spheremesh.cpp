@@ -208,7 +208,7 @@ private:
     \internal
 */
 SphereMesh::SphereMesh(QObject *parent)
-    : QDeclarativeMesh(parent)
+    : QQuickMesh(parent)
     , d(new SphereMeshPrivate)
 {
 }
@@ -321,7 +321,7 @@ void SphereMesh::draw(QGLPainter *painter, int branchId)
 {
     if (!d->currentSphere)
         createGeometry();
-    QDeclarativeMesh::draw(painter, branchId);
+    QQuickMesh::draw(painter, branchId);
 }
 
 /*!

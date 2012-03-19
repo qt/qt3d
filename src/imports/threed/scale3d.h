@@ -62,7 +62,7 @@ public:
     QVariant scale() const { return QGraphicsScale3D::scale(); }
     void setScale(const QVariant &value);
 
-    QGraphicsTransform3D *clone(QObject *parent) const;
+    QQuickQGraphicsTransform3D *clone(QObject *parent) const;
 
 Q_SIGNALS:
     void variantScaleChanged();

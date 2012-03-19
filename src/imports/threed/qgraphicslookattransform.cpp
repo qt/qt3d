@@ -198,11 +198,11 @@ public:
     QGraphicsLookAtTransform* lookAt;
     void determineOriginItem();
     void calculateRotationValues() const;
-    QVector3D relativePosition(QDeclarativeItem3D* originItem, QDeclarativeItem3D* subject) const;
+    QVector3D relativePosition(QQuickItem3D* originItem, QQuickItem3D* subject) const;
 
     bool preserveUpVector;
-    QDeclarativeItem3D* originItem;
-    QDeclarativeItem3D* subject;
+    QQuickItem3D* originItem;
+    QQuickItem3D* subject;
     mutable LookAtRotationCache rotationCache;
     mutable bool rotationCacheDirty;
 
@@ -216,18 +216,18 @@ QGraphicsLookAtTransformPrivate::QGraphicsLookAtTransformPrivate(QGraphicsLookAt
 void QGraphicsLookAtTransformPrivate::determineOriginItem()
 {
     QObject* workingObject = lookAt->parent();
-    while (qobject_cast<QDeclarativeItem3D*>(workingObject) == 0 &&
+    while (qobject_cast<QQuickItem3D*>(workingObject) == 0 &&
            workingObject != 0)
     {
         workingObject = workingObject->parent();
     }
 
-    originItem = qobject_cast<QDeclarativeItem3D*>(workingObject);
+    originItem = qobject_cast<QQuickItem3D*>(workingObject);
     if (!originItem)
         qWarning() << "LookAt transform requires an Item3D ancestor";
 }
 
-QVector3D QGraphicsLookAtTransformPrivate::relativePosition(QDeclarativeItem3D* originItem, QDeclarativeItem3D* subject) const
+QVector3D QGraphicsLookAtTransformPrivate::relativePosition(QQuickItem3D* originItem, QQuickItem3D* subject) const
 {
     QVector3D result =  originItem->worldToLocal(subject->localToWorld());
     return result;
@@ -312,7 +312,7 @@ void QGraphicsLookAtTransformPrivate::calculateRotationValues() const
     Construct a lookAt transform and attach it to \a parent.
 */
 QGraphicsLookAtTransform::QGraphicsLookAtTransform(QObject *parent)
-    : QGraphicsTransform3D(parent), d_ptr(new QGraphicsLookAtTransformPrivate(this))
+    : QQuickQGraphicsTransform3D(parent), d_ptr(new QGraphicsLookAtTransformPrivate(this))
 {
 }
 
@@ -409,13 +409,13 @@ void QGraphicsLookAtTransform::setPreserveUpVector(bool value)
 */
 
 
-QDeclarativeItem3D* QGraphicsLookAtTransform::subject() const
+QQuickItem3D* QGraphicsLookAtTransform::subject() const
 {
     Q_D(const QGraphicsLookAtTransform);
     return d->subject;
 }
 
-void QGraphicsLookAtTransform::setSubject(QDeclarativeItem3D* value)
+void QGraphicsLookAtTransform::setSubject(QQuickItem3D* value)
 {
     Q_D(QGraphicsLookAtTransform);
     if (d->subject != value)
@@ -424,7 +424,7 @@ void QGraphicsLookAtTransform::setSubject(QDeclarativeItem3D* value)
         // lookAt transform needs to be recalculated
         disconnect(this, SLOT(subjectPositionChanged()));
         d->subject = value;
-        QDeclarativeItem3D* ancestorItem = d->subject;
+        QQuickItem3D* ancestorItem = d->subject;
         while (ancestorItem != 0)
         {
             // listen for changes directly on the item, changes on it's
@@ -433,17 +433,17 @@ void QGraphicsLookAtTransform::setSubject(QDeclarativeItem3D* value)
             connect(ancestorItem, SIGNAL(rotationChanged()), this, SLOT(subjectPositionChanged()));
             connect(ancestorItem, SIGNAL(scaleChanged()), this, SLOT(subjectPositionChanged()));
             connect(ancestorItem, SIGNAL(parentChanged(QQuickItem*)), this, SLOT(ancestryChanged()));
-            QQmlListProperty<QGraphicsTransform3D> transforms =
+            QQmlListProperty<QQuickQGraphicsTransform3D> transforms =
                     ancestorItem->transform();
 
             for (int i=0; i < transforms.count(&transforms) ; i++)
             {
-                QGraphicsTransform3D* transform = transforms.at(&transforms, i);
+                QQuickQGraphicsTransform3D* transform = transforms.at(&transforms, i);
                 connect(transform, SIGNAL(transformChanged()),
                         this, SLOT(subjectPositionChanged()));
             }
 
-            ancestorItem = qobject_cast<QDeclarativeItem3D*> (ancestorItem->parent());
+            ancestorItem = qobject_cast<QQuickItem3D*> (ancestorItem->parent());
         };
 
         d->rotationCacheDirty = true;
@@ -499,7 +499,7 @@ void QGraphicsLookAtTransform::applyTo(QMatrix4x4 *matrix) const
 /*!
     \internal
 */
-QGraphicsTransform3D *QGraphicsLookAtTransform::clone(QObject *parent) const
+QQuickQGraphicsTransform3D *QGraphicsLookAtTransform::clone(QObject *parent) const
 {
     Q_D(const QGraphicsLookAtTransform);
     QGraphicsLookAtTransform *copy = new QGraphicsLookAtTransform(parent);

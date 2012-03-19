@@ -42,13 +42,13 @@
 #ifndef BILLBOARDITEM3D_H
 #define BILLBOARDITEM3D_H
 
-#include "qdeclarativeitem3d.h"
+#include "qquickitem3d.h"
 
 QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
-class BillboardItem3D : public QDeclarativeItem3D
+class BillboardItem3D : public QQuickItem3D
 {
     Q_OBJECT
     Q_PROPERTY(bool preserveUpVector READ preserveUpVector WRITE setPreserveUpVector)

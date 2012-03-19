@@ -180,7 +180,7 @@ private:
     \internal
 */
 CylinderMesh::CylinderMesh(QObject *parent)
-    : QDeclarativeMesh(parent)
+    : QQuickMesh(parent)
     , d(new CylinderMeshPrivate)
 {
 }
@@ -292,7 +292,7 @@ void CylinderMesh::draw(QGLPainter *painter, int branchId)
 {
     if (!d->currentCylinder)
         createGeometry();
-    QDeclarativeMesh::draw(painter, branchId);
+    QQuickMesh::draw(painter, branchId);
 }
 
 /*!

@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QDECLARATIVEITEM3D_H
-#define QDECLARATIVEITEM3D_H
+#ifndef QQUICKITEM3D_H
+#define QQUICKITEM3D_H
 
 #include "qt3dquickglobal.h"
 
@@ -50,7 +50,7 @@
 
 #include <QtQuick/qquickitem.h>
 
-#include "qdeclarativeanimation3d.h"
+#include "qquickanimation3d.h"
 #include "qglscenenode.h"
 #include "qglpainter.h"
 #include "qgraphicstransform3d.h"
@@ -59,12 +59,12 @@ QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
-class QDeclarativeItem3DPrivate;
-class QDeclarativeMesh;
-class QDeclarativeEffect;
-class QDeclarativeViewport;
+class QQuickItem3DPrivate;
+class QQuickMesh;
+class QQuickEffect;
+class QQuickViewport;
 
-class Q_QT3D_QUICK_EXPORT QDeclarativeItem3D : public QQuickItem
+class Q_QT3D_QUICK_EXPORT QQuickItem3D : public QQuickItem
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
@@ -76,10 +76,10 @@ class Q_QT3D_QUICK_EXPORT QDeclarativeItem3D : public QQuickItem
     Q_PROPERTY(qreal y READ y WRITE setY NOTIFY positionChanged)
     Q_PROPERTY(qreal z READ z WRITE setZ NOTIFY positionChanged)
     Q_PROPERTY(qreal scale READ scale WRITE setScale NOTIFY scaleChanged)
-    Q_PROPERTY(QQmlListProperty<QGraphicsTransform3D> transform READ transform DESIGNABLE false FINAL)
-    Q_PROPERTY(QQmlListProperty<QGraphicsTransform3D> pretransform READ pretransform DESIGNABLE false FINAL)
-    Q_PROPERTY(QDeclarativeMesh *mesh READ mesh WRITE setMesh NOTIFY meshChanged)
-    Q_PROPERTY(QDeclarativeEffect *effect READ effect WRITE setEffect NOTIFY effectChanged)
+    Q_PROPERTY(QQmlListProperty<QQuickQGraphicsTransform3D> transform READ transform DESIGNABLE false FINAL)
+    Q_PROPERTY(QQmlListProperty<QQuickQGraphicsTransform3D> pretransform READ pretransform DESIGNABLE false FINAL)
+    Q_PROPERTY(QQuickMesh *mesh READ mesh WRITE setMesh NOTIFY meshChanged)
+    Q_PROPERTY(QQuickEffect *effect READ effect WRITE setEffect NOTIFY effectChanged)
     Q_PROPERTY(QGLLightParameters *light READ light WRITE setLight NOTIFY lightChanged)
     Q_PROPERTY(QQmlListProperty<QObject> resources READ resources DESIGNABLE false)
     Q_PROPERTY(QQmlListProperty<QObject> data READ data DESIGNABLE false)
@@ -88,11 +88,11 @@ class Q_QT3D_QUICK_EXPORT QDeclarativeItem3D : public QQuickItem
     Q_PROPERTY(QString meshNode READ meshNode WRITE setMeshNode NOTIFY meshNodeChanged)
     Q_PROPERTY(bool inheritEvents READ inheritEvents WRITE setInheritEvents NOTIFY inheritEventsChanged)
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
-    Q_PROPERTY(QQmlListProperty<QDeclarativeAnimation3D> animations READ animations NOTIFY animationsChanged DESIGNABLE false)
+    Q_PROPERTY(QQmlListProperty<QQuickAnimation3D> animations READ animations NOTIFY animationsChanged DESIGNABLE false)
     Q_CLASSINFO("DefaultProperty", "data")
 public:
-    QDeclarativeItem3D(QObject *parent = 0);
-    ~QDeclarativeItem3D();
+    QQuickItem3D(QObject *parent = 0);
+    ~QQuickItem3D();
 
     enum CullFace
     {
@@ -123,14 +123,14 @@ public:
     qreal scale() const;
     void setScale(qreal value);
 
-    QDeclarativeMesh *mesh() const;
-    void setMesh(QDeclarativeMesh* value);
+    QQuickMesh *mesh() const;
+    void setMesh(QQuickMesh* value);
 
     bool inheritEvents() const;
     void setInheritEvents(bool inherit);
 
-    QDeclarativeEffect *effect() const;
-    void setEffect(QDeclarativeEffect *value);
+    QQuickEffect *effect() const;
+    void setEffect(QQuickEffect *value);
 
     QGLLightParameters *light() const;
     void setLight(QGLLightParameters *value);
@@ -138,8 +138,8 @@ public:
     QQmlListProperty<QObject> data();
     QQmlListProperty<QObject> resources();
 
-    QQmlListProperty<QGraphicsTransform3D> transform();
-    QQmlListProperty<QGraphicsTransform3D> pretransform();
+    QQmlListProperty<QQuickQGraphicsTransform3D> transform();
+    QQmlListProperty<QQuickQGraphicsTransform3D> pretransform();
 
     CullFaces cullFaces() const;
     void setCullFaces(CullFaces value);
@@ -153,7 +153,7 @@ public:
     bool isEnabled() const;
     void setEnabled(bool value);
 
-    QQmlListProperty<QDeclarativeAnimation3D> animations();
+    QQmlListProperty<QQuickAnimation3D> animations();
 
     virtual void draw(QGLPainter *painter);
     virtual void initialize(QGLPainter *painter);
@@ -212,19 +212,19 @@ Q_SIGNALS:
     void animationsChanged();
 
 private:
-    QDeclarativeItem3DPrivate *d;
+    QQuickItem3DPrivate *d;
 
-    friend class QDeclarativeItem3DPrivate;
-    friend class QDeclarativeViewport;
+    friend class QQuickItem3DPrivate;
+    friend class QQuickViewport;
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(QDeclarativeItem3D::CullFaces)
+Q_DECLARE_OPERATORS_FOR_FLAGS(QQuickItem3D::CullFaces)
 
-Q_QT3D_QUICK_EXPORT void qDumpItem(QDeclarativeItem3D *item, bool detailed = true, int indent = 0);
+Q_QT3D_QUICK_EXPORT void qDumpItem(QQuickItem3D *item, bool detailed = true, int indent = 0);
 
 QT_END_NAMESPACE
 
-QML_DECLARE_TYPE(QDeclarativeItem3D)
+QML_DECLARE_TYPE(QQuickItem3D)
 
 QT_END_HEADER
 

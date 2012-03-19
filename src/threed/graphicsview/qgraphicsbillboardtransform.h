@@ -51,7 +51,7 @@ QT_BEGIN_NAMESPACE
 
 class QGraphicsBillboardTransformPrivate;
 
-class Q_QT3D_EXPORT QGraphicsBillboardTransform : public QGraphicsTransform3D
+class Q_QT3D_EXPORT QGraphicsBillboardTransform : public QQuickQGraphicsTransform3D
 {
     Q_OBJECT
     Q_PROPERTY(bool preserveUpVector READ preserveUpVector WRITE setPreserveUpVector NOTIFY preserveUpVectorChanged)
@@ -63,7 +63,7 @@ public:
     void setPreserveUpVector(bool value);
 
     void applyTo(QMatrix4x4 *matrix) const;
-    QGraphicsTransform3D *clone(QObject *parent) const;
+    QQuickQGraphicsTransform3D *clone(QObject *parent) const;
 
 Q_SIGNALS:
     void preserveUpVectorChanged();

@@ -77,7 +77,7 @@
     For a practical illustration of its use see the forest example.
 */
 BillboardItem3D::BillboardItem3D(QObject *parent)
-    : QDeclarativeItem3D(parent)
+    : QQuickItem3D(parent)
 {
     m_preserveUpVector = false;
 }

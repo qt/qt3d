@@ -42,7 +42,7 @@
 #ifndef CAPSULE_H
 #define CAPSULE_H
 
-#include "qdeclarativeitem3d.h"
+#include "qquickitem3d.h"
 #include "qglscenenode.h"
 #include <QtCore/qmap.h>
 
@@ -50,7 +50,7 @@ QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
-class Capsule : public QDeclarativeItem3D
+class Capsule : public QQuickItem3D
 {
     Q_OBJECT
     Q_PROPERTY(qreal radius READ radius WRITE setRadius NOTIFY radiusChanged)

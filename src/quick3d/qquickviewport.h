@@ -39,12 +39,10 @@
 **
 ****************************************************************************/
 
-#ifndef QDECLARATIVEANIMATION3D_H
-#define QDECLARATIVEANIMATION3D_H
+#ifndef QQUICKVIEWPORT_H
+#define QQUICKVIEWPORT_H
 
 #include "qt3dquickglobal.h"
-
-#include <qqml.h>
 #include <QtCore/qobject.h>
 
 QT_BEGIN_HEADER
@@ -53,33 +51,22 @@ QT_BEGIN_NAMESPACE
 
 QT_MODULE(QtQuick3D)
 
-class QDeclarativeAnimation3DPrivate;
-class QGLSceneAnimation;
+class QQuickItem3D;
 
-class Q_QT3D_QUICK_EXPORT QDeclarativeAnimation3D : public QObject
+// Abstract interface for "Item3D" getting access to the "Viewport"
+// item in the QML/3D plugin.
+class Q_QT3D_QUICK_EXPORT QQuickViewport
 {
-    Q_OBJECT
-    Q_PROPERTY(QString name READ name NOTIFY nameChanged DESIGNABLE false )
 public:
-    explicit QDeclarativeAnimation3D(QObject *parent = 0);
-    explicit QDeclarativeAnimation3D(QGLSceneAnimation* pAnim, QObject *parent = 0);
-    ~QDeclarativeAnimation3D();
+    virtual int registerPickableObject(QObject *obj) = 0;
+    virtual void update3d() = 0;
+    virtual bool blending() const = 0;
 
-    QString name() const;
-
-public Q_SLOTS:
-
-Q_SIGNALS:
-    void nameChanged();
-
-private:
-    QDeclarativeAnimation3DPrivate *d;
+    void setItemViewport(QQuickItem3D *item);
 };
 
 QT_END_NAMESPACE
 
-QML_DECLARE_TYPE(QDeclarativeAnimation3D)
-
 QT_END_HEADER
 
-#endif // QDECLARATIVEANIMATION3D_H
+#endif

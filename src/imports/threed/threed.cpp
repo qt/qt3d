@@ -44,11 +44,11 @@
 #include <QtQml/qqmlcontext.h>
 #include <QtQml/qqml.h>
 
-#include "qdeclarativeitem3d.h"
-#include "qdeclarativemesh.h"
-#include "qdeclarativeanimation3d.h"
+#include "qquickitem3d.h"
+#include "qquickmesh.h"
+#include "qquickanimation3d.h"
 #include "viewport.h"
-#include "qdeclarativeeffect.h"
+#include "qquickeffect.h"
 #include "scale3d.h"
 #include "skybox.h"
 
@@ -70,7 +70,7 @@
 
 #include "billboarditem3d.h"
 
-QML_DECLARE_TYPE(QGraphicsTransform3D)
+QML_DECLARE_TYPE(QQuickQGraphicsTransform3D)
 QML_DECLARE_TYPE(QGraphicsRotation3D)
 QML_DECLARE_TYPE(QGraphicsTranslation3D)
 QML_DECLARE_TYPE(QGraphicsScale3D)
@@ -92,10 +92,10 @@ public:
     {
         Q_ASSERT(QLatin1String(uri) == QLatin1String("Qt3D"));
         qmlRegisterType<QGLSceneNode>(uri,1,0,"SceneNode");
-        qmlRegisterType<QDeclarativeEffect>(uri,1,0,"Effect");
-        qmlRegisterType<QDeclarativeMesh>(uri,1,0,"Mesh");
-        qmlRegisterType<QDeclarativeItem3D>(uri,1,0,"Item3D");
-        qmlRegisterType<QDeclarativeAnimation3D>(uri,1,0,"Animation3D");
+        qmlRegisterType<QQuickEffect>(uri,1,0,"Effect");
+        qmlRegisterType<QQuickMesh>(uri,1,0,"Mesh");
+        qmlRegisterType<QQuickItem3D>(uri,1,0,"Item3D");
+        qmlRegisterType<QQuickAnimation3D>(uri,1,0,"Animation3D");
         qmlRegisterType<QGLLightModel>(uri,1,0,"LightModel");
         qmlRegisterType<QGLLightParameters>(uri,1,0,"Light");
         qmlRegisterType<QGLCamera>(uri,1,0,"Camera");
@@ -118,8 +118,8 @@ public:
 
         qmlRegisterType<Viewport>(uri,1,0,"Viewport");
 
-        // Needed to make QQmlListProperty<QGraphicsTransform3D> work.
-        qmlRegisterType<QGraphicsTransform3D>();
+        // Needed to make QQmlListProperty<QQuickQGraphicsTransform3D> work.
+        qmlRegisterType<QQuickQGraphicsTransform3D>();
         qmlRegisterType<QGraphicsScale3D>();
     }
     void initializeEngine(QQmlEngine *engine, const char *uri)

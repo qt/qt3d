@@ -52,7 +52,7 @@ QT_BEGIN_NAMESPACE
 
 class QGraphicsScale3DPrivate;
 
-class Q_QT3D_EXPORT QGraphicsScale3D : public QGraphicsTransform3D
+class Q_QT3D_EXPORT QGraphicsScale3D : public QQuickQGraphicsTransform3D
 {
     Q_OBJECT
     Q_PROPERTY(QVector3D origin READ origin WRITE setOrigin NOTIFY originChanged)
@@ -68,7 +68,7 @@ public:
     void setScale(const QVector3D &value);
 
     void applyTo(QMatrix4x4 *matrix) const;
-    QGraphicsTransform3D *clone(QObject *parent) const;
+    QQuickQGraphicsTransform3D *clone(QObject *parent) const;
 
 Q_SIGNALS:
     void originChanged();

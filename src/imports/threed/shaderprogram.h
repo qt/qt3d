@@ -42,7 +42,7 @@
 #ifndef SHADERPROGRAM_H
 #define SHADERPROGRAM_H
 
-#include "qdeclarativeeffect.h"
+#include "qquickeffect.h"
 
 QT_BEGIN_HEADER
 
@@ -51,7 +51,7 @@ QT_BEGIN_NAMESPACE
 class ShaderProgramPrivate;
 class QGLSceneNode;
 
-class ShaderProgram : public QDeclarativeEffect
+class ShaderProgram : public QQuickEffect
 {
     Q_OBJECT
     Q_PROPERTY(QString vertexShader READ vertexShader WRITE setVertexShader NOTIFY shaderChanged)

@@ -42,7 +42,7 @@
 #ifndef CAPSULE_H
 #define CAPSULE_H
 
-#include "qdeclarativemesh.h"
+#include "qquickmesh.h"
 
 QT_BEGIN_HEADER
 
@@ -50,7 +50,7 @@ QT_BEGIN_NAMESPACE
 
 class CapsuleMeshPrivate;
 
-class Q_QT3D_QUICK_EXPORT CapsuleMesh : public QDeclarativeMesh
+class Q_QT3D_QUICK_EXPORT CapsuleMesh : public QQuickMesh
 {
     Q_OBJECT
     Q_PROPERTY(qreal radius READ radius WRITE setRadius NOTIFY radiusChanged)

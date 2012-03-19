@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "qdeclarativeeffect.h"
+#include "qquickeffect.h"
 
 #include "qglpainter.h"
 #include "qglmaterial.h"
@@ -53,7 +53,7 @@
 #include "qglscenenode.h"
 
 /*!
-    \qmlclass Effect QDeclarativeEffect
+    \qmlclass Effect QQuickEffect
     \brief The Effect item defines simple effects within the QML/3D environment.  Examples
     of such effects include textures, simple material and lighting effects, and so on.
     \since 4.8
@@ -81,10 +81,10 @@
 
 QT_BEGIN_NAMESPACE
 
-class QDeclarativeEffectPrivate
+class QQuickEffectPrivate
 {
 public:
-    QDeclarativeEffectPrivate()
+    QQuickEffectPrivate()
         : color(255, 255, 255, 255),
           useLighting(true),
           decal(false),
@@ -95,7 +95,7 @@ public:
     {
     }
 
-    ~QDeclarativeEffectPrivate()
+    ~QQuickEffectPrivate()
     {
         palette.clear();
     }
@@ -123,7 +123,7 @@ public:
     void cleanupResources();
 };
 
-void QDeclarativeEffectPrivate::cleanupResources()
+void QQuickEffectPrivate::cleanupResources()
 {
     if (!palette)
         return;
@@ -145,17 +145,17 @@ void QDeclarativeEffectPrivate::cleanupResources()
     \internal
     Constructs the Effect object with \a parent as its parent.
 */
-QDeclarativeEffect::QDeclarativeEffect(QObject *parent)
+QQuickEffect::QQuickEffect(QObject *parent)
     : QObject(parent)
 {
-    d = new QDeclarativeEffectPrivate;
+    d = new QQuickEffectPrivate;
 }
 
 /*!
     \internal
     Destroy the \l Effect object and delete any unneeded data.
 */
-QDeclarativeEffect::~QDeclarativeEffect()
+QQuickEffect::~QQuickEffect()
 {
     delete d;
 }
@@ -167,12 +167,12 @@ QDeclarativeEffect::~QDeclarativeEffect()
     The default value for this property is white.
 */
 
-QColor QDeclarativeEffect::color() const
+QColor QQuickEffect::color() const
 {
     return d->color;
 }
 
-void QDeclarativeEffect::setColor(const QColor& value)
+void QQuickEffect::setColor(const QColor& value)
 {
     d->color = value;
     d->ensureMaterial();
@@ -189,12 +189,12 @@ void QDeclarativeEffect::setColor(const QColor& value)
 
     The default value for this property is true.
 */
-bool QDeclarativeEffect::useLighting() const
+bool QQuickEffect::useLighting() const
 {
     return d->useLighting;
 }
 
-void QDeclarativeEffect::setUseLighting(bool value)
+void QQuickEffect::setUseLighting(bool value)
 {
     d->useLighting = value;
     emit effectChanged();
@@ -210,12 +210,12 @@ void QDeclarativeEffect::setUseLighting(bool value)
 
     The default value for this property is false.
 */
-bool QDeclarativeEffect::decal() const
+bool QQuickEffect::decal() const
 {
     return d->decal;
 }
 
-void QDeclarativeEffect::setDecal(bool value)
+void QQuickEffect::setDecal(bool value)
 {
     if (d->decal != value) {
         d->decal = value;
@@ -233,12 +233,12 @@ void QDeclarativeEffect::setDecal(bool value)
     This property overrides the viewport-specific blending setting
     that is specified by Viewport::blending.
 */
-bool QDeclarativeEffect::blending() const
+bool QQuickEffect::blending() const
 {
     return d->blending;
 }
 
-void QDeclarativeEffect::setBlending(bool value)
+void QQuickEffect::setBlending(bool value)
 {
     if (d->blending != value) {
         d->blending = value;
@@ -260,14 +260,14 @@ void QDeclarativeEffect::setBlending(bool value)
 
     \sa textureImage
 */
-QUrl QDeclarativeEffect::texture() const
+QUrl QQuickEffect::texture() const
 {
     if (!material())
         return QUrl();
     return material()->textureUrl();
 }
 
-void QDeclarativeEffect::setTexture(const QUrl& value)
+void QQuickEffect::setTexture(const QUrl& value)
 {
     if (material() && material()->textureUrl() == value)
         return;
@@ -304,7 +304,7 @@ void QDeclarativeEffect::setTexture(const QUrl& value)
 
     \sa texture
 */
-QImage QDeclarativeEffect::textureImage() const
+QImage QQuickEffect::textureImage() const
 {
     return (material() && material()->texture()) ?
                 material()->texture()->image() : QImage();
@@ -316,7 +316,7 @@ QImage QDeclarativeEffect::textureImage() const
   
   OpenGL defaults have been overridden to clamp the texture both horizontally and vertically as per QGL::Clamp.
 */
-void QDeclarativeEffect::setTextureImage(const QImage& value)
+void QQuickEffect::setTextureImage(const QImage& value)
 {
     QGLTexture2D * tex;
     d->ensureMaterial();
@@ -346,7 +346,7 @@ void QDeclarativeEffect::setTextureImage(const QImage& value)
 
     Defines the material to apply to items that use this effect.
 */
-QGLMaterial *QDeclarativeEffect::material() const
+QGLMaterial *QQuickEffect::material() const
 {
     if (!d->palette)
         return 0;
@@ -358,7 +358,7 @@ QGLMaterial *QDeclarativeEffect::material() const
   Sets the material for use with this effect.  Creates a QGLMaterialCollection
   to contain it if necessary.
 */
-void QDeclarativeEffect::setMaterial(QGLMaterial *value)
+void QQuickEffect::setMaterial(QGLMaterial *value)
 {
     d->ensureMaterial();
     int newIndex = -1;
@@ -391,7 +391,7 @@ void QDeclarativeEffect::setMaterial(QGLMaterial *value)
     \internal
     Enable the effect on for a given \a painter.
 */
-void QDeclarativeEffect::enableEffect(QGLPainter *painter)
+void QQuickEffect::enableEffect(QGLPainter *painter)
 {
     painter->setColor(d->color);
     if (d->materialIndex != -1 && d->palette->material(d->materialIndex))
@@ -432,7 +432,7 @@ void QDeclarativeEffect::enableEffect(QGLPainter *painter)
     \internal
     Disable the effect for a given \a painter.
 */
-void QDeclarativeEffect::disableEffect(QGLPainter *painter)
+void QQuickEffect::disableEffect(QGLPainter *painter)
 {
     painter->setStandardEffect(QGL::FlatColor);
     painter->setColor(Qt::white);
@@ -450,7 +450,7 @@ void QDeclarativeEffect::disableEffect(QGLPainter *painter)
   Subclasses can reimplement this function to set desired effects (e.g. user
   effects);
 */
-void QDeclarativeEffect::applyTo(QGLSceneNode *node)
+void QQuickEffect::applyTo(QGLSceneNode *node)
 {
     d->ensureMaterial();
 
@@ -485,7 +485,7 @@ void QDeclarativeEffect::applyTo(QGLSceneNode *node)
     }
 }
 
-QGLTexture2D *QDeclarativeEffect::texture2D()
+QGLTexture2D *QQuickEffect::texture2D()
 {
     if (!material())
         return 0;
@@ -495,12 +495,12 @@ QGLTexture2D *QDeclarativeEffect::texture2D()
 /*!
   Returns the progress of remote resource loading.
   */
-qreal QDeclarativeEffect::progress()
+qreal QQuickEffect::progress()
 {
     return d->progress;
 }
 
-void QDeclarativeEffect::openglContextIsAboutToBeDestroyed()
+void QQuickEffect::openglContextIsAboutToBeDestroyed()
 {
     d->cleanupResources();
 }

@@ -40,7 +40,7 @@
 ****************************************************************************/
 
 #include "viewport.h"
-#include "qdeclarativeeffect.h"
+#include "qquickeffect.h"
 
 #include "qgllightmodel.h"
 #include "qgllightparameters.h"
@@ -978,7 +978,7 @@ void Viewport::draw(QGLPainter *painter)
     painter->setMainLight(d->light, QMatrix4x4());
     painter->setLightModel(d->lightModel);
     foreach (QObject *child, list) {
-        QDeclarativeItem3D *item = qobject_cast<QDeclarativeItem3D *>(child);
+        QQuickItem3D *item = qobject_cast<QQuickItem3D *>(child);
         if (item)
         {
             if (d->showSceneGraph && (d->dumpCount == 0))
@@ -1000,7 +1000,7 @@ void Viewport::initializeGL(QGLPainter *painter)
     // Initialize the Item3D objects attached to this scene.
     QObjectList list = QObject::children();
     foreach (QObject *child, list) {
-        QDeclarativeItem3D *item = qobject_cast<QDeclarativeItem3D *>(child);
+        QQuickItem3D *item = qobject_cast<QQuickItem3D *>(child);
         if (item) {
             setItemViewport(item);
             item->initialize(painter);
@@ -1816,8 +1816,8 @@ void Viewport::itemChange(QQuickItem::ItemChange change, const ItemChangeData &v
     if (change == QQuickItem::ItemChildAddedChange)
     {
         QQuickItem *newItem = value.item;
-        if (QDeclarativeItem3D* item3d =
-                qobject_cast<QDeclarativeItem3D*>(newItem))
+        if (QQuickItem3D* item3d =
+                qobject_cast<QQuickItem3D*>(newItem))
         {
             setItemViewport(item3d);
         }

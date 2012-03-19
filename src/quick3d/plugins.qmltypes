@@ -7,7 +7,7 @@ Module {
     Component {
         name: "Capsule"
         defaultProperty: "data"
-        prototype: "QDeclarativeItem3D"
+        prototype: "QQuickItem3D"
         exports: [
             "Capsule 1.0"
         ]
@@ -21,7 +21,7 @@ Module {
     Component {
         name: "Cylinder"
         defaultProperty: "data"
-        prototype: "QDeclarativeItem3D"
+        prototype: "QQuickItem3D"
         exports: [
             "Cylinder 1.0"
         ]
@@ -35,7 +35,7 @@ Module {
     Component {
         name: "Line"
         defaultProperty: "data"
-        prototype: "QDeclarativeItem3D"
+        prototype: "QQuickItem3D"
         exports: [
             "Line 1.0"
         ]
@@ -47,7 +47,7 @@ Module {
     Component {
         name: "Point"
         defaultProperty: "data"
-        prototype: "QDeclarativeItem3D"
+        prototype: "QQuickItem3D"
         exports: [
             "Point 1.0"
         ]
@@ -57,7 +57,7 @@ Module {
         Signal { name: "pointSizeChanged" }
     }
     Component {
-        name: "QDeclarativeItem3D"
+        name: "QQuickItem3D"
         defaultProperty: "data"
         prototype: "QQuickItem"
         Enum {
@@ -92,20 +92,20 @@ Module {
         Property { name: "y"; type: "qreal" }
         Property { name: "z"; type: "qreal" }
         Property { name: "scale"; type: "qreal" }
-        Property { name: "transform"; type: "QGraphicsTransform3D"; isList: true; isReadonly: true }
-        Property { name: "pretransform"; type: "QGraphicsTransform3D"; isList: true; isReadonly: true }
-        Property { name: "mesh"; type: "QDeclarativeMesh"; isPointer: true }
-        Property { name: "effect"; type: "QDeclarativeEffect"; isPointer: true }
+        Property { name: "transform"; type: "QQuickQGraphicsTransform3D"; isList: true; isReadonly: true }
+        Property { name: "pretransform"; type: "QQuickQGraphicsTransform3D"; isList: true; isReadonly: true }
+        Property { name: "mesh"; type: "QQuickMesh"; isPointer: true }
+        Property { name: "effect"; type: "QQuickEffect"; isPointer: true }
         Property { name: "light"; type: "QGLLightParameters"; isPointer: true }
         Property { name: "resources"; type: "QObject"; isList: true; isReadonly: true }
         Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
-        Property { name: "children"; type: "QDeclarativeItem3D"; isList: true; isReadonly: true }
+        Property { name: "children"; type: "QQuickItem3D"; isList: true; isReadonly: true }
         Property { name: "cullFaces"; type: "CullFaces" }
         Property { name: "sortChildren"; type: "SortMode" }
         Property { name: "meshNode"; type: "string" }
         Property { name: "inheritEvents"; type: "bool" }
         Property { name: "enabled"; type: "bool" }
-        Property { name: "parent"; type: "QDeclarativeItem3D"; isPointer: true }
+        Property { name: "parent"; type: "QQuickItem3D"; isPointer: true }
         Signal { name: "positionChanged" }
         Signal { name: "scaleChanged" }
         Signal { name: "rotationChanged" }
@@ -145,7 +145,7 @@ Module {
     Component {
         name: "Sphere"
         defaultProperty: "data"
-        prototype: "QDeclarativeItem3D"
+        prototype: "QQuickItem3D"
         exports: [
             "Sphere 1.0"
         ]

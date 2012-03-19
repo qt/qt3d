@@ -95,7 +95,7 @@ QT_BEGIN_NAMESPACE
     \internal
 */
 Sphere::Sphere(QObject *parent)
-    : QDeclarativeItem3D(parent)
+    : QQuickItem3D(parent)
     , m_radius(1.0f)
     , m_lod(-1)
     , m_axis(Qt::ZAxis)

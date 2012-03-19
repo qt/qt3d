@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QDECLARATIVEMESH_H
-#define QDECLARATIVEMESH_H
+#ifndef QQUICKMESH_H
+#define QQUICKMESH_H
 
 #include "qt3dquickglobal.h"
 
@@ -59,12 +59,12 @@ QT_BEGIN_NAMESPACE
 
 QT_MODULE(QtQuick3D)
 
-class QDeclarativeMeshPrivate;
+class QQuickMeshPrivate;
 class QGLAbstractScene;
 class QGLMaterial;
 class QGLSceneAnimation;
 
-class Q_QT3D_QUICK_EXPORT QDeclarativeMesh : public QObject, public QQmlParserStatus
+class Q_QT3D_QUICK_EXPORT QQuickMesh : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
@@ -75,8 +75,8 @@ class Q_QT3D_QUICK_EXPORT QDeclarativeMesh : public QObject, public QQmlParserSt
     Q_PROPERTY(bool dumpInfo READ dumpInfo WRITE setDumpInfo NOTIFY dumpInfoChanged)
 
 public:
-    QDeclarativeMesh(QObject *parent = 0);
-    ~QDeclarativeMesh();
+    QQuickMesh(QObject *parent = 0);
+    ~QQuickMesh();
 
     QUrl source() const;
     void setSource(const QUrl& value);
@@ -132,13 +132,13 @@ private Q_SLOTS:
     void dataRequestFinished();
 
 private:
-    QDeclarativeMeshPrivate *d;
+    QQuickMeshPrivate *d;
 
 };
 
 QT_END_NAMESPACE
 
-QML_DECLARE_TYPE(QDeclarativeMesh)
+QML_DECLARE_TYPE(QQuickMesh)
 
 QT_END_HEADER
 

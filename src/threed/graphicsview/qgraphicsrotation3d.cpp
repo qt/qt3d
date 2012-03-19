@@ -127,7 +127,7 @@ public:
     Create a 3D rotation transformation and attach it to \a parent.
 */
 QGraphicsRotation3D::QGraphicsRotation3D(QObject *parent)
-    : QGraphicsTransform3D(parent)
+    : QQuickQGraphicsTransform3D(parent)
     , d_ptr(new QGraphicsRotation3DPrivate)
 {
 }
@@ -243,7 +243,7 @@ void QGraphicsRotation3D::applyTo(QMatrix4x4 *matrix) const
 /*!
     \internal
 */
-QGraphicsTransform3D *QGraphicsRotation3D::clone(QObject *parent) const
+QQuickQGraphicsTransform3D *QGraphicsRotation3D::clone(QObject *parent) const
 {
     Q_D(const QGraphicsRotation3D);
     QGraphicsRotation3D *copy = new QGraphicsRotation3D(parent);

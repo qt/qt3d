@@ -43,7 +43,7 @@
 #define SPHEREMESH_H
 
 #include "qglscenenode.h"
-#include "qdeclarativemesh.h"
+#include "qquickmesh.h"
 //#include "spheremesh_p.h"
 
 #include <QtCore/qmap.h>
@@ -55,7 +55,7 @@ QT_BEGIN_NAMESPACE
 
 class SphereMeshPrivate;
 
-class Q_QT3D_QUICK_EXPORT SphereMesh : public QDeclarativeMesh
+class Q_QT3D_QUICK_EXPORT SphereMesh : public QQuickMesh
 {
     Q_OBJECT
     Q_PROPERTY(qreal radius READ radius WRITE setRadius NOTIFY radiusChanged)

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module>
-    <type name="QDeclarativeEffect" extends="QObject">
+    <type name="QQuickEffect" extends="QObject">
         <exports>
             <export module="Qt3D" version="1.0" type="Effect" />
         </exports>
@@ -17,7 +17,7 @@
             <param name="progress" type="qreal" />
         </signal>
     </type>
-    <type name="QDeclarativeItem3D" defaultProperty="data" extends="QQuickItem">
+    <type name="QQuickItem3D" defaultProperty="data" extends="QQuickItem">
         <exports>
             <export module="Qt3D" version="1.0" type="Item3D" />
         </exports>
@@ -44,20 +44,20 @@
         <property name="y" type="qreal" />
         <property name="z" type="qreal" />
         <property name="scale" type="qreal" />
-        <property name="transform" type="QGraphicsTransform3D" isList="true" />
-        <property name="pretransform" type="QGraphicsTransform3D" isList="true" />
-        <property name="mesh" type="QDeclarativeMesh" />
-        <property name="effect" type="QDeclarativeEffect" />
+        <property name="transform" type="QQuickQGraphicsTransform3D" isList="true" />
+        <property name="pretransform" type="QQuickQGraphicsTransform3D" isList="true" />
+        <property name="mesh" type="QQuickMesh" />
+        <property name="effect" type="QQuickEffect" />
         <property name="light" type="QGLLightParameters" />
         <property name="resources" type="QObject" isList="true" />
         <property name="data" type="QObject" isList="true" />
-        <property name="children" type="QDeclarativeItem3D" isList="true" />
+        <property name="children" type="QQuickItem3D" isList="true" />
         <property name="cullFaces" type="CullFaces" />
         <property name="sortChildren" type="SortMode" />
         <property name="meshNode" type="string" />
         <property name="inheritEvents" type="bool" />
         <property name="enabled" type="bool" />
-        <property name="parent" type="QDeclarativeItem3D" />
+        <property name="parent" type="QQuickItem3D" />
         <signal name="positionChanged" />
         <signal name="scaleChanged" />
         <signal name="rotationChanged" />
@@ -89,7 +89,7 @@
         </method>
         <method name="worldToLocal" type="QVector3D" />
     </type>
-    <type name="QDeclarativeMesh" extends="QObject">
+    <type name="QQuickMesh" extends="QObject">
         <exports>
             <export module="Qt3D" version="1.0" type="Mesh" />
         </exports>
@@ -301,23 +301,23 @@
             <param name="names" type="QStringList" />
         </method>
     </type>
-    <type name="QGraphicsBillboardTransform" extends="QGraphicsTransform3D">
+    <type name="QGraphicsBillboardTransform" extends="QQuickQGraphicsTransform3D">
         <exports>
             <export module="Qt3D" version="1.0" type="BillboardTransform" />
         </exports>
         <property name="preserveUpVector" type="bool" />
         <signal name="preserveUpVectorChanged" />
     </type>
-    <type name="QGraphicsLookAtTransform" extends="QGraphicsTransform3D">
+    <type name="QGraphicsLookAtTransform" extends="QQuickQGraphicsTransform3D">
         <exports>
             <export module="Qt3D" version="1.0" type="LookAt" />
         </exports>
         <property name="preserveUpVector" type="bool" />
-        <property name="subject" type="QDeclarativeItem3D" />
+        <property name="subject" type="QQuickItem3D" />
         <signal name="preserveUpVectorChanged" />
         <signal name="subjectChanged" />
     </type>
-    <type name="QGraphicsRotation3D" extends="QGraphicsTransform3D">
+    <type name="QGraphicsRotation3D" extends="QQuickQGraphicsTransform3D">
         <exports>
             <export module="Qt3D" version="1.0" type="Rotation3D" />
         </exports>
@@ -328,7 +328,7 @@
         <signal name="angleChanged" />
         <signal name="axisChanged" />
     </type>
-    <type name="QGraphicsTranslation3D" extends="QGraphicsTransform3D">
+    <type name="QGraphicsTranslation3D" extends="QQuickQGraphicsTransform3D">
         <exports>
             <export module="Qt3D" version="1.0" type="Translation3D" />
         </exports>
@@ -344,7 +344,7 @@
         <property name="scale" type="QVariant" />
         <signal name="variantScaleChanged" />
     </type>
-    <type name="ShaderProgram" extends="QDeclarativeEffect">
+    <type name="ShaderProgram" extends="QQuickEffect">
         <exports>
             <export module="Qt3D" version="1.0" type="ShaderProgram" />
         </exports>

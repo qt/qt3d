@@ -186,7 +186,7 @@ private:
     \internal
 */
 CapsuleMesh::CapsuleMesh(QObject *parent)
-    : QDeclarativeMesh(parent)
+    : QQuickMesh(parent)
     , d(new CapsuleMeshPrivate)
 {
 }
@@ -284,7 +284,7 @@ void CapsuleMesh::draw(QGLPainter *painter, int branchId)
 {
     if (!d->currentCapsule)
         createGeometry();
-    QDeclarativeMesh::draw(painter, branchId);
+    QQuickMesh::draw(painter, branchId);
 }
 
 /*!

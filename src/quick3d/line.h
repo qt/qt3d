@@ -42,14 +42,14 @@
 #ifndef LINE_H
 #define LINE_H
 
-#include "qdeclarativeitem3d.h"
+#include "qquickitem3d.h"
 #include "qglscenenode.h"
 
 QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
-class Q_QT3D_QUICK_EXPORT Line : public QDeclarativeItem3D
+class Q_QT3D_QUICK_EXPORT Line : public QQuickItem3D
 {
     Q_OBJECT
     Q_PROPERTY(qreal width READ width WRITE setWidth NOTIFY widthChanged)

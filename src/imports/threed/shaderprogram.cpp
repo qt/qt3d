@@ -618,7 +618,7 @@ void ShaderProgramEffect::processTextureUrl(int uniformLocation, QString urlStri
     // Try to make path absolute:
     if (url.isRelative())
     {
-        // Get the baseUrl from the declarative engine
+        // Get the baseUrl from the qml engine
         QQmlContext *context =
                 QQmlEngine::contextForObject(parent.data());
 
@@ -679,7 +679,7 @@ void ShaderProgramEffect::processTextureUrl(int uniformLocation, QString urlStri
   Construction of the shader program and assignment of its \a parent object.
 */
 ShaderProgram::ShaderProgram(QObject *parent)
-    : QDeclarativeEffect(parent)
+    : QQuickEffect(parent)
 {
     d = new ShaderProgramPrivate();
 }
@@ -746,7 +746,7 @@ void ShaderProgram::enableEffect(QGLPainter *painter)
 {
     if (!d->shadersSupported && !d->regenerate) {
         // Use a simple fallback effect.
-        QDeclarativeEffect::enableEffect(painter);
+        QQuickEffect::enableEffect(painter);
         return;
     }
     if (!d->effect) {
@@ -756,7 +756,7 @@ void ShaderProgram::enableEffect(QGLPainter *painter)
         if (!d->effect->create(d->vertexShader, d->fragmentShader)) {
             delete d->effect;
             d->effect = 0;
-            QDeclarativeEffect::enableEffect(painter);
+            QQuickEffect::enableEffect(painter);
             d->regenerate = false;
             d->shadersSupported = false;
             return;
@@ -766,7 +766,7 @@ void ShaderProgram::enableEffect(QGLPainter *painter)
         if (!d->effect->create(d->vertexShader, d->fragmentShader)) {
             delete d->effect;
             d->effect = 0;
-            QDeclarativeEffect::enableEffect(painter);
+            QQuickEffect::enableEffect(painter);
             d->regenerate = false;
             d->shadersSupported = false;
             return;

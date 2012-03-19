@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "qdeclarativemesh.h"
+#include "qquickmesh.h"
 
 #include "qglabstractscene.h"
 #include "qglscenenode.h"
@@ -52,7 +52,7 @@
 #include <QtCore/qlist.h>
 
 /*!
-    \qmlclass Mesh QDeclarativeMesh
+    \qmlclass Mesh QQuickMesh
     \brief The Mesh item provides a means of abstracting 3D mesh and geometry representations in
     a way that can be used in QML.  The Mesh class contains necessary properties and methods for
     display and manipulation of 3d objects of this type.
@@ -97,10 +97,10 @@
 
 QT_BEGIN_NAMESPACE
 
-class QDeclarativeMeshPrivate
+class QQuickMeshPrivate
 {
 public:
-    QDeclarativeMeshPrivate()
+    QQuickMeshPrivate()
         : dataReply(0)
         , scene(0)
         , nextSceneBranchId(0)
@@ -110,7 +110,7 @@ public:
         , loaded(false)
         , dumpInfo(false)
     {}
-    ~QDeclarativeMeshPrivate()
+    ~QQuickMeshPrivate()
     {
         delete scene;
     }
@@ -122,7 +122,7 @@ public:
 
     QUrl data;
     QString meshName;
-    QDeclarativeMesh *parentMesh;
+    QQuickMesh *parentMesh;
     QNetworkReply *dataReply;
     QGLAbstractScene *scene;
     int nextSceneBranchId;
@@ -161,7 +161,7 @@ inline void gatherTexturesRecursive(QGLSceneNode* pNode, QList<QGLTexture2D*>& f
     }
 }
 
-void QDeclarativeMeshPrivate::cleanupResources()
+void QQuickMeshPrivate::cleanupResources()
 {
     QList<QGLTexture2D*> textures;
     gatherTexturesRecursive(scene->mainNode(),textures);
@@ -174,16 +174,16 @@ void QDeclarativeMeshPrivate::cleanupResources()
     \internal
     Construct a \l Mesh object with \a parent as its parent.
 */
-QDeclarativeMesh::QDeclarativeMesh(QObject *parent)
+QQuickMesh::QQuickMesh(QObject *parent)
     : QObject(parent)
-    ,d(new QDeclarativeMeshPrivate())
+    ,d(new QQuickMeshPrivate())
 {}
 
 /*!
     \internal
     Destroy the \l Mesh object and free any unneeded memory.
 */
-QDeclarativeMesh::~QDeclarativeMesh()
+QQuickMesh::~QQuickMesh()
 {
     delete d;
 }
@@ -204,12 +204,12 @@ QDeclarativeMesh::~QDeclarativeMesh()
     requirements within the different file types.
 */
 
-QUrl QDeclarativeMesh::source() const
+QUrl QQuickMesh::source() const
 {
     return d->data;
 }
 
-void QDeclarativeMesh::setSource(const QUrl& value)
+void QQuickMesh::setSource(const QUrl& value)
 {
     if (d->data == value)
         return;
@@ -246,12 +246,12 @@ void QDeclarativeMesh::setSource(const QUrl& value)
     Users can associate a name with a mesh to facilitate easy finding or
     description of a mesh.
 */
-QString QDeclarativeMesh::meshName() const
+QString QQuickMesh::meshName() const
 {
     return d->meshName;
 }
 
-void QDeclarativeMesh::setMeshName(const QString& value)
+void QQuickMesh::setMeshName(const QString& value)
 {
     bool emitDataChanged = false;
     if (d->meshName != value)
@@ -290,12 +290,12 @@ void QDeclarativeMesh::setMeshName(const QString& value)
     Specifies the current options for loading this mesh.  The default value
     is the null string, meaning no options are applied.
 */
-QString QDeclarativeMesh::options() const
+QString QQuickMesh::options() const
 {
     return d->options;
 }
 
-void QDeclarativeMesh::setOptions(const QString &options)
+void QQuickMesh::setOptions(const QString &options)
 {
     if (options != d->options)
     {
@@ -309,7 +309,7 @@ void QDeclarativeMesh::setOptions(const QString &options)
   Once the request for data has been finished the \l Mesh class is now free to load
   the scene.
 */
-void QDeclarativeMesh::dataRequestFinished()
+void QQuickMesh::dataRequestFinished()
 {
     setScene(QGLAbstractScene::loadScene(d->dataReply, d->data, d->options));
     d->dataReply->deleteLater();
@@ -332,7 +332,7 @@ void QDeclarativeMesh::dataRequestFinished()
 
     \sa QGLAbstractScene
 */
-void QDeclarativeMesh::initSceneObjectList()
+void QQuickMesh::initSceneObjectList()
 {
     d->sceneObjects.clear();
     if (d->scene) {
@@ -353,9 +353,9 @@ void QDeclarativeMesh::initSceneObjectList()
     \internal
     //TODO
 */
-void QDeclarativeMesh::initAnimations()
+void QQuickMesh::initAnimations()
 {
-    //qDebug("QDeclarativeMesh::initAnimations()");
+    //qDebug("QQuickMesh::initAnimations()");
     d->originalAnimations.clear();
     if (d->scene) {
         const QList<QGLSceneAnimation *>& rSrcList = d->scene->animations();
@@ -368,7 +368,7 @@ void QDeclarativeMesh::initAnimations()
 
     Get the main scene node for the \l QGLAbstractScene associated with this mesh.
 */
-QGLSceneNode *QDeclarativeMesh::getSceneObject()
+QGLSceneNode *QQuickMesh::getSceneObject()
 {
     //This variant of the function gets the main scene object for the scene
     if (!d->mainSceneObject)
@@ -382,7 +382,7 @@ QGLSceneNode *QDeclarativeMesh::getSceneObject()
     Get the scene object called \a name, specified as a QString, and retrieve the
     scene object in this mesh which corresponds to it.
 */
-QGLSceneNode *QDeclarativeMesh::getSceneObject(const QString &name)
+QGLSceneNode *QQuickMesh::getSceneObject(const QString &name)
 {
     //This variant of the function gets the mesh scene object for a scene
     //based on the name of the object.
@@ -403,7 +403,7 @@ QGLSceneNode *QDeclarativeMesh::getSceneObject(const QString &name)
     \internal
     //TODO
 */
-QList<QGLSceneAnimation *> QDeclarativeMesh::getAnimations()
+QList<QGLSceneAnimation *> QQuickMesh::getAnimations()
 {
     return d->originalAnimations;
 }
@@ -413,7 +413,7 @@ QList<QGLSceneAnimation *> QDeclarativeMesh::getAnimations()
     Used mainly for diagnostic purposes this function returns a QStringList containing
     all of the object names for the given mesh.
 */
-QStringList QDeclarativeMesh::getSceneObjectNames()
+QStringList QQuickMesh::getSceneObjectNames()
 {
     //Get a string list of all mesh object names in the scene.
     if (d->sceneObjects.empty())
@@ -439,12 +439,12 @@ QStringList QDeclarativeMesh::getSceneObjectNames()
     names of all the subnodes of the mesh, materials and geometry parameters, will be
     dumped to the console during the loading of the model.
 */
-bool QDeclarativeMesh::dumpInfo() const
+bool QQuickMesh::dumpInfo() const
 {
     return d->dumpInfo;
 }
 
-void QDeclarativeMesh::setDumpInfo(bool enable)
+void QQuickMesh::setDumpInfo(bool enable)
 {
     if (enable != d->dumpInfo)
     {
@@ -468,7 +468,7 @@ void QDeclarativeMesh::setDumpInfo(bool enable)
 
     \sa QGLAbstractScene
 */
-void QDeclarativeMesh::setScene(QGLAbstractScene *scene)
+void QQuickMesh::setScene(QGLAbstractScene *scene)
 {
     delete d->scene;
     resetSceneBranches();
@@ -519,7 +519,7 @@ void QDeclarativeMesh::setScene(QGLAbstractScene *scene)
     manipulated sub-branch of the whole, the branches taken are identified numerically.  This
     function returns the next scene branch ID number
 */
-int QDeclarativeMesh::nextSceneBranchId() const
+int QQuickMesh::nextSceneBranchId() const
 {
     //Retrieve the next unused scene branch ID
     return d->nextSceneBranchId;
@@ -537,7 +537,7 @@ int QDeclarativeMesh::nextSceneBranchId() const
     destruction rules apply, however this \a parent parameter gives the user extra flexibility if
     required.
 */
-int QDeclarativeMesh::createSceneBranch(QString nodeName)
+int QQuickMesh::createSceneBranch(QString nodeName)
 {
     if (!d->scene) {
         qWarning() << "Unable to split mesh: no scene initialised - attempt to add scene object failed.";
@@ -577,11 +577,11 @@ int QDeclarativeMesh::createSceneBranch(QString nodeName)
      The \a previousParent of \a rootSceneObject is also stored so that the object can be restored to its
      previous parent if necessary.
 */
-int QDeclarativeMesh::addSceneBranch(QGLSceneNode *rootSceneObject, QObject *previousParent)
+int QQuickMesh::addSceneBranch(QGLSceneNode *rootSceneObject, QObject *previousParent)
 {
     //when adding a new object to a mesh we also store the previous parent information
     //in case we wish to 'reattach' it to the parent at a later stage.
-    QDeclarativeMeshPrivate::branchObject newBranch;
+    QQuickMeshPrivate::branchObject newBranch;
     newBranch.previousParent=previousParent;
     newBranch.rootSceneObject = rootSceneObject;
 
@@ -600,7 +600,7 @@ int QDeclarativeMesh::addSceneBranch(QGLSceneNode *rootSceneObject, QObject *pre
 
     If the item selected is already the default item, and no parent can be found, it is deleted.
 */
-void QDeclarativeMesh::restoreSceneBranch(int branchId)
+void QQuickMesh::restoreSceneBranch(int branchId)
 {
 
     if (d->sceneBranches.contains(branchId)) {
@@ -608,7 +608,7 @@ void QDeclarativeMesh::restoreSceneBranch(int branchId)
         return;
     }
 
-    QDeclarativeMeshPrivate::branchObject targetBranch = d->sceneBranches.value(branchId);
+    QQuickMeshPrivate::branchObject targetBranch = d->sceneBranches.value(branchId);
 
     if (!targetBranch.previousParent && branchId!=0) {
         targetBranch.rootSceneObject->setParent(getSceneObject());
@@ -629,10 +629,10 @@ void QDeclarativeMesh::restoreSceneBranch(int branchId)
     \internal
     Return a pointer to the scene branch identified by \a branchId.
 */
-QGLSceneNode *QDeclarativeMesh::getSceneBranch(int branchId) const
+QGLSceneNode *QQuickMesh::getSceneBranch(int branchId) const
 {
     if (!d->sceneBranches.contains(branchId)) return NULL;
-    QDeclarativeMeshPrivate::branchObject targetBranch = d->sceneBranches.value(branchId);
+    QQuickMeshPrivate::branchObject targetBranch = d->sceneBranches.value(branchId);
     return targetBranch.rootSceneObject;
 }
 
@@ -643,7 +643,7 @@ QGLSceneNode *QDeclarativeMesh::getSceneBranch(int branchId) const
     restore them to their original position in the object hierarchy of the scene.  It then clears the
     map ready for reuse.
 */
-void QDeclarativeMesh::resetSceneBranches()
+void QQuickMesh::resetSceneBranches()
 {
     //Delete all "hanging" object entries in the scene branches list and return them
     //to their rightful place in their parent scene if possible.
@@ -659,12 +659,12 @@ void QDeclarativeMesh::resetSceneBranches()
     \internal
     Core "draw" function for the mesh draws scene branch \a branchId using \a painter.
 */
-void QDeclarativeMesh::draw(QGLPainter *painter, int branchId)
+void QQuickMesh::draw(QGLPainter *painter, int branchId)
 {
     if (!d->sceneBranches.contains(branchId)) {
         qWarning() << "No scene object with ID: " << branchId << "for" << this;
     } else {
-        QDeclarativeMeshPrivate::branchObject targetBranch = d->sceneBranches.value(branchId);
+        QQuickMeshPrivate::branchObject targetBranch = d->sceneBranches.value(branchId);
         targetBranch.rootSceneObject->draw(painter);
     }
 }
@@ -673,7 +673,7 @@ void QDeclarativeMesh::draw(QGLPainter *painter, int branchId)
     \internal
     Reference counting increment.
 */
-void QDeclarativeMesh::ref()
+void QQuickMesh::ref()
 {
     ++(d->refCount);
 }
@@ -683,7 +683,7 @@ void QDeclarativeMesh::ref()
     Reference counting decrement; returns true if there are still outstanding references
     to the class.
 */
-bool QDeclarativeMesh::deref()
+bool QQuickMesh::deref()
 {
     --(d->refCount);
     return d->refCount > 0;
@@ -697,7 +697,7 @@ bool QDeclarativeMesh::deref()
     Returns a pointer to the QGLMaterial material object \a materialName; or NULL if
     either there is no current scene, or if the scene does not contain such a material.
 */
-QObject *QDeclarativeMesh::material(const QString& nodeName, const QString& materialName)
+QObject *QQuickMesh::material(const QString& nodeName, const QString& materialName)
 {
     if (!d->scene)
         return 0;
@@ -730,7 +730,7 @@ QObject *QDeclarativeMesh::material(const QString& nodeName, const QString& mate
 /*!
     \internal
 */
-void QDeclarativeMesh::classBegin()
+void QQuickMesh::classBegin()
 {
 }
 
@@ -741,7 +741,7 @@ void QDeclarativeMesh::classBegin()
 
     \sa loaded()
 */
-void QDeclarativeMesh::componentComplete()
+void QQuickMesh::componentComplete()
 {
     d->completed = true;
     if (d->loaded)
@@ -755,7 +755,7 @@ void QDeclarativeMesh::componentComplete()
     \internal
     //TODO
 */
-void QDeclarativeMesh::openglContextIsAboutToBeDestroyed()
+void QQuickMesh::openglContextIsAboutToBeDestroyed()
 {
     d->cleanupResources();
 }

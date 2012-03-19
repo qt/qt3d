@@ -39,34 +39,60 @@
 **
 ****************************************************************************/
 
-#ifndef QDECLARATIVEVIEWPORT_H
-#define QDECLARATIVEVIEWPORT_H
-
-#include "qt3dquickglobal.h"
-#include <QtCore/qobject.h>
-
-QT_BEGIN_HEADER
+#include "qquickanimation3d.h"
+#include "qglsceneanimation.h"
 
 QT_BEGIN_NAMESPACE
 
-QT_MODULE(QtQuick3D)
+// -------------------------------------------------------------------------------------------------------------
 
-class QDeclarativeItem3D;
-
-// Abstract interface for "Item3D" getting access to the "Viewport"
-// item in the QML/3D plugin.
-class Q_QT3D_QUICK_EXPORT QDeclarativeViewport
+class QQuickAnimation3DPrivate
 {
 public:
-    virtual int registerPickableObject(QObject *obj) = 0;
-    virtual void update3d() = 0;
-    virtual bool blending() const = 0;
-
-    void setItemViewport(QDeclarativeItem3D *item);
+    QQuickAnimation3DPrivate(QQuickAnimation3D *pParent, QGLSceneAnimation* pAnim) :
+        m_pParent(pParent)
+        ,m_pAnim(pAnim)
+    {
+        Q_ASSERT(m_pParent);
+    }
+    ~QQuickAnimation3DPrivate()
+    {
+    }
+    QQuickAnimation3D*    m_pParent;
+    QGLSceneAnimation*          m_pAnim;
 };
+
+// -------------------------------------------------------------------------------------------------------------
+
+QQuickAnimation3D::QQuickAnimation3D(QObject *parent) :
+    QObject(parent)
+    ,d(new QQuickAnimation3DPrivate(this,0))
+{
+}
+
+QQuickAnimation3D::QQuickAnimation3D(QGLSceneAnimation* pAnim, QObject *parent) :
+    QObject(parent)
+    ,d(new QQuickAnimation3DPrivate(this,pAnim))
+{
+    Q_ASSERT(pAnim);
+    emit nameChanged();
+}
+
+QQuickAnimation3D::~QQuickAnimation3D()
+{
+    delete d;
+    d = 0;
+}
+
+QString QQuickAnimation3D::name() const
+{
+    Q_ASSERT(d);
+    if (d->m_pAnim) {
+        return d->m_pAnim->name();
+    } else {
+        return QString();
+    }
+}
 
 QT_END_NAMESPACE
 
-QT_END_HEADER
-
-#endif

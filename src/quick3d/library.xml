@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module>
-    <type name="Capsule" defaultProperty="data" extends="QDeclarativeItem3D">
+    <type name="Capsule" defaultProperty="data" extends="QQuickItem3D">
         <exports>
             <export module="Qt3D.Shapes" version="1.0" type="Capsule" />
         </exports>
@@ -11,7 +11,7 @@
         <signal name="lengthChanged" />
         <signal name="levelOfDetailChanged" />
     </type>
-    <type name="Cylinder" defaultProperty="data" extends="QDeclarativeItem3D">
+    <type name="Cylinder" defaultProperty="data" extends="QQuickItem3D">
         <exports>
             <export module="Qt3D.Shapes" version="1.0" type="Cylinder" />
         </exports>
@@ -22,7 +22,7 @@
         <signal name="lengthChanged" />
         <signal name="levelOfDetailChanged" />
     </type>
-    <type name="Line" defaultProperty="data" extends="QDeclarativeItem3D">
+    <type name="Line" defaultProperty="data" extends="QQuickItem3D">
         <exports>
             <export module="Qt3D.Shapes" version="1.0" type="Line" />
         </exports>
@@ -31,7 +31,7 @@
         <signal name="verticesChanged" />
         <signal name="widthChanged" />
     </type>
-    <type name="Point" defaultProperty="data" extends="QDeclarativeItem3D">
+    <type name="Point" defaultProperty="data" extends="QQuickItem3D">
         <exports>
             <export module="Qt3D.Shapes" version="1.0" type="Point" />
         </exports>
@@ -40,7 +40,7 @@
         <signal name="verticesChanged" />
         <signal name="pointSizeChanged" />
     </type>
-    <type name="Sphere" defaultProperty="data" extends="QDeclarativeItem3D">
+    <type name="Sphere" defaultProperty="data" extends="QQuickItem3D">
         <exports>
             <export module="Qt3D.Shapes" version="1.0" type="Sphere" />
         </exports>

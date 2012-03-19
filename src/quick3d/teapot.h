@@ -44,17 +44,17 @@
 
 // This is a dummy header for defining the interface of "Teapot.qml" to qdoc.
 
-#include "qdeclarativeitem3d.h"
+#include "qquickitem3d.h"
 
 QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
-class Teapot : public QDeclarativeItem3D
+class Teapot : public QQuickItem3D
 {
     Q_OBJECT
 public:
-    Teapot(QObject *parent = 0) : QDeclarativeItem3D(parent) {}
+    Teapot(QObject *parent = 0) : QQuickItem3D(parent) {}
     ~Teapot() {}
 };
 

@@ -118,7 +118,7 @@ public:
     Constructs a new translation and attaches it to \a parent.
 */
 QGraphicsTranslation3D::QGraphicsTranslation3D(QObject *parent)
-    : QGraphicsTransform3D(parent), d_ptr(new QGraphicsTranslation3DPrivate)
+    : QQuickQGraphicsTransform3D(parent), d_ptr(new QGraphicsTranslation3DPrivate)
 {
 }
 
@@ -209,7 +209,7 @@ void QGraphicsTranslation3D::applyTo(QMatrix4x4 *matrix) const
 /*!
     \internal
 */
-QGraphicsTransform3D *QGraphicsTranslation3D::clone(QObject *parent) const
+QQuickQGraphicsTransform3D *QGraphicsTranslation3D::clone(QObject *parent) const
 {
     Q_D(const QGraphicsTranslation3D);
     QGraphicsTranslation3D *copy = new QGraphicsTranslation3D(parent);

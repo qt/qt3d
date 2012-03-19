@@ -148,7 +148,7 @@ public:
     Construct a billboard transform and attach it to \a parent.
 */
 QGraphicsBillboardTransform::QGraphicsBillboardTransform(QObject *parent)
-    : QGraphicsTransform3D(parent), d_ptr(new QGraphicsBillboardTransformPrivate)
+    : QQuickQGraphicsTransform3D(parent), d_ptr(new QGraphicsBillboardTransformPrivate)
 {
 }
 
@@ -241,7 +241,7 @@ void QGraphicsBillboardTransform::applyTo(QMatrix4x4 *matrix) const
 /*!
     \internal
 */
-QGraphicsTransform3D *QGraphicsBillboardTransform::clone(QObject *parent) const
+QQuickQGraphicsTransform3D *QGraphicsBillboardTransform::clone(QObject *parent) const
 {
     Q_D(const QGraphicsBillboardTransform);
     QGraphicsBillboardTransform *copy = new QGraphicsBillboardTransform(parent);

@@ -563,7 +563,7 @@ void QGLSceneNode::setZ(qreal z)
 
     \sa setTransforms(), addTransform(), position()
 */
-QList<QGraphicsTransform3D *> QGLSceneNode::transforms() const
+QList<QQuickQGraphicsTransform3D *> QGLSceneNode::transforms() const
 {
     Q_D(const QGLSceneNode);
     return d->transforms;
@@ -586,16 +586,16 @@ QList<QGraphicsTransform3D *> QGLSceneNode::transforms() const
 
     \sa transforms(), addTransform(), position()
 */
-void QGLSceneNode::setTransforms(const QList<QGraphicsTransform3D *> &transforms)
+void QGLSceneNode::setTransforms(const QList<QQuickQGraphicsTransform3D *> &transforms)
 {
     Q_D(QGLSceneNode);
     for (int index = 0; index < d->transforms.size(); ++index) {
-        QGraphicsTransform3D *transform = d->transforms.at(index);
+        QQuickQGraphicsTransform3D *transform = d->transforms.at(index);
         disconnect(transform, SIGNAL(transformChanged()), this, SLOT(transformChanged()));
     }
     d->transforms.clear();
     for (int index = 0; index < transforms.size(); ++index) {
-        QGraphicsTransform3D *transform = transforms.at(index);
+        QQuickQGraphicsTransform3D *transform = transforms.at(index);
         if (transform) {
             connect(transform, SIGNAL(transformChanged()), this, SLOT(transformChanged()));
             d->transforms.append(transform);
@@ -615,7 +615,7 @@ void QGLSceneNode::setTransforms(const QList<QGraphicsTransform3D *> &transforms
 
     \sa transforms(), setTransforms()
 */
-void QGLSceneNode::addTransform(QGraphicsTransform3D *transform)
+void QGLSceneNode::addTransform(QQuickQGraphicsTransform3D *transform)
 {
     Q_D(QGLSceneNode);
     if (!transform)
@@ -2024,7 +2024,7 @@ void qDumpScene(QGLSceneNode *node, bool detailed, int indent, const QSet<QGLSce
             qDebug("%s     %0.4f   %0.4f   %0.4f   %0.4f",
                     qPrintable(ind), m(i, 0), m(i, 1), m(i, 2), m(i, 3));
     }
-    QList<QGraphicsTransform3D*> tx = node->transforms();
+    QList<QQuickQGraphicsTransform3D*> tx = node->transforms();
     if (tx.size() > 0)
         qDebug("%s transforms list:", qPrintable(ind));
     for (int i = 0; i < tx.size(); ++i)

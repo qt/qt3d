@@ -123,7 +123,7 @@ public:
     QSharedPointer<QGLMaterialCollection> palette;
     QMatrix4x4 localTransform;
     QVector3D translate;
-    QList<QGraphicsTransform3D *> transforms;
+    QList<QQuickQGraphicsTransform3D *> transforms;
     QGL::StandardEffect localEffect;
     QGLAbstractEffect *customEffect;
     QList<QGLSceneNode*> childNodes;

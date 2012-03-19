@@ -39,10 +39,10 @@
 **
 ****************************************************************************/
 
-#include "qdeclarativeitem3d.h"
-#include "qdeclarativeviewport.h"
-#include "qdeclarativemesh.h"
-#include "qdeclarativeeffect.h"
+#include "qquickitem3d.h"
+#include "qquickviewport.h"
+#include "qquickmesh.h"
+#include "qquickeffect.h"
 
 #include "qgllightparameters.h"
 #include "qglabstractscene.h"
@@ -55,7 +55,7 @@
 #include <qquickcanvas.h>
 
 /*!
-    \qmlclass Item3D QDeclarativeItem3D
+    \qmlclass Item3D QQuickItem3D
     \brief The Item3D item encapsulates 3D objects and contains all of the properties and methods needed for simple 3D operations.
     part of a QML/3d script.
     \since 4.8
@@ -223,11 +223,11 @@
 
     \section1 Using QML Data Models With Item3D
 
-    QDeclarativeItem3D supports standard \l
+    QQuickItem3D supports standard \l
     {http://doc.qt.nokia.com/4.7/qdeclarativemodels.html#qml-data-models}
     {QML Data Models} with a few caveats.
 
-    QDeclarativeItem3D derives from QtDeclarativeItem, and interacts with
+    QQuickItem3D derives from QQuickItem, and interacts with
     the \l{http://doc.qt.nokia.com/4.7/qml-component.html}{Component} element
     normally.  However, there is a delay between between removing an item from
     a model and the cleaning up the corresponding Item3D, so it is recommended
@@ -257,10 +257,10 @@
 
 QT_BEGIN_NAMESPACE
 
-class QDeclarativeItem3DPrivate
+class QQuickItem3DPrivate
 {
 public:
-    QDeclarativeItem3DPrivate(QDeclarativeItem3D *_item)
+    QQuickItem3DPrivate(QQuickItem3D *_item)
         : item(_item)
         , viewport(0)
         , position(0.0f, 0.0f, 0.0f)
@@ -272,8 +272,8 @@ public:
         , requireBlockingEffectsCheck(false)
         , light(0)
         , objectPickId(-1)
-        , cullFaces(QDeclarativeItem3D::CullDisabled)
-        , sortChildren(QDeclarativeItem3D::DefaultSorting)
+        , cullFaces(QQuickItem3D::CullDisabled)
+        , sortChildren(QQuickItem3D::DefaultSorting)
         , inheritEvents(false)
         , isEnabled(true)
         , isInitialized(false)
@@ -282,21 +282,21 @@ public:
         , bConnectedToOpenGLContextSignal(false)
     {
     }
-    ~QDeclarativeItem3DPrivate();
+    ~QQuickItem3DPrivate();
 
-    QDeclarativeItem3D *item;
-    QDeclarativeViewport *viewport;
+    QQuickItem3D *item;
+    QQuickViewport *viewport;
     QVector3D position;
     QVector3D pivot;
     bool usePivot;
     qreal scale;
-    QDeclarativeMesh *mesh;
-    QDeclarativeEffect *effect;
+    QQuickMesh *mesh;
+    QQuickEffect *effect;
     bool requireBlockingEffectsCheck;
     QGLLightParameters *light;
     int objectPickId;
-    QDeclarativeItem3D::CullFaces cullFaces;
-    QDeclarativeItem3D::SortMode sortChildren;
+    QQuickItem3D::CullFaces cullFaces;
+    QQuickItem3D::SortMode sortChildren;
 
     bool inheritEvents;
     bool isEnabled;
@@ -313,26 +313,26 @@ public:
     static int resources_count(QQmlListProperty<QObject> *);
 
     // transform property
-    static int transform_count(QQmlListProperty<QGraphicsTransform3D> *list);
-    static void transform_append(QQmlListProperty<QGraphicsTransform3D> *list, QGraphicsTransform3D *);
-    static QGraphicsTransform3D *transform_at(QQmlListProperty<QGraphicsTransform3D> *list, int);
-    static void transform_clear(QQmlListProperty<QGraphicsTransform3D> *list);
-    QList<QGraphicsTransform3D *> transforms;
+    static int transform_count(QQmlListProperty<QQuickQGraphicsTransform3D> *list);
+    static void transform_append(QQmlListProperty<QQuickQGraphicsTransform3D> *list, QQuickQGraphicsTransform3D *);
+    static QQuickQGraphicsTransform3D *transform_at(QQmlListProperty<QQuickQGraphicsTransform3D> *list, int);
+    static void transform_clear(QQmlListProperty<QQuickQGraphicsTransform3D> *list);
+    QList<QQuickQGraphicsTransform3D *> transforms;
 
 
     // pretransform property
-    static int pretransform_count(QQmlListProperty<QGraphicsTransform3D> *list);
-    static void pretransform_append(QQmlListProperty<QGraphicsTransform3D> *list, QGraphicsTransform3D *);
-    static QGraphicsTransform3D *pretransform_at(QQmlListProperty<QGraphicsTransform3D> *list, int);
-    static void pretransform_clear(QQmlListProperty<QGraphicsTransform3D> *list);
-    QList<QGraphicsTransform3D *> pretransforms;
+    static int pretransform_count(QQmlListProperty<QQuickQGraphicsTransform3D> *list);
+    static void pretransform_append(QQmlListProperty<QQuickQGraphicsTransform3D> *list, QQuickQGraphicsTransform3D *);
+    static QQuickQGraphicsTransform3D *pretransform_at(QQmlListProperty<QQuickQGraphicsTransform3D> *list, int);
+    static void pretransform_clear(QQmlListProperty<QQuickQGraphicsTransform3D> *list);
+    QList<QQuickQGraphicsTransform3D *> pretransforms;
 
     // animations property
-    static int animations_count(QQmlListProperty<QDeclarativeAnimation3D> *list);
-    static void animations_append(QQmlListProperty<QDeclarativeAnimation3D> *list, QDeclarativeAnimation3D *);
-    static QDeclarativeAnimation3D *animations_at(QQmlListProperty<QDeclarativeAnimation3D> *list, int);
-    static void animations_clear(QQmlListProperty<QDeclarativeAnimation3D> *list);
-    QList<QDeclarativeAnimation3D *> animations;
+    static int animations_count(QQmlListProperty<QQuickAnimation3D> *list);
+    static void animations_append(QQmlListProperty<QQuickAnimation3D> *list, QQuickAnimation3D *);
+    static QQuickAnimation3D *animations_at(QQmlListProperty<QQuickAnimation3D> *list, int);
+    static void animations_clear(QQmlListProperty<QQuickAnimation3D> *list);
+    QList<QQuickAnimation3D *> animations;
 
     // transform convenience functions
     QMatrix4x4 localTransforms() const;
@@ -343,13 +343,13 @@ public:
     bool bConnectedToOpenGLContextSignal;
 };
 
-QDeclarativeItem3DPrivate::~QDeclarativeItem3DPrivate()
+QQuickItem3DPrivate::~QQuickItem3DPrivate()
 {
 }
 
-int QDeclarativeItem3DPrivate::transform_count(QQmlListProperty<QGraphicsTransform3D> *list)
+int QQuickItem3DPrivate::transform_count(QQmlListProperty<QQuickQGraphicsTransform3D> *list)
 {
-    QDeclarativeItem3D *object = qobject_cast<QDeclarativeItem3D *>(list->object);
+    QQuickItem3D *object = qobject_cast<QQuickItem3D *>(list->object);
     if (object) {
         return object->d->transforms.count();
     } else {
@@ -358,10 +358,10 @@ int QDeclarativeItem3DPrivate::transform_count(QQmlListProperty<QGraphicsTransfo
     }
 }
 
-void QDeclarativeItem3DPrivate::transform_append(QQmlListProperty<QGraphicsTransform3D> *list, QGraphicsTransform3D *item)
+void QQuickItem3DPrivate::transform_append(QQmlListProperty<QQuickQGraphicsTransform3D> *list, QQuickQGraphicsTransform3D *item)
 {
-    QDeclarativeItem3D *object = qobject_cast<QDeclarativeItem3D *>(list->object);
-    QList<QGraphicsTransform3D *> *ptrans;
+    QQuickItem3D *object = qobject_cast<QQuickItem3D *>(list->object);
+    QList<QQuickQGraphicsTransform3D *> *ptrans;
     if (object)
     {
         ptrans = &object->d->transforms;
@@ -377,9 +377,9 @@ void QDeclarativeItem3DPrivate::transform_append(QQmlListProperty<QGraphicsTrans
         qWarning()<<"Warning: could not find Item3D to add transformation to.";
 }
 
-QGraphicsTransform3D *QDeclarativeItem3DPrivate::transform_at(QQmlListProperty<QGraphicsTransform3D> *list, int idx)
+QQuickQGraphicsTransform3D *QQuickItem3DPrivate::transform_at(QQmlListProperty<QQuickQGraphicsTransform3D> *list, int idx)
 {
-   QDeclarativeItem3D *object = qobject_cast<QDeclarativeItem3D *>(list->object);
+   QQuickItem3D *object = qobject_cast<QQuickItem3D *>(list->object);
     if (object) {
         return object->d->transforms.at(idx);
     } else {
@@ -389,10 +389,10 @@ QGraphicsTransform3D *QDeclarativeItem3DPrivate::transform_at(QQmlListProperty<Q
     return 0;
 }
 
-void QDeclarativeItem3DPrivate::transform_clear(QQmlListProperty<QGraphicsTransform3D> *list)
+void QQuickItem3DPrivate::transform_clear(QQmlListProperty<QQuickQGraphicsTransform3D> *list)
 {
 
-    QDeclarativeItem3D *object = qobject_cast<QDeclarativeItem3D *>(list->object);
+    QQuickItem3D *object = qobject_cast<QQuickItem3D *>(list->object);
     if (object) {
         object->d->transforms.clear();
         object->update();
@@ -401,9 +401,9 @@ void QDeclarativeItem3DPrivate::transform_clear(QQmlListProperty<QGraphicsTransf
         qWarning()<<"Warning: could not find Item3D to clear of transformations";
 }
 
-int QDeclarativeItem3DPrivate::pretransform_count(QQmlListProperty<QGraphicsTransform3D> *list)
+int QQuickItem3DPrivate::pretransform_count(QQmlListProperty<QQuickQGraphicsTransform3D> *list)
 {
-    QDeclarativeItem3D *object = qobject_cast<QDeclarativeItem3D *>(list->object);
+    QQuickItem3D *object = qobject_cast<QQuickItem3D *>(list->object);
     if (object) {
         return object->d->pretransforms.count();
     } else {
@@ -412,10 +412,10 @@ int QDeclarativeItem3DPrivate::pretransform_count(QQmlListProperty<QGraphicsTran
     }
 }
 
-void QDeclarativeItem3DPrivate::pretransform_append(QQmlListProperty<QGraphicsTransform3D> *list, QGraphicsTransform3D *item)
+void QQuickItem3DPrivate::pretransform_append(QQmlListProperty<QQuickQGraphicsTransform3D> *list, QQuickQGraphicsTransform3D *item)
 {
-    QDeclarativeItem3D *object = qobject_cast<QDeclarativeItem3D *>(list->object);
-    QList<QGraphicsTransform3D *> *ptrans;
+    QQuickItem3D *object = qobject_cast<QQuickItem3D *>(list->object);
+    QList<QQuickQGraphicsTransform3D *> *ptrans;
     if (object)
     {
         ptrans = &object->d->pretransforms;
@@ -431,9 +431,9 @@ void QDeclarativeItem3DPrivate::pretransform_append(QQmlListProperty<QGraphicsTr
         qWarning()<<"Warning: could not find Item3D to add transformation to.";
 }
 
-QGraphicsTransform3D *QDeclarativeItem3DPrivate::pretransform_at(QQmlListProperty<QGraphicsTransform3D> *list, int idx)
+QQuickQGraphicsTransform3D *QQuickItem3DPrivate::pretransform_at(QQmlListProperty<QQuickQGraphicsTransform3D> *list, int idx)
 {
-   QDeclarativeItem3D *object = qobject_cast<QDeclarativeItem3D *>(list->object);
+   QQuickItem3D *object = qobject_cast<QQuickItem3D *>(list->object);
     if (object) {
         return object->d->pretransforms.at(idx);
     } else {
@@ -443,10 +443,10 @@ QGraphicsTransform3D *QDeclarativeItem3DPrivate::pretransform_at(QQmlListPropert
     return 0;
 }
 
-void QDeclarativeItem3DPrivate::pretransform_clear(QQmlListProperty<QGraphicsTransform3D> *list)
+void QQuickItem3DPrivate::pretransform_clear(QQmlListProperty<QQuickQGraphicsTransform3D> *list)
 {
 
-    QDeclarativeItem3D *object = qobject_cast<QDeclarativeItem3D *>(list->object);
+    QQuickItem3D *object = qobject_cast<QQuickItem3D *>(list->object);
     if (object) {
         object->d->pretransforms.clear();
         object->update();
@@ -455,9 +455,9 @@ void QDeclarativeItem3DPrivate::pretransform_clear(QQmlListProperty<QGraphicsTra
         qWarning()<<"Warning: could not find Item3D to clear of transformations";
 }
 
-int QDeclarativeItem3DPrivate::animations_count(QQmlListProperty<QDeclarativeAnimation3D> *list)
+int QQuickItem3DPrivate::animations_count(QQmlListProperty<QQuickAnimation3D> *list)
 {
-    QDeclarativeItem3D *object = qobject_cast<QDeclarativeItem3D *>(list->object);
+    QQuickItem3D *object = qobject_cast<QQuickItem3D *>(list->object);
     if (object) {
         return object->d->animations.count();
     } else {
@@ -466,10 +466,10 @@ int QDeclarativeItem3DPrivate::animations_count(QQmlListProperty<QDeclarativeAni
     }
 }
 
-void QDeclarativeItem3DPrivate::animations_append(QQmlListProperty<QDeclarativeAnimation3D> *list, QDeclarativeAnimation3D *item)
+void QQuickItem3DPrivate::animations_append(QQmlListProperty<QQuickAnimation3D> *list, QQuickAnimation3D *item)
 {
-    QDeclarativeItem3D *object = qobject_cast<QDeclarativeItem3D *>(list->object);
-    QList<QDeclarativeAnimation3D *> *panim;
+    QQuickItem3D *object = qobject_cast<QQuickItem3D *>(list->object);
+    QList<QQuickAnimation3D *> *panim;
     if (object)
     {
         panim = &object->d->animations;
@@ -481,9 +481,9 @@ void QDeclarativeItem3DPrivate::animations_append(QQmlListProperty<QDeclarativeA
         qWarning()<<"Warning: could not find Item3D to add animation to.";
 }
 
-QDeclarativeAnimation3D* QDeclarativeItem3DPrivate::animations_at(QQmlListProperty<QDeclarativeAnimation3D> *list, int idx)
+QQuickAnimation3D* QQuickItem3DPrivate::animations_at(QQmlListProperty<QQuickAnimation3D> *list, int idx)
 {
-    QDeclarativeItem3D *object = qobject_cast<QDeclarativeItem3D *>(list->object);
+    QQuickItem3D *object = qobject_cast<QQuickItem3D *>(list->object);
     if (object) {
         return object->d->animations.at(idx);
     } else {
@@ -493,9 +493,9 @@ QDeclarativeAnimation3D* QDeclarativeItem3DPrivate::animations_at(QQmlListProper
     return 0;
 }
 
-void QDeclarativeItem3DPrivate::animations_clear(QQmlListProperty<QDeclarativeAnimation3D> *list)
+void QQuickItem3DPrivate::animations_clear(QQmlListProperty<QQuickAnimation3D> *list)
 {
-    QDeclarativeItem3D *object = qobject_cast<QDeclarativeItem3D *>(list->object);
+    QQuickItem3D *object = qobject_cast<QQuickItem3D *>(list->object);
     if (object) {
         object->d->animations.clear();
     }
@@ -505,7 +505,7 @@ void QDeclarativeItem3DPrivate::animations_clear(QQmlListProperty<QDeclarativeAn
 
 
 
-void QDeclarativeItem3DPrivate::data_append(QQmlListProperty<QObject> *prop, QObject *o)
+void QQuickItem3DPrivate::data_append(QQmlListProperty<QObject> *prop, QObject *o)
 {
     // This function is called by the QML runtime to assign children to
     // an item3d.  The object 'o' is the new child, and prop->object is the
@@ -525,13 +525,13 @@ void QDeclarativeItem3DPrivate::data_append(QQmlListProperty<QObject> *prop, QOb
 
     QQuickItem *i = qobject_cast<QQuickItem *>(o);
     if (i)
-        i->setParentItem(static_cast<QDeclarativeItem3D *>(prop->object));
+        i->setParentItem(static_cast<QQuickItem3D *>(prop->object));
     else
-        o->setParent(static_cast<QDeclarativeItem3D *>(prop->object));
+        o->setParent(static_cast<QQuickItem3D *>(prop->object));
 }
 
 
-QObject *QDeclarativeItem3DPrivate::resources_at(QQmlListProperty<QObject> *prop, int index)
+QObject *QQuickItem3DPrivate::resources_at(QQmlListProperty<QObject> *prop, int index)
 {
     QObjectList children = prop->object->children();
     if (index < children.count())
@@ -540,12 +540,12 @@ QObject *QDeclarativeItem3DPrivate::resources_at(QQmlListProperty<QObject> *prop
         return 0;
 }
 
-void QDeclarativeItem3DPrivate::resources_append(QQmlListProperty<QObject> *prop, QObject *o)
+void QQuickItem3DPrivate::resources_append(QQmlListProperty<QObject> *prop, QObject *o)
 {
     o->setParent(prop->object);
 }
 
-int QDeclarativeItem3DPrivate::resources_count(QQmlListProperty<QObject> *prop)
+int QQuickItem3DPrivate::resources_count(QQmlListProperty<QObject> *prop)
 {
     return prop->object->children().count();
 }
@@ -555,7 +555,7 @@ int QDeclarativeItem3DPrivate::resources_count(QQmlListProperty<QObject> *prop)
     Applies position, scale and rotation transforms for this item3d to matrix
     \a m
 */
-QMatrix4x4 QDeclarativeItem3DPrivate::localTransforms() const
+QMatrix4x4 QQuickItem3DPrivate::localTransforms() const
 {
     QMatrix4x4 m;
     m.translate(position);
@@ -583,25 +583,25 @@ QMatrix4x4 QDeclarativeItem3DPrivate::localTransforms() const
 /*!
     \internal
 */
-QDeclarativeItem3D::QDeclarativeItem3D(QObject *parent)
+QQuickItem3D::QQuickItem3D(QObject *parent)
     : QQuickItem(0)
 {
-    d = new QDeclarativeItem3DPrivate(this);
+    d = new QQuickItem3DPrivate(this);
 
-    QDeclarativeItem3D *itemParent = qobject_cast<QDeclarativeItem3D *>(parent);
+    QQuickItem3D *itemParent = qobject_cast<QQuickItem3D *>(parent);
     if (itemParent) {
         setParentItem(itemParent);
     } else {
         setParent(parent);
     }
 
-    // TODO: Handle QDeclarativeItem3D case
+    // TODO: Handle QQuickItem3D case
 }
 
 /*!
     \internal
 */
-QDeclarativeItem3D::~QDeclarativeItem3D()
+QQuickItem3D::~QQuickItem3D()
 {
     delete d;
 }
@@ -617,12 +617,12 @@ QDeclarativeItem3D::~QDeclarativeItem3D()
     \sa x, y, z
 */
 
-QVector3D QDeclarativeItem3D::position() const
+QVector3D QQuickItem3D::position() const
 {
     return d->position;
 }
 
-void QDeclarativeItem3D::setPosition(const QVector3D& value)
+void QQuickItem3D::setPosition(const QVector3D& value)
 {
     d->position = value;
     emit positionChanged();
@@ -638,12 +638,12 @@ void QDeclarativeItem3D::setPosition(const QVector3D& value)
     \sa position, y, z
 */
 
-qreal QDeclarativeItem3D::x() const
+qreal QQuickItem3D::x() const
 {
     return d->position.x();
 }
 
-void QDeclarativeItem3D::setX(qreal value)
+void QQuickItem3D::setX(qreal value)
 {
     d->position.setX(value);
     emit positionChanged();
@@ -659,12 +659,12 @@ void QDeclarativeItem3D::setX(qreal value)
     \sa position, x, z
 */
 
-qreal QDeclarativeItem3D::y() const
+qreal QQuickItem3D::y() const
 {
     return d->position.y();
 }
 
-void QDeclarativeItem3D::setY(qreal value)
+void QQuickItem3D::setY(qreal value)
 {
     d->position.setY(value);
     emit positionChanged();
@@ -680,12 +680,12 @@ void QDeclarativeItem3D::setY(qreal value)
     \sa position, x, y
 */
 
-qreal QDeclarativeItem3D::z() const
+qreal QQuickItem3D::z() const
 {
     return d->position.z();
 }
 
-void QDeclarativeItem3D::setZ(qreal value)
+void QQuickItem3D::setZ(qreal value)
 {
     d->position.setZ(value);
     emit positionChanged();
@@ -702,12 +702,12 @@ void QDeclarativeItem3D::setZ(qreal value)
     \sa transform
 */
 
-qreal QDeclarativeItem3D::scale() const
+qreal QQuickItem3D::scale() const
 {
     return d->scale;
 }
 
-void QDeclarativeItem3D::setScale(qreal value)
+void QQuickItem3D::setScale(qreal value)
 {
     d->scale = value;
     emit scaleChanged();
@@ -755,9 +755,9 @@ void QDeclarativeItem3D::setScale(qreal value)
 */
 
 
-QQmlListProperty<QGraphicsTransform3D> QDeclarativeItem3D::transform()
+QQmlListProperty<QQuickQGraphicsTransform3D> QQuickItem3D::transform()
 {
-    return QQmlListProperty<QGraphicsTransform3D>(this, 0, d->transform_append, d->transform_count,
+    return QQmlListProperty<QQuickQGraphicsTransform3D>(this, 0, d->transform_append, d->transform_count,
                                                d->transform_at, d->transform_clear);
 }
 
@@ -781,9 +781,9 @@ QQmlListProperty<QGraphicsTransform3D> QDeclarativeItem3D::transform()
     \sa transform, scale, position
 */
 
-QQmlListProperty<QGraphicsTransform3D> QDeclarativeItem3D::pretransform()
+QQmlListProperty<QQuickQGraphicsTransform3D> QQuickItem3D::pretransform()
 {
-    return QQmlListProperty<QGraphicsTransform3D>(this, 0, d->pretransform_append, d->pretransform_count,
+    return QQmlListProperty<QQuickQGraphicsTransform3D>(this, 0, d->pretransform_append, d->pretransform_count,
                                                d->pretransform_at, d->pretransform_clear);
 }
 
@@ -808,12 +808,12 @@ QQmlListProperty<QGraphicsTransform3D> QDeclarativeItem3D::pretransform()
 
     The default value for this property is false.
 */
-bool QDeclarativeItem3D::inheritEvents() const
+bool QQuickItem3D::inheritEvents() const
 {
     return d->inheritEvents;
 }
 
-void QDeclarativeItem3D::setInheritEvents(bool inherit)
+void QQuickItem3D::setInheritEvents(bool inherit)
 {
     d->inheritEvents = inherit;
 
@@ -821,7 +821,7 @@ void QDeclarativeItem3D::setInheritEvents(bool inherit)
     if (inherit)
     {
         for (int index = 0; index < children().size(); ++index) {
-            QDeclarativeItem3D *subItem = qobject_cast<QDeclarativeItem3D *>(children().at(index));
+            QQuickItem3D *subItem = qobject_cast<QQuickItem3D *>(children().at(index));
             if (subItem)
             {
                 // Proxy the mouse event signals to the parent so that
@@ -838,7 +838,7 @@ void QDeclarativeItem3D::setInheritEvents(bool inherit)
     else
     {
         for (int index = 0; index < children().size(); ++index) {
-            QDeclarativeItem3D *subItem = qobject_cast<QDeclarativeItem3D *>(children().at(index));
+            QQuickItem3D *subItem = qobject_cast<QQuickItem3D *>(children().at(index));
             if (subItem)
             {
                 // Proxy the mouse event signals to the parent so that
@@ -871,12 +871,12 @@ void QDeclarativeItem3D::setInheritEvents(bool inherit)
     \sa effect
 */
 
-QDeclarativeMesh *QDeclarativeItem3D::mesh() const
+QQuickMesh *QQuickItem3D::mesh() const
 {
     return d->mesh;
 }
 
-void QDeclarativeItem3D::setMesh(QDeclarativeMesh *value)
+void QQuickItem3D::setMesh(QQuickMesh *value)
 {
     if (d->mesh != value)
     {
@@ -917,12 +917,12 @@ void QDeclarativeItem3D::setMesh(QDeclarativeMesh *value)
 
     \sa Effect, mesh
 */
-QDeclarativeEffect *QDeclarativeItem3D::effect() const
+QQuickEffect *QQuickItem3D::effect() const
 {
     return d->effect;
 }
 
-void QDeclarativeItem3D::setEffect(QDeclarativeEffect *value)
+void QQuickItem3D::setEffect(QQuickEffect *value)
 {
     if (d->effect == value)
         return;
@@ -948,12 +948,12 @@ void QDeclarativeItem3D::setEffect(QDeclarativeEffect *value)
     \sa Viewport::light
 */
 
-QGLLightParameters *QDeclarativeItem3D::light() const
+QGLLightParameters *QQuickItem3D::light() const
 {
     return d->light;
 }
 
-void QDeclarativeItem3D::setLight(QGLLightParameters *value)
+void QQuickItem3D::setLight(QGLLightParameters *value)
 {
     if (d->light != value) {
         if (d->light) {
@@ -978,7 +978,7 @@ void QDeclarativeItem3D::setLight(QGLLightParameters *value)
     child items for this item.  This provides logical grouping of items in a
     scene. Transformations that are applied to this item will also affect
     child items.  Note that children that are not derived from
-    QDeclarativeItem3D will not be rendered at draw time, but will interact
+    QQuickItem3D will not be rendered at draw time, but will interact
     normally otherwise (e.g. parenting, signal passing etc).  Use a
     qobject_cast if you need to check whether a child is an Item3D.
 
@@ -993,11 +993,11 @@ void QDeclarativeItem3D::setLight(QGLLightParameters *value)
     \sa transform
 */
 
-QQmlListProperty<QObject> QDeclarativeItem3D::resources()
+QQmlListProperty<QObject> QQuickItem3D::resources()
 {
-    return QQmlListProperty<QObject>(this, 0, QDeclarativeItem3DPrivate::resources_append,
-                                             QDeclarativeItem3DPrivate::resources_count,
-                                             QDeclarativeItem3DPrivate::resources_at);
+    return QQmlListProperty<QObject>(this, 0, QQuickItem3DPrivate::resources_append,
+                                             QQuickItem3DPrivate::resources_count,
+                                             QQuickItem3DPrivate::resources_at);
 }
 
 
@@ -1009,9 +1009,9 @@ QQmlListProperty<QObject> QDeclarativeItem3D::resources()
     include additional data and resources.  Currently there is no underlying
     implementation for this.
 */
-QQmlListProperty<QObject> QDeclarativeItem3D::data()
+QQmlListProperty<QObject> QQuickItem3D::data()
 {
-    return QQmlListProperty<QObject>(this, 0, QDeclarativeItem3DPrivate::data_append);
+    return QQmlListProperty<QObject>(this, 0, QQuickItem3DPrivate::data_append);
 }
 
 /*!
@@ -1029,12 +1029,12 @@ QQmlListProperty<QObject> QDeclarativeItem3D::data()
     \li CullClockwise Cull faces based on clockwise winding of vertices.
     \endlist
 */
-QDeclarativeItem3D::CullFaces QDeclarativeItem3D::cullFaces() const
+QQuickItem3D::CullFaces QQuickItem3D::cullFaces() const
 {
     return d->cullFaces;
 }
 
-void QDeclarativeItem3D::setCullFaces(QDeclarativeItem3D::CullFaces value)
+void QQuickItem3D::setCullFaces(QQuickItem3D::CullFaces value)
 {
     if (d->cullFaces != value) {
         d->cullFaces = value;
@@ -1059,12 +1059,12 @@ void QDeclarativeItem3D::setCullFaces(QDeclarativeItem3D::CullFaces value)
        and must be drawn in back-to-front order for correct rendering.
     \endlist
 */
-QDeclarativeItem3D::SortMode QDeclarativeItem3D::sortChildren() const
+QQuickItem3D::SortMode QQuickItem3D::sortChildren() const
 {
     return d->sortChildren;
 }
 
-void QDeclarativeItem3D::setSortChildren(QDeclarativeItem3D::SortMode mode)
+void QQuickItem3D::setSortChildren(QQuickItem3D::SortMode mode)
 {
     if (d->sortChildren != mode) {
         d->sortChildren = mode;
@@ -1081,7 +1081,7 @@ void QDeclarativeItem3D::setSortChildren(QDeclarativeItem3D::SortMode mode)
 
     \sa drawLightingCleanup(), draw()
 */
-void QDeclarativeItem3D::drawLightingSetup(QGLPainter *painter, const QGLLightParameters *currentLight, QMatrix4x4 &currentLightTransform)
+void QQuickItem3D::drawLightingSetup(QGLPainter *painter, const QGLLightParameters *currentLight, QMatrix4x4 &currentLightTransform)
 {
     //Lighting
     Q_UNUSED(currentLight)
@@ -1099,7 +1099,7 @@ void QDeclarativeItem3D::drawLightingSetup(QGLPainter *painter, const QGLLightPa
 
     \sa drawLightingSetup(), draw()
 */
-void QDeclarativeItem3D::drawLightingCleanup(QGLPainter *painter, const QGLLightParameters *currentLight, QMatrix4x4 &currentLightTransform)
+void QQuickItem3D::drawLightingCleanup(QGLPainter *painter, const QGLLightParameters *currentLight, QMatrix4x4 &currentLightTransform)
 {
     if (d->light)
         painter->setMainLight(currentLight, currentLightTransform);
@@ -1114,7 +1114,7 @@ void QDeclarativeItem3D::drawLightingCleanup(QGLPainter *painter, const QGLLight
 
     \sa drawLightingCleanup(), draw()
 */
-void QDeclarativeItem3D::drawEffectSetup(QGLPainter *painter, bool &viewportBlend, bool &effectBlend)
+void QQuickItem3D::drawEffectSetup(QGLPainter *painter, bool &viewportBlend, bool &effectBlend)
 {
     // Blending change for the effect.
     viewportBlend = d->viewport ? d->viewport->blending() : false;
@@ -1138,7 +1138,7 @@ void QDeclarativeItem3D::drawEffectSetup(QGLPainter *painter, bool &viewportBlen
 
     \sa drawEffectSetup(), draw()
 */
-void QDeclarativeItem3D::drawEffectCleanup(QGLPainter *painter, bool &viewportBlend, bool &effectBlend)
+void QQuickItem3D::drawEffectCleanup(QGLPainter *painter, bool &viewportBlend, bool &effectBlend)
 {
     if (d->effect)
         d->effect->disableEffect(painter);
@@ -1158,7 +1158,7 @@ void QDeclarativeItem3D::drawEffectCleanup(QGLPainter *painter, bool &viewportBl
 
     \sa drawCullCleanup(), draw()
 */
-void QDeclarativeItem3D::drawCullSetup()
+void QQuickItem3D::drawCullSetup()
 {
     //Culling
     if ((d->cullFaces & ~CullClockwise) == CullDisabled) {
@@ -1180,7 +1180,7 @@ void QDeclarativeItem3D::drawCullSetup()
 
     \sa drawCullSetup(), draw()
 */
-void QDeclarativeItem3D::drawCullCleanup()
+void QQuickItem3D::drawCullCleanup()
 {
     if (d->cullFaces != CullDisabled)
         glDisable(GL_CULL_FACE);
@@ -1194,7 +1194,7 @@ void QDeclarativeItem3D::drawCullCleanup()
 
     \sa drawTransformCleanup(), draw()
 */
-void QDeclarativeItem3D::drawTransformSetup(QGLPainter *painter)
+void QQuickItem3D::drawTransformSetup(QGLPainter *painter)
 {
     //Local and Global transforms
     painter->modelViewMatrix().push();
@@ -1207,7 +1207,7 @@ void QDeclarativeItem3D::drawTransformSetup(QGLPainter *painter)
 
     \sa drawTransformSetup(), draw()
 */
-void QDeclarativeItem3D::drawTransformCleanup(QGLPainter *painter)
+void QQuickItem3D::drawTransformCleanup(QGLPainter *painter)
 {
     //Unset parameters for transforms, effects etc.
     painter->modelViewMatrix().pop();
@@ -1221,19 +1221,19 @@ void QDeclarativeItem3D::drawTransformCleanup(QGLPainter *painter)
 
     \sa sortMode(), draw()
 */
-void QDeclarativeItem3D::drawChildren(QGLPainter *painter)
+void QQuickItem3D::drawChildren(QGLPainter *painter)
 {
     // Find all 3d children for drawing
-    QList<QDeclarativeItem3D *> list;;
+    QList<QQuickItem3D *> list;;
     foreach (QObject* o, children())
     {
-        if (QDeclarativeItem3D *item3d = qobject_cast<QDeclarativeItem3D*>(o))
+        if (QQuickItem3D *item3d = qobject_cast<QQuickItem3D*>(o))
         {
             list.append(item3d);
         }
     }
 
-    if (d->sortChildren == QDeclarativeItem3D::BackToFront) {
+    if (d->sortChildren == QQuickItem3D::BackToFront) {
         // Collect up the transformed z positions of all children.
         QList<qreal> zlist;
         QMatrix4x4 mv = painter->modelViewMatrix();
@@ -1280,7 +1280,7 @@ void QDeclarativeItem3D::drawChildren(QGLPainter *painter)
 
     \sa drawItem(), drawLightingSetup(), drawCullSetup(), drawEffectSetup(), drawChildren(), drawTransformSetup()
 */
-void QDeclarativeItem3D::draw(QGLPainter *painter)
+void QQuickItem3D::draw(QGLPainter *painter)
 {
     // Bail out if this item and its children have been disabled.
     if (!d->isEnabled)
@@ -1331,7 +1331,7 @@ void QDeclarativeItem3D::draw(QGLPainter *painter)
 /*!
     \internal
 */
-void QDeclarativeViewport::setItemViewport(QDeclarativeItem3D *item)
+void QQuickViewport::setItemViewport(QQuickItem3D *item)
 {
     item->d->viewport = this;
 }
@@ -1348,14 +1348,14 @@ void QDeclarativeViewport::setItemViewport(QDeclarativeItem3D *item)
     function performs all of the splitting of meshes into sub-branches ready for local
     control by the item.
 */
-void QDeclarativeItem3D::initialize(QGLPainter *painter)
+void QQuickItem3D::initialize(QGLPainter *painter)
 {
     if (d->isInitialized) return;
 
     if (!d->viewport)
     {
-        if (QDeclarativeItem3D* parentItem =
-                qobject_cast<QDeclarativeItem3D*>(parent()))
+        if (QQuickItem3D* parentItem =
+                qobject_cast<QQuickItem3D*>(parent()))
         {
             d->viewport = parentItem->d->viewport;
             Q_ASSERT(d->viewport);
@@ -1365,7 +1365,7 @@ void QDeclarativeItem3D::initialize(QGLPainter *painter)
     d->objectPickId = d->viewport->registerPickableObject(this);
 
     for (int index = 0; index < children().size(); ++index) {
-        QDeclarativeItem3D *item = qobject_cast<QDeclarativeItem3D *>(children().at(index));
+        QQuickItem3D *item = qobject_cast<QQuickItem3D *>(children().at(index));
         if (item) {
             //Event inheritance is generally only declared at initialization, but can also be done at runtime
             //if the user wishes (though not recommended).
@@ -1396,12 +1396,12 @@ void QDeclarativeItem3D::initialize(QGLPainter *painter)
 
     \sa initialize()
 */
-bool QDeclarativeItem3D::isInitialized() const
+bool QQuickItem3D::isInitialized() const
 {
     return d->isInitialized;
 }
 
-void QDeclarativeItem3D::componentComplete()
+void QQuickItem3D::componentComplete()
 {
     QQuickItem::componentComplete();
     d->componentComplete = true;
@@ -1418,7 +1418,7 @@ void QDeclarativeItem3D::componentComplete()
         }
     }
 
-    QDeclarativeItem3D *parentItem3D = qobject_cast<QDeclarativeItem3D*>(parentItem());
+    QQuickItem3D *parentItem3D = qobject_cast<QQuickItem3D*>(parentItem());
     if (!parentItem3D)
     {
         if (!d->viewport)
@@ -1450,7 +1450,7 @@ void QDeclarativeItem3D::componentComplete()
     The \c drawItem function performs the actual drawing of the mesh branch which corresponds
     to the section of the mesh being drawn by the \l Item3D to a specific \a painter.
 */
-void QDeclarativeItem3D::drawItem(QGLPainter *painter)
+void QQuickItem3D::drawItem(QGLPainter *painter)
 {
     if (d->mesh)
     {
@@ -1459,7 +1459,7 @@ void QDeclarativeItem3D::drawItem(QGLPainter *painter)
 }
 
 /*!
-    \relates QDeclarativeItem3D
+    \relates QQuickItem3D
     Print a description of \a item to the console.
 
     If \a detailed is true (which it is by default) then all the properties
@@ -1470,11 +1470,11 @@ void QDeclarativeItem3D::drawItem(QGLPainter *painter)
 
     The \a indent argument is used internally.
 */
-void qDumpItem(QDeclarativeItem3D *item, bool detailed, int indent)
+void qDumpItem(QQuickItem3D *item, bool detailed, int indent)
 {
     if (item)
     {
-        QDeclarativeMesh *mesh = item->mesh();
+        QQuickMesh *mesh = item->mesh();
         QString ind;
         ind.fill(QLatin1Char(' '), indent * 4);
         if (mesh)
@@ -1492,7 +1492,7 @@ void qDumpItem(QDeclarativeItem3D *item, bool detailed, int indent)
         QObjectList kids = item->children();
         for (int i = 0; i < kids.size(); ++i)
         {
-            QDeclarativeItem3D *it = qobject_cast<QDeclarativeItem3D*>(kids.at(i));
+            QQuickItem3D *it = qobject_cast<QQuickItem3D*>(kids.at(i));
             qDumpItem(it, detailed, indent + 1);
         }
     }
@@ -1503,16 +1503,16 @@ void qDumpItem(QDeclarativeItem3D *item, bool detailed, int indent)
     world coordinates (i.e. coordinates untransformed by any item3d's
     transforms).
 */
-QMatrix4x4 QDeclarativeItem3DPrivate::localToWorldMatrix() const
+QMatrix4x4 QQuickItem3DPrivate::localToWorldMatrix() const
 {
     QMatrix4x4 result;
 
     result = localTransforms() * result;
-    QDeclarativeItem3D *anscestor = qobject_cast<QDeclarativeItem3D *>(item->parent());
+    QQuickItem3D *anscestor = qobject_cast<QQuickItem3D *>(item->parent());
     while (anscestor)
     {
         result = anscestor->d->localTransforms() * result;
-        anscestor = qobject_cast<QDeclarativeItem3D *>(anscestor->parent());
+        anscestor = qobject_cast<QQuickItem3D *>(anscestor->parent());
     }
     return result;
 }
@@ -1521,13 +1521,13 @@ QMatrix4x4 QDeclarativeItem3DPrivate::localToWorldMatrix() const
     Calculates and returns a matrix that transforms world coordinates into
     coordinates relative to this Item3D.
 */
-QMatrix4x4 QDeclarativeItem3DPrivate::worldToLocalMatrix() const
+QMatrix4x4 QQuickItem3DPrivate::worldToLocalMatrix() const
 {
     bool inversionSuccessful;
     QMatrix4x4 result = localToWorldMatrix().inverted(&inversionSuccessful);
     if (inversionSuccessful)
         return result;
-    qWarning() << "QDeclarativeItem3D - matrix inversion failed trying to generate worldToLocal Matrix";
+    qWarning() << "QQuickItem3D - matrix inversion failed trying to generate worldToLocal Matrix";
     return QMatrix4x4();
 }
 
@@ -1535,7 +1535,7 @@ QMatrix4x4 QDeclarativeItem3DPrivate::worldToLocalMatrix() const
     Returns the position of a local \a point in world space (i.e. not
     transformed by this item, it's parents, the camera etc).
 */
-QVector3D QDeclarativeItem3D::localToWorld(const QVector3D &point) const
+QVector3D QQuickItem3D::localToWorld(const QVector3D &point) const
 {
     return d->localToWorldMatrix() * point;
 }
@@ -1543,7 +1543,7 @@ QVector3D QDeclarativeItem3D::localToWorld(const QVector3D &point) const
 /*!
     Returns the position of a point in world space in local coordinates.
 */
-QVector3D QDeclarativeItem3D::worldToLocal(const QVector3D &point) const
+QVector3D QQuickItem3D::worldToLocal(const QVector3D &point) const
 {
     return d->worldToLocalMatrix() * point;
 }
@@ -1555,7 +1555,7 @@ QVector3D QDeclarativeItem3D::worldToLocal(const QVector3D &point) const
     Returns the boolean value of the regular QObject::event() function.oo
 */
 
-bool QDeclarativeItem3D::event(QEvent *e)
+bool QQuickItem3D::event(QEvent *e)
 {
     // Convert the raw event into a signal representing the user's action.
     if (e->type() == QEvent::MouseButtonPress) {
@@ -1579,13 +1579,13 @@ bool QDeclarativeItem3D::event(QEvent *e)
     return QObject::event(e);
 }
 
-void QDeclarativeItem3D::handleEffectChanged()
+void QQuickItem3D::handleEffectChanged()
 {
     d->requireBlockingEffectsCheck = true;
     update();
 }
 
-void QDeclarativeItem3D::handleOpenglContextIsAboutToBeDestroyed()
+void QQuickItem3D::handleOpenglContextIsAboutToBeDestroyed()
 {
     if (d->mesh) {
         d->mesh->openglContextIsAboutToBeDestroyed();
@@ -1603,12 +1603,12 @@ void QDeclarativeItem3D::handleOpenglContextIsAboutToBeDestroyed()
 
     \sa mesh
 */
-QString QDeclarativeItem3D::meshNode() const
+QString QQuickItem3D::meshNode() const
 {
     return d->meshNode;
 }
 
-void QDeclarativeItem3D::setMeshNode(const QString &node)
+void QQuickItem3D::setMeshNode(const QString &node)
 {
     //the actual instantiation of the node as the mesh itself is undertaken in the initialize function.
     d->meshNode = node;
@@ -1618,7 +1618,7 @@ void QDeclarativeItem3D::setMeshNode(const QString &node)
     \internal
     Update the \l Viewport with which this item is associated.
 */
-void QDeclarativeItem3D::update()
+void QQuickItem3D::update()
 {
     if (d->requireBlockingEffectsCheck && d->effect && d->mesh && d->componentComplete)
     {
@@ -1670,13 +1670,13 @@ void QDeclarativeItem3D::update()
     Update the animations property.
     //TODO
 */
-void QDeclarativeItem3D::updateAnimations()
+void QQuickItem3D::updateAnimations()
 {
     d->animations.clear();
     if (d->mesh) {
         const QList<QGLSceneAnimation *>& rSrcList = d->mesh->getAnimations();
         for (int i=0; i<rSrcList.count(); ++i) {
-            d->animations.append(new QDeclarativeAnimation3D(rSrcList.at(i),0));
+            d->animations.append(new QQuickAnimation3D(rSrcList.at(i),0));
         }
     }
     emit animationsChanged();
@@ -1691,12 +1691,12 @@ void QDeclarativeItem3D::updateAnimations()
 
     \sa mesh
 */
-bool QDeclarativeItem3D::isEnabled() const
+bool QQuickItem3D::isEnabled() const
 {
     return d->isEnabled;
 }
 
-void QDeclarativeItem3D::setEnabled(bool value)
+void QQuickItem3D::setEnabled(bool value)
 {
     if (d->isEnabled != value) {
         d->isEnabled = value;
@@ -1707,15 +1707,15 @@ void QDeclarativeItem3D::setEnabled(bool value)
 /*!
     //TODO
 */
-QQmlListProperty<QDeclarativeAnimation3D> QDeclarativeItem3D::animations()
+QQmlListProperty<QQuickAnimation3D> QQuickItem3D::animations()
 {
-    return QQmlListProperty<QDeclarativeAnimation3D>(this, 0, d->animations_append, d->animations_count, d->animations_at, d->animations_clear);
+    return QQmlListProperty<QQuickAnimation3D>(this, 0, d->animations_append, d->animations_count, d->animations_at, d->animations_clear);
 }
 
 /*!
   Returns the unique pick ID for this item.
 */
-int QDeclarativeItem3D::objectPickId() const
+int QQuickItem3D::objectPickId() const
 {
     return d->objectPickId;
 }

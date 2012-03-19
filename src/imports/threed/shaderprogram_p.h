@@ -45,7 +45,7 @@
 #include <QtCore/qsharedpointer.h>
 #include <QOpenGLShaderProgram>
 
-#include "qdeclarativeeffect.h"
+#include "qquickeffect.h"
 #include "qglshaderprogrameffect.h"
 
 QT_BEGIN_NAMESPACE

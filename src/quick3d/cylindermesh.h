@@ -42,7 +42,7 @@
 #ifndef CYLINDER_H
 #define CYLINDER_H
 
-#include "qdeclarativemesh.h"
+#include "qquickmesh.h"
 
 QT_BEGIN_HEADER
 
@@ -50,7 +50,7 @@ QT_BEGIN_NAMESPACE
 
 class CylinderMeshPrivate;
 
-class Q_QT3D_QUICK_EXPORT CylinderMesh : public QDeclarativeMesh
+class Q_QT3D_QUICK_EXPORT CylinderMesh : public QQuickMesh
 {
     Q_OBJECT
     Q_PROPERTY(qreal radius READ radius WRITE setRadius NOTIFY radiusChanged)

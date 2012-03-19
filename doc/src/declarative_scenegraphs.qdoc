@@ -136,7 +136,7 @@
     hierarchy of scene-graph branches which are then optimised and drawn in a single call for
     the viewport.
 
-    Components of a mesh can now be accessed with specific QDeclarativeMesh functions which are
+    Components of a mesh can now be accessed with specific QQuickMesh functions which are
     exposed to QML.
 
     The sections below describe the various scenarios in which a user may wish to use sub-components

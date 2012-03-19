@@ -43,7 +43,7 @@
 #define QGRAPHICSLOOKATTRANSFORM_H
 
 #include "qgraphicstransform3d.h"
-#include "qdeclarativeitem3d.h"
+#include "qquickitem3d.h"
 
 #include <QtCore/qscopedpointer.h>
 #include <QtCore/qpointer.h>
@@ -54,11 +54,11 @@ QT_BEGIN_NAMESPACE
 
 class QGraphicsLookAtTransformPrivate;
 
-class QGraphicsLookAtTransform : public QGraphicsTransform3D
+class QGraphicsLookAtTransform : public QQuickQGraphicsTransform3D
 {
     Q_OBJECT
     Q_PROPERTY(bool preserveUpVector READ preserveUpVector WRITE setPreserveUpVector NOTIFY preserveUpVectorChanged)
-    Q_PROPERTY(QDeclarativeItem3D* subject READ subject WRITE setSubject NOTIFY subjectChanged )
+    Q_PROPERTY(QQuickItem3D* subject READ subject WRITE setSubject NOTIFY subjectChanged )
 public:
     QGraphicsLookAtTransform(QObject *parent = 0);
     ~QGraphicsLookAtTransform();
@@ -66,11 +66,11 @@ public:
     bool preserveUpVector() const;
     void setPreserveUpVector(bool value);
 
-    QDeclarativeItem3D* subject() const;
-    void setSubject(QDeclarativeItem3D* value);
+    QQuickItem3D* subject() const;
+    void setSubject(QQuickItem3D* value);
 
     void applyTo(QMatrix4x4 *matrix) const;
-    QGraphicsTransform3D *clone(QObject *parent) const;
+    QQuickQGraphicsTransform3D *clone(QObject *parent) const;
 
 private Q_SLOTS:
     void subjectPositionChanged();

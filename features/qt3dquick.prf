@@ -23,4 +23,4 @@ CONFIG += qt3d
     LIBS += -lQt3DQuick
 }
 
-QT += opengl network declarative
+QT += opengl network qml quick

@@ -50,15 +50,15 @@ QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
-class Q_QT3D_EXPORT QGraphicsTransform3D : public QObject
+class Q_QT3D_EXPORT QQuickQGraphicsTransform3D : public QObject
 {
     Q_OBJECT
 public:
-    QGraphicsTransform3D(QObject *parent = 0) : QObject(parent) {}
-    ~QGraphicsTransform3D() {}
+    QQuickQGraphicsTransform3D(QObject *parent = 0) : QObject(parent) {}
+    ~QQuickQGraphicsTransform3D() {}
 
     virtual void applyTo(QMatrix4x4 *matrix) const = 0;
-    virtual QGraphicsTransform3D *clone(QObject *parent = 0) const = 0;
+    virtual QQuickQGraphicsTransform3D *clone(QObject *parent = 0) const = 0;
 
 Q_SIGNALS:
     void transformChanged();

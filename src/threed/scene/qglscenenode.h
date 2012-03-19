@@ -56,7 +56,7 @@ QT_MODULE(Qt3D)
 class QGLSceneNodePrivate;
 class QGLAbstractEffect;
 class QGLPickNode;
-class QGraphicsTransform3D;
+class QQuickQGraphicsTransform3D;
 
 class Q_QT3D_EXPORT QGLSceneNode : public QObject
 {
@@ -106,9 +106,9 @@ public:
     qreal z() const;
     void setZ(qreal z);
 
-    QList<QGraphicsTransform3D *> transforms() const;
-    void setTransforms(const QList<QGraphicsTransform3D *> &transforms);
-    void addTransform(QGraphicsTransform3D *transform);
+    QList<QQuickQGraphicsTransform3D *> transforms() const;
+    void setTransforms(const QList<QQuickQGraphicsTransform3D *> &transforms);
+    void addTransform(QQuickQGraphicsTransform3D *transform);
 
     QGL::DrawingMode drawingMode() const;
     void setDrawingMode(QGL::DrawingMode mode);

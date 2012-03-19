@@ -82,7 +82,7 @@ QT_BEGIN_NAMESPACE
     \internal
 */
 Point::Point(QObject *parent) :
-    QDeclarativeItem3D(parent)
+    QQuickItem3D(parent)
     , m_pointSize(1.0f)
     , m_geometry(0)
     , m_changeFlag(false)

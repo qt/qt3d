@@ -63,7 +63,7 @@ void Scale3D::setScale(const QVariant &value)
     }
 }
 
-QGraphicsTransform3D *Scale3D::clone(QObject *parent) const
+QQuickQGraphicsTransform3D *Scale3D::clone(QObject *parent) const
 {
     Scale3D *copy = new Scale3D(parent);
     copy->setOrigin(origin());

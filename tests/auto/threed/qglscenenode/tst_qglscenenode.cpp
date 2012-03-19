@@ -151,7 +151,7 @@ void tst_QGLSceneNode::modify()
     QCOMPARE(updatedSpy.count(), 6);
     QVERIFY(node.position() == QVector3D(-45.0f, 67.0f, -23.5f));
 
-    QList<QGraphicsTransform3D *> transforms;
+    QList<QQuickQGraphicsTransform3D *> transforms;
     transforms.append(new QGraphicsScale3D(this));
     transforms.append(new QGraphicsRotation3D(this));
     node.setTransforms(transforms);
@@ -405,8 +405,8 @@ void tst_QGLSceneNode::removeNode()
     QCOMPARE(node5Spy.count(), 1);
 }
 
-static bool sameTransforms(const QList<QGraphicsTransform3D *> &transforms1,
-                           const QList<QGraphicsTransform3D *> &transforms2)
+static bool sameTransforms(const QList<QQuickQGraphicsTransform3D *> &transforms1,
+                           const QList<QQuickQGraphicsTransform3D *> &transforms2)
 {
     if (transforms1.size() != transforms2.size())
         return false;
@@ -454,7 +454,7 @@ void tst_QGLSceneNode::clone()
     m.scale(23.5f);
     TestEffect userEffect;
     QGLPickNode pick;
-    QList<QGraphicsTransform3D *> transforms;
+    QList<QQuickQGraphicsTransform3D *> transforms;
     transforms.append(new QGraphicsScale3D(this));
     transforms.append(new QGraphicsRotation3D(this));
 
@@ -689,7 +689,7 @@ protected:
             m.translate(position());
         if (!localTransform().isIdentity())
             m *= localTransform();
-        QList<QGraphicsTransform3D *> tx = transforms();
+        QList<QQuickQGraphicsTransform3D *> tx = transforms();
         for (int index = tx.size() - 1; index >= 0; --index)
             tx.at(index)->applyTo(&m);
 
