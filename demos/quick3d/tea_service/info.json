@@ -7,7 +7,7 @@
         "Subcategory": "utility",
         "MainQML": "mt.qml",
         "Version": "1.0",
-        "Identifier": "com.nokia.qtquick3d.teaserviceqml",
+        "Identifier": "com.nokia.qt3d.teaserviceqml",
         "Summary": "Tea Service QML Demo"
     }
 }

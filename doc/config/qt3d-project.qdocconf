@@ -7,9 +7,9 @@ sourceencoding = UTF-8
 outputencoding = UTF-8
 naturallanguage = en_US
 
-project = QtQuick3D
-description = QtQuick3D Documentation
-url = http://doc.qt.nokia.com/qtquick3d
+project = Qt3D
+description = Qt3D Documentation
+url = http://doc.qt.nokia.com/5.0-snapshot/qt3d-reference.html
 language = Cpp
 
 sources.fileextensions = "*.cpp *.qdoc *.mm *.qml"

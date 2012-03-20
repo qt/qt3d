@@ -7,7 +7,7 @@
         "Subcategory": "utility",
         "MainQML": "mt.qml",
         "Version": "1.0",
-        "Identifier": "com.nokia.qtquick3d.flickr3d",
+        "Identifier": "com.nokia.qt3d.flickr3d",
         "Summary": "Flickr3d QML Demo"
     }
 }

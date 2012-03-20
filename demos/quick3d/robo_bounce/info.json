@@ -7,7 +7,7 @@
         "Subcategory": "utility",
         "MainQML": "mt.qml",
         "Version": "1.0",
-        "Identifier": "com.nokia.qtquick3d.robobounce",
+        "Identifier": "com.nokia.qt3d.robobounce",
         "Summary": "Robo Bounce QML Demo"
     }
 }

@@ -7,7 +7,7 @@
         "Subcategory": "utility",
         "MainQML": "mt.qml",
         "Version": "1.0",
-        "Identifier": "com.nokia.qtquick3d.forest",
+        "Identifier": "com.nokia.qt3d.forest",
         "Summary": "Forest QML Demo"
     }
 }

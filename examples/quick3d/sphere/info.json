@@ -7,7 +7,7 @@
         "Subcategory": "utility",
         "MainQML": "mt.qml",
         "Version": "1.0",
-        "Identifier": "com.nokia.qtquick3d.sphere",
+        "Identifier": "com.nokia.qt3d.sphere",
         "Summary": "Sphere QML Demo"
     }
 }

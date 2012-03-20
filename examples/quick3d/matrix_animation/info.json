@@ -7,7 +7,7 @@
         "Subcategory": "utility",
         "MainQML": "mt.qml",
         "Version": "1.0",
-        "Identifier": "com.nokia.qtquick3d.matrixanimation",
+        "Identifier": "com.nokia.qt3d.matrixanimation",
         "Summary": "Matrix Animation QML Demo"
     }
 }
