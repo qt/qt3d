@@ -78,19 +78,25 @@
 
     Like other objects in QML/3d, Mesh objects are created by the standard QML syntax for
     objects.  Meshes should always specify an appropriate file containing the data for
-    the Mesh,
+    the Mesh:
 
     \code
-    Effect {}
+    Mesh {
+        id: teapot_mesh
+        source: "teapot.bez"
+    }
     \endcode
 
     More complex effects use the usual QML syntax for accessing and updating properties.  In order to specify
     a texture, for example, the following could be used:
 
     \code
-    Effect {
-        id: myTextureEffect
-        texture: "texture.png"
+    Mesh {
+        id: teapot_mesh
+        source: "teapot.bez"
+        effect: Effect {
+            texture: "texture.png"
+        }
     }
     \endcode
 */
@@ -196,8 +202,8 @@ QQuickMesh::~QQuickMesh()
     specified via the source property.
 
     Source files can be of any type supported by Qt3D.  The types of file currently
-    supported can be found in the \c sceneFormat plugins, with \e .3ds, \e .bez, \e .obj
-    files currently being supported.
+    supported can be found in the \c sceneFormat plugins,
+    with \e .3ds, \e .bez, \e .obj, \e .dae files currently being supported.
 
     Meshes can also be stored within QRC files and loaded via the standard resource
     mechanisms, however there may be issues with some esoteric remote resource loading
@@ -761,7 +767,7 @@ void QQuickMesh::openglContextIsAboutToBeDestroyed()
 }
 
 /*!
-  \qmlsignal Mesh::onLoaded()
+  \qmlsignal Mesh::loaded()
 
   This handler is called when mesh loading is complete.
 */

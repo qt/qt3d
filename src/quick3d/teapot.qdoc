@@ -48,9 +48,10 @@
 
     The Teapot element in QML provides a simple way to create a teapot
     object, usually for testing material effects and complex
-    geometry.  For example, the following QML code displays a teapot
-    of size 1.5, centered on the origin and covered in the Qt logo
-    texture:
+    geometry.
+    Teapot's center is the center of it's base.
+    For example, the following QML code displays a teapot
+    of size 1.5, covered in the Qt logo texture:
 
     \code
     Teapot {

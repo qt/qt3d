@@ -52,13 +52,13 @@ QT_BEGIN_NAMESPACE
     \brief The CapsuleMesh item represents a simple capsule in 3D space.
     \since 4.8
     \ingroup qt3d::qml3d::shapes
-    \inherits Item3D
+    \inherits Mesh
 
     The CapsuleMesh element in QML provides a simple way to create a capsule
-    object, usually for testing material effects.  For example,
-    the following QML code displays a green capsule of with a uniform
-    diameter of 0.5, and a length of 3.0, centered vertically on the
-    origin:
+    object, usually for testing material effects.
+    Capsule's center is its barycenter.
+    For example, the following QML code displays a green capsule
+    with a uniform diameter of 0.5, and a length of 3.0:
 
     \code
     Item3D {
