@@ -261,6 +261,17 @@ QGLSceneNode::~QGLSceneNode()
 }
 
 /*!
+    \property QGLSceneNode::options
+    \brief Various option flags effecting rendering
+
+    This property containst several flags that modify normal rendering and
+    culling on a QGLSceneNode.  See \l Options for a full description of the
+    available flags.
+
+    \sa setOption(), Options
+*/
+
+/*!
     Returns the drawing options associated with this node.
     The default is 0 (no options set).
 

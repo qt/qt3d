@@ -240,7 +240,7 @@ void CapsuleMesh::setLength(qreal length)
     level of detail as specified in the Cylinder and Sphere
     objects.
 
-    \sa Sphere, Cylinder
+    \sa SphereMesh, CylinderMesh
 */
 int CapsuleMesh::levelOfDetail() const
 {
