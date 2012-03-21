@@ -200,7 +200,7 @@ SphereMesh::SphereMesh(QObject *parent)
     \qmlproperty real SphereMesh::radius
 
     This property defines the radius of the sphere.  The default
-    value is 1.
+    value is 0.5.
 */
 qreal SphereMesh::radius() const
 {

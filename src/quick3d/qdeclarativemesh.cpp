@@ -78,10 +78,12 @@
 
     Like other objects in QML/3d, Mesh objects are created by the standard QML syntax for
     objects.  Meshes should always specify an appropriate file containing the data for
-    the Mesh,
+    the Mesh:
 
     \code
-    Mesh {source: "model.obj"}
+    Mesh {
+        source: "model.obj"
+    }
     \endcode
 
     For objects loaded from the network we can wait for an "onLoaded" signal in QML (from the

@@ -52,13 +52,13 @@ QT_BEGIN_NAMESPACE
     \brief The CylinderMesh item represents a simple cylinder in 3D space.
     \since 4.8
     \ingroup qt3d::qml3d::shapes
-    \inherits Item3D
+    \inherits Mesh
 
     The CylinderMesh element in QML provides a way to create a simple cylinder
-    object, usually for testing material effects.  For example, the
-    following QML code displays a green cylinder of with a uniform
-    diameter of 0.5, and a length of 3.0, centered with its base on the
-    origin:
+    object, usually for testing material effects.
+    Cylinder's center is its barycenter.
+    For example, the following QML code displays a green cylinder
+    with a uniform diameter of 0.5, and a length of 3.0:
 
     \code
     Item3D {
