@@ -1002,7 +1002,8 @@ void QGLShaderProgramEffect::setFragmentShader(const QByteArray &source)
 
 /*!
     Sets the type of primitive the program's geometry shader is expecting to
-    recieve from the vertex shader.  The default value is GL_TRIANGLE_STRIP.
+    recieve from the vertex shader to \a drawingMode.  The default value is
+    GL_TRIANGLE_STRIP.
 
     If the program has no geometry shader, this has no effect.
 */
@@ -1013,8 +1014,8 @@ void QGLShaderProgramEffect::setGeometryInputType(GLenum drawingMode)
 }
 
 /*!
-    Sets what sort of primitives the program's geometry shader will produce.
-    The default value is GL_TRIANGLE_STRIP.
+    Sets what sort of primitives the program's geometry shader will produce
+    to \a drawingMode. The default value is GL_TRIANGLE_STRIP.
 
     If the program has no geometry shader, this has no effect.
 */
