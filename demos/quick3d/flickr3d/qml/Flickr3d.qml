@@ -71,4 +71,10 @@ Viewport {
             decal: true
         }
     }
+
+    MouseArea {
+        anchors.fill: parent
+        //this mousearea simply stops users from trying to move the viewpoint in
+        //what is meant to be a fixed scene.
+    }
 }
