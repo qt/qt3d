@@ -60,8 +60,8 @@
 
     \section1 Building Qt3D
 
-    Qt3D requires Qt 5.0.  The QtSDK currently ships with Qt 4.8 so you will need
-    to \l{http://developer.qt.nokia.com/wiki/Building_Qt_5_from_Git}{build from Git}.
+    The latest version of Qt3D requires Qt 5.0.  The QtSDK currently ships with Qt 4.8 so
+    you will need to \l{http://developer.qt.nokia.com/wiki/Building_Qt_5_from_Git}{build from Git}.
 
     Just make sure that when you build Qt, that you use the
     -developer-build option, and do not do a \c{make install} as root.
@@ -69,87 +69,91 @@
     headers and plugins into the correct position in the hosted Qt library,
     so that will need to be writable.
 
+    If you're working with Qt4.8.x, and want to use Qt3D, you will need to check-out the
+    qt4 branch for Qt3D.  After the git clone command earlier, checkout the qt4 code branch
+    by running:
+
+    \code
+    $ git checkout --track -b qt4 origin/qt4
+    \endcode
+
+    Instructions for building against Qt4 are fundamentally the same as for Qt5 (except that
+    wherever we select Qt5 in these instructions, you should use Qt4.8), however
+    you should make and review the docs provided in the qt4 branch for accuracy.
+
     \section1 Building Qt3D Using QtCreator / QtSDK
 
     Here is a step-by-step guide to building Qt3D using the
     \l{http://qt.nokia.com/products/appdev/developer-tools/developer-tools}{QtCreator IDE}.
-    QtCreator is the development environment for the QtSDK.  Here we're using
-    version 2.0 on Mac OSX, but other operating systems and versions should
-    look similar.  Always use the latest release of QtCreator if possible.
+    QtCreator is the development environment for the QtSDK.  As you can see in the screenshot
+    below, we're using the beta version 2.5 on Linux, but other operating systems and
+    versions should look similar.  Always use the latest release of QtCreator if possible.
 
     \image build-qt3d-qtcreator-1.png
 
-    \b{Step 1} - Open the Qt3D project.
+    \bold{Step 1} - Open the Qt3D project.
 
     Choose \c{Open} from the \c{File} menu and navigate to the qt3d.pro project
     file \c {$HOME/depot/qt/qt3d/qt3d.pro}.  Click \c{Open}.
 
     \image build-qt3d-qtcreator-2.png
 
-    \b{Step 2} - Select the Qt and load Qt3D.
-
-    \image build-qt3d-qtcreator-4.png
-
-    Set the Qt5 build that you created above.  In this screenshot there is a
-    situation where I have a large number of Qt versions to choose from, so it is
-    easiest to use the "Uncheck All" button, then check the one I want - which is the
-    Qt created above.  You'll need to add it using the "Manage" button first.
+    \bold{Step 2} - Select the Qt and load Qt3D.
 
     \image build-qt3d-qtcreator-3.png
 
+    Set the Qt5 build that you created above.  In the screenshot below there is a
+    situation where we have a  number of Qt versions to choose from, so it is
+    easiest to uncheck all of the ones we don't need, then check the one we want - which
+    is the Qt5 version created above.  You may need to add it using the "Manage" button first.
+
     After a short time QtCreator will have loaded up the Qt3D project, read all its
-    project files and display the source tree as shown just above.
+    project files and display the source tree as shown below.
 
-    \b{Step 2a} - Useful Options
+    \image build-qt3d-qtcreator-4.png
 
-    Use \c{QtCreator} -> \c{Preferences...} to bring up QtCreators options and settings.
-    On Windows its \c{Tools} -> \c{Options...}.
+    \bold{Step 3} - Set up for Building.
 
-    Make sure you have QtCreator set to display the compile process, so you can check
-    what any errors may be.  The other options are set how I like them, and may suit
-    your use too.  Give them a try, as shown in this screenshot just below.
-
-    \image build-qt3d-qtcreator-7.png
-
-    \b{Step 3} - Set up for Building.
+    Click the projects tab at the left to display the Qt3D target's \c{Build Settings}
+    pane, marked in the screenshot below.
 
     \image build-qt3d-qtcreator-5.png
 
-    Click the projects tab at the left to display the Qt3D target's \c{Build Settings}
-    pane.  Here you can specify a Shadow Build directory.  It is always a good idea to
+    Here you can specify a Shadow Build directory.  It is always a good idea to
     build in a shadow directory, instead of inside the source tree.
 
-    In the screenshot just above I use the Finder (Mac's equivalent to the Windows File
-    Manager) to create the shadow build directory as a "new folder".
+    In the screenshot below we use file management windows invoked by the the browse button to create
+    the shadow build directory as a "new folder", which we'll call "qt3d" to match the project name.
 
     \image build-qt3d-qtcreator-6.png
 
-    In this screenshot, I have renamed the "new folder" to match the shadow build directory
-    name that I gave QtCreator.  Now I'm ready to click the "Build" button - circled in
-    red in the bottom left hand corner of Qt Creators main screen.
+    Here's another handy trick - set QtCreator to use multiple cores when it builds, if its supported
+    on your platform.  On Mac and other platforms that use GCC I can set the \c{-j 4} argument to \c{make}.
 
-    \image build-qt3d-qtcreator-8.png
+    Do this by expanding the details of the make step in the projects page, then enter the extra arguments,
+    as shown below.
 
-    Before you do that here's a handy trick - set QtCreator to use multiple cores
-    when it builds, if its supported on your platform.  On Mac and other platforms that
-    use GCC I can set the \c{-j 4} argument to \c{make}.  For Windows check for the
-    \c{jom} tool which you will already be using automatically, to see how many
+    \image build-qt3d-qtcreator-7.png
+
+    For Windows check for the \c{jom} tool which you will already be using automatically, to see how many
     parallel jobs your build will use.
 
-    \image build-qt3d-qtcreator-set-to-release.png
-
-    \b{Special note for Windows} - make sure that the type of build matches the
+    \bold{Special note for Windows} - make sure that the type of build matches the
     Qt that you are building against.  In the case of binary packages, and the Qt
     that ships with the SDK these are binary release builds - so in those cases set
     your Qt3D to a release build also.  One way to tell that this has gone wrong is
     that your Qt3D library will be called \c{Qt3Dd.dll} (note the lower case "d"
     for debug) when your QtGui library is called \c{QtGui4.dll} (no lower case "d").
 
+    \image build-qt3d-qtcreator-set-to-release.png
+
+    \bold{Step 4} - Build Qt3D and run a test App.
+
     By default the Qt build system used by QtCreator will build Qt3D in debug mode.
 
-    Ok, \b{now} hit the build button.
+    Now hit the build button (marked with a red arrow in the screenshot below)
 
-    \b{Step 4} - Build Qt3D and run a test App.
+    \image build-qt3d-qtcreator-8.png
 
     Qt3D will go ahead and compile all its libraries, plugins and QML imports.
 
@@ -179,13 +183,11 @@
 
     There is no need to run a make install step.
 
+    Now you can use QtCreator to run one of the examples.  You can do this by right clicking on
+    the example you want to run in the build tree (in this case, the "basket" app), then clicking
+    the green arrow bottom to actually launch the app.
+
     \image build-qt3d-qtcreator-9.png
-
-    Now you can use QtCreator to run one of the examples.  Click the button for the
-    project switcher (circled in red) and then choose one of the apps.  Here we
-    have chosen the QML "Moon" app from the menu (indicated by the red arrow).
-
-    Click the green arrow bottom left to actually launch the "Moon" app.
 
     Congratulations on building Qt3D!
 
@@ -198,7 +200,7 @@
     $ cd $HOME/build/qt5
     $ make module-qt3d
     $ make -j 4
-    $ bin/moon
+    $ bin/basket
     \endcode
 
     Note that the \c{$} above means the shell prompt (don't type the \{$}).
@@ -211,7 +213,7 @@
     \code
     cd \build\qt5
     nmake module-qt3d
-    bin\moon
+    bin\basket
     \endcode
 
     These commands for Windows assume that your Qt build for Qt5 is in
