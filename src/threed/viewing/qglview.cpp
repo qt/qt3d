@@ -84,8 +84,7 @@ QT_BEGIN_NAMESPACE
     On the keyboard, the left, right, up, and down keys can also be used
     to shift the camera() position around the object being viewed.  Shift
     and Control modify keys the same way they modify the left mouse
-    button above.  Hitting the Home key will cause the camera position
-    to be reset to its original position.
+    button above.
 
     \section1 Stereo viewing support
 
