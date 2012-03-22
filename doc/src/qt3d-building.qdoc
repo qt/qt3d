@@ -4,7 +4,7 @@
 ** All rights reserved.
 ** Contact: Nokia Corporation (qt-info@nokia.com)
 **
-** This file is part of the QtQuick3D documentation of the Qt Toolkit.
+** This file is part of the Qt3D documentation of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:FDL$
 ** GNU Free Documentation License
@@ -27,65 +27,81 @@
 
 /*!
     \page qt3d-building.html
-    \title Building QtQuick3D
-    \keyword Building QtQuick3D
+    \title Building Qt3D for Qt 4
+    \keyword Building Qt3D
 
-    \section1 QtQuick3D Binary Packages
+    \section1 This is Qt3D for Qt 4.
 
-    Do you have to build QtQuick3D?  Check if binary packages are available
+    If you're looking for Qt 3D on Qt 5, please check for a recent Qt 5
+    release or source package, as Qt 3D is now a Qt 5 Essential and ships as
+    part of Qt 5 and the \l{http://qt.nokia.com/downloads}{Qt SDK}.  Obtaining
+    Qt 5 source is explained on \l{http://qt-project.org/wiki/Building_Qt_5_from_Git}{the Qt project pages}.
+
+    \section1 Qt3D Binary Packages
+
+    Do you have to build Qt3D for Qt 4?  Check if binary packages are available
     for your platform on the \l{http://qt.nokia.com/downloads}{Qt downloads page}.
 
     This page gives guidelines on how to build Qt3D either from a source package
     or from a repository snapshot.
 
-    \section1 Obtaining QtQuick3D sources
+    \section1 Obtaining Qt3D sources
 
-    If you want to work with the latest bleeding edge QtQuick3D features, or if
-    you would like to modify or contribute to QtQuick3D you can build it from
+    If you want to work with the latest bleeding edge Qt3D features, or if
+    you would like to modify or contribute to Qt3D you can build it from
     our source repository.
 
-    The source for QtQuick3D is hosted on Gitorious as the git repository
-    \l{http://qt.gitorious.org/qt-quick3d/qt-quick3d}{\c{qt-quick3d/qt-quick3d.git}}.
+    The source for Qt3D is hosted on Gitorious as the git repository
+    \l{http://qt.gitorious.org/qt/qt3d}{\c{qt/qt3d.git}}.  Note that you'll
+    need the \c{qt4} branch.
+
     It can be cloned as follows:
 
     \code
-    $ mkdir -p $HOME/depot/qt
-    $ cd $HOME/depot/qt
-    $ git clone git://gitorious.org/qt-quick3d/qt-quick3d.git
+    $ mkdir $HOME/source/qt && cd $HOME/source/qt
+    $ git clone git://gitorious.org/qt/qt3d.git qt3d
+    $ cd qt3d
+    $ git checkout --track -b qt4 origin/qt4
     \endcode
 
-    More stable versions of the QtQuick3D source code is available as source
+    Note that the \c{$} above means the shell prompt (don't type the \c{$}).
+
+    More stable versions of the Qt3D source code is available as source
     packages from \l{ftp://ftp.qt.nokia.com/qt3d/noarch}{Qt3D downloads page}.
     Just unzip or untar it into your \c{depot} directory.
 
-    \section1 Building QtQuick3D
+    \section1 Building Qt3D for Qt 4
 
-    QtQuick3D requires Qt 4.7.  The QtSDK currently ships with Qt 4.7 so if
-    you're using the SDK you should be fine.  Alternatively you can build
+    This version of Qt3D requires Qt 4.8.  The QtSDK currently ships with
+    Qt 4.8 so if you're using the SDK you should be fine.  Alternatively you can build
     against a Qt that you have compiled from source.  Just make sure that
     when you build Qt, that you use the -developer-build option, and do not
-    do a \c{make install} as root.  The reason for this is when Qt3D builds in
+    do a \c{make install} as root.  The reason for this is when Qt3D builds
     it will place the libraries, headers and plugins into the correct position
     in the hosted Qt library, so that will need to be writable.
 
     Here's an example configure line you can use:
     \code
-    mkdir -p $HOME/build/qt/4.7 && cd $HOME/build/qt/4.7
-    /path/to/qt/configure -developer-build -no-qt3support -no-webkit -no-xmlpatterns \
+    $ mkdir -p $HOME/build/qt/4.8 && cd $HOME/build/qt/4.8
+    $ $HOME/source/qt/4.8/configure -developer-build -no-qt3support -no-webkit \
          -no-phonon -opengl -declarative -nomake demos -nomake examples
-    make
+    $ make
     \endcode
-    ...this line turns off many features that aren't needed for QtQuick3D, and
+    ...this line turns off many features that aren't needed for Qt3D, and
     it also explicitly asks for declarative and opengl (even though those are
     on by default) so that an error will be generated if OpenGL is not available.
+    If you're on windows omit the -opengl as it can cause errors.
 
-    \section1 Building QtQuick3D Using QtCreator / QtSDK
+    Once you have your Qt 4 set up, you can go ahead and build Qt 3D.  The recommended
+    way is to use QtCreator, which you'll have if you downloaded the SDK.
 
-    Here is a step-by-step guide to building QtQuick3D using the
+    \section1 Building Qt3D Using QtCreator / QtSDK
+
+    Here is a step-by-step guide to building Qt3D using the
     \l{http://qt.nokia.com/products/appdev/developer-tools/developer-tools}{QtCreator IDE}.
-    QtCreator is the development environment for the QtSDK.  Here we're using
-    version 2.0 on Mac OSX, but other operating systems and versions should
-    look similar.  Always use the latest release of QtCreator if possible.
+    QtCreator is the development environment for the QtSDK.  As you can see in the screenshot
+    below, we're using the beta version 2.5 on Linux, but other operating systems and
+    versions should look similar.  Always use the latest release of QtCreator if possible.
 
     \bold{Special note: Harmattan SDK.}  When using the Harmattan support in the Qt SDK:
     \list
@@ -95,7 +111,7 @@
 
     \image build-qt3d-qtcreator-1.png
 
-    \bold{Step 1} - Open the QtQuick3D project.
+    \bold{Step 1} - Open the Qt3D project.
 
     Choose \c{Open} from the \c{File} menu and navigate to the qt3d.pro project
     file \c {$HOME/depot/qt/quick3d/qt3d.pro}.  Click \c{Open}.
@@ -117,46 +133,42 @@
 
     \image build-qt3d-qtcreator-3.png
 
+    Set the Qt5 build that you created above.  In the screenshot below there is a
+    situation where we have a  number of Qt versions to choose from, so it is
+    easiest to uncheck all of the ones we don't need, then check the one we want - which
+    is the Qt5 version created above.  You may need to add it using the "Manage" button first.
+
     After a short time QtCreator will have loaded up the Qt3D project, read all its
-    project files and display the source tree as shown just above.
+    project files and display the source tree as shown below.
 
-    \bold{Step 2a} - Useful Options
-
-    Use \c{QtCreator} -> \c{Preferences...} to bring up QtCreators options and settings.
-    On Windows its \c{Tools} -> \c{Options...}.
-
-    Make sure you have QtCreator set to display the compile process, so you can check
-    what any errors may be.  The other options are set how I like them, and may suit
-    your use too.  Give them a try, as shown in this screenshot just below.
-
-    \image build-qt3d-qtcreator-7.png
+    \image build-qt3d-qtcreator-4.png
 
     \bold{Step 3} - Set up for Building.
 
+    Click the projects tab at the left to display the Qt3D target's \c{Build Settings}
+    pane, marked in the screenshot below.
+
     \image build-qt3d-qtcreator-5.png
 
-    Click the projects tab at the left to display the QtQuick3D target's \c{Build Settings}
+    Click the projects tab at the left to display the Qt3D target's \c{Build Settings}
     pane.  Here you can specify a Shadow Build directory.  It is always a good idea to
     build in a shadow directory, instead of inside the source tree.
 
-    In the screenshot just above I use the Finder (Mac's equivalent to the Windows File
-    Manager) to create the shadow build directory as a "new folder".
+    In the screenshot below we use file management windows invoked by the the browse button to create
+    the shadow build directory as a "new folder", which we'll call "qt3d" to match the project name.
 
     \image build-qt3d-qtcreator-6.png
 
-    In this screenshot, I have renamed the "new folder" to match the shadow build directory
-    name that I gave QtCreator.  Now I'm ready to click the "Build" button - circled in
-    red in the bottom left hand corner of Qt Creators main screen.
+    Here's another handy trick - set QtCreator to use multiple cores when it builds, if its supported
+    on your platform.  On Mac and other platforms that use GCC I can set the \c{-j 4} argument to \c{make}.
 
-    \image build-qt3d-qtcreator-8.png
+    Do this by expanding the details of the make step in the projects page, then enter the extra arguments,
+    as shown below.
 
-    Before you do that here's a handy trick - set QtCreator to use multiple cores
-    when it builds, if its supported on your platform.  On Mac and other platforms that
-    use GCC I can set the \c{-j 4} argument to \c{make}.  For Windows check for the
-    \c{jom} tool which you will already be using automatically, to see how many
+    \image build-qt3d-qtcreator-7.png
+
+    For Windows check for the \c{jom} tool which you will already be using automatically, to see how many
     parallel jobs your build will use.
-
-    \image build-qt3d-qtcreator-set-to-release.png
 
     \bold{Special note for Windows} - make sure that the type of build matches the
     Qt that you are building against.  In the case of binary packages, and the Qt
@@ -165,11 +177,15 @@
     that your Qt3D library will be called \c{Qt3Dd.dll} (note the lower case "d"
     for debug) when your QtGui library is called \c{QtGui4.dll} (no lower case "d").
 
+    \image build-qt3d-qtcreator-set-to-release.png
+
+    \bold{Step 4} - Build Qt3D and run a test App.
+
     By default the Qt build system used by QtCreator will build Qt3D in debug mode.
 
-    Ok, \bold{now} hit the build button.
+    Now hit the build button (marked with a red arrow in the screenshot below)
 
-    \bold{Step 4} - Build QtQuick3D and run a test App.
+    \image build-qt3d-qtcreator-8.png
 
     Qt3D will go ahead and compile all its libraries, plugins and QML imports.
 
@@ -199,27 +215,41 @@
 
     There is no need to run a make install step.
 
+    Now you can use QtCreator to run one of the examples.  You can do this by right clicking on
+    the example you want to run in the build tree (in this case, the "basket" app), then clicking
+    the green arrow bottom to actually launch the app.
+
     \image build-qt3d-qtcreator-9.png
-
-    Now you can use QtCreator to run one of the examples.  Click the button for the
-    project switcher (circled in red) and then choose one of the apps.  Here we
-    have chosen the QML "Moon" app from the menu (indicated by the red arrow).
-
-    Click the green arrow bottom left to actually launch the "Moon" app.
 
     Congratulations on building Qt3D!
 
+    \bold{If you built for Harmattan - N9}.  Now you'll want to go ahead and create some
+    packages for your device.  Ensure you have your device correctly set up for use within
+    QtCreator, by activating the device wizard under the Tools > Options or Preferences menu.
+    Now right choose \c{Deploy Project Qt3D} from the \c{Build} menu.  This step will
+    cause the SDK to copy the harmattan support files from the qtc_harmattan directory of
+    the Qt3D sources into \c{$BUILD/debian} and then proceed to create the 3 debian packages
+    which are specified there, by the *.install files and the rules file.  When its
+    complete 3 package files will have been created:
+    \list
+        \o libqt4-3d_1.0-rc_armel.deb
+        \o libqt4-3d-examples_1.0-rc_armel.deb
+        \o libqt4-3d-dev_1.0-rc_armel.deb
+    \endlist
+    The first of these \c{libqt4-3d_1.0-rc_armel.deb} which provides all the Qt 3D
+    functionality including QML support has been deployed to the phone.  The other two are
+    in the directory \bold{below} your build directory.  If you want to deploy the examples
+    to your N9, you can do this with ssh from the command line.
+
     \section1 Building from the Command Line
 
-    On Linux assuming that you have built Qt 4.7 in
-    \c{$HOME/build/qt/4.7}, you would configure and build QtQuick3D as follows:
+    On Linux assuming that you have built Qt 4.8 in
+    \c{$HOME/build/qt/4.8}, you would configure and build Qt3D as follows:
 
     \code
-    $ mkdir -p $HOME/build/qt/quick3d
-    $ cd $HOME/build/qt/quick3d
-    $ $HOME/build/qt/4.7/bin/qmake $HOME/depot/qt/quick3d/qt3d.pro
+    $ mkdir -p $HOME/build/qt/qt3d && cd $HOME/build/qt/qt3d
+    $ $HOME/build/qt/4.8/bin/qmake $HOME/depot/qt/qt3d/qt3d.pro
     $ make -j 4
-    $ bin/moon
     \endcode
 
     Note that the \c{$} above means the shell prompt (don't type the \{$}).
@@ -230,30 +260,28 @@
     On Windows (with Visual Studio) those commands look like this:
 
     \code
-    mkdir \build\qt\quick3d
-    cd \build\qt\quick3d
+    mkdir \build\qt\qt3d && cd \build\qt\qt3d
     qmake \depot\qt\quick3d\qt3d.pro
     nmake
-    bin\moon
     \endcode
 
-    These commands for Windows assume that your Qt build for Qt 4.7 is in
+    These commands for Windows assume that your Qt build for Qt 4.8 is in
     the current PATH - so that the qmake invoked above is actually going to
-    be the Qt 4.7 qmake.
+    be the Qt 4.8 qmake.
 
     On Symbian (with RVCT) those commands look like this:
 
     \code
-    mkdir C:\depot\qt\quick3d
-    cd C:\depot\qt\quick3d
+    mkdir C:\sources\qt\qt3d
+    cd C:\sources\qt\qt3d
     qmake CONFIG+=old_importer
     sbs -c armv5_urel
     cd devices\symbian
-    createpackage QtQuick3D_template.pkg release-armv5
-    runonphone --sis QtQuick3D.sis
+    createpackage Qt3D_template.pkg release-armv5
+    runonphone --sis Qt3D.sis
     \endcode
 
-    Once you have built QtQuick3D, you can run the "teapot" example:
+    Once you have built Qt3D, you can run the "teapot" example:
 
     \code
     $ cd $HOME/build/qt/quick3d
@@ -265,11 +293,11 @@
 
     \image teapot-screenshot.png
 
-    QtQuick3D has been tested with Qt/X11 and Qt/Embedded under Linux, on MacOSX
+    Qt3D has been tested with Qt/X11 and Qt/Embedded under Linux, on MacOSX
     and Windows XP.  It also runs on Symbian^3 and MeeGo/Maemo.
 
     Patches for other platforms are welcome.
 
-    \l{index.html}{Return to the main QtQuick3D page} or
+    \l{index.html}{Return to the main Qt3D page} or
     \l{qt3d-examples.html}{Continue to the Tutorials and Examples}.
 */
