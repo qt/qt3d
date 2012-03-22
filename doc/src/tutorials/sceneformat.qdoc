@@ -78,88 +78,9 @@
     \b deprecated and in our next release cycle it will be removed
     altogether.
 
-    \section1 Sceneformat Tutorial
-    Scene format plugins are used to load external 3D model file
-    formats like \b 3DS, \b obj, and so on.  In this tutorial we will
-    do a walk-through of the \b obj scene format plugin to
-    demonstrate what is required to add a new format to Qt3D.
-
-    Models are loaded by QGLAbstractScene::loadScene(), which locates
-    a suitable plug-in for the format, and then asks the plug-in to
-    parse the data and create a QGLAbstractScene object that describes
-    the 3D objects in the scene.
-
-    We start by declaring an instance of QGLSceneFormatPlugin and
-    arranging for it to be registered with the Qt plug-in system:
-
-    \snippet sceneformats/obj/main.cpp 1
-    \snippet sceneformats/obj/main.cpp 4
-
-    The two functions we need to implement are
-    \l{QGLSceneFormatPlugin::keys()}{keys()} and
-    \l{QGLSceneFormatPlugin::create()}{create()}.  The first of these
-    returns a lower-case list of the file extensions and MIME types
-    that are supported by the plug-in:
-
-    \snippet sceneformats/obj/main.cpp 2
-
-    The create function is called to create the QGLSceneFormatHandler
-    which is used to load the model data:
-
-    \snippet sceneformats/obj/main.cpp 3
-
-    The create function is passed the QIODevice for the data,
-    the URL of where the data was found, and the chosen format.
-    These parameters can be used by the plug-in to decide which
-    handler to return if multiple formats are supported by
-    the plug-in.  In the case of obj, we always return the same
-    handler so we don't need to inspect the passed parameters.
-
-    QGLAbstractScene::loadScene() will set the parameters on
-    the QGLSceneFormatHandler object and then call
-    \l{QGLSceneFormatHandler::read()}{read()}:
-
-    \snippet sceneformats/obj/qglobjscenehandler.h 1
-    \dots
-    \snippet sceneformats/obj/qglobjscenehandler.h 2
-
-    The read function will typically construct a QGLBuilder
-    for the geometry in the scene and then parse all of the objects,
-    materials, textures, and so on.  Ultimately, it needs to produce a
-    QGLAbstractScene object, populated with QGLSceneNode instances
-    for each of the objects in the model file.  In our case, we create
-    an instance of \c QGLObjScene:
-
-    \snippet sceneformats/obj/qglobjscene.h 1
-    \dots
-    \snippet sceneformats/obj/qglobjscene.h 2
-    \dots
-    \snippet sceneformats/obj/qglobjscene.h 3
-
-    The most important function is the override for
-    QGLAbstractScene::objects(), which allows the rest of Qt3D
-    to query the full list of objects in the model file.
-    The scene object can also override QGLAbstractScene::object()
-    if it has an efficient method to quickly look up an object by name.
-
-    The scene should also override QGLAbstractScene::mainNode()
-    to return the main mesh node in the scene.  Usually this is
-    the first element in the list returned by QGLAbstractScene::objects()
-    but doesn't have to be.
-
-    Note: the plug-in does not need to use QGLBuilder and the
-    other Qt3D classes to load the model if it doesn't want to.
-    It can instantiate subclasses of QGLSceneNode that override
-    the draw() method and draws the object using whatever technique
-    the plug-in chooses.  It just needs to leave the OpenGL state
-    in the condition that it found it so that other parts of Qt3D
-    will not be confused.
-
-    Once you have written a plug-in for your new format, you should
-    install it into \c{$QTDIR/plugins/sceneformats}.  You can test it
-    by running the \c{modelviewer} program and trying to load models
-    in your new format.  When debugging, it can be useful to set the
-    \c{QT_DEBUG_PLUGINS} environment variable to 1.
+    In the meantime, this tutorial is out of date and misleading and has been
+    removed.  Until it can be re-written, please refer to the source code of
+    the Asset Importer Plugin Example in src/plugins/sceneformats/assimp.
 
     \l{qt3d-examples.html}{Return to the main Tutorials page}.
 */
