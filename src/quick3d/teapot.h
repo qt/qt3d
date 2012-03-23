@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef CUBE_H
-#define CUBE_H
+#ifndef TEAPOT_H
+#define TEAPOT_H
 
 // This is a dummy header for defining the interface of "Teapot.qml" to qdoc.
 
