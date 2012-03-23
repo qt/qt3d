@@ -8,7 +8,8 @@ ICON_FILE = ../icon.png
 
 QML_FILES = \
     qml/Flickr3d.qml \
-    qml/desktop.qml
+    qml/desktop.qml \
+    qml/RssModel.qml
 
 QML_INFRA_FILES = \
     $$QML_FILES \
@@ -18,7 +19,8 @@ QML_INFRA_FILES = \
     qml/default_sky_up.png \
     qml/default_sky_east.png \
     qml/default_sky_south.png \
-    qml/default_sky_west.png
+    qml/default_sky_west.png \
+
 
 CATEGORY = demos
 include(../../../pkg.pri)
