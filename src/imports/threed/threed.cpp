@@ -61,7 +61,6 @@
 #include "qgraphicsrotation3d.h"
 #include "qgraphicstranslation3d.h"
 #include "qgraphicsscale3d.h"
-#include "qgraphicsbillboardtransform.h"
 #include "qglscenenode.h"
 
 #include "qgraphicslookattransform.h"
@@ -74,7 +73,6 @@ QML_DECLARE_TYPE(QQuickQGraphicsTransform3D)
 QML_DECLARE_TYPE(QGraphicsRotation3D)
 QML_DECLARE_TYPE(QGraphicsTranslation3D)
 QML_DECLARE_TYPE(QGraphicsScale3D)
-QML_DECLARE_TYPE(QGraphicsBillboardTransform)
 QML_DECLARE_TYPE(QGraphicsLookAtTransform)
 QML_DECLARE_TYPE(QGLMaterial)
 QML_DECLARE_TYPE(QGLLightModel)
@@ -102,7 +100,6 @@ public:
         qmlRegisterType<QGraphicsRotation3D>(uri,1,0,"Rotation3D");
         qmlRegisterType<QGraphicsTranslation3D>(uri,1,0,"Translation3D");
         qmlRegisterType<Scale3D>(uri,1,0,"Scale3D");
-        qmlRegisterType<QGraphicsBillboardTransform>(uri,1,0,"BillboardTransform");
         qmlRegisterType<QGraphicsLookAtTransform>(uri,1,0,"LookAt");
         qmlRegisterType<QGLMaterial>(uri,1,0,"Material");
         qmlRegisterType<QGLTexture2D>(uri,1,0,"Texture2D");
