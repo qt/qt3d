@@ -40,9 +40,13 @@ package {
     # rules to copy files from the *base level* of $$PWD/qml into the right place
     package {
         copyqmlinfra_install.files = $$QML_INFRA_FILES
-        mt: copyqmlinfra_install.files += info.json mt.qml $$ICON_FILE
         copyqmlinfra_install.path = $$resource_dir/qml
         INSTALLS += copyqmlinfra_install
+        mt {
+            copyqmlcontrol_install.files = info.json mt.qml $$ICON_FILE
+            copyqmlcontrol_install.path = $$resource_dir
+            INSTALLS += copyqmlcontrol_install
+        }
     } else {
         # if we're not packaging, put all our demos/examples and supporting files
         # into $BUILD_DIR/bin
