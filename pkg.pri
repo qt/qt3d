@@ -21,7 +21,7 @@ package {
     target.path = $$[QT_INSTALL_DATA]/qt3d
     INSTALLS += target
 } else {
-    macx: resource_dir = $$DESTDIR/$$QMAKE_BUNDLE/Contents/Resources/qml
+    macx: resource_dir = $$DESTDIR/$${TARGET}.app/Contents/Resources
 }
 
 #  The QML_INFRA_FILES and QML_MESHES_FILES are both about QML based
