@@ -160,7 +160,7 @@
 
     The output for this, as well as the scenegraphs it produces, can be seen below:
 
-    \image scenegraph_scenario_1.png
+    \image scenegraph_scenario1.png
 
     \section2 Scenario 2: Use a Sub-tree of the Model
 
@@ -180,7 +180,7 @@
 
     The output for this, as well as the scenegraphs it produces, can be seen below:
 
-    \image scenegraph_scenario_2.png
+    \image scenegraph_scenario2.png
 
     \section2 Scenario 3: Use an Intermediate Set of Model Nodes
 
@@ -202,7 +202,7 @@
 
     The output for this, as well as the scenegraphs it produces, can be seen below:
 
-    \image scenegraph_scenario_3.png
+    \image scenegraph_scenario3.png
 
     \section2 Scenario 4: Transform the Model, and a Sub-tree of the Model, Independently
 
@@ -229,7 +229,7 @@
 
     The output for this, as well as the scenegraphs it produces, can be seen below:
 
-    \image scenegraph_scenario_4.png
+    \image scenegraph_scenario4.png
 
     \section2 Scenario 5: Use a Model, and a set materials on a Sub-tree of the Model, Independently
 
@@ -255,7 +255,7 @@
 
     The output for this, as well as the scenegraphs it produces, can be seen below:
 
-    \image scenegraph_scenario_5.png
+    \image scenegraph_scenario5.png
 
     \section2 Scenario 6: Set Model materials, and use a Sub-tree of the Model, Independently
 
@@ -281,7 +281,7 @@
 
     The output for this, as well as the scenegraphs it produces, can be seen below:
 
-    \image scenegraph_scenario_7.png
+    \image scenegraph_scenario6.png
 
     \section2 Scenario 7: Display Model Section, and Transform a Sub-tree of the Model, Independently
 
@@ -307,7 +307,7 @@
 
     The output for this, as well as the scenegraphs it produces, can be seen below:
 
-    \image scenegraph_scenario_7.png
+    \image scenegraph_scenario7.png
 
     \section2 Scenario 8: Use Unconnected Sub-nodes of a Tree
 
@@ -326,5 +326,5 @@
 
     The output for this, as well as the scenegraphs it produces, can be seen below:
 
-    \image scenegraph_scenario_8.png
+    \image scenegraph_scenario8.png
 */
