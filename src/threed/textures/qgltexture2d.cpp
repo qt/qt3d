@@ -503,16 +503,26 @@ QGLTexture2D::BindOptions QGLTexture2D::bindOptions() const
     Sets the \a options to use when binding the image() to an
     OpenGL context.  If the image() has already been bound,
     then changing the options will cause it to be recreated
-    from image() the next time bind() is called.
+    from image() the next time bind() is called, unless the
+    only change was to the LinearFilteringBindOption, which
+    can be applied without re-creation.
 
     \sa bindOptions(), bind()
 */
 void QGLTexture2D::setBindOptions(QGLTexture2D::BindOptions options)
 {
     Q_D(QGLTexture2D);
-    if (d->bindOptions != options) {
+    uint optionDelta = d->bindOptions ^ options;
+    if (optionDelta) {
+        // special case: only LinearFiltering option changed
+        // --> treat this just as a parameter change
+        if (optionDelta == LinearFilteringBindOption) {
+            ++(d->parameterGeneration);
+        } else {
+            // all other options trigger re-upload
+            ++(d->imageGeneration);
+        }
         d->bindOptions = options;
-        ++(d->imageGeneration);
     }
 }
 
@@ -589,8 +599,10 @@ void QGLTexture2D::setVerticalWrap(QGL::TextureWrap value)
     To remove the resources from the GL server when this texture is
     no longer required, call cleanupResources().
 
-    If setImage() or setSize() was called since the last upload,
-    then image() will be re-uploaded to the GL server.
+    If setImage(), setSize() or setBindOptions() were called since
+    the last upload, then image() will be re-uploaded to the GL
+    server, except for the special case where setBindOptions()
+    changed only the LinearFilteringBindOption.
 
     Returns false if the texture could not be bound for some reason.
 
@@ -681,6 +693,9 @@ bool QGLTexture2DPrivate::bind(GLenum target)
     // If the parameter generation has changed, then alter the parameters.
     if (parameterGeneration != texInfo->parameterGeneration) {
         texInfo->parameterGeneration = parameterGeneration;
+        uint v = ((bindOptions & QGLTexture2D::LinearFilteringBindOption) ? GL_LINEAR : GL_NEAREST);
+        q_glTexParameteri(target, GL_TEXTURE_MIN_FILTER, v);
+        q_glTexParameteri(target, GL_TEXTURE_MAG_FILTER, v);
         q_glTexParameteri(target, GL_TEXTURE_WRAP_S, horizontalWrap);
         q_glTexParameteri(target, GL_TEXTURE_WRAP_T, verticalWrap);
     }
