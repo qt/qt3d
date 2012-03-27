@@ -85,17 +85,11 @@
     left shows the view in its startup default position, and the
     image on the right shows the view after rotation using the mouse:
 
-    \raw HTML
-    <center><table><tr><td>
-    \endraw
-    \image teapot-screenshot.png
-    \raw HTML
-    </td><td>
-    \endraw
-    \image teapot-rotated.png
-    \raw HTML
-    </td></tr></table></center>
-    \endraw
+    \table
+    \row
+        \li \image teapot-screenshot.png
+        \li \image teapot-rotated.png
+    \endtable
 
     \l{qt3d-examples.html}{Return to Examples}.
 */
