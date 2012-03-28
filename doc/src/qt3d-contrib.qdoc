@@ -27,10 +27,10 @@
 
 /*!
     \page qt3d-contrib.html
-    \title Contributing to Qt3D and Qt3D
+    \title Contributing to Qt3D
     \keyword Contributing to Qt3D
 
-    Qt3D and Qt3D are developed primarily in the Brisbane office of Qt
+    Qt3D is developed primarily in the Brisbane office of Qt
     Development Frameworks, but anyone is welcome to join the effort with
     patches, new examples, and major feature development.
 

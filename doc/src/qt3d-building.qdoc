@@ -252,7 +252,7 @@
     $ make -j 4
     \endcode
 
-    Note that the \c{$} above means the shell prompt (don't type the \{$}).
+    Note that the \c{$} above means the shell prompt (don't type the \c{$}).
 
     The last line runs the example QML application \c{moon} to check that
     the build went OK.

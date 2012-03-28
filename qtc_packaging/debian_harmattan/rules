@@ -28,7 +28,7 @@
 # export SYSROOT_DIR=$MADDE/sysroots/harmattan-meego-arm-sysroot-1122-slim
 #
 # ### Step 3: copy all the stuff across - cannot shadow build (probably don't want git)
-# (cd ~/depot/qt/quick3d && tar cf - --exclude-vcs .)|(cd pkg && tar xf -)
+# (cd ~/source/qt/qt3d && tar cf - --exclude-vcs .)|(cd pkg && tar xf -)
 # cd pkg
 # cp -f -v qtc_packaging/debian_harmattan/* debian/.
 #
@@ -69,7 +69,7 @@ build-stamp: configure-stamp
 
 	# Add here commands to compile the package.
     # $(DEB_MAKE_INVOKE) # Uncomment this line for use without Qt Creator
-	#docbook-to-man debian/quick3d.sgml > quick3d.1
+        #docbook-to-man debian/qt3d.sgml > qt3d.1
 
 	touch $@
 

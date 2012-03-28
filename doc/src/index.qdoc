@@ -103,7 +103,7 @@
         \o \list
             \o \l{qt3d-all-classes.html}{All Classes}
             \o \l{All Namespaces}{QGL Namespace}
-            \o \l{Qt3D for Scripting 3D Apps in QML}{QtQuick3D Elements}
+            \o \l{Qt3D for Scripting 3D Apps in QML}{QML/3D Elements}
             \o \l{Stock Shapes for Qt3D}{QML/3D Stock Shapes}
         \endlist
     \endtable
