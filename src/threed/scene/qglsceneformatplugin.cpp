@@ -42,7 +42,6 @@
 #include "qglsceneformatplugin.h"
 #include "qdownloadmanager.h"
 #include "qabstractdownloadmanager.h"
-#include "qthreadeddownloadmanager.h"
 #include <QDebug>
 
 QT_BEGIN_NAMESPACE
@@ -232,15 +231,9 @@ QGLSceneFormatPlugin::~QGLSceneFormatPlugin()
 */
 void QGLSceneFormatHandler::downloadScene()
 {
-    if (!m_downloadManager) {
-           if (getenv(QT3D_MULTITHREAD)) {
-               //Download in a multithreaded environment
-               m_downloadManager = new QThreadedDownloadManager();
-           } else {
-           //Download in a single threaded environment
-           m_downloadManager = new QDownloadManager();
-           }
-           connect(m_downloadManager,SIGNAL(downloadComplete(QByteArray)), this, SLOT(downloadComplete(QByteArray)));
+   if (!m_downloadManager) {
+        m_downloadManager = new QDownloadManager();
+        connect(m_downloadManager,SIGNAL(downloadComplete(QByteArray)), this, SLOT(downloadComplete(QByteArray)));
    }
 
    if (!m_downloadManager->beginDownload(QUrl(url().toString()))) {

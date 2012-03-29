@@ -55,22 +55,17 @@ QT_BEGIN_NAMESPACE
     \ingroup qt3d
     \ingroup qt3d::network
 
-    QDownloadManager extends the QAbstractDownloadManager class for use in a
-    single-threaded Qt3D application. The QDownloadManager performs its network
-    activities asynchronously, and processing will continue as normal while the download
+    QDownloadManager extends the QAbstractDownloadManager class for use
+    in Qt3D application. The QDownloadManager performs its network activities
+    asynchronously, and processing will continue as normal while the download
     is underway (ie. the call is non-blocking).
-
-    It should be noted that this does not preclude its usage in a multi-threaded
-    application, rather that it does not itself spawn any threads of its own.
-
-    In circumstances where an application will benefit greatly from multithreading,
-    the developer may prefer to use the QThreadedDownloadManager.
 
     At the core of QDownloadManager is a QNetworkAccessManager which is
     shared by all instances of QDownloadManager.  The download manager itself
     provides all handling of network requests and replies internally, and
     allows for redirection of URLs and handling of errors without the need
-    for the user to query network replies.
+    for the user to query network replies. The QNetworkAccessManager will automatically run HTTP requests in a separate
+    thread if it is able to do so.
 
     To use the QDownloadManager simply create an instance of the class
     within your code, and connect QDownloadManager's downloadComplete() signal

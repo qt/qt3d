@@ -52,9 +52,8 @@
     The QAbstractDownloadManager provides only the framework for this, and
     should be extended/overidden by the user to provide a specific implementation.
 
-    There are two extant implementations using this base class: QDownloadManager, which
-    provides for asynchronous data transfer from a single thread, and QThreadedDownloadManager,
-    which spawns its own download thread.
+    There is currently a single implementation using this base class: QDownloadManager, which
+    provides for asynchronous data transfer using the standard Qt networking classes.
 */
 
 /*!

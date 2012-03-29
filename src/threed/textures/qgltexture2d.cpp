@@ -46,7 +46,6 @@
 #include "qglext_p.h"
 #include "qabstractdownloadmanager.h"
 #include "qdownloadmanager.h"
-#include "qthreadeddownloadmanager.h"
 #include "qopenglfunctions.h"
 
 #include <QtCore/qfile.h>
@@ -434,14 +433,8 @@ void QGLTexture2D::setUrl(const QUrl &url)
         }
         else
         {
-             if (!d->downloadManager) {
-                if (getenv(QT3D_MULTITHREAD)) {
-                    //Download in a multithreaded environment
-                    d->downloadManager = new QThreadedDownloadManager();
-                } else {
-                    //Download in a single threaded environment
-                    d->downloadManager = new QDownloadManager();
-                }
+            if (!d->downloadManager) {
+                d->downloadManager = new QDownloadManager();
                 connect (d->downloadManager,SIGNAL(downloadComplete(QByteArray)),this, SLOT(textureRequestFinished(QByteArray)));
             }
 
