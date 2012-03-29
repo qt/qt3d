@@ -29,9 +29,9 @@
     \example quick3d/basket
     \title Basket Example
 
-    \section2 Basket in QtQuick3D
+    \section2 Basket in Qt3D
 
-    The QtQuick3D version of the basket example is very similar in
+    The Qt3D version of the basket example is very similar in
     structure to the C++ version above, but much simpler.
     We start by defining a viewport with a specific camera position:
 

@@ -68,7 +68,7 @@
 
     More stable versions of the Qt3D source code is available as source
     packages from \l{ftp://ftp.qt.nokia.com/qt3d/noarch}{Qt3D downloads page}.
-    Just unzip or untar it into your \c{depot} directory.
+    Just unzip or untar it into your \c{source} directory.
 
     \section1 Building Qt3D for Qt 4
 
@@ -114,7 +114,7 @@
     \bold{Step 1} - Open the Qt3D project.
 
     Choose \c{Open} from the \c{File} menu and navigate to the qt3d.pro project
-    file \c {$HOME/depot/qt/quick3d/qt3d.pro}.  Click \c{Open}.
+    file \c {$HOME/source/qt/qt3d/qt3d.pro}.  Click \c{Open}.
 
     \image build-qt3d-qtcreator-2.png
 
@@ -248,7 +248,7 @@
 
     \code
     $ mkdir -p $HOME/build/qt/qt3d && cd $HOME/build/qt/qt3d
-    $ $HOME/build/qt/4.8/bin/qmake $HOME/depot/qt/qt3d/qt3d.pro
+    $ $HOME/build/qt/4.8/bin/qmake $HOME/source/qt/qt3d/qt3d.pro
     $ make -j 4
     \endcode
 
@@ -261,7 +261,7 @@
 
     \code
     mkdir \build\qt\qt3d && cd \build\qt\qt3d
-    qmake \depot\qt\quick3d\qt3d.pro
+    qmake \source\qt\qt3d\qt3d.pro
     nmake
     \endcode
 
@@ -272,8 +272,8 @@
     On Symbian (with RVCT) those commands look like this:
 
     \code
-    mkdir C:\sources\qt\qt3d
-    cd C:\sources\qt\qt3d
+    mkdir C:\source\qt\qt3d
+    cd C:\source\qt\qt3d
     qmake CONFIG+=old_importer
     sbs -c armv5_urel
     cd devices\symbian
@@ -281,10 +281,10 @@
     runonphone --sis Qt3D.sis
     \endcode
 
-    Once you have built Qt3D, you can run the "teapot" example:
+    Once you have built Qt 3D, you can run the "teapot" example:
 
     \code
-    $ cd $HOME/build/qt/quick3d
+    $ cd $HOME/build/qt/qt3d
     $ bin/teapot
     \endcode
 

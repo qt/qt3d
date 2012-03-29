@@ -5,7 +5,7 @@ HTML.postheader = \
     "    <div class=\"content\"> \n" \
     "    <div id=\"nav-logo\">\n" \
     "      <a href=\"index.html\">Home</a></div>\n" \
-    "    <a href=\"index.html\" class=\"qtref\"><span>QtQuick3D Reference Documentation</span></a>\n" \
+    "    <a href=\"index.html\" class=\"qtref\"><span>Qt3D Reference Documentation</span></a>\n" \
     "    <div id=\"narrowsearch\"></div>\n" \
     "    <div id=\"nav-topright\">\n" \
     "      <ul>\n" \
@@ -19,7 +19,7 @@ HTML.postheader = \
     "    </div>\n" \
     "    <div id=\"shortCut\">\n" \
     "      <ul>\n" \
-    "        <li class=\"shortCut-topleft-inactive\"><span><a href=\"index.html\">QtQuick3D</a></span></li>\n" \
+    "        <li class=\"shortCut-topleft-inactive\"><span><a href=\"index.html\">Qt3D</a></span></li>\n" \
     "        </a></li>\n" \
     "      </ul>\n" \
     "     </div>\n" \

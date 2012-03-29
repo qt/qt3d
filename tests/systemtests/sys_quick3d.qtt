@@ -551,7 +551,7 @@ testcase = {
              *Tested Binary:* ' + testBinary + '<br>
              *Requirements:* ' + testRequirements + '<br>
             | *Step* | *Verification* |
-            | Launch qglinfo utility (called QtQuick3D on Windows) | the application starts, showing a window with OpenGL informations |
+            | Launch qglinfo utility (called Qt3D on Windows) | the application starts, showing a window with OpenGL informations |
             | Read the information | the information displayed reflects the system OpenGL ability |
             | Click on menu File - Save as | the displayed information can be saved as a text file |
             | Click on menu Edit - Copy | the information are copied to the clipboard |

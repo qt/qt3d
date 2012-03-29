@@ -34,9 +34,9 @@
     simple cube object to demonstrate how to modify the QGLPainter
     state to achieve different effects.
 
-    \section2 Cube in QtQuick3D
+    \section2 Cube in Qt3D
 
-    It is quite simple to achieve these effects in QtQuick3D:
+    It is quite simple to achieve these effects in Qt3D:
 
     \snippet quick3d/cube/qml/cube.qml 1
 

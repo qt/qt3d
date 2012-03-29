@@ -58,6 +58,8 @@ QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
+QT_MODULE(Qt3DQuick)
+
 class QDeclarativeItem3DPrivate;
 class QDeclarativeMesh;
 class QDeclarativeEffect;

@@ -18,8 +18,13 @@
 #
 # ### Step 2: set up to use the Madde build environment - eg if Madde is in your home under QtSDK:
 # export MADDE=$HOME/QtSDK/Madde
-# export PATH=$MADDE/targets/harmattan-platform-api/bin:$MADDE/bin:$MADDE/madlib:$MADDE/madbin:$PATH
+#
+# **** check that this directory contains the version of qmake & tools for your SDK:
+# export TARGET_API=$MADDE/targets/harmattan_10.2011.34-1_rt1.2/bin
+# export PATH=$TARGET_API:$MADDE/bin:$MADDE/madlib:$MADDE/madbin:$PATH
 # export PERL5LIB=$MADDE/madlib/perl5
+#
+# **** check that this directory contains a sysroot for your N9 in your SDK
 # export SYSROOT_DIR=$MADDE/sysroots/harmattan-meego-arm-sysroot-1122-slim
 #
 # ### Step 3: copy all the stuff across - cannot shadow build (probably don't want git)
@@ -54,7 +59,7 @@ DEB_MAKE_INVOKE := $(MAKE) $(PARALLEL_MAKEFLAGS)
 configure: configure-stamp
 configure-stamp:
 	dh_testdir
-	qmake -spec linux-g++-maemo qt3d.pro CONFIG+=qtc_harmattan # Uncomment this line for use without Qt Creator
+    # qmake -spec linux-g++-maemo qt3d.pro CONFIG+=qtc_harmattan # Uncomment this line for use without Qt Creator
 	touch configure-stamp
 
 build: build-stamp
@@ -63,7 +68,7 @@ build-stamp: configure-stamp
 	dh_testdir
 
 	# Add here commands to compile the package.
-	$(DEB_MAKE_INVOKE) # Uncomment this line for use without Qt Creator
+    # $(DEB_MAKE_INVOKE) # Uncomment this line for use without Qt Creator
 	#docbook-to-man debian/quick3d.sgml > quick3d.1
 
 	touch $@

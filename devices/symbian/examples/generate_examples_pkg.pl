@@ -49,7 +49,7 @@ sub system_example_dirs {
 
 sub pkg_template_files
 {
-    print "Recording pkg files of QtQuick3D\n";
+    print "Recording pkg files of Qt3D\n";
     my @out;
 
     #get all of the pkg files we might want.
@@ -102,7 +102,7 @@ sub parse_pkg
   return $lines;
 }
 
-open(OUTPUTPKG, ">QtQuick3D_apps_template.pkg") or die "cannot open file for reading: $!";
+open(OUTPUTPKG, ">Qt3D_apps_template.pkg") or die "cannot open file for reading: $!";
 
 # Print the pkg file heading for our collective pkg file
 print OUTPUTPKG <<PKGHEADER;
@@ -122,7 +122,7 @@ print OUTPUTPKG <<PKGHEADER;
 ; Default dependency to Qt libraries
 (0x2001E61C), 4, 7, 3, {"Qt"}
 
-; Default dependency to QtQuick3D libraries
+; Default dependency to Qt3D libraries
 (0x2002AC89), 1, 0, 0, {"Qt Quick 3D"}
 
 ; Default HW/platform dependencies

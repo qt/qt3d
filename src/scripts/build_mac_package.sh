@@ -42,7 +42,7 @@
 
 set -e
 
-APP=QtQuick3D
+APP=Qt3D
 
 PRO=qt3d.pro
 
@@ -71,7 +71,7 @@ mkdir -p $DEV_PKG_ROOT
 INSTALL_ROOT=$PWD/dist/dev/Pkg_Root make $(JOBS) install
 
 make docs
-DOC_LOC="Developer/Documentation/QtQuick3D"
+DOC_LOC="Developer/Documentation/Qt3D"
 mkdir -p "$DEV_PKG_ROOT/$DOC_LOC"
 mv doc/html "$DEV_PKG_ROOT/$DOC_LOC"
 
@@ -87,7 +87,7 @@ XMPL_PKG_RES="$DIST/$XMPL/Resources"
 mkdir -p $XMPL_PKG_RES
 cp src/scripts/mac_installer_background.png $XMPL_PKG_RES/background.png
 
-XMPL_LOC="Applications/QtQuick3D Examples"
+XMPL_LOC="Applications/Qt3D Examples"
 mkdir -p "${XMPL_PKG_ROOT}/$XMPL_LOC"
 mv "${DEV_PKG_ROOT}/Developer/Tools/Qt" "${XMPL_PKG_ROOT}/$XMPL_LOC"
 
@@ -104,14 +104,14 @@ PKGMGR="/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/Packag
 ## TODO: create VolumeCheck script to ensure 4.7.2 is installed
 PKG="${RELEASE_DIR}/${APP}-${VER}-${DEV}.pkg"
 $PKGMGR --root "$DEV_PKG_ROOT" \
-    --id "com.nokia.qtquick3d.${DEV}" \
+    --id "com.nokia.quick3d.${DEV}" \
     --resources "$DEV_PKG_RES" \
     --title "Core Developer Tools" \
     --target 10.5 --version "$VER" --verbose --out "$PKG"
 
 PKG="${RELEASE_DIR}/${APP}-${VER}-${XMPL}.pkg"
 $PKGMGR --root "$XMPL_PKG_ROOT" \
-    --id "com.nokia.qtquick3d.${XMPL}" \
+    --id "com.nokia.quick3d.${XMPL}" \
     --resources "$XMPL_PKG_RES" \
     --title "Example Applications" \
     --target 10.5 --version "$VER" --verbose --out "$PKG"

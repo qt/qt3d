@@ -9,4 +9,4 @@ The third mesh is a heirarchic mesh with no materials.
 
 The fourth mesh is a heirarchic mesh with colours/textures.
 
-All meshes should be lit & shaded, and can be manually rotated etc. as per QtQuick3D norms.
+All meshes should be lit & shaded, and can be manually rotated etc. as per Qt3D norms.

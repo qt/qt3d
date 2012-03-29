@@ -30,18 +30,18 @@
     \title Tutorials and Examples
     \keyword Tutorials and Examples
 
-    Building 3D applications in QML with QtQuick3D:
+    Building 3D applications in QML with Qt3D:
 
     \list
-    \o \l{Teapot Example in QtQuick3D}{Hello Teapot} in QtQuick3D
-    \o \l{quick3d/basket#Basket in QtQuick3D}{Basket} in QtQuick3D
-    \o \l{Object Effects}{Cube} in QtQuick3D
-    \o \l{Monkey God in QML}{Monkey God} in QtQuick3D
-    \o \l{Tea Service Demo in QML}{Tea Service} in QtQuick3D
-    \o \l{Using GLSL shaders in QtQuick3D}
+    \o \l{Teapot Example in Qt3D}{Hello Teapot}
+    \o \l{quick3d/basket#Basket in Qt3D}{Basket}
+    \o \l{Object Effects}{Cube}
+    \o \l{Monkey God in QML}{Monkey God}
+    \o \l{Tea Service Demo in QML}{Tea Service}
+    \o \l{Using GLSL shaders in Qt3D}
     \endlist
 
-    Using C++ to extend QtQuick3D and to build applications with Qt3D:
+    Using the Qt3D C++ API:
 
     \list
     \o \l{Teapot Example}{Hello Teapot} - drawing a basic object in 3D.
@@ -50,12 +50,6 @@
     \o \l{Loading a 3DS model with Qt3D}{Penguin} - loading a 3DS model with Qt3D.
     \o \l{qt3d/pageflip}{Page Flip} - using shaders to combine textures.
     \o \l{qt3d/shapes}{Shapes} - paints all of the basic OpenGL shapes.
-    \endlist
-
-    Other topics:
-
-    \list
-    \o \l{Scene Format Plugin}{Writing a scene format plug-in for Qt3D}
     \endlist
 
     \l{index.html}{Return to the main Qt3D page}.

@@ -27,9 +27,9 @@
 
 /*!
     \example quick3d/teapot_qml
-    \title Teapot Example in QtQuick3D
+    \title Teapot Example in Qt3D
 
-    This example shows to use QtQuick3D to display a teapot on
+    This example shows to use Qt3D to display a teapot on
     the screen.  The QML is fairly simple:
 
     \snippet quick3d/teapot_qml/qml/teapot.qml 1

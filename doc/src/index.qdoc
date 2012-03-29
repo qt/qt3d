@@ -27,44 +27,52 @@
 
 /*!
     \page index.html
-    \title QtQuick3D Reference Documentation
-    \keyword QtQuick3D Reference Documentation
+    \title Qt3D Reference Documentation
+    \keyword Qt3D Reference Documentation
 
-    \image qt3d-logo.png
+    \image icon-qt3d.png
 
-    QtQuick3D adds 3D content to \l{http://qt.nokia.com/qtquick/}{Qt Quick's} cross-platform ability and coding power.
+    Qt 3D adds \bold{3D content} to \l{http://qt.nokia.com/qtquick/}{Qt Quick's} cross-platform ability and coding power.
     Developers of fluid user interfaces can now enhance their applications with 3D
     content in the same way icons and pixmaps would be used in a 2D application.
 
-    QtQuick3D is a product resulting from the \l{http://doc.qt.nokia.com/qt3d-snapshot}{Qt3D project}.  Qt3D is a set of powerful
-    cross-platform C++ API's for 3D programming using OpenGL.
+    Qt3D comes with two libraries:
 
-    QtQuick3D is made up of the QML bindings for Qt3D (called QML3D) plus
-    Qt Creator integration, and other supporting tools.  Qt3D may be used to
-    extend QtQuick3D by creating new user-defined QML3D items using C++.
+    \table
+    \header
+        \o Library
+        \o API provided
+        \o Functionality
+        \o Useful For
+    \row
+        \o Qt3DQuick
+        \o QML API
+        \o QML bindings for Qt3D
+        \o Writing 3D apps in QML using declarative animations and techniques.
+    \row
+        \o Qt3D
+        \o C++ API
+        \o 3D rendering, scene-management and asset loading, plus more.
+        \o Extending QML3D and for writing 3D in Qt C++ instead of complex C-style OpenGL code.
+    \endtable
 
-    OpenGL hardware was designed for 3D acceleration and QtQuick3D allows applications
-    to utilise that 3D hardware fully.
+    The QML bindings create a whole new declarative way to write 3D applications, where the
+    naturally nested scopes of QML work to create 3D scene-graphs, and QML animations and easing-
+    curves can be easily applied to 3D objects.  We call this \bold{QML3D}.
 
-    QtQuick3D is the Qt Quick product for scripting 3D applications in QML. Apps can be
+    Thus QML3D is the Qt Quick tool for scripting 3D applications in QML. Apps can be
     2D QML applications with a small amount of simple 3D content; through to complex
     3D scenes, containing 3D assets - such as complex 3D models, and shader effects.
 
-    In QtQuick3D scripts are written in QML, and rendered with the power of Qt & C++.
+    Qt3D research continues and if the features you're looking for are not in Qt3D
+    yet you may find them in the \l{http://qt.gitorious.org/qt-labs/qt3d}{Qt3D research project}.
 
-    Qt3D research continues and if the features you're looking for are not in QtQuick3D
-    yet you may find them in the \l{http://doc.qt.nokia.com/qt3d-snapshot/index.html}{Qt3D research project}.
-
-    Check the Qt3D research project for upcoming features like \bold{stereoscopic support},
+    Check the Qt3D research project for features like \bold{stereoscopic support},
     which will enable your programs to take advantage of special hardware that displays a different image to each eye.
-    We are readying QtQuick3D for stereo support and in some places you may see references to it,
-    however it is \bold{not supported yet}.
+    We have done some work in Qt3D for stereo support and in some places you may see references to it,
+    however it is \bold{not supported currently}.
 
-    QtQuick3D displays \bold{3D content} that is \bold{ready to be enhanced} by stereoscopic
-    hardware, but out-of-the-box QtQuick3D works just fine on regular non-stereo displays
-    and does not require special glasses or displays to use it.
-
-    See the \l{Tutorials and Examples} for an introduction to using QtQuick3D and Qt3D.
+    See the \l{Tutorials and Examples} for an introduction to using Qt3D.
 
     \table 100%
     \header
@@ -75,10 +83,9 @@
         \o \list
             \o \l{qt3d-building.html}{Building}
             \o \l{qt3d-examples.html}{Tutorials and Examples}
-            \o \l{Writing a scene format plug-in for Qt3D}{Scene format plug-ins}
             \o \l{qt3d-contrib.html}{Contributing}
             \o \l{qt3d-acceptance.html}{Acceptance tests}
-            \o \l{qt3d-troubleshooting.html}{Troubleshooting Quick3D}
+            \o \l{qt3d-troubleshooting.html}{Troubleshooting Qt3D}
         \endlist
 
         \o \list
@@ -96,8 +103,8 @@
         \o \list
             \o \l{qt3d-all-classes.html}{All Classes}
             \o \l{All Namespaces}{QGL Namespace}
-            \o \l{QtQuick3D for Scripting 3D Apps in QML}{QtQuick3D Elements}
-            \o \l{Stock Shapes for QtQuick3D}{QML/3D Stock Shapes}
+            \o \l{Qt3D for Scripting 3D Apps in QML}{QtQuick3D Elements}
+            \o \l{Stock Shapes for Qt3D}{QML/3D Stock Shapes}
         \endlist
     \endtable
 */

@@ -27,10 +27,10 @@
 
 /*!
     \page qt3d-troubleshooting.html
-    \title QtQuick3D Troubleshooting Guide
-    \keyword Building QML QtQuick3D
+    \title Qt3D Troubleshooting Guide
+    \keyword Building QML Qt3D
 
-    Quick3D has been developed with the intention of supporting a variety
+    Qt 3D has been developed with the intention of supporting a variety
     of platforms and systems, and in doing so leverages the plugin and
     import architecture used by Qt.
 
@@ -38,7 +38,7 @@
     the Qt plugin architecture, however, which can cause runtime problems to
     occasionally arise.
 
-    \section1 Common Quick3D Problems
+    \section1 Common Qt 3D Problems
 
     \section2 PROBLEM 1: I Can't See Warnings from my QML/3D Application
 
@@ -71,7 +71,7 @@
 
     \section2 PROBLEM 2: Qt3D Plugin File Not Found
 
-    By far the most prevalant problems encountered by Quick3D newcomers are
+    By far the most prevalant problems encountered by Qt 3D newcomers are
     those relating to inability for an application to find the correct plugins
     at runtime.
 
@@ -106,7 +106,7 @@
     messages similar to the following:
 
     \code
-    file:///path/to/quick3d/app.qml:10:1: plugin cannot be loaded for module "Qt3D": Cannot load library C:/path/to/Qt/imports/qthreedqmlplugin.dll: The specified module could not be found.
+    file:///path/to/qt3d/app.qml:10:1: plugin cannot be loaded for module "Qt3D": Cannot load library C:/path/to/Qt/imports/qthreedqmlplugin.dll: The specified module could not be found.
     \endcode
 
     To resolve this problem try each of the Resolution Actions listed, one at
@@ -141,11 +141,11 @@
 
     \section2 PROBLEM 7: Case mis-match on loading QML plugins
 
-    You get a blank screen when the Qt Quick 3D application runs.  The debug output
+    You get a blank screen when the Qt 3D application runs.  The debug output
     (see Problem 1 above) reveals a message similar to
     \code
-    Starting C:\Qt\4.7.3\bin\qmlviewer.exe -I C:/Qt/4.7.3/imports C:/Qt/4.7.3/quick3d/bin/resources/examples/basket_qml/qml/basket.qml
-    C:/Qt/4.7.3/quick3d/bin/resources/examples/basket_qml/qml/basket.qml: File name case mismatch
+    Starting C:\Qt\4.8.1\bin\qmlviewer.exe -I C:/Qt/4.8.1/imports C:/Qt/4.8.1/qt3d/bin/resources/examples/basket_qml/qml/basket.qml
+    C:/Qt/4.8.1/qt3d/bin/resources/examples/basket_qml/qml/basket.qml: File name case mismatch
     \endcode
 
     This issue can occur when a custom install directory for Qt is used, which does not
@@ -164,22 +164,22 @@
 
     \section1 Resolution Actions
 
-    \section2 ACTION 1: Ensure that Quick3D is Building Correctly
+    \section2 ACTION 1: Ensure that Qt 3D is Building Correctly
 
     As obvious as this sounds, it is sometimes the case that a problem is
-    caused simply by one of the runtime libraries or plugins for Quick3D
+    caused simply by one of the runtime libraries or plugins for Qt 3D
     failing to build, even while the user's application itself builds without
     error.
 
-    Ensure that all of the components of Quick3D have built without error
+    Ensure that all of the components of Qt 3D have built without error
     before attempting further resolution actions.
 
     \section2 ACTION 2: Ensure Import Files Are Correctly Located
 
-    Ensure that the Quick3D import libraries are in the directory specified by
+    Ensure that the Qt 3D import libraries are in the directory specified by
     the QtQuick import path.
 
-    The core Quick3D import directory is: \c{imports\Qt3D} in the directory
+    The core Qt 3D import directory is: \c{imports\Qt3D} in the directory
     where Qt is installed.
 
     This directory should contain the files as shown in the following diagram:
@@ -190,14 +190,14 @@
     \c{C:\Qt\4.7.3}.
 
     If these files are not in the correct locations copy them manually into the
-    specified locations and retry your Quick3D application before moving on to
+    specified locations and retry your Qt 3D application before moving on to
     other fixes.  The dll's should have been built as part of your build process
     and the other files are shipped in the source tree, and can be simply copied
     over if somehow the build process has failed to do this.
 
     \section2 ACTION 3: Ensure Qt3D Libraries Are Correctly Located
 
-    Ensure that the Quick3D libraries can be found by the application.  The
+    Ensure that the Qt 3D libraries can be found by the application.  The
     files that should be found are:
 
     \list
@@ -223,10 +223,10 @@
 
     \section2 ACTION 4: Ensure Additional Plugin Libraries Are Correctly Located
 
-    Ensure that the Quick3D plugin libraries are in the directory specified by
+    Ensure that the Qt 3D plugin libraries are in the directory specified by
     the QtQuick plugins path.
 
-    The Quick3D scene format plugins (which are responsible for loading model files)
+    The Qt 3D scene format plugins (which are responsible for loading model files)
     should be found in:
 
     \code
@@ -240,7 +240,7 @@
     \o qscenebezier4.dll
     \endlist
 
-    Additional Quick3D image format plugins (which are responsible for loading some
+    Additional Qt 3D image format plugins (which are responsible for loading some
     image files) should be found in:
 
     \code
@@ -254,25 +254,25 @@
     \endlist
 
     If these files are not in the correct locations copy them manually into the
-    specified locations and retry your Quick3D application before moving on to
+    specified locations and retry your Qt 3D application before moving on to
     other fixes.
 
     \section2 ACTION 5: Check Your Build Configuration
 
-    It is possible that Quick3D libraries which have been built against a given
+    It is possible that Qt 3D libraries which have been built against a given
     set of Qt libraries have problems when used with another build of Qt.
 
     This may be resolved by trying each of the following:
 
     \list
-    \o Ensure that the Qt and Quick3D libraries use the same toolchain/compiler.
-    \o Ensure that the Qt Configuration used to build Quick3D matches that used in
+    \o Ensure that the Qt and Qt 3D libraries use the same toolchain/compiler.
+    \o Ensure that the Qt Configuration used to build Qt 3D matches that used in
         your runtime Qt libraries.
-    \o Ensure that the Qt used to build Quick3D and the Qt runtimes are both either
+    \o Ensure that the Qt used to build Qt 3D and the Qt runtimes are both either
         Debug or Release, not a mixture of both.
     \endlist
 
-    After making this change, retry your Quick3D application before implementing
+    After making this change, retry your Qt 3D application before implementing
     other troubleshooting tips.
 
     \section2 ACTION 6: Clear the Plugin Cache
@@ -281,7 +281,7 @@
     cache is stored through QSettings, and so is platform independent.
 
     It is possible that obselete plugin data for an older version of your Qt3D
-    plugins could be causing your Quick3D applications to fail.
+    plugins could be causing your Qt 3D applications to fail.
 
     On Windows the entries in the plugin cache are stored in the registry, and
     typically begin with one of the following strings:
@@ -291,5 +291,5 @@
     HKEY_CURRENT_USER\Software\Trolltech\OrganizationDefaults\Qt Plugin Cache 4.2.false
     \endcode
 
-    Delete these entries and retry your Quick3D application.
+    Delete these entries and retry your Qt 3D application.
 */
