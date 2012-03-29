@@ -324,6 +324,25 @@ void QGLRenderSequencer::applyState()
             }
         }
     }
+    if (s.backMaterial() && !d->painter->isPicking())
+    {
+        QGLMaterial *mat = s.backMaterial();
+        if (1) //FIXME: d->painter->faceMaterial(QGL::FrontFaces) != mat)
+        {
+            d->painter->setFaceMaterial(QGL::BackFaces, mat);
+            int texUnit = 0;
+            for (int i = 0; i < mat->textureLayerCount(); ++i)
+            {
+                QGLTexture2D *tex = mat->texture(i);
+                if (tex)
+                {
+                    d->painter->glActiveTexture(GL_TEXTURE0 + texUnit);
+                    tex->bind();
+                    ++texUnit;
+                }
+            }
+        }
+    }
 }
 
 void QGLRenderSequencer::insertNew(const QGLRenderOrder &order)
