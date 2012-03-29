@@ -14,7 +14,7 @@
 
 ; MUI Settings
 !define MUI_ABORTWARNING
-!define MUI_ICON "src\scripts\qtquick3d.ico"
+!define MUI_ICON "src\scripts\quick3d.ico"
 !define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall.ico"
 !define MUI_WELCOMEFINISHPAGE_BITMAP "src\scripts\win_installer_background.bmp"
 !define MUI_WELCOMEPAGE_TITLE "${PRODUCT_NAME} Setup"

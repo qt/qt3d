@@ -21,5 +21,5 @@ symbian {
     my_deployment.pkg_prerules = vendorinfo
     DEPLOYMENT += my_deployment
 
-    ICON = ../qtquick3d.svg
+    ICON = ../quick3d.svg
 }

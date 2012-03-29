@@ -45,7 +45,7 @@ qt3dquick_deploy_pkg {
         }
         QT += declarative opengl
 
-        maemo: icons.files = qtquick3d.png
+        maemo: icons.files = quick3d.png
     } else {
         CONFIG += qt3dquick
     }
@@ -118,7 +118,7 @@ contains(TEMPLATE, app) {
         DEPLOYMENT += my_deployment
 
         qt3dquick_deploy_pkg {
-            ICON = ../qtquick3d.svg
+            ICON = ../quick3d.svg
         } else {
             ICON = ../qt3d.svg
         }

@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
 Name=Flickr3D
-Icon=/usr/share/icons/hicolor/80x80/apps/qtquick3d.png
+Icon=/usr/share/icons/hicolor/80x80/apps/quick3d.png
 Exec=/usr/bin/invoker --type=e -s /usr/bin/flickr3d -fullscreen
 OnlyShowIn=X-MeeGo;
 X-MeeGo-Logical-Id=qtn_comm_appname_flickr3d
