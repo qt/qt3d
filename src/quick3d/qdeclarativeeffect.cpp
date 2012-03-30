@@ -263,6 +263,7 @@ void QDeclarativeEffect::setTexture(const QUrl& value)
         if (material())
         {
             material()->setTextureUrl(value);
+            connect(material(), SIGNAL(textureChanged()), this, SIGNAL(effectChanged()));
             emit effectChanged();
         }
     }
