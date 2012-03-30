@@ -89,8 +89,6 @@ Rectangle {
 
     Item {
         id: main
-        state: "orientation " + runtime.orientation
-
         width: parent.width; height: parent.height; anchors.centerIn: parent
 
         Column {
@@ -154,32 +152,6 @@ Rectangle {
                     Button { width: grid.w; height: column.h; operation: "+" }
                     Button { width: grid.w; height: column.h; operation: "="; color: 'red' }
                 }
-            }
-        }
-
-        states: [
-            State {
-                name: "orientation " + Orientation.Landscape
-                PropertyChanges { target: main; rotation: 90; width: window.height; height: window.width }
-                PropertyChanges { target: rotateButton; operation: rotateLeft }
-            },
-            State {
-                name: "orientation " + Orientation.PortraitInverted
-                PropertyChanges { target: main; rotation: 180; }
-                PropertyChanges { target: rotateButton; operation: rotateRight }
-            },
-            State {
-                name: "orientation " + Orientation.LandscapeInverted
-                PropertyChanges { target: main; rotation: 270; width: window.height; height: window.width }
-                PropertyChanges { target: rotateButton; operation: rotateLeft }
-            }
-        ]
-
-        transitions: Transition {
-            SequentialAnimation {
-                PropertyAction { target: rotateButton; property: "operation" }
-                RotationAnimation { direction: RotationAnimation.Shortest; duration: 300; easing.type: Easing.InOutQuint  }
-                NumberAnimation { properties: "x,y,width,height"; duration: 300; easing.type: Easing.InOutQuint }
             }
         }
     }
