@@ -40,7 +40,7 @@
     We start by defining a viewport with a blue fill to make the cube stand
     out, and we also tell the viewport to use DirectRender:
 
-    \snippet ../../examples/quick3d/cube/qml/Cube.qml 1
+    \snippet quick3d/cube/qml/Cube.qml 1
 
     A basic static rotation is applied, so that the cube appears in the
     window in a nice orientation initially.

@@ -41,13 +41,13 @@
     is specified, since the default one is at (10, 0, 0) and we want one
     a bit further away and elevated to see the scene better.
 
-    \snippet ../../examples/quick3d/monkeygod/qml/Monkeygod.qml 1
+    \snippet quick3d/monkeygod/qml/Monkeygod.qml 1
 
     Next we add our monkey-god himself, with a nice gold effect material
     (which is specifed later in the file) and he is set up to orient towards
     the central one of our penguin followers.
 
-    \snippet ../../examples/quick3d/monkeygod/qml/Monkeygod.qml 2
+    \snippet quick3d/monkeygod/qml/Monkeygod.qml 2
 
     The penguin followers are positioned in two ranks, using a Penguin
     component that is created in the file Penguin.qml.  The Asset Viewer tool
@@ -58,7 +58,7 @@
     The code for the first rank of penguins is shown here, and the second rank
     is coded in a similar way:
 
-    \snippet ../../examples/quick3d/monkeygod/qml/Monkeygod.qml 3
+    \snippet quick3d/monkeygod/qml/Monkeygod.qml 3
 
     \image monkeygod-screenshot.png
 

@@ -234,21 +234,21 @@
     that Item3D based delegates hide themselves when their index is
     -1 as shown in the photoroom example:
 
-    \snippet ../../examples/quick3d/photoroom/qml/photoroom.qml 1
+    \snippet quick3d/photoroom/qml/photoroom.qml 1
 
     However Item3D does not use the width or height properties, so most
     positioners and views will not work.  Use a
     \l{http://doc.qt.nokia.com/4.7/qml-repeater.html}{Repeater} element to
     generate Item3Ds from model data.  For example:
 
-    \snippet ../../examples/quick3d/photoroom/qml/photoroom.qml 2
+    \snippet quick3d/photoroom/qml/photoroom.qml 2
 
     Models can be used normally, so
 \l{http://doc.qt.nokia.com/4.7/qdeclarativemodels.html#listmodel}{ListModel},
 \l{http://doc.qt.nokia.com/4.7/qdeclarativemodels.html#qstringlist}{QStringList}
     etc. work just like they would with two dimensional Items.  For example:
 
-    \snippet ../../examples/quick3d/photoroom/qml/photoroom.qml 0
+    \snippet quick3d/photoroom/qml/photoroom.qml 0
 
     \sa{http://doc.qt.nokia.com/4.7/qdeclarativemodels.html#qml-data-models}{QML Data Models}
 */

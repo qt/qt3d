@@ -35,7 +35,7 @@
     This example demonstrates the basis for what could be a simple game.  To
     create the game background we load an image of stars.
 
-    \snippet ../../examples/quick3d/lander/qml/lander.qml 1
+    \snippet quick3d/lander/qml/Lander.qml 1
 
     Then inside the Image element our Viewport is constructed, and we tell it to fill
     its parent.  Since the Viewport will be composited on top of the Image, we tell
@@ -43,7 +43,7 @@
     that the Viewport is not the top level element and try to do the right thing, but
     it does not hurt to make it specific.
 
-    \snippet ../../examples/quick3d/lander/qml/lander.qml 2
+    \snippet quick3d/lander/qml/Lander.qml 2
 
     Now we load our lunar landscape which is an OBJ format model and scale & position
     it to suit.  Note that our camera is set up to track our lander as it moves above
@@ -51,20 +51,20 @@
     default position of the camera which is pointing at (0, 0, 0).  Here we position
     the landscape just below the origin.
 
-    \snippet ../../examples/quick3d/lander/qml/lander.qml 3
+    \snippet quick3d/lander/qml/Lander.qml 3
 
     Next the lunar lander spacecraft is loaded, and a rusty texture applied to it. We
     have created some transforms to capture the motion of the lander, and make it
     behave appropriately when the UI causes a rocket boost to occur.
 
-    \snippet ../../examples/quick3d/lander/qml/lander.qml 4
+    \snippet quick3d/lander/qml/Lander.qml 4
 
     To control the lander we create a UI element by installing a MouseArea.  This
     snippet just shows the Y change handler, but there is a similar one for X.
     Activating these causes the boost game logic to increment, and thus to have
     the position of the lander changed, and the the jet animation fire.
 
-    \snippet ../../examples/quick3d/lander/qml/lander.qml 5
+    \snippet quick3d/lander/qml/Lander.qml 5
 
     The rest of the game logic is added in using javascript.  See the source for
     complete details.
