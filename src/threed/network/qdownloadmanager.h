@@ -39,38 +39,42 @@
 **
 ****************************************************************************/
 
-#ifndef QGLOBJSCENEHANDLER_H
-#define QGLOBJSCENEHANDLER_H
 
-#include "qglsceneformatplugin.h"
-#include "qglmaterialcollection.h"
-#include <QtCore/qmap.h>
-#include <QtCore/qset.h>
+#ifndef DOWNLOADMANAGER_H
+#define DOWNLOADMANAGER_H
+
+#include "qglnamespace.h"
+#include <QObject>
+
+QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
-//! [1]
-class QGLObjSceneHandler : public QGLSceneFormatHandler
+QT_MODULE(Qt3D)
+
+class QNetworkAccessManager;
+class QUrl;
+
+class Q_QT3D_EXPORT QDownloadManager : public QObject
 {
+    Q_OBJECT
 public:
-    QGLObjSceneHandler();
-    QGLAbstractScene *read();
-    QGLAbstractScene *download();
-//! [1]
-    void decodeOptions(const QString &options);
+    explicit QDownloadManager(QObject *parent = 0);
+    bool downloadAsset(QUrl assetUrl);
+
+    QNetworkAccessManager * getNetworkManager();
+signals:
+    void downloadComplete(QByteArray*);
+
+public slots:
+    void netReplyDone();
 
 private:
-    void loadMaterialLibrary(const QString& name);
-    void loadMaterials(QIODevice *device);
-    QGLTexture2D *loadTexture(const QString& name);
-
-    QSharedPointer<QGLMaterialCollection> palette;
-    QGL::Smoothing smoothing;
-    bool smoothingForced;
-//! [2]
+    static QNetworkAccessManager* m_netAccessMgr;
 };
-//! [2]
 
 QT_END_NAMESPACE
 
-#endif
+QT_END_HEADER
+
+#endif // DOWNLOADMANAGER_H

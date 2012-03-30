@@ -110,7 +110,10 @@ public:
     bool cleanupResources();
 
     static QGLTexture2D *fromTextureId(GLuint id, const QSize& size);
-
+signals:
+    void textureUpdated();
+public slots:
+    void textureRequestFinished(QByteArray*);
 private:
     QScopedPointer<QGLTexture2DPrivate> d_ptr;
 

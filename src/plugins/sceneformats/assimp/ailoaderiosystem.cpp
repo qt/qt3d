@@ -60,7 +60,7 @@ AiLoaderIOSystem::~AiLoaderIOSystem()
 
 bool AiLoaderIOSystem::Exists(const char* path) const
 {
-    return QFile::exists(QLatin1String(path));
+    return m_device->isReadable();
 }
 
 char AiLoaderIOSystem::getOsSeparator() const
@@ -87,7 +87,10 @@ Assimp::IOStream* AiLoaderIOSystem::Open(const char* pFile, const char* pMode)
     // TODO: handle network case
     if (url.scheme() != QLatin1String("file"))
     {
-        qWarning("Opening %s url not supported", qPrintable(url.scheme()));
+        //network cases should already be opened by this stage - they
+        //depend entirely on the download manager returning a QBuffer, so
+        //cannot be handled as the simple "open file" case shown below.
+        qWarning("Directly opening a network URL is not supported.  Use scene handler code. (URL: %s).", qPrintable(url.scheme()));
         return 0;
     }
 

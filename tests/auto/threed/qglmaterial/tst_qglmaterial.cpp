@@ -469,7 +469,8 @@ void tst_QGLMaterial::textureLayers()
     QVERIFY(!mat1.textureUrl(3).isValid());
 
     // This will delete the texture object and replace it with a new one.
-    QTest::ignoreMessage(QtWarningMsg, "Network URLs not yet supported");
+    // This texture is not intended to actually "load" as such, but rather
+    // to simply test the setting of notional textures.
     mat1.setTextureUrl(QUrl(QLatin1String("foo://bar.com/texture.png")));
     QCOMPARE(tex1Spy.count(), 1);
     QCOMPARE(texturesSpy.count(), 6);

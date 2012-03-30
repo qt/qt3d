@@ -50,6 +50,7 @@ class QGLBezierSceneHandler : public QGLSceneFormatHandler
 {
 public:
     QGLAbstractScene *read();
+    QGLAbstractScene *download();
 };
 
 QT_END_NAMESPACE

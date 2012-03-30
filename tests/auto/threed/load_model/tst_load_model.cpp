@@ -87,7 +87,7 @@ void tst_LoadModel::load()
     u.setPath(model_path);
     u.setScheme("file");
 
-    scene = QGLAbstractScene::loadScene(&f, u);
+    scene = QGLAbstractScene::loadScene((&f), model_path);
     QVERIFY(scene != 0);
 }
 

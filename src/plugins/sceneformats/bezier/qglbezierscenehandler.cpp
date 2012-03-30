@@ -188,4 +188,10 @@ QGLAbstractScene *QGLBezierSceneHandler::read()
     return new QGLBezierScene(geometry.finalizedSceneNode());
 }
 
+QGLAbstractScene *QGLBezierSceneHandler::download()
+{
+    qWarning() << "Network loading is not supported for .bez files.";
+    return NULL;
+}
+
 QT_END_NAMESPACE

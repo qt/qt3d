@@ -55,6 +55,7 @@ struct aiMaterial;
 QT_BEGIN_NAMESPACE
 
 class QAiMesh;
+class QAiScene;
 class QGLSceneNode;
 class QAiSceneHandler;
 class QGLSceneAnimation;
@@ -69,6 +70,8 @@ public:
     QList<QGLSceneAnimation *> loadAnimations();
 
 private:
+    friend class QAiScene;
+
     void loadMesh(aiMesh *);
     void loadNodes(aiNode *, QGLSceneNode *);
     void loadMaterial(aiMaterial *);

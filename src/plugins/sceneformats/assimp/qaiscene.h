@@ -52,24 +52,30 @@ QT_BEGIN_NAMESPACE
 
 QT_MODULE(Qt3D)
 
-#include <QtCore/qurl.h>
-
 class QGLSceneNode;
 class QAiSceneHandler;
+class QAiLoader;
 
 class QAiScene : public QGLAbstractScene
 {
     Q_OBJECT
 public:
     explicit QAiScene(const aiScene *scene, QAiSceneHandler *handler);
+    explicit QAiScene(QAiSceneHandler *handler);
     virtual ~QAiScene();
+
+    //load a scene with the current handler
+    void loadScene(const aiScene*scene);
 
     QList<QObject *> objects() const;
     QGLSceneNode *mainNode() const;
     QList<QGLSceneAnimation *> animations() const;
 private:
-    QGLSceneNode *m_root;
+    QAiLoader * aiLoader() const;
     QList<QGLSceneAnimation *> m_animations;
+protected:
+    QGLSceneNode *m_root;
+    QAiLoader *m_aiLoader;
 };
 
 QT_END_NAMESPACE

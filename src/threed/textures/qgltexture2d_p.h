@@ -56,8 +56,9 @@
 #include "qgltexture2d.h"
 #include "qgltextureutils_p.h"
 #include "qurl.h"
-#include <QDebug>
+#include "qdownloadmanager.h"
 
+#include <QDebug>
 #include <QAtomicInt>
 #include <QImage>
 
@@ -107,7 +108,7 @@ public:
     uint parameterGeneration;
     QList<QGLTexture2DTextureInfo*>  textureInfo;
     bool sizeAdjusted;
-
+    QDownloadManager *downloadManager;
     bool bind(GLenum target);
     virtual void bindImages(QGLTexture2DTextureInfo *info);
     void adjustForNPOTTextureSize();

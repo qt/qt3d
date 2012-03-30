@@ -326,6 +326,12 @@ QGLAbstractScene *QGLObjSceneHandler::read()
     return new QGLObjScene(builder.finalizedSceneNode());
 }
 
+QGLAbstractScene *QGLObjSceneHandler::download()
+{
+    qWarning() << "Network loading of obj files using this plugin is not implemented.";
+    return NULL;
+}
+
 void QGLObjSceneHandler::loadMaterialLibrary(const QString& name)
 {
     QUrl materialUrl = url().resolved(name);

@@ -107,18 +107,6 @@ public:
     QSharedPointer<QGLMaterialCollection> palette;
     int materialIndex;
     qreal progress;
-    inline void ensureMaterial() {
-        if (!palette)
-        {
-            palette = QSharedPointer<QGLMaterialCollection>(new QGLMaterialCollection());
-        }
-        if (materialIndex == -1)
-        {
-            materialIndex = palette->addMaterial(new QGLMaterial(palette.data()));
-            palette->material(materialIndex)->setColor(color);
-        }
-        // TODO: decal & blending
-    }
 
     void cleanupResources();
 };
@@ -175,7 +163,7 @@ QColor QQuickEffect::color() const
 void QQuickEffect::setColor(const QColor& value)
 {
     d->color = value;
-    d->ensureMaterial();
+    ensureMaterial();
     material()->setColor(value);
     emit effectChanged();
 }
@@ -288,7 +276,7 @@ void QQuickEffect::setTexture(const QUrl& value)
     }
     else
     {
-        d->ensureMaterial();
+        ensureMaterial();
         // Warning: This will trigger the deletion of the old texure.
         material()->setTextureUrl(value);
         emit effectChanged();
@@ -319,7 +307,7 @@ QImage QQuickEffect::textureImage() const
 void QQuickEffect::setTextureImage(const QImage& value)
 {
     QGLTexture2D * tex;
-    d->ensureMaterial();
+    ensureMaterial();
     if (!material()->texture())
     {
         // Should this texture be parented?
@@ -360,7 +348,7 @@ QGLMaterial *QQuickEffect::material() const
 */
 void QQuickEffect::setMaterial(QGLMaterial *value)
 {
-    d->ensureMaterial();
+    ensureMaterial();
     int newIndex = -1;
     if (value)
         newIndex = d->palette->addMaterial(value);
@@ -370,6 +358,7 @@ void QQuickEffect::setMaterial(QGLMaterial *value)
         QGLMaterial *current = d->palette->material(d->materialIndex);
         if (current) {
             disconnect(current, SIGNAL(materialChanged()), this, SIGNAL(effectChanged()));
+
         }
         if (value) {
             connect(value, SIGNAL(materialChanged()), this, SIGNAL(effectChanged()));
@@ -452,7 +441,7 @@ void QQuickEffect::disableEffect(QGLPainter *painter)
 */
 void QQuickEffect::applyTo(QGLSceneNode *node)
 {
-    d->ensureMaterial();
+    ensureMaterial();
 
     node->setPalette(d->palette);
     node->setMaterialIndex(d->materialIndex);
@@ -503,6 +492,20 @@ qreal QQuickEffect::progress()
 void QQuickEffect::openglContextIsAboutToBeDestroyed()
 {
     d->cleanupResources();
+}
+
+void QQuickEffect::ensureMaterial() {
+    if (!d->palette)
+    {
+        d->palette = QSharedPointer<QGLMaterialCollection>(new QGLMaterialCollection());
+    }
+    if (d->materialIndex == -1)
+    {
+        QGLMaterial * newMaterial = new QGLMaterial(d->palette.data());
+        newMaterial->setColor(d->color);
+        connect(newMaterial, SIGNAL(materialChanged()), this, SIGNAL(effectChanged()));
+        d->materialIndex = d->palette->addMaterial(newMaterial);
+    }
 }
 
 QT_END_NAMESPACE
