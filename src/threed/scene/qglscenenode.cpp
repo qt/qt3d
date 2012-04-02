@@ -1480,11 +1480,13 @@ void QGLSceneNode::setPickNode(QGLPickNode *node)
 
     For example, given the following scene graph:
 
+    \code
           Item2
          /
     Item1
          \
           Item3 - Item4
+    \endcode
 
     We could get the QGLSceneNode for "Item4" using the following function
     call:
@@ -1497,11 +1499,13 @@ void QGLSceneNode::setPickNode(QGLPickNode *node)
     The function will automatically skip unnamed nodes.  For example, consider
     this scene graph:
 
+    \code
                       Item2
                      /
     <unnamed> - Item1
                      \
                       Item3 - <unnamed> - Item4
+    \endcode
 
 
     The function \a nodePath will return the QGLSceneNode for node "Item4".
@@ -1523,11 +1527,13 @@ void QGLSceneNode::setPickNode(QGLPickNode *node)
     scenegraph is invalid because of the repeat of Sphere1 in the same layer
     of the graph:
 
+    \code
           Sphere1
          /
     Cube1
          \
           Sphere1
+    \endcode
 
     The function also assumes that the names of nodes do not contain
     double colons.  For example, a node with the name: "Sphere::1" would
@@ -1636,11 +1642,13 @@ QGLSceneNode *QGLSceneNode::get(const QString &name, QObject *parent, bool force
     The resulting set of branches will then be added to a newly created root node,
     creating a composite branch.  For example, consider the simple scenegraph below:
 
+    \code
          Node 1 - Node 2 - Node 3
         /
     Root
         \
          Node 4 - Node 5 - Node 6
+    \endcode
 
     If we now call the get() function with the following code.
 
@@ -1655,11 +1663,13 @@ QGLSceneNode *QGLSceneNode::get(const QString &name, QObject *parent, bool force
     In this case the function will create a new root node for the output, and
     graft the two branches onto it, as follows:
 
+    \code
              Node 2 - Node 3
             /
     New-Root
             \
              Node 5 - Node 6
+    \endcode
 
     \sa findSceneNode(), clone(), cloneWithChildren(), get(), except()
 */
@@ -1689,11 +1699,13 @@ QGLSceneNode *QGLSceneNode::get(const QStringList &names, QObject *parent, bool 
 
     For example, consider the following scenegraph:
 
+    \code
          Node 1 - Node 2
         /
     Root
         \
          Node 3 - Node 4
+    \endcode
 
     By using the following code:
 
@@ -1704,9 +1716,11 @@ QGLSceneNode *QGLSceneNode::get(const QStringList &names, QObject *parent, bool 
 
     We can create a copy of the scenegraph with the branch pruned, as shown below:
 
+    \code
     Root
         \
          Node 3 - Node 4
+    \endcode
 
     \sa findSceneNode(), clone(), cloneWithChildren(), get()
 */
@@ -1726,11 +1740,13 @@ QGLSceneNode *QGLSceneNode::except(const QString &name, QObject *parent)
 
     Thus for the scenegraph:
 
+    \code
          Node 1 - Node 2 - Node 3
         /
     Root
         \
          Node 4 - Node 5 - Node 6
+    \endcode
 
     The code:
 
@@ -1744,11 +1760,13 @@ QGLSceneNode *QGLSceneNode::except(const QString &name, QObject *parent)
 
     Would yield the scenegraph:
 
+    \code
          Node 1
         /
     Root
         \
          Node 4
+    \endcode
 
     Once again, this copy will be reparented with the parameter \a parent if it
     exists.
