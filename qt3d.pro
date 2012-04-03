@@ -42,8 +42,6 @@ SUBDIRS += module_qt3d_src \
 
 !gcov: SUBDIRS += module_qt3d_util
 
-include(doc/doc.pri)
-
 # We need opengl, minimum es2 or desktop
 !contains(QT_CONFIG, opengl) {
     error(Qt3D requires OpenGL!)
