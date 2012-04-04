@@ -192,4 +192,6 @@
     For more information on contributions please visit the Qt3D \l{qt3d-contrib.html}{contributions page}.
 
     We would like to hear your feedback and accept any contributions in forms of code, documentation, examples and bugs reports. Please contact us on the \l{http://lists.qt.nokia.com/mailman/listinfo/qt-3d}{Qt3D mailing list}.
+
+    See \l{Other Licenses Used in Qt 3D} for details of Qt 3D licensing, and also of 3rd party code used in Qt 3D, including acknowledgements.
 */

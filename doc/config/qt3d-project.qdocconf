@@ -29,7 +29,8 @@ sourcedirs = $TOPSRC/src/imports \
 exampledirs = $TOPSRC/examples \
               $TOPSRC/demos \
               $TOPSRC/tutorials \
-              $TOPSRC/src/plugins
+              $TOPSRC/src/plugins \
+              $TOPSRC/doc/src/legal/snippets
 
 imagedirs = $TOPSRC/doc/src/images \
             $TOPSRC/doc/src/images/tutorials \
