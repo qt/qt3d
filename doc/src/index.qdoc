@@ -107,4 +107,7 @@
             \o \l{Stock Shapes for Qt3D}{QML/3D Stock Shapes}
         \endlist
     \endtable
+
+    See \l{Licensing Information} for details of Qt3D licensing, and also of 3rd party code
+    used in Qt3D, including acknowledgements.
 */

@@ -1,0 +1,129 @@
+/****************************************************************************
+**
+** Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies).
+** All rights reserved.
+** Contact: Nokia Corporation (qt-info@nokia.com)
+**
+** This file is part of the Qt3D documentation of the Qt Toolkit.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** GNU Free Documentation License
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.
+**
+** Other Usage
+** Alternatively, this file may be used in accordance with the terms
+** and conditions contained in a signed written agreement between you
+** and Nokia.
+**
+**
+**
+**
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \group licensing
+    \title Licensing Information
+    \brief Information about licenses and licensing issues.
+
+    These documents include information about Qt 3D's licenses and the licenses
+    of third party components used in Qt 3D.
+
+    \generatelist{related}
+*/
+
+
+/*!
+    \page licenses.html
+    \title Other Licenses Used in Qt 3D
+    \ingroup licensing
+    \brief Information about other licenses used for Qt components and third-party code.
+
+    Qt 3D contains some code that is not provided under the
+    \l{lgpl-license.html}{GNU Lesser General Public License (LGPL)} but rather under
+    specific licenses from the original authors. Some pieces of code were developed
+    by Nokia and others originated from third parties.
+    This page lists the licenses used, names the authors, and links
+    to the places where it is used.
+
+    Nokia gratefully acknowledges these and other contributions
+    to Qt 3D. We recommend that programs that use Qt 3D also acknowledge
+    these contributions, and quote these license statements in an
+    appendix to the documentation.
+
+    \generatelist legalese-command
+
+    \hr
+
+    Qt3D is extremely grateful to the hard work of the Open Asset Import Library
+    team, who provide the loader/file-reader support for all 3D Assets.  See the
+    \l{http://assimp.sourceforge.net/}{Open Asset Import project} for details.
+
+
+    \legalese Open Asset Import Library (Assimp)
+
+    \quotefile open-asset-importer.txt
+
+    \endlegalese
+
+    \hr
+
+    The MDC file format is included within the Open Asset Importer Library
+    code, and provides support for the \l{http://www.planetwolfenstein.com/themdcfile/}{MDC file format}.
+    The Pico-Model code provides this MDC file format support for AssImp.
+
+    \legalese Pico-Model
+
+    \quotefile pico-model.txt
+
+    \endlegalese
+
+    \hr
+
+    The Portable StdInt implementation is included in the Open Asset Importer
+    Library code.
+
+    \legalese
+
+    \quotefile pstdint.txt
+
+    \endlegalese
+
+    \hr
+
+    The following license is for portions of code from the Info-ZIP
+    project which the Asset Importer Library includes for opening asset
+    files compressed using the zip algorithms.
+
+    \legalese
+
+    \quotefile info-zip.txt
+
+    \endlegalese
+
+*/
+
+/*!
+    \page lgpl-license.html
+    \title LGPL.txt
+    \ingroup licensing
+    \brief The LGPL License used in Qt3D.
+
+    \section1 GNU Lesser General Public License (LGPL)
+
+    Qt3D is Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
+    Contact: http://www.qt-project.org/
+    Qt3D is available under the LGPL.
+
+    Some files are licensed under different licences as recorded in the headers
+    of those files.  See the files themselves, and also the full text of the
+    licenses included with the source code for details.
+
+    \section1 The GNU Lesser General Public License (Version 3).
+
+    \quotefile LICENSE.LGPL
+*/
