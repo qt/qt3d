@@ -51,10 +51,10 @@ usage:
 
   Generated package files and directories are named after <version>.
 
-  Make sure the bin path for a valid Qt with qdoc3 is in the $PATH.
+  Make sure the bin path for a valid Qt (qmake) with qdoc3 is in the $PATH.
 
   example:
-    env PATH=/path/to/Qt/bin:$PATH src/scripts/build_src_package.sh origin/tp1 1.0-tp1
+    env PATH=/path/to/Qt/bin:\$PATH src/scripts/build_src_package.sh origin/qt4 1.0
 USAGE
     exit 1
 }
@@ -65,6 +65,7 @@ if [[ $# != 2 ]]; then
 fi
 
 set -e
+set -x
 
 QDOC3=$(qmake -query QT_INSTALL_BINS)/qdoc3
 
@@ -74,14 +75,14 @@ test -f qt3d.pro || usage
 BRANCH=$1
 VERSION=$2
 echo "Creating tar archive..."
-git archive --format=tar --prefix=quick3d-${VERSION}-src/ ${BRANCH} | gzip > ../quick3d-${VERSION}-src.tar.gz || exit 1
+git archive --format=tar --prefix=qt3d-${VERSION}-src/ ${BRANCH} | gzip > ../qt3d-${VERSION}-src.tar.gz || exit 1
 echo "Creating zip archive..."
-git archive --format=zip --prefix=quick3d-${VERSION}-src/ ${BRANCH} > ../quick3d-${VERSION}-src.zip || exit 1
+git archive --format=zip --prefix=qt3d-${VERSION}-src/ ${BRANCH} > ../qt3d-${VERSION}-src.zip || exit 1
 echo "Creating documentation..."
 rm -r -f doc/html
 qmake qt3d.pro -spec macx-g++ CONFIG+=package >/dev/null || exit 1
 make docs || exit 1
 cd doc
-cp -r html quick3d-${VERSION}
-zip -r ../../quick3d-${VERSION}-doc.zip quick3d-${VERSION} >/dev/null
-rm -r quick3d-${VERSION}
+cp -r html qt3d-${VERSION}
+zip -r ../../qt3d-${VERSION}-doc.zip qt3d-${VERSION} >/dev/null && echo "Successfully created source package ../../qt3d-${VERSION}-doc.zip"
+rm -r qt3d-${VERSION}
