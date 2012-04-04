@@ -5,4 +5,8 @@ doc/html
 *.user.*
 src/quick3d/qt3dquickversion.h
 src/threed/qt3dversion.h
-
+tmp
+Makefile*
+*.pdb
+include/*
+*_resource.rc
