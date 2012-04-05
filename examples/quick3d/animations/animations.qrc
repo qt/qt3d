@@ -3,5 +3,7 @@
         <file>qml/cube_rotated.dae</file>
         <file>qml/animations.qml</file>
         <file>qml/stonewal.jpg</file>
+        <file>qml/stonewal.png</file>
+        <file>qml/waves.bmp</file>
     </qresource>
 </RCC>

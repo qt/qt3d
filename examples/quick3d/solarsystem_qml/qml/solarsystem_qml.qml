@@ -44,7 +44,6 @@ import Qt3D.Shapes 1.0
 
 Viewport {
     width: 800; height: 600
-    showSceneGraph: true
 
     //! [0]
     SphereMesh {

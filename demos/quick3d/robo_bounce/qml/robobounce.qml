@@ -57,7 +57,6 @@ Image {
     Keys.onSpacePressed: {
         heartbeat.restart();
         qt3dButton.bounce = true;
-        console.log("Hide Calc")
         if (calc.state=="hidden") {
             calc.state="shown"
 
@@ -66,17 +65,14 @@ Image {
         };
     }
     Keys.onLeftPressed: {
-        console.log("Rotate Key Pressed");
         heartbeat.restart();
         room.spinning = true;
     }
     Keys.onRightPressed: {
-        console.log("Box Drop Key pressed");
         heartbeat.restart();
         smallCube.fallingCubeAnimation=true;
     }
     Keys.onUpPressed: {
-        console.log("Info Key Pressed");
         heartbeat.restart();
         roboInfo.showVisible=true
     }
@@ -148,7 +144,6 @@ Image {
         repeat: true
         onTriggered: {
             qt3dButton.bounce = true;
-            console.log("Hide Calc")
             if (calc.state=="hidden") {
                 calc.state="shown"
             } else {
@@ -196,7 +191,6 @@ Image {
                         from: "*"
                         to: "panelUp"
                         SequentialAnimation {
-                            onStarted: { console.log("Panel Up"); }
                             NumberAnimation {target: buttonPanel; property: opacity; to: 0; duration: 2000;}
                             PropertyAction{target: buttonPanel; property: "visible"; value: false}
                         }
@@ -220,7 +214,6 @@ Image {
                     x: buttonBox1.x+10
                     y: buttonBox1.y+10
                     onPressed: {
-                        console.log("Rotate Pressed");
                         room.spinning = true;
                         heartbeat.restart();
                     }
@@ -230,7 +223,6 @@ Image {
                     x: buttonBox1.x+60
                     y: buttonBox1.y+10
                     onPressed: {
-                        console.log("Box button pressed");
                         smallCube.fallingCubeAnimation=true;
                         heartbeat.restart();
                     }
@@ -240,7 +232,6 @@ Image {
                     x: buttonBox1.x+110
                     y: buttonBox1.y+10
                     onPressed: {
-                        console.log("Info Button Pressed");
                         roboInfo.showVisible=true
                         heartbeat.restart();
                     }
@@ -299,7 +290,6 @@ Image {
                     onClicked: {
                         heartbeat.restart();
                         qt3dButton.bounce = true;
-                        console.log("Hide Calc")
                         if (calc.state=="hidden") {
                             calc.state="shown"
                         } else {
@@ -351,7 +341,6 @@ Image {
                         from: "*"
                         to: "threedView"
                         SequentialAnimation {
-                            onStarted: {console.log("start")}
                             SequentialAnimation {
                                 NumberAnimation { target: theCamera; property: "fieldOfView"; to: 20; duration: 1000; easing.type: "InOutQuad" }
                                 ParallelAnimation {
@@ -451,7 +440,6 @@ Image {
 
                         onClicked: {
                             heartbeat.restart();
-                            console.log("Small cube clicked");
                             smallCube.fallingCubeAnimation=true;
                         }
 
@@ -525,7 +513,6 @@ Image {
                         scale: 10.0
                         onClicked: {
                             heartbeat.restart();
-                            console.log("Big cube clicked");
                             room.spinning = true;
                         }
                     }
@@ -566,7 +553,6 @@ Image {
 
                         onClicked: {
                             heartbeat.restart();
-                            console.log("robot has been clicked")
                             roboInfo.showVisible=true
                         }
 

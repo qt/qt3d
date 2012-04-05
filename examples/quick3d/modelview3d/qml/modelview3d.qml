@@ -141,7 +141,7 @@ Rectangle {
             // Component.onCompleted can be a useful place to do
             // initialization, like hooking up signals and slots.
             Component.onCompleted: {
-                console.log("Cube Completed");
+                // console.log("Cube Completed");
             }
         }
     }
