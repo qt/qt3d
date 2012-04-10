@@ -68,6 +68,13 @@ Viewport {
         }\
         "
 
+    Material {
+        id: china
+        ambientColor: "#c09680"
+        specularColor: "#3c3c3c"
+        shininess: 128
+    }
+
     Effect {
         id: testEffect
         material: china
