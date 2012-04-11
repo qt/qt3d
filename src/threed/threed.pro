@@ -2,12 +2,13 @@ load(qt_module)
 
 TARGET     = Qt3D
 MODULE     = 3d
-QT         = core-private gui-private network
-
 CONFIG += module
-MODULE_PRI = ../../modules/qt_qt3d.pri
+QT         = core-private gui-private
 
 load(qt_module_config)
+
+# private dependencies
+QT += network
 
 gcov {
     CONFIG += staticlib warn_on

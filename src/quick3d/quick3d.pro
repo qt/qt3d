@@ -2,12 +2,13 @@ load(qt_module)
 
 TARGET     = Qt3DQuick
 MODULE     = 3dquick
-QT         = core gui network qml quick 3d
-
 CONFIG += module
-MODULE_PRI = ../../modules/qt_qt3dquick.pri
+QT         = core gui qml quick 3d
 
 load(qt_module_config)
+
+# private dependencies
+QT += network
 
 gcov {
     CONFIG += staticlib warn_on

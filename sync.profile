@@ -15,10 +15,6 @@
     "quick" => "#include <QtQuick/QQuick>\n",
     "network" => "#include <QtNetwork/QtNetwork>\n"
 );
-%modulepris = (
-    "Qt3D" => "$basedir/modules/qt_qt3d.pri",
-    "Qt3DQuick" => "$basedir/modules/qt_qt3dquick.pri",
-);
 # Module dependencies.
 # Every module that is required to build this module should have one entry.
 # Each of the module version specifiers can take one of the following values:
