@@ -133,10 +133,10 @@
 
     \image build-qt3d-qtcreator-3.png
 
-    Set the Qt5 build that you created above.  In the screenshot below there is a
+    Set the Qt build that you created above.  In the screenshot below there is a
     situation where we have a  number of Qt versions to choose from, so it is
     easiest to uncheck all of the ones we don't need, then check the one we want - which
-    is the Qt5 version created above.  You may need to add it using the "Manage" button first.
+    is the Qt version created above.  You may need to add it using the "Manage" button first.
 
     After a short time QtCreator will have loaded up the Qt3D project, read all its
     project files and display the source tree as shown below.
