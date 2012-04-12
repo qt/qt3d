@@ -5,5 +5,3 @@ QT += testlib 3d opengl
 CONFIG += warn_on
 
 SOURCES += tst_qglvertexbundle.cpp
-
-macx:CONFIG+=insignificant_test
