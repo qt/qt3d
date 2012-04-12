@@ -5,5 +5,3 @@ QT += testlib 3d
 CONFIG += warn_on
 
 SOURCES += tst_qglmaterial.cpp
-
-CONFIG+=insignificant_test
