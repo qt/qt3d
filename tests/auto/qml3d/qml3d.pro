@@ -22,5 +22,4 @@ OTHER_FILES += \
     item3d/tst_missing_texture_coordinates.qml \
     item3d/tst_item3d_local_v_world.qml \
 
-# Don't block while tests are unstable
-CONFIG+=insignificant_test
+CONFIG+=insignificant_test  # See QTBUG-25276

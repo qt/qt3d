@@ -6,4 +6,4 @@ CONFIG += warn_on
 
 SOURCES += tst_qglabstractsurface.cpp
 
-CONFIG+=insignificant_test
+CONFIG+=insignificant_test  # See QTBUG-25277
