@@ -1,8 +1,7 @@
-load(qt_module)
+load(qt_build_config)
 
 TARGET     = Qt3D
 MODULE     = 3d
-CONFIG += module
 QT         = core-private gui-private
 
 load(qt_module_config)
@@ -22,6 +21,5 @@ include(../private/private.pri)
 include(threed.pri)
 PUBLIC_HEADERS = $$HEADERS
 HEADERS += $$PRIVATE_HEADERS
-DEFINES += QT_BUILD_QT3D_LIB
 
 !contains(QT_CONFIG, egl):DEFINES += QT_NO_EGL

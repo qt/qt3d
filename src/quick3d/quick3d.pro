@@ -1,8 +1,7 @@
-load(qt_module)
+load(qt_build_config)
 
 TARGET     = Qt3DQuick
 MODULE     = 3dquick
-CONFIG += module
 QT         = core gui qml quick 3d
 
 load(qt_module_config)
@@ -32,7 +31,6 @@ include(quick3d.pri)
 
 PUBLIC_HEADERS = $$HEADERS
 HEADERS += $$PRIVATE_HEADERS
-DEFINES += QT_BUILD_QT3D_QUICK_LIB
 
 !contains(QT_CONFIG, egl):DEFINES += QT_NO_EGL
 
