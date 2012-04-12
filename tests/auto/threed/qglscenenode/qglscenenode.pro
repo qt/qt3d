@@ -6,5 +6,3 @@ CONFIG += warn_on
 
 INCLUDEPATH += ../../../shared
 SOURCES += tst_qglscenenode.cpp
-
-CONFIG+=insignificant_test
