@@ -80,6 +80,25 @@
     it will place the libraries, headers and plugins into the correct position
     in the hosted Qt library, so that will need to be writable.
 
+    \bold{Note: Don't build Qt3D against binary package}.  As just
+    explained, when building against a binary package Qt3D will try to
+    install itself \bold{during compile time} into the Qt against which
+    it is being compiled.  It cannot do this if your current user
+    account does not have permissions to write there, which is generally
+    the case with binary packages, that install as root into the
+    standard system locations.
+
+    In the case of Windows many do development in an account that
+    has Administrator privileges.  This is not an endorsement of that
+    practice, but it does mean that Windows users developing this way do
+    not run into this problem.  However in the case of Mac or Linux (or
+    more security conscious Windows developers) this won't work.  For
+    advanced users you can try buiding with the package option turned on
+    by adding \c{CONFIG+=package} to the qmake line, and then run
+    \c{make install} as root.  It is not recommended to run the whole
+    build as root.  In summary, build against a source package or
+    against the SDK and it will just work.
+
     Here's an example configure line you can use:
     \code
     $ mkdir -p $HOME/build/qt/4.8 && cd $HOME/build/qt/4.8
