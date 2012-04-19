@@ -71,7 +71,7 @@ public:
     ~Skybox();
     QUrl source() const { return m_source; }
     void setSource(const QUrl &url);
-    void draw(QGLPainter *painter) const;
+    void draw(QGLPainter *painter);
     Viewport *viewport() const
     {
         return m_view;
@@ -88,6 +88,9 @@ Q_SIGNALS:
 protected:
     bool event(QEvent *event);
 
+private Q_SLOTS:
+    void handleOpenglContextIsAboutToBeDestroyed();
+
 private:
     void scanLocalDir(const QString &imagePath);
 
@@ -100,6 +103,7 @@ private:
     QGLSceneNode *m_faces[6];
     Viewport *m_view;
     QGLCamera *m_camera;
+    bool m_bConnectedToOpenGLContextSignal;
 };
 
 QT_END_NAMESPACE

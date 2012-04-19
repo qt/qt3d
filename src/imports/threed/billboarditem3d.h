@@ -60,8 +60,12 @@ public:
 
     void draw(QGLPainter *painter);
 
+private Q_SLOTS:
+    void handleOpenglContextIsAboutToBeDestroyed();
+
 private:
     bool m_preserveUpVector;
+    bool m_bConnectedToOpenGLContextSignal;
 };
 
 QT_END_NAMESPACE
