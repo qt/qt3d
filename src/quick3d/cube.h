@@ -44,17 +44,17 @@
 
 // This is a dummy header for defining the interface of "Cube.qml" to qdoc.
 
-#include "item3d.h"
+#include "qquickitem3d.h"
 
 QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
-class Cube : public Item3D
+class Cube : public QQuickItem3D
 {
     Q_OBJECT
 public:
-    Cube(QObject *parent = 0) : Item3D(parent) {}
+    Cube(QObject *parent = 0) : QQuickItem3D(parent) {}
     ~Cube() {}
 };
 
