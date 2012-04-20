@@ -8,5 +8,6 @@ src/threed/qt3dversion.h
 tmp
 Makefile*
 *.pdb
+bin/*
 include/*
 *_resource.rc
