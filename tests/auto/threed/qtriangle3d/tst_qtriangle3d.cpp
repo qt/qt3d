@@ -684,7 +684,7 @@ void tst_QTriangle3D::properties()
     obj.setTriangle(QTriangle3D(QVector3D(1, 2, 3), QVector3D(4, 5, 6),
                                 QVector3D(7, 8, 9)));
 
-    QTriangle3D t = qVariantValue<QTriangle3D>(obj.property("triangle"));
+    QTriangle3D t = qvariant_cast<QTriangle3D>(obj.property("triangle"));
     QCOMPARE(t.p(), QVector3D(1, 2, 3));
     QCOMPARE(t.q(), QVector3D(4, 5, 6));
     QCOMPARE(t.r(), QVector3D(7, 8, 9));
@@ -695,7 +695,7 @@ void tst_QTriangle3D::properties()
                                      QVector3D(-4, -5, -6),
                                      QVector3D(-7, -8, -9))));
 
-    t = qVariantValue<QTriangle3D>(obj.property("triangle"));
+    t = qvariant_cast<QTriangle3D>(obj.property("triangle"));
     QCOMPARE(t.p(), QVector3D(-1, -2, -3));
     QCOMPARE(t.q(), QVector3D(-4, -5, -6));
     QCOMPARE(t.r(), QVector3D(-7, -8, -9));

@@ -433,9 +433,9 @@ static bool qCompareByAttributes(const QLogicalVertex &a, const QLogicalVertex &
                 if (v1.type() == (QVariant::Type)QMetaType::Float)
                     return qFskCompare(v1.toFloat(), v2.toFloat());
                 else if (v1.type() == QVariant::Vector2D)
-                    return qFskCompare(qVariantValue<QVector2D>(v1), qVariantValue<QVector2D>(v2));
+                    return qFskCompare(qvariant_cast<QVector2D>(v1), qvariant_cast<QVector2D>(v2));
                 else if (v1.type() == QVariant::Vector3D)
-                    return qFskCompare(qVariantValue<QVector3D>(v1), qVariantValue<QVector3D>(v2));
+                    return qFskCompare(qvariant_cast<QVector3D>(v1), qvariant_cast<QVector3D>(v2));
                 else
                     return v1 == v2;
             }

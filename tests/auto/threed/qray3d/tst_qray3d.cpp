@@ -514,7 +514,7 @@ void tst_QRay3D::properties()
 
     obj.setRay(QRay3D(QVector3D(1, 2, 3), QVector3D(4, 5, 6)));
 
-    QRay3D r = qVariantValue<QRay3D>(obj.property("ray"));
+    QRay3D r = qvariant_cast<QRay3D>(obj.property("ray"));
     QCOMPARE(r.origin(), QVector3D(1, 2, 3));
     QCOMPARE(r.direction(), QVector3D(4, 5, 6));
 
@@ -522,7 +522,7 @@ void tst_QRay3D::properties()
                     qVariantFromValue
                         (QRay3D(QVector3D(-1, -2, -3), QVector3D(-4, -5, -6))));
 
-    r = qVariantValue<QRay3D>(obj.property("ray"));
+    r = qvariant_cast<QRay3D>(obj.property("ray"));
     QCOMPARE(r.origin(), QVector3D(-1, -2, -3));
     QCOMPARE(r.direction(), QVector3D(-4, -5, -6));
 }

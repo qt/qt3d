@@ -1276,7 +1276,7 @@ void tst_QBox3D::properties()
 
     obj.setBox(QBox3D(QVector3D(1, 2, 3), QVector3D(4, 5, 6)));
 
-    QBox3D b = qVariantValue<QBox3D>(obj.property("box"));
+    QBox3D b = qvariant_cast<QBox3D>(obj.property("box"));
     QCOMPARE(b.minimum(), QVector3D(1, 2, 3));
     QCOMPARE(b.maximum(), QVector3D(4, 5, 6));
 
@@ -1284,7 +1284,7 @@ void tst_QBox3D::properties()
                     qVariantFromValue
                         (QBox3D(QVector3D(-1, -2, -3), QVector3D(-4, -5, -6))));
 
-    b = qVariantValue<QBox3D>(obj.property("box"));
+    b = qvariant_cast<QBox3D>(obj.property("box"));
     QCOMPARE(b.minimum(), QVector3D(-4, -5, -6));
     QCOMPARE(b.maximum(), QVector3D(-1, -2, -3));
 }

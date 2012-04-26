@@ -448,33 +448,33 @@ void QCustomDataArray::setAt(int index, const QVariant& value)
     case QVariant::Vector2D:
         Q_ASSERT(m_elementType == QCustomDataArray::Vector2D);
         *(reinterpret_cast<QVector2D *>(m_array.data() + index * 2))
-            = qVariantValue<QVector2D>(value);
+            = qvariant_cast<QVector2D>(value);
         break;
 
     case QVariant::Vector3D:
         Q_ASSERT(m_elementType == QCustomDataArray::Vector3D);
         *(reinterpret_cast<QVector3D *>(m_array.data() + index * 3))
-            = qVariantValue<QVector3D>(value);
+            = qvariant_cast<QVector3D>(value);
         break;
 
     case QVariant::Vector4D:
         Q_ASSERT(m_elementType == QCustomDataArray::Vector4D);
         *(reinterpret_cast<QVector4D *>(m_array.data() + index * 4))
-            = qVariantValue<QVector4D>(value);
+            = qvariant_cast<QVector4D>(value);
         break;
 
     case QVariant::Color:
         // Convert QColor into QColor4ub.
         Q_ASSERT(m_elementType == QCustomDataArray::Color);
         *(reinterpret_cast<QColor4ub *>(m_array.data() + index))
-            = QColor4ub(qVariantValue<QColor>(value));
+            = QColor4ub(qvariant_cast<QColor>(value));
         break;
 
     case QVariant::UserType:
         if (value.userType() == qMetaTypeId<QColor4ub>()) {
             Q_ASSERT(m_elementType == QCustomDataArray::Color);
             *(reinterpret_cast<QColor4ub *>(m_array.data() + index))
-                = qVariantValue<QColor4ub>(value);
+                = qvariant_cast<QColor4ub>(value);
             break;
         }
         // Fall through.
@@ -753,25 +753,25 @@ void QCustomDataArray::append(const QVariant& value)
         break;
 
     case QVariant::Vector2D:
-        append(qVariantValue<QVector2D>(value));
+        append(qvariant_cast<QVector2D>(value));
         break;
 
     case QVariant::Vector3D:
-        append(qVariantValue<QVector3D>(value));
+        append(qvariant_cast<QVector3D>(value));
         break;
 
     case QVariant::Vector4D:
-        append(qVariantValue<QVector4D>(value));
+        append(qvariant_cast<QVector4D>(value));
         break;
 
     case QVariant::Color:
         // Convert QColor into QColor4ub.
-        append(QColor4ub(qVariantValue<QColor>(value)));
+        append(QColor4ub(qvariant_cast<QColor>(value)));
         break;
 
     case QVariant::UserType:
         if (value.userType() == qMetaTypeId<QColor4ub>()) {
-            append(qVariantValue<QColor4ub>(value));
+            append(qvariant_cast<QColor4ub>(value));
             break;
         }
         // Fall through.
