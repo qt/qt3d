@@ -70,7 +70,7 @@ Item3D {
     }
 
     Quad {
-        y: -1.0
+        y: -0.5
         pretransform: Rotation3D { axis: Qt.vector3d(1, 0, 0); angle: 90 }
         effect: flame
     }
@@ -108,8 +108,8 @@ Item3D {
 
         void main(void)
         {
-            mediump vec4 col1 = texture2D(qt_Texture0, texCoord.st);
-            mediump vec4 col2 = texture2D(texture2, texCoord.st);
+            mediump vec4 col1 = texture2D(qt_Texture0, vec2(texCoord.s, - texCoord.t));
+            mediump vec4 col2 = texture2D(texture2, vec2(texCoord.s, - texCoord.t));
             gl_FragColor = mix(col1, col2, interpolationFactor);
         }
         "
