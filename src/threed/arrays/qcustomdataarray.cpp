@@ -155,7 +155,7 @@ QCustomDataArray::QCustomDataArray(const QArray<QVector2D>& other)
     if (size > 0) {
         const QVector2D *src = other.constData();
         float *dst = m_array.extend(size * 2);
-        qMemCopy(dst, src, size * sizeof(QVector2D));
+        memcpy(dst, src, size * sizeof(QVector2D));
     }
 }
 
@@ -177,7 +177,7 @@ QCustomDataArray::QCustomDataArray(const QArray<QVector3D>& other)
     if (size > 0) {
         const QVector3D *src = other.constData();
         float *dst = m_array.extend(size * 3);
-        qMemCopy(dst, src, size * sizeof(QVector3D));
+        memcpy(dst, src, size * sizeof(QVector3D));
     }
 }
 
@@ -199,7 +199,7 @@ QCustomDataArray::QCustomDataArray(const QArray<QVector4D>& other)
     if (size > 0) {
         const QVector4D *src = other.constData();
         float *dst = m_array.extend(size * 4);
-        qMemCopy(dst, src, size * sizeof(QVector4D));
+        memcpy(dst, src, size * sizeof(QVector4D));
     }
 }
 
@@ -218,7 +218,7 @@ QCustomDataArray::QCustomDataArray(const QArray<QColor4ub>& other)
       m_elementComponents(1)
 {
     int size = other.size();
-    qMemCopy(m_array.extend(size), other.constData(), sizeof(QColor4ub) * size);
+    memcpy(m_array.extend(size), other.constData(), sizeof(QColor4ub) * size);
 }
 
 /*!
@@ -812,7 +812,7 @@ QArray<QVector2D> QCustomDataArray::toVector2DArray() const
     if (size > 0) {
         QVector2D *dst = result.extend(size);
         const float *src = m_array.constData();
-        qMemCopy(dst, src, size * sizeof(QVector2D));
+        memcpy(dst, src, size * sizeof(QVector2D));
     }
     return result;
 }
@@ -834,7 +834,7 @@ QArray<QVector3D> QCustomDataArray::toVector3DArray() const
     if (size > 0) {
         QVector3D *dst = result.extend(size);
         const float *src = m_array.constData();
-        qMemCopy(dst, src, size * sizeof(QVector3D));
+        memcpy(dst, src, size * sizeof(QVector3D));
     }
     return result;
 }
@@ -856,7 +856,7 @@ QArray<QVector4D> QCustomDataArray::toVector4DArray() const
     if (size > 0) {
         QVector4D *dst = result.extend(size);
         const float *src = m_array.constData();
-        qMemCopy(dst, src, size * sizeof(QVector4D));
+        memcpy(dst, src, size * sizeof(QVector4D));
     }
     return result;
 }

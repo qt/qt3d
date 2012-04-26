@@ -350,7 +350,7 @@ Q_INLINE_TEMPLATE void QArray<T, PreallocSize>::release()
         if (!m_data->ref.deref()) {
             if (QTypeInfo<T>::isComplex)
                 free(m_start, m_end - m_start);
-            qFree(m_data);
+            ::free(m_data);
         }
     } else if (this->isPrealloc(m_start)) {
         if (QTypeInfo<T>::isComplex)
@@ -375,7 +375,7 @@ template <typename T, int PreallocSize>
 Q_INLINE_TEMPLATE typename QArray<T, PreallocSize>::Data *QArray<T, PreallocSize>::copyData(const T *src, int size, int capacity)
 {
     Data *data = reinterpret_cast<Data *>
-        (qMalloc(sizeof(Data) + sizeof(T) * (capacity - 1)));
+        (malloc(sizeof(Data) + sizeof(T) * (capacity - 1)));
     Q_CHECK_PTR(data);
     data->ref.store(1);
     data->capacity = capacity;
@@ -390,7 +390,7 @@ Q_INLINE_TEMPLATE typename QArray<T, PreallocSize>::Data *QArray<T, PreallocSize
     } QT_CATCH(...) {
         while (copied-- > 0)
             (--dst)->~T();
-        qFree(data);
+        ::free(data);
         QT_RETHROW;
     }
     return data;
@@ -402,14 +402,14 @@ Q_INLINE_TEMPLATE void QArray<T, PreallocSize>::reallocate(int capacity)
     int size = m_end - m_start;
     if (!QTypeInfo<T>::isStatic) {
         Data *data = reinterpret_cast<Data *>
-            (qRealloc(m_data, sizeof(Data) + sizeof(T) * (capacity - 1)));
+            (realloc(m_data, sizeof(Data) + sizeof(T) * (capacity - 1)));
         Q_CHECK_PTR(data);
         data->capacity = capacity;
         m_data = data;
     } else {
         Data *data = copyData(m_data->array, size, capacity);
         free(m_data->array, size);
-        qFree(m_data);
+        ::free(m_data);
         m_data = data;
     }
     m_start = m_data->array;
@@ -500,7 +500,7 @@ Q_OUTOFLINE_TEMPLATE void QArray<T, PreallocSize>::setSize(int size)
     } else {
         int capacity = qArrayAllocMore(size, 0, sizeof(T));
         Data *data = reinterpret_cast<Data *>
-            (qMalloc(sizeof(Data) + sizeof(T) * (capacity - 1)));
+            (malloc(sizeof(Data) + sizeof(T) * (capacity - 1)));
         Q_CHECK_PTR(data);
         m_data = data;
         m_data->ref.store(1);

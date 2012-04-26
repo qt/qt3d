@@ -41,6 +41,7 @@
 
 #include "pageflipmath_p.h"
 #include <QtCore/qmath.h>
+#include <string.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -53,8 +54,8 @@ PageFlipMath::PageFlipMath()
     m_showPageReverse = false;
     m_startCorner = BottomRight;
 
-    qMemSet(vertices, 0, sizeof(vertices));
-    qMemSet(pageCount, 0, sizeof(pageCount));
+    memset(vertices, 0, sizeof(vertices));
+    memset(pageCount, 0, sizeof(pageCount));
 }
 
 PageFlipMath::~PageFlipMath()

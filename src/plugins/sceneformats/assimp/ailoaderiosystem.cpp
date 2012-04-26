@@ -95,7 +95,7 @@ Assimp::IOStream* AiLoaderIOSystem::Open(const char* pFile, const char* pMode)
     }
 
     char mode_str[4];
-    qMemSet(mode_str, '\0', 4);
+    memset(mode_str, '\0', 4);
     int i = 0;
     for (const char *ptr = pMode; i < 4 && *ptr; ++ptr)
     {
