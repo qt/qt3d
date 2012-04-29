@@ -516,7 +516,7 @@ QGLAbstractScene *QGLAbstractScene::loadScene
 {
     QUrl fileUrl(fileName);
 
-    if (fileUrl.scheme()!="http" && fileUrl.scheme()!="ftp") {
+    if (fileUrl.scheme()!=QLatin1String("http") && fileUrl.scheme()!=QLatin1String("ftp")) {
         QFile file(fileName);
         if (!file.open(QIODevice::ReadOnly))
         {
@@ -584,7 +584,7 @@ void QGLAbstractScene::checkSupportedFormats()
         m_Formats = l->keys();
         m_FormatsFilter.clear();
         foreach (QString f, m_Formats) {
-            m_FormatsFilter.append(f.prepend("*."));
+            m_FormatsFilter.append(f.prepend(QLatin1String("*.")));
         }
         m_bFormatListReady = true;
     }
