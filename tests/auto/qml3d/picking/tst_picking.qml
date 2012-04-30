@@ -148,8 +148,8 @@ Rectangle
                 var y = viewport.height / 2;
                 // Usually succeeds on the first run
 //                console.log("objectForPoint(" + x + "," + y + "): " + viewport.objectForPoint(x,y)  );
-                if (viewport.objectForPoint(x,y) != null)
-                    pickingTestCase.when = true;
+                // if (viewport.objectForPoint(x,y) != null)
+                //     pickingTestCase.when = true;
             }
         }
 
@@ -174,6 +174,7 @@ Rectangle
             property int midX : viewport.width / 2;
             property int midY : viewport.height / 2;
             function test_picking() {
+                skip("objectForPoint() function is not currently supported");
                 verify(!timedOut, "timed out");
                 verify(viewport.objectForPoint(0,0) == fullScreenQuad,
                        "Didn't find full screen quad in top left corner");

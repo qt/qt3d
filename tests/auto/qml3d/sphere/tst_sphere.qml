@@ -79,7 +79,7 @@ Viewport {
         name: "Sphere"
 
         function test_defaults() {
-            compare(sphere1.radius, 1, "radius");
+            compare(sphere1.radius, 0.5, "radius");
             compare(sphere1.levelOfDetail, 5, "levelOfDetail");
             compare(sphere1.axis, Qt.ZAxis, "axis");
         }
