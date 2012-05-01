@@ -239,8 +239,12 @@ void tst_QGLMaterial::initTestCase()
 {
     widget = new TestWidget();
     widget->show();
-    if (widget->context() == 0)
+    QOpenGLContext *ctx = widget->context();
+    if (!ctx || !ctx->isValid())
         QSKIP("Could not create valid GL context");
+
+    // TODO: if there is no context the whole thing gets skipped.  We should at
+    // least be able to test for properties, setters & getters and so on.
 }
 
 void tst_QGLMaterial::cleanupTestCase()
@@ -708,7 +712,7 @@ void tst_QGLMaterial::standardMaterialDraw()
 {
     QSKIP("not currently working");
 
-    if (!widget->context()->isValid())
+    if (!widget->context() || !widget->context()->isValid())
         QSKIP("GL Implementation not valid");
 
     QGLMaterial mat1;

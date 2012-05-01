@@ -820,6 +820,9 @@ void QGLView::showEvent(QShowEvent *e)
 {
     Q_UNUSED(e);
     d->visible = true;
+    d->ensureContext();
+    if (!d->initialized)
+        initializeGL();
 }
 
 void QGLView::hideEvent(QHideEvent *e)
@@ -834,7 +837,6 @@ void QGLView::exposeEvent(QExposeEvent *e)
 
     d->updateQueued = false;
     d->ensureContext();
-
     if (!d->initialized)
         initializeGL();
 
@@ -850,6 +852,9 @@ void QGLView::resizeEvent(QResizeEvent *e)
     Q_ASSERT(e->size() == r.size());
     if (r.size() != d->viewport.size())
     {
+        d->ensureContext();
+        if (!d->initialized)
+            initializeGL();
         resizeGL(r.width(), r.height());
         d->viewport = r;
     }
