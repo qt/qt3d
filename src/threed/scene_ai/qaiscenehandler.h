@@ -83,6 +83,8 @@ public:
     QAiSceneHandler();
     ~QAiSceneHandler();
 
+    static QStringList supportedFormats();
+
     QGLAbstractScene *read();
     QGLAbstractScene *download();
 

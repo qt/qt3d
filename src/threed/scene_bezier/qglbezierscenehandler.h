@@ -39,37 +39,20 @@
 **
 ****************************************************************************/
 
-#ifndef QGLOBJSCENEHANDLER_H
-#define QGLOBJSCENEHANDLER_H
+#ifndef QGLBEZIERSCENEHANDLER_H
+#define QGLBEZIERSCENEHANDLER_H
 
 #include "qglsceneformatplugin.h"
-#include "qglmaterialcollection.h"
-#include <QtCore/qmap.h>
-#include <QtCore/qset.h>
 
 QT_BEGIN_NAMESPACE
 
-//! [1]
-class QGLObjSceneHandler : public QGLSceneFormatHandler
+class QGLBezierSceneHandler : public QGLSceneFormatHandler
 {
 public:
-    QGLObjSceneHandler();
+    static QStringList supportedFormats();
     QGLAbstractScene *read();
     QGLAbstractScene *download();
-//! [1]
-    void decodeOptions(const QString &options);
-
-private:
-    void loadMaterialLibrary(const QString& name);
-    void loadMaterials(QIODevice *device);
-    QGLTexture2D *loadTexture(const QString& name);
-
-    QSharedPointer<QGLMaterialCollection> palette;
-    QGL::Smoothing smoothing;
-    bool smoothingForced;
-//! [2]
 };
-//! [2]
 
 QT_END_NAMESPACE
 

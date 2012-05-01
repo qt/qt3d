@@ -214,6 +214,60 @@ void QAiSceneHandler::decodeOptions(const QString &options)
     }
 }
 
+QStringList QAiSceneHandler::supportedFormats() {
+    QStringList result;
+    result.append(QString("3d"));
+    result.append(QString("3ds"));
+    result.append(QString("ac"));
+    result.append(QString("ac3d"));
+    result.append(QString("acc"));
+    result.append(QString("ase"));
+    result.append(QString("ask"));
+    result.append(QString("b3d"));
+    result.append(QString("blend"));
+    result.append(QString("bvh"));
+    result.append(QString("cob"));
+    result.append(QString("csm"));
+    result.append(QString("dae"));
+    result.append(QString("dxf"));
+    result.append(QString("enff"));
+    result.append(QString("hmp"));
+    result.append(QString("irr"));
+    result.append(QString("irrmesh"));
+    result.append(QString("lwo"));
+    result.append(QString("lws"));
+    result.append(QString("lxo"));
+    result.append(QString("md2"));
+    result.append(QString("md3"));
+    result.append(QString("md5anim"));
+    result.append(QString("md5camera"));
+    result.append(QString("md5mesh"));
+    result.append(QString("mdc"));
+    result.append(QString("mdl"));
+    result.append(QString("mesh.xml"));
+    result.append(QString("mot"));
+    result.append(QString("ms3d"));
+    result.append(QString("ndo"));
+    result.append(QString("nff"));
+    result.append(QString("obj"));
+    result.append(QString("off"));
+    result.append(QString("pk3"));
+    result.append(QString("ply"));
+    result.append(QString("prj"));
+    result.append(QString("q3o"));
+    result.append(QString("q3s"));
+    result.append(QString("raw"));
+    result.append(QString("scn"));
+    result.append(QString("smd"));
+    result.append(QString("stl"));
+    result.append(QString("ter"));
+    result.append(QString("uc"));
+    result.append(QString("vta"));
+    result.append(QString("x"));
+    result.append(QString("xml"));
+    return result;
+}
+
 QGLAbstractScene *QAiSceneHandler::read()
 {
     AiLoaderIOSystem *ios = new AiLoaderIOSystem(device(), url());
@@ -238,7 +292,7 @@ QGLAbstractScene *QAiSceneHandler::read()
     QUrl u = url();
     if (u.scheme() != QLatin1String("file"))
     {
-        path = u.toEncoded();
+        path = u.toEncoded() ;
     } else {
         path = u.toLocalFile();
     }

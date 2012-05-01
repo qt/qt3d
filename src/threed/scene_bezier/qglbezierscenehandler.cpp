@@ -47,6 +47,12 @@
 
 QT_BEGIN_NAMESPACE
 
+QStringList QGLBezierSceneHandler::supportedFormats() {
+    QStringList result;
+    result.append(QString("bez"));
+    return result;
+}
+
 QGLAbstractScene *QGLBezierSceneHandler::read()
 {
     QTextStream stream(device());
