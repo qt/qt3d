@@ -37,69 +37,47 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-
+//! [1]
 import QtQuick 2.0
 import Qt3D 1.0
 
 Viewport {
     width: 640; height: 480
 
+
     TutorialTeapot {
+        id: teapot
         effect: program
+        xRotation: 30
     }
 
     ShaderProgram {
         id: program
         texture: "textures/qtlogo.png"
-        property real textureOffsetX : 1.0
-        NumberAnimation on textureOffsetX
-        {
-            running: true; loops: Animation.Infinite
-            from: 0.0; to: 1.0;
-            duration: 1000
-        }
-
-        property string texture2: "textures/basket.jpg"
-        property real interpolationFactor : 1.0
-        SequentialAnimation on interpolationFactor
-        {
-            running: true; loops: Animation.Infinite
-            NumberAnimation { from: 0.0; to: 1.0; duration: 2000 }
-            PauseAnimation { duration: 500 }
-            NumberAnimation { from: 1.0; to: 0.0; duration: 2000 }
-            PauseAnimation { duration: 500 }
-        }
 
         vertexShader: "
         attribute highp vec4 qt_Vertex;
-        uniform mediump mat4 qt_ModelViewProjectionMatrix;
+        uniform highp mat4 qt_ModelViewProjectionMatrix;
 
         attribute highp vec4 qt_MultiTexCoord0;
-        uniform mediump float textureOffsetX;
-        varying mediump vec4 texCoord;
+        varying highp vec4 texCoord;
 
         void main(void)
         {
+            texCoord = qt_MultiTexCoord0;
             gl_Position = qt_ModelViewProjectionMatrix * qt_Vertex;
-            texCoord.st = vec2(-qt_MultiTexCoord0.s - textureOffsetX,
-                            -qt_MultiTexCoord0.t);
-            texCoord.pq = vec2(-qt_MultiTexCoord0.s + textureOffsetX,
-                            -qt_MultiTexCoord0.t);
         }
         "
         fragmentShader: "
         varying highp vec4 texCoord;
         uniform sampler2D qt_Texture0;
-        uniform sampler2D texture2;
-        uniform mediump float interpolationFactor;
 
         void main(void)
         {
-            mediump vec4 texture1Color = texture2D(qt_Texture0, texCoord.st);
-            mediump vec4 texture2Color = texture2D(texture2, texCoord.pq);
-            mediump vec4 textureColor = mix(texture1Color, texture2Color, interpolationFactor);
+            mediump vec4 textureColor = texture2D(qt_Texture0, texCoord.st);
             gl_FragColor = textureColor;
         }
         "
     }
 }
+//! [1]

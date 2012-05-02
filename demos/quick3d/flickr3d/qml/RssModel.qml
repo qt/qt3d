@@ -3,7 +3,7 @@
 ** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/
 **
-** This file is part of the Qt3D module of the Qt Toolkit.
+** This file is part of the Qt3D examples of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
 ** GNU Lesser General Public License Usage
@@ -39,23 +39,29 @@
 **
 ****************************************************************************/
 
-#ifndef QGLMOCKVIEW_P_H
-#define QGLMOCKVIEW_P_H
+import QtQuick 2.0
+import QtQuick.XmlListModel 2.0
 
-QT_BEGIN_NAMESPACE
+XmlListModel {
+    property string tags : ""
 
-class QOpenGLContext;
+    function commasep(x)
+    {
+        return x.replace(' ',',');
+    }
 
-class QGLMockViewPrivate
-{
-public:
-    QGLMockViewPrivate();
-    ~QGLMockViewPrivate();
+    source: "http://api.flickr.com/services/feeds/photos_public.gne?"+(tags ? "tags="+commasep(tags)+"&" : "")+"format=rss2"
+    query: "/rss/channel/item"
+    namespaceDeclarations: "declare namespace media=\"http://search.yahoo.com/mrss/\";"
 
-    bool valid;
-    QOpenGLContext *ctx;
-};
-
-QT_END_NAMESPACE
-
-#endif // QGLMOCKVIEW_P_H
+    XmlRole { name: "title"; query: "title/string()" }
+    XmlRole { name: "imagePath"; query: "media:thumbnail/@url/string()" }
+    XmlRole { name: "url"; query: "media:content/@url/string()" }
+    XmlRole { name: "description"; query: "description/string()" }
+    XmlRole { name: "tags"; query: "media:category/string()" }
+    XmlRole { name: "photoWidth"; query: "media:content/@width/string()" }
+    XmlRole { name: "photoHeight"; query: "media:content/@height/string()" }
+    XmlRole { name: "photoType"; query: "media:content/@type/string()" }
+    XmlRole { name: "photoAuthor"; query: "author/string()" }
+    XmlRole { name: "photoDate"; query: "pubDate/string()" }
+}
