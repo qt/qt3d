@@ -111,6 +111,7 @@ Q_SIGNALS:
 
 protected:
     QGLTexture2D *texture2D();
+    inline void ensureMaterial();
 
 private:
     QDeclarativeEffectPrivate *d;

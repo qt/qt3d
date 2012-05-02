@@ -107,18 +107,6 @@ public:
     QGLMaterialCollection *palette;
     int materialIndex;
     qreal progress;
-    inline void ensureMaterial() {
-        if (!palette)
-        {
-            palette = new QGLMaterialCollection();
-        }
-        if (materialIndex == -1)
-        {
-            materialIndex = palette->addMaterial(new QGLMaterial(palette));
-            palette->material(materialIndex)->setColor(color);
-        }
-        // TODO: decal & blending
-    }
 };
 
 /*!
@@ -155,7 +143,7 @@ QColor QDeclarativeEffect::color() const
 void QDeclarativeEffect::setColor(const QColor& value)
 {
     d->color = value;
-    d->ensureMaterial();
+    ensureMaterial();
     material()->setColor(value);
     emit effectChanged();
 }
@@ -269,7 +257,7 @@ void QDeclarativeEffect::setTexture(const QUrl& value)
     }
     else
     {
-        d->ensureMaterial();
+        ensureMaterial();
         // Warning: This will trigger the deletion of the old texure.
         material()->setTextureUrl(value);
         emit effectChanged();
@@ -309,7 +297,7 @@ QImage QDeclarativeEffect::textureImage() const
 void QDeclarativeEffect::setTextureImage(const QImage& value)
 {
     QGLTexture2D * tex;
-    d->ensureMaterial();
+    ensureMaterial();
     if (!material()->texture())
     {
         tex = new QGLTexture2D(material());
@@ -349,7 +337,7 @@ QGLMaterial *QDeclarativeEffect::material() const
 */
 void QDeclarativeEffect::setMaterial(QGLMaterial *value)
 {
-    d->ensureMaterial();
+    ensureMaterial();
     if (d->materialIndex != -1)
         d->palette->material(d->materialIndex)->disconnect(this);
     int newIndex = -1;
@@ -358,10 +346,17 @@ void QDeclarativeEffect::setMaterial(QGLMaterial *value)
     if (newIndex != d->materialIndex)
     {
         d->materialIndex = newIndex;
+        QGLMaterial *current = d->palette->material(d->materialIndex);
+        if (current) {
+            disconnect(current, SIGNAL(materialChanged()), this, SIGNAL(effectChanged()));
+
+        }
+        if (value) {
+            connect(value, SIGNAL(materialChanged()), this, SIGNAL(effectChanged()));
+        }
+
         emit effectChanged();
         // TODO: deleting old materials
-        if (value)
-            connect(value, SIGNAL(materialChanged()), this, SIGNAL(effectChanged()));
     }
 }
 
@@ -371,6 +366,23 @@ void QDeclarativeEffect::setMaterial(QGLMaterial *value)
     Tracks how much of a remote resource has been downloaded, where 0.0
     is no progress, and 1.0 is completion.
 */
+
+/*!
+  \internal
+*/
+void QDeclarativeEffect::ensureMaterial() {
+    if (!d->palette)
+    {
+        d->palette = new QGLMaterialCollection();
+    }
+    if (d->materialIndex == -1)
+    {
+        QGLMaterial * newMaterial = new QGLMaterial(d->palette);
+        newMaterial->setColor(d->color);
+        connect(newMaterial, SIGNAL(materialChanged()), this, SIGNAL(effectChanged()));
+        d->materialIndex = d->palette->addMaterial(newMaterial);
+    }
+}
 
 /*!
     \internal
@@ -437,7 +449,7 @@ void QDeclarativeEffect::disableEffect(QGLPainter *painter)
 */
 void QDeclarativeEffect::applyTo(QGLSceneNode *node)
 {
-    d->ensureMaterial();
+    ensureMaterial();
 
     node->setPalette(d->palette);
     node->setMaterialIndex(d->materialIndex);

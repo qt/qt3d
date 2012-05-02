@@ -308,6 +308,8 @@ void QGLMaterial::setTexture(QGLTexture2D *value, int layer)
     if (prev != value) {
         delete prev;
         d->textures[layer] = value;
+        connect(value, SIGNAL(textureUpdated()), this, SIGNAL(texturesChanged()));
+        connect(value, SIGNAL(textureUpdated()), this, SIGNAL(materialChanged()));
         emit texturesChanged();
         emit materialChanged();
     }
@@ -349,6 +351,7 @@ void QGLMaterial::setTextureUrl(const QUrl &url, int layer)
         {
             tex = new QGLTexture2D(this);
             connect(tex, SIGNAL(textureUpdated()), this, SIGNAL(texturesChanged()));
+            connect(tex, SIGNAL(textureUpdated()), this, SIGNAL(materialChanged()));
             tex->setUrl(url);
         }
         setTexture(tex, layer);
