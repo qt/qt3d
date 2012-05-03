@@ -51,6 +51,7 @@
 #include <QPaintEngine>
 #include <QVarLengthArray>
 #include <QMap>
+#include <QDebug>
 
 #if !defined(QT_NO_THREAD)
 #include <QThreadStorage>
@@ -111,6 +112,7 @@ QT_BEGIN_NAMESPACE
 
 QGLPainterPrivate::QGLPainterPrivate()
     : ref(1),
+      badShaderCount(0),
       eye(QGL::NoEye),
       lightModel(0),
       defaultLightModel(0),
@@ -350,11 +352,41 @@ bool QGLPainter::begin
     // If we don't have a context specified, then use the one
     // that the surface just made current.
     if (!context)
-        context = QOpenGLContext::currentContext();
+        context = surface->context();
+
+    if (!context)
+    {
+        qWarning() << "##### Attempt to begin painter with no GL context!";
+        return false;
+    }
+
+    // Initialize the QOpenGLFunctions parent class.
+    initializeGLFunctions();
+
+    // Determine if the OpenGL implementation is fixed-function or not.
+    bool isFixedFunction = !hasOpenGLFeature(QOpenGLFunctions::Shaders);
+    if (!isFixedFunction)
+        isFixedFunction = !QOpenGLShaderProgram::hasOpenGLShaderPrograms();
+    if (!isFixedFunction)
+    {
+        QOpenGLContext *ctx = QOpenGLContext::currentContext();
+        QFunctionPointer res = ctx->getProcAddress("glCreateShader");
+        if (!res)
+        {
+            res = ctx->getProcAddress("glCreateShaderObject");
+            if (!res)
+            {
+                res = ctx->getProcAddress("glCreateShaderObjectARB");
+            }
+        }
+        if (!res)
+            isFixedFunction = !res;
+    }
 
     // Find the QGLPainterPrivate for the context, or create a new one.
     d_ptr = painterPrivateCache()->fromContext(context);
     d_ptr->ref.ref();
+    d_ptr->isFixedFunction = isFixedFunction;
     if (d_ptr->renderSequencer)
     {
         d_ptr->renderSequencer->reset();
@@ -393,11 +425,6 @@ bool QGLPainter::begin
     d_ptr->modelViewMatrix.setDirty(true);
     d_ptr->projectionMatrix.setDirty(true);
 
-    // Initialize the QOpenGLFunctions parent class.
-    initializeGLFunctions();
-
-    // Determine if the OpenGL implementation is fixed-function or not.
-    d_ptr->isFixedFunction = !hasOpenGLFeature(QOpenGLFunctions::Shaders);
     return true;
 }
 

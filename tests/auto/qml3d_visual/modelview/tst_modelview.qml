@@ -162,7 +162,7 @@ Rectangle
         TestCase {
             id: modelViewTestAddingCase
 //            when: false
-            name: "Quick3d ModelView Adding Data Test"
+            name: "Quick3d_ModelView_AddingData"
 
             function test_changing_stringList_model() {
                 var viewportEmptyModelChildCount = viewport.children.length;
@@ -222,7 +222,7 @@ Rectangle
             id: modelViewRemovingItemsTestCase
             // Wait for event loop before performing removal tests
             when: false
-            name: "Quick3d ModelView Removing Data Test"
+            name: "Quick3d_ModelView_RemovingData"
 
             function test_removing_from_listModel() {
                 var viewportChildCount = viewport.children.length;

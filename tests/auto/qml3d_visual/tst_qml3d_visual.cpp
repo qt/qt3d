@@ -39,40 +39,6 @@
 **
 ****************************************************************************/
 
-import Qt3D 1.0
-import QtQuick 2.0
-import QtTest 1.0
+#include <QtQuickTest/quicktest.h>
 
-Viewport  {
-    width: 1000
-    height: 800
-    camera: Camera {
-        eye.z: 10
-    }
-
-    Item3D {
-        id: testItem
-        mesh: Mesh { source: "square.3ds" }
-        effect: Effect { texture: "test_data/test-image.png" }
-    }
-
-    // HACK.
-    // The test requires that actual drawing happen,
-    // and it would be better to verify that directly.
-    Timer {
-        running: true
-        interval: 5
-        onTriggered: Qt.quit()
-    }
-
-    TestCase {
-        name: "NoTextureCoordinates"
-        //  This test is simply testing to see if the item crashes on startup,
-        // so this dummy test is probably not even required
-        function test_exists()
-        {
-            verify(testItem.visible);
-            Qt.quit();
-        }
-    }
-}
+QUICK_TEST_MAIN(qml3d_visual)

@@ -12,13 +12,9 @@ OTHER_FILES += \
     scale3d/tst_scale3d.qml \
     modelview/tst_modelview.qml \
     sphere/tst_sphere.qml \
-    effect/tst_effect.qml \
     viewport/tst_viewport.qml \
     mesh/tst_mesh.qml \
-    picking/tst_picking.qml \
     item3d/tst_item3d.qml \
     item3d/tst_missing_texture_coordinates.qml \
     item3d/tst_item3d_local_v_world.qml
 TESTDATA = $$OTHER_FILES
-
-CONFIG+=insignificant_test  # See QTBUG-25276

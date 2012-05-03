@@ -41,6 +41,8 @@
 
 #include <QtTest/QtTest>
 #include <QtGui/QOpenGLContext>
+#include <QOpenGLShaderProgram>
+
 #include "qglmaterial.h"
 #include "qglcolormaterial.h"
 #include "qgltwosidedmaterial.h"
@@ -240,6 +242,8 @@ void tst_QGLMaterial::initTestCase()
     widget = new TestWidget();
     widget->show();
     QOpenGLContext *ctx = widget->context();
+    if (!QOpenGLShaderProgram::hasOpenGLShaderPrograms(ctx))
+        QSKIP("Shaders not supported");
     if (!ctx || !ctx->isValid())
         QSKIP("Could not create valid GL context");
 

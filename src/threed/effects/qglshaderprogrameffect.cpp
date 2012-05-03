@@ -793,6 +793,8 @@ void QGLShaderProgramEffect::update(QGLPainter *painter, QGLPainter::Updates upd
     }
 #endif
 #if !defined(QGL_FIXED_FUNCTION_ONLY)
+    if (!d->program)
+        return;
     if ((updates & QGLPainter::UpdateColor) != 0 && d->color != -1)
         d->program->setUniformValue(d->color, painter->color());
     if ((updates & QGLPainter::UpdateMatrices) != 0) {

@@ -196,6 +196,8 @@ void QGLFlatColorEffect::update
         return;
     }
 #endif
+    if (!d->program)
+        return;
     if ((updates & QGLPainter::UpdateColor) != 0) {
         if (painter->isPicking())
             d->program->setUniformValue(d->colorUniform, painter->pickColor());
@@ -341,6 +343,8 @@ void QGLPerVertexColorEffect::update
         return;
     }
 #endif
+    if (!d->program)
+        return;
     if ((updates & QGLPainter::UpdateMatrices) != 0) {
         d->program->setUniformValue
             (d->matrixUniform, painter->combinedMatrix());
