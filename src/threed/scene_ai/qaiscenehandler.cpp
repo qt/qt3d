@@ -314,7 +314,7 @@ QGLAbstractScene *QAiSceneHandler::read()
 
     // the importer owns the scene, so when the it goes out of scope on exiting
     // this function the scene will get destroyed
-    const aiScene* scene = m_importer.ReadFile(path.toAscii().constData(), m_options);
+    const aiScene* scene = m_importer.ReadFile(path.toLatin1().constData(), m_options);
 
     if (!scene)
     {

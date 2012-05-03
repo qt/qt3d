@@ -130,7 +130,7 @@ QGLTexture2DPrivate::~QGLTexture2DPrivate()
             if (url.isEmpty()) {
                 qWarning("OPENGL RESOURCE LEAK: texture(created from Image) has non-released resources:");
             } else {
-                qWarning("OPENGL RESOURCE LEAK: texture '%s' has non-released resources:", url.toString().toAscii().constData());
+                qWarning("OPENGL RESOURCE LEAK: texture '%s' has non-released resources:", url.toString().toLatin1().constData());
             }
             for (QList<QGLTexture2DTextureInfo*>::iterator It=textureInfo.begin(); It!=textureInfo.end(); ++It) {
                 if ((*It)->isLiteral==false && (*It)->tex.textureId()) {

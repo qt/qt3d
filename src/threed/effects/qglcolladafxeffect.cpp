@@ -148,12 +148,12 @@ inline void QGLColladaFxEffectPrivate::setTextureUniform(QOpenGLShaderProgram *p
         QString texVariableName = QString(QLatin1String("texCoord%1")).arg(*textureUnit);
         painter->glActiveTexture(GL_TEXTURE0 + *textureUnit);
         texture->bind();
-        program->setUniformValue(sourceVariableName.toAscii().data(), *textureUnit);
+        program->setUniformValue(sourceVariableName.toLatin1().data(), *textureUnit);
     }
     else
     {
         // It's just a const value, so set it that way in the fragment shader.
-        program->setUniformValue(qVariableName.toAscii().data(), fallbackColor);
+        program->setUniformValue(qVariableName.toLatin1().data(), fallbackColor);
     }
 }
 
