@@ -352,7 +352,7 @@ bool QGLPainter::begin
     // If we don't have a context specified, then use the one
     // that the surface just made current.
     if (!context)
-        context = surface->context();
+        context = QOpenGLContext::currentContext();
 
     if (!context)
     {

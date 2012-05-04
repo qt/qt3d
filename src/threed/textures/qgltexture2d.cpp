@@ -715,20 +715,22 @@ bool QGLTexture2DPrivate::cleanupResources()
 {
     if (!textureInfo.empty()) {
         QOpenGLContext *ctx = QOpenGLContext::currentContext();
-        Q_ASSERT(ctx!=0);
-        for (QList<QGLTexture2DTextureInfo*>::iterator It=textureInfo.begin(); It!=textureInfo.end();) {
-            QGLTexture2DTextureInfo *texInfo = *It;
-            QOpenGLContext *ictx = const_cast<QOpenGLContext*>(texInfo->tex.context());
-            Q_ASSERT(ictx!=0);
-            if (QOpenGLContext::areSharing(ictx, ctx)) {
-                if (!texInfo->isLiteral && texInfo->tex.textureId()) {
-                    GLuint id = texInfo->tex.textureId();
-                    glDeleteTextures(1, &id);
-                    texInfo->tex.clearId();
+        if (ctx)
+        {
+            for (QList<QGLTexture2DTextureInfo*>::iterator It=textureInfo.begin(); It!=textureInfo.end();) {
+                QGLTexture2DTextureInfo *texInfo = *It;
+                QOpenGLContext *ictx = const_cast<QOpenGLContext*>(texInfo->tex.context());
+                Q_ASSERT(ictx!=0);
+                if (QOpenGLContext::areSharing(ictx, ctx)) {
+                    if (!texInfo->isLiteral && texInfo->tex.textureId()) {
+                        GLuint id = texInfo->tex.textureId();
+                        glDeleteTextures(1, &id);
+                        texInfo->tex.clearId();
+                    }
+                    It = textureInfo.erase(It);
+                } else {
+                    ++It;
                 }
-                It = textureInfo.erase(It);
-            } else {
-                ++It;
             }
         }
     }
