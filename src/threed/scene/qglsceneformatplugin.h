@@ -100,7 +100,7 @@ public:
     virtual QGLSceneFormatHandler *create(QIODevice *device, const QUrl& url, const QString &format = QString()) const = 0;
 };
 
-Q_DECLARE_INTERFACE(QGLSceneFormatFactoryInterface, "com.trolltech.Qt.QGLSceneFormatFactoryInterface")
+Q_DECLARE_INTERFACE(QGLSceneFormatFactoryInterface, "org.qt-project.Qt.QGLSceneFormatFactoryInterface")
 
 QT_END_NAMESPACE
 
