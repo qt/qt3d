@@ -546,7 +546,7 @@ void Viewport::setPicking(bool value)
     if (value != d->picking)
     {
         d->picking = value;
-        if (d->picking)
+        if (d->picking && d->canvas)
         {
             connect(d->canvas, SIGNAL(beforeRendering()),
                     this, SLOT(objectForPoint()), Qt::DirectConnection);
@@ -554,8 +554,9 @@ void Viewport::setPicking(bool value)
         }
         else
         {
-            disconnect(d->canvas, SIGNAL(beforeRendering()),
-                       this, SLOT(objectForPoint()));
+            if (d->canvas)
+                disconnect(d->canvas, SIGNAL(beforeRendering()),
+                           this, SLOT(objectForPoint()));
             d->pickingRenderInitialized = false;
         }
         emit viewportChanged();
