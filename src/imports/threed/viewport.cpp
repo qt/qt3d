@@ -795,7 +795,7 @@ qreal ViewportSubsurface::aspectRatio() const
 
     Called by QQuickPaintedItem to refresh the content.
 
-    \sa beforeRendering() setRenderMode()
+    \sa beforeRendering(), setRenderMode()
 */
 void Viewport::paint(QPainter *painter)
 {

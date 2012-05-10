@@ -250,7 +250,7 @@
 
     \snippet ../../examples/quick3d/photoroom/qml/photoroom.qml 0
 
-    \sa{http://doc.qt.nokia.com/4.7/qdeclarativemodels.html#qml-data-models}{QML Data Models}
+    \sa {http://doc.qt.nokia.com/4.7/qdeclarativemodels.html#qml-data-models}{QML Data Models}
 */
 
 
