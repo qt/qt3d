@@ -2,7 +2,7 @@ TEMPLATE = app
 TARGET = teapot_bounce_qml
 CONFIG += qt warn_on
 
-QT += declarative quick 3dquick
+QT += qml quick 3dquick
 
 SOURCES += main.cpp
 
