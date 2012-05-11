@@ -216,55 +216,56 @@ void QAiSceneHandler::decodeOptions(const QString &options)
 
 QStringList QAiSceneHandler::supportedFormats() {
     QStringList result;
-    result.append(QString("3d"));
-    result.append(QString("3ds"));
-    result.append(QString("ac"));
-    result.append(QString("ac3d"));
-    result.append(QString("acc"));
-    result.append(QString("ase"));
-    result.append(QString("ask"));
-    result.append(QString("b3d"));
-    result.append(QString("blend"));
-    result.append(QString("bvh"));
-    result.append(QString("cob"));
-    result.append(QString("csm"));
-    result.append(QString("dae"));
-    result.append(QString("dxf"));
-    result.append(QString("enff"));
-    result.append(QString("hmp"));
-    result.append(QString("irr"));
-    result.append(QString("irrmesh"));
-    result.append(QString("lwo"));
-    result.append(QString("lws"));
-    result.append(QString("lxo"));
-    result.append(QString("md2"));
-    result.append(QString("md3"));
-    result.append(QString("md5anim"));
-    result.append(QString("md5camera"));
-    result.append(QString("md5mesh"));
-    result.append(QString("mdc"));
-    result.append(QString("mdl"));
-    result.append(QString("mesh.xml"));
-    result.append(QString("mot"));
-    result.append(QString("ms3d"));
-    result.append(QString("ndo"));
-    result.append(QString("nff"));
-    result.append(QString("obj"));
-    result.append(QString("off"));
-    result.append(QString("pk3"));
-    result.append(QString("ply"));
-    result.append(QString("prj"));
-    result.append(QString("q3o"));
-    result.append(QString("q3s"));
-    result.append(QString("raw"));
-    result.append(QString("scn"));
-    result.append(QString("smd"));
-    result.append(QString("stl"));
-    result.append(QString("ter"));
-    result.append(QString("uc"));
-    result.append(QString("vta"));
-    result.append(QString("x"));
-    result.append(QString("xml"));
+    result.reserve(60);
+    result.append(QStringLiteral("3d"));
+    result.append(QStringLiteral("3ds"));
+    result.append(QStringLiteral("ac"));
+    result.append(QStringLiteral("ac3d"));
+    result.append(QStringLiteral("acc"));
+    result.append(QStringLiteral("ase"));
+    result.append(QStringLiteral("ask"));
+    result.append(QStringLiteral("b3d"));
+    result.append(QStringLiteral("blend"));
+    result.append(QStringLiteral("bvh"));
+    result.append(QStringLiteral("cob"));
+    result.append(QStringLiteral("csm"));
+    result.append(QStringLiteral("dae"));
+    result.append(QStringLiteral("dxf"));
+    result.append(QStringLiteral("enff"));
+    result.append(QStringLiteral("hmp"));
+    result.append(QStringLiteral("irr"));
+    result.append(QStringLiteral("irrmesh"));
+    result.append(QStringLiteral("lwo"));
+    result.append(QStringLiteral("lws"));
+    result.append(QStringLiteral("lxo"));
+    result.append(QStringLiteral("md2"));
+    result.append(QStringLiteral("md3"));
+    result.append(QStringLiteral("md5anim"));
+    result.append(QStringLiteral("md5camera"));
+    result.append(QStringLiteral("md5mesh"));
+    result.append(QStringLiteral("mdc"));
+    result.append(QStringLiteral("mdl"));
+    result.append(QStringLiteral("mesh.xml"));
+    result.append(QStringLiteral("mot"));
+    result.append(QStringLiteral("ms3d"));
+    result.append(QStringLiteral("ndo"));
+    result.append(QStringLiteral("nff"));
+    result.append(QStringLiteral("obj"));
+    result.append(QStringLiteral("off"));
+    result.append(QStringLiteral("pk3"));
+    result.append(QStringLiteral("ply"));
+    result.append(QStringLiteral("prj"));
+    result.append(QStringLiteral("q3o"));
+    result.append(QStringLiteral("q3s"));
+    result.append(QStringLiteral("raw"));
+    result.append(QStringLiteral("scn"));
+    result.append(QStringLiteral("smd"));
+    result.append(QStringLiteral("stl"));
+    result.append(QStringLiteral("ter"));
+    result.append(QStringLiteral("uc"));
+    result.append(QStringLiteral("vta"));
+    result.append(QStringLiteral("x"));
+    result.append(QStringLiteral("xml"));
     return result;
 }
 
@@ -292,7 +293,7 @@ QGLAbstractScene *QAiSceneHandler::read()
     QUrl u = url();
     if (u.scheme() != QLatin1String("file"))
     {
-        path = u.toEncoded() ;
+        path = QLatin1String(u.toEncoded());
     } else {
         path = u.toLocalFile();
     }
@@ -454,7 +455,7 @@ void QAiSceneHandler::downloadComplete(QByteArray *sceneData)
     m_importer.SetIOHandler(ios);
 
     QString path;
-    path = url().toEncoded();
+    path = QLatin1String(url().toEncoded());
 
     Assimp::Logger *log = 0;
     Assimp::Logger::LogSeverity severity = Assimp::Logger::NORMAL;

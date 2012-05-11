@@ -89,7 +89,7 @@ void QAiMesh::loadTriangles(QGLBuilder &builder)
         if (m_mesh->mNumUVComponents[t] != 2)
             Assimp::DefaultLogger::get()->warn("Tex co-ords only supports U & V");
         QGLMaterial *m = builder.currentNode()->material();
-        if (m && m->textureUrl().path().endsWith(".dds", Qt::CaseInsensitive))
+        if (m && m->textureUrl().path().endsWith(QStringLiteral(".dds"), Qt::CaseInsensitive))
         {
             for (unsigned int i = 0; i < m_mesh->mNumVertices; ++i)
                 data.appendTexCoord(qv2d_inv(m_mesh->mTextureCoords[t][i]), static_cast<QGL::VertexAttribute>(QGL::TextureCoord0 + t));

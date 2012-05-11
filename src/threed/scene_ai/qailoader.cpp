@@ -103,7 +103,7 @@ static inline bool qHasTextures(const QGLSceneNode *node)
 
 void QAiLoader::loadMesh(aiMesh *mesh)
 {
-    QString name = QString::fromUtf8(mesh->mName.data, mesh->mName.length);
+    QString name = QString::fromUtf8(mesh->mName.data, int(mesh->mName.length));
     // qDebug() << "loadMesh" << name << "with" << mesh->mNumVertices << "vertices"
     //            << "and" << mesh->mNumFaces << "faces";
 
@@ -198,7 +198,7 @@ void QAiLoader::loadNodes(aiNode *nodeList, QGLSceneNode *parentNode)
     {
         node = new QGLSceneNode(parentNode);
         m_nodes.append(node);
-        QString name = QString::fromUtf8(nodeList->mName.data, nodeList->mName.length);
+        QString name = QString::fromUtf8(nodeList->mName.data, int(nodeList->mName.length));
         if (name.isEmpty())
             name = QString(QLatin1String("aiNode %1")).arg(m_nodes.size());
         node->setObjectName(name);
@@ -243,9 +243,9 @@ QGLSceneNode *QAiLoader::loadMeshes()
     m_root = m_builder.finalizedSceneNode();
 
     QString name = m_handler->url().path();
-    int pos = name.lastIndexOf("/");
+    int pos = name.lastIndexOf(QLatin1Char('/'));
     if (pos == -1)
-        pos = name.lastIndexOf("\\");
+        pos = name.lastIndexOf(QLatin1Char('\\'));
     if (pos != -1)
         name = name.mid(pos+1);
     m_root->setObjectName(name);
@@ -318,7 +318,7 @@ QList<QGLSceneAnimation *> QAiLoader::loadAnimations()
     m_animations.clear();
 
     for (unsigned int i=0; i<m_scene->mNumAnimations; ++i) {
-        m_animations.append( new QGLSceneAnimation( QString(m_scene->mAnimations[i]->mName.data), 0 ) );
+        m_animations.append( new QGLSceneAnimation( QLatin1String(m_scene->mAnimations[i]->mName.data), 0 ) );
     }
 
     return m_animations;
@@ -439,7 +439,7 @@ void QAiLoader::loadTextures(aiMaterial *ma, QGLMaterial *mq)
             if (texCount && texType != aiTextureType_DIFFUSE)
             {
                 QString error = QLatin1String("Unsupported texture type \"%1\" in material \"%2\".");
-                error.arg(typeNames[i]).arg(mq->objectName());
+                error.arg(QLatin1String(typeNames[i]), mq->objectName());
                 Assimp::DefaultLogger::get()->warn(error.toLatin1().constData());
             }
         }
@@ -459,7 +459,7 @@ void QAiLoader::loadTextures(aiMaterial *ma, QGLMaterial *mq)
         {
             aiString path;
             ma->Get(AI_MATKEY_TEXTURE_DIFFUSE(0), path);
-            QString qpath = QString::fromUtf8(path.data, path.length);
+            const QString qpath = QString::fromUtf8(path.data, int(path.length));
             QUrl url = ensureResource(qpath);
             if (url.isEmpty())
             {
@@ -484,7 +484,7 @@ void QAiLoader::loadTextures(aiMaterial *ma, QGLMaterial *mq)
 void QAiLoader::loadMaterial(aiMaterial *ma)
 {
     QGLMaterial *mq = new QGLMaterial;
-    mq->setObjectName("___DEFAULT_NAME___");
+    mq->setObjectName(QStringLiteral("___DEFAULT_NAME___"));
 
     bool isTwoSided = false;
     bool isWireframe = false;

@@ -120,8 +120,6 @@ void TerragenImporter::InternReadFile( const std::string& pFile,
         throw DeadlyImportError( "TER: Magic string \'TERRAIN\' not found" );
 
     unsigned int x = 0,y = 0,mode = 0;
-    float rad  = 6370.f;
-
 
     aiNode* root = pScene->mRootNode = new aiNode();
     root->mName.Set("<TERRAGEN.TERRAIN>");
@@ -163,10 +161,6 @@ void TerragenImporter::InternReadFile( const std::string& pFile,
             root->mTransformation.c3 = reader.GetF4();
         }
         // mapping == 1: earth radius
-        else if (!::strncmp(head,AI_TERR_CHUNK_CRAD,4))
-        {
-            rad = reader.GetF4();
-        }
         // mapping mode
         else if (!::strncmp(head,AI_TERR_CHUNK_CRVM,4))
         {

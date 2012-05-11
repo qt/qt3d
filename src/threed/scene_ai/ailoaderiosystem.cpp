@@ -60,6 +60,7 @@ AiLoaderIOSystem::~AiLoaderIOSystem()
 
 bool AiLoaderIOSystem::Exists(const char* path) const
 {
+    Q_UNUSED(path)
     return m_device->isReadable();
 }
 

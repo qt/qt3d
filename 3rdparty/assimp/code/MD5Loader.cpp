@@ -360,10 +360,9 @@ void MD5Importer::LoadMD5MeshFile ()
     if (pScene->mRootNode->mChildren[1]->mNumChildren) /* start at the right hierarchy level */
         SkeletonMeshBuilder skeleton_maker(pScene,pScene->mRootNode->mChildren[1]->mChildren[0]);
 #else
-    std::vector<MD5::MeshDesc>::const_iterator end = meshParser.mMeshes.end();
-
+    const std::vector<MD5::MeshDesc>::const_iterator end = meshParser.mMeshes.end();
     // FIX: MD5 files exported from Blender can have empty meshes
-    for (std::vector<MD5::MeshDesc>::const_iterator it  = meshParser.mMeshes.begin(),end = meshParser.mMeshes.end(); it != end;++it) {
+    for (std::vector<MD5::MeshDesc>::const_iterator it  = meshParser.mMeshes.begin(); it != end;++it) {
         if (!(*it).mFaces.empty() && !(*it).mVertices.empty())
             ++pScene->mNumMaterials;
     }
