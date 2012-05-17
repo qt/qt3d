@@ -52,6 +52,28 @@ Viewport {
         eye: Qt.vector3d(0, 3, 10)
     }
 
+    Effect {
+        id: effect_china
+        material: china
+    }
+
+    Effect {
+        id: effect_china_hightlight
+        material: china_highlight;
+    }
+
+    Effect {
+        id: effect_metal
+        material: metal
+    }
+
+    Effect {
+        id: effect_metal_highlight
+        material: metal_highlight;
+    }
+
+
+
     Item3D {
         id: teapot
         transform: [
@@ -71,24 +93,20 @@ Viewport {
         Item3D {
             id: body
             mesh: Mesh { source: "teapot-body.bez" }
-            effect: Effect {
-                material: china
-            }
+            effect: effect_china
 
-            onHoverEnter: { effect.material = china_highlight }
-            onHoverLeave: { effect.material = china }
+            onHoverEnter: { effect = effect_china_hightlight }
+            onHoverLeave: { effect = effect_china }
             onClicked: { teapot.bounce = true }
         }
 
         Item3D {
             id: handle
             mesh: Mesh { source: "teapot-handle.bez" }
-            effect: Effect {
-                material: china
-            }
+            effect: effect_china
 
-            onHoverEnter: { effect.material = china_highlight }
-            onHoverLeave: { effect.material = china }
+            onHoverEnter: { effect = effect_china_hightlight }
+            onHoverLeave: { effect = effect_china }
             onClicked: {
                 if (teapot.state == "facing_left" ||
                     teapot.state == "pour_left") {
@@ -106,12 +124,11 @@ Viewport {
         Item3D {
             id: spout
             mesh: Mesh { source: "teapot-spout.bez" }
-            effect: Effect {
-                material: china
-            }
+            effect: effect_china
 
-            onHoverEnter: { effect.material = china_highlight }
-            onHoverLeave: { effect.material = china }
+
+            onHoverEnter: { effect = effect_china_hightlight }
+            onHoverLeave: { effect = effect_china }
             onClicked: {
                 if (teapot.state == "facing_left") {
                     teapot.state = "pour_left";
