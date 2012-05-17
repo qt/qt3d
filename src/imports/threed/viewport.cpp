@@ -222,7 +222,6 @@ public:
     bool fovzoom;
     bool blending;
     bool itemsInitialized;
-    bool needsRepaint;
     QGLCamera *camera;
     QGLLightParameters *light;
     QGLLightModel *lightModel;
@@ -282,7 +281,6 @@ ViewportPrivate::ViewportPrivate()
     , fovzoom(true)
     , blending(false)
     , itemsInitialized(false)
-    , needsRepaint(true)
     , camera(0)
     , light(0)
     , lightModel(0)
@@ -843,7 +841,7 @@ void Viewport::beforeRendering()
     // (Qt::DirectConnection) - not in the GUI/main thread of the app.
     // Beware of thread-safety issues.
 
-    if (!isVisible() || !d->needsRepaint)
+    if (!isVisible())
         return;
 
     Q_ASSERT(d->canvas);
@@ -868,8 +866,6 @@ void Viewport::beforeRendering()
 
     d->setRenderSettings(&painter);
     render(&painter);
-
-    d->needsRepaint = false;
 }
 
 void Viewport::render(QGLPainter *painter)
@@ -1212,7 +1208,6 @@ void Viewport::objectForPoint()
 void Viewport::update3d()
 {
     update();
-    d->needsRepaint = true;
 }
 
 /*!
@@ -1221,7 +1216,6 @@ void Viewport::update3d()
 void Viewport::cameraChanged()
 {
     update();
-    d->needsRepaint = true;
 }
 
 static inline void sendEnterEvent(QObject *object)
