@@ -257,7 +257,7 @@ namespace boost    {
         return t;
     }
 
-    // Constructs a tuple with 2 elements (fucking idiot, use std::pair instead!)
+    // Constructs a tuple with 2 elements (TODO: use std::pair instead!)
     template <typename T0,typename T1>
     inline tuple <T0,T1> make_tuple (const T0& t0,
         const T1& t1) {

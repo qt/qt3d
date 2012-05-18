@@ -368,7 +368,7 @@ void Q3DImporter::InternReadFile( const std::string& pFile,
 
 
                 // We don't need the rest, but we need to know where
-                // this fucking chunk ends.
+                // this chunk ends.
                 unsigned int temp = (unsigned int)(stream.GetI4() * stream.GetI4());
 
                 // skip the background file name
