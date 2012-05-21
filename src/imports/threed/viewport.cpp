@@ -401,6 +401,8 @@ Viewport::Viewport(QQuickItem *parent)
     // the update() function gets called when a re-render is needed.
     setFlags(QQuickItem::ItemHasContents);
 
+    connect(this, SIGNAL(widthChanged()), this, SIGNAL(viewportChanged()));
+    connect(this, SIGNAL(heightChanged()), this, SIGNAL(viewportChanged()));
     connect(this, SIGNAL(viewportChanged()), this, SLOT(update3d()));
 
     setCamera(new QGLCamera(this));

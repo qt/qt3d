@@ -149,6 +149,7 @@ int q_quick3d_main(const char *entryPointQmlFile, const char *category, int argc
     f.setSamples(16);
     QQuickView view;
     view.setFormat(f);
+    view.setResizeMode(QQuickView::SizeRootObjectToView);
     QString qml = q_get_qmldir(QLatin1String(entryPointQmlFile), QLatin1String(category));
     view.setSource(QUrl::fromLocalFile(qml));
     if (QGuiApplication::arguments().contains(QLatin1String("-maximize")))

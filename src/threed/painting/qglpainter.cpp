@@ -1390,8 +1390,7 @@ void QGLPainter::update()
     }
     if ((updates & UpdateViewport) != 0) {
         QRect viewport = currentSurface()->viewportGL();
-        glViewport(viewport.x(), viewport.y(),
-                   viewport.width(), viewport.height());
+        glViewport(0, 0, viewport.width(), viewport.height());
     }
     if (updates != 0)
         d->effect->update(this, updates);
