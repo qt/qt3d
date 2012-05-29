@@ -10,7 +10,7 @@ load(qt_module_config)
 QT += network
 
 gcov {
-    CONFIG += staticlib warn_on
+    CONFIG += static warn_on
     QMAKE_CXXFLAGS += -fprofile-arcs -ftest-coverage
     QMAKE_LFLAGS += -fprofile-arcs -ftest-coverage
 } else {

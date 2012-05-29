@@ -12,7 +12,7 @@ QMAKE_DOCS = $$PWD/doc/qt3d.qdocconf
 QT += network
 
 gcov {
-    CONFIG += staticlib warn_on
+    CONFIG += static warn_on
     QMAKE_CXXFLAGS += -fprofile-arcs -ftest-coverage
     QMAKE_LFLAGS += -fprofile-arcs -ftest-coverage
 } else {
