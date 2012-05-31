@@ -898,6 +898,8 @@ void QGLTexture2D::textureRequestFinished(QByteArray* assetData)
         //Convert asset data to an image.
         QImage texImage;
         texImage.loadFromData(*assetData);
+
+        setSize(texImage.size());
         setImage(texImage.mirrored());
 
         emit textureUpdated();
