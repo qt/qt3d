@@ -116,6 +116,23 @@ public:
     bool cleanupResources();
 };
 
+typedef QMap<QOpenGLContext*,QList<GLuint> > PendingResourcesMap;
+typedef PendingResourcesMap::iterator PendingResourcesMapIter;
+class QToBeDeleted : public QObject
+{
+    Q_OBJECT
+public:
+    QToBeDeleted(QObject *parent = 0);
+    ~QToBeDeleted();
+
+    PendingResourcesMap m_ToBeDeleted;
+
+    void processPendingResourceDeallocations();
+
+public Q_SLOTS:
+    void mournGLContextDeath();
+};
+
 QT_END_NAMESPACE
 
 #endif

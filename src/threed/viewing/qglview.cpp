@@ -45,6 +45,7 @@
 #include "qglwindowsurface.h"
 #include "qgldrawbuffersurface_p.h"
 #include "qray3d.h"
+#include "qgltexture2d.h"
 
 #include <QOpenGLFramebufferObject>
 #include <QEvent>
@@ -915,6 +916,9 @@ void QGLView::resizeGL(int w, int h)
 void QGLView::paintGL()
 {
     d->logEnter("QGLView::paintGL");
+
+    QGLTexture2D::processPendingResourceDeallocations();
+
     // We may need to regenerate the pick buffer on the next mouse event.
     d->pickBufferMaybeInvalid = true;
 

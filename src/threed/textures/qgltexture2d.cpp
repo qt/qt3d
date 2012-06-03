@@ -119,23 +119,9 @@ QGLTexture2DPrivate::QGLTexture2DPrivate()
 QGLTexture2DPrivate::~QGLTexture2DPrivate()
 {
     if (!textureInfo.empty()) {
-        bool bSomethingLeft = false;
         for (QList<QGLTexture2DTextureInfo*>::iterator It=textureInfo.begin(); It!=textureInfo.end(); ++It) {
             if ((*It)->isLiteral==false && (*It)->tex.textureId()) {
-                bSomethingLeft = true;
-                break;
-            }
-        }
-        if (bSomethingLeft) {
-            if (url.isEmpty()) {
-                qWarning("OPENGL RESOURCE LEAK: texture(created from Image) has non-released resources:");
-            } else {
-                qWarning("OPENGL RESOURCE LEAK: texture '%s' has non-released resources:", url.toString().toLatin1().constData());
-            }
-            for (QList<QGLTexture2DTextureInfo*>::iterator It=textureInfo.begin(); It!=textureInfo.end(); ++It) {
-                if ((*It)->isLiteral==false && (*It)->tex.textureId()) {
-                    qWarning("  id = %u",(*It)->tex.textureId());
-                }
+                QGLTexture2D::toBeDeletedLater((*It)->tex.context(), (*It)->tex.textureId());
             }
         }
     }
@@ -907,6 +893,77 @@ void QGLTexture2D::textureRequestFinished(QByteArray* assetData)
 
     if (assetData)
         delete assetData;
+}
+
+
+Q_GLOBAL_STATIC(QToBeDeleted,getPendingObject)
+Q_GLOBAL_STATIC(QMutex,getPendingResourceMutex)
+
+QToBeDeleted::QToBeDeleted(QObject *parent) : QObject(parent) {}
+
+QToBeDeleted::~QToBeDeleted()
+{
+    for (PendingResourcesMapIter It=m_ToBeDeleted.begin(); It!=m_ToBeDeleted.end(); ++It) {
+        QOpenGLContext* context = It.key();
+        qWarning("OPENGL RESOURCE LEAK !");
+        qWarning("  context %p:",context);
+        QList<GLuint>& rPendingList = It.value();
+        foreach (GLuint res, rPendingList) {
+            qWarning("    resource %u",res);
+        }
+    }
+}
+
+void QToBeDeleted::processPendingResourceDeallocations()
+{
+    if (!m_ToBeDeleted.isEmpty()) {
+        QOpenGLContext* currContext = QOpenGLContext::currentContext();
+        Q_ASSERT(currContext != 0);
+        bool bDeletedSomething = false;
+        do {
+            bDeletedSomething = false;
+            for (PendingResourcesMapIter It=m_ToBeDeleted.begin(); It!=m_ToBeDeleted.end(); ++It) {
+                QOpenGLContext* context = It.key();
+                if (currContext==context || QOpenGLContext::areSharing(currContext,context)) {
+                    QList<GLuint>& rPendingList = It.value();
+                    foreach (GLuint res, rPendingList) {
+                        glDeleteTextures(1,&res);
+                    }
+                    bDeletedSomething = true;
+                }
+                if (bDeletedSomething) {
+                    m_ToBeDeleted.erase(It);
+                    break;
+                }
+            }
+        } while (bDeletedSomething);
+    }
+}
+
+void QToBeDeleted::mournGLContextDeath()
+{
+    QMutexLocker locker(getPendingResourceMutex());
+    processPendingResourceDeallocations();
+}
+
+void QGLTexture2D::toBeDeletedLater(QOpenGLContext* context, GLuint textureId)
+{
+    QMutexLocker locker(getPendingResourceMutex());
+    QToBeDeleted* pObj = getPendingObject();
+    PendingResourcesMapIter It = pObj->m_ToBeDeleted.find(context);
+    if (It == pObj->m_ToBeDeleted.end()) {
+        QObject::connect(context,SIGNAL(aboutToBeDestroyed()),pObj,SLOT(mournGLContextDeath()),Qt::DirectConnection);
+        It = pObj->m_ToBeDeleted.insert(context,QList<GLuint>());
+    }
+    Q_ASSERT(It != pObj->m_ToBeDeleted.end());
+    It.value().append(textureId);
+}
+
+void QGLTexture2D::processPendingResourceDeallocations()
+{
+    QMutexLocker locker(getPendingResourceMutex());
+    QToBeDeleted* pObj = getPendingObject();
+    pObj->processPendingResourceDeallocations();
 }
 
 /*!

@@ -56,6 +56,7 @@ QT_BEGIN_NAMESPACE
 QT_MODULE(Qt3D)
 
 class QGLTexture2DPrivate;
+class QOpenGLContext;
 
 class Q_QT3D_EXPORT QGLTexture2D : public QObject
 {
@@ -110,6 +111,10 @@ public:
     bool cleanupResources();
 
     static QGLTexture2D *fromTextureId(GLuint id, const QSize& size);
+
+    static void toBeDeletedLater(QOpenGLContext*, GLuint);
+    static void processPendingResourceDeallocations();
+
 signals:
     void textureUpdated();
 public slots:

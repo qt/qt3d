@@ -874,6 +874,8 @@ void Viewport::render(QGLPainter *painter)
     if (!d->itemsInitialized)
         initializeGL(painter);
 
+    QGLTexture2D::processPendingResourceDeallocations();
+
     // No stereo rendering, set the eye as neutral
     painter->setEye(QGL::NoEye);
 
