@@ -43,6 +43,7 @@
 #define SHADERPROGRAM_P_H
 
 #include <QtCore/qsharedpointer.h>
+#include <QtCore/qpointer.h>
 #include <QOpenGLShaderProgram>
 
 #include "qquickeffect.h"
@@ -129,7 +130,7 @@ private:
     QGLTexture2D* textureForUniformValue(int uniformLocation);
     int textureUnitForUniformValue(int uniformLocation);
 
-    QWeakPointer<ShaderProgram> parent;
+    QPointer<ShaderProgram> parent;
     int nextTextureUnit;
     QMap<int, int> propertyIdsToUniformLocations;
     QMap<int, int> uniformLocationsToTextureUnits;
