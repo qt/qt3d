@@ -58,7 +58,7 @@
 #include <QtGui/qmatrix4x4.h>
 #if !defined(QT_NO_THREAD)
 #include <QtCore/qthread.h>
-#include <QtWidgets/qapplication.h>
+#include <QtCore/qcoreapplication.h>
 #endif
 
 QT_BEGIN_NAMESPACE
@@ -2004,10 +2004,10 @@ void qDumpScene(QGLSceneNode *node, bool detailed, int indent, const QSet<QGLSce
     Q_UNUSED(loop);
 #else
 #if !defined(QT_NO_THREAD)
-    QCoreApplication *app = QApplication::instance();
+    QCoreApplication *app = QCoreApplication::instance();
     QThread *appThread = 0;
     if (app)
-        appThread = QApplication::instance()->thread();
+        appThread = QCoreApplication::instance()->thread();
 #endif
     QSet<QGLSceneNode *> lp = loop;
     lp.insert(node);
