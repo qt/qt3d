@@ -367,7 +367,16 @@ bool QGLPainter::begin
     bool isFixedFunction = !hasOpenGLFeature(QOpenGLFunctions::Shaders);
     if (!isFixedFunction)
         isFixedFunction = !QOpenGLShaderProgram::hasOpenGLShaderPrograms();
+#ifdef Q_OS_WIN
+    // On windows platforms in a virtual environment the hasOpenGLFunctions can report shaders are
+    // available when in fact they are not, and the only effective test for the presence of
+    // shaders is checking for extensions handling important shader functionality.
+    // We need to support this environment to run autotests.
+    // On non-windows platforms native support can mean that shaders are available without extensions,
+    // so in the general case, we trust hasOpenGLFeature/hasOpenGLShaderPrograms, and on windows we
+    // check for the relevant extensions.
     if (!isFixedFunction)
+
     {
         QOpenGLContext *ctx = QOpenGLContext::currentContext();
         QFunctionPointer res = ctx->getProcAddress("glCreateShader");
@@ -382,6 +391,7 @@ bool QGLPainter::begin
         if (!res)
             isFixedFunction = !res;
     }
+#endif
 
     // Find the QGLPainterPrivate for the context, or create a new one.
     d_ptr = painterPrivateCache()->fromContext(context);
