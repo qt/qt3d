@@ -496,6 +496,8 @@ void QGLLitMaterialEffect::update
     }
 #endif
     QOpenGLShaderProgram *program = d->program;
+    if (!program)
+        return;
     if ((updates & QGLPainter::UpdateMatrices) != 0) {
         program->setUniformValue(d->matrixUniform, painter->combinedMatrix());
         program->setUniformValue(d->modelViewUniform, painter->modelViewMatrix());

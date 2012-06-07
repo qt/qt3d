@@ -487,7 +487,7 @@ void ColladaParser::ReadController( Collada::Controller& pController)
             else if ( IsElement( "skin"))
             {
                 // read the mesh it refers to. According to the spec this could also be another
-                // controller, but I refuse to implement every bullshit idea they've come up with
+                // controller, but I refuse to implement every idea they've come up with
                 int sourceIndex = GetAttribute( "source");
                 pController.mMeshId = mReader->getAttributeValue( sourceIndex) + 1;
             }
@@ -1088,10 +1088,6 @@ void ColladaParser::ReadEffectLibrary()
         if ( mReader->getNodeType() == irr::io::EXN_ELEMENT) {
             if ( IsElement( "effect"))
             {
-                // read ID. Do I have to repeat my ranting about "optional" attributes?
-                // Alex: .... no, not necessary. Please shut up and leave more space for
-                // me to complain about the fucking Collada spec with its fucking
-                // 'optional' attributes ...
                 int attrID = GetAttribute( "id");
                 std::string id = mReader->getAttributeValue( attrID);
 
@@ -1603,7 +1599,7 @@ void ColladaParser::ReadSource()
             }
             else if ( IsElement( "technique_common"))
             {
-                // I don't fucking care for your profiles bullshit
+                // ignore
             }
             else if ( IsElement( "accessor"))
             {
@@ -2045,7 +2041,7 @@ void ColladaParser::ReadPrimitives( Mesh* pMesh, std::vector<InputChannel>& pPer
         {
             // warn if the vertex channel does not refer to the <vertices> element in the same mesh
             if ( input.mAccessor != pMesh->mVertexID)
-                ThrowException( "Unsupported vertex referencing scheme. I fucking hate Collada.");
+                ThrowException( "Unsupported vertex referencing scheme.");
             continue;
         }
 

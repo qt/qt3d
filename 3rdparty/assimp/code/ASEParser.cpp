@@ -1890,7 +1890,7 @@ void Parser::ParseLV3MeshNormalListBlock(ASE::Mesh& sMesh)
     unsigned int index, faceIdx = 0xffffffff;
 
     // FIXME: rewrite this and find out how to interpret the normals
-    // correctly. This is crap.
+    // correctly.
 
     // Smooth the vertex and face normals together. The result
     // will be edgy then, but otherwise everything would be soft ...

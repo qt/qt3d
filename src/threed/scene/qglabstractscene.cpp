@@ -43,8 +43,8 @@
 #include "qglsceneformatplugin.h"
 #include "qglpicknode.h"
 
-// copied private header
-#include "qfactoryloader_p.h"
+#include "qaiscenehandler.h"
+#include "qglbezierscenehandler.h"
 
 #include <QtCore/qfile.h>
 #include <QtCore/qfileinfo.h>
@@ -56,8 +56,47 @@
 #include <QtCore/qdir.h>
 #include <QtCore/qpluginloader.h>
 #include <QBuffer>
+#include <QSharedPointer>
 
 QT_BEGIN_NAMESPACE
+
+/*
+    Internal.
+    Format handlers.
+*/
+
+class ISceneLoaderInfo
+{
+public:
+    virtual ~ISceneLoaderInfo() {}
+    virtual QStringList supportedFormats() const = 0;
+    virtual QGLSceneFormatHandler* createHandler() const = 0;
+};
+
+template <typename T>
+class SceneLoaderInfo : public ISceneLoaderInfo
+{
+public:
+    QStringList supportedFormats() const {
+        return T::supportedFormats();
+    }
+    QGLSceneFormatHandler* createHandler() const {
+        return new T;
+    }
+};
+
+const QList< QSharedPointer<ISceneLoaderInfo> >& getSceneLoaderInfos()
+{
+    static QList< QSharedPointer<ISceneLoaderInfo> > infos;
+    if (infos.empty()) {
+        infos.push_back( QSharedPointer<ISceneLoaderInfo>(new SceneLoaderInfo<QAiSceneHandler>()) );
+        infos.push_back( QSharedPointer<ISceneLoaderInfo>(new SceneLoaderInfo<QGLBezierSceneHandler>()) );
+    }
+    return infos;
+}
+typedef QMap< QString, QSharedPointer<ISceneLoaderInfo> > FormatMap;
+Q_GLOBAL_STATIC(FormatMap,qFormatMap)
+
 
 /*!
     \class QGLAbstractScene
@@ -331,12 +370,6 @@ QList<QGLSceneAnimation *> QGLAbstractScene::animations() const
     \sa objects()
 */
 
-#if !defined (QT_NO_LIBRARY) && !defined(QT_NO_SETTINGS)
-Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader,
-    ("com.trolltech.Qt.QGLSceneFormatFactoryInterface",
-     QLatin1String("/sceneformats")))
-#endif
-
 /*!
     Loads a scene from \a device in the specified \a format using
     the registered scene format plugins.  If \a format is an empty
@@ -384,8 +417,6 @@ QGLAbstractScene *QGLAbstractScene::loadScene
     checkSupportedFormats();
     QStringList keys = m_Formats;
 
-    QFactoryLoader *l = loader();
-
     // If the format is not specified, then use the filename/url extension.
     QString fmt = format;
     if (fmt.isEmpty()) {
@@ -411,36 +442,29 @@ QGLAbstractScene *QGLAbstractScene::loadScene
         if (index >= 0)
             fmt = suffix;
     }
+    if (fmt.isEmpty())
+        return 0;
 
-    // Find the plugin that handles the format and ask it to create a handler.
-    if (QGLSceneFormatFactoryInterface *factory
-            = qobject_cast<QGLSceneFormatFactoryInterface*>
-                (l->instance(fmt))) {
-        QGLSceneFormatHandler *handler = factory->create(device, url, fmt);
-        if (handler) {
-            handler->setDevice(device);
-            handler->setUrl(url);
-            handler->setFormat(format);
-            if (!options.isEmpty())
-                handler->decodeOptions(options);
-            QGLAbstractScene *scene = 0;
-            if (!device) {
-                scene = handler->download();
-            } else {
-                scene = handler->read();
-            }
-            return scene;
-        }
+    FormatMap::const_iterator It = qFormatMap()->find(fmt);
+    if (It==qFormatMap()->end()) {
+        qWarning("Could not create handler for format %s",qPrintable(fmt));
+        return 0;
     }
+    QGLSceneFormatHandler *handler = It.value().data()->createHandler();
+    Q_ASSERT(handler);
+    handler->setDevice(device);
+    handler->setUrl(url);
+    handler->setFormat(format);
+    if (!options.isEmpty())
+        handler->decodeOptions(options);
+    QGLAbstractScene *scene = 0;
+    if (!device) {
+        scene = handler->download();
+    } else {
+        scene = handler->read();
+    }
+    return scene;
 
-    // If we get here, then the format is not supported by any of the plugins.
-#ifndef QT_NO_DEBUG
-    qWarning("Could not create handler for format %s"
-             "- check plugins are installed correctly in %s",
-             qPrintable(fmt),
-             qPrintable(QLibraryInfo::location(QLibraryInfo::PluginsPath)));
-#endif
-    return 0;
 #else // QT_NO_LIBRARY || QT_NO_SETTINGS
     Q_UNUSED(device);
     Q_UNUSED(url);
@@ -516,7 +540,7 @@ QGLAbstractScene *QGLAbstractScene::loadScene
 {
     QUrl fileUrl(fileName);
 
-    if (fileUrl.scheme()!="http" && fileUrl.scheme()!="ftp") {
+    if (fileUrl.scheme()!=QLatin1String("http") && fileUrl.scheme()!=QLatin1String("ftp")) {
         QFile file(fileName);
         if (!file.open(QIODevice::ReadOnly))
         {
@@ -559,10 +583,6 @@ QGLAbstractScene *QGLAbstractScene::loadScene
 
     Otherwise (when \a t is QGLAbstractScene::AsSuffix) it is simply a list
     of file name suffixes.
-
-    Note that this function may be expensive to
-    call since it scans for available plugins, and loads each one it
-    finds to get an accurate report of formats supported at run-time.
 */
 QStringList QGLAbstractScene::supportedFormats(QGLAbstractScene::FormatListType t)
 {
@@ -580,11 +600,24 @@ QStringList QGLAbstractScene::supportedFormats(QGLAbstractScene::FormatListType 
 void QGLAbstractScene::checkSupportedFormats()
 {
     if (!m_bFormatListReady) {
-        QFactoryLoader *l = loader();
-        m_Formats = l->keys();
+        Q_ASSERT(m_Formats.empty());
+        Q_ASSERT(qFormatMap()->empty());
+
+        const QList< QSharedPointer<ISceneLoaderInfo> >& rSceneLoaderInfos = getSceneLoaderInfos();
+        for (QList< QSharedPointer<ISceneLoaderInfo> >::const_iterator It=rSceneLoaderInfos.begin(); It!=rSceneLoaderInfos.end(); ++It) {
+            QStringList formats = It->data()->supportedFormats();
+            foreach (QString sss, formats) {
+                sss = sss.toLower();
+                if (!m_Formats.contains(sss,Qt::CaseInsensitive)) {
+                    m_Formats.append(sss);
+                    qFormatMap()->insert(sss,*It);
+                }
+            }
+        }
+
         m_FormatsFilter.clear();
         foreach (QString f, m_Formats) {
-            m_FormatsFilter.append(f.prepend("*."));
+            m_FormatsFilter.append(f.prepend(QLatin1String("*.")));
         }
         m_bFormatListReady = true;
     }

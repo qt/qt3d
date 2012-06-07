@@ -145,7 +145,6 @@ void ThumbnailEffect::setActive(QGLPainter *painter, bool flag)
 void ThumbnailEffect::update
         (QGLPainter *painter, QGLPainter::Updates updates)
 {
-    Q_ASSERT(d->program);
     if ((updates & QGLPainter::UpdateMatrices) != 0)
     {
         d->program->setUniformValue(d->matrixUniform,

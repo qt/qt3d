@@ -50,6 +50,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory.h>
 #include <math.h>
 #include <stddef.h>
+#include <string.h>
 
 // Our compile configuration
 #include "aiDefines.h"
@@ -65,10 +66,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef __cplusplus
 #include <new>        // for std::nothrow_t
 #include <string>    // for aiString::Set(const std::string&)
-
-#if defined(__QNXNTO__)
-#include <string.h>
-#endif
 
 namespace Assimp    {
     //! @cond never

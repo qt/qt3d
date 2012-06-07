@@ -87,6 +87,7 @@ Skybox::Skybox(QObject *parent)
     , m_scene(0)
     , m_view(0)
     , m_camera(new QGLCamera(this))
+    , m_bConnectedToOpenGLContextSignal(false)
 {
     m_view = qobject_cast<Viewport*>(parent);
 
@@ -221,6 +222,7 @@ void Skybox::setViewport(Viewport *view)
 void Skybox::scanLocalDir(const QString &imagePath)
 {
     m_imagePath = imagePath;
+    m_bConnectedToOpenGLContextSignal = false;
     QStringList notFound;
     const char **exp = EXPECTED_NAMES;
     for ( ; *exp; ++exp)
@@ -295,10 +297,21 @@ void Skybox::setSource(const QUrl &source)
     }
 }
 
-void Skybox::draw(QGLPainter *painter) const
+void Skybox::draw(QGLPainter *painter)
 {
     if (!m_view)
         return;
+
+    if (!m_bConnectedToOpenGLContextSignal) {
+        QOpenGLContext* pOpenGLContext = QOpenGLContext::currentContext();
+        if (pOpenGLContext) {
+            bool Ok = QObject::connect(pOpenGLContext, SIGNAL(aboutToBeDestroyed()), this, SLOT(handleOpenglContextIsAboutToBeDestroyed()), Qt::DirectConnection);
+            Q_UNUSED(Ok);  // quell compiler warning
+            Q_ASSERT(Ok);
+            m_bConnectedToOpenGLContextSignal = true;
+        }
+    }
+
     painter->modelViewMatrix().push();
     painter->modelViewMatrix().setToIdentity();
 
@@ -314,6 +327,13 @@ void Skybox::draw(QGLPainter *painter) const
 
     painter->setCamera(cam);
     painter->modelViewMatrix().pop();
+}
+
+void Skybox::handleOpenglContextIsAboutToBeDestroyed()
+{
+    for (int ix = 0; ix<6; ++ix) {
+        m_faces[ix]->material()->texture()->cleanupResources();
+    }
 }
 
 /*!

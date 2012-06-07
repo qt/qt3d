@@ -424,7 +424,7 @@ void tst_QPlane3D::properties()
 
     obj.setPlane(QPlane3D(QVector3D(1, 2, 3), QVector3D(4, 5, 6)));
 
-    QPlane3D p = qVariantValue<QPlane3D>(obj.property("plane"));
+    QPlane3D p = qvariant_cast<QPlane3D>(obj.property("plane"));
     QCOMPARE(p.origin(), QVector3D(1, 2, 3));
     QCOMPARE(p.normal(), QVector3D(4, 5, 6));
 
@@ -432,7 +432,7 @@ void tst_QPlane3D::properties()
                     qVariantFromValue
                         (QPlane3D(QVector3D(-1, -2, -3), QVector3D(-4, -5, -6))));
 
-    p = qVariantValue<QPlane3D>(obj.property("plane"));
+    p = qvariant_cast<QPlane3D>(obj.property("plane"));
     QCOMPARE(p.origin(), QVector3D(-1, -2, -3));
     QCOMPARE(p.normal(), QVector3D(-4, -5, -6));
 }

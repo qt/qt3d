@@ -130,7 +130,7 @@ QGLTexture2DPrivate::~QGLTexture2DPrivate()
             if (url.isEmpty()) {
                 qWarning("OPENGL RESOURCE LEAK: texture(created from Image) has non-released resources:");
             } else {
-                qWarning("OPENGL RESOURCE LEAK: texture '%s' has non-released resources:", url.toString().toAscii().constData());
+                qWarning("OPENGL RESOURCE LEAK: texture '%s' has non-released resources:", url.toString().toLatin1().constData());
             }
             for (QList<QGLTexture2DTextureInfo*>::iterator It=textureInfo.begin(); It!=textureInfo.end(); ++It) {
                 if ((*It)->isLiteral==false && (*It)->tex.textureId()) {
@@ -715,20 +715,22 @@ bool QGLTexture2DPrivate::cleanupResources()
 {
     if (!textureInfo.empty()) {
         QOpenGLContext *ctx = QOpenGLContext::currentContext();
-        Q_ASSERT(ctx!=0);
-        for (QList<QGLTexture2DTextureInfo*>::iterator It=textureInfo.begin(); It!=textureInfo.end();) {
-            QGLTexture2DTextureInfo *texInfo = *It;
-            QOpenGLContext *ictx = const_cast<QOpenGLContext*>(texInfo->tex.context());
-            Q_ASSERT(ictx!=0);
-            if (QOpenGLContext::areSharing(ictx, ctx)) {
-                if (!texInfo->isLiteral && texInfo->tex.textureId()) {
-                    GLuint id = texInfo->tex.textureId();
-                    glDeleteTextures(1, &id);
-                    texInfo->tex.clearId();
+        if (ctx)
+        {
+            for (QList<QGLTexture2DTextureInfo*>::iterator It=textureInfo.begin(); It!=textureInfo.end();) {
+                QGLTexture2DTextureInfo *texInfo = *It;
+                QOpenGLContext *ictx = const_cast<QOpenGLContext*>(texInfo->tex.context());
+                Q_ASSERT(ictx!=0);
+                if (QOpenGLContext::areSharing(ictx, ctx)) {
+                    if (!texInfo->isLiteral && texInfo->tex.textureId()) {
+                        GLuint id = texInfo->tex.textureId();
+                        glDeleteTextures(1, &id);
+                        texInfo->tex.clearId();
+                    }
+                    It = textureInfo.erase(It);
+                } else {
+                    ++It;
                 }
-                It = textureInfo.erase(It);
-            } else {
-                ++It;
             }
         }
     }
@@ -896,6 +898,8 @@ void QGLTexture2D::textureRequestFinished(QByteArray* assetData)
         //Convert asset data to an image.
         QImage texImage;
         texImage.loadFromData(*assetData);
+
+        setSize(texImage.size());
         setImage(texImage.mirrored());
 
         emit textureUpdated();

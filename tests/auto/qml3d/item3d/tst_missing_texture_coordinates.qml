@@ -41,6 +41,7 @@
 
 import Qt3D 1.0
 import QtQuick 2.0
+import QtTest 1.0
 
 Viewport  {
     width: 1000
@@ -64,11 +65,14 @@ Viewport  {
         onTriggered: Qt.quit()
     }
 
-    //  This test is simply testing to see if the item crashes on startup,
-    // so this dummy test is probably not even required
-    function test_exists()
-    {
-        verify(testItem.visible);
-        Qt.quit();
+    TestCase {
+        name: "NoTextureCoordinates"
+        //  This test is simply testing to see if the item crashes on startup,
+        // so this dummy test is probably not even required
+        function test_exists()
+        {
+            verify(testItem.visible);
+            Qt.quit();
+        }
     }
 }

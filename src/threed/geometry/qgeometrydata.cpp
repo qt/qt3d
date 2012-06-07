@@ -164,8 +164,8 @@ QGeometryDataPrivate::QGeometryDataPrivate()
     , boxValid(true)
     , bufferStrategy(QGeometryData::BufferIfPossible | QGeometryData::KeepClientData)
 {
-    qMemSet(key, -1, ATTR_CNT);
-    qMemSet(size, 0, ATTR_CNT);
+    memset(key, -1, ATTR_CNT);
+    memset(size, 0, ATTR_CNT);
 }
 
 QGeometryDataPrivate::~QGeometryDataPrivate()
@@ -187,8 +187,8 @@ QGeometryDataPrivate *QGeometryDataPrivate::clone() const
     temp->modified = modified;
     temp->bb = bb;
     temp->fields = fields;
-    qMemCopy(temp->key, key, ATTR_CNT);
-    qMemCopy(temp->size, size, ATTR_CNT);
+    memcpy(temp->key, key, ATTR_CNT);
+    memcpy(temp->size, size, ATTR_CNT);
     temp->count = count;
     temp->reserved = reserved;
     temp->boxValid = boxValid;

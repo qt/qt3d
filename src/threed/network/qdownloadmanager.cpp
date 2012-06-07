@@ -170,7 +170,7 @@ void QDownloadManager::netReplyDone()
         //Check if we have a relative URL
         if (url.isRelative()) {
             url.setScheme(reply->url().scheme());
-            url.setEncodedHost(reply->url().encodedHost());
+            url.setHost(reply->url().host());
         }
 
         //Reissue redirected request.

@@ -49,12 +49,10 @@ Item3D {
 
     Item3D {
         mesh: teacup_mesh
-        effect: Effect {
-            material: china
-        }
+        effect: effect_china
 
-        onHoverEnter: { effect.material = china_highlight }
-        onHoverLeave: { effect.material = china }
+        onHoverEnter: { effect = effect_china_hightlight }
+        onHoverLeave: { effect = effect_china }
         onClicked: { top.bounce = true }
 
         y: top.spoonY

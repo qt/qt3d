@@ -75,6 +75,8 @@ void ProjectiveTextureEffect::update(QGLPainter *painter, QGLPainter::Updates up
         recalulateObjectLinearTexgenMatrix();
         matrixDirty = false;
     }
+    if (!program())
+        return;
 
     program()->setUniformValue("objectLinearTexgenMatrix",
                                objectLinearTexgenMatrix);

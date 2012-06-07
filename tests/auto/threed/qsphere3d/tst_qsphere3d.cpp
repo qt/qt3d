@@ -213,14 +213,14 @@ void tst_QSphere3D::properties()
 
     obj.setSphere(QSphere3D(QVector3D(1, 2, 3), 4));
 
-    QSphere3D s = qVariantValue<QSphere3D>(obj.property("sphere"));
+    QSphere3D s = qvariant_cast<QSphere3D>(obj.property("sphere"));
     QCOMPARE(s.center(), QVector3D(1, 2, 3));
     QCOMPARE(s.radius(), qreal(4.0f));
 
     obj.setProperty("sphere",
                     qVariantFromValue(QSphere3D(QVector3D(-1, -2, -3), -4)));
 
-    s = qVariantValue<QSphere3D>(obj.property("sphere"));
+    s = qvariant_cast<QSphere3D>(obj.property("sphere"));
     QCOMPARE(s.center(), QVector3D(-1, -2, -3));
     QCOMPARE(s.radius(), qreal(-4.0f));
 }

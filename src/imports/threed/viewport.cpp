@@ -222,7 +222,6 @@ public:
     bool fovzoom;
     bool blending;
     bool itemsInitialized;
-    bool needsRepaint;
     QGLCamera *camera;
     QGLLightParameters *light;
     QGLLightModel *lightModel;
@@ -282,7 +281,6 @@ ViewportPrivate::ViewportPrivate()
     , fovzoom(true)
     , blending(false)
     , itemsInitialized(false)
-    , needsRepaint(true)
     , camera(0)
     , light(0)
     , lightModel(0)
@@ -401,6 +399,8 @@ Viewport::Viewport(QQuickItem *parent)
     // the update() function gets called when a re-render is needed.
     setFlags(QQuickItem::ItemHasContents);
 
+    connect(this, SIGNAL(widthChanged()), this, SIGNAL(viewportChanged()));
+    connect(this, SIGNAL(heightChanged()), this, SIGNAL(viewportChanged()));
     connect(this, SIGNAL(viewportChanged()), this, SLOT(update3d()));
 
     setCamera(new QGLCamera(this));
@@ -546,7 +546,7 @@ void Viewport::setPicking(bool value)
     if (value != d->picking)
     {
         d->picking = value;
-        if (d->picking)
+        if (d->picking && d->canvas)
         {
             connect(d->canvas, SIGNAL(beforeRendering()),
                     this, SLOT(objectForPoint()), Qt::DirectConnection);
@@ -554,8 +554,9 @@ void Viewport::setPicking(bool value)
         }
         else
         {
-            disconnect(d->canvas, SIGNAL(beforeRendering()),
-                       this, SLOT(objectForPoint()));
+            if (d->canvas)
+                disconnect(d->canvas, SIGNAL(beforeRendering()),
+                           this, SLOT(objectForPoint()));
             d->pickingRenderInitialized = false;
         }
         emit viewportChanged();
@@ -794,7 +795,7 @@ qreal ViewportSubsurface::aspectRatio() const
 
     Called by QQuickPaintedItem to refresh the content.
 
-    \sa beforeRendering() setRenderMode()
+    \sa beforeRendering(), setRenderMode()
 */
 void Viewport::paint(QPainter *painter)
 {
@@ -840,7 +841,7 @@ void Viewport::beforeRendering()
     // (Qt::DirectConnection) - not in the GUI/main thread of the app.
     // Beware of thread-safety issues.
 
-    if (!isVisible() || !d->needsRepaint)
+    if (!isVisible())
         return;
 
     Q_ASSERT(d->canvas);
@@ -865,8 +866,6 @@ void Viewport::beforeRendering()
 
     d->setRenderSettings(&painter);
     render(&painter);
-
-    d->needsRepaint = false;
 }
 
 void Viewport::render(QGLPainter *painter)
@@ -1209,7 +1208,6 @@ void Viewport::objectForPoint()
 void Viewport::update3d()
 {
     update();
-    d->needsRepaint = true;
 }
 
 /*!
@@ -1218,7 +1216,6 @@ void Viewport::update3d()
 void Viewport::cameraChanged()
 {
     update();
-    d->needsRepaint = true;
 }
 
 static inline void sendEnterEvent(QObject *object)

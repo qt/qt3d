@@ -1586,13 +1586,13 @@ QStringList QGLColladaFxEffectFactory::generateCodeElements( QGLColladaFxEffect*
     {
         QStringList parts;
         parts << indent << QLatin1String("<code sid=\"") << baseSid << QLatin1String("VertexShader\">")
-              << QString::fromAscii(effect->vertexShader()) << QLatin1String("</code>");
+              << QString::fromLatin1(effect->vertexShader()) << QLatin1String("</code>");
         result << parts.join(QLatin1String(""));
     }
     {
         QStringList parts;
         parts << indent << QLatin1String("<code sid=\"") << baseSid << QLatin1String("FragmentShader\">")
-              << QString::fromAscii(effect->fragmentShader()) << QLatin1String("</code>\n");
+              << QString::fromLatin1(effect->fragmentShader()) << QLatin1String("</code>\n");
         result << parts.join(QLatin1String(""));
     }
     return result;

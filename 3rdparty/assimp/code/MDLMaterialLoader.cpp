@@ -786,7 +786,7 @@ void MDLImporter::SkipSkinLump_3DGS_MDL7(
 }
 
 // ------------------------------------------------------------------------------------------------
-// What the fuck does this function do? Can't remember
+// What does this function do? Can't remember
 void MDLImporter::ParseSkinLump_3DGS_MDL7(
     const unsigned char* szCurrent,
     const unsigned char** szCurrentOut,

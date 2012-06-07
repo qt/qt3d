@@ -41,6 +41,7 @@
 
 #include "billboarditem3d.h"
 #include "qgraphicsbillboardtransform.h"
+#include "qquickeffect.h"
 
 /*!
     \qmlclass BillboardItem3D BillboardItem3D
@@ -126,6 +127,16 @@ void BillboardItem3D::draw(QGLPainter *painter)
     if (!isInitialized())
         initialize(painter);
 
+    if (!m_bConnectedToOpenGLContextSignal) {
+        QOpenGLContext* pOpenGLContext = QOpenGLContext::currentContext();
+        if (pOpenGLContext) {
+            bool Ok = QObject::connect(pOpenGLContext, SIGNAL(aboutToBeDestroyed()), this, SLOT(handleOpenglContextIsAboutToBeDestroyed()), Qt::DirectConnection);
+            Q_UNUSED(Ok);  // quell compiler warning
+            Q_ASSERT(Ok);
+            m_bConnectedToOpenGLContextSignal = true;
+        }
+    }
+
     //Setup picking
     int prevId = painter->objectPickId();
     painter->setObjectPickId(objectPickId());
@@ -166,5 +177,12 @@ void BillboardItem3D::draw(QGLPainter *painter)
 
     //Reset pick id.
     painter->setObjectPickId(prevId);
+}
+
+void BillboardItem3D::handleOpenglContextIsAboutToBeDestroyed()
+{
+    if (effect()) {
+        effect()->openglContextIsAboutToBeDestroyed();
+    }
 }
 

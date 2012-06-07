@@ -54,13 +54,11 @@ Item3D {
             axis: Qt.vector3d(1, 0, 0)
         }
         mesh: teaspoon_mesh
-        effect: Effect {
-            material: metal
-        }
+        effect: effect_metal
         property bool bounce: false
 
-        onHoverEnter: { effect.material = metal_highlight }
-        onHoverLeave: { effect.material = metal }
+        onHoverEnter: { effect= effect_metal_highlight }
+        onHoverLeave: { effect = effect_metal }
         onClicked: { teaspoon1.bounce = true }
 
         SequentialAnimation on y_lift {

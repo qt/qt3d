@@ -155,7 +155,7 @@ QCustomDataArray::QCustomDataArray(const QArray<QVector2D>& other)
     if (size > 0) {
         const QVector2D *src = other.constData();
         float *dst = m_array.extend(size * 2);
-        qMemCopy(dst, src, size * sizeof(QVector2D));
+        memcpy(dst, src, size * sizeof(QVector2D));
     }
 }
 
@@ -177,7 +177,7 @@ QCustomDataArray::QCustomDataArray(const QArray<QVector3D>& other)
     if (size > 0) {
         const QVector3D *src = other.constData();
         float *dst = m_array.extend(size * 3);
-        qMemCopy(dst, src, size * sizeof(QVector3D));
+        memcpy(dst, src, size * sizeof(QVector3D));
     }
 }
 
@@ -199,7 +199,7 @@ QCustomDataArray::QCustomDataArray(const QArray<QVector4D>& other)
     if (size > 0) {
         const QVector4D *src = other.constData();
         float *dst = m_array.extend(size * 4);
-        qMemCopy(dst, src, size * sizeof(QVector4D));
+        memcpy(dst, src, size * sizeof(QVector4D));
     }
 }
 
@@ -218,7 +218,7 @@ QCustomDataArray::QCustomDataArray(const QArray<QColor4ub>& other)
       m_elementComponents(1)
 {
     int size = other.size();
-    qMemCopy(m_array.extend(size), other.constData(), sizeof(QColor4ub) * size);
+    memcpy(m_array.extend(size), other.constData(), sizeof(QColor4ub) * size);
 }
 
 /*!
@@ -448,33 +448,33 @@ void QCustomDataArray::setAt(int index, const QVariant& value)
     case QVariant::Vector2D:
         Q_ASSERT(m_elementType == QCustomDataArray::Vector2D);
         *(reinterpret_cast<QVector2D *>(m_array.data() + index * 2))
-            = qVariantValue<QVector2D>(value);
+            = qvariant_cast<QVector2D>(value);
         break;
 
     case QVariant::Vector3D:
         Q_ASSERT(m_elementType == QCustomDataArray::Vector3D);
         *(reinterpret_cast<QVector3D *>(m_array.data() + index * 3))
-            = qVariantValue<QVector3D>(value);
+            = qvariant_cast<QVector3D>(value);
         break;
 
     case QVariant::Vector4D:
         Q_ASSERT(m_elementType == QCustomDataArray::Vector4D);
         *(reinterpret_cast<QVector4D *>(m_array.data() + index * 4))
-            = qVariantValue<QVector4D>(value);
+            = qvariant_cast<QVector4D>(value);
         break;
 
     case QVariant::Color:
         // Convert QColor into QColor4ub.
         Q_ASSERT(m_elementType == QCustomDataArray::Color);
         *(reinterpret_cast<QColor4ub *>(m_array.data() + index))
-            = QColor4ub(qVariantValue<QColor>(value));
+            = QColor4ub(qvariant_cast<QColor>(value));
         break;
 
     case QVariant::UserType:
         if (value.userType() == qMetaTypeId<QColor4ub>()) {
             Q_ASSERT(m_elementType == QCustomDataArray::Color);
             *(reinterpret_cast<QColor4ub *>(m_array.data() + index))
-                = qVariantValue<QColor4ub>(value);
+                = qvariant_cast<QColor4ub>(value);
             break;
         }
         // Fall through.
@@ -753,25 +753,25 @@ void QCustomDataArray::append(const QVariant& value)
         break;
 
     case QVariant::Vector2D:
-        append(qVariantValue<QVector2D>(value));
+        append(qvariant_cast<QVector2D>(value));
         break;
 
     case QVariant::Vector3D:
-        append(qVariantValue<QVector3D>(value));
+        append(qvariant_cast<QVector3D>(value));
         break;
 
     case QVariant::Vector4D:
-        append(qVariantValue<QVector4D>(value));
+        append(qvariant_cast<QVector4D>(value));
         break;
 
     case QVariant::Color:
         // Convert QColor into QColor4ub.
-        append(QColor4ub(qVariantValue<QColor>(value)));
+        append(QColor4ub(qvariant_cast<QColor>(value)));
         break;
 
     case QVariant::UserType:
         if (value.userType() == qMetaTypeId<QColor4ub>()) {
-            append(qVariantValue<QColor4ub>(value));
+            append(qvariant_cast<QColor4ub>(value));
             break;
         }
         // Fall through.
@@ -812,7 +812,7 @@ QArray<QVector2D> QCustomDataArray::toVector2DArray() const
     if (size > 0) {
         QVector2D *dst = result.extend(size);
         const float *src = m_array.constData();
-        qMemCopy(dst, src, size * sizeof(QVector2D));
+        memcpy(dst, src, size * sizeof(QVector2D));
     }
     return result;
 }
@@ -834,7 +834,7 @@ QArray<QVector3D> QCustomDataArray::toVector3DArray() const
     if (size > 0) {
         QVector3D *dst = result.extend(size);
         const float *src = m_array.constData();
-        qMemCopy(dst, src, size * sizeof(QVector3D));
+        memcpy(dst, src, size * sizeof(QVector3D));
     }
     return result;
 }
@@ -856,7 +856,7 @@ QArray<QVector4D> QCustomDataArray::toVector4DArray() const
     if (size > 0) {
         QVector4D *dst = result.extend(size);
         const float *src = m_array.constData();
-        qMemCopy(dst, src, size * sizeof(QVector4D));
+        memcpy(dst, src, size * sizeof(QVector4D));
     }
     return result;
 }

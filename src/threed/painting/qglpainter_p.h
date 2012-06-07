@@ -94,6 +94,7 @@ public:
     ~QGLPainterPrivate();
 
     QAtomicInt ref;
+    QAtomicInt badShaderCount;
     QOpenGLContext *context;
     QMatrix4x4Stack projectionMatrix;
     QMatrix4x4Stack modelViewMatrix;

@@ -85,6 +85,7 @@ QT_BEGIN_NAMESPACE
 class QThreedQmlModule : public QQmlExtensionPlugin
 {
     Q_OBJECT
+    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface/1.0")
 public:
     virtual void registerTypes(const char *uri)
     {
@@ -131,4 +132,3 @@ QT_END_NAMESPACE
 
 #include "threed.moc"
 
-Q_EXPORT_PLUGIN2(qthreedqmlplugin, QT_PREPEND_NAMESPACE(QThreedQmlModule));

@@ -370,7 +370,7 @@ bool STLImporter::LoadBinaryFile()
             }
             aiColor4D* clr = &pMesh->mColors[0][pMesh->mNumFaces*3];
             clr->a = 1.0f;
-            if (bIsMaterialise) // fuck, this is reversed
+            if (bIsMaterialise) // this is reversed
             {
                 clr->r = (color & 0x31u) / 31.0f;
                 clr->g = ((color & (0x31u<<5))>>5u) / 31.0f;

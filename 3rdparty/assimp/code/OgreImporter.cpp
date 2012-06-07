@@ -514,8 +514,6 @@ void OgreImporter::LoadSkeleton(std::string FileName, vector<Bone> &Bones, vecto
     if (!SkeletonFile)
         throw DeadlyImportError(string("Failed to create XML Reader for ")+FileName);
 
-    //Quick note: Whoever read this should know this one thing: irrXml fucking sucks!!!
-
     XmlRead(SkeletonFile);
     if (string("skeleton")!=SkeletonFile->getNodeName())
         throw DeadlyImportError("No <skeleton> node in SkeletonFile: "+FileName);

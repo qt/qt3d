@@ -60,21 +60,57 @@ Viewport {
         loops: Animation.Infinite
     }
 
+    RssModel { id: rssModel }
+
+    Item3D {
+        transform: [
+            Rotation3D { axis: Qt.vector3d(1, 0, 0); angle: 90 },
+            Translation3D { translate: Qt.vector3d(0, 1, 0) }
+        ]
+
+        Cylinder {
+            levelOfDetail: 1
+            length: 2.0
+            radius: 2.8
+            effect: Effect {
+                color: "#ccccdd"
+            }
+        }
+    }
+
     Skybox {
         source: "./"
     }
 
-    Cube {
-        effect: Effect {
-            color: "#aaca00"
-            texture: "qtlogo.png"
-            decal: true
+    Component {
+        id: octoDisplayDelegate
+        Item3D {
+            transform: [
+                Translation3D { translate: Qt.vector3d(0, 0, 2.6) },
+                // index is a special variable that comes from model instancing
+                Rotation3D { axis: Qt.vector3d(0, 1, 0); angle: (360 / 16) * (index * 2 + 1) }
+            ]
+            Item3D {
+                enabled: index > -1 && index < 9
+                transform: [
+                    Rotation3D { axis: Qt.vector3d(1, 0, 0); angle: 90 }
+                ]
+                Quad {
+                    effect: Effect {
+                        //The current texture downloading does not operate as network URLs are unsupported
+                        //in qt 5.
+                        //texture: model.imagePath
+                        texture: "qtlogo.png"
+                        blending: true
+                    }
+                }
+            }
         }
     }
 
-    MouseArea {
-        anchors.fill: parent
-        //this mousearea simply stops users from trying to move the viewpoint in
-        //what is meant to be a fixed scene.
+    Repeater {
+        delegate: octoDisplayDelegate
+        model: rssModel
     }
 }
+

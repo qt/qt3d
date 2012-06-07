@@ -1321,14 +1321,10 @@ void Discreet3DSImporter::ParseColorChunk(aiColor3D* out,
     ReadChunk(&chunk);
     const unsigned int diff = chunk.Size - sizeof(Discreet3DS::Chunk);
 
-    bool bGamma = false;
-
     // Get the type of the chunk
     switch(chunk.Flag)
     {
     case Discreet3DS::CHUNK_LINRGBF:
-        bGamma = true;
-
     case Discreet3DS::CHUNK_RGBF:
         if (sizeof(float) * 3 > diff)    {
             *out = clrError;
@@ -1340,7 +1336,6 @@ void Discreet3DSImporter::ParseColorChunk(aiColor3D* out,
         break;
 
     case Discreet3DS::CHUNK_LINRGBB:
-        bGamma = true;
     case Discreet3DS::CHUNK_RGBB:
         if (sizeof(char) * 3 > diff)    {
             *out = clrError;

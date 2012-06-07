@@ -223,6 +223,8 @@ void QGLFlatTextureEffect::update
         return;
     }
 #endif
+    if (!d->program)
+        return;
     if ((updates & QGLPainter::UpdateMatrices) != 0) {
         d->program->setUniformValue
             (d->matrixUniform, painter->combinedMatrix());
@@ -362,6 +364,8 @@ void QGLFlatDecalTextureEffect::update
         return;
     }
 #endif
+    if (!d->program)
+        return;
     if ((updates & QGLPainter::UpdateColor) != 0)
         d->program->setUniformValue(d->colorUniform, painter->color());
     if ((updates & QGLPainter::UpdateMatrices) != 0) {
