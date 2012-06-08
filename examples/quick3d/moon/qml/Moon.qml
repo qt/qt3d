@@ -51,7 +51,7 @@ Viewport {
         }
 
         NumberAnimation {
-            running: true
+            running: Qt.application.active
             target: rot;
             loops: Animation.Infinite
             property: "angle";

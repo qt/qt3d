@@ -62,7 +62,7 @@ Viewport {
             Rotation3D {
                 axis: Qt.vector3d(0, 1, 0)
                 NumberAnimation on angle {
-                    running: true
+                    running: Qt.application.active
                     loops: Animation.Infinite
                     from: 0
                     to: 360

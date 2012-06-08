@@ -52,7 +52,7 @@ Image {
     signal pressed
 
     SequentialAnimation {
-        running: theButton.bounce
+        running: theButton.bounce && Qt.application.active
         NumberAnimation {target: theButton; property: "scale"; duration: 50; to: 0.8;}
         NumberAnimation {target: theButton; property: "scale"; duration: 50; to: 1;}
         onCompleted: {theButton.bounce = false}

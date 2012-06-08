@@ -58,7 +58,7 @@ Viewport {
 
         transform: Rotation3D {
             NumberAnimation on angle{
-                running: true
+                running: Qt.application.active
                 loops: Animation.Infinite
                 from: 0
                 to: 360
@@ -86,7 +86,7 @@ Viewport {
                 0.0, 0.0, 0.0, 1.0 ]
 
             SequentialAnimation on translationY {
-                running: true
+                running: Qt.application.active
                 loops: Animation.Infinite
                 PauseAnimation { duration: 2000 }
                 NumberAnimation { from: 1.0; to: 0.001; duration: 1500; easing.type:"OutBounce" }
@@ -95,7 +95,7 @@ Viewport {
             }
 
             SequentialAnimation on customInt {
-                running: true
+                running: Qt.application.active
                 loops: Animation.Infinite
                 PauseAnimation { duration: 2500 }
                 NumberAnimation { from: 1.0; to: 0.001; duration: 1500; easing.type:"OutBounce" }

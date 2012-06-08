@@ -46,7 +46,6 @@ Viewport {
 
     property string name: "Animation Shader"
     property string icon: "teapot-logo.png"
-    property bool run: true
 
 //! [1]
     Item3D {
@@ -55,7 +54,7 @@ Viewport {
 
         transform: Rotation3D {
             NumberAnimation on angle{
-                running: run
+                running: Qt.application.active
                 loops: Animation.Infinite
                 from: 0
                 to: 360
@@ -70,7 +69,7 @@ Viewport {
             id: program
             property real qt_Custom : 1.0
             SequentialAnimation on qt_Custom {
-                running: run
+                running: Qt.application.active
                 loops: Animation.Infinite
                 PauseAnimation { duration: 700 }
                 NumberAnimation { from: 1.0; to: 0.001; duration: 1500; easing.type:"OutBounce" }
@@ -81,7 +80,7 @@ Viewport {
             texture: "qtlogo.png"
 
             SequentialAnimation on color {
-                running: run
+                running: Qt.application.active
                 loops: Animation.Infinite
                 ColorAnimation {
                     from: "#00008a"

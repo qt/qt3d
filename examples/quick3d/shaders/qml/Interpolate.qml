@@ -53,7 +53,7 @@ Viewport {
 
         transform: Rotation3D {
             NumberAnimation on angle{
-                running: true
+                running: Qt.application.active
                 loops: Animation.Infinite
                 from: 0
                 to: 360
@@ -69,7 +69,7 @@ Viewport {
             property real interpolationFactor : 0.0
 
             SequentialAnimation on interpolationFactor {
-                running: true
+                running: Qt.application.active
                 loops: Animation.Infinite
                 NumberAnimation { to : 1.0; duration: 750; }
                 PauseAnimation { duration: 550 }
@@ -78,7 +78,7 @@ Viewport {
             }
 
             SequentialAnimation on color{
-                running: true
+                running: Qt.application.active
                 loops: Animation.Infinite
                 ColorAnimation {
                     from: "#aaca00"

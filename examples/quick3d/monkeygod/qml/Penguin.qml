@@ -62,14 +62,14 @@ Item3D {
     mesh: Mesh { source: "meshes/penguin.3ds" }
 
     SequentialAnimation {
-        running: true
+        running: Qt.application.active
         loops: Animation.Infinite
         NumberAnimation {target: penguinTilt; property: "angle"; to: -30; duration: 600; easing.type: "OutQuad"}
         NumberAnimation {target: penguinTilt; property: "angle"; to: 10; duration: 600; easing.type: "OutQuad"}
     }
 
     SequentialAnimation on y {
-        running: true
+        running: Qt.application.active
         loops: Animation.Infinite
         NumberAnimation {to: 0.5; duration: 200; easing.type: "OutQuad"}
         NumberAnimation {to: 0.0; duration: 200; easing.type: "OutQuad"}

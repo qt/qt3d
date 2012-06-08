@@ -79,7 +79,7 @@ Viewport  {
         ]
 
         SequentialAnimation {
-            running: true
+            running:  Qt.application.active
             loops: Animation.Infinite
             NumberAnimation {target: swivel1; property: "angle"; to: 20; duration: 1200; easing.type: "OutQuad"}
             NumberAnimation {target: swivel1; property: "angle"; to: -20; duration: 1200; easing.type: "OutQuad"}
@@ -113,7 +113,7 @@ Viewport  {
         ]
 
         SequentialAnimation {
-            running: true
+            running: Qt.application.active
             loops: Animation.Infinite
             NumberAnimation {target: swivel2; property: "angle"; to: -20; duration: 1200; easing.type: "OutQuad"}
             NumberAnimation {target: swivel2; property: "angle"; to: 20; duration: 1200; easing.type: "OutQuad"}

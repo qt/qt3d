@@ -53,7 +53,7 @@ Viewport {
 
         transform: Rotation3D {
             NumberAnimation on angle{
-                running: true
+                running: Qt.application.active
                 loops: Animation.Infinite
                 from: 0
                 to: 360
@@ -67,7 +67,7 @@ Viewport {
             property real collapseFactor : 0.0
 
             SequentialAnimation on collapseFactor {
-                running: true
+                running: Qt.application.active
                 loops: Animation.Infinite
                 PauseAnimation { duration: 700 }
                 NumberAnimation { from: 0.0; to: 1.0; duration: 1500; easing.type:"OutBounce" }
@@ -77,7 +77,7 @@ Viewport {
             texture: "qtlogo.png"
 
             SequentialAnimation on color{
-                running: true
+                running: Qt.application.active
                 loops: Animation.Infinite
                 ColorAnimation {
                     from: "#00008a"

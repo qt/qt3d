@@ -54,7 +54,7 @@ Viewport {
     }
 
     NumberAnimation {
-        running: true
+        running: Qt.application.active
         target: cam; property: "viewAngle";
         from: 0.0; to: 360.0; duration: 2000000;
         loops: Animation.Infinite

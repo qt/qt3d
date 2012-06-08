@@ -147,7 +147,7 @@ Viewport {
         }
 
         SequentialAnimation on y{
-            running: teapot.bounce
+            running: teapot.bounce && Qt.application.active
             NumberAnimation { to : 1.0; duration: 300; easing.type: "OutQuad" }
             NumberAnimation { to : 0.0; duration: 300; easing.type: "OutBounce" }
             onCompleted: teapot.bounce = false

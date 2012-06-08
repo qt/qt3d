@@ -101,7 +101,7 @@ Rectangle {
             property string image : imageUrl
 
             SequentialAnimation on textureOffsetX {
-                running: true
+                running: Qt.application.active
                 loops: Animation.Infinite
                 PauseAnimation { duration: 2500 }
                 NumberAnimation { from: 0.0; to: 1.0; duration: 1500; easing.type:"OutBounce" }

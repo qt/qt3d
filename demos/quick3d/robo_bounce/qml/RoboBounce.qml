@@ -116,7 +116,7 @@ Image {
     Timer {
         id: navigator;
         interval: 5;
-        running: true
+        running: Qt.application.active
         repeat: true
         property int tiltdir: 0 //1 is forward, 2 is back
         property int spindir: 0 //1 is right, 2 is left
@@ -144,7 +144,7 @@ Image {
     Timer {
         id: heartbeat;
         interval: theBackground.repeatAnimationTimer*1000;
-        running: true
+        running: Qt.application.active
         repeat: true
         onTriggered: {
             qt3dButton.bounce = true;
@@ -265,7 +265,7 @@ Image {
                 }
 
                 SequentialAnimation {
-                    running: roboInfo.showVisible
+                    running: roboInfo.showVisible && Qt.application.active
                     NumberAnimation {target: roboInfo; property: "opacity"; to: 0.7; duration: 500}
                     PauseAnimation {duration: 3000}
                     NumberAnimation {target: roboInfo; property: "opacity"; to: 0.0; duration: 500}
@@ -288,7 +288,7 @@ Image {
                 height: 70
 
                 SequentialAnimation {
-                    running: qt3dButton.bounce
+                    running: qt3dButton.bounce && Qt.application.active
                     NumberAnimation {target: qt3dButton; property: "scale"; duration: 100; to: 1.2;}
                     NumberAnimation {target: qt3dButton; property: "scale"; duration: 100; to: 1;}
                     onCompleted: {qt3dButton.bounce = false}
@@ -433,7 +433,7 @@ Image {
 
 
                     NumberAnimation {
-                        running: room.spinning
+                        running: room.spinning && Qt.application.active
                         target: roomSpin
                         property: "angle"
                         to: 360
@@ -461,7 +461,7 @@ Image {
                         ]
 
                         SequentialAnimation {
-                            running: smallCube.fallingCubeAnimation
+                            running: smallCube.fallingCubeAnimation && Qt.application.active
                             onCompleted: {smallCube.fallingCubeAnimation=false;}
                             ParallelAnimation {
                                 NumberAnimation {target: spinSmallCube; property: "angle"; to: 360; easing.type: "InOutQuad"; duration: 1750}
@@ -583,14 +583,6 @@ Image {
                             mesh: Mesh { source: "meshes/roboticArms.3ds"}
                             transform: Rotation3D{id: armBend; angle: -90;axis: Qt.vector3d(0,1,0)}
                             position: Qt.vector3d(.18, 0,-5.4)
-
-                            SequentialAnimation {
-                                running: false
-                                loops: 100
-                                NumberAnimation {target: armBend; property: "angle"; to: 0.0; duration: 1000; easing.type: "OutQuad" }
-                                PauseAnimation {duration: 1000}
-                                NumberAnimation {target: armBend; property: "angle"; to: -90.0; duration: 1000; easing.type: "OutQuad" }
-                            }
                         }
 
                         Item3D {
