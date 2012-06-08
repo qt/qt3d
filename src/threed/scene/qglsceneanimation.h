@@ -44,6 +44,8 @@
 
 #include "qt3dglobal.h"
 #include <QtCore/qobject.h>
+#include <QtGui/qvector3d.h>
+#include <QtGui/qquaternion.h>
 
 QT_BEGIN_HEADER
 
@@ -59,13 +61,43 @@ class Q_QT3D_EXPORT QGLSceneAnimation : public QObject
     Q_DECLARE_PRIVATE(QGLSceneAnimation)
 
     Q_PROPERTY(QString name READ name DESIGNABLE false)
+    Q_PROPERTY(qreal duration READ duration DESIGNABLE false)
+    Q_PROPERTY(qreal position READ position WRITE setPosition NOTIFY positionChanged DESIGNABLE false)
+    Q_PROPERTY(bool loop READ loop WRITE setLoop NOTIFY loopChanged DESIGNABLE false)
 
 public:
     explicit QGLSceneAnimation(QObject *parent = 0);
-    explicit QGLSceneAnimation(const QString &name, QObject *parent = 0);
+    explicit QGLSceneAnimation(QObject *parent, const QString &name);
     virtual ~QGLSceneAnimation();
 
     QString name() const;
+
+    virtual qreal duration() const;
+
+    virtual qreal position() const;
+    virtual void setPosition(qreal pos);
+
+    virtual bool loop() const;
+    virtual void setLoop(bool l);
+
+    virtual QList<QString> affectedNodes() const;
+    struct NodeTransform
+    {
+        QVector3D   m_Scale;
+        QQuaternion m_Rotate;
+        QVector3D   m_Translate;
+    };
+    virtual QList<NodeTransform>    transformations() const;
+
+public Q_SLOTS:
+    virtual void play();
+    virtual void stop();
+    virtual void pause(bool);
+
+Q_SIGNALS:
+    void positionChanged();
+    void loopChanged();
+    void animationCycleFinished();
 
 private:
     Q_DISABLE_COPY(QGLSceneAnimation)

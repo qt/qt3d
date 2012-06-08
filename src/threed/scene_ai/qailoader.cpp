@@ -43,6 +43,7 @@
 #include "qaiscenehandler.h"
 #include "qaiscene.h"
 #include "qaimesh.h"
+#include "qaianimation.h"
 
 #include "qgeometrydata.h"
 #include "qgltwosidedmaterial.h"
@@ -192,32 +193,24 @@ inline static QMatrix4x4 getNodeMatrix(aiNode *node)
 
 void QAiLoader::loadNodes(aiNode *nodeList, QGLSceneNode *parentNode)
 {
-    QMap<aiNode *, QGLSceneNode *>::const_iterator it = m_nodeMap.constFind(nodeList);
-    QGLSceneNode *node = 0;
-    if (it == m_nodeMap.constEnd()) // not found
+    QGLSceneNode* node = new QGLSceneNode(parentNode);
+    m_nodes.append(node);
+    QString name = QString::fromUtf8(nodeList->mName.data, int(nodeList->mName.length));
+    if (name.isEmpty())
+        name = QString(QLatin1String("aiNode %1")).arg(m_nodes.size());
+    node->setObjectName(name);
+    m_defaultTransforms.insert(name,nodeList->mTransformation);
+
+    QMatrix4x4 mat = getNodeMatrix(nodeList);
+    if (!mat.isIdentity())
+        node->setLocalTransform(mat);
+    for (unsigned int i = 0; i < nodeList->mNumChildren; ++i)
+        loadNodes(nodeList->mChildren[i], node);
+    for (unsigned int i = 0; i < nodeList->mNumMeshes; ++i)
     {
-        node = new QGLSceneNode(parentNode);
-        m_nodes.append(node);
-        QString name = QString::fromUtf8(nodeList->mName.data, int(nodeList->mName.length));
-        if (name.isEmpty())
-            name = QString(QLatin1String("aiNode %1")).arg(m_nodes.size());
-        node->setObjectName(name);
-        QMatrix4x4 mat = getNodeMatrix(nodeList);
-        if (!mat.isIdentity())
-            node->setLocalTransform(mat);
-        for (unsigned int i = 0; i < nodeList->mNumChildren; ++i)
-            loadNodes(nodeList->mChildren[i], node);
-        for (unsigned int i = 0; i < nodeList->mNumMeshes; ++i)
-        {
-            int n = nodeList->mMeshes[i];
-            if (n < m_meshes.size())
-                node->addNode(m_meshes.at(n));
-        }
-    }
-    else
-    {
-        node = it.value();
-        parentNode->addNode(node);
+        int n = nodeList->mMeshes[i];
+        if (n < m_meshes.size())
+            node->addNode(m_meshes.at(n));
     }
 }
 
@@ -250,12 +243,8 @@ QGLSceneNode *QAiLoader::loadMeshes()
         name = name.mid(pos+1);
     m_root->setObjectName(name);
 
-    // if scene has a node heierarchy replace the naive heierarchy with that
-    if (m_scene->mRootNode->mNumChildren > 0 && m_scene->mRootNode->mChildren)
-    {
-        m_root->removeNodes(m_root->children());
-        loadNodes(m_scene->mRootNode, m_root);
-    }
+    m_root->removeNodes(m_root->children());
+    loadNodes(m_scene->mRootNode, m_root);
 
     setEffectRecursive(m_root);
 
@@ -316,12 +305,40 @@ QList<QGLSceneAnimation *> QAiLoader::loadAnimations()
 {
     Q_ASSERT(m_scene);
     m_animations.clear();
+    m_AnimatedNodesDefaultTransforms.clear();
 
     for (unsigned int i=0; i<m_scene->mNumAnimations; ++i) {
-        m_animations.append( new QGLSceneAnimation( QLatin1String(m_scene->mAnimations[i]->mName.data), 0 ) );
+        aiAnimation* pSrcAnim = m_scene->mAnimations[i];
+        Q_ASSERT(pSrcAnim!=0);
+        QAiAnimation* pNewAnimation = new QAiAnimation(0, QString(QLatin1String(pSrcAnim->mName.data)));
+        pNewAnimation->loadData(pSrcAnim,m_defaultTransforms,m_AnimatedNodesDefaultTransforms);
+        m_animations.append(pNewAnimation);
     }
 
     return m_animations;
+}
+
+/*!
+    TODO: docs
+ */
+QMap<QGLSceneNode*,QGLSceneAnimation::NodeTransform> QAiLoader::loadDefaultTransformations()
+{
+    QMap<QString,QGLSceneNode*> nodes;
+    foreach (QGLSceneNode* pNode, m_nodes) {
+        QString name = pNode->objectName();
+        if (name.length()>0) {
+            nodes.insert(name,pNode);
+        }
+    }
+    QMap<QGLSceneNode*,QGLSceneAnimation::NodeTransform> result;
+    typedef QMap<QString,QGLSceneAnimation::NodeTransform>::const_iterator UberIterator;
+    for (UberIterator It=m_AnimatedNodesDefaultTransforms.begin(); It!=m_AnimatedNodesDefaultTransforms.end(); ++It) {
+        QMap<QString,QGLSceneNode*>::const_iterator ItNode = nodes.find(It.key());
+        Q_ASSERT(ItNode != nodes.end());
+        QMap<QGLSceneNode*,QGLSceneAnimation::NodeTransform>::iterator res = result.insert(ItNode.value(),It.value());
+        Q_ASSERT(res != result.end());
+    }
+    return result;
 }
 
 /*!

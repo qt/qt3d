@@ -72,7 +72,7 @@ QGLSceneAnimation::QGLSceneAnimation(QObject *parent) :
 {
 }
 
-QGLSceneAnimation::QGLSceneAnimation(const QString &name, QObject *parent) :
+QGLSceneAnimation::QGLSceneAnimation(QObject *parent, const QString &name) :
     QObject(parent)
     ,d_ptr(new QGLSceneAnimationPrivate())
 {
@@ -88,6 +88,54 @@ QString QGLSceneAnimation::name() const
 {
     Q_D(const QGLSceneAnimation);
     return d->m_name;
+}
+
+qreal QGLSceneAnimation::duration() const
+{
+    return 0.0;
+}
+
+qreal QGLSceneAnimation::position() const
+{
+    return 0.0;
+}
+
+void QGLSceneAnimation::setPosition(qreal)
+{
+}
+
+bool QGLSceneAnimation::loop() const
+{
+    return false;
+}
+
+void QGLSceneAnimation::setLoop(bool)
+{
+}
+
+QList<QString> QGLSceneAnimation::affectedNodes() const
+{
+    return QList<QString>();
+}
+
+QList<QGLSceneAnimation::NodeTransform> QGLSceneAnimation::transformations() const
+{
+    return QList<QGLSceneAnimation::NodeTransform>();
+}
+
+void QGLSceneAnimation::play()
+{
+    qDebug("QGLSceneAnimation::play()");
+}
+
+void QGLSceneAnimation::stop()
+{
+    qDebug("QGLSceneAnimation::stop()");
+}
+
+void QGLSceneAnimation::pause(bool val)
+{
+    qDebug("QGLSceneAnimation::pause( %d )", val);
 }
 
 QT_END_NAMESPACE

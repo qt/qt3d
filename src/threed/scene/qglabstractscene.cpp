@@ -168,12 +168,31 @@ class QGLAbstractScenePrivate
 {
 public:
     QGLAbstractScenePrivate()
-        : picking(false), nextPickId(-1), pickNodesDirty(true) {}
+        : picking(false), nextPickId(-1), pickNodesDirty(true), m_bFirstProcess(true) {}
     bool picking;
     int nextPickId;
     QList<QGLPickNode*> pickNodes;
     QSet<QGLSceneNode*> pickable;
     bool pickNodesDirty;
+
+    bool                                                    m_bFirstProcess;
+    QList<QGLSceneAnimation *>                              m_animations;
+    std::vector<std::vector<QGLSceneNode*> >                m_affectedNodes;
+    QMap<QGLSceneNode*,QGLSceneAnimation::NodeTransform>    m_defaultTransformations;
+
+    struct NodeIndex
+    {
+        QGLSceneNode*   m_pNode;
+        int             m_Index;
+        bool operator < (const NodeIndex& other) const {
+            if (m_pNode != other.m_pNode)
+                return m_pNode < other.m_pNode;
+            else
+                return m_Index < other.m_Index;
+        }
+    };
+    QArray<NodeIndex>                           m_NodeIndices;
+    QArray<QGLSceneAnimation::NodeTransform>    m_TransformsBuffer;
 };
 
 bool QGLAbstractScene::m_bFormatListReady = false;
@@ -353,12 +372,147 @@ QObject *QGLAbstractScene::object(const QString& name) const
 
 /*!
     Returns a list of animations.
-
-    The default implementation returns empty list.
 */
 QList<QGLSceneAnimation *> QGLAbstractScene::animations() const
 {
-    return QList<QGLSceneAnimation *>();
+    return getAnimations();
+}
+
+/*!
+    \internal
+*/
+QList<QGLSceneAnimation *>& QGLAbstractScene::getAnimations() const
+{
+    return d_ptr->m_animations;
+}
+
+/*!
+    \internal
+*/
+QMap<QGLSceneNode*,QGLSceneAnimation::NodeTransform>& QGLAbstractScene::getDefaultTransformations() const
+{
+    return d_ptr->m_defaultTransformations;
+}
+
+void CollectNodesRecursive(QGLSceneNode* pNode, QList<QGLSceneNode*>& rNodes) {
+    if (pNode) {
+        rNodes.append(pNode);
+        foreach (QGLSceneNode* pN, pNode->children()) {
+            CollectNodesRecursive(pN,rNodes);
+        }
+    }
+}
+
+/*!
+    \internal
+*/
+void QGLAbstractScene::processAnimations()
+{
+    if (d_ptr->m_bFirstProcess) {
+        d_ptr->m_bFirstProcess = false;
+
+        QList<QGLSceneNode*> Nodes;
+        CollectNodesRecursive(mainNode(), Nodes);
+
+        int maximumNodesCount = 0;
+        d_ptr->m_affectedNodes.resize(d_ptr->m_animations.count());
+        for (int i=0; i<d_ptr->m_animations.count(); ++i) {
+            QGLSceneAnimation*          pAnimation              = d_ptr->m_animations[i];
+            std::vector<QGLSceneNode*>& rNodesForThisAnimation  = d_ptr->m_affectedNodes[i];
+
+            QList<QString> AffectedNodes = pAnimation->affectedNodes();
+            rNodesForThisAnimation.resize(AffectedNodes.count());
+            maximumNodesCount += AffectedNodes.count();
+
+            for (int an=0; an<AffectedNodes.count(); ++an) {
+                QGLSceneNode* pNode = 0;
+                for (int nn=0; nn<Nodes.count(); ++nn) {
+                    if (AffectedNodes.at(an) == Nodes.at(nn)->objectName()) {
+                        pNode = Nodes.at(nn);
+                        break;
+                    }
+                }
+                Q_ASSERT(pNode!=0);
+                rNodesForThisAnimation[an] = pNode;
+            }
+        }
+        maximumNodesCount += getDefaultTransformations().size();
+        d_ptr->m_NodeIndices.resize(maximumNodesCount);
+        d_ptr->m_TransformsBuffer.resize(maximumNodesCount);
+    }
+
+    int nReportedPositions = 0;
+    for ( QMap<QGLSceneNode*,QGLSceneAnimation::NodeTransform>::const_iterator It=d_ptr->m_defaultTransformations.begin(); It!=d_ptr->m_defaultTransformations.end(); ++It,++nReportedPositions) {
+        d_ptr->m_NodeIndices[nReportedPositions].m_pNode = It.key();
+        d_ptr->m_NodeIndices[nReportedPositions].m_Index = -1;
+    }
+    for (int i=0; i<d_ptr->m_animations.count(); ++i) {
+        QGLSceneAnimation* pAnimation = d_ptr->m_animations[i];
+
+        QList<QGLSceneAnimation::NodeTransform> transforms = pAnimation->transformations();
+        Q_ASSERT(transforms.size()==0 || transforms.size()==d_ptr->m_affectedNodes[i].size());
+        if (transforms.size()>0) {
+            for (int j=0; j<transforms.size(); ++j,++nReportedPositions) {
+                d_ptr->m_NodeIndices[nReportedPositions].m_pNode = d_ptr->m_affectedNodes[i][j];
+                d_ptr->m_NodeIndices[nReportedPositions].m_Index = nReportedPositions;
+                d_ptr->m_TransformsBuffer[nReportedPositions] = transforms.at(j);
+            }
+        }
+    }
+    if (nReportedPositions>0) {
+        QGLAbstractScenePrivate::NodeIndex* pBegin = &(d_ptr->m_NodeIndices[0]);
+        QGLAbstractScenePrivate::NodeIndex* pEnd = pBegin + nReportedPositions;
+        std::sort(pBegin,pEnd);
+    }
+
+    // iterate sorted array, blend transforms, get default transforms if needed, assign transforms to nodes
+    for (int index=0; index<nReportedPositions; ) {
+        Q_ASSERT(index==0 || d_ptr->m_NodeIndices[index].m_pNode!=d_ptr->m_NodeIndices[index-1].m_pNode);
+        Q_ASSERT(d_ptr->m_NodeIndices[index].m_Index == -1);
+        QGLSceneNode* pNode = d_ptr->m_NodeIndices[index].m_pNode;
+        int iEnd=index+1;
+        for (; iEnd<nReportedPositions && d_ptr->m_NodeIndices[iEnd].m_pNode==pNode; ++iEnd) {}
+        int nElementsForThisNode = iEnd-index;
+        QGLSceneAnimation::NodeTransform transform;
+        if (nElementsForThisNode==1) {
+            QMap<QGLSceneNode*,QGLSceneAnimation::NodeTransform>::const_iterator It=getDefaultTransformations().find(pNode);
+            Q_ASSERT(It!=getDefaultTransformations().end());
+            transform = It.value();
+        } else if (nElementsForThisNode==2) {
+            Q_ASSERT(d_ptr->m_NodeIndices[index  ].m_Index == -1);
+            Q_ASSERT(d_ptr->m_NodeIndices[index+1].m_Index >= 0);
+            Q_ASSERT(d_ptr->m_NodeIndices[index+1].m_Index < nReportedPositions);
+            transform = d_ptr->m_TransformsBuffer[ d_ptr->m_NodeIndices[index+1].m_Index ];
+        } else if (nElementsForThisNode==3) {
+            Q_ASSERT(d_ptr->m_NodeIndices[index  ].m_Index == -1);
+            Q_ASSERT(d_ptr->m_NodeIndices[index+1].m_Index >= 0);
+            Q_ASSERT(d_ptr->m_NodeIndices[index+1].m_Index < nReportedPositions);
+            Q_ASSERT(d_ptr->m_NodeIndices[index+2].m_Index >= 0);
+            Q_ASSERT(d_ptr->m_NodeIndices[index+2].m_Index < nReportedPositions);
+            const QGLSceneAnimation::NodeTransform& transform1 = d_ptr->m_TransformsBuffer[ d_ptr->m_NodeIndices[index+1].m_Index ];
+            const QGLSceneAnimation::NodeTransform& transform2 = d_ptr->m_TransformsBuffer[ d_ptr->m_NodeIndices[index+2].m_Index ];
+            transform.m_Scale = 0.5*(transform1.m_Scale + transform2.m_Scale);
+            transform.m_Translate = 0.5*(transform1.m_Translate + transform2.m_Translate);
+            transform.m_Rotate = QQuaternion::slerp(transform1.m_Rotate,transform2.m_Rotate,0.5).normalized();
+        } else {
+            //TODO: extend to this case
+            QMap<QGLSceneNode*,QGLSceneAnimation::NodeTransform>::const_iterator It=getDefaultTransformations().find(pNode);
+            Q_ASSERT(It!=getDefaultTransformations().end());
+            transform = It.value();
+        }
+        QMatrix4x4 nodeMatrix;
+        if (!transform.m_Translate.isNull())
+            nodeMatrix.translate(transform.m_Translate);
+        if (!transform.m_Scale.isNull())
+            nodeMatrix.scale(transform.m_Scale);
+        if (!transform.m_Rotate.isNull())
+            nodeMatrix.rotate(transform.m_Rotate);
+        pNode->setLocalTransform(nodeMatrix);
+
+        index = iEnd;
+    }
+
+    emit animationUpdated();
 }
 
 /*!

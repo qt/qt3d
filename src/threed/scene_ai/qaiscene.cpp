@@ -62,6 +62,47 @@ QT_BEGIN_NAMESPACE
 
     The QAiScene object takes ownership of the \a file.
 */
+
+const int g_MaxLevel = 16;
+char g_Buffer[1 + g_MaxLevel*2];
+void DumpSceneNode(int level, QGLSceneNode* pNode)
+{
+    if (pNode) {
+        if (level > g_MaxLevel)
+            level = g_MaxLevel;
+        memset(g_Buffer,' ',level*2);
+        g_Buffer[level*2] = '\0';
+        qDebug("%snode(%p) name='%s'",g_Buffer,pNode,pNode->objectName().toLatin1().constData());
+        if (!pNode->localTransform().isIdentity()) {
+            qDebug("%s  transform",g_Buffer);
+        }
+        if (pNode->count() > 0) {
+            qDebug("%s  geometry",g_Buffer);
+        }
+        foreach (QGLSceneNode* pChild, pNode->children()) {
+            DumpSceneNode(level+1, pChild);
+        }
+    }
+}
+
+void DumpAnimations(const QList<QGLSceneAnimation *>& rAnimations)
+{
+    foreach (QGLSceneAnimation* pAnim, rAnimations) {
+        qDebug("animation '%s':",pAnim->name().toLatin1().constData());
+        QList<QString> nodes = pAnim->affectedNodes();
+        foreach (QString node, nodes) {
+            qDebug("  affects node '%s'",node.toLatin1().constData());
+        }
+    }
+}
+
+void DumpDefaultTransforms(const QMap<QGLSceneNode*,QGLSceneAnimation::NodeTransform>& rDefaultTransforms)
+{
+    for (QMap<QGLSceneNode*,QGLSceneAnimation::NodeTransform>::const_iterator It=rDefaultTransforms.begin(); It!=rDefaultTransforms.end(); ++It) {
+        qDebug("got default transform for node '%s'",It.key()->objectName().toLatin1().constData());
+    }
+}
+
 QAiScene::QAiScene(const aiScene *scene, QAiSceneHandler *handler)
     : QGLAbstractScene(0)
 {
@@ -70,7 +111,18 @@ QAiScene::QAiScene(const aiScene *scene, QAiSceneHandler *handler)
     QAiLoader loader(scene, handler);
     m_root = loader.loadMeshes();
     m_root->setParent(this);
-    m_animations = loader.loadAnimations();
+    getAnimations() = loader.loadAnimations();
+    getDefaultTransformations() = loader.loadDefaultTransformations();
+    foreach (QGLSceneAnimation* pAnim, getAnimations()) {
+        pAnim->setParent(this);
+        QObject::connect(pAnim,SIGNAL(positionChanged()),this,SLOT(processAnimations()));
+    }
+    qDebug("=======================================");
+    qDebug("loaded scene:");
+    DumpSceneNode(1,m_root);
+    DumpAnimations(getAnimations());
+    DumpDefaultTransforms(getDefaultTransformations());
+    qDebug("=======================================");
     m_aiLoader = 0;
 }
 
@@ -180,11 +232,6 @@ void QAiScene::loadScene(const aiScene *scene)
     if (pickable()) generatePickNodes();
 
     emit sceneUpdated();
-}
-
-QList<QGLSceneAnimation *> QAiScene::animations() const
-{
-    return m_animations;
 }
 
 QT_END_NAMESPACE

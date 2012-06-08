@@ -1819,13 +1819,13 @@ void Viewport::itemChange(QQuickItem::ItemChange change, const ItemChangeData &v
             setItemViewport(item3d);
         }
     }
-    if (change == ItemSceneChange && value.canvas != d->canvas)
+    if (change == ItemSceneChange && value.window != d->canvas)
     {
         if (d->canvas)
         {
             d->canvas->disconnect(this);
         }
-        d->canvas = value.canvas;
+        d->canvas = value.window;
         d->directRenderInitialized = false;
         if (d->canvas)
         {

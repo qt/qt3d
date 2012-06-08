@@ -69,7 +69,6 @@ public:
 
     QList<QObject *> objects() const;
     QGLSceneNode *mainNode() const;
-    QList<QGLSceneAnimation *> animations() const;
 private:
     QAiLoader * aiLoader() const;
     QList<QGLSceneAnimation *> m_animations;

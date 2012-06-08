@@ -38,69 +38,55 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
+#ifndef QAIANIMATION_H
+#define QAIANIMATION_H
 
-#ifndef QAILOADER_H
-#define QAILOADER_H
-
-#include <QtCore/qurl.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qmap.h>
-
+#include "qglsceneanimation.h"
 #include "aiScene.h"
 
-#include "qglbuilder.h"
-#include "qglsceneanimation.h"
+#include <QtCore/qmap.h>
 
-struct aiMaterial;
+QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
-class QAiMesh;
-class QAiScene;
-class QGLSceneNode;
-class QAiSceneHandler;
-//class QGLSceneAnimation;
-class QGLMaterial;
+class QAiAnimationPrivate;
 
-class QAiLoader
+class QAiAnimation : public QGLSceneAnimation
 {
 public:
-    QAiLoader(const aiScene *scene, QAiSceneHandler* handler);
-    ~QAiLoader();
-    QGLSceneNode *loadMeshes();
-    QList<QGLSceneAnimation *> loadAnimations();
-    QMap<QGLSceneNode*,QGLSceneAnimation::NodeTransform> loadDefaultTransformations();
+    explicit QAiAnimation(QObject *parent = 0);
+    explicit QAiAnimation(QObject *parent, const QString &name);
+    ~QAiAnimation();
+
+    qreal duration() const;
+
+    qreal position() const;
+    void setPosition(qreal pos);
+
+    bool loop() const;
+    void setLoop(bool l);
+
+    QList<QString>          affectedNodes() const;
+    QList<NodeTransform>    transformations() const;
+
+    void loadData(aiAnimation* pSrcAnim, const QMap<QString,aiMatrix4x4>& rDefaultTransforms, QMap<QString,QGLSceneAnimation::NodeTransform>& rDefaultTransformsRaw);
+
+public Q_SLOTS:
+    void play();
+    void stop();
+    void pause(bool);
 
 private:
-    friend class QAiScene;
+    Q_DISABLE_COPY(QAiAnimation)
+    QAiAnimationPrivate* d_ptr;
 
-    void loadMesh(aiMesh *);
-    void loadNodes(aiNode *, QGLSceneNode *);
-    void loadMaterial(aiMaterial *);
-    void loadTextures(aiMaterial *, QGLMaterial *);
-    QUrl ensureResource(const QString &);
-    void optimizeData();
-    void optimizeNodes(QGLSceneNode *node = 0, QGLSceneNode *parent = 0);
-    void countChildNodeReferences();
-    void setEffectRecursive(QGLSceneNode *node);
-
-    const aiScene *m_scene;
-    QGLSceneNode *m_root;
-    QAiSceneHandler *m_handler;
-    QList<QGLSceneNode *> m_nodes;
-
-    QMap<QString,aiMatrix4x4> m_defaultTransforms;
-    QMap<QString,QGLSceneAnimation::NodeTransform>   m_AnimatedNodesDefaultTransforms;
-
-    QList<QGLMaterial *> m_materials;
-    QList<QGLSceneNode *> m_meshes;
-    QMap<QGLSceneNode *, int> m_refCounts;
-    QList<QGLSceneAnimation *> m_animations;
-    bool m_hasTextures;
-    bool m_hasLitMaterials;
-    QGLBuilder m_builder;
+    qreal AdjustPosition(qreal newPos);
 };
 
 QT_END_NAMESPACE
 
-#endif // QAILOADER_H
+QT_END_HEADER
+
+
+#endif // QAIANIMATION_H

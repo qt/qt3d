@@ -79,7 +79,7 @@ public:
     virtual QObject *object(const QString& name) const;
     virtual QGLSceneNode *mainNode() const = 0;
 
-    virtual QList<QGLSceneAnimation *> animations() const;
+    QList<QGLSceneAnimation *> animations() const;
 
     static QGLAbstractScene *loadScene
         (const QUrl& url, const QString& format = QString(),
@@ -100,8 +100,16 @@ public:
 signals:
     void sceneUpdated();
 
+public Q_SLOTS:
+    void processAnimations();
+
+Q_SIGNALS:
+    void animationUpdated();
+
 protected:
     void childEvent(QChildEvent * event);
+    QList<QGLSceneAnimation *>& getAnimations() const;
+    QMap<QGLSceneNode*,QGLSceneAnimation::NodeTransform>& getDefaultTransformations() const;
 
 private:
     QScopedPointer<QGLAbstractScenePrivate> d_ptr;
