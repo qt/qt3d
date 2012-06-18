@@ -32,7 +32,6 @@ CATEGORY = examples
 include(../../../pkg.pri)
 
 OTHER_FILES += \
-    mt.qml \
     lander.rc \
     $$QML_INFRA_FILES
 

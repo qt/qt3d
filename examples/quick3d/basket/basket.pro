@@ -22,7 +22,6 @@ CATEGORY = examples
 include(../../../pkg.pri)
 
 OTHER_FILES += \
-    mt.qml \
     basket_qml.rc \
     $$QML_INFRA_FILES
 

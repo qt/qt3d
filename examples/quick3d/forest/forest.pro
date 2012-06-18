@@ -24,7 +24,6 @@ CATEGORY = examples
 include(../../../pkg.pri)
 
 OTHER_FILES += \
-    mt.qml \
     forest.rc \
     $$QML_INFRA_FILES
 

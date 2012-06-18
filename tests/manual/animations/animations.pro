@@ -20,5 +20,4 @@ CATEGORY = manual
 include(../../../pkg.pri)
 
 OTHER_FILES += \
-    mt.qml \
     $$QML_INFRA_FILES

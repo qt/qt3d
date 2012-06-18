@@ -18,7 +18,6 @@ CATEGORY = examples
 include(../../../pkg.pri)
 
 OTHER_FILES += \
-    mt.qml \
     sphere.rc \
     $$QML_INFRA_FILES
 

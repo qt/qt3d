@@ -19,7 +19,6 @@ CATEGORY = examples
 include(../../../pkg.pri)
 
 OTHER_FILES += \
-    mt.qml \
     cube_qml.rc \
     $$QML_INFRA_FILES
 

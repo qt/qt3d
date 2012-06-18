@@ -22,7 +22,6 @@ CATEGORY = tutorials
 include(../../../pkg.pri)
 
 OTHER_FILES += \
-    mt.qml \
     teapot_bounce_qml.rc \
     $$QML_INFRA_FILES
 

@@ -49,7 +49,6 @@ include(../../../pkg.pri)
 RC_FILE = robo_bounce.rc
 
 OTHER_FILES += \
-    mt.qml \
     robo_bounce.rc \
     $$QML_INFRA_FILES \
     $$RC_FILE

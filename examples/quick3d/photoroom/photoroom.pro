@@ -28,7 +28,6 @@ CATEGORY = examples
 include(../../../pkg.pri)
 
 OTHER_FILES += \
-    mt.qml \
     photoroom.rc \
     $$QML_INFRA_FILES
 

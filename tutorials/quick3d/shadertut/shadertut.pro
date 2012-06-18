@@ -27,7 +27,7 @@ CATEGORY = tutorials
 include(../../../pkg.pri)
 
 OTHER_FILES += \
-    mt.qml \
     shadertut.rc \
     $$QML_INFRA_FILES
+
 RC_FILE = shadertut.rc

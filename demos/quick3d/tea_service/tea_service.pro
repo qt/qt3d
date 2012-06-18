@@ -24,11 +24,7 @@ CATEGORY = demos
 include(../../../pkg.pri)
 
 OTHER_FILES += \
-    mt.qml \
     $$QML_INFRA_FILES \
     tea_service.rc
-
-INSTALL_DIRS = qml
-mt: INSTALL_FILES = mt.qml
 
 RC_FILE = tea_service.rc

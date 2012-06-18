@@ -28,7 +28,6 @@ CATEGORY = examples
 include(../../../pkg.pri)
 
 OTHER_FILES += \
-    mt.qml \
     shaders.rc \
     $$QML_INFRA_FILES
 

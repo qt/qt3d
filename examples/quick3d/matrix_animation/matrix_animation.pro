@@ -22,7 +22,6 @@ CATEGORY = examples
 include(../../../pkg.pri)
 
 OTHER_FILES += \
-    mt.qml \
     matrix_animation.rc \
     $$QML_INFRA_FILES
 

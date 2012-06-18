@@ -26,7 +26,6 @@ CATEGORY = demos
 include(../../../pkg.pri)
 
 OTHER_FILES += \
-    mt.qml \
     flickr3d.rc \
     $$QML_INFRA_FILES
 

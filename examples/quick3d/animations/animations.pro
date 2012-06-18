@@ -21,7 +21,6 @@ CATEGORY = examples
 include(../../../pkg.pri)
 
 OTHER_FILES += \
-    mt.qml \
     animations_qml.rc \
     $$QML_INFRA_FILES
 
