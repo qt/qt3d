@@ -90,31 +90,31 @@ public:
     virtual void registerTypes(const char *uri)
     {
         Q_ASSERT(QLatin1String(uri) == QLatin1String("Qt3D"));
-        qmlRegisterType<QGLSceneNode>(uri,1,0,"SceneNode");
-        qmlRegisterType<QQuickEffect>(uri,1,0,"Effect");
-        qmlRegisterType<QQuickMesh>(uri,1,0,"Mesh");
-        qmlRegisterType<QQuickItem3D>(uri,1,0,"Item3D");
-        qmlRegisterType<QQuickAnimation3D>(uri,1,0,"Animation3D");
-        qmlRegisterType<QGLLightModel>(uri,1,0,"LightModel");
-        qmlRegisterType<QGLLightParameters>(uri,1,0,"Light");
-        qmlRegisterType<QGLCamera>(uri,1,0,"Camera");
-        qmlRegisterType<QGraphicsRotation3D>(uri,1,0,"Rotation3D");
-        qmlRegisterType<QGraphicsTranslation3D>(uri,1,0,"Translation3D");
-        qmlRegisterType<Scale3D>(uri,1,0,"Scale3D");
-        qmlRegisterType<QGraphicsLookAtTransform>(uri,1,0,"LookAt");
-        qmlRegisterType<QGLMaterial>(uri,1,0,"Material");
-        qmlRegisterType<QGLTexture2D>(uri,1,0,"Texture2D");
-        qmlRegisterType<ShaderProgram>(uri,1,0,"ShaderProgram");
-        qmlRegisterType<Skybox>(uri, 1, 0, "Skybox");
-        qmlRegisterType<BillboardItem3D>(uri, 1, 0, "BillboardItem3D");
+        qmlRegisterType<QGLSceneNode>(uri,2,0,"SceneNode");
+        qmlRegisterType<QQuickEffect>(uri,2,0,"Effect");
+        qmlRegisterType<QQuickMesh>(uri,2,0,"Mesh");
+        qmlRegisterType<QQuickItem3D>(uri,2,0,"Item3D");
+        qmlRegisterType<QQuickAnimation3D>(uri,2,0,"Animation3D");
+        qmlRegisterType<QGLLightModel>(uri,2,0,"LightModel");
+        qmlRegisterType<QGLLightParameters>(uri,2,0,"Light");
+        qmlRegisterType<QGLCamera>(uri,2,0,"Camera");
+        qmlRegisterType<QGraphicsRotation3D>(uri,2,0,"Rotation3D");
+        qmlRegisterType<QGraphicsTranslation3D>(uri,2,0,"Translation3D");
+        qmlRegisterType<Scale3D>(uri,2,0,"Scale3D");
+        qmlRegisterType<QGraphicsLookAtTransform>(uri,2,0,"LookAt");
+        qmlRegisterType<QGLMaterial>(uri,2,0,"Material");
+        qmlRegisterType<QGLTexture2D>(uri,2,0,"Texture2D");
+        qmlRegisterType<ShaderProgram>(uri,2,0,"ShaderProgram");
+        qmlRegisterType<Skybox>(uri,2,0, "Skybox");
+        qmlRegisterType<BillboardItem3D>(uri,2,0, "BillboardItem3D");
 
-        qmlRegisterType<Point>(uri,1,0,"Point");
-        qmlRegisterType<Line>(uri,1,0,"Line");
-        qmlRegisterType<CapsuleMesh>(uri,1,0,"CapsuleMesh");
-        qmlRegisterType<CylinderMesh>(uri,1,0,"CylinderMesh");
-        qmlRegisterType<SphereMesh>(uri,1,0,"SphereMesh");
+        qmlRegisterType<Point>(uri,2,0,"Point");
+        qmlRegisterType<Line>(uri,2,0,"Line");
+        qmlRegisterType<CapsuleMesh>(uri,2,0,"CapsuleMesh");
+        qmlRegisterType<CylinderMesh>(uri,2,0,"CylinderMesh");
+        qmlRegisterType<SphereMesh>(uri,2,0,"SphereMesh");
 
-        qmlRegisterType<Viewport>(uri,1,0,"Viewport");
+        qmlRegisterType<Viewport>(uri,2,0,"Viewport");
 
         // Needed to make QQmlListProperty<QQuickQGraphicsTransform3D> work.
         qmlRegisterType<QQuickQGraphicsTransform3D>();

@@ -40,8 +40,8 @@
 ****************************************************************************/
 
 import QtQuick 2.0
-import Qt3D 1.0
-import Qt3D.Shapes 1.0
+import Qt3D 2.0
+import Qt3D.Shapes 2.0
 
 Cube {
     effect: Effect {color: "#aaaaaa"; texture: "meshes/qtlogo.png"; decal: true}

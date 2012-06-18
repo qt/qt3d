@@ -40,7 +40,7 @@
 
 //![1]
 import QtQuick 2.0
-import Qt3D 1.0
+import Qt3D 2.0
 
 BillboardItem3D {
     id: tree
