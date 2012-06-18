@@ -131,21 +131,21 @@ void tst_QSphereMesh::testGeometry()
         QGL::IndexArray ib = geom.indices();
         for (int i=pSceneNodeLevel2->start(); i<pSceneNodeLevel2->start()+pSceneNodeLevel2->count(); i+=3) {
             unsigned int ii0 = ib.at(i);
-            QVERIFY(ii0<verts.size());
+            QVERIFY(ii0<(unsigned int)verts.size());
             QVector3D vv0 = verts.at(ii0);
             qreal vv0sq = vv0.lengthSquared();
             QVERIFY(fabs(vv0sq-1.0)<0.0001); // vertex is on sphere
             QVector3D nn0 = norms.at(ii0);
             QVERIFY((fabs(QVector3D::dotProduct(vv0,nn0))-1.0) < 0.0001); // vertex normal == vertex itself
             unsigned int ii1 = ib.at(i+1);
-            QVERIFY(ii1<verts.size());
+            QVERIFY(ii1<(unsigned int)verts.size());
             QVector3D vv1 = verts.at(ii1);
             qreal vv1sq = vv1.lengthSquared();
             QVERIFY(fabs(vv1sq-1.0)<0.0001); // vertex is on sphere
             QVector3D nn1 = norms.at(ii1);
             QVERIFY((fabs(QVector3D::dotProduct(vv1,nn1))-1.0) < 0.0001); // vertex normal == vertex itself
             unsigned int ii2 = ib.at(i+2);
-            QVERIFY(ii2<verts.size());
+            QVERIFY(ii2<(unsigned int)verts.size());
             QVector3D vv2 = verts.at(ii2);
             qreal vv2sq = vv2.lengthSquared();
             QVERIFY(fabs(vv2sq-1.0)<0.0001); // vertex is on sphere
