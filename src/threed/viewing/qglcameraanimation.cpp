@@ -84,6 +84,8 @@ public:
         , duration(250)
         , dirty(true)
         , pointOfRotation(Both)
+        , upVectorAngle(0.0f)
+        , pointAngle(0.0f)
         , lengthStart(1.0f)
         , lengthEnd(1.0f)
     {

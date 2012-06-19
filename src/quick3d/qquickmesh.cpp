@@ -148,7 +148,6 @@ public:
 
     QUrl data;
     QString meshName;
-    QQuickMesh *parentMesh;
     QNetworkReply *dataReply;
     QGLAbstractScene *scene;
     int nextSceneBranchId;

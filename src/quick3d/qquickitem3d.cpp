@@ -1505,9 +1505,7 @@ void qDumpItem(QQuickItem3D *item, bool detailed, int indent)
 */
 QMatrix4x4 QQuickItem3DPrivate::localToWorldMatrix() const
 {
-    QMatrix4x4 result;
-
-    result = localTransforms() * result;
+    QMatrix4x4 result = localTransforms();
     QQuickItem3D *anscestor = qobject_cast<QQuickItem3D *>(item->parent());
     while (anscestor)
     {

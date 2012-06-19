@@ -66,6 +66,10 @@ AnimResolver::AnimResolver(std::list<Envelope>& _envelopes,double tick)
     trans_x = trans_y = trans_z = NULL;
     rotat_x = rotat_y = rotat_z = NULL;
     scale_x = scale_y = scale_z = NULL;
+    envl_x = envl_y = envl_z = NULL;
+    end_x = end_y = end_z = false;
+    flags = 0;
+    sample_delta = 0.0;
 
     first = last = 150392.;
 

@@ -560,7 +560,7 @@ Importer::~Importer()
 
 // ------------------------------------------------------------------------------------------------
 // Copy constructor - copies the config of another Importer, not the scene
-Importer::Importer(const Importer &other)
+Importer::Importer(const Importer &other) : pimpl(0)
 {
     new(this) Importer();
 

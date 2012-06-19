@@ -51,12 +51,15 @@
 
 QT_BEGIN_NAMESPACE
 
-QGLColladaFxEffect::QGLColladaFxEffect() : QGLShaderProgramEffect()
-        , d( new QGLColladaFxEffectPrivate )
+QGLColladaFxEffect::QGLColladaFxEffect()
+    : QGLShaderProgramEffect()
+    , d( new QGLColladaFxEffectPrivate )
 {
 }
 
-QGLColladaFxEffect::QGLColladaFxEffect(const QGLColladaFxEffect&) : QGLShaderProgramEffect()
+QGLColladaFxEffect::QGLColladaFxEffect(const QGLColladaFxEffect&)
+    : QGLShaderProgramEffect()
+    , d(0) // TODO ?
 {
     Q_ASSERT(false);
 };
@@ -78,6 +81,7 @@ QGLColladaFxEffectPrivate::QGLColladaFxEffectPrivate() : id()
         , specularTexture(0)
         , lighting(QGLColladaFxEffect::NoLighting)
         , material(0)
+        , currentlyActive(false)
 {
     resetGlueSnippets();
 }

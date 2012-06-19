@@ -1059,34 +1059,42 @@ void NFFImporter::InternReadFile( const std::string& pFile,
     root->mNumMeshes = pScene->mNumMeshes-numNamed;
 
     aiNode** ppcChildren = NULL;
+    unsigned int iChild = 0;
+    unsigned int nChildren = 0;
     unsigned int* pMeshes = NULL;
     if (root->mNumMeshes)
         pMeshes = root->mMeshes = new unsigned int[root->mNumMeshes];
-    if (root->mNumChildren)
+    if (root->mNumChildren) {
         ppcChildren = root->mChildren = new aiNode*[root->mNumChildren];
+        nChildren = root->mNumChildren;
+    }
 
     // generate the camera
     if (hasCam)
     {
-        aiNode* nd = *ppcChildren = new aiNode();
-        nd->mName.Set("<NFF_Camera>");
-        nd->mParent = root;
+        ai_assert(ppcChildren && iChild<nChildren);
+        if (ppcChildren && iChild<nChildren) {
+            aiNode* nd = *ppcChildren = new aiNode();
+            ++iChild;
+            nd->mName.Set("<NFF_Camera>");
+            nd->mParent = root;
 
-        // allocate the camera in the scene
-        pScene->mNumCameras = 1;
-        pScene->mCameras = new aiCamera*[1];
-        aiCamera* c = pScene->mCameras[0] = new aiCamera;
+            // allocate the camera in the scene
+            pScene->mNumCameras = 1;
+            pScene->mCameras = new aiCamera*[1];
+            aiCamera* c = pScene->mCameras[0] = new aiCamera;
 
-        c->mName = nd->mName; // make sure the names are identical
-        c->mHorizontalFOV = AI_DEG_TO_RAD( angle );
-        c->mLookAt        = camLookAt - camPos;
-        c->mPosition    = camPos;
-        c->mUp            = camUp;
+            c->mName = nd->mName; // make sure the names are identical
+            c->mHorizontalFOV = AI_DEG_TO_RAD( angle );
+            c->mLookAt        = camLookAt - camPos;
+            c->mPosition    = camPos;
+            c->mUp            = camUp;
 
-        // If the resolution is not specified in the file, we
-        // need to set 1.0 as aspect.
-        c->mAspect        = (!resolution.y ? 0.f : resolution.x / resolution.y);
-        ++ppcChildren;
+            // If the resolution is not specified in the file, we
+            // need to set 1.0 as aspect.
+            c->mAspect        = (!resolution.y ? 0.f : resolution.x / resolution.y);
+            ++ppcChildren;
+        }
     }
 
     // generate light sources
@@ -1098,17 +1106,21 @@ void NFFImporter::InternReadFile( const std::string& pFile,
         {
             const Light& l = lights[i];
 
-            aiNode* nd = *ppcChildren  = new aiNode();
-            nd->mParent = root;
+            ai_assert(ppcChildren && iChild<nChildren);
+            if (ppcChildren && iChild<nChildren) {
+                aiNode* nd = *ppcChildren  = new aiNode();
+                ++iChild;
+                nd->mParent = root;
 
-            nd->mName.length = ::sprintf(nd->mName.data,"<NFF_Light%i>",i);
+                nd->mName.length = ::sprintf(nd->mName.data,"<NFF_Light%i>",i);
 
-            // allocate the light in the scene data structure
-            aiLight* out = pScene->mLights[i] = new aiLight();
-            out->mName = nd->mName; // make sure the names are identical
-            out->mType = aiLightSource_POINT;
-            out->mColorDiffuse = out->mColorSpecular = l.color * l.intensity;
-            out->mPosition = l.position;
+                // allocate the light in the scene data structure
+                aiLight* out = pScene->mLights[i] = new aiLight();
+                out->mName = nd->mName; // make sure the names are identical
+                out->mType = aiLightSource_POINT;
+                out->mColorDiffuse = out->mColorSpecular = l.color * l.intensity;
+                out->mPosition = l.position;
+            }
         }
     }
 
@@ -1127,24 +1139,28 @@ void NFFImporter::InternReadFile( const std::string& pFile,
         // Generate sub nodes for named meshes
         if (src.name[0])
         {
-            aiNode* const node = *ppcChildren = new aiNode();
-            node->mParent = root;
-            node->mNumMeshes = 1;
-            node->mMeshes = new unsigned int[1];
-            node->mMeshes[0] = m;
-            node->mName.Set(src.name);
+            ai_assert(ppcChildren && iChild<nChildren);
+            if (ppcChildren && iChild<nChildren) {
+                aiNode* const node = *ppcChildren = new aiNode();
+                ++iChild;
+                node->mParent = root;
+                node->mNumMeshes = 1;
+                node->mMeshes = new unsigned int[1];
+                node->mMeshes[0] = m;
+                node->mName.Set(src.name);
 
-            // setup the transformation matrix of the node
-            aiMatrix4x4::FromToMatrix(aiVector3D(0.f,1.f,0.f),
-                src.dir,node->mTransformation);
+                // setup the transformation matrix of the node
+                aiMatrix4x4::FromToMatrix(aiVector3D(0.f,1.f,0.f),
+                    src.dir,node->mTransformation);
 
-            aiMatrix4x4& mat = node->mTransformation;
-            mat.a1 *= src.radius.x; mat.b1 *= src.radius.x; mat.c1 *= src.radius.x;
-            mat.a2 *= src.radius.y; mat.b2 *= src.radius.y; mat.c2 *= src.radius.y;
-            mat.a3 *= src.radius.z; mat.b3 *= src.radius.z; mat.c3 *= src.radius.z;
-            mat.a4 = src.center.x;
-            mat.b4 = src.center.y;
-            mat.c4 = src.center.z;
+                aiMatrix4x4& mat = node->mTransformation;
+                mat.a1 *= src.radius.x; mat.b1 *= src.radius.x; mat.c1 *= src.radius.x;
+                mat.a2 *= src.radius.y; mat.b2 *= src.radius.y; mat.c2 *= src.radius.y;
+                mat.a3 *= src.radius.z; mat.b3 *= src.radius.z; mat.c3 *= src.radius.z;
+                mat.a4 = src.center.x;
+                mat.b4 = src.center.y;
+                mat.c4 = src.center.z;
+            }
 
             ++ppcChildren;
         }

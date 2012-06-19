@@ -149,7 +149,8 @@ class QGLSectionPrivate
 {
 public:
     QGLSectionPrivate(const QVector3DArray *ary)
-        : vec_data(ary)
+        : index(0)
+        , vec_data(ary)
         , it(vec_map.end())
         , map_threshold(5)
         , number_mapped(0)

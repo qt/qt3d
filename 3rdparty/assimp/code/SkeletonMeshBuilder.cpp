@@ -50,7 +50,7 @@ using namespace Assimp;
 
 // ------------------------------------------------------------------------------------------------
 // The constructor processes the given scene and adds a mesh there.
-SkeletonMeshBuilder::SkeletonMeshBuilder( aiScene* pScene, aiNode* root, bool bKnobsOnly)
+SkeletonMeshBuilder::SkeletonMeshBuilder( aiScene* pScene, aiNode* root, bool bKnobsOnly) : mKnobsOnly(bKnobsOnly)
 {
     // nothing to do if there's mesh data already present at the scene
     if ( pScene->mNumMeshes > 0 || pScene->mRootNode == NULL)
@@ -58,8 +58,6 @@ SkeletonMeshBuilder::SkeletonMeshBuilder( aiScene* pScene, aiNode* root, bool bK
 
     if (!root)
         root = pScene->mRootNode;
-
-    mKnobsOnly = bKnobsOnly;
 
     // build some faces around each node
     CreateGeometry( root );

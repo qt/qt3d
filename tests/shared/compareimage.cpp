@@ -113,8 +113,9 @@ float qProportionDifferentRGBPixels(const QImage& img1, const QImage& img2, int 
     qDebug() << "Sum of absolute differences was:"<< sumDiff;
     qDebug() << "Average difference per pixel was:" << (float)sumDiff/(float)pixelcount;
 #endif
+    Q_ASSERT(pixelcount>0);
     return (float)result/(float)pixelcount;
-};
+}
 
 
 

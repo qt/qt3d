@@ -51,7 +51,7 @@ using namespace Assimp;
 
 // ------------------------------------------------------------------------------------------------
 // Constructor to be privately used by Importer
-BVHLoader::BVHLoader()
+BVHLoader::BVHLoader() : mLine(0), mAnimTickDuration(1.), mAnimNumFrames(0)
 {}
 
 // ------------------------------------------------------------------------------------------------

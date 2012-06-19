@@ -50,6 +50,8 @@ public:
         : program(0)
         , matrixUniform(-1)
         , thumbnailUniform(-1)
+        , colorUniform(0)
+        , pickingUniform(0)
         , thumbnail(false)
         , thumbnailUpdateRequired(false)
     {

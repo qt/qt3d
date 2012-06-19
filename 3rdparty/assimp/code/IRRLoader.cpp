@@ -64,7 +64,7 @@ using namespace irr::io;
 
 // ------------------------------------------------------------------------------------------------
 // Constructor to be privately used by Importer
-IRRImporter::IRRImporter()
+IRRImporter::IRRImporter() : fps(24.0), configSpeedFlag(false)
 {}
 
 // ------------------------------------------------------------------------------------------------

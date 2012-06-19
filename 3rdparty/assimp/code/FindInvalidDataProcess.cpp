@@ -54,7 +54,7 @@ using namespace Assimp;
 
 // ------------------------------------------------------------------------------------------------
 // Constructor to be privately used by Importer
-FindInvalidDataProcess::FindInvalidDataProcess()
+FindInvalidDataProcess::FindInvalidDataProcess() : configEpsilon(0.0f)
 {
     // nothing to do here
 }

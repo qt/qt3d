@@ -220,10 +220,12 @@ void tst_LoadModel::create()
     int r, g, b;
     if (!materialName.isEmpty())
     {
+        Q_ASSERT(foundMaterial);
         foundMaterial->material()->diffuseColor().getRgb(&r, &g, &b);
         QCOMPARE(materialDiffuse, qRgb(r, g, b));
     }
 
+    Q_ASSERT(foundGeometry);
     QGeometryData data = foundGeometry->geometry();
     QVERIFY(data.count() > 0);
 

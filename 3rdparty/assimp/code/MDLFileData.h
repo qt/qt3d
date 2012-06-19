@@ -834,6 +834,9 @@ struct IntGroupInfo_MDL7
     IntGroupInfo_MDL7(BE_NCONST MDL::Group_MDL7* _pcGroup, unsigned int _iIndex)
         :    iIndex(_iIndex)
         ,    pcGroup(_pcGroup)
+        ,    pcGroupUVs(NULL)
+        ,    pcGroupTris(NULL)
+        ,    pcGroupVerts(NULL)
     {}
 
     //! Index of the group
@@ -888,7 +891,7 @@ struct IntGroupData_MDL7
 struct IntSharedData_MDL7
 {
     //! Default constructor
-    IntSharedData_MDL7()
+    IntSharedData_MDL7() : apcOutBones(0), iNum(0)
     {
         abNeedMaterials.reserve(10);
     }
@@ -926,7 +929,7 @@ struct IntSplittedGroupData_MDL7
     IntSplittedGroupData_MDL7(IntSharedData_MDL7& _shared,
         std::vector<aiMesh*>& _avOutList)
 
-        : shared(_shared), avOutList(_avOutList)
+        : aiSplit(0), shared(_shared), avOutList(_avOutList)
     {
     }
 

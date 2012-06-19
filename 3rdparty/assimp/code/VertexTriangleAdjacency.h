@@ -114,10 +114,6 @@ public:
 
     //! Table containing the number of referenced triangles per vertex
     unsigned int* mLiveTriangles;
-
-    //! Debug: Number of referenced vertices
-    unsigned int iNumVertices;
-
 };
 }
 

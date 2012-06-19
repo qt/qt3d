@@ -433,6 +433,7 @@ struct Texture
     Texture()
         : mClipIdx(0xffffffff)
         , mStrength            (1.0f)
+        , type(0)
         , mUVChannelIndex    ("unknown")
         , mRealUVIndex        (0xffffffff)
         , enabled            (true)
@@ -499,6 +500,7 @@ struct Clip
 
     Clip()
         : type     (UNSUPPORTED)
+        , clipRef(0)
         , idx     (0)
         , negate (false)
     {}

@@ -124,7 +124,8 @@ struct Camera
 struct Light
 {
     Light()
-        :    mAttConstant     (1.f)
+        :    mType(0)
+        ,    mAttConstant     (1.f)
         ,    mAttLinear       (0.f)
         ,    mAttQuadratic    (0.f)
         ,    mFalloffAngle    (180.f)
@@ -163,6 +164,7 @@ struct InputSemanticMapEntry
 {
     InputSemanticMapEntry()
         :    mSet    (0)
+        ,    mType   (IT_Invalid)
     {}
 
     //! Index of set, optional
@@ -592,7 +594,7 @@ struct ChannelEntry
     const Collada::Accessor* mValueAccessor; ///> Collada accessor to the key value values
     const Collada::Data* mValueData; ///> Source datat array for the key value values
 
-    ChannelEntry() { mChannel = NULL; mSubElement = 0; }
+    ChannelEntry() : mChannel(0), mTransformIndex(0), mSubElement(0), mTimeAccessor(0), mTimeData(0), mValueAccessor(0), mValueData(0) {}
 };
 
 } // end of namespace Collada

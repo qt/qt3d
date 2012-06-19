@@ -94,47 +94,47 @@ void tst_QGLMaterialCollection::simple()
 // Also acts as a torture test for the underlying data structures.
 void tst_QGLMaterialCollection::addMaterial()
 {
-    QGLMaterialCollection *coll = new QGLMaterialCollection();
-
     const int Size = 2048;
+    {
+        QScopedPointer<QGLMaterialCollection> coll( new QGLMaterialCollection() );
+        QScopedArrayPointer<QGLMaterial*> materials( new QGLMaterial* [Size] );
+        for (int index = 0; index < Size; ++index) {
+            QGLMaterial *mat = new QGLMaterial();
+            mat->setObjectName(QString::number(index));
+            connect(mat, SIGNAL(destroyed()), this, SLOT(materialDestroyed()));
+            materials[index] = mat;
+            QCOMPARE(coll->addMaterial(mat), index);
+        }
+        QCOMPARE(coll->size(), Size);
+        QVERIFY(!coll->isEmpty());
 
-    QGLMaterial **materials = new QGLMaterial *[Size];
-    for (int index = 0; index < Size; ++index) {
+        for (int index = 0; index < Size; ++index) {
+            QString name = QString::number(index);
+            QVERIFY(coll->material(index) == materials[index]);
+            QVERIFY(coll->material(name) == materials[index]);
+            QVERIFY(coll->contains(materials[index]));
+            QVERIFY(coll->contains(name));
+            QCOMPARE(coll->indexOf(materials[index]), index);
+            QCOMPARE(coll->indexOf(name), index);
+            QCOMPARE(coll->materialName(index), name);
+        }
+
         QGLMaterial *mat = new QGLMaterial();
-        mat->setObjectName(QString::number(index));
-        connect(mat, SIGNAL(destroyed()), this, SLOT(materialDestroyed()));
-        materials[index] = mat;
-        QCOMPARE(coll->addMaterial(mat), index);
+
+        QVERIFY(!coll->material(-1));
+        QVERIFY(!coll->material(coll->size()));
+        QVERIFY(!coll->contains(0));
+        QVERIFY(!coll->contains(mat));
+        QVERIFY(!coll->contains(QLatin1String("foo")));
+        QCOMPARE(coll->indexOf(0), -1);
+        QCOMPARE(coll->indexOf(mat), -1);
+        QCOMPARE(coll->indexOf(QLatin1String("foo")), -1);
+
+        delete mat;
+
+        destroyCount = 0;
+        // coll goes out of scope here; all materials will be destroyed.
     }
-    QCOMPARE(coll->size(), Size);
-    QVERIFY(!coll->isEmpty());
-
-    for (int index = 0; index < Size; ++index) {
-        QString name = QString::number(index);
-        QVERIFY(coll->material(index) == materials[index]);
-        QVERIFY(coll->material(name) == materials[index]);
-        QVERIFY(coll->contains(materials[index]));
-        QVERIFY(coll->contains(name));
-        QCOMPARE(coll->indexOf(materials[index]), index);
-        QCOMPARE(coll->indexOf(name), index);
-        QCOMPARE(coll->materialName(index), name);
-    }
-
-    QGLMaterial *mat = new QGLMaterial();
-
-    QVERIFY(!coll->material(-1));
-    QVERIFY(!coll->material(coll->size()));
-    QVERIFY(!coll->contains(0));
-    QVERIFY(!coll->contains(mat));
-    QVERIFY(!coll->contains(QLatin1String("foo")));
-    QCOMPARE(coll->indexOf(0), -1);
-    QCOMPARE(coll->indexOf(mat), -1);
-    QCOMPARE(coll->indexOf(QLatin1String("foo")), -1);
-
-    delete mat;
-
-    destroyCount = 0;
-    delete coll;
     QCOMPARE(destroyCount, Size);
 }
 

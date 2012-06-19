@@ -112,15 +112,15 @@ void tst_QGraphicsTransform3D::rotation3D()
     m2.translate(-1, -2, -3);
     QVERIFY(isSameMatrix(m1, m2));
 
-    QGraphicsRotation3D *rot2 = qobject_cast<QGraphicsRotation3D *>
-        (rot1.clone(this));
+    QQuickQGraphicsTransform3D *transform2 = rot1.clone(this);
+    QGraphicsRotation3D *rot2 = qobject_cast<QGraphicsRotation3D *>(transform2);
     QVERIFY(rot2 != 0);
     QVERIFY(rot2 != &rot1);
     QVERIFY(rot2->parent() == this);
     QVERIFY(rot2->origin() == rot1.origin());
     QVERIFY(rot2->axis() == rot1.axis());
     QVERIFY(rot2->angle() == rot1.angle());
-    delete rot2;
+    delete transform2;
 }
 
 void tst_QGraphicsTransform3D::scale3D()
@@ -167,14 +167,14 @@ void tst_QGraphicsTransform3D::scale3D()
     QVERIFY(scale1.origin() == QVector3D(1, 2, 3));
     QCOMPARE(spy1.size(), 1);
 
-    QGraphicsScale3D *scale2 = qobject_cast<QGraphicsScale3D *>
-        (scale1.clone(this));
+    QQuickQGraphicsTransform3D *transform2 = scale1.clone(this);
+    QGraphicsScale3D *scale2 = qobject_cast<QGraphicsScale3D *>(transform2);
     QVERIFY(scale2 != 0);
     QVERIFY(scale2 != &scale1);
     QVERIFY(scale2->parent() == this);
     QVERIFY(scale2->origin() == scale1.origin());
     QVERIFY(scale2->scale() == scale1.scale());
-    delete scale2;
+    delete transform2;
 }
 
 void tst_QGraphicsTransform3D::translation3D()
@@ -210,14 +210,14 @@ void tst_QGraphicsTransform3D::translation3D()
     m2.translate(QVector3D(8, -12, 1));
     QVERIFY(isSameMatrix(m1, m2));
 
-    QGraphicsTranslation3D *translate2 = qobject_cast<QGraphicsTranslation3D *>
-        (translate1.clone(this));
+    QQuickQGraphicsTransform3D *transform2 = translate1.clone(this);
+    QGraphicsTranslation3D *translate2 = qobject_cast<QGraphicsTranslation3D *>(transform2);
     QVERIFY(translate2 != 0);
     QVERIFY(translate2 != &translate1);
     QVERIFY(translate2->parent() == this);
     QVERIFY(translate2->translate() == translate1.translate());
     QVERIFY(translate2->progress() == translate1.progress());
-    delete translate2;
+    delete transform2;
 }
 
 void tst_QGraphicsTransform3D::billboard()
@@ -266,13 +266,13 @@ void tst_QGraphicsTransform3D::billboard()
     billboard1.applyTo(&m6);
     QVERIFY(m6 == m4);
 
-    QGraphicsBillboardTransform *billboard2 = qobject_cast<QGraphicsBillboardTransform *>
-        (billboard1.clone(this));
+    QQuickQGraphicsTransform3D *transform2 = billboard1.clone(this);
+    QGraphicsBillboardTransform *billboard2 = qobject_cast<QGraphicsBillboardTransform *>(transform2);
     QVERIFY(billboard2 != 0);
     QVERIFY(billboard2 != &billboard1);
     QVERIFY(billboard2->parent() == this);
     QVERIFY(billboard2->preserveUpVector() == billboard1.preserveUpVector());
-    delete billboard2;
+    delete transform2;
 }
 
 QTEST_APPLESS_MAIN(tst_QGraphicsTransform3D)

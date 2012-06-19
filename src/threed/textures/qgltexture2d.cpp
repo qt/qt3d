@@ -220,6 +220,9 @@ void QGLTexture2DPrivate::adjustForNPOTTextureSize()
         if (!ok || verNum < 2.0)
         {
             QGLTextureExtensions *te = QGLTextureExtensions::extensions();
+            if (!te) {
+                size = QGL::nextPowerOfTwo(size);
+            } else
             if (!te->npotTextures)
             {
                 if (!ok)

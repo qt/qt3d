@@ -112,7 +112,7 @@ void LWS::Element::Parse (const char*& buffer)
 
 // ------------------------------------------------------------------------------------------------
 // Constructor to be privately used by Importer
-LWSImporter::LWSImporter()
+LWSImporter::LWSImporter() : configSpeedFlag(false), io(0), first(0.0), last(0.0), fps(0.0)
 {
     // nothing to do here
 }

@@ -61,7 +61,7 @@ using namespace Assimp::ASE;
 
 // ------------------------------------------------------------------------------------------------
 // Constructor to be privately used by Importer
-ASEImporter::ASEImporter()
+ASEImporter::ASEImporter() : mParser(0), mBuffer(0), pcScene(0), configRecomputeNormals(false)
 {}
 
 // ------------------------------------------------------------------------------------------------

@@ -63,7 +63,7 @@ using namespace Assimp;
 
 // ------------------------------------------------------------------------------------------------
 // Constructor to be privately used by Importer
-ValidateDSProcess::ValidateDSProcess()
+ValidateDSProcess::ValidateDSProcess() : mScene(0)
 {}
 
 // ------------------------------------------------------------------------------------------------

@@ -101,6 +101,9 @@ private:
 
 ShapesWidget::ShapesWidget(QWindow *parent)
     : QWindow(parent)
+    , scene(0)
+    , cube(0)
+    , teapot(0)
     , context(0)
     , initialised(false)
 {

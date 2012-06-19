@@ -209,7 +209,7 @@ public:
 };
 
 QGraphicsLookAtTransformPrivate::QGraphicsLookAtTransformPrivate(QGraphicsLookAtTransform* _lookAt) :
-    lookAt(_lookAt), preserveUpVector(false), originItem(0), subject(0)
+    lookAt(_lookAt), preserveUpVector(false), originItem(0), subject(0), rotationCacheDirty(false)
 {
 }
 

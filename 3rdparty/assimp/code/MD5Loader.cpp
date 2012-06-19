@@ -66,7 +66,16 @@ using namespace Assimp;
 // ------------------------------------------------------------------------------------------------
 // Constructor to be privately used by Importer
 MD5Importer::MD5Importer()
-: configNoAutoLoad (false)
+    : mIOHandler(0)
+    , mBuffer(0)
+    , fileSize(0)
+    , iLineNumber(0)
+    , pScene(0)
+    , pIOHandler(0)
+    , bHadMD5Mesh(false)
+    , bHadMD5Anim(false)
+    , bHadMD5Camera(false)
+    , configNoAutoLoad (false)
 {}
 
 // ------------------------------------------------------------------------------------------------

@@ -94,6 +94,10 @@ void IRRMeshImporter::GetExtensionList(std::set<std::string>& extensions)
     extensions.insert("irrmesh");
 }
 
+static inline void deleteAndSetNull(aiMaterial*& rPtr) {
+    delete rPtr;
+    rPtr = 0;
+}
 // ------------------------------------------------------------------------------------------------
 // Imports the given file into the given scene structure.
 void IRRMeshImporter::InternReadFile( const std::string& pFile,
@@ -138,7 +142,7 @@ void IRRMeshImporter::InternReadFile( const std::string& pFile,
                 // end of previous buffer. A material and a mesh should be there
                 if ( !curMat || !curMesh)    {
                     DefaultLogger::get()->error("IRRMESH: A buffer must contain a mesh and a material");
-                    delete curMat;
+                    deleteAndSetNull(curMat);
                     delete curMesh;
                 }
                 else    {
@@ -161,7 +165,7 @@ void IRRMeshImporter::InternReadFile( const std::string& pFile,
             if (!ASSIMP_stricmp(reader->getNodeName(),"material"))    {
                 if (curMat)    {
                     DefaultLogger::get()->warn("IRRMESH: Only one material description per buffer, please");
-                    delete curMat;curMat = NULL;
+                    deleteAndSetNull(curMat);
                 }
                 curMat = ParseMaterial(curMatFlags);
             }
@@ -173,7 +177,7 @@ void IRRMeshImporter::InternReadFile( const std::string& pFile,
                     // This is possible ... remove the mesh from the list and skip further reading
                     DefaultLogger::get()->warn("IRRMESH: Found mesh with zero vertices");
 
-                    delete curMat;curMat = NULL;
+                    deleteAndSetNull(curMat);
 
                     curMesh = NULL;
                     textMeaning = 0;
@@ -218,7 +222,7 @@ void IRRMeshImporter::InternReadFile( const std::string& pFile,
                     vertexFormat = 2;
                 }
                 else if (ASSIMP_stricmp("standard", t))    {
-                    delete curMat;
+                    deleteAndSetNull(curMat);
                     DefaultLogger::get()->warn("IRRMESH: Unknown vertex format");
                 }
                 else vertexFormat = 0;
@@ -226,7 +230,7 @@ void IRRMeshImporter::InternReadFile( const std::string& pFile,
             }
             else if (!ASSIMP_stricmp(reader->getNodeName(),"indices"))    {
                 if (curVertices.empty() && curMat)    {
-                    delete curMat;
+                    deleteAndSetNull(curMat);
                     throw DeadlyImportError("IRRMESH: indices must come after vertices");
                 }
 
@@ -245,7 +249,7 @@ void IRRMeshImporter::InternReadFile( const std::string& pFile,
                     delete curMesh; curMesh = NULL;
 
                     // material - away
-                    delete curMat;curMat = NULL;
+                    deleteAndSetNull(curMat);
 
                     textMeaning = 0;
                     continue;
@@ -388,6 +392,7 @@ void IRRMeshImporter::InternReadFile( const std::string& pFile,
                 textMeaning = 0;
 
                 // read indices
+                ai_assert(curMesh);
                 aiFace* curFace = curMesh->mFaces;
                 aiFace* const faceEnd = curMesh->mFaces  + curMesh->mNumFaces;
 
@@ -458,7 +463,7 @@ void IRRMeshImporter::InternReadFile( const std::string& pFile,
     if (curMat || curMesh)    {
         if ( !curMat || !curMesh)    {
             DefaultLogger::get()->error("IRRMESH: A buffer must contain a mesh and a material");
-            delete curMat;
+            deleteAndSetNull(curMat);
             delete curMesh;
         }
         else    {

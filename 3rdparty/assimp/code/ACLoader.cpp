@@ -110,7 +110,7 @@ using namespace Assimp;
 
 // ------------------------------------------------------------------------------------------------
 // Constructor to be privately used by Importer
-AC3DImporter::AC3DImporter()
+AC3DImporter::AC3DImporter() : buffer(0), configSplitBFCull(false), configEvalSubdivision(false), mNumMeshes(0), lights(0), groups(0), polys(0), worlds(0)
 {
     // nothing to be done here
 }

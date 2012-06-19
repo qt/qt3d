@@ -54,7 +54,7 @@ using namespace Assimp;
 
 // ------------------------------------------------------------------------------------------------
 // Constructor to be privately used by Importer
-STLImporter::STLImporter()
+STLImporter::STLImporter() : mBuffer(0), fileSize(0), pScene(0)
 {}
 
 // ------------------------------------------------------------------------------------------------

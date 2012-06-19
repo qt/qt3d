@@ -357,6 +357,7 @@ void LogPrint(const char* pFormat, ...)
 #ifndef QT_NO_DEBUG_STREAM
     qDebug() << buff;
 #endif
+    va_end(args);
 }
 
 void DumpAnimation(int i, const aiAnimation* pAnimation, const aiScene* pScene)

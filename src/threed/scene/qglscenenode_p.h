@@ -85,6 +85,7 @@ public:
         , pickNode(0)
         , boxValid(false)
         , drawingMode(QGL::Triangles)
+        , drawingWidth(1.0)
         , culled(false)
     {
     }

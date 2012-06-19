@@ -78,9 +78,10 @@
     For a practical illustration of its use see the forest example.
 */
 BillboardItem3D::BillboardItem3D(QObject *parent)
-    : QQuickItem3D(parent)
+    : QQuickItem3D(parent),
+      m_preserveUpVector(false),
+      m_bConnectedToOpenGLContextSignal(false)
 {
-    m_preserveUpVector = false;
 }
 
 /*!

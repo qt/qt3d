@@ -58,9 +58,11 @@ using namespace Assimp;
 // ------------------------------------------------------------------------------------------------
 // Constructor to be privately used by Importer
 OptimizeMeshesProcess::OptimizeMeshesProcess()
-: pts (false)
-, max_verts (0xffffffff)
-, max_faces (0xffffffff)
+    : mScene(0)
+    , mesh(0)
+    , pts (false)
+    , max_verts (0xffffffff)
+    , max_faces (0xffffffff)
 {}
 
 // ------------------------------------------------------------------------------------------------
