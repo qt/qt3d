@@ -625,7 +625,7 @@ QVector3D QQuickItem3D::position() const
 void QQuickItem3D::setPosition(const QVector3D& value)
 {
     d->position = value;
-    emit positionChanged();
+    emit position3dChanged();
     update();
 }
 
@@ -646,7 +646,7 @@ qreal QQuickItem3D::x() const
 void QQuickItem3D::setX(qreal value)
 {
     d->position.setX(value);
-    emit positionChanged();
+    emit position3dChanged();
     update();
 }
 
@@ -667,7 +667,7 @@ qreal QQuickItem3D::y() const
 void QQuickItem3D::setY(qreal value)
 {
     d->position.setY(value);
-    emit positionChanged();
+    emit position3dChanged();
     update();
 }
 
@@ -688,7 +688,7 @@ qreal QQuickItem3D::z() const
 void QQuickItem3D::setZ(qreal value)
 {
     d->position.setZ(value);
-    emit positionChanged();
+    emit position3dChanged();
     update();
 }
 
@@ -710,7 +710,7 @@ qreal QQuickItem3D::scale() const
 void QQuickItem3D::setScale(qreal value)
 {
     d->scale = value;
-    emit scaleChanged();
+    emit scale3dChanged();
     update();
 }
 

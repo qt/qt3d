@@ -94,8 +94,7 @@ Viewport {
         }
 
         function test_radiusChanged() {
-            skip("Crashing");
-            compare(sphere4.radius, 1, "radius");
+            compare(sphere4.radius, 0.5, "radius");
             compare(sphere4.radChanged, 0, "changed 1");
             sphere4.radius = 3.5
             compare(sphere4.radChanged, 1, "changed 2");
@@ -105,7 +104,6 @@ Viewport {
         }
 
         function test_levelOfDetailChanged() {
-            skip("Crashing");
             compare(sphere4.levelOfDetail, 5, "levelOfDetail");
             compare(sphere4.lodChanged, 0, "changed 1");
             sphere4.levelOfDetail = 2
@@ -116,7 +114,6 @@ Viewport {
         }
 
         function test_axisChanged() {
-            skip("Crashing");
             compare(sphere4.axis, Qt.ZAxis, "axis");
             compare(sphere4.axChanged, 0, "changed 1");
             sphere4.axis = Qt.YAxis

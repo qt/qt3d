@@ -75,10 +75,10 @@ Viewport {
     Item3D {
         id: item
         property int positionHasBeenChanged: 0
-        onPositionChanged : positionHasBeenChanged = positionHasBeenChanged + 1;
+        onPosition3dChanged : positionHasBeenChanged = positionHasBeenChanged + 1;
 
         property bool onScaleChangedSignalTriggered: false
-        onScaleChanged: onScaleChangedSignalTriggered = true
+        onScale3dChanged: onScaleChangedSignalTriggered = true
 
         property bool onMeshChangedSignalTriggered: false
         onMeshChanged: onMeshChangedSignalTriggered = true
@@ -232,9 +232,9 @@ Viewport {
                 verify(item.position.z == -74635, "position modified by setting z negative");
                 compare(item.positionHasBeenChanged, 2, "onPositionChanged signal after setting z negative");
 
-                skip("comparing reals is too precise");
+                //skip("comparing reals is too precise");
                 item.z = 0.435;
-                compare(item.z, 0.435, "setting z to a real number")
+                verify((item.z - 0.435) < 0.0005, "setting z to a real number")
                 compare(item.position.z, 0.435, "position modified by setting z to a real");
                 compare(item.positionHasBeenChanged, 3, "onPositionChanged signal after setting z to a real");
 

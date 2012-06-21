@@ -123,6 +123,10 @@ Viewport {
             return "Vector3D(" + vector.x + ", " + vector.y + ", " + vector.z + ")";
         }
 
+        function fuzzyCompare(float1, float2) {
+            return (Math.abs(float1 - float2) < 0.0005);
+        }
+
         function compareVectors(vector1, vector2, string )
         {
             compare(vector1.x, vector2.x, string + " x");
@@ -153,11 +157,9 @@ Viewport {
             testPosition = child1.localToWorld();
             targetPosition = target1.localToWorld();
 
-            skip("comparing reals is too precise");
-            // compare is fuzzy by default
-            compare(testPosition.x, targetPosition.x, "test subject position change: x");
-            compare(testPosition.y, targetPosition.y, "test subject position change: y");
-            compare(testPosition.z, targetPosition.z, "test subject position change: z");
+            verify(fuzzyCompare(testPosition.x, targetPosition.x), "test subject position change: x");
+            verify(fuzzyCompare(testPosition.y, targetPosition.y), "test subject position change: y");
+            verify(fuzzyCompare(testPosition.z, targetPosition.z), "test subject position change: z");
         }
 
         function test_preserveUpVector() {

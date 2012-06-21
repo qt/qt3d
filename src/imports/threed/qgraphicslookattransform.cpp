@@ -429,9 +429,8 @@ void QGraphicsLookAtTransform::setSubject(QQuickItem3D* value)
         {
             // listen for changes directly on the item, changes on it's
             // transforms property, or through reparenting
-            connect(ancestorItem, SIGNAL(positionChanged()), this, SLOT(subjectPositionChanged()));
-            connect(ancestorItem, SIGNAL(rotationChanged()), this, SLOT(subjectPositionChanged()));
-            connect(ancestorItem, SIGNAL(scaleChanged()), this, SLOT(subjectPositionChanged()));
+            connect(ancestorItem, SIGNAL(position3dChanged()), this, SLOT(subjectPositionChanged()));
+            connect(ancestorItem, SIGNAL(scale3dChanged()), this, SLOT(subjectPositionChanged()));
             connect(ancestorItem, SIGNAL(parentChanged(QQuickItem*)), this, SLOT(ancestryChanged()));
             QQmlListProperty<QQuickQGraphicsTransform3D> transforms =
                     ancestorItem->transform();
