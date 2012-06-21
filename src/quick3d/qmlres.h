@@ -54,6 +54,8 @@
 
 #include <qt3dquickglobal.h>
 
-extern int Q_QT3D_QUICK_EXPORT q_quick3d_main(const char *entryPointQmlFile, const char *category, int argc, char *argv[]);
+int Q_QT3D_QUICK_EXPORT q_quick3d_main(const char *entryPointQmlFile, const char *category, int argc, char *argv[]);
+
+QString Q_QT3D_QUICK_EXPORT q_get_qmldir(const QString &name, const QString &category);
 
 #endif // QMLRES_H

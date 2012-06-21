@@ -62,7 +62,7 @@
     and should not be used or relied on anywhere else but in the examples
     that ship with Qt3D.
 */
-static QString q_get_qmldir(const QString &name, const QString &category)
+QString q_get_qmldir(const QString &name, const QString &category)
 {
     QString qml = name;
     // try for a Linux package install first
