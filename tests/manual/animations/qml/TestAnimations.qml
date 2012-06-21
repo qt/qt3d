@@ -50,10 +50,9 @@ Item {
 
     Flow {
         anchors.fill: parent
-
         TestCase {
             id: aTestCase
-            text: "Rotation: Z axis\n(Rolling to the left)\nNumberAnimation"
+            text: "Case A - Rotation: Z axis\n(Rolling to the left) - NumberAnimation\nClick for next"
             rotationAxis: Qt.vector3d(0,0,1)
             rotation: Rotation3D {
                 axis: aTestCase.rotationAxis
@@ -71,11 +70,11 @@ Item {
                     bTestCase.visible = true
                 }
             }
+            Component.onCompleted: aTestCase.visible = true;
         }
-
         TestCase {
             id: bTestCase
-            text: "Rotation: Z axis\n(Rolling to the left)\nRotationAnimation"
+            text: "Case B - Rotation: Z axis\n(Rolling to the left)\nRotationAnimation\nClick for next"
             rotationAxis: Qt.vector3d(0,0,1)
             rotation: Rotation3D {
                 axis: bTestCase.rotationAxis
@@ -95,17 +94,17 @@ Item {
                 }
             }
         }
-
         TestCase {
             id: cTestCase
-            text: "Rotation: Z axis\n(Rolling to the left)\nSmoothedAnimation"
+            text: "Case C - Rotation: Z axis\n(Rolling to the left)\nSmoothedAnimation\nClick for next"
             rotationAxis: Qt.vector3d(0,0,1)
             rotation: Rotation3D {
                 axis: cTestCase.rotationAxis
                 SmoothedAnimation on angle {
                     loops: Animation.Infinite
+                    running: cTestCase.visible
                     from: 0
-                    to: 360
+                    to: 359
                     duration: 1500
                     velocity: 200
                 }
@@ -121,7 +120,7 @@ Item {
 
         TestCase {
             id: dTestCase
-            text: "Rotation: Z axis\n(Rolling to the left)\nSpringAnimation"
+            text: "Case D - Rotation: Z axis\n(Rolling to the left)\nSpringAnimation\nClick to Quit"
             rotationAxis: Qt.vector3d(0,0,1)
             rotation: Rotation3D {
                 axis: dTestCase.rotationAxis
@@ -133,6 +132,7 @@ Item {
                     duration: 1500
                     spring: 2
                     damping: 0.2
+                    running: dTestCase.visible
                 }
             }
             MouseArea {

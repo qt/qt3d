@@ -70,7 +70,6 @@ Rectangle {
         anchors.top: textItem.bottom
         anchors.bottom: container.bottom
         color: "#aaccee"
-
         Viewport {
             id: view
             anchors.fill: parent
@@ -82,6 +81,7 @@ Rectangle {
                 transform: container.rotation
             }
         }
+
     }
     Component.onCompleted: container.visible = false;
 }
