@@ -116,6 +116,7 @@ Rectangle {
                 id: model
                 scale: container.scaleFactor
                 transform: container.testTransform
+                effect: Effect {}
             }
         }
     }

@@ -91,6 +91,7 @@ Rectangle {
                 id: model
                 scale: 8.0
                 transform: container.rotation
+                effect: Effect { }
             }
         }
     }

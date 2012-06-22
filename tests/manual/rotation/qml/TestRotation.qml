@@ -52,49 +52,49 @@ Item {
     Flow {
         anchors.fill: parent
 
-        TestCase {
+        RotationTestCase {
             id: aTestCase
             text: "Rotation: X axis\n(Rolling towards you)"
             rotationAxis: Qt.vector3d(1,0,0)
         }
 
-        TestCase {
+        RotationTestCase {
             text: "Rotation on Y Axis\n(Cube front rotating left to right)"
             rotationAxis: Qt.vector3d(0,1,0)
         }
 
-        TestCase {
+        RotationTestCase {
             text: "Rotation: Z axis\n(Rolling to the left)"
             rotationAxis: Qt.vector3d(0,0,1)
         }
 
 
-        TestCase {
+        RotationTestCase {
             text: "Rotation: -X axis\n(Rolling away)"
             rotationAxis: Qt.vector3d(-1,0,0)
         }
 
-        TestCase {
+        RotationTestCase {
             text: "Rotation on -Y Axis\n(Cube front rotating right to left)"
             rotationAxis: Qt.vector3d(0,-1,0)
         }
 
-        TestCase {
+        RotationTestCase {
             text: "Rotation: -Z axis\n(Rolling to the right)"
             rotationAxis: Qt.vector3d(0,0,-1)
         }
 
-        TestCase {
+        RotationTestCase {
             text: "Rotation: 3 axis\n(top-right-front corner stationary)"
             rotationAxis: Qt.vector3d(1,1,1)
         }
 
-        TestCase {
+        RotationTestCase {
             text: "Axis Normalization\n(Identical to previous case)"
             rotationAxis: Qt.vector3d(12.3,12.3,12.3)
         }
 
-        TestCase {
+        RotationTestCase {
             text: "Degenerate Axis\n(Anything but a crash is ok)"
             rotationAxis: Qt.vector3d(0,0,0)
         }

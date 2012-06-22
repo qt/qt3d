@@ -10,7 +10,8 @@ ICON_FILE = ../icon.png
 
 QML_FILES = \
     qml/desktop.qml \
-    qml/TestRotation.qml
+    qml/TestRotation.qml \
+    qml/RotationTestCase.qml
 
 QML_INFRA_FILES = \
     $$QML_FILES
