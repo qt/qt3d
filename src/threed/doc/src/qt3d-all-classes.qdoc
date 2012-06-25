@@ -34,13 +34,6 @@
 */
 
 /*!
-    \group qt3d
-    \title Qt3D Classes
-
-    \generatelist{related}
-*/
-
-/*!
     \page qt3d-all-namespaces.html
     \title Qt3D Namespaces
     \keyword All Namespaces

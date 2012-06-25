@@ -6,6 +6,8 @@ QT         = core-private gui-private
 
 load(qt_module_config)
 
+QMAKE_DOCS = $$PWD/doc/qt3d.qdocconf
+
 # private dependencies
 QT += network
 

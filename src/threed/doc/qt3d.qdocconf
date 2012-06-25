@@ -1,0 +1,93 @@
+include(../../../doc/global/qt-html-templates-offline.qdocconf)
+include(../../../doc/global/qt-cpp-ignore.qdocconf)
+
+project                 = Qt3D
+description             = Qt 3D Reference Documentation
+url                     = http://qt-project.org/doc/qt-5.0/qt3d
+version                 = 5.0.0
+
+sourceencoding          = UTF-8
+outputencoding          = UTF-8
+naturallanguage         = en_US
+qhp.projects            = Qt3D
+
+qhp.Qt3D.file         = qt3d.qhp
+qhp.Qt3D.namespace           = org.qt-project.qt3d.500
+qhp.Qt3D.virtualFolder       = qdoc
+qhp.Qt3D.indexTitle          = Qt 3D Reference Documentation
+qhp.Qt3D.indexRoot           =
+
+qhp.Qt3D.filterAttributes    = qt3d 5.0.0 qtrefdoc
+qhp.Qt3D.customFilters.Qt.name = Qt3D 5.0.0
+qhp.Qt3D.customFilters.Qt.filterAttributes = qt3d 5.0.0
+qhp.Qt3D.subprojects         = classes overviews examples
+qhp.Qt3D.subprojects.classes.title = Classes
+qhp.Qt3D.subprojects.classes.indexTitle = Qt 3D's Classes
+qhp.Qt3D.subprojects.classes.selectors = class fake:headerfile
+qhp.Qt3D.subprojects.classes.sortPages = true
+qhp.Qt3D.subprojects.overviews.title = Overviews
+qhp.Qt3D.subprojects.overviews.indexTitle = All Overviews and HOWTOs
+qhp.Qt3D.subprojects.overviews.selectors = fake:page,group,module
+qhp.Qt3D.subprojects.examples.title = Qt 3D Examples
+qhp.Qt3D.subprojects.examples.indexTitle = Qt 3D Examples
+qhp.Qt3D.subprojects.examples.selectors = fake:example
+
+dita.metadata.default.author      = Qt Project
+dita.metadata.default.permissions = all
+dita.metadata.default.publisher   = Qt Project
+dita.metadata.default.copyryear = 2012
+dita.metadata.default.copyrholder = Nokia
+dita.metadata.default.audience = programmer
+
+sources.fileextensions  = "*.c++ *.cc *.cpp *.cxx *.mm *.qml *.qdoc"
+headers.fileextensions  = "*.ch *.h *.h++ *.hh *.hpp *.hxx"
+
+examples.fileextensions = "*.cpp *.h *.js *.xq *.svg *.xml *.ui *.qhp *.qhcp *.qml *.css"
+examples.imageextensions = "*.png"
+
+outputdir               = ../../../doc/qt3d
+tagfile                 = ../../../doc/qt3d/qt3d.tags
+
+HTML.generatemacrefs    = "true"
+HTML.nobreadcrumbs      = "true"
+
+HTML.templatedir = .
+
+HTML.stylesheets = global/style/offline.css
+
+HTML.headerstyles = \
+    "  <link rel=\"stylesheet\" type=\"text/css\" href=\"style/offline.css\" />\n"
+
+HTML.endheader = \
+    "</head>\n" \
+
+defines                 = Q_QDOC \
+                          QT_.*_SUPPORT \
+                          QT_.*_LIB \
+                          QT_COMPAT \
+                          QT_KEYPAD_NAVIGATION \
+                          QT_NO_EGL \
+                          Q_WS_.* \
+                          Q_OS_.* \
+                          Q_BYTE_ORDER \
+                          QT_DEPRECATED \
+                          QT_DEPRECATED_* \
+                          Q_NO_USING_KEYWORD \
+                          __cplusplus \
+                          Q_COMPILER_INITIALIZER_LISTS
+
+versionsym              = QT_VERSION_STR
+
+codeindent              = 1
+
+depends                 += qtcore qtgui
+
+headerdirs  += ..
+
+sourcedirs  += ..
+
+exampledirs += ../../../examples \
+               ../ \
+               snippets
+
+imagedirs   += images
