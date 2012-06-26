@@ -48,7 +48,10 @@
 QT_BEGIN_NAMESPACE
 
 QStringList QGLBezierSceneHandler::supportedFormats() {
-    return QStringList(QLatin1String("bez"));
+    QStringList val;
+    val.append(QLatin1String("bez"));
+    val.append(QLatin1String("bezier"));
+    return val;
 }
 
 QGLAbstractScene *QGLBezierSceneHandler::read()
