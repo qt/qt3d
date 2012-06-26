@@ -77,6 +77,51 @@
         texture: "texture.png"
     }
     \endcode
+
+    For more precise control over color and textures pertaining to Effect users should set a Material on the
+    material property of Effect.
+
+    With this in mind it should be noted that the color and texture properties of a QML Effect are convenience
+    function which may have undesirable results in some circumstances.  This is because color and texture will
+    directly affect the underlying QGLMaterial associated with the Effect.
+
+    If no material has been specified when the color and texture are set, then a new default material is
+    created and used - any later material specification will then override these values.
+
+    Properties are parsed and set in order, so this should inform usage of these properties.
+
+    For example:
+
+    \code
+    Effect {
+        id: effect1
+        color: "green"
+        material: Material {
+            diffuseColor: "blue"
+        }
+    }
+
+    Effect {
+        id: effect2
+        material: Material {
+            diffuseColor: "blue"
+        }
+        color: "green"
+    }
+    \endcode
+
+    In the case of effect1 the result will be a blue colored item.  This is because the green Material
+    created when the color property is set is overridden when the "blue" material property is later set.
+
+    In the case of effect2, however, the resultant item will be colored green.  In thise case the Material
+    specified shall have its color set from "blue" to "green" when the color property is set.
+
+    \note Because color and texture properties directly change the values in the underlying Material (and hence
+    could unintentionally change the color of a material which is shared between two Effect it is recommended
+    that users only use color and texture properties of an Effect in simple cases - if an underlying Material is
+    specified, the user should not use the color and texture properties at all.
+
+    \sa QGLMaterial
 */
 
 QT_BEGIN_NAMESPACE
