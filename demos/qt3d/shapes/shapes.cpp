@@ -368,18 +368,15 @@ void ShapesWidget::paintCube(QGLPainter *painter, const QRect& rect)
     painter->projectionMatrix().push();
     painter->modelViewMatrix().push();
 
-    QGLSubsurface surface(painter->currentSurface(), rect);
-    painter->pushSurface(&surface);
-
+    QMatrix4x4 cubeTransform;
+    cubeTransform.translate(0,-2.5,-12);
+    cubeTransform.rotate(45.0f, 1.0f, 1.0f, 1.0f);
+    cube->setLocalTransform(cubeTransform);
     painter->setCamera(&camera);
-    painter->modelViewMatrix().rotate(45.0f, 1.0f, 1.0f, 1.0f);
-
     cube->draw(painter);
 
     painter->projectionMatrix().pop();
     painter->modelViewMatrix().pop();
-
-    painter->popSurface();
 
     drawText(painter, rect, tr("Cube"));
 }
@@ -391,22 +388,21 @@ void ShapesWidget::paintTeapot(QGLPainter *painter, const QRect& rect)
     painter->projectionMatrix().push();
     painter->modelViewMatrix().push();
 
-    QGLSubsurface surface(painter->currentSurface(), rect);
-    painter->pushSurface(&surface);
-
+    QRect view = geometry();
+    qreal aspect = ((qreal)view.width())/((qreal)view.height());
+    qreal ratio = aspect/1.333;
+    QMatrix4x4 teapotTransform;
+    teapotTransform.translate(4*ratio,-2.5,-12.0);
+    teapot->setLocalTransform(teapotTransform);
     painter->setCamera(&camera);
-
     // Need a one-sided lighting model for the teapot.
     painter->setLightModel(&oneSidedModel);
-
     teapot->draw(painter);
 
     painter->setLightModel(&twoSidedModel);
 
     painter->projectionMatrix().pop();
     painter->modelViewMatrix().pop();
-
-    painter->popSurface();
 
     drawText(painter, rect, tr("Teapot"));
 }
