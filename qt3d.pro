@@ -28,8 +28,8 @@ module_qt3d_tests.depends = module_qt3d_src
 module_qt3d_tests.CONFIG = no_default_install
 !contains(QT_BUILD_PARTS,tests):module_qt3d_tests.CONFIG += no_default_target
 
-module_qt3d_util.subdir = util
-module_qt3d_util.target = module-qt3d-util
+module_qt3d_util.subdir = tools
+module_qt3d_util.target = module-qt3d-tools
 module_qt3d_util.depends = module_qt3d_src
 module_qt3d_util.CONFIG = no_default_target no_default_install
 
