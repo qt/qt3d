@@ -1,2 +1,3 @@
 TEMPLATE = subdirs
-SUBDIRS += quick3d qt3d
+SUBDIRS += qt3d
+!isEmpty(QT.qml.name): SUBDIRS += quick3d

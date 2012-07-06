@@ -1,3 +1,4 @@
 TEMPLATE = subdirs
 CONFIG += ordered
-SUBDIRS = threed quick3d imports
+SUBDIRS = threed
+!isEmpty(QT.qml.name): SUBDIRS += quick3d imports
