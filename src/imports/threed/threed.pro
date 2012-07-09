@@ -1,12 +1,7 @@
-TEMPLATE = lib
+CXX_MODULE = 3d
 TARGET  = qthreedqmlplugin
-CONFIG += qt plugin
 
 QT += quick qml 3d 3dquick
-
-DESTDIR = $$QT.3dquick.imports/Qt3D
-target.path = $$[QT_INSTALL_IMPORTS]/Qt3D
-INSTALLS += target
 
 SOURCES += \
     threed.cpp \
@@ -28,24 +23,11 @@ HEADERS += \
     skybox.h \
     billboarditem3d.h
 
-QML_INFRA_FILES = \
-    qmldir \
-    library.xml \
-    plugins.qmltypes
-
-copyqmlinfra_install.files = $$QML_INFRA_FILES
-copyqmlinfra_install.path = $$[QT_INSTALL_IMPORTS]/Qt3D
-INSTALLS += copyqmlinfra_install
-
-copyqmlinfra.input = QML_INFRA_FILES
-copyqmlinfra.output = $$DESTDIR/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
-copyqmlinfra.commands = $$QMAKE_COPY ${QMAKE_FILE_IN} ${QMAKE_FILE_OUT}
-copyqmlinfra.CONFIG += no_link no_clean
-copyqmlinfra.variable_out = PRE_TARGETDEPS
-QMAKE_EXTRA_COMPILERS += copyqmlinfra
+QML_FILES += \
+    library.xml
 
 OTHER_FILES += \
     README.plugins_types \
     README.library_xml
 
-
+load(qml_plugin)
