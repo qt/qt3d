@@ -5,6 +5,7 @@ SUBDIRS += \
     forest \
     lander \
     matrix_animation \
+    positional_lighting \
     monkeygod \
     moon \
     photoroom \
