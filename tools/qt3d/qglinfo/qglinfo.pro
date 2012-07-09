@@ -1,5 +1,5 @@
 TARGET = qglinfo
-QT += 3d
+QT += 3d widgets opengl
 
 SOURCES += main.cpp \
     qglinfowindow.cpp \

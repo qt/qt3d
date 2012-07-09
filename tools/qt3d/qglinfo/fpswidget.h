@@ -46,7 +46,7 @@
 #if defined(QT_OPENGL_ES_2)
 #include <QtGui/qvector3d.h>
 #include <QtGui/qmatrix4x4.h>
-#include <QOpenGLShaderProgram>
+#include <QtOpenGL/QGLShaderProgram>
 #endif
 
 class QTime;

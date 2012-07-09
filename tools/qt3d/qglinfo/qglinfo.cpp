@@ -41,10 +41,10 @@
 
 #include "qglinfo.h"
 
+#include <QtGui/qopenglframebufferobject.h>
 #include <QtOpenGL/qgl.h>
 #include <QtOpenGL/qglpixelbuffer.h>
-#include <QtOpenGL/qglframebufferobject.h>
-#include <QOpenGLShaderProgram>
+#include <QtOpenGL/QGLShaderProgram>
 
 #include <QtCore/qtimer.h>
 #include <QtCore/qdatetime.h>
