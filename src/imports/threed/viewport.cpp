@@ -976,7 +976,8 @@ void Viewport::draw(QGLPainter *painter)
 
     painter->setObjectPickId(-1);
     QObjectList list = QObject::children();
-    painter->setMainLight(d->light, camera()->modelViewMatrix());
+    painter->setMainLight(d->light,
+                          camera() ? camera()->modelViewMatrix() : QMatrix4x4());
     painter->setLightModel(d->lightModel);
     foreach (QObject *child, list) {
         QQuickItem3D *item = qobject_cast<QQuickItem3D *>(child);
