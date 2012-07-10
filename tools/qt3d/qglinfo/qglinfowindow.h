@@ -44,9 +44,11 @@
 
 #include <QMainWindow>
 
+QT_BEGIN_NAMESPACE
 namespace Ui {
     class QGLInfoWindow;
 }
+QT_END_NAMESPACE
 
 class QGLInfo;
 class FPSWidget;

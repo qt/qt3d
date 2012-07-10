@@ -49,8 +49,10 @@
 #include <QtOpenGL/QGLShaderProgram>
 #endif
 
+QT_BEGIN_NAMESPACE
 class QTime;
 class QTimer;
+QT_END_NAMESPACE
 
 class FPSWidget : public QGLWidget
 {
