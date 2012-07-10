@@ -52,7 +52,7 @@
 
 #include <QtGui/qevent.h>
 #include <QtQml/qqmlcontext.h>
-#include <qquickcanvas.h>
+#include <QtQuick/qquickwindow.h>
 
 /*!
     \qmlclass Item3D QQuickItem3D
@@ -1289,7 +1289,7 @@ void QQuickItem3D::draw(QGLPainter *painter)
         initialize(painter);
 
     if (!d->bConnectedToOpenGLContextSignal) {
-        QQuickCanvas* pCanvas = canvas();
+        QQuickWindow * pCanvas = window();
         Q_ASSERT(pCanvas);
         QOpenGLContext* pOpenGLContext = pCanvas->openglContext();
         Q_ASSERT(pOpenGLContext);

@@ -59,7 +59,7 @@
 #include <QTimer>
 #include <QCoreApplication>
 #include <QQmlInfo>
-#include <QtQuick/QQuickCanvas>
+#include <QtQuick/QQuickWindow>
 #include <QOpenGLBuffer>
 #include <QtCore/qthread.h>
 #include <QtCore/qmutex.h>
@@ -264,7 +264,7 @@ public:
     // class instance data from other threads should be at a bare minimum.
     QMutexMaybeLocker::Lock viewportLock;
 
-    QQuickCanvas* canvas;
+    QQuickWindow* canvas;
 
     void setDefaults(QGLPainter *painter);
     void setRenderSettings(QGLPainter *painter);
@@ -1822,13 +1822,13 @@ void Viewport::itemChange(QQuickItem::ItemChange change, const ItemChangeData &v
             setItemViewport(item3d);
         }
     }
-    if (change == ItemSceneChange && value.canvas != d->canvas)
+    if (change == ItemSceneChange && value.window != d->canvas)
     {
         if (d->canvas)
         {
             d->canvas->disconnect(this);
         }
-        d->canvas = value.canvas;
+        d->canvas = value.window;
         d->directRenderInitialized = false;
         if (d->canvas)
         {
@@ -1872,7 +1872,7 @@ void Viewport::sceneGraphInitialized()
     Q_ASSERT(d->canvas);
     if (renderMode() == UnknownRender)
     {
-        if (d->canvas->rootItem() != parentItem())
+        if (d->canvas->contentItem() != parentItem())
         {
 #ifdef Q_DEBUG_VIEWPORT
             qWarning() << "Viewport not the top level item - has parent %1:"
