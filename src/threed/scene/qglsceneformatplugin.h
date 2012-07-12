@@ -97,6 +97,7 @@ private:
 class Q_QT3D_EXPORT QGLSceneFormatFactoryInterface
 {
 public:
+    virtual ~QGLSceneFormatFactoryInterface() {}
     virtual QGLSceneFormatHandler *create(QIODevice *device, const QUrl& url, const QString &format = QString()) const = 0;
 };
 
