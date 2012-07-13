@@ -92,10 +92,10 @@ void QGLContextSurface::deactivate(QGLAbstractSurface *nextSurface)
 
 QRect QGLContextSurface::viewportGL() const
 {
-    QRect r;
     if (window())
     {
-        r = window()->geometry();
+        QRect geom = window()->geometry();
+        return QRect(0,0,geom.width(),geom.height());
     }
 #ifndef QT_NO_DEBUG_STREAM
     else
@@ -104,7 +104,7 @@ QRect QGLContextSurface::viewportGL() const
                       << "Call activate() first";
     }
 #endif
-    return r;
+    return QRect();
 }
 
 bool QGLContextSurface::isValid() const

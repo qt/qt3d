@@ -142,9 +142,10 @@ void QGLWindowSurface::deactivate(QGLAbstractSurface *nextSurface)
 */
 QRect QGLWindowSurface::viewportGL() const
 {
-    if (window())
-        return window()->geometry();    // Origin assumed to be (0, 0).
-    else
+    if (window()) {
+        QRect geom = window()->geometry();
+        return QRect(0,0,geom.width(),geom.height());
+    } else
         return QRect();
 }
 

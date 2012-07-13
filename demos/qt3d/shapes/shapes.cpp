@@ -171,8 +171,11 @@ void ShapesWidget::paintGL()
 
     glDisable(GL_DEPTH_TEST);
 
+    QRect rect = geometry();
+    QRect rectnew(0,0,rect.width(),rect.height());
+
     QMatrix4x4 projm;
-    projm.ortho(geometry());
+    projm.ortho(rectnew);
     painter.projectionMatrix() = projm;
     painter.modelViewMatrix().setToIdentity();
 
@@ -226,6 +229,8 @@ void ShapesWidget::paintPoints(QGLPainter *painter, const QRect& rect)
 void ShapesWidget::paintLines(QGLPainter *painter, const QRect& rect)
 {
     painter->clearAttributes();
+    painter->setStandardEffect(QGL::FlatColor);
+    painter->setColor(QColor(170, 202, 0));
     painter->setVertexAttribute(QGL::Position, basicPoints(rect));
     painter->draw(QGL::Lines, 8);
 
@@ -235,6 +240,8 @@ void ShapesWidget::paintLines(QGLPainter *painter, const QRect& rect)
 void ShapesWidget::paintLineStrip(QGLPainter *painter, const QRect& rect)
 {
     painter->clearAttributes();
+    painter->setStandardEffect(QGL::FlatColor);
+    painter->setColor(QColor(170, 202, 0));
     painter->setVertexAttribute(QGL::Position, basicPoints(rect));
     painter->draw(QGL::LineStrip, 8);
 
@@ -244,6 +251,8 @@ void ShapesWidget::paintLineStrip(QGLPainter *painter, const QRect& rect)
 void ShapesWidget::paintLineLoop(QGLPainter *painter, const QRect& rect)
 {
     painter->clearAttributes();
+    painter->setStandardEffect(QGL::FlatColor);
+    painter->setColor(QColor(170, 202, 0));
     painter->setVertexAttribute(QGL::Position, basicPoints(rect));
     painter->draw(QGL::LineLoop, 8);
 
@@ -368,15 +377,18 @@ void ShapesWidget::paintCube(QGLPainter *painter, const QRect& rect)
     painter->projectionMatrix().push();
     painter->modelViewMatrix().push();
 
-    QMatrix4x4 cubeTransform;
-    cubeTransform.translate(0,-2.5,-12);
-    cubeTransform.rotate(45.0f, 1.0f, 1.0f, 1.0f);
-    cube->setLocalTransform(cubeTransform);
+    QGLSubsurface surface(painter->currentSurface(), rect);
+    painter->pushSurface(&surface);
+
     painter->setCamera(&camera);
+    painter->modelViewMatrix().rotate(45.0f, 1.0f, 1.0f, 1.0f);
+
     cube->draw(painter);
 
     painter->projectionMatrix().pop();
     painter->modelViewMatrix().pop();
+
+    painter->popSurface();
 
     drawText(painter, rect, tr("Cube"));
 }
@@ -388,12 +400,9 @@ void ShapesWidget::paintTeapot(QGLPainter *painter, const QRect& rect)
     painter->projectionMatrix().push();
     painter->modelViewMatrix().push();
 
-    QRect view = geometry();
-    qreal aspect = ((qreal)view.width())/((qreal)view.height());
-    qreal ratio = aspect/1.333;
-    QMatrix4x4 teapotTransform;
-    teapotTransform.translate(4*ratio,-2.5,-12.0);
-    teapot->setLocalTransform(teapotTransform);
+    QGLSubsurface surface(painter->currentSurface(), rect);
+    painter->pushSurface(&surface);
+
     painter->setCamera(&camera);
     // Need a one-sided lighting model for the teapot.
     painter->setLightModel(&oneSidedModel);
@@ -403,6 +412,8 @@ void ShapesWidget::paintTeapot(QGLPainter *painter, const QRect& rect)
 
     painter->projectionMatrix().pop();
     painter->modelViewMatrix().pop();
+
+    painter->popSurface();
 
     drawText(painter, rect, tr("Teapot"));
 }
