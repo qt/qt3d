@@ -4,7 +4,10 @@
 # removed.  Also check the README file.
 
 # package the binary wrapper that launches the QML
-target.path = $$[QT_INSTALL_DATA]/qt3d
+testcase|qmltestcase: \
+    target.path = $$[QT_INSTALL_TESTS]/$$TARGET
+else: \
+    target.path = $$[QT_INSTALL_EXAMPLES]/qt3d
 INSTALLS += target
 
 macx: \
