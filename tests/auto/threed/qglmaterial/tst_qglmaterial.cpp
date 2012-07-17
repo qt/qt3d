@@ -158,9 +158,7 @@ bool TestWidget::runTest(QGLAbstractMaterial *mat, int timeout)
     QTimer::singleShot(timeout, eventLoop, SLOT(quit()));
     if (!isVisible()) {
         show();
-#ifdef Q_WS_X11
-        qt_x11_wait_for_window_manager(this);
-#endif
+        QTest::qWaitForWindowExposed(this);
     } else {
         update();
     }
