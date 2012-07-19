@@ -1,5 +1,7 @@
 TEMPLATE = subdirs
-SUBDIRS = threed
+SUBDIRS = threed \
+          cmake
+
 !isEmpty(QT.qml.name): SUBDIRS += imports
 contains(QT_CONFIG, qmltest) {
     SUBDIRS += qml3d
