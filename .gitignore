@@ -37,6 +37,7 @@ tst_*
 tst_*.log
 tst_*.debug
 tst_*~
+tests/auto/cmake/build
 
 # Visual Studio generated files
 *.ib_pdb_index
