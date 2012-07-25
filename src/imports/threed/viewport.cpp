@@ -885,7 +885,13 @@ void Viewport::render(QGLPainter *painter)
     // boundingRect is in local coordinates. We need to map it to the scene coordinates
     // in order to render to correct area.
     QRect viewport = mapRectToScene(boundingRect()).toRect();
-    QGLSubsurface surface (painter->currentSurface(), viewport);
+    // In BufferedRender mode we don't need to shift left upper corner of our rect,
+    // because we render to separate render target.
+    QRect target_rect( (renderMode() == DirectRender)? viewport.x():0,
+                       (renderMode() == DirectRender)? viewport.y():0,
+                       viewport.width(),
+                       viewport.height() );
+    QGLSubsurface surface (painter->currentSurface(), target_rect);
     painter->pushSurface(&surface);
 
     // Perform early drawing operations.
