@@ -40,7 +40,8 @@
 ****************************************************************************/
 
 /*!
-    \qmlclass Cube Cube
+    \qmltype Cube
+    \instantiates Cube
     \brief The Cube item represents a simple cube in 3D space.
     \since 4.8
     \ingroup qt3d::qml3d::shapes

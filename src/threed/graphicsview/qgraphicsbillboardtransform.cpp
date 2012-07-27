@@ -61,7 +61,8 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \qmlclass BillboardTransform QGraphicsBillboardTransform
+    \qmltype BillboardTransform
+    \instantiates QGraphicsBillboardTransform
     \brief The BillboardTransform item implements a transformation that causes objects to face the camera.
     \since 4.8
     \ingroup qt3d::qml3d

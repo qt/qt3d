@@ -44,7 +44,8 @@
 QT_BEGIN_NAMESPACE
 
 /*!
-    \qmlclass Qt3D Qt3DNamespace
+    \qmltype Qt3D
+    \instantiates Qt3DNamespace
     \brief The QML global object Qt3D provides useful functions for 3D applications.
     \ingroup qt3d::qml3d
 */

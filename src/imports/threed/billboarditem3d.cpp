@@ -44,7 +44,8 @@
 #include "qquickeffect.h"
 
 /*!
-    \qmlclass BillboardItem3D BillboardItem3D
+    \qmltype BillboardItem3D
+    \instantiates BillboardItem3D
     \brief The BillboardItem3D will always face toward the viewer.
     \since 4.8
     \ingroup qt3d::qml3d

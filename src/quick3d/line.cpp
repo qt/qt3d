@@ -45,7 +45,8 @@
 QT_BEGIN_NAMESPACE
 
 /*!
-    \qmlclass Line Line
+    \qmltype Line
+    \instantiates Line
     \brief The Line item represents a geometric line drawn in 3D space.
     \since 4.8
     \ingroup qt3d::qml3d::shapes

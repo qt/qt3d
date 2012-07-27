@@ -62,7 +62,8 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \qmlclass LookAtTransform QGraphicsLookAtTransform
+    \qmltype LookAtTransform
+    \instantiates QGraphicsLookAtTransform
     \brief The LookAtTransform item implements a transformation that causes objects to face the camera.
     \since 4.8
     \ingroup qt3d::qml3d

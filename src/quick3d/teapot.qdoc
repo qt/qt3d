@@ -40,7 +40,8 @@
 ****************************************************************************/
 
 /*!
-    \qmlclass Teapot Teapot
+    \qmltype Teapot
+    \instantiates Teapot
     \brief The Teapot item represents a stock teapot object.
     \since 4.8
     \ingroup qt3d::qml3d::shapes

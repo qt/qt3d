@@ -54,7 +54,8 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \qmlclass Scale3D QGraphicsScale3D
+    \qmltype Scale3D
+    \instantiates QGraphicsScale3D
     \brief The Scale3D item supports scaling of items in 3D.
     \since 4.8
     \ingroup qt3d::qml3d

@@ -64,7 +64,8 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \qmlclass Translation3D QGraphicsTranslation3D
+    \qmltype Translation3D
+    \instantiates QGraphicsTranslation3D
     \brief The Translation3D item supports translation of items in 3D.
     \since 4.8
     \ingroup qt3d::qml3d

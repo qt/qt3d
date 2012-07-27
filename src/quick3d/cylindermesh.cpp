@@ -48,7 +48,8 @@
 QT_BEGIN_NAMESPACE
 
 /*!
-    \qmlclass CylinderMesh CylinderMesh
+    \qmltype CylinderMesh
+    \instantiates CylinderMesh
     \brief The CylinderMesh item represents a simple cylinder in 3D space.
     \since 4.8
     \ingroup qt3d::qml3d::shapes

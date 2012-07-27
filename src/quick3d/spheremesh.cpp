@@ -49,7 +49,8 @@
 QT_BEGIN_NAMESPACE
 
 /*!
-    \qmlclass SphereMesh SphereMesh
+    \qmltype SphereMesh
+    \instantiates SphereMesh
     \brief The SphereMesh item represents a simple UV-sphere in 3D space.
     \since 4.8
     \ingroup qt3d::qml3d::shapes

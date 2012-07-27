@@ -62,7 +62,8 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \qmlclass Material QGLMaterial
+    \qmltype Material
+    \instantiates QGLMaterial
     \brief The Material item describes material properties for OpenGL drawing.
     \since 4.8
     \ingroup qt3d::qml3d

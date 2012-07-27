@@ -45,7 +45,8 @@
 QT_BEGIN_NAMESPACE
 
 /*!
-    \qmlclass Point Point
+    \qmltype Point
+    \instantiates Point
     \brief The Point item represents a geometric point drawn in 3D space.
     \since 4.8
     \ingroup qt3d::qml3d::shapes

@@ -48,7 +48,8 @@
 QT_BEGIN_NAMESPACE
 
 /*!
-    \qmlclass CapsuleMesh CapsuleMesh
+    \qmltype CapsuleMesh
+    \instantiates CapsuleMesh
     \brief The CapsuleMesh item represents a simple capsule in 3D space.
     \since 4.8
     \ingroup qt3d::qml3d::shapes

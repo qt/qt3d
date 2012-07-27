@@ -52,7 +52,8 @@
 #include <QtCore/qlist.h>
 
 /*!
-    \qmlclass Mesh QQuickMesh
+    \qmltype Mesh
+    \instantiates QQuickMesh
     \brief The Mesh item provides a means of abstracting 3D mesh and geometry representations in
     a way that can be used in QML.  The Mesh class contains necessary properties and methods for
     display and manipulation of 3d objects of this type.

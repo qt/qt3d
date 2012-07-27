@@ -55,7 +55,8 @@
 #include <QtQuick/qquickwindow.h>
 
 /*!
-    \qmlclass Item3D QQuickItem3D
+    \qmltype Item3D
+    \instantiates QQuickItem3D
     \brief The Item3D item encapsulates 3D objects and contains all of the properties and methods needed for simple 3D operations.
     part of a QML/3d script.
     \since 4.8

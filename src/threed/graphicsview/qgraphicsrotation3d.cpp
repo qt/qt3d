@@ -54,7 +54,8 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \qmlclass Rotation3D QGraphicsRotation3D
+    \qmltype Rotation3D
+    \instantiates QGraphicsRotation3D
     \brief The Rotation3D item supports arbitrary rotation around an axis in 3D space.
     \since 4.8
     \ingroup qt3d::qml3d

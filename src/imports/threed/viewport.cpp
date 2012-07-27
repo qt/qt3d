@@ -66,7 +66,8 @@
 #include <QtCore/qmath.h>
 
 /*!
-    \qmlclass Viewport Viewport
+    \qmltype Viewport
+    \instantiates Viewport
     \brief The Viewport item defines the logical viewport for a 3D scene.  It includes all necessary
     references and parameters for the contents of the scene, as well as drawing and painting functions
     \since 4.8

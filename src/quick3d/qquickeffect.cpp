@@ -53,7 +53,8 @@
 #include "qglscenenode.h"
 
 /*!
-    \qmlclass Effect QQuickEffect
+    \qmltype Effect
+    \instantiates QQuickEffect
     \brief The Effect item defines simple effects within the QML/3D environment.  Examples
     of such effects include textures, simple material and lighting effects, and so on.
     \since 4.8

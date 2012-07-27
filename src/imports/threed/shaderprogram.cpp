@@ -50,7 +50,8 @@
 #include <QQmlContext>
 
 /*!
-    \qmlclass ShaderProgram ShaderProgram
+    \qmltype ShaderProgram
+    \instantiates ShaderProgram
     \brief The ShaderProgram item is derivative class of the more general Effect class in QML/3d.
     Whereas the Effect class provides support for standard effects under OpenGL, the ShaderProgramEffect supports effects based on custom shader programs for the GPU.
     \since 4.8

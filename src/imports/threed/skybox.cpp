@@ -50,7 +50,8 @@
 #include <QFileInfo>
 
 /*!
-    \qmlclass Skybox Skybox
+    \qmltype Skybox
+    \instantiates Skybox
     \brief The Skybox item provides a simple 6-texture environment.
     \since 4.8
     \ingroup qt3d::qml3d

@@ -296,7 +296,8 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \qmlclass Camera QGLCamera
+    \qmltype Camera
+    \instantiates QGLCamera
     \brief The Camera item defines the viewing position and projection for a 3D scene.
     \since 4.8
     \ingroup qt3d::qml3d

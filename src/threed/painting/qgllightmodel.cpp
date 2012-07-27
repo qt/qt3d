@@ -52,7 +52,8 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \qmlclass LightModel QGLLightModel
+    \qmltype LightModel
+    \instantiates QGLLightModel
     \brief The LightModel item defines the lighting model to use for the scene.
     \since 4.8
     \ingroup qt3d::qml3d

@@ -40,7 +40,8 @@
 ****************************************************************************/
 
 /*!
-    \qmlclass Quad Quad
+    \qmltype Quad
+    \instantiates Quad
     \brief The Quad item represents a simple quad in 3D space.
     \since 4.8
     \ingroup qt3d::qml3d::shapes

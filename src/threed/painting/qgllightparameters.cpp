@@ -125,7 +125,8 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \qmlclass Light QGLLightParameters
+    \qmltype Light
+    \instantiates QGLLightParameters
     \brief The Light item represents the parameters of a light in a 3D scene.
     \since 4.8
     \ingroup qt3d::qml3d
