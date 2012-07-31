@@ -27,15 +27,14 @@
 
 /*!
     \page qt3d-all-classes.html
-    \title Qt3D Classes
-    \keyword Qt3D Classes
+    \title Qt 3D Classes
 
     \generatelist classes
 */
 
 /*!
     \page qt3d-all-namespaces.html
-    \title Qt3D Namespaces
+    \title Qt 3D Namespaces
     \keyword All Namespaces
 
     \l{QGL}{QGL Namespace}

@@ -29,10 +29,10 @@
     \example quick3d/monkeygod
     \title Monkey God in QML
 
-    The Monkey God demo in QML shows how QML/Qt3D can be used to build
+    The Monkey God demo in QML shows how QML and \l{Qt 3D} can be used to build
     up complex 3D scenes including materials and animations.
 
     \image monkeygod-screenshot.png
 
-    \l{qt3d-examples.html}{Return to Examples}.
+    \l{Qt 3D Tutorials and Examples}{Return to Examples}.
 */

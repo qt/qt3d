@@ -29,7 +29,7 @@
     \example qt3d/teapot
     \title Teapot Example
 
-    The Teapot example shows how Qt3D can be used to draw a simple
+    The Teapot example shows how \l{Qt 3D} can be used to draw a simple
     teapot object with a perspective camera view in C++.  There is
     also a \l{Teapot Example in QML}{QML version} of the teapot
     example.
@@ -91,5 +91,5 @@
         \li \image teapot-rotated.png
     \endtable
 
-    \l{qt3d-examples.html}{Return to Examples}.
+    \l{Qt 3D Tutorials and Examples}{Return to Examples}.
 */

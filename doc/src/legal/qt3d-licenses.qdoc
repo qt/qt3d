@@ -47,7 +47,7 @@
 
     \hr
 
-    Qt3D is grateful for the work of the Open Asset Import Library
+    Qt 3D is grateful for the work of the Open Asset Import Library
     team, who provide the file-reader support for all 3D Assets.  See the
     \l{http://assimp.sourceforge.net/}{Open Asset Import project} for details.
 

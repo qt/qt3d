@@ -45,12 +45,12 @@
 
 /*!
     \page classes.html
-    \title All Qt3D Classes
+    \title All Qt 3D Classes
     \ingroup classlists
 
     \brief If you know the name of the class you want, find it here.
 
-    This is a list of all Qt3D classes.
+    This is a list of all \l{Qt 3D} classes.
 
     \generatelist classes
 
@@ -64,7 +64,7 @@
     \brief If you don't know the name of the class you want, but you
     know what the class should do, you might try looking here.
 
-    Qt3D API classes with brief descriptions:
+    \l{Qt 3D} API classes with brief descriptions:
 
     \generatelist annotatedclasses
 */
@@ -77,7 +77,7 @@
     \ingroup classlists
 
     \brief The C++ class inheritance hierarchy for all classes in the
-    Qt3D API.
+    Qt 3D API.
 
     \generatelist classhierarchy
 */
@@ -89,11 +89,11 @@
     \title All Functions
     \ingroup funclists
 
-    \brief All documented Qt3D functions listed alphabetically with a
+    \brief All documented Qt 3D functions listed alphabetically with a
     link to where each one is declared.
 
     This is the list of all documented member functions and global
-    functions in the Qt3D API.  Each function has a link to the class or
+    functions in the \l{Qt 3D} module.  Each function has a link to the class or
     header file where it is declared and documented.
 
     \generatelist functionindex

@@ -48,9 +48,9 @@
 
     \snippet quick3d/basket/qml/Basket.qml 3
 
-    \section2 Basket in Qt3D
+    \section2 Basket in Qt 3D
 
-    The Basket example shows how Qt3D can be used to draw an animated
+    The Basket example shows how \l{Qt 3D} can be used to draw an animated
     object covered in a texture.  The basic application shell is similar
     to the \l{qt3d/teapot}{Hello Teapot} example.  In this case, we create
     the basket object and add a texture to it as follows:
@@ -77,5 +77,5 @@
 
     \image basket-screenshot.png
 
-    \l{qt3d-examples.html}{Return to Examples}.
+    \l{Qt 3D Tutorials and Examples}{Return to Examples}.
 */

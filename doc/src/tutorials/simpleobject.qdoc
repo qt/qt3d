@@ -36,13 +36,13 @@
 
     \section2 Cube in QML
 
-    It is quite simple to achieve these effects in Qt3D:
+    It is quite simple to achieve these effects in \l{Qt 3D}:
 
     \snippet quick3d/cube/qml/Cube.qml 1
 
     \section2 Cube in C++
 
-    In the C++ side of Qt3D we start by declaring a view class to show our cube
+    In the C++ side of Qt 3D we start by declaring a view class to show our cube
     on the screen:
 
     \snippet qt3d/cube1/cubeview.h 1
@@ -102,5 +102,5 @@
 
     \image tutorials/cube4-screenshot.png
 
-    \l{qt3d-examples.html}{Return to the main Tutorials page}.
+    \l{Qt 3D Tutorials and Examples}{Return to the main Tutorials page}.
 */

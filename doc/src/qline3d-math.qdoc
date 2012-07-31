@@ -32,7 +32,7 @@
     \title 3D Math Basis
     \page qt3d-math-basis.html
     \keyword 3D Math Basis
-    \brief Math foundations for the Qt3D math classes.
+    \brief Math foundations for the Qt 3D math classes.
 
     The math classes provide basic operations in 3-space useful for graphics:
     \list

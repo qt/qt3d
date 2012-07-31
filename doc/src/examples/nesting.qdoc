@@ -29,7 +29,7 @@
     \example qt3d/nesting
     \title Drawing into framebuffer objects
 
-    The Nesting example shows how Qt3D can be used to draw into a
+    The Nesting example shows how \l{Qt 3D} can be used to draw into a
     framebuffer object and then use the associated texture in
     subsequent drawing operations.  It is assumed that the reader
     is already familar with the following examples:
@@ -130,5 +130,5 @@
     we would need to break the objects up into smaller convex pieces
     and then order the pieces from back to front.
 
-    \l{qt3d-examples.html}{Return to Examples}.
+    \l{Qt 3D Tutorials and Examples}{Return to Examples}.
 */

@@ -48,7 +48,7 @@
 
     \section1 The Default Camera
 
-    Qt3D uses the OpenGL co-ordinate system, that is a right-handed system.  In
+    Qt 3D uses the OpenGL co-ordinate system, that is a right-handed system.  In
     this system you can think of X as pointing to the right, Y as pointing up and
     Z as pointing toward you.  If you hold your right-hand so that the thumb,
     index and middle fingers are all at right angles to each other, then
@@ -205,7 +205,7 @@
     the cost of just sending it anyway and allowing the GPU to clip away all of it.
 
     The optimisation technique where you detect this case is called \b{View Frustum
-    Culling} and it can a simple and valuable performance enhancement.  Qt3D implements
+    Culling} and it can a simple and valuable performance enhancement.  Qt 3D implements
     view frustum culling via the QGLPainter::isCullable() function.
 
     \section1 Aspect-Ratio Correction

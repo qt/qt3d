@@ -27,21 +27,18 @@
 
 /*!
     \page qt3d-acceptance.html
-    \title Acceptance tests for Qt3D
+    \title Acceptance tests for Qt 3D
     \keyword Acceptance
 
-    As described in the \l{index.html}{Introduction} Qt3D is the C++ framework
-    that underlies Qt3D.
-
     This section of the documentation contains some recommended
-    acceptance tests for use when verifying that Qt3D has been
-    successfully ported to a new platform or device, and to
-    determine if the major features of Qt3D work correctly prior
-    to a release.  The list of tests is not intended to be exhaustive.
+    acceptance tests for use when verifying that the \l{Qt 3D}{Qt 3D module}
+    has been successfully ported to a new platform or device, and to determine
+    if the major features of Qt 3D work correctly prior to a release. The list
+    of tests is not intended to be exhaustive.
 
-    When \l{Contributing to Qt3D}{reporting bugs}, please include
+    When reporting bugs, please include
     as much information as possible about your platform and particularly
-    its OpenGL implementation.  The \c{qglinfo} program in the Qt3D
+    its OpenGL implementation.  The \c{qglinfo} program in the Qt 3D
     source tree can be used to collect up information about the OpenGL
     version, features, and extensions.  On X11 systems, usually
     \c{glxinfo} can be run to obtain similar information.
@@ -88,13 +85,13 @@
 
     \section1 Basic bring-up
 
-    A pre-requisite for the acceptance tests is that Qt and Qt3D have
+    A pre-requisite for the acceptance tests is that Qt and Qt 3D have
     been built and installed in accordance with the
-    \l{Building Qt3D}{build instructions}.  In particular, Qt must
+    \l{Building Qt 3D}{build instructions}.  In particular, Qt must
     be configured with OpenGL support and QGLWidget must be working.
 
     First, run all unit tests on the platform or device and verify that
-    they all pass (\l{Contributing to Qt3D}{report bugs} for those that
+    they all pass (\l{Contributing to Qt 3D}{report bugs} for those that
     do not pass).  The "make check" rule can be used to run the
     unit tests if you are not cross-compiling.  For cross-compile
     environments, copy all of the \c{tst_*} binaries under \c{tests/auto}
@@ -152,7 +149,7 @@
     If the basket does not spin, then try to determine if
     \c{BasketView::paintGL()} is being called every frame or not.
     If it is being called over and over, then the problem
-    may be in Qt3D.  But if it is not being called repeatedly, then
+    may be in Qt 3D.  But if it is not being called repeatedly, then
     it could be a problem in Qt's animation framework or QGLWidget
     update processing.
 
@@ -171,7 +168,7 @@
 
     \section1 Model loading
 
-    Run the \l{Loading a 3DS model with Qt3D}{Penguin} example
+    Run the \l{Loading a 3DS model with Qt 3D}{Penguin} example
     to check that 3DS model loading basically works:
 
     \image penguin-screenshot.png
@@ -182,9 +179,9 @@
     \c{QT_DEBUG_PLUGINS} environment variable to 1 to get extra
     information about why the plug-in could not be loaded.
 
-    \section1 Qt3D Verification
+    \section1 Qt 3D Verification
 
-    Run the Qt3D version of the bouncing
+    Run the Qt 3D version of the bouncing
     \l{Teapot Example in QML}{Teapot Example} using
     "qmlviewer -opengl teapot-bounce.qml".  The teapot should have a
     shiny appearence (compared to the grey teapot above) and bounce
@@ -195,13 +192,14 @@
     It should be possible to rotate the teapot using the mouse
     and keyboard.
 
-    Note that when running Qt3D examples on a device that both the
-    QML files and the model files must be copied to the device (the model
-    file is "teapot.bez" in the case of the bouncing teapot example).
+    Note that when running \l{Qt 3D Tutorials and Examples}{Qt 3D examples} on a
+    device that both the QML files and the model files must be copied to the
+    device (the model file is \c teapot.bez in the case of the bouncing teapot
+    example).
 
     \section1 Object picking
 
-    Run the Qt3D \l{Tea Service Demo in QML}{Tea Service} demo
+    Run the Qt 3D \l{Tea Service Demo in QML}{Tea Service} demo
     with "qmlviewer -opengl teaservice.qml".  Click on the teapot, teacups,
     and teaspoons to make them jump up, and click on the teapot
     spout and handle for other effects.  This example tests object
@@ -214,7 +212,7 @@
 
     \section1 Build tests
 
-    The Qt3D code base contains a number of \c{#ifdef} statements
+    The Qt 3D code base contains a number of \c{#ifdef} statements
     that may cause the build to fail in non-default Qt configurations
     or when strict API options are enabled.  It is recommended that
     these configurations be verified periodically, particularly
@@ -229,5 +227,5 @@
             DEFINES+=QT_NO_CAST_FROM_ASCII
     \endcode
 
-    \l{index.html}{Return to the main Qt3D page}.
+    \l{Qt 3D}{Return to the main Qt 3D page}.
 */

@@ -33,9 +33,10 @@
     \section2 Cube in QML
 
     The QML version of the cube example is very similar in
-    structure to the C++ version, but much simpler.  As with all Qt3D QML examples
-    we must include the QtQuick import, and our Qt3D import.  Since we
-    are using the stock Cube shape we must use the Qt3D.Shapes import as well.
+    structure to the C++ version, but much simpler.  As with all
+    \l{Qt 3D Tutorials and Examples}{Qt 3D QML examples},
+    we must include the \c QtQuick and \c Qt3D import.  Since we
+    are using the stock Cube shape we must use \c Qt3D.Shapes import as well.
 
     We start by defining a viewport with a blue fill to make the cube stand
     out, and we also tell the viewport to use DirectRender:
@@ -50,5 +51,5 @@
 
     \image cube-screenshot.png
 
-    \l{qt3d-examples.html}{Return to Examples}.
+    \l{Qt 3D Tutorials and Examples}{Return to Examples}.
 */

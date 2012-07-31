@@ -52,7 +52,7 @@
         </table>
     \endraw
 
-    At the highest level, shaders in Qt3D are created using the ShaderProgram
+    At the highest level, shaders in Qt 3D are created using the ShaderProgram
     element.  The ShaderProgram element in this example has the id \a program,
     and applying it to the teapot is as simple as assigning it to the \c effect
     property of an Item3D derived element.
@@ -384,5 +384,5 @@
     For further reading, the full specification for the OpenGL Shader Language
     is available from the Khronos website at http://www.khronos.org/opengl/
 
-    \l{qt3d-examples.html}{Return to the main Tutorials page}.
+    \l{Qt 3D Tutorials and Examples}{Return to the main Tutorials page}.
 */

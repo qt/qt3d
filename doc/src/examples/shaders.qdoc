@@ -32,7 +32,7 @@
     \target Shaders in QML 3D
     \section2 Shaders in QML 3D
 
-    This example demonstrates the use of inline shaders in QML using Qt3D.
+    This example demonstrates the use of inline shaders in QML using \l{Qt 3D}.
     It shows how we can animate properties on the shader to produce effects
     in our 3D scene.  To actually learn how to write GLSL shaders you'll
     need to consult the GL SL specification and resources.  Here we assume
@@ -69,5 +69,5 @@
 
     \image shaders-screenshot.png
 
-    \l{qt3d-examples.html}{Return to Examples}.
+    \l{Qt 3D Tutorials and Examples}{Return to Examples}.
 */

@@ -29,11 +29,11 @@
     \example qt3d/pageflip
     \title Page Flip Demo
 
-    The Page Flip demo shows how Qt3D can be used to animate
+    The Page Flip demo shows how \l{Qt 3D} can be used to animate
     flipping pages in a book.  A shader program is used to combine a
     gradient texture with the page textures to create a curl effect.
 
     \image pageflip-screenshot.png
 
-    \l{qt3d-examples.html}{Return to Examples}.
+    \l{Qt 3D Tutorials and Examples}{Return to Examples}.
 */

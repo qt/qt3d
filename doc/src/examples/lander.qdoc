@@ -39,7 +39,7 @@
 
     Then inside the Image element our Viewport is constructed, and we tell it to fill
     its parent.  Since the Viewport will be composited on top of the Image, we tell
-    the viewport to use a BufferedRender mode.  Generally Qt3D will detect the fact
+    the viewport to use a BufferedRender mode.  Generally Qt 3D will detect the fact
     that the Viewport is not the top level element and try to do the right thing, but
     it does not hurt to make it specific.
 
@@ -71,5 +71,5 @@
 
     \image lander-screenshot.png
 
-    \l{qt3d-examples.html}{Return to Examples}.
+    \l{Qt 3D Tutorials and Examples}{Return to Examples}.
 */

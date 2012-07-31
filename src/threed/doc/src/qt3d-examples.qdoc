@@ -27,27 +27,27 @@
 
 /*!
     \page qt3d-examples.html
-    \title Qt3D Tutorials and Examples
-    \keyword Qt3D Tutorials and Examples
+    \title Qt 3D Tutorials and Examples
+    \keyword Qt 3D Tutorials and Examples
 
-    Building 3D applications in QML with Qt3D:
+    Building 3D applications in QML with \l{Qt 3D}:
 
     \list
-    \li \l{Teapot Example in QML}{Hello Teapot} in Qt3D
-    \li \l{Basket Example#Basket in QML}{Basket} in Qt3D
-    \li \l{Object Effects}{Cube} in Qt3D
-    \li \l{Monkey God in QML}{Monkey God} in Qt3D
-    \li \l{Tea Service Demo in QML}{Tea Service} in Qt3D
+    \li \l{Teapot Example in QML}{Hello Teapot} in Qt 3D
+    \li \l{Basket Example#Basket in QML}{Basket} in Qt 3D
+    \li \l{Object Effects}{Cube} in Qt 3D
+    \li \l{Monkey God in QML}{Monkey God} in Qt 3D
+    \li \l{Tea Service Demo in QML}{Tea Service} in Qt 3D
     \li \l{Using GLSL shaders in QML}
     \endlist
 
-    Using C++ to extend QML Qt3D and to build applications with Qt3D:
+    Using C++ to extend QML Qt 3D and to build applications with Qt 3D:
 
     \list
     \li \l{Teapot Example}{Hello Teapot} - drawing a basic object in 3D.
     \li \l{Object Effects#Cube in QML}{Cube in C++} - applying transformations and materials to objects.
     \li \l{qt3d/nesting}{Nesting} - drawing into framebuffer objects.
-    \li \l{Loading a 3DS model with Qt3D}{Penguin} - loading a 3DS model with Qt3D.
+    \li \l{Loading a 3DS model with Qt 3D}{Penguin} - loading a 3DS model with Qt 3D.
     \li \l{qt3d/pageflip}{Page Flip} - using shaders to combine textures.
     \li \l{qt3d/shapes}{Shapes} - paints all of the basic OpenGL shapes.
     \endlist
@@ -55,18 +55,17 @@
     Other topics:
 
     \list
-    \li \l{Scene Format Plugin}{Writing a scene format plug-in for Qt3D}
+    \li \l{Scene Format Plugin}{Writing a scene format plug-in for Qt 3D}
     \endlist
 
-    \l{index.html}{Return to the main Qt3D page}.
+    \l{Qt 3D}{Return to the main Qt 3D page}.
 */
 
 /*!
     \page qt3d-examples-placeholder.html
-    \title Qt3D Examples
-    \keyword Qt3D Examples
+    \title Qt 3D Examples
 
     Check the \l{http://doc.qt.nokia.com/4.7/all-examples.html}{Qt Examples for sample code specific to Qt itself.}
 
-    For examples specific to Qt3D check our \l{qt3d-examples.html}{examples page}.
+    For examples specific to Qt 3D check our \l{Qt 3D Tutorials and Examples}{examples page}.
 */

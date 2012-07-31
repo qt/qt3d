@@ -27,9 +27,9 @@
 
 /*!
     \example qt3d/penguin_advanced
-    \title Loading a 3DS model with Qt3D
+    \title Loading a 3DS model with Qt 3D
 
-    This tutorial shows how Qt3D can be used to load a simple
+    This tutorial shows how \l{Qt 3D} can be used to load a simple
     model object in 3D Studio Max (3DS) format with a perspective
     camera view.
 
@@ -102,5 +102,5 @@
 
     \image penguin-screenshot.png
 
-    \l{qt3d-examples.html}{Return to Tutorials}.
+    \l{Qt 3D Tutorials and Examples}{Return to Tutorials}.
 */

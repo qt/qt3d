@@ -29,7 +29,7 @@
     \example qt3d/teaservice
     \title Tea Service Demo
 
-    The Tea Service demo shows how Qt3D can be used to draw a complex
+    The Tea Service demo shows how Qt 3D can be used to draw a complex
     scene made up of several objects.  It also demonstrates object picking.
 
     \image teaservice-screenshot.png
@@ -39,5 +39,5 @@
     states, and transitions.  It is much easier to add complex
     interaction models and animations in QML than in C++.
 
-    \l{qt3d-examples.html}{Return to Examples}.
+    \l{Qt 3D Tutorials and Examples}{Return to Examples}.
 */
