@@ -361,7 +361,7 @@ bool QGLPainter::begin
     }
 
     // Initialize the QOpenGLFunctions parent class.
-    initializeGLFunctions();
+    initializeOpenGLFunctions();
 
     // Determine if the OpenGL implementation is fixed-function or not.
     bool isFixedFunction = !hasOpenGLFeature(QOpenGLFunctions::Shaders);
