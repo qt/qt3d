@@ -13,3 +13,4 @@ SOURCES += \
 
 HEADERS += \
     qglpickcolors_p.h
+DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0

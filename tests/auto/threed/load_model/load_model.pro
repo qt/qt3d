@@ -8,3 +8,4 @@ SOURCES += tst_load_model.cpp
 
 RESOURCES += \
     load_model.qrc
+DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0

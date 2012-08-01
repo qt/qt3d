@@ -7,3 +7,4 @@ CONFIG += warn_on
 INCLUDEPATH += ../../../shared
 SOURCES += tst_qglsection.cpp
 INCLUDEPATH += ../../../../src/threed/geometry
+DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0

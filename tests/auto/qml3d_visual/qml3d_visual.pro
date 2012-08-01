@@ -12,3 +12,4 @@ OTHER_FILES += \
     picking/tst_picking.qml
 
 TESTDATA = $$OTHER_FILES
+DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0

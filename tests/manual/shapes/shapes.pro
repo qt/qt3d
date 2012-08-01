@@ -20,3 +20,4 @@ include(../../../pkg.pri)
 
 OTHER_FILES += \
     $$QML_INFRA_FILES
+DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0

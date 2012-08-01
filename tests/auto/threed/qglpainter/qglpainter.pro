@@ -14,3 +14,4 @@ SOURCES += tst_qglpainter.cpp \
 HEADERS += qgltestwidget.h \
            compareimage.h \
            qglsimulator.h
+DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0

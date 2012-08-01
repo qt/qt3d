@@ -6,3 +6,4 @@ QT += qml quick
 CONFIG += warn_on
 
 SOURCES += tst_qcylindermesh.cpp
+DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0

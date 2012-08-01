@@ -18,3 +18,4 @@ OTHER_FILES += \
     item3d/tst_missing_texture_coordinates.qml \
     item3d/tst_item3d_local_v_world.qml
 TESTDATA = $$OTHER_FILES
+DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0
