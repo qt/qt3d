@@ -44,8 +44,8 @@
 */
 
 /*!
-    \page classes.html
-    \title All Qt 3D Classes
+    \page qt3d-classes.html
+    \title Qt 3D Classes
     \ingroup classlists
 
     \brief If you know the name of the class you want, find it here.
@@ -57,8 +57,8 @@
 */
 
 /*!
-    \page annotated.html
-    \title Annotated Class List
+    \page qt3d-annotated.html
+    \title Qt 3D Annotated Class List
     \ingroup classlists
 
     \brief If you don't know the name of the class you want, but you
@@ -71,9 +71,9 @@
 
 
 /*!
-    \page hierarchy.html
+    \page qt3d-hierarchy.html
 
-    \title Inheritance Hierarchy
+    \title Qt 3D Inheritance Hierarchy
     \ingroup classlists
 
     \brief The C++ class inheritance hierarchy for all classes in the
@@ -85,8 +85,8 @@
 
 
 /*!
-    \page functions.html
-    \title All Functions
+    \page qt3d-functions.html
+    \title Qt 3D Functions
     \ingroup funclists
 
     \brief All documented Qt 3D functions listed alphabetically with a
