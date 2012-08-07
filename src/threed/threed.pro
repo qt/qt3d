@@ -3,13 +3,11 @@ load(qt_build_config)
 TARGET     = Qt3D
 MODULE     = 3d
 QT         = core-private gui-private
+QT_PRIVATE = network
 
 load(qt_module)
 
 QMAKE_DOCS = $$PWD/doc/qt3d.qdocconf
-
-# private dependencies
-QT += network
 
 gcov {
     CONFIG += static warn_on
