@@ -211,9 +211,6 @@ public:
     {
         Q_UNUSED(ix);
         Q_UNUSED(v);
-        static bool seeded = false;
-        if (!seeded)
-            qsrand(31415);
         Q_ASSERT(vec_data->at(ix) == v);
         if ((vec_data->size() - number_mapped) > map_threshold)
         {
