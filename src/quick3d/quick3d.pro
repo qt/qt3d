@@ -4,7 +4,7 @@ TARGET     = Qt3DQuick
 MODULE     = 3dquick
 QT         = core gui qml quick 3d
 
-load(qt_module_config)
+load(qt_module)
 
 # private dependencies
 QT += network

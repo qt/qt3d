@@ -4,7 +4,7 @@ TARGET     = Qt3D
 MODULE     = 3d
 QT         = core-private gui-private
 
-load(qt_module_config)
+load(qt_module)
 
 QMAKE_DOCS = $$PWD/doc/qt3d.qdocconf
 
