@@ -569,12 +569,14 @@ bool QGLBoundTexture::bindCompressedTextureDDS(const char *buf, int len)
         format = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
         blockSize = 8;
         break;
+#if !defined(QT_OPENGL_ES_2)
     case FOURCC_DXT3:
         format = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
         break;
     case FOURCC_DXT5:
         format = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
         break;
+#endif
     default:
         qWarning("QGLBoundTexture::bindCompressedTextureDDS(): DDS image format not supported.");
         return false;
