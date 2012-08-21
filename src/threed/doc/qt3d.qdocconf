@@ -1,5 +1,5 @@
-include(../../../doc/global/qt-html-templates-offline.qdocconf)
-include(../../../doc/global/qt-cpp-ignore.qdocconf)
+include(global/qt-html-templates-offline.qdocconf)
+include(global/qt-cpp-ignore.qdocconf)
 
 project                 = Qt3D
 description             = Qt 3D Reference Documentation
