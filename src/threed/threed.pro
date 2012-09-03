@@ -1,5 +1,3 @@
-load(qt_build_config)
-
 TARGET     = Qt3D
 MODULE     = 3d
 QT         = core-private gui-private

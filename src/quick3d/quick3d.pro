@@ -1,5 +1,3 @@
-load(qt_build_config)
-
 TARGET     = Qt3DQuick
 MODULE     = 3dquick
 QT         = core gui qml quick 3d
