@@ -17,6 +17,9 @@ gcov {
     CONFIG += dll warn_on
 }
 
+# otherwise mingw headers do not declare common functions like ::strcasecmp
+win32-g++*:QMAKE_CXXFLAGS_CXX11 = -std=gnu++0x
+
 include(../private/private.pri)
 include(threed.pri)
 PUBLIC_HEADERS = $$HEADERS
