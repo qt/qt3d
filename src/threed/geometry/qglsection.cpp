@@ -140,7 +140,7 @@ static inline bool qSameDirection(const QVector3D &a , const QVector3D &b)
     if (!a.isNull() && !b.isNull())
     {
         float dot = QVector3D::dotProduct(a, b);
-        res = qFskCompare((qreal)dot, a.length() * b.length());
+        res = qFskCompare(dot, a.length() * b.length());
     }
     return res;
 }

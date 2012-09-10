@@ -723,7 +723,7 @@ void tst_QGLSceneNode::position_QTBUG_17279()
     QSKIP("QWidget: Cannot create a QWidget when no GUI is being used");
     QGeometryData geom;
     geom.appendVertex(QVector3D(0, 0, 0),
-                      QVector3D(1.414, 1.414, 0),
+                      QVector3D(1.414f, 1.414f, 0),
                       QVector3D(2, 0, 0));
     TestSceneNode *node = new TestSceneNode;
 
@@ -759,7 +759,7 @@ void tst_QGLSceneNode::position_QTBUG_17279()
 
     QGeometryData geom2;
     geom2.appendVertex(QVector3D(0, 0, 0),
-                      QVector3D(-1.414, 1.414, 0),
+                      QVector3D(-1.414f, 1.414f, 0),
                       QVector3D(-2, 0, 0));
     TestSceneNode *node2 = new TestSceneNode;
     node2->setGeometry(geom2);
@@ -784,7 +784,7 @@ void tst_QGLSceneNode::findSceneNode()
     //        +--"Item2"--""--"Item1"--"Item3"
     QGeometryData geom;
     geom.appendVertex(QVector3D(0, 0, 0),
-                      QVector3D(1.414, 1.414, 0),
+                      QVector3D(1.414f, 1.414f, 0),
                       QVector3D(2, 0, 0));
 
     QGLBuilder builder;

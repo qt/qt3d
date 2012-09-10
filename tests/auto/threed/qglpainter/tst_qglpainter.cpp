@@ -416,7 +416,7 @@ static bool checkGLMatrix(GLenum type, const QMatrix4x4& expected)
     int index;
     GLfloat mat[16];
     glGetFloatv(type, mat);
-    qreal *m = actual.data();
+    float *m = actual.data();
     for (index = 0; index < 16; ++index)
         m[index] = mat[index];
     for (index = 0; index < 16; ++index) {

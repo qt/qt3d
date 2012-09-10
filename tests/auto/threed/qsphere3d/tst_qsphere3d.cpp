@@ -186,7 +186,7 @@ void tst_QSphere3D::transform()
 
     qreal tradius = m.mapVector(QVector3D(0, radius, 0)).length();
 
-    QCOMPARE(sphere1.center(), m * center);
+    QVERIFY(qFuzzyCompare(sphere1.center(), m * center));
     QCOMPARE(float(sphere1.radius()), float(tradius));
 }
 

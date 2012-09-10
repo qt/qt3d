@@ -1540,7 +1540,7 @@ void QGLPainter::updateFixedFunction(QGLPainter::Updates updates)
                 (matrix.constData()));
         } else {
             GLfloat mat[16];
-            const qreal *m = matrix.constData();
+            const float *m = matrix.constData();
             for (int index = 0; index < 16; ++index)
                 mat[index] = m[index];
             glLoadMatrixf(mat);
@@ -1554,7 +1554,7 @@ void QGLPainter::updateFixedFunction(QGLPainter::Updates updates)
                 (matrix.constData()));
         } else {
             GLfloat mat[16];
-            const qreal *m = matrix.constData();
+            const float *m = matrix.constData();
             for (int index = 0; index < 16; ++index)
                 mat[index] = m[index];
             glLoadMatrixf(mat);

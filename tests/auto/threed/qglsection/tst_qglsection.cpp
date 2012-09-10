@@ -275,7 +275,7 @@ void tst_QGLSection::appendFacetedMap()
     // now create a new section and fill to just below the threshold for QMap
     int t = section->mapThreshold();
     QVector3D testVertex(-12.34f, -23.45f, -34.56f);
-    QVector3D incrVector(0.02, 0.02, 0.02);
+    QVector3D incrVector(0.02f, 0.02f, 0.02f);
     QVector3D testNormal(1.0f, 0.0f, 0.0f);
     for (int i = 0; i < (t - 2); ++i)
     {

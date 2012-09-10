@@ -659,7 +659,7 @@ static QColor litColor(const QGLMaterial &material)
     else
         toLight = (pli.toVector3D() - vertex).normalized();
 
-    qreal angle = qMax(QVector3D::dotProduct(normal, toLight), qreal(0.0f));
+    float angle = qMax(QVector3D::dotProduct(normal, toLight), 0.0f);
 
     QVector4D adcomponent = colorToVector4D(material.ambientColor()) *
                             colorToVector4D(light.ambientColor());
@@ -669,7 +669,7 @@ static QColor litColor(const QGLMaterial &material)
     QVector4D scomponent;
     if (angle != 0.0f) {
         QVector3D h = (toLight + toEye).normalized();
-        angle = qMax(QVector3D::dotProduct(normal, h), qreal(0.0f));
+        angle = qMax(QVector3D::dotProduct(normal, h), 0.0f);
         if (material.shininess() != 0.0f) {
             scomponent = qPow(angle, material.shininess()) *
                          colorToVector4D(material.specularColor()) *
@@ -684,7 +684,7 @@ static QColor litColor(const QGLMaterial &material)
 
     if (light.spotAngle() != 180.0f) {
         qreal spot = qMax(QVector3D::dotProduct
-            (vertex - pli.toVector3D(), light.spotDirection()), qreal(0.0f));
+            (vertex - pli.toVector3D(), light.spotDirection()), 0.0f);
         if (spot < light.spotCosAngle()) {
             adcomponent = QVector4D(0, 0, 0, 0);
             scomponent = QVector4D(0, 0, 0, 0);

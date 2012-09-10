@@ -263,11 +263,11 @@ void tst_QGLLightParameters::transform()
     m.rotate(45.0f, 1.0f, 1.0f, 1.0f);
     m.scale(2.0f);
 
-    QCOMPARE(params.eyePosition(m), m * QVector4D(1, 2, -3, 1));
-    QCOMPARE(params.eyeSpotDirection(m), m.mapVector(QVector3D(-5, 1, 3)));
+    QVERIFY(qFuzzyCompare(params.eyePosition(m), m * QVector4D(1, 2, -3, 1)));
+    QVERIFY(qFuzzyCompare(params.eyeSpotDirection(m), m.mapVector(QVector3D(-5, 1, 3))));
 
     params.setDirection(QVector3D(-1, -2, 3));
-    QCOMPARE(params.eyePosition(m), m * QVector4D(-1, -2, 3, 0));
+    QVERIFY(qFuzzyCompare(params.eyePosition(m), m * QVector4D(-1, -2, 3, 0)));
 }
 
 QTEST_APPLESS_MAIN(tst_QGLLightParameters)

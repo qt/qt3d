@@ -126,8 +126,8 @@ bool QRay3D::contains(const QVector3D &point) const
     QVector3D ppVec(point - m_origin);
     if (ppVec.isNull()) // point coincides with origin
         return true;
-    qreal dot = QVector3D::dotProduct(ppVec, m_direction);
-    if (qFuzzyIsNull(float(dot)))
+    const float dot = QVector3D::dotProduct(ppVec, m_direction);
+    if (qFuzzyIsNull(dot))
         return false;
     return qFuzzyCompare(dot*dot, ppVec.lengthSquared() * m_direction.lengthSquared());
 }
@@ -139,7 +139,7 @@ bool QRay3D::contains(const QVector3D &point) const
 */
 bool QRay3D::contains(const QRay3D &ray) const
 {
-    qreal dot = QVector3D::dotProduct(m_direction, ray.direction());
+    const float dot = QVector3D::dotProduct(m_direction, ray.direction());
     if (!qFuzzyCompare(dot*dot, m_direction.lengthSquared() * ray.direction().lengthSquared()))
         return false;
     return contains(ray.origin());

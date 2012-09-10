@@ -283,7 +283,7 @@ void tst_QRay3D::contains_point_data()
     QTest::newRow("close to the origin")
             << QVector3D(1.0, 1.0, 1.0)
             << QVector3D(1.0, 3.0, 3.0)
-            << QVector3D(1.0005, 1.0005, 1.0)
+            << QVector3D(1.0005f, 1.0005f, 1.0)
             << false;
 
     QTest::newRow("45 line line in plane x=1")
