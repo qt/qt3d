@@ -15,7 +15,9 @@ HEADERS += qglinfowindow.h \
     fpswidget.h
 RESOURCES += qglinfo.qrc
 
-!contains(QT_CONFIG, egl):DEFINES += QT_NO_EGL
+# This assumes the legacy (non-QPA) EGL support, which is gone for a while now.
+# !contains(QT_CONFIG, egl):
+DEFINES += QT_NO_EGL
 
 OTHER_FILES += \
     qglinfo.rc
