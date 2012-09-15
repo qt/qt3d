@@ -146,7 +146,7 @@ bool QRay3D::contains(const QRay3D &ray) const
 }
 
 /*!
-    \fn QVector3D QRay3D::point(qreal t) const
+    \fn QVector3D QRay3D::point(float t) const
 
     Returns the point on the ray defined by moving \a t units
     along the ray in the direction of the direction() vector.
@@ -173,7 +173,7 @@ bool QRay3D::contains(const QRay3D &ray) const
 
     \sa point(), project()
 */
-qreal QRay3D::fromPoint(const QVector3D &point) const
+float QRay3D::fromPoint(const QVector3D &point) const
 {
     return QVector3D::dotProduct(point - m_origin, m_direction) /
                 m_direction.lengthSquared();
@@ -201,9 +201,9 @@ QVector3D QRay3D::project(const QVector3D &vector) const
 
     \sa point()
 */
-qreal QRay3D::distanceTo(const QVector3D &point) const
+float QRay3D::distanceTo(const QVector3D &point) const
 {
-    qreal t = fromPoint(point);
+    float t = fromPoint(point);
     return (point - (m_origin + t * m_direction)).length();
 }
 

@@ -194,7 +194,7 @@ bool QTriangle3D::contains(const QVector3D &point) const
 */
 bool QTriangle3D::intersects(const QRay3D &ray) const
 {
-    qreal t = plane().intersection(ray);
+    float t = plane().intersection(ray);
     if (qIsNaN(t))
         return false;
     return contains(ray.point(t));
@@ -209,7 +209,7 @@ bool QTriangle3D::intersects(const QRay3D &ray) const
     the actual intersection point, as shown in the following example:
 
     \code
-    qreal t = triangle.intersection(ray);
+    float t = triangle.intersection(ray);
     QVector3D pt;
     if (qIsNaN(t)) {
         qWarning("no intersection occurred");
@@ -219,9 +219,9 @@ bool QTriangle3D::intersects(const QRay3D &ray) const
 
     \sa intersects(), contains(), QRay3D::point()
  */
-qreal QTriangle3D::intersection(const QRay3D &ray) const
+float QTriangle3D::intersection(const QRay3D &ray) const
 {
-    qreal t = plane().intersection(ray);
+    float t = plane().intersection(ray);
     if (qIsNaN(t) || contains(ray.point(t)))
         return t;
     return qSNaN();
@@ -282,12 +282,12 @@ QVector2D QTriangle3D::uv(const QVector3D &point) const
     QVector3D rq = m_q - m_r;
     QVector3D rp = m_p - m_r;
     QVector3D pp = point - m_r;
-    qreal dot_rq_rq = QVector3D::dotProduct(rq, rq);
-    qreal dot_rq_rp = QVector3D::dotProduct(rq, rp);
-    qreal dot_rq_pp = QVector3D::dotProduct(rq, pp);
-    qreal dot_rp_rp = QVector3D::dotProduct(rp, rp);
-    qreal dot_rp_pp = QVector3D::dotProduct(rp, pp);
-    qreal det = dot_rq_rq * dot_rp_rp - dot_rq_rp * dot_rq_rp;
+    float dot_rq_rq = QVector3D::dotProduct(rq, rq);
+    float dot_rq_rp = QVector3D::dotProduct(rq, rp);
+    float dot_rq_pp = QVector3D::dotProduct(rq, pp);
+    float dot_rp_rp = QVector3D::dotProduct(rp, rp);
+    float dot_rp_pp = QVector3D::dotProduct(rp, pp);
+    float det = dot_rq_rq * dot_rp_rp - dot_rq_rp * dot_rq_rp;
     if (qFuzzyIsNull(float(det))) {
         // The point is probably not in the triangle, or the triangle
         // is degenerate.  Return an out of range value for (u, v) so

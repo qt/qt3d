@@ -231,41 +231,41 @@ void tst_QBox3D::fuzzyCompare()
 
 void tst_QBox3D::size_data()
 {
-    QTest::addColumn<qreal>("x1");
-    QTest::addColumn<qreal>("y1");
-    QTest::addColumn<qreal>("z1");
-    QTest::addColumn<qreal>("x2");
-    QTest::addColumn<qreal>("y2");
-    QTest::addColumn<qreal>("z2");
+    QTest::addColumn<float>("x1");
+    QTest::addColumn<float>("y1");
+    QTest::addColumn<float>("z1");
+    QTest::addColumn<float>("x2");
+    QTest::addColumn<float>("y2");
+    QTest::addColumn<float>("z2");
 
     QTest::newRow("zero")
-        << (qreal)0.0 << (qreal)0.0 << (qreal)0.0
-        << (qreal)0.0 << (qreal)0.0 << (qreal)0.0;
+        << 0.0f << 0.0f << 0.0f
+        << 0.0f << 0.0f << 0.0f;
 
     QTest::newRow("one")
-        << (qreal)0.0 << (qreal)0.0 << (qreal)0.0
-        << (qreal)1.0 << (qreal)1.0 << (qreal)1.0;
+        << 0.0f << 0.0f << 0.0f
+        << 1.0f << 1.0f << 1.0f;
 
     QTest::newRow("empty")
-        << (qreal)1.0 << (qreal)1.0 << (qreal)1.0
-        << (qreal)1.0 << (qreal)1.0 << (qreal)1.0;
+        << 1.0f << 1.0f << 1.0f
+        << 1.0f << 1.0f << 1.0f;
 
     QTest::newRow("complex")
-        << (qreal)-1.0 << (qreal)-2.0 << (qreal)-3.0
-        << (qreal)4.0 << (qreal)5.0 << (qreal)6.0;
+        << -1.0f << -2.0f << -3.0f
+        << 4.0f << 5.0f << 6.0f;
 }
 void tst_QBox3D::size()
 {
-    QFETCH(qreal, x1);
-    QFETCH(qreal, y1);
-    QFETCH(qreal, z1);
-    QFETCH(qreal, x2);
-    QFETCH(qreal, y2);
-    QFETCH(qreal, z2);
+    QFETCH(float, x1);
+    QFETCH(float, y1);
+    QFETCH(float, z1);
+    QFETCH(float, x2);
+    QFETCH(float, y2);
+    QFETCH(float, z2);
 
-    qreal sizex = (x1 < x2) ? (x2 - x1) : (x1 - x2);
-    qreal sizey = (y1 < y2) ? (y2 - y1) : (y1 - y2);
-    qreal sizez = (z1 < z2) ? (z2 - z1) : (z1 - z2);
+    float sizex = (x1 < x2) ? (x2 - x1) : (x1 - x2);
+    float sizey = (y1 < y2) ? (y2 - y1) : (y1 - y2);
+    float sizez = (z1 < z2) ? (z2 - z1) : (z1 - z2);
 
     QBox3D box(QVector3D(x1, y1, z1), QVector3D(x2, y2, z2));
     QVERIFY(box.size() == QVector3D(sizex, sizey, sizez));
@@ -284,16 +284,16 @@ void tst_QBox3D::center_data()
 }
 void tst_QBox3D::center()
 {
-    QFETCH(qreal, x1);
-    QFETCH(qreal, y1);
-    QFETCH(qreal, z1);
-    QFETCH(qreal, x2);
-    QFETCH(qreal, y2);
-    QFETCH(qreal, z2);
+    QFETCH(float, x1);
+    QFETCH(float, y1);
+    QFETCH(float, z1);
+    QFETCH(float, x2);
+    QFETCH(float, y2);
+    QFETCH(float, z2);
 
-    qreal centerx = (x1 + x2) / 2;
-    qreal centery = (y1 + y2) / 2;
-    qreal centerz = (z1 + z2) / 2;
+    float centerx = (x1 + x2) / 2;
+    float centery = (y1 + y2) / 2;
+    float centerz = (z1 + z2) / 2;
 
     QBox3D box(QVector3D(x1, y1, z1), QVector3D(x2, y2, z2));
     QVERIFY(box.center() == QVector3D(centerx, centery, centerz));
@@ -307,53 +307,53 @@ void tst_QBox3D::center()
 
 void tst_QBox3D::containsPoint_data()
 {
-    QTest::addColumn<qreal>("x");
-    QTest::addColumn<qreal>("y");
-    QTest::addColumn<qreal>("z");
+    QTest::addColumn<float>("x");
+    QTest::addColumn<float>("y");
+    QTest::addColumn<float>("z");
     QTest::addColumn<bool>("contained");
 
     QTest::newRow("zero")
-        << (qreal)0.0 << (qreal)0.0 << (qreal)0.0 << true;
+        << 0.0f << 0.0f << 0.0f << true;
 
     QTest::newRow("boundary1")
-        << (qreal)-1 << (qreal)-2 << (qreal)-3 << true;
+        << -1.0f << -2.0f << -3.0f << true;
     QTest::newRow("boundary2")
-        << (qreal)-1 << (qreal)5 << (qreal)-3 << true;
+        << -1.0f << 5.0f << -3.0f << true;
     QTest::newRow("boundary3")
-        << (qreal)-1 << (qreal)-2 << (qreal)6 << true;
+        << -1.0f << -2.0f << 6.0f << true;
     QTest::newRow("boundary4")
-        << (qreal)-1 << (qreal)5 << (qreal)6 << true;
+        << -1.0f << 5.0f << 6.0f << true;
     QTest::newRow("boundary5")
-        << (qreal)4 << (qreal)-2 << (qreal)-3 << true;
+        << 4.0f << -2.0f << -3.0f << true;
     QTest::newRow("boundary6")
-        << (qreal)4 << (qreal)5 << (qreal)-3 << true;
+        << 4.0f << 5.0f << -3.0f << true;
     QTest::newRow("boundary7")
-        << (qreal)4 << (qreal)-2 << (qreal)6 << true;
+        << 4.0f << -2.0f << 6.0f << true;
     QTest::newRow("boundary8")
-        << (qreal)4 << (qreal)5 << (qreal)6 << true;
+        << 4.0f << 5.0f << 6.0f << true;
 
     QTest::newRow("outside1")
-        << (qreal)-2 << (qreal)-2 << (qreal)-3 << false;
+        << -2.0f << -2.0f << -3.0f << false;
     QTest::newRow("outside2")
-        << (qreal)-1 << (qreal)6 << (qreal)-3 << false;
+        << -1.0f << 6.0f << -3.0f << false;
     QTest::newRow("outside3")
-        << (qreal)-1 << (qreal)-2 << (qreal)7 << false;
+        << -1.0f << -2.0f << 7.0f << false;
     QTest::newRow("outside4")
-        << (qreal)-1 << (qreal)-3 << (qreal)6 << false;
+        << -1.0f << -3.0f << 6.0f << false;
     QTest::newRow("outside5")
-        << (qreal)5 << (qreal)-2 << (qreal)-3 << false;
+        << 5.0f << -2.0f << -3.0f << false;
     QTest::newRow("outside6")
-        << (qreal)4 << (qreal)6 << (qreal)-3 << false;
+        << 4.0f << 6.0f << -3.0f << false;
     QTest::newRow("outside7")
-        << (qreal)4 << (qreal)-2 << (qreal)7 << false;
+        << 4.0f << -2.0f << 7.0f << false;
     QTest::newRow("outside8")
-        << (qreal)4 << (qreal)-3 << (qreal)6 << false;
+        << 4.0f << -3.0f << 6.0f << false;
 }
 void tst_QBox3D::containsPoint()
 {
-    QFETCH(qreal, x);
-    QFETCH(qreal, y);
-    QFETCH(qreal, z);
+    QFETCH(float, x);
+    QFETCH(float, y);
+    QFETCH(float, z);
     QFETCH(bool, contained);
 
     QBox3D box(QVector3D(-1, -2, -3), QVector3D(4, 5, 6));
@@ -373,200 +373,200 @@ void tst_QBox3D::containsPoint()
 
 void tst_QBox3D::containsBox_data()
 {
-    QTest::addColumn<qreal>("x1");
-    QTest::addColumn<qreal>("y1");
-    QTest::addColumn<qreal>("z1");
-    QTest::addColumn<qreal>("x2");
-    QTest::addColumn<qreal>("y2");
-    QTest::addColumn<qreal>("z2");
+    QTest::addColumn<float>("x1");
+    QTest::addColumn<float>("y1");
+    QTest::addColumn<float>("z1");
+    QTest::addColumn<float>("x2");
+    QTest::addColumn<float>("y2");
+    QTest::addColumn<float>("z2");
     QTest::addColumn<bool>("contained");
     QTest::addColumn<bool>("intersects");
-    QTest::addColumn<qreal>("ix1");     // Intersection box
-    QTest::addColumn<qreal>("iy1");
-    QTest::addColumn<qreal>("iz1");
-    QTest::addColumn<qreal>("ix2");
-    QTest::addColumn<qreal>("iy2");
-    QTest::addColumn<qreal>("iz2");
-    QTest::addColumn<qreal>("ex1");     // Expanded box
-    QTest::addColumn<qreal>("ey1");
-    QTest::addColumn<qreal>("ez1");
-    QTest::addColumn<qreal>("ex2");
-    QTest::addColumn<qreal>("ey2");
-    QTest::addColumn<qreal>("ez2");
+    QTest::addColumn<float>("ix1");     // Intersection box
+    QTest::addColumn<float>("iy1");
+    QTest::addColumn<float>("iz1");
+    QTest::addColumn<float>("ix2");
+    QTest::addColumn<float>("iy2");
+    QTest::addColumn<float>("iz2");
+    QTest::addColumn<float>("ex1");     // Expanded box
+    QTest::addColumn<float>("ey1");
+    QTest::addColumn<float>("ez1");
+    QTest::addColumn<float>("ex2");
+    QTest::addColumn<float>("ey2");
+    QTest::addColumn<float>("ez2");
 
     QTest::newRow("zero")
-        << (qreal)0.0 << (qreal)0.0 << (qreal)0.0
-        << (qreal)0.0 << (qreal)0.0 << (qreal)0.0
+        << 0.0f << 0.0f << 0.0f
+        << 0.0f << 0.0f << 0.0f
         << true << true
-        << (qreal)0.0 << (qreal)0.0 << (qreal)0.0
-        << (qreal)0.0 << (qreal)0.0 << (qreal)0.0
-        << (qreal)-1.0 << (qreal)-2.0 << (qreal)-3.0
-        << (qreal)1.0 << (qreal)2.0 << (qreal)3.0;
+        << 0.0f << 0.0f << 0.0f
+        << 0.0f << 0.0f << 0.0f
+        << -1.0f << -2.0f << -3.0f
+        << 1.0f << 2.0f << 3.0f;
 
     QTest::newRow("side1")
-        << (qreal)-1.0 << (qreal)-2.0 << (qreal)-3.0
-        << (qreal)1.0 << (qreal)-2.0 << (qreal)3.0
+        << -1.0f << -2.0f << -3.0f
+        << 1.0f << -2.0f << 3.0f
         << true << true
-        << (qreal)-1.0 << (qreal)-2.0 << (qreal)-3.0
-        << (qreal)1.0 << (qreal)-2.0 << (qreal)3.0
-        << (qreal)-1.0 << (qreal)-2.0 << (qreal)-3.0
-        << (qreal)1.0 << (qreal)2.0 << (qreal)3.0;
+        << -1.0f << -2.0f << -3.0f
+        << 1.0f << -2.0f << 3.0f
+        << -1.0f << -2.0f << -3.0f
+        << 1.0f << 2.0f << 3.0f;
     QTest::newRow("side2")
-        << (qreal)-1.0 << (qreal)-2.0 << (qreal)-3.0
-        << (qreal)1.0 << (qreal)2.0 << (qreal)-3.0
+        << -1.0f << -2.0f << -3.0f
+        << 1.0f << 2.0f << -3.0f
         << true << true
-        << (qreal)-1.0 << (qreal)-2.0 << (qreal)-3.0
-        << (qreal)1.0 << (qreal)2.0 << (qreal)-3.0
-        << (qreal)-1.0 << (qreal)-2.0 << (qreal)-3.0
-        << (qreal)1.0 << (qreal)2.0 << (qreal)3.0;
+        << -1.0f << -2.0f << -3.0f
+        << 1.0f << 2.0f << -3.0f
+        << -1.0f << -2.0f << -3.0f
+        << 1.0f << 2.0f << 3.0f;
     QTest::newRow("side3")
-        << (qreal)-1.0 << (qreal)-2.0 << (qreal)-3.0
-        << (qreal)-1.0 << (qreal)2.0 << (qreal)3.0
+        << -1.0f << -2.0f << -3.0f
+        << -1.0f << 2.0f << 3.0f
         << true << true
-        << (qreal)-1.0 << (qreal)-2.0 << (qreal)-3.0
-        << (qreal)-1.0 << (qreal)2.0 << (qreal)3.0
-        << (qreal)-1.0 << (qreal)-2.0 << (qreal)-3.0
-        << (qreal)1.0 << (qreal)2.0 << (qreal)3.0;
+        << -1.0f << -2.0f << -3.0f
+        << -1.0f << 2.0f << 3.0f
+        << -1.0f << -2.0f << -3.0f
+        << 1.0f << 2.0f << 3.0f;
     QTest::newRow("side4")
-        << (qreal)-1.0 << (qreal)2.0 << (qreal)-3.0
-        << (qreal)1.0 << (qreal)2.0 << (qreal)3.0
+        << -1.0f << 2.0f << -3.0f
+        << 1.0f << 2.0f << 3.0f
         << true << true
-        << (qreal)-1.0 << (qreal)2.0 << (qreal)-3.0
-        << (qreal)1.0 << (qreal)2.0 << (qreal)3.0
-        << (qreal)-1.0 << (qreal)-2.0 << (qreal)-3.0
-        << (qreal)1.0 << (qreal)2.0 << (qreal)3.0;
+        << -1.0f << 2.0f << -3.0f
+        << 1.0f << 2.0f << 3.0f
+        << -1.0f << -2.0f << -3.0f
+        << 1.0f << 2.0f << 3.0f;
     QTest::newRow("side5")
-        << (qreal)1.0 << (qreal)-2.0 << (qreal)-3.0
-        << (qreal)1.0 << (qreal)2.0 << (qreal)3.0
+        << 1.0f << -2.0f << -3.0f
+        << 1.0f << 2.0f << 3.0f
         << true << true
-        << (qreal)1.0 << (qreal)-2.0 << (qreal)-3.0
-        << (qreal)1.0 << (qreal)2.0 << (qreal)3.0
-        << (qreal)-1.0 << (qreal)-2.0 << (qreal)-3.0
-        << (qreal)1.0 << (qreal)2.0 << (qreal)3.0;
+        << 1.0f << -2.0f << -3.0f
+        << 1.0f << 2.0f << 3.0f
+        << -1.0f << -2.0f << -3.0f
+        << 1.0f << 2.0f << 3.0f;
     QTest::newRow("side6")
-        << (qreal)-1.0 << (qreal)-2.0 << (qreal)3.0
-        << (qreal)1.0 << (qreal)2.0 << (qreal)3.0
+        << -1.0f << -2.0f << 3.0f
+        << 1.0f << 2.0f << 3.0f
         << true << true
-        << (qreal)-1.0 << (qreal)-2.0 << (qreal)3.0
-        << (qreal)1.0 << (qreal)2.0 << (qreal)3.0
-        << (qreal)-1.0 << (qreal)-2.0 << (qreal)-3.0
-        << (qreal)1.0 << (qreal)2.0 << (qreal)3.0;
+        << -1.0f << -2.0f << 3.0f
+        << 1.0f << 2.0f << 3.0f
+        << -1.0f << -2.0f << -3.0f
+        << 1.0f << 2.0f << 3.0f;
 
     QTest::newRow("outside1")
-        << (qreal)-1.0 << (qreal)-2.5 << (qreal)-3.0
-        << (qreal)1.0 << (qreal)-2.5 << (qreal)3.0
+        << -1.0f << -2.5f << -3.0f
+        << 1.0f << -2.5f << 3.0f
         << false << false
-        << (qreal)0.0 << (qreal)0.0 << (qreal)0.0
-        << (qreal)0.0 << (qreal)0.0 << (qreal)0.0
-        << (qreal)-1.0 << (qreal)-2.5 << (qreal)-3.0
-        << (qreal)1.0 << (qreal)2.0 << (qreal)3.0;
+        << 0.0f << 0.0f << 0.0f
+        << 0.0f << 0.0f << 0.0f
+        << -1.0f << -2.5f << -3.0f
+        << 1.0f << 2.0f << 3.0f;
     QTest::newRow("outside2")
-        << (qreal)-1.0 << (qreal)-2.0 << (qreal)-3.5
-        << (qreal)1.0 << (qreal)2.0 << (qreal)-3.5
+        << -1.0f << -2.0f << -3.5f
+        << 1.0f << 2.0f << -3.5f
         << false << false
-        << (qreal)0.0 << (qreal)0.0 << (qreal)0.0
-        << (qreal)0.0 << (qreal)0.0 << (qreal)0.0
-        << (qreal)-1.0 << (qreal)-2.0 << (qreal)-3.5
-        << (qreal)1.0 << (qreal)2.0 << (qreal)3.0;
+        << 0.0f << 0.0f << 0.0f
+        << 0.0f << 0.0f << 0.0f
+        << -1.0f << -2.0f << -3.5f
+        << 1.0f << 2.0f << 3.0f;
     QTest::newRow("outside3")
-        << (qreal)-1.5 << (qreal)-2.0 << (qreal)-3.0
-        << (qreal)-1.5 << (qreal)2.0 << (qreal)3.0
+        << -1.5f << -2.0f << -3.0f
+        << -1.5f << 2.0f << 3.0f
         << false << false
-        << (qreal)0.0 << (qreal)0.0 << (qreal)0.0
-        << (qreal)0.0 << (qreal)0.0 << (qreal)0.0
-        << (qreal)-1.5 << (qreal)-2.0 << (qreal)-3.0
-        << (qreal)1.0 << (qreal)2.0 << (qreal)3.0;
+        << 0.0f << 0.0f << 0.0f
+        << 0.0f << 0.0f << 0.0f
+        << -1.5f << -2.0f << -3.0f
+        << 1.0f << 2.0f << 3.0f;
     QTest::newRow("outside4")
-        << (qreal)-1.0 << (qreal)2.5 << (qreal)-3.0
-        << (qreal)1.0 << (qreal)2.5 << (qreal)3.0
+        << -1.0f << 2.5f << -3.0f
+        << 1.0f << 2.5f << 3.0f
         << false << false
-        << (qreal)0.0 << (qreal)0.0 << (qreal)0.0
-        << (qreal)0.0 << (qreal)0.0 << (qreal)0.0
-        << (qreal)-1.0 << (qreal)-2.0 << (qreal)-3.0
-        << (qreal)1.0 << (qreal)2.5 << (qreal)3.0;
+        << 0.0f << 0.0f << 0.0f
+        << 0.0f << 0.0f << 0.0f
+        << -1.0f << -2.0f << -3.0f
+        << 1.0f << 2.5f << 3.0f;
     QTest::newRow("outside5")
-        << (qreal)1.5 << (qreal)-2.0 << (qreal)-3.0
-        << (qreal)1.5 << (qreal)2.0 << (qreal)3.0
+        << 1.5f << -2.0f << -3.0f
+        << 1.5f << 2.0f << 3.0f
         << false << false
-        << (qreal)0.0 << (qreal)0.0 << (qreal)0.0
-        << (qreal)0.0 << (qreal)0.0 << (qreal)0.0
-        << (qreal)-1.0 << (qreal)-2.0 << (qreal)-3.0
-        << (qreal)1.5 << (qreal)2.0 << (qreal)3.0;
+        << 0.0f << 0.0f << 0.0f
+        << 0.0f << 0.0f << 0.0f
+        << -1.0f << -2.0f << -3.0f
+        << 1.5f << 2.0f << 3.0f;
     QTest::newRow("outside6")
-        << (qreal)-1.0 << (qreal)-2.0 << (qreal)3.5
-        << (qreal)1.0 << (qreal)2.0 << (qreal)3.5
+        << -1.0f << -2.0f << 3.5f
+        << 1.0f << 2.0f << 3.5f
         << false << false
-        << (qreal)0.0 << (qreal)0.0 << (qreal)0.0
-        << (qreal)0.0 << (qreal)0.0 << (qreal)0.0
-        << (qreal)-1.0 << (qreal)-2.0 << (qreal)-3.0
-        << (qreal)1.0 << (qreal)2.0 << (qreal)3.5;
+        << 0.0f << 0.0f << 0.0f
+        << 0.0f << 0.0f << 0.0f
+        << -1.0f << -2.0f << -3.0f
+        << 1.0f << 2.0f << 3.5f;
 
     QTest::newRow("overlap1")
-        << (qreal)-1.0 << (qreal)-2.5 << (qreal)-3.0
-        << (qreal)1.0 << (qreal)-1.5 << (qreal)3.0
+        << -1.0f << -2.5f << -3.0f
+        << 1.0f << -1.5f << 3.0f
         << false << true
-        << (qreal)-1.0 << (qreal)-2.0 << (qreal)-3.0
-        << (qreal)1.0 << (qreal)-1.5 << (qreal)3.0
-        << (qreal)-1.0 << (qreal)-2.5 << (qreal)-3.0
-        << (qreal)1.0 << (qreal)2.0 << (qreal)3.0;
+        << -1.0f << -2.0f << -3.0f
+        << 1.0f << -1.5f << 3.0f
+        << -1.0f << -2.5f << -3.0f
+        << 1.0f << 2.0f << 3.0f;
     QTest::newRow("overlap2")
-        << (qreal)-1.0 << (qreal)-2.0 << (qreal)-3.5
-        << (qreal)1.0 << (qreal)2.0 << (qreal)-2.5
+        << -1.0f << -2.0f << -3.5f
+        << 1.0f << 2.0f << -2.5f
         << false << true
-        << (qreal)-1.0 << (qreal)-2.0 << (qreal)-3.0
-        << (qreal)1.0 << (qreal)2.0 << (qreal)-2.5
-        << (qreal)-1.0 << (qreal)-2.0 << (qreal)-3.5
-        << (qreal)1.0 << (qreal)2.0 << (qreal)3.0;
+        << -1.0f << -2.0f << -3.0f
+        << 1.0f << 2.0f << -2.5f
+        << -1.0f << -2.0f << -3.5f
+        << 1.0f << 2.0f << 3.0f;
     QTest::newRow("overlap3")
-        << (qreal)-1.5 << (qreal)-2.0 << (qreal)-3.0
-        << (qreal)-0.5 << (qreal)2.0 << (qreal)3.0
+        << -1.5f << -2.0f << -3.0f
+        << -0.5f << 2.0f << 3.0f
         << false << true
-        << (qreal)-1.0 << (qreal)-2.0 << (qreal)-3.0
-        << (qreal)-0.5 << (qreal)2.0 << (qreal)3.0
-        << (qreal)-1.5 << (qreal)-2.0 << (qreal)-3.0
-        << (qreal)1.0 << (qreal)2.0 << (qreal)3.0;
+        << -1.0f << -2.0f << -3.0f
+        << -0.5f << 2.0f << 3.0f
+        << -1.5f << -2.0f << -3.0f
+        << 1.0f << 2.0f << 3.0f;
     QTest::newRow("overlap4")
-        << (qreal)-1.0 << (qreal)2.5 << (qreal)-3.0
-        << (qreal)1.0 << (qreal)1.5 << (qreal)3.0
+        << -1.0f << 2.5f << -3.0f
+        << 1.0f << 1.5f << 3.0f
         << false << true
-        << (qreal)-1.0 << (qreal)2.0 << (qreal)-3.0
-        << (qreal)1.0 << (qreal)1.5 << (qreal)3.0
-        << (qreal)-1.0 << (qreal)-2.0 << (qreal)-3.0
-        << (qreal)1.0 << (qreal)2.5 << (qreal)3.0;
+        << -1.0f << 2.0f << -3.0f
+        << 1.0f << 1.5f << 3.0f
+        << -1.0f << -2.0f << -3.0f
+        << 1.0f << 2.5f << 3.0f;
     QTest::newRow("overlap5")
-        << (qreal)1.5 << (qreal)-2.0 << (qreal)-3.0
-        << (qreal)0.5 << (qreal)2.0 << (qreal)3.0
+        << 1.5f << -2.0f << -3.0f
+        << 0.5f << 2.0f << 3.0f
         << false << true
-        << (qreal)1.0 << (qreal)-2.0 << (qreal)-3.0
-        << (qreal)0.5 << (qreal)2.0 << (qreal)3.0
-        << (qreal)-1.0 << (qreal)-2.0 << (qreal)-3.0
-        << (qreal)1.5 << (qreal)2.0 << (qreal)3.0;
+        << 1.0f << -2.0f << -3.0f
+        << 0.5f << 2.0f << 3.0f
+        << -1.0f << -2.0f << -3.0f
+        << 1.5f << 2.0f << 3.0f;
     QTest::newRow("overlap6")
-        << (qreal)-1.0 << (qreal)-2.0 << (qreal)3.5
-        << (qreal)1.0 << (qreal)2.0 << (qreal)2.5
+        << -1.0f << -2.0f << 3.5f
+        << 1.0f << 2.0f << 2.5f
         << false << true
-        << (qreal)-1.0 << (qreal)-2.0 << (qreal)3.0
-        << (qreal)1.0 << (qreal)2.0 << (qreal)2.5
-        << (qreal)-1.0 << (qreal)-2.0 << (qreal)-3.0
-        << (qreal)1.0 << (qreal)2.0 << (qreal)3.5;
+        << -1.0f << -2.0f << 3.0f
+        << 1.0f << 2.0f << 2.5f
+        << -1.0f << -2.0f << -3.0f
+        << 1.0f << 2.0f << 3.5f;
 
     QTest::newRow("surround")
-        << (qreal)-2.0 << (qreal)-3.0 << (qreal)-4.0
-        << (qreal)2.0 << (qreal)3.0 << (qreal)4.0
+        << -2.0f << -3.0f << -4.0f
+        << 2.0f << 3.0f << 4.0f
         << false << true
-        << (qreal)-1.0 << (qreal)-2.0 << (qreal)-3.0
-        << (qreal)1.0 << (qreal)2.0 << (qreal)3.0
-        << (qreal)-2.0 << (qreal)-3.0 << (qreal)-4.0
-        << (qreal)2.0 << (qreal)3.0 << (qreal)4.0;
+        << -1.0f << -2.0f << -3.0f
+        << 1.0f << 2.0f << 3.0f
+        << -2.0f << -3.0f << -4.0f
+        << 2.0f << 3.0f << 4.0f;
 }
 void tst_QBox3D::containsBox()
 {
-    QFETCH(qreal, x1);
-    QFETCH(qreal, y1);
-    QFETCH(qreal, z1);
-    QFETCH(qreal, x2);
-    QFETCH(qreal, y2);
-    QFETCH(qreal, z2);
+    QFETCH(float, x1);
+    QFETCH(float, y1);
+    QFETCH(float, z1);
+    QFETCH(float, x2);
+    QFETCH(float, y2);
+    QFETCH(float, z2);
     QFETCH(bool, contained);
 
     QBox3D box(QVector3D(-1, -2, -3), QVector3D(1, 2, 3));
@@ -595,12 +595,12 @@ void tst_QBox3D::intersects_data()
 }
 void tst_QBox3D::intersects()
 {
-    QFETCH(qreal, x1);
-    QFETCH(qreal, y1);
-    QFETCH(qreal, z1);
-    QFETCH(qreal, x2);
-    QFETCH(qreal, y2);
-    QFETCH(qreal, z2);
+    QFETCH(float, x1);
+    QFETCH(float, y1);
+    QFETCH(float, z1);
+    QFETCH(float, x2);
+    QFETCH(float, y2);
+    QFETCH(float, z2);
     QFETCH(bool, contained);
     QFETCH(bool, intersects);
 
@@ -632,20 +632,20 @@ void tst_QBox3D::intersect_data()
 }
 void tst_QBox3D::intersect()
 {
-    QFETCH(qreal, x1);
-    QFETCH(qreal, y1);
-    QFETCH(qreal, z1);
-    QFETCH(qreal, x2);
-    QFETCH(qreal, y2);
-    QFETCH(qreal, z2);
+    QFETCH(float, x1);
+    QFETCH(float, y1);
+    QFETCH(float, z1);
+    QFETCH(float, x2);
+    QFETCH(float, y2);
+    QFETCH(float, z2);
     QFETCH(bool, contained);
     QFETCH(bool, intersects);
-    QFETCH(qreal, ix1);
-    QFETCH(qreal, iy1);
-    QFETCH(qreal, iz1);
-    QFETCH(qreal, ix2);
-    QFETCH(qreal, iy2);
-    QFETCH(qreal, iz2);
+    QFETCH(float, ix1);
+    QFETCH(float, iy1);
+    QFETCH(float, iz1);
+    QFETCH(float, ix2);
+    QFETCH(float, iy2);
+    QFETCH(float, iz2);
 
     Q_UNUSED(contained);
 
@@ -688,20 +688,20 @@ void tst_QBox3D::intersected_data()
 }
 void tst_QBox3D::intersected()
 {
-    QFETCH(qreal, x1);
-    QFETCH(qreal, y1);
-    QFETCH(qreal, z1);
-    QFETCH(qreal, x2);
-    QFETCH(qreal, y2);
-    QFETCH(qreal, z2);
+    QFETCH(float, x1);
+    QFETCH(float, y1);
+    QFETCH(float, z1);
+    QFETCH(float, x2);
+    QFETCH(float, y2);
+    QFETCH(float, z2);
     QFETCH(bool, contained);
     QFETCH(bool, intersects);
-    QFETCH(qreal, ix1);
-    QFETCH(qreal, iy1);
-    QFETCH(qreal, iz1);
-    QFETCH(qreal, ix2);
-    QFETCH(qreal, iy2);
-    QFETCH(qreal, iz2);
+    QFETCH(float, ix1);
+    QFETCH(float, iy1);
+    QFETCH(float, iz1);
+    QFETCH(float, ix2);
+    QFETCH(float, iy2);
+    QFETCH(float, iz2);
 
     Q_UNUSED(contained);
 
@@ -730,234 +730,234 @@ void tst_QBox3D::intersected()
 
 void tst_QBox3D::intersectRay_data()
 {
-    QTest::addColumn<qreal>("x1");
-    QTest::addColumn<qreal>("y1");
-    QTest::addColumn<qreal>("z1");
-    QTest::addColumn<qreal>("x2");
-    QTest::addColumn<qreal>("y2");
-    QTest::addColumn<qreal>("z2");
+    QTest::addColumn<float>("x1");
+    QTest::addColumn<float>("y1");
+    QTest::addColumn<float>("z1");
+    QTest::addColumn<float>("x2");
+    QTest::addColumn<float>("y2");
+    QTest::addColumn<float>("z2");
     QTest::addColumn<bool>("intersects");
-    QTest::addColumn<qreal>("mint");
-    QTest::addColumn<qreal>("maxt");
-    QTest::addColumn<qreal>("originx");
-    QTest::addColumn<qreal>("originy");
-    QTest::addColumn<qreal>("originz");
-    QTest::addColumn<qreal>("directionx");
-    QTest::addColumn<qreal>("directiony");
-    QTest::addColumn<qreal>("directionz");
+    QTest::addColumn<float>("mint");
+    QTest::addColumn<float>("maxt");
+    QTest::addColumn<float>("originx");
+    QTest::addColumn<float>("originy");
+    QTest::addColumn<float>("originz");
+    QTest::addColumn<float>("directionx");
+    QTest::addColumn<float>("directiony");
+    QTest::addColumn<float>("directionz");
 
     QTest::newRow("zero")
-        << qreal(0.0) << qreal(0.0) << qreal(0.0)
-        << qreal(0.0) << qreal(0.0) << qreal(0.0)
-        << false << qreal(0.0) << qreal(0.0)
-        << qreal(0.0) << qreal(0.0) << qreal(0.0)
-        << qreal(0.0) << qreal(0.0) << qreal(0.0);
+        << 0.0f << 0.0f << 0.0f
+        << 0.0f << 0.0f << 0.0f
+        << false << 0.0f << 0.0f
+        << 0.0f << 0.0f << 0.0f
+        << 0.0f << 0.0f << 0.0f;
 
     QTest::newRow("zero-x")
-        << qreal(0.0) << qreal(0.0) << qreal(0.0)
-        << qreal(0.0) << qreal(0.0) << qreal(0.0)
-        << true << qreal(1.0) << qreal(1.0)
-        << qreal(-1.0) << qreal(0.0) << qreal(0.0)
-        << qreal(1.0) << qreal(0.0) << qreal(0.0);
+        << 0.0f << 0.0f << 0.0f
+        << 0.0f << 0.0f << 0.0f
+        << true << 1.0f << 1.0f
+        << -1.0f << 0.0f << 0.0f
+        << 1.0f << 0.0f << 0.0f;
 
     QTest::newRow("zero-neg-x")
-        << qreal(0.0) << qreal(0.0) << qreal(0.0)
-        << qreal(0.0) << qreal(0.0) << qreal(0.0)
-        << true << qreal(-1.0) << qreal(-1.0)
-        << qreal(-1.0) << qreal(0.0) << qreal(0.0)
-        << qreal(-1.0) << qreal(0.0) << qreal(0.0);
+        << 0.0f << 0.0f << 0.0f
+        << 0.0f << 0.0f << 0.0f
+        << true << -1.0f << -1.0f
+        << -1.0f << 0.0f << 0.0f
+        << -1.0f << 0.0f << 0.0f;
 
     QTest::newRow("zero-x-miss")
-        << qreal(0.0) << qreal(0.0) << qreal(0.0)
-        << qreal(0.0) << qreal(0.0) << qreal(0.0)
-        << false << qreal(0.0) << qreal(0.0)
-        << qreal(0.0) << qreal(1.0) << qreal(0.0)
-        << qreal(1.0) << qreal(0.0) << qreal(0.0);
+        << 0.0f << 0.0f << 0.0f
+        << 0.0f << 0.0f << 0.0f
+        << false << 0.0f << 0.0f
+        << 0.0f << 1.0f << 0.0f
+        << 1.0f << 0.0f << 0.0f;
 
     QTest::newRow("zero-y")
-        << qreal(0.0) << qreal(0.0) << qreal(0.0)
-        << qreal(0.0) << qreal(0.0) << qreal(0.0)
-        << true << qreal(1.0) << qreal(1.0)
-        << qreal(0.0) << qreal(-1.0) << qreal(0.0)
-        << qreal(0.0) << qreal(1.0) << qreal(0.0);
+        << 0.0f << 0.0f << 0.0f
+        << 0.0f << 0.0f << 0.0f
+        << true << 1.0f << 1.0f
+        << 0.0f << -1.0f << 0.0f
+        << 0.0f << 1.0f << 0.0f;
 
     QTest::newRow("zero-neg-y")
-        << qreal(0.0) << qreal(0.0) << qreal(0.0)
-        << qreal(0.0) << qreal(0.0) << qreal(0.0)
-        << true << qreal(-1.0) << qreal(-1.0)
-        << qreal(0.0) << qreal(-1.0) << qreal(0.0)
-        << qreal(0.0) << qreal(-1.0) << qreal(0.0);
+        << 0.0f << 0.0f << 0.0f
+        << 0.0f << 0.0f << 0.0f
+        << true << -1.0f << -1.0f
+        << 0.0f << -1.0f << 0.0f
+        << 0.0f << -1.0f << 0.0f;
 
     QTest::newRow("zero-y-miss")
-        << qreal(0.0) << qreal(0.0) << qreal(0.0)
-        << qreal(0.0) << qreal(0.0) << qreal(0.0)
-        << false << qreal(0.0) << qreal(0.0)
-        << qreal(1.0) << qreal(0.0) << qreal(0.0)
-        << qreal(0.0) << qreal(-1.0) << qreal(0.0);
+        << 0.0f << 0.0f << 0.0f
+        << 0.0f << 0.0f << 0.0f
+        << false << 0.0f << 0.0f
+        << 1.0f << 0.0f << 0.0f
+        << 0.0f << -1.0f << 0.0f;
 
     QTest::newRow("zero-z")
-        << qreal(0.0) << qreal(0.0) << qreal(0.0)
-        << qreal(0.0) << qreal(0.0) << qreal(0.0)
-        << true << qreal(1.0) << qreal(1.0)
-        << qreal(0.0) << qreal(0.0) << qreal(1.0)
-        << qreal(0.0) << qreal(0.0) << qreal(-1.0);
+        << 0.0f << 0.0f << 0.0f
+        << 0.0f << 0.0f << 0.0f
+        << true << 1.0f << 1.0f
+        << 0.0f << 0.0f << 1.0f
+        << 0.0f << 0.0f << -1.0f;
 
     QTest::newRow("zero-neg-z")
-        << qreal(0.0) << qreal(0.0) << qreal(0.0)
-        << qreal(0.0) << qreal(0.0) << qreal(0.0)
-        << true << qreal(-1.0) << qreal(-1.0)
-        << qreal(0.0) << qreal(0.0) << qreal(1.0)
-        << qreal(0.0) << qreal(0.0) << qreal(1.0);
+        << 0.0f << 0.0f << 0.0f
+        << 0.0f << 0.0f << 0.0f
+        << true << -1.0f << -1.0f
+        << 0.0f << 0.0f << 1.0f
+        << 0.0f << 0.0f << 1.0f;
 
     QTest::newRow("zero-z-miss")
-        << qreal(0.0) << qreal(0.0) << qreal(0.0)
-        << qreal(0.0) << qreal(0.0) << qreal(0.0)
-        << false << qreal(0.0) << qreal(0.0)
-        << qreal(0.0) << qreal(1.0) << qreal(0.0)
-        << qreal(0.0) << qreal(0.0) << qreal(1.0);
+        << 0.0f << 0.0f << 0.0f
+        << 0.0f << 0.0f << 0.0f
+        << false << 0.0f << 0.0f
+        << 0.0f << 1.0f << 0.0f
+        << 0.0f << 0.0f << 1.0f;
 
     QTest::newRow("normal-no-ray")
-        << qreal(-1.0) << qreal(-2.0) << qreal(-3.0)
-        << qreal(1.0) << qreal(2.0) << qreal(3.0)
-        << false << qreal(0.0) << qreal(0.0)
-        << qreal(0.0) << qreal(0.0) << qreal(0.0)
-        << qreal(0.0) << qreal(0.0) << qreal(0.0);
+        << -1.0f << -2.0f << -3.0f
+        << 1.0f << 2.0f << 3.0f
+        << false << 0.0f << 0.0f
+        << 0.0f << 0.0f << 0.0f
+        << 0.0f << 0.0f << 0.0f;
 
     QTest::newRow("normal-from-inside-x")
-        << qreal(-1.0) << qreal(-2.0) << qreal(-3.0)
-        << qreal(1.0) << qreal(2.0) << qreal(3.0)
-        << true << qreal(-1.0) << qreal(1.0)
-        << qreal(0.0) << qreal(0.0) << qreal(0.0)
-        << qreal(1.0) << qreal(0.0) << qreal(0.0);
+        << -1.0f << -2.0f << -3.0f
+        << 1.0f << 2.0f << 3.0f
+        << true << -1.0f << 1.0f
+        << 0.0f << 0.0f << 0.0f
+        << 1.0f << 0.0f << 0.0f;
 
     QTest::newRow("normal-from-inside-neg-x")
-        << qreal(-1.0) << qreal(-2.0) << qreal(-3.0)
-        << qreal(1.0) << qreal(2.0) << qreal(3.0)
-        << true << qreal(-2.0) << qreal(2.0)
-        << qreal(0.0) << qreal(0.0) << qreal(0.0)
-        << qreal(-0.5) << qreal(0.0) << qreal(0.0);
+        << -1.0f << -2.0f << -3.0f
+        << 1.0f << 2.0f << 3.0f
+        << true << -2.0f << 2.0f
+        << 0.0f << 0.0f << 0.0f
+        << -0.5f << 0.0f << 0.0f;
 
     QTest::newRow("normal-from-inside-y")
-        << qreal(-1.0) << qreal(-2.0) << qreal(-3.0)
-        << qreal(1.0) << qreal(2.0) << qreal(3.0)
-        << true << qreal(-2.0) << qreal(2.0)
-        << qreal(0.0) << qreal(0.0) << qreal(0.0)
-        << qreal(0.0) << qreal(1.0) << qreal(0.0);
+        << -1.0f << -2.0f << -3.0f
+        << 1.0f << 2.0f << 3.0f
+        << true << -2.0f << 2.0f
+        << 0.0f << 0.0f << 0.0f
+        << 0.0f << 1.0f << 0.0f;
 
     QTest::newRow("normal-from-inside-neg-y")
-        << qreal(-1.0) << qreal(-2.0) << qreal(-3.0)
-        << qreal(1.0) << qreal(2.0) << qreal(3.0)
-        << true << qreal(-4.0) << qreal(4.0)
-        << qreal(0.0) << qreal(0.0) << qreal(0.0)
-        << qreal(0.0) << qreal(-0.5) << qreal(0.0);
+        << -1.0f << -2.0f << -3.0f
+        << 1.0f << 2.0f << 3.0f
+        << true << -4.0f << 4.0f
+        << 0.0f << 0.0f << 0.0f
+        << 0.0f << -0.5f << 0.0f;
 
     QTest::newRow("normal-from-inside-z")
-        << qreal(-1.0) << qreal(-2.0) << qreal(-3.0)
-        << qreal(1.0) << qreal(2.0) << qreal(3.0)
-        << true << qreal(-3.0) << qreal(3.0)
-        << qreal(0.0) << qreal(0.0) << qreal(0.0)
-        << qreal(0.0) << qreal(0.0) << qreal(1.0);
+        << -1.0f << -2.0f << -3.0f
+        << 1.0f << 2.0f << 3.0f
+        << true << -3.0f << 3.0f
+        << 0.0f << 0.0f << 0.0f
+        << 0.0f << 0.0f << 1.0f;
 
     QTest::newRow("normal-from-inside-neg-z")
-        << qreal(-1.0) << qreal(-2.0) << qreal(-3.0)
-        << qreal(1.0) << qreal(2.0) << qreal(3.0)
-        << true << qreal(-6.0) << qreal(6.0)
-        << qreal(0.0) << qreal(0.0) << qreal(0.0)
-        << qreal(0.0) << qreal(0.0) << qreal(-0.5);
+        << -1.0f << -2.0f << -3.0f
+        << 1.0f << 2.0f << 3.0f
+        << true << -6.0f << 6.0f
+        << 0.0f << 0.0f << 0.0f
+        << 0.0f << 0.0f << -0.5f;
 
     QTest::newRow("normal-from-outside-x")
-        << qreal(-1.0) << qreal(-2.0) << qreal(-3.0)
-        << qreal(1.0) << qreal(2.0) << qreal(3.0)
-        << true << qreal(1.0) << qreal(3.0)
-        << qreal(-2.0) << qreal(0.0) << qreal(0.0)
-        << qreal(1.0) << qreal(0.0) << qreal(0.0);
+        << -1.0f << -2.0f << -3.0f
+        << 1.0f << 2.0f << 3.0f
+        << true << 1.0f << 3.0f
+        << -2.0f << 0.0f << 0.0f
+        << 1.0f << 0.0f << 0.0f;
 
     QTest::newRow("normal-from-outside-neg-x")
-        << qreal(-1.0) << qreal(-2.0) << qreal(-3.0)
-        << qreal(1.0) << qreal(2.0) << qreal(3.0)
-        << true << qreal(-6.0) << qreal(-2.0)
-        << qreal(-2.0) << qreal(0.0) << qreal(0.0)
-        << qreal(-0.5) << qreal(0.0) << qreal(0.0);
+        << -1.0f << -2.0f << -3.0f
+        << 1.0f << 2.0f << 3.0f
+        << true << -6.0f << -2.0f
+        << -2.0f << 0.0f << 0.0f
+        << -0.5f << 0.0f << 0.0f;
 
     QTest::newRow("normal-from-outside-miss-x")
-        << qreal(-1.0) << qreal(-2.0) << qreal(-3.0)
-        << qreal(1.0) << qreal(2.0) << qreal(3.0)
-        << false << qreal(0.0) << qreal(0.0)
-        << qreal(-2.0) << qreal(3.0) << qreal(0.0)
-        << qreal(1.0) << qreal(0.0) << qreal(0.0);
+        << -1.0f << -2.0f << -3.0f
+        << 1.0f << 2.0f << 3.0f
+        << false << 0.0f << 0.0f
+        << -2.0f << 3.0f << 0.0f
+        << 1.0f << 0.0f << 0.0f;
 
     QTest::newRow("normal-from-outside-y")
-        << qreal(-1.0) << qreal(-2.0) << qreal(-3.0)
-        << qreal(1.0) << qreal(2.0) << qreal(3.0)
-        << true << qreal(1.0) << qreal(5.0)
-        << qreal(0.0) << qreal(-3.0) << qreal(0.0)
-        << qreal(0.0) << qreal(1.0) << qreal(0.0);
+        << -1.0f << -2.0f << -3.0f
+        << 1.0f << 2.0f << 3.0f
+        << true << 1.0f << 5.0f
+        << 0.0f << -3.0f << 0.0f
+        << 0.0f << 1.0f << 0.0f;
 
     QTest::newRow("normal-from-outside-neg-y")
-        << qreal(-1.0) << qreal(-2.0) << qreal(-3.0)
-        << qreal(1.0) << qreal(2.0) << qreal(3.0)
-        << true << qreal(-10.0) << qreal(-2.0)
-        << qreal(0.0) << qreal(-3.0) << qreal(0.0)
-        << qreal(0.0) << qreal(-0.5) << qreal(0.0);
+        << -1.0f << -2.0f << -3.0f
+        << 1.0f << 2.0f << 3.0f
+        << true << -10.0f << -2.0f
+        << 0.0f << -3.0f << 0.0f
+        << 0.0f << -0.5f << 0.0f;
 
     QTest::newRow("normal-from-outside-miss-y")
-        << qreal(-1.0) << qreal(-2.0) << qreal(-3.0)
-        << qreal(1.0) << qreal(2.0) << qreal(3.0)
-        << false << qreal(0.0) << qreal(0.0)
-        << qreal(2.0) << qreal(-3.0) << qreal(0.0)
-        << qreal(0.0) << qreal(1.5) << qreal(0.0);
+        << -1.0f << -2.0f << -3.0f
+        << 1.0f << 2.0f << 3.0f
+        << false << 0.0f << 0.0f
+        << 2.0f << -3.0f << 0.0f
+        << 0.0f << 1.5f << 0.0f;
 
     QTest::newRow("normal-from-outside-z")
-        << qreal(-1.0) << qreal(-2.0) << qreal(-3.0)
-        << qreal(1.0) << qreal(2.0) << qreal(3.0)
-        << true << qreal(1.0) << qreal(7.0)
-        << qreal(0.0) << qreal(0.0) << qreal(-4.0)
-        << qreal(0.0) << qreal(0.0) << qreal(1.0);
+        << -1.0f << -2.0f << -3.0f
+        << 1.0f << 2.0f << 3.0f
+        << true << 1.0f << 7.0f
+        << 0.0f << 0.0f << -4.0f
+        << 0.0f << 0.0f << 1.0f;
 
     QTest::newRow("normal-from-outside-neg-z")
-        << qreal(-1.0) << qreal(-2.0) << qreal(-3.0)
-        << qreal(1.0) << qreal(2.0) << qreal(3.0)
-        << true << qreal(-14.0) << qreal(-2.0)
-        << qreal(0.0) << qreal(0.0) << qreal(-4.0)
-        << qreal(0.0) << qreal(0.0) << qreal(-0.5);
+        << -1.0f << -2.0f << -3.0f
+        << 1.0f << 2.0f << 3.0f
+        << true << -14.0f << -2.0f
+        << 0.0f << 0.0f << -4.0f
+        << 0.0f << 0.0f << -0.5f;
 
     QTest::newRow("normal-from-outside-miss-z")
-        << qreal(-1.0) << qreal(-2.0) << qreal(-3.0)
-        << qreal(1.0) << qreal(2.0) << qreal(3.0)
-        << false << qreal(0.0) << qreal(0.0)
-        << qreal(0.0) << qreal(3.0) << qreal(-4.0)
-        << qreal(0.0) << qreal(0.0) << qreal(1.5);
+        << -1.0f << -2.0f << -3.0f
+        << 1.0f << 2.0f << 3.0f
+        << false << 0.0f << 0.0f
+        << 0.0f << 3.0f << -4.0f
+        << 0.0f << 0.0f << 1.5f;
 }
 
 void tst_QBox3D::intersectRay()
 {
-    QFETCH(qreal, x1);
-    QFETCH(qreal, y1);
-    QFETCH(qreal, z1);
-    QFETCH(qreal, x2);
-    QFETCH(qreal, y2);
-    QFETCH(qreal, z2);
+    QFETCH(float, x1);
+    QFETCH(float, y1);
+    QFETCH(float, z1);
+    QFETCH(float, x2);
+    QFETCH(float, y2);
+    QFETCH(float, z2);
     QFETCH(bool, intersects);
-    QFETCH(qreal, mint);
-    QFETCH(qreal, maxt);
-    QFETCH(qreal, originx);
-    QFETCH(qreal, originy);
-    QFETCH(qreal, originz);
-    QFETCH(qreal, directionx);
-    QFETCH(qreal, directiony);
-    QFETCH(qreal, directionz);
+    QFETCH(float, mint);
+    QFETCH(float, maxt);
+    QFETCH(float, originx);
+    QFETCH(float, originy);
+    QFETCH(float, originz);
+    QFETCH(float, directionx);
+    QFETCH(float, directiony);
+    QFETCH(float, directionz);
 
     QBox3D box(QVector3D(x1, y1, z1), QVector3D(x2, y2, z2));
     QRay3D ray(QVector3D(originx, originy, originz),
                QVector3D(directionx, directiony, directionz));
 
-    qreal minimum_t = -1.0f, maximum_t = -1.0f;
+    float minimum_t = -1.0f, maximum_t = -1.0f;
     if (intersects) {
         QVERIFY(box.intersection(ray, &minimum_t, &maximum_t));
         QCOMPARE(minimum_t, mint);
         QCOMPARE(maximum_t, maxt);
         QVERIFY(box.intersects(ray));
-        qreal t = box.intersection(ray);
+        float t = box.intersection(ray);
         if (mint >= 0.0f)
             QCOMPARE(t, mint);
         else if (maxt >= 0.0f)
@@ -980,9 +980,9 @@ void tst_QBox3D::unitePoint_data()
 }
 void tst_QBox3D::unitePoint()
 {
-    QFETCH(qreal, x);
-    QFETCH(qreal, y);
-    QFETCH(qreal, z);
+    QFETCH(float, x);
+    QFETCH(float, y);
+    QFETCH(float, z);
     QFETCH(bool, contained);
 
     QBox3D box(QVector3D(-1, -2, -3), QVector3D(4, 5, 6));
@@ -993,12 +993,12 @@ void tst_QBox3D::unitePoint()
     if (contained) {
         QVERIFY(result == box);
     } else {
-        qreal minx = (x < -1) ? x : -1;
-        qreal miny = (y < -2) ? y : -2;
-        qreal minz = (z < -3) ? z : -3;
-        qreal maxx = (x > 4) ? x : 4;
-        qreal maxy = (y > 5) ? y : 5;
-        qreal maxz = (z > 6) ? z : 6;
+        float minx = (x < -1) ? x : -1;
+        float miny = (y < -2) ? y : -2;
+        float minz = (z < -3) ? z : -3;
+        float maxx = (x > 4) ? x : 4;
+        float maxy = (y > 5) ? y : 5;
+        float maxz = (z > 6) ? z : 6;
         QBox3D expected(QVector3D(minx, miny, minz), QVector3D(maxx, maxy, maxz));
         QVERIFY(result == expected);
     }
@@ -1020,26 +1020,26 @@ void tst_QBox3D::uniteBox_data()
 }
 void tst_QBox3D::uniteBox()
 {
-    QFETCH(qreal, x1);
-    QFETCH(qreal, y1);
-    QFETCH(qreal, z1);
-    QFETCH(qreal, x2);
-    QFETCH(qreal, y2);
-    QFETCH(qreal, z2);
+    QFETCH(float, x1);
+    QFETCH(float, y1);
+    QFETCH(float, z1);
+    QFETCH(float, x2);
+    QFETCH(float, y2);
+    QFETCH(float, z2);
     QFETCH(bool, contained);
     QFETCH(bool, intersects);
-    QFETCH(qreal, ix1);
-    QFETCH(qreal, iy1);
-    QFETCH(qreal, iz1);
-    QFETCH(qreal, ix2);
-    QFETCH(qreal, iy2);
-    QFETCH(qreal, iz2);
-    QFETCH(qreal, ex1);
-    QFETCH(qreal, ey1);
-    QFETCH(qreal, ez1);
-    QFETCH(qreal, ex2);
-    QFETCH(qreal, ey2);
-    QFETCH(qreal, ez2);
+    QFETCH(float, ix1);
+    QFETCH(float, iy1);
+    QFETCH(float, iz1);
+    QFETCH(float, ix2);
+    QFETCH(float, iy2);
+    QFETCH(float, iz2);
+    QFETCH(float, ex1);
+    QFETCH(float, ey1);
+    QFETCH(float, ez1);
+    QFETCH(float, ex2);
+    QFETCH(float, ey2);
+    QFETCH(float, ez2);
 
     Q_UNUSED(contained);
     Q_UNUSED(intersects);
@@ -1086,9 +1086,9 @@ void tst_QBox3D::unitedPoint_data()
 }
 void tst_QBox3D::unitedPoint()
 {
-    QFETCH(qreal, x);
-    QFETCH(qreal, y);
-    QFETCH(qreal, z);
+    QFETCH(float, x);
+    QFETCH(float, y);
+    QFETCH(float, z);
     QFETCH(bool, contained);
 
     QBox3D box(QVector3D(-1, -2, -3), QVector3D(4, 5, 6));
@@ -1098,12 +1098,12 @@ void tst_QBox3D::unitedPoint()
     if (contained) {
         QVERIFY(result == box);
     } else {
-        qreal minx = (x < -1) ? x : -1;
-        qreal miny = (y < -2) ? y : -2;
-        qreal minz = (z < -3) ? z : -3;
-        qreal maxx = (x > 4) ? x : 4;
-        qreal maxy = (y > 5) ? y : 5;
-        qreal maxz = (z > 6) ? z : 6;
+        float minx = (x < -1) ? x : -1;
+        float miny = (y < -2) ? y : -2;
+        float minz = (z < -3) ? z : -3;
+        float maxx = (x > 4) ? x : 4;
+        float maxy = (y > 5) ? y : 5;
+        float maxz = (z > 6) ? z : 6;
         QBox3D expected(QVector3D(minx, miny, minz), QVector3D(maxx, maxy, maxz));
         QVERIFY(result == expected);
     }
@@ -1125,26 +1125,26 @@ void tst_QBox3D::unitedBox_data()
 }
 void tst_QBox3D::unitedBox()
 {
-    QFETCH(qreal, x1);
-    QFETCH(qreal, y1);
-    QFETCH(qreal, z1);
-    QFETCH(qreal, x2);
-    QFETCH(qreal, y2);
-    QFETCH(qreal, z2);
+    QFETCH(float, x1);
+    QFETCH(float, y1);
+    QFETCH(float, z1);
+    QFETCH(float, x2);
+    QFETCH(float, y2);
+    QFETCH(float, z2);
     QFETCH(bool, contained);
     QFETCH(bool, intersects);
-    QFETCH(qreal, ix1);
-    QFETCH(qreal, iy1);
-    QFETCH(qreal, iz1);
-    QFETCH(qreal, ix2);
-    QFETCH(qreal, iy2);
-    QFETCH(qreal, iz2);
-    QFETCH(qreal, ex1);
-    QFETCH(qreal, ey1);
-    QFETCH(qreal, ez1);
-    QFETCH(qreal, ex2);
-    QFETCH(qreal, ey2);
-    QFETCH(qreal, ez2);
+    QFETCH(float, ix1);
+    QFETCH(float, iy1);
+    QFETCH(float, iz1);
+    QFETCH(float, ix2);
+    QFETCH(float, iy2);
+    QFETCH(float, iz2);
+    QFETCH(float, ex1);
+    QFETCH(float, ey1);
+    QFETCH(float, ez1);
+    QFETCH(float, ex2);
+    QFETCH(float, ey2);
+    QFETCH(float, ez2);
 
     Q_UNUSED(contained);
     Q_UNUSED(intersects);

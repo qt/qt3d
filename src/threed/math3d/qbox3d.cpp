@@ -242,13 +242,13 @@ bool QBox3D::intersects(const QBox3D& box) const
 */
 bool QBox3D::intersects(const QRay3D &ray) const
 {
-    qreal minimum_t, maximum_t;
+    float minimum_t, maximum_t;
     return intersection(ray, &minimum_t, &maximum_t);
 }
 
 static inline void trackIntersectionX
-    (const QBox3D &box, const QRay3D &ray, qreal t,
-     qreal *minimum_t, qreal *maximum_t, bool *found)
+    (const QBox3D &box, const QRay3D &ray, float t,
+     float *minimum_t, float *maximum_t, bool *found)
 {
     QVector3D point = ray.point(t);
     if (point.y() < box.minimum().y() || point.y() > box.maximum().y())
@@ -267,8 +267,8 @@ static inline void trackIntersectionX
 }
 
 static inline void trackIntersectionY
-    (const QBox3D &box, const QRay3D &ray, qreal t,
-     qreal *minimum_t, qreal *maximum_t, bool *found)
+    (const QBox3D &box, const QRay3D &ray, float t,
+     float *minimum_t, float *maximum_t, bool *found)
 {
     QVector3D point = ray.point(t);
     if (point.x() < box.minimum().x() || point.x() > box.maximum().x())
@@ -287,8 +287,8 @@ static inline void trackIntersectionY
 }
 
 static inline void trackIntersectionZ
-    (const QBox3D &box, const QRay3D &ray, qreal t,
-     qreal *minimum_t, qreal *maximum_t, bool *found)
+    (const QBox3D &box, const QRay3D &ray, float t,
+     float *minimum_t, float *maximum_t, bool *found)
 {
     QVector3D point = ray.point(t);
     if (point.x() < box.minimum().x() || point.x() > box.maximum().x())
@@ -321,7 +321,7 @@ static inline void trackIntersectionZ
     example:
 
     \code
-    qreal minimum_t, maximum_t;
+    float minimum_t, maximum_t;
     if (box.intersection(ray, &minimum_t, &maximum_t)) {
         qDebug() << "intersections at"
                  << ray.point(minimum_t) << "and"
@@ -331,7 +331,7 @@ static inline void trackIntersectionZ
 
     \sa intersects(), QRay3D::point()
 */
-bool QBox3D::intersection(const QRay3D &ray, qreal *minimum_t, qreal *maximum_t) const
+bool QBox3D::intersection(const QRay3D &ray, float *minimum_t, float *maximum_t) const
 {
     bool found = false;
     QVector3D origin = ray.origin();
@@ -375,7 +375,7 @@ bool QBox3D::intersection(const QRay3D &ray, qreal *minimum_t, qreal *maximum_t)
     the actual intersection point, as shown in the following example:
 
     \code
-    qreal t = box.intersection(ray);
+    float t = box.intersection(ray);
     QVector3D pt;
     if (qIsNaN(t)) {
         qWarning("no intersection occurred");
@@ -400,9 +400,9 @@ bool QBox3D::intersection(const QRay3D &ray, qreal *minimum_t, qreal *maximum_t)
 
     \sa intersects(), QRay3D::point()
 */
-qreal QBox3D::intersection(const QRay3D &ray) const
+float QBox3D::intersection(const QRay3D &ray) const
 {
-    qreal minimum_t, maximum_t;
+    float minimum_t, maximum_t;
     if (intersection(ray, &minimum_t, &maximum_t)) {
         if (minimum_t >= 0.0f)
             return minimum_t;

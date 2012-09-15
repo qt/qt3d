@@ -71,17 +71,12 @@ private slots:
     void metaTypes();
 };
 
-// since all calculations involved QVector3D are producing values with only
-// float precision those calculations can at best be float precision
-// if you assign the results of the calculation to a qreal then qFuzzyCompare
-// will quite happily use a much higher standard of precision than it is
-// possible to acheive - hence redefine it here to always use the float
-// Also while on the job fix the problem where a compared value happens
-// to be zero (and you cannot always predict this, and should not predict it
+// Fix the problem where a compared value happens to be zero (and
+// you cannot always predict this, and should not predict it
 // since then you produce self-fulling prophecies instead of tests).
 // In that case qFuzzyCompare has a completely strict criterion since
 // it finds the "fudge factor" by multiplying by zero...
-static inline bool fuzzyCompare(qreal p1, qreal p2)
+static inline bool fuzzyCompare(float p1, float p2)
 {
     float fac = qMin(qAbs(p1), qAbs(p2));
     return (qAbs(p1 - p2) <= (qIsNull(fac) ? 0.00001f : 0.00001f * fac));
@@ -387,31 +382,31 @@ void tst_QRay3D::distanceTo_data()
     QTest::addColumn<QVector3D>("origin");
     QTest::addColumn<QVector3D>("direction");
     QTest::addColumn<QVector3D>("point");
-    QTest::addColumn<qreal>("distance");
+    QTest::addColumn<float>("distance");
 
     QTest::newRow("axis-x")
         << QVector3D(6.0f, 0.0f, 0.0f)
         << QVector3D(1.0f, 0.0f, 0.0f)
         << QVector3D(0.0f, 0.0f, 0.0f)
-        << qreal(0.0f);
+        << 0.0f;
 
     QTest::newRow("axis-x to 1")
         << QVector3D(6.0f, 0.0f, 0.0f)
         << QVector3D(1.0f, 0.0f, 0.0f)
         << QVector3D(0.0f, 1.0f, 0.0f)
-        << qreal(1.0f);
+        << 1.0f;
 
     QTest::newRow("neg-axis-y")
         << QVector3D(0.0f, 6.0f, 0.0f)
         << QVector3D(0.0f, -1.5f, 0.0f)
         << QVector3D(0.0f, 100.0f, 0.0f)
-        << qreal(0.0f);
+        << 0.0f;
 
     QTest::newRow("neg-axis-y to 2")
         << QVector3D(0.0f, 6.0f, 0.0f)
         << QVector3D(0.0f, -1.5f, 0.0f)
         << QVector3D(2.0f, 0.0f, 0.0f)
-        << qreal(2.0f);
+        << 2.0f;
 }
 
 void tst_QRay3D::distanceTo()
@@ -419,7 +414,7 @@ void tst_QRay3D::distanceTo()
     QFETCH(QVector3D, origin);
     QFETCH(QVector3D, direction);
     QFETCH(QVector3D, point);
-    QFETCH(qreal, distance);
+    QFETCH(float, distance);
 
     QRay3D line(origin, direction);
     QCOMPARE(line.distanceTo(point), distance);

@@ -70,17 +70,12 @@ private slots:
     void metaTypes();
 };
 
-// since all calculations involved QVector3D are producing values with only
-// float precision those calculations can at best be float precision
-// if you assign the results of the calculation to a qreal then qFuzzyCompare
-// will quite happily use a much higher standard of precision than it is
-// possible to acheive - hence redefine it here to always use the float
-// Also while on the job fix the problem where a compared value happens
-// to be zero (and you cannot always predict this, and should not predict it
+// Fix the problem where a compared value happens to be zero (and
+// you cannot always predict this, and should not predict it
 // since then you produce self-fulling prophecies instead of tests).
 // In that case qFuzzyCompare has a completely strict criterion since
 // it finds the "fudge factor" by multiplying by zero...
-static inline bool fuzzyCompare(qreal p1, qreal p2)
+static inline bool fuzzyCompare(float p1, float p2)
 {
     float fac = qMin(qAbs(p1), qAbs(p2));
     return (qAbs(p1 - p2) <= (qIsNull(fac) ? 0.00001f : 0.00001f * fac));
@@ -228,7 +223,7 @@ void tst_QPlane3D::intersection()
     QRay3D line(point1, direction);
     QPlane3D plane(point2, normal);
 
-    qreal t = plane.intersection(line);
+    float t = plane.intersection(line);
     QVERIFY(!qIsNaN(t));
     QVERIFY(fuzzyCompare(line.point(t), intersection));
     QVERIFY(plane.intersects(line));
@@ -272,7 +267,7 @@ void tst_QPlane3D::noIntersection()
     QPlane3D plane(point1, normal);
     QRay3D line(point2, direction);
 
-    qreal t = plane.intersection(line);
+    float t = plane.intersection(line);
     QVERIFY(qIsNaN(t));
     QVERIFY(!plane.intersects(line));
 }

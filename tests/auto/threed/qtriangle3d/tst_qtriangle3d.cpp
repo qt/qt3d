@@ -532,7 +532,7 @@ void tst_QTriangle3D::intersect()
     QRay3D line(origin, direction);
     QCOMPARE(triangle.intersects(line), doesIntersect);
 
-    qreal result = triangle.intersection(line);
+    float result = triangle.intersection(line);
     if (doesIntersect)
         QCOMPARE(line.point(result), intersection);
     else

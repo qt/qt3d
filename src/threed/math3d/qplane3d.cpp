@@ -159,7 +159,7 @@ bool QPlane3D::intersects(const QRay3D &ray) const
     the actual intersection point, as shown in the following example:
 
     \code
-    qreal t = plane.intersection(ray);
+    float t = plane.intersection(ray);
     QVector3D pt;
     if (qIsNaN(t)) {
         qWarning("no intersection occurred");
@@ -184,9 +184,9 @@ bool QPlane3D::intersects(const QRay3D &ray) const
 
     \sa intersects()
 */
-qreal QPlane3D::intersection(const QRay3D& ray) const
+float QPlane3D::intersection(const QRay3D& ray) const
 {
-    qreal dotLineAndPlane = QVector3D::dotProduct(m_normal, ray.direction());
+    float dotLineAndPlane = QVector3D::dotProduct(m_normal, ray.direction());
     if (qFuzzyIsNull(float(dotLineAndPlane))) {
         // degenerate case - ray & plane-normal vectors are at
         // 90 degrees to each other, so either plane and ray never meet
@@ -202,7 +202,7 @@ qreal QPlane3D::intersection(const QRay3D& ray) const
     be positive if \a point is above the plane in the direction
     of normal(), and negative if \a point is below the plane.
 */
-qreal QPlane3D::distanceTo(const QVector3D &point) const
+float QPlane3D::distanceTo(const QVector3D &point) const
 {
     return QVector3D::dotProduct(point - m_origin, m_normal) /
                 m_normal.length();

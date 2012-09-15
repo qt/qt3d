@@ -77,8 +77,8 @@ public:
     bool contains(const QBox3D& box) const;
 
     bool intersects(const QRay3D& ray) const;
-    bool intersection(const QRay3D &ray, qreal *minimum_t, qreal *maximum_t) const;
-    qreal intersection(const QRay3D& ray) const;
+    bool intersection(const QRay3D &ray, float *minimum_t, float *maximum_t) const;
+    float intersection(const QRay3D& ray) const;
 
     bool intersects(const QBox3D& box) const;
     void intersect(const QBox3D& box);

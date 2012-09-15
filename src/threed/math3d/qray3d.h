@@ -67,12 +67,12 @@ public:
     bool contains(const QVector3D &point) const;
     bool contains(const QRay3D &ray) const;
 
-    QVector3D point(qreal t) const;
-    qreal fromPoint(const QVector3D &point) const;
+    QVector3D point(float t) const;
+    float fromPoint(const QVector3D &point) const;
 
     QVector3D project(const QVector3D &vector) const;
 
-    qreal distanceTo(const QVector3D &point) const;
+    float distanceTo(const QVector3D &point) const;
 
     void transform(const QMatrix4x4 &matrix);
     QRay3D transformed(const QMatrix4x4 &matrix) const;
@@ -114,7 +114,7 @@ inline void QRay3D::setDirection(const QVector3D & value)
     m_direction = value;
 }
 
-inline QVector3D QRay3D::point(qreal t) const
+inline QVector3D QRay3D::point(float t) const
 {
     return m_origin + t * m_direction;
 }

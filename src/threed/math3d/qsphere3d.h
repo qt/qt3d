@@ -60,13 +60,13 @@ class Q_QT3D_EXPORT QSphere3D
 {
 public:
     QSphere3D();
-    QSphere3D(const QVector3D &center, qreal radius);
+    QSphere3D(const QVector3D &center, float radius);
 
     QVector3D center() const;
     void setCenter(const QVector3D &center);
 
-    qreal radius() const;
-    void setRadius(qreal radius);
+    float radius() const;
+    void setRadius(float radius);
 
     bool contains(const QVector3D &point) const;
 
@@ -75,8 +75,8 @@ public:
     bool intersects(const QBox3D &box) const;
     bool intersects(const QPlane3D &plane) const;
 
-    bool intersection(const QRay3D &ray, qreal *minimum_t, qreal *maximum_t) const;
-    qreal intersection(const QRay3D &ray) const;
+    bool intersection(const QRay3D &ray, float *minimum_t, float *maximum_t) const;
+    float intersection(const QRay3D &ray) const;
 
     void transform(const QMatrix4x4 &matrix);
     QSphere3D transformed(const QMatrix4x4 &matrix) const;
@@ -86,12 +86,12 @@ public:
 
 private:
     QVector3D m_center;
-    qreal m_radius;
+    float m_radius;
 };
 
 inline QSphere3D::QSphere3D() : m_radius(1.0f) {}
 
-inline QSphere3D::QSphere3D(const QVector3D &center, qreal radius)
+inline QSphere3D::QSphere3D(const QVector3D &center, float radius)
     : m_center(center), m_radius(radius) {}
 
 inline QVector3D QSphere3D::center() const
@@ -104,12 +104,12 @@ inline void QSphere3D::setCenter(const QVector3D &center)
     m_center = center;
 }
 
-inline qreal QSphere3D::radius() const
+inline float QSphere3D::radius() const
 {
     return m_radius;
 }
 
-inline void QSphere3D::setRadius(qreal radius)
+inline void QSphere3D::setRadius(float radius)
 {
     m_radius = radius;
 }
@@ -121,7 +121,7 @@ inline bool QSphere3D::contains(const QVector3D &point) const
 
 inline bool QSphere3D::intersects(const QSphere3D &sphere) const
 {
-    qreal radsum = sphere.radius() + m_radius;
+    float radsum = sphere.radius() + m_radius;
     return (sphere.center() - m_center).lengthSquared() <= (radsum * radsum);
 }
 
