@@ -159,7 +159,7 @@ void tst_QCapsuleMesh::testGeometry()
             unsigned int ii0 = ib.at(i);
             QVERIFY(ii0<(unsigned int)verts.size());
             QVector3D vv0 = verts.at(ii0);
-            qreal vv0sq = (vv0-QVector3D(0,0,vv0.z())).lengthSquared();
+            float vv0sq = (vv0-QVector3D(0,0,vv0.z())).lengthSquared();
             QVERIFY(fabs(vv0sq-0.25)<0.0001); // vertex is on cylinder
             QVector3D nn0 = norms.at(ii0);
             QVERIFY((fabs(QVector3D::dotProduct(nn0,(vv0-QVector3D(0,0,vv0.z()))))-1.0) < 0.0001); // vertex normal points to the same direction as vertex
@@ -167,7 +167,7 @@ void tst_QCapsuleMesh::testGeometry()
             unsigned int ii1 = ib.at(i+1);
             QVERIFY(ii1<(unsigned int)verts.size());
             QVector3D vv1 = verts.at(ii1);
-            qreal vv1sq = (vv1-QVector3D(0,0,vv1.z())).lengthSquared();
+            float vv1sq = (vv1-QVector3D(0,0,vv1.z())).lengthSquared();
             QVERIFY(fabs(vv1sq-0.25)<0.0001); // vertex is on cylinder
             QVector3D nn1 = norms.at(ii1);
             QVERIFY((fabs(QVector3D::dotProduct(nn1,(vv1-QVector3D(0,0,vv1.z()))))-1.0) < 0.0001); // vertex normal points to the same direction as vertex
@@ -175,15 +175,16 @@ void tst_QCapsuleMesh::testGeometry()
             unsigned int ii2 = ib.at(i+2);
             QVERIFY(ii2<(unsigned int)verts.size());
             QVector3D vv2 = verts.at(ii2);
-            qreal vv2sq = (vv2-QVector3D(0,0,vv2.z())).lengthSquared();
+            float vv2sq = (vv2-QVector3D(0,0,vv2.z())).lengthSquared();
             QVERIFY(fabs(vv2sq-0.25)<0.0001); // vertex is on cylinder
             QVector3D nn2 = norms.at(ii2);
             QVERIFY((fabs(QVector3D::dotProduct(nn2,(vv2-QVector3D(0,0,vv2.z()))))-1.0) < 0.0001); // vertex normal points to the same direction as vertex
 
             QVector3D triangleNormal = QVector3D::crossProduct(vv1-vv0,vv2-vv0);
             triangleNormal.normalize();
-            qreal dp = QVector3D::dotProduct(triangleNormal,nn0);
-            QVERIFY(dp>0.9238 && dp<=1.0); // triangle normal points in approx the same dir as one of vertex normals. Max deviation is 22.5 degrees.
+            float dp = QVector3D::dotProduct(triangleNormal,nn0);
+            const float epsilon = 1.0e-5f;
+            QVERIFY(dp - 0.9238f > -epsilon && dp - 1.0f <= epsilon); // triangle normal points in approx the same dir as one of vertex normals. Max deviation is 22.5 degrees.
         }
     }
     {
@@ -211,30 +212,30 @@ void tst_QCapsuleMesh::testGeometry()
             unsigned int ii0 = ib.at(i);
             QVERIFY(ii0<(unsigned int)verts.size());
             QVector3D vv0 = verts.at(ii0);
-            qreal vv0sq = vv0.lengthSquared();
+            float vv0sq = vv0.lengthSquared();
             QVERIFY(fabs(vv0sq-0.25)<0.0001); // vertex is on dome
             QVector3D nn0 = norms.at(ii0);
-            qreal nn0sq = nn0.lengthSquared();
+            float nn0sq = nn0.lengthSquared();
             QVERIFY(fabs(nn0sq-1.0)<0.0001); // normal has unit length
             QVERIFY(fabs(QVector3D::dotProduct(nn0,vv0)-0.5) < 0.0001); // vertex normal points to the same direction as vertex
 
             unsigned int ii1 = ib.at(i+1);
             QVERIFY(ii1<(unsigned int)verts.size());
             QVector3D vv1 = verts.at(ii1);
-            qreal vv1sq = vv1.lengthSquared();
+            float vv1sq = vv1.lengthSquared();
             QVERIFY(fabs(vv1sq-0.25)<0.0001); // vertex is on dome
             QVector3D nn1 = norms.at(ii1);
-            qreal nn1sq = nn1.lengthSquared();
+            float nn1sq = nn1.lengthSquared();
             QVERIFY(fabs(nn1sq-1.0)<0.0001); // normal has unit length
             QVERIFY(fabs(QVector3D::dotProduct(nn1,vv1)-0.5) < 0.0001); // vertex normal points to the same direction as vertex
 
             unsigned int ii2 = ib.at(i+2);
             QVERIFY(ii2<(unsigned int)verts.size());
             QVector3D vv2 = verts.at(ii2);
-            qreal vv2sq = vv2.lengthSquared();
+            float vv2sq = vv2.lengthSquared();
             QVERIFY(fabs(vv2sq-0.25)<0.0001); // vertex is on cylinder
             QVector3D nn2 = norms.at(ii2);
-            qreal nn2sq = nn2.lengthSquared();
+            float nn2sq = nn2.lengthSquared();
             QVERIFY(fabs(nn2sq-1.0)<0.0001); // normal has unit length
             QVERIFY(fabs(QVector3D::dotProduct(nn2,vv2)-0.5) < 0.0001); // vertex normal points to the same direction as vertex
 
@@ -247,7 +248,7 @@ void tst_QCapsuleMesh::testGeometry()
                     QVector3D triangleNormal = QVector3D::crossProduct(vvv0,vvv1);
                     if (triangleNormal.lengthSquared()>0.001) {
                         triangleNormal.normalize();
-                        qreal dp = QVector3D::dotProduct(triangleNormal,nn0);
+                        float dp = QVector3D::dotProduct(triangleNormal,nn0);
                         QVERIFY(dp<-0.8628);
                     }
                 }
@@ -279,30 +280,30 @@ void tst_QCapsuleMesh::testGeometry()
             unsigned int ii0 = ib.at(i);
             QVERIFY(ii0<(unsigned int)verts.size());
             QVector3D vv0 = verts.at(ii0);
-            qreal vv0sq = vv0.lengthSquared();
+            float vv0sq = vv0.lengthSquared();
             QVERIFY(fabs(vv0sq-0.25)<0.0001); // vertex is on dome
             QVector3D nn0 = norms.at(ii0);
-            qreal nn0sq = nn0.lengthSquared();
+            float nn0sq = nn0.lengthSquared();
             QVERIFY(fabs(nn0sq-1.0)<0.0001); // normal has unit length
             QVERIFY(fabs(QVector3D::dotProduct(nn0,vv0)-0.5) < 0.0001); // vertex normal points to the same direction as vertex
 
             unsigned int ii1 = ib.at(i+1);
             QVERIFY(ii1<(unsigned int)verts.size());
             QVector3D vv1 = verts.at(ii1);
-            qreal vv1sq = vv1.lengthSquared();
+            float vv1sq = vv1.lengthSquared();
             QVERIFY(fabs(vv1sq-0.25)<0.0001); // vertex is on dome
             QVector3D nn1 = norms.at(ii1);
-            qreal nn1sq = nn1.lengthSquared();
+            float nn1sq = nn1.lengthSquared();
             QVERIFY(fabs(nn1sq-1.0)<0.0001); // normal has unit length
             QVERIFY(fabs(QVector3D::dotProduct(nn1,vv1)-0.5) < 0.0001); // vertex normal points to the same direction as vertex
 
             unsigned int ii2 = ib.at(i+2);
             QVERIFY(ii2<(unsigned int)verts.size());
             QVector3D vv2 = verts.at(ii2);
-            qreal vv2sq = vv2.lengthSquared();
+            float vv2sq = vv2.lengthSquared();
             QVERIFY(fabs(vv2sq-0.25)<0.0001); // vertex is on cylinder
             QVector3D nn2 = norms.at(ii2);
-            qreal nn2sq = nn2.lengthSquared();
+            float nn2sq = nn2.lengthSquared();
             QVERIFY(fabs(nn2sq-1.0)<0.0001); // normal has unit length
             QVERIFY(fabs(QVector3D::dotProduct(nn2,vv2)-0.5) < 0.0001); // vertex normal points to the same direction as vertex
 
@@ -315,7 +316,7 @@ void tst_QCapsuleMesh::testGeometry()
                     QVector3D triangleNormal = QVector3D::crossProduct(vvv0,vvv1);
                     if (triangleNormal.lengthSquared()>0.001) {
                         triangleNormal.normalize();
-                        qreal dp = QVector3D::dotProduct(triangleNormal,nn0);
+                        float dp = QVector3D::dotProduct(triangleNormal,nn0);
                         QVERIFY(dp<-0.8628);
                     }
                 }

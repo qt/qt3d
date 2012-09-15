@@ -11,8 +11,8 @@ Module {
         exports: [
             "Capsule 1.0"
         ]
-        Property { name: "radius"; type: "qreal" }
-        Property { name: "length"; type: "qreal" }
+        Property { name: "radius"; type: "float" }
+        Property { name: "length"; type: "float" }
         Property { name: "levelOfDetail"; type: "int" }
         Signal { name: "radiusChanged" }
         Signal { name: "lengthChanged" }
@@ -25,8 +25,8 @@ Module {
         exports: [
             "Cylinder 1.0"
         ]
-        Property { name: "radius"; type: "qreal" }
-        Property { name: "length"; type: "qreal" }
+        Property { name: "radius"; type: "float" }
+        Property { name: "length"; type: "float" }
         Property { name: "levelOfDetail"; type: "int" }
         Signal { name: "radiusChanged" }
         Signal { name: "lengthChanged" }
@@ -39,7 +39,7 @@ Module {
         exports: [
             "Line 1.0"
         ]
-        Property { name: "width"; type: "qreal" }
+        Property { name: "width"; type: "float" }
         Property { name: "vertices"; type: "QVariant" }
         Signal { name: "verticesChanged" }
         Signal { name: "widthChanged" }
@@ -51,7 +51,7 @@ Module {
         exports: [
             "Point 1.0"
         ]
-        Property { name: "pointSize"; type: "qreal" }
+        Property { name: "pointSize"; type: "float" }
         Property { name: "vertices"; type: "QVariant" }
         Signal { name: "verticesChanged" }
         Signal { name: "pointSizeChanged" }
@@ -88,10 +88,10 @@ Module {
             }
         }
         Property { name: "position"; type: "QVector3D" }
-        Property { name: "x"; type: "qreal" }
-        Property { name: "y"; type: "qreal" }
-        Property { name: "z"; type: "qreal" }
-        Property { name: "scale"; type: "qreal" }
+        Property { name: "x"; type: "float" }
+        Property { name: "y"; type: "float" }
+        Property { name: "z"; type: "float" }
+        Property { name: "scale"; type: "float" }
         Property { name: "transform"; type: "QQuickQGraphicsTransform3D"; isList: true; isReadonly: true }
         Property { name: "pretransform"; type: "QQuickQGraphicsTransform3D"; isList: true; isReadonly: true }
         Property { name: "mesh"; type: "QQuickMesh"; isPointer: true }
@@ -149,7 +149,7 @@ Module {
         exports: [
             "Sphere 1.0"
         ]
-        Property { name: "radius"; type: "qreal" }
+        Property { name: "radius"; type: "float" }
         Property { name: "levelOfDetail"; type: "int" }
         Property { name: "axis"; type: "Qt::Axis" }
         Signal { name: "radiusChanged" }

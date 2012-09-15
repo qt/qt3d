@@ -67,13 +67,13 @@ public:
 
     void setToIdentity();
 
-    void translate(qreal x, qreal y, qreal z);
+    void translate(float x, float y, float z);
     void translate(const QVector3D& vector);
-    void scale(qreal x, qreal y, qreal z);
-    void scale(qreal factor);
+    void scale(float x, float y, float z);
+    void scale(float factor);
     void scale(const QVector3D& vector);
-    void rotate(qreal angle, qreal x, qreal y, qreal z);
-    void rotate(qreal angle, const QVector3D& vector);
+    void rotate(float angle, float x, float y, float z);
+    void rotate(float angle, const QVector3D& vector);
     void rotate(const QQuaternion &quaternion);
 
     QMatrix4x4Stack& operator=(const QMatrix4x4& matrix);

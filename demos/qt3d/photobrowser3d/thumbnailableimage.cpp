@@ -77,7 +77,7 @@ public:
     QGLTexture2D *tex;
     QGLMaterial *mat;
     QRect frame;
-    qreal scale;
+    float scale;
     QGL::IndexArray indices;
 };
 
@@ -217,9 +217,9 @@ QRectF ThumbnailableImage::frame() const
     return result;
 }
 
-qreal ThumbnailableImage::scale() const
+float ThumbnailableImage::scale() const
 {
-    qreal result = 0.0f;
+    float result = 0.0f;
     if (d)
         result = d->scale;
     return result;

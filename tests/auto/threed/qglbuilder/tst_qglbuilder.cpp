@@ -557,7 +557,7 @@ void tst_QGLBuilder::addTriangleFan()
     QVector3D b(1.0f, -1.0f, 0.0f);
     QVector3D c(1.0f, 1.0f, 0.0f);
     QVector3D d(-1.0f, 1.0f, 0.0f);
-    qreal one_on_root2 = 1.0f / sqrt(2.0f);
+    float one_on_root2 = 1.0f / sqrtf(2.0f);
     QVector3D n1(0.0f, -one_on_root2, one_on_root2);
     QVector3D n2(one_on_root2, 0.0f, one_on_root2);
     QVector3D n3(0.0f, one_on_root2, one_on_root2);
@@ -701,7 +701,7 @@ void tst_QGLBuilder::extrude()
     p.appendVertex(a);
     q = p.translated(-n);
 
-    qreal one_on_root2 = 1.0f / sqrt(2.0f);
+    float one_on_root2 = 1.0f / sqrtf(2.0f);
     QVector3D n1(-one_on_root2, -one_on_root2, 0.0f);
     QVector3D n2(one_on_root2, -one_on_root2, 0.0f);
     QVector3D n3(one_on_root2, one_on_root2, 0.0f);
@@ -797,7 +797,7 @@ void tst_QGLBuilder::finalize()
     p.appendVertex(center);
     p.appendVertex(a, b, c, d);
 
-    qreal one_on_root2 = 1.0f / sqrt(2.0f);
+    float one_on_root2 = 1.0f / sqrtf(2.0f);
     QVector3D n0(0.0f, 0.0f, 1.0f);
     QVector3D n1(-one_on_root2, -one_on_root2, 0.0f);
     QVector3D n2(one_on_root2, -one_on_root2, 0.0f);

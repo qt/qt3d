@@ -290,7 +290,7 @@ public:
     QVector3D position;
     QVector3D pivot;
     bool usePivot;
-    qreal scale;
+    float scale;
     QQuickMesh *mesh;
     QQuickEffect *effect;
     bool requireBlockingEffectsCheck;
@@ -639,12 +639,12 @@ void QQuickItem3D::setPosition(const QVector3D& value)
     \sa position, y, z
 */
 
-qreal QQuickItem3D::x() const
+float QQuickItem3D::x() const
 {
     return d->position.x();
 }
 
-void QQuickItem3D::setX(qreal value)
+void QQuickItem3D::setX(float value)
 {
     d->position.setX(value);
     emit position3dChanged();
@@ -660,12 +660,12 @@ void QQuickItem3D::setX(qreal value)
     \sa position, x, z
 */
 
-qreal QQuickItem3D::y() const
+float QQuickItem3D::y() const
 {
     return d->position.y();
 }
 
-void QQuickItem3D::setY(qreal value)
+void QQuickItem3D::setY(float value)
 {
     d->position.setY(value);
     emit position3dChanged();
@@ -681,12 +681,12 @@ void QQuickItem3D::setY(qreal value)
     \sa position, x, y
 */
 
-qreal QQuickItem3D::z() const
+float QQuickItem3D::z() const
 {
     return d->position.z();
 }
 
-void QQuickItem3D::setZ(qreal value)
+void QQuickItem3D::setZ(float value)
 {
     d->position.setZ(value);
     emit position3dChanged();
@@ -703,12 +703,12 @@ void QQuickItem3D::setZ(qreal value)
     \sa transform
 */
 
-qreal QQuickItem3D::scale() const
+float QQuickItem3D::scale() const
 {
     return d->scale;
 }
 
-void QQuickItem3D::setScale(qreal value)
+void QQuickItem3D::setScale(float value)
 {
     d->scale = value;
     emit scale3dChanged();
@@ -1236,11 +1236,11 @@ void QQuickItem3D::drawChildren(QGLPainter *painter)
 
     if (d->sortChildren == QQuickItem3D::BackToFront) {
         // Collect up the transformed z positions of all children.
-        QList<QPair<qreal, QQuickItem3D*> > zlist;
+        QList<QPair<float, QQuickItem3D*> > zlist;
         QMatrix4x4 mv = painter->modelViewMatrix();
         for (int index = 0; index < list.size(); ++index) {
             QVector3D position = list.at(index)->position();
-            zlist.append(QPair<qreal, QQuickItem3D*> (mv.map(position).z(), list.at(index)));
+            zlist.append(QPair<float, QQuickItem3D*> (mv.map(position).z(), list.at(index)));
         }
 
         qSort(zlist);

@@ -768,7 +768,7 @@ void Viewport::setLightModel(QGLLightModel *value)
 class ViewportSubsurface : public QGLSubsurface
 {
 public:
-    ViewportSubsurface(QGLAbstractSurface *surface, const QRect &region, qreal adjust)
+    ViewportSubsurface(QGLAbstractSurface *surface, const QRect &region, float adjust)
         : QGLSubsurface(surface, region)
         , m_adjust(adjust)
     {
@@ -777,13 +777,13 @@ public:
     {
     }
 
-    qreal aspectRatio() const;
+    float aspectRatio() const;
 
 private:
-    qreal m_adjust;
+    float m_adjust;
 };
 
-qreal ViewportSubsurface::aspectRatio() const
+float ViewportSubsurface::aspectRatio() const
 {
     return QGLSubsurface::aspectRatio() * m_adjust;
 }
@@ -1094,9 +1094,9 @@ void Viewport::setupPickPaint(QGLPainter *painter, const QPointF &pt)
         cam.reset(new QGLCamera);
     }
 
-    qreal vw = cam->viewSize().width();
-    qreal vh = cam->viewSize().height();
-    qreal asp = 1.0f;
+    float vw = cam->viewSize().width();
+    float vh = cam->viewSize().height();
+    float asp = 1.0f;
     if (cam->adjustForAspectRatio())
     {
         // see QGLCamera::projectionMatrix for this logic
@@ -1117,12 +1117,12 @@ void Viewport::setupPickPaint(QGLPainter *painter, const QPointF &pt)
     cam->setAdjustForAspectRatio(false);
 
     // map the pick to coordinate system with origin at center of viewport
-    qreal dx = pt.x() - (width() / 2.0);
-    qreal dy = pt.y() - (height() / 2.0);
+    float dx = pt.x() - (width() / 2.0f);
+    float dy = pt.y() - (height() / 2.0f);
     dy = -dy;  // near plane coord system is correct, opengl style, not upside down like qt
     dx *= vw / width();
     dy *= vh / height();
-    qreal dim = qMin(width(), height());
+    float dim = qMin(width(), height());
     Q_ASSERT(cam->viewSize().width() == cam->viewSize().height());  // viewsize is square
 
     painter->setCamera(cam.data());
@@ -1136,7 +1136,7 @@ void Viewport::setupPickPaint(QGLPainter *painter, const QPointF &pt)
     m.translate(tx);
 
     QMatrix4x4 s;
-    qreal fac = dim / qreal(FBO_SIZE);
+    float fac = dim / float(FBO_SIZE);
     s.scale(QVector3D(fac, fac, 0.0f));
 
     painter->projectionMatrix() = s * m * painter->projectionMatrix().top();
@@ -1577,7 +1577,7 @@ void Viewport::wheelEvent(QWheelEvent *e)
 void Viewport::keyPressEvent(QKeyEvent *e)
 {
     // Process the "Keys" property on the item first.
-    qreal sep;
+    float sep;
 
     if (!d->navigation) {
         QQuickItem::keyPressEvent(e);
@@ -1704,18 +1704,18 @@ void Viewport::processMouseHover(quint64 eventId)
 }
 
 // Zoom in and out according to the change in wheel delta.
-void Viewport::wheel(qreal delta)
+void Viewport::wheel(float delta)
 {
     if (d->fovzoom) {
         //Use field-of view as zoom (much like a traditional camera)
-        qreal scale = qAbs(viewDelta(delta, delta).x());
+        float scale = qAbs(viewDelta(delta, delta).x());
         if (delta < 0)
             scale = -scale;
         if (scale >= 0.0f)
             scale += 1.0f;
         else
             scale = 1.0f / (1.0f - scale);
-        qreal fov = d->camera->fieldOfView();
+        float fov = d->camera->fieldOfView();
         if (fov != 0.0f)
             d->camera->setFieldOfView(d->camera->fieldOfView() / scale);
         else
@@ -1724,8 +1724,8 @@ void Viewport::wheel(qreal delta)
         // enable this to get wheel navigation that actually zooms by moving the
         // camera back, as opposed to making the angle of view wider.
         QVector3D viewVector= camera()->eye() - camera()->center();
-        qreal zoomMag = viewVector.length();
-        qreal zoomIncrement = -float(delta) / 100.0f;
+        float zoomMag = viewVector.length();
+        float zoomIncrement = -float(delta) / 100.0f;
         if (!qFuzzyIsNull(zoomIncrement))
         {
             zoomMag += zoomIncrement;
@@ -1739,7 +1739,7 @@ void Viewport::wheel(qreal delta)
 }
 
 // Pan left/right/up/down without rotating about the object.
-void Viewport::pan(qreal deltax, qreal deltay)
+void Viewport::pan(float deltax, float deltay)
 {
     QPointF delta = viewDelta(deltax, deltay);
     QVector3D t = d->camera->translation(delta.x(), -delta.y(), 0.0f);
@@ -1754,7 +1754,7 @@ void Viewport::pan(qreal deltax, qreal deltay)
 }
 
 // Rotate about the object being viewed.
-void Viewport::rotate(qreal deltax, qreal deltay)
+void Viewport::rotate(float deltax, float deltay)
 {
     QRectF rect = boundingRect();
     int rotation = d->camera->screenRotation();
@@ -1767,8 +1767,8 @@ void Viewport::rotate(qreal deltax, qreal deltay)
     if (rotation == 180 || rotation == 270) {
         deltay = -deltay;
     }
-    qreal anglex = deltax * 90.0f / rect.width();
-    qreal angley = deltay * 90.0f / rect.height();
+    float anglex = deltax * 90.0f / rect.width();
+    float angley = deltay * 90.0f / rect.height();
     QQuaternion q = d->camera->pan(-anglex);
     q *= d->camera->tilt(-angley);
     d->camera->rotateCenter(q);
@@ -1776,13 +1776,13 @@ void Viewport::rotate(qreal deltax, qreal deltay)
 
 // Convert deltas in the X and Y directions into percentages of
 // the view width and height.
-QPointF Viewport::viewDelta(qreal deltax, qreal deltay)
+QPointF Viewport::viewDelta(float deltax, float deltay)
 {
     QRectF rect = boundingRect();
-    qreal w = rect.width();
-    qreal h = rect.height();
+    float w = rect.width();
+    float h = rect.height();
     bool scaleToWidth;
-    qreal scaleFactor, scaleX, scaleY;
+    float scaleFactor, scaleX, scaleY;
     QSizeF viewSize = d->camera->viewSize();
     if (w >= h) {
         if (viewSize.width() >= viewSize.height())

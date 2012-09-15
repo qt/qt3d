@@ -163,10 +163,10 @@ void tst_matrix_properties::boundVariableChange()
     QVERIFY(item != 0);
 
     QByteArray propertyNameByteArray = propertyName.toUtf8().constData();
-    qreal value = 1.0;
+    float value = 1.0f;
 
     QBENCHMARK {
-        item->setProperty(propertyNameByteArray.constData(), (value += 0.1));
+        item->setProperty(propertyNameByteArray.constData(), (value += 0.1f));
     }
 
     delete item;

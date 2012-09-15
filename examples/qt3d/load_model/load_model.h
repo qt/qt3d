@@ -51,21 +51,21 @@ QT_END_NAMESPACE
 class LoadModelView : public QGLView
 {
     Q_OBJECT
-    Q_PROPERTY(qreal angleTeapot READ angleTeapot WRITE setAngleTeapot)
-    Q_PROPERTY(qreal angleTeapotOrbit READ angleTeapotOrbit WRITE setAngleTeapotOrbit)
-    Q_PROPERTY(qreal angleLander READ angleLander WRITE setAngleLander)
+    Q_PROPERTY(float angleTeapot READ angleTeapot WRITE setAngleTeapot)
+    Q_PROPERTY(float angleTeapotOrbit READ angleTeapotOrbit WRITE setAngleTeapotOrbit)
+    Q_PROPERTY(float angleLander READ angleLander WRITE setAngleLander)
 public:
     LoadModelView(QWindow *parent = 0);
     ~LoadModelView();
 
-    qreal angleTeapot() const { return m_AngleTeapot; }
-    void setAngleTeapot(qreal angle) { m_AngleTeapot = angle; update(); }
+    float angleTeapot() const { return m_AngleTeapot; }
+    void setAngleTeapot(float angle) { m_AngleTeapot = angle; update(); }
 
-    qreal angleTeapotOrbit() const { return m_AngleTeapotOrbit; }
-    void setAngleTeapotOrbit(qreal angle) { m_AngleTeapotOrbit = angle; update(); }
+    float angleTeapotOrbit() const { return m_AngleTeapotOrbit; }
+    void setAngleTeapotOrbit(float angle) { m_AngleTeapotOrbit = angle; update(); }
 
-    qreal angleLander() const { return m_AngleLander; }
-    void setAngleLander(qreal angle) { m_AngleLander = angle; update(); }
+    float angleLander() const { return m_AngleLander; }
+    void setAngleLander(float angle) { m_AngleLander = angle; update(); }
 
 protected:
     void paintGL(QGLPainter *painter);
@@ -75,12 +75,12 @@ private:
 
     QGLAbstractScene*   m_pTeapotScene;
     QGLTexture2D*       m_pTeapotTexture;
-    qreal               m_AngleTeapot;
-    qreal               m_AngleTeapotOrbit;
+    float               m_AngleTeapot;
+    float               m_AngleTeapotOrbit;
 
     QGLAbstractScene*   m_pLanderScene;
     QGLTexture2D*       m_pLanderTexture;
-    qreal               m_AngleLander;
+    float               m_AngleLander;
 };
 
 #endif

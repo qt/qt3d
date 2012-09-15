@@ -106,7 +106,7 @@ QGLAbstractScene *QGLBezierSceneHandler::read()
     QVector3DArray vertices;
     for (int vertex = 0; vertex < vertexCount; ++vertex) {
         bool eoln = false;
-        qreal coords[3] = {0.0f, 0.0f, 0.0f};
+        float coords[3] = {0.0f, 0.0f, 0.0f};
         for (int index = 0; index < 3; ++index) {
             stream >> coords[index];
 
@@ -151,15 +151,15 @@ QGLAbstractScene *QGLBezierSceneHandler::read()
                 //     matrix.translate(0.0f, 0.0f, -1.5f);
                 for (int vertex = 0; vertex < vertexCount; ++vertex) {
                     QVector3D vec = vertices[vertex];
-                    qreal x = vec.x();
-                    qreal y = vec.y();
-                    qreal z = vec.z();
+                    float x = vec.x();
+                    float y = vec.y();
+                    float z = vec.z();
                     z -= 1.5f;
                     x *= 0.5f;
                     y *= 0.5f;
                     z *= 0.5f;
-                    qreal y2 = z;
-                    qreal z2 = -y;
+                    float y2 = z;
+                    float z2 = -y;
                     y = y2;
                     z = z2;
                     vertices[vertex] = QVector3D(x, y, z);

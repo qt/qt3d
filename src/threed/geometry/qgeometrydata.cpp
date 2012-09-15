@@ -504,15 +504,15 @@ QGeometryData QGeometryData::translated(const QVector3D &t) const
 */
 void QGeometryData::generateTextureCoordinates(Qt::Orientation orientation, QGL::VertexAttribute field)
 {
-    QArray<qreal> extents;
+    QArray<float> extents;
     extents.append(0.0);
-    qreal totalExtents = 0.0;
+    float totalExtents = 0.0f;
     QArray<QVector3D> v = vertices();
     for (int i = 0; i < v.count() - 1; ++i)
     {
         int n = (i + 1) % v.count();
         QVector3D e = v[n] - v[i];
-        qreal extent = e.length();
+        float extent = e.length();
         totalExtents += extent;
         extents.append(totalExtents);
     }
@@ -859,7 +859,7 @@ void QGeometryData::reserve(int amount)
     If the geometry is a point or line, then the \a drawWidth value specified the
     width/size of the line/point.
 */
-void QGeometryData::draw(QGLPainter *painter, int start, int count, GLenum mode, qreal drawWidth)
+void QGeometryData::draw(QGLPainter *painter, int start, int count, GLenum mode, float drawWidth)
 {
     if (d && d->indices.size() && d->count)
     {

@@ -50,12 +50,12 @@ void Scale3D::setScale(const QVariant &value)
         newScale = value.value<QVector3D>();
     } else {
         bool ok = false;
-        double val = value.toDouble(&ok);
+        float val = value.toFloat(&ok);
         if (!ok) {
             qWarning("Scale3D: scale value is not a vector3D or single floating-point value");
             return;
         }
-        newScale = QVector3D(qreal(val), qreal(val), qreal(val));
+        newScale = QVector3D(val, val, val);
     }
     if (newScale != QGraphicsScale3D::scale()) {
         QGraphicsScale3D::setScale(newScale);

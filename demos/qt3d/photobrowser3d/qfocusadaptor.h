@@ -54,13 +54,13 @@ class QFocusAdaptorPrivate;
 class QFocusAdaptor : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(qreal progress READ progress WRITE setProgress NOTIFY progressChanged)
+    Q_PROPERTY(float progress READ progress WRITE setProgress NOTIFY progressChanged)
 public:
     explicit QFocusAdaptor(QObject *parent = 0);
     ~QFocusAdaptor();
 
-    qreal progress() const;
-    void setProgress(qreal progress);
+    float progress() const;
+    void setProgress(float progress);
 
     QGLView *view() const;
     void setView(QGLView *view);

@@ -60,17 +60,17 @@ public:
     QVector4DArray(int size, const QVector4D& value = QVector4D());
     QVector4DArray(const QArray<QVector4D>& other);
 
-    void append(qreal x, qreal y, qreal z, qreal w);
+    void append(float x, float y, float z, float w);
 
-    void scale(qreal scale);
-    QVector4DArray scaled(qreal scale) const;
+    void scale(float scale);
+    QVector4DArray scaled(float scale) const;
 
     void translate(const QVector4D& value);
-    void translate(qreal x, qreal y, qreal z, qreal w);
+    void translate(float x, float y, float z, float w);
 
     QArray<QVector4D> translated(const QVector4D& value) const;
     QArray<QVector4D> translated
-        (qreal x, qreal y, qreal z, qreal w) const;
+        (float x, float y, float z, float w) const;
 
     void transform(const QMatrix4x4& matrix);
     QArray<QVector4D> transformed(const QMatrix4x4& matrix) const;
@@ -101,14 +101,14 @@ inline QVector4DArray::QVector4DArray(int size, const QVector4D& value)
 inline QVector4DArray::QVector4DArray(const QArray<QVector4D>& other)
     : QArray<QVector4D>(other) {}
 
-inline void QVector4DArray::append(qreal x, qreal y, qreal z, qreal w)
+inline void QVector4DArray::append(float x, float y, float z, float w)
     { QArray<QVector4D>::append(QVector4D(x, y, z, w)); }
 
-inline void QVector4DArray::translate(qreal x, qreal y, qreal z, qreal w)
+inline void QVector4DArray::translate(float x, float y, float z, float w)
     { translate(QVector4D(x, y, z, w)); }
 
 inline QArray<QVector4D> QVector4DArray::translated
-        (qreal x, qreal y, qreal z, qreal w) const
+        (float x, float y, float z, float w) const
     { return translated(QVector4D(x, y, z, w)); }
 
 QT_END_NAMESPACE

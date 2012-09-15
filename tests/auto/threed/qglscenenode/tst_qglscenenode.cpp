@@ -82,9 +82,9 @@ void tst_QGLSceneNode::defaultValues()
     QVERIFY(node.localTransform().isIdentity());
 
     QVERIFY(node.position() == QVector3D(0, 0, 0));
-    QCOMPARE(node.x(), qreal(0.0f));
-    QCOMPARE(node.y(), qreal(0.0f));
-    QCOMPARE(node.z(), qreal(0.0f));
+    QCOMPARE(node.x(), 0.0f);
+    QCOMPARE(node.y(), 0.0f);
+    QCOMPARE(node.z(), 0.0f);
 
     QVERIFY(node.transforms().isEmpty());
 

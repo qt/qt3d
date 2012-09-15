@@ -52,10 +52,10 @@ QT_END_NAMESPACE
 class BasketView : public QGLView
 {
     Q_OBJECT
-    Q_PROPERTY(qreal angle READ angle WRITE setAngle)
+    Q_PROPERTY(float angle READ angle WRITE setAngle)
 public:
-    qreal angle() const { return m_angle; }
-    void setAngle(qreal angle) { m_angle = angle; update(); }
+    float angle() const { return m_angle; }
+    void setAngle(float angle) { m_angle = angle; update(); }
 //! [1]
 
     BasketView(QWindow *parent = 0);
@@ -66,7 +66,7 @@ protected:
 
 private:
     QGLSceneNode *basket;
-    qreal m_angle;
+    float m_angle;
 };
 
 #endif

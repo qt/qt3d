@@ -52,7 +52,7 @@ class ProjectiveTextureEffect;
 class CubeView : public QGLView
 {
     Q_OBJECT
-    Q_PROPERTY(qreal cubeAngle READ cubeAngle WRITE setCubeAngle)
+    Q_PROPERTY(float cubeAngle READ cubeAngle WRITE setCubeAngle)
 public:
     CubeView(QWindow *parent = 0);
     ~CubeView();
@@ -64,8 +64,8 @@ public:
     useProjectiveTextureEffect = value;
 }
 
-    qreal cubeAngle() const { return cangle; }
-    void setCubeAngle(qreal angle);
+    float cubeAngle() const { return cangle; }
+    void setCubeAngle(float angle);
 
 protected:
     void initializeGL(QGLPainter *painter);
@@ -85,7 +85,7 @@ private:
     QGLSceneNode *room;
     QGLCamera *roomCamera;
     QGLCamera *projectorCamera;
-    qreal sensitivity;
+    float sensitivity;
     QGLLightModel *roomModel;
     QGLLightModel *normalModel;
     QGLLightParameters *lightParameters;
@@ -93,8 +93,8 @@ private:
     bool stereo;
     bool useProjectiveTextureEffect;
     QTime time;
-    qreal cangle;
-    mutable qreal prevX, prevY, prevZ;
+    float cangle;
+    mutable float prevX, prevY, prevZ;
     mutable bool havePrev;
 
     QVector3D gravity() const;

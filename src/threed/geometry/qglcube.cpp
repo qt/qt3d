@@ -68,14 +68,14 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn QGLCube::QGLCube(qreal size)
+    \fn QGLCube::QGLCube(float size)
 
     Constructs the geometry for a regular cube of \a size
     units on a side.
 */
 
 /*!
-    \fn qreal QGLCube::size() const
+    \fn float QGLCube::size() const
 
     Returns the size of this cube.
 
@@ -83,7 +83,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn void QGLCube::setSize(qreal size)
+    \fn void QGLCube::setSize(float size)
 
     Sets the \a size of this cube.
 

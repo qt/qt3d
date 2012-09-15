@@ -152,7 +152,7 @@ public:
     bool blending;
     QSharedPointer<QGLMaterialCollection> palette;
     int materialIndex;
-    qreal progress;
+    float progress;
 
     void cleanupResources();
 };
@@ -530,7 +530,7 @@ QGLTexture2D *QQuickEffect::texture2D()
 /*!
   Returns the progress of remote resource loading.
   */
-qreal QQuickEffect::progress()
+float QQuickEffect::progress()
 {
     return d->progress;
 }

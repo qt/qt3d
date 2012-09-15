@@ -55,7 +55,7 @@ class Q_QT3D_EXPORT QGraphicsTranslation3D : public QQuickQGraphicsTransform3D
 {
     Q_OBJECT
     Q_PROPERTY(QVector3D translate READ translate WRITE setTranslate NOTIFY translateChanged)
-    Q_PROPERTY(qreal progress READ progress WRITE setProgress NOTIFY progressChanged)
+    Q_PROPERTY(float progress READ progress WRITE setProgress NOTIFY progressChanged)
 public:
     QGraphicsTranslation3D(QObject *parent = 0);
     ~QGraphicsTranslation3D();
@@ -63,8 +63,8 @@ public:
     QVector3D translate() const;
     void setTranslate(const QVector3D &value);
 
-    qreal progress() const;
-    void setProgress(qreal value);
+    float progress() const;
+    void setProgress(float value);
 
     void applyTo(QMatrix4x4 *matrix) const;
     QQuickQGraphicsTransform3D *clone(QObject *parent) const;

@@ -72,10 +72,10 @@ class Q_QT3D_QUICK_EXPORT QQuickItem3D : public QQuickItem
     Q_ENUMS(CullFace)
     Q_FLAGS(CullFaces)
     Q_PROPERTY(QVector3D position READ position WRITE setPosition NOTIFY position3dChanged)
-    Q_PROPERTY(qreal x READ x WRITE setX NOTIFY position3dChanged)
-    Q_PROPERTY(qreal y READ y WRITE setY NOTIFY position3dChanged)
-    Q_PROPERTY(qreal z READ z WRITE setZ NOTIFY position3dChanged)
-    Q_PROPERTY(qreal scale READ scale WRITE setScale NOTIFY scale3dChanged)
+    Q_PROPERTY(float x READ x WRITE setX NOTIFY position3dChanged)
+    Q_PROPERTY(float y READ y WRITE setY NOTIFY position3dChanged)
+    Q_PROPERTY(float z READ z WRITE setZ NOTIFY position3dChanged)
+    Q_PROPERTY(float scale READ scale WRITE setScale NOTIFY scale3dChanged)
     Q_PROPERTY(QQmlListProperty<QQuickQGraphicsTransform3D> transform READ transform DESIGNABLE false FINAL)
     Q_PROPERTY(QQmlListProperty<QQuickQGraphicsTransform3D> pretransform READ pretransform DESIGNABLE false FINAL)
     Q_PROPERTY(QQuickMesh *mesh READ mesh WRITE setMesh NOTIFY meshChanged)
@@ -113,15 +113,15 @@ public:
     QVector3D position() const;
     void setPosition(const QVector3D& value);
 
-    qreal x() const;
-    void setX(qreal value);
-    qreal y() const;
-    void setY(qreal value);
-    qreal z() const;
-    void setZ(qreal value);
+    float x() const;
+    void setX(float value);
+    float y() const;
+    void setY(float value);
+    float z() const;
+    void setZ(float value);
 
-    qreal scale() const;
-    void setScale(qreal value);
+    float scale() const;
+    void setScale(float value);
 
     QQuickMesh *mesh() const;
     void setMesh(QQuickMesh* value);

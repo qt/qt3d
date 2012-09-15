@@ -132,8 +132,8 @@ public:
     QGLSceneNode *topNode;
     QGLSceneNode *currentCylinder;
     QGraphicsScale3D *scale;
-    qreal radius;
-    qreal length;
+    float radius;
+    float length;
     int lod;
     bool sceneSet;
 };
@@ -200,12 +200,12 @@ CylinderMesh::~CylinderMesh()
     This property defines the radius of the cylinder.
     The default value is 1.
 */
-qreal CylinderMesh::radius() const
+float CylinderMesh::radius() const
 {
     return d->radius;
 }
 
-void CylinderMesh::setRadius(qreal radius)
+void CylinderMesh::setRadius(float radius)
 {
     if (qFuzzyCompare(radius, 1))
         radius = 1.0f;
@@ -223,12 +223,12 @@ void CylinderMesh::setRadius(qreal radius)
     This property defines the length of the cylinder.
     The default value is 1.
 */
-qreal CylinderMesh::length() const
+float CylinderMesh::length() const
 {
     return d->length;
 }
 
-void CylinderMesh::setLength(qreal length)
+void CylinderMesh::setLength(float length)
 {
     if (qFuzzyCompare(length, 1))
         length = 1.0f;

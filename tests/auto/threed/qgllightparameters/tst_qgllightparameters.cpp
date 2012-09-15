@@ -68,12 +68,12 @@ void tst_QGLLightParameters::create()
     QVERIFY(params.diffuseColor() == QColor(255, 255, 255, 255));
     QVERIFY(params.specularColor() == QColor(255, 255, 255, 255));
     QVERIFY(params.spotDirection() == QVector3D(0, 0, -1));
-    QCOMPARE(params.spotExponent(), (qreal)0.0f);
-    QCOMPARE(params.spotAngle(), (qreal)180.0f);
-    QCOMPARE(params.spotCosAngle(), (qreal)-1.0f);
-    QCOMPARE(params.constantAttenuation(), (qreal)1.0f);
-    QCOMPARE(params.linearAttenuation(), (qreal)0.0f);
-    QCOMPARE(params.quadraticAttenuation(), (qreal)0.0f);
+    QCOMPARE(params.spotExponent(), 0.0f);
+    QCOMPARE(params.spotAngle(), 180.0f);
+    QCOMPARE(params.spotCosAngle(), -1.0f);
+    QCOMPARE(params.constantAttenuation(), 1.0f);
+    QCOMPARE(params.linearAttenuation(), 0.0f);
+    QCOMPARE(params.quadraticAttenuation(), 0.0f);
 }
 
 void tst_QGLLightParameters::modify()
@@ -139,33 +139,33 @@ void tst_QGLLightParameters::modify()
     QCOMPARE(lightSpy.size(), 6);
 
     params.setSpotExponent(23.5f);
-    QCOMPARE(params.spotExponent(), (qreal)23.5f);
+    QCOMPARE(params.spotExponent(), 23.5f);
     QCOMPARE(spotExponentSpy.size(), 1);
     QCOMPARE(lightSpy.size(), 7);
 
     params.setSpotAngle(90.0f);
-    QCOMPARE(params.spotAngle(), (qreal)90.0f);
+    QCOMPARE(params.spotAngle(), 90.0f);
     QVERIFY(params.spotCosAngle() <= 0.000001f);    // Fuzzy compare is not fuzzy enough!
     QCOMPARE(spotAngleSpy.size(), 1);
     QCOMPARE(lightSpy.size(), 8);
 
     params.setSpotAngle(180.0f);
-    QCOMPARE(params.spotCosAngle(), (qreal)-1.0f);
+    QCOMPARE(params.spotCosAngle(), -1.0f);
     QCOMPARE(spotAngleSpy.size(), 2);
     QCOMPARE(lightSpy.size(), 9);
 
     params.setConstantAttenuation(16.0f);
-    QCOMPARE(params.constantAttenuation(), (qreal)16.0f);
+    QCOMPARE(params.constantAttenuation(), 16.0f);
     QCOMPARE(constSpy.size(), 1);
     QCOMPARE(lightSpy.size(), 10);
 
     params.setLinearAttenuation(-3.5f);
-    QCOMPARE(params.linearAttenuation(), (qreal)-3.5f);
+    QCOMPARE(params.linearAttenuation(), -3.5f);
     QCOMPARE(linearSpy.size(), 1);
     QCOMPARE(lightSpy.size(), 11);
 
     params.setQuadraticAttenuation(4.0f);
-    QCOMPARE(params.quadraticAttenuation(), (qreal)4.0f);
+    QCOMPARE(params.quadraticAttenuation(), 4.0f);
     QCOMPARE(quadSpy.size(), 1);
     QCOMPARE(lightSpy.size(), 12);
 
@@ -186,12 +186,12 @@ void tst_QGLLightParameters::modify()
     QCOMPARE(params.specularColor().blue(), 0);
     QCOMPARE(params.specularColor().alpha(), 255);
     QVERIFY(params.spotDirection() == QVector3D(0.0f, 1.0f, 0.0f));
-    QCOMPARE(params.spotExponent(), (qreal)23.5f);
-    QCOMPARE(params.spotAngle(), (qreal)180.0f);
-    QCOMPARE(params.spotCosAngle(), (qreal)-1.0f);
-    QCOMPARE(params.constantAttenuation(), (qreal)16.0f);
-    QCOMPARE(params.linearAttenuation(), (qreal)-3.5f);
-    QCOMPARE(params.quadraticAttenuation(), (qreal)4.0f);
+    QCOMPARE(params.spotExponent(), 23.5f);
+    QCOMPARE(params.spotAngle(), 180.0f);
+    QCOMPARE(params.spotCosAngle(), -1.0f);
+    QCOMPARE(params.constantAttenuation(), 16.0f);
+    QCOMPARE(params.linearAttenuation(), -3.5f);
+    QCOMPARE(params.quadraticAttenuation(), 4.0f);
 
     // Set the properties to same values and check for no further signals.
     params.setDirection(QVector3D(-1, -2, 3));

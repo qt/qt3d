@@ -91,7 +91,7 @@ static inline void qAddPane(QSizeF size, QGeometryData *data)
     data->appendIndices(k, k+2, k+3);
 }
 
-ImageDisplay::ImageDisplay(QObject *parent, QSharedPointer<QGLMaterialCollection> materials, qreal wallSize)
+ImageDisplay::ImageDisplay(QObject *parent, QSharedPointer<QGLMaterialCollection> materials, float wallSize)
     : QGLSceneNode(parent)
     , m_wall(0)
     , m_frames(0)

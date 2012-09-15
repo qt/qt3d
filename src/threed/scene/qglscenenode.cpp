@@ -493,13 +493,13 @@ void QGLSceneNode::setPosition(const QVector3D &p)
 
     \sa position()
 */
-qreal QGLSceneNode::x() const
+float QGLSceneNode::x() const
 {
     Q_D(const QGLSceneNode);
     return d->translate.x();
 }
 
-void QGLSceneNode::setX(qreal x)
+void QGLSceneNode::setX(float x)
 {
     Q_D(QGLSceneNode);
     if (x != d->translate.x())
@@ -516,13 +516,13 @@ void QGLSceneNode::setX(qreal x)
 
     \sa position()
 */
-qreal QGLSceneNode::y() const
+float QGLSceneNode::y() const
 {
     Q_D(const QGLSceneNode);
     return d->translate.y();
 }
 
-void QGLSceneNode::setY(qreal y)
+void QGLSceneNode::setY(float y)
 {
     Q_D(QGLSceneNode);
     if (y != d->translate.y())
@@ -539,13 +539,13 @@ void QGLSceneNode::setY(qreal y)
 
     \sa position()
 */
-qreal QGLSceneNode::z() const
+float QGLSceneNode::z() const
 {
     Q_D(const QGLSceneNode);
     return d->translate.z();
 }
 
-void QGLSceneNode::setZ(qreal z)
+void QGLSceneNode::setZ(float z)
 {
     Q_D(QGLSceneNode);
     if (z != d->translate.z())
@@ -688,7 +688,7 @@ void QGLSceneNode::setDrawingMode(QGL::DrawingMode mode)
 
     \sa drawingMode()
 */
-qreal QGLSceneNode::drawingWidth() const
+float QGLSceneNode::drawingWidth() const
 {
     Q_D(const QGLSceneNode);
     return d->drawingWidth;
@@ -702,7 +702,7 @@ qreal QGLSceneNode::drawingWidth() const
 
     \sa drawingMode()
 */
-void QGLSceneNode::setDrawingWidth(qreal width)
+void QGLSceneNode::setDrawingWidth(float width)
 {
     Q_D(QGLSceneNode);
     d->drawingWidth = width;

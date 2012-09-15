@@ -122,8 +122,8 @@ void QGLSimulator::drawTriangles(const QVector3DArray& array)
 QPointF QGLSimulator::project(const QVector3D& vector) const
 {
     QVector3D pt = (m_projectionMatrix * m_modelViewMatrix) * vector;
-    qreal x = (pt.x() + 1.0f) * m_viewport.width() * 0.5f + m_viewport.x();
-    qreal y = (pt.y() + 1.0f) * m_viewport.height() * 0.5f + m_viewport.y();
+    float x = (pt.x() + 1.0f) * m_viewport.width() * 0.5f + m_viewport.x();
+    float y = (pt.y() + 1.0f) * m_viewport.height() * 0.5f + m_viewport.y();
     y = (m_viewport.height() - 1) - y;
     return QPointF(x, y);
 }

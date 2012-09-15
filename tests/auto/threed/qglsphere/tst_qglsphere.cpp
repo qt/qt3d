@@ -57,21 +57,21 @@ private slots:
     void build();
 
 private:
-    bool validateSphere(QGLSceneNode *node, qreal size);
+    bool validateSphere(QGLSceneNode *node, float size);
 };
 
 void tst_QGLSphere::create()
 {
     QGLSphere sphere1;
-    QCOMPARE(sphere1.diameter(), qreal(1.0f));
+    QCOMPARE(sphere1.diameter(), 1.0f);
     QCOMPARE(sphere1.subdivisionDepth(), 5);
 
     QGLSphere sphere2(27.5f);
-    QCOMPARE(sphere2.diameter(), qreal(27.5f));
+    QCOMPARE(sphere2.diameter(), 27.5f);
     QCOMPARE(sphere2.subdivisionDepth(), 5);
 
     QGLSphere sphere3(20.5f, 4);
-    QCOMPARE(sphere3.diameter(), qreal(20.5f));
+    QCOMPARE(sphere3.diameter(), 20.5f);
     QCOMPARE(sphere3.subdivisionDepth(), 4);
 }
 
@@ -80,14 +80,14 @@ void tst_QGLSphere::modify()
     QGLSphere sphere1;
     sphere1.setDiameter(5.0f);
     sphere1.setSubdivisionDepth(4);
-    QCOMPARE(sphere1.diameter(), qreal(5.0f));
+    QCOMPARE(sphere1.diameter(), 5.0f);
     QCOMPARE(sphere1.subdivisionDepth(), 4);
 }
 
 // Validates the geometry in a sphere node to check that all vertices
 // are on the surface of a sphere of diameter "size" and all normals
 // are of length 1 and point directly out from the center.
-bool tst_QGLSphere::validateSphere(QGLSceneNode *node, qreal size)
+bool tst_QGLSphere::validateSphere(QGLSceneNode *node, float size)
 {
     QGeometryData data = node->geometry();
     int start = node->start();

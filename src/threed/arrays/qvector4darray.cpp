@@ -98,7 +98,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn void QVector4DArray::append(qreal x, qreal y, qreal z, qreal w)
+    \fn void QVector4DArray::append(float x, float y, float z, float w)
 
     Appends (\a x, \a y, \a z, \a w) to this array of QVector4D values.
 */
@@ -109,7 +109,7 @@ QT_BEGIN_NAMESPACE
 
     \sa scaled()
 */
-void QVector4DArray::scale(qreal scale)
+void QVector4DArray::scale(float scale)
 {
     if (isDetached()) {
         // Modify the array in-place.
@@ -135,7 +135,7 @@ void QVector4DArray::scale(qreal scale)
 
     \sa scale()
 */
-QVector4DArray QVector4DArray::scaled(qreal scale) const
+QVector4DArray QVector4DArray::scaled(float scale) const
 {
     QArray<QVector4D> result;
     int size = count();
@@ -173,7 +173,7 @@ void QVector4DArray::translate(const QVector4D& value)
 }
 
 /*!
-    \fn void QVector4DArray::translate(qreal x, qreal y, qreal z, qreal w);
+    \fn void QVector4DArray::translate(float x, float y, float z, float w);
     \overload
 
     Translates the elements in this array of QVector4D values
@@ -200,7 +200,7 @@ QArray<QVector4D> QVector4DArray::translated(const QVector4D& value) const
 }
 
 /*!
-    \fn QArray<QVector4D> QVector4DArray::translated(qreal x, qreal y, qreal z, qreal w) const
+    \fn QArray<QVector4D> QVector4DArray::translated(float x, float y, float z, float w) const
     \overload
 
     Returns a copy of this array of QVector4D values, translated

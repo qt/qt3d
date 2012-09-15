@@ -54,25 +54,25 @@ class PanControllerPrivate;
 class PanController : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(qreal speed READ speed WRITE setSpeed NOTIFY speedChanged)
+    Q_PROPERTY(float speed READ speed WRITE setSpeed NOTIFY speedChanged)
 public:
     explicit PanController(QObject *parent = 0);
     ~PanController();
 
-    qreal defaultDistance() const;
-    void setDefaultDistance(qreal d);
+    float defaultDistance() const;
+    void setDefaultDistance(float d);
 
-    qreal panDistance() const;
-    void setPanDistance(qreal d);
+    float panDistance() const;
+    void setPanDistance(float d);
 
-    qreal panViewAngle() const;
-    void setPanViewAngle(qreal angle);
+    float panViewAngle() const;
+    void setPanViewAngle(float angle);
 
-    qreal maxSpeed() const;
-    void setMaxSpeed(qreal maxSpeed);
+    float maxSpeed() const;
+    void setMaxSpeed(float maxSpeed);
 
-    qreal speed() const;
-    void setSpeed(qreal speed);
+    float speed() const;
+    void setSpeed(float speed);
 
     Qt::ArrowType direction() const;
     void setDirection(Qt::ArrowType arrow);

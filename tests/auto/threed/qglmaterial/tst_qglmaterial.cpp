@@ -254,23 +254,29 @@ void tst_QGLMaterial::cleanupTestCase()
     delete widget;
 }
 
-static inline bool fuzzyCompare(qreal x, qreal y)
+// Fix the problem where a compared value happens to be zero (and
+// you cannot always predict this, and should not predict it
+// since then you produce self-fulling prophecies instead of tests).
+// In that case qFuzzyCompare has a completely strict criterion since
+// it finds the "fudge factor" by multiplying by zero...
+static inline bool fuzzyCompare(float p1, float p2)
 {
-    return qAbs(x - y) <= 0.00001;
+    float fac = qMin(qAbs(p1), qAbs(p2));
+    return (qAbs(p1 - p2) <= (qIsNull(fac) ? 0.00001f : 0.00001f * fac));
 }
 
 void tst_QGLMaterial::standardMaterial()
 {
     // Test that a newly created object has the correct defaults.
     QGLMaterial mat1;
-    QVERIFY(fuzzyCompare(mat1.ambientColor().redF(), qreal(0.2f)));
-    QVERIFY(fuzzyCompare(mat1.ambientColor().greenF(), qreal(0.2f)));
-    QVERIFY(fuzzyCompare(mat1.ambientColor().blueF(), qreal(0.2f)));
-    QVERIFY(fuzzyCompare(mat1.ambientColor().alphaF(), qreal(1.0f)));
-    QVERIFY(fuzzyCompare(mat1.diffuseColor().redF(), qreal(0.8f)));
-    QVERIFY(fuzzyCompare(mat1.diffuseColor().greenF(), qreal(0.8f)));
-    QVERIFY(fuzzyCompare(mat1.diffuseColor().blueF(), qreal(0.8f)));
-    QVERIFY(fuzzyCompare(mat1.diffuseColor().alphaF(), qreal(1.0f)));
+    QVERIFY(fuzzyCompare(mat1.ambientColor().redF(), 0.2f));
+    QVERIFY(fuzzyCompare(mat1.ambientColor().greenF(), 0.2f));
+    QVERIFY(fuzzyCompare(mat1.ambientColor().blueF(), 0.2f));
+    QVERIFY(fuzzyCompare(mat1.ambientColor().alphaF(), 1.0f));
+    QVERIFY(fuzzyCompare(mat1.diffuseColor().redF(), 0.8f));
+    QVERIFY(fuzzyCompare(mat1.diffuseColor().greenF(), 0.8f));
+    QVERIFY(fuzzyCompare(mat1.diffuseColor().blueF(), 0.8f));
+    QVERIFY(fuzzyCompare(mat1.diffuseColor().alphaF(), 1.0f));
     QCOMPARE(mat1.specularColor().red(), 0);
     QCOMPARE(mat1.specularColor().green(), 0);
     QCOMPARE(mat1.specularColor().blue(), 0);
@@ -279,7 +285,7 @@ void tst_QGLMaterial::standardMaterial()
     QCOMPARE(mat1.emittedLight().green(), 0);
     QCOMPARE(mat1.emittedLight().blue(), 0);
     QCOMPARE(mat1.emittedLight().alpha(), 255);
-    QCOMPARE(mat1.shininess(), qreal(0));
+    QCOMPARE(mat1.shininess(), 0.0f);
     QVERIFY(!mat1.isTransparent());
 
     // Test modifying each field individually, including expected signals.
@@ -340,7 +346,7 @@ void tst_QGLMaterial::standardMaterial()
     QCOMPARE(texturesSpy.count(), 0);
     QCOMPARE(materialSpy.count(), 4);
     mat2.setShininess(128);
-    QCOMPARE(mat2.shininess(), qreal(128));
+    QCOMPARE(mat2.shininess(), 128.0f);
     QCOMPARE(ambientSpy.count(), 1);
     QCOMPARE(diffuseSpy.count(), 1);
     QCOMPARE(specularSpy.count(), 1);
@@ -365,9 +371,9 @@ void tst_QGLMaterial::standardMaterial()
 
     // Check clamping of shininess to the range 0..128.
     mat1.setShininess(-0.5f);
-    QCOMPARE(mat1.shininess(), qreal(0.0f));
+    QCOMPARE(mat1.shininess(), 0.0f);
     mat1.setShininess(128.5f);
-    QCOMPARE(mat1.shininess(), qreal(128.0f));
+    QCOMPARE(mat1.shininess(), 128.0f);
 
     // Test that we don't get any side effects between properties.
     QCOMPARE(mat2.ambientColor().red(), 0);
@@ -386,7 +392,7 @@ void tst_QGLMaterial::standardMaterial()
     QCOMPARE(mat2.emittedLight().green(), 255);
     QCOMPARE(mat2.emittedLight().blue(), 255);
     QCOMPARE(mat2.emittedLight().alpha(), 255);
-    QCOMPARE(mat2.shininess(), qreal(128));
+    QCOMPARE(mat2.shininess(), 128.0f);
 
     // Test the material fetch functions from QGLAbstractMaterial.
     QVERIFY(mat1.front() == &mat1);
@@ -396,14 +402,14 @@ void tst_QGLMaterial::standardMaterial()
 
     // Test setting a pseudo-flat color via QGLMaterial::setColor().
     mat2.setColor(QColor::fromRgbF(0.2f, 0.8f, 0.5f, 0.7f));
-    QVERIFY(fuzzyCompare(mat2.ambientColor().redF(), qreal(0.2f * 0.2f)));
-    QVERIFY(fuzzyCompare(mat2.ambientColor().greenF(), qreal(0.2f * 0.8f)));
-    QVERIFY(fuzzyCompare(mat2.ambientColor().blueF(), qreal(0.2f * 0.5f)));
-    QVERIFY(fuzzyCompare(mat2.ambientColor().alphaF(), qreal(0.7f)));
-    QVERIFY(fuzzyCompare(mat2.diffuseColor().redF(), qreal(0.8f * 0.2f)));
-    QVERIFY(fuzzyCompare(mat2.diffuseColor().greenF(), qreal(0.8f * 0.8f)));
-    QVERIFY(fuzzyCompare(mat2.diffuseColor().blueF(), qreal(0.8f * 0.5f)));
-    QVERIFY(fuzzyCompare(mat2.diffuseColor().alphaF(), qreal(0.7f)));
+    QVERIFY(fuzzyCompare(mat2.ambientColor().redF(), 0.2f * 0.2f));
+    QVERIFY(fuzzyCompare(mat2.ambientColor().greenF(), 0.2f * 0.8f));
+    QVERIFY(fuzzyCompare(mat2.ambientColor().blueF(), 0.2f * 0.5f));
+    QVERIFY(fuzzyCompare(mat2.ambientColor().alphaF(), 0.7f));
+    QVERIFY(fuzzyCompare(mat2.diffuseColor().redF(), 0.8f * 0.2f));
+    QVERIFY(fuzzyCompare(mat2.diffuseColor().greenF(), 0.8f * 0.8f));
+    QVERIFY(fuzzyCompare(mat2.diffuseColor().blueF(), 0.8f * 0.5f));
+    QVERIFY(fuzzyCompare(mat2.diffuseColor().alphaF(), 0.7f));
     QCOMPARE(ambientSpy.count(), 2);
     QCOMPARE(diffuseSpy.count(), 2);
     QCOMPARE(specularSpy.count(), 1);
@@ -613,7 +619,7 @@ static inline QVector4D colorToVector4D(const QColor &color)
                      color.blueF(), color.alphaF());
 }
 
-static inline qreal clampRange(qreal value)
+static inline float clampRange(float value)
 {
     if (value < 0.0f)
         return 0.0f;
@@ -623,7 +629,7 @@ static inline qreal clampRange(qreal value)
         return value;
 }
 
-static inline QColor vector4DToColor(const QVector4D &value, qreal alpha)
+static inline QColor vector4DToColor(const QVector4D &value, float alpha)
 {
     return QColor::fromRgbF(clampRange(value.x()),
                             clampRange(value.y()),
@@ -683,11 +689,11 @@ static QColor litColor(const QGLMaterial &material)
     }
 
     if (light.spotAngle() != 180.0f) {
-        qreal spot = qMax(QVector3D::dotProduct
+        float spot = qMax(QVector3D::dotProduct
             (vertex - pli.toVector3D(), light.spotDirection()), 0.0f);
         if (spot < light.spotCosAngle()) {
-            adcomponent = QVector4D(0, 0, 0, 0);
-            scomponent = QVector4D(0, 0, 0, 0);
+            adcomponent = QVector4D(0.0f, 0.0f, 0.0f, 0.0f);
+            scomponent = QVector4D(0.0f, 0.0f, 0.0f, 0.0f);
         } else {
             spot = qPow(spot, light.spotExponent());
             adcomponent *= spot;
@@ -696,8 +702,8 @@ static QColor litColor(const QGLMaterial &material)
     }
 
     if (pli.w() != 0.0f) {
-        qreal attenuation = light.constantAttenuation();
-        qreal len = (pli.toVector3D() - vertex).length();
+        float attenuation = light.constantAttenuation();
+        float len = (pli.toVector3D() - vertex).length();
         attenuation += light.linearAttenuation() * len;
         attenuation += light.quadraticAttenuation() * len * len;
         color += adcomponent / attenuation;

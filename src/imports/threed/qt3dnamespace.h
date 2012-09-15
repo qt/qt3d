@@ -62,13 +62,13 @@ public:
     ~Qt3DNamespace() {}
 
 public Q_SLOTS:
-    QVector2D vector2d(qreal x, qreal y);
-    QVector4D vector4d(qreal x, qreal y, qreal z, qreal w);
-    QQuaternion quaternion(qreal scalar, qreal x, qreal y, qreal z);
-    QMatrix4x4 matrix4x4(qreal m11, qreal m12, qreal m13, qreal m14,
-                         qreal m21, qreal m22, qreal m23, qreal m24,
-                         qreal m31, qreal m32, qreal m33, qreal m34,
-                         qreal m41, qreal m42, qreal m43, qreal m44);
+    QVector2D vector2d(float x, float y);
+    QVector4D vector4d(float x, float y, float z, float w);
+    QQuaternion quaternion(float scalar, float x, float y, float z);
+    QMatrix4x4 matrix4x4(float m11, float m12, float m13, float m14,
+                         float m21, float m22, float m23, float m24,
+                         float m31, float m32, float m33, float m34,
+                         float m41, float m42, float m43, float m44);
 };
 
 QT_END_NAMESPACE

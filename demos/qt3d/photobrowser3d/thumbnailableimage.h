@@ -74,7 +74,7 @@ public:
     void setUrl(const QUrl &url);
 
     QRectF frame() const;
-    qreal scale() const;
+    float scale() const;
 
     void minimize();
     bool isMinimized() const;

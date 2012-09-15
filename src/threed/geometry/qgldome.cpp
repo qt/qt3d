@@ -85,7 +85,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn QGLDome::QGLDome(qreal diameter, int depth, bool base)
+    \fn QGLDome::QGLDome(float diameter, int depth, bool base)
 
     Creates a dome of \a diameter across (default is 1).  When the dome
     is recursively subdivided into triangles, it will be subdivided no more
@@ -103,7 +103,7 @@ QGLDome::~QGLDome()
 }
 
 /*!
-    \fn qreal QGLDome::diameter() const
+    \fn float QGLDome::diameter() const
 
     Returns the diameter of this dome.  The default is 1.
 
@@ -111,7 +111,7 @@ QGLDome::~QGLDome()
 */
 
 /*!
-    \fn void QGLDome::setDiameter(qreal diameter)
+    \fn void QGLDome::setDiameter(float diameter)
 
     Sets the diameter of this dome to \a diameter.
 
@@ -168,7 +168,7 @@ QGLDome::~QGLDome()
 */
 QGLBuilder& operator<<(QGLBuilder& builder, const QGLDome& dome)
 {
-    qreal radius = dome.diameter() / 2.0f;
+    float radius = dome.diameter() / 2.0f;
 
     // Determine the number of slices and stacks to generate.
     int divisions = dome.subdivisionDepth();
@@ -183,22 +183,22 @@ QGLBuilder& operator<<(QGLBuilder& builder, const QGLDome& dome)
     // Precompute sin/cos values for the slices and stacks.
     const int maxSlices = 4 * (1 << 5) + 1;
     const int maxStacks = 2 * (1 << 5) + 1;
-    qreal sliceSin[maxSlices];
-    qreal sliceCos[maxSlices];
-    qreal stackSin[maxStacks];
-    qreal stackCos[maxStacks];
+    float sliceSin[maxSlices];
+    float sliceCos[maxSlices];
+    float stackSin[maxStacks];
+    float stackCos[maxStacks];
     for (int slice = 0; slice < slices; ++slice) {
-        qreal angle = 2 * M_PI * slice / slices;
+        float angle = 2.0f * M_PI * slice / slices;
         sliceSin[slice] = qFastSin(angle);
         sliceCos[slice] = qFastCos(angle);
     }
     sliceSin[slices] = sliceSin[0]; // Join first and last slice.
     sliceCos[slices] = sliceCos[0];
 
-    const qreal halfPi=M_PI/2.0;
+    const float halfPi = M_PI / 2.0;
 
     for (int stack = 0; stack <= stacks; ++stack) {
-        qreal angle = halfPi * stack / stacks;
+        float angle = halfPi * stack / stacks;
         stackSin[stack] = qFastSin(angle);
         stackCos[stack] = qFastCos(angle);
     }
@@ -210,22 +210,22 @@ QGLBuilder& operator<<(QGLBuilder& builder, const QGLDome& dome)
     // Create the stacks for the dome part of the dome
     for (int stack = 0; stack < stacks; ++stack) {
         QGeometryData prim;
-        qreal z = radius * stackCos[stack];
-        qreal nextz = radius * stackCos[stack + 1];
-        qreal s = stackSin[stack];
-        qreal nexts = stackSin[stack + 1];
-        qreal c = stackCos[stack];
-        qreal nextc = stackCos[stack + 1];
-        qreal r = radius * s;
-        qreal nextr = radius * nexts;
+        float z = radius * stackCos[stack];
+        float nextz = radius * stackCos[stack + 1];
+        float s = stackSin[stack];
+        float nexts = stackSin[stack + 1];
+        float c = stackCos[stack];
+        float nextc = stackCos[stack + 1];
+        float r = radius * s;
+        float nextr = radius * nexts;
         for (int slice = 0; slice <= slices; ++slice) {
             prim.appendVertex(QVector3D(nextr * sliceSin[slice], nextr * sliceCos[slice], nextz));
             prim.appendNormal(QVector3D(sliceSin[slice] * nexts, sliceCos[slice] * nexts, nextc));
-            prim.appendTexCoord(QVector2D(1.0f - qreal(slice) / slices, 1.0f - qreal(stack + 1) / stacks));
+            prim.appendTexCoord(QVector2D(1.0f - float(slice) / slices, 1.0f - float(stack + 1) / stacks));
 
             prim.appendVertex(QVector3D(r * sliceSin[slice], r * sliceCos[slice], z));
             prim.appendNormal(QVector3D(sliceSin[slice] * s, sliceCos[slice] * s, c));
-            prim.appendTexCoord(QVector2D(1.0f - qreal(slice) / slices, 1.0f - qreal(stack) / stacks));
+            prim.appendTexCoord(QVector2D(1.0f - float(slice) / slices, 1.0f - float(stack) / stacks));
         }
         builder.addQuadStrip(prim);
     }
@@ -238,12 +238,12 @@ QGLBuilder& operator<<(QGLBuilder& builder, const QGLDome& dome)
         //Generate a circle of vertices for this layer.
         QGeometryData tempBase;
 
-        tempBase.appendVertex(QVector3D(0,0,0));
-        tempBase.appendTexCoord(QVector2D(0.5,0.5));
+        tempBase.appendVertex(QVector3D(0.0f, 0.0f, 0.0f));
+        tempBase.appendTexCoord(QVector2D(0.5f, 0.5f));
         for (int slice=0; slice<=slices+1; slice++)
         {
-            tempBase.appendVertex(QVector3D(radius * sliceCos[slice], radius * sliceSin[slice], 0));
-            tempBase.appendTexCoord(QVector2D(0.5*sliceCos[slice]+0.5, 0.5*sliceSin[slice]+0.5));
+            tempBase.appendVertex(QVector3D(radius * sliceCos[slice], radius * sliceSin[slice], 0.0f));
+            tempBase.appendTexCoord(QVector2D(0.5f * sliceCos[slice] + 0.5f, 0.5f * sliceSin[slice] + 0.5f));
         }
 
         //we need to reverse the above to draw it properly - windings!

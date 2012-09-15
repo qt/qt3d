@@ -135,7 +135,7 @@ public:
     bool isCullable(const QBox3D& box) const;
     QGLRenderSequencer *renderSequencer();
 
-    qreal aspectRatio() const;
+    float aspectRatio() const;
 
     QGLAbstractEffect *effect() const;
 

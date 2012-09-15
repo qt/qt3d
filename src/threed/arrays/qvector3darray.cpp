@@ -98,7 +98,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn void QVector3DArray::append(qreal x, qreal y, qreal z)
+    \fn void QVector3DArray::append(float x, float y, float z)
 
     Appends (\a x, \a y, \a z) to this array of QVector3D values.
 */
@@ -109,7 +109,7 @@ QT_BEGIN_NAMESPACE
 
     \sa scaled()
 */
-void QVector3DArray::scale(qreal scale)
+void QVector3DArray::scale(float scale)
 {
     if (isDetached()) {
         // Modify the array in-place.
@@ -135,7 +135,7 @@ void QVector3DArray::scale(qreal scale)
 
     \sa scale()
 */
-QVector3DArray QVector3DArray::scaled(qreal scale) const
+QVector3DArray QVector3DArray::scaled(float scale) const
 {
     QArray<QVector3D> result;
     int size = count();
@@ -173,7 +173,7 @@ void QVector3DArray::translate(const QVector3D& value)
 }
 
 /*!
-    \fn void QVector3DArray::translate(qreal x, qreal y, qreal z)
+    \fn void QVector3DArray::translate(float x, float y, float z)
     \overload
 
     Translates the elements in this array of QVector3D values
@@ -200,7 +200,7 @@ QArray<QVector3D> QVector3DArray::translated(const QVector3D& value) const
 }
 
 /*!
-    \fn QArray<QVector3D> QVector3DArray::translated(qreal x, qreal y, qreal z) const
+    \fn QArray<QVector3D> QVector3DArray::translated(float x, float y, float z) const
     \overload
 
     Returns a copy of this array of QVector3D values, translated

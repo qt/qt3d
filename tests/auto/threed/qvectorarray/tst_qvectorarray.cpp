@@ -191,19 +191,19 @@ void tst_QVectorArray::create4DArray()
 
 void tst_QVectorArray::scale_data()
 {
-    QTest::addColumn<qreal>("scale");
+    QTest::addColumn<float>("scale");
 
-    QTest::newRow("zero") << qreal(0.0f);
-    QTest::newRow("one") << qreal(1.0f);
-    QTest::newRow("neg-one") << qreal(-1.0f);
-    QTest::newRow("two") << qreal(2.0f);
-    QTest::newRow("neg-two-point-five") << qreal(-2.5f);
-    QTest::newRow("half") << qreal(0.5f);
+    QTest::newRow("zero") << 0.0f;
+    QTest::newRow("one") << 1.0f;
+    QTest::newRow("neg-one") << -1.0f;
+    QTest::newRow("two") << 2.0f;
+    QTest::newRow("neg-two-point-five") << -2.5f;
+    QTest::newRow("half") << 0.5f;
 }
 
 void tst_QVectorArray::scale()
 {
-    QFETCH(qreal, scale);
+    QFETCH(float, scale);
 
     QVector2DArray v2array;
     QVector3DArray v3array;

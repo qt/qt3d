@@ -55,18 +55,18 @@ class QGLBuilder;
 class Q_QT3D_EXPORT QGLSphere
 {
 public:
-    explicit QGLSphere(qreal diameter = 1.0f, int depth = 5)
+    explicit QGLSphere(float diameter = 1.0f, int depth = 5)
         : m_diameter(diameter), m_subdivisionDepth(depth) {}
     virtual ~QGLSphere();
 
-    qreal diameter() const { return m_diameter; }
-    void setDiameter(qreal diameter) { m_diameter = diameter; }
+    float diameter() const { return m_diameter; }
+    void setDiameter(float diameter) { m_diameter = diameter; }
 
     int subdivisionDepth() const { return m_subdivisionDepth; }
     void setSubdivisionDepth(int depth) { m_subdivisionDepth = depth; }
 
 private:
-    qreal m_diameter;
+    float m_diameter;
     int m_subdivisionDepth;
 };
 

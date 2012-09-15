@@ -279,9 +279,9 @@ void QGraphicsLookAtTransformPrivate::calculateRotationValues() const
             primaryRotationAxis = QVector3D(0,1,0);
         }
 
-        qreal angleCosine =
+        float angleCosine =
                 QVector3D::dotProduct(forwards, subjectProjection);
-        qreal angle = qAcos(angleCosine);
+        float angle = acosf(angleCosine);
 
         rotationCache.primaryRotation.setAxis(primaryRotationAxis);
         rotationCache.primaryRotation.setAngle(angle * RADS_TO_DEGREES );
@@ -293,7 +293,7 @@ void QGraphicsLookAtTransformPrivate::calculateRotationValues() const
 
     relativePositionVector.normalize();
 
-    qreal secondaryAngleCosine = QVector3D::dotProduct( subjectProjection,
+    float secondaryAngleCosine = QVector3D::dotProduct(subjectProjection,
                                                        relativePositionVector);
     // Sanity check in case of rounding errors
     if (secondaryAngleCosine <= 1.0 && secondaryAngleCosine >= -1.0)

@@ -78,7 +78,7 @@ public:
     QGLBezierPatches transformed(const QMatrix4x4 &matrix) const;
 
     bool intersects(const QRay3D &ray) const;
-    qreal intersection(const QRay3D &ray, QVector2D *texCoord = 0, int *patch = 0) const;
+    float intersection(const QRay3D &ray, QVector2D *texCoord = 0, int *patch = 0) const;
 
 private:
     QScopedPointer<QGLBezierPatchesPrivate> d_ptr;

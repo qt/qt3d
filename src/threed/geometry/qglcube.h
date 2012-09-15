@@ -58,13 +58,13 @@ class QGLBuilder;
 class Q_QT3D_EXPORT QGLCube
 {
 public:
-    explicit QGLCube(qreal size = 1.0f) : m_size(size) {}
+    explicit QGLCube(float size = 1.0f) : m_size(size) {}
 
-    qreal size() const { return m_size; }
-    void setSize(qreal size) { m_size = size; }
+    float size() const { return m_size; }
+    void setSize(float size) { m_size = size; }
 
 private:
-    qreal m_size;
+    float m_size;
 };
 
 Q_QT3D_EXPORT QGLBuilder& operator<<(QGLBuilder& builder, const QGLCube& cube);

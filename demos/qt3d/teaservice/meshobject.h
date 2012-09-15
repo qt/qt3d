@@ -64,11 +64,11 @@ public:
     QVector3D position() const { return m_position; }
     void setPosition(const QVector3D& value) { m_position = value; }
 
-    qreal scale() const { return m_scale; }
-    void setScale(qreal value) { m_scale = value; }
+    float scale() const { return m_scale; }
+    void setScale(float value) { m_scale = value; }
 
-    qreal rotationAngle() const { return m_rotationAngle; }
-    void setRotationAngle(qreal value) { m_rotationAngle = value; }
+    float rotationAngle() const { return m_rotationAngle; }
+    void setRotationAngle(float value) { m_rotationAngle = value; }
 
     QVector3D rotationVector() const { return m_rotationVector; }
     void setRotationVector(const QVector3D& value) { m_rotationVector = value; }
@@ -104,8 +104,8 @@ private:
     QGLSceneNode *m_meshObject;
     QGLAbstractScene *m_scene;
     QVector3D m_position;
-    qreal m_scale;
-    qreal m_rotationAngle;
+    float m_scale;
+    float m_rotationAngle;
     QVector3D m_rotationVector;
     QGLMaterial *m_material;
     QGLMaterial *m_hoverMaterial;

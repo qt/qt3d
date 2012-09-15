@@ -139,8 +139,8 @@ public:
     QMap<int, QGLSceneNode *> lodGeometry;
     QGLSceneNode *topNode;
     QGLSceneNode *currentCapsule;
-    qreal radius;
-    qreal length;
+    float radius;
+    float length;
     int lod;
     bool sceneSet;
 };
@@ -206,12 +206,12 @@ CapsuleMesh::~CapsuleMesh()
     This property defines the radius of the capsule.
     The default value is 1.
 */
-qreal CapsuleMesh::radius() const
+float CapsuleMesh::radius() const
 {
     return d->radius;
 }
 
-void CapsuleMesh::setRadius(qreal radius)
+void CapsuleMesh::setRadius(float radius)
 {
     if (qFuzzyCompare(radius, 1))
         radius = 1.0f;
@@ -229,12 +229,12 @@ void CapsuleMesh::setRadius(qreal radius)
     This property defines the length of the capsule.
     The default value is 1.
 */
-qreal CapsuleMesh::length() const
+float CapsuleMesh::length() const
 {
     return d->length;
 }
 
-void CapsuleMesh::setLength(qreal length)
+void CapsuleMesh::setLength(float length)
 {
     if (qFuzzyCompare(length, 1))
         length = 1.0f;
@@ -319,16 +319,16 @@ void CapsuleMesh::createGeometry(bool bForce)
 
         // Sanity check - the height of the capsule must not be less than its
         // diameter.  A minimal capsule is a sphere - where diameter == height.
-        if (d->length < 2.0 * d->radius)
+        if (d->length < 2.0f * d->radius)
         {
             qWarning() << "Length of capsule must exceed its diameter"
                           << " - correcting length.";
-            d->length = 2 * d->radius;
+            d->length = 2.0f * d->radius;
         }
 
-        qreal diameter = d->radius+d->radius;
-        qreal cylinderHeight = d->length - diameter;
-        qreal offset = cylinderHeight/2.0;
+        float diameter = d->radius+d->radius;
+        float cylinderHeight = d->length - diameter;
+        float offset = cylinderHeight/2.0f;
 
         builder << QGL::Faceted;
         QGLSceneNode *s = 0;
@@ -342,15 +342,15 @@ void CapsuleMesh::createGeometry(bool bForce)
         builder << QGLDome(diameter, divisions, false);
         QMatrix4x4 translateMatrix;
         translateMatrix.setToIdentity();
-        translateMatrix.rotate(180, 0, 1,0);
-        translateMatrix.translate(0, 0, offset);
+        translateMatrix.rotate(180.0f, 0.0f, 1.0f, 0.0f);
+        translateMatrix.translate(0.0f, 0.0f, offset);
         builder.currentNode()->setLocalTransform(translateMatrix);
 
         s = builder.newNode();
         s->setObjectName(QLatin1String("RightEndCap"));
         builder << QGLDome(diameter, divisions, false);
         translateMatrix.setToIdentity();
-        translateMatrix.translate(0, 0, offset);
+        translateMatrix.translate(0.0f, 0.0f, offset);
         builder.currentNode()->setLocalTransform(translateMatrix);
 
         geometry = builder.finalizedSceneNode();

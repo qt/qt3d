@@ -119,7 +119,7 @@ void Line::setVertices(const QVariant &value)
     m_vertexArray.clear();
     QVariantList vertlist = m_vertices.toList();
     for (int index = 0; (index + 2) < vertlist.size(); index += 3) {
-        m_vertexArray.append(qreal(vertlist.at(index).toDouble()), qreal(vertlist.at(index + 1).toDouble()), qreal(vertlist.at(index + 2).toDouble()));
+        m_vertexArray.append(vertlist.at(index).toFloat(), vertlist.at(index + 1).toFloat(), vertlist.at(index + 2).toFloat());
     }
     m_changeFlag=true;
     emit verticesChanged();
@@ -133,7 +133,7 @@ void Line::setVertices(const QVariant &value)
     This property defines the width of the line.  The
     default is 1.0
 */
-void Line::setWidth(qreal width)
+void Line::setWidth(float width)
 {
     if (m_width != width) {
         m_width = width;

@@ -141,8 +141,8 @@ QGLSceneNode *BuilderView::buildGeometry()
     //! [2]
 
     // size data for can
-    const qreal canRadius = 1.0f;
-    const qreal canHeight = 2.5f;
+    const float canRadius = 1.0f;
+    const float canHeight = 2.5f;
     const int numSlices = 32;
 
     QGeometryData canRim;
@@ -151,9 +151,9 @@ QGLSceneNode *BuilderView::buildGeometry()
     // do the math for the defining points
     for (int i = 0; i < numSlices; ++i)
     {
-        qreal angle = (qreal(i) * 2.0 * M_PI) / numSlices;
-        canRim.appendVertex(QVector3D(canRadius * qCos(angle),
-                                      canRadius * qSin(angle),
+        float angle = (float(i) * 2.0 * M_PI) / numSlices;
+        canRim.appendVertex(QVector3D(canRadius * cosf(angle),
+                                      canRadius * sinf(angle),
                                       canHeight / 2.0f));
     }
 

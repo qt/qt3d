@@ -65,8 +65,8 @@ public:
     ~ThumbnailNode();
     QUrl url() const { return m_url; }
     void setUrl(const QUrl &url);
-    void setThreshold(qreal threshold) { m_thresholdSquared = threshold * threshold; }
-    qreal threshold() const { return qSqrt(m_thresholdSquared); }
+    void setThreshold(float threshold) { m_thresholdSquared = threshold * threshold; }
+    float threshold() const { return qSqrt(m_thresholdSquared); }
     void draw(QGLPainter *painter);
     void drawGeometry(QGLPainter *painter);
     ThumbnailableImage image() const { return m_image; }
@@ -83,7 +83,7 @@ private:
     void loadFullImage();
 
     ThumbnailableImage m_image;
-    qreal m_thresholdSquared;
+    float m_thresholdSquared;
     int m_defaultMaterial;
     QUrl m_url;
     bool m_loading;

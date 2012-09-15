@@ -121,7 +121,7 @@ void Point::setVertices(const QVariant &value)
     m_vertexArray.clear();
     QVariantList vertlist = m_vertices.toList();
     for (int index = 0; (index + 2) < vertlist.size(); index += 3) {
-        m_vertexArray.append(qreal(vertlist.at(index).toDouble()), qreal(vertlist.at(index + 1).toDouble()), qreal(vertlist.at(index + 2).toDouble()));
+        m_vertexArray.append(vertlist.at(index).toFloat(), vertlist.at(index + 1).toFloat(), vertlist.at(index + 2).toFloat());
     }
     m_changeFlag=true;
     emit verticesChanged();
@@ -130,12 +130,12 @@ void Point::setVertices(const QVariant &value)
 
 
 /*!
-    \qmlproperty qreal Point::pointSize
+    \qmlproperty float Point::pointSize
 
     This property defines the size of the point.  The
     default is 1.0
 */
-void Point::setPointSize(qreal pointSize)
+void Point::setPointSize(float pointSize)
 {
     if (m_pointSize != pointSize) {
         m_pointSize = pointSize;

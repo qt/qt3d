@@ -96,7 +96,7 @@ public:
     void drawOutline(int page) const;
 
     // Compute the frame at position t (0...1) in the animation.
-    void compute(qreal t);
+    void compute(float t);
 
 private:
     StartCorner m_startCorner;
@@ -114,7 +114,7 @@ private:
     // Number of vertices for drawing the triangle fan for each page.
     int pageCount[4];
 
-    void flip(qreal pageWidth, qreal pageHeight, qreal t);
+    void flip(float pageWidth, float pageHeight, float t);
 };
 
 QT_END_NAMESPACE

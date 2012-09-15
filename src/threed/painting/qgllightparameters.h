@@ -69,11 +69,11 @@ class Q_QT3D_EXPORT QGLLightParameters : public QObject
     Q_PROPERTY(QColor diffuseColor READ diffuseColor WRITE setDiffuseColor NOTIFY diffuseColorChanged)
     Q_PROPERTY(QColor specularColor READ specularColor WRITE setSpecularColor NOTIFY specularColorChanged)
     Q_PROPERTY(QVector3D spotDirection READ spotDirection WRITE setSpotDirection NOTIFY spotDirectionChanged)
-    Q_PROPERTY(qreal spotExponent READ spotExponent WRITE setSpotExponent NOTIFY spotExponentChanged)
-    Q_PROPERTY(qreal spotAngle READ spotAngle WRITE setSpotAngle NOTIFY spotAngleChanged)
-    Q_PROPERTY(qreal constantAttenuation READ constantAttenuation WRITE setConstantAttenuation NOTIFY constantAttenuationChanged)
-    Q_PROPERTY(qreal linearAttenuation READ linearAttenuation WRITE setLinearAttenuation NOTIFY linearAttenuationChanged)
-    Q_PROPERTY(qreal quadraticAttenuation READ quadraticAttenuation WRITE setQuadraticAttenuation NOTIFY quadraticAttenuationChanged)
+    Q_PROPERTY(float spotExponent READ spotExponent WRITE setSpotExponent NOTIFY spotExponentChanged)
+    Q_PROPERTY(float spotAngle READ spotAngle WRITE setSpotAngle NOTIFY spotAngleChanged)
+    Q_PROPERTY(float constantAttenuation READ constantAttenuation WRITE setConstantAttenuation NOTIFY constantAttenuationChanged)
+    Q_PROPERTY(float linearAttenuation READ linearAttenuation WRITE setLinearAttenuation NOTIFY linearAttenuationChanged)
+    Q_PROPERTY(float quadraticAttenuation READ quadraticAttenuation WRITE setQuadraticAttenuation NOTIFY quadraticAttenuationChanged)
 public:
     enum LightType {
         Directional,
@@ -103,22 +103,22 @@ public:
     QVector3D spotDirection() const;
     void setSpotDirection(const QVector3D& value);
 
-    qreal spotExponent() const;
-    void setSpotExponent(qreal value);
+    float spotExponent() const;
+    void setSpotExponent(float value);
 
-    qreal spotAngle() const;
-    void setSpotAngle(qreal value);
+    float spotAngle() const;
+    void setSpotAngle(float value);
 
-    qreal spotCosAngle() const;
+    float spotCosAngle() const;
 
-    qreal constantAttenuation() const;
-    void setConstantAttenuation(qreal value);
+    float constantAttenuation() const;
+    void setConstantAttenuation(float value);
 
-    qreal linearAttenuation() const;
-    void setLinearAttenuation(qreal value);
+    float linearAttenuation() const;
+    void setLinearAttenuation(float value);
 
-    qreal quadraticAttenuation() const;
-    void setQuadraticAttenuation(qreal value);
+    float quadraticAttenuation() const;
+    void setQuadraticAttenuation(float value);
 
     QVector4D eyePosition(const QMatrix4x4& transform) const;
     QVector3D eyeSpotDirection(const QMatrix4x4& transform) const;

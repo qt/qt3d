@@ -387,9 +387,9 @@ public:
     QGLCameraPrivate();
 
     QGLCamera::ProjectionType projectionType;
-    qreal fieldOfView;
-    qreal nearPlane;
-    qreal farPlane;
+    float fieldOfView;
+    float nearPlane;
+    float farPlane;
     QSizeF viewSize;
     QSizeF minViewSize;
     int screenRotation;
@@ -397,7 +397,7 @@ public:
     QVector3D upVector;
     QVector3D center;
     QVector3D viewVector;
-    qreal eyeSeparation;
+    float eyeSeparation;
     QVector3D motionAdjustment;
     QQuaternion motionQuaternion;
     bool adjustForAspectRatio;
@@ -502,13 +502,13 @@ void QGLCamera::setProjectionType(QGLCamera::ProjectionType value)
     \sa projectionType
 */
 
-qreal QGLCamera::fieldOfView() const
+float QGLCamera::fieldOfView() const
 {
     Q_D(const QGLCamera);
     return d->fieldOfView;
 }
 
-void QGLCamera::setFieldOfView(qreal angle)
+void QGLCamera::setFieldOfView(float angle)
 {
     Q_D(QGLCamera);
     if (d->fieldOfView != angle) {
@@ -533,13 +533,13 @@ void QGLCamera::setFieldOfView(qreal angle)
     \sa farPlane
 */
 
-qreal QGLCamera::nearPlane() const
+float QGLCamera::nearPlane() const
 {
     Q_D(const QGLCamera);
     return d->nearPlane;
 }
 
-void QGLCamera::setNearPlane(qreal value)
+void QGLCamera::setNearPlane(float value)
 {
     Q_D(QGLCamera);
     if (d->nearPlane != value) {
@@ -564,13 +564,13 @@ void QGLCamera::setNearPlane(qreal value)
     \sa nearPlane
 */
 
-qreal QGLCamera::farPlane() const
+float QGLCamera::farPlane() const
 {
     Q_D(const QGLCamera);
     return d->farPlane;
 }
 
-void QGLCamera::setFarPlane(qreal value)
+void QGLCamera::setFarPlane(float value)
 {
     Q_D(QGLCamera);
     if (d->farPlane != value) {
@@ -727,7 +727,7 @@ void QGLCamera::setEye(const QVector3D& vertex)
 
     \sa eye(), setEye(), translateCenter()
 */
-void QGLCamera::translateEye(qreal x, qreal y, qreal z)
+void QGLCamera::translateEye(float x, float y, float z)
 {
     Q_D(QGLCamera);
     d->eye += translation(x, y, z);
@@ -805,7 +805,7 @@ void QGLCamera::setCenter(const QVector3D& vertex)
 
     \sa center(), setCenter(), translateEye()
 */
-void QGLCamera::translateCenter(qreal x, qreal y, qreal z)
+void QGLCamera::translateCenter(float x, float y, float z)
 {
     Q_D(QGLCamera);
     d->center += translation(x, y, z);
@@ -831,13 +831,13 @@ void QGLCamera::translateCenter(qreal x, qreal y, qreal z)
     \sa eye
 */
 
-qreal QGLCamera::eyeSeparation() const
+float QGLCamera::eyeSeparation() const
 {
     Q_D(const QGLCamera);
     return d->eyeSeparation;
 }
 
-void QGLCamera::setEyeSeparation(qreal value)
+void QGLCamera::setEyeSeparation(float value)
 {
     Q_D(QGLCamera);
     if (d->eyeSeparation != value) {
@@ -893,8 +893,8 @@ void QGLCamera::setMotionAdjustment(const QVector3D& vector)
             QVector3D view = -vector.normalized();
             if (view.z() < 0.0f)
                 view = -view;
-            qreal xangle = asin(view.x()) * 180.0f / M_PI;
-            qreal yangle = asin(-view.y()) * 180.0f / M_PI;
+            float xangle = asinf(view.x()) * 180.0f / M_PI;
+            float yangle = asinf(-view.y()) * 180.0f / M_PI;
 
             // Construct the pan and tilt quaternions.
             if (qFuzzyIsNull(xangle))
@@ -957,7 +957,7 @@ void QGLCamera::setAdjustForAspectRatio(bool value)
 
     \sa pan(), roll(), rotateEye(), rotateCenter()
 */
-QQuaternion QGLCamera::tilt(qreal angle) const
+QQuaternion QGLCamera::tilt(float angle) const
 {
     Q_D(const QGLCamera);
     QVector3D side = QVector3D::crossProduct(d->viewVector, d->upVector);
@@ -972,7 +972,7 @@ QQuaternion QGLCamera::tilt(qreal angle) const
 
     \sa tilt(), roll(), rotateEye(), rotateCenter()
 */
-QQuaternion QGLCamera::pan(qreal angle) const
+QQuaternion QGLCamera::pan(float angle) const
 {
     Q_D(const QGLCamera);
     return QQuaternion::fromAxisAndAngle(d->upVector, angle);
@@ -986,7 +986,7 @@ QQuaternion QGLCamera::pan(qreal angle) const
 
     \sa tilt(), pan(), rotateEye(), rotateCenter()
 */
-QQuaternion QGLCamera::roll(qreal angle) const
+QQuaternion QGLCamera::roll(float angle) const
 {
     Q_D(const QGLCamera);
     return QQuaternion::fromAxisAndAngle(d->viewVector, angle);
@@ -1044,7 +1044,7 @@ void QGLCamera::rotateCenter(const QQuaternion& q)
 
     \sa translateEye(), translateCenter()
 */
-QVector3D QGLCamera::translation(qreal x, qreal y, qreal z) const
+QVector3D QGLCamera::translation(float x, float y, float z) const
 {
     Q_D(const QGLCamera);
     QVector3D vector(0.0f, 0.0f, 0.0f);
@@ -1069,14 +1069,14 @@ QVector3D QGLCamera::translation(qreal x, qreal y, qreal z) const
 
     \sa modelViewMatrix()
 */
-QMatrix4x4 QGLCamera::projectionMatrix(qreal aspectRatio) const
+QMatrix4x4 QGLCamera::projectionMatrix(float aspectRatio) const
 {
     Q_D(const QGLCamera);
     QMatrix4x4 m;
     if (!d->adjustForAspectRatio)
         aspectRatio = 1.0f;
     if (d->screenRotation != 0) {
-        m.rotate((qreal)(d->screenRotation), 0.0f, 0.0f, 1.0f);
+        m.rotate(float(d->screenRotation), 0.0f, 0.0f, 1.0f);
         if (d->screenRotation == 90 || d->screenRotation == 270) {
             if (aspectRatio != 0.0f)
                 aspectRatio = 1.0f / aspectRatio;
@@ -1086,8 +1086,8 @@ QMatrix4x4 QGLCamera::projectionMatrix(qreal aspectRatio) const
         m.perspective(d->fieldOfView, aspectRatio,
                       d->nearPlane, d->farPlane);
     } else {
-        qreal halfWidth = d->viewSize.width() / 2.0f;
-        qreal halfHeight = d->viewSize.height() / 2.0f;
+        float halfWidth = d->viewSize.width() / 2.0f;
+        float halfHeight = d->viewSize.height() / 2.0f;
         if (aspectRatio > 1.0f) {
             halfWidth *= aspectRatio;
         } else if (aspectRatio > 0.0f && aspectRatio < 1.0f) {
@@ -1146,7 +1146,7 @@ QMatrix4x4 QGLCamera::modelViewMatrix(QGL::Eye eye) const
     into eye co-ordinates within the current camera view.
 */
 QVector3D QGLCamera::mapPoint
-    (const QPoint& point, qreal aspectRatio, const QSize& viewportSize) const
+    (const QPoint& point, float aspectRatio, const QSize& viewportSize) const
 {
     Q_D(const QGLCamera);
 
@@ -1178,13 +1178,13 @@ QVector3D QGLCamera::mapPoint
     // (unless the point was outside the viewport).  The yrel is
     // flipped upside down to account for the incoming co-ordinate
     // being left-handed, but the world being right-handed.
-    qreal xrel, yrel;
+    float xrel, yrel;
     if (width)
-        xrel = (((qreal)(x * 2)) - (qreal)width) / (qreal)width;
+        xrel = ((float(x * 2)) - float(width)) / float(width);
     else
         xrel = 0.0f;
     if (height)
-        yrel = -(((qreal)(y * 2)) - (qreal)height) / (qreal)height;
+        yrel = -((float(y * 2)) - float(height)) / float(height);
     else
         yrel = 0.0f;
 
@@ -1243,7 +1243,7 @@ QVector3D QGLCamera::mapPoint
     \sa tiltPanRollEye()
 */
 void QGLCamera::tiltPanRollCenter
-    (qreal tiltAngle, qreal panAngle, qreal rollAngle,
+    (float tiltAngle, float panAngle, float rollAngle,
      QGLCamera::RotateOrder order)
 {
     switch (order) {
@@ -1283,7 +1283,7 @@ void QGLCamera::tiltPanRollCenter
     \sa tiltPanRollCenter()
 */
 void QGLCamera::tiltPanRollEye
-    (qreal tiltAngle, qreal panAngle, qreal rollAngle,
+    (float tiltAngle, float panAngle, float rollAngle,
      QGLCamera::RotateOrder order)
 {
     switch (order) {

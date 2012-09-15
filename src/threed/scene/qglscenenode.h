@@ -65,9 +65,9 @@ class Q_QT3D_EXPORT QGLSceneNode : public QObject
     Q_ENUMS(Option)
     Q_FLAGS(Options)
     Q_PROPERTY(QVector3D position READ position WRITE setPosition NOTIFY updated)
-    Q_PROPERTY(qreal x READ x WRITE setX NOTIFY updated)
-    Q_PROPERTY(qreal y READ y WRITE setY NOTIFY updated)
-    Q_PROPERTY(qreal z READ z WRITE setZ NOTIFY updated)
+    Q_PROPERTY(float x READ x WRITE setX NOTIFY updated)
+    Q_PROPERTY(float y READ y WRITE setY NOTIFY updated)
+    Q_PROPERTY(float z READ z WRITE setZ NOTIFY updated)
     Q_PROPERTY(QGLMaterial *material READ material WRITE setMaterial NOTIFY updated)
     Q_PROPERTY(QGLMaterial *backMaterial READ backMaterial WRITE setBackMaterial NOTIFY updated)
     Q_PROPERTY(Options options READ options WRITE setOptions NOTIFY updated)
@@ -99,12 +99,12 @@ public:
     void setLocalTransform(const QMatrix4x4 &);
     QVector3D position() const;
     void setPosition(const QVector3D &p);
-    qreal x() const;
-    void setX(qreal x);
-    qreal y() const;
-    void setY(qreal y);
-    qreal z() const;
-    void setZ(qreal z);
+    float x() const;
+    void setX(float x);
+    float y() const;
+    void setY(float y);
+    float z() const;
+    void setZ(float z);
 
     QList<QQuickQGraphicsTransform3D *> transforms() const;
     void setTransforms(const QList<QQuickQGraphicsTransform3D *> &transforms);
@@ -113,8 +113,8 @@ public:
     QGL::DrawingMode drawingMode() const;
     void setDrawingMode(QGL::DrawingMode mode);
 
-    qreal drawingWidth() const;
-    void setDrawingWidth(qreal width);
+    float drawingWidth() const;
+    void setDrawingWidth(float width);
 
     QGL::StandardEffect effect() const;
     void setEffect(QGL::StandardEffect);

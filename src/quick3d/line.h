@@ -52,7 +52,7 @@ QT_BEGIN_NAMESPACE
 class Q_QT3D_QUICK_EXPORT Line : public QQuickItem3D
 {
     Q_OBJECT
-    Q_PROPERTY(qreal width READ width WRITE setWidth NOTIFY widthChanged)
+    Q_PROPERTY(float width READ width WRITE setWidth NOTIFY widthChanged)
     Q_PROPERTY(QVariant vertices READ vertices WRITE setVertices NOTIFY verticesChanged)
 
 public:
@@ -62,8 +62,8 @@ public:
     QVariant vertices() const;
     void setVertices(const QVariant &value);
 
-    qreal width() const {return m_width;}
-    void setWidth(qreal width);
+    float width() const {return m_width;}
+    void setWidth(float width);
 
 Q_SIGNALS:
     void verticesChanged();
@@ -73,7 +73,7 @@ protected:
     void drawItem(QGLPainter *painter);
 
 private:
-    qreal m_width;
+    float m_width;
     QVariant m_vertices;
     QVector3DArray m_vertexArray;
     QGLSceneNode * m_geometry;

@@ -52,7 +52,7 @@ QT_BEGIN_NAMESPACE
 class Q_QT3D_QUICK_EXPORT Point : public QQuickItem3D
 {
     Q_OBJECT
-    Q_PROPERTY(qreal pointSize READ pointSize WRITE setPointSize NOTIFY pointSizeChanged)
+    Q_PROPERTY(float pointSize READ pointSize WRITE setPointSize NOTIFY pointSizeChanged)
     Q_PROPERTY(QVariant vertices READ vertices WRITE setVertices NOTIFY verticesChanged)
 
 public:
@@ -62,8 +62,8 @@ public:
     QVariant vertices() const;
     void setVertices(const QVariant &value);
 
-    qreal pointSize() const {return m_pointSize;}
-    void setPointSize(qreal pointSize);
+    float pointSize() const {return m_pointSize;}
+    void setPointSize(float pointSize);
 
 Q_SIGNALS:
     void verticesChanged();
@@ -73,7 +73,7 @@ protected:
     void drawItem(QGLPainter *painter);
 
 private:
-    qreal m_pointSize;
+    float m_pointSize;
     QVariant m_vertices;
     QVector3DArray m_vertexArray;
     QGLSceneNode * m_geometry;

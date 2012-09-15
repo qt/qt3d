@@ -90,7 +90,7 @@ public:
     void addQuadStrip(const QGeometryData &strip);
     void addQuadsInterleaved(const QGeometryData &top,
                         const QGeometryData &bottom);
-    inline void addPane(qreal size = 1.0f);
+    inline void addPane(float size = 1.0f);
     inline void addPane(QSizeF size);
 
 protected:
@@ -108,7 +108,7 @@ private:
     QGLBuilderPrivate *dptr;
 };
 
-inline void QGLBuilder::addPane(qreal size)
+inline void QGLBuilder::addPane(float size)
 {
     addPane(QSizeF(size, size));
 }

@@ -159,7 +159,7 @@ public:
     QGLSceneNode *currentSphere;
     QGraphicsRotation3D *rot;
     QGraphicsScale3D *scale;
-    qreal radius;
+    float radius;
     int lod;
     Qt::Axis axis;
     bool sceneSet;
@@ -228,12 +228,12 @@ SphereMesh::~SphereMesh()
     This property defines the radius of the sphere.  The default
     value is 0.5.
 */
-qreal SphereMesh::radius() const
+float SphereMesh::radius() const
 {
     return d->radius;
 }
 
-void SphereMesh::setRadius(qreal radius)
+void SphereMesh::setRadius(float radius)
 {
     if (qFuzzyCompare(radius, 1))
         radius = 1.0f;

@@ -102,26 +102,26 @@ public:
     QVariant at(int index) const;
     void setAt(int index, const QVariant& value);
 
-    void setAt(int index, qreal x);
-    void setAt(int index, qreal x, qreal y);
-    void setAt(int index, qreal x, qreal y, qreal z);
-    void setAt(int index, qreal x, qreal y, qreal z, qreal w);
+    void setAt(int index, float x);
+    void setAt(int index, float x, float y);
+    void setAt(int index, float x, float y, float z);
+    void setAt(int index, float x, float y, float z, float w);
     void setAt(int index, const QVector2D& value);
     void setAt(int index, const QVector3D& value);
     void setAt(int index, const QVector4D& value);
     void setAt(int index, const QColor4ub& value);
     void setAt(int index, Qt::GlobalColor value);
 
-    qreal floatAt(int index) const;
+    float floatAt(int index) const;
     QVector2D vector2DAt(int index) const;
     QVector3D vector3DAt(int index) const;
     QVector4D vector4DAt(int index) const;
     QColor4ub colorAt(int index) const;
 
-    void append(qreal x);
-    void append(qreal x, qreal y);
-    void append(qreal x, qreal y, qreal z);
-    void append(qreal x, qreal y, qreal z, qreal w);
+    void append(float x);
+    void append(float x, float y);
+    void append(float x, float y, float z);
+    void append(float x, float y, float z, float w);
     void append(const QVector2D& value);
     void append(const QVector3D& value);
     void append(const QVector4D& value);
@@ -222,41 +222,41 @@ inline void QCustomDataArray::squeeze()
     m_array.squeeze();
 }
 
-inline void QCustomDataArray::setAt(int index, qreal x)
+inline void QCustomDataArray::setAt(int index, float x)
 {
     Q_ASSERT(m_elementType == QCustomDataArray::Float);
     Q_ASSERT(index >= 0 && index < size());
-    m_array[index] = float(x);
+    m_array[index] = x;
 }
 
-inline void QCustomDataArray::setAt(int index, qreal x, qreal y)
+inline void QCustomDataArray::setAt(int index, float x, float y)
 {
     Q_ASSERT(m_elementType == QCustomDataArray::Vector2D);
     Q_ASSERT(index >= 0 && index < size());
     float *data = m_array.data() + index * 2;
-    data[0] = float(x);
-    data[1] = float(y);
+    data[0] = x;
+    data[1] = y;
 }
 
-inline void QCustomDataArray::setAt(int index, qreal x, qreal y, qreal z)
+inline void QCustomDataArray::setAt(int index, float x, float y, float z)
 {
     Q_ASSERT(m_elementType == QCustomDataArray::Vector3D);
     Q_ASSERT(index >= 0 && index < size());
     float *data = m_array.data() + index * 3;
-    data[0] = float(x);
-    data[1] = float(y);
-    data[2] = float(z);
+    data[0] = x;
+    data[1] = y;
+    data[2] = z;
 }
 
-inline void QCustomDataArray::setAt(int index, qreal x, qreal y, qreal z, qreal w)
+inline void QCustomDataArray::setAt(int index, float x, float y, float z, float w)
 {
     Q_ASSERT(m_elementType == QCustomDataArray::Vector4D);
     Q_ASSERT(index >= 0 && index < size());
     float *data = m_array.data() + index * 4;
-    data[0] = float(x);
-    data[1] = float(y);
-    data[2] = float(z);
-    data[3] = float(w);
+    data[0] = x;
+    data[1] = y;
+    data[2] = z;
+    data[3] = w;
 }
 
 inline void QCustomDataArray::setAt(int index, const QVector2D& value)
@@ -264,8 +264,8 @@ inline void QCustomDataArray::setAt(int index, const QVector2D& value)
     Q_ASSERT(m_elementType == QCustomDataArray::Vector2D);
     Q_ASSERT(index >= 0 && index < size());
     float *data = m_array.data() + index * 2;
-    data[0] = float(value.x());
-    data[1] = float(value.y());
+    data[0] = value.x();
+    data[1] = value.y();
 }
 
 inline void QCustomDataArray::setAt(int index, const QVector3D& value)
@@ -273,9 +273,9 @@ inline void QCustomDataArray::setAt(int index, const QVector3D& value)
     Q_ASSERT(m_elementType == QCustomDataArray::Vector3D);
     Q_ASSERT(index >= 0 && index < size());
     float *data = m_array.data() + index * 3;
-    data[0] = float(value.x());
-    data[1] = float(value.y());
-    data[2] = float(value.z());
+    data[0] = value.x();
+    data[1] = value.y();
+    data[2] = value.z();
 }
 
 inline void QCustomDataArray::setAt(int index, const QVector4D& value)
@@ -283,10 +283,10 @@ inline void QCustomDataArray::setAt(int index, const QVector4D& value)
     Q_ASSERT(m_elementType == QCustomDataArray::Vector4D);
     Q_ASSERT(index >= 0 && index < size());
     float *data = m_array.data() + index * 4;
-    data[0] = float(value.x());
-    data[1] = float(value.y());
-    data[2] = float(value.z());
-    data[3] = float(value.w());
+    data[0] = value.x();
+    data[1] = value.y();
+    data[2] = value.z();
+    data[3] = value.w();
 }
 
 inline void QCustomDataArray::setAt(int index, const QColor4ub& value)
@@ -303,7 +303,7 @@ inline void QCustomDataArray::setAt(int index, Qt::GlobalColor value)
     *(reinterpret_cast<QColor4ub *>(m_array.data() + index)) = QColor4ub(value);
 }
 
-inline qreal QCustomDataArray::floatAt(int index) const
+inline float QCustomDataArray::floatAt(int index) const
 {
     Q_ASSERT(m_elementType == QCustomDataArray::Float);
     Q_ASSERT(index >= 0 && index < size());
@@ -341,47 +341,47 @@ inline QColor4ub QCustomDataArray::colorAt(int index) const
     return *(reinterpret_cast<const QColor4ub *>(m_array.constData() + index));
 }
 
-inline void QCustomDataArray::append(qreal x)
+inline void QCustomDataArray::append(float x)
 {
     Q_ASSERT(m_elementType == QCustomDataArray::Float);
-    m_array.append(float(x));
+    m_array.append(x);
 }
 
-inline void QCustomDataArray::append(qreal x, qreal y)
+inline void QCustomDataArray::append(float x, float y)
 {
     Q_ASSERT(m_elementType == QCustomDataArray::Vector2D);
-    m_array.append(float(x), float(y));
+    m_array.append(x, y);
 }
 
-inline void QCustomDataArray::append(qreal x, qreal y, qreal z)
+inline void QCustomDataArray::append(float x, float y, float z)
 {
     Q_ASSERT(m_elementType == QCustomDataArray::Vector3D);
-    m_array.append(float(x), float(y), float(z));
+    m_array.append(x, y, z);
 }
 
-inline void QCustomDataArray::append(qreal x, qreal y, qreal z, qreal w)
+inline void QCustomDataArray::append(float x, float y, float z, float w)
 {
     Q_ASSERT(m_elementType == QCustomDataArray::Vector4D);
-    m_array.append(float(x), float(y), float(z), float(w));
+    m_array.append(x, y, z, w);
 }
 
 inline void QCustomDataArray::append(const QVector2D& value)
 {
     Q_ASSERT(m_elementType == QCustomDataArray::Vector2D);
-    m_array.append(float(value.x()), float(value.y()));
+    m_array.append(value.x(), value.y());
 }
 
 inline void QCustomDataArray::append(const QVector3D& value)
 {
     Q_ASSERT(m_elementType == QCustomDataArray::Vector3D);
-    m_array.append(float(value.x()), float(value.y()), float(value.z()));
+    m_array.append(value.x(), value.y(), value.z());
 }
 
 inline void QCustomDataArray::append(const QVector4D& value)
 {
     Q_ASSERT(m_elementType == QCustomDataArray::Vector4D);
-    m_array.append(float(value.x()), float(value.y()),
-                   float(value.z()), float(value.w()));
+    m_array.append(value.x(), value.y(),
+                   value.z(), value.w());
 }
 
 inline void QCustomDataArray::append(const QColor4ub& value)

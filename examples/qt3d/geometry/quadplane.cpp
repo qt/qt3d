@@ -72,12 +72,12 @@ QuadPlane::QuadPlane(QObject *parent, QSizeF size, int level)
     QGeometryData zip2;
     for (int yy = 0; yy <= divisions; ++yy)
     {
-        qreal y = half.height() - float(yy) * div.height();
-        qreal texY = float(yy) / divisions;
+        float y = half.height() - float(yy) * div.height();
+        float texY = float(yy) / divisions;
         for (int xx = 0; xx <= divisions; ++xx)
         {
-            qreal x = half.width() - float(xx) * div.width();
-            qreal texX = float(xx) / divisions;
+            float x = half.width() - float(xx) * div.width();
+            float texX = float(xx) / divisions;
             zip.appendVertex(QVector3D(x, y, 0));
             zip.appendTexCoord(QVector2D(1.0f - texX, 1.0f - texY));
         }

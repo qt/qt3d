@@ -198,8 +198,8 @@ void FPSWidget::resizeGL(int w, int h)
     glLoadIdentity();
 #endif
     int side = qMin(w, h);
-    qreal ws = (qreal)w / (qreal)side;
-    qreal hs = (qreal)h / (qreal)side;
+    float ws = float(w) / float(side);
+    float hs = float(h) / float(side);
 #if defined(QT_OPENGL_ES_2)
     projection.setToIdentity();
     projection.ortho(-ws, ws, -hs, hs, -10.0f, 10.0f);
@@ -253,7 +253,7 @@ void FPSWidget::paintGL()
     program.disableAttributeArray(vertexAttr);
     program.disableAttributeArray(normalAttr);
 #endif
-    QString framesPerSecond = QString::fromLatin1("%1 fps").arg(1000.0f / ((qreal)totalFrameTime / (qreal)frameCount));
+    QString framesPerSecond = QString::fromLatin1("%1 fps").arg(1000.0f / (float(totalFrameTime) / float(frameCount)));
 }
 
 void FPSWidget::animate()
@@ -268,7 +268,7 @@ void FPSWidget::animate()
         {
             frameCount += 1;
             totalFrameTime += frameElapsed;
-            emit fps(1000.0f / ((qreal)frameTime->elapsed() / (qreal)frameCount));
+            emit fps(1000.0f / (float(frameTime->elapsed()) / float(frameCount)));
             xrot = (xrot + adv) % 360;
             yrot = (xrot + adv) % 360;
             zrot = (xrot + adv) % 360;

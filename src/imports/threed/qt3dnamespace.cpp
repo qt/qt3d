@@ -55,7 +55,7 @@ QT_BEGIN_NAMESPACE
     Returns a Vector2D with the specified \c x and \c y.
 */
 
-QVector2D Qt3DNamespace::vector2d(qreal x, qreal y)
+QVector2D Qt3DNamespace::vector2d(float x, float y)
 {
     return QVector2D(x, y);
 }
@@ -65,7 +65,7 @@ QVector2D Qt3DNamespace::vector2d(qreal x, qreal y)
     Returns a Vector4D with the specified \c x, \c y, \c z, and \c w.
 */
 
-QVector4D Qt3DNamespace::vector4d(qreal x, qreal y, qreal z, qreal w)
+QVector4D Qt3DNamespace::vector4d(float x, float y, float z, float w)
 {
     return QVector4D(x, y, z, w);
 }
@@ -75,7 +75,7 @@ QVector4D Qt3DNamespace::vector4d(qreal x, qreal y, qreal z, qreal w)
     Returns a Quaternion with the specified \c scalar, \c x, \c y, and \c z.
 */
 
-QQuaternion Qt3DNamespace::quaternion(qreal scalar, qreal x, qreal y, qreal z)
+QQuaternion Qt3DNamespace::quaternion(float scalar, float x, float y, float z)
 {
     return QQuaternion(scalar, x, y, z);
 }
@@ -87,10 +87,10 @@ QQuaternion Qt3DNamespace::quaternion(qreal scalar, qreal x, qreal y, qreal z)
 */
 
 QMatrix4x4 Qt3DNamespace::matrix4x4
-    (qreal m11, qreal m12, qreal m13, qreal m14,
-     qreal m21, qreal m22, qreal m23, qreal m24,
-     qreal m31, qreal m32, qreal m33, qreal m34,
-     qreal m41, qreal m42, qreal m43, qreal m44)
+    (float m11, float m12, float m13, float m14,
+     float m21, float m22, float m23, float m24,
+     float m31, float m32, float m33, float m34,
+     float m41, float m42, float m43, float m44)
 {
     return QMatrix4x4(m11, m12, m13, m14,
                       m21, m22, m23, m24,

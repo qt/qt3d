@@ -107,7 +107,7 @@ private:
     QFocusAdaptor *m_fa;
     PanController *m_pc;
     bool m_pickableDirty;
-    qreal m_displaySize;
+    float m_displaySize;
     bool m_done;
     bool m_closing;
     bool m_updateRequired;

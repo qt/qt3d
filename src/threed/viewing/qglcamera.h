@@ -64,16 +64,16 @@ class Q_QT3D_EXPORT QGLCamera : public QObject
     Q_OBJECT
     Q_ENUMS(ProjectionType RotateOrder)
     Q_PROPERTY(ProjectionType projectionType READ projectionType WRITE setProjectionType NOTIFY projectionChanged)
-    Q_PROPERTY(qreal fieldOfView READ fieldOfView WRITE setFieldOfView NOTIFY projectionChanged)
-    Q_PROPERTY(qreal nearPlane READ nearPlane WRITE setNearPlane NOTIFY projectionChanged)
-    Q_PROPERTY(qreal farPlane READ farPlane WRITE setFarPlane NOTIFY projectionChanged)
+    Q_PROPERTY(float fieldOfView READ fieldOfView WRITE setFieldOfView NOTIFY projectionChanged)
+    Q_PROPERTY(float nearPlane READ nearPlane WRITE setNearPlane NOTIFY projectionChanged)
+    Q_PROPERTY(float farPlane READ farPlane WRITE setFarPlane NOTIFY projectionChanged)
     Q_PROPERTY(QSizeF viewSize READ viewSize WRITE setViewSize NOTIFY projectionChanged SCRIPTABLE false)
     Q_PROPERTY(QSizeF minViewSize READ minViewSize WRITE setMinViewSize NOTIFY projectionChanged SCRIPTABLE false)
     Q_PROPERTY(int screenRotation READ screenRotation WRITE setScreenRotation NOTIFY projectionChanged SCRIPTABLE false)
     Q_PROPERTY(QVector3D eye READ eye WRITE setEye NOTIFY viewChanged)
     Q_PROPERTY(QVector3D upVector READ upVector WRITE setUpVector NOTIFY viewChanged)
     Q_PROPERTY(QVector3D center READ center WRITE setCenter NOTIFY viewChanged)
-    Q_PROPERTY(qreal eyeSeparation READ eyeSeparation WRITE setEyeSeparation NOTIFY viewChanged)
+    Q_PROPERTY(float eyeSeparation READ eyeSeparation WRITE setEyeSeparation NOTIFY viewChanged)
     Q_PROPERTY(QVector3D motionAdjustment READ motionAdjustment WRITE setMotionAdjustment DESIGNABLE false NOTIFY viewChanged SCRIPTABLE false)
     Q_PROPERTY(bool adjustForAspectRatio READ adjustForAspectRatio WRITE setAdjustForAspectRatio NOTIFY viewChanged)
 public:
@@ -89,14 +89,14 @@ public:
     QGLCamera::ProjectionType projectionType() const;
     void setProjectionType(QGLCamera::ProjectionType value);
 
-    qreal fieldOfView() const;
-    void setFieldOfView(qreal angle);
+    float fieldOfView() const;
+    void setFieldOfView(float angle);
 
-    qreal nearPlane() const;
-    void setNearPlane(qreal value);
+    float nearPlane() const;
+    void setNearPlane(float value);
 
-    qreal farPlane() const;
-    void setFarPlane(qreal value);
+    float farPlane() const;
+    void setFarPlane(float value);
 
     QSizeF viewSize() const;
     void setViewSize(const QSizeF& size);
@@ -116,8 +116,8 @@ public:
     QVector3D center() const;
     void setCenter(const QVector3D& vertex);
 
-    qreal eyeSeparation() const;
-    void setEyeSeparation(qreal value);
+    float eyeSeparation() const;
+    void setEyeSeparation(float value);
 
     QVector3D motionAdjustment() const;
     void setMotionAdjustment(const QVector3D& vector);
@@ -125,20 +125,20 @@ public:
     bool adjustForAspectRatio() const;
     void setAdjustForAspectRatio(bool value);
 
-    QQuaternion tilt(qreal angle) const;
-    QQuaternion pan(qreal angle) const;
-    QQuaternion roll(qreal angle) const;
+    QQuaternion tilt(float angle) const;
+    QQuaternion pan(float angle) const;
+    QQuaternion roll(float angle) const;
 
     void rotateEye(const QQuaternion& q);
     void rotateCenter(const QQuaternion& q);
 
-    QVector3D translation(qreal x, qreal y, qreal z) const;
+    QVector3D translation(float x, float y, float z) const;
 
-    QMatrix4x4 projectionMatrix(qreal aspectRatio) const;
+    QMatrix4x4 projectionMatrix(float aspectRatio) const;
     QMatrix4x4 modelViewMatrix(QGL::Eye eye = QGL::NoEye) const;
 
     QVector3D mapPoint
-        (const QPoint& point, qreal aspectRatio,
+        (const QPoint& point, float aspectRatio,
          const QSize& viewportSize) const;
 
     enum RotateOrder
@@ -154,12 +154,12 @@ public:
     QGLCamera *clone(QObject *parent = 0) const;
 
 public Q_SLOTS:
-    void translateEye(qreal x, qreal y, qreal z);
-    void translateCenter(qreal x, qreal y, qreal z);
+    void translateEye(float x, float y, float z);
+    void translateCenter(float x, float y, float z);
 
-    void tiltPanRollCenter(qreal tiltAngle, qreal panAngle, qreal rollAngle,
+    void tiltPanRollCenter(float tiltAngle, float panAngle, float rollAngle,
                            QGLCamera::RotateOrder order = TiltPanRoll);
-    void tiltPanRollEye(qreal tiltAngle, qreal panAngle, qreal rollAngle,
+    void tiltPanRollEye(float tiltAngle, float panAngle, float rollAngle,
                         QGLCamera::RotateOrder order = TiltPanRoll);
 
 Q_SIGNALS:

@@ -264,8 +264,8 @@ void PhotoBrowser3DView::wheelEvent(QWheelEvent *e)
 {
     e->accept();
     QVector3D viewVec = camera()->eye() - camera()->center();
-    qreal zoomMag = viewVec.length();
-    qreal inc = float(e->delta()) / 50.0f;
+    float zoomMag = viewVec.length();
+    float inc = float(e->delta()) / 50.0f;
     if (!qFuzzyIsNull(inc))
     {
         zoomMag += inc;
@@ -297,7 +297,7 @@ void PhotoBrowser3DView::keyPressEvent(QKeyEvent *e)
     else if (e->key() == Qt::Key_Up || e->key() == Qt::Key_Down)
     {
         QVector3D viewVec = camera()->eye() - camera()->center();
-        qreal zoomMag = viewVec.length();
+        float zoomMag = viewVec.length();
         zoomMag += (e->key() == Qt::Key_Up) ? -0.5f : 0.5f;
         if (zoomMag < 5.0f)
             zoomMag = 5.0f;
@@ -358,8 +358,8 @@ void PhotoBrowser3DView::initializeGL(QGLPainter *painter)
     QAtlas::instance()->initialize(painter);
     camera()->setEye(QVector3D(0.0f, 0.0f, 4.0f * m_displaySize));
     registerPickableNodes();
-    qreal q = camera()->eye().z();
-    qreal r = qBound(camera()->nearPlane(), q / 2.0f, camera()->nearPlane() * 3.0f);
+    float q = camera()->eye().z();
+    float r = qBound(camera()->nearPlane(), q / 2.0f, camera()->nearPlane() * 3.0f);
     m_pc->setDefaultDistance(q);
     m_pc->setPanDistance(r);
 }

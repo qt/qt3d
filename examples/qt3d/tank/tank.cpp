@@ -61,7 +61,7 @@
 static inline int rval()
 {
     // return an int 64 <--> 192 inclusive
-    return (qreal(qrand()) / qreal(RAND_MAX)) * 128 + 64;
+    return (float(qrand()) / float(RAND_MAX)) * 128 + 64;
 }
 
 static QGLMaterial *qCreateFluid()

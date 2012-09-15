@@ -84,7 +84,7 @@ public:
     virtual void deactivate(QGLAbstractSurface *nextSurface = 0) = 0;
     virtual QRect viewportGL() const = 0;
     QRect viewportRect() const;
-    virtual qreal aspectRatio() const;
+    virtual float aspectRatio() const;
 
     bool switchTo(QGLAbstractSurface *nextSurface);
     virtual bool isValid() const;

@@ -331,9 +331,9 @@ void CubeView::paintGL(QGLPainter *painter)
         QVector3D direction = projectorCamera->center() - projectorCamera->eye();
 
         QVector3D normal = projectorCamera->upVector().normalized();
-        qreal nearPlane = projectorCamera->nearPlane();
-        qreal farPlane = projectorCamera->farPlane();
-        qreal fieldOfView = projectorCamera->fieldOfView();
+        float nearPlane = projectorCamera->nearPlane();
+        float farPlane = projectorCamera->farPlane();
+        float fieldOfView = projectorCamera->fieldOfView();
 
         QVector3D nearTopLeft;
         QVector3D nearTopRight;
@@ -346,7 +346,7 @@ void CubeView::paintGL(QGLPainter *painter)
 
         QSizeF viewSize = projectorCamera->viewSize();
 
-        qreal fieldDepthRatio = farPlane / nearPlane;
+        float fieldDepthRatio = farPlane / nearPlane;
 
         QVector3D rightVector = QVector3D::crossProduct(direction, normal).normalized() * viewSize.width() / 2.0;
         QVector3D topVector = normal * viewSize.height() / 2.0;
@@ -397,7 +397,7 @@ void CubeView::paintGL(QGLPainter *painter)
 //    useProjectiveTextureEffect = value;
 //}
 
-void CubeView::setCubeAngle(qreal angle)
+void CubeView::setCubeAngle(float angle)
 {
     cangle = angle;
     accelerometerTimeout();
@@ -416,10 +416,10 @@ QVector3D CubeView::gravity() const
     // Access the raw accelerometer data on the N900.
     FILE *file = fopen("/sys/class/i2c-adapter/i2c-3/3-001d/coord", "r");
     if (!file)
-        return QVector3D(0, 0, -1);
-    float x = 0;
-    float y = 0;
-    float z = 0;
+        return QVector3D(0.0f, 0.0f, -1.0f);
+    float x = 0.0f;
+    float y = 0.0f;
+    float z = 0.0f;
     int numValues = fscanf(file, "%f %f %f", &x, &y, &z);
     fclose(file);
 
@@ -429,9 +429,9 @@ QVector3D CubeView::gravity() const
     // Smooth out the reported values.  Large changes are applied as-is,
     // and small jitters smooth to the rest position.
     if (havePrev) {
-        qreal xdiff = x - prevX;
-        qreal ydiff = y - prevY;
-        qreal zdiff = z - prevZ;
+        float xdiff = x - prevX;
+        float ydiff = y - prevY;
+        float zdiff = z - prevZ;
         if (qAbs(xdiff) < 20.0f && qAbs(ydiff) < 20.0f && qAbs(zdiff) < 20.0f) {
             x = prevX + xdiff * 0.1f;
             y = prevY + ydiff * 0.1f;
@@ -456,7 +456,7 @@ void CubeView::updateProjectorViewMatrix()
 
 void CubeView::updateProjectorProjectionMatrix()
 {
-    qreal projectorAspectRatio = 1.0;
+    float projectorAspectRatio = 1.0f;
     projectiveTextureEffect->setProjectorProjectionMatrix(projectorCamera->projectionMatrix(projectorAspectRatio));
     updateProjectiveTextureEffect();
 }

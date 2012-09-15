@@ -69,17 +69,17 @@ public:
 
     void calculateValues();
 
-    qreal speed;
-    qreal angle;
+    float speed;
+    float angle;
     Qt::ArrowType arrowDirection;
     QGLView *view;
     QTime panTime;
-    qreal maxSpeed;
-    qreal defaultDistance;
-    qreal panDistance;
-    qreal panViewAngle;
+    float maxSpeed;
+    float defaultDistance;
+    float panDistance;
+    float panViewAngle;
     bool animating;
-    qreal elapsed;
+    float elapsed;
 };
 
 PanController::PanController(QObject *parent)
@@ -96,49 +96,49 @@ PanController::~PanController()
     delete d;
 }
 
-qreal PanController::defaultDistance() const
+float PanController::defaultDistance() const
 {
     return d->defaultDistance;
 }
 
-void PanController::setDefaultDistance(qreal dist)
+void PanController::setDefaultDistance(float dist)
 {
     d->defaultDistance = dist;
 }
 
-qreal PanController::panDistance() const
+float PanController::panDistance() const
 {
     return d->panDistance;
 }
 
-void PanController::setPanDistance(qreal dist)
+void PanController::setPanDistance(float dist)
 {
     d->panDistance = dist;
 }
 
-qreal PanController::panViewAngle() const
+float PanController::panViewAngle() const
 {
     return d->panViewAngle;
 }
 
-void PanController::setPanViewAngle(qreal angle)
+void PanController::setPanViewAngle(float angle)
 {
     d->panViewAngle = angle;
 }
 
-void PanController::setMaxSpeed(qreal maxSpeed)
+void PanController::setMaxSpeed(float maxSpeed)
 {
     d->maxSpeed = maxSpeed;
 }
 
-qreal PanController::maxSpeed() const
+float PanController::maxSpeed() const
 {
     return d->maxSpeed;
 }
 
-void PanController::setSpeed(qreal speed)
+void PanController::setSpeed(float speed)
 {
-    qreal t = d->panTime.restart();
+    float t = d->panTime.restart();
     if (d->speed != speed)
     {
         d->speed = speed;
@@ -151,7 +151,7 @@ void PanController::setSpeed(qreal speed)
     }
 }
 
-qreal PanController::speed() const
+float PanController::speed() const
 {
     return d->speed;
 }
@@ -160,7 +160,7 @@ void PanController::pan()
 {
     if (d->animating)
     {
-        qreal t = d->panTime.restart();
+        float t = d->panTime.restart();
         d->elapsed += t;
         // dont recalculate every single time
         // 30ms frame time == 33fps - more than enough
@@ -195,12 +195,12 @@ void PanControllerPrivate::calculateValues()
 
             // the view angle is a direct function of the speed see setSpeed() above
             // and as view angle increases we look further along the x-axis
-            qreal opp = (e.z() - c.z()) * qTan(angle);
+            float opp = (e.z() - c.z()) * qTan(angle);
 
             // velocity along the x axis is controlled by speed (a value from 0 -> 1
             // which is a modifier for the maxSpeed, a constant).  the velocity gives
             // us the incremental change in x for this unit time
-            qreal dx = (speed * maxSpeed * elapsed);
+            float dx = (speed * maxSpeed * elapsed);
 
             if (arrowDirection == Qt::LeftArrow)
             {

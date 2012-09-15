@@ -98,7 +98,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn void QVector2DArray::append(qreal x, qreal y)
+    \fn void QVector2DArray::append(float x, float y)
     \overload
 
     Appends (\a x, \a y) to this array of QVector2D values.
@@ -124,7 +124,7 @@ QT_BEGIN_NAMESPACE
 
     \sa scaled()
 */
-void QVector2DArray::scale(qreal scale)
+void QVector2DArray::scale(float scale)
 {
     if (isDetached()) {
         // Modify the array in-place.
@@ -150,9 +150,9 @@ void QVector2DArray::scale(qreal scale)
 
     \sa scale()
 */
-QVector2DArray QVector2DArray::scaled(qreal scale) const
+QVector2DArray QVector2DArray::scaled(float scale) const
 {
-    const qreal identity = 1.0;
+    const float identity = 1.0f;
     if (qFuzzyCompare(scale, identity))
         return *this;
     QArray<QVector2D> result;
@@ -191,7 +191,7 @@ void QVector2DArray::translate(const QVector2D& value)
 }
 
 /*!
-    \fn void QVector2DArray::translate(qreal x, qreal y)
+    \fn void QVector2DArray::translate(float x, float y)
     \overload
 
     Translates the elements in this array of QVector2D values
@@ -218,7 +218,7 @@ QArray<QVector2D> QVector2DArray::translated(const QVector2D& value) const
 }
 
 /*!
-    \fn QArray<QVector2D> QVector2DArray::translated(qreal x, qreal y) const
+    \fn QArray<QVector2D> QVector2DArray::translated(float x, float y) const
     \overload
 
     Returns a copy of this array of QVector2D values, translated

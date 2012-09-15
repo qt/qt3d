@@ -73,7 +73,7 @@ class Q_QT3D_QUICK_EXPORT QQuickEffect : public QObject
     Q_PROPERTY(QUrl texture READ texture WRITE setTexture NOTIFY effectChanged)
     Q_PROPERTY(QImage textureImage READ textureImage WRITE setTextureImage NOTIFY effectChanged)
     Q_PROPERTY(QGLMaterial *material READ material WRITE setMaterial NOTIFY effectChanged)
-    Q_PROPERTY(qreal progress READ progress NOTIFY progressChanged)
+    Q_PROPERTY(float progress READ progress NOTIFY progressChanged)
 public:
     QQuickEffect(QObject *parent = 0);
     virtual ~QQuickEffect();
@@ -103,13 +103,13 @@ public:
     virtual void disableEffect(QGLPainter *painter);
     virtual void applyTo(QGLSceneNode *node);
 
-    virtual qreal progress();
+    virtual float progress();
 
     void openglContextIsAboutToBeDestroyed();
 
 Q_SIGNALS:
     void effectChanged();
-    void progressChanged(qreal progress);
+    void progressChanged(float progress);
 
 protected:
     QGLTexture2D *texture2D();

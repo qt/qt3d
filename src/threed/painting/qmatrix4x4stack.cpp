@@ -226,7 +226,7 @@ QMatrix4x4Stack& QMatrix4x4Stack::operator*=(const QMatrix4x4& matrix)
 
     \sa scale(), rotate()
 */
-void QMatrix4x4Stack::translate(qreal x, qreal y, qreal z)
+void QMatrix4x4Stack::translate(float x, float y, float z)
 {
     Q_D(QMatrix4x4Stack);
     d->matrix.translate(x, y, z);
@@ -258,7 +258,7 @@ void QMatrix4x4Stack::translate(const QVector3D& vector)
 
     \sa translate(), rotate()
 */
-void QMatrix4x4Stack::scale(qreal x, qreal y, qreal z)
+void QMatrix4x4Stack::scale(float x, float y, float z)
 {
     Q_D(QMatrix4x4Stack);
     d->matrix.scale(x, y, z);
@@ -277,7 +277,7 @@ void QMatrix4x4Stack::scale(qreal x, qreal y, qreal z)
 
     \sa translate(), rotate()
 */
-void QMatrix4x4Stack::scale(qreal factor)
+void QMatrix4x4Stack::scale(float factor)
 {
     Q_D(QMatrix4x4Stack);
     d->matrix.scale(factor);
@@ -310,7 +310,7 @@ void QMatrix4x4Stack::scale(const QVector3D& vector)
 
     \sa scale(), translate()
 */
-void QMatrix4x4Stack::rotate(qreal angle, qreal x, qreal y, qreal z)
+void QMatrix4x4Stack::rotate(float angle, float x, float y, float z)
 {
     Q_D(QMatrix4x4Stack);
     d->matrix.rotate(angle, x, y, z);
@@ -323,7 +323,7 @@ void QMatrix4x4Stack::rotate(qreal angle, qreal x, qreal y, qreal z)
 
     \sa scale(), translate()
 */
-void QMatrix4x4Stack::rotate(qreal angle, const QVector3D& vector)
+void QMatrix4x4Stack::rotate(float angle, const QVector3D& vector)
 {
     Q_D(QMatrix4x4Stack);
     d->matrix.rotate(angle, vector);

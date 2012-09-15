@@ -139,8 +139,8 @@ void tst_QGLCube::create()
 
 void tst_QGLCube::size()
 {
-    qreal size0 = 3.2f;
-    qreal size1 = 5.2f;
+    float size0 = 3.2f;
+    float size1 = 5.2f;
     QGLCube cube(size0);
     QCOMPARE(cube.size(), size0);
     {

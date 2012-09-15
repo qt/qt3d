@@ -75,7 +75,7 @@ void tst_QGraphicsTransform3D::rotation3D()
     QGraphicsRotation3D rot1;
     QVERIFY(rot1.origin() == QVector3D(0, 0, 0));
     QVERIFY(rot1.axis() == QVector3D(0, 0, 1));
-    QCOMPARE(rot1.angle(), qreal(0.0f));
+    QCOMPARE(rot1.angle(), 0.0f);
 
     QSignalSpy spy1(&rot1, SIGNAL(originChanged()));
     QSignalSpy spy2(&rot1, SIGNAL(axisChanged()));
@@ -87,7 +87,7 @@ void tst_QGraphicsTransform3D::rotation3D()
     rot1.setAngle(45.0f);
     QVERIFY(rot1.origin() == QVector3D(1, 2, 3));
     QVERIFY(rot1.axis() == QVector3D(4, -5, 6));
-    QCOMPARE(rot1.angle(), qreal(45.0f));
+    QCOMPARE(rot1.angle(), 45.0f);
 
     QCOMPARE(spy1.size(), 1);
     QCOMPARE(spy2.size(), 1);
@@ -181,7 +181,7 @@ void tst_QGraphicsTransform3D::translation3D()
 {
     QGraphicsTranslation3D translate1;
     QVERIFY(translate1.translate() == QVector3D(0, 0, 0));
-    QCOMPARE(translate1.progress(), qreal(1.0f));
+    QCOMPARE(translate1.progress(), 1.0f);
 
     QSignalSpy spy1(&translate1, SIGNAL(translateChanged()));
     QSignalSpy spy2(&translate1, SIGNAL(progressChanged()));
@@ -190,7 +190,7 @@ void tst_QGraphicsTransform3D::translation3D()
     translate1.setTranslate(QVector3D(4, -6, 0.5f));
     translate1.setProgress(2.0f);
     QVERIFY(translate1.translate() == QVector3D(4, -6, 0.5f));
-    QCOMPARE(translate1.progress(), qreal(2.0f));
+    QCOMPARE(translate1.progress(), 2.0f);
 
     QCOMPARE(spy1.size(), 1);
     QCOMPARE(spy2.size(), 1);

@@ -102,9 +102,9 @@ void tst_QGLBuilder::addQuadRandom_data()
     }
 }
 
-static inline qreal randCoord()
+static inline float randCoord()
 {
-    return (200.0f * ((qreal)qrand() / (qreal)RAND_MAX)) - 100.0f;
+    return (200.0f * (float(qrand()) / float(RAND_MAX))) - 100.0f;
 }
 
 QVector3D randVector()

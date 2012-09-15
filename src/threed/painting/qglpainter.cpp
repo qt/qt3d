@@ -710,7 +710,7 @@ QMatrix4x4 QGLPainter::combinedMatrix() const
 // Inverting the eye transformation will often result in values like
 // 1.5e-15 in the world matrix.  Clamp these to zero to make worldMatrix()
 // more stable when removing the eye component of the modelViewMatrix().
-static inline qreal qt_gl_stablize_value(qreal value)
+static inline float qt_gl_stablize_value(float value)
 {
     return (qAbs(value) >= 0.00001f) ? value : 0.0f;
 }
@@ -928,7 +928,7 @@ QGLRenderSequencer *QGLPainter::renderSequencer()
     Returns the aspect ratio of the viewport for adjusting projection
     transformations.
 */
-qreal QGLPainter::aspectRatio() const
+float QGLPainter::aspectRatio() const
 {
     return currentSurface()->aspectRatio();
 }
@@ -1535,30 +1535,12 @@ void QGLPainter::updateFixedFunction(QGLPainter::Updates updates)
     if ((updates & QGLPainter::UpdateModelViewMatrix) != 0) {
         const QMatrix4x4 &matrix = d->modelViewMatrix.top();
         glMatrixMode(GL_MODELVIEW);
-        if (sizeof(qreal) == sizeof(GLfloat)) {
-            glLoadMatrixf(reinterpret_cast<const GLfloat *>
-                (matrix.constData()));
-        } else {
-            GLfloat mat[16];
-            const float *m = matrix.constData();
-            for (int index = 0; index < 16; ++index)
-                mat[index] = m[index];
-            glLoadMatrixf(mat);
-        }
+        glLoadMatrixf(reinterpret_cast<const GLfloat *>(matrix.constData()));
     }
     if ((updates & QGLPainter::UpdateProjectionMatrix) != 0) {
         const QMatrix4x4 &matrix = d->projectionMatrix.top();
         glMatrixMode(GL_PROJECTION);
-        if (sizeof(qreal) == sizeof(GLfloat)) {
-            glLoadMatrixf(reinterpret_cast<const GLfloat *>
-                (matrix.constData()));
-        } else {
-            GLfloat mat[16];
-            const float *m = matrix.constData();
-            for (int index = 0; index < 16; ++index)
-                mat[index] = m[index];
-            glLoadMatrixf(mat);
-        }
+        glLoadMatrixf(reinterpret_cast<const GLfloat *>(matrix.constData()));
     }
     if ((updates & QGLPainter::UpdateLights) != 0) {
         // Save the current modelview matrix and load the identity.

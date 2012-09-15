@@ -437,9 +437,9 @@ void tst_QGLSection::accumNormals()
 
 void tst_QGLSection::normalizedNormals()
 {
-    const qreal qRadius = 1.0f;
-    const qreal qHeight = 0.6f;
-    const qreal qThickness = 0.4f;
+    const float qRadius = 1.0f;
+    const float qHeight = 0.6f;
+    const float qThickness = 0.4f;
     const int qNumSlices = 16;
 
     TestBuilder builder;
@@ -456,10 +456,10 @@ void tst_QGLSection::normalizedNormals()
     QVector3D anc(qRadius * 2.0f, qRadius *2.0f, qHeight);
     for (int slice = 1; slice < qNumSlices; ++slice)
     {
-        const qreal pi2 = 2.0 * M_PI;
-        qreal angle = (slice * pi2) / (4 * qNumSlices);
-        qreal cs = qCos(angle);
-        qreal sn = qSin(angle);
+        const float pi2 = 2.0f * M_PI;
+        float angle = (slice * pi2) / (4 * qNumSlices);
+        float cs = cosf(angle);
+        float sn = sinf(angle);
         QVector3D a(cs * qRadius, sn * qRadius, 0.0f);
         QVector3D b(cs * (qRadius + qThickness), sn * (qRadius + qThickness), qHeight);
         QGeometryData quad;

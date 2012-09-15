@@ -263,13 +263,13 @@ void QGLMaterial::setColor(const QColor& value)
     this range will be clamped to the range when the property is set.
 */
 
-qreal QGLMaterial::shininess() const
+float QGLMaterial::shininess() const
 {
     Q_D(const QGLMaterial);
     return d->shininess;
 }
 
-void QGLMaterial::setShininess(qreal value)
+void QGLMaterial::setShininess(float value)
 {
     Q_D(QGLMaterial);
     if (value < 0)

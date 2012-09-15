@@ -112,7 +112,7 @@ public:
     QGraphicsTranslation3DPrivate() : progress(1.0f) {}
 
     QVector3D translate;
-    qreal progress;
+    float progress;
 };
 
 /*!
@@ -182,13 +182,13 @@ void QGraphicsTranslation3D::setTranslate(const QVector3D &value)
     are also possible by setting the value to something outside this range.
 */
 
-qreal QGraphicsTranslation3D::progress() const
+float QGraphicsTranslation3D::progress() const
 {
     Q_D(const QGraphicsTranslation3D);
     return d->progress;
 }
 
-void QGraphicsTranslation3D::setProgress(qreal value)
+void QGraphicsTranslation3D::setProgress(float value)
 {
     Q_D(QGraphicsTranslation3D);
     if (d->progress != value) {

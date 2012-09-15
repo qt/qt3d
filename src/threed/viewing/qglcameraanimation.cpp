@@ -105,17 +105,17 @@ public:
     // Derived values for use during the animation.
     PointOfRotation pointOfRotation;
     QVector3D upVectorAxis;
-    qreal upVectorAngle;
+    float upVectorAngle;
     QVector3D pointAxis;
-    qreal pointAngle;
+    float pointAngle;
     QVector3D centerTranslate;
     QVector3D eyeTranslate;
-    qreal lengthStart;
-    qreal lengthEnd;
+    float lengthStart;
+    float lengthEnd;
 
     static void rotateBetween(const QVector3D &start, const QVector3D &end,
                               const QVector3D &defaultAxis,
-                              QVector3D *rotationAxis, qreal *rotationAngle);
+                              QVector3D *rotationAxis, float *rotationAngle);
     void deriveRotations();
 };
 
@@ -131,7 +131,7 @@ static inline bool fuzzyCompareVectors(const QVector3D &v1, const QVector3D &v2)
 // or "defaultAxis" if the cross-product is zero (180 degree rotation).
 void QGLCameraAnimationPrivate::rotateBetween
     (const QVector3D &start, const QVector3D &end, const QVector3D &defaultAxis,
-     QVector3D *rotationAxis, qreal *rotationAngle)
+     QVector3D *rotationAxis, float *rotationAngle)
 {
     QVector3D nstart = start.normalized();
     QVector3D nend = end.normalized();
@@ -448,8 +448,8 @@ void QGLCameraAnimation::updateCurrentTime(int currentTime)
         }
 
         // Calculate the progress and modify it with the easing curve.
-        qreal progress = d->easingCurve.valueForProgress
-            (qreal(currentTime) / qreal(d->duration));
+        float progress = d->easingCurve.valueForProgress
+            (float(currentTime) / float(d->duration));
 
         // Calculate the new eye and center locations.
         QVector3D eye = d->startEye;
@@ -460,7 +460,7 @@ void QGLCameraAnimation::updateCurrentTime(int currentTime)
                 (d->pointAxis, d->pointAngle * progress);
             eye = q.rotatedVector(eye - d->startCenter);
             if (d->lengthStart != d->lengthEnd) {
-                qreal length = (1.0f - progress) * d->lengthStart +
+                float length = (1.0f - progress) * d->lengthStart +
                                progress * d->lengthEnd;
                 eye = eye.normalized() * length;
             }
@@ -472,7 +472,7 @@ void QGLCameraAnimation::updateCurrentTime(int currentTime)
                     (d->pointAxis, d->pointAngle * progress * 2.0f);
                 eye = q.rotatedVector(eye - d->startCenter);
                 if (d->lengthStart != d->lengthEnd) {
-                    qreal length = (1.0f - progress) * d->lengthStart +
+                    float length = (1.0f - progress) * d->lengthStart +
                                    progress * d->lengthEnd;
                     eye = eye.normalized() * length;
                 }
@@ -493,7 +493,7 @@ void QGLCameraAnimation::updateCurrentTime(int currentTime)
                 (d->pointAxis, d->pointAngle * progress);
             center = q.rotatedVector(center - d->startEye);
             if (d->lengthStart != d->lengthEnd) {
-                qreal length = (1.0f - progress) * d->lengthStart +
+                float length = (1.0f - progress) * d->lengthStart +
                                progress * d->lengthEnd;
                 center = center.normalized() * length;
             }
@@ -505,7 +505,7 @@ void QGLCameraAnimation::updateCurrentTime(int currentTime)
                     (d->pointAxis, d->pointAngle * progress * 2.0f);
                 center = q.rotatedVector(center - d->startEye);
                 if (d->lengthStart != d->lengthEnd) {
-                    qreal length = (1.0f - progress) * d->lengthStart +
+                    float length = (1.0f - progress) * d->lengthStart +
                                    progress * d->lengthEnd;
                     center = center.normalized() * length;
                 }

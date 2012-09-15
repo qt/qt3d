@@ -176,7 +176,7 @@ void ThumbnailNode::draw(QGLPainter *painter)
 
     QMatrix4x4 m = painter->modelViewMatrix().top();
     QVector3D pos = m.map(position());
-    qreal magSquared = pos.lengthSquared();
+    float magSquared = pos.lengthSquared();
 
     Distance distance = Unknown;
 

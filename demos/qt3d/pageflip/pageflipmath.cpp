@@ -76,7 +76,7 @@ void PageFlipMath::drawOutline(int page) const
     glDrawArrays(GL_LINE_LOOP, page * 5, pageCount[page]);
 }
 
-void PageFlipMath::compute(qreal t)
+void PageFlipMath::compute(float t)
 {
     int page, vertex;
 
@@ -236,7 +236,7 @@ void PageFlipMath::compute(qreal t)
 // The flip starts at the bottom-right corner and proceeds leftwards
 // across the page.  All other flip directions and starting corners
 // can be derived from this basic reference flip animation.
-void PageFlipMath::flip(qreal pageWidth, qreal pageHeight, qreal t)
+void PageFlipMath::flip(float pageWidth, float pageHeight, float t)
 {
     // Handle the simple start and end position cases first.
     if (t <= 0.0f) {
@@ -383,40 +383,40 @@ void PageFlipMath::flip(qreal pageWidth, qreal pageHeight, qreal t)
     // Get the angle of the "curling" dividing line to the bottom of the page.
     // Basically: 45deg + (45deg * t) = 45deg * (1 + t), where t is between
     // 0 and 1 but is neither 0 nor 1.
-    qreal angle = (M_PI / 4.0f) * (1.0f + t);
+    float angle = (M_PI / 4.0f) * (1.0f + t);
 
     // We need the cos and sin of both the angle and angle * 2.
-    qreal cosAngle = qCos(angle);
-    qreal sinAngle = qSin(angle);
-    qreal cosAngle2 = qCos(angle * 2.0f);
-    qreal sinAngle2 = qSin(angle * 2.0f);
+    float cosAngle = cosf(angle);
+    float sinAngle = sinf(angle);
+    float cosAngle2 = cosf(angle * 2.0f);
+    float sinAngle2 = sinf(angle * 2.0f);
 
     // Find the reference point.  This is the point along the bottom of
     // the page where the dividing line intersects the page bottom.
-    qreal refx = pageWidth * (1.0f - t);
-    qreal refy = 0.0f;
+    float refx = pageWidth * (1.0f - t);
+    float refy = 0.0f;
 
     // Distance from the reference point to the right side of the page.
-    qreal d = pageWidth - refx;
+    float d = pageWidth - refx;
 
     // Determine the intersection of the dividing line with the
     // top of the page.  If the intersection is not on the page (k >= d),
     // then we need to generate similar triangles.  If the intersection is
     // on the page (k < d), then we need to generate similar trapezoids.
-    qreal k = (pageHeight * cosAngle) / sinAngle;
+    float k = (pageHeight * cosAngle) / sinAngle;
     if (k >= d) {
     // Generate similar triangles.  Find the intersection with
     // the right-hand side of the page at x == pageWidth.
-    qreal intx = pageWidth;
-    qreal inty = refy + (d * sinAngle) / cosAngle;
+    float intx = pageWidth;
+    float inty = refy + (d * sinAngle) / cosAngle;
 
     // Find the opposite triangle corner on the back page.
-    qreal oppx = refx + d * cosAngle2;
-    qreal oppy = refy + d * sinAngle2;
+    float oppx = refx + d * cosAngle2;
+    float oppy = refy + d * sinAngle2;
 
     // Generate vertices and texture co-ordinates for the back page.
-    qreal texa = 1.0f - (d * sinAngle) / (pageHeight * cosAngle);
-    qreal texb = d / pageWidth;
+    float texa = 1.0f - (d * sinAngle) / (pageHeight * cosAngle);
+    float texb = d / pageWidth;
     vertices[2][0][0] = intx;
     vertices[2][0][1] = inty;
     vertices[2][0][2] = 0.0f;
@@ -493,21 +493,21 @@ void PageFlipMath::flip(qreal pageWidth, qreal pageHeight, qreal t)
     } else {
     // Generate similar trapezoids.  Find the intersection with
     // the top of the page at y == pageHeight.
-    qreal intx = refx + (pageHeight * cosAngle) / sinAngle;
-    qreal inty = pageHeight;
+    float intx = refx + (pageHeight * cosAngle) / sinAngle;
+    float inty = pageHeight;
 
     // Get the distance between the intersection and the right of the page.
-    qreal e = pageWidth - intx;
+    float e = pageWidth - intx;
 
     // Find the opposite trapezoid corners to "ref" and "int".
-    qreal opprefx = refx + d * cosAngle2;
-    qreal opprefy = refy + d * sinAngle2;
-    qreal oppintx = intx + e * cosAngle2;
-    qreal oppinty = inty + e * sinAngle2;
+    float opprefx = refx + d * cosAngle2;
+    float opprefy = refy + d * sinAngle2;
+    float oppintx = intx + e * cosAngle2;
+    float oppinty = inty + e * sinAngle2;
 
     // Generate vertices and texture co-ordinates for the back page.
-    qreal texa = e / pageWidth;
-    qreal texb = d / pageWidth;
+    float texa = e / pageWidth;
+    float texb = d / pageWidth;
     vertices[2][0][0] = intx;
     vertices[2][0][1] = inty;
     vertices[2][0][2] = texa;

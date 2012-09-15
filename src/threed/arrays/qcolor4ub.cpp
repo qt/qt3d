@@ -171,7 +171,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn qreal QColor4ub::redF() const { return m_red / 255.0f; }
+    \fn float QColor4ub::redF() const { return m_red / 255.0f; }
 
     Returns the red component of this color as a floating-point
     value between 0 and 1.
@@ -180,7 +180,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn qreal QColor4ub::greenF() const { return m_green / 255.0f; }
+    \fn float QColor4ub::greenF() const { return m_green / 255.0f; }
 
     Returns the green component of this color as a floating-point
     value between 0 and 1.
@@ -189,7 +189,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn qreal QColor4ub::blueF() const { return m_blue / 255.0f; }
+    \fn float QColor4ub::blueF() const { return m_blue / 255.0f; }
 
     Returns the blue component of this color as a floating-point
     value between 0 and 1.
@@ -198,7 +198,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn qreal QColor4ub::alphaF() const { return m_alpha / 255.0f; }
+    \fn float QColor4ub::alphaF() const { return m_alpha / 255.0f; }
 
     Returns the alpha component of this color as a floating-point
     value between 0 and 1.
@@ -207,7 +207,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn void QColor4ub::setRedF(qreal value)
+    \fn void QColor4ub::setRedF(float value)
 
     Sets the red component of this color to a floating-point \a value,
     between 0 and 1.
@@ -216,7 +216,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn void QColor4ub::setGreenF(qreal value)
+    \fn void QColor4ub::setGreenF(float value)
 
     Sets the green component of this color to a floating-point \a value,
     between 0 and 1.
@@ -225,7 +225,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn void QColor4ub::setBlueF(qreal value)
+    \fn void QColor4ub::setBlueF(float value)
 
     Sets the blue component of this color to a floating-point \a value,
     between 0 and 1.
@@ -234,7 +234,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn void QColor4ub::setAlphaF(qreal value)
+    \fn void QColor4ub::setAlphaF(float value)
 
     Sets the alpha component of this color to a floating-point \a value,
     between 0 and 1.
@@ -252,7 +252,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn void QColor4ub::setRgbF(qreal red, qreal green, qreal blue, qreal alpha)
+    \fn void QColor4ub::setRgbF(float red, float green, float blue, float alpha)
 
     Sets the components of this color to \a red, \a green, \a blue,
     and \a alpha.  Each component is a floating-point value between 0 and 1.
@@ -270,7 +270,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn QColor4ub QColor4ub::fromRgbF(qreal red, qreal green, qreal blue, qreal alpha)
+    \fn QColor4ub QColor4ub::fromRgbF(float red, float green, float blue, float alpha)
 
     Returns a QColor4ub with the components \a red, \a green, \a blue,
     and \a alpha.  Each component is a floating-point value between 0 and 1.

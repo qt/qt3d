@@ -60,18 +60,18 @@ public:
     QVector2DArray(int size, const QVector2D& value = QVector2D());
     QVector2DArray(const QArray<QVector2D>& other);
 
-    void append(qreal x, qreal y);
+    void append(float x, float y);
     void append(const QPointF& point);
     void append(const QPoint& point);
 
-    void scale(qreal scale);
-    QVector2DArray scaled(qreal scale) const;
+    void scale(float scale);
+    QVector2DArray scaled(float scale) const;
 
     void translate(const QVector2D& value);
-    void translate(qreal x, qreal y);
+    void translate(float x, float y);
 
     QArray<QVector2D> translated(const QVector2D& value) const;
-    QArray<QVector2D> translated(qreal x, qreal y) const;
+    QArray<QVector2D> translated(float x, float y) const;
 
     void transform(const QMatrix4x4& matrix);
     QArray<QVector2D> transformed(const QMatrix4x4& matrix) const;
@@ -102,7 +102,7 @@ inline QVector2DArray::QVector2DArray(int size, const QVector2D& value)
 inline QVector2DArray::QVector2DArray(const QArray<QVector2D>& other)
     : QArray<QVector2D>(other) {}
 
-inline void QVector2DArray::append(qreal x, qreal y)
+inline void QVector2DArray::append(float x, float y)
     { QArray<QVector2D>::append(QVector2D(x, y)); }
 
 inline void QVector2DArray::append(const QPointF& point)
@@ -111,10 +111,10 @@ inline void QVector2DArray::append(const QPointF& point)
 inline void QVector2DArray::append(const QPoint& point)
     { QArray<QVector2D>::append(QVector2D(point)); }
 
-inline void QVector2DArray::translate(qreal x, qreal y)
+inline void QVector2DArray::translate(float x, float y)
     { translate(QVector2D(x, y)); }
 
-inline QArray<QVector2D> QVector2DArray::translated(qreal x, qreal y) const
+inline QArray<QVector2D> QVector2DArray::translated(float x, float y) const
     { return translated(QVector2D(x, y)); }
 
 QT_END_NAMESPACE

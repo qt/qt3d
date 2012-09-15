@@ -54,7 +54,7 @@ public:
         , target(0)
         , view(0)
     {}
-    qreal progress;
+    float progress;
     QVector3D targetEye;
     QVector3D targetCenter;
     QVector3D sourceEye;
@@ -78,12 +78,12 @@ QFocusAdaptor::~QFocusAdaptor()
     delete d;
 }
 
-qreal QFocusAdaptor::progress() const
+float QFocusAdaptor::progress() const
 {
     return d->progress;
 }
 
-void QFocusAdaptor::setProgress(qreal progress)
+void QFocusAdaptor::setProgress(float progress)
 {
     if (d->progress != progress)
     {
@@ -152,26 +152,26 @@ void QFocusAdaptor::calculateValues()
                 box.unite(g.vertexAt(inxs.at(i)));
             QVector3D sz = box.size();
 
-            qreal nearDist = cam->nearPlane();
+            float nearDist = cam->nearPlane();
 
             QSizeF v = cam->viewSize();
 
-            qreal vh = d->view->geometry().height();
-            qreal vw = d->view->geometry().width();
+            float vh(d->view->geometry().height());
+            float vw(d->view->geometry().width());
             if (!qFuzzyIsNull(vw - vh))
             {
-                qreal asp = vh / vw;
+                float asp = vh / vw;
                 if (vh > vw)
                     v.setHeight(v.height() * asp);
                 else
                     v.setWidth(v.width() / asp);
             }
 
-            qreal qh = (nearDist * sz.y()) / v.height();
-            qreal qw = (nearDist * sz.x()) / v.width();
+            float qh = (nearDist * sz.y()) / v.height();
+            float qw = (nearDist * sz.x()) / v.width();
 
-            qreal q = qMax(qh, qw);
-            q = qMax(q, qreal(nearDist * 1.05));
+            float q = qMax(qh, qw);
+            q = qMax(q, float(nearDist * 1.05f));
 
             d->sourceCenter = cam->center();
             d->sourceEye = cam->eye();

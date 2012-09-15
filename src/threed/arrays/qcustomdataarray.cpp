@@ -487,7 +487,7 @@ void QCustomDataArray::setAt(int index, const QVariant& value)
 }
 
 /*!
-    \fn void QCustomDataArray::setAt(int index, qreal x)
+    \fn void QCustomDataArray::setAt(int index, float x)
     \overload
 
     Sets the floating-point element at \a index in this custom data
@@ -497,7 +497,7 @@ void QCustomDataArray::setAt(int index, const QVariant& value)
 */
 
 /*!
-    \fn void QCustomDataArray::setAt(int index, qreal x, qreal y)
+    \fn void QCustomDataArray::setAt(int index, float x, float y)
     \overload
 
     Sets the 2D vector element at \a index in this custom
@@ -508,7 +508,7 @@ void QCustomDataArray::setAt(int index, const QVariant& value)
 */
 
 /*!
-    \fn void QCustomDataArray::setAt(int index, qreal x, qreal y, qreal z)
+    \fn void QCustomDataArray::setAt(int index, float x, float y, float z)
     \overload
 
     Sets the 3D vector element at \a index in this custom
@@ -519,7 +519,7 @@ void QCustomDataArray::setAt(int index, const QVariant& value)
 */
 
 /*!
-    \fn void QCustomDataArray::setAt(int index, qreal x, qreal y, qreal z, qreal w)
+    \fn void QCustomDataArray::setAt(int index, float x, float y, float z, float w)
     \overload
 
     Sets the 4D vector element at \a index in this custom
@@ -583,7 +583,7 @@ void QCustomDataArray::setAt(int index, const QVariant& value)
 */
 
 /*!
-    \fn qreal QCustomDataArray::floatAt(int index) const
+    \fn float QCustomDataArray::floatAt(int index) const
 
     Returns the floating-point element at \a index in this custom data array.
     The elementType() must be QCustomDataArray::Float.
@@ -628,7 +628,7 @@ void QCustomDataArray::setAt(int index, const QVariant& value)
 */
 
 /*!
-    \fn void QCustomDataArray::append(qreal x)
+    \fn void QCustomDataArray::append(float x)
     \overload
 
     Appends the floating-point value \a x to this custom data array.
@@ -638,7 +638,7 @@ void QCustomDataArray::setAt(int index, const QVariant& value)
 */
 
 /*!
-    \fn void QCustomDataArray::append(qreal x, qreal y)
+    \fn void QCustomDataArray::append(float x, float y)
     \overload
 
     Appends the 2D vector value (\a x, \a y) to this custom data array.
@@ -648,7 +648,7 @@ void QCustomDataArray::setAt(int index, const QVariant& value)
 */
 
 /*!
-    \fn void QCustomDataArray::append(qreal x, qreal y, qreal z)
+    \fn void QCustomDataArray::append(float x, float y, float z)
     \overload
 
     Appends the 3D vector value (\a x, \a y, \a z) to this custom
@@ -658,7 +658,7 @@ void QCustomDataArray::setAt(int index, const QVariant& value)
 */
 
 /*!
-    \fn void QCustomDataArray::append(qreal x, qreal y, qreal z, qreal w)
+    \fn void QCustomDataArray::append(float x, float y, float z, float w)
     \overload
 
     Appends the 4D vector value (\a x, \a y, \a z, \a w) to this custom

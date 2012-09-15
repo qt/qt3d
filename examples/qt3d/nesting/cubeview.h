@@ -53,21 +53,21 @@ QT_END_NAMESPACE
 class CubeView : public QGLView
 {
     Q_OBJECT
-    Q_PROPERTY(qreal teapotAngle READ teapotAngle WRITE setTeapotAngle)
-    Q_PROPERTY(qreal cubeAngle READ cubeAngle WRITE setCubeAngle)
-    Q_PROPERTY(qreal orbitAngle READ orbitAngle WRITE setOrbitAngle)
+    Q_PROPERTY(float teapotAngle READ teapotAngle WRITE setTeapotAngle)
+    Q_PROPERTY(float cubeAngle READ cubeAngle WRITE setCubeAngle)
+    Q_PROPERTY(float orbitAngle READ orbitAngle WRITE setOrbitAngle)
 public:
     CubeView(QWindow *parent = 0);
     ~CubeView();
 
-    qreal teapotAngle() const { return tangle; }
-    void setTeapotAngle(qreal angle) { tangle = angle; update(); }
+    float teapotAngle() const { return tangle; }
+    void setTeapotAngle(float angle) { tangle = angle; update(); }
 
-    qreal cubeAngle() const { return cangle; }
-    void setCubeAngle(qreal angle) { cangle = angle; update(); }
+    float cubeAngle() const { return cangle; }
+    void setCubeAngle(float angle) { cangle = angle; update(); }
 
-    qreal orbitAngle() const { return oangle; }
-    void setOrbitAngle(qreal angle) { oangle = angle; update(); }
+    float orbitAngle() const { return oangle; }
+    void setOrbitAngle(float angle) { oangle = angle; update(); }
 
 protected:
     void initializeGL(QGLPainter *painter);
@@ -81,9 +81,9 @@ private:
     QOpenGLFramebufferObject *fbo;
     QGLFramebufferObjectSurface fboSurface;
     QGLCamera *innerCamera;
-    qreal tangle;
-    qreal cangle;
-    qreal oangle;
+    float tangle;
+    float cangle;
+    float oangle;
 
     void drawCube1(QGLPainter *painter, const QVector3D &posn);
     void drawCube2(QGLPainter *painter, const QVector3D &posn);

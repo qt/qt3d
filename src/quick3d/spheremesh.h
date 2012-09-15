@@ -58,15 +58,15 @@ class SphereMeshPrivate;
 class Q_QT3D_QUICK_EXPORT SphereMesh : public QQuickMesh
 {
     Q_OBJECT
-    Q_PROPERTY(qreal radius READ radius WRITE setRadius NOTIFY radiusChanged)
+    Q_PROPERTY(float radius READ radius WRITE setRadius NOTIFY radiusChanged)
     Q_PROPERTY(int levelOfDetail READ levelOfDetail WRITE setLevelOfDetail NOTIFY levelOfDetailChanged)
     Q_PROPERTY(Qt::Axis axis READ axis WRITE setAxis NOTIFY axisChanged)
 public:
     SphereMesh(QObject *parent = 0);
     ~SphereMesh();
 
-    qreal radius() const;
-    void setRadius(qreal radius);
+    float radius() const;
+    void setRadius(float radius);
 
     int levelOfDetail() const;
     void setLevelOfDetail(int lod);

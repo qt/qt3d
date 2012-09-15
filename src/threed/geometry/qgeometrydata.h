@@ -95,7 +95,7 @@ public:
     void clear();
     void clear(QGL::VertexAttribute);
     void reserve(int amount);
-    void draw(QGLPainter *painter, int start, int count, GLenum mode = QGL::Triangles, qreal drawWidth=1.0);
+    void draw(QGLPainter *painter, int start, int count, GLenum mode = QGL::Triangles, float drawWidth = 1.0f);
     bool upload();
     enum BufferStrategyFlags
     {

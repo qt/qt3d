@@ -54,7 +54,7 @@ class Q_QT3D_EXPORT QGraphicsRotation3D : public QQuickQGraphicsTransform3D
 {
     Q_OBJECT
     Q_PROPERTY(QVector3D origin READ origin WRITE setOrigin NOTIFY originChanged)
-    Q_PROPERTY(qreal angle READ angle WRITE setAngle NOTIFY angleChanged)
+    Q_PROPERTY(float angle READ angle WRITE setAngle NOTIFY angleChanged)
     Q_PROPERTY(QVector3D axis READ axis WRITE setAxis NOTIFY axisChanged)
 public:
     QGraphicsRotation3D(QObject *parent = 0);
@@ -63,8 +63,8 @@ public:
     QVector3D origin() const;
     void setOrigin(const QVector3D &value);
 
-    qreal angle() const;
-    void setAngle(qreal value);
+    float angle() const;
+    void setAngle(float value);
 
     QVector3D axis() const;
     void setAxis(const QVector3D &value);

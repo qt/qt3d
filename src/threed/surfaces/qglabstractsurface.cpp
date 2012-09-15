@@ -344,7 +344,7 @@ QRect QGLAbstractSurface::viewportRect() const
     if the DPI in the horizontal vs vertical direction is not the same,
     that is, the pixels are not square.
 */
-qreal QGLAbstractSurface::aspectRatio() const
+float QGLAbstractSurface::aspectRatio() const
 {
     Q_ASSERT(isValid());
 
@@ -354,7 +354,7 @@ qreal QGLAbstractSurface::aspectRatio() const
         return 1.0f;
 
     // Return the final aspect ratio based on viewport.
-    return (qreal)size.width() / (qreal)size.height();
+    return float(size.width()) / float(size.height());
 }
 
 /*!

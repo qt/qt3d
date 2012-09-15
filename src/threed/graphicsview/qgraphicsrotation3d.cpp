@@ -121,7 +121,7 @@ public:
 
     QVector3D origin;
     QVector3D axis;
-    qreal angle;
+    float angle;
 };
 
 /*!
@@ -184,13 +184,13 @@ void QGraphicsRotation3D::setOrigin(const QVector3D &value)
     The default value for this property is 0.
 */
 
-qreal QGraphicsRotation3D::angle() const
+float QGraphicsRotation3D::angle() const
 {
     Q_D(const QGraphicsRotation3D);
     return d->angle;
 }
 
-void QGraphicsRotation3D::setAngle(qreal value)
+void QGraphicsRotation3D::setAngle(float value)
 {
     Q_D(QGraphicsRotation3D);
     if (d->angle != value) {

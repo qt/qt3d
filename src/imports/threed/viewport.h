@@ -175,10 +175,10 @@ private:
 
     bool hoverEvent(QHoverEvent *event);
 
-    void wheel(qreal delta);
-    void pan(qreal deltax, qreal deltay);
-    void rotate(qreal deltax, qreal deltay);
-    QPointF viewDelta(qreal deltax, qreal deltay);
+    void wheel(float delta);
+    void pan(float deltax, float deltay);
+    void rotate(float deltax, float deltay);
+    QPointF viewDelta(float deltax, float deltay);
 
     static const int FBO_SIZE;
 };

@@ -120,7 +120,7 @@ QT_BEGIN_NAMESPACE
 
 
 /*!
-    \fn QGLCylinder::QGLCylinder(qreal diameterTop, qreal diameterBase , qreal height, int slices, int layers, bool top, bool base)
+    \fn QGLCylinder::QGLCylinder(float diameterTop, float diameterBase , float height, int slices, int layers, bool top, bool base)
 
     Constructs the geometry for a cylinder with top of diameter \a diameterTop,
     a base of diameter \a diameterBase, and a height of \a height.
@@ -137,7 +137,7 @@ QT_BEGIN_NAMESPACE
 
 
 /*!
-    \fn qreal QGLCylinder::diameterTop() const
+    \fn float QGLCylinder::diameterTop() const
 
     Returns the diameter of the top of the cylinder.
 
@@ -147,7 +147,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn void QGLCylinder::setDiameterTop(qreal diameter)
+    \fn void QGLCylinder::setDiameterTop(float diameter)
 
     Sets the diameter of the top of this cylinder to \a diameter.
 
@@ -155,7 +155,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn qreal QGLCylinder::diameterBottom() const
+    \fn float QGLCylinder::diameterBottom() const
 
     Returns the diameter of the bottom of the cylinder.
 
@@ -165,7 +165,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn void QGLCylinder::setDiameterBottom(qreal diameter)
+    \fn void QGLCylinder::setDiameterBottom(float diameter)
 
     Sets the diameter of the bottom of this cylinder to \a diameter.
 
@@ -173,7 +173,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn qreal QGLCylinder::height() const
+    \fn float QGLCylinder::height() const
 
     Returns the height of the cylinder.
 
@@ -183,7 +183,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn void QGLCylinder::setHeight(qreal height)
+    \fn void QGLCylinder::setHeight(float height)
 
     Sets the height of this cylinder to \a height.
 
@@ -283,21 +283,21 @@ QGLBuilder& operator<<(QGLBuilder& builder, const QGLCylinder& cylinder)
     int nCaps = (cylinder.topEnabled()?1:0) + (cylinder.baseEnabled()?1:0);
     Q_ASSERT(cylinder.layers() >= 1 + nCaps);
 
-    qreal numSlices = qreal(cylinder.slices());
-    qreal numLayers = qreal(cylinder.layers() - nCaps); // minus top and base caps
-    qreal topRadius = cylinder.diameterTop()/2.0;
-    qreal bottomRadius = cylinder.diameterBottom()/2.0;
+    float numSlices = float(cylinder.slices());
+    float numLayers = float(cylinder.layers() - nCaps); // minus top and base caps
+    float topRadius = cylinder.diameterTop() / 2.0f;
+    float bottomRadius = cylinder.diameterBottom() / 2.0f;
 
-    qreal angle = 0;
-    qreal angleIncrement = (2.0 * M_PI) / numSlices;
-    qreal radius = topRadius;
-    qreal radiusIncrement = qreal(bottomRadius-topRadius)/ numLayers;
-    qreal height = qreal(cylinder.height());
-    qreal heightDecrement = height/numLayers;
-    height *= 0.5;
+    float angle = 0.0f;
+    float angleIncrement = (2.0f * M_PI) / numSlices;
+    float radius = topRadius;
+    float radiusIncrement = float(bottomRadius-topRadius) / numLayers;
+    float height = float(cylinder.height());
+    float heightDecrement = height / numLayers;
+    height *= 0.5f;
 
-    qreal textureHeight = 1.0;
-    qreal textureDecrement = 1.0/numLayers;
+    float textureHeight = 1.0f;
+    float textureDecrement = 1.0f / numLayers;
 
     QGeometryData oldLayer;
 
@@ -306,10 +306,10 @@ QGLBuilder& operator<<(QGLBuilder& builder, const QGLCylinder& cylinder)
         QGeometryData newLayer;
         //Generate a circle of vertices for this layer.
         for (int i=0; i<cylinder.slices(); i++) {
-            newLayer.appendVertex(QVector3D(radius * qCos(angle), radius * qSin(angle), height));
+            newLayer.appendVertex(QVector3D(radius * cosf(angle), radius * sinf(angle), height));
             angle+=angleIncrement;
         }
-        angle = 0;
+        angle = 0.0f;
         QVector3D center = newLayer.center();
         // Generate texture coordinates (including an extra seam vertex for textures).
         newLayer.appendVertex(newLayer.vertex(0));
@@ -323,9 +323,9 @@ QGLBuilder& operator<<(QGLBuilder& builder, const QGLCylinder& cylinder)
             top.appendVertex(center);
             top.appendVertexArray(newLayer.vertices());
             //Generate a circle of texture vertices for this layer.
-            top.appendTexCoord(QVector2D(0.5,0.5));
+            top.appendTexCoord(QVector2D(0.5f, 0.5f));
             for (int i=1; i<top.count(); i++) {
-                top.appendTexCoord(QVector2D(0.5*qCos(angle)+0.5, 0.5*qSin(angle)+0.5));
+                top.appendTexCoord(QVector2D(0.5f * cosf(angle) + 0.5f, 0.5f * sinf(angle) + 0.5f));
                 angle+=angleIncrement;
             }
             angle = 0;
@@ -343,10 +343,10 @@ QGLBuilder& operator<<(QGLBuilder& builder, const QGLCylinder& cylinder)
         QGeometryData newLayer;
         //Generate a circle of vertices for this layer.
         for (int i=0; i<cylinder.slices(); ++i) {
-            newLayer.appendVertex(QVector3D(radius * qCos(angle), radius * qSin(angle), height));
+            newLayer.appendVertex(QVector3D(radius * cosf(angle), radius * sinf(angle), height));
             angle+=angleIncrement;
         }
-        angle = 0;
+        angle = 0.0f;
         // Generate texture coordinates (including an extra seam vertex for textures).
         newLayer.appendVertex(newLayer.vertex(0));
         newLayer.generateTextureCoordinates();
@@ -378,11 +378,11 @@ QGLBuilder& operator<<(QGLBuilder& builder, const QGLCylinder& cylinder)
         }
         //Generate a circle of texture vertices for this layer.
         for (int i=1; i<base.count(); i++) {
-            base.appendTexCoord(QVector2D(0.5*qCos(angle)+0.5, 0.5*qSin(angle)+0.5));
+            base.appendTexCoord(QVector2D(0.5f * cosf(angle) + 0.5f, 0.5f * sinf(angle) + 0.5f));
             angle+=angleIncrement;
         }
-        base.appendTexCoord(QVector2D(0.5,0.5));
-        angle = 0;
+        base.appendTexCoord(QVector2D(0.5f, 0.5f));
+        angle = 0.0f;
         //we need to reverse the above to draw it properly - windings!
         builder.addTriangulatedFace(base.reversed());
     }

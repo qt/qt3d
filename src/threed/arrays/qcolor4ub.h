@@ -74,22 +74,22 @@ public:
     void setBlue(int value) { m_blue = uchar(value); }
     void setAlpha(int value) { m_alpha = uchar(value); }
 
-    qreal redF() const { return m_red / 255.0f; }
-    qreal greenF() const { return m_green / 255.0f; }
-    qreal blueF() const { return m_blue / 255.0f; }
-    qreal alphaF() const { return m_alpha / 255.0f; }
+    float redF() const { return m_red / 255.0f; }
+    float greenF() const { return m_green / 255.0f; }
+    float blueF() const { return m_blue / 255.0f; }
+    float alphaF() const { return m_alpha / 255.0f; }
 
-    void setRedF(qreal value) { m_red = uchar(qRound(value * 255.0f)); }
-    void setGreenF(qreal value) { m_green = uchar(qRound(value * 255.0f)); }
-    void setBlueF(qreal value) { m_blue = uchar(qRound(value * 255.0f)); }
-    void setAlphaF(qreal value) { m_alpha = uchar(qRound(value * 255.0f)); }
+    void setRedF(float value) { m_red = uchar(qRound(value * 255.0f)); }
+    void setGreenF(float value) { m_green = uchar(qRound(value * 255.0f)); }
+    void setBlueF(float value) { m_blue = uchar(qRound(value * 255.0f)); }
+    void setAlphaF(float value) { m_alpha = uchar(qRound(value * 255.0f)); }
 
     void setRgb(int red, int green, int blue, int alpha = 255);
-    void setRgbF(qreal red, qreal green, qreal blue, qreal alpha = 1.0f);
+    void setRgbF(float red, float green, float blue, float alpha = 1.0f);
 
     static QColor4ub fromRgb(int red, int green, int blue, int alpha = 255);
     static QColor4ub fromRgbF
-        (qreal red, qreal green, qreal blue, qreal alpha = 1.0f);
+        (float red, float green, float blue, float alpha = 1.0f);
     static QColor4ub fromRaw(const uchar *data);
 
     QColor toColor() const;
@@ -159,7 +159,7 @@ inline void QColor4ub::setRgb(int red, int green, int blue, int alpha)
     m_alpha = uchar(alpha);
 }
 
-inline void QColor4ub::setRgbF(qreal red, qreal green, qreal blue, qreal alpha)
+inline void QColor4ub::setRgbF(float red, float green, float blue, float alpha)
 {
     m_red = uchar(qRound(red * 255.0f));
     m_green = uchar(qRound(green * 255.0f));
@@ -173,7 +173,7 @@ inline QColor4ub QColor4ub::fromRgb(int red, int green, int blue, int alpha)
 }
 
 inline QColor4ub QColor4ub::fromRgbF
-    (qreal red, qreal green, qreal blue, qreal alpha)
+    (float red, float green, float blue, float alpha)
 {
     return QColor4ub(qRound(red * 255.0f), qRound(green * 255.0f),
                     qRound(blue * 255.0f), qRound(alpha * 255.0f));

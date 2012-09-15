@@ -53,19 +53,19 @@ class CylinderMeshPrivate;
 class Q_QT3D_QUICK_EXPORT CylinderMesh : public QQuickMesh
 {
     Q_OBJECT
-    Q_PROPERTY(qreal radius READ radius WRITE setRadius NOTIFY radiusChanged)
-    Q_PROPERTY(qreal length READ length WRITE setLength NOTIFY lengthChanged)
+    Q_PROPERTY(float radius READ radius WRITE setRadius NOTIFY radiusChanged)
+    Q_PROPERTY(float length READ length WRITE setLength NOTIFY lengthChanged)
     Q_PROPERTY(int levelOfDetail READ levelOfDetail WRITE setLevelOfDetail NOTIFY levelOfDetailChanged)
 
 public:
     explicit CylinderMesh(QObject *parent = 0);
     ~CylinderMesh();
 
-    qreal radius() const;
-    void setRadius(qreal radius);
+    float radius() const;
+    void setRadius(float radius);
 
-    qreal length() const;
-    void setLength(qreal length);
+    float length() const;
+    void setLength(float length);
 
     int levelOfDetail() const;
     void setLevelOfDetail(int lod);

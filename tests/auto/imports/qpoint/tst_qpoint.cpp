@@ -74,9 +74,9 @@ void tst_QPoint::test()
     {
         QSignalSpy spyVertices(&point,SIGNAL(verticesChanged()));
         QVariantList vertices;
-        vertices.append(QVariant(qreal(1.0)));
-        vertices.append(QVariant(qreal(2.0)));
-        vertices.append(QVariant(qreal(3.0)));
+        vertices.append(QVariant(1.0f));
+        vertices.append(QVariant(2.0f));
+        vertices.append(QVariant(3.0f));
         point.setVertices(vertices);
         QCOMPARE(spyVertices.size(), 1);
 

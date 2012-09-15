@@ -60,7 +60,7 @@ class ImageDisplay : public QGLSceneNode
 {
     Q_OBJECT
 public:
-    ImageDisplay(QObject *parent, QSharedPointer<QGLMaterialCollection> materials, qreal wallSize = 4.0);
+    ImageDisplay(QObject *parent, QSharedPointer<QGLMaterialCollection> materials, float wallSize = 4.0);
     ~ImageDisplay();
     int maxImages() const { return m_maxImages; }
     void setMaxImages(int max) { m_maxImages = max; }
@@ -77,8 +77,8 @@ private:
     QList<QGLTexture2D*> m_LoadedTextures;
     bool m_imageSetToDefault;
     int m_count;
-    qreal m_size;
-    qreal m_frameSize;
+    float m_size;
+    float m_frameSize;
     int m_maxImages;
     QImage m_frameImage;
     int m_frameLoadingMaterial;

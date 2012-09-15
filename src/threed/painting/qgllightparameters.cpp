@@ -159,12 +159,12 @@ public:
     QColor diffuseColor;
     QColor specularColor;
     QVector3D spotDirection;
-    qreal spotExponent;
-    qreal spotAngle;
-    qreal spotCosAngle;
-    qreal constantAttenuation;
-    qreal linearAttenuation;
-    qreal quadraticAttenuation;
+    float spotExponent;
+    float spotAngle;
+    float spotCosAngle;
+    float constantAttenuation;
+    float linearAttenuation;
+    float quadraticAttenuation;
 };
 
 
@@ -505,13 +505,13 @@ void QGLLightParameters::setSpotDirection(const QVector3D& vector)
     \sa spotAngle, position
 */
 
-qreal QGLLightParameters::spotExponent() const
+float QGLLightParameters::spotExponent() const
 {
     Q_D(const QGLLightParameters);
     return d->spotExponent;
 }
 
-void QGLLightParameters::setSpotExponent(qreal value)
+void QGLLightParameters::setSpotExponent(float value)
 {
     Q_D(QGLLightParameters);
     if (d->spotExponent != value) {
@@ -543,7 +543,7 @@ void QGLLightParameters::setSpotExponent(qreal value)
     This parameter has no effect on a Directional light.
 */
 
-qreal QGLLightParameters::spotAngle() const
+float QGLLightParameters::spotAngle() const
 {
     Q_D(const QGLLightParameters);
     return d->spotAngle;
@@ -553,13 +553,13 @@ qreal QGLLightParameters::spotAngle() const
 #define M_PI 3.14159265358979323846
 #endif
 
-void QGLLightParameters::setSpotAngle(qreal value)
+void QGLLightParameters::setSpotAngle(float value)
 {
     Q_D(QGLLightParameters);
     if (d->spotAngle != value) {
         d->spotAngle = value;
         if (value != 180.0f)
-            d->spotCosAngle = qCos(value * M_PI / 180.0f);
+            d->spotCosAngle = cosf(value * M_PI / 180.0f);
         else
             d->spotCosAngle = -1.0f;
         emit spotAngleChanged();
@@ -577,7 +577,7 @@ void QGLLightParameters::setSpotAngle(qreal value)
 
     \sa spotAngle()
 */
-qreal QGLLightParameters::spotCosAngle() const
+float QGLLightParameters::spotCosAngle() const
 {
     Q_D(const QGLLightParameters);
     return d->spotCosAngle;
@@ -602,13 +602,13 @@ qreal QGLLightParameters::spotCosAngle() const
     \sa linearAttenuation, quadraticAttenuation
 */
 
-qreal QGLLightParameters::constantAttenuation() const
+float QGLLightParameters::constantAttenuation() const
 {
     Q_D(const QGLLightParameters);
     return d->constantAttenuation;
 }
 
-void QGLLightParameters::setConstantAttenuation(qreal value)
+void QGLLightParameters::setConstantAttenuation(float value)
 {
     Q_D(QGLLightParameters);
     if (d->constantAttenuation != value) {
@@ -637,13 +637,13 @@ void QGLLightParameters::setConstantAttenuation(qreal value)
     \sa constantAttenuation, quadraticAttenuation
 */
 
-qreal QGLLightParameters::linearAttenuation() const
+float QGLLightParameters::linearAttenuation() const
 {
     Q_D(const QGLLightParameters);
     return d->linearAttenuation;
 }
 
-void QGLLightParameters::setLinearAttenuation(qreal value)
+void QGLLightParameters::setLinearAttenuation(float value)
 {
     Q_D(QGLLightParameters);
     if (d->linearAttenuation != value) {
@@ -672,13 +672,13 @@ void QGLLightParameters::setLinearAttenuation(qreal value)
     \sa constantAttenuation, linearAttenuation
 */
 
-qreal QGLLightParameters::quadraticAttenuation() const
+float QGLLightParameters::quadraticAttenuation() const
 {
     Q_D(const QGLLightParameters);
     return d->quadraticAttenuation;
 }
 
-void QGLLightParameters::setQuadraticAttenuation(qreal value)
+void QGLLightParameters::setQuadraticAttenuation(float value)
 {
     Q_D(QGLLightParameters);
     if (d->quadraticAttenuation != value) {

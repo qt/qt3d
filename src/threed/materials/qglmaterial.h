@@ -71,7 +71,7 @@ class Q_QT3D_EXPORT QGLMaterial : public QGLAbstractMaterial
     Q_PROPERTY(QColor diffuseColor READ diffuseColor WRITE setDiffuseColor NOTIFY diffuseColorChanged)
     Q_PROPERTY(QColor specularColor READ specularColor WRITE setSpecularColor NOTIFY specularColorChanged)
     Q_PROPERTY(QColor emittedLight READ emittedLight WRITE setEmittedLight NOTIFY emittedLightChanged)
-    Q_PROPERTY(qreal shininess READ shininess WRITE setShininess NOTIFY shininessChanged)
+    Q_PROPERTY(float shininess READ shininess WRITE setShininess NOTIFY shininessChanged)
     Q_PROPERTY(QGLTexture2D *texture READ texture WRITE setTexture NOTIFY texturesChanged)
     Q_PROPERTY(QGLMaterial::TextureCombineMode textureCombineMode READ textureCombineMode WRITE setTextureCombineMode NOTIFY texturesChanged)
     Q_PROPERTY(QUrl textureUrl READ textureUrl WRITE setTextureUrl NOTIFY texturesChanged)
@@ -93,8 +93,8 @@ public:
 
     void setColor(const QColor& value);
 
-    qreal shininess() const;
-    void setShininess(qreal value);
+    float shininess() const;
+    void setShininess(float value);
 
     QGLTexture2D *texture(int layer = 0) const;
     void setTexture(QGLTexture2D *value, int layer = 0);

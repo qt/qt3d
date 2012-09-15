@@ -86,7 +86,7 @@ private:
     bool blend;
     bool vertical;
 
-    qreal posn;     // Position within the animation - 0...1
+    float posn;     // Position within the animation - 0...1
     QSize pageSize; // Size of a page within the window.
 
     QRect pageRect1;

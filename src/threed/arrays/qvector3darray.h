@@ -60,16 +60,16 @@ public:
     QVector3DArray(int size, const QVector3D& value = QVector3D());
     QVector3DArray(const QArray<QVector3D>& other);
 
-    void append(qreal x, qreal y, qreal z);
+    void append(float x, float y, float z);
 
-    void scale(qreal scale);
-    QVector3DArray scaled(qreal scale) const;
+    void scale(float scale);
+    QVector3DArray scaled(float scale) const;
 
     void translate(const QVector3D& value);
-    void translate(qreal x, qreal y, qreal z);
+    void translate(float x, float y, float z);
 
     QArray<QVector3D> translated(const QVector3D& value) const;
-    QArray<QVector3D> translated(qreal x, qreal y, qreal z) const;
+    QArray<QVector3D> translated(float x, float y, float z) const;
 
     void transform(const QMatrix4x4& matrix);
     QArray<QVector3D> transformed(const QMatrix4x4& matrix) const;
@@ -100,13 +100,13 @@ inline QVector3DArray::QVector3DArray(int size, const QVector3D& value)
 inline QVector3DArray::QVector3DArray(const QArray<QVector3D>& other)
     : QArray<QVector3D>(other) {}
 
-inline void QVector3DArray::append(qreal x, qreal y, qreal z)
+inline void QVector3DArray::append(float x, float y, float z)
     { QArray<QVector3D>::append(QVector3D(x, y, z)); }
 
-inline void QVector3DArray::translate(qreal x, qreal y, qreal z)
+inline void QVector3DArray::translate(float x, float y, float z)
     { translate(QVector3D(x, y, z)); }
 
-inline QArray<QVector3D> QVector3DArray::translated(qreal x, qreal y, qreal z) const
+inline QArray<QVector3D> QVector3DArray::translated(float x, float y, float z) const
     { return translated(QVector3D(x, y, z)); }
 
 QT_END_NAMESPACE
