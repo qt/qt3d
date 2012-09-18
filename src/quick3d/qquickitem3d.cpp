@@ -1426,7 +1426,7 @@ void QQuickItem3D::componentComplete()
             QQmlComponent vp(engine);
             vp.setData(QByteArray(
                            "import QtQuick 2.0\n"
-                           "import Qt3D 1.0\n"
+                           "import Qt3D 2.0\n"
                            "Viewport{ objectName: \"vp\" }\n"), QUrl());
             QObject *implicitViewport = vp.create();
             QQuickItem *parentViewport = qobject_cast<QQuickItem*>(implicitViewport);

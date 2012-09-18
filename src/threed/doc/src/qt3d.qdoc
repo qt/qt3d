@@ -74,7 +74,8 @@
     To use Qt 3D in your QML application you need the following import statement in your qml file.
 
     \code
-    import Qt3D 1.0
+    import Qt3D 2.0
+
     \endcode
 
     Asset loading, built-in shapes, shaders and texture management are the main features and they are explained below in
@@ -120,7 +121,7 @@
 
     \code
     import QtQuick 2.0
-    import Qt3D 1.0
+    import Qt3D 2.0
 
     Viewport {
         width: 640; height: 480
@@ -137,7 +138,7 @@
     Qt 3D comes with a number of built-in primitive shapes. To use these shapes in your application you need the following import statement in your QML application.
 
     \code
-    import Qt3D.Shapes 1.0
+    import Qt3D.Shapes 2.0
     \endcode
 
     \image sampleshapes.png

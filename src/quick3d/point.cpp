@@ -74,7 +74,7 @@ QT_BEGIN_NAMESPACE
     references it:
 
     \code
-    import Qt3D.Shapes 1.0
+    import Qt3D.Shapes 2.0
     \endcode
 
     \sa Item3D

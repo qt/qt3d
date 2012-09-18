@@ -72,7 +72,7 @@
     references it:
 
     \code
-    import Qt3D.Shapes 1.0
+    import Qt3D.Shapes 2.0
     \endcode
 
     The teapot can be moved from the origin by specifying the

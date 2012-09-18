@@ -79,7 +79,7 @@
 
     \code
     file:///C:/path/to/qml/app/my_app.qml:42:1: module "Qt3D" plugin "qthreedqmlplugin" not found
-     import Qt3D 1.0
+     import Qt3D 2.0
 
      ^
     \endcode
