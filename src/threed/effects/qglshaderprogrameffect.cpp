@@ -708,14 +708,6 @@ void QGLShaderProgramEffect::setActive(QGLPainter *painter, bool flag)
             (QOpenGLShader::Vertex, d->vertexShader);
         d->program->addShaderFromSourceCode
             (QOpenGLShader::Fragment, d->fragmentShader);
-        if (!d->geometryShader.isEmpty())
-        {
-            d->program->addShaderFromSourceCode
-                (QOpenGLShader::Geometry, d->geometryShader);
-            d->program->setGeometryInputType(d->geometryInputType);
-            d->program->setGeometryOutputType(d->geometryOutputType);
-
-        }
 
         if (beforeLink()) {
             for (attr = 0; attr < numAttributes; ++attr)
@@ -1000,49 +992,6 @@ void QGLShaderProgramEffect::setFragmentShader(const QByteArray &source)
     Q_D(QGLShaderProgramEffect);
     d->fragmentShader = source;
     d->regenerate = true;
-}
-
-/*!
-    Sets the type of primitive the program's geometry shader is expecting to
-    recieve from the vertex shader to \a drawingMode.  The default value is
-    GL_TRIANGLE_STRIP.
-
-    If the program has no geometry shader, this has no effect.
-*/
-void QGLShaderProgramEffect::setGeometryInputType(GLenum drawingMode)
-{
-    Q_D(QGLShaderProgramEffect);
-    d->geometryInputType = drawingMode;
-}
-
-/*!
-    Sets what sort of primitives the program's geometry shader will produce
-    to \a drawingMode. The default value is GL_TRIANGLE_STRIP.
-
-    If the program has no geometry shader, this has no effect.
-*/
-void QGLShaderProgramEffect::setGeometryOutputType(GLenum drawingMode)
-{
-    Q_D(QGLShaderProgramEffect);
-    d->geometryOutputType = drawingMode;
-}
-
-/*!
-    Returns the type of primitives this program's geometry shader is expecting.
-*/
-GLenum QGLShaderProgramEffect::geometryInputType()
-{
-    Q_D(QGLShaderProgramEffect);
-    return d->geometryInputType;
-}
-
-/*!
-    Returns the type of primitive this program's geometry shader will produce.
-*/
-GLenum QGLShaderProgramEffect::geometryOutputType()
-{
-    Q_D(QGLShaderProgramEffect);
-    return d->geometryOutputType;
 }
 
 /*!

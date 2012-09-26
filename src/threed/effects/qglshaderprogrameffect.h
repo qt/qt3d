@@ -72,11 +72,6 @@ public:
     void setFragmentShader(const QByteArray &source);
     void setFragmentShaderFromFile(const QString &fileName);
 
-    void setGeometryInputType(GLenum drawingMode);
-    void setGeometryOutputType(GLenum drawingMode);
-    GLenum geometryInputType();
-    GLenum geometryOutputType();
-
     int maximumLights() const;
     void setMaximumLights(int value);
 
