@@ -1,5 +1,6 @@
 TARGET = qglinfo
 QT += 3d widgets opengl
+!build_pass:contains(QT_CONFIG, build_all): CONFIG += release
 
 SOURCES += main.cpp \
     qglinfowindow.cpp \
