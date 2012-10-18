@@ -312,6 +312,7 @@ public:
     static QObject *resources_at(QQmlListProperty<QObject> *, int);
     static void resources_append(QQmlListProperty<QObject> *, QObject *);
     static int resources_count(QQmlListProperty<QObject> *);
+    static void resources_clear(QQmlListProperty<QObject> *);
 
     // transform property
     static int transform_count(QQmlListProperty<QQuickQGraphicsTransform3D> *list);
@@ -549,6 +550,13 @@ void QQuickItem3DPrivate::resources_append(QQmlListProperty<QObject> *prop, QObj
 int QQuickItem3DPrivate::resources_count(QQmlListProperty<QObject> *prop)
 {
     return prop->object->children().count();
+}
+
+void QQuickItem3DPrivate::resources_clear(QQmlListProperty<QObject> *property)
+{
+    QObjectList children = property->object->children();
+    foreach (QObject *child, children)
+        child->setParent(0);
 }
 
 /*!
@@ -998,7 +1006,8 @@ QQmlListProperty<QObject> QQuickItem3D::resources()
 {
     return QQmlListProperty<QObject>(this, 0, QQuickItem3DPrivate::resources_append,
                                              QQuickItem3DPrivate::resources_count,
-                                             QQuickItem3DPrivate::resources_at);
+                                             QQuickItem3DPrivate::resources_at,
+                                             QQuickItem3DPrivate::resources_clear);
 }
 
 
@@ -1012,7 +1021,7 @@ QQmlListProperty<QObject> QQuickItem3D::resources()
 */
 QQmlListProperty<QObject> QQuickItem3D::data()
 {
-    return QQmlListProperty<QObject>(this, 0, QQuickItem3DPrivate::data_append);
+    return QQmlListProperty<QObject>(this, 0, QQuickItem3DPrivate::data_append, 0, 0, 0);
 }
 
 /*!
