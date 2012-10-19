@@ -62,7 +62,7 @@ TankView::TankView(QWindow *parent)
 
     // TODO: setToolTip not implemented in QWindow
     // setToolTip(tr("Double-click to add more tanks"));
-    setWindowTitle(tr("Double-click Me!"));
+    setTitle(tr("Double-click Me!"));
 }
 
 TankView::~TankView()

@@ -49,7 +49,7 @@ BasketView::BasketView(QWindow *parent)
     : QGLView(parent)
     , m_angle(0)
 {
-    setWindowTitle(tr("Basket"));
+    setTitle(tr("Basket"));
 
 //! [1]
     QGLBuilder builder;

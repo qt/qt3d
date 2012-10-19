@@ -107,7 +107,7 @@ ShapesWidget::ShapesWidget(QWindow *parent)
     , context(0)
     , initialised(false)
 {
-    setWindowTitle(tr("GL Primitive Shapes"));
+    setTitle(tr("GL Primitive Shapes"));
     format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
     format.setDepthBufferSize(24);
     setSurfaceType(QWindow::OpenGLSurface);
