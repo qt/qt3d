@@ -48,12 +48,10 @@ QML_FILES = \
 QML_INFRA_FILES += \
     $$QML_FILES \
     qmldir \
-    library.xml \
     plugins.qmltypes \
     cube.obj \
     quad.obj \
     teapot.bez
-    # see the file README.library_xml for more on library.xml
 
 copyqmlinfra_install.files = $$QML_INFRA_FILES
 copyqmlinfra_install.path = $$[QT_INSTALL_IMPORTS]/Qt3D/Shapes
@@ -67,7 +65,6 @@ copyqmlinfra.variable_out = PRE_TARGETDEPS
 QMAKE_EXTRA_COMPILERS += copyqmlinfra
 
 OTHER_FILES += \
-    README.plugins_types \
-    README.library_xml
+    README.plugins_types
 
 OTHER_FILES += $$QML_FILES
