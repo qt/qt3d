@@ -64,7 +64,4 @@ copyqmlinfra.CONFIG += no_link no_clean
 copyqmlinfra.variable_out = PRE_TARGETDEPS
 QMAKE_EXTRA_COMPILERS += copyqmlinfra
 
-OTHER_FILES += \
-    README.plugins_types
-
 OTHER_FILES += $$QML_FILES

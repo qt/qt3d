@@ -23,7 +23,4 @@ HEADERS += \
     skybox.h \
     billboarditem3d.h
 
-OTHER_FILES += \
-    README.plugins_types
-
 load(qml_plugin)
