@@ -22,6 +22,7 @@ DEPENDPATH += \
         $$PWD/code/BoostWorkaround/boost/tuple
 
 VPATH += \
+        $$PWD \
         $$PWD/code \
         $$PWD/contrib/ConvertUTF \
         $$PWD/contrib/zlib \
