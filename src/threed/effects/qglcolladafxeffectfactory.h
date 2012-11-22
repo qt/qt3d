@@ -42,12 +42,14 @@
 #ifndef QGLCOLLADAFXEFFECTFACTORY_H
 #define QGLCOLLADAFXEFFECTFACTORY_H
 
+#include <Qt3D/qgltexture2d.h>
+#include <Qt3D/qglcolladafxeffect.h>
+
 #include <QVector>
 #include <QXmlStreamReader>
 #include <QDir>
 
-#include "qgltexture2d.h"
-#include "qglcolladafxeffect.h"
+QT_BEGIN_HEADER
 
 Q_DECLARE_METATYPE(QArray<float>)
 
@@ -213,5 +215,7 @@ protected:
 };
 
 QT_END_NAMESPACE
+
+QT_END_HEADER
 
 #endif // QGLCOLLADAFXEFFECTFACTORY_H

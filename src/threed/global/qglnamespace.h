@@ -42,7 +42,7 @@
 #ifndef QGLNAMESPACE_H
 #define QGLNAMESPACE_H
 
-#include "qt3dglobal.h"
+#include <Qt3D/qt3dglobal.h>
 
 QT_BEGIN_HEADER
 

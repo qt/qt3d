@@ -52,10 +52,18 @@
 // ONCE QML APP DEPLOYMENT FOR QT3D IS STABLE & DEFINED THIS FILE WILL BE
 // REMOVED.  DO NOT USE IT IN YOUR APPLICATIONS.
 
-#include <qt3dquickglobal.h>
+#include <Qt3DQuick/qt3dquickglobal.h>
+
+QT_BEGIN_HEADER
+
+QT_BEGIN_NAMESPACE
 
 int Q_QT3D_QUICK_EXPORT q_quick3d_main(const char *entryPointQmlFile, const char *category, int argc, char *argv[]);
 
 QString Q_QT3D_QUICK_EXPORT q_get_qmldir(const QString &name, const QString &category);
+
+QT_END_NAMESPACE
+
+QT_END_HEADER
 
 #endif // QMLRES_H

@@ -42,9 +42,9 @@
 #ifndef QGLABSTRACTSCENE_H
 #define QGLABSTRACTSCENE_H
 
-#include "qt3dglobal.h"
-#include "qglscenenode.h"
-#include "qglsceneanimation.h"
+#include <Qt3D/qt3dglobal.h>
+#include <Qt3D/qglscenenode.h>
+#include <Qt3D/qglsceneanimation.h>
 
 #include <QtCore/qstringlist.h>
 #include <QtCore/qurl.h>

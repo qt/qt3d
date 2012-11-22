@@ -42,8 +42,8 @@
 #ifndef QBOX3D_H
 #define QBOX3D_H
 
-#include "qt3dglobal.h"
-#include "qray3d.h"
+#include <Qt3D/qt3dglobal.h>
+#include <Qt3D/qray3d.h>
 
 QT_BEGIN_HEADER
 

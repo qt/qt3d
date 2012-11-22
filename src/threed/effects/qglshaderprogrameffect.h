@@ -42,7 +42,7 @@
 #ifndef QGLSHADERPROGRAMEFFECT_H
 #define QGLSHADERPROGRAMEFFECT_H
 
-#include "qglabstracteffect.h"
+#include <Qt3D/qglabstracteffect.h>
 
 QT_BEGIN_HEADER
 

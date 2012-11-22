@@ -53,7 +53,8 @@
 // We mean it.
 //
 
-#include "qglmaterial.h"
+#include <Qt3D/qglmaterial.h>
+
 #include <QtCore/qmap.h>
 
 QT_BEGIN_HEADER

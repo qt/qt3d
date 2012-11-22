@@ -42,7 +42,7 @@
 #ifndef QQUICKANIMATION3D_H
 #define QQUICKANIMATION3D_H
 
-#include "qt3dquickglobal.h"
+#include <Qt3DQuick/qt3dquickglobal.h>
 
 #include <QtQml/qqml.h>
 #include <QtCore/qobject.h>

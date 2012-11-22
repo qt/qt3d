@@ -42,7 +42,7 @@
 #ifndef QGLLIGHTMODEL_H
 #define QGLLIGHTMODEL_H
 
-#include "qt3dglobal.h"
+#include <Qt3D/qt3dglobal.h>
 #include <QtCore/qobject.h>
 #include <QtGui/qcolor.h>
 

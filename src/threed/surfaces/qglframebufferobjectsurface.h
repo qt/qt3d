@@ -42,7 +42,7 @@
 #ifndef QGLFRAMEBUFFEROBJECTSURFACE_H
 #define QGLFRAMEBUFFEROBJECTSURFACE_H
 
-#include "qglabstractsurface.h"
+#include <Qt3D/qglabstractsurface.h>
 
 #include <QtGui/QOpenGLFramebufferObject>
 

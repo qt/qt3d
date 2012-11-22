@@ -42,7 +42,8 @@
 #ifndef QGLCOLORMATERIAL_H
 #define QGLCOLORMATERIAL_H
 
-#include "qglabstractmaterial.h"
+#include <Qt3D/qglabstractmaterial.h>
+
 #include <QtGui/qcolor.h>
 
 QT_BEGIN_HEADER

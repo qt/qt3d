@@ -42,7 +42,7 @@
 #ifndef QGLABSTRACTEFFECT_H
 #define QGLABSTRACTEFFECT_H
 
-#include "qglpainter.h"
+#include <Qt3D/qglpainter.h>
 
 QT_BEGIN_HEADER
 

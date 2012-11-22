@@ -42,8 +42,10 @@
 #ifndef QAIMESH_H
 #define QAIMESH_H
 
-#include "qaiscenehandler.h"
-#include "qgeometrydata.h"
+#include <Qt3D/qaiscenehandler.h>
+#include <Qt3D/qgeometrydata.h>
+
+QT_BEGIN_HEADER
 
 struct aiMesh;
 
@@ -68,5 +70,7 @@ private:
 };
 
 QT_END_NAMESPACE
+
+QT_END_HEADER
 
 #endif // QAIMESH_H

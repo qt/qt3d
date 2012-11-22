@@ -53,7 +53,7 @@
 // We mean it.
 //
 
-#include "qglvertexbundle.h"
+#include <Qt3D/qglvertexbundle.h>
 
 QT_BEGIN_HEADER
 

@@ -42,7 +42,7 @@
 #ifndef QVECTOR4DARRAY_H
 #define QVECTOR4DARRAY_H
 
-#include "qarray.h"
+#include <Qt3D/qarray.h>
 #include <QtGui/qvector4d.h>
 
 QT_BEGIN_HEADER

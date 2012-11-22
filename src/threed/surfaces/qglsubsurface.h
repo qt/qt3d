@@ -42,7 +42,7 @@
 #ifndef QGLSUBSURFACE_H
 #define QGLSUBSURFACE_H
 
-#include "qglabstractsurface.h"
+#include <Qt3D/qglabstractsurface.h>
 
 #include <QScopedPointer>
 

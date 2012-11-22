@@ -42,7 +42,8 @@
 #ifndef QVECTOR2DARRAY_H
 #define QVECTOR2DARRAY_H
 
-#include "qarray.h"
+#include <Qt3D/qarray.h>
+
 #include <QtGui/qvector2d.h>
 
 QT_BEGIN_HEADER

@@ -42,7 +42,8 @@
 #ifndef QGRAPHICSTRANSLATION3D_H
 #define QGRAPHICSTRANSLATION3D_H
 
-#include "qgraphicstransform3d.h"
+#include <Qt3D/qgraphicstransform3d.h>
+
 #include <QtCore/qscopedpointer.h>
 
 QT_BEGIN_HEADER

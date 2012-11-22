@@ -42,7 +42,8 @@
 #ifndef QGRAPHICSBILLBOARDTRANSFORM_H
 #define QGRAPHICSBILLBOARDTRANSFORM_H
 
-#include "qgraphicstransform3d.h"
+#include <Qt3D/qgraphicstransform3d.h>
+
 #include <QtCore/qscopedpointer.h>
 
 QT_BEGIN_HEADER

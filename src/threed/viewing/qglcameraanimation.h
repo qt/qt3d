@@ -42,10 +42,11 @@
 #ifndef QGLCAMERAANIMATION_H
 #define QGLCAMERAANIMATION_H
 
+#include <Qt3D/qt3dglobal.h>
+
 #include <QtCore/qabstractanimation.h>
 #include <QtCore/qeasingcurve.h>
 #include <QtGui/qvector3d.h>
-#include "qt3dglobal.h"
 
 QT_BEGIN_HEADER
 

@@ -44,8 +44,8 @@
 
 #include <QtCore/qobject.h>
 
-#include "qgeometrydata.h"
-#include "qglmaterialcollection.h"
+#include <Qt3D/qgeometrydata.h>
+#include <Qt3D/qglmaterialcollection.h>
 
 QT_BEGIN_HEADER
 

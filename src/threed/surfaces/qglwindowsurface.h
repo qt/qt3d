@@ -42,7 +42,7 @@
 #ifndef QGLWIDGETSURFACE_H
 #define QGLWIDGETSURFACE_H
 
-#include "qglabstractsurface.h"
+#include <Qt3D/qglabstractsurface.h>
 
 QT_BEGIN_HEADER
 

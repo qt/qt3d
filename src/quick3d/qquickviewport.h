@@ -42,7 +42,7 @@
 #ifndef QQUICKVIEWPORT_H
 #define QQUICKVIEWPORT_H
 
-#include "qt3dquickglobal.h"
+#include <Qt3DQuick/qt3dquickglobal.h>
 #include <QtCore/qobject.h>
 
 QT_BEGIN_HEADER

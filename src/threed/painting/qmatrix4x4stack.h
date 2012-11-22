@@ -42,7 +42,7 @@
 #ifndef QMATRIX4X4STACK_H
 #define QMATRIX4X4STACK_H
 
-#include "qt3dglobal.h"
+#include <Qt3D/qt3dglobal.h>
 #include <QtGui/qmatrix4x4.h>
 #include <QtCore/qscopedpointer.h>
 

@@ -43,7 +43,9 @@
 #define QGLPICKNODE_H
 
 #include <QtCore/qobject.h>
-#include "qt3dglobal.h"
+#include <Qt3D/qt3dglobal.h>
+
+QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
@@ -78,5 +80,7 @@ protected:
 };
 
 QT_END_NAMESPACE
+
+QT_END_HEADER
 
 #endif // QGLPICKNODE_H

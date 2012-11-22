@@ -42,8 +42,8 @@
 #ifndef QGLVIEW_H
 #define QGLVIEW_H
 
-#include "qglpainter.h"
-#include "qglcamera.h"
+#include <Qt3D/qglpainter.h>
+#include <Qt3D/qglcamera.h>
 
 #include <QWindow>
 

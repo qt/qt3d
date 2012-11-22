@@ -42,7 +42,7 @@
 #ifndef QGLMOCKVIEW_H
 #define QGLMOCKVIEW_H
 
-#include "qt3dglobal.h"
+#include <Qt3D/qt3dglobal.h>
 
 #include <QWindow>
 #include <QSharedPointer>

@@ -42,11 +42,13 @@
 #ifndef QGLMATERIAL_H
 #define QGLMATERIAL_H
 
-#include "qglabstractmaterial.h"
+#include <Qt3D/qglabstractmaterial.h>
+
 #include <QtCore/qobject.h>
 #include <QtCore/qscopedpointer.h>
-#include <QtGui/qcolor.h>
 #include <QtCore/qurl.h>
+
+#include <QtGui/qcolor.h>
 
 QT_BEGIN_HEADER
 

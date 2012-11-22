@@ -42,8 +42,9 @@
 #ifndef QCUSTOMDATAARRAY_H
 #define QCUSTOMDATAARRAY_H
 
-#include "qarray.h"
-#include "qcolor4ub.h"
+#include <Qt3D/qarray.h>
+#include <Qt3D/qcolor4ub.h>
+
 #include <QtCore/qvariant.h>
 #include <QtGui/qvector2d.h>
 #include <QtGui/qvector3d.h>

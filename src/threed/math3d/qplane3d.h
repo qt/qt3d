@@ -42,9 +42,9 @@
 #ifndef QPLANE3D_H
 #define QPLANE3D_H
 
+#include <Qt3D/qray3d.h>
 #include <QtGui/qvector3d.h>
 #include <QtCore/qnumeric.h>
-#include "qray3d.h"
 
 QT_BEGIN_HEADER
 

@@ -43,7 +43,7 @@
 #ifndef DOWNLOADMANAGER_H
 #define DOWNLOADMANAGER_H
 
-#include "qglnamespace.h"
+#include <Qt3D/qglnamespace.h>
 #include <QObject>
 
 QT_BEGIN_HEADER

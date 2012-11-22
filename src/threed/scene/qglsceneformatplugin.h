@@ -42,7 +42,7 @@
 #ifndef QGLSCENEFORMATPLUGIN_H
 #define QGLSCENEFORMATPLUGIN_H
 
-#include "qt3dglobal.h"
+#include <Qt3D/qt3dglobal.h>
 #include <QtCore/qplugin.h>
 #include <QtCore/qfactoryinterface.h>
 #include <QtCore/qurl.h>

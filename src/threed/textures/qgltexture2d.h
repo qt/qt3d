@@ -42,7 +42,7 @@
 #ifndef QGLTEXTURE2D_H
 #define QGLTEXTURE2D_H
 
-#include "qglnamespace.h"
+#include <Qt3D/qglnamespace.h>
 
 #include <QOpenGLBuffer>
 #include <QScopedPointer>

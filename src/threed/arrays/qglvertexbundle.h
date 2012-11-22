@@ -42,12 +42,12 @@
 #ifndef QGLVERTEXBUNDLE_H
 #define QGLVERTEXBUNDLE_H
 
+#include <Qt3D/qcustomdataarray.h>
+#include <Qt3D/qglattributevalue.h>
+#include <Qt3D/qglattributeset.h>
+
 #include <QOpenGLBuffer>
 #include <QList>
-
-#include "qcustomdataarray.h"
-#include "qglattributevalue.h"
-#include "qglattributeset.h"
 
 QT_BEGIN_HEADER
 

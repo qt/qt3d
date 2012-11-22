@@ -42,8 +42,9 @@
 #ifndef QGLABSTRACTMATERIAL_H
 #define QGLABSTRACTMATERIAL_H
 
+#include <Qt3D/qglattributeset.h>
+
 #include <QtCore/qobject.h>
-#include "qglattributeset.h"
 
 QT_BEGIN_HEADER
 

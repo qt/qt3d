@@ -42,14 +42,14 @@
 #ifndef QARRAY_H
 #define QARRAY_H
 
+#include <Qt3D/qt3dglobal.h>
+
 #include <QtCore/qglobal.h>
 #include <QtCore/qatomic.h>
 #include <QtCore/qdatastream.h>
 #include <QtCore/qdebug.h>
 #include <string.h>
 #include <new>
-
-#include "qt3dglobal.h"
 
 QT_BEGIN_HEADER
 

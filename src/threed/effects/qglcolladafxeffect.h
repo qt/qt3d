@@ -42,11 +42,13 @@
 #ifndef QGLCOLLADAEFFECT_H
 #define QGLCOLLADAEFFECT_H
 
+#include <Qt3D/qglshaderprogrameffect.h>
+
 #include <QStack>
 #include <QList>
 #include <QOpenGLShaderProgram>
 
-#include "qglshaderprogrameffect.h"
+QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
@@ -95,5 +97,7 @@ private:
 };
 
 QT_END_NAMESPACE
+
+QT_END_HEADER
 
 #endif // QGLCOLLADAEFFECT_H

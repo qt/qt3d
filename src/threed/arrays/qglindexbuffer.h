@@ -42,10 +42,10 @@
 #ifndef QGLINDEXBUFFER_H
 #define QGLINDEXBUFFER_H
 
-#include <QOpenGLBuffer>
+#include <Qt3D/qglnamespace.h>
+#include <Qt3D/qarray.h>
 
-#include "qglnamespace.h"
-#include "qarray.h"
+#include <QOpenGLBuffer>
 
 QT_BEGIN_HEADER
 

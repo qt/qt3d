@@ -42,8 +42,10 @@
 #ifndef QGLBEZIERSCENE_H
 #define QGLBEZIERSCENE_H
 
-#include "qglabstractscene.h"
-#include "qglbuilder.h"
+#include <Qt3D/qglabstractscene.h>
+#include <Qt3D/qglbuilder.h>
+
+QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
@@ -62,5 +64,7 @@ private:
 };
 
 QT_END_NAMESPACE
+
+QT_END_HEADER
 
 #endif

@@ -42,8 +42,9 @@
 #ifndef QGLATTRIBUTESET_H
 #define QGLATTRIBUTESET_H
 
-#include "qt3dglobal.h"
-#include "qglnamespace.h"
+#include <Qt3D/qt3dglobal.h>
+#include <Qt3D/qglnamespace.h>
+
 #include <QtCore/qlist.h>
 
 QT_BEGIN_HEADER

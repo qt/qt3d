@@ -39,17 +39,17 @@
 **
 ****************************************************************************/
 
-#ifndef QGLBuilder_H
-#define QGLBuilder_H
+#ifndef QGLBUILDER_H
+#define QGLBUILDER_H
+
+#include <Qt3D/qglnamespace.h>
+#include <Qt3D/qglscenenode.h>
+#include <Qt3D/qglattributevalue.h>
+#include <Qt3D/qgeometrydata.h>
 
 #include <QVector>
 #include <QList>
 #include <QVector3D>
-
-#include "qglnamespace.h"
-#include "qglscenenode.h"
-#include "qglattributevalue.h"
-#include "qgeometrydata.h"
 
 QT_BEGIN_HEADER
 
@@ -137,4 +137,4 @@ QT_END_NAMESPACE
 
 QT_END_HEADER
 
-#endif // QGLBuilder_H
+#endif // QGLBUILDER_H

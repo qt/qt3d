@@ -42,7 +42,7 @@
 #ifndef QGLRenderOrderComparator_H
 #define QGLRenderOrderComparator_H
 
-#include "qglrenderorder.h"
+#include <Qt3D/qglrenderorder.h>
 
 QT_BEGIN_HEADER
 

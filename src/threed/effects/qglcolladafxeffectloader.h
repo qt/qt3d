@@ -42,11 +42,14 @@
 #ifndef QGLCOLLADAFXEFFECTLOADER_H
 #define QGLCOLLADAFXEFFECTLOADER_H
 
+#include <Qt3D/qt3dglobal.h>
+
 #include <qglobal.h>
 #include <QString>
 #include <QStringList>
 #include <QtCore/qscopedpointer.h>
-#include "qt3dglobal.h"
+
+QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
@@ -69,5 +72,7 @@ private:
 };
 
 QT_END_NAMESPACE
+
+QT_END_HEADER
 
 #endif // QGLCOLLADAFXEFFECTLOADER_H

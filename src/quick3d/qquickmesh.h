@@ -42,16 +42,15 @@
 #ifndef QQUICKMESH_H
 #define QQUICKMESH_H
 
-#include "qt3dquickglobal.h"
+#include <Qt3DQuick/qt3dquickglobal.h>
+#include <Qt3D/qglscenenode.h>
+#include <Qt3D/qglpainter.h>
 
 #include <QtCore/qobject.h>
 #include <QtCore/qurl.h>
 #include <QtQml/qqml.h>
 #include <QtQml/qqmlengine.h>
 #include <QtQml/qqmlparserstatus.h>
-
-#include "qglscenenode.h"
-#include "qglpainter.h"
 
 QT_BEGIN_HEADER
 

@@ -42,8 +42,9 @@
 #ifndef QGLCAMERA_H
 #define QGLCAMERA_H
 
-#include "qt3dglobal.h"
-#include "qglnamespace.h"
+#include <Qt3D/qt3dglobal.h>
+#include <Qt3D/qglnamespace.h>
+
 #include <QtCore/qobject.h>
 #include <QtCore/qsize.h>
 #include <QtGui/qvector3d.h>

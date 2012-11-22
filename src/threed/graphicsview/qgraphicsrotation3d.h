@@ -42,7 +42,7 @@
 #ifndef QGRAPHICSROTATION3D_H
 #define QGRAPHICSROTATION3D_H
 
-#include "qgraphicstransform3d.h"
+#include <Qt3D/qgraphicstransform3d.h>
 
 QT_BEGIN_HEADER
 

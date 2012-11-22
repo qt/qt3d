@@ -42,7 +42,7 @@
 #ifndef QCOLOR4UB_H
 #define QCOLOR4UB_H
 
-#include "qt3dglobal.h"
+#include <Qt3D/qt3dglobal.h>
 #include <QtGui/qcolor.h>
 #include <QtCore/qmetatype.h>
 

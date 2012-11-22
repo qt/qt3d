@@ -42,7 +42,7 @@
 #ifndef QAISCENE_H
 #define QAISCENE_H
 
-#include "qglabstractscene.h"
+#include <Qt3D/qglabstractscene.h>
 
 #include "aiScene.h"
 

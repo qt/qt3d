@@ -44,7 +44,7 @@
 
 // This is a dummy header for defining the interface of "Cube.qml" to qdoc.
 
-#include "qquickitem3d.h"
+#include <Qt3DQuick/qquickitem3d.h>
 
 QT_BEGIN_HEADER
 

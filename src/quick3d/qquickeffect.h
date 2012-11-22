@@ -42,15 +42,14 @@
 #ifndef QQUICKEFFECT_P_H
 #define QQUICKEFFECT_P_H
 
-#include "qt3dquickglobal.h"
+#include <Qt3DQuick/qt3dquickglobal.h>
+#include <Qt3D/qgltexture2d.h>
 
 #include <QtCore/qobject.h>
 #include <QtCore/qurl.h>
 #include <QtGui/qcolor.h>
 #include <QtGui/qimage.h>
 #include <QtQml/qqml.h>
-
-#include "qgltexture2d.h"
 
 QT_BEGIN_HEADER
 

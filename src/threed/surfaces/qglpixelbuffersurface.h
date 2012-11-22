@@ -42,7 +42,7 @@
 #ifndef QGLPIXELBUFFERSURFACE_H
 #define QGLPIXELBUFFERSURFACE_H
 
-#include "qglabstractsurface.h"
+#include <Qt3D/qglabstractsurface.h>
 
 #include <QGLPixelBuffer>
 

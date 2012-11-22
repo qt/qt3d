@@ -42,8 +42,8 @@
 #ifndef QGLATTRIBUTEVALUE_H
 #define QGLATTRIBUTEVALUE_H
 
-#include "qglattributedescription.h"
-#include "qcustomdataarray.h"
+#include <Qt3D/qglattributedescription.h>
+#include <Qt3D/qcustomdataarray.h>
 
 QT_BEGIN_HEADER
 

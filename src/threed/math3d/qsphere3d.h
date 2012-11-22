@@ -42,7 +42,7 @@
 #ifndef QSPHERE3D_H
 #define QSPHERE3D_H
 
-#include "qt3dglobal.h"
+#include <Qt3D/qt3dglobal.h>
 #include <QtGui/qvector3d.h>
 
 QT_BEGIN_HEADER

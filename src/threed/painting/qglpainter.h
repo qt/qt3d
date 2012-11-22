@@ -42,27 +42,27 @@
 #ifndef QGLPAINTER_H
 #define QGLPAINTER_H
 
-#include "qglnamespace.h"
+#include <QOpenGLFunctions>
+
+#include <Qt3D/qglnamespace.h>
+#include <Qt3D/qbox3d.h>
+#include <Qt3D/qglvertexbundle.h>
+#include <Qt3D/qglindexbuffer.h>
+#include <Qt3D/qgllightmodel.h>
+#include <Qt3D/qgllightparameters.h>
+#include <Qt3D/qglmaterial.h>
+#include <Qt3D/qglabstractsurface.h>
+#include <Qt3D/qmatrix4x4stack.h>
+#include <Qt3D/qglcamera.h>
+#include <Qt3D/qvector2darray.h>
+#include <Qt3D/qvector3darray.h>
+#include <Qt3D/qvector4darray.h>
 
 #include <QVector2D>
 #include <QVector3D>
 #include <QVector4D>
 #include <QMatrix4x4>
 #include <QPainter>
-
-#include "qbox3d.h"
-#include "qopenglfunctions.h"
-#include "qglvertexbundle.h"
-#include "qglindexbuffer.h"
-#include "qgllightmodel.h"
-#include "qgllightparameters.h"
-#include "qglmaterial.h"
-#include "qglabstractsurface.h"
-#include "qmatrix4x4stack.h"
-#include "qglcamera.h"
-#include "qvector2darray.h"
-#include "qvector3darray.h"
-#include "qvector4darray.h"
 
 QT_BEGIN_HEADER
 

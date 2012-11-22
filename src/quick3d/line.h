@@ -42,8 +42,9 @@
 #ifndef LINE_H
 #define LINE_H
 
-#include "qquickitem3d.h"
-#include "qglscenenode.h"
+#include <Qt3DQuick/qquickitem3d.h>
+
+#include <Qt3D/qglscenenode.h>
 
 QT_BEGIN_HEADER
 

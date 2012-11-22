@@ -42,7 +42,7 @@
 #ifndef CAPSULE_H
 #define CAPSULE_H
 
-#include "qquickmesh.h"
+#include <Qt3DQuick/qquickmesh.h>
 
 QT_BEGIN_HEADER
 

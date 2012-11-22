@@ -46,7 +46,7 @@
 #include <QtCore/qlinkedlist.h>
 #include <QtCore/qset.h>
 
-#include "qglrenderorder.h"
+#include <Qt3D/qglrenderorder.h>
 
 QT_BEGIN_HEADER
 

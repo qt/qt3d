@@ -42,7 +42,7 @@
 #ifndef QGLTEAPOT_H
 #define QGLTEAPOT_H
 
-#include "qglbezierpatches.h"
+#include <Qt3D/qglbezierpatches.h>
 
 QT_BEGIN_HEADER
 

@@ -42,8 +42,10 @@
 #ifndef QLOGICALVERTEX_H
 #define QLOGICALVERTEX_H
 
-#include "qgeometrydata.h"
-#include "qcustomdataarray.h"
+#include <Qt3D/qgeometrydata.h>
+#include <Qt3D/qcustomdataarray.h>
+
+QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
@@ -324,5 +326,7 @@ QDebug operator<<(QDebug dbg, const QLogicalVertex &section);
 #endif
 
 QT_END_NAMESPACE
+
+QT_END_HEADER
 
 #endif // QLOGICALVERTEX_H

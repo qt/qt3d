@@ -42,8 +42,8 @@
 #ifndef QGLCYLINDER_H
 #define QGLCYLINDER_H
 
-#include "qt3dglobal.h"
-#include "qglmaterialcollection.h"
+#include <Qt3D/qt3dglobal.h>
+#include <Qt3D/qglmaterialcollection.h>
 
 QT_BEGIN_HEADER
 

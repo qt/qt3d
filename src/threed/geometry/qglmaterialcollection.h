@@ -42,11 +42,11 @@
 #ifndef QGLMATERIALCOLLECTION_H
 #define QGLMATERIALCOLLECTION_H
 
-#include <QtCore/qobject.h>
+#include <Qt3D/qt3dglobal.h>
+#include <Qt3D/qglmaterial.h>
+#include <Qt3D/qgltexture2d.h>
 
-#include "qt3dglobal.h"
-#include "qglmaterial.h"
-#include "qgltexture2d.h"
+#include <QtCore/qobject.h>
 
 QT_BEGIN_HEADER
 

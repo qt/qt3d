@@ -42,7 +42,7 @@
 #ifndef QGLSCENEANIMATION_H
 #define QGLSCENEANIMATION_H
 
-#include "qt3dglobal.h"
+#include <Qt3D/qt3dglobal.h>
 #include <QtCore/qobject.h>
 
 QT_BEGIN_HEADER

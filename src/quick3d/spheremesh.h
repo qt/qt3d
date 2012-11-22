@@ -42,9 +42,9 @@
 #ifndef SPHEREMESH_H
 #define SPHEREMESH_H
 
-#include "qglscenenode.h"
-#include "qquickmesh.h"
-//#include "spheremesh_p.h"
+#include <Qt3DQuick/qquickmesh.h>
+
+#include <Qt3D/qglscenenode.h>
 
 #include <QtCore/qmap.h>
 #include <QtCore/qscopedpointer.h>

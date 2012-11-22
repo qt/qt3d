@@ -43,8 +43,8 @@
 #ifndef QGLRENDERORDER_H
 #define QGLRENDERORDER_H
 
-#include "qglscenenode.h"
-#include "qglrenderstate.h"
+#include <Qt3D/qglscenenode.h>
+#include <Qt3D/qglrenderstate.h>
 
 QT_BEGIN_HEADER
 

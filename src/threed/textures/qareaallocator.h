@@ -53,7 +53,7 @@
 // We mean it.
 //
 
-#include "qt3dglobal.h"
+#include <Qt3D/qt3dglobal.h>
 #include <QtCore/qsize.h>
 #include <QtCore/qrect.h>
 #include <QtCore/qlist.h>

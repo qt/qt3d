@@ -53,11 +53,12 @@
 // We mean it.
 //
 
+#include "qgltexture2d.h"
+#include "qglcolladafxeffect.h"
+
 #include <QString>
 #include <QMap>
 #include <QColor>
-#include "qgltexture2d.h"
-#include "qglcolladafxeffect.h"
 
 QT_BEGIN_NAMESPACE
 

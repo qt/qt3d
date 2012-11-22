@@ -42,8 +42,9 @@
 #ifndef QGLBEZIERPATCHES_H
 #define QGLBEZIERPATCHES_H
 
-#include "qvector2darray.h"
-#include "qvector3darray.h"
+#include <Qt3D/qvector2darray.h>
+#include <Qt3D/qvector3darray.h>
+
 #include <QtCore/qscopedpointer.h>
 
 QT_BEGIN_HEADER

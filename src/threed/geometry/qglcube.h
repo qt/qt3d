@@ -42,10 +42,10 @@
 #ifndef QGLCUBE_H
 #define QGLCUBE_H
 
-#include "qt3dglobal.h"
+#include <Qt3D/qt3dglobal.h>
+#include <Qt3D/qvector2darray.h>
 
 #include <QtGui/qvector2d.h>
-#include "qvector2darray.h"
 
 QT_BEGIN_HEADER
 

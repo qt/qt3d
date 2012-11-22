@@ -42,16 +42,18 @@
 #ifndef QGEOMETRYDATA_H
 #define QGEOMETRYDATA_H
 
-#include "qcolor4ub.h"
-#include "qglnamespace.h"
-#include "qglindexbuffer.h"
-#include "qglvertexbundle.h"
-#include "qglattributevalue.h"
-#include "qcustomdataarray.h"
-#include "qbox3d.h"
-#include "qarray.h"
-#include "qvector2darray.h"
-#include "qvector3darray.h"
+#include <Qt3D/qcolor4ub.h>
+#include <Qt3D/qglnamespace.h>
+#include <Qt3D/qglindexbuffer.h>
+#include <Qt3D/qglvertexbundle.h>
+#include <Qt3D/qglattributevalue.h>
+#include <Qt3D/qcustomdataarray.h>
+#include <Qt3D/qbox3d.h>
+#include <Qt3D/qarray.h>
+#include <Qt3D/qvector2darray.h>
+#include <Qt3D/qvector3darray.h>
+
+QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
@@ -209,5 +211,7 @@ Q_QT3D_EXPORT QDebug operator<<(QDebug dbg, const QGeometryData &vertices);
 #endif
 
 QT_END_NAMESPACE
+
+QT_END_HEADER
 
 #endif // QGEOMETRYDATA_H

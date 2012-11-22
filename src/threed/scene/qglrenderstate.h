@@ -43,10 +43,12 @@
 #ifndef QGLRENDERSTATE_H
 #define QGLRENDERSTATE_H
 
-#include "qglnamespace.h"
-#include "qglscenenode.h"
+#include <Qt3D/qglnamespace.h>
+#include <Qt3D/qglscenenode.h>
 
 #include <QtCore/qshareddata.h>
+
+QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
@@ -101,5 +103,7 @@ Q_QT3D_EXPORT QDebug operator<<(QDebug dbg, const QGLRenderState &order);
 #endif
 
 QT_END_NAMESPACE
+
+QT_END_HEADER
 
 #endif // QGLRENDERSTATE_H

@@ -42,7 +42,7 @@
 #ifndef QGLTWOSIDEDMATERIAL_H
 #define QGLTWOSIDEDMATERIAL_H
 
-#include "qglmaterial.h"
+#include <Qt3D/qglmaterial.h>
 
 QT_BEGIN_HEADER
 

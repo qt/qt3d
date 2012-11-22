@@ -42,8 +42,8 @@
 #ifndef QGLTEXTURECUBEMAP_H
 #define QGLTEXTURECUBEMAP_H
 
-#include "qglnamespace.h"
-#include "qgltexture2d.h"
+#include <Qt3D/qglnamespace.h>
+#include <Qt3D/qgltexture2d.h>
 
 #include <QOpenGLBuffer>
 

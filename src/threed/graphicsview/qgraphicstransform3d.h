@@ -42,9 +42,10 @@
 #ifndef QGRAPHICSTRANSFORM3D_H
 #define QGRAPHICSTRANSFORM3D_H
 
+#include <Qt3D/qt3dglobal.h>
+
 #include <QtCore/qobject.h>
 #include <QtGui/qmatrix4x4.h>
-#include "qt3dglobal.h"
 
 QT_BEGIN_HEADER
 

@@ -42,18 +42,17 @@
 #ifndef QQUICKITEM3D_H
 #define QQUICKITEM3D_H
 
-#include "qt3dquickglobal.h"
+#include <Qt3DQuick/qt3dquickglobal.h>
+#include <Qt3DQuick/qquickanimation3d.h>
+#include <Qt3D/qglscenenode.h>
+#include <Qt3D/qglpainter.h>
+#include <Qt3D/qgraphicstransform3d.h>
 
 #include <QtCore/qobject.h>
 #include <QtCore/qvariant.h>
 #include <QtGui/qvector3d.h>
 
 #include <QtQuick/qquickitem.h>
-
-#include "qquickanimation3d.h"
-#include "qglscenenode.h"
-#include "qglpainter.h"
-#include "qgraphicstransform3d.h"
 
 QT_BEGIN_HEADER
 
