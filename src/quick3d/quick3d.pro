@@ -54,11 +54,11 @@ QML_INFRA_FILES += \
     teapot.bez
 
 copyqmlinfra_install.files = $$QML_INFRA_FILES
-copyqmlinfra_install.path = $$[QT_INSTALL_IMPORTS]/Qt3D/Shapes
+copyqmlinfra_install.path = $$[QT_INSTALL_QML]/Qt3D/Shapes
 INSTALLS += copyqmlinfra_install
 
 copyqmlinfra.input = QML_INFRA_FILES
-copyqmlinfra.output = $$QT.3dquick.imports/Qt3D/Shapes/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
+copyqmlinfra.output = $$QT.3dquick.qml/Qt3D/Shapes/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
 copyqmlinfra.commands = $$QMAKE_COPY ${QMAKE_FILE_IN} ${QMAKE_FILE_OUT}
 copyqmlinfra.CONFIG += no_link no_clean
 copyqmlinfra.variable_out = PRE_TARGETDEPS
