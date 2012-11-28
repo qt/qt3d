@@ -381,7 +381,7 @@ void QQuickItem3DPrivate::transform_append(QQmlListProperty<QQuickQGraphicsTrans
 
 QQuickQGraphicsTransform3D *QQuickItem3DPrivate::transform_at(QQmlListProperty<QQuickQGraphicsTransform3D> *list, int idx)
 {
-   QQuickItem3D *object = qobject_cast<QQuickItem3D *>(list->object);
+    QQuickItem3D *object = qobject_cast<QQuickItem3D *>(list->object);
     if (object) {
         return object->d->transforms.at(idx);
     } else {
@@ -435,7 +435,7 @@ void QQuickItem3DPrivate::pretransform_append(QQmlListProperty<QQuickQGraphicsTr
 
 QQuickQGraphicsTransform3D *QQuickItem3DPrivate::pretransform_at(QQmlListProperty<QQuickQGraphicsTransform3D> *list, int idx)
 {
-   QQuickItem3D *object = qobject_cast<QQuickItem3D *>(list->object);
+    QQuickItem3D *object = qobject_cast<QQuickItem3D *>(list->object);
     if (object) {
         return object->d->pretransforms.at(idx);
     } else {
@@ -766,8 +766,7 @@ void QQuickItem3D::setScale(float value)
 
 QQmlListProperty<QQuickQGraphicsTransform3D> QQuickItem3D::transform()
 {
-    return QQmlListProperty<QQuickQGraphicsTransform3D>(this, 0, d->transform_append, d->transform_count,
-                                               d->transform_at, d->transform_clear);
+    return QQmlListProperty<QQuickQGraphicsTransform3D>(this, 0, d->transform_append, d->transform_count, d->transform_at, d->transform_clear);
 }
 
 /*!
@@ -792,8 +791,7 @@ QQmlListProperty<QQuickQGraphicsTransform3D> QQuickItem3D::transform()
 
 QQmlListProperty<QQuickQGraphicsTransform3D> QQuickItem3D::pretransform()
 {
-    return QQmlListProperty<QQuickQGraphicsTransform3D>(this, 0, d->pretransform_append, d->pretransform_count,
-                                               d->pretransform_at, d->pretransform_clear);
+    return QQmlListProperty<QQuickQGraphicsTransform3D>(this, 0, d->pretransform_append, d->pretransform_count, d->pretransform_at, d->pretransform_clear);
 }
 
 /*!
@@ -1005,9 +1003,9 @@ void QQuickItem3D::setLight(QGLLightParameters *value)
 QQmlListProperty<QObject> QQuickItem3D::resources()
 {
     return QQmlListProperty<QObject>(this, 0, QQuickItem3DPrivate::resources_append,
-                                             QQuickItem3DPrivate::resources_count,
-                                             QQuickItem3DPrivate::resources_at,
-                                             QQuickItem3DPrivate::resources_clear);
+                                     QQuickItem3DPrivate::resources_count,
+                                     QQuickItem3DPrivate::resources_at,
+                                     QQuickItem3DPrivate::resources_clear);
 }
 
 
@@ -1432,10 +1430,23 @@ void QQuickItem3D::componentComplete()
         }
     }
 
-    QQuickItem3D *parentItem3D = qobject_cast<QQuickItem3D*>(parentItem());
-    if (!parentItem3D)
+    // Find nearest QQuickItem3D parent or Viewport Item
+    QQuickItem* parentItem2D = qobject_cast<QQuickItem*>(parentItem());
+    // While parent is not null and is not either a QQuickItem3D or the Viewport, loops to find the parent element
+    // The dynamic_cast is needed because QQuickViewport is an interface and doesn't have the Q_INTERFACES Macro
+    while (parentItem2D && (qobject_cast<QQuickItem3D *>(parentItem2D) == NULL
+                            && dynamic_cast<QQuickViewport*>(parentItem2D) == NULL))
+        parentItem2D = qobject_cast<QQuickItem*>(parentItem2D->parentItem());
+    // If we found a QQuickItem3d or QQuickViewport parent we set it as the direct parent of our component
+    if (parentItem2D)
     {
-        if (!d->viewport)
+        this->setParentItem(parentItem2D);
+        this->setParent(parentItem2D);
+    }
+    else
+    {   // Otherwise if the element has no suitable parent, we insert it in a viewport
+        QQuickItem3D *parentItem3D = qobject_cast<QQuickItem3D*>(parentItem());
+        if (!parentItem3D && !d->viewport)
         {
             QQmlContext *ctx = QQmlEngine::contextForObject(this);
             QQmlEngine *engine = ctx->engine();
