@@ -51,6 +51,8 @@
 #define internal_xstr(s) internal_str(s)
 #define internal_str(s) #s
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \internal
     Returns a string with the path to qml resources, including qml sources,
@@ -130,6 +132,8 @@ QString q_get_qmldir(const QString &name, const QString &category)
     }
     return qml;
 }
+
+QT_END_NAMESPACE
 
 /*!
     \internal
