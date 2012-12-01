@@ -62,7 +62,7 @@
     To control the lander we create a UI element by installing a MouseArea.  This
     snippet just shows the Y change handler, but there is a similar one for X.
     Activating these causes the boost game logic to increment, and thus to have
-    the position of the lander changed, and the the jet animation fire.
+    the position of the lander changed, and the jet animation fire.
 
     \snippet quick3d/lander/qml/Lander.qml 5
 

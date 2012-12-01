@@ -595,7 +595,7 @@ void ShaderProgramEffect::setPropertyDirty(int property)
 
 /*!
   \internal Update the image for the texture bound at \a uniform location with
-    the the image at \a urlString.  If \a urlString is a remote resource, this
+    the image at \a urlString.  If \a urlString is a remote resource, this
     starts an asycnrounous loading process.
 
     Note: Consecutive calls with the same url for a given uniform are ignored.

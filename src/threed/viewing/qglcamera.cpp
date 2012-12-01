@@ -112,7 +112,7 @@ QT_BEGIN_NAMESPACE
     If fieldOfView() is zero, then a standard perspective frustum of
     viewSize() is used to define the viewing volume.  The viewSize()
     can be adjusted with setViewSize() to zoom the view.  A smaller
-    viewSize() will make the the object appear closer.
+    viewSize() will make the object appear closer.
 
     The fieldOfView() or viewSize() is applied as part of the
     projectionMatrix().

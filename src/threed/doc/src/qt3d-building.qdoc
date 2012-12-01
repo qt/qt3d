@@ -122,7 +122,7 @@
     Here you can specify a Shadow Build directory.  It is always a good idea to
     build in a shadow directory, instead of inside the source tree.
 
-    In the screenshot below we use file management windows invoked by the the browse button to create
+    In the screenshot below we use file management windows invoked by the browse button to create
     the shadow build directory as a "new folder", which we'll call "qt3d" to match the project name.
 
     \image build-qt3d-qtcreator-6.png
