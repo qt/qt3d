@@ -8,7 +8,6 @@ SOURCES = solarsystem.cpp \
     main.cpp
 HEADERS = solarsystem.h
 RESOURCES += solarsystem.qrc
-DEPENDPATH += resources
 
 OTHER_FILES += \
     resources/moon-texture.jpg \
