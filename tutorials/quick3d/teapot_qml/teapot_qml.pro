@@ -1,6 +1,5 @@
 TEMPLATE = app
 TARGET = teapot_qml
-CONFIG += qt warn_on
 
 QT += 3dquick quick
 

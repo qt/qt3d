@@ -1,6 +1,5 @@
 TEMPLATE = app
 TARGET = basket_qml
-CONFIG += qt warn_on
 QT += qml quick 3dquick
 
 SOURCES += main.cpp

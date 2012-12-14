@@ -3,8 +3,6 @@ CONFIG += testcase
 TEMPLATE = app
 QT += testlib 3d
 
-CONFIG += warn_on
-
 INCLUDEPATH += ../../../../demos/shaderwizard/
 VPATH += ../../../../demos/shaderwizard/
 

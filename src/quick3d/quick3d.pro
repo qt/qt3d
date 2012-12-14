@@ -6,11 +6,11 @@ QT_PRIVATE = network
 load(qt_module)
 
 gcov {
-    CONFIG += static warn_on
+    CONFIG += static
     QMAKE_CXXFLAGS += -fprofile-arcs -ftest-coverage
     QMAKE_LFLAGS += -fprofile-arcs -ftest-coverage
 } else {
-    CONFIG += dll warn_on
+    CONFIG += dll
 }
 
 # Use this define to set a data directory into which QML resources

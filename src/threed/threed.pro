@@ -8,11 +8,11 @@ load(qt_module)
 QMAKE_DOCS = $$PWD/doc/qt3d.qdocconf
 
 gcov {
-    CONFIG += static warn_on
+    CONFIG += static
     QMAKE_CXXFLAGS += -fprofile-arcs -ftest-coverage
     QMAKE_LFLAGS += -fprofile-arcs -ftest-coverage
 } else {
-    CONFIG += dll warn_on
+    CONFIG += dll
 }
 
 # otherwise mingw headers do not declare common functions like ::strcasecmp

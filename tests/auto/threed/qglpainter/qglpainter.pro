@@ -2,7 +2,6 @@ TARGET = tst_qglpainter
 CONFIG += testcase
 TEMPLATE=app
 QT += testlib 3d
-CONFIG += warn_on
 
 INCLUDEPATH += ../../../shared
 VPATH += ../../../shared

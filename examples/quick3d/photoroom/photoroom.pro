@@ -1,6 +1,5 @@
 TEMPLATE = app
 TARGET = photoroom
-CONFIG += qt warn_on
 QT += qml quick 3dquick
 
 SOURCES += main.cpp

@@ -1,6 +1,5 @@
 TEMPLATE = app
 TARGET = basket
-CONFIG += qt warn_on
 QT += 3d
 
 include(../../../pkg.pri)

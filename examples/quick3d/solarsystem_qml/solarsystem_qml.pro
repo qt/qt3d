@@ -1,6 +1,5 @@
 TEMPLATE = app
 TARGET = solarsystem_qml
-CONFIG += qt warn_on
 
 INSTALL_DIRS = qml
 CONFIG += qt3d_deploy_qml qt3dquick_deploy_pkg

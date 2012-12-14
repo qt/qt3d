@@ -1,7 +1,6 @@
 TEMPLATE = app
 TARGET = tea_service
 QT += qml quick 3dquick
-CONFIG += qt warn_on
 
 SOURCES += main.cpp
 ICON_FILE = ../icon.png

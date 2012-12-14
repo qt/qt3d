@@ -1,6 +1,5 @@
 TEMPLATE = app
 TARGET = teapot_bounce_qml
-CONFIG += qt warn_on
 
 QT += qml quick 3dquick
 

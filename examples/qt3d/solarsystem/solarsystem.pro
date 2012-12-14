@@ -1,6 +1,5 @@
 TEMPLATE = app
 TARGET = solarsystem
-CONFIG += qt warn_on
 QT += 3d
 
 include(../../../pkg.pri)

@@ -1,6 +1,5 @@
 TEMPLATE = app
 TARGET = load_model
-CONFIG += qt warn_on
 
 QT += 3d
 

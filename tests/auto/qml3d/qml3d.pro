@@ -1,6 +1,6 @@
 TEMPLATE=app
 TARGET=tst_qml3d
-CONFIG += warn_on qmltestcase
+CONFIG += qmltestcase
 QT += qml opengl
 SOURCES += tst_qml3d.cpp
 

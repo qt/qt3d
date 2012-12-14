@@ -1,7 +1,6 @@
 TEMPLATE = app
 TARGET = animations_qml
 QT += qml quick 3dquick
-CONFIG += qt warn_on
 
 SOURCES += main.cpp
 

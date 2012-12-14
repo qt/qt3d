@@ -1,6 +1,5 @@
 TEMPLATE = app
 TARGET = tst_translation
-CONFIG += qt warn_on
 
 QT += 3dquick
 

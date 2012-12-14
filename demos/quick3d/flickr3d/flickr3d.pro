@@ -1,7 +1,6 @@
 TEMPLATE = app
 TARGET = flickr3d
 QT += qml quick 3dquick
-CONFIG += qt warn_on
 
 SOURCES += main.cpp
 ICON_FILE = ../icon.png

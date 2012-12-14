@@ -1,6 +1,5 @@
 TEMPLATE = app
 TARGET = positional_lighting
-CONFIG += qt warn_on
 QT += qml quick 3d 3dquick
 
 SOURCES += main.cpp
