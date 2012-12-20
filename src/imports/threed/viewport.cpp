@@ -1192,10 +1192,12 @@ void Viewport::objectForPoint()
             QGLPainter painter;
             if (painter.begin(fboSurf.data()))
             {
+                int winToFboRatioW = width() / FBO_SIZE;
+                int winToFboRatioH = height() / FBO_SIZE;
                 setupPickPaint(&painter, pt);
                 draw(&painter);
                 painter.setPicking(false);
-                objectId = painter.pickObject(FBO_SIZE / 2, FBO_SIZE / 2);
+                objectId = painter.pickObject(pt.x() / winToFboRatioW, pt.y() / winToFboRatioH);
                 d->setDefaults(&painter);
                 d->needsPick = false;
                 d->lastPick = pt;
