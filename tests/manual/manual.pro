@@ -1,5 +1,5 @@
 TEMPLATE = subdirs
-!isEmpty(QT.quick.name) {
+qtHaveModule(quick) {
     SUBDIRS += \
         animations \
         basic \
