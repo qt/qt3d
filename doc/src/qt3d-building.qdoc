@@ -30,13 +30,6 @@
     \title Building Qt3D for Qt 4
     \keyword Building Qt3D
 
-    \section1 This is Qt3D for Qt 4.
-
-    If you're looking for Qt 3D on Qt 5, please check for a recent Qt 5
-    release or source package, as Qt 3D is now a Qt 5 Essential and ships as
-    part of Qt 5 and the \l{http://qt.nokia.com/downloads}{Qt SDK}.  Obtaining
-    Qt 5 source is explained on \l{http://qt-project.org/wiki/Building_Qt_5_from_Git}{the Qt project pages}.
-
     \section1 Qt3D Binary Packages
 
     Do you have to build Qt3D for Qt 4?  Check if binary packages are available
