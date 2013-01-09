@@ -134,7 +134,7 @@ bool QRay3D::contains(const QVector3D &point) const
 
 /*!
     Returns true if \a ray lies on this ray; false otherwise.  If true,
-    this implies that the two rays are the actually the same, but with
+    this implies that the two rays are actually the same, but with
     different origin() points or an inverted direction().
 */
 bool QRay3D::contains(const QRay3D &ray) const
