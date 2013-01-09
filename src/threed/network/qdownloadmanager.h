@@ -63,7 +63,7 @@ public:
     bool downloadAsset(QUrl assetUrl);
 
     QNetworkAccessManager * getNetworkManager();
-signals:
+Q_SIGNALS:
     void downloadComplete(QByteArray*);
 
 public slots:

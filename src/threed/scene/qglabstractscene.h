@@ -97,7 +97,7 @@ public:
 
     static QStringList supportedFormats(FormatListType t = AsFilter);
 
-signals:
+Q_SIGNALS:
     void sceneUpdated();
 
 protected:

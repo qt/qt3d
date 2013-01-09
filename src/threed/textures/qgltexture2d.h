@@ -115,7 +115,7 @@ public:
     static void toBeDeletedLater(QOpenGLContext*, GLuint);
     static void processPendingResourceDeallocations();
 
-signals:
+Q_SIGNALS:
     void textureUpdated();
 public slots:
     void textureRequestFinished(QByteArray*);
