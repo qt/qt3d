@@ -50,8 +50,6 @@ QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
-QT_MODULE(Qt3D)
-
 class QMatrix4x4StackPrivate;
 
 class Q_QT3D_EXPORT QMatrix4x4Stack

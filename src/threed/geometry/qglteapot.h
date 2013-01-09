@@ -48,8 +48,6 @@ QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
-QT_MODULE(Qt3D)
-
 class Q_QT3D_EXPORT QGLTeapot : public QGLBezierPatches
 {
 public:

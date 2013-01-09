@@ -51,8 +51,6 @@ QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
-QT_MODULE(QtQuick3D)
-
 class QQuickAnimation3DPrivate;
 class QGLSceneAnimation;
 

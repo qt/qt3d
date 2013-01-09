@@ -52,8 +52,6 @@ QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
-QT_MODULE(Qt3D)
-
 class QGLLightParametersPrivate;
 class QMatrix4x4;
 

@@ -51,8 +51,6 @@ QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
-QT_MODULE(Qt3D)
-
 class QGLBezierPatchesPrivate;
 class QGLBuilder;
 class QRay3D;

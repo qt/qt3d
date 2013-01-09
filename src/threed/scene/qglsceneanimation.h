@@ -49,8 +49,6 @@ QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
-QT_MODULE(Qt3D)
-
 class QGLSceneAnimationPrivate;
 
 class Q_QT3D_EXPORT QGLSceneAnimation : public QObject

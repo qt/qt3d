@@ -49,8 +49,6 @@ QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
-QT_MODULE(QtQuick3D)
-
 class QQuickItem3D;
 
 // Abstract interface for "Item3D" getting access to the "Viewport"

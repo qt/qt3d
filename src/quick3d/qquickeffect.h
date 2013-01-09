@@ -55,8 +55,6 @@ QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
-QT_MODULE(QtQuick3D)
-
 class QQuickEffectPrivate;
 class QGLPainter;
 class QGLMaterial;

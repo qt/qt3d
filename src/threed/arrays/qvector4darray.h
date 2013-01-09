@@ -49,8 +49,6 @@ QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
 
-QT_MODULE(Qt3D)
-
 class QMatrix4x4;
 
 class Q_QT3D_EXPORT QVector4DArray : public QArray<QVector4D>
