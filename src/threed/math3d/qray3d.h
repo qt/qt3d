@@ -64,7 +64,7 @@ public:
     bool contains(const QRay3D &ray) const;
 
     QVector3D point(float t) const;
-    float fromPoint(const QVector3D &point) const;
+    float projectedDistance(const QVector3D &point) const;
 
     QVector3D project(const QVector3D &vector) const;
 

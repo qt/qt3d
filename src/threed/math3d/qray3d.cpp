@@ -61,7 +61,7 @@ QT_BEGIN_NAMESPACE
     \b t = 0, the point origin() + direction() is at \b t = 1,
     and the point origin() - direction() is at \b t = -1.
     The point() method can be used to obtain the position of a point
-    within this one-dimensional co-ordinate system.  The fromPoint()
+    within this one-dimensional co-ordinate system. The projectedDistance()
     method can be used to convert a point into a value in this
     one-dimensional co-ordinate system.
 */
@@ -157,7 +157,7 @@ bool QRay3D::contains(const QRay3D &ray) const
     The units for \a t are defined by direction().  The return value
     is precisely origin() + t * direction().
 
-    \sa fromPoint(), distance()
+    \sa projectedDistance(), distance()
 */
 
 /*!
@@ -173,7 +173,7 @@ bool QRay3D::contains(const QRay3D &ray) const
 
     \sa point(), project()
 */
-float QRay3D::fromPoint(const QVector3D &point) const
+float QRay3D::projectedDistance(const QVector3D &point) const
 {
     return QVector3D::dotProduct(point - m_origin, m_direction) /
                 m_direction.lengthSquared();
@@ -186,7 +186,7 @@ float QRay3D::fromPoint(const QVector3D &point) const
 
     \image qray3d-project.png
 
-    \sa fromPoint()
+    \sa projectedDistance()
 */
 QVector3D QRay3D::project(const QVector3D &vector) const
 {
@@ -203,7 +203,7 @@ QVector3D QRay3D::project(const QVector3D &vector) const
 */
 float QRay3D::distance(const QVector3D &point) const
 {
-    float t = fromPoint(point);
+    float t = projectedDistance(point);
     return (point - (m_origin + t * m_direction)).length();
 }
 

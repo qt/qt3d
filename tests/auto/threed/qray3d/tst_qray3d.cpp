@@ -252,8 +252,8 @@ void tst_QRay3D::point()
     QRay3D line(point, direction);
     QVERIFY(fuzzyCompare(line.point(0.6), point_on_line_pos_0_6));
     QVERIFY(fuzzyCompare(line.point(-7.2), point_on_line_neg_7_2));
-    QVERIFY(fuzzyCompare(line.fromPoint(point_on_line_pos_0_6), 0.6));
-    QVERIFY(fuzzyCompare(line.fromPoint(point_on_line_neg_7_2), -7.2));
+    QVERIFY(fuzzyCompare(line.projectedDistance(point_on_line_pos_0_6), 0.6));
+    QVERIFY(fuzzyCompare(line.projectedDistance(point_on_line_neg_7_2), -7.2));
 }
 
 void tst_QRay3D::contains_point_data()
