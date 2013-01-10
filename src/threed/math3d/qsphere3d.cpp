@@ -177,7 +177,7 @@ bool QSphere3D::intersects(const QBox3D &box) const
 */
 bool QSphere3D::intersects(const QPlane3D &plane) const
 {
-    return qAbs(plane.distanceTo(m_center)) <= m_radius;
+    return qAbs(plane.distance(m_center)) <= m_radius;
 }
 
 /*!

@@ -67,7 +67,7 @@ public:
     bool intersects(const QRay3D &ray) const;
     float intersection(const QRay3D &ray) const;
 
-    float distanceTo(const QVector3D &point) const;
+    float distance(const QVector3D &point) const;
 
     void transform(const QMatrix4x4 &matrix);
     QPlane3D transformed(const QMatrix4x4 &matrix) const;

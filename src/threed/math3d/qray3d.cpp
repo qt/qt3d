@@ -157,7 +157,7 @@ bool QRay3D::contains(const QRay3D &ray) const
     The units for \a t are defined by direction().  The return value
     is precisely origin() + t * direction().
 
-    \sa fromPoint(), distanceTo()
+    \sa fromPoint(), distance()
 */
 
 /*!
@@ -201,7 +201,7 @@ QVector3D QRay3D::project(const QVector3D &vector) const
 
     \sa point()
 */
-float QRay3D::distanceTo(const QVector3D &point) const
+float QRay3D::distance(const QVector3D &point) const
 {
     float t = fromPoint(point);
     return (point - (m_origin + t * m_direction)).length();

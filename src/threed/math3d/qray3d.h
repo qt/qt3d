@@ -68,7 +68,7 @@ public:
 
     QVector3D project(const QVector3D &vector) const;
 
-    float distanceTo(const QVector3D &point) const;
+    float distance(const QVector3D &point) const;
 
     void transform(const QMatrix4x4 &matrix);
     QRay3D transformed(const QMatrix4x4 &matrix) const;

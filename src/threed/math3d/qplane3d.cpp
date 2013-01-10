@@ -202,7 +202,7 @@ float QPlane3D::intersection(const QRay3D& ray) const
     be positive if \a point is above the plane in the direction
     of normal(), and negative if \a point is below the plane.
 */
-float QPlane3D::distanceTo(const QVector3D &point) const
+float QPlane3D::distance(const QVector3D &point) const
 {
     return QVector3D::dotProduct(point - m_origin, m_normal) /
                 m_normal.length();

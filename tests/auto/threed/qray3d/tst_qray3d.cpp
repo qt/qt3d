@@ -61,8 +61,8 @@ private slots:
     void contains_point();
     void contains_ray_data();
     void contains_ray();
-    void distanceTo_data();
-    void distanceTo();
+    void distance_data();
+    void distance();
     void compare();
     void dataStream();
     void transform_data();
@@ -377,7 +377,7 @@ void tst_QRay3D::contains_ray()
     }
 }
 
-void tst_QRay3D::distanceTo_data()
+void tst_QRay3D::distance_data()
 {
     QTest::addColumn<QVector3D>("origin");
     QTest::addColumn<QVector3D>("direction");
@@ -409,7 +409,7 @@ void tst_QRay3D::distanceTo_data()
         << 2.0f;
 }
 
-void tst_QRay3D::distanceTo()
+void tst_QRay3D::distance()
 {
     QFETCH(QVector3D, origin);
     QFETCH(QVector3D, direction);
@@ -417,7 +417,7 @@ void tst_QRay3D::distanceTo()
     QFETCH(float, distance);
 
     QRay3D line(origin, direction);
-    QCOMPARE(line.distanceTo(point), distance);
+    QCOMPARE(line.distance(point), distance);
 }
 
 void tst_QRay3D::compare()

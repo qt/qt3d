@@ -60,8 +60,8 @@ private slots:
     void noIntersection();
     void contains_data();
     void contains();
-    void distanceTo_data();
-    void distanceTo();
+    void distance_data();
+    void distance();
     void compare();
     void transform_data();
     void transform();
@@ -308,25 +308,25 @@ void tst_QPlane3D::contains()
     QVERIFY(!plane.contains(QRay3D(point, normal)));
 }
 
-void tst_QPlane3D::distanceTo_data()
+void tst_QPlane3D::distance_data()
 {
     create_data();
 }
 
-void tst_QPlane3D::distanceTo()
+void tst_QPlane3D::distance()
 {
     QFETCH(QVector3D, point);
     QFETCH(QVector3D, normal);
     QPlane3D plane(point, normal);
 
-    QVERIFY(fuzzyCompare(plane.distanceTo(point), 0.0f));
-    QVERIFY(fuzzyCompare(plane.distanceTo(point + normal), normal.length()));
-    QVERIFY(fuzzyCompare(plane.distanceTo(point - normal), -normal.length()));
+    QVERIFY(fuzzyCompare(plane.distance(point), 0.0f));
+    QVERIFY(fuzzyCompare(plane.distance(point + normal), normal.length()));
+    QVERIFY(fuzzyCompare(plane.distance(point - normal), -normal.length()));
 
     QVector3D v = vectorInPlane(plane);
-    QVERIFY(fuzzyCompare(plane.distanceTo(point + v), 0.0f));
-    QVERIFY(fuzzyCompare(plane.distanceTo(point + normal + v), normal.length()));
-    QVERIFY(fuzzyCompare(plane.distanceTo(point - normal + v), -normal.length()));
+    QVERIFY(fuzzyCompare(plane.distance(point + v), 0.0f));
+    QVERIFY(fuzzyCompare(plane.distance(point + normal + v), normal.length()));
+    QVERIFY(fuzzyCompare(plane.distance(point - normal + v), -normal.length()));
 }
 
 void tst_QPlane3D::compare()
