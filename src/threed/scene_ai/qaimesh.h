@@ -45,8 +45,6 @@
 #include <Qt3D/qaiscenehandler.h>
 #include <Qt3D/qgeometrydata.h>
 
-QT_BEGIN_HEADER
-
 struct aiMesh;
 
 QT_BEGIN_NAMESPACE
@@ -70,7 +68,5 @@ private:
 };
 
 QT_END_NAMESPACE
-
-QT_END_HEADER
 
 #endif // QAIMESH_H

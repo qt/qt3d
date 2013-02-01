@@ -46,8 +46,6 @@
 #include "IOStream.h"
 #include "IOSystem.h"
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 class QIODevice;
 QT_END_NAMESPACE
@@ -68,7 +66,5 @@ private:
     QIODevice *m_device;
     bool m_errorState;
 };
-
-QT_END_HEADER
 
 #endif // AILOADERIOSTREAM_H

@@ -44,8 +44,6 @@
 
 #include <Qt3D/qgraphicstransform3d.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class QGraphicsRotation3DPrivate;
@@ -85,7 +83,5 @@ private:
 };
 
 QT_END_NAMESPACE
-
-QT_END_HEADER
 
 #endif

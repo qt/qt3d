@@ -54,8 +54,6 @@
 
 #include <QtQuick/qquickitem.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class QQuickItem3DPrivate;
@@ -223,7 +221,5 @@ Q_QT3D_QUICK_EXPORT void qDumpItem(QQuickItem3D *item, bool detailed = true, int
 QT_END_NAMESPACE
 
 QML_DECLARE_TYPE(QQuickItem3D)
-
-QT_END_HEADER
 
 #endif

@@ -45,8 +45,6 @@
 #include <Qt3DQuick/qt3dquickglobal.h>
 #include <QtCore/qobject.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class QQuickItem3D;
@@ -64,7 +62,5 @@ public:
 };
 
 QT_END_NAMESPACE
-
-QT_END_HEADER
 
 #endif

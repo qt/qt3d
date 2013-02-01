@@ -45,8 +45,6 @@
 #include <Qt3D/qt3dglobal.h>
 #include <QtGui/qvector3d.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class QMatrix4x4;
@@ -156,7 +154,5 @@ Q_QT3D_EXPORT QDataStream &operator>>(QDataStream &stream, QSphere3D &sphere);
 QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(QSphere3D)
-
-QT_END_HEADER
 
 #endif

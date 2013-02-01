@@ -52,8 +52,6 @@
 #include <QtQml/qqmlengine.h>
 #include <QtQml/qqmlparserstatus.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class QQuickMeshPrivate;
@@ -136,7 +134,5 @@ private:
 QT_END_NAMESPACE
 
 QML_DECLARE_TYPE(QQuickMesh)
-
-QT_END_HEADER
 
 #endif

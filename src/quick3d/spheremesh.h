@@ -49,8 +49,6 @@
 #include <QtCore/qmap.h>
 #include <QtCore/qscopedpointer.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class SphereMeshPrivate;
@@ -93,7 +91,5 @@ private:
 QT_END_NAMESPACE
 
 QML_DECLARE_TYPE(SphereMesh)
-
-QT_END_HEADER
 
 #endif   // SPHEREMESH_H

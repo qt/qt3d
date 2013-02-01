@@ -46,8 +46,6 @@
 #include <QtGui/qvector3d.h>
 #include <QtGui/qmatrix4x4.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class Q_QT3D_EXPORT QRay3D
@@ -156,7 +154,5 @@ Q_QT3D_EXPORT QDataStream &operator>>(QDataStream &stream, QRay3D &ray);
 QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(QRay3D)
-
-QT_END_HEADER
 
 #endif

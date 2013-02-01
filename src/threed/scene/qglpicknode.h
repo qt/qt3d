@@ -45,8 +45,6 @@
 #include <QtCore/qobject.h>
 #include <Qt3D/qt3dglobal.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class QGLAbstractScene;
@@ -80,7 +78,5 @@ protected:
 };
 
 QT_END_NAMESPACE
-
-QT_END_HEADER
 
 #endif // QGLPICKNODE_H

@@ -46,8 +46,6 @@
 #include <Qt3D/qglscenenode.h>
 #include <Qt3D/qglrenderstate.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class Q_QT3D_EXPORT QGLRenderOrder
@@ -195,7 +193,5 @@ Q_QT3D_EXPORT QDebug operator<<(QDebug dbg, const QGLRenderOrder &order);
 #endif
 
 QT_END_NAMESPACE
-
-QT_END_HEADER
 
 #endif // QGLRENDERORDER_H

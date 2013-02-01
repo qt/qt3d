@@ -47,8 +47,6 @@
 #include "qquickitem3d.h"
 #include "qquickviewport.h"
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class ViewportPrivate;
@@ -186,7 +184,5 @@ private:
 QT_END_NAMESPACE
 
 QML_DECLARE_TYPE(Viewport)
-
-QT_END_HEADER
 
 #endif

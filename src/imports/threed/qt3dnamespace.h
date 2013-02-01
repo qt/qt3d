@@ -50,8 +50,6 @@
 #include <QtGui/qmatrix4x4.h>
 #include <QtGui/qquaternion.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class Qt3DNamespace : public QObject
@@ -72,7 +70,5 @@ public Q_SLOTS:
 };
 
 QT_END_NAMESPACE
-
-QT_END_HEADER
 
 #endif // QT3DNAMESPACE_H

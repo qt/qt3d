@@ -48,8 +48,6 @@
 #include <QtCore/qurl.h>
 #include <QObject>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class QGLAbstractScene;
@@ -102,7 +100,5 @@ public:
 Q_DECLARE_INTERFACE(QGLSceneFormatFactoryInterface, "org.qt-project.Qt.QGLSceneFormatFactoryInterface")
 
 QT_END_NAMESPACE
-
-QT_END_HEADER
 
 #endif

@@ -46,8 +46,6 @@
 #include <QtGui/qvector3d.h>
 #include <QtCore/qnumeric.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class Q_QT3D_EXPORT QPlane3D
@@ -153,7 +151,5 @@ Q_QT3D_EXPORT QDataStream &operator>>(QDataStream &stream, QPlane3D &plane);
 QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(QPlane3D)
-
-QT_END_HEADER
 
 #endif // QPLANE3D_H

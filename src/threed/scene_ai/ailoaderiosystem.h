@@ -46,8 +46,6 @@
 
 #include <QtCore/qurl.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 class QIODevice;
 QT_END_NAMESPACE
@@ -68,7 +66,5 @@ private:
     QList<QIODevice*> m_sub;
     QUrl m_url;
 };
-
-QT_END_HEADER
 
 #endif // AILOADERIOSYSTEM_H

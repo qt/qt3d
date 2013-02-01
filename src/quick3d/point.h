@@ -46,8 +46,6 @@
 
 #include <Qt3D/qglscenenode.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class Q_QT3D_QUICK_EXPORT Point : public QQuickItem3D
@@ -84,7 +82,5 @@ private:
 QT_END_NAMESPACE
 
 QML_DECLARE_TYPE(Point)
-
-QT_END_HEADER
 
 #endif // POINT_H

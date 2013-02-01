@@ -48,8 +48,6 @@
 #include <QtCore/qscopedpointer.h>
 #include <QtCore/qpointer.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class QGraphicsLookAtTransformPrivate;
@@ -88,7 +86,5 @@ private:
 };
 
 QT_END_NAMESPACE
-
-QT_END_HEADER
 
 #endif

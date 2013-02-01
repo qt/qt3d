@@ -49,8 +49,6 @@
 #include <QXmlStreamReader>
 #include <QDir>
 
-QT_BEGIN_HEADER
-
 Q_DECLARE_METATYPE(QArray<float>)
 
 QT_BEGIN_NAMESPACE
@@ -215,7 +213,5 @@ protected:
 };
 
 QT_END_NAMESPACE
-
-QT_END_HEADER
 
 #endif // QGLCOLLADAFXEFFECTFACTORY_H

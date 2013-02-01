@@ -54,8 +54,6 @@
 
 #include <Qt3DQuick/qt3dquickglobal.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 QString Q_QT3D_QUICK_EXPORT q_get_qmldir(const QString &name, const QString &category);
@@ -63,7 +61,5 @@ QString Q_QT3D_QUICK_EXPORT q_get_qmldir(const QString &name, const QString &cat
 QT_END_NAMESPACE
 
 int Q_QT3D_QUICK_EXPORT q_quick3d_main(const char *entryPointQmlFile, const char *category, int argc, char *argv[]);
-
-QT_END_HEADER
 
 #endif // QMLRES_H

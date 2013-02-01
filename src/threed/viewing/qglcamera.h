@@ -51,8 +51,6 @@
 #include <QtGui/qmatrix4x4.h>
 #include <QtGui/qquaternion.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class QGLCameraPrivate;
@@ -179,7 +177,5 @@ Q_QT3D_EXPORT QDebug operator<<(QDebug dbg, const QGLCamera &order);
 #endif
 
 QT_END_NAMESPACE
-
-QT_END_HEADER
 
 #endif

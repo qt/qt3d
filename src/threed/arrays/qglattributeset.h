@@ -47,8 +47,6 @@
 
 #include <QtCore/qlist.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class Q_QT3D_EXPORT QGLAttributeSet
@@ -131,7 +129,5 @@ inline bool QGLAttributeSet::operator!=(const QGLAttributeSet &other) const
 }
 
 QT_END_NAMESPACE
-
-QT_END_HEADER
 
 #endif

@@ -44,8 +44,6 @@
 
 #include "qquickitem3d.h"
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class BillboardItem3D : public QQuickItem3D
@@ -71,7 +69,5 @@ private:
 QT_END_NAMESPACE
 
 QML_DECLARE_TYPE(BillboardItem3D)
-
-QT_END_HEADER
 
 #endif // BILLBOARDITEM3D_H

@@ -47,8 +47,6 @@
 
 #include <QtGui/qvector2d.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class QGLBuilder;
@@ -68,7 +66,5 @@ private:
 Q_QT3D_EXPORT QGLBuilder& operator<<(QGLBuilder& builder, const QGLCube& cube);
 
 QT_END_NAMESPACE
-
-QT_END_HEADER
 
 #endif

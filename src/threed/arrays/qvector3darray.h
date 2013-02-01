@@ -46,8 +46,6 @@
 
 #include <QtGui/qvector3d.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class QMatrix4x4;
@@ -109,7 +107,5 @@ inline QArray<QVector3D> QVector3DArray::translated(float x, float y, float z) c
     { return translated(QVector3D(x, y, z)); }
 
 QT_END_NAMESPACE
-
-QT_END_HEADER
 
 #endif

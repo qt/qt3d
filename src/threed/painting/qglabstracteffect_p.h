@@ -55,8 +55,6 @@
 
 #include "qglabstracteffect.h"
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 #if defined(QT_OPENGL_ES_2)
@@ -64,7 +62,5 @@ QT_BEGIN_NAMESPACE
 #endif
 
 QT_END_NAMESPACE
-
-QT_END_HEADER
 
 #endif

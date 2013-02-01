@@ -51,8 +51,6 @@
 #include <string.h>
 #include <new>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 #if defined(Q_DECL_ALIGN) && defined(Q_ALIGNOF)
@@ -1201,7 +1199,5 @@ QDebug operator<<(QDebug dbg, const QArray<T, PreallocSize>& array)
 #endif
 
 QT_END_NAMESPACE
-
-QT_END_HEADER
 
 #endif

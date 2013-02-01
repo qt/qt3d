@@ -51,8 +51,6 @@
 #include <QList>
 #include <QVector3D>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class QGLSection;
@@ -132,7 +130,5 @@ Q_QT3D_EXPORT QGLBuilder& operator<<(QGLBuilder& builder, const QGL::Smoothing& 
 Q_QT3D_EXPORT QGLBuilder& operator<<(QGLBuilder& builder, const QGeometryData& triangles);
 
 QT_END_NAMESPACE
-
-QT_END_HEADER
 
 #endif // QGLBUILDER_H

@@ -44,8 +44,6 @@
 
 #include <Qt3D/qglabstracteffect.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class QGLShaderProgramEffectPrivate;
@@ -89,7 +87,5 @@ private:
 };
 
 QT_END_NAMESPACE
-
-QT_END_HEADER
 
 #endif

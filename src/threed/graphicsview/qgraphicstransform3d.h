@@ -47,8 +47,6 @@
 #include <QtCore/qobject.h>
 #include <QtGui/qmatrix4x4.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class Q_QT3D_EXPORT QQuickQGraphicsTransform3D : public QObject
@@ -66,7 +64,5 @@ Q_SIGNALS:
 };
 
 QT_END_NAMESPACE
-
-QT_END_HEADER
 
 #endif

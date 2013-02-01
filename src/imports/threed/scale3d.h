@@ -47,8 +47,6 @@
 #include <QtCore/qvariant.h>
 #include <QtQml/qqml.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class Scale3D : public QGraphicsScale3D
@@ -74,7 +72,5 @@ private:
 QT_END_NAMESPACE
 
 QML_DECLARE_TYPE(Scale3D)
-
-QT_END_HEADER
 
 #endif

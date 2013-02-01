@@ -44,8 +44,6 @@
 
 #include "qquickeffect.h"
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class ShaderProgramPrivate;
@@ -81,7 +79,5 @@ private:
 QT_END_NAMESPACE
 
 QML_DECLARE_TYPE(ShaderProgram)
-
-QT_END_HEADER
 
 #endif

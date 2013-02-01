@@ -53,8 +53,6 @@
 #include <Qt3D/qvector2darray.h>
 #include <Qt3D/qvector3darray.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class QGeometryDataPrivate;
@@ -211,7 +209,5 @@ Q_QT3D_EXPORT QDebug operator<<(QDebug dbg, const QGeometryData &vertices);
 #endif
 
 QT_END_NAMESPACE
-
-QT_END_HEADER
 
 #endif // QGEOMETRYDATA_H

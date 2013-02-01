@@ -46,8 +46,6 @@
 #include <QtGui/qcolor.h>
 #include <QtCore/qmetatype.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class Q_QT3D_EXPORT QColor4ub
@@ -208,7 +206,5 @@ Q_DECLARE_TYPEINFO(QColor4ub, Q_MOVABLE_TYPE);
 QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(QColor4ub)
-
-QT_END_HEADER
 
 #endif

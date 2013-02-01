@@ -46,8 +46,6 @@
 
 #include <QtCore/qscopedpointer.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class QGraphicsTranslation3DPrivate;
@@ -82,7 +80,5 @@ private:
 };
 
 QT_END_NAMESPACE
-
-QT_END_HEADER
 
 #endif

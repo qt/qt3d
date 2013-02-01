@@ -50,8 +50,6 @@
 #include <QtCore/qurl.h>
 #include <QtCore/qscopedpointer.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class QGLAbstractScenePrivate;
@@ -114,7 +112,5 @@ private:
 };
 
 QT_END_NAMESPACE
-
-QT_END_HEADER
 
 #endif

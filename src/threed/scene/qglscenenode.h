@@ -47,8 +47,6 @@
 #include <Qt3D/qgeometrydata.h>
 #include <Qt3D/qglmaterialcollection.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class QGLSceneNodePrivate;
@@ -206,7 +204,5 @@ Q_QT3D_EXPORT QDebug operator<<(QDebug dbg, const QGLSceneNode &node);
 #endif
 
 QT_END_NAMESPACE
-
-QT_END_HEADER
 
 #endif

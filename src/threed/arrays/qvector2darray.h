@@ -46,8 +46,6 @@
 
 #include <QtGui/qvector2d.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class QMatrix4x4;
@@ -117,7 +115,5 @@ inline QArray<QVector2D> QVector2DArray::translated(float x, float y) const
     { return translated(QVector2D(x, y)); }
 
 QT_END_NAMESPACE
-
-QT_END_HEADER
 
 #endif

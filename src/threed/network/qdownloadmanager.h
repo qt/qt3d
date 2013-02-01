@@ -46,8 +46,6 @@
 #include <Qt3D/qglnamespace.h>
 #include <QObject>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class QNetworkAccessManager;
@@ -72,7 +70,5 @@ private:
 };
 
 QT_END_NAMESPACE
-
-QT_END_HEADER
 
 #endif // DOWNLOADMANAGER_H

@@ -57,8 +57,6 @@
 
 #include <QtCore/qmap.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class QGLMaterialPrivate
@@ -80,7 +78,5 @@ public:
 };
 
 QT_END_NAMESPACE
-
-QT_END_HEADER
 
 #endif

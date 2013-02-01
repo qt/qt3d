@@ -51,8 +51,6 @@
 #include <QtGui/qimage.h>
 #include <QtQml/qqml.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class QQuickEffectPrivate;
@@ -119,7 +117,5 @@ private:
 QT_END_NAMESPACE
 
 QML_DECLARE_TYPE(QQuickEffect)
-
-QT_END_HEADER
 
 #endif

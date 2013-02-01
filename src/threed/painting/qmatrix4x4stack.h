@@ -46,8 +46,6 @@
 #include <QtGui/qmatrix4x4.h>
 #include <QtCore/qscopedpointer.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class QMatrix4x4StackPrivate;
@@ -97,7 +95,5 @@ inline QMatrix4x4Stack::operator const QMatrix4x4 &() const
 }
 
 QT_END_NAMESPACE
-
-QT_END_HEADER
 
 #endif

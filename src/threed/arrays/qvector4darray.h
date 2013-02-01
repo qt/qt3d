@@ -45,8 +45,6 @@
 #include <Qt3D/qarray.h>
 #include <QtGui/qvector4d.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class QMatrix4x4;
@@ -110,7 +108,5 @@ inline QArray<QVector4D> QVector4DArray::translated
     { return translated(QVector4D(x, y, z, w)); }
 
 QT_END_NAMESPACE
-
-QT_END_HEADER
 
 #endif

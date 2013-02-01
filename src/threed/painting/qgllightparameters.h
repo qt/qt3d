@@ -48,8 +48,6 @@
 #include <QtGui/qvector3d.h>
 #include <QtGui/qvector4d.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class QGLLightParametersPrivate;
@@ -142,7 +140,5 @@ private:
 };
 
 QT_END_NAMESPACE
-
-QT_END_HEADER
 
 #endif

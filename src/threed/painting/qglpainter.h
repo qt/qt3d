@@ -64,8 +64,6 @@
 #include <QMatrix4x4>
 #include <QPainter>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class QGLAbstractEffect;
@@ -219,7 +217,5 @@ private:
 Q_DECLARE_OPERATORS_FOR_FLAGS(QGLPainter::Updates)
 
 QT_END_NAMESPACE
-
-QT_END_HEADER
 
 #endif

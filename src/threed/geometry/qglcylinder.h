@@ -45,8 +45,6 @@
 #include <Qt3D/qt3dglobal.h>
 #include <Qt3D/qglmaterialcollection.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class QGLBuilder;
@@ -97,7 +95,5 @@ protected:
 Q_QT3D_EXPORT QGLBuilder& operator<<(QGLBuilder& builder, const QGLCylinder& cylinder);
 
 QT_END_NAMESPACE
-
-QT_END_HEADER
 
 #endif // QGLCYLINDER_H

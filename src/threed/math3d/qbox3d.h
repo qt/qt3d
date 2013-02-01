@@ -45,8 +45,6 @@
 #include <Qt3D/qt3dglobal.h>
 #include <Qt3D/qray3d.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class QMatrix4x4;
@@ -210,7 +208,5 @@ Q_QT3D_EXPORT QDataStream &operator>>(QDataStream &stream, QBox3D &box);
 QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(QBox3D)
-
-QT_END_HEADER
 
 #endif

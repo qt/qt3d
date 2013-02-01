@@ -44,8 +44,6 @@
 
 #include <Qt3D/qglbezierpatches.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class Q_QT3D_EXPORT QGLTeapot : public QGLBezierPatches
@@ -56,7 +54,5 @@ public:
 };
 
 QT_END_NAMESPACE
-
-QT_END_HEADER
 
 #endif

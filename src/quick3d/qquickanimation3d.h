@@ -47,8 +47,6 @@
 #include <QtQml/qqml.h>
 #include <QtCore/qobject.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class QQuickAnimation3DPrivate;
@@ -77,7 +75,5 @@ private:
 QT_END_NAMESPACE
 
 QML_DECLARE_TYPE(QQuickAnimation3D)
-
-QT_END_HEADER
 
 #endif // QQUICKANIMATION3D_H

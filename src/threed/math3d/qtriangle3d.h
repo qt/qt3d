@@ -48,8 +48,6 @@
 #include <QtGui/qvector3d.h>
 #include <QtGui/qvector2d.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class QMatrix4x4;
@@ -175,7 +173,5 @@ Q_QT3D_EXPORT QDataStream &operator>>(QDataStream &stream, QTriangle3D &triangle
 QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(QTriangle3D)
-
-QT_END_HEADER
 
 #endif // QTRIANGLE3D_H

@@ -50,8 +50,6 @@
 
 #include <QtGui/qcolor.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
 
 class QGLMaterialPrivate;
@@ -143,7 +141,5 @@ Q_QT3D_EXPORT QDebug operator<<(QDebug dbg, const QGLMaterial &material);
 #endif
 
 QT_END_NAMESPACE
-
-QT_END_HEADER
 
 #endif
