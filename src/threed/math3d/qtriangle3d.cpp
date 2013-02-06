@@ -151,6 +151,17 @@ QT_BEGIN_NAMESPACE
     cross-product of P-Q and Q-R.  The result is not normalized.
 */
 
+static inline bool uvInTriangle(const QVector2D &c)
+{
+    if (c.x() < 0.0f || c.x() > 1.0f)
+        return false;
+    if (c.y() < 0.0f || c.y() > 1.0f)
+        return false;
+    if ((c.x() + c.y()) > 1.0f)
+        return false;
+    return true;
+}
+
 /*!
     Returns true if this triangle contains \a point; false otherwise.
     To contain the \a point means that:
@@ -175,14 +186,7 @@ bool QTriangle3D::contains(const QVector3D &point) const
 
     // Compute the barycentric co-ordinates and use them to determine
     // if the point is within the triangle.
-    QVector2D c = uv(point);
-    if (c.x() < 0.0f || c.x() > 1.0f)
-        return false;
-    if (c.y() < 0.0f || c.y() > 1.0f)
-        return false;
-    if ((c.x() + c.y()) > 1.0f)
-        return false;
-    return true;
+    return uvInTriangle(uv(point));
 }
 
 /*!
@@ -197,7 +201,7 @@ bool QTriangle3D::intersects(const QRay3D &ray) const
     float t = plane().intersection(ray);
     if (qIsNaN(t))
         return false;
-    return contains(ray.point(t));
+    return uvInTriangle(uv(ray.point(t)));
 }
 
 /*!
