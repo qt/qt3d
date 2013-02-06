@@ -184,7 +184,7 @@
     \section1 View Frustum Culling
 
     Carefully examine the next 3 screenshots, which show the same plan view of the
-    camera, cube and view - except the cube is rotated arount the eye of the camera
+    camera, cube and view - except the cube is rotated around the eye of the camera
     by 10 degrees each time.
 
     \image view-frustum-10-degrees.png

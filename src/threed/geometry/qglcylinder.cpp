@@ -55,7 +55,7 @@ QT_BEGIN_NAMESPACE
     \ingroup qt3d::geometry
 
     The following example creates a cone with a top diameter of 1 unit,
-    a bottom diameter of  of 2 units in diameter and height of 3 units.
+    a bottom diameter of 2 units in diameter and height of 3 units.
 
     It then draws it at (10, 25, 0) in a QGLPainter:
 

@@ -153,7 +153,7 @@ QT_BEGIN_NAMESPACE
 
     Three axes of rotation are used to compute the quaternions.  The tilt()
     quaternion is computed with respect to the side vector, the pan()
-    quaterion is computed with respect to the upVector(), and the roll()
+    quaternion is computed with respect to the upVector(), and the roll()
     quaternion is computed with respect to the view vector.
 
     The following example tilts the direction the eye() is pointing

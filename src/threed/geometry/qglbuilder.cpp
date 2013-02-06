@@ -826,7 +826,7 @@ void QGLBuilder::addQuadStrip(const QGeometryData &strip)
 
     If no normals are supplied in the vertices of \a face, normals are
     calculated as per addTriangle().  One normal is calculated, since a
-    faces vertices lie in the same plane.
+    face's vertices lie in the same plane.
 
     Degenerate triangles are skipped in the same way as addTriangles().
 
