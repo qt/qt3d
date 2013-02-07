@@ -181,7 +181,7 @@ bool QTriangle3D::contains(const QVector3D &point) const
 {
     // Check if the point is on the triangle's plane first.
     QVector3D normal = QVector3D::crossProduct(m_q - m_p, m_r - m_q);
-    if (!qFuzzyIsNull(float(QVector3D::dotProduct(normal, m_p - point))))
+    if (!qFuzzyIsNull(float(QVector3D::dotProduct(normal.normalized(), m_p - point))))
         return false;
 
     // Compute the barycentric co-ordinates and use them to determine
