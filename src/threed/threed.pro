@@ -1,6 +1,6 @@
 TARGET     = Qt3D
 MODULE     = 3d
-QT         = core-private gui-private
+QT         = core-private gui-private opengl
 QT_PRIVATE = network
 
 load(qt_module)
