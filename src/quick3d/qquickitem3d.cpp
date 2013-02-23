@@ -1338,6 +1338,13 @@ void QQuickItem3D::draw(QGLPainter *painter)
 /*!
     \internal
 */
+QQuickViewport::~QQuickViewport()
+{
+}
+
+/*!
+    \internal
+*/
 void QQuickViewport::setItemViewport(QQuickItem3D *item)
 {
     item->d->viewport = this;

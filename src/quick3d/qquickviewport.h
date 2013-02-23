@@ -54,6 +54,7 @@ class QQuickItem3D;
 class Q_QT3D_QUICK_EXPORT QQuickViewport
 {
 public:
+    virtual ~QQuickViewport();
     virtual int registerPickableObject(QObject *obj) = 0;
     virtual void update3d() = 0;
     virtual bool blending() const = 0;
