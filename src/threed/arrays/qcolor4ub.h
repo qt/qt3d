@@ -104,9 +104,9 @@ private:
 
 inline QColor4ub::QColor4ub() : m_red(0), m_green(0), m_blue(0), m_alpha(255) {}
 
-inline QColor4ub::QColor4ub(int red, int green, int blue, int alpha)
-    : m_red(uchar(red)), m_green(uchar(green)),
-      m_blue(uchar(blue)), m_alpha(uchar(alpha)) {}
+inline QColor4ub::QColor4ub(int red_, int green_, int blue_, int alpha_)
+    : m_red(uchar(red_)), m_green(uchar(green_)),
+      m_blue(uchar(blue_)), m_alpha(uchar(alpha_)) {}
 
 inline QColor4ub::QColor4ub(const QColor& color)
     : m_red(uchar(color.red())), m_green(uchar(color.green())),
@@ -147,25 +147,25 @@ inline QColor4ub& QColor4ub::operator=(Qt::GlobalColor color)
     return *this;
 }
 
-inline void QColor4ub::setRgb(int red, int green, int blue, int alpha)
+inline void QColor4ub::setRgb(int red_, int green_, int blue_, int alpha_)
 {
-    m_red = uchar(red);
-    m_green = uchar(green);
-    m_blue = uchar(blue);
-    m_alpha = uchar(alpha);
+    m_red = uchar(red_);
+    m_green = uchar(green_);
+    m_blue = uchar(blue_);
+    m_alpha = uchar(alpha_);
 }
 
-inline void QColor4ub::setRgbF(float red, float green, float blue, float alpha)
+inline void QColor4ub::setRgbF(float red_, float green_, float blue_, float alpha_)
 {
-    m_red = uchar(qRound(red * 255.0f));
-    m_green = uchar(qRound(green * 255.0f));
-    m_blue = uchar(qRound(blue * 255.0f));
-    m_alpha = uchar(qRound(alpha * 255.0f));
+    m_red = uchar(qRound(red_ * 255.0f));
+    m_green = uchar(qRound(green_ * 255.0f));
+    m_blue = uchar(qRound(blue_ * 255.0f));
+    m_alpha = uchar(qRound(alpha_ * 255.0f));
 }
 
-inline QColor4ub QColor4ub::fromRgb(int red, int green, int blue, int alpha)
+inline QColor4ub QColor4ub::fromRgb(int red_, int green_, int blue_, int alpha_)
 {
-    return QColor4ub(red, green, blue, alpha);
+    return QColor4ub(red_, green_, blue_, alpha_);
 }
 
 inline QColor4ub QColor4ub::fromRgbF

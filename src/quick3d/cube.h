@@ -54,7 +54,7 @@ class Cube : public QQuickItem3D
 {
     Q_OBJECT
 public:
-    Cube(QObject *parent = 0) : QQuickItem3D(parent) {}
+    Cube(QObject *p = 0) : QQuickItem3D(p) {}
     ~Cube() {}
 };
 

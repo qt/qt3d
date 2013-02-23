@@ -51,9 +51,9 @@ QT_BEGIN_NAMESPACE
 class Q_QT3D_EXPORT QGLRenderOrder
 {
 public:
-    explicit QGLRenderOrder(const QGLSceneNode *node = 0, const QGLRenderState &state = QGLRenderState())
-        : m_node(node)
-        , m_state(state)
+    explicit QGLRenderOrder(const QGLSceneNode *node_ = 0, const QGLRenderState &state_ = QGLRenderState())
+        : m_node(node_)
+        , m_state(state_)
     {
     }
     ~QGLRenderOrder() {}
@@ -111,9 +111,9 @@ inline QGLRenderState QGLRenderOrder::state() const
     return m_state;
 }
 
-inline void QGLRenderOrder::setState(const QGLRenderState &state)
+inline void QGLRenderOrder::setState(const QGLRenderState &state_)
 {
-    m_state = state;
+    m_state = state_;
 }
 
 inline QGLAbstractEffect *QGLRenderOrder::effectiveUserEffect() const

@@ -53,7 +53,7 @@ class Q_QT3D_EXPORT QQuickQGraphicsTransform3D : public QObject
 {
     Q_OBJECT
 public:
-    QQuickQGraphicsTransform3D(QObject *parent = 0) : QObject(parent) {}
+    QQuickQGraphicsTransform3D(QObject *p = 0) : QObject(p) {}
     ~QQuickQGraphicsTransform3D() {}
 
     virtual void applyTo(QMatrix4x4 *matrix) const = 0;

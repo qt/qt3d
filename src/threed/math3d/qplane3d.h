@@ -82,8 +82,8 @@ private:
 
 inline QPlane3D::QPlane3D() : m_normal(1.0f, 0.0f, 0.0f) {}
 
-inline QPlane3D::QPlane3D(const QVector3D &point, const QVector3D &normal)
-    : m_origin(point), m_normal(normal)
+inline QPlane3D::QPlane3D(const QVector3D &point, const QVector3D &normal_)
+    : m_origin(point), m_normal(normal_)
 {
 }
 

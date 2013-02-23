@@ -54,7 +54,7 @@ class Teapot : public QQuickItem3D
 {
     Q_OBJECT
 public:
-    Teapot(QObject *parent = 0) : QQuickItem3D(parent) {}
+    Teapot(QObject *p = 0) : QQuickItem3D(p) {}
     ~Teapot() {}
 };
 

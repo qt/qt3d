@@ -54,7 +54,7 @@ class Q_QT3D_EXPORT QVector2DArray : public QArray<QVector2D>
 {
 public:
     QVector2DArray();
-    QVector2DArray(int size, const QVector2D& value = QVector2D());
+    QVector2DArray(int fillSize, const QVector2D& fillValue = QVector2D());
     QVector2DArray(const QArray<QVector2D>& other);
 
     void append(float x, float y);
@@ -93,8 +93,8 @@ public:
 
 inline QVector2DArray::QVector2DArray() {}
 
-inline QVector2DArray::QVector2DArray(int size, const QVector2D& value)
-    : QArray<QVector2D>(size, value) {}
+inline QVector2DArray::QVector2DArray(int fillSize, const QVector2D& fillValue)
+    : QArray<QVector2D>(fillSize, fillValue) {}
 
 inline QVector2DArray::QVector2DArray(const QArray<QVector2D>& other)
     : QArray<QVector2D>(other) {}

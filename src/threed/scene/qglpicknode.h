@@ -57,10 +57,10 @@ class Q_QT3D_EXPORT QGLPickNode : public QObject
 public:
     explicit QGLPickNode(QGLAbstractScene *parent = 0);
     int id() const { return m_id; }
-    void setId(int id) { m_id = id; }
+    void setId(int id_) { m_id = id_; }
 
     QGLSceneNode *target() const { return m_target; }
-    void setTarget(QGLSceneNode *target) { m_target = target; }
+    void setTarget(QGLSceneNode *target_) { m_target = target_; }
 
 Q_SIGNALS:
     void pressed();

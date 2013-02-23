@@ -87,17 +87,17 @@ private:
 
 inline QSphere3D::QSphere3D() : m_radius(1.0f) {}
 
-inline QSphere3D::QSphere3D(const QVector3D &center, float radius)
-    : m_center(center), m_radius(radius) {}
+inline QSphere3D::QSphere3D(const QVector3D &center_, float radius_)
+    : m_center(center_), m_radius(radius_) {}
 
 inline QVector3D QSphere3D::center() const
 {
     return m_center;
 }
 
-inline void QSphere3D::setCenter(const QVector3D &center)
+inline void QSphere3D::setCenter(const QVector3D &center_)
 {
-    m_center = center;
+    m_center = center_;
 }
 
 inline float QSphere3D::radius() const
@@ -105,9 +105,9 @@ inline float QSphere3D::radius() const
     return m_radius;
 }
 
-inline void QSphere3D::setRadius(float radius)
+inline void QSphere3D::setRadius(float radius_)
 {
-    m_radius = radius;
+    m_radius = radius_;
 }
 
 inline bool QSphere3D::contains(const QVector3D &point) const

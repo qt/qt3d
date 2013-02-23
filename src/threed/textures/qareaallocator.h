@@ -69,10 +69,10 @@ public:
     QSize size() const { return m_size; }
 
     QSize minimumAllocation() const { return m_minAlloc; }
-    void setMinimumAllocation(const QSize &size) { m_minAlloc = size; }
+    void setMinimumAllocation(const QSize &minimumSize) { m_minAlloc = minimumSize; }
 
     QSize margin() const { return m_margin; }
-    void setMargin(const QSize &margin) { m_margin = margin; }
+    void setMargin(const QSize &margin_) { m_margin = margin_; }
 
     virtual void expand(const QSize &size);
     void expandBy(const QSize &size);
@@ -101,6 +101,7 @@ public:
     QRect allocate(const QSize &size);
 
 private:
+    using QAreaAllocator::allocate;
     int m_row;
     int m_column;
     int m_rowHeight;
@@ -118,6 +119,8 @@ public:
     int overhead() const;
 
 private:
+    using QAreaAllocator::allocate;
+    using QAreaAllocator::release;
     enum Split { SplitOnX, SplitOnY };
 
     struct Node
@@ -152,6 +155,8 @@ public:
     int overhead() const;
 
 private:
+    using QAreaAllocator::allocate;
+    using QAreaAllocator::release;
     QSize m_uniformSize;
     QSize m_gridSize;
     int *m_grid;

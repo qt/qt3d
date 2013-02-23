@@ -54,10 +54,10 @@ class QGLBuilder;
 class Q_QT3D_EXPORT QGLCube
 {
 public:
-    explicit QGLCube(float size = 1.0f) : m_size(size) {}
+    explicit QGLCube(float size_ = 1.0f) : m_size(size_) {}
 
     float size() const { return m_size; }
-    void setSize(float size) { m_size = size; }
+    void setSize(float size_) { m_size = size_; }
 
 private:
     float m_size;

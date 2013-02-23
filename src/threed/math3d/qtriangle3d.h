@@ -93,10 +93,10 @@ inline QTriangle3D::QTriangle3D()
     , m_q(1.0f, 0.0f, 0.0f)
     , m_r(0.0f, 1.0f, 0.0f) {}
 
-inline QTriangle3D::QTriangle3D(const QVector3D &p, const QVector3D &q, const QVector3D &r)
-    : m_p(p)
-    , m_q(q)
-    , m_r(r) {}
+inline QTriangle3D::QTriangle3D(const QVector3D &p_, const QVector3D &q_, const QVector3D &r_)
+    : m_p(p_)
+    , m_q(q_)
+    , m_r(r_) {}
 
 inline QVector3D QTriangle3D::p() const
 {

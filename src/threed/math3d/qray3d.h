@@ -84,9 +84,9 @@ private:
 
 inline QRay3D::QRay3D() : m_direction(1.0f, 0.0f, 0.0f) {}
 
-inline QRay3D::QRay3D(const QVector3D &origin, const QVector3D &direction)
-    : m_origin(origin)
-    , m_direction(direction)
+inline QRay3D::QRay3D(const QVector3D &origin_, const QVector3D &direction_)
+    : m_origin(origin_)
+    , m_direction(direction_)
 {
 }
 

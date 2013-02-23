@@ -109,11 +109,11 @@ inline QLogicalVertex::QLogicalVertex()
 {
 }
 
-inline QLogicalVertex::QLogicalVertex(QGeometryData data, int index)
-    : m_data(data)
-    , m_index(index)
+inline QLogicalVertex::QLogicalVertex(QGeometryData data_, int index_)
+    : m_data(data_)
+    , m_index(index_)
 {
-    Q_ASSERT(index < data.count());
+    Q_ASSERT(index_ < data_.count());
 #ifdef QT3D_DEBUG_QLOGICALVERTEX
     data.check();
 #endif
@@ -140,11 +140,11 @@ inline QLogicalVertex::QLogicalVertex(const QVector3D &a, const QVector3D &n, co
     m_data.appendTexCoord(t);
 }
 
-inline QLogicalVertex::QLogicalVertex(const QVector3D &a, QColor4ub color)
+inline QLogicalVertex::QLogicalVertex(const QVector3D &a, QColor4ub color_)
     : m_index(0)
 {
     m_data.appendVertex(a);
-    m_data.appendColor(color);
+    m_data.appendColor(color_);
 }
 
 inline const QVector3D &QLogicalVertex::vertex() const

@@ -81,7 +81,7 @@ private:
     const void *m_data;
     int m_count;
 
-    void setStride(int stride) { m_stride = stride; }
+    void setStride(int stride_) { m_stride = stride_; }
     void setOffset(int offset)
         { m_data = reinterpret_cast<const void *>(offset); }
 
@@ -124,34 +124,34 @@ inline QGLAttributeValue::QGLAttributeValue(const QArray<QColor4ub>& array)
 }
 
 inline QGLAttributeValue::QGLAttributeValue
-        (int tupleSize, GLenum type, int stride, const void *data, int count)
-    : m_tupleSize(tupleSize), m_type(type), m_stride(stride)
-    , m_data(data), m_count(count)
+        (int tupleSize_, GLenum type_, int stride_, const void *data_, int count_)
+    : m_tupleSize(tupleSize_), m_type(type_), m_stride(stride_)
+    , m_data(data_), m_count(count_)
 {
-    Q_ASSERT(tupleSize >= 1 && tupleSize <= 4);
+    Q_ASSERT(tupleSize_ >= 1 && tupleSize_ <= 4);
 }
 
 inline QGLAttributeValue::QGLAttributeValue
-        (int tupleSize, GLenum type, int stride, int offset, int count)
-    : m_tupleSize(tupleSize), m_type(type), m_stride(stride)
-    , m_data(reinterpret_cast<const void *>(offset)), m_count(count)
+        (int tupleSize_, GLenum type_, int stride_, int offset_, int count_)
+    : m_tupleSize(tupleSize_), m_type(type_), m_stride(stride_)
+    , m_data(reinterpret_cast<const void *>(offset_)), m_count(count_)
 {
-    Q_ASSERT(tupleSize >= 1 && tupleSize <= 4);
+    Q_ASSERT(tupleSize_ >= 1 && tupleSize_ <= 4);
 }
 
 inline QGLAttributeValue::QGLAttributeValue
-        (const QGLAttributeDescription& description, const void *data, int count)
-    : m_tupleSize(description.tupleSize()), m_type(description.type())
-    , m_stride(description.stride()), m_data(data), m_count(count)
+        (const QGLAttributeDescription& description_, const void *data_, int count_)
+    : m_tupleSize(description_.tupleSize()), m_type(description_.type())
+    , m_stride(description_.stride()), m_data(data_), m_count(count_)
 {
 }
 
 inline QGLAttributeValue::QGLAttributeValue
-        (const QGLAttributeDescription& description, int offset, int count)
-    : m_tupleSize(description.tupleSize()), m_type(description.type())
-    , m_stride(description.stride())
-    , m_data(reinterpret_cast<const void *>(offset))
-    , m_count(count)
+        (const QGLAttributeDescription& description_, int offset_, int count_)
+    : m_tupleSize(description_.tupleSize()), m_type(description_.type())
+    , m_stride(description_.stride())
+    , m_data(reinterpret_cast<const void *>(offset_))
+    , m_count(count_)
 {
 }
 

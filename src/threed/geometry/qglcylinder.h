@@ -53,8 +53,8 @@ class QVector2D;
 class Q_QT3D_EXPORT QGLCylinder
 {
 public:
-    explicit QGLCylinder(float diameterTop = 1.0f, float diameterBase = 1.0f, float height = 1.0f, int slices = 6, int layers = 3, bool top = true, bool base = true)
-        : m_diameterTop(diameterTop), m_diameterBottom(diameterBase), m_height(height), m_slices(slices), m_layers(layers), m_top(top), m_base(base) {}
+    explicit QGLCylinder(float diameterTop_ = 1.0f, float diameterBase = 1.0f, float height_ = 1.0f, int slices_ = 6, int layers_ = 3, bool top = true, bool base = true)
+        : m_diameterTop(diameterTop_), m_diameterBottom(diameterBase), m_height(height_), m_slices(slices_), m_layers(layers_), m_top(top), m_base(base) {}
 
     //Cylinder dimensions
     float diameterTop() const {return m_diameterTop;}
@@ -64,14 +64,14 @@ public:
     void setDiameterBottom(float diameter) {m_diameterBottom=diameter;}
 
     float height() const {return m_height;}
-    void setHeight(float height) {m_height = height;}
+    void setHeight(float height_) {m_height = height_;}
 
     //Cylinder geometrical subdivisions
     int slices() const {return m_slices;}
-    void setSlices(int slices) {m_slices = slices;}
+    void setSlices(int slices_) {m_slices = slices_;}
 
     int layers() const {return m_layers;}
-    void setLayers(int layers) {m_layers = layers;}
+    void setLayers(int layers_) {m_layers = layers_;}
 
     //End-caps attached?
     bool topEnabled() const {return m_top;}

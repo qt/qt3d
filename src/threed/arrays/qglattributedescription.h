@@ -86,11 +86,11 @@ inline QGLAttributeDescription::QGLAttributeDescription()
 }
 
 inline QGLAttributeDescription::QGLAttributeDescription
-        (QGL::VertexAttribute attribute, int tupleSize, GLenum type, int stride)
-    : m_attribute(attribute), m_type(type),
-      m_tupleSize(tupleSize), m_stride(stride)
+        (QGL::VertexAttribute attribute_, int tupleSize_, GLenum type_, int stride_)
+    : m_attribute(attribute_), m_type(type_),
+      m_tupleSize(tupleSize_), m_stride(stride_)
 {
-    Q_ASSERT(tupleSize >= 1 && tupleSize <= 4);
+    Q_ASSERT(tupleSize_ >= 1 && tupleSize_ <= 4);
 }
 
 inline bool QGLAttributeDescription::isNull() const
@@ -103,9 +103,9 @@ inline QGL::VertexAttribute QGLAttributeDescription::attribute() const
     return m_attribute;
 }
 
-inline void QGLAttributeDescription::setAttribute(QGL::VertexAttribute attribute)
+inline void QGLAttributeDescription::setAttribute(QGL::VertexAttribute attribute_)
 {
-    m_attribute = attribute;
+    m_attribute = attribute_;
 }
 
 inline GLenum QGLAttributeDescription::type() const
@@ -113,9 +113,9 @@ inline GLenum QGLAttributeDescription::type() const
     return m_type;
 }
 
-inline void QGLAttributeDescription::setType(GLenum type)
+inline void QGLAttributeDescription::setType(GLenum type_)
 {
-    m_type = type;
+    m_type = type_;
 }
 
 inline int QGLAttributeDescription::tupleSize() const
@@ -123,10 +123,10 @@ inline int QGLAttributeDescription::tupleSize() const
     return m_tupleSize;
 }
 
-inline void QGLAttributeDescription::setTupleSize(int tupleSize)
+inline void QGLAttributeDescription::setTupleSize(int tupleSize_)
 {
-    Q_ASSERT(tupleSize >= 1 && tupleSize <= 4);
-    m_tupleSize = tupleSize;
+    Q_ASSERT(tupleSize_ >= 1 && tupleSize_ <= 4);
+    m_tupleSize = tupleSize_;
 }
 
 inline int QGLAttributeDescription::stride() const
@@ -134,9 +134,9 @@ inline int QGLAttributeDescription::stride() const
     return m_stride;
 }
 
-inline void QGLAttributeDescription::setStride(int stride)
+inline void QGLAttributeDescription::setStride(int stride_)
 {
-    m_stride = stride;
+    m_stride = stride_;
 }
 
 QT_END_NAMESPACE
