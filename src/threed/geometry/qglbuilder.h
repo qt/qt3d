@@ -96,7 +96,7 @@ protected:
     void setDefaultThreshold(int);
 
 private:
-    Q_DISABLE_COPY(QGLBuilder);
+    Q_DISABLE_COPY(QGLBuilder)
     void addSection(QGLSection *section);
 
     friend class QGLSection;

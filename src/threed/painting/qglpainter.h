@@ -110,7 +110,7 @@ public:
         UpdateViewport              = 0x00000020,
         UpdateAll                   = 0x7FFFFFFF
     };
-    Q_DECLARE_FLAGS(Updates, Update);
+    Q_DECLARE_FLAGS(Updates, Update)
 
     void setClearColor(const QColor& color);
 

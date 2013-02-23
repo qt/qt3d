@@ -65,7 +65,7 @@ public:
     int count();
     QGLColladaFxEffect* operator[](int);
 private:
-    Q_DECLARE_PRIVATE(QGLColladaFxEffectLoader);
+    Q_DECLARE_PRIVATE(QGLColladaFxEffectLoader)
     QScopedPointer<QGLColladaFxEffectLoaderPrivate> d_ptr;
 };
 

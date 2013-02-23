@@ -50,8 +50,8 @@
 #include <QtCore/qurl.h>
 #include <QObject>
 
-Q_DECLARE_FLAGS(aiPostProcessFlags, aiPostProcessSteps);
-Q_DECLARE_OPERATORS_FOR_FLAGS(aiPostProcessFlags);
+Q_DECLARE_FLAGS(aiPostProcessFlags, aiPostProcessSteps)
+Q_DECLARE_OPERATORS_FOR_FLAGS(aiPostProcessFlags)
 
 
 QT_BEGIN_NAMESPACE

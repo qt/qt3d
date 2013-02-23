@@ -147,7 +147,7 @@ namespace QGL
 
     Q_QT3D_EXPORT int nextPowerOfTwo(int value);
     Q_QT3D_EXPORT QSize nextPowerOfTwo(const QSize& value);
-};
+}
 
 QT_END_NAMESPACE
 

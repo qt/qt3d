@@ -68,7 +68,7 @@ namespace QGL
 #else
     typedef QArray<uint> IndexArray;
 #endif
-};
+}
 
 class Q_QT3D_EXPORT QGeometryData
 {
@@ -202,7 +202,7 @@ private:
     QGeometryDataPrivate *d;
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(QGeometryData::BufferStrategy);
+Q_DECLARE_OPERATORS_FOR_FLAGS(QGeometryData::BufferStrategy)
 
 #ifndef QT_NO_DEBUG_STREAM
 Q_QT3D_EXPORT QDebug operator<<(QDebug dbg, const QGeometryData &vertices);

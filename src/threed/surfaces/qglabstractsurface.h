@@ -93,7 +93,7 @@ protected:
 private:
     QScopedPointer<QGLAbstractSurfacePrivate> d_ptr;
 
-    Q_DECLARE_PRIVATE(QGLAbstractSurface);
+    Q_DECLARE_PRIVATE(QGLAbstractSurface)
     Q_DISABLE_COPY(QGLAbstractSurface)
 };
 
