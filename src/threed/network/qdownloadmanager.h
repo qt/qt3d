@@ -62,7 +62,7 @@ public:
 Q_SIGNALS:
     void downloadComplete(QByteArray*);
 
-public slots:
+public Q_SLOTS:
     void netReplyDone();
 
 private:

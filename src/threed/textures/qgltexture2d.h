@@ -113,7 +113,7 @@ public:
 
 Q_SIGNALS:
     void textureUpdated();
-public slots:
+public Q_SLOTS:
     void textureRequestFinished(QByteArray*);
 private:
     QScopedPointer<QGLTexture2DPrivate> d_ptr;

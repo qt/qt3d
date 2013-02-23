@@ -78,7 +78,7 @@ public:
     void finalize();
     void downloadScene();
 
-public slots:
+public Q_SLOTS:
     virtual void downloadComplete(QByteArray *sceneData);
 
 protected:

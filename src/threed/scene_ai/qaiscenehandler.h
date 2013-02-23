@@ -97,7 +97,7 @@ public:
     quint32 removeComponentFlags() const { return m_removeComponentFlags; }
     quint32 removeSortFlags() const { return m_removeSortFlags; }
 
-public slots:
+public Q_SLOTS:
     void downloadComplete(QByteArray *sceneData);
 
 private:
