@@ -58,7 +58,7 @@ public:
     ~Teapot() {}
 };
 
-QML_DECLARE_TYPE(Cube)
+QML_DECLARE_TYPE(Teapot)
 
 QT_END_NAMESPACE
 
