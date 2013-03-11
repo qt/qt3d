@@ -2,7 +2,6 @@
 # Cause make to do nothing.
 TEMPLATE = subdirs
 
-CMAKE_QT_MODULES_UNDER_TEST = 3d
+CMAKE_QT_MODULES_UNDER_TEST = 3d 3dquick
 
-CONFIG += insignificant_test
 CONFIG += ctest_testcase

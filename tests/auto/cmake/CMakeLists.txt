@@ -9,4 +9,7 @@ find_package(Qt5Core REQUIRED)
 
 include("${_Qt5CTestMacros}")
 
-expect_pass(test_modules)
+test_module_includes(
+  3D QGLTexture2D
+  3DQuick QQuickItem3D
+)
