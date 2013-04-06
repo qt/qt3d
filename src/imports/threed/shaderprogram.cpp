@@ -458,7 +458,7 @@ inline bool ShaderProgramEffect::setUniformForPropertyIndex(int propertyIndex, Q
     QVariant value =
             parent.data()->metaObject()->property(propertyIndex).read(parent.data());
 
-    switch(value.type())
+    switch(int(value.type()))
     {
     case QVariant::Double:
         // Convert double to float to pass to shader program

@@ -87,7 +87,7 @@ protected:
     static QGLColladaFxEffect* processTechniqueElement( QXmlStreamReader& xml, ResultState* stateStack, QString &profileName );
     static QGLColladaParam* processNewparamElement( QXmlStreamReader& xml, ResultState* stateStack );
     static void processImageElement( QXmlStreamReader& xml, ResultState* stateStack );
-    static QGLColladaSurfaceParam* processSurfaceElement( QXmlStreamReader& xml, ResultState* stateStack, QString passedInSid = "");
+    static QGLColladaSurfaceParam* processSurfaceElement( QXmlStreamReader& xml, ResultState* stateStack, QString passedInSid = QString());
     static void processSampler2DElement( QXmlStreamReader& xml, ResultState* stateStack, QString passedInSid );
     static QGLTexture2D* processTextureElement( QXmlStreamReader& xml , ResultState* stateStack );
     static QVariant processFloatList( QXmlStreamReader& xml );
