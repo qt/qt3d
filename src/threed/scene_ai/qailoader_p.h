@@ -39,41 +39,64 @@
 **
 ****************************************************************************/
 
-#ifndef QAISCENE_H
-#define QAISCENE_H
+#ifndef QAILOADER_H
+#define QAILOADER_H
 
-#include <Qt3D/qglabstractscene.h>
+#include <QtCore/qurl.h>
+#include <QtCore/qstring.h>
+#include <QtCore/qmap.h>
 
-#include "aiScene.h"
+#include <Qt3D/qglbuilder.h>
+
+struct aiMaterial;
+struct aiMesh;
+struct aiNode;
+struct aiScene;
 
 QT_BEGIN_NAMESPACE
 
+class QAiMesh;
+class QAiScene;
 class QGLSceneNode;
 class QAiSceneHandler;
-class QAiLoader;
+class QGLSceneAnimation;
+class QGLMaterial;
 
-class QAiScene : public QGLAbstractScene
+class QAiLoader
 {
-    Q_OBJECT
 public:
-    explicit QAiScene(const aiScene *scene, QAiSceneHandler *handler);
-    explicit QAiScene(QAiSceneHandler *handler);
-    virtual ~QAiScene();
+    QAiLoader(const aiScene *scene, QAiSceneHandler* handler);
+    ~QAiLoader();
+    QGLSceneNode *loadMeshes();
+    QList<QGLSceneAnimation *> loadAnimations();
 
-    //load a scene with the current handler
-    void loadScene(const aiScene*scene);
-
-    QList<QObject *> objects() const;
-    QGLSceneNode *mainNode() const;
-    QList<QGLSceneAnimation *> animations() const;
 private:
-    QAiLoader * aiLoader() const;
-    QList<QGLSceneAnimation *> m_animations;
-protected:
+    friend class QAiScene;
+
+    void loadMesh(aiMesh *);
+    void loadNodes(aiNode *, QGLSceneNode *);
+    void loadMaterial(aiMaterial *);
+    void loadTextures(aiMaterial *, QGLMaterial *);
+    QUrl ensureResource(const QString &);
+    void optimizeData();
+    void optimizeNodes(QGLSceneNode *node = 0, QGLSceneNode *parent = 0);
+    void countChildNodeReferences();
+    void setEffectRecursive(QGLSceneNode *node);
+
+    const aiScene *m_scene;
     QGLSceneNode *m_root;
-    QAiLoader *m_aiLoader;
+    QAiSceneHandler *m_handler;
+    QList<QGLSceneNode *> m_nodes;
+    QList<QGLMaterial *> m_materials;
+    QList<QGLSceneNode *> m_meshes;
+    QMap<aiNode *, QGLSceneNode *> m_nodeMap;
+    QMap<QGLSceneNode *, int> m_refCounts;
+    QList<QGLSceneAnimation *> m_animations;
+    bool m_hasTextures;
+    bool m_hasLitMaterials;
+    QGLBuilder m_builder;
 };
 
 QT_END_NAMESPACE
 
-#endif
+#endif // QAILOADER_H

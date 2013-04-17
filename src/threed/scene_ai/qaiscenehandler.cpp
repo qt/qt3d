@@ -39,10 +39,10 @@
 **
 ****************************************************************************/
 
-#include "qaiscenehandler.h"
-#include "qaiscene.h"
+#include "qaiscenehandler_p.h"
+#include "qaiscene_p.h"
 #include "qdownloadmanager.h"
-#include "ailoaderiosystem.h"
+#include "ailoaderiosystem_p.h"
 
 #include "aiScene.h"
 #include "aiPostProcess.h"

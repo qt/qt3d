@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#include "ailoaderiosystem.h"
-#include "ailoaderiostream.h"
+#include "ailoaderiosystem_p.h"
+#include "ailoaderiostream_p.h"
 #include "DefaultLogger.h"
 
 #include <QtCore/qfile.h>

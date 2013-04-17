@@ -39,11 +39,14 @@
 **
 ****************************************************************************/
 
-#include "qaiscene.h"
-#include "qaimesh.h"
-#include "qailoader.h"
+#include "qaiscene_p.h"
+#include "qaimesh_p.h"
+#include "qailoader_p.h"
 
-#include "qglscenenode.h"
+#include <qglmaterialcollection.h>
+#include <qglscenenode.h>
+
+#include <QtCore/qsharedpointer.h>
 
 QT_BEGIN_NAMESPACE
 

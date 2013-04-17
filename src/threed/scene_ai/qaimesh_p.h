@@ -39,63 +39,33 @@
 **
 ****************************************************************************/
 
-#ifndef QAILOADER_H
-#define QAILOADER_H
+#ifndef QAIMESH_H
+#define QAIMESH_H
 
-#include <QtCore/qurl.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qmap.h>
+#include <Qt3D/qgeometrydata.h>
 
-#include "aiScene.h"
-
-#include <Qt3D/qglbuilder.h>
-
-struct aiMaterial;
+struct aiMesh;
 
 QT_BEGIN_NAMESPACE
 
-class QAiMesh;
-class QAiScene;
+class QGLMaterialCollection;
 class QGLSceneNode;
-class QAiSceneHandler;
-class QGLSceneAnimation;
-class QGLMaterial;
+class QGLBuilder;
+class QAiLoader;
 
-class QAiLoader
+class QAiMesh
 {
 public:
-    QAiLoader(const aiScene *scene, QAiSceneHandler* handler);
-    ~QAiLoader();
-    QGLSceneNode *loadMeshes();
-    QList<QGLSceneAnimation *> loadAnimations();
+    QAiMesh(aiMesh *mesh);
+    virtual ~QAiMesh();
 
+    void build(QGLBuilder &builder, bool showWarnings = false);
 private:
-    friend class QAiScene;
+    void loadTriangles(QGLBuilder &builder);
 
-    void loadMesh(aiMesh *);
-    void loadNodes(aiNode *, QGLSceneNode *);
-    void loadMaterial(aiMaterial *);
-    void loadTextures(aiMaterial *, QGLMaterial *);
-    QUrl ensureResource(const QString &);
-    void optimizeData();
-    void optimizeNodes(QGLSceneNode *node = 0, QGLSceneNode *parent = 0);
-    void countChildNodeReferences();
-    void setEffectRecursive(QGLSceneNode *node);
-
-    const aiScene *m_scene;
-    QGLSceneNode *m_root;
-    QAiSceneHandler *m_handler;
-    QList<QGLSceneNode *> m_nodes;
-    QList<QGLMaterial *> m_materials;
-    QList<QGLSceneNode *> m_meshes;
-    QMap<aiNode *, QGLSceneNode *> m_nodeMap;
-    QMap<QGLSceneNode *, int> m_refCounts;
-    QList<QGLSceneAnimation *> m_animations;
-    bool m_hasTextures;
-    bool m_hasLitMaterials;
-    QGLBuilder m_builder;
+    aiMesh *m_mesh;
 };
 
 QT_END_NAMESPACE
 
-#endif // QAILOADER_H
+#endif // QAIMESH_H

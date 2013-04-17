@@ -43,7 +43,7 @@
 #include "qglsceneformatplugin.h"
 #include "qglpicknode.h"
 
-#include "qaiscenehandler.h"
+#include "qaiscenehandler_p.h"
 #include "qglbezierscenehandler.h"
 
 #include <QtCore/qfile.h>

@@ -39,13 +39,14 @@
 **
 ****************************************************************************/
 
-#include "qaimesh.h"
-#include "qglscenenode.h"
-#include "qglmaterialcollection.h"
-#include "qglbuilder.h"
+#include "qaimesh_p.h"
+#include <qglscenenode.h>
+#include <qglmaterialcollection.h>
+#include <qglbuilder.h>
 
 #include <QtGui/qmatrix4x4.h>
 #include <QtCore/qmath.h>
+#include <QtCore/qsharedpointer.h>
 
 #include "aiMesh.h"
 #include "DefaultLogger.h"

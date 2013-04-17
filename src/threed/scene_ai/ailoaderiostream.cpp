@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "ailoaderiostream.h"
+#include "ailoaderiostream_p.h"
 
 #include <QtCore/qiodevice.h>
 

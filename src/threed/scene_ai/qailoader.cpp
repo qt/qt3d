@@ -39,10 +39,10 @@
 **
 ****************************************************************************/
 
-#include "qailoader.h"
-#include "qaiscenehandler.h"
-#include "qaiscene.h"
-#include "qaimesh.h"
+#include "qailoader_p.h"
+#include "qaiscenehandler_p.h"
+#include "qaiscene_p.h"
+#include "qaimesh_p.h"
 
 #include "qgeometrydata.h"
 #include "qgltwosidedmaterial.h"

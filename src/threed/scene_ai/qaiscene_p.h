@@ -39,34 +39,41 @@
 **
 ****************************************************************************/
 
-#ifndef QAIMESH_H
-#define QAIMESH_H
+#ifndef QAISCENE_H
+#define QAISCENE_H
 
-#include <Qt3D/qaiscenehandler.h>
-#include <Qt3D/qgeometrydata.h>
+#include <Qt3D/qglabstractscene.h>
 
-struct aiMesh;
+struct aiScene;
 
 QT_BEGIN_NAMESPACE
 
-class QGLMaterialCollection;
 class QGLSceneNode;
-class QGLBuilder;
+class QAiSceneHandler;
 class QAiLoader;
 
-class QAiMesh
+class QAiScene : public QGLAbstractScene
 {
+    Q_OBJECT
 public:
-    QAiMesh(aiMesh *mesh);
-    virtual ~QAiMesh();
+    explicit QAiScene(const aiScene *scene, QAiSceneHandler *handler);
+    explicit QAiScene(QAiSceneHandler *handler);
+    virtual ~QAiScene();
 
-    void build(QGLBuilder &builder, bool showWarnings = false);
+    //load a scene with the current handler
+    void loadScene(const aiScene *scene);
+
+    QList<QObject *> objects() const;
+    QGLSceneNode *mainNode() const;
+    QList<QGLSceneAnimation *> animations() const;
 private:
-    void loadTriangles(QGLBuilder &builder);
-
-    aiMesh *m_mesh;
+    QAiLoader * aiLoader() const;
+    QList<QGLSceneAnimation *> m_animations;
+protected:
+    QGLSceneNode *m_root;
+    QAiLoader *m_aiLoader;
 };
 
 QT_END_NAMESPACE
 
-#endif // QAIMESH_H
+#endif
