@@ -4,4 +4,5 @@ TEMPLATE = subdirs
 
 CMAKE_QT_MODULES_UNDER_TEST = 3d
 
+CONFIG += insignificant_test
 CONFIG += ctest_testcase
