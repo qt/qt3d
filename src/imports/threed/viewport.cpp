@@ -1841,8 +1841,14 @@ void Viewport::itemChange(QQuickItem::ItemChange change, const ItemChangeData &v
         d->directRenderInitialized = false;
         if (d->canvas)
         {
-            connect(d->canvas, SIGNAL(sceneGraphInitialized()),
-                    this, SLOT(sceneGraphInitialized()), Qt::DirectConnection);
+            if (d->canvas->openglContext() != NULL)
+            {
+                sceneGraphInitialized();
+            } else {
+                connect(d->canvas, SIGNAL(sceneGraphInitialized()),
+                        this, SLOT(sceneGraphInitialized()),
+                        Qt::DirectConnection);
+            }
             connect(d->canvas, SIGNAL(destroyed()),
                     this, SLOT(canvasDeleted()));
             QSurfaceFormat format = d->canvas->format();
