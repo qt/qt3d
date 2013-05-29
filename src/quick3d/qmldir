@@ -1,3 +1,4 @@
+module Qt3D.Shapes
 Cube 2.0 Cube.qml
 Teapot 2.0 Teapot.qml
 Quad 2.0 Quad.qml
