@@ -802,6 +802,9 @@ void Viewport::paint(QPainter *painter)
 {
     Q_ASSERT(renderMode() == BufferedRender);
 
+    if (!isVisible())
+        return;
+
     QGLPainter glPainter;
     if (!glPainter.begin(painter))
     {
