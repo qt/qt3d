@@ -236,9 +236,7 @@ public:
     bool panning;
     QPointF startPan;
     QPointF lastPan;
-    QPointF lastPick;
     QObject *lastObject;
-    bool needsPick;
     QVector3D startEye;
     QVector3D startCenter;
     QVector3D startUpVector;
@@ -249,15 +247,7 @@ public:
     bool pickingRenderInitialized;
     QList<PickEvent *> pickEventQueue;
 
-    // INVARIANT: PickEvents are always either in the queue, or in the registry, never
-    // in both.  Here "never" means "not outside of sections guarded by the lock".
-    //
-    // Serializing PickEvents across the signal/slot boundary is dicey, since they are
-    // not a value type.  Instead keep our own registry of them here, and forward the
-    // id values instead.  Should also make dispatch faster.
-    QMap<quint64, PickEvent *> pickEventRegistry;
-
-    // This lock is for the registry and for the pick event queue itself.  All accesses
+    // This lock is for the pick event queue itself.  All accesses
     // to that data structure must be guarded by this lock.
     QMutexMaybeLocker::Lock pickEventQueueLock;
 
@@ -270,7 +260,6 @@ public:
     void setDefaults(QGLPainter *painter);
     void setRenderSettings(QGLPainter *painter);
     void getOverflow(QMouseEvent *e);
-    PickEvent *takeFromRegistry(quint64 id);
 };
 
 ViewportPrivate::ViewportPrivate()
@@ -294,9 +283,7 @@ ViewportPrivate::ViewportPrivate()
     , panning(false)
     , startPan(-1, -1)
     , lastPan(-1, -1)
-    , lastPick(-1, -1)
     , lastObject(0)
-    , needsPick(true)
     , panModifiers(Qt::NoModifier)
     , renderMode(Viewport::UnknownRender)
     , directRenderInitialized(false)
@@ -312,7 +299,6 @@ ViewportPrivate::~ViewportPrivate()
 {
     delete pickFbo;
     qDeleteAll(pickEventQueue);
-    qDeleteAll(pickEventRegistry);
 }
 
 void ViewportPrivate::setDefaults(QGLPainter *painter)
@@ -370,20 +356,6 @@ void ViewportPrivate::setRenderSettings(QGLPainter *painter)
         clearColor = fillColor;
     painter->setClearColor(clearColor);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-}
-
-PickEvent *ViewportPrivate::takeFromRegistry(quint64 id)
-{
-    PickEvent *pick = 0;
-    QMutexMaybeLocker locker(&pickEventQueueLock);
-    QMap<quint64, PickEvent*>::iterator it = pickEventRegistry.find(id);
-    if (it != pickEventRegistry.end())
-    {
-        pick = it.value();
-        pickEventRegistry.erase(it);
-    }
-    locker.unlock();
-    return pick;
 }
 
 const int Viewport::FBO_SIZE = 8;
@@ -939,7 +911,6 @@ void Viewport::render(QGLPainter *painter)
     // May've been set by early draw
     glDisable(GL_CULL_FACE);
 
-    d->needsPick = true;
     draw(painter);
 
     // May've been set by one of the items
@@ -1194,8 +1165,6 @@ void Viewport::objectForPoint()
             QMutexMaybeLocker locker(&d->pickEventQueueLock);
             if (d->pickEventQueue.size() > 0)
                 p = d->pickEventQueue.takeFirst();
-            if (p)
-                d->pickEventRegistry.insert(p->id(), p);
             locker.unlock();
         }
         if (!p)
@@ -1205,8 +1174,10 @@ void Viewport::objectForPoint()
         // Check the viewport boundaries in case a mouse move has
         // moved the pointer outside the window.
         QRectF rect = boundingRect();
-        if (!rect.contains(pt))
+        if (!rect.contains(pt)) {
+            delete p;
             continue;
+        }
 
         if (!d->pickFbo)
         {
@@ -1226,8 +1197,6 @@ void Viewport::objectForPoint()
                 painter.setPicking(false);
                 objectId = painter.pickObject(pt.x() / winToFboRatioW, pt.y() / winToFboRatioH);
                 d->setDefaults(&painter);
-                d->needsPick = false;
-                d->lastPick = pt;
             } else {
                 qWarning() << "Warning: unable to paint into fbo, picking will be unavailable";
                 continue;
@@ -1237,7 +1206,7 @@ void Viewport::objectForPoint()
         d->lastObject = obj;
         p->setObject(obj);
         QMetaMethod m = metaObject()->method(p->callback());
-        m.invoke(this, Qt::QueuedConnection, Q_ARG(quint64, p->id()));
+        m.invoke(this, Qt::QueuedConnection, Q_ARG(void*, p));
     }
 }
 
@@ -1277,7 +1246,7 @@ void Viewport::mousePressEvent(QMouseEvent *e)
     static int processMousePressInvocation = -1;
     if (processMousePressInvocation == -1)
     {
-        processMousePressInvocation = metaObject()->indexOfMethod("processMousePress(quint64)");
+        processMousePressInvocation = metaObject()->indexOfMethod("processMousePress(PickEvent*)");
         Q_ASSERT(processMousePressInvocation != -1);
     }
     if (!d->panning && d->picking)
@@ -1285,6 +1254,8 @@ void Viewport::mousePressEvent(QMouseEvent *e)
         PickEvent * p = initiatePick(e);
         if (p)
             p->setCallback(processMousePressInvocation);
+        e->setAccepted(true); //This is necessary, otherwise we won't get a realese event
+        return;
     }
     if (d->navigation && e->button() == Qt::LeftButton)
     {
@@ -1298,10 +1269,8 @@ void Viewport::mousePressEvent(QMouseEvent *e)
     e->setAccepted(true);
 }
 
-void Viewport::processMousePress(quint64 eventId)
+void Viewport::processMousePress(PickEvent *pick)
 {
-    QScopedPointer<PickEvent> pick(d->takeFromRegistry(eventId));
-    Q_ASSERT(pick.data());
     QObject *object = pick->object();
     QMouseEvent *e = pick->event();
     if (d->pressedObject)
@@ -1328,10 +1297,12 @@ void Viewport::processMousePress(quint64 eventId)
                           e->modifiers());
         QCoreApplication::sendEvent(object, &event);
     }
-    else if (d->navigation && e->button() == Qt::LeftButton)
+
+    if (d->navigation && e->button() == Qt::LeftButton)
     {
         processNavEvent(e);
     }
+    delete pick;
 }
 
 void Viewport::processNavEvent(QMouseEvent *e)
@@ -1352,7 +1323,7 @@ void Viewport::mouseReleaseEvent(QMouseEvent *e)
     static int processMouseReleaseInvocation = -1;
     if (processMouseReleaseInvocation == -1)
     {
-        processMouseReleaseInvocation = metaObject()->indexOfMethod("processMouseRelease(quint64)");
+        processMouseReleaseInvocation = metaObject()->indexOfMethod("processMouseRelease(PickEvent*)");
         Q_ASSERT(processMouseReleaseInvocation != -1);
     }
     if (d->panning && e->button() == Qt::LeftButton) {
@@ -1368,10 +1339,8 @@ void Viewport::mouseReleaseEvent(QMouseEvent *e)
     }
 }
 
-void Viewport::processMouseRelease(quint64 eventId)
+void Viewport::processMouseRelease(PickEvent *pick)
 {
-    QScopedPointer<PickEvent> pick(d->takeFromRegistry(eventId));
-    Q_ASSERT(pick.data());
     Q_ASSERT(d->pressedObject);
     QObject *object = pick->object();
     QMouseEvent *e = pick->event();
@@ -1407,6 +1376,7 @@ void Viewport::processMouseRelease(quint64 eventId)
              e->screenPos(), e->button(), e->buttons(), e->modifiers());
         QCoreApplication::sendEvent(pressed, &event);
     }
+    delete pick;
 }
 
 /*!
@@ -1417,7 +1387,7 @@ void Viewport::mouseDoubleClickEvent(QMouseEvent *e)
     static int processMouseDoubleClickInvocation = -1;
     if (processMouseDoubleClickInvocation == -1)
     {
-        processMouseDoubleClickInvocation = metaObject()->indexOfMethod("processMouseDoubleClick(quint64)");
+        processMouseDoubleClickInvocation = metaObject()->indexOfMethod("processMouseDoubleClick(PickEvent*)");
         Q_ASSERT(processMouseDoubleClickInvocation != -1);
     }
     if (d->picking) {
@@ -1428,10 +1398,8 @@ void Viewport::mouseDoubleClickEvent(QMouseEvent *e)
     QQuickItem::mouseDoubleClickEvent(e);
 }
 
-void Viewport::processMouseDoubleClick(quint64 eventId)
+void Viewport::processMouseDoubleClick(PickEvent *pick)
 {
-    QScopedPointer<PickEvent> pick(d->takeFromRegistry(eventId));
-    Q_ASSERT(pick.data());
     QObject *object = pick->object();
     QMouseEvent *e = pick->event();
     if (object) {
@@ -1442,6 +1410,7 @@ void Viewport::processMouseDoubleClick(quint64 eventId)
         QCoreApplication::sendEvent(object, &event);
         e->setAccepted(true);
     }
+    delete pick;
 }
 
 /*!
@@ -1481,7 +1450,7 @@ void Viewport::mouseMoveEvent(QMouseEvent *e)
     static int processMouseMoveInvocation = -1;
     if (processMouseMoveInvocation == -1)
     {
-        processMouseMoveInvocation = metaObject()->indexOfMethod("processMouseMove(quint64)");
+        processMouseMoveInvocation = metaObject()->indexOfMethod("processMouseMove(PickEvent*)");
         Q_ASSERT(processMouseMoveInvocation != -1);
     }
     if (d->panning) {
@@ -1516,10 +1485,8 @@ void Viewport::mouseMoveEvent(QMouseEvent *e)
     e->setAccepted(true);
 }
 
-void Viewport::processMouseMove(quint64 eventId)
+void Viewport::processMouseMove(PickEvent *pick)
 {
-    QScopedPointer<PickEvent> pick(d->takeFromRegistry(eventId));
-    Q_ASSERT(pick.data());
     QObject *object = pick->object();
     QMouseEvent *e = pick->event();
     if (d->pressedObject) {
@@ -1547,8 +1514,10 @@ void Viewport::processMouseMove(quint64 eventId)
         d->enteredObject = 0;
     } else {
         QQuickItem::mouseMoveEvent(e);
+        delete pick;
         return;
     }
+    delete pick;
 }
 
 /*!
@@ -1683,7 +1652,7 @@ bool Viewport::hoverEvent(QHoverEvent *e)
     static int processMouseHoverInvocation = -1;
     if (processMouseHoverInvocation == -1)
     {
-        processMouseHoverInvocation = metaObject()->indexOfMethod("processMouseHover(quint64)");
+        processMouseHoverInvocation = metaObject()->indexOfMethod("processMouseHover(PickEvent*)");
         Q_ASSERT(processMouseHoverInvocation != -1);
     }
     if (!d->panning && d->picking) {
@@ -1699,10 +1668,8 @@ bool Viewport::hoverEvent(QHoverEvent *e)
     return false;
 }
 
-void Viewport::processMouseHover(quint64 eventId)
+void Viewport::processMouseHover(PickEvent *pick)
 {
-    QScopedPointer<PickEvent> pick(d->takeFromRegistry(eventId));
-    Q_ASSERT(pick.data());
     QObject *object = pick->object();
     QMouseEvent *e = pick->event();
 
@@ -1730,6 +1697,7 @@ void Viewport::processMouseHover(quint64 eventId)
         sendLeaveEvent(d->enteredObject);
         d->enteredObject = 0;
     }
+    delete pick;
 }
 
 // Zoom in and out according to the change in wheel delta.

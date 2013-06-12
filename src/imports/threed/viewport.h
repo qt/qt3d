@@ -163,11 +163,11 @@ private:
     void setupPickPaint(QGLPainter *painter, const QPointF &pt);
     bool mouseMoveOverflow(QMouseEvent *e) const;
 
-    Q_INVOKABLE void processMousePress(quint64 eventId);
-    Q_INVOKABLE void processMouseRelease(quint64);
-    Q_INVOKABLE void processMouseDoubleClick(quint64);
-    Q_INVOKABLE void processMouseMove(quint64);
-    Q_INVOKABLE void processMouseHover(quint64);
+    Q_INVOKABLE void processMousePress(PickEvent *event);
+    Q_INVOKABLE void processMouseRelease(PickEvent *event);
+    Q_INVOKABLE void processMouseDoubleClick(PickEvent *event);
+    Q_INVOKABLE void processMouseMove(PickEvent *event);
+    Q_INVOKABLE void processMouseHover(PickEvent *event);
 
     void processNavEvent(QMouseEvent *event);
 
