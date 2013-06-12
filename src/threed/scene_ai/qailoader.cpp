@@ -156,14 +156,14 @@ void QAiLoader::loadMesh(aiMesh *mesh)
         {
             // TODO: Implement skeletal animation
             QString error = QLatin1String("Bones in mesh %1 not yet supported");
-            error.arg(name);
+            error = error.arg(name);
             Assimp::DefaultLogger::get()->warn(error.toLatin1().constData());
         }
         if (mesh->HasTangentsAndBitangents())
         {
             // TODO: Implement normal maps - here and in the texture import
             QString error = QLatin1String("Tangents for normal map in mesh %1 not yet supported");
-            error.arg(name);
+            error = error.arg(name);
             Assimp::DefaultLogger::get()->warn(error.toLatin1().constData());
         }
     }
@@ -439,7 +439,7 @@ void QAiLoader::loadTextures(aiMaterial *ma, QGLMaterial *mq)
             if (texCount && texType != aiTextureType_DIFFUSE)
             {
                 QString error = QLatin1String("Unsupported texture type \"%1\" in material \"%2\".");
-                error.arg(QLatin1String(typeNames[i]), mq->objectName());
+                error = error.arg(QLatin1String(typeNames[i]), mq->objectName());
                 Assimp::DefaultLogger::get()->warn(error.toLatin1().constData());
             }
         }
@@ -452,7 +452,7 @@ void QAiLoader::loadTextures(aiMaterial *ma, QGLMaterial *mq)
         if (texCount > 1 && m_handler->showWarnings())
         {
             QString error = QLatin1String("Multi-textures not supported: \"%1\" has %2");
-            error.arg(mq->objectName()).arg(texCount);
+            error = error.arg(mq->objectName()).arg(texCount);
             Assimp::DefaultLogger::get()->warn(error.toLatin1().constData());
         }
         else
@@ -466,7 +466,7 @@ void QAiLoader::loadTextures(aiMaterial *ma, QGLMaterial *mq)
                 if (m_handler->showWarnings())
                 {
                     QString error = QLatin1String("Could not load texture: %1 for material %2");
-                    error.arg(url.toString()).arg(mq->objectName());
+                    error = error.arg(url.toString()).arg(mq->objectName());
                     Assimp::DefaultLogger::get()->warn(error.toLatin1().constData());
                 }
             }
