@@ -1,3 +1,5 @@
+requires(qtHaveModule(opengl))
+
 load(qt_parts)
 
 module_qt3d_tutorials.subdir = tutorials
@@ -9,10 +11,7 @@ module_qt3d_tutorials.CONFIG = no_default_target no_default_install
 
 gcov: SUBDIRS -= sub_tools
 
-# We need opengl, minimum es2 or desktop
-!contains(QT_CONFIG, opengl) {
-    error("Qt3D requires OpenGL!")
-}
+# We need opengl, minimum es2
 contains(QT_CONFIG, opengles1) {
     error("Qt3D does not support OpenGL ES 1!")
 }
