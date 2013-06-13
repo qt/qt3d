@@ -675,6 +675,30 @@ void Viewport::setBlending(bool value)
 }
 
 /*!
+    \qmlproperty bool Viewport::antialiasing
+
+    The antialiasing property is used to enable or disable antialiasing
+    on the viewport. This property only has an effect if renderMode() == BufferedRender.
+    For renderMode() == DirectRender antialiasing can be enabled by setting the
+    QSurfaceFormat.
+
+    By default, antialiasing is set to false.
+*/
+bool Viewport::antialiasing() const
+{
+    return QQuickPaintedItem::antialiasing();
+}
+
+void Viewport::setAntialiasing(bool value)
+{
+    if (value != QQuickPaintedItem::antialiasing()) {
+        QQuickPaintedItem::setAntialiasing(value);
+        Q_EMIT antialiasingChanged();
+    }
+}
+
+
+/*!
     \qmlproperty Camera Viewport::camera
 
     This property sets the camera parameters which will be used for

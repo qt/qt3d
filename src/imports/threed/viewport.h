@@ -71,6 +71,8 @@ class Viewport : public QQuickPaintedItem, public QQuickViewport
     Q_PROPERTY(QGLCamera *camera READ camera WRITE setCamera)
     Q_PROPERTY(QGLLightParameters *light READ light WRITE setLight NOTIFY viewportChanged)
     Q_PROPERTY(QGLLightModel *lightModel READ lightModel WRITE setLightModel NOTIFY viewportChanged)
+    Q_PROPERTY(bool antialiasing READ antialiasing WRITE setAntialiasing NOTIFY antialiasingChanged)
+
 public:
     enum RenderMode
     {
@@ -103,6 +105,9 @@ public:
     bool blending() const;
     void setBlending(bool value);
 
+    bool antialiasing() const;
+    void setAntialiasing(bool value);
+
     QGLCamera *camera() const;
     void setCamera(QGLCamera *value);
 
@@ -123,6 +128,7 @@ public:
 Q_SIGNALS:
     void viewportChanged();
     void showSceneGraphChanged();
+    void antialiasingChanged();
 
 public Q_SLOTS:
     void update3d();
