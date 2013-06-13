@@ -1066,7 +1066,7 @@ PickEvent *Viewport::initiatePick(QMouseEvent *pick)
         locker.unlock();
     }
 
-    update();
+    update3d();
     return p;
 }
 
@@ -1215,7 +1215,13 @@ void Viewport::objectForPoint()
 */
 void Viewport::update3d()
 {
-    update();
+    if (renderMode() == DirectRender) {
+        if (d->canvas)
+            d->canvas->update();
+    }
+    else {
+        update();
+    }
 }
 
 /*!
@@ -1223,7 +1229,7 @@ void Viewport::update3d()
 */
 void Viewport::cameraChanged()
 {
-    update();
+    update3d();
 }
 
 static inline void sendEnterEvent(QObject *object)
