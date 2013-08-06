@@ -61,7 +61,7 @@ class QGLPainter;
 
 namespace QGL
 {
-    inline quint32 fieldMask(QGL::VertexAttribute f) { return (quint32)0x01 << f; }
+    inline quint32 fieldMask(QGL::VertexAttribute f) { return 1U << f; }
 
 #if defined(QT_OPENGL_ES)
     typedef QArray<ushort> IndexArray;
@@ -186,7 +186,7 @@ public:
     bool isNull() const;
     void detach();
 #ifndef QT_NO_DEBUG
-    quint64 id() const { return (quint64)d; }
+    quint64 id() const { return quint64(d); }
 #endif
 protected:
     const QVector3DArray *vertexData() const;

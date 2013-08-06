@@ -86,21 +86,21 @@ inline bool QGLAttributeSet::isValidAttr(QGL::VertexAttribute attr) const
 inline bool QGLAttributeSet::contains(QGL::VertexAttribute attr) const
 {
     quint32 flag = quint32(attr);
-    return isValidAttr(attr) ? ((m_attrs & (((quint32)1) << flag)) != 0) : false;
+    return isValidAttr(attr) ? ((m_attrs & (1U << flag)) != 0) : false;
 }
 
 inline void QGLAttributeSet::insert(QGL::VertexAttribute attr)
 {
     quint32 flag = quint32(attr);
     if (isValidAttr(attr))
-        m_attrs |= (((quint32)1) << flag);
+        m_attrs |= (1U << flag);
 }
 
 inline void QGLAttributeSet::remove(QGL::VertexAttribute attr)
 {
     quint32 flag = quint32(attr);
     if (isValidAttr(attr))
-        m_attrs &= ~(((quint32)1) << flag);
+        m_attrs &= ~(1U << flag);
 }
 
 inline void QGLAttributeSet::unite(const QGLAttributeSet &other)
