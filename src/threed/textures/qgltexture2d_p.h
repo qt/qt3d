@@ -90,7 +90,7 @@ class QGLTexture2DPrivate
 {
 public:
     QGLTexture2DPrivate();
-    ~QGLTexture2DPrivate();
+    virtual ~QGLTexture2DPrivate();
 
     QSize size;
     QSize requestedSize;
