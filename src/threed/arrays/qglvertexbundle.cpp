@@ -384,7 +384,9 @@ bool QGLVertexBundle::upload()
     // Determine how to upload the data, using a map if possible.
     // Interleave the data into the final buffer.  We do it in
     // sections so as to keep locality problems to a minimum.
-    void *mapped = d->buffer.map(QOpenGLBuffer::WriteOnly);
+    void *mapped = 0;
+    if (QOpenGLContext::currentContext()->hasExtension("GL_OES_mapbuffer"))
+        mapped = d->buffer.map(QOpenGLBuffer::WriteOnly);
     int offset = 0;
     QArray<float> temp;
     float *dst;
