@@ -843,8 +843,9 @@ void MD3Importer::InternReadFile( const std::string& pFile,
         const char* texture_name = NULL;
 
         // Check whether we have a texture record for this surface in the .skin file
+        const char *surface_name = pcSurfaces->NAME;
         std::list< Q3Shader::SkinData::TextureEntry >::iterator it = std::find(
-            skins.textures.begin(), skins.textures.end(), pcSurfaces->NAME );
+            skins.textures.begin(), skins.textures.end(), surface_name);
 
         if (it != skins.textures.end()) {
             texture_name = &*( _texture_name = (*it).second).begin();
