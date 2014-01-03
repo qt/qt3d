@@ -897,27 +897,35 @@ void WriteLogOpening(const std::string& file)
         << aiGetVersionMinor()
         << "."
         << aiGetVersionRevision()
+        << " "
 
-#if defined(ASSIMP_BUILD_X86_32BIT_ARCHITECTURE)
+#if defined(ASSIMP_BUILD_ARCHITECTURE)
+        << ASSIMP_BUILD_ARCHITECTURE
+#elif defined(_M_IX86) || defined(__x86_32__) || defined(__i386__)
         << " x86"
-#elif defined(ASSIMP_BUILD_X86_64BIT_ARCHITECTURE)
+#elif defined(_M_X64) || defined(__x86_64__)
         << " amd64"
-#elif defined(ASSIMP_BUILD_IA_64BIT_ARCHITECTURE)
+#elif defined(_M_IA64) || defined(__ia64__)
         << " itanium"
-#elif defined(ASSIMP_BUILD_PPC_32BIT_ARCHITECTURE)
+#elif defined(__ppc__) || defined(__powerpc__)
         << " ppc32"
-#elif defined(ASSIMP_BUILD_ARM_32BIT_ARCHITECTURE)
-        << " arm32"
+#elif defined(__powerpc64__)
+        << " ppc64"
+#elif defined(__arm__)
+        << " arm"
 #else
-#    error unknown architecture
+        << " unknown architecture"
 #endif
 
-#if defined(_MSC_VER)
+        << " "
+#if defined(ASSIMP_BUILD_COMPILER)
+        << ASSIMP_BUILD_COMPILER
+#elif defined(_MSC_VER)
         << " msvc"
 #elif defined(__GNUC__)
         << " gcc"
 #else
-#    warning unknown compiler
+#       << " unknown compiler"
 #endif
 
 #ifndef NDEBUG
