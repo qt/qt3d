@@ -1,4 +1,6 @@
 TEMPLATE = subdirs
 CONFIG += ordered
-SUBDIRS = threed
-qtHaveModule(qml): SUBDIRS += quick3d imports
+SUBDIRS += core
+
+#SUBDIRS += thred
+#qtHaveModule(qml): SUBDIRS += quick3d imports
