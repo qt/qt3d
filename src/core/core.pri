@@ -27,7 +27,9 @@ HEADERS += \
     $$PWD/translatetransform.h \
     $$PWD/rotatetransform.h \
     $$PWD/qchangearbiter.h \
-    $$PWD/lookattransform.h
+    $$PWD/lookattransform.h \
+    $$PWD/weaverjob_p.h \
+    $$PWD/qjobmanager.h
 
 SOURCES += \
     $$PWD/abstractaspect.cpp \
@@ -53,4 +55,6 @@ SOURCES += \
     $$PWD/translatetransform.cpp \
     $$PWD/rotatetransform.cpp \
     $$PWD/qchangearbiter.cpp \
-    $$PWD/lookattransform.cpp
+    $$PWD/lookattransform.cpp \
+    $$PWD/weaverjob.cpp \
+    $$PWD/qjobmanager.cpp

@@ -1,3 +1,5 @@
+CONFIG += exceptions
+
 INCLUDEPATH += $$PWD
 
 HEADERS += \
