@@ -1,38 +1,38 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** GNU Lesser General Public License Usage
-** This file may be used under the terms of the GNU Lesser General Public
-** License version 2.1 as published by the Free Software Foundation and
-** appearing in the file LICENSE.LGPL included in the packaging of this
-** file. Please review the following information to ensure the GNU Lesser
-** General Public License version 2.1 requirements will be met:
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
 **
-** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU General
-** Public License version 3.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of this
-** file. Please review the following information to ensure the GNU General
-** Public License version 3.0 requirements will be met:
-** http://www.gnu.org/copyleft/gpl.html.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms and
-** conditions contained in a signed written agreement between you and Nokia.
-**
-**
-**
-**
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
 ** $QT_END_LICENSE$
@@ -171,7 +171,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn qreal QColor4ub::redF() const { return m_red / 255.0f; }
+    \fn float QColor4ub::redF() const { return m_red / 255.0f; }
 
     Returns the red component of this color as a floating-point
     value between 0 and 1.
@@ -180,7 +180,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn qreal QColor4ub::greenF() const { return m_green / 255.0f; }
+    \fn float QColor4ub::greenF() const { return m_green / 255.0f; }
 
     Returns the green component of this color as a floating-point
     value between 0 and 1.
@@ -189,7 +189,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn qreal QColor4ub::blueF() const { return m_blue / 255.0f; }
+    \fn float QColor4ub::blueF() const { return m_blue / 255.0f; }
 
     Returns the blue component of this color as a floating-point
     value between 0 and 1.
@@ -198,7 +198,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn qreal QColor4ub::alphaF() const { return m_alpha / 255.0f; }
+    \fn float QColor4ub::alphaF() const { return m_alpha / 255.0f; }
 
     Returns the alpha component of this color as a floating-point
     value between 0 and 1.
@@ -207,7 +207,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn void QColor4ub::setRedF(qreal value)
+    \fn void QColor4ub::setRedF(float value)
 
     Sets the red component of this color to a floating-point \a value,
     between 0 and 1.
@@ -216,7 +216,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn void QColor4ub::setGreenF(qreal value)
+    \fn void QColor4ub::setGreenF(float value)
 
     Sets the green component of this color to a floating-point \a value,
     between 0 and 1.
@@ -225,7 +225,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn void QColor4ub::setBlueF(qreal value)
+    \fn void QColor4ub::setBlueF(float value)
 
     Sets the blue component of this color to a floating-point \a value,
     between 0 and 1.
@@ -234,7 +234,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn void QColor4ub::setAlphaF(qreal value)
+    \fn void QColor4ub::setAlphaF(float value)
 
     Sets the alpha component of this color to a floating-point \a value,
     between 0 and 1.
@@ -252,7 +252,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn void QColor4ub::setRgbF(qreal red, qreal green, qreal blue, qreal alpha)
+    \fn void QColor4ub::setRgbF(float red, float green, float blue, float alpha)
 
     Sets the components of this color to \a red, \a green, \a blue,
     and \a alpha.  Each component is a floating-point value between 0 and 1.
@@ -270,7 +270,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn QColor4ub QColor4ub::fromRgbF(qreal red, qreal green, qreal blue, qreal alpha)
+    \fn QColor4ub QColor4ub::fromRgbF(float red, float green, float blue, float alpha)
 
     Returns a QColor4ub with the components \a red, \a green, \a blue,
     and \a alpha.  Each component is a floating-point value between 0 and 1.

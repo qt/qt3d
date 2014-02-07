@@ -1,38 +1,38 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** GNU Lesser General Public License Usage
-** This file may be used under the terms of the GNU Lesser General Public
-** License version 2.1 as published by the Free Software Foundation and
-** appearing in the file LICENSE.LGPL included in the packaging of this
-** file. Please review the following information to ensure the GNU Lesser
-** General Public License version 2.1 requirements will be met:
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
 **
-** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU General
-** Public License version 3.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of this
-** file. Please review the following information to ensure the GNU General
-** Public License version 3.0 requirements will be met:
-** http://www.gnu.org/copyleft/gpl.html.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms and
-** conditions contained in a signed written agreement between you and Nokia.
-**
-**
-**
-**
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
 ** $QT_END_LICENSE$
@@ -99,10 +99,10 @@ void tst_QGeometryData::createDefault()
 
 void tst_QGeometryData::appendVertex()
 {
-    QVector3D a(1.1, 1.2, 1.3);
-    QVector3D b(2.1, 2.2, 2.3);
-    QVector3D c(3.1, 3.2, 3.3);
-    QVector3D d(4.1, 4.2, 4.3);
+    QVector3D a(1.1f, 1.2f, 1.3f);
+    QVector3D b(2.1f, 2.2f, 2.3f);
+    QVector3D c(3.1f, 3.2f, 3.3f);
+    QVector3D d(4.1f, 4.2f, 4.3f);
     {
         QGeometryData data;
         data.appendVertex(a);
@@ -217,14 +217,14 @@ void tst_QGeometryData::appendNormal()
 
 void tst_QGeometryData::appendVertexNormal()
 {
-    QVector3D a(1.1, 1.2, 1.3);
-    QVector3D b(2.1, 2.2, 2.3);
-    QVector3D c(3.1, 3.2, 3.3);
-    QVector3D d(4.1, 4.2, 4.3);
-    QVector3D an(5.1, 5.2, 5.3);
-    QVector3D bn(6.1, 6.2, 6.3);
-    QVector3D cn(7.1, 7.2, 7.3);
-    QVector3D dn(8.1, 8.2, 8.3);
+    QVector3D a(1.1f, 1.2f, 1.3f);
+    QVector3D b(2.1f, 2.2f, 2.3f);
+    QVector3D c(3.1f, 3.2f, 3.3f);
+    QVector3D d(4.1f, 4.2f, 4.3f);
+    QVector3D an(5.1f, 5.2f, 5.3f);
+    QVector3D bn(6.1f, 6.2f, 6.3f);
+    QVector3D cn(7.1f, 7.2f, 7.3f);
+    QVector3D dn(8.1f, 8.2f, 8.3f);
     {
         QGeometryData data;
         data.appendVertex(a);
@@ -303,7 +303,7 @@ void tst_QGeometryData::appendVertexNormal()
 }
 
 
-QVector3D avec(99.1, 99.2, 99.3);
+QVector3D avec(99.1f, 99.2f, 99.3f);
 
 static QGeometryData aFunc(const QGeometryData& g)   // not a copy but a ref
 {
@@ -314,10 +314,10 @@ static QGeometryData aFunc(const QGeometryData& g)   // not a copy but a ref
 
 void tst_QGeometryData::copy()
 {
-    QVector3D a(1.1, 1.2, 1.3);
-    QVector3D b(2.1, 2.2, 2.3);
-    QVector3D c(3.1, 3.2, 3.3);
-    QVector3D d(4.1, 4.2, 4.3);
+    QVector3D a(1.1f, 1.2f, 1.3f);
+    QVector3D b(2.1f, 2.2f, 2.3f);
+    QVector3D c(3.1f, 3.2f, 3.3f);
+    QVector3D d(4.1f, 4.2f, 4.3f);
     {
         QGeometryData data;
         QCOMPARE(data.count(), 0);
@@ -352,16 +352,16 @@ void tst_QGeometryData::copy()
 
 void tst_QGeometryData::interleaveWith()
 {
-    QVector3D a(1.1, 1.2, 1.3);
-    QVector3D b(2.1, 2.2, 2.3);
-    QVector3D c(3.1, 3.2, 3.3);
-    QVector3D d(4.1, 4.2, 4.3);
-    QVector3D vx(0.7071, 0.7071, 0.0);
-    QVector2D at(0.11, 0.12);
-    QVector2D bt(0.21, 0.22);
-    QVector2D ct(0.31, 0.32);
-    QVector2D dt(0.41, 0.42);
-    QVector2D tx(1.0, 1.0);
+    QVector3D a(1.1f, 1.2f, 1.3f);
+    QVector3D b(2.1f, 2.2f, 2.3f);
+    QVector3D c(3.1f, 3.2f, 3.3f);
+    QVector3D d(4.1f, 4.2f, 4.3f);
+    QVector3D vx(0.7071f, 0.7071f, 0.0f);
+    QVector2D at(0.11f, 0.12f);
+    QVector2D bt(0.21f, 0.22f);
+    QVector2D ct(0.31f, 0.32f);
+    QVector2D dt(0.41f, 0.42f);
+    QVector2D tx(1.0f, 1.0f);
 
     QGeometryData data;
     data.appendVertex(a, b, c, d);
@@ -445,40 +445,40 @@ void tst_QGeometryData::center()
 
 void tst_QGeometryData::normalizeNormals()
 {
-    QVector3D a(1.1, 1.2, 1.3);
-    QVector3D b(2.1, 2.2, 2.3);
-    QVector3D c(3.1, 3.2, 3.3);
-    QVector3D d(4.1, 4.2, 4.3);
-    QVector3D an(5.1, 5.2, 5.3);
-    QVector3D bn(6.1, 6.2, 6.3);
-    QVector3D cn(7.1, 7.2, 7.3);
-    QVector3D dn(8.1, 8.2, 8.3);
+    QVector3D a(1.1f, 1.2f, 1.3f);
+    QVector3D b(2.1f, 2.2f, 2.3f);
+    QVector3D c(3.1f, 3.2f, 3.3f);
+    QVector3D d(4.1f, 4.2f, 4.3f);
+    QVector3D an(5.1f, 5.2f, 5.3f);
+    QVector3D bn(6.1f, 6.2f, 6.3f);
+    QVector3D cn(7.1f, 7.2f, 7.3f);
+    QVector3D dn(8.1f, 8.2f, 8.3f);
 
     QGeometryData data;
     data.appendVertex(a, b, c, d);
     data.appendNormal(an, bn, cn, dn);
 
     data.normalizeNormals();
-    QVERIFY(qFskCompare(data.normalAt(0), QVector3D(0.566178, 0.577279, 0.588381)));
-    QVERIFY(qFskCompare(data.normalAt(1), QVector3D(0.567989, 0.577300, 0.586612)));
-    QVERIFY(qFskCompare(data.normalAt(2), QVector3D(0.569295, 0.577313, 0.585331)));
-    QVERIFY(qFskCompare(data.normalAt(3), QVector3D(0.570281, 0.577322, 0.584362)));
-    QVERIFY(qFskCompare(data.normalAt(0).lengthSquared(), qreal(1.0f)));
-    QVERIFY(qFskCompare(data.normalAt(1).lengthSquared(), qreal(1.0f)));
-    QVERIFY(qFskCompare(data.normalAt(2).lengthSquared(), qreal(1.0f)));
-    QVERIFY(qFskCompare(data.normalAt(3).lengthSquared(), qreal(1.0f)));
+    QVERIFY(qFskCompare(data.normalAt(0), QVector3D(0.566178f, 0.577279f, 0.588381f)));
+    QVERIFY(qFskCompare(data.normalAt(1), QVector3D(0.567989f, 0.577300f, 0.586612f)));
+    QVERIFY(qFskCompare(data.normalAt(2), QVector3D(0.569295f, 0.577313f, 0.585331f)));
+    QVERIFY(qFskCompare(data.normalAt(3), QVector3D(0.570281f, 0.577322f, 0.584362f)));
+    QVERIFY(qFskCompare(data.normalAt(0).lengthSquared(), 1.0f));
+    QVERIFY(qFskCompare(data.normalAt(1).lengthSquared(), 1.0f));
+    QVERIFY(qFskCompare(data.normalAt(2).lengthSquared(), 1.0f));
+    QVERIFY(qFskCompare(data.normalAt(3).lengthSquared(), 1.0f));
 }
 
 void tst_QGeometryData::reversed()
 {
-    QVector3D a(1.1, 1.2, 1.3);
-    QVector3D b(2.1, 2.2, 2.3);
-    QVector3D c(3.1, 3.2, 3.3);
-    QVector3D d(4.1, 4.2, 4.3);
-    QVector3D an(5.1, 5.2, 5.3);
-    QVector3D bn(6.1, 6.2, 6.3);
-    QVector3D cn(7.1, 7.2, 7.3);
-    QVector3D dn(8.1, 8.2, 8.3);
+    QVector3D a(1.1f, 1.2f, 1.3f);
+    QVector3D b(2.1f, 2.2f, 2.3f);
+    QVector3D c(3.1f, 3.2f, 3.3f);
+    QVector3D d(4.1f, 4.2f, 4.3f);
+    QVector3D an(5.1f, 5.2f, 5.3f);
+    QVector3D bn(6.1f, 6.2f, 6.3f);
+    QVector3D cn(7.1f, 7.2f, 7.3f);
+    QVector3D dn(8.1f, 8.2f, 8.3f);
 
     QGeometryData data;
     data.appendVertex(a, b, c, d);
@@ -498,14 +498,14 @@ void tst_QGeometryData::reversed()
 
 void tst_QGeometryData::translated()
 {
-    QVector3D a(1.1, 1.2, 1.3);
-    QVector3D b(2.1, 2.2, 2.3);
-    QVector3D c(3.1, 3.2, 3.3);
-    QVector3D d(4.1, 4.2, 4.3);
-    QVector3D an(5.1, 5.2, 5.3);
-    QVector3D bn(6.1, 6.2, 6.3);
-    QVector3D cn(7.1, 7.2, 7.3);
-    QVector3D dn(8.1, 8.2, 8.3);
+    QVector3D a(1.1f, 1.2f, 1.3f);
+    QVector3D b(2.1f, 2.2f, 2.3f);
+    QVector3D c(3.1f, 3.2f, 3.3f);
+    QVector3D d(4.1f, 4.2f, 4.3f);
+    QVector3D an(5.1f, 5.2f, 5.3f);
+    QVector3D bn(6.1f, 6.2f, 6.3f);
+    QVector3D cn(7.1f, 7.2f, 7.3f);
+    QVector3D dn(8.1f, 8.2f, 8.3f);
 
     QGeometryData data;
     data.appendVertex(a, b, c, d);
@@ -564,14 +564,14 @@ void tst_QGeometryData::generateTextureCoordinates()
 
 void tst_QGeometryData::clear()
 {
-    QVector3D a(1.1, 1.2, 1.3);
-    QVector3D b(2.1, 2.2, 2.3);
-    QVector3D c(3.1, 3.2, 3.3);
-    QVector3D d(4.1, 4.2, 4.3);
-    QVector3D an(5.1, 5.2, 5.3);
-    QVector3D bn(6.1, 6.2, 6.3);
-    QVector3D cn(7.1, 7.2, 7.3);
-    QVector3D dn(8.1, 8.2, 8.3);
+    QVector3D a(1.1f, 1.2f, 1.3f);
+    QVector3D b(2.1f, 2.2f, 2.3f);
+    QVector3D c(3.1f, 3.2f, 3.3f);
+    QVector3D d(4.1f, 4.2f, 4.3f);
+    QVector3D an(5.1f, 5.2f, 5.3f);
+    QVector3D bn(6.1f, 6.2f, 6.3f);
+    QVector3D cn(7.1f, 7.2f, 7.3f);
+    QVector3D dn(8.1f, 8.2f, 8.3f);
 
     QGeometryData data;
     data.appendVertex(a, b, c, d);
@@ -605,14 +605,14 @@ void tst_QGeometryData::clear()
 
 void tst_QGeometryData::draw()
 {
-    QVector3D a(1.1, 1.2, 1.3);
-    QVector3D b(2.1, 2.2, 2.3);
-    QVector3D c(3.1, 3.2, 3.3);
-    QVector3D d(4.1, 4.2, 4.3);
-    QVector3D an(5.1, 5.2, 5.3);
-    QVector3D bn(6.1, 6.2, 6.3);
-    QVector3D cn(7.1, 7.2, 7.3);
-    QVector3D dn(8.1, 8.2, 8.3);
+    QVector3D a(1.1f, 1.2f, 1.3f);
+    QVector3D b(2.1f, 2.2f, 2.3f);
+    QVector3D c(3.1f, 3.2f, 3.3f);
+    QVector3D d(4.1f, 4.2f, 4.3f);
+    QVector3D an(5.1f, 5.2f, 5.3f);
+    QVector3D bn(6.1f, 6.2f, 6.3f);
+    QVector3D cn(7.1f, 7.2f, 7.3f);
+    QVector3D dn(8.1f, 8.2f, 8.3f);
 
     QGeometryData data;
     data.appendVertex(a, b, c, d);

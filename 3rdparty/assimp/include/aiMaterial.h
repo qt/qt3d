@@ -634,6 +634,8 @@ struct aiMaterialProperty
 
     aiMaterialProperty()    {
         mData = NULL;
+        mDataLength = 0;
+        mType = aiPTI_Float;
         mIndex = mSemantic = 0;
     }
 
@@ -663,8 +665,7 @@ struct ASSIMP_API aiMaterial
 
 #ifdef __cplusplus
 
-     /// NOTE: no initialization, instance Assimp::MaterialHelper instead
-     aiMaterial() {}
+    aiMaterial() : mProperties(0), mNumProperties(0), mNumAllocated(0) {}
 
 public:
 

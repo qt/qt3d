@@ -1,38 +1,38 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** GNU Lesser General Public License Usage
-** This file may be used under the terms of the GNU Lesser General Public
-** License version 2.1 as published by the Free Software Foundation and
-** appearing in the file LICENSE.LGPL included in the packaging of this
-** file. Please review the following information to ensure the GNU Lesser
-** General Public License version 2.1 requirements will be met:
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
 **
-** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU General
-** Public License version 3.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of this
-** file. Please review the following information to ensure the GNU General
-** Public License version 3.0 requirements will be met:
-** http://www.gnu.org/copyleft/gpl.html.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms and
-** conditions contained in a signed written agreement between you and Nokia.
-**
-**
-**
-**
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
 ** $QT_END_LICENSE$
@@ -57,7 +57,7 @@ private slots:
     void build();
 
 private:
-    bool validateCylinder(QGLSceneNode *node, qreal topDiameter, qreal baseDiameter, qreal height, bool top, bool base);
+    bool validateCylinder(QGLSceneNode *node, float topDiameter, float baseDiameter, float height, bool top, bool base);
 };
 
 void tst_QGLCylinder::create()
@@ -67,9 +67,9 @@ void tst_QGLCylinder::create()
 
     //Defaults
     QGLCylinder cylinder1;
-    QCOMPARE(cylinder1.diameterTop(), qreal(1.0f));
-    QCOMPARE(cylinder1.diameterBottom(), qreal(1.0f));
-    QCOMPARE(cylinder1.height(), qreal(1.0f));
+    QCOMPARE(cylinder1.diameterTop(), 1.0f);
+    QCOMPARE(cylinder1.diameterBottom(), 1.0f);
+    QCOMPARE(cylinder1.height(), 1.0f);
     QCOMPARE(cylinder1.slices(), 6);
     QCOMPARE(cylinder1.layers(), 3);
     QCOMPARE(cylinder1.topEnabled(), true);
@@ -77,9 +77,9 @@ void tst_QGLCylinder::create()
 
     //Top diameter
     QGLCylinder cylinder2(0.5f);
-    QCOMPARE(cylinder2.diameterTop(), qreal(0.5f));
-    QCOMPARE(cylinder2.diameterBottom(), qreal(1.0f));
-    QCOMPARE(cylinder2.height(), qreal(1.0f));
+    QCOMPARE(cylinder2.diameterTop(), 0.5f);
+    QCOMPARE(cylinder2.diameterBottom(), 1.0f);
+    QCOMPARE(cylinder2.height(), 1.0f);
     QCOMPARE(cylinder2.slices(), 6);
     QCOMPARE(cylinder2.layers(), 3);
     QCOMPARE(cylinder2.topEnabled(), true);
@@ -87,9 +87,9 @@ void tst_QGLCylinder::create()
 
     //Top and Bottom diameter
     QGLCylinder cylinder3(0.5f, 1.5f);
-    QCOMPARE(cylinder3.diameterTop(), qreal(0.5f));
-    QCOMPARE(cylinder3.diameterBottom(), qreal(1.5f));
-    QCOMPARE(cylinder3.height(), qreal(1.0f));
+    QCOMPARE(cylinder3.diameterTop(), 0.5f);
+    QCOMPARE(cylinder3.diameterBottom(), 1.5f);
+    QCOMPARE(cylinder3.height(), 1.0f);
     QCOMPARE(cylinder3.slices(), 6);
     QCOMPARE(cylinder3.layers(), 3);
     QCOMPARE(cylinder3.topEnabled(), true);
@@ -97,9 +97,9 @@ void tst_QGLCylinder::create()
 
     //Top & Bottom diameter, Height
     QGLCylinder cylinder4(0.5f, 1.5f, 3.0f);
-    QCOMPARE(cylinder4.diameterTop(), qreal(0.5f));
-    QCOMPARE(cylinder4.diameterBottom(), qreal(1.5f));
-    QCOMPARE(cylinder4.height(), qreal(3.0f));
+    QCOMPARE(cylinder4.diameterTop(), 0.5f);
+    QCOMPARE(cylinder4.diameterBottom(), 1.5f);
+    QCOMPARE(cylinder4.height(), 3.0f);
     QCOMPARE(cylinder4.slices(), 6);
     QCOMPARE(cylinder4.layers(), 3);
     QCOMPARE(cylinder4.topEnabled(), true);
@@ -107,9 +107,9 @@ void tst_QGLCylinder::create()
 
     //Top & Bottom diameter, Height, Slices
     QGLCylinder cylinder5(0.5f, 1.5f, 3.0f, 10);
-    QCOMPARE(cylinder5.diameterTop(), qreal(0.5f));
-    QCOMPARE(cylinder5.diameterBottom(), qreal(1.5f));
-    QCOMPARE(cylinder5.height(), qreal(3.0f));
+    QCOMPARE(cylinder5.diameterTop(), 0.5f);
+    QCOMPARE(cylinder5.diameterBottom(), 1.5f);
+    QCOMPARE(cylinder5.height(), 3.0f);
     QCOMPARE(cylinder5.slices(), 10);
     QCOMPARE(cylinder5.layers(), 3);
     QCOMPARE(cylinder5.topEnabled(), true);
@@ -117,9 +117,9 @@ void tst_QGLCylinder::create()
 
     //Top & Bottom diameter, Height, Slices, Layers
     QGLCylinder cylinder6(0.5f, 1.5f, 3.0f, 10, 5);
-    QCOMPARE(cylinder6.diameterTop(), qreal(0.5f));
-    QCOMPARE(cylinder6.diameterBottom(), qreal(1.5f));
-    QCOMPARE(cylinder6.height(), qreal(3.0f));
+    QCOMPARE(cylinder6.diameterTop(), 0.5f);
+    QCOMPARE(cylinder6.diameterBottom(), 1.5f);
+    QCOMPARE(cylinder6.height(), 3.0f);
     QCOMPARE(cylinder6.slices(), 10);
     QCOMPARE(cylinder6.layers(), 5);
     QCOMPARE(cylinder6.topEnabled(), true);
@@ -127,9 +127,9 @@ void tst_QGLCylinder::create()
 
     //Top & Bottom diameter, Height, Slices, Layers, Top disabled
     QGLCylinder cylinder7(0.5f, 1.5f, 3.0f, 10, 5, false);
-    QCOMPARE(cylinder7.diameterTop(), qreal(0.5f));
-    QCOMPARE(cylinder7.diameterBottom(), qreal(1.5f));
-    QCOMPARE(cylinder7.height(), qreal(3.0f));
+    QCOMPARE(cylinder7.diameterTop(), 0.5f);
+    QCOMPARE(cylinder7.diameterBottom(), 1.5f);
+    QCOMPARE(cylinder7.height(), 3.0f);
     QCOMPARE(cylinder7.slices(), 10);
     QCOMPARE(cylinder7.layers(), 5);
     QCOMPARE(cylinder7.topEnabled(), false);
@@ -137,9 +137,9 @@ void tst_QGLCylinder::create()
 
     //Top & Bottom diameter, Height, Slices, Layers, Top disabled, Bottom disabled.
     QGLCylinder cylinder8(0.5f, 1.5f, 3.0f, 10, 5, false, false);
-    QCOMPARE(cylinder8.diameterTop(), qreal(0.5f));
-    QCOMPARE(cylinder8.diameterBottom(), qreal(1.5f));
-    QCOMPARE(cylinder8.height(), qreal(3.0f));
+    QCOMPARE(cylinder8.diameterTop(), 0.5f);
+    QCOMPARE(cylinder8.diameterBottom(), 1.5f);
+    QCOMPARE(cylinder8.height(), 3.0f);
     QCOMPARE(cylinder8.slices(), 10);
     QCOMPARE(cylinder8.layers(), 5);
     QCOMPARE(cylinder8.topEnabled(), false);
@@ -152,13 +152,13 @@ void tst_QGLCylinder::modify()
     QGLCylinder cylinder1;
 
     cylinder1.setDiameterTop(0.5f);
-    QCOMPARE(cylinder1.diameterTop(), qreal(0.5f));
+    QCOMPARE(cylinder1.diameterTop(), 0.5f);
 
     cylinder1.setDiameterBottom(1.5f);
-    QCOMPARE(cylinder1.diameterBottom(), qreal(1.5f));
+    QCOMPARE(cylinder1.diameterBottom(), 1.5f);
 
     cylinder1.setHeight(3.0f);
-    QCOMPARE(cylinder1.height(), qreal(3.0f));
+    QCOMPARE(cylinder1.height(), 3.0f);
 
     cylinder1.setSlices(10);
     QCOMPARE(cylinder1.slices(), 10);
@@ -177,7 +177,7 @@ void tst_QGLCylinder::modify()
 // on the top and bottom are at the correct height, and that all normals
 // are of length 1.  It also ensures that all points are within the defined
 // top and bottom diameters for the cylinder.
-bool tst_QGLCylinder::validateCylinder(QGLSceneNode *node, qreal topDiameter, qreal baseDiameter, qreal height, bool topAttached, bool baseAttached)
+bool tst_QGLCylinder::validateCylinder(QGLSceneNode *node, float topDiameter, float baseDiameter, float height, bool topAttached, bool baseAttached)
 {
     QGLSceneNode *top = node->findChild<QGLSceneNode *>("Cylinder Top");
     QGLSceneNode *sides = node->findChild<QGLSceneNode *>("Cylinder Sides");

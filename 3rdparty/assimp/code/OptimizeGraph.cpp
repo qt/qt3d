@@ -71,7 +71,7 @@ using namespace Assimp;
 
 // ------------------------------------------------------------------------------------------------
 // Constructor to be privately used by Importer
-OptimizeGraphProcess::OptimizeGraphProcess()
+OptimizeGraphProcess::OptimizeGraphProcess() : mScene(0), nodes_in(0), nodes_out(0), count_merged(0)
 {}
 
 // ------------------------------------------------------------------------------------------------
@@ -316,6 +316,7 @@ void OptimizeGraphProcess::Execute( aiScene* pScene)
     else {
 
         // Remove the dummy root node again.
+        ai_assert(dummy_root->mChildren);
         pScene->mRootNode = dummy_root->mChildren[0];
 
         dummy_root->mChildren[0] = NULL;

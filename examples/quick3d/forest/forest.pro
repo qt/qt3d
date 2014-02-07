@@ -1,7 +1,6 @@
 TEMPLATE = app
 TARGET = forest_qml
 QT += qml quick 3dquick
-CONFIG += qt warn_on
 
 SOURCES += main.cpp
 
@@ -24,7 +23,6 @@ CATEGORY = examples
 include(../../../pkg.pri)
 
 OTHER_FILES += \
-    mt.qml \
     forest.rc \
     $$QML_INFRA_FILES
 

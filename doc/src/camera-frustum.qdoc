@@ -1,26 +1,26 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D documentation of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:FDL$
-** GNU Free Documentation License
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
+**
+** GNU Free Documentation License Usage
 ** Alternatively, this file may be used under the terms of the GNU Free
 ** Documentation License version 1.3 as published by the Free Software
 ** Foundation and appearing in the file included in the packaging of
-** this file.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms
-** and conditions contained in a signed written agreement between you
-** and Nokia.
-**
-**
-**
-**
-**
+** this file.  Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: http://www.gnu.org/copyleft/fdl.html.
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
@@ -48,7 +48,7 @@
 
     \section1 The Default Camera
 
-    Qt3D uses the OpenGL co-ordinate system, that is a right-handed system.  In
+    Qt 3D uses the OpenGL co-ordinate system, that is a right-handed system.  In
     this system you can think of X as pointing to the right, Y as pointing up and
     Z as pointing toward you.  If you hold your right-hand so that the thumb,
     index and middle fingers are all at right angles to each other, then
@@ -184,7 +184,7 @@
     \section1 View Frustum Culling
 
     Carefully examine the next 3 screenshots, which show the same plan view of the
-    camera, cube and view - except the cube is rotated arount the eye of the camera
+    camera, cube and view - except the cube is rotated around the eye of the camera
     by 10 degrees each time.
 
     \image view-frustum-10-degrees.png
@@ -205,7 +205,7 @@
     the cost of just sending it anyway and allowing the GPU to clip away all of it.
 
     The optimisation technique where you detect this case is called \b{View Frustum
-    Culling} and it can a simple and valuable performance enhancement.  Qt3D implements
+    Culling} and it can a simple and valuable performance enhancement.  Qt 3D implements
     view frustum culling via the QGLPainter::isCullable() function.
 
     \section1 Aspect-Ratio Correction

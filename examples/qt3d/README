@@ -1,6 +1,6 @@
-This directory contains examples for the Qt3D C++ API.
+This directory contains examples for the Qt 3D C++ API.
 
-Qt3D can be used to extend Qt Quick3D with custom 3D items.  Qt3D is also
+Qt 3D can be used to extend Qt Quick with custom 3D items.  Qt 3D is also
 a general 3D toolkit, featuring a scenegraph API, support for OpenGL VBO's
 and other utilities for general 3D programming.
 
@@ -9,11 +9,9 @@ will place any resulting binaries (and any required resources) into qt3d/bin in
 the build tree, in line with the logic in pkg.pri.
 Note that "make install" should not be run on the qt3d examples except for building packages.
 
-Research work on Qt3D also continues in the labs repository:
+Research work on Qt 3D also continues in the labs repository:
 
   http://qt.gitorious.org/qt-labs/qt3d
 
-...and is from time to time ported into Qt Quick3D.
-
-Check the labs version of Qt3D for additional cutting edge features such as
+Check the labs version of Qt 3D for additional cutting edge features such as
 support for stereoscopic hardware.

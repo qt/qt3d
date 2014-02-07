@@ -78,7 +78,9 @@ public:
 struct NodeDesc
 {
     NodeDesc()
-        :    number    (0)
+        :    type(OBJECT)
+        ,    id(0)
+        ,    number    (0)
         ,    parent    (0)
         ,    name    ("")
         ,    lightColor (1.f,1.f,1.f)
@@ -86,6 +88,7 @@ struct NodeDesc
         ,    lightType (0)
         ,    lightFalloffType (0)
         ,    lightConeAngle (45.f)
+        ,    lightEdgeAngle(0.0)
         ,    parent_resolved (NULL)
     {}
 

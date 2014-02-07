@@ -1,38 +1,38 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** GNU Lesser General Public License Usage
-** This file may be used under the terms of the GNU Lesser General Public
-** License version 2.1 as published by the Free Software Foundation and
-** appearing in the file LICENSE.LGPL included in the packaging of this
-** file. Please review the following information to ensure the GNU Lesser
-** General Public License version 2.1 requirements will be met:
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
 **
-** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU General
-** Public License version 3.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of this
-** file. Please review the following information to ensure the GNU General
-** Public License version 3.0 requirements will be met:
-** http://www.gnu.org/copyleft/gpl.html.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms and
-** conditions contained in a signed written agreement between you and Nokia.
-**
-**
-**
-**
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
 ** $QT_END_LICENSE$
@@ -42,16 +42,16 @@
 #ifndef QGEOMETRYDATA_H
 #define QGEOMETRYDATA_H
 
-#include "qcolor4ub.h"
-#include "qglnamespace.h"
-#include "qglindexbuffer.h"
-#include "qglvertexbundle.h"
-#include "qglattributevalue.h"
-#include "qcustomdataarray.h"
-#include "qbox3d.h"
-#include "qarray.h"
-#include "qvector2darray.h"
-#include "qvector3darray.h"
+#include <Qt3D/qcolor4ub.h>
+#include <Qt3D/qglnamespace.h>
+#include <Qt3D/qglindexbuffer.h>
+#include <Qt3D/qglvertexbundle.h>
+#include <Qt3D/qglattributevalue.h>
+#include <Qt3D/qcustomdataarray.h>
+#include <Qt3D/qbox3d.h>
+#include <Qt3D/qarray.h>
+#include <Qt3D/qvector2darray.h>
+#include <Qt3D/qvector3darray.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -61,14 +61,14 @@ class QGLPainter;
 
 namespace QGL
 {
-    inline quint32 fieldMask(QGL::VertexAttribute f) { return (quint32)0x01 << f; }
+    inline quint32 fieldMask(QGL::VertexAttribute f) { return 1U << f; }
 
 #if defined(QT_OPENGL_ES)
     typedef QArray<ushort> IndexArray;
 #else
     typedef QArray<uint> IndexArray;
 #endif
-};
+}
 
 class Q_QT3D_EXPORT QGeometryData
 {
@@ -95,7 +95,7 @@ public:
     void clear();
     void clear(QGL::VertexAttribute);
     void reserve(int amount);
-    void draw(QGLPainter *painter, int start, int count, GLenum mode = QGL::Triangles, qreal drawWidth=1.0);
+    void draw(QGLPainter *painter, int start, int count, GLenum mode = QGL::Triangles, float drawWidth = 1.0f);
     bool upload();
     enum BufferStrategyFlags
     {
@@ -186,7 +186,7 @@ public:
     bool isNull() const;
     void detach();
 #ifndef QT_NO_DEBUG
-    quint64 id() const { return (quint64)d; }
+    quint64 id() const { return quint64(d); }
 #endif
 protected:
     const QVector3DArray *vertexData() const;
@@ -202,7 +202,7 @@ private:
     QGeometryDataPrivate *d;
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(QGeometryData::BufferStrategy);
+Q_DECLARE_OPERATORS_FOR_FLAGS(QGeometryData::BufferStrategy)
 
 #ifndef QT_NO_DEBUG_STREAM
 Q_QT3D_EXPORT QDebug operator<<(QDebug dbg, const QGeometryData &vertices);

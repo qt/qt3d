@@ -1,38 +1,38 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** GNU Lesser General Public License Usage
-** This file may be used under the terms of the GNU Lesser General Public
-** License version 2.1 as published by the Free Software Foundation and
-** appearing in the file LICENSE.LGPL included in the packaging of this
-** file. Please review the following information to ensure the GNU Lesser
-** General Public License version 2.1 requirements will be met:
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
 **
-** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU General
-** Public License version 3.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of this
-** file. Please review the following information to ensure the GNU General
-** Public License version 3.0 requirements will be met:
-** http://www.gnu.org/copyleft/gpl.html.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms and
-** conditions contained in a signed written agreement between you and Nokia.
-**
-**
-**
-**
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
 ** $QT_END_LICENSE$
@@ -75,7 +75,7 @@ void tst_QGraphicsTransform3D::rotation3D()
     QGraphicsRotation3D rot1;
     QVERIFY(rot1.origin() == QVector3D(0, 0, 0));
     QVERIFY(rot1.axis() == QVector3D(0, 0, 1));
-    QCOMPARE(rot1.angle(), qreal(0.0f));
+    QCOMPARE(rot1.angle(), 0.0f);
 
     QSignalSpy spy1(&rot1, SIGNAL(originChanged()));
     QSignalSpy spy2(&rot1, SIGNAL(axisChanged()));
@@ -87,7 +87,7 @@ void tst_QGraphicsTransform3D::rotation3D()
     rot1.setAngle(45.0f);
     QVERIFY(rot1.origin() == QVector3D(1, 2, 3));
     QVERIFY(rot1.axis() == QVector3D(4, -5, 6));
-    QCOMPARE(rot1.angle(), qreal(45.0f));
+    QCOMPARE(rot1.angle(), 45.0f);
 
     QCOMPARE(spy1.size(), 1);
     QCOMPARE(spy2.size(), 1);
@@ -112,15 +112,15 @@ void tst_QGraphicsTransform3D::rotation3D()
     m2.translate(-1, -2, -3);
     QVERIFY(isSameMatrix(m1, m2));
 
-    QGraphicsRotation3D *rot2 = qobject_cast<QGraphicsRotation3D *>
-        (rot1.clone(this));
+    QQuickQGraphicsTransform3D *transform2 = rot1.clone(this);
+    QGraphicsRotation3D *rot2 = qobject_cast<QGraphicsRotation3D *>(transform2);
     QVERIFY(rot2 != 0);
     QVERIFY(rot2 != &rot1);
     QVERIFY(rot2->parent() == this);
     QVERIFY(rot2->origin() == rot1.origin());
     QVERIFY(rot2->axis() == rot1.axis());
     QVERIFY(rot2->angle() == rot1.angle());
-    delete rot2;
+    delete transform2;
 }
 
 void tst_QGraphicsTransform3D::scale3D()
@@ -167,21 +167,21 @@ void tst_QGraphicsTransform3D::scale3D()
     QVERIFY(scale1.origin() == QVector3D(1, 2, 3));
     QCOMPARE(spy1.size(), 1);
 
-    QGraphicsScale3D *scale2 = qobject_cast<QGraphicsScale3D *>
-        (scale1.clone(this));
+    QQuickQGraphicsTransform3D *transform2 = scale1.clone(this);
+    QGraphicsScale3D *scale2 = qobject_cast<QGraphicsScale3D *>(transform2);
     QVERIFY(scale2 != 0);
     QVERIFY(scale2 != &scale1);
     QVERIFY(scale2->parent() == this);
     QVERIFY(scale2->origin() == scale1.origin());
     QVERIFY(scale2->scale() == scale1.scale());
-    delete scale2;
+    delete transform2;
 }
 
 void tst_QGraphicsTransform3D::translation3D()
 {
     QGraphicsTranslation3D translate1;
     QVERIFY(translate1.translate() == QVector3D(0, 0, 0));
-    QCOMPARE(translate1.progress(), qreal(1.0f));
+    QCOMPARE(translate1.progress(), 1.0f);
 
     QSignalSpy spy1(&translate1, SIGNAL(translateChanged()));
     QSignalSpy spy2(&translate1, SIGNAL(progressChanged()));
@@ -190,7 +190,7 @@ void tst_QGraphicsTransform3D::translation3D()
     translate1.setTranslate(QVector3D(4, -6, 0.5f));
     translate1.setProgress(2.0f);
     QVERIFY(translate1.translate() == QVector3D(4, -6, 0.5f));
-    QCOMPARE(translate1.progress(), qreal(2.0f));
+    QCOMPARE(translate1.progress(), 2.0f);
 
     QCOMPARE(spy1.size(), 1);
     QCOMPARE(spy2.size(), 1);
@@ -210,14 +210,14 @@ void tst_QGraphicsTransform3D::translation3D()
     m2.translate(QVector3D(8, -12, 1));
     QVERIFY(isSameMatrix(m1, m2));
 
-    QGraphicsTranslation3D *translate2 = qobject_cast<QGraphicsTranslation3D *>
-        (translate1.clone(this));
+    QQuickQGraphicsTransform3D *transform2 = translate1.clone(this);
+    QGraphicsTranslation3D *translate2 = qobject_cast<QGraphicsTranslation3D *>(transform2);
     QVERIFY(translate2 != 0);
     QVERIFY(translate2 != &translate1);
     QVERIFY(translate2->parent() == this);
     QVERIFY(translate2->translate() == translate1.translate());
     QVERIFY(translate2->progress() == translate1.progress());
-    delete translate2;
+    delete transform2;
 }
 
 void tst_QGraphicsTransform3D::billboard()
@@ -266,13 +266,13 @@ void tst_QGraphicsTransform3D::billboard()
     billboard1.applyTo(&m6);
     QVERIFY(m6 == m4);
 
-    QGraphicsBillboardTransform *billboard2 = qobject_cast<QGraphicsBillboardTransform *>
-        (billboard1.clone(this));
+    QQuickQGraphicsTransform3D *transform2 = billboard1.clone(this);
+    QGraphicsBillboardTransform *billboard2 = qobject_cast<QGraphicsBillboardTransform *>(transform2);
     QVERIFY(billboard2 != 0);
     QVERIFY(billboard2 != &billboard1);
     QVERIFY(billboard2->parent() == this);
     QVERIFY(billboard2->preserveUpVector() == billboard1.preserveUpVector());
-    delete billboard2;
+    delete transform2;
 }
 
 QTEST_APPLESS_MAIN(tst_QGraphicsTransform3D)

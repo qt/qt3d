@@ -1,38 +1,38 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** GNU Lesser General Public License Usage
-** This file may be used under the terms of the GNU Lesser General Public
-** License version 2.1 as published by the Free Software Foundation and
-** appearing in the file LICENSE.LGPL included in the packaging of this
-** file. Please review the following information to ensure the GNU Lesser
-** General Public License version 2.1 requirements will be met:
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
 **
-** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU General
-** Public License version 3.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of this
-** file. Please review the following information to ensure the GNU General
-** Public License version 3.0 requirements will be met:
-** http://www.gnu.org/copyleft/gpl.html.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms and
-** conditions contained in a signed written agreement between you and Nokia.
-**
-**
-**
-**
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
 ** $QT_END_LICENSE$
@@ -62,7 +62,8 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \qmlclass LookAtTransform QGraphicsLookAtTransform
+    \qmltype LookAtTransform
+    \instantiates QGraphicsLookAtTransform
     \brief The LookAtTransform item implements a transformation that causes objects to face the camera.
     \since 4.8
     \ingroup qt3d::qml3d
@@ -209,7 +210,7 @@ public:
 };
 
 QGraphicsLookAtTransformPrivate::QGraphicsLookAtTransformPrivate(QGraphicsLookAtTransform* _lookAt) :
-    lookAt(_lookAt), preserveUpVector(false), originItem(0), subject(0)
+    lookAt(_lookAt), preserveUpVector(false), originItem(0), subject(0), rotationCacheDirty(false)
 {
 }
 
@@ -278,9 +279,9 @@ void QGraphicsLookAtTransformPrivate::calculateRotationValues() const
             primaryRotationAxis = QVector3D(0,1,0);
         }
 
-        qreal angleCosine =
+        float angleCosine =
                 QVector3D::dotProduct(forwards, subjectProjection);
-        qreal angle = qAcos(angleCosine);
+        float angle = acosf(angleCosine);
 
         rotationCache.primaryRotation.setAxis(primaryRotationAxis);
         rotationCache.primaryRotation.setAngle(angle * RADS_TO_DEGREES );
@@ -292,7 +293,7 @@ void QGraphicsLookAtTransformPrivate::calculateRotationValues() const
 
     relativePositionVector.normalize();
 
-    qreal secondaryAngleCosine = QVector3D::dotProduct( subjectProjection,
+    float secondaryAngleCosine = QVector3D::dotProduct(subjectProjection,
                                                        relativePositionVector);
     // Sanity check in case of rounding errors
     if (secondaryAngleCosine <= 1.0 && secondaryAngleCosine >= -1.0)
@@ -429,9 +430,8 @@ void QGraphicsLookAtTransform::setSubject(QQuickItem3D* value)
         {
             // listen for changes directly on the item, changes on it's
             // transforms property, or through reparenting
-            connect(ancestorItem, SIGNAL(positionChanged()), this, SLOT(subjectPositionChanged()));
-            connect(ancestorItem, SIGNAL(rotationChanged()), this, SLOT(subjectPositionChanged()));
-            connect(ancestorItem, SIGNAL(scaleChanged()), this, SLOT(subjectPositionChanged()));
+            connect(ancestorItem, SIGNAL(position3dChanged()), this, SLOT(subjectPositionChanged()));
+            connect(ancestorItem, SIGNAL(scale3dChanged()), this, SLOT(subjectPositionChanged()));
             connect(ancestorItem, SIGNAL(parentChanged(QQuickItem*)), this, SLOT(ancestryChanged()));
             QQmlListProperty<QQuickQGraphicsTransform3D> transforms =
                     ancestorItem->transform();

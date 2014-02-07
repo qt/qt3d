@@ -1,6 +1,5 @@
 TEMPLATE = app
 TARGET = tst_fullreferencing
-CONFIG += qt warn_on
 QT += qml quick 3dquick
 
 SOURCES += main.cpp
@@ -22,5 +21,5 @@ CATEGORY = manual
 include(../../../pkg.pri)
 
 OTHER_FILES += \
-    mt.qml \
     $$QML_INFRA_FILES
+DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0

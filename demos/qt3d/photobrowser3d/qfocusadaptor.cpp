@@ -1,38 +1,38 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** GNU Lesser General Public License Usage
-** This file may be used under the terms of the GNU Lesser General Public
-** License version 2.1 as published by the Free Software Foundation and
-** appearing in the file LICENSE.LGPL included in the packaging of this
-** file. Please review the following information to ensure the GNU Lesser
-** General Public License version 2.1 requirements will be met:
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
 **
-** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU General
-** Public License version 3.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of this
-** file. Please review the following information to ensure the GNU General
-** Public License version 3.0 requirements will be met:
-** http://www.gnu.org/copyleft/gpl.html.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms and
-** conditions contained in a signed written agreement between you and Nokia.
-**
-**
-**
-**
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
 ** $QT_END_LICENSE$
@@ -54,7 +54,7 @@ public:
         , target(0)
         , view(0)
     {}
-    qreal progress;
+    float progress;
     QVector3D targetEye;
     QVector3D targetCenter;
     QVector3D sourceEye;
@@ -78,12 +78,12 @@ QFocusAdaptor::~QFocusAdaptor()
     delete d;
 }
 
-qreal QFocusAdaptor::progress() const
+float QFocusAdaptor::progress() const
 {
     return d->progress;
 }
 
-void QFocusAdaptor::setProgress(qreal progress)
+void QFocusAdaptor::setProgress(float progress)
 {
     if (d->progress != progress)
     {
@@ -152,26 +152,26 @@ void QFocusAdaptor::calculateValues()
                 box.unite(g.vertexAt(inxs.at(i)));
             QVector3D sz = box.size();
 
-            qreal nearDist = cam->nearPlane();
+            float nearDist = cam->nearPlane();
 
             QSizeF v = cam->viewSize();
 
-            qreal vh = d->view->geometry().height();
-            qreal vw = d->view->geometry().width();
+            float vh(d->view->geometry().height());
+            float vw(d->view->geometry().width());
             if (!qFuzzyIsNull(vw - vh))
             {
-                qreal asp = vh / vw;
+                float asp = vh / vw;
                 if (vh > vw)
                     v.setHeight(v.height() * asp);
                 else
                     v.setWidth(v.width() / asp);
             }
 
-            qreal qh = (nearDist * sz.y()) / v.height();
-            qreal qw = (nearDist * sz.x()) / v.width();
+            float qh = (nearDist * sz.y()) / v.height();
+            float qw = (nearDist * sz.x()) / v.width();
 
-            qreal q = qMax(qh, qw);
-            q = qMax(q, qreal(nearDist * 1.05));
+            float q = qMax(qh, qw);
+            q = qMax(q, float(nearDist * 1.05f));
 
             d->sourceCenter = cam->center();
             d->sourceEye = cam->eye();

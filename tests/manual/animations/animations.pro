@@ -1,8 +1,7 @@
 TEMPLATE = app
 TARGET = tst_animations
-CONFIG += qt warn_on
 
-QT += 3dquick
+QT += 3dquick qml
 
 SOURCES += main.cpp
 
@@ -20,5 +19,5 @@ CATEGORY = manual
 include(../../../pkg.pri)
 
 OTHER_FILES += \
-    mt.qml \
     $$QML_INFRA_FILES
+DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0

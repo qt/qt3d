@@ -1,6 +1,6 @@
 TEMPLATE=app
 TARGET=tst_qml3d_visual
-CONFIG += warn_on qmltestcase
+CONFIG += qmltestcase
 QT += qml opengl
 SOURCES += tst_qml3d_visual.cpp
 
@@ -12,3 +12,4 @@ OTHER_FILES += \
     picking/tst_picking.qml
 
 TESTDATA = $$OTHER_FILES
+DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0

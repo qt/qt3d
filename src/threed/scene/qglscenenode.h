@@ -1,38 +1,38 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** GNU Lesser General Public License Usage
-** This file may be used under the terms of the GNU Lesser General Public
-** License version 2.1 as published by the Free Software Foundation and
-** appearing in the file LICENSE.LGPL included in the packaging of this
-** file. Please review the following information to ensure the GNU Lesser
-** General Public License version 2.1 requirements will be met:
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
 **
-** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU General
-** Public License version 3.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of this
-** file. Please review the following information to ensure the GNU General
-** Public License version 3.0 requirements will be met:
-** http://www.gnu.org/copyleft/gpl.html.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms and
-** conditions contained in a signed written agreement between you and Nokia.
-**
-**
-**
-**
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
 ** $QT_END_LICENSE$
@@ -44,14 +44,10 @@
 
 #include <QtCore/qobject.h>
 
-#include "qgeometrydata.h"
-#include "qglmaterialcollection.h"
-
-QT_BEGIN_HEADER
+#include <Qt3D/qgeometrydata.h>
+#include <Qt3D/qglmaterialcollection.h>
 
 QT_BEGIN_NAMESPACE
-
-QT_MODULE(Qt3D)
 
 class QGLSceneNodePrivate;
 class QGLAbstractEffect;
@@ -65,9 +61,9 @@ class Q_QT3D_EXPORT QGLSceneNode : public QObject
     Q_ENUMS(Option)
     Q_FLAGS(Options)
     Q_PROPERTY(QVector3D position READ position WRITE setPosition NOTIFY updated)
-    Q_PROPERTY(qreal x READ x WRITE setX NOTIFY updated)
-    Q_PROPERTY(qreal y READ y WRITE setY NOTIFY updated)
-    Q_PROPERTY(qreal z READ z WRITE setZ NOTIFY updated)
+    Q_PROPERTY(float x READ x WRITE setX NOTIFY updated)
+    Q_PROPERTY(float y READ y WRITE setY NOTIFY updated)
+    Q_PROPERTY(float z READ z WRITE setZ NOTIFY updated)
     Q_PROPERTY(QGLMaterial *material READ material WRITE setMaterial NOTIFY updated)
     Q_PROPERTY(QGLMaterial *backMaterial READ backMaterial WRITE setBackMaterial NOTIFY updated)
     Q_PROPERTY(Options options READ options WRITE setOptions NOTIFY updated)
@@ -99,12 +95,12 @@ public:
     void setLocalTransform(const QMatrix4x4 &);
     QVector3D position() const;
     void setPosition(const QVector3D &p);
-    qreal x() const;
-    void setX(qreal x);
-    qreal y() const;
-    void setY(qreal y);
-    qreal z() const;
-    void setZ(qreal z);
+    float x() const;
+    void setX(float x);
+    float y() const;
+    void setY(float y);
+    float z() const;
+    void setZ(float z);
 
     QList<QQuickQGraphicsTransform3D *> transforms() const;
     void setTransforms(const QList<QQuickQGraphicsTransform3D *> &transforms);
@@ -113,8 +109,8 @@ public:
     QGL::DrawingMode drawingMode() const;
     void setDrawingMode(QGL::DrawingMode mode);
 
-    qreal drawingWidth() const;
-    void setDrawingWidth(qreal width);
+    float drawingWidth() const;
+    void setDrawingWidth(float width);
 
     QGL::StandardEffect effect() const;
     void setEffect(QGL::StandardEffect);
@@ -208,7 +204,5 @@ Q_QT3D_EXPORT QDebug operator<<(QDebug dbg, const QGLSceneNode &node);
 #endif
 
 QT_END_NAMESPACE
-
-QT_END_HEADER
 
 #endif

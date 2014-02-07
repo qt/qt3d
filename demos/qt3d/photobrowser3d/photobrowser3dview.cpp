@@ -1,38 +1,38 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** GNU Lesser General Public License Usage
-** This file may be used under the terms of the GNU Lesser General Public
-** License version 2.1 as published by the Free Software Foundation and
-** appearing in the file LICENSE.LGPL included in the packaging of this
-** file. Please review the following information to ensure the GNU Lesser
-** General Public License version 2.1 requirements will be met:
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
 **
-** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU General
-** Public License version 3.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of this
-** file. Please review the following information to ensure the GNU General
-** Public License version 3.0 requirements will be met:
-** http://www.gnu.org/copyleft/gpl.html.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms and
-** conditions contained in a signed written agreement between you and Nokia.
-**
-**
-**
-**
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
 ** $QT_END_LICENSE$
@@ -264,8 +264,8 @@ void PhotoBrowser3DView::wheelEvent(QWheelEvent *e)
 {
     e->accept();
     QVector3D viewVec = camera()->eye() - camera()->center();
-    qreal zoomMag = viewVec.length();
-    qreal inc = float(e->delta()) / 50.0f;
+    float zoomMag = viewVec.length();
+    float inc = float(e->delta()) / 50.0f;
     if (!qFuzzyIsNull(inc))
     {
         zoomMag += inc;
@@ -297,7 +297,7 @@ void PhotoBrowser3DView::keyPressEvent(QKeyEvent *e)
     else if (e->key() == Qt::Key_Up || e->key() == Qt::Key_Down)
     {
         QVector3D viewVec = camera()->eye() - camera()->center();
-        qreal zoomMag = viewVec.length();
+        float zoomMag = viewVec.length();
         zoomMag += (e->key() == Qt::Key_Up) ? -0.5f : 0.5f;
         if (zoomMag < 5.0f)
             zoomMag = 5.0f;
@@ -358,8 +358,8 @@ void PhotoBrowser3DView::initializeGL(QGLPainter *painter)
     QAtlas::instance()->initialize(painter);
     camera()->setEye(QVector3D(0.0f, 0.0f, 4.0f * m_displaySize));
     registerPickableNodes();
-    qreal q = camera()->eye().z();
-    qreal r = qBound(camera()->nearPlane(), q / 2.0f, camera()->nearPlane() * 3.0f);
+    float q = camera()->eye().z();
+    float r = qBound(camera()->nearPlane(), q / 2.0f, camera()->nearPlane() * 3.0f);
     m_pc->setDefaultDistance(q);
     m_pc->setPanDistance(r);
 }

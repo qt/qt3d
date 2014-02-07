@@ -1,38 +1,38 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** GNU Lesser General Public License Usage
-** This file may be used under the terms of the GNU Lesser General Public
-** License version 2.1 as published by the Free Software Foundation and
-** appearing in the file LICENSE.LGPL included in the packaging of this
-** file. Please review the following information to ensure the GNU Lesser
-** General Public License version 2.1 requirements will be met:
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
 **
-** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU General
-** Public License version 3.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of this
-** file. Please review the following information to ensure the GNU General
-** Public License version 3.0 requirements will be met:
-** http://www.gnu.org/copyleft/gpl.html.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms and
-** conditions contained in a signed written agreement between you and Nokia.
-**
-**
-**
-**
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
 ** $QT_END_LICENSE$
@@ -84,6 +84,8 @@ public:
         , duration(250)
         , dirty(true)
         , pointOfRotation(Both)
+        , upVectorAngle(0.0f)
+        , pointAngle(0.0f)
         , lengthStart(1.0f)
         , lengthEnd(1.0f)
     {
@@ -103,17 +105,17 @@ public:
     // Derived values for use during the animation.
     PointOfRotation pointOfRotation;
     QVector3D upVectorAxis;
-    qreal upVectorAngle;
+    float upVectorAngle;
     QVector3D pointAxis;
-    qreal pointAngle;
+    float pointAngle;
     QVector3D centerTranslate;
     QVector3D eyeTranslate;
-    qreal lengthStart;
-    qreal lengthEnd;
+    float lengthStart;
+    float lengthEnd;
 
     static void rotateBetween(const QVector3D &start, const QVector3D &end,
                               const QVector3D &defaultAxis,
-                              QVector3D *rotationAxis, qreal *rotationAngle);
+                              QVector3D *rotationAxis, float *rotationAngle);
     void deriveRotations();
 };
 
@@ -129,7 +131,7 @@ static inline bool fuzzyCompareVectors(const QVector3D &v1, const QVector3D &v2)
 // or "defaultAxis" if the cross-product is zero (180 degree rotation).
 void QGLCameraAnimationPrivate::rotateBetween
     (const QVector3D &start, const QVector3D &end, const QVector3D &defaultAxis,
-     QVector3D *rotationAxis, qreal *rotationAngle)
+     QVector3D *rotationAxis, float *rotationAngle)
 {
     QVector3D nstart = start.normalized();
     QVector3D nend = end.normalized();
@@ -446,8 +448,8 @@ void QGLCameraAnimation::updateCurrentTime(int currentTime)
         }
 
         // Calculate the progress and modify it with the easing curve.
-        qreal progress = d->easingCurve.valueForProgress
-            (qreal(currentTime) / qreal(d->duration));
+        float progress = d->easingCurve.valueForProgress
+            (float(currentTime) / float(d->duration));
 
         // Calculate the new eye and center locations.
         QVector3D eye = d->startEye;
@@ -458,7 +460,7 @@ void QGLCameraAnimation::updateCurrentTime(int currentTime)
                 (d->pointAxis, d->pointAngle * progress);
             eye = q.rotatedVector(eye - d->startCenter);
             if (d->lengthStart != d->lengthEnd) {
-                qreal length = (1.0f - progress) * d->lengthStart +
+                float length = (1.0f - progress) * d->lengthStart +
                                progress * d->lengthEnd;
                 eye = eye.normalized() * length;
             }
@@ -470,7 +472,7 @@ void QGLCameraAnimation::updateCurrentTime(int currentTime)
                     (d->pointAxis, d->pointAngle * progress * 2.0f);
                 eye = q.rotatedVector(eye - d->startCenter);
                 if (d->lengthStart != d->lengthEnd) {
-                    qreal length = (1.0f - progress) * d->lengthStart +
+                    float length = (1.0f - progress) * d->lengthStart +
                                    progress * d->lengthEnd;
                     eye = eye.normalized() * length;
                 }
@@ -491,7 +493,7 @@ void QGLCameraAnimation::updateCurrentTime(int currentTime)
                 (d->pointAxis, d->pointAngle * progress);
             center = q.rotatedVector(center - d->startEye);
             if (d->lengthStart != d->lengthEnd) {
-                qreal length = (1.0f - progress) * d->lengthStart +
+                float length = (1.0f - progress) * d->lengthStart +
                                progress * d->lengthEnd;
                 center = center.normalized() * length;
             }
@@ -503,7 +505,7 @@ void QGLCameraAnimation::updateCurrentTime(int currentTime)
                     (d->pointAxis, d->pointAngle * progress * 2.0f);
                 center = q.rotatedVector(center - d->startEye);
                 if (d->lengthStart != d->lengthEnd) {
-                    qreal length = (1.0f - progress) * d->lengthStart +
+                    float length = (1.0f - progress) * d->lengthStart +
                                    progress * d->lengthEnd;
                     center = center.normalized() * length;
                 }

@@ -1,38 +1,38 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** GNU Lesser General Public License Usage
-** This file may be used under the terms of the GNU Lesser General Public
-** License version 2.1 as published by the Free Software Foundation and
-** appearing in the file LICENSE.LGPL included in the packaging of this
-** file. Please review the following information to ensure the GNU Lesser
-** General Public License version 2.1 requirements will be met:
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
 **
-** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU General
-** Public License version 3.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of this
-** file. Please review the following information to ensure the GNU General
-** Public License version 3.0 requirements will be met:
-** http://www.gnu.org/copyleft/gpl.html.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms and
-** conditions contained in a signed written agreement between you and Nokia.
-**
-**
-**
-**
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
 ** $QT_END_LICENSE$
@@ -275,7 +275,7 @@ void tst_QGLSection::appendFacetedMap()
     // now create a new section and fill to just below the threshold for QMap
     int t = section->mapThreshold();
     QVector3D testVertex(-12.34f, -23.45f, -34.56f);
-    QVector3D incrVector(0.02, 0.02, 0.02);
+    QVector3D incrVector(0.02f, 0.02f, 0.02f);
     QVector3D testNormal(1.0f, 0.0f, 0.0f);
     for (int i = 0; i < (t - 2); ++i)
     {
@@ -437,9 +437,9 @@ void tst_QGLSection::accumNormals()
 
 void tst_QGLSection::normalizedNormals()
 {
-    const qreal qRadius = 1.0f;
-    const qreal qHeight = 0.6f;
-    const qreal qThickness = 0.4f;
+    const float qRadius = 1.0f;
+    const float qHeight = 0.6f;
+    const float qThickness = 0.4f;
     const int qNumSlices = 16;
 
     TestBuilder builder;
@@ -456,10 +456,10 @@ void tst_QGLSection::normalizedNormals()
     QVector3D anc(qRadius * 2.0f, qRadius *2.0f, qHeight);
     for (int slice = 1; slice < qNumSlices; ++slice)
     {
-        const qreal pi2 = 2.0 * M_PI;
-        qreal angle = (slice * pi2) / (4 * qNumSlices);
-        qreal cs = qCos(angle);
-        qreal sn = qSin(angle);
+        const float pi2 = 2.0f * M_PI;
+        float angle = (slice * pi2) / (4 * qNumSlices);
+        float cs = cosf(angle);
+        float sn = sinf(angle);
         QVector3D a(cs * qRadius, sn * qRadius, 0.0f);
         QVector3D b(cs * (qRadius + qThickness), sn * (qRadius + qThickness), qHeight);
         QGeometryData quad;

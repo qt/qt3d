@@ -1,38 +1,38 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** GNU Lesser General Public License Usage
-** This file may be used under the terms of the GNU Lesser General Public
-** License version 2.1 as published by the Free Software Foundation and
-** appearing in the file LICENSE.LGPL included in the packaging of this
-** file. Please review the following information to ensure the GNU Lesser
-** General Public License version 2.1 requirements will be met:
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
 **
-** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU General
-** Public License version 3.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of this
-** file. Please review the following information to ensure the GNU General
-** Public License version 3.0 requirements will be met:
-** http://www.gnu.org/copyleft/gpl.html.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms and
-** conditions contained in a signed written agreement between you and Nokia.
-**
-**
-**
-**
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
 ** $QT_END_LICENSE$
@@ -331,9 +331,9 @@ void CubeView::paintGL(QGLPainter *painter)
         QVector3D direction = projectorCamera->center() - projectorCamera->eye();
 
         QVector3D normal = projectorCamera->upVector().normalized();
-        qreal nearPlane = projectorCamera->nearPlane();
-        qreal farPlane = projectorCamera->farPlane();
-        qreal fieldOfView = projectorCamera->fieldOfView();
+        float nearPlane = projectorCamera->nearPlane();
+        float farPlane = projectorCamera->farPlane();
+        float fieldOfView = projectorCamera->fieldOfView();
 
         QVector3D nearTopLeft;
         QVector3D nearTopRight;
@@ -346,7 +346,7 @@ void CubeView::paintGL(QGLPainter *painter)
 
         QSizeF viewSize = projectorCamera->viewSize();
 
-        qreal fieldDepthRatio = farPlane / nearPlane;
+        float fieldDepthRatio = farPlane / nearPlane;
 
         QVector3D rightVector = QVector3D::crossProduct(direction, normal).normalized() * viewSize.width() / 2.0;
         QVector3D topVector = normal * viewSize.height() / 2.0;
@@ -397,7 +397,7 @@ void CubeView::paintGL(QGLPainter *painter)
 //    useProjectiveTextureEffect = value;
 //}
 
-void CubeView::setCubeAngle(qreal angle)
+void CubeView::setCubeAngle(float angle)
 {
     cangle = angle;
     accelerometerTimeout();
@@ -416,10 +416,10 @@ QVector3D CubeView::gravity() const
     // Access the raw accelerometer data on the N900.
     FILE *file = fopen("/sys/class/i2c-adapter/i2c-3/3-001d/coord", "r");
     if (!file)
-        return QVector3D(0, 0, -1);
-    float x = 0;
-    float y = 0;
-    float z = 0;
+        return QVector3D(0.0f, 0.0f, -1.0f);
+    float x = 0.0f;
+    float y = 0.0f;
+    float z = 0.0f;
     int numValues = fscanf(file, "%f %f %f", &x, &y, &z);
     fclose(file);
 
@@ -429,9 +429,9 @@ QVector3D CubeView::gravity() const
     // Smooth out the reported values.  Large changes are applied as-is,
     // and small jitters smooth to the rest position.
     if (havePrev) {
-        qreal xdiff = x - prevX;
-        qreal ydiff = y - prevY;
-        qreal zdiff = z - prevZ;
+        float xdiff = x - prevX;
+        float ydiff = y - prevY;
+        float zdiff = z - prevZ;
         if (qAbs(xdiff) < 20.0f && qAbs(ydiff) < 20.0f && qAbs(zdiff) < 20.0f) {
             x = prevX + xdiff * 0.1f;
             y = prevY + ydiff * 0.1f;
@@ -456,7 +456,7 @@ void CubeView::updateProjectorViewMatrix()
 
 void CubeView::updateProjectorProjectionMatrix()
 {
-    qreal projectorAspectRatio = 1.0;
+    float projectorAspectRatio = 1.0f;
     projectiveTextureEffect->setProjectorProjectionMatrix(projectorCamera->projectionMatrix(projectorAspectRatio));
     updateProjectiveTextureEffect();
 }

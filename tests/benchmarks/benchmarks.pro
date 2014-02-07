@@ -1,5 +1,5 @@
 TEMPLATE = subdirs
 SUBDIRS = \
     qarray \
-    qglbuilder_perf \
-    matrix_properties
+    qglbuilder_perf
+qtHaveModule(qml): SUBDIRS += matrix_properties

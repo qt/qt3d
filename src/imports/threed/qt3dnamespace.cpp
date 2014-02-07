@@ -1,38 +1,38 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** GNU Lesser General Public License Usage
-** This file may be used under the terms of the GNU Lesser General Public
-** License version 2.1 as published by the Free Software Foundation and
-** appearing in the file LICENSE.LGPL included in the packaging of this
-** file. Please review the following information to ensure the GNU Lesser
-** General Public License version 2.1 requirements will be met:
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
 **
-** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU General
-** Public License version 3.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of this
-** file. Please review the following information to ensure the GNU General
-** Public License version 3.0 requirements will be met:
-** http://www.gnu.org/copyleft/gpl.html.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms and
-** conditions contained in a signed written agreement between you and Nokia.
-**
-**
-**
-**
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
 ** $QT_END_LICENSE$
@@ -44,7 +44,8 @@
 QT_BEGIN_NAMESPACE
 
 /*!
-    \qmlclass Qt3D Qt3DNamespace
+    \qmltype Qt3D
+    \instantiates Qt3DNamespace
     \brief The QML global object Qt3D provides useful functions for 3D applications.
     \ingroup qt3d::qml3d
 */
@@ -54,7 +55,7 @@ QT_BEGIN_NAMESPACE
     Returns a Vector2D with the specified \c x and \c y.
 */
 
-QVector2D Qt3DNamespace::vector2d(qreal x, qreal y)
+QVector2D Qt3DNamespace::vector2d(float x, float y)
 {
     return QVector2D(x, y);
 }
@@ -64,7 +65,7 @@ QVector2D Qt3DNamespace::vector2d(qreal x, qreal y)
     Returns a Vector4D with the specified \c x, \c y, \c z, and \c w.
 */
 
-QVector4D Qt3DNamespace::vector4d(qreal x, qreal y, qreal z, qreal w)
+QVector4D Qt3DNamespace::vector4d(float x, float y, float z, float w)
 {
     return QVector4D(x, y, z, w);
 }
@@ -74,7 +75,7 @@ QVector4D Qt3DNamespace::vector4d(qreal x, qreal y, qreal z, qreal w)
     Returns a Quaternion with the specified \c scalar, \c x, \c y, and \c z.
 */
 
-QQuaternion Qt3DNamespace::quaternion(qreal scalar, qreal x, qreal y, qreal z)
+QQuaternion Qt3DNamespace::quaternion(float scalar, float x, float y, float z)
 {
     return QQuaternion(scalar, x, y, z);
 }
@@ -86,10 +87,10 @@ QQuaternion Qt3DNamespace::quaternion(qreal scalar, qreal x, qreal y, qreal z)
 */
 
 QMatrix4x4 Qt3DNamespace::matrix4x4
-    (qreal m11, qreal m12, qreal m13, qreal m14,
-     qreal m21, qreal m22, qreal m23, qreal m24,
-     qreal m31, qreal m32, qreal m33, qreal m34,
-     qreal m41, qreal m42, qreal m43, qreal m44)
+    (float m11, float m12, float m13, float m14,
+     float m21, float m22, float m23, float m24,
+     float m31, float m32, float m33, float m34,
+     float m41, float m42, float m43, float m44)
 {
     return QMatrix4x4(m11, m12, m13, m14,
                       m21, m22, m23, m24,

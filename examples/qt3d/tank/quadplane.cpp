@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D examples of the Qt Toolkit.
 **
@@ -17,10 +17,10 @@
 **     notice, this list of conditions and the following disclaimer in
 **     the documentation and/or other materials provided with the
 **     distribution.
-**   * Neither the name of Nokia Corporation and its Subsidiary(-ies) nor
-**     the names of its contributors may be used to endorse or promote
-**     products derived from this software without specific prior written
-**     permission.
+**   * Neither the name of Digia Plc and its Subsidiary(-ies) nor the names
+**     of its contributors may be used to endorse or promote products derived
+**     from this software without specific prior written permission.
+**
 **
 ** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 ** "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -86,12 +86,12 @@ QuadPlane::QuadPlane(QObject *parent, QSizeF size, int level)
     QGeometryData zip2;
     for (int yy = 0; yy <= divisions; ++yy)
     {
-        qreal y = half.height() - float(yy) * div.height();
-        qreal texY = float(yy) / divisions;
+        float y = half.height() - float(yy) * div.height();
+        float texY = float(yy) / divisions;
         for (int xx = 0; xx <= divisions; ++xx)
         {
-            qreal x = half.width() - float(xx) * div.width();
-            qreal texX = float(xx) / divisions;
+            float x = half.width() - float(xx) * div.width();
+            float texX = float(xx) / divisions;
             zip.appendVertex(QVector3D(x, y, 0));
             zip.appendTexCoord(QVector2D(1.0f - texX, 1.0f - texY));
         }

@@ -533,6 +533,7 @@ void SceneCombiner::MergeScenes(aiScene** _dest, aiScene* master,
         // Copy light sources
         for (unsigned int i = 0; i < (*cur)->mNumLights;++i,++ppLights)
         {
+            ai_assert(ppLights);
             if (n != (int)duplicates[n]) // duplicate scene?
             {
                 Copy(ppLights, (*cur)->mLights[i]);
@@ -554,6 +555,7 @@ void SceneCombiner::MergeScenes(aiScene** _dest, aiScene* master,
         // --------------------------------------------------------------------
         // Copy cameras
         for (unsigned int i = 0; i < (*cur)->mNumCameras;++i,++ppCameras)    {
+            ai_assert(ppCameras);
             if (n != (int)duplicates[n]) // duplicate scene?
             {
                 Copy(ppCameras, (*cur)->mCameras[i]);
@@ -574,6 +576,7 @@ void SceneCombiner::MergeScenes(aiScene** _dest, aiScene* master,
         // --------------------------------------------------------------------
         // Copy animations
         for (unsigned int i = 0; i < (*cur)->mNumAnimations;++i,++ppAnims)    {
+            ai_assert(ppAnims);
             if (n != (int)duplicates[n]) // duplicate scene?
             {
                 Copy(ppAnims, (*cur)->mAnimations[i]);

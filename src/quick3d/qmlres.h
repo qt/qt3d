@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
@@ -17,10 +17,10 @@
 **     notice, this list of conditions and the following disclaimer in
 **     the documentation and/or other materials provided with the
 **     distribution.
-**   * Neither the name of Nokia Corporation and its Subsidiary(-ies) nor
-**     the names of its contributors may be used to endorse or promote
-**     products derived from this software without specific prior written
-**     permission.
+**   * Neither the name of Digia Plc and its Subsidiary(-ies) nor the names
+**     of its contributors may be used to endorse or promote products derived
+**     from this software without specific prior written permission.
+**
 **
 ** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 ** "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -52,8 +52,14 @@
 // ONCE QML APP DEPLOYMENT FOR QT3D IS STABLE & DEFINED THIS FILE WILL BE
 // REMOVED.  DO NOT USE IT IN YOUR APPLICATIONS.
 
-#include <qt3dquickglobal.h>
+#include <Qt3DQuick/qt3dquickglobal.h>
 
-extern int Q_QT3D_QUICK_EXPORT q_quick3d_main(const char *entryPointQmlFile, const char *category, int argc, char *argv[]);
+QT_BEGIN_NAMESPACE
+
+QString Q_QT3D_QUICK_EXPORT q_get_qmldir(const QString &name, const QString &category);
+
+QT_END_NAMESPACE
+
+int Q_QT3D_QUICK_EXPORT q_quick3d_main(const char *entryPointQmlFile, const char *category, int argc, char *argv[]);
 
 #endif // QMLRES_H

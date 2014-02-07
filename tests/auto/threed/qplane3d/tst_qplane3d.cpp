@@ -1,38 +1,38 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** GNU Lesser General Public License Usage
-** This file may be used under the terms of the GNU Lesser General Public
-** License version 2.1 as published by the Free Software Foundation and
-** appearing in the file LICENSE.LGPL included in the packaging of this
-** file. Please review the following information to ensure the GNU Lesser
-** General Public License version 2.1 requirements will be met:
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
 **
-** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU General
-** Public License version 3.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of this
-** file. Please review the following information to ensure the GNU General
-** Public License version 3.0 requirements will be met:
-** http://www.gnu.org/copyleft/gpl.html.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms and
-** conditions contained in a signed written agreement between you and Nokia.
-**
-**
-**
-**
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
 ** $QT_END_LICENSE$
@@ -60,8 +60,8 @@ private slots:
     void noIntersection();
     void contains_data();
     void contains();
-    void distanceTo_data();
-    void distanceTo();
+    void distance_data();
+    void distance();
     void compare();
     void transform_data();
     void transform();
@@ -70,17 +70,12 @@ private slots:
     void metaTypes();
 };
 
-// since all calculations involved QVector3D are producing values with only
-// float precision those calculations can at best be float precision
-// if you assign the results of the calculation to a qreal then qFuzzyCompare
-// will quite happily use a much higher standard of precision than it is
-// possible to acheive - hence redefine it here to always use the float
-// Also while on the job fix the problem where a compared value happens
-// to be zero (and you cannot always predict this, and should not predict it
+// Fix the problem where a compared value happens to be zero (and
+// you cannot always predict this, and should not predict it
 // since then you produce self-fulling prophecies instead of tests).
 // In that case qFuzzyCompare has a completely strict criterion since
 // it finds the "fudge factor" by multiplying by zero...
-static inline bool fuzzyCompare(qreal p1, qreal p2)
+static inline bool fuzzyCompare(float p1, float p2)
 {
     float fac = qMin(qAbs(p1), qAbs(p2));
     return (qAbs(p1 - p2) <= (qIsNull(fac) ? 0.00001f : 0.00001f * fac));
@@ -228,7 +223,7 @@ void tst_QPlane3D::intersection()
     QRay3D line(point1, direction);
     QPlane3D plane(point2, normal);
 
-    qreal t = plane.intersection(line);
+    float t = plane.intersection(line);
     QVERIFY(!qIsNaN(t));
     QVERIFY(fuzzyCompare(line.point(t), intersection));
     QVERIFY(plane.intersects(line));
@@ -272,7 +267,7 @@ void tst_QPlane3D::noIntersection()
     QPlane3D plane(point1, normal);
     QRay3D line(point2, direction);
 
-    qreal t = plane.intersection(line);
+    float t = plane.intersection(line);
     QVERIFY(qIsNaN(t));
     QVERIFY(!plane.intersects(line));
 }
@@ -313,25 +308,25 @@ void tst_QPlane3D::contains()
     QVERIFY(!plane.contains(QRay3D(point, normal)));
 }
 
-void tst_QPlane3D::distanceTo_data()
+void tst_QPlane3D::distance_data()
 {
     create_data();
 }
 
-void tst_QPlane3D::distanceTo()
+void tst_QPlane3D::distance()
 {
     QFETCH(QVector3D, point);
     QFETCH(QVector3D, normal);
     QPlane3D plane(point, normal);
 
-    QVERIFY(fuzzyCompare(plane.distanceTo(point), 0.0f));
-    QVERIFY(fuzzyCompare(plane.distanceTo(point + normal), normal.length()));
-    QVERIFY(fuzzyCompare(plane.distanceTo(point - normal), -normal.length()));
+    QVERIFY(fuzzyCompare(plane.distance(point), 0.0f));
+    QVERIFY(fuzzyCompare(plane.distance(point + normal), normal.length()));
+    QVERIFY(fuzzyCompare(plane.distance(point - normal), -normal.length()));
 
     QVector3D v = vectorInPlane(plane);
-    QVERIFY(fuzzyCompare(plane.distanceTo(point + v), 0.0f));
-    QVERIFY(fuzzyCompare(plane.distanceTo(point + normal + v), normal.length()));
-    QVERIFY(fuzzyCompare(plane.distanceTo(point - normal + v), -normal.length()));
+    QVERIFY(fuzzyCompare(plane.distance(point + v), 0.0f));
+    QVERIFY(fuzzyCompare(plane.distance(point + normal + v), normal.length()));
+    QVERIFY(fuzzyCompare(plane.distance(point - normal + v), -normal.length()));
 }
 
 void tst_QPlane3D::compare()

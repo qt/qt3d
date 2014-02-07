@@ -1,6 +1,5 @@
 TEMPLATE = app
 TARGET = shaders
-CONFIG += qt warn_on
 QT += qml quick 3dquick
 
 SOURCES += main.cpp
@@ -28,7 +27,6 @@ CATEGORY = examples
 include(../../../pkg.pri)
 
 OTHER_FILES += \
-    mt.qml \
     shaders.rc \
     $$QML_INFRA_FILES
 

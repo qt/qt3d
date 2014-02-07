@@ -125,7 +125,7 @@ struct Bone
     struct Animation
     {
         //! Public default constructor
-        Animation()
+        Animation() : iFirstTimeKey(0)
         {
             asKeys.reserve(20);
         }

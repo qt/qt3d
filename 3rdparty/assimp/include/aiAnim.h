@@ -66,7 +66,7 @@ struct aiVectorKey
 #ifdef __cplusplus
 
     //! Default constructor
-    aiVectorKey(){}
+    aiVectorKey() : mTime(0.0) {}
 
     //! Construction from a given time and key value
     aiVectorKey(double time, const aiVector3D& value)
@@ -107,7 +107,7 @@ struct aiQuatKey
     C_STRUCT aiQuaternion mValue;
 
 #ifdef __cplusplus
-    aiQuatKey(){
+    aiQuatKey() : mTime(0.0) {
     }
 
     /** Construction from a given time and key value */

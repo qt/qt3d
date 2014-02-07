@@ -1,38 +1,38 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** GNU Lesser General Public License Usage
-** This file may be used under the terms of the GNU Lesser General Public
-** License version 2.1 as published by the Free Software Foundation and
-** appearing in the file LICENSE.LGPL included in the packaging of this
-** file. Please review the following information to ensure the GNU Lesser
-** General Public License version 2.1 requirements will be met:
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
 **
-** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU General
-** Public License version 3.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of this
-** file. Please review the following information to ensure the GNU General
-** Public License version 3.0 requirements will be met:
-** http://www.gnu.org/copyleft/gpl.html.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms and
-** conditions contained in a signed written agreement between you and Nokia.
-**
-**
-**
-**
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
 ** $QT_END_LICENSE$
@@ -52,10 +52,11 @@
 
 #include <QtGui/qevent.h>
 #include <QtQml/qqmlcontext.h>
-#include <qquickcanvas.h>
+#include <QtQuick/qquickwindow.h>
 
 /*!
-    \qmlclass Item3D QQuickItem3D
+    \qmltype Item3D
+    \instantiates QQuickItem3D
     \brief The Item3D item encapsulates 3D objects and contains all of the properties and methods needed for simple 3D operations.
     part of a QML/3d script.
     \since 4.8
@@ -289,7 +290,7 @@ public:
     QVector3D position;
     QVector3D pivot;
     bool usePivot;
-    qreal scale;
+    float scale;
     QQuickMesh *mesh;
     QQuickEffect *effect;
     bool requireBlockingEffectsCheck;
@@ -311,6 +312,7 @@ public:
     static QObject *resources_at(QQmlListProperty<QObject> *, int);
     static void resources_append(QQmlListProperty<QObject> *, QObject *);
     static int resources_count(QQmlListProperty<QObject> *);
+    static void resources_clear(QQmlListProperty<QObject> *);
 
     // transform property
     static int transform_count(QQmlListProperty<QQuickQGraphicsTransform3D> *list);
@@ -379,7 +381,7 @@ void QQuickItem3DPrivate::transform_append(QQmlListProperty<QQuickQGraphicsTrans
 
 QQuickQGraphicsTransform3D *QQuickItem3DPrivate::transform_at(QQmlListProperty<QQuickQGraphicsTransform3D> *list, int idx)
 {
-   QQuickItem3D *object = qobject_cast<QQuickItem3D *>(list->object);
+    QQuickItem3D *object = qobject_cast<QQuickItem3D *>(list->object);
     if (object) {
         return object->d->transforms.at(idx);
     } else {
@@ -433,7 +435,7 @@ void QQuickItem3DPrivate::pretransform_append(QQmlListProperty<QQuickQGraphicsTr
 
 QQuickQGraphicsTransform3D *QQuickItem3DPrivate::pretransform_at(QQmlListProperty<QQuickQGraphicsTransform3D> *list, int idx)
 {
-   QQuickItem3D *object = qobject_cast<QQuickItem3D *>(list->object);
+    QQuickItem3D *object = qobject_cast<QQuickItem3D *>(list->object);
     if (object) {
         return object->d->pretransforms.at(idx);
     } else {
@@ -550,6 +552,13 @@ int QQuickItem3DPrivate::resources_count(QQmlListProperty<QObject> *prop)
     return prop->object->children().count();
 }
 
+void QQuickItem3DPrivate::resources_clear(QQmlListProperty<QObject> *property)
+{
+    QObjectList children = property->object->children();
+    foreach (QObject *child, children)
+        child->setParent(0);
+}
+
 /*!
     \internal
     Applies position, scale and rotation transforms for this item3d to matrix
@@ -625,7 +634,7 @@ QVector3D QQuickItem3D::position() const
 void QQuickItem3D::setPosition(const QVector3D& value)
 {
     d->position = value;
-    emit positionChanged();
+    emit position3dChanged();
     update();
 }
 
@@ -638,15 +647,15 @@ void QQuickItem3D::setPosition(const QVector3D& value)
     \sa position, y, z
 */
 
-qreal QQuickItem3D::x() const
+float QQuickItem3D::x() const
 {
     return d->position.x();
 }
 
-void QQuickItem3D::setX(qreal value)
+void QQuickItem3D::setX(float value)
 {
     d->position.setX(value);
-    emit positionChanged();
+    emit position3dChanged();
     update();
 }
 
@@ -659,15 +668,15 @@ void QQuickItem3D::setX(qreal value)
     \sa position, x, z
 */
 
-qreal QQuickItem3D::y() const
+float QQuickItem3D::y() const
 {
     return d->position.y();
 }
 
-void QQuickItem3D::setY(qreal value)
+void QQuickItem3D::setY(float value)
 {
     d->position.setY(value);
-    emit positionChanged();
+    emit position3dChanged();
     update();
 }
 
@@ -680,15 +689,15 @@ void QQuickItem3D::setY(qreal value)
     \sa position, x, y
 */
 
-qreal QQuickItem3D::z() const
+float QQuickItem3D::z() const
 {
     return d->position.z();
 }
 
-void QQuickItem3D::setZ(qreal value)
+void QQuickItem3D::setZ(float value)
 {
     d->position.setZ(value);
-    emit positionChanged();
+    emit position3dChanged();
     update();
 }
 
@@ -702,15 +711,15 @@ void QQuickItem3D::setZ(qreal value)
     \sa transform
 */
 
-qreal QQuickItem3D::scale() const
+float QQuickItem3D::scale() const
 {
     return d->scale;
 }
 
-void QQuickItem3D::setScale(qreal value)
+void QQuickItem3D::setScale(float value)
 {
     d->scale = value;
-    emit scaleChanged();
+    emit scale3dChanged();
     update();
 }
 
@@ -757,8 +766,7 @@ void QQuickItem3D::setScale(qreal value)
 
 QQmlListProperty<QQuickQGraphicsTransform3D> QQuickItem3D::transform()
 {
-    return QQmlListProperty<QQuickQGraphicsTransform3D>(this, 0, d->transform_append, d->transform_count,
-                                               d->transform_at, d->transform_clear);
+    return QQmlListProperty<QQuickQGraphicsTransform3D>(this, 0, d->transform_append, d->transform_count, d->transform_at, d->transform_clear);
 }
 
 /*!
@@ -783,8 +791,7 @@ QQmlListProperty<QQuickQGraphicsTransform3D> QQuickItem3D::transform()
 
 QQmlListProperty<QQuickQGraphicsTransform3D> QQuickItem3D::pretransform()
 {
-    return QQmlListProperty<QQuickQGraphicsTransform3D>(this, 0, d->pretransform_append, d->pretransform_count,
-                                               d->pretransform_at, d->pretransform_clear);
+    return QQmlListProperty<QQuickQGraphicsTransform3D>(this, 0, d->pretransform_append, d->pretransform_count, d->pretransform_at, d->pretransform_clear);
 }
 
 /*!
@@ -996,8 +1003,9 @@ void QQuickItem3D::setLight(QGLLightParameters *value)
 QQmlListProperty<QObject> QQuickItem3D::resources()
 {
     return QQmlListProperty<QObject>(this, 0, QQuickItem3DPrivate::resources_append,
-                                             QQuickItem3DPrivate::resources_count,
-                                             QQuickItem3DPrivate::resources_at);
+                                     QQuickItem3DPrivate::resources_count,
+                                     QQuickItem3DPrivate::resources_at,
+                                     QQuickItem3DPrivate::resources_clear);
 }
 
 
@@ -1011,7 +1019,7 @@ QQmlListProperty<QObject> QQuickItem3D::resources()
 */
 QQmlListProperty<QObject> QQuickItem3D::data()
 {
-    return QQmlListProperty<QObject>(this, 0, QQuickItem3DPrivate::data_append);
+    return QQmlListProperty<QObject>(this, 0, QQuickItem3DPrivate::data_append, 0, 0, 0);
 }
 
 /*!
@@ -1235,25 +1243,22 @@ void QQuickItem3D::drawChildren(QGLPainter *painter)
 
     if (d->sortChildren == QQuickItem3D::BackToFront) {
         // Collect up the transformed z positions of all children.
-        QList<qreal> zlist;
+        QList<QPair<float, QQuickItem3D*> > zlist;
         QMatrix4x4 mv = painter->modelViewMatrix();
         for (int index = 0; index < list.size(); ++index) {
             QVector3D position = list.at(index)->position();
-            zlist.append(mv.map(position).z());
+            zlist.append(QPair<float, QQuickItem3D*> (mv.map(position).z(), list.at(index)));
         }
 
-        // Sort the item list (Caution: really dumb sort algorithm).
-        for (int i = 0; i < list.size() - 1; ++i) {
-            for (int j = i + 1; j < list.size(); ++j) {
-                if (zlist.at(i) > zlist.at(j)) {
-                    qSwap(list[i], list[j]);
-                    qSwap(zlist[i], zlist[j]);
-                }
-            }
-        }
+        qSort(zlist);
+        for (int index = 0; index < zlist.size(); ++index)
+            zlist.at(index).second->draw(painter);
+
     }
-    for (int index = 0; index < list.size(); ++index)
-        list.at(index)->draw(painter);
+    else {
+        for (int index = 0; index < list.size(); ++index)
+            list.at(index)->draw(painter);
+    }
 }
 
 /*!
@@ -1289,7 +1294,7 @@ void QQuickItem3D::draw(QGLPainter *painter)
         initialize(painter);
 
     if (!d->bConnectedToOpenGLContextSignal) {
-        QQuickCanvas* pCanvas = canvas();
+        QQuickWindow * pCanvas = window();
         Q_ASSERT(pCanvas);
         QOpenGLContext* pOpenGLContext = pCanvas->openglContext();
         Q_ASSERT(pOpenGLContext);
@@ -1326,6 +1331,13 @@ void QQuickItem3D::draw(QGLPainter *painter)
 
     //Reset pick id.
     painter->setObjectPickId(prevId);
+}
+
+/*!
+    \internal
+*/
+QQuickViewport::~QQuickViewport()
+{
 }
 
 /*!
@@ -1418,17 +1430,30 @@ void QQuickItem3D::componentComplete()
         }
     }
 
-    QQuickItem3D *parentItem3D = qobject_cast<QQuickItem3D*>(parentItem());
-    if (!parentItem3D)
+    // Find nearest QQuickItem3D parent or Viewport Item
+    QQuickItem* parentItem2D = qobject_cast<QQuickItem*>(parentItem());
+    // While parent is not null and is not either a QQuickItem3D or the Viewport, loops to find the parent element
+    // The dynamic_cast is needed because QQuickViewport is an interface and doesn't have the Q_INTERFACES Macro
+    while (parentItem2D && (qobject_cast<QQuickItem3D *>(parentItem2D) == NULL
+                            && dynamic_cast<QQuickViewport*>(parentItem2D) == NULL))
+        parentItem2D = qobject_cast<QQuickItem*>(parentItem2D->parentItem());
+    // If we found a QQuickItem3d or QQuickViewport parent we set it as the direct parent of our component
+    if (parentItem2D)
     {
-        if (!d->viewport)
+        this->setParentItem(parentItem2D);
+        this->setParent(parentItem2D);
+    }
+    else
+    {   // Otherwise if the element has no suitable parent, we insert it in a viewport
+        QQuickItem3D *parentItem3D = qobject_cast<QQuickItem3D*>(parentItem());
+        if (!parentItem3D && !d->viewport)
         {
             QQmlContext *ctx = QQmlEngine::contextForObject(this);
             QQmlEngine *engine = ctx->engine();
             QQmlComponent vp(engine);
             vp.setData(QByteArray(
                            "import QtQuick 2.0\n"
-                           "import Qt3D 1.0\n"
+                           "import Qt3D 2.0\n"
                            "Viewport{ objectName: \"vp\" }\n"), QUrl());
             QObject *implicitViewport = vp.create();
             QQuickItem *parentViewport = qobject_cast<QQuickItem*>(implicitViewport);
@@ -1505,9 +1530,7 @@ void qDumpItem(QQuickItem3D *item, bool detailed, int indent)
 */
 QMatrix4x4 QQuickItem3DPrivate::localToWorldMatrix() const
 {
-    QMatrix4x4 result;
-
-    result = localTransforms() * result;
+    QMatrix4x4 result = localTransforms();
     QQuickItem3D *anscestor = qobject_cast<QQuickItem3D *>(item->parent());
     while (anscestor)
     {

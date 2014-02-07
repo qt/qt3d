@@ -1,38 +1,38 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** GNU Lesser General Public License Usage
-** This file may be used under the terms of the GNU Lesser General Public
-** License version 2.1 as published by the Free Software Foundation and
-** appearing in the file LICENSE.LGPL included in the packaging of this
-** file. Please review the following information to ensure the GNU Lesser
-** General Public License version 2.1 requirements will be met:
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
 **
-** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU General
-** Public License version 3.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of this
-** file. Please review the following information to ensure the GNU General
-** Public License version 3.0 requirements will be met:
-** http://www.gnu.org/copyleft/gpl.html.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms and
-** conditions contained in a signed written agreement between you and Nokia.
-**
-**
-**
-**
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
 ** $QT_END_LICENSE$
@@ -68,12 +68,12 @@ void tst_QGLLightParameters::create()
     QVERIFY(params.diffuseColor() == QColor(255, 255, 255, 255));
     QVERIFY(params.specularColor() == QColor(255, 255, 255, 255));
     QVERIFY(params.spotDirection() == QVector3D(0, 0, -1));
-    QCOMPARE(params.spotExponent(), (qreal)0.0f);
-    QCOMPARE(params.spotAngle(), (qreal)180.0f);
-    QCOMPARE(params.spotCosAngle(), (qreal)-1.0f);
-    QCOMPARE(params.constantAttenuation(), (qreal)1.0f);
-    QCOMPARE(params.linearAttenuation(), (qreal)0.0f);
-    QCOMPARE(params.quadraticAttenuation(), (qreal)0.0f);
+    QCOMPARE(params.spotExponent(), 0.0f);
+    QCOMPARE(params.spotAngle(), 180.0f);
+    QCOMPARE(params.spotCosAngle(), -1.0f);
+    QCOMPARE(params.constantAttenuation(), 1.0f);
+    QCOMPARE(params.linearAttenuation(), 0.0f);
+    QCOMPARE(params.quadraticAttenuation(), 0.0f);
 }
 
 void tst_QGLLightParameters::modify()
@@ -139,33 +139,33 @@ void tst_QGLLightParameters::modify()
     QCOMPARE(lightSpy.size(), 6);
 
     params.setSpotExponent(23.5f);
-    QCOMPARE(params.spotExponent(), (qreal)23.5f);
+    QCOMPARE(params.spotExponent(), 23.5f);
     QCOMPARE(spotExponentSpy.size(), 1);
     QCOMPARE(lightSpy.size(), 7);
 
     params.setSpotAngle(90.0f);
-    QCOMPARE(params.spotAngle(), (qreal)90.0f);
+    QCOMPARE(params.spotAngle(), 90.0f);
     QVERIFY(params.spotCosAngle() <= 0.000001f);    // Fuzzy compare is not fuzzy enough!
     QCOMPARE(spotAngleSpy.size(), 1);
     QCOMPARE(lightSpy.size(), 8);
 
     params.setSpotAngle(180.0f);
-    QCOMPARE(params.spotCosAngle(), (qreal)-1.0f);
+    QCOMPARE(params.spotCosAngle(), -1.0f);
     QCOMPARE(spotAngleSpy.size(), 2);
     QCOMPARE(lightSpy.size(), 9);
 
     params.setConstantAttenuation(16.0f);
-    QCOMPARE(params.constantAttenuation(), (qreal)16.0f);
+    QCOMPARE(params.constantAttenuation(), 16.0f);
     QCOMPARE(constSpy.size(), 1);
     QCOMPARE(lightSpy.size(), 10);
 
     params.setLinearAttenuation(-3.5f);
-    QCOMPARE(params.linearAttenuation(), (qreal)-3.5f);
+    QCOMPARE(params.linearAttenuation(), -3.5f);
     QCOMPARE(linearSpy.size(), 1);
     QCOMPARE(lightSpy.size(), 11);
 
     params.setQuadraticAttenuation(4.0f);
-    QCOMPARE(params.quadraticAttenuation(), (qreal)4.0f);
+    QCOMPARE(params.quadraticAttenuation(), 4.0f);
     QCOMPARE(quadSpy.size(), 1);
     QCOMPARE(lightSpy.size(), 12);
 
@@ -186,12 +186,12 @@ void tst_QGLLightParameters::modify()
     QCOMPARE(params.specularColor().blue(), 0);
     QCOMPARE(params.specularColor().alpha(), 255);
     QVERIFY(params.spotDirection() == QVector3D(0.0f, 1.0f, 0.0f));
-    QCOMPARE(params.spotExponent(), (qreal)23.5f);
-    QCOMPARE(params.spotAngle(), (qreal)180.0f);
-    QCOMPARE(params.spotCosAngle(), (qreal)-1.0f);
-    QCOMPARE(params.constantAttenuation(), (qreal)16.0f);
-    QCOMPARE(params.linearAttenuation(), (qreal)-3.5f);
-    QCOMPARE(params.quadraticAttenuation(), (qreal)4.0f);
+    QCOMPARE(params.spotExponent(), 23.5f);
+    QCOMPARE(params.spotAngle(), 180.0f);
+    QCOMPARE(params.spotCosAngle(), -1.0f);
+    QCOMPARE(params.constantAttenuation(), 16.0f);
+    QCOMPARE(params.linearAttenuation(), -3.5f);
+    QCOMPARE(params.quadraticAttenuation(), 4.0f);
 
     // Set the properties to same values and check for no further signals.
     params.setDirection(QVector3D(-1, -2, 3));
@@ -263,11 +263,11 @@ void tst_QGLLightParameters::transform()
     m.rotate(45.0f, 1.0f, 1.0f, 1.0f);
     m.scale(2.0f);
 
-    QCOMPARE(params.eyePosition(m), m * QVector4D(1, 2, -3, 1));
-    QCOMPARE(params.eyeSpotDirection(m), m.mapVector(QVector3D(-5, 1, 3)));
+    QVERIFY(qFuzzyCompare(params.eyePosition(m), m * QVector4D(1, 2, -3, 1)));
+    QVERIFY(qFuzzyCompare(params.eyeSpotDirection(m), m.mapVector(QVector3D(-5, 1, 3))));
 
     params.setDirection(QVector3D(-1, -2, 3));
-    QCOMPARE(params.eyePosition(m), m * QVector4D(-1, -2, 3, 0));
+    QVERIFY(qFuzzyCompare(params.eyePosition(m), m * QVector4D(-1, -2, 3, 0)));
 }
 
 QTEST_APPLESS_MAIN(tst_QGLLightParameters)

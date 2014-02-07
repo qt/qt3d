@@ -1,38 +1,38 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** GNU Lesser General Public License Usage
-** This file may be used under the terms of the GNU Lesser General Public
-** License version 2.1 as published by the Free Software Foundation and
-** appearing in the file LICENSE.LGPL included in the packaging of this
-** file. Please review the following information to ensure the GNU Lesser
-** General Public License version 2.1 requirements will be met:
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
 **
-** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU General
-** Public License version 3.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of this
-** file. Please review the following information to ensure the GNU General
-** Public License version 3.0 requirements will be met:
-** http://www.gnu.org/copyleft/gpl.html.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms and
-** conditions contained in a signed written agreement between you and Nokia.
-**
-**
-**
-**
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
 ** $QT_END_LICENSE$
@@ -48,7 +48,8 @@
 QT_BEGIN_NAMESPACE
 
 /*!
-    \qmlclass CapsuleMesh CapsuleMesh
+    \qmltype CapsuleMesh
+    \instantiates CapsuleMesh
     \brief The CapsuleMesh item represents a simple capsule in 3D space.
     \since 4.8
     \ingroup qt3d::qml3d::shapes
@@ -77,7 +78,7 @@ QT_BEGIN_NAMESPACE
     references it:
 
     \code
-    import Qt3D.Shapes 1.0
+    import Qt3D.Shapes 2.0
     \endcode
 
     The capsule shape can have differing levels of detail, allowing
@@ -138,8 +139,8 @@ public:
     QMap<int, QGLSceneNode *> lodGeometry;
     QGLSceneNode *topNode;
     QGLSceneNode *currentCapsule;
-    qreal radius;
-    qreal length;
+    float radius;
+    float length;
     int lod;
     bool sceneSet;
 };
@@ -205,12 +206,12 @@ CapsuleMesh::~CapsuleMesh()
     This property defines the radius of the capsule.
     The default value is 1.
 */
-qreal CapsuleMesh::radius() const
+float CapsuleMesh::radius() const
 {
     return d->radius;
 }
 
-void CapsuleMesh::setRadius(qreal radius)
+void CapsuleMesh::setRadius(float radius)
 {
     if (qFuzzyCompare(radius, 1))
         radius = 1.0f;
@@ -228,12 +229,12 @@ void CapsuleMesh::setRadius(qreal radius)
     This property defines the length of the capsule.
     The default value is 1.
 */
-qreal CapsuleMesh::length() const
+float CapsuleMesh::length() const
 {
     return d->length;
 }
 
-void CapsuleMesh::setLength(qreal length)
+void CapsuleMesh::setLength(float length)
 {
     if (qFuzzyCompare(length, 1))
         length = 1.0f;
@@ -318,16 +319,16 @@ void CapsuleMesh::createGeometry(bool bForce)
 
         // Sanity check - the height of the capsule must not be less than its
         // diameter.  A minimal capsule is a sphere - where diameter == height.
-        if (d->length < 2.0 * d->radius)
+        if (d->length < 2.0f * d->radius)
         {
             qWarning() << "Length of capsule must exceed its diameter"
                           << " - correcting length.";
-            d->length = 2 * d->radius;
+            d->length = 2.0f * d->radius;
         }
 
-        qreal diameter = d->radius+d->radius;
-        qreal cylinderHeight = d->length - diameter;
-        qreal offset = cylinderHeight/2.0;
+        float diameter = d->radius+d->radius;
+        float cylinderHeight = d->length - diameter;
+        float offset = cylinderHeight/2.0f;
 
         builder << QGL::Faceted;
         QGLSceneNode *s = 0;
@@ -341,15 +342,15 @@ void CapsuleMesh::createGeometry(bool bForce)
         builder << QGLDome(diameter, divisions, false);
         QMatrix4x4 translateMatrix;
         translateMatrix.setToIdentity();
-        translateMatrix.rotate(180, 0, 1,0);
-        translateMatrix.translate(0, 0, offset);
+        translateMatrix.rotate(180.0f, 0.0f, 1.0f, 0.0f);
+        translateMatrix.translate(0.0f, 0.0f, offset);
         builder.currentNode()->setLocalTransform(translateMatrix);
 
         s = builder.newNode();
         s->setObjectName(QLatin1String("RightEndCap"));
         builder << QGLDome(diameter, divisions, false);
         translateMatrix.setToIdentity();
-        translateMatrix.translate(0, 0, offset);
+        translateMatrix.translate(0.0f, 0.0f, offset);
         builder.currentNode()->setLocalTransform(translateMatrix);
 
         geometry = builder.finalizedSceneNode();

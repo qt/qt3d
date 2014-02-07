@@ -1,38 +1,38 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** GNU Lesser General Public License Usage
-** This file may be used under the terms of the GNU Lesser General Public
-** License version 2.1 as published by the Free Software Foundation and
-** appearing in the file LICENSE.LGPL included in the packaging of this
-** file. Please review the following information to ensure the GNU Lesser
-** General Public License version 2.1 requirements will be met:
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
 **
-** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU General
-** Public License version 3.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of this
-** file. Please review the following information to ensure the GNU General
-** Public License version 3.0 requirements will be met:
-** http://www.gnu.org/copyleft/gpl.html.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms and
-** conditions contained in a signed written agreement between you and Nokia.
-**
-**
-**
-**
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
 ** $QT_END_LICENSE$
@@ -45,6 +45,7 @@
 #include "qglwindowsurface.h"
 #include "qgldrawbuffersurface_p.h"
 #include "qray3d.h"
+#include "qgltexture2d.h"
 
 #include <QOpenGLFramebufferObject>
 #include <QEvent>
@@ -411,16 +412,16 @@ class QGLViewSubsurface : public QGLSubsurface
 {
 public:
     QGLViewSubsurface(QGLAbstractSurface *surface, const QRect &region,
-                      qreal adjust)
+                      float adjust)
         : QGLSubsurface(surface, region), m_adjust(adjust) {}
 
-    qreal aspectRatio() const;
+    float aspectRatio() const;
 
 private:
-    qreal m_adjust;
+    float m_adjust;
 };
 
-qreal QGLViewSubsurface::aspectRatio() const
+float QGLViewSubsurface::aspectRatio() const
 {
     return QGLSubsurface::aspectRatio() * m_adjust;
 }
@@ -429,7 +430,7 @@ qreal QGLViewSubsurface::aspectRatio() const
 QGLAbstractSurface *QGLViewPrivate::leftEyeSurface(const QSize &size)
 {
     QRect viewport;
-    qreal adjust = 1.0f;
+    float adjust = 1.0f;
     switch (stereoType) {
     case QGLView::Hardware:
 #if defined(GL_BACK_LEFT) && defined(GL_BACK_RIGHT)
@@ -493,7 +494,7 @@ QGLAbstractSurface *QGLViewPrivate::leftEyeSurface(const QSize &size)
 QGLAbstractSurface *QGLViewPrivate::rightEyeSurface(const QSize &size)
 {
     QRect viewport;
-    qreal adjust = 1.0f;
+    float adjust = 1.0f;
     switch (stereoType) {
     case QGLView::Hardware:
 #if defined(GL_BACK_LEFT) && defined(GL_BACK_RIGHT)
@@ -788,7 +789,7 @@ void QGLView::setCamera(QGLCamera *value)
 QVector3D QGLView::mapPoint(const QPoint &point) const
 {
     QSize viewportSize(size());
-    qreal aspectRatio;
+    float aspectRatio;
 
     // Get the size of the underlying paint device.
     int width = viewportSize.width();
@@ -800,7 +801,7 @@ QVector3D QGLView::mapPoint(const QPoint &point) const
     if (width <= 0 || height <= 0)
         aspectRatio = 1.0f;
     else
-        aspectRatio = (qreal)width / (qreal)height;
+        aspectRatio = float(width) / float(height);
 
     // Map the point into eye co-ordinates.
     return d->camera->mapPoint(point, aspectRatio, viewportSize);
@@ -915,6 +916,9 @@ void QGLView::resizeGL(int w, int h)
 void QGLView::paintGL()
 {
     d->logEnter("QGLView::paintGL");
+
+    QGLTexture2D::processPendingResourceDeallocations();
+
     // We may need to regenerate the pick buffer on the next mouse event.
     d->pickBufferMaybeInvalid = true;
 
@@ -1219,7 +1223,7 @@ void QGLView::wheelEvent(QWheelEvent *e)
 void QGLView::keyPressEvent(QKeyEvent *e)
 {
     QGLCamera *camera;
-    qreal sep;
+    float sep;
 
     // process the key only if we're doing camera navigation, or we
     // have received a Quit action
@@ -1463,14 +1467,14 @@ void QGLView::wheel(int delta)
 {
     if (d->options & QGLView::FOVZoom) {     
         //Use field-of view as zoom (much like a traditional camera)
-        qreal scale = qAbs(viewDelta(delta, delta).x());
+        float scale = qAbs(viewDelta(delta, delta).x());
         if (delta < 0)
             scale = -scale;
         if (scale >= 0.0f)
             scale += 1.0f;
         else
             scale = 1.0f / (1.0f - scale);
-        qreal fov = d->camera->fieldOfView();
+        float fov = d->camera->fieldOfView();
         if (fov != 0.0f)
             d->camera->setFieldOfView(d->camera->fieldOfView() / scale);
         else
@@ -1479,8 +1483,8 @@ void QGLView::wheel(int delta)
         // enable this to get wheel navigation that actually zooms by moving the
         // camera back, as opposed to making the angle of view wider.        
         QVector3D viewVector= camera()->eye() - camera()->center();
-        qreal zoomMag = viewVector.length();
-        qreal zoomIncrement = -float(delta) / 100.0f;
+        float zoomMag = viewVector.length();
+        float zoomIncrement = -float(delta) / 100.0f;
         if (!qFuzzyIsNull(zoomIncrement))
         {
             zoomMag += zoomIncrement;
@@ -1522,8 +1526,8 @@ void QGLView::rotate(int deltax, int deltay)
     if (rotation == 180 || rotation == 270) {
         deltay = -deltay;
     }
-    qreal anglex = deltax * 90.0f / width();
-    qreal angley = deltay * 90.0f / height();
+    float anglex = deltax * 90.0f / width();
+    float angley = deltay * 90.0f / height();
     QQuaternion q = d->camera->pan(-anglex);
     q *= d->camera->tilt(-angley);
     d->camera->rotateCenter(q);
@@ -1546,7 +1550,7 @@ QPointF QGLView::viewDelta(int deltax, int deltay) const
     int w = width();
     int h = height();
     bool scaleToWidth;
-    qreal scaleFactor, scaleX, scaleY;
+    float scaleFactor, scaleX, scaleY;
     QSizeF viewSize = d->camera->viewSize();
     if (w >= h) {
         if (viewSize.width() >= viewSize.height())
@@ -1572,12 +1576,12 @@ QPointF QGLView::viewDelta(int deltax, int deltay) const
     }
     if (scaleToWidth) {
         scaleFactor = 2.0f / viewSize.width();
-        scaleX = scaleFactor * ((qreal)h) / ((qreal)w);
+        scaleX = scaleFactor * float(h) / float(w);
         scaleY = scaleFactor;
     } else {
         scaleFactor = 2.0f / viewSize.height();
         scaleX = scaleFactor;
-        scaleY = scaleFactor * ((qreal)w) / ((qreal)h);
+        scaleY = scaleFactor * float(w) / float(h);
     }
     return QPointF(deltax * scaleX / w, deltay * scaleY / h);
 }

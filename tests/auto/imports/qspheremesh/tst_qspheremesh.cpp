@@ -1,38 +1,38 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** GNU Lesser General Public License Usage
-** This file may be used under the terms of the GNU Lesser General Public
-** License version 2.1 as published by the Free Software Foundation and
-** appearing in the file LICENSE.LGPL included in the packaging of this
-** file. Please review the following information to ensure the GNU Lesser
-** General Public License version 2.1 requirements will be met:
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
 **
-** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU General
-** Public License version 3.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of this
-** file. Please review the following information to ensure the GNU General
-** Public License version 3.0 requirements will be met:
-** http://www.gnu.org/copyleft/gpl.html.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms and
-** conditions contained in a signed written agreement between you and Nokia.
-**
-**
-**
-**
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
 ** $QT_END_LICENSE$
@@ -131,23 +131,23 @@ void tst_QSphereMesh::testGeometry()
         QGL::IndexArray ib = geom.indices();
         for (int i=pSceneNodeLevel2->start(); i<pSceneNodeLevel2->start()+pSceneNodeLevel2->count(); i+=3) {
             unsigned int ii0 = ib.at(i);
-            QVERIFY(ii0<verts.size());
+            QVERIFY(ii0<(unsigned int)verts.size());
             QVector3D vv0 = verts.at(ii0);
-            qreal vv0sq = vv0.lengthSquared();
+            float vv0sq = vv0.lengthSquared();
             QVERIFY(fabs(vv0sq-1.0)<0.0001); // vertex is on sphere
             QVector3D nn0 = norms.at(ii0);
             QVERIFY((fabs(QVector3D::dotProduct(vv0,nn0))-1.0) < 0.0001); // vertex normal == vertex itself
             unsigned int ii1 = ib.at(i+1);
-            QVERIFY(ii1<verts.size());
+            QVERIFY(ii1<(unsigned int)verts.size());
             QVector3D vv1 = verts.at(ii1);
-            qreal vv1sq = vv1.lengthSquared();
+            float vv1sq = vv1.lengthSquared();
             QVERIFY(fabs(vv1sq-1.0)<0.0001); // vertex is on sphere
             QVector3D nn1 = norms.at(ii1);
             QVERIFY((fabs(QVector3D::dotProduct(vv1,nn1))-1.0) < 0.0001); // vertex normal == vertex itself
             unsigned int ii2 = ib.at(i+2);
-            QVERIFY(ii2<verts.size());
+            QVERIFY(ii2<(unsigned int)verts.size());
             QVector3D vv2 = verts.at(ii2);
-            qreal vv2sq = vv2.lengthSquared();
+            float vv2sq = vv2.lengthSquared();
             QVERIFY(fabs(vv2sq-1.0)<0.0001); // vertex is on sphere
             QVector3D nn2 = norms.at(ii2);
             QVERIFY((fabs(QVector3D::dotProduct(vv2,nn2))-1.0) < 0.0001); // vertex normal == vertex itself
@@ -161,8 +161,8 @@ void tst_QSphereMesh::testGeometry()
                     QVector3D triangleNormal = QVector3D::crossProduct(vvv0,vvv1);
                     if (triangleNormal.lengthSquared()>0.001) {
                         triangleNormal.normalize();
-                        qreal dp = QVector3D::dotProduct(triangleNormal,nn0);
-                        QVERIFY(dp<-0.8628);
+                        float dp = QVector3D::dotProduct(triangleNormal,nn0);
+                        QVERIFY(dp>0.8628);
                     }
                 }
             }

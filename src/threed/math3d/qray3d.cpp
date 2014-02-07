@@ -1,38 +1,38 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** GNU Lesser General Public License Usage
-** This file may be used under the terms of the GNU Lesser General Public
-** License version 2.1 as published by the Free Software Foundation and
-** appearing in the file LICENSE.LGPL included in the packaging of this
-** file. Please review the following information to ensure the GNU Lesser
-** General Public License version 2.1 requirements will be met:
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
 **
-** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU General
-** Public License version 3.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of this
-** file. Please review the following information to ensure the GNU General
-** Public License version 3.0 requirements will be met:
-** http://www.gnu.org/copyleft/gpl.html.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms and
-** conditions contained in a signed written agreement between you and Nokia.
-**
-**
-**
-**
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
 ** $QT_END_LICENSE$
@@ -61,7 +61,7 @@ QT_BEGIN_NAMESPACE
     \b t = 0, the point origin() + direction() is at \b t = 1,
     and the point origin() - direction() is at \b t = -1.
     The point() method can be used to obtain the position of a point
-    within this one-dimensional co-ordinate system.  The fromPoint()
+    within this one-dimensional co-ordinate system. The projectedDistance()
     method can be used to convert a point into a value in this
     one-dimensional co-ordinate system.
 */
@@ -126,27 +126,27 @@ bool QRay3D::contains(const QVector3D &point) const
     QVector3D ppVec(point - m_origin);
     if (ppVec.isNull()) // point coincides with origin
         return true;
-    qreal dot = QVector3D::dotProduct(ppVec, m_direction);
-    if (qFuzzyIsNull(float(dot)))
+    const float dot = QVector3D::dotProduct(ppVec, m_direction);
+    if (qFuzzyIsNull(dot))
         return false;
     return qFuzzyCompare(dot*dot, ppVec.lengthSquared() * m_direction.lengthSquared());
 }
 
 /*!
     Returns true if \a ray lies on this ray; false otherwise.  If true,
-    this implies that the two rays are the actually the same, but with
+    this implies that the two rays are actually the same, but with
     different origin() points or an inverted direction().
 */
 bool QRay3D::contains(const QRay3D &ray) const
 {
-    qreal dot = QVector3D::dotProduct(m_direction, ray.direction());
+    const float dot = QVector3D::dotProduct(m_direction, ray.direction());
     if (!qFuzzyCompare(dot*dot, m_direction.lengthSquared() * ray.direction().lengthSquared()))
         return false;
     return contains(ray.origin());
 }
 
 /*!
-    \fn QVector3D QRay3D::point(qreal t) const
+    \fn QVector3D QRay3D::point(float t) const
 
     Returns the point on the ray defined by moving \a t units
     along the ray in the direction of the direction() vector.
@@ -157,7 +157,7 @@ bool QRay3D::contains(const QRay3D &ray) const
     The units for \a t are defined by direction().  The return value
     is precisely origin() + t * direction().
 
-    \sa fromPoint(), distanceTo()
+    \sa projectedDistance(), distance()
 */
 
 /*!
@@ -173,7 +173,7 @@ bool QRay3D::contains(const QRay3D &ray) const
 
     \sa point(), project()
 */
-qreal QRay3D::fromPoint(const QVector3D &point) const
+float QRay3D::projectedDistance(const QVector3D &point) const
 {
     return QVector3D::dotProduct(point - m_origin, m_direction) /
                 m_direction.lengthSquared();
@@ -186,7 +186,7 @@ qreal QRay3D::fromPoint(const QVector3D &point) const
 
     \image qray3d-project.png
 
-    \sa fromPoint()
+    \sa projectedDistance()
 */
 QVector3D QRay3D::project(const QVector3D &vector) const
 {
@@ -201,9 +201,9 @@ QVector3D QRay3D::project(const QVector3D &vector) const
 
     \sa point()
 */
-qreal QRay3D::distanceTo(const QVector3D &point) const
+float QRay3D::distance(const QVector3D &point) const
 {
-    qreal t = fromPoint(point);
+    float t = projectedDistance(point);
     return (point - (m_origin + t * m_direction)).length();
 }
 

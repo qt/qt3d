@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D examples of the Qt Toolkit.
 **
@@ -17,10 +17,10 @@
 **     notice, this list of conditions and the following disclaimer in
 **     the documentation and/or other materials provided with the
 **     distribution.
-**   * Neither the name of Nokia Corporation and its Subsidiary(-ies) nor
-**     the names of its contributors may be used to endorse or promote
-**     products derived from this software without specific prior written
-**     permission.
+**   * Neither the name of Digia Plc and its Subsidiary(-ies) nor the names
+**     of its contributors may be used to endorse or promote products derived
+**     from this software without specific prior written permission.
+**
 **
 ** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 ** "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -141,8 +141,8 @@ QGLSceneNode *BuilderView::buildGeometry()
     //! [2]
 
     // size data for can
-    const qreal canRadius = 1.0f;
-    const qreal canHeight = 2.5f;
+    const float canRadius = 1.0f;
+    const float canHeight = 2.5f;
     const int numSlices = 32;
 
     QGeometryData canRim;
@@ -151,9 +151,9 @@ QGLSceneNode *BuilderView::buildGeometry()
     // do the math for the defining points
     for (int i = 0; i < numSlices; ++i)
     {
-        qreal angle = (qreal(i) * 2.0 * M_PI) / numSlices;
-        canRim.appendVertex(QVector3D(canRadius * qCos(angle),
-                                      canRadius * qSin(angle),
+        float angle = (float(i) * 2.0 * M_PI) / numSlices;
+        canRim.appendVertex(QVector3D(canRadius * cosf(angle),
+                                      canRadius * sinf(angle),
                                       canHeight / 2.0f));
     }
 

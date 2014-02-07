@@ -1,6 +1,5 @@
 TEMPLATE = app
 TARGET = lander
-CONFIG += qt warn_on
 QT += qml quick 3dquick
 
 SOURCES += main.cpp
@@ -32,7 +31,6 @@ CATEGORY = examples
 include(../../../pkg.pri)
 
 OTHER_FILES += \
-    mt.qml \
     lander.rc \
     $$QML_INFRA_FILES
 

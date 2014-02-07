@@ -1,38 +1,38 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** GNU Lesser General Public License Usage
-** This file may be used under the terms of the GNU Lesser General Public
-** License version 2.1 as published by the Free Software Foundation and
-** appearing in the file LICENSE.LGPL included in the packaging of this
-** file. Please review the following information to ensure the GNU Lesser
-** General Public License version 2.1 requirements will be met:
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
 **
-** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU General
-** Public License version 3.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of this
-** file. Please review the following information to ensure the GNU General
-** Public License version 3.0 requirements will be met:
-** http://www.gnu.org/copyleft/gpl.html.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms and
-** conditions contained in a signed written agreement between you and Nokia.
-**
-**
-**
-**
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
 ** $QT_END_LICENSE$
@@ -242,13 +242,13 @@ bool QBox3D::intersects(const QBox3D& box) const
 */
 bool QBox3D::intersects(const QRay3D &ray) const
 {
-    qreal minimum_t, maximum_t;
+    float minimum_t, maximum_t;
     return intersection(ray, &minimum_t, &maximum_t);
 }
 
 static inline void trackIntersectionX
-    (const QBox3D &box, const QRay3D &ray, qreal t,
-     qreal *minimum_t, qreal *maximum_t, bool *found)
+    (const QBox3D &box, const QRay3D &ray, float t,
+     float *minimum_t, float *maximum_t, bool *found)
 {
     QVector3D point = ray.point(t);
     if (point.y() < box.minimum().y() || point.y() > box.maximum().y())
@@ -267,8 +267,8 @@ static inline void trackIntersectionX
 }
 
 static inline void trackIntersectionY
-    (const QBox3D &box, const QRay3D &ray, qreal t,
-     qreal *minimum_t, qreal *maximum_t, bool *found)
+    (const QBox3D &box, const QRay3D &ray, float t,
+     float *minimum_t, float *maximum_t, bool *found)
 {
     QVector3D point = ray.point(t);
     if (point.x() < box.minimum().x() || point.x() > box.maximum().x())
@@ -287,8 +287,8 @@ static inline void trackIntersectionY
 }
 
 static inline void trackIntersectionZ
-    (const QBox3D &box, const QRay3D &ray, qreal t,
-     qreal *minimum_t, qreal *maximum_t, bool *found)
+    (const QBox3D &box, const QRay3D &ray, float t,
+     float *minimum_t, float *maximum_t, bool *found)
 {
     QVector3D point = ray.point(t);
     if (point.x() < box.minimum().x() || point.x() > box.maximum().x())
@@ -321,7 +321,7 @@ static inline void trackIntersectionZ
     example:
 
     \code
-    qreal minimum_t, maximum_t;
+    float minimum_t, maximum_t;
     if (box.intersection(ray, &minimum_t, &maximum_t)) {
         qDebug() << "intersections at"
                  << ray.point(minimum_t) << "and"
@@ -331,7 +331,7 @@ static inline void trackIntersectionZ
 
     \sa intersects(), QRay3D::point()
 */
-bool QBox3D::intersection(const QRay3D &ray, qreal *minimum_t, qreal *maximum_t) const
+bool QBox3D::intersection(const QRay3D &ray, float *minimum_t, float *maximum_t) const
 {
     bool found = false;
     QVector3D origin = ray.origin();
@@ -375,7 +375,7 @@ bool QBox3D::intersection(const QRay3D &ray, qreal *minimum_t, qreal *maximum_t)
     the actual intersection point, as shown in the following example:
 
     \code
-    qreal t = box.intersection(ray);
+    float t = box.intersection(ray);
     QVector3D pt;
     if (qIsNaN(t)) {
         qWarning("no intersection occurred");
@@ -400,9 +400,9 @@ bool QBox3D::intersection(const QRay3D &ray, qreal *minimum_t, qreal *maximum_t)
 
     \sa intersects(), QRay3D::point()
 */
-qreal QBox3D::intersection(const QRay3D &ray) const
+float QBox3D::intersection(const QRay3D &ray) const
 {
-    qreal minimum_t, maximum_t;
+    float minimum_t, maximum_t;
     if (intersection(ray, &minimum_t, &maximum_t)) {
         if (minimum_t >= 0.0f)
             return minimum_t;

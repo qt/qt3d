@@ -85,7 +85,7 @@ struct Material
     aiColor3D mEmissive;
     std::vector<TexEntry> mTextures;
 
-    Material() { mIsReference = false; }
+    Material() : mSpecularExponent(0.0f) { mIsReference = false; }
 };
 
 /** Helper structure to represent a bone weight */

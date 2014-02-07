@@ -1,38 +1,38 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** GNU Lesser General Public License Usage
-** This file may be used under the terms of the GNU Lesser General Public
-** License version 2.1 as published by the Free Software Foundation and
-** appearing in the file LICENSE.LGPL included in the packaging of this
-** file. Please review the following information to ensure the GNU Lesser
-** General Public License version 2.1 requirements will be met:
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
 **
-** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU General
-** Public License version 3.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of this
-** file. Please review the following information to ensure the GNU General
-** Public License version 3.0 requirements will be met:
-** http://www.gnu.org/copyleft/gpl.html.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms and
-** conditions contained in a signed written agreement between you and Nokia.
-**
-**
-**
-**
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
 ** $QT_END_LICENSE$
@@ -61,8 +61,8 @@ private slots:
     void contains_point();
     void contains_ray_data();
     void contains_ray();
-    void distanceTo_data();
-    void distanceTo();
+    void distance_data();
+    void distance();
     void compare();
     void dataStream();
     void transform_data();
@@ -71,17 +71,12 @@ private slots:
     void metaTypes();
 };
 
-// since all calculations involved QVector3D are producing values with only
-// float precision those calculations can at best be float precision
-// if you assign the results of the calculation to a qreal then qFuzzyCompare
-// will quite happily use a much higher standard of precision than it is
-// possible to acheive - hence redefine it here to always use the float
-// Also while on the job fix the problem where a compared value happens
-// to be zero (and you cannot always predict this, and should not predict it
+// Fix the problem where a compared value happens to be zero (and
+// you cannot always predict this, and should not predict it
 // since then you produce self-fulling prophecies instead of tests).
 // In that case qFuzzyCompare has a completely strict criterion since
 // it finds the "fudge factor" by multiplying by zero...
-static inline bool fuzzyCompare(qreal p1, qreal p2)
+static inline bool fuzzyCompare(float p1, float p2)
 {
     float fac = qMin(qAbs(p1), qAbs(p2));
     return (qAbs(p1 - p2) <= (qIsNull(fac) ? 0.00001f : 0.00001f * fac));
@@ -257,8 +252,8 @@ void tst_QRay3D::point()
     QRay3D line(point, direction);
     QVERIFY(fuzzyCompare(line.point(0.6), point_on_line_pos_0_6));
     QVERIFY(fuzzyCompare(line.point(-7.2), point_on_line_neg_7_2));
-    QVERIFY(fuzzyCompare(line.fromPoint(point_on_line_pos_0_6), 0.6));
-    QVERIFY(fuzzyCompare(line.fromPoint(point_on_line_neg_7_2), -7.2));
+    QVERIFY(fuzzyCompare(line.projectedDistance(point_on_line_pos_0_6), 0.6));
+    QVERIFY(fuzzyCompare(line.projectedDistance(point_on_line_neg_7_2), -7.2));
 }
 
 void tst_QRay3D::contains_point_data()
@@ -283,7 +278,7 @@ void tst_QRay3D::contains_point_data()
     QTest::newRow("close to the origin")
             << QVector3D(1.0, 1.0, 1.0)
             << QVector3D(1.0, 3.0, 3.0)
-            << QVector3D(1.0005, 1.0005, 1.0)
+            << QVector3D(1.0005f, 1.0005f, 1.0)
             << false;
 
     QTest::newRow("45 line line in plane x=1")
@@ -382,47 +377,47 @@ void tst_QRay3D::contains_ray()
     }
 }
 
-void tst_QRay3D::distanceTo_data()
+void tst_QRay3D::distance_data()
 {
     QTest::addColumn<QVector3D>("origin");
     QTest::addColumn<QVector3D>("direction");
     QTest::addColumn<QVector3D>("point");
-    QTest::addColumn<qreal>("distance");
+    QTest::addColumn<float>("distance");
 
     QTest::newRow("axis-x")
         << QVector3D(6.0f, 0.0f, 0.0f)
         << QVector3D(1.0f, 0.0f, 0.0f)
         << QVector3D(0.0f, 0.0f, 0.0f)
-        << qreal(0.0f);
+        << 0.0f;
 
     QTest::newRow("axis-x to 1")
         << QVector3D(6.0f, 0.0f, 0.0f)
         << QVector3D(1.0f, 0.0f, 0.0f)
         << QVector3D(0.0f, 1.0f, 0.0f)
-        << qreal(1.0f);
+        << 1.0f;
 
     QTest::newRow("neg-axis-y")
         << QVector3D(0.0f, 6.0f, 0.0f)
         << QVector3D(0.0f, -1.5f, 0.0f)
         << QVector3D(0.0f, 100.0f, 0.0f)
-        << qreal(0.0f);
+        << 0.0f;
 
     QTest::newRow("neg-axis-y to 2")
         << QVector3D(0.0f, 6.0f, 0.0f)
         << QVector3D(0.0f, -1.5f, 0.0f)
         << QVector3D(2.0f, 0.0f, 0.0f)
-        << qreal(2.0f);
+        << 2.0f;
 }
 
-void tst_QRay3D::distanceTo()
+void tst_QRay3D::distance()
 {
     QFETCH(QVector3D, origin);
     QFETCH(QVector3D, direction);
     QFETCH(QVector3D, point);
-    QFETCH(qreal, distance);
+    QFETCH(float, distance);
 
     QRay3D line(origin, direction);
-    QCOMPARE(line.distanceTo(point), distance);
+    QCOMPARE(line.distance(point), distance);
 }
 
 void tst_QRay3D::compare()

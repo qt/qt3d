@@ -1,38 +1,38 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** GNU Lesser General Public License Usage
-** This file may be used under the terms of the GNU Lesser General Public
-** License version 2.1 as published by the Free Software Foundation and
-** appearing in the file LICENSE.LGPL included in the packaging of this
-** file. Please review the following information to ensure the GNU Lesser
-** General Public License version 2.1 requirements will be met:
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
 **
-** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU General
-** Public License version 3.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of this
-** file. Please review the following information to ensure the GNU General
-** Public License version 3.0 requirements will be met:
-** http://www.gnu.org/copyleft/gpl.html.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms and
-** conditions contained in a signed written agreement between you and Nokia.
-**
-**
-**
-**
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
 ** $QT_END_LICENSE$
@@ -98,7 +98,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn void QVector4DArray::append(qreal x, qreal y, qreal z, qreal w)
+    \fn void QVector4DArray::append(float x, float y, float z, float w)
 
     Appends (\a x, \a y, \a z, \a w) to this array of QVector4D values.
 */
@@ -109,7 +109,7 @@ QT_BEGIN_NAMESPACE
 
     \sa scaled()
 */
-void QVector4DArray::scale(qreal scale)
+void QVector4DArray::scale(float scale)
 {
     if (isDetached()) {
         // Modify the array in-place.
@@ -135,7 +135,7 @@ void QVector4DArray::scale(qreal scale)
 
     \sa scale()
 */
-QVector4DArray QVector4DArray::scaled(qreal scale) const
+QVector4DArray QVector4DArray::scaled(float scale) const
 {
     QArray<QVector4D> result;
     int size = count();
@@ -173,7 +173,7 @@ void QVector4DArray::translate(const QVector4D& value)
 }
 
 /*!
-    \fn void QVector4DArray::translate(qreal x, qreal y, qreal z, qreal w);
+    \fn void QVector4DArray::translate(float x, float y, float z, float w);
     \overload
 
     Translates the elements in this array of QVector4D values
@@ -200,7 +200,7 @@ QArray<QVector4D> QVector4DArray::translated(const QVector4D& value) const
 }
 
 /*!
-    \fn QArray<QVector4D> QVector4DArray::translated(qreal x, qreal y, qreal z, qreal w) const
+    \fn QArray<QVector4D> QVector4DArray::translated(float x, float y, float z, float w) const
     \overload
 
     Returns a copy of this array of QVector4D values, translated

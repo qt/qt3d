@@ -1,6 +1,5 @@
 TEMPLATE = app
 TARGET = tst_rotation
-CONFIG += qt warn_on
 
 QT += 3dquick
 
@@ -10,7 +9,8 @@ ICON_FILE = ../icon.png
 
 QML_FILES = \
     qml/desktop.qml \
-    qml/TestRotation.qml
+    qml/TestRotation.qml \
+    qml/RotationTestCase.qml
 
 QML_INFRA_FILES = \
     $$QML_FILES
@@ -19,5 +19,5 @@ CATEGORY = manual
 include(../../../pkg.pri)
 
 OTHER_FILES += \
-    mt.qml \
     $$QML_INFRA_FILES
+DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0

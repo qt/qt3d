@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
@@ -17,10 +17,10 @@
 **     notice, this list of conditions and the following disclaimer in
 **     the documentation and/or other materials provided with the
 **     distribution.
-**   * Neither the name of Nokia Corporation and its Subsidiary(-ies) nor
-**     the names of its contributors may be used to endorse or promote
-**     products derived from this software without specific prior written
-**     permission.
+**   * Neither the name of Digia Plc and its Subsidiary(-ies) nor the names
+**     of its contributors may be used to endorse or promote products derived
+**     from this software without specific prior written permission.
+**
 **
 ** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 ** "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -51,6 +51,8 @@
 #define internal_xstr(s) internal_str(s)
 #define internal_str(s) #s
 
+QT_BEGIN_NAMESPACE
+
 /*!
     \internal
     Returns a string with the path to qml resources, including qml sources,
@@ -62,7 +64,7 @@
     and should not be used or relied on anywhere else but in the examples
     that ship with Qt3D.
 */
-static QString q_get_qmldir(const QString &name, const QString &category)
+QString q_get_qmldir(const QString &name, const QString &category)
 {
     QString qml = name;
     // try for a Linux package install first
@@ -130,6 +132,8 @@ static QString q_get_qmldir(const QString &name, const QString &category)
     }
     return qml;
 }
+
+QT_END_NAMESPACE
 
 /*!
     \internal

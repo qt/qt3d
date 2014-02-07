@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D examples of the Qt Toolkit.
 **
@@ -17,10 +17,10 @@
 **     notice, this list of conditions and the following disclaimer in
 **     the documentation and/or other materials provided with the
 **     distribution.
-**   * Neither the name of Nokia Corporation and its Subsidiary(-ies) nor
-**     the names of its contributors may be used to endorse or promote
-**     products derived from this software without specific prior written
-**     permission.
+**   * Neither the name of Digia Plc and its Subsidiary(-ies) nor the names
+**     of its contributors may be used to endorse or promote products derived
+**     from this software without specific prior written permission.
+**
 **
 ** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 ** "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -39,7 +39,7 @@
 ****************************************************************************/
 
 import QtQuick 2.0
-import Qt3D 1.0
+import Qt3D 2.0
 
 Viewport {
     property string name: "Collapsing Shader"
@@ -53,7 +53,7 @@ Viewport {
 
         transform: Rotation3D {
             NumberAnimation on angle{
-                running: true
+                running: Qt.application.active
                 loops: Animation.Infinite
                 from: 0
                 to: 360
@@ -67,7 +67,7 @@ Viewport {
             property real collapseFactor : 0.0
 
             SequentialAnimation on collapseFactor {
-                running: true
+                running: Qt.application.active
                 loops: Animation.Infinite
                 PauseAnimation { duration: 700 }
                 NumberAnimation { from: 0.0; to: 1.0; duration: 1500; easing.type:"OutBounce" }
@@ -77,7 +77,7 @@ Viewport {
             texture: "qtlogo.png"
 
             SequentialAnimation on color{
-                running: true
+                running: Qt.application.active
                 loops: Animation.Infinite
                 ColorAnimation {
                     from: "#00008a"

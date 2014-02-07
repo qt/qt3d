@@ -1,38 +1,38 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** GNU Lesser General Public License Usage
-** This file may be used under the terms of the GNU Lesser General Public
-** License version 2.1 as published by the Free Software Foundation and
-** appearing in the file LICENSE.LGPL included in the packaging of this
-** file. Please review the following information to ensure the GNU Lesser
-** General Public License version 2.1 requirements will be met:
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
 **
-** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU General
-** Public License version 3.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of this
-** file. Please review the following information to ensure the GNU General
-** Public License version 3.0 requirements will be met:
-** http://www.gnu.org/copyleft/gpl.html.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms and
-** conditions contained in a signed written agreement between you and Nokia.
-**
-**
-**
-**
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
 ** $QT_END_LICENSE$
@@ -68,30 +68,30 @@ void tst_QColor4ub::create()
     QCOMPARE(c1.green(), 0);
     QCOMPARE(c1.blue(), 0);
     QCOMPARE(c1.alpha(), 255);
-    QCOMPARE(c1.redF(), qreal(0.0));
-    QCOMPARE(c1.greenF(), qreal(0.0));
-    QCOMPARE(c1.blueF(), qreal(0.0));
-    QCOMPARE(c1.alphaF(), qreal(1.0));
+    QCOMPARE(c1.redF(), 0.0f);
+    QCOMPARE(c1.greenF(), 0.0f);
+    QCOMPARE(c1.blueF(), 0.0f);
+    QCOMPARE(c1.alphaF(), 1.0f);
 
     QColor4ub c2(162, 54, 39);
     QCOMPARE(c2.red(), 162);
     QCOMPARE(c2.green(), 54);
     QCOMPARE(c2.blue(), 39);
     QCOMPARE(c2.alpha(), 255);
-    QVERIFY(fuzzyCompare(c2.redF(), qreal(162 / 255.0f)));
-    QVERIFY(fuzzyCompare(c2.greenF(), qreal(54 / 255.0f)));
-    QVERIFY(fuzzyCompare(c2.blueF(), qreal(39 / 255.0f)));
-    QVERIFY(fuzzyCompare(c2.alphaF(), qreal(1.0)));
+    QVERIFY(fuzzyCompare(c2.redF(), 162 / 255.0f));
+    QVERIFY(fuzzyCompare(c2.greenF(), 54 / 255.0f));
+    QVERIFY(fuzzyCompare(c2.blueF(), 39 / 255.0f));
+    QVERIFY(fuzzyCompare(c2.alphaF(), 1.0));
 
     QColor4ub c3(162, 54, 39, 41);
     QCOMPARE(c3.red(), 162);
     QCOMPARE(c3.green(), 54);
     QCOMPARE(c3.blue(), 39);
     QCOMPARE(c3.alpha(), 41);
-    QVERIFY(fuzzyCompare(c3.redF(), qreal(162 / 255.0f)));
-    QVERIFY(fuzzyCompare(c3.greenF(), qreal(54 / 255.0f)));
-    QVERIFY(fuzzyCompare(c3.blueF(), qreal(39 / 255.0f)));
-    QVERIFY(fuzzyCompare(c3.alphaF(), qreal(41 / 255.0f)));
+    QVERIFY(fuzzyCompare(c3.redF(), 162 / 255.0f));
+    QVERIFY(fuzzyCompare(c3.greenF(), 54 / 255.0f));
+    QVERIFY(fuzzyCompare(c3.blueF(), 39 / 255.0f));
+    QVERIFY(fuzzyCompare(c3.alphaF(), 41 / 255.0f));
 
     QColor4ub c4(QColor(162, 54, 39, 41));
     QCOMPARE(c4.red(), 162);
@@ -164,10 +164,10 @@ void tst_QColor4ub::modify()
     QCOMPARE(c1.green(), 163);
     QCOMPARE(c1.blue(), 2);
     QCOMPARE(c1.alpha(), 200);
-    QVERIFY(fuzzyCompare(c1.redF(), qreal(34 / 255.0f)));
-    QVERIFY(fuzzyCompare(c1.greenF(), qreal(163 / 255.0f)));
-    QVERIFY(fuzzyCompare(c1.blueF(), qreal(2 / 255.0f)));
-    QVERIFY(fuzzyCompare(c1.alphaF(), qreal(200 / 255.0f)));
+    QVERIFY(fuzzyCompare(c1.redF(), 34 / 255.0f));
+    QVERIFY(fuzzyCompare(c1.greenF(), 163 / 255.0f));
+    QVERIFY(fuzzyCompare(c1.blueF(), 2 / 255.0f));
+    QVERIFY(fuzzyCompare(c1.alphaF(), 200 / 255.0f));
 
     QColor4ub c2;
     c2.setRedF(1.0f);
@@ -178,10 +178,10 @@ void tst_QColor4ub::modify()
     QCOMPARE(c2.green(), 128);
     QCOMPARE(c2.blue(), 64);
     QCOMPARE(c2.alpha(), 191);
-    QVERIFY(fuzzyCompare(c2.redF(), qreal(1.0)));
-    QVERIFY(fuzzyCompare(c2.greenF(), qreal(128 / 255.0f)));
-    QVERIFY(fuzzyCompare(c2.blueF(), qreal(64 / 255.0f)));
-    QVERIFY(fuzzyCompare(c2.alphaF(), qreal(191 / 255.0f)));
+    QVERIFY(fuzzyCompare(c2.redF(), 1.0f));
+    QVERIFY(fuzzyCompare(c2.greenF(), 128 / 255.0f));
+    QVERIFY(fuzzyCompare(c2.blueF(), 64 / 255.0f));
+    QVERIFY(fuzzyCompare(c2.alphaF(), 191 / 255.0f));
 
     QColor4ub c3;
     c3.setRgb(162, 54, 39);

@@ -1,6 +1,5 @@
 TEMPLATE = app
 TARGET = matrix_animation
-CONFIG += qt warn_on
 QT += qml quick 3dquick
 
 SOURCES += main.cpp
@@ -22,7 +21,6 @@ CATEGORY = examples
 include(../../../pkg.pri)
 
 OTHER_FILES += \
-    mt.qml \
     matrix_animation.rc \
     $$QML_INFRA_FILES
 

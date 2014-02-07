@@ -1,38 +1,38 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** GNU Lesser General Public License Usage
-** This file may be used under the terms of the GNU Lesser General Public
-** License version 2.1 as published by the Free Software Foundation and
-** appearing in the file LICENSE.LGPL included in the packaging of this
-** file. Please review the following information to ensure the GNU Lesser
-** General Public License version 2.1 requirements will be met:
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
 **
-** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU General
-** Public License version 3.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of this
-** file. Please review the following information to ensure the GNU General
-** Public License version 3.0 requirements will be met:
-** http://www.gnu.org/copyleft/gpl.html.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms and
-** conditions contained in a signed written agreement between you and Nokia.
-**
-**
-**
-**
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
 ** $QT_END_LICENSE$
@@ -64,16 +64,16 @@ void tst_QGLCamera::create()
     // Test that a newly created object has the correct defaults.
     QGLCamera camera;
     QVERIFY(camera.projectionType() == QGLCamera::Perspective);
-    QCOMPARE(camera.fieldOfView(), (qreal)0.0f);
-    QCOMPARE(camera.nearPlane(), (qreal)5.0f);
-    QCOMPARE(camera.farPlane(), (qreal)1000.0f);
+    QCOMPARE(camera.fieldOfView(), 0.0f);
+    QCOMPARE(camera.nearPlane(), 5.0f);
+    QCOMPARE(camera.farPlane(), 1000.0f);
     QCOMPARE(camera.viewSize(), QSizeF(2.0f, 2.0f));
     QCOMPARE(camera.minViewSize(), QSizeF(0.0001f, 0.0001f));
     QCOMPARE(camera.screenRotation(), 0);
     QVERIFY(camera.eye() == QVector3D(0, 0, 10));
     QVERIFY(camera.upVector() == QVector3D(0, 1, 0));
     QVERIFY(camera.center() == QVector3D(0, 0, 0));
-    QCOMPARE(camera.eyeSeparation(), (qreal)0.0f);
+    QCOMPARE(camera.eyeSeparation(), 0.0f);
     QVERIFY(camera.motionAdjustment() == QVector3D(0, 0, 1));
     QVERIFY(camera.adjustForAspectRatio());
 }
@@ -88,13 +88,13 @@ void tst_QGLCamera::modify()
     QVERIFY(camera.projectionType() == QGLCamera::Orthographic);
     QCOMPARE(spy1.size(), 1);
     camera.setFieldOfView(60.0f);
-    QCOMPARE(camera.fieldOfView(), (qreal)60.0f);
+    QCOMPARE(camera.fieldOfView(), 60.0f);
     QCOMPARE(spy1.size(), 2);
     camera.setNearPlane(-3.0f);
-    QCOMPARE(camera.nearPlane(), (qreal)-3.0f);
+    QCOMPARE(camera.nearPlane(), -3.0f);
     QCOMPARE(spy1.size(), 3);
     camera.setFarPlane(3000.0f);
-    QCOMPARE(camera.farPlane(), (qreal)3000.0f);
+    QCOMPARE(camera.farPlane(), 3000.0f);
     QCOMPARE(spy1.size(), 4);
     camera.setViewSize(QSizeF(45.0f, 25.5f));
     QCOMPARE(camera.viewSize(), QSizeF(45.0f, 25.5f));
@@ -115,7 +115,7 @@ void tst_QGLCamera::modify()
     QVERIFY(camera.center() == QVector3D(7.0f, 8.0f, 9.0f));
     QCOMPARE(spy2.size(), 3);
     camera.setEyeSeparation(3.0f);
-    QCOMPARE(camera.eyeSeparation(), (qreal)3.0f);
+    QCOMPARE(camera.eyeSeparation(), 3.0f);
     QCOMPARE(spy2.size(), 4);
     camera.setMotionAdjustment(QVector3D(10.0f, 11.0f, 12.0f));
     QVERIFY(camera.motionAdjustment() == QVector3D(10.0f, 11.0f, 12.0f));
@@ -126,16 +126,16 @@ void tst_QGLCamera::modify()
 
     // Test that we don't get any side effects between properties.
     QVERIFY(camera.projectionType() == QGLCamera::Orthographic);
-    QCOMPARE(camera.fieldOfView(), (qreal)60.0f);
-    QCOMPARE(camera.nearPlane(), (qreal)-3.0f);
-    QCOMPARE(camera.farPlane(), (qreal)3000.0f);
+    QCOMPARE(camera.fieldOfView(), 60.0f);
+    QCOMPARE(camera.nearPlane(), -3.0f);
+    QCOMPARE(camera.farPlane(), 3000.0f);
     QCOMPARE(camera.viewSize(), QSizeF(45.0f, 25.5f));
     QCOMPARE(camera.minViewSize(), QSizeF(0.05f, 0.025f));
     QCOMPARE(camera.screenRotation(), 270);
     QVERIFY(camera.eye() == QVector3D(1.0f, 2.0f, 3.0f));
     QVERIFY(camera.upVector() == QVector3D(4.0f, 5.0f, 6.0f));
     QVERIFY(camera.center() == QVector3D(7.0f, 8.0f, 9.0f));
-    QCOMPARE(camera.eyeSeparation(), (qreal)3.0f);
+    QCOMPARE(camera.eyeSeparation(), 3.0f);
     QVERIFY(camera.motionAdjustment() == QVector3D(10.0f, 11.0f, 12.0f));
     QVERIFY(!camera.adjustForAspectRatio());
 

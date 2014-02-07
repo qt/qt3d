@@ -1,5 +1,6 @@
 TEMPLATE = subdirs
-SUBDIRS += qt3d quick3d
+SUBDIRS += qt3d
+qtHaveModule(qml): SUBDIRS += quick3d
 
 # These tutorial directories contain code that is of instructive value only,
 # and therefore it is not packaged for installation along with demos and

@@ -1,38 +1,38 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** GNU Lesser General Public License Usage
-** This file may be used under the terms of the GNU Lesser General Public
-** License version 2.1 as published by the Free Software Foundation and
-** appearing in the file LICENSE.LGPL included in the packaging of this
-** file. Please review the following information to ensure the GNU Lesser
-** General Public License version 2.1 requirements will be met:
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
 **
-** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU General
-** Public License version 3.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of this
-** file. Please review the following information to ensure the GNU General
-** Public License version 3.0 requirements will be met:
-** http://www.gnu.org/copyleft/gpl.html.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms and
-** conditions contained in a signed written agreement between you and Nokia.
-**
-**
-**
-**
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
 ** $QT_END_LICENSE$
@@ -59,14 +59,15 @@
 #include <QTimer>
 #include <QCoreApplication>
 #include <QQmlInfo>
-#include <QtQuick/QQuickCanvas>
+#include <QtQuick/QQuickWindow>
 #include <QOpenGLBuffer>
 #include <QtCore/qthread.h>
 #include <QtCore/qmutex.h>
 #include <QtCore/qmath.h>
 
 /*!
-    \qmlclass Viewport Viewport
+    \qmltype Viewport
+    \instantiates Viewport
     \brief The Viewport item defines the logical viewport for a 3D scene.  It includes all necessary
     references and parameters for the contents of the scene, as well as drawing and painting functions
     \since 4.8
@@ -77,7 +78,7 @@
 
     \code
     import QtQuick 2.0
-    import Qt3D 1.0
+    import Qt3D 2.0
 
     Viewport {
         width: 640; height: 480
@@ -235,9 +236,7 @@ public:
     bool panning;
     QPointF startPan;
     QPointF lastPan;
-    QPointF lastPick;
     QObject *lastObject;
-    bool needsPick;
     QVector3D startEye;
     QVector3D startCenter;
     QVector3D startUpVector;
@@ -248,15 +247,7 @@ public:
     bool pickingRenderInitialized;
     QList<PickEvent *> pickEventQueue;
 
-    // INVARIANT: PickEvents are always either in the queue, or in the registry, never
-    // in both.  Here "never" means "not outside of sections guarded by the lock".
-    //
-    // Serializing PickEvents across the signal/slot boundary is dicey, since they are
-    // not a value type.  Instead keep our own registry of them here, and forward the
-    // id values instead.  Should also make dispatch faster.
-    QMap<quint64, PickEvent *> pickEventRegistry;
-
-    // This lock is for the registry and for the pick event queue itself.  All accesses
+    // This lock is for the pick event queue itself.  All accesses
     // to that data structure must be guarded by this lock.
     QMutexMaybeLocker::Lock pickEventQueueLock;
 
@@ -264,12 +255,11 @@ public:
     // class instance data from other threads should be at a bare minimum.
     QMutexMaybeLocker::Lock viewportLock;
 
-    QQuickCanvas* canvas;
+    QQuickWindow* canvas;
 
     void setDefaults(QGLPainter *painter);
     void setRenderSettings(QGLPainter *painter);
     void getOverflow(QMouseEvent *e);
-    PickEvent *takeFromRegistry(quint64 id);
 };
 
 ViewportPrivate::ViewportPrivate()
@@ -293,9 +283,7 @@ ViewportPrivate::ViewportPrivate()
     , panning(false)
     , startPan(-1, -1)
     , lastPan(-1, -1)
-    , lastPick(-1, -1)
     , lastObject(0)
-    , needsPick(true)
     , panModifiers(Qt::NoModifier)
     , renderMode(Viewport::UnknownRender)
     , directRenderInitialized(false)
@@ -311,7 +299,6 @@ ViewportPrivate::~ViewportPrivate()
 {
     delete pickFbo;
     qDeleteAll(pickEventQueue);
-    qDeleteAll(pickEventRegistry);
 }
 
 void ViewportPrivate::setDefaults(QGLPainter *painter)
@@ -369,20 +356,6 @@ void ViewportPrivate::setRenderSettings(QGLPainter *painter)
         clearColor = fillColor;
     painter->setClearColor(clearColor);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-}
-
-PickEvent *ViewportPrivate::takeFromRegistry(quint64 id)
-{
-    PickEvent *pick = 0;
-    QMutexMaybeLocker locker(&pickEventQueueLock);
-    QMap<quint64, PickEvent*>::iterator it = pickEventRegistry.find(id);
-    if (it != pickEventRegistry.end())
-    {
-        pick = it.value();
-        pickEventRegistry.erase(it);
-    }
-    locker.unlock();
-    return pick;
 }
 
 const int Viewport::FBO_SIZE = 8;
@@ -674,6 +647,30 @@ void Viewport::setBlending(bool value)
 }
 
 /*!
+    \qmlproperty bool Viewport::antialiasing
+
+    The antialiasing property is used to enable or disable antialiasing
+    on the viewport. This property only has an effect if renderMode() == BufferedRender.
+    For renderMode() == DirectRender antialiasing can be enabled by setting the
+    QSurfaceFormat.
+
+    By default, antialiasing is set to false.
+*/
+bool Viewport::antialiasing() const
+{
+    return QQuickPaintedItem::antialiasing();
+}
+
+void Viewport::setAntialiasing(bool value)
+{
+    if (value != QQuickPaintedItem::antialiasing()) {
+        QQuickPaintedItem::setAntialiasing(value);
+        Q_EMIT antialiasingChanged();
+    }
+}
+
+
+/*!
     \qmlproperty Camera Viewport::camera
 
     This property sets the camera parameters which will be used for
@@ -767,7 +764,7 @@ void Viewport::setLightModel(QGLLightModel *value)
 class ViewportSubsurface : public QGLSubsurface
 {
 public:
-    ViewportSubsurface(QGLAbstractSurface *surface, const QRect &region, qreal adjust)
+    ViewportSubsurface(QGLAbstractSurface *surface, const QRect &region, float adjust)
         : QGLSubsurface(surface, region)
         , m_adjust(adjust)
     {
@@ -776,13 +773,13 @@ public:
     {
     }
 
-    qreal aspectRatio() const;
+    float aspectRatio() const;
 
 private:
-    qreal m_adjust;
+    float m_adjust;
 };
 
-qreal ViewportSubsurface::aspectRatio() const
+float ViewportSubsurface::aspectRatio() const
 {
     return QGLSubsurface::aspectRatio() * m_adjust;
 }
@@ -800,6 +797,9 @@ qreal ViewportSubsurface::aspectRatio() const
 void Viewport::paint(QPainter *painter)
 {
     Q_ASSERT(renderMode() == BufferedRender);
+
+    if (!isVisible())
+        return;
 
     QGLPainter glPainter;
     if (!glPainter.begin(painter))
@@ -874,6 +874,8 @@ void Viewport::render(QGLPainter *painter)
     if (!d->itemsInitialized)
         initializeGL(painter);
 
+    QGLTexture2D::processPendingResourceDeallocations();
+
     // No stereo rendering, set the eye as neutral
     painter->setEye(QGL::NoEye);
 
@@ -883,7 +885,13 @@ void Viewport::render(QGLPainter *painter)
     // boundingRect is in local coordinates. We need to map it to the scene coordinates
     // in order to render to correct area.
     QRect viewport = mapRectToScene(boundingRect()).toRect();
-    QGLSubsurface surface (painter->currentSurface(), viewport);
+    // In BufferedRender mode we don't need to shift left upper corner of our rect,
+    // because we render to separate render target.
+    QRect target_rect( (renderMode() == DirectRender)? viewport.x():0,
+                       (renderMode() == DirectRender)? viewport.y():0,
+                       viewport.width(),
+                       viewport.height() );
+    QGLSubsurface surface (painter->currentSurface(), target_rect);
     painter->pushSurface(&surface);
 
     // Perform early drawing operations.
@@ -903,7 +911,6 @@ void Viewport::render(QGLPainter *painter)
     // May've been set by early draw
     glDisable(GL_CULL_FACE);
 
-    d->needsPick = true;
     draw(painter);
 
     // May've been set by one of the items
@@ -974,7 +981,8 @@ void Viewport::draw(QGLPainter *painter)
 
     painter->setObjectPickId(-1);
     QObjectList list = QObject::children();
-    painter->setMainLight(d->light, QMatrix4x4());
+    painter->setMainLight(d->light,
+                          camera() ? camera()->modelViewMatrix() : QMatrix4x4());
     painter->setLightModel(d->lightModel);
     foreach (QObject *child, list) {
         QQuickItem3D *item = qobject_cast<QQuickItem3D *>(child);
@@ -1058,7 +1066,7 @@ PickEvent *Viewport::initiatePick(QMouseEvent *pick)
         locker.unlock();
     }
 
-    update();
+    update3d();
     return p;
 }
 
@@ -1084,9 +1092,9 @@ void Viewport::setupPickPaint(QGLPainter *painter, const QPointF &pt)
         cam.reset(new QGLCamera);
     }
 
-    qreal vw = cam->viewSize().width();
-    qreal vh = cam->viewSize().height();
-    qreal asp = 1.0f;
+    float vw = cam->viewSize().width();
+    float vh = cam->viewSize().height();
+    float asp = 1.0f;
     if (cam->adjustForAspectRatio())
     {
         // see QGLCamera::projectionMatrix for this logic
@@ -1107,12 +1115,12 @@ void Viewport::setupPickPaint(QGLPainter *painter, const QPointF &pt)
     cam->setAdjustForAspectRatio(false);
 
     // map the pick to coordinate system with origin at center of viewport
-    qreal dx = pt.x() - (width() / 2.0);
-    qreal dy = pt.y() - (height() / 2.0);
+    float dx = pt.x() - (width() / 2.0f);
+    float dy = pt.y() - (height() / 2.0f);
     dy = -dy;  // near plane coord system is correct, opengl style, not upside down like qt
     dx *= vw / width();
     dy *= vh / height();
-    qreal dim = qMin(width(), height());
+    float dim = qMin(width(), height());
     Q_ASSERT(cam->viewSize().width() == cam->viewSize().height());  // viewsize is square
 
     painter->setCamera(cam.data());
@@ -1126,7 +1134,7 @@ void Viewport::setupPickPaint(QGLPainter *painter, const QPointF &pt)
     m.translate(tx);
 
     QMatrix4x4 s;
-    qreal fac = dim / qreal(FBO_SIZE);
+    float fac = dim / float(FBO_SIZE);
     s.scale(QVector3D(fac, fac, 0.0f));
 
     painter->projectionMatrix() = s * m * painter->projectionMatrix().top();
@@ -1157,8 +1165,6 @@ void Viewport::objectForPoint()
             QMutexMaybeLocker locker(&d->pickEventQueueLock);
             if (d->pickEventQueue.size() > 0)
                 p = d->pickEventQueue.takeFirst();
-            if (p)
-                d->pickEventRegistry.insert(p->id(), p);
             locker.unlock();
         }
         if (!p)
@@ -1168,8 +1174,10 @@ void Viewport::objectForPoint()
         // Check the viewport boundaries in case a mouse move has
         // moved the pointer outside the window.
         QRectF rect = boundingRect();
-        if (!rect.contains(pt))
+        if (!rect.contains(pt)) {
+            delete p;
             continue;
+        }
 
         if (!d->pickFbo)
         {
@@ -1182,13 +1190,13 @@ void Viewport::objectForPoint()
             QGLPainter painter;
             if (painter.begin(fboSurf.data()))
             {
+                int winToFboRatioW = width() / FBO_SIZE;
+                int winToFboRatioH = height() / FBO_SIZE;
                 setupPickPaint(&painter, pt);
                 draw(&painter);
                 painter.setPicking(false);
-                objectId = painter.pickObject(FBO_SIZE / 2, FBO_SIZE / 2);
+                objectId = painter.pickObject(pt.x() / winToFboRatioW, pt.y() / winToFboRatioH);
                 d->setDefaults(&painter);
-                d->needsPick = false;
-                d->lastPick = pt;
             } else {
                 qWarning() << "Warning: unable to paint into fbo, picking will be unavailable";
                 continue;
@@ -1198,7 +1206,7 @@ void Viewport::objectForPoint()
         d->lastObject = obj;
         p->setObject(obj);
         QMetaMethod m = metaObject()->method(p->callback());
-        m.invoke(this, Qt::QueuedConnection, Q_ARG(quint64, p->id()));
+        m.invoke(this, Qt::QueuedConnection, Q_ARG(void*, p));
     }
 }
 
@@ -1207,7 +1215,13 @@ void Viewport::objectForPoint()
 */
 void Viewport::update3d()
 {
-    update();
+    if (renderMode() == DirectRender) {
+        if (d->canvas)
+            d->canvas->update();
+    }
+    else {
+        update();
+    }
 }
 
 /*!
@@ -1215,7 +1229,7 @@ void Viewport::update3d()
 */
 void Viewport::cameraChanged()
 {
-    update();
+    update3d();
 }
 
 static inline void sendEnterEvent(QObject *object)
@@ -1238,7 +1252,7 @@ void Viewport::mousePressEvent(QMouseEvent *e)
     static int processMousePressInvocation = -1;
     if (processMousePressInvocation == -1)
     {
-        processMousePressInvocation = metaObject()->indexOfMethod("processMousePress(quint64)");
+        processMousePressInvocation = metaObject()->indexOfMethod("processMousePress(PickEvent*)");
         Q_ASSERT(processMousePressInvocation != -1);
     }
     if (!d->panning && d->picking)
@@ -1246,6 +1260,8 @@ void Viewport::mousePressEvent(QMouseEvent *e)
         PickEvent * p = initiatePick(e);
         if (p)
             p->setCallback(processMousePressInvocation);
+        e->setAccepted(true); //This is necessary, otherwise we won't get a realese event
+        return;
     }
     if (d->navigation && e->button() == Qt::LeftButton)
     {
@@ -1259,10 +1275,8 @@ void Viewport::mousePressEvent(QMouseEvent *e)
     e->setAccepted(true);
 }
 
-void Viewport::processMousePress(quint64 eventId)
+void Viewport::processMousePress(PickEvent *pick)
 {
-    QScopedPointer<PickEvent> pick(d->takeFromRegistry(eventId));
-    Q_ASSERT(pick.data());
     QObject *object = pick->object();
     QMouseEvent *e = pick->event();
     if (d->pressedObject)
@@ -1289,10 +1303,12 @@ void Viewport::processMousePress(quint64 eventId)
                           e->modifiers());
         QCoreApplication::sendEvent(object, &event);
     }
-    else if (d->navigation && e->button() == Qt::LeftButton)
+
+    if (d->navigation && e->button() == Qt::LeftButton)
     {
         processNavEvent(e);
     }
+    delete pick;
 }
 
 void Viewport::processNavEvent(QMouseEvent *e)
@@ -1313,7 +1329,7 @@ void Viewport::mouseReleaseEvent(QMouseEvent *e)
     static int processMouseReleaseInvocation = -1;
     if (processMouseReleaseInvocation == -1)
     {
-        processMouseReleaseInvocation = metaObject()->indexOfMethod("processMouseRelease(quint64)");
+        processMouseReleaseInvocation = metaObject()->indexOfMethod("processMouseRelease(PickEvent*)");
         Q_ASSERT(processMouseReleaseInvocation != -1);
     }
     if (d->panning && e->button() == Qt::LeftButton) {
@@ -1329,10 +1345,8 @@ void Viewport::mouseReleaseEvent(QMouseEvent *e)
     }
 }
 
-void Viewport::processMouseRelease(quint64 eventId)
+void Viewport::processMouseRelease(PickEvent *pick)
 {
-    QScopedPointer<PickEvent> pick(d->takeFromRegistry(eventId));
-    Q_ASSERT(pick.data());
     Q_ASSERT(d->pressedObject);
     QObject *object = pick->object();
     QMouseEvent *e = pick->event();
@@ -1368,6 +1382,7 @@ void Viewport::processMouseRelease(quint64 eventId)
              e->screenPos(), e->button(), e->buttons(), e->modifiers());
         QCoreApplication::sendEvent(pressed, &event);
     }
+    delete pick;
 }
 
 /*!
@@ -1378,7 +1393,7 @@ void Viewport::mouseDoubleClickEvent(QMouseEvent *e)
     static int processMouseDoubleClickInvocation = -1;
     if (processMouseDoubleClickInvocation == -1)
     {
-        processMouseDoubleClickInvocation = metaObject()->indexOfMethod("processMouseDoubleClick(quint64)");
+        processMouseDoubleClickInvocation = metaObject()->indexOfMethod("processMouseDoubleClick(PickEvent*)");
         Q_ASSERT(processMouseDoubleClickInvocation != -1);
     }
     if (d->picking) {
@@ -1389,10 +1404,8 @@ void Viewport::mouseDoubleClickEvent(QMouseEvent *e)
     QQuickItem::mouseDoubleClickEvent(e);
 }
 
-void Viewport::processMouseDoubleClick(quint64 eventId)
+void Viewport::processMouseDoubleClick(PickEvent *pick)
 {
-    QScopedPointer<PickEvent> pick(d->takeFromRegistry(eventId));
-    Q_ASSERT(pick.data());
     QObject *object = pick->object();
     QMouseEvent *e = pick->event();
     if (object) {
@@ -1403,6 +1416,7 @@ void Viewport::processMouseDoubleClick(quint64 eventId)
         QCoreApplication::sendEvent(object, &event);
         e->setAccepted(true);
     }
+    delete pick;
 }
 
 /*!
@@ -1442,7 +1456,7 @@ void Viewport::mouseMoveEvent(QMouseEvent *e)
     static int processMouseMoveInvocation = -1;
     if (processMouseMoveInvocation == -1)
     {
-        processMouseMoveInvocation = metaObject()->indexOfMethod("processMouseMove(quint64)");
+        processMouseMoveInvocation = metaObject()->indexOfMethod("processMouseMove(PickEvent*)");
         Q_ASSERT(processMouseMoveInvocation != -1);
     }
     if (d->panning) {
@@ -1477,10 +1491,8 @@ void Viewport::mouseMoveEvent(QMouseEvent *e)
     e->setAccepted(true);
 }
 
-void Viewport::processMouseMove(quint64 eventId)
+void Viewport::processMouseMove(PickEvent *pick)
 {
-    QScopedPointer<PickEvent> pick(d->takeFromRegistry(eventId));
-    Q_ASSERT(pick.data());
     QObject *object = pick->object();
     QMouseEvent *e = pick->event();
     if (d->pressedObject) {
@@ -1508,8 +1520,10 @@ void Viewport::processMouseMove(quint64 eventId)
         d->enteredObject = 0;
     } else {
         QQuickItem::mouseMoveEvent(e);
+        delete pick;
         return;
     }
+    delete pick;
 }
 
 /*!
@@ -1567,7 +1581,7 @@ void Viewport::wheelEvent(QWheelEvent *e)
 void Viewport::keyPressEvent(QKeyEvent *e)
 {
     // Process the "Keys" property on the item first.
-    qreal sep;
+    float sep;
 
     if (!d->navigation) {
         QQuickItem::keyPressEvent(e);
@@ -1644,7 +1658,7 @@ bool Viewport::hoverEvent(QHoverEvent *e)
     static int processMouseHoverInvocation = -1;
     if (processMouseHoverInvocation == -1)
     {
-        processMouseHoverInvocation = metaObject()->indexOfMethod("processMouseHover(quint64)");
+        processMouseHoverInvocation = metaObject()->indexOfMethod("processMouseHover(PickEvent*)");
         Q_ASSERT(processMouseHoverInvocation != -1);
     }
     if (!d->panning && d->picking) {
@@ -1660,10 +1674,8 @@ bool Viewport::hoverEvent(QHoverEvent *e)
     return false;
 }
 
-void Viewport::processMouseHover(quint64 eventId)
+void Viewport::processMouseHover(PickEvent *pick)
 {
-    QScopedPointer<PickEvent> pick(d->takeFromRegistry(eventId));
-    Q_ASSERT(pick.data());
     QObject *object = pick->object();
     QMouseEvent *e = pick->event();
 
@@ -1691,21 +1703,22 @@ void Viewport::processMouseHover(quint64 eventId)
         sendLeaveEvent(d->enteredObject);
         d->enteredObject = 0;
     }
+    delete pick;
 }
 
 // Zoom in and out according to the change in wheel delta.
-void Viewport::wheel(qreal delta)
+void Viewport::wheel(float delta)
 {
     if (d->fovzoom) {
         //Use field-of view as zoom (much like a traditional camera)
-        qreal scale = qAbs(viewDelta(delta, delta).x());
+        float scale = qAbs(viewDelta(delta, delta).x());
         if (delta < 0)
             scale = -scale;
         if (scale >= 0.0f)
             scale += 1.0f;
         else
             scale = 1.0f / (1.0f - scale);
-        qreal fov = d->camera->fieldOfView();
+        float fov = d->camera->fieldOfView();
         if (fov != 0.0f)
             d->camera->setFieldOfView(d->camera->fieldOfView() / scale);
         else
@@ -1714,8 +1727,8 @@ void Viewport::wheel(qreal delta)
         // enable this to get wheel navigation that actually zooms by moving the
         // camera back, as opposed to making the angle of view wider.
         QVector3D viewVector= camera()->eye() - camera()->center();
-        qreal zoomMag = viewVector.length();
-        qreal zoomIncrement = -float(delta) / 100.0f;
+        float zoomMag = viewVector.length();
+        float zoomIncrement = -float(delta) / 100.0f;
         if (!qFuzzyIsNull(zoomIncrement))
         {
             zoomMag += zoomIncrement;
@@ -1729,7 +1742,7 @@ void Viewport::wheel(qreal delta)
 }
 
 // Pan left/right/up/down without rotating about the object.
-void Viewport::pan(qreal deltax, qreal deltay)
+void Viewport::pan(float deltax, float deltay)
 {
     QPointF delta = viewDelta(deltax, deltay);
     QVector3D t = d->camera->translation(delta.x(), -delta.y(), 0.0f);
@@ -1744,7 +1757,7 @@ void Viewport::pan(qreal deltax, qreal deltay)
 }
 
 // Rotate about the object being viewed.
-void Viewport::rotate(qreal deltax, qreal deltay)
+void Viewport::rotate(float deltax, float deltay)
 {
     QRectF rect = boundingRect();
     int rotation = d->camera->screenRotation();
@@ -1757,8 +1770,8 @@ void Viewport::rotate(qreal deltax, qreal deltay)
     if (rotation == 180 || rotation == 270) {
         deltay = -deltay;
     }
-    qreal anglex = deltax * 90.0f / rect.width();
-    qreal angley = deltay * 90.0f / rect.height();
+    float anglex = deltax * 90.0f / rect.width();
+    float angley = deltay * 90.0f / rect.height();
     QQuaternion q = d->camera->pan(-anglex);
     q *= d->camera->tilt(-angley);
     d->camera->rotateCenter(q);
@@ -1766,13 +1779,13 @@ void Viewport::rotate(qreal deltax, qreal deltay)
 
 // Convert deltas in the X and Y directions into percentages of
 // the view width and height.
-QPointF Viewport::viewDelta(qreal deltax, qreal deltay)
+QPointF Viewport::viewDelta(float deltax, float deltay)
 {
     QRectF rect = boundingRect();
-    qreal w = rect.width();
-    qreal h = rect.height();
+    float w = rect.width();
+    float h = rect.height();
     bool scaleToWidth;
-    qreal scaleFactor, scaleX, scaleY;
+    float scaleFactor, scaleX, scaleY;
     QSizeF viewSize = d->camera->viewSize();
     if (w >= h) {
         if (viewSize.width() >= viewSize.height())
@@ -1829,8 +1842,14 @@ void Viewport::itemChange(QQuickItem::ItemChange change, const ItemChangeData &v
         d->directRenderInitialized = false;
         if (d->canvas)
         {
-            connect(d->canvas, SIGNAL(sceneGraphInitialized()),
-                    this, SLOT(sceneGraphInitialized()), Qt::DirectConnection);
+            if (d->canvas->openglContext() != NULL)
+            {
+                sceneGraphInitialized();
+            } else {
+                connect(d->canvas, SIGNAL(sceneGraphInitialized()),
+                        this, SLOT(sceneGraphInitialized()),
+                        Qt::DirectConnection);
+            }
             connect(d->canvas, SIGNAL(destroyed()),
                     this, SLOT(canvasDeleted()));
             QSurfaceFormat format = d->canvas->format();
@@ -1869,7 +1888,7 @@ void Viewport::sceneGraphInitialized()
     Q_ASSERT(d->canvas);
     if (renderMode() == UnknownRender)
     {
-        if (d->canvas->rootItem() != parentItem())
+        if (d->canvas->contentItem() != parentItem())
         {
 #ifdef Q_DEBUG_VIEWPORT
             qWarning() << "Viewport not the top level item - has parent %1:"

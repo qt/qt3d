@@ -1,38 +1,38 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** GNU Lesser General Public License Usage
-** This file may be used under the terms of the GNU Lesser General Public
-** License version 2.1 as published by the Free Software Foundation and
-** appearing in the file LICENSE.LGPL included in the packaging of this
-** file. Please review the following information to ensure the GNU Lesser
-** General Public License version 2.1 requirements will be met:
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
 **
-** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU General
-** Public License version 3.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of this
-** file. Please review the following information to ensure the GNU General
-** Public License version 3.0 requirements will be met:
-** http://www.gnu.org/copyleft/gpl.html.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms and
-** conditions contained in a signed written agreement between you and Nokia.
-**
-**
-**
-**
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
 ** $QT_END_LICENSE$
@@ -42,15 +42,11 @@
 #ifndef QCOLOR4UB_H
 #define QCOLOR4UB_H
 
-#include "qt3dglobal.h"
+#include <Qt3D/qt3dglobal.h>
 #include <QtGui/qcolor.h>
 #include <QtCore/qmetatype.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
-
-QT_MODULE(Qt3D)
 
 class Q_QT3D_EXPORT QColor4ub
 {
@@ -74,22 +70,22 @@ public:
     void setBlue(int value) { m_blue = uchar(value); }
     void setAlpha(int value) { m_alpha = uchar(value); }
 
-    qreal redF() const { return m_red / 255.0f; }
-    qreal greenF() const { return m_green / 255.0f; }
-    qreal blueF() const { return m_blue / 255.0f; }
-    qreal alphaF() const { return m_alpha / 255.0f; }
+    float redF() const { return m_red / 255.0f; }
+    float greenF() const { return m_green / 255.0f; }
+    float blueF() const { return m_blue / 255.0f; }
+    float alphaF() const { return m_alpha / 255.0f; }
 
-    void setRedF(qreal value) { m_red = uchar(qRound(value * 255.0f)); }
-    void setGreenF(qreal value) { m_green = uchar(qRound(value * 255.0f)); }
-    void setBlueF(qreal value) { m_blue = uchar(qRound(value * 255.0f)); }
-    void setAlphaF(qreal value) { m_alpha = uchar(qRound(value * 255.0f)); }
+    void setRedF(float value) { m_red = uchar(qRound(value * 255.0f)); }
+    void setGreenF(float value) { m_green = uchar(qRound(value * 255.0f)); }
+    void setBlueF(float value) { m_blue = uchar(qRound(value * 255.0f)); }
+    void setAlphaF(float value) { m_alpha = uchar(qRound(value * 255.0f)); }
 
     void setRgb(int red, int green, int blue, int alpha = 255);
-    void setRgbF(qreal red, qreal green, qreal blue, qreal alpha = 1.0f);
+    void setRgbF(float red, float green, float blue, float alpha = 1.0f);
 
     static QColor4ub fromRgb(int red, int green, int blue, int alpha = 255);
     static QColor4ub fromRgbF
-        (qreal red, qreal green, qreal blue, qreal alpha = 1.0f);
+        (float red, float green, float blue, float alpha = 1.0f);
     static QColor4ub fromRaw(const uchar *data);
 
     QColor toColor() const;
@@ -108,9 +104,9 @@ private:
 
 inline QColor4ub::QColor4ub() : m_red(0), m_green(0), m_blue(0), m_alpha(255) {}
 
-inline QColor4ub::QColor4ub(int red, int green, int blue, int alpha)
-    : m_red(uchar(red)), m_green(uchar(green)),
-      m_blue(uchar(blue)), m_alpha(uchar(alpha)) {}
+inline QColor4ub::QColor4ub(int red_, int green_, int blue_, int alpha_)
+    : m_red(uchar(red_)), m_green(uchar(green_)),
+      m_blue(uchar(blue_)), m_alpha(uchar(alpha_)) {}
 
 inline QColor4ub::QColor4ub(const QColor& color)
     : m_red(uchar(color.red())), m_green(uchar(color.green())),
@@ -151,29 +147,29 @@ inline QColor4ub& QColor4ub::operator=(Qt::GlobalColor color)
     return *this;
 }
 
-inline void QColor4ub::setRgb(int red, int green, int blue, int alpha)
+inline void QColor4ub::setRgb(int red_, int green_, int blue_, int alpha_)
 {
-    m_red = uchar(red);
-    m_green = uchar(green);
-    m_blue = uchar(blue);
-    m_alpha = uchar(alpha);
+    m_red = uchar(red_);
+    m_green = uchar(green_);
+    m_blue = uchar(blue_);
+    m_alpha = uchar(alpha_);
 }
 
-inline void QColor4ub::setRgbF(qreal red, qreal green, qreal blue, qreal alpha)
+inline void QColor4ub::setRgbF(float red_, float green_, float blue_, float alpha_)
 {
-    m_red = uchar(qRound(red * 255.0f));
-    m_green = uchar(qRound(green * 255.0f));
-    m_blue = uchar(qRound(blue * 255.0f));
-    m_alpha = uchar(qRound(alpha * 255.0f));
+    m_red = uchar(qRound(red_ * 255.0f));
+    m_green = uchar(qRound(green_ * 255.0f));
+    m_blue = uchar(qRound(blue_ * 255.0f));
+    m_alpha = uchar(qRound(alpha_ * 255.0f));
 }
 
-inline QColor4ub QColor4ub::fromRgb(int red, int green, int blue, int alpha)
+inline QColor4ub QColor4ub::fromRgb(int red_, int green_, int blue_, int alpha_)
 {
-    return QColor4ub(red, green, blue, alpha);
+    return QColor4ub(red_, green_, blue_, alpha_);
 }
 
 inline QColor4ub QColor4ub::fromRgbF
-    (qreal red, qreal green, qreal blue, qreal alpha)
+    (float red, float green, float blue, float alpha)
 {
     return QColor4ub(qRound(red * 255.0f), qRound(green * 255.0f),
                     qRound(blue * 255.0f), qRound(alpha * 255.0f));
@@ -210,7 +206,5 @@ Q_DECLARE_TYPEINFO(QColor4ub, Q_MOVABLE_TYPE);
 QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(QColor4ub)
-
-QT_END_HEADER
 
 #endif

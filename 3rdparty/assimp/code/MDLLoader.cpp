@@ -71,7 +71,7 @@ using namespace Assimp;
 
 // ------------------------------------------------------------------------------------------------
 // Constructor to be privately used by Importer
-MDLImporter::MDLImporter()
+MDLImporter::MDLImporter() : configFrameID(0), mBuffer(0), iGSFileVersion(0), pIOHandler(0), pScene(0), iFileSize(0)
 {}
 
 // ------------------------------------------------------------------------------------------------

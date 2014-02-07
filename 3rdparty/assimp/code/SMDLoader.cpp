@@ -59,7 +59,7 @@ using namespace Assimp;
 
 // ------------------------------------------------------------------------------------------------
 // Constructor to be privately used by Importer
-SMDImporter::SMDImporter()
+SMDImporter::SMDImporter() : configFrameID(0), mBuffer(0), pScene(0), iFileSize(0), iSmallestFrame(0), dLengthOfAnim(0), bHasUVs(false), iLineNumber(0)
 {}
 
 // ------------------------------------------------------------------------------------------------

@@ -46,6 +46,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ObjFileMtlImporter.h"
 #include "ObjTools.h"
 #include "ObjFileData.h"
+#include "ParsingUtils.h"
 #include "fast_atof.h"
 #include "../include/aiTypes.h"
 #include "DefaultIOSystem.h"
@@ -70,6 +71,8 @@ ObjFileParser::ObjFileParser(std::vector<char> &Data,const std::string &strModel
     m_uiLine(0),
     m_pIO( io )
 {
+    std::fill_n(m_buffer,BUFFERSIZE,0);
+
     // Create the model instance to store all the data
     m_pModel = new ObjFile::Model();
     m_pModel->m_ModelName = strModelName;
@@ -192,7 +195,7 @@ void ObjFileParser::copyNextWord(char *pBuffer, size_t length)
 {
     size_t index = 0;
     m_DataIt = getNextWord<DataArrayIt>(m_DataIt, m_DataItEnd);
-    while ( !isSeparator(*m_DataIt) && m_DataIt != m_DataItEnd )
+    while ( m_DataIt != m_DataItEnd && !isSeparator(*m_DataIt) )
     {
         pBuffer[index] = *m_DataIt;
         index++;
@@ -266,7 +269,7 @@ void ObjFileParser::getFace()
     char *pPtr = m_buffer;
     char *pEnd = &pPtr[BUFFERSIZE];
     pPtr = getNextToken<char*>(pPtr, pEnd);
-    if (pPtr == '\0')
+    if (pPtr == pEnd || *pPtr == '\0')
         return;
 
     std::vector<unsigned int> *pIndices = new std::vector<unsigned int>;
@@ -274,8 +277,8 @@ void ObjFileParser::getFace()
     std::vector<unsigned int> *pNormalID = new std::vector<unsigned int>;
     bool hasNormal = false;
 
-    bool vt = (!m_pModel->m_TextureCoord.empty());
-    bool vn = (!m_pModel->m_Normals.empty());
+    const bool vt = (!m_pModel->m_TextureCoord.empty());
+    const bool vn = (!m_pModel->m_Normals.empty());
     int iStep = 0, iPos = 0;
     while (pPtr != pEnd)
     {
@@ -283,7 +286,7 @@ void ObjFileParser::getFace()
         if (*pPtr == '\0')
             break;
 
-        if (*pPtr=='\r')
+        if (IsLineEnd(*pPtr))
             break;
 
         if (*pPtr=='/' )
@@ -332,8 +335,14 @@ void ObjFileParser::getFace()
                 }
             }
         }
-        for ( int i=0; i<iStep; i++ )
-            ++pPtr;
+        pPtr += iStep;
+    }
+
+    if ( pIndices->empty() )
+    {
+       DefaultLogger::get()->error("Obj: Ignoring empty face");
+       m_DataIt = skipLine<DataArrayIt>( m_DataIt, m_DataItEnd, m_uiLine );
+       return;
     }
 
     ObjFile::Face *face = new ObjFile::Face( pIndices, pNormalID, pTexID );
@@ -370,13 +379,22 @@ void ObjFileParser::getFace()
 //    Get values for a new material description
 void ObjFileParser::getMaterialDesc()
 {
+    // Each material request a new object.
+    // Sometimes the object is already created (see 'o' tag by example), but it is not initialized !
+    // So, we create a new object only if the current on is already initialized !
+    if (m_pModel->m_pCurrent != NULL &&
+       (m_pModel->m_pCurrent->m_Meshes.size() > 1 ||
+          (m_pModel->m_pCurrent->m_Meshes.size() == 1 && m_pModel->m_Meshes[m_pModel->m_pCurrent->m_Meshes[0]]->m_Faces.size() != 0))
+       )
+       m_pModel->m_pCurrent = NULL;
+
     // Get next data for material data
     m_DataIt = getNextToken<DataArrayIt>(m_DataIt, m_DataItEnd);
     if (m_DataIt == m_DataItEnd)
         return;
 
     char *pStart = &(*m_DataIt);
-    while ( !isSeparator(*m_DataIt) && m_DataIt != m_DataItEnd )
+    while ( m_DataIt != m_DataItEnd && !isSeparator(*m_DataIt) )
         ++m_DataIt;
 
     // Get name
@@ -390,6 +408,7 @@ void ObjFileParser::getMaterialDesc()
     {
         // Not found, use default material
         m_pModel->m_pCurrentMaterial = m_pModel->m_pDefaultMaterial;
+        DefaultLogger::get()->error("OBJ: failed to locate material " + strName + ", skipping");
     }
     else
     {
@@ -410,10 +429,9 @@ void ObjFileParser::getMaterialDesc()
 //    Get a comment, values will be skipped
 void ObjFileParser::getComment()
 {
-    bool running = true;
-    while (running)
+    while (m_DataIt != m_DataItEnd)
     {
-        if ( '\n' == (*m_DataIt) || m_DataIt == m_DataItEnd )
+        if ( '\n' == (*m_DataIt) )
         {
             ++m_DataIt;
             break;
@@ -435,7 +453,7 @@ void ObjFileParser::getMaterialLib()
         return;
 
     char *pStart = &(*m_DataIt);
-    while (!isNewLine(*m_DataIt))
+    while (m_DataIt != m_DataItEnd && !isNewLine(*m_DataIt))
         m_DataIt++;
 
     // Check for existence
@@ -469,7 +487,7 @@ void ObjFileParser::getNewMaterial()
 
     char *pStart = &(*m_DataIt);
     std::string strMat( pStart, *m_DataIt );
-    while ( isSeparator( *m_DataIt ) )
+    while ( m_DataIt != m_DataItEnd && isSeparator( *m_DataIt ) )
         m_DataIt++;
     std::map<std::string, ObjFile::Material*>::iterator it = m_pModel->m_MaterialMap.find( strMat );
     if ( it == m_pModel->m_MaterialMap.end() )
@@ -512,17 +530,11 @@ int ObjFileParser::getMaterialIndex( const std::string &strMaterialName )
 //    Getter for a group name.
 void ObjFileParser::getGroupName()
 {
-    // Get next word from data buffer
-    m_DataIt = getNextToken<DataArrayIt>(m_DataIt, m_DataItEnd);
-    m_DataIt = getNextWord<DataArrayIt>(m_DataIt, m_DataItEnd);
-    if ( isEndOfBuffer( m_DataIt, m_DataItEnd ) )
-        return;
+    std::string strGroupName;
 
-    // Store groupname in group library
-    char *pStart = &(*m_DataIt);
-    while ( !isSeparator(*m_DataIt) )
-        m_DataIt++;
-    std::string strGroupName(pStart, &(*m_DataIt));
+    m_DataIt = getName<DataArrayIt>(m_DataIt, m_DataItEnd, strGroupName);
+    if ( isEndOfBuffer( m_DataIt, m_DataItEnd ) )
+       return;
 
     // Change active group, if necessary
     if ( m_pModel->m_strActiveGroup != strGroupName )
@@ -567,7 +579,7 @@ void ObjFileParser::getObjectName()
     if (m_DataIt == m_DataItEnd)
         return;
     char *pStart = &(*m_DataIt);
-    while ( !isSeparator( *m_DataIt ) )
+    while ( m_DataIt != m_DataItEnd && !isSeparator( *m_DataIt ) )
         ++m_DataIt;
 
     std::string strObjectName(pStart, &(*m_DataIt));

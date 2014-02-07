@@ -210,7 +210,7 @@ public:
 
     //! Default constructor
     Property()
-        : eType (EDT_Int), bIsList(false), eFirstType(EDT_UChar)
+        : eType (EDT_Int), Semantic(EST_INVALID), bIsList(false), eFirstType(EDT_UChar)
     {}
 
     //!    Data type of the property

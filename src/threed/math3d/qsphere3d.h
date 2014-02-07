@@ -1,38 +1,38 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** GNU Lesser General Public License Usage
-** This file may be used under the terms of the GNU Lesser General Public
-** License version 2.1 as published by the Free Software Foundation and
-** appearing in the file LICENSE.LGPL included in the packaging of this
-** file. Please review the following information to ensure the GNU Lesser
-** General Public License version 2.1 requirements will be met:
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
 **
-** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU General
-** Public License version 3.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of this
-** file. Please review the following information to ensure the GNU General
-** Public License version 3.0 requirements will be met:
-** http://www.gnu.org/copyleft/gpl.html.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms and
-** conditions contained in a signed written agreement between you and Nokia.
-**
-**
-**
-**
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
 ** $QT_END_LICENSE$
@@ -42,14 +42,10 @@
 #ifndef QSPHERE3D_H
 #define QSPHERE3D_H
 
-#include "qt3dglobal.h"
+#include <Qt3D/qt3dglobal.h>
 #include <QtGui/qvector3d.h>
 
-QT_BEGIN_HEADER
-
 QT_BEGIN_NAMESPACE
-
-QT_MODULE(Qt3D)
 
 class QMatrix4x4;
 class QRay3D;
@@ -60,13 +56,13 @@ class Q_QT3D_EXPORT QSphere3D
 {
 public:
     QSphere3D();
-    QSphere3D(const QVector3D &center, qreal radius);
+    QSphere3D(const QVector3D &center, float radius);
 
     QVector3D center() const;
     void setCenter(const QVector3D &center);
 
-    qreal radius() const;
-    void setRadius(qreal radius);
+    float radius() const;
+    void setRadius(float radius);
 
     bool contains(const QVector3D &point) const;
 
@@ -75,8 +71,8 @@ public:
     bool intersects(const QBox3D &box) const;
     bool intersects(const QPlane3D &plane) const;
 
-    bool intersection(const QRay3D &ray, qreal *minimum_t, qreal *maximum_t) const;
-    qreal intersection(const QRay3D &ray) const;
+    bool intersection(const QRay3D &ray, float *minimum_t, float *maximum_t) const;
+    float intersection(const QRay3D &ray) const;
 
     void transform(const QMatrix4x4 &matrix);
     QSphere3D transformed(const QMatrix4x4 &matrix) const;
@@ -86,32 +82,32 @@ public:
 
 private:
     QVector3D m_center;
-    qreal m_radius;
+    float m_radius;
 };
 
 inline QSphere3D::QSphere3D() : m_radius(1.0f) {}
 
-inline QSphere3D::QSphere3D(const QVector3D &center, qreal radius)
-    : m_center(center), m_radius(radius) {}
+inline QSphere3D::QSphere3D(const QVector3D &center_, float radius_)
+    : m_center(center_), m_radius(radius_) {}
 
 inline QVector3D QSphere3D::center() const
 {
     return m_center;
 }
 
-inline void QSphere3D::setCenter(const QVector3D &center)
+inline void QSphere3D::setCenter(const QVector3D &center_)
 {
-    m_center = center;
+    m_center = center_;
 }
 
-inline qreal QSphere3D::radius() const
+inline float QSphere3D::radius() const
 {
     return m_radius;
 }
 
-inline void QSphere3D::setRadius(qreal radius)
+inline void QSphere3D::setRadius(float radius_)
 {
-    m_radius = radius;
+    m_radius = radius_;
 }
 
 inline bool QSphere3D::contains(const QVector3D &point) const
@@ -121,7 +117,7 @@ inline bool QSphere3D::contains(const QVector3D &point) const
 
 inline bool QSphere3D::intersects(const QSphere3D &sphere) const
 {
-    qreal radsum = sphere.radius() + m_radius;
+    float radsum = sphere.radius() + m_radius;
     return (sphere.center() - m_center).lengthSquared() <= (radsum * radsum);
 }
 
@@ -158,7 +154,5 @@ Q_QT3D_EXPORT QDataStream &operator>>(QDataStream &stream, QSphere3D &sphere);
 QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(QSphere3D)
-
-QT_END_HEADER
 
 #endif

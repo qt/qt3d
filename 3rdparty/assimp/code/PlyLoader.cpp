@@ -54,7 +54,7 @@ using namespace Assimp;
 
 // ------------------------------------------------------------------------------------------------
 // Constructor to be privately used by Importer
-PLYImporter::PLYImporter()
+PLYImporter::PLYImporter() : mBuffer(0), pcDOM(0)
 {}
 
 // ------------------------------------------------------------------------------------------------

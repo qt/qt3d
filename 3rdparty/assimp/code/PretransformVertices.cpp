@@ -61,7 +61,7 @@ using namespace Assimp;
 // ------------------------------------------------------------------------------------------------
 // Constructor to be privately used by Importer
 PretransformVertices::PretransformVertices()
-:    configKeepHierarchy (false)
+    : configKeepHierarchy (false), configNormalize(false)
 {
 }
 

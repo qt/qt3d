@@ -402,7 +402,9 @@ namespace Assimp
 struct Assimp::BatchData
 {
     BatchData()
-        :    next_id(0xffff)
+        :    pIOSystem(0)
+        ,    pImporter(0)
+        ,    next_id(0xffff)
     {}
 
     // IO system to be used for all imports

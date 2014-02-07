@@ -1,38 +1,38 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** GNU Lesser General Public License Usage
-** This file may be used under the terms of the GNU Lesser General Public
-** License version 2.1 as published by the Free Software Foundation and
-** appearing in the file LICENSE.LGPL included in the packaging of this
-** file. Please review the following information to ensure the GNU Lesser
-** General Public License version 2.1 requirements will be met:
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
 **
-** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU General
-** Public License version 3.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of this
-** file. Please review the following information to ensure the GNU General
-** Public License version 3.0 requirements will be met:
-** http://www.gnu.org/copyleft/gpl.html.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms and
-** conditions contained in a signed written agreement between you and Nokia.
-**
-**
-**
-**
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
 ** $QT_END_LICENSE$
@@ -104,7 +104,7 @@ public:
     }
 
     void subdivide(QGLBuilder *list) const;
-    qreal intersection
+    float intersection
         (const QRay3D &ray, bool anyIntersection, QVector2D *texCoord, int *patch) const;
 
     QVector3DArray positions;
@@ -122,71 +122,71 @@ public:
     // Triangle mesh indices of the control points at each corner.
     int indices[4];
 
-    QVector3D normal(qreal s, qreal t) const;
+    QVector3D normal(float s, float t) const;
     void convertToTriangles
         (QGeometryData *prim,
-         qreal xtex, qreal ytex, qreal wtex, qreal htex);
+         float xtex, float ytex, float wtex, float htex);
     void subDivide(QGLBezierPatch &patch1, QGLBezierPatch &patch2,
                    QGLBezierPatch &patch3, QGLBezierPatch &patch4);
     void createNewCorners(QGLBezierPatch &patch1, QGLBezierPatch &patch2,
                           QGLBezierPatch &patch3, QGLBezierPatch &patch4,
                           QGeometryData *prim,
-                          qreal xtex, qreal ytex, qreal wtex, qreal htex);
+                          float xtex, float ytex, float wtex, float htex);
     void recursiveSubDivide
         (QGeometryData *prim,
-         int depth, qreal xtex, qreal ytex, qreal wtex, qreal htex);
-    qreal intersection
-        (qreal result, int depth, const QRay3D &ray, bool anyIntersection,
-         qreal xtex, qreal ytex, qreal wtex, qreal htex, QVector2D *tc);
+         int depth, float xtex, float ytex, float wtex, float htex);
+    float intersection
+        (float result, int depth, const QRay3D &ray, bool anyIntersection,
+         float xtex, float ytex, float wtex, float htex, QVector2D *tc);
 };
 
 static int const cornerOffsets[] = {0, 3, 12, 15};
-static qreal const cornerS[] = {0.0f, 1.0f, 0.0f, 1.0f};
-static qreal const cornerT[] = {0.0f, 0.0f, 1.0f, 1.0f};
+static float const cornerS[] = {0.0f, 1.0f, 0.0f, 1.0f};
+static float const cornerT[] = {0.0f, 0.0f, 1.0f, 1.0f};
 
 // Helper functions for calculating the components of the Bernstein
 // polynomial and its derivative that make up the surface.
-static inline qreal b0(qreal v)
+static inline float b0(float v)
 {
     return (1.0f - v) * (1.0f - v) * (1.0f - v);
 }
-static inline qreal b1(qreal v)
+static inline float b1(float v)
 {
     return 3.0f * v * (1.0f - v) * (1.0f - v);
 }
-static inline qreal b2(qreal v)
+static inline float b2(float v)
 {
     return 2.0f * v * v * (1.0f - v);
 }
-static inline qreal b3(qreal v)
+static inline float b3(float v)
 {
     return v * v * v;
 }
-static inline qreal db0(qreal v)
+static inline float db0(float v)
 {
     return -3.0f * (1.0f - v) * (1.0f - v);
 }
-static inline qreal db1(qreal v)
+static inline float db1(float v)
 {
     return -6.0f * v * (1.0f - v) + 3.0f * (1.0f - v) * (1.0f - v);
 }
-static inline qreal db2(qreal v)
+static inline float db2(float v)
 {
     return -3.0f * v * v + 6.0f * v * (1.0f - v);
 }
-static inline qreal db3(qreal v)
+static inline float db3(float v)
 {
     return 3.0f * v * v;
 }
 
 // Compute the normal at a specific point in the patch.
 // The s and t values vary between 0 and 1.
-QVector3D QGLBezierPatch::normal(qreal s, qreal t) const
+QVector3D QGLBezierPatch::normal(float s, float t) const
 {
-    qreal a[4];
-    qreal b[4];
-    qreal tx, ty, tz;
-    qreal sx, sy, sz;
+    float a[4];
+    float b[4];
+    float tx, ty, tz;
+    float sx, sy, sz;
 
     // Compute the derivative of the surface in t.
     a[0] = b0(s);
@@ -259,7 +259,7 @@ QVector3D QGLBezierPatch::normal(qreal s, qreal t) const
 // Convert this patch into flat triangles.
 void QGLBezierPatch::convertToTriangles
     (QGeometryData *prim,
-     qreal xtex, qreal ytex, qreal wtex, qreal htex)
+     float xtex, float ytex, float wtex, float htex)
 {
     // The edges are considered ok if they have a non-zero length.
     // Zero-length edges can occur in triangular-shaped patches.
@@ -373,11 +373,11 @@ void QGLBezierPatch::createNewCorners
         (QGLBezierPatch &patch1, QGLBezierPatch &patch2,
          QGLBezierPatch &patch3, QGLBezierPatch &patch4,
          QGeometryData *prim,
-         qreal xtex, qreal ytex, qreal wtex, qreal htex)
+         float xtex, float ytex, float wtex, float htex)
 {
     // Add vertices for the new patch corners we have created.
-    qreal hwtex = wtex / 2.0f;
-    qreal hhtex = htex / 2.0f;
+    float hwtex = wtex / 2.0f;
+    float hhtex = htex / 2.0f;
     int topPointIndex = prim->count();
     int leftPointIndex = topPointIndex + 1;
     int midPointIndex = topPointIndex + 2;
@@ -426,7 +426,7 @@ void QGLBezierPatch::createNewCorners
 // Recursively sub-divide a patch into triangles.
 void QGLBezierPatch::recursiveSubDivide
         (QGeometryData *prim,
-         int depth, qreal xtex, qreal ytex, qreal wtex, qreal htex)
+         int depth, float xtex, float ytex, float wtex, float htex)
 {
     if (depth <= 1) {
         convertToTriangles(prim, xtex, ytex, wtex, htex);
@@ -435,8 +435,8 @@ void QGLBezierPatch::recursiveSubDivide
         subDivide(patch1, patch2, patch3, patch4);
         createNewCorners(patch1, patch2, patch3, patch4, prim, xtex, ytex, wtex, htex);
         --depth;
-        qreal hwtex = wtex / 2.0f;
-        qreal hhtex = htex / 2.0f;
+        float hwtex = wtex / 2.0f;
+        float hhtex = htex / 2.0f;
         patch1.recursiveSubDivide(prim, depth, xtex, ytex, hwtex, hhtex);
         patch2.recursiveSubDivide(prim, depth, xtex + hwtex, ytex, hwtex, hhtex);
         patch3.recursiveSubDivide(prim, depth, xtex, ytex + hhtex, hwtex, hhtex);
@@ -461,10 +461,10 @@ void QGLBezierPatchesPrivate::subdivide(QGLBuilder *list) const
             tex1 = QVector2D(0.0f, 0.0f);
             tex2 = QVector2D(1.0f, 1.0f);
         }
-        qreal xtex = tex1.x();
-        qreal ytex = tex1.y();
-        qreal wtex = tex2.x() - xtex;
-        qreal htex = tex2.y() - ytex;
+        float xtex = tex1.x();
+        float ytex = tex1.y();
+        float wtex = tex2.x() - xtex;
+        float htex = tex2.y() - ytex;
         for (int corner = 0; corner < 4; ++corner) {
             QVector3D n = patch.normal(cornerS[corner], cornerT[corner]);
             patch.indices[corner] = prim.count();
@@ -482,7 +482,7 @@ void QGLBezierPatchesPrivate::subdivide(QGLBuilder *list) const
     list->addTriangles(prim);
 }
 
-static inline qreal combineResults(qreal result, qreal t)
+static inline float combineResults(float result, float t)
 {
     if (qIsNaN(result))
         return t;
@@ -492,9 +492,9 @@ static inline qreal combineResults(qreal result, qreal t)
         return result >= 0.0f ? result : qMax(result, t);
 }
 
-qreal QGLBezierPatch::intersection
-    (qreal result, int depth, const QRay3D& ray, bool anyIntersection,
-     qreal xtex, qreal ytex, qreal wtex, qreal htex, QVector2D *tc)
+float QGLBezierPatch::intersection
+    (float result, int depth, const QRay3D& ray, bool anyIntersection,
+     float xtex, float ytex, float wtex, float htex, QVector2D *tc)
 {
     // Check the convex hull of the patch for an intersection.
     // If no intersection with the convex hull, then there is
@@ -509,7 +509,7 @@ qreal QGLBezierPatch::intersection
     if (depth <= 1) {
         // Divide the patch into two triangles and intersect with those.
         QTriangle3D triangle1(points[0], points[3], points[12]);
-        qreal t = triangle1.intersection(ray);
+        float t = triangle1.intersection(ray);
         if (!qIsNaN(t)) {
             result = combineResults(result, t);
             if (result == t) {
@@ -521,7 +521,7 @@ qreal QGLBezierPatch::intersection
             }
         } else {
             QTriangle3D triangle2(points[3], points[15], points[12]);
-            qreal t = triangle2.intersection(ray);
+            float t = triangle2.intersection(ray);
             if (!qIsNaN(t)) {
                 result = combineResults(result, t);
                 if (result == t) {
@@ -538,8 +538,8 @@ qreal QGLBezierPatch::intersection
         QGLBezierPatch patch1, patch2, patch3, patch4;
         subDivide(patch1, patch2, patch3, patch4);
         --depth;
-        qreal hwtex = wtex / 2.0f;
-        qreal hhtex = htex / 2.0f;
+        float hwtex = wtex / 2.0f;
+        float hhtex = htex / 2.0f;
         result = patch1.intersection
             (result, depth, ray, anyIntersection,
              xtex, ytex, hwtex, hhtex, tc);
@@ -562,11 +562,11 @@ qreal QGLBezierPatch::intersection
     return result;
 }
 
-qreal QGLBezierPatchesPrivate::intersection
+float QGLBezierPatchesPrivate::intersection
     (const QRay3D &ray, bool anyIntersection, QVector2D *texCoord, int *bestPatch) const
 {
     int count = positions.size();
-    qreal result = qSNaN();
+    float result = qSNaN();
     QVector2D tc;
     if (bestPatch)
         *bestPatch = -1;
@@ -582,11 +582,11 @@ qreal QGLBezierPatchesPrivate::intersection
             tex1 = QVector2D(0.0f, 0.0f);
             tex2 = QVector2D(1.0f, 1.0f);
         }
-        qreal xtex = tex1.x();
-        qreal ytex = tex1.y();
-        qreal wtex = tex2.x() - xtex;
-        qreal htex = tex2.y() - ytex;
-        qreal prev = result;
+        float xtex = tex1.x();
+        float ytex = tex1.y();
+        float wtex = tex2.x() - xtex;
+        float htex = tex2.y() - ytex;
+        float prev = result;
         result = patch.intersection
             (result, subdivisionDepth, ray, anyIntersection,
              xtex, ytex, wtex, htex, &tc);
@@ -764,7 +764,7 @@ bool QGLBezierPatches::intersects(const QRay3D &ray) const
     the actual intersection point, as shown in the following example:
 
     \code
-    qreal t = patches.intersection(ray);
+    float t = patches.intersection(ray);
     QVector3D pt;
     if (qIsNaN(t)) {
         qWarning("no intersection occurred");
@@ -792,7 +792,7 @@ bool QGLBezierPatches::intersects(const QRay3D &ray) const
 
     \sa intersects()
 */
-qreal QGLBezierPatches::intersection(const QRay3D &ray, QVector2D *texCoord, int *patch) const
+float QGLBezierPatches::intersection(const QRay3D &ray, QVector2D *texCoord, int *patch) const
 {
     Q_D(const QGLBezierPatches);
     return d->intersection(ray, false, texCoord, patch);

@@ -1,38 +1,38 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** GNU Lesser General Public License Usage
-** This file may be used under the terms of the GNU Lesser General Public
-** License version 2.1 as published by the Free Software Foundation and
-** appearing in the file LICENSE.LGPL included in the packaging of this
-** file. Please review the following information to ensure the GNU Lesser
-** General Public License version 2.1 requirements will be met:
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
 **
-** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU General
-** Public License version 3.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of this
-** file. Please review the following information to ensure the GNU General
-** Public License version 3.0 requirements will be met:
-** http://www.gnu.org/copyleft/gpl.html.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms and
-** conditions contained in a signed written agreement between you and Nokia.
-**
-**
-**
-**
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
 ** $QT_END_LICENSE$
@@ -112,7 +112,7 @@ QT_BEGIN_NAMESPACE
     If fieldOfView() is zero, then a standard perspective frustum of
     viewSize() is used to define the viewing volume.  The viewSize()
     can be adjusted with setViewSize() to zoom the view.  A smaller
-    viewSize() will make the the object appear closer.
+    viewSize() will make the object appear closer.
 
     The fieldOfView() or viewSize() is applied as part of the
     projectionMatrix().
@@ -153,7 +153,7 @@ QT_BEGIN_NAMESPACE
 
     Three axes of rotation are used to compute the quaternions.  The tilt()
     quaternion is computed with respect to the side vector, the pan()
-    quaterion is computed with respect to the upVector(), and the roll()
+    quaternion is computed with respect to the upVector(), and the roll()
     quaternion is computed with respect to the view vector.
 
     The following example tilts the direction the eye() is pointing
@@ -296,7 +296,8 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \qmlclass Camera QGLCamera
+    \qmltype Camera
+    \instantiates QGLCamera
     \brief The Camera item defines the viewing position and projection for a 3D scene.
     \since 4.8
     \ingroup qt3d::qml3d
@@ -306,7 +307,7 @@ QT_BEGIN_NAMESPACE
 
     \code
     import QtQuick 2.0
-    import Qt3D 1.0
+    import Qt3D 2.0
 
     Viewport {
         width: 640; height: 480
@@ -386,9 +387,9 @@ public:
     QGLCameraPrivate();
 
     QGLCamera::ProjectionType projectionType;
-    qreal fieldOfView;
-    qreal nearPlane;
-    qreal farPlane;
+    float fieldOfView;
+    float nearPlane;
+    float farPlane;
     QSizeF viewSize;
     QSizeF minViewSize;
     int screenRotation;
@@ -396,7 +397,7 @@ public:
     QVector3D upVector;
     QVector3D center;
     QVector3D viewVector;
-    qreal eyeSeparation;
+    float eyeSeparation;
     QVector3D motionAdjustment;
     QQuaternion motionQuaternion;
     bool adjustForAspectRatio;
@@ -501,13 +502,13 @@ void QGLCamera::setProjectionType(QGLCamera::ProjectionType value)
     \sa projectionType
 */
 
-qreal QGLCamera::fieldOfView() const
+float QGLCamera::fieldOfView() const
 {
     Q_D(const QGLCamera);
     return d->fieldOfView;
 }
 
-void QGLCamera::setFieldOfView(qreal angle)
+void QGLCamera::setFieldOfView(float angle)
 {
     Q_D(QGLCamera);
     if (d->fieldOfView != angle) {
@@ -532,13 +533,13 @@ void QGLCamera::setFieldOfView(qreal angle)
     \sa farPlane
 */
 
-qreal QGLCamera::nearPlane() const
+float QGLCamera::nearPlane() const
 {
     Q_D(const QGLCamera);
     return d->nearPlane;
 }
 
-void QGLCamera::setNearPlane(qreal value)
+void QGLCamera::setNearPlane(float value)
 {
     Q_D(QGLCamera);
     if (d->nearPlane != value) {
@@ -563,13 +564,13 @@ void QGLCamera::setNearPlane(qreal value)
     \sa nearPlane
 */
 
-qreal QGLCamera::farPlane() const
+float QGLCamera::farPlane() const
 {
     Q_D(const QGLCamera);
     return d->farPlane;
 }
 
-void QGLCamera::setFarPlane(qreal value)
+void QGLCamera::setFarPlane(float value)
 {
     Q_D(QGLCamera);
     if (d->farPlane != value) {
@@ -726,7 +727,7 @@ void QGLCamera::setEye(const QVector3D& vertex)
 
     \sa eye(), setEye(), translateCenter()
 */
-void QGLCamera::translateEye(qreal x, qreal y, qreal z)
+void QGLCamera::translateEye(float x, float y, float z)
 {
     Q_D(QGLCamera);
     d->eye += translation(x, y, z);
@@ -804,7 +805,7 @@ void QGLCamera::setCenter(const QVector3D& vertex)
 
     \sa center(), setCenter(), translateEye()
 */
-void QGLCamera::translateCenter(qreal x, qreal y, qreal z)
+void QGLCamera::translateCenter(float x, float y, float z)
 {
     Q_D(QGLCamera);
     d->center += translation(x, y, z);
@@ -830,13 +831,13 @@ void QGLCamera::translateCenter(qreal x, qreal y, qreal z)
     \sa eye
 */
 
-qreal QGLCamera::eyeSeparation() const
+float QGLCamera::eyeSeparation() const
 {
     Q_D(const QGLCamera);
     return d->eyeSeparation;
 }
 
-void QGLCamera::setEyeSeparation(qreal value)
+void QGLCamera::setEyeSeparation(float value)
 {
     Q_D(QGLCamera);
     if (d->eyeSeparation != value) {
@@ -892,8 +893,8 @@ void QGLCamera::setMotionAdjustment(const QVector3D& vector)
             QVector3D view = -vector.normalized();
             if (view.z() < 0.0f)
                 view = -view;
-            qreal xangle = asin(view.x()) * 180.0f / M_PI;
-            qreal yangle = asin(-view.y()) * 180.0f / M_PI;
+            float xangle = asinf(view.x()) * 180.0f / M_PI;
+            float yangle = asinf(-view.y()) * 180.0f / M_PI;
 
             // Construct the pan and tilt quaternions.
             if (qFuzzyIsNull(xangle))
@@ -956,7 +957,7 @@ void QGLCamera::setAdjustForAspectRatio(bool value)
 
     \sa pan(), roll(), rotateEye(), rotateCenter()
 */
-QQuaternion QGLCamera::tilt(qreal angle) const
+QQuaternion QGLCamera::tilt(float angle) const
 {
     Q_D(const QGLCamera);
     QVector3D side = QVector3D::crossProduct(d->viewVector, d->upVector);
@@ -971,7 +972,7 @@ QQuaternion QGLCamera::tilt(qreal angle) const
 
     \sa tilt(), roll(), rotateEye(), rotateCenter()
 */
-QQuaternion QGLCamera::pan(qreal angle) const
+QQuaternion QGLCamera::pan(float angle) const
 {
     Q_D(const QGLCamera);
     return QQuaternion::fromAxisAndAngle(d->upVector, angle);
@@ -985,7 +986,7 @@ QQuaternion QGLCamera::pan(qreal angle) const
 
     \sa tilt(), pan(), rotateEye(), rotateCenter()
 */
-QQuaternion QGLCamera::roll(qreal angle) const
+QQuaternion QGLCamera::roll(float angle) const
 {
     Q_D(const QGLCamera);
     return QQuaternion::fromAxisAndAngle(d->viewVector, angle);
@@ -1043,7 +1044,7 @@ void QGLCamera::rotateCenter(const QQuaternion& q)
 
     \sa translateEye(), translateCenter()
 */
-QVector3D QGLCamera::translation(qreal x, qreal y, qreal z) const
+QVector3D QGLCamera::translation(float x, float y, float z) const
 {
     Q_D(const QGLCamera);
     QVector3D vector(0.0f, 0.0f, 0.0f);
@@ -1068,14 +1069,14 @@ QVector3D QGLCamera::translation(qreal x, qreal y, qreal z) const
 
     \sa modelViewMatrix()
 */
-QMatrix4x4 QGLCamera::projectionMatrix(qreal aspectRatio) const
+QMatrix4x4 QGLCamera::projectionMatrix(float aspectRatio) const
 {
     Q_D(const QGLCamera);
     QMatrix4x4 m;
     if (!d->adjustForAspectRatio)
         aspectRatio = 1.0f;
     if (d->screenRotation != 0) {
-        m.rotate((qreal)(d->screenRotation), 0.0f, 0.0f, 1.0f);
+        m.rotate(float(d->screenRotation), 0.0f, 0.0f, 1.0f);
         if (d->screenRotation == 90 || d->screenRotation == 270) {
             if (aspectRatio != 0.0f)
                 aspectRatio = 1.0f / aspectRatio;
@@ -1085,8 +1086,8 @@ QMatrix4x4 QGLCamera::projectionMatrix(qreal aspectRatio) const
         m.perspective(d->fieldOfView, aspectRatio,
                       d->nearPlane, d->farPlane);
     } else {
-        qreal halfWidth = d->viewSize.width() / 2.0f;
-        qreal halfHeight = d->viewSize.height() / 2.0f;
+        float halfWidth = d->viewSize.width() / 2.0f;
+        float halfHeight = d->viewSize.height() / 2.0f;
         if (aspectRatio > 1.0f) {
             halfWidth *= aspectRatio;
         } else if (aspectRatio > 0.0f && aspectRatio < 1.0f) {
@@ -1145,7 +1146,7 @@ QMatrix4x4 QGLCamera::modelViewMatrix(QGL::Eye eye) const
     into eye co-ordinates within the current camera view.
 */
 QVector3D QGLCamera::mapPoint
-    (const QPoint& point, qreal aspectRatio, const QSize& viewportSize) const
+    (const QPoint& point, float aspectRatio, const QSize& viewportSize) const
 {
     Q_D(const QGLCamera);
 
@@ -1177,13 +1178,13 @@ QVector3D QGLCamera::mapPoint
     // (unless the point was outside the viewport).  The yrel is
     // flipped upside down to account for the incoming co-ordinate
     // being left-handed, but the world being right-handed.
-    qreal xrel, yrel;
+    float xrel, yrel;
     if (width)
-        xrel = (((qreal)(x * 2)) - (qreal)width) / (qreal)width;
+        xrel = ((float(x * 2)) - float(width)) / float(width);
     else
         xrel = 0.0f;
     if (height)
-        yrel = -(((qreal)(y * 2)) - (qreal)height) / (qreal)height;
+        yrel = -((float(y * 2)) - float(height)) / float(height);
     else
         yrel = 0.0f;
 
@@ -1242,7 +1243,7 @@ QVector3D QGLCamera::mapPoint
     \sa tiltPanRollEye()
 */
 void QGLCamera::tiltPanRollCenter
-    (qreal tiltAngle, qreal panAngle, qreal rollAngle,
+    (float tiltAngle, float panAngle, float rollAngle,
      QGLCamera::RotateOrder order)
 {
     switch (order) {
@@ -1282,7 +1283,7 @@ void QGLCamera::tiltPanRollCenter
     \sa tiltPanRollCenter()
 */
 void QGLCamera::tiltPanRollEye
-    (qreal tiltAngle, qreal panAngle, qreal rollAngle,
+    (float tiltAngle, float panAngle, float rollAngle,
      QGLCamera::RotateOrder order)
 {
     switch (order) {

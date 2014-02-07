@@ -204,7 +204,8 @@ class Structure
 public:
 
     Structure()
-        :    cache_idx(-1)
+        :    size(0)
+        ,    cache_idx(-1)
     {}
 
 public:

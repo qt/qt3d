@@ -1,38 +1,38 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** GNU Lesser General Public License Usage
-** This file may be used under the terms of the GNU Lesser General Public
-** License version 2.1 as published by the Free Software Foundation and
-** appearing in the file LICENSE.LGPL included in the packaging of this
-** file. Please review the following information to ensure the GNU Lesser
-** General Public License version 2.1 requirements will be met:
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
 **
-** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU General
-** Public License version 3.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of this
-** file. Please review the following information to ensure the GNU General
-** Public License version 3.0 requirements will be met:
-** http://www.gnu.org/copyleft/gpl.html.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms and
-** conditions contained in a signed written agreement between you and Nokia.
-**
-**
-**
-**
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
 ** $QT_END_LICENSE$
@@ -85,7 +85,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn QGLSphere::QGLSphere(qreal diameter, int depth)
+    \fn QGLSphere::QGLSphere(float diameter, int depth)
 
     Creates a sphere of \a diameter across (default is 1).  When the sphere
     is recursively subdivided into triangles, it will be subdivided no more
@@ -100,7 +100,7 @@ QGLSphere::~QGLSphere()
 }
 
 /*!
-    \fn qreal QGLSphere::diameter() const
+    \fn float QGLSphere::diameter() const
 
     Returns the diameter of this sphere.  The default is 1.
 
@@ -108,7 +108,7 @@ QGLSphere::~QGLSphere()
 */
 
 /*!
-    \fn void QGLSphere::setDiameter(qreal diameter)
+    \fn void QGLSphere::setDiameter(float diameter)
 
     Sets the diameter of this sphere to \a diameter.
 
@@ -157,7 +157,7 @@ QGLSphere::~QGLSphere()
 */
 QGLBuilder& operator<<(QGLBuilder& builder, const QGLSphere& sphere)
 {
-    qreal radius = sphere.diameter() / 2.0f;
+    float radius = sphere.diameter() / 2.0f;
 
     // Determine the number of slices and stacks to generate.
     static int const slicesAndStacks[] = {
@@ -183,19 +183,19 @@ QGLBuilder& operator<<(QGLBuilder& builder, const QGLSphere& sphere)
     // Precompute sin/cos values for the slices and stacks.
     const int maxSlices = 128 + 1;
     const int maxStacks = 128 + 1;
-    qreal sliceSin[maxSlices];
-    qreal sliceCos[maxSlices];
-    qreal stackSin[maxStacks];
-    qreal stackCos[maxStacks];
+    float sliceSin[maxSlices];
+    float sliceCos[maxSlices];
+    float stackSin[maxStacks];
+    float stackCos[maxStacks];
     for (int slice = 0; slice < slices; ++slice) {
-        qreal angle = 2 * M_PI * slice / slices;
+        float angle = 2.0f * M_PI * (slices - 1 - slice) / slices;
         sliceSin[slice] = qFastSin(angle);
         sliceCos[slice] = qFastCos(angle);
     }
     sliceSin[slices] = sliceSin[0]; // Join first and last slice.
     sliceCos[slices] = sliceCos[0];
     for (int stack = 0; stack <= stacks; ++stack) {
-        qreal angle = M_PI * stack / stacks;
+        float angle = M_PI * stack / stacks;
         stackSin[stack] = qFastSin(angle);
         stackCos[stack] = qFastCos(angle);
     }
@@ -205,14 +205,14 @@ QGLBuilder& operator<<(QGLBuilder& builder, const QGLSphere& sphere)
     // Create the stacks.
     for (int stack = 0; stack < stacks; ++stack) {
         QGeometryData prim;
-        qreal z = radius * stackCos[stack];
-        qreal nextz = radius * stackCos[stack + 1];
-        qreal s = stackSin[stack];
-        qreal nexts = stackSin[stack + 1];
-        qreal c = stackCos[stack];
-        qreal nextc = stackCos[stack + 1];
-        qreal r = radius * s;
-        qreal nextr = radius * nexts;
+        float z = radius * stackCos[stack];
+        float nextz = radius * stackCos[stack + 1];
+        float s = stackSin[stack];
+        float nexts = stackSin[stack + 1];
+        float c = stackCos[stack];
+        float nextc = stackCos[stack + 1];
+        float r = radius * s;
+        float nextr = radius * nexts;
         for (int slice = 0; slice <= slices; ++slice) {
             prim.appendVertex
                 (QVector3D(nextr * sliceSin[slice],
@@ -221,8 +221,8 @@ QGLBuilder& operator<<(QGLBuilder& builder, const QGLSphere& sphere)
                 (QVector3D(sliceSin[slice] * nexts,
                            sliceCos[slice] * nexts, nextc));
             prim.appendTexCoord
-                (QVector2D(1.0f - qreal(slice) / slices,
-                           1.0f - qreal(stack + 1) / stacks));
+                (QVector2D(1.0f - float(slice) / slices,
+                           1.0f - float(stack + 1) / stacks));
 
             prim.appendVertex
                 (QVector3D(r * sliceSin[slice],
@@ -231,8 +231,8 @@ QGLBuilder& operator<<(QGLBuilder& builder, const QGLSphere& sphere)
                 (QVector3D(sliceSin[slice] * s,
                            sliceCos[slice] * s, c));
             prim.appendTexCoord
-                (QVector2D(1.0f - qreal(slice) / slices,
-                           1.0f - qreal(stack) / stacks));
+                (QVector2D(1.0f - float(slice) / slices,
+                           1.0f - float(stack) / stacks));
         }
         builder.addQuadStrip(prim);
     }

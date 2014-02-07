@@ -1,49 +1,49 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** GNU Lesser General Public License Usage
-** This file may be used under the terms of the GNU Lesser General Public
-** License version 2.1 as published by the Free Software Foundation and
-** appearing in the file LICENSE.LGPL included in the packaging of this
-** file. Please review the following information to ensure the GNU Lesser
-** General Public License version 2.1 requirements will be met:
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
 **
-** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU General
-** Public License version 3.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of this
-** file. Please review the following information to ensure the GNU General
-** Public License version 3.0 requirements will be met:
-** http://www.gnu.org/copyleft/gpl.html.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms and
-** conditions contained in a signed written agreement between you and Nokia.
-**
-**
-**
-**
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
 
-#include "qailoader.h"
-#include "qaiscenehandler.h"
-#include "qaiscene.h"
-#include "qaimesh.h"
+#include "qailoader_p.h"
 #include "qaianimation.h"
+#include "qaiscenehandler_p.h"
+#include "qaiscene_p.h"
+#include "qaimesh_p.h"
 
 #include "qgeometrydata.h"
 #include "qgltwosidedmaterial.h"
@@ -157,14 +157,14 @@ void QAiLoader::loadMesh(aiMesh *mesh)
         {
             // TODO: Implement skeletal animation
             QString error = QLatin1String("Bones in mesh %1 not yet supported");
-            error.arg(name);
+            error = error.arg(name);
             Assimp::DefaultLogger::get()->warn(error.toLatin1().constData());
         }
         if (mesh->HasTangentsAndBitangents())
         {
             // TODO: Implement normal maps - here and in the texture import
             QString error = QLatin1String("Tangents for normal map in mesh %1 not yet supported");
-            error.arg(name);
+            error = error.arg(name);
             Assimp::DefaultLogger::get()->warn(error.toLatin1().constData());
         }
     }
@@ -456,7 +456,7 @@ void QAiLoader::loadTextures(aiMaterial *ma, QGLMaterial *mq)
             if (texCount && texType != aiTextureType_DIFFUSE)
             {
                 QString error = QLatin1String("Unsupported texture type \"%1\" in material \"%2\".");
-                error.arg(QLatin1String(typeNames[i]), mq->objectName());
+                error = error.arg(QLatin1String(typeNames[i]), mq->objectName());
                 Assimp::DefaultLogger::get()->warn(error.toLatin1().constData());
             }
         }
@@ -469,7 +469,7 @@ void QAiLoader::loadTextures(aiMaterial *ma, QGLMaterial *mq)
         if (texCount > 1 && m_handler->showWarnings())
         {
             QString error = QLatin1String("Multi-textures not supported: \"%1\" has %2");
-            error.arg(mq->objectName()).arg(texCount);
+            error = error.arg(mq->objectName()).arg(texCount);
             Assimp::DefaultLogger::get()->warn(error.toLatin1().constData());
         }
         else
@@ -483,7 +483,7 @@ void QAiLoader::loadTextures(aiMaterial *ma, QGLMaterial *mq)
                 if (m_handler->showWarnings())
                 {
                     QString error = QLatin1String("Could not load texture: %1 for material %2");
-                    error.arg(url.toString()).arg(mq->objectName());
+                    error = error.arg(url.toString()).arg(mq->objectName());
                     Assimp::DefaultLogger::get()->warn(error.toLatin1().constData());
                 }
             }

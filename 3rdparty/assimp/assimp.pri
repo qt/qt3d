@@ -7,21 +7,8 @@ CONFIG += exceptions
 
 win32:DEFINES+=_CRT_SECURE_NO_WARNINGS
 
-DEPENDPATH += \
-        $$PWD \
-        $$PWD/code \
-        $$PWD/include \
-        $$PWD/code/res \
-        $$PWD/contrib/ConvertUTF \
-        $$PWD/contrib/irrXML \
-        $$PWD/contrib/unzip \
-        $$PWD/contrib/zlib \
-        $$PWD/include/Compiler \
-        $$PWD/code/BoostWorkaround/boost \
-        $$PWD/code/BoostWorkaround/boost/math \
-        $$PWD/code/BoostWorkaround/boost/tuple
-
 VPATH += \
+        $$PWD \
         $$PWD/code \
         $$PWD/contrib/ConvertUTF \
         $$PWD/contrib/zlib \

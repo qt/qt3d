@@ -1,38 +1,38 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** GNU Lesser General Public License Usage
-** This file may be used under the terms of the GNU Lesser General Public
-** License version 2.1 as published by the Free Software Foundation and
-** appearing in the file LICENSE.LGPL included in the packaging of this
-** file. Please review the following information to ensure the GNU Lesser
-** General Public License version 2.1 requirements will be met:
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
 **
-** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU General
-** Public License version 3.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of this
-** file. Please review the following information to ensure the GNU General
-** Public License version 3.0 requirements will be met:
-** http://www.gnu.org/copyleft/gpl.html.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms and
-** conditions contained in a signed written agreement between you and Nokia.
-**
-**
-**
-**
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
 ** $QT_END_LICENSE$
@@ -361,13 +361,22 @@ bool QGLPainter::begin
     }
 
     // Initialize the QOpenGLFunctions parent class.
-    initializeGLFunctions();
+    initializeOpenGLFunctions();
 
     // Determine if the OpenGL implementation is fixed-function or not.
     bool isFixedFunction = !hasOpenGLFeature(QOpenGLFunctions::Shaders);
     if (!isFixedFunction)
         isFixedFunction = !QOpenGLShaderProgram::hasOpenGLShaderPrograms();
+#ifdef Q_OS_WIN
+    // On windows platforms in a virtual environment the hasOpenGLFunctions can report shaders are
+    // available when in fact they are not, and the only effective test for the presence of
+    // shaders is checking for extensions handling important shader functionality.
+    // We need to support this environment to run autotests.
+    // On non-windows platforms native support can mean that shaders are available without extensions,
+    // so in the general case, we trust hasOpenGLFeature/hasOpenGLShaderPrograms, and on windows we
+    // check for the relevant extensions.
     if (!isFixedFunction)
+
     {
         QOpenGLContext *ctx = QOpenGLContext::currentContext();
         QFunctionPointer res = ctx->getProcAddress("glCreateShader");
@@ -382,6 +391,7 @@ bool QGLPainter::begin
         if (!res)
             isFixedFunction = !res;
     }
+#endif
 
     // Find the QGLPainterPrivate for the context, or create a new one.
     d_ptr = painterPrivateCache()->fromContext(context);
@@ -700,7 +710,7 @@ QMatrix4x4 QGLPainter::combinedMatrix() const
 // Inverting the eye transformation will often result in values like
 // 1.5e-15 in the world matrix.  Clamp these to zero to make worldMatrix()
 // more stable when removing the eye component of the modelViewMatrix().
-static inline qreal qt_gl_stablize_value(qreal value)
+static inline float qt_gl_stablize_value(float value)
 {
     return (qAbs(value) >= 0.00001f) ? value : 0.0f;
 }
@@ -918,7 +928,7 @@ QGLRenderSequencer *QGLPainter::renderSequencer()
     Returns the aspect ratio of the viewport for adjusting projection
     transformations.
 */
-qreal QGLPainter::aspectRatio() const
+float QGLPainter::aspectRatio() const
 {
     return currentSurface()->aspectRatio();
 }
@@ -1390,7 +1400,7 @@ void QGLPainter::update()
     }
     if ((updates & UpdateViewport) != 0) {
         QRect viewport = currentSurface()->viewportGL();
-        glViewport(0, 0, viewport.width(), viewport.height());
+        glViewport(viewport.x(), viewport.y(), viewport.width(), viewport.height());
     }
     if (updates != 0)
         d->effect->update(this, updates);
@@ -1525,30 +1535,12 @@ void QGLPainter::updateFixedFunction(QGLPainter::Updates updates)
     if ((updates & QGLPainter::UpdateModelViewMatrix) != 0) {
         const QMatrix4x4 &matrix = d->modelViewMatrix.top();
         glMatrixMode(GL_MODELVIEW);
-        if (sizeof(qreal) == sizeof(GLfloat)) {
-            glLoadMatrixf(reinterpret_cast<const GLfloat *>
-                (matrix.constData()));
-        } else {
-            GLfloat mat[16];
-            const qreal *m = matrix.constData();
-            for (int index = 0; index < 16; ++index)
-                mat[index] = m[index];
-            glLoadMatrixf(mat);
-        }
+        glLoadMatrixf(reinterpret_cast<const GLfloat *>(matrix.constData()));
     }
     if ((updates & QGLPainter::UpdateProjectionMatrix) != 0) {
         const QMatrix4x4 &matrix = d->projectionMatrix.top();
         glMatrixMode(GL_PROJECTION);
-        if (sizeof(qreal) == sizeof(GLfloat)) {
-            glLoadMatrixf(reinterpret_cast<const GLfloat *>
-                (matrix.constData()));
-        } else {
-            GLfloat mat[16];
-            const qreal *m = matrix.constData();
-            for (int index = 0; index < 16; ++index)
-                mat[index] = m[index];
-            glLoadMatrixf(mat);
-        }
+        glLoadMatrixf(reinterpret_cast<const GLfloat *>(matrix.constData()));
     }
     if ((updates & QGLPainter::UpdateLights) != 0) {
         // Save the current modelview matrix and load the identity.

@@ -1,6 +1,5 @@
 TEMPLATE = app
 TARGET = teapot_qml
-CONFIG += qt warn_on
 
 QT += 3dquick quick
 
@@ -22,7 +21,6 @@ CATEGORY = tutorials
 include(../../../pkg.pri)
 
 OTHER_FILES += \
-    mt.qml \
     teapot_qml.rc \
     $$QML_INFRA_FILES
 

@@ -107,8 +107,16 @@ enum PrePostBehaviour
 struct Key
 {
     Key()
-        :    inter    (IT_LINE)
-    {}
+        :    time(0.0)
+        ,    value(0.0f)
+        ,    inter    (IT_LINE)
+    {
+        params[0] = 0.0f;
+        params[1] = 0.0f;
+        params[2] = 0.0f;
+        params[3] = 0.0f;
+        params[4] = 0.0f;
+    }
 
     //! Current time
     double time;
@@ -135,7 +143,8 @@ struct Key
 struct Envelope
 {
     Envelope()
-        :    type    (EnvelopeType_Unknown)
+        :    index(0)
+        ,    type    (EnvelopeType_Unknown)
         ,    pre        (PrePostBehaviour_Constant)
         ,    post    (PrePostBehaviour_Constant)
 

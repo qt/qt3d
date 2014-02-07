@@ -59,7 +59,7 @@ using namespace Assimp;
 
 // ------------------------------------------------------------------------------------------------
 // Constructor to be privately used by Importer
-MS3DImporter::MS3DImporter()
+MS3DImporter::MS3DImporter() : mScene(0)
 {}
 
 // ------------------------------------------------------------------------------------------------

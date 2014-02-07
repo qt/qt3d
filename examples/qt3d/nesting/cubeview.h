@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D examples of the Qt Toolkit.
 **
@@ -17,10 +17,10 @@
 **     notice, this list of conditions and the following disclaimer in
 **     the documentation and/or other materials provided with the
 **     distribution.
-**   * Neither the name of Nokia Corporation and its Subsidiary(-ies) nor
-**     the names of its contributors may be used to endorse or promote
-**     products derived from this software without specific prior written
-**     permission.
+**   * Neither the name of Digia Plc and its Subsidiary(-ies) nor the names
+**     of its contributors may be used to endorse or promote products derived
+**     from this software without specific prior written permission.
+**
 **
 ** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 ** "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -53,21 +53,21 @@ QT_END_NAMESPACE
 class CubeView : public QGLView
 {
     Q_OBJECT
-    Q_PROPERTY(qreal teapotAngle READ teapotAngle WRITE setTeapotAngle)
-    Q_PROPERTY(qreal cubeAngle READ cubeAngle WRITE setCubeAngle)
-    Q_PROPERTY(qreal orbitAngle READ orbitAngle WRITE setOrbitAngle)
+    Q_PROPERTY(float teapotAngle READ teapotAngle WRITE setTeapotAngle)
+    Q_PROPERTY(float cubeAngle READ cubeAngle WRITE setCubeAngle)
+    Q_PROPERTY(float orbitAngle READ orbitAngle WRITE setOrbitAngle)
 public:
     CubeView(QWindow *parent = 0);
     ~CubeView();
 
-    qreal teapotAngle() const { return tangle; }
-    void setTeapotAngle(qreal angle) { tangle = angle; update(); }
+    float teapotAngle() const { return tangle; }
+    void setTeapotAngle(float angle) { tangle = angle; update(); }
 
-    qreal cubeAngle() const { return cangle; }
-    void setCubeAngle(qreal angle) { cangle = angle; update(); }
+    float cubeAngle() const { return cangle; }
+    void setCubeAngle(float angle) { cangle = angle; update(); }
 
-    qreal orbitAngle() const { return oangle; }
-    void setOrbitAngle(qreal angle) { oangle = angle; update(); }
+    float orbitAngle() const { return oangle; }
+    void setOrbitAngle(float angle) { oangle = angle; update(); }
 
 protected:
     void initializeGL(QGLPainter *painter);
@@ -81,9 +81,9 @@ private:
     QOpenGLFramebufferObject *fbo;
     QGLFramebufferObjectSurface fboSurface;
     QGLCamera *innerCamera;
-    qreal tangle;
-    qreal cangle;
-    qreal oangle;
+    float tangle;
+    float cangle;
+    float oangle;
 
     void drawCube1(QGLPainter *painter, const QVector3D &posn);
     void drawCube2(QGLPainter *painter, const QVector3D &posn);

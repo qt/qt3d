@@ -1,38 +1,38 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** GNU Lesser General Public License Usage
-** This file may be used under the terms of the GNU Lesser General Public
-** License version 2.1 as published by the Free Software Foundation and
-** appearing in the file LICENSE.LGPL included in the packaging of this
-** file. Please review the following information to ensure the GNU Lesser
-** General Public License version 2.1 requirements will be met:
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
 **
-** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU General
-** Public License version 3.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of this
-** file. Please review the following information to ensure the GNU General
-** Public License version 3.0 requirements will be met:
-** http://www.gnu.org/copyleft/gpl.html.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms and
-** conditions contained in a signed written agreement between you and Nokia.
-**
-**
-**
-**
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
 ** $QT_END_LICENSE$
@@ -70,7 +70,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn QSphere3D::QSphere3D(const QVector3D &center, qreal radius)
+    \fn QSphere3D::QSphere3D(const QVector3D &center, float radius)
 
     Constructs a sphere with the specified \a center and \a radius.
 */
@@ -92,7 +92,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn qreal QSphere3D::radius() const
+    \fn float QSphere3D::radius() const
 
     Returns the radius of this sphere.
 
@@ -100,7 +100,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn void QSphere3D::setRadius(qreal radius)
+    \fn void QSphere3D::setRadius(float radius)
 
     Sets the \a radius of this sphere.
 
@@ -122,10 +122,10 @@ QT_BEGIN_NAMESPACE
 bool QSphere3D::intersects(const QRay3D &ray) const
 {
     QVector3D centerToOrigin = ray.origin() - m_center;
-    qreal term1 = ray.direction().lengthSquared();
-    qreal term2 = 2.0f * QVector3D::dotProduct(centerToOrigin, ray.direction());
-    qreal term3 = centerToOrigin.lengthSquared() - m_radius * m_radius;
-    qreal det = term2 * term2 - (4.0f * term1 * term3);
+    float term1 = ray.direction().lengthSquared();
+    float term2 = 2.0f * QVector3D::dotProduct(centerToOrigin, ray.direction());
+    float term3 = centerToOrigin.lengthSquared() - m_radius * m_radius;
+    float det = term2 * term2 - (4.0f * term1 * term3);
     return term1 != 0.0f && det >= 0.0f;
 }
 
@@ -144,10 +144,10 @@ bool QSphere3D::intersects(const QBox3D &box) const
 {
     if (box.isFinite()) {
         // Use Arvo's Algorithm to determine if we have an intersection.
-        qreal dist = 0.0f;
-        qreal center = m_center.x();
-        qreal minval = box.minimum().x();
-        qreal maxval = box.maximum().x();
+        float dist = 0.0f;
+        float center = m_center.x();
+        float minval = box.minimum().x();
+        float maxval = box.maximum().x();
         if (center < minval)
             dist += (center - minval) * (center - minval);
         else if (center > maxval)
@@ -177,7 +177,7 @@ bool QSphere3D::intersects(const QBox3D &box) const
 */
 bool QSphere3D::intersects(const QPlane3D &plane) const
 {
-    return qAbs(plane.distanceTo(m_center)) <= m_radius;
+    return qAbs(plane.distance(m_center)) <= m_radius;
 }
 
 /*!
@@ -195,7 +195,7 @@ bool QSphere3D::intersects(const QPlane3D &plane) const
     example:
 
     \code
-    qreal minimum_t, maximum_t;
+    float minimum_t, maximum_t;
     if (sphere.intersection(ray, &minimum_t, &maximum_t)) {
         qDebug() << "intersections at"
                  << ray.point(minimum_t) << "and"
@@ -205,13 +205,13 @@ bool QSphere3D::intersects(const QPlane3D &plane) const
 
     \sa intersects(), QRay3D::point()
 */
-bool QSphere3D::intersection(const QRay3D &ray, qreal *minimum_t, qreal *maximum_t) const
+bool QSphere3D::intersection(const QRay3D &ray, float *minimum_t, float *maximum_t) const
 {
     QVector3D centerToOrigin = ray.origin() - m_center;
-    qreal term1 = ray.direction().lengthSquared();
-    qreal term2 = 2.0f * QVector3D::dotProduct(centerToOrigin, ray.direction());
-    qreal term3 = centerToOrigin.lengthSquared() - m_radius * m_radius;
-    qreal det = term2 * term2 - (4.0f * term1 * term3);
+    float term1 = ray.direction().lengthSquared();
+    float term2 = 2.0f * QVector3D::dotProduct(centerToOrigin, ray.direction());
+    float term3 = centerToOrigin.lengthSquared() - m_radius * m_radius;
+    float det = term2 * term2 - (4.0f * term1 * term3);
     if (term1 == 0.0f || det < 0.0f) {
         *minimum_t = qSNaN();
         *maximum_t = qSNaN();
@@ -219,9 +219,9 @@ bool QSphere3D::intersection(const QRay3D &ray, qreal *minimum_t, qreal *maximum
     } else if (det == 0.0f) {
         *minimum_t = *maximum_t = -term2 / (2.0f * term1);
     } else {
-        qreal sqrtDet = qSqrt(det);
-        qreal t1 = (-term2 - sqrtDet) / (2.0f * term1);
-        qreal t2 = (-term2 + sqrtDet) / (2.0f * term1);
+        float sqrtDet = sqrtf(det);
+        float t1 = (-term2 - sqrtDet) / (2.0f * term1);
+        float t2 = (-term2 + sqrtDet) / (2.0f * term1);
         if (t1 < t2) {
             *minimum_t = t1;
             *maximum_t = t2;
@@ -242,7 +242,7 @@ bool QSphere3D::intersection(const QRay3D &ray, qreal *minimum_t, qreal *maximum
     the actual intersection point, as shown in the following example:
 
     \code
-    qreal t = sphere.intersection(ray);
+    float t = sphere.intersection(ray);
     QVector3D pt;
     if (qIsNaN(t)) {
         qWarning("no intersection occurred");
@@ -267,9 +267,9 @@ bool QSphere3D::intersection(const QRay3D &ray, qreal *minimum_t, qreal *maximum
 
     \sa intersects(), QRay3D::point()
 */
-qreal QSphere3D::intersection(const QRay3D &ray) const
+float QSphere3D::intersection(const QRay3D &ray) const
 {
-    qreal minimum_t, maximum_t;
+    float minimum_t, maximum_t;
     if (intersection(ray, &minimum_t, &maximum_t)) {
         if (minimum_t >= 0.0f)
             return minimum_t;
@@ -372,7 +372,7 @@ QDataStream &operator>>(QDataStream &stream, QSphere3D &sphere)
     stream >> center;
     stream >> radius;
     sphere.setCenter(center);
-    sphere.setRadius(qreal(radius));
+    sphere.setRadius(float(radius));
     return stream;
 }
 

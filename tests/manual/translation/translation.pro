@@ -1,6 +1,5 @@
 TEMPLATE = app
 TARGET = tst_translation
-CONFIG += qt warn_on
 
 QT += 3dquick
 
@@ -22,5 +21,5 @@ CATEGORY = manual
 include(../../../pkg.pri)
 
 OTHER_FILES += \
-    mt.qml \
     $$QML_INFRA_FILES
+DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0

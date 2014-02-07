@@ -128,6 +128,7 @@ protected:
             ,    surfaces()
             ,    numRefs (0)
             ,    subDiv    (0)
+            ,    crease(0.0f)
         {}
 
         // Type description

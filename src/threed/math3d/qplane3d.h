@@ -1,38 +1,38 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** GNU Lesser General Public License Usage
-** This file may be used under the terms of the GNU Lesser General Public
-** License version 2.1 as published by the Free Software Foundation and
-** appearing in the file LICENSE.LGPL included in the packaging of this
-** file. Please review the following information to ensure the GNU Lesser
-** General Public License version 2.1 requirements will be met:
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
 **
-** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU General
-** Public License version 3.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of this
-** file. Please review the following information to ensure the GNU General
-** Public License version 3.0 requirements will be met:
-** http://www.gnu.org/copyleft/gpl.html.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms and
-** conditions contained in a signed written agreement between you and Nokia.
-**
-**
-**
-**
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
 ** $QT_END_LICENSE$
@@ -42,15 +42,11 @@
 #ifndef QPLANE3D_H
 #define QPLANE3D_H
 
+#include <Qt3D/qray3d.h>
 #include <QtGui/qvector3d.h>
 #include <QtCore/qnumeric.h>
-#include "qray3d.h"
-
-QT_BEGIN_HEADER
 
 QT_BEGIN_NAMESPACE
-
-QT_MODULE(Qt3D)
 
 class Q_QT3D_EXPORT QPlane3D
 {
@@ -69,9 +65,9 @@ public:
     bool contains(const QRay3D &ray) const;
 
     bool intersects(const QRay3D &ray) const;
-    qreal intersection(const QRay3D &ray) const;
+    float intersection(const QRay3D &ray) const;
 
-    qreal distanceTo(const QVector3D &point) const;
+    float distance(const QVector3D &point) const;
 
     void transform(const QMatrix4x4 &matrix);
     QPlane3D transformed(const QMatrix4x4 &matrix) const;
@@ -86,8 +82,8 @@ private:
 
 inline QPlane3D::QPlane3D() : m_normal(1.0f, 0.0f, 0.0f) {}
 
-inline QPlane3D::QPlane3D(const QVector3D &point, const QVector3D &normal)
-    : m_origin(point), m_normal(normal)
+inline QPlane3D::QPlane3D(const QVector3D &point, const QVector3D &normal_)
+    : m_origin(point), m_normal(normal_)
 {
 }
 
@@ -155,7 +151,5 @@ Q_QT3D_EXPORT QDataStream &operator>>(QDataStream &stream, QPlane3D &plane);
 QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(QPlane3D)
-
-QT_END_HEADER
 
 #endif // QPLANE3D_H

@@ -1,6 +1,5 @@
 TEMPLATE = app
 TARGET = tst_qrc
-CONFIG += qt warn_on
 
 # This manual test is to confirm the functionality of running
 # Qt3D QML apps from a Qt resource (or *.qrc) file.
@@ -25,3 +24,4 @@ OTHER_FILES += \
 RESOURCES += \
     qrc.qrc
 
+DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0

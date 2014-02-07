@@ -1,38 +1,38 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** GNU Lesser General Public License Usage
-** This file may be used under the terms of the GNU Lesser General Public
-** License version 2.1 as published by the Free Software Foundation and
-** appearing in the file LICENSE.LGPL included in the packaging of this
-** file. Please review the following information to ensure the GNU Lesser
-** General Public License version 2.1 requirements will be met:
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
 **
-** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU General
-** Public License version 3.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of this
-** file. Please review the following information to ensure the GNU General
-** Public License version 3.0 requirements will be met:
-** http://www.gnu.org/copyleft/gpl.html.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms and
-** conditions contained in a signed written agreement between you and Nokia.
-**
-**
-**
-**
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
 ** $QT_END_LICENSE$
@@ -159,7 +159,7 @@ bool QPlane3D::intersects(const QRay3D &ray) const
     the actual intersection point, as shown in the following example:
 
     \code
-    qreal t = plane.intersection(ray);
+    float t = plane.intersection(ray);
     QVector3D pt;
     if (qIsNaN(t)) {
         qWarning("no intersection occurred");
@@ -184,9 +184,9 @@ bool QPlane3D::intersects(const QRay3D &ray) const
 
     \sa intersects()
 */
-qreal QPlane3D::intersection(const QRay3D& ray) const
+float QPlane3D::intersection(const QRay3D& ray) const
 {
-    qreal dotLineAndPlane = QVector3D::dotProduct(m_normal, ray.direction());
+    float dotLineAndPlane = QVector3D::dotProduct(m_normal, ray.direction());
     if (qFuzzyIsNull(float(dotLineAndPlane))) {
         // degenerate case - ray & plane-normal vectors are at
         // 90 degrees to each other, so either plane and ray never meet
@@ -202,7 +202,7 @@ qreal QPlane3D::intersection(const QRay3D& ray) const
     be positive if \a point is above the plane in the direction
     of normal(), and negative if \a point is below the plane.
 */
-qreal QPlane3D::distanceTo(const QVector3D &point) const
+float QPlane3D::distance(const QVector3D &point) const
 {
     return QVector3D::dotProduct(point - m_origin, m_normal) /
                 m_normal.length();

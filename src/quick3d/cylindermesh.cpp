@@ -1,38 +1,38 @@
 /****************************************************************************
 **
-** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** GNU Lesser General Public License Usage
-** This file may be used under the terms of the GNU Lesser General Public
-** License version 2.1 as published by the Free Software Foundation and
-** appearing in the file LICENSE.LGPL included in the packaging of this
-** file. Please review the following information to ensure the GNU Lesser
-** General Public License version 2.1 requirements will be met:
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
 **
-** In addition, as a special exception, Nokia gives you certain additional
-** rights. These rights are described in the Nokia Qt LGPL Exception
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Digia gives you certain additional
+** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
 ** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU General
-** Public License version 3.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of this
-** file. Please review the following information to ensure the GNU General
-** Public License version 3.0 requirements will be met:
-** http://www.gnu.org/copyleft/gpl.html.
-**
-** Other Usage
-** Alternatively, this file may be used in accordance with the terms and
-** conditions contained in a signed written agreement between you and Nokia.
-**
-**
-**
-**
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 **
 ** $QT_END_LICENSE$
@@ -48,7 +48,8 @@
 QT_BEGIN_NAMESPACE
 
 /*!
-    \qmlclass CylinderMesh CylinderMesh
+    \qmltype CylinderMesh
+    \instantiates CylinderMesh
     \brief The CylinderMesh item represents a simple cylinder in 3D space.
     \since 4.8
     \ingroup qt3d::qml3d::shapes
@@ -77,7 +78,7 @@ QT_BEGIN_NAMESPACE
     references it:
 
     \code
-    import Qt3D.Shapes 1.0
+    import Qt3D.Shapes 2.0
     \endcode
 
     The cylinder shape can have differing levels of detail, allowing
@@ -131,8 +132,8 @@ public:
     QGLSceneNode *topNode;
     QGLSceneNode *currentCylinder;
     QGraphicsScale3D *scale;
-    qreal radius;
-    qreal length;
+    float radius;
+    float length;
     int lod;
     bool sceneSet;
 };
@@ -199,12 +200,12 @@ CylinderMesh::~CylinderMesh()
     This property defines the radius of the cylinder.
     The default value is 1.
 */
-qreal CylinderMesh::radius() const
+float CylinderMesh::radius() const
 {
     return d->radius;
 }
 
-void CylinderMesh::setRadius(qreal radius)
+void CylinderMesh::setRadius(float radius)
 {
     if (qFuzzyCompare(radius, 1))
         radius = 1.0f;
@@ -222,12 +223,12 @@ void CylinderMesh::setRadius(qreal radius)
     This property defines the length of the cylinder.
     The default value is 1.
 */
-qreal CylinderMesh::length() const
+float CylinderMesh::length() const
 {
     return d->length;
 }
 
-void CylinderMesh::setLength(qreal length)
+void CylinderMesh::setLength(float length)
 {
     if (qFuzzyCompare(length, 1))
         length = 1.0f;

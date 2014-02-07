@@ -64,6 +64,19 @@ using namespace Assimp;
 // ------------------------------------------------------------------------------------------------
 // Constructor to be privately used by Importer
 LWOImporter::LWOImporter()
+    : mIsLWO2(false)
+    , mIsLXOB(false)
+    , mLayers(0)
+    , mCurLayer(0)
+    , mTags(0)
+    , mMapping()
+    , mSurfaces(0)
+    , mFileBuffer(0)
+    , fileSize(0)
+    , pScene(0)
+    , configSpeedFlag(false)
+    , configLayerIndex(0)
+    , hasNamedLayer(false)
 {}
 
 // ------------------------------------------------------------------------------------------------

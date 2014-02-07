@@ -1,2 +1,3 @@
 TEMPLATE = subdirs
-SUBDIRS = quick3d qt3d
+SUBDIRS = qt3d
+qtHaveModule(qml): SUBDIRS += quick3d

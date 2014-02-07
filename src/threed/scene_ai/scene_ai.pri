@@ -1,14 +1,15 @@
 INCLUDEPATH += $$PWD
 VPATH += $$PWD
 HEADERS += \
+    scene_ai/qaiscenehandler_p.h \
+    scene_ai/qaiscene_p.h \
+    scene_ai/qaimesh_p.h \
+    scene_ai/qailoader_p.h \
+    scene_ai/ailoaderiosystem_p.h \
+    scene_ai/ailoaderiostream_p.h \
     scene_ai/qaianimation.h \
     scene_ai/qaianimation_p.h \
-    scene_ai/qaiscenehandler.h \
-    scene_ai/qaiscene.h \
-    scene_ai/qaimesh.h \
-    scene_ai/qailoader.h \
-    scene_ai/ailoaderiosystem.h \
-    scene_ai/ailoaderiostream.h
+
 SOURCES += \
     scene_ai/qaianimation.cpp \
     scene_ai/qaiscenehandler.cpp \
