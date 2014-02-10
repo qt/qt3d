@@ -39,55 +39,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_LOOKATTRANSFORM_H
-#define QT3D_LOOKATTRANSFORM_H
+#ifndef QT3D_EXAMPLERESOURCES_H
+#define QT3D_EXAMPLERESOURCES_H
 
-#include "abstracttransform.h"
-#include "qt3dcore_global.h"
+#include <QResource>
 
-#include <QVector3D>
+#define QT3D_XSTRINGIFY(s) QT3D_STRINGIFY(s)
+#define QT3D_STRINGIFY(s) #s
 
-namespace Qt3D {
+bool initializeAssetResources( const QString& fileName );
 
-class QT3DCORESHARED_EXPORT LookAtTransform : public Qt3D::AbstractTransform
-{
-    Q_OBJECT
-    Q_PROPERTY(QVector3D position READ position WRITE setPosition)
-    Q_PROPERTY(QVector3D upVector READ upVector WRITE setUpVector)
-    Q_PROPERTY(QVector3D viewCenter READ viewCenter WRITE setViewCenter)
-    Q_PROPERTY(QVector3D viewVector READ viewVector NOTIFY viewVectorChanged)
+#endif // QT3D_EXAMPLERESOURCES_H
 
-public:
-    explicit LookAtTransform(Node *parent = 0);
-
-    QMatrix4x4 matrix() const Q_DECL_OVERRIDE;
-
-    void setPosition(const QVector3D &position);
-    QVector3D position() const;
-
-    void setUpVector(const QVector3D &upVector);
-    QVector3D upVector() const;
-
-    void setViewCenter(const QVector3D &viewCenter);
-    QVector3D viewCenter() const;
-
-    QVector3D viewVector() const;
-
-signals:
-    void positionChanged();
-    void upVectorChanged();
-    void viewCenterChanged();
-    void viewVectorChanged();
-
-private:
-    mutable QMatrix4x4 m_matrix;
-    QVector3D m_position;
-    QVector3D m_upVector;
-    QVector3D m_viewCenter;
-    QVector3D m_viewVector; // From "camera" position to view center
-    mutable bool m_matrixDirty;
-};
-
-} // namespace Qt3D
-
-#endif // QT3D_LOOKATTRANSFORM_H

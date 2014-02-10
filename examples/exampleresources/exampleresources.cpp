@@ -39,38 +39,16 @@
 **
 ****************************************************************************/
 
-#ifndef VIEWPORT_H
-#define VIEWPORT_H
+#include "exampleresources.h"
 
-#include <qt3dcore_global.h>
+#include <QDebug>
 
-#include <component.h>
-
-#include <QRectF>
-
-namespace Qt3D {
-
-class Viewport : public Component
+bool initializeAssetResources( const QString& fileName )
 {
-    Q_OBJECT
-
-    Q_PROPERTY(QRectF rect READ rect WRITE setRect NOTIFY rectChanged)
-
-public:
-    explicit Viewport(Node *parent = 0);
-
-    QRectF rect() const;
-
-public slots:
-    void setRect( const QRectF& rect );
-
-signals:
-    void rectChanged( const QRectF& arg );
-
-private:
-    QRectF m_rect;
-};
-
+    QString assetPath = QStringLiteral( QT3D_XSTRINGIFY( ASSETS ) ) + fileName;
+    qDebug() << "assetPath =" << assetPath;
+    bool b = QResource::registerResource( assetPath );
+    if ( !b )
+        qDebug() << "Failed to load assets";
+    return b;
 }
-
-#endif // VIEWPORT_H

@@ -43,12 +43,13 @@
 #define QT3D_SHAPE_H
 
 #include <component.h>
+#include <qt3dcore_global.h>
 
 #include <meshdata.h>
 
 namespace Qt3D {
 
-class Shape : public Qt3D::Component
+class QT3DCORESHARED_EXPORT Shape : public Qt3D::Component
 {
     Q_OBJECT
 

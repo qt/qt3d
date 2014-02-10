@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>SimpleEffect.qml</file>
+        <file>Renderable.qml</file>
+        <file>AdsEffect.qml</file>
+        <file>assets/ball.obj</file>
+    </qresource>
+</RCC>

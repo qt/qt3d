@@ -49,7 +49,7 @@
 
 namespace Qt3D {
 
-class TranslateTransform : public AbstractTransform
+class QT3DCORESHARED_EXPORT TranslateTransform : public AbstractTransform
 {
     Q_OBJECT
 

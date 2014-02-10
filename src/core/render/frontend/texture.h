@@ -39,55 +39,49 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_LOOKATTRANSFORM_H
-#define QT3D_LOOKATTRANSFORM_H
+#ifndef QT3D_TEXTURE_H
+#define QT3D_TEXTURE_H
 
-#include "abstracttransform.h"
-#include "qt3dcore_global.h"
+#include "node.h"
+#include <qt3dcore_global.h>
 
-#include <QVector3D>
+#include <QUrl>
 
 namespace Qt3D {
 
-class QT3DCORESHARED_EXPORT LookAtTransform : public Qt3D::AbstractTransform
+class Texture;
+
+class QT3DCORESHARED_EXPORT QmlTexture : public Node
 {
     Q_OBJECT
-    Q_PROPERTY(QVector3D position READ position WRITE setPosition)
-    Q_PROPERTY(QVector3D upVector READ upVector WRITE setUpVector)
-    Q_PROPERTY(QVector3D viewCenter READ viewCenter WRITE setViewCenter)
-    Q_PROPERTY(QVector3D viewVector READ viewVector NOTIFY viewVectorChanged)
-
 public:
-    explicit LookAtTransform(Node *parent = 0);
+    explicit QmlTexture(Node *parent = 0);
 
-    QMatrix4x4 matrix() const Q_DECL_OVERRIDE;
+    Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(bool rectangle READ isRectangle WRITE setRectangle NOTIFY formatChanged)
 
-    void setPosition(const QVector3D &position);
-    QVector3D position() const;
+    QUrl source() const;
 
-    void setUpVector(const QVector3D &upVector);
-    QVector3D upVector() const;
+    bool isRectangle() const;
 
-    void setViewCenter(const QVector3D &viewCenter);
-    QVector3D viewCenter() const;
-
-    QVector3D viewVector() const;
-
+    Texture* texture() const;
 signals:
-    void positionChanged();
-    void upVectorChanged();
-    void viewCenterChanged();
-    void viewVectorChanged();
+    void sourceChanged();
+    void formatChanged();
+
+public slots:
+
+
+    void setSource(QUrl arg);
+
+    void setRectangle(bool r);
 
 private:
-    mutable QMatrix4x4 m_matrix;
-    QVector3D m_position;
-    QVector3D m_upVector;
-    QVector3D m_viewCenter;
-    QVector3D m_viewVector; // From "camera" position to view center
-    mutable bool m_matrixDirty;
+    Texture* m_texture;
+
+    QUrl m_source;
 };
 
 } // namespace Qt3D
 
-#endif // QT3D_LOOKATTRANSFORM_H
+#endif // QT3D_TEXTURE_H

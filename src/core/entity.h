@@ -54,7 +54,7 @@ class Component;
 
 typedef QList<Component*> ComponentList;
 
-class Entity : public Node
+class QT3DCORESHARED_EXPORT Entity : public Node
 {
     Q_OBJECT
 

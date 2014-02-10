@@ -39,65 +39,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QITEMMODELBUFFER_H
-#define QT3D_QITEMMODELBUFFER_H
+import Qt3D 2.0
 
-#include <QAbstractItemModel>
-#include <QMap>
-#include <QObject>
+Entity {
+    property alias renderPassNames: filter.renderPassNames
 
-#include <meshdata.h>
+    property RenderPassFilter _renderPassFilter: filter
 
-namespace Qt3D {
-
-class QItemModelBuffer : public QObject
-{
-    Q_OBJECT
-public:
-    QItemModelBuffer();
-
-    void setModel(QAbstractItemModel* model);
-    void setRoot(const QModelIndex& rootIndex);
-
-    void mapRoleName(QByteArray roleName, int type);
-    void mapRoleName(QByteArray roleName, QString attributeName, int type);
-
-    BufferPtr buffer();
-
-    QStringList attributeNames() const;
-    AttributePtr attributeByName(QString nm) const;
-
-private slots:
-
-    void onModelReset();
-
-    void onModelDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
-private:
-    QAbstractItemModel* m_model;
-    QModelIndex m_rootIndex;
-
-    struct RoleMapping {
-        RoleMapping(QByteArray role, QString attr, int ty);
-
-        QByteArray roleName;
-        int cachedRole;
-        QString attribute;
-        int type;
-        int byteSize;
-    };
-
-    QList<RoleMapping> m_mappings;
-
-    BufferPtr m_buffer;
-    QMap<QString, AttributePtr> m_attributes;
-    int m_itemStride;
-
-    QByteArray computeBufferData();
-
-    void writeDataForIndex(const QModelIndex &index, int mappingCount, char *bufferPtr);
-    bool validateRoles();
-};
-
-} // namespace Qt3D
-
-#endif // QT3D_QITEMMODELBUFFER_H
+    RenderPassFilter {
+        id: filter
+    }
+}

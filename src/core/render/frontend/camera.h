@@ -43,6 +43,7 @@
 #define CAMERA_H
 
 #include "component.h"
+#include <qt3dcore_global.h>
 
 #include <QMatrix4x4>
 #include <QQuaternion>
@@ -52,7 +53,7 @@ namespace Qt3D {
 
 class CameraPrivate;
 
-class Camera : public Component
+class QT3DCORESHARED_EXPORT Camera : public Component
 {
     Q_OBJECT
 

@@ -49,7 +49,7 @@
 
 namespace Qt3D {
 
-class RotateTransform : public AbstractTransform
+class QT3DCORESHARED_EXPORT RotateTransform : public AbstractTransform
 {
     Q_OBJECT
 

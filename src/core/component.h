@@ -49,7 +49,7 @@
 
 namespace Qt3D {
 
-class Component : public Node
+class QT3DCORESHARED_EXPORT Component : public Node
 {
     Q_OBJECT
 public:

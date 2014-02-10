@@ -39,56 +39,55 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_TRANSFORM_H
-#define QT3D_TRANSFORM_H
+#ifndef SHADERPROGRAM_H
+#define SHADERPROGRAM_H
 
-#include <component.h>
-
-#include <QMatrix4x4>
+#include <node.h>
+#include <qt3dcore_global.h>
 
 namespace Qt3D {
 
-class AbstractTransform;
-
-class Transform : public Qt3D::Component
+class QT3DCORESHARED_EXPORT ShaderProgram : public Node
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3D::AbstractTransform> transforms READ transformList)
-    Q_CLASSINFO("DefaultProperty", "transforms")
+
+    Q_PROPERTY(QString vertexSourceFile READ vertexSourceFile WRITE setVertexSourceFile NOTIFY vertexSourceFileChanged)
+    Q_PROPERTY(QString fragmentSourceFile READ fragmentSourceFile WRITE setFragmentSourceFile NOTIFY fragmentSourceFileChanged)
 
 public:
-    explicit Transform(Node *parent = 0);
+    explicit ShaderProgram(Node *parent = 0);
 
-    QMatrix4x4 matrix() const;
-    void setMatrix(const QMatrix4x4 &m);
+    void setVertexSourceFile(const QString &vertexSourceFile);
+    QString vertexSourceFile() const;
 
-    QVector3D rotationCenter() const;
-    void setRotationCenter(const QVector3D &rc);
+    void setFragmentSourceFile(const QString &fragmentSource);
+    QString fragmentSourceFile() const;
 
-    QList<AbstractTransform*> transforms() const;
+    QByteArray vertexSourceCode() const;
+    QByteArray fragmentSourceCode() const;
 
-    // void insertTransformAt(...)
-    Q_INVOKABLE void appendTransfrom(AbstractTransform *xform);
-    Q_INVOKABLE void removeTransform(AbstractTransform *xform);
+    bool isLoaded() const;
 
-    QQmlListProperty<Qt3D::AbstractTransform> transformList();
+    /**
+     * @brief load - call from main / worker thread to do synchronous
+     * loading of shader source files
+     */
+    void load();
+
+signals:
+    void vertexSourceFileChanged();
+    void fragmentSourceFileChanged();
 
 private:
-    QMatrix4x4 applyTransforms() const;
+    QString m_vertexSourceFile;
+    QString m_fragmentSourceFile;
 
-    static void qmlAppendTransform(QQmlListProperty<Qt3D::AbstractTransform> *list, Qt3D::AbstractTransform *bar);
-    static AbstractTransform* transformAt(QQmlListProperty<Qt3D::AbstractTransform> *list, int index);
-    static int transformCount(QQmlListProperty<Qt3D::AbstractTransform> *list);
-    static void qmlClearTransforms(QQmlListProperty<Qt3D::AbstractTransform> *list);
+    bool m_sourcesDirty, m_isLoaded;
+    QByteArray m_cachedVertexCode,
+        m_cachedFragmentCode;
 
-    mutable bool m_transformsDirty;
-    bool m_visible;
-    QList<AbstractTransform*> m_transforms;
-
-    mutable QMatrix4x4 m_matrix;
-    QMatrix4x4 m_sceneMatrix;
 };
 
-} // namespace Qt3D
+}
 
-#endif // QT3D_TRANSFORM_H
+#endif // SHADERPROGRAM_H

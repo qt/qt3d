@@ -39,35 +39,42 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_CAMERASELECTOR_H
-#define QT3D_CAMERASELECTOR_H
+#ifndef QT3D_TECHNIQUEFILTER_H
+#define QT3D_TECHNIQUEFILTER_H
 
-#include <qt3dcore_global.h>
 #include <component.h>
+#include <qt3dcore_global.h>
+
+#include "tag.h"
+
+#include <QQmlListProperty>
 
 namespace Qt3D {
 
-class Camera;
-
-class CameraSelector : public Qt3D::Component
+class QT3DCORESHARED_EXPORT TechniqueFilter : public Qt3D::Component
 {
     Q_OBJECT
 
-    Q_PROPERTY(Qt3D::Camera *camera READ camera WRITE setCamera NOTIFY cameraChanged)
+    Q_PROPERTY(QQmlListProperty<Qt3D::Tag> tags READ tags NOTIFY tagsChanged)
+    Q_CLASSINFO("DefaultProperty", "tags")
 
 public:
-    explicit CameraSelector(Node *parent = 0);
+    explicit TechniqueFilter(Node *parent = 0);
 
-    void setCamera(Qt3D::Camera *camera);
-    Camera *camera() const;
+    QQmlListProperty<Qt3D::Tag> tags();
 
 signals:
-    void cameraChanged();
+    void tagsChanged();
 
 private:
-    Camera *m_camera;
+    static void appendTag(QQmlListProperty<Tag> *list, Tag *bar);
+    static Tag *tagAt(QQmlListProperty<Tag> *list, int index);
+    static int tagCount(QQmlListProperty<Tag> *list);
+    static void clearTags(QQmlListProperty<Tag> *list);
+
+    QList<Tag *> m_tagList;
 };
 
 } // namespace Qt3D
 
-#endif // QT3D_CAMERASELECTOR_H
+#endif // QT3D_TECHNIQUEFILTER_H

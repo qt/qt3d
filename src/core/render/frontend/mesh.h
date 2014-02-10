@@ -39,55 +39,46 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_LOOKATTRANSFORM_H
-#define QT3D_LOOKATTRANSFORM_H
+#ifndef QT3D_MESH_H
+#define QT3D_MESH_H
 
-#include "abstracttransform.h"
-#include "qt3dcore_global.h"
+#include <component.h>
+#include <qt3dcore_global.h>
 
-#include <QVector3D>
+#include <meshdata.h>
 
 namespace Qt3D {
 
-class QT3DCORESHARED_EXPORT LookAtTransform : public Qt3D::AbstractTransform
+/**
+* @brief Simple static mesh
+*
+*/
+class QT3DCORESHARED_EXPORT Mesh : public Component
 {
     Q_OBJECT
-    Q_PROPERTY(QVector3D position READ position WRITE setPosition)
-    Q_PROPERTY(QVector3D upVector READ upVector WRITE setUpVector)
-    Q_PROPERTY(QVector3D viewCenter READ viewCenter WRITE setViewCenter)
-    Q_PROPERTY(QVector3D viewVector READ viewVector NOTIFY viewVectorChanged)
+
+    Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
 
 public:
-    explicit LookAtTransform(Node *parent = 0);
+    Mesh(Node *parent = 0);
+    virtual ~Mesh();
 
-    QMatrix4x4 matrix() const Q_DECL_OVERRIDE;
+    void setSource(const QString &source);
+    QString source() const;
 
-    void setPosition(const QVector3D &position);
-    QVector3D position() const;
-
-    void setUpVector(const QVector3D &upVector);
-    QVector3D upVector() const;
-
-    void setViewCenter(const QVector3D &viewCenter);
-    QVector3D viewCenter() const;
-
-    QVector3D viewVector() const;
-
+    MeshDataPtr data() const;
+    void setData(MeshDataPtr d);
 signals:
-    void positionChanged();
-    void upVectorChanged();
-    void viewCenterChanged();
-    void viewVectorChanged();
+    void sourceChanged();
 
 private:
-    mutable QMatrix4x4 m_matrix;
-    QVector3D m_position;
-    QVector3D m_upVector;
-    QVector3D m_viewCenter;
-    QVector3D m_viewVector; // From "camera" position to view center
-    mutable bool m_matrixDirty;
+    Q_INVOKABLE void update();
+
+    MeshDataPtr m_data;
+    QString m_source;
+    bool m_sourceDirty;
 };
 
-} // namespace Qt3D
+}
 
-#endif // QT3D_LOOKATTRANSFORM_H
+#endif // of QT3D_MESH_H

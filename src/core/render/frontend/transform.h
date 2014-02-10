@@ -39,48 +39,57 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_TEXTURE_H
-#define QT3D_TEXTURE_H
+#ifndef QT3D_TRANSFORM_H
+#define QT3D_TRANSFORM_H
 
-#include "node.h"
+#include <component.h>
+#include <qt3dcore_global.h>
 
-#include <QUrl>
+#include <QMatrix4x4>
 
 namespace Qt3D {
 
-class Texture;
+class AbstractTransform;
 
-class QmlTexture : public Node
+class QT3DCORESHARED_EXPORT Transform : public Qt3D::Component
 {
     Q_OBJECT
+    Q_PROPERTY(QQmlListProperty<Qt3D::AbstractTransform> transforms READ transformList)
+    Q_CLASSINFO("DefaultProperty", "transforms")
+
 public:
-    explicit QmlTexture(Node *parent = 0);
+    explicit Transform(Node *parent = 0);
 
-    Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
-    Q_PROPERTY(bool rectangle READ isRectangle WRITE setRectangle NOTIFY formatChanged)
+    QMatrix4x4 matrix() const;
+    void setMatrix(const QMatrix4x4 &m);
 
-    QUrl source() const;
+    QVector3D rotationCenter() const;
+    void setRotationCenter(const QVector3D &rc);
 
-    bool isRectangle() const;
+    QList<AbstractTransform*> transforms() const;
 
-    Texture* texture() const;
-signals:
-    void sourceChanged();
-    void formatChanged();
+    // void insertTransformAt(...)
+    Q_INVOKABLE void appendTransfrom(AbstractTransform *xform);
+    Q_INVOKABLE void removeTransform(AbstractTransform *xform);
 
-public slots:
-
-
-    void setSource(QUrl arg);
-
-    void setRectangle(bool r);
+    QQmlListProperty<Qt3D::AbstractTransform> transformList();
 
 private:
-    Texture* m_texture;
+    QMatrix4x4 applyTransforms() const;
 
-    QUrl m_source;
+    static void qmlAppendTransform(QQmlListProperty<Qt3D::AbstractTransform> *list, Qt3D::AbstractTransform *bar);
+    static AbstractTransform* transformAt(QQmlListProperty<Qt3D::AbstractTransform> *list, int index);
+    static int transformCount(QQmlListProperty<Qt3D::AbstractTransform> *list);
+    static void qmlClearTransforms(QQmlListProperty<Qt3D::AbstractTransform> *list);
+
+    mutable bool m_transformsDirty;
+    bool m_visible;
+    QList<AbstractTransform*> m_transforms;
+
+    mutable QMatrix4x4 m_matrix;
+    QMatrix4x4 m_sceneMatrix;
 };
 
 } // namespace Qt3D
 
-#endif // QT3D_TEXTURE_H
+#endif // QT3D_TRANSFORM_H

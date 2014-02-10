@@ -21,7 +21,7 @@ win32-g++*:QMAKE_CXXFLAGS_CXX11 = -std=gnu++0x
 
 include(../3rdparty/threadweaver/src/threadweaver.pri)
 include(core.pri)
-include(../render/render.pri)
+include(render/render.pri)
 PUBLIC_HEADERS = $$HEADERS
 HEADERS += $$PRIVATE_HEADERS
 

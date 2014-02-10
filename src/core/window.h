@@ -58,7 +58,7 @@ class Camera;
 // temporary solution to get control over camera
 class CameraController;
 
-class Window : public QWindow
+class QT3DCORESHARED_EXPORT Window : public QWindow
 {
     Q_OBJECT
 public:

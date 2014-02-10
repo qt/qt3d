@@ -39,54 +39,14 @@
 **
 ****************************************************************************/
 
-#ifndef SHADERPROGRAM_H
-#define SHADERPROGRAM_H
+import Qt3D 2.0
 
-#include <node.h>
+Entity {
+    property alias camera: selector.camera
 
-namespace Qt3D {
+    property CameraSelector _cameraSelector: selector
 
-class ShaderProgram : public Node
-{
-    Q_OBJECT
-
-    Q_PROPERTY(QString vertexSourceFile READ vertexSourceFile WRITE setVertexSourceFile NOTIFY vertexSourceFileChanged)
-    Q_PROPERTY(QString fragmentSourceFile READ fragmentSourceFile WRITE setFragmentSourceFile NOTIFY fragmentSourceFileChanged)
-
-public:
-    explicit ShaderProgram(Node *parent = 0);
-
-    void setVertexSourceFile(const QString &vertexSourceFile);
-    QString vertexSourceFile() const;
-
-    void setFragmentSourceFile(const QString &fragmentSource);
-    QString fragmentSourceFile() const;
-
-    QByteArray vertexSourceCode() const;
-    QByteArray fragmentSourceCode() const;
-
-    bool isLoaded() const;
-
-    /**
-     * @brief load - call from main / worker thread to do synchronous
-     * loading of shader source files
-     */
-    void load();
-
-signals:
-    void vertexSourceFileChanged();
-    void fragmentSourceFileChanged();
-
-private:
-    QString m_vertexSourceFile;
-    QString m_fragmentSourceFile;
-
-    bool m_sourcesDirty, m_isLoaded;
-    QByteArray m_cachedVertexCode,
-        m_cachedFragmentCode;
-
-};
-
+    CameraSelector {
+        id: selector
+    }
 }
-
-#endif // SHADERPROGRAM_H

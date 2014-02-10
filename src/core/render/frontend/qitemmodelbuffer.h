@@ -39,55 +39,67 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_LOOKATTRANSFORM_H
-#define QT3D_LOOKATTRANSFORM_H
+#ifndef QT3D_QITEMMODELBUFFER_H
+#define QT3D_QITEMMODELBUFFER_H
 
-#include "abstracttransform.h"
-#include "qt3dcore_global.h"
+#include <QObject>
+#include <qt3dcore_global.h>
 
-#include <QVector3D>
+#include <meshdata.h>
+
+#include <QAbstractItemModel>
+#include <QMap>
 
 namespace Qt3D {
 
-class QT3DCORESHARED_EXPORT LookAtTransform : public Qt3D::AbstractTransform
+class QT3DCORESHARED_EXPORT QItemModelBuffer : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QVector3D position READ position WRITE setPosition)
-    Q_PROPERTY(QVector3D upVector READ upVector WRITE setUpVector)
-    Q_PROPERTY(QVector3D viewCenter READ viewCenter WRITE setViewCenter)
-    Q_PROPERTY(QVector3D viewVector READ viewVector NOTIFY viewVectorChanged)
-
 public:
-    explicit LookAtTransform(Node *parent = 0);
+    QItemModelBuffer();
 
-    QMatrix4x4 matrix() const Q_DECL_OVERRIDE;
+    void setModel(QAbstractItemModel* model);
+    void setRoot(const QModelIndex& rootIndex);
 
-    void setPosition(const QVector3D &position);
-    QVector3D position() const;
+    void mapRoleName(QByteArray roleName, int type);
+    void mapRoleName(QByteArray roleName, QString attributeName, int type);
 
-    void setUpVector(const QVector3D &upVector);
-    QVector3D upVector() const;
+    BufferPtr buffer();
 
-    void setViewCenter(const QVector3D &viewCenter);
-    QVector3D viewCenter() const;
+    QStringList attributeNames() const;
+    AttributePtr attributeByName(QString nm) const;
 
-    QVector3D viewVector() const;
+private slots:
 
-signals:
-    void positionChanged();
-    void upVectorChanged();
-    void viewCenterChanged();
-    void viewVectorChanged();
+    void onModelReset();
 
+    void onModelDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
 private:
-    mutable QMatrix4x4 m_matrix;
-    QVector3D m_position;
-    QVector3D m_upVector;
-    QVector3D m_viewCenter;
-    QVector3D m_viewVector; // From "camera" position to view center
-    mutable bool m_matrixDirty;
+    QAbstractItemModel* m_model;
+    QModelIndex m_rootIndex;
+
+    struct RoleMapping {
+        RoleMapping(QByteArray role, QString attr, int ty);
+
+        QByteArray roleName;
+        int cachedRole;
+        QString attribute;
+        int type;
+        int byteSize;
+    };
+
+    QList<RoleMapping> m_mappings;
+
+    BufferPtr m_buffer;
+    QMap<QString, AttributePtr> m_attributes;
+    int m_itemStride;
+
+    QByteArray computeBufferData();
+
+    void writeDataForIndex(const QModelIndex &index, int mappingCount, char *bufferPtr);
+    bool validateRoles();
 };
 
 } // namespace Qt3D
 
-#endif // QT3D_LOOKATTRANSFORM_H
+#endif // QT3D_QITEMMODELBUFFER_H

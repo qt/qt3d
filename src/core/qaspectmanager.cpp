@@ -44,7 +44,7 @@
 #include "rendereraspect.h"
 #include "qchangearbiter.h"
 // TODO Make the kind of job manager configurable (e.g. ThreadWeaver vs Intel TBB)
-//#include "qjobmanager.h"
+#include "qjobmanager.h"
 #include "qjobmanagerinterface.h"
 #include "qscheduler.h"
 #include "qtickclock.h"
@@ -65,7 +65,7 @@ QAspectManager::QAspectManager(QObject *parent)
     , m_root(0)
     , m_window(0)
     , m_scheduler(new QScheduler(this))
-    , m_jobManager(0/*new QJobManager(this)*/)
+    , m_jobManager(new QJobManager(this))
     , m_changeArbiter(new QChangeArbiter(this))
     , m_runMainLoop(false)
 {

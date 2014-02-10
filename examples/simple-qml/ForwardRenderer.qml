@@ -39,42 +39,36 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_TECHNIQUEFILTER_H
-#define QT3D_TECHNIQUEFILTER_H
+import Qt3D 2.0
+import "elements/"
 
-#include <qt3dcore_global.h>
-#include <component.h>
+Entity {
+    id: root
 
-#include "tag.h"
+    // Expose the viewport rect and camera. This allows users of this
+    // forward rendering framegraph to decide which camera in the
+    // scene renders to a given viewport region.
+    //
+    // Using this as a building block for a larger framegraph would
+    // allow a scene to be rendered multiple times to different
+    // viewports using different cameras for e.g.
+    property alias viewportRect: viewport.viewportRect
+    property alias camera: cameraSelector.camera
 
-#include <QQmlListProperty>
+    TechniqueFilterEntity {
+        filterTags: [
+            Tag { name: "style"; value: "forward"}
+        ]
 
-namespace Qt3D {
+        ViewportEntity {
+            id: viewport
 
-class TechniqueFilter : public Qt3D::Component
-{
-    Q_OBJECT
+            CameraSelectorEntity {
+                id: cameraSelector
 
-    Q_PROPERTY(QQmlListProperty<Qt3D::Tag> tags READ tags NOTIFY tagsChanged)
-    Q_CLASSINFO("DefaultProperty", "tags")
-
-public:
-    explicit TechniqueFilter(Node *parent = 0);
-
-    QQmlListProperty<Qt3D::Tag> tags();
-
-signals:
-    void tagsChanged();
-
-private:
-    static void appendTag(QQmlListProperty<Tag> *list, Tag *bar);
-    static Tag *tagAt(QQmlListProperty<Tag> *list, int index);
-    static int tagCount(QQmlListProperty<Tag> *list);
-    static void clearTags(QQmlListProperty<Tag> *list);
-
-    QList<Tag *> m_tagList;
-};
-
-} // namespace Qt3D
-
-#endif // QT3D_TECHNIQUEFILTER_H
+                RenderPassFilterEntity { renderPassNames: "zFill" }
+                RenderPassFilterEntity { renderPassNames: "lighting" }
+            }
+        }
+    }
+}

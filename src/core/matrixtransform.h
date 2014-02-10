@@ -49,7 +49,7 @@
 
 namespace Qt3D {
 
-class MatrixTransform : public AbstractTransform
+class QT3DCORESHARED_EXPORT MatrixTransform : public AbstractTransform
 {
 public:
     MatrixTransform();

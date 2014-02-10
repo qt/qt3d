@@ -39,55 +39,62 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_LOOKATTRANSFORM_H
-#define QT3D_LOOKATTRANSFORM_H
+import Qt3D 2.0
 
-#include "abstracttransform.h"
-#include "qt3dcore_global.h"
+// For Qt.vector3d() and friends. For some reason this is provided by
+// QQuickValueTypeProvider in QtQuick rather than the default value
+// type provider in QtQml. So we will need to replicate this in Qt3D
+// for the types that we wish to support. Otherwise we'll have to import
+// QtQuick 2.1 all over the place.
+import QtQuick 2.1
 
-#include <QVector3D>
+Effect {
+    // TODO add another effect that uses texture for diffuse
+    //property Texture2D diffuseTexture
+    property vector3d ambient: Qt.vector3d( 0.1, 0.1, 0.1 )
+    property vector3d diffuse: Qt.vector3d( 0.7, 0.7, 0.7 )
+    property vector3d specular: Qt.vector3d( 0.2, 0.2, 0.2 )
+    property real shininess: 10.0
 
-namespace Qt3D {
+    techniques: [
+        Technique {
+            tags: [
+                Tag { name: "style"; value: "forward" }
+            ]
 
-class QT3DCORESHARED_EXPORT LookAtTransform : public Qt3D::AbstractTransform
-{
-    Q_OBJECT
-    Q_PROPERTY(QVector3D position READ position WRITE setPosition)
-    Q_PROPERTY(QVector3D upVector READ upVector WRITE setUpVector)
-    Q_PROPERTY(QVector3D viewCenter READ viewCenter WRITE setViewCenter)
-    Q_PROPERTY(QVector3D viewVector READ viewVector NOTIFY viewVectorChanged)
+            renderPasses: [
+                RenderPass {
+                    name: "zFill"
+                    shaderProgram: zFillProgram
+                    //renderStates: [ DepthState { depthTest: true; } ]
+                },
 
-public:
-    explicit LookAtTransform(Node *parent = 0);
+                RenderPass {
+                    name: "lighting"
+                    shaderProgram: adsProgram
+                    //renderStates: [ DepthState { depthWrites: true; depthTest: true; } ]
+                }
+            ]
+        }
+    ]
 
-    QMatrix4x4 matrix() const Q_DECL_OVERRIDE;
+    ShaderProgram {
+        id: zFillProgram
+        objectName: "zFillProgram"
+        vertexSourceFile: ":/shaders/zfill.vert"
+        fragmentSourceFile: ":/shaders/zfill.frag"
+    }
 
-    void setPosition(const QVector3D &position);
-    QVector3D position() const;
+    ShaderProgram {
+        id: adsProgram
+        objectName: "adsProgram"
+        vertexSourceFile: ":/shaders/phong.vert"
+        fragmentSourceFile: ":/shaders/phong.frag"
 
-    void setUpVector(const QVector3D &upVector);
-    QVector3D upVector() const;
-
-    void setViewCenter(const QVector3D &viewCenter);
-    QVector3D viewCenter() const;
-
-    QVector3D viewVector() const;
-
-signals:
-    void positionChanged();
-    void upVectorChanged();
-    void viewCenterChanged();
-    void viewVectorChanged();
-
-private:
-    mutable QMatrix4x4 m_matrix;
-    QVector3D m_position;
-    QVector3D m_upVector;
-    QVector3D m_viewCenter;
-    QVector3D m_viewVector; // From "camera" position to view center
-    mutable bool m_matrixDirty;
-};
-
-} // namespace Qt3D
-
-#endif // QT3D_LOOKATTRANSFORM_H
+//        // How to handle uniforms? Especially arrays and structs
+//        uniforms: [
+//            Uniform { name: "light[0].position:";  value: Qt.vector3d( 0.0, 0.0, 0.0 ) },
+//            Uniform { name: "light[0].intensity:"; value: Qt.vector3d( 1.0, 1.0, 1.0 ) }
+//        ]
+    }
+}

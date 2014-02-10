@@ -48,7 +48,7 @@
 namespace Qt3D
 {
 
-class Scene : public Entity
+class QT3DCORESHARED_EXPORT Scene : public Entity
 {
     Q_OBJECT
 

@@ -39,45 +39,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_MESH_H
-#define QT3D_MESH_H
+import Qt3D 2.0
 
-#include <component.h>
+Entity {
+    property alias filterTags: filter.tags
 
-#include <meshdata.h>
+    property TechniqueFilter _techniqueFilter: filter
 
-namespace Qt3D {
-
-/**
-* @brief Simple static mesh
-*
-*/
-class Mesh : public Component
-{
-    Q_OBJECT
-
-    Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
-
-public:
-    Mesh(Node *parent = 0);
-    virtual ~Mesh();
-
-    void setSource(const QString &source);
-    QString source() const;
-
-    MeshDataPtr data() const;
-    void setData(MeshDataPtr d);
-signals:
-    void sourceChanged();
-
-private:
-    Q_INVOKABLE void update();
-
-    MeshDataPtr m_data;
-    QString m_source;
-    bool m_sourceDirty;
-};
-
+    TechniqueFilter {
+        id: filter
+    }
 }
-
-#endif // of QT3D_MESH_H
