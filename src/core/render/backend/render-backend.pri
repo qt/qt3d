@@ -1,7 +1,7 @@
 INCLUDEPATH += $$PWD
 
 include("framegraph/framegraph.pri")
-include("jobs/jobs.pri")
+include("jobs/render-jobs.pri")
 
 HEADERS += \
     $$PWD/rendereraspect.h \

@@ -45,9 +45,9 @@
 #include "renderer.h"
 #include "renderthread.h"
 
-#include <jobs/loadmeshdatajob.h>
-#include <jobs/updateworldtransformjob.h>
-#include <jobs/updateboundingvolumejob.h>
+#include <loadmeshdatajob.h>
+#include <updateworldtransformjob.h>
+#include <updateboundingvolumejob.h>
 
 #include <node.h>
 
