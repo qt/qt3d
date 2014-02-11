@@ -149,7 +149,7 @@ private:
 
     QVariant parameterValueFromJSON(Parameter *p, QJsonValue val);
 
-    DrawState *buildState(QString nm, QJsonValue obj);
+    DrawState *buildState(const QByteArray& nm, QJsonValue obj);
 };
 
 }

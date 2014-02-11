@@ -72,7 +72,66 @@ namespace Qt3D {
 namespace
 {
 
-Parameter::StandardUniform parseSemanticName(QString s)
+#define KEY_CAMERA      QStringLiteral("camera")
+#define KEY_CAMERAS     QStringLiteral("cameras")
+#define KEY_SCENES      QStringLiteral("scenes")
+#define KEY_NODES       QStringLiteral("nodes")
+#define KEY_MESHES      QStringLiteral("meshes")
+#define KEY_CHILDREN    QStringLiteral("children")
+#define KEY_MATRIX      QStringLiteral("matrix")
+#define KEY_TYPE        QStringLiteral("type")
+#define KEY_PERSPECTIVE QStringLiteral("perspective")
+#define KEY_NAME        QStringLiteral("name")
+#define KEY_COUNT       QStringLiteral("count")
+#define KEY_YFOV        QStringLiteral("yfov")
+#define KEY_ZNEAR       QStringLiteral("znear")
+#define KEY_ZFAR        QStringLiteral("zfar")
+#define KEY_MATERIALS   QStringLiteral("materials")
+#define KEY_TECHNIQUE   QStringLiteral("technique")
+#define KEY_VALUES      QStringLiteral("values")
+#define KEY_BUFFERS     QStringLiteral("buffers")
+#define KEY_SHADERS     QStringLiteral("shaders")
+#define KEY_PROGRAMS    QStringLiteral("programs")
+#define KEY_PROGRAM     QStringLiteral("program")
+#define KEY_TECHNIQUES  QStringLiteral("techniques")
+#define KEY_ACCESSORS   QStringLiteral("accessors")
+#define KEY_IMAGES      QStringLiteral("images")
+#define KEY_TEXTURES    QStringLiteral("textures")
+#define KEY_SCENE       QStringLiteral("scene")
+#define KEY_BUFFER      QStringLiteral("buffer")
+#define KEY_TARGET      QStringLiteral("target")
+#define KEY_BYTE_OFFSET QStringLiteral("byteOffset")
+#define KEY_BYTE_LENGTH QStringLiteral("byteLength")
+#define KEY_BYTE_STRIDE QStringLiteral("byteStride")
+#define KEY_PRIMITIVES  QStringLiteral("primitives")
+#define KEY_PRIMITIVE   QStringLiteral("primitive")
+#define KEY_MATERIAL    QStringLiteral("material")
+#define KEY_ATTRIBUTES  QStringLiteral("attributes")
+#define KEY_INDICES     QStringLiteral("indices")
+#define KEY_PATH        QStringLiteral("path")
+#define KEY_FORMAT      QStringLiteral("format")
+#define KEY_PASSES      QStringLiteral("passes")
+#define KEY_SOURCE      QStringLiteral("source")
+#define KEY_SAMPLER     QStringLiteral("sampler")
+#define KEY_SAMPLERS    QStringLiteral("sampler")
+#define KEY_LENGTH      QStringLiteral("length")
+#define KEY_SEMANTIC    QStringLiteral("semantic")
+#define KEY_STATES      QStringLiteral("states")
+#define KEY_UNIFORMS    QStringLiteral("uniforms")
+#define KEY_PARAMETERS  QStringLiteral("parameters")
+#define KEY_WRAP_S      QStringLiteral("wrapS")
+#define KEY_MIN_FILTER  QStringLiteral("minFilter")
+#define KEY_MAG_FILTER  QStringLiteral("magFilter")
+
+#define KEY_INSTANCE_TECHNIQUE QStringLiteral("instanceTechnique")
+#define KEY_INSTANCE_PROGRAM QStringLiteral("instanceProgram")
+#define KEY_BUFFER_VIEWS     QStringLiteral("bufferViews")
+#define KEY_BUFFER_VIEW      QStringLiteral("bufferView")
+#define KEY_VERTEX_SHADER    QStringLiteral("vertexShader")
+#define KEY_FRAGMENT_SHADER  QStringLiteral("fragmentShader")
+#define KEY_INTERNAL_FORMAT  QStringLiteral("internalFormat")
+
+Parameter::StandardUniform parseSemanticName(const QByteArray& s)
 {
     if (s == "MODEL")           return Parameter::ModelMatrix;
     if (s == "VIEW")            return Parameter::ViewMatrix;
@@ -113,7 +172,7 @@ bool GLTFParser::isGLTFPath(QString path)
 
     // might need to detect other things in the future, but would
     // prefer to avoid doing a full parse.
-    return (finfo.suffix().toLower() == "json");
+    return (finfo.suffix().toLower() == QStringLiteral("json"));
 }
 
 void GLTFParser::setFilePath(QString path)
@@ -181,7 +240,7 @@ Entity* GLTFParser::scene(QString id)
 {
     parse();
 
-    QJsonObject scenes = m_json.object().value("scenes").toObject();
+    QJsonObject scenes = m_json.object().value(KEY_SCENES).toObject();
     if (!scenes.contains(id)) {
         qWarning() << "GLTF: no such scene" << id << "in file" << m_basePath;
         return NULL;
@@ -189,7 +248,7 @@ Entity* GLTFParser::scene(QString id)
 
     QJsonObject sceneObj = scenes.value(id).toObject();
     Entity* sceneEntity = new Entity;
-    foreach (QJsonValue nnv, sceneObj.value("nodes").toArray()) {
+    foreach (QJsonValue nnv, sceneObj.value(KEY_NODES).toArray()) {
         QString nodeName = nnv.toString();
         Entity* child = node(nodeName);
         if (!child)
@@ -203,7 +262,7 @@ Entity* GLTFParser::scene(QString id)
 
 Entity* GLTFParser::node(QString id)
 {
-    QJsonObject nodes = m_json.object().value("nodes").toObject();
+    QJsonObject nodes = m_json.object().value(KEY_NODES).toObject();
     if (!nodes.contains(id)) {
         qWarning() << "unknown node" << id << "in GLTF file" << m_basePath;
         return NULL;
@@ -213,9 +272,9 @@ Entity* GLTFParser::node(QString id)
     Entity* result( new Entity );
     parse();
 
-    if ( jsonObj.contains( "children" ) )
+    if ( jsonObj.contains(KEY_CHILDREN) )
     {
-        foreach (QJsonValue c, jsonObj.value( "children" ).toArray()) {
+        foreach (QJsonValue c, jsonObj.value(KEY_CHILDREN).toArray()) {
             Entity* child = node(c.toString());
             if (!child)
                 continue;
@@ -223,12 +282,12 @@ Entity* GLTFParser::node(QString id)
         }
     }
 
-    if ( jsonObj.contains( "meshes") )
+    if ( jsonObj.contains(KEY_MESHES) )
     {
         typedef QList<Mesh*> MeshList;
         QMap<QString, MeshList> materialDict;
 
-        foreach (QJsonValue m, jsonObj.value( "meshes" ).toArray())
+        foreach (QJsonValue m, jsonObj.value(KEY_MESHES).toArray())
         {
             if (!m_meshDict.contains(m.toString())) {
                 qWarning() << "node" << id << "references unknown mesh" << m.toString();
@@ -263,10 +322,10 @@ Entity* GLTFParser::node(QString id)
 
     processName(jsonObj, result);
 
-    if ( jsonObj.contains( "matrix") )
+    if ( jsonObj.contains(KEY_MATRIX) )
     {
         QMatrix4x4 m;
-        QJsonArray matrixValues = jsonObj.value( "matrix" ).toArray();
+        QJsonArray matrixValues = jsonObj.value(KEY_MATRIX).toArray();
 
         for (int i=0; i<16; ++i) {
             double v = matrixValues.at( i ).toDouble();
@@ -276,11 +335,11 @@ Entity* GLTFParser::node(QString id)
         result->setMatrix( m );
     }
 
-    if ( jsonObj.contains( "camera") )
+    if ( jsonObj.contains(KEY_CAMERA) )
     {
-        Camera* cam = camera( jsonObj.value("camera").toString() );
+        Camera* cam = camera( jsonObj.value(KEY_CAMERA).toString() );
         if (!cam) {
-            qWarning() << "failed to build camera:" << jsonObj.value("camera")
+            qWarning() << "failed to build camera:" << jsonObj.value(KEY_CAMERA)
                           << "on node" << id;
         } else {
             result->addComponent(cam);
@@ -302,25 +361,25 @@ Entity* GLTFParser::node(QString id)
 Camera* GLTFParser::camera(QString id)
 {
     parse();
-    QJsonObject cams = m_json.object().value("cameras").toObject();
+    QJsonObject cams = m_json.object().value(KEY_CAMERAS).toObject();
     if (!cams.contains(id)) {
         qWarning() << "unknown camera" << id << "in GLTF file" << m_basePath;
         return NULL;
     }
 
     QJsonObject jsonObj = cams.value(id).toObject();
-    QString camTy = jsonObj.value("type").toString();
+    QByteArray camTy = jsonObj.value(KEY_TYPE).toString().toUtf8();
 
     if (camTy == "perspective") {
-        if (!jsonObj.contains("perspective")) {
+        if (!jsonObj.contains(KEY_PERSPECTIVE)) {
             qWarning() << "camera:" << id << "missing 'perspective' object";
             return NULL;
         }
 
-        QJsonObject pObj = jsonObj.value("perspective").toObject();
-        double yfov = pObj.value("yfov").toDouble();
-        double near = pObj.value("znear").toDouble();
-        double far = pObj.value("zfar").toDouble();
+        QJsonObject pObj = jsonObj.value(KEY_PERSPECTIVE).toObject();
+        double yfov = pObj.value(KEY_YFOV).toDouble();
+        double near = pObj.value(KEY_ZNEAR).toDouble();
+        double far = pObj.value(KEY_ZFAR).toDouble();
 
         Camera* result = new Camera;
         result->setPerspectiveProjection(yfov, 1.0, near, far);
@@ -342,7 +401,7 @@ Material* GLTFParser::material(QString id)
     if (m_materialCache.contains(id))
         return m_materialCache.value(id);
 
-    QJsonObject mats = m_json.object().value("materials").toObject();
+    QJsonObject mats = m_json.object().value(KEY_MATERIALS).toObject();
     if (!mats.contains(id)) {
         qWarning() << "unknown material" << id << "in GLTF file" << m_basePath;
         return NULL;
@@ -350,8 +409,8 @@ Material* GLTFParser::material(QString id)
 
     QJsonObject jsonObj = mats.value(id).toObject();
 
-    QJsonObject tech = jsonObj.value("instanceTechnique").toObject();
-    QString tname = tech.value("technique").toString();
+    QJsonObject tech = jsonObj.value(KEY_INSTANCE_TECHNIQUE).toObject();
+    QString tname = tech.value(KEY_TECHNIQUE).toString();
     if (!m_techniques.contains(tname)) {
         qWarning() << "unknown technique" << tname <<
                       "for material" << id << "in GLTF file" << m_basePath;
@@ -371,7 +430,7 @@ Material* GLTFParser::material(QString id)
 
     processName(jsonObj, mat);
 
-    QJsonObject values = tech.value("values").toObject();
+    QJsonObject values = tech.value(KEY_VALUES).toObject();
     foreach (QString vName, values.keys()) {
         Parameter* param = technique->parameterByName(vName);
         if (!param) {
@@ -403,52 +462,52 @@ void GLTFParser::parse()
     if (m_parseDone)
         return;
 
-    QJsonObject buffers = m_json.object().value("buffers").toObject();
+    QJsonObject buffers = m_json.object().value(KEY_BUFFERS).toObject();
     foreach (QString nm, buffers.keys()) {
         processJSONBuffer( nm, buffers.value(nm).toObject() );
     }
 
-    QJsonObject views = m_json.object().value("bufferViews").toObject();
+    QJsonObject views = m_json.object().value(KEY_BUFFER_VIEWS).toObject();
     foreach (QString nm, views.keys()) {
         processJSONBufferView( nm, views.value(nm).toObject() );
     }
 
-    QJsonObject shaders = m_json.object().value("shaders").toObject();
+    QJsonObject shaders = m_json.object().value(KEY_SHADERS).toObject();
     foreach (QString nm, shaders.keys()) {
         processJSONShader( nm, shaders.value(nm).toObject() );
     }
 
-    QJsonObject programs = m_json.object().value("programs").toObject();
+    QJsonObject programs = m_json.object().value(KEY_PROGRAMS).toObject();
     foreach (QString nm, programs.keys()) {
         processJSONProgram( nm, programs.value(nm).toObject() );
     }
 
-    QJsonObject techniques = m_json.object().value("techniques").toObject();
+    QJsonObject techniques = m_json.object().value(KEY_TECHNIQUES).toObject();
     foreach (QString nm, techniques.keys()) {
         processJSONTechnique( nm, techniques.value(nm).toObject() );
     }
 
-    QJsonObject attrs = m_json.object().value("accessors").toObject();
+    QJsonObject attrs = m_json.object().value(KEY_ACCESSORS).toObject();
     foreach (QString nm, attrs.keys()) {
         processJSONAccessor( nm, attrs.value(nm).toObject() );
     }
 
-    QJsonObject meshes = m_json.object().value("meshes").toObject();
+    QJsonObject meshes = m_json.object().value(KEY_MESHES).toObject();
     foreach (QString nm, meshes.keys()) {
         processJSONMesh( nm, meshes.value(nm).toObject() );
     }
 
-    QJsonObject images = m_json.object().value("images").toObject();
+    QJsonObject images = m_json.object().value(KEY_IMAGES).toObject();
     foreach (QString nm, images.keys()) {
         processJSONImage( nm, images.value(nm).toObject() );
     }
 
-    QJsonObject textures = m_json.object().value("textures").toObject();
+    QJsonObject textures = m_json.object().value(KEY_TEXTURES).toObject();
     foreach (QString nm, textures.keys()) {
         processJSONTexture(nm, textures.value(nm).toObject() );
     }
 
-    m_defaultScene = m_json.object().value("scene").toString();
+    m_defaultScene = m_json.object().value(KEY_SCENE).toString();
     m_parseDone = true;
 }
 
@@ -460,13 +519,13 @@ void GLTFParser::processJSONBuffer( QString id, const QJsonObject& json )
 
 void GLTFParser::processJSONBufferView( QString id, const QJsonObject& json )
 {
-    QString bufName = json.value("buffer").toString();
+    QString bufName = json.value(KEY_BUFFER).toString();
     if (!m_bufferDatas.contains(bufName)) {
         qWarning() << "unknown buffer:" << bufName << "processing view:" << id;
         return;
     }
 
-    int target = json.value("target").toInt();
+    int target = json.value(KEY_TARGET).toInt();
     QOpenGLBuffer::Type ty(QOpenGLBuffer::VertexBuffer);
 
     switch (target) {
@@ -478,12 +537,12 @@ void GLTFParser::processJSONBufferView( QString id, const QJsonObject& json )
     }
 
     quint64 offset = 0;
-    if (json.contains("byteOffset")) {
-        offset = json.value("byteOffset").toInt();
+    if (json.contains(KEY_BYTE_OFFSET)) {
+        offset = json.value(KEY_BYTE_OFFSET).toInt();
         qDebug() << "bv:" << id << "has offset:" << offset;
     }
 
-    quint64 len = json.value("byteLength").toInt();
+    quint64 len = json.value(KEY_BYTE_LENGTH).toInt();
     QFile* f = resolveLocalData(m_bufferDatas[bufName].path);
     if (!f->seek(offset)) {
         qWarning() << "failed to seek to offset in file for bufferView:" << id << offset;
@@ -503,7 +562,7 @@ void GLTFParser::processJSONBufferView( QString id, const QJsonObject& json )
 
 void GLTFParser::processJSONAccessor( QString id, const QJsonObject& json )
 {
-    QString bvName = json.value("bufferView").toString();
+    QString bvName = json.value(KEY_BUFFER_VIEW).toString();
     if (!m_buffers.contains(bvName)) {
         qWarning() << "unknown buffer-view:" << bvName << "processing accessor:" << id;
         return;
@@ -511,13 +570,13 @@ void GLTFParser::processJSONAccessor( QString id, const QJsonObject& json )
 
     BufferPtr buf = m_buffers.value(bvName);
     int offset = 0, stride = 0;
-    int type = json.value("type").toInt();
-    int count = json.value("count").toInt();
+    int type = json.value(KEY_TYPE).toInt();
+    int count = json.value(KEY_COUNT).toInt();
 
-    if ( json.contains("byteOffset"))
-        offset = json.value("byteOffset").toInt();
-    if ( json.contains("byteStride"))
-        stride = json.value("byteStride").toInt();
+    if ( json.contains(KEY_BYTE_OFFSET))
+        offset = json.value(KEY_BYTE_OFFSET).toInt();
+    if ( json.contains(KEY_BYTE_STRIDE))
+        stride = json.value(KEY_BYTE_STRIDE).toInt();
 
     AttributePtr attr( new Attribute( buf, type, count, offset, stride ) );
     m_attributeDict[id] = attr;
@@ -525,11 +584,11 @@ void GLTFParser::processJSONAccessor( QString id, const QJsonObject& json )
 
 void GLTFParser::processJSONMesh( QString id, QJsonObject jsonObj )
 {
-    QJsonArray primsArray = jsonObj.value( "primitives").toArray();
+    QJsonArray primsArray = jsonObj.value(KEY_PRIMITIVES).toArray();
     Q_FOREACH (QJsonValue primVal, primsArray) {
         QJsonObject primObj = primVal.toObject();
-        int type = primObj.value( "primitive").toInt();
-        QString material = primObj.value( "material").toString();
+        int type = primObj.value(KEY_PRIMITIVE).toInt();
+        QString material = primObj.value(KEY_MATERIAL).toString();
 
         if ( material.isEmpty()) {
             qWarning() << "malformed primitive on " << id << ", missing material value"
@@ -540,7 +599,7 @@ void GLTFParser::processJSONMesh( QString id, QJsonObject jsonObj )
         MeshDataPtr md( new MeshData( type ) );
         m_meshMaterialDict[md.data()] = material;
 
-        QJsonObject attrs = primObj.value("attributes").toObject();
+        QJsonObject attrs = primObj.value(KEY_ATTRIBUTES).toObject();
         Q_FOREACH (QString attrName, attrs.keys()) {
             QString k = attrs.value(attrName).toString();
             if (!m_attributeDict.contains(k)) {
@@ -554,8 +613,8 @@ void GLTFParser::processJSONMesh( QString id, QJsonObject jsonObj )
          //   m_attributeDict[k]->dump(20);
         }
 
-        if ( primObj.contains( "indices" )) {
-            QString k = primObj.value("indices").toString();
+        if ( primObj.contains(KEY_INDICES)) {
+            QString k = primObj.value(KEY_INDICES).toString();
             if (!m_attributeDict.contains(k)) {
                 qWarning() << "unknown index accessor:" << k << "on mesh" << id;
             } else {
@@ -570,9 +629,9 @@ void GLTFParser::processJSONMesh( QString id, QJsonObject jsonObj )
 
 void GLTFParser::processName(const QJsonObject &json, QObject *ins)
 {
-    if ( json.contains( "name" ) )
+    if ( json.contains(KEY_NAME) )
     {
-        ins->setObjectName( json.value("name").toString() );
+        ins->setObjectName( json.value(KEY_NAME).toString() );
     }
 }
 
@@ -581,8 +640,8 @@ void GLTFParser::processJSONProgram( QString id, QJsonObject jsonObj)
     ShaderProgram* prog = new ShaderProgram;
     prog->setObjectName(id);
 
-    QString fragName = jsonObj.value("fragmentShader").toString(),
-            vertName = jsonObj.value("vertexShader").toString();
+    QString fragName = jsonObj.value(KEY_FRAGMENT_SHADER).toString(),
+            vertName = jsonObj.value(KEY_VERTEX_SHADER).toString();
     if (!m_shaderPaths.contains(fragName) || !m_shaderPaths.contains(vertName)) {
         qWarning() << Q_FUNC_INFO << "program:" << id << "missing shader:" <<
                       fragName << vertName;
@@ -598,7 +657,7 @@ void GLTFParser::processJSONShader( QString id, QJsonObject jsonObj)
 {
     // shaders are trivial for the moment, defer the real work
     // to the program section
-    QString path = jsonObj.value("path").toString();
+    QString path = jsonObj.value(KEY_PATH).toString();
 
     QFileInfo info(m_basePath, path);
     if (!info.exists()) {
@@ -611,7 +670,7 @@ void GLTFParser::processJSONShader( QString id, QJsonObject jsonObj)
 
 void GLTFParser::processJSONImage( QString id, QJsonObject jsonObj)
 {
-    QString path = jsonObj.value("path").toString();
+    QString path = jsonObj.value(KEY_PATH).toString();
     QFileInfo info(m_basePath, path);
     if (!info.exists()) {
         qWarning() << "can't find image" << id << "from path" << path;
@@ -631,15 +690,15 @@ void GLTFParser::processJSONTexture( QString id, QJsonObject jsonObj)
 {
     Texture* tex = new Texture();
 
-    int target = jsonObj.value("target").toInt();
-    int pixelFormat = jsonObj.value("format").toInt();
-    int internalFormat = jsonObj.value("internalFormat").toInt();
+    int target = jsonObj.value(KEY_TARGET).toInt();
+    int pixelFormat = jsonObj.value(KEY_FORMAT).toInt();
+    int internalFormat = jsonObj.value(KEY_INTERNAL_FORMAT).toInt();
 
     tex->setTarget(static_cast<QOpenGLTexture::Target>(target));
     tex->setInternalFormat(QOpenGLTexture::RGBA8_UNorm /* static_cast<QOpenGLTexture::TextureFormat>(internalFormat)*/);
 
-    QString samplerId = jsonObj.value("sampler").toString();
-    QString source = jsonObj.value("source").toString();
+    QString samplerId = jsonObj.value(KEY_SAMPLER).toString();
+    QString source = jsonObj.value(KEY_SOURCE).toString();
     if (!m_images.contains(source)) {
         qWarning() << "texture" << id << "references missing image" << source;
         return;
@@ -647,7 +706,7 @@ void GLTFParser::processJSONTexture( QString id, QJsonObject jsonObj)
 
     tex->setFromQImage(m_images[source]);
 
-    QJsonObject samplersDict(m_json.object().value("samplers").toObject());
+    QJsonObject samplersDict(m_json.object().value(KEY_SAMPLERS).toObject());
     if (!samplersDict.contains(samplerId)) {
         qWarning() << "texture" << id << "references unknown sampler" << samplerId;
         return;
@@ -655,11 +714,11 @@ void GLTFParser::processJSONTexture( QString id, QJsonObject jsonObj)
 
     QJsonObject sampler = samplersDict.value(samplerId).toObject();
 
-    tex->setWrapMode(static_cast<QOpenGLTexture::WrapMode>(sampler.value("wrapS").toInt()));
+    tex->setWrapMode(static_cast<QOpenGLTexture::WrapMode>(sampler.value(KEY_WRAP_S).toInt()));
     // tex->setWrapMode(sampler.value("wrapT").toInt());
 
-    tex->setMinificationFilter(static_cast<QOpenGLTexture::Filter>(sampler.value("minFilter").toInt()));
-    tex->setMagnificationFilter(static_cast<QOpenGLTexture::Filter>(sampler.value("magFilter").toInt()));
+    tex->setMinificationFilter(static_cast<QOpenGLTexture::Filter>(sampler.value(KEY_MIN_FILTER).toInt()));
+    tex->setMagnificationFilter(static_cast<QOpenGLTexture::Filter>(sampler.value(KEY_MAG_FILTER).toInt()));
 
     m_textures[id] = tex;
 }
@@ -670,15 +729,15 @@ void GLTFParser::processJSONTechnique( QString id, QJsonObject jsonObj )
     t->setObjectName(id);
 
     QHash<QString, Parameter*> paramDict;
-    QJsonObject params = jsonObj.value( "parameters").toObject();
+    QJsonObject params = jsonObj.value(KEY_PARAMETERS).toObject();
     Q_FOREACH (QString pname, params.keys()) {
         QJsonObject po = params.value(pname).toObject();
 
-        int dataType = po.value("type").toInt();
-        QString semantic = po.value("semantic").toString();
+        int dataType = po.value(KEY_TYPE).toInt();
+        QString semantic = po.value(KEY_SEMANTIC).toString();
 
         Parameter* p = new Parameter(t, pname, dataType);
-        Parameter::StandardUniform su = parseSemanticName(semantic);
+        Parameter::StandardUniform su = parseSemanticName(semantic.toUtf8());
         if (su != Parameter::None) {
             p->setStandardUniform(su);
         } else {
@@ -693,12 +752,12 @@ void GLTFParser::processJSONTechnique( QString id, QJsonObject jsonObj )
         paramDict[pname] = p;
     } // of parameters iteration
 
-    QJsonObject passes = jsonObj.value("passes").toObject();
+    QJsonObject passes = jsonObj.value(KEY_PASSES).toObject();
     Q_FOREACH (QString pname, passes.keys()) {
         QJsonObject po = passes.value(pname).toObject();
-        QJsonObject ip = po.value("instanceProgram").toObject();
+        QJsonObject ip = po.value(KEY_INSTANCE_PROGRAM).toObject();
 
-        QString programName = ip.value("program").toString();
+        QString programName = ip.value(KEY_PROGRAM).toString();
         if (!m_programs.contains(programName)) {
             qWarning() << Q_FUNC_INFO << "technique" << id << "pass" << pname
                        << ": missing program" << programName;
@@ -708,24 +767,24 @@ void GLTFParser::processJSONTechnique( QString id, QJsonObject jsonObj )
         RenderPass* pass = new RenderPass;
         pass->setShaderProgram(m_programs[programName]);
 
-        QJsonObject attrs = ip.value("attributes").toObject();
+        QJsonObject attrs = ip.value(KEY_ATTRIBUTES).toObject();
         Q_FOREACH ( QString attrName, attrs.keys() ) {
             QString pname = attrs.value(attrName).toString();
             pass->addAttributeBinding(paramDict[pname], attrName);
         } // of program-instance attributes
 
 
-        QJsonObject uniforms = ip.value("uniforms").toObject();
+        QJsonObject uniforms = ip.value(KEY_UNIFORMS).toObject();
         Q_FOREACH (QString uniformName, uniforms.keys()) {
             QString pname = uniforms.value(uniformName).toString();
             pass->addUniformBinding(paramDict[pname], uniformName);
         } // of program-instance attributes
 
-        QJsonObject states = po.value("states").toObject();
+        QJsonObject states = po.value(KEY_STATES).toObject();
         DrawStateSet* ss = new DrawStateSet;
 
         Q_FOREACH (QString stateName, states.keys()) {
-            DrawState* s= buildState(stateName, states.value(stateName));
+            DrawState* s= buildState(stateName.toUtf8(), states.value(stateName));
             if (!s)
                 continue;
 
@@ -739,7 +798,7 @@ void GLTFParser::processJSONTechnique( QString id, QJsonObject jsonObj )
     m_techniques[id] = t;
 }
 
-DrawState* GLTFParser::buildState(QString nm, QJsonValue v)
+DrawState* GLTFParser::buildState(const QByteArray& nm, QJsonValue v)
 {
     if (nm == "blendEnable") {
         return NULL; // will see a blendEquation spec too
@@ -747,8 +806,8 @@ DrawState* GLTFParser::buildState(QString nm, QJsonValue v)
 
     if (nm == "blendFunc") {
         QJsonObject obj =  v.toObject();
-        GLenum srcF = static_cast<GLenum>(obj.value("sfactor").toInt());
-        GLenum dstF = static_cast<GLenum>(obj.value("dfactor").toInt());
+        GLenum srcF = static_cast<GLenum>(obj.value(QStringLiteral("sfactor")).toInt());
+        GLenum dstF = static_cast<GLenum>(obj.value(QStringLiteral("dfactor")).toInt());
         return BlendState::getOrCreate(srcF, dstF);
     }
 
@@ -790,8 +849,8 @@ GLTFParser::BufferData::BufferData() :
 
 GLTFParser::BufferData::BufferData(QJsonObject json)
 {
-    path = json.value("path").toString();
-    length = json.value("length").toInt();
+    path = json.value(KEY_PATH).toString();
+    length = json.value(KEY_LENGTH).toInt();
     // url
 }
 
