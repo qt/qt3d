@@ -49,7 +49,8 @@
 namespace Qt3D {
 
 Material::Material(Node *parent)
-    : Component(parent)
+    : Component(parent),
+      m_effect(0)
 {
 }
 
