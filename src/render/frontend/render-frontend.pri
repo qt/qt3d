@@ -30,7 +30,15 @@ HEADERS += \
     $$PWD/qtorusmesh.h \
     $$PWD/qspheremesh.h \
     $$PWD/qabstractshapemesh_p.h \
-    $$PWD/qmesh_p.h
+    $$PWD/qmesh_p.h \
+    $$PWD/qabstractlight.h \
+    $$PWD/qpointlight.h \
+    $$PWD/qspotlight.h \
+    $$PWD/qdirectionallight.h \
+    $$PWD/qabstractlight_p.h \
+    $$PWD/qspotlight_p.h \
+    $$PWD/qdirectionallight_p.h \
+    $$PWD/qpointlight_p.h
 
 SOURCES += \
     $$PWD/material.cpp \
@@ -52,4 +60,8 @@ SOURCES += \
     $$PWD/parameter.cpp \
     $$PWD/parametermapper.cpp \
     $$PWD/qtorusmesh.cpp \
-    $$PWD/qspheremesh.cpp
+    $$PWD/qspheremesh.cpp \
+    $$PWD/qabstractlight.cpp \
+    $$PWD/qpointlight.cpp \
+    $$PWD/qspotlight.cpp \
+    $$PWD/qdirectionallight.cpp
