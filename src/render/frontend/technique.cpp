@@ -267,9 +267,11 @@ Render::QUniformValue::Type Parameter::uniformType() const
         return Render::QUniformValue::Float;
 
     case GL_DOUBLE:
+#ifdef GL_DOUBLE_VEC3 // Required to compile on pre GL 4.1 systems
     case GL_DOUBLE_VEC2:
     case GL_DOUBLE_VEC3:
     case GL_DOUBLE_VEC4:
+#endif
         return Render::QUniformValue::Double;
 
     default:

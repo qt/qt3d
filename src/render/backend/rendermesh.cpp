@@ -49,7 +49,7 @@
 #include <technique.h>
 
 #include <QOpenGLContext>
-#include <QOpenGLFunctions_3_3_Core>
+#include <QOpenGLFunctions_3_2_Core>
 #include <QOpenGLShaderProgram>
 
 namespace Qt3D {
@@ -123,7 +123,7 @@ void RenderMesh::initializeGL(QGraphicsContext* gc)
 
     // TODO Be careful about where we do this OpenGL work
     QOpenGLContext* ctx = QOpenGLContext::currentContext();
-    m_funcs = ctx->versionFunctions<QOpenGLFunctions_3_3_Core>();
+    m_funcs = ctx->versionFunctions<QOpenGLFunctions_3_2_Core>();
     if ( m_funcs )
         m_funcs->initializeOpenGLFunctions();
     else

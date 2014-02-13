@@ -50,7 +50,7 @@
 #include <QOpenGLVertexArrayObject>
 #include <QMatrix4x4>
 
-class QOpenGLFunctions_3_3_Core;
+class QOpenGLFunctions_3_2_Core;
 
 namespace Qt3D {
 
@@ -115,7 +115,7 @@ private:
 
     QOpenGLVertexArrayObject m_vao;
 
-    QOpenGLFunctions_3_3_Core *m_funcs;
+    QOpenGLFunctions_3_2_Core *m_funcs;
 
     QMatrix4x4 m_modelMatrix;
 };

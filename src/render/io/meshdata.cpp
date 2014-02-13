@@ -58,9 +58,11 @@ GLint elementType(GLint type)
         return GL_FLOAT;
 
     case GL_DOUBLE:
+#ifdef GL_DOUBLE_VEC3 // For compiling on pre GL 4.1 systems
     case GL_DOUBLE_VEC2:
     case GL_DOUBLE_VEC3:
     case GL_DOUBLE_VEC4:
+#endif
         return GL_DOUBLE;
 
     default:
@@ -80,13 +82,22 @@ GLint tupleSizeFromType(GLint type)
         break; // fall through
 
     case GL_FLOAT_VEC2:
-    case GL_DOUBLE_VEC2:    return 2;
+#ifdef GL_DOUBLE_VEC2 // For compiling on pre GL 4.1 systems.
+    case GL_DOUBLE_VEC2:
+#endif
+        return 2;
 
     case GL_FLOAT_VEC3:
-    case GL_DOUBLE_VEC3:    return 3;
+#ifdef GL_DOUBLE_VEC3 // For compiling on pre GL 4.1 systems.
+    case GL_DOUBLE_VEC3:
+#endif
+        return 3;
 
     case GL_FLOAT_VEC4:
-    case GL_DOUBLE_VEC4:    return 4;
+#ifdef GL_DOUBLE_VEC4 // For compiling on pre GL 4.1 systems.
+    case GL_DOUBLE_VEC4:
+#endif
+        return 4;
 
     default:
         qWarning() << Q_FUNC_INFO << "unsupported:" << QString::number(type, 16);
@@ -104,14 +115,13 @@ GLuint byteSizeFromType(GLint type)
     case GL_UNSIGNED_INT:   return sizeof(GLuint);
 
     case GL_FLOAT_VEC2:     return sizeof(float) * 2;
-    case GL_DOUBLE_VEC2:    return sizeof(double) * 2;
-
     case GL_FLOAT_VEC3:     return sizeof(float) * 3;
-    case GL_DOUBLE_VEC3:    return sizeof(double) * 3;
-
     case GL_FLOAT_VEC4:     return sizeof(float) * 4;
+#ifdef GL_DOUBLE_VEC3 // Required to compile on pre GL 4.1 systems
+    case GL_DOUBLE_VEC2:    return sizeof(double) * 2;
+    case GL_DOUBLE_VEC3:    return sizeof(double) * 3;
     case GL_DOUBLE_VEC4:    return sizeof(double) * 4;
-
+#endif
     default:
         qWarning() << Q_FUNC_INFO << "unsupported:" << QString::number(type, 16);
     }

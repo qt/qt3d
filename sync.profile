@@ -1,5 +1,5 @@
 %modules = ( # path to module name map
-    "Qt3DCore" => "$basedir/src/threed",
+    "Qt3DCore" => "$basedir/src/core",
     "Qt3D" => "$basedir/src/threed",
     "Qt3DQuick" => "$basedir/src/quick3d",
 );
