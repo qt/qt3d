@@ -12,5 +12,6 @@
         <file>assets/gltf/wine/wine4FS.glsl</file>
         <file>assets/gltf/wine/wine4VS.glsl</file>
         <file>assets/gltf/wine/Wood_Cherry_Original_.jpg</file>
+        <file>assets/test_scene.dae</file>
     </qresource>
 </RCC>

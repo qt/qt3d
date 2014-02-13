@@ -3,7 +3,8 @@ CONFIG += ordered
 SUBDIRS += \
     exampleresources \
     simple-qml \
-    gltf
+    gltf \
+    assimp
 
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d
