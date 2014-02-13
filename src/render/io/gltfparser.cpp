@@ -72,64 +72,64 @@ namespace Qt3D {
 namespace
 {
 
-#define KEY_CAMERA      QStringLiteral("camera")
-#define KEY_CAMERAS     QStringLiteral("cameras")
-#define KEY_SCENES      QStringLiteral("scenes")
-#define KEY_NODES       QStringLiteral("nodes")
-#define KEY_MESHES      QStringLiteral("meshes")
-#define KEY_CHILDREN    QStringLiteral("children")
-#define KEY_MATRIX      QStringLiteral("matrix")
-#define KEY_TYPE        QStringLiteral("type")
-#define KEY_PERSPECTIVE QStringLiteral("perspective")
-#define KEY_NAME        QStringLiteral("name")
-#define KEY_COUNT       QStringLiteral("count")
-#define KEY_YFOV        QStringLiteral("yfov")
-#define KEY_ZNEAR       QStringLiteral("znear")
-#define KEY_ZFAR        QStringLiteral("zfar")
-#define KEY_MATERIALS   QStringLiteral("materials")
-#define KEY_TECHNIQUE   QStringLiteral("technique")
-#define KEY_VALUES      QStringLiteral("values")
-#define KEY_BUFFERS     QStringLiteral("buffers")
-#define KEY_SHADERS     QStringLiteral("shaders")
-#define KEY_PROGRAMS    QStringLiteral("programs")
-#define KEY_PROGRAM     QStringLiteral("program")
-#define KEY_TECHNIQUES  QStringLiteral("techniques")
-#define KEY_ACCESSORS   QStringLiteral("accessors")
-#define KEY_IMAGES      QStringLiteral("images")
-#define KEY_TEXTURES    QStringLiteral("textures")
-#define KEY_SCENE       QStringLiteral("scene")
-#define KEY_BUFFER      QStringLiteral("buffer")
-#define KEY_TARGET      QStringLiteral("target")
-#define KEY_BYTE_OFFSET QStringLiteral("byteOffset")
-#define KEY_BYTE_LENGTH QStringLiteral("byteLength")
-#define KEY_BYTE_STRIDE QStringLiteral("byteStride")
-#define KEY_PRIMITIVES  QStringLiteral("primitives")
-#define KEY_PRIMITIVE   QStringLiteral("primitive")
-#define KEY_MATERIAL    QStringLiteral("material")
-#define KEY_ATTRIBUTES  QStringLiteral("attributes")
-#define KEY_INDICES     QStringLiteral("indices")
-#define KEY_PATH        QStringLiteral("path")
-#define KEY_FORMAT      QStringLiteral("format")
-#define KEY_PASSES      QStringLiteral("passes")
-#define KEY_SOURCE      QStringLiteral("source")
-#define KEY_SAMPLER     QStringLiteral("sampler")
-#define KEY_SAMPLERS    QStringLiteral("sampler")
-#define KEY_LENGTH      QStringLiteral("length")
-#define KEY_SEMANTIC    QStringLiteral("semantic")
-#define KEY_STATES      QStringLiteral("states")
-#define KEY_UNIFORMS    QStringLiteral("uniforms")
-#define KEY_PARAMETERS  QStringLiteral("parameters")
-#define KEY_WRAP_S      QStringLiteral("wrapS")
-#define KEY_MIN_FILTER  QStringLiteral("minFilter")
-#define KEY_MAG_FILTER  QStringLiteral("magFilter")
+const QString KEY_CAMERA     = QStringLiteral("camera");
+const QString KEY_CAMERAS    = QStringLiteral("cameras");
+const QString KEY_SCENES     = QStringLiteral("scenes");
+const QString KEY_NODES      = QStringLiteral("nodes");
+const QString KEY_MESHES     = QStringLiteral("meshes");
+const QString KEY_CHILDREN   = QStringLiteral("children");
+const QString KEY_MATRIX     = QStringLiteral("matrix");
+const QString KEY_TYPE       = QStringLiteral("type");
+const QString KEY_PERSPECTIVE =QStringLiteral("perspective");
+const QString KEY_NAME       = QStringLiteral("name");
+const QString KEY_COUNT      = QStringLiteral("count");
+const QString KEY_YFOV       = QStringLiteral("yfov");
+const QString KEY_ZNEAR      = QStringLiteral("znear");
+const QString KEY_ZFAR       = QStringLiteral("zfar");
+const QString KEY_MATERIALS  = QStringLiteral("materials");
+const QString KEY_TECHNIQUE  = QStringLiteral("technique");
+const QString KEY_VALUES     = QStringLiteral("values");
+const QString KEY_BUFFERS    = QStringLiteral("buffers");
+const QString KEY_SHADERS    = QStringLiteral("shaders");
+const QString KEY_PROGRAMS   = QStringLiteral("programs");
+const QString KEY_PROGRAM    = QStringLiteral("program");
+const QString KEY_TECHNIQUES = QStringLiteral("techniques");
+const QString KEY_ACCESSORS  = QStringLiteral("accessors");
+const QString KEY_IMAGES     = QStringLiteral("images");
+const QString KEY_TEXTURES   = QStringLiteral("textures");
+const QString KEY_SCENE      = QStringLiteral("scene");
+const QString KEY_BUFFER     = QStringLiteral("buffer");
+const QString KEY_TARGET     = QStringLiteral("target");
+const QString KEY_BYTE_OFFSET = QStringLiteral("byteOffset");
+const QString KEY_BYTE_LENGTH = QStringLiteral("byteLength");
+const QString KEY_BYTE_STRIDE = QStringLiteral("byteStride");
+const QString KEY_PRIMITIVES = QStringLiteral("primitives");
+const QString KEY_PRIMITIVE  = QStringLiteral("primitive");
+const QString KEY_MATERIAL   = QStringLiteral("material");
+const QString KEY_ATTRIBUTES = QStringLiteral("attributes");
+const QString KEY_INDICES    = QStringLiteral("indices");
+const QString KEY_PATH       = QStringLiteral("path");
+const QString KEY_FORMAT     = QStringLiteral("format");
+const QString KEY_PASSES     = QStringLiteral("passes");
+const QString KEY_SOURCE     = QStringLiteral("source");
+const QString KEY_SAMPLER    = QStringLiteral("sampler");
+const QString KEY_SAMPLERS   = QStringLiteral("sampler");
+const QString KEY_LENGTH     = QStringLiteral("length");
+const QString KEY_SEMANTIC   = QStringLiteral("semantic");
+const QString KEY_STATES     = QStringLiteral("states");
+const QString KEY_UNIFORMS   = QStringLiteral("uniforms");
+const QString KEY_PARAMETERS = QStringLiteral("parameters");
+const QString KEY_WRAP_S     = QStringLiteral("wrapS");
+const QString KEY_MIN_FILTER = QStringLiteral("minFilter");
+const QString KEY_MAG_FILTER = QStringLiteral("magFilter");
 
-#define KEY_INSTANCE_TECHNIQUE QStringLiteral("instanceTechnique")
-#define KEY_INSTANCE_PROGRAM QStringLiteral("instanceProgram")
-#define KEY_BUFFER_VIEWS     QStringLiteral("bufferViews")
-#define KEY_BUFFER_VIEW      QStringLiteral("bufferView")
-#define KEY_VERTEX_SHADER    QStringLiteral("vertexShader")
-#define KEY_FRAGMENT_SHADER  QStringLiteral("fragmentShader")
-#define KEY_INTERNAL_FORMAT  QStringLiteral("internalFormat")
+const QString KEY_INSTANCE_TECHNIQUE = QStringLiteral("instanceTechnique");
+const QString KEY_INSTANCE_PROGRAM = QStringLiteral("instanceProgram");
+const QString KEY_BUFFER_VIEWS    = QStringLiteral("bufferViews");
+const QString KEY_BUFFER_VIEW     = QStringLiteral("bufferView");
+const QString KEY_VERTEX_SHADER   = QStringLiteral("vertexShader");
+const QString KEY_FRAGMENT_SHADER = QStringLiteral("fragmentShader");
+const QString KEY_INTERNAL_FORMAT = QStringLiteral("internalFormat");
 
 Parameter::StandardUniform parseSemanticName(const QByteArray& s)
 {
