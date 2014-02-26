@@ -13,5 +13,6 @@
         <file>assets/gltf/wine/wine4VS.glsl</file>
         <file>assets/gltf/wine/Wood_Cherry_Original_.jpg</file>
         <file>assets/test_scene.dae</file>
+        <file>assets/obj/ball.obj</file>
     </qresource>
 </RCC>

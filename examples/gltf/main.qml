@@ -67,11 +67,11 @@ Node {
 
             ]
 
-            property Mesh myMesh: toyplane
+            property Mesh myMesh: ballmesh
         }
 
         Entity {
-            property Mesh myMesh: toyplane
+            property Mesh myMesh: ballmesh
 
             transforms: [
                 Translate {
@@ -128,7 +128,7 @@ Node {
 
 
         Entity {
-            property Mesh myMesh: toyplane
+            property Mesh myMesh: ballmesh
 
             transforms: [
                 Rotate {
@@ -147,8 +147,8 @@ Node {
     }
 
     Mesh {
-        id: toyplane
-        source: ":/assets/obj/toyplane.obj"
+        id: ballmesh
+        source: ":/assets/obj/ball.obj"
     }
 
     Material {
