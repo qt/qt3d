@@ -44,6 +44,7 @@
 #include <QDebug>
 
 #include <gltfparser.h>
+#include <assimpparser.h>
 
 namespace Qt3D
 {
@@ -126,8 +127,19 @@ void Scene::rebuild()
         if (m_sceneChild) {
             addChild(m_sceneChild);
         }
-    } else {
-
+    }
+    else if (AssimpParser::isAssimpPath(m_source)) {
+        qDebug() << Q_FUNC_INFO << "will load Assimp scene";
+        AssimpParser parser;
+        parser.setFilePath(m_source);
+        m_sceneChild = parser.scene(m_sceneId);
+        if (m_sceneChild) {
+            qDebug() << Q_FUNC_INFO << "Assimp scene not empty";
+            addChild(m_sceneChild);
+        }
+    }
+    else {
+        qWarning() << Q_FUNC_INFO << "Scene file format not supported by Qt3D";
     }
 }
 
