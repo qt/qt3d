@@ -360,7 +360,10 @@ void Attribute::dump(int count)
             usptr = reinterpret_cast<quint16*>(rawBuffer);
             qDebug() << c << ":u16:" << usptr[0];
             break;
-
+        case GL_UNSIGNED_INT:
+            if (!stride) stride = sizeof(quint32);
+            qDebug() << c << ":u32:" << reinterpret_cast<quint32*>(rawBuffer)[0];
+            break;
         case GL_FLOAT_VEC2:
             if (!stride) stride = sizeof(float) * 2;
             fptr = reinterpret_cast<float*>(rawBuffer);
