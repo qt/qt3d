@@ -42,7 +42,7 @@
 #ifndef TECHNIQUE_H
 #define TECHNIQUE_H
 
-#include <qt3dcore_global.h>
+#include <qt3drenderer_global.h>
 #include <node.h>
 
 #include "tag.h"
@@ -58,7 +58,7 @@
 
 namespace Qt3D {
 
-class QT3DCORESHARED_EXPORT Parameter : public QObject
+class QT3DRENDERERSHARED_EXPORT Parameter : public QObject
 {
     Q_OBJECT
 

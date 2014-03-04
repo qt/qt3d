@@ -42,14 +42,14 @@
 #ifndef RENDERPASSFILTER_H
 #define RENDERPASSFILTER_H
 
-#include <qt3dcore_global.h>
+#include <qt3drenderer_global.h>
 #include <component.h>
 
 #include <QString>
 
 namespace Qt3D {
 
-class QT3DCORESHARED_EXPORT RenderPassFilter : public Component
+class QT3DRENDERERSHARED_EXPORT RenderPassFilter : public Component
 {
     Q_OBJECT
 

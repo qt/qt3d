@@ -16,7 +16,8 @@ HEADERS += \
     $$PWD/transform.h \
     $$PWD/qitemmodelbuffer.h \
     $$PWD/texture.h \
-    $$PWD/sphere.h
+    $$PWD/sphere.h \
+    $$PWD/scene.h
 
 SOURCES += \
     $$PWD/effect.cpp \
@@ -33,4 +34,5 @@ SOURCES += \
     $$PWD/transform.cpp \
     $$PWD/qitemmodelbuffer.cpp \
     $$PWD/texture.cpp \
-    $$PWD/sphere.cpp
+    $$PWD/sphere.cpp \
+    $$PWD/scene.cpp

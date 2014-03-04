@@ -43,7 +43,7 @@
 #define QT3D_TECHNIQUEFILTER_H
 
 #include <component.h>
-#include <qt3dcore_global.h>
+#include <qt3drenderer_global.h>
 
 #include "tag.h"
 
@@ -51,7 +51,7 @@
 
 namespace Qt3D {
 
-class QT3DCORESHARED_EXPORT TechniqueFilter : public Qt3D::Component
+class QT3DRENDERERSHARED_EXPORT TechniqueFilter : public Qt3D::Component
 {
     Q_OBJECT
 

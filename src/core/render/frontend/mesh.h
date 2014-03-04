@@ -43,7 +43,7 @@
 #define QT3D_MESH_H
 
 #include <component.h>
-#include <qt3dcore_global.h>
+#include <qt3drenderer_global.h>
 
 #include <meshdata.h>
 
@@ -53,7 +53,7 @@ namespace Qt3D {
 * @brief Simple static mesh
 *
 */
-class QT3DCORESHARED_EXPORT Mesh : public Component
+class QT3DRENDERERSHARED_EXPORT Mesh : public Component
 {
     Q_OBJECT
 

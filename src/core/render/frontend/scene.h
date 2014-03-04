@@ -39,109 +39,58 @@
 **
 ****************************************************************************/
 
-#include "scene.h"
+#ifndef SCENE_H
+#define SCENE_H
 
-#include <QDebug>
-
-#include <gltfparser.h>
-#include <assimpparser.h>
+#include <entity.h>
+#include "qt3drenderer_global.h"
 
 namespace Qt3D
 {
 
-Scene::Scene(Node* parent) :
-    Entity(parent),
-    m_sceneChild(Q_NULLPTR)
+class QT3DRENDERERSHARED_EXPORT Scene : public Entity
 {
-}
+    Q_OBJECT
 
-QString Scene::source() const
-{
-    return m_source;
-}
+    Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(QString sceneId READ sceneId WRITE setSceneId NOTIFY sceneIdChanged)
+public:
+    explicit Scene(Node *parent = 0);
 
-QString Scene::sceneId() const
-{
-    return m_sceneId;
-}
+    QString source() const;
 
-Scene *Scene::findInTree(Node *root)
-{
-    if (!root)
-        return Q_NULLPTR;
+    QString sceneId() const;
 
-    Scene* s = qobject_cast<Scene*>(root);
-    if (s)
-        return s;
+    /**
+     * @brief findInTree - given a Node* object rooting a tree, find
+     * the top-most Scene entity within.
+     * @param root - the found Scene or NULL if no Scene was found
+     * @return
+     */
+    static Scene* findInTree(Node* root);
+signals:
 
-    // recursive walk down the tree
-    foreach (Node* nd, root->children()) {
-        s = findInTree(nd);
-        if (s)
-            return s;
-    }
+    void sourceChanged(QString arg);
 
-    return Q_NULLPTR;
-}
+    void sceneIdChanged(QString arg);
 
-void Scene::clear()
-{
-    removeAllChildren();
-}
+public slots:
+    void clear();
 
-void Scene::setSource(QString arg)
-{
-    if (m_source != arg) {
-        m_source = arg;
-        rebuild();
-        emit sourceChanged(arg);
-    }
-}
+    void setSource(QString arg);
 
-void Qt3D::Scene::setSceneId(QString arg)
-{
-    if (m_sceneId != arg) {
-        m_sceneId = arg;
-        rebuild();
-        emit sceneIdChanged(arg);
-    }
-}
+    void setSceneId(QString arg);
 
-void Scene::rebuild()
-{
-    if (m_sceneChild != Q_NULLPTR) {
-        removeChild(m_sceneChild);
-        m_sceneChild->deleteLater();
-    }
+private:
+    void rebuild();
 
-    if (GLTFParser::isGLTFPath(m_source)) {
-        qDebug() << Q_FUNC_INFO << "will load GLTF scene";
+    QString m_source;
+    QString m_sceneId;
 
-        GLTFParser parser;
-        parser.setFilePath(m_source);
+    Node* m_sceneChild;
 
-        if (!m_sceneId.isEmpty())
-            m_sceneChild = parser.scene(m_sceneId);
-        else
-            m_sceneChild = parser.defaultScene();
-
-        if (m_sceneChild != Q_NULLPTR) {
-            addChild(m_sceneChild);
-        }
-    }
-    else if (AssimpParser::isAssimpPath(m_source)) {
-        qDebug() << Q_FUNC_INFO << "will load Assimp scene";
-        AssimpParser parser;
-        parser.setFilePath(m_source);
-        m_sceneChild = parser.scene(m_sceneId);
-        if (m_sceneChild) {
-            qDebug() << Q_FUNC_INFO << "Assimp scene not empty";
-            addChild(m_sceneChild);
-        }
-    }
-    else {
-        qWarning() << Q_FUNC_INFO << "Scene file format not supported by Qt3D";
-    }
-}
+};
 
 } // of namespace
+
+#endif // SCENE_H

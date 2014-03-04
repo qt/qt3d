@@ -72,13 +72,30 @@ void QAspectEngine::shutdown()
 
 void QAspectEngine::setWindow(QWindow *window)
 {
-    QMetaObject::invokeMethod(m_aspectThread->aspectManager(), "setWindow", Q_ARG(QWindow *, window));
+    QMetaObject::invokeMethod(m_aspectThread->aspectManager(),
+                              "setWindow",
+                              Q_ARG(QWindow *, window));
+}
+
+/*!
+ * Registers a new \a aspect to the AspectManager.
+ * Passing as a QObject* as abstracts like AbstractAspect
+ * cannot be registered as a meta type.
+ */
+void QAspectEngine::registerAspect(AbstractAspect *aspect)
+{
+    QMetaObject::invokeMethod(m_aspectThread->aspectManager(),
+                              "registerAspect",
+                              Q_ARG(QObject *, reinterpret_cast<QObject*>(aspect)));
 }
 
 void QAspectEngine::setRoot(QObject *rootObject)
 {
     QMutexLocker locker(&m_mutex);
-    QMetaObject::invokeMethod(m_aspectThread->aspectManager(), "setRoot", Q_ARG(QObject *, rootObject), Q_ARG(QWaitCondition *, &m_waitCondition));
+    QMetaObject::invokeMethod(m_aspectThread->aspectManager(),
+                              "setRoot",
+                              Q_ARG(QObject *, rootObject),
+                              Q_ARG(QWaitCondition *, &m_waitCondition));
 
     qDebug() << "Putting main thread to sleep whilst aspects build their local scenes...";
     m_waitCondition.wait(&m_mutex);

@@ -41,29 +41,8 @@
 
 #include <exampleresources.h>
 
-#include <camera.h>
-#include <cameraselector.h>
-#include <effect.h>
-#include <entity.h>
-#include <material.h>
-#include <mesh.h>
-#include <node.h>
-#include <renderpass.h>
-#include <renderpassfilter.h>
-#include <shaderprogram.h>
-#include <technique.h>
-#include <techniquefilter.h>
-#include <viewport.h>
-#include <scene.h>
-#include <shape.h>
-#include <texture.h>
 #include <window.h>
-
-#include <gltfparser.h>
-
-#include <translatetransform.h>
-#include <matrixtransform.h>
-#include <rotatetransform.h>
+#include <rendereraspect.h>
 
 #include <QGuiApplication>
 #include <QtQml>
@@ -74,31 +53,8 @@ int main(int argc, char* argv[])
 
     initializeAssetResources("../exampleresources/example-assets.qrb");
 
-    qmlRegisterType<Qt3D::Node>("Qt3D", 2, 0, "Node");
-    qmlRegisterType<Qt3D::Entity>("Qt3D", 2, 0, "Entity");
-    qmlRegisterType<Qt3D::Scene>("Qt3D", 2, 0, "Scene");
-    qmlRegisterType<Qt3D::Camera>("Qt3D", 2, 0, "Camera");
-    qmlRegisterType<Qt3D::Effect>("Qt3D", 2, 0, "Effect");
-    qmlRegisterType<Qt3D::Technique>("Qt3D", 2, 0, "Technique");
-    qmlRegisterType<Qt3D::Tag>("Qt3D", 2, 0, "Tag");
-    qmlRegisterType<Qt3D::Mesh>("Qt3D", 2, 0, "Mesh");
-    qmlRegisterType<Qt3D::Shape>("Qt3D", 2, 0, "Shape");
-    qmlRegisterType<Qt3D::Material>("Qt3D", 2, 0, "Material");
-    qmlRegisterType<Qt3D::RenderPass>("Qt3D", 2, 0, "RenderPass");
-    qmlRegisterType<Qt3D::ShaderProgram>("Qt3D", 2, 0, "ShaderProgram");
-    qmlRegisterType<Qt3D::QmlTexture>("Qt3D", 2, 0, "Texture");
-
-    qmlRegisterType<Qt3D::MatrixTransform>("Qt3D", 2, 0, "MatrixTransform");
-    qmlRegisterType<Qt3D::TranslateTransform>("Qt3D", 2, 0, "Translate");
-    qmlRegisterType<Qt3D::RotateTransform>("Qt3D", 2, 0, "Rotate");
-
-    // Framegraph components - TODO RenderTarget, RenderTargetSelector
-    qmlRegisterType<Qt3D::Viewport>("Qt3D", 2, 0, "Viewport");
-    qmlRegisterType<Qt3D::CameraSelector>("Qt3D", 2, 0, "CameraSelector");
-    qmlRegisterType<Qt3D::RenderPassFilter>("Qt3D", 2, 0, "RenderPassFilter");
-    qmlRegisterType<Qt3D::TechniqueFilter>("Qt3D", 2, 0, "TechniqueFilter");
-
     Qt3D::Window view;
+    view.registerAspect(new Qt3D::RendererAspect());
     view.setSource(QUrl("qrc:/main.qml"));
     view.show();
 

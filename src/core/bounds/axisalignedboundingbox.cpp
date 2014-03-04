@@ -77,7 +77,7 @@ void AxisAlignedBoundingBox::update(const QVector<QVector3D> &points)
 #endif
 }
 
-QDebug operator<<(QDebug dbg, const AxisAlignedBoundingBox &c)
+QT3DCORESHARED_EXPORT QDebug operator<<(QDebug dbg, const AxisAlignedBoundingBox &c)
 {
     dbg.nospace() << "AABB ( min:" << c.minPoint() << ", max:" << c.maxPoint() << ")";
     return dbg.space();

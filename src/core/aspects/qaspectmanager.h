@@ -70,6 +70,7 @@ public slots:
 
     void setRoot(QObject *rootObject, QWaitCondition *waitCondition);
     void setWindow(QWindow* window);
+    void registerAspect(QObject *aspect);
 
     void exec();
 
@@ -85,6 +86,9 @@ private:
     QJobManagerInterface *m_jobManager;
     QChangeArbiter *m_changeArbiter;
     bool m_runMainLoop;
+
+private:
+    void    registerCoreQmlComponents();
 };
 
 } // namespace Qt3D

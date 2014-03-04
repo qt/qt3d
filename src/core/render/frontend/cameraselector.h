@@ -43,13 +43,13 @@
 #define QT3D_CAMERASELECTOR_H
 
 #include <component.h>
-#include <qt3dcore_global.h>
+#include <qt3drenderer_global.h>
 
 namespace Qt3D {
 
 class Camera;
 
-class QT3DCORESHARED_EXPORT CameraSelector : public Qt3D::Component
+class QT3DRENDERERSHARED_EXPORT CameraSelector : public Qt3D::Component
 {
     Q_OBJECT
 

@@ -62,6 +62,7 @@
 #include <techniquefilter.h>
 #include <viewport.h>
 #include <cameraselector.h>
+#include <rendereraspect.h>
 
 int main(int ac, char **av)
 {
@@ -69,12 +70,8 @@ int main(int ac, char **av)
 
     initializeAssetResources("../exampleresources/example-assets.qrb");
 
-    qmlRegisterType<Qt3D::Node>("Qt3D", 2, 0, "Node");
-    qmlRegisterType<Qt3D::Entity>("Qt3D", 2, 0, "Entity");
-
-    qmlRegisterType<Qt3D::MatrixTransform>("Qt3D", 2, 0, "MatrixTransform");
-
     Qt3D::Window view;
+    view.registerAspect(new Qt3D::RendererAspect());
 
     Qt3D::Entity *rootEntity = new Qt3D::Entity();
     Qt3D::Scene  *scene = new Qt3D::Scene();

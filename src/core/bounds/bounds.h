@@ -49,7 +49,7 @@
 
 namespace Qt3D {
 
-class Bounds : public QObject
+class QT3DCORESHARED_EXPORT Bounds : public QObject
 {
     Q_OBJECT
 public:

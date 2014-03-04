@@ -2,7 +2,7 @@ TEMPLATE = app
 
 SOURCE += main.cpp
 
-QT += qml quick 3dcore
+QT += qml quick 3dcore 3drenderer
 
 OTHER_FILES += main.qml
 

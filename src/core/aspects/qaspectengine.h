@@ -67,6 +67,7 @@ public:
 
     void setRoot(QObject *rootObject);
     void setWindow(QWindow *window);
+    void registerAspect(AbstractAspect *aspect);
 private:
     QAspectThread *m_aspectThread;
     QMutex m_mutex;

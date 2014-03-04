@@ -43,11 +43,11 @@
 #define SHADERPROGRAM_H
 
 #include <node.h>
-#include <qt3dcore_global.h>
+#include <qt3drenderer_global.h>
 
 namespace Qt3D {
 
-class QT3DCORESHARED_EXPORT ShaderProgram : public Node
+class QT3DRENDERERSHARED_EXPORT ShaderProgram : public Node
 {
     Q_OBJECT
 

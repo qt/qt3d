@@ -42,7 +42,7 @@
 #ifndef EFFECT_H
 #define EFFECT_H
 
-#include <qt3dcore_global.h>
+#include <qt3drenderer_global.h>
 #include <node.h>
 
 #include <QQmlListProperty>
@@ -52,7 +52,7 @@ namespace Qt3D {
 
 class Technique;
 
-class QT3DCORESHARED_EXPORT Effect : public Node
+class QT3DRENDERERSHARED_EXPORT Effect : public Node
 {
     Q_OBJECT
 

@@ -39,58 +39,15 @@
 **
 ****************************************************************************/
 
-#ifndef SCENE_H
-#define SCENE_H
+#ifndef QT3DRENDERER_GLOBAL_H
+#define QT3DRENDERER_GLOBAL_H
 
-#include "entity.h"
-#include "qt3dcore_global.h"
+#include <QtCore/qglobal.h>
 
-namespace Qt3D
-{
+#if defined(QT3DRENDERER_LIBRARY)
+#  define QT3DRENDERERSHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define QT3DRENDERERSHARED_EXPORT Q_DECL_IMPORT
+#endif
 
-class QT3DCORESHARED_EXPORT Scene : public Entity
-{
-    Q_OBJECT
-
-    Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
-    Q_PROPERTY(QString sceneId READ sceneId WRITE setSceneId NOTIFY sceneIdChanged)
-public:
-    explicit Scene(Node *parent = 0);
-
-    QString source() const;
-
-    QString sceneId() const;
-
-    /**
-     * @brief findInTree - given a Node* object rooting a tree, find
-     * the top-most Scene entity within.
-     * @param root - the found Scene or NULL if no Scene was found
-     * @return
-     */
-    static Scene* findInTree(Node* root);
-signals:
-
-    void sourceChanged(QString arg);
-
-    void sceneIdChanged(QString arg);
-
-public slots:
-    void clear();
-
-    void setSource(QString arg);
-
-    void setSceneId(QString arg);
-
-private:
-    void rebuild();
-
-    QString m_source;
-    QString m_sceneId;
-
-    Node* m_sceneChild;
-
-};
-
-} // of namespace
-
-#endif // SCENE_H
+#endif // QT3DRENDERER_GLOBAL_H

@@ -1,6 +1,7 @@
 TEMPLATE = subdirs
 CONFIG += ordered
-SUBDIRS += core
+SUBDIRS += core \
+           core/render
 
 #SUBDIRS += thred
 #qtHaveModule(qml): SUBDIRS += quick3d imports

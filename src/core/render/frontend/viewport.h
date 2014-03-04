@@ -43,13 +43,13 @@
 #define VIEWPORT_H
 
 #include <component.h>
-#include <qt3dcore_global.h>
+#include <qt3drenderer_global.h>
 
 #include <QRectF>
 
 namespace Qt3D {
 
-class QT3DCORESHARED_EXPORT Viewport : public Component
+class QT3DRENDERERSHARED_EXPORT Viewport : public Component
 {
     Q_OBJECT
 

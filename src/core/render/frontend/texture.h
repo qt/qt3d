@@ -43,7 +43,7 @@
 #define QT3D_TEXTURE_H
 
 #include "node.h"
-#include <qt3dcore_global.h>
+#include <qt3drenderer_global.h>
 
 #include <QUrl>
 
@@ -51,7 +51,7 @@ namespace Qt3D {
 
 class Texture;
 
-class QT3DCORESHARED_EXPORT QmlTexture : public Node
+class QT3DRENDERERSHARED_EXPORT QmlTexture : public Node
 {
     Q_OBJECT
 public:

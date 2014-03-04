@@ -54,7 +54,7 @@ class Entity;
 
 typedef QList<Node *> NodeList;
 
-class NodeVisitor
+class QT3DCORESHARED_EXPORT NodeVisitor
 {
 public:
     NodeVisitor();

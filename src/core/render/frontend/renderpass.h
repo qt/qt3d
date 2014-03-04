@@ -43,7 +43,7 @@
 #define RENDERPASS_H
 
 #include <node.h>
-#include <qt3dcore_global.h>
+#include <qt3drenderer_global.h>
 
 #include "shaderprogram.h"
 #include <drawstate.h>
@@ -55,7 +55,7 @@ namespace Qt3D {
 class Parameter;
 typedef QList<Parameter*> ParameterList;
 
-class QT3DCORESHARED_EXPORT RenderPass : public Node
+class QT3DRENDERERSHARED_EXPORT RenderPass : public Node
 {
     Q_OBJECT
 

@@ -50,6 +50,14 @@
 #include "qtickclock.h"
 
 #include <node.h>
+#include <entity.h>
+#include <camera.h>
+#include <scene.h>
+#include <matrixtransform.h>
+#include <rotatetransform.h>
+#include <translatetransform.h>
+#include <lookattransform.h>
+#include <scaletransform.h>
 
 #include <QDebug>
 #include <QElapsedTimer>
@@ -57,6 +65,9 @@
 #include <QThread>
 #include <QWaitCondition>
 #include <QWindow>
+#include <QPluginLoader>
+#include <QDir>
+#include <QtQml>
 
 namespace Qt3D {
 
@@ -79,12 +90,32 @@ void QAspectManager::initialize()
     m_jobManager->initialize();
     m_scheduler->setAspectManager(this);
     m_changeArbiter->initialize(m_jobManager);
+
+    // Regiter Qml
+    registerCoreQmlComponents();
 }
 
 void QAspectManager::shutdown()
 {
     qDebug() << Q_FUNC_INFO;
 }
+
+/*!
+ * Registers core Qt3D Qml Components to the Qml Engine.
+ */
+void QAspectManager::registerCoreQmlComponents()
+{
+    qDebug() << Q_FUNC_INFO;
+    qmlRegisterType<Qt3D::Node>("Qt3D", 2, 0, "Node");
+    qmlRegisterType<Qt3D::Entity>("Qt3D", 2, 0, "Entity");
+    qmlRegisterType<Qt3D::Camera>("Qt3D", 2, 0, "Camera");
+    qmlRegisterType<Qt3D::MatrixTransform>("Qt3D", 2, 0, "MatrixTransform");
+    qmlRegisterType<Qt3D::TranslateTransform>("Qt3D", 2, 0, "Translate");
+    qmlRegisterType<Qt3D::RotateTransform>("Qt3D", 2, 0, "Rotate");
+    qmlRegisterType<Qt3D::LookAtTransform>("Qt3D", 2, 0, "LookAt");
+    qmlRegisterType<Qt3D::ScaleTransform>("Qt3D", 2, 0, "Scale");
+}
+
 
 void QAspectManager::setRoot(QObject *rootObject, QWaitCondition *waitCondition)
 {
@@ -114,9 +145,6 @@ void QAspectManager::setRoot(QObject *rootObject, QWaitCondition *waitCondition)
 
     if (rootObject) {
         // TODO Load all aspect plugins that are found and required.
-        // For now just load the render aspect
-        RendererAspect *renderAspect = new RendererAspect(this);
-        m_aspects.append(renderAspect);
 
         Q_FOREACH (AbstractAspect *aspect, m_aspects)
             aspect->initialize(this);
@@ -145,6 +173,24 @@ void QAspectManager::setWindow(QWindow *window)
     if (m_window) {
         Q_FOREACH (AbstractAspect *aspect, m_aspects)
             aspect->setWindow(m_window);
+    }
+}
+
+/*!
+ * Registers a new \a aspect.
+ */
+void QAspectManager::registerAspect(QObject *aspect)
+{
+    qDebug() << Q_FUNC_INFO << "Registering aspect libraries";
+
+    AbstractAspect *aspectImpl = Q_NULLPTR;
+    if ((aspectImpl = qobject_cast<AbstractAspect*>(aspect)) != Q_NULLPTR) {
+        m_aspects.append(aspectImpl);
+        // RegisterQmlComponents
+        aspectImpl->registerQmlComponents();
+    }
+    else {
+        qWarning() << Q_FUNC_INFO << "Failed to register aspect";
     }
 }
 

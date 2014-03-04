@@ -49,14 +49,14 @@
 // FIXME - write a custom QML parser and stop mis-using Tag
 #include "tag.h"
 
-#include <qt3dcore_global.h>
+#include <qt3drenderer_global.h>
 
 namespace Qt3D {
 
 class Effect;
 class Texture;
 
-class QT3DCORESHARED_EXPORT Material : public Component
+class QT3DRENDERERSHARED_EXPORT Material : public Component
 {
     Q_OBJECT
     Q_PROPERTY(Qt3D::Effect* effect READ effect WRITE setEffect NOTIFY effectChanged)

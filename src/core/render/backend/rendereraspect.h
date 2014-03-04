@@ -42,7 +42,9 @@
 #ifndef RENDERERASPECT_H
 #define RENDERERASPECT_H
 
+#include <qt3drenderer_global.h>
 #include "abstractaspect.h"
+
 
 namespace Qt3D {
 class RenderThread;
@@ -52,7 +54,7 @@ class QWindow;
 
 namespace Qt3D {
 
-class RendererAspect : public AbstractAspect
+class QT3DRENDERERSHARED_EXPORT RendererAspect : public AbstractAspect
 {
     Q_OBJECT
 public:
@@ -61,6 +63,7 @@ public:
     virtual void setWindow(QWindow *window);
 
     QVector<QJobPtr> jobsToExecute() Q_DECL_OVERRIDE;
+    void registerQmlComponents() Q_DECL_OVERRIDE;
 
 protected:
     void registerAspectHelper(Node *rootObject) Q_DECL_OVERRIDE;

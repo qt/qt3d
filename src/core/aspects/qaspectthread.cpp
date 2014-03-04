@@ -72,12 +72,14 @@ void QAspectThread::run()
     QMutexLocker locker(&m_mutex);
     m_aspectManager = new QAspectManager;
 
+    // Load and initialize the aspects and any other core services
+    // Done before releasing condition to make sure that Qml Components
+    // Are exposed prior to Qml Engine source being set
+    m_aspectManager->initialize();
+
     // Wake up the calling thread now that our worker objects are ready for action
     m_waitCondition.wakeOne();
     m_mutex.unlock();
-
-    // Load and initialize the aspects and any other core services
-    m_aspectManager->initialize();
 
     // Enter the main loop
     m_aspectManager->exec();

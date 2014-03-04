@@ -44,12 +44,12 @@
 
 #include <QDebug>
 
-#include <qt3dcore_global.h>
+#include <qt3drenderer_global.h>
 #include <node.h>
 
 namespace Qt3D {
 
-class QT3DCORESHARED_EXPORT Tag : public Node
+class QT3DRENDERERSHARED_EXPORT Tag : public Node
 {
     Q_OBJECT
 

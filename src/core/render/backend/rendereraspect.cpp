@@ -55,6 +55,24 @@
 #include <QThread>
 #include <QWindow>
 
+#include <QtQml>
+
+#include "scene.h"
+#include "transform.h"
+#include "effect.h"
+#include "technique.h"
+#include "tag.h"
+#include "mesh.h"
+#include "material.h"
+#include "renderpass.h"
+#include "shaderprogram.h"
+#include "viewport.h"
+#include "cameraselector.h"
+#include "renderpassfilter.h"
+#include "techniquefilter.h"
+#include "shape.h"
+#include "texture.h"
+
 namespace Qt3D {
 
 RendererAspect::RendererAspect(QObject *parent)
@@ -124,6 +142,31 @@ void RendererAspect::cleanupHelper()
 {
     Render::Renderer *renderer = m_renderThread->renderer();
     //QMetaObject::invokeMethod(renderer, "cleanup");
+}
+
+/*!
+ *  Registers the Qt3D Qml components defined by the aspect to the QmlEngine.
+ */
+void RendererAspect::registerQmlComponents()
+{
+    qmlRegisterType<Qt3D::Scene>("Qt3D.Render", 2, 0, "Scene");
+    qmlRegisterType<Qt3D::Transform>("Qt3D.Render", 2, 0, "Transform");
+    qmlRegisterType<Qt3D::Effect>("Qt3D.Render", 2, 0, "Effect");
+    qmlRegisterType<Qt3D::Technique>("Qt3D.Render", 2, 0, "Technique");
+    qmlRegisterType<Qt3D::Tag>("Qt3D.Render", 2, 0, "Tag");
+    qmlRegisterType<Qt3D::Mesh>("Qt3D.Render", 2, 0, "Mesh");
+    qmlRegisterType<Qt3D::Material>("Qt3D.Render", 2, 0, "Material");
+    qmlRegisterType<Qt3D::RenderPass>("Qt3D.Render", 2, 0, "RenderPass");
+    qmlRegisterType<Qt3D::ShaderProgram>("Qt3D.Render", 2, 0, "ShaderProgram");
+
+    qmlRegisterType<Qt3D::Shape>("Qt3D.Render", 2, 0, "Shape");
+    qmlRegisterType<Qt3D::QmlTexture>("Qt3D.Render", 2, 0, "Texture");
+
+    // Framegraph components - TODO RenderTarget, RenderTargetSelector
+    qmlRegisterType<Qt3D::Viewport>("Qt3D.Render", 2, 0, "Viewport");
+    qmlRegisterType<Qt3D::CameraSelector>("Qt3D.Render", 2, 0, "CameraSelector");
+    qmlRegisterType<Qt3D::RenderPassFilter>("Qt3D.Render", 2, 0, "RenderPassFilter");
+    qmlRegisterType<Qt3D::TechniqueFilter>("Qt3D.Render", 2, 0, "TechniqueFilter");
 }
 
 }

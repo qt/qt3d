@@ -49,7 +49,7 @@
 
 namespace Qt3D {
 
-class QJob
+class QT3DCORESHARED_EXPORT QJob
 {
 public:
     QJob();

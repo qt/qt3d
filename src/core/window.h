@@ -72,6 +72,7 @@ public:
     Status status() const;
 
     QSharedPointer<QObject> rootObject() { return m_root; }
+    void    registerAspect(AbstractAspect *aspect);
 
 signals:
     void statusChanged( Qt3D::Window::Status );
@@ -99,8 +100,6 @@ private:
     // The various aspects (subsystems) that will be interested in (parts)
     // of the objects in the object tree.
     QAspectEngine *m_aspectEngine;
-
-    QList<Qt3D::AbstractAspect*> m_aspects;
 
     Camera* m_camera;
 

@@ -43,7 +43,7 @@
 #define QT3D_QITEMMODELBUFFER_H
 
 #include <QObject>
-#include <qt3dcore_global.h>
+#include <qt3drenderer_global.h>
 
 #include <meshdata.h>
 
@@ -52,7 +52,7 @@
 
 namespace Qt3D {
 
-class QT3DCORESHARED_EXPORT QItemModelBuffer : public QObject
+class QT3DRENDERERSHARED_EXPORT QItemModelBuffer : public QObject
 {
     Q_OBJECT
 public:

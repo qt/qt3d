@@ -187,8 +187,6 @@ HEADERS += revision.h \
            code/XFileImporter.h \
            code/XFileParser.h \
            code/XGLLoader.h \
-           doc/dox.h \
-           doc/dox_cmd.h \
            code/res/resource.h \
            contrib/clipper/clipper.hpp \
            contrib/ConvertUTF/ConvertUTF.h \

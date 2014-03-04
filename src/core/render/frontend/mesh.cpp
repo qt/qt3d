@@ -110,6 +110,9 @@ void Mesh::update()
         QFile f(m_source);
         f.open(QIODevice::ReadOnly);
 
+        // Could be nice to abstract this
+        // Use AbstractSceneParsers of a dedicated AbstractMeshLoader
+
         ObjLoader objLoad;
         objLoad.setLoadTextureCoordinatesEnabled(true);
 

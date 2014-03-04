@@ -1,6 +1,6 @@
 TEMPLATE = app
 
-QT += 3dcore qml quick
+QT += 3dcore 3drenderer qml quick
 
 include("../exampleresources/exampleresources.pri")
 

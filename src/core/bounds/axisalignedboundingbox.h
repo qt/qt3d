@@ -53,7 +53,7 @@ class QDebug;
 
 namespace Qt3D {
 
-class AxisAlignedBoundingBox
+class QT3DCORESHARED_EXPORT AxisAlignedBoundingBox
 {
 public:
     inline AxisAlignedBoundingBox()

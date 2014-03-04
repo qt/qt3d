@@ -272,7 +272,14 @@ void Renderer::setSceneGraphRoot(Node *sgRoot)
 
     // TODO: Unify this to one root node and scene builder
     Scene *scene = Scene::findInTree(sgRoot);
-    if (scene) {
+    if (scene)
+    {
+        // Scene needs to be built with scene parsers
+        // For each scene parser, check whether scene source format
+        // is supported, filter if there is a preference toward which
+        // parser should parse the file if two parsers support the same
+        // format
+
         qDebug() << "building temporary backend";
         m_sceneGraphRoot = scene;
         TemporaryBackendBuilder tbb(this);

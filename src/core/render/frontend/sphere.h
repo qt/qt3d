@@ -42,14 +42,14 @@
 #ifndef SPHERE_H
 #define SPHERE_H
 
-#include "qt3dcore_global.h"
+#include "qt3drenderer_global.h"
 
 #include <QMatrix4x4>
 #include <QVector3D>
 
 namespace Qt3D {
 
-class QT3DCORESHARED_EXPORT Sphere
+class Sphere
 {
 public:
     inline Sphere()

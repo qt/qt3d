@@ -1,10 +1,7 @@
 HEADERS += \
         $$PWD/camera_p.h \
-        $$PWD/camera.h \
-        $$PWD/scene.h
-
+        $$PWD/camera.h
 SOURCES += \
-        $$PWD/camera.cpp \
-        $$PWD/scene.cpp
+        $$PWD/camera.cpp
 
 INCLUDEPATH += $$PWD

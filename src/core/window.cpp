@@ -102,6 +102,14 @@ Window::Status Window::status() const
     return Status(m_component->status());
 }
 
+/*!
+ * Registers an Aspect module to the AspectEngine;
+ */
+void Window::registerAspect(AbstractAspect *aspect)
+{
+    m_aspectEngine->registerAspect(aspect);
+}
+
 void Window::setSource( const QUrl& source )
 {
     if (!m_engine) {
@@ -181,6 +189,10 @@ void Window::setRootObject( QObject* obj )
 
     // Hook up controller input to camera
     // TODO: Do this more generically as we may want keyboard ot control an Entity etc
+    // What happens if there is no camera
+    // What happens if at some point the camera is added but not directly when the scene is created ?
+    // eg scene file provided and camera tree node created after parsing ?
+    // What happens if there are multiple cameras in the scene ?
     m_camera = Entity::findComponentInTree<Camera>(qobject_cast<Node *>(m_root.data()));
     if (m_camera) {
         qDebug() << "found a camera in the scene";

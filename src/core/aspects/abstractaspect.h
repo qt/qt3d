@@ -86,6 +86,8 @@ public:
 
     virtual void setWindow(QWindow* win);
 
+    virtual void registerQmlComponents() = 0;
+
 protected:
     virtual void registerAspectHelper(Node *rootObject) = 0;
     virtual void unregisterAspectHelper(Node *rootObject) = 0;
@@ -98,7 +100,6 @@ private:
     Node *m_root;
     AspectType m_aspectType;
 };
-
 }
 
 #endif // ABSTRACTASPECT_H
