@@ -1,8 +1,6 @@
 INCLUDEPATH += $$PWD
 
 HEADERS += \
-    $$PWD/camera.h \
-    $$PWD/camera_p.h \
     $$PWD/effect.h \
     $$PWD/material.h \
     $$PWD/mesh.h \
@@ -14,13 +12,13 @@ HEADERS += \
     $$PWD/cameraselector.h \
     $$PWD/techniquefilter.h \
     $$PWD/tag.h \
-    $$PWD//shape.h \
-    $$PWD//transform.h \
-    $$PWD//qitemmodelbuffer.h \
-    $$PWD//texture.h
+    $$PWD/shape.h \
+    $$PWD/transform.h \
+    $$PWD/qitemmodelbuffer.h \
+    $$PWD/texture.h \
+    $$PWD/sphere.h
 
 SOURCES += \
-    $$PWD/camera.cpp \
     $$PWD/effect.cpp \
     $$PWD/material.cpp \
     $$PWD/mesh.cpp \
@@ -34,4 +32,5 @@ SOURCES += \
     $$PWD/shape.cpp \
     $$PWD/transform.cpp \
     $$PWD/qitemmodelbuffer.cpp \
-    $$PWD/texture.cpp
+    $$PWD/texture.cpp \
+    $$PWD/sphere.cpp

@@ -4,7 +4,7 @@ SOURCES += \
         $$PWD/qaspectengine.cpp \
         $$PWD/qaspectmanager.cpp \
         $$PWD/qaspectscheduler.cpp \
-        $$PWD/qaspectthread.cpp \
+        $$PWD/qaspectthread.cpp
 
 HEADERS += \
         $$PWD/abstractaspect.h \
