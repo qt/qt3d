@@ -2345,7 +2345,7 @@ int QGLPainter::pickObject(int x, int y) const
 
     // Fetch the color at the specified pixel.
     unsigned char data[4] = {0, 0, 0, 0};
-    glReadPixels(x, y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    context()->functions()->glReadPixels(x, y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
     QRgb color = qRgb(data[0], data[1], data[2]);
 
     // Normalize the color to account for floating-point rounding.
