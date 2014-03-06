@@ -57,6 +57,8 @@
 #include <entity.h>
 #include <technique.h>
 
+#include "abstractsceneparser.h"
+
 #include <QMap>
 #include <QDir>
 
@@ -71,19 +73,21 @@ class Camera;
 class Texture;
 class Mesh;
 
-class AssimpParser
+class AssimpParser : public AbstractSceneParser
 {
+    Q_OBJECT
 public:
     AssimpParser();
     ~AssimpParser();
 
     static bool isAssimpPath(const QString& path);
-    static QMatrix4x4 aiMatrix4x4ToQMatrix4x4(const aiMatrix4x4 &matrix);
 
-    void setFilePath(const QString& path);
+    // SceneParserInterface interface
+    void setFilePath(const QString& path) Q_DECL_OVERRIDE;
+    bool isPathExtensionSupported(const QString &path) Q_DECL_OVERRIDE;
+    Entity *scene(QString id = QStringLiteral("")) Q_DECL_OVERRIDE;
+    Entity *node(QString id) Q_DECL_OVERRIDE;
 
-    Entity *scene(QString id = QStringLiteral(""));
-    Entity *node(QString id);
     Entity *defaultScene();
     MeshDataPtr mesh(QString id);
     Material *material(QString id);
@@ -91,6 +95,7 @@ public:
 
 private :
     static QStringList assimpSupportedFormats();
+    static QMatrix4x4 aiMatrix4x4ToQMatrix4x4(const aiMatrix4x4 &matrix);
 
     Entity *node(aiNode *node);
 
@@ -127,6 +132,7 @@ private :
     QMap<QString, Texture*> m_materialTextures;
     QMap<aiNode*, Camera*> m_cameras;
 //    QMap<aiNode*, Light*> m_lights;
+
 };
 
 }

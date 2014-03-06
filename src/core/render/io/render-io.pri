@@ -6,7 +6,8 @@ HEADERS += \
     $$PWD/objloader.h \
     $$PWD/texturedata.h \
     $$PWD/assimpparser.h \
-    $$PWD/assimphelpers.h
+    $$PWD/assimphelpers.h \
+    $$PWD/abstractsceneparser.h
 
 SOURCES += \
     $$PWD/meshdata.cpp \
@@ -14,4 +15,5 @@ SOURCES += \
     $$PWD/objloader.cpp \
     $$PWD/texturedata.cpp \
     $$PWD/assimpparser.cpp \
-    $$PWD/assimphelpers.cpp
+    $$PWD/assimphelpers.cpp \
+    $$PWD/abstractsceneparser.cpp

@@ -51,6 +51,8 @@
 #include <QMultiHash>
 #include <QImage>
 
+#include "abstractsceneparser.h"
+
 class QFile;
 
 namespace Qt3D {
@@ -61,27 +63,30 @@ class Effect;
 class Camera;
 class Texture;
 
-class GLTFParser
+class GLTFParser : public AbstractSceneParser
 {
+    Q_OBJECT
 public:
     GLTFParser();
 
-    static bool isGLTFPath(const QString& path);
-
-    void setFilePath(QString path);
-
-    void setBasePath( QString path );
-
+    static bool isGLTFPath(const QString &path);
+    void setBasePath(const QString& path);
     bool setJSON( QJsonDocument json );
+
+    // SceneParserInterface interface
+    void setFilePath(const QString &path) Q_DECL_OVERRIDE;
+    bool isPathExtensionSupported(const QString &path) Q_DECL_OVERRIDE;
 
     /**
      * @brief instantiate Create Nodes based on glTf JSON document
      * @return A new scene-graph fragment based on the provided glTf
      */
-    Entity *node(QString id);
+    Entity *node(QString id) Q_DECL_OVERRIDE;
+    Entity *scene(QString id) Q_DECL_OVERRIDE;
+
+
     Entity *defaultScene();
     MeshDataPtr mesh(QString id);
-    Entity *scene(QString id);
     Material *material(QString id);
     Camera *camera(QString id);
 

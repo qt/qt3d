@@ -159,7 +159,7 @@ Parameter::StandardUniform parseSemanticName(const QByteArray& s)
 
 } // of anonymous namespace
 
-GLTFParser::GLTFParser() :
+GLTFParser::GLTFParser() : AbstractSceneParser(),
     m_parseDone(false)
 {
 }
@@ -175,26 +175,7 @@ bool GLTFParser::isGLTFPath(const QString& path)
     return (finfo.suffix().toLower() == QStringLiteral("json"));
 }
 
-void GLTFParser::setFilePath(QString path)
-{
-    QFileInfo finfo(path);
-    if (!finfo.exists()) {
-        qWarning() << "missing file:" << path;
-        return;
-    }
-
-    QFile f(path);
-    f.open(QIODevice::ReadOnly);
-
-    if (!setJSON(QJsonDocument::fromJson(f.readAll()))) {
-        qWarning() << "not a JSON document";
-        return;
-    }
-
-    setBasePath(finfo.dir().absolutePath());
-}
-
-void GLTFParser::setBasePath(QString path)
+void GLTFParser::setBasePath(const QString& path)
 {
     m_basePath = path;
 }
@@ -213,6 +194,37 @@ bool GLTFParser::setJSON( QJsonDocument json )
     m_defaultScene.clear();
 
     return true;
+}
+
+/*!
+ * Sets the \a path used by the parser to load the scene file.
+ * If the file is valid, parsing is automatically triggered.
+ */
+void GLTFParser::setFilePath(const QString &path)
+{
+    QFileInfo finfo(path);
+    if (!finfo.exists()) {
+        qWarning() << "missing file:" << path;
+        return;
+    }
+    QFile f(path);
+    f.open(QIODevice::ReadOnly);
+
+    if (!setJSON(QJsonDocument::fromJson(f.readAll()))) {
+        qWarning() << "not a JSON document";
+        return;
+    }
+
+    setBasePath(finfo.dir().absolutePath());
+}
+
+/*!
+ * Returns true if the extension of \a path is supported by the
+ * GLTF parser.
+ */
+bool GLTFParser::isPathExtensionSupported(const QString &path)
+{
+    return GLTFParser::isGLTFPath(path);
 }
 
 MeshDataPtr GLTFParser::mesh(QString id)

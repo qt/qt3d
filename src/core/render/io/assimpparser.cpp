@@ -155,7 +155,7 @@ QStringList AssimpParser::assimpSupportedFormats()
 /*!
  *  Initialized a new instance of AssimpParser.
  */
-AssimpParser::AssimpParser() :
+AssimpParser::AssimpParser() : AbstractSceneParser(),
     m_aiScene(0),
     m_sceneParsed(false)
 {
@@ -207,6 +207,15 @@ void AssimpParser::setFilePath(const QString& path)
         return ;
     }
     readSceneFile(path);
+}
+
+/*!
+ * Returns true if the extension of \a path is supported by
+ * the assimp parser.
+ */
+bool AssimpParser::isPathExtensionSupported(const QString &path)
+{
+    return AssimpParser::isAssimpPath(path);
 }
 
 /*!
