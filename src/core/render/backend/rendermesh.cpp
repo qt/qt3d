@@ -49,7 +49,6 @@
 #include <technique.h>
 
 #include <QOpenGLContext>
-#include <QOpenGLFunctions_3_2_Core>
 #include <QOpenGLShaderProgram>
 
 namespace Qt3D {
@@ -60,8 +59,7 @@ RenderMesh::RenderMesh(Mesh* peer)
       m_technique(0),
       m_pass(0),
       m_material(0),
-      m_instanceCount( 0 ),
-      m_funcs(0)
+      m_instanceCount( 0 )
 {
 }
 
@@ -98,9 +96,10 @@ DrawStateSet *RenderMesh::stateSet()
     return m_technique->stateSetForPass(m_pass);
 }
 
-
 void RenderMesh::initializeGL(QGraphicsContext* gc)
 {
+    if (m_meshData.isNull())
+        return ;
     m_vao.create();
     m_vao.bind();
 
@@ -115,20 +114,10 @@ void RenderMesh::initializeGL(QGraphicsContext* gc)
     }
 
     m_drawIndexed = (m_meshData->indexAttr() != NULL);
-    if (m_drawIndexed) {
+    if (m_drawIndexed)
         gc->specifyIndices(m_meshData->indexAttr());
-    }
-
     m_vao.release();
-
-    // TODO Be careful about where we do this OpenGL work
-    QOpenGLContext* ctx = QOpenGLContext::currentContext();
-    m_funcs = ctx->versionFunctions<QOpenGLFunctions_3_2_Core>();
-    if ( m_funcs )
-        m_funcs->initializeOpenGLFunctions();
-    else
-        qWarning() << Q_FUNC_INFO << "couldn't resolve 3.3 core functions";
-};
+}
 
 void RenderMesh::releaseGL()
 {
@@ -137,6 +126,8 @@ void RenderMesh::releaseGL()
 
 void RenderMesh::sendDrawingCommands(QGraphicsContext* gc)
 {
+    if (m_meshData.isNull())
+        return ;
     if (gc->activeMaterial() != m_material) {
         gc->setActiveMaterial(m_material);
         m_material->setUniformsForPass(m_pass, gc);
@@ -150,19 +141,27 @@ void RenderMesh::sendDrawingCommands(QGraphicsContext* gc)
     GLint indexType = m_drawIndexed ? m_meshData->indexAttr()->type() : 0;
 
     if (m_instanceCount > 0) {
-        if ( m_drawIndexed ) {
-            m_funcs->glDrawElementsInstanced(primType, primType, indexType, 0, m_instanceCount);
-        } else {
-            m_funcs->glDrawArraysInstanced(primType, 0, primCount, m_instanceCount);
-        }
-    } else {
-        if ( m_drawIndexed ) {
-            m_funcs->glDrawElements(primType, primCount, indexType,
-                                    reinterpret_cast<void*>(m_meshData->indexAttr()->byteOffset()));
-        } else {
-            m_funcs->glDrawArrays(primType, 0, primCount);
-        }
-    } // non-instanced drawing
+        if (m_drawIndexed)
+            gc->drawElementsInstanced(primType,
+                                      primType,
+                                      indexType,
+                                      0,
+                                      m_instanceCount);
+        else
+            gc->drawArraysInstanced(primType,
+                                    0,
+                                    primCount,
+                                    m_instanceCount);
+    }
+    else {
+        if (m_drawIndexed)
+            gc->drawElements(primType,
+                             primCount,
+                             indexType,
+                             reinterpret_cast<void*>(m_meshData->indexAttr()->byteOffset()));
+        else
+            gc->drawArrays(primType, 0, primCount);
+    }  // non-instanced drawing
 
     int err = glGetError();
     if (err)
@@ -226,16 +225,14 @@ void RenderMesh::setMeshData( DrawContext& dc )
     float* tc = 0;
     float* tang = 0;
 
-    if ( !texCoords.isEmpty() )
-    {
+    if ( !texCoords.isEmpty() ) {
         tc = new float[ 2 * vertexCount ];
         if ( !tangents.isEmpty() )
             tang = new float[ 4 * vertexCount ];
     }
 
     int idx = 0, tcIdx = 0, tangIdx = 0;
-    for ( int i = 0; i < vertexCount; ++i )
-    {
+    for ( int i = 0; i < vertexCount; ++i ) {
         v[idx]   = points[i].x();
         v[idx+1] = points[i].y();
         v[idx+2] = points[i].z();
@@ -243,14 +240,12 @@ void RenderMesh::setMeshData( DrawContext& dc )
         n[idx+1] = normals[i].y();
         n[idx+2] = normals[i].z();
         idx += 3;
-        if ( tc != 0 )
-        {
+        if ( tc != 0 ) {
             tc[tcIdx]   = texCoords[i].x();
             tc[tcIdx+1] = texCoords[i].y();
             tcIdx += 2;
         }
-        if ( tang != 0 )
-        {
+        if ( tang != 0 ) {
             tang[tangIdx]   = tangents[i].x();
             tang[tangIdx+1] = tangents[i].y();
             tang[tangIdx+2] = tangents[i].z();
@@ -272,16 +267,14 @@ void RenderMesh::setMeshData( DrawContext& dc )
     m_normalBuffer.bind();
     m_normalBuffer.allocate( n, 3 * vertexCount * sizeof( float ) );
 
-    if ( tc )
-    {
+    if ( tc ) {
         m_textureCoordBuffer.create();
         m_textureCoordBuffer.setUsagePattern( QOpenGLBuffer::StaticDraw );
         m_textureCoordBuffer.bind();
         m_textureCoordBuffer.allocate( tc, 2 * vertexCount * sizeof( float ) );
     }
 
-    if ( tang )
-    {
+    if ( tang ) {
         m_tangentBuffer.create();
         m_tangentBuffer.setUsagePattern( QOpenGLBuffer::StaticDraw );
         m_tangentBuffer.bind();
@@ -314,7 +307,7 @@ void RenderMesh::setMeshData( DrawContext& dc )
     }
 
     // Calculate the bounding volume
-   // m_boundingVolume->update( points );
+    // m_boundingVolume->update( points );
 
     // Clean up
     delete[] v;

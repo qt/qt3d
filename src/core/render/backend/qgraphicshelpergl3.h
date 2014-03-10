@@ -39,83 +39,40 @@
 **
 ****************************************************************************/
 
-#ifndef RENDERMESH_H
-#define RENDERMESH_H
+#ifndef QGRAPHICHELPERGL3_H
+#define QGRAPHICHELPERGL3_H
 
-#include "drawable.h"
+#ifndef QT_OPENGL_ES_2
 
-#include <meshdata.h>
-#include <axisalignedboundingbox.h>
+#include "qgraphicshelperinterface.h"
 
-#include <QOpenGLVertexArrayObject>
-#include <QMatrix4x4>
+class QOpenGLFunctions_3_2_Core;
 
-namespace Qt3D {
+namespace Qt3D
+{
 
-class Mesh;
-class RenderNode;
-class RenderPass;
-class RenderMaterial;
-class RenderTechnique;
-
-class RenderMesh : public Drawable
+class QGraphicsHelperGL3 : public QGraphicsHelperInterface
 {
 public:
-    explicit RenderMesh(Mesh* peer);
+    QGraphicsHelperGL3();
 
-    void setPeer(Mesh* peer);
-
-    void setData(MeshDataPtr mesh);
-
-    void setTechniqueAndPass(RenderTechnique* tech, unsigned int pass);
-
-    void setMaterial(RenderMaterial* rmat);
-
-    void setInstanceCount(unsigned int count);
-
-    void setModelMatrix(const QMatrix4x4& mm);
-
-    virtual DrawStateSet* stateSet();
-
-    /**
-     * @brief mapAttributeNames - resolve mapping of mesh-data attribute
-     * names to parameters.
-     * @param t
-     */
-    void mapAttributeNames();
-
-    virtual void initializeGL(QGraphicsContext* dc);
-
-    virtual void releaseGL();
-
-protected:
-    virtual void sendDrawingCommands( QGraphicsContext* dc );
-
-    virtual RenderShader* shader();
-
-    virtual AxisAlignedBoundingBox boundingBox() const;
+    // QGraphicHelperInterface interface
+    void initializeHelper(QOpenGLContext *context, QAbstractOpenGLFunctions *functions) Q_DECL_OVERRIDE;
+    void drawElementsInstanced(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void *indices, GLsizei instances) Q_DECL_OVERRIDE;
+    void drawArraysInstanced(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances) Q_DECL_OVERRIDE;
+    void drawElements(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void *indices) Q_DECL_OVERRIDE;
+    void drawArrays(GLenum primitiveType, GLint first, GLsizei count) Q_DECL_OVERRIDE;
+    void useProgram(GLuint programId) Q_DECL_OVERRIDE;
+    void vertexAttribDivisor(GLuint index, GLuint divisor) Q_DECL_OVERRIDE;
+    void blendEquation(GLenum mode) Q_DECL_OVERRIDE;
 
 private:
+    QOpenGLFunctions_3_2_Core *m_funcs;
 
-
-    Mesh* m_peer;
-
-    MeshDataPtr m_meshData;
-
-    RenderTechnique* m_technique;
-    unsigned int m_pass;
-
-    RenderMaterial* m_material;
-
-    bool m_drawIndexed;
-    bool m_meshDirty;
-    unsigned int m_instanceCount;
-
-    QOpenGLVertexArrayObject m_vao;
-
-    QMatrix4x4 m_modelMatrix;
 };
 
 }
 
-#endif // RENDERMESH_H
+#endif // !QT_OPENGL_ES_2
+
+#endif // QGRAPHICHELPERGL3_H

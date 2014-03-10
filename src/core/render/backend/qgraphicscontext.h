@@ -53,7 +53,7 @@
 #include <meshdata.h>
 
 class QOpenGLShaderProgram;
-class QOpenGLFunctions_3_3_Core;
+class QAbstractOpenGLFunctions;
 
 namespace Qt3D
 {
@@ -63,6 +63,7 @@ class RenderCamera;
 class RenderMaterial;
 class RenderTexture;
 class DrawStateSet;
+class QGraphicsHelperInterface;
 
 enum TextureScope
 {
@@ -138,6 +139,14 @@ public:
 
     void setCurrentStateSet(DrawStateSet* ss);
     DrawStateSet* currentStateSet() const;
+
+    // Wrapper methods
+    void    drawElementsInstanced(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices, GLsizei instances);
+    void    drawArraysInstanced(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances);
+    void    drawElements(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices);
+    void    drawArrays(GLenum primitiveType, GLint first, GLsizei count);
+    void    blendEquation(GLenum mode);
+
 private:
     void initialize();
 
@@ -146,13 +155,14 @@ private:
     GLint assignUnitForTexture(RenderTexture* tex);
     void deactivateTexturesWithScope(TextureScope ts);
 
+    void resolveHighestOpenGLFunctions();
 
     bool m_initialized;
     const unsigned int m_id;
     QOpenGLContext* m_gl;
     QSurface* m_surface;
+    QGraphicsHelperInterface* m_glHelper;
 
-    QOpenGLFunctions_3_3_Core *m_funcs;
     RenderShader* m_activeShader;
     QHash<RenderShader*, QOpenGLShaderProgram*> m_shaderHash;
     QHash<BufferPtr,QOpenGLBuffer> m_bufferHash;

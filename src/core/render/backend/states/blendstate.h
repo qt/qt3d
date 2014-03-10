@@ -47,8 +47,6 @@
 
 #include <QOpenGLContext>
 
-class QOpenGLFunctions_3_2_Core;
-
 namespace Qt3D {
 
 class BlendState : public GenericState2<BlendState, GLenum, GLenum>
@@ -74,7 +72,6 @@ public:
 
 private:
     BlendEquation(GLenum func);
-    mutable QOpenGLFunctions_3_2_Core *m_funcs;
 };
 
 

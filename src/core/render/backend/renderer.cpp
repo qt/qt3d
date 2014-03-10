@@ -139,7 +139,8 @@ Renderer::Renderer()
 {
     m_temporaryAllBin = NULL;
     m_graphicsContext = new QGraphicsContext;
-    m_graphicsContext->setOpenGLContext(new QOpenGLContext);
+    // Done in set surface
+//    m_graphicsContext->setOpenGLContext(new QOpenGLContext);
 
     m_frameTimer = new QTimer(this);
     connect(m_frameTimer, SIGNAL(timeout()), this, SLOT(onFrame()));

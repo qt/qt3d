@@ -46,9 +46,21 @@
 #include "rendermaterial.h"
 #include "rendertexture.h"
 
+#include "qgraphicshelperinterface.h"
+
 #include <QDebug>
 #include <QOpenGLShaderProgram>
-#include <QOpenGLFunctions_3_3_Core>
+
+#if !defined(QT_OPENGL_ES_2)
+#include <QOpenGLFunctions_2_0>
+#include <QOpenGLFunctions_3_2_Core>
+#include "qgraphicshelpergl2.h"
+#include "qgraphicshelpergl3.h"
+#else
+#include <QOpenGLFunctions_ES2>
+#include "qgraphicshelperes2.h"
+#endif
+
 #include <QSurface>
 #include <QOpenGLTexture>
 
@@ -71,8 +83,9 @@ unsigned int nextFreeContextId()
 QGraphicsContext::QGraphicsContext()
     : m_initialized(false)
     , m_id(nextFreeContextId())
+    , m_gl(0)
     , m_surface(0)
-    , m_funcs(0)
+    , m_glHelper(0)
     , m_activeShader(0)
     , m_camera(0)
     , m_material(0)
@@ -91,6 +104,7 @@ QGraphicsContext::~QGraphicsContext()
 
 void QGraphicsContext::setSurface(QSurface *s)
 {
+    qDebug() << Q_FUNC_INFO;
     m_surface = s;
 }
 
@@ -181,13 +195,18 @@ void QGraphicsContext::releaseOpenGL()
 
 void QGraphicsContext::setOpenGLContext(QOpenGLContext* ctx)
 {
+    qDebug() << Q_FUNC_INFO;
     releaseOpenGL();
     m_gl = ctx;
+    qDebug() << Q_FUNC_INFO << " " << ctx->format().version();
     //    m_gl->setParent(this);
 
-    m_funcs = m_gl->versionFunctions<QOpenGLFunctions_3_3_Core>();
-    if (m_funcs)
-        m_funcs->initializeOpenGLFunctions();
+    // The Context should be made current to the surface
+    // otherwise gl functions initialization fails
+
+    Q_ASSERT(m_surface);
+    m_gl->makeCurrent(m_surface);
+    this->resolveHighestOpenGLFunctions();
 }
 
 void QGraphicsContext::activateShader(RenderShader *shader)
@@ -195,7 +214,7 @@ void QGraphicsContext::activateShader(RenderShader *shader)
     if (shader == NULL) {
         m_activeShader = NULL;
         m_material = NULL;
-        m_funcs->glUseProgram(0);
+        m_glHelper->useProgram(0);
         return;
     }
 
@@ -315,7 +334,7 @@ int QGraphicsContext::activateTexture(TextureScope scope, RenderTexture *tex, in
     int err = glGetError();
     if (err)
         qWarning() << "GL error after activating texture" << QString::number(err, 16)
-                      << tex->textureId() << "on unit" << onUnit;
+                   << tex->textureId() << "on unit" << onUnit;
 
     m_textureScores[tex] = 200;
     m_pinnedTextureUnits[onUnit] = true;
@@ -334,6 +353,35 @@ void QGraphicsContext::deactivateTexturesWithScope(TextureScope ts)
             m_pinnedTextureUnits[u] = false;
         }
     } // of units iteration
+}
+
+/*!
+ * Finds the highest supported opengl version and internally use the most optimized
+ * helper for a given version.
+ */
+void QGraphicsContext::resolveHighestOpenGLFunctions()
+{
+    Q_ASSERT(m_gl);
+
+    QAbstractOpenGLFunctions *glFunctions = Q_NULLPTR;
+
+#if defined QT_OPENGL_ES_2
+    if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_ES2>()) != Q_NULLPTR) {
+        qDebug() << Q_FUNC_INFO << " Building OpenGL 2/ES2 Helper";
+        m_glHelper = new QGraphicsHelperES2();
+    }
+#else
+    if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_3_2_Core>()) != Q_NULLPTR) {
+        qDebug() << Q_FUNC_INFO << " Building OpenGL 3.2";
+        m_glHelper = new QGraphicsHelperGL3();
+    }
+    else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_2_0>()) != Q_NULLPTR) {
+        qDebug() << Q_FUNC_INFO << " Building OpenGL 2 Helper";
+        m_glHelper = new QGraphicsHelperGL2();
+    }
+#endif
+    if (m_glHelper != Q_NULLPTR)
+        m_glHelper->initializeHelper(m_gl, glFunctions);
 }
 
 void QGraphicsContext::deactivateTexture(RenderTexture* tex)
@@ -361,6 +409,69 @@ void QGraphicsContext::setCurrentStateSet(DrawStateSet *ss)
 DrawStateSet *QGraphicsContext::currentStateSet() const
 {
     return m_stateSet;
+}
+
+/*!
+ * Wraps an OpenGL call to glDrawElementsInstanced.
+ * If the call is not supported by the system's OpenGL version,
+ * it is simulated with a loop.
+ */
+void QGraphicsContext::drawElementsInstanced(GLenum primitiveType,
+                                             GLsizei primitiveCount,
+                                             GLint indexType,
+                                             void *indices,
+                                             GLsizei instances)
+{
+    m_glHelper->drawElementsInstanced(primitiveType,
+                                      primitiveCount,
+                                      indexType,
+                                      indices,
+                                      instances);
+}
+
+/*!
+ * Wraps an OpenGL call to glDrawArraysInstanced.
+ */
+void QGraphicsContext::drawArraysInstanced(GLenum primitiveType,
+                                           GLint first,
+                                           GLsizei count,
+                                           GLsizei instances)
+{
+    m_glHelper->drawArraysInstanced(primitiveType,
+                                    first,
+                                    count,
+                                    instances);
+}
+
+/*!
+ * Wraps an OpenGL call to glDrawElements.
+ */
+void QGraphicsContext::drawElements(GLenum primitiveType,
+                                    GLsizei primitiveCount,
+                                    GLint indexType,
+                                    void *indices)
+{
+    m_glHelper->drawElements(primitiveType,
+                             primitiveCount,
+                             indexType,
+                             indices);
+}
+
+/*!
+ * Wraps an OpenGL call to glDrawArrays.
+ */
+void QGraphicsContext::drawArrays(GLenum primitiveType,
+                                  GLint first,
+                                  GLsizei count)
+{
+    m_glHelper->drawArrays(primitiveType,
+                           first,
+                           count);
+}
+
+void QGraphicsContext::blendEquation(GLenum mode)
+{
+    m_glHelper->blendEquation(mode);
 }
 
 GLint QGraphicsContext::assignUnitForTexture(RenderTexture *tex)
@@ -423,14 +534,14 @@ void QGraphicsContext::specifyAttribute(QString nm, AttributePtr attr)
 
     prog->enableAttributeArray(location);
     prog->setAttributeBuffer(location,
-                          elementType(attr->type()),
-                          attr->byteOffset(),
-                          tupleSizeFromType(attr->type()),
-                          attr->byteStride());
+                             elementType(attr->type()),
+                             attr->byteOffset(),
+                             tupleSizeFromType(attr->type()),
+                             attr->byteStride());
 
     if (attr->divisor() != 0) {
-        // TODO - only if supported!
-        m_funcs->glVertexAttribDivisor(location, attr->divisor());
+        // Done by the helper if it supports it
+        m_glHelper->vertexAttribDivisor(location, attr->divisor());
     }
 
     buf.release();

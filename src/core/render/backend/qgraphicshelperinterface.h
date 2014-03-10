@@ -39,83 +39,27 @@
 **
 ****************************************************************************/
 
-#ifndef RENDERMESH_H
-#define RENDERMESH_H
+#ifndef QGRAPHICSHELPERINTERFACE_H
+#define QGRAPHICSHELPERINTERFACE_H
 
-#include "drawable.h"
+#include <QOpenGLFunctions>
 
-#include <meshdata.h>
-#include <axisalignedboundingbox.h>
+namespace Qt3D
+{
 
-#include <QOpenGLVertexArrayObject>
-#include <QMatrix4x4>
-
-namespace Qt3D {
-
-class Mesh;
-class RenderNode;
-class RenderPass;
-class RenderMaterial;
-class RenderTechnique;
-
-class RenderMesh : public Drawable
+class QGraphicsHelperInterface
 {
 public:
-    explicit RenderMesh(Mesh* peer);
-
-    void setPeer(Mesh* peer);
-
-    void setData(MeshDataPtr mesh);
-
-    void setTechniqueAndPass(RenderTechnique* tech, unsigned int pass);
-
-    void setMaterial(RenderMaterial* rmat);
-
-    void setInstanceCount(unsigned int count);
-
-    void setModelMatrix(const QMatrix4x4& mm);
-
-    virtual DrawStateSet* stateSet();
-
-    /**
-     * @brief mapAttributeNames - resolve mapping of mesh-data attribute
-     * names to parameters.
-     * @param t
-     */
-    void mapAttributeNames();
-
-    virtual void initializeGL(QGraphicsContext* dc);
-
-    virtual void releaseGL();
-
-protected:
-    virtual void sendDrawingCommands( QGraphicsContext* dc );
-
-    virtual RenderShader* shader();
-
-    virtual AxisAlignedBoundingBox boundingBox() const;
-
-private:
-
-
-    Mesh* m_peer;
-
-    MeshDataPtr m_meshData;
-
-    RenderTechnique* m_technique;
-    unsigned int m_pass;
-
-    RenderMaterial* m_material;
-
-    bool m_drawIndexed;
-    bool m_meshDirty;
-    unsigned int m_instanceCount;
-
-    QOpenGLVertexArrayObject m_vao;
-
-    QMatrix4x4 m_modelMatrix;
+    virtual void    initializeHelper(QOpenGLContext *context, QAbstractOpenGLFunctions *functions) = 0;
+    virtual void    drawElementsInstanced(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices, GLsizei instances) = 0;
+    virtual void    drawArraysInstanced(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances) = 0;
+    virtual void    drawElements(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices) = 0;
+    virtual void    drawArrays(GLenum primitiveType, GLint first, GLsizei count) = 0;
+    virtual void    useProgram(GLuint programId) = 0;
+    virtual void    vertexAttribDivisor(GLuint index, GLuint divisor) = 0;
+    virtual void    blendEquation(GLenum mode) = 0;
 };
 
 }
 
-#endif // RENDERMESH_H
+#endif // QGRAPHICSHELPERINTERFACE_H

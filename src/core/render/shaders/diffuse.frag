@@ -1,4 +1,4 @@
-#version 330
+#version 150
 
 uniform vec4 lightPosition;
 uniform vec3 lightIntensity;
@@ -8,7 +8,8 @@ uniform vec3 ka; // Ambient reflectivity
 in vec3 position;
 in vec3 normal;
 
-layout (location = 0) out vec4 fragColor;
+//layout (location = 0)
+out vec4 fragColor;
 
 void main()
 {

@@ -86,14 +86,7 @@ BlendState::BlendState(GLenum src, GLenum dst) :
 
 void BlendEquation::apply(QGraphicsContext *gc) const
 {
-    Q_UNUSED(gc);
-
-    if (!m_funcs) {
-        m_funcs = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_2_Core>();
-        m_funcs->initializeOpenGLFunctions();
-    }
-
-    m_funcs->glBlendEquation(m_1);
+    gc->blendEquation(m_1);
 }
 
 BlendEquation *BlendEquation::getOrCreate(GLenum func)
@@ -102,8 +95,7 @@ BlendEquation *BlendEquation::getOrCreate(GLenum func)
 }
 
 BlendEquation::BlendEquation(GLenum func) :
-    GenericState1(func),
-    m_funcs(0)
+    GenericState1(func)
 {
 }
 

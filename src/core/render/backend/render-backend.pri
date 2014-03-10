@@ -25,7 +25,11 @@ HEADERS += \
     $$PWD/meshmanager.h \
     $$PWD/drawstate.h \
     $$PWD/states/blendstate.h \
-    $$PWD/genericstate.h
+    $$PWD/genericstate.h \
+    $$PWD/qgraphicshelperinterface.h \
+    $$PWD/qgraphicshelpergl3.h \
+    $$PWD/qgraphicshelperes2.h \
+    $$PWD/qgraphicshelpergl2.h
 
 
 SOURCES += \
@@ -49,4 +53,7 @@ SOURCES += \
     $$PWD/rendertextureprovider.cpp \
     $$PWD/meshmanager.cpp \
     $$PWD/drawstate.cpp \
-    $$PWD/states/blendstate.cpp
+    $$PWD/states/blendstate.cpp \
+    $$PWD/qgraphicshelpergl3.cpp \
+    $$PWD/qgraphicshelperes2.cpp \
+    $$PWD/qgraphicshelpergl2.cpp
