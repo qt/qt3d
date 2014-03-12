@@ -94,7 +94,7 @@ void QUniformValue::fromVariant(QVariant v)
         fromVariantToFloat(v);
         break;
 
-    // doubles, if the extension is present
+        // Handle doubles if extension supported
 
     default:
         qWarning() << Q_FUNC_INFO << "unsupported internal type" << m_type;
@@ -119,8 +119,6 @@ void QUniformValue::fromVariantToInt(QVariant v)
 
 void QUniformValue::fromVariantToFloat(QVariant v)
 {
-    float* bufPtr = NULL;
-
     switch (v.type()) {
     case QVariant::Int:
     case QVariant::UInt:
@@ -155,15 +153,15 @@ void QUniformValue::fromVariantToFloat(QVariant v)
     }
 
     case QVariant::Color: {
-        qDebug() << "XXXXXXX setting from" << v;
-        m_bytes.resize(sizeof(float) * 4);
         m_count = 1;
         m_tupleSize = 4;
+        m_bytes.resize(sizeof(float) * m_count * m_tupleSize);
+        float* bufPtr = reinterpret_cast<float *>(m_bytes.data());
         QColor c = v.value<QColor>();
         *bufPtr++ = c.redF();
         *bufPtr++ = c.greenF();
         *bufPtr++ = c.blueF();
-        *bufPtr++ = c.alphaF();
+        *bufPtr = c.alphaF();
         break;
     }
 
@@ -214,9 +212,7 @@ void QUniformValue::apply(QGraphicsContext *gc, int location, QString nm) const
         gc->activeShader()->setUniformValueArray(location,
                                                  reinterpret_cast<const GLint*>(m_bytes.constData()),
                                                  m_count * m_tupleSize);
-        glUni
-
-        break;
+                break;
 
     case UInt:
         gc->activeShader()->setUniformValueArray(location,
