@@ -82,9 +82,37 @@ QString ShaderProgram::fragmentSourceFile() const
     return m_fragmentSourceFile;
 }
 
+/*!
+ * Sets the vertexShader from raw data in \a vertexShader.
+ * Note that if vertexSourceFile is set, when load is called,
+ * the shader code will be replaced by the shader located at vertexSourceFile.
+ */
+void ShaderProgram::setVertexShader(const QByteArray &vertexShader)
+{
+    if (vertexShader != m_cachedVertexCode) {
+        m_cachedVertexCode = vertexShader;
+        m_isLoaded = false;
+        emit vertexShaderChanged();
+    }
+}
+
+/*!
+ * Sets the fragmentShader from raw data in \a fragmentShader.
+ * Note that if a fragmentSourceFile is set, when load is called,
+ * the shader code will be replaced by the shader located at fragmentSourceFile.
+ */
+void ShaderProgram::setFragmentShader(const QByteArray &fragmentShader)
+{
+    if (fragmentShader != m_cachedFragmentCode) {
+        m_cachedFragmentCode = fragmentShader;
+        m_isLoaded = false;
+        emit fragmentShaderChanged();
+    }
+}
+
 QByteArray ShaderProgram::vertexSourceCode() const
 {
-    if (!isLoaded())
+    if (!isLoaded() && m_cachedVertexCode.isEmpty())
         return QByteArray();
 
     return m_cachedVertexCode;
@@ -92,7 +120,7 @@ QByteArray ShaderProgram::vertexSourceCode() const
 
 QByteArray ShaderProgram::fragmentSourceCode() const
 {
-    if (!isLoaded())
+    if (!isLoaded() && m_cachedFragmentCode.isEmpty())
         return QByteArray();
 
     return m_cachedFragmentCode;
@@ -110,22 +138,25 @@ void ShaderProgram::load()
 
     m_isLoaded = true;
 
-    QFile f(m_fragmentSourceFile);
-    if (!f.exists()) {
-        qWarning() << "couldn't find shader source file:" << m_fragmentSourceFile;
-        return;
-    } else {
-        f.open(QIODevice::ReadOnly);
-        m_cachedFragmentCode = f.readAll();
+    if (!m_fragmentSourceFile.isEmpty()) {
+        QFile f(m_fragmentSourceFile);
+        if (!f.exists()) {
+            qWarning() << "couldn't find shader source file:" << m_fragmentSourceFile;
+            return;
+        } else {
+            f.open(QIODevice::ReadOnly);
+            m_cachedFragmentCode = f.readAll();
+        }
     }
-
-    QFile vs(m_vertexSourceFile);
-    if (!vs.exists()) {
-        qWarning() << "couldn't find shader source file:" << m_vertexSourceFile;
-        return;
-    } else {
-        vs.open(QIODevice::ReadOnly);
-        m_cachedVertexCode = vs.readAll();
+    if (!m_vertexSourceFile.isEmpty()) {
+        QFile vs(m_vertexSourceFile);
+        if (!vs.exists()) {
+            qWarning() << "couldn't find shader source file:" << m_vertexSourceFile;
+            return;
+        } else {
+            vs.open(QIODevice::ReadOnly);
+            m_cachedVertexCode = vs.readAll();
+        }
     }
 }
 

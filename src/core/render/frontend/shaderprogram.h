@@ -53,6 +53,8 @@ class QT3DCORESHARED_EXPORT ShaderProgram : public Node
 
     Q_PROPERTY(QString vertexSourceFile READ vertexSourceFile WRITE setVertexSourceFile NOTIFY vertexSourceFileChanged)
     Q_PROPERTY(QString fragmentSourceFile READ fragmentSourceFile WRITE setFragmentSourceFile NOTIFY fragmentSourceFileChanged)
+    Q_PROPERTY(QByteArray vertexShader READ vertexSourceCode WRITE setVertexShader NOTIFY vertexShaderChanged)
+    Q_PROPERTY(QByteArray fragmentShader READ fragmentSourceCode WRITE setFragmentShader NOTIFY fragmentShaderChanged)
 
 public:
     explicit ShaderProgram(Node *parent = 0);
@@ -62,6 +64,9 @@ public:
 
     void setFragmentSourceFile(const QString &fragmentSource);
     QString fragmentSourceFile() const;
+
+    void setVertexShader(const QByteArray &vertexShader);
+    void setFragmentShader(const QByteArray &fragmentShader);
 
     QByteArray vertexSourceCode() const;
     QByteArray fragmentSourceCode() const;
@@ -77,6 +82,8 @@ public:
 signals:
     void vertexSourceFileChanged();
     void fragmentSourceFileChanged();
+    void vertexShaderChanged();
+    void fragmentShaderChanged();
 
 private:
     QString m_vertexSourceFile;
