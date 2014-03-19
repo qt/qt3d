@@ -182,7 +182,7 @@ void Renderer::buildDefaultTechnique()
     m_defaultTechnique->addParameter(np);
     basicPass->addAttributeBinding(np, "vertexNormal");
 
-// matrix uniforms from standard
+    // matrix uniforms from standard
     Parameter* mvMat = new Parameter(m_defaultTechnique, "modelView", GL_FLOAT_MAT4);
     mvMat->setStandardUniform(Parameter::ModelView);
     m_defaultTechnique->addParameter(mvMat);
@@ -198,7 +198,7 @@ void Renderer::buildDefaultTechnique()
     m_defaultTechnique->addParameter(mvpMat);
     basicPass->addUniformBinding(mvpMat, "mvp");
 
-// diffuse lighting uniforms
+    // diffuse lighting uniforms
     Parameter* lightPos = new Parameter(m_defaultTechnique, "lightPos", GL_FLOAT_VEC4);
     m_defaultTechnique->addParameter(lightPos);
     basicPass->addUniformBinding(lightPos, "lightPosition");
@@ -353,11 +353,26 @@ void Renderer::setDefaultMaterial(Material *mat)
 void Renderer::render()
 {
     // Traverse the framegraph
- //   FrameGraphVisitor visitor;
- //   visitor.traverse(m_frameGraphRoot, this);
+    //   FrameGraphVisitor visitor;
+    //   visitor.traverse(m_frameGraphRoot, this);
+
+
+
+    // Traversing the framegraph tree from root to lead node
+    // Allows us to define the rendering set up
+    // Camera, RenderTarget ...
+
+    // Utimately the renderer should be a framework
+    // For the processing of the list of renderbins
+
+    // Matrice update, bounding volumes computation ...
+    // Should be jobs
+
+    // Qt3D has 2 distincts node trees
+    // One scene description
+    // One framegraph description
 
     // begin hack renderer
-
     if (!m_renderCamera)
         return;
 
@@ -394,7 +409,7 @@ RenderTechnique* Renderer::techniqueForMaterial(Material* mat)
         Q_ASSERT(!eff->techniques().empty());
 
         // FIXME - technique selection happens in here, now we know
-       // the renderer characteristics
+        // the renderer characteristics
         tech = eff->techniques().front();
     } else {
         tech = m_defaultTechnique;

@@ -153,9 +153,9 @@ void QAspectManager::exec()
     // Gentlemen, start your engines
     QEventLoop eventLoop;
 
-//    QElapsedTimer timer;
-//    timer.start();
-//    qint64 t(0);
+    //    QElapsedTimer timer;
+    //    timer.start();
+    //    qint64 t(0);
     QTickClock tickClock;
     tickClock.start();
 
@@ -174,13 +174,19 @@ void QAspectManager::exec()
             // Update the clocks (just main clock for now).
             // TODO: Add additional clocks
             qint64 t = tickClock.waitForNextTick();
-    //        qDebug() << "t =" << t / 1000000;
-//            const qint64 t1 = timer.nsecsElapsed();
-//            const qint64 dt = t1 - t;
-//            t = t1;
-//            qDebug() << "dt =" << dt;
+            //        qDebug() << "t =" << t / 1000000;
+            //            const qint64 t1 = timer.nsecsElapsed();
+            //            const qint64 dt = t1 - t;
+            //            t = t1;
+            //            qDebug() << "dt =" << dt;
 
             m_scheduler->update(t);
+
+
+            // For each Aspect
+            // Ask them to launch set of jobs for the current frame
+            // Updates matrices, bounding volumes, render bins ...
+
 
             // Distribute accumulated changes
             m_changeArbiter->syncChanges();
