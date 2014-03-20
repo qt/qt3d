@@ -4,7 +4,8 @@ SUBDIRS += \
     exampleresources \
     simple-qml \
     gltf \
-    assimp
+    assimp \
+    cpp_example
 
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d

@@ -39,77 +39,78 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_WINDOW_H
-#define QT3D_WINDOW_H
+#include <QGuiApplication>
+#include <QtQml>
 
-#include <QWindow>
-#include "qt3dcore_global.h"
+#include <exampleresources.h>
 
-#include <QQmlEngine>
+#include <window.h>
+#include <scene.h>
+#include <entity.h>
+#include <camera.h>
+#include <shape.h>
+#include <mesh.h>
+#include <technique.h>
+#include <material.h>
+#include <effect.h>
+#include <translatetransform.h>
+#include <matrixtransform.h>
+#include <rotatetransform.h>
+#include <texture.h>
+#include <renderpass.h>
+#include <renderpassfilter.h>
+#include <techniquefilter.h>
+#include <viewport.h>
+#include <cameraselector.h>
 
-class QTimer;
-
-namespace Qt3D {
-
-class AbstractAspect;
-class QAspectEngine;
-class Camera;
-
-// temporary solution to get control over camera
-class CameraController;
-
-class QT3DCORESHARED_EXPORT Window : public QWindow
+int main(int ac, char **av)
 {
-    Q_OBJECT
-public:
-    explicit Window(QScreen *screen = 0);
-    ~Window();
+    QGuiApplication app(ac, av);
 
-    void setSource( const QUrl& url );
-    void setRootObject( QObject* obj );
+    initializeAssetResources("../exampleresources/example-assets.qrb");
 
-    enum Status { Null, Ready, Loading, Error };
-    Status status() const;
+    qmlRegisterType<Qt3D::Node>("Qt3D", 2, 0, "Node");
+    qmlRegisterType<Qt3D::Entity>("Qt3D", 2, 0, "Entity");
 
-    QSharedPointer<QObject> rootObject() { return m_root; }
+    qmlRegisterType<Qt3D::MatrixTransform>("Qt3D", 2, 0, "MatrixTransform");
 
-signals:
-    void statusChanged( Qt3D::Window::Status );
+    Qt3D::Window view;
 
-protected:
-    virtual void keyPressEvent(QKeyEvent *e);
-    virtual void keyReleaseEvent( QKeyEvent* e );
+    Qt3D::Entity *rootEntity = new Qt3D::Entity();
+    Qt3D::Scene  *scene = new Qt3D::Scene();
 
-    virtual void mousePressEvent( QMouseEvent* e );
-    virtual void mouseReleaseEvent( QMouseEvent* e );
-    virtual void mouseMoveEvent( QMouseEvent* e );
-    virtual void resizeEvent(QResizeEvent *e);
+    Qt3D::Entity *torusEntity = new Qt3D::Entity();
+    Qt3D::Mesh *torusMesh = new Qt3D::Mesh();
+    Qt3D::Shape *torus = new Qt3D::Shape();
 
-private slots:
-    void continueExecute();
+    torus->setType(Qt3D::Shape::ShapeTorus);
+    torus->setRadius(40);
+    torus->setMinorRadius(15);
 
-    void onUpdate();
+    torusMesh->setData(torus->data());
+    torusEntity->addComponent(torusMesh);
 
-private:
+    Qt3D::TranslateTransform *torusTranslation = new Qt3D::TranslateTransform();
+    Qt3D::RotateTransform *torusRotation = new Qt3D::RotateTransform();
 
-    QScopedPointer<QQmlEngine> m_engine;
-    QSharedPointer<QObject> m_root;
-    QSharedPointer<QQmlComponent> m_component;
+    torusTranslation->setTranslation(QVector3D(2.5f, 3.5f, 2.0f));
+    torusRotation->setAxis(QVector3D(1, 0, 0));
+    torusRotation->setAngleDeg(35.0f);
 
-    // The various aspects (subsystems) that will be interested in (parts)
-    // of the objects in the object tree.
-    QAspectEngine *m_aspectEngine;
+    torusEntity->appendTransfrom(torusTranslation);
+    torusEntity->appendTransfrom(torusRotation);
 
-    QList<Qt3D::AbstractAspect*> m_aspects;
+    scene->setSource(":/assets/gltf/wine/wine.json");
 
-    Camera* m_camera;
+    // Build Node Tree
+    scene->addChild(torusEntity);
+    rootEntity->addChild(scene);
 
-    // temporary, borrowed from training material
-    CameraController* m_controller;
+    // Set root object of the scene
+    view.setRootObject(rootEntity);
 
-    QTimer* m_updateTimer;
-};
+    // Show window
+    view.show();
 
-} // namespace Qt3D
-
-#endif // QT3D_WINDOW_H
+    return app.exec();
+}
