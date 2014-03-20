@@ -50,7 +50,8 @@ namespace Qt3D
 {
 
 Scene::Scene(Node* parent) :
-    Entity(parent)
+    Entity(parent),
+    m_sceneChild(Q_NULLPTR)
 {
 }
 
@@ -67,7 +68,7 @@ QString Scene::sceneId() const
 Scene *Scene::findInTree(Node *root)
 {
     if (!root)
-        return NULL;
+        return Q_NULLPTR;
 
     Scene* s = qobject_cast<Scene*>(root);
     if (s)
@@ -80,7 +81,7 @@ Scene *Scene::findInTree(Node *root)
             return s;
     }
 
-    return NULL;
+    return Q_NULLPTR;
 }
 
 void Scene::clear()
@@ -108,7 +109,7 @@ void Qt3D::Scene::setSceneId(QString arg)
 
 void Scene::rebuild()
 {
-    if (m_sceneChild) {
+    if (m_sceneChild != Q_NULLPTR) {
         removeChild(m_sceneChild);
         m_sceneChild->deleteLater();
     }
@@ -124,7 +125,7 @@ void Scene::rebuild()
         else
             m_sceneChild = parser.defaultScene();
 
-        if (m_sceneChild) {
+        if (m_sceneChild != Q_NULLPTR) {
             addChild(m_sceneChild);
         }
     }
