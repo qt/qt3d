@@ -164,7 +164,7 @@ GLTFParser::GLTFParser() :
 {
 }
 
-bool GLTFParser::isGLTFPath(QString path)
+bool GLTFParser::isGLTFPath(const QString& path)
 {
     QFileInfo finfo(path);
     if (!finfo.exists())

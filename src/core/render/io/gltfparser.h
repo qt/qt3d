@@ -66,7 +66,7 @@ class GLTFParser
 public:
     GLTFParser();
 
-    static bool isGLTFPath(QString path);
+    static bool isGLTFPath(const QString& path);
 
     void setFilePath(QString path);
 
