@@ -79,7 +79,8 @@ void RenderSceneBuilder::visitEntity(Qt3D::Entity *entity)
     // be calculated later by jobs
     RenderNode *renderNode = new RenderNode(m_renderer->rendererAspect(), m_nodeStack.top());
     renderNode->m_frontEndPeer = entity;
-    *(renderNode->m_localTransform) = entity->matrix();
+    // REPLACE WITH ENTITY MATRIX FROM TRANSFORMS
+//    *(renderNode->m_localTransform) = entity->matrix();
     m_nodeStack.push(renderNode);
 
     // Look for a transform component

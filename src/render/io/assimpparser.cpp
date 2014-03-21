@@ -41,6 +41,8 @@
 
 #include "assimpparser.h"
 
+#include <transform.h>
+
 #include <QFileInfo>
 #include <QColor>
 #include <qmath.h>
@@ -290,8 +292,10 @@ Entity *AssimpParser::node(aiNode *node)
     }
 
     // Add Transformations
+    Transform *transform = new Transform();
     QMatrix4x4 qTransformMatrix = AssimpParser::aiMatrix4x4ToQMatrix4x4(node->mTransformation);
-    entityNode->setMatrix(qTransformMatrix);
+    transform->setMatrix(qTransformMatrix);
+    entityNode->addComponent(transform);
 
     // Add components attached to current node (Camera, Lights ...)
     if (m_cameras.contains(node)) {
@@ -299,10 +303,12 @@ Entity *AssimpParser::node(aiNode *node)
         Camera *cam = m_cameras[node];
         Entity *tmpEntity;
 
-        while ((tmpEntity = entityNode->parentEntity()) != Q_NULLPTR)
-        {
-            QMatrix4x4 nodeTransform = tmpEntity->matrix();
+        while ((tmpEntity = entityNode->parentEntity()) != Q_NULLPTR) {
+            QMatrix4x4 nodeTransform;
+            QList<Transform*> transforms = tmpEntity->componentsOfType<Transform>();
             // TO DO : IF NODE IS ANIMATED RETRIEVE CURRENT MATRIX
+            if (!transforms.isEmpty())
+                nodeTransform = transforms.first()->matrix();
             cameraTransforms = nodeTransform * cameraTransforms;
         }
         cameraTransforms = cam->viewMatrix() * cameraTransforms * qTransformMatrix;

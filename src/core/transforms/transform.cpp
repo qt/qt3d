@@ -46,7 +46,8 @@
 namespace Qt3D {
 
 Transform::Transform(Node *parent)
-    : Qt3D::Component(parent)
+    : Qt3D::Component(parent),
+      m_transformsDirty(false)
 {
 }
 
@@ -88,6 +89,9 @@ QList<AbstractTransform *> Transform::transforms() const
     return m_transforms;
 }
 
+/*!
+ *   The center of rotation for the entity. Defaults to the local origin.
+ */
 void Transform::setRotationCenter(const QVector3D &rc)
 {
     Q_UNUSED(rc);

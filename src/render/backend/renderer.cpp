@@ -104,19 +104,21 @@ protected:
             m_materialStack.push(mats.front());
         }
 
+        // TMP REPLACE WITH TRANSFORM SCENE MATRIX
+        QMatrix4x4 sceneMatrix;
 
         foreach (Mesh* mesh, ent->componentsOfType<Mesh>()) {
             Material* mat = m_materialStack.empty() ? NULL : m_materialStack.top();
-            m_renderer->buildMeshes(mesh, mat, ent->sceneMatrix());
+            m_renderer->buildMeshes(mesh, mat, sceneMatrix);
         }
 
         foreach (Shape* shape, ent->componentsOfType<Shape>()) {
             Material* mat = m_materialStack.empty() ? NULL : m_materialStack.top();
-            m_renderer->buildShape(shape, mat, ent->sceneMatrix());
+            m_renderer->buildShape(shape, mat, sceneMatrix);
         }
 
         foreach (Camera* cam, ent->componentsOfType<Camera>()) {
-            m_renderer->foundCamera(cam, ent->sceneMatrix());
+            m_renderer->foundCamera(cam, sceneMatrix);
         }
 
         NodeVisitor::visitEntity(ent);

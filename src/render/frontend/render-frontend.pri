@@ -31,7 +31,6 @@ SOURCES += \
     $$PWD/cameraselector.cpp \
     $$PWD/techniquefilter.cpp \
     $$PWD/shape.cpp \
-    $$PWD/transform.cpp \
     $$PWD/qitemmodelbuffer.cpp \
     $$PWD/texture.cpp \
     $$PWD/sphere.cpp \

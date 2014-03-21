@@ -43,7 +43,7 @@
 #define QT3D_TRANSFORM_H
 
 #include <component.h>
-#include <qt3drenderer_global.h>
+#include <qt3dcore_global.h>
 
 #include <QMatrix4x4>
 
@@ -51,7 +51,7 @@ namespace Qt3D {
 
 class AbstractTransform;
 
-class QT3DRENDERERSHARED_EXPORT Transform : public Qt3D::Component
+class QT3DCORESHARED_EXPORT Transform : public Qt3D::Component
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Qt3D::AbstractTransform> transforms READ transformList)

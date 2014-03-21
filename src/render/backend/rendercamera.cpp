@@ -81,7 +81,8 @@ void RenderCamera::sync()
     e->update();
 
     // transform from world -> eye, so invert
-    m_view = e->sceneMatrix().inverted();
+    // REPLACE WITH sceneMatrix
+    //    m_view = e->sceneMatrix().inverted();
 }
 
 unsigned int RenderCamera::clearMask() const

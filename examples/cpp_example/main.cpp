@@ -56,6 +56,7 @@
 #include <translatetransform.h>
 #include <matrixtransform.h>
 #include <rotatetransform.h>
+#include <transform.h>
 #include <texture.h>
 #include <renderpass.h>
 #include <renderpassfilter.h>
@@ -89,13 +90,16 @@ int main(int ac, char **av)
 
     Qt3D::TranslateTransform *torusTranslation = new Qt3D::TranslateTransform();
     Qt3D::RotateTransform *torusRotation = new Qt3D::RotateTransform();
+    Qt3D::Transform *torusTransforms = new Qt3D::Transform();
 
     torusTranslation->setTranslation(QVector3D(2.5f, 3.5f, 2.0f));
     torusRotation->setAxis(QVector3D(1, 0, 0));
     torusRotation->setAngleDeg(35.0f);
 
-    torusEntity->appendTransfrom(torusTranslation);
-    torusEntity->appendTransfrom(torusRotation);
+    torusTransforms->appendTransfrom(torusTranslation);
+    torusTransforms->appendTransfrom(torusRotation);
+
+    torusEntity->addComponent(torusTransforms);
 
     scene->setSource(":/assets/gltf/wine/wine.json");
 

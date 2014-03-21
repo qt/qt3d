@@ -60,8 +60,6 @@ class QT3DCORESHARED_EXPORT Entity : public Node
 
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
 
-    Q_PROPERTY(QQmlListProperty<Qt3D::AbstractTransform> transforms READ transformList)
-
 
 public:
     explicit Entity(Node *parent = 0);
@@ -110,20 +108,6 @@ public:
     bool isEnabled() const;
     void setEnabled(bool on);
 
-    QMatrix4x4 matrix() const;
-    void setMatrix(const QMatrix4x4 &m);
-
-    QMatrix4x4 sceneMatrix() const;
-
-    QVector3D rotationCenter() const;
-    void setRotationCenter(const QVector3D &rc);
-
-    QList<AbstractTransform*> transforms() const;
-
-    // void insertTransformAt(...)
-    Q_INVOKABLE void appendTransfrom(AbstractTransform *xform);
-    Q_INVOKABLE void removeTransform(AbstractTransform *xform);
-
     virtual Entity* asEntity();
 
     Entity* parentEntity();
@@ -134,15 +118,9 @@ signals:
     void enabledChanged();
 
 private:
-    QQmlListProperty<Qt3D::AbstractTransform> transformList();
 
     ComponentList m_components;
-
-    QMatrix4x4 applyTransforms() const;
-
-    mutable bool m_transformsDirty;
     bool m_visible;
-    QList<AbstractTransform*> m_transforms;
 
     mutable QMatrix4x4 m_matrix;
     QMatrix4x4 m_sceneMatrix;
@@ -150,11 +128,6 @@ private:
     // TODO: Is a bool enough here or do we need additional states for entities?
     // Perhaps aboutToBeDeleted would be useful?
     bool m_enabled;
-
-    static void qmlAppendTransform(QQmlListProperty<Qt3D::AbstractTransform> *list, Qt3D::AbstractTransform *bar);
-    static AbstractTransform* transformAt(QQmlListProperty<Qt3D::AbstractTransform> *list, int index);
-    static int transformCount(QQmlListProperty<Qt3D::AbstractTransform> *list);
-    static void qmlClearTransforms(QQmlListProperty<Qt3D::AbstractTransform> *list);
 };
 
 } // namespace Qt3D

@@ -57,15 +57,6 @@ Entity::Entity(Node *parent)
 {
 }
 
-QQmlListProperty<AbstractTransform> Entity::transformList()
-{
-    return QQmlListProperty<AbstractTransform>(this, 0,
-                                  Entity::qmlAppendTransform,
-                                  Entity::transformCount,
-                                  Entity::transformAt,
-                                  Entity::qmlClearTransforms);
-}
-
 QList<Component *> Entity::components() const
 {
     // Construct the list of components by looking for all properties that
@@ -110,73 +101,19 @@ void Entity::setEnabled(bool on)
     }
 }
 
-QMatrix4x4 Entity::matrix() const
-{
-    if (m_transformsDirty) {
-        m_matrix = applyTransforms();
-        m_transformsDirty = false;
-    }
-    return m_matrix;
-}
-
 void Entity::update()
 {
-    if (m_transformsDirty) {
-        m_matrix = applyTransforms();
-        m_transformsDirty = false;
-    }
+//    if (m_transformsDirty) {
+//        m_matrix = applyTransforms();
+//        m_transformsDirty = false;
+//    }
 
-    QMatrix4x4 prM;
-    if (parentEntity())
-        prM = parentEntity()->sceneMatrix();
+//    QMatrix4x4 prM;
+//    if (parentEntity())
+//        prM = parentEntity()->sceneMatrix();
 
-    m_sceneMatrix = prM * matrix();
+//    m_sceneMatrix = prM * matrix();
     // invalidate bounding volume information as required
-}
-
-void Entity::setMatrix(const QMatrix4x4 &m)
-{
-    qDeleteAll(m_transforms);
-    m_transforms.clear();
-    appendTransfrom(new MatrixTransform(m));
-}
-
-/*!
-    The combined transform relative to the root of the scene
-*/
-QMatrix4x4 Entity::sceneMatrix() const
-{
-    return m_sceneMatrix;
-}
-
-/*!
-    The center of rotation for the entity. Defaults to the local origin.
-*/
-QVector3D Entity::rotationCenter() const
-{
-    return QVector3D();
-}
-
-QList<AbstractTransform *> Entity::transforms() const
-{
-    return m_transforms;
-}
-
-void setRotationCenter(const QVector3D &rc)
-{
-    Q_UNUSED(rc);
-}
-
-void Entity::appendTransfrom(AbstractTransform *xform)
-{
-    m_transformsDirty = true;
-    m_transforms.append( xform );
-}
-
-void Entity::removeTransform(AbstractTransform *xform)
-{
-    m_transformsDirty = true;
-    m_transforms.removeOne( xform );
 }
 
 Entity *Entity::asEntity()
@@ -188,45 +125,5 @@ Entity *Entity::parentEntity()
 {
     return qobject_cast<Entity*>(parent());
 }
-
-QMatrix4x4 Entity::applyTransforms() const
-{
-    QMatrix4x4 m;
-    m.setToIdentity();
-    Q_FOREACH (AbstractTransform *t, m_transforms)
-        m = t->matrix() * m;
-    return m;
-}
-
-
-void Entity::qmlAppendTransform(QQmlListProperty<AbstractTransform> *list, AbstractTransform *obj  )
-{
-    if ( !obj )
-        return;
-
-    Entity* self = static_cast<Entity*>(list->object);
-    self->appendTransfrom(obj);
-}
-
-AbstractTransform* Entity::transformAt(QQmlListProperty<AbstractTransform>* list, int index)
-{
-    Entity* self = static_cast<Entity*>(list->object);
-    return self->transforms().at(index);
-}
-
-int Entity::transformCount(QQmlListProperty<AbstractTransform>* list)
-{
-    Entity* self = static_cast<Entity*>(list->object);
-    return self->transforms().count();
-}
-
-void Entity::qmlClearTransforms(QQmlListProperty<AbstractTransform> *list)
-{
-    Entity* self = static_cast<Entity*>(list->object);
-    qDeleteAll(self->m_transforms);
-    self->m_transforms.clear();
-    self->m_transformsDirty = true;
-}
-
 
 } // namespace Qt3D

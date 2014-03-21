@@ -50,6 +50,8 @@
 #include <shaderprogram.h>
 #include <effect.h>
 #include <camera.h>
+#include <transform.h>
+#include <matrixtransform.h>
 
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -344,7 +346,10 @@ Entity* GLTFParser::node(QString id)
             m(i % 4, i >> 2) = v;
         }
 
-        result->setMatrix( m );
+        // ADD MATRIX TRANSFORM COMPONENT TO ENTITY
+        Transform *trans = new Transform();
+        trans->appendTransfrom(new MatrixTransform(m));
+        result->addComponent(trans);
     }
 
     if ( jsonObj.contains(KEY_CAMERA) )
