@@ -39,17 +39,17 @@
 **
 ****************************************************************************/
 
-#ifndef RENDERPASSFILTER_H
-#define RENDERPASSFILTER_H
+#ifndef QT3D_RENDERPASSFILTER_H
+#define QT3D_RENDERPASSFILTER_H
 
 #include <qt3drenderer_global.h>
-#include <component.h>
+#include "framegraphitem.h"
 
 #include <QString>
 
 namespace Qt3D {
 
-class QT3DRENDERERSHARED_EXPORT RenderPassFilter : public Component
+class QT3DRENDERERSHARED_EXPORT RenderPassFilter : public FrameGraphItem
 {
     Q_OBJECT
 
@@ -66,8 +66,9 @@ signals:
 
 private:
     QString m_renderPassNames;
+
 };
 
 } // namespace Qt3D
 
-#endif // RENDERPASSFILTER_H
+#endif // QT3D_RENDERPASSFILTER_H

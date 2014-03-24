@@ -39,27 +39,48 @@
 **
 ****************************************************************************/
 
-#include "techniquefilternode.h"
-
-#include <QDebug>
+#include "framegraph.h"
+#include "entity.h"
 
 namespace Qt3D {
-namespace Render {
 
-TechniqueFilter::TechniqueFilter(Qt3D::Render::FrameGraphNode *parent)
-    : Qt3D::Render::FrameGraphNode(parent)
+/*!
+ * \class FrameGraph
+ *
+ * \brief Component that has an activeFrameGraph property that should
+ * reference a FrameGraphNode. Then Entity that contains a FrameGraph property
+ * defines the rendering method to be used by the renderer.
+ *
+ * Note that only a single FrameGraph can be active at any moment.
+ *
+ * \since 5.3
+ * \namespace Qt3D
+ */
+
+FrameGraph::FrameGraph(Node *parent) :
+    Qt3D::Component(parent),
+    m_activeFrameGraph(Q_NULLPTR)
 {
 }
 
-void TechniqueFilter::apply()
+/*!
+ * Returns the current activeFrameGraph root node.
+ */
+FrameGraphNode* FrameGraph::activeFrameGraph() const
 {
-    qDebug() << Q_FUNC_INFO;
+    return m_activeFrameGraph;
 }
 
-void TechniqueFilter::revert()
+/*!
+ * Sets the root node \a activeFrameGraph of the FrameGraph.
+ */
+void FrameGraph::setActiveFrameGraph(FrameGraphNode *activeFrameGraph)
 {
-    qDebug() << Q_FUNC_INFO;
+    if (activeFrameGraph != m_activeFrameGraph) {
+        m_activeFrameGraph = activeFrameGraph;
+        qDebug() << Q_FUNC_INFO << m_activeFrameGraph;
+        emit activeFrameGraphChanged();
+    }
 }
 
-}
-}
+} // Qt3D

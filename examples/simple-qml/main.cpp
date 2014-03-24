@@ -42,6 +42,7 @@
 #include <window.h>
 #include <rendereraspect.h>
 
+
 #include <QGuiApplication>
 #include <QtQml>
 

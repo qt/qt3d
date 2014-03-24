@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef TECHNIQUEFILTER_H
-#define TECHNIQUEFILTER_H
+#ifndef QT3D_RENDER_TECHNIQUEFILTER_H
+#define QT3D_RENDER_TECHNIQUEFILTER_H
 
 #include "framegraphnode.h"
 
@@ -51,10 +51,10 @@
 namespace Qt3D {
 namespace Render {
 
-class TechniqueFilter : public FrameGraphNode
+class TechniqueFilter : public Render::FrameGraphNode
 {
 public:
-    TechniqueFilter(FrameGraphNode *parent = 0);
+    TechniqueFilter(Render::FrameGraphNode *parent = 0);
 
     void apply() Q_DECL_OVERRIDE;
     void revert() Q_DECL_OVERRIDE;
@@ -66,4 +66,4 @@ public:
 }
 }
 
-#endif // TECHNIQUEFILTER_H
+#endif // QT3D_RENDER_TECHNIQUEFILTER_H

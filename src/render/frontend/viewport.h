@@ -39,20 +39,19 @@
 **
 ****************************************************************************/
 
-#ifndef VIEWPORT_H
-#define VIEWPORT_H
+#ifndef QT3D_VIEWPORT_H
+#define QT3D_VIEWPORT_H
 
-#include <component.h>
 #include <qt3drenderer_global.h>
+#include "framegraphitem.h"
 
 #include <QRectF>
 
 namespace Qt3D {
 
-class QT3DRENDERERSHARED_EXPORT Viewport : public Component
+class QT3DRENDERERSHARED_EXPORT  Viewport : public FrameGraphItem
 {
     Q_OBJECT
-
     Q_PROPERTY(QRectF rect READ rect WRITE setRect NOTIFY rectChanged)
 
 public:
@@ -72,4 +71,4 @@ private:
 
 }
 
-#endif // VIEWPORT_H
+#endif // QT3D_VIEWPORT_H

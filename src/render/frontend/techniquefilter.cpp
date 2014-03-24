@@ -44,7 +44,7 @@
 namespace Qt3D {
 
 TechniqueFilter::TechniqueFilter(Node *parent)
-    : Qt3D::Component(parent)
+    : FrameGraphItem(parent)
 {
 }
 

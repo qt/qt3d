@@ -42,8 +42,8 @@
 #ifndef QT3D_TECHNIQUEFILTER_H
 #define QT3D_TECHNIQUEFILTER_H
 
-#include <component.h>
 #include <qt3drenderer_global.h>
+#include "framegraphitem.h"
 
 #include "tag.h"
 
@@ -51,12 +51,10 @@
 
 namespace Qt3D {
 
-class QT3DRENDERERSHARED_EXPORT TechniqueFilter : public Qt3D::Component
+class QT3DRENDERERSHARED_EXPORT TechniqueFilter : public FrameGraphItem
 {
     Q_OBJECT
-
     Q_PROPERTY(QQmlListProperty<Qt3D::Tag> tags READ tags NOTIFY tagsChanged)
-    Q_CLASSINFO("DefaultProperty", "tags")
 
 public:
     explicit TechniqueFilter(Node *parent = 0);

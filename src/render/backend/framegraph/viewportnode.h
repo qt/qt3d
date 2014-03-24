@@ -39,18 +39,18 @@
 **
 ****************************************************************************/
 
-#ifndef VIEWPORT_H
-#define VIEWPORT_H
+#ifndef QT3D_RENDER_VIEWPORTNODE_H
+#define QT3D_RENDER_VIEWPORTNODE_H
 
 #include "framegraphnode.h"
 
 namespace Qt3D {
 namespace Render {
 
-class ViewportNode : public FrameGraphNode
+class ViewportNode : public Render::FrameGraphNode
 {
 public:
-    ViewportNode(FrameGraphNode *parent = 0);
+    ViewportNode(Render::FrameGraphNode *parent = 0);
 
     void apply() Q_DECL_OVERRIDE;
     void revert() Q_DECL_OVERRIDE;
@@ -65,4 +65,4 @@ public:
 }
 }
 
-#endif // VIEWPORT_H
+#endif // QT3D_RENDER_VIEWPORTNODE_H

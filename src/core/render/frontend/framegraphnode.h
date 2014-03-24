@@ -39,27 +39,22 @@
 **
 ****************************************************************************/
 
-#include "techniquefilternode.h"
+#ifndef QT3D_FRAMEGRAPHNODE_H
+#define QT3D_FRAMEGRAPHNODE_H
 
-#include <QDebug>
+#include <qt3drenderer_global.h>
+#include <node.h>
 
 namespace Qt3D {
-namespace Render {
 
-TechniqueFilter::TechniqueFilter(Qt3D::Render::FrameGraphNode *parent)
-    : Qt3D::Render::FrameGraphNode(parent)
+class QT3DRENDERERSHARED_EXPORT FrameGraphNode : public Node
 {
-}
+    Q_OBJECT
+public:
+    explicit FrameGraphNode(Node *parent = 0);
+    virtual ~FrameGraphNode();
+};
 
-void TechniqueFilter::apply()
-{
-    qDebug() << Q_FUNC_INFO;
-}
+} // Qt3D
 
-void TechniqueFilter::revert()
-{
-    qDebug() << Q_FUNC_INFO;
-}
-
-}
-}
+#endif // QT3D_FRAMEGRAPHNODE_H

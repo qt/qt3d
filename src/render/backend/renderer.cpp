@@ -45,12 +45,11 @@
 #include <entity.h>
 #include <scene.h>
 
-#include "framegraph/framegraphnode.h"
-#include "framegraph/framegraphvisitor.h"
-#include "framegraph/cameraselectornode.h"
-#include "framegraph/renderpassfilternode.h"
-#include "framegraph/techniquefilternode.h"
-#include "framegraph/viewportnode.h"
+#include "framegraphvisitor.h"
+#include "cameraselectornode.h"
+#include "renderpassfilternode.h"
+#include "techniquefilternode.h"
+#include "viewportnode.h"
 
 #include <material.h>
 #include <mesh.h>
@@ -156,6 +155,7 @@ Renderer::Renderer()
 
     buildDefaultTechnique();
     buildDefaultMaterial();
+
 }
 
 void Renderer::buildDefaultTechnique()
@@ -247,13 +247,13 @@ void Renderer::initialize()
 
 }
 
-void Renderer::setFrameGraphRoot(FrameGraphNode *fgRoot)
+void Renderer::setFrameGraphRoot(Render::FrameGraphNode *fgRoot)
 {
     qDebug() << Q_FUNC_INFO;
     m_frameGraphRoot = fgRoot;
 }
 
-FrameGraphNode *Renderer::frameGraphRoot() const
+Render::FrameGraphNode *Renderer::frameGraphRoot() const
 {
     return m_frameGraphRoot;
 }
@@ -306,7 +306,7 @@ void Renderer::setSceneGraphRoot(Node *sgRoot)
         //    |- Viewport
         //       |- CameraSelector[mainCamera]
         //          |- RenderPass[lighting]
-        FrameGraphNode *fgRoot = new FrameGraphNode;
+        Render::FrameGraphNode *fgRoot = new Render::FrameGraphNode;
 
         TechniqueFilter *forwardTechnique = new TechniqueFilter(fgRoot);
         forwardTechnique->m_filters.insert(QStringLiteral("style"), QStringLiteral("forward"));

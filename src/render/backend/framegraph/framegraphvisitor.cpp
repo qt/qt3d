@@ -51,16 +51,16 @@ FrameGraphVisitor::FrameGraphVisitor()
 {
 }
 
-void FrameGraphVisitor::traverse(FrameGraphNode *root, Renderer *renderer)
+void FrameGraphVisitor::traverse(Render::FrameGraphNode *root, Renderer *renderer)
 {
     m_renderer = renderer;
 
     // Kick off the traversal
-    FrameGraphNode *node = root;
+    Render::FrameGraphNode *node = root;
     visit(node);
 }
 
-void FrameGraphVisitor::visit(FrameGraphNode *node)
+void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
 {
     // Apply the state from this node
     node->apply();
@@ -69,7 +69,7 @@ void FrameGraphVisitor::visit(FrameGraphNode *node)
     // initiate a rendering from the current camera
     if (node->childCount()) {
         for (int i = 0; i < node->childCount(); ++i) {
-            FrameGraphNode *n = node->child(i);
+            Render::FrameGraphNode *n = node->child(i);
             visit(n);
         }
     } else {

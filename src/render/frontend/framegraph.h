@@ -39,27 +39,37 @@
 **
 ****************************************************************************/
 
-#include "techniquefilternode.h"
+#ifndef QT3D_FRAMEGRAPH_H
+#define QT3D_FRAMEGRAPH_H
 
-#include <QDebug>
+#include <qt3dcore_global.h>
+#include <component.h>
 
 namespace Qt3D {
-namespace Render {
 
-TechniqueFilter::TechniqueFilter(Qt3D::Render::FrameGraphNode *parent)
-    : Qt3D::Render::FrameGraphNode(parent)
+class FrameGraphItem;
+
+class QT3DCORESHARED_EXPORT FrameGraph : public Qt3D::Component
 {
-}
+    Q_OBJECT
+    // Note : The full namespace has to be used to define the property
+    // otherwise this results in an error "cannot assign object to property"
+    Q_PROPERTY(Qt3D::FrameGraphItem *activeFrameGraph READ activeFrameGraph WRITE setActiveFrameGraph NOTIFY activeFrameGraphChanged)
+    Q_CLASSINFO("DefaultProperty", "activeFrameGraph")
 
-void TechniqueFilter::apply()
-{
-    qDebug() << Q_FUNC_INFO;
-}
+public:
+    explicit FrameGraph(Node *parent = 0);
 
-void TechniqueFilter::revert()
-{
-    qDebug() << Q_FUNC_INFO;
-}
+    FrameGraphItem *activeFrameGraph() const;
+    void setActiveFrameGraph(FrameGraphItem *activeFrameGraph);
 
-}
-}
+signals:
+    void activeFrameGraphChanged();
+
+private:
+    FrameGraphItem *m_activeFrameGraph;
+};
+
+} //Qt3D
+
+#endif // QT3D_FRAMEGRAPH_H

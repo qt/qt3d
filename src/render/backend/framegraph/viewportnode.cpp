@@ -46,8 +46,8 @@
 namespace Qt3D {
 namespace Render {
 
-ViewportNode::ViewportNode(FrameGraphNode *parent)
-    : FrameGraphNode(parent)
+ViewportNode::ViewportNode(Render::FrameGraphNode *parent)
+    : Render::FrameGraphNode(parent)
     , m_xMin(0.0f)
     , m_yMin(0.0f)
     , m_xMax(1.0f)
@@ -65,5 +65,5 @@ void ViewportNode::revert()
     qDebug() << Q_FUNC_INFO;
 }
 
-}
-}
+} // Render
+} // Qt3D

@@ -39,14 +39,22 @@
 **
 ****************************************************************************/
 
-import Qt3D 2.0
+#ifndef QT3D_FRAMEGRAPHNODE_H
+#define QT3D_FRAMEGRAPHNODE_H
 
-Entity {
-    property alias filterTags: filter.tags
+#include <qt3drenderer_global.h>
+#include <node.h>
 
-    property TechniqueFilter _techniqueFilter: filter
+namespace Qt3D {
 
-    TechniqueFilter {
-        id: filter
-    }
-}
+class QT3DRENDERERSHARED_EXPORT FrameGraphItem : public Node
+{
+    Q_OBJECT
+public:
+    explicit FrameGraphItem(Node *parent = 0);
+    virtual ~FrameGraphItem();
+};
+
+} // Qt3D
+
+#endif // QT3D_FRAMEGRAPHNODE_H

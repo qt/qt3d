@@ -42,6 +42,7 @@
 import Qt3D 2.0
 import Qt3D.Render 2.0
 
+
 // For Qt.vector3d() and friends. For some reason this is provided by
 // QQuickValueTypeProvider in QtQuick rather than the default value
 // type provider in QtQml. So we will need to replicate this in Qt3D
@@ -54,21 +55,47 @@ Node {
     objectName: "root"
 
     // Scene graph
-    Node {
+    Entity {
         id: sceneRoot
-        objectName: "sceneRoot"
+        objectName: "sceneRootTest"
+
+        property FrameGraph frameGraph : FrameGraph {
+            objectName : "frameGraph"
+            //            activeFrameGraph can be defined inline or by reference
+            //            activeFrameGraph : ForwardRenderer {objectName :"innerExternalRenderer"}
+            activeFrameGraph : external_forward_renderer
+        }
+
+        ForwardRenderer {
+            id : external_forward_renderer
+            objectName : "externalRenderer"
+            camera: mainCamera
+            viewportRect: Qt.rect(0, 0, 1, 1)
+        }
+
+        property Entity testEntity : Entity {
+            objectName : "testInlineEntity"
+        }
+
+        property Transform transform: Transform {
+            transforms: Rotate {objectName : "scaleTransform"}
+        }
+
+        property Mesh toto : Mesh {
+            Material {
+
+            }
+        }
+
+        Entity {
+            id : test_entity
+            objectName : "test_entity"
+        }
 
         Entity {
             id: mainCamera
             objectName: "mainCamera"
 
-            property Transform transform: Transform {
-                transforms: LookAt {
-                    position:   Qt.vector3d(0.0, 2.0, 0.0)
-                    viewCenter: Qt.vector3d(0.0, 0.0, 0.5)
-                    upVector:   Qt.vector3d(0.0, 1.0, 0.0)
-                }
-            }
 
             property Camera camera: Camera {
                 objectName: "cameraComponent"
@@ -83,10 +110,10 @@ Node {
             }
         }
 
-        AdsEffect {
-            id: adsEffect
-            objectName: "adsEffect"
-        }
+        //        AdsEffect {
+        //            id: adsEffect
+        //            objectName: "adsEffect"
+        //        }
 
         Mesh {
             id: ballMesh
@@ -120,36 +147,37 @@ Node {
             property Material material: ballMaterial
         }
 
+        Translate {
+            id: ball2Translation
+            objectName : "ball2Translation"
+            dx: 0; dy: 0
+            QQ2.SequentialAnimation {
+                running: true
+                loops: QQ2.Animation.Infinite
+
+                QQ2.NumberAnimation {
+                    target: ball2Translation
+                    property: "dx"
+                    duration: 1000
+                    easing.type: QQ2.Easing.InOutQuad
+                    from: 0; to: 100
+                }
+                QQ2.NumberAnimation {
+                    target: ball2Translation
+                    property: "dx"
+                    duration: 1000
+                    easing.type: QQ2.Easing.InOutQuad
+                    from: 100; to: 0
+                }
+            }
+        }
+
         Entity {
             id: ball2
             objectName: "ball2"
 
             property Transform transform: Transform {
-                Translate {
-                    id: ball2Translation
-                    dx: 0; dy: 0
-
-                    QQ2.SequentialAnimation {
-                        running: true
-                        loops: QQ2.Animation.Infinite
-
-                        QQ2.NumberAnimation {
-                            target: ball2Translation
-                            property: "dx"
-                            duration: 1000
-                            easing.type: Easing.InOutQuad
-                            from: 0; to: 100
-                        }
-                        QQ2.NumberAnimation {
-                            target: ball2Translation
-                            property: "dx"
-                            duration: 1000
-                            easing.type: Easing.InOutQuad
-                            from: 100; to: 0
-                        }
-                    }
-                }
-            }
+                transforms: ball2Translation}
             property Mesh mesh: ballMesh
             property Material material: ballMaterial
         }

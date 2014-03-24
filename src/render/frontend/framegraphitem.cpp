@@ -39,14 +39,26 @@
 **
 ****************************************************************************/
 
-import Qt3D 2.0
+#include "framegraphitem.h"
 
-Entity {
-    property alias camera: selector.camera
+/*!
+ * \class FrameGraphNode
+ *
+ * \brief Base class of all FrameGraph configuration nodes.
+ *
+ * \since 5.3
+ * \namespace Qt3D
+ */
 
-    property CameraSelector _cameraSelector: selector
+namespace Qt3D {
 
-    CameraSelector {
-        id: selector
-    }
+FrameGraphItem::FrameGraphItem(Node *parent)
+    : Node(parent)
+{
 }
+
+FrameGraphItem::~FrameGraphItem()
+{
+}
+
+} // Qt3D

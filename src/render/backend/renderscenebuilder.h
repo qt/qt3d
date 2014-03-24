@@ -47,10 +47,14 @@
 #include <QStack>
 
 namespace Qt3D {
+
+class FrameGraphItem;
+
 namespace Render {
 
 class Renderer;
 class RenderNode;
+class FrameGraphNode;
 
 class RenderSceneBuilder : public Qt3D::NodeVisitor
 {
@@ -67,6 +71,10 @@ private:
     Renderer *m_renderer;
     RenderNode *m_rootNode;
     QStack<RenderNode *> m_nodeStack;
+
+    Render::FrameGraphNode* buildFrameGraph(Node *node);
+    Render::FrameGraphNode* backendFrameGraphNode(Qt3D::FrameGraphItem *);
+
 };
 
 } // namespace Render

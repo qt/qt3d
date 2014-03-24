@@ -120,7 +120,7 @@ void NodeVisitor::outerVisitNode(Node *n)
         visitEntity(e);
 
         m_path.pop_back();
-        m_matrixStack.pop_back();
+//        m_matrixStack.pop_back();
     } else {
         visitNode(n);
     }

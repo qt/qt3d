@@ -44,7 +44,7 @@
 namespace Qt3D {
 
 Viewport::Viewport(Node *parent)
-    : Component(parent)
+    : FrameGraphItem(parent)
 {
 }
 
@@ -61,4 +61,4 @@ void Viewport::setRect(const QRectF &rect)
     }
 }
 
-}
+} // Qt3D

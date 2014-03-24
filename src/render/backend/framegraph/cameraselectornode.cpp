@@ -46,8 +46,8 @@
 namespace Qt3D {
 namespace Render {
 
-CameraSelector::CameraSelector(FrameGraphNode *parent)
-    : FrameGraphNode(parent)
+CameraSelector::CameraSelector(Render::FrameGraphNode *parent)
+    : Render::FrameGraphNode(parent)
 {
 }
 

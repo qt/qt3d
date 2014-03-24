@@ -49,8 +49,19 @@
 #include <material.h>
 #include <mesh.h>
 #include <transform.h>
-
 #include <entity.h>
+
+#include <framegraph.h>
+#include <viewport.h>
+#include <techniquefilter.h>
+#include <renderpassfilter.h>
+#include <cameraselector.h>
+
+#include <techniquefilternode.h>
+#include <cameraselectornode.h>
+#include <renderpassfilternode.h>
+#include <viewportnode.h>
+
 
 namespace Qt3D {
 namespace Render {
@@ -62,6 +73,78 @@ RenderSceneBuilder::RenderSceneBuilder(Renderer *renderer)
 {
 }
 
+/*!
+ * Returns a FrameGraphNode and all its children from \a node which points to the activeFrameGraph.
+ * Returns Q_NULLPTR if \a is also Q_NULLPTR or if there is no FrameGraphComponent
+ * in node's children tree.
+ */
+Render::FrameGraphNode *RenderSceneBuilder::buildFrameGraph(Node *node)
+{
+    if (node == Q_NULLPTR)
+        return Q_NULLPTR;
+
+    qDebug() << Q_FUNC_INFO << node->objectName();
+
+    Render::FrameGraphNode *fgNode = Q_NULLPTR;
+    Qt3D::FrameGraphItem *fgItem = Q_NULLPTR;
+
+    if ((fgItem = qobject_cast<Qt3D::FrameGraphItem *>(node)) != Q_NULLPTR) {
+        // Instantiate proper backend node corresponding to the frontend node
+        fgNode = backendFrameGraphNode(fgItem);
+    }
+
+    // we need to travel the node's children tree to find either the FG root Node or
+    // its children
+    QList<FrameGraphNode *> fgChildNodes;
+    foreach (Node *child, node->children()) {
+        FrameGraphNode* fgChildNode = buildFrameGraph(child);
+        if (fgChildNode != Q_NULLPTR)
+            fgChildNodes << fgChildNode;
+    }
+    if (!fgChildNodes.isEmpty()) {
+        if (fgNode == Q_NULLPTR && fgChildNodes.size() == 1) {
+            fgNode = fgChildNodes.first();
+        }
+        else {
+            if (fgNode == Q_NULLPTR)
+                fgNode = new FrameGraphNode();
+            foreach (FrameGraphNode *fgChildNodes, fgChildNodes)
+                fgNode->appendChild(fgChildNodes);
+        }
+    }
+    return fgNode;
+}
+
+/*!
+ * Returns a proper FrameGraphNode subclass instance from \a block.
+ * If no subclass corresponds, Q_NULLPTR is returned.
+ */
+Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(Qt3D::FrameGraphItem *block)
+{
+    if (qobject_cast<Qt3D::TechniqueFilter*>(block) != Q_NULLPTR) {
+        qDebug() << Q_FUNC_INFO << "TechniqueFilter";
+        Render::TechniqueFilter *techniqueFilterNode = new Render::TechniqueFilter();
+        return techniqueFilterNode;
+    }
+    else if (qobject_cast<Qt3D::Viewport*>(block) != Q_NULLPTR) {
+        qDebug() << Q_FUNC_INFO << "Viewport";
+        Render::ViewportNode *viewportNode = new Render::ViewportNode();
+        return viewportNode;
+    }
+    else if (qobject_cast<Qt3D::RenderPassFilter*>(block) != Q_NULLPTR) {
+        qDebug() << Q_FUNC_INFO << "RenderPassFilter";
+        Render::RenderPassFilter *renderPassFilterNode = new Render::RenderPassFilter();
+        return renderPassFilterNode;
+    }
+    else if (qobject_cast<Qt3D::CameraSelector*>(block) != Q_NULLPTR)
+    {
+        qDebug() << Q_FUNC_INFO << "CameraSelector";
+        Render::CameraSelector *cameraSelectorNode = new Render::CameraSelector();
+        return cameraSelectorNode;
+    }
+    return Q_NULLPTR;
+}
+
 void RenderSceneBuilder::visitNode(Qt3D::Node *node)
 {
     if (!m_rootNode) {
@@ -69,7 +152,7 @@ void RenderSceneBuilder::visitNode(Qt3D::Node *node)
         m_rootNode->m_frontEndPeer = node;
         m_nodeStack.push(m_rootNode);
     }
-
+    qDebug() << Q_FUNC_INFO << "Node " << node->objectName();
     Qt3D::NodeVisitor::visitNode(node);
 }
 
@@ -77,7 +160,9 @@ void RenderSceneBuilder::visitEntity(Qt3D::Entity *entity)
 {
     // Create a RenderNode corresponding to the Entity. Most data will
     // be calculated later by jobs
+    qDebug() << Q_FUNC_INFO << "Entity " << entity->objectName();
     RenderNode *renderNode = new RenderNode(m_renderer->rendererAspect(), m_nodeStack.top());
+//    entity->dumpObjectTree();
     renderNode->m_frontEndPeer = entity;
     // REPLACE WITH ENTITY MATRIX FROM TRANSFORMS
 //    *(renderNode->m_localTransform) = entity->matrix();
@@ -88,10 +173,21 @@ void RenderSceneBuilder::visitEntity(Qt3D::Entity *entity)
     if (!transforms.isEmpty())
         renderNode->setPeer(transforms.first());
 
-//    QList<Material *> materials = entity->componentsOfType<Material>();
-//    Material *material = 0;
-//    if (!materials.isEmpty())
-//        material = materials.first();
+
+    QList<FrameGraph *> framegraphRefs = entity->componentsOfType<FrameGraph>();
+    if (!framegraphRefs.isEmpty()) {
+        FrameGraph *fg = framegraphRefs.first();
+        // Entity has a reference to a framegraph configuration
+        // Build a tree of FrameGraphNodes by reading the tree of FrameGraphBuildingBlocks
+        Render::FrameGraphNode* frameGraphRootNode = buildFrameGraph(fg->activeFrameGraph());
+        qDebug() << Q_FUNC_INFO << "SceneGraphRoot" <<  frameGraphRootNode;
+        m_renderer->setFrameGraphRoot(frameGraphRootNode);
+    }
+
+    //    QList<Material *> materials = entity->componentsOfType<Material>();
+    //    Material *material = 0;
+    //    if (!materials.isEmpty())
+    //        material = materials.first();
 
     // We'll update matrices in a job later. In fact should the matrix be decoupled from the mesh?
     foreach (Mesh *mesh, entity->componentsOfType<Mesh>()) {

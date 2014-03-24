@@ -46,8 +46,8 @@
 namespace Qt3D {
 namespace Render {
 
-RenderPassFilter::RenderPassFilter(FrameGraphNode *parent)
-    : FrameGraphNode(parent)
+RenderPassFilter::RenderPassFilter(Render::FrameGraphNode *parent)
+    : Render::FrameGraphNode(parent)
 {
 }
 

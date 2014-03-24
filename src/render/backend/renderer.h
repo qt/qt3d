@@ -90,8 +90,8 @@ public:
     void setRendererAspect(RendererAspect *rendererAspect) { m_rendererAspect = rendererAspect; }
     RendererAspect *rendererAspect() const { return m_rendererAspect; }
 
-    void setFrameGraphRoot(FrameGraphNode *fgRoot);
-    FrameGraphNode *frameGraphRoot() const;
+    void setFrameGraphRoot(Render::FrameGraphNode *fgRoot);
+    Render::FrameGraphNode *frameGraphRoot() const;
 
     void setSceneObject(Qt3D::Node *obj);
     void setSceneGraphRoot(Qt3D::Node *sgRoot);
@@ -130,7 +130,7 @@ private:
     RendererAspect *m_rendererAspect;
 
     // Frame graph root
-    FrameGraphNode *m_frameGraphRoot;
+    Render::FrameGraphNode *m_frameGraphRoot;
 
     Qt3D::Node *m_sceneGraphRoot;
     RenderNode *m_renderSceneRoot;

@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef RENDERPASSFILTER_H
-#define RENDERPASSFILTER_H
+#ifndef QT3D_RENDER_RENDERPASSFILTER_H
+#define QT3D_RENDER_RENDERPASSFILTER_H
 
 #include "framegraphnode.h"
 
@@ -49,10 +49,10 @@
 namespace Qt3D {
 namespace Render {
 
-class RenderPassFilter : public FrameGraphNode
+class RenderPassFilter : public Render::FrameGraphNode
 {
 public:
-    RenderPassFilter(FrameGraphNode *parent = 0);
+    RenderPassFilter(Render::FrameGraphNode *parent = 0);
 
     void apply() Q_DECL_OVERRIDE;
     void revert() Q_DECL_OVERRIDE;
@@ -65,4 +65,4 @@ public:
 
 }
 
-#endif // RENDERPASSFILTER_H
+#endif // QT3D_RENDER_RENDERPASSFILTER_H

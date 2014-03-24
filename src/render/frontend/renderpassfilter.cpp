@@ -44,7 +44,7 @@
 namespace Qt3D {
 
 RenderPassFilter::RenderPassFilter(Node *parent)
-    : Component(parent)
+    : FrameGraphItem(parent)
 {
 }
 
@@ -61,4 +61,4 @@ QString RenderPassFilter::renderPassNames() const
     return m_renderPassNames;
 }
 
-}
+} // Qt3D

@@ -13,11 +13,12 @@ HEADERS += \
     $$PWD/techniquefilter.h \
     $$PWD/tag.h \
     $$PWD/shape.h \
-    $$PWD/transform.h \
     $$PWD/qitemmodelbuffer.h \
     $$PWD/texture.h \
     $$PWD/sphere.h \
-    $$PWD/scene.h
+    $$PWD/scene.h \
+    $$PWD/framegraph.h \
+    $$PWD/framegraphitem.h
 
 SOURCES += \
     $$PWD/effect.cpp \
@@ -34,4 +35,6 @@ SOURCES += \
     $$PWD/qitemmodelbuffer.cpp \
     $$PWD/texture.cpp \
     $$PWD/sphere.cpp \
-    $$PWD/scene.cpp
+    $$PWD/scene.cpp \
+    $$PWD/framegraph.cpp \
+    $$PWD/framegraphitem.cpp

@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDERER_FRAMEGRAPHVISITOR_H
-#define QT3D_RENDERER_FRAMEGRAPHVISITOR_H
+#ifndef QT3D_RENDER_FRAMEGRAPHVISITOR_H
+#define QT3D_RENDER_FRAMEGRAPHVISITOR_H
 
 namespace Qt3D {
 namespace Render {
@@ -53,10 +53,10 @@ class FrameGraphVisitor
 public:
     FrameGraphVisitor();
 
-    void traverse(FrameGraphNode *root, Renderer *renderer);
+    void traverse(Render::FrameGraphNode *root, Renderer *renderer);
 
 private:
-    void visit(FrameGraphNode *node);
+    void visit(Render::FrameGraphNode *node);
 
     Renderer *m_renderer;
 };
@@ -64,4 +64,4 @@ private:
 } // namespace Render
 } // namespace Qt3D
 
-#endif // QT3D_RENDERER_FRAMEGRAPHVISITOR_H
+#endif // QT3D_RENDER_FRAMEGRAPHVISITOR_H

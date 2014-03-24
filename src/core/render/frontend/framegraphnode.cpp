@@ -39,14 +39,26 @@
 **
 ****************************************************************************/
 
-import Qt3D 2.0
+#include "frontend/framegraphnode.h"
 
-Entity {
-    property alias viewportRect: defaultViewport.rect
+/*!
+ * \class FrameGraphNode
+ *
+ * \brief Base class of all FrameGraph configuration nodes.
+ *
+ * \since 5.3
+ * \namespace Qt3D
+ */
 
-    property Viewport _viewport: defaultViewport
+namespace Qt3D {
 
-    Viewport {
-        id: defaultViewport
-    }
+FrameGraphNode::FrameGraphNode(Node *parent) :
+    Node(parent)
+{
 }
+
+FrameGraphNode::~FrameGraphNode()
+{
+}
+
+} // Qt3D

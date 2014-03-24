@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef CAMERASELECTOR_H
-#define CAMERASELECTOR_H
+#ifndef QT3D_RENDER_CAMERASELECTOR_H
+#define QT3D_RENDER_CAMERASELECTOR_H
 
 #include "framegraphnode.h"
 
@@ -50,10 +50,10 @@ class Camera;
 
 namespace Render {
 
-class CameraSelector : public FrameGraphNode
+class CameraSelector : public Render::FrameGraphNode
 {
 public:
-    CameraSelector(FrameGraphNode *parent = 0);
+    CameraSelector(Render::FrameGraphNode *parent = 0);
 
     void apply() Q_DECL_OVERRIDE;
     void revert() Q_DECL_OVERRIDE;
@@ -65,4 +65,4 @@ public:
 }
 }
 
-#endif // CAMERASELECTOR_H
+#endif // QT3D_RENDER_CAMERASELECTOR_H

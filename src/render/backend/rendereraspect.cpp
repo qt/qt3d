@@ -72,6 +72,8 @@
 #include "techniquefilter.h"
 #include "shape.h"
 #include "texture.h"
+#include "framegraph.h"
+
 
 namespace Qt3D {
 
@@ -168,6 +170,9 @@ void RendererAspect::registerQmlComponents()
     qmlRegisterType<Qt3D::CameraSelector>("Qt3D.Render", 2, 0, "CameraSelector");
     qmlRegisterType<Qt3D::RenderPassFilter>("Qt3D.Render", 2, 0, "RenderPassFilter");
     qmlRegisterType<Qt3D::TechniqueFilter>("Qt3D.Render", 2, 0, "TechniqueFilter");
+    qmlRegisterType<Qt3D::Viewport>("Qt3D.Render", 2, 0, "Viewport");
+    qmlRegisterType<Qt3D::FrameGraphItem>("Qt3D.Render", 2, 0, "FrameGraphNode");
+    qmlRegisterType<Qt3D::FrameGraph>("Qt3D.Render", 2, 0, "FrameGraph");
 }
 
 }

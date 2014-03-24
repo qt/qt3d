@@ -44,7 +44,7 @@
 namespace Qt3D {
 
 CameraSelector::CameraSelector(Node *parent)
-    : Qt3D::Component(parent)
+    : FrameGraphItem(parent)
     , m_camera(0)
 {
 }

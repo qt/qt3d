@@ -39,14 +39,37 @@
 **
 ****************************************************************************/
 
-import Qt3D 2.0
+#ifndef QT3D_FRAMEGRAPH_H
+#define QT3D_FRAMEGRAPH_H
 
-Entity {
-    property alias renderPassNames: filter.renderPassNames
+#include <qt3dcore_global.h>
+#include <component.h>
 
-    property RenderPassFilter _renderPassFilter: filter
+namespace Qt3D {
 
-    RenderPassFilter {
-        id: filter
-    }
-}
+class FrameGraphNode;
+
+class QT3DCORESHARED_EXPORT FrameGraph : public Qt3D::Component
+{
+    Q_OBJECT
+    // Note : The full namespace has to be used to define the property
+    // otherwise this results in an error "cannot assign object to property"
+    Q_PROPERTY(Qt3D::FrameGraphNode *activeFrameGraph READ activeFrameGraph WRITE setActiveFrameGraph NOTIFY activeFrameGraphChanged)
+    Q_CLASSINFO("DefaultProperty", "activeFrameGraph")
+
+public:
+    explicit FrameGraph(Node *parent = 0);
+
+    FrameGraphNode *activeFrameGraph() const;
+    void setActiveFrameGraph(FrameGraphNode *activeFrameGraph);
+
+private:
+    FrameGraphNode *m_activeFrameGraph;
+
+signals:
+    void activeFrameGraphChanged();
+};
+
+} //Qt3D
+
+#endif // QT3D_FRAMEGRAPH_H

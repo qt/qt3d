@@ -54,9 +54,11 @@ public:
     virtual ~FrameGraphNode();
 
     FrameGraphNode *parent() const { return m_parent; }
+    void setParent(FrameGraphNode *parent) { m_parent = parent; }
 
     int childCount() const { return m_children.count(); }
     FrameGraphNode * child(int index) const { return m_children.at(index); }
+    void appendChild(FrameGraphNode *child) { child->setParent(m_parent); m_children.append(child); }
 
     void setEnabled(bool enabled) { m_enabled = enabled; }
     bool isEnabled() const { return m_enabled; }

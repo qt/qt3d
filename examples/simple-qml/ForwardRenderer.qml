@@ -40,10 +40,12 @@
 ****************************************************************************/
 
 import Qt3D 2.0
-import "elements/"
+import Qt3D.Render 2.0
 
-Entity {
+TechniqueFilter {
     id: root
+
+    objectName : "techniqueFilter"
 
     // Expose the viewport rect and camera. This allows users of this
     // forward rendering framegraph to decide which camera in the
@@ -52,23 +54,24 @@ Entity {
     // Using this as a building block for a larger framegraph would
     // allow a scene to be rendered multiple times to different
     // viewports using different cameras for e.g.
-    property alias viewportRect: viewport.viewportRect
+    property alias viewportRect: viewport.rect
     property alias camera: cameraSelector.camera
 
-    TechniqueFilterEntity {
-        filterTags: [
-            Tag { name: "style"; value: "forward"}
-        ]
+    tags: [
+        Tag { name: "style"; value: "forward"}
+    ]
 
-        ViewportEntity {
-            id: viewport
+    Viewport {
+        id: viewport
+        objectName : "viewport"
 
-            CameraSelectorEntity {
-                id: cameraSelector
 
-                RenderPassFilterEntity { renderPassNames: "zFill" }
-                RenderPassFilterEntity { renderPassNames: "lighting" }
-            }
+        CameraSelector {
+            id: cameraSelector
+            objectName : "cameraSelector"
+
+            RenderPassFilter { renderPassNames: "zFill" }
+            RenderPassFilter { renderPassNames: "lighting" }
         }
     }
 }
