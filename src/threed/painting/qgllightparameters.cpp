@@ -43,6 +43,8 @@
 #include <QtCore/qmath.h>
 #include <QtGui/qmatrix4x4.h>
 
+#include <cmath>
+
 QT_BEGIN_NAMESPACE
 
 /*!
