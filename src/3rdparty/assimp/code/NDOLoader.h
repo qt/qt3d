@@ -1,12 +1,12 @@
 /*
-Open Asset Import Library (ASSIMP)
+Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2008, ASSIMP Development Team
+Copyright (c) 2006-2008, assimp team
 All rights reserved.
 
-Redistribution and use of this software in source and binary forms,
-with or without modification, are permitted provided that the
+Redistribution and use of this software in source and binary forms, 
+with or without modification, are permitted provided that the 
 following conditions are met:
 
 * Redistributions of source code must retain the above
@@ -18,21 +18,21 @@ following conditions are met:
   following disclaimer in the documentation and/or other
   materials provided with the distribution.
 
-* Neither the name of the ASSIMP team, nor the names of its
+* Neither the name of the assimp team, nor the names of its
   contributors may be used to endorse or promote products
   derived from this software without specific prior
-  written permission of the ASSIMP Development Team.
+  written permission of the assimp team.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
 LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT 
 OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT 
 LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY 
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ----------------------------------------------------------------------
@@ -43,71 +43,68 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #ifndef INCLUDED_AI_NDO_LOADER_H
 #define INCLUDED_AI_NDO_LOADER_H
-namespace Assimp    {
+namespace Assimp	{
 
 // ---------------------------------------------------------------------------
 /** @brief Importer class to load meshes from Nendo.
  *
  *  Basing on
- *  <blender>/blender/release/scripts/nendo_import.py by Anthony D'Agostino.
+ *  <blender>/blender/release/scripts/nendo_import.py by Anthony D'Agostino. 
 */
 class NDOImporter : public BaseImporter
 {
-    friend class Importer;
-protected:
-    /** Constructor to be privately used by Importer */
-    NDOImporter();
+public:
+	NDOImporter();
+	~NDOImporter();
 
-    /** Destructor, private as well */
-    ~NDOImporter();
 
 public:
 
-    //! Represents a single edge
-    struct Edge
-    {
-        unsigned int edge[8];
-        unsigned int hard;
-        uint8_t color[8];
-    };
+	//! Represents a single edge
+	struct Edge
+	{
+		unsigned int edge[8];
+		unsigned int hard;
+		uint8_t color[8];
+	};
 
-    //! Represents a single face
-    struct Face
-    {
-        unsigned int elem;
-    };
+	//! Represents a single face
+	struct Face
+	{
+		unsigned int elem;
+	};
 
-    struct Vertex
-    {
-        unsigned int num;
-        aiVector3D val;
-    };
+	struct Vertex
+	{
+		unsigned int num;
+		aiVector3D val;
+	};
 
-    //! Represents a single object
-    struct Object
-    {
-        std::string name;
+	//! Represents a single object
+	struct Object 
+	{
+		std::string name;
+	
+		std::vector<Edge> edges;
+		std::vector<Face> faces;
+		std::vector<Vertex> vertices;
+	};
 
-        std::vector<Edge> edges;
-        std::vector<Face> faces;
-        std::vector<Vertex> vertices;
-    };
-
-    // -------------------------------------------------------------------
-    bool CanRead( const std::string& pFile, IOSystem* pIOHandler,
-        bool checkSig) const;
+	// -------------------------------------------------------------------
+	bool CanRead( const std::string& pFile, IOSystem* pIOHandler, 
+		bool checkSig) const;
 
 protected:
 
-    // -------------------------------------------------------------------
-    void GetExtensionList(std::set<std::string>& extensions);
+	// -------------------------------------------------------------------
+	const aiImporterDesc* GetInfo () const;
 
-    // -------------------------------------------------------------------
-    void SetupProperties(const Importer* pImp);
+	// -------------------------------------------------------------------
+	void SetupProperties(const Importer* pImp);
 
-    // -------------------------------------------------------------------
-    void InternReadFile( const std::string& pFile, aiScene* pScene,
-        IOSystem* pIOHandler);
+	// -------------------------------------------------------------------
+	void InternReadFile( const std::string& pFile, aiScene* pScene, 
+		IOSystem* pIOHandler);
 
 private:
 

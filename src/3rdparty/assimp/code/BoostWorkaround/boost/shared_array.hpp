@@ -7,61 +7,61 @@
 // ------------------------------
 // Internal stub
 namespace boost {
-    namespace array_detail {
-        class controller {
-        public:
+	namespace array_detail {
+		class controller {
+		public:
 
-            controller()
-                : cnt(1)
-            {}
+			controller()
+				: cnt(1)
+			{}
+		
+		public:
 
-        public:
+			template <typename T>
+			controller* decref(T* pt) {
+				if (--cnt <= 0) {
+					delete this;
+					delete[] pt;
+				}
+				return NULL;
+			}
+		
+			controller* incref() {
+				++cnt;
+				return this;
+			}
 
-            template <typename T>
-            controller* decref(T* pt) {
-                if (--cnt <= 0) {
-                    delete this;
-                    delete[] pt;
-                }
-                return NULL;
-            }
+			long get() const {
+				return cnt;
+			}
 
-            controller* incref() {
-                ++cnt;
-                return this;
-            }
+		private:
+			long cnt;
+		};
 
-            long get() const {
-                return cnt;
-            }
+		struct empty {};
+		
+		template <typename DEST, typename SRC>
+		struct is_convertible_stub {
+			
+			struct yes {char s[1];};
+			struct no  {char s[2];};
 
-        private:
-            long cnt;
-        };
+			static yes foo(DEST*);
+			static no  foo(...);
 
-        struct empty {};
+			enum {result = (sizeof(foo((SRC*)0)) == sizeof(yes) ? 1 : 0)};	
+		};
 
-        template <typename DEST, typename SRC>
-        struct is_convertible_stub {
+		template <bool> struct enable_if {};
+		template <> struct enable_if<true> {
+			typedef empty result;
+		};
 
-            struct yes {char s[1];};
-            struct no  {char s[2];};
-
-            static yes foo(DEST*);
-            static no  foo(...);
-
-            enum {result = (sizeof(foo((SRC*)0)) == sizeof(yes) ? 1 : 0)};
-        };
-
-        template <bool> struct enable_if {};
-        template <> struct enable_if<true> {
-            typedef empty result;
-        };
-
-        template <typename DEST, typename SRC>
-        struct is_convertible : public enable_if<is_convertible_stub<DEST,SRC>::result > {
-        };
-    }
+		template <typename DEST, typename SRC>
+		struct is_convertible : public enable_if<is_convertible_stub<DEST,SRC>::result > {
+		};
+	}
 
 // ------------------------------
 // Small replacement for boost::shared_array, not threadsafe because no
@@ -70,159 +70,159 @@ namespace boost {
 template <class T>
 class shared_array
 {
-    template <typename TT> friend class shared_array;
+	template <typename TT> friend class shared_array;
 
-    template<class TT> friend bool operator== (const shared_array<TT>& a, const shared_array<TT>& b);
-    template<class TT> friend bool operator!= (const shared_array<TT>& a, const shared_array<TT>& b);
-    template<class TT> friend bool operator<  (const shared_array<TT>& a, const shared_array<TT>& b);
-
-public:
-
-    typedef T element_type;
+	template<class TT> friend bool operator== (const shared_array<TT>& a, const shared_array<TT>& b);
+	template<class TT> friend bool operator!= (const shared_array<TT>& a, const shared_array<TT>& b);
+	template<class TT> friend bool operator<  (const shared_array<TT>& a, const shared_array<TT>& b);
 
 public:
 
-    // provide a default constructor
-    shared_array()
-        : ptr()
-        , ctr(NULL)
-    {
-    }
+	typedef T element_type;
 
-    // construction from an existing object of type T
-    explicit shared_array(T* ptr)
-        : ptr(ptr)
-        , ctr(ptr ? new array_detail::controller() : NULL)
-    {
-    }
+public:
 
-    shared_array(const shared_array& r)
-        : ptr(r.ptr)
-        , ctr(r.ctr ? r.ctr->incref() : NULL)
-    {
-    }
+	// provide a default constructor
+	shared_array()
+		: ptr()
+		, ctr(NULL)
+	{
+	}
 
-    template <typename Y>
-    shared_array(const shared_array<Y>& r,typename detail::is_convertible<T,Y>::result = detail::empty())
-        : ptr(r.ptr)
-        , ctr(r.ctr ? r.ctr->incref() : NULL)
-    {
-    }
+	// construction from an existing object of type T
+	explicit shared_array(T* ptr)
+		: ptr(ptr)
+		, ctr(ptr ? new array_detail::controller() : NULL)
+	{
+	}
 
-    // automatic destruction of the wrapped object when all
-    // references are freed.
-    ~shared_array()    {
-        if (ctr) {
-            ctr = ctr->decref(ptr);
-        }
-    }
+	shared_array(const shared_array& r)
+		: ptr(r.ptr)
+		, ctr(r.ctr ? r.ctr->incref() : NULL)
+	{
+	}
 
-    shared_array& operator=(const shared_array& r) {
-        if (this == &r) {
-            return *this;
-        }
-        if (ctr) {
-            ctr->decref(ptr);
-        }
-        ptr = r.ptr;
-        ctr = ptr?r.ctr->incref():NULL;
-        return *this;
-    }
+	template <typename Y>
+	shared_array(const shared_array<Y>& r,typename detail::is_convertible<T,Y>::result = detail::empty())
+		: ptr(r.ptr)
+		, ctr(r.ctr ? r.ctr->incref() : NULL)
+	{
+	}
 
-    template <typename Y>
-    shared_array& operator=(const shared_array<Y>& r) {
-        if (this == &r) {
-            return *this;
-        }
-        if (ctr) {
-            ctr->decref(ptr);
-        }
-        ptr = r.ptr;
-        ctr = ptr?r.ctr->incref():NULL;
-        return *this;
-    }
+	// automatic destruction of the wrapped object when all
+	// references are freed.
+	~shared_array()	{
+		if (ctr) {
+			ctr = ctr->decref(ptr);
+		}
+	}
 
-    // pointer access
-    inline operator T*()    {
-        return ptr;
-    }
+	shared_array& operator=(const shared_array& r) {
+		if (this == &r) {
+			return *this;
+		}
+		if (ctr) {
+			ctr->decref(ptr);
+		}
+		ptr = r.ptr;
+		ctr = ptr?r.ctr->incref():NULL;
+		return *this;
+	}
 
-    inline T* operator-> () const    {
-        return ptr;
-    }
+	template <typename Y>
+	shared_array& operator=(const shared_array<Y>& r) {
+		if (this == &r) {
+			return *this;
+		}
+		if (ctr) {
+			ctr->decref(ptr);
+		}
+		ptr = r.ptr;
+		ctr = ptr?r.ctr->incref():NULL;
+		return *this;
+	}
 
-    // standard semantics
-    inline T* get() {
-        return ptr;
-    }
+	// pointer access
+	inline operator T*()	{
+		return ptr;
+	}
 
-    T& operator[] (std::ptrdiff_t index) const {
-        return ptr[index];
-    }
+	inline T* operator-> () const	{
+		return ptr;
+	}
 
-    inline const T* get() const    {
-        return ptr;
-    }
+	// standard semantics
+	inline T* get() {
+		return ptr;
+	}
 
-    inline operator bool () const {
-        return ptr != NULL;
-    }
+	T& operator[] (std::ptrdiff_t index) const {
+		return ptr[index];
+	}
 
-    inline bool unique() const {
-        return use_count() == 1;
-    }
+	inline const T* get() const	{
+		return ptr;
+	}
 
-    inline long use_count() const {
-        return ctr->get();
-    }
+	inline operator bool () const {
+		return ptr != NULL;
+	}
 
-    inline void reset (T* t = 0)    {
-        if (ctr) {
-            ctr->decref(ptr);
-        }
-        ptr = t;
-        ctr = ptr?new array_detail::controller():NULL;
-    }
+	inline bool unique() const {
+		return use_count() == 1;
+	}
 
-    void swap(shared_array & b)    {
-        std::swap(ptr, b.ptr);
-        std::swap(ctr, b.ctr);
-    }
+	inline long use_count() const {
+		return ctr->get();
+	}
+
+	inline void reset (T* t = 0)	{
+		if (ctr) {
+			ctr->decref(ptr);
+		}
+		ptr = t;
+		ctr = ptr?new array_detail::controller():NULL;
+	}
+
+	void swap(shared_array & b)	{
+		std::swap(ptr, b.ptr);
+		std::swap(ctr, b.ctr);
+	}
 
 
 private:
 
-    // encapsulated object pointer
-    T* ptr;
+	// encapsulated object pointer
+	T* ptr;
 
-    // control block
-    array_detail::controller* ctr;
+	// control block
+	array_detail::controller* ctr;
 };
 
 template<class T>
 inline void swap(shared_array<T> & a, shared_array<T> & b)
 {
-    a.swap(b);
+	a.swap(b);
 }
 
 template<class T>
 bool operator== (const shared_array<T>& a, const shared_array<T>& b) {
-    return a.ptr == b.ptr;
+	return a.ptr == b.ptr;
 }
 template<class T>
 bool operator!= (const shared_array<T>& a, const shared_array<T>& b) {
-    return a.ptr != b.ptr;
+	return a.ptr != b.ptr;
 }
-
+	
 template<class T>
 bool operator< (const shared_array<T>& a, const shared_array<T>& b) {
-    return a.ptr < b.ptr;
+	return a.ptr < b.ptr;
 }
 
 
 } // end of namespace boost
 
 #else
-#    error "shared_array.h was already included"
+#	error "shared_array.h was already included"
 #endif
 #endif // INCLUDED_AI_BOOST_SHARED_ARRAY

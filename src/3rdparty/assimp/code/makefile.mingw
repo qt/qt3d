@@ -17,15 +17,15 @@
 #   NOBOOST=1            Build against boost workaround
 #   SINGLETHREADED=1     Build single-threaded library
 #   DEBUG=1              Build debug build of library
-#
+# 
 # ---------------------------------------------------------------------------
 
 # C++ object files
-OBJECTS   := $(patsubst %.cpp,%.o,  $(wildcard *.cpp))
-OBJECTS   += $(patsubst %.cpp,%.o,  $(wildcard extra/*.cpp))
-OBJECTS   += $(patsubst %.cpp,%.o,  $(wildcard ./../contrib/irrXML/*.cpp))
+OBJECTS   := $(patsubst %.cpp,%.o,  $(wildcard *.cpp)) 
+OBJECTS   += $(patsubst %.cpp,%.o,  $(wildcard extra/*.cpp)) 
+OBJECTS   += $(patsubst %.cpp,%.o,  $(wildcard ./../contrib/irrXML/*.cpp)) 
 
-# C object files
+# C object files 
 OBJECTSC  := $(patsubst %.c,%.oc,   $(wildcard ./../contrib/zlib/*.c))
 OBJECTSC  += $(patsubst %.c,%.oc,   $(wildcard ./../contrib/ConvertUTF/*.c))
 OBJECTSC  += $(patsubst %.c,%.oc,   $(wildcard ./../contrib/unzip/*.c))
@@ -34,44 +34,44 @@ OBJECTSC  += $(patsubst %.c,%.oc,   $(wildcard ./../contrib/unzip/*.c))
 INCLUDEFLAGS =
 
 # Preprocessor defines for gcc
-DEFINEFLAGS =
+DEFINEFLAGS = 
 
 # Suffix for the output binary, represents build type
-NAMESUFFIX =
+NAMESUFFIX = 
 
 # Output path for binaries
 BINPATH = ../bin/mingw/
 
-# GCC compiler flags
-CPPFLAGS=-Wall
+# GCC compiler flags 
+CPPFLAGS=-Wall 
 
 # Setup environment for noboost build
 ifeq ($(NOBOOST),1)
-    SINGLETHREADED = 1
-    INCLUDEFLAGS  += -I./BoostWorkaround/
-    DEFINEFLAGS   += -DASSIMP_BUILD_BOOST_WORKAROUND
-# NAMESUFFIX    += -noboost
+	SINGLETHREADED = 1
+	INCLUDEFLAGS  += -I./BoostWorkaround/
+	DEFINEFLAGS   += -DASSIMP_BUILD_BOOST_WORKAROUND 
+#	NAMESUFFIX    += -noboost
 else
-    # adjust this manually if your boost is stored elsewhere
-    INCLUDEFLAGS  += -I"C:/Program Files/boost/boost_1_38"
-    #INCLUDEFLAGS  += -I"$(BOOST_DIR)"
+	# adjust this manually if your boost is stored elsewhere
+	INCLUDEFLAGS  += -I"C:/Program Files/boost/boost_1_38"
+	#INCLUDEFLAGS  += -I"$(BOOST_DIR)"
 
 endif
 
 # Setup environment for st build
 ifeq ($(SINGLETHREADED),1)
-    DEFINEFLAGS   += -DASSIMP_BUILD_SINGLETHREADED
-# NAMESUFFIX    += -st
+	DEFINEFLAGS   += -DASSIMP_BUILD_SINGLETHREADED
+#	NAMESUFFIX    += -st
 endif
 
 # Setup environment for debug build
 ifeq ($(DEBUG),1)
-    DEFINEFLAGS   += -D_DEBUG -DDEBUG
-    CPPFLAGS      += -g
-# NAMESUFFIX    += -debug
+	DEFINEFLAGS   += -D_DEBUG -DDEBUG
+	CPPFLAGS      += -g
+#	NAMESUFFIX    += -debug
 else
-    CPPFLAGS      += -O2 -s
-    DEFINEFLAGS   += -DNDEBUG -D_NDEBUG
+	CPPFLAGS      += -O2 -s
+	DEFINEFLAGS   += -DNDEBUG -D_NDEBUG
 endif
 
 # Output name of shared library
@@ -82,24 +82,24 @@ STATIC = $(BINPATH)/libassimp$(NAMESUFFIX).a
 
 # target: all
 # usage : build a shared library (*.so)
-all: $(SHARED_TARGET)
+all:	$(SHARED_TARGET)
 
 $(SHARED_TARGET):  $(OBJECTS)  $(OBJECTSC)
-    gcc -o $@ $(OBJECTS) $(OBJECTSC) -shared -lstdc++
+	gcc -o $@ $(OBJECTS) $(OBJECTSC) -shared -lstdc++ 
 %.o:%.cpp
-    $(CXX) -c  $(CPPFLAGS) $? -o $@ $(INCLUDEFLAGS) $(DEFINEFLAGS)
+	$(CXX) -c  $(CPPFLAGS) $? -o $@ $(INCLUDEFLAGS) $(DEFINEFLAGS)
 %.oc:%.c
-    $(CXX) -x c -c -ansi $(CPPFLAGS) $? -o $@
+	$(CXX) -x c -c -ansi $(CPPFLAGS) $? -o $@ 
 
 # target: clean
 # usage : cleanup all object files, prepare for a rebuild
 .PHONY: clean
 clean:
-    -del *.o .\..\contrib\irrXML\*.o .\..\contrib\zlib\*.oc .\..\contrib\unzip\*.oc .\..\contrib\ConvertUTF\*.oc
+	-del *.o .\..\contrib\irrXML\*.o .\..\contrib\zlib\*.oc .\..\contrib\unzip\*.oc .\..\contrib\ConvertUTF\*.oc
 
 # target: static
 # usage : build a static library (*.a)
-static:    $(STATIC)
+static:    $(STATIC) 
 $(STATIC):    $(OBJECTS) $(OBJECTSC)
-    ar rcs $@ $(OBJECTS) $(OBJECTSC)
+	ar rcs $@ $(OBJECTS) $(OBJECTSC)
 

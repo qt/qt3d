@@ -2,8 +2,8 @@
 // Microsoft Visual C++ generated include file.
 // Used by assimp.rc
 
-// Nchste Standardwerte fr neue Objekte
-//
+// Nächste Standardwerte für neue Objekte
+// 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        101

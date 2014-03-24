@@ -988,7 +988,7 @@ local int unzlocal_CheckCurrentFileCoherencyHeader (s,piSizeVar,
         else if (uMagic!=0x04034b50)
             err=UNZ_BADZIPFILE;
     }
-
+    
     if (unzlocal_getShort(&s->z_filefunc, s->filestream,&uData) != UNZ_OK)
         err=UNZ_ERRNO;
 /*
@@ -1181,7 +1181,7 @@ extern int ZEXPORT unzOpenCurrentFile3 (file, method, level, raw, password)
                      s->pfile_in_zip_read->byte_before_the_zipfile,
                   SEEK_SET)!=0)
             return UNZ_INTERNALERROR;
-        if (ZREAD(s->z_filefunc, s->filestream,source, 12)<12)
+        if(ZREAD(s->z_filefunc, s->filestream,source, 12)<12)
             return UNZ_INTERNALERROR;
 
         for (i = 0; i<12; i++)
@@ -1291,10 +1291,10 @@ extern int ZEXPORT unzReadCurrentFile  (file, buf, len)
 
 
 #            ifndef NOUNCRYPT
-            if (s->encrypted)
+            if(s->encrypted)
             {
                 uInt i;
-                for (i=0;i<uReadThis;i++)
+                for(i=0;i<uReadThis;i++)
                   pfile_in_zip_read_info->read_buffer[i] =
                       zdecode(s->keys,s->pcrc_32_tab,
                               pfile_in_zip_read_info->read_buffer[i]);

@@ -43,8 +43,8 @@
 #define ASSIMPHELPERS_H
 
 // ASSIMP INCLUDES
-#include <IOStream.h>
-#include <IOSystem.h>
+#include <assimp/IOStream.hpp>
+#include <assimp/IOSystem.hpp>
 
 #include <QIODevice>
 #include <QMap>

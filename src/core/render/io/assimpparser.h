@@ -43,10 +43,10 @@
 #define ASSIMPPARSER_H
 
 // ASSIMP LIBRARY INCLUDE
-#include <assimp.hpp>
-#include <aiScene.h>
-#include <aiPostProcess.h>
-#include <DefaultLogger.h>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+#include <assimp/DefaultLogger.hpp>
 
 #include "meshdata.h"
 #include "texturedata.h"

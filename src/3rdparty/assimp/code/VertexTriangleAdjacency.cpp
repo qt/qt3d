@@ -1,14 +1,14 @@
 /*
 ---------------------------------------------------------------------------
-Open Asset Import Library (ASSIMP)
+Open Asset Import Library (assimp)
 ---------------------------------------------------------------------------
 
-Copyright (c) 2006-2010, ASSIMP Development Team
+Copyright (c) 2006-2012, assimp team
 
 All rights reserved.
 
-Redistribution and use of this software in source and binary forms,
-with or without modification, are permitted provided that the following
+Redistribution and use of this software in source and binary forms, 
+with or without modification, are permitted provided that the following 
 conditions are met:
 
 * Redistributions of source code must retain the above
@@ -20,21 +20,21 @@ conditions are met:
   following disclaimer in the documentation and/or other
   materials provided with the distribution.
 
-* Neither the name of the ASSIMP team, nor the names of its
+* Neither the name of the assimp team, nor the names of its
   contributors may be used to endorse or promote products
   derived from this software without specific prior
-  written permission of the ASSIMP Development Team.
+  written permission of the assimp team.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
 LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT 
 OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT 
 LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY 
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ---------------------------------------------------------------------------
 */
@@ -51,82 +51,85 @@ using namespace Assimp;
 
 // ------------------------------------------------------------------------------------------------
 VertexTriangleAdjacency::VertexTriangleAdjacency(aiFace *pcFaces,
-    unsigned int iNumFaces,
-    unsigned int iNumVertices /*= 0*/,
-    bool bComputeNumTriangles /*= false*/)
+	unsigned int iNumFaces,
+	unsigned int iNumVertices /*= 0*/,
+	bool bComputeNumTriangles /*= false*/)
 {
-    // compute the number of referenced vertices if it wasn't specified by the caller
-    const aiFace* const pcFaceEnd = pcFaces + iNumFaces;
-    if (!iNumVertices)    {
+	// compute the number of referenced vertices if it wasn't specified by the caller
+	const aiFace* const pcFaceEnd = pcFaces + iNumFaces;
+	if (!iNumVertices)	{
 
-        for (aiFace* pcFace = pcFaces; pcFace != pcFaceEnd; ++pcFace)    {
-            ai_assert(3 == pcFace->mNumIndices);
-            iNumVertices = std::max(iNumVertices,pcFace->mIndices[0]);
-            iNumVertices = std::max(iNumVertices,pcFace->mIndices[1]);
-            iNumVertices = std::max(iNumVertices,pcFace->mIndices[2]);
-        }
-    }
-    unsigned int* pi;
+		for (aiFace* pcFace = pcFaces; pcFace != pcFaceEnd; ++pcFace)	{
+			ai_assert(3 == pcFace->mNumIndices);
+			iNumVertices = std::max(iNumVertices,pcFace->mIndices[0]);
+			iNumVertices = std::max(iNumVertices,pcFace->mIndices[1]);
+			iNumVertices = std::max(iNumVertices,pcFace->mIndices[2]);
+		}
+	}
 
-    // allocate storage
-    if (bComputeNumTriangles)    {
-        pi = mLiveTriangles = new unsigned int[iNumVertices+1];
-        memset(mLiveTriangles,0,sizeof(unsigned int)*(iNumVertices+1));
-        mOffsetTable = new unsigned int[iNumVertices+2]+1;
-    }
-    else {
-        pi = mOffsetTable = new unsigned int[iNumVertices+2]+1;
-        memset(mOffsetTable,0,sizeof(unsigned int)*(iNumVertices+1));
-        mLiveTriangles = NULL; // important, otherwise the d'tor would crash
-    }
+	this->iNumVertices = iNumVertices;
 
-    // get a pointer to the end of the buffer
-    unsigned int* piEnd = pi+iNumVertices;
-    *piEnd++ = 0u;
+	unsigned int* pi;
 
-    // first pass: compute the number of faces referencing each vertex
-    for (aiFace* pcFace = pcFaces; pcFace != pcFaceEnd; ++pcFace)
-    {
-        pi[pcFace->mIndices[0]]++;
-        pi[pcFace->mIndices[1]]++;
-        pi[pcFace->mIndices[2]]++;
-    }
+	// allocate storage
+	if (bComputeNumTriangles)	{
+		pi = mLiveTriangles = new unsigned int[iNumVertices+1];
+		memset(mLiveTriangles,0,sizeof(unsigned int)*(iNumVertices+1));
+		mOffsetTable = new unsigned int[iNumVertices+2]+1;
+	}
+	else {
+		pi = mOffsetTable = new unsigned int[iNumVertices+2]+1;
+		memset(mOffsetTable,0,sizeof(unsigned int)*(iNumVertices+1));
+		mLiveTriangles = NULL; // important, otherwise the d'tor would crash
+	}
 
-    // second pass: compute the final offset table
-    unsigned int iSum = 0;
-    unsigned int* piCurOut = this->mOffsetTable;
-    for (unsigned int* piCur = pi; piCur != piEnd;++piCur,++piCurOut)    {
+	// get a pointer to the end of the buffer
+	unsigned int* piEnd = pi+iNumVertices;
+	*piEnd++ = 0u;
 
-        unsigned int iLastSum = iSum;
-        iSum += *piCur;
-        *piCurOut = iLastSum;
-    }
-    pi = this->mOffsetTable;
+	// first pass: compute the number of faces referencing each vertex
+	for (aiFace* pcFace = pcFaces; pcFace != pcFaceEnd; ++pcFace)
+	{
+		pi[pcFace->mIndices[0]]++;	
+		pi[pcFace->mIndices[1]]++;	
+		pi[pcFace->mIndices[2]]++;	
+	}
 
-    // third pass: compute the final table
-    this->mAdjacencyTable = new unsigned int[iSum];
-    iSum = 0;
-    for (aiFace* pcFace = pcFaces; pcFace != pcFaceEnd; ++pcFace,++iSum)    {
+	// second pass: compute the final offset table
+	unsigned int iSum = 0;
+	unsigned int* piCurOut = this->mOffsetTable;
+	for (unsigned int* piCur = pi; piCur != piEnd;++piCur,++piCurOut)	{
 
-        unsigned int idx = pcFace->mIndices[0];
-        mAdjacencyTable[pi[idx]++] = iSum;
+		unsigned int iLastSum = iSum;
+		iSum += *piCur; 
+		*piCurOut = iLastSum;
+	}
+	pi = this->mOffsetTable;
 
-        idx = pcFace->mIndices[1];
-        mAdjacencyTable[pi[idx]++] = iSum;
+	// third pass: compute the final table
+	this->mAdjacencyTable = new unsigned int[iSum];
+	iSum = 0;
+	for (aiFace* pcFace = pcFaces; pcFace != pcFaceEnd; ++pcFace,++iSum)	{
 
-        idx = pcFace->mIndices[2];
-        mAdjacencyTable[pi[idx]++] = iSum;
-    }
-    // fourth pass: undo the offset computations made during the third pass
-    // We could do this in a separate buffer, but this would be TIMES slower.
-    --mOffsetTable;
-    *mOffsetTable = 0u;
+		unsigned int idx = pcFace->mIndices[0];
+		mAdjacencyTable[pi[idx]++] = iSum;
+
+		idx = pcFace->mIndices[1];
+		mAdjacencyTable[pi[idx]++] = iSum;
+
+		idx = pcFace->mIndices[2];
+		mAdjacencyTable[pi[idx]++] = iSum;
+	}
+	// fourth pass: undo the offset computations made during the third pass
+	// We could do this in a separate buffer, but this would be TIMES slower.
+	--mOffsetTable;
+	*mOffsetTable = 0u;
 }
 // ------------------------------------------------------------------------------------------------
 VertexTriangleAdjacency::~VertexTriangleAdjacency()
 {
-    // delete allocated storage
-    delete[] mOffsetTable;
-    delete[] mAdjacencyTable;
-    delete[] mLiveTriangles;
+	// delete allocated storage
+	delete[] mOffsetTable;
+	delete[] mAdjacencyTable;
+	delete[] mLiveTriangles;
 }
