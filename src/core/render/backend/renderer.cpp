@@ -47,6 +47,10 @@
 
 #include "framegraph/framegraphnode.h"
 #include "framegraph/framegraphvisitor.h"
+#include "framegraph/cameraselectornode.h"
+#include "framegraph/renderpassfilternode.h"
+#include "framegraph/techniquefilternode.h"
+#include "framegraph/viewportnode.h"
 
 #include <material.h>
 #include <mesh.h>
@@ -290,6 +294,30 @@ void Renderer::setSceneGraphRoot(Node *sgRoot)
     } else {
         // Test new scene builder
         m_sceneGraphRoot = sgRoot;
+
+        // TODO: Remove this temporary framegraph once we have code
+        // to build framegraphs from the frontend
+        // Build a simple framegraph that implements the most simple
+        // forward renderer
+        // Root
+        // |- Technique[style = forward]
+        //    |- Viewport
+        //       |- CameraSelector[mainCamera]
+        //          |- RenderPass[lighting]
+        FrameGraphNode *fgRoot = new FrameGraphNode;
+
+        TechniqueFilter *forwardTechnique = new TechniqueFilter(fgRoot);
+        forwardTechnique->m_filters.insert(QStringLiteral("style"), QStringLiteral("forward"));
+
+        ViewportNode *viewport = new ViewportNode(forwardTechnique);
+
+        CameraSelector *cam1 = new CameraSelector(viewport);
+        cam1->m_camera = m_camera;
+
+        RenderPassFilter *lightingPass = new RenderPassFilter(cam1);
+        lightingPass->m_filters.append(QStringLiteral("lighting"));
+
+        setFrameGraphRoot(fgRoot);
 
         RenderSceneBuilder builder(this);
         builder.traverse(m_sceneGraphRoot);
