@@ -108,17 +108,17 @@ MeshDataPtr createSphereMesh(double radius, int rings, int slices, bool hasTange
     buf->setUsage(QOpenGLBuffer::StaticDraw);
     buf->setData(bufferBytes);
 
-    mesh->addAttribute("position", new Attribute(buf, GL_FLOAT_VEC3, nVerts, 0, stride));
+    mesh->addAttribute(QStringLiteral("position"), new Attribute(buf, GL_FLOAT_VEC3, nVerts, 0, stride));
     quint32 offset = sizeof(float) * 3;
 
-    mesh->addAttribute("texcoord", new Attribute(buf, GL_FLOAT_VEC2, nVerts, offset, stride));
+    mesh->addAttribute(QStringLiteral("texcoord"), new Attribute(buf, GL_FLOAT_VEC2, nVerts, offset, stride));
     offset += sizeof(float) * 2;
 
-    mesh->addAttribute("normal", new Attribute(buf, GL_FLOAT_VEC3, nVerts, offset, stride));
+    mesh->addAttribute(QStringLiteral("normal"), new Attribute(buf, GL_FLOAT_VEC3, nVerts, offset, stride));
     offset += sizeof(float) * 3;
 
     if (hasTangents) {
-        mesh->addAttribute("tangent", new Attribute(buf, GL_FLOAT_VEC4, nVerts, offset, stride));
+        mesh->addAttribute(QStringLiteral("tangent"), new Attribute(buf, GL_FLOAT_VEC4, nVerts, offset, stride));
         offset += sizeof(float) * 4;
     }
 
@@ -176,7 +176,7 @@ MeshDataPtr createSphereMesh(double radius, int rings, int slices, bool hasTange
     indexBuffer->setData(indexBytes);
     mesh->setIndexAttr(AttributePtr(new Attribute(indexBuffer, GL_UNSIGNED_SHORT, indices, 0, 0)));
 
-    mesh->computeBoundsFromAttribute("position");
+    mesh->computeBoundsFromAttribute(QStringLiteral("position"));
     qDebug() << "computed sphere bounds is:" << mesh->boundingBox();
 
     return mesh;
@@ -233,13 +233,13 @@ MeshDataPtr createTorusMesh(double radius, double minorRadius,
     buf->setUsage(QOpenGLBuffer::StaticDraw);
     buf->setData(bufferBytes);
 
-    mesh->addAttribute("position", new Attribute(buf, GL_FLOAT_VEC3, nVerts, 0, stride));
+    mesh->addAttribute(QStringLiteral("position"), new Attribute(buf, GL_FLOAT_VEC3, nVerts, 0, stride));
     quint32 offset = sizeof(float) * 3;
 
-    mesh->addAttribute("texcoord", new Attribute(buf, GL_FLOAT_VEC2, nVerts, offset, stride));
+    mesh->addAttribute(QStringLiteral("texcoord"), new Attribute(buf, GL_FLOAT_VEC2, nVerts, offset, stride));
     offset += sizeof(float) * 2;
 
-    mesh->addAttribute("normal", new Attribute(buf, GL_FLOAT_VEC3, nVerts, offset, stride));
+    mesh->addAttribute(QStringLiteral("normal"), new Attribute(buf, GL_FLOAT_VEC3, nVerts, offset, stride));
     offset += sizeof(float) * 3;
 
     QByteArray indexBytes;
@@ -270,7 +270,7 @@ MeshDataPtr createTorusMesh(double radius, double minorRadius,
     indexBuffer->setData(indexBytes);
     mesh->setIndexAttr(AttributePtr(new Attribute(indexBuffer, GL_UNSIGNED_SHORT, indices, 0, 0)));
 
-    mesh->computeBoundsFromAttribute("position");
+    mesh->computeBoundsFromAttribute(QStringLiteral("position"));
 
     return mesh;
 }

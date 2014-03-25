@@ -123,7 +123,7 @@ void Mesh::update()
 
         qDebug() << "Loaded OBJ ok";
         setData(objLoad.mesh());
-        setObjectName("OBJ");
+        setObjectName(QStringLiteral("OBJ"));
     }
 
     m_sourceDirty = false;

@@ -155,12 +155,12 @@ Renderer::Renderer()
 void Renderer::buildDefaultTechnique()
 {
     m_defaultTechnique = new Technique;
-    m_defaultTechnique->setObjectName("default-technique");
+    m_defaultTechnique->setObjectName(QStringLiteral("default-technique"));
 
     ShaderProgram* defaultShader = new ShaderProgram;
-    defaultShader->setVertexSourceFile(":/shaders/diffuse.vert");
-    defaultShader->setFragmentSourceFile(":/shaders/diffuse.frag");
-    defaultShader->setObjectName("DefaultShader");
+    defaultShader->setVertexSourceFile(QStringLiteral(":/shaders/diffuse.vert"));
+    defaultShader->setFragmentSourceFile(QStringLiteral(":/shaders/diffuse.frag"));
+    defaultShader->setObjectName(QStringLiteral("DefaultShader"));
 
     RenderPass* basicPass = new RenderPass;
     basicPass->setShaderProgram(defaultShader);
@@ -172,58 +172,58 @@ void Renderer::buildDefaultTechnique()
 
     m_defaultTechnique->addPass(basicPass);
 
-    Parameter* vp = new Parameter(m_defaultTechnique, "position", GL_FLOAT_VEC3);
-    vp->setMeshAttributeName("position");
+    Parameter* vp = new Parameter(m_defaultTechnique, QStringLiteral("position"), GL_FLOAT_VEC3);
+    vp->setMeshAttributeName(QStringLiteral("position"));
     m_defaultTechnique->addParameter(vp);
-    basicPass->addAttributeBinding(vp, "vertexPosition");
+    basicPass->addAttributeBinding(vp, QStringLiteral("vertexPosition"));
 
-    Parameter* np = new Parameter(m_defaultTechnique, "normal", GL_FLOAT_VEC3);
-    np->setMeshAttributeName("normal");
+    Parameter* np = new Parameter(m_defaultTechnique, QStringLiteral("normal"), GL_FLOAT_VEC3);
+    np->setMeshAttributeName(QStringLiteral("normal"));
     m_defaultTechnique->addParameter(np);
-    basicPass->addAttributeBinding(np, "vertexNormal");
+    basicPass->addAttributeBinding(np, QStringLiteral("vertexNormal"));
 
     // matrix uniforms from standard
-    Parameter* mvMat = new Parameter(m_defaultTechnique, "modelView", GL_FLOAT_MAT4);
+    Parameter* mvMat = new Parameter(m_defaultTechnique, QStringLiteral("modelView"), GL_FLOAT_MAT4);
     mvMat->setStandardUniform(Parameter::ModelView);
     m_defaultTechnique->addParameter(mvMat);
-    basicPass->addUniformBinding(mvMat, "modelViewMatrix");
+    basicPass->addUniformBinding(mvMat, QStringLiteral("modelViewMatrix"));
 
-    Parameter* nMat = new Parameter(m_defaultTechnique, "normalMat", GL_FLOAT_MAT3);
+    Parameter* nMat = new Parameter(m_defaultTechnique, QStringLiteral("normalMat"), GL_FLOAT_MAT3);
     nMat->setStandardUniform(Parameter::ModelViewNormal);
     m_defaultTechnique->addParameter(nMat);
-    basicPass->addUniformBinding(nMat, "normalMatrix");
+    basicPass->addUniformBinding(nMat, QStringLiteral("normalMatrix"));
 
-    Parameter* mvpMat = new Parameter(m_defaultTechnique, "mvp", GL_FLOAT_MAT4);
+    Parameter* mvpMat = new Parameter(m_defaultTechnique, QStringLiteral("mvp"), GL_FLOAT_MAT4);
     mvpMat->setStandardUniform(Parameter::ModelViewProjection);
     m_defaultTechnique->addParameter(mvpMat);
-    basicPass->addUniformBinding(mvpMat, "mvp");
+    basicPass->addUniformBinding(mvpMat, QStringLiteral("mvp"));
 
     // diffuse lighting uniforms
-    Parameter* lightPos = new Parameter(m_defaultTechnique, "lightPos", GL_FLOAT_VEC4);
+    Parameter* lightPos = new Parameter(m_defaultTechnique, QStringLiteral("lightPos"), GL_FLOAT_VEC4);
     m_defaultTechnique->addParameter(lightPos);
-    basicPass->addUniformBinding(lightPos, "lightPosition");
+    basicPass->addUniformBinding(lightPos, QStringLiteral("lightPosition"));
 
-    Parameter* lightIntensity = new Parameter(m_defaultTechnique, "lightIntensity", GL_FLOAT_VEC3);
+    Parameter* lightIntensity = new Parameter(m_defaultTechnique, QStringLiteral("lightIntensity"), GL_FLOAT_VEC3);
     m_defaultTechnique->addParameter(lightIntensity);
-    basicPass->addUniformBinding(lightIntensity, "lightIntensity");
+    basicPass->addUniformBinding(lightIntensity, QStringLiteral("lightIntensity"));
 
-    Parameter* kd = new Parameter(m_defaultTechnique, "kd", GL_FLOAT_VEC3);
+    Parameter* kd = new Parameter(m_defaultTechnique, QStringLiteral("kd"), GL_FLOAT_VEC3);
     m_defaultTechnique->addParameter(kd);
-    basicPass->addUniformBinding(kd, "kd");
+    basicPass->addUniformBinding(kd, QStringLiteral("kd"));
 
-    Parameter* ka = new Parameter(m_defaultTechnique, "ka", GL_FLOAT_VEC3);
+    Parameter* ka = new Parameter(m_defaultTechnique, QStringLiteral("ka"), GL_FLOAT_VEC3);
     m_defaultTechnique->addParameter(ka);
-    basicPass->addUniformBinding(ka, "ka");
+    basicPass->addUniformBinding(ka, QStringLiteral("ka"));
 }
 
 void Renderer::buildDefaultMaterial()
 {
     m_defaultMaterial = new Material;
-    m_defaultMaterial->setObjectName("DefaultMaterial");
-    m_defaultMaterial->setParameter("lightPos", QVector4D(10.0f, 10.0f, 0.0f, 1.0f));
-    m_defaultMaterial->setParameter("lightIntensity", QVector3D(0.5f, 0.5f, 0.5f));
-    m_defaultMaterial->setParameter("ka", QVector3D(0.2f, 0.2f, 0.2f));
-    m_defaultMaterial->setParameter("kd", QVector3D(1.0f, 0.5f, 0.0f));
+    m_defaultMaterial->setObjectName(QStringLiteral("DefaultMaterial"));
+    m_defaultMaterial->setParameter(QStringLiteral("lightPos"), QVector4D(10.0f, 10.0f, 0.0f, 1.0f));
+    m_defaultMaterial->setParameter(QStringLiteral("lightIntensity"), QVector3D(0.5f, 0.5f, 0.5f));
+    m_defaultMaterial->setParameter(QStringLiteral("ka"), QVector3D(0.2f, 0.2f, 0.2f));
+    m_defaultMaterial->setParameter(QStringLiteral("kd"), QVector3D(1.0f, 0.5f, 0.0f));
 
     Effect* defEff = new Effect;
     defEff->addTechnique(m_defaultTechnique);

@@ -64,6 +64,8 @@ QAspectManager *QScheduler::aspectManager() const
 
 void QScheduler::update(qint64 time)
 {
+    Q_UNUSED(time);
+
     // Get tasks for this frame from each aspect
     const QList<AbstractAspect *> &aspects = m_aspectManager->aspects();
     QHash<AbstractAspect::AspectType, QVector<QJobPtr> > jobs;

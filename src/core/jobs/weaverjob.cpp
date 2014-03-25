@@ -49,6 +49,8 @@ WeaverJob::WeaverJob()
 
 void WeaverJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 {
+    Q_UNUSED(self);
+    Q_UNUSED(thread);
     if (m_job)
         m_job->run();
 }

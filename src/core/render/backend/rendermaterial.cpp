@@ -189,7 +189,7 @@ void RenderMaterial::sceneChangeEvent(const QSceneChangePtr &e)
     switch (e->m_type) {
     case MaterialParameter: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        QString propertyName = propertyChange->m_propertyName;
+        QString propertyName = QString::fromLatin1(propertyChange->m_propertyName);
         QVariant propertyValue = propertyChange->m_value;
         setParameter(propertyName, propertyValue);
         break;

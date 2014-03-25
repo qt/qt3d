@@ -129,6 +129,7 @@ void RendererAspect::registerAspectHelper(Node *rootObject)
 
 void RendererAspect::unregisterAspectHelper(Node *rootObject)
 {
+    Q_UNUSED(rootObject);
 }
 
 void RendererAspect::initializeHelper(QAspectManager *aspectManager)
@@ -140,7 +141,7 @@ void RendererAspect::initializeHelper(QAspectManager *aspectManager)
 
 void RendererAspect::cleanupHelper()
 {
-    Render::Renderer *renderer = m_renderThread->renderer();
+    //Render::Renderer *renderer = m_renderThread->renderer();
     //QMetaObject::invokeMethod(renderer, "cleanup");
 }
 

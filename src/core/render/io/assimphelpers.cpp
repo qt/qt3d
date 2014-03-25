@@ -224,8 +224,7 @@ Assimp::IOStream *AssimpIOSystem::Open(const char *pFile, const char *pMode)
  */
 void AssimpIOSystem::Close(Assimp::IOStream *pFile)
 {
-    AssimpHelper::AssimpIOStream *stream = static_cast< AssimpHelper::AssimpIOStream*>(pFile);
-    // Assimp::IOStream as a virtual destructor
+    // Assimp::IOStream has a virtual destructor which closes the stream
     delete pFile;
 }
 

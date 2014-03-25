@@ -250,21 +250,21 @@ MeshDataPtr ObjLoader::mesh() const
     buf->setData(bufferBytes);
 
 
-    mesh->addAttribute("position", new Attribute(buf, GL_FLOAT_VEC3, count, 0, stride));
+    mesh->addAttribute(QStringLiteral("position"), new Attribute(buf, GL_FLOAT_VEC3, count, 0, stride));
     quint32 offset = sizeof(float) * 3;
 
     if (hasTextureCoordinates()) {
-        mesh->addAttribute("texcoord", new Attribute(buf, GL_FLOAT_VEC2, count, offset, stride));
+        mesh->addAttribute(QStringLiteral("texcoord"), new Attribute(buf, GL_FLOAT_VEC2, count, offset, stride));
         offset += sizeof(float) * 2;
     }
 
     if (hasNormals()) {
-        mesh->addAttribute("normal", new Attribute(buf, GL_FLOAT_VEC3, count, offset, stride));
+        mesh->addAttribute(QStringLiteral("normal"), new Attribute(buf, GL_FLOAT_VEC3, count, offset, stride));
         offset += sizeof(float) * 3;
     }
 
     if (hasTangents()) {
-        mesh->addAttribute("tangent", new Attribute(buf, GL_FLOAT_VEC4, count, offset, stride));
+        mesh->addAttribute(QStringLiteral("tangent"), new Attribute(buf, GL_FLOAT_VEC4, count, offset, stride));
         offset += sizeof(float) * 4;
     }
 
@@ -290,7 +290,7 @@ MeshDataPtr ObjLoader::mesh() const
     indexBuffer->setData(indexBytes);
     mesh->setIndexAttr(AttributePtr(new Attribute(indexBuffer, ty, m_indices.size(), 0, 0)));
 
-    mesh->computeBoundsFromAttribute("position");
+    mesh->computeBoundsFromAttribute(QStringLiteral("position"));
     qDebug() << "computed bounds is:" << mesh->boundingBox();
 
     return mesh;

@@ -564,6 +564,8 @@ void AssimpParser::loadEmbeddedTexture(uint textureIndex)
 void AssimpParser::loadLight(uint lightIndex)
 {
     aiLight *light = m_aiScene->mLights[lightIndex];
+    // TODO: Implement me!
+    Q_UNUSED(light);
 }
 
 /*!

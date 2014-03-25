@@ -74,13 +74,13 @@ void LoadMeshDataJob::run()
         qWarning() << Q_FUNC_INFO << "OBJ load failure for:" << m_source;
     }
 
-    AttributePtr attr = m_meshData->attributeByName("position");
+    AttributePtr attr = m_meshData->attributeByName(QStringLiteral("position"));
     if (!attr) {
         qWarning() << Q_FUNC_INFO << "unknown attribute: position";
         return;
     }
 
-    Qt3D::Sphere sphere = Qt3D::Sphere::fromPoints(loader.vertices());
+    //Qt3D::Sphere sphere = Qt3D::Sphere::fromPoints(loader.vertices());
 
     qDebug() << "Exiting" << Q_FUNC_INFO << QThread::currentThread();
 }

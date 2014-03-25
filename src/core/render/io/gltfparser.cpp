@@ -703,8 +703,10 @@ void GLTFParser::processJSONTexture( QString id, QJsonObject jsonObj)
     Texture* tex = new Texture();
 
     int target = jsonObj.value(KEY_TARGET).toInt();
-    int pixelFormat = jsonObj.value(KEY_FORMAT).toInt();
-    int internalFormat = jsonObj.value(KEY_INTERNAL_FORMAT).toInt();
+
+    // TODO: Choose suitable internal format - may vary on OpenGL context type
+    //int pixelFormat = jsonObj.value(KEY_FORMAT).toInt();
+    //int internalFormat = jsonObj.value(KEY_INTERNAL_FORMAT).toInt();
 
     tex->setTarget(static_cast<QOpenGLTexture::Target>(target));
     tex->setInternalFormat(QOpenGLTexture::RGBA8_UNorm /* static_cast<QOpenGLTexture::TextureFormat>(internalFormat)*/);

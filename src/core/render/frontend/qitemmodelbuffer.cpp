@@ -135,7 +135,7 @@ void QItemModelBuffer::setRoot(const QModelIndex &rootIndex)
 
 void QItemModelBuffer::mapRoleName(QByteArray roleName, int elementType)
 {
-    mapRoleName(roleName, roleName, elementType);
+    mapRoleName(roleName, QString::fromLatin1(roleName), elementType);
 }
 
 void QItemModelBuffer::mapRoleName(QByteArray roleName, QString attributeName, int elementType)

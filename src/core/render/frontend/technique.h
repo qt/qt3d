@@ -134,7 +134,7 @@ private:
     StandardUniform m_standardUniform;
 };
 
-class QT3DCORESHARED_EXPORT Technique : public Node
+class QT3DRENDERERSHARED_EXPORT Technique : public Node
 {
     Q_OBJECT
 

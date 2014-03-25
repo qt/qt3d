@@ -185,6 +185,8 @@ void QChangeArbiter::unregisterObserver(QObserverInterface *observer,
                                         QObservableInterface *subject)
 {
     // TODO: Implement me!
+    Q_UNUSED(observer);
+    Q_UNUSED(subject);
 }
 
 void QChangeArbiter::sceneChangeEvent(const QSceneChangePtr &e)
@@ -223,6 +225,7 @@ void QChangeArbiter::createUnmanagedThreadLocalChangeQueue(void *changeArbiter)
 static void destroyUnmanagedThreadLocalChangeQueue(void *changeArbiter)
 {
     // TODO: Implement me!
+    Q_UNUSED(changeArbiter);
 }
 
 void QChangeArbiter::createThreadLocalChangeQueue(void *changeArbiter)
@@ -244,6 +247,7 @@ void QChangeArbiter::createThreadLocalChangeQueue(void *changeArbiter)
 static void destroyThreadLocalChangeQueue(void *changeArbiter)
 {
     // TODO: Implement me!
+    Q_UNUSED(changeArbiter);
 }
 
 } // namespace Qt3D

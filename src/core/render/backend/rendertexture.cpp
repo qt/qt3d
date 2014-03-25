@@ -113,15 +113,14 @@ QOpenGLTexture *RenderTexture::buildGLTexture()
 void RenderTexture::setToGLTexture(TexImageDataPtr imgData)
 {
     Q_ASSERT(m_gl && m_gl->isCreated() && m_gl->isStorageAllocated());
- // ensure we don't accidently cause a detach / copy of the raw bytes
+    // ensure we don't accidently cause a detach / copy of the raw bytes
     const QByteArray& bytes(imgData->data());
-    char* rawPtr = const_cast<char*>(bytes.constData());
     if (imgData->isCompressed()) {
         m_gl->setCompressedData(imgData->mipMapLevel(),
                                 imgData->layer(),
                                 imgData->cubeFace(),
                                 bytes.size(),
-                                rawPtr);
+                                bytes.constData());
     } else {
         QOpenGLPixelTransferOptions uploadOptions;
         uploadOptions.setAlignment(1);
@@ -130,7 +129,7 @@ void RenderTexture::setToGLTexture(TexImageDataPtr imgData)
                       imgData->cubeFace(),
                       imgData->pixelFormat(),
                       imgData->pixelType(),
-                      rawPtr,
+                      bytes.constData(),
                       &uploadOptions);
     }
 
