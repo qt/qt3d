@@ -50,12 +50,23 @@ namespace Qt3D {
 namespace Render {
 
 FrameGraphVisitor::FrameGraphVisitor()
+    : m_renderer(Q_NULLPTR)
+    , m_jobs(Q_NULLPTR)
+    , m_renderviewIndex(0)
+
 {
 }
 
-void FrameGraphVisitor::traverse(Render::FrameGraphNode *root, Renderer *renderer)
+void FrameGraphVisitor::traverse(FrameGraphNode *root,
+                                 Renderer *renderer,
+                                 QVector<QJobPtr> *jobs)
 {
     m_renderer = renderer;
+    m_jobs = jobs;
+    m_renderviewIndex = 0;
+
+    Q_ASSERT(m_renderer);
+    Q_ASSERT(m_jobs);
 
     // Kick off the traversal
     Render::FrameGraphNode *node = root;
@@ -64,9 +75,6 @@ void FrameGraphVisitor::traverse(Render::FrameGraphNode *root, Renderer *rendere
 
 void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
 {
-    // Apply the state from this node
-    node->apply();
-
     // Recurse to children (if we have any), otherwise if this is a leaf node,
     // initiate a rendering from the current camera
     if (node->childCount()) {
@@ -75,13 +83,12 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
             visit(n);
         }
     } else {
-        // Leaf node. All state is applied and renderer context configured.
-        // Go render something
-        m_renderer->doRender();
+        // Leaf node - create a RenderView ready to be populated
+        // TODO: Pass in only framegraph config that has changed from previous
+        // index RenderViewJob.
+        QJobPtr job = m_renderer->createRenderViewJob(node, m_renderviewIndex++);
+        m_jobs->append(job);
     }
-
-    // Undo the applied state as we exit this node
-    node->revert();
 }
 
 } // namespace Render

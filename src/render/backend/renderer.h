@@ -43,6 +43,7 @@
 #define QT3D_RENDER_RENDERER_H
 
 #include <Qt3DRenderer/technique.h>
+#include <Qt3DCore/qjob.h>
 
 #include <QHash>
 #include <QMatrix4x4>
@@ -81,6 +82,7 @@ class RenderTechnique;
 class RenderShader;
 class RenderNode;
 class MeshManager;
+class RenderCommand;
 
 class Renderer : public QObject
 {
@@ -105,6 +107,10 @@ public:
 
     void render();
     void doRender();
+
+    QVector<QJobPtr> createRenderBinJobs();
+    QJobPtr createRenderViewJob(FrameGraphNode *node, int submitOrderIndex);
+    void executeCommands(const QVector<RenderCommand *> &commands);
 
     MeshManager *meshManager() const { return m_meshManager; }
 

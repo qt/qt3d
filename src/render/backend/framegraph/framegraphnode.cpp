@@ -50,6 +50,16 @@ namespace Render {
 
 FrameGraphNode::FrameGraphNode(FrameGraphNode *parent)
     : m_parent(parent)
+    , m_nodeType(InvalidNodeType)
+    , m_enabled(true)
+{
+    if (parent)
+        parent->m_children.append(this);
+}
+
+FrameGraphNode::FrameGraphNode(FrameGraphNodeType nodeType, FrameGraphNode *parent)
+    : m_parent(parent)
+    , m_nodeType(nodeType)
     , m_enabled(true)
 {
     if (parent)

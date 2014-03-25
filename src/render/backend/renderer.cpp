@@ -51,6 +51,8 @@
 #include "techniquefilternode.h"
 #include "viewportnode.h"
 
+#include "jobs/renderviewjob.h"
+
 #include <material.h>
 #include <mesh.h>
 #include <effect.h>
@@ -307,20 +309,18 @@ void Renderer::setSceneGraphRoot(Node *sgRoot)
         //    |- Viewport
         //       |- CameraSelector[mainCamera]
         //          |- RenderPass[lighting]
-        Render::FrameGraphNode *fgRoot = new Render::FrameGraphNode;
-
-        TechniqueFilter *forwardTechnique = new TechniqueFilter(fgRoot);
+        TechniqueFilter *forwardTechnique = new TechniqueFilter;
         forwardTechnique->appendFilter(QStringLiteral("style"), QStringLiteral("forward"));
 
         ViewportNode *viewport = new ViewportNode(forwardTechnique);
 
         CameraSelector *cam1 = new CameraSelector(viewport);
-        cam1->setCamera(m_camera);
+        cam1->setCameraEntity(m_camera);
 
         RenderPassFilter *lightingPass = new RenderPassFilter(cam1);
         lightingPass->setFilter(QStringLiteral("lighting"));
 
-        setFrameGraphRoot(fgRoot);
+        setFrameGraphRoot(forwardTechnique);
 
         RenderSceneBuilder builder(this);
         builder.traverse(m_sceneGraphRoot);
@@ -396,12 +396,6 @@ void Renderer::setDefaultMaterial(Material *mat)
 
 void Renderer::render()
 {
-    // Traverse the framegraph
-    //   FrameGraphVisitor visitor;
-    //   visitor.traverse(m_frameGraphRoot, this);
-
-
-
     // Traversing the framegraph tree from root to lead node
     // Allows us to define the rendering set up
     // Camera, RenderTarget ...
@@ -443,6 +437,37 @@ void Renderer::doRender()
 {
     // Render using current device state and renderer configuration
     qDebug() << Q_FUNC_INFO;
+}
+
+QVector<QJobPtr> Renderer::createRenderBinJobs()
+{
+    // Traverse the current framegraph. For each leaf node create a
+    // RenderBin and set its configuration then create a job to
+    // populate the RenderBin with a set of RenderCommands that get
+    // their details from the RenderNodes that are visible to the
+    // Camera selected by the framegraph configuration
+    QVector<QJobPtr> renderBinJobs;
+    FrameGraphVisitor visitor;
+    visitor.traverse(m_frameGraphRoot, this, &renderBinJobs);
+    return renderBinJobs;
+}
+
+QJobPtr Renderer::createRenderViewJob(FrameGraphNode *node, int submitOrderIndex)
+{
+    RenderViewJobPtr job(new RenderViewJob);
+    job->setRenderer(this);
+    job->setFrameGraphLeafNode(node);
+    job->setSubmitOrderIndex(submitOrderIndex);
+    return job;
+}
+
+void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
+{
+    // Use the graphicscontext to submit the commands to the underlying
+    // graphics API (OpenGL)
+    Q_UNUSED(commands);
+    // TODO: Implement me!
+    //m_graphicsContext->executeCommands(commands);
 }
 
 RenderTechnique* Renderer::techniqueForMaterial(Material* mat)

@@ -48,8 +48,8 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
-TechniqueFilter::TechniqueFilter(Qt3D::Render::FrameGraphNode *parent)
-    : Qt3D::Render::FrameGraphNode(parent)
+TechniqueFilter::TechniqueFilter(FrameGraphNode *parent)
+    : FrameGraphNode(FrameGraphNode::TechniqueFilter, parent)
 {
 }
 QHash<QString, QVariant> TechniqueFilter::filters() const

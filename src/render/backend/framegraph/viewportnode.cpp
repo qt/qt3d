@@ -48,8 +48,8 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
-ViewportNode::ViewportNode(Render::FrameGraphNode *parent)
-    : Render::FrameGraphNode(parent)
+ViewportNode::ViewportNode(FrameGraphNode *parent)
+    : FrameGraphNode(FrameGraphNode::Viewport, parent)
     , m_xMin(0.0f)
     , m_yMin(0.0f)
     , m_xMax(1.0f)

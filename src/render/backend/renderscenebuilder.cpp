@@ -157,7 +157,7 @@ Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(Qt3D::FrameGra
         Render::CameraSelector *cameraSelectorNode = new Render::CameraSelector();
 
         qDebug() << Q_FUNC_INFO << "CameraSelector";
-        cameraSelectorNode->setCamera(cameraSelector->camera());
+        cameraSelectorNode->setCameraEntity(cameraSelector->camera());
         return cameraSelectorNode;
     }
     else if (qobject_cast<Qt3D::RenderTargetSelector*>(block) != Q_NULLPTR) {

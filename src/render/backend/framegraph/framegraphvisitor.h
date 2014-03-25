@@ -44,6 +44,10 @@
 
 #include <qglobal.h>
 
+#include <Qt3DCore/qjob.h>
+
+#include <QVector>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
@@ -57,12 +61,16 @@ class FrameGraphVisitor
 public:
     FrameGraphVisitor();
 
-    void traverse(Render::FrameGraphNode *root, Renderer *renderer);
+    void traverse(FrameGraphNode *root,
+                  Renderer *renderer,
+                  QVector<QJobPtr> *jobs);
 
 private:
     void visit(Render::FrameGraphNode *node);
 
     Renderer *m_renderer;
+    QVector<QJobPtr> *m_jobs;
+    int m_renderviewIndex;
 };
 
 } // namespace Render

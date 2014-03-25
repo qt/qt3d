@@ -29,7 +29,9 @@ HEADERS += \
     $$PWD/qgraphicshelperinterface.h \
     $$PWD/qgraphicshelpergl3.h \
     $$PWD/qgraphicshelperes2.h \
-    $$PWD/qgraphicshelpergl2.h
+    $$PWD/qgraphicshelpergl2.h \
+    $$PWD/renderview.h \
+    $$PWD/rendercommand.h
 
 
 SOURCES += \
@@ -56,4 +58,6 @@ SOURCES += \
     $$PWD/states/blendstate.cpp \
     $$PWD/qgraphicshelpergl3.cpp \
     $$PWD/qgraphicshelperes2.cpp \
-    $$PWD/qgraphicshelpergl2.cpp
+    $$PWD/qgraphicshelpergl2.cpp \
+    $$PWD/renderview.cpp \
+    $$PWD/rendercommand.cpp

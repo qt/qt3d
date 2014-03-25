@@ -103,6 +103,16 @@ QVector<QJobPtr> RendererAspect::jobsToExecute()
     // Create jobs that will get exectued by the threadpool
     QVector<QJobPtr> jobs;
 
+    // Create jobs to load in any meshes that are pending
+    QList< QPair<QString,MeshDataPtr> > meshes = m_renderThread->renderer()->meshManager()->meshesPending();
+    for (int i = 0; i < meshes.size(); ++i ) {
+        const QPair<QString, MeshDataPtr> &meshDataInfo = meshes.at(i);
+        Render::LoadMeshDataJobPtr loadMeshJob(new Render::LoadMeshDataJob(meshDataInfo.first, meshDataInfo.second));
+        jobs.append(loadMeshJob);
+    }
+    m_renderThread->renderer()->meshManager()->clearMeshesPending();
+
+    // Create jobs to update transforms and bounding volumes
 //    Render::UpdateWorldTransformJobPtr worldTransformJob(new Render::UpdateWorldTransformJob(m_renderThread->renderer()->renderSceneRoot()));
 //    Render::UpdateBoundingVolumeJobPtr boundingVolumeJob(new Render::UpdateBoundingVolumeJob(m_renderThread->renderer()));
 
@@ -113,14 +123,13 @@ QVector<QJobPtr> RendererAspect::jobsToExecute()
 //    jobs.append(worldTransformJob);
 //    jobs.append(boundingVolumeJob);
 
-    // Create jobs to load in any meshes that are pending
-    QList< QPair<QString,MeshDataPtr> > meshes = m_renderThread->renderer()->meshManager()->meshesPending();
-    for (int i = 0; i < meshes.size(); ++i ) {
-        const QPair<QString, MeshDataPtr> &meshDataInfo = meshes.at(i);
-        Render::LoadMeshDataJobPtr loadMeshJob(new Render::LoadMeshDataJob(meshDataInfo.first, meshDataInfo.second));
-        jobs.append(loadMeshJob);
-    }
-    m_renderThread->renderer()->meshManager()->clearMeshesPending();
+    // Traverse the current framegraph and create jobs to populate
+    // RenderBins with RenderCommands
+    QVector<QJobPtr> renderBinJobs = m_renderThread->renderer()->createRenderBinJobs();
+
+    // TODO: Add wrapper around ThreadWeaver::Collection
+    for (int i = 0; i < renderBinJobs.size(); ++i)
+        jobs.append(renderBinJobs.at(i));
 
     return jobs;
 }

@@ -52,19 +52,21 @@ class Entity;
 
 namespace Render {
 
-class CameraSelector : public Render::FrameGraphNode
+class RenderCamera;
+
+class CameraSelector : public FrameGraphNode
 {
 public:
-    CameraSelector(Render::FrameGraphNode *parent = 0);
+    CameraSelector(FrameGraphNode *parent = 0);
+
+    void setCameraEntity(Entity *cameraEntity) { m_cameraEntity = cameraEntity; }
+    Entity *cameraEntity() const { return m_cameraEntity; }
 
     void apply() Q_DECL_OVERRIDE;
     void revert() Q_DECL_OVERRIDE;
 
-    Entity *camera() const;
-    void setCamera(Entity *camera);
-
 private:
-    Entity *m_camera;
+    Entity *m_cameraEntity;
 };
 
 } // namespace Render

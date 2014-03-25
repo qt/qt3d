@@ -39,58 +39,66 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_FRAMEGRAPHNODE_H
-#define QT3D_RENDER_FRAMEGRAPHNODE_H
+#ifndef QT3D_RENDER_RENDERVIEW_H
+#define QT3D_RENDER_RENDERVIEW_H
 
-#include <qglobal.h>
+#include <Qt3DRenderer/renderer.h>
+
 #include <QVector>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
+
+class Renderer;
+class RenderCamera;
+class RenderPass; // TODO Split into front/back ends
+
 namespace Render {
 
-class FrameGraphNode
+class RenderCommand;
+class RenderPassFilter;
+class TechniqueFilter;
+class ViewportNode;
+
+// This class is kind of analogous to RenderBin but I want to avoid trampling
+// on that until we get this working
+class RenderView
 {
 public:
-    FrameGraphNode(FrameGraphNode *parent = 0);
-    virtual ~FrameGraphNode();
+    RenderView()
+        : m_camera(0)
+        , m_techniqueFilter(0)
+        , m_passFilter(0)
+        , m_viewport(0)
+        , m_commands()
+    {
+    }
 
-    enum FrameGraphNodeType {
-        InvalidNodeType,
-        CameraSelector,
-        LayerFilter,    // TODO: Add class
-        RenderPassFilter,
-        RenderTarget,   // TODO: Add class
-        TechniqueFilter,
-        Viewport
-    };
-    FrameGraphNodeType nodeType() const { return m_nodeType; }
+    ~RenderView();
 
-    FrameGraphNode *parent() const { return m_parent; }
-    void setParent(FrameGraphNode *parent) { m_parent = parent; }
+    void setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf);
 
-    int childCount() const { return m_children.count(); }
-    FrameGraphNode * child(int index) const { return m_children.at(index); }
-    void appendChild(FrameGraphNode *child) { child->setParent(m_parent); m_children.append(child); }
+    // Called by the RenderThread to actually submit the commands to OpenGL
+    void submit(Renderer *renderer);
 
-    void setEnabled(bool enabled) { m_enabled = enabled; }
-    bool isEnabled() const { return m_enabled; }
+    // TODO: Add a way to specify a sort predicate for the RenderCommands
+    void sort();
 
-protected:
-    FrameGraphNode(FrameGraphNodeType nodeType, FrameGraphNode *parent = 0);
+    // These pointers define the configuration that needs to be
+    // set for this RenderView before it's contained RenderCommands
+    // can be submitted. If a pointer is null, that pice of state
+    // does not need to be changed.
+    // TODO: Add RenderTarget
+    Qt3D::RenderCamera *m_camera;
+    TechniqueFilter *m_techniqueFilter;
+    RenderPassFilter *m_passFilter;
+    ViewportNode *m_viewport;
 
-    virtual void apply();
-    virtual void revert();
-
-private:
-    FrameGraphNode *m_parent;
-    QVector<FrameGraphNode *> m_children;
-
-    FrameGraphNodeType m_nodeType;
-    bool m_enabled;
-
-    friend class FrameGraphVisitor;
+    // We do not use pointers to RenderNodes or Drawable's here so that the
+    // render aspect is free to change the drawables on the next frame whilst
+    // the render thread is submitting these commands.
+    QVector<RenderCommand *> m_commands;
 };
 
 } // namespace Render
@@ -98,4 +106,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_FRAMEGRAPHNODE_H
+#endif // QT3D_RENDER_RENDERVIEW_H

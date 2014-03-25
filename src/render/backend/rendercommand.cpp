@@ -39,63 +39,18 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_FRAMEGRAPHNODE_H
-#define QT3D_RENDER_FRAMEGRAPHNODE_H
-
-#include <qglobal.h>
-#include <QVector>
+#include "rendercommand.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 namespace Render {
 
-class FrameGraphNode
+RenderCommand::RenderCommand()
 {
-public:
-    FrameGraphNode(FrameGraphNode *parent = 0);
-    virtual ~FrameGraphNode();
-
-    enum FrameGraphNodeType {
-        InvalidNodeType,
-        CameraSelector,
-        LayerFilter,    // TODO: Add class
-        RenderPassFilter,
-        RenderTarget,   // TODO: Add class
-        TechniqueFilter,
-        Viewport
-    };
-    FrameGraphNodeType nodeType() const { return m_nodeType; }
-
-    FrameGraphNode *parent() const { return m_parent; }
-    void setParent(FrameGraphNode *parent) { m_parent = parent; }
-
-    int childCount() const { return m_children.count(); }
-    FrameGraphNode * child(int index) const { return m_children.at(index); }
-    void appendChild(FrameGraphNode *child) { child->setParent(m_parent); m_children.append(child); }
-
-    void setEnabled(bool enabled) { m_enabled = enabled; }
-    bool isEnabled() const { return m_enabled; }
-
-protected:
-    FrameGraphNode(FrameGraphNodeType nodeType, FrameGraphNode *parent = 0);
-
-    virtual void apply();
-    virtual void revert();
-
-private:
-    FrameGraphNode *m_parent;
-    QVector<FrameGraphNode *> m_children;
-
-    FrameGraphNodeType m_nodeType;
-    bool m_enabled;
-
-    friend class FrameGraphVisitor;
-};
+}
 
 } // namespace Render
 } // namespace Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_RENDER_FRAMEGRAPHNODE_H

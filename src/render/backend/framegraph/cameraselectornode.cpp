@@ -41,6 +41,8 @@
 
 #include "cameraselectornode.h"
 
+#include "rendercamera.h"
+
 #include <QDebug>
 
 QT_BEGIN_NAMESPACE
@@ -48,19 +50,9 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
-CameraSelector::CameraSelector(Render::FrameGraphNode *parent)
-    : Render::FrameGraphNode(parent)
+CameraSelector::CameraSelector(FrameGraphNode *parent)
+    : FrameGraphNode(FrameGraphNode::CameraSelector, parent)
 {
-}
-
-Entity *CameraSelector::camera() const
-{
-    return m_camera;
-}
-
-void CameraSelector::setCamera(Entity *camera)
-{
-    m_camera = camera;
 }
 
 void CameraSelector::apply()
