@@ -44,6 +44,8 @@
 #include <QtGui/qquaternion.h>
 #include <QtCore/qmath.h>
 
+#include <cmath>
+
 QT_BEGIN_NAMESPACE
 
 /*!
