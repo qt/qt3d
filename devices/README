@@ -1,5 +1,0 @@
-This directory contains useful scripts and resources for use when
-using Qt3D on devices.
-
-In the case of the N900 and other maemo devices, use the packaging system
-by following the instructions in the debian/rules file.

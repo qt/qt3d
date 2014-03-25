@@ -1,8 +1,0 @@
-<!DOCTYPE RCC><RCC version="1.0">
-<qresource>
-    <file>per_pixel_lighting.vsh</file>
-    <file>per_pixel_lighting.fsh</file>
-    <file>teacup.txt</file>
-    <file>teaspoon.txt</file>
-</qresource>
-</RCC>
