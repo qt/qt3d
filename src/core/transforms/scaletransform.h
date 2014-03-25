@@ -47,7 +47,7 @@
 namespace Qt3D
 {
 
-class ScaleTransform : public AbstractTransform
+class QT3DCORESHARED_EXPORT ScaleTransform : public AbstractTransform
 {
     Q_OBJECT
 
@@ -72,6 +72,6 @@ private:
     QVector3D m_scale3D;
 };
 
-}
+} // Qt3D
 
 #endif // SCALETRANSFORM_H
