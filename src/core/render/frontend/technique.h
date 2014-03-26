@@ -43,7 +43,7 @@
 #define TECHNIQUE_H
 
 #include <qt3drenderer_global.h>
-#include <node.h>
+#include <Qt3DCore/node.h>
 
 #include "tag.h"
 #include "renderpass.h"

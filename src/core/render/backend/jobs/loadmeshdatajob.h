@@ -42,7 +42,7 @@
 #ifndef QT3D_RENDER_LOADMESHDATAJOB_H
 #define QT3D_RENDER_LOADMESHDATAJOB_H
 
-#include <qjob.h>
+#include <Qt3DCore/qjob.h>
 
 #include <meshdata.h>
 
