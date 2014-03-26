@@ -193,7 +193,7 @@ void Window::setRootObject( QObject* obj )
     // What happens if at some point the camera is added but not directly when the scene is created ?
     // eg scene file provided and camera tree node created after parsing ?
     // What happens if there are multiple cameras in the scene ?
-    m_camera = Entity::findComponentInTree<Camera>(qobject_cast<Node *>(m_root.data()));
+    m_camera = Entity::findEntityInTree<Camera>(qobject_cast<Node *>(m_root.data()));
     if (m_camera) {
         qDebug() << "found a camera in the scene";
         m_controller->setCamera(m_camera);

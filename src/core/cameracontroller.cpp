@@ -44,9 +44,10 @@
 #include <QMouseEvent>
 #include <QKeyEvent>
 
-#include "camera.h"
-#include "entity.h"
-#include "matrixtransform.h"
+#include <camera.h>
+#include <cameralens.h>
+#include <entity.h>
+#include <matrixtransform.h>
 
 namespace Qt3D
 {
@@ -70,14 +71,20 @@ CameraController::CameraController() :
 {
 }
 
+/*!
+ * CameraController expects to find a Camera entity.
+ * That means if you have built you Camera yourself using
+ * an Entity, a CameraLens and a Transform instead of using the
+ * ready made Camera element, it won't work.
+ */
 void CameraController::setCamera( Camera* cam )
 {
     m_camera = cam;
-    m_camera->setPerspectiveProjection( 25.0, 1.0, 0.1, 1000 );
+    m_camera->lens()->setPerspectiveProjection( 25.0, 1.0, 0.1, 1000 );
 
-    Entity* cameraEntity = cam->parentNode()->asEntity();
-    Q_ASSERT(cameraEntity);
-    m_cameraEntity = cameraEntity;
+//    Entity* cameraEntity = cam->parentNode()->asEntity();
+//    Q_ASSERT(cameraEntity);
+    m_cameraEntity = cam;
 }
 
 void CameraController::setLinearSpeed( float speed )

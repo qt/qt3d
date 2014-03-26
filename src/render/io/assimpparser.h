@@ -130,7 +130,7 @@ private :
     QMap<uint, Effect *> m_effects;
     QMap<uint, Texture*> m_embeddedTextures;
     QMap<QString, Texture*> m_materialTextures;
-    QMap<aiNode*, Camera*> m_cameras;
+    QMap<aiNode*, Entity*> m_cameras;
 //    QMap<aiNode*, Light*> m_lights;
 
 };

@@ -42,6 +42,8 @@
 #include "assimpparser.h"
 
 #include <transform.h>
+#include <matrixtransform.h>
+#include <cameralens.h>
 
 #include <QFileInfo>
 #include <QColor>
@@ -297,24 +299,12 @@ Entity *AssimpParser::node(aiNode *node)
     transform->setMatrix(qTransformMatrix);
     entityNode->addComponent(transform);
 
-    // Add components attached to current node (Camera, Lights ...)
-    if (m_cameras.contains(node)) {
-        QMatrix4x4 cameraTransforms;
-        Camera *cam = m_cameras[node];
-        Entity *tmpEntity;
+    // Add Camera
+    if (m_cameras.contains(node))
+        entityNode->addChild(m_cameras[node]);
 
-        while ((tmpEntity = entityNode->parentEntity()) != Q_NULLPTR) {
-            QMatrix4x4 nodeTransform;
-            QList<Transform*> transforms = tmpEntity->componentsOfType<Transform>();
-            // TO DO : IF NODE IS ANIMATED RETRIEVE CURRENT MATRIX
-            if (!transforms.isEmpty())
-                nodeTransform = transforms.first()->matrix();
-            cameraTransforms = nodeTransform * cameraTransforms;
-        }
-        cameraTransforms = cam->viewMatrix() * cameraTransforms * qTransformMatrix;
-        cam->setViewMatrix(cameraTransforms);
-        entityNode->addComponent(cam);
-    }
+    // TO DO : Add lights ....
+
     return entityNode;
 }
 
@@ -586,21 +576,29 @@ void AssimpParser::loadCamera(uint cameraIndex)
     if (cameraNode == Q_NULLPTR)
         return ;
 
-    Camera  *camera = new Camera();
+    Entity  *camera = new Entity();
+    CameraLens *lens = new CameraLens();
     aiMatrix4x4 cm;
 
     assimpCamera->GetCameraMatrix(cm);
-    camera->setObjectName(QString::fromUtf8(assimpCamera->mName.data));
-    camera->setViewCenter(QVector3D(assimpCamera->mLookAt.x,
-                                    assimpCamera->mLookAt.y,
-                                    assimpCamera->mLookAt.z));
-    camera->setPerspectiveProjection(qRadiansToDegrees(assimpCamera->mHorizontalFOV),
-                                     qMax(assimpCamera->mAspect, 1.0f),
-                                     assimpCamera->mClipPlaneNear,
-                                     assimpCamera->mClipPlaneFar);
+    lens->setObjectName(QString::fromUtf8(assimpCamera->mName.data));
+    lens->setPerspectiveProjection(qRadiansToDegrees(assimpCamera->mHorizontalFOV),
+                                   qMax(assimpCamera->mAspect, 1.0f),
+                                   assimpCamera->mClipPlaneNear,
+                                   assimpCamera->mClipPlaneFar);
+    camera->addComponent(lens);
     // View Matrix defines camera position & up vector relative to the associated
     // node in the scene. This is computed in AssimpParser::node
-    camera->setViewMatrix(AssimpParser::aiMatrix4x4ToQMatrix4x4(cm));
+    //    camera->lookAt()->setViewMatrix();
+    Transform *transform = new Transform();
+    QMatrix4x4 viewMatrix = AssimpParser::aiMatrix4x4ToQMatrix4x4(cm);
+    // CHECK THAT THIS WORKS
+    qDebug() << Q_FUNC_INFO << "IF CAMERA NOT BEHAVING CORRECTLY LOOK HERE";
+    viewMatrix.lookAt(QVector3D(0, 0, 0),
+                      QVector3D(assimpCamera->mLookAt.x, assimpCamera->mLookAt.y, assimpCamera->mLookAt.z),
+                      QVector3D(0, 0, 0));
+    transform->setMatrix(viewMatrix);
+    camera->addComponent(transform);
     m_cameras[cameraNode] = camera;
 }
 

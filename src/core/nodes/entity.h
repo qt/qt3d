@@ -60,7 +60,6 @@ class QT3DCORESHARED_EXPORT Entity : public Node
 
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
 
-
 public:
     explicit Entity(Node *parent = 0);
 
@@ -83,7 +82,7 @@ public:
     static T* findComponentInTree(Node* root)
     {
         if (!root)
-            return NULL;
+            return Q_NULLPTR;
 
         if (root->asEntity()) {
             foreach (Component* comp, root->asEntity()->components()) {
@@ -99,7 +98,32 @@ public:
                 return i;
         } // of child nodes iteration
 
-        return NULL;
+        return Q_NULLPTR;
+    }
+
+    template <class T>
+    static T* findEntityInTree(Node* root)
+    {
+        if (!root)
+            return Q_NULLPTR;
+
+        if (root->asEntity()) {
+            foreach (Node* child, root->children()) {
+                if (!qobject_cast<Entity*>(child))
+                    continue;
+                T* i = qobject_cast<T*>(child);
+                if (i)
+                    return i;
+            } // of child iteration
+        } // of is-entity
+
+        foreach (Node* child, root->children()) {
+            T* i = findEntityInTree<T>(child);
+            if (i)
+                return i;
+        } // of child nodes iteration
+
+        return Q_NULLPTR;
     }
 
     void addComponent(Component *comp);

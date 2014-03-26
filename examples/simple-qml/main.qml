@@ -97,7 +97,7 @@ Node {
             objectName: "mainCamera"
 
 
-            property Camera camera: Camera {
+            property CameraLens lens: CameraLens {
                 objectName: "cameraComponent"
                 projectionType: Camera.PerspectiveProjection
                 fieldOfView: 22.5

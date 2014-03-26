@@ -39,80 +39,72 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_CAMERA_H
-#define QT3D_CAMERA_H
 
-#include <entity.h>
-#include <qt3dcore_global.h>
+#ifndef QT3D_CAMERALENS_P_H
+#define QT3D_CAMERALENS_P_H
 
 #include <QMatrix4x4>
-#include <QQuaternion>
-#include <QVector3D>
 
 namespace Qt3D {
 
-class CameraPrivate;
-class CameraLens;
-class Transform;
-class LookAtTransform;
-
-class QT3DCORESHARED_EXPORT Camera : public Entity
+class CameraLensPrivate
 {
-    Q_OBJECT
-
-    // TODO Move view matrix out of the camera and use Transform component (once it exists)
-    Q_PROPERTY(Qt3D::CameraLens* lens READ lens WRITE setLens NOTIFY lensChanged)
-    Q_PROPERTY(Qt3D::LookAtTransform* lookAt READ lookAt WRITE setLookAt NOTIFY lookAtChanged)
-
 public:
-    explicit Camera(Node *parent = 0);
+    CameraLensPrivate( CameraLens *qq ) :
+        q_ptr(qq)
+      , m_projectionType( CameraLens::OrthogonalProjection )
+      , m_nearPlane( 0.1f )
+      , m_farPlane( 1024.0f )
+      , m_fieldOfView( 25.0f )
+      , m_aspectRatio( 1.0f )
+      , m_left( -0.5 )
+      , m_right( 0.5f )
+      , m_bottom( -0.5f )
+      , m_top( 0.5f )
+      , m_syncNeeded( false )
+    {
+        updateOrthogonalProjection();
+    }
+
+    ~CameraLensPrivate()
+    {
+    }
+
+    inline void updatePerpectiveProjection()
+    {
+        m_projectionMatrix.setToIdentity();
+        m_projectionMatrix.perspective( m_fieldOfView, m_aspectRatio, m_nearPlane, m_farPlane );
+        m_syncNeeded = true;
+    }
+
+    inline void updateOrthogonalProjection()
+    {
+        m_projectionMatrix.setToIdentity();
+        m_projectionMatrix.ortho( m_left, m_right, m_bottom, m_top, m_nearPlane, m_farPlane );
+        m_syncNeeded = true;
+    }
 
 
-    enum CameraTranslationOption {
-        TranslateViewCenter,
-        DontTranslateViewCenter
-    };
+    Q_DECLARE_PUBLIC( CameraLens )
+    CameraLens *q_ptr;
 
-    CameraLens* lens() const;
-    void setLens(CameraLens *lens);
+    CameraLens::ProjectionType m_projectionType;
 
-    LookAtTransform *lookAt() const;
-    void setLookAt(LookAtTransform* lookAt);
+    float m_nearPlane;
+    float m_farPlane;
 
-    QQuaternion tiltRotation(float angle) const;
-    QQuaternion panRotation(float angle) const;
-    QQuaternion rollRotation(float angle) const;
+    float m_fieldOfView;
+    float m_aspectRatio;
 
-public slots:
+    float m_left;
+    float m_right;
+    float m_bottom;
+    float m_top;
 
-    // Translate relative to camera orientation axes
-    void translate( const QVector3D& vLocal, CameraTranslationOption option = TranslateViewCenter );
-
-    // Translate relative to world axes
-    void translateWorld( const QVector3D& vWorld, CameraTranslationOption option = TranslateViewCenter );
-
-    void tilt( const float& angle );
-    void pan( const float& angle );
-    void roll( const float& angle );
-
-    void tiltAboutViewCenter( const float& angle );
-    void panAboutViewCenter( const float& angle );
-    void rollAboutViewCenter( const float& angle );
-
-    void rotate( const QQuaternion& q );
-    void rotateAboutViewCenter( const QQuaternion& q );
-
-signals:
-    void lensChanged();
-    void lookAtChanged();
-
-protected:
-    Q_DECLARE_PRIVATE(Camera)
-
-private:
-    CameraPrivate* d_ptr;
+    mutable QMatrix4x4 m_projectionMatrix;
+    mutable bool m_syncNeeded;
 };
 
 }
 
-#endif // QT3D_CAMERA_H
+#endif // QT3D_CAMERALENS_P_H

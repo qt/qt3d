@@ -52,6 +52,7 @@
 #include <camera.h>
 #include <transform.h>
 #include <matrixtransform.h>
+#include <cameralens.h>
 
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -354,7 +355,7 @@ Entity* GLTFParser::node(QString id)
 
     if ( jsonObj.contains(KEY_CAMERA) )
     {
-        Camera* cam = camera( jsonObj.value(KEY_CAMERA).toString() );
+        CameraLens* cam = camera( jsonObj.value(KEY_CAMERA).toString() );
         if (!cam) {
             qWarning() << "failed to build camera:" << jsonObj.value(KEY_CAMERA)
                           << "on node" << id;
@@ -375,13 +376,13 @@ Entity* GLTFParser::node(QString id)
 #undef far
 #endif
 
-Camera* GLTFParser::camera(QString id)
+CameraLens* GLTFParser::camera(QString id)
 {
     parse();
     QJsonObject cams = m_json.object().value(KEY_CAMERAS).toObject();
     if (!cams.contains(id)) {
         qWarning() << "unknown camera" << id << "in GLTF file" << m_basePath;
-        return NULL;
+        return Q_NULLPTR;
     }
 
     QJsonObject jsonObj = cams.value(id).toObject();
@@ -390,7 +391,7 @@ Camera* GLTFParser::camera(QString id)
     if (camTy == "perspective") {
         if (!jsonObj.contains(KEY_PERSPECTIVE)) {
             qWarning() << "camera:" << id << "missing 'perspective' object";
-            return NULL;
+            return Q_NULLPTR;
         }
 
         QJsonObject pObj = jsonObj.value(KEY_PERSPECTIVE).toObject();
@@ -398,16 +399,16 @@ Camera* GLTFParser::camera(QString id)
         double near = pObj.value(KEY_ZNEAR).toDouble();
         double far = pObj.value(KEY_ZFAR).toDouble();
 
-        Camera* result = new Camera;
+        CameraLens* result = new CameraLens;
         result->setPerspectiveProjection(yfov, 1.0, near, far);
         return result;
     } else if (camTy == "orthographic") {
         qWarning() << Q_FUNC_INFO << "implement me";
 
-        return NULL;
+        return Q_NULLPTR;
     } else {
         qWarning() << "camera:" << id << "has unsupported type:" << camTy;
-        return NULL;
+        return Q_NULLPTR;
     }
 }
 

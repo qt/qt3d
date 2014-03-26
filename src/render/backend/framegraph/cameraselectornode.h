@@ -46,7 +46,7 @@
 
 namespace Qt3D {
 
-class Camera;
+class Entity;
 
 namespace Render {
 
@@ -59,7 +59,7 @@ public:
     void revert() Q_DECL_OVERRIDE;
 
 //private:
-    Camera *m_camera;
+    Entity *m_camera;
 };
 
 }

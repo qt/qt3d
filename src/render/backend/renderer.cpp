@@ -57,7 +57,7 @@
 #include <technique.h>
 #include <shaderprogram.h>
 #include <renderpass.h>
-#include <camera.h>
+#include <cameralens.h>
 #include <shape.h>
 
 #include <meshmanager.h>
@@ -116,9 +116,9 @@ protected:
             m_renderer->buildShape(shape, mat, sceneMatrix);
         }
 
-        foreach (Camera* cam, ent->componentsOfType<Camera>()) {
-            m_renderer->foundCamera(cam, sceneMatrix);
-        }
+//        foreach (Camera* cam, ent->componentsOfType<Camera>()) {
+//            m_renderer->foundCamera(cam, sceneMatrix);
+//        }
 
         NodeVisitor::visitEntity(ent);
 
@@ -343,12 +343,18 @@ Node *Renderer::sceneGraphRoot() const
     return m_sceneGraphRoot;
 }
 
-void Renderer::setCamera(Camera *cam)
+void Renderer::setCamera(Entity *cam)
 {
+    QList<CameraLens *> lenses = cam->componentsOfType<CameraLens>();
+    if (lenses.empty()) {
+        qWarning() << Q_FUNC_INFO << "No Lens associated to the camera";
+        return ;
+    }
+    CameraLens *lens = lenses.first();
     m_camera = cam;
     m_renderCamera = new RenderCamera(m_rendererAspect);
-    m_renderCamera->setPeer(cam);
-    m_renderCamera->setProjection(cam->projectionMatrix());
+    m_renderCamera->setPeer(lens);
+    m_renderCamera->setProjection(lens->projectionMatrix());
 
     m_graphicsContext->setCamera(m_renderCamera);
 }
@@ -569,8 +575,8 @@ void Renderer::buildShape(Shape* shape, Material* mat, const QMatrix4x4& mm)
 void Renderer::foundCamera(Camera *cam, const QMatrix4x4 &mm)
 {
     Q_UNUSED(mm);
-    cam->setViewMatrix(mm.inverted());
-    setCamera(cam);
+//    cam->setViewMatrix(mm.inverted());
+//    setCamera(cam);
 }
 
 } // namespace Render

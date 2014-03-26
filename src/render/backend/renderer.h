@@ -99,7 +99,7 @@ public:
 
     RenderNode *renderSceneRoot() const { return m_renderSceneRoot; }
 
-    void setCamera(Camera* cam);
+    void setCamera(Entity* cam);
 
     void render();
     void doRender();
@@ -135,7 +135,7 @@ private:
     Qt3D::Node *m_sceneGraphRoot;
     RenderNode *m_renderSceneRoot;
 
-    Camera *m_camera;
+    Entity *m_camera;
     RenderCamera* m_renderCamera;
 
     QHash<Material*, RenderMaterial*> m_materialHash;

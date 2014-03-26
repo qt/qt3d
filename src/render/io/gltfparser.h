@@ -61,6 +61,7 @@ class Material;
 class ShaderProgram;
 class Effect;
 class Camera;
+class CameraLens;
 class Texture;
 
 class GLTFParser : public AbstractSceneParser
@@ -88,7 +89,7 @@ public:
     Entity *defaultScene();
     MeshDataPtr mesh(QString id);
     Material *material(QString id);
-    Camera *camera(QString id);
+    CameraLens *camera(QString id);
 
 private:
     void parse();

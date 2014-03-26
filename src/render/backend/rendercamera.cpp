@@ -42,7 +42,8 @@
 #include "rendercamera.h"
 #include "rendereraspect.h"
 
-#include <camera.h>
+#include <transform.h>
+#include <cameralens.h>
 
 #include <entity.h>
 #include <qaspectmanager.h>
@@ -62,10 +63,10 @@ RenderCamera::RenderCamera(RendererAspect *rendererAspect)
     m_clearColor = QVector4D(0.5, 0.5, 1.0, 1.0);
 }
 
-void RenderCamera::setPeer(Camera *peer)
+void RenderCamera::setPeer(CameraLens *peer)
 {
     m_peer = peer;
-
+    \
     // Register for changes
     QChangeArbiter *arbiter = m_rendererAspect->aspectManager()->changeArbiter();
     arbiter->registerObserver(this, m_peer, MaterialParameter);
@@ -77,12 +78,29 @@ void RenderCamera::sync()
     // use the Entity's transformation (and later the Transform component).
     Entity* e = m_peer->parentNode()->asEntity();
 
+    if (e == Q_NULLPTR)
+        return ;
+
     // HACK - in absence of an update pass
     e->update();
 
-    // transform from world -> eye, so invert
-    // REPLACE WITH sceneMatrix
-    //    m_view = e->sceneMatrix().inverted();
+    // Need to travel back the entity tree to apply all transforms
+    QMatrix4x4 sceneMatrix;
+    QList<Transform*> entityTransforms = e->componentsOfType<Transform>();
+    if (!entityTransforms.isEmpty())
+        sceneMatrix = entityTransforms.first()->matrix();
+
+    Node *n = e;
+    while ((n = n->parentNode()) != Q_NULLPTR)
+        if (n->asEntity() &&
+                !(entityTransforms = n->asEntity()->componentsOfType<Transform>()).isEmpty())
+            sceneMatrix = entityTransforms.first()->matrix() * sceneMatrix;
+
+    m_view = sceneMatrix.inverted();
+
+            // transform from world -> eye, so invert
+            // REPLACE WITH sceneMatrix
+            //    m_view = e->sceneMatrix().inverted();
 }
 
 unsigned int RenderCamera::clearMask() const

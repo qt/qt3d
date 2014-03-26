@@ -50,7 +50,7 @@
 namespace Qt3D
 {
 
-class Camera;
+class CameraLens;
 class RendererAspect;
 
 namespace Render {
@@ -60,7 +60,7 @@ class RenderCamera : public QObserverInterface
 public:
     RenderCamera(RendererAspect *rendererAspect);
 
-    void setPeer(Camera *peer);
+    void setPeer(CameraLens *peer);
 
     // manually sync state with the peer, for the moment
     void sync();
@@ -80,7 +80,7 @@ public:
 
 private:
     RendererAspect *m_rendererAspect;
-    Camera *m_peer;
+    CameraLens *m_peer;
 
     // clip plane data
     // ? m_zNear, m_zFar;
