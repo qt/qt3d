@@ -56,11 +56,13 @@
 #include <techniquefilter.h>
 #include <renderpassfilter.h>
 #include <cameraselector.h>
+#include <rendertargetselector.h>
 
 #include <techniquefilternode.h>
 #include <cameraselectornode.h>
 #include <renderpassfilternode.h>
 #include <viewportnode.h>
+#include <rendertargetselectornode.h>
 
 
 namespace Qt3D {
@@ -122,25 +124,48 @@ Render::FrameGraphNode *RenderSceneBuilder::buildFrameGraph(Node *node)
 Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(Qt3D::FrameGraphItem *block)
 {
     if (qobject_cast<Qt3D::TechniqueFilter*>(block) != Q_NULLPTR) {
-        qDebug() << Q_FUNC_INFO << "TechniqueFilter";
+        Qt3D::TechniqueFilter* techniqueFilter = qobject_cast<Qt3D::TechniqueFilter*>(block);
         Render::TechniqueFilter *techniqueFilterNode = new Render::TechniqueFilter();
+
+        qDebug() << Q_FUNC_INFO << "TechniqueFilter";
+        foreach (Tag *tag, techniqueFilter->tags())
+            techniqueFilterNode->appendFilter(tag->name(), tag->value());
         return techniqueFilterNode;
     }
     else if (qobject_cast<Qt3D::Viewport*>(block) != Q_NULLPTR) {
-        qDebug() << Q_FUNC_INFO << "Viewport";
+        Qt3D::Viewport *viewport = qobject_cast<Qt3D::Viewport*>(block);
         Render::ViewportNode *viewportNode = new Render::ViewportNode();
+
+        qDebug() << Q_FUNC_INFO << "Viewport";
+        viewportNode->setXMin(viewport->rect().x());
+        viewportNode->setXMax(viewport->rect().x() + viewport->rect().width());
+        viewportNode->setYMin(viewport->rect().y());
+        viewportNode->setYMax(viewport->rect().y() + viewport->rect().height());
         return viewportNode;
     }
     else if (qobject_cast<Qt3D::RenderPassFilter*>(block) != Q_NULLPTR) {
-        qDebug() << Q_FUNC_INFO << "RenderPassFilter";
+        Qt3D::RenderPassFilter *renderPassFilter = qobject_cast<Qt3D::RenderPassFilter*>(block);
         Render::RenderPassFilter *renderPassFilterNode = new Render::RenderPassFilter();
+
+        qDebug() << Q_FUNC_INFO << "RenderPassFilter";
+        renderPassFilterNode->setFilter(renderPassFilter->renderPassName());
         return renderPassFilterNode;
     }
-    else if (qobject_cast<Qt3D::CameraSelector*>(block) != Q_NULLPTR)
-    {
-        qDebug() << Q_FUNC_INFO << "CameraSelector";
+    else if (qobject_cast<Qt3D::CameraSelector*>(block) != Q_NULLPTR) {
+        Qt3D::CameraSelector *cameraSelector = qobject_cast<Qt3D::CameraSelector*>(block);
         Render::CameraSelector *cameraSelectorNode = new Render::CameraSelector();
+
+        qDebug() << Q_FUNC_INFO << "CameraSelector";
+        cameraSelectorNode->setCamera(cameraSelector->camera());
         return cameraSelectorNode;
+    }
+    else if (qobject_cast<Qt3D::RenderTargetSelector*>(block) != Q_NULLPTR) {
+        Qt3D::RenderTargetSelector *renderTargetSelector = qobject_cast<Qt3D::RenderTargetSelector*>(block);
+        Render::RenderTargetSelector *renderTargetSelectorNode = new Render::RenderTargetSelector();
+
+        // TO DO
+        qDebug() << Q_FUNC_INFO << "RenderTargetSelector";
+        return renderTargetSelectorNode;
     }
     return Q_NULLPTR;
 }

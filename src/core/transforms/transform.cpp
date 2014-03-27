@@ -118,7 +118,6 @@ QMatrix4x4 Transform::applyTransforms() const
     return m;
 }
 
-
 void Transform::qmlAppendTransform(QQmlListProperty<AbstractTransform> *list, AbstractTransform *obj  )
 {
     if ( !obj )

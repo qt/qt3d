@@ -39,22 +39,13 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_FRAMEGRAPHNODE_H
-#define QT3D_FRAMEGRAPHNODE_H
-
-#include <qt3drenderer_global.h>
-#include <node.h>
+#include "rendertargetselector.h"
 
 namespace Qt3D {
 
-class QT3DRENDERERSHARED_EXPORT FrameGraphNode : public Node
+RenderTargetSelector::RenderTargetSelector(Qt3D::Node *parent) :
+    FrameGraphItem(parent)
 {
-    Q_OBJECT
-public:
-    explicit FrameGraphNode(Node *parent = 0);
-    virtual ~FrameGraphNode();
-};
+}
 
 } // Qt3D
-
-#endif // QT3D_FRAMEGRAPHNODE_H

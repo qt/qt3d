@@ -55,6 +55,43 @@ ViewportNode::ViewportNode(Render::FrameGraphNode *parent)
 {
 }
 
+float ViewportNode::xMin() const
+{
+    return m_xMin;
+}
+
+void ViewportNode::setXMin(float xMin)
+{
+    m_xMin = xMin;
+}
+float ViewportNode::yMin() const
+{
+    return m_yMin;
+}
+
+void ViewportNode::setYMin(float yMin)
+{
+    m_yMin = yMin;
+}
+float ViewportNode::xMax() const
+{
+    return m_xMax;
+}
+
+void ViewportNode::setXMax(float xMax)
+{
+    m_xMax = xMax;
+}
+float ViewportNode::yMax() const
+{
+    return m_yMax;
+}
+
+void ViewportNode::setYMax(float yMax)
+{
+    m_yMax = yMax;
+}
+
 void ViewportNode::apply()
 {
     qDebug() << Q_FUNC_INFO;

@@ -50,6 +50,28 @@ TechniqueFilter::TechniqueFilter(Qt3D::Render::FrameGraphNode *parent)
     : Qt3D::Render::FrameGraphNode(parent)
 {
 }
+QHash<QString, QVariant> TechniqueFilter::filters() const
+{
+    return m_filters;
+}
+
+void TechniqueFilter::appendFilter(const QString &name, const QVariant &filter)
+{
+    m_filters[name] = filter;
+}
+
+void TechniqueFilter::removeFilter(const QString &name)
+{
+    m_filters.remove(name);
+}
+
+QVariant TechniqueFilter::filter(const QString &name) const
+{
+    if (m_filters.contains(name))
+        return m_filters[name];
+    return QVariant();
+}
+
 
 void TechniqueFilter::apply()
 {

@@ -51,6 +51,16 @@ RenderPassFilter::RenderPassFilter(Render::FrameGraphNode *parent)
 {
 }
 
+QString RenderPassFilter::filter() const
+{
+    return m_filter;
+}
+
+void RenderPassFilter::setFilter(const QString &filter)
+{
+    m_filter = filter;
+}
+
 void RenderPassFilter::apply()
 {
     qDebug() << Q_FUNC_INFO;

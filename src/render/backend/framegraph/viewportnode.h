@@ -55,7 +55,19 @@ public:
     void apply() Q_DECL_OVERRIDE;
     void revert() Q_DECL_OVERRIDE;
 
-//private:
+    float xMin() const;
+    void setXMin(float xMin);
+
+    float yMin() const;
+    void setYMin(float yMin);
+
+    float xMax() const;
+    void setXMax(float xMax);
+
+    float yMax() const;
+    void setYMax(float yMax);
+
+private:
     float m_xMin;
     float m_yMin;
     float m_xMax;

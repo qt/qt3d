@@ -70,6 +70,7 @@
 #include "cameraselector.h"
 #include "renderpassfilter.h"
 #include "techniquefilter.h"
+#include "rendertargetselector.h"
 #include "shape.h"
 #include "texture.h"
 #include "framegraph.h"
@@ -172,6 +173,7 @@ void RendererAspect::registerQmlComponents()
     qmlRegisterType<Qt3D::TechniqueFilter>("Qt3D.Render", 2, 0, "TechniqueFilter");
     qmlRegisterType<Qt3D::Viewport>("Qt3D.Render", 2, 0, "Viewport");
     qmlRegisterType<Qt3D::FrameGraphItem>("Qt3D.Render", 2, 0, "FrameGraphNode");
+    qmlRegisterType<Qt3D::RenderTargetSelector>("Qt3D.Render", 2, 0, "RenderTargetSelector");
     qmlRegisterType<Qt3D::FrameGraph>("Qt3D.Render", 2, 0, "FrameGraph");
 }
 

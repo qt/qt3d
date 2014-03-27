@@ -39,26 +39,29 @@
 **
 ****************************************************************************/
 
-#include "frontend/framegraphnode.h"
+#include "rendertargetselectornode.h"
 
-/*!
- * \class FrameGraphNode
- *
- * \brief Base class of all FrameGraph configuration nodes.
- *
- * \since 5.3
- * \namespace Qt3D
- */
+#include <QDebug>
 
 namespace Qt3D {
 
-FrameGraphNode::FrameGraphNode(Node *parent) :
-    Node(parent)
+namespace Render {
+
+RenderTargetSelector::RenderTargetSelector(FrameGraphNode *parent) :
+    FrameGraphNode(parent)
 {
 }
 
-FrameGraphNode::~FrameGraphNode()
+void RenderTargetSelector::apply()
 {
+    qDebug() << Q_FUNC_INFO;
 }
+
+void RenderTargetSelector::revert()
+{
+    qDebug() << Q_FUNC_INFO;
+}
+
+} // Render
 
 } // Qt3D

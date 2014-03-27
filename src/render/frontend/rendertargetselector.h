@@ -39,37 +39,27 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_FRAMEGRAPH_H
-#define QT3D_FRAMEGRAPH_H
+#ifndef QT3D_RENDERTARGETSELECTOR_H
+#define QT3D_RENDERTARGETSELECTOR_H
 
-#include <qt3dcore_global.h>
-#include <component.h>
+#include <qt3drenderer_global.h>
+#include <framegraphitem.h>
 
 namespace Qt3D {
 
-class FrameGraphNode;
-
-class QT3DCORESHARED_EXPORT FrameGraph : public Qt3D::Component
+class QT3DRENDERERSHARED_EXPORT RenderTargetSelector : public FrameGraphItem
 {
     Q_OBJECT
-    // Note : The full namespace has to be used to define the property
-    // otherwise this results in an error "cannot assign object to property"
-    Q_PROPERTY(Qt3D::FrameGraphNode *activeFrameGraph READ activeFrameGraph WRITE setActiveFrameGraph NOTIFY activeFrameGraphChanged)
-    Q_CLASSINFO("DefaultProperty", "activeFrameGraph")
+//    Q_PROPERTY(Qt3D::RenderTarget *)
 
 public:
-    explicit FrameGraph(Node *parent = 0);
-
-    FrameGraphNode *activeFrameGraph() const;
-    void setActiveFrameGraph(FrameGraphNode *activeFrameGraph);
-
-private:
-    FrameGraphNode *m_activeFrameGraph;
+    explicit RenderTargetSelector(Node *parent = 0);
 
 signals:
-    void activeFrameGraphChanged();
+
+private:
 };
 
-} //Qt3D
+} // Qt3D
 
-#endif // QT3D_FRAMEGRAPH_H
+#endif // QT3D_RENDERTARGETSELECTOR_H

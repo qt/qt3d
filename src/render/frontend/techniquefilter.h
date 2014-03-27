@@ -54,12 +54,15 @@ namespace Qt3D {
 class QT3DRENDERERSHARED_EXPORT TechniqueFilter : public FrameGraphItem
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3D::Tag> tags READ tags NOTIFY tagsChanged)
+
+    Q_PROPERTY(QQmlListProperty<Qt3D::Tag> tags READ tagList)
 
 public:
     explicit TechniqueFilter(Node *parent = 0);
 
-    QQmlListProperty<Qt3D::Tag> tags();
+    QQmlListProperty<Qt3D::Tag> tagList();
+    QList<Tag *> tags() const;
+
 
 signals:
     void tagsChanged();

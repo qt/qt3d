@@ -51,6 +51,16 @@ CameraSelector::CameraSelector(Render::FrameGraphNode *parent)
 {
 }
 
+Entity *CameraSelector::camera() const
+{
+    return m_camera;
+}
+
+void CameraSelector::setCamera(Entity *camera)
+{
+    m_camera = camera;
+}
+
 void CameraSelector::apply()
 {
     qDebug() << Q_FUNC_INFO;

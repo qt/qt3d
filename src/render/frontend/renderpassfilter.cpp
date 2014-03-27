@@ -48,17 +48,17 @@ RenderPassFilter::RenderPassFilter(Node *parent)
 {
 }
 
-void RenderPassFilter::setRenderPassNames(const QString &renderpassNames)
+void RenderPassFilter::setRenderPassName(const QString &renderpassName)
 {
-    if (m_renderPassNames != renderpassNames) {
-        m_renderPassNames = renderpassNames;
-        emit renderPassNamesChanged();
+    if (m_renderPassName != renderpassName) {
+        m_renderPassName = renderpassName;
+        emit renderPassNameChanged();
     }
 }
 
-QString RenderPassFilter::renderPassNames() const
+QString RenderPassFilter::renderPassName() const
 {
-    return m_renderPassNames;
+    return m_renderPassName;
 }
 
 } // Qt3D

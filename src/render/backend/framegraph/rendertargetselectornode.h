@@ -39,48 +39,31 @@
 **
 ****************************************************************************/
 
-#include "framegraph.h"
-#include "entity.h"
+#ifndef QT3D_RENDER_RENDERTARGETSELECTOR_H
+#define QT3D_RENDER_RENDERTARGETSELECTOR_H
+
+#include "framegraphnode.h"
 
 namespace Qt3D {
 
-/*!
- * \class FrameGraph
- *
- * \brief Component that has an activeFrameGraph property that should
- * reference a FrameGraphNode. Then Entity that contains a FrameGraph property
- * defines the rendering method to be used by the renderer.
- *
- * Note that only a single FrameGraph can be active at any moment.
- *
- * \since 5.3
- * \namespace Qt3D
- */
+namespace Render {
 
-FrameGraph::FrameGraph(Node *parent) :
-    Qt3D::Component(parent),
-    m_activeFrameGraph(Q_NULLPTR)
-{
-}
 
-/*!
- * Returns the current activeFrameGraph root node.
- */
-FrameGraphNode* FrameGraph::activeFrameGraph() const
+class RenderTargetSelector : public FrameGraphNode
 {
-    return m_activeFrameGraph;
-}
+public:
+    RenderTargetSelector(FrameGraphNode *parent = 0);
 
-/*!
- * Sets the root node \a activeFrameGraph of the FrameGraph.
- */
-void FrameGraph::setActiveFrameGraph(FrameGraphNode *activeFrameGraph)
-{
-    if (activeFrameGraph != m_activeFrameGraph) {
-        m_activeFrameGraph = activeFrameGraph;
-        qDebug() << Q_FUNC_INFO << m_activeFrameGraph;
-        emit activeFrameGraphChanged();
-    }
-}
+    void apply();
+    void revert();
+
+private:
+
+};
+
+} // Render
 
 } // Qt3D
+
+
+#endif // QT3D_RENDER_RENDERTARGETSELECTOR_H

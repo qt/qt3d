@@ -57,8 +57,11 @@ public:
     void apply() Q_DECL_OVERRIDE;
     void revert() Q_DECL_OVERRIDE;
 
-//private:
-    QStringList m_filters;
+    QString filter() const;
+    void setFilter(const QString &filter);
+
+private:
+    QString m_filter;
 };
 
 }

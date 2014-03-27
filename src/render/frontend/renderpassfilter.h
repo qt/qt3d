@@ -53,19 +53,19 @@ class QT3DRENDERERSHARED_EXPORT RenderPassFilter : public FrameGraphItem
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString renderPassNames READ renderPassNames WRITE setRenderPassNames NOTIFY renderPassNamesChanged)
+    Q_PROPERTY(QString renderPassName READ renderPassName WRITE setRenderPassName NOTIFY renderPassNameChanged)
 
 public:
     explicit RenderPassFilter(Node *parent = 0);
 
-    void setRenderPassNames(const QString &renderpassNames);
-    QString renderPassNames() const;
+    void setRenderPassName(const QString &renderpassName);
+    QString renderPassName() const;
 
 signals:
-    void renderPassNamesChanged();
+    void renderPassNameChanged();
 
 private:
-    QString m_renderPassNames;
+    QString m_renderPassName;
 
 };
 

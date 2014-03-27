@@ -49,6 +49,7 @@
 #include <QVariant>
 
 namespace Qt3D {
+
 namespace Render {
 
 class TechniqueFilter : public Render::FrameGraphNode
@@ -59,11 +60,17 @@ public:
     void apply() Q_DECL_OVERRIDE;
     void revert() Q_DECL_OVERRIDE;
 
-//private:
+    QHash<QString, QVariant> filters() const;
+    void appendFilter(const QString &name, const QVariant &filter);
+    void removeFilter(const QString &name);
+    QVariant filter(const QString &name) const;
+
+private:
     QHash<QString, QVariant> m_filters;
 };
 
-}
-}
+} // Render
+
+} // Qt3D
 
 #endif // QT3D_RENDER_TECHNIQUEFILTER_H

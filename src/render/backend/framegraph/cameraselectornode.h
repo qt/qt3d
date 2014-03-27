@@ -58,11 +58,15 @@ public:
     void apply() Q_DECL_OVERRIDE;
     void revert() Q_DECL_OVERRIDE;
 
-//private:
+    Entity *camera() const;
+    void setCamera(Entity *camera);
+
+private:
     Entity *m_camera;
 };
 
-}
-}
+} // Render
+
+} // Qt3D
 
 #endif // QT3D_RENDER_CAMERASELECTOR_H

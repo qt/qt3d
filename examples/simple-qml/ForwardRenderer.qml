@@ -70,8 +70,8 @@ TechniqueFilter {
             id: cameraSelector
             objectName : "cameraSelector"
 
-            RenderPassFilter { renderPassNames: "zFill" }
-            RenderPassFilter { renderPassNames: "lighting" }
+            RenderPassFilter { renderPassName: "zFill" }
+            RenderPassFilter { renderPassName: "lighting" }
         }
     }
 }

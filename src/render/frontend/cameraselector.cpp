@@ -49,7 +49,7 @@ CameraSelector::CameraSelector(Node *parent)
 {
 }
 
-void CameraSelector::setCamera(Qt3D::Camera *camera)
+void CameraSelector::setCamera(Qt3D::Entity *camera)
 {
     if (m_camera != camera) {
         m_camera = camera;
@@ -57,7 +57,7 @@ void CameraSelector::setCamera(Qt3D::Camera *camera)
     }
 }
 
-Camera *CameraSelector::camera() const
+Entity *CameraSelector::camera() const
 {
     return m_camera;
 }

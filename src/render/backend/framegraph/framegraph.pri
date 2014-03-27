@@ -4,7 +4,8 @@ HEADERS += \
     $$PWD/framegraphvisitor.h \
     $$PWD/renderpassfilternode.h \
     $$PWD/techniquefilternode.h \
-    $$PWD/viewportnode.h
+    $$PWD/viewportnode.h \
+    $$PWD/rendertargetselectornode.h
 
 SOURCES += \
     $$PWD/cameraselectornode.cpp \
@@ -12,4 +13,5 @@ SOURCES += \
     $$PWD/framegraphvisitor.cpp \
     $$PWD/renderpassfilternode.cpp \
     $$PWD/techniquefilternode.cpp \
-    $$PWD/viewportnode.cpp
+    $$PWD/viewportnode.cpp \
+    $$PWD/rendertargetselectornode.cpp

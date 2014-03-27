@@ -309,15 +309,15 @@ void Renderer::setSceneGraphRoot(Node *sgRoot)
         Render::FrameGraphNode *fgRoot = new Render::FrameGraphNode;
 
         TechniqueFilter *forwardTechnique = new TechniqueFilter(fgRoot);
-        forwardTechnique->m_filters.insert(QStringLiteral("style"), QStringLiteral("forward"));
+        forwardTechnique->appendFilter(QStringLiteral("style"), QStringLiteral("forward"));
 
         ViewportNode *viewport = new ViewportNode(forwardTechnique);
 
         CameraSelector *cam1 = new CameraSelector(viewport);
-        cam1->m_camera = m_camera;
+        cam1->setCamera(m_camera);
 
         RenderPassFilter *lightingPass = new RenderPassFilter(cam1);
-        lightingPass->m_filters.append(QStringLiteral("lighting"));
+        lightingPass->setFilter(QStringLiteral("lighting"));
 
         setFrameGraphRoot(fgRoot);
 

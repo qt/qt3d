@@ -18,7 +18,8 @@ HEADERS += \
     $$PWD/sphere.h \
     $$PWD/scene.h \
     $$PWD/framegraph.h \
-    $$PWD/framegraphitem.h
+    $$PWD/framegraphitem.h \
+    $$PWD/rendertargetselector.h
 
 SOURCES += \
     $$PWD/effect.cpp \
@@ -37,4 +38,5 @@ SOURCES += \
     $$PWD/sphere.cpp \
     $$PWD/scene.cpp \
     $$PWD/framegraph.cpp \
-    $$PWD/framegraphitem.cpp
+    $$PWD/framegraphitem.cpp \
+    $$PWD/rendertargetselector.cpp

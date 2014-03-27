@@ -48,7 +48,12 @@ TechniqueFilter::TechniqueFilter(Node *parent)
 {
 }
 
-QQmlListProperty<Qt3D::Tag> TechniqueFilter::tags()
+QList<Tag *> TechniqueFilter::tags() const
+{
+    return m_tagList;
+}
+
+QQmlListProperty<Qt3D::Tag> TechniqueFilter::tagList()
 {
     return QQmlListProperty<Qt3D::Tag>(this, 0,
                                        &TechniqueFilter::appendTag,
