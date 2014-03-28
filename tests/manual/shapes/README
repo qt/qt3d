@@ -1,6 +1,0 @@
-This is a basic manual test for the shapes classes in QML.
-It needs to be extended greatly to deal with level-of-detail, and the
-other properties which can be changed, such as radius and length,
-also checking on the animations of these, and creation of larger
-numbers of shapes.  This last item is to confirm that only one copy
-of the geometry is created in this case.

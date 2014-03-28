@@ -1,6 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>latte.png</file>
-        <file>cupTexture.png</file>
-    </qresource>
-</RCC>

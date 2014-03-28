@@ -1,5 +1,0 @@
-The *.odf files here are OpenOffice formula files.
-
-To edit the formulas shown here as png's, open the corresponding odf file
-with OpenOffices formula editor, edit, save, then export as PDF.  The
-PDF can be opened with gimp to create a PNG.

@@ -1,6 +1,0 @@
-<RCC>
-    <qresource prefix="/qml">
-        <file alias="tst_qrc.qml">qml/tst_qrc.qml</file>
-        <file alias="qtlogo.png">qml/qtlogo.png</file>
-    </qresource>
-</RCC>

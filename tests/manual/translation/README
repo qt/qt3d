@@ -1,1 +1,0 @@
-The "One teapot" test is ensuring that the two different ways of specifying position (x,y,z vs position) both have the same result.  Two teapots are being rendered.  To pass, the two teapots should be rendered in exactly the same position, so it looks like only one teapot. This test fails if the teapots are not aligned - e.g. there are two spouts, or the teapot is distorted.

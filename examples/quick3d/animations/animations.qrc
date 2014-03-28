@@ -1,7 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>qml/cube_rotated.dae</file>
-        <file>qml/animations.qml</file>
-        <file>qml/stonewal.jpg</file>
-    </qresource>
-</RCC>

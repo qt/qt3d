@@ -1,8 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>qml/basket.jpg</file>
-        <file>qml/Basket.qml</file>
-        <file>qml/desktop.qml</file>
-        <file>qml/meshes/basket.bez</file>
-    </qresource>
-</RCC>

@@ -1,8 +1,0 @@
-This tests navigation, specifically zooming and rotating the object using the default
-navigation configuration for QML applications.
-
-The first panel shows a 3D monkey head, and uses positional zooming: zooming in will
-move the camera physically closer to the object until it is clipped by the near plane.
-
-The second panel show a 3D monkey head, and uses field of view zooming: zooming is
-based on adjusting the field of view: zooming in will not clip the object.

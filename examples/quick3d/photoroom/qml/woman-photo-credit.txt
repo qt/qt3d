@@ -1,5 +1,0 @@
-http://www.flickr.com/photos/fromthefrontend/
-
-Attribution:
-
-<div xmlns:cc="http://creativecommons.org/ns#" about="http://www.flickr.com/photos/fromthefrontend/4527587863/"><a rel="cc:attributionURL" href="http://www.flickr.com/photos/fromthefrontend/">http://www.flickr.com/photos/fromthefrontend/</a> / <a rel="license" href="http://creativecommons.org/licenses/by/2.0/">CC BY 2.0</a></div>

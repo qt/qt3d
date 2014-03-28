@@ -1,3 +1,0 @@
-module Qt3D
-plugin qthreedqmlplugin
-typeinfo plugins.qmltypes

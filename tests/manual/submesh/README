@@ -1,9 +1,0 @@
-
-This test renders a lander model and submeshes to validate functionality.
-A radar dish submesh is stripped off, and duplicated three times.
-One instance rotates near the original position on the lander.  
-If the submesh is not successfully removed from the model, there will be a second
-stationary dish underneath/near this rotating dish.
-A second model moves left and right, and should appear close to the right of lander.
-The third dish is testing scaling.  Because of the way the scaling works, it may also appear to 
-be moving left and right, and this is acceptable.

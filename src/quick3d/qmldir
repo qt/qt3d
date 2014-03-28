@@ -1,7 +1,0 @@
-module Qt3D.Shapes
-Cube 2.0 Cube.qml
-Teapot 2.0 Teapot.qml
-Quad 2.0 Quad.qml
-Sphere 2.0 Sphere.qml
-Capsule 2.0 Capsule.qml
-Cylinder 2.0 Cylinder.qml
