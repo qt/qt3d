@@ -39,13 +39,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_DRAWSTATE_H
-#define QT3D_DRAWSTATE_H
+#ifndef QT3D_RENDER_DRAWSTATE_H
+#define QT3D_RENDER_DRAWSTATE_H
 
 #include <QList>
 #include <QSet>
 
 namespace Qt3D {
+
+namespace Render {
 
 class QGraphicsContext;
 
@@ -116,6 +118,8 @@ private:
     QList<DrawState*> m_cachedDeltaStates;
 };
 
+} // Render
+
 } // namespace Qt3D
 
-#endif // QT3D_DRAWSTATE_H
+#endif // QT3D_RENDER_DRAWSTATE_H

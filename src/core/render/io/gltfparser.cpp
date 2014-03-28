@@ -795,10 +795,10 @@ void GLTFParser::processJSONTechnique( QString id, QJsonObject jsonObj )
         } // of program-instance attributes
 
         QJsonObject states = po.value(KEY_STATES).toObject();
-        DrawStateSet* ss = new DrawStateSet;
+        Render::DrawStateSet* ss = new Render::DrawStateSet;
 
         Q_FOREACH (QString stateName, states.keys()) {
-            DrawState* s= buildState(stateName.toUtf8(), states.value(stateName));
+            Render::DrawState* s= buildState(stateName.toUtf8(), states.value(stateName));
             if (!s)
                 continue;
 
@@ -812,7 +812,7 @@ void GLTFParser::processJSONTechnique( QString id, QJsonObject jsonObj )
     m_techniques[id] = t;
 }
 
-DrawState* GLTFParser::buildState(const QByteArray& nm, QJsonValue v)
+Render::DrawState* GLTFParser::buildState(const QByteArray& nm, QJsonValue v)
 {
     if (nm == "blendEnable") {
         return NULL; // will see a blendEquation spec too
@@ -822,23 +822,23 @@ DrawState* GLTFParser::buildState(const QByteArray& nm, QJsonValue v)
         QJsonObject obj =  v.toObject();
         GLenum srcF = static_cast<GLenum>(obj.value(QStringLiteral("sfactor")).toInt());
         GLenum dstF = static_cast<GLenum>(obj.value(QStringLiteral("dfactor")).toInt());
-        return BlendState::getOrCreate(srcF, dstF);
+        return Render::BlendState::getOrCreate(srcF, dstF);
     }
 
     if (nm == "blendEquation") {
-        return BlendEquation::getOrCreate(static_cast<GLenum>(v.toInt()));
+        return Render::BlendEquation::getOrCreate(static_cast<GLenum>(v.toInt()));
     }
 
     if (nm == "cullFaceEnable" && v.toInt()) {
-        return CullFace::getOrCreate(GL_BACK);
+        return Render::CullFace::getOrCreate(GL_BACK);
     }
 
     if (nm == "depthTestEnable" && v.toInt()) {
-        return DepthTest::getOrCreate(GL_LESS);
+        return Render::DepthTest::getOrCreate(GL_LESS);
     }
 
     if (nm == "depthMask") {
-        return DepthMask::getOrCreate(v.toInt() ? GL_TRUE : GL_FALSE);
+        return Render::DepthMask::getOrCreate(v.toInt() ? GL_TRUE : GL_FALSE);
     }
 
     qWarning() << Q_FUNC_INFO << "unsupported gltf state:" << nm;

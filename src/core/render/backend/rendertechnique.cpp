@@ -50,6 +50,9 @@
 namespace Qt3D
 {
 
+namespace Render
+{
+
 RenderTechnique::RenderTechnique(Technique* peer) :
     m_peer(peer)
 {
@@ -152,5 +155,7 @@ QStringList RenderTechnique::glslNamesForUniformParameter(QString pName) const
 
     return result;
 }
+
+} // Render
 
 } // of namespace Qt3D

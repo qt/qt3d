@@ -47,6 +47,9 @@
 namespace Qt3D
 {
 
+namespace Render
+{
+
 QGraphicsHelperGL2::QGraphicsHelperGL2() :
     m_funcs(0)
 {
@@ -123,6 +126,8 @@ void QGraphicsHelperGL2::blendEquation(GLenum mode)
 {
     m_funcs->glBlendEquation(mode);
 }
+
+} // Render
 
 } // Qt3D
 

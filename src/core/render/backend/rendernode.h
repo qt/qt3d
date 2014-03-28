@@ -43,7 +43,6 @@
 #define QT3D_RENDER_RENDERNODE_H
 
 #include <qchangearbiter.h>
-
 #include <QVector>
 
 class QMatrix4x4;
@@ -85,6 +84,7 @@ public:
 };
 
 } // namespace Render
+
 } // namespace Qt3D
 
 #endif // QT3D_RENDER_RENDERNODE_H

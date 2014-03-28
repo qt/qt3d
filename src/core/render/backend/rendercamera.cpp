@@ -52,6 +52,9 @@
 namespace Qt3D
 {
 
+namespace Render
+{
+
 RenderCamera::RenderCamera(RendererAspect *rendererAspect)
     : m_rendererAspect(rendererAspect)
     , m_peer(0)
@@ -117,5 +120,7 @@ void RenderCamera::sceneChangeEvent(const QSceneChangePtr &e)
     }
 }
 
-} // of namespace
+} // Render
+
+} // Qt3D of namespace
 

@@ -53,8 +53,10 @@
 
 namespace Qt3D {
 
-RenderMesh::RenderMesh(Mesh* peer)
-    : Drawable(  ),
+namespace Render {
+
+RenderMesh::RenderMesh(Mesh *peer)
+    : Drawable(),
       m_peer(peer),
       m_technique(0),
       m_pass(0),
@@ -323,4 +325,6 @@ void RenderMesh::setMeshData( DrawContext& dc )
 }
 #endif
 
-}
+} // Render
+
+} // Qt3D

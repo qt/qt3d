@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef RENDERTECHNIQUE_H
-#define RENDERTECHNIQUE_H
+#ifndef QT3D_RENDER_RENDERTECHNIQUE_H
+#define QT3D_RENDER_RENDERTECHNIQUE_H
 
 #include <QVector>
 #include <QStringList>
@@ -49,10 +49,14 @@ namespace Qt3D
 {
 
 class Technique;
-class RenderShader;
-class RenderBin;
 class Parameter;
+
+namespace Render
+{
+
+class RenderBin;
 class DrawStateSet;
+class RenderShader;
 
 class RenderTechnique
 {
@@ -89,6 +93,9 @@ private:
 
 };
 
+} // Render
+
 } // of namespace Qgt3D
 
-#endif // RENDERTECHNIQUE_H
+
+#endif // QT3D_RENDER_RENDERTECHNIQUE_H

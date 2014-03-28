@@ -64,8 +64,9 @@
 #include <QSurface>
 #include <QOpenGLTexture>
 
-namespace Qt3D
-{
+namespace Qt3D {
+
+namespace Render {
 
 static QHash<unsigned int, QGraphicsContext*> static_contexts;
 
@@ -573,5 +574,7 @@ QOpenGLBuffer QGraphicsContext::glBufferFor(BufferPtr buf)
     return glbuf;
 }
 
-} // of namespace
+} // Render
+
+} // Qt3D of namespace
 

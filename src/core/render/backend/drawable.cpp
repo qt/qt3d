@@ -43,6 +43,8 @@
 
 namespace Qt3D {
 
+namespace Render {
+
 Drawable::Drawable()
 {
 
@@ -75,5 +77,7 @@ RenderNode *Drawable::node() const
 }
 #endif
 
-} // of namespace
+} // Render
+
+} // Qt3D of namespace
 

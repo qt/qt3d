@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef STATE_IMPLS_H
-#define STATE_IMPLS_H
+#ifndef QT3D_RENDER_STATE_IMPLS_H
+#define QT3D_RENDER_STATE_IMPLS_H
 
 #include <QList>
 
@@ -53,6 +53,8 @@
 
 namespace Qt3D
 {
+
+namespace Render {
 
 template <typename Derived, typename T>
 class GenericState1 : public DrawState
@@ -109,6 +111,8 @@ protected:
 
 };
 
-} // of namespace
+} // Render
+
+} // Qt3D of namespace
 
 #endif // STATE_IMPLS_H

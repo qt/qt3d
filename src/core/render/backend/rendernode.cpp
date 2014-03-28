@@ -53,6 +53,7 @@
 #include <QDebug>
 
 namespace Qt3D {
+
 namespace Render {
 
 // TODO: Create custom allocators for each of the matrices and
@@ -105,4 +106,5 @@ void RenderNode::dump() const
 }
 
 } // namespace Render
+
 } // namespace Qt3D

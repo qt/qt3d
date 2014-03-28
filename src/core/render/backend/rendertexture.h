@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDERTEXTURE_H
-#define QT3D_RENDERTEXTURE_H
+#ifndef QT3D_RENDER_RENDERTEXTURE_H
+#define QT3D_RENDER_RENDERTEXTURE_H
 
 #include <QOpenGLContext>
 
@@ -50,6 +50,8 @@
 class QOpenGLTexture;
 
 namespace Qt3D {
+
+namespace Render {
 
 class RenderTexture
 {
@@ -67,6 +69,8 @@ private:
     void setToGLTexture(TexImageDataPtr imgData);
 };
 
+} // Render
+
 } // namespace Qt3D
 
-#endif // QT3D_RENDERTEXTURE_H
+#endif // QT3D_RENDER_RENDERTEXTURE_H

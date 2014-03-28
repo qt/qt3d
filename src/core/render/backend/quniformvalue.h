@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QUNIFORMVALUE_H
-#define QUNIFORMVALUE_H
+#ifndef QT3D_RENDER_QUNIFORMVALUE_H
+#define QT3D_RENDER_QUNIFORMVALUE_H
 
 #include <QVariant>
 #include <QByteArray>
@@ -51,10 +51,10 @@
 
 namespace Qt3D {
 
-class QGraphicsContext;
 
 namespace Render {
 
+class QGraphicsContext;
 /**
  * @brief The QUniformValue class - immutable storage of uniform value
  * in the rendering backend.
@@ -139,4 +139,4 @@ private:
 
 }} // of namespace Qt3D::Render
 
-#endif // QUNIFORMVALUE_H
+#endif // QT3D_RENDER_QUNIFORMVALUE_H

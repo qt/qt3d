@@ -56,6 +56,9 @@
 namespace Qt3D
 {
 
+namespace Render
+{
+
 RenderMaterial::RenderMaterial(RendererAspect *rendererAspect)
     : m_rendererAspect(rendererAspect)
     , m_textureProvider(NULL)
@@ -199,6 +202,8 @@ void RenderMaterial::sceneChangeEvent(const QSceneChangePtr &e)
         break;
     }
 }
+
+} // Render
 
 } // of namespace Qt3D
 

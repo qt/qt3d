@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDERTEXTUREPROVIDER_H
-#define QT3D_RENDERTEXTUREPROVIDER_H
+#ifndef QT3D_RENDER_RENDERTEXTUREPROVIDER_H
+#define QT3D_RENDER_RENDERTEXTUREPROVIDER_H
 
 #include <QSharedPointer>
 #include <QHash>
@@ -49,19 +49,23 @@ namespace Qt3D {
 
 class Texture;
 
+namespace Render {
 class RenderTexture;
 typedef QSharedPointer<RenderTexture> RenderTexturePtr;
+
 
 class RenderTextureProvider
 {
 public:
     RenderTextureProvider();
 
-    RenderTexturePtr get(Texture* t);
+    Render::RenderTexturePtr get(Texture* t);
 private:
-    QHash<Texture*, RenderTexturePtr> m_dict;
+    QHash<Texture*, Render::RenderTexturePtr> m_dict;
 };
+
+} // Render
 
 } // namespace Qt3D
 
-#endif // QT3D_RENDERTEXTUREPROVIDER_H
+#endif // QT3D_RENDER_RENDERTEXTUREPROVIDER_H

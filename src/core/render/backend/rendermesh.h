@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef RENDERMESH_H
-#define RENDERMESH_H
+#ifndef QT3D_RENDER_RENDERMESH_H
+#define QT3D_RENDER_RENDERMESH_H
 
 #include "drawable.h"
 
@@ -53,17 +53,18 @@
 namespace Qt3D {
 
 class Mesh;
-class RenderNode;
 class RenderPass;
+
+namespace Render {
+
+class RenderNode;
 class RenderMaterial;
 class RenderTechnique;
 
 class RenderMesh : public Drawable
 {
 public:
-    explicit RenderMesh(Mesh* peer);
-
-    void setPeer(Mesh* peer);
+    explicit RenderMesh(Mesh *peer);
 
     void setData(MeshDataPtr mesh);
 
@@ -96,12 +97,8 @@ protected:
     virtual AxisAlignedBoundingBox boundingBox() const;
 
 private:
-
-
     Mesh* m_peer;
-
     MeshDataPtr m_meshData;
-
     RenderTechnique* m_technique;
     unsigned int m_pass;
 
@@ -116,6 +113,8 @@ private:
     QMatrix4x4 m_modelMatrix;
 };
 
-}
+} // Render
 
-#endif // RENDERMESH_H
+} // Qt3D
+
+#endif // QT3D_RENDER_RENDERMESH_H

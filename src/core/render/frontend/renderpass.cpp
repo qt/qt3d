@@ -107,12 +107,12 @@ ParameterList RenderPass::uniforms() const
     return m_uniforms;
 }
 
-void RenderPass::setStateSet(DrawStateSet *ss)
+void RenderPass::setStateSet(Render::DrawStateSet *ss)
 {
     m_stateSet = ss;
 }
 
-DrawStateSet *RenderPass::stateSet() const
+Render::DrawStateSet *RenderPass::stateSet() const
 {
     return m_stateSet;
 }

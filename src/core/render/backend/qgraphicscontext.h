@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QGRAPHICSCONTEXT_H
-#define QGRAPHICSCONTEXT_H
+#ifndef QT3D_RENDER_QGRAPHICSCONTEXT_H
+#define QT3D_RENDER_QGRAPHICSCONTEXT_H
 
 #include <QOpenGLContext>
 #include <QOpenGLBuffer>
@@ -58,12 +58,15 @@ class QAbstractOpenGLFunctions;
 namespace Qt3D
 {
 
+
+namespace Render {
+
+class QGraphicsHelperInterface;
+class DrawStateSet;
 class RenderShader;
 class RenderCamera;
 class RenderMaterial;
 class RenderTexture;
-class DrawStateSet;
-class QGraphicsHelperInterface;
 
 enum TextureScope
 {
@@ -182,6 +185,8 @@ private:
     DrawStateSet* m_stateSet;
 };
 
-}
+} // Render
 
-#endif // QGRAPHICSCONTEXT_H
+} // Qt3D
+
+#endif // QT3D_RENDER_QGRAPHICSCONTEXT_H

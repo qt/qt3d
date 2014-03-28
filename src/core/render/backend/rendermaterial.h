@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef RENDERMATERIAL_H
-#define RENDERMATERIAL_H
+#ifndef QT3D_RENDER_RENDERMATERIAL_H
+#define QT3D_RENDER_RENDERMATERIAL_H
 
 #include <QVariant>
 
@@ -49,13 +49,15 @@
 #include <quniformvalue.h>
 #include <rendertextureprovider.h>
 
-namespace Qt3D
-{
+namespace Qt3D {
 
 class Material;
-class RenderTechnique;
-class QGraphicsContext;
 class RendererAspect;
+
+namespace Render {
+
+class QGraphicsContext;
+class RenderTechnique;
 
 class RenderMaterial : public QObserverInterface
 {
@@ -97,6 +99,8 @@ private:
     QVector<Render::QUniformPack*> m_packs;
 };
 
-}
+} // Render
 
-#endif // RENDERMATERIAL_H
+} // Qt3D
+
+#endif // QT3D_RENDER_RENDERMATERIAL_H

@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef RENDERCAMERA_H
-#define RENDERCAMERA_H
+#ifndef QT3D_RENDER_RENDERCAMERA_H
+#define QT3D_RENDER_RENDERCAMERA_H
 
 #include <qchangearbiter.h>
 
@@ -52,6 +52,8 @@ namespace Qt3D
 
 class Camera;
 class RendererAspect;
+
+namespace Render {
 
 class RenderCamera : public QObserverInterface
 {
@@ -91,6 +93,8 @@ private:
     QRectF m_viewport;
 };
 
-}
+} // Render
 
-#endif // RENDERCAMERA_H
+} // Qt3D
+
+#endif // QT3D_RENDER_RENDERCAMERA_H

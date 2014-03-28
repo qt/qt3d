@@ -59,24 +59,24 @@ namespace Qt3D {
 
 class Camera;
 class Entity;
-class RenderBin;
 class Material;
-class RenderMaterial;
-class RenderTechnique;
 class ShaderProgram;
-class RenderShader;
 class Mesh;
 class RenderPass;
-class QGraphicsContext;
-class RenderCamera;
-class Drawable;
 class RenderTextureProvider;
 class Shape;
 class RendererAspect;
 
 namespace Render {
 
+class RenderCamera;
+class QGraphicsContext;
+class Drawable;
 class FrameGraphNode;
+class RenderBin;
+class RenderMaterial;
+class RenderTechnique;
+class RenderShader;
 class RenderNode;
 class MeshManager;
 

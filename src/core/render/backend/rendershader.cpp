@@ -50,6 +50,9 @@
 namespace Qt3D
 {
 
+namespace Render
+{
+
 RenderShader::RenderShader(ShaderProgram *peer) :
     m_program(NULL),
     m_peer(peer)
@@ -146,5 +149,7 @@ QOpenGLShaderProgram* RenderShader::createDefaultProgram()
 
     return p;
 }
+
+} // Render
 
 } // of namespace Qt3D

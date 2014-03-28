@@ -80,8 +80,8 @@ public:
     ParameterList attributes() const;
     ParameterList uniforms() const;
 
-    void setStateSet(DrawStateSet* ss);
-    DrawStateSet* stateSet() const;
+    void setStateSet(Render::DrawStateSet* ss);
+    Render::DrawStateSet* stateSet() const;
 
 signals:
     void nameChanged();
@@ -96,7 +96,7 @@ protected:
     // map Parameter names to GLSL names
     QHash<QString, QString> m_parameterNameDict;
 
-    DrawStateSet* m_stateSet;
+    Render::DrawStateSet* m_stateSet;
 };
 
 }

@@ -39,12 +39,15 @@
 **
 ****************************************************************************/
 
-#ifndef QGRAPHICSHELPERINTERFACE_H
-#define QGRAPHICSHELPERINTERFACE_H
+#ifndef QT3D_RENDER_QGRAPHICSHELPERINTERFACE_H
+#define QT3D_RENDER_QGRAPHICSHELPERINTERFACE_H
 
 #include <QOpenGLFunctions>
 
 namespace Qt3D
+{
+
+namespace Render
 {
 
 class QGraphicsHelperInterface
@@ -60,6 +63,8 @@ public:
     virtual void    blendEquation(GLenum mode) = 0;
 };
 
-}
+} // Render
 
-#endif // QGRAPHICSHELPERINTERFACE_H
+} // Qt3D
+
+#endif // QT3D_RENDER_QGRAPHICSHELPERINTERFACE_H

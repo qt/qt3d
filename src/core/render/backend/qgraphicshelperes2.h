@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QGRAPHICHELPERES2_H
-#define QGRAPHICHELPERES2_H
+#ifndef QT3D_RENDER_QGRAPHICSHELPERES2_H
+#define QT3D_RENDER_QGRAPHICSHELPERES2_H
 
 #include "qgraphicshelperinterface.h"
 #include <QOpenGLContext>
@@ -50,6 +50,9 @@
 class QOpenGLFunctions_ES2;
 
 namespace Qt3D
+{
+
+namespace Render
 {
 
 class QGraphicsHelperES2 : public QGraphicsHelperInterface
@@ -72,8 +75,9 @@ private:
 
 };
 
-}
+} // Render
 
+} // Qt3D
 #endif // QT_OPENGL_ES2
 
-#endif // QGRAPHICHELPERES2_H
+#endif // QT3D_RENDER_QGRAPHICSHELPERES2_H

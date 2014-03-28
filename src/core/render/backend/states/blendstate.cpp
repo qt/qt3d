@@ -47,6 +47,8 @@
 
 namespace Qt3D {
 
+namespace Render {
+
 template <class State>
 State* getOrCreateImpl(const State& data)
 {
@@ -185,5 +187,6 @@ DepthMask::DepthMask(GLboolean flag) :
 {
 }
 
+} // Render
 
-} // of namespace
+} // Render of namespace

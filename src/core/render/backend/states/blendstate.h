@@ -49,6 +49,8 @@
 
 namespace Qt3D {
 
+namespace Render {
+
 class BlendState : public GenericState2<BlendState, GLenum, GLenum>
 {
 public:
@@ -144,7 +146,8 @@ private:
     FrontFace(GLenum func);
 };
 
+} // Render
 
-} // of namespace
+} // Qt3D of namespace
 
 #endif // BLENDSTATE_H

@@ -45,6 +45,8 @@
 
 namespace Qt3D {
 
+namespace Render {
+
 RenderTextureProvider::RenderTextureProvider()
 {
 }
@@ -59,5 +61,7 @@ RenderTexturePtr RenderTextureProvider::get(Texture *t)
 
     return rt;
 }
+
+} // Render
 
 } // namespace Qt3D

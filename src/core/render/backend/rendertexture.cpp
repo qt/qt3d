@@ -49,6 +49,8 @@
 
 namespace Qt3D {
 
+namespace Render {
+
 RenderTexture::RenderTexture(Texture* peer) :
     m_peer(peer),
     m_gl(NULL)
@@ -144,5 +146,7 @@ GLint RenderTexture::textureId()
 {
     return getOrCreateGLTexture()->textureId();
 }
+
+} // Render
 
 } // namespace Qt3D

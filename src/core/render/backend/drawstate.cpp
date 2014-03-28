@@ -52,6 +52,8 @@
 
 namespace Qt3D {
 
+namespace Render {
+
 DrawStateSet::DrawStateSet()
 {
 
@@ -178,5 +180,7 @@ bool DrawStateSet::contains(DrawState *ds) const
 
     return m_states.contains(ds);
 }
+
+} // Render
 
 } // namespace Qt3D

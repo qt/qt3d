@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef RENDERSHADER_H
-#define RENDERSHADER_H
+#ifndef QT3D_RENDER_RENDERSHADER_H
+#define QT3D_RENDER_RENDERSHADER_H
 
 #include <QVector>
 
@@ -54,6 +54,8 @@ namespace Qt3D
 {
 
 class ShaderProgram;
+
+namespace Render {
 
 class RenderShader
 {
@@ -97,7 +99,9 @@ private:
     QVector<int> m_standardUniformLocations;
 };
 
-}
+} // Render
+
+} // Qt3D
 
 
-#endif // RENDERSHADER_H
+#endif // QT3D_RENDER_RENDERSHADER_H

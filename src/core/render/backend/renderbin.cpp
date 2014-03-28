@@ -51,6 +51,8 @@
 namespace Qt3D
 {
 
+namespace Render {
+
 
 void OpaqueBin::sendDrawingCommands(QGraphicsContext *gc)
 {
@@ -200,5 +202,6 @@ void OpaqueBin::removeDrawable(Drawable *dr)
     m_drawables.removeOne(dr);
 }
 
+} // Render
 
-} // of namespace
+} // Qt3D of namespace

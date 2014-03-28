@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QGRAPHICHELPERGL3_H
-#define QGRAPHICHELPERGL3_H
+#ifndef QT3D_RENDER_QGRAPHICSHELPERGL3_H
+#define QT3D_RENDER_QGRAPHICSHELPERGL3_H
 
 #ifndef QT_OPENGL_ES_2
 
@@ -49,6 +49,9 @@
 class QOpenGLFunctions_3_2_Core;
 
 namespace Qt3D
+{
+
+namespace Render
 {
 
 class QGraphicsHelperGL3 : public QGraphicsHelperInterface
@@ -71,8 +74,10 @@ private:
 
 };
 
-}
+} // Render
+
+} // Qt3D
 
 #endif // !QT_OPENGL_ES_2
 
-#endif // QGRAPHICHELPERGL3_H
+#endif // QT3D_RENDER_QGRAPHICSHELPERGL3_H

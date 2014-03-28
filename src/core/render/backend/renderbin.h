@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef RENDERBIN_H
-#define RENDERBIN_H
+#ifndef QT3D_RENDER_RENDERBIN_H
+#define QT3D_RENDER_RENDERBIN_H
 
 #include <QList>
 #include <QMap>
@@ -48,9 +48,12 @@
 namespace Qt3D
 {
 
+namespace Render
+{
+
 class Drawable;
-class QGraphicsContext;
 class RenderShader;
+class QGraphicsContext;
 class DrawStateSet;
 
 class RenderBin
@@ -89,6 +92,8 @@ public:
 private:
 };
 
-} // of namespace
+} // Render
 
-#endif // RENDERBIN_H
+} // Qt3D of namespace
+
+#endif // QT3D_RENDER_RENDERBIN_H

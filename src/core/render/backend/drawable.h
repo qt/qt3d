@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_DRAWABLE_H
-#define QT3D_DRAWABLE_H
+#ifndef QT3D_RENDER_DRAWABLE_H
+#define QT3D_RENDER_DRAWABLE_H
 
 #include <QObject>
 
@@ -48,9 +48,11 @@
 
 namespace Qt3D {
 
+namespace Render {
+
+class DrawStateSet;
 class QGraphicsContext;
 class RenderShader;
-class DrawStateSet;
 
 class Drawable
 {
@@ -98,6 +100,8 @@ protected:
 
 };
 
-}
+} // Render
 
-#endif // of QT3D_DRAWABLE_H
+} // Qt3D
+
+#endif // of QT3D_RENDER_DRAWABLE_H
