@@ -15,3 +15,6 @@ load(qt_parts)
 contains(QT_CONFIG, opengles1) {
     error("Qt3D does not support OpenGL ES 1!")
 }
+
+OTHER_FILES += \
+    sync.profile

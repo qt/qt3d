@@ -41,7 +41,7 @@
 
 #include "qaspectmanager.h"
 
-#include "rendereraspect.h"
+#include "abstractaspect.h"
 #include "qchangearbiter.h"
 // TODO Make the kind of job manager configurable (e.g. ThreadWeaver vs Intel TBB)
 #include "qjobmanager.h"
@@ -52,7 +52,6 @@
 #include <node.h>
 #include <entity.h>
 #include <camera.h>
-#include <scene.h>
 #include <matrixtransform.h>
 #include <rotatetransform.h>
 #include <translatetransform.h>
@@ -60,13 +59,10 @@
 #include <scaletransform.h>
 
 #include <QDebug>
-#include <QElapsedTimer>
 #include <QEventLoop>
 #include <QThread>
 #include <QWaitCondition>
 #include <QWindow>
-#include <QPluginLoader>
-#include <QDir>
 #include <QtQml>
 
 namespace Qt3D {
