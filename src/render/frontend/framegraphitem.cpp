@@ -54,11 +54,25 @@ namespace Qt3D {
 
 FrameGraphItem::FrameGraphItem(Node *parent)
     : Node(parent)
+    , m_enabled(true)
 {
 }
 
 FrameGraphItem::~FrameGraphItem()
 {
+}
+
+void FrameGraphItem::setEnabled(bool enabled)
+{
+    if (m_enabled != enabled) {
+        m_enabled = enabled;
+        emit enabledChanged();
+    }
+}
+
+bool FrameGraphItem::isEnabled() const
+{
+    return m_enabled;
 }
 
 } // Qt3D

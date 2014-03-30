@@ -50,9 +50,20 @@ namespace Qt3D {
 class QT3DRENDERERSHARED_EXPORT FrameGraphItem : public Node
 {
     Q_OBJECT
+    Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
+
 public:
     explicit FrameGraphItem(Node *parent = 0);
     virtual ~FrameGraphItem();
+
+    void setEnabled(bool enabled);
+    bool isEnabled() const;
+
+signals:
+    void enabledChanged();
+
+private:
+    bool m_enabled;
 };
 
 } // Qt3D
