@@ -55,6 +55,7 @@ Entity::Entity(Node *parent)
     : Node(parent)
     , m_enabled(true)
 {
+    m_uuid = QUuid::createUuid();
 }
 
 QList<Component *> Entity::components() const

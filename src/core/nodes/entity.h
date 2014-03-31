@@ -46,6 +46,7 @@
 #include "qt3dcore_global.h"
 
 #include <QMatrix4x4>
+#include <QUuid>
 
 namespace Qt3D {
 
@@ -62,6 +63,8 @@ class QT3DCORESHARED_EXPORT Entity : public Node
 
 public:
     explicit Entity(Node *parent = 0);
+
+    QUuid uuid() const { return m_uuid; }
 
     ComponentList components() const;
 
@@ -142,9 +145,10 @@ signals:
     void enabledChanged();
 
 private:
-
     ComponentList m_components;
     bool m_visible;
+
+    QUuid m_uuid;
 
     mutable QMatrix4x4 m_matrix;
     QMatrix4x4 m_sceneMatrix;
