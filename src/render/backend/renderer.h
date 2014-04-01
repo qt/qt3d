@@ -53,6 +53,8 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLBuffer>
+#include <QMutex>
+#include <QWaitCondition>
 
 QT_BEGIN_NAMESPACE
 
@@ -85,6 +87,8 @@ class MeshManager;
 class RenderCommand;
 class CameraManager;
 class RenderNodesManager;
+class RenderQueues;
+class RenderView;
 
 class Renderer : public QObject
 {
@@ -114,6 +118,7 @@ public:
     QJobPtr createRenderViewJob(FrameGraphNode *node, int submitOrderIndex);
     void executeCommands(const QVector<RenderCommand *> &commands);
 
+    RenderQueues* renderQueues() const { return m_renderQueues; }
     MeshManager *meshManager() const { return m_meshManager; }
     CameraManager *cameraManager() const { return m_cameraManager; }
     RenderNodesManager *renderNodesManager() const { return m_renderNodesManager; }
@@ -131,6 +136,9 @@ public:
 
     void setDefaultTechnique(Technique* t);
     void setDefaultMaterial(Material* mat);
+
+    void enqueueRenderView(RenderView *renderView, int submitOrder);
+    void submitRenderViews();
 
 protected:
     Q_INVOKABLE void initialize();
@@ -175,8 +183,14 @@ private:
     /// list of drawables to be initialized next frame
     QList<Drawable*> m_initList;
 
+    RenderQueues* m_renderQueues;
+
     void buildDefaultMaterial();
     void buildDefaultTechnique();
+
+    QMutex m_mutex;
+    QWaitCondition m_submitRenderViewsCondition;
+    uint m_frameCount;
 };
 
 } // namespace Render

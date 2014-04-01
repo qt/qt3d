@@ -65,6 +65,7 @@
 #include <cameramanager.h>
 #include <meshmanager.h>
 #include <rendermesh.h>
+#include <renderqueues.h>
 #include <renderbin.h>
 #include <rendermaterial.h>
 #include <rendernode.h>
@@ -77,10 +78,15 @@
 #include <drawstate.h>
 #include <states/blendstate.h>
 #include <rendernodesmanager.h>
+#include <renderview.h>
 
 #include <QStack>
 #include <QDebug>
 #include <QSurface>
+#include <QElapsedTimer>
+
+// For Debug purposes only
+#include <QThread>
 
 QT_BEGIN_NAMESPACE
 
@@ -121,9 +127,9 @@ protected:
             m_renderer->buildShape(shape, mat, sceneMatrix);
         }
 
-//        foreach (Camera* cam, ent->componentsOfType<Camera>()) {
-//            m_renderer->foundCamera(cam, sceneMatrix);
-//        }
+        //        foreach (Camera* cam, ent->componentsOfType<Camera>()) {
+        //            m_renderer->foundCamera(cam, sceneMatrix);
+        //        }
 
         NodeVisitor::visitEntity(ent);
 
@@ -148,15 +154,17 @@ Renderer::Renderer()
     , m_meshManager(new MeshManager())
     , m_cameraManager(new CameraManager())
     , m_renderNodesManager(new RenderNodesManager())
+    , m_renderQueues(new RenderQueues())
+    , m_frameCount(0)
 {
     m_temporaryAllBin = NULL;
     m_graphicsContext = new QGraphicsContext;
     // Done in set surface
-//    m_graphicsContext->setOpenGLContext(new QOpenGLContext);
+    //    m_graphicsContext->setOpenGLContext(new QOpenGLContext);
 
-    m_frameTimer = new QTimer(this);
-    connect(m_frameTimer, SIGNAL(timeout()), this, SLOT(onFrame()));
-    m_frameTimer->setInterval(16);
+    //        m_frameTimer = new QTimer(this);
+    //        connect(m_frameTimer, SIGNAL(timeout()), this, SLOT(onFrame()));
+    //        m_frameTimer->setInterval(1000);
 
     m_textureProvider = new RenderTextureProvider;
 
@@ -276,9 +284,9 @@ void Renderer::setSceneObject(Qt3D::Node *obj)
 
 void Renderer::onFrame()
 {
-    render();
 }
 
+// QAspectThread context
 void Renderer::setSceneGraphRoot(Node *sgRoot)
 {
     Q_ASSERT(sgRoot);
@@ -299,7 +307,7 @@ void Renderer::setSceneGraphRoot(Node *sgRoot)
         tbb.traverse(m_sceneGraphRoot);
         qDebug() << "done building backend";
 
-        QMetaObject::invokeMethod(m_frameTimer, "start");
+        //        QMetaObject::invokeMethod(m_frameTimer, "start");
     } else {
         // Test new scene builder
         m_sceneGraphRoot = sgRoot;
@@ -333,6 +341,7 @@ void Renderer::setSceneGraphRoot(Node *sgRoot)
             qWarning() << "Failed to build render scene";
         m_renderSceneRoot = root;
 
+        qDebug() << Q_FUNC_INFO << "DUMPING SCENE";
         root->dump();
 
         // Queue up jobs to do initial full updates of
@@ -415,25 +424,33 @@ void Renderer::render()
     // One scene description
     // One framegraph description
 
+    doRender();
     // begin hack renderer
-    if (!m_renderCamera)
-        return;
+    //    qDebug() << Q_FUNC_INFO << QThread::currentThread();
 
-    m_renderCamera->sync();
 
-    m_graphicsContext->beginDrawing();
+    //    if (!m_renderCamera)
+    //        return;
 
-    foreach (Drawable* dr, m_initList)
-        dr->initializeGL(m_graphicsContext);
-    m_initList.clear();
+    // If fist time scenegraph is set
+    //    m_waitForRenderViewsJobsCondition.wakeAll();
 
-    int err = glGetError();
-    if (err)
-        qWarning() << "GL error before submitting bins:" << err;
 
-    m_temporaryAllBin->sendDrawingCommands(m_graphicsContext);
+    //    m_renderCamera->sync();
 
-    m_graphicsContext->endDrawing();
+    //    m_graphicsContext->beginDrawing();
+
+    //    foreach (Drawable* dr, m_initList)
+    //        dr->initializeGL(m_graphicsContext);
+    //    m_initList.clear();
+
+    //    int err = glGetError();
+    //    if (err)
+    //        qWarning() << "GL error before submitting bins:" << err;
+
+    //    m_temporaryAllBin->sendDrawingCommands(m_graphicsContext);
+
+    //    m_graphicsContext->endDrawing();
 
     // end hack renderer
 }
@@ -441,24 +458,68 @@ void Renderer::render()
 void Renderer::doRender()
 {
     // Render using current device state and renderer configuration
-    qDebug() << Q_FUNC_INFO;
+    submitRenderViews();
 }
 
+// Called by threadWeaver RenderViewJobs
+void Renderer::enqueueRenderView(Render::RenderView *renderView, int submitOrder)
+{
+    //    qDebug() << Q_FUNC_INFO << QThread::currentThread();
+    m_renderQueues->queueRenderView(renderView, submitOrder);
+    if (m_renderQueues->isFrameQueueComplete()) {
+        m_renderQueues->pushFrameQueue();
+        m_submitRenderViewsCondition.wakeOne();
+    }
+}
+
+// Happens in RenderThread context when all RenderViewJobs are done
+void Renderer::submitRenderViews()
+{
+    qDebug() << Q_FUNC_INFO << QThread::currentThread();
+    QMutexLocker locker(&m_mutex);
+    m_submitRenderViewsCondition.wait(locker.mutex());
+    // Allow RenderViewJobs to be processed for the next frame
+    // Without having to wait for the current RenderViews to be submitted
+    // as long as there is available space in the renderQueues.
+    // Otherwise it waits for submission to be done so as to never miss
+    // Any important state change that could be in a RenderView
+    locker.unlock();
+    while (m_renderQueues->queuedFrames() > 0)
+    {
+        QVector<Render::RenderView *> renderViews = m_renderQueues->popFrameQueue();
+        QElapsedTimer timer;
+        timer.start();
+        for (int i = 0; i < renderViews.size(); i++)
+            renderViews[i]->submit(this);
+        qDebug() << Q_FUNC_INFO << "Submission took " << timer.elapsed() << "ms";
+        qDeleteAll(renderViews);
+        m_frameCount++;
+    }
+}
+
+// Waits to be tolds to create jobs for the next frame
+// Called by RendererAspect jobsToExecute context of QAspectThread
 QVector<QJobPtr> Renderer::createRenderBinJobs()
 {
     // Traverse the current framegraph. For each leaf node create a
-    // RenderBin and set its configuration then create a job to
-    // populate the RenderBin with a set of RenderCommands that get
+    // RenderView and set its configuration then create a job to
+    // populate the RenderView with a set of RenderCommands that get
     // their details from the RenderNodes that are visible to the
     // Camera selected by the framegraph configuration
+
     QVector<QJobPtr> renderBinJobs;
+    //    qDebug() << Q_FUNC_INFO << QThread::currentThread();
+
     FrameGraphVisitor visitor;
     visitor.traverse(m_frameGraphRoot, this, &renderBinJobs);
+    m_renderQueues->setTargetRenderViewCount(renderBinJobs.size());
     return renderBinJobs;
 }
 
+// Called during while traversing the FrameGraph for each leaf node context of QAspectThread
 QJobPtr Renderer::createRenderViewJob(FrameGraphNode *node, int submitOrderIndex)
 {
+    //    qDebug() << Q_FUNC_INFO << QThread::currentThread();
     RenderViewJobPtr job(new RenderViewJob);
     job->setRenderer(this);
     job->setFrameGraphLeafNode(node);
@@ -466,11 +527,13 @@ QJobPtr Renderer::createRenderViewJob(FrameGraphNode *node, int submitOrderIndex
     return job;
 }
 
+// Called by RenderView->submit() in RenderThread context
 void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
 {
     // Use the graphicscontext to submit the commands to the underlying
     // graphics API (OpenGL)
     Q_UNUSED(commands);
+    qDebug() << Q_FUNC_INFO;
     // TODO: Implement me!
     //m_graphicsContext->executeCommands(commands);
 }
@@ -610,8 +673,8 @@ void Renderer::buildShape(Shape* shape, Material* mat, const QMatrix4x4& mm)
 void Renderer::foundCamera(Camera *cam, const QMatrix4x4 &mm)
 {
     Q_UNUSED(mm);
-//    cam->setViewMatrix(mm.inverted());
-//    setCamera(cam);
+    //    cam->setViewMatrix(mm.inverted());
+    //    setCamera(cam);
 }
 
 } // namespace Render

@@ -56,7 +56,7 @@ class Renderer;
 
 class RenderEventProcessor;
 
-class RenderThread : public QThread
+class Q_AUTOTEST_EXPORT RenderThread : public QThread
 {
     Q_OBJECT
 public:
@@ -67,6 +67,7 @@ public:
     Render::Renderer* renderer() const { return m_renderer; }
 
     RenderEventProcessor* eventHandler() const { return m_eventHandler; }
+
 protected:
     void run();
 

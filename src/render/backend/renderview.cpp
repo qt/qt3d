@@ -60,7 +60,7 @@ namespace Render {
 
 RenderView::~RenderView()
 {
-    qDebug() << Q_FUNC_INFO;
+//    qDebug() << Q_FUNC_INFO;
     qDeleteAll(m_commands);
 }
 

@@ -39,45 +39,52 @@
 **
 ****************************************************************************/
 
-#include "renderviewjob.h"
+#ifndef QT3D_RENDER_RENDERQUEUES_H
+#define QT3D_RENDER_RENDERQUEUES_H
 
-#include <renderview.h>
-#include <renderer.h>
-
-#include <QDebug>
+#include <QVector>
+#include <QAtomicInt>
+#include <QtGlobal>
+#include <QMutex>
+#include <Qt3DCore/qboundedcircularbuffer.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
+
 namespace Render {
 
-void RenderViewJob::run()
+class RenderView;
+
+class Q_AUTOTEST_EXPORT RenderQueues
 {
-    qDebug() << Q_FUNC_INFO << m_index;
+public:
+    RenderQueues(int capacity = 5);
 
-    // Create a RenderView object
-    RenderView *renderView = new RenderView;
+    void setTargetRenderViewCount(int targetRenderViewCount);
+    int targetRenderViewCount() const { return m_targetRenderViewCount; }
+    int currentRenderViewCount() const;
+    bool isFrameQueueComplete() const;
+    int queuedFrames() const { return m_queues.size(); }
+    int framesCapacity() const { return m_queues.capacity(); }
 
-    // Populate its configuration from the framegraph
-    // using the root->leaf set of nodes
-    renderView->setConfigFromFrameGraphLeafNode(m_fgLeaf);
+    void queueRenderView(RenderView *renderView, uint submissionOrderIndex);
+    QVector<RenderView *> popFrameQueue();
+    void pushFrameQueue();
+    void reset();
 
-    // Perform a view-frustum cull of the scenegraph
-    // along with any additional filtering based on the
-    // framegraph (e.g.render layer) to build list of
-    // RenderNodes that need to be used to build the
-    // list of RenderCommands
-    //buildRenderCommands(renderView, m_renderer);
+private:
+    QMutex m_mutex;
+    int m_targetRenderViewCount;
+    QAtomicInt m_currentRenderViewCount;
+    QBoundedCircularBuffer< QVector<RenderView*> > m_queues;
+    QVector<RenderView *> m_currentWorkQueue;
+};
 
+} // Render
 
-
-
-
-    // Enqueue our fully populated RenderView with the RenderThread
-    m_renderer->enqueueRenderView(renderView, m_index);
-}
-
-} // namespace Render
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_RENDER_RENDERQUEUES_H

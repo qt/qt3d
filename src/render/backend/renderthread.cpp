@@ -41,10 +41,12 @@
 
 #include "renderthread.h"
 #include "renderer.h"
+#include "renderview.h"
 
 #include <QDebug>
 #include <QEventLoop>
 #include <QTime>
+#include <QMutexLocker>
 
 QT_BEGIN_NAMESPACE
 
@@ -77,9 +79,10 @@ void RenderThread::run()
     m_waitCondition.wakeOne();
     m_mutex.unlock();
 
-    // Enter the render thread event loop
-    exec();
-
+    // Enter the rendering loop
+    while (true) {
+        m_renderer->render();
+    }
     delete m_renderer;
 }
 

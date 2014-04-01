@@ -48,10 +48,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class Renderer;
 
 namespace Render {
 
+class Renderer;
 class FrameGraphNode;
 
 class RenderViewJob : public QJob

@@ -33,7 +33,8 @@ HEADERS += \
     $$PWD/renderview.h \
     $$PWD/rendercommand.h \
     $$PWD/rendernodesmanager.h \
-    $$PWD/cameramanager.h
+    $$PWD/cameramanager.h \
+    $$PWD/renderqueues.h
 
 SOURCES += \
     $$PWD/rendereraspect.cpp \
@@ -63,4 +64,5 @@ SOURCES += \
     $$PWD/renderview.cpp \
     $$PWD/rendercommand.cpp \
     $$PWD/rendernodesmanager.cpp \
-    $$PWD/cameramanager.cpp
+    $$PWD/cameramanager.cpp \
+    $$PWD/renderqueues.cpp

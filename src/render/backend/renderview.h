@@ -63,7 +63,7 @@ class ViewportNode;
 
 // This class is kind of analogous to RenderBin but I want to avoid trampling
 // on that until we get this working
-class RenderView
+class Q_AUTOTEST_EXPORT RenderView
 {
 public:
     RenderView()
