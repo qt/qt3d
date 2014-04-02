@@ -1000,8 +1000,8 @@ void QuadrifyPart(const IfcVector2& pmin, const IfcVector2& pmax, XYSortedField&
 // ------------------------------------------------------------------------------------------------
 void InsertWindowContours(const std::vector< BoundingBox >& bbs,
 	const std::vector< std::vector<IfcVector2> >& contours,
-	const std::vector<TempOpening>& openings,
-	const std::vector<IfcVector3>& nors, 
+    const std::vector<TempOpening>& /*openings*/,
+    const std::vector<IfcVector3>& /*nors*/,
 	const IfcMatrix3& minv,
 	const IfcVector2& scale,
 	const IfcVector2& offset,

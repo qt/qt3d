@@ -401,7 +401,7 @@ aiNode* XGLImporter::ReadObject(TempScope& scope, bool skipFirst, const char* cl
 					ThrowException("<meshref> index out of range");
 				}
 
-				for(; it != end && (*it).first == id; ++it) {
+                for(; it != end && (*it).first == static_cast<unsigned int>(id); ++it) {
 					// ok, this is n^2 and should get optimized one day
 					aiMesh* const m = (*it).second;
 
