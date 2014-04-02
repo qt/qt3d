@@ -53,6 +53,8 @@
 
 #include "abstractsceneparser.h"
 
+QT_BEGIN_NAMESPACE
+
 class QFile;
 
 namespace Qt3D {
@@ -159,5 +161,7 @@ private:
 };
 
 }
+
+QT_END_NAMESPACE
 
 #endif // GLTFPARSER_H

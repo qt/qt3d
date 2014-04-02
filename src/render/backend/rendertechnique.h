@@ -45,14 +45,14 @@
 #include <QVector>
 #include <QStringList>
 
-namespace Qt3D
-{
+QT_BEGIN_NAMESPACE
+
+namespace Qt3D {
 
 class Technique;
 class Parameter;
 
-namespace Render
-{
+namespace Render {
 
 class RenderBin;
 class DrawStateSet;
@@ -87,15 +87,11 @@ private:
     // technique state
     QVector<RenderShader*> m_passShader;
     QVector<RenderBin*> m_passBin;
-
-
-
-
 };
 
-} // Render
+} // namespace Render
+} // namespace Qt3D
 
-} // of namespace Qgt3D
-
+QT_END_NAMESPACE
 
 #endif // QT3D_RENDER_RENDERTECHNIQUE_H

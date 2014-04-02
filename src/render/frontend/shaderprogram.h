@@ -45,6 +45,8 @@
 #include <node.h>
 #include <qt3drenderer_global.h>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 class QT3DRENDERERSHARED_EXPORT ShaderProgram : public Node
@@ -96,5 +98,7 @@ private:
 };
 
 }
+
+QT_END_NAMESPACE
 
 #endif // SHADERPROGRAM_H

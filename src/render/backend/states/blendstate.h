@@ -47,8 +47,9 @@
 
 #include <QOpenGLContext>
 
-namespace Qt3D {
+QT_BEGIN_NAMESPACE
 
+namespace Qt3D {
 namespace Render {
 
 class BlendState : public GenericState2<BlendState, GLenum, GLenum>
@@ -147,7 +148,8 @@ private:
 };
 
 } // Render
+} // Qt3D
 
-} // Qt3D of namespace
+QT_END_NAMESPACE
 
 #endif // BLENDSTATE_H

@@ -70,10 +70,10 @@
 #include <drawstate.h>
 #include <states/blendstate.h>
 
-namespace Qt3D {
+QT_BEGIN_NAMESPACE
 
-namespace
-{
+namespace Qt3D {
+namespace {
 
 const QString KEY_CAMERA     = QStringLiteral("camera");
 const QString KEY_CAMERAS    = QStringLiteral("cameras");
@@ -919,3 +919,5 @@ QVariant GLTFParser::parameterValueFromJSON(Parameter* p, QJsonValue val)
 }
 
 } // of namespace Qt3D
+
+QT_END_NAMESPACE

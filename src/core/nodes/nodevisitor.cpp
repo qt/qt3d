@@ -44,6 +44,8 @@
 #include "node.h"
 #include "entity.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 NodeVisitor::NodeVisitor()
@@ -126,4 +128,6 @@ void NodeVisitor::outerVisitNode(Node *n)
     }
 }
 
-} // of namespace
+} // namespace Qt3D
+
+QT_END_NAMESPACE

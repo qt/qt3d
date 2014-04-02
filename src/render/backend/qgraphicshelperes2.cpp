@@ -44,11 +44,10 @@
 
 #ifdef QT_OPENGL_ES_2
 
-namespace Qt3D
-{
+QT_BEGIN_NAMESPACE
 
-namespace Render
-{
+namespace Qt3D {
+namespace Render {
 
 QGraphicsHelperES2::QGraphicsHelperES2() :
     m_funcs(0)
@@ -126,8 +125,9 @@ void Qt3D::QGraphicsHelperES2::blendEquation(GLenum mode)
 }
 
 } // Render
-
 } //Qt3D
+
+QT_END_NAMESPACE
 
 #endif // QT_OPENGL_ES_2
 

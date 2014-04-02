@@ -47,6 +47,8 @@
 
 #include <QQmlListProperty>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 class Node;
@@ -98,6 +100,8 @@ private:
     NodeList m_children;
 };
 
-}
+} // namespace Qt3D
+
+QT_END_NAMESPACE
 
 #endif

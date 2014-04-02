@@ -48,6 +48,8 @@
 #include <QMetaProperty>
 #include <QDebug>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 Node::Node( Node* parent )
@@ -225,4 +227,6 @@ void Node::clearChildren(QQmlListProperty<Qt3D::Node> *list)
     self->m_children.clear();
 }
 
-} // of namespace Qt3D
+} // namespace Qt3D
+
+QT_END_NAMESPACE

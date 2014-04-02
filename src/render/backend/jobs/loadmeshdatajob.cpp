@@ -47,6 +47,8 @@
 #include <QDebug>
 #include <QThread>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 namespace Render {
 
@@ -87,3 +89,5 @@ void LoadMeshDataJob::run()
 
 } // namespace Render
 } // namespace Qt3D
+
+QT_END_NAMESPACE

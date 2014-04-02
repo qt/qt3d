@@ -43,8 +43,9 @@
 
 #include <QStringList>
 
-namespace Qt3D
-{
+QT_BEGIN_NAMESPACE
+
+namespace Qt3D {
 
 AbstractSceneParser::AbstractSceneParser() : QObject(),
     m_parserStatus(Empty)
@@ -85,3 +86,5 @@ void AbstractSceneParser::logInfo(const QString &info)
 }
 
 } // Qt3D namespace
+
+QT_END_NAMESPACE

@@ -39,11 +39,12 @@
 **
 ****************************************************************************/
 
-
 #ifndef QT3D_CAMERALENS_P_H
 #define QT3D_CAMERALENS_P_H
 
 #include <QMatrix4x4>
+
+QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
@@ -105,6 +106,8 @@ public:
     mutable bool m_syncNeeded;
 };
 
-}
+} // namespace Qt3D
+
+QT_END_NAMESPACE
 
 #endif // QT3D_CAMERALENS_P_H

@@ -44,6 +44,8 @@
 
 #include <cmath>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 RotateTransform::RotateTransform(Node *parent)
@@ -96,3 +98,5 @@ void RotateTransform::setAxis(const QVector3D& arg)
 }
 
 } // namespace Qt3D
+
+QT_END_NAMESPACE

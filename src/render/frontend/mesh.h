@@ -47,6 +47,8 @@
 
 #include <meshdata.h>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 /**
@@ -80,5 +82,7 @@ private:
 };
 
 }
+
+QT_END_NAMESPACE
 
 #endif // of QT3D_MESH_H

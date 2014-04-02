@@ -66,6 +66,8 @@
 #include <QWindow>
 #include <QtQml>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 QAspectManager::QAspectManager(QObject *parent)
@@ -239,3 +241,5 @@ void QAspectManager::exec()
 }
 
 } // namespace Qt3D
+
+QT_END_NAMESPACE

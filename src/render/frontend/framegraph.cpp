@@ -42,6 +42,8 @@
 #include "framegraph.h"
 #include "entity.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 /*!
@@ -84,3 +86,5 @@ void FrameGraph::setActiveFrameGraph(FrameGraphItem *activeFrameGraph)
 }
 
 } // Qt3D
+
+QT_END_NAMESPACE

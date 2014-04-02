@@ -49,7 +49,14 @@
 #include <QStack>
 #include <QThread>
 
-static void expandWorldBoundingVolume(Qt3D::Render::RenderNode *node)
+QT_BEGIN_NAMESPACE
+
+namespace Qt3D {
+namespace Render {
+
+namespace {
+
+void expandWorldBoundingVolume(Qt3D::Render::RenderNode *node)
 {
     Qt3D::Render::RenderNode *currentNode = node;
     QStack<int> childIndexStack;
@@ -82,8 +89,7 @@ static void expandWorldBoundingVolume(Qt3D::Render::RenderNode *node)
     }
 }
 
-namespace Qt3D {
-namespace Render {
+}
 
 UpdateBoundingVolumeJob::UpdateBoundingVolumeJob(RenderNode *node)
     : m_node(node)
@@ -103,3 +109,5 @@ void UpdateBoundingVolumeJob::run()
 
 } // namespace Render
 } // namespace Qt3D
+
+QT_END_NAMESPACE

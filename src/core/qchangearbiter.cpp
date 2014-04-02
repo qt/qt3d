@@ -49,6 +49,8 @@
 #include <QThread>
 #include <QWriteLocker>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 QObservable::QObservable()
@@ -251,3 +253,5 @@ static void destroyThreadLocalChangeQueue(void *changeArbiter)
 }
 
 } // namespace Qt3D
+
+QT_END_NAMESPACE

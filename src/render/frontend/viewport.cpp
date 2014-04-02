@@ -41,6 +41,8 @@
 
 #include "viewport.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 Viewport::Viewport(Node *parent)
@@ -62,3 +64,5 @@ void Viewport::setRect(const QRectF &rect)
 }
 
 } // Qt3D
+
+QT_END_NAMESPACE

@@ -47,8 +47,9 @@
 #include <QMatrix4x4>
 #include <QRectF>
 
-namespace Qt3D
-{
+QT_BEGIN_NAMESPACE
+
+namespace Qt3D {
 
 class CameraLens;
 class RendererAspect;
@@ -94,7 +95,8 @@ private:
 };
 
 } // Render
-
 } // Qt3D
+
+QT_END_NAMESPACE
 
 #endif // QT3D_RENDER_RENDERCAMERA_H

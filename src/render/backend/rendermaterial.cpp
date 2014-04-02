@@ -53,11 +53,10 @@
 
 #include <QOpenGLShaderProgram>
 
-namespace Qt3D
-{
+QT_BEGIN_NAMESPACE
 
-namespace Render
-{
+namespace Qt3D {
+namespace Render {
 
 RenderMaterial::RenderMaterial(RendererAspect *rendererAspect)
     : m_rendererAspect(rendererAspect)
@@ -203,7 +202,7 @@ void RenderMaterial::sceneChangeEvent(const QSceneChangePtr &e)
     }
 }
 
-} // Render
+} // namespace Render
+} // namespace Qt3D
 
-} // of namespace Qt3D
-
+QT_END_NAMESPACE

@@ -47,6 +47,8 @@
 
 #include <QRectF>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 class QT3DRENDERERSHARED_EXPORT  Viewport : public FrameGraphItem
@@ -70,5 +72,7 @@ private:
 };
 
 }
+
+QT_END_NAMESPACE
 
 #endif // QT3D_VIEWPORT_H

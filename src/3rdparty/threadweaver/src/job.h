@@ -33,8 +33,10 @@ $Id: Job.h 32 2005-08-17 08:38:01Z mirko $
 #include "jobinterface.h"
 #include "jobpointer.h"
 
+QT_BEGIN_NAMESPACE
 class QMutex;
 class QWaitCondition;
+QT_END_NAMESPACE
 
 namespace ThreadWeaver
 {

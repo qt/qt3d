@@ -51,6 +51,8 @@
 #include <QTextStream>
 #include <QVector>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 inline uint qHash(const Qt3D::FaceIndices &faceIndices)
@@ -440,3 +442,5 @@ void ObjLoader::center( QVector<QVector3D>& points )
 }
 
 }
+
+QT_END_NAMESPACE

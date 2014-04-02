@@ -48,6 +48,8 @@
 #include <QQmlListProperty>
 #include <QVector>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 class Technique;
@@ -76,6 +78,8 @@ private:
 };
 
 }
+
+QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(Qt3D::Effect*)
 

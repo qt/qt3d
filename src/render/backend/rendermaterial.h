@@ -49,6 +49,8 @@
 #include <quniformvalue.h>
 #include <rendertextureprovider.h>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 class Material;
@@ -100,7 +102,8 @@ private:
 };
 
 } // Render
-
 } // Qt3D
+
+QT_END_NAMESPACE
 
 #endif // QT3D_RENDER_RENDERMATERIAL_H

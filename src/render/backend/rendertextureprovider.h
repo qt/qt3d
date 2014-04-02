@@ -45,14 +45,16 @@
 #include <QSharedPointer>
 #include <QHash>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 class Texture;
 
 namespace Render {
+
 class RenderTexture;
 typedef QSharedPointer<RenderTexture> RenderTexturePtr;
-
 
 class RenderTextureProvider
 {
@@ -64,8 +66,9 @@ private:
     QHash<Texture*, Render::RenderTexturePtr> m_dict;
 };
 
-} // Render
-
+} // namespace Render
 } // namespace Qt3D
+
+QT_END_NAMESPACE
 
 #endif // QT3D_RENDER_RENDERTEXTUREPROVIDER_H

@@ -49,6 +49,8 @@
 
 #include <objloader.h>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 Mesh::Mesh(Node *parent)
@@ -129,4 +131,6 @@ void Mesh::update()
     m_sourceDirty = false;
 }
 
-} // of namespace Qt3D
+} // namespace Qt3D
+
+QT_END_NAMESPACE

@@ -46,6 +46,8 @@
 
 #include <QStack>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 class FrameGraphItem;
@@ -79,5 +81,7 @@ private:
 
 } // namespace Render
 } // namespace Qt3D
+
+QT_END_NAMESPACE
 
 #endif // QT3D_RENDER_RENDERSCENEBUILDER_H

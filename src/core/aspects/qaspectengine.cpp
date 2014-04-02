@@ -49,6 +49,8 @@
 #include <QMetaObject>
 #include <QMutexLocker>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 QAspectEngine::QAspectEngine(QObject *parent)
@@ -103,3 +105,5 @@ void QAspectEngine::setRoot(QObject *rootObject)
 }
 
 } // namespace Qt3D
+
+QT_END_NAMESPACE

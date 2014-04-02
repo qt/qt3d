@@ -41,6 +41,8 @@
 
 #include "techniquefilter.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 TechniqueFilter::TechniqueFilter(Node *parent)
@@ -98,3 +100,5 @@ void TechniqueFilter::clearTags(QQmlListProperty<Tag> *list)
 }
 
 } // namespace Qt3D
+
+QT_END_NAMESPACE

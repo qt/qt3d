@@ -46,8 +46,9 @@
 
 #include <QDebug>
 
-namespace Qt3D {
+QT_BEGIN_NAMESPACE
 
+namespace Qt3D {
 namespace {
 
 MeshDataPtr createSphereMesh(double radius, int rings, int slices, bool hasTangents)
@@ -384,3 +385,5 @@ void Shape::setMinorRadius(double arg)
 }
 
 } // namespace Qt3D
+
+QT_END_NAMESPACE

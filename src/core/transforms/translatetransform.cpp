@@ -41,6 +41,8 @@
 
 #include "translatetransform.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 TranslateTransform::TranslateTransform(Node *parent)
@@ -108,3 +110,5 @@ void TranslateTransform::setTranslation(QVector3D arg)
 }
 
 } // namespace Qt3D
+
+QT_END_NAMESPACE

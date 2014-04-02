@@ -46,8 +46,9 @@
 
 #include <axisalignedboundingbox.h>
 
-namespace Qt3D {
+QT_BEGIN_NAMESPACE
 
+namespace Qt3D {
 namespace Render {
 
 class DrawStateSet;
@@ -101,7 +102,8 @@ protected:
 };
 
 } // Render
-
 } // Qt3D
+
+QT_END_NAMESPACE
 
 #endif // of QT3D_RENDER_DRAWABLE_H

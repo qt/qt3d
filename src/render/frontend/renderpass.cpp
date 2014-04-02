@@ -44,6 +44,8 @@
 
 #include <QDebug>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 RenderPass::RenderPass(Node *parent)
@@ -117,4 +119,6 @@ Render::DrawStateSet *RenderPass::stateSet() const
     return m_stateSet;
 }
 
-} // of namespace Qt3D
+} // namespace Qt3D
+
+QT_END_NAMESPACE

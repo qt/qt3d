@@ -45,6 +45,8 @@
 #include "qaspectmanager.h"
 #include "qjobmanagerinterface.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 QScheduler::QScheduler(QObject *parent)
@@ -92,3 +94,5 @@ void QScheduler::update(qint64 time)
 }
 
 } // namespace Qt3D
+
+QT_END_NAMESPACE

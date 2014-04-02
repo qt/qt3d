@@ -49,6 +49,8 @@
 #include <QMetaProperty>
 #include <QDebug>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 Entity::Entity(Node *parent)
@@ -128,3 +130,5 @@ Entity *Entity::parentEntity()
 }
 
 } // namespace Qt3D
+
+QT_END_NAMESPACE

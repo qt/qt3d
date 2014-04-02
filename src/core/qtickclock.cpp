@@ -44,6 +44,8 @@
 #include <QDebug>
 #include <QThread>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 QTickClock::QTickClock(QObject *parent)
@@ -103,4 +105,6 @@ qint64 QTickClock::waitForNextTick()
     return m_time;
 }
 
-}
+} // namespace Qt3D
+
+QT_END_NAMESPACE

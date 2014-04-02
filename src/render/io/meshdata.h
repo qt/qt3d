@@ -50,9 +50,9 @@
 
 #include <axisalignedboundingbox.h>
 
+QT_BEGIN_NAMESPACE
 
-namespace Qt3D
-{
+namespace Qt3D {
 
 GLint elementType(GLint type);
 GLint tupleSizeFromType(GLint type);
@@ -177,5 +177,7 @@ private:
 typedef QSharedPointer<MeshData> MeshDataPtr;
 
 }
+
+QT_END_NAMESPACE
 
 #endif // MESHDATA_H

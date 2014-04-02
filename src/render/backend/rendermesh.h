@@ -50,6 +50,8 @@
 #include <QOpenGLVertexArrayObject>
 #include <QMatrix4x4>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 class Mesh;
@@ -114,7 +116,8 @@ private:
 };
 
 } // Render
-
 } // Qt3D
+
+QT_END_NAMESPACE
 
 #endif // QT3D_RENDER_RENDERMESH_H

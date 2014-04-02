@@ -41,6 +41,8 @@
 
 #include "renderpassfilter.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 RenderPassFilter::RenderPassFilter(Node *parent)
@@ -62,3 +64,5 @@ QString RenderPassFilter::renderPassName() const
 }
 
 } // Qt3D
+
+QT_END_NAMESPACE

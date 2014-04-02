@@ -44,6 +44,8 @@
 
 #include <QDebug>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 Effect::Effect(Node *parent)
@@ -78,4 +80,6 @@ void Effect::clearTechniques()
     m_techniques.clear();
 }
 
-} // of namespace
+} // namespace Qt3D
+
+QT_END_NAMESPACE

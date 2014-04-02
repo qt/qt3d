@@ -47,6 +47,8 @@
 
 #include <QElapsedTimer>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 class QTickClock : public QObject
@@ -69,5 +71,7 @@ private:
 };
 
 } // namespace Qt3D
+
+QT_END_NAMESPACE
 
 #endif // QTICKCLOCK_H

@@ -45,6 +45,8 @@
 #include <QObject>
 #include "qt3dcore_global.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 class QAspectManager;
@@ -65,5 +67,7 @@ private:
 };
 
 } // namespace Qt3D
+
+QT_END_NAMESPACE
 
 #endif // QT3D_QSCHEDULER_H

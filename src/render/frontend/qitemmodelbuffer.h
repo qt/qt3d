@@ -50,6 +50,8 @@
 #include <QAbstractItemModel>
 #include <QMap>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 class QT3DRENDERERSHARED_EXPORT QItemModelBuffer : public QObject
@@ -101,5 +103,7 @@ private:
 };
 
 } // namespace Qt3D
+
+QT_END_NAMESPACE
 
 #endif // QT3D_QITEMMODELBUFFER_H

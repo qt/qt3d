@@ -45,6 +45,8 @@
 #include <qt3dcore_global.h>
 #include <component.h>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 class FrameGraphItem;
@@ -71,5 +73,7 @@ private:
 };
 
 } //Qt3D
+
+QT_END_NAMESPACE
 
 #endif // QT3D_FRAMEGRAPH_H

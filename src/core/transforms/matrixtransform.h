@@ -47,6 +47,8 @@
 
 #include <QMatrix4x4>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 class QT3DCORESHARED_EXPORT MatrixTransform : public AbstractTransform
@@ -61,6 +63,8 @@ private:
     QMatrix4x4 m_matrix;
 };
 
-}
+} // namespace Qt3D
+
+QT_END_NAMESPACE
 
 #endif // MATRIXTRANSFORM_H

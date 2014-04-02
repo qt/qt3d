@@ -47,6 +47,8 @@
 
 #include <QList>
 
+QT_BEGIN_NAMESPACE
+
 class QWaitCondition;
 class QWindow;
 
@@ -92,5 +94,7 @@ private:
 };
 
 } // namespace Qt3D
+
+QT_END_NAMESPACE
 
 #endif // QT3D_QASPECTMANAGER_H

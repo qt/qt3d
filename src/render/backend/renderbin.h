@@ -45,11 +45,10 @@
 #include <QList>
 #include <QMap>
 
-namespace Qt3D
-{
+QT_BEGIN_NAMESPACE
 
-namespace Render
-{
+namespace Qt3D {
+namespace Render {
 
 class Drawable;
 class RenderShader;
@@ -93,7 +92,8 @@ private:
 };
 
 } // Render
+} // Qt3D
 
-} // Qt3D of namespace
+QT_END_NAMESPACE
 
 #endif // QT3D_RENDER_RENDERBIN_H

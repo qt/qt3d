@@ -49,6 +49,8 @@
 #include <QMutex>
 #include <QWaitCondition>
 
+QT_BEGIN_NAMESPACE
+
 class QWindow;
 
 namespace Qt3D {
@@ -75,6 +77,8 @@ private:
 };
 
 } // namespace Qt3D
+
+QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(QWaitCondition *)
 

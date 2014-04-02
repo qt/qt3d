@@ -44,6 +44,8 @@
 #include "framegraphnode.h"
 #include "renderer.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 namespace Render {
 
@@ -84,3 +86,5 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
 
 } // namespace Render
 } // namespace Qt3D
+
+QT_END_NAMESPACE

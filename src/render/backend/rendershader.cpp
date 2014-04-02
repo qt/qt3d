@@ -47,11 +47,10 @@
 
 #include <shaderprogram.h>
 
-namespace Qt3D
-{
+QT_BEGIN_NAMESPACE
 
-namespace Render
-{
+namespace Qt3D {
+namespace Render {
 
 RenderShader::RenderShader(ShaderProgram *peer) :
     m_program(NULL),
@@ -150,6 +149,7 @@ QOpenGLShaderProgram* RenderShader::createDefaultProgram()
     return p;
 }
 
-} // Render
+} // namespace Render
+} // namespace Qt3D
 
-} // of namespace Qt3D
+QT_END_NAMESPACE

@@ -41,6 +41,8 @@
 
 #include "weaverjob_p.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 WeaverJob::WeaverJob()
@@ -56,3 +58,5 @@ void WeaverJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
 }
 
 } // namespace Qt3D
+
+QT_END_NAMESPACE

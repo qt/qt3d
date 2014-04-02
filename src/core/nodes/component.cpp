@@ -41,6 +41,8 @@
 
 #include "component.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 Component::Component(Node *parent)
@@ -63,3 +65,5 @@ void Component::notifySceneChange(const QSceneChangePtr &change)
 }
 
 } // namespace Qt3D
+
+QT_END_NAMESPACE

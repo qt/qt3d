@@ -52,13 +52,12 @@
 #include <rendercamera.h>
 #include <meshdata.h>
 
+QT_BEGIN_NAMESPACE
+
 class QOpenGLShaderProgram;
 class QAbstractOpenGLFunctions;
 
-namespace Qt3D
-{
-
-
+namespace Qt3D {
 namespace Render {
 
 class QGraphicsHelperInterface;
@@ -186,7 +185,8 @@ private:
 };
 
 } // Render
-
 } // Qt3D
+
+QT_END_NAMESPACE
 
 #endif // QT3D_RENDER_QGRAPHICSCONTEXT_H

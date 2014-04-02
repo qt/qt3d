@@ -50,11 +50,10 @@
 
 #include <QOpenGLContext>
 
-namespace Qt3D
-{
+QT_BEGIN_NAMESPACE
 
-namespace Render
-{
+namespace Qt3D {
+namespace Render {
 
 RenderCamera::RenderCamera(RendererAspect *rendererAspect)
     : m_rendererAspect(rendererAspect)
@@ -140,6 +139,6 @@ void RenderCamera::sceneChangeEvent(const QSceneChangePtr &e)
 }
 
 } // Render
+} // Qt3D
 
-} // Qt3D of namespace
-
+QT_END_NAMESPACE

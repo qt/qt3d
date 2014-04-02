@@ -49,6 +49,8 @@
 #include <lookattransform.h>
 #include <transform.h>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 class CameraPrivate
@@ -73,6 +75,8 @@ public:
     Transform *m_transform;
 };
 
-}
+} // namespace Qt3D
+
+QT_END_NAMESPACE
 
 #endif // CAMERA_P_H

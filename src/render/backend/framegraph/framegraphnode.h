@@ -42,7 +42,10 @@
 #ifndef QT3D_RENDER_FRAMEGRAPHNODE_H
 #define QT3D_RENDER_FRAMEGRAPHNODE_H
 
+#include <qglobal.h>
 #include <QVector>
+
+QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 namespace Render {
@@ -78,5 +81,7 @@ private:
 
 } // namespace Render
 } // namespace Qt3D
+
+QT_END_NAMESPACE
 
 #endif // QT3D_RENDER_FRAMEGRAPHNODE_H

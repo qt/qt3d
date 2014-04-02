@@ -48,7 +48,14 @@
 #include <QDebug>
 #include <QThread>
 
-static void updateWorldTransformAndBounds(Qt3D::Render::RenderNode *node)
+QT_BEGIN_NAMESPACE
+
+namespace Qt3D {
+namespace Render {
+
+namespace {
+
+void updateWorldTransformAndBounds(Qt3D::Render::RenderNode *node)
 {
     QMatrix4x4 parentTransform;
     if (node->m_parent)
@@ -61,8 +68,7 @@ static void updateWorldTransformAndBounds(Qt3D::Render::RenderNode *node)
         updateWorldTransformAndBounds(child);
 }
 
-namespace Qt3D {
-namespace Render {
+}
 
 UpdateWorldTransformJob::UpdateWorldTransformJob(RenderNode *node)
     : Qt3D::QJob()
@@ -86,3 +92,5 @@ void UpdateWorldTransformJob::run()
 
 } // namespace Render
 } // namespace Qt3D
+
+QT_END_NAMESPACE

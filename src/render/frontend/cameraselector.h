@@ -45,6 +45,8 @@
 #include <qt3drenderer_global.h>
 #include "framegraphitem.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 class Camera;
@@ -69,5 +71,7 @@ private:
 };
 
 } // namespace Qt3D
+
+QT_END_NAMESPACE
 
 #endif // QT3D_CAMERASELECTOR_H

@@ -51,6 +51,8 @@
 
 #include <qt3drenderer_global.h>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 class Effect;
@@ -104,5 +106,7 @@ private:
 };
 
 }
+
+QT_END_NAMESPACE
 
 #endif // MATERIAL_H

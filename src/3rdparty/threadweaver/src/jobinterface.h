@@ -32,7 +32,9 @@
 #include "threadweaver_export.h"
 #include "jobpointer.h"
 
+QT_BEGIN_NAMESPACE
 class QMutex;
+QT_END_NAMESPACE
 
 namespace ThreadWeaver
 {

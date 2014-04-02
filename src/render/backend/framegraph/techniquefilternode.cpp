@@ -43,6 +43,8 @@
 
 #include <QDebug>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 namespace Render {
 
@@ -85,3 +87,5 @@ void TechniqueFilter::revert()
 
 }
 }
+
+QT_END_NAMESPACE

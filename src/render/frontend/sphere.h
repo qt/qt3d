@@ -47,6 +47,8 @@
 #include <QMatrix4x4>
 #include <QVector3D>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 class Sphere
@@ -134,5 +136,7 @@ inline bool intersects(const Sphere &a, const Sphere &b)
 }
 
 }
+
+QT_END_NAMESPACE
 
 #endif // SPHERE_H

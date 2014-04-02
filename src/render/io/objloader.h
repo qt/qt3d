@@ -51,6 +51,8 @@
 
 #include <limits>
 
+QT_BEGIN_NAMESPACE
+
 class QString;
 class QIODevice;
 
@@ -139,5 +141,7 @@ private:
 };
 
 }
+
+QT_END_NAMESPACE
 
 #endif // OBJLOADER_H

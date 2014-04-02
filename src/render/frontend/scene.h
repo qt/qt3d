@@ -45,6 +45,8 @@
 #include <entity.h>
 #include "qt3drenderer_global.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D
 {
 
@@ -91,6 +93,8 @@ private:
 
 };
 
-} // of namespace
+} // namespace Qt3D
+
+QT_END_NAMESPACE
 
 #endif // SCENE_H

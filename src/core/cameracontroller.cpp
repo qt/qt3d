@@ -49,6 +49,8 @@
 #include <entity.h>
 #include <matrixtransform.h>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D
 {
 
@@ -297,3 +299,5 @@ void CameraController::toggleMSAA()
 }
 
 } // of namespace Qt3D
+
+QT_END_NAMESPACE

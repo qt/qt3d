@@ -47,6 +47,8 @@
 
 #include "axisalignedboundingbox.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 class QT3DCORESHARED_EXPORT Bounds : public QObject
@@ -62,6 +64,8 @@ private:
     AxisAlignedBoundingBox m_box;
 };
 
-}
+} // namespace Qt3D
+
+QT_END_NAMESPACE
 
 #endif // BOUNDS_H

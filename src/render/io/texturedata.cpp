@@ -44,6 +44,8 @@
 #include <QDebug>
 #include <QOpenGLTexture>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 Texture::Texture() :
@@ -165,3 +167,5 @@ void TexImageData::setData(QByteArray data, QOpenGLTexture::PixelFormat fmt, QOp
 }
 
 } // namespace Qt3D
+
+QT_END_NAMESPACE

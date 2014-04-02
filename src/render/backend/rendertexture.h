@@ -46,11 +46,11 @@
 
 #include <texturedata.h>
 
-// forward decls
+QT_BEGIN_NAMESPACE
+
 class QOpenGLTexture;
 
 namespace Qt3D {
-
 namespace Render {
 
 class RenderTexture
@@ -69,8 +69,9 @@ private:
     void setToGLTexture(TexImageDataPtr imgData);
 };
 
-} // Render
-
+} // namespace Render
 } // namespace Qt3D
+
+QT_END_NAMESPACE
 
 #endif // QT3D_RENDER_RENDERTEXTURE_H

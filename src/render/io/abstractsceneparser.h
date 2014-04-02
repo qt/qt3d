@@ -45,8 +45,9 @@
 #include <entity.h>
 #include <QObject>
 
-namespace Qt3D
-{
+QT_BEGIN_NAMESPACE
+
+namespace Qt3D {
 
 class AbstractSceneParser : public QObject
 {
@@ -91,5 +92,7 @@ private:
 };
 
 }
+
+QT_END_NAMESPACE
 
 #endif // ABSTRACTSCENEPARSER_H

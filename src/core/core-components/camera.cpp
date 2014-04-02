@@ -45,6 +45,8 @@
 #include <transform.h>
 #include <lookattransform.h>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 Camera::Camera(Node *parent) : Entity(parent)
@@ -223,3 +225,5 @@ void Camera::rotateAboutViewCenter( const QQuaternion& q )
 }
 
 } // Qt3D
+
+QT_END_NAMESPACE

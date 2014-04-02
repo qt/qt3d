@@ -41,6 +41,8 @@
 
 #include "meshmanager.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 namespace Render {
 
@@ -62,3 +64,5 @@ void MeshManager::addMesh(Qt3D::Mesh *frontEndMesh)
 
 } // namespace Render
 } // namespace Qt3D
+
+QT_END_NAMESPACE

@@ -46,13 +46,12 @@
 
 #include "qgraphicshelperinterface.h"
 
+QT_BEGIN_NAMESPACE
+
 class QOpenGLFunctions_3_2_Core;
 
-namespace Qt3D
-{
-
-namespace Render
-{
+namespace Qt3D {
+namespace Render {
 
 class QGraphicsHelperGL3 : public QGraphicsHelperInterface
 {
@@ -75,8 +74,9 @@ private:
 };
 
 } // Render
-
 } // Qt3D
+
+QT_END_NAMESPACE
 
 #endif // !QT_OPENGL_ES_2
 

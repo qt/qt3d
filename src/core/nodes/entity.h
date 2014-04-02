@@ -48,6 +48,8 @@
 #include <QMatrix4x4>
 #include <QUuid>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 class AbstractTransform;
@@ -159,5 +161,7 @@ private:
 };
 
 } // namespace Qt3D
+
+QT_END_NAMESPACE
 
 #endif // QT3D_ENTITY_H

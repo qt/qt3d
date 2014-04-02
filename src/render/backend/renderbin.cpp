@@ -48,11 +48,10 @@
 
 //#define QT3D_STATE_CHANGE_DEBUG
 
-namespace Qt3D
-{
+QT_BEGIN_NAMESPACE
 
+namespace Qt3D {
 namespace Render {
-
 
 void OpaqueBin::sendDrawingCommands(QGraphicsContext *gc)
 {
@@ -203,5 +202,6 @@ void OpaqueBin::removeDrawable(Drawable *dr)
 }
 
 } // Render
-
 } // Qt3D of namespace
+
+QT_END_NAMESPACE

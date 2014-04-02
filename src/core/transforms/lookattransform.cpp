@@ -41,6 +41,8 @@
 
 #include "lookattransform.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 LookAtTransform::LookAtTransform(Node *parent)
@@ -110,3 +112,5 @@ QVector3D LookAtTransform::viewVector() const
 }
 
 } // namespace Qt3D
+
+QT_END_NAMESPACE

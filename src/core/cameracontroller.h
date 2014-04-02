@@ -47,10 +47,11 @@
 
 #include <QPoint>
 
+QT_BEGIN_NAMESPACE
+
 class QMouseEvent;
 class QWheelEvent;
 class QKeyEvent;
-
 
 namespace Qt3D
 {
@@ -130,5 +131,7 @@ private:
 };
 
 } // of namespace Qt3D
+
+QT_END_NAMESPACE
 
 #endif // of CAMERA_CONTROLLER_H

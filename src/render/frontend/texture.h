@@ -47,6 +47,8 @@
 
 #include <QUrl>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 class Texture;
@@ -83,5 +85,7 @@ private:
 };
 
 } // namespace Qt3D
+
+QT_END_NAMESPACE
 
 #endif // QT3D_TEXTURE_H

@@ -43,8 +43,9 @@
 
 #include "rendertexture.h"
 
-namespace Qt3D {
+QT_BEGIN_NAMESPACE
 
+namespace Qt3D {
 namespace Render {
 
 RenderTextureProvider::RenderTextureProvider()
@@ -62,6 +63,7 @@ RenderTexturePtr RenderTextureProvider::get(Texture *t)
     return rt;
 }
 
-} // Render
-
+} // namespace Render
 } // namespace Qt3D
+
+QT_END_NAMESPACE

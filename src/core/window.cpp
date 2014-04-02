@@ -55,6 +55,8 @@
 
 #include "cameracontroller.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 Window::Window(QScreen *screen)
@@ -257,5 +259,6 @@ void Window::mouseMoveEvent( QMouseEvent* e )
     m_controller->mouseMoveEvent(e);
 }
 
-
 } // namespace Qt3D
+
+QT_END_NAMESPACE

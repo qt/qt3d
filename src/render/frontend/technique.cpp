@@ -44,6 +44,8 @@
 #include <QDebug>
 #include <QOpenGLContext>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 Technique::Technique(Node *parent)
@@ -281,3 +283,5 @@ Render::QUniformValue::Type Parameter::uniformType() const
 }
 
 } // of namespace Qt3D
+
+QT_END_NAMESPACE

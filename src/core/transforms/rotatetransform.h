@@ -47,6 +47,8 @@
 
 #include <QVector3D>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 class QT3DCORESHARED_EXPORT RotateTransform : public AbstractTransform
@@ -87,5 +89,7 @@ private:
 };
 
 } // namespace Qt3D
+
+QT_END_NAMESPACE
 
 #endif // QT3D_ROTATETRANSFORM_H

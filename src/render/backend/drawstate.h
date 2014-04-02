@@ -45,8 +45,9 @@
 #include <QList>
 #include <QSet>
 
-namespace Qt3D {
+QT_BEGIN_NAMESPACE
 
+namespace Qt3D {
 namespace Render {
 
 class QGraphicsContext;
@@ -119,7 +120,8 @@ private:
 };
 
 } // Render
-
 } // namespace Qt3D
+
+QT_END_NAMESPACE
 
 #endif // QT3D_RENDER_DRAWSTATE_H

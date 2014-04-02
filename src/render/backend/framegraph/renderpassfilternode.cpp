@@ -43,6 +43,8 @@
 
 #include <QDebug>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 namespace Render {
 
@@ -71,5 +73,7 @@ void RenderPassFilter::revert()
     qDebug() << Q_FUNC_INFO;
 }
 
-}
-}
+} // namespace Render
+} // namespace Qt3D
+
+QT_END_NAMESPACE

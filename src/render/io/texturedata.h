@@ -46,6 +46,8 @@
 #include <QImage>
 #include <QSharedPointer>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 class TexImageData
@@ -160,5 +162,7 @@ private:
 };
 
 } // namespace Qt3D
+
+QT_END_NAMESPACE
 
 #endif // QT3D_TEXTUREDATA_H

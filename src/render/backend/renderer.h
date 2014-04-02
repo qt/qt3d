@@ -53,6 +53,8 @@
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLBuffer>
 
+QT_BEGIN_NAMESPACE
+
 class QSurface;
 
 namespace Qt3D {
@@ -167,5 +169,7 @@ private:
 
 } // namespace Render
 } // namespace Qt3D
+
+QT_END_NAMESPACE
 
 #endif // QT3D_RENDER_RENDERER_H

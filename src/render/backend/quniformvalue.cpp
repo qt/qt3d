@@ -49,8 +49,9 @@
 #include <QColor>
 #include <QQuaternion>
 
-namespace Qt3D {
+QT_BEGIN_NAMESPACE
 
+namespace Qt3D {
 namespace Render {
 
 QUniformValue::QUniformValue() :
@@ -300,7 +301,7 @@ void QUniformPack::apply(QGraphicsContext *gc)
     } // of textures iteration
 }
 
-} // Render
+} // namespace Render
+} // namespace Qt3D
 
-} // of namespace Qt3D
-
+QT_END_NAMESPACE

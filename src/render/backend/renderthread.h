@@ -47,6 +47,8 @@
 #include <QMutex>
 #include <QWaitCondition>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 namespace Render {
 class Renderer;
@@ -76,5 +78,7 @@ private:
 };
 
 }
+
+QT_END_NAMESPACE
 
 #endif // RENDERTHREAD_H

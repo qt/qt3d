@@ -48,6 +48,8 @@
 
 #include <QSharedPointer>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 namespace Render {
 
@@ -69,5 +71,7 @@ typedef QSharedPointer<LoadMeshDataJob> LoadMeshDataJobPtr;
 
 } // namespace Render
 } // namespace Qt3D
+
+QT_END_NAMESPACE
 
 #endif // QT3D_RENDER_LOADMESHDATAJOB_H

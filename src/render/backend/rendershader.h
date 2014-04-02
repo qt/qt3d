@@ -48,10 +48,11 @@
 // somewhere common to avoid this include?
 #include <technique.h>
 
+QT_BEGIN_NAMESPACE
+
 class QOpenGLShaderProgram;
 
-namespace Qt3D
-{
+namespace Qt3D {
 
 class ShaderProgram;
 
@@ -100,8 +101,8 @@ private:
 };
 
 } // Render
-
 } // Qt3D
 
+QT_END_NAMESPACE
 
 #endif // QT3D_RENDER_RENDERSHADER_H

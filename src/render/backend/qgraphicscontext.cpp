@@ -64,8 +64,9 @@
 #include <QSurface>
 #include <QOpenGLTexture>
 
-namespace Qt3D {
+QT_BEGIN_NAMESPACE
 
+namespace Qt3D {
 namespace Render {
 
 static QHash<unsigned int, QGraphicsContext*> static_contexts;
@@ -575,6 +576,6 @@ QOpenGLBuffer QGraphicsContext::glBufferFor(BufferPtr buf)
 }
 
 } // Render
-
 } // Qt3D of namespace
 
+QT_END_NAMESPACE

@@ -49,11 +49,10 @@
 #include <QIODevice>
 #include <QMap>
 
-namespace Qt3D
-{
+QT_BEGIN_NAMESPACE
 
-namespace AssimpHelper
-{
+namespace Qt3D {
+namespace AssimpHelper {
 
 //CUSTOM FILE STREAM
 class AssimpIOStream : public Assimp::IOStream
@@ -89,7 +88,8 @@ private:
 };
 
 } // AssimpHelper namespace
-
 } // Qt3D namespace
+
+QT_END_NAMESPACE
 
 #endif // ASSIMPHELPERS_H

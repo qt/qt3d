@@ -49,9 +49,9 @@
 // for RenderTexturePtr
 #include <rendertextureprovider.h>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
-
-
 namespace Render {
 
 class QGraphicsContext;
@@ -137,6 +137,9 @@ private:
     QVector<NamedTexture> m_textures;
 };
 
-}} // of namespace Qt3D::Render
+} // Render
+} // Qt3D
+
+QT_END_NAMESPACE
 
 #endif // QT3D_RENDER_QUNIFORMVALUE_H

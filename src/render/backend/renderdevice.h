@@ -42,6 +42,10 @@
 #ifndef QT3D_RENDER_RENDERDEVICE_H
 #define QT3D_RENDER_RENDERDEVICE_H
 
+#include <qglobal.h>
+
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 namespace Render {
 
@@ -53,5 +57,7 @@ public:
 
 } // namespace Render
 } // namespace Qt3D
+
+QT_END_NAMESPACE
 
 #endif // QT3D_RENDER_RENDERDEVICE_H

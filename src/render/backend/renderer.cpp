@@ -78,8 +78,9 @@
 #include <QDebug>
 #include <QSurface>
 
-namespace Qt3D {
+QT_BEGIN_NAMESPACE
 
+namespace Qt3D {
 namespace {
 
 class TemporaryBackendBuilder : public NodeVisitor
@@ -581,3 +582,5 @@ void Renderer::foundCamera(Camera *cam, const QMatrix4x4 &mm)
 
 } // namespace Render
 } // namespace Qt3D
+
+QT_END_NAMESPACE

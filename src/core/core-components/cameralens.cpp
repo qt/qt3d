@@ -42,6 +42,8 @@
 #include "cameralens.h"
 #include "cameralens_p.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 CameraLens::CameraLens(Node *parent) :
@@ -235,3 +237,5 @@ QMatrix4x4 CameraLens::projectionMatrix() const
 }
 
 } // Qt3D
+
+QT_END_NAMESPACE

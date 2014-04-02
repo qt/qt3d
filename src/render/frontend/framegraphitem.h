@@ -45,6 +45,8 @@
 #include <qt3drenderer_global.h>
 #include <node.h>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 class QT3DRENDERERSHARED_EXPORT FrameGraphItem : public Node
@@ -67,5 +69,7 @@ private:
 };
 
 } // Qt3D
+
+QT_END_NAMESPACE
 
 #endif // QT3D_FRAMEGRAPHNODE_H

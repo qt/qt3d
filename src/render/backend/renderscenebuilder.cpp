@@ -64,6 +64,7 @@
 #include <viewportnode.h>
 #include <rendertargetselectornode.h>
 
+QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 namespace Render {
@@ -231,3 +232,5 @@ void RenderSceneBuilder::visitEntity(Qt3D::Entity *entity)
 
 } // namespace Render
 } // namespace Qt3D
+
+QT_END_NAMESPACE

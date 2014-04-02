@@ -46,6 +46,8 @@
 
 #include <QMatrix4x4>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D
 {
 
@@ -85,6 +87,8 @@ private:
     void outerVisitNode(Node *n);
 };
 
-} // of namespace
+} // namespace Qt3D
+
+QT_END_NAMESPACE
 
 #endif // NODEVISITOR_H

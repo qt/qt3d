@@ -41,6 +41,8 @@
 
 #include "cameraselector.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 CameraSelector::CameraSelector(Node *parent)
@@ -63,3 +65,5 @@ Entity *CameraSelector::camera() const
 }
 
 } // namespace Qt3D
+
+QT_END_NAMESPACE

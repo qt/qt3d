@@ -47,6 +47,8 @@
 #include <qt3drenderer_global.h>
 #include <node.h>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 class QT3DRENDERERSHARED_EXPORT Tag : public Node
@@ -93,5 +95,7 @@ private:
 };
 
 } // namespace Qt3D
+
+QT_END_NAMESPACE
 
 #endif // TAG_H

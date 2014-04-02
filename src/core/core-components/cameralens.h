@@ -49,6 +49,8 @@
 #include <QQuaternion>
 #include <QVector3D>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 class CameraLensPrivate;
@@ -134,5 +136,7 @@ private:
 };
 
 } // Qt3D
+
+QT_END_NAMESPACE
 
 #endif // CAMERALENS_H

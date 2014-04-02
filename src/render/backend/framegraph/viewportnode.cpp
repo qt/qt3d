@@ -43,6 +43,8 @@
 
 #include <QDebug>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 namespace Render {
 
@@ -104,3 +106,5 @@ void ViewportNode::revert()
 
 } // Render
 } // Qt3D
+
+QT_END_NAMESPACE

@@ -75,6 +75,7 @@
 #include "texture.h"
 #include "framegraph.h"
 
+QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
@@ -178,3 +179,5 @@ void RendererAspect::registerQmlComponents()
 }
 
 }
+
+QT_END_NAMESPACE

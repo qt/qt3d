@@ -45,8 +45,9 @@
 #include <QDebug>
 #include <QOpenGLVertexArrayObject>
 
-namespace Qt3D
-{
+QT_BEGIN_NAMESPACE
+
+namespace Qt3D {
 
 GLint elementType(GLint type)
 {
@@ -433,3 +434,5 @@ void Buffer::upload(QOpenGLBuffer b)
 }
 
 } // of namespace
+
+QT_END_NAMESPACE

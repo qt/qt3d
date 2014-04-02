@@ -62,6 +62,8 @@
 #include <QMap>
 #include <QDir>
 
+QT_BEGIN_NAMESPACE
+
 class QFile;
 
 namespace Qt3D {
@@ -136,5 +138,7 @@ private :
 };
 
 }
+
+QT_END_NAMESPACE
 
 #endif // ASSIMPPARSER_H

@@ -41,6 +41,8 @@
 
 #include "scaletransform.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D
 {
 
@@ -83,3 +85,5 @@ QMatrix4x4 ScaleTransform::matrix() const
 }
 
 } // Qt3D
+
+QT_END_NAMESPACE

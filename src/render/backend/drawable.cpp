@@ -41,8 +41,9 @@
 
 #include "drawable.h"
 
-namespace Qt3D {
+QT_BEGIN_NAMESPACE
 
+namespace Qt3D {
 namespace Render {
 
 Drawable::Drawable()
@@ -78,6 +79,6 @@ RenderNode *Drawable::node() const
 #endif
 
 } // Render
+} // Qt3D
 
-} // Qt3D of namespace
-
+QT_END_NAMESPACE

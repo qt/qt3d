@@ -47,6 +47,8 @@
 
 #include <QMatrix4x4>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 class QT3DCORESHARED_EXPORT AbstractTransform : public Node
@@ -59,6 +61,8 @@ public:
     virtual QMatrix4x4 matrix() const = 0;
 };
 
-} // of namespace Qt3D
+} // namespace Qt3D
+
+QT_END_NAMESPACE
 
 #endif // of QT3D_ABSTRACT_TRANSFORM_H

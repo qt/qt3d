@@ -44,11 +44,10 @@
 #include "qgraphicshelpergl2.h"
 #include <QOpenGLFunctions_2_0>
 
-namespace Qt3D
-{
+QT_BEGIN_NAMESPACE
 
-namespace Render
-{
+namespace Qt3D {
+namespace Render {
 
 QGraphicsHelperGL2::QGraphicsHelperGL2() :
     m_funcs(0)
@@ -128,7 +127,8 @@ void QGraphicsHelperGL2::blendEquation(GLenum mode)
 }
 
 } // Render
-
 } // Qt3D
+
+QT_END_NAMESPACE
 
 #endif // !QT_OPENGL_ES_2

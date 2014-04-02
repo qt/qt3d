@@ -41,6 +41,8 @@
 
 #include "matrixtransform.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 MatrixTransform::MatrixTransform()
@@ -57,4 +59,6 @@ QMatrix4x4 MatrixTransform::matrix() const
     return m_matrix;
 }
 
-}
+} // namespace Qt3D
+
+QT_END_NAMESPACE

@@ -50,8 +50,9 @@
 
 #include "states/blendstate.h"
 
-namespace Qt3D {
+QT_BEGIN_NAMESPACE
 
+namespace Qt3D {
 namespace Render {
 
 DrawStateSet::DrawStateSet()
@@ -182,5 +183,6 @@ bool DrawStateSet::contains(DrawState *ds) const
 }
 
 } // Render
-
 } // namespace Qt3D
+
+QT_END_NAMESPACE

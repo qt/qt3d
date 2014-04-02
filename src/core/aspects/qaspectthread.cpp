@@ -46,6 +46,8 @@
 #include <QDebug>
 #include <QMutexLocker>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 QAspectThread::QAspectThread(QObject *parent)
@@ -92,3 +94,5 @@ void QAspectThread::run()
 }
 
 } // namespace Qt3D
+
+QT_END_NAMESPACE

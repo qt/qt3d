@@ -41,6 +41,8 @@
 
 #include "abstractaspect.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 AbstractAspect::AbstractAspect(AspectType aspectType, QObject *parent)
@@ -82,3 +84,4 @@ void AbstractAspect::setWindow(QWindow *win)
 
 } // of namespace Qt3D
 
+QT_END_NAMESPACE

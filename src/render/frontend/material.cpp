@@ -46,6 +46,8 @@
 
 #include <QDebug>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 Material::Material(Node *parent)
@@ -155,4 +157,6 @@ void Material::clearTags(QQmlListProperty<Tag> *list)
     }
 }
 
-} // of namespace
+} // namespace Qt3D
+
+QT_END_NAMESPACE

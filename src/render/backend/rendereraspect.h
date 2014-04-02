@@ -45,6 +45,7 @@
 #include <qt3drenderer_global.h>
 #include "abstractaspect.h"
 
+QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 class RenderThread;
@@ -77,5 +78,7 @@ private:
 };
 
 }
+
+QT_END_NAMESPACE
 
 #endif // RENDERERASPECT_H

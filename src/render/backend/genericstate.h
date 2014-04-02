@@ -51,9 +51,9 @@
 #undef DrawState
 #endif
 
-namespace Qt3D
-{
+QT_BEGIN_NAMESPACE
 
+namespace Qt3D {
 namespace Render {
 
 template <typename Derived, typename T>
@@ -112,7 +112,8 @@ protected:
 };
 
 } // Render
-
 } // Qt3D of namespace
+
+QT_END_NAMESPACE
 
 #endif // STATE_IMPLS_H

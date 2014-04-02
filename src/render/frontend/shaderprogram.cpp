@@ -44,6 +44,8 @@
 #include <QDebug>
 #include <QFile>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 ShaderProgram::ShaderProgram(Node *parent)
@@ -162,3 +164,4 @@ void ShaderProgram::load()
 
 } // of namespace Qt3D
 
+QT_END_NAMESPACE

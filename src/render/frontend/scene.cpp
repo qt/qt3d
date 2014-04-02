@@ -46,8 +46,9 @@
 #include <gltfparser.h>
 #include <assimpparser.h>
 
-namespace Qt3D
-{
+QT_BEGIN_NAMESPACE
+
+namespace Qt3D {
 
 Scene::Scene(Node* parent) :
     Entity(parent),
@@ -145,4 +146,6 @@ void Scene::rebuild()
     }
 }
 
-} // of namespace
+} // namespace Qt3D
+
+QT_END_NAMESPACE

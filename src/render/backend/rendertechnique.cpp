@@ -47,11 +47,10 @@
 
 #include <QDebug>
 
-namespace Qt3D
-{
+QT_BEGIN_NAMESPACE
 
-namespace Render
-{
+namespace Qt3D {
+namespace Render {
 
 RenderTechnique::RenderTechnique(Technique* peer) :
     m_peer(peer)
@@ -156,6 +155,7 @@ QStringList RenderTechnique::glslNamesForUniformParameter(QString pName) const
     return result;
 }
 
-} // Render
+} // namespace Render
+} // namespace Qt3D
 
-} // of namespace Qt3D
+QT_END_NAMESPACE

@@ -45,6 +45,8 @@
 #include <qchangearbiter.h>
 #include <QVector>
 
+QT_BEGIN_NAMESPACE
+
 class QMatrix4x4;
 
 namespace Qt3D {
@@ -84,7 +86,8 @@ public:
 };
 
 } // namespace Render
-
 } // namespace Qt3D
+
+QT_END_NAMESPACE
 
 #endif // QT3D_RENDER_RENDERNODE_H

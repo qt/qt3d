@@ -44,6 +44,8 @@
 #include <QDebug>
 #include <QMatrix4x4>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 void AxisAlignedBoundingBox::update(const QVector<QVector3D> &points)
@@ -83,4 +85,6 @@ QT3DCORESHARED_EXPORT QDebug operator<<(QDebug dbg, const AxisAlignedBoundingBox
     return dbg.space();
 }
 
-}
+} //namespace Qt3D
+
+QT_END_NAMESPACE

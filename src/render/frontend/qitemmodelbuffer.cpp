@@ -44,6 +44,8 @@
 #include <QDebug>
 #include <QColor>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 void variantToBytes(void* dest, const QVariant& v, GLint type)
@@ -287,3 +289,5 @@ QItemModelBuffer::RoleMapping::RoleMapping(QByteArray rnm, QString nm, int ty) :
 }
 
 } // namespace Qt3D
+
+QT_END_NAMESPACE

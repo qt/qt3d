@@ -47,6 +47,8 @@
 
 #include <QQmlEngine>
 
+QT_BEGIN_NAMESPACE
+
 class QTimer;
 
 namespace Qt3D {
@@ -110,5 +112,7 @@ private:
 };
 
 } // namespace Qt3D
+
+QT_END_NAMESPACE
 
 #endif // QT3D_WINDOW_H

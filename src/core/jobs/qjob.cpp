@@ -41,6 +41,8 @@
 
 #include "qjob.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 QJob::QJob()
@@ -57,3 +59,5 @@ void QJob::addDependency(QWeakPointer<QJob> dependency)
 }
 
 } // namespace Qt3D
+
+QT_END_NAMESPACE

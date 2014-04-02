@@ -51,6 +51,8 @@
 #include <QDebug>
 #include <QThread>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 QJobManager::QJobManager(QObject *parent)
@@ -131,3 +133,5 @@ void QJobManager::waitForPerThreadFunction(JobFunction func, void *arg)
 }
 
 } // namespace Qt3D
+
+QT_END_NAMESPACE

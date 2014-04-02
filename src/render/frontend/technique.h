@@ -56,6 +56,8 @@
 // FIXME - move enum somewhere common so don't need to include this here
 #include <quniformvalue.h>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 class QT3DRENDERERSHARED_EXPORT Parameter : public QObject
@@ -190,5 +192,7 @@ private:
 };
 
 }
+
+QT_END_NAMESPACE
 
 #endif // TECHNIQUE_H

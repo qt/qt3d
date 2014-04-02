@@ -44,6 +44,8 @@
 
 #include "framegraphnode.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 class Entity;
@@ -65,8 +67,9 @@ private:
     Entity *m_camera;
 };
 
-} // Render
+} // namespace Render
+} // namespace Qt3D
 
-} // Qt3D
+QT_END_NAMESPACE
 
 #endif // QT3D_RENDER_CAMERASELECTOR_H

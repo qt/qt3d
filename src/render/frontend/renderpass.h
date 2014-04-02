@@ -50,6 +50,8 @@
 
 #include <QHash>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 class Parameter;
@@ -100,5 +102,7 @@ protected:
 };
 
 }
+
+QT_END_NAMESPACE
 
 #endif // RENDERPASS_H

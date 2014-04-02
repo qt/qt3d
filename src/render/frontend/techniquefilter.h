@@ -49,6 +49,8 @@
 
 #include <QQmlListProperty>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 class QT3DRENDERERSHARED_EXPORT TechniqueFilter : public FrameGraphItem
@@ -77,5 +79,7 @@ private:
 };
 
 } // namespace Qt3D
+
+QT_END_NAMESPACE
 
 #endif // QT3D_TECHNIQUEFILTER_H

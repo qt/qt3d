@@ -47,11 +47,10 @@
 #include <QDebug>
 #include <QMap>
 
-namespace Qt3D
-{
+QT_BEGIN_NAMESPACE
 
-namespace AssimpHelper
-{
+namespace Qt3D {
+namespace AssimpHelper {
 /*!
  *  \class AssimpIOStream
  *
@@ -229,5 +228,6 @@ void AssimpIOSystem::Close(Assimp::IOStream *pFile)
 }
 
 } // AssimpHelper namespace
-
 } // Qt3D namespace
+
+QT_END_NAMESPACE

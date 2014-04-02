@@ -49,8 +49,9 @@
 #include <QColor>
 #include <qmath.h>
 
-namespace Qt3D
-{
+QT_BEGIN_NAMESPACE
+
+namespace Qt3D {
 
 /*!
  * \class AssimpParser
@@ -65,8 +66,7 @@ namespace Qt3D
  * \sa GLTFParser
 */
 
-namespace
-{
+namespace {
 
 const QString ASSIMP_MATERIAL_DIFFUSE_COLOR = QStringLiteral("diffuse");
 const QString ASSIMP_MATERIAL_SPECULAR_COLOR = QStringLiteral("specular");
@@ -733,3 +733,5 @@ void AssimpParser::copyMaterialFloatProperties(Material *material, aiMaterial *a
 }
 
 } // Qt3D
+
+QT_END_NAMESPACE

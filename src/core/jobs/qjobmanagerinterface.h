@@ -46,6 +46,8 @@
 
 #include "qjob.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 class QJobManagerInterface : public QObject
@@ -66,5 +68,7 @@ public:
 };
 
 } // namespace Qt3D
+
+QT_END_NAMESPACE
 
 #endif // QJOBMANAGERINTERFACE_H

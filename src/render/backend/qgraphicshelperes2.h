@@ -47,13 +47,12 @@
 
 #ifdef QT_OPENGL_ES_2
 
+QT_BEGIN_NAMESPACE
+
 class QOpenGLFunctions_ES2;
 
-namespace Qt3D
-{
-
-namespace Render
-{
+namespace Qt3D {
+namespace Render {
 
 class QGraphicsHelperES2 : public QGraphicsHelperInterface
 {
@@ -76,8 +75,10 @@ private:
 };
 
 } // Render
-
 } // Qt3D
+
+QT_END_NAMESPACE
+
 #endif // QT_OPENGL_ES2
 
 #endif // QT3D_RENDER_QGRAPHICSHELPERES2_H

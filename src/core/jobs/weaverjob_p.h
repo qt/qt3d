@@ -45,6 +45,8 @@
 #include <job.h>
 #include "qjob.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 class WeaverJob : public ThreadWeaver::Job
@@ -58,5 +60,7 @@ public:
 };
 
 } // namespace Qt3D
+
+QT_END_NAMESPACE
 
 #endif // QT3D_WEAVERJOB_H

@@ -46,6 +46,8 @@
 
 #include <QStringList>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 namespace Render {
 
@@ -64,8 +66,9 @@ private:
     QString m_filter;
 };
 
-}
+} // namespace Render
+} // namespace Qt3D
 
-}
+QT_END_NAMESPACE
 
 #endif // QT3D_RENDER_RENDERPASSFILTER_H

@@ -47,6 +47,8 @@
 
 #include <QVector>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 class QJobProviderInterface
@@ -56,5 +58,7 @@ public:
 };
 
 }
+
+QT_END_NAMESPACE
 
 #endif // QT3D_QJOBPROVIDERINTERFACE_H

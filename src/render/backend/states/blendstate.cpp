@@ -45,8 +45,9 @@
 
 #include <QOpenGLFunctions_3_2_Core>
 
-namespace Qt3D {
+QT_BEGIN_NAMESPACE
 
+namespace Qt3D {
 namespace Render {
 
 template <class State>
@@ -188,5 +189,6 @@ DepthMask::DepthMask(GLboolean flag) :
 }
 
 } // Render
+} // Qt3D
 
-} // Render of namespace
+QT_END_NAMESPACE

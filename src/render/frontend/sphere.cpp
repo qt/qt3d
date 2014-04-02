@@ -45,6 +45,8 @@
 
 #include <math.h>
 
+QT_BEGIN_NAMESPACE
+
 namespace {
 
 inline QPair<int, int> findExtremePoints(const QVector<QVector3D> &points)
@@ -173,3 +175,5 @@ Sphere Sphere::transformed(const QMatrix4x4 &mat)
 }
 
 }
+
+QT_END_NAMESPACE

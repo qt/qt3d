@@ -48,7 +48,8 @@
 #include <QVector>
 #include <QVector3D>
 
-// forward decls
+QT_BEGIN_NAMESPACE
+
 class QDebug;
 
 namespace Qt3D {
@@ -152,6 +153,8 @@ inline bool intersects(const AxisAlignedBoundingBox &a,
     return true;
 }
 
-}
+} // namespace Qt3D
+
+QT_END_NAMESPACE
 
 #endif // AXIS_ALIGNED_BOUNDING_BOX

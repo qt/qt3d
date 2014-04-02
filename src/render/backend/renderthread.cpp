@@ -46,6 +46,8 @@
 #include <QEventLoop>
 #include <QTime>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 RenderThread::RenderThread( QObject* parent )
@@ -82,3 +84,5 @@ void RenderThread::run()
 }
 
 }
+
+QT_END_NAMESPACE

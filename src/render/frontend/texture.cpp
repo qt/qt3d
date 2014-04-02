@@ -46,6 +46,8 @@
 #include <QImage>
 #include <QDebug>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 QmlTexture::QmlTexture(Node *parent) :
@@ -97,5 +99,6 @@ void QmlTexture::setRectangle(bool r)
                              QOpenGLTexture::Target2D);
 }
 
-
 } // namespace Qt3D
+
+QT_END_NAMESPACE

@@ -43,6 +43,8 @@
 
 #include <QDebug>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 namespace Render {
 
@@ -73,3 +75,5 @@ void CameraSelector::revert()
 
 }
 }
+
+QT_END_NAMESPACE

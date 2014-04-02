@@ -41,6 +41,8 @@
 
 #include "bounds.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 Bounds::Bounds(QObject *parent) :
@@ -58,4 +60,6 @@ void Bounds::setBox( const AxisAlignedBoundingBox& aabb )
     m_box = aabb;
 }
 
-}
+} // namespace Qt3D
+
+QT_END_NAMESPACE

@@ -49,7 +49,8 @@
 
 #include <QSharedPointer>
 
-// forward decls
+QT_BEGIN_NAMESPACE
+
 class QWindow;
 
 namespace Qt3D {
@@ -100,6 +101,9 @@ private:
     Node *m_root;
     AspectType m_aspectType;
 };
-}
+
+} // namespace Qt3D
+
+QT_END_NAMESPACE
 
 #endif // ABSTRACTASPECT_H

@@ -43,6 +43,8 @@
 
 #include <QDebug>
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 QAspectScheduler::QAspectScheduler(QObject *parent)
@@ -52,3 +54,5 @@ QAspectScheduler::QAspectScheduler(QObject *parent)
 }
 
 } // namespace Qt3D
+
+QT_END_NAMESPACE
