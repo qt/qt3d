@@ -22,5 +22,6 @@ include(../private/private.pri)
 include(threed.pri)
 PUBLIC_HEADERS = $$HEADERS
 HEADERS += $$PRIVATE_HEADERS
+PRECOMPILED_HEADER =
 
 !contains(QT_CONFIG, egl):DEFINES += QT_NO_EGL
