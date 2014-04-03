@@ -44,10 +44,10 @@
 
 #include "framegraphnode.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
-
 namespace Render {
-
 
 class RenderTargetSelector : public FrameGraphNode
 {
@@ -62,8 +62,8 @@ private:
 };
 
 } // Render
-
 } // Qt3D
 
+QT_END_NAMESPACE
 
 #endif // QT3D_RENDER_RENDERTARGETSELECTOR_H

@@ -41,6 +41,8 @@
 
 #include "rendertargetselector.h"
 
+QT_BEGIN_NAMESPACE
+
 namespace Qt3D {
 
 RenderTargetSelector::RenderTargetSelector(Qt3D::Node *parent) :
@@ -49,3 +51,5 @@ RenderTargetSelector::RenderTargetSelector(Qt3D::Node *parent) :
 }
 
 } // Qt3D
+
+QT_END_NAMESPACE
