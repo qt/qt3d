@@ -59,13 +59,15 @@ namespace Render {
 class RenderCamera : public QObserverInterface
 {
 public:
-    RenderCamera(RendererAspect *rendererAspect);
+    RenderCamera();
 
+    void setRendererAspect(RendererAspect *rendererAspect);
     void setPeer(CameraLens *peer);
 
     // manually sync state with the peer, for the moment
     void sync();
 
+    void setClearColor();
     QVector4D clearColor() const { return m_clearColor; }
 
     unsigned int clearMask() const;

@@ -353,7 +353,8 @@ void Renderer::setCamera(Entity *cam)
     }
     CameraLens *lens = lenses.first();
     m_camera = cam;
-    m_renderCamera = new RenderCamera(m_rendererAspect);
+    m_renderCamera = new RenderCamera();
+    m_renderCamera->setRendererAspect(m_rendererAspect);
     m_renderCamera->setPeer(lens);
     m_renderCamera->setProjection(lens->projectionMatrix());
 
@@ -495,7 +496,8 @@ RenderTechnique* Renderer::techniqueForMaterial(Material* mat)
 RenderShader* Renderer::getOrCreateShader(ShaderProgram* sp)
 {
     if (!m_shaderHash.contains(sp)) {
-        RenderShader* rs = new RenderShader(sp);
+        RenderShader* rs = new RenderShader();
+        rs->setPeer(sp);
         m_shaderHash[sp] = rs;
     }
 
@@ -517,7 +519,8 @@ RenderBin* Renderer::getOrCreateBinForPass(Technique* t, RenderPass* p)
 
 RenderTechnique* Renderer::createTechnique(Technique* tech)
 {
-    RenderTechnique* rt = new RenderTechnique(tech);
+    RenderTechnique* rt = new RenderTechnique();
+    rt->setPeer(tech);
     for (unsigned int p=0; p<rt->passCount(); ++p) {
         RenderPass* frontendPass = tech->renderPasses().at(p);
         RenderShader* rshader = getOrCreateShader(frontendPass->shaderProgram());
@@ -535,7 +538,8 @@ RenderMaterial* Renderer::getOrCreateMaterial(Material* mat)
     if (!m_materialHash.contains(mat)) {
         qDebug() << "creating render material for mat:" << mat->objectName();
 
-        RenderMaterial* rmat = new RenderMaterial(m_rendererAspect);
+        RenderMaterial* rmat = new RenderMaterial();
+        rmat->setRendererAspect(m_rendererAspect);
         rmat->setPeer(mat);
         rmat->setTextureProvider(m_textureProvider);
         m_materialHash[mat] = rmat;
@@ -560,7 +564,8 @@ void Renderer::buildMeshes(Mesh* mesh, Material* mat, const QMatrix4x4& mm)
     for (unsigned int p=0; p<t->passCount(); ++p) {
         RenderBin* bin = t->binForPass(p);
 
-        RenderMesh* rmesh = new RenderMesh(mesh);
+        RenderMesh* rmesh = new RenderMesh();
+        rmesh->setPeer(mesh);
         rmesh->setData(mesh->data());
         rmesh->setTechniqueAndPass(t, p);
         rmesh->setModelMatrix(mm);
@@ -585,7 +590,7 @@ void Renderer::buildShape(Shape* shape, Material* mat, const QMatrix4x4& mm)
     for (unsigned int p=0; p<t->passCount(); ++p) {
         RenderBin* bin = t->binForPass(p);
 
-        RenderMesh* rmesh = new RenderMesh(NULL);
+        RenderMesh* rmesh = new RenderMesh();
         rmesh->setData(shapeMeshData);
         rmesh->setTechniqueAndPass(t, p);
         rmesh->setModelMatrix(mm);

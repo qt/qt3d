@@ -61,7 +61,9 @@ class RenderShader;
 class RenderTechnique
 {
 public:
-    RenderTechnique(Technique* peer);
+    RenderTechnique();
+
+    void setPeer(Technique* peer);
 
     unsigned int passCount() const;
 

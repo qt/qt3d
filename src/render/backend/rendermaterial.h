@@ -64,10 +64,11 @@ class RenderTechnique;
 class RenderMaterial : public QObserverInterface
 {
 public:
-    RenderMaterial(RendererAspect *rendererAspect);
+    RenderMaterial();
     ~RenderMaterial();
 
     void setPeer(Material* mat);
+    void setRendererAspect(RendererAspect *rendererAspect);
 
     void setEffectName(QString nm);
 

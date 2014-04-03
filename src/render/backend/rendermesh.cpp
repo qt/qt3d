@@ -56,14 +56,19 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
-RenderMesh::RenderMesh(Mesh *peer)
+RenderMesh::RenderMesh()
     : Drawable(),
-      m_peer(peer),
+      m_peer(0),
       m_technique(0),
       m_pass(0),
       m_material(0),
       m_instanceCount( 0 )
 {
+}
+
+void RenderMesh::setPeer(Mesh *peer)
+{
+    m_peer = peer;
 }
 
 void RenderMesh::setData(MeshDataPtr mesh)

@@ -58,9 +58,9 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
-RenderMaterial::RenderMaterial(RendererAspect *rendererAspect)
-    : m_rendererAspect(rendererAspect)
-    , m_textureProvider(NULL)
+RenderMaterial::RenderMaterial()
+    : m_rendererAspect(Q_NULLPTR)
+    , m_textureProvider(Q_NULLPTR)
 {
 }
 
@@ -82,6 +82,11 @@ void RenderMaterial::setPeer(Material *mat)
     // Register for changes
     QChangeArbiter *arbiter = m_rendererAspect->aspectManager()->changeArbiter();
     arbiter->registerObserver(this, m_peer, MaterialParameter);
+}
+
+void RenderMaterial::setRendererAspect(RendererAspect *rendererAspect)
+{
+    m_rendererAspect = rendererAspect;
 }
 
 void RenderMaterial::setEffectName(QString nm)

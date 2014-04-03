@@ -60,26 +60,38 @@ namespace Render {
 // TODO: Create custom allocators for each of the matrices and
 // bounding volumes to that they end up in contiguous arrays.
 
-RenderNode::RenderNode(RendererAspect *rendererAspect, RenderNode *parent)
-    : m_rendererAspect(rendererAspect)
-    , m_parent(parent)
+RenderNode::RenderNode()
+    : m_rendererAspect(Q_NULLPTR)
+    , m_transform(Q_NULLPTR)
+    , m_parent(Q_NULLPTR)
     , m_localTransform(new QMatrix4x4)
     , m_worldTransform(new QMatrix4x4)
     , m_localBoundingVolume(new Qt3D::Sphere)
     , m_worldBoundingVolume(new Qt3D::Sphere)
     , m_frontEndPeer(0)
 {
+
+}
+
+void RenderNode::setParent(RenderNode *parent)
+{
+    m_parent = parent;
     if (parent)
         parent->m_children.append(this);
 }
 
-void RenderNode::setPeer(Transform *transform)
+void RenderNode::setRendererAspect(RendererAspect *rendererAspect)
 {
-    m_peer = transform;
+    m_rendererAspect = rendererAspect;
+}
+
+void RenderNode::setTransform(Transform *transform)
+{
+    m_transform = transform;
 
     // Register for changes
     QChangeArbiter *arbiter = m_rendererAspect->aspectManager()->changeArbiter();
-    arbiter->registerObserver(this, m_peer, LocalTransform);
+    arbiter->registerObserver(this, m_transform, LocalTransform);
 }
 
 void RenderNode::sceneChangeEvent(const QSceneChangePtr &e)

@@ -56,8 +56,9 @@ namespace Render {
 class RenderTexture
 {
 public:
-    RenderTexture(Texture* peer);
+    RenderTexture();
 
+    void setPeer(Texture* peer);
     QOpenGLTexture* getOrCreateGLTexture() ;
 
     GLint textureId();

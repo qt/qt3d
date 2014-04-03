@@ -55,11 +55,16 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
-RenderCamera::RenderCamera(RendererAspect *rendererAspect)
-    : m_rendererAspect(rendererAspect)
-    , m_peer(0)
+RenderCamera::RenderCamera()
+    : m_rendererAspect(Q_NULLPTR)
+    , m_peer(Q_NULLPTR)
 {
     m_clearColor = QVector4D(0.5, 0.5, 1.0, 1.0);
+}
+
+void RenderCamera::setRendererAspect(RendererAspect *rendererAspect)
+{
+    m_rendererAspect = rendererAspect;
 }
 
 void RenderCamera::setPeer(CameraLens *peer)

@@ -61,7 +61,9 @@ namespace Render {
 class RenderShader
 {
 public:
-    RenderShader(ShaderProgram* peer);
+    RenderShader();
+
+    void setPeer(ShaderProgram* peer);
 
     /**
      * @brief getOrCreateProgram

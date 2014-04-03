@@ -52,9 +52,15 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
-RenderTechnique::RenderTechnique(Technique* peer) :
-    m_peer(peer)
+RenderTechnique::RenderTechnique() :
+    m_peer(Q_NULLPTR),
+    m_passCount(0)
 {
+}
+
+void RenderTechnique::setPeer(Technique *peer)
+{
+    m_peer = peer;
     m_passCount = peer->renderPasses().count();
     m_passBin.resize(m_passCount);
     m_passShader.resize(m_passCount);

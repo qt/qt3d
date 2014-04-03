@@ -65,7 +65,9 @@ class RenderTechnique;
 class RenderMesh : public Drawable
 {
 public:
-    explicit RenderMesh(Mesh *peer);
+    RenderMesh();
+
+    void setPeer(Mesh *peer);
 
     void setData(MeshDataPtr mesh);
 

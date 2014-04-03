@@ -52,10 +52,15 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
-RenderTexture::RenderTexture(Texture* peer) :
-    m_peer(peer),
-    m_gl(NULL)
+RenderTexture::RenderTexture() :
+    m_peer(Q_NULLPTR),
+    m_gl(Q_NULLPTR)
 {
+}
+
+void RenderTexture::setPeer(Texture *peer)
+{
+    m_peer = peer;
 }
 
 QOpenGLTexture *RenderTexture::getOrCreateGLTexture()

@@ -52,11 +52,16 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
-RenderShader::RenderShader(ShaderProgram *peer) :
-    m_program(NULL),
-    m_peer(peer)
+RenderShader::RenderShader() :
+    m_program(Q_NULLPTR),
+    m_peer(Q_NULLPTR)
+{
+}
+
+void RenderShader::setPeer(ShaderProgram *peer)
 {
     Q_ASSERT(peer);
+    m_peer = peer;
 }
 
 QOpenGLShaderProgram *RenderShader::getOrCreateProgram()

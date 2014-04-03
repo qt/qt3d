@@ -174,7 +174,8 @@ Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(Qt3D::FrameGra
 void RenderSceneBuilder::visitNode(Qt3D::Node *node)
 {
     if (!m_rootNode) {
-        m_rootNode = new RenderNode(m_renderer->rendererAspect());
+        m_rootNode = new RenderNode();
+        m_rootNode->setRendererAspect(m_renderer->rendererAspect());
         m_rootNode->m_frontEndPeer = node;
         m_nodeStack.push(m_rootNode);
     }
@@ -187,7 +188,9 @@ void RenderSceneBuilder::visitEntity(Qt3D::Entity *entity)
     // Create a RenderNode corresponding to the Entity. Most data will
     // be calculated later by jobs
     qDebug() << Q_FUNC_INFO << "Entity " << entity->objectName();
-    RenderNode *renderNode = new RenderNode(m_renderer->rendererAspect(), m_nodeStack.top());
+    RenderNode *renderNode = new RenderNode();
+    renderNode->setRendererAspect(m_renderer->rendererAspect());
+    renderNode->setParent(m_nodeStack.top());
 //    entity->dumpObjectTree();
     renderNode->m_frontEndPeer = entity;
     // REPLACE WITH ENTITY MATRIX FROM TRANSFORMS
@@ -197,7 +200,7 @@ void RenderSceneBuilder::visitEntity(Qt3D::Entity *entity)
     // Look for a transform component
     QList<Transform *> transforms = entity->componentsOfType<Transform>();
     if (!transforms.isEmpty())
-        renderNode->setPeer(transforms.first());
+        renderNode->setTransform(transforms.first());
 
 
     QList<FrameGraph *> framegraphRefs = entity->componentsOfType<FrameGraph>();

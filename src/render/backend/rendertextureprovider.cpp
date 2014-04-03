@@ -57,7 +57,8 @@ RenderTexturePtr RenderTextureProvider::get(Texture *t)
     if (m_dict.contains(t))
         return m_dict.value(t);
 
-    RenderTexturePtr rt(new RenderTexture(t));
+    RenderTexturePtr rt(new RenderTexture());
+    rt->setPeer(t);
     m_dict[t] = rt;
 
     return rt;

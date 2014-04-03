@@ -61,16 +61,19 @@ namespace Render {
 class RenderNode : public QObserverInterface
 {
 public:
-    explicit RenderNode(RendererAspect *rendererAspect, RenderNode *parent = 0);
+    explicit RenderNode();
 
-    void setPeer(Transform *transform);
+    void setTransform(Transform *transform);
+    void setParent(RenderNode *parent);
+    void setRendererAspect(RendererAspect *rendererAspect);
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     void dump() const;
 
 //private:
+
     RendererAspect *m_rendererAspect;
-    Transform *m_peer;
+    Transform *m_transform;
     RenderNode *m_parent;
     QVector<RenderNode *> m_children;
     QMatrix4x4 *m_localTransform;
