@@ -98,7 +98,7 @@ public slots:
 
 
 
-signals:
+Q_SIGNALS:
     void linearSpeedChanged();
     void orbitRateChanged();
     void lookRateChanged();

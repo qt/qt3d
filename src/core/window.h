@@ -76,7 +76,7 @@ public:
     QSharedPointer<QObject> rootObject() { return m_root; }
     void    registerAspect(AbstractAspect *aspect);
 
-signals:
+Q_SIGNALS:
     void statusChanged( Qt3D::Window::Status );
 
 protected:

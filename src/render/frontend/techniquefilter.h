@@ -66,7 +66,7 @@ public:
     QList<Tag *> tags() const;
 
 
-signals:
+Q_SIGNALS:
     void tagsChanged();
 
 private:

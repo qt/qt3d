@@ -65,7 +65,7 @@ public:
 
     QMatrix4x4 matrix() const Q_DECL_OVERRIDE;
 
-signals:
+Q_SIGNALS:
     void    scale3DChanged();
     void    scaleChanged();
 

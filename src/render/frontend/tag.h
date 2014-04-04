@@ -85,7 +85,7 @@ public:
 
     QVariant value() const { return m_value; }
 
-signals:
+Q_SIGNALS:
     void nameChanged();
     void valueChanged();
 

@@ -79,7 +79,7 @@ public:
 
     void setTextureParameter(QString name, Texture* tex);
 
-signals:
+Q_SIGNALS:
     void effectChanged();
     void parametersChanged();
 

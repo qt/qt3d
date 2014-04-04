@@ -81,7 +81,7 @@ public:
      */
     void load();
 
-signals:
+Q_SIGNALS:
     void vertexSourceFileChanged();
     void fragmentSourceFileChanged();
     void vertexShaderChanged();

@@ -61,7 +61,7 @@ public:
     void setEnabled(bool enabled);
     bool isEnabled() const;
 
-signals:
+Q_SIGNALS:
     void enabledChanged();
 
 private:

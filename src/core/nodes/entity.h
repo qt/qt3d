@@ -143,7 +143,7 @@ public:
 
     // TEMPORARY - should be driven by an Update traversal in the core
     void update();
-signals:
+Q_SIGNALS:
     void enabledChanged();
 
 private:

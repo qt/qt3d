@@ -70,7 +70,7 @@ public:
 
     MeshDataPtr data() const;
     void setData(MeshDataPtr d);
-signals:
+Q_SIGNALS:
     void sourceChanged();
 
 private:

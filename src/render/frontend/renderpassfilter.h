@@ -63,7 +63,7 @@ public:
     void setRenderPassName(const QString &renderpassName);
     QString renderPassName() const;
 
-signals:
+Q_SIGNALS:
     void renderPassNameChanged();
 
 private:

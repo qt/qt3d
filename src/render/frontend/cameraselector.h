@@ -63,7 +63,7 @@ public:
     void setCamera(Qt3D::Entity *camera);
     Entity *camera() const;
 
-signals:
+Q_SIGNALS:
     void cameraChanged();
 
 private:

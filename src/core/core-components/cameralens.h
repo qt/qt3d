@@ -116,7 +116,7 @@ public slots:
     void setPerspectiveProjection(float fieldOfView, float aspect,
                                   float nearPlane, float farPlane);
 
-signals:
+Q_SIGNALS:
     void projectionTypeChanged();
     void nearPlaneChanged();
     void farPlaneChanged();

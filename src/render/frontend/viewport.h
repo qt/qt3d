@@ -64,7 +64,7 @@ public:
 public slots:
     void setRect( const QRectF& rect );
 
-signals:
+Q_SIGNALS:
     void rectChanged( const QRectF& arg );
 
 private:

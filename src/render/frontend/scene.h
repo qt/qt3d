@@ -70,7 +70,7 @@ public:
      * @return
      */
     static Scene* findInTree(Node* root);
-signals:
+Q_SIGNALS:
 
     void sourceChanged(QString arg);
 

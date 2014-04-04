@@ -57,7 +57,7 @@ class QT3DRENDERERSHARED_EXPORT RenderTargetSelector : public FrameGraphItem
 public:
     explicit RenderTargetSelector(Node *parent = 0);
 
-signals:
+Q_SIGNALS:
 
 private:
 };

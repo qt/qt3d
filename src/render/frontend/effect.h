@@ -70,7 +70,7 @@ public:
     QList<Technique *> techniques() const;
 
     void clearTechniques();
-signals:
+Q_SIGNALS:
     void techniquesChanged();
 
 private:

@@ -75,7 +75,7 @@ public:
 
     QVector3D viewVector() const;
 
-signals:
+Q_SIGNALS:
     void positionChanged();
     void upVectorChanged();
     void viewCenterChanged();

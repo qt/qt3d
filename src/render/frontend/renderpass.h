@@ -85,7 +85,7 @@ public:
     void setStateSet(Render::DrawStateSet* ss);
     Render::DrawStateSet* stateSet() const;
 
-signals:
+Q_SIGNALS:
     void nameChanged();
     void shaderProgramChanged();
 

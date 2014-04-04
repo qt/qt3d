@@ -104,7 +104,7 @@ public slots:
     void rotate( const QQuaternion& q );
     void rotateAboutViewCenter( const QQuaternion& q );
 
-signals:
+Q_SIGNALS:
     void lensChanged();
     void lookAtChanged();
 

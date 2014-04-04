@@ -78,7 +78,7 @@ public slots:
 
     void setAxis(const QVector3D& arg);
 
-signals:
+Q_SIGNALS:
 
     void axisChanged();
     void angleChanged();

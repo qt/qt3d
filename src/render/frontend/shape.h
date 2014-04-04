@@ -90,7 +90,7 @@ public:
     double radius() const;
     double minorRadius() const;
 
-signals:
+Q_SIGNALS:
 
     void typeChanged(ShapeType arg);
     void shapeChanged();

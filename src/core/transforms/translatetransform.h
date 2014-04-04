@@ -78,7 +78,7 @@ public slots:
 
     void setTranslation(QVector3D arg);
 
-signals:
+Q_SIGNALS:
     void translateChanged();
 
 private:

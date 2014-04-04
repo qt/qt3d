@@ -124,7 +124,7 @@ public:
      * @return
      */
     Render::QUniformValue::Type uniformType() const;
-signals:
+Q_SIGNALS:
     void valueChanged();
 
 private:
@@ -168,7 +168,7 @@ public:
     { return m_parameters; }
 
     Parameter* parameterByName(QString name) const;
-signals:
+Q_SIGNALS:
     void tagsChanged();
     void renderPassesChanged();
 

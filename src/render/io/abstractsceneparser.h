@@ -76,7 +76,7 @@ public:
     ParserStatus parserStatus() const;
     QStringList  errors() const;
 
-signals:
+Q_SIGNALS:
     void    parserStatusChanged();
     void    errorsChanged();
 

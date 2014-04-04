@@ -67,7 +67,7 @@ public:
     bool isRectangle() const;
 
     Texture* texture() const;
-signals:
+Q_SIGNALS:
     void sourceChanged();
     void formatChanged();
 

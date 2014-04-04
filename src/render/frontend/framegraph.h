@@ -65,7 +65,7 @@ public:
     FrameGraphItem *activeFrameGraph() const;
     void setActiveFrameGraph(FrameGraphItem *activeFrameGraph);
 
-signals:
+Q_SIGNALS:
     void activeFrameGraphChanged();
 
 private:
