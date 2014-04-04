@@ -42,11 +42,11 @@
 #ifndef TECHNIQUE_H
 #define TECHNIQUE_H
 
-#include <qt3drenderer_global.h>
+#include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DCore/node.h>
 
-#include "tag.h"
-#include "renderpass.h"
+#include <Qt3DRenderer/tag.h>
+#include <Qt3DRenderer/renderpass.h>
 
 #include <QList>
 #include <QMap>
@@ -54,7 +54,7 @@
 #include <QSharedPointer>
 
 // FIXME - move enum somewhere common so don't need to include this here
-#include <quniformvalue.h>
+#include <Qt3DRenderer/quniformvalue.h>
 
 QT_BEGIN_NAMESPACE
 

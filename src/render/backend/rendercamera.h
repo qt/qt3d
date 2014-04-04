@@ -42,7 +42,7 @@
 #ifndef QT3D_RENDER_RENDERCAMERA_H
 #define QT3D_RENDER_RENDERCAMERA_H
 
-#include <qchangearbiter.h>
+#include <Qt3DCore/qchangearbiter.h>
 
 #include <QMatrix4x4>
 #include <QRectF>

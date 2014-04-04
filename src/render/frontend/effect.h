@@ -42,8 +42,8 @@
 #ifndef EFFECT_H
 #define EFFECT_H
 
-#include <qt3drenderer_global.h>
-#include <node.h>
+#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DCore/node.h>
 
 #include <QQmlListProperty>
 #include <QVector>

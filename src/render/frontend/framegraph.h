@@ -42,8 +42,8 @@
 #ifndef QT3D_FRAMEGRAPH_H
 #define QT3D_FRAMEGRAPH_H
 
-#include <qt3dcore_global.h>
-#include <component.h>
+#include <Qt3DCore/qt3dcore_global.h>
+#include <Qt3DCore/component.h>
 
 QT_BEGIN_NAMESPACE
 

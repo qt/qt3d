@@ -42,7 +42,7 @@
 #ifndef QT3D_RENDER_RENDERNODE_H
 #define QT3D_RENDER_RENDERNODE_H
 
-#include <qchangearbiter.h>
+#include <Qt3DCore/qchangearbiter.h>
 #include <QVector>
 
 QT_BEGIN_NAMESPACE

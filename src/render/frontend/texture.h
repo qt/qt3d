@@ -42,8 +42,8 @@
 #ifndef QT3D_TEXTURE_H
 #define QT3D_TEXTURE_H
 
-#include "node.h"
-#include <qt3drenderer_global.h>
+#include <Qt3DCore/node.h>
+#include <Qt3DRenderer/qt3drenderer_global.h>
 
 #include <QUrl>
 

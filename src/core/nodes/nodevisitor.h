@@ -42,8 +42,7 @@
 #ifndef NODEVISITOR_H
 #define NODEVISITOR_H
 
-#include "qt3dcore_global.h"
-
+#include <Qt3DCore/qt3dcore_global.h>
 #include <QMatrix4x4>
 
 QT_BEGIN_NAMESPACE

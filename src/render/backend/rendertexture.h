@@ -44,7 +44,7 @@
 
 #include <QOpenGLContext>
 
-#include <texturedata.h>
+#include <Qt3DRenderer/texturedata.h>
 
 QT_BEGIN_NAMESPACE
 

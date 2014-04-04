@@ -42,8 +42,8 @@
 #ifndef SHADERPROGRAM_H
 #define SHADERPROGRAM_H
 
-#include <node.h>
-#include <qt3drenderer_global.h>
+#include <Qt3DCore/node.h>
+#include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 

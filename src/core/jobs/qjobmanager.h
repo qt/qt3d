@@ -42,10 +42,10 @@
 #ifndef QT3D_QJOBMANAGER_H
 #define QT3D_QJOBMANAGER_H
 
-#include "qjobmanagerinterface.h"
-#include "qt3dcore_global.h"
+#include <Qt3DCore/qjobmanagerinterface.h>
+#include <Qt3DCore/qt3dcore_global.h>
 
-#include "qjob.h"
+#include <Qt3DCore/qjob.h>
 
 #include <job.h>
 

@@ -42,8 +42,8 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include <entity.h>
-#include "qt3drenderer_global.h"
+#include <Qt3DCore/entity.h>
+#include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 

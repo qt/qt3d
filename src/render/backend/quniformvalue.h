@@ -47,7 +47,7 @@
 #include <QVector>
 
 // for RenderTexturePtr
-#include <rendertextureprovider.h>
+#include <Qt3DRenderer/rendertextureprovider.h>
 
 QT_BEGIN_NAMESPACE
 

@@ -42,7 +42,7 @@
 #ifndef QT3D_RENDER_UPDATEWORLDTRANSFORMJOB_H
 #define QT3D_RENDER_UPDATEWORLDTRANSFORMJOB_H
 
-#include <qjob.h>
+#include <Qt3DCore/qjob.h>
 
 #include <QSharedPointer>
 

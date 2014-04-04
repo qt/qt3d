@@ -42,7 +42,7 @@
 #ifndef AXIS_ALIGNED_BOUNDING_BOX
 #define AXIS_ALIGNED_BOUNDING_BOX
 
-#include "qt3dcore_global.h"
+#include <Qt3DCore/qt3dcore_global.h>
 
 #include <QMatrix4x4>
 #include <QVector>

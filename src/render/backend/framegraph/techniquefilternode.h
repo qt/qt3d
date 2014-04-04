@@ -42,8 +42,7 @@
 #ifndef QT3D_RENDER_TECHNIQUEFILTER_H
 #define QT3D_RENDER_TECHNIQUEFILTER_H
 
-#include "framegraphnode.h"
-
+#include <Qt3DRenderer/framegraphnode.h>
 #include <QHash>
 #include <QString>
 #include <QVariant>

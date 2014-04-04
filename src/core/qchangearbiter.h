@@ -42,7 +42,7 @@
 #ifndef QT3D_QCHANGEARBITER_H
 #define QT3D_QCHANGEARBITER_H
 
-#include "qt3dcore_global.h"
+#include <Qt3DCore/qt3dcore_global.h>
 
 #include <QObject>
 #include <QDebug>

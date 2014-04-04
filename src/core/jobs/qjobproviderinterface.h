@@ -42,8 +42,8 @@
 #ifndef QT3D_QJOBPROVIDERINTERFACE_H
 #define QT3D_QJOBPROVIDERINTERFACE_H
 
-#include "qt3dcore_global.h"
-#include "qjob.h"
+#include <Qt3DCore/qt3dcore_global.h>
+#include <Qt3DCore/qjob.h>
 
 #include <QVector>
 

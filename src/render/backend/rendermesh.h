@@ -42,10 +42,9 @@
 #ifndef QT3D_RENDER_RENDERMESH_H
 #define QT3D_RENDER_RENDERMESH_H
 
-#include "drawable.h"
-
-#include <meshdata.h>
-#include <axisalignedboundingbox.h>
+#include <Qt3DRenderer/drawable.h>
+#include <Qt3DRenderer/meshdata.h>
+#include <Qt3DCore/axisalignedboundingbox.h>
 
 #include <QOpenGLVertexArrayObject>
 #include <QMatrix4x4>

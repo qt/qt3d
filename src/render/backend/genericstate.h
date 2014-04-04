@@ -44,7 +44,7 @@
 
 #include <QList>
 
-#include "drawstate.h"
+#include <Qt3DRenderer/drawstate.h>
 
 // winuser.h has a #define called DrawState. Let's get rid of it
 #if defined(DrawState)

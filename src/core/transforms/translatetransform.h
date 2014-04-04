@@ -42,8 +42,8 @@
 #ifndef QT3D_TRANSLATETRANSFORM_H
 #define QT3D_TRANSLATETRANSFORM_H
 
-#include "abstracttransform.h"
-#include "qt3dcore_global.h"
+#include <Qt3DCore/abstracttransform.h>
+#include <Qt3DCore/qt3dcore_global.h>
 
 #include <QVector3D>
 

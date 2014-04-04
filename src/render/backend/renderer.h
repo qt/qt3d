@@ -42,7 +42,7 @@
 #ifndef QT3D_RENDER_RENDERER_H
 #define QT3D_RENDER_RENDERER_H
 
-#include <technique.h>
+#include <Qt3DRenderer/technique.h>
 
 #include <QHash>
 #include <QMatrix4x4>

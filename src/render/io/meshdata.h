@@ -48,7 +48,7 @@
 #include <QOpenGLBuffer>
 #include <QVector2D>
 
-#include <axisalignedboundingbox.h>
+#include <Qt3DCore/axisalignedboundingbox.h>
 
 QT_BEGIN_NAMESPACE
 

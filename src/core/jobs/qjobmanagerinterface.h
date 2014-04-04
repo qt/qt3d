@@ -44,7 +44,7 @@
 
 #include <QObject>
 
-#include "qjob.h"
+#include <Qt3DCore/qjob.h>
 
 QT_BEGIN_NAMESPACE
 

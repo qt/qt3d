@@ -43,7 +43,7 @@
 #define QT3D_WEAVERJOB_H
 
 #include <job.h>
-#include "qjob.h"
+#include <Qt3DCore/qjob.h>
 
 QT_BEGIN_NAMESPACE
 

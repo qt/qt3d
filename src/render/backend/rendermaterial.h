@@ -44,10 +44,10 @@
 
 #include <QVariant>
 
-#include <qchangearbiter.h>
+#include <Qt3DCore/qchangearbiter.h>
 
-#include <quniformvalue.h>
-#include <rendertextureprovider.h>
+#include <Qt3DRenderer/quniformvalue.h>
+#include <Qt3DRenderer/rendertextureprovider.h>
 
 QT_BEGIN_NAMESPACE
 

@@ -42,11 +42,11 @@
 #ifndef RENDERPASS_H
 #define RENDERPASS_H
 
-#include <node.h>
-#include <qt3drenderer_global.h>
+#include <Qt3DCore/node.h>
+#include <Qt3DRenderer/qt3drenderer_global.h>
 
-#include "shaderprogram.h"
-#include <drawstate.h>
+#include <Qt3DRenderer/shaderprogram.h>
+#include <Qt3DRenderer/drawstate.h>
 
 #include <QHash>
 

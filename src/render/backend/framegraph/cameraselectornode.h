@@ -42,7 +42,7 @@
 #ifndef QT3D_RENDER_CAMERASELECTOR_H
 #define QT3D_RENDER_CAMERASELECTOR_H
 
-#include "framegraphnode.h"
+#include <Qt3DRenderer/framegraphnode.h>
 
 QT_BEGIN_NAMESPACE
 

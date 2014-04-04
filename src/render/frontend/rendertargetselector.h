@@ -42,8 +42,8 @@
 #ifndef QT3D_RENDERTARGETSELECTOR_H
 #define QT3D_RENDERTARGETSELECTOR_H
 
-#include <qt3drenderer_global.h>
-#include <framegraphitem.h>
+#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRenderer/framegraphitem.h>
 
 QT_BEGIN_NAMESPACE
 

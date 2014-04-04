@@ -42,7 +42,7 @@
 #ifndef QT3D_RENDER_UPDATEBOUNDINGVOLUMEJOB_H
 #define QT3D_RENDER_UPDATEBOUNDINGVOLUMEJOB_H
 
-#include <qjob.h>
+#include <Qt3DCore/qjob.h>
 
 #include <QSharedPointer>
 

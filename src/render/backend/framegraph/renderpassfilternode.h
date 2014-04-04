@@ -42,8 +42,7 @@
 #ifndef QT3D_RENDER_RENDERPASSFILTER_H
 #define QT3D_RENDER_RENDERPASSFILTER_H
 
-#include "framegraphnode.h"
-
+#include <Qt3DRenderer/framegraphnode.h>
 #include <QStringList>
 
 QT_BEGIN_NAMESPACE

@@ -42,7 +42,7 @@
 #ifndef SCALETRANSFORM_H
 #define SCALETRANSFORM_H
 
-#include "abstracttransform.h"
+#include <Qt3DCore/abstracttransform.h>
 
 QT_BEGIN_NAMESPACE
 

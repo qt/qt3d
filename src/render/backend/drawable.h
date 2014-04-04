@@ -44,7 +44,7 @@
 
 #include <QObject>
 
-#include <axisalignedboundingbox.h>
+#include <Qt3DCore/axisalignedboundingbox.h>
 
 QT_BEGIN_NAMESPACE
 

@@ -43,7 +43,7 @@
 #define QT3D_WINDOW_H
 
 #include <QWindow>
-#include "qt3dcore_global.h"
+#include <Qt3DCore/qt3dcore_global.h>
 
 #include <QQmlEngine>
 

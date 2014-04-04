@@ -45,9 +45,9 @@
 #include <QMatrix4x4>
 #include <QVector3D>
 
-#include "cameralens.h"
-#include <lookattransform.h>
-#include <transform.h>
+#include <Qt3DCore/cameralens.h>
+#include <Qt3DCore/lookattransform.h>
+#include <Qt3DCore/transform.h>
 
 QT_BEGIN_NAMESPACE
 

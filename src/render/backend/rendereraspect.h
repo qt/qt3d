@@ -42,8 +42,8 @@
 #ifndef RENDERERASPECT_H
 #define RENDERERASPECT_H
 
-#include <qt3drenderer_global.h>
-#include "abstractaspect.h"
+#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DCore/abstractaspect.h>
 
 QT_BEGIN_NAMESPACE
 

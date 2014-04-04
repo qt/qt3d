@@ -42,10 +42,10 @@
 #ifndef QT3D_SHAPE_H
 #define QT3D_SHAPE_H
 
-#include <component.h>
-#include <qt3drenderer_global.h>
+#include <Qt3DCore/component.h>
+#include <Qt3DRenderer/qt3drenderer_global.h>
 
-#include <meshdata.h>
+#include <Qt3DRenderer/meshdata.h>
 
 QT_BEGIN_NAMESPACE
 

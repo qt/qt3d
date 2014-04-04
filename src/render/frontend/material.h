@@ -44,12 +44,11 @@
 
 #include <QVariant>
 
-#include <component.h>
+#include <Qt3DCore/component.h>
 
 // FIXME - write a custom QML parser and stop mis-using Tag
-#include "tag.h"
-
-#include <qt3drenderer_global.h>
+#include <Qt3DRenderer/tag.h>
+#include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 

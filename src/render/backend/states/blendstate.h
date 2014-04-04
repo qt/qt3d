@@ -42,8 +42,8 @@
 #ifndef BLENDSTATE_H
 #define BLENDSTATE_H
 
-#include <drawstate.h>
-#include <genericstate.h>
+#include <Qt3DRenderer/drawstate.h>
+#include <Qt3DRenderer/genericstate.h>
 
 #include <QOpenGLContext>
 

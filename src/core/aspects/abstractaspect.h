@@ -43,11 +43,9 @@
 #define ABSTRACTASPECT_H
 
 #include <QObject>
-#include "qt3dcore_global.h"
-
-#include "qjobproviderinterface.h"
-
 #include <QSharedPointer>
+#include <Qt3DCore/qt3dcore_global.h>
+#include <Qt3DCore/qjobproviderinterface.h>
 
 QT_BEGIN_NAMESPACE
 

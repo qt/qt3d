@@ -42,7 +42,7 @@
 #ifndef OBJLOADER_H
 #define OBJLOADER_H
 
-#include "meshdata.h"
+#include <Qt3DRenderer/meshdata.h>
 
 #include <QVector>
 #include <QVector2D>

@@ -44,7 +44,7 @@
 
 #include <Qt3DCore/qjob.h>
 
-#include <meshdata.h>
+#include <Qt3DRenderer/meshdata.h>
 
 #include <QSharedPointer>
 

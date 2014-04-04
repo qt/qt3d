@@ -43,9 +43,8 @@
 #define QT3D_QASPECTMANAGER_H
 
 #include <QObject>
-#include "qt3dcore_global.h"
-
 #include <QList>
+#include <Qt3DCore/qt3dcore_global.h>
 
 QT_BEGIN_NAMESPACE
 

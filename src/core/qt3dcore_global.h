@@ -44,10 +44,14 @@
 
 #include <QtCore/qglobal.h>
 
+QT_BEGIN_NAMESPACE
+
 #if defined(QT3DCORE_LIBRARY)
 #  define QT3DCORESHARED_EXPORT Q_DECL_EXPORT
 #else
 #  define QT3DCORESHARED_EXPORT Q_DECL_IMPORT
 #endif
+
+QT_END_NAMESPACE
 
 #endif // QT3DCORE_GLOBAL_H

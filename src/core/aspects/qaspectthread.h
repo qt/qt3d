@@ -43,10 +43,9 @@
 #define QT3D_QASPECTTHREAD_H
 
 #include <QThread>
-#include "qt3dcore_global.h"
-
 #include <QMutex>
 #include <QWaitCondition>
+#include <Qt3DCore/qt3dcore_global.h>
 
 QT_BEGIN_NAMESPACE
 

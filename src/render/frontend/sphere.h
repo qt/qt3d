@@ -42,7 +42,7 @@
 #ifndef SPHERE_H
 #define SPHERE_H
 
-#include "qt3drenderer_global.h"
+#include <Qt3DRenderer/qt3drenderer_global.h>
 
 #include <QMatrix4x4>
 #include <QVector3D>

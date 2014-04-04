@@ -42,8 +42,8 @@
 #ifndef QT3D_TRANSFORM_H
 #define QT3D_TRANSFORM_H
 
-#include <component.h>
-#include <qt3dcore_global.h>
+#include <Qt3DCore/component.h>
+#include <Qt3DCore/qt3dcore_global.h>
 
 #include <QMatrix4x4>
 

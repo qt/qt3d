@@ -49,8 +49,8 @@
 #include <QMatrix4x4>
 #include <QBitArray>
 
-#include <rendercamera.h>
-#include <meshdata.h>
+#include <Qt3DRenderer/rendercamera.h>
+#include <Qt3DRenderer/meshdata.h>
 
 QT_BEGIN_NAMESPACE
 

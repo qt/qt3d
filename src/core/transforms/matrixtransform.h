@@ -42,8 +42,8 @@
 #ifndef MATRIXTRANSFORM_H
 #define MATRIXTRANSFORM_H
 
-#include "abstracttransform.h"
-#include "qt3dcore_global.h"
+#include <Qt3DCore/abstracttransform.h>
+#include <Qt3DCore/qt3dcore_global.h>
 
 #include <QMatrix4x4>
 

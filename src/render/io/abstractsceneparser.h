@@ -42,7 +42,7 @@
 #ifndef ABSTRACTSCENEPARSER_H
 #define ABSTRACTSCENEPARSER_H
 
-#include <entity.h>
+#include <Qt3DCore/entity.h>
 #include <QObject>
 
 QT_BEGIN_NAMESPACE

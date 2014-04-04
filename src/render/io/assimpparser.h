@@ -48,16 +48,16 @@
 #include <assimp/postprocess.h>
 #include <assimp/DefaultLogger.hpp>
 
-#include "meshdata.h"
-#include "texturedata.h"
-#include "assimphelpers.h"
-#include <camera.h>
-#include <mesh.h>
-#include <material.h>
-#include <entity.h>
-#include <technique.h>
+#include <Qt3DRenderer/meshdata.h>
+#include <Qt3DRenderer/texturedata.h>
+#include <Qt3DRenderer/assimphelpers.h>
+#include <Qt3DCore/camera.h>
+#include <Qt3DRenderer/mesh.h>
+#include <Qt3DRenderer/material.h>
+#include <Qt3DCore/entity.h>
+#include <Qt3DRenderer/technique.h>
 
-#include "abstractsceneparser.h"
+#include <Qt3DRenderer/abstractsceneparser.h>
 
 #include <QMap>
 #include <QDir>

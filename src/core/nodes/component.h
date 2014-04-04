@@ -42,10 +42,10 @@
 #ifndef QT3D_COMPONENT_H
 #define QT3D_COMPONENT_H
 
-#include "node.h"
-#include "qt3dcore_global.h"
+#include <Qt3DCore/node.h>
+#include <Qt3DCore/qt3dcore_global.h>
 
-#include <qchangearbiter.h>
+#include <Qt3DCore/qchangearbiter.h>
 
 QT_BEGIN_NAMESPACE
 

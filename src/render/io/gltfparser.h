@@ -42,16 +42,16 @@
 #ifndef GLTFPARSER_H
 #define GLTFPARSER_H
 
-#include "meshdata.h"
+#include <Qt3DRenderer/meshdata.h>
 
-#include <entity.h>
-#include <technique.h>
+#include <Qt3DCore/entity.h>
+#include <Qt3DRenderer/technique.h>
 
 #include <QJsonDocument>
 #include <QMultiHash>
 #include <QImage>
 
-#include "abstractsceneparser.h"
+#include <Qt3DRenderer/abstractsceneparser.h>
 
 QT_BEGIN_NAMESPACE
 

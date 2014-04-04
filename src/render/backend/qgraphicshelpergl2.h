@@ -44,7 +44,7 @@
 
 #ifndef QT_OPENGL_ES_2
 
-#include "qgraphicshelperinterface.h"
+#include <Qt3DRenderer/qgraphicshelperinterface.h>
 
 QT_BEGIN_NAMESPACE
 

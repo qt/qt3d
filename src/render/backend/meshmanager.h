@@ -44,8 +44,8 @@
 
 #include <QObject>
 
-#include <mesh.h>
-#include <meshdata.h>
+#include <Qt3DRenderer/mesh.h>
+#include <Qt3DRenderer/meshdata.h>
 
 #include <QHash>
 #include <QPair>

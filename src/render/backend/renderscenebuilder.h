@@ -42,7 +42,7 @@
 #ifndef QT3D_RENDER_RENDERSCENEBUILDER_H
 #define QT3D_RENDER_RENDERSCENEBUILDER_H
 
-#include <nodevisitor.h>
+#include <Qt3DCore/nodevisitor.h>
 
 #include <QStack>
 

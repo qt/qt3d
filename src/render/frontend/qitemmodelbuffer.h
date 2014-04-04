@@ -43,9 +43,9 @@
 #define QT3D_QITEMMODELBUFFER_H
 
 #include <QObject>
-#include <qt3drenderer_global.h>
+#include <Qt3DRenderer/qt3drenderer_global.h>
 
-#include <meshdata.h>
+#include <Qt3DRenderer/meshdata.h>
 
 #include <QAbstractItemModel>
 #include <QMap>

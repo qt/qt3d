@@ -42,10 +42,10 @@
 #ifndef QT3D_TECHNIQUEFILTER_H
 #define QT3D_TECHNIQUEFILTER_H
 
-#include <qt3drenderer_global.h>
-#include "framegraphitem.h"
+#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRenderer/framegraphitem.h>
 
-#include "tag.h"
+#include <Qt3DRenderer/tag.h>
 
 #include <QQmlListProperty>
 
