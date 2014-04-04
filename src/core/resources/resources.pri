@@ -1,3 +1,4 @@
 HEADERS += \
-    $$PWD/qhandle.h
+    $$PWD/qhandle.h \
+    $$PWD/qhandlemanager.h
 
