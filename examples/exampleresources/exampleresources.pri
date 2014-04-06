@@ -1,2 +1,3 @@
 INCLUDEPATH +=  $$PWD
-LIBS += $$PWD/libexampleresources.a
+# TODO: Fix lib name for windows
+LIBS += $$shadowed($$PWD)/libexampleresources.a
