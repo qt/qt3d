@@ -70,7 +70,7 @@ void RenderCamera::setRendererAspect(RendererAspect *rendererAspect)
 void RenderCamera::setPeer(CameraLens *peer)
 {
     m_peer = peer;
-    \
+
     // Register for changes
     QChangeArbiter *arbiter = m_rendererAspect->aspectManager()->changeArbiter();
     arbiter->registerObserver(this, m_peer, MaterialParameter);

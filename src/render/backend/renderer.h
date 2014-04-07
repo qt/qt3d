@@ -83,6 +83,7 @@ class RenderShader;
 class RenderNode;
 class MeshManager;
 class RenderCommand;
+class CameraManager;
 
 class Renderer : public QObject
 {
@@ -113,6 +114,7 @@ public:
     void executeCommands(const QVector<RenderCommand *> &commands);
 
     MeshManager *meshManager() const { return m_meshManager; }
+    CameraManager *cameraManager() const { return m_cameraManager; }
 
     // temporary!
 
@@ -163,6 +165,7 @@ private:
     RenderBin* m_temporaryAllBin;
     RenderTextureProvider* m_textureProvider;
     MeshManager *m_meshManager;
+    CameraManager *m_cameraManager;
 
     QTimer* m_frameTimer;
 

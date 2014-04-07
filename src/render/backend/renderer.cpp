@@ -62,6 +62,7 @@
 #include <cameralens.h>
 #include <shape.h>
 
+#include <cameramanager.h>
 #include <meshmanager.h>
 #include <rendermesh.h>
 #include <renderbin.h>
@@ -144,6 +145,7 @@ Renderer::Renderer()
     , m_camera(0)
     , m_renderCamera(0)
     , m_meshManager(new MeshManager(this))
+    , m_cameraManager(new CameraManager())
 {
     m_temporaryAllBin = NULL;
     m_graphicsContext = new QGraphicsContext;

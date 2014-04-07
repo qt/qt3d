@@ -42,10 +42,12 @@
 #include "renderscenebuilder.h"
 
 #include "meshmanager.h"
+#include "cameramanager.h"
 #include "renderer.h"
 #include "rendernode.h"
 
 #include <camera.h>
+#include <cameralens.h>
 #include <material.h>
 #include <mesh.h>
 #include <transform.h>
@@ -224,8 +226,17 @@ void RenderSceneBuilder::visitEntity(Qt3D::Entity *entity)
         //m_renderer->buildMeshes(mesh, material, QMatrix4x4());
     }
 
-    //foreach (Camera *camera, entity->componentsOfType<Camera>())
-    //    m_renderer->foundCamera(camera, entity->sceneMatrix());
+    QList<CameraLens*> cameraLenses = entity->componentsOfType<CameraLens>();
+    if (!cameraLenses.isEmpty()) {
+        // Retrieves or create RenderCamera for entity->uuid
+        RenderCamera *camera = m_renderer->cameraManager()->getOrCreateRenderCamera(entity->uuid());
+        camera->setRendererAspect(m_renderer->rendererAspect());
+        camera->setPeer(cameraLenses.first());
+        // TO DO : Transforms
+        // Should we apply a combination of all transform of the parent entities in the tree
+        // Or use only the one associated with the Camera Lens ?
+        // Applying all parents transform could lead to some strange behavior.
+    }
 
     NodeVisitor::visitEntity(entity);
 
