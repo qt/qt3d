@@ -84,6 +84,7 @@ class RenderNode;
 class MeshManager;
 class RenderCommand;
 class CameraManager;
+class RenderNodesManager;
 
 class Renderer : public QObject
 {
@@ -115,6 +116,7 @@ public:
 
     MeshManager *meshManager() const { return m_meshManager; }
     CameraManager *cameraManager() const { return m_cameraManager; }
+    RenderNodesManager *renderNodesManager() const { return m_renderNodesManager; }
 
     // temporary!
 
@@ -166,6 +168,7 @@ private:
     RenderTextureProvider* m_textureProvider;
     MeshManager *m_meshManager;
     CameraManager *m_cameraManager;
+    RenderNodesManager *m_renderNodesManager;
 
     QTimer* m_frameTimer;
 

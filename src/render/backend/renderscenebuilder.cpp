@@ -41,6 +41,7 @@
 
 #include "renderscenebuilder.h"
 
+#include "rendernodesmanager.h"
 #include "meshmanager.h"
 #include "cameramanager.h"
 #include "renderer.h"
@@ -190,10 +191,10 @@ void RenderSceneBuilder::visitEntity(Qt3D::Entity *entity)
     // Create a RenderNode corresponding to the Entity. Most data will
     // be calculated later by jobs
     qDebug() << Q_FUNC_INFO << "Entity " << entity->objectName();
-    RenderNode *renderNode = new RenderNode();
+    // Retrieve or created RenderNode for entity
+    RenderNode *renderNode = m_renderer->renderNodesManager()->getOrCreateRenderNode(entity->uuid());
     renderNode->setRendererAspect(m_renderer->rendererAspect());
     renderNode->setParent(m_nodeStack.top());
-//    entity->dumpObjectTree();
     renderNode->m_frontEndPeer = entity;
     // REPLACE WITH ENTITY MATRIX FROM TRANSFORMS
 //    *(renderNode->m_localTransform) = entity->matrix();

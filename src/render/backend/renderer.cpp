@@ -76,6 +76,7 @@
 #include <rendertextureprovider.h>
 #include <drawstate.h>
 #include <states/blendstate.h>
+#include <rendernodesmanager.h>
 
 #include <QStack>
 #include <QDebug>
@@ -146,6 +147,7 @@ Renderer::Renderer()
     , m_renderCamera(0)
     , m_meshManager(new MeshManager(this))
     , m_cameraManager(new CameraManager())
+    , m_renderNodesManager(new RenderNodesManager())
 {
     m_temporaryAllBin = NULL;
     m_graphicsContext = new QGraphicsContext;
