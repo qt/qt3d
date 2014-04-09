@@ -1,8 +1,10 @@
 HEADERS += \
     $$PWD/qhandle.h \
     $$PWD/qhandlemanager.h \
-    $$PWD/qresourcesmanager.h
+    $$PWD/qabstractresourcesmanager.h \
+    $$PWD/qarrayresourcesmanager.h \
+    $$PWD/qlistresourcesmanager.h
 
 SOURCES += \
-    $$PWD/qresourcesmanager.cpp
+    $$PWD/qabstractresourcesmanager.cpp
 

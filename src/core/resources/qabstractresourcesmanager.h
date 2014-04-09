@@ -39,24 +39,68 @@
 **
 ****************************************************************************/
 
-/*!
- * \class QResourcesManager
- *
- * \brief The QResourcesManager allocates memory for resources that can be referenced by a
- * QHandle.
- *
- * Using a QHandleManager for handles management, the QResourcesManager responsibility lies
- * in allocating memory for a resource and provinding ways to interact with the resource through
- * the QHandle.
- *
- * Using the QHandle obtained when acquiring a resource, the resource can be retrieved and
- * released when not needed any longer.
- *
- * Internally, memory can be reorganized for best performances while being transparent to the user.
- *
- *
- *
- * \since 5.3
- * \namespace Qt3D
- *
- */
+#ifndef QT3D_QABSTRACTRESOURCESMANAGER_H
+#define QT3D_QABSTRACTRESOURCESMANAGER_H
+
+#include <QtGlobal>
+#include <Qt3DCore/qt3dcore_global.h>
+#include <Qt3DCore/qhandle.h>
+#include <Qt3DCore/qhandlemanager.h>
+
+QT_BEGIN_NAMESPACE
+
+namespace Qt3D {
+
+template <typename T, typename C, int INDEXBITS = 16>
+class QT3DCORESHARED_EXPORT QAbstractResourcesManager
+{
+public:
+    QAbstractResourcesManager() :
+        m_maxResourcesEntries(1 << INDEXBITS)
+    {
+    }
+
+    virtual ~QAbstractResourcesManager()
+    {
+    }
+
+    virtual QHandle<T, INDEXBITS> acquire() = 0;
+    virtual T* data(const QHandle<T, INDEXBITS> &handle) = 0;
+    virtual void release(const QHandle<T, INDEXBITS> &handle) = 0;
+    virtual void reset() = 0;
+
+    QHandle<T, INDEXBITS> lookupHandle(const C &id)
+    {
+        if (m_handleToResourceMapper.contains(id))
+            return m_handleToResourceMapper[id];
+        return QHandle<T, INDEXBITS>();
+    }
+
+    T *lookupResource(const C &id)
+    {
+        if (m_handleToResourceMapper.contains(id))
+            return data(m_handleToResourceMapper[id]);
+        return Q_NULLPTR;
+    }
+
+    T *getOrCreate(const C &id)
+    {
+        if (!m_handleToResourceMapper.contains(id))
+            m_handleToResourceMapper[id] = acquire();
+        return data(m_handleToResourceMapper[id]);
+    }
+
+
+    int maxResourcesEntries() const { return m_maxResourcesEntries; }
+
+protected:
+    QHandleManager<T, INDEXBITS> m_handleManager;
+    QHash<C, QHandle<T, INDEXBITS> > m_handleToResourceMapper;
+    int m_maxResourcesEntries;
+};
+
+}// Qt3D
+
+QT_END_NAMESPACE
+
+#endif // QT3D_QABSTRACTRESOURCESMANAGER_H
