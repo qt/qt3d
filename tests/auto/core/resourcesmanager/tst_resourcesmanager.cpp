@@ -70,10 +70,15 @@ public:
 };
 
 typedef Qt3D::QHandle<tst_Resource> tHandle;
+typedef Qt3D::QHandle<tst_Resource, 4> tHandle4;
+typedef Qt3D::QHandle<tst_Resource, 8> tHandle8;
+typedef Qt3D::QHandle<tst_Resource, 16> tHandle16;
 
 void tst_ResourcesManager::createResourcesManager()
 {
-    Qt3D::QResourcesManager<tst_Resource> manager;
+    Qt3D::QResourcesManager<tst_Resource, 16> manager16;
+    Qt3D::QResourcesManager<tst_Resource, 4> manager4;
+    Qt3D::QResourcesManager<tst_Resource, 8> manager8;
 }
 
 /*!
@@ -82,9 +87,9 @@ void tst_ResourcesManager::createResourcesManager()
  */
 void tst_ResourcesManager::acquireResources()
 {
-    Qt3D::QResourcesManager<tst_Resource> manager;
+    Qt3D::QResourcesManager<tst_Resource, 4> manager;
 
-    QList<tHandle> handles;
+    QList<tHandle4> handles;
 
     for (int i = 0; i < 5; i++) {
         handles << manager.acquire();
@@ -102,9 +107,9 @@ void tst_ResourcesManager::acquireResources()
 void tst_ResourcesManager::getResources()
 {
 
-    Qt3D::QResourcesManager<tst_Resource> manager;
+    Qt3D::QResourcesManager<tst_Resource, 8> manager;
     QList<tst_Resource *> resources;
-    QList<tHandle> handles;
+    QList<tHandle8> handles;
 
     for (int i = 0; i < 5; i++) {
         handles << manager.acquire();
@@ -122,7 +127,7 @@ void tst_ResourcesManager::getResources()
         QVERIFY(manager.data(handles.at(i))->m_value == i);
 
     // Check that an invalid resource returns NULL
-    tHandle iHandle;
+    tHandle8 iHandle;
     QVERIFY(manager.data(iHandle) == Q_NULLPTR);
 
 }
@@ -133,8 +138,8 @@ void tst_ResourcesManager::getResources()
  */
 void tst_ResourcesManager::registerResourcesResize()
 {
-    Qt3D::QResourcesManager<tst_Resource> manager;
-    QList<tHandle> handles;
+    Qt3D::QResourcesManager<tst_Resource, 16> manager;
+    QList<tHandle16> handles;
 
     for (uint i = 0; i < 2; i++) {
         handles << manager.acquire();
@@ -188,7 +193,7 @@ void tst_ResourcesManager::resetResource()
     Qt3D::QResourcesManager<tst_Resource> manager;
 
     QList<tst_Resource *> resources;
-    QList<tHandle> handles;
+    QList<tHandle16> handles;
 
     for (int i = 0; i < 5; i++) {
         handles << manager.acquire();

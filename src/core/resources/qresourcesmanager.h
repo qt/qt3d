@@ -71,22 +71,22 @@ public:
         m_resourceEntries.clear();
     }
 
-    QHandle<T> acquire();
-    T* data(const QHandle<T> &handle);
-    void release(const QHandle<T> &handle);
+    QHandle<T, INDEXBITS> acquire();
+    T* data(const QHandle<T, INDEXBITS> &handle);
+    void release(const QHandle<T, INDEXBITS> &handle);
     void reset();
 
 private:
     int nextFreeEntry();
 
-    QHandleManager<T> *m_handleManager;
+    QHandleManager<T, INDEXBITS> *m_handleManager;
     QVector<T> m_resourceEntries;
     QHash<int, int> m_handleToResource;
     QList<int> m_freeEntryIndices;
 };
 
 template <typename T, int INDEXBITS>
-void QResourcesManager<T, INDEXBITS>::release(const QHandle<T> &handle)
+void QResourcesManager<T, INDEXBITS>::release(const QHandle<T, INDEXBITS> &handle)
 {
     Q_ASSERT(m_handleToResource.contains(handle.index()));
     m_freeEntryIndices << m_handleToResource[handle.index()];
@@ -106,18 +106,18 @@ void QResourcesManager<T, INDEXBITS>::reset()
 }
 
 template <typename T, int INDEXBITS>
-T* QResourcesManager<T, INDEXBITS>::data(const QHandle<T> &handle)
+T* QResourcesManager<T, INDEXBITS>::data(const QHandle<T, INDEXBITS> &handle)
 {
     return m_handleManager->data(handle);
 }
 
 template <typename T, int INDEXBITS>
-QHandle<T> QResourcesManager<T, INDEXBITS>::acquire()
+QHandle<T, INDEXBITS> QResourcesManager<T, INDEXBITS>::acquire()
 {
     Q_ASSERT(!m_freeEntryIndices.isEmpty());
     int idx = m_freeEntryIndices.takeFirst();
     m_resourceEntries[idx] = T();
-    QHandle<T> handle = m_handleManager->acquire(m_resourceEntries.begin() + idx);
+    QHandle<T, INDEXBITS> handle = m_handleManager->acquire(m_resourceEntries.begin() + idx);
     m_handleToResource[handle.index()] = idx;
     return handle;
 }

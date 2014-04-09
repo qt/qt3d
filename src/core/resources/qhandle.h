@@ -60,14 +60,6 @@ public:
         : m_handle(0)
     {}
 
-    QHandle(quint32 index, quint32 counter)
-        : m_index(index)
-        , m_counter(counter)
-        , m_unused(0)
-    {
-        Q_ASSERT(index < MaxIndex);
-        Q_ASSERT(counter < MaxCounter);
-    }
 
     quint32 index() const { return m_index; }
     quint32 counter() const { return m_counter; }
@@ -79,9 +71,8 @@ public:
     static quint32 maxIndex() { return MaxIndex; }
     static quint32 maxCounter() { return MaxCounter; }
 
-private:
-    friend class QHandleManager<T, INDEXBITS>;
 
+private:
     enum {
         // Sizes to use for bit fields
         IndexBits = INDEXBITS,
@@ -91,6 +82,18 @@ private:
         MaxIndex = (1 << IndexBits) - 1,
         MaxCounter = (1 << CounterBits) - 1
     };
+
+    QHandle(quint32 index, quint32 counter)
+        : m_index(index)
+        , m_counter(counter)
+        , m_unused(0)
+    {
+        Q_ASSERT(index < MaxIndex);
+        Q_ASSERT(counter < MaxCounter);
+    }
+
+
+    friend class QHandleManager<T, INDEXBITS>;
 
     union {
         struct {

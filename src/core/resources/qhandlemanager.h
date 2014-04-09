@@ -67,11 +67,11 @@ public:
     quint32 activeEntries() const { return m_activeEntryCount; }
 
     void reset();
-    QHandle<T> acquire(T *data);
-    void release(const QHandle<T> &handle);
-    void update(const QHandle<T> &, T *data);
-    T *data(const QHandle<T> &handle, bool *ok = 0);
-    const T *constData(const QHandle<T> &handle, bool *ok = 0) const;
+    QHandle<T, INDEXBITS> acquire(T *data);
+    void release(const QHandle<T, INDEXBITS> &handle);
+    void update(const QHandle<T, INDEXBITS> &, T *data);
+    T *data(const QHandle<T, INDEXBITS> &handle, bool *ok = 0);
+    const T *constData(const QHandle<T, INDEXBITS> &handle, bool *ok = 0) const;
 
 private:
     Q_DISABLE_COPY(QHandleManager)
@@ -96,8 +96,8 @@ private:
         {}
 
         U *m_data;
-        unsigned int m_nextFreeIndex : QHandle<U>::IndexBits;
-        unsigned int m_counter : QHandle<U>::CounterBits;
+        unsigned int m_nextFreeIndex :  QHandle<U, INDEXBITS>::IndexBits;
+        unsigned int m_counter : QHandle<U, INDEXBITS>::CounterBits;
         unsigned int m_active : 1;
         unsigned int m_endOfFreeList : 1;
     };
@@ -113,19 +113,20 @@ void QHandleManager<T, INDEXBITS>::reset()
     m_activeEntryCount = 0;
     m_firstFreeEntry = 0;
 
-    for (int i = 0; i < QHandle<T>::MaxIndex; ++i)
+    for (int i = 0; i < QHandle<T, INDEXBITS >::MaxIndex; ++i)
         m_entries[i] = HandleEntry<T>(i + 1);
-    m_entries[QHandle<T>::MaxIndex] = HandleEntry<T>();
-    m_entries[QHandle<T>::MaxIndex].m_endOfFreeList = true;
+    m_entries[QHandle<T, INDEXBITS>::MaxIndex] = HandleEntry<T>();
+    m_entries[QHandle<T, INDEXBITS>::MaxIndex].m_endOfFreeList = true;
 }
 
 template <typename T, int INDEXBITS>
-QHandle<T> QHandleManager<T, INDEXBITS>::acquire(T *data)
+QHandle<T, INDEXBITS> QHandleManager<T, INDEXBITS>::acquire(T *data)
 {
-    Q_ASSERT(m_activeEntryCount < QHandle<T>::MaxIndex);
+    typedef QHandle<T, INDEXBITS> qHandle;
+    Q_ASSERT(m_activeEntryCount < qHandle::MaxIndex);
 
     const quint32 newIndex = m_firstFreeEntry;
-    Q_ASSERT(newIndex < QHandle<T>::MaxIndex);
+    Q_ASSERT(newIndex < qHandle::MaxIndex);
     Q_ASSERT(m_entries[newIndex].m_active == false);
     Q_ASSERT(!m_entries[newIndex].m_endOfFreeList);
 
@@ -139,11 +140,11 @@ QHandle<T> QHandleManager<T, INDEXBITS>::acquire(T *data)
 
     ++m_activeEntryCount;
 
-    return QHandle<T>(newIndex, m_entries[newIndex].m_counter);
+    return QHandle<T, INDEXBITS>(newIndex, m_entries[newIndex].m_counter);
 }
 
 template <typename T, int INDEXBITS>
-void QHandleManager<T, INDEXBITS>::release(const QHandle<T> &handle)
+void QHandleManager<T, INDEXBITS>::release(const QHandle<T, INDEXBITS> &handle)
 {
     const quint32 index = handle.index();
     Q_ASSERT(m_entries[index].m_counter == handle.counter());
@@ -159,7 +160,7 @@ void QHandleManager<T, INDEXBITS>::release(const QHandle<T> &handle)
 // Needed in case the QResourcesManager has reordered
 // memory so that the handle still points to valid data
 template <typename T, int INDEXBITS>
-void QHandleManager<T, INDEXBITS>::update(const QHandle<T> &handle, T *data)
+void QHandleManager<T, INDEXBITS>::update(const QHandle<T, INDEXBITS> &handle, T *data)
 {
     const quint32 index = handle.index();
     Q_ASSERT(m_entries[index].m_counter == handle.counter());
@@ -168,7 +169,7 @@ void QHandleManager<T, INDEXBITS>::update(const QHandle<T> &handle, T *data)
 }
 
 template <typename T, int INDEXBITS>
-T *QHandleManager<T, INDEXBITS>::data(const QHandle<T> &handle, bool *ok)
+T *QHandleManager<T, INDEXBITS>::data(const QHandle<T, INDEXBITS> &handle, bool *ok)
 {
     const quint32 index = handle.index();
     if (m_entries[index].m_counter != handle.counter() ||
@@ -185,7 +186,7 @@ T *QHandleManager<T, INDEXBITS>::data(const QHandle<T> &handle, bool *ok)
 }
 
 template <typename T, int INDEXBITS>
-const T *QHandleManager<T, INDEXBITS>::constData(const QHandle<T> &handle, bool *ok) const
+const T *QHandleManager<T, INDEXBITS>::constData(const QHandle<T, INDEXBITS> &handle, bool *ok) const
 {
     const quint32 index = handle.index();
     if (m_entries[index].m_counter != handle.counter() ||

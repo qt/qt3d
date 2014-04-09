@@ -40,6 +40,10 @@
 ****************************************************************************/
 
 #include <QtTest/QtTest>
+
+// Not really clean but as the QHandle(idx, counter) is private
+// This allows to use this constructor in the tests
+#define private public
 #include <Qt3DCore/qhandle.h>
 
 class tst_Handle : public QObject
