@@ -4,4 +4,5 @@ SUBDIRS = \
     handle \
     handlemanager \
     arrayresourcesmanager \
-    listresourcesmanager
+    listresourcesmanager \
+    qcircularbuffer
