@@ -41,6 +41,8 @@
 
 #include "rendernode.h"
 #include "rendereraspect.h"
+#include "renderer.h"
+#include "rendernodesmanager.h"
 
 #include <transform.h>
 
@@ -61,28 +63,38 @@ namespace Render {
 // bounding volumes to that they end up in contiguous arrays.
 
 RenderNode::RenderNode()
-    : m_rendererAspect(Q_NULLPTR)
+    : m_renderer(Q_NULLPTR)
     , m_transform(Q_NULLPTR)
-    , m_parent(Q_NULLPTR)
     , m_localTransform(new QMatrix4x4)
     , m_worldTransform(new QMatrix4x4)
     , m_localBoundingVolume(new Qt3D::Sphere)
     , m_worldBoundingVolume(new Qt3D::Sphere)
     , m_frontEndPeer(0)
 {
-
 }
 
-void RenderNode::setParent(RenderNode *parent)
+void RenderNode::setParentHandle(HRenderNode parentHandle)
 {
-    m_parent = parent;
-    if (parent)
-        parent->m_children.append(this);
+    Q_ASSERT(m_renderer);
+    m_parentHandle = parentHandle;
+    RenderNode *parent = m_renderer->renderNodesManager()->data(parentHandle);
+    if (parent != Q_NULLPTR && !parent->m_childrenHandles.contains(m_handle))
+        parent->m_childrenHandles.append(m_handle);
 }
 
-void RenderNode::setRendererAspect(RendererAspect *rendererAspect)
+void RenderNode::setRenderer(Renderer *renderer)
 {
-    m_rendererAspect = rendererAspect;
+    m_renderer = renderer;
+}
+
+void RenderNode::setHandle(HRenderNode handle)
+{
+    m_handle = handle;
+}
+
+void RenderNode::setFrontEndPeer(Node *peer)
+{
+    m_frontEndPeer = peer;
 }
 
 void RenderNode::setTransform(Transform *transform)
@@ -90,7 +102,7 @@ void RenderNode::setTransform(Transform *transform)
     m_transform = transform;
 
     // Register for changes
-    QChangeArbiter *arbiter = m_rendererAspect->aspectManager()->changeArbiter();
+    QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
     arbiter->registerObserver(this, m_transform, LocalTransform);
 }
 
@@ -113,9 +125,36 @@ void RenderNode::dump() const
     static int depth = 0;
     QString indent(2 * depth++, QChar::fromLatin1(' '));
     qDebug() << indent + m_frontEndPeer->objectName();
-    foreach (const RenderNode *child, m_children)
+    foreach (const RenderNode *child, children())
         child->dump();
     --depth;
+}
+
+RenderNode *RenderNode::parent() const
+{
+    return m_renderer->renderNodesManager()->data(m_parentHandle);
+}
+
+void RenderNode::appendChildHandle(HRenderNode childHandle)
+{
+    if (!m_childrenHandles.contains(childHandle)) {
+        m_childrenHandles.append(childHandle);
+        RenderNode *child = m_renderer->renderNodesManager()->data(childHandle);
+        if (child != Q_NULLPTR)
+            child->m_parentHandle = m_handle;
+    }
+}
+
+QVector<RenderNode *> RenderNode::children() const
+{
+    QVector<RenderNode *> childrenVector;
+    childrenVector.reserve(m_childrenHandles.size());
+    foreach (HRenderNode handle, m_childrenHandles) {
+        RenderNode *child = m_renderer->renderNodesManager()->data(handle);
+        if (child != Q_NULLPTR)
+            childrenVector.append(child);
+    }
+    return childrenVector;
 }
 
 } // namespace Render

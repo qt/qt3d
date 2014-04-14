@@ -43,6 +43,7 @@
 #define QT3D_RENDER_RENDERNODE_H
 
 #include <Qt3DCore/qchangearbiter.h>
+#include <Qt3DCore/qhandle.h>
 #include <QVector>
 
 QT_BEGIN_NAMESPACE
@@ -57,25 +58,54 @@ class Node;
 class Transform;
 
 namespace Render {
+class RenderNode;
+}
+typedef QHandle<Render::RenderNode, 16> HRenderNode;
+
+namespace Render {
+
+class Renderer;
+class RenderNodesManager;
 
 class RenderNode : public QObserverInterface
 {
 public:
-    explicit RenderNode();
+    RenderNode();
 
     void setTransform(Transform *transform);
-    void setParent(RenderNode *parent);
-    void setRendererAspect(RendererAspect *rendererAspect);
+    void setParentHandle(HRenderNode parentHandle);
+    void setRenderer(Renderer *renderer);
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void setFrontEndPeer(Node *peer);
 
     void dump() const;
 
-//private:
+    HRenderNode handle() const { return m_handle; }
+    RenderNode *parent() const;
+    HRenderNode parentHandle() const { return m_parentHandle; }
 
-    RendererAspect *m_rendererAspect;
+    void appendChildHandle(HRenderNode childHandle);
+    QVector<HRenderNode> childrenHandles() const { return m_childrenHandles; }
+    QVector<RenderNode *> children() const;
+
+    QMatrix4x4 *localTransform() { return m_localTransform; }
+    QMatrix4x4 *worldTransform() { return m_worldTransform; }
+    Sphere *localBoundingVolume() { return m_localBoundingVolume; }
+    Sphere *worldBoundingVolume() { return m_worldBoundingVolume; }
+    Node *frontEndPeer() const { return m_frontEndPeer; }
+
+private:
+    friend class RenderNodesManager;
+    // Only called by RenderNodesManager when acquiring a new RenderNode
+    // so that the handle is stored in the RenderNode
+    void  setHandle(HRenderNode handle);
+
+    Renderer *m_renderer;
     Transform *m_transform;
-    RenderNode *m_parent;
-    QVector<RenderNode *> m_children;
+    HRenderNode m_handle;
+    HRenderNode m_parentHandle;
+    QVector<HRenderNode > m_childrenHandles;
+
     QMatrix4x4 *m_localTransform;
     QMatrix4x4 *m_worldTransform;
     Sphere *m_localBoundingVolume;
@@ -87,6 +117,7 @@ public:
 
     // TODO: Add pointer to Drawable or references to VBO's and other info needed to draw
 };
+
 
 } // namespace Render
 } // namespace Qt3D

@@ -43,7 +43,7 @@
 #define QT3D_RENDER_RENDERSCENEBUILDER_H
 
 #include <Qt3DCore/nodevisitor.h>
-
+#include <Qt3DCore/qhandle.h>
 #include <QStack>
 
 QT_BEGIN_NAMESPACE
@@ -53,9 +53,14 @@ namespace Qt3D {
 class FrameGraphItem;
 
 namespace Render {
+class RenderNode;
+}
+
+typedef QHandle<Render::RenderNode, 16> HRenderNode;
+
+namespace Render {
 
 class Renderer;
-class RenderNode;
 class FrameGraphNode;
 
 class RenderSceneBuilder : public Qt3D::NodeVisitor
@@ -63,7 +68,8 @@ class RenderSceneBuilder : public Qt3D::NodeVisitor
 public:
     explicit RenderSceneBuilder(Renderer *renderer);
 
-    RenderNode *rootNode() const { return m_rootNode; }
+    RenderNode *rootNode() const;
+    HRenderNode rootHandle() const { return m_rootNodeHandle; }
 
 protected:
     void visitNode(Qt3D::Node *node) Q_DECL_OVERRIDE;
@@ -71,8 +77,8 @@ protected:
 
 private:
     Renderer *m_renderer;
-    RenderNode *m_rootNode;
-    QStack<RenderNode *> m_nodeStack;
+    HRenderNode m_rootNodeHandle;
+    QStack<HRenderNode> m_nodeStack;
 
     Render::FrameGraphNode* buildFrameGraph(Node *node);
     Render::FrameGraphNode* backendFrameGraphNode(Qt3D::FrameGraphItem *);

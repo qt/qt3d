@@ -75,8 +75,12 @@ namespace Render {
 RenderSceneBuilder::RenderSceneBuilder(Renderer *renderer)
     : Qt3D::NodeVisitor()
     , m_renderer(renderer)
-    , m_rootNode(0)
 {
+}
+
+RenderNode *RenderSceneBuilder::rootNode() const
+{
+    return m_renderer->renderNodesManager()->data(m_rootNodeHandle);
 }
 
 /*!
@@ -176,11 +180,15 @@ Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(Qt3D::FrameGra
 
 void RenderSceneBuilder::visitNode(Qt3D::Node *node)
 {
-    if (!m_rootNode) {
-        m_rootNode = new RenderNode();
-        m_rootNode->setRendererAspect(m_renderer->rendererAspect());
-        m_rootNode->m_frontEndPeer = node;
-        m_nodeStack.push(m_rootNode);
+    if (!rootNode()) {
+        // Note : the root node doesn't have any entity uuid it can be referenced by
+        // as it is node an Entity. However as it is the scene root, it can always be referenced
+        // as the scene root
+        m_rootNodeHandle = m_renderer->renderNodesManager()->acquire();
+        RenderNode *rootRenderNode = rootNode();
+        rootRenderNode->setRenderer(m_renderer);
+        rootRenderNode->setFrontEndPeer(node);
+        m_nodeStack.push(m_rootNodeHandle);
     }
     qDebug() << Q_FUNC_INFO << "Node " << node->objectName();
     Qt3D::NodeVisitor::visitNode(node);
@@ -192,13 +200,14 @@ void RenderSceneBuilder::visitEntity(Qt3D::Entity *entity)
     // be calculated later by jobs
     qDebug() << Q_FUNC_INFO << "Entity " << entity->objectName();
     // Retrieve or created RenderNode for entity
-    RenderNode *renderNode = m_renderer->renderNodesManager()->getOrCreateRenderNode(entity->uuid());
-    renderNode->setRendererAspect(m_renderer->rendererAspect());
-    renderNode->setParent(m_nodeStack.top());
-    renderNode->m_frontEndPeer = entity;
+    HRenderNode renderNodeHandle = m_renderer->renderNodesManager()->getOrAcquireHandle(entity->uuid());
+    RenderNode *renderNode = m_renderer->renderNodesManager()->data(renderNodeHandle);
+    renderNode->setRenderer(m_renderer);
+    renderNode->setParentHandle(m_nodeStack.top());
+    renderNode->setFrontEndPeer(entity);
     // REPLACE WITH ENTITY MATRIX FROM TRANSFORMS
 //    *(renderNode->m_localTransform) = entity->matrix();
-    m_nodeStack.push(renderNode);
+    m_nodeStack.push(renderNodeHandle);
 
     // Look for a transform component
     QList<Transform *> transforms = entity->componentsOfType<Transform>();

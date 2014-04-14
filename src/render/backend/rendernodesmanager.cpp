@@ -52,6 +52,14 @@ RenderNodesManager::RenderNodesManager() :
 {
 }
 
+HRenderNode RenderNodesManager::acquire()
+{
+    HRenderNode handle = QArrayResourcesManager::acquire();
+    QArrayResourcesManager::data(handle)->setHandle(handle);
+    return handle;
+}
+
+
 /*!
  * Returns true if there is a RenderNode associated to the Entity
  * identified by \a id. Returns false otherwise.

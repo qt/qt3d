@@ -58,13 +58,13 @@ namespace {
 void updateWorldTransformAndBounds(Qt3D::Render::RenderNode *node)
 {
     QMatrix4x4 parentTransform;
-    if (node->m_parent)
-        parentTransform = *(node->m_parent->m_worldTransform);
+    if (node->parent())
+        parentTransform = *(node->parent()->worldTransform());
 
-    *(node->m_worldTransform) = parentTransform * *(node->m_localTransform);
-    *(node->m_worldBoundingVolume) = node->m_localBoundingVolume->transformed(*(node->m_worldTransform));
+    *(node->worldTransform()) = parentTransform * *(node->localTransform());
+    *(node->worldBoundingVolume()) = node->localBoundingVolume()->transformed(*(node->worldTransform()));
 
-    Q_FOREACH (Qt3D::Render::RenderNode *child, node->m_children)
+    Q_FOREACH (Qt3D::Render::RenderNode *child, node->children())
         updateWorldTransformAndBounds(child);
 }
 

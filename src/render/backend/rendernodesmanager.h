@@ -60,6 +60,7 @@ class RenderNodesManager : public QArrayResourcesManager<RenderNode, QUuid, 16>
 public:
     RenderNodesManager();
 
+    HRenderNode acquire() Q_DECL_OVERRIDE;
     inline bool hasRenderNode(const QUuid &id) const { return contains(id); }
     inline RenderNode *getOrCreateRenderNode(const QUuid &id) { return getOrCreateResource(id); }
     inline RenderNode *renderNode(const QUuid &id) { return lookupResource(id); }

@@ -62,30 +62,30 @@ void expandWorldBoundingVolume(Qt3D::Render::RenderNode *node)
     QStack<int> childIndexStack;
     forever {
         // Find left most leaf node of currentNode
-        while (!currentNode->m_children.isEmpty()) {
+        while (!currentNode->children().isEmpty()) {
             childIndexStack.push(1);
-            currentNode = node->m_children.first();
+            currentNode = node->children().first();
         }
 
-        if (!currentNode->m_parent)
+        if (!currentNode->parent())
             return;
 
         // Initialize parent bounding volume to be equal to that of the first child
-        Qt3D::Render::RenderNode *parentNode = currentNode->m_parent;
-        Qt3D::Sphere *parentBoundingVolume = parentNode->m_worldBoundingVolume;
-        *(parentBoundingVolume) = *(currentNode->m_worldBoundingVolume);
+        Qt3D::Render::RenderNode *parentNode = node->parent();
+        Qt3D::Sphere *parentBoundingVolume = parentNode->worldBoundingVolume();
+        *(parentBoundingVolume) = *(currentNode->worldBoundingVolume());
 
         // Expand the parent bounding volume by each of remaining the siblings
-        const int siblingCount = parentNode->m_children.count();
+        const int siblingCount = parentNode->children().count();
         for (int i = 1; i < siblingCount; ++i) {
-            Qt3D::Sphere *siblingBoundingVolume = parentNode->m_children.at(i)->m_worldBoundingVolume;
+            Qt3D::Sphere *siblingBoundingVolume = parentNode->children().at(i)->worldBoundingVolume();
             parentBoundingVolume->expandToContain(*siblingBoundingVolume);
         }
 
         // Move to parent's next sibling
         childIndexStack.pop();
         const int nextSiblingIndex = childIndexStack.top()++;
-        currentNode = parentNode->m_parent->m_children.at(nextSiblingIndex);
+        currentNode = parentNode->parent()->children().at(nextSiblingIndex);
     }
 }
 
