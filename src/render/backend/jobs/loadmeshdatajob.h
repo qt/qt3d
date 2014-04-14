@@ -43,7 +43,7 @@
 #define QT3D_RENDER_LOADMESHDATAJOB_H
 
 #include <Qt3DCore/qjob.h>
-
+#include <Qt3DCore/qhandle.h>
 #include <Qt3DRenderer/meshdata.h>
 
 #include <QSharedPointer>
@@ -51,20 +51,28 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
+
+typedef QHandle<MeshData, 16> HMeshData;
+
 namespace Render {
+
+class Renderer;
+
 
 class LoadMeshDataJob : public Qt3D::QJob
 {
 public:
     LoadMeshDataJob(const QString &source,
-                    const Qt3D::MeshDataPtr &meshData);
+                    const HMeshData &meshData);
 
+    void setRenderer(Renderer *renderer) { m_renderer = renderer; }
 protected:
     void run() Q_DECL_OVERRIDE;
 
 private:
     QString m_source;
-    Qt3D::MeshDataPtr m_meshData;
+    HMeshData m_meshDataHandle;
+    Renderer *m_renderer;
 };
 
 typedef QSharedPointer<LoadMeshDataJob> LoadMeshDataJobPtr;

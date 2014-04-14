@@ -42,39 +42,40 @@
 #ifndef QT3D_RENDER_MESHMANAGER_H
 #define QT3D_RENDER_MESHMANAGER_H
 
-#include <QObject>
-
 #include <Qt3DRenderer/mesh.h>
 #include <Qt3DRenderer/meshdata.h>
+#include <Qt3DCore/qarrayresourcesmanager.h>
 
 #include <QHash>
 #include <QPair>
 #include <QString>
+#include <QUuid>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 namespace Render {
 
-class MeshManager : public QObject
+typedef QHandle<MeshData, 16> HMeshData;
+
+class MeshManager : public QArrayResourcesManager<MeshData, Mesh *, 16>
 {
-    Q_OBJECT
 public:
-    explicit MeshManager(QObject *parent = 0);
+    MeshManager();
 
     void addMesh(Qt3D::Mesh *frontEndMesh);
 
-    QList< QPair<QString, MeshDataPtr> > meshesPending() const { return m_meshesPending; }
+    QList< QPair<QString, HMeshData> > meshesPending() const { return m_meshesPending; }
     void clearMeshesPending() { m_meshesPending.clear(); }
 
 private:
     // TODO What unique id do we want to index by?
-    QHash<QString, Qt3D::MeshDataPtr> m_meshesBySource;
-    QHash<Qt3D::Mesh *, Qt3D::MeshDataPtr> m_meshesByPeer;
+    QHash<QString, HMeshData> m_meshesBySource;
+    QHash<Qt3D::Mesh *, HMeshData> m_meshesByPeer;
 
     // List of meshes that we need to schedule jobs to load
     // and calculate bounds for.
-    QList< QPair<QString,MeshDataPtr> > m_meshesPending;
+    QList< QPair<QString, HMeshData> > m_meshesPending;
 };
 
 } // namespace Render

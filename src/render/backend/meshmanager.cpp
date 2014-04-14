@@ -46,19 +46,19 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
-MeshManager::MeshManager(QObject *parent)
-    : QObject(parent)
+MeshManager::MeshManager()
+    : QArrayResourcesManager<MeshData, Mesh *, 16>()
 {
 }
 
 void MeshManager::addMesh(Qt3D::Mesh *frontEndMesh)
 {
-    MeshDataPtr meshData(new MeshData);
+    HMeshData meshData = getOrAcquireHandle(frontEndMesh);
+
     m_meshesByPeer.insert(frontEndMesh, meshData);
 
     // TODO: Protect access to front end data
     m_meshesBySource.insert(frontEndMesh->source(), meshData);
-
     m_meshesPending.append(qMakePair(frontEndMesh->source(), meshData));
 }
 

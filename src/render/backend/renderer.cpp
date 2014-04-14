@@ -145,7 +145,7 @@ Renderer::Renderer()
     , m_frameGraphRoot(0)
     , m_camera(0)
     , m_renderCamera(0)
-    , m_meshManager(new MeshManager(this))
+    , m_meshManager(new MeshManager())
     , m_cameraManager(new CameraManager())
     , m_renderNodesManager(new RenderNodesManager())
 {

@@ -104,10 +104,11 @@ QVector<QJobPtr> RendererAspect::jobsToExecute()
     QVector<QJobPtr> jobs;
 
     // Create jobs to load in any meshes that are pending
-    QList< QPair<QString,MeshDataPtr> > meshes = m_renderThread->renderer()->meshManager()->meshesPending();
+    QList< QPair<QString, Render::HMeshData> > meshes = m_renderThread->renderer()->meshManager()->meshesPending();
     for (int i = 0; i < meshes.size(); ++i ) {
-        const QPair<QString, MeshDataPtr> &meshDataInfo = meshes.at(i);
+        const QPair<QString, Render::HMeshData> &meshDataInfo = meshes.at(i);
         Render::LoadMeshDataJobPtr loadMeshJob(new Render::LoadMeshDataJob(meshDataInfo.first, meshDataInfo.second));
+        loadMeshJob->setRenderer(m_renderThread->renderer());
         jobs.append(loadMeshJob);
     }
     m_renderThread->renderer()->meshManager()->clearMeshesPending();

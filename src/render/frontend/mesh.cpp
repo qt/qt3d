@@ -97,38 +97,39 @@ void Mesh::setData(MeshDataPtr d)
     m_data = d;
 }
 
+// Should be handled in RenderMesh
 void Mesh::update()
 {
-    if (m_sourceDirty) {
-        m_data = MeshDataPtr();
-        m_sourceDirty = false;
+//    if (m_sourceDirty) {
+//        m_data = MeshDataPtr();
+//        m_sourceDirty = false;
 
-        QFileInfo finfo(m_source);
-        if (!finfo.exists()) {
-            qWarning() << Q_FUNC_INFO << "not found:" << m_source;
-            return;
-        }
+//        QFileInfo finfo(m_source);
+//        if (!finfo.exists()) {
+//            qWarning() << Q_FUNC_INFO << "not found:" << m_source;
+//            return;
+//        }
 
-        QFile f(m_source);
-        f.open(QIODevice::ReadOnly);
+//        QFile f(m_source);
+//        f.open(QIODevice::ReadOnly);
 
-        // Could be nice to abstract this
-        // Use AbstractSceneParsers of a dedicated AbstractMeshLoader
+//        // Could be nice to abstract this
+//        // Use AbstractSceneParsers of a dedicated AbstractMeshLoader
 
-        ObjLoader objLoad;
-        objLoad.setLoadTextureCoordinatesEnabled(true);
+//        ObjLoader objLoad;
+//        objLoad.setLoadTextureCoordinatesEnabled(true);
 
-        if (!objLoad.load(&f)) {
-            qWarning() << Q_FUNC_INFO << "OBJ load failure for:" << m_source;
-            return;
-        }
+//        if (!objLoad.load(&f)) {
+//            qWarning() << Q_FUNC_INFO << "OBJ load failure for:" << m_source;
+//            return;
+//        }
 
-        qDebug() << "Loaded OBJ ok";
-        setData(objLoad.mesh());
-        setObjectName(QStringLiteral("OBJ"));
-    }
+//        qDebug() << "Loaded OBJ ok";
+//        setData(objLoad.mesh());
+//        setObjectName(QStringLiteral("OBJ"));
+//    }
 
-    m_sourceDirty = false;
+//    m_sourceDirty = false;
 }
 
 } // namespace Qt3D

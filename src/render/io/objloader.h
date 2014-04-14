@@ -111,7 +111,7 @@ public:
     QVector<QVector4D> tangents() const { return m_tangents; }
     QVector<unsigned int> indices() const { return m_indices; }
 
-    MeshDataPtr mesh() const;
+    MeshData *mesh() const;
 
 private:
     void updateIndices(const QVector<QVector3D> &positions,

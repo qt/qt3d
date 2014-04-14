@@ -44,6 +44,9 @@
 #include <objloader.h>
 #include <sphere.h>
 
+#include <renderer.h>
+#include <meshmanager.h>
+
 #include <QDebug>
 #include <QThread>
 
@@ -52,10 +55,10 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
-LoadMeshDataJob::LoadMeshDataJob(const QString &source, const MeshDataPtr &meshData)
+LoadMeshDataJob::LoadMeshDataJob(const QString &source, const HMeshData &meshDataHandle)
     : QJob()
     , m_source(source)
-    , m_meshData(meshData)
+    , m_meshDataHandle(meshDataHandle)
 {
 }
 
@@ -69,17 +72,18 @@ void LoadMeshDataJob::run()
     ObjLoader loader;
     loader.setLoadTextureCoordinatesEnabled(true);
 
-    if (loader.load(m_source)) {
-        qDebug() << "Loaded OBJ ok";
-        *m_meshData = *(loader.mesh());
+    MeshData *meshData = Q_NULLPTR;
+    if (loader.load(m_source) &&
+            (meshData = m_renderer->meshManager()->data(m_meshDataHandle)) != Q_NULLPTR) {
+        qDebug() << Q_FUNC_INFO << "Loaded OBJ ok";
+        meshData = loader.mesh();
+        AttributePtr attr = meshData->attributeByName(QStringLiteral("position"));
+        if (!attr) {
+            qWarning() << Q_FUNC_INFO << "unknown attribute: position";
+            return;
+        }
     } else {
         qWarning() << Q_FUNC_INFO << "OBJ load failure for:" << m_source;
-    }
-
-    AttributePtr attr = m_meshData->attributeByName(QStringLiteral("position"));
-    if (!attr) {
-        qWarning() << Q_FUNC_INFO << "unknown attribute: position";
-        return;
     }
 
     //Qt3D::Sphere sphere = Qt3D::Sphere::fromPoints(loader.vertices());
