@@ -31,7 +31,8 @@ HEADERS += \
     $$PWD/qgraphicshelperes2.h \
     $$PWD/qgraphicshelpergl2.h \
     $$PWD/renderview.h \
-    $$PWD/rendercommand.h
+    $$PWD/rendercommand.h \
+    $$PWD/rendernodesmanager.h
 
 
 SOURCES += \
@@ -60,4 +61,5 @@ SOURCES += \
     $$PWD/qgraphicshelperes2.cpp \
     $$PWD/qgraphicshelpergl2.cpp \
     $$PWD/renderview.cpp \
-    $$PWD/rendercommand.cpp
+    $$PWD/rendercommand.cpp \
+    $$PWD/rendernodesmanager.cpp
