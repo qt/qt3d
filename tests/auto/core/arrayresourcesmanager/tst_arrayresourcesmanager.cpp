@@ -235,11 +235,12 @@ void tst_ArrayResourcesManager::lookupResource()
     tHandle16 t = manager.lookupHandle(2);
     QVERIFY(t.handle() == 0);
     QVERIFY(manager.data(t) == Q_NULLPTR);
-    tst_ArrayResource *resource = manager.getOrCreate(2);
+    tst_ArrayResource *resource = manager.getOrCreateResource(2);
     QVERIFY(resource != Q_NULLPTR);
     t = manager.lookupHandle(2);
     QVERIFY(manager.data(t) == manager.lookupResource(2));
-    QVERIFY(resource == manager.getOrCreate(2));
+    QVERIFY(t == manager.getOrAcquireHandle(2));
+    QVERIFY(resource == manager.getOrCreateResource(2));
     QVERIFY(manager.data(t) == resource);
 }
 

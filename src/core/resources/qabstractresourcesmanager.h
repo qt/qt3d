@@ -69,7 +69,19 @@ public:
     virtual void release(const QHandle<T, INDEXBITS> &handle) = 0;
     virtual void reset() = 0;
 
-    QHandle<T, INDEXBITS> lookupHandle(const C &id)
+    bool contains(const C &id) const
+    {
+        return m_handleToResourceMapper.contains(id);
+    }
+
+    QHandle<T, INDEXBITS> getOrAcquireHandle(const C &id)
+    {
+        if (!m_handleToResourceMapper.contains(id))
+            m_handleToResourceMapper[id] = acquire();
+        return m_handleToResourceMapper[id];
+    }
+
+    QHandle<T, INDEXBITS> lookupHandle(const C &id) const
     {
         if (m_handleToResourceMapper.contains(id))
             return m_handleToResourceMapper[id];
@@ -83,13 +95,18 @@ public:
         return Q_NULLPTR;
     }
 
-    T *getOrCreate(const C &id)
+    T *getOrCreateResource(const C &id)
     {
         if (!m_handleToResourceMapper.contains(id))
             m_handleToResourceMapper[id] = acquire();
         return data(m_handleToResourceMapper[id]);
     }
 
+    void releaseResource(const C &id)
+    {
+        if (m_handleToResourceMapper.contains(id))
+            release(m_handleToResourceMapper[id]);
+    }
 
     int maxResourcesEntries() const { return m_maxResourcesEntries; }
 
