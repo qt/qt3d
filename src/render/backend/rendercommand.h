@@ -43,20 +43,79 @@
 #define QT3D_RENDER_RENDERCOMMAND_H
 
 #include <qglobal.h>
+#include <quniformvalue.h>
+#include <meshdata.h>
+#include <QOpenGLVertexArrayObject>
+#include <QOpenGLShaderProgram>
+#include <QOpenGLTexture>
+#include <QMatrix4x4>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
+
 namespace Render {
+
+class RenderTarget;
+
+// 1 Leaf Node -> 1 RenderView -> * RenderCommands
+
+//// RenderViewJob
+// Basically we are only interested in Entity that contains
+// a mesh component
+// From such Entity, we create a RenderCommand
+
+//// RenderView submission
+// When the a RenderView is submitted
+// Set the Viewport
+// Retrieve Camera projectionMatrix and viewMatrix
+// Bind RenderTarget
+// ClearColor
+// We retrieve the RenderCommands from the RenderView
+// For each RenderCommand
+//  We create and bind the RenderCommand's VAO
+//  Activate shaderProgram
+//  Set Attributes
+//  For each attribute
+//   bind mesh VBO for currentAttribute;
+//   program.attributeLocation
+//   program.enableAttributeArray
+//   program.setAttributeBuffer
+//  Set Uniforms
+//  For each uniform
+//   bind texture if texture
+//   program.uniformLocation
+//   program.setUniformValue/setUniformArray
+//  We bind mesh indices VBO
+//  We Release the VAO
+//  RenderViews are submitted
+//  Renderer->executeCommands
+//  Does something like QGraphicsContext->draw(RenderCommand)
+//  QGraphicsContext basically does
+//  RenderCommand->vao.bind()
+//  Call matching glHelperMethod for Arrays,Elements, ArrayInstanced, ElementsInstanced
+// RenderCommand->vao.release()
+// Destroy RenderCommand
+
 
 class RenderCommand
 {
 public:
     RenderCommand();
+
+//private:
+    QOpenGLVertexArrayObject m_vao; // VAO used during the submission step to store all states and VBOs
+    QMatrix4x4 m_worldMatrix; // modelMatrix for the mesh -> could maybe be stored directly with other uniform
+    MeshData m_meshData; // mesh for given pass
+    QOpenGLShaderProgram m_shaderProgram; // Shader for given pass and mesh
+    QUniformPack m_uniforms; // Might need to be reworked so as to be able to destroy the
+                            // RenderTexture while submission is happening.
+    GLint m_instancesCount; // Number of instances of the mesh, if 0 regular draw otherwise glDrawArraysInstanced or glDrawElementsInstanced
 };
 
-} // namespace Render
-} // namespace Qt3D
+} // Render
+
+} // Qt3D
 
 QT_END_NAMESPACE
 

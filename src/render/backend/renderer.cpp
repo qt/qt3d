@@ -497,7 +497,7 @@ void Renderer::submitRenderViews()
     }
 }
 
-// Waits to be tolds to create jobs for the next frame
+// Waits to be told to create jobs for the next frame
 // Called by RendererAspect jobsToExecute context of QAspectThread
 QVector<QJobPtr> Renderer::createRenderBinJobs()
 {

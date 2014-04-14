@@ -58,6 +58,7 @@ void RenderViewJob::run()
     // Create a RenderView object
     RenderView *renderView = new RenderView;
 
+    renderView->setRenderer(m_renderer);
     // Populate its configuration from the framegraph
     // using the root->leaf set of nodes
     renderView->setConfigFromFrameGraphLeafNode(m_fgLeaf);
@@ -69,9 +70,8 @@ void RenderViewJob::run()
     // list of RenderCommands
     //buildRenderCommands(renderView, m_renderer);
 
-
-
-
+    // When culling is implemented, pass the culled renderSceneRoot
+    renderView->buildRenderCommands(m_renderer->renderSceneRoot());
 
     // Enqueue our fully populated RenderView with the RenderThread
     m_renderer->enqueueRenderView(renderView, m_index);

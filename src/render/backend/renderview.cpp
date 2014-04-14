@@ -44,7 +44,11 @@
 #include "renderer.h"
 #include "rendercamera.h"
 #include "rendercommand.h"
-
+#include "rendernode.h"
+#include "meshmanager.h"
+#include "meshdata.h"
+#include <entity.h>
+#include "cameramanager.h"
 #include <cameraselectornode.h>
 #include <framegraphnode.h>
 #include <renderpassfilternode.h>
@@ -60,7 +64,6 @@ namespace Render {
 
 RenderView::~RenderView()
 {
-//    qDebug() << Q_FUNC_INFO;
     qDeleteAll(m_commands);
 }
 
@@ -78,11 +81,10 @@ void RenderView::setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf)
         FrameGraphNode::FrameGraphNodeType type = node->nodeType();
         switch (type) {
         case FrameGraphNode::CameraSelector: {
-            // TODO: Store handle to RenderCamera rather than raw pointer
-            // CameraSelector *cameraSelector = static_cast<CameraSelector *>(node);
-            // typedef Handle<RenderCamera> HCamera;
-            // Entity *cameraEntity = cameraSelector->cameraEntity();
-            // HCamera m_cameraHandle = m_renderer->cameraManager()->find(cameraEntity->uuid());
+            CameraSelector *cameraSelector = static_cast<CameraSelector *>(node);
+            Entity *cameraEntity = cameraSelector->cameraEntity();
+            if (cameraEntity != Q_NULLPTR)
+               m_camera = m_renderer->cameraManager()->lookupHandle(cameraEntity->uuid());
             break;
         }
 
@@ -127,6 +129,50 @@ void RenderView::submit(Renderer *renderer)
 void RenderView::sort()
 {
     // TODO: Implement me!
+}
+
+void RenderView::setRenderer(Renderer *renderer)
+{
+    m_renderer = renderer;
+}
+
+// Traverse Scene graphTree or culledSceneGraphTree
+// ideally m_commands has been sized properly after the
+// scene has been culled to the number of nodes in the culled
+// scene using reserve().
+void RenderView::buildRenderCommands(RenderNode *node)
+{
+    // Build renderCommand for current node
+    RenderCommand *command = new RenderCommand();
+    qDebug() << Q_FUNC_INFO << node->frontEndPeer()->objectName();
+    Entity *frontEndEntity = Q_NULLPTR;
+    if (node->frontEndPeer() != Q_NULLPTR
+        && (frontEndEntity = node->frontEndPeer()->asEntity()) != Q_NULLPTR) {
+        MeshData *meshData = m_renderer->meshManager()->meshForEntityUuid(frontEndEntity->uuid());
+        if (meshData != Q_NULLPTR) {
+            qDebug() << Q_FUNC_INFO << meshData->attributeNames();
+            // Find MeshData and assigns it to command
+            command->m_meshData = *meshData;
+            command->m_instancesCount = 0;
+            command->m_worldMatrix = *(node->worldTransform());
+            qDebug() << Q_FUNC_INFO << command->m_worldMatrix;
+
+            // Use a default shader and uniform bindings for the moment
+            // Shader and Uniforms obtained from Material/Effect/Technique/RenderPass/ShaderProgram
+            // ShaderProgram = shaderForMeshMaterialAndPassForTechnique
+            // ShaderProgramManager[MaterialManager[frontentEntity->uuid()]->Effect->Techniques[TechniqueFilter->name]->RenderPasses[RenderPassFilter->name]];
+            //            command->m_shaderProgram = ;
+            //            command->m_uniforms = ;
+
+            // Append renderCommand
+            m_commands.append(command);
+        }
+    }
+
+    // Traver children
+    foreach (RenderNode *child, node->children()) {
+        buildRenderCommands(child);
+    }
 }
 
 } // namespace Render

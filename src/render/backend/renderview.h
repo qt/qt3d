@@ -43,23 +43,25 @@
 #define QT3D_RENDER_RENDERVIEW_H
 
 #include <Qt3DRenderer/renderer.h>
-
+#include <Qt3DCore/qhandle.h>
 #include <QVector>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class Renderer;
-class RenderCamera;
 class RenderPass; // TODO Split into front/back ends
 
 namespace Render {
 
+class Renderer;
 class RenderCommand;
 class RenderPassFilter;
 class TechniqueFilter;
 class ViewportNode;
+class RenderCamera;
+
+typedef QHandle<RenderCamera, 8> HCamera;
 
 // This class is kind of analogous to RenderBin but I want to avoid trampling
 // on that until we get this working
@@ -67,7 +69,7 @@ class Q_AUTOTEST_EXPORT RenderView
 {
 public:
     RenderView()
-        : m_camera(0)
+        : m_renderer(Q_NULLPTR)
         , m_techniqueFilter(0)
         , m_passFilter(0)
         , m_viewport(0)
@@ -90,10 +92,16 @@ public:
     // can be submitted. If a pointer is null, that pice of state
     // does not need to be changed.
     // TODO: Add RenderTarget
-    Qt3D::RenderCamera *m_camera;
+
+    void setRenderer(Renderer *renderer);
+
+    Renderer *m_renderer;
+    HCamera m_camera;
     TechniqueFilter *m_techniqueFilter;
     RenderPassFilter *m_passFilter;
     ViewportNode *m_viewport;
+
+    void buildRenderCommands(RenderNode *node);
 
     // We do not use pointers to RenderNodes or Drawable's here so that the
     // render aspect is free to change the drawables on the next frame whilst
