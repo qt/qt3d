@@ -232,7 +232,7 @@ void RenderSceneBuilder::visitEntity(Qt3D::Entity *entity)
 
     // We'll update matrices in a job later. In fact should the matrix be decoupled from the mesh?
     foreach (Mesh *mesh, entity->componentsOfType<Mesh>()) {
-        m_renderer->meshManager()->addMesh(mesh);
+        m_renderer->meshManager()->linkMeshToEntity(entity->uuid(), m_renderer->meshManager()->addMesh(mesh));
         //m_renderer->buildMeshes(mesh, material, QMatrix4x4());
     }
 

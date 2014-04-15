@@ -51,7 +51,7 @@ MeshManager::MeshManager()
 {
 }
 
-void MeshManager::addMesh(Qt3D::Mesh *frontEndMesh)
+HMeshData MeshManager::addMesh(Qt3D::Mesh *frontEndMesh)
 {
     HMeshData meshData = getOrAcquireHandle(frontEndMesh);
 
@@ -60,6 +60,20 @@ void MeshManager::addMesh(Qt3D::Mesh *frontEndMesh)
     // TODO: Protect access to front end data
     m_meshesBySource.insert(frontEndMesh->source(), meshData);
     m_meshesPending.append(qMakePair(frontEndMesh->source(), meshData));
+
+    return meshData;
+}
+
+void MeshManager::linkMeshToEntity(const QUuid &id, HMeshData handle)
+{
+    m_meshesByEntityUuid[id] = handle;
+}
+
+MeshData *MeshManager::meshForEntityUuid(const QUuid &id)
+{
+    if (m_meshesByEntityUuid.contains(id))
+        return data(m_meshesByEntityUuid[id]);
+    return Q_NULLPTR;
 }
 
 } // namespace Render

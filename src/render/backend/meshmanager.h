@@ -63,7 +63,9 @@ class MeshManager : public QArrayResourcesManager<MeshData, Mesh *, 16>
 public:
     MeshManager();
 
-    void addMesh(Qt3D::Mesh *frontEndMesh);
+    HMeshData addMesh(Qt3D::Mesh *frontEndMesh);
+    void linkMeshToEntity(const QUuid &id, HMeshData handle);
+    MeshData *meshForEntityUuid(const QUuid &id);
 
     QList< QPair<QString, HMeshData> > meshesPending() const { return m_meshesPending; }
     void clearMeshesPending() { m_meshesPending.clear(); }
@@ -72,6 +74,7 @@ private:
     // TODO What unique id do we want to index by?
     QHash<QString, HMeshData> m_meshesBySource;
     QHash<Qt3D::Mesh *, HMeshData> m_meshesByPeer;
+    QHash<QUuid, HMeshData> m_meshesByEntityUuid;
 
     // List of meshes that we need to schedule jobs to load
     // and calculate bounds for.
