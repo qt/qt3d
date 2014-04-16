@@ -61,31 +61,38 @@ void expandWorldBoundingVolume(Qt3D::Render::RenderNode *node)
     Qt3D::Render::RenderNode *currentNode = node;
     QStack<int> childIndexStack;
     forever {
+
         // Find left most leaf node of currentNode
-        while (!currentNode->children().isEmpty()) {
+        while (!currentNode && !currentNode->children().isEmpty()) {
             childIndexStack.push(1);
-            currentNode = node->children().first();
+            currentNode = currentNode->children().first();
         }
 
-        if (!currentNode->parent())
+        if (!currentNode || !currentNode->parent())
             return;
 
         // Initialize parent bounding volume to be equal to that of the first child
-        Qt3D::Render::RenderNode *parentNode = node->parent();
+        Qt3D::Render::RenderNode *parentNode = currentNode->parent();
         Qt3D::Sphere *parentBoundingVolume = parentNode->worldBoundingVolume();
         *(parentBoundingVolume) = *(currentNode->worldBoundingVolume());
 
         // Expand the parent bounding volume by each of remaining the siblings
-        const int siblingCount = parentNode->children().count();
+        QVector<RenderNode *> siblings = parentNode->children();
+        const int siblingCount = siblings.count();
         for (int i = 1; i < siblingCount; ++i) {
-            Qt3D::Sphere *siblingBoundingVolume = parentNode->children().at(i)->worldBoundingVolume();
+            Qt3D::Sphere *siblingBoundingVolume = siblings.at(i)->worldBoundingVolume();
             parentBoundingVolume->expandToContain(*siblingBoundingVolume);
         }
 
         // Move to parent's next sibling
         childIndexStack.pop();
-        const int nextSiblingIndex = childIndexStack.top()++;
-        currentNode = parentNode->parent()->children().at(nextSiblingIndex);
+        currentNode = Q_NULLPTR;
+        if (!childIndexStack.empty() && parentNode->parent()) {
+            const int nextSiblingIndex = childIndexStack.top()++;
+            QVector<RenderNode *> parentSiblings = parentNode->parent()->children();
+            if (nextSiblingIndex < parentSiblings.size())
+                currentNode = parentSiblings.at(nextSiblingIndex);
+        }
     }
 }
 

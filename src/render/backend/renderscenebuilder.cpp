@@ -206,13 +206,16 @@ void RenderSceneBuilder::visitEntity(Qt3D::Entity *entity)
     renderNode->setParentHandle(m_nodeStack.top());
     renderNode->setFrontEndPeer(entity);
     // REPLACE WITH ENTITY MATRIX FROM TRANSFORMS
-//    *(renderNode->m_localTransform) = entity->matrix();
     m_nodeStack.push(renderNodeHandle);
 
     // Look for a transform component
     QList<Transform *> transforms = entity->componentsOfType<Transform>();
-    if (!transforms.isEmpty())
+    if (!transforms.isEmpty()) {
         renderNode->setTransform(transforms.first());
+        // Sets default transform matrix, this will later be updated by the QChangeArbiter
+        // and the sceneChangeEvent in RenderNode
+        *(renderNode->localTransform()) = transforms.first()->matrix();
+    }
 
 
     QList<FrameGraph *> framegraphRefs = entity->componentsOfType<FrameGraph>();
@@ -225,10 +228,15 @@ void RenderSceneBuilder::visitEntity(Qt3D::Entity *entity)
         m_renderer->setFrameGraphRoot(frameGraphRootNode);
     }
 
-    //    QList<Material *> materials = entity->componentsOfType<Material>();
-    //    Material *material = 0;
-    //    if (!materials.isEmpty())
-    //        material = materials.first();
+    // Parse Materials to retrieve
+    // Material
+    // Effect
+    // Techniques
+    // RenderPass
+    // ShaderPrograms
+    QList<Material *> materials = entity->componentsOfType<Material>();
+    foreach (Material *material, materials) {
+    }
 
     // We'll update matrices in a job later. In fact should the matrix be decoupled from the mesh?
     foreach (Mesh *mesh, entity->componentsOfType<Mesh>()) {
