@@ -78,33 +78,7 @@ void RenderCamera::setPeer(CameraLens *peer)
 
 void RenderCamera::sync()
 {
-    // TODO Move the view matrix out of Camera and instead
-    // use the Entity's transformation (and later the Transform component).
-    Entity* e = m_peer->parentNode()->asEntity();
 
-    if (e == Q_NULLPTR)
-        return ;
-
-    // HACK - in absence of an update pass
-    e->update();
-
-    // Need to travel back the entity tree to apply all transforms
-    QMatrix4x4 sceneMatrix;
-    QList<Transform*> entityTransforms = e->componentsOfType<Transform>();
-    if (!entityTransforms.isEmpty())
-        sceneMatrix = entityTransforms.first()->matrix();
-
-    Node *n = e;
-    while ((n = n->parentNode()) != Q_NULLPTR)
-        if (n->asEntity() &&
-                !(entityTransforms = n->asEntity()->componentsOfType<Transform>()).isEmpty())
-            sceneMatrix = entityTransforms.first()->matrix() * sceneMatrix;
-
-    m_view = sceneMatrix.inverted();
-
-            // transform from world -> eye, so invert
-            // REPLACE WITH sceneMatrix
-            //    m_view = e->sceneMatrix().inverted();
 }
 
 unsigned int RenderCamera::clearMask() const
@@ -120,6 +94,11 @@ void RenderCamera::setProjection(const QMatrix4x4 &projection)
 QMatrix4x4 RenderCamera::projection() const
 {
     return m_projection;
+}
+
+void RenderCamera::setViewMatrix(const QMatrix4x4 &view)
+{
+    m_view = view;
 }
 
 QMatrix4x4 RenderCamera::view() const

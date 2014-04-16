@@ -66,6 +66,7 @@ class RenderShader;
 class RenderCamera;
 class RenderMaterial;
 class RenderTexture;
+class RenderCommand;
 
 enum TextureScope
 {
@@ -111,6 +112,8 @@ public:
     { return m_material; }
 
     void setActiveMaterial(RenderMaterial* rmat);
+
+    void executeCommand(const RenderCommand *command);
 
     /**
      * @brief activeShader

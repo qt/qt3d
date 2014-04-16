@@ -81,9 +81,6 @@ public:
 
     void setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf);
 
-    // Called by the RenderThread to actually submit the commands to OpenGL
-    void submit(Renderer *renderer);
-
     // TODO: Add a way to specify a sort predicate for the RenderCommands
     void sort();
 
@@ -95,14 +92,19 @@ public:
 
     void setRenderer(Renderer *renderer);
 
+
+    void buildRenderCommands(RenderNode *node);
+    QVector<RenderCommand *> commands() const { return m_commands; }
+
+    QRectF viewport() const;
+    RenderCamera *camera() const;
+
+private:
     Renderer *m_renderer;
     HCamera m_camera;
     TechniqueFilter *m_techniqueFilter;
     RenderPassFilter *m_passFilter;
     ViewportNode *m_viewport;
-
-    void buildRenderCommands(RenderNode *node);
-
     // We do not use pointers to RenderNodes or Drawable's here so that the
     // render aspect is free to change the drawables on the next frame whilst
     // the render thread is submitting these commands.

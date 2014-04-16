@@ -95,7 +95,8 @@ void RendererAspect::setWindow(QWindow *window)
     QSurface* surface = window;
 
     Render::Renderer *renderer = m_renderThread->renderer();
-    QMetaObject::invokeMethod(renderer, "setSurface", Q_ARG(QSurface*, surface));
+    // Renderer no longer uses an exec loop, no more QMetaObject::invoke
+    renderer->setSurface(surface);
 }
 
 QVector<QJobPtr> RendererAspect::jobsToExecute()
@@ -105,11 +106,12 @@ QVector<QJobPtr> RendererAspect::jobsToExecute()
 
     // Create jobs to load in any meshes that are pending
     QList< QPair<QString, Render::HMeshData> > meshes = m_renderThread->renderer()->meshManager()->meshesPending();
+    QVector<QJobPtr> meshesJobs;
     for (int i = 0; i < meshes.size(); ++i ) {
         const QPair<QString, Render::HMeshData> &meshDataInfo = meshes.at(i);
         Render::LoadMeshDataJobPtr loadMeshJob(new Render::LoadMeshDataJob(meshDataInfo.first, meshDataInfo.second));
         loadMeshJob->setRenderer(m_renderThread->renderer());
-        jobs.append(loadMeshJob);
+        meshesJobs.append(loadMeshJob);
     }
     m_renderThread->renderer()->meshManager()->clearMeshesPending();
 
@@ -117,10 +119,14 @@ QVector<QJobPtr> RendererAspect::jobsToExecute()
     Render::UpdateWorldTransformJobPtr worldTransformJob(new Render::UpdateWorldTransformJob(m_renderThread->renderer()->renderSceneRoot()));
     Render::UpdateBoundingVolumeJobPtr boundingVolumeJob(new Render::UpdateBoundingVolumeJob(m_renderThread->renderer()->renderSceneRoot()));
 
-//    // We can only update bounding volumes once all world transforms are known
+    Q_FOREACH (QJobPtr meshJob, meshesJobs) {
+        worldTransformJob->addDependency(meshJob);
+        jobs.append(meshJob);
+    }
+    //    // We can only update bounding volumes once all world transforms are known
     boundingVolumeJob->addDependency(worldTransformJob);
 
-//    // Add all jobs to queue
+    //    // Add all jobs to queue
     jobs.append(worldTransformJob);
     jobs.append(boundingVolumeJob);
 
@@ -151,7 +157,9 @@ void RendererAspect::initializeHelper(QAspectManager *aspectManager)
 {
     Q_UNUSED(aspectManager);
     Render::Renderer *renderer = m_renderThread->renderer();
-    QMetaObject::invokeMethod(renderer, "initialize");
+
+    // No more exec loop so method cannot be invoked
+    renderer->initialize();
 }
 
 void RendererAspect::cleanupHelper()

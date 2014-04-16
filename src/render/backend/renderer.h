@@ -90,9 +90,8 @@ class RenderNodesManager;
 class RenderQueues;
 class RenderView;
 
-class Renderer : public QObject
+class Renderer
 {
-    Q_OBJECT
 public:
     Renderer();
     ~Renderer();
@@ -109,14 +108,12 @@ public:
 
     RenderNode *renderSceneRoot() const { return m_renderSceneRoot; }
 
-    void setCamera(Entity* cam);
-
     void render();
     void doRender();
 
     QVector<QJobPtr> createRenderBinJobs();
     QJobPtr createRenderViewJob(FrameGraphNode *node, int submitOrderIndex);
-    void executeCommands(const QVector<RenderCommand *> &commands);
+    void executeCommands(RenderView const *renderView);
 
     RenderQueues* renderQueues() const { return m_renderQueues; }
     MeshManager *meshManager() const { return m_meshManager; }
@@ -130,9 +127,7 @@ public:
     void buildMeshes(Mesh *mesh, Material *mat, const QMatrix4x4& mm);
     void buildShape(Shape *shape, Material *mat, const QMatrix4x4 &mm);
 
-    void foundCamera(Camera* cam, const QMatrix4x4& mm);
-
-    Q_INVOKABLE void setSurface(QSurface *s);
+    void setSurface(QSurface *s);
 
     void setDefaultTechnique(Technique* t);
     void setDefaultMaterial(Material* mat);
@@ -140,11 +135,7 @@ public:
     void enqueueRenderView(RenderView *renderView, int submitOrder);
     void submitRenderViews();
 
-protected:
-    Q_INVOKABLE void initialize();
-
-private slots:
-    void onFrame();
+    void initialize();
 
 private:
     RendererAspect *m_rendererAspect;
@@ -154,9 +145,6 @@ private:
 
     Qt3D::Node *m_sceneGraphRoot;
     RenderNode *m_renderSceneRoot;
-
-    Entity *m_camera;
-    RenderCamera* m_renderCamera;
 
     QHash<Material*, RenderMaterial*> m_materialHash;
     QHash<Technique *, RenderTechnique*> m_techniqueHash;
@@ -172,6 +160,7 @@ private:
     Technique* m_defaultTechnique;
 
     QGraphicsContext* m_graphicsContext;
+    QSurface *m_surface;
     RenderBin* m_temporaryAllBin;
     RenderTextureProvider* m_textureProvider;
     MeshManager *m_meshManager;

@@ -45,6 +45,7 @@
 #include "rendershader.h"
 #include "rendermaterial.h"
 #include "rendertexture.h"
+#include "rendercommand.h"
 
 #include "qgraphicshelperinterface.h"
 
@@ -201,10 +202,8 @@ void QGraphicsContext::releaseOpenGL()
 
 void QGraphicsContext::setOpenGLContext(QOpenGLContext* ctx)
 {
-    qDebug() << Q_FUNC_INFO;
     releaseOpenGL();
     m_gl = ctx;
-    qDebug() << Q_FUNC_INFO << " " << ctx->format().version();
     //    m_gl->setParent(this);
 
     // The Context should be made current to the surface
@@ -237,7 +236,6 @@ void QGraphicsContext::activateShader(RenderShader *shader)
         m_activeShader = shader;
         QOpenGLShaderProgram* prog = m_shaderHash[shader];
         prog->bind();
-
         // ensure material uniforms are re-applied
         m_material = NULL;
     }
@@ -250,6 +248,11 @@ void QGraphicsContext::setActiveMaterial(RenderMaterial *rmat)
 
     deactivateTexturesWithScope(TextureScopeMaterial);
     m_material = rmat;
+}
+
+void QGraphicsContext::executeCommand(const RenderCommand *command)
+{
+
 }
 
 void QGraphicsContext::setModelMatrix(const QMatrix4x4& modelMat)
@@ -537,7 +540,6 @@ void QGraphicsContext::specifyAttribute(QString nm, AttributePtr attr)
         qWarning() << "failed to resolve location for attribute:" << nm;
         return;
     }
-
     prog->enableAttributeArray(location);
     prog->setAttributeBuffer(location,
                              elementType(attr->type()),
