@@ -91,6 +91,9 @@ public:
     void setCamera(RenderCamera* rcam);
     RenderCamera* camera() const;
 
+    void setViewport(const QRectF &viewport);
+    QRectF viewport() const { return m_viewport; }
+
     QMatrix4x4 projectionMatrix() const;
     QMatrix4x4 viewMatrix() const;
 
@@ -180,6 +183,7 @@ private:
 
     RenderCamera* m_camera;
     RenderMaterial* m_material;
+    QRectF m_viewport;
 
     DrawStateSet* m_stateSet;
 };

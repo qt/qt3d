@@ -72,8 +72,6 @@ public:
 
     unsigned int clearMask() const;
 
-    QRectF viewport() const { return m_viewport; }
-
     void setProjection(const QMatrix4x4 &projection);
     QMatrix4x4 projection() const;
 
@@ -85,15 +83,10 @@ private:
     RendererAspect *m_rendererAspect;
     CameraLens *m_peer;
 
-    // clip plane data
-    // ? m_zNear, m_zFar;
-
-
     QVector4D m_clearColor;
 
     QMatrix4x4 m_projection;
     QMatrix4x4 m_view;
-    QRectF m_viewport;
 };
 
 } // Render

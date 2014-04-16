@@ -150,11 +150,10 @@ void QGraphicsContext::beginDrawing()
     glClearColor(cc[0], cc[1], cc[2], cc[3]);
     glClear(m_camera->clearMask());
 
-    QRectF vp(m_camera->viewport());
     // default to the entire surface
-    if (vp.isEmpty())
-        vp = QRectF(QPointF(0,0), m_surface->size());
-    glViewport(vp.x(), vp.y(), vp.width(), vp.height());
+    if (m_viewport.isEmpty())
+        m_viewport = QRectF(QPointF(0,0), m_surface->size());
+    glViewport(m_viewport.x(), m_viewport.y(), m_viewport.width(), m_viewport.height());
 
     if (m_activeShader)
         m_activeShader = NULL;
@@ -176,6 +175,11 @@ void QGraphicsContext::setCamera(RenderCamera *rcam)
 RenderCamera *QGraphicsContext::camera() const
 {
     return m_camera;
+}
+
+void QGraphicsContext::setViewport(const QRectF &viewport)
+{
+    m_viewport = viewport;
 }
 
 
