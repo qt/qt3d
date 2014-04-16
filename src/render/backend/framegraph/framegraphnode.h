@@ -57,7 +57,7 @@ public:
     virtual ~FrameGraphNode();
 
     enum FrameGraphNodeType {
-        InvalidNodeType,
+        InvalidNodeType = 0,
         CameraSelector,
         LayerFilter,    // TODO: Add class
         RenderPassFilter,
@@ -72,7 +72,7 @@ public:
 
     int childCount() const { return m_children.count(); }
     FrameGraphNode * child(int index) const { return m_children.at(index); }
-    void appendChild(FrameGraphNode *child) { child->setParent(m_parent); m_children.append(child); }
+    void appendChild(FrameGraphNode *child) { child->setParent(this); m_children.append(child); }
 
     void setEnabled(bool enabled) { m_enabled = enabled; }
     bool isEnabled() const { return m_enabled; }
