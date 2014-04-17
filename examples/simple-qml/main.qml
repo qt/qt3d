@@ -61,8 +61,6 @@ Node {
 
         property FrameGraph frameGraph : FrameGraph {
             objectName : "frameGraph"
-            //            activeFrameGraph can be defined inline or by reference
-            //            activeFrameGraph : ForwardRenderer {objectName :"innerExternalRenderer"}
             activeFrameGraph : external_forward_renderer
         }
 
@@ -70,26 +68,22 @@ Node {
             id : external_forward_renderer
             objectName : "externalRenderer"
             camera: mainCamera
-            viewportRect: Qt.rect(0, 0, 1, 1)
         }
 
-        property Entity testEntity : Entity {
-            objectName : "testInlineEntity"
-        }
-
-        property Transform transform: Transform {
-            transforms: Rotate {objectName : "scaleTransform"}
-        }
-
-        property Mesh toto : Mesh {
-            Material {
-
+        Transform {
+            id : transform_0
+            Rotate {
+                axis : Qt.vector3d(0,1,0)
+                angle : 30
             }
-        }
-
-        Entity {
-            id : test_entity
-            objectName : "test_entity"
+            Scale {
+                scale3D : Qt.vector3d(0.5, 0.25, 0.5)
+            }
+            Translate {
+                dx : -9
+                dy : 2
+                dz : 20
+            }
         }
 
         Entity {
@@ -98,16 +92,25 @@ Node {
 
 
             property CameraLens lens: CameraLens {
-                objectName: "cameraComponent"
-                projectionType: Camera.PerspectiveProjection
-                fieldOfView: 22.5
-                aspectRatio: 1920.0 / 1080.0
+                projectionType: CameraLens.PerspectiveProjection
+                fieldOfView: 60
+                aspectRatio: 1024 / 768
+                nearPlane : 0.01
+                farPlane : 1000.0
             }
 
-            QQ2.Timer {
-                id: timer
-                objectName: "timer"
+            property Transform transform : Transform {
+                LookAt {
+                    position: Qt.vector3d( 0.0, 0.0, -1.0 )
+                    upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
+                    viewCenter: Qt.vector3d( 0.0, 0.0, 10.0 )
+                }
             }
+
+//            QQ2.Timer {
+//                id: timer
+//                objectName: "timer"
+//            }
         }
 
         //        AdsEffect {
@@ -124,7 +127,7 @@ Node {
         Material {
             id: ballMaterial
             objectName: "ballMaterial"
-            effect: adsEffect
+            //            effect: adsEffect
 
             // Custom properties go here
         }
@@ -133,7 +136,10 @@ Node {
             id: ball
             objectName: "ball"
 
-            property Transform transform: Transform { Translate{ dx: 0; dy: 100 } }
+            property Transform transform: Transform {
+                Translate{ dx: 0; dy: -10; dz : 25 }
+                Scale {scale : 0.1}
+            }
             property Mesh mesh: ballMesh
             property Material material: ballMaterial
         }
@@ -142,42 +148,44 @@ Node {
             id: ball1
             objectName: "ball1"
 
-            property Transform transform: Transform { Translate{ dx: 0; dy: 50 } }
+            property Transform transform: Transform {
+                Scale { scale : 0.5 }
+                Translate{ dx: 8; dy: 4; dz : 25 }
+            }
             property Mesh mesh: ballMesh
             property Material material: ballMaterial
         }
 
-        Translate {
-            id: ball2Translation
-            objectName : "ball2Translation"
-            dx: 0; dy: 0
-            QQ2.SequentialAnimation {
-                running: true
-                loops: QQ2.Animation.Infinite
+//        Translate {
+//            id: ball2Translation
+//            objectName : "ball2Translation"
+//            dx: 0; dy: 0
+//            QQ2.SequentialAnimation {
+//                running: true
+//                loops: QQ2.Animation.Infinite
 
-                QQ2.NumberAnimation {
-                    target: ball2Translation
-                    property: "dx"
-                    duration: 1000
-                    easing.type: QQ2.Easing.InOutQuad
-                    from: 0; to: 100
-                }
-                QQ2.NumberAnimation {
-                    target: ball2Translation
-                    property: "dx"
-                    duration: 1000
-                    easing.type: QQ2.Easing.InOutQuad
-                    from: 100; to: 0
-                }
-            }
-        }
+//                QQ2.NumberAnimation {
+//                    target: ball2Translation
+//                    property: "dx"
+//                    duration: 1000
+//                    easing.type: QQ2.Easing.InOutQuad
+//                    from: 0; to: 100
+//                }
+//                QQ2.NumberAnimation {
+//                    target: ball2Translation
+//                    property: "dx"
+//                    duration: 1000
+//                    easing.type: QQ2.Easing.InOutQuad
+//                    from: 100; to: 0
+//                }
+//            }
+//        }
 
         Entity {
             id: ball2
             objectName: "ball2"
 
-            property Transform transform: Transform {
-                transforms: ball2Translation}
+            property Transform transform: transform_0
             property Mesh mesh: ballMesh
             property Material material: ballMaterial
         }
