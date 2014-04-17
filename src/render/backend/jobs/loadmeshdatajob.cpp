@@ -76,7 +76,7 @@ void LoadMeshDataJob::run()
     if (loader.load(m_source) &&
             (meshData = m_renderer->meshManager()->data(m_meshDataHandle)) != Q_NULLPTR) {
         qDebug() << Q_FUNC_INFO << "Loaded OBJ ok";
-        meshData = loader.mesh();
+        *meshData = *loader.mesh();
         AttributePtr attr = meshData->attributeByName(QStringLiteral("position"));
         if (!attr) {
             qWarning() << Q_FUNC_INFO << "unknown attribute: position";
