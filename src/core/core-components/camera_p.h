@@ -58,20 +58,15 @@ class CameraPrivate
 public:
     CameraPrivate(Camera *qq)
         : q_ptr(qq),
-          m_lens(new CameraLens()),
-          m_lookAt(new LookAtTransform()),
-          m_transform(new Transform())
+          m_lens(Q_NULLPTR),
+          m_transform(Q_NULLPTR)
     {
-        m_transform->appendTransfrom(m_lookAt);
-        qq->addComponent(m_transform);
-        qq->addComponent(m_lens);
     }
 
     Q_DECLARE_PUBLIC(Camera)
     Camera *q_ptr;
 
     CameraLens *m_lens;
-    LookAtTransform *m_lookAt;
     Transform *m_transform;
 };
 

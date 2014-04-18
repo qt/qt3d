@@ -64,7 +64,7 @@ class QT3DCORESHARED_EXPORT Camera : public Entity
 
     // TODO Move view matrix out of the camera and use Transform component (once it exists)
     Q_PROPERTY(Qt3D::CameraLens* lens READ lens WRITE setLens NOTIFY lensChanged)
-    Q_PROPERTY(Qt3D::LookAtTransform* lookAt READ lookAt WRITE setLookAt NOTIFY lookAtChanged)
+    Q_PROPERTY(Qt3D::Transform* transform READ transform WRITE setTransform NOTIFY transformChanged)
 
 public:
     explicit Camera(Node *parent = 0);
@@ -78,8 +78,8 @@ public:
     CameraLens* lens() const;
     void setLens(CameraLens *lens);
 
-    LookAtTransform *lookAt() const;
-    void setLookAt(LookAtTransform* lookAt);
+    Transform *transform() const;
+    void setTransform(Transform* lookAt);
 
     QQuaternion tiltRotation(float angle) const;
     QQuaternion panRotation(float angle) const;
@@ -106,7 +106,7 @@ public slots:
 
 Q_SIGNALS:
     void lensChanged();
-    void lookAtChanged();
+    void transformChanged();
 
 protected:
     Q_DECLARE_PRIVATE(Camera)

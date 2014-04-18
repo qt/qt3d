@@ -70,6 +70,16 @@ public:
 
     QList<AbstractTransform*> transforms() const;
 
+    template <class T>
+    T *findFirstTransform() const
+    {
+        T* transform = Q_NULLPTR;
+        Q_FOREACH (AbstractTransform *trans, m_transforms)
+            if ((transform = qobject_cast<T*>(trans)) != Q_NULLPTR)
+                break;
+        return transform;
+    }
+
     // void insertTransformAt(...)
     Q_INVOKABLE void appendTransfrom(AbstractTransform *xform);
     Q_INVOKABLE void removeTransform(AbstractTransform *xform);
