@@ -52,8 +52,8 @@ ViewportNode::ViewportNode(FrameGraphNode *parent)
     : FrameGraphNode(FrameGraphNode::Viewport, parent)
     , m_xMin(0.0f)
     , m_yMin(0.0f)
-    , m_xMax(1024.0f)
-    , m_yMax(768.0f)
+    , m_xMax(1.0f)
+    , m_yMax(1.0f)
 {
 }
 

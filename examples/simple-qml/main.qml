@@ -67,7 +67,8 @@ Node {
         ForwardRenderer {
             id : external_forward_renderer
             objectName : "externalRenderer"
-            camera: mainCamera
+            cameraViewportBottomLeft: camera1
+            cameraViewportTopRight: camera2
         }
 
         Transform {
@@ -87,7 +88,7 @@ Node {
         }
 
         Entity {
-            id: mainCamera
+            id: camera1
             objectName: "mainCamera"
 
 
@@ -106,11 +107,30 @@ Node {
                     viewCenter: Qt.vector3d( 0.0, 0.0, 10.0 )
                 }
             }
+        }
 
-//            QQ2.Timer {
-//                id: timer
-//                objectName: "timer"
-//            }
+        Entity {
+            id : camera2
+
+            property CameraLens lens : CameraLens {
+                projectionType: CameraLens.PerspectiveProjection
+                fieldOfView: 45
+                aspectRatio: 16/9
+                nearPlane : 0.01
+                farPlane : 1000.0
+            }
+
+            property Transform transform : Transform {
+                LookAt {
+                    position: Qt.vector3d( 0.0, -1.0, -5.0 )
+                    upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
+                    viewCenter: Qt.vector3d( 0.0, 2.0, 10.0 )
+                }
+                Rotate {
+                    axis : Qt.vector3d(0, 0, 1)
+                    angle : 40
+                }
+            }
         }
 
         //        AdsEffect {
@@ -156,30 +176,30 @@ Node {
             property Material material: ballMaterial
         }
 
-//        Translate {
-//            id: ball2Translation
-//            objectName : "ball2Translation"
-//            dx: 0; dy: 0
-//            QQ2.SequentialAnimation {
-//                running: true
-//                loops: QQ2.Animation.Infinite
+        //        Translate {
+        //            id: ball2Translation
+        //            objectName : "ball2Translation"
+        //            dx: 0; dy: 0
+        //            QQ2.SequentialAnimation {
+        //                running: true
+        //                loops: QQ2.Animation.Infinite
 
-//                QQ2.NumberAnimation {
-//                    target: ball2Translation
-//                    property: "dx"
-//                    duration: 1000
-//                    easing.type: QQ2.Easing.InOutQuad
-//                    from: 0; to: 100
-//                }
-//                QQ2.NumberAnimation {
-//                    target: ball2Translation
-//                    property: "dx"
-//                    duration: 1000
-//                    easing.type: QQ2.Easing.InOutQuad
-//                    from: 100; to: 0
-//                }
-//            }
-//        }
+        //                QQ2.NumberAnimation {
+        //                    target: ball2Translation
+        //                    property: "dx"
+        //                    duration: 1000
+        //                    easing.type: QQ2.Easing.InOutQuad
+        //                    from: 0; to: 100
+        //                }
+        //                QQ2.NumberAnimation {
+        //                    target: ball2Translation
+        //                    property: "dx"
+        //                    duration: 1000
+        //                    easing.type: QQ2.Easing.InOutQuad
+        //                    from: 100; to: 0
+        //                }
+        //            }
+        //        }
 
         Entity {
             id: ball2

@@ -153,8 +153,21 @@ void QGraphicsContext::beginDrawing()
 
     // default to the entire surface
     if (m_viewport.isEmpty())
-        m_viewport = QRectF(QPointF(0,0), m_surface->size());
-    glViewport(m_viewport.x(), m_viewport.y(), m_viewport.width(), m_viewport.height());
+        m_viewport = QRectF(0.0, 0.0, 1.0, 1.0);
+    // The Viewport is defined between 0 and 1 which allows us to automatically
+    // scale to the size of the provided window surface
+
+    // Qt3D 0------------------> 1  OpenGL  1^
+    //      |                                |
+    //      |                                |
+    //      |                                |
+    //      V                                |
+    //      1                                0---------------------> 1
+
+    glViewport(m_viewport.x() * m_surface->size().width(),
+               (1.0 - m_viewport.y() - m_viewport.height()) * m_surface->size().height(),
+               m_viewport.width()* m_surface->size().width(),
+               m_viewport.height() * m_surface->size().height());
 
     if (m_activeShader)
         m_activeShader = NULL;

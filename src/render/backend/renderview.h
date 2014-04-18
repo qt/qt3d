@@ -72,7 +72,6 @@ public:
         : m_renderer(Q_NULLPTR)
         , m_techniqueFilter(0)
         , m_passFilter(0)
-        , m_viewport(0)
         , m_commands()
     {
     }
@@ -100,11 +99,14 @@ public:
     RenderCamera *camera() const;
 
 private:
+
+    void computeViewport(ViewportNode *viewportNode);
+
     Renderer *m_renderer;
     HCamera m_camera;
     TechniqueFilter *m_techniqueFilter;
     RenderPassFilter *m_passFilter;
-    ViewportNode *m_viewport;
+    QRectF m_viewport;
     // We do not use pointers to RenderNodes or Drawable's here so that the
     // render aspect is free to change the drawables on the next frame whilst
     // the render thread is submitting these commands.

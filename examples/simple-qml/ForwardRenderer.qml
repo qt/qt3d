@@ -55,7 +55,8 @@ TechniqueFilter {
     // allow a scene to be rendered multiple times to different
     // viewports using different cameras for e.g.
     property alias viewportRect: viewport.rect
-    property alias camera: cameraSelector.camera
+    property alias cameraViewportTopRight: cameraSelectorTopRight.camera
+    property alias cameraViewportBottomLeft: cameraSelectorBottomLeft.camera
 
     tags: [
         Tag { name: "style"; value: "forward"}
@@ -64,14 +65,28 @@ TechniqueFilter {
     Viewport {
         id: viewport
         objectName : "viewport"
+        rect: Qt.rect(0.0, 0.0, 1.0, 1.0) // From Top Left
 
+        Viewport {
+            id : top_right_viewport
+            rect: Qt.rect(0.5, 0, 0.5, 0.5)
+            CameraSelector {
+                id : cameraSelectorTopRight
+                objectName : "cameraSelector"
+                RenderPassFilter { renderPassName: "zFill" }
+                RenderPassFilter { renderPassName: "lighting" }
+            }
+        }
 
-        CameraSelector {
-            id: cameraSelector
-            objectName : "cameraSelector"
-
-            RenderPassFilter { renderPassName: "zFill" }
-            RenderPassFilter { renderPassName: "lighting" }
+        Viewport {
+            id : bottom_left_viewport
+            rect: Qt.rect(0.0, 0.5, 0.5, 0.5)
+            CameraSelector {
+                id: cameraSelectorBottomLeft
+                objectName : "cameraSelector"
+                RenderPassFilter { renderPassName: "zFill" }
+                RenderPassFilter { renderPassName: "lighting" }
+            }
         }
     }
 }

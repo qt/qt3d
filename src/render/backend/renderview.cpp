@@ -114,7 +114,10 @@ void RenderView::setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf)
             break;
 
         case FrameGraphNode::Viewport:
-            m_viewport = static_cast<ViewportNode *>(node);
+            // If the Viewport has already been set in a lower node
+            // Make it so that the previously set viewport is actually
+            // a subregion relative to that of the viewport
+            computeViewport(static_cast<ViewportNode *>(node));
             break;
 
         default:
@@ -125,6 +128,8 @@ void RenderView::setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf)
         node = node->parent();
     }
 }
+
+
 
 void RenderView::sort()
 {
@@ -175,17 +180,30 @@ void RenderView::buildRenderCommands(RenderNode *node)
 
 QRectF RenderView::viewport() const
 {
-    if (m_viewport)
-        return QRectF(m_viewport->xMin(),
-                      m_viewport->yMin(),
-                      m_viewport->xMax(),
-                      m_viewport->yMax());
-    return QRect(0, 0, 1, 1);
+    return m_viewport;
 }
 
 RenderCamera *RenderView::camera() const
 {
     return m_renderer->cameraManager()->data(m_camera);
+}
+
+void RenderView::computeViewport(ViewportNode *viewportNode)
+{
+    QRectF tmpViewport(viewportNode->xMin(),
+                    viewportNode->yMin(),
+                    viewportNode->xMax(),
+                    viewportNode->yMax());
+    if (m_viewport.isEmpty()) {
+        m_viewport = tmpViewport;
+    }
+    else {
+        QRectF oldViewport = m_viewport;
+        m_viewport = QRectF(tmpViewport.x() + tmpViewport.width() * oldViewport.x(),
+                            tmpViewport.y() + tmpViewport.height() * oldViewport.y(),
+                            tmpViewport.width() * oldViewport.width(),
+                            tmpViewport.height() * oldViewport.height());
+    }
 }
 
 } // namespace Render

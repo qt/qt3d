@@ -146,9 +146,9 @@ Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(Qt3D::FrameGra
 
         qDebug() << Q_FUNC_INFO << "Viewport";
         viewportNode->setXMin(viewport->rect().x());
-        viewportNode->setXMax(viewport->rect().x() + viewport->rect().width());
+        viewportNode->setXMax(viewport->rect().width());
         viewportNode->setYMin(viewport->rect().y());
-        viewportNode->setYMax(viewport->rect().y() + viewport->rect().height());
+        viewportNode->setYMax(viewport->rect().height());
         return viewportNode;
     }
     else if (qobject_cast<Qt3D::RenderPassFilter*>(block) != Q_NULLPTR) {
