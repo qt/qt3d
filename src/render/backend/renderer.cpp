@@ -81,8 +81,8 @@
 #include <renderview.h>
 #include <rendercommand.h>
 
+#include "renderlogging.h"
 #include <QStack>
-#include <QDebug>
 #include <QSurface>
 #include <QElapsedTimer>
 
@@ -263,7 +263,7 @@ void Renderer::initialize()
 
 void Renderer::setFrameGraphRoot(Render::FrameGraphNode *fgRoot)
 {
-    qDebug() << Q_FUNC_INFO;
+    qCDebug(Backend) << Q_FUNC_INFO;
     m_frameGraphRoot = fgRoot;
 }
 
@@ -278,7 +278,7 @@ void Renderer::setSceneObject(Qt3D::Node *obj)
     if (sc) {
         setSceneGraphRoot(sc);
     } else
-        qWarning() << Q_FUNC_INFO << "couldn't find Scene object";
+        qCWarning(Backend) << Q_FUNC_INFO << "couldn't find Scene object";
 }
 
 // QAspectThread context
@@ -296,11 +296,11 @@ void Renderer::setSceneGraphRoot(Node *sgRoot)
         // parser should parse the file if two parsers support the same
         // format
 
-        qDebug() << "building temporary backend";
+        qCDebug(Backend) << "building temporary backend";
         m_sceneGraphRoot = scene;
         TemporaryBackendBuilder tbb(this);
         tbb.traverse(m_sceneGraphRoot);
-        qDebug() << "done building backend";
+        qCDebug(Backend) << "done building backend";
 
         //        QMetaObject::invokeMethod(m_frameTimer, "start");
     } else {
@@ -310,10 +310,10 @@ void Renderer::setSceneGraphRoot(Node *sgRoot)
         builder.traverse(m_sceneGraphRoot);
         RenderNode *root = builder.rootNode();
         if (!root)
-            qWarning() << "Failed to build render scene";
+            qCWarning(Backend) << "Failed to build render scene";
         m_renderSceneRoot = root;
 
-        qDebug() << Q_FUNC_INFO << "DUMPING SCENE";
+        qCDebug(Backend) << Q_FUNC_INFO << "DUMPING SCENE";
         root->dump();
 
         // Queue up jobs to do initial full updates of
@@ -333,7 +333,7 @@ Node *Renderer::sceneGraphRoot() const
 // Cannot do OpenGLContext initialization here
 void Renderer::setSurface(QSurface* s)
 {
-    qDebug() << Q_FUNC_INFO << QThread::currentThread();
+    qCDebug(Backend) << Q_FUNC_INFO << QThread::currentThread();
     m_surface = s;
 }
 
@@ -422,7 +422,7 @@ void Renderer::enqueueRenderView(Render::RenderView *renderView, int submitOrder
 // Happens in RenderThread context when all RenderViewJobs are done
 void Renderer::submitRenderViews()
 {
-    qDebug() << Q_FUNC_INFO << 1 << QThread::currentThread();
+    qCDebug(Backend) << Q_FUNC_INFO << 1 << QThread::currentThread();
     QMutexLocker locker(&m_mutex);
     m_submitRenderViewsCondition.wait(locker.mutex());
     // Allow RenderViewJobs to be processed for the next frame
@@ -432,7 +432,7 @@ void Renderer::submitRenderViews()
     // Any important state change that could be in a RenderView
     locker.unlock();
 
-    qDebug() << Q_FUNC_INFO << 2 << QThread::currentThread();
+    qCDebug(Backend) << Q_FUNC_INFO << 2 << QThread::currentThread();
     if (m_graphicsContext == Q_NULLPTR || m_surface == Q_NULLPTR) {
         m_graphicsContext = new QGraphicsContext;
         QOpenGLContext* ctx = new QOpenGLContext;
@@ -440,7 +440,7 @@ void Renderer::submitRenderViews()
         QSurfaceFormat sf = m_surface->format();
         ctx->setFormat(sf);
         if (!ctx->create())
-            qWarning() << Q_FUNC_INFO << "OpenGL context creation failed";
+            qCWarning(Backend) << Q_FUNC_INFO << "OpenGL context creation failed";
         m_graphicsContext->setOpenGLContext(ctx);
     }
 
@@ -451,7 +451,7 @@ void Renderer::submitRenderViews()
         timer.start();
         for (int i = 0; i < renderViews.size(); i++)
             executeCommands(renderViews[i]);
-        qDebug() << Q_FUNC_INFO << "Submission took " << timer.elapsed() << "ms";
+        qCDebug(Backend) << Q_FUNC_INFO << "Submission took " << timer.elapsed() << "ms";
         qDeleteAll(renderViews);
         m_frameCount++;
     }
@@ -489,7 +489,7 @@ QJobPtr Renderer::createRenderViewJob(FrameGraphNode *node, int submitOrderIndex
 // Called by RenderView->submit() in RenderThread context
 void Renderer::executeCommands(const RenderView *renderView)
 {
-    qDebug() << Q_FUNC_INFO;
+    qCDebug(Backend) << Q_FUNC_INFO;
     // Render drawing commands
 
     // Use the graphicscontext to submit the commands to the underlying
@@ -535,7 +535,7 @@ void Renderer::executeCommands(const RenderView *renderView)
         //// Draw Calls
         // Set state
         m_graphicsContext->setCurrentStateSet(technique->stateSetForPass(0));
-//        m_graphicsContext->activateShader(technique->shaderForPass(0));
+        //        m_graphicsContext->activateShader(technique->shaderForPass(0));
         m_graphicsContext->setModelMatrix(command->m_worldMatrix);
         m_graphicsContext->setActiveMaterial(mat);
         mat->setUniformsForPass(0, m_graphicsContext);
@@ -555,7 +555,7 @@ void Renderer::executeCommands(const RenderView *renderView)
 
         int err = glGetError();
         if (err)
-            qWarning() << "GL error after drawing mesh:" << QString::number(err, 16);
+            qCWarning(Backend) << "GL error after drawing mesh:" << QString::number(err, 16);
 
         command->m_vao.release();
 
@@ -629,7 +629,7 @@ RenderTechnique* Renderer::createTechnique(Technique* tech)
 RenderMaterial* Renderer::getOrCreateMaterial(Material* mat)
 {
     if (!m_materialHash.contains(mat)) {
-        qDebug() << "creating render material for mat:" << mat->objectName();
+        qCDebug(Backend) << "creating render material for mat:" << mat->objectName();
 
         RenderMaterial* rmat = new RenderMaterial();
         rmat->setRendererAspect(m_rendererAspect);

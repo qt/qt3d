@@ -55,9 +55,6 @@ class RenderPassFilter : public Render::FrameGraphNode
 public:
     RenderPassFilter(Render::FrameGraphNode *parent = 0);
 
-    void apply() Q_DECL_OVERRIDE;
-    void revert() Q_DECL_OVERRIDE;
-
     QString filter() const;
     void setFilter(const QString &filter);
 

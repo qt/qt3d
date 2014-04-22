@@ -43,8 +43,6 @@
 
 #include "rendercamera.h"
 
-#include <QDebug>
-
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
@@ -53,16 +51,6 @@ namespace Render {
 CameraSelector::CameraSelector(FrameGraphNode *parent)
     : FrameGraphNode(FrameGraphNode::CameraSelector, parent)
 {
-}
-
-void CameraSelector::apply()
-{
-    qDebug() << Q_FUNC_INFO;
-}
-
-void CameraSelector::revert()
-{
-    qDebug() << Q_FUNC_INFO;
 }
 
 }

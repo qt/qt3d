@@ -39,42 +39,27 @@
 **
 ****************************************************************************/
 
-#include "techniquefilternode.h"
+#ifndef QT3D_RENDER_RENDERLOGGING_H
+#define QT3D_RENDER_RENDERLOGGING_H
 
-#include <QDebug>
+#include <QLoggingCategory>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
+
 namespace Render {
 
-TechniqueFilter::TechniqueFilter(FrameGraphNode *parent)
-    : FrameGraphNode(FrameGraphNode::TechniqueFilter, parent)
-{
-}
-QHash<QString, QVariant> TechniqueFilter::filters() const
-{
-    return m_filters;
-}
+Q_DECLARE_LOGGING_CATEGORY(Backend)
+Q_DECLARE_LOGGING_CATEGORY(Frontend)
+Q_DECLARE_LOGGING_CATEGORY(Io)
+Q_DECLARE_LOGGING_CATEGORY(Jobs)
+Q_DECLARE_LOGGING_CATEGORY(Framegraph)
 
-void TechniqueFilter::appendFilter(const QString &name, const QVariant &filter)
-{
-    m_filters[name] = filter;
-}
+} // Render
 
-void TechniqueFilter::removeFilter(const QString &name)
-{
-    m_filters.remove(name);
-}
-
-QVariant TechniqueFilter::filter(const QString &name) const
-{
-    if (m_filters.contains(name))
-        return m_filters[name];
-    return QVariant();
-}
-
-}
-}
+} // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_RENDER_RENDERLOGGING_H

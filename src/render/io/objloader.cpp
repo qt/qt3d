@@ -44,7 +44,7 @@
 #include "mesh.h"
 #include "axisalignedboundingbox.h"
 
-#include <QDebug>
+#include "renderlogging.h"
 #include <QFile>
 #include <QOpenGLBuffer>
 #include <QOpenGLShaderProgram>
@@ -74,7 +74,7 @@ bool ObjLoader::load( const QString& fileName )
     QFile file( fileName );
     if ( !file.open( ::QIODevice::ReadOnly | ::QIODevice::Text ) )
     {
-        qDebug() << "Could not open file" << fileName << "for reading";
+        qCDebug(Render::Io) << "Could not open file" << fileName << "for reading";
         return false;
     }
 
@@ -90,7 +90,7 @@ static void addFaceVertex(const FaceIndices &faceIndices,
         if (!faceIndexMap.contains(faceIndices))
             faceIndexMap.insert(faceIndices, faceIndexMap.size());
     } else {
-        qWarning( "Missing position index" );
+        qCWarning(Render::Io) << "Missing position index";
     }
 }
 
@@ -98,7 +98,7 @@ bool ObjLoader::load(::QIODevice *ioDev)
 {
     Q_CHECK_PTR(ioDev);
     if (!ioDev->isOpen()) {
-        qWarning() << "iodevice" << ioDev << "not open for reading";
+        qCWarning(Render::Io) << "iodevice" << ioDev << "not open for reading";
         return false;
     }
 
@@ -157,7 +157,7 @@ bool ObjLoader::load(::QIODevice *ioDev)
                         faceIndices.positionIndex = indices.at(0).toInt() - 1;
                         break;
                     default:
-                        qWarning() << "Unsupported number of indices in face element";
+                        qCWarning(Render::Io) << "Unsupported number of indices in face element";
                     }
 
                     face.append(faceIndices);
@@ -198,13 +198,13 @@ bool ObjLoader::load(::QIODevice *ioDev)
         center(m_points);
 
 //#if 0
-    qDebug() << "Loaded mesh:";
-    qDebug() << " " << m_points.size() << "points";
-    qDebug() << " " << faceCount << "faces";
-    qDebug() << " " << m_indices.size() / 3 << "triangles.";
-    qDebug() << " " << m_normals.size() << "normals";
-    qDebug() << " " << m_tangents.size() << "tangents ";
-    qDebug() << " " << m_texCoords.size() << "texture coordinates.";
+    qCDebug(Render::Io) << "Loaded mesh:";
+    qCDebug(Render::Io) << " " << m_points.size() << "points";
+    qCDebug(Render::Io) << " " << faceCount << "faces";
+    qCDebug(Render::Io) << " " << m_indices.size() / 3 << "triangles.";
+    qCDebug(Render::Io) << " " << m_normals.size() << "normals";
+    qCDebug(Render::Io) << " " << m_tangents.size() << "tangents ";
+    qCDebug(Render::Io) << " " << m_texCoords.size() << "texture coordinates.";
 //#endif
 
     return true;
@@ -293,7 +293,7 @@ MeshData *ObjLoader::mesh() const
     mesh->setIndexAttr(AttributePtr(new Attribute(indexBuffer, ty, m_indices.size(), 0, 0)));
 
     mesh->computeBoundsFromAttribute(QStringLiteral("position"));
-    qDebug() << "computed bounds is:" << mesh->boundingBox();
+    qCDebug(Render::Io) << "computed bounds is:" << mesh->boundingBox();
 
     return mesh;
 }

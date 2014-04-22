@@ -45,7 +45,7 @@
 #include <rendernode.h>
 #include <sphere.h>
 
-#include <QDebug>
+#include "renderlogging.h"
 #include <QThread>
 
 QT_BEGIN_NAMESPACE
@@ -85,9 +85,9 @@ void UpdateWorldTransformJob::run()
     // TODO: Parallelise this on each level using a parallel_for
     // implementation.
 
-    qDebug() << "Entering" << Q_FUNC_INFO << QThread::currentThread();
+    qCDebug(Jobs) << "Entering" << Q_FUNC_INFO << QThread::currentThread();
     updateWorldTransformAndBounds(m_node);
-    qDebug() << "Exiting" << Q_FUNC_INFO << QThread::currentThread();
+    qCDebug(Jobs) << "Exiting" << Q_FUNC_INFO << QThread::currentThread();
 }
 
 } // namespace Render

@@ -54,9 +54,6 @@ class ViewportNode : public Render::FrameGraphNode
 public:
     ViewportNode(Render::FrameGraphNode *parent = 0);
 
-    void apply() Q_DECL_OVERRIDE;
-    void revert() Q_DECL_OVERRIDE;
-
     float xMin() const;
     void setXMin(float xMin);
 

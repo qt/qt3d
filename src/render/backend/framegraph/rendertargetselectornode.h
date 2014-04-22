@@ -54,9 +54,6 @@ class RenderTargetSelector : public FrameGraphNode
 public:
     RenderTargetSelector(FrameGraphNode *parent = 0);
 
-    void apply();
-    void revert();
-
 private:
 
 };

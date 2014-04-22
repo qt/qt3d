@@ -62,9 +62,6 @@ public:
     void setCameraEntity(Entity *cameraEntity) { m_cameraEntity = cameraEntity; }
     Entity *cameraEntity() const { return m_cameraEntity; }
 
-    void apply() Q_DECL_OVERRIDE;
-    void revert() Q_DECL_OVERRIDE;
-
 private:
     Entity *m_cameraEntity;
 };

@@ -46,6 +46,7 @@
 #include "cameramanager.h"
 #include "renderer.h"
 #include "rendernode.h"
+#include "renderlogging.h"
 
 #include <camera.h>
 #include <cameralens.h>
@@ -93,7 +94,7 @@ Render::FrameGraphNode *RenderSceneBuilder::buildFrameGraph(Node *node)
     if (node == Q_NULLPTR)
         return Q_NULLPTR;
 
-    qDebug() << Q_FUNC_INFO << node->objectName();
+    qCDebug(Backend) << Q_FUNC_INFO << node->objectName();
 
     Render::FrameGraphNode *fgNode = Q_NULLPTR;
     Qt3D::FrameGraphItem *fgItem = Q_NULLPTR;
@@ -135,7 +136,7 @@ Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(Qt3D::FrameGra
         Qt3D::TechniqueFilter* techniqueFilter = qobject_cast<Qt3D::TechniqueFilter*>(block);
         Render::TechniqueFilter *techniqueFilterNode = new Render::TechniqueFilter();
 
-        qDebug() << Q_FUNC_INFO << "TechniqueFilter";
+        qCDebug(Backend) << Q_FUNC_INFO << "TechniqueFilter";
         foreach (Tag *tag, techniqueFilter->tags())
             techniqueFilterNode->appendFilter(tag->name(), tag->value());
         return techniqueFilterNode;
@@ -144,7 +145,7 @@ Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(Qt3D::FrameGra
         Qt3D::Viewport *viewport = qobject_cast<Qt3D::Viewport*>(block);
         Render::ViewportNode *viewportNode = new Render::ViewportNode();
 
-        qDebug() << Q_FUNC_INFO << "Viewport";
+        qCDebug(Backend) << Q_FUNC_INFO << "Viewport";
         viewportNode->setXMin(viewport->rect().x());
         viewportNode->setXMax(viewport->rect().width());
         viewportNode->setYMin(viewport->rect().y());
@@ -155,7 +156,7 @@ Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(Qt3D::FrameGra
         Qt3D::RenderPassFilter *renderPassFilter = qobject_cast<Qt3D::RenderPassFilter*>(block);
         Render::RenderPassFilter *renderPassFilterNode = new Render::RenderPassFilter();
 
-        qDebug() << Q_FUNC_INFO << "RenderPassFilter";
+        qCDebug(Backend) << Q_FUNC_INFO << "RenderPassFilter";
         renderPassFilterNode->setFilter(renderPassFilter->renderPassName());
         return renderPassFilterNode;
     }
@@ -163,7 +164,7 @@ Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(Qt3D::FrameGra
         Qt3D::CameraSelector *cameraSelector = qobject_cast<Qt3D::CameraSelector*>(block);
         Render::CameraSelector *cameraSelectorNode = new Render::CameraSelector();
 
-        qDebug() << Q_FUNC_INFO << "CameraSelector";
+        qCDebug(Backend) << Q_FUNC_INFO << "CameraSelector";
         cameraSelectorNode->setCameraEntity(cameraSelector->camera());
         return cameraSelectorNode;
     }
@@ -172,7 +173,7 @@ Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(Qt3D::FrameGra
         Render::RenderTargetSelector *renderTargetSelectorNode = new Render::RenderTargetSelector();
 
         // TO DO
-        qDebug() << Q_FUNC_INFO << "RenderTargetSelector";
+        qCDebug(Backend) << Q_FUNC_INFO << "RenderTargetSelector";
         return renderTargetSelectorNode;
     }
     return Q_NULLPTR;
@@ -190,7 +191,7 @@ void RenderSceneBuilder::visitNode(Qt3D::Node *node)
         rootRenderNode->setFrontEndPeer(node);
         m_nodeStack.push(m_rootNodeHandle);
     }
-    qDebug() << Q_FUNC_INFO << "Node " << node->objectName();
+    qCDebug(Backend) << Q_FUNC_INFO << "Node " << node->objectName();
     Qt3D::NodeVisitor::visitNode(node);
 }
 
@@ -198,7 +199,7 @@ void RenderSceneBuilder::visitEntity(Qt3D::Entity *entity)
 {
     // Create a RenderNode corresponding to the Entity. Most data will
     // be calculated later by jobs
-    qDebug() << Q_FUNC_INFO << "Entity " << entity->objectName();
+    qCDebug(Backend) << Q_FUNC_INFO << "Entity " << entity->objectName();
     // Retrieve or created RenderNode for entity
     HRenderNode renderNodeHandle = m_renderer->renderNodesManager()->getOrAcquireHandle(entity->uuid());
     RenderNode *renderNode = m_renderer->renderNodesManager()->data(renderNodeHandle);
@@ -224,7 +225,7 @@ void RenderSceneBuilder::visitEntity(Qt3D::Entity *entity)
         // Entity has a reference to a framegraph configuration
         // Build a tree of FrameGraphNodes by reading the tree of FrameGraphBuildingBlocks
         Render::FrameGraphNode* frameGraphRootNode = buildFrameGraph(fg->activeFrameGraph());
-        qDebug() << Q_FUNC_INFO << "SceneGraphRoot" <<  frameGraphRootNode;
+        qCDebug(Backend) << Q_FUNC_INFO << "SceneGraphRoot" <<  frameGraphRootNode;
         m_renderer->setFrameGraphRoot(frameGraphRootNode);
     }
 

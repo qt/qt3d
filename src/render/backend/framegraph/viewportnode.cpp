@@ -94,16 +94,6 @@ void ViewportNode::setYMax(float yMax)
     m_yMax = yMax;
 }
 
-void ViewportNode::apply()
-{
-    qDebug() << Q_FUNC_INFO;
-}
-
-void ViewportNode::revert()
-{
-    qDebug() << Q_FUNC_INFO;
-}
-
 } // Render
 } // Qt3D
 

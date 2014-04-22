@@ -80,9 +80,6 @@ public:
 protected:
     FrameGraphNode(FrameGraphNodeType nodeType, FrameGraphNode *parent = 0);
 
-    virtual void apply();
-    virtual void revert();
-
 private:
     FrameGraphNode *m_parent;
     QVector<FrameGraphNode *> m_children;

@@ -41,7 +41,6 @@
 
 #include "rendertargetselectornode.h"
 
-#include <QDebug>
 
 QT_BEGIN_NAMESPACE
 
@@ -51,16 +50,6 @@ namespace Render {
 RenderTargetSelector::RenderTargetSelector(FrameGraphNode *parent) :
     FrameGraphNode(parent)
 {
-}
-
-void RenderTargetSelector::apply()
-{
-    qDebug() << Q_FUNC_INFO;
-}
-
-void RenderTargetSelector::revert()
-{
-    qDebug() << Q_FUNC_INFO;
 }
 
 } // Render

@@ -40,7 +40,7 @@
 ****************************************************************************/
 
 #include "abstractsceneparser.h"
-
+#include "renderlogging.h"
 #include <QStringList>
 
 QT_BEGIN_NAMESPACE
@@ -82,7 +82,7 @@ void AbstractSceneParser::logError(const QString &error)
 
 void AbstractSceneParser::logInfo(const QString &info)
 {
-    qDebug() << info;
+    qCDebug(Render::Io) << info;
 }
 
 } // Qt3D namespace

@@ -41,8 +41,6 @@
 
 #include "renderpassfilternode.h"
 
-#include <QDebug>
-
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
@@ -61,16 +59,6 @@ QString RenderPassFilter::filter() const
 void RenderPassFilter::setFilter(const QString &filter)
 {
     m_filter = filter;
-}
-
-void RenderPassFilter::apply()
-{
-    qDebug() << Q_FUNC_INFO;
-}
-
-void RenderPassFilter::revert()
-{
-    qDebug() << Q_FUNC_INFO;
 }
 
 } // namespace Render

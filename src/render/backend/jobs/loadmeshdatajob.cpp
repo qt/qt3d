@@ -47,8 +47,8 @@
 #include <renderer.h>
 #include <meshmanager.h>
 
-#include <QDebug>
 #include <QThread>
+#include "renderlogging.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -64,10 +64,10 @@ LoadMeshDataJob::LoadMeshDataJob(const QString &source, const HMeshData &meshDat
 
 void LoadMeshDataJob::run()
 {
-    qDebug() << "Entering" << Q_FUNC_INFO << QThread::currentThread();
+    qCDebug(Jobs) << "Entering" << Q_FUNC_INFO << QThread::currentThread();
 
     // Load the mesh from disk (or wherever)
-    qDebug() << "Loading mesh from" << m_source;
+    qCDebug(Jobs) << "Loading mesh from" << m_source;
 
     ObjLoader loader;
     loader.setLoadTextureCoordinatesEnabled(true);
@@ -75,20 +75,20 @@ void LoadMeshDataJob::run()
     MeshData *meshData = Q_NULLPTR;
     if (loader.load(m_source) &&
             (meshData = m_renderer->meshManager()->data(m_meshDataHandle)) != Q_NULLPTR) {
-        qDebug() << Q_FUNC_INFO << "Loaded OBJ ok";
+         qCDebug(Jobs) << Q_FUNC_INFO << "Loaded OBJ ok";
         *meshData = *loader.mesh();
         AttributePtr attr = meshData->attributeByName(QStringLiteral("position"));
         if (!attr) {
-            qWarning() << Q_FUNC_INFO << "unknown attribute: position";
+            qCWarning(Jobs) << Q_FUNC_INFO << "unknown attribute: position";
             return;
         }
     } else {
-        qWarning() << Q_FUNC_INFO << "OBJ load failure for:" << m_source;
+        qCWarning(Jobs) << Q_FUNC_INFO << "OBJ load failure for:" << m_source;
     }
 
     //Qt3D::Sphere sphere = Qt3D::Sphere::fromPoints(loader.vertices());
 
-    qDebug() << "Exiting" << Q_FUNC_INFO << QThread::currentThread();
+    qCDebug(Jobs) << "Exiting" << Q_FUNC_INFO << QThread::currentThread();
 }
 
 } // namespace Render

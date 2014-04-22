@@ -44,7 +44,7 @@
 #include <qchangearbiter.h>
 #include <texture.h>
 
-#include <QDebug>
+#include "renderlogging.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -104,7 +104,7 @@ void Material::onTagValueChanged()
     QVariant v = t->value();
     QmlTexture* qmlTex = v.value<QmlTexture*>();
     if (qmlTex) {
-        qDebug() << "got texture parameter" << t->name();
+        qCDebug(Render::Frontend) << "got texture parameter" << t->name();
         setTextureParameter(t->name(), qmlTex->texture());
     } else {
         setParameter(t->name(), t->value());

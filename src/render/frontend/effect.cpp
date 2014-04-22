@@ -42,7 +42,7 @@
 #include "effect.h"
 #include "technique.h"
 
-#include <QDebug>
+#include "renderlogging.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -52,7 +52,7 @@ Effect::Effect(Node *parent)
     : Node(parent)
 {
     qRegisterMetaType<Qt3D::Effect*>();
-    qDebug() << Q_FUNC_INFO;
+    qCDebug(Render::Frontend) << Q_FUNC_INFO;
 }
 
 

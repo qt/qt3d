@@ -42,6 +42,7 @@
 #include "gltfparser.h"
 
 #include "texturedata.h"
+#include "renderlogging.h"
 
 #include <entity.h>
 #include <mesh.h>
@@ -557,7 +558,7 @@ void GLTFParser::processJSONBufferView( QString id, const QJsonObject& json )
     quint64 offset = 0;
     if (json.contains(KEY_BYTE_OFFSET)) {
         offset = json.value(KEY_BYTE_OFFSET).toInt();
-        qDebug() << "bv:" << id << "has offset:" << offset;
+        qCDebug(Render::Io) << "bv:" << id << "has offset:" << offset;
     }
 
     quint64 len = json.value(KEY_BYTE_LENGTH).toInt();
@@ -609,7 +610,7 @@ void GLTFParser::processJSONMesh( QString id, QJsonObject jsonObj )
         QString material = primObj.value(KEY_MATERIAL).toString();
 
         if ( material.isEmpty()) {
-            qWarning() << "malformed primitive on " << id << ", missing material value"
+            qCWarning(Render::Io) << "malformed primitive on " << id << ", missing material value"
                           << material;
             continue;
         }
@@ -621,20 +622,20 @@ void GLTFParser::processJSONMesh( QString id, QJsonObject jsonObj )
         Q_FOREACH (QString attrName, attrs.keys()) {
             QString k = attrs.value(attrName).toString();
             if (!m_attributeDict.contains(k)) {
-                qWarning() << "unknown attribute accessor:" << k << "on mesh" << id;
+                qCWarning(Render::Io) << "unknown attribute accessor:" << k << "on mesh" << id;
                 continue;
             }
 
             md->addAttribute(attrName, m_attributeDict[k]);
 
-          //  qDebug() << "DUMP of:" << attrName;
+          //  qCDebug(Render::rIo) << "DUMP of:" << attrName;
          //   m_attributeDict[k]->dump(20);
         }
 
         if ( primObj.contains(KEY_INDICES)) {
             QString k = primObj.value(KEY_INDICES).toString();
             if (!m_attributeDict.contains(k)) {
-                qWarning() << "unknown index accessor:" << k << "on mesh" << id;
+                qCWarning(Render::Io) << "unknown index accessor:" << k << "on mesh" << id;
             } else {
                 md->setIndexAttr(m_attributeDict[k]);
             //    m_attributeDict[k]->dump(100);
@@ -661,7 +662,7 @@ void GLTFParser::processJSONProgram( QString id, QJsonObject jsonObj)
     QString fragName = jsonObj.value(KEY_FRAGMENT_SHADER).toString(),
             vertName = jsonObj.value(KEY_VERTEX_SHADER).toString();
     if (!m_shaderPaths.contains(fragName) || !m_shaderPaths.contains(vertName)) {
-        qWarning() << Q_FUNC_INFO << "program:" << id << "missing shader:" <<
+        qCWarning(Render::Io) << Q_FUNC_INFO << "program:" << id << "missing shader:" <<
                       fragName << vertName;
         return;
     }
@@ -679,7 +680,7 @@ void GLTFParser::processJSONShader( QString id, QJsonObject jsonObj)
 
     QFileInfo info(m_basePath, path);
     if (!info.exists()) {
-        qWarning() << "can't find shader" << id << "from path" << path;
+        qCWarning(Render::Io) << "can't find shader" << id << "from path" << path;
         return;
     }
 
@@ -691,13 +692,13 @@ void GLTFParser::processJSONImage( QString id, QJsonObject jsonObj)
     QString path = jsonObj.value(KEY_PATH).toString();
     QFileInfo info(m_basePath, path);
     if (!info.exists()) {
-        qWarning() << "can't find image" << id << "from path" << path;
+        qCWarning(Render::Io)<< "can't find image" << id << "from path" << path;
         return;
     }
 
     QImage img(info.absoluteFilePath());
     if (img.isNull()) {
-        qWarning() << "failed to load image:" << info.absoluteFilePath();
+        qCWarning(Render::Io) << "failed to load image:" << info.absoluteFilePath();
         return;
     }
 
@@ -720,7 +721,7 @@ void GLTFParser::processJSONTexture( QString id, QJsonObject jsonObj)
     QString samplerId = jsonObj.value(KEY_SAMPLER).toString();
     QString source = jsonObj.value(KEY_SOURCE).toString();
     if (!m_images.contains(source)) {
-        qWarning() << "texture" << id << "references missing image" << source;
+        qCWarning(Render::Io) << "texture" << id << "references missing image" << source;
         return;
     }
 
@@ -728,7 +729,7 @@ void GLTFParser::processJSONTexture( QString id, QJsonObject jsonObj)
 
     QJsonObject samplersDict(m_json.object().value(KEY_SAMPLERS).toObject());
     if (!samplersDict.contains(samplerId)) {
-        qWarning() << "texture" << id << "references unknown sampler" << samplerId;
+        qCWarning(Render::Io) << "texture" << id << "references unknown sampler" << samplerId;
         return;
     }
 
@@ -847,7 +848,7 @@ Render::DrawState* GLTFParser::buildState(const QByteArray& nm, QJsonValue v)
         return Render::DepthMask::getOrCreate(v.toInt() ? GL_TRUE : GL_FALSE);
     }
 
-    qWarning() << Q_FUNC_INFO << "unsupported gltf state:" << nm;
+    qCWarning(Render::Io) << Q_FUNC_INFO << "unsupported gltf state:" << nm;
     return NULL;
 }
 
@@ -912,7 +913,7 @@ QVariant GLTFParser::parameterValueFromJSON(Parameter* p, QJsonValue val)
     }
 
     default:
-        qWarning() << Q_FUNC_INFO << "unhandled type:" << QString::number(p->datatype(), 16);
+        qCWarning(Render::Io) << Q_FUNC_INFO << "unhandled type:" << QString::number(p->datatype(), 16);
     }
 
     return QVariant();

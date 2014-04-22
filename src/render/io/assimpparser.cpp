@@ -48,6 +48,7 @@
 #include <QFileInfo>
 #include <QColor>
 #include <qmath.h>
+#include "renderlogging.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -207,7 +208,7 @@ void AssimpParser::setFilePath(const QString& path)
     QFileInfo file(path);
     m_sceneDir = file.absoluteDir();
     if (!file.exists()) {
-        qWarning() << "File missing " << path;
+        qCWarning(Render::Io) << "File missing " << path;
         return ;
     }
     readSceneFile(path);
@@ -241,7 +242,7 @@ Entity *AssimpParser::scene(QString id)
     // if id specified, tries to find node
     if (!id.isEmpty() &&
             !(rootNode = rootNode->FindNode(id.toUtf8().constData()))) {
-        qDebug() << Q_FUNC_INFO << " Couldn't find requested scene node";
+        qCDebug(Render::Io) << Q_FUNC_INFO << " Couldn't find requested scene node";
         return Q_NULLPTR;
     }
 
@@ -334,7 +335,7 @@ void AssimpParser::readSceneFile(const QString &path)
     cleanup();
     aiScene *scene = Q_NULLPTR;
     if (!(scene = importer.GetOrphanedScene())) {
-        qWarning() << "Assimp scene import failed";
+        qCWarning(Render::Io) << "Assimp scene import failed";
         return ;
     }
     m_aiScene.reset(scene);
@@ -520,7 +521,7 @@ void AssimpParser::loadMesh(uint meshIndex)
     m_meshes[meshIndex] = meshData;
     m_namedMeshes[meshName] = meshData;
 
-    qDebug() << Q_FUNC_INFO << " Mesh " << meshName << " Vertices " << mesh->mNumVertices << " Faces " << mesh->mNumFaces << " Indices " << indices;
+    qCDebug(Render::Io) << Q_FUNC_INFO << " Mesh " << meshName << " Vertices " << mesh->mNumVertices << " Faces " << mesh->mNumFaces << " Indices " << indices;
 }
 
 /*!
@@ -593,7 +594,7 @@ void AssimpParser::loadCamera(uint cameraIndex)
     Transform *transform = new Transform();
     QMatrix4x4 viewMatrix = AssimpParser::aiMatrix4x4ToQMatrix4x4(cm);
     // CHECK THAT THIS WORKS
-    qDebug() << Q_FUNC_INFO << "IF CAMERA NOT BEHAVING CORRECTLY LOOK HERE";
+    qCDebug(Render::Io) << Q_FUNC_INFO << "IF CAMERA NOT BEHAVING CORRECTLY LOOK HERE";
     viewMatrix.lookAt(QVector3D(0, 0, 0),
                       QVector3D(assimpCamera->mLookAt.x, assimpCamera->mLookAt.y, assimpCamera->mLookAt.z),
                       QVector3D(0, 0, 0));
@@ -618,7 +619,7 @@ void AssimpParser::copyMaterialName(Material *material, aiMaterial *assimpMateri
         // May not be necessary
         // Kept for debug purposes at the moment
         material->setObjectName(QString::fromUtf8(name.data));
-        qDebug() << Q_FUNC_INFO << "Assimp Material " << material->objectName();
+        qCDebug(Render::Io) << Q_FUNC_INFO << "Assimp Material " << material->objectName();
     }
 }
 

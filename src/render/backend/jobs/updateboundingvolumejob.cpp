@@ -44,7 +44,7 @@
 #include <rendernode.h>
 #include <sphere.h>
 
-#include <QDebug>
+#include "renderlogging.h"
 #include <QElapsedTimer>
 #include <QStack>
 #include <QThread>
@@ -109,9 +109,9 @@ void UpdateBoundingVolumeJob::run()
     // bounding volumes of the children
 
     // TODO: Implement this using a parallel_for
-    qDebug() << "Entering" << Q_FUNC_INFO << QThread::currentThread();
+    qCDebug(Jobs) << "Entering" << Q_FUNC_INFO << QThread::currentThread();
     expandWorldBoundingVolume(m_node);
-    qDebug() << "Exiting" << Q_FUNC_INFO << QThread::currentThread();
+    qCDebug(Jobs) << "Exiting" << Q_FUNC_INFO << QThread::currentThread();
 }
 
 } // namespace Render

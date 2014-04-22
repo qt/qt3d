@@ -41,8 +41,6 @@
 
 #include "framegraphnode.h"
 
-#include <QDebug>
-
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
@@ -68,16 +66,6 @@ FrameGraphNode::FrameGraphNode(FrameGraphNodeType nodeType, FrameGraphNode *pare
 
 FrameGraphNode::~FrameGraphNode()
 {
-}
-
-void FrameGraphNode::apply()
-{
-    qDebug() << Q_FUNC_INFO;
-}
-
-void FrameGraphNode::revert()
-{
-    qDebug() << Q_FUNC_INFO;
 }
 
 } // namespace Render

@@ -44,7 +44,7 @@
 #include <renderview.h>
 #include <renderer.h>
 
-#include <QDebug>
+#include "renderlogging.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -53,7 +53,7 @@ namespace Render {
 
 void RenderViewJob::run()
 {
-    qDebug() << Q_FUNC_INFO << m_index;
+    qCDebug(Jobs) << Q_FUNC_INFO << m_index;
 
     // Create a RenderView object
     RenderView *renderView = new RenderView;

@@ -42,7 +42,7 @@
 #include "meshdata.h"
 
 #include <QSet>
-#include <QDebug>
+#include "renderlogging.h"
 #include <QOpenGLVertexArrayObject>
 
 QT_BEGIN_NAMESPACE
@@ -266,7 +266,7 @@ QVector<QVector3D> Attribute::asVector3D() const
         stride = sizeof(float) * 4; break;
 
     default:
-        qDebug() << Q_FUNC_INFO << "can't convert" << QString::number(type(), 16) << "to QVector3D";
+        qCDebug(Render::Io) << Q_FUNC_INFO << "can't convert" << QString::number(type(), 16) << "to QVector3D";
         return QVector<QVector3D>();
     }
 
@@ -322,7 +322,7 @@ QVector<QVector2D> Attribute::asVector2D() const
         stride = sizeof(float) * 4; break;
 
     default:
-        qDebug() << Q_FUNC_INFO << "can't convert" << QString::number(type(), 16) << "to QVector2D";
+        qCDebug(Render::Io) << Q_FUNC_INFO << "can't convert" << QString::number(type(), 16) << "to QVector2D";
         return QVector<QVector2D>();
     }
 
@@ -359,25 +359,25 @@ void Attribute::dump(int count)
         case GL_UNSIGNED_SHORT:
             if (!stride) stride = sizeof(quint16);
             usptr = reinterpret_cast<quint16*>(rawBuffer);
-            qDebug() << c << ":u16:" << usptr[0];
+            qCDebug(Render::Io) << c << ":u16:" << usptr[0];
             break;
         case GL_UNSIGNED_INT:
             if (!stride) stride = sizeof(quint32);
-            qDebug() << c << ":u32:" << reinterpret_cast<quint32*>(rawBuffer)[0];
+            qCDebug(Render::Io) << c << ":u32:" << reinterpret_cast<quint32*>(rawBuffer)[0];
             break;
         case GL_FLOAT_VEC2:
             if (!stride) stride = sizeof(float) * 2;
             fptr = reinterpret_cast<float*>(rawBuffer);
-            qDebug() << c << ":vec2:"<< fptr[0] << fptr[0];
+            qCDebug(Render::Io) << c << ":vec2:"<< fptr[0] << fptr[0];
             break;
 
         case GL_FLOAT_VEC3:
             if (!stride) stride = sizeof(float) * 3;
             fptr = reinterpret_cast<float*>(rawBuffer);
-            qDebug() << c << ":vec3:" << fptr[0] << fptr[0] << fptr[2];
+            qCDebug(Render::Io) << c << ":vec3:" << fptr[0] << fptr[0] << fptr[2];
             break;
 
-        default: qDebug() << Q_FUNC_INFO << "unspported type:" << QString::number(type(), 16);
+        default: qCDebug(Render::Io) << Q_FUNC_INFO << "unspported type:" << QString::number(type(), 16);
         }
 
 
@@ -412,10 +412,10 @@ QOpenGLBuffer Buffer::createGL() const
     QOpenGLBuffer b(m_type);
     b.setUsagePattern(m_usage);
     if (!b.create())
-        qWarning() << Q_FUNC_INFO << "buffer creation failed";
+        qCWarning(Render::Io) << Q_FUNC_INFO << "buffer creation failed";
 
     if (!b.bind())
-        qWarning() << Q_FUNC_INFO << "buffer binding failed";
+        qCWarning(Render::Io) << Q_FUNC_INFO << "buffer binding failed";
 
     b.allocate(m_clientSideBytes.count());
     b.release();
@@ -425,12 +425,12 @@ QOpenGLBuffer Buffer::createGL() const
 void Buffer::upload(QOpenGLBuffer b)
 {
     if (!b.bind())
-        qWarning() << Q_FUNC_INFO << "buffer bind failed";
+        qCWarning(Render::Io) << Q_FUNC_INFO << "buffer bind failed";
     b.allocate(NULL, m_clientSideBytes.count()); // orphan the buffer
     b.allocate(m_clientSideBytes.data(),
                m_clientSideBytes.count());
     b.release();
-    qDebug() << "uploaded buffer size=" << m_clientSideBytes.count();
+    qCDebug(Render::Io) << "uploaded buffer size=" << m_clientSideBytes.count();
 }
 
 } // of namespace

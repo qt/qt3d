@@ -43,8 +43,8 @@
 #define QT3D_RENDER_RENDERCOMMAND_H
 
 #include <qglobal.h>
-#include <quniformvalue.h>
-#include <meshdata.h>
+#include <Qt3DRenderer/quniformvalue.h>
+#include <Qt3DRenderer/meshdata.h>
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>

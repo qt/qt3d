@@ -43,7 +43,7 @@
 #include "renderer.h"
 #include "renderview.h"
 
-#include <QDebug>
+#include "renderlogging.h"
 #include <QEventLoop>
 #include <QTime>
 #include <QMutexLocker>
@@ -61,11 +61,11 @@ RenderThread::RenderThread( QObject* parent )
 
 void RenderThread::waitForStart( Priority priority )
 {
-    qDebug() << "Starting Render thread and then going to sleep until it is ready for us...";
+    qCDebug(Render::Backend) << "Starting Render thread and then going to sleep until it is ready for us...";
     m_mutex.lock();
     start( priority );
     m_waitCondition.wait( &m_mutex );
-    qDebug() << "Render thread is now ready & calling thread is now awake again";
+    qCDebug(Render::Backend) << "Render thread is now ready & calling thread is now awake again";
 }
 
 void RenderThread::run()

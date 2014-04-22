@@ -44,7 +44,7 @@
 
 #include <cmath>
 
-#include <QDebug>
+#include "renderlogging.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -178,7 +178,7 @@ MeshDataPtr createSphereMesh(double radius, int rings, int slices, bool hasTange
     mesh->setIndexAttr(AttributePtr(new Attribute(indexBuffer, GL_UNSIGNED_SHORT, indices, 0, 0)));
 
     mesh->computeBoundsFromAttribute(QStringLiteral("position"));
-    qDebug() << "computed sphere bounds is:" << mesh->boundingBox();
+    qCDebug(Render::Frontend) << "computed sphere bounds is:" << mesh->boundingBox();
 
     return mesh;
 }

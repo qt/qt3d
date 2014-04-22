@@ -52,7 +52,7 @@
 
 #include <QMatrix4x4>
 #include <QString>
-#include <QDebug>
+#include "renderlogging.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -124,7 +124,7 @@ void RenderNode::dump() const
 {
     static int depth = 0;
     QString indent(2 * depth++, QChar::fromLatin1(' '));
-    qDebug() << indent + m_frontEndPeer->objectName();
+    qCDebug(Backend) << indent + m_frontEndPeer->objectName();
     foreach (const RenderNode *child, children())
         child->dump();
     --depth;

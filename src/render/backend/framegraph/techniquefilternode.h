@@ -58,9 +58,6 @@ class TechniqueFilter : public Render::FrameGraphNode
 public:
     TechniqueFilter(Render::FrameGraphNode *parent = 0);
 
-    void apply() Q_DECL_OVERRIDE;
-    void revert() Q_DECL_OVERRIDE;
-
     QHash<QString, QVariant> filters() const;
     void appendFilter(const QString &name, const QVariant &filter);
     void removeFilter(const QString &name);

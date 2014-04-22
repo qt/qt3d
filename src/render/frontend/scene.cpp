@@ -41,7 +41,7 @@
 
 #include "scene.h"
 
-#include <QDebug>
+#include "renderlogging.h"
 
 #include <gltfparser.h>
 #include <assimpparser.h>
@@ -117,7 +117,7 @@ void Scene::rebuild()
     // Maybe move scene parsers to plugins
     // And handle priority if a format is handled by more than one parser
     if (GLTFParser::isGLTFPath(m_source)) {
-        qDebug() << Q_FUNC_INFO << "will load GLTF scene";
+        qCDebug(Render::Frontend) << Q_FUNC_INFO << "will load GLTF scene";
 
         GLTFParser parser;
         parser.setFilePath(m_source);
@@ -132,17 +132,17 @@ void Scene::rebuild()
         }
     }
     else if (AssimpParser::isAssimpPath(m_source)) {
-        qDebug() << Q_FUNC_INFO << "will load Assimp scene";
+        qCDebug(Render::Frontend) << Q_FUNC_INFO << "will load Assimp scene";
         AssimpParser parser;
         parser.setFilePath(m_source);
         m_sceneChild = parser.scene(m_sceneId);
         if (m_sceneChild) {
-            qDebug() << Q_FUNC_INFO << "Assimp scene not empty";
+            qCDebug(Render::Frontend) << Q_FUNC_INFO << "Assimp scene not empty";
             addChild(m_sceneChild);
         }
     }
     else {
-        qWarning() << Q_FUNC_INFO << "Scene file format not supported by Qt3D";
+        qCWarning(Render::Frontend) << Q_FUNC_INFO << "Scene file format not supported by Qt3D";
     }
 }
 

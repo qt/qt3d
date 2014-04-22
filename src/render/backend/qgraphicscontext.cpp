@@ -49,7 +49,7 @@
 
 #include "qgraphicshelperinterface.h"
 
-#include <QDebug>
+#include "renderlogging.h"
 #include <QOpenGLShaderProgram>
 
 #if !defined(QT_OPENGL_ES_2)
@@ -107,7 +107,7 @@ QGraphicsContext::~QGraphicsContext()
 
 void QGraphicsContext::setSurface(QSurface *s)
 {
-    qDebug() << Q_FUNC_INFO;
+    qCDebug(Backend) << Q_FUNC_INFO;
     m_surface = s;
 }
 
@@ -119,7 +119,7 @@ void QGraphicsContext::initialize()
 
     GLint numTexUnits;
     glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &numTexUnits);
-    qDebug() << "context supports" << numTexUnits << "texture units";
+    qCDebug(Backend) << "context supports" << numTexUnits << "texture units";
 
     m_pinnedTextureUnits = QBitArray(numTexUnits);
     m_activeTextures.resize(numTexUnits);
@@ -129,18 +129,18 @@ void QGraphicsContext::initialize()
 void QGraphicsContext::beginDrawing()
 {
     if (!m_gl || !m_surface) {
-        qWarning() << Q_FUNC_INFO << "no content or surface provided";
+        qCWarning(Backend) << Q_FUNC_INFO << "no content or surface provided";
         return;
     }
 
     bool ok = m_gl->makeCurrent(m_surface);
     if (!ok) {
-        qWarning() << Q_FUNC_INFO << "make current failed";
+        qCWarning(Backend) << Q_FUNC_INFO << "make current failed";
     }
 
     GLint err = glGetError();
     if (err != 0) {
-        qWarning() << Q_FUNC_INFO << "glGetError:" << err;
+        qCWarning(Backend) << Q_FUNC_INFO << "glGetError:" << err;
     }
 
     if (!m_initialized) {
@@ -276,7 +276,7 @@ void QGraphicsContext::setModelMatrix(const QMatrix4x4& modelMat)
     GLint progId;
     glGetIntegerv(GL_CURRENT_PROGRAM, &progId);
     if (progId != (int) prog->programId()) {
-        qWarning() << "current program mismatch, very bad:" << progId << prog->programId();
+        qCWarning(Backend) << "current program mismatch, very bad:" << progId << prog->programId();
         return;
     }
 
@@ -332,7 +332,7 @@ void QGraphicsContext::setModelMatrix(const QMatrix4x4& modelMat)
 
         int err = glGetError();
         if (err)
-            qWarning() << "GL error after setting matrix" << QString::number(err, 16) << i << loc;
+            qCWarning(Backend) << "GL error after setting matrix" << QString::number(err, 16) << i << loc;
 
     } // of standard uniforms
 }
@@ -355,7 +355,7 @@ int QGraphicsContext::activateTexture(TextureScope scope, RenderTexture *tex, in
 
     int err = glGetError();
     if (err)
-        qWarning() << "GL error after activating texture" << QString::number(err, 16)
+        qCWarning(Backend) << "GL error after activating texture" << QString::number(err, 16)
                    << tex->textureId() << "on unit" << onUnit;
 
     m_textureScores[tex] = 200;
@@ -389,16 +389,16 @@ void QGraphicsContext::resolveHighestOpenGLFunctions()
 
 #if defined QT_OPENGL_ES_2
     if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_ES2>()) != Q_NULLPTR) {
-        qDebug() << Q_FUNC_INFO << " Building OpenGL 2/ES2 Helper";
+        qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 2/ES2 Helper";
         m_glHelper = new QGraphicsHelperES2();
     }
 #else
     if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_3_2_Core>()) != Q_NULLPTR) {
-        qDebug() << Q_FUNC_INFO << " Building OpenGL 3.2";
+        qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 3.2";
         m_glHelper = new QGraphicsHelperGL3();
     }
     else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_2_0>()) != Q_NULLPTR) {
-        qDebug() << Q_FUNC_INFO << " Building OpenGL 2 Helper";
+        qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 2 Helper";
         m_glHelper = new QGraphicsHelperGL2();
     }
 #endif
@@ -416,7 +416,7 @@ void QGraphicsContext::deactivateTexture(RenderTexture* tex)
         }
     } // of units iteration
 
-    qWarning() << Q_FUNC_INFO << "texture not active:" << tex;
+    qCWarning(Backend) << Q_FUNC_INFO << "texture not active:" << tex;
 }
 
 void QGraphicsContext::setCurrentStateSet(DrawStateSet *ss)
@@ -516,7 +516,7 @@ GLint QGraphicsContext::assignUnitForTexture(RenderTexture *tex)
     } // of units iteration
 
     if (lowestScoredUnit == -1) {
-        qWarning() << Q_FUNC_INFO << "NO free texture units!";
+        qCWarning(Backend) << Q_FUNC_INFO << "NO free texture units!";
         return GL_INVALID_VALUE;
     }
 
@@ -529,7 +529,7 @@ void QGraphicsContext::decayTextureScores()
     // traversal coherency and subsequent modification.
     Q_FOREACH (RenderTexture* t, m_textureScores.keys()) {
         if ((m_textureScores[t]--) <= 0) {
-            qDebug() << "removing inactive texture" << t;
+            qCDebug(Backend) << "removing inactive texture" << t;
             m_textureScores.remove((t));
         }
     }
@@ -550,7 +550,7 @@ void QGraphicsContext::specifyAttribute(QString nm, AttributePtr attr)
     QOpenGLShaderProgram* prog = activeShader();
     int location = prog->attributeLocation(nm);
     if (location < 0) {
-        qWarning() << "failed to resolve location for attribute:" << nm;
+        qCWarning(Backend) << "failed to resolve location for attribute:" << nm;
         return;
     }
     prog->enableAttributeArray(location);
@@ -571,13 +571,13 @@ void QGraphicsContext::specifyAttribute(QString nm, AttributePtr attr)
 void QGraphicsContext::specifyIndices(AttributePtr attr)
 {
     if (attr->buffer()->type() != QOpenGLBuffer::IndexBuffer) {
-        qWarning() << Q_FUNC_INFO << "provided buffer is not correct type";
+        qCWarning(Backend) << Q_FUNC_INFO << "provided buffer is not correct type";
         return;
     }
 
     QOpenGLBuffer buf = glBufferFor(attr->buffer());
     if (!buf.bind())
-        qWarning() << Q_FUNC_INFO << "binding index buffer failed";
+        qCWarning(Backend) << Q_FUNC_INFO << "binding index buffer failed";
 
     // bind within the current VAO
 }
