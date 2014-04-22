@@ -39,19 +39,19 @@
 **
 ****************************************************************************/
 
-#include "meshmanager.h"
+#include "meshdatamanager.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 namespace Render {
 
-MeshManager::MeshManager()
+MeshDataManager::MeshDataManager()
     : QArrayResourcesManager<MeshData, Mesh *, 16>()
 {
 }
 
-HMeshData MeshManager::addMesh(Qt3D::Mesh *frontEndMesh)
+HMeshData MeshDataManager::addMesh(Qt3D::Mesh *frontEndMesh)
 {
     HMeshData meshData = getOrAcquireHandle(frontEndMesh);
 
@@ -64,12 +64,12 @@ HMeshData MeshManager::addMesh(Qt3D::Mesh *frontEndMesh)
     return meshData;
 }
 
-void MeshManager::linkMeshToEntity(const QUuid &id, HMeshData handle)
+void MeshDataManager::linkMeshToEntity(const QUuid &id, HMeshData handle)
 {
     m_meshesByEntityUuid[id] = handle;
 }
 
-MeshData *MeshManager::meshForEntityUuid(const QUuid &id)
+MeshData *MeshDataManager::meshForEntityUuid(const QUuid &id)
 {
     if (m_meshesByEntityUuid.contains(id))
         return data(m_meshesByEntityUuid[id]);

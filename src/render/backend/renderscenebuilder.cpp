@@ -42,11 +42,12 @@
 #include "renderscenebuilder.h"
 
 #include "rendernodesmanager.h"
-#include "meshmanager.h"
+#include "meshdatamanager.h"
 #include "cameramanager.h"
 #include "renderer.h"
 #include "rendernode.h"
 #include "renderlogging.h"
+#include "materialmanager.h"
 
 #include <camera.h>
 #include <cameralens.h>
@@ -237,11 +238,16 @@ void RenderSceneBuilder::visitEntity(Qt3D::Entity *entity)
     // ShaderPrograms
     QList<Material *> materials = entity->componentsOfType<Material>();
     foreach (Material *material, materials) {
+        HMaterial rMaterialHandle = m_renderer->materialManager()->getOrAcquireHandle(material);
+        m_renderer->materialManager()->linkMaterialToEntity(entity->uuid(), rMaterialHandle);
+        RenderMaterial *rMaterial = m_renderer->materialManager()->data(rMaterialHandle);
+        rMaterial->setRendererAspect(m_renderer->rendererAspect());
+        rMaterial->setPeer(material);
     }
 
     // We'll update matrices in a job later. In fact should the matrix be decoupled from the mesh?
     foreach (Mesh *mesh, entity->componentsOfType<Mesh>()) {
-        m_renderer->meshManager()->linkMeshToEntity(entity->uuid(), m_renderer->meshManager()->addMesh(mesh));
+        m_renderer->meshDataManager()->linkMeshToEntity(entity->uuid(), m_renderer->meshDataManager()->addMesh(mesh));
         //m_renderer->buildMeshes(mesh, material, QMatrix4x4());
     }
 

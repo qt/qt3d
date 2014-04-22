@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_MESHMANAGER_H
-#define QT3D_RENDER_MESHMANAGER_H
+#ifndef QT3D_RENDER_MESHDATAMANAGER_H
+#define QT3D_RENDER_MESHDATAMANAGER_H
 
 #include <Qt3DRenderer/mesh.h>
 #include <Qt3DRenderer/meshdata.h>
@@ -58,10 +58,10 @@ namespace Render {
 
 typedef QHandle<MeshData, 16> HMeshData;
 
-class MeshManager : public QArrayResourcesManager<MeshData, Mesh *, 16>
+class MeshDataManager : public QArrayResourcesManager<MeshData, Mesh *, 16>
 {
 public:
-    MeshManager();
+    MeshDataManager();
 
     HMeshData addMesh(Qt3D::Mesh *frontEndMesh);
     void linkMeshToEntity(const QUuid &id, HMeshData handle);
@@ -86,4 +86,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_MESHMANAGER_H
+#endif // QT3D_RENDER_MESHDATAMANAGER_H

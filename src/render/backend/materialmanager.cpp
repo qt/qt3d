@@ -48,8 +48,27 @@ namespace Qt3D {
 namespace Render {
 
 MaterialManager::MaterialManager() :
-    QArrayResourcesManager<RenderMaterial, QUuid, 16>()
+    QArrayResourcesManager<RenderMaterial, Material*, 16>()
 {
+}
+
+RenderMaterial *MaterialManager::renderMaterial(const QUuid &id)
+{
+    if (m_materialByEntity.contains(id))
+        return data(m_materialByEntity[id]);
+    return Q_NULLPTR;
+}
+
+void MaterialManager::linkMaterialToEntity(const QUuid &id, HMaterial material)
+{
+    m_materialByEntity[id] = material;
+}
+
+HMaterial MaterialManager::lookupHandle(const QUuid &id)
+{
+    if (m_materialByEntity.contains(id))
+        return m_materialByEntity[id];
+    return HMaterial();
 }
 
 /*!

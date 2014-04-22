@@ -42,7 +42,6 @@
 #ifndef QT3D_RENDER_RENDERMESH_H
 #define QT3D_RENDER_RENDERMESH_H
 
-#include <Qt3DRenderer/drawable.h>
 #include <Qt3DRenderer/meshdata.h>
 #include <Qt3DCore/axisalignedboundingbox.h>
 
@@ -62,7 +61,18 @@ class RenderNode;
 class RenderMaterial;
 class RenderTechnique;
 
-class RenderMesh : public Drawable
+/*!
+ * \class RenderMesh
+ *
+ * Monitor a frontend Mesh for source changes. If the source is changed,
+ * the MeshData returned is either a valid MeshData corresponding to the source
+ * or null if the new MeshData hasn't been loaded. If this is the case the meshDirty
+ * flag is set to true.
+ *
+ * \sa MeshData
+ */
+
+class RenderMesh
 {
 public:
     RenderMesh();
@@ -73,13 +83,7 @@ public:
 
     void setTechniqueAndPass(RenderTechnique* tech, unsigned int pass);
 
-    void setMaterial(RenderMaterial* rmat);
-
-    void setInstanceCount(unsigned int count);
-
-    void setModelMatrix(const QMatrix4x4& mm);
-
-    virtual DrawStateSet* stateSet();
+//    virtual DrawStateSet* stateSet();
 
     /**
      * @brief mapAttributeNames - resolve mapping of mesh-data attribute
@@ -88,16 +92,16 @@ public:
      */
     void mapAttributeNames();
 
-    virtual void initializeGL(QGraphicsContext* dc);
+//    virtual void initializeGL(QGraphicsContext* dc);
 
-    virtual void releaseGL();
+//    virtual void releaseGL();
 
 protected:
-    virtual void sendDrawingCommands( QGraphicsContext* dc );
+//    virtual void sendDrawingCommands( QGraphicsContext* dc );
 
-    virtual RenderShader* shader();
+//    virtual RenderShader* shader();
 
-    virtual AxisAlignedBoundingBox boundingBox() const;
+//    virtual AxisAlignedBoundingBox boundingBox() const;
 
 private:
     Mesh* m_peer;
@@ -109,11 +113,6 @@ private:
 
     bool m_drawIndexed;
     bool m_meshDirty;
-    unsigned int m_instanceCount;
-
-    QOpenGLVertexArrayObject m_vao;
-
-    QMatrix4x4 m_modelMatrix;
 };
 
 } // Render

@@ -56,13 +56,11 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
-RenderMesh::RenderMesh()
-    : Drawable(),
+RenderMesh::RenderMesh() :
       m_peer(0),
       m_technique(0),
       m_pass(0),
-      m_material(0),
-      m_instanceCount( 0 )
+      m_material(0)
 {
 }
 
@@ -78,119 +76,98 @@ void RenderMesh::setData(MeshDataPtr mesh)
     // clear bounding box?
 }
 
-void RenderMesh::setTechniqueAndPass(RenderTechnique* tech, unsigned int pass)
-{
-    m_technique = tech;
-    m_pass = pass;
-}
+//DrawStateSet *RenderMesh::stateSet()
+//{
+//    return m_technique->stateSetForPass(m_pass);
+//}
 
-void RenderMesh::setMaterial(RenderMaterial *rmat)
-{
-    m_material = rmat;
-}
+//void RenderMesh::initializeGL(QGraphicsContext* gc)
+//{
+//    if (m_meshData.isNull())
+//        return ;
+//    m_vao.create();
+//    m_vao.bind();
 
-void RenderMesh::setInstanceCount(unsigned int count)
-{
-    m_instanceCount = count;
-}
+//    gc->activateShader(m_technique->shaderForPass(m_pass));
 
-void RenderMesh::setModelMatrix(const QMatrix4x4 &mm)
-{
-    m_modelMatrix = mm;
-}
+//    foreach (QString nm, m_meshData->attributeNames()) {
+//        AttributePtr attr(m_meshData->attributeByName(nm));
+//        QString glsl = m_technique->glslNameForMeshAttribute(m_pass, nm);
+//        if (glsl.isEmpty())
+//            continue; // not used in this pass
+//        gc->specifyAttribute(glsl, attr);
+//    }
 
-DrawStateSet *RenderMesh::stateSet()
-{
-    return m_technique->stateSetForPass(m_pass);
-}
+//    m_drawIndexed = (m_meshData->indexAttr() != NULL);
+//    if (m_drawIndexed)
+//        gc->specifyIndices(m_meshData->indexAttr());
+//    m_vao.release();
+//}
 
-void RenderMesh::initializeGL(QGraphicsContext* gc)
-{
-    if (m_meshData.isNull())
-        return ;
-    m_vao.create();
-    m_vao.bind();
+//void RenderMesh::releaseGL()
+//{
+//    m_vao.destroy();
+//}
 
-    gc->activateShader(m_technique->shaderForPass(m_pass));
+//void RenderMesh::sendDrawingCommands(QGraphicsContext* gc)
+//{
+//    if (m_meshData.isNull())
+//        return ;
+//    if (gc->activeMaterial() != m_material) {
+//        gc->setActiveMaterial(m_material);
+//        m_material->setUniformsForPass(m_pass, gc);
+//    }
 
-    foreach (QString nm, m_meshData->attributeNames()) {
-        AttributePtr attr(m_meshData->attributeByName(nm));
-        QString glsl = m_technique->glslNameForMeshAttribute(m_pass, nm);
-        if (glsl.isEmpty())
-            continue; // not used in this pass
-        gc->specifyAttribute(glsl, attr);
-    }
+//    gc->setModelMatrix(m_modelMatrix);
 
-    m_drawIndexed = (m_meshData->indexAttr() != NULL);
-    if (m_drawIndexed)
-        gc->specifyIndices(m_meshData->indexAttr());
-    m_vao.release();
-}
+//    m_vao.bind();
+//    GLint primType = m_meshData->primitiveType();
+//    GLint primCount = m_meshData->primitiveCount();
+//    GLint indexType = m_drawIndexed ? m_meshData->indexAttr()->type() : 0;
 
-void RenderMesh::releaseGL()
-{
-    m_vao.destroy();
-}
+//    if (m_instanceCount > 0) {
+//        if (m_drawIndexed)
+//            gc->drawElementsInstanced(primType,
+//                                      primType,
+//                                      indexType,
+//                                      0,
+//                                      m_instanceCount);
+//        else
+//            gc->drawArraysInstanced(primType,
+//                                    0,
+//                                    primCount,
+//                                    m_instanceCount);
+//    }
+//    else {
+//        if (m_drawIndexed)
+//            gc->drawElements(primType,
+//                             primCount,
+//                             indexType,
+//                             reinterpret_cast<void*>(m_meshData->indexAttr()->byteOffset()));
+//        else
+//            gc->drawArrays(primType, 0, primCount);
+//    }  // non-instanced drawing
 
-void RenderMesh::sendDrawingCommands(QGraphicsContext* gc)
-{
-    if (m_meshData.isNull())
-        return ;
-    if (gc->activeMaterial() != m_material) {
-        gc->setActiveMaterial(m_material);
-        m_material->setUniformsForPass(m_pass, gc);
-    }
-
-    gc->setModelMatrix(m_modelMatrix);
-
-    m_vao.bind();
-    GLint primType = m_meshData->primitiveType();
-    GLint primCount = m_meshData->primitiveCount();
-    GLint indexType = m_drawIndexed ? m_meshData->indexAttr()->type() : 0;
-
-    if (m_instanceCount > 0) {
-        if (m_drawIndexed)
-            gc->drawElementsInstanced(primType,
-                                      primType,
-                                      indexType,
-                                      0,
-                                      m_instanceCount);
-        else
-            gc->drawArraysInstanced(primType,
-                                    0,
-                                    primCount,
-                                    m_instanceCount);
-    }
-    else {
-        if (m_drawIndexed)
-            gc->drawElements(primType,
-                             primCount,
-                             indexType,
-                             reinterpret_cast<void*>(m_meshData->indexAttr()->byteOffset()));
-        else
-            gc->drawArrays(primType, 0, primCount);
-    }  // non-instanced drawing
-
-    int err = glGetError();
-    if (err)
-        qWarning() << "GL error after drawing mesh:" << QString::number(err, 16);
+//    int err = glGetError();
+//    if (err)
+//        qWarning() << "GL error after drawing mesh:" << QString::number(err, 16);
 
 
-    m_vao.release();
-}
+//    m_vao.release();
+//}
 
-RenderShader *RenderMesh::shader()
-{
-    return m_technique->shaderForPass(m_pass);
-}
+//RenderShader *RenderMesh::shader()
+//{
+//    return m_technique->shaderForPass(m_pass);
+//}
 
-AxisAlignedBoundingBox RenderMesh::boundingBox() const
-{
-    if (!m_meshData)
-        return AxisAlignedBoundingBox();
+//AxisAlignedBoundingBox RenderMesh::boundingBox() const
+//{
+//    if (!m_meshData)
+//        return AxisAlignedBoundingBox();
 
-    return m_meshData->boundingBox();
-}
+//    return m_meshData->boundingBox();
+//}
 
 #if 0
 static bool areIndicesShort( const QVector<unsigned int>& indices )

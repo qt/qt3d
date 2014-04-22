@@ -22,7 +22,7 @@ HEADERS += \
     $$PWD/renderscenebuilder.h \
     $$PWD/rendertexture.h \
     $$PWD/rendertextureprovider.h \
-    $$PWD/meshmanager.h \
+    $$PWD/meshdatamanager.h \
     $$PWD/drawstate.h \
     $$PWD/states/blendstate.h \
     $$PWD/genericstate.h \
@@ -56,7 +56,7 @@ SOURCES += \
     $$PWD/renderscenebuilder.cpp \
     $$PWD/rendertexture.cpp \
     $$PWD/rendertextureprovider.cpp \
-    $$PWD/meshmanager.cpp \
+    $$PWD/meshdatamanager.cpp \
     $$PWD/drawstate.cpp \
     $$PWD/states/blendstate.cpp \
     $$PWD/qgraphicshelpergl3.cpp \

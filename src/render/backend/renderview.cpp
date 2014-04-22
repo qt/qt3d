@@ -45,11 +45,12 @@
 #include "rendercamera.h"
 #include "rendercommand.h"
 #include "rendernode.h"
-#include "meshmanager.h"
+#include "meshdatamanager.h"
 #include "meshdata.h"
-#include <entity.h>
 #include "cameramanager.h"
 #include "rendernodesmanager.h"
+#include "materialmanager.h"
+#include <entity.h>
 #include <cameraselectornode.h>
 #include <framegraphnode.h>
 #include <renderpassfilternode.h>
@@ -153,12 +154,17 @@ void RenderView::buildRenderCommands(RenderNode *node)
     Entity *frontEndEntity = Q_NULLPTR;
     if (node->frontEndPeer() != Q_NULLPTR
         && (frontEndEntity = node->frontEndPeer()->asEntity()) != Q_NULLPTR) {
-        MeshData *meshData = m_renderer->meshManager()->meshForEntityUuid(frontEndEntity->uuid());
+        MeshData *meshData = m_renderer->meshDataManager()->meshForEntityUuid(frontEndEntity->uuid());
         if (meshData != Q_NULLPTR) {
             // Find MeshData and assigns it to command
             command->m_meshData = *meshData;
             command->m_instancesCount = 0;
             command->m_worldMatrix = *(node->worldTransform());
+            // Sets handle to entity material. If there is no material associated to the entity,
+            // the handle will be invalid and a default material will be used during rendering
+            command->m_material = m_renderer->materialManager()->lookupHandle(frontEndEntity->uuid());
+            // Set shader according to material and effect, technique and renderpassfilter
+
 
             // Use a default shader and uniform bindings for the moment
             // Shader and Uniforms obtained from Material/Effect/Technique/RenderPass/ShaderProgram

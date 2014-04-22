@@ -45,7 +45,7 @@
 #include <sphere.h>
 
 #include <renderer.h>
-#include <meshmanager.h>
+#include <meshdatamanager.h>
 
 #include <QThread>
 #include "renderlogging.h"
@@ -74,7 +74,7 @@ void LoadMeshDataJob::run()
 
     MeshData *meshData = Q_NULLPTR;
     if (loader.load(m_source) &&
-            (meshData = m_renderer->meshManager()->data(m_meshDataHandle)) != Q_NULLPTR) {
+            (meshData = m_renderer->meshDataManager()->data(m_meshDataHandle)) != Q_NULLPTR) {
          qCDebug(Jobs) << Q_FUNC_INFO << "Loaded OBJ ok";
         *meshData = *loader.mesh();
         AttributePtr attr = meshData->attributeByName(QStringLiteral("position"));

@@ -41,7 +41,7 @@
 
 #include "rendereraspect.h"
 
-#include "meshmanager.h"
+#include "meshdatamanager.h"
 #include "renderer.h"
 #include "renderthread.h"
 
@@ -105,7 +105,7 @@ QVector<QJobPtr> RendererAspect::jobsToExecute()
     QVector<QJobPtr> jobs;
 
     // Create jobs to load in any meshes that are pending
-    QList< QPair<QString, Render::HMeshData> > meshes = m_renderThread->renderer()->meshManager()->meshesPending();
+    QList< QPair<QString, Render::HMeshData> > meshes = m_renderThread->renderer()->meshDataManager()->meshesPending();
     QVector<QJobPtr> meshesJobs;
     for (int i = 0; i < meshes.size(); ++i ) {
         const QPair<QString, Render::HMeshData> &meshDataInfo = meshes.at(i);
@@ -113,7 +113,7 @@ QVector<QJobPtr> RendererAspect::jobsToExecute()
         loadMeshJob->setRenderer(m_renderThread->renderer());
         meshesJobs.append(loadMeshJob);
     }
-    m_renderThread->renderer()->meshManager()->clearMeshesPending();
+    m_renderThread->renderer()->meshDataManager()->clearMeshesPending();
 
     // Create jobs to update transforms and bounding volumes
     Render::UpdateWorldTransformJobPtr worldTransformJob(new Render::UpdateWorldTransformJob(m_renderThread->renderer()->renderSceneRoot()));

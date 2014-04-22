@@ -63,7 +63,7 @@
 #include <shape.h>
 
 #include <cameramanager.h>
-#include <meshmanager.h>
+#include <meshdatamanager.h>
 #include <rendermesh.h>
 #include <renderqueues.h>
 #include <renderbin.h>
@@ -80,6 +80,7 @@
 #include <rendernodesmanager.h>
 #include <renderview.h>
 #include <rendercommand.h>
+#include <materialmanager.h>
 
 #include "renderlogging.h"
 #include <QStack>
@@ -152,9 +153,10 @@ Renderer::Renderer()
     , m_frameGraphRoot(0)
     , m_graphicsContext(0)
     , m_surface(0)
-    , m_meshManager(new MeshManager())
+    , m_meshDataManager(new MeshDataManager())
     , m_cameraManager(new CameraManager())
     , m_renderNodesManager(new RenderNodesManager())
+    , m_materialManager(new MaterialManager())
     , m_renderQueues(new RenderQueues())
     , m_frameCount(0)
 {
@@ -507,15 +509,26 @@ void Renderer::executeCommands(const RenderView *renderView)
     m_graphicsContext->beginDrawing();
     // Set RenderTarget ...
 
-    RenderMaterial *mat = getOrCreateMaterial(m_defaultMaterial);
-    RenderTechnique *technique = mat->technique();
-
     Q_FOREACH (RenderCommand *command, commands) {
 
         //// Initialize GL
         if (command->m_meshData.attributeNames().empty())
             continue ;
-        command->m_vao.create(); // At the moment VAO isn't really needed
+
+          RenderMaterial *mat = getOrCreateMaterial(m_defaultMaterial);
+          RenderTechnique *technique = mat->technique();
+//        RenderMaterial *mat = m_materialManager->data(command->m_material);
+//        if (mat == Q_NULLPTR)
+//            mat = getOrCreateMaterial(m_defaultMaterial);
+//        RenderTechnique *technique = mat->technique();
+//        if (technique = Q_NULLPTR)
+//            technique = techniqueForMaterial(m_defaultMaterial);
+
+        // The VAO should be created only once for a MeshData and an ShaderProgram
+        // Manager should have a VAO Manager that are indexed by MeshData and Shader
+        // RenderCommand should have a handle to the corresponding VAO for the Mesh and Shader
+
+        command->m_vao.create();
         command->m_vao.bind();
 
         bool drawIndexed = !command->m_meshData.indexAttr().isNull();
@@ -535,7 +548,7 @@ void Renderer::executeCommands(const RenderView *renderView)
         //// Draw Calls
         // Set state
         m_graphicsContext->setCurrentStateSet(technique->stateSetForPass(0));
-        //        m_graphicsContext->activateShader(technique->shaderForPass(0));
+        m_graphicsContext->activateShader(technique->shaderForPass(0));
         m_graphicsContext->setModelMatrix(command->m_worldMatrix);
         m_graphicsContext->setActiveMaterial(mat);
         mat->setUniformsForPass(0, m_graphicsContext);
@@ -597,6 +610,7 @@ RenderShader* Renderer::getOrCreateShader(ShaderProgram* sp)
     return m_shaderHash.value(sp);
 }
 
+// To be removed, created by renderViewJobs and framegraph nodes
 RenderBin* Renderer::getOrCreateBinForPass(Technique* t, RenderPass* p)
 {
     Q_UNUSED(t);
@@ -626,6 +640,7 @@ RenderTechnique* Renderer::createTechnique(Technique* tech)
     return rt;
 }
 
+// To be removed and handled by the MaterialManager
 RenderMaterial* Renderer::getOrCreateMaterial(Material* mat)
 {
     if (!m_materialHash.contains(mat)) {
@@ -645,6 +660,7 @@ RenderMaterial* Renderer::getOrCreateMaterial(Material* mat)
     return m_materialHash.value(mat);
 }
 
+// To be removed and handled by the renderview jobs
 void Renderer::buildMeshes(Mesh* mesh, Material* mat, const QMatrix4x4& mm)
 {
     if (mat == NULL) {
@@ -658,14 +674,14 @@ void Renderer::buildMeshes(Mesh* mesh, Material* mat, const QMatrix4x4& mm)
         RenderBin* bin = t->binForPass(p);
 
         RenderMesh* rmesh = new RenderMesh();
-        rmesh->setPeer(mesh);
-        rmesh->setData(mesh->data());
-        rmesh->setTechniqueAndPass(t, p);
-        rmesh->setModelMatrix(mm);
-        rmesh->setMaterial(rmat);
+//        rmesh->setPeer(mesh);
+//        rmesh->setData(mesh->data());
+//        rmesh->setTechniqueAndPass(t, p);
+//        rmesh->setModelMatrix(mm);
+//        rmesh->setMaterial(rmat);
 
-        m_initList.push_back(rmesh);
-        bin->addDrawable(rmesh);
+//        m_initList.push_back(rmesh);
+//        bin->addDrawable(rmesh);
 
     } // of technique pass iteration
 }
@@ -680,19 +696,19 @@ void Renderer::buildShape(Shape* shape, Material* mat, const QMatrix4x4& mm)
     RenderMaterial* rmat = getOrCreateMaterial(mat);
     RenderTechnique* t = rmat->technique();
 
-    for (unsigned int p=0; p<t->passCount(); ++p) {
-        RenderBin* bin = t->binForPass(p);
+//    for (unsigned int p=0; p<t->passCount(); ++p) {
+//        RenderBin* bin = t->binForPass(p);
 
-        RenderMesh* rmesh = new RenderMesh();
-        rmesh->setData(shapeMeshData);
-        rmesh->setTechniqueAndPass(t, p);
-        rmesh->setModelMatrix(mm);
-        rmesh->setMaterial(rmat);
+//        RenderMesh* rmesh = new RenderMesh();
+//        rmesh->setData(shapeMeshData);
+//        rmesh->setTechniqueAndPass(t, p);
+//        rmesh->setModelMatrix(mm);
+//        rmesh->setMaterial(rmat);
 
-        m_initList.push_back(rmesh);
-        bin->addDrawable(rmesh);
+//        m_initList.push_back(rmesh);
+//        bin->addDrawable(rmesh);
 
-    } // of technique pass iteration
+//    } // of technique pass iteration
 }
 
 } // namespace Render

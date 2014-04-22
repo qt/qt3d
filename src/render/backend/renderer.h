@@ -83,12 +83,13 @@ class RenderMaterial;
 class RenderTechnique;
 class RenderShader;
 class RenderNode;
-class MeshManager;
+class MeshDataManager;
 class RenderCommand;
 class CameraManager;
 class RenderNodesManager;
 class RenderQueues;
 class RenderView;
+class MaterialManager;
 
 class Renderer
 {
@@ -116,9 +117,10 @@ public:
     void executeCommands(RenderView const *renderView);
 
     RenderQueues* renderQueues() const { return m_renderQueues; }
-    MeshManager *meshManager() const { return m_meshManager; }
+    MeshDataManager *meshDataManager() const { return m_meshDataManager; }
     CameraManager *cameraManager() const { return m_cameraManager; }
     RenderNodesManager *renderNodesManager() const { return m_renderNodesManager; }
+    MaterialManager *materialManager() const { return m_materialManager; }
 
     // temporary!
 
@@ -163,9 +165,10 @@ private:
     QSurface *m_surface;
     RenderBin* m_temporaryAllBin;
     RenderTextureProvider* m_textureProvider;
-    MeshManager *m_meshManager;
+    MeshDataManager *m_meshDataManager;
     CameraManager *m_cameraManager;
     RenderNodesManager *m_renderNodesManager;
+    MaterialManager *m_materialManager;
 
     QTimer* m_frameTimer;
 
