@@ -42,18 +42,22 @@
 #ifndef QT3D_RENDER_RENDERMESH_H
 #define QT3D_RENDER_RENDERMESH_H
 
-#include <Qt3DRenderer/meshdata.h>
 #include <Qt3DCore/axisalignedboundingbox.h>
-
-#include <QOpenGLVertexArrayObject>
-#include <QMatrix4x4>
+#include <Qt3DCore/qchangearbiter.h>
+#include <Qt3DCore/qhandle.h>
 
 QT_BEGIN_NAMESPACE
+
+class QReadWriteLock;
 
 namespace Qt3D {
 
 class Mesh;
 class RenderPass;
+class RendererAspect;
+class MeshData;
+
+typedef QHandle<MeshData, 16> HMeshData;
 
 namespace Render {
 
@@ -61,29 +65,23 @@ class RenderNode;
 class RenderMaterial;
 class RenderTechnique;
 
-/*!
- * \class RenderMesh
- *
- * Monitor a frontend Mesh for source changes. If the source is changed,
- * the MeshData returned is either a valid MeshData corresponding to the source
- * or null if the new MeshData hasn't been loaded. If this is the case the meshDirty
- * flag is set to true.
- *
- * \sa MeshData
- */
-
-class RenderMesh
+class RenderMesh : public QObserverInterface
 {
 public:
     RenderMesh();
 
     void setPeer(Mesh *peer);
+    void setRendererAspect(RendererAspect *rendererAspect);
 
-    void setData(MeshDataPtr mesh);
+//    void setTechniqueAndPass(RenderTechnique* tech, unsigned int pass);
 
-    void setTechniqueAndPass(RenderTechnique* tech, unsigned int pass);
+    void sceneChangeEvent(const QSceneChangePtr &e);
+    bool meshDirty() const;
+    HMeshData meshData() const;
+    void setMeshData(HMeshData handle);
+    QString meshSource() const { return m_source; }
 
-//    virtual DrawStateSet* stateSet();
+    //    virtual DrawStateSet* stateSet();
 
     /**
      * @brief mapAttributeNames - resolve mapping of mesh-data attribute
@@ -104,15 +102,15 @@ protected:
 //    virtual AxisAlignedBoundingBox boundingBox() const;
 
 private:
+    RendererAspect *m_rendererAspect;
     Mesh* m_peer;
-    MeshDataPtr m_meshData;
-    RenderTechnique* m_technique;
-    unsigned int m_pass;
+    QString m_source;
+//    RenderTechnique* m_technique;
+//    unsigned int m_pass;
 
-    RenderMaterial* m_material;
-
-    bool m_drawIndexed;
     bool m_meshDirty;
+    HMeshData m_meshDataHandle;
+    QReadWriteLock *m_lock;
 };
 
 } // Render

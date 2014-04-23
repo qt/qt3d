@@ -55,10 +55,9 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
-LoadMeshDataJob::LoadMeshDataJob(const QString &source, const HMeshData &meshDataHandle)
+LoadMeshDataJob::LoadMeshDataJob(const QString &source)
     : QJob()
     , m_source(source)
-    , m_meshDataHandle(meshDataHandle)
 {
 }
 
@@ -72,10 +71,9 @@ void LoadMeshDataJob::run()
     ObjLoader loader;
     loader.setLoadTextureCoordinatesEnabled(true);
 
-    MeshData *meshData = Q_NULLPTR;
-    if (loader.load(m_source) &&
-            (meshData = m_renderer->meshDataManager()->data(m_meshDataHandle)) != Q_NULLPTR) {
-         qCDebug(Jobs) << Q_FUNC_INFO << "Loaded OBJ ok";
+    if (loader.load(m_source)) {
+        qCDebug(Jobs) << Q_FUNC_INFO << "Loaded OBJ ok";
+        MeshData *meshData = m_renderer->meshDataManager()->getOrCreateResource(m_source);
         *meshData = *loader.mesh();
         AttributePtr attr = meshData->attributeByName(QStringLiteral("position"));
         if (!attr) {

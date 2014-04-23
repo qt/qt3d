@@ -39,47 +39,37 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_MESHDATAMANAGER_H
-#define QT3D_RENDER_MESHDATAMANAGER_H
+#ifndef QT3D_RENDER_MESHMANAGER_H
+#define QT3D_RENDER_MESHMANAGER_H
 
-#include <Qt3DRenderer/mesh.h>
-#include <Qt3DRenderer/meshdata.h>
+#include <Qt3DCore/qhandle.h>
+#include <Qt3DRenderer/rendermesh.h>
 #include <Qt3DCore/qarrayresourcesmanager.h>
-
-#include <QHash>
-#include <QPair>
-#include <QString>
 #include <QUuid>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
+
 namespace Render {
 
-typedef QHandle<MeshData, 16> HMeshData;
+typedef QHandle<RenderMesh, 16> HMesh;
 
-class MeshDataManager : public QArrayResourcesManager<MeshData, QString, 16>
+class MeshManager : public QArrayResourcesManager<RenderMesh, QUuid, 16>
 {
 public:
-    MeshDataManager();
+    MeshManager();
 
-    inline bool hasMeshData(const QString &source) { return contains(source); }
-    inline MeshData* getOrCreateMeshData(const QString &source) { return getOrCreateResource(source); }
-    inline MeshData* meshData(const QString &source) { return lookupResource(source); }
-    void addMeshData(const QString &source);
-
-    QList<QString> meshesPending() const { return m_meshesPending; }
-    void clearMeshesPending() { m_meshesPending.clear(); }
-
-private:
-    // List of meshes that we need to schedule jobs to load
-    // and calculate bounds for.
-    QList<QString> m_meshesPending;
+    inline bool hasRenderMesh(const QUuid &id) { return contains(id); }
+    inline RenderMesh *getOrCreateRenderMesh(const QUuid &id) { return getOrCreateResource(id); }
+    inline RenderMesh *renderMesh(const QUuid &id) { return lookupResource(id); }
+    inline void releaseRenderMesh(const QUuid &id) { releaseResource(id); }
 };
 
-} // namespace Render
-} // namespace Qt3D
+} // Render
+
+} // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_MESHDATAMANAGER_H
+#endif // QT3D_RENDER_MESHMANAGER_H

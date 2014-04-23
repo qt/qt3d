@@ -45,6 +45,7 @@
 #include <Qt3DRenderer/renderer.h>
 #include <Qt3DCore/qhandle.h>
 #include <QVector>
+#include <QMutex>
 
 QT_BEGIN_NAMESPACE
 
@@ -60,8 +61,11 @@ class RenderPassFilter;
 class TechniqueFilter;
 class ViewportNode;
 class RenderCamera;
+class RenderMesh;
 
 typedef QHandle<RenderCamera, 8> HCamera;
+typedef QHandle<RenderMesh, 16> HMesh;
+typedef QHandle<RenderMaterial, 16> HMaterial;
 
 // This class is kind of analogous to RenderBin but I want to avoid trampling
 // on that until we get this working
@@ -107,6 +111,7 @@ private:
     TechniqueFilter *m_techniqueFilter;
     RenderPassFilter *m_passFilter;
     QRectF m_viewport;
+    QMutex m_mutex;
     // We do not use pointers to RenderNodes or Drawable's here so that the
     // render aspect is free to change the drawables on the next frame whilst
     // the render thread is submitting these commands.

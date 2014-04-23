@@ -47,34 +47,16 @@ namespace Qt3D {
 namespace Render {
 
 MeshDataManager::MeshDataManager()
-    : QArrayResourcesManager<MeshData, Mesh *, 16>()
+    : QArrayResourcesManager<MeshData, QString, 16>()
 {
 }
 
-HMeshData MeshDataManager::addMesh(Qt3D::Mesh *frontEndMesh)
+void MeshDataManager::addMeshData(const QString &source)
 {
-    HMeshData meshData = getOrAcquireHandle(frontEndMesh);
-
-    m_meshesByPeer.insert(frontEndMesh, meshData);
-
-    // TODO: Protect access to front end data
-    m_meshesBySource.insert(frontEndMesh->source(), meshData);
-    m_meshesPending.append(qMakePair(frontEndMesh->source(), meshData));
-
-    return meshData;
+    if (!contains(source) && !m_meshesPending.contains(source))
+        m_meshesPending.append(source);
 }
 
-void MeshDataManager::linkMeshToEntity(const QUuid &id, HMeshData handle)
-{
-    m_meshesByEntityUuid[id] = handle;
-}
-
-MeshData *MeshDataManager::meshForEntityUuid(const QUuid &id)
-{
-    if (m_meshesByEntityUuid.contains(id))
-        return data(m_meshesByEntityUuid[id]);
-    return Q_NULLPTR;
-}
 
 } // namespace Render
 } // namespace Qt3D

@@ -46,6 +46,7 @@
 #include "rendercommand.h"
 #include "rendernode.h"
 #include "meshdatamanager.h"
+#include "meshmanager.h"
 #include "meshdata.h"
 #include "cameramanager.h"
 #include "rendernodesmanager.h"
@@ -57,7 +58,7 @@
 #include <techniquefilternode.h>
 #include <viewportnode.h>
 
-#include <QDebug>
+#include "renderlogging.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -87,9 +88,6 @@ void RenderView::setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf)
             Entity *cameraEntity = cameraSelector->cameraEntity();
             if (cameraEntity != Q_NULLPTR) {
                 m_camera = m_renderer->cameraManager()->lookupHandle(cameraEntity->uuid());
-                // TODO: Remove hack!
-                // TMP TO UPDATE CAMERA VIEW MATRIX
-                // SHOULD BE DONE BY CHANGE ARBITER
                 RenderCamera *tmpCam = m_renderer->cameraManager()->data(m_camera);
                 RenderNode *tmpCamNode = m_renderer->renderNodesManager()->lookupResource(cameraEntity->uuid());
                 if (tmpCam && tmpCamNode)
@@ -99,7 +97,7 @@ void RenderView::setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf)
         }
 
         case FrameGraphNode::LayerFilter:
-            qWarning() << "LayerFilter not implemented yet";
+            qCWarning(Backend) << "LayerFilter not implemented yet";
             break;
 
         case FrameGraphNode::RenderPassFilter:
@@ -107,7 +105,7 @@ void RenderView::setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf)
             break;
 
         case FrameGraphNode::RenderTarget:
-            qWarning() << "RenderTarget not implemented yet";
+            qCWarning(Backend) << "RenderTarget not implemented yet";
             break;
 
         case FrameGraphNode::TechniqueFilter:
@@ -123,7 +121,7 @@ void RenderView::setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf)
 
         default:
             // Should never get here
-            qWarning() << "Unhandled FrameGraphNode type";
+            qCWarning(Backend) << "Unhandled FrameGraphNode type";
         }
 
         node = node->parent();
@@ -149,15 +147,21 @@ void RenderView::setRenderer(Renderer *renderer)
 void RenderView::buildRenderCommands(RenderNode *node)
 {
     // Build renderCommand for current node
-    RenderCommand *command = new RenderCommand();
 
     Entity *frontEndEntity = Q_NULLPTR;
     if (node->frontEndPeer() != Q_NULLPTR
-        && (frontEndEntity = node->frontEndPeer()->asEntity()) != Q_NULLPTR) {
-        MeshData *meshData = m_renderer->meshDataManager()->meshForEntityUuid(frontEndEntity->uuid());
-        if (meshData != Q_NULLPTR) {
-            // Find MeshData and assigns it to command
-            command->m_meshData = *meshData;
+            && (frontEndEntity = node->frontEndPeer()->asEntity()) != Q_NULLPTR) {
+        if (m_renderer->meshManager()->contains(frontEndEntity->uuid())) {
+            RenderCommand *command = new RenderCommand();
+            // Set Handle to RenderMesh
+            command->m_mesh = m_renderer->meshManager()->lookupHandle(frontEndEntity->uuid());
+            if (!command->m_mesh.isNull()) {
+                RenderMesh *mesh = m_renderer->meshManager()->data(command->m_mesh);
+                if (mesh != Q_NULLPTR && mesh->meshDirty()) {
+                    mesh->setMeshData(m_renderer->meshDataManager()->lookupHandle(mesh->meshSource()));
+                    qCDebug(Backend) << Q_FUNC_INFO << "Updating RenderMesh -> MeshData handle";
+                }
+            }
             command->m_instancesCount = 0;
             command->m_worldMatrix = *(node->worldTransform());
             // Sets handle to entity material. If there is no material associated to the entity,
@@ -197,9 +201,9 @@ RenderCamera *RenderView::camera() const
 void RenderView::computeViewport(ViewportNode *viewportNode)
 {
     QRectF tmpViewport(viewportNode->xMin(),
-                    viewportNode->yMin(),
-                    viewportNode->xMax(),
-                    viewportNode->yMax());
+                       viewportNode->yMin(),
+                       viewportNode->xMax(),
+                       viewportNode->yMax());
     if (m_viewport.isEmpty()) {
         m_viewport = tmpViewport;
     }

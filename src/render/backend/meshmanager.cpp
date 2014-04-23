@@ -39,47 +39,20 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_MESHDATAMANAGER_H
-#define QT3D_RENDER_MESHDATAMANAGER_H
-
-#include <Qt3DRenderer/mesh.h>
-#include <Qt3DRenderer/meshdata.h>
-#include <Qt3DCore/qarrayresourcesmanager.h>
-
-#include <QHash>
-#include <QPair>
-#include <QString>
-#include <QUuid>
+#include "meshmanager.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
+
 namespace Render {
 
-typedef QHandle<MeshData, 16> HMeshData;
-
-class MeshDataManager : public QArrayResourcesManager<MeshData, QString, 16>
+MeshManager::MeshManager() : QArrayResourcesManager<RenderMesh, QUuid, 16>()
 {
-public:
-    MeshDataManager();
+}
 
-    inline bool hasMeshData(const QString &source) { return contains(source); }
-    inline MeshData* getOrCreateMeshData(const QString &source) { return getOrCreateResource(source); }
-    inline MeshData* meshData(const QString &source) { return lookupResource(source); }
-    void addMeshData(const QString &source);
+} // Render
 
-    QList<QString> meshesPending() const { return m_meshesPending; }
-    void clearMeshesPending() { m_meshesPending.clear(); }
-
-private:
-    // List of meshes that we need to schedule jobs to load
-    // and calculate bounds for.
-    QList<QString> m_meshesPending;
-};
-
-} // namespace Render
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_RENDER_MESHDATAMANAGER_H

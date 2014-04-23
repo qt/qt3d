@@ -59,8 +59,11 @@ namespace Render {
 
 class RenderTarget;
 class RenderMaterial;
+class RenderMesh;
 
 typedef QHandle<RenderMaterial, 16> HMaterial;
+typedef QHandle<RenderMesh, 16> HMesh;
+
 
 
 // 1 Leaf Node -> 1 RenderView -> * RenderCommands
@@ -116,7 +119,8 @@ public:
 //private:
     QOpenGLVertexArrayObject m_vao; // VAO used during the submission step to store all states and VBOs
     QMatrix4x4 m_worldMatrix; // modelMatrix for the mesh -> could maybe be stored directly with other uniform
-    MeshData m_meshData; // mesh for given pass
+//    MeshData m_meshData; // mesh for given pass
+    HMesh m_mesh;
     QOpenGLShaderProgram m_shaderProgram; // Shader for given pass and mesh
     QUniformPack m_uniforms; // Might need to be reworked so as to be able to destroy the
                             // RenderTexture while submission is happening.

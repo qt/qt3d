@@ -40,40 +40,92 @@
 ****************************************************************************/
 
 #include "rendermesh.h"
-
+#include "qaspectmanager.h"
 #include "rendertechnique.h"
 #include "rendermaterial.h"
-
+#include "rendereraspect.h"
+#include "mesh.h"
 #include "qgraphicscontext.h"
 #include <meshdata.h>
 #include <technique.h>
 
 #include <QOpenGLContext>
 #include <QOpenGLShaderProgram>
+#include <QReadWriteLock>
+#include <QReadLocker>
+#include <QWriteLocker>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 namespace Render {
 
+/*!
+ * \class RenderMesh
+ *
+ * Monitor a frontend Mesh for source changes. If the source is changed,
+ * the MeshData returned is either a valid MeshData corresponding to the source
+ * or null if the new MeshData hasn't been loaded. If this is the case the meshDirty
+ * flag is set to true.
+ *
+ * \sa MeshData
+ */
+
 RenderMesh::RenderMesh() :
+      m_rendererAspect(0),
       m_peer(0),
-      m_technique(0),
-      m_pass(0),
-      m_material(0)
+      m_meshDirty(true),
+      m_lock(new QReadWriteLock())
 {
 }
 
 void RenderMesh::setPeer(Mesh *peer)
 {
     m_peer = peer;
+    m_source = peer->source();
+    QChangeArbiter *arbiter = m_rendererAspect->aspectManager()->changeArbiter();
+    arbiter->registerObserver(this, m_peer, MeshChange);
 }
 
-void RenderMesh::setData(MeshDataPtr mesh)
+void RenderMesh::setRendererAspect(RendererAspect *rendererAspect)
 {
-    m_meshData = mesh;
-    m_meshDirty = true;
-    // clear bounding box?
+    m_rendererAspect = rendererAspect;
+}
+
+void RenderMesh::sceneChangeEvent(const QSceneChangePtr &e)
+{
+    switch (e->m_type) {
+    case MeshChange: {
+        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+//        QString propertyName = QString::fromLatin1(propertyChange->m_propertyName);
+        QVariant propertyValue = propertyChange->m_value;
+        m_source = propertyValue.toString();
+        m_meshDirty = true;
+        break;
+    }
+
+    default:
+        break;
+    }
+}
+
+bool RenderMesh::meshDirty() const
+{
+    QReadLocker lock(m_lock);
+    return m_meshDirty;
+}
+
+HMeshData RenderMesh::meshData() const
+{
+    QReadLocker lock(m_lock);
+    return m_meshDataHandle;
+}
+
+void RenderMesh::setMeshData(HMeshData handle)
+{
+    QWriteLocker lock(m_lock);
+    m_meshDataHandle = handle;
+    m_meshDirty = false;
 }
 
 //DrawStateSet *RenderMesh::stateSet()

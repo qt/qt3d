@@ -84,6 +84,7 @@ class RenderTechnique;
 class RenderShader;
 class RenderNode;
 class MeshDataManager;
+class MeshManager;
 class RenderCommand;
 class CameraManager;
 class RenderNodesManager;
@@ -118,6 +119,7 @@ public:
 
     RenderQueues* renderQueues() const { return m_renderQueues; }
     MeshDataManager *meshDataManager() const { return m_meshDataManager; }
+    MeshManager *meshManager() const { return m_meshManager; }
     CameraManager *cameraManager() const { return m_cameraManager; }
     RenderNodesManager *renderNodesManager() const { return m_renderNodesManager; }
     MaterialManager *materialManager() const { return m_materialManager; }
@@ -166,6 +168,7 @@ private:
     RenderBin* m_temporaryAllBin;
     RenderTextureProvider* m_textureProvider;
     MeshDataManager *m_meshDataManager;
+    MeshManager *m_meshManager;
     CameraManager *m_cameraManager;
     RenderNodesManager *m_renderNodesManager;
     MaterialManager *m_materialManager;

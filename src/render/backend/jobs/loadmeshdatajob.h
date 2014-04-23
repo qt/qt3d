@@ -62,8 +62,7 @@ class Renderer;
 class LoadMeshDataJob : public Qt3D::QJob
 {
 public:
-    LoadMeshDataJob(const QString &source,
-                    const HMeshData &meshData);
+    LoadMeshDataJob(const QString &source);
 
     void setRenderer(Renderer *renderer) { m_renderer = renderer; }
 protected:
@@ -71,7 +70,6 @@ protected:
 
 private:
     QString m_source;
-    HMeshData m_meshDataHandle;
     Renderer *m_renderer;
 };
 

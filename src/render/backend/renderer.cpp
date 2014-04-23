@@ -64,6 +64,7 @@
 
 #include <cameramanager.h>
 #include <meshdatamanager.h>
+#include <meshmanager.h>
 #include <rendermesh.h>
 #include <renderqueues.h>
 #include <renderbin.h>
@@ -154,6 +155,7 @@ Renderer::Renderer()
     , m_graphicsContext(0)
     , m_surface(0)
     , m_meshDataManager(new MeshDataManager())
+    , m_meshManager(new MeshManager())
     , m_cameraManager(new CameraManager())
     , m_renderNodesManager(new RenderNodesManager())
     , m_materialManager(new MaterialManager())
@@ -170,6 +172,7 @@ Renderer::Renderer()
 
     buildDefaultTechnique();
     buildDefaultMaterial();
+//    QLoggingCategory::setFilterRules("*.debug=false\n");
 
 }
 
@@ -501,7 +504,6 @@ void Renderer::executeCommands(const RenderView *renderView)
     // Set the Viewport
     m_graphicsContext->setViewport(renderView->viewport());
     // Set the Camera
-
     RenderCamera *camera = renderView->camera();
     Q_ASSERT(camera);
     m_graphicsContext->setCamera(camera);
@@ -510,19 +512,22 @@ void Renderer::executeCommands(const RenderView *renderView)
     // Set RenderTarget ...
 
     Q_FOREACH (RenderCommand *command, commands) {
-
         //// Initialize GL
-        if (command->m_meshData.attributeNames().empty())
+        RenderMesh *rMesh = m_meshManager->data(command->m_mesh);
+        MeshData *meshData = Q_NULLPTR;
+        if (m_meshManager == Q_NULLPTR ||
+                (meshData = m_meshDataManager->data(rMesh->meshData())) == Q_NULLPTR ||
+                meshData->attributeNames().empty())
             continue ;
-
-          RenderMaterial *mat = getOrCreateMaterial(m_defaultMaterial);
-          RenderTechnique *technique = mat->technique();
-//        RenderMaterial *mat = m_materialManager->data(command->m_material);
-//        if (mat == Q_NULLPTR)
-//            mat = getOrCreateMaterial(m_defaultMaterial);
-//        RenderTechnique *technique = mat->technique();
-//        if (technique = Q_NULLPTR)
-//            technique = techniqueForMaterial(m_defaultMaterial);
+        RenderMaterial *mat = getOrCreateMaterial(m_defaultMaterial);
+        RenderTechnique *technique = mat->technique();
+//        qCDebug(Backend()) << Q_FUNC_INFO;
+        //        RenderMaterial *mat = m_materialManager->data(command->m_material);
+        //        if (mat == Q_NULLPTR)
+        //            mat = getOrCreateMaterial(m_defaultMaterial);
+        //        RenderTechnique *technique = mat->technique();
+        //        if (technique = Q_NULLPTR)
+        //            technique = techniqueForMaterial(m_defaultMaterial);
 
         // The VAO should be created only once for a MeshData and an ShaderProgram
         // Manager should have a VAO Manager that are indexed by MeshData and Shader
@@ -531,18 +536,18 @@ void Renderer::executeCommands(const RenderView *renderView)
         command->m_vao.create();
         command->m_vao.bind();
 
-        bool drawIndexed = !command->m_meshData.indexAttr().isNull();
+        bool drawIndexed = !meshData->indexAttr().isNull();
         m_graphicsContext->activateShader(technique->shaderForPass(0));
 
-        foreach (QString nm, command->m_meshData.attributeNames()) {
-            AttributePtr attr(command->m_meshData.attributeByName(nm));
+        foreach (QString nm, meshData->attributeNames()) {
+            AttributePtr attr(meshData->attributeByName(nm));
             QString glsl = technique->glslNameForMeshAttribute(0, nm);
             if (glsl.isEmpty())
                 continue; // not used in this pass
             m_graphicsContext->specifyAttribute(glsl, attr);
         }
         if (drawIndexed)
-            m_graphicsContext->specifyIndices(command->m_meshData.indexAttr());
+            m_graphicsContext->specifyIndices(meshData->indexAttr());
         command->m_vao.release();
 
         //// Draw Calls
@@ -554,15 +559,15 @@ void Renderer::executeCommands(const RenderView *renderView)
         mat->setUniformsForPass(0, m_graphicsContext);
 
         command->m_vao.bind();
-        GLint primType = command->m_meshData.primitiveType();
-        GLint primCount = command->m_meshData.primitiveCount();
-        GLint indexType = drawIndexed ? command->m_meshData.indexAttr()->type() : 0;
+        GLint primType = meshData->primitiveType();
+        GLint primCount = meshData->primitiveCount();
+        GLint indexType = drawIndexed ? meshData->indexAttr()->type() : 0;
 
         if (drawIndexed)
             m_graphicsContext->drawElements(primType,
                                             primCount,
                                             indexType,
-                                            reinterpret_cast<void*>(command->m_meshData.indexAttr()->byteOffset()));
+                                            reinterpret_cast<void*>(meshData->indexAttr()->byteOffset()));
         else
             m_graphicsContext->drawArrays(primType, 0, primCount);
 
@@ -571,7 +576,6 @@ void Renderer::executeCommands(const RenderView *renderView)
             qCWarning(Backend) << "GL error after drawing mesh:" << QString::number(err, 16);
 
         command->m_vao.release();
-
         command->m_vao.destroy();
     }
     m_graphicsContext->endDrawing();
@@ -674,14 +678,14 @@ void Renderer::buildMeshes(Mesh* mesh, Material* mat, const QMatrix4x4& mm)
         RenderBin* bin = t->binForPass(p);
 
         RenderMesh* rmesh = new RenderMesh();
-//        rmesh->setPeer(mesh);
-//        rmesh->setData(mesh->data());
-//        rmesh->setTechniqueAndPass(t, p);
-//        rmesh->setModelMatrix(mm);
-//        rmesh->setMaterial(rmat);
+        //        rmesh->setPeer(mesh);
+        //        rmesh->setData(mesh->data());
+        //        rmesh->setTechniqueAndPass(t, p);
+        //        rmesh->setModelMatrix(mm);
+        //        rmesh->setMaterial(rmat);
 
-//        m_initList.push_back(rmesh);
-//        bin->addDrawable(rmesh);
+        //        m_initList.push_back(rmesh);
+        //        bin->addDrawable(rmesh);
 
     } // of technique pass iteration
 }
@@ -696,19 +700,19 @@ void Renderer::buildShape(Shape* shape, Material* mat, const QMatrix4x4& mm)
     RenderMaterial* rmat = getOrCreateMaterial(mat);
     RenderTechnique* t = rmat->technique();
 
-//    for (unsigned int p=0; p<t->passCount(); ++p) {
-//        RenderBin* bin = t->binForPass(p);
+    //    for (unsigned int p=0; p<t->passCount(); ++p) {
+    //        RenderBin* bin = t->binForPass(p);
 
-//        RenderMesh* rmesh = new RenderMesh();
-//        rmesh->setData(shapeMeshData);
-//        rmesh->setTechniqueAndPass(t, p);
-//        rmesh->setModelMatrix(mm);
-//        rmesh->setMaterial(rmat);
+    //        RenderMesh* rmesh = new RenderMesh();
+    //        rmesh->setData(shapeMeshData);
+    //        rmesh->setTechniqueAndPass(t, p);
+    //        rmesh->setModelMatrix(mm);
+    //        rmesh->setMaterial(rmat);
 
-//        m_initList.push_back(rmesh);
-//        bin->addDrawable(rmesh);
+    //        m_initList.push_back(rmesh);
+    //        bin->addDrawable(rmesh);
 
-//    } // of technique pass iteration
+    //    } // of technique pass iteration
 }
 
 } // namespace Render
