@@ -82,6 +82,7 @@
 #include <renderview.h>
 #include <rendercommand.h>
 #include <materialmanager.h>
+#include <matrixmanager.h>
 
 #include "renderlogging.h"
 #include <QStack>
@@ -159,6 +160,8 @@ Renderer::Renderer()
     , m_cameraManager(new CameraManager())
     , m_renderNodesManager(new RenderNodesManager())
     , m_materialManager(new MaterialManager())
+    , m_worldMatrixManager(new MatrixManager())
+    , m_localMatrixManager(new MatrixManager())
     , m_renderQueues(new RenderQueues())
     , m_frameCount(0)
 {

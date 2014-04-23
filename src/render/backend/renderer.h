@@ -91,6 +91,7 @@ class RenderNodesManager;
 class RenderQueues;
 class RenderView;
 class MaterialManager;
+class MatrixManager;
 
 class Renderer
 {
@@ -123,6 +124,8 @@ public:
     CameraManager *cameraManager() const { return m_cameraManager; }
     RenderNodesManager *renderNodesManager() const { return m_renderNodesManager; }
     MaterialManager *materialManager() const { return m_materialManager; }
+    MatrixManager *worldMatrixManager() const { return m_worldMatrixManager; }
+    MatrixManager *localMatrixManager() const { return m_localMatrixManager; }
 
     // temporary!
 
@@ -172,6 +175,8 @@ private:
     CameraManager *m_cameraManager;
     RenderNodesManager *m_renderNodesManager;
     MaterialManager *m_materialManager;
+    MatrixManager *m_worldMatrixManager;
+    MatrixManager *m_localMatrixManager;
 
     QTimer* m_frameTimer;
 

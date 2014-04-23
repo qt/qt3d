@@ -57,6 +57,8 @@ class Sphere;
 class Node;
 class Transform;
 
+typedef QHandle<QMatrix4x4, 16> HMatrix;
+
 namespace Render {
 class RenderNode;
 }
@@ -88,8 +90,8 @@ public:
     QVector<HRenderNode> childrenHandles() const { return m_childrenHandles; }
     QVector<RenderNode *> children() const;
 
-    QMatrix4x4 *localTransform() { return m_localTransform; }
-    QMatrix4x4 *worldTransform() { return m_worldTransform; }
+    QMatrix4x4 *localTransform();
+    QMatrix4x4 *worldTransform();
     Sphere *localBoundingVolume() { return m_localBoundingVolume; }
     Sphere *worldBoundingVolume() { return m_worldBoundingVolume; }
     Node *frontEndPeer() const { return m_frontEndPeer; }
@@ -106,8 +108,10 @@ private:
     HRenderNode m_parentHandle;
     QVector<HRenderNode > m_childrenHandles;
 
-    QMatrix4x4 *m_localTransform;
-    QMatrix4x4 *m_worldTransform;
+//    QMatrix4x4 *m_localTransform;
+//    QMatrix4x4 *m_worldTransform;
+    HMatrix m_localTransform;
+    HMatrix m_worldTransform;
     Sphere *m_localBoundingVolume;
     Sphere *m_worldBoundingVolume;
 

@@ -43,6 +43,7 @@
 #include "rendereraspect.h"
 #include "renderer.h"
 #include "rendernodesmanager.h"
+#include "matrixmanager.h"
 
 #include <transform.h>
 
@@ -65,8 +66,6 @@ namespace Render {
 RenderNode::RenderNode()
     : m_renderer(Q_NULLPTR)
     , m_transform(Q_NULLPTR)
-    , m_localTransform(new QMatrix4x4)
-    , m_worldTransform(new QMatrix4x4)
     , m_localBoundingVolume(new Qt3D::Sphere)
     , m_worldBoundingVolume(new Qt3D::Sphere)
     , m_frontEndPeer(0)
@@ -96,9 +95,20 @@ void RenderNode::setFrontEndPeer(Node *peer)
 {
     m_frontEndPeer = peer;
 
+    if (!m_localTransform.isNull())
+        m_renderer->localMatrixManager()->release(m_localTransform);
+    if (!m_worldTransform.isNull())
+        m_renderer->worldMatrixManager()->release(m_worldTransform);
+
     if (m_frontEndPeer->asEntity()) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
         arbiter->registerObserver(this, m_frontEndPeer->asEntity(), AllChanges);
+        m_localTransform = m_renderer->localMatrixManager()->getOrAcquireHandle(peer->asEntity()->uuid());
+        m_worldTransform = m_renderer->worldMatrixManager()->getOrAcquireHandle(peer->asEntity()->uuid());
+    }
+    else {
+        m_localTransform = m_renderer->localMatrixManager()->acquire();
+        m_worldTransform = m_renderer->worldMatrixManager()->acquire();
     }
 }
 
@@ -116,7 +126,7 @@ void RenderNode::sceneChangeEvent(const QSceneChangePtr &e)
     switch (e->m_type) {
     case LocalTransform: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        *m_localTransform = propertyChange->m_value.value<QMatrix4x4>();
+        *localTransform() = propertyChange->m_value.value<QMatrix4x4>();
         break;
     }
     case AllChanges: {
@@ -166,6 +176,10 @@ QVector<RenderNode *> RenderNode::children() const
     }
     return childrenVector;
 }
+
+QMatrix4x4 *RenderNode::localTransform() { return m_renderer->localMatrixManager()->data(m_localTransform); }
+
+QMatrix4x4 *RenderNode::worldTransform() { return m_renderer->worldMatrixManager()->data(m_worldTransform); }
 
 } // namespace Render
 } // namespace Qt3D

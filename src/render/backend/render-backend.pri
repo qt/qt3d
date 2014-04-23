@@ -36,7 +36,8 @@ HEADERS += \
     $$PWD/cameramanager.h \
     $$PWD/renderqueues.h \
     $$PWD/materialmanager.h \
-    $$PWD/meshmanager.h
+    $$PWD/meshmanager.h \
+    $$PWD/matrixmanager.h
 
 SOURCES += \
     $$PWD/rendereraspect.cpp \
@@ -69,4 +70,5 @@ SOURCES += \
     $$PWD/cameramanager.cpp \
     $$PWD/renderqueues.cpp \
     $$PWD/materialmanager.cpp \
-    $$PWD/meshmanager.cpp
+    $$PWD/meshmanager.cpp \
+    $$PWD/matrixmanager.cpp
