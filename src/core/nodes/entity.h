@@ -44,6 +44,7 @@
 
 #include <Qt3DCore/node.h>
 #include <Qt3DCore/qt3dcore_global.h>
+#include <Qt3DCore/qchangearbiter.h>
 
 #include <QMatrix4x4>
 #include <QUuid>
@@ -57,7 +58,7 @@ class Component;
 
 typedef QList<Component*> ComponentList;
 
-class QT3DCORESHARED_EXPORT Entity : public Node
+class QT3DCORESHARED_EXPORT Entity : public Node, public QObservable
 {
     Q_OBJECT
 
@@ -145,6 +146,9 @@ public:
     void update();
 Q_SIGNALS:
     void enabledChanged();
+
+private Q_SLOTS:
+    void componentPropertyUpdated();
 
 private:
     ComponentList m_components;

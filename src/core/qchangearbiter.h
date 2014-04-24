@@ -66,7 +66,7 @@ enum ChangeFlag {
     NodeDeleted             = 0x00000004,
     NodeStatus              = 0x00000008,
     LocalTransform          = 0x00000010,
-    MeshChange              = 0x00000020,
+    MeshChange              = 0x00000020, // Find a way to make that generic for aspects : like model roles ?
     MaterialParameter       = 0x00000040,
     CameraProjectionMatrix  = 0x00000080,
     AllChanges              = 0xFFFFFFFF

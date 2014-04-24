@@ -226,12 +226,12 @@ void QAspectManager::exec()
             //            t = t1;
             //            qDebug() << "dt =" << dt;
 
-            m_scheduler->update(t);
 
 
             // For each Aspect
             // Ask them to launch set of jobs for the current frame
             // Updates matrices, bounding volumes, render bins ...
+            m_scheduler->update(t);
 
 
             // Distribute accumulated changes

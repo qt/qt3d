@@ -95,6 +95,11 @@ void RenderNode::setHandle(HRenderNode handle)
 void RenderNode::setFrontEndPeer(Node *peer)
 {
     m_frontEndPeer = peer;
+
+    if (m_frontEndPeer->asEntity()) {
+        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
+        arbiter->registerObserver(this, m_frontEndPeer->asEntity(), AllChanges);
+    }
 }
 
 void RenderNode::setTransform(Transform *transform)
@@ -112,6 +117,11 @@ void RenderNode::sceneChangeEvent(const QSceneChangePtr &e)
     case LocalTransform: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         *m_localTransform = propertyChange->m_value.value<QMatrix4x4>();
+        break;
+    }
+    case AllChanges: {
+        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+        qCDebug(RenderNodes) << Q_FUNC_INFO << "ALLCHANGES RECEIVED" << propertyChange->m_value;
         break;
     }
 

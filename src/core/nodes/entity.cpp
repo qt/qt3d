@@ -54,7 +54,8 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 Entity::Entity(Node *parent)
-    : Node(parent)
+    : Node(parent),
+      QObservable()
     , m_enabled(true)
 {
     m_uuid = QUuid::createUuid();
@@ -70,10 +71,19 @@ QList<Component *> Entity::components() const
         const QMetaProperty metaProperty = meta->property(i);
         const QVariant value = property(metaProperty.name());
         Component *component = value.value<Component *>();
-        if (component)
+        if (component) {
+            // Connect notify signal of the property to the updatePropertySlots
+            // This allows aspects to monitor for property changes
+            if (metaProperty.hasNotifySignal()) {
+                QMetaMethod componentPropertyUpdateSlot = metaObject()->method(metaObject()->indexOfSlot("componentPropertyUpdated()"));
+                qDebug() << metaProperty.name() << metaProperty.notifySignal().methodSignature();
+                QObject::connect(this, metaProperty.notifySignal(),
+                                 this, componentPropertyUpdateSlot,
+                                 Qt::UniqueConnection);
+            }
             componentList.append(component);
+        }
     }
-
     return componentList + m_components;
 }
 
@@ -106,17 +116,25 @@ void Entity::setEnabled(bool on)
 
 void Entity::update()
 {
-//    if (m_transformsDirty) {
-//        m_matrix = applyTransforms();
-//        m_transformsDirty = false;
-//    }
+    //    if (m_transformsDirty) {
+    //        m_matrix = applyTransforms();
+    //        m_transformsDirty = false;
+    //    }
 
-//    QMatrix4x4 prM;
-//    if (parentEntity())
-//        prM = parentEntity()->sceneMatrix();
+    //    QMatrix4x4 prM;
+    //    if (parentEntity())
+    //        prM = parentEntity()->sceneMatrix();
 
-//    m_sceneMatrix = prM * matrix();
+    //    m_sceneMatrix = prM * matrix();
     // invalidate bounding volume information as required
+}
+
+void Entity::componentPropertyUpdated()
+{
+    qDebug() << Q_FUNC_INFO << "Component property updated ";
+
+    QScenePropertyChangePtr propertyChange(new QScenePropertyChange(AllChanges, this));
+    notifyObservers(propertyChange);
 }
 
 Entity *Entity::asEntity()

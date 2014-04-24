@@ -54,6 +54,21 @@ Node {
     id: root
     objectName: "root"
 
+    QQ2.Timer
+    {
+        property bool test : false;
+        interval : 2000
+        repeat : true
+        running: true
+        onTriggered:
+        {
+            console.log("Triggered <<<<<<<<<<<<<<<<<<<<< " + test);
+            camera2.transform = test ? transform_0 : transform_1
+            test = !test
+        }
+    }
+
+
     // Scene graph
     Entity {
         id: sceneRoot
@@ -87,6 +102,19 @@ Node {
             }
         }
 
+        Transform {
+            id : transform_1
+            LookAt {
+                position: Qt.vector3d( 0.0, -1.0, -5.0 )
+                upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
+                viewCenter: Qt.vector3d( 0.0, 2.0, 10.0 )
+            }
+            Rotate {
+                axis : Qt.vector3d(0, 0, 1)
+                angle : 40
+            }
+        }
+
         Entity {
             id: camera1
             objectName: "mainCamera"
@@ -111,7 +139,7 @@ Node {
 
         Camera {
             id : camera2
-
+            objectName : "camera2"
             lens : CameraLens {
                 projectionType: CameraLens.PerspectiveProjection
                 fieldOfView: 45
@@ -120,17 +148,7 @@ Node {
                 farPlane : 1000.0
             }
 
-            transform : Transform {
-                LookAt {
-                    position: Qt.vector3d( 0.0, -1.0, -5.0 )
-                    upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
-                    viewCenter: Qt.vector3d( 0.0, 2.0, 10.0 )
-                }
-                Rotate {
-                    axis : Qt.vector3d(0, 0, 1)
-                    angle : 40
-                }
-            }
+            transform : transform_1
         }
 
         //        AdsEffect {
