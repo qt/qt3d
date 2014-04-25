@@ -70,6 +70,8 @@ public:
     void setPeer(Material* mat);
     void setRendererAspect(RendererAspect *rendererAspect);
 
+    Material *peer() const { return m_peer; }
+
     void setEffectName(QString nm);
 
     void setParameter(QString paramName, QVariant value);

@@ -89,6 +89,7 @@ private:
     // technique state
     QVector<RenderShader*> m_passShader;
     QVector<RenderBin*> m_passBin;
+//    QHash<QString, RenderShader*> m_passShader;
 };
 
 } // namespace Render

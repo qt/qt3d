@@ -40,12 +40,14 @@
 ****************************************************************************/
 
 #include "renderview.h"
-
+#include "material.h"
+#include "effect.h"
 #include "renderer.h"
 #include "rendercamera.h"
 #include "rendercommand.h"
 #include "rendernode.h"
 #include "meshdatamanager.h"
+#include "vaomanager.h"
 #include "meshmanager.h"
 #include "meshdata.h"
 #include "cameramanager.h"
@@ -76,9 +78,6 @@ void RenderView::setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf)
     // which is referenced by the Material which is referenced by the RenderMesh. So we can
     // only store the filter info in the RenderView structure and use it to do the resolving
     // when we build the RenderCommand list.
-    //
-    // The Camera and Viewport can be resolved at this stage as they are independent of the object
-    // material.
     FrameGraphNode *node = fgLeaf;
     while (node != Q_NULLPTR) {
         FrameGraphNode::FrameGraphNodeType type = node->nodeType();
@@ -114,8 +113,8 @@ void RenderView::setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf)
 
         case FrameGraphNode::Viewport:
             // If the Viewport has already been set in a lower node
-            // Make it so that the previously set viewport is actually
-            // a subregion relative to that of the viewport
+            // Make it so that the new viewport is actually
+            // a subregion relative to that of the parent viewport
             computeViewport(static_cast<ViewportNode *>(node));
             break;
 
@@ -128,11 +127,14 @@ void RenderView::setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf)
     }
 }
 
-
-
 void RenderView::sort()
 {
     // TODO: Implement me!
+
+    // The goal here is to sort RenderCommand by :
+    // 1) Shader
+    // 2) DrawStateSet
+    // 2) Texture
 }
 
 void RenderView::setRenderer(Renderer *renderer)
@@ -144,6 +146,7 @@ void RenderView::setRenderer(Renderer *renderer)
 // ideally m_commands has been sized properly after the
 // scene has been culled to the number of nodes in the culled
 // scene using reserve().
+// Tries to order renderCommand by shader so as to minimize shader changes
 void RenderView::buildRenderCommands(RenderNode *node)
 {
     // Build renderCommand for current node
@@ -151,31 +154,44 @@ void RenderView::buildRenderCommands(RenderNode *node)
     Entity *frontEndEntity = Q_NULLPTR;
     if (node->frontEndPeer() != Q_NULLPTR
             && (frontEndEntity = node->frontEndPeer()->asEntity()) != Q_NULLPTR) {
-        if (m_renderer->meshManager()->contains(frontEndEntity->uuid())) {
+        HMesh meshHandle;
+        if (m_renderer->meshManager()->contains(frontEndEntity->uuid()) &&
+                (meshHandle = m_renderer->meshManager()->lookupHandle(frontEndEntity->uuid())) != HMesh()) {
             RenderCommand *command = new RenderCommand();
-            // Set Handle to RenderMesh
-            command->m_mesh = m_renderer->meshManager()->lookupHandle(frontEndEntity->uuid());
-            if (!command->m_mesh.isNull()) {
-                RenderMesh *mesh = m_renderer->meshManager()->data(command->m_mesh);
-                if (mesh != Q_NULLPTR && mesh->meshDirty()) {
-                    mesh->setMeshData(m_renderer->meshDataManager()->lookupHandle(mesh->meshSource()));
-                    qCDebug(Backend) << Q_FUNC_INFO << "Updating RenderMesh -> MeshData handle";
-                }
+            command->m_mesh = meshHandle;
+            RenderMesh *mesh = m_renderer->meshManager()->data(command->m_mesh);
+            Q_ASSERT(mesh);
+            if (mesh->meshDirty()) {
+                mesh->setMeshData(m_renderer->meshDataManager()->lookupHandle(mesh->meshSource()));
+                qCDebug(Backend) << Q_FUNC_INFO << "Updating RenderMesh -> MeshData handle";
             }
+            command->m_meshData = mesh->meshData();
             command->m_instancesCount = 0;
             command->m_worldMatrix = *(node->worldTransform());
             // Sets handle to entity material. If there is no material associated to the entity,
             // the handle will be invalid and a default material will be used during rendering
             command->m_material = m_renderer->materialManager()->lookupHandle(frontEndEntity->uuid());
             // Set shader according to material and effect, technique and renderpassfilter
+            RenderMaterial *mat = m_renderer->materialManager()->data(command->m_material);
+            if (m_techniqueFilter != Q_NULLPTR && mat != Q_NULLPTR && mat->peer() != Q_NULLPTR) {
+                Effect *eff = mat->peer()->effect();
+                if (eff != Q_NULLPTR) {
+                    if (eff->techniques().empty())
+                        qCWarning(Backend) << "No technique defined in Effect";
+                    // Find HShader for technique and renderpass
+                    Q_FOREACH (Technique *tech, eff->techniques()) {
+                        qCDebug(Backend) << "Technique : " << tech->renderPasses();
+                    }
+                }
+            }
 
+            // Set the vao handle
+            command->m_vao = m_renderer->vaoManager()->lookupHandle(QPair<HMeshData, HShader>(command->m_meshData, command->m_shader));
 
             // Use a default shader and uniform bindings for the moment
             // Shader and Uniforms obtained from Material/Effect/Technique/RenderPass/ShaderProgram
             // ShaderProgram = shaderForMeshMaterialAndPassForTechnique
             // ShaderProgramManager[MaterialManager[frontentEntity->uuid()]->Effect->Techniques[TechniqueFilter->name]->RenderPasses[RenderPassFilter->name]];
-            //            command->m_shaderProgram = ;
-            //            command->m_uniforms = ;
 
             // Append renderCommand
             m_commands.append(command);

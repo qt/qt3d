@@ -39,16 +39,11 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERCOMMAND_H
-#define QT3D_RENDER_RENDERCOMMAND_H
+#ifndef QT3D_RENDER_VAOMANAGER_H
+#define QT3D_RENDER_VAOMANAGER_H
 
-#include <qglobal.h>
-#include <Qt3DRenderer/quniformvalue.h>
-#include <Qt3DRenderer/meshdata.h>
+#include <Qt3DCore/qlistresourcesmanager.h>
 #include <Qt3DCore/qhandle.h>
-#include <QOpenGLShaderProgram>
-#include <QOpenGLTexture>
-#include <QMatrix4x4>
 
 QT_BEGIN_NAMESPACE
 
@@ -56,39 +51,20 @@ class QOpenGLVertexArrayObject;
 
 namespace Qt3D {
 
+class MeshData;
+
 namespace Render {
 
-class RenderTarget;
-class RenderMaterial;
-class RenderMesh;
 class RenderShader;
 
 typedef QHandle<QOpenGLVertexArrayObject*, 16> HVao;
-typedef QHandle<RenderMaterial, 16> HMaterial;
-typedef QHandle<RenderMesh, 16> HMesh;
-typedef QHandle<RenderShader, 16> HShader;
 typedef QHandle<MeshData, 16> HMeshData;
+typedef QHandle<RenderShader, 16> HShader;
 
-class RenderCommand
+class VAOManager : public QListResourcesManager<QOpenGLVertexArrayObject*, QPair<HMeshData, HShader>, 16>
 {
 public:
-    RenderCommand();
-
-//    void setMaterial(HMaterial material);
-//    void setModelMatrix(HMatrix matrix);
-//    void setIntanceCount(uint instanceCount);
-//    void setTechnique(); // Do we really need the technique ?, isn't a shader enough
-
-//private:
-    HVao m_vao; // VAO used during the submission step to store all states and VBOs
-    QMatrix4x4 m_worldMatrix; // modelMatrix for the mesh -> could maybe be stored directly with other uniform
-    HMesh m_mesh;
-    HMeshData m_meshData;
-    HShader m_shader; // Shader for given pass and mesh
-    QUniformPack m_uniforms; // Might need to be reworked so as to be able to destroy the
-                            // RenderTexture while submission is happening.
-    GLint m_instancesCount; // Number of instances of the mesh, if 0 regular draw otherwise glDrawArraysInstanced or glDrawElementsInstanced
-    HMaterial m_material;
+    VAOManager();
 };
 
 } // Render
@@ -97,4 +73,4 @@ public:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERCOMMAND_H
+#endif // QT3D_RENDER_VAOMANAGER_H

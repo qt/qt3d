@@ -67,6 +67,8 @@ QList<Component *> Entity::components() const
     // inherit from Component
     QList<Component *> componentList;
     const QMetaObject *meta = metaObject();
+    for (int i = meta->methodOffset(); i < meta->methodCount(); ++i)
+        qDebug() << QString::fromLatin1(meta->method(i).methodSignature());
     for (int i = 0; i < meta->propertyCount(); ++i) {
         const QMetaProperty metaProperty = meta->property(i);
         const QVariant value = property(metaProperty.name());

@@ -37,7 +37,9 @@ HEADERS += \
     $$PWD/renderqueues.h \
     $$PWD/materialmanager.h \
     $$PWD/meshmanager.h \
-    $$PWD/matrixmanager.h
+    $$PWD/matrixmanager.h \
+    $$PWD/vaomanager.h \
+    $$PWD/shadermanager.h
 
 SOURCES += \
     $$PWD/rendereraspect.cpp \
@@ -71,4 +73,6 @@ SOURCES += \
     $$PWD/renderqueues.cpp \
     $$PWD/materialmanager.cpp \
     $$PWD/meshmanager.cpp \
-    $$PWD/matrixmanager.cpp
+    $$PWD/matrixmanager.cpp \
+    $$PWD/vaomanager.cpp \
+    $$PWD/shadermanager.cpp

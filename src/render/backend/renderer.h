@@ -92,6 +92,8 @@ class RenderQueues;
 class RenderView;
 class MaterialManager;
 class MatrixManager;
+class VAOManager;
+class ShaderManager;
 
 class Renderer
 {
@@ -116,7 +118,7 @@ public:
 
     QVector<QJobPtr> createRenderBinJobs();
     QJobPtr createRenderViewJob(FrameGraphNode *node, int submitOrderIndex);
-    void executeCommands(RenderView const *renderView);
+    void executeCommands(const QVector<RenderCommand *> commands);
 
     RenderQueues* renderQueues() const { return m_renderQueues; }
     MeshDataManager *meshDataManager() const { return m_meshDataManager; }
@@ -126,7 +128,8 @@ public:
     MaterialManager *materialManager() const { return m_materialManager; }
     MatrixManager *worldMatrixManager() const { return m_worldMatrixManager; }
     MatrixManager *localMatrixManager() const { return m_localMatrixManager; }
-
+    VAOManager *vaoManager() const { return m_vaoManager; }
+    ShaderManager *shaderManager() const { return m_shaderManager; }
     // temporary!
 
     RenderTechnique* techniqueForMaterial(Material* mat);
@@ -177,6 +180,8 @@ private:
     MaterialManager *m_materialManager;
     MatrixManager *m_worldMatrixManager;
     MatrixManager *m_localMatrixManager;
+    VAOManager *m_vaoManager;
+    ShaderManager *m_shaderManager;
 
     QTimer* m_frameTimer;
 

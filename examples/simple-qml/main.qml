@@ -68,7 +68,6 @@ Node {
         }
     }
 
-
     // Scene graph
     Entity {
         id: sceneRoot

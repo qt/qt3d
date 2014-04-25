@@ -108,8 +108,6 @@ private:
     HRenderNode m_parentHandle;
     QVector<HRenderNode > m_childrenHandles;
 
-//    QMatrix4x4 *m_localTransform;
-//    QMatrix4x4 *m_worldTransform;
     HMatrix m_localTransform;
     HMatrix m_worldTransform;
     Sphere *m_localBoundingVolume;

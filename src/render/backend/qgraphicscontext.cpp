@@ -147,27 +147,9 @@ void QGraphicsContext::beginDrawing()
         initialize();
     }
 
-    QVector4D cc = m_camera->clearColor();
+    QVector4D cc(0.5, 0.5, 1.0, 1.0);
     glClearColor(cc[0], cc[1], cc[2], cc[3]);
-    glClear(m_camera->clearMask());
-
-    // default to the entire surface
-    if (m_viewport.isEmpty())
-        m_viewport = QRectF(0.0, 0.0, 1.0, 1.0);
-    // The Viewport is defined between 0 and 1 which allows us to automatically
-    // scale to the size of the provided window surface
-
-    // Qt3D 0------------------> 1  OpenGL  1^
-    //      |                                |
-    //      |                                |
-    //      |                                |
-    //      V                                |
-    //      1                                0---------------------> 1
-
-    glViewport(m_viewport.x() * m_surface->size().width(),
-               (1.0 - m_viewport.y() - m_viewport.height()) * m_surface->size().height(),
-               m_viewport.width()* m_surface->size().width(),
-               m_viewport.height() * m_surface->size().height());
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     if (m_activeShader)
         m_activeShader = NULL;
@@ -194,6 +176,18 @@ RenderCamera *QGraphicsContext::camera() const
 void QGraphicsContext::setViewport(const QRectF &viewport)
 {
     m_viewport = viewport;
+    // Qt3D 0------------------> 1  OpenGL  1^
+    //      |                                |
+    //      |                                |
+    //      |                                |
+    //      V                                |
+    //      1                                0---------------------> 1
+    // The Viewport is defined between 0 and 1 which allows us to automatically
+    // scale to the size of the provided window surface
+    glViewport(m_viewport.x() * m_surface->size().width(),
+               (1.0 - m_viewport.y() - m_viewport.height()) * m_surface->size().height(),
+               m_viewport.width()* m_surface->size().width(),
+               m_viewport.height() * m_surface->size().height());
 }
 
 

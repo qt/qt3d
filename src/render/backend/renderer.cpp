@@ -83,7 +83,8 @@
 #include <rendercommand.h>
 #include <materialmanager.h>
 #include <matrixmanager.h>
-
+#include <vaomanager.h>
+#include <shadermanager.h>
 #include "renderlogging.h"
 #include <QStack>
 #include <QSurface>
@@ -95,58 +96,6 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
-namespace {
-
-class TemporaryBackendBuilder : public NodeVisitor
-{
-public:
-    TemporaryBackendBuilder(Render::Renderer* r) :
-        m_renderer(r)
-    {
-
-    }
-
-protected:
-    virtual void visitEntity(Entity* ent)
-    {
-        ent->update();
-
-        bool haveMaterial = false;
-        QList<Material*> mats = ent->componentsOfType<Material>();
-        if (!mats.empty()) {
-            haveMaterial = true;
-            m_materialStack.push(mats.front());
-        }
-
-        // TMP REPLACE WITH TRANSFORM SCENE MATRIX
-        QMatrix4x4 sceneMatrix;
-
-        foreach (Mesh* mesh, ent->componentsOfType<Mesh>()) {
-            Material* mat = m_materialStack.empty() ? NULL : m_materialStack.top();
-            m_renderer->buildMeshes(mesh, mat, sceneMatrix);
-        }
-
-        foreach (Shape* shape, ent->componentsOfType<Shape>()) {
-            Material* mat = m_materialStack.empty() ? NULL : m_materialStack.top();
-            m_renderer->buildShape(shape, mat, sceneMatrix);
-        }
-
-        //        foreach (Camera* cam, ent->componentsOfType<Camera>()) {
-        //            m_renderer->foundCamera(cam, sceneMatrix);
-        //        }
-
-        NodeVisitor::visitEntity(ent);
-
-        if (haveMaterial)
-            m_materialStack.pop();
-    }
-
-private:
-    QStack<Material*> m_materialStack;
-    Render::Renderer* m_renderer;
-};
-
-} // anonymous namespace
 
 namespace Render {
 
@@ -162,21 +111,19 @@ Renderer::Renderer()
     , m_materialManager(new MaterialManager())
     , m_worldMatrixManager(new MatrixManager())
     , m_localMatrixManager(new MatrixManager())
+    , m_vaoManager(new VAOManager())
+    , m_shaderManager(new ShaderManager())
     , m_renderQueues(new RenderQueues())
     , m_frameCount(0)
 {
     m_temporaryAllBin = NULL;
-
-    //        m_frameTimer = new QTimer(this);
-    //        connect(m_frameTimer, SIGNAL(timeout()), this, SLOT(onFrame()));
-    //        m_frameTimer->setInterval(1000);
-
     m_textureProvider = new RenderTextureProvider;
 
     buildDefaultTechnique();
     buildDefaultMaterial();
-//    QLoggingCategory::setFilterRules("*.debug=false\n");
 
+    QLoggingCategory::setFilterRules("*.debug=false\n"
+                                     "Qt3D.Render.Rendering.debug=true\n");
 }
 
 void Renderer::buildDefaultTechnique()
@@ -294,42 +241,27 @@ void Renderer::setSceneGraphRoot(Node *sgRoot)
 {
     Q_ASSERT(sgRoot);
 
-    // TODO: Unify this to one root node and scene builder
-    Scene *scene = Scene::findInTree(sgRoot);
-    if (scene)
-    {
-        // Scene needs to be built with scene parsers
-        // For each scene parser, check whether scene source format
-        // is supported, filter if there is a preference toward which
-        // parser should parse the file if two parsers support the same
-        // format
+//    Scene *scene = Scene::findInTree(sgRoot);
+    // Scene needs to be built with scene parsers
+    // For each scene parser, check whether scene source format
+    // is supported, filter if there is a preference toward which
+    // parser should parse the file if two parsers support the same
+    // format
 
-        qCDebug(Backend) << "building temporary backend";
-        m_sceneGraphRoot = scene;
-        TemporaryBackendBuilder tbb(this);
-        tbb.traverse(m_sceneGraphRoot);
-        qCDebug(Backend) << "done building backend";
+    m_sceneGraphRoot = sgRoot;
+    RenderSceneBuilder builder(this);
+    builder.traverse(m_sceneGraphRoot);
+    m_renderSceneRoot = builder.rootNode();
+    if (!m_renderSceneRoot)
+        qCWarning(Backend) << "Failed to build render scene";
+    qCDebug(Backend) << Q_FUNC_INFO << "DUMPING SCENE";
+    m_renderSceneRoot->dump();
 
-        //        QMetaObject::invokeMethod(m_frameTimer, "start");
-    } else {
-        // Test new scene builder
-        m_sceneGraphRoot = sgRoot;
-        RenderSceneBuilder builder(this);
-        builder.traverse(m_sceneGraphRoot);
-        RenderNode *root = builder.rootNode();
-        if (!root)
-            qCWarning(Backend) << "Failed to build render scene";
-        m_renderSceneRoot = root;
-
-        qCDebug(Backend) << Q_FUNC_INFO << "DUMPING SCENE";
-        root->dump();
-
-        // Queue up jobs to do initial full updates of
-        //  - Mesh loading + bounding volume calculation
-        //  - Local bounding volumes
-        //  - World transforms
-        //  - World bounding volumes
-    }
+    // Queue up jobs to do initial full updates of
+    //  - Mesh loading + bounding volume calculation
+    //  - Local bounding volumes
+    //  - World transforms
+    //  - World bounding volumes
 }
 
 Node *Renderer::sceneGraphRoot() const
@@ -380,34 +312,6 @@ void Renderer::render()
     // One framegraph description
 
     doRender();
-    // begin hack renderer
-    //    qDebug() << Q_FUNC_INFO << QThread::currentThread();
-
-
-    //    if (!m_renderCamera)
-    //        return;
-
-    // If fist time scenegraph is set
-    //    m_waitForRenderViewsJobsCondition.wakeAll();
-
-
-    //    m_renderCamera->sync();
-
-    //    m_graphicsContext->beginDrawing();
-
-    //    foreach (Drawable* dr, m_initList)
-    //        dr->initializeGL(m_graphicsContext);
-    //    m_initList.clear();
-
-    //    int err = glGetError();
-    //    if (err)
-    //        qWarning() << "GL error before submitting bins:" << err;
-
-    //    m_temporaryAllBin->sendDrawingCommands(m_graphicsContext);
-
-    //    m_graphicsContext->endDrawing();
-
-    // end hack renderer
 }
 
 void Renderer::doRender()
@@ -430,7 +334,6 @@ void Renderer::enqueueRenderView(Render::RenderView *renderView, int submitOrder
 // Happens in RenderThread context when all RenderViewJobs are done
 void Renderer::submitRenderViews()
 {
-    qCDebug(Backend) << Q_FUNC_INFO << 1 << QThread::currentThread();
     QMutexLocker locker(&m_mutex);
     m_submitRenderViewsCondition.wait(locker.mutex());
     // Allow RenderViewJobs to be processed for the next frame
@@ -440,7 +343,6 @@ void Renderer::submitRenderViews()
     // Any important state change that could be in a RenderView
     locker.unlock();
 
-    qCDebug(Backend) << Q_FUNC_INFO << 2 << QThread::currentThread();
     if (m_graphicsContext == Q_NULLPTR || m_surface == Q_NULLPTR) {
         m_graphicsContext = new QGraphicsContext;
         QOpenGLContext* ctx = new QOpenGLContext;
@@ -452,17 +354,43 @@ void Renderer::submitRenderViews()
         m_graphicsContext->setOpenGLContext(ctx);
     }
 
+    QElapsedTimer timer;
+    quint64 queueElapsed = 0;
+    timer.start();
     while (m_renderQueues->queuedFrames() > 0)
     {
         QVector<Render::RenderView *> renderViews = m_renderQueues->popFrameQueue();
-        QElapsedTimer timer;
-        timer.start();
-        for (int i = 0; i < renderViews.size(); i++)
-            executeCommands(renderViews[i]);
-        qCDebug(Backend) << Q_FUNC_INFO << "Submission took " << timer.elapsed() << "ms";
+        int renderViewsCount = renderViews.size();
+        quint64 frameElapsed = queueElapsed;
+
+        m_graphicsContext->beginDrawing();
+
+        for (int i = 0; i < renderViewsCount; i++) {
+            // Set the Viewport
+            m_graphicsContext->setViewport(renderViews[i]->viewport());
+            // Set RenderTarget ...
+            // Set the Camera
+            RenderCamera *camera = renderViews[i]->camera();
+            Q_ASSERT(camera);
+            m_graphicsContext->setCamera(camera);
+            // Initialize QGraphicsContext for drawing
+
+            executeCommands(renderViews[i]->commands());
+            frameElapsed = timer.elapsed() - frameElapsed;
+            qCDebug(Rendering) << Q_FUNC_INFO << "Submitted Renderview " << i + 1 << "/" << renderViewsCount  << "in " << frameElapsed << "ms";
+            frameElapsed = timer.elapsed();
+        }
+        m_graphicsContext->endDrawing();
         qDeleteAll(renderViews);
+        queueElapsed = timer.elapsed() - queueElapsed;
+        qCDebug(Rendering) << Q_FUNC_INFO << "Submission of Queue " << m_frameCount + 1 << "in " << queueElapsed << "ms <=> " << queueElapsed / renderViewsCount << "ms per RenderView <=> Avg " << 1000.0f / (queueElapsed * 1.0f/ renderViewsCount * 1.0f) << " RenderView/s";
+        qCDebug(Rendering) << Q_FUNC_INFO << "Queued frames for rendering remaining " << m_renderQueues->queuedFrames();;
+        qCDebug(Rendering) << Q_FUNC_INFO << "Average FPS : " << 1000 / (queueElapsed * 1.0f);
+        queueElapsed = timer.elapsed();
         m_frameCount++;
     }
+    qCDebug(Rendering) << Q_FUNC_INFO << "Submission Completed " << m_frameCount << " RenderQueues in " << timer.elapsed() << "ms";
+    m_frameCount = 0;
 }
 
 // Waits to be told to create jobs for the next frame
@@ -486,7 +414,6 @@ QVector<QJobPtr> Renderer::createRenderBinJobs()
 // Called during while traversing the FrameGraph for each leaf node context of QAspectThread
 QJobPtr Renderer::createRenderViewJob(FrameGraphNode *node, int submitOrderIndex)
 {
-    //    qDebug() << Q_FUNC_INFO << QThread::currentThread();
     RenderViewJobPtr job(new RenderViewJob);
     job->setRenderer(this);
     job->setFrameGraphLeafNode(node);
@@ -495,36 +422,38 @@ QJobPtr Renderer::createRenderViewJob(FrameGraphNode *node, int submitOrderIndex
 }
 
 // Called by RenderView->submit() in RenderThread context
-void Renderer::executeCommands(const RenderView *renderView)
+void Renderer::executeCommands(const QVector<RenderCommand *> commands)
 {
-    qCDebug(Backend) << Q_FUNC_INFO;
     // Render drawing commands
 
     // Use the graphicscontext to submit the commands to the underlying
     // graphics API (OpenGL)
-    QVector<RenderCommand *> commands = renderView->commands();
-
-    // Set the Viewport
-    m_graphicsContext->setViewport(renderView->viewport());
-    // Set the Camera
-    RenderCamera *camera = renderView->camera();
-    Q_ASSERT(camera);
-    m_graphicsContext->setCamera(camera);
-    // Initialize QGraphicsContext for drawing
-    m_graphicsContext->beginDrawing();
-    // Set RenderTarget ...
 
     Q_FOREACH (RenderCommand *command, commands) {
-        //// Initialize GL
-        RenderMesh *rMesh = m_meshManager->data(command->m_mesh);
-        MeshData *meshData = Q_NULLPTR;
-        if (m_meshManager == Q_NULLPTR ||
-                (meshData = m_meshDataManager->data(rMesh->meshData())) == Q_NULLPTR ||
-                meshData->attributeNames().empty())
+        MeshData *meshData = m_meshDataManager->data(command->m_meshData);
+        if (meshData == Q_NULLPTR || meshData->attributeNames().empty()) {
+            qCWarning(Rendering) << "RenderCommand should have a mesh";
             continue ;
+        }
+        if (command->m_vao.isNull()) {
+            // Either VAO has not been created for MeshData and RenderPass
+            // Or there is no RenderPass
+            // Tries to use vao for Mesh source and Default Technique
+
+            // Check if HShader exists. If it doesn't that means there is no RenderPass
+            // Otherwise use a default renderpass name
+            command->m_vao = m_vaoManager->lookupHandle(QPair<HMeshData, HShader>(command->m_meshData, command->m_shader));
+            // Check if VAO pointer for the MeshData / RenderPass exists
+            if (command->m_vao.isNull()) {
+                command->m_vao = m_vaoManager->getOrAcquireHandle(QPair<HMeshData, HShader>(command->m_meshData, command->m_shader));
+                *(m_vaoManager->data(command->m_vao)) = new QOpenGLVertexArrayObject();
+            }
+        }
+        QOpenGLVertexArrayObject *vao = *(m_vaoManager->data(command->m_vao));
+
         RenderMaterial *mat = getOrCreateMaterial(m_defaultMaterial);
         RenderTechnique *technique = mat->technique();
-//        qCDebug(Backend()) << Q_FUNC_INFO;
+        //        qCDebug(Backend()) << Q_FUNC_INFO;
         //        RenderMaterial *mat = m_materialManager->data(command->m_material);
         //        if (mat == Q_NULLPTR)
         //            mat = getOrCreateMaterial(m_defaultMaterial);
@@ -532,26 +461,32 @@ void Renderer::executeCommands(const RenderView *renderView)
         //        if (technique = Q_NULLPTR)
         //            technique = techniqueForMaterial(m_defaultMaterial);
 
-        // The VAO should be created only once for a MeshData and an ShaderProgram
+        // The VAO should be created only once for a MeshData and a ShaderProgram
         // Manager should have a VAO Manager that are indexed by MeshData and Shader
         // RenderCommand should have a handle to the corresponding VAO for the Mesh and Shader
 
-        command->m_vao.create();
-        command->m_vao.bind();
-
         bool drawIndexed = !meshData->indexAttr().isNull();
-        m_graphicsContext->activateShader(technique->shaderForPass(0));
 
-        foreach (QString nm, meshData->attributeNames()) {
-            AttributePtr attr(meshData->attributeByName(nm));
-            QString glsl = technique->glslNameForMeshAttribute(0, nm);
-            if (glsl.isEmpty())
-                continue; // not used in this pass
-            m_graphicsContext->specifyAttribute(glsl, attr);
+        //// Initialize GL
+        if (!vao->isCreated()) {
+            vao->create();
+            vao->bind();
+
+            qCDebug(Rendering) << Q_FUNC_INFO << "Creating new VAO";
+
+            m_graphicsContext->activateShader(technique->shaderForPass(0));
+
+            foreach (QString nm, meshData->attributeNames()) {
+                AttributePtr attr(meshData->attributeByName(nm));
+                QString glsl = technique->glslNameForMeshAttribute(0, nm);
+                if (glsl.isEmpty())
+                    continue; // not used in this pass
+                m_graphicsContext->specifyAttribute(glsl, attr);
+            }
+            if (drawIndexed)
+                m_graphicsContext->specifyIndices(meshData->indexAttr());
+            vao->release();
         }
-        if (drawIndexed)
-            m_graphicsContext->specifyIndices(meshData->indexAttr());
-        command->m_vao.release();
 
         //// Draw Calls
         // Set state
@@ -561,7 +496,7 @@ void Renderer::executeCommands(const RenderView *renderView)
         m_graphicsContext->setActiveMaterial(mat);
         mat->setUniformsForPass(0, m_graphicsContext);
 
-        command->m_vao.bind();
+        vao->bind();
         GLint primType = meshData->primitiveType();
         GLint primCount = meshData->primitiveCount();
         GLint indexType = drawIndexed ? meshData->indexAttr()->type() : 0;
@@ -576,12 +511,10 @@ void Renderer::executeCommands(const RenderView *renderView)
 
         int err = glGetError();
         if (err)
-            qCWarning(Backend) << "GL error after drawing mesh:" << QString::number(err, 16);
+            qCWarning(Rendering) << "GL error after drawing mesh:" << QString::number(err, 16);
 
-        command->m_vao.release();
-        command->m_vao.destroy();
+        vao->release();
     }
-    m_graphicsContext->endDrawing();
 }
 
 RenderTechnique* Renderer::techniqueForMaterial(Material* mat)
@@ -665,32 +598,6 @@ RenderMaterial* Renderer::getOrCreateMaterial(Material* mat)
     }
 
     return m_materialHash.value(mat);
-}
-
-// To be removed and handled by the renderview jobs
-void Renderer::buildMeshes(Mesh* mesh, Material* mat, const QMatrix4x4& mm)
-{
-    if (mat == NULL) {
-        mat = m_defaultMaterial;
-    }
-
-    RenderMaterial* rmat = getOrCreateMaterial(mat);
-    RenderTechnique* t = rmat->technique();
-
-    for (unsigned int p=0; p<t->passCount(); ++p) {
-        RenderBin* bin = t->binForPass(p);
-
-        RenderMesh* rmesh = new RenderMesh();
-        //        rmesh->setPeer(mesh);
-        //        rmesh->setData(mesh->data());
-        //        rmesh->setTechniqueAndPass(t, p);
-        //        rmesh->setModelMatrix(mm);
-        //        rmesh->setMaterial(rmat);
-
-        //        m_initList.push_back(rmesh);
-        //        bin->addDrawable(rmesh);
-
-    } // of technique pass iteration
 }
 
 void Renderer::buildShape(Shape* shape, Material* mat, const QMatrix4x4& mm)
