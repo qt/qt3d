@@ -69,7 +69,7 @@ enum ChangeFlag {
     MeshChange              = 0x00000020, // Find a way to make that generic for aspects : like model roles ?
     MaterialParameter       = 0x00000040,
     CameraProjectionMatrix  = 0x00000080,
-    AllChanges              = 0xFFFFFFFF
+    AllChanges              = 0x00000100
 };
 Q_DECLARE_FLAGS(ChangeFlags, ChangeFlag)
 Q_DECLARE_OPERATORS_FOR_FLAGS(ChangeFlags)

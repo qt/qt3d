@@ -72,16 +72,12 @@ public:
 
     void setPeer(Mesh *peer);
     void setRendererAspect(RendererAspect *rendererAspect);
-
-//    void setTechniqueAndPass(RenderTechnique* tech, unsigned int pass);
+    Mesh *peer() const { return m_peer; }
 
     void sceneChangeEvent(const QSceneChangePtr &e);
     bool meshDirty() const;
     HMeshData meshData() const;
     void setMeshData(HMeshData handle);
-    QString meshSource() const { return m_source; }
-
-    //    virtual DrawStateSet* stateSet();
 
     /**
      * @brief mapAttributeNames - resolve mapping of mesh-data attribute

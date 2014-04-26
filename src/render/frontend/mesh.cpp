@@ -42,7 +42,6 @@
 #include "mesh.h"
 
 #include <qchangearbiter.h>
-
 #include <QDebug>
 #include <QFile>
 #include <QFileInfo>
@@ -57,6 +56,7 @@ Mesh::Mesh(Node *parent)
     : Component( parent )
     , m_sourceDirty( false )
 {
+    m_uuid = QUuid::createUuid();
 }
 
 Mesh::~Mesh()
@@ -69,9 +69,6 @@ void Mesh::setSource( const QString& source )
         return;
     m_source = source;
     m_sourceDirty = true;
-
-    // FIXME - synchronous update
-    update();
 
     // Let aspects know about the change
     QScenePropertyChangePtr e(new QScenePropertyChange(Qt3D::MeshChange, this));
@@ -95,41 +92,6 @@ MeshDataPtr Mesh::data() const
 void Mesh::setData(MeshDataPtr d)
 {
     m_data = d;
-}
-
-// Should be handled in RenderMesh
-void Mesh::update()
-{
-//    if (m_sourceDirty) {
-//        m_data = MeshDataPtr();
-//        m_sourceDirty = false;
-
-//        QFileInfo finfo(m_source);
-//        if (!finfo.exists()) {
-//            qWarning() << Q_FUNC_INFO << "not found:" << m_source;
-//            return;
-//        }
-
-//        QFile f(m_source);
-//        f.open(QIODevice::ReadOnly);
-
-//        // Could be nice to abstract this
-//        // Use AbstractSceneParsers of a dedicated AbstractMeshLoader
-
-//        ObjLoader objLoad;
-//        objLoad.setLoadTextureCoordinatesEnabled(true);
-
-//        if (!objLoad.load(&f)) {
-//            qWarning() << Q_FUNC_INFO << "OBJ load failure for:" << m_source;
-//            return;
-//        }
-
-//        qDebug() << "Loaded OBJ ok";
-//        setData(objLoad.mesh());
-//        setObjectName(QStringLiteral("OBJ"));
-//    }
-
-//    m_sourceDirty = false;
 }
 
 } // namespace Qt3D

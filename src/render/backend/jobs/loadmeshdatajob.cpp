@@ -43,7 +43,7 @@
 
 #include <objloader.h>
 #include <sphere.h>
-
+#include <mesh.h>
 #include <renderer.h>
 #include <meshdatamanager.h>
 
@@ -55,9 +55,9 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
-LoadMeshDataJob::LoadMeshDataJob(const QString &source)
+LoadMeshDataJob::LoadMeshDataJob(Mesh *mesh)
     : QJob()
-    , m_source(source)
+    , m_meshSource(mesh)
 {
 }
 
@@ -66,22 +66,36 @@ void LoadMeshDataJob::run()
     qCDebug(Jobs) << "Entering" << Q_FUNC_INFO << QThread::currentThread();
 
     // Load the mesh from disk (or wherever)
-    qCDebug(Jobs) << "Loading mesh from" << m_source;
 
-    ObjLoader loader;
-    loader.setLoadTextureCoordinatesEnabled(true);
-
-    if (loader.load(m_source)) {
-        qCDebug(Jobs) << Q_FUNC_INFO << "Loaded OBJ ok";
-        MeshData *meshData = m_renderer->meshDataManager()->getOrCreateResource(m_source);
-        *meshData = *loader.mesh();
-        AttributePtr attr = meshData->attributeByName(QStringLiteral("position"));
-        if (!attr) {
-            qCWarning(Jobs) << Q_FUNC_INFO << "unknown attribute: position";
-            return;
+    if (m_meshSource->source().isEmpty()) {
+        if (m_meshSource->data().isNull())
+            qCWarning(Jobs) << Q_FUNC_INFO << "Mesh is empty, no source nor data set";
+        else {
+            qCDebug(Jobs) << Q_FUNC_INFO << "Mesh has raw data";
+            QMutexLocker locker(m_renderer->mutex());
+            MeshData *meshData = m_renderer->meshDataManager()->getOrCreateResource(m_meshSource->uuid());
+            *meshData = *(m_meshSource->data().data());
+            locker.unlock();
         }
-    } else {
-        qCWarning(Jobs) << Q_FUNC_INFO << "OBJ load failure for:" << m_source;
+    }
+    else {
+        ObjLoader loader;
+        loader.setLoadTextureCoordinatesEnabled(true);
+        qCDebug(Jobs) << Q_FUNC_INFO << "Loading mesh from" << m_meshSource->source();
+        if (loader.load(m_meshSource->source())) {
+            qCDebug(Jobs) << Q_FUNC_INFO << "Loaded OBJ ok";
+            QMutexLocker locker(m_renderer->mutex());
+            MeshData *meshData = m_renderer->meshDataManager()->getOrCreateResource(m_meshSource->uuid());
+            *meshData = *loader.mesh();
+            locker.unlock();
+            AttributePtr attr = meshData->attributeByName(QStringLiteral("position"));
+            if (!attr) {
+                qCWarning(Jobs) << Q_FUNC_INFO << "unknown attribute: position";
+                return;
+            }
+        } else {
+            qCWarning(Jobs) << Q_FUNC_INFO << "OBJ load failure for:" << m_meshSource->source();
+        }
     }
 
     //Qt3D::Sphere sphere = Qt3D::Sphere::fromPoints(loader.vertices());

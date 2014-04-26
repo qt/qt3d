@@ -47,14 +47,14 @@ namespace Qt3D {
 namespace Render {
 
 MeshDataManager::MeshDataManager()
-    : QArrayResourcesManager<MeshData, QString, 16>()
+    : QArrayResourcesManager<MeshData, QUuid, 16>()
 {
 }
 
-void MeshDataManager::addMeshData(const QString &source)
+void MeshDataManager::addMeshData(Mesh *mesh)
 {
-    if (!contains(source) && !m_meshesPending.contains(source))
-        m_meshesPending.append(source);
+    if (!contains(mesh->uuid()) && !m_meshesPending.contains(mesh))
+        m_meshesPending.append(mesh);
 }
 
 

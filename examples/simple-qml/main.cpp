@@ -52,6 +52,10 @@ int main(int argc, char* argv[])
 
     Qt3D::Window view;
     view.registerAspect(new Qt3D::RendererAspect());
+    // There should be some synchronising mechanism to make sure
+    // the source is set after alll aspects have been completely initialized
+    // Otherwise we might encounter cases where an Aspect's QML elements have
+    // not yet been registered
     view.setSource(QUrl("qrc:/main.qml"));
     view.show();
 

@@ -44,7 +44,7 @@
 #include <transform.h>
 #include <matrixtransform.h>
 #include <cameralens.h>
-
+#include <mesh.h>
 #include <QFileInfo>
 #include <QColor>
 #include <qmath.h>
@@ -276,8 +276,7 @@ Entity *AssimpParser::node(aiNode *node)
     // Add Meshes to the node
     for (uint i = 0; i < node->mNumMeshes; i++) {
         uint meshIdx = node->mMeshes[i];
-        Mesh * mesh = new Mesh();
-        mesh->setData(m_meshes[meshIdx]);
+        Mesh * mesh = m_meshes[meshIdx];
         // mesh material
         if (m_materials.contains(meshIdx))
             entityNode->addComponent(m_materials[meshIdx]);
@@ -518,8 +517,9 @@ void AssimpParser::loadMesh(uint meshIndex)
 
     meshData->computeBoundsFromAttribute(VERTICES_ATTRIBUTE_NAME);
 
-    m_meshes[meshIndex] = meshData;
-    m_namedMeshes[meshName] = meshData;
+    Mesh *storedMesh = new Mesh();
+    storedMesh->setData(meshData);
+    m_meshes[meshIndex] = storedMesh;
 
     qCDebug(Render::Io) << Q_FUNC_INFO << " Mesh " << meshName << " Vertices " << mesh->mNumVertices << " Faces " << mesh->mNumFaces << " Indices " << indices;
 }

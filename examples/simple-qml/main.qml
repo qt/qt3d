@@ -104,13 +104,13 @@ Node {
         Transform {
             id : transform_1
             LookAt {
-                position: Qt.vector3d( 0.0, -1.0, -5.0 )
+                position: Qt.vector3d( -2.0, -1.0, -18.0 )
                 upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
-                viewCenter: Qt.vector3d( 0.0, 2.0, 10.0 )
+                viewCenter: Qt.vector3d( 0.0, 0.0, 5.0 )
             }
             Rotate {
-                axis : Qt.vector3d(0, 0, 1)
-                angle : 40
+                axis : Qt.vector3d(0, 1, 0)
+                angle : 45
             }
         }
 
@@ -129,7 +129,7 @@ Node {
 
             property Transform transform : Transform {
                 LookAt {
-                    position: Qt.vector3d( 0.0, 0.0, -1.0 )
+                    position: Qt.vector3d( 0.0, 0.0, -15.0 )
                     upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
                     viewCenter: Qt.vector3d( 0.0, 0.0, 10.0 )
                 }
@@ -167,6 +167,13 @@ Node {
             //            effect: adsEffect
 
             // Custom properties go here
+        }
+
+        Scene
+        {
+            id: scene
+            source: ":/assets/test_scene.dae"
+            objectName: "dae_scene"
         }
 
         Entity {

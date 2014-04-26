@@ -49,7 +49,7 @@
 #include "rendernode.h"
 #include "renderlogging.h"
 #include "materialmanager.h"
-
+#include "scene.h"
 #include <camera.h>
 #include <cameralens.h>
 #include <material.h>
@@ -254,8 +254,7 @@ void RenderSceneBuilder::visitEntity(Qt3D::Entity *entity)
         renderMesh->setRendererAspect(m_renderer->rendererAspect());
         renderMesh->setPeer(meshes.first());
         // That should ideally be done elsewhere
-        m_renderer->meshDataManager()->addMeshData(renderMesh->meshSource());
-        //m_renderer->buildMeshes(mesh, material, QMatrix4x4());
+        m_renderer->meshDataManager()->addMeshData(meshes.first());
     }
 
     QList<CameraLens*> cameraLenses = entity->componentsOfType<CameraLens>();
@@ -269,6 +268,12 @@ void RenderSceneBuilder::visitEntity(Qt3D::Entity *entity)
         // Should we apply a combination of all transform of the parent entities in the tree
         // Or use only the one associated with the Camera Lens ?
         // Applying all parents transform could lead to some strange behavior.
+    }
+
+    // Check if entity is a Scene and if so parses the scene
+    Scene *sceneEntity = Q_NULLPTR;
+    if ((sceneEntity = qobject_cast<Scene *>(entity)) != Q_NULLPTR) {
+        qDebug() << Q_FUNC_INFO << "Found a Scene";
     }
 
     NodeVisitor::visitEntity(entity);

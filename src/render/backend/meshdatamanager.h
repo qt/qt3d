@@ -58,23 +58,23 @@ namespace Render {
 
 typedef QHandle<MeshData, 16> HMeshData;
 
-class MeshDataManager : public QArrayResourcesManager<MeshData, QString, 16>
+class MeshDataManager : public QArrayResourcesManager<MeshData, QUuid, 16>
 {
 public:
     MeshDataManager();
 
-    inline bool hasMeshData(const QString &source) { return contains(source); }
-    inline MeshData* getOrCreateMeshData(const QString &source) { return getOrCreateResource(source); }
-    inline MeshData* meshData(const QString &source) { return lookupResource(source); }
-    void addMeshData(const QString &source);
+    inline bool hasMeshData(const QUuid &id) { return contains(id); }
+    inline MeshData* getOrCreateMeshData(const QUuid &id) { return getOrCreateResource(id); }
+    inline MeshData* meshData(const QUuid &id) { return lookupResource(id); }
+    void addMeshData(Mesh *mesh);
 
-    QList<QString> meshesPending() const { return m_meshesPending; }
+    QList<Mesh *> meshesPending() const { return m_meshesPending; }
     void clearMeshesPending() { m_meshesPending.clear(); }
 
 private:
     // List of meshes that we need to schedule jobs to load
     // and calculate bounds for.
-    QList<QString> m_meshesPending;
+    QList<Mesh *> m_meshesPending;
 };
 
 } // namespace Render

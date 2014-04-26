@@ -430,27 +430,34 @@ void Renderer::executeCommands(const QVector<RenderCommand *> commands)
     // graphics API (OpenGL)
 
     Q_FOREACH (RenderCommand *command, commands) {
+
+        QMutexLocker locker(&m_mutex);
         MeshData *meshData = m_meshDataManager->data(command->m_meshData);
         if (meshData == Q_NULLPTR || meshData->attributeNames().empty()) {
             qCWarning(Rendering) << "RenderCommand should have a mesh";
+            locker.unlock();
             continue ;
         }
+        locker.unlock();
+        command->m_vao = m_vaoManager->lookupHandle(QPair<HMeshData, HShader>(command->m_meshData, command->m_shader));
         if (command->m_vao.isNull()) {
             // Either VAO has not been created for MeshData and RenderPass
             // Or there is no RenderPass
             // Tries to use vao for Mesh source and Default Technique
-
+            qCDebug(Backend) << Q_FUNC_INFO << "VAO Handle is null";
+            qCDebug(Backend) << Q_FUNC_INFO << "HShader " << command->m_shader;
             // Check if HShader exists. If it doesn't that means there is no RenderPass
             // Otherwise use a default renderpass name
             command->m_vao = m_vaoManager->lookupHandle(QPair<HMeshData, HShader>(command->m_meshData, command->m_shader));
-            // Check if VAO pointer for the MeshData / RenderPass exists
+            // Check if VAO pointer for the MeshData / RenderShader exists
             if (command->m_vao.isNull()) {
+                qCDebug(Rendering) << Q_FUNC_INFO << "Allocating new VAO";
                 command->m_vao = m_vaoManager->getOrAcquireHandle(QPair<HMeshData, HShader>(command->m_meshData, command->m_shader));
                 *(m_vaoManager->data(command->m_vao)) = new QOpenGLVertexArrayObject();
             }
         }
         QOpenGLVertexArrayObject *vao = *(m_vaoManager->data(command->m_vao));
-
+        Q_ASSERT(vao);
         RenderMaterial *mat = getOrCreateMaterial(m_defaultMaterial);
         RenderTechnique *technique = mat->technique();
         //        qCDebug(Backend()) << Q_FUNC_INFO;

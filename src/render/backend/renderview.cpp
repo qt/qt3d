@@ -162,7 +162,7 @@ void RenderView::buildRenderCommands(RenderNode *node)
             RenderMesh *mesh = m_renderer->meshManager()->data(command->m_mesh);
             Q_ASSERT(mesh);
             if (mesh->meshDirty()) {
-                mesh->setMeshData(m_renderer->meshDataManager()->lookupHandle(mesh->meshSource()));
+                mesh->setMeshData(m_renderer->meshDataManager()->lookupHandle(mesh->peer()->uuid()));
                 qCDebug(Backend) << Q_FUNC_INFO << "Updating RenderMesh -> MeshData handle";
             }
             command->m_meshData = mesh->meshData();
@@ -184,9 +184,7 @@ void RenderView::buildRenderCommands(RenderNode *node)
                     }
                 }
             }
-
-            // Set the vao handle
-            command->m_vao = m_renderer->vaoManager()->lookupHandle(QPair<HMeshData, HShader>(command->m_meshData, command->m_shader));
+            // The VAO Handle is set directly in the renderer thread so as to avoid having to use a mutex here
 
             // Use a default shader and uniform bindings for the moment
             // Shader and Uniforms obtained from Material/Effect/Technique/RenderPass/ShaderProgram

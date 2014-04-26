@@ -82,7 +82,6 @@ RenderMesh::RenderMesh() :
 void RenderMesh::setPeer(Mesh *peer)
 {
     m_peer = peer;
-    m_source = peer->source();
     QChangeArbiter *arbiter = m_rendererAspect->aspectManager()->changeArbiter();
     arbiter->registerObserver(this, m_peer, MeshChange);
 }

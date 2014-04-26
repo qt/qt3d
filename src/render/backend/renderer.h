@@ -147,6 +147,8 @@ public:
 
     void initialize();
 
+    QMutex* mutex() { return &m_mutex; }
+
 private:
     RendererAspect *m_rendererAspect;
 

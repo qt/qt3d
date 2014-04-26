@@ -44,7 +44,7 @@
 
 #include <Qt3DCore/component.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
-
+#include <QUuid>
 #include <Qt3DRenderer/meshdata.h>
 
 QT_BEGIN_NAMESPACE
@@ -58,12 +58,12 @@ namespace Qt3D {
 class QT3DRENDERERSHARED_EXPORT Mesh : public Component
 {
     Q_OBJECT
-
     Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
 
 public:
     Mesh(Node *parent = 0);
     virtual ~Mesh();
+    QUuid uuid() const { return m_uuid; }
 
     void setSource(const QString &source);
     QString source() const;
@@ -74,11 +74,11 @@ Q_SIGNALS:
     void sourceChanged();
 
 private:
-    Q_INVOKABLE void update();
 
     MeshDataPtr m_data;
     QString m_source;
     bool m_sourceDirty;
+    QUuid m_uuid;
 };
 
 }

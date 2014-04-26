@@ -42,7 +42,7 @@
 #ifndef QT3D_RENDER_VAOMANAGER_H
 #define QT3D_RENDER_VAOMANAGER_H
 
-#include <Qt3DCore/qlistresourcesmanager.h>
+#include <Qt3DCore/qarrayresourcesmanager.h>
 #include <Qt3DCore/qhandle.h>
 
 QT_BEGIN_NAMESPACE
@@ -61,7 +61,7 @@ typedef QHandle<QOpenGLVertexArrayObject*, 16> HVao;
 typedef QHandle<MeshData, 16> HMeshData;
 typedef QHandle<RenderShader, 16> HShader;
 
-class VAOManager : public QListResourcesManager<QOpenGLVertexArrayObject*, QPair<HMeshData, HShader>, 16>
+class VAOManager : public QArrayResourcesManager<QOpenGLVertexArrayObject*, QPair<HMeshData, HShader>, 16>
 {
 public:
     VAOManager();

@@ -6,5 +6,6 @@
         <file>AdsEffect.qml</file>
         <file>assets/ball.obj</file>
         <file>ForwardRenderer.qml</file>
+        <file>assets/test_scene.dae</file>
     </qresource>
 </RCC>

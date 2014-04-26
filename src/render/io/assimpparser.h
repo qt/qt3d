@@ -126,8 +126,7 @@ private :
     bool     m_sceneParsed;
     static QStringList assimpSupportedFormatsList;
 
-    QMap<uint, MeshDataPtr> m_meshes;
-    QMap<QString, MeshDataPtr> m_namedMeshes;
+    QMap<uint, Mesh *> m_meshes;
     QMap<uint, Material*> m_materials;
     QMap<uint, Effect *> m_effects;
     QMap<uint, Texture*> m_embeddedTextures;
