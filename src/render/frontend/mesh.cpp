@@ -71,7 +71,7 @@ void Mesh::setSource( const QString& source )
     m_sourceDirty = true;
 
     // Let aspects know about the change
-    QScenePropertyChangePtr e(new QScenePropertyChange(Qt3D::MeshChange, this));
+    QScenePropertyChangePtr e(new QScenePropertyChange(Qt3D::CustomAspectChange, this));
     e->m_propertyName = QByteArrayLiteral("source");
     e->m_value = m_source;
     notifySceneChange(e);

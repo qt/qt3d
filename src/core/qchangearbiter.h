@@ -66,9 +66,9 @@ enum ChangeFlag {
     NodeDeleted             = 0x00000004,
     NodeStatus              = 0x00000008,
     LocalTransform          = 0x00000010,
-    MeshChange              = 0x00000020, // Find a way to make that generic for aspects : like model roles ?
-    MaterialParameter       = 0x00000040,
-    CameraProjectionMatrix  = 0x00000080,
+    MaterialParameter       = 0x00000020,
+    CameraProjectionMatrix  = 0x00000040,
+    CustomAspectChange      = 0x00000080,
     AllChanges              = 0x00000100
 };
 Q_DECLARE_FLAGS(ChangeFlags, ChangeFlag)
@@ -81,14 +81,14 @@ class QObservableInterface;
 class QT3DCORESHARED_EXPORT QSceneChange
 {
 public:
-    QSceneChange(ChangeFlag type, QObservableInterface *observable)
+    QSceneChange(int type, QObservableInterface *observable)
         : m_type(type)
     {
         m_subject.m_observable = observable;
         m_subjectType = ObservableType;
     }
 
-    QSceneChange(ChangeFlag type, Component *component)
+    QSceneChange(int type, Component *component)
         : m_type(type)
     {
         m_subject.m_component = component;
@@ -105,7 +105,7 @@ public:
         ComponentType
     } m_subjectType;
 
-    ChangeFlag m_type;
+    int m_type;
 
     // TODO: add timestamp from central clock and priority level
     // These can be used to resolve any conflicts between events
@@ -117,12 +117,12 @@ typedef QSharedPointer<QSceneChange> QSceneChangePtr;
 class QT3DCORESHARED_EXPORT QScenePropertyChange : public QSceneChange
 {
 public:
-    QScenePropertyChange(ChangeFlag type, QObservableInterface *subject)
+    QScenePropertyChange(int type, QObservableInterface *subject)
         : QSceneChange(type, subject)
     {
     }
 
-    QScenePropertyChange(ChangeFlag type, Component *component)
+    QScenePropertyChange(int type, Component *component)
         : QSceneChange(type, component)
     {
     }
@@ -190,14 +190,17 @@ public:
 
     void registerObserver(QObserverInterface *observer,
                           QObservableInterface *subject,
-                          ChangeFlags changeFlags = AllChanges);
+                          int changeFlags = AllChanges);
 
     void registerObserver(QObserverInterface *observer,
                           Component *component,
-                          ChangeFlags changeFlags = AllChanges);
+                          int changeFlags = AllChanges);
 
     void unregisterObserver(QObserverInterface *observer,
                             QObservableInterface *subject);
+
+    void unregisterObserver(QObserverInterface *observer,
+                            Component *subject);
 
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;                 // QObserverInterface impl
     void sceneChangeEventWithLock(const QSceneChangePtr &e);
@@ -216,8 +219,9 @@ private:
     QJobManagerInterface *m_jobManager;
 
     typedef QList<QObserverInterface *> QObserverList;
-    QHash<QObservableInterface *, QObserverList> m_observations;
-    QHash<Component *, QObserverList> m_componentObservations;
+    typedef QHash<int, QObserverList> QObserverHash;
+    QHash<QObservableInterface *, QObserverHash> m_observations;
+    QHash<Component *, QObserverHash> m_componentObservations;
 
     // Each thread has a TLS ChangeQueue so we never need to lock whilst
     // receiving a QSceneChange.

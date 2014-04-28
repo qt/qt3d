@@ -103,8 +103,8 @@ void QChangeArbiter::distributeQueueChanges(ChangeQueue *changeQueue)
         switch (change->m_subjectType) {
         case QSceneChange::ObservableType: {
             QObservableInterface *subject = change->m_subject.m_observable;
-            if (m_observations.contains(subject)) {
-                QObserverList &observers = m_observations[subject];
+            if (m_observations.contains(subject) && m_observations[subject].contains(change->m_type)) {
+                QObserverList &observers = m_observations[subject][change->m_type];
                 Q_FOREACH (QObserverInterface *observer, observers)
                     observer->sceneChangeEvent(change);
             }
@@ -113,8 +113,8 @@ void QChangeArbiter::distributeQueueChanges(ChangeQueue *changeQueue)
 
         case QSceneChange::ComponentType: {
             Component *subject = change->m_subject.m_component;
-            if (m_componentObservations.contains(subject)) {
-                QObserverList &observers = m_componentObservations[subject];
+            if (m_componentObservations.contains(subject) && m_componentObservations[subject].contains(change->m_type)) {
+                QObserverList &observers = m_componentObservations[subject][change->m_type];
                 Q_FOREACH (QObserverInterface *observer, observers)
                     observer->sceneChangeEvent(change);
             }
@@ -141,7 +141,7 @@ void QChangeArbiter::syncChanges()
 
 void QChangeArbiter::registerObserver(QObserverInterface *observer,
                                       QObservableInterface *subject,
-                                      ChangeFlags changeFlags)
+                                      int changeFlags)
 {
     qDebug() << Q_FUNC_INFO;
     if (!observer || !subject)
@@ -150,7 +150,7 @@ void QChangeArbiter::registerObserver(QObserverInterface *observer,
     // Store info about which observers are watching which observables.
     // Protect access as this could be called from any thread
     QMutexLocker locker(&m_mutex);
-    QObserverList &observers = m_observations[subject];
+    QObserverList &observers = m_observations[subject][changeFlags];
     observers.append(observer);
 
     // TODO: Also store info about types of change observer is interested in so that we
@@ -163,7 +163,7 @@ void QChangeArbiter::registerObserver(QObserverInterface *observer,
 
 void QChangeArbiter::registerObserver(QObserverInterface *observer,
                                       Component *component,
-                                      ChangeFlags changeFlags)
+                                      int changeFlags)
 {
     qDebug() << Q_FUNC_INFO;
     if (!observer || !component)
@@ -172,7 +172,7 @@ void QChangeArbiter::registerObserver(QObserverInterface *observer,
     // Store info about which observers are watching which observables.
     // Protect access as this could be called from any thread
     QMutexLocker locker(&m_mutex);
-    QObserverList &observers = m_componentObservations[component];
+    QObserverList &observers = m_componentObservations[component][changeFlags];
     observers.append(observer);
 
     // TODO: Also store info about types of change observer is interested in so that we
@@ -186,9 +186,24 @@ void QChangeArbiter::registerObserver(QObserverInterface *observer,
 void QChangeArbiter::unregisterObserver(QObserverInterface *observer,
                                         QObservableInterface *subject)
 {
-    // TODO: Implement me!
-    Q_UNUSED(observer);
-    Q_UNUSED(subject);
+    if (m_observations.contains(subject)) {
+        QObserverHash &observers = m_observations[subject];
+        QList<int> changeFlags = observers.keys();
+        Q_FOREACH (int changeFlag, changeFlags) {
+            observers[changeFlag].removeAll(observer);
+        }
+    }
+}
+
+void QChangeArbiter::unregisterObserver(QObserverInterface *observer, Component *subject)
+{
+    if (m_componentObservations.contains(subject)) {
+        QObserverHash &observers = m_componentObservations[subject];
+        QList<int> changeFlags = observers.keys();
+        Q_FOREACH (int changeFlag, changeFlags) {
+            observers[changeFlag].removeAll(observer);
+        }
+    }
 }
 
 void QChangeArbiter::sceneChangeEvent(const QSceneChangePtr &e)

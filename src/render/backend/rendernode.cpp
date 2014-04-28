@@ -127,6 +127,7 @@ void RenderNode::sceneChangeEvent(const QSceneChangePtr &e)
     case LocalTransform: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         *localTransform() = propertyChange->m_value.value<QMatrix4x4>();
+        qCDebug(RenderNodes) << Q_FUNC_INFO << "Updating transform";
         break;
     }
     case AllChanges: {

@@ -83,7 +83,7 @@ void RenderMesh::setPeer(Mesh *peer)
 {
     m_peer = peer;
     QChangeArbiter *arbiter = m_rendererAspect->aspectManager()->changeArbiter();
-    arbiter->registerObserver(this, m_peer, MeshChange);
+    arbiter->registerObserver(this, m_peer, CustomAspectChange);
 }
 
 void RenderMesh::setRendererAspect(RendererAspect *rendererAspect)
@@ -94,7 +94,7 @@ void RenderMesh::setRendererAspect(RendererAspect *rendererAspect)
 void RenderMesh::sceneChangeEvent(const QSceneChangePtr &e)
 {
     switch (e->m_type) {
-    case MeshChange: {
+    case CustomAspectChange: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
 //        QString propertyName = QString::fromLatin1(propertyChange->m_propertyName);
         QVariant propertyValue = propertyChange->m_value;
