@@ -96,8 +96,8 @@ int main(int ac, char **av)
     torusRotation->setAxis(QVector3D(1, 0, 0));
     torusRotation->setAngleDeg(35.0f);
 
-    torusTransforms->appendTransfrom(torusTranslation);
-    torusTransforms->appendTransfrom(torusRotation);
+    torusTransforms->appendTransform(torusTranslation);
+    torusTransforms->appendTransform(torusRotation);
 
     torusEntity->addComponent(torusTransforms);
 

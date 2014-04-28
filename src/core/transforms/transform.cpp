@@ -62,6 +62,17 @@ QQmlListProperty<AbstractTransform> Transform::transformList()
                                                Transform::qmlClearTransforms);
 }
 
+void Transform::setTransformsDirty()
+{
+    if (!m_transformsDirty) {
+        m_transformsDirty = true;
+        QScenePropertyChangePtr e(new QScenePropertyChange(LocalTransform, this));
+        e->m_propertyName = QByteArrayLiteral("transforms");
+        e->m_value = matrix();
+        notifySceneChange(e);
+    }
+}
+
 QMatrix4x4 Transform::matrix() const
 {
     if (m_transformsDirty) {
@@ -75,7 +86,8 @@ void Transform::setMatrix(const QMatrix4x4 &m)
 {
     qDeleteAll(m_transforms);
     m_transforms.clear();
-    appendTransfrom(new MatrixTransform(m));
+    appendTransform(new MatrixTransform(m));
+    setTransformsDirty();
 }
 
 /*!
@@ -99,15 +111,15 @@ void Transform::setRotationCenter(const QVector3D &rc)
     Q_UNUSED(rc);
 }
 
-void Transform::appendTransfrom(AbstractTransform *xform)
+void Transform::appendTransform(AbstractTransform *xform)
 {
-    m_transformsDirty = true;
+    setTransformsDirty();
     m_transforms.append( xform );
 }
 
 void Transform::removeTransform(AbstractTransform *xform)
 {
-    m_transformsDirty = true;
+    setTransformsDirty();
     m_transforms.removeOne( xform );
 }
 
@@ -126,7 +138,8 @@ void Transform::qmlAppendTransform(QQmlListProperty<AbstractTransform> *list, Ab
         return;
 
     Transform *self = static_cast<Transform *>(list->object);
-    self->appendTransfrom(obj);
+    self->appendTransform(obj);
+    QObject::connect(obj, SIGNAL(transformUpdated()), self, SLOT(setTransformsDirty()));
 }
 
 AbstractTransform* Transform::transformAt(QQmlListProperty<AbstractTransform> *list, int index)
@@ -144,9 +157,11 @@ int Transform::transformCount(QQmlListProperty<AbstractTransform> *list)
 void Transform::qmlClearTransforms(QQmlListProperty<AbstractTransform> *list)
 {
     Transform *self = static_cast<Transform *>(list->object);
+    Q_FOREACH (AbstractTransform *trans, self->m_transforms)
+        QObject::disconnect(trans, SIGNAL(transformUpdated()), self, SLOT(setTransformsDirty()));
     qDeleteAll(self->m_transforms);
     self->m_transforms.clear();
-    self->m_transformsDirty = true;
+    self->setTransformsDirty();
 }
 
 } // namespace Qt3D

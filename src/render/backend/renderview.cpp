@@ -162,8 +162,11 @@ void RenderView::buildRenderCommands(RenderNode *node)
             RenderMesh *mesh = m_renderer->meshManager()->data(command->m_mesh);
             Q_ASSERT(mesh);
             if (mesh->meshDirty()) {
-                mesh->setMeshData(m_renderer->meshDataManager()->lookupHandle(mesh->peer()->uuid()));
+                QMutexLocker locker(m_renderer->mutex());
+                if (mesh->meshDirty())
+                    mesh->setMeshData(m_renderer->meshDataManager()->lookupHandle(mesh->peer()->uuid()));
                 qCDebug(Backend) << Q_FUNC_INFO << "Updating RenderMesh -> MeshData handle";
+                locker.unlock();
             }
             command->m_meshData = mesh->meshData();
             command->m_instancesCount = 0;

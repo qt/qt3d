@@ -61,6 +61,7 @@ void ScaleTransform::setScale3D(const QVector3D &scale3D)
     if (scale3D != m_scale3D) {
         m_scale3D = scale3D;
         emit scale3DChanged();
+        emit transformUpdated();
     }
 }
 

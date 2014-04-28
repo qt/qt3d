@@ -80,6 +80,7 @@ void RotateTransform::setAngleDeg(float arg)
     if (m_angleDeg != arg) {
         m_angleDeg = arg;
         emit angleChanged();
+        emit transformUpdated();
     }
 }
 
@@ -94,6 +95,7 @@ void RotateTransform::setAxis(const QVector3D& arg)
     if (m_axis != arg) {
         m_axis = arg;
         emit axisChanged();
+        emit transformUpdated();
     }
 }
 

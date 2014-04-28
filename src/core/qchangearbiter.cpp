@@ -126,7 +126,6 @@ void QChangeArbiter::distributeQueueChanges(ChangeQueue *changeQueue)
 
 void QChangeArbiter::syncChanges()
 {
-    //qDebug() << Q_FUNC_INFO;
     QMutexLocker locker(&m_mutex);
     Q_FOREACH (QChangeArbiter::ChangeQueue *changeQueue, m_changeQueues) {
         distributeQueueChanges(changeQueue);

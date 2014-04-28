@@ -73,6 +73,7 @@ void LookAtTransform::setPosition(const QVector3D &position)
         m_matrixDirty = true;
         emit positionChanged();
         emit viewVectorChanged();
+        emit transformUpdated();
     }
 }
 
@@ -82,6 +83,7 @@ void LookAtTransform::setUpVector(const QVector3D &upVector)
         m_upVector = upVector;
         m_matrixDirty = true;
         emit upVectorChanged();
+        emit transformUpdated();
     }
 }
 
@@ -98,6 +100,7 @@ void LookAtTransform::setViewCenter(const QVector3D &viewCenter)
         m_matrixDirty = true;
         emit viewCenterChanged();
         emit viewVectorChanged();
+        emit transformUpdated();
     }
 }
 

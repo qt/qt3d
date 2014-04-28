@@ -350,7 +350,7 @@ Entity* GLTFParser::node(QString id)
 
         // ADD MATRIX TRANSFORM COMPONENT TO ENTITY
         Transform *trans = new Transform();
-        trans->appendTransfrom(new MatrixTransform(m));
+        trans->appendTransform(new MatrixTransform(m));
         result->addComponent(trans);
     }
 

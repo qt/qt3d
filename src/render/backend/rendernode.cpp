@@ -114,11 +114,16 @@ void RenderNode::setFrontEndPeer(Node *peer)
 
 void RenderNode::setTransform(Transform *transform)
 {
-    m_transform = transform;
-
-    // Register for changes
-    QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-    arbiter->registerObserver(this, m_transform, LocalTransform);
+    if (transform != m_transform) {
+        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
+        // Unregister from changes of the previous transform
+        if (m_transform)
+            arbiter->unregisterObserver(this, m_transform);
+        m_transform = transform;
+        // Register for changes
+        arbiter->registerObserver(this, m_transform, LocalTransform);
+        *localTransform() = m_transform->matrix();
+    }
 }
 
 void RenderNode::sceneChangeEvent(const QSceneChangePtr &e)
@@ -127,7 +132,6 @@ void RenderNode::sceneChangeEvent(const QSceneChangePtr &e)
     case LocalTransform: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         *localTransform() = propertyChange->m_value.value<QMatrix4x4>();
-        qCDebug(RenderNodes) << Q_FUNC_INFO << "Updating transform";
         break;
     }
     case AllChanges: {

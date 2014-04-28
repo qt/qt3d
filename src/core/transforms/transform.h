@@ -44,7 +44,6 @@
 
 #include <Qt3DCore/component.h>
 #include <Qt3DCore/qt3dcore_global.h>
-
 #include <QMatrix4x4>
 
 QT_BEGIN_NAMESPACE
@@ -81,10 +80,13 @@ public:
     }
 
     // void insertTransformAt(...)
-    Q_INVOKABLE void appendTransfrom(AbstractTransform *xform);
+    Q_INVOKABLE void appendTransform(AbstractTransform *xform);
     Q_INVOKABLE void removeTransform(AbstractTransform *xform);
 
     QQmlListProperty<Qt3D::AbstractTransform> transformList();
+
+private Q_SLOTS:
+    void setTransformsDirty();
 
 private:
     QMatrix4x4 applyTransforms() const;

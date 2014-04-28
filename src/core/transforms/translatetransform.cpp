@@ -82,6 +82,7 @@ void TranslateTransform::setDx(float arg)
     if (arg != m_translation.x()) {
         m_translation.setX(arg);
         emit translateChanged();
+        emit transformUpdated();
     }
 }
 
@@ -90,6 +91,7 @@ void TranslateTransform::setDy(float arg)
     if (arg != m_translation.y()) {
         m_translation.setY(arg);
         emit translateChanged();
+        emit transformUpdated();
     }
 }
 
@@ -98,6 +100,7 @@ void TranslateTransform::setDz(float arg)
     if (arg != m_translation.z()) {
         m_translation.setZ(arg);
         emit translateChanged();
+        emit transformUpdated();
     }
 }
 

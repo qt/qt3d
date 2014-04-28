@@ -213,13 +213,8 @@ void RenderSceneBuilder::visitEntity(Qt3D::Entity *entity)
 
     // Look for a transform component
     QList<Transform *> transforms = entity->componentsOfType<Transform>();
-    if (!transforms.isEmpty()) {
+    if (!transforms.isEmpty())
         renderNode->setTransform(transforms.first());
-        // Sets default transform matrix, this will later be updated by the QChangeArbiter
-        // and the sceneChangeEvent in RenderNode
-        *(renderNode->localTransform()) = transforms.first()->matrix();
-    }
-
 
     QList<FrameGraph *> framegraphRefs = entity->componentsOfType<FrameGraph>();
     if (!framegraphRefs.isEmpty()) {

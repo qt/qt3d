@@ -122,8 +122,11 @@ Renderer::Renderer()
     buildDefaultTechnique();
     buildDefaultMaterial();
 
-    QLoggingCategory::setFilterRules("*.debug=false\n"
-                                     "Qt3D.Render.Rendering.debug=true\n");
+    QLoggingCategory::setFilterRules("Qt3D.Render.*.debug=false\n"
+                                     "Qt3D.Render.Rendering.debug=true\n"
+                                     "Qt3D.Render.RenderNodes.debug=true\n"
+                                     "Qt3D.Render.Frontend.debug=true\n"
+                                     "qml.debug=true\n");
 }
 
 void Renderer::buildDefaultTechnique()
@@ -433,12 +436,11 @@ void Renderer::executeCommands(const QVector<RenderCommand *> commands)
 
         QMutexLocker locker(&m_mutex);
         MeshData *meshData = m_meshDataManager->data(command->m_meshData);
+        locker.unlock();
         if (meshData == Q_NULLPTR || meshData->attributeNames().empty()) {
             qCWarning(Rendering) << "RenderCommand should have a mesh";
-            locker.unlock();
             continue ;
         }
-        locker.unlock();
         command->m_vao = m_vaoManager->lookupHandle(QPair<HMeshData, HShader>(command->m_meshData, command->m_shader));
         if (command->m_vao.isNull()) {
             // Either VAO has not been created for MeshData and RenderPass

@@ -103,14 +103,22 @@ Node {
 
         Transform {
             id : transform_1
+
             LookAt {
                 position: Qt.vector3d( -2.0, -1.0, -18.0 )
                 upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
                 viewCenter: Qt.vector3d( 0.0, 0.0, 5.0 )
             }
             Rotate {
+                id : rotate
                 axis : Qt.vector3d(0, 1, 0)
-                angle : 45
+                angle : 0
+                QQ2.SequentialAnimation {
+                    running : true
+                    loops: QQ2.Animation.Infinite
+                    QQ2.NumberAnimation { target : rotate; property : "angle"; to : 360; duration : 2000 }
+                    QQ2.NumberAnimation { target : rotate; property : "angle"; to : 0; duration : 2000 }
+                }
             }
         }
 

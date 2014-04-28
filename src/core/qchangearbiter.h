@@ -43,8 +43,8 @@
 #define QT3D_QCHANGEARBITER_H
 
 #include <Qt3DCore/qt3dcore_global.h>
-
 #include <QObject>
+#include <QDateTime>
 #include <QDebug>
 #include <QFlags>
 #include <QMutex>
@@ -81,15 +81,25 @@ class QObservableInterface;
 class QT3DCORESHARED_EXPORT QSceneChange
 {
 public:
-    QSceneChange(int type, QObservableInterface *observable)
-        : m_type(type)
+    enum Priority {
+        High,
+        Standard,
+        Low
+    };
+
+    QSceneChange(int type, QObservableInterface *observable, Priority priority = Standard)
+        : m_type(type),
+          m_priority(priority),
+          m_timestamp(QDateTime::currentMSecsSinceEpoch())
     {
         m_subject.m_observable = observable;
         m_subjectType = ObservableType;
     }
 
-    QSceneChange(int type, Component *component)
-        : m_type(type)
+    QSceneChange(int type, Component *component, Priority priority = Standard)
+        : m_type(type),
+          m_priority(priority),
+          m_timestamp(QDateTime::currentMSecsSinceEpoch())
     {
         m_subject.m_component = component;
         m_subjectType = ComponentType;
@@ -106,6 +116,8 @@ public:
     } m_subjectType;
 
     int m_type;
+    Priority m_priority;
+    qint64 m_timestamp;
 
     // TODO: add timestamp from central clock and priority level
     // These can be used to resolve any conflicts between events
@@ -117,13 +129,13 @@ typedef QSharedPointer<QSceneChange> QSceneChangePtr;
 class QT3DCORESHARED_EXPORT QScenePropertyChange : public QSceneChange
 {
 public:
-    QScenePropertyChange(int type, QObservableInterface *subject)
-        : QSceneChange(type, subject)
+    QScenePropertyChange(int type, QObservableInterface *subject, Priority priority = Standard)
+        : QSceneChange(type, subject, priority)
     {
     }
 
-    QScenePropertyChange(int type, Component *component)
-        : QSceneChange(type, component)
+    QScenePropertyChange(int type, Component *component, Priority priority = Standard)
+        : QSceneChange(type, component, priority)
     {
     }
 

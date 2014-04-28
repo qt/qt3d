@@ -59,6 +59,8 @@ public:
     virtual ~AbstractTransform();
 
     virtual QMatrix4x4 matrix() const = 0;
+Q_SIGNALS:
+    void transformUpdated();
 };
 
 } // namespace Qt3D
