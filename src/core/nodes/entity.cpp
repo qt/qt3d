@@ -63,30 +63,7 @@ Entity::Entity(Node *parent)
 
 QList<Component *> Entity::components() const
 {
-    // Construct the list of components by looking for all properties that
-    // inherit from Component
-    QList<Component *> componentList;
-    const QMetaObject *meta = metaObject();
-    for (int i = meta->methodOffset(); i < meta->methodCount(); ++i)
-        qDebug() << QString::fromLatin1(meta->method(i).methodSignature());
-    for (int i = 0; i < meta->propertyCount(); ++i) {
-        const QMetaProperty metaProperty = meta->property(i);
-        const QVariant value = property(metaProperty.name());
-        Component *component = value.value<Component *>();
-        if (component) {
-            // Connect notify signal of the property to the updatePropertySlots
-            // This allows aspects to monitor for property changes
-            if (metaProperty.hasNotifySignal()) {
-                QMetaMethod componentPropertyUpdateSlot = metaObject()->method(metaObject()->indexOfSlot("componentPropertyUpdated()"));
-                qDebug() << metaProperty.name() << metaProperty.notifySignal().methodSignature();
-                QObject::connect(this, metaProperty.notifySignal(),
-                                 this, componentPropertyUpdateSlot,
-                                 Qt::UniqueConnection);
-            }
-            componentList.append(component);
-        }
-    }
-    return componentList + m_components;
+    return m_components;
 }
 
 void Entity::addComponent(Component *comp)
@@ -95,12 +72,18 @@ void Entity::addComponent(Component *comp)
     Q_ASSERT(m_components.count(comp) == 0);
     comp->setParent(this);
     m_components.append(comp);
+    qDebug() << Q_FUNC_INFO << objectName() << comp->objectName() << m_components.count();
+    QScenePropertyChangePtr propertyChange(new QScenePropertyChange(AllChanges, this));
+    notifyObservers(propertyChange);
+
+    // Have a method in component returning a value for add / update / remove
 }
 
 void Entity::removeComponent(Component *comp)
 {
     Q_CHECK_PTR(comp);
     m_components.removeOne(comp);
+    qDebug() << Q_FUNC_INFO << objectName() << comp->objectName() << m_components.count();
 }
 
 bool Entity::isEnabled() const
@@ -114,29 +97,6 @@ void Entity::setEnabled(bool on)
         m_enabled = on;
         emit enabledChanged();
     }
-}
-
-void Entity::update()
-{
-    //    if (m_transformsDirty) {
-    //        m_matrix = applyTransforms();
-    //        m_transformsDirty = false;
-    //    }
-
-    //    QMatrix4x4 prM;
-    //    if (parentEntity())
-    //        prM = parentEntity()->sceneMatrix();
-
-    //    m_sceneMatrix = prM * matrix();
-    // invalidate bounding volume information as required
-}
-
-void Entity::componentPropertyUpdated()
-{
-    qDebug() << Q_FUNC_INFO << "Component property updated ";
-
-    QScenePropertyChangePtr propertyChange(new QScenePropertyChange(AllChanges, this));
-    notifyObservers(propertyChange);
 }
 
 Entity *Entity::asEntity()

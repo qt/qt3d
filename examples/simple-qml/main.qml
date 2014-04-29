@@ -57,7 +57,7 @@ Node {
     QQ2.Timer
     {
         property bool test : false;
-        interval : 500
+        interval : 1500
         repeat : true
         running: true
         onTriggered:
@@ -73,20 +73,21 @@ Node {
         id: sceneRoot
         objectName: "sceneRootTest"
 
-        property FrameGraph frameGraph : FrameGraph {
-            objectName : "frameGraph"
-            activeFrameGraph : external_forward_renderer
+        FrameGraph {
+            id : external_forward_renderer
+            activeFrameGraph : ForwardRenderer {
+                objectName : "externalRenderer"
+                cameraViewportBottomLeft: camera1
+                cameraViewportTopRight: camera2
+            }
         }
 
-        ForwardRenderer {
-            id : external_forward_renderer
-            objectName : "externalRenderer"
-            cameraViewportBottomLeft: camera1
-            cameraViewportTopRight: camera2
-        }
+        components: [external_forward_renderer]
 
         Transform {
             id : transform_0
+            objectName : "transform_0"
+
             Translate {
                 id : translate_0
                 QQ2.SequentialAnimation {
@@ -105,6 +106,7 @@ Node {
 
         Transform {
             id : transform_1
+            objectName : "transform_1"
 
             LookAt {
                 position: Qt.vector3d( -2.0, -1.0, -18.0 )
@@ -124,45 +126,66 @@ Node {
             }
         }
 
+        CameraLens {
+            id : default_lens
+            objectName : "default_lens"
+            projectionType: CameraLens.PerspectiveProjection
+            fieldOfView: 45
+            aspectRatio: 16/9
+            nearPlane : 0.01
+            farPlane : 1000.0
+        }
+
         Entity {
             id: camera1
             objectName: "mainCamera"
 
-
-            property CameraLens lens: CameraLens {
-                projectionType: CameraLens.PerspectiveProjection
-                fieldOfView: 60
-                aspectRatio: 1024 / 768
-                nearPlane : 0.01
-                farPlane : 1000.0
-            }
-
-            property Transform transform : Transform {
-                LookAt {
-                    position: Qt.vector3d( 0.0, 0.0, -20.0 )
-                    upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
-                    viewCenter: Qt.vector3d( 0.0, 0.0, 10.0 )
-                }
-                Rotate {
-                    angle : -30
-                    axis : Qt.vector3d(0, 1, 0)
-                }
-            }
+                components : [
+                    Transform {
+                        LookAt {
+                            position: Qt.vector3d( 0.0, 0.0, -20.0 )
+                            upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
+                            viewCenter: Qt.vector3d( 0.0, 0.0, 10.0 )
+                        }
+                        Rotate {
+                            angle : -30
+                            axis : Qt.vector3d(0, 1, 0)
+                        }
+                    },
+                    CameraLens {
+                        objectName : "lens_2"
+                        projectionType: CameraLens.PerspectiveProjection
+                        fieldOfView: 45
+                        aspectRatio: 16/9
+                        nearPlane : 0.01
+                        farPlane : 1000.0
+                    }
+                ]
         }
 
-        Camera {
-            id : camera2
-            objectName : "camera2"
-            lens : CameraLens {
-                projectionType: CameraLens.PerspectiveProjection
-                fieldOfView: 45
-                aspectRatio: 16/9
-                nearPlane : 0.01
-                farPlane : 1000.0
-            }
+        Entity {
+            id: camera2
+            objectName: "camera2"
 
-            transform : transform_1
+            property Transform transform : transform_1
+
+            components : [default_lens, transform]
         }
+
+        //        Camera {
+        //            id : camera2
+        //            objectName : "camera2"
+        //            lens : CameraLens {
+        //                projectionType: CameraLens.PerspectiveProjection
+        //                fieldOfView: 45
+        //                aspectRatio: 16/9
+        //                nearPlane : 0.01
+        //                farPlane : 1000.0
+        //            }
+
+        //            transform : transform_1
+
+        //        }
 
         //        AdsEffect {
         //            id: adsEffect
@@ -200,6 +223,12 @@ Node {
             }
             property Mesh mesh: ballMesh
             property Material material: ballMaterial
+
+            components : [
+                transform,
+                ballMesh,
+                ballMaterial
+            ]
         }
 
         Entity {
@@ -212,6 +241,12 @@ Node {
             }
             property Mesh mesh: ballMesh
             property Material material: ballMaterial
+
+            components: [
+                transform,
+                mesh,
+                material
+            ]
         }
 
         Transform {
@@ -249,40 +284,12 @@ Node {
             property Transform transform: ball2Transform
             property Mesh mesh: ballMesh
             property Material material: ballMaterial
+
+            components : [
+                ball2Transform,
+                ballMesh,
+                ballMaterial
+            ]
         }
     }
 }
-
-//Object {
-//    id: root
-
-//    Object {
-//        id: scene // 3D Scene
-
-//        property var camera: Camera{
-//            id: mainCamera
-//            position: Qt.vector3d( 0.0, 1.0, 5.0 )
-//            upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
-//            viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
-//            effect: simpleEffect
-//        }
-
-//        Mesh {
-//            id: mesh
-//            source: ":/meshes/toyplane.obj"
-//        }
-
-//        SimpleEffect {
-//            id: simpleEffect
-//        }
-//    }
-
-//    Object {
-//        id: ui // 2D UI
-//    }
-
-//    Object {
-//        id: simulationLogic // Other random "stuff"
-//    }
-//}
-

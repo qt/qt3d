@@ -142,13 +142,8 @@ public:
 
     Entity* parentEntity();
 
-    // TEMPORARY - should be driven by an Update traversal in the core
-    void update();
 Q_SIGNALS:
     void enabledChanged();
-
-private Q_SLOTS:
-    void componentPropertyUpdated();
 
 private:
     ComponentList m_components;

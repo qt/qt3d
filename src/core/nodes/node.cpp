@@ -117,9 +117,6 @@ void Node::addChild(Node *childNode)
 
     m_children.append(childNode);
     childNode->setParent(this);
-
-    if (childNode->asEntity())
-        childNode->asEntity()->update();
 }
 
 void Node::removeChild(Node *childNode)

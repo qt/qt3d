@@ -51,6 +51,7 @@
 
 #include <node.h>
 #include <entity.h>
+#include <qmlentity.h>
 #include <camera.h>
 #include <cameralens.h>
 #include <matrixtransform.h>
@@ -106,7 +107,9 @@ void QAspectManager::registerCoreQmlComponents()
 {
     qDebug() << Q_FUNC_INFO;
     qmlRegisterType<Qt3D::Node>("Qt3D", 2, 0, "Node");
-    qmlRegisterType<Qt3D::Entity>("Qt3D", 2, 0, "Entity");
+    qmlRegisterUncreatableType<Qt3D::Entity>("Qt3D", 2, 0, "", "");
+    qmlRegisterType<Qt3D::Component>("Qt3D", 2, 0, "Component");
+    qmlRegisterType<Qt3D::QmlEntity>("Qt3D", 2, 0, "Entity");
     qmlRegisterType<Qt3D::Camera>("Qt3D", 2, 0, "Camera");
     qmlRegisterType<Qt3D::CameraLens>("Qt3D", 2, 0, "CameraLens");
     qmlRegisterType<Qt3D::MatrixTransform>("Qt3D", 2, 0, "MatrixTransform");
