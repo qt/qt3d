@@ -83,7 +83,15 @@ void QObservable::notifyObservers(const QSceneChangePtr &e)
 QChangeArbiter::QChangeArbiter(QObject *parent)
     : QObject(parent)
     , m_jobManager(0)
+    , m_mutex(QMutex::Recursive)
 {
+    // The QMutex has to be recursive to handle the case where :
+    // 1) SyncChanges is called, mutex is locked
+    // 2) Changes are distributed
+    // 3) An observer decides to register a new observable upon receiving notification
+    // 4) registerObserver locks the mutex once again -> we need recursion otherwise deadlock
+    // 5) Mutex is unlocked - leaving registerObserver
+    // 6) Mutex is unlocked - leaving SyncChanges
 }
 
 void QChangeArbiter::initialize(QJobManagerInterface *jobManager)
@@ -152,10 +160,6 @@ void QChangeArbiter::registerObserver(QObserverInterface *observer,
     QObserverList &observers = m_observations[subject][changeFlags];
     observers.append(observer);
 
-    // TODO: Also store info about types of change observer is interested in so that we
-    // can reduce the amount of traffic
-    Q_UNUSED(changeFlags);
-
     // Register ourselves with the observable as the intermediary
     subject->registerObserver(this);
 }
@@ -174,10 +178,6 @@ void QChangeArbiter::registerObserver(QObserverInterface *observer,
     QObserverList &observers = m_componentObservations[component][changeFlags];
     observers.append(observer);
 
-    // TODO: Also store info about types of change observer is interested in so that we
-    // can reduce the amount of traffic
-    Q_UNUSED(changeFlags);
-
     // Register ourselves with the observable as the intermediary
     component->registerChangeArbiter(this);
 }
@@ -185,6 +185,7 @@ void QChangeArbiter::registerObserver(QObserverInterface *observer,
 void QChangeArbiter::unregisterObserver(QObserverInterface *observer,
                                         QObservableInterface *subject)
 {
+    QMutexLocker locker(&m_mutex);
     if (m_observations.contains(subject)) {
         QObserverHash &observers = m_observations[subject];
         QList<int> changeFlags = observers.keys();
@@ -196,6 +197,7 @@ void QChangeArbiter::unregisterObserver(QObserverInterface *observer,
 
 void QChangeArbiter::unregisterObserver(QObserverInterface *observer, Component *subject)
 {
+    QMutexLocker locker(&m_mutex);
     if (m_componentObservations.contains(subject)) {
         QObserverHash &observers = m_componentObservations[subject];
         QList<int> changeFlags = observers.keys();
@@ -207,13 +209,13 @@ void QChangeArbiter::unregisterObserver(QObserverInterface *observer, Component 
 
 void QChangeArbiter::sceneChangeEvent(const QSceneChangePtr &e)
 {
-    //qDebug() << Q_FUNC_INFO << QThread::currentThread();
+//    qDebug() << Q_FUNC_INFO << QThread::currentThread();
 
     // Add the change to the thread local storage queue - no locking required => yay!
     ChangeQueue *localChangeQueue = m_tlsChangeQueue.localData();
     localChangeQueue->append(e);
 
-    //qDebug() << "Change queue for thread" << QThread::currentThread() << "now contains" << localChangeQueue->count() << "items";
+//    qDebug() << "Change queue for thread" << QThread::currentThread() << "now contains" << localChangeQueue->count() << "items";
 }
 
 void QChangeArbiter::sceneChangeEventWithLock(const QSceneChangePtr &e)

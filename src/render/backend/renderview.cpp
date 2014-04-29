@@ -175,18 +175,18 @@ void RenderView::buildRenderCommands(RenderNode *node)
             // the handle will be invalid and a default material will be used during rendering
             command->m_material = m_renderer->materialManager()->lookupHandle(frontEndEntity->uuid());
             // Set shader according to material and effect, technique and renderpassfilter
-            RenderMaterial *mat = m_renderer->materialManager()->data(command->m_material);
-            if (m_techniqueFilter != Q_NULLPTR && mat != Q_NULLPTR && mat->peer() != Q_NULLPTR) {
-                Effect *eff = mat->peer()->effect();
-                if (eff != Q_NULLPTR) {
-                    if (eff->techniques().empty())
-                        qCWarning(Backend) << "No technique defined in Effect";
-                    // Find HShader for technique and renderpass
-                    Q_FOREACH (Technique *tech, eff->techniques()) {
-                        qCDebug(Backend) << "Technique : " << tech->renderPasses();
-                    }
-                }
-            }
+//            RenderMaterial *mat = m_renderer->materialManager()->data(command->m_material);
+//            if (m_techniqueFilter != Q_NULLPTR && mat != Q_NULLPTR && mat->peer() != Q_NULLPTR) {
+//                Effect *eff = mat->peer()->effect();
+//                if (eff != Q_NULLPTR) {
+//                    if (eff->techniques().empty())
+//                        qCWarning(Backend) << "No technique defined in Effect";
+//                    // Find HShader for technique and renderpass
+//                    Q_FOREACH (Technique *tech, eff->techniques()) {
+//                        qCDebug(Backend) << "Technique : " << tech->renderPasses();
+//                    }
+//                }
+//            }
             // The VAO Handle is set directly in the renderer thread so as to avoid having to use a mutex here
 
             // Use a default shader and uniform bindings for the moment

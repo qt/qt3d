@@ -57,7 +57,7 @@ Node {
     QQ2.Timer
     {
         property bool test : false;
-        interval : 2000
+        interval : 500
         repeat : true
         running: true
         onTriggered:
@@ -87,17 +87,19 @@ Node {
 
         Transform {
             id : transform_0
-            Rotate {
-                axis : Qt.vector3d(0,1,0)
-                angle : 30
-            }
-            Scale {
-                scale3D : Qt.vector3d(0.5, 0.25, 0.5)
-            }
             Translate {
-                dx : -9
-                dy : 2
-                dz : 20
+                id : translate_0
+                QQ2.SequentialAnimation {
+                    running : true
+                    loops: QQ2.Animation.Infinite
+                    QQ2.NumberAnimation { target : translate_0; property : "dz"; to : -360; duration : 2000 }
+                    QQ2.NumberAnimation { target : translate_0; property : "dz"; to : -20; duration : 2000 }
+                }
+            }
+            LookAt {
+                position: Qt.vector3d( -2.0, -1.0, -18.0 )
+                upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
+                viewCenter: Qt.vector3d( 0.0, 0.0, 5.0 )
             }
         }
 
@@ -112,7 +114,7 @@ Node {
             Rotate {
                 id : rotate
                 axis : Qt.vector3d(0, 1, 0)
-                angle : 0
+                angle : 45
                 QQ2.SequentialAnimation {
                     running : true
                     loops: QQ2.Animation.Infinite
@@ -137,9 +139,13 @@ Node {
 
             property Transform transform : Transform {
                 LookAt {
-                    position: Qt.vector3d( 0.0, 0.0, -15.0 )
+                    position: Qt.vector3d( 0.0, 0.0, -20.0 )
                     upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
                     viewCenter: Qt.vector3d( 0.0, 0.0, 10.0 )
+                }
+                Rotate {
+                    angle : -30
+                    axis : Qt.vector3d(0, 1, 0)
                 }
             }
         }
@@ -202,42 +208,45 @@ Node {
 
             property Transform transform: Transform {
                 Scale { scale : 0.5 }
-                Translate{ dx: 8; dy: 4; dz : 25 }
+                Translate{ dx: 8; dy: 8; dz : 30 }
             }
             property Mesh mesh: ballMesh
             property Material material: ballMaterial
         }
 
-        //        Translate {
-        //            id: ball2Translation
-        //            objectName : "ball2Translation"
-        //            dx: 0; dy: 0
-        //            QQ2.SequentialAnimation {
-        //                running: true
-        //                loops: QQ2.Animation.Infinite
+        Transform {
+            id: ball2Transform
+            Scale { scale : 0.35 }
+            Translate {
+                id: ball2Translation
+                dx: 0; dy: 0; dz : 40
+                QQ2.SequentialAnimation {
+                    running: true
+                    loops: QQ2.Animation.Infinite
 
-        //                QQ2.NumberAnimation {
-        //                    target: ball2Translation
-        //                    property: "dx"
-        //                    duration: 1000
-        //                    easing.type: QQ2.Easing.InOutQuad
-        //                    from: 0; to: 100
-        //                }
-        //                QQ2.NumberAnimation {
-        //                    target: ball2Translation
-        //                    property: "dx"
-        //                    duration: 1000
-        //                    easing.type: QQ2.Easing.InOutQuad
-        //                    from: 100; to: 0
-        //                }
-        //            }
-        //        }
+                    QQ2.NumberAnimation {
+                        target: ball2Translation
+                        property: "dx"
+                        duration: 1000
+                        easing.type: QQ2.Easing.InOutQuad
+                        from: 0; to: 10
+                    }
+                    QQ2.NumberAnimation {
+                        target: ball2Translation
+                        property: "dx"
+                        duration: 1000
+                        easing.type: QQ2.Easing.InOutQuad
+                        from: 10; to: 0
+                    }
+                }
+            }
+        }
 
         Entity {
             id: ball2
             objectName: "ball2"
 
-            property Transform transform: transform_0
+            property Transform transform: ball2Transform
             property Mesh mesh: ballMesh
             property Material material: ballMaterial
         }

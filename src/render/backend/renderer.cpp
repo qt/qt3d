@@ -195,7 +195,7 @@ void Renderer::buildDefaultTechnique()
 
 void Renderer::buildDefaultMaterial()
 {
-    m_defaultMaterial = new Material;
+    m_defaultMaterial = new Material();
     m_defaultMaterial->setObjectName(QStringLiteral("DefaultMaterial"));
     m_defaultMaterial->setParameter(QStringLiteral("lightPos"), QVector4D(10.0f, 10.0f, 0.0f, 1.0f));
     m_defaultMaterial->setParameter(QStringLiteral("lightIntensity"), QVector3D(0.5f, 0.5f, 0.5f));
@@ -244,7 +244,7 @@ void Renderer::setSceneGraphRoot(Node *sgRoot)
 {
     Q_ASSERT(sgRoot);
 
-//    Scene *scene = Scene::findInTree(sgRoot);
+    //    Scene *scene = Scene::findInTree(sgRoot);
     // Scene needs to be built with scene parsers
     // For each scene parser, check whether scene source format
     // is supported, filter if there is a preference toward which
@@ -441,6 +441,20 @@ void Renderer::executeCommands(const QVector<RenderCommand *> commands)
             qCWarning(Rendering) << "RenderCommand should have a mesh";
             continue ;
         }
+        RenderMaterial *mat = getOrCreateMaterial(m_defaultMaterial);
+        if (mat == Q_NULLPTR)
+            mat = getOrCreateMaterial(m_defaultMaterial);
+        // Mat -> Effect -> Techniques
+        // Technique -> RenderPass -> Shader
+        RenderTechnique *technique = mat->technique();
+        //        qCDebug(Backend()) << Q_FUNC_INFO;
+        //        RenderMaterial *mat = m_materialManager->data(command->m_material);
+        //        if (mat == Q_NULLPTR)
+        //            mat = getOrCreateMaterial(m_defaultMaterial);
+        //        RenderTechnique *technique = mat->technique();
+        //        if (technique = Q_NULLPTR)
+        //            technique = techniqueForMaterial(m_defaultMaterial);
+
         command->m_vao = m_vaoManager->lookupHandle(QPair<HMeshData, HShader>(command->m_meshData, command->m_shader));
         if (command->m_vao.isNull()) {
             // Either VAO has not been created for MeshData and RenderPass
@@ -460,15 +474,6 @@ void Renderer::executeCommands(const QVector<RenderCommand *> commands)
         }
         QOpenGLVertexArrayObject *vao = *(m_vaoManager->data(command->m_vao));
         Q_ASSERT(vao);
-        RenderMaterial *mat = getOrCreateMaterial(m_defaultMaterial);
-        RenderTechnique *technique = mat->technique();
-        //        qCDebug(Backend()) << Q_FUNC_INFO;
-        //        RenderMaterial *mat = m_materialManager->data(command->m_material);
-        //        if (mat == Q_NULLPTR)
-        //            mat = getOrCreateMaterial(m_defaultMaterial);
-        //        RenderTechnique *technique = mat->technique();
-        //        if (technique = Q_NULLPTR)
-        //            technique = techniqueForMaterial(m_defaultMaterial);
 
         // The VAO should be created only once for a MeshData and a ShaderProgram
         // Manager should have a VAO Manager that are indexed by MeshData and Shader

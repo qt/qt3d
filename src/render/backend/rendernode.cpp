@@ -137,6 +137,14 @@ void RenderNode::sceneChangeEvent(const QSceneChangePtr &e)
     case AllChanges: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         qCDebug(RenderNodes) << Q_FUNC_INFO << "ALLCHANGES RECEIVED" << propertyChange->m_value;
+
+        Entity *entity = m_frontEndPeer->asEntity();
+        if (entity != Q_NULLPTR) {
+            if (m_transform) {
+                qDebug(RenderNodes) << Q_FUNC_INFO << "Transform component Changed";
+                setTransform(entity->componentsOfType<Transform>().first());
+            }
+        }
         break;
     }
 
