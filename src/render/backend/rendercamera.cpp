@@ -41,7 +41,7 @@
 
 #include "rendercamera.h"
 #include "rendereraspect.h"
-
+#include "renderlogging.h"
 #include <transform.h>
 #include <cameralens.h>
 
@@ -69,11 +69,16 @@ void RenderCamera::setRendererAspect(RendererAspect *rendererAspect)
 
 void RenderCamera::setPeer(CameraLens *peer)
 {
-    m_peer = peer;
-
-    // Register for changes
-    QChangeArbiter *arbiter = m_rendererAspect->aspectManager()->changeArbiter();
-    arbiter->registerObserver(this, m_peer, MaterialParameter);
+    if (peer != m_peer) {
+        QChangeArbiter *arbiter = m_rendererAspect->aspectManager()->changeArbiter();
+        if (m_peer)
+            arbiter->unregisterObserver(this, m_peer);
+        m_peer = peer;
+        if (m_peer) {
+            // Register for changes
+            arbiter->registerObserver(this, m_peer, ComponentUpdated);
+        }
+    }
 }
 
 void RenderCamera::sync()
@@ -109,7 +114,7 @@ QMatrix4x4 RenderCamera::view() const
 void RenderCamera::sceneChangeEvent(const QSceneChangePtr &e)
 {
     switch (e->m_type) {
-    case CameraProjectionMatrix: {
+    case ComponentUpdated: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         QVariant propertyValue = propertyChange->m_value;
         QMatrix4x4 viewMatrix = propertyValue.value<QMatrix4x4>();

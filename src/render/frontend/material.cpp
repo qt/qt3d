@@ -75,7 +75,7 @@ void Material::setParameter(QString name, QVariant val)
     m_parameters[name] = val;
 
     // schedule update to the backend
-    QScenePropertyChangePtr change(new QScenePropertyChange(MaterialParameter, this));
+    QScenePropertyChangePtr change(new QScenePropertyChange(ComponentUpdated, this));
     change->m_propertyName = name.toLocal8Bit();
     change->m_value = val;
     notifySceneChange(change);

@@ -82,8 +82,8 @@ void QObservable::notifyObservers(const QSceneChangePtr &e)
 
 QChangeArbiter::QChangeArbiter(QObject *parent)
     : QObject(parent)
-    , m_jobManager(0)
     , m_mutex(QMutex::Recursive)
+    , m_jobManager(0)
 {
     // The QMutex has to be recursive to handle the case where :
     // 1) SyncChanges is called, mutex is locked
@@ -111,20 +111,24 @@ void QChangeArbiter::distributeQueueChanges(ChangeQueue *changeQueue)
         switch (change->m_subjectType) {
         case QSceneChange::ObservableType: {
             QObservableInterface *subject = change->m_subject.m_observable;
-            if (m_observations.contains(subject) && m_observations[subject].contains(change->m_type)) {
-                QObserverList &observers = m_observations[subject][change->m_type];
-                Q_FOREACH (QObserverInterface *observer, observers)
-                    observer->sceneChangeEvent(change);
+            if (m_observations.contains(subject)) {
+                QObserverList &observers = m_observations[subject];
+                Q_FOREACH (const QObserverPair &observer, observers) {
+                    if ((change->m_type & observer.first))
+                        observer.second->sceneChangeEvent(change);
+                }
             }
             break;
         }
 
         case QSceneChange::ComponentType: {
             Component *subject = change->m_subject.m_component;
-            if (m_componentObservations.contains(subject) && m_componentObservations[subject].contains(change->m_type)) {
-                QObserverList &observers = m_componentObservations[subject][change->m_type];
-                Q_FOREACH (QObserverInterface *observer, observers)
-                    observer->sceneChangeEvent(change);
+            if (m_componentObservations.contains(subject)) {
+                QObserverList &observers = m_componentObservations[subject];
+                Q_FOREACH (const QObserverPair&observer, observers) {
+                    if ((change->m_type & observer.first))
+                        observer.second->sceneChangeEvent(change);
+                }
             }
             break;
         }
@@ -148,7 +152,7 @@ void QChangeArbiter::syncChanges()
 
 void QChangeArbiter::registerObserver(QObserverInterface *observer,
                                       QObservableInterface *subject,
-                                      int changeFlags)
+                                      ChangeFlags changeFlags)
 {
     qDebug() << Q_FUNC_INFO;
     if (!observer || !subject)
@@ -157,8 +161,8 @@ void QChangeArbiter::registerObserver(QObserverInterface *observer,
     // Store info about which observers are watching which observables.
     // Protect access as this could be called from any thread
     QMutexLocker locker(&m_mutex);
-    QObserverList &observers = m_observations[subject][changeFlags];
-    observers.append(observer);
+    QObserverList &observers = m_observations[subject];
+    observers.append(QObserverPair(changeFlags, observer));
 
     // Register ourselves with the observable as the intermediary
     subject->registerObserver(this);
@@ -166,7 +170,7 @@ void QChangeArbiter::registerObserver(QObserverInterface *observer,
 
 void QChangeArbiter::registerObserver(QObserverInterface *observer,
                                       Component *component,
-                                      int changeFlags)
+                                      ChangeFlags changeFlags)
 {
     qDebug() << Q_FUNC_INFO;
     if (!observer || !component)
@@ -175,8 +179,8 @@ void QChangeArbiter::registerObserver(QObserverInterface *observer,
     // Store info about which observers are watching which observables.
     // Protect access as this could be called from any thread
     QMutexLocker locker(&m_mutex);
-    QObserverList &observers = m_componentObservations[component][changeFlags];
-    observers.append(observer);
+    QObserverList &observers = m_componentObservations[component];
+    observers.append(QObserverPair(changeFlags, observer));
 
     // Register ourselves with the observable as the intermediary
     component->registerChangeArbiter(this);
@@ -187,10 +191,10 @@ void QChangeArbiter::unregisterObserver(QObserverInterface *observer,
 {
     QMutexLocker locker(&m_mutex);
     if (m_observations.contains(subject)) {
-        QObserverHash &observers = m_observations[subject];
-        QList<int> changeFlags = observers.keys();
-        Q_FOREACH (int changeFlag, changeFlags) {
-            observers[changeFlag].removeAll(observer);
+        QObserverList &observers = m_observations[subject];
+        for (int i = observers.count() - 1; i >= 0; i--) {
+            if (observers[i].second == observer)
+                observers.removeAt(i);
         }
     }
 }
@@ -199,23 +203,23 @@ void QChangeArbiter::unregisterObserver(QObserverInterface *observer, Component 
 {
     QMutexLocker locker(&m_mutex);
     if (m_componentObservations.contains(subject)) {
-        QObserverHash &observers = m_componentObservations[subject];
-        QList<int> changeFlags = observers.keys();
-        Q_FOREACH (int changeFlag, changeFlags) {
-            observers[changeFlag].removeAll(observer);
+        QObserverList &observers = m_componentObservations[subject];
+        for (int i = observers.count() - 1; i >= 0; i--) {
+            if (observers[i].second == observer)
+                observers.removeAt(i);
         }
     }
 }
 
 void QChangeArbiter::sceneChangeEvent(const QSceneChangePtr &e)
 {
-//    qDebug() << Q_FUNC_INFO << QThread::currentThread();
+    //    qDebug() << Q_FUNC_INFO << QThread::currentThread();
 
     // Add the change to the thread local storage queue - no locking required => yay!
     ChangeQueue *localChangeQueue = m_tlsChangeQueue.localData();
     localChangeQueue->append(e);
 
-//    qDebug() << "Change queue for thread" << QThread::currentThread() << "now contains" << localChangeQueue->count() << "items";
+    //    qDebug() << "Change queue for thread" << QThread::currentThread() << "now contains" << localChangeQueue->count() << "items";
 }
 
 void QChangeArbiter::sceneChangeEventWithLock(const QSceneChangePtr &e)

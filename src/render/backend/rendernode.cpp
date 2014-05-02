@@ -44,7 +44,11 @@
 #include "renderer.h"
 #include "rendernodesmanager.h"
 #include "matrixmanager.h"
-
+#include "cameramanager.h"
+#include "materialmanager.h"
+#include "meshmanager.h"
+#include "mesh.h"
+#include <cameralens.h>
 #include <transform.h>
 
 #include <qaspectmanager.h>
@@ -121,28 +125,60 @@ void RenderNode::setTransform(Transform *transform)
             arbiter->unregisterObserver(this, m_transform);
         m_transform = transform;
         // Register for changes
-        arbiter->registerObserver(this, m_transform, LocalTransform);
-        *localTransform() = m_transform->matrix();
+        if (m_transform) {
+            arbiter->registerObserver(this, m_transform, ComponentUpdated);
+            *localTransform() = m_transform->matrix();
+        }
     }
 }
 
 void RenderNode::sceneChangeEvent(const QSceneChangePtr &e)
 {
     switch (e->m_type) {
-    case LocalTransform: {
+
+    case ComponentUpdated: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        *localTransform() = propertyChange->m_value.value<QMatrix4x4>();
+        Component *component = propertyChange->m_subject.m_component;
+        if (component == m_transform)
+            *localTransform() = m_transform->matrix();
         break;
     }
-    case AllChanges: {
+    case ComponentAdded: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        qCDebug(RenderNodes) << Q_FUNC_INFO << "ALLCHANGES RECEIVED" << propertyChange->m_value;
-
-        Entity *entity = m_frontEndPeer->asEntity();
-        if (entity != Q_NULLPTR) {
-            if (m_transform) {
-                qDebug(RenderNodes) << Q_FUNC_INFO << "Transform component Changed";
-                setTransform(entity->componentsOfType<Transform>().first());
+        Component *component = propertyChange->m_value.value<Component*>();
+        if (m_transform == Q_NULLPTR && qobject_cast<Transform*>(component) != Q_NULLPTR) {
+            setTransform(qobject_cast<Transform *>(component));
+        }
+        else if (m_frontEndPeer->asEntity()) {
+            if (qobject_cast<CameraLens *>(component)) {
+                RenderCamera *cam = m_renderer->cameraManager()->lookupResource(m_frontEndPeer->asEntity()->uuid());
+                if (cam != Q_NULLPTR)
+                    cam->setPeer(qobject_cast<CameraLens *>(component));
+            }
+            else if (qobject_cast<Mesh *>(component)) {
+                RenderMesh *mesh = m_renderer->meshManager()->lookupResource(m_frontEndPeer->asEntity()->uuid());
+                if (mesh != Q_NULLPTR)
+                    mesh->setPeer(qobject_cast<Mesh *>(component));
+            }
+        }
+        break;
+    }
+    case ComponentRemoved: {
+        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+        Component *component = propertyChange->m_value.value<Component*>();
+        if (component == m_transform) {
+            setTransform(Q_NULLPTR);
+        }
+        else if (m_frontEndPeer->asEntity()) {
+            if (qobject_cast<CameraLens *>(component)) {
+                RenderCamera *cam = m_renderer->cameraManager()->lookupResource(m_frontEndPeer->asEntity()->uuid());
+                if (cam != Q_NULLPTR)
+                    cam->setPeer(Q_NULLPTR);
+            }
+            else if (qobject_cast<Mesh *>(component)) {
+                RenderMesh *mesh = m_renderer->meshManager()->lookupResource(m_frontEndPeer->asEntity()->uuid());
+                if (mesh != Q_NULLPTR)
+                    mesh->setPeer(Q_NULLPTR);
             }
         }
         break;

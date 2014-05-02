@@ -69,21 +69,23 @@ QList<Component *> Entity::components() const
 void Entity::addComponent(Component *comp)
 {
     Q_CHECK_PTR( comp );
+    qDebug() << Q_FUNC_INFO << objectName() << comp;
     Q_ASSERT(m_components.count(comp) == 0);
     comp->setParent(this);
     m_components.append(comp);
-    qDebug() << Q_FUNC_INFO << objectName() << comp->objectName() << m_components.count();
-    QScenePropertyChangePtr propertyChange(new QScenePropertyChange(AllChanges, this));
+    QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentAdded, this));
+    propertyChange->m_value = QVariant::fromValue(comp);
     notifyObservers(propertyChange);
-
-    // Have a method in component returning a value for add / update / remove
 }
 
 void Entity::removeComponent(Component *comp)
 {
     Q_CHECK_PTR(comp);
+    qDebug() << Q_FUNC_INFO << objectName() << comp;
     m_components.removeOne(comp);
-    qDebug() << Q_FUNC_INFO << objectName() << comp->objectName() << m_components.count();
+    QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentRemoved, this));
+    propertyChange->m_value = QVariant::fromValue(comp);
+    notifyObservers(propertyChange);
 }
 
 bool Entity::isEnabled() const

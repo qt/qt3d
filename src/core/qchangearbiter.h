@@ -53,6 +53,7 @@
 #include <QThreadStorage>
 #include <QVariant>
 #include <QVector>
+#include <QPair>
 
 QT_BEGIN_NAMESPACE
 
@@ -65,11 +66,10 @@ enum ChangeFlag {
     NodeAboutToBeDeleted    = 0x00000002,
     NodeDeleted             = 0x00000004,
     NodeStatus              = 0x00000008,
-    LocalTransform          = 0x00000010,
-    MaterialParameter       = 0x00000020,
-    CameraProjectionMatrix  = 0x00000040,
-    CustomAspectChange      = 0x00000080,
-    AllChanges              = 0x00000100
+    ComponentAdded          = 0x00000010,
+    ComponentRemoved        = 0x00000020,
+    ComponentUpdated        = 0x00000040,
+    AllChanges              = 0x00000FFF
 };
 Q_DECLARE_FLAGS(ChangeFlags, ChangeFlag)
 Q_DECLARE_OPERATORS_FOR_FLAGS(ChangeFlags)
@@ -87,7 +87,7 @@ public:
         Low
     };
 
-    QSceneChange(int type, QObservableInterface *observable, Priority priority = Standard)
+    QSceneChange(ChangeFlag type, QObservableInterface *observable, Priority priority = Standard)
         : m_type(type),
           m_priority(priority),
           m_timestamp(QDateTime::currentMSecsSinceEpoch())
@@ -96,7 +96,7 @@ public:
         m_subjectType = ObservableType;
     }
 
-    QSceneChange(int type, Component *component, Priority priority = Standard)
+    QSceneChange(ChangeFlag type, Component *component, Priority priority = Standard)
         : m_type(type),
           m_priority(priority),
           m_timestamp(QDateTime::currentMSecsSinceEpoch())
@@ -115,7 +115,7 @@ public:
         ComponentType
     } m_subjectType;
 
-    int m_type;
+    ChangeFlag m_type;
     Priority m_priority;
     qint64 m_timestamp;
 
@@ -129,12 +129,12 @@ typedef QSharedPointer<QSceneChange> QSceneChangePtr;
 class QT3DCORESHARED_EXPORT QScenePropertyChange : public QSceneChange
 {
 public:
-    QScenePropertyChange(int type, QObservableInterface *subject, Priority priority = Standard)
+    QScenePropertyChange(ChangeFlag type, QObservableInterface *subject, Priority priority = Standard)
         : QSceneChange(type, subject, priority)
     {
     }
 
-    QScenePropertyChange(int type, Component *component, Priority priority = Standard)
+    QScenePropertyChange(ChangeFlag type, Component *component, Priority priority = Standard)
         : QSceneChange(type, component, priority)
     {
     }
@@ -202,11 +202,11 @@ public:
 
     void registerObserver(QObserverInterface *observer,
                           QObservableInterface *subject,
-                          int changeFlags = AllChanges);
+                          ChangeFlags changeFlags = AllChanges);
 
     void registerObserver(QObserverInterface *observer,
                           Component *component,
-                          int changeFlags = AllChanges);
+                          ChangeFlags changeFlags = AllChanges);
 
     void unregisterObserver(QObserverInterface *observer,
                             QObservableInterface *subject);
@@ -230,10 +230,10 @@ private:
     QMutex m_mutex;
     QJobManagerInterface *m_jobManager;
 
-    typedef QList<QObserverInterface *> QObserverList;
-    typedef QHash<int, QObserverList> QObserverHash;
-    QHash<QObservableInterface *, QObserverHash> m_observations;
-    QHash<Component *, QObserverHash> m_componentObservations;
+    typedef QPair<ChangeFlags, QObserverInterface *> QObserverPair;
+    typedef QList<QObserverPair> QObserverList;
+    QHash<QObservableInterface *, QObserverList> m_observations;
+    QHash<Component *, QObserverList> m_componentObservations;
 
     // Each thread has a TLS ChangeQueue so we never need to lock whilst
     // receiving a QSceneChange.

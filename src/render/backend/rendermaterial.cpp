@@ -81,7 +81,7 @@ void RenderMaterial::setPeer(Material *mat)
 
     // Register for changes
     QChangeArbiter *arbiter = m_rendererAspect->aspectManager()->changeArbiter();
-    arbiter->registerObserver(this, m_peer, MaterialParameter);
+    arbiter->registerObserver(this, m_peer, ComponentUpdated);
 }
 
 void RenderMaterial::setRendererAspect(RendererAspect *rendererAspect)
@@ -194,7 +194,7 @@ void RenderMaterial::setUniformsForPass(unsigned int pass, QGraphicsContext *gc)
 void RenderMaterial::sceneChangeEvent(const QSceneChangePtr &e)
 {
     switch (e->m_type) {
-    case MaterialParameter: {
+    case ComponentUpdated: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         QString propertyName = QString::fromLatin1(propertyChange->m_propertyName);
         QVariant propertyValue = propertyChange->m_value;

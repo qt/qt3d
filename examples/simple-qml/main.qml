@@ -64,6 +64,7 @@ Node {
         {
             console.log("Triggered <<<<<<<<<<<<<<<<<<<<< " + test);
             camera2.transform = test ? transform_0 : transform_1
+            ball2.mesh = test ? cubeMesh : ballMesh
             test = !test
         }
     }
@@ -168,9 +169,18 @@ Node {
             objectName: "camera2"
 
             property Transform transform : transform_1
-
             components : [default_lens, transform]
         }
+        Entity {
+            id: ball2
+            objectName: "ball2"
+
+            property Transform transform : ball2Transform;
+            property Mesh mesh: ballMesh
+            property Material material: ballMaterial
+            components : [mesh, ballMaterial, transform]
+        }
+
 
         //        Camera {
         //            id : camera2
@@ -198,6 +208,12 @@ Node {
             source: ":/assets/ball.obj"
         }
 
+        Mesh {
+            id : cubeMesh
+            objectName: "cubeMesh"
+            source : ":/assets/cube.obj"
+        }
+
         Material {
             id: ballMaterial
             objectName: "ballMaterial"
@@ -219,7 +235,7 @@ Node {
 
             property Transform transform: Transform {
                 Translate{ dx: 0; dy: -10; dz : 25 }
-                Scale {scale : 0.1}
+                Scale {scale : 0.3}
             }
             property Mesh mesh: ballMesh
             property Material material: ballMaterial
@@ -275,21 +291,6 @@ Node {
                     }
                 }
             }
-        }
-
-        Entity {
-            id: ball2
-            objectName: "ball2"
-
-            property Transform transform: ball2Transform
-            property Mesh mesh: ballMesh
-            property Material material: ballMaterial
-
-            components : [
-                ball2Transform,
-                ballMesh,
-                ballMaterial
-            ]
         }
     }
 }

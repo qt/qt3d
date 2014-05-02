@@ -259,10 +259,6 @@ void RenderSceneBuilder::visitEntity(Qt3D::Entity *entity)
         camera->setRendererAspect(m_renderer->rendererAspect());
         camera->setPeer(cameraLenses.first());
         camera->setProjection(cameraLenses.first()->projectionMatrix());
-        // TO DO : Transforms
-        // Should we apply a combination of all transform of the parent entities in the tree
-        // Or use only the one associated with the Camera Lens ?
-        // Applying all parents transform could lead to some strange behavior.
     }
 
     // Check if entity is a Scene and if so parses the scene

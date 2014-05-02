@@ -7,5 +7,6 @@
         <file>assets/ball.obj</file>
         <file>ForwardRenderer.qml</file>
         <file>assets/test_scene.dae</file>
+        <file>assets/cube.obj</file>
     </qresource>
 </RCC>

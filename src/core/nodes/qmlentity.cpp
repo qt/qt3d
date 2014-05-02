@@ -48,7 +48,6 @@ namespace Qt3D {
 
 QmlEntity::QmlEntity(Node *parent) : Entity(parent)
 {
-
 }
 
 QQmlListProperty<Component> QmlEntity::componentList()
@@ -86,7 +85,6 @@ void QmlEntity::qmlClearComponents(QQmlListProperty<Component> *list)
     ComponentList components = self->components();
     Q_FOREACH (Component *comp, components) {
         self->removeComponent(comp);
-//        delete comp;
     }
 }
 

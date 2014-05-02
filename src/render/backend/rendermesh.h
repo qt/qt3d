@@ -86,23 +86,13 @@ public:
      */
     void mapAttributeNames();
 
-//    virtual void initializeGL(QGraphicsContext* dc);
-
-//    virtual void releaseGL();
-
 protected:
-//    virtual void sendDrawingCommands( QGraphicsContext* dc );
 
-//    virtual RenderShader* shader();
-
-//    virtual AxisAlignedBoundingBox boundingBox() const;
 
 private:
     RendererAspect *m_rendererAspect;
     Mesh* m_peer;
     QString m_source;
-//    RenderTechnique* m_technique;
-//    unsigned int m_pass;
 
     bool m_meshDirty;
     HMeshData m_meshDataHandle;

@@ -72,18 +72,23 @@ namespace Render {
  */
 
 RenderMesh::RenderMesh() :
-      m_rendererAspect(0),
-      m_peer(0),
-      m_meshDirty(true),
-      m_lock(new QReadWriteLock())
+    m_rendererAspect(0),
+    m_peer(0),
+    m_meshDirty(true),
+    m_lock(new QReadWriteLock())
 {
 }
 
 void RenderMesh::setPeer(Mesh *peer)
 {
-    m_peer = peer;
-    QChangeArbiter *arbiter = m_rendererAspect->aspectManager()->changeArbiter();
-    arbiter->registerObserver(this, m_peer, CustomAspectChange);
+    if (m_peer != peer) {
+        QChangeArbiter *arbiter = m_rendererAspect->aspectManager()->changeArbiter();
+        if (m_peer)
+            arbiter->unregisterObserver(this, m_peer);
+        m_peer = peer;
+        if (m_peer)
+            arbiter->registerObserver(this, m_peer, ComponentUpdated);
+    }
 }
 
 void RenderMesh::setRendererAspect(RendererAspect *rendererAspect)
@@ -94,9 +99,9 @@ void RenderMesh::setRendererAspect(RendererAspect *rendererAspect)
 void RenderMesh::sceneChangeEvent(const QSceneChangePtr &e)
 {
     switch (e->m_type) {
-    case CustomAspectChange: {
+    case ComponentUpdated: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-//        QString propertyName = QString::fromLatin1(propertyChange->m_propertyName);
+        //        QString propertyName = QString::fromLatin1(propertyChange->m_propertyName);
         QVariant propertyValue = propertyChange->m_value;
         m_source = propertyValue.toString();
         m_meshDirty = true;

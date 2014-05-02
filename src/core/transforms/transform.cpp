@@ -66,7 +66,7 @@ void Transform::setTransformsDirty()
 {
     if (!m_transformsDirty) {
         m_transformsDirty = true;
-        QScenePropertyChangePtr e(new QScenePropertyChange(LocalTransform, this));
+        QScenePropertyChangePtr e(new QScenePropertyChange(ComponentUpdated, this));
         e->m_propertyName = QByteArrayLiteral("transforms");
         e->m_value = matrix();
         notifySceneChange(e);
