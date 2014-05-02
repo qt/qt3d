@@ -64,7 +64,8 @@ Node {
         {
             console.log("Triggered <<<<<<<<<<<<<<<<<<<<< " + test);
             camera2.transform = test ? transform_0 : transform_1
-            ball2.mesh = test ? cubeMesh : ballMesh
+            ball2.mesh = test ? null : ballMesh
+            ball1.mesh = test ? cubeMesh : ballMesh
             test = !test
         }
     }

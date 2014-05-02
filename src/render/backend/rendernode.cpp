@@ -47,6 +47,7 @@
 #include "cameramanager.h"
 #include "materialmanager.h"
 #include "meshmanager.h"
+#include "meshdatamanager.h"
 #include "mesh.h"
 #include <cameralens.h>
 #include <transform.h>
@@ -157,8 +158,10 @@ void RenderNode::sceneChangeEvent(const QSceneChangePtr &e)
             }
             else if (qobject_cast<Mesh *>(component)) {
                 RenderMesh *mesh = m_renderer->meshManager()->lookupResource(m_frontEndPeer->asEntity()->uuid());
-                if (mesh != Q_NULLPTR)
+                if (mesh != Q_NULLPTR) {
                     mesh->setPeer(qobject_cast<Mesh *>(component));
+                    m_renderer->meshDataManager()->addMeshData(mesh->peer());
+                }
             }
         }
         break;

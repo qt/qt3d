@@ -157,10 +157,11 @@ void RenderView::buildRenderCommands(RenderNode *node)
         HMesh meshHandle;
         if (m_renderer->meshManager()->contains(frontEndEntity->uuid()) &&
                 (meshHandle = m_renderer->meshManager()->lookupHandle(frontEndEntity->uuid())) != HMesh()) {
+            RenderMesh *mesh = m_renderer->meshManager()->data(meshHandle);
+            if (mesh == Q_NULLPTR || mesh->peer() == Q_NULLPTR)
+                return ;
             RenderCommand *command = new RenderCommand();
             command->m_mesh = meshHandle;
-            RenderMesh *mesh = m_renderer->meshManager()->data(command->m_mesh);
-            Q_ASSERT(mesh);
             if (mesh->meshDirty()) {
                 mesh->setMeshData(m_renderer->meshDataManager()->lookupHandle(mesh->peer()->uuid()));
                 qCDebug(Backend) << Q_FUNC_INFO << "Updating RenderMesh -> MeshData handle";

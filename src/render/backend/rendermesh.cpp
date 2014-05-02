@@ -86,6 +86,7 @@ void RenderMesh::setPeer(Mesh *peer)
         if (m_peer)
             arbiter->unregisterObserver(this, m_peer);
         m_peer = peer;
+        m_meshDirty = true;
         if (m_peer)
             arbiter->registerObserver(this, m_peer, ComponentUpdated);
     }
