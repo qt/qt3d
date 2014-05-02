@@ -85,6 +85,7 @@
 #include <matrixmanager.h>
 #include <vaomanager.h>
 #include <shadermanager.h>
+#include <techniquemanager.h>
 #include "renderlogging.h"
 #include <QStack>
 #include <QSurface>
@@ -113,6 +114,7 @@ Renderer::Renderer()
     , m_localMatrixManager(new MatrixManager())
     , m_vaoManager(new VAOManager())
     , m_shaderManager(new ShaderManager())
+    , m_techniqueManager(new TechniqueManager())
     , m_renderQueues(new RenderQueues())
     , m_frameCount(0)
 {
