@@ -434,19 +434,17 @@ void Renderer::executeCommands(const QVector<RenderCommand *> commands)
             qCWarning(Rendering) << "RenderCommand should have a mesh";
             continue ;
         }
-        RenderMaterial *mat = getOrCreateMaterial(m_defaultMaterial);
+        RenderMaterial *mat = m_materialManager->data(command->m_material);
         if (mat == Q_NULLPTR)
             mat = getOrCreateMaterial(m_defaultMaterial);
-        // Mat -> Effect -> Techniques
-        // Technique -> RenderPass -> Shader
-        RenderTechnique *technique = mat->technique();
-        //        qCDebug(Backend()) << Q_FUNC_INFO;
-        //        RenderMaterial *mat = m_materialManager->data(command->m_material);
-        //        if (mat == Q_NULLPTR)
-        //            mat = getOrCreateMaterial(m_defaultMaterial);
-        //        RenderTechnique *technique = mat->technique();
-        //        if (technique = Q_NULLPTR)
-        //            technique = techniqueForMaterial(m_defaultMaterial);
+        RenderTechnique *technique = m_techniqueManager->data(command->m_technique);
+        if (technique == Q_NULLPTR) {
+            mat = getOrCreateMaterial(m_defaultMaterial);
+            technique = techniqueForMaterial(m_defaultMaterial);
+        }
+        RenderShader *shader = m_shaderManager->data(command->m_shader);
+        if (shader == Q_NULLPTR)
+            shader = techniqueForMaterial(m_defaultMaterial)->shaderForPass(0);
 
         command->m_vao = m_vaoManager->lookupHandle(QPair<HMeshData, HShader>(command->m_meshData, command->m_shader));
         if (command->m_vao.isNull()) {
@@ -457,7 +455,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> commands)
             qCDebug(Backend) << Q_FUNC_INFO << "HShader " << command->m_shader;
             // Check if HShader exists. If it doesn't that means there is no RenderPass
             // Otherwise use a default renderpass name
-            command->m_vao = m_vaoManager->lookupHandle(QPair<HMeshData, HShader>(command->m_meshData, command->m_shader));
+             command->m_vao = m_vaoManager->lookupHandle(QPair<HMeshData, HShader>(command->m_meshData, command->m_shader));
             // Check if VAO pointer for the MeshData / RenderShader exists
             if (command->m_vao.isNull()) {
                 qCDebug(Rendering) << Q_FUNC_INFO << "Allocating new VAO";
@@ -481,7 +479,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> commands)
 
             qCDebug(Rendering) << Q_FUNC_INFO << "Creating new VAO";
 
-            m_graphicsContext->activateShader(technique->shaderForPass(0));
+            m_graphicsContext->activateShader(shader);
 
             foreach (QString nm, meshData->attributeNames()) {
                 AttributePtr attr(meshData->attributeByName(nm));
@@ -497,10 +495,15 @@ void Renderer::executeCommands(const QVector<RenderCommand *> commands)
 
         //// Draw Calls
         // Set state
+//        if (command->m_stateSet != Q_NULLPTR)
+//            m_graphicsContext->setCurrentStateSet(command->m_stateSet);
         m_graphicsContext->setCurrentStateSet(technique->stateSetForPass(0));
-        m_graphicsContext->activateShader(technique->shaderForPass(0));
+        m_graphicsContext->activateShader(shader);
         m_graphicsContext->setModelMatrix(command->m_worldMatrix);
         m_graphicsContext->setActiveMaterial(mat);
+        // 1) Set Uniforms from Effect
+        // 2) Set Uniforms from Technique
+        // 3) Set Uniforms from Material
         mat->setUniformsForPass(0, m_graphicsContext);
 
         vao->bind();

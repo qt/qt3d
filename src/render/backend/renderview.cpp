@@ -53,6 +53,8 @@
 #include "cameramanager.h"
 #include "rendernodesmanager.h"
 #include "materialmanager.h"
+#include "techniquemanager.h"
+#include "shadermanager.h"
 #include <entity.h>
 #include <cameraselectornode.h>
 #include <framegraphnode.h>
@@ -161,6 +163,7 @@ void RenderView::buildRenderCommands(RenderNode *node)
             if (mesh == Q_NULLPTR || mesh->peer() == Q_NULLPTR)
                 return ;
             RenderCommand *command = new RenderCommand();
+            command->m_stateSet = Q_NULLPTR;
             command->m_mesh = meshHandle;
             if (mesh->meshDirty()) {
                 mesh->setMeshData(m_renderer->meshDataManager()->lookupHandle(mesh->peer()->uuid()));
@@ -172,25 +175,10 @@ void RenderView::buildRenderCommands(RenderNode *node)
             // Sets handle to entity material. If there is no material associated to the entity,
             // the handle will be invalid and a default material will be used during rendering
             command->m_material = m_renderer->materialManager()->lookupHandle(frontEndEntity->uuid());
-            // Set shader according to material and effect, technique and renderpassfilter
-            //            RenderMaterial *mat = m_renderer->materialManager()->data(command->m_material);
-            //            if (m_techniqueFilter != Q_NULLPTR && mat != Q_NULLPTR && mat->peer() != Q_NULLPTR) {
-            //                Effect *eff = mat->peer()->effect();
-            //                if (eff != Q_NULLPTR) {
-            //                    if (eff->techniques().empty())
-            //                        qCWarning(Backend) << "No technique defined in Effect";
-            //                    // Find HShader for technique and renderpass
-            //                    Q_FOREACH (Technique *tech, eff->techniques()) {
-            //                        qCDebug(Backend) << "Technique : " << tech->renderPasses();
-            //                    }
-            //                }
-            //            }
-            // The VAO Handle is set directly in the renderer thread so as to avoid having to use a mutex here
 
-            // Use a default shader and uniform bindings for the moment
-            // Shader and Uniforms obtained from Material/Effect/Technique/RenderPass/ShaderProgram
-            // ShaderProgram = shaderForMeshMaterialAndPassForTechnique
-            // ShaderProgramManager[MaterialManager[frontentEntity->uuid()]->Effect->Techniques[TechniqueFilter->name]->RenderPasses[RenderPassFilter->name]];
+            // The RenderTechnique && RenderPass instances have to be created in the RenderViewJobs
+            // As it offers a way to create instances only for techniques and passes that are used.
+            setCommandShaderTechniqueEffect(command);
 
             // Append renderCommand
             m_commands.append(command);
@@ -211,6 +199,53 @@ QRectF RenderView::viewport() const
 RenderCamera *RenderView::camera() const
 {
     return m_renderer->cameraManager()->data(m_camera);
+}
+
+void RenderView::setCommandShaderTechniqueEffect(RenderCommand *command)
+{
+    RenderMaterial *material = m_renderer->materialManager()->data(command->m_material);
+    if (m_techniqueFilter != Q_NULLPTR && material != Q_NULLPTR &&
+            !m_techniqueFilter->filters().empty() && material->peer() != Q_NULLPTR) {
+        QMutexLocker locker(&m_mutex);
+        // The VAO Handle is set directly in the renderer thread so as to avoid having to use a mutex here
+        // Set shader, technique, and effect by basically doing :
+        // ShaderProgramManager[MaterialManager[frontentEntity->uuid()]->Effect->Techniques[TechniqueFilter->name]->RenderPasses[RenderPassFilter->name]];
+        // The Renderer knows that if one of those is null, a default material / technique / effect as to be used
+        Effect *effect = qobject_cast<Effect*>(material->peer()->effect());
+        QString techniqueName = m_techniqueFilter->filters().values().first().toString();
+        command->m_technique = m_renderer->techniqueManager()->lookupHandle(EffectTechniquePair(effect, techniqueName));
+        if (effect != Q_NULLPTR && m_renderer->techniqueManager()->data(command->m_technique) == Q_NULLPTR) {
+            RenderTechnique *technique = Q_NULLPTR;
+            Q_FOREACH (Technique *t, effect->techniques()) {
+                if (t->name() == techniqueName) {
+                    command->m_technique = m_renderer->techniqueManager()->getOrAcquireHandle(EffectTechniquePair(effect, techniqueName));
+                    technique = m_renderer->techniqueManager()->data(command->m_technique);
+                    technique->setPeer(t);
+                    break;
+                }
+            }
+            if (technique == Q_NULLPTR) {
+                command->m_technique = HTechnique();
+                qCWarning(Render::Backend) << Q_FUNC_INFO << "No technique found for technique filter";
+            }
+            // Load RenderPass and ShaderPrograms
+            QString passName = m_passFilter->filter();
+            if (technique != Q_NULLPTR)
+                Q_FOREACH (RenderPass *pass, technique->peer()->renderPasses()) {
+                    if (pass->name() == passName) {
+                        // Index RenderShader by Shader UUID
+                        command->m_shader = m_renderer->shaderManager()->lookupHandle(pass->shaderProgram()->uuid());
+                        if (command->m_shader.isNull()) {
+                            RenderShader *shader = m_renderer->shaderManager()->getOrCreateResource(pass->shaderProgram()->uuid());
+                            shader->setPeer(pass->shaderProgram());
+                            command->m_shader = m_renderer->shaderManager()->lookupHandle(pass->shaderProgram()->uuid());
+                        }
+                        command->m_stateSet = pass->stateSet();
+                        break;
+                    }
+                }
+        }
+    }
 }
 
 void RenderView::computeViewport(ViewportNode *viewportNode)

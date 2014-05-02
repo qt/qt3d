@@ -62,12 +62,15 @@ class RenderTarget;
 class RenderMaterial;
 class RenderMesh;
 class RenderShader;
+class RenderTechnique;
+class DrawStateSet;
 
 typedef QHandle<QOpenGLVertexArrayObject*, 16> HVao;
 typedef QHandle<RenderMaterial, 16> HMaterial;
 typedef QHandle<RenderMesh, 16> HMesh;
 typedef QHandle<RenderShader, 16> HShader;
 typedef QHandle<MeshData, 16> HMeshData;
+typedef QHandle<RenderTechnique, 16> HTechnique;
 
 class RenderCommand
 {
@@ -89,6 +92,8 @@ public:
                             // RenderTexture while submission is happening.
     GLint m_instancesCount; // Number of instances of the mesh, if 0 regular draw otherwise glDrawArraysInstanced or glDrawElementsInstanced
     HMaterial m_material;
+    HTechnique m_technique;
+    DrawStateSet *m_stateSet;
 };
 
 } // Render

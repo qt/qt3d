@@ -260,8 +260,11 @@ void RenderSceneBuilder::createRenderMesh(Entity *entity)
         RenderMesh *renderMesh = m_renderer->meshManager()->data(meshHandle);
         renderMesh->setRendererAspect(m_renderer->rendererAspect());
         renderMesh->setPeer(meshes.first());
-        // That should ideally be done elsewhere
+        // That should be done here initially as we might have
+        // missed prior QChangeArbiter notifications
         m_renderer->meshDataManager()->addMeshData(meshes.first());
+        // If MeshData is updated afterward, it should be handled directly by a notification
+        // Through the QChangeArbiter
     }
 }
 
@@ -269,6 +272,7 @@ void RenderSceneBuilder::createRenderMaterial(Entity *entity)
 {
     // Parse Materials to retrieve
     // Material
+    // Using Material, we can create the following at runtime
     // Effect
     // Techniques
     // RenderPass

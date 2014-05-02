@@ -42,6 +42,7 @@
 #ifndef SHADERPROGRAM_H
 #define SHADERPROGRAM_H
 
+#include <QUuid>
 #include <Qt3DCore/node.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
@@ -61,6 +62,7 @@ class QT3DRENDERERSHARED_EXPORT ShaderProgram : public Node
 public:
     explicit ShaderProgram(Node *parent = 0);
 
+    QUuid uuid() const;
     void setVertexSourceFile(const QString &vertexSourceFile);
     QString vertexSourceFile() const;
 
@@ -95,6 +97,7 @@ private:
     QByteArray m_cachedVertexCode,
         m_cachedFragmentCode;
 
+    QUuid m_uuid;
 };
 
 }

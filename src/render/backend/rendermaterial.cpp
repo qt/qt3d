@@ -77,11 +77,15 @@ void RenderMaterial::setTextureProvider(RenderTextureProvider* rtp)
 
 void RenderMaterial::setPeer(Material *mat)
 {
-    m_peer = mat;
-
-    // Register for changes
-    QChangeArbiter *arbiter = m_rendererAspect->aspectManager()->changeArbiter();
-    arbiter->registerObserver(this, m_peer, ComponentUpdated);
+    if (m_peer != mat) {
+        QChangeArbiter *arbiter = m_rendererAspect->aspectManager()->changeArbiter();
+        if (m_peer)
+            arbiter->unregisterObserver(this, m_peer);
+        m_peer = mat;
+        // Register for changes
+        if (m_peer)
+            arbiter->registerObserver(this, m_peer, ComponentUpdated);
+    }
 }
 
 void RenderMaterial::setRendererAspect(RendererAspect *rendererAspect)
@@ -195,10 +199,17 @@ void RenderMaterial::sceneChangeEvent(const QSceneChangePtr &e)
 {
     switch (e->m_type) {
     case ComponentUpdated: {
+        // Check for shader parameter
+        // Check for effect change
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         QString propertyName = QString::fromLatin1(propertyChange->m_propertyName);
         QVariant propertyValue = propertyChange->m_value;
-        setParameter(propertyName, propertyValue);
+        if (propertyName == QByteArrayLiteral("effect")) {
+
+        }
+        else {
+            setParameter(propertyName, propertyValue);
+        }
         break;
     }
 

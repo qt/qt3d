@@ -54,6 +54,12 @@ ShaderProgram::ShaderProgram(Node *parent)
     , m_fragmentSourceFile()
     , m_isLoaded(false)
 {
+    m_uuid = QUuid::createUuid();
+}
+
+QUuid ShaderProgram::uuid() const
+{
+    return m_uuid;
 }
 
 void ShaderProgram::setVertexSourceFile(const QString& vertexSourceFile)

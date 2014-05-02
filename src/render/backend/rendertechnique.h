@@ -64,6 +64,7 @@ public:
     RenderTechnique();
 
     void setPeer(Technique* peer);
+    Technique *peer() const;
 
     unsigned int passCount() const;
 

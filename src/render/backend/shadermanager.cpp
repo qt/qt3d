@@ -47,7 +47,7 @@ namespace Qt3D {
 
 namespace Render {
 
-ShaderManager::ShaderManager() : QArrayResourcesManager<RenderShader, QString, 16>()
+ShaderManager::ShaderManager() : QArrayResourcesManager<RenderShader, QUuid, 16>()
 {
 }
 

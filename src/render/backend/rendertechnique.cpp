@@ -66,6 +66,11 @@ void RenderTechnique::setPeer(Technique *peer)
     m_passShader.resize(m_passCount);
 }
 
+Technique *RenderTechnique::peer() const
+{
+    return m_peer;
+}
+
 unsigned int RenderTechnique::passCount() const
 {
     return m_passCount;

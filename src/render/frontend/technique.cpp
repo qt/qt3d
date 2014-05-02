@@ -100,6 +100,19 @@ bool Technique::containsTag(const QString &name) const
     return m_tags.contains(name);
 }
 
+void Technique::setName(const QString &name)
+{
+    if (name != m_name) {
+        m_name = name;
+        emit nameChanged();
+    }
+}
+
+QString Technique::name() const
+{
+    return m_name;
+}
+
 void Technique::addPass(RenderPass *pass)
 {
     Q_ASSERT(pass);

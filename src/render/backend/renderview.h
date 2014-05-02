@@ -103,7 +103,7 @@ public:
     RenderCamera *camera() const;
 
 private:
-
+    void setCommandShaderTechniqueEffect(RenderCommand *command);
     void computeViewport(ViewportNode *viewportNode);
 
     Renderer *m_renderer;

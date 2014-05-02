@@ -138,6 +138,7 @@ private:
 class QT3DRENDERERSHARED_EXPORT Technique : public Node
 {
     Q_OBJECT
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
 
 public:
     explicit Technique(Node *parent = 0);
@@ -149,6 +150,9 @@ public:
     QList<Tag *> tags() const;
     void clearTags();
     bool containsTag( const QString &name ) const;
+
+    void setName(const QString &name);
+    QString name() const;
 
     void addPass(RenderPass* pass);
     void removePass(RenderPass *pass);
@@ -162,12 +166,16 @@ public:
 
     Parameter* parameterByName(QString name) const;
 
+Q_SIGNALS:
+    void nameChanged();
+
 private:
 
     QList<Tag *> m_tagList;
     QMap<QString, Tag *> m_tags;
     QList<Parameter *> m_parameters;
     QList<RenderPass *> m_renderPasses;
+    QString m_name;
 };
 
 }

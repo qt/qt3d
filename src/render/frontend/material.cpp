@@ -65,14 +65,12 @@ void Material::setEffect(Qt3D::Node *effect)
 {
     if (effect == m_effect)
         return;
-
-    if (qobject_cast<Effect*>(effect) != Q_NULLPTR) {
-        m_effect = effect;
-        emit effectChanged();
-    }
-    else {
-        qCWarning(Render::Frontend) << Q_FUNC_INFO << "Trying to set an Effect which isn't one";
-    }
+    m_effect = effect;
+    QScenePropertyChangePtr change(new QScenePropertyChange(ComponentUpdated, this));
+    change->m_propertyName = QByteArrayLiteral("effect");
+    change->m_value = QVariant::fromValue(m_effect);
+    notifySceneChange(change);
+    emit effectChanged();
 }
 
 void Material::setParameter(QString name, QVariant val)
