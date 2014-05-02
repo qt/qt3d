@@ -434,9 +434,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> commands)
 
     Q_FOREACH (RenderCommand *command, commands) {
 
-        QMutexLocker locker(&m_mutex);
         MeshData *meshData = m_meshDataManager->data(command->m_meshData);
-        locker.unlock();
         if (meshData == Q_NULLPTR || meshData->attributeNames().empty()) {
             qCWarning(Rendering) << "RenderCommand should have a mesh";
             continue ;
