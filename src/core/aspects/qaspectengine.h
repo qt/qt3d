@@ -57,7 +57,7 @@ namespace Qt3D {
 class AbstractAspect;
 class QAspectThread;
 
-class QAspectEngine : public QObject
+class QT3DCORESHARED_EXPORT QAspectEngine : public QObject
 {
     Q_OBJECT
 public:

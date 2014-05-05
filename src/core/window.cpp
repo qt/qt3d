@@ -42,7 +42,6 @@
 #include "window.h"
 
 #include <QDebug>
-#include <QQmlComponent>
 #include <QTimer>
 #include <QKeyEvent>
 #include <QMouseEvent>
@@ -51,8 +50,7 @@
 #include "node.h"
 #include "camera.h"
 #include "entity.h"
-#include <qaspectengine.h>
-
+#include "qaspectengine.h"
 #include "cameracontroller.h"
 
 QT_BEGIN_NAMESPACE
@@ -61,7 +59,6 @@ namespace Qt3D {
 
 Window::Window(QScreen *screen)
     : QWindow(screen)
-    , m_engine(new QQmlEngine)
     , m_aspectEngine(new QAspectEngine(this))
     , m_camera(NULL)
     , m_controller(NULL)
@@ -93,83 +90,12 @@ Window::~Window()
     delete m_aspectEngine;
 }
 
-Window::Status Window::status() const
-{
-    if (!m_engine)
-        return Error;
-
-    if (!m_component)
-        return Null;
-
-    return Status(m_component->status());
-}
-
 /*!
  * Registers an Aspect module to the AspectEngine;
  */
 void Window::registerAspect(AbstractAspect *aspect)
 {
     m_aspectEngine->registerAspect(aspect);
-}
-
-void Window::setSource( const QUrl& source )
-{
-    if (!m_engine) {
-        qWarning() << "Window: invalid qml engine.";
-        return;
-    }
-
-    if (m_root) {
-        m_aspectEngine->shutdown();
-        m_aspectEngine->setRoot(0);
-        m_root = QSharedPointer<QObject>();
-    }
-
-    if (m_component)
-        m_component = QSharedPointer<QQmlComponent>();
-
-    if (!source.isEmpty()) {
-        m_component = QSharedPointer<QQmlComponent>(new QQmlComponent(m_engine.data(), source, this));
-        if (!m_component->isLoading()) {
-            continueExecute();
-        } else {
-            QObject::connect(m_component.data(), SIGNAL(statusChanged(QQmlComponent::Status)),
-                             this, SLOT(continueExecute()));
-        }
-    }
-}
-
-void Window::continueExecute()
-{
-    qDebug() << Q_FUNC_INFO;
-
-    disconnect(m_component.data(), SIGNAL(statusChanged(QQmlComponent::Status)),
-               this, SLOT(continueExecute()));
-
-    if (m_component->isError()) {
-        QList<QQmlError> errorList = m_component->errors();
-        Q_FOREACH ( const QQmlError& error, errorList ) {
-            QMessageLogger(error.url().toString().toLatin1().constData(), error.line(), 0).warning()
-                << error;
-        }
-        emit statusChanged(status());
-        return;
-    }
-
-    QObject* obj = m_component->create();
-
-    if (m_component->isError()) {
-        QList<QQmlError> errorList = m_component->errors();
-        Q_FOREACH ( const QQmlError& error, errorList ) {
-            QMessageLogger(error.url().toString().toLatin1().constData(), error.line(), 0).warning()
-                << error;
-        }
-        emit statusChanged(status());
-        return;
-    }
-
-    setRootObject(obj);
-    emit statusChanged(status());
 }
 
 void Window::onUpdate()

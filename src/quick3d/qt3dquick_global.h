@@ -39,24 +39,19 @@
 **
 ****************************************************************************/
 
-#include <exampleresources.h>
+#ifndef QT3DQUICK_GLOBAL_H
+#define QT3DQUICK_GLOBAL_H
 
-#include <quickwindow.h>
-#include <rendereraspect.h>
+#include <QtCore/qglobal.h>
 
-#include <QGuiApplication>
-#include <QtQml>
+QT_BEGIN_NAMESPACE
 
-int main(int argc, char* argv[])
-{
-    QGuiApplication app(argc, argv);
+#if defined(QT3DQUICK_LIBRARY)
+#  define QT3DQUICKSHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define QT3DQUICKSHARED_EXPORT Q_DECL_IMPORT
+#endif
 
-    initializeAssetResources("../exampleresources/example-assets.qrb");
+QT_END_NAMESPACE
 
-    Qt3D::Quick::QuickWindow view;
-    view.registerAspect(new Qt3D::RendererAspect());
-    view.setSource(QUrl("qrc:/main.qml"));
-    view.show();
-
-    return app.exec();
-}
+#endif // QT3DQUICK_GLOBAL_H

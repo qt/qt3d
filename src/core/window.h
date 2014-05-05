@@ -45,8 +45,6 @@
 #include <QWindow>
 #include <Qt3DCore/qt3dcore_global.h>
 
-#include <QQmlEngine>
-
 QT_BEGIN_NAMESPACE
 
 class QTimer;
@@ -67,17 +65,10 @@ public:
     explicit Window(QScreen *screen = 0);
     ~Window();
 
-    void setSource( const QUrl& url );
     void setRootObject( QObject* obj );
-
-    enum Status { Null, Ready, Loading, Error };
-    Status status() const;
 
     QSharedPointer<QObject> rootObject() { return m_root; }
     void    registerAspect(AbstractAspect *aspect);
-
-Q_SIGNALS:
-    void statusChanged( Qt3D::Window::Status );
 
 protected:
     virtual void keyPressEvent(QKeyEvent *e);
@@ -89,20 +80,14 @@ protected:
     virtual void resizeEvent(QResizeEvent *e);
 
 private slots:
-    void continueExecute();
-
     void onUpdate();
 
-private:
-
-    QScopedPointer<QQmlEngine> m_engine;
+protected:
     QSharedPointer<QObject> m_root;
-    QSharedPointer<QQmlComponent> m_component;
 
     // The various aspects (subsystems) that will be interested in (parts)
     // of the objects in the object tree.
     QAspectEngine *m_aspectEngine;
-
     Camera* m_camera;
 
     // temporary, borrowed from training material

@@ -39,24 +39,51 @@
 **
 ****************************************************************************/
 
-#include <exampleresources.h>
+#ifndef QT3D_QUICK_QUICKWINDOW_H
+#define QT3D_QUICK_QUICKWINDOW_H
 
-#include <quickwindow.h>
-#include <rendereraspect.h>
+#include <QWindow>
+#include <QQmlEngine>
 
-#include <QGuiApplication>
-#include <QtQml>
+#include <Qt3DQuick/qt3dquick_global.h>
+#include <Qt3DCore/window.h>
 
-int main(int argc, char* argv[])
+QT_BEGIN_NAMESPACE
+
+namespace Qt3D {
+
+class QAspectEngine;
+
+namespace Quick {
+
+class QT3DQUICKSHARED_EXPORT QuickWindow : public Qt3D::Window
 {
-    QGuiApplication app(argc, argv);
+    Q_OBJECT
+public:
+    enum Status { Null, Ready, Loading, Error };
 
-    initializeAssetResources("../exampleresources/example-assets.qrb");
+    explicit QuickWindow(QScreen *screen = 0);
+    ~QuickWindow();
 
-    Qt3D::Quick::QuickWindow view;
-    view.registerAspect(new Qt3D::RendererAspect());
-    view.setSource(QUrl("qrc:/main.qml"));
-    view.show();
+    Status status() const;
+    void setSource(const QUrl& url);
 
-    return app.exec();
-}
+Q_SIGNALS:
+    void statusChanged(Status);
+
+private Q_SLOTS:
+    void continueExecute();
+
+private:
+    QScopedPointer<QQmlEngine> m_engine;
+    QSharedPointer<QQmlComponent> m_component;
+
+};
+
+} // Quick
+
+} // Qt3D
+
+QT_END_NAMESPACE
+
+#endif // QT3D_QUICK_QUICKWINDOW_H

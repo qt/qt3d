@@ -2,4 +2,5 @@ TEMPLATE = subdirs
 CONFIG += ordered
 SUBDIRS += \
     core \
-    render
+    render \
+    quick3d
