@@ -39,105 +39,46 @@
 **
 ****************************************************************************/
 
-#include "node.h"
+#ifndef QT3D_QUICK_QUICK3DNODE_H
+#define QT3D_QUICK_QUICK3DNODE_H
 
-#include "entity.h"
-
-#include <QEvent>
-#include <QMetaObject>
-#include <QMetaProperty>
-#include <QDebug>
+#include <Qt3DCore/node.h>
+#include <QQmlListProperty>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-Node::Node( Node* parent )
-    : QObject( parent )
+namespace Quick {
+
+class Quick3DNode : public Qt3D::Node
 {
-    if (parent)
-        parent->m_children.append(this);
-}
+    Q_OBJECT
+    Q_PROPERTY(QQmlListProperty<QObject> data READ data)
+    Q_PROPERTY(QQmlListProperty<Qt3D::Node> childNodes READ childNodes)
+    Q_CLASSINFO("DefaultProperty", "data")
+public:
+    explicit Quick3DNode(Node *parent = 0);
 
-Node::~Node()
-{
-}
+    QQmlListProperty<QObject> data();
+    QQmlListProperty<Qt3D::Node> childNodes();
 
-void Node::dump()
-{
-    const QMetaObject *meta = metaObject();
-    QStringList result;
-    for (int i = 0; i < meta->propertyCount(); ++i) {
-        const QMetaProperty metaProperty = meta->property(i);
-        const QVariant value = property(metaProperty.name());
-        result += QString(QStringLiteral("%1 %2 = %3;"))
-            .arg(QString::fromLatin1(metaProperty.typeName()))
-            .arg(QString::fromLatin1(metaProperty.name()))
-            .arg(value.toString());
-    }
+private:
+    static void appendData(QQmlListProperty<QObject> *list, QObject *obj);
+    static QObject *dataAt(QQmlListProperty<QObject> *list, int index);
+    static int dataCount(QQmlListProperty<QObject> *list);
+    static void clearData(QQmlListProperty<QObject> *list);
 
-    qDebug() << result.join(QStringLiteral("\n"));
+    static void appendChild(QQmlListProperty<Qt3D::Node> *list, Qt3D::Node *obj);
+    static Node *childAt(QQmlListProperty<Qt3D::Node> *list, int index);
+    static int childCount(QQmlListProperty<Qt3D::Node> *list);
+    static void clearChildren(QQmlListProperty<Qt3D::Node> *list);
+};
 
-    foreach (QObject *child, children()) {
-        Node *node = qobject_cast<Node *>(child);
-        if (!node)
-            continue;
-        node->dump();
-    }
-}
+} // Quick;
 
-NodeList Node::children() const
-{
-    return m_children;
-}
-
-void Node::addChild(Node *childNode)
-{
-    Q_CHECK_PTR( childNode );
-    if (childNode->parent() == this)
-        return;
-
-    m_children.append(childNode);
-    childNode->setParent(this);
-}
-
-void Node::removeChild(Node *childNode)
-{
-    Q_CHECK_PTR( childNode );
-    if (childNode->parent() != this)
-        qWarning() << Q_FUNC_INFO << "not a child";
-
-    m_children.removeOne(childNode);
-    childNode->setParent(NULL);
-}
-
-void Node::removeAllChildren()
-{
-    foreach (QObject *child, children()) {
-        child->deleteLater();
-    }
-
-    m_children.clear();
-}
-
-Entity *Node::asEntity()
-{
-    return NULL;
-}
-
-Node *Node::parentNode() const
-{
-    return qobject_cast<Node*>(parent());
-}
-
-bool Node::event(QEvent *e)
-{
-    if (e->type() == QEvent::DynamicPropertyChange) {
-        qDebug() << "*** Dynamic Property Change ***";
-    }
-    return QObject::event(e);
-}
-
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QUICK3DNODE_H

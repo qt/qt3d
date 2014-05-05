@@ -44,6 +44,7 @@
 
 #include <QtCore/QtGlobal>
 #include <Qt3DCore/transform.h>
+#include <QQmlListProperty>
 
 QT_BEGIN_NAMESPACE
 

@@ -60,6 +60,7 @@
 #include <lookattransform.h>
 #include <scaletransform.h>
 #include <quick3dtransform.h>
+#include <quick3dnode.h>
 
 #include <QDebug>
 #include <QEventLoop>
@@ -107,8 +108,8 @@ void QAspectManager::shutdown()
 void QAspectManager::registerCoreQmlComponents()
 {
     qDebug() << Q_FUNC_INFO;
-    qmlRegisterType<Qt3D::Node>("Qt3D", 2, 0, "Node");
-    qmlRegisterUncreatableType<Qt3D::Entity>("Qt3D", 2, 0, "", "");
+    qmlRegisterUncreatableType<Qt3D::Node>("Qt3D", 2, 0, "Node_priv", "");
+    qmlRegisterUncreatableType<Qt3D::Entity>("Qt3D", 2, 0, "Entity_priv", "");
     qmlRegisterType<Qt3D::Component>("Qt3D", 2, 0, "Component");
     qmlRegisterType<Qt3D::Camera>("Qt3D", 2, 0, "Camera");
     qmlRegisterType<Qt3D::CameraLens>("Qt3D", 2, 0, "CameraLens");
@@ -119,6 +120,7 @@ void QAspectManager::registerCoreQmlComponents()
     qmlRegisterType<Qt3D::ScaleTransform>("Qt3D", 2, 0, "Scale");
     qmlRegisterType<Qt3D::Quick::Quick3DEntity>("Qt3D", 2, 0, "Entity");
     qmlRegisterType<Qt3D::Quick::Quick3DTransform>("Qt3D", 2, 0, "Transform");
+    qmlRegisterType<Qt3D::Quick::Quick3DNode>("Qt3D", 2, 0, "Node");
 }
 
 

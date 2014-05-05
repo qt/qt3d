@@ -43,6 +43,7 @@
 #define QT3D_QUICK_QUICK3DENTITY_H
 
 #include <Qt3DCore/entity.h>
+#include <QQmlListProperty>
 
 QT_BEGIN_NAMESPACE
 

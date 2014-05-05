@@ -49,6 +49,7 @@
 // FIXME - write a custom QML parser and stop mis-using Tag
 #include <Qt3DRenderer/tag.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
+#include <QQmlListProperty>
 
 QT_BEGIN_NAMESPACE
 
