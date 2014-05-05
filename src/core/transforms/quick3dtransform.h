@@ -39,63 +39,38 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_TRANSFORM_H
-#define QT3D_TRANSFORM_H
+#ifndef QT3D_QUICK_QUICK3DTRANSFORM_H
+#define QT3D_QUICK_QUICK3DTRANSFORM_H
 
-#include <Qt3DCore/component.h>
-#include <Qt3DCore/qt3dcore_global.h>
-#include <QMatrix4x4>
+#include <QtCore/QtGlobal>
+#include <Qt3DCore/transform.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class AbstractTransform;
+namespace Quick {
 
-class QT3DCORESHARED_EXPORT Transform : public Qt3D::Component
+class Quick3DTransform : public Transform
 {
     Q_OBJECT
-
+    Q_PROPERTY(QQmlListProperty<Qt3D::AbstractTransform> transforms READ transformList)
+    Q_CLASSINFO("DefaultProperty", "transforms")
 public:
-    explicit Transform(Node *parent = 0);
-
-    QMatrix4x4 matrix() const;
-    void setMatrix(const QMatrix4x4 &m);
-
-    QVector3D rotationCenter() const;
-    void setRotationCenter(const QVector3D &rc);
-
-    QList<AbstractTransform*> transforms() const;
-
-    template <class T>
-    T *findFirstTransform() const
-    {
-        T* transform = Q_NULLPTR;
-        Q_FOREACH (AbstractTransform *trans, m_transforms)
-            if ((transform = qobject_cast<T*>(trans)) != Q_NULLPTR)
-                break;
-        return transform;
-    }
-
-    void appendTransform(AbstractTransform *xform);
-    void removeTransform(AbstractTransform *xform);
-
-private Q_SLOTS:
-    void setTransformsDirty();
+    explicit Quick3DTransform(Node *parent = 0);
+    QQmlListProperty<Qt3D::AbstractTransform> transformList();
 
 private:
-    QMatrix4x4 applyTransforms() const;
-
-    mutable bool m_transformsDirty;
-    bool m_visible;
-    QList<AbstractTransform*> m_transforms;
-
-    mutable QMatrix4x4 m_matrix;
-    QMatrix4x4 m_sceneMatrix;
+    static void qmlAppendTransform(QQmlListProperty<Qt3D::AbstractTransform> *list, Qt3D::AbstractTransform *bar);
+    static AbstractTransform* transformAt(QQmlListProperty<Qt3D::AbstractTransform> *list, int index);
+    static int transformCount(QQmlListProperty<Qt3D::AbstractTransform> *list);
+    static void qmlClearTransforms(QQmlListProperty<Qt3D::AbstractTransform> *list);
 };
 
-} // namespace Qt3D
+} //Quick
+
+} // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_TRANSFORM_H
+#endif // QT3D_QUICK_QUICK3DTRANSFORM_H

@@ -53,15 +53,6 @@ Transform::Transform(Node *parent)
 {
 }
 
-QQmlListProperty<AbstractTransform> Transform::transformList()
-{
-    return QQmlListProperty<AbstractTransform>(this, 0,
-                                               Transform::qmlAppendTransform,
-                                               Transform::transformCount,
-                                               Transform::transformAt,
-                                               Transform::qmlClearTransforms);
-}
-
 void Transform::setTransformsDirty()
 {
     if (!m_transformsDirty) {
@@ -130,38 +121,6 @@ QMatrix4x4 Transform::applyTransforms() const
     Q_FOREACH (AbstractTransform *t, m_transforms)
         m = t->matrix() * m;
     return m;
-}
-
-void Transform::qmlAppendTransform(QQmlListProperty<AbstractTransform> *list, AbstractTransform *obj  )
-{
-    if ( !obj )
-        return;
-
-    Transform *self = static_cast<Transform *>(list->object);
-    self->appendTransform(obj);
-    QObject::connect(obj, SIGNAL(transformUpdated()), self, SLOT(setTransformsDirty()));
-}
-
-AbstractTransform* Transform::transformAt(QQmlListProperty<AbstractTransform> *list, int index)
-{
-    Transform *self = static_cast<Transform *>(list->object);
-    return self->transforms().at(index);
-}
-
-int Transform::transformCount(QQmlListProperty<AbstractTransform> *list)
-{
-    Transform *self = static_cast<Transform *>(list->object);
-    return self->transforms().count();
-}
-
-void Transform::qmlClearTransforms(QQmlListProperty<AbstractTransform> *list)
-{
-    Transform *self = static_cast<Transform *>(list->object);
-    Q_FOREACH (AbstractTransform *trans, self->m_transforms)
-        QObject::disconnect(trans, SIGNAL(transformUpdated()), self, SLOT(setTransformsDirty()));
-    qDeleteAll(self->m_transforms);
-    self->m_transforms.clear();
-    self->setTransformsDirty();
 }
 
 } // namespace Qt3D

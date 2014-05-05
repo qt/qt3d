@@ -6,7 +6,8 @@ SOURCES += \
         $$PWD/rotatetransform.cpp \
         $$PWD/translatetransform.cpp \
         $$PWD/scaletransform.cpp \
-        $$PWD/transform.cpp
+        $$PWD/transform.cpp \
+        $$PWD/quick3dtransform.cpp
 
 HEADERS += \
         $$PWD/abstracttransform.h \
@@ -15,6 +16,7 @@ HEADERS += \
         $$PWD/rotatetransform.h \
         $$PWD/translatetransform.h \
         $$PWD/scaletransform.h \
-        $$PWD/transform.h
+        $$PWD/transform.h \
+        $$PWD/quick3dtransform.h
 
 INCLUDEPATH += $$PWD

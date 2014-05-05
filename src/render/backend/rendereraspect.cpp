@@ -58,7 +58,6 @@
 #include <QtQml>
 
 #include "scene.h"
-#include "transform.h"
 #include "effect.h"
 #include "technique.h"
 #include "tag.h"
@@ -173,7 +172,6 @@ void RendererAspect::cleanupHelper()
 void RendererAspect::registerQmlComponents()
 {
     qmlRegisterType<Qt3D::Scene>("Qt3D.Render", 2, 0, "Scene");
-    qmlRegisterType<Qt3D::Transform>("Qt3D.Render", 2, 0, "Transform");
     qmlRegisterType<Qt3D::Effect>("Qt3D.Render", 2, 0, "Effect");
     qmlRegisterType<Qt3D::Technique>("Qt3D.Render", 2, 0, "Technique");
     qmlRegisterType<Qt3D::Tag>("Qt3D.Render", 2, 0, "Tag");
