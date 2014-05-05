@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QMLENTITY_H
-#define QT3D_QMLENTITY_H
+#ifndef QT3D_QUICK_QUICK3DENTITY_H
+#define QT3D_QUICK_QUICK3DENTITY_H
 
 #include <Qt3DCore/entity.h>
 
@@ -50,13 +50,15 @@ namespace Qt3D {
 
 class Component;
 
-class QmlEntity : public Entity
+namespace Quick {
+
+class Quick3DEntity : public Entity
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Qt3D::Component> components READ componentList)
 
 public:
-    explicit QmlEntity(Node *parent = 0);
+    explicit Quick3DEntity(Node *parent = 0);
     QQmlListProperty<Qt3D::Component> componentList();
 
 private:
@@ -66,8 +68,10 @@ private:
     static void qmlClearComponents(QQmlListProperty<Qt3D::Component> *list);
 };
 
+} // Quick
+
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QMLENTITY_H
+#endif // QT3D_QUICK_QUICK3DENTITY_H

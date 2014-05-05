@@ -39,54 +39,57 @@
 **
 ****************************************************************************/
 
-#include "qmlentity.h"
-#include <QEvent>
+#include "quick3dentity.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QmlEntity::QmlEntity(Node *parent) : Entity(parent)
+namespace Quick {
+
+Quick3DEntity::Quick3DEntity(Node *parent) : Entity(parent)
 {
 }
 
-QQmlListProperty<Component> QmlEntity::componentList()
+QQmlListProperty<Component> Quick3DEntity::componentList()
 {
     return QQmlListProperty<Qt3D::Component>(this, 0,
-                                             QmlEntity::qmlAppendComponent,
-                                             QmlEntity::qmlComponentsCount,
-                                             QmlEntity::qmlComponentAt,
-                                             QmlEntity::qmlClearComponents);
+                                             Quick3DEntity::qmlAppendComponent,
+                                             Quick3DEntity::qmlComponentsCount,
+                                             Quick3DEntity::qmlComponentAt,
+                                             Quick3DEntity::qmlClearComponents);
 }
 
-void QmlEntity::qmlAppendComponent(QQmlListProperty<Component> *list, Component *comp)
+void Quick3DEntity::qmlAppendComponent(QQmlListProperty<Component> *list, Component *comp)
 {
     if (comp == Q_NULLPTR)
         return;
-    QmlEntity *self = static_cast<QmlEntity *>(list->object);
+    Quick3DEntity *self = static_cast<Quick3DEntity *>(list->object);
     self->addComponent(comp);
 }
 
-Component *QmlEntity::qmlComponentAt(QQmlListProperty<Component> *list, int index)
+Component *Quick3DEntity::qmlComponentAt(QQmlListProperty<Component> *list, int index)
 {
-    QmlEntity *self = static_cast<QmlEntity *>(list->object);
+    Quick3DEntity *self = static_cast<Quick3DEntity *>(list->object);
     return self->components().at(index);
 }
 
-int QmlEntity::qmlComponentsCount(QQmlListProperty<Component> *list)
+int Quick3DEntity::qmlComponentsCount(QQmlListProperty<Component> *list)
 {
-    QmlEntity *self = static_cast<QmlEntity *>(list->object);
+    Quick3DEntity *self = static_cast<Quick3DEntity *>(list->object);
     return self->components().count();
 }
 
-void QmlEntity::qmlClearComponents(QQmlListProperty<Component> *list)
+void Quick3DEntity::qmlClearComponents(QQmlListProperty<Component> *list)
 {
-    QmlEntity *self = static_cast<QmlEntity *>(list->object);
+    Quick3DEntity *self = static_cast<Quick3DEntity *>(list->object);
     ComponentList components = self->components();
     Q_FOREACH (Component *comp, components) {
         self->removeComponent(comp);
     }
 }
+
+} // Quick
 
 } // Qt3D
 

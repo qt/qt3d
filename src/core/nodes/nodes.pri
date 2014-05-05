@@ -5,11 +5,11 @@ HEADERS += \
     $$PWD/nodevisitor.h \
     $$PWD/component.h \
     $$PWD/entity.h \
-    $$PWD/qmlentity.h
+    $$PWD/quick3dentity.h
 
 SOURCES += \
     $$PWD/node.cpp \
     $$PWD/nodevisitor.cpp \
     $$PWD/component.cpp \
     $$PWD/entity.cpp \
-    $$PWD/qmlentity.cpp
+    $$PWD/quick3dentity.cpp

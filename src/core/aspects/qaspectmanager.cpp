@@ -51,7 +51,7 @@
 
 #include <node.h>
 #include <entity.h>
-#include <qmlentity.h>
+#include <quick3dentity.h>
 #include <camera.h>
 #include <cameralens.h>
 #include <matrixtransform.h>
@@ -110,15 +110,15 @@ void QAspectManager::registerCoreQmlComponents()
     qmlRegisterType<Qt3D::Node>("Qt3D", 2, 0, "Node");
     qmlRegisterUncreatableType<Qt3D::Entity>("Qt3D", 2, 0, "", "");
     qmlRegisterType<Qt3D::Component>("Qt3D", 2, 0, "Component");
-    qmlRegisterType<Qt3D::QmlEntity>("Qt3D", 2, 0, "Entity");
     qmlRegisterType<Qt3D::Camera>("Qt3D", 2, 0, "Camera");
     qmlRegisterType<Qt3D::CameraLens>("Qt3D", 2, 0, "CameraLens");
-    qmlRegisterType<Qt3D::Quick::Quick3DTransform>("Qt3D", 2, 0, "Transform");
     qmlRegisterType<Qt3D::MatrixTransform>("Qt3D", 2, 0, "MatrixTransform");
     qmlRegisterType<Qt3D::TranslateTransform>("Qt3D", 2, 0, "Translate");
     qmlRegisterType<Qt3D::RotateTransform>("Qt3D", 2, 0, "Rotate");
     qmlRegisterType<Qt3D::LookAtTransform>("Qt3D", 2, 0, "LookAt");
     qmlRegisterType<Qt3D::ScaleTransform>("Qt3D", 2, 0, "Scale");
+    qmlRegisterType<Qt3D::Quick::Quick3DEntity>("Qt3D", 2, 0, "Entity");
+    qmlRegisterType<Qt3D::Quick::Quick3DTransform>("Qt3D", 2, 0, "Transform");
 }
 
 
