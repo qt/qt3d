@@ -39,11 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QUICK_QUICK3DVIEWPORT_H
-#define QT3D_QUICK_QUICK3DVIEWPORT_H
-
-#include <Qt3DRenderer/quick3dframegraphitem.h>
-#include <Qt3DRenderer/viewport.h>
+#include "quick3dentity.h"
+#include <Qt3DCore/component.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -51,24 +48,62 @@ namespace Qt3D {
 
 namespace Quick {
 
-class Quick3DViewport : public Quick3DFrameGraphItem, public virtual Viewport
+Quick3DEntity::Quick3DEntity(Node *parent)
+    : Quick3DNode(parent)
+    , Entity()
 {
-    Q_OBJECT
-    Q_INTERFACES(Qt3D::Viewport)
-    Q_PROPERTY(QRectF rect READ rect WRITE setRect NOTIFY rectChanged)
-public:
-    explicit Quick3DViewport(Node *parent = 0);
+}
 
-Q_SIGNALS:
-    void rectChanged() Q_DECL_OVERRIDE;
-    void enabledChanged() Q_DECL_OVERRIDE;
-};
+QQmlListProperty<Component> Quick3DEntity::componentList()
+{
+    return QQmlListProperty<Qt3D::Component>(this, 0,
+                                             Quick3DEntity::qmlAppendComponent,
+                                             Quick3DEntity::qmlComponentsCount,
+                                             Quick3DEntity::qmlComponentAt,
+                                             Quick3DEntity::qmlClearComponents);
+}
+
+Entity *Quick3DEntity::parentEntity()
+{
+    return qobject_cast<Entity*>(parent());
+}
+
+Entity *Quick3DEntity::asEntity()
+{
+    return this;
+}
+
+void Quick3DEntity::qmlAppendComponent(QQmlListProperty<Component> *list, Component *comp)
+{
+    if (comp == Q_NULLPTR)
+        return;
+    Quick3DEntity *self = static_cast<Quick3DEntity *>(list->object);
+    self->addComponent(comp);
+}
+
+Component *Quick3DEntity::qmlComponentAt(QQmlListProperty<Component> *list, int index)
+{
+    Quick3DEntity *self = static_cast<Quick3DEntity *>(list->object);
+    return self->components().at(index);
+}
+
+int Quick3DEntity::qmlComponentsCount(QQmlListProperty<Component> *list)
+{
+    Quick3DEntity *self = static_cast<Quick3DEntity *>(list->object);
+    return self->components().count();
+}
+
+void Quick3DEntity::qmlClearComponents(QQmlListProperty<Component> *list)
+{
+    Quick3DEntity *self = static_cast<Quick3DEntity *>(list->object);
+    ComponentList components = self->components();
+    Q_FOREACH (Component *comp, components) {
+        self->removeComponent(comp);
+    }
+}
 
 } // Quick
 
 } // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QUICK3DVIEWPORT_H
-

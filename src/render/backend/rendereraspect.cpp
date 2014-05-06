@@ -55,29 +55,6 @@
 #include <QThread>
 #include <QWindow>
 
-#include <QtQml>
-
-#include "scene.h"
-#include "effect.h"
-#include "technique.h"
-#include "tag.h"
-#include "mesh.h"
-#include "material.h"
-#include "renderpass.h"
-#include "shaderprogram.h"
-#include "viewport.h"
-#include "quick3dcameraselector.h"
-#include "quick3dtechniquefilter.h"
-#include "quick3dviewport.h"
-#include "quick3drenderpassfilter.h"
-#include "quick3drendertargetselector.h"
-#include "renderpassfilter.h"
-#include "techniquefilter.h"
-#include "rendertargetselector.h"
-#include "shape.h"
-#include "texture.h"
-#include "framegraph.h"
-
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
@@ -175,26 +152,6 @@ void RendererAspect::cleanupHelper()
  */
 void RendererAspect::registerQmlComponents()
 {
-    qmlRegisterType<Qt3D::Scene>("Qt3D.Render", 2, 0, "Scene");
-    qmlRegisterType<Qt3D::Effect>("Qt3D.Render", 2, 0, "Effect");
-    qmlRegisterType<Qt3D::Technique>("Qt3D.Render", 2, 0, "Technique");
-    qmlRegisterType<Qt3D::Tag>("Qt3D.Render", 2, 0, "Tag");
-    qmlRegisterType<Qt3D::Mesh>("Qt3D.Render", 2, 0, "Mesh");
-    qmlRegisterType<Qt3D::Material>("Qt3D.Render", 2, 0, "Material");
-    qmlRegisterType<Qt3D::RenderPass>("Qt3D.Render", 2, 0, "RenderPass");
-    qmlRegisterType<Qt3D::ShaderProgram>("Qt3D.Render", 2, 0, "ShaderProgram");
-
-    qmlRegisterType<Qt3D::Shape>("Qt3D.Render", 2, 0, "Shape");
-    qmlRegisterType<Qt3D::QmlTexture>("Qt3D.Render", 2, 0, "Texture");
-
-    // Framegraph components - TODO RenderTarget, RenderTargetSelector
-    qmlRegisterType<Qt3D::Quick::Quick3DCameraSelector>("Qt3D.Render", 2, 0, "CameraSelector");
-    qmlRegisterType<Qt3D::Quick::Quick3DRenderPassFilter>("Qt3D.Render", 2, 0, "RenderPassFilter");
-    qmlRegisterType<Qt3D::Quick::Quick3DTechniqueFilter>("Qt3D.Render", 2, 0, "TechniqueFilter");
-    qmlRegisterType<Qt3D::Quick::Quick3DViewport>("Qt3D.Render", 2, 0, "Viewport");
-//    qmlRegisterType<Qt3D::FrameGraphItem>("Qt3D.Render", 2, 0, "FrameGraphNode");
-    qmlRegisterType<Qt3D::Quick::Quick3DRenderTargetSelector>("Qt3D.Render", 2, 0, "RenderTargetSelector");
-    qmlRegisterType<Qt3D::FrameGraph>("Qt3D.Render", 2, 0, "FrameGraph");
 }
 
 }

@@ -1,6 +1,6 @@
 TARGET     = Qt3DCore
 MODULE     = 3dcore
-QT         = core-private gui-private qml qml-private quick
+QT         = core-private gui-private
 
 load(qt_module)
 

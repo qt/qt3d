@@ -39,47 +39,34 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QUICK_QUICK3DTECHNIQUEFILTER_H
-#define QT3D_QUICK_QUICK3DTECHNIQUEFILTER_H
-
-#include <Qt3DRenderer/quick3dframegraphitem.h>
-#include <Qt3DRenderer/techniquefilter.h>
-#include <QQmlListProperty>
+#include <QtQml>
+#include "qt3dquick3dcoreplugin.h"
+#include <Qt3DQuick/quick3dentity.h>
+#include <Qt3DQuick/quick3dtransform.h>
+#include <Qt3DCore/cameralens.h>
+#include <Qt3DCore/camera.h>
+#include <Qt3DCore/scaletransform.h>
+#include <Qt3DCore/lookattransform.h>
+#include <Qt3DCore/matrixtransform.h>
+#include <Qt3DCore/translatetransform.h>
+#include <Qt3DCore/rotatetransform.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
-class TechniqueFilterPrivate;
-
-namespace Quick {
-
-class Quick3DTechniqueFilter : public Quick3DFrameGraphItem, public virtual TechniqueFilter
+void Qt3DQuick3DCorePlugin::registerTypes(const char *uri)
 {
-    Q_OBJECT
-    Q_INTERFACES(Qt3D::TechniqueFilter)
-    Q_PROPERTY(QQmlListProperty<Qt3D::Tag> tags READ tagList)
-
-public:
-    explicit Quick3DTechniqueFilter(Node *parent = 0);
-    QQmlListProperty<Qt3D::Tag> tagList();
-
-Q_SIGNALS:
-    void tagsChanged() Q_DECL_OVERRIDE;
-    void enabledChanged() Q_DECL_OVERRIDE;
-
-private:
-    static void appendTag(QQmlListProperty<Tag> *list, Tag *bar);
-    static Tag *tagAt(QQmlListProperty<Tag> *list, int index);
-    static int tagCount(QQmlListProperty<Tag> *list);
-    static void clearTags(QQmlListProperty<Tag> *list);
-
-};
-
-} // Quick
-
-} // Qt3D
+    qmlRegisterUncreatableType<Qt3D::Node>(uri, 2, 0, "Node_priv", "");
+    qmlRegisterType<Qt3D::Component>(uri, 2, 0, "Component");
+    qmlRegisterType<Qt3D::Camera>(uri, 2, 0, "Camera");
+    qmlRegisterType<Qt3D::CameraLens>(uri, 2, 0, "CameraLens");
+    qmlRegisterType<Qt3D::MatrixTransform>(uri, 2, 0, "MatrixTransform");
+    qmlRegisterType<Qt3D::TranslateTransform>(uri, 2, 0, "Translate");
+    qmlRegisterType<Qt3D::RotateTransform>(uri, 2, 0, "Rotate");
+    qmlRegisterType<Qt3D::LookAtTransform>(uri, 2, 0, "LookAt");
+    qmlRegisterType<Qt3D::ScaleTransform>(uri, 2, 0, "Scale");
+    qmlRegisterType<Qt3D::Quick::Quick3DEntity>(uri, 2, 0, "Entity");
+    qmlRegisterType<Qt3D::Quick::Quick3DTransform>(uri, 2, 0, "Transform");
+    qmlRegisterType<Qt3D::Quick::Quick3DNode>(uri, 2, 0, "Node");
+}
 
 QT_END_NAMESPACE
-
-#endif // QT3D_QUICK_QUICK3DTECHNIQUEFILTER_H

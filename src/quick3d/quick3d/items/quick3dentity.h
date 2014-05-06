@@ -39,28 +39,42 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QUICK_QUICK3DCAMERASELECTOR_H
-#define QT3D_QUICK_QUICK3DCAMERASELECTOR_H
+#ifndef QT3D_QUICK_QUICK3DENTITY_H
+#define QT3D_QUICK_QUICK3DENTITY_H
 
-#include <Qt3DRenderer/quick3dframegraphitem.h>
-#include <Qt3DRenderer/cameraselector.h>
+#include <Qt3DCore/entity.h>
+#include <QQmlListProperty>
+#include <Qt3DQuick/quick3dnode.h>
+#include <Qt3DQuick/qt3dquick_global.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class Component;
+
 namespace Quick {
 
-class Quick3DCameraSelector : public Quick3DFrameGraphItem, public virtual CameraSelector
+class QT3DQUICKSHARED_EXPORT Quick3DEntity : public Quick3DNode, public Entity
 {
     Q_OBJECT
-    Q_INTERFACES(Qt3D::CameraSelector)
-    Q_PROPERTY(Qt3D::Node *camera READ camera WRITE setCamera NOTIFY cameraChanged)
+    Q_INTERFACES(Qt3D::Entity)
+    Q_PROPERTY(QQmlListProperty<Qt3D::Component> components READ componentList)
+
 public:
-    Quick3DCameraSelector(Node *parent = 0);
+    explicit Quick3DEntity(Node *parent = 0);
+    QQmlListProperty<Qt3D::Component> componentList();
+    Entity *parentEntity() Q_DECL_OVERRIDE;
+    Entity *asEntity() Q_DECL_OVERRIDE;
+
 Q_SIGNALS:
-    void cameraChanged() Q_DECL_OVERRIDE;
     void enabledChanged() Q_DECL_OVERRIDE;
+
+private:
+    static void qmlAppendComponent(QQmlListProperty<Qt3D::Component> *list, Qt3D::Component *comp);
+    static Component *qmlComponentAt(QQmlListProperty<Qt3D::Component> *list, int index);
+    static int qmlComponentsCount(QQmlListProperty<Qt3D::Component> *list);
+    static void qmlClearComponents(QQmlListProperty<Qt3D::Component> *list);
 };
 
 } // Quick
@@ -69,4 +83,4 @@ Q_SIGNALS:
 
 QT_END_NAMESPACE
 
-#endif // QUICK3DCAMERASELECTOR_H
+#endif // QT3D_QUICK_QUICK3DENTITY_H

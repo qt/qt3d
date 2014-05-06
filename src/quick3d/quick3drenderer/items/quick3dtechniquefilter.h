@@ -39,22 +39,49 @@
 **
 ****************************************************************************/
 
-#include "quick3drenderpassfilter.h"
+#ifndef QT3D_RENDER_QUICK_QUICK3DTECHNIQUEFILTER_H
+#define QT3D_RENDER_QUICK_QUICK3DTECHNIQUEFILTER_H
+
+#include <Qt3DQuickRenderer/quick3dframegraphitem.h>
+#include <Qt3DRenderer/techniquefilter.h>
+#include <QQmlListProperty>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+namespace Render {
+
 namespace Quick {
 
-Quick3DRenderPassFilter::Quick3DRenderPassFilter(Node *parent)
-    : RenderPassFilter()
-    , Quick3DFrameGraphItem(parent)
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTechniqueFilter : public Quick3DFrameGraphItem, public virtual TechniqueFilter
 {
-}
+    Q_OBJECT
+    Q_INTERFACES(Qt3D::TechniqueFilter)
+    Q_PROPERTY(QQmlListProperty<Qt3D::Tag> tags READ tagList)
+
+public:
+    explicit Quick3DTechniqueFilter(Node *parent = 0);
+    QQmlListProperty<Qt3D::Tag> tagList();
+
+Q_SIGNALS:
+    void tagsChanged() Q_DECL_OVERRIDE;
+    void enabledChanged() Q_DECL_OVERRIDE;
+
+private:
+    static void appendTag(QQmlListProperty<Tag> *list, Tag *bar);
+    static Tag *tagAt(QQmlListProperty<Tag> *list, int index);
+    static int tagCount(QQmlListProperty<Tag> *list);
+    static void clearTags(QQmlListProperty<Tag> *list);
+
+};
 
 } // Quick
+
+} // Render
 
 } // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_RENDER_QUICK_QUICK3DTECHNIQUEFILTER_H

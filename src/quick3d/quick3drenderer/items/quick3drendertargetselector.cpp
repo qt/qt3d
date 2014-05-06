@@ -39,33 +39,26 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QUICK_QUICK3DRENDERTARGETSELECTOR_H
-#define QT3D_QUICK_QUICK3DRENDERTARGETSELECTOR_H
-
-#include <Qt3DRenderer/quick3dframegraphitem.h>
-#include <Qt3DRenderer/rendertargetselector.h>
+#include "quick3drendertargetselector.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+namespace Render {
+
 namespace Quick {
 
-class Quick3DRenderTargetSelector : public Quick3DFrameGraphItem, public virtual RenderTargetSelector
+Quick3DRenderTargetSelector::Quick3DRenderTargetSelector(Node * parent)
+    : RenderTargetSelector()
+    , Quick3DFrameGraphItem(parent)
 {
-    Q_OBJECT
-    Q_INTERFACES(Qt3D::RenderTargetSelector)
-public:
-    explicit Quick3DRenderTargetSelector(Node *parent = 0);
-
-Q_SIGNALS:
-    void enabledChanged() Q_DECL_OVERRIDE;
-};
+}
 
 } // Quick
+
+} // Render
 
 } // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_QUICK_QUICK3DRENDERTARGETSELECTOR_H

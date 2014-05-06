@@ -39,22 +39,21 @@
 **
 ****************************************************************************/
 
-#include "quick3dviewport.h"
+#ifndef QT3DQUICK3DRENDERPLUGIN_H
+#define QT3DQUICK3DRENDERPLUGIN_H
+
+#include <QtQml/QQmlExtensionPlugin>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
-namespace Quick {
-
-Quick3DViewport::Quick3DViewport(Node *parent)
-    : Viewport()
-    , Quick3DFrameGraphItem(parent)
+class Qt3DQuick3DRenderPlugin : public QQmlExtensionPlugin
 {
-}
-
-} // Quick
-
-} // Qt3D
+    Q_OBJECT
+    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface/1.0")
+public:
+    void registerTypes(const char *uri) Q_DECL_OVERRIDE;
+};
 
 QT_END_NAMESPACE
+
+#endif // QT3DQUICK3DRENDERPLUGIN_H

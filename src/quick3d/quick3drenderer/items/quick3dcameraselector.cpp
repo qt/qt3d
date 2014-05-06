@@ -39,47 +39,26 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QUICK_QUICK3DNODE_H
-#define QT3D_QUICK_QUICK3DNODE_H
-
-#include <Qt3DCore/node.h>
-#include <QQmlListProperty>
-#include <Qt3DCore/qt3dcore_global.h>
+#include "quick3dcameraselector.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+namespace Render {
+
 namespace Quick {
 
-class QT3DCORESHARED_EXPORT Quick3DNode : public Qt3D::Node
+Quick3DCameraSelector::Quick3DCameraSelector(Node *parent)
+    : CameraSelector()
+    , Quick3DFrameGraphItem(parent)
 {
-    Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<QObject> data READ data)
-    Q_PROPERTY(QQmlListProperty<Qt3D::Node> childNodes READ childNodes)
-    Q_CLASSINFO("DefaultProperty", "data")
-public:
-    explicit Quick3DNode(Node *parent = 0);
+}
 
-    QQmlListProperty<QObject> data();
-    QQmlListProperty<Qt3D::Node> childNodes();
+} // Quick
 
-private:
-    static void appendData(QQmlListProperty<QObject> *list, QObject *obj);
-    static QObject *dataAt(QQmlListProperty<QObject> *list, int index);
-    static int dataCount(QQmlListProperty<QObject> *list);
-    static void clearData(QQmlListProperty<QObject> *list);
-
-    static void appendChild(QQmlListProperty<Qt3D::Node> *list, Qt3D::Node *obj);
-    static Node *childAt(QQmlListProperty<Qt3D::Node> *list, int index);
-    static int childCount(QQmlListProperty<Qt3D::Node> *list);
-    static void clearChildren(QQmlListProperty<Qt3D::Node> *list);
-};
-
-} // Quick;
+} // Render
 
 } // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QUICK3DNODE_H

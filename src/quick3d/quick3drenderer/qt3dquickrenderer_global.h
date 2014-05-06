@@ -39,27 +39,19 @@
 **
 ****************************************************************************/
 
-#include "quick3dframegraphitem.h"
-#include "framegraphitem_p.h"
+#ifndef QT3DQUICKRENDERER_GLOBAL_H
+#define QT3DQUICKRENDERER_GLOBAL_H
+
+#include <QtCore/qglobal.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
-namespace Quick {
-
-Quick3DFrameGraphItem::Quick3DFrameGraphItem(Node *parent)
-    : Quick3DNode(parent)
-    , FrameGraphItem()
-{
-}
-
-Quick3DFrameGraphItem::~Quick3DFrameGraphItem()
-{
-}
-
-} // Quick
-
-} // Qt3D
+#if defined(QT3DQUICKRENDERER_LIBRARY)
+#  define QT3DQUICKRENDERERSHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define QT3DQUICKRENDERERSHARED_EXPORT Q_DECL_IMPORT
+#endif
 
 QT_END_NAMESPACE
+
+#endif // QT3DQUICKRENDERER_GLOBAL_H

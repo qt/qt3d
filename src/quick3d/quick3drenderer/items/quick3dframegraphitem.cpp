@@ -39,21 +39,29 @@
 **
 ****************************************************************************/
 
-#include "quick3dcameraselector.h"
+#include "quick3dframegraphitem.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+namespace Render {
+
 namespace Quick {
 
-Quick3DCameraSelector::Quick3DCameraSelector(Node *parent)
-    : CameraSelector()
-    , Quick3DFrameGraphItem(parent)
+Quick3DFrameGraphItem::Quick3DFrameGraphItem(Node *parent)
+    : Qt3D::Quick::Quick3DNode(parent)
+    , FrameGraphItem()
+{
+}
+
+Quick3DFrameGraphItem::~Quick3DFrameGraphItem()
 {
 }
 
 } // Quick
+
+} // Render
 
 } // Qt3D
 

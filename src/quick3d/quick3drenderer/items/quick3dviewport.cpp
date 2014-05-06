@@ -39,21 +39,25 @@
 **
 ****************************************************************************/
 
-#include "quick3drendertargetselector.h"
+#include "quick3dviewport.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+namespace Render {
+
 namespace Quick {
 
-Quick3DRenderTargetSelector::Quick3DRenderTargetSelector(Node * parent)
-    : RenderTargetSelector()
+Quick3DViewport::Quick3DViewport(Node *parent)
+    : Viewport()
     , Quick3DFrameGraphItem(parent)
 {
 }
 
 } // Quick
+
+} // Render
 
 } // Qt3D
 

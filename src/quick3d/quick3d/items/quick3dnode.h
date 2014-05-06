@@ -39,8 +39,12 @@
 **
 ****************************************************************************/
 
-#include "quick3dentity.h"
-#include "component.h"
+#ifndef QT3D_QUICK_QUICK3DNODE_H
+#define QT3D_QUICK_QUICK3DNODE_H
+
+#include <QQmlListProperty>
+#include <Qt3DCore/node.h>
+#include <Qt3DQuick/qt3dquick_global.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -48,62 +52,34 @@ namespace Qt3D {
 
 namespace Quick {
 
-Quick3DEntity::Quick3DEntity(Node *parent)
-    : Quick3DNode(parent)
-    , Entity()
+class QT3DQUICKSHARED_EXPORT Quick3DNode : public Qt3D::Node
 {
-}
+    Q_OBJECT
+    Q_PROPERTY(QQmlListProperty<QObject> data READ data)
+    Q_PROPERTY(QQmlListProperty<Qt3D::Node> childNodes READ childNodes)
+    Q_CLASSINFO("DefaultProperty", "data")
+public:
+    explicit Quick3DNode(Node *parent = 0);
 
-QQmlListProperty<Component> Quick3DEntity::componentList()
-{
-    return QQmlListProperty<Qt3D::Component>(this, 0,
-                                             Quick3DEntity::qmlAppendComponent,
-                                             Quick3DEntity::qmlComponentsCount,
-                                             Quick3DEntity::qmlComponentAt,
-                                             Quick3DEntity::qmlClearComponents);
-}
+    QQmlListProperty<QObject> data();
+    QQmlListProperty<Qt3D::Node> childNodes();
 
-Entity *Quick3DEntity::parentEntity()
-{
-    return qobject_cast<Entity*>(parent());
-}
+private:
+    static void appendData(QQmlListProperty<QObject> *list, QObject *obj);
+    static QObject *dataAt(QQmlListProperty<QObject> *list, int index);
+    static int dataCount(QQmlListProperty<QObject> *list);
+    static void clearData(QQmlListProperty<QObject> *list);
 
-Entity *Quick3DEntity::asEntity()
-{
-    return this;
-}
+    static void appendChild(QQmlListProperty<Qt3D::Node> *list, Qt3D::Node *obj);
+    static Node *childAt(QQmlListProperty<Qt3D::Node> *list, int index);
+    static int childCount(QQmlListProperty<Qt3D::Node> *list);
+    static void clearChildren(QQmlListProperty<Qt3D::Node> *list);
+};
 
-void Quick3DEntity::qmlAppendComponent(QQmlListProperty<Component> *list, Component *comp)
-{
-    if (comp == Q_NULLPTR)
-        return;
-    Quick3DEntity *self = static_cast<Quick3DEntity *>(list->object);
-    self->addComponent(comp);
-}
-
-Component *Quick3DEntity::qmlComponentAt(QQmlListProperty<Component> *list, int index)
-{
-    Quick3DEntity *self = static_cast<Quick3DEntity *>(list->object);
-    return self->components().at(index);
-}
-
-int Quick3DEntity::qmlComponentsCount(QQmlListProperty<Component> *list)
-{
-    Quick3DEntity *self = static_cast<Quick3DEntity *>(list->object);
-    return self->components().count();
-}
-
-void Quick3DEntity::qmlClearComponents(QQmlListProperty<Component> *list)
-{
-    Quick3DEntity *self = static_cast<Quick3DEntity *>(list->object);
-    ComponentList components = self->components();
-    Q_FOREACH (Component *comp, components) {
-        self->removeComponent(comp);
-    }
-}
-
-} // Quick
+} // Quick;
 
 } // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QUICK3DNODE_H

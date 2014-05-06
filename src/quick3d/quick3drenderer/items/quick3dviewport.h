@@ -39,39 +39,40 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QUICK_QUICK3DFRAMEGRAPHITEM_H
-#define QT3D_QUICK_QUICK3DFRAMEGRAPHITEM_H
+#ifndef QT3D_RENDER_QUICK_QUICK3DVIEWPORT_H
+#define QT3D_RENDER_QUICK_QUICK3DVIEWPORT_H
 
-#include <Qt3DCore/quick3dnode.h>
-#include <Qt3DRenderer/framegraphitem.h>
+#include <Qt3DQuickRenderer/quick3dframegraphitem.h>
+#include <Qt3DRenderer/viewport.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class FrameGraphItemPrivate;
+namespace Render {
 
 namespace Quick {
 
-class Quick3DFrameGraphItem : public Quick3DNode, public FrameGraphItem
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DViewport : public Quick3DFrameGraphItem, public virtual Viewport
 {
     Q_OBJECT
-    Q_INTERFACES(Qt3D::FrameGraphItem)
-    Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
-
+    Q_INTERFACES(Qt3D::Viewport)
+    Q_PROPERTY(QRectF rect READ rect WRITE setRect NOTIFY rectChanged)
 public:
-    explicit Quick3DFrameGraphItem(Node *parent = 0);
-    virtual ~Quick3DFrameGraphItem();
-
+    explicit Quick3DViewport(Node *parent = 0);
 
 Q_SIGNALS:
+    void rectChanged() Q_DECL_OVERRIDE;
     void enabledChanged() Q_DECL_OVERRIDE;
 };
 
 } // Quick
 
+} // Render
+
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QUICK_QUICK3DFRAMEGRAPHITEM_H
+#endif // QT3D_RENDER_QUICK_QUICK3DVIEWPORT_H
+

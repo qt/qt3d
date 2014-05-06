@@ -39,7 +39,13 @@
 **
 ****************************************************************************/
 
-#include "quick3dtechniquefilter.h"
+#ifndef QT3D_QUICK_QUICK3DTRANSFORM_H
+#define QT3D_QUICK_QUICK3DTRANSFORM_H
+
+#include <QtCore/QtGlobal>
+#include <Qt3DCore/transform.h>
+#include <QQmlListProperty>
+#include <Qt3DQuick/qt3dquick_global.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -47,57 +53,26 @@ namespace Qt3D {
 
 namespace Quick {
 
-Quick3DTechniqueFilter::Quick3DTechniqueFilter(Node *parent)
-    : TechniqueFilter()
-    , Quick3DFrameGraphItem(parent)
+class QT3DQUICKSHARED_EXPORT Quick3DTransform : public Transform
 {
-}
+    Q_OBJECT
+    Q_PROPERTY(QQmlListProperty<Qt3D::AbstractTransform> transforms READ transformList)
+    Q_CLASSINFO("DefaultProperty", "transforms")
+public:
+    explicit Quick3DTransform(Node *parent = 0);
+    QQmlListProperty<Qt3D::AbstractTransform> transformList();
 
-QQmlListProperty<Qt3D::Tag> Quick3DTechniqueFilter::tagList()
-{
-    return QQmlListProperty<Qt3D::Tag>(this, 0,
-                                       &Quick3DTechniqueFilter::appendTag,
-                                       &Quick3DTechniqueFilter::tagCount,
-                                       &Quick3DTechniqueFilter::tagAt,
-                                       &Quick3DTechniqueFilter::clearTags);
-}
+private:
+    static void qmlAppendTransform(QQmlListProperty<Qt3D::AbstractTransform> *list, Qt3D::AbstractTransform *bar);
+    static AbstractTransform* transformAt(QQmlListProperty<Qt3D::AbstractTransform> *list, int index);
+    static int transformCount(QQmlListProperty<Qt3D::AbstractTransform> *list);
+    static void qmlClearTransforms(QQmlListProperty<Qt3D::AbstractTransform> *list);
+};
 
-void Quick3DTechniqueFilter::appendTag(QQmlListProperty<Tag> *list, Tag *tag)
-{
-    Quick3DTechniqueFilter *filter = qobject_cast<Quick3DTechniqueFilter *>(list->object);
-    if (filter) {
-        tag->setParent(filter);
-        filter->addTag(tag);
-    }
-}
-
-Tag *Quick3DTechniqueFilter::tagAt(QQmlListProperty<Tag> *list, int index)
-{
-    TechniqueFilter *filter = qobject_cast<TechniqueFilter *>(list->object);
-    if (filter)
-        return filter->tags().at(index);
-    return 0;
-}
-
-int Quick3DTechniqueFilter::tagCount(QQmlListProperty<Tag> *list)
-{
-    TechniqueFilter *filter = qobject_cast<TechniqueFilter *>(list->object);
-    if (filter)
-        return filter->tags().size();
-    return 0;
-}
-
-void Quick3DTechniqueFilter::clearTags(QQmlListProperty<Tag> *list)
-{
-    TechniqueFilter *filter = qobject_cast<TechniqueFilter *>(list->object);
-    if (filter) {
-        Q_FOREACH (Tag *tag, filter->tags())
-            filter->removeTag(tag);
-    }
-}
-
-} // Quick
+} //Quick
 
 } // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_QUICK_QUICK3DTRANSFORM_H

@@ -1,7 +1,8 @@
 %modules = ( # path to module name map
     "Qt3DCore" => "$basedir/src/core",
     "Qt3DRenderer" => "$basedir/src/render",
-    "Qt3DQuick" => "$basedir/src/quick3d",
+    "Qt3DQuick" => "$basedir/src/quick3d/quick3d",
+    "Qt3DQuickRenderer" => "$basedir/src/quick3d/quick3drenderer",
 );
 %moduleheaders = ( # restrict the module headers to those found in relative path
 );

@@ -39,36 +39,37 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QUICK_QUICK3DRENDERPASSFILTER_H
-#define QT3D_QUICK_QUICK3DRENDERPASSFILTER_H
+#ifndef QT3D_RENDER_QUICK_QUICK3DRENDERTARGETSELECTOR_H
+#define QT3D_RENDER_QUICK_QUICK3DRENDERTARGETSELECTOR_H
 
-#include <Qt3DRenderer/quick3dframegraphitem.h>
-#include <Qt3DRenderer/renderpassfilter.h>
+#include <Qt3DQuickRenderer/quick3dframegraphitem.h>
+#include <Qt3DRenderer/rendertargetselector.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+namespace Render {
+
 namespace Quick {
 
-class Quick3DRenderPassFilter : public Quick3DFrameGraphItem, public virtual RenderPassFilter
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DRenderTargetSelector : public Quick3DFrameGraphItem, public virtual RenderTargetSelector
 {
     Q_OBJECT
-    Q_INTERFACES(Qt3D::RenderPassFilter)
-    Q_PROPERTY(QString renderPassName READ renderPassName WRITE setRenderPassName NOTIFY renderPassNameChanged)
-
+    Q_INTERFACES(Qt3D::RenderTargetSelector)
 public:
-    Quick3DRenderPassFilter(Node *parent = 0);
+    explicit Quick3DRenderTargetSelector(Node *parent = 0);
 
 Q_SIGNALS:
-    void renderPassNameChanged() Q_DECL_OVERRIDE;
     void enabledChanged() Q_DECL_OVERRIDE;
 };
 
 } // Quick
 
+} // Render
+
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QUICK_QUICK3DRENDERPASSFILTER_H
+#endif // QT3D_RENDER_QUICK_QUICK3DRENDERTARGETSELECTOR_H
