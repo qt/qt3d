@@ -109,7 +109,6 @@ void QAspectManager::registerCoreQmlComponents()
 {
     qDebug() << Q_FUNC_INFO;
     qmlRegisterUncreatableType<Qt3D::Node>("Qt3D", 2, 0, "Node_priv", "");
-    qmlRegisterUncreatableType<Qt3D::Entity>("Qt3D", 2, 0, "Entity_priv", "");
     qmlRegisterType<Qt3D::Component>("Qt3D", 2, 0, "Component");
     qmlRegisterType<Qt3D::Camera>("Qt3D", 2, 0, "Camera");
     qmlRegisterType<Qt3D::CameraLens>("Qt3D", 2, 0, "CameraLens");

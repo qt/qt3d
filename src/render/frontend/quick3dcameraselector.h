@@ -55,7 +55,7 @@ class Quick3DCameraSelector : public Quick3DFrameGraphItem, public virtual Camer
 {
     Q_OBJECT
     Q_INTERFACES(Qt3D::CameraSelector)
-    Q_PROPERTY(Qt3D::Entity *camera READ camera WRITE setCamera NOTIFY cameraChanged)
+    Q_PROPERTY(Qt3D::Node *camera READ camera WRITE setCamera NOTIFY cameraChanged)
 public:
     Quick3DCameraSelector(Node *parent = 0);
 Q_SIGNALS:

@@ -46,7 +46,7 @@
 
 #include <window.h>
 #include <scene.h>
-#include <entity.h>
+#include <entitynode.h>
 #include <camera.h>
 #include <shape.h>
 #include <mesh.h>
@@ -74,10 +74,10 @@ int main(int ac, char **av)
     Qt3D::Window view;
     view.registerAspect(new Qt3D::RendererAspect());
 
-    Qt3D::Entity *rootEntity = new Qt3D::Entity();
+    Qt3D::EntityNode *rootEntity = new Qt3D::EntityNode();
     Qt3D::Scene  *scene = new Qt3D::Scene();
 
-    Qt3D::Entity *torusEntity = new Qt3D::Entity();
+    Qt3D::EntityNode *torusEntity = new Qt3D::EntityNode();
     Qt3D::Mesh *torusMesh = new Qt3D::Mesh();
     Qt3D::Shape *torus = new Qt3D::Shape();
 

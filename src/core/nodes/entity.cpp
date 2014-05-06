@@ -40,7 +40,6 @@
 ****************************************************************************/
 
 #include "entity.h"
-
 #include "component.h"
 #include "abstracttransform.h"
 #include "matrixtransform.h"
@@ -53,26 +52,28 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-Entity::Entity(Node *parent)
-    : Node(parent),
-      QObservable()
-    , m_enabled(true)
+Entity::Entity()
+    : QObservable()
+    , d_ptr(new EntityPrivate(this))
 {
-    m_uuid = QUuid::createUuid();
+    Q_D(Entity);
+    d->m_enabled = true;
+    d->m_uuid = QUuid::createUuid();
 }
 
 QList<Component *> Entity::components() const
 {
-    return m_components;
+    Q_D(const Entity);
+    return d->m_components;
 }
 
 void Entity::addComponent(Component *comp)
 {
+    Q_D(Entity);
     Q_CHECK_PTR( comp );
-    qDebug() << Q_FUNC_INFO << objectName() << comp;
-    Q_ASSERT(m_components.count(comp) == 0);
-    comp->setParent(this);
-    m_components.append(comp);
+    qDebug() << Q_FUNC_INFO << comp;
+    Q_ASSERT(d->m_components.count(comp) == 0);
+    d->m_components.append(comp);
     QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentAdded, this));
     propertyChange->m_value = QVariant::fromValue(comp);
     notifyObservers(propertyChange);
@@ -81,8 +82,9 @@ void Entity::addComponent(Component *comp)
 void Entity::removeComponent(Component *comp)
 {
     Q_CHECK_PTR(comp);
-    qDebug() << Q_FUNC_INFO << objectName() << comp;
-    m_components.removeOne(comp);
+    qDebug() << Q_FUNC_INFO << comp;
+    Q_D(Entity);
+    d->m_components.removeOne(comp);
     QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentRemoved, this));
     propertyChange->m_value = QVariant::fromValue(comp);
     notifyObservers(propertyChange);
@@ -90,25 +92,17 @@ void Entity::removeComponent(Component *comp)
 
 bool Entity::isEnabled() const
 {
-    return m_enabled;
+    Q_D(const Entity);
+    return d->m_enabled;
 }
 
 void Entity::setEnabled(bool on)
 {
-    if (m_enabled != on) {
-        m_enabled = on;
+    Q_D(Entity);
+    if (d->m_enabled != on) {
+        d->m_enabled = on;
         emit enabledChanged();
     }
-}
-
-Entity *Entity::asEntity()
-{
-    return this;
-}
-
-Entity *Entity::parentEntity()
-{
-    return qobject_cast<Entity*>(parent());
 }
 
 } // namespace Qt3D

@@ -42,7 +42,7 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include <Qt3DCore/entity.h>
+#include <Qt3DCore/entitynode.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
@@ -50,7 +50,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D
 {
 
-class QT3DRENDERERSHARED_EXPORT Scene : public Entity
+class QT3DRENDERERSHARED_EXPORT Scene : public EntityNode
 {
     Q_OBJECT
 

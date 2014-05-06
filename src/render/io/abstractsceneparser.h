@@ -42,12 +42,14 @@
 #ifndef ABSTRACTSCENEPARSER_H
 #define ABSTRACTSCENEPARSER_H
 
-#include <Qt3DCore/entity.h>
 #include <QObject>
+#include <QStringList>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
+
+class EntityNode;
 
 class AbstractSceneParser : public QObject
 {
@@ -70,8 +72,8 @@ public:
 
     virtual void    setFilePath(const QString &path) = 0;
     virtual bool    isPathExtensionSupported(const QString &path) = 0;
-    virtual Entity *scene(QString id) = 0;
-    virtual Entity *node(QString id) = 0;
+    virtual EntityNode *scene(QString id) = 0;
+    virtual EntityNode *node(QString id) = 0;
 
     ParserStatus parserStatus() const;
     QStringList  errors() const;

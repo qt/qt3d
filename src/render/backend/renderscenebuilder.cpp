@@ -167,7 +167,7 @@ Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(Node *block)
         Render::CameraSelector *cameraSelectorNode = new Render::CameraSelector();
 
         qCDebug(Backend) << Q_FUNC_INFO << "CameraSelector";
-        cameraSelectorNode->setCameraEntity(cameraSelector->camera());
+        cameraSelectorNode->setCameraEntity(qobject_cast<Entity*>(cameraSelector->camera()));
         return cameraSelectorNode;
     }
     else if (qobject_cast<Qt3D::RenderTargetSelector*>(block) != Q_NULLPTR) {
@@ -197,17 +197,18 @@ void RenderSceneBuilder::visitNode(Qt3D::Node *node)
     Qt3D::NodeVisitor::visitNode(node);
 }
 
-void RenderSceneBuilder::visitEntity(Qt3D::Entity *entity)
+void RenderSceneBuilder::visitEntity(Qt3D::Node *node)
 {
     // Create a RenderNode corresponding to the Entity. Most data will
     // be calculated later by jobs
-    qCDebug(Backend) << Q_FUNC_INFO << "Entity " << entity->objectName();
+    Entity *entity = qobject_cast<Entity*>(node);
+    qCDebug(Backend) << Q_FUNC_INFO << "Entity " << node->objectName();
     // Retrieve or created RenderNode for entity
     HRenderNode renderNodeHandle = m_renderer->renderNodesManager()->getOrAcquireHandle(entity->uuid());
     RenderNode *renderNode = m_renderer->renderNodesManager()->data(renderNodeHandle);
     renderNode->setRenderer(m_renderer);
     renderNode->setParentHandle(m_nodeStack.top());
-    renderNode->setFrontEndPeer(entity);
+    renderNode->setFrontEndPeer(node);
     // REPLACE WITH ENTITY MATRIX FROM TRANSFORMS
     m_nodeStack.push(renderNodeHandle);
 
@@ -263,11 +264,11 @@ void RenderSceneBuilder::visitEntity(Qt3D::Entity *entity)
 
     // Check if entity is a Scene and if so parses the scene
     Scene *sceneEntity = Q_NULLPTR;
-    if ((sceneEntity = qobject_cast<Scene *>(entity)) != Q_NULLPTR) {
+    if ((sceneEntity = qobject_cast<Scene *>(node)) != Q_NULLPTR) {
         qDebug() << Q_FUNC_INFO << "Found a Scene";
     }
 
-    NodeVisitor::visitEntity(entity);
+    NodeVisitor::visitEntity(node);
 
     // Coming back up the tree
     m_nodeStack.pop();

@@ -62,7 +62,7 @@ public:
 
     Q_DECLARE_PUBLIC(CameraSelector)
     CameraSelector *q_ptr;
-    Entity *m_camera;
+    Node *m_camera;
 };
 
 class QT3DRENDERERSHARED_EXPORT CameraSelector : public FrameGraphItem
@@ -75,7 +75,7 @@ public:
 
     virtual ~CameraSelector() {}
 
-    void setCamera(Qt3D::Entity *camera)
+    void setCamera(Qt3D::Node *camera)
     {
         Q_D(CameraSelector);
         if (d->m_camera != camera) {
@@ -84,7 +84,7 @@ public:
         }
     }
 
-    Entity *camera() const
+    Node *camera() const
     {
         Q_D(const CameraSelector);
         return d->m_camera;

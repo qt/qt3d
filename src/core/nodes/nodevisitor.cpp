@@ -63,7 +63,7 @@ void NodeVisitor::traverse(Node *rootNode)
 //    m_matrixStack.append(rootEntity ? rootEntity->matrix() : QMatrix4x4());
 
     if (rootEntity)
-        visitEntity(rootEntity);
+        visitEntity(rootNode);
     else
         visitNode(rootNode);
 }
@@ -99,7 +99,7 @@ void NodeVisitor::visitNode(Node *nd)
     traverseChildren();
 }
 
-void NodeVisitor::visitEntity(Entity *nd)
+void NodeVisitor::visitEntity(Node *nd)
 {
     visitNode(nd);
 }
@@ -119,7 +119,7 @@ void NodeVisitor::outerVisitNode(Node *n)
 //        QMatrix4x4 m = m_matrixStack.back() * e->matrix();
 //        m_matrixStack.push_back(m);
 
-        visitEntity(e);
+        visitEntity(n);
 
         m_path.pop_back();
 //        m_matrixStack.pop_back();

@@ -55,19 +55,47 @@ namespace Qt3D {
 
 class AbstractTransform;
 class Component;
+class Entity;
 
 typedef QList<Component*> ComponentList;
 
-class QT3DCORESHARED_EXPORT Entity : public Node, public QObservable
+class EntityPrivate
 {
-    Q_OBJECT
+public :
 
-    Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
+    EntityPrivate(Entity *qq)
+        : q_ptr(qq)
+    {}
 
+    Q_DECLARE_PUBLIC(Entity)
+    Entity *q_ptr;
+
+    ComponentList m_components;
+    bool m_visible;
+
+    QUuid m_uuid;
+
+    mutable QMatrix4x4 m_matrix;
+    QMatrix4x4 m_sceneMatrix;
+
+    // TODO: Is a bool enough here or do we need additional states for entities?
+    // Perhaps aboutToBeDeleted would be useful?
+    bool m_enabled;
+};
+
+class QT3DCORESHARED_EXPORT Entity : public QObservable
+{
 public:
-    explicit Entity(Node *parent = 0);
+    Entity();
 
-    QUuid uuid() const { return m_uuid; }
+    virtual ~Entity()
+    {}
+
+    QUuid uuid() const
+    {
+        Q_D(const Entity);
+        return d->m_uuid;
+    }
 
     ComponentList components() const;
 
@@ -132,35 +160,26 @@ public:
         return Q_NULLPTR;
     }
 
-    void addComponent(Component *comp);
-    void removeComponent(Component *comp);
+    virtual void addComponent(Component *comp);
+    virtual void removeComponent(Component *comp);
 
     bool isEnabled() const;
     void setEnabled(bool on);
 
-    virtual Entity* asEntity();
-
-    Entity* parentEntity();
+    virtual Entity *parentEntity() = 0;
 
 Q_SIGNALS:
-    void enabledChanged();
+    virtual void enabledChanged() = 0;
 
 private:
-    ComponentList m_components;
-    bool m_visible;
+    Q_DECLARE_PRIVATE(Entity)
+    EntityPrivate *d_ptr;
 
-    QUuid m_uuid;
-
-    mutable QMatrix4x4 m_matrix;
-    QMatrix4x4 m_sceneMatrix;
-
-    // TODO: Is a bool enough here or do we need additional states for entities?
-    // Perhaps aboutToBeDeleted would be useful?
-    bool m_enabled;
 };
 
 } // namespace Qt3D
 
+Q_DECLARE_INTERFACE(Qt3D::Entity, "org.qtproject.qt3d.entity/2.0")
 QT_END_NAMESPACE
 
 #endif // QT3D_ENTITY_H

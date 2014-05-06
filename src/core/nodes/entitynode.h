@@ -39,47 +39,37 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QUICK_QUICK3DENTITY_H
-#define QT3D_QUICK_QUICK3DENTITY_H
+#ifndef QT3D_ENTITYNODE_H
+#define QT3D_ENTITYNODE_H
 
+#include <Qt3DCore/node.h>
 #include <Qt3DCore/entity.h>
-#include <Qt3DCore/quick3dnode.h>
-#include <QQmlListProperty>
+#include <Qt3DCore/qt3dcore_global.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class Component;
-
-namespace Quick {
-
-class Quick3DEntity : public Quick3DNode, public Entity
+class QT3DCORESHARED_EXPORT EntityNode : public Node, public Entity
 {
     Q_OBJECT
     Q_INTERFACES(Qt3D::Entity)
-    Q_PROPERTY(QQmlListProperty<Qt3D::Component> components READ componentList)
+    Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
 
 public:
-    explicit Quick3DEntity(Node *parent = 0);
-    QQmlListProperty<Qt3D::Component> componentList();
+    explicit EntityNode(Node *parent = 0);
+
     Entity *parentEntity() Q_DECL_OVERRIDE;
     Entity *asEntity() Q_DECL_OVERRIDE;
+    void addComponent(Component *comp) Q_DECL_OVERRIDE;
+    void removeComponent(Component *comp) Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
     void enabledChanged() Q_DECL_OVERRIDE;
-
-private:
-    static void qmlAppendComponent(QQmlListProperty<Qt3D::Component> *list, Qt3D::Component *comp);
-    static Component *qmlComponentAt(QQmlListProperty<Qt3D::Component> *list, int index);
-    static int qmlComponentsCount(QQmlListProperty<Qt3D::Component> *list);
-    static void qmlClearComponents(QQmlListProperty<Qt3D::Component> *list);
 };
-
-} // Quick
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QUICK_QUICK3DENTITY_H
+#endif // QT3D_ENTITYNODE_H

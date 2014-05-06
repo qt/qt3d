@@ -42,7 +42,7 @@
 #ifndef QT3D_CAMERA_H
 #define QT3D_CAMERA_H
 
-#include <Qt3DCore/entity.h>
+#include <Qt3DCore/entitynode.h>
 #include <Qt3DCore/qt3dcore_global.h>
 
 #include <QMatrix4x4>
@@ -58,10 +58,9 @@ class CameraLens;
 class Transform;
 class LookAtTransform;
 
-class QT3DCORESHARED_EXPORT Camera : public Entity
+class QT3DCORESHARED_EXPORT Camera : public EntityNode
 {
     Q_OBJECT
-
     // TODO Move view matrix out of the camera and use Transform component (once it exists)
     Q_PROPERTY(Qt3D::CameraLens* lens READ lens WRITE setLens NOTIFY lensChanged)
     Q_PROPERTY(Qt3D::Transform* transform READ transform WRITE setTransform NOTIFY transformChanged)

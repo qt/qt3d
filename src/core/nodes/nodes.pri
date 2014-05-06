@@ -6,7 +6,8 @@ HEADERS += \
     $$PWD/component.h \
     $$PWD/entity.h \
     $$PWD/quick3dentity.h \
-    $$PWD/quick3dnode.h
+    $$PWD/quick3dnode.h \
+    $$PWD/entitynode.h
 
 SOURCES += \
     $$PWD/node.cpp \
@@ -14,4 +15,5 @@ SOURCES += \
     $$PWD/component.cpp \
     $$PWD/entity.cpp \
     $$PWD/quick3dentity.cpp \
-    $$PWD/quick3dnode.cpp
+    $$PWD/quick3dnode.cpp \
+    $$PWD/entitynode.cpp

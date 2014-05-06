@@ -51,7 +51,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 Scene::Scene(Node* parent) :
-    Entity(parent),
+    EntityNode(parent),
     m_sceneChild(Q_NULLPTR)
 {
 }

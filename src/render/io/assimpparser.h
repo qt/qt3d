@@ -54,7 +54,6 @@
 #include <Qt3DCore/camera.h>
 #include <Qt3DRenderer/mesh.h>
 #include <Qt3DRenderer/material.h>
-#include <Qt3DCore/entity.h>
 #include <Qt3DRenderer/technique.h>
 
 #include <Qt3DRenderer/abstractsceneparser.h>
@@ -74,6 +73,7 @@ class Effect;
 class Camera;
 class Texture;
 class Mesh;
+class EntityNode;
 
 class AssimpParser : public AbstractSceneParser
 {
@@ -87,10 +87,10 @@ public:
     // SceneParserInterface interface
     void setFilePath(const QString& path) Q_DECL_OVERRIDE;
     bool isPathExtensionSupported(const QString &path) Q_DECL_OVERRIDE;
-    Entity *scene(QString id = QStringLiteral("")) Q_DECL_OVERRIDE;
-    Entity *node(QString id) Q_DECL_OVERRIDE;
+    EntityNode *scene(QString id = QStringLiteral("")) Q_DECL_OVERRIDE;
+    EntityNode *node(QString id) Q_DECL_OVERRIDE;
 
-    Entity *defaultScene();
+    EntityNode *defaultScene();
     MeshDataPtr mesh(QString id);
     Material *material(QString id);
     Camera *camera(QString id);
@@ -99,7 +99,7 @@ private :
     static QStringList assimpSupportedFormats();
     static QMatrix4x4 aiMatrix4x4ToQMatrix4x4(const aiMatrix4x4 &matrix);
 
-    Entity *node(aiNode *node);
+    EntityNode *node(aiNode *node);
 
     void readSceneFile(const QString &file);
 
@@ -131,7 +131,7 @@ private :
     QMap<uint, Effect *> m_effects;
     QMap<uint, Texture*> m_embeddedTextures;
     QMap<QString, Texture*> m_materialTextures;
-    QMap<aiNode*, Entity*> m_cameras;
+    QMap<aiNode*, EntityNode*> m_cameras;
 //    QMap<aiNode*, Light*> m_lights;
 
 };

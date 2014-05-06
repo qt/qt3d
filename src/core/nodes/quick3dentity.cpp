@@ -40,6 +40,7 @@
 ****************************************************************************/
 
 #include "quick3dentity.h"
+#include "component.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -47,7 +48,9 @@ namespace Qt3D {
 
 namespace Quick {
 
-Quick3DEntity::Quick3DEntity(Node *parent) : Entity(parent)
+Quick3DEntity::Quick3DEntity(Node *parent)
+    : Quick3DNode(parent)
+    , Entity()
 {
 }
 
@@ -58,6 +61,16 @@ QQmlListProperty<Component> Quick3DEntity::componentList()
                                              Quick3DEntity::qmlComponentsCount,
                                              Quick3DEntity::qmlComponentAt,
                                              Quick3DEntity::qmlClearComponents);
+}
+
+Entity *Quick3DEntity::parentEntity()
+{
+    return qobject_cast<Entity*>(parent());
+}
+
+Entity *Quick3DEntity::asEntity()
+{
+    return this;
 }
 
 void Quick3DEntity::qmlAppendComponent(QQmlListProperty<Component> *list, Component *comp)

@@ -92,18 +92,18 @@ Node {
 
             Translate {
                 id : translate_0
-                QQ2.SequentialAnimation {
-                    running : true
-                    loops: QQ2.Animation.Infinite
-                    QQ2.NumberAnimation { target : translate_0; property : "dz"; to : -360; duration : 2000 }
-                    QQ2.NumberAnimation { target : translate_0; property : "dz"; to : -20; duration : 2000 }
-                }
             }
             LookAt {
                 position: Qt.vector3d( -2.0, -1.0, -18.0 )
                 upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
                 viewCenter: Qt.vector3d( 0.0, 0.0, 5.0 )
             }
+        }
+        QQ2.SequentialAnimation {
+            running : true
+            loops: QQ2.Animation.Infinite
+            QQ2.NumberAnimation { target : translate_0; property : "dz"; to : -360; duration : 2000 }
+            QQ2.NumberAnimation { target : translate_0; property : "dz"; to : -20; duration : 2000 }
         }
 
         Transform {
@@ -119,13 +119,13 @@ Node {
                 id : rotate
                 axis : Qt.vector3d(0, 1, 0)
                 angle : 45
-                QQ2.SequentialAnimation {
-                    running : true
-                    loops: QQ2.Animation.Infinite
-                    QQ2.NumberAnimation { target : rotate; property : "angle"; to : 360; duration : 2000 }
-                    QQ2.NumberAnimation { target : rotate; property : "angle"; to : 0; duration : 2000 }
-                }
             }
+        }
+        QQ2.SequentialAnimation {
+            running : true
+            loops: QQ2.Animation.Infinite
+            QQ2.NumberAnimation { target : rotate; property : "angle"; to : 360; duration : 2000 }
+            QQ2.NumberAnimation { target : rotate; property : "angle"; to : 0; duration : 2000 }
         }
 
         CameraLens {
@@ -142,27 +142,27 @@ Node {
             id: camera1
             objectName: "mainCamera"
 
-                components : [
-                    Transform {
-                        LookAt {
-                            position: Qt.vector3d( 0.0, 0.0, -20.0 )
-                            upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
-                            viewCenter: Qt.vector3d( 0.0, 0.0, 10.0 )
-                        }
-                        Rotate {
-                            angle : -30
-                            axis : Qt.vector3d(0, 1, 0)
-                        }
-                    },
-                    CameraLens {
-                        objectName : "lens_2"
-                        projectionType: CameraLens.PerspectiveProjection
-                        fieldOfView: 45
-                        aspectRatio: 16/9
-                        nearPlane : 0.01
-                        farPlane : 1000.0
+            components : [
+                Transform {
+                    LookAt {
+                        position: Qt.vector3d( 0.0, 0.0, -20.0 )
+                        upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
+                        viewCenter: Qt.vector3d( 0.0, 0.0, 10.0 )
                     }
-                ]
+                    Rotate {
+                        angle : -30
+                        axis : Qt.vector3d(0, 1, 0)
+                    }
+                },
+                CameraLens {
+                    objectName : "lens_2"
+                    projectionType: CameraLens.PerspectiveProjection
+                    fieldOfView: 45
+                    aspectRatio: 16/9
+                    nearPlane : 0.01
+                    farPlane : 1000.0
+                }
+            ]
         }
 
         Entity {
@@ -266,31 +266,32 @@ Node {
             ]
         }
 
+        QQ2.SequentialAnimation {
+            running: true
+            loops: QQ2.Animation.Infinite
+
+            QQ2.NumberAnimation {
+                target: ball2Translation
+                property: "dx"
+                duration: 1000
+                easing.type: QQ2.Easing.InOutQuad
+                from: 0; to: 10
+            }
+            QQ2.NumberAnimation {
+                target: ball2Translation
+                property: "dx"
+                duration: 1000
+                easing.type: QQ2.Easing.InOutQuad
+                from: 10; to: 0
+            }
+        }
+
         Transform {
             id: ball2Transform
             Scale { scale : 0.35 }
             Translate {
                 id: ball2Translation
                 dx: 0; dy: 0; dz : 40
-                QQ2.SequentialAnimation {
-                    running: true
-                    loops: QQ2.Animation.Infinite
-
-                    QQ2.NumberAnimation {
-                        target: ball2Translation
-                        property: "dx"
-                        duration: 1000
-                        easing.type: QQ2.Easing.InOutQuad
-                        from: 0; to: 10
-                    }
-                    QQ2.NumberAnimation {
-                        target: ball2Translation
-                        property: "dx"
-                        duration: 1000
-                        easing.type: QQ2.Easing.InOutQuad
-                        from: 10; to: 0
-                    }
-                }
             }
         }
     }
