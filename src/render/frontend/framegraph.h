@@ -49,27 +49,25 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class FrameGraphItem;
-
 class QT3DCORESHARED_EXPORT FrameGraph : public Qt3D::Component
 {
     Q_OBJECT
     // Note : The full namespace has to be used to define the property
     // otherwise this results in an error "cannot assign object to property"
-    Q_PROPERTY(Qt3D::FrameGraphItem *activeFrameGraph READ activeFrameGraph WRITE setActiveFrameGraph NOTIFY activeFrameGraphChanged)
+    Q_PROPERTY(Qt3D::Node *activeFrameGraph READ activeFrameGraph WRITE setActiveFrameGraph NOTIFY activeFrameGraphChanged)
     Q_CLASSINFO("DefaultProperty", "activeFrameGraph")
 
 public:
     explicit FrameGraph(Node *parent = 0);
 
-    FrameGraphItem *activeFrameGraph() const;
-    void setActiveFrameGraph(FrameGraphItem *activeFrameGraph);
+    Node *activeFrameGraph() const;
+    void setActiveFrameGraph(Node *activeFrameGraph);
 
 Q_SIGNALS:
     void activeFrameGraphChanged();
 
 private:
-    FrameGraphItem *m_activeFrameGraph;
+    Node *m_activeFrameGraph;
 };
 
 } //Qt3D

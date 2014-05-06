@@ -39,45 +39,27 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDERTARGETSELECTOR_H
-#define QT3D_RENDERTARGETSELECTOR_H
-
-#include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/framegraphitem.h>
+#include "quick3dframegraphitem.h"
+#include "framegraphitem_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class RenderTargetSelector;
+namespace Quick {
 
-class RenderTargetSelectorPrivate
+Quick3DFrameGraphItem::Quick3DFrameGraphItem(Node *parent)
+    : Quick3DNode(parent)
+    , FrameGraphItem()
 {
-public:
-    RenderTargetSelectorPrivate(RenderTargetSelector *qq)
-        : q_ptr(qq)
-    {}
+}
 
-    Q_DECLARE_PUBLIC(RenderTargetSelector)
-    RenderTargetSelector *q_ptr;
-};
-
-class QT3DRENDERERSHARED_EXPORT RenderTargetSelector : public FrameGraphItem
+Quick3DFrameGraphItem::~Quick3DFrameGraphItem()
 {
-public:
-    explicit RenderTargetSelector()
-        : d_ptr(new RenderTargetSelectorPrivate(this))
-    {}
+}
 
-private:
-    Q_DECLARE_PRIVATE(RenderTargetSelector)
-    RenderTargetSelectorPrivate *d_ptr;
-};
+} // Quick
 
 } // Qt3D
 
-Q_DECLARE_INTERFACE(Qt3D::RenderTargetSelector, "org.qt-project.Qt3D.Render.RenderTargetSelector/2.0")
-
 QT_END_NAMESPACE
-
-#endif // QT3D_RENDERTARGETSELECTOR_H

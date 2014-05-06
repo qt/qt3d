@@ -39,30 +39,31 @@
 **
 ****************************************************************************/
 
-#include "renderpassfilter.h"
+#ifndef QT3D_CAMERASELECTORNODE_H
+#define QT3D_CAMERASELECTORNODE_H
+
+#include <Qt3DCore/node.h>
+#include <Qt3DRenderer/cameraselector.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-RenderPassFilter::RenderPassFilter(Node *parent)
-    : FrameGraphItem(parent)
+class QT3DRENDERERSHARED_EXPORT CameraSelectorNode : public Node, public CameraSelector
 {
-}
-
-void RenderPassFilter::setRenderPassName(const QString &renderpassName)
-{
-    if (m_renderPassName != renderpassName) {
-        m_renderPassName = renderpassName;
-        emit renderPassNameChanged();
-    }
-}
-
-QString RenderPassFilter::renderPassName() const
-{
-    return m_renderPassName;
-}
+    Q_OBJECT
+    Q_INTERFACES(Qt3D::FrameGraphItem)
+    Q_INTERFACES(Qt3D::CameraSelector)
+    Q_PROPERTY(Qt3D::Entity *camera READ camera WRITE setCamera NOTIFY cameraChanged)
+public:
+    explicit CameraSelectorNode(Node *parent = 0);
+Q_SIGNALS:
+    void cameraChanged() Q_DECL_OVERRIDE;
+    void enabledChanged() Q_DECL_OVERRIDE;
+};
 
 } // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // CAMERASELECTORNODE_H

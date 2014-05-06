@@ -69,7 +69,7 @@ FrameGraph::FrameGraph(Node *parent) :
 /*!
  * Returns the current activeFrameGraph root node.
  */
-FrameGraphItem *FrameGraph::activeFrameGraph() const
+Node *FrameGraph::activeFrameGraph() const
 {
     return m_activeFrameGraph;
 }
@@ -77,7 +77,7 @@ FrameGraphItem *FrameGraph::activeFrameGraph() const
 /*!
  * Sets the root node \a activeFrameGraph of the FrameGraph.
  */
-void FrameGraph::setActiveFrameGraph(FrameGraphItem *activeFrameGraph)
+void FrameGraph::setActiveFrameGraph(Node *activeFrameGraph)
 {
     if (activeFrameGraph != m_activeFrameGraph) {
         m_activeFrameGraph = activeFrameGraph;

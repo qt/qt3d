@@ -103,7 +103,7 @@ Render::FrameGraphNode *RenderSceneBuilder::buildFrameGraph(Node *node)
 
     if ((fgItem = qobject_cast<Qt3D::FrameGraphItem *>(node)) != Q_NULLPTR) {
         // Instantiate proper backend node corresponding to the frontend node
-        fgNode = backendFrameGraphNode(fgItem);
+        fgNode = backendFrameGraphNode(node);
     }
 
     // we need to travel the node's children tree to find either the FG root Node or
@@ -132,7 +132,7 @@ Render::FrameGraphNode *RenderSceneBuilder::buildFrameGraph(Node *node)
  * Returns a proper FrameGraphNode subclass instance from \a block.
  * If no subclass corresponds, Q_NULLPTR is returned.
  */
-Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(Qt3D::FrameGraphItem *block)
+Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(Node *block)
 {
     if (qobject_cast<Qt3D::TechniqueFilter*>(block) != Q_NULLPTR) {
         Qt3D::TechniqueFilter* techniqueFilter = qobject_cast<Qt3D::TechniqueFilter*>(block);
@@ -221,7 +221,7 @@ void RenderSceneBuilder::visitEntity(Qt3D::Entity *entity)
         FrameGraph *fg = framegraphRefs.first();
         // Entity has a reference to a framegraph configuration
         // Build a tree of FrameGraphNodes by reading the tree of FrameGraphBuildingBlocks
-        Render::FrameGraphNode* frameGraphRootNode = buildFrameGraph(fg->activeFrameGraph());
+        Render::FrameGraphNode* frameGraphRootNode = buildFrameGraph(qobject_cast<Node*>(fg->activeFrameGraph()));
         qCDebug(Backend) << Q_FUNC_INFO << "SceneGraphRoot" <<  frameGraphRootNode;
         m_renderer->setFrameGraphRoot(frameGraphRootNode);
     }

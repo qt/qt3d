@@ -39,66 +39,36 @@
 **
 ****************************************************************************/
 
-#include "techniquefilter.h"
+#ifndef QT3D_QUICK_QUICK3DVIEWPORT_H
+#define QT3D_QUICK_QUICK3DVIEWPORT_H
+
+#include <Qt3DRenderer/quick3dframegraphitem.h>
+#include <Qt3DRenderer/viewport.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-TechniqueFilter::TechniqueFilter(Node *parent)
-    : FrameGraphItem(parent)
-{
-}
+namespace Quick {
 
-QList<Tag *> TechniqueFilter::tags() const
+class Quick3DViewport : public Quick3DFrameGraphItem, public virtual Viewport
 {
-    return m_tagList;
-}
+    Q_OBJECT
+    Q_INTERFACES(Qt3D::Viewport)
+    Q_PROPERTY(QRectF rect READ rect WRITE setRect NOTIFY rectChanged)
+public:
+    explicit Quick3DViewport(Node *parent = 0);
 
-QQmlListProperty<Qt3D::Tag> TechniqueFilter::tagList()
-{
-    return QQmlListProperty<Qt3D::Tag>(this, 0,
-                                       &TechniqueFilter::appendTag,
-                                       &TechniqueFilter::tagCount,
-                                       &TechniqueFilter::tagAt,
-                                       &TechniqueFilter::clearTags);
-}
+Q_SIGNALS:
+    void rectChanged() Q_DECL_OVERRIDE;
+    void enabledChanged() Q_DECL_OVERRIDE;
+};
 
-void TechniqueFilter::appendTag(QQmlListProperty<Tag> *list, Tag *tag)
-{
-    TechniqueFilter *filter = qobject_cast<TechniqueFilter *>(list->object);
-    if (filter) {
-        tag->setParent(filter);
-        filter->m_tagList.append(tag);
-        emit filter->tagsChanged();
-    }
-}
+} // Quick
 
-Tag *TechniqueFilter::tagAt(QQmlListProperty<Tag> *list, int index)
-{
-    TechniqueFilter *filter = qobject_cast<TechniqueFilter *>(list->object);
-    if (filter)
-        return filter->m_tagList.value(index);
-    return 0;
-}
-
-int TechniqueFilter::tagCount(QQmlListProperty<Tag> *list)
-{
-    TechniqueFilter *filter = qobject_cast<TechniqueFilter *>(list->object);
-    if (filter)
-        return filter->m_tagList.size();
-    return 0;
-}
-
-void TechniqueFilter::clearTags(QQmlListProperty<Tag> *list)
-{
-    TechniqueFilter *filter = qobject_cast<TechniqueFilter *>(list->object);
-    if (filter) {
-        filter->m_tagList.clear();
-        emit filter->tagsChanged();
-    }
-}
-
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QUICK3DVIEWPORT_H
+

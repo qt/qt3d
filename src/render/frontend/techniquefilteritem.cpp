@@ -39,31 +39,18 @@
 **
 ****************************************************************************/
 
-#include "cameraselector.h"
+#include "techniquefilteritem.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-CameraSelector::CameraSelector(Node *parent)
-    : FrameGraphItem(parent)
-    , m_camera(0)
+TechniqueFilterNode::TechniqueFilterNode(Node *parent)
+    : Node(parent)
+    , TechniqueFilter()
 {
 }
 
-void CameraSelector::setCamera(Qt3D::Entity *camera)
-{
-    if (m_camera != camera) {
-        m_camera = camera;
-        emit cameraChanged();
-    }
-}
-
-Entity *CameraSelector::camera() const
-{
-    return m_camera;
-}
-
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE

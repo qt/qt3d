@@ -39,45 +39,30 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDERTARGETSELECTOR_H
-#define QT3D_RENDERTARGETSELECTOR_H
+#ifndef QT3D_TECHNIQUEFILTERNODE_H
+#define QT3D_TECHNIQUEFILTERNODE_H
 
-#include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/framegraphitem.h>
+#include <Qt3DRenderer/techniquefilter.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class RenderTargetSelector;
-
-class RenderTargetSelectorPrivate
+class QT3DRENDERERSHARED_EXPORT TechniqueFilterNode : public Node, public TechniqueFilter
 {
+    Q_OBJECT
+    Q_INTERFACES(Qt3D::FrameGraphItem)
+    Q_INTERFACES(Qt3D::TechniqueFilter)
 public:
-    RenderTargetSelectorPrivate(RenderTargetSelector *qq)
-        : q_ptr(qq)
-    {}
+    TechniqueFilterNode(Node *parent = 0);
 
-    Q_DECLARE_PUBLIC(RenderTargetSelector)
-    RenderTargetSelector *q_ptr;
-};
-
-class QT3DRENDERERSHARED_EXPORT RenderTargetSelector : public FrameGraphItem
-{
-public:
-    explicit RenderTargetSelector()
-        : d_ptr(new RenderTargetSelectorPrivate(this))
-    {}
-
-private:
-    Q_DECLARE_PRIVATE(RenderTargetSelector)
-    RenderTargetSelectorPrivate *d_ptr;
+Q_SIGNALS:
+    void tagsChanged() Q_DECL_OVERRIDE;
+    void enabledChanged() Q_DECL_OVERRIDE;
 };
 
 } // Qt3D
 
-Q_DECLARE_INTERFACE(Qt3D::RenderTargetSelector, "org.qt-project.Qt3D.Render.RenderTargetSelector/2.0")
-
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDERTARGETSELECTOR_H
+#endif // QT3D_TECHNIQUEFILTERNODE_H

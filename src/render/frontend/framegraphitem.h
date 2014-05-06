@@ -49,26 +49,28 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DRENDERERSHARED_EXPORT FrameGraphItem : public Node
-{
-    Q_OBJECT
-    Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
+class FrameGraphItemPrivate;
 
+class QT3DRENDERERSHARED_EXPORT FrameGraphItem
+{
 public:
-    explicit FrameGraphItem(Node *parent = 0);
+    FrameGraphItem();
     virtual ~FrameGraphItem();
 
     void setEnabled(bool enabled);
     bool isEnabled() const;
 
 Q_SIGNALS:
-    void enabledChanged();
+    virtual void enabledChanged() = 0;
 
 private:
-    bool m_enabled;
+    FrameGraphItemPrivate* d_ptr;
+    Q_DECLARE_PRIVATE(FrameGraphItem)
 };
 
 } // Qt3D
+
+Q_DECLARE_INTERFACE(Qt3D::FrameGraphItem, "org.qt-project.Qt3D.Render.FrameGraphItem/2.0")
 
 QT_END_NAMESPACE
 

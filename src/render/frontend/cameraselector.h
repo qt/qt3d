@@ -50,28 +50,59 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class Camera;
+class CameraSelector;
+
+class CameraSelectorPrivate
+{
+public:
+    CameraSelectorPrivate(CameraSelector *qq)
+        : q_ptr(qq)
+        , m_camera(Q_NULLPTR)
+    {}
+
+    Q_DECLARE_PUBLIC(CameraSelector)
+    CameraSelector *q_ptr;
+    Entity *m_camera;
+};
 
 class QT3DRENDERERSHARED_EXPORT CameraSelector : public FrameGraphItem
 {
-    Q_OBJECT
-
-    Q_PROPERTY(Qt3D::Entity *camera READ camera WRITE setCamera NOTIFY cameraChanged)
 
 public:
-    explicit CameraSelector(Node *parent = 0);
+    CameraSelector()
+        : d_ptr(new CameraSelectorPrivate(this))
+    {}
 
-    void setCamera(Qt3D::Entity *camera);
-    Entity *camera() const;
+    virtual ~CameraSelector() {}
+
+    void setCamera(Qt3D::Entity *camera)
+    {
+        Q_D(CameraSelector);
+        if (d->m_camera != camera) {
+          d->m_camera = camera;
+          emit cameraChanged();
+        }
+    }
+
+    Entity *camera() const
+    {
+        Q_D(const CameraSelector);
+        return d->m_camera;
+    }
 
 Q_SIGNALS:
-    void cameraChanged();
+    virtual void cameraChanged() = 0;
 
 private:
-    Entity *m_camera;
+    Q_DECLARE_PRIVATE(CameraSelector)
+    CameraSelectorPrivate *d_ptr;
 };
 
 } // namespace Qt3D
 
+Q_DECLARE_INTERFACE(Qt3D::CameraSelector, "org.qt-project.Qt3D.Render.CameraSelector/2.0")
+
 QT_END_NAMESPACE
+
 
 #endif // QT3D_CAMERASELECTOR_H

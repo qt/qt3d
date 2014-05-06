@@ -47,38 +47,66 @@
 
 #include <Qt3DRenderer/tag.h>
 
-#include <QQmlListProperty>
-
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DRENDERERSHARED_EXPORT TechniqueFilter : public FrameGraphItem
+class TechniqueFilter;
+
+class TechniqueFilterPrivate
 {
-    Q_OBJECT
+public :
+    TechniqueFilterPrivate(TechniqueFilter *qq) :
+        q_ptr(qq)
+    {}
 
-    Q_PROPERTY(QQmlListProperty<Qt3D::Tag> tags READ tagList)
-
-public:
-    explicit TechniqueFilter(Node *parent = 0);
-
-    QQmlListProperty<Qt3D::Tag> tagList();
-    QList<Tag *> tags() const;
-
-
-Q_SIGNALS:
-    void tagsChanged();
-
-private:
-    static void appendTag(QQmlListProperty<Tag> *list, Tag *bar);
-    static Tag *tagAt(QQmlListProperty<Tag> *list, int index);
-    static int tagCount(QQmlListProperty<Tag> *list);
-    static void clearTags(QQmlListProperty<Tag> *list);
-
+    Q_DECLARE_PUBLIC(TechniqueFilter)
+    TechniqueFilter *q_ptr;
     QList<Tag *> m_tagList;
 };
 
+class QT3DRENDERERSHARED_EXPORT TechniqueFilter : public FrameGraphItem
+{
+public:
+    TechniqueFilter()
+        : d_ptr(new TechniqueFilterPrivate(this))
+    {}
+
+    virtual ~TechniqueFilter()
+    {}
+
+    //    QQmlListProperty<Qt3D::Tag> tagList();
+    QList<Tag *> tags() const
+    {
+        Q_D(const TechniqueFilter);
+        return d->m_tagList;
+    }
+
+    void addTag(Tag *tag)
+    {
+        Q_D(TechniqueFilter);
+        d->m_tagList.append(tag);
+        emit tagsChanged();
+    }
+
+    void removeTag(Tag *tag)
+    {
+        Q_D(TechniqueFilter);
+        d->m_tagList.removeOne(tag);
+        emit tagsChanged();
+    }
+
+Q_SIGNALS:
+    virtual void tagsChanged() = 0;
+
+private:
+    Q_DECLARE_PRIVATE(TechniqueFilter)
+    TechniqueFilterPrivate *d_ptr;
+};
+
 } // namespace Qt3D
+
+Q_DECLARE_INTERFACE(Qt3D::TechniqueFilter, "org.qt-project.Qt3D.Render.TechniqueFilter/2.0")
 
 QT_END_NAMESPACE
 

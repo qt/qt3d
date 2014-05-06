@@ -39,45 +39,33 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDERTARGETSELECTOR_H
-#define QT3D_RENDERTARGETSELECTOR_H
+#ifndef QT3D_RENDERPASSFILTERNODE_H
+#define QT3D_RENDERPASSFILTERNODE_H
 
-#include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/framegraphitem.h>
+#include <Qt3DRenderer/renderpassfilter.h>
+#include <Qt3DCore/node.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class RenderTargetSelector;
-
-class RenderTargetSelectorPrivate
+class QT3DRENDERERSHARED_EXPORT RenderPassFilterNode : public Node, public RenderPassFilter
 {
+    Q_OBJECT
+    Q_INTERFACES(Qt3D::FrameGraphItem)
+    Q_INTERFACES(Qt3D::RenderPassFilter)
+    Q_PROPERTY(QString renderPassName READ renderPassName WRITE setRenderPassName NOTIFY renderPassNameChanged)
+
 public:
-    RenderTargetSelectorPrivate(RenderTargetSelector *qq)
-        : q_ptr(qq)
-    {}
+    RenderPassFilterNode(Node *parent = 0);
 
-    Q_DECLARE_PUBLIC(RenderTargetSelector)
-    RenderTargetSelector *q_ptr;
-};
-
-class QT3DRENDERERSHARED_EXPORT RenderTargetSelector : public FrameGraphItem
-{
-public:
-    explicit RenderTargetSelector()
-        : d_ptr(new RenderTargetSelectorPrivate(this))
-    {}
-
-private:
-    Q_DECLARE_PRIVATE(RenderTargetSelector)
-    RenderTargetSelectorPrivate *d_ptr;
+Q_SIGNALS:
+    void enabledChanged() Q_DECL_OVERRIDE;
+    void renderPassNameChanged() Q_DECL_OVERRIDE;
 };
 
 } // Qt3D
 
-Q_DECLARE_INTERFACE(Qt3D::RenderTargetSelector, "org.qt-project.Qt3D.Render.RenderTargetSelector/2.0")
-
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDERTARGETSELECTOR_H
+#endif // RENDERPASSFILTERNODE_H

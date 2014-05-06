@@ -42,36 +42,62 @@
 #ifndef QT3D_VIEWPORT_H
 #define QT3D_VIEWPORT_H
 
-#include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DRenderer/framegraphitem.h>
-
-#include <QRectF>
+#include <QtCore/QRectF>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DRENDERERSHARED_EXPORT  Viewport : public FrameGraphItem
+class Viewport;
+
+class ViewportPrivate
 {
-    Q_OBJECT
-    Q_PROPERTY(QRectF rect READ rect WRITE setRect NOTIFY rectChanged)
+public :
+    ViewportPrivate(Viewport *qq) :
+        q_ptr(qq)
+    {}
 
-public:
-    explicit Viewport(Node *parent = 0);
-
-    QRectF rect() const;
-
-public slots:
-    void setRect( const QRectF& rect );
-
-Q_SIGNALS:
-    void rectChanged( const QRectF& arg );
-
-private:
+    Q_DECLARE_PUBLIC(Viewport)
+    Viewport *q_ptr;
     QRectF m_rect;
 };
 
-}
+class QT3DRENDERERSHARED_EXPORT Viewport : public FrameGraphItem
+{
+public:
+    Viewport() :
+        d_ptr(new ViewportPrivate(this))
+    {}
+
+    virtual ~Viewport() {}
+
+    QRectF rect() const
+    {
+        Q_D(const Viewport);
+        return d->m_rect;
+    }
+
+    void setRect(const QRectF& rect)
+    {
+        Q_D(Viewport);
+        if (rect != d->m_rect) {
+            d->m_rect = rect;
+            emit rectChanged();
+        }
+    }
+
+Q_SIGNALS:
+    virtual void rectChanged() = 0;
+
+private:
+    Q_DECLARE_PRIVATE(Viewport)
+    ViewportPrivate *d_ptr;
+};
+
+} // Qt3D
+
+Q_DECLARE_INTERFACE(Qt3D::Viewport, "org.qt-project.Qt3D.Render.Viewport/2.0")
 
 QT_END_NAMESPACE
 

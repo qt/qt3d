@@ -81,7 +81,7 @@ private:
     QStack<HRenderNode> m_nodeStack;
 
     Render::FrameGraphNode* buildFrameGraph(Node *node);
-    Render::FrameGraphNode* backendFrameGraphNode(Qt3D::FrameGraphItem *);
+    Render::FrameGraphNode* backendFrameGraphNode(Node *);
 
 };
 

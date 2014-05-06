@@ -44,6 +44,7 @@
 
 #include <Qt3DCore/node.h>
 #include <QQmlListProperty>
+#include <Qt3DCore/qt3dcore_global.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -51,7 +52,7 @@ namespace Qt3D {
 
 namespace Quick {
 
-class Quick3DNode : public Qt3D::Node
+class QT3DCORESHARED_EXPORT Quick3DNode : public Qt3D::Node
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<QObject> data READ data)

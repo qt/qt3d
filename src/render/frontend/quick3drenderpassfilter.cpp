@@ -39,29 +39,21 @@
 **
 ****************************************************************************/
 
-#include "viewport.h"
+#include "quick3drenderpassfilter.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-Viewport::Viewport(Node *parent)
-    : FrameGraphItem(parent)
+namespace Quick {
+
+Quick3DRenderPassFilter::Quick3DRenderPassFilter(Node *parent)
+    : RenderPassFilter()
+    , Quick3DFrameGraphItem(parent)
 {
 }
 
-QRectF Viewport::rect() const
-{
-    return m_rect;
-}
-
-void Viewport::setRect(const QRectF &rect)
-{
-    if (m_rect != rect) {
-        m_rect = rect;
-        emit rectChanged( rect );
-    }
-}
+} // Quick
 
 } // Qt3D
 

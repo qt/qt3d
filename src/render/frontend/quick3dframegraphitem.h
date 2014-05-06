@@ -39,17 +39,39 @@
 **
 ****************************************************************************/
 
-#include "rendertargetselector.h"
+#ifndef QT3D_QUICK_QUICK3DFRAMEGRAPHITEM_H
+#define QT3D_QUICK_QUICK3DFRAMEGRAPHITEM_H
+
+#include <Qt3DCore/quick3dnode.h>
+#include <Qt3DRenderer/framegraphitem.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-RenderTargetSelector::RenderTargetSelector(Qt3D::Node *parent) :
-    FrameGraphItem(parent)
+class FrameGraphItemPrivate;
+
+namespace Quick {
+
+class Quick3DFrameGraphItem : public Quick3DNode, public FrameGraphItem
 {
-}
+    Q_OBJECT
+    Q_INTERFACES(Qt3D::FrameGraphItem)
+    Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
+
+public:
+    explicit Quick3DFrameGraphItem(Node *parent = 0);
+    virtual ~Quick3DFrameGraphItem();
+
+
+Q_SIGNALS:
+    void enabledChanged() Q_DECL_OVERRIDE;
+};
+
+} // Quick
 
 } // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_QUICK_QUICK3DFRAMEGRAPHITEM_H

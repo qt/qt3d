@@ -51,27 +51,55 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class RenderPassFilter;
+
+class RenderPassFilterPrivate
+{
+public:
+    RenderPassFilterPrivate(RenderPassFilter *qq)
+        : q_ptr(qq)
+    {}
+
+    Q_DECLARE_PUBLIC(RenderPassFilter)
+    RenderPassFilter *q_ptr;
+    QString m_renderPassName;
+};
+
 class QT3DRENDERERSHARED_EXPORT RenderPassFilter : public FrameGraphItem
 {
-    Q_OBJECT
-
-    Q_PROPERTY(QString renderPassName READ renderPassName WRITE setRenderPassName NOTIFY renderPassNameChanged)
-
 public:
-    explicit RenderPassFilter(Node *parent = 0);
+    RenderPassFilter()
+        : d_ptr(new RenderPassFilterPrivate(this))
+    {}
 
-    void setRenderPassName(const QString &renderpassName);
-    QString renderPassName() const;
+    ~RenderPassFilter() {}
+
+    void setRenderPassName(const QString &renderpassName)
+    {
+        Q_D(RenderPassFilter);
+        if (renderpassName != d->m_renderPassName) {
+            d->m_renderPassName = renderpassName;
+            emit renderPassNameChanged();
+        }
+    }
+
+    QString renderPassName() const
+    {
+        Q_D(const RenderPassFilter);
+        return d->m_renderPassName;
+    }
 
 Q_SIGNALS:
-    void renderPassNameChanged();
+    virtual void renderPassNameChanged() = 0;
 
 private:
-    QString m_renderPassName;
-
+    Q_DECLARE_PRIVATE(RenderPassFilter)
+    RenderPassFilterPrivate *d_ptr;
 };
 
 } // namespace Qt3D
+
+Q_DECLARE_INTERFACE(Qt3D::RenderPassFilter, "org.qt-project.Qt3D.Render.RenderPassFilter/2.0")
 
 QT_END_NAMESPACE
 

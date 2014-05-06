@@ -39,45 +39,65 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDERTARGETSELECTOR_H
-#define QT3D_RENDERTARGETSELECTOR_H
-
-#include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/framegraphitem.h>
+#include "quick3dtechniquefilter.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class RenderTargetSelector;
+namespace Quick {
 
-class RenderTargetSelectorPrivate
+Quick3DTechniqueFilter::Quick3DTechniqueFilter(Node *parent)
+    : TechniqueFilter()
+    , Quick3DFrameGraphItem(parent)
 {
-public:
-    RenderTargetSelectorPrivate(RenderTargetSelector *qq)
-        : q_ptr(qq)
-    {}
+}
 
-    Q_DECLARE_PUBLIC(RenderTargetSelector)
-    RenderTargetSelector *q_ptr;
-};
-
-class QT3DRENDERERSHARED_EXPORT RenderTargetSelector : public FrameGraphItem
+QQmlListProperty<Qt3D::Tag> Quick3DTechniqueFilter::tagList()
 {
-public:
-    explicit RenderTargetSelector()
-        : d_ptr(new RenderTargetSelectorPrivate(this))
-    {}
+    return QQmlListProperty<Qt3D::Tag>(this, 0,
+                                       &Quick3DTechniqueFilter::appendTag,
+                                       &Quick3DTechniqueFilter::tagCount,
+                                       &Quick3DTechniqueFilter::tagAt,
+                                       &Quick3DTechniqueFilter::clearTags);
+}
 
-private:
-    Q_DECLARE_PRIVATE(RenderTargetSelector)
-    RenderTargetSelectorPrivate *d_ptr;
-};
+void Quick3DTechniqueFilter::appendTag(QQmlListProperty<Tag> *list, Tag *tag)
+{
+    Quick3DTechniqueFilter *filter = qobject_cast<Quick3DTechniqueFilter *>(list->object);
+    if (filter) {
+        tag->setParent(filter);
+        filter->addTag(tag);
+    }
+}
+
+Tag *Quick3DTechniqueFilter::tagAt(QQmlListProperty<Tag> *list, int index)
+{
+    TechniqueFilter *filter = qobject_cast<TechniqueFilter *>(list->object);
+    if (filter)
+        return filter->tags().at(index);
+    return 0;
+}
+
+int Quick3DTechniqueFilter::tagCount(QQmlListProperty<Tag> *list)
+{
+    TechniqueFilter *filter = qobject_cast<TechniqueFilter *>(list->object);
+    if (filter)
+        return filter->tags().size();
+    return 0;
+}
+
+void Quick3DTechniqueFilter::clearTags(QQmlListProperty<Tag> *list)
+{
+    TechniqueFilter *filter = qobject_cast<TechniqueFilter *>(list->object);
+    if (filter) {
+        Q_FOREACH (Tag *tag, filter->tags())
+            filter->removeTag(tag);
+    }
+}
+
+} // Quick
 
 } // Qt3D
 
-Q_DECLARE_INTERFACE(Qt3D::RenderTargetSelector, "org.qt-project.Qt3D.Render.RenderTargetSelector/2.0")
-
 QT_END_NAMESPACE
-
-#endif // QT3D_RENDERTARGETSELECTOR_H

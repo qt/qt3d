@@ -66,7 +66,11 @@
 #include "renderpass.h"
 #include "shaderprogram.h"
 #include "viewport.h"
-#include "cameraselector.h"
+#include "quick3dcameraselector.h"
+#include "quick3dtechniquefilter.h"
+#include "quick3dviewport.h"
+#include "quick3drenderpassfilter.h"
+#include "quick3drendertargetselector.h"
 #include "renderpassfilter.h"
 #include "techniquefilter.h"
 #include "rendertargetselector.h"
@@ -184,13 +188,12 @@ void RendererAspect::registerQmlComponents()
     qmlRegisterType<Qt3D::QmlTexture>("Qt3D.Render", 2, 0, "Texture");
 
     // Framegraph components - TODO RenderTarget, RenderTargetSelector
-    qmlRegisterType<Qt3D::Viewport>("Qt3D.Render", 2, 0, "Viewport");
-    qmlRegisterType<Qt3D::CameraSelector>("Qt3D.Render", 2, 0, "CameraSelector");
-    qmlRegisterType<Qt3D::RenderPassFilter>("Qt3D.Render", 2, 0, "RenderPassFilter");
-    qmlRegisterType<Qt3D::TechniqueFilter>("Qt3D.Render", 2, 0, "TechniqueFilter");
-    qmlRegisterType<Qt3D::Viewport>("Qt3D.Render", 2, 0, "Viewport");
-    qmlRegisterType<Qt3D::FrameGraphItem>("Qt3D.Render", 2, 0, "FrameGraphNode");
-    qmlRegisterType<Qt3D::RenderTargetSelector>("Qt3D.Render", 2, 0, "RenderTargetSelector");
+    qmlRegisterType<Qt3D::Quick::Quick3DCameraSelector>("Qt3D.Render", 2, 0, "CameraSelector");
+    qmlRegisterType<Qt3D::Quick::Quick3DRenderPassFilter>("Qt3D.Render", 2, 0, "RenderPassFilter");
+    qmlRegisterType<Qt3D::Quick::Quick3DTechniqueFilter>("Qt3D.Render", 2, 0, "TechniqueFilter");
+    qmlRegisterType<Qt3D::Quick::Quick3DViewport>("Qt3D.Render", 2, 0, "Viewport");
+//    qmlRegisterType<Qt3D::FrameGraphItem>("Qt3D.Render", 2, 0, "FrameGraphNode");
+    qmlRegisterType<Qt3D::Quick::Quick3DRenderTargetSelector>("Qt3D.Render", 2, 0, "RenderTargetSelector");
     qmlRegisterType<Qt3D::FrameGraph>("Qt3D.Render", 2, 0, "FrameGraph");
 }
 

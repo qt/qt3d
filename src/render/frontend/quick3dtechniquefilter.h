@@ -39,45 +39,47 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDERTARGETSELECTOR_H
-#define QT3D_RENDERTARGETSELECTOR_H
+#ifndef QT3D_QUICK_QUICK3DTECHNIQUEFILTER_H
+#define QT3D_QUICK_QUICK3DTECHNIQUEFILTER_H
 
-#include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/framegraphitem.h>
+#include <Qt3DRenderer/quick3dframegraphitem.h>
+#include <Qt3DRenderer/techniquefilter.h>
+#include <QQmlListProperty>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class RenderTargetSelector;
+class TechniqueFilterPrivate;
 
-class RenderTargetSelectorPrivate
+namespace Quick {
+
+class Quick3DTechniqueFilter : public Quick3DFrameGraphItem, public virtual TechniqueFilter
 {
-public:
-    RenderTargetSelectorPrivate(RenderTargetSelector *qq)
-        : q_ptr(qq)
-    {}
+    Q_OBJECT
+    Q_INTERFACES(Qt3D::TechniqueFilter)
+    Q_PROPERTY(QQmlListProperty<Qt3D::Tag> tags READ tagList)
 
-    Q_DECLARE_PUBLIC(RenderTargetSelector)
-    RenderTargetSelector *q_ptr;
-};
-
-class QT3DRENDERERSHARED_EXPORT RenderTargetSelector : public FrameGraphItem
-{
 public:
-    explicit RenderTargetSelector()
-        : d_ptr(new RenderTargetSelectorPrivate(this))
-    {}
+    explicit Quick3DTechniqueFilter(Node *parent = 0);
+    QQmlListProperty<Qt3D::Tag> tagList();
+
+Q_SIGNALS:
+    void tagsChanged() Q_DECL_OVERRIDE;
+    void enabledChanged() Q_DECL_OVERRIDE;
 
 private:
-    Q_DECLARE_PRIVATE(RenderTargetSelector)
-    RenderTargetSelectorPrivate *d_ptr;
+    static void appendTag(QQmlListProperty<Tag> *list, Tag *bar);
+    static Tag *tagAt(QQmlListProperty<Tag> *list, int index);
+    static int tagCount(QQmlListProperty<Tag> *list);
+    static void clearTags(QQmlListProperty<Tag> *list);
+
 };
+
+} // Quick
 
 } // Qt3D
 
-Q_DECLARE_INTERFACE(Qt3D::RenderTargetSelector, "org.qt-project.Qt3D.Render.RenderTargetSelector/2.0")
-
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDERTARGETSELECTOR_H
+#endif // QT3D_QUICK_QUICK3DTECHNIQUEFILTER_H

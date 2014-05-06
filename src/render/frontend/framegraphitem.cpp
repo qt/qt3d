@@ -40,11 +40,15 @@
 ****************************************************************************/
 
 #include "framegraphitem.h"
+#include "framegraphitem_p.h"
 
 /*!
  * \class FrameGraphNode
  *
  * \brief Base class of all FrameGraph configuration nodes.
+ *
+ * This is an abstract class so it cannot be instanced directly
+ * but rather through one of its subclasses.
  *
  * \since 5.3
  * \namespace Qt3D
@@ -54,9 +58,8 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-FrameGraphItem::FrameGraphItem(Node *parent)
-    : Node(parent)
-    , m_enabled(true)
+FrameGraphItem::FrameGraphItem()
+    : d_ptr(new FrameGraphItemPrivate(this))
 {
 }
 
@@ -66,15 +69,17 @@ FrameGraphItem::~FrameGraphItem()
 
 void FrameGraphItem::setEnabled(bool enabled)
 {
-    if (m_enabled != enabled) {
-        m_enabled = enabled;
+    Q_D(FrameGraphItem);
+    if (d->m_enabled != enabled) {
+        d->m_enabled = enabled;
         emit enabledChanged();
     }
 }
 
 bool FrameGraphItem::isEnabled() const
 {
-    return m_enabled;
+    Q_D(const FrameGraphItem);
+    return d->m_enabled;
 }
 
 } // Qt3D
