@@ -79,23 +79,11 @@ void QAspectManager::initialize()
     m_jobManager->initialize();
     m_scheduler->setAspectManager(this);
     m_changeArbiter->initialize(m_jobManager);
-
-    // Regiter Qml
-    registerCoreQmlComponents();
 }
 
 void QAspectManager::shutdown()
 {
     qDebug() << Q_FUNC_INFO;
-}
-
-/*!
- * Registers core Qt3D Qml Components to the Qml Engine.
- */
-void QAspectManager::registerCoreQmlComponents()
-{
-    qDebug() << Q_FUNC_INFO;
-
 }
 
 
@@ -166,14 +154,10 @@ void QAspectManager::registerAspect(QObject *aspect)
     qDebug() << Q_FUNC_INFO << "Registering aspect libraries";
 
     AbstractAspect *aspectImpl = Q_NULLPTR;
-    if ((aspectImpl = qobject_cast<AbstractAspect*>(aspect)) != Q_NULLPTR) {
+    if ((aspectImpl = qobject_cast<AbstractAspect*>(aspect)) != Q_NULLPTR)
         m_aspects.append(aspectImpl);
-        // RegisterQmlComponents
-        aspectImpl->registerQmlComponents();
-    }
-    else {
+    else
         qWarning() << Q_FUNC_INFO << "Failed to register aspect";
-    }
 }
 
 void QAspectManager::exec()

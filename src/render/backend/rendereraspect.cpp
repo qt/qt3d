@@ -147,13 +147,6 @@ void RendererAspect::cleanupHelper()
     //QMetaObject::invokeMethod(renderer, "cleanup");
 }
 
-/*!
- *  Registers the Qt3D Qml components defined by the aspect to the QmlEngine.
- */
-void RendererAspect::registerQmlComponents()
-{
-}
-
-}
+} // Qt3D
 
 QT_END_NAMESPACE

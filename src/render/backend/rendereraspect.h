@@ -64,7 +64,6 @@ public:
     virtual void setWindow(QWindow *window);
 
     QVector<QJobPtr> jobsToExecute() Q_DECL_OVERRIDE;
-    void registerQmlComponents() Q_DECL_OVERRIDE;
 
 protected:
     void registerAspectHelper(Node *rootObject) Q_DECL_OVERRIDE;
