@@ -104,14 +104,14 @@ void Transform::setRotationCenter(const QVector3D &rc)
 
 void Transform::appendTransform(AbstractTransform *xform)
 {
-    setTransformsDirty();
     m_transforms.append( xform );
+    setTransformsDirty();
 }
 
 void Transform::removeTransform(AbstractTransform *xform)
 {
-    setTransformsDirty();
     m_transforms.removeOne( xform );
+    setTransformsDirty();
 }
 
 QMatrix4x4 Transform::applyTransforms() const
