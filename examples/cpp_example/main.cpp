@@ -40,30 +40,34 @@
 ****************************************************************************/
 
 #include <QGuiApplication>
-#include <QtQml>
 
 #include <exampleresources.h>
 
-#include <window.h>
-#include <scene.h>
-#include <entitynode.h>
-#include <camera.h>
-#include <shape.h>
-#include <mesh.h>
-#include <technique.h>
-#include <material.h>
-#include <effect.h>
-#include <translatetransform.h>
-#include <matrixtransform.h>
-#include <rotatetransform.h>
-#include <transform.h>
-#include <texture.h>
-#include <renderpass.h>
-#include <renderpassfilter.h>
-#include <techniquefilter.h>
-#include <viewport.h>
-#include <cameraselector.h>
-#include <rendereraspect.h>
+#include <Qt3DCore/window.h>
+#include <Qt3DCore/entitynode.h>
+#include <Qt3DCore/cameralens.h>
+
+#include <Qt3DRenderer/shape.h>
+#include <Qt3DRenderer/mesh.h>
+#include <Qt3DRenderer/technique.h>
+#include <Qt3DRenderer/material.h>
+#include <Qt3DRenderer/effect.h>
+#include <Qt3DRenderer/texture.h>
+#include <Qt3DRenderer/renderpass.h>
+#include <Qt3DRenderer/scene.h>
+
+#include <Qt3DCore/translatetransform.h>
+#include <Qt3DCore/matrixtransform.h>
+#include <Qt3DCore/rotatetransform.h>
+#include <Qt3DCore/lookattransform.h>
+#include <Qt3DCore/transform.h>
+
+#include <Qt3DRenderer/renderpassfilteritem.h>
+#include <Qt3DRenderer/techniquefilteritem.h>
+#include <Qt3DRenderer/viewportitem.h>
+#include <Qt3DRenderer/cameraselectoritem.h>
+#include <Qt3DRenderer/rendereraspect.h>
+#include <Qt3DRenderer/framegraph.h>
 
 int main(int ac, char **av)
 {
@@ -74,42 +78,89 @@ int main(int ac, char **av)
     Qt3D::Window view;
     view.registerAspect(new Qt3D::RendererAspect());
 
+    // Root entity
     Qt3D::EntityNode *rootEntity = new Qt3D::EntityNode();
-    Qt3D::Scene  *scene = new Qt3D::Scene();
-
+    rootEntity->setObjectName(QStringLiteral("rootEntity"));
+    // Torus
     Qt3D::EntityNode *torusEntity = new Qt3D::EntityNode();
-    Qt3D::Mesh *torusMesh = new Qt3D::Mesh();
-    Qt3D::Shape *torus = new Qt3D::Shape();
 
+    // Torus shape data
+    Qt3D::Shape *torus = new Qt3D::Shape();
     torus->setType(Qt3D::Shape::ShapeTorus);
     torus->setRadius(40);
     torus->setMinorRadius(15);
 
+    // Torus mesh holding the shape's data
+    Qt3D::Mesh *torusMesh = new Qt3D::Mesh();
     torusMesh->setData(torus->data());
     torusEntity->addComponent(torusMesh);
 
+    // TorusMesh Transform
     Qt3D::TranslateTransform *torusTranslation = new Qt3D::TranslateTransform();
     Qt3D::RotateTransform *torusRotation = new Qt3D::RotateTransform();
     Qt3D::Transform *torusTransforms = new Qt3D::Transform();
 
-    torusTranslation->setTranslation(QVector3D(2.5f, 3.5f, 2.0f));
+    torusTranslation->setTranslation(QVector3D(-5.0f, 3.5f, 2.0f));
     torusRotation->setAxis(QVector3D(1, 0, 0));
     torusRotation->setAngleDeg(35.0f);
-
     torusTransforms->appendTransform(torusTranslation);
     torusTransforms->appendTransform(torusRotation);
-
     torusEntity->addComponent(torusTransforms);
 
-    scene->setSource(":/assets/gltf/wine/wine.json");
+    // Scene file
+    Qt3D::Scene  *scene = new Qt3D::Scene();
+    scene->setObjectName(QStringLiteral("scene"));
+    Qt3D::Transform *sceneTransform = new Qt3D::Transform();
+    Qt3D::TranslateTransform *sceneTranslateTransform = new Qt3D::TranslateTransform();
+    sceneTranslateTransform->setDx(2.5);
+    sceneTranslateTransform->setDy(0.5);
+    sceneTranslateTransform->setDz(-10);
+    sceneTransform->appendTransform(sceneTranslateTransform);
+    scene->addComponent(sceneTransform);
+//    scene->setSource(":/assets/gltf/wine/wine.json");
+    scene->setSource(":/assets/test_scene.dae");
+
+    // Camera
+    Qt3D::EntityNode *cameraEntity = new Qt3D::EntityNode();
+    cameraEntity->setObjectName(QStringLiteral("cameraEntity"));
+    Qt3D::CameraLens *cameraLens = new Qt3D::CameraLens();
+    Qt3D::Transform *cameraTransform = new Qt3D::Transform();
+    Qt3D::LookAtTransform *cameraLookAtTransform = new Qt3D::LookAtTransform();
+
+    cameraLens->setPerspectiveProjection(60.0f, 16.0f/9.0f, 0.1f, 1000.0f);
+    cameraLookAtTransform->setPosition(QVector3D(-5, 0, -20.0f));
+    cameraLookAtTransform->setViewCenter(QVector3D(11, 0, 5));
+    cameraLookAtTransform->setUpVector(QVector3D(0, 1, 0));
+    cameraTransform->appendTransform(cameraLookAtTransform);
+    cameraEntity->addComponent(cameraTransform);
+    cameraEntity->addComponent(cameraLens);
+
+    // FrameGraph
+    Qt3D::FrameGraph *frameGraph = new Qt3D::FrameGraph();
+    Qt3D::TechniqueFilterNode *techniqueFilter = new Qt3D::TechniqueFilterNode();
+    Qt3D::CameraSelectorNode *cameraSelector = new Qt3D::CameraSelectorNode();
+    Qt3D::RenderPassFilterNode *defaultRenderPassFilter = new Qt3D::RenderPassFilterNode();
+    Qt3D::ViewportNode *viewport = new Qt3D::ViewportNode();
+
+    // TechiqueFilter and renderPassFilter are not implement yet
+
+    viewport->setRect(QRectF(0, 0, 1, 1));
+    viewport->addChild(cameraSelector);
+    cameraSelector->setCamera(cameraEntity);
+    cameraSelector->addChild(defaultRenderPassFilter);
+    techniqueFilter->addChild(viewport);
+    frameGraph->setActiveFrameGraph(techniqueFilter);
+
+    // Setting the FrameGraph
+    rootEntity->addComponent(frameGraph);
 
     // Build Node Tree
-    scene->addChild(torusEntity);
+    rootEntity->addChild(cameraEntity);
+    rootEntity->addChild(torusEntity);
     rootEntity->addChild(scene);
 
     // Set root object of the scene
     view.setRootObject(rootEntity);
-
     // Show window
     view.show();
 

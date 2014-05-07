@@ -1,6 +1,6 @@
 TEMPLATE = app
 
-QT += 3dcore qml 3drenderer
+QT += 3dcore 3drenderer
 
 include("../exampleresources/exampleresources.pri")
 
