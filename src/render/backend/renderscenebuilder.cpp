@@ -93,8 +93,7 @@ RenderNode *RenderSceneBuilder::rootNode() const
  */
 Render::FrameGraphNode *RenderSceneBuilder::buildFrameGraph(Node *node)
 {
-    if (node == Q_NULLPTR)
-        return Q_NULLPTR;
+    Q_ASSERT(node);
 
     qCDebug(Backend) << Q_FUNC_INFO << node->objectName();
 
@@ -168,6 +167,9 @@ Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(Node *block)
 
         qCDebug(Backend) << Q_FUNC_INFO << "CameraSelector";
         cameraSelectorNode->setCameraEntity(qobject_cast<Entity*>(cameraSelector->camera()));
+        if (cameraSelectorNode->cameraEntity() == Q_NULLPTR ||
+                cameraSelectorNode->cameraEntity()->componentsOfType<CameraLens>().isEmpty())
+            qCWarning(Backend) << Q_FUNC_INFO << "No camera or camera lens present in the referenced entity";
         return cameraSelectorNode;
     }
     else if (qobject_cast<Qt3D::RenderTargetSelector*>(block) != Q_NULLPTR) {
@@ -207,8 +209,15 @@ void RenderSceneBuilder::visitEntity(Qt3D::Node *node)
     HRenderNode renderNodeHandle = m_renderer->renderNodesManager()->getOrAcquireHandle(entity->uuid());
     RenderNode *renderNode = m_renderer->renderNodesManager()->data(renderNodeHandle);
     renderNode->setRenderer(m_renderer);
-    renderNode->setParentHandle(m_nodeStack.top());
     renderNode->setFrontEndPeer(node);
+
+    if (m_rootNodeHandle.isNull()) {
+        m_rootNodeHandle = renderNodeHandle;
+        m_nodeStack.push(renderNodeHandle);
+    }
+    else {
+        renderNode->setParentHandle(m_nodeStack.top());
+    }
     // REPLACE WITH ENTITY MATRIX FROM TRANSFORMS
     m_nodeStack.push(renderNodeHandle);
 
@@ -223,7 +232,7 @@ void RenderSceneBuilder::visitEntity(Qt3D::Node *node)
         // Entity has a reference to a framegraph configuration
         // Build a tree of FrameGraphNodes by reading the tree of FrameGraphBuildingBlocks
         Render::FrameGraphNode* frameGraphRootNode = buildFrameGraph(qobject_cast<Node*>(fg->activeFrameGraph()));
-        qCDebug(Backend) << Q_FUNC_INFO << "SceneGraphRoot" <<  frameGraphRootNode;
+        qCDebug(Backend) << Q_FUNC_INFO << "FrameGraphRoot" <<  frameGraphRootNode;
         m_renderer->setFrameGraphRoot(frameGraphRootNode);
     }
 
@@ -243,8 +252,8 @@ void RenderSceneBuilder::visitEntity(Qt3D::Node *node)
     }
 
     // We'll update matrices in a job later. In fact should the matrix be decoupled from the mesh?
-   QList<Mesh *> meshes = entity->componentsOfType<Mesh>();
-   if (!meshes.isEmpty()) {
+    QList<Mesh *> meshes = entity->componentsOfType<Mesh>();
+    if (!meshes.isEmpty()) {
         HMesh meshHandle = m_renderer->meshManager()->getOrAcquireHandle(entity->uuid());
         RenderMesh *renderMesh = m_renderer->meshManager()->data(meshHandle);
         renderMesh->setRendererAspect(m_renderer->rendererAspect());
