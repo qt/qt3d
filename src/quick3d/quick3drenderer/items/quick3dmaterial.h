@@ -39,68 +39,53 @@
 **
 ****************************************************************************/
 
-#include "material.h"
+#ifndef QT3D_RENDER_QUICK_QUICK3DMATERIAL_H
+#define QT3D_RENDER_QUICK_QUICK3DMATERIAL_H
 
-#include <qchangearbiter.h>
-#include <texture.h>
-
-#include "renderlogging.h"
+#include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
+#include <Qt3DRenderer/material.h>
+#include <QQmlListProperty>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-Material::Material(Node *parent)
-    : Component(parent),
-      m_effect(0)
+namespace Render {
+
+namespace Quick {
+
+// FIXME - write a custom QML parser and stop mis-using Tag
+
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DMaterial : public Material
 {
-}
+    Q_OBJECT
+    Q_PROPERTY(QQmlListProperty<Qt3D::Tag> parameters READ qmlParameters)
 
-Qt3D::Effect *Material::effect() const
-{
-    return m_effect;
-}
+public:
+    explicit Quick3DMaterial(Node *parent = 0);
 
-void Material::setEffect(Qt3D::Effect *effect)
-{
-    if (effect == m_effect)
-        return;
+    QQmlListProperty<Tag> qmlParameters();
 
-    m_effect = effect;
-    emit effectChanged();
-}
+private Q_SLOTS:
+    void onTagValueChanged();
 
-void Material::setParameter(QString name, QVariant val)
-{
-    m_parameters[name] = val;
+private:
+    // FIXME - remove when we have a custom QML parser
+    static void appendTag(QQmlListProperty<Tag> *list, Tag *bar);
+    static Tag *tagAt(QQmlListProperty<Tag> *list, int index);
+    static int tagCount(QQmlListProperty<Tag> *list);
+    static void clearTags(QQmlListProperty<Tag> *list);
 
-    // schedule update to the backend
-    QScenePropertyChangePtr change(new QScenePropertyChange(ComponentUpdated, this));
-    change->m_propertyName = name.toLocal8Bit();
-    change->m_value = val;
-    notifySceneChange(change);
-}
+    // FIXME - remove with tags
+    QList<Tag *> m_tagList;
+};
 
-QVariantMap Material::parameterValues() const
-{
-    return m_parameters;
-}
+} // Quick
 
-Material::TextureDict Material::textureValues() const
-{
-    return m_textures;
-}
+} // Render
 
-void Material::setTextureParameter(QString name, Texture *tex)
-{
-    m_textures[name] = tex;
-}
-
-void Material::cleanParameters()
-{
-    m_parameters.clear();
-}
-
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_RENDER_QUICK_QUICK3DMATERIAL_H

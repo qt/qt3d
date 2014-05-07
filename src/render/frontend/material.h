@@ -46,10 +46,8 @@
 
 #include <Qt3DCore/component.h>
 
-// FIXME - write a custom QML parser and stop mis-using Tag
 #include <Qt3DRenderer/tag.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <QQmlListProperty>
 
 QT_BEGIN_NAMESPACE
 
@@ -62,7 +60,6 @@ class QT3DRENDERERSHARED_EXPORT Material : public Component
 {
     Q_OBJECT
     Q_PROPERTY(Qt3D::Effect* effect READ effect WRITE setEffect NOTIFY effectChanged)
-    Q_PROPERTY(QQmlListProperty<Qt3D::Tag> parameters READ qmlParameters)
 
 public:
     explicit Material(Node *parent = 0);
@@ -78,29 +75,16 @@ public:
     TextureDict textureValues() const;
 
     void setTextureParameter(QString name, Texture* tex);
+    void cleanParameters();
 
 Q_SIGNALS:
     void effectChanged();
     void parametersChanged();
 
-private slots:
-    void onTagValueChanged();
-
 private:
-    QQmlListProperty<Tag> qmlParameters();
-
-    // FIXME - remove when we have a custom QML parser
-    static void appendTag(QQmlListProperty<Tag> *list, Tag *bar);
-    static Tag *tagAt(QQmlListProperty<Tag> *list, int index);
-    static int tagCount(QQmlListProperty<Tag> *list);
-    static void clearTags(QQmlListProperty<Tag> *list);
-
 
     Effect *m_effect;
     QVariantMap m_parameters;
-
-    // FIXME - remove with tags
-    QList<Tag *> m_tagList;
 
     TextureDict m_textures;
 };

@@ -46,7 +46,6 @@
 #include <Qt3DRenderer/technique.h>
 #include <Qt3DRenderer/tag.h>
 #include <Qt3DRenderer/mesh.h>
-#include <Qt3DRenderer/material.h>
 #include <Qt3DRenderer/renderpass.h>
 #include <Qt3DRenderer/shaderprogram.h>
 #include <Qt3DRenderer/viewport.h>
@@ -56,6 +55,7 @@
 #include <Qt3DRenderer/shape.h>
 #include <Qt3DRenderer/texture.h>
 #include <Qt3DRenderer/framegraph.h>
+#include <Qt3DQuickRenderer/quick3dmaterial.h>
 #include <Qt3DQuickRenderer/quick3dcameraselector.h>
 #include <Qt3DQuickRenderer/quick3dtechniquefilter.h>
 #include <Qt3DQuickRenderer/quick3dviewport.h>
@@ -71,7 +71,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3D::Technique>(uri, 2, 0, "Technique");
     qmlRegisterType<Qt3D::Tag>(uri, 2, 0, "Tag");
     qmlRegisterType<Qt3D::Mesh>(uri, 2, 0, "Mesh");
-    qmlRegisterType<Qt3D::Material>(uri, 2, 0, "Material");
+    qmlRegisterType<Qt3D::Render::Quick::Quick3DMaterial>(uri, 2, 0, "Material");
     qmlRegisterType<Qt3D::RenderPass>(uri, 2, 0, "RenderPass");
     qmlRegisterType<Qt3D::ShaderProgram>(uri, 2, 0, "ShaderProgram");
     qmlRegisterType<Qt3D::Shape>(uri, 2, 0, "Shape");

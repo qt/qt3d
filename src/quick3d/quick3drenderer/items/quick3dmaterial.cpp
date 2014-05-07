@@ -39,68 +39,88 @@
 **
 ****************************************************************************/
 
-#include "material.h"
-
-#include <qchangearbiter.h>
-#include <texture.h>
-
-#include "renderlogging.h"
+#include "quick3dmaterial.h"
+#include <QDebug>
+#include <Qt3DRenderer/texture.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-Material::Material(Node *parent)
-    : Component(parent),
-      m_effect(0)
+namespace Render {
+
+namespace Quick {
+
+Quick3DMaterial::Quick3DMaterial(Node *parent)
+    : Material(parent)
 {
 }
 
-Qt3D::Effect *Material::effect() const
+QQmlListProperty<Tag> Quick3DMaterial::qmlParameters()
 {
-    return m_effect;
+    return QQmlListProperty<Tag>(this, 0,
+                                       &Quick3DMaterial::appendTag,
+                                       &Quick3DMaterial::tagCount,
+                                       &Quick3DMaterial::tagAt,
+                                       &Quick3DMaterial::clearTags );
 }
 
-void Material::setEffect(Qt3D::Effect *effect)
+void Quick3DMaterial::appendTag(QQmlListProperty<Tag> *list, Tag *tag)
 {
-    if (effect == m_effect)
-        return;
-
-    m_effect = effect;
-    emit effectChanged();
+    Quick3DMaterial *mat = qobject_cast<Quick3DMaterial *>(list->object);
+    if (mat) {
+        tag->setParent(mat);
+        QObject::connect(tag, SIGNAL(valueChanged()), mat, SLOT(onTagValueChanged()));
+        mat->m_tagList.append(tag);
+        emit mat->parametersChanged();
+    }
 }
 
-void Material::setParameter(QString name, QVariant val)
+Tag *Quick3DMaterial::tagAt(QQmlListProperty<Tag> *list, int index)
 {
-    m_parameters[name] = val;
-
-    // schedule update to the backend
-    QScenePropertyChangePtr change(new QScenePropertyChange(ComponentUpdated, this));
-    change->m_propertyName = name.toLocal8Bit();
-    change->m_value = val;
-    notifySceneChange(change);
+    Quick3DMaterial *mat = qobject_cast<Quick3DMaterial *>(list->object);
+    if (mat)
+        return mat->m_tagList.value(index);
+    return 0;
 }
 
-QVariantMap Material::parameterValues() const
+int Quick3DMaterial::tagCount(QQmlListProperty<Tag> *list)
 {
-    return m_parameters;
+    Quick3DMaterial *mat = qobject_cast<Quick3DMaterial *>(list->object);
+    if (mat)
+        return mat->m_tagList.size();
+    return 0;
 }
 
-Material::TextureDict Material::textureValues() const
+void Quick3DMaterial::clearTags(QQmlListProperty<Tag> *list)
 {
-    return m_textures;
+    Quick3DMaterial *mat = qobject_cast<Quick3DMaterial *>(list->object);
+    if (mat) {
+        mat->m_tagList.clear();
+        mat->cleanParameters();
+        emit mat->parametersChanged();
+    }
 }
 
-void Material::setTextureParameter(QString name, Texture *tex)
+void Quick3DMaterial::onTagValueChanged()
 {
-    m_textures[name] = tex;
+    Tag* t = qobject_cast<Tag*>(sender());
+    Q_ASSERT(m_tagList.contains(t));
+
+    QVariant v = t->value();
+    QmlTexture* qmlTex = v.value<QmlTexture*>();
+    if (qmlTex) {
+        qDebug() << "got texture parameter" << t->name();
+        setTextureParameter(t->name(), qmlTex->texture());
+    } else {
+        setParameter(t->name(), t->value());
+    }
 }
 
-void Material::cleanParameters()
-{
-    m_parameters.clear();
-}
+} // Quick
 
-} // namespace Qt3D
+} // Render
+
+} // Qt3D
 
 QT_END_NAMESPACE
