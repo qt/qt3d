@@ -50,7 +50,6 @@
 
 #include <QList>
 #include <QMap>
-#include <QQmlListProperty>
 #include <QSharedPointer>
 
 // FIXME - move enum somewhere common so don't need to include this here
@@ -140,54 +139,34 @@ class QT3DRENDERERSHARED_EXPORT Technique : public Node
 {
     Q_OBJECT
 
-    Q_PROPERTY(QQmlListProperty<Qt3D::Tag> tags READ tags NOTIFY tagsChanged)
-    Q_PROPERTY(QQmlListProperty<Qt3D::RenderPass> renderPasses READ renderPassList NOTIFY renderPassesChanged)
-
 public:
     explicit Technique(Node *parent = 0);
 
-    QQmlListProperty<Qt3D::Tag> tags();
-    void addTag( const QString& name, const QVariant& value );
-    void removeTag( const QString& name );
-    void setTagValue( const QString& name, const QVariant& value );
-    QVariant tagValue( const QString& name ) const;
-    bool containsTag( const QString& name ) const;
-
+    void addTag( const QString &name, const QVariant &value );
+    void removeTag( const QString &name );
+    void setTagValue( const QString &name, const QVariant &value );
+    QVariant tagValue( const QString &name ) const;
+    QList<Tag *> tags() const;
+    void clearTags();
+    bool containsTag( const QString &name ) const;
 
     void addPass(RenderPass* pass);
+    void removePass(RenderPass *pass);
     QList<RenderPass *> renderPasses() const;
-
-    QQmlListProperty<Qt3D::RenderPass> renderPassList();
-
-
 
     // QQmlListProperty<Qt3D::Parameter> parameters();
 
-    void addParameter(Parameter* p);
+    void addParameter(Parameter *p);
     QList<Parameter *> parameters() const
     { return m_parameters; }
 
     Parameter* parameterByName(QString name) const;
-Q_SIGNALS:
-    void tagsChanged();
-    void renderPassesChanged();
 
 private:
-    static void appendTag(QQmlListProperty<Tag> *list, Tag *bar);
-    static Tag *tagAt(QQmlListProperty<Tag> *list, int index);
-    static int tagCount(QQmlListProperty<Tag> *list);
-    static void clearTags(QQmlListProperty<Tag> *list);
-
-    static void appendRenderPass(QQmlListProperty<RenderPass> *list, RenderPass* renderPass);
-    static RenderPass *renderPassAt(QQmlListProperty<RenderPass> *list, int index);
-    static int renderPassCount(QQmlListProperty<RenderPass> *list);
-    static void clearRenderPasses( QQmlListProperty<RenderPass> *list);
 
     QList<Tag *> m_tagList;
     QMap<QString, Tag *> m_tags;
-
     QList<Parameter *> m_parameters;
-
     QList<RenderPass *> m_renderPasses;
 };
 

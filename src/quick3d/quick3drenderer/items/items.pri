@@ -5,7 +5,8 @@ HEADERS += \
     $$PWD/quick3drendertargetselector.h \
     $$PWD/quick3dtechniquefilter.h \
     $$PWD/quick3dviewport.h \
-    $$PWD/quick3dmaterial.h
+    $$PWD/quick3dmaterial.h \
+    $$PWD/quick3dtechnique.h
 
 SOURCES += \
     $$PWD/quick3dcameraselector.cpp \
@@ -14,6 +15,7 @@ SOURCES += \
     $$PWD/quick3drendertargetselector.cpp \
     $$PWD/quick3dtechniquefilter.cpp \
     $$PWD/quick3dviewport.cpp \
-    $$PWD/quick3dmaterial.cpp
+    $$PWD/quick3dmaterial.cpp \
+    $$PWD/quick3dtechnique.cpp
 
 INCLUDEPATH += $$PWD

@@ -53,15 +53,6 @@ Technique::Technique(Node *parent)
 {
 }
 
-QQmlListProperty<Qt3D::Tag> Technique::tags()
-{
-    return QQmlListProperty<Qt3D::Tag>(this, 0,
-                                       &Technique::appendTag,
-                                       &Technique::tagCount,
-                                       &Technique::tagAt,
-                                       &Technique::clearTags );
-}
-
 void Technique::addTag(const QString &name, const QVariant &value)
 {
     Tag *tag = new Tag(this);
@@ -69,7 +60,6 @@ void Technique::addTag(const QString &name, const QVariant &value)
     tag->setValue(value);
     m_tags.insert(name, tag);
     m_tagList.append(tag);
-    emit tagsChanged();
 }
 
 void Technique::removeTag(const QString &name)
@@ -79,7 +69,6 @@ void Technique::removeTag(const QString &name)
     m_tagList.removeOne(tag);
     if (tag) {
         delete tag;
-        emit tagsChanged();
     }
 }
 
@@ -95,6 +84,17 @@ QVariant Technique::tagValue(const QString &name) const
     return m_tags.value(name)->value();
 }
 
+QList<Tag *> Technique::tags() const
+{
+    return m_tagList;
+}
+
+void Technique::clearTags()
+{
+    m_tagList.clear();
+    m_tags.clear();
+}
+
 bool Technique::containsTag(const QString &name) const
 {
     return m_tags.contains(name);
@@ -105,58 +105,16 @@ void Technique::addPass(RenderPass *pass)
     Q_ASSERT(pass);
     pass->setParent(this);
     m_renderPasses.append(pass);
-    emit renderPassesChanged();
+}
+
+void Technique::removePass(RenderPass *pass)
+{
+    m_renderPasses.removeOne(pass);
 }
 
 QList<RenderPass *> Technique::renderPasses() const
 {
     return m_renderPasses;
-}
-
-void Technique::appendTag(QQmlListProperty<Tag> *list, Tag *tag)
-{
-    Technique *technique = qobject_cast<Technique *>(list->object);
-    if (technique) {
-        tag->setParent(technique);
-        technique->m_tags.insert(tag->name(), tag);
-        technique->m_tagList.append(tag);
-        emit technique->tagsChanged();
-    }
-}
-
-Tag *Technique::tagAt(QQmlListProperty<Tag> *list, int index)
-{
-    Technique *technique = qobject_cast<Technique *>(list->object);
-    if (technique)
-        return technique->m_tagList.value(index);
-    return 0;
-}
-
-int Technique::tagCount(QQmlListProperty<Tag> *list)
-{
-    Technique *technique = qobject_cast<Technique *>(list->object);
-    if (technique)
-        return technique->m_tagList.size();
-    return 0;
-}
-
-void Technique::clearTags(QQmlListProperty<Tag> *list)
-{
-    Technique *technique = qobject_cast<Technique *>(list->object);
-    if (technique) {
-        technique->m_tags.clear();
-        technique->m_tagList.clear();
-        emit technique->tagsChanged();
-    }
-}
-
-QQmlListProperty<Qt3D::RenderPass> Technique::renderPassList()
-{
-    return QQmlListProperty<Qt3D::RenderPass>(this, 0,
-                                              &Technique::appendRenderPass,
-                                              &Technique::renderPassCount,
-                                              &Technique::renderPassAt,
-                                              &Technique::clearRenderPasses);
 }
 
 void Technique::addParameter(Parameter *p)
@@ -175,38 +133,6 @@ Parameter *Technique::parameterByName(QString name) const
     return NULL;
 }
 
-void Technique::appendRenderPass(QQmlListProperty<RenderPass> *list, RenderPass *renderPass)
-{
-    Technique *technique = qobject_cast<Technique *>(list->object);
-    if (technique) {
-        technique->addPass(renderPass);
-    }
-}
-
-RenderPass *Technique::renderPassAt(QQmlListProperty<RenderPass> *list, int index)
-{
-    Technique *technique = qobject_cast<Technique *>(list->object);
-    if (technique)
-        return technique->m_renderPasses.value(index);
-    return 0;
-}
-
-int Technique::renderPassCount(QQmlListProperty<RenderPass> *list)
-{
-    Technique *technique = qobject_cast<Technique *>(list->object);
-    if (technique)
-        return technique->m_renderPasses.size();
-    return 0;
-}
-
-void Technique::clearRenderPasses(QQmlListProperty<RenderPass> *list)
-{
-    Technique *technique = qobject_cast<Technique *>(list->object);
-    if (technique) {
-        technique->m_renderPasses.clear();
-        emit technique->renderPassesChanged();
-    }
-}
 
 Parameter::Parameter(QObject *parent, QString name, int ty) :
     QObject(parent),
