@@ -39,13 +39,12 @@
 **
 ****************************************************************************/
 
-#ifndef EFFECT_H
-#define EFFECT_H
+#ifndef QT3D_EFFECT_H
+#define QT3D_EFFECT_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DCore/node.h>
 
-#include <QQmlListProperty>
 #include <QVector>
 
 QT_BEGIN_NAMESPACE
@@ -53,34 +52,49 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class Technique;
+class Effect;
 
-class QT3DRENDERERSHARED_EXPORT Effect : public Node
+class EffectPrivate
 {
-    Q_OBJECT
+public :
+    EffectPrivate(Effect *qq)
+        : q_ptr(qq)
+    {}
 
-    Q_PROPERTY(QQmlListProperty<Qt3D::Technique> techniques READ techniqueList NOTIFY techniquesChanged)
+    QList<Technique *> m_techniques;
+
+    Q_DECLARE_PUBLIC(Effect)
+    Effect *q_ptr;
+};
+
+class QT3DRENDERERSHARED_EXPORT Effect
+{
 
 public:
-    explicit Effect(Node *parent = 0);
+    Effect();
 
-    QQmlListProperty<Qt3D::Technique> techniqueList();
-
-    void addTechnique(Technique *t);
+    virtual void addTechnique(Technique *t);
+    virtual void removeTechnique(Technique *t);
 
     QList<Technique *> techniques() const;
 
     void clearTechniques();
+
 Q_SIGNALS:
-    void techniquesChanged();
+    virtual void techniquesChanged() = 0;
 
 private:
-    QList<Technique *> m_techniques;
+    Q_DECLARE_PRIVATE(Effect)
+    EffectPrivate *d_ptr;
 };
 
-}
+} // Qt3D
+
+Q_DECLARE_INTERFACE(Qt3D::Effect, "org.qt-project.Qt3D.Render.Effect/2.0")
 
 QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(Qt3D::Effect*)
 
-#endif // EFFECT_H
+
+#endif // QT3D_EFFECT_H

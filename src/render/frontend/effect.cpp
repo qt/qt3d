@@ -48,36 +48,37 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-Effect::Effect(Node *parent)
-    : Node(parent)
+Effect::Effect()
+    : d_ptr(new EffectPrivate(this))
 {
     qRegisterMetaType<Qt3D::Effect*>();
     qCDebug(Render::Frontend) << Q_FUNC_INFO;
 }
 
-
-QQmlListProperty<Qt3D::Technique> Effect::techniqueList()
-{
-    return QQmlListProperty<Qt3D::Technique>(this, m_techniques);
-}
-
 void Effect::addTechnique(Technique *t)
 {
     Q_ASSERT(t);
-    t->setParent(this);
-    m_techniques.append(t);
-    emit techniquesChanged();
+    Q_D(Effect);
+    d->m_techniques.append(t);
+}
+
+void Effect::removeTechnique(Technique *t)
+{
+    Q_D(Effect);
+    d->m_techniques.removeOne(t);
 }
 
 QList<Technique *> Effect::techniques() const
 {
-    return m_techniques;
+    Q_D(const Effect);
+    return d->m_techniques;
 }
 
 void Effect::clearTechniques()
 {
-    qDeleteAll(m_techniques);
-    m_techniques.clear();
+    Q_D(Effect);
+    qDeleteAll(d->m_techniques);
+    d->m_techniques.clear();
 }
 
 } // namespace Qt3D

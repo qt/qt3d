@@ -53,19 +53,18 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class Effect;
 class Texture;
 
 class QT3DRENDERERSHARED_EXPORT Material : public Component
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3D::Effect* effect READ effect WRITE setEffect NOTIFY effectChanged)
+    Q_PROPERTY(Qt3D::Node* effect READ effect WRITE setEffect NOTIFY effectChanged)
 
 public:
     explicit Material(Node *parent = 0);
 
-    Qt3D::Effect *effect() const;
-    void setEffect(Qt3D::Effect *effect);
+    Qt3D::Node *effect() const;
+    void setEffect(Qt3D::Node *effect);
 
     void setParameter(QString name, QVariant val);
 
@@ -83,7 +82,7 @@ Q_SIGNALS:
 
 private:
 
-    Effect *m_effect;
+    Node *m_effect;
     QVariantMap m_parameters;
 
     TextureDict m_textures;

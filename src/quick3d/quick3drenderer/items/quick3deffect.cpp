@@ -39,73 +39,69 @@
 **
 ****************************************************************************/
 
-#include "material.h"
-
-#include <qchangearbiter.h>
-#include <texture.h>
-#include "effect.h"
-#include "renderlogging.h"
+#include "quick3deffect.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-Material::Material(Node *parent)
-    : Component(parent),
-      m_effect(0)
+namespace Render {
+
+namespace Quick {
+
+Quick3DEffect::Quick3DEffect(Node *parent)
+    : Qt3D::Quick::Quick3DNode(parent),
+      Effect()
 {
 }
 
-Qt3D::Node *Material::effect() const
+QQmlListProperty<Technique> Quick3DEffect::techniqueList()
 {
-    return m_effect;
+    return QQmlListProperty<Technique>(this, 0,
+                                       &Quick3DEffect::appendTechnique,
+                                       &Quick3DEffect::techniqueCount,
+                                       &Quick3DEffect::techniqueAt,
+                                       &Quick3DEffect::clearTechniqueList);
 }
 
-void Material::setEffect(Qt3D::Node *effect)
+void Quick3DEffect::appendTechnique(QQmlListProperty<Technique> *list, Technique *bar)
 {
-    if (effect == m_effect)
-        return;
+    Effect *eff = qobject_cast<Effect*>(list->object);
+    if (eff)
+        eff->addTechnique(bar);
+}
 
-    if (qobject_cast<Effect*>(effect) != Q_NULLPTR) {
-        m_effect = effect;
-        emit effectChanged();
+Technique *Quick3DEffect::techniqueAt(QQmlListProperty<Technique> *list, int index)
+{
+    Effect *eff = qobject_cast<Effect*>(list->object);
+    if (eff)
+        return eff->techniques().at(index);
+    return Q_NULLPTR;
+}
+
+int Quick3DEffect::techniqueCount(QQmlListProperty<Technique> *list)
+{
+    Effect *eff = qobject_cast<Effect*>(list->object);
+    if (eff)
+        return eff->techniques().count();
+    return 0;
+}
+
+void Quick3DEffect::clearTechniqueList(QQmlListProperty<Technique> *list)
+{
+    Effect *eff = qobject_cast<Effect*>(list->object);
+    if (eff) {
+        // Ownership of techniques is handled by the QmlEngine so we shouldn't class clearTechniques
+        // which deletes techniques
+        Q_FOREACH (Technique *tech, eff->techniques())
+            eff->removeTechnique(tech);
     }
-    else {
-        qCWarning(Render::Frontend) << Q_FUNC_INFO << "Trying to set an Effect which isn't one";
-    }
 }
 
-void Material::setParameter(QString name, QVariant val)
-{
-    m_parameters[name] = val;
+} // Quick
 
-    // schedule update to the backend
-    QScenePropertyChangePtr change(new QScenePropertyChange(ComponentUpdated, this));
-    change->m_propertyName = name.toLocal8Bit();
-    change->m_value = val;
-    notifySceneChange(change);
-}
+} // Render
 
-QVariantMap Material::parameterValues() const
-{
-    return m_parameters;
-}
-
-Material::TextureDict Material::textureValues() const
-{
-    return m_textures;
-}
-
-void Material::setTextureParameter(QString name, Texture *tex)
-{
-    m_textures[name] = tex;
-}
-
-void Material::cleanParameters()
-{
-    m_parameters.clear();
-}
-
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE

@@ -42,7 +42,6 @@
 #include <QtQml>
 #include "qt3dquick3drenderplugin.h"
 #include <Qt3DRenderer/scene.h>
-#include <Qt3DRenderer/effect.h>
 #include <Qt3DRenderer/tag.h>
 #include <Qt3DRenderer/mesh.h>
 #include <Qt3DRenderer/renderpass.h>
@@ -61,13 +60,14 @@
 #include <Qt3DQuickRenderer/quick3dviewport.h>
 #include <Qt3DQuickRenderer/quick3drenderpassfilter.h>
 #include <Qt3DQuickRenderer/quick3drendertargetselector.h>
+#include <Qt3DQuickRenderer/quick3deffect.h>
 
 QT_BEGIN_NAMESPACE
 
 void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
 {
     qmlRegisterType<Qt3D::Scene>(uri, 2, 0, "Scene");
-    qmlRegisterType<Qt3D::Effect>(uri, 2, 0, "Effect");
+    qmlRegisterType<Qt3D::Render::Quick::Quick3DEffect>(uri, 2, 0, "Effect");
     qmlRegisterType<Qt3D::Render::Quick::Quick3DTechnique>(uri, 2, 0, "Technique");
     qmlRegisterType<Qt3D::Tag>(uri, 2, 0, "Tag");
     qmlRegisterType<Qt3D::Mesh>(uri, 2, 0, "Mesh");

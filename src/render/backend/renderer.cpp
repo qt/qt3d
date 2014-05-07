@@ -87,6 +87,7 @@
 #include <shadermanager.h>
 #include <techniquemanager.h>
 #include "renderlogging.h"
+#include <effectnode.h>
 #include <QStack>
 #include <QSurface>
 #include <QElapsedTimer>
@@ -204,7 +205,7 @@ void Renderer::buildDefaultMaterial()
     m_defaultMaterial->setParameter(QStringLiteral("ka"), QVector3D(0.2f, 0.2f, 0.2f));
     m_defaultMaterial->setParameter(QStringLiteral("kd"), QVector3D(1.0f, 0.5f, 0.0f));
 
-    Effect* defEff = new Effect;
+    EffectNode* defEff = new EffectNode;
     defEff->addTechnique(m_defaultTechnique);
     m_defaultMaterial->setEffect(defEff);
 }
@@ -284,7 +285,7 @@ void Renderer::setSurface(QSurface* s)
 
 void Renderer::setDefaultTechnique(Technique *t)
 {
-    Effect* defEff = m_defaultMaterial->effect();
+    Effect* defEff = qobject_cast<Effect*>(m_defaultMaterial->effect());
     bool materialWasUsing = (defEff->techniques().front() ==
                              m_defaultTechnique);
 
@@ -533,7 +534,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> commands)
 
 RenderTechnique* Renderer::techniqueForMaterial(Material* mat)
 {
-    Effect* eff = mat->effect();
+    Effect* eff = qobject_cast<Effect*>(mat->effect());
     Technique *tech;
     if (eff) {
         Q_ASSERT(!eff->techniques().empty());

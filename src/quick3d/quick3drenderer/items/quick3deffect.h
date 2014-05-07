@@ -39,73 +39,51 @@
 **
 ****************************************************************************/
 
-#include "material.h"
+#ifndef QT3D_RENDER_QUICK_QUICK3DEFFECT_H
+#define QT3D_RENDER_QUICK_QUICK3DEFFECT_H
 
-#include <qchangearbiter.h>
-#include <texture.h>
-#include "effect.h"
-#include "renderlogging.h"
+#include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
+#include <Qt3DQuick/quick3dnode.h>
+#include <Qt3DRenderer/effect.h>
+#include <QQmlListProperty>
+
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-Material::Material(Node *parent)
-    : Component(parent),
-      m_effect(0)
+namespace Render {
+
+namespace Quick {
+
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DEffect : public Qt3D::Quick::Quick3DNode, public Effect
 {
-}
+    Q_OBJECT
+    Q_INTERFACES(Qt3D::Effect)
+    Q_PROPERTY(QQmlListProperty<Qt3D::Technique> techniques READ techniqueList)
 
-Qt3D::Node *Material::effect() const
-{
-    return m_effect;
-}
+public:
+    explicit Quick3DEffect(Node *parent = 0);
 
-void Material::setEffect(Qt3D::Node *effect)
-{
-    if (effect == m_effect)
-        return;
+    QQmlListProperty<Qt3D::Technique> techniqueList();
 
-    if (qobject_cast<Effect*>(effect) != Q_NULLPTR) {
-        m_effect = effect;
-        emit effectChanged();
-    }
-    else {
-        qCWarning(Render::Frontend) << Q_FUNC_INFO << "Trying to set an Effect which isn't one";
-    }
-}
+Q_SIGNALS:
+    void techniquesChanged() Q_DECL_OVERRIDE;
 
-void Material::setParameter(QString name, QVariant val)
-{
-    m_parameters[name] = val;
+private:
+    static void appendTechnique(QQmlListProperty<Technique> *list, Technique *bar);
+    static Technique *techniqueAt(QQmlListProperty<Technique> *list, int index);
+    static int techniqueCount(QQmlListProperty<Technique> *list);
+    static void clearTechniqueList(QQmlListProperty<Technique> *list);
 
-    // schedule update to the backend
-    QScenePropertyChangePtr change(new QScenePropertyChange(ComponentUpdated, this));
-    change->m_propertyName = name.toLocal8Bit();
-    change->m_value = val;
-    notifySceneChange(change);
-}
+};
 
-QVariantMap Material::parameterValues() const
-{
-    return m_parameters;
-}
+} // Quick
 
-Material::TextureDict Material::textureValues() const
-{
-    return m_textures;
-}
+} // Render
 
-void Material::setTextureParameter(QString name, Texture *tex)
-{
-    m_textures[name] = tex;
-}
-
-void Material::cleanParameters()
-{
-    m_parameters.clear();
-}
-
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_RENDER_QUICK_QUICK3DEFFECT_H

@@ -39,73 +39,34 @@
 **
 ****************************************************************************/
 
-#include "material.h"
-
-#include <qchangearbiter.h>
-#include <texture.h>
-#include "effect.h"
-#include "renderlogging.h"
+#include "effectnode.h"
+#include "technique.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-Material::Material(Node *parent)
-    : Component(parent),
-      m_effect(0)
+
+EffectNode::EffectNode(Node *parent)
+    : Node(parent)
+    , Effect()
 {
 }
 
-Qt3D::Node *Material::effect() const
+void EffectNode::addTechnique(Technique *t)
 {
-    return m_effect;
+    // In the C++ API we are responsible for setting the parent
+    // Qml API is automatically handled by the Qml Engine
+    t->setParent(this);
+    Effect::addTechnique(t);
 }
 
-void Material::setEffect(Qt3D::Node *effect)
+void EffectNode::removeTechnique(Technique *t)
 {
-    if (effect == m_effect)
-        return;
-
-    if (qobject_cast<Effect*>(effect) != Q_NULLPTR) {
-        m_effect = effect;
-        emit effectChanged();
-    }
-    else {
-        qCWarning(Render::Frontend) << Q_FUNC_INFO << "Trying to set an Effect which isn't one";
-    }
+    Effect::removeTechnique(t);
+    delete t;
 }
 
-void Material::setParameter(QString name, QVariant val)
-{
-    m_parameters[name] = val;
-
-    // schedule update to the backend
-    QScenePropertyChangePtr change(new QScenePropertyChange(ComponentUpdated, this));
-    change->m_propertyName = name.toLocal8Bit();
-    change->m_value = val;
-    notifySceneChange(change);
-}
-
-QVariantMap Material::parameterValues() const
-{
-    return m_parameters;
-}
-
-Material::TextureDict Material::textureValues() const
-{
-    return m_textures;
-}
-
-void Material::setTextureParameter(QString name, Texture *tex)
-{
-    m_textures[name] = tex;
-}
-
-void Material::cleanParameters()
-{
-    m_parameters.clear();
-}
-
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE

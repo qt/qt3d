@@ -39,73 +39,33 @@
 **
 ****************************************************************************/
 
-#include "material.h"
+#ifndef QT3D_EFFECTNODE_H
+#define QT3D_EFFECTNODE_H
 
-#include <qchangearbiter.h>
-#include <texture.h>
-#include "effect.h"
-#include "renderlogging.h"
+#include <Qt3DRenderer/effect.h>
+#include <Qt3DCore/node.h>
+#include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-Material::Material(Node *parent)
-    : Component(parent),
-      m_effect(0)
+class QT3DRENDERERSHARED_EXPORT EffectNode : public Node, public Effect
 {
-}
+    Q_OBJECT
+    Q_INTERFACES(Qt3D::Effect)
+public:
+    explicit EffectNode(Node *parent = 0);
 
-Qt3D::Node *Material::effect() const
-{
-    return m_effect;
-}
+    void addTechnique(Technique *t) Q_DECL_OVERRIDE;
+    void removeTechnique(Technique *t) Q_DECL_OVERRIDE;
 
-void Material::setEffect(Qt3D::Node *effect)
-{
-    if (effect == m_effect)
-        return;
+Q_SIGNALS:
+    void techniquesChanged() Q_DECL_OVERRIDE;
+};
 
-    if (qobject_cast<Effect*>(effect) != Q_NULLPTR) {
-        m_effect = effect;
-        emit effectChanged();
-    }
-    else {
-        qCWarning(Render::Frontend) << Q_FUNC_INFO << "Trying to set an Effect which isn't one";
-    }
-}
-
-void Material::setParameter(QString name, QVariant val)
-{
-    m_parameters[name] = val;
-
-    // schedule update to the backend
-    QScenePropertyChangePtr change(new QScenePropertyChange(ComponentUpdated, this));
-    change->m_propertyName = name.toLocal8Bit();
-    change->m_value = val;
-    notifySceneChange(change);
-}
-
-QVariantMap Material::parameterValues() const
-{
-    return m_parameters;
-}
-
-Material::TextureDict Material::textureValues() const
-{
-    return m_textures;
-}
-
-void Material::setTextureParameter(QString name, Texture *tex)
-{
-    m_textures[name] = tex;
-}
-
-void Material::cleanParameters()
-{
-    m_parameters.clear();
-}
-
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_EFFECTNODE_H
