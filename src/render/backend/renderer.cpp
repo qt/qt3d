@@ -233,15 +233,6 @@ Render::FrameGraphNode *Renderer::frameGraphRoot() const
     return m_frameGraphRoot;
 }
 
-void Renderer::setSceneObject(Qt3D::Node *obj)
-{
-    Scene* sc = Scene::findInTree(obj);
-    if (sc) {
-        setSceneGraphRoot(sc);
-    } else
-        qCWarning(Backend) << Q_FUNC_INFO << "couldn't find Scene object";
-}
-
 // QAspectThread context
 void Renderer::setSceneGraphRoot(Node *sgRoot)
 {

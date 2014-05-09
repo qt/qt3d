@@ -108,7 +108,6 @@ public:
     void setFrameGraphRoot(Render::FrameGraphNode *fgRoot);
     Render::FrameGraphNode *frameGraphRoot() const;
 
-    void setSceneObject(Qt3D::Node *obj);
     void setSceneGraphRoot(Qt3D::Node *sgRoot);
     Qt3D::Node *sceneGraphRoot() const;
 

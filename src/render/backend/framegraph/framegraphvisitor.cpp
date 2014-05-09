@@ -70,6 +70,8 @@ void FrameGraphVisitor::traverse(FrameGraphNode *root,
 
     // Kick off the traversal
     Render::FrameGraphNode *node = root;
+    if (node == Q_NULLPTR)
+        qCritical() << Q_FUNC_INFO << "FrameGraph is null";
     visit(node);
 }
 

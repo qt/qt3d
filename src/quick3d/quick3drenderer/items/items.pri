@@ -7,7 +7,8 @@ HEADERS += \
     $$PWD/quick3dviewport.h \
     $$PWD/quick3dmaterial.h \
     $$PWD/quick3dtechnique.h \
-    $$PWD/quick3deffect.h
+    $$PWD/quick3deffect.h \
+    $$PWD/quick3dscene.h
 
 SOURCES += \
     $$PWD/quick3dcameraselector.cpp \
@@ -18,6 +19,7 @@ SOURCES += \
     $$PWD/quick3dviewport.cpp \
     $$PWD/quick3dmaterial.cpp \
     $$PWD/quick3dtechnique.cpp \
-    $$PWD/quick3deffect.cpp
+    $$PWD/quick3deffect.cpp \
+    $$PWD/quick3dscene.cpp
 
 INCLUDEPATH += $$PWD

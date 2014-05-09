@@ -39,79 +39,44 @@
 **
 ****************************************************************************/
 
-#ifndef SCENE_H
-#define SCENE_H
+#ifndef QT3D_RENDER_QUICK_QUICK3DSCENE_H
+#define QT3D_RENDER_QUICK_QUICK3DSCENE_H
 
-#include <Qt3DCore/entitynode.h>
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
+#include <Qt3DQuick/quick3dentity.h>
+#include <Qt3DRenderer/scene.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D
-{
+namespace Qt3D {
 
-class Scene;
-class AbstractSceneParser;
+namespace Render {
 
-class ScenePrivate
+namespace Quick {
+
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DScene : public Qt3D::Quick::Quick3DEntity, public Qt3D::Scene
 {
+    Q_OBJECT
+    Q_INTERFACES(Qt3D::Scene)
+    Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(QString sceneId READ sceneId WRITE setSceneId NOTIFY sceneIdChanged)
 public:
+    explicit Quick3DScene(Node *parent = 0);
 
-    ScenePrivate(Scene *qq)
-        : q_ptr(qq)
-        , m_sceneChild(Q_NULLPTR)
-        , m_currentParser(Q_NULLPTR)
-    {}
+    Q_INVOKABLE Node *node(QString id) Q_DECL_OVERRIDE;
+    Q_INVOKABLE Node *scene(QString id) Q_DECL_OVERRIDE;
 
-    Q_DECLARE_PUBLIC(Scene)
-    Scene *q_ptr;
-
-    QString m_source;
-    QString m_sceneId;
-    Node *m_sceneNode;
-    Node *m_sceneChild;
-    AbstractSceneParser *m_currentParser;
-};
-
-class QT3DRENDERERSHARED_EXPORT Scene
-{
-public:
-    explicit Scene(Node *sceneNode);
-
-    QString source() const;
-    void setSource(QString arg);
-
-    QString sceneId() const;
-    void setSceneId(QString arg);
-
-    virtual Node *node(QString id);
-    virtual Node *scene(QString id);
-
-    void clear();
-
-    /**
-     * @brief findInTree - given a Node* object rooting a tree, find
-     * the top-most Scene entity within.
-     * @param root - the found Scene or NULL if no Scene was found
-     * @return
-     */
-    static Scene* findInTree(Node* root);
 Q_SIGNALS:
-
-    virtual void sourceChanged(QString arg) = 0;
-    virtual void sceneIdChanged(QString arg) = 0;
-
-private:
-    void rebuild();
-    Q_DECLARE_PRIVATE(Scene)
-    ScenePrivate *d_ptr;
-
+    void sourceChanged(QString arg);
+    void sceneIdChanged(QString arg);
 };
 
-} // namespace Qt3D
+} // Quick
 
-Q_DECLARE_INTERFACE(Qt3D::Scene, "org.qt-project.org.Qt3D.Scene/2.0")
+} // Render
+
+} // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // SCENE_H
+#endif // QT3D_RENDER_QUICK_QUICK3DSCENE_H

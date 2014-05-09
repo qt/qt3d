@@ -259,7 +259,7 @@ EntityNode* GLTFParser::scene(QString id)
     QJsonObject scenes = m_json.object().value(KEY_SCENES).toObject();
     if (!scenes.contains(id)) {
         qWarning() << "GLTF: no such scene" << id << "in file" << m_basePath;
-        return NULL;
+        return defaultScene();
     }
 
     QJsonObject sceneObj = scenes.value(id).toObject();

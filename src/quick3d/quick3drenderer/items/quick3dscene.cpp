@@ -39,79 +39,36 @@
 **
 ****************************************************************************/
 
-#ifndef SCENE_H
-#define SCENE_H
-
-#include <Qt3DCore/entitynode.h>
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include "quick3dscene.h"
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D
+namespace Qt3D {
+
+namespace Render {
+
+namespace Quick {
+
+Quick3DScene::Quick3DScene(Node *parent)
+    : Quick3DEntity(parent)
+    , Scene(this)
 {
+}
 
-class Scene;
-class AbstractSceneParser;
-
-class ScenePrivate
+Node *Quick3DScene::node(QString id)
 {
-public:
+    return Scene::node(id);
+}
 
-    ScenePrivate(Scene *qq)
-        : q_ptr(qq)
-        , m_sceneChild(Q_NULLPTR)
-        , m_currentParser(Q_NULLPTR)
-    {}
-
-    Q_DECLARE_PUBLIC(Scene)
-    Scene *q_ptr;
-
-    QString m_source;
-    QString m_sceneId;
-    Node *m_sceneNode;
-    Node *m_sceneChild;
-    AbstractSceneParser *m_currentParser;
-};
-
-class QT3DRENDERERSHARED_EXPORT Scene
+Node *Quick3DScene::scene(QString id)
 {
-public:
-    explicit Scene(Node *sceneNode);
+    return Scene::scene(id);
+}
 
-    QString source() const;
-    void setSource(QString arg);
+} // Quick
 
-    QString sceneId() const;
-    void setSceneId(QString arg);
+} // Render
 
-    virtual Node *node(QString id);
-    virtual Node *scene(QString id);
-
-    void clear();
-
-    /**
-     * @brief findInTree - given a Node* object rooting a tree, find
-     * the top-most Scene entity within.
-     * @param root - the found Scene or NULL if no Scene was found
-     * @return
-     */
-    static Scene* findInTree(Node* root);
-Q_SIGNALS:
-
-    virtual void sourceChanged(QString arg) = 0;
-    virtual void sceneIdChanged(QString arg) = 0;
-
-private:
-    void rebuild();
-    Q_DECLARE_PRIVATE(Scene)
-    ScenePrivate *d_ptr;
-
-};
-
-} // namespace Qt3D
-
-Q_DECLARE_INTERFACE(Qt3D::Scene, "org.qt-project.org.Qt3D.Scene/2.0")
+} // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // SCENE_H

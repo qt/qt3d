@@ -50,20 +50,23 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-Scene::Scene(Node* parent) :
-    EntityNode(parent),
-    m_sceneChild(Q_NULLPTR)
+Scene::Scene(Node *sceneNode)
+    : d_ptr(new ScenePrivate(this))
 {
+    Q_D(Scene);
+    d->m_sceneNode = sceneNode;
 }
 
 QString Scene::source() const
 {
-    return m_source;
+    Q_D(const Scene);
+    return d->m_source;
 }
 
 QString Scene::sceneId() const
 {
-    return m_sceneId;
+    Q_D(const Scene);
+    return d->m_sceneId;
 }
 
 Scene *Scene::findInTree(Node *root)
@@ -87,63 +90,78 @@ Scene *Scene::findInTree(Node *root)
 
 void Scene::clear()
 {
-    removeAllChildren();
+    Q_D(Scene);
+    d->m_sceneNode->removeAllChildren();
 }
 
 void Scene::setSource(QString arg)
 {
-    if (m_source != arg) {
-        m_source = arg;
+    Q_D(Scene);
+    if (d->m_source != arg) {
+        d->m_source = arg;
         rebuild();
         emit sourceChanged(arg);
     }
 }
 
-void Qt3D::Scene::setSceneId(QString arg)
+void Scene::setSceneId(QString arg)
 {
-    if (m_sceneId != arg) {
-        m_sceneId = arg;
+    Q_D(Scene);
+    if (d->m_sceneId != arg) {
+        d->m_sceneId = arg;
         rebuild();
         emit sceneIdChanged(arg);
     }
 }
 
+Node *Scene::node(QString id)
+{
+    Q_D(Scene);
+    if (d->m_currentParser)
+        return d->m_currentParser->node(id);
+    return Q_NULLPTR;
+}
+
+Node *Scene::scene(QString id)
+{
+    Q_D(Scene);
+    if (d->m_currentParser)
+        return d->m_currentParser->scene(id);
+    return Q_NULLPTR;
+}
+
 void Scene::rebuild()
 {
-    if (m_sceneChild != Q_NULLPTR) {
-        removeChild(m_sceneChild);
-        m_sceneChild->deleteLater();
+    Q_D(Scene);
+    if (d->m_sceneChild != Q_NULLPTR) {
+        d->m_sceneNode->removeChild(d->m_sceneChild);
+        d->m_sceneChild->deleteLater();
     }
+
+    // Make scene parsers plugins
+    QList<AbstractSceneParser *> parsers;
+    parsers << new GLTFParser() << new AssimpParser();
+
     // Maybe move scene parsers to plugins
     // And handle priority if a format is handled by more than one parser
-    if (GLTFParser::isGLTFPath(m_source)) {
-        qCDebug(Render::Frontend) << Q_FUNC_INFO << "will load GLTF scene";
 
-        GLTFParser parser;
-        parser.setFilePath(m_source);
-
-        if (!m_sceneId.isEmpty())
-            m_sceneChild = parser.scene(m_sceneId);
-        else
-            m_sceneChild = parser.defaultScene();
-
-        if (m_sceneChild != Q_NULLPTR) {
-            addChild(m_sceneChild);
+    bool parserFound = false;
+    Q_FOREACH (AbstractSceneParser *parser, parsers) {
+        if (parser->isPathExtensionSupported(d->m_source)) {
+            if (d->m_currentParser != Q_NULLPTR && parser != d->m_currentParser) {
+                delete d->m_currentParser;
+                d->m_currentParser = parser;
+            }
+            qCDebug(Render::Io) << Q_FUNC_INFO << parser;
+            parser->setFilePath(d->m_source);
+            if ((d->m_sceneChild = parser->scene(d->m_sceneId)) != Q_NULLPTR)
+                d->m_sceneNode->addChild(d->m_sceneChild);
+            parserFound = true;
+            break;
         }
     }
-    else if (AssimpParser::isAssimpPath(m_source)) {
-        qCDebug(Render::Frontend) << Q_FUNC_INFO << "will load Assimp scene";
-        AssimpParser parser;
-        parser.setFilePath(m_source);
-        m_sceneChild = parser.scene(m_sceneId);
-        if (m_sceneChild) {
-            qCDebug(Render::Frontend) << Q_FUNC_INFO << "Assimp scene not empty";
-            addChild(m_sceneChild);
-        }
-    }
-    else {
+    if (!parserFound)
         qCWarning(Render::Frontend) << Q_FUNC_INFO << "Scene file format not supported by Qt3D";
-    }
 }
 
 } // namespace Qt3D
