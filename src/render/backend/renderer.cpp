@@ -249,6 +249,7 @@ void Renderer::setSceneGraphRoot(Node *sgRoot)
     RenderSceneBuilder builder(this);
     builder.traverse(m_sceneGraphRoot);
     m_renderSceneRoot = builder.rootNode();
+    builder.initializeFrameGraph();
     if (!m_renderSceneRoot)
         qCWarning(Backend) << "Failed to build render scene";
     qCDebug(Backend) << Q_FUNC_INFO << "DUMPING SCENE";

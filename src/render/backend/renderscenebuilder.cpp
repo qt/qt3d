@@ -86,6 +86,18 @@ RenderNode *RenderSceneBuilder::rootNode() const
     return m_renderer->renderNodesManager()->data(m_rootNodeHandle);
 }
 
+void RenderSceneBuilder::initializeFrameGraph()
+{
+    // We trigger the Backend FrameGraph building once we're sure all
+    // References that the FrameGraphItem may be usings have been inserted
+    // Into the scenegraph
+    qCDebug(Render::Backend) << Q_FUNC_INFO << "FrameGraph";
+    // Retrieve and set Renderer FrameGraph
+    FrameGraph *fg = Entity::findComponentInTree<FrameGraph>(rootNode()->frontEndPeer());
+    m_frameGraphEntityNode = m_renderer->renderNodesManager()->lookupHandle(fg->parentNode()->asEntity()->uuid());
+    createFrameGraph(fg);
+}
+
 /*!
  * Returns a FrameGraphNode and all its children from \a node which points to the activeFrameGraph.
  * Returns Q_NULLPTR if \a is also Q_NULLPTR or if there is no FrameGraphComponent
@@ -165,8 +177,16 @@ Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(Node *block)
         Qt3D::CameraSelector *cameraSelector = qobject_cast<Qt3D::CameraSelector*>(block);
         Render::CameraSelector *cameraSelectorNode = new Render::CameraSelector();
 
-        qCDebug(Backend) << Q_FUNC_INFO << "CameraSelector";
-        cameraSelectorNode->setCameraEntity(qobject_cast<Entity*>(cameraSelector->camera()));
+        Entity *cameraEntity = qobject_cast<Entity*>(cameraSelector->camera());
+        // If the Entity is declared inline on the QML Side, the Entity is not set as part of the Scene tree
+        // So we need to make sure the RenderNode for the given Entity exists in the RenderNodesMananger
+        if (cameraEntity && m_renderer->cameraManager()->lookupHandle(cameraEntity->uuid()).isNull()) {
+            HRenderNode nodeHandle = createRenderNode(cameraSelector->camera());
+            m_renderer->renderNodesManager()->data(nodeHandle)->setParentHandle(m_frameGraphEntityNode);
+            createRenderCamera(cameraEntity);
+        }
+        cameraSelectorNode->setCameraEntity(cameraEntity);
+        qCDebug(Backend) << Q_FUNC_INFO << "CameraSelector" << cameraSelectorNode->cameraEntity();
         if (cameraSelectorNode->cameraEntity() == Q_NULLPTR ||
                 cameraSelectorNode->cameraEntity()->componentsOfType<CameraLens>().isEmpty())
             qCWarning(Backend) << Q_FUNC_INFO << "No camera or camera lens present in the referenced entity";
@@ -199,43 +219,54 @@ void RenderSceneBuilder::visitNode(Qt3D::Node *node)
     Qt3D::NodeVisitor::visitNode(node);
 }
 
-void RenderSceneBuilder::visitEntity(Qt3D::Node *node)
+HRenderNode RenderSceneBuilder::createRenderNode(Node *node)
 {
-    // Create a RenderNode corresponding to the Entity. Most data will
-    // be calculated later by jobs
-    Entity *entity = qobject_cast<Entity*>(node);
-    qCDebug(Backend) << Q_FUNC_INFO << "Entity " << node->objectName();
-    // Retrieve or created RenderNode for entity
-    HRenderNode renderNodeHandle = m_renderer->renderNodesManager()->getOrAcquireHandle(entity->uuid());
+    Entity *entity = qobject_cast<Entity *>(node);
+    HRenderNode renderNodeHandle;
+    if (entity != Q_NULLPTR)
+        renderNodeHandle = m_renderer->renderNodesManager()->getOrAcquireHandle(entity->uuid());
+    else
+        renderNodeHandle = m_renderer->renderNodesManager()->acquire();
     RenderNode *renderNode = m_renderer->renderNodesManager()->data(renderNodeHandle);
     renderNode->setRenderer(m_renderer);
     renderNode->setFrontEndPeer(node);
 
-    if (m_rootNodeHandle.isNull()) {
-        m_rootNodeHandle = renderNodeHandle;
-        m_nodeStack.push(renderNodeHandle);
-    }
-    else {
-        renderNode->setParentHandle(m_nodeStack.top());
-    }
-    // REPLACE WITH ENTITY MATRIX FROM TRANSFORMS
-    m_nodeStack.push(renderNodeHandle);
-
-    // Look for a transform component
-    QList<Transform *> transforms = entity->componentsOfType<Transform>();
-    if (!transforms.isEmpty())
-        renderNode->setTransform(transforms.first());
-
-    QList<FrameGraph *> framegraphRefs = entity->componentsOfType<FrameGraph>();
-    if (!framegraphRefs.isEmpty()) {
-        FrameGraph *fg = framegraphRefs.first();
-        // Entity has a reference to a framegraph configuration
-        // Build a tree of FrameGraphNodes by reading the tree of FrameGraphBuildingBlocks
-        Render::FrameGraphNode* frameGraphRootNode = buildFrameGraph(qobject_cast<Node*>(fg->activeFrameGraph()));
-        qCDebug(Backend) << Q_FUNC_INFO << "FrameGraphRoot" <<  frameGraphRootNode;
-        m_renderer->setFrameGraphRoot(frameGraphRootNode);
+    if (entity != Q_NULLPTR) {
+        QList<Transform *> transforms = entity->componentsOfType<Transform>();
+        if (!transforms.isEmpty())
+            m_renderer->renderNodesManager()->data(renderNodeHandle)->setTransform(transforms.first());
     }
 
+    return renderNodeHandle;
+}
+
+void RenderSceneBuilder::createRenderCamera(Entity *entity)
+{
+    QList<CameraLens*> cameraLenses = entity->componentsOfType<CameraLens>();
+    if (!cameraLenses.isEmpty()) {
+        // Retrieves or create RenderCamera for entity->uuid
+        RenderCamera *camera = m_renderer->cameraManager()->getOrCreateRenderCamera(entity->uuid());
+        camera->setRendererAspect(m_renderer->rendererAspect());
+        camera->setPeer(cameraLenses.first());
+        camera->setProjection(cameraLenses.first()->projectionMatrix());
+    }
+}
+
+void RenderSceneBuilder::createRenderMesh(Entity *entity)
+{
+    QList<Mesh *> meshes = entity->componentsOfType<Mesh>();
+    if (!meshes.isEmpty()) {
+        HMesh meshHandle = m_renderer->meshManager()->getOrAcquireHandle(entity->uuid());
+        RenderMesh *renderMesh = m_renderer->meshManager()->data(meshHandle);
+        renderMesh->setRendererAspect(m_renderer->rendererAspect());
+        renderMesh->setPeer(meshes.first());
+        // That should ideally be done elsewhere
+        m_renderer->meshDataManager()->addMeshData(meshes.first());
+    }
+}
+
+void RenderSceneBuilder::createRenderMaterial(Entity *entity)
+{
     // Parse Materials to retrieve
     // Material
     // Effect
@@ -250,26 +281,44 @@ void RenderSceneBuilder::visitEntity(Qt3D::Node *node)
         rMaterial->setRendererAspect(m_renderer->rendererAspect());
         rMaterial->setPeer(material);
     }
+}
 
-    // We'll update matrices in a job later. In fact should the matrix be decoupled from the mesh?
-    QList<Mesh *> meshes = entity->componentsOfType<Mesh>();
-    if (!meshes.isEmpty()) {
-        HMesh meshHandle = m_renderer->meshManager()->getOrAcquireHandle(entity->uuid());
-        RenderMesh *renderMesh = m_renderer->meshManager()->data(meshHandle);
-        renderMesh->setRendererAspect(m_renderer->rendererAspect());
-        renderMesh->setPeer(meshes.first());
-        // That should ideally be done elsewhere
-        m_renderer->meshDataManager()->addMeshData(meshes.first());
-    }
+void RenderSceneBuilder::createFrameGraph(FrameGraph *fg)
+{
+        // Entity has a reference to a framegraph configuration
+        // Build a tree of FrameGraphNodes by reading the tree of FrameGraphBuildingBlocks
+        Render::FrameGraphNode* frameGraphRootNode = buildFrameGraph(qobject_cast<Node*>(fg->activeFrameGraph()));
+        qCDebug(Backend) << Q_FUNC_INFO << "FrameGraphRoot" <<  frameGraphRootNode;
+        m_renderer->setFrameGraphRoot(frameGraphRootNode);
+}
 
-    QList<CameraLens*> cameraLenses = entity->componentsOfType<CameraLens>();
-    if (!cameraLenses.isEmpty()) {
-        // Retrieves or create RenderCamera for entity->uuid
-        RenderCamera *camera = m_renderer->cameraManager()->getOrCreateRenderCamera(entity->uuid());
-        camera->setRendererAspect(m_renderer->rendererAspect());
-        camera->setPeer(cameraLenses.first());
-        camera->setProjection(cameraLenses.first()->projectionMatrix());
+void RenderSceneBuilder::visitEntity(Qt3D::Node *node)
+{
+    // Create a RenderNode corresponding to the Entity. Most data will
+    // be calculated later by jobs
+    Entity *entity = qobject_cast<Entity*>(node);
+    qCDebug(Backend) << Q_FUNC_INFO << "Entity " << node->objectName();
+    // Retrieve or created RenderNode for entity
+
+    // Create RenderNode and Transforms
+    HRenderNode renderNodeHandle = createRenderNode(node);
+
+    if (m_rootNodeHandle.isNull()) {
+        m_rootNodeHandle = renderNodeHandle;
+        m_nodeStack.push(m_rootNodeHandle);
     }
+    else {
+        m_renderer->renderNodesManager()->data(renderNodeHandle)->setParentHandle(m_nodeStack.top());
+    }
+    // REPLACE WITH ENTITY MATRIX FROM TRANSFORMS
+    m_nodeStack.push(renderNodeHandle);
+
+    // Retrieve Material from Entity
+    createRenderMaterial(entity);
+    // Retrieve Mesh from Entity
+    createRenderMesh(entity);
+    // Retrieve Camera from Entity
+    createRenderCamera(entity);
 
     // Check if entity is a Scene and if so parses the scene
     Scene *sceneEntity = Q_NULLPTR;

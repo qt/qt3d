@@ -51,6 +51,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class FrameGraphItem;
+class FrameGraph;
 
 namespace Render {
 class RenderNode;
@@ -70,6 +71,7 @@ public:
 
     RenderNode *rootNode() const;
     HRenderNode rootHandle() const { return m_rootNodeHandle; }
+    void        initializeFrameGraph();
 
 protected:
     void visitNode(Qt3D::Node *node) Q_DECL_OVERRIDE;
@@ -79,9 +81,17 @@ private:
     Renderer *m_renderer;
     HRenderNode m_rootNodeHandle;
     QStack<HRenderNode> m_nodeStack;
+    HRenderNode m_frameGraphEntityNode;
 
     Render::FrameGraphNode* buildFrameGraph(Node *node);
     Render::FrameGraphNode* backendFrameGraphNode(Node *);
+
+    HRenderNode createRenderNode(Node *node);
+    void createRenderMesh(Entity *entity);
+    void createRenderCamera(Entity *entity);
+    void createRenderMaterial(Entity *entity);
+    void createFrameGraph(FrameGraph *frameGraph);
+
 
 };
 
