@@ -1,6 +1,6 @@
 TARGET   = Qt3DQuickRenderer
 
-QT      += core qml quick 3dcore 3drenderer 3dquick
+QT      += core core-private qml qml-private quick 3dcore 3drenderer 3dquick
 
 DEFINES += QT3DQUICKRENDERER_LIBRARY
 

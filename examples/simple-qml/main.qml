@@ -220,6 +220,13 @@ Node {
             objectName: "ballMaterial"
             //            effect: adsEffect
 
+            effect : Effect {
+                customproperty : "red"
+                ambient : "orange"
+
+            }
+
+
             // Custom properties go here
         }
 
