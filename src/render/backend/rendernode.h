@@ -73,6 +73,7 @@ class RenderNode : public QObserverInterface
 {
 public:
     RenderNode();
+    ~RenderNode();
 
     void setTransform(Transform *transform);
     void setParentHandle(HRenderNode parentHandle);

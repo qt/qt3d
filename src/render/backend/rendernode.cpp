@@ -77,6 +77,12 @@ RenderNode::RenderNode()
 {
 }
 
+RenderNode::~RenderNode()
+{
+    delete m_localBoundingVolume;
+    delete m_worldBoundingVolume;
+}
+
 void RenderNode::setParentHandle(HRenderNode parentHandle)
 {
     Q_ASSERT(m_renderer);
