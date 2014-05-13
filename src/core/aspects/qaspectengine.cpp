@@ -45,7 +45,7 @@
 #include "qaspectmanager.h"
 #include "qchangearbiter.h"
 
-#include <QDebug>
+#include "corelogging.h"
 #include <QMetaObject>
 #include <QMutexLocker>
 
@@ -57,7 +57,7 @@ QAspectEngine::QAspectEngine(QObject *parent)
     : QObject(parent)
     , m_aspectThread(new QAspectThread(this))
 {
-    qDebug() << Q_FUNC_INFO;
+    qCDebug(Aspects) << Q_FUNC_INFO;
     qRegisterMetaType<QWaitCondition *>();
     m_aspectThread->waitForStart(QThread::HighestPriority);
 }
@@ -99,9 +99,9 @@ void QAspectEngine::setRoot(QObject *rootObject)
                               Q_ARG(QObject *, rootObject),
                               Q_ARG(QWaitCondition *, &m_waitCondition));
 
-    qDebug() << "Putting main thread to sleep whilst aspects build their local scenes...";
+    qCDebug(Aspects) << "Putting main thread to sleep whilst aspects build their local scenes...";
     m_waitCondition.wait(&m_mutex);
-    qDebug() << "Main thread is now awake again";
+    qCDebug(Aspects) << "Main thread is now awake again";
 }
 
 } // namespace Qt3D

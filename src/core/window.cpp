@@ -41,7 +41,6 @@
 
 #include "window.h"
 
-#include <QDebug>
 #include <QTimer>
 #include <QKeyEvent>
 #include <QMouseEvent>
@@ -50,6 +49,7 @@
 #include "node.h"
 #include "camera.h"
 #include "entity.h"
+#include "corelogging.h"
 #include "qaspectengine.h"
 #include "cameracontroller.h"
 
@@ -123,7 +123,7 @@ void Window::setRootObject( QObject* obj )
     // What happens if there are multiple cameras in the scene ?
     m_camera = Entity::findEntityInTree<Camera>(qobject_cast<Node *>(m_root.data()));
     if (m_camera) {
-        qDebug() << "found a camera in the scene";
+        qCDebug(Nodes) << "found a camera in the scene";
         m_controller->setCamera(m_camera);
         m_updateTimer->start();
     }

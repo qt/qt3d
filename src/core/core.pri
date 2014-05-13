@@ -21,11 +21,13 @@ HEADERS += \
     $$PWD/qtickclock.h \
     $$PWD/qscheduler.h \
     $$PWD/cameracontroller.h \
-    $$PWD/qchangearbiter.h
+    $$PWD/qchangearbiter.h \
+    $$PWD/corelogging.h
 
 SOURCES += \
     $$PWD/window.cpp \
     $$PWD/qtickclock.cpp \
     $$PWD/qscheduler.cpp \
     $$PWD/cameracontroller.cpp \
-    $$PWD/qchangearbiter.cpp
+    $$PWD/qchangearbiter.cpp \
+    $$PWD/corelogging.cpp

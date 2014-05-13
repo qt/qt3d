@@ -41,7 +41,7 @@
 
 #include "qtickclock.h"
 
-#include <QDebug>
+#include "corelogging.h"
 #include <QThread>
 
 QT_BEGIN_NAMESPACE
@@ -65,7 +65,7 @@ void QTickClock::start()
 {
     m_timer.start();
     m_time = m_timer.nsecsElapsed();
-    qDebug() << "tickInterval =" << m_tickInterval << "ns";
+    qCDebug(ChangeArbiter) << "tickInterval =" << m_tickInterval << "ns";
 }
 
 void QTickClock::reset()
@@ -83,19 +83,19 @@ qint64 QTickClock::waitForNextTick()
     // TODO: Do we want a mode where if we are lagging we instead wait
     // for the next tick instead?
     if (timeToSleep < 0) {
-        qDebug() << "Lagging behind desired tick interval";
+        qCDebug(ChangeArbiter) << "Lagging behind desired tick interval";
         m_time = t;
         return m_time;
     }
 
     unsigned long sleepTimeMicroSeconds = static_cast<unsigned long>(timeToSleep / 1000);
-    //qDebug() << "sleeping for" << sleepTimeMicroSeconds << "us";
+    //qCDebug(ChangeArbiter) << "sleeping for" << sleepTimeMicroSeconds << "us";
     QThread::usleep(sleepTimeMicroSeconds);
 
 #if defined(QT3D_DEBUG_TICKCLOCK)
     qint64 expectedWakeTime = t + sleepTimeMicroSeconds * 1000;
     qint64 wakeTime = m_timer.nsecsElapsed();
-    qDebug() << "t =" << t / 1000000 << "timeToSleep =" << timeToSleep / 1000000
+    qCDebug(ChangeArbiter) << "t =" << t / 1000000 << "timeToSleep =" << timeToSleep / 1000000
              << "due to wake at =" << expectedWakeTime / 1000000
              << "actually woke at" << wakeTime / 1000000
              << "delta =" << (expectedWakeTime - wakeTime) / 1000000;

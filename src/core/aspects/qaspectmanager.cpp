@@ -50,7 +50,7 @@
 #include "qtickclock.h"
 #include "node.h"
 
-#include <QDebug>
+#include "corelogging.h"
 #include <QEventLoop>
 #include <QThread>
 #include <QWaitCondition>
@@ -70,12 +70,12 @@ QAspectManager::QAspectManager(QObject *parent)
     , m_runMainLoop(false)
 {
     qRegisterMetaType<QWindow*>("QWindow*");
-    qDebug() << Q_FUNC_INFO;
+    qCDebug(Aspects) << Q_FUNC_INFO;
 }
 
 void QAspectManager::initialize()
 {
-    qDebug() << Q_FUNC_INFO;
+    qCDebug(Aspects) << Q_FUNC_INFO;
     m_jobManager->initialize();
     m_scheduler->setAspectManager(this);
     m_changeArbiter->initialize(m_jobManager);
@@ -83,13 +83,13 @@ void QAspectManager::initialize()
 
 void QAspectManager::shutdown()
 {
-    qDebug() << Q_FUNC_INFO;
+    qCDebug(Aspects) << Q_FUNC_INFO;
 }
 
 
 void QAspectManager::setRoot(QObject *rootObject, QWaitCondition *waitCondition)
 {
-    qDebug() << Q_FUNC_INFO;
+    qCDebug(Aspects) << Q_FUNC_INFO;
 
     Node *root = qobject_cast<Node *>(rootObject);
     if (root == m_root)
@@ -136,7 +136,7 @@ void QAspectManager::setRoot(QObject *rootObject, QWaitCondition *waitCondition)
 
 void QAspectManager::setWindow(QWindow *window)
 {
-    qDebug() << Q_FUNC_INFO;
+    qCDebug(Aspects) << Q_FUNC_INFO;
 
     m_window = window;
 
@@ -151,13 +151,13 @@ void QAspectManager::setWindow(QWindow *window)
  */
 void QAspectManager::registerAspect(QObject *aspect)
 {
-    qDebug() << Q_FUNC_INFO << "Registering aspect libraries";
+    qCDebug(Aspects) << Q_FUNC_INFO << "Registering aspect libraries";
 
     AbstractAspect *aspectImpl = Q_NULLPTR;
     if ((aspectImpl = qobject_cast<AbstractAspect*>(aspect)) != Q_NULLPTR)
         m_aspects.append(aspectImpl);
     else
-        qWarning() << Q_FUNC_INFO << "Failed to register aspect";
+       qCWarning(Aspects) << Q_FUNC_INFO << "Failed to register aspect";
 }
 
 void QAspectManager::exec()

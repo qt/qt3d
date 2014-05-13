@@ -43,7 +43,7 @@
 
 #include <qaspectmanager.h>
 
-#include <QDebug>
+#include "corelogging.h"
 #include <QMutexLocker>
 
 QT_BEGIN_NAMESPACE
@@ -54,21 +54,21 @@ QAspectThread::QAspectThread(QObject *parent)
     : QThread(parent)
     , m_aspectManager(0)
 {
-    qDebug() << Q_FUNC_INFO;
+    qCDebug(Aspects) << Q_FUNC_INFO;
 }
 
 void QAspectThread::waitForStart(Priority priority)
 {
-    qDebug() << "Starting QAspectThread and going to sleep until it is ready for us...";
+    qCDebug(Aspects) << "Starting QAspectThread and going to sleep until it is ready for us...";
     m_mutex.lock();
     start(priority);
     m_waitCondition.wait(&m_mutex);
-    qDebug() << "QAspectThead is now ready & calling thread is now awake again";
+    qCDebug(Aspects) << "QAspectThead is now ready & calling thread is now awake again";
 }
 
 void QAspectThread::run()
 {
-    qDebug() << "Entering void QAspectThread::run()";
+    qCDebug(Aspects) << "Entering void QAspectThread::run()";
 
     // Lock mutex and create worker objects
     QMutexLocker locker(&m_mutex);
@@ -90,7 +90,7 @@ void QAspectThread::run()
     m_aspectManager->shutdown();
     delete m_aspectManager;
 
-    qDebug() << "Exiting void QAspectThread::run()";
+    qCDebug(Aspects) << "Exiting void QAspectThread::run()";
 }
 
 } // namespace Qt3D

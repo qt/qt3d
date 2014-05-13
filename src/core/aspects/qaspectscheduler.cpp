@@ -41,7 +41,7 @@
 
 #include "qaspectscheduler.h"
 
-#include <QDebug>
+#include "corelogging.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -50,7 +50,7 @@ namespace Qt3D {
 QAspectScheduler::QAspectScheduler(QObject *parent)
     : QObject(parent)
 {
-    qDebug() << Q_FUNC_INFO;
+    qCDebug(Aspects) << Q_FUNC_INFO;
 }
 
 } // namespace Qt3D

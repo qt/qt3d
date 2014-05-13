@@ -39,105 +39,23 @@
 **
 ****************************************************************************/
 
-#include "node.h"
+#ifndef QT3D_CORELOGGING_H
+#define QT3D_CORELOGGING_H
 
-#include "entity.h"
-
-#include <QEvent>
-#include <QMetaObject>
-#include <QMetaProperty>
-#include "corelogging.h"
+#include <QLoggingCategory>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-Node::Node( Node* parent )
-    : QObject( parent )
-{
-    if (parent)
-        parent->m_children.append(this);
-}
+Q_DECLARE_LOGGING_CATEGORY(Resources)
+Q_DECLARE_LOGGING_CATEGORY(Nodes)
+Q_DECLARE_LOGGING_CATEGORY(Aspects)
+Q_DECLARE_LOGGING_CATEGORY(ChangeArbiter)
 
-Node::~Node()
-{
-}
 
-void Node::dump()
-{
-    const QMetaObject *meta = metaObject();
-    QStringList result;
-    for (int i = 0; i < meta->propertyCount(); ++i) {
-        const QMetaProperty metaProperty = meta->property(i);
-        const QVariant value = property(metaProperty.name());
-        result += QString(QStringLiteral("%1 %2 = %3;"))
-            .arg(QString::fromLatin1(metaProperty.typeName()))
-            .arg(QString::fromLatin1(metaProperty.name()))
-            .arg(value.toString());
-    }
-
-    qCDebug(Nodes) << result.join(QStringLiteral("\n"));
-
-    foreach (QObject *child, children()) {
-        Node *node = qobject_cast<Node *>(child);
-        if (!node)
-            continue;
-        node->dump();
-    }
-}
-
-NodeList Node::children() const
-{
-    return m_children;
-}
-
-void Node::addChild(Node *childNode)
-{
-    Q_CHECK_PTR( childNode );
-    if (childNode->parent() == this)
-        return;
-
-    m_children.append(childNode);
-    childNode->setParent(this);
-}
-
-void Node::removeChild(Node *childNode)
-{
-    Q_CHECK_PTR( childNode );
-    if (childNode->parent() != this)
-        qCWarning(Nodes) << Q_FUNC_INFO << "not a child";
-
-    m_children.removeOne(childNode);
-    childNode->setParent(NULL);
-}
-
-void Node::removeAllChildren()
-{
-    foreach (QObject *child, children()) {
-        child->deleteLater();
-    }
-
-    m_children.clear();
-}
-
-Entity *Node::asEntity()
-{
-    return NULL;
-}
-
-Node *Node::parentNode() const
-{
-    return qobject_cast<Node*>(parent());
-}
-
-bool Node::event(QEvent *e)
-{
-    if (e->type() == QEvent::DynamicPropertyChange) {
-        qCDebug(Nodes) << "*** Dynamic Property Change ***";
-    }
-    return QObject::event(e);
-}
-
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_CORELOGGING_H

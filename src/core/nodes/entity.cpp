@@ -46,7 +46,7 @@
 
 #include <QMetaObject>
 #include <QMetaProperty>
-#include <QDebug>
+#include "corelogging.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -71,7 +71,7 @@ void Entity::addComponent(Component *comp)
 {
     Q_D(Entity);
     Q_CHECK_PTR( comp );
-    qDebug() << Q_FUNC_INFO << comp;
+    qCDebug(Nodes) << Q_FUNC_INFO << comp;
     Q_ASSERT(d->m_components.count(comp) == 0);
     d->m_components.append(comp);
     QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentAdded, this));
@@ -82,7 +82,7 @@ void Entity::addComponent(Component *comp)
 void Entity::removeComponent(Component *comp)
 {
     Q_CHECK_PTR(comp);
-    qDebug() << Q_FUNC_INFO << comp;
+    qCDebug(Nodes) << Q_FUNC_INFO << comp;
     Q_D(Entity);
     d->m_components.removeOne(comp);
     QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentRemoved, this));
