@@ -72,14 +72,7 @@ typedef QHandle<RenderMaterial, 16> HMaterial;
 class Q_AUTOTEST_EXPORT RenderView
 {
 public:
-    RenderView()
-        : m_renderer(Q_NULLPTR)
-        , m_techniqueFilter(0)
-        , m_passFilter(0)
-        , m_commands()
-    {
-    }
-
+    RenderView();
     ~RenderView();
 
     void setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf);

@@ -69,6 +69,14 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
+RenderView::RenderView()
+    : m_renderer(Q_NULLPTR)
+    , m_techniqueFilter(0)
+    , m_passFilter(0)
+    , m_commands()
+{
+}
+
 RenderView::~RenderView()
 {
     qDeleteAll(m_commands);
