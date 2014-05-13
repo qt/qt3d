@@ -50,53 +50,94 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QmlTexture::QmlTexture(Node *parent) :
-    Node(parent),
-    m_texture(new Texture)
+Texture::Texture() :
+    m_target(QOpenGLTexture::Target2D),
+    m_width(1),
+    m_height(1),
+    m_depth(1),
+    m_autoMipMap(false)
 {
-    m_texture->setTarget(QOpenGLTexture::Target2D);
-    m_texture->setInternalFormat(QOpenGLTexture::RGBA8_UNorm);
 }
 
-QUrl QmlTexture::source() const
+void Texture::setTarget(QOpenGLTexture::Target target)
 {
-    return m_source;
+    m_target = target;
 }
 
-bool QmlTexture::isRectangle() const
+void Texture::setSize(int w, int h, int d)
 {
-    return (m_texture->target() == QOpenGLTexture::TargetRectangle);
+    m_width = w;
+    m_height = h;
+    m_depth = d;
 }
 
-Texture *QmlTexture::texture() const
+int Texture::width() const
 {
-    return m_texture;
+    return m_width;
 }
 
-void QmlTexture::setSource(QUrl arg)
+int Texture::height() const
 {
-    if (m_source != arg) {
-        m_source = arg;
+    return m_height;
+}
 
-        if (m_source.isLocalFile()) {
-            QImage img(m_source.toLocalFile());
-            m_texture->setInternalFormat(img.hasAlphaChannel() ?
-                                             QOpenGLTexture::RGBA8_UNorm :
-                                             QOpenGLTexture::RGB8_UNorm);
+int Texture::depth() const
+{
+    return m_depth;
+}
 
-            m_texture->setFromQImage(img);
-        } else {
-            qWarning() << "implement loading from remote URLs";
-        }
+void Texture::setInternalFormat(QOpenGLTexture::TextureFormat format)
+{
+    m_format = format;
+}
 
-        emit sourceChanged();
+bool Texture::setFromQImage(QImage img, int layer)
+{
+    setSize(img.width(), img.height());
+
+    if ((m_target != QOpenGLTexture::Target2D) &&
+        (m_target != QOpenGLTexture::Target2DArray) &&
+        (m_target == QOpenGLTexture::TargetRectangle))
+    {
+        qWarning() << Q_FUNC_INFO << "invalid texture target";
+        return false;
     }
+
+    TexImageDataPtr dataPtr(new TexImageData(0, layer));
+    dataPtr->setImage(img);
+    addImageData(dataPtr);
+
+    return true;
 }
 
-void QmlTexture::setRectangle(bool r)
+void Texture::addImageData(TexImageDataPtr imgData)
 {
-    m_texture->setTarget(r ? QOpenGLTexture::TargetRectangle :
-                             QOpenGLTexture::Target2D);
+    m_data.append(imgData);
+}
+
+QList<TexImageDataPtr> Texture::imageData() const
+{
+    return m_data;
+}
+
+void Texture::setGenerateMipMaps(bool gen)
+{
+    m_autoMipMap = gen;
+}
+
+void Texture::setMinificationFilter(QOpenGLTexture::Filter f)
+{
+    m_minFilter = f;
+}
+
+void Texture::setMagnificationFilter(QOpenGLTexture::Filter f)
+{
+    m_magFilter = f;
+}
+
+void Texture::setWrapMode(QOpenGLTexture::WrapMode wrapMode)
+{
+    m_wrapMode = wrapMode;
 }
 
 } // namespace Qt3D

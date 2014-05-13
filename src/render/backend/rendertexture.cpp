@@ -44,7 +44,7 @@
 #include <QDebug>
 #include <QOpenGLTexture>
 #include <QOpenGLPixelTransferOptions>
-
+#include <texture.h>
 #include <texturedata.h>
 
 QT_BEGIN_NAMESPACE

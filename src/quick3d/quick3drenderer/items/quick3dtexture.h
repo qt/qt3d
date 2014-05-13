@@ -39,43 +39,53 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERTEXTURE_H
-#define QT3D_RENDER_RENDERTEXTURE_H
+#ifndef QT3D_RENDER_QUICK_QUICK3DTEXTURE_H
+#define QT3D_RENDER_QUICK_QUICK3DTEXTURE_H
 
-#include <QOpenGLContext>
-
-#include <Qt3DRenderer/texturedata.h>
+#include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
+#include <Qt3DQuick/quick3dnode.h>
+#include <Qt3DRenderer/texture.h>
 
 QT_BEGIN_NAMESPACE
 
-class QOpenGLTexture;
-
 namespace Qt3D {
-
-class Texture;
 
 namespace Render {
 
-class RenderTexture
+namespace Quick {
+
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTexture
+        : public Qt3D::Quick::Quick3DNode,
+        public Qt3D::Texture
 {
+    Q_OBJECT
+    Q_INTERFACES(Qt3D::Texture)
+    Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(bool rectangle READ isRectangle WRITE setRectangle NOTIFY formatChanged)
 public:
-    RenderTexture();
+    explicit Quick3DTexture(Node *parent = 0);
 
-    void setPeer(Texture* peer);
-    QOpenGLTexture* getOrCreateGLTexture() ;
+    QUrl source() const;
+    void setSource(QUrl arg);
 
-    GLint textureId();
+    void setRectangle(bool r);
+    bool isRectangle() const;
+
+Q_SIGNALS:
+    void sourceChanged();
+    void formatChanged();
+
+
 private:
-    Texture* m_peer;
-    QOpenGLTexture* m_gl;
-
-    QOpenGLTexture *buildGLTexture();
-    void setToGLTexture(TexImageDataPtr imgData);
+    QUrl m_source;
 };
 
-} // namespace Render
-} // namespace Qt3D
+} // Quick
+
+} // Render
+
+} // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERTEXTURE_H
+#endif // QUICK3DTEXTURE_H

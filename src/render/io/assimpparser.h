@@ -47,15 +47,8 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <assimp/DefaultLogger.hpp>
-
 #include <Qt3DRenderer/meshdata.h>
-#include <Qt3DRenderer/texturedata.h>
 #include <Qt3DRenderer/assimphelpers.h>
-#include <Qt3DCore/camera.h>
-#include <Qt3DRenderer/mesh.h>
-#include <Qt3DRenderer/material.h>
-#include <Qt3DRenderer/technique.h>
-
 #include <Qt3DRenderer/abstractsceneparser.h>
 
 #include <QMap>

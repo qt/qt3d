@@ -97,71 +97,8 @@ private:
 
 typedef QSharedPointer<TexImageData> TexImageDataPtr;
 
-class Texture
-{
-public:
-    Texture();
-
-    void setTarget(QOpenGLTexture::Target target);
-
-    void setInternalFormat(QOpenGLTexture::TextureFormat format);
-
-    QOpenGLTexture::TextureFormat format() const
-    { return m_format; }
-
-    QOpenGLTexture::Target target() const
-    { return m_target; }
-
-    /**
-     * @brief setFromQImage - set size and image data based upon a QImage
-     * Can optionally generate mip-map levels automatically too. Target
-     *  must be Texture2D, Texture2DArray or TextureRectangle.
-     * @param img - valid QImage. If Texture2D is set, should be power-of-2
-     * dimensions.
-     */
-    bool setFromQImage(QImage img, int layer = 0);
-
-    void addImageData(TexImageDataPtr imgData);
-    QList<TexImageDataPtr> imageData() const;
-
-    void setGenerateMipMaps(bool gen);
-    bool generateMipMaps() const
-    { return m_autoMipMap; }
-
-// sampler data - in the future proxy to a Sampler helper
-    void setMinificationFilter(QOpenGLTexture::Filter f);
-    void setMagnificationFilter(QOpenGLTexture::Filter f);
-
-    QOpenGLTexture::Filter minificationFilter() const
-    { return m_minFilter; }
-
-    QOpenGLTexture::Filter magnificationFilter() const
-    { return m_magFilter; }
-
-    void setWrapMode(QOpenGLTexture::WrapMode wrapMode);
-    QOpenGLTexture::WrapMode wrapMode() const
-    { return m_wrapMode; }
-
-    void setSize(int width, int height=1, int depth=1);
-
-    int width() const;
-    int height() const;
-    int depth() const;
-
-private:
-    QOpenGLTexture::Target m_target;
-    QOpenGLTexture::TextureFormat m_format;
-    int m_width, m_height, m_depth;
-    bool m_autoMipMap;
-
-    QList<TexImageDataPtr> m_data;
-
-    QOpenGLTexture::Filter m_minFilter, m_magFilter;
-    // FIXME, store per direction
-    QOpenGLTexture::WrapMode m_wrapMode;
-};
-
 } // namespace Qt3D
+
 
 QT_END_NAMESPACE
 

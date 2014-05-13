@@ -62,6 +62,7 @@
 #include <Qt3DQuickRenderer/quick3drendertargetselector.h>
 #include <Qt3DQuickRenderer/quick3deffect.h>
 #include <Qt3DQuickRenderer/quick3dscene.h>
+#include <Qt3DQuickRenderer/quick3dtexture.h>
 #include <Qt3DQuickRenderer/shaderpropertyparser.h>
 
 QT_BEGIN_NAMESPACE
@@ -77,7 +78,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3D::RenderPass>(uri, 2, 0, "RenderPass");
     qmlRegisterType<Qt3D::ShaderProgram>(uri, 2, 0, "ShaderProgram");
     qmlRegisterType<Qt3D::Shape>(uri, 2, 0, "Shape");
-    qmlRegisterType<Qt3D::QmlTexture>(uri, 2, 0, "Texture");
+    qmlRegisterType<Qt3D::Render::Quick::Quick3DTexture>(uri, 2, 0, "Texture");
     // Framegraph components - TODO RenderTarget, RenderTargetSelector
     qmlRegisterType<Qt3D::Render::Quick::Quick3DCameraSelector>(uri, 2, 0, "CameraSelector");
     qmlRegisterType<Qt3D::Render::Quick::Quick3DRenderPassFilter>(uri, 2, 0, "RenderPassFilter");

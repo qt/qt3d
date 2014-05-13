@@ -39,43 +39,65 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERTEXTURE_H
-#define QT3D_RENDER_RENDERTEXTURE_H
-
-#include <QOpenGLContext>
-
-#include <Qt3DRenderer/texturedata.h>
+#include "quick3dtexture.h"
+#include <QDebug>
 
 QT_BEGIN_NAMESPACE
 
-class QOpenGLTexture;
-
 namespace Qt3D {
-
-class Texture;
 
 namespace Render {
 
-class RenderTexture
+namespace Quick {
+
+
+Quick3DTexture::Quick3DTexture(Node *parent)
+    : Quick3DNode(parent)
+    , Texture()
 {
-public:
-    RenderTexture();
+    setTarget(QOpenGLTexture::Target2D);
+    setInternalFormat(QOpenGLTexture::RGBA8_UNorm);
+}
 
-    void setPeer(Texture* peer);
-    QOpenGLTexture* getOrCreateGLTexture() ;
+QUrl Quick3DTexture::source() const
+{
+    return m_source;
+}
 
-    GLint textureId();
-private:
-    Texture* m_peer;
-    QOpenGLTexture* m_gl;
+void Quick3DTexture::setSource(QUrl arg)
+{
+    if (m_source != arg) {
+        m_source = arg;
 
-    QOpenGLTexture *buildGLTexture();
-    void setToGLTexture(TexImageDataPtr imgData);
-};
+        if (m_source.isLocalFile()) {
+            QImage img(m_source.toLocalFile());
+            setInternalFormat(img.hasAlphaChannel() ?
+                                             QOpenGLTexture::RGBA8_UNorm :
+                                             QOpenGLTexture::RGB8_UNorm);
 
-} // namespace Render
-} // namespace Qt3D
+            setFromQImage(img);
+        } else {
+            qWarning() << "implement loading from remote URLs";
+        }
+        emit sourceChanged();
+    }
+}
+
+void Quick3DTexture::setRectangle(bool r)
+{
+    setTarget(r ? QOpenGLTexture::TargetRectangle :
+                             QOpenGLTexture::Target2D);
+}
+
+bool Quick3DTexture::isRectangle() const
+{
+    return (target() == QOpenGLTexture::TargetRectangle);
+}
+
+} // Quick
+
+} // Render
+
+} // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_RENDER_RENDERTEXTURE_H

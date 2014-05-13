@@ -108,10 +108,10 @@ void Quick3DMaterial::onTagValueChanged()
     Q_ASSERT(m_tagList.contains(t));
 
     QVariant v = t->value();
-    QmlTexture* qmlTex = v.value<QmlTexture*>();
-    if (qmlTex) {
+    Texture* tex = v.value<Texture*>();
+    if (tex != Q_NULLPTR) {
         qDebug() << "got texture parameter" << t->name();
-        setTextureParameter(t->name(), qmlTex->texture());
+        setTextureParameter(t->name(), tex);
     } else {
         setParameter(t->name(), t->value());
     }

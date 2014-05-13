@@ -48,105 +48,12 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-Texture::Texture() :
-    m_target(QOpenGLTexture::Target2D),
-    m_width(1),
-    m_height(1),
-    m_depth(1),
-    m_autoMipMap(false)
-{
-}
-
-void Texture::setTarget(QOpenGLTexture::Target target)
-{
-    m_target = target;
-}
-
-void Texture::setSize(int w, int h, int d)
-{
-    m_width = w;
-    m_height = h;
-    m_depth = d;
-}
-
-int Texture::width() const
-{
-    return m_width;
-}
-
-int Texture::height() const
-{
-    return m_height;
-}
-
-int Texture::depth() const
-{
-    return m_depth;
-}
-
-void Texture::setInternalFormat(QOpenGLTexture::TextureFormat format)
-{
-    m_format = format;
-}
-
-bool Texture::setFromQImage(QImage img, int layer)
-{
-    setSize(img.width(), img.height());
-
-    if ((m_target != QOpenGLTexture::Target2D) &&
-        (m_target != QOpenGLTexture::Target2DArray) &&
-        (m_target == QOpenGLTexture::TargetRectangle))
-    {
-        qWarning() << Q_FUNC_INFO << "invalid texture target";
-        return false;
-    }
-
-    TexImageDataPtr dataPtr(new TexImageData(0, layer));
-    dataPtr->setImage(img);
-    addImageData(dataPtr);
-
-    return true;
-}
-
-void Texture::addImageData(TexImageDataPtr imgData)
-{
-    m_data.append(imgData);
-}
-
-QList<TexImageDataPtr> Texture::imageData() const
-{
-    return m_data;
-}
-
-void Texture::setGenerateMipMaps(bool gen)
-{
-    m_autoMipMap = gen;
-}
-
-void Texture::setMinificationFilter(QOpenGLTexture::Filter f)
-{
-    m_minFilter = f;
-}
-
-void Texture::setMagnificationFilter(QOpenGLTexture::Filter f)
-{
-    m_magFilter = f;
-}
-
-void Texture::setWrapMode(QOpenGLTexture::WrapMode wrapMode)
-{
-    m_wrapMode = wrapMode;
-}
-
-/////////////////////////////////////////////////////////////////////////////
-
 TexImageData::TexImageData(int level, int layer) :
     m_layer(layer),
     m_mipMapLevel(level),
     m_cubeFace(QOpenGLTexture::CubeMapPositiveX),
     m_isCompressed(false)
 {
-
 }
 
 void TexImageData::setImage(QImage image)

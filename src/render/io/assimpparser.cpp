@@ -49,6 +49,9 @@
 #include <QColor>
 #include <qmath.h>
 #include <entitynode.h>
+#include <material.h>
+#include <mesh.h>
+#include <texture.h>
 #include "renderlogging.h"
 
 QT_BEGIN_NAMESPACE

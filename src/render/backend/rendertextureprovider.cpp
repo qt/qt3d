@@ -40,7 +40,7 @@
 ****************************************************************************/
 
 #include "rendertextureprovider.h"
-
+#include "texture.h"
 #include "rendertexture.h"
 
 QT_BEGIN_NAMESPACE
