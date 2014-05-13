@@ -427,7 +427,9 @@ void AssimpParser::loadMesh(uint meshIndex)
 
     // Add values in raw float array
     ushort chunkSize = 6 + (hasTangent ? 3 : 0) + (hasTexture ? 2 : 0);
-    float *vbufferContent = new float[chunkSize * mesh->mNumVertices];
+    QByteArray bufferArray;
+    bufferArray.resize(chunkSize * mesh->mNumVertices * sizeof(float));
+    float *vbufferContent = reinterpret_cast<float*>(bufferArray.data());
     for (uint i = 0; i < mesh->mNumVertices; i++) {
         uint idx = i * chunkSize;
         // position
@@ -453,8 +455,7 @@ void AssimpParser::loadMesh(uint meshIndex)
     // Create a Buffer from the raw array
     BufferPtr vbuffer(new Buffer(QOpenGLBuffer::VertexBuffer));
     vbuffer->setUsage(QOpenGLBuffer::StaticDraw);
-    vbuffer->setData(QByteArray(reinterpret_cast<char *>(vbufferContent),
-                                chunkSize * mesh->mNumVertices * sizeof(float)));
+    vbuffer->setData(bufferArray);
 
     // Add vertex attributes to the mesh with the right array
     meshData->addAttribute(VERTICES_ATTRIBUTE_NAME,
