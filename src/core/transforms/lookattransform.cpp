@@ -47,6 +47,7 @@ namespace Qt3D {
 
 LookAtTransform::LookAtTransform(Node *parent)
     : AbstractTransform(parent)
+    , m_matrixDirty(true)
 {
 }
 
