@@ -47,6 +47,7 @@ namespace Qt3D {
 
 AbstractAspect::AbstractAspect(AspectType aspectType, QObject *parent)
     : QObject(parent)
+    , m_root(Q_NULLPTR)
     , m_aspectType(aspectType)
 {
 }
