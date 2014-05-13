@@ -60,6 +60,7 @@ namespace Render {
 
 RenderMaterial::RenderMaterial()
     : m_rendererAspect(Q_NULLPTR)
+    , m_peer(Q_NULLPTR)
     , m_textureProvider(Q_NULLPTR)
 {
 }
