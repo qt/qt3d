@@ -42,7 +42,6 @@
 #include "technique.h"
 
 #include <QDebug>
-#include <QOpenGLContext>
 
 QT_BEGIN_NAMESPACE
 
@@ -161,9 +160,20 @@ Parameter::Parameter(QObject *parent, QString name, int ty) :
 
 }
 
+void Parameter::setName(const QString &name)
+{
+    if (m_name != name) {
+        m_name = name;
+        emit nameChanged();
+    }
+}
+
 void Parameter::setMeshAttributeName(QString name)
 {
-    m_meshName = name;
+    if (m_meshName != name) {
+        m_meshName = name;
+        emit meshAttributeNameChanged();
+    }
 }
 
 bool Parameter::isStandardUniform() const
@@ -179,6 +189,14 @@ void Parameter::setStandardUniform(Parameter::StandardUniform su)
 Parameter::StandardUniform Parameter::standardUniform() const
 {
     return m_standardUniform;
+}
+
+void Parameter::setDatatype(int type)
+{
+    if (m_type != type) {
+        m_type = type;
+        emit datatypeChanged();
+    }
 }
 
 bool Parameter::isTextureType() const

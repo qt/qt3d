@@ -44,7 +44,7 @@
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DCore/node.h>
-
+#include <QOpenGLContext>
 #include <Qt3DRenderer/tag.h>
 #include <Qt3DRenderer/renderpass.h>
 
@@ -62,6 +62,11 @@ namespace Qt3D {
 class QT3DRENDERERSHARED_EXPORT Parameter : public QObject
 {
     Q_OBJECT
+    Q_ENUMS(OpenGLTypes)
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+    Q_PROPERTY(QString meshAttributeName READ meshAttributeName WRITE setMeshAttributeName NOTIFY meshAttributeNameChanged)
+    Q_PROPERTY(int datatype READ datatype() WRITE setDatatype() NOTIFY datatypeChanged())
+
 
 public:
     // FIXME - sort this by frequency, to minimize the size of the
@@ -87,8 +92,30 @@ public:
         ModelViewNormal
     };
 
+    enum OpenGLTypes
+    {
+        Sampler1D = GL_SAMPLER_1D,
+        Sampler2D = GL_SAMPLER_2D,
+        Sampler3D = GL_SAMPLER_3D,
+        SamplerCube = GL_SAMPLER_CUBE,
+        Bool = GL_BOOL,
+        BoolVec2 = GL_BOOL_VEC2,
+        BoolVec3 = GL_BOOL_VEC3,
+        BoolVec4 = GL_BOOL_VEC4,
+        Double = GL_DOUBLE,
+        DoubleVec2 = GL_DOUBLE_VEC2,
+        DoubleVec3 = GL_DOUBLE_VEC3,
+        DoubleVec4 = GL_DOUBLE_VEC4,
+        Float = GL_FLOAT,
+        FloatVec2 = GL_FLOAT_VEC2,
+        FloatVec3 = GL_FLOAT_VEC3,
+        FloatVec4 = GL_FLOAT_VEC4,
+        FloatMat4 = GL_FLOAT_MAT4
+    };
+
     Parameter(QObject* parent, QString name, int ty);
 
+    void setName(const QString &name);
     QString name() const
     { return m_name; }
 
@@ -115,6 +142,7 @@ public:
 
     int datatype() const
     { return m_type; }
+    void setDatatype(int type);
 
     bool isTextureType() const;
 
@@ -125,6 +153,9 @@ public:
     Render::QUniformValue::Type uniformType() const;
 Q_SIGNALS:
     void valueChanged();
+    void nameChanged();
+    void meshAttributeNameChanged();
+    void datatypeChanged();
 
 private:
     QString m_name;
