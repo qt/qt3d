@@ -63,6 +63,40 @@ QQmlListProperty<Qt3D::RenderPass> Quick3DTechnique::renderPassList()
                                               &Quick3DTechnique::clearRenderPasses);
 }
 
+QQmlListProperty<Parameter> Quick3DTechnique::parameterList()
+{
+    return QQmlListProperty<Qt3D::Parameter>(this, 0,
+                                             &Quick3DTechnique::appendParameter,
+                                             &Quick3DTechnique::parametersCount,
+                                             &Quick3DTechnique::parameterAt,
+                                             &Quick3DTechnique::clearParameterList);
+}
+
+void Quick3DTechnique::appendParameter(QQmlListProperty<Parameter> *list, Parameter *param)
+{
+    Technique *technique = qobject_cast<Technique *>(list->object);
+    technique->addParameter(param);
+}
+
+Parameter *Quick3DTechnique::parameterAt(QQmlListProperty<Parameter> *list, int index)
+{
+    Technique *technique = qobject_cast<Technique *>(list->object);
+    return technique->parameters().at(index);
+}
+
+int Quick3DTechnique::parametersCount(QQmlListProperty<Parameter> *list)
+{
+    Technique *technique = qobject_cast<Technique *>(list->object);
+    return technique->parameters().count();
+}
+
+void Quick3DTechnique::clearParameterList(QQmlListProperty<Parameter> *list)
+{
+    Technique *technique = qobject_cast<Technique *>(list->object);
+    Q_FOREACH (Parameter *p, technique->parameters())
+        technique->removeParameter(p);
+}
+
 void Quick3DTechnique::appendRenderPass(QQmlListProperty<RenderPass> *list, RenderPass *renderPass)
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);

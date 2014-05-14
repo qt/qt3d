@@ -136,6 +136,11 @@ void Technique::addParameter(Parameter *p)
     m_parameters.append(p);
 }
 
+void Technique::removeParameter(Parameter *p)
+{
+    m_parameters.removeOne(p);
+}
+
 Parameter *Technique::parameterByName(QString name) const
 {
     foreach (Parameter* p, m_parameters) {

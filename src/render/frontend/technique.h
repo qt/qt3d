@@ -161,6 +161,7 @@ public:
     // QQmlListProperty<Qt3D::Parameter> parameters();
 
     void addParameter(Parameter *p);
+    void removeParameter(Parameter *p);
     QList<Parameter *> parameters() const
     { return m_parameters; }
 
