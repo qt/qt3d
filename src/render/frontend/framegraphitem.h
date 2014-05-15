@@ -44,6 +44,7 @@
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DCore/node.h>
+#include <Qt3DCore/qchangearbiter.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -51,7 +52,7 @@ namespace Qt3D {
 
 class FrameGraphItemPrivate;
 
-class QT3DRENDERERSHARED_EXPORT FrameGraphItem
+class QT3DRENDERERSHARED_EXPORT FrameGraphItem : public QObservable
 {
 public:
     FrameGraphItem();

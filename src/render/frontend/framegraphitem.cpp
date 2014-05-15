@@ -59,7 +59,8 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 FrameGraphItem::FrameGraphItem()
-    : d_ptr(new FrameGraphItemPrivate(this))
+    : QObservable()
+    , d_ptr(new FrameGraphItemPrivate(this))
 {
 }
 

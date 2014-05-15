@@ -81,6 +81,10 @@ public:
         if (d->m_camera != camera) {
           d->m_camera = camera;
           emit cameraChanged();
+          QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentUpdated, this));
+          propertyChange->m_propertyName = QByteArrayLiteral("camera");
+          propertyChange->m_value = QVariant::fromValue(d->m_camera);
+          notifyObservers(propertyChange);
         }
     }
 

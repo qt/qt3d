@@ -47,12 +47,21 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
+
+class Viewport;
+
 namespace Render {
 
-class ViewportNode : public Render::FrameGraphNode
+class Renderer;
+
+class ViewportNode : public Render::FrameGraphNode, public QObserverInterface
 {
 public:
     ViewportNode(Render::FrameGraphNode *parent = 0);
+
+    void setRenderer(Renderer *renderer);
+    void setPeer(Qt3D::Viewport *peer);
+    Qt3D::Viewport *peer() const { return m_peer; }
 
     float xMin() const;
     void setXMin(float xMin);
@@ -66,15 +75,21 @@ public:
     float yMax() const;
     void setYMax(float yMax);
 
+    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+
 private:
+    Renderer *m_renderer;
+    Qt3D::Viewport *m_peer;
     float m_xMin;
     float m_yMin;
     float m_xMax;
     float m_yMax;
+
 };
 
-}
-}
+} // Render
+
+} // Qt3D
 
 QT_END_NAMESPACE
 

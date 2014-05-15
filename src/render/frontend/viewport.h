@@ -66,8 +66,8 @@ public :
 class QT3DRENDERERSHARED_EXPORT Viewport : public FrameGraphItem
 {
 public:
-    Viewport() :
-        d_ptr(new ViewportPrivate(this))
+    Viewport()
+        : d_ptr(new ViewportPrivate(this))
     {}
 
     virtual ~Viewport() {}
@@ -84,6 +84,10 @@ public:
         if (rect != d->m_rect) {
             d->m_rect = rect;
             emit rectChanged();
+            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentUpdated, this));
+            propertyChange->m_propertyName = QByteArrayLiteral("rect");
+            propertyChange->m_value = QVariant::fromValue(d->m_rect);
+            notifyObservers(propertyChange);
         }
     }
 

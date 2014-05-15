@@ -157,7 +157,8 @@ Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(Node *block)
     else if (qobject_cast<Qt3D::Viewport*>(block) != Q_NULLPTR) {
         Qt3D::Viewport *viewport = qobject_cast<Qt3D::Viewport*>(block);
         Render::ViewportNode *viewportNode = new Render::ViewportNode();
-
+        viewportNode->setRenderer(m_renderer);
+        viewportNode->setPeer(viewport);
         qCDebug(Backend) << Q_FUNC_INFO << "Viewport";
         viewportNode->setXMin(viewport->rect().x());
         viewportNode->setXMax(viewport->rect().width());
@@ -176,7 +177,8 @@ Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(Node *block)
     else if (qobject_cast<Qt3D::CameraSelector*>(block) != Q_NULLPTR) {
         Qt3D::CameraSelector *cameraSelector = qobject_cast<Qt3D::CameraSelector*>(block);
         Render::CameraSelector *cameraSelectorNode = new Render::CameraSelector();
-
+        cameraSelectorNode->setRenderer(m_renderer);
+        cameraSelectorNode->setPeer(cameraSelector);
         Entity *cameraEntity = qobject_cast<Entity*>(cameraSelector->camera());
         // If the Entity is declared inline on the QML Side, the Entity is not set as part of the Scene tree
         // So we need to make sure the RenderNode for the given Entity exists in the RenderNodesMananger

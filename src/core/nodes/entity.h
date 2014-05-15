@@ -180,6 +180,9 @@ private:
 } // namespace Qt3D
 
 Q_DECLARE_INTERFACE(Qt3D::Entity, "org.qtproject.qt3d.entity/2.0")
+
 QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE(Qt3D::Entity *)
 
 #endif // QT3D_ENTITY_H

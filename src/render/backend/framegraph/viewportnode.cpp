@@ -40,7 +40,10 @@
 ****************************************************************************/
 
 #include "viewportnode.h"
-
+#include <Qt3DRenderer/renderer.h>
+#include <Qt3DRenderer/rendereraspect.h>
+#include <Qt3DCore/qaspectmanager.h>
+#include <Qt3DRenderer/viewport.h>
 #include <QDebug>
 
 QT_BEGIN_NAMESPACE
@@ -50,11 +53,29 @@ namespace Render {
 
 ViewportNode::ViewportNode(FrameGraphNode *parent)
     : FrameGraphNode(FrameGraphNode::Viewport, parent)
+    , m_renderer(Q_NULLPTR)
+    , m_peer(Q_NULLPTR)
     , m_xMin(0.0f)
     , m_yMin(0.0f)
     , m_xMax(1.0f)
     , m_yMax(1.0f)
 {
+}
+
+void ViewportNode::setRenderer(Renderer *renderer)
+{
+    m_renderer = renderer;
+}
+
+void ViewportNode::setPeer(Qt3D::Viewport *peer)
+{
+    if (m_peer != peer) {
+        if (m_peer)
+            m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_peer);
+        m_peer = peer;
+        if (m_peer)
+            m_renderer->rendererAspect()->aspectManager()->changeArbiter()->registerObserver(this, m_peer, ComponentUpdated);
+    }
 }
 
 float ViewportNode::xMin() const
@@ -94,7 +115,22 @@ void ViewportNode::setYMax(float yMax)
     m_yMax = yMax;
 }
 
+void ViewportNode::sceneChangeEvent(const QSceneChangePtr &e)
+{
+    if (e->m_type == ComponentUpdated) {
+        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+        if (propertyChange->m_propertyName == QByteArrayLiteral("rect")) {
+            QRectF rect = propertyChange->m_value.value<QRectF>();
+            setXMin(rect.x());
+            setYMin(rect.y());
+            setXMax(rect.width());
+            setYMax(rect.height());
+        }
+    }
+}
+
 } // Render
+
 } // Qt3D
 
 QT_END_NAMESPACE
