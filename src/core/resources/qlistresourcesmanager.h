@@ -70,48 +70,39 @@ public:
     }
 
     // QAbstractResourcesManager interface
-    QHandle<T, INDEXBITS> acquire() Q_DECL_OVERRIDE;
-    T *data(const QHandle<T, INDEXBITS> &handle) Q_DECL_OVERRIDE;
-    void release(const QHandle<T, INDEXBITS> &handle) Q_DECL_OVERRIDE;
-    void reset() Q_DECL_OVERRIDE;
+    QHandle<T, INDEXBITS> acquire() Q_DECL_OVERRIDE
+    {
+        m_resourceEntries << T();
+        QHandle<T, INDEXBITS> handle = QAbstractResourcesManager<T, C, INDEXBITS>::m_handleManager.acquire(&m_resourceEntries.last());
+        m_handleToResource << handle;
+        return handle;
+    }
+
+    T *data(const QHandle<T, INDEXBITS> &handle) Q_DECL_OVERRIDE
+    {
+        return QAbstractResourcesManager<T, C, INDEXBITS>::m_handleManager.data(handle);
+    }
+
+    void release(const QHandle<T, INDEXBITS> &handle) Q_DECL_OVERRIDE
+    {
+        int idx = m_handleToResource.indexOf(handle);
+        QAbstractResourcesManager<T, C, INDEXBITS>::m_handleManager.release(handle);
+        m_resourceEntries.removeAt(idx);
+        m_handleToResource.removeAt(idx);
+
+    }
+
+    void reset() Q_DECL_OVERRIDE
+    {
+        QAbstractResourcesManager<T, C, INDEXBITS>::m_handleManager.reset();
+        m_handleToResource.clear();
+        m_resourceEntries.clear();
+    }
 
 protected:
     QList<T> m_resourceEntries;
     QList<QHandle<T, INDEXBITS> >m_handleToResource;
 };
-
-template <typename T, typename C, int INDEXBITS>
-QHandle<T, INDEXBITS> QListResourcesManager<T, C, INDEXBITS>::acquire()
-{
-    m_resourceEntries << T();
-    QHandle<T, INDEXBITS> handle = QAbstractResourcesManager<T, C, INDEXBITS>::m_handleManager.acquire(&m_resourceEntries.last());
-    m_handleToResource << handle;
-    return handle;
-}
-
-template <typename T, typename C, int INDEXBITS>
-T *QListResourcesManager<T, C, INDEXBITS>::data(const QHandle<T, INDEXBITS> &handle)
-{
-    return QAbstractResourcesManager<T, C, INDEXBITS>::m_handleManager.data(handle);
-}
-
-template <typename T, typename C, int INDEXBITS>
-void QListResourcesManager<T, C, INDEXBITS>::release(const QHandle<T, INDEXBITS> &handle)
-{
-    int idx = m_handleToResource.indexOf(handle);
-    QAbstractResourcesManager<T, C, INDEXBITS>::m_handleManager.release(handle);
-    m_resourceEntries.removeAt(idx);
-    m_handleToResource.removeAt(idx);
-
-}
-
-template <typename T, typename C, int INDEXBITS>
-void QListResourcesManager<T, C, INDEXBITS>::reset()
-{
-    QAbstractResourcesManager<T, C, INDEXBITS>::m_handleManager.reset();
-    m_handleToResource.clear();
-    m_resourceEntries.clear();
-}
 
 } // Qt3D
 

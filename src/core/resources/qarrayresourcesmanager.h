@@ -70,53 +70,44 @@ public:
         m_freeEntryIndices.clear();
     }
 
-    QHandle<T, INDEXBITS> acquire() Q_DECL_OVERRIDE;
-    T *data(const QHandle<T, INDEXBITS> &handle) Q_DECL_OVERRIDE;
-    void release(const QHandle<T, INDEXBITS> &handle) Q_DECL_OVERRIDE;
-    void reset() Q_DECL_OVERRIDE;
+    QHandle<T, INDEXBITS> acquire() Q_DECL_OVERRIDE
+    {
+        Q_ASSERT(!m_freeEntryIndices.isEmpty());
+        int idx = m_freeEntryIndices.takeFirst();
+        m_resourceEntries[idx] = T();
+        QHandle<T, INDEXBITS> handle = QAbstractResourcesManager<T, C, INDEXBITS>::m_handleManager.acquire(m_resourceEntries.begin() + idx);
+        m_handleToResource[handle.index()] = idx;
+        return handle;
+    }
+
+    T *data(const QHandle<T, INDEXBITS> &handle) Q_DECL_OVERRIDE
+    {
+        return QAbstractResourcesManager<T, C, INDEXBITS>::m_handleManager.data(handle);
+    }
+
+    void release(const QHandle<T, INDEXBITS> &handle) Q_DECL_OVERRIDE
+    {
+        Q_ASSERT(m_handleToResource.contains(handle.index()));
+        m_freeEntryIndices << m_handleToResource[handle.index()];
+        QAbstractResourcesManager<T, C, INDEXBITS>::m_handleManager.release(handle);
+        m_handleToResource.remove(handle.index());
+        // Maybe trigger some kind of memory reordering and update
+        // Handles and their pointer
+    }
+
+    void reset() Q_DECL_OVERRIDE
+    {
+        QAbstractResourcesManager<T, C, INDEXBITS>::m_handleManager.reset();
+        m_handleToResource.clear();
+        for (int i = 0; i < m_resourceEntries.size(); i++)
+            m_freeEntryIndices << i;
+    }
 
 protected:
     QVector<T> m_resourceEntries;
     QHash<int, int> m_handleToResource;
     QList<int> m_freeEntryIndices;
 };
-
-template <typename T, typename C, int INDEXBITS>
-void QArrayResourcesManager<T, C, INDEXBITS>::release(const QHandle<T, INDEXBITS> &handle)
-{
-    Q_ASSERT(m_handleToResource.contains(handle.index()));
-    m_freeEntryIndices << m_handleToResource[handle.index()];
-    QAbstractResourcesManager<T, C, INDEXBITS>::m_handleManager.release(handle);
-    m_handleToResource.remove(handle.index());
-    // Maybe trigger some kind of memory reordering and update
-    // Handles and their pointer
-}
-
-template <typename T, typename C, int INDEXBITS>
-void QArrayResourcesManager<T, C, INDEXBITS>::reset()
-{
-    QAbstractResourcesManager<T, C, INDEXBITS>::m_handleManager.reset();
-    m_handleToResource.clear();
-    for (int i = 0; i < m_resourceEntries.size(); i++)
-        m_freeEntryIndices << i;
-}
-
-template <typename T, typename C, int INDEXBITS>
-T* QArrayResourcesManager<T, C, INDEXBITS>::data(const QHandle<T, INDEXBITS> &handle)
-{
-    return QAbstractResourcesManager<T, C, INDEXBITS>::m_handleManager.data(handle);
-}
-
-template <typename T, typename C, int INDEXBITS>
-QHandle<T, INDEXBITS>QArrayResourcesManager<T, C, INDEXBITS>::acquire()
-{
-    Q_ASSERT(!m_freeEntryIndices.isEmpty());
-    int idx = m_freeEntryIndices.takeFirst();
-    m_resourceEntries[idx] = T();
-    QHandle<T, INDEXBITS> handle = QAbstractResourcesManager<T, C, INDEXBITS>::m_handleManager.acquire(m_resourceEntries.begin() + idx);
-    m_handleToResource[handle.index()] = idx;
-    return handle;
-}
 
 }// Qt3D
 
