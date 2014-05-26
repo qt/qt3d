@@ -45,9 +45,6 @@
 #ifndef _unz_H
 #define _unz_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #ifndef _ZLIB_H
 #	ifdef ASSIMP_BUILD_NO_OWN_ZLIB
@@ -55,6 +52,17 @@ extern "C" {
 #	else
 #		include "../zlib/zlib.h"
 #	endif
+#endif
+
+// This needs to be moved down a bit otherwise
+// when using the Zlib headers bundled with Qt
+// an extern C block is redefined within another
+// extern C block resulting in an extern C dangling
+// around causing hundred of template with C linkage e
+// errors
+
+#ifdef __cplusplus
+extern "C" {
 #endif
 
 #ifndef _ZLIBIOAPI_H

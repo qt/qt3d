@@ -45,6 +45,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "AssimpPCH.h"
 
+//This section should be excluded only if both the Irrlicht AND the Irrlicht Mesh importers were omitted.
+#if !(defined(ASSIMP_BUILD_NO_IRR_IMPORTER) && defined(ASSIMP_BUILD_NO_IRRMESH_IMPORTER))
+
 #include "IRRShared.h"
 #include "ParsingUtils.h"
 #include "fast_atof.h"
@@ -494,3 +497,5 @@ aiMaterial* IrrlichtBase::ParseMaterial(unsigned int& matFlags)
 	DefaultLogger::get()->error("IRRMESH: Unexpected end of file. Material is not complete");
 	return mat;
 }
+
+#endif // !(defined(ASSIMP_BUILD_NO_IRR_IMPORTER) && defined(ASSIMP_BUILD_NO_IRRMESH_IMPORTER))

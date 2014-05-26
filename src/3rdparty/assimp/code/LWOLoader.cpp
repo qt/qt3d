@@ -294,7 +294,7 @@ void LWOImporter::InternReadFile( const std::string& pFile,
 				unsigned int vUVChannelIndices[AI_MAX_NUMBER_OF_TEXTURECOORDS];
 				unsigned int vVColorIndices[AI_MAX_NUMBER_OF_COLOR_SETS];
 
-#if _DEBUG
+#ifdef ASSIMP_BUILD_DEBUG
 				for (unsigned int mui = 0; mui < AI_MAX_NUMBER_OF_TEXTURECOORDS;++mui ) {
 					vUVChannelIndices[mui] = UINT_MAX;
 				}
@@ -466,6 +466,10 @@ void LWOImporter::ComputeNormals(aiMesh* mesh, const std::vector<unsigned int>& 
 	aiFace* begin = mesh->mFaces, *const end = mesh->mFaces+mesh->mNumFaces;
 	for (; begin != end; ++begin)	{
 		aiFace& face = *begin;
+
+		if(face.mNumIndices < 3) {
+			continue;
+		}
 
 		// LWO doc: "the normal is defined as the cross product of the first and last edges"
 		aiVector3D* pV1 = mesh->mVertices + face.mIndices[0];
@@ -1291,6 +1295,11 @@ void LWOImporter::LoadLWO2File()
 		}
 		uint8_t* const next = mFileBuffer+head->length;
 		unsigned int iUnnamed = 0;
+
+		if(!head->length) {
+			mFileBuffer = next;
+			continue;
+		}
 
 		switch (head->type)
 		{

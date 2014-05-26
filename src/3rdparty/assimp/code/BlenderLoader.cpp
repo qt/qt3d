@@ -1,3 +1,4 @@
+
 /*
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
@@ -50,6 +51,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "BlenderIntermediate.h"
 #include "BlenderModifier.h"
+#include "BlenderBMesh.h"
 
 #include "StreamReader.h"
 #include "MemoryIOWrapper.h"
@@ -360,7 +362,7 @@ void BlenderImporter::ConvertBlendFile(aiScene* out, const Scene& in,const FileD
 	root->mNumChildren = static_cast<unsigned int>(no_parents.size());
 	root->mChildren = new aiNode*[root->mNumChildren]();
 	for (unsigned int i = 0; i < root->mNumChildren; ++i) {
-		root->mChildren[i] = ConvertNode(in, no_parents[i], conv);	
+		root->mChildren[i] = ConvertNode(in, no_parents[i], conv, aiMatrix4x4());	
 		root->mChildren[i]->mParent = root;
 	}
 
@@ -445,9 +447,43 @@ void BlenderImporter::ResolveImage(aiMaterial* out, const Material* mat, const M
 	else {
 		name = aiString( img->name );
 	}
-	out->AddProperty(&name,AI_MATKEY_TEXTURE_DIFFUSE(
-		conv_data.next_texture[aiTextureType_DIFFUSE]++)
-	);
+
+	aiTextureType texture_type = aiTextureType_UNKNOWN;
+	MTex::MapType map_type = tex->mapto;
+
+	if (map_type & MTex::MapType_COL)
+	    texture_type = aiTextureType_DIFFUSE;
+	else if (map_type & MTex::MapType_NORM) {
+	    if (tex->tex->imaflag & Tex::ImageFlags_NORMALMAP) {
+	        texture_type = aiTextureType_NORMALS;
+	    }
+	    else {
+	        texture_type = aiTextureType_HEIGHT;
+	    }
+	    out->AddProperty(&tex->norfac,1,AI_MATKEY_BUMPSCALING);
+	}
+	else if (map_type & MTex::MapType_COLSPEC)
+		texture_type = aiTextureType_SPECULAR;
+	else if (map_type & MTex::MapType_COLMIR)
+		texture_type = aiTextureType_REFLECTION;
+	//else if (map_type & MTex::MapType_REF)
+	else if (map_type & MTex::MapType_SPEC)
+		texture_type = aiTextureType_SHININESS;
+	else if (map_type & MTex::MapType_EMIT)
+		texture_type = aiTextureType_EMISSIVE;
+	//else if (map_type & MTex::MapType_ALPHA)
+	//else if (map_type & MTex::MapType_HAR)
+	//else if (map_type & MTex::MapType_RAYMIRR)
+	//else if (map_type & MTex::MapType_TRANSLU)
+	else if (map_type & MTex::MapType_AMB)
+		texture_type = aiTextureType_AMBIENT;
+	else if (map_type & MTex::MapType_DISPLACE)
+		texture_type = aiTextureType_DISPLACEMENT;
+	//else if (map_type & MTex::MapType_WARP)
+
+	out->AddProperty(&name,AI_MATKEY_TEXTURE(texture_type,
+	    conv_data.next_texture[texture_type]++));
+
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -472,7 +508,7 @@ void BlenderImporter::ResolveTexture(aiMaterial* out, const Material* mat, const
 		return;
 	}
 	
-	// We can't support most of the texture types because the're mostly procedural.
+	// We can't support most of the texture types because they're mostly procedural.
 	// These are substituted by a dummy texture.
 	const char* dispnam = "";
 	switch( rtex->type ) 
@@ -568,6 +604,11 @@ void BlenderImporter::BuildMaterials(ConversionData& conv_data)
 			// Usually, zero diffuse color means no diffuse color at all in the equation.
 			// So we omit this member to express this intent.
 			mout->AddProperty(&col,1,AI_MATKEY_COLOR_DIFFUSE);
+
+			if (mat->emit) {
+				aiColor3D emit_col(mat->emit * mat->r, mat->emit * mat->g, mat->emit * mat->b) ;
+				mout->AddProperty(&emit_col, 1, AI_MATKEY_COLOR_EMISSIVE) ;
+			}
 		}
 
 		col = aiColor3D(mat->specr,mat->specg,mat->specb);
@@ -618,8 +659,14 @@ void BlenderImporter::ConvertMesh(const Scene& /*in*/, const Object* /*obj*/, co
 	ConversionData& conv_data, TempArray<std::vector,aiMesh>&  temp
 	) 
 {
+	BlenderBMeshConverter BMeshConverter( mesh );
+	if ( BMeshConverter.ContainsBMesh( ) )
+	{
+		mesh = BMeshConverter.TriangulateBMesh( );
+	}
+
 	typedef std::pair<const int,size_t> MyPair;
-	if (!mesh->totface || !mesh->totvert) {
+	if ((!mesh->totface && !mesh->totloop) || !mesh->totvert) {
 		return;
 	}
 
@@ -632,12 +679,24 @@ void BlenderImporter::ConvertMesh(const Scene& /*in*/, const Object* /*obj*/, co
 		ThrowException("Number of vertices is larger than the corresponding array");
 	}
 
+	if (static_cast<size_t> ( mesh->totloop ) > mesh->mloop.size()) {
+		ThrowException("Number of vertices is larger than the corresponding array");
+	}
+
 	// collect per-submesh numbers
 	std::map<int,size_t> per_mat;
+	std::map<int,size_t> per_mat_verts;
 	for (int i = 0; i < mesh->totface; ++i) {
 
 		const MFace& mf = mesh->mface[i];
 		per_mat[ mf.mat_nr ]++;
+		per_mat_verts[ mf.mat_nr ] += mf.v4?4:3;
+	}
+
+	for (int i = 0; i < mesh->totpoly; ++i) {
+		const MPoly& mp = mesh->mpoly[i];
+		per_mat[ mp.mat_nr ]++;
+		per_mat_verts[ mp.mat_nr ] += mp.totloop;
 	}
 
 	// ... and allocate the corresponding meshes
@@ -651,8 +710,8 @@ void BlenderImporter::ConvertMesh(const Scene& /*in*/, const Object* /*obj*/, co
 		temp->push_back(new aiMesh());
 
 		aiMesh* out = temp->back();
-		out->mVertices = new aiVector3D[it.second*4];
-		out->mNormals  = new aiVector3D[it.second*4];
+		out->mVertices = new aiVector3D[per_mat_verts[it.first]];
+		out->mNormals  = new aiVector3D[per_mat_verts[it.first]];
 
 		//out->mNumFaces = 0
 		//out->mNumVertices = 0
@@ -775,8 +834,56 @@ void BlenderImporter::ConvertMesh(const Scene& /*in*/, const Object* /*obj*/, co
 		//	}
 	}
 
+	for (int i = 0; i < mesh->totpoly; ++i) {
+		
+		const MPoly& mf = mesh->mpoly[i];
+		
+		aiMesh* const out = temp[ mat_num_to_mesh_idx[ mf.mat_nr ] ];
+		aiFace& f = out->mFaces[out->mNumFaces++];
+		
+		f.mIndices = new unsigned int[ f.mNumIndices = mf.totloop ];
+		aiVector3D* vo = out->mVertices + out->mNumVertices;
+		aiVector3D* vn = out->mNormals + out->mNumVertices;
+		
+		// XXX we can't fold this easily, because we are restricted
+		// to the member names from the BLEND file (v1,v2,v3,v4)
+		// which are assigned by the genblenddna.py script and
+		// cannot be changed without breaking the entire
+		// import process.
+		for (int j = 0;j < mf.totloop; ++j)
+		{
+			const MLoop& loop = mesh->mloop[mf.loopstart + j];
+
+			if (loop.v >= mesh->totvert) {
+				ThrowException("Vertex index out of range");
+			}
+
+			const MVert& v = mesh->mvert[loop.v];
+			
+			vo->x = v.co[0];
+			vo->y = v.co[1];
+			vo->z = v.co[2];
+			vn->x = v.no[0];
+			vn->y = v.no[1];
+			vn->z = v.no[2];
+			f.mIndices[j] = out->mNumVertices++;
+			
+			++vo;
+			++vn;
+			
+		}
+		if (mf.totloop == 3)
+		{
+			out->mPrimitiveTypes |= aiPrimitiveType_TRIANGLE;
+		}
+		else
+		{
+			out->mPrimitiveTypes |= aiPrimitiveType_POLYGON;
+		}
+	}
+	
 	// collect texture coordinates, they're stored in a separate per-face buffer
-	if (mesh->mtface) {
+	if (mesh->mtface || mesh->mloopuv) {
 		if (mesh->totface > static_cast<int> ( mesh->mtface.size())) {
 			ThrowException("Number of UV faces is larger than the corresponding UV face array (#1)");
 		}
@@ -798,6 +905,20 @@ void BlenderImporter::ConvertMesh(const Scene& /*in*/, const Object* /*obj*/, co
 				vo->x = v->uv[i][0];
 				vo->y = v->uv[i][1];
 			}
+		}
+		
+		for (int i = 0; i < mesh->totpoly; ++i) {
+			const MPoly& v = mesh->mpoly[i];
+			aiMesh* const out = temp[ mat_num_to_mesh_idx[ v.mat_nr ] ];
+			const aiFace& f = out->mFaces[out->mNumFaces++];
+			
+			aiVector3D* vo = &out->mTextureCoords[0][out->mNumVertices];
+			for (unsigned int j = 0; j < f.mNumIndices; ++j,++vo,++out->mNumVertices) {
+				const MLoopUV& uv = mesh->mloopuv[v.loopstart + j];
+				vo->x = uv.uv[0];
+				vo->y = uv.uv[1];
+			}
+			
 		}
 	}
 
@@ -828,7 +949,7 @@ void BlenderImporter::ConvertMesh(const Scene& /*in*/, const Object* /*obj*/, co
 	}
 
 	// collect vertex colors, stored separately as well
-	if (mesh->mcol) {
+	if (mesh->mcol || mesh->mloopcol) {
 		if (mesh->totface > static_cast<int> ( (mesh->mcol.size()/4)) ) {
 			ThrowException("Number of faces is larger than the corresponding color face array");
 		}
@@ -855,29 +976,68 @@ void BlenderImporter::ConvertMesh(const Scene& /*in*/, const Object* /*obj*/, co
 			}
 			for (unsigned int n = f.mNumIndices; n < 4; ++n);
 		}
+		
+		for (int i = 0; i < mesh->totpoly; ++i) {
+			const MPoly& v = mesh->mpoly[i];
+			aiMesh* const out = temp[ mat_num_to_mesh_idx[ v.mat_nr ] ];
+			const aiFace& f = out->mFaces[out->mNumFaces++];
+			
+			aiColor4D* vo = &out->mColors[0][out->mNumVertices];
+			for (unsigned int j = 0; j < f.mNumIndices; ++j,++vo,++out->mNumVertices) {
+				const MLoopCol& col = mesh->mloopcol[v.loopstart + j];
+				vo->r = col.r;
+				vo->g = col.g;
+				vo->b = col.b;
+				vo->a = col.a;
+			}
+			
+		}
+
 	}
 
 	return;
 }
 
 // ------------------------------------------------------------------------------------------------
-aiCamera* BlenderImporter::ConvertCamera(const Scene& /*in*/, const Object* /*obj*/, const Camera* /*mesh*/, ConversionData& /*conv_data*/)
+aiCamera* BlenderImporter::ConvertCamera(const Scene& /*in*/, const Object* obj, const Camera* camera, ConversionData& /*conv_data*/)
 {
 	ScopeGuard<aiCamera> out(new aiCamera());
-
-	return NULL ; //out.dismiss();
+	out->mName = obj->id.name+2;
+	out->mPosition = aiVector3D(0.f, 0.f, 0.f);
+	out->mUp = aiVector3D(0.f, 1.f, 0.f);
+	out->mLookAt = aiVector3D(0.f, 0.f, -1.f);
+	return out.dismiss();
 }
 
 // ------------------------------------------------------------------------------------------------
-aiLight* BlenderImporter::ConvertLight(const Scene& /*in*/, const Object* /*obj*/, const Lamp* /*mesh*/, ConversionData& /*conv_data*/)
+aiLight* BlenderImporter::ConvertLight(const Scene& in, const Object* obj, const Lamp* lamp, ConversionData& conv_data)
 {
 	ScopeGuard<aiLight> out(new aiLight());
+	out->mName = obj->id.name+2;
 
-	return NULL ; //out.dismiss();
+	switch (lamp->type)
+	{
+	    case Lamp::Type_Local:
+	        out->mType = aiLightSource_POINT;
+	        break;
+	    case Lamp::Type_Sun:
+	        out->mType = aiLightSource_DIRECTIONAL;
+
+	        // blender orients directional lights as facing toward -z
+	        out->mDirection = aiVector3D(0.f, 0.f, -1.f);
+	        break;
+	    default:
+	        break;
+	}
+
+	out->mColorAmbient = aiColor3D(lamp->r, lamp->g, lamp->b) * lamp->energy;
+	out->mColorSpecular = aiColor3D(lamp->r, lamp->g, lamp->b) * lamp->energy;
+	out->mColorDiffuse = aiColor3D(lamp->r, lamp->g, lamp->b) * lamp->energy;
+	return out.dismiss();
 }
 
 // ------------------------------------------------------------------------------------------------
-aiNode* BlenderImporter::ConvertNode(const Scene& in, const Object* obj, ConversionData& conv_data) 
+aiNode* BlenderImporter::ConvertNode(const Scene& in, const Object* obj, ConversionData& conv_data, const aiMatrix4x4& parentTransform)
 {
 	std::deque<const Object*> children;
 	for(std::set<const Object*>::iterator it = conv_data.objects.begin(); it != conv_data.objects.end() ;) {
@@ -961,16 +1121,12 @@ aiNode* BlenderImporter::ConvertNode(const Scene& in, const Object* obj, Convers
 
 	for(unsigned int x = 0; x < 4; ++x) {
 		for(unsigned int y = 0; y < 4; ++y) {
-			node->mTransformation[y][x] = obj->parentinv[x][y];
+			node->mTransformation[y][x] = obj->obmat[x][y];
 		}
 	}
 
-	aiMatrix4x4 m;
-	for(unsigned int x = 0; x < 4; ++x) {
-		for(unsigned int y = 0; y < 4; ++y) {
-			m[y][x] = obj->obmat[x][y];
-		}
-	}
+	aiMatrix4x4 m = parentTransform;
+	m = m.Inverse();
 
 	node->mTransformation = m*node->mTransformation;
 	
@@ -978,7 +1134,7 @@ aiNode* BlenderImporter::ConvertNode(const Scene& in, const Object* obj, Convers
 		node->mNumChildren = static_cast<unsigned int>(children.size());
 		aiNode** nd = node->mChildren = new aiNode*[node->mNumChildren]();
 		for_each (const Object* nobj,children) {
-			*nd = ConvertNode(in,nobj,conv_data);
+			*nd = ConvertNode(in,nobj,conv_data,node->mTransformation * parentTransform);
 			(*nd++)->mParent = node;
 		}
 	}

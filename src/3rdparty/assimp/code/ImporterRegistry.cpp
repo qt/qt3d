@@ -140,7 +140,7 @@ corresponding preprocessor flag to selectively disable formats.
 #	include "LWSLoader.h"
 #endif
 #ifndef ASSIMP_BUILD_NO_OGRE_IMPORTER
-#	include "OgreImporter.hpp"
+#	include "OgreImporter.h"
 #endif
 #ifndef ASSIMP_BUILD_NO_MS3D_IMPORTER
 #	include "MS3DLoader.h"
@@ -160,11 +160,11 @@ corresponding preprocessor flag to selectively disable formats.
 #ifndef ASSIMP_BUILD_NO_IFC_IMPORTER
 #	include "IFCLoader.h"
 #endif
-#ifndef ASSIMP_BUILD_NO_M3_IMPORTER
-#   include "M3Importer.h"
-#endif 
 #ifndef ASSIMP_BUILD_NO_XGL_IMPORTER
 #   include "XGLLoader.h"
+#endif 
+#ifndef ASSIMP_BUILD_NO_FBX_IMPORTER
+#   include "FBXImporter.h"
 #endif 
 
 namespace Assimp {
@@ -285,11 +285,11 @@ void GetImporterInstanceList(std::vector< BaseImporter* >& out)
 #if (!defined ASSIMP_BUILD_NO_IFC_IMPORTER)
 	out.push_back( new IFCImporter() );
 #endif
-#if ( !defined ASSIMP_BUILD_NO_M3_IMPORTER )
-	out.push_back( new M3::M3Importer() );
-#endif
 #if ( !defined ASSIMP_BUILD_NO_XGL_IMPORTER )
 	out.push_back( new XGLImporter() );
+#endif
+#if ( !defined ASSIMP_BUILD_NO_FBX_IMPORTER )
+	out.push_back( new FBXImporter() );
 #endif
 }
 

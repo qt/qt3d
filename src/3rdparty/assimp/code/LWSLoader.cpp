@@ -44,6 +44,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include "AssimpPCH.h"
+#ifndef ASSIMP_BUILD_NO_LWS_IMPORTER
 
 #include "LWSLoader.h"
 #include "ParsingUtils.h"
@@ -123,6 +124,7 @@ void LWS::Element::Parse (const char*& buffer)
 // ------------------------------------------------------------------------------------------------
 // Constructor to be privately used by Importer
 LWSImporter::LWSImporter()
+: noSkeletonMesh()
 {
 	// nothing to do here
 }
@@ -177,6 +179,8 @@ void LWSImporter::SetupProperties(const Importer* pImp)
 	if (last < first) {
 		std::swap(last,first);
 	}
+
+	noSkeletonMesh = pImp->GetPropertyInteger(AI_CONFIG_IMPORT_NO_SKELETON_MESHES,0) != 0;
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -460,7 +464,7 @@ std::string LWSImporter::FindLWOFile(const std::string& in)
 	std::string tmp;
 	if (in.length() > 3 && in[1] == ':'&& in[2] != '\\' && in[2] != '/')
 	{
-		tmp = in[0] + ":\\" + in.substr(2);
+		tmp = in[0] + (":\\" + in.substr(2));
 	}
 	else tmp = in;
 
@@ -476,11 +480,12 @@ std::string LWSImporter::FindLWOFile(const std::string& in)
 	// <folder>\Scenes\<hh>\<*>.lws
 	// where <hh> is optional.
 
-	std::string test = ".." + io->getOsSeparator() + tmp; 
-	if (io->Exists(test))
+	std::string test = ".." + (io->getOsSeparator() + tmp); 
+	if (io->Exists(test)) {
 		return test;
+	}
 
-	test = ".." + io->getOsSeparator() + test; 
+	test = ".." + (io->getOsSeparator() + test); 
 	if (io->Exists(test)) {
 		return test;
 	}
@@ -908,10 +913,12 @@ void LWSImporter::InternReadFile( const std::string& pFile, aiScene* pScene,
 	if (!pScene->mNumMeshes || !pScene->mNumMaterials) {
 		pScene->mFlags |= AI_SCENE_FLAGS_INCOMPLETE;
 
-		if (pScene->mNumAnimations) {
+		if (pScene->mNumAnimations && !noSkeletonMesh) {
 			// construct skeleton mesh
 			SkeletonMeshBuilder builder(pScene);
 		}
 	}
 
 }
+
+#endif // !! ASSIMP_BUILD_NO_LWS_IMPORTER

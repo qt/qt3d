@@ -77,7 +77,10 @@ struct free_it
 	void* free;
 };
 
+namespace Assimp { // this has to be in here because LogFunctions is in ::Assimp
 template<> const std::string LogFunctions<XGLImporter>::log_prefix = "XGL: ";
+
+}
 
 static const aiImporterDesc desc = {
 	"XGL Importer",
@@ -394,14 +397,14 @@ aiNode* XGLImporter::ReadObject(TempScope& scope, bool skipFirst, const char* cl
 				// XXX
 			}
 			else if (s == "meshref") {
-				const int id = ReadIndexFromText();
+				const unsigned int id = static_cast<unsigned int>( ReadIndexFromText() );
 
 				std::multimap<unsigned int, aiMesh*>::iterator it = scope.meshes.find(id), end = scope.meshes.end();
 				if (it == end) {
 					ThrowException("<meshref> index out of range");
 				}
 
-                for(; it != end && (*it).first == static_cast<unsigned int>(id); ++it) {
+				for(; it != end && (*it).first == id; ++it) {
 					// ok, this is n^2 and should get optimized one day
 					aiMesh* const m = (*it).second;
 

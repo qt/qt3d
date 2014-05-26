@@ -60,6 +60,7 @@ static const aiImporterDesc desc = {
 	"obj"
 };
 
+static const unsigned int ObjMinSize = 16;
 
 namespace Assimp	{
 
@@ -80,12 +81,8 @@ ObjFileImporter::ObjFileImporter() :
 //	Destructor.
 ObjFileImporter::~ObjFileImporter()
 {
-	// Release root object instance
-	if (NULL != m_pRootObject)
-	{
-		delete m_pRootObject;
-		m_pRootObject = NULL;
-	}
+	delete m_pRootObject;
+	m_pRootObject = NULL;
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -118,13 +115,15 @@ void ObjFileImporter::InternReadFile( const std::string& pFile, aiScene* pScene,
 	// Read file into memory
 	const std::string mode = "rb";
 	boost::scoped_ptr<IOStream> file( pIOHandler->Open( pFile, mode));
-	if (NULL == file.get())
-		throw DeadlyImportError( "Failed to open file " + pFile + ".");
+    if( !file.get() ) {
+        throw DeadlyImportError( "Failed to open file " + pFile + "." );
+    }
 
 	// Get the file-size and validate it, throwing an exception when fails
 	size_t fileSize = file->FileSize();
-	if( fileSize < 16)
+    if( fileSize < ObjMinSize ) {
 		throw DeadlyImportError( "OBJ-file is too small.");
+    }
 
 	// Allocate buffer and read file into it
 	TextFileToBuffer(file.get(),m_Buffer);
@@ -153,10 +152,10 @@ void ObjFileImporter::InternReadFile( const std::string& pFile, aiScene* pScene,
 
 // ------------------------------------------------------------------------------------------------
 //	Create the data from parsed obj-file
-void ObjFileImporter::CreateDataFromImport(const ObjFile::Model* pModel, aiScene* pScene)
-{
-	if (0L == pModel)
-		return;
+void ObjFileImporter::CreateDataFromImport(const ObjFile::Model* pModel, aiScene* pScene) {
+    if( 0L == pModel ) {
+        return;
+    }
 		
 	// Create the root node of the scene
 	pScene->mRootNode = new aiNode;
@@ -167,15 +166,15 @@ void ObjFileImporter::CreateDataFromImport(const ObjFile::Model* pModel, aiScene
 	}
 	else
 	{
-		// This is an error, so break down the application
+		// This is a fatal error, so break down the application
 		ai_assert(false);
-	}
+	} 
 
 	// Create nodes for the whole scene	
 	std::vector<aiMesh*> MeshArray;
 	for (size_t index = 0; index < pModel->m_Objects.size(); index++)
 	{
-		createNodes(pModel, pModel->m_Objects[ index ], index, pScene->mRootNode, pScene, MeshArray);
+		createNodes(pModel, pModel->m_Objects[ index ], pScene->mRootNode, pScene, MeshArray);
 	}
 
 	// Create mesh pointer buffer for this scene
@@ -195,13 +194,13 @@ void ObjFileImporter::CreateDataFromImport(const ObjFile::Model* pModel, aiScene
 // ------------------------------------------------------------------------------------------------
 //	Creates all nodes of the model
 aiNode *ObjFileImporter::createNodes(const ObjFile::Model* pModel, const ObjFile::Object* pObject, 
-									 unsigned int /*uiMeshIndex*/,
 									 aiNode *pParent, aiScene* pScene, 
 									 std::vector<aiMesh*> &MeshArray )
 {
 	ai_assert( NULL != pModel );
-	if ( NULL == pObject )
-		return NULL;
+    if( NULL == pObject ) {
+        return NULL;
+    }
 	
 	// Store older mesh size to be able to computes mesh offsets for new mesh instances
 	const size_t oldMeshSize = MeshArray.size();
@@ -210,8 +209,9 @@ aiNode *ObjFileImporter::createNodes(const ObjFile::Model* pModel, const ObjFile
 	pNode->mName = pObject->m_strObjName;
 	
 	// If we have a parent node, store it
-	if (pParent != NULL)
-		appendChildToParentNode(pParent, pNode);
+    if( pParent != NULL ) {
+        appendChildToParentNode( pParent, pNode );
+    }
 
 	for ( unsigned int i=0; i< pObject->m_Meshes.size(); i++ )
 	{
@@ -265,8 +265,9 @@ void ObjFileImporter::createTopology(const ObjFile::Model* pModel,
 {
 	// Checking preconditions
 	ai_assert( NULL != pModel );
-	if (NULL == pData)
-		return;
+    if( NULL == pData ) {
+        return;
+    }
 
 	// Create faces
 	ObjFile::Mesh *pObjMesh = pModel->m_Meshes[ uiMeshIndex ];
@@ -276,14 +277,22 @@ void ObjFileImporter::createTopology(const ObjFile::Model* pModel,
 	for (size_t index = 0; index < pObjMesh->m_Faces.size(); index++)
 	{
 		ObjFile::Face* const inp = pObjMesh->m_Faces[ index ];
+	
 		if (inp->m_PrimitiveType == aiPrimitiveType_LINE) {
 			pMesh->mNumFaces += inp->m_pVertices->size() - 1;
+			pMesh->mPrimitiveTypes |= aiPrimitiveType_LINE;
 		}
 		else if (inp->m_PrimitiveType == aiPrimitiveType_POINT) {
 			pMesh->mNumFaces += inp->m_pVertices->size();
-		}
-		else {
+			pMesh->mPrimitiveTypes |= aiPrimitiveType_POINT;
+		} else {
 			++pMesh->mNumFaces;
+			if (inp->m_pVertices->size() > 3) {
+				pMesh->mPrimitiveTypes |= aiPrimitiveType_POLYGON;
+			}
+			else {
+				pMesh->mPrimitiveTypes |= aiPrimitiveType_TRIANGLE;
+			}
 		}
 	}
 
@@ -384,7 +393,7 @@ void ObjFileImporter::createVertexArray(const ObjFile::Model* pModel,
 			pMesh->mVertices[ newIndex ] = pModel->m_Vertices[ vertex ];
 			
 			// Copy all normals 
-			if ( !pSourceFace->m_pNormals->empty() && !pModel->m_Normals.empty())
+			if ( !pModel->m_Normals.empty() && vertexIndex < pSourceFace->m_pNormals->size())
 			{
 				const unsigned int normal = pSourceFace->m_pNormals->at( vertexIndex );
 				if ( normal >= pModel->m_Normals.size() )
@@ -394,21 +403,16 @@ void ObjFileImporter::createVertexArray(const ObjFile::Model* pModel,
 			}
 			
 			// Copy all texture coordinates
-			if ( !pModel->m_TextureCoord.empty() )
+			if ( !pModel->m_TextureCoord.empty() && vertexIndex < pSourceFace->m_pTexturCoords->size())
 			{
-				if ( !pSourceFace->m_pTexturCoords->empty() )
-				{
-					const unsigned int tex = pSourceFace->m_pTexturCoords->at( vertexIndex );
-					ai_assert( tex < pModel->m_TextureCoord.size() );
-					for ( size_t i=0; i < pMesh->GetNumUVChannels(); i++ )
-					{
-						if ( tex >= pModel->m_TextureCoord.size() )
-							throw DeadlyImportError("OBJ: texture coord index out of range");
+				const unsigned int tex = pSourceFace->m_pTexturCoords->at( vertexIndex );
+				ai_assert( tex < pModel->m_TextureCoord.size() );
+					
+				if ( tex >= pModel->m_TextureCoord.size() )
+					throw DeadlyImportError("OBJ: texture coordinate index out of range");
 
-						aiVector2D coord2d = pModel->m_TextureCoord[ tex ];
-						pMesh->mTextureCoords[ i ][ newIndex ] = aiVector3D( coord2d.x, coord2d.y, 0.0 );
-					}
-				}
+				const aiVector3D &coord3d = pModel->m_TextureCoord[ tex ];
+                pMesh->mTextureCoords[ 0 ][ newIndex ] = aiVector3D( coord3d.x, coord3d.y, coord3d.z );
 			}
 
 			ai_assert( pMesh->mNumVertices > newIndex );
@@ -481,6 +485,15 @@ void ObjFileImporter::countObjects(const std::vector<ObjFile::Object*> &rObjects
 }
 
 // ------------------------------------------------------------------------------------------------
+//	 Add clamp mode property to material if necessary 
+void ObjFileImporter::addTextureMappingModeProperty(aiMaterial* mat, aiTextureType type, int clampMode)
+{
+	ai_assert( NULL != mat);
+	mat->AddProperty<int>(&clampMode, 1, AI_MATKEY_MAPPINGMODE_U(type, 0));
+	mat->AddProperty<int>(&clampMode, 1, AI_MATKEY_MAPPINGMODE_V(type, 0));
+}
+
+// ------------------------------------------------------------------------------------------------
 //	Creates the material 
 void ObjFileImporter::createMaterials(const ObjFile::Model* pModel, aiScene* pScene )
 {
@@ -537,6 +550,7 @@ void ObjFileImporter::createMaterials(const ObjFile::Model* pModel, aiScene* pSc
 		mat->AddProperty( &pCurrentMaterial->ambient, 1, AI_MATKEY_COLOR_AMBIENT );
 		mat->AddProperty( &pCurrentMaterial->diffuse, 1, AI_MATKEY_COLOR_DIFFUSE );
 		mat->AddProperty( &pCurrentMaterial->specular, 1, AI_MATKEY_COLOR_SPECULAR );
+		mat->AddProperty( &pCurrentMaterial->emissive, 1, AI_MATKEY_COLOR_EMISSIVE );
 		mat->AddProperty( &pCurrentMaterial->shineness, 1, AI_MATKEY_SHININESS );
 		mat->AddProperty( &pCurrentMaterial->alpha, 1, AI_MATKEY_OPACITY );
 
@@ -544,23 +558,80 @@ void ObjFileImporter::createMaterials(const ObjFile::Model* pModel, aiScene* pSc
 		mat->AddProperty( &pCurrentMaterial->ior, 1, AI_MATKEY_REFRACTI );
 
 		// Adding textures
-		if ( 0 != pCurrentMaterial->texture.length )
+		if ( 0 != pCurrentMaterial->texture.length ) 
+		{
 			mat->AddProperty( &pCurrentMaterial->texture, AI_MATKEY_TEXTURE_DIFFUSE(0));
+			if (pCurrentMaterial->clamp[ObjFile::Material::TextureDiffuseType])
+			{
+				addTextureMappingModeProperty(mat, aiTextureType_DIFFUSE);
+			}
+		}
 
 		if ( 0 != pCurrentMaterial->textureAmbient.length )
+		{
 			mat->AddProperty( &pCurrentMaterial->textureAmbient, AI_MATKEY_TEXTURE_AMBIENT(0));
+			if (pCurrentMaterial->clamp[ObjFile::Material::TextureAmbientType])
+			{
+				addTextureMappingModeProperty(mat, aiTextureType_AMBIENT);
+			}
+		}
+
+		if ( 0 != pCurrentMaterial->textureEmissive.length )
+			mat->AddProperty( &pCurrentMaterial->textureEmissive, AI_MATKEY_TEXTURE_EMISSIVE(0));
 
 		if ( 0 != pCurrentMaterial->textureSpecular.length )
+		{
 			mat->AddProperty( &pCurrentMaterial->textureSpecular, AI_MATKEY_TEXTURE_SPECULAR(0));
+			if (pCurrentMaterial->clamp[ObjFile::Material::TextureSpecularType])
+			{
+				addTextureMappingModeProperty(mat, aiTextureType_SPECULAR);
+			}
+		}
 
 		if ( 0 != pCurrentMaterial->textureBump.length )
+		{
 			mat->AddProperty( &pCurrentMaterial->textureBump, AI_MATKEY_TEXTURE_HEIGHT(0));
+			if (pCurrentMaterial->clamp[ObjFile::Material::TextureBumpType])
+			{
+				addTextureMappingModeProperty(mat, aiTextureType_HEIGHT);
+			}
+		}
+
+		if ( 0 != pCurrentMaterial->textureNormal.length )
+		{
+			mat->AddProperty( &pCurrentMaterial->textureNormal, AI_MATKEY_TEXTURE_NORMALS(0));
+			if (pCurrentMaterial->clamp[ObjFile::Material::TextureNormalType])
+			{
+				addTextureMappingModeProperty(mat, aiTextureType_NORMALS);
+			}
+		}
+
+		if ( 0 != pCurrentMaterial->textureDisp.length )
+		{
+			mat->AddProperty( &pCurrentMaterial->textureDisp, AI_MATKEY_TEXTURE_DISPLACEMENT(0) );
+			if (pCurrentMaterial->clamp[ObjFile::Material::TextureDispType])
+			{
+				addTextureMappingModeProperty(mat, aiTextureType_DISPLACEMENT);
+			}
+		}
 
 		if ( 0 != pCurrentMaterial->textureOpacity.length )
+		{
 			mat->AddProperty( &pCurrentMaterial->textureOpacity, AI_MATKEY_TEXTURE_OPACITY(0));
+			if (pCurrentMaterial->clamp[ObjFile::Material::TextureOpacityType])
+			{
+				addTextureMappingModeProperty(mat, aiTextureType_OPACITY);
+			}
+		}
 
 		if ( 0 != pCurrentMaterial->textureSpecularity.length )
+		{
 			mat->AddProperty( &pCurrentMaterial->textureSpecularity, AI_MATKEY_TEXTURE_SHININESS(0));
+			if (pCurrentMaterial->clamp[ObjFile::Material::TextureSpecularityType])
+			{
+				addTextureMappingModeProperty(mat, aiTextureType_SHININESS);
+			}
+		}
 		
 		// Store material property info in material array in scene
 		pScene->mMaterials[ pScene->mNumMaterials ] = mat;
@@ -581,15 +652,12 @@ void ObjFileImporter::appendChildToParentNode(aiNode *pParent, aiNode *pChild)
 
 	// Assign parent to child
 	pChild->mParent = pParent;
-	size_t sNumChildren = 0;
-	(void)sNumChildren; // remove warning on release build
 	
 	// If already children was assigned to the parent node, store them in a 
 	std::vector<aiNode*> temp;
 	if (pParent->mChildren != NULL)
 	{
-		sNumChildren = pParent->mNumChildren;
-		ai_assert( 0 != sNumChildren );
+		ai_assert( 0 != pParent->mNumChildren );
 		for (size_t index = 0; index < pParent->mNumChildren; index++)
 		{
 			temp.push_back(pParent->mChildren [ index ] );

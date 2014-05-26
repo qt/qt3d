@@ -8,6 +8,15 @@ CONFIG += exceptions
 
 win32:DEFINES+=_CRT_SECURE_NO_WARNINGS
 
+contains(QT_CONFIG, system-zlib) {
+    unix|mingw: LIBS += -lz
+    else: LIBS += zdll.lib
+} else {
+    INCLUDEPATH += $$[QT_INSTALL_HEADERS/get]/QtZlib
+}
+
+DEFINES += ASSIMP_BUILD_NO_OWN_ZLIB
+
 VPATH += \
         $$PWD \
         $$PWD/code \
@@ -16,7 +25,6 @@ VPATH += \
         $$PWD/contrib/ConvertUTF \
         $$PWD/contrib/irrXML \
         $$PWD/contrib/unzip \
-        $$PWD/contrib/zlib
 
 INCLUDEPATH += \
         $$PWD \
@@ -25,7 +33,6 @@ INCLUDEPATH += \
         $$PWD/include \
         $$PWD/include/assimp/Compiler \
         $$PWD/contrib/ConvertUTF \
-        $$PWD/contrib/zlib \
         $$PWD/contrib/irrXML \
         $$PWD/contrib/poly2tri/poly2tri \
         $$PWD/contrib/clipper \
@@ -42,6 +49,8 @@ HEADERS += revision.h \
            code/AssimpPCH.h \
            code/B3DImporter.h \
            code/BaseImporter.h \
+           code/Bitmap.h \
+           code/BlenderBMesh.h \
            code/BaseProcess.h \
            code/BlenderDNA.h \
            code/BlenderIntermediate.h \
@@ -49,6 +58,7 @@ HEADERS += revision.h \
            code/BlenderModifier.h \
            code/BlenderScene.h \
            code/BlenderSceneGen.h \
+           code/BlenderTessellator.h \
            code/BlobIOSystem.h \
            code/BVHLoader.h \
            code/ByteSwap.h \
@@ -199,17 +209,6 @@ HEADERS += revision.h \
            contrib/unzip/crypt.h \
            contrib/unzip/ioapi.h \
            contrib/unzip/unzip.h \
-           contrib/zlib/crc32.h \
-           contrib/zlib/deflate.h \
-           contrib/zlib/inffast.h \
-           contrib/zlib/inffixed.h \
-           contrib/zlib/inflate.h \
-           contrib/zlib/inftrees.h \
-           contrib/zlib/trees.h \
-           contrib/zlib/zconf.h \
-           contrib/zlib/zconf.in.h \
-           contrib/zlib/zlib.h \
-           contrib/zlib/zutil.h \
            include/assimp/ai_assert.h \
            include/assimp/anim.h \
            include/assimp/camera.h \
@@ -273,7 +272,21 @@ HEADERS += revision.h \
            include/assimp/matrix4x4.inl \
            include/assimp/material.inl \
            code/SmoothingGroups.inl \
-           code/BlenderDNA.inl
+           code/BlenderDNA.inl \
+           code/FBXConverter.h \
+           code/FBXDocument.h \
+           code/FBXDocumentUtil.h \
+           code/FBXImporter.h \
+           code/FBXImportSettings.h \
+           code/FBXParser.h \
+           code/FBXProperties.h \
+           code/FBXTokenizer.h \
+           code/FBXUtil.h \
+           code/OgreImporter.h \
+           code/OgreParsingUtils.h \
+           code/FBXCompileConfig.h \
+           code/STEPFileEncoding.h \
+           include/assimp/metadata.h
 
 SOURCES += code/3DSConverter.cpp \
            code/3DSLoader.cpp \
@@ -285,11 +298,14 @@ SOURCES += code/3DSConverter.cpp \
            code/AssimpPCH.cpp \
            code/B3DImporter.cpp \
            code/BaseImporter.cpp \
+           code/Bitmap.cpp \
+           code/BlenderBMesh.cpp \
            code/BaseProcess.cpp \
            code/BlenderDNA.cpp \
            code/BlenderLoader.cpp \
            code/BlenderModifier.cpp \
            code/BlenderScene.cpp \
+           code/BlenderTessellator.cpp \
            code/BVHLoader.cpp \
            code/CalcTangentsProcess.cpp \
            code/COBLoader.cpp \
@@ -399,17 +415,28 @@ SOURCES += code/3DSConverter.cpp \
            contrib/irrXML/irrXML.cpp \
            contrib/unzip/ioapi.c \
            contrib/unzip/unzip.c \
-           contrib/zlib/adler32.c \
-           contrib/zlib/compress.c \
-           contrib/zlib/crc32.c \
-           contrib/zlib/deflate.c \
-           contrib/zlib/inffast.c \
-           contrib/zlib/inflate.c \
-           contrib/zlib/inftrees.c \
-           contrib/zlib/trees.c \
-           contrib/zlib/zutil.c \
            contrib/poly2tri/poly2tri/common/shapes.cc \
            contrib/poly2tri/poly2tri/sweep/advancing_front.cc \
            contrib/poly2tri/poly2tri/sweep/cdt.cc \
            contrib/poly2tri/poly2tri/sweep/sweep.cc \
-           contrib/poly2tri/poly2tri/sweep/sweep_context.cc
+           contrib/poly2tri/poly2tri/sweep/sweep_context.cc \
+           code/FBXAnimation.cpp \
+           code/FBXBinaryTokenizer.cpp \
+           code/FBXDeformer.cpp \
+           code/FBXDocument.cpp \
+           code/FBXDocumentUtil.cpp \
+           code/FBXImporter.cpp \
+           code/FBXMaterial.cpp \
+           code/FBXMeshGeometry.cpp \
+           code/FBXModel.cpp \
+           code/FBXNodeAttribute.cpp \
+           code/FBXParser.cpp \
+           code/FBXProperties.cpp \
+           code/FBXTokenizer.cpp \
+           code/FBXUtil.cpp \
+           code/IFCBoolean.cpp \
+           code/IFCOpenings.cpp \
+           code/FBXConverter.cpp \
+           code/STEPFileEncoding.cpp
+
+

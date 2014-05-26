@@ -94,6 +94,7 @@ namespace Assimp	{
 
 struct Object;
 struct MTex;
+struct Image;
 
 #define AI_BLEND_MESH_MAX_VERTS 2000000000L
 
@@ -154,6 +155,38 @@ struct MEdge : ElemBase {
       int v1, v2 FAIL;
       char crease, bweight;
       short flag;
+};
+
+// -------------------------------------------------------------------------------
+struct MLoop : ElemBase {
+	int v, e;
+};
+
+// -------------------------------------------------------------------------------
+struct MLoopUV : ElemBase {
+	float uv[2];
+	int flag;
+};
+
+// -------------------------------------------------------------------------------
+// Note that red and blue are not swapped, as with MCol
+struct MLoopCol : ElemBase {
+	char r, g, b, a;
+};
+
+// -------------------------------------------------------------------------------
+struct MPoly : ElemBase {
+	int loopstart;
+	int totloop;
+	short mat_nr;
+	char flag;
+};
+
+// -------------------------------------------------------------------------------
+struct MTexPoly : ElemBase {
+	Image* tpage;
+	char flag, transp;
+	short mode, tile, pad;
 };
 
 // -------------------------------------------------------------------------------
@@ -235,6 +268,8 @@ struct Mesh : ElemBase {
 	int totface FAIL;
 	int totedge FAIL;
 	int totvert FAIL;
+	int totloop;
+	int totpoly;
 
 	short subdiv;
 	short subdivr;
@@ -246,6 +281,11 @@ struct Mesh : ElemBase {
 	vector<TFace> tface;
 	vector<MVert> mvert FAIL;
 	vector<MEdge> medge WARN;
+	vector<MLoop> mloop;
+	vector<MLoopUV> mloopuv;
+	vector<MLoopCol> mloopcol;
+	vector<MPoly> mpoly;
+	vector<MTexPoly> mtpoly;
 	vector<MDeformVert> dvert;
 	vector<MCol> mcol;
 
@@ -558,6 +598,18 @@ struct Tex : ElemBase {
 		,Type_VOXELDATA		= 15
 	};
 
+	enum ImageFlags {
+	     ImageFlags_INTERPOL    	 = 1
+	    ,ImageFlags_USEALPHA    	 = 2
+	    ,ImageFlags_MIPMAP      	 = 4
+	    ,ImageFlags_IMAROT      	 = 16
+	    ,ImageFlags_CALCALPHA   	 = 32
+	    ,ImageFlags_NORMALMAP   	 = 2048
+	    ,ImageFlags_GAUSS_MIP   	 = 4096
+	    ,ImageFlags_FILTER_MIN  	 = 8192
+	    ,ImageFlags_DERIVATIVEMAP   = 16384
+	};
+
 	ID id FAIL;
 	// AnimData *adt; 
 
@@ -578,7 +630,8 @@ struct Tex : ElemBase {
 	//short noisedepth, noisetype;
 	//short noisebasis, noisebasis2;
 
-	//short imaflag, flag;
+	//short flag;
+	ImageFlags imaflag;
 	Type type FAIL;
 	//short stype;
 
@@ -645,7 +698,25 @@ struct MTex : ElemBase {
 		,BlendType_BLEND_COLOR		= 13
 	};
 
-	// short texco, mapto, maptoneg;
+	enum MapType {
+	     MapType_COL         = 1
+	    ,MapType_NORM        = 2
+	    ,MapType_COLSPEC     = 4
+	    ,MapType_COLMIR      = 8
+	    ,MapType_REF         = 16
+	    ,MapType_SPEC        = 32
+	    ,MapType_EMIT        = 64
+	    ,MapType_ALPHA       = 128
+	    ,MapType_HAR         = 256
+	    ,MapType_RAYMIRR     = 512
+	    ,MapType_TRANSLU     = 1024
+	    ,MapType_AMB         = 2048
+	    ,MapType_DISPLACE    = 4096
+	    ,MapType_WARP        = 8192
+	};
+
+	// short texco, maptoneg;
+	MapType mapto;
 
 	BlendType blendtype;
 	boost::shared_ptr<Object> object;
@@ -665,7 +736,8 @@ struct MTex : ElemBase {
 
 	//float colfac, varfac;
 
-	//float norfac, dispfac, warpfac;
+	float norfac;
+	//float dispfac, warpfac;
 	float colspecfac, mirrfac, alphafac;
 	float difffac, specfac, emitfac, hardfac;
 	//float raymirrfac, translfac, ambfac;

@@ -123,10 +123,10 @@ void FillMaterial(aiMaterial* mat,const IFC::IfcSurfaceStyle* surf,ConversionDat
 					}
 				}
 			}
-		}
-        else if (/*const IFC::IfcSurfaceStyleWithTextures* tex =*/ sel2->ResolveSelectPtr<IFC::IfcSurfaceStyleWithTextures>(conv.db)) {
+		} /*
+		else if (const IFC::IfcSurfaceStyleWithTextures* tex = sel2->ResolveSelectPtr<IFC::IfcSurfaceStyleWithTextures>(conv.db)) {
 			// XXX
-		}
+		} */
 	}
 
 }
@@ -159,7 +159,7 @@ unsigned int ProcessMaterials(const IFC::IfcRepresentationItem& item, Conversion
 							IFCImporter::LogWarn("ignoring surface side marker on IFC::IfcSurfaceStyle: " + side);
 						}
 
-                        std::unique_ptr<aiMaterial> mat(new aiMaterial());
+						std::auto_ptr<aiMaterial> mat(new aiMaterial());
 
 						FillMaterial(mat.get(),surf,conv);
 

@@ -4,6 +4,7 @@
 # 3) Add libassimp using the file lists (eliminates duplication of file names between
 #    source groups and library command)
 #
+cmake_minimum_required( VERSION 2.6 )
 SET( HEADER_PATH ../include/assimp )
 
 SET( COMPILER_HEADERS
@@ -34,6 +35,7 @@ SET( PUBLIC_HEADERS
 	${HEADER_PATH}/quaternion.h
 	${HEADER_PATH}/quaternion.inl
 	${HEADER_PATH}/scene.h
+	${HEADER_PATH}/metadata.h
 	${HEADER_PATH}/texture.h
 	${HEADER_PATH}/types.h
 	${HEADER_PATH}/vector2.h
@@ -57,8 +59,6 @@ SET( PUBLIC_HEADERS
 
 SET( Core_SRCS
 	Assimp.cpp
-	AssimpPCH.cpp
-	AssimpPCH.h
 )
 
 SET( Boost_SRCS
@@ -77,13 +77,13 @@ SOURCE_GROUP(Boost FILES ${Boost_SRCS})
 
 SET( Logging_SRCS
 	${HEADER_PATH}/DefaultLogger.hpp
-	${HEADER_PATH}/IOStream.hpp
 	${HEADER_PATH}/LogStream.hpp
 	${HEADER_PATH}/Logger.hpp
 	${HEADER_PATH}/NullLogger.hpp
 	Win32DebugLogStream.h
 	DefaultLogger.cpp
 	FileLogStream.h
+	StdOStreamLogStream.h
 )
 SOURCE_GROUP(Logging FILES ${Logging_SRCS})
 
@@ -108,8 +108,8 @@ SET( Common_SRCS
 	Hash.h
 	Importer.cpp
 	IFF.h
+	MemoryIOWrapper.h
 	ParsingUtils.h
-	StdOStreamLogStream.h
 	StreamReader.h
 	StringComparison.h
 	SGSpatialSort.cpp
@@ -141,6 +141,8 @@ SET( Common_SRCS
 	TinyFormatter.h
 	Profiler.h
 	LogAux.h
+	Bitmap.cpp
+	Bitmap.h
 )
 SOURCE_GROUP(Common FILES ${Common_SRCS})
 
@@ -237,11 +239,7 @@ SET( LWS_SRCS
 )
 SOURCE_GROUP( LWS FILES ${LWS_SRCS})
 
-SET ( M3_SRCS
-	M3Importer.cpp
-	M3Importer.h
-)
-SOURCE_GROUP( M3 FILES ${M3_SRCS} )
+
 
 SET( MD2_SRCS
 	MD2FileData.h
@@ -323,8 +321,8 @@ SET( Obj_SRCS
 SOURCE_GROUP( Obj FILES ${Obj_SRCS})
 
 SET( Ogre_SRCS
-	OgreImporter.hpp
-	OgreXmlHelper.hpp
+	OgreImporter.h
+	OgreParsingUtils.h
 	OgreImporter.cpp
 	OgreMaterial.cpp
 	OgreMesh.cpp
@@ -367,6 +365,10 @@ SET(BLENDER_SRCS
 	BlenderIntermediate.h
 	BlenderModifier.h
 	BlenderModifier.cpp
+	BlenderBMesh.h
+	BlenderBMesh.cpp
+	BlenderTessellator.h
+	BlenderTessellator.cpp
 )
 SOURCE_GROUP( BLENDER FILES ${BLENDER_SRCS})
 
@@ -381,9 +383,13 @@ SET(IFC_SRCS
 	IFCMaterial.cpp
 	IFCProfile.cpp
 	IFCCurve.cpp
+	IFCBoolean.cpp
+	IFCOpenings.cpp
 	STEPFile.h
 	STEPFileReader.h
 	STEPFileReader.cpp
+	STEPFileEncoding.cpp
+	STEPFileEncoding.h
 )
 SOURCE_GROUP( IFC FILES ${IFC_SRCS})
 
@@ -392,6 +398,35 @@ SET( XGL_SRCS
 	XGLLoader.h
 )
 SOURCE_GROUP( XGL FILES ${XGL_SRCS})
+
+
+SET(FBX_SRCS
+	FBXImporter.cpp
+	FBXCompileConfig.h
+	FBXImporter.h
+	FBXParser.cpp
+	FBXParser.h
+	FBXTokenizer.cpp
+	FBXTokenizer.h
+	FBXImportSettings.h
+	FBXConverter.h
+	FBXConverter.cpp
+	FBXUtil.h
+	FBXUtil.cpp
+	FBXDocument.h
+	FBXDocument.cpp
+	FBXProperties.h
+	FBXProperties.cpp
+	FBXMeshGeometry.cpp
+	FBXMaterial.cpp
+	FBXModel.cpp
+	FBXAnimation.cpp
+	FBXNodeAttribute.cpp
+	FBXDeformer.cpp
+	FBXBinaryTokenizer.cpp
+	FBXDocumentUtil.cpp
+)
+SOURCE_GROUP( FBX FILES ${FBX_SRCS})
 
 
 SET( PostProcessing_SRCS
@@ -429,8 +464,6 @@ SET( PostProcessing_SRCS
 	SortByPTypeProcess.h
 	SplitLargeMeshes.cpp
 	SplitLargeMeshes.h
-	TerragenLoader.cpp
-	TerragenLoader.h
 	TextureTransform.cpp
 	TextureTransform.h
 	TriangulateProcess.cpp
@@ -487,6 +520,12 @@ SET( STL_SRCS
 	STLExporter.cpp
 )
 SOURCE_GROUP( STL FILES ${STL_SRCS})
+
+SET( Terragen_SRCS
+	TerragenLoader.cpp
+	TerragenLoader.h
+)
+SOURCE_GROUP( Terragen FILES ${Terragen_SRCS})
 
 SET( Unreal_SRCS
 	UnrealLoader.cpp
@@ -566,17 +605,19 @@ SOURCE_GROUP( unzip FILES ${unzip_SRCS})
 
 
 # VC2010 fixes
-OPTION( VC10_STDINT_FIX "Fix for VC10 Compiler regarding pstdint.h redefinition errors" OFF )
-if( VC10_STDINT_FIX )
-	ADD_DEFINITIONS( -D_STDINT )
-endif( VC10_STDINT_FIX )
+if(MSVC10)
+	OPTION( VC10_STDINT_FIX "Fix for VC10 Compiler regarding pstdint.h redefinition errors" OFF )
+	if( VC10_STDINT_FIX )
+		ADD_DEFINITIONS( -D_STDINT )
+	endif( VC10_STDINT_FIX )
+endif(MSVC10)
 
 ADD_DEFINITIONS( -DASSIMP_BUILD_DLL_EXPORT )
 
-if ( MSVC80 OR MSVC90 OR MSVC10 )
+if ( MSVC )
 	ADD_DEFINITIONS( -D_SCL_SECURE_NO_WARNINGS )
 	ADD_DEFINITIONS( -D_CRT_SECURE_NO_WARNINGS )
-endif ( MSVC80 OR MSVC90 OR MSVC10 )
+endif ( MSVC )
 
 if (UNZIP_FOUND)
 	SET (unzip_compile_SRCS "")
@@ -584,7 +625,7 @@ else (UNZIP_FOUND)
 	SET (unzip_compile_SRCS ${unzip_SRCS})
 endif (UNZIP_FOUND)
 
-SET( assim_src
+SET( assimp_src
 	# Assimp Files
 	${Core_SRCS}
 	${Common_SRCS}
@@ -605,7 +646,6 @@ SET( assim_src
 	${Irr_SRCS}
 	${LWO_SRCS}
 	${LWS_SRCS}
-	${M3_SRCS}
 	${MD2_SRCS}
 	${MD3_SRCS}
 	${MD5_SRCS}
@@ -622,6 +662,7 @@ SET( assim_src
 	${Raw_SRCS}
 	${SMD_SRCS}
 	${STL_SRCS}
+	${Terragen_SRCS}
 	${Unreal_SRCS}
 	${XFile_SRCS}
 	${Extra_SRCS}
@@ -631,6 +672,7 @@ SET( assim_src
 	${NDO_SRCS}
 	${IFC_SRCS}
 	${XGL_SRCS}
+	${FBX_SRCS}
 	
 	# Third-party libraries
 	${IrrXML_SRCS}
@@ -643,26 +685,30 @@ SET( assim_src
 
 	${PUBLIC_HEADERS}
 	${COMPILER_HEADERS}
+	
+	# Old precompiled header
+	# (removed because the precompiled header is not updated when visual studio switch configuration which leads to failed compilation.
+	# Moreover it's a drag to recompile assimp entirely each time a modification is made to one of the included header, which is definitely counter-productive.)
+	AssimpPCH.cpp
 )
-IF ( BUILD_STATIC_LIB )
-	ADD_LIBRARY( assimp STATIC
-		${assim_src}
-	)
-ELSE ( BUILD_STATIC_LIB )
-	ADD_LIBRARY( assimp SHARED
-		${assim_src}
-	)
-ENDIF ( BUILD_STATIC_LIB )
 
-SET_PROPERTY(TARGET assimp PROPERTY DEBUG_POSTFIX ${DEBUG_POSTFIX})
+#ADD_MSVC_PRECOMPILED_HEADER("AssimpPCH.h" "AssimpPCH.cpp" assimp_src)
+
+ADD_LIBRARY( assimp ${assimp_src} )
+
+SET_PROPERTY(TARGET assimp PROPERTY DEBUG_POSTFIX ${ASSIMP_DEBUG_POSTFIX})
 
 TARGET_LINK_LIBRARIES(assimp ${ZLIB_LIBRARIES})
 SET_TARGET_PROPERTIES( assimp PROPERTIES
 	VERSION ${ASSIMP_VERSION}
 	SOVERSION ${ASSIMP_SOVERSION} # use full version 
     OUTPUT_NAME assimp${ASSIMP_LIBRARY_SUFFIX}
-    CLEAN_DIRECT_OUTPUT 1
 )
+
+if (APPLE)
+    SET_TARGET_PROPERTIES( assimp PROPERTIES INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}")
+endif()
+
 # Build against external unzip, or add ../contrib/unzip so
 # assimp can #include "unzip.h"
 if (UNZIP_FOUND)
@@ -672,6 +718,21 @@ else (UNZIP_FOUND)
 	INCLUDE_DIRECTORIES("../contrib/unzip")
 endif (UNZIP_FOUND)
 
-INSTALL( TARGETS assimp DESTINATION ${LIB_INSTALL_DIR} COMPONENT ${LIBASSIMP_COMPONENT})
-INSTALL( FILES ${PUBLIC_HEADERS} DESTINATION ${INCLUDE_INSTALL_DIR}/assimp COMPONENT ${LIBASSIMP-DEV_COMPONENT})
-INSTALL( FILES ${COMPILER_HEADERS} DESTINATION ${INCLUDE_INSTALL_DIR}/assimp/Compiler COMPONENT ${LIBASSIMP-DEV_COMPONENT})
+INSTALL( TARGETS assimp
+         LIBRARY DESTINATION ${ASSIMP_LIB_INSTALL_DIR}
+         ARCHIVE DESTINATION ${ASSIMP_LIB_INSTALL_DIR}
+         RUNTIME DESTINATION ${ASSIMP_BIN_INSTALL_DIR}
+         COMPONENT ${LIBASSIMP_COMPONENT})
+INSTALL( FILES ${PUBLIC_HEADERS} DESTINATION ${ASSIMP_INCLUDE_INSTALL_DIR}/assimp COMPONENT assimp-dev)
+INSTALL( FILES ${COMPILER_HEADERS} DESTINATION ${ASSIMP_INCLUDE_INSTALL_DIR}/assimp/Compiler COMPONENT assimp-dev)
+
+if(MSVC AND ASSIMP_INSTALL_PDB)
+	install(FILES ${Assimp_BINARY_DIR}/code/Debug/assimp${ASSIMP_DEBUG_POSTFIX}.pdb
+		DESTINATION ${ASSIMP_LIB_INSTALL_DIR}
+		CONFIGURATIONS Debug
+	)
+	install(FILES ${Assimp_BINARY_DIR}/code/RelWithDebInfo/assimp.pdb
+		DESTINATION ${ASSIMP_LIB_INSTALL_DIR}
+		CONFIGURATIONS RelWithDebInfo
+	)
+endif ()
