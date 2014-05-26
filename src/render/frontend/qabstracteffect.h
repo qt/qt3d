@@ -39,48 +39,62 @@
 **
 ****************************************************************************/
 
-#include "effect.h"
-#include "technique.h"
+#ifndef QT3D_EFFECT_H
+#define QT3D_EFFECT_H
 
-#include "renderlogging.h"
+#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DCore/node.h>
+
+#include <QVector>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-Effect::Effect()
-    : d_ptr(new EffectPrivate(this))
-{
-    qRegisterMetaType<Qt3D::Effect*>();
-    qCDebug(Render::Frontend) << Q_FUNC_INFO;
-}
+class Technique;
+class QAbstractEffect;
 
-void Effect::addTechnique(Technique *t)
+class QAbstractEffectPrivate
 {
-    Q_ASSERT(t);
-    Q_D(Effect);
-    d->m_techniques.append(t);
-}
+public :
+    QAbstractEffectPrivate(QAbstractEffect *qq)
+        : q_ptr(qq)
+    {}
 
-void Effect::removeTechnique(Technique *t)
+    QList<Technique *> m_techniques;
+
+    Q_DECLARE_PUBLIC(QAbstractEffect)
+    QAbstractEffect *q_ptr;
+};
+
+class QT3DRENDERERSHARED_EXPORT QAbstractEffect
 {
-    Q_D(Effect);
-    d->m_techniques.removeOne(t);
-}
 
-QList<Technique *> Effect::techniques() const
-{
-    Q_D(const Effect);
-    return d->m_techniques;
-}
+public:
+    QAbstractEffect();
 
-void Effect::clearTechniques()
-{
-    Q_D(Effect);
-    qDeleteAll(d->m_techniques);
-    d->m_techniques.clear();
-}
+    virtual void addTechnique(Technique *t);
+    virtual void removeTechnique(Technique *t);
 
-} // namespace Qt3D
+    QList<Technique *> techniques() const;
+
+    void clearTechniques();
+
+    // Signal
+    virtual void techniquesChanged() = 0;
+
+private:
+    Q_DECLARE_PRIVATE(QAbstractEffect)
+    QAbstractEffectPrivate *d_ptr;
+};
+
+} // Qt3D
+
+Q_DECLARE_INTERFACE(Qt3D::QAbstractEffect, "org.qt-project.Qt3D.Effect/2.0")
 
 QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE(Qt3D::QAbstractEffect*)
+
+
+#endif // QT3D_EFFECT_H

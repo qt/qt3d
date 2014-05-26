@@ -43,7 +43,7 @@
 
 #include <qchangearbiter.h>
 #include <texture.h>
-#include "effect.h"
+#include "qabstracteffect.h"
 #include "renderlogging.h"
 
 QT_BEGIN_NAMESPACE

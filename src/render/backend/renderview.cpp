@@ -41,7 +41,7 @@
 
 #include "renderview.h"
 #include "material.h"
-#include "effect.h"
+#include "qabstracteffect.h"
 #include "renderer.h"
 #include "rendercamera.h"
 #include "rendercommand.h"
@@ -219,7 +219,7 @@ void RenderView::setCommandShaderTechniqueEffect(RenderCommand *command)
         // Set shader, technique, and effect by basically doing :
         // ShaderProgramManager[MaterialManager[frontentEntity->uuid()]->Effect->Techniques[TechniqueFilter->name]->RenderPasses[RenderPassFilter->name]];
         // The Renderer knows that if one of those is null, a default material / technique / effect as to be used
-        Effect *effect = qobject_cast<Effect*>(material->peer()->effect());
+        QAbstractEffect *effect = qobject_cast<QAbstractEffect*>(material->peer()->effect());
         QString techniqueName = m_techniqueFilter->filters().values().first().toString();
         command->m_technique = m_renderer->techniqueManager()->lookupHandle(EffectTechniquePair(effect, techniqueName));
         if (effect != Q_NULLPTR && m_renderer->techniqueManager()->data(command->m_technique) == Q_NULLPTR) {

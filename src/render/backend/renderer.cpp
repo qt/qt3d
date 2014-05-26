@@ -55,7 +55,7 @@
 
 #include <material.h>
 #include <mesh.h>
-#include <effect.h>
+#include <qabstracteffect.h>
 #include <technique.h>
 #include <shaderprogram.h>
 #include <renderpass.h>
@@ -277,7 +277,7 @@ void Renderer::setSurface(QSurface* s)
 
 void Renderer::setDefaultTechnique(Technique *t)
 {
-    Effect* defEff = qobject_cast<Effect*>(m_defaultMaterial->effect());
+    QAbstractEffect* defEff = qobject_cast<QAbstractEffect*>(m_defaultMaterial->effect());
     bool materialWasUsing = (defEff->techniques().front() ==
                              m_defaultTechnique);
 
@@ -529,7 +529,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> commands)
 
 RenderTechnique* Renderer::techniqueForMaterial(Material* mat)
 {
-    Effect* eff = qobject_cast<Effect*>(mat->effect());
+    QAbstractEffect* eff = qobject_cast<QAbstractEffect*>(mat->effect());
     Technique *tech;
     if (eff) {
         Q_ASSERT(!eff->techniques().empty());

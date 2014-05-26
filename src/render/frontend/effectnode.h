@@ -42,7 +42,7 @@
 #ifndef QT3D_EFFECTNODE_H
 #define QT3D_EFFECTNODE_H
 
-#include <Qt3DRenderer/effect.h>
+#include <Qt3DRenderer/qabstracteffect.h>
 #include <Qt3DCore/node.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
@@ -50,10 +50,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DRENDERERSHARED_EXPORT EffectNode : public Node, public Effect
+class QT3DRENDERERSHARED_EXPORT EffectNode : public Node, public QAbstractEffect
 {
     Q_OBJECT
-    Q_INTERFACES(Qt3D::Effect)
+    Q_INTERFACES(Qt3D::QAbstractEffect)
 public:
     explicit EffectNode(Node *parent = 0);
 

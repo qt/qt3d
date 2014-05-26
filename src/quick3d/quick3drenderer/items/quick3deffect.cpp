@@ -51,7 +51,7 @@ namespace Quick {
 
 Quick3DEffect::Quick3DEffect(Node *parent)
     : Qt3D::Quick::Quick3DNode(parent),
-      Effect()
+      QAbstractEffect()
 {
 }
 
@@ -66,14 +66,14 @@ QQmlListProperty<Technique> Quick3DEffect::techniqueList()
 
 void Quick3DEffect::appendTechnique(QQmlListProperty<Technique> *list, Technique *bar)
 {
-    Effect *eff = qobject_cast<Effect*>(list->object);
+    QAbstractEffect *eff = qobject_cast<QAbstractEffect*>(list->object);
     if (eff)
         eff->addTechnique(bar);
 }
 
 Technique *Quick3DEffect::techniqueAt(QQmlListProperty<Technique> *list, int index)
 {
-    Effect *eff = qobject_cast<Effect*>(list->object);
+    QAbstractEffect *eff = qobject_cast<QAbstractEffect*>(list->object);
     if (eff)
         return eff->techniques().at(index);
     return Q_NULLPTR;
@@ -81,7 +81,7 @@ Technique *Quick3DEffect::techniqueAt(QQmlListProperty<Technique> *list, int ind
 
 int Quick3DEffect::techniqueCount(QQmlListProperty<Technique> *list)
 {
-    Effect *eff = qobject_cast<Effect*>(list->object);
+    QAbstractEffect *eff = qobject_cast<QAbstractEffect*>(list->object);
     if (eff)
         return eff->techniques().count();
     return 0;
@@ -89,7 +89,7 @@ int Quick3DEffect::techniqueCount(QQmlListProperty<Technique> *list)
 
 void Quick3DEffect::clearTechniqueList(QQmlListProperty<Technique> *list)
 {
-    Effect *eff = qobject_cast<Effect*>(list->object);
+    QAbstractEffect *eff = qobject_cast<QAbstractEffect*>(list->object);
     if (eff) {
         // Ownership of techniques is handled by the QmlEngine so we shouldn't class clearTechniques
         // which deletes techniques

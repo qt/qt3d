@@ -50,11 +50,11 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class Effect;
+class QAbstractEffect;
 
 namespace Render {
 
-typedef QPair<Effect *, QString> EffectTechniquePair;
+typedef QPair<QAbstractEffect *, QString> EffectTechniquePair;
 typedef QHandle<RenderTechnique, 16> HTechnique;
 
 class TechniqueManager : public QArrayResourcesManager<RenderTechnique, EffectTechniquePair, 16>

@@ -1,7 +1,7 @@
 INCLUDEPATH += $$PWD
 
 HEADERS += \
-    $$PWD/effect.h \
+    $$PWD/qabstracteffect.h \
     $$PWD/material.h \
     $$PWD/mesh.h \
     $$PWD/renderpass.h \
@@ -30,7 +30,7 @@ HEADERS += \
     $$PWD/scenenode.h
 
 SOURCES += \
-    $$PWD/effect.cpp \
+    $$PWD/qabstracteffect.cpp \
     $$PWD/material.cpp \
     $$PWD/mesh.cpp \
     $$PWD/renderpass.cpp \

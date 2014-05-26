@@ -44,7 +44,7 @@
 
 #include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
 #include <Qt3DQuick/quick3dnode.h>
-#include <Qt3DRenderer/effect.h>
+#include <Qt3DRenderer/qabstracteffect.h>
 #include <QQmlListProperty>
 
 
@@ -56,10 +56,10 @@ namespace Render {
 
 namespace Quick {
 
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DEffect : public Qt3D::Quick::Quick3DNode, public Effect
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DEffect : public Qt3D::Quick::Quick3DNode, public QAbstractEffect
 {
     Q_OBJECT
-    Q_INTERFACES(Qt3D::Effect)
+    Q_INTERFACES(Qt3D::QAbstractEffect)
     Q_PROPERTY(QQmlListProperty<Qt3D::Technique> techniques READ techniqueList)
 
 public:
