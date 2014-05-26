@@ -45,6 +45,7 @@
 #include <QVariant>
 
 #include <Qt3DCore/component.h>
+#include <Qt3DCore/qabstracteffect.h>
 
 #include <Qt3DRenderer/tag.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
@@ -58,13 +59,13 @@ class Texture;
 class QT3DRENDERERSHARED_EXPORT Material : public Component
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3D::Node* effect READ effect WRITE setEffect NOTIFY effectChanged)
+    Q_PROPERTY(Qt3D::QAbstractEffect* effect READ effect WRITE setEffect NOTIFY effectChanged)
 
 public:
     explicit Material(Node *parent = 0);
 
-    Qt3D::Node *effect() const;
-    void setEffect(Qt3D::Node *effect);
+    QAbstractEffect *effect() const;
+    void setEffect(QAbstractEffect *effect);
 
     void setParameter(QString name, QVariant val);
 
@@ -82,7 +83,7 @@ Q_SIGNALS:
 
 private:
 
-    Node *m_effect;
+    QAbstractEffect *m_effect;
     QVariantMap m_parameters;
 
     TextureDict m_textures;

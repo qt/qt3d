@@ -52,16 +52,16 @@ namespace Qt3D {
 
 Material::Material(Node *parent)
     : Component(parent),
-      m_effect(0)
+      m_effect(Q_NULLPTR)
 {
 }
 
-Qt3D::Node *Material::effect() const
+QAbstractEffect *Material::effect() const
 {
     return m_effect;
 }
 
-void Material::setEffect(Qt3D::Node *effect)
+void Material::setEffect(QAbstractEffect *effect)
 {
     if (effect == m_effect)
         return;

@@ -277,7 +277,7 @@ void Renderer::setSurface(QSurface* s)
 
 void Renderer::setDefaultTechnique(Technique *t)
 {
-    QAbstractEffect* defEff = qobject_cast<QAbstractEffect*>(m_defaultMaterial->effect());
+    QAbstractEffect* defEff = m_defaultMaterial->effect();
     bool materialWasUsing = (defEff->techniques().front() ==
                              m_defaultTechnique);
 
@@ -529,7 +529,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> commands)
 
 RenderTechnique* Renderer::techniqueForMaterial(Material* mat)
 {
-    QAbstractEffect* eff = qobject_cast<QAbstractEffect*>(mat->effect());
+    QAbstractEffect* eff = mat->effect();
     Technique *tech;
     if (eff) {
         Q_ASSERT(!eff->techniques().empty());

@@ -50,12 +50,14 @@
 #include <Qt3DCore/matrixtransform.h>
 #include <Qt3DCore/translatetransform.h>
 #include <Qt3DCore/rotatetransform.h>
+#include <Qt3DCore/qabstracteffect.h>
 
 QT_BEGIN_NAMESPACE
 
 void Qt3DQuick3DCorePlugin::registerTypes(const char *uri)
 {
     qmlRegisterUncreatableType<Qt3D::Node>(uri, 2, 0, "Node_priv", "");
+    qmlRegisterInterface<Qt3D::QAbstractEffect>("QAbstractEffect");
     qmlRegisterType<Qt3D::Component>(uri, 2, 0, "Component");
     qmlRegisterType<Qt3D::Camera>(uri, 2, 0, "Camera");
     qmlRegisterType<Qt3D::CameraLens>(uri, 2, 0, "CameraLens");
