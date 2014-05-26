@@ -44,8 +44,9 @@
 
 #include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
 #include <Qt3DQuick/quick3dnode.h>
-#include <Qt3DRenderer/qabstracteffect.h>
+#include <Qt3DCore/qabstracteffect.h>
 #include <QQmlListProperty>
+#include <Qt3DRenderer/technique.h>
 
 
 QT_BEGIN_NAMESPACE

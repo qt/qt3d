@@ -42,7 +42,7 @@
 #ifndef QT3D_EFFECTNODE_H
 #define QT3D_EFFECTNODE_H
 
-#include <Qt3DRenderer/qabstracteffect.h>
+#include <Qt3DCore/qabstracteffect.h>
 #include <Qt3DCore/node.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
@@ -57,8 +57,8 @@ class QT3DRENDERERSHARED_EXPORT EffectNode : public Node, public QAbstractEffect
 public:
     explicit EffectNode(Node *parent = 0);
 
-    void addTechnique(Technique *t) Q_DECL_OVERRIDE;
-    void removeTechnique(Technique *t) Q_DECL_OVERRIDE;
+    void addTechnique(QAbstractTechnique *t) Q_DECL_OVERRIDE;
+    void removeTechnique(QAbstractTechnique *t) Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
     void techniquesChanged() Q_DECL_OVERRIDE;

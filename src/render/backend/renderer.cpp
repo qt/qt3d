@@ -536,7 +536,7 @@ RenderTechnique* Renderer::techniqueForMaterial(Material* mat)
 
         // FIXME - technique selection happens in here, now we know
         // the renderer characteristics
-        tech = eff->techniques().front();
+        tech = qobject_cast<Technique*>(eff->techniques().front());
     } else {
         tech = m_defaultTechnique;
     }

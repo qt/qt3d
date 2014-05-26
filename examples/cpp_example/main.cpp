@@ -51,7 +51,7 @@
 #include <Qt3DRenderer/mesh.h>
 #include <Qt3DRenderer/technique.h>
 #include <Qt3DRenderer/material.h>
-#include <Qt3DRenderer/qabstracteffect.h>
+#include <Qt3DCore/qabstracteffect.h>
 #include <Qt3DRenderer/texture.h>
 #include <Qt3DRenderer/renderpass.h>
 #include <Qt3DRenderer/scenenode.h>

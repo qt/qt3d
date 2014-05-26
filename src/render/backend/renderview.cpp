@@ -61,6 +61,7 @@
 #include <renderpassfilternode.h>
 #include <techniquefilternode.h>
 #include <viewportnode.h>
+#include <qabstracttechnique.h>
 
 #include "renderlogging.h"
 
@@ -224,11 +225,11 @@ void RenderView::setCommandShaderTechniqueEffect(RenderCommand *command)
         command->m_technique = m_renderer->techniqueManager()->lookupHandle(EffectTechniquePair(effect, techniqueName));
         if (effect != Q_NULLPTR && m_renderer->techniqueManager()->data(command->m_technique) == Q_NULLPTR) {
             RenderTechnique *technique = Q_NULLPTR;
-            Q_FOREACH (Technique *t, effect->techniques()) {
-                if (t->name() == techniqueName) {
+            Q_FOREACH (QAbstractTechnique *t, effect->techniques()) {
+                if (qobject_cast<Technique *>(t) && t->name() == techniqueName) {
                     command->m_technique = m_renderer->techniqueManager()->getOrAcquireHandle(EffectTechniquePair(effect, techniqueName));
                     technique = m_renderer->techniqueManager()->data(command->m_technique);
-                    technique->setPeer(t);
+                    technique->setPeer(qobject_cast<Technique *>(t));
                     break;
                 }
             }

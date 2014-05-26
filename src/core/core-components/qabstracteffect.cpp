@@ -40,9 +40,7 @@
 ****************************************************************************/
 
 #include "qabstracteffect.h"
-#include "technique.h"
-
-#include "renderlogging.h"
+#include "qabstracttechnique.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -52,23 +50,22 @@ QAbstractEffect::QAbstractEffect()
     : d_ptr(new QAbstractEffectPrivate(this))
 {
     qRegisterMetaType<Qt3D::QAbstractEffect*>();
-    qCDebug(Render::Frontend) << Q_FUNC_INFO;
 }
 
-void QAbstractEffect::addTechnique(Technique *t)
+void QAbstractEffect::addTechnique(QAbstractTechnique *t)
 {
     Q_ASSERT(t);
     Q_D(QAbstractEffect);
     d->m_techniques.append(t);
 }
 
-void QAbstractEffect::removeTechnique(Technique *t)
+void QAbstractEffect::removeTechnique(QAbstractTechnique *t)
 {
     Q_D(QAbstractEffect);
     d->m_techniques.removeOne(t);
 }
 
-QList<Technique *> QAbstractEffect::techniques() const
+QList<QAbstractTechnique *> QAbstractEffect::techniques() const
 {
     Q_D(const QAbstractEffect);
     return d->m_techniques;

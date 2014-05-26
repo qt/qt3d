@@ -39,19 +39,16 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_EFFECT_H
-#define QT3D_EFFECT_H
+#ifndef QT3D_QABSTRACTEFFECT_H
+#define QT3D_QABSTRACTEFFECT_H
 
-#include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DCore/node.h>
-
-#include <QVector>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class Technique;
+class QAbstractTechnique;
 class QAbstractEffect;
 
 class QAbstractEffectPrivate
@@ -61,22 +58,22 @@ public :
         : q_ptr(qq)
     {}
 
-    QList<Technique *> m_techniques;
+    QList<QAbstractTechnique *> m_techniques;
 
     Q_DECLARE_PUBLIC(QAbstractEffect)
     QAbstractEffect *q_ptr;
 };
 
-class QT3DRENDERERSHARED_EXPORT QAbstractEffect
+class QT3DCORESHARED_EXPORT QAbstractEffect
 {
 
 public:
     QAbstractEffect();
 
-    virtual void addTechnique(Technique *t);
-    virtual void removeTechnique(Technique *t);
+    virtual void addTechnique(QAbstractTechnique *t);
+    virtual void removeTechnique(QAbstractTechnique *t);
 
-    QList<Technique *> techniques() const;
+    QList<QAbstractTechnique *> techniques() const;
 
     void clearTechniques();
 
@@ -97,4 +94,4 @@ QT_END_NAMESPACE
 Q_DECLARE_METATYPE(Qt3D::QAbstractEffect*)
 
 
-#endif // QT3D_EFFECT_H
+#endif // QT3D_QABSTRACTEFFECT_H

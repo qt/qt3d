@@ -75,7 +75,7 @@ Technique *Quick3DEffect::techniqueAt(QQmlListProperty<Technique> *list, int ind
 {
     QAbstractEffect *eff = qobject_cast<QAbstractEffect*>(list->object);
     if (eff)
-        return eff->techniques().at(index);
+        return qobject_cast<Technique*>(eff->techniques().at(index));
     return Q_NULLPTR;
 }
 
@@ -93,7 +93,7 @@ void Quick3DEffect::clearTechniqueList(QQmlListProperty<Technique> *list)
     if (eff) {
         // Ownership of techniques is handled by the QmlEngine so we shouldn't class clearTechniques
         // which deletes techniques
-        Q_FOREACH (Technique *tech, eff->techniques())
+        Q_FOREACH (QAbstractTechnique *tech, eff->techniques())
             eff->removeTechnique(tech);
     }
 }

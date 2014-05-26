@@ -48,7 +48,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 Technique::Technique(Node *parent)
-    : Node(parent)
+    : QAbstractTechnique(parent)
 {
 }
 
@@ -97,19 +97,6 @@ void Technique::clearTags()
 bool Technique::containsTag(const QString &name) const
 {
     return m_tags.contains(name);
-}
-
-void Technique::setName(const QString &name)
-{
-    if (name != m_name) {
-        m_name = name;
-        emit nameChanged();
-    }
-}
-
-QString Technique::name() const
-{
-    return m_name;
 }
 
 void Technique::addPass(RenderPass *pass)

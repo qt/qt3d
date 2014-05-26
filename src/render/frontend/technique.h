@@ -47,6 +47,7 @@
 #include <QOpenGLContext>
 #include <Qt3DRenderer/tag.h>
 #include <Qt3DRenderer/renderpass.h>
+#include <Qt3DCore/qabstracttechnique.h>
 
 #include <QList>
 #include <QMap>
@@ -166,7 +167,7 @@ private:
     StandardUniform m_standardUniform;
 };
 
-class QT3DRENDERERSHARED_EXPORT Technique : public Node
+class QT3DRENDERERSHARED_EXPORT Technique : public QAbstractTechnique
 {
     Q_OBJECT
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
@@ -181,9 +182,6 @@ public:
     QList<Tag *> tags() const;
     void clearTags();
     bool containsTag( const QString &name ) const;
-
-    void setName(const QString &name);
-    QString name() const;
 
     void addPass(RenderPass* pass);
     void removePass(RenderPass *pass);
@@ -207,7 +205,6 @@ private:
     QMap<QString, Tag *> m_tags;
     QList<Parameter *> m_parameters;
     QList<RenderPass *> m_renderPasses;
-    QString m_name;
 };
 
 }

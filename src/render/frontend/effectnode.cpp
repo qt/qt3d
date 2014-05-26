@@ -53,7 +53,7 @@ EffectNode::EffectNode(Node *parent)
 {
 }
 
-void EffectNode::addTechnique(Technique *t)
+void EffectNode::addTechnique(QAbstractTechnique *t)
 {
     // In the C++ API we are responsible for setting the parent
     // Qml API is automatically handled by the Qml Engine
@@ -61,7 +61,7 @@ void EffectNode::addTechnique(Technique *t)
     QAbstractEffect::addTechnique(t);
 }
 
-void EffectNode::removeTechnique(Technique *t)
+void EffectNode::removeTechnique(QAbstractTechnique *t)
 {
     QAbstractEffect::removeTechnique(t);
     delete t;
