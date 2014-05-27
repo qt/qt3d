@@ -39,34 +39,33 @@
 **
 ****************************************************************************/
 
-#include "effectnode.h"
-#include "technique.h"
+#ifndef QT3D_EFFECT_H
+#define QT3D_EFFECT_H
+
+#include <Qt3DCore/qabstracteffect.h>
+#include <Qt3DCore/node.h>
+#include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-
-EffectNode::EffectNode(Node *parent)
-    : Node(parent)
-    , QAbstractEffect()
+class QT3DRENDERERSHARED_EXPORT Effect : public Node, public QAbstractEffect
 {
-}
+    Q_OBJECT
+    Q_INTERFACES(Qt3D::QAbstractEffect)
+public:
+    explicit Effect(Node *parent = 0);
 
-void EffectNode::addTechnique(QAbstractTechnique *t)
-{
-    // In the C++ API we are responsible for setting the parent
-    // Qml API is automatically handled by the Qml Engine
-    t->setParent(this);
-    QAbstractEffect::addTechnique(t);
-}
+    void addTechnique(QAbstractTechnique *t) Q_DECL_OVERRIDE;
+    void removeTechnique(QAbstractTechnique *t) Q_DECL_OVERRIDE;
 
-void EffectNode::removeTechnique(QAbstractTechnique *t)
-{
-    QAbstractEffect::removeTechnique(t);
-    delete t;
-}
+Q_SIGNALS:
+    void techniquesChanged() Q_DECL_OVERRIDE;
+};
 
 } // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_EFFECT_H

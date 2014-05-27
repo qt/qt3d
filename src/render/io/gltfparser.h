@@ -61,7 +61,7 @@ namespace Qt3D {
 
 class Material;
 class ShaderProgram;
-class EffectNode;
+class Effect;
 class Camera;
 class CameraLens;
 class Texture;
@@ -141,7 +141,7 @@ private:
     QMap<QString, Technique *> m_techniques;
     // glTF doesn't deal in effects, but we need a trivial one to wrap
     // up our techniques
-    QMap<QString, EffectNode*> m_effectProxies;
+    QMap<QString, Effect*> m_effectProxies;
 
     QMap<QString, Texture*> m_textures;
     QMap<QString, QImage> m_images;

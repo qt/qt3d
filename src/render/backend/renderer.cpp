@@ -86,7 +86,7 @@
 #include <shadermanager.h>
 #include <techniquemanager.h>
 #include "renderlogging.h"
-#include <effectnode.h>
+#include <effect.h>
 #include <QStack>
 #include <QSurface>
 #include <QElapsedTimer>
@@ -204,7 +204,7 @@ void Renderer::buildDefaultMaterial()
     m_defaultMaterial->setParameter(QStringLiteral("ka"), QVector3D(0.2f, 0.2f, 0.2f));
     m_defaultMaterial->setParameter(QStringLiteral("kd"), QVector3D(1.0f, 0.5f, 0.0f));
 
-    EffectNode* defEff = new EffectNode;
+    Effect* defEff = new Effect;
     defEff->addTechnique(m_defaultTechnique);
     m_defaultMaterial->setEffect(defEff);
 }

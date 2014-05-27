@@ -49,7 +49,7 @@
 #include <material.h>
 #include <technique.h>
 #include <shaderprogram.h>
-#include <effectnode.h>
+#include <effect.h>
 #include <camera.h>
 #include <transform.h>
 #include <matrixtransform.h>
@@ -439,7 +439,7 @@ Material* GLTFParser::material(QString id)
 
     Technique *technique = m_techniques.value(tname);
     if (!m_effectProxies.contains(tname)) {
-        EffectNode* eff = new EffectNode;
+        Effect* eff = new Effect;
         eff->setObjectName(tname);
         eff->addTechnique(technique);
         m_effectProxies[tname] = eff;
