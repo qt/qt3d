@@ -51,18 +51,18 @@ namespace Quick {
 
 Quick3DScene::Quick3DScene(Node *parent)
     : Quick3DEntity(parent)
-    , Scene(this)
+    , QAbstractScene(this)
 {
 }
 
 Node *Quick3DScene::node(QString id)
 {
-    return Scene::node(id);
+    return QAbstractScene::node(id);
 }
 
 Node *Quick3DScene::scene(QString id)
 {
-    return Scene::scene(id);
+    return QAbstractScene::scene(id);
 }
 
 } // Quick

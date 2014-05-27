@@ -39,32 +39,34 @@
 **
 ****************************************************************************/
 
-#ifndef SCENE_H
-#define SCENE_H
+#ifndef QT3D_QABSTRACTSCENE_H
+#define QT3D_QABSTRACTSCENE_H
 
 #include <Qt3DCore/entitynode.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D
-{
+namespace Qt3D {
 
-class Scene;
 class AbstractSceneParser;
 
-class ScenePrivate
+namespace Render {
+
+class QAbstractScene;
+
+class QAbstractScenePrivate
 {
 public:
 
-    ScenePrivate(Scene *qq)
+    QAbstractScenePrivate(QAbstractScene *qq)
         : q_ptr(qq)
         , m_sceneChild(Q_NULLPTR)
         , m_currentParser(Q_NULLPTR)
     {}
 
-    Q_DECLARE_PUBLIC(Scene)
-    Scene *q_ptr;
+    Q_DECLARE_PUBLIC(QAbstractScene)
+    QAbstractScene *q_ptr;
 
     QString m_source;
     QString m_sceneId;
@@ -73,10 +75,10 @@ public:
     AbstractSceneParser *m_currentParser;
 };
 
-class QT3DRENDERERSHARED_EXPORT Scene
+class QT3DRENDERERSHARED_EXPORT QAbstractScene
 {
 public:
-    explicit Scene(Node *sceneNode);
+    explicit QAbstractScene(Node *sceneNode);
 
     QString source() const;
     void setSource(QString arg);
@@ -95,7 +97,7 @@ public:
      * @param root - the found Scene or NULL if no Scene was found
      * @return
      */
-    static Scene* findInTree(Node* root);
+    static QAbstractScene* findInTree(Node* root);
 Q_SIGNALS:
 
     virtual void sourceChanged(QString arg) = 0;
@@ -103,15 +105,17 @@ Q_SIGNALS:
 
 private:
     void rebuild();
-    Q_DECLARE_PRIVATE(Scene)
-    ScenePrivate *d_ptr;
+    Q_DECLARE_PRIVATE(QAbstractScene)
+    QAbstractScenePrivate *d_ptr;
 
 };
 
+} // Render
+
 } // namespace Qt3D
 
-Q_DECLARE_INTERFACE(Qt3D::Scene, "org.qt-project.org.Qt3D.Scene/2.0")
+Q_DECLARE_INTERFACE(Qt3D::Render::QAbstractScene, "org.qt-project.org.Qt3D.QAbstractScene/2.0")
 
 QT_END_NAMESPACE
 
-#endif // SCENE_H
+#endif // QT3D_QABSTRACTSCENE_H

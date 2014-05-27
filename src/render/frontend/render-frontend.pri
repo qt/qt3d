@@ -14,7 +14,7 @@ HEADERS += \
     $$PWD/qitemmodelbuffer.h \
     $$PWD/texture.h \
     $$PWD/sphere.h \
-    $$PWD/scene.h \
+    $$PWD/qabstractscene.h \
     $$PWD/framegraph.h \
     $$PWD/framegraphitem.h \
     $$PWD/rendertargetselector.h \
@@ -38,7 +38,7 @@ SOURCES += \
     $$PWD/qitemmodelbuffer.cpp \
     $$PWD/texture.cpp \
     $$PWD/sphere.cpp \
-    $$PWD/scene.cpp \
+    $$PWD/qabstractscene.cpp \
     $$PWD/framegraph.cpp \
     $$PWD/framegraphitem.cpp \
     $$PWD/viewportitem.cpp \

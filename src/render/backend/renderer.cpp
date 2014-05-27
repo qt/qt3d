@@ -43,7 +43,6 @@
 
 #include <nodevisitor.h>
 #include <entity.h>
-#include <scene.h>
 
 #include "framegraphvisitor.h"
 #include "cameraselectornode.h"

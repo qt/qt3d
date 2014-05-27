@@ -44,7 +44,7 @@
 
 #include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
 #include <Qt3DQuick/quick3dentity.h>
-#include <Qt3DRenderer/scene.h>
+#include <Qt3DRenderer/qabstractscene.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -54,10 +54,10 @@ namespace Render {
 
 namespace Quick {
 
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DScene : public Qt3D::Quick::Quick3DEntity, public Qt3D::Scene
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DScene : public Qt3D::Quick::Quick3DEntity, public Qt3D::Render::QAbstractScene
 {
     Q_OBJECT
-    Q_INTERFACES(Qt3D::Scene)
+    Q_INTERFACES(Qt3D::Render::QAbstractScene)
     Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
     Q_PROPERTY(QString sceneId READ sceneId WRITE setSceneId NOTIFY sceneIdChanged)
 public:

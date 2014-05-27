@@ -42,16 +42,16 @@
 #ifndef QT3D_SCENENODE_H
 #define QT3D_SCENENODE_H
 
-#include <Qt3DRenderer/scene.h>
+#include <Qt3DRenderer/qabstractscene.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DRENDERERSHARED_EXPORT SceneNode : public EntityNode, public Scene
+class QT3DRENDERERSHARED_EXPORT SceneNode : public EntityNode, public Render::QAbstractScene
 {
     Q_OBJECT
-    Q_INTERFACES(Qt3D::Scene)
+    Q_INTERFACES(Qt3D::Render::QAbstractScene)
     Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
     Q_PROPERTY(QString sceneId READ sceneId WRITE setSceneId NOTIFY sceneIdChanged)
 public:

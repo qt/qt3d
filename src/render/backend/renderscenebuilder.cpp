@@ -49,7 +49,7 @@
 #include "rendernode.h"
 #include "renderlogging.h"
 #include "materialmanager.h"
-#include "scene.h"
+#include "qabstractscene.h"
 #include <camera.h>
 #include <cameralens.h>
 #include <material.h>
@@ -327,8 +327,8 @@ void RenderSceneBuilder::visitEntity(Qt3D::Node *node)
     createRenderCamera(entity);
 
     // Check if entity is a Scene and if so parses the scene
-    Scene *sceneEntity = Q_NULLPTR;
-    if ((sceneEntity = qobject_cast<Scene *>(node)) != Q_NULLPTR) {
+    QAbstractScene *sceneEntity = Q_NULLPTR;
+    if ((sceneEntity = qobject_cast<QAbstractScene *>(node)) != Q_NULLPTR) {
         qDebug() << Q_FUNC_INFO << "Found a Scene";
     }
 

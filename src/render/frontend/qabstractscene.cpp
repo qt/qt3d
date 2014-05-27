@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "scene.h"
+#include "qabstractscene.h"
 
 #include "renderlogging.h"
 
@@ -50,31 +50,33 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-Scene::Scene(Node *sceneNode)
-    : d_ptr(new ScenePrivate(this))
+namespace Render {
+
+QAbstractScene::QAbstractScene(Node *sceneNode)
+    : d_ptr(new QAbstractScenePrivate(this))
 {
-    Q_D(Scene);
+    Q_D(QAbstractScene);
     d->m_sceneNode = sceneNode;
 }
 
-QString Scene::source() const
+QString QAbstractScene::source() const
 {
-    Q_D(const Scene);
+    Q_D(const QAbstractScene);
     return d->m_source;
 }
 
-QString Scene::sceneId() const
+QString QAbstractScene::sceneId() const
 {
-    Q_D(const Scene);
+    Q_D(const QAbstractScene);
     return d->m_sceneId;
 }
 
-Scene *Scene::findInTree(Node *root)
+QAbstractScene *QAbstractScene::findInTree(Node *root)
 {
     if (!root)
         return Q_NULLPTR;
 
-    Scene* s = qobject_cast<Scene*>(root);
+    QAbstractScene* s = qobject_cast<QAbstractScene*>(root);
     if (s)
         return s;
 
@@ -88,15 +90,15 @@ Scene *Scene::findInTree(Node *root)
     return Q_NULLPTR;
 }
 
-void Scene::clear()
+void QAbstractScene::clear()
 {
-    Q_D(Scene);
+    Q_D(QAbstractScene);
     d->m_sceneNode->removeAllChildren();
 }
 
-void Scene::setSource(QString arg)
+void QAbstractScene::setSource(QString arg)
 {
-    Q_D(Scene);
+    Q_D(QAbstractScene);
     if (d->m_source != arg) {
         d->m_source = arg;
         rebuild();
@@ -104,9 +106,9 @@ void Scene::setSource(QString arg)
     }
 }
 
-void Scene::setSceneId(QString arg)
+void QAbstractScene::setSceneId(QString arg)
 {
-    Q_D(Scene);
+    Q_D(QAbstractScene);
     if (d->m_sceneId != arg) {
         d->m_sceneId = arg;
         rebuild();
@@ -114,25 +116,25 @@ void Scene::setSceneId(QString arg)
     }
 }
 
-Node *Scene::node(QString id)
+Node *QAbstractScene::node(QString id)
 {
-    Q_D(Scene);
+    Q_D(QAbstractScene);
     if (d->m_currentParser)
         return d->m_currentParser->node(id);
     return Q_NULLPTR;
 }
 
-Node *Scene::scene(QString id)
+Node *QAbstractScene::scene(QString id)
 {
-    Q_D(Scene);
+    Q_D(QAbstractScene);
     if (d->m_currentParser)
         return d->m_currentParser->scene(id);
     return Q_NULLPTR;
 }
 
-void Scene::rebuild()
+void QAbstractScene::rebuild()
 {
-    Q_D(Scene);
+    Q_D(QAbstractScene);
     if (d->m_sceneChild != Q_NULLPTR) {
         d->m_sceneNode->removeChild(d->m_sceneChild);
         d->m_sceneChild->deleteLater();
@@ -163,6 +165,8 @@ void Scene::rebuild()
     if (!parserFound)
         qCWarning(Render::Frontend) << Q_FUNC_INFO << "Scene file format not supported by Qt3D";
 }
+
+} // Render
 
 } // namespace Qt3D
 

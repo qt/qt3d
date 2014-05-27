@@ -47,7 +47,7 @@ namespace Qt3D {
 
 SceneNode::SceneNode(Node *parent)
     : EntityNode(parent)
-    , Scene(this)
+    , Render::QAbstractScene(this)
 {
 }
 
