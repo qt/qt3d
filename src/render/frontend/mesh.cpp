@@ -53,7 +53,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 Mesh::Mesh(Node *parent)
-    : Component( parent )
+    : QAbstractMesh( parent )
     , m_sourceDirty( false )
 {
     m_uuid = QUuid::createUuid();
@@ -65,23 +65,16 @@ Mesh::~Mesh()
 
 void Mesh::setSource( const QString& source )
 {
-    if ( source == m_source )
+    if (QAbstractMesh::source() == source)
         return;
-    m_source = source;
+    QAbstractMesh::setSource(source);
     m_sourceDirty = true;
 
     // Let aspects know about the change
     QScenePropertyChangePtr e(new QScenePropertyChange(ComponentUpdated, this));
     e->m_propertyName = QByteArrayLiteral("source");
-    e->m_value = m_source;
+    e->m_value = QAbstractMesh::source();
     notifySceneChange(e);
-
-    emit sourceChanged();
-}
-
-QString Mesh::source() const
-{
-    return m_source;
 }
 
 MeshDataPtr Mesh::data() const

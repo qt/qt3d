@@ -42,7 +42,7 @@
 #ifndef QT3D_MESH_H
 #define QT3D_MESH_H
 
-#include <Qt3DCore/component.h>
+#include <Qt3DCore/qabstractmesh.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <QUuid>
 #include <Qt3DRenderer/meshdata.h>
@@ -55,7 +55,7 @@ namespace Qt3D {
 * @brief Simple static mesh
 *
 */
-class QT3DRENDERERSHARED_EXPORT Mesh : public Component
+class QT3DRENDERERSHARED_EXPORT Mesh : public QAbstractMesh
 {
     Q_OBJECT
     Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
@@ -65,8 +65,7 @@ public:
     virtual ~Mesh();
     QUuid uuid() const { return m_uuid; }
 
-    void setSource(const QString &source);
-    QString source() const;
+    void setSource(const QString &source) Q_DECL_OVERRIDE;
 
     MeshDataPtr data() const;
     void setData(MeshDataPtr d);
