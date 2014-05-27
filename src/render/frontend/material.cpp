@@ -51,26 +51,19 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 Material::Material(Node *parent)
-    : Component(parent),
-      m_effect(Q_NULLPTR)
+    : QAbstractMaterial(parent)
 {
-}
-
-QAbstractEffect *Material::effect() const
-{
-    return m_effect;
 }
 
 void Material::setEffect(QAbstractEffect *effect)
 {
-    if (effect == m_effect)
-        return;
-    m_effect = effect;
+    if (effect == QAbstractMaterial::effect())
+        return ;
+    QAbstractMaterial::setEffect(effect);
     QScenePropertyChangePtr change(new QScenePropertyChange(ComponentUpdated, this));
     change->m_propertyName = QByteArrayLiteral("effect");
-    change->m_value = QVariant::fromValue(m_effect);
+    change->m_value = QVariant::fromValue(QAbstractMaterial::effect());
     notifySceneChange(change);
-    emit effectChanged();
 }
 
 void Material::setParameter(QString name, QVariant val)
