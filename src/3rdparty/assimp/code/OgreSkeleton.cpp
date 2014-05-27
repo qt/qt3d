@@ -52,7 +52,7 @@ namespace Assimp
 namespace Ogre
 {
 
-void OgreImporter::ReadSkeleton(const std::string &pFile, Assimp::IOSystem *pIOHandler, const aiScene *pScene,
+void OgreImporter::ReadSkeleton(const std::string &/*pFile*/, Assimp::IOSystem *pIOHandler, const aiScene */*pScene*/,
 							    const std::string &skeletonFile, vector<Bone> &Bones, vector<Animation> &Animations) const
 {
 	string filename = skeletonFile;

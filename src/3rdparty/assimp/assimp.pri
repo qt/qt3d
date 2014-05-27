@@ -17,6 +17,9 @@ contains(QT_CONFIG, system-zlib) {
 
 DEFINES += ASSIMP_BUILD_NO_OWN_ZLIB
 
+# Stop compiler complaining about ignored qualifiers on return types
+gcc: QMAKE_CXXFLAGS += -Wno-ignored-qualifiers
+
 VPATH += \
         $$PWD \
         $$PWD/code \

@@ -100,7 +100,7 @@ namespace boost	{
 			};
 
 			// dummy
-			list_elem& operator = (const list_elem& other)	{
+			list_elem& operator = (const list_elem& /*other*/)	{
 				return *this;
 			}
 

@@ -462,7 +462,7 @@ void OgreImporter::ProcessSubMesh(SubMesh &submesh, SubMesh &sharedGeometry)
 	}
 }
 
-aiMesh *OgreImporter::CreateAssimpSubMesh(aiScene *pScene, const SubMesh& submesh, const vector<Bone>& bones) const
+aiMesh *OgreImporter::CreateAssimpSubMesh(aiScene */*pScene*/, const SubMesh& submesh, const vector<Bone>& bones) const
 {
 	const size_t sizeVector3D = sizeof(aiVector3D);
 
