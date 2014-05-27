@@ -26,7 +26,7 @@ HEADERS += \
     $$PWD/techniquefilteritem.h \
     $$PWD/rendertargetselectoritem.h \
     $$PWD/effect.h \
-    $$PWD/scenenode.h
+    $$PWD/scene.h
 
 SOURCES += \
     $$PWD/material.cpp \
@@ -47,4 +47,4 @@ SOURCES += \
     $$PWD/renderpassfilteritem.cpp \
     $$PWD/rendertargetselectoritem.cpp \
     $$PWD/effect.cpp \
-    $$PWD/scenenode.cpp
+    $$PWD/scene.cpp

@@ -39,13 +39,13 @@
 **
 ****************************************************************************/
 
-#include "scenenode.h"
+#include "scene.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-SceneNode::SceneNode(Node *parent)
+Scene::Scene(Node *parent)
     : EntityNode(parent)
     , Render::QAbstractScene(this)
 {

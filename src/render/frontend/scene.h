@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_SCENENODE_H
-#define QT3D_SCENENODE_H
+#ifndef QT3D_SCENE_H
+#define QT3D_SCENE_H
 
 #include <Qt3DRenderer/qabstractscene.h>
 
@@ -48,14 +48,14 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DRENDERERSHARED_EXPORT SceneNode : public EntityNode, public Render::QAbstractScene
+class QT3DRENDERERSHARED_EXPORT Scene : public EntityNode, public Render::QAbstractScene
 {
     Q_OBJECT
     Q_INTERFACES(Qt3D::Render::QAbstractScene)
     Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
     Q_PROPERTY(QString sceneId READ sceneId WRITE setSceneId NOTIFY sceneIdChanged)
 public:
-    explicit SceneNode(Node *parent = 0);
+    explicit Scene(Node *parent = 0);
 
 Q_SIGNALS:
     void sourceChanged(QString arg);
@@ -66,4 +66,4 @@ Q_SIGNALS:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_SCENENODE_H
+#endif // QT3D_SCENE_H
