@@ -44,6 +44,7 @@
 
 #include <Qt3DCore/component.h>
 #include <Qt3DCore/qt3dcore_global.h>
+#include <QAtomicInt>
 #include <QMatrix4x4>
 
 QT_BEGIN_NAMESPACE
@@ -86,7 +87,7 @@ private Q_SLOTS:
 private:
     QMatrix4x4 applyTransforms() const;
 
-    mutable bool m_transformsDirty;
+    mutable QAtomicInt m_transformsDirty;
     bool m_visible;
     QList<AbstractTransform*> m_transforms;
 

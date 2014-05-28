@@ -48,15 +48,15 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 Transform::Transform(Node *parent)
-    : Qt3D::Component(parent),
-      m_transformsDirty(false)
+    : Qt3D::Component(parent)
 {
+    m_transformsDirty.fetchAndStoreOrdered(0);
 }
 
 void Transform::setTransformsDirty()
 {
-    if (!m_transformsDirty) {
-        m_transformsDirty = true;
+    if (!m_transformsDirty.loadAcquire()) {
+        m_transformsDirty.fetchAndStoreOrdered(1);
         QScenePropertyChangePtr e(new QScenePropertyChange(ComponentUpdated, this));
         e->m_propertyName = QByteArrayLiteral("transforms");
         e->m_value = matrix();
@@ -66,9 +66,9 @@ void Transform::setTransformsDirty()
 
 QMatrix4x4 Transform::matrix() const
 {
-    if (m_transformsDirty) {
+    if (m_transformsDirty.loadAcquire()) {
         m_matrix = applyTransforms();
-        m_transformsDirty = false;
+        m_transformsDirty.fetchAndStoreOrdered(0);
     }
     return m_matrix;
 }
