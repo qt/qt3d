@@ -62,7 +62,8 @@
 #include <techniquefilternode.h>
 #include <viewportnode.h>
 #include <qabstracttechnique.h>
-
+#include "rendereffect.h"
+#include "effectmanager.h"
 #include "renderlogging.h"
 
 QT_BEGIN_NAMESPACE
@@ -222,14 +223,21 @@ void RenderView::setCommandShaderTechniqueEffect(RenderCommand *command)
         // Set shader, technique, and effect by basically doing :
         // ShaderProgramManager[MaterialManager[frontentEntity->uuid()]->Effect->Techniques[TechniqueFilter->name]->RenderPasses[RenderPassFilter->name]];
         // The Renderer knows that if one of those is null, a default material / technique / effect as to be used
-        QAbstractEffect *effect = material->peer()->effect();
+        QAbstractEffect *fEffect = material->peer()->effect();
+        RenderEffect *effect = m_renderer->effectManager()->lookupResource(fEffect);
+        if (effect == Q_NULLPTR) {
+            effect = m_renderer->effectManager()->getOrCreateResource(fEffect);
+            effect->setRendererAspect(m_renderer->rendererAspect());
+            effect->setPeer(fEffect);
+        }
         QString techniqueName = m_techniqueFilter->filters().values().first().toString();
-        command->m_technique = m_renderer->techniqueManager()->lookupHandle(EffectTechniquePair(effect, techniqueName));
+        command->m_technique = m_renderer->techniqueManager()->lookupHandle(EffectTechniquePair(fEffect, techniqueName));
         if (effect != Q_NULLPTR && m_renderer->techniqueManager()->data(command->m_technique) == Q_NULLPTR) {
             RenderTechnique *technique = Q_NULLPTR;
+            // Tries to select technique based on criteria defined in the TechniqueFilter
             Q_FOREACH (QAbstractTechnique *t, effect->techniques()) {
                 if (qobject_cast<Technique *>(t) && t->name() == techniqueName) {
-                    command->m_technique = m_renderer->techniqueManager()->getOrAcquireHandle(EffectTechniquePair(effect, techniqueName));
+                    command->m_technique = m_renderer->techniqueManager()->getOrAcquireHandle(EffectTechniquePair(fEffect, techniqueName));
                     technique = m_renderer->techniqueManager()->data(command->m_technique);
                     technique->setPeer(qobject_cast<Technique *>(t));
                     break;
