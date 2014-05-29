@@ -44,13 +44,16 @@
 
 #include <Qt3DCore/qabstracteffect.h>
 #include <Qt3DCore/node.h>
+#include <Qt3DCore/qchangearbiter.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DRENDERERSHARED_EXPORT Effect : public Node, public QAbstractEffect
+class QT3DRENDERERSHARED_EXPORT Effect
+        : public Node
+        , public QAbstractEffect
 {
     Q_OBJECT
     Q_INTERFACES(Qt3D::QAbstractEffect)

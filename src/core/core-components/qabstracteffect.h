@@ -43,6 +43,7 @@
 #define QT3D_QABSTRACTEFFECT_H
 
 #include <Qt3DCore/node.h>
+#include <Qt3DCore/qchangearbiter.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -65,6 +66,7 @@ public :
 };
 
 class QT3DCORESHARED_EXPORT QAbstractEffect
+        : public QObservable
 {
 
 public:

@@ -47,7 +47,8 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 QAbstractEffect::QAbstractEffect()
-    : d_ptr(new QAbstractEffectPrivate(this))
+    : QObservable()
+    , d_ptr(new QAbstractEffectPrivate(this))
 {
     qRegisterMetaType<Qt3D::QAbstractEffect*>();
 }
@@ -57,12 +58,20 @@ void QAbstractEffect::addTechnique(QAbstractTechnique *t)
     Q_ASSERT(t);
     Q_D(QAbstractEffect);
     d->m_techniques.append(t);
+    QScenePropertyChangePtr e(new QScenePropertyChange(ComponentAdded, this));
+    e->m_propertyName = QByteArrayLiteral("technique");
+    e->m_value = QVariant::fromValue(t);
+    notifyObservers(e);
 }
 
 void QAbstractEffect::removeTechnique(QAbstractTechnique *t)
 {
     Q_D(QAbstractEffect);
     d->m_techniques.removeOne(t);
+    QScenePropertyChangePtr e(new QScenePropertyChange(ComponentRemoved, this));
+    e->m_propertyName = QByteArrayLiteral("technique");
+    e->m_value = QVariant::fromValue(t);
+    notifyObservers(e);
 }
 
 QList<QAbstractTechnique *> QAbstractEffect::techniques() const

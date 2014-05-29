@@ -64,7 +64,6 @@ void Effect::addTechnique(QAbstractTechnique *t)
 void Effect::removeTechnique(QAbstractTechnique *t)
 {
     QAbstractEffect::removeTechnique(t);
-    delete t;
 }
 
 } // Qt3D
