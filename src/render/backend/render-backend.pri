@@ -41,7 +41,8 @@ HEADERS += \
     $$PWD/vaomanager.h \
     $$PWD/shadermanager.h \
     $$PWD/techniquemanager.h \
-    $$PWD/rendereffect.h
+    $$PWD/rendereffect.h \
+    $$PWD/effectmanager.h
 
 SOURCES += \
     $$PWD/rendereraspect.cpp \
@@ -79,4 +80,5 @@ SOURCES += \
     $$PWD/vaomanager.cpp \
     $$PWD/shadermanager.cpp \
     $$PWD/techniquemanager.cpp \
-    $$PWD/rendereffect.cpp
+    $$PWD/rendereffect.cpp \
+    $$PWD/effectmanager.cpp
