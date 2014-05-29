@@ -40,7 +40,8 @@ HEADERS += \
     $$PWD/matrixmanager.h \
     $$PWD/vaomanager.h \
     $$PWD/shadermanager.h \
-    $$PWD/techniquemanager.h
+    $$PWD/techniquemanager.h \
+    $$PWD/rendereffect.h
 
 SOURCES += \
     $$PWD/rendereraspect.cpp \
@@ -77,4 +78,5 @@ SOURCES += \
     $$PWD/matrixmanager.cpp \
     $$PWD/vaomanager.cpp \
     $$PWD/shadermanager.cpp \
-    $$PWD/techniquemanager.cpp
+    $$PWD/techniquemanager.cpp \
+    $$PWD/rendereffect.cpp
