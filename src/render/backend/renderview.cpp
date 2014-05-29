@@ -70,6 +70,8 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
+QMutex RenderView::m_mutex;
+
 RenderView::RenderView()
     : m_renderer(Q_NULLPTR)
     , m_techniqueFilter(0)
@@ -215,7 +217,7 @@ void RenderView::setCommandShaderTechniqueEffect(RenderCommand *command)
     RenderMaterial *material = m_renderer->materialManager()->data(command->m_material);
     if (m_techniqueFilter != Q_NULLPTR && material != Q_NULLPTR &&
             !m_techniqueFilter->filters().empty() && material->peer() != Q_NULLPTR) {
-        QMutexLocker locker(&m_mutex);
+        QMutexLocker locker(&RenderView::m_mutex);
         // The VAO Handle is set directly in the renderer thread so as to avoid having to use a mutex here
         // Set shader, technique, and effect by basically doing :
         // ShaderProgramManager[MaterialManager[frontentEntity->uuid()]->Effect->Techniques[TechniqueFilter->name]->RenderPasses[RenderPassFilter->name]];

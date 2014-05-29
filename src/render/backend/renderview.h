@@ -104,7 +104,7 @@ private:
     TechniqueFilter *m_techniqueFilter;
     RenderPassFilter *m_passFilter;
     QRectF m_viewport;
-    QMutex m_mutex;
+    static QMutex m_mutex;
     // We do not use pointers to RenderNodes or Drawable's here so that the
     // render aspect is free to change the drawables on the next frame whilst
     // the render thread is submitting these commands.
