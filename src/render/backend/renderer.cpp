@@ -85,6 +85,7 @@
 #include <vaomanager.h>
 #include <shadermanager.h>
 #include <techniquemanager.h>
+#include <effectmanager.h>
 #include "renderlogging.h"
 #include <effect.h>
 #include <QStack>
@@ -115,6 +116,7 @@ Renderer::Renderer()
     , m_vaoManager(new VAOManager())
     , m_shaderManager(new ShaderManager())
     , m_techniqueManager(new TechniqueManager())
+    , m_effectManager(new EffectManager())
     , m_renderQueues(new RenderQueues())
     , m_frameCount(0)
 {

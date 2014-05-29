@@ -95,6 +95,7 @@ class MatrixManager;
 class VAOManager;
 class ShaderManager;
 class TechniqueManager;
+class EffectManager;
 
 class Renderer
 {
@@ -131,6 +132,7 @@ public:
     VAOManager *vaoManager() const { return m_vaoManager; }
     ShaderManager *shaderManager() const { return m_shaderManager; }
     TechniqueManager *techniqueManager() const { return m_techniqueManager; }
+    EffectManager *effectManager() const { return m_effectManager; }
     // temporary!
 
     RenderTechnique* techniqueForMaterial(Material* mat);
@@ -186,6 +188,7 @@ private:
     VAOManager *m_vaoManager;
     ShaderManager *m_shaderManager;
     TechniqueManager *m_techniqueManager;
+    EffectManager *m_effectManager;
 
     QTimer* m_frameTimer;
 
