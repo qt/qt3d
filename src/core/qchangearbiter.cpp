@@ -72,6 +72,7 @@ void QObservable::unregisterObserver(QObserverInterface *observer)
     m_observers.removeOne(observer);
 }
 
+// This calls sceneChangeEvent on the QChangeArbiter
 void QObservable::notifyObservers(const QSceneChangePtr &e)
 {
     QReadLocker locker(&m_lock);
@@ -108,6 +109,8 @@ void QChangeArbiter::distributeQueueChanges(ChangeQueue *changeQueue)
     Q_FOREACH (const QSceneChangePtr &change, *changeQueue) {
         // Lookup which observers care about the subject this change came from
         // and distribute the change to them
+        if (change.isNull())
+            continue;
         switch (change->m_subjectType) {
         case QSceneChange::ObservableType: {
             QObservableInterface *subject = change->m_subject.m_observable;

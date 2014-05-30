@@ -164,6 +164,8 @@ class QT3DCORESHARED_EXPORT QObservable : public QObservableInterface
 public:
     QObservable();
 
+    // In most cases, only the QChangeArbiter should be able to call these
+    // Might be worth making them private and having a friend class
     void registerObserver(QObserverInterface *observer) Q_DECL_OVERRIDE;
     void unregisterObserver(QObserverInterface *observer) Q_DECL_OVERRIDE;
 
