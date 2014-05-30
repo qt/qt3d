@@ -65,6 +65,7 @@ public :
 
     EntityPrivate(Entity *qq)
         : q_ptr(qq)
+        , m_uuid(QUuid::createUuid())
     {}
 
     Q_DECLARE_PUBLIC(Entity)
@@ -73,7 +74,7 @@ public :
     ComponentList m_components;
     bool m_visible;
 
-    QUuid m_uuid;
+    const QUuid m_uuid;
 
     mutable QMatrix4x4 m_matrix;
     QMatrix4x4 m_sceneMatrix;
@@ -91,11 +92,7 @@ public:
     virtual ~Entity()
     {}
 
-    QUuid uuid() const
-    {
-        Q_D(const Entity);
-        return d->m_uuid;
-    }
+    const QUuid uuid() const;
 
     ComponentList components() const;
 

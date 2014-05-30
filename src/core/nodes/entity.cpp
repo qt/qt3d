@@ -58,7 +58,12 @@ Entity::Entity()
 {
     Q_D(Entity);
     d->m_enabled = true;
-    d->m_uuid = QUuid::createUuid();
+}
+
+const QUuid Entity::uuid() const
+{
+    Q_D(const Entity);
+    return d->m_uuid;
 }
 
 QList<Component *> Entity::components() const
