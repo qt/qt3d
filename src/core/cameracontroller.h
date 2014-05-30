@@ -59,7 +59,7 @@ namespace Qt3D
 class Camera;
 class Entity;
 
-class CameraController : public QObject
+class QT3DCORESHARED_EXPORT CameraController : public QObject
 {
     Q_OBJECT
     Q_PROPERTY( float linearSpeed READ linearSpeed WRITE setLinearSpeed NOTIFY linearSpeedChanged )

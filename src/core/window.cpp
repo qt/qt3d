@@ -77,7 +77,7 @@ Window::Window(QScreen *screen)
     m_aspectEngine->initialize();
     m_aspectEngine->setWindow(this);
 
-    m_controller = new CameraController;
+    m_controller = new CameraController();
 
     m_updateTimer = new QTimer(this);
     m_updateTimer->setInterval(16);

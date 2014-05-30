@@ -56,14 +56,12 @@ namespace Qt3D {
 class CameraPrivate;
 class CameraLens;
 class Transform;
-class LookAtTransform;
 
 class QT3DCORESHARED_EXPORT Camera : public EntityNode
 {
     Q_OBJECT
-    // TODO Move view matrix out of the camera and use Transform component (once it exists)
-    Q_PROPERTY(Qt3D::CameraLens* lens READ lens WRITE setLens NOTIFY lensChanged)
-    Q_PROPERTY(Qt3D::Transform* transform READ transform WRITE setTransform NOTIFY transformChanged)
+    Q_PROPERTY(Qt3D::CameraLens *lens READ lens WRITE setLens NOTIFY lensChanged)
+    Q_PROPERTY(Qt3D::Transform *transform READ transform WRITE setTransform NOTIFY transformChanged)
 
 public:
     explicit Camera(Node *parent = 0);

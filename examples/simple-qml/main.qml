@@ -138,31 +138,32 @@ Node {
             farPlane : 1000.0
         }
 
-        Entity {
+        Camera {
             id: camera1
             objectName: "mainCamera"
+            lens : CameraLens {
+                projectionType: CameraLens.PerspectiveProjection
+                fieldOfView: 45
+                aspectRatio: 16/9
+                nearPlane : 0.01
+                farPlane : 1000.0
+            }
 
-            components : [
-                Transform {
-                    LookAt {
-                        position: Qt.vector3d( 0.0, 0.0, -20.0 )
-                        upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
-                        viewCenter: Qt.vector3d( 0.0, 0.0, 10.0 )
-                    }
-                    Rotate {
-                        angle : -30
-                        axis : Qt.vector3d(0, 1, 0)
-                    }
-                },
-                CameraLens {
-                    objectName : "lens_2"
-                    projectionType: CameraLens.PerspectiveProjection
-                    fieldOfView: 45
-                    aspectRatio: 16/9
-                    nearPlane : 0.01
-                    farPlane : 1000.0
+            transform : Transform {
+                LookAt {
+                    position: Qt.vector3d( 0.0, 0.0, -20.0 )
+                    upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
+                    viewCenter: Qt.vector3d( 0.0, 0.0, 10.0 )
                 }
-            ]
+                Rotate {
+                    angle : -30
+                    axis : Qt.vector3d(0, 1, 0)
+                }
+            }
+        }
+
+        Configuration  {
+            controlledCamera: camera1
         }
 
         Entity {

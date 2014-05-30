@@ -55,18 +55,24 @@
 #include <Qt3DCore/qabstracttechnique.h>
 #include <Qt3DCore/qabstractmesh.h>
 #include <Qt3DCore/qabstractrenderpass.h>
+#include <Qt3DQuick/quick3dconfiguration.h>
 
 QT_BEGIN_NAMESPACE
 
 void Qt3DQuick3DCorePlugin::registerTypes(const char *uri)
 {
-    qmlRegisterUncreatableType<Qt3D::Node>(uri, 2, 0, "Node_priv", "");
+    qmlRegisterUncreatableType<Qt3D::Node>(uri, 2, 0, "Node_private", "");
+    qmlRegisterUncreatableType<Qt3D::Transform>(uri, 2, 0, "Transform_private", "");
     qmlRegisterInterface<Qt3D::QAbstractEffect>("QAbstractEffect");
     qmlRegisterUncreatableType<Qt3D::QAbstractMesh>(uri, 2, 0, "QAbstractMesh", "");
     qmlRegisterUncreatableType<Qt3D::QAbstractMaterial>(uri, 2, 0, "QAbstractMaterial", "");
     qmlRegisterUncreatableType<Qt3D::QAbstractTechnique>(uri, 2, 0, "QAbstractTechnique", "");
     qmlRegisterUncreatableType<Qt3D::QAbstractRenderPass>(uri, 2, 0, "QAbstractRenderPass", "");
 
+    qmlRegisterType<Qt3D::Quick::Quick3DConfiguration>(uri, 2, 0, "Configuration");
+    qmlRegisterType<Qt3D::Quick::Quick3DEntity>(uri, 2, 0, "Entity");
+    qmlRegisterType<Qt3D::Quick::Quick3DTransform>(uri, 2, 0, "Transform");
+    qmlRegisterType<Qt3D::Quick::Quick3DNode>(uri, 2, 0, "Node");
     qmlRegisterType<Qt3D::Component>(uri, 2, 0, "Component");
     qmlRegisterType<Qt3D::Camera>(uri, 2, 0, "Camera");
     qmlRegisterType<Qt3D::CameraLens>(uri, 2, 0, "CameraLens");
@@ -75,9 +81,6 @@ void Qt3DQuick3DCorePlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3D::RotateTransform>(uri, 2, 0, "Rotate");
     qmlRegisterType<Qt3D::LookAtTransform>(uri, 2, 0, "LookAt");
     qmlRegisterType<Qt3D::ScaleTransform>(uri, 2, 0, "Scale");
-    qmlRegisterType<Qt3D::Quick::Quick3DEntity>(uri, 2, 0, "Entity");
-    qmlRegisterType<Qt3D::Quick::Quick3DTransform>(uri, 2, 0, "Transform");
-    qmlRegisterType<Qt3D::Quick::Quick3DNode>(uri, 2, 0, "Node");
 }
 
 QT_END_NAMESPACE

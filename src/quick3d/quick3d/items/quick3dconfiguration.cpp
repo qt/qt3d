@@ -39,67 +39,38 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_WINDOW_H
-#define QT3D_WINDOW_H
-
-#include <QWindow>
-#include <Qt3DCore/qt3dcore_global.h>
+#include "quick3dconfiguration.h"
+#include "quickwindow.h"
+#include <QDebug>
 
 QT_BEGIN_NAMESPACE
 
-class QTimer;
-
 namespace Qt3D {
 
-class AbstractAspect;
-class QAspectEngine;
-class Camera;
+namespace Quick {
 
-// temporary solution to get control over camera
-class CameraController;
-
-class QT3DCORESHARED_EXPORT Window : public QWindow
+Quick3DConfiguration::Quick3DConfiguration(QObject *parent)
+    : QObject(parent)
+    , m_camera(Q_NULLPTR)
 {
-    Q_OBJECT
-public:
-    explicit Window(QScreen *screen = 0);
-    ~Window();
+}
 
-    void setRootObject( QObject* obj );
+void Quick3DConfiguration::setControlledCamera(Camera *camera)
+{
+    if (m_camera != camera) {
+        m_camera = camera;
+        emit controlledCameraChanged();
+        Qt3D::Quick::QuickWindow::getInstance()->setCamera(camera);
+    }
+}
 
-    QSharedPointer<QObject> rootObject() { return m_root; }
-    void    registerAspect(AbstractAspect *aspect);
-    virtual void    setCamera(Camera *camera);
+Camera *Quick3DConfiguration::controlledCamera() const
+{
+    return m_camera;
+}
 
-protected:
-    virtual void keyPressEvent(QKeyEvent *e);
-    virtual void keyReleaseEvent( QKeyEvent* e );
+} // Quick
 
-    virtual void mousePressEvent( QMouseEvent* e );
-    virtual void mouseReleaseEvent( QMouseEvent* e );
-    virtual void mouseMoveEvent( QMouseEvent* e );
-    virtual void resizeEvent(QResizeEvent *e);
-
-
-private slots:
-    void onUpdate();
-
-protected:
-    QSharedPointer<QObject> m_root;
-
-    // The various aspects (subsystems) that will be interested in (parts)
-    // of the objects in the object tree.
-    QAspectEngine *m_aspectEngine;
-    Camera* m_camera;
-
-    // temporary, borrowed from training material
-    CameraController* m_controller;
-
-    QTimer* m_updateTimer;
-};
-
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_WINDOW_H

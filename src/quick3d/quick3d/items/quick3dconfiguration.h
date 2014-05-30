@@ -39,67 +39,41 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_WINDOW_H
-#define QT3D_WINDOW_H
+#ifndef QT3D_QUICK_QUICK3DCONFIGURATION_H
+#define QT3D_QUICK_QUICK3DCONFIGURATION_H
 
-#include <QWindow>
-#include <Qt3DCore/qt3dcore_global.h>
+#include <Qt3DQuick/qt3dquick_global.h>
+#include <QObject>
 
 QT_BEGIN_NAMESPACE
 
-class QTimer;
-
 namespace Qt3D {
 
-class AbstractAspect;
-class QAspectEngine;
 class Camera;
 
-// temporary solution to get control over camera
-class CameraController;
+namespace Quick {
 
-class QT3DCORESHARED_EXPORT Window : public QWindow
+class QT3DQUICKSHARED_EXPORT Quick3DConfiguration : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(Qt3D::Camera *controlledCamera READ controlledCamera WRITE setControlledCamera NOTIFY controlledCameraChanged)
 public:
-    explicit Window(QScreen *screen = 0);
-    ~Window();
+    explicit Quick3DConfiguration(QObject *parent = 0);
 
-    void setRootObject( QObject* obj );
+    void setControlledCamera(Camera *camera);
+    Camera *controlledCamera() const;
 
-    QSharedPointer<QObject> rootObject() { return m_root; }
-    void    registerAspect(AbstractAspect *aspect);
-    virtual void    setCamera(Camera *camera);
+Q_SIGNALS:
+    void controlledCameraChanged();
 
-protected:
-    virtual void keyPressEvent(QKeyEvent *e);
-    virtual void keyReleaseEvent( QKeyEvent* e );
-
-    virtual void mousePressEvent( QMouseEvent* e );
-    virtual void mouseReleaseEvent( QMouseEvent* e );
-    virtual void mouseMoveEvent( QMouseEvent* e );
-    virtual void resizeEvent(QResizeEvent *e);
-
-
-private slots:
-    void onUpdate();
-
-protected:
-    QSharedPointer<QObject> m_root;
-
-    // The various aspects (subsystems) that will be interested in (parts)
-    // of the objects in the object tree.
-    QAspectEngine *m_aspectEngine;
-    Camera* m_camera;
-
-    // temporary, borrowed from training material
-    CameraController* m_controller;
-
-    QTimer* m_updateTimer;
+private:
+    Camera *m_camera;
 };
 
-} // namespace Qt3D
+} // Quick
+
+} // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_WINDOW_H
+#endif // QT3D_QUICK_QUICK3DCONFIGURATION_H

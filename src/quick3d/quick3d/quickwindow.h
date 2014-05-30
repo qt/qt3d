@@ -56,6 +56,8 @@ class QAspectEngine;
 
 namespace Quick {
 
+class Quick3DConfiguration;
+
 class QT3DQUICKSHARED_EXPORT QuickWindow : public Qt3D::Window
 {
     Q_OBJECT
@@ -68,6 +70,10 @@ public:
     Status status() const;
     void setSource(const QUrl& url);
 
+    void setCamera(Camera *camera);
+    static QuickWindow *getInstance();
+
+
 Q_SIGNALS:
     void statusChanged(Status);
 
@@ -78,6 +84,7 @@ private:
     QScopedPointer<QQmlEngine> m_engine;
     QSharedPointer<QQmlComponent> m_component;
 
+    static QuickWindow *m_instance;
 };
 
 } // Quick

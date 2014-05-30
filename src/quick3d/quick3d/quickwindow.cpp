@@ -43,7 +43,10 @@
 #include <Qt3DCore/qaspectengine.h>
 
 #include <QQmlComponent>
+#include <QQmlContext>
 #include <QDebug>
+#include <QTimer>
+#include "cameracontroller.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -51,10 +54,16 @@ namespace Qt3D {
 
 namespace Quick {
 
+QuickWindow *QuickWindow::m_instance = Q_NULLPTR;
+
 QuickWindow::QuickWindow(QScreen *screen)
     : Window(screen)
     , m_engine(new QQmlEngine)
 {
+
+    // HACKED TO BE ABLE TO ASSIGN CAMERA TO CONTROLLER
+    // FROM QML EASILY
+    QuickWindow::m_instance = this;
 }
 
 QuickWindow::~QuickWindow()
@@ -97,6 +106,20 @@ void QuickWindow::setSource(const QUrl& source)
                              this, SLOT(continueExecute()));
         }
     }
+}
+
+void QuickWindow::setCamera(Camera *camera)
+{
+    Window::setCamera(camera);
+    if (m_camera) {
+        m_controller->setCamera(m_camera);
+        m_updateTimer->start();
+    }
+}
+
+QuickWindow *QuickWindow::getInstance()
+{
+    return QuickWindow::m_instance;
 }
 
 void QuickWindow::continueExecute()
