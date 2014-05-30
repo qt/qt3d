@@ -43,6 +43,7 @@
 #define QT3D_QABSTRACTMESH_H
 
 #include <Qt3DCore/component.h>
+#include <QUuid>
 
 QT_BEGIN_NAMESPACE
 
@@ -55,12 +56,15 @@ class QAbstractMeshPrivate
 public:
     QAbstractMeshPrivate(QAbstractMesh *qq)
         : q_ptr(qq)
+        , m_uuid(QUuid::createUuid())
     {}
 
-    QString m_source;
 
     Q_DECLARE_PUBLIC(QAbstractMesh)
     QAbstractMesh *q_ptr;
+
+    QString m_source;
+    const QUuid m_uuid;
 };
 
 class QT3DCORESHARED_EXPORT QAbstractMesh : public Component
@@ -71,6 +75,9 @@ public:
 
     virtual void setSource(const QString &source);
     QString source() const;
+
+    const QUuid uuid() const;
+
 
     // Signal
     virtual void sourceChanged() = 0;

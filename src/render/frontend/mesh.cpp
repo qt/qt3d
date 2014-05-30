@@ -56,7 +56,6 @@ Mesh::Mesh(Node *parent)
     : QAbstractMesh( parent )
     , m_sourceDirty( false )
 {
-    m_uuid = QUuid::createUuid();
 }
 
 Mesh::~Mesh()

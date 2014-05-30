@@ -66,6 +66,12 @@ QString QAbstractMesh::source() const
     return d->m_source;
 }
 
+const QUuid QAbstractMesh::uuid() const
+{
+    Q_D(const QAbstractMesh);
+    return d->m_uuid;
+}
+
 } // Qt3D
 
 QT_END_NAMESPACE

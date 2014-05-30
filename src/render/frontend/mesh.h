@@ -44,7 +44,6 @@
 
 #include <Qt3DCore/qabstractmesh.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <QUuid>
 #include <Qt3DRenderer/meshdata.h>
 
 QT_BEGIN_NAMESPACE
@@ -63,7 +62,6 @@ class QT3DRENDERERSHARED_EXPORT Mesh : public QAbstractMesh
 public:
     Mesh(Node *parent = 0);
     virtual ~Mesh();
-    QUuid uuid() const { return m_uuid; }
 
     void setSource(const QString &source) Q_DECL_OVERRIDE;
 
@@ -77,7 +75,6 @@ private:
     MeshDataPtr m_data;
     QString m_source;
     bool m_sourceDirty;
-    QUuid m_uuid;
 };
 
 }
