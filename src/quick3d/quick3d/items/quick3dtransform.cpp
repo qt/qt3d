@@ -68,7 +68,6 @@ void Quick3DTransform::qmlAppendTransform(QQmlListProperty<AbstractTransform> *l
 
     Transform *self = static_cast<Transform *>(list->object);
     self->appendTransform(obj);
-    QObject::connect(obj, SIGNAL(transformUpdated()), self, SLOT(setTransformsDirty()));
 }
 
 AbstractTransform* Quick3DTransform::transformAt(QQmlListProperty<AbstractTransform> *list, int index)
@@ -86,10 +85,8 @@ int Quick3DTransform::transformCount(QQmlListProperty<AbstractTransform> *list)
 void Quick3DTransform::qmlClearTransforms(QQmlListProperty<AbstractTransform> *list)
 {
     Transform *self = static_cast<Transform *>(list->object);
-    Q_FOREACH (AbstractTransform *trans, self->transforms()) {
-        QObject::disconnect(trans, SIGNAL(transformUpdated()), self, SLOT(setTransformsDirty()));
+    Q_FOREACH (AbstractTransform *trans, self->transforms())
         self->removeTransform(trans);
-    }
 }
 
 } //Quick

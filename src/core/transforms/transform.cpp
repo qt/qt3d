@@ -105,12 +105,14 @@ void Transform::setRotationCenter(const QVector3D &rc)
 void Transform::appendTransform(AbstractTransform *xform)
 {
     m_transforms.append( xform );
+    QObject::connect(xform, SIGNAL(transformUpdated()), this, SLOT(setTransformsDirty()));
     setTransformsDirty();
 }
 
 void Transform::removeTransform(AbstractTransform *xform)
 {
     m_transforms.removeOne( xform );
+    QObject::disconnect(xform, SIGNAL(transformUpdated()), this, SLOT(setTransformsDirty()));
     setTransformsDirty();
 }
 
