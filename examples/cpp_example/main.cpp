@@ -44,6 +44,7 @@
 #include <exampleresources.h>
 
 #include <Qt3DCore/window.h>
+#include <Qt3DCore/camera.h>
 #include <Qt3DCore/entitynode.h>
 #include <Qt3DCore/cameralens.h>
 
@@ -121,7 +122,7 @@ int main(int ac, char **av)
     scene->setSource(":/assets/test_scene.dae");
 
     // Camera
-    Qt3D::EntityNode *cameraEntity = new Qt3D::EntityNode();
+    Qt3D::Camera *cameraEntity = new Qt3D::Camera();
     cameraEntity->setObjectName(QStringLiteral("cameraEntity"));
     Qt3D::CameraLens *cameraLens = new Qt3D::CameraLens();
     Qt3D::Transform *cameraTransform = new Qt3D::Transform();
@@ -132,8 +133,9 @@ int main(int ac, char **av)
     cameraLookAtTransform->setViewCenter(QVector3D(11, 0, 5));
     cameraLookAtTransform->setUpVector(QVector3D(0, 1, 0));
     cameraTransform->appendTransform(cameraLookAtTransform);
-    cameraEntity->addComponent(cameraTransform);
-    cameraEntity->addComponent(cameraLens);
+    cameraEntity->setTransform(cameraTransform);
+    cameraEntity->setLens(cameraLens);
+    view.setCamera(cameraEntity);
 
     // FrameGraph
     Qt3D::FrameGraph *frameGraph = new Qt3D::FrameGraph();

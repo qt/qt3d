@@ -69,6 +69,7 @@ public:
 
     QSharedPointer<QObject> rootObject() { return m_root; }
     void    registerAspect(AbstractAspect *aspect);
+    void    setCamera(Camera *camera);
 
 protected:
     virtual void keyPressEvent(QKeyEvent *e);
@@ -78,6 +79,7 @@ protected:
     virtual void mouseReleaseEvent( QMouseEvent* e );
     virtual void mouseMoveEvent( QMouseEvent* e );
     virtual void resizeEvent(QResizeEvent *e);
+
 
 private slots:
     void onUpdate();

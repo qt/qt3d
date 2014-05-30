@@ -65,7 +65,11 @@ void Camera::setLens(CameraLens *lens)
 {
     Q_D(Camera);
     if (d->m_lens != lens) {
+        if (d->m_lens)
+            removeComponent(d->m_lens);
         d->m_lens = lens;
+        if (d->m_lens)
+            addComponent(d->m_lens);
         emit lensChanged();
     }
 }
@@ -80,7 +84,11 @@ void Camera::setTransform(Transform *transform)
 {
     Q_D(Camera);
     if (d->m_transform != transform) {
+        if (d->m_transform)
+            removeComponent(d->m_transform);
         d->m_transform = transform;
+        if (d->m_transform)
+            addComponent(d->m_transform);
         emit transformChanged();
     }
 }
