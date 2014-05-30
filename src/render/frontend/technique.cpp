@@ -52,51 +52,57 @@ Technique::Technique(Node *parent)
 {
 }
 
-void Technique::addTag(const QString &name, const QVariant &value)
+void Technique::addCriterion(TechniqueCriterion *criterion)
 {
-    Tag *tag = new Tag(this);
-    tag->setName(name);
-    tag->setValue(value);
-    m_tags.insert(name, tag);
-    m_tagList.append(tag);
+    if (m_criteriaList.contains(criterion))
+        m_criteriaList.append(criterion);
 }
 
-void Technique::removeTag(const QString &name)
+void Technique::removeCriterion(TechniqueCriterion *criterion)
 {
-    Tag *tag = m_tags.value(name);
-    m_tags.remove(name);
-    m_tagList.removeOne(tag);
-    if (tag) {
-        delete tag;
-    }
+    m_criteriaList.removeOne(criterion);
 }
 
-void Technique::setTagValue(const QString &name, const QVariant &value)
+QVariant Technique::criterionValue(const QString &customTypeName) const
 {
-    Tag *tag = m_tags.value(name);
-    if (tag)
-        tag->setValue(value);
+    Q_FOREACH (TechniqueCriterion *criterion, m_criteriaList)
+        if (criterion->criterionCustomType() == customTypeName)
+            return criterion->criterionValue();
+    return QVariant();
 }
 
-QVariant Technique::tagValue(const QString &name) const
+QVariant Technique::criterionValue(TechniqueCriterion::CriterionType type)
 {
-    return m_tags.value(name)->value();
+    Q_FOREACH (TechniqueCriterion *criterion, m_criteriaList)
+        if (criterion->criterionType() == type)
+            return criterion->criterionValue();
+    return QVariant();
 }
 
-QList<Tag *> Technique::tags() const
+QList<TechniqueCriterion *> Technique::criteria() const
 {
-    return m_tagList;
+    return m_criteriaList;
 }
 
-void Technique::clearTags()
+void Technique::clearCriteria()
 {
-    m_tagList.clear();
-    m_tags.clear();
+    m_criteriaList.clear();
 }
 
-bool Technique::containsTag(const QString &name) const
+bool Technique::containsCriterion(const QString &customTypeName) const
 {
-    return m_tags.contains(name);
+    Q_FOREACH (TechniqueCriterion *criterion, m_criteriaList)
+        if (criterion->criterionCustomType() == customTypeName)
+            return true;
+    return false;
+}
+
+bool Technique::containsCriterion(TechniqueCriterion::CriterionType type) const
+{
+    Q_FOREACH (TechniqueCriterion *criterion, m_criteriaList)
+        if (criterion->criterionType() == type)
+            return true;
+    return false;
 }
 
 void Technique::addPass(RenderPass *pass)

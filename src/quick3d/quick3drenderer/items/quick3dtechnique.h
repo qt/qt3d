@@ -58,18 +58,18 @@ class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTechnique : public Technique
 {
     Q_OBJECT
 
-    Q_PROPERTY(QQmlListProperty<Qt3D::Tag> tags READ tags NOTIFY tagsChanged)
+    Q_PROPERTY(QQmlListProperty<Qt3D::TechniqueCriterion> criteria READ criteriaList NOTIFY criteriaChanged)
     Q_PROPERTY(QQmlListProperty<Qt3D::RenderPass> renderPasses READ renderPassList NOTIFY renderPassesChanged)
     Q_PROPERTY(QQmlListProperty<Qt3D::Parameter> parameters READ parameterList)
 public:
     explicit Quick3DTechnique(Node *parent = 0);
 
-    QQmlListProperty<Qt3D::Tag> tags();
+    QQmlListProperty<Qt3D::TechniqueCriterion> criteriaList();
     QQmlListProperty<Qt3D::RenderPass> renderPassList();
     QQmlListProperty<Qt3D::Parameter> parameterList();
 
 Q_SIGNALS:
-    void tagsChanged();
+    void criteriaChanged();
     void renderPassesChanged();
 
 private:
@@ -79,10 +79,10 @@ private:
     static int parametersCount(QQmlListProperty<Parameter> *list);
     static void clearParameterList(QQmlListProperty<Parameter> *list);
 
-    static void appendTag(QQmlListProperty<Tag> *list, Tag *bar);
-    static Tag *tagAt(QQmlListProperty<Tag> *list, int index);
-    static int tagCount(QQmlListProperty<Tag> *list);
-    static void clearTagsList(QQmlListProperty<Tag> *list);
+    static void appendCriterion(QQmlListProperty<TechniqueCriterion> *list, TechniqueCriterion *criterion);
+    static TechniqueCriterion *criterionAt(QQmlListProperty<TechniqueCriterion> *list, int index);
+    static int criteriaCount(QQmlListProperty<TechniqueCriterion> *list);
+    static void clearCriteriaList(QQmlListProperty<TechniqueCriterion> *list);
 
     static void appendRenderPass(QQmlListProperty<RenderPass> *list, RenderPass* renderPass);
     static RenderPass *renderPassAt(QQmlListProperty<RenderPass> *list, int index);

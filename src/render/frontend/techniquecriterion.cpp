@@ -52,6 +52,20 @@ TechniqueCriterion::TechniqueCriterion(QObject *parent)
 
 }
 
+bool TechniqueCriterion::operator ==(const TechniqueCriterion &other)
+{
+    if (&other == this)
+        return true;
+    if (other.criterionType() == criterionType()) {
+        if (other.criterionType() == CustomType)
+            return (other.criterionCustomType() == criterionCustomType())
+                    && (other.criterionValue() == criterionValue());
+        else
+            return other.criterionValue() == criterionValue();
+    }
+    return false;
+}
+
 void TechniqueCriterion::setCriterionType(TechniqueCriterion::CriterionType type)
 {
     Q_D(TechniqueCriterion);

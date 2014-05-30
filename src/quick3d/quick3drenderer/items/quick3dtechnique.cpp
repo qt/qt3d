@@ -132,47 +132,47 @@ void Quick3DTechnique::clearRenderPasses(QQmlListProperty<RenderPass> *list)
     }
 }
 
-QQmlListProperty<Qt3D::Tag> Quick3DTechnique::tags()
+QQmlListProperty<Qt3D::TechniqueCriterion> Quick3DTechnique::criteriaList()
 {
-    return QQmlListProperty<Qt3D::Tag>(this, 0,
-                                       &Quick3DTechnique::appendTag,
-                                       &Quick3DTechnique::tagCount,
-                                       &Quick3DTechnique::tagAt,
-                                       &Quick3DTechnique::clearTagsList);
+    return QQmlListProperty<Qt3D::TechniqueCriterion>(this, 0,
+                                       &Quick3DTechnique::appendCriterion,
+                                       &Quick3DTechnique::criteriaCount,
+                                       &Quick3DTechnique::criterionAt,
+                                       &Quick3DTechnique::clearCriteriaList);
 }
 
-void Quick3DTechnique::appendTag(QQmlListProperty<Tag> *list, Tag *tag)
+void Quick3DTechnique::appendCriterion(QQmlListProperty<TechniqueCriterion> *list, TechniqueCriterion *criterion)
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     if (technique) {
-        tag->setParent(technique);
-        technique->addTag(tag->name(), QVariant::fromValue(tag));
-        emit technique->tagsChanged();
+        criterion->setParent(technique);
+        technique->addCriterion(criterion);
+        emit technique->criteriaChanged();
     }
 }
 
-Tag *Quick3DTechnique::tagAt(QQmlListProperty<Tag> *list, int index)
+TechniqueCriterion *Quick3DTechnique::criterionAt(QQmlListProperty<TechniqueCriterion> *list, int index)
 {
     Technique *technique = qobject_cast<Technique *>(list->object);
     if (technique)
-        return technique->tags().at(index);
+        return technique->criteria().at(index);
     return 0;
 }
 
-int Quick3DTechnique::tagCount(QQmlListProperty<Tag> *list)
+int Quick3DTechnique::criteriaCount(QQmlListProperty<TechniqueCriterion> *list)
 {
     Technique *technique = qobject_cast<Technique *>(list->object);
     if (technique)
-        return technique->tags().size();
+        return technique->criteria().size();
     return 0;
 }
 
-void Quick3DTechnique::clearTagsList(QQmlListProperty<Tag> *list)
+void Quick3DTechnique::clearCriteriaList(QQmlListProperty<TechniqueCriterion> *list)
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     if (technique) {
-        technique->clearTags();
-        emit technique->tagsChanged();
+        technique->clearCriteria();
+        emit technique->criteriaChanged();
     }
 }
 

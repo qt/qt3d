@@ -40,8 +40,7 @@
 ****************************************************************************/
 
 #include "techniquefilternode.h"
-
-#include <QDebug>
+#include "techniquecriterion.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -52,29 +51,24 @@ TechniqueFilter::TechniqueFilter(FrameGraphNode *parent)
     : FrameGraphNode(FrameGraphNode::TechniqueFilter, parent)
 {
 }
-QHash<QString, QVariant> TechniqueFilter::filters() const
+QList<TechniqueCriterion*> TechniqueFilter::filters() const
 {
     return m_filters;
 }
 
-void TechniqueFilter::appendFilter(const QString &name, const QVariant &filter)
+void TechniqueFilter::appendFilter(TechniqueCriterion *criterion)
 {
-    m_filters[name] = filter;
+    if (!m_filters.contains(criterion))
+        m_filters.append(criterion);
 }
 
-void TechniqueFilter::removeFilter(const QString &name)
+void TechniqueFilter::removeFilter(TechniqueCriterion *criterion)
 {
-    m_filters.remove(name);
+    m_filters.removeOne(criterion);
 }
 
-QVariant TechniqueFilter::filter(const QString &name) const
-{
-    if (m_filters.contains(name))
-        return m_filters[name];
-    return QVariant();
-}
+} // Render
 
-}
-}
+} // Qt3D
 
 QT_END_NAMESPACE

@@ -44,8 +44,7 @@
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DRenderer/framegraphitem.h>
-
-#include <Qt3DRenderer/tag.h>
+#include <Qt3DRenderer/techniquecriterion.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -62,7 +61,7 @@ public :
 
     Q_DECLARE_PUBLIC(TechniqueFilter)
     TechniqueFilter *q_ptr;
-    QList<Tag *> m_tagList;
+    QList<TechniqueCriterion *> m_criteriaList;
 };
 
 class QT3DRENDERERSHARED_EXPORT TechniqueFilter : public FrameGraphItem
@@ -75,29 +74,28 @@ public:
     virtual ~TechniqueFilter()
     {}
 
-    //    QQmlListProperty<Qt3D::Tag> tagList();
-    QList<Tag *> tags() const
+    QList<TechniqueCriterion *> criteria() const
     {
         Q_D(const TechniqueFilter);
-        return d->m_tagList;
+        return d->m_criteriaList;
     }
 
-    void addTag(Tag *tag)
+    void addCriterion(TechniqueCriterion *criterion)
     {
         Q_D(TechniqueFilter);
-        d->m_tagList.append(tag);
-        emit tagsChanged();
+        d->m_criteriaList.append(criterion);
+        emit criteriaChanged();
     }
 
-    void removeTag(Tag *tag)
+    void removeCriterion(TechniqueCriterion *criterion)
     {
         Q_D(TechniqueFilter);
-        d->m_tagList.removeOne(tag);
-        emit tagsChanged();
+        d->m_criteriaList.removeOne(criterion);
+        emit criteriaChanged();
     }
 
 Q_SIGNALS:
-    virtual void tagsChanged() = 0;
+    virtual void criteriaChanged() = 0;
 
 private:
     Q_DECLARE_PRIVATE(TechniqueFilter)

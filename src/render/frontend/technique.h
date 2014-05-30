@@ -48,7 +48,7 @@
 #include <Qt3DRenderer/tag.h>
 #include <Qt3DRenderer/renderpass.h>
 #include <Qt3DCore/qabstracttechnique.h>
-
+#include <Qt3DRenderer/techniquecriterion.h>
 #include <QList>
 #include <QMap>
 #include <QSharedPointer>
@@ -175,13 +175,14 @@ class QT3DRENDERERSHARED_EXPORT Technique : public QAbstractTechnique
 public:
     explicit Technique(Node *parent = 0);
 
-    void addTag( const QString &name, const QVariant &value );
-    void removeTag( const QString &name );
-    void setTagValue( const QString &name, const QVariant &value );
-    QVariant tagValue( const QString &name ) const;
-    QList<Tag *> tags() const;
-    void clearTags();
-    bool containsTag( const QString &name ) const;
+    void addCriterion(TechniqueCriterion *criterion);
+    void removeCriterion(TechniqueCriterion *criterion);
+    QVariant criterionValue(const QString &customTypeName) const;
+    QVariant criterionValue(TechniqueCriterion::CriterionType type);
+    QList<TechniqueCriterion *> criteria() const;
+    void clearCriteria();
+    bool containsCriterion(const QString &customTypeName) const;
+    bool containsCriterion(TechniqueCriterion::CriterionType type) const;
 
     void addPass(RenderPass* pass);
     void removePass(RenderPass *pass);
@@ -201,8 +202,7 @@ Q_SIGNALS:
 
 private:
 
-    QList<Tag *> m_tagList;
-    QMap<QString, Tag *> m_tags;
+    QList<TechniqueCriterion *> m_criteriaList;
     QList<Parameter *> m_parameters;
     QList<RenderPass *> m_renderPasses;
 };

@@ -57,7 +57,7 @@ public:
     TechniqueFilterNode(Node *parent = 0);
 
 Q_SIGNALS:
-    void tagsChanged() Q_DECL_OVERRIDE;
+    void criteriaChanged() Q_DECL_OVERRIDE;
     void enabledChanged() Q_DECL_OVERRIDE;
 };
 

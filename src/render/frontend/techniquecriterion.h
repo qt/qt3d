@@ -71,6 +71,7 @@ public:
         Vendor
     };
 
+    bool operator ==(const TechniqueCriterion &other);
     void setCriterionType(CriterionType type);
     void setCriterionValue(const QVariant &value);
     void setCriterionCustomType(const QString &customType);

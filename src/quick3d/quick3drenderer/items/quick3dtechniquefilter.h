@@ -58,21 +58,21 @@ class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTechniqueFilter : public Quick3DFram
 {
     Q_OBJECT
     Q_INTERFACES(Qt3D::TechniqueFilter)
-    Q_PROPERTY(QQmlListProperty<Qt3D::Tag> tags READ tagList)
+    Q_PROPERTY(QQmlListProperty<Qt3D::TechniqueCriterion> criteria READ criteriaList)
 
 public:
     explicit Quick3DTechniqueFilter(Node *parent = 0);
-    QQmlListProperty<Qt3D::Tag> tagList();
+    QQmlListProperty<Qt3D::TechniqueCriterion> criteriaList();
 
 Q_SIGNALS:
-    void tagsChanged() Q_DECL_OVERRIDE;
+    void criteriaChanged() Q_DECL_OVERRIDE;
     void enabledChanged() Q_DECL_OVERRIDE;
 
 private:
-    static void appendTag(QQmlListProperty<Tag> *list, Tag *bar);
-    static Tag *tagAt(QQmlListProperty<Tag> *list, int index);
-    static int tagCount(QQmlListProperty<Tag> *list);
-    static void clearTags(QQmlListProperty<Tag> *list);
+    static void appendCriterion(QQmlListProperty<TechniqueCriterion> *list, TechniqueCriterion *criterion);
+    static TechniqueCriterion *criterionAt(QQmlListProperty<TechniqueCriterion> *list, int index);
+    static int criteriaCount(QQmlListProperty<TechniqueCriterion> *list);
+    static void clearCriteria(QQmlListProperty<TechniqueCriterion> *list);
 
 };
 

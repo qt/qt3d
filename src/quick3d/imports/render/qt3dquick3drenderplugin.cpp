@@ -75,6 +75,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterInterface<Qt3D::Render::QAbstractScene>("QAbstractScene");
     qmlRegisterCustomType<Qt3D::Render::Quick::Quick3DEffect>(uri, 2, 0, "Effect", new Qt3D::Render::Quick::ShaderPropertyParser());
     qmlRegisterType<Qt3D::Render::Quick::Quick3DTechnique>(uri, 2, 0, "Technique");
+    qmlRegisterType<Qt3D::TechniqueCriterion>(uri, 2, 0, "TechniqueCriterion");
     qmlRegisterType<Qt3D::Tag>(uri, 2, 0, "Tag");
     qmlRegisterType<Qt3D::Mesh>(uri, 2, 0, "Mesh");
     qmlRegisterType<Qt3D::Render::Quick::Quick3DMaterial>(uri, 2, 0, "Material");

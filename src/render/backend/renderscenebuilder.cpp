@@ -150,8 +150,8 @@ Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(Node *block)
         Render::TechniqueFilter *techniqueFilterNode = new Render::TechniqueFilter();
 
         qCDebug(Backend) << Q_FUNC_INFO << "TechniqueFilter";
-        foreach (Tag *tag, techniqueFilter->tags())
-            techniqueFilterNode->appendFilter(tag->name(), tag->value());
+        foreach (TechniqueCriterion *criterion, techniqueFilter->criteria())
+            techniqueFilterNode->appendFilter(criterion);
         return techniqueFilterNode;
     }
     else if (qobject_cast<Qt3D::Viewport*>(block) != Q_NULLPTR) {

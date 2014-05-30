@@ -49,9 +49,9 @@ Effect {
         Technique {
             id: technique1
 
-            tags: [
-                Tag { name: "useEarlyZ"; value: true },
-                Tag { name: "description"; value: "forward" }
+            criteria : [
+                TechniqueCriterion { name: "useEarlyZ"; value: true },
+                TechniqueCriterion { name: "description"; value: "forward" }
             ]
 
             renderPasses: [

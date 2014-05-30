@@ -43,13 +43,15 @@
 #define QT3D_RENDER_TECHNIQUEFILTER_H
 
 #include <Qt3DRenderer/framegraphnode.h>
-#include <QHash>
+#include <QList>
 #include <QString>
 #include <QVariant>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
+
+class TechniqueCriterion;
 
 namespace Render {
 
@@ -58,13 +60,12 @@ class TechniqueFilter : public Render::FrameGraphNode
 public:
     TechniqueFilter(Render::FrameGraphNode *parent = 0);
 
-    QHash<QString, QVariant> filters() const;
-    void appendFilter(const QString &name, const QVariant &filter);
-    void removeFilter(const QString &name);
-    QVariant filter(const QString &name) const;
+    QList<TechniqueCriterion*> filters() const;
+    void appendFilter(TechniqueCriterion *criterion);
+    void removeFilter(TechniqueCriterion *criterion);
 
 private:
-    QHash<QString, QVariant> m_filters;
+    QList<TechniqueCriterion *> m_filters;
 };
 
 } // Render

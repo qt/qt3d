@@ -66,6 +66,8 @@
 #include "effectmanager.h"
 #include "renderlogging.h"
 
+#include <QDebug>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
@@ -230,7 +232,32 @@ void RenderView::setCommandShaderTechniqueEffect(RenderCommand *command)
             effect->setRendererAspect(m_renderer->rendererAspect());
             effect->setPeer(fEffect);
         }
-        QString techniqueName = m_techniqueFilter->filters().values().first().toString();
+
+        // Check to see if the Effect contains a Technique matching the criteria defined in the Technique Filter
+        Q_FOREACH (QAbstractTechnique *technique, effect->techniques()) {
+            Technique *tech = Q_NULLPTR;
+            if ((tech = qobject_cast<Technique*>(technique)) != Q_NULLPTR) {
+                bool foundMatchingTechnique = true;
+                Q_FOREACH (TechniqueCriterion *filterCriterion, m_techniqueFilter->filters()) {
+                    bool findMatch = false;
+                    Q_FOREACH (TechniqueCriterion *techCriterion, tech->criteria()) {
+                        if (filterCriterion == techCriterion) {
+                            findMatch = true;
+                            break;
+                        }
+                    }
+                    if (!findMatch) {
+                        foundMatchingTechnique = false;
+                        break;
+                    }
+                }
+                if (!foundMatchingTechnique)
+                    qFatal("No Technique was found matching the criteria defined in the TechniqueFilter");
+            }
+        }
+
+        // This will be changed in the near future
+        QString techniqueName; //= m_techniqueFilter->filters().values().first().toString();
         command->m_technique = m_renderer->techniqueManager()->lookupHandle(EffectTechniquePair(fEffect, techniqueName));
         if (effect != Q_NULLPTR && m_renderer->techniqueManager()->data(command->m_technique) == Q_NULLPTR) {
             RenderTechnique *technique = Q_NULLPTR;
