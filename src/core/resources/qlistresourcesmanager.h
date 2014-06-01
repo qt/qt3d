@@ -54,7 +54,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 template <typename T, typename C, int INDEXBITS = 16>
-class QT3DCORESHARED_EXPORT QListResourcesManager : public QAbstractResourcesManager<T, C, INDEXBITS>
+class QListResourcesManager : public QAbstractResourcesManager<T, C, INDEXBITS>
 {
 
 public:
