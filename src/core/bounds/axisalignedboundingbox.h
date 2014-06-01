@@ -137,7 +137,7 @@ private:
                            const AxisAlignedBoundingBox &b);
 };
 
-QDebug operator<<(QDebug dbg, const AxisAlignedBoundingBox &c);
+QT3DCORESHARED_EXPORT QDebug operator<<(QDebug dbg, const AxisAlignedBoundingBox &c);
 
 inline bool intersects(const AxisAlignedBoundingBox &a,
                        const AxisAlignedBoundingBox &b)
