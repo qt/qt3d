@@ -42,14 +42,14 @@
 #ifndef QT3D_FRAMEGRAPH_H
 #define QT3D_FRAMEGRAPH_H
 
-#include <Qt3DCore/qt3dcore_global.h>
+#include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DCore/component.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DCORESHARED_EXPORT FrameGraph : public Qt3D::Component
+class QT3DRENDERERSHARED_EXPORT FrameGraph : public Qt3D::Component
 {
     Q_OBJECT
     // Note : The full namespace has to be used to define the property
