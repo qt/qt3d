@@ -64,7 +64,7 @@
 #include <Qt3DCore/transform.h>
 
 #include <Qt3DRenderer/cameraselector.h>
-#include <Qt3DRenderer/renderpassfilteritem.h>
+#include <Qt3DRenderer/renderpassfilter.h>
 #include <Qt3DRenderer/techniquefilter.h>
 #include <Qt3DRenderer/viewport.h>
 #include <Qt3DRenderer/rendereraspect.h>
@@ -141,7 +141,7 @@ int main(int ac, char **av)
     Qt3D::FrameGraph *frameGraph = new Qt3D::FrameGraph();
     Qt3D::TechniqueFilter *techniqueFilter = new Qt3D::TechniqueFilter();
     Qt3D::CameraSelector *cameraSelector = new Qt3D::CameraSelector();
-    Qt3D::RenderPassFilterNode *defaultRenderPassFilter = new Qt3D::RenderPassFilterNode();
+    Qt3D::RenderPassFilter *defaultRenderPassFilter = new Qt3D::RenderPassFilter();
     Qt3D::Viewport *viewport = new Qt3D::Viewport();
 
     // TechiqueFilter and renderPassFilter are not implement yet

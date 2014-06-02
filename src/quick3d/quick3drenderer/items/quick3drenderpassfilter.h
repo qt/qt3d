@@ -42,6 +42,7 @@
 #ifndef QT3D_RENDER_QUICK_QUICK3DRENDERPASSFILTER_H
 #define QT3D_RENDER_QUICK_QUICK3DRENDERPASSFILTER_H
 
+#include <Qt3DQuick/quick3dnode.h>
 #include <Qt3DQuickRenderer/quick3dframegraphitem.h>
 #include <Qt3DRenderer/renderpassfilter.h>
 
@@ -53,18 +54,11 @@ namespace Render {
 
 namespace Quick {
 
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DRenderPassFilter : public Quick3DFrameGraphItem, public virtual RenderPassFilter
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DRenderPassFilter : public Qt3D::Quick::Quick3DNode
 {
     Q_OBJECT
-    Q_INTERFACES(Qt3D::RenderPassFilter)
-    Q_PROPERTY(QString renderPassName READ renderPassName WRITE setRenderPassName NOTIFY renderPassNameChanged)
-
 public:
-    Quick3DRenderPassFilter(Node *parent = 0);
-
-Q_SIGNALS:
-    void renderPassNameChanged() Q_DECL_OVERRIDE;
-    void enabledChanged() Q_DECL_OVERRIDE;
+    explicit Quick3DRenderPassFilter(QObject *parent = 0);
 };
 
 } // Quick

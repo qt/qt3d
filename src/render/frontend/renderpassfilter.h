@@ -65,11 +65,16 @@ public:
     QString m_renderPassName;
 };
 
-class QT3DRENDERERSHARED_EXPORT RenderPassFilter : public FrameGraphItem
+class QT3DRENDERERSHARED_EXPORT RenderPassFilter : public Node, public FrameGraphItem
 {
+    Q_OBJECT
+    Q_INTERFACES(Qt3D::FrameGraphItem)
+    Q_PROPERTY(QString renderPassName READ renderPassName WRITE setRenderPassName NOTIFY renderPassNameChanged)
+
 public:
-    RenderPassFilter()
-        : d_ptr(new RenderPassFilterPrivate(this))
+    explicit RenderPassFilter(Node *parent = 0)
+        : Node(parent)
+        , d_ptr(new RenderPassFilterPrivate(this))
     {}
 
     ~RenderPassFilter() {}
@@ -90,7 +95,8 @@ public:
     }
 
 Q_SIGNALS:
-    virtual void renderPassNameChanged() = 0;
+    void renderPassNameChanged();
+    void enabledChanged() Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(RenderPassFilter)
@@ -98,8 +104,6 @@ private:
 };
 
 } // namespace Qt3D
-
-Q_DECLARE_INTERFACE(Qt3D::RenderPassFilter, "org.qt-project.Qt3D.Render.RenderPassFilter/2.0")
 
 QT_END_NAMESPACE
 

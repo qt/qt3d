@@ -49,9 +49,8 @@ namespace Render {
 
 namespace Quick {
 
-Quick3DRenderPassFilter::Quick3DRenderPassFilter(Node *parent)
-    : RenderPassFilter()
-    , Quick3DFrameGraphItem(parent)
+Quick3DRenderPassFilter::Quick3DRenderPassFilter(QObject *parent)
+    : Quick3DNode(parent)
 {
 }
 
