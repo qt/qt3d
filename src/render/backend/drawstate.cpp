@@ -56,6 +56,8 @@ namespace Qt3D {
 namespace Render {
 
 DrawStateSet::DrawStateSet()
+    : m_stateMask(0)
+    , m_cachedPrevious(0)
 {
 
 }
@@ -110,7 +112,7 @@ void DrawStateSet::apply(QGraphicsContext *gc)
 
     resetMasked(stateToReset, gc);
 
-    if (previousStates == m_cachedPrevious) {
+    if (m_cachedPrevious && previousStates == m_cachedPrevious) {
         // state-change cache hit
         foreach (DrawState* ds, m_cachedDeltaStates) {
             ds->apply(gc);
