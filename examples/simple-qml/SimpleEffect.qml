@@ -50,8 +50,8 @@ Effect {
             id: technique1
 
             criteria : [
-                TechniqueCriterion { name: "useEarlyZ"; value: true },
-                TechniqueCriterion { name: "description"; value: "forward" }
+                TechniqueCriterion { criterionType : TechniqueCriterion.CustomType; criterionCustomType: "useEarlyZ"; criterionValue : true},
+                TechniqueCriterion { criterionType : TechniqueCriterion.RenderingStyle; criterionValue : "forward"}
             ]
 
             renderPasses: [
@@ -71,9 +71,9 @@ Effect {
         Technique {
             id: technique2
 
-            tags: [
-                Tag { name: "useEarlyZ"; value: false },
-                Tag { name: "description"; value: "forward" }
+            criteria : [
+                TechniqueCriterion { criterionType : TechniqueCriterion.CustomType; criterionCustomType: "useEarlyZ"; criterionValue : false},
+                TechniqueCriterion { criterionType : TechniqueCriterion.RenderingStyle; criterionValue : "forward"}
             ]
 
             renderPasses: [
@@ -86,9 +86,9 @@ Effect {
         Technique {
             id: technique3
 
-            tags: [
-                Tag { name: "useEarlyZ"; value: false },
-                Tag { name: "description"; value: "deferred" }
+            criteria : [
+                TechniqueCriterion { criterionType : TechniqueCriterion.CustomType; criterionCustomType: "useEarlyZ"; criterionValue : false},
+                TechniqueCriterion { criterionType : TechniqueCriterion.RenderingStyle; criterionValue : "deferred"}
             ]
 
             renderPasses: [

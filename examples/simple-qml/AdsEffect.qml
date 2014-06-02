@@ -59,8 +59,8 @@ Effect {
 
     techniques: [
         Technique {
-            tags: [
-                Tag { name: "style"; value: "forward" }
+            criteria : [
+                TechniqueCriterion { criterionType : TechniqueCriterion.RenderingStyle; criterionValue : "forward"}
             ]
 
             renderPasses: [
