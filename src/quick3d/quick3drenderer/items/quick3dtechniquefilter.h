@@ -44,6 +44,7 @@
 
 #include <Qt3DQuickRenderer/quick3dframegraphitem.h>
 #include <Qt3DRenderer/techniquefilter.h>
+#include <Qt3DQuick/quick3dnode.h>
 #include <QQmlListProperty>
 
 QT_BEGIN_NAMESPACE
@@ -54,19 +55,16 @@ namespace Render {
 
 namespace Quick {
 
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTechniqueFilter : public Quick3DFrameGraphItem, public virtual TechniqueFilter
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTechniqueFilter : public Qt3D::Quick::Quick3DNode
 {
     Q_OBJECT
-    Q_INTERFACES(Qt3D::TechniqueFilter)
     Q_PROPERTY(QQmlListProperty<Qt3D::TechniqueCriterion> criteria READ criteriaList)
 
 public:
-    explicit Quick3DTechniqueFilter(Node *parent = 0);
+    explicit Quick3DTechniqueFilter(QObject *parent = 0);
     QQmlListProperty<Qt3D::TechniqueCriterion> criteriaList();
 
-Q_SIGNALS:
-    void criteriaChanged() Q_DECL_OVERRIDE;
-    void enabledChanged() Q_DECL_OVERRIDE;
+    inline TechniqueFilter *parentTechniqueFilter() { return qobject_cast<Qt3D::TechniqueFilter*>(parent()); }
 
 private:
     static void appendCriterion(QQmlListProperty<TechniqueCriterion> *list, TechniqueCriterion *criterion);

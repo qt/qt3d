@@ -64,11 +64,14 @@ public :
     QList<TechniqueCriterion *> m_criteriaList;
 };
 
-class QT3DRENDERERSHARED_EXPORT TechniqueFilter : public FrameGraphItem
+class QT3DRENDERERSHARED_EXPORT TechniqueFilter : public Node, public FrameGraphItem
 {
+    Q_OBJECT
+    Q_INTERFACES(Qt3D::FrameGraphItem)
 public:
-    TechniqueFilter()
-        : d_ptr(new TechniqueFilterPrivate(this))
+    explicit TechniqueFilter(Node *parent = 0)
+        : Node(parent)
+        , d_ptr(new TechniqueFilterPrivate(this))
     {}
 
     virtual ~TechniqueFilter()
@@ -95,7 +98,8 @@ public:
     }
 
 Q_SIGNALS:
-    virtual void criteriaChanged() = 0;
+    void criteriaChanged();
+    void enabledChanged() Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(TechniqueFilter)
@@ -103,8 +107,6 @@ private:
 };
 
 } // namespace Qt3D
-
-Q_DECLARE_INTERFACE(Qt3D::TechniqueFilter, "org.qt-project.Qt3D.Render.TechniqueFilter/2.0")
 
 QT_END_NAMESPACE
 

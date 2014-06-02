@@ -49,9 +49,8 @@ namespace Render {
 
 namespace Quick {
 
-Quick3DTechniqueFilter::Quick3DTechniqueFilter(Node *parent)
-    : TechniqueFilter()
-    , Quick3DFrameGraphItem(parent)
+Quick3DTechniqueFilter::Quick3DTechniqueFilter(QObject *parent)
+    : Quick3DNode(parent)
 {
 }
 
@@ -68,33 +67,33 @@ void Quick3DTechniqueFilter::appendCriterion(QQmlListProperty<TechniqueCriterion
 {
     Quick3DTechniqueFilter *filter = qobject_cast<Quick3DTechniqueFilter *>(list->object);
     if (filter) {
-        criterion->setParent(filter);
-        filter->addCriterion(criterion);
+        criterion->setParent(filter->parentTechniqueFilter());
+        filter->parentTechniqueFilter()->addCriterion(criterion);
     }
 }
 
 TechniqueCriterion *Quick3DTechniqueFilter::criterionAt(QQmlListProperty<TechniqueCriterion> *list, int index)
 {
-    TechniqueFilter *filter = qobject_cast<TechniqueFilter *>(list->object);
+    Quick3DTechniqueFilter *filter = qobject_cast<Quick3DTechniqueFilter *>(list->object);
     if (filter)
-        return filter->criteria().at(index);
+        return filter->parentTechniqueFilter()->criteria().at(index);
     return 0;
 }
 
 int Quick3DTechniqueFilter::criteriaCount(QQmlListProperty<TechniqueCriterion> *list)
 {
-    TechniqueFilter *filter = qobject_cast<TechniqueFilter *>(list->object);
+    Quick3DTechniqueFilter *filter = qobject_cast<Quick3DTechniqueFilter *>(list->object);
     if (filter)
-        return filter->criteria().size();
+        return filter->parentTechniqueFilter()->criteria().size();
     return 0;
 }
 
 void Quick3DTechniqueFilter::clearCriteria(QQmlListProperty<TechniqueCriterion> *list)
 {
-    TechniqueFilter *filter = qobject_cast<TechniqueFilter *>(list->object);
+    Quick3DTechniqueFilter *filter = qobject_cast<Quick3DTechniqueFilter *>(list->object);
     if (filter) {
-        Q_FOREACH (TechniqueCriterion *criterion, filter->criteria())
-            filter->removeCriterion(criterion);
+        Q_FOREACH (TechniqueCriterion *criterion, filter->parentTechniqueFilter()->criteria())
+            filter->parentTechniqueFilter()->removeCriterion(criterion);
     }
 }
 
