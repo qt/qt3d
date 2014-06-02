@@ -267,7 +267,7 @@ void QGraphicsContext::setModelMatrix(const QMatrix4x4& modelMat)
     const QVector<int>& locs(m_activeShader->standardUniformLocations());
     QOpenGLShaderProgram* prog = activeShader();
 
-    GLint progId;
+    GLint progId = 0;
     glGetIntegerv(GL_CURRENT_PROGRAM, &progId);
     if (progId != (int) prog->programId()) {
         qCWarning(Backend) << "current program mismatch, very bad:" << progId << prog->programId();
