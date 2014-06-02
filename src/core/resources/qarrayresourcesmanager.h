@@ -74,7 +74,6 @@ public:
     {
         Q_ASSERT(!m_freeEntryIndices.isEmpty());
         int idx = m_freeEntryIndices.takeFirst();
-        m_resourceEntries[idx] = T();
         QHandle<T, INDEXBITS> handle = QAbstractResourcesManager<T, C, INDEXBITS>::m_handleManager.acquire(m_resourceEntries.begin() + idx);
         m_handleToResource[handle.index()] = idx;
         return handle;
