@@ -49,8 +49,8 @@ namespace Render {
 
 namespace Quick {
 
-Quick3DTechnique::Quick3DTechnique(Node *parent)
-    : Technique(parent)
+Quick3DTechnique::Quick3DTechnique(QObject *parent)
+    : Quick3DNode(parent)
 {
 }
 
@@ -74,51 +74,51 @@ QQmlListProperty<Parameter> Quick3DTechnique::parameterList()
 
 void Quick3DTechnique::appendParameter(QQmlListProperty<Parameter> *list, Parameter *param)
 {
-    Technique *technique = qobject_cast<Technique *>(list->object);
-    technique->addParameter(param);
+    Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
+    technique->parentTechnique()->addParameter(param);
 }
 
 Parameter *Quick3DTechnique::parameterAt(QQmlListProperty<Parameter> *list, int index)
 {
-    Technique *technique = qobject_cast<Technique *>(list->object);
-    return technique->parameters().at(index);
+    Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
+    return technique->parentTechnique()->parameters().at(index);
 }
 
 int Quick3DTechnique::parametersCount(QQmlListProperty<Parameter> *list)
 {
-    Technique *technique = qobject_cast<Technique *>(list->object);
-    return technique->parameters().count();
+    Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
+    return technique->parentTechnique()->parameters().count();
 }
 
 void Quick3DTechnique::clearParameterList(QQmlListProperty<Parameter> *list)
 {
-    Technique *technique = qobject_cast<Technique *>(list->object);
-    Q_FOREACH (Parameter *p, technique->parameters())
-        technique->removeParameter(p);
+    Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
+    Q_FOREACH (Parameter *p, technique->parentTechnique()->parameters())
+        technique->parentTechnique()->removeParameter(p);
 }
 
 void Quick3DTechnique::appendRenderPass(QQmlListProperty<RenderPass> *list, RenderPass *renderPass)
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     if (technique) {
-        technique->addPass(renderPass);
+        technique->parentTechnique()->addPass(renderPass);
         emit technique->renderPassesChanged();
     }
 }
 
 RenderPass *Quick3DTechnique::renderPassAt(QQmlListProperty<RenderPass> *list, int index)
 {
-    Technique *technique = qobject_cast<Technique *>(list->object);
+    Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     if (technique)
-        return technique->renderPasses().at(index);
+        return technique->parentTechnique()->renderPasses().at(index);
     return 0;
 }
 
 int Quick3DTechnique::renderPassCount(QQmlListProperty<RenderPass> *list)
 {
-    Technique *technique = qobject_cast<Technique *>(list->object);
+    Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     if (technique)
-        return technique->renderPasses().size();
+        return technique->parentTechnique()->renderPasses().size();
     return 0;
 }
 
@@ -126,8 +126,8 @@ void Quick3DTechnique::clearRenderPasses(QQmlListProperty<RenderPass> *list)
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     if (technique) {
-        Q_FOREACH (RenderPass *pass, technique->renderPasses())
-            technique->removePass(pass);
+        Q_FOREACH (RenderPass *pass, technique->parentTechnique()->renderPasses())
+            technique->parentTechnique()->removePass(pass);
         emit technique->renderPassesChanged();
     }
 }
@@ -145,25 +145,25 @@ void Quick3DTechnique::appendCriterion(QQmlListProperty<TechniqueCriterion> *lis
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     if (technique) {
-        criterion->setParent(technique);
-        technique->addCriterion(criterion);
+        criterion->setParent(technique->parentTechnique());
+        technique->parentTechnique()->addCriterion(criterion);
         emit technique->criteriaChanged();
     }
 }
 
 TechniqueCriterion *Quick3DTechnique::criterionAt(QQmlListProperty<TechniqueCriterion> *list, int index)
 {
-    Technique *technique = qobject_cast<Technique *>(list->object);
+    Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     if (technique)
-        return technique->criteria().at(index);
+        return technique->parentTechnique()->criteria().at(index);
     return 0;
 }
 
 int Quick3DTechnique::criteriaCount(QQmlListProperty<TechniqueCriterion> *list)
 {
-    Technique *technique = qobject_cast<Technique *>(list->object);
+    Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     if (technique)
-        return technique->criteria().size();
+        return technique->parentTechnique()->criteria().size();
     return 0;
 }
 
@@ -171,7 +171,7 @@ void Quick3DTechnique::clearCriteriaList(QQmlListProperty<TechniqueCriterion> *l
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     if (technique) {
-        technique->clearCriteria();
+        technique->parentTechnique()->clearCriteria();
         emit technique->criteriaChanged();
     }
 }

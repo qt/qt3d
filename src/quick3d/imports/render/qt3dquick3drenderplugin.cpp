@@ -71,11 +71,10 @@ QT_BEGIN_NAMESPACE
 
 void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
 {
-    qmlRegisterUncreatableType<Qt3D::Technique>(uri, 2, 0, "Technique_priv", "");
     qmlRegisterInterface<Qt3D::Render::QAbstractScene>("QAbstractScene");
     qmlRegisterExtendedType<Qt3D::Scene, Qt3D::Render::Quick::Quick3DScene>(uri, 2, 0, "Scene");
     qmlRegisterCustomType<Qt3D::Render::Quick::Quick3DEffect>(uri, 2, 0, "Effect", new Qt3D::Render::Quick::ShaderPropertyParser());
-    qmlRegisterType<Qt3D::Render::Quick::Quick3DTechnique>(uri, 2, 0, "Technique");
+    qmlRegisterExtendedType<Qt3D::Technique, Qt3D::Render::Quick::Quick3DTechnique>(uri, 2, 0, "Technique");
     qmlRegisterType<Qt3D::TechniqueCriterion>(uri, 2, 0, "TechniqueCriterion");
     qmlRegisterType<Qt3D::Tag>(uri, 2, 0, "Tag");
     qmlRegisterType<Qt3D::Mesh>(uri, 2, 0, "Mesh");

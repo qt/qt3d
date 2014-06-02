@@ -42,6 +42,7 @@
 #ifndef QT3D_RENDER_QUICK_QUICK3DTECHNIQUE_H
 #define QT3D_RENDER_QUICK_QUICK3DTECHNIQUE_H
 
+#include <Qt3DQuick/quick3dnode.h>
 #include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
 #include <Qt3DRenderer/technique.h>
 #include <QQmlListProperty>
@@ -54,19 +55,21 @@ namespace Render {
 
 namespace Quick {
 
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTechnique : public Technique
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTechnique : public Qt3D::Quick::Quick3DNode
 {
     Q_OBJECT
-
     Q_PROPERTY(QQmlListProperty<Qt3D::TechniqueCriterion> criteria READ criteriaList NOTIFY criteriaChanged)
     Q_PROPERTY(QQmlListProperty<Qt3D::RenderPass> renderPasses READ renderPassList NOTIFY renderPassesChanged)
     Q_PROPERTY(QQmlListProperty<Qt3D::Parameter> parameters READ parameterList)
 public:
-    explicit Quick3DTechnique(Node *parent = 0);
+    explicit Quick3DTechnique(QObject *parent = 0);
 
     QQmlListProperty<Qt3D::TechniqueCriterion> criteriaList();
     QQmlListProperty<Qt3D::RenderPass> renderPassList();
     QQmlListProperty<Qt3D::Parameter> parameterList();
+
+    // Use QAbstractTechnique when it has been properly defined
+    inline Technique *parentTechnique() const { return qobject_cast<Technique*>(parent()); }
 
 Q_SIGNALS:
     void criteriaChanged();
