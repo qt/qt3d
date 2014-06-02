@@ -110,6 +110,11 @@ QVector3D LookAtTransform::viewCenter() const
     return m_viewCenter;
 }
 
+void LookAtTransform::setViewVector(const QVector3D &viewVector)
+{
+    m_viewVector = viewVector;
+}
+
 QVector3D LookAtTransform::viewVector() const
 {
     return m_viewVector;

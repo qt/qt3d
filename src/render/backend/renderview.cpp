@@ -106,7 +106,7 @@ void RenderView::setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf)
                 RenderCamera *tmpCam = m_renderer->cameraManager()->data(m_camera);
                 RenderNode *tmpCamNode = m_renderer->renderNodesManager()->lookupResource(cameraEntity->uuid());
                 if (tmpCam && tmpCamNode)
-                    tmpCam->setViewMatrix(tmpCamNode->worldTransform()->inverted());
+                    tmpCam->setViewMatrix(*tmpCamNode->worldTransform());
             }
             break;
         }

@@ -73,6 +73,7 @@ public:
     void setViewCenter(const QVector3D &viewCenter);
     QVector3D viewCenter() const;
 
+    void setViewVector(const QVector3D &viewVector);
     QVector3D viewVector() const;
 
 Q_SIGNALS:

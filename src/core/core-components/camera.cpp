@@ -98,15 +98,41 @@ void Camera::translate( const QVector3D& vLocal, CameraTranslationOption option 
     Q_D(Camera);
     LookAtTransform *lookAt = d->m_transform->findFirstTransform<LookAtTransform>();
     if (lookAt == Q_NULLPTR)
-        return ;
+        return;
 
-    // Update the camera position
-    lookAt->setPosition(lookAt->position() + vLocal);
+    // Calculate the amount to move by in world coordinates
+    QVector3D vWorld;
+    if ( !qFuzzyIsNull( vLocal.x() ) )
+    {
+        // Calculate the vector for the local x axis
+        QVector3D x = QVector3D::crossProduct(lookAt->viewVector(), lookAt->upVector()).normalized();
+        vWorld += vLocal.x() * x;
+    }
+
+    if ( !qFuzzyIsNull( vLocal.y() ) )
+        vWorld += vLocal.y() * lookAt->upVector();
+
+    if ( !qFuzzyIsNull( vLocal.z() ) )
+        vWorld += vLocal.z() * lookAt->viewVector().normalized();
+
+    // Update the camera position using the calculated world vector
+    lookAt->setPosition(lookAt->position() + vWorld);
 
     // May be also update the view center coordinates
     if ( option == TranslateViewCenter )
-        lookAt->setViewCenter(lookAt->viewCenter() + vLocal);
+        lookAt->setViewCenter(lookAt->viewCenter() + vWorld);
 
+    // Refresh the camera -> view center vector
+    lookAt->setViewVector(lookAt->viewCenter() - lookAt->position());
+
+    // Calculate a new up vector. We do this by:
+    // 1) Calculate a new local x-direction vector from the cross product of the new
+    //    camera to view center vector and the old up vector.
+    // 2) The local x vector is the normal to the plane in which the new up vector
+    //    must lay. So we can take the cross product of this normal and the new
+    //    x vector. The new normal vector forms the last part of the orthonormal basis
+    QVector3D x = QVector3D::crossProduct( lookAt->viewVector(), lookAt->upVector() ).normalized();
+    lookAt->setUpVector(QVector3D::crossProduct( x, lookAt->viewVector() ).normalized());
 }
 
 void Camera::translateWorld(const QVector3D& vWorld , CameraTranslationOption option )
@@ -124,11 +150,7 @@ void Camera::translateWorld(const QVector3D& vWorld , CameraTranslationOption op
         lookAt->setViewCenter(lookAt->viewCenter() + vWorld);
 
     // Refresh the camera -> view center vector
-    lookAt->setViewCenter(lookAt->position() - lookAt->viewCenter());
-    //    m_cameraToCenter = d->m_viewCenter - d->m_position;
-
-    //    d->m_viewMatrixDirty = true;
-    //    d->m_viewProjectionMatrixDirty = true;
+    lookAt->setViewVector(lookAt->viewCenter() - lookAt->position());
 }
 
 QQuaternion Camera::tiltRotation(float angle) const

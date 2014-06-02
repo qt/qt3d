@@ -270,7 +270,7 @@ void CameraController::mouseMoveEvent( QMouseEvent* e )
 
     m_pos = e->pos();
     float dx = m_pos.x() - m_prevPos.x();
-    float dy = m_pos.y() - m_prevPos.y();
+    float dy = -(m_pos.y() - m_prevPos.y());
     m_prevPos = m_pos;
 
     if ( m_leftButtonPressed )
