@@ -49,9 +49,8 @@ namespace Render {
 
 namespace Quick {
 
-Quick3DViewport::Quick3DViewport(Node *parent)
-    : Viewport()
-    , Quick3DFrameGraphItem(parent)
+Quick3DViewport::Quick3DViewport(QObject *parent)
+    : Quick3DNode(parent)
 {
 }
 

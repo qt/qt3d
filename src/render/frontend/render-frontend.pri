@@ -7,7 +7,6 @@ HEADERS += \
     $$PWD/renderpassfilter.h \
     $$PWD/shaderprogram.h \
     $$PWD/technique.h \
-    $$PWD/viewportitem.h \
     $$PWD/techniquefilter.h \
     $$PWD/tag.h \
     $$PWD/shape.h \
@@ -40,7 +39,6 @@ SOURCES += \
     $$PWD/qabstractscene.cpp \
     $$PWD/framegraph.cpp \
     $$PWD/framegraphitem.cpp \
-    $$PWD/viewportitem.cpp \
     $$PWD/renderpassfilteritem.cpp \
     $$PWD/rendertargetselectoritem.cpp \
     $$PWD/effect.cpp \

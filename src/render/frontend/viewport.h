@@ -63,11 +63,16 @@ public :
     QRectF m_rect;
 };
 
-class QT3DRENDERERSHARED_EXPORT Viewport : public FrameGraphItem
+class QT3DRENDERERSHARED_EXPORT Viewport : public Node, public FrameGraphItem
 {
+    Q_OBJECT
+    Q_INTERFACES(Qt3D::FrameGraphItem)
+    Q_PROPERTY(QRectF rect READ rect WRITE setRect NOTIFY rectChanged)
+
 public:
-    Viewport()
-        : d_ptr(new ViewportPrivate(this))
+    explicit Viewport(Node *parent = 0)
+        : Node(parent)
+        , d_ptr(new ViewportPrivate(this))
     {}
 
     virtual ~Viewport() {}
@@ -92,7 +97,9 @@ public:
     }
 
 Q_SIGNALS:
-    virtual void rectChanged() = 0;
+    void rectChanged();
+    void enabledChanged() Q_DECL_OVERRIDE;
+
 
 private:
     Q_DECLARE_PRIVATE(Viewport)
@@ -100,8 +107,6 @@ private:
 };
 
 } // Qt3D
-
-Q_DECLARE_INTERFACE(Qt3D::Viewport, "org.qt-project.Qt3D.Render.Viewport/2.0")
 
 QT_END_NAMESPACE
 

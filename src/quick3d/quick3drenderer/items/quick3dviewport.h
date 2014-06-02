@@ -42,6 +42,7 @@
 #ifndef QT3D_RENDER_QUICK_QUICK3DVIEWPORT_H
 #define QT3D_RENDER_QUICK_QUICK3DVIEWPORT_H
 
+#include <Qt3DQuick/quick3dnode.h>
 #include <Qt3DQuickRenderer/quick3dframegraphitem.h>
 #include <Qt3DRenderer/viewport.h>
 
@@ -53,17 +54,13 @@ namespace Render {
 
 namespace Quick {
 
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DViewport : public Quick3DFrameGraphItem, public virtual Viewport
+// TO DO : Check if this is required or if this might as well be removed
+
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DViewport : public Qt3D::Quick::Quick3DNode
 {
     Q_OBJECT
-    Q_INTERFACES(Qt3D::Viewport)
-    Q_PROPERTY(QRectF rect READ rect WRITE setRect NOTIFY rectChanged)
 public:
-    explicit Quick3DViewport(Node *parent = 0);
-
-Q_SIGNALS:
-    void rectChanged() Q_DECL_OVERRIDE;
-    void enabledChanged() Q_DECL_OVERRIDE;
+    explicit Quick3DViewport(QObject *parent = 0);
 };
 
 } // Quick
