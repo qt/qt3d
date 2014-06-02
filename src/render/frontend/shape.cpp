@@ -189,7 +189,7 @@ MeshDataPtr createTorusMesh(double radius, double minorRadius,
 {
     MeshDataPtr mesh(new MeshData(GL_TRIANGLES));
 
-    int nVerts  = ( sides + 1 ) * ( rings + 1 );
+    int nVerts  = sides * ( rings + 1 );
     QByteArray bufferBytes;
     // vec3 pos, vec2 texCoord, vec3 normal
     quint32 elementSize = 3 + 2 + 3;
