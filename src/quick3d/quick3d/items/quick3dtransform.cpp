@@ -48,7 +48,8 @@ namespace Qt3D {
 
 namespace Quick {
 
-Quick3DTransform::Quick3DTransform(Node *parent) : Transform(parent)
+Quick3DTransform::Quick3DTransform(QObject *parent)
+    : QObject(parent)
 {
 }
 
@@ -66,27 +67,27 @@ void Quick3DTransform::qmlAppendTransform(QQmlListProperty<AbstractTransform> *l
     if ( !obj )
         return;
 
-    Transform *self = static_cast<Transform *>(list->object);
-    self->appendTransform(obj);
+    Quick3DTransform *self = static_cast<Quick3DTransform *>(list->object);
+    self->parentTransform()->appendTransform(obj);
 }
 
 AbstractTransform* Quick3DTransform::transformAt(QQmlListProperty<AbstractTransform> *list, int index)
 {
-    Transform *self = static_cast<Transform *>(list->object);
-    return self->transforms().at(index);
+    Quick3DTransform *self = static_cast<Quick3DTransform *>(list->object);
+    return self->parentTransform()->transforms().at(index);
 }
 
 int Quick3DTransform::transformCount(QQmlListProperty<AbstractTransform> *list)
 {
-    Transform *self = static_cast<Transform *>(list->object);
-    return self->transforms().count();
+    Quick3DTransform *self = static_cast<Quick3DTransform *>(list->object);
+    return self->parentTransform()->transforms().count();
 }
 
 void Quick3DTransform::qmlClearTransforms(QQmlListProperty<AbstractTransform> *list)
 {
-    Transform *self = static_cast<Transform *>(list->object);
-    Q_FOREACH (AbstractTransform *trans, self->transforms())
-        self->removeTransform(trans);
+    Quick3DTransform *self = static_cast<Quick3DTransform *>(list->object);
+    Q_FOREACH (AbstractTransform *trans, self->parentTransform()->transforms())
+        self->parentTransform()->removeTransform(trans);
 }
 
 } //Quick
