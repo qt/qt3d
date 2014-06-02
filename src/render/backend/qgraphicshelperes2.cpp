@@ -59,7 +59,9 @@ void QGraphicsHelperES2::initializeHelper(QOpenGLContext *context,
 {
     Q_UNUSED(context)
     m_funcs = static_cast<QOpenGLFunctions_ES2*>(functions);
-    Q_ASSERT(m_funcs->initializeOpenGLFunctions());
+    const bool ok = m_funcs->initializeOpenGLFunctions();
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
     // Check Vertex Array Object extension is present
     Q_ASSERT(context->hasExtension(QByteArrayLiteral("GL_OES_vertex_array_object")));
 }

@@ -59,7 +59,9 @@ void QGraphicsHelperGL3::initializeHelper(QOpenGLContext *context,
 {
     Q_UNUSED(context)
     m_funcs = static_cast<QOpenGLFunctions_3_2_Core*>(functions);
-    Q_ASSERT(m_funcs->initializeOpenGLFunctions());
+    const bool ok = m_funcs->initializeOpenGLFunctions();
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
 }
 
 void QGraphicsHelperGL3::drawElementsInstanced(GLenum primitiveType,
