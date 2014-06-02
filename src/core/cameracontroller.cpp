@@ -142,8 +142,6 @@ void CameraController::update(double dt)
                                                : Camera::TranslateViewCenter;
     m_camera->translate(dt * QVector3D(m_vx, m_vy, m_vz), option);
 
-//    m_cameraEntity->setMatrix(m_camera->viewMatrix().inverted());
-
     if (!qFuzzyIsNull(m_panAngle)) {
         m_camera->pan(m_panAngle);
         m_panAngle = 0.0f;
