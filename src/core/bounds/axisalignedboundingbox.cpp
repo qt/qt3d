@@ -50,8 +50,16 @@ namespace Qt3D {
 
 void AxisAlignedBoundingBox::update(const QVector<QVector3D> &points)
 {
-    QVector3D minPoint, maxPoint;
-    for (int i = 0; i < points.size(); ++i)
+    if (points.isEmpty()) {
+        m_center = QVector3D();
+        m_radii = QVector3D();
+        return;
+    }
+
+    QVector3D minPoint = points.at( 0 );
+    QVector3D maxPoint = points.at( 0 );
+
+    for (int i = 1; i < points.size(); ++i)
     {
         const QVector3D &point = points.at(i);
         if (point.x() > maxPoint.x())
