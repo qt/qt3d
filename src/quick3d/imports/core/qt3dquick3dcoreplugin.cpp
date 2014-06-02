@@ -61,20 +61,18 @@ QT_BEGIN_NAMESPACE
 
 void Qt3DQuick3DCorePlugin::registerTypes(const char *uri)
 {
-    qmlRegisterUncreatableType<Qt3D::Node>(uri, 2, 0, "Node_private", "");
-    qmlRegisterUncreatableType<Qt3D::Transform>(uri, 2, 0, "Transform_private", "");
     qmlRegisterInterface<Qt3D::QAbstractEffect>("QAbstractEffect");
+    qmlRegisterUncreatableType<Qt3D::Component>(uri, 2, 0, "Component", "");
     qmlRegisterUncreatableType<Qt3D::QAbstractMesh>(uri, 2, 0, "QAbstractMesh", "");
     qmlRegisterUncreatableType<Qt3D::QAbstractMaterial>(uri, 2, 0, "QAbstractMaterial", "");
     qmlRegisterUncreatableType<Qt3D::QAbstractTechnique>(uri, 2, 0, "QAbstractTechnique", "");
     qmlRegisterUncreatableType<Qt3D::QAbstractRenderPass>(uri, 2, 0, "QAbstractRenderPass", "");
 
     qmlRegisterType<Qt3D::Quick::Quick3DConfiguration>(uri, 2, 0, "Configuration");
-    qmlRegisterType<Qt3D::Quick::Quick3DEntity>(uri, 2, 0, "Entity");
-    qmlRegisterType<Qt3D::Quick::Quick3DTransform>(uri, 2, 0, "Transform");
-    qmlRegisterType<Qt3D::Quick::Quick3DNode>(uri, 2, 0, "Node");
-    qmlRegisterType<Qt3D::Component>(uri, 2, 0, "Component");
-    qmlRegisterType<Qt3D::Camera>(uri, 2, 0, "Camera");
+    qmlRegisterExtendedType<Qt3D::Entity, Qt3D::Quick::Quick3DEntity>(uri, 2, 0, "Entity");
+    qmlRegisterExtendedType<Qt3D::Transform, Qt3D::Quick::Quick3DTransform>(uri, 2, 0, "Transform");
+    qmlRegisterExtendedType<Qt3D::Node, Qt3D::Quick::Quick3DNode>(uri, 2, 0, "Node");
+    qmlRegisterExtendedType<Qt3D::Camera, Qt3D::Quick::Quick3DNode>(uri, 2, 0, "Camera");
     qmlRegisterType<Qt3D::CameraLens>(uri, 2, 0, "CameraLens");
     qmlRegisterType<Qt3D::MatrixTransform>(uri, 2, 0, "MatrixTransform");
     qmlRegisterType<Qt3D::TranslateTransform>(uri, 2, 0, "Translate");
