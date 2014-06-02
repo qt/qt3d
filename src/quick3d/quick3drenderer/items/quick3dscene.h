@@ -54,21 +54,16 @@ namespace Render {
 
 namespace Quick {
 
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DScene : public Qt3D::Quick::Quick3DEntity, public Qt3D::Render::QAbstractScene
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DScene : public QObject
 {
     Q_OBJECT
-    Q_INTERFACES(Qt3D::Render::QAbstractScene)
-    Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
-    Q_PROPERTY(QString sceneId READ sceneId WRITE setSceneId NOTIFY sceneIdChanged)
 public:
-    explicit Quick3DScene(Node *parent = 0);
+    explicit Quick3DScene(QObject *parent = 0);
 
-    Q_INVOKABLE Node *node(QString id) Q_DECL_OVERRIDE;
-    Q_INVOKABLE Node *scene(QString id) Q_DECL_OVERRIDE;
+    inline QAbstractScene *parentScene() const { return qobject_cast<QAbstractScene*>(parent()); }
 
-Q_SIGNALS:
-    void sourceChanged(QString arg);
-    void sceneIdChanged(QString arg);
+    Q_INVOKABLE Node *node(QString id);
+    Q_INVOKABLE Node *scene(QString id);
 };
 
 } // Quick
