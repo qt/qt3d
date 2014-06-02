@@ -42,8 +42,8 @@
 #ifndef QT3D_QUICK_QUICK3DENTITY_H
 #define QT3D_QUICK_QUICK3DENTITY_H
 
-#include <Qt3DCore/entity.h>
 #include <QQmlListProperty>
+#include <Qt3DCore/entity.h>
 #include <Qt3DQuick/quick3dnode.h>
 #include <Qt3DQuick/qt3dquick_global.h>
 
@@ -51,26 +51,24 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class Entity;
 class Component;
 
 namespace Quick {
 
-class QT3DQUICKSHARED_EXPORT Quick3DEntity : public Quick3DNode, public Entity
+class QT3DQUICKSHARED_EXPORT Quick3DEntity : public QObject
 {
     Q_OBJECT
-    Q_INTERFACES(Qt3D::Entity)
     Q_PROPERTY(QQmlListProperty<Qt3D::Component> components READ componentList)
 
 public:
-    explicit Quick3DEntity(Node *parent = 0);
+    explicit Quick3DEntity(QObject *parent = 0);
     QQmlListProperty<Qt3D::Component> componentList();
-    Entity *parentEntity() Q_DECL_OVERRIDE;
-    Entity *asEntity() Q_DECL_OVERRIDE;
 
-Q_SIGNALS:
-    void enabledChanged() Q_DECL_OVERRIDE;
+    inline Entity *parentEntity() const { return qobject_cast<Entity*>(parent()); }
 
 private:
+
     static void qmlAppendComponent(QQmlListProperty<Qt3D::Component> *list, Qt3D::Component *comp);
     static Component *qmlComponentAt(QQmlListProperty<Qt3D::Component> *list, int index);
     static int qmlComponentsCount(QQmlListProperty<Qt3D::Component> *list);
