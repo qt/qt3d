@@ -42,6 +42,7 @@
 #include <QtQml>
 #include "qt3dquick3drenderplugin.h"
 #include <Qt3DRenderer/qabstractscene.h>
+#include <Qt3DRenderer/scene.h>
 #include <Qt3DRenderer/tag.h>
 #include <Qt3DRenderer/mesh.h>
 #include <Qt3DRenderer/renderpass.h>
@@ -54,9 +55,9 @@
 #include <Qt3DRenderer/texture.h>
 #include <Qt3DRenderer/framegraph.h>
 #include <Qt3DRenderer/technique.h>
+#include <Qt3DRenderer/cameraselector.h>
 #include <Qt3DQuickRenderer/quick3dtechnique.h>
 #include <Qt3DQuickRenderer/quick3dmaterial.h>
-#include <Qt3DQuickRenderer/quick3dcameraselector.h>
 #include <Qt3DQuickRenderer/quick3dtechniquefilter.h>
 #include <Qt3DQuickRenderer/quick3dviewport.h>
 #include <Qt3DQuickRenderer/quick3drenderpassfilter.h>
@@ -70,9 +71,9 @@ QT_BEGIN_NAMESPACE
 
 void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
 {
-    qmlRegisterType<Qt3D::Render::Quick::Quick3DScene>(uri, 2, 0, "Scene");
     qmlRegisterUncreatableType<Qt3D::Technique>(uri, 2, 0, "Technique_priv", "");
     qmlRegisterInterface<Qt3D::Render::QAbstractScene>("QAbstractScene");
+    qmlRegisterExtendedType<Qt3D::Scene, Qt3D::Render::Quick::Quick3DScene>(uri, 2, 0, "Scene");
     qmlRegisterCustomType<Qt3D::Render::Quick::Quick3DEffect>(uri, 2, 0, "Effect", new Qt3D::Render::Quick::ShaderPropertyParser());
     qmlRegisterType<Qt3D::Render::Quick::Quick3DTechnique>(uri, 2, 0, "Technique");
     qmlRegisterType<Qt3D::TechniqueCriterion>(uri, 2, 0, "TechniqueCriterion");
@@ -84,7 +85,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3D::Shape>(uri, 2, 0, "Shape");
     qmlRegisterType<Qt3D::Render::Quick::Quick3DTexture>(uri, 2, 0, "Texture");
     // Framegraph components - TODO RenderTarget, RenderTargetSelector
-    qmlRegisterType<Qt3D::Render::Quick::Quick3DCameraSelector>(uri, 2, 0, "CameraSelector");
+    qmlRegisterExtendedType<Qt3D::CameraSelector, Qt3D::Quick::Quick3DNode>(uri, 2, 0, "CameraSelector");
     qmlRegisterType<Qt3D::Render::Quick::Quick3DRenderPassFilter>(uri, 2, 0, "RenderPassFilter");
     qmlRegisterType<Qt3D::Render::Quick::Quick3DTechniqueFilter>(uri, 2, 0, "TechniqueFilter");
     qmlRegisterType<Qt3D::Render::Quick::Quick3DViewport>(uri, 2, 0, "Viewport");

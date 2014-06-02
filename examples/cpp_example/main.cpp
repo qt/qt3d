@@ -63,10 +63,10 @@
 #include <Qt3DCore/lookattransform.h>
 #include <Qt3DCore/transform.h>
 
+#include <Qt3DRenderer/cameraselector.h>
 #include <Qt3DRenderer/renderpassfilteritem.h>
 #include <Qt3DRenderer/techniquefilteritem.h>
 #include <Qt3DRenderer/viewportitem.h>
-#include <Qt3DRenderer/cameraselectoritem.h>
 #include <Qt3DRenderer/rendereraspect.h>
 #include <Qt3DRenderer/framegraph.h>
 
@@ -140,7 +140,7 @@ int main(int ac, char **av)
     // FrameGraph
     Qt3D::FrameGraph *frameGraph = new Qt3D::FrameGraph();
     Qt3D::TechniqueFilterNode *techniqueFilter = new Qt3D::TechniqueFilterNode();
-    Qt3D::CameraSelectorNode *cameraSelector = new Qt3D::CameraSelectorNode();
+    Qt3D::CameraSelector *cameraSelector = new Qt3D::CameraSelector();
     Qt3D::RenderPassFilterNode *defaultRenderPassFilter = new Qt3D::RenderPassFilterNode();
     Qt3D::ViewportNode *viewport = new Qt3D::ViewportNode();
 

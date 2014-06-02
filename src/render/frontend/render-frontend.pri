@@ -21,7 +21,6 @@ HEADERS += \
     $$PWD/framegraphitem_p.h \
     $$PWD/viewport.h \
     $$PWD/cameraselector.h \
-    $$PWD/cameraselectoritem.h \
     $$PWD/renderpassfilteritem.h \
     $$PWD/techniquefilteritem.h \
     $$PWD/rendertargetselectoritem.h \
@@ -43,7 +42,6 @@ SOURCES += \
     $$PWD/framegraph.cpp \
     $$PWD/framegraphitem.cpp \
     $$PWD/viewportitem.cpp \
-    $$PWD/cameraselectoritem.cpp \
     $$PWD/techniquefilteritem.cpp \
     $$PWD/renderpassfilteritem.cpp \
     $$PWD/rendertargetselectoritem.cpp \

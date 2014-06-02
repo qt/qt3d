@@ -65,12 +65,16 @@ public:
     Node *m_camera;
 };
 
-class QT3DRENDERERSHARED_EXPORT CameraSelector : public FrameGraphItem
+class QT3DRENDERERSHARED_EXPORT CameraSelector : public Node, public FrameGraphItem
 {
+    Q_OBJECT
+    Q_INTERFACES(Qt3D::FrameGraphItem)
+    Q_PROPERTY(Qt3D::Node *camera READ camera WRITE setCamera NOTIFY cameraChanged)
 
 public:
-    CameraSelector()
-        : d_ptr(new CameraSelectorPrivate(this))
+    explicit CameraSelector(Node *parent = 0)
+        :   Node(parent)
+        ,   d_ptr(new CameraSelectorPrivate(this))
     {}
 
     virtual ~CameraSelector() {}
@@ -95,7 +99,8 @@ public:
     }
 
 Q_SIGNALS:
-    virtual void cameraChanged() = 0;
+    virtual void cameraChanged();
+    void enabledChanged() Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(CameraSelector)
@@ -103,8 +108,6 @@ private:
 };
 
 } // namespace Qt3D
-
-Q_DECLARE_INTERFACE(Qt3D::CameraSelector, "org.qt-project.Qt3D.Render.CameraSelector/2.0")
 
 QT_END_NAMESPACE
 
