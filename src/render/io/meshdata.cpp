@@ -250,7 +250,8 @@ BufferPtr Attribute::buffer() const
 
 QVector<QVector3D> Attribute::asVector3D() const
 {
-    const char* rawBuffer = m_buffer->data().constData();
+    const QByteArray buffer = m_buffer->data();
+    const char *rawBuffer = buffer.constData();
     rawBuffer += m_offset;
     const float* fptr;
     int stride;
