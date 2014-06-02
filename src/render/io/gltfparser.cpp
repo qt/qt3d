@@ -44,7 +44,7 @@
 #include "texturedata.h"
 #include "renderlogging.h"
 
-#include <entitynode.h>
+#include <entity.h>
 #include <mesh.h>
 #include <material.h>
 #include <technique.h>
@@ -242,7 +242,7 @@ MeshDataPtr GLTFParser::mesh(QString id)
     return MeshDataPtr();
 }
 
-EntityNode* GLTFParser::defaultScene()
+Entity* GLTFParser::defaultScene()
 {
     parse();
     if (m_defaultScene.isEmpty()) {
@@ -253,7 +253,7 @@ EntityNode* GLTFParser::defaultScene()
     return scene(m_defaultScene);
 }
 
-EntityNode* GLTFParser::scene(QString id)
+Entity* GLTFParser::scene(QString id)
 {
     parse();
 
@@ -264,10 +264,10 @@ EntityNode* GLTFParser::scene(QString id)
     }
 
     QJsonObject sceneObj = scenes.value(id).toObject();
-    EntityNode* sceneEntity = new EntityNode;
+    Entity* sceneEntity = new Entity;
     foreach (QJsonValue nnv, sceneObj.value(KEY_NODES).toArray()) {
         QString nodeName = nnv.toString();
-        EntityNode* child = node(nodeName);
+        Entity* child = node(nodeName);
         if (!child)
             continue;
 
@@ -277,7 +277,7 @@ EntityNode* GLTFParser::scene(QString id)
     return sceneEntity;
 }
 
-EntityNode* GLTFParser::node(QString id)
+Entity* GLTFParser::node(QString id)
 {
     QJsonObject nodes = m_json.object().value(KEY_NODES).toObject();
     if (!nodes.contains(id)) {
@@ -286,13 +286,13 @@ EntityNode* GLTFParser::node(QString id)
     }
 
     QJsonObject jsonObj = nodes.value(id).toObject();
-    EntityNode* result( new EntityNode );
+    Entity* result( new Entity );
     parse();
 
     if ( jsonObj.contains(KEY_CHILDREN) )
     {
         foreach (QJsonValue c, jsonObj.value(KEY_CHILDREN).toArray()) {
-            EntityNode* child = node(c.toString());
+            Entity* child = node(c.toString());
             if (!child)
                 continue;
             result->addChild(child);
@@ -327,7 +327,7 @@ EntityNode* GLTFParser::node(QString id)
         } else {
             // need to make a child entity per material
             foreach (QString matId, materialDict.keys()) {
-                EntityNode* subEntity(new EntityNode);
+                Entity* subEntity(new Entity);
                 result->addChild(subEntity);
 
                 subEntity->addComponent(material(matId));

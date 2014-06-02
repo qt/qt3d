@@ -48,7 +48,7 @@
 #include <QFileInfo>
 #include <QColor>
 #include <qmath.h>
-#include <entitynode.h>
+#include <entity.h>
 #include <material.h>
 #include <mesh.h>
 #include <texture.h>
@@ -63,7 +63,7 @@ namespace Qt3D {
  * \namespace Qt3D
  * \since 5.3
  *
- * \brief Provides an generic way of loading various 3D assets
+ * \brief Provides a generic way of loading various 3D assets
  * format into a Qt3D scene.
  *
  * It should be noted that Assimp aiString is explicitly defined to be UTF-8.
@@ -234,7 +234,7 @@ bool AssimpParser::isPathExtensionSupported(const QString &path)
  *
  * Returns Q_NULLPTR if \a id was specified but not node matching it can be found.
  */
-EntityNode *AssimpParser::scene(QString id)
+Entity *AssimpParser::scene(QString id)
 {
     // m_aiScene shouldn't be null.
     // If it is either, the file failed to be imported or
@@ -259,7 +259,7 @@ EntityNode *AssimpParser::scene(QString id)
  *  Returns a Node from the scene identified by \a id.
  *  Returns Q_NULLPTR if no node can be found.
  */
-EntityNode *AssimpParser::node(QString id)
+Entity *AssimpParser::node(QString id)
 {
     if (m_aiScene.isNull())
         return Q_NULLPTR;
@@ -271,11 +271,11 @@ EntityNode *AssimpParser::node(QString id)
 /*!
  * Returns a Node from an Assimp aiNode \a node.
  */
-EntityNode *AssimpParser::node(aiNode *node)
+Entity *AssimpParser::node(aiNode *node)
 {
     if (node == Q_NULLPTR)
         return Q_NULLPTR;
-    EntityNode *entityNode = new EntityNode();
+    Entity *entityNode = new Entity();
 
     // Add Meshes to the node
     for (uint i = 0; i < node->mNumMeshes; i++) {
@@ -292,7 +292,7 @@ EntityNode *AssimpParser::node(aiNode *node)
     for (uint i = 0; i < node->mNumChildren; i++) {
         // this-> is necessary here otherwise
         // it conflicts with the variable node
-        EntityNode *child = this->node(node->mChildren[i]);
+        Entity *child = this->node(node->mChildren[i]);
         if (child != Q_NULLPTR)
             entityNode->addChild(child);
     }
@@ -582,7 +582,7 @@ void AssimpParser::loadCamera(uint cameraIndex)
     if (cameraNode == Q_NULLPTR)
         return ;
 
-    EntityNode  *camera = new EntityNode();
+    Entity  *camera = new Entity();
     CameraLens *lens = new CameraLens();
     aiMatrix4x4 cm;
 

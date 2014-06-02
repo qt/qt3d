@@ -42,7 +42,7 @@
 #ifndef QT3D_CAMERA_H
 #define QT3D_CAMERA_H
 
-#include <Qt3DCore/entitynode.h>
+#include <Qt3DCore/entity.h>
 #include <Qt3DCore/qt3dcore_global.h>
 
 #include <QMatrix4x4>
@@ -57,7 +57,7 @@ class CameraPrivate;
 class CameraLens;
 class Transform;
 
-class QT3DCORESHARED_EXPORT Camera : public EntityNode
+class QT3DCORESHARED_EXPORT Camera : public Entity
 {
     Q_OBJECT
     Q_PROPERTY(Qt3D::CameraLens *lens READ lens WRITE setLens NOTIFY lensChanged)

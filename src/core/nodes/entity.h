@@ -84,10 +84,12 @@ public :
     bool m_enabled;
 };
 
-class QT3DCORESHARED_EXPORT Entity : public QObservable
+class QT3DCORESHARED_EXPORT Entity : public Node, public QObservable
 {
+    Q_OBJECT
+    Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
 public:
-    Entity();
+    explicit Entity(Node *parent = 0);
 
     virtual ~Entity()
     {}
@@ -163,10 +165,11 @@ public:
     bool isEnabled() const;
     void setEnabled(bool on);
 
-    virtual Entity *parentEntity() = 0;
+    virtual Entity *parentEntity();
+    virtual Entity *asEntity() Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
-    virtual void enabledChanged() = 0;
+    virtual void enabledChanged();
 
 private:
     Q_DECLARE_PRIVATE(Entity)
@@ -175,8 +178,6 @@ private:
 };
 
 } // namespace Qt3D
-
-Q_DECLARE_INTERFACE(Qt3D::Entity, "org.qtproject.qt3d.entity/2.0")
 
 QT_END_NAMESPACE
 

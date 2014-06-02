@@ -48,7 +48,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DRENDERERSHARED_EXPORT Scene : public EntityNode, public Render::QAbstractScene
+class QT3DRENDERERSHARED_EXPORT Scene : public Entity, public Render::QAbstractScene
 {
     Q_OBJECT
     Q_INTERFACES(Qt3D::Render::QAbstractScene)

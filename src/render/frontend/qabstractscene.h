@@ -42,7 +42,7 @@
 #ifndef QT3D_QABSTRACTSCENE_H
 #define QT3D_QABSTRACTSCENE_H
 
-#include <Qt3DCore/entitynode.h>
+#include <Qt3DCore/entity.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE

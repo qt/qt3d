@@ -84,11 +84,11 @@ public:
      * @brief instantiate Create Nodes based on glTf JSON document
      * @return A new scene-graph fragment based on the provided glTf
      */
-    EntityNode *node(QString id) Q_DECL_OVERRIDE;
-    EntityNode *scene(QString id) Q_DECL_OVERRIDE;
+    Entity *node(QString id) Q_DECL_OVERRIDE;
+    Entity *scene(QString id) Q_DECL_OVERRIDE;
 
 
-    EntityNode *defaultScene();
+    Entity *defaultScene();
     MeshDataPtr mesh(QString id);
     Material *material(QString id);
     CameraLens *camera(QString id);
