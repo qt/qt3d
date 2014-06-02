@@ -47,7 +47,8 @@ namespace Qt3D {
 
 namespace Quick {
 
-Quick3DNode::Quick3DNode(Node *parent) : Node(parent)
+Quick3DNode::Quick3DNode(QObject *parent)
+    : QObject(parent)
 {
 }
 
@@ -75,33 +76,33 @@ void Quick3DNode::appendData(QQmlListProperty<QObject> *list, QObject *obj)
         return;
 
     QObject *self = static_cast<QObject *>(list->object);
-    if (obj->parent() == self)
+    if (obj->parent() == self->parent())
         obj->setParent(0);
 
-    Node *parentNode = qobject_cast<Qt3D::Node *>(self);
+    Node *parentNode = qobject_cast<Quick3DNode *>(self)->parentNode();
     Node *node = qobject_cast<Qt3D::Node *>(obj);
     if (node && parentNode)
         parentNode->addChild(node);
     // Set after otherwise addChild might not work
-    obj->setParent(self);
+    obj->setParent(parentNode);
 }
 
 QObject *Quick3DNode::dataAt(QQmlListProperty<QObject> *list, int index)
 {
-    QObject *self = static_cast<QObject *>(list->object);
-    return self->children().at(index);
+    Quick3DNode *self = static_cast<Quick3DNode *>(list->object);
+    return self->parentNode()->children().at(index);
 }
 
 int Quick3DNode::dataCount(QQmlListProperty<QObject> *list)
 {
-    QObject *self = static_cast<QObject *>(list->object);
-    return self->children().count();
+    Quick3DNode *self = static_cast<Quick3DNode *>(list->object);
+    return self->parentNode()->children().count();
 }
 
 void Quick3DNode::clearData(QQmlListProperty<QObject> *list)
 {
-    QObject *self = static_cast<QObject *>(list->object);
-    Q_FOREACH (QObject *const child, self->children())
+    Quick3DNode *self = static_cast<Quick3DNode *>(list->object);
+    Q_FOREACH (QObject *const child, self->parentNode()->children())
         child->setParent(0);
 }
 
@@ -110,31 +111,31 @@ void Quick3DNode::appendChild(QQmlListProperty<Qt3D::Node> *list, Qt3D::Node *ob
     if (!obj)
         return;
 
-    Node *self = static_cast<Node *>(list->object);
-    Q_ASSERT(!self->children().contains(obj));
-    if (obj->parent() == self)
+    Quick3DNode *self = static_cast<Quick3DNode *>(list->object);
+    Q_ASSERT(!self->parentNode()->children().contains(obj));
+    if (obj->parent() == self->parentNode())
         obj->setParent(0);
-    // Set parent if set in appendChild
-    self->addChild(obj);
+    // Set parent is set in appendChild
+    self->parentNode()->addChild(obj);
 }
 
 Qt3D::Node *Quick3DNode::childAt(QQmlListProperty<Qt3D::Node> *list, int index)
 {
-    Node *self = static_cast<Node *>(list->object);
-    return self->children().at(index);
+    Quick3DNode *self = static_cast<Quick3DNode *>(list->object);
+    return self->parentNode()->children().at(index);
 }
 
 int Quick3DNode::childCount(QQmlListProperty<Qt3D::Node> *list)
 {
-    Node *self = static_cast<Node *>(list->object);
-    return self->children().count();
+    Quick3DNode *self = static_cast<Quick3DNode *>(list->object);
+    return self->parentNode()->children().count();
 }
 
 void Quick3DNode::clearChildren(QQmlListProperty<Qt3D::Node> *list)
 {
-    Node *self = static_cast<Node *>(list->object);
-    Q_FOREACH (Node *const child, self->children())
-        self->removeChild(child);
+    Quick3DNode *self = static_cast<Quick3DNode *>(list->object);
+    Q_FOREACH (Node *const child, self->parentNode()->children())
+        self->parentNode()->removeChild(child);
 }
 
 } // Quick

@@ -52,17 +52,19 @@ namespace Qt3D {
 
 namespace Quick {
 
-class QT3DQUICKSHARED_EXPORT Quick3DNode : public Qt3D::Node
+class QT3DQUICKSHARED_EXPORT Quick3DNode : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<QObject> data READ data)
     Q_PROPERTY(QQmlListProperty<Qt3D::Node> childNodes READ childNodes)
     Q_CLASSINFO("DefaultProperty", "data")
 public:
-    explicit Quick3DNode(Node *parent = 0);
+    explicit Quick3DNode(QObject *parent = 0);
 
     QQmlListProperty<QObject> data();
     QQmlListProperty<Qt3D::Node> childNodes();
+
+    inline Node *parentNode() const { return qobject_cast<Node*>(parent()); }
 
 private:
     static void appendData(QQmlListProperty<QObject> *list, QObject *obj);
