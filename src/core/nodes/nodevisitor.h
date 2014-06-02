@@ -74,7 +74,7 @@ public:
 
 protected:
     virtual void visitNode(Node *nd);
-    virtual void visitEntity(Node *ent);
+    virtual void visitEntity(Entity *ent);
 
     void traverseChildren();
 

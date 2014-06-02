@@ -75,7 +75,7 @@ public:
 
 protected:
     void visitNode(Qt3D::Node *node) Q_DECL_OVERRIDE;
-    void visitEntity(Qt3D::Node *entity) Q_DECL_OVERRIDE;
+    void visitEntity(Qt3D::Entity *entity) Q_DECL_OVERRIDE;
 
 private:
     Renderer *m_renderer;

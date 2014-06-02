@@ -179,7 +179,8 @@ Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(Node *block)
         Render::CameraSelector *cameraSelectorNode = new Render::CameraSelector();
         cameraSelectorNode->setRenderer(m_renderer);
         cameraSelectorNode->setPeer(cameraSelector);
-        Entity *cameraEntity = qobject_cast<Entity*>(cameraSelector->camera());
+        // TO DO : We might as well store an Entity in CameraSelector
+        Entity *cameraEntity = cameraSelector->camera()->asEntity();
         // If the Entity is declared inline on the QML Side, the Entity is not set as part of the Scene tree
         // So we need to make sure the RenderNode for the given Entity exists in the RenderNodesMananger
         if (cameraEntity && m_renderer->cameraManager()->lookupHandle(cameraEntity->uuid()).isNull()) {
@@ -291,23 +292,22 @@ void RenderSceneBuilder::createRenderMaterial(Entity *entity)
 
 void RenderSceneBuilder::createFrameGraph(FrameGraph *fg)
 {
-        // Entity has a reference to a framegraph configuration
-        // Build a tree of FrameGraphNodes by reading the tree of FrameGraphBuildingBlocks
-        Render::FrameGraphNode* frameGraphRootNode = buildFrameGraph(qobject_cast<Node*>(fg->activeFrameGraph()));
-        qCDebug(Backend) << Q_FUNC_INFO << "FrameGraphRoot" <<  frameGraphRootNode;
-        m_renderer->setFrameGraphRoot(frameGraphRootNode);
+    // Entity has a reference to a framegraph configuration
+    // Build a tree of FrameGraphNodes by reading the tree of FrameGraphBuildingBlocks
+    Render::FrameGraphNode* frameGraphRootNode = buildFrameGraph(qobject_cast<Node*>(fg->activeFrameGraph()));
+    qCDebug(Backend) << Q_FUNC_INFO << "FrameGraphRoot" <<  frameGraphRootNode;
+    m_renderer->setFrameGraphRoot(frameGraphRootNode);
 }
 
-void RenderSceneBuilder::visitEntity(Qt3D::Node *node)
+void RenderSceneBuilder::visitEntity(Qt3D::Entity *entity)
 {
     // Create a RenderNode corresponding to the Entity. Most data will
     // be calculated later by jobs
-    Entity *entity = qobject_cast<Entity*>(node);
-    qCDebug(Backend) << Q_FUNC_INFO << "Entity " << node->objectName();
+    qCDebug(Backend) << Q_FUNC_INFO << "Entity " << entity->objectName();
     // Retrieve or created RenderNode for entity
 
     // Create RenderNode and Transforms
-    HRenderNode renderNodeHandle = createRenderNode(node);
+    HRenderNode renderNodeHandle = createRenderNode(entity);
 
     if (m_rootNodeHandle.isNull()) {
         m_rootNodeHandle = renderNodeHandle;
@@ -328,11 +328,11 @@ void RenderSceneBuilder::visitEntity(Qt3D::Node *node)
 
     // Check if entity is a Scene and if so parses the scene
     QAbstractScene *sceneEntity = Q_NULLPTR;
-    if ((sceneEntity = qobject_cast<QAbstractScene *>(node)) != Q_NULLPTR) {
+    if ((sceneEntity = qobject_cast<QAbstractScene *>(entity)) != Q_NULLPTR) {
         qDebug() << Q_FUNC_INFO << "Found a Scene";
     }
 
-    NodeVisitor::visitEntity(node);
+    NodeVisitor::visitEntity(entity);
 
     // Coming back up the tree
     m_nodeStack.pop();
