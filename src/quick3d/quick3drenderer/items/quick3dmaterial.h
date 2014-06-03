@@ -55,14 +55,18 @@ namespace Render {
 namespace Quick {
 
 // FIXME - write a custom QML parser and stop mis-using Tag
+// Tags could be replaced by Parameters directly
 
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DMaterial : public Material
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DMaterial : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Qt3D::Tag> parameters READ qmlParameters)
 
 public:
-    explicit Quick3DMaterial(Node *parent = 0);
+    explicit Quick3DMaterial(QObject *parent = 0);
+
+    // TO DO : replace by QAbstractMaterial later on
+    inline Material *parentMaterial() const { return qobject_cast<Material*>(parent()); }
 
     QQmlListProperty<Tag> qmlParameters();
 

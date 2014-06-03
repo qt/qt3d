@@ -51,8 +51,8 @@ namespace Render {
 
 namespace Quick {
 
-Quick3DMaterial::Quick3DMaterial(Node *parent)
-    : Material(parent)
+Quick3DMaterial::Quick3DMaterial(QObject *parent)
+    : QObject(parent)
 {
 }
 
@@ -69,10 +69,10 @@ void Quick3DMaterial::appendTag(QQmlListProperty<Tag> *list, Tag *tag)
 {
     Quick3DMaterial *mat = qobject_cast<Quick3DMaterial *>(list->object);
     if (mat) {
-        tag->setParent(mat);
+        tag->setParent(mat->parentMaterial());
         QObject::connect(tag, SIGNAL(valueChanged()), mat, SLOT(onTagValueChanged()));
         mat->m_tagList.append(tag);
-        emit mat->parametersChanged();
+        emit mat->parentMaterial()->parametersChanged();
     }
 }
 
@@ -97,8 +97,8 @@ void Quick3DMaterial::clearTags(QQmlListProperty<Tag> *list)
     Quick3DMaterial *mat = qobject_cast<Quick3DMaterial *>(list->object);
     if (mat) {
         mat->m_tagList.clear();
-        mat->cleanParameters();
-        emit mat->parametersChanged();
+        mat->parentMaterial()->cleanParameters();
+        emit mat->parentMaterial()->parametersChanged();
     }
 }
 
@@ -111,9 +111,9 @@ void Quick3DMaterial::onTagValueChanged()
     Texture* tex = v.value<Texture*>();
     if (tex != Q_NULLPTR) {
         qDebug() << "got texture parameter" << t->name();
-        setTextureParameter(t->name(), tex);
+        parentMaterial()->setTextureParameter(t->name(), tex);
     } else {
-        setParameter(t->name(), t->value());
+        parentMaterial()->setParameter(t->name(), t->value());
     }
 }
 

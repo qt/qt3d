@@ -80,7 +80,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3D::TechniqueCriterion>(uri, 2, 0, "TechniqueCriterion");
     qmlRegisterType<Qt3D::Tag>(uri, 2, 0, "Tag");
     qmlRegisterType<Qt3D::Mesh>(uri, 2, 0, "Mesh");
-    qmlRegisterType<Qt3D::Render::Quick::Quick3DMaterial>(uri, 2, 0, "Material");
+    qmlRegisterExtendedType<Qt3D::Material, Qt3D::Render::Quick::Quick3DMaterial>(uri, 2, 0, "Material");
     qmlRegisterType<Qt3D::RenderPass>(uri, 2, 0, "RenderPass");
     qmlRegisterType<Qt3D::ShaderProgram>(uri, 2, 0, "ShaderProgram");
     qmlRegisterType<Qt3D::Shape>(uri, 2, 0, "Shape");
