@@ -50,7 +50,7 @@ namespace Render {
 namespace Quick {
 
 Quick3DRenderPassFilter::Quick3DRenderPassFilter(QObject *parent)
-    : Quick3DNode(parent)
+    : QObject(parent)
 {
 }
 

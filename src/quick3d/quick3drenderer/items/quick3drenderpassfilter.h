@@ -54,7 +54,7 @@ namespace Render {
 
 namespace Quick {
 
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DRenderPassFilter : public Qt3D::Quick::Quick3DNode
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DRenderPassFilter : public QObject
 {
     Q_OBJECT
 public:
