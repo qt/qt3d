@@ -49,7 +49,7 @@ namespace Render {
 
 namespace Quick {
 
-Quick3DFrameGraphItem::Quick3DFrameGraphItem(Node *parent)
+Quick3DFrameGraphItem::Quick3DFrameGraphItem(QObject *parent)
     : Qt3D::Quick::Quick3DNode(parent)
     , FrameGraphItem()
 {

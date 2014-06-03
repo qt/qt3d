@@ -90,7 +90,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterExtendedType<Qt3D::RenderPassFilter, Qt3D::Render::Quick::Quick3DRenderPassFilter>(uri, 2, 0, "RenderPassFilter");
     qmlRegisterExtendedType<Qt3D::TechniqueFilter, Qt3D::Render::Quick::Quick3DTechniqueFilter>(uri, 2, 0, "TechniqueFilter");
     qmlRegisterExtendedType<Qt3D::Viewport, Qt3D::Render::Quick::Quick3DViewport>(uri, 2, 0, "Viewport");
-    qmlRegisterType<Qt3D::Render::Quick::Quick3DRenderTargetSelector>(uri, 2, 0, "RenderTargetSelector");
+    qmlRegisterExtendedType<Qt3D::RenderTargetSelector, Qt3D::Render::Quick::Quick3DRenderTargetSelector>(uri, 2, 0, "RenderTargetSelector");
     qmlRegisterType<Qt3D::FrameGraph>(uri, 2, 0, "FrameGraph");
 }
 

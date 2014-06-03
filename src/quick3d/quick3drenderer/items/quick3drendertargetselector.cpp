@@ -49,9 +49,8 @@ namespace Render {
 
 namespace Quick {
 
-Quick3DRenderTargetSelector::Quick3DRenderTargetSelector(Node * parent)
-    : RenderTargetSelector()
-    , Quick3DFrameGraphItem(parent)
+Quick3DRenderTargetSelector::Quick3DRenderTargetSelector(QObject * parent)
+    : QObject(parent)
 {
 }
 

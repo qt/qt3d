@@ -20,7 +20,6 @@ HEADERS += \
     $$PWD/framegraphitem_p.h \
     $$PWD/viewport.h \
     $$PWD/cameraselector.h \
-    $$PWD/rendertargetselectoritem.h \
     $$PWD/effect.h \
     $$PWD/scene.h \
     $$PWD/techniquecriterion.h
@@ -38,7 +37,6 @@ SOURCES += \
     $$PWD/qabstractscene.cpp \
     $$PWD/framegraph.cpp \
     $$PWD/framegraphitem.cpp \
-    $$PWD/rendertargetselectoritem.cpp \
     $$PWD/effect.cpp \
     $$PWD/scene.cpp \
     $$PWD/techniquecriterion.cpp

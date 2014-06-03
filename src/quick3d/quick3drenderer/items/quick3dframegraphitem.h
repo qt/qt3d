@@ -61,7 +61,7 @@ class QT3DQUICKRENDERERSHARED_EXPORT Quick3DFrameGraphItem : public Qt3D::Quick:
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
 
 public:
-    explicit Quick3DFrameGraphItem(Node *parent = 0);
+    explicit Quick3DFrameGraphItem(QObject *parent = 0);
     virtual ~Quick3DFrameGraphItem();
 
 

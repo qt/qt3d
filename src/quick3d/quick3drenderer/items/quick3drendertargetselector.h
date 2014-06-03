@@ -53,15 +53,12 @@ namespace Render {
 
 namespace Quick {
 
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DRenderTargetSelector : public Quick3DFrameGraphItem, public virtual RenderTargetSelector
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DRenderTargetSelector : public QObject
 {
     Q_OBJECT
-    Q_INTERFACES(Qt3D::RenderTargetSelector)
 public:
-    explicit Quick3DRenderTargetSelector(Node *parent = 0);
+    explicit Quick3DRenderTargetSelector(QObject *parent = 0);
 
-Q_SIGNALS:
-    void enabledChanged() Q_DECL_OVERRIDE;
 };
 
 } // Quick

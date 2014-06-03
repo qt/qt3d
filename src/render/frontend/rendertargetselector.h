@@ -62,12 +62,18 @@ public:
     RenderTargetSelector *q_ptr;
 };
 
-class QT3DRENDERERSHARED_EXPORT RenderTargetSelector : public FrameGraphItem
+class QT3DRENDERERSHARED_EXPORT RenderTargetSelector : public Node, public FrameGraphItem
 {
+    Q_OBJECT
+    Q_INTERFACES(Qt3D::FrameGraphItem)
 public:
-    explicit RenderTargetSelector()
-        : d_ptr(new RenderTargetSelectorPrivate(this))
+    explicit RenderTargetSelector(Node *parent = 0)
+        : Node(parent)
+        , d_ptr(new RenderTargetSelectorPrivate(this))
     {}
+
+Q_SIGNALS:
+    void enabledChanged() Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(RenderTargetSelector)
@@ -75,8 +81,6 @@ private:
 };
 
 } // Qt3D
-
-Q_DECLARE_INTERFACE(Qt3D::RenderTargetSelector, "org.qt-project.Qt3D.Render.RenderTargetSelector/2.0")
 
 QT_END_NAMESPACE
 
