@@ -63,7 +63,7 @@ Node {
         onTriggered:
         {
             console.log("Triggered <<<<<<<<<<<<<<<<<<<<< " + test);
-            camera2.transform = test ? transform_0 : transform_1
+            camera2.transform = test ? transform_2 : transform_1
             ball2.mesh = test ? null : ballMesh
             ball1.mesh = test ? cubeMesh : ballMesh
             test = !test
@@ -110,22 +110,35 @@ Node {
             id : transform_1
             objectName : "transform_1"
 
+            Rotate {
+                id : rotate
+                axis : Qt.vector3d(0, 1, 0)
+                angle: 0
+            }
             LookAt {
                 position: Qt.vector3d( -2.0, -1.0, -18.0 )
                 upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
                 viewCenter: Qt.vector3d( 0.0, 0.0, 5.0 )
             }
+        }
+        Transform {
+            id : transform_2
+            objectName : "transform_2"
+
             Rotate {
-                id : rotate
-                axis : Qt.vector3d(0, 1, 0)
-                angle : 45
+                axis : Qt.vector3d(1, 0, 0)
+                angle: rotate.angle
+            }
+            LookAt {
+                position: Qt.vector3d( -2.0, -1.0, -18.0 )
+                upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
+                viewCenter: Qt.vector3d( 0.0, 0.0, 5.0 )
             }
         }
         QQ2.SequentialAnimation {
             running : true
             loops: QQ2.Animation.Infinite
             QQ2.NumberAnimation { target : rotate; property : "angle"; to : 360; duration : 2000 }
-            QQ2.NumberAnimation { target : rotate; property : "angle"; to : 0; duration : 2000 }
         }
 
         CameraLens {
@@ -151,12 +164,12 @@ Node {
 
             transform : Transform {
                 LookAt {
-                    position: Qt.vector3d( 0.0, 0.0, -20.0 )
+                    position: Qt.vector3d( 10.0, 10.0, -25.0 )
                     upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
                     viewCenter: Qt.vector3d( 0.0, 0.0, 10.0 )
                 }
                 Rotate {
-                    angle : -30
+                    angle : 0
                     axis : Qt.vector3d(0, 1, 0)
                 }
             }
