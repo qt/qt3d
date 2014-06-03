@@ -54,6 +54,7 @@
 #include <cameralens.h>
 #include <material.h>
 #include <mesh.h>
+#include <shape.h>
 #include <transform.h>
 #include <entity.h>
 
@@ -258,6 +259,10 @@ void RenderSceneBuilder::createRenderCamera(Entity *entity)
 void RenderSceneBuilder::createRenderMesh(Entity *entity)
 {
     QList<Mesh *> meshes = entity->componentsOfType<Mesh>();
+    // Build Meshes from Shapes
+    QList<Shape *> shapes = entity->componentsOfType<Shape>();
+    if (!shapes.empty())
+       meshes.append(shapes.first()->mesh());
     if (!meshes.isEmpty()) {
         HMesh meshHandle = m_renderer->meshManager()->getOrAcquireHandle(entity->uuid());
         RenderMesh *renderMesh = m_renderer->meshManager()->data(meshHandle);

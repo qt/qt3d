@@ -41,7 +41,7 @@
 
 #define _USE_MATH_DEFINES // For MSVC
 #include "shape.h"
-
+#include "mesh.h"
 #include <cmath>
 
 #include "renderlogging.h"
@@ -285,7 +285,9 @@ Shape::Shape(Node *parent) :
     m_rings(16),
     m_slices(16),
     m_radius(1.0),
-    m_minorRadius(1.0)
+    m_minorRadius(1.0),
+    m_mesh(new Mesh(this)),
+    m_loaded(false)
 {
 }
 
@@ -300,6 +302,15 @@ MeshDataPtr Shape::data() const
         return createTorusMesh(m_radius, m_minorRadius, m_rings, m_slices);
 
     return createSphereMesh(m_radius, m_rings, m_slices, m_generateTangents);
+}
+
+Mesh *Shape::mesh()
+{
+    if (!m_loaded) {
+        m_mesh->setData(data());
+        m_loaded = true;
+    }
+    return m_mesh;
 }
 
 int Shape::rings() const

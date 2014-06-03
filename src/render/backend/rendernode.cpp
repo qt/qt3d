@@ -49,6 +49,7 @@
 #include "meshmanager.h"
 #include "meshdatamanager.h"
 #include "mesh.h"
+#include "shape.h"
 #include <cameralens.h>
 #include <transform.h>
 
@@ -169,6 +170,13 @@ void RenderNode::sceneChangeEvent(const QSceneChangePtr &e)
                     m_renderer->meshDataManager()->addMeshData(mesh->peer());
                 }
             }
+            else if (qobject_cast<Shape *>(component)) {
+                RenderMesh *mesh = m_renderer->meshManager()->lookupResource(m_frontEndPeer->asEntity()->uuid());
+                if (mesh != Q_NULLPTR) {
+                    mesh->setPeer(qobject_cast<Shape *>(component)->mesh());
+                    m_renderer->meshDataManager()->addMeshData(mesh->peer());
+                }
+            }
         }
         break;
     }
@@ -184,7 +192,7 @@ void RenderNode::sceneChangeEvent(const QSceneChangePtr &e)
                 if (cam != Q_NULLPTR)
                     cam->setPeer(Q_NULLPTR);
             }
-            else if (qobject_cast<Mesh *>(component)) {
+            else if (qobject_cast<Mesh *>(component) || qobject_cast<Shape *>(component)) {
                 RenderMesh *mesh = m_renderer->meshManager()->lookupResource(m_frontEndPeer->asEntity()->uuid());
                 if (mesh != Q_NULLPTR)
                     mesh->setPeer(Q_NULLPTR);

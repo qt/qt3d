@@ -51,6 +51,8 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class Mesh;
+
 class QT3DRENDERERSHARED_EXPORT Shape : public Qt3D::Component
 {
     Q_OBJECT
@@ -83,6 +85,7 @@ public:
     ShapeType type() const;
 
     MeshDataPtr data() const;
+    Mesh *mesh();
 
     int rings() const;
     int slices() const;
@@ -114,6 +117,8 @@ private:
     m_slices;
     double m_radius;
     double m_minorRadius;
+    Mesh *m_mesh;
+    bool m_loaded;
 };
 
 } // namespace Qt3D
