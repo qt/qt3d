@@ -54,7 +54,7 @@ Technique::Technique(Node *parent)
 
 void Technique::addCriterion(TechniqueCriterion *criterion)
 {
-    if (m_criteriaList.contains(criterion))
+    if (!m_criteriaList.contains(criterion))
         m_criteriaList.append(criterion);
 }
 

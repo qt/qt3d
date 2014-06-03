@@ -220,18 +220,19 @@ void RenderView::setCommandShaderTechniqueEffect(RenderCommand *command)
     RenderMaterial *material = m_renderer->materialManager()->data(command->m_material);
     if (m_techniqueFilter != Q_NULLPTR && material != Q_NULLPTR &&
             !m_techniqueFilter->filters().empty() && material->peer() != Q_NULLPTR) {
-        QMutexLocker locker(&RenderView::m_mutex);
         // The VAO Handle is set directly in the renderer thread so as to avoid having to use a mutex here
         // Set shader, technique, and effect by basically doing :
         // ShaderProgramManager[MaterialManager[frontentEntity->uuid()]->Effect->Techniques[TechniqueFilter->name]->RenderPasses[RenderPassFilter->name]];
         // The Renderer knows that if one of those is null, a default material / technique / effect as to be used
         QAbstractEffect *fEffect = material->peer()->effect();
+        QMutexLocker locker(&RenderView::m_mutex);
         RenderEffect *effect = m_renderer->effectManager()->lookupResource(fEffect);
         if (effect == Q_NULLPTR) {
             effect = m_renderer->effectManager()->getOrCreateResource(fEffect);
             effect->setRendererAspect(m_renderer->rendererAspect());
             effect->setPeer(fEffect);
         }
+        locker.unlock();
 
         // Check to see if the Effect contains a Technique matching the criteria defined in the Technique Filter
         Q_FOREACH (QAbstractTechnique *technique, effect->techniques()) {
@@ -241,7 +242,7 @@ void RenderView::setCommandShaderTechniqueEffect(RenderCommand *command)
                 Q_FOREACH (TechniqueCriterion *filterCriterion, m_techniqueFilter->filters()) {
                     bool findMatch = false;
                     Q_FOREACH (TechniqueCriterion *techCriterion, tech->criteria()) {
-                        if (filterCriterion == techCriterion) {
+                        if (*filterCriterion == *techCriterion) {
                             findMatch = true;
                             break;
                         }
@@ -252,7 +253,7 @@ void RenderView::setCommandShaderTechniqueEffect(RenderCommand *command)
                     }
                 }
                 if (!foundMatchingTechnique)
-                    qFatal("No Technique was found matching the criteria defined in the TechniqueFilter");
+                    qFatal("No Technique was found matching the criteria defined in the TechniqueFilter : Cannot Continue");
             }
         }
 

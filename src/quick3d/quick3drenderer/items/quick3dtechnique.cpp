@@ -50,7 +50,7 @@ namespace Render {
 namespace Quick {
 
 Quick3DTechnique::Quick3DTechnique(QObject *parent)
-    : Quick3DNode(parent)
+    : QObject(parent)
 {
 }
 
@@ -145,7 +145,8 @@ void Quick3DTechnique::appendCriterion(QQmlListProperty<TechniqueCriterion> *lis
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     if (technique) {
-        criterion->setParent(technique->parentTechnique());
+        if (!criterion->parent())
+            criterion->setParent(technique->parentTechnique());
         technique->parentTechnique()->addCriterion(criterion);
         emit technique->criteriaChanged();
     }

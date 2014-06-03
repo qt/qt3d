@@ -42,7 +42,6 @@
 #ifndef QT3D_RENDER_QUICK_QUICK3DTECHNIQUE_H
 #define QT3D_RENDER_QUICK_QUICK3DTECHNIQUE_H
 
-#include <Qt3DQuick/quick3dnode.h>
 #include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
 #include <Qt3DRenderer/technique.h>
 #include <QQmlListProperty>
@@ -55,7 +54,7 @@ namespace Render {
 
 namespace Quick {
 
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTechnique : public Qt3D::Quick::Quick3DNode
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTechnique : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Qt3D::TechniqueCriterion> criteria READ criteriaList NOTIFY criteriaChanged)

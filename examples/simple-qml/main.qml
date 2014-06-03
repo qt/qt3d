@@ -234,14 +234,22 @@ Node {
             objectName: "ballMaterial"
             //            effect: adsEffect
 
+            parameters : [
+            Tag { name : "ambient"; value : Qt.vector4d(255, 0, 0, 1) }
+            ]
+
             effect : Effect {
 //                customproperty : "red"
 //                ambient : "orange"
 
-                Node
-                {
+                techniques : [
 
-                }
+                    Technique {
+                        criteria : [
+                             TechniqueCriterion { criterionType : TechniqueCriterion.RenderingStyle; criterionValue : "forward"}
+                        ]
+                    }
+                ]
             }
 
 
