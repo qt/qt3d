@@ -55,7 +55,7 @@ namespace Render {
 
 namespace Quick {
 
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTechniqueFilter : public Qt3D::Quick::Quick3DNode
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTechniqueFilter : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Qt3D::TechniqueCriterion> criteria READ criteriaList)

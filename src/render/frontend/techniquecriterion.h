@@ -111,4 +111,6 @@ public:
 
 QT_END_NAMESPACE
 
+Q_DECLARE_METATYPE(Qt3D::TechniqueCriterion *)
+
 #endif // QT3D_TECHNIQUECRITERION_H

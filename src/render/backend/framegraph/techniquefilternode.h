@@ -52,19 +52,29 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class TechniqueCriterion;
+class TechniqueFilter;
 
 namespace Render {
 
-class TechniqueFilter : public Render::FrameGraphNode
+class Renderer;
+
+class TechniqueFilter
+        : public Render::FrameGraphNode
+        , public QObserverInterface
 {
 public:
     TechniqueFilter(Render::FrameGraphNode *parent = 0);
+    void setRenderer(Renderer *renderer);
+    void setPeer(Qt3D::TechniqueFilter *peer);
 
     QList<TechniqueCriterion*> filters() const;
     void appendFilter(TechniqueCriterion *criterion);
     void removeFilter(TechniqueCriterion *criterion);
+    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
+    Renderer *m_renderer;
+    Qt3D::TechniqueFilter *m_peer;
     QList<TechniqueCriterion *> m_filters;
 };
 

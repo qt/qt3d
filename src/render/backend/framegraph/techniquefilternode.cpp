@@ -41,6 +41,11 @@
 
 #include "techniquefilternode.h"
 #include "techniquecriterion.h"
+#include "techniquefilter.h"
+#include "renderer.h"
+#include "rendereraspect.h"
+#include <Qt3DCore/qaspectmanager.h>
+#include <Qt3DCore/qchangearbiter.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -49,8 +54,28 @@ namespace Render {
 
 TechniqueFilter::TechniqueFilter(FrameGraphNode *parent)
     : FrameGraphNode(FrameGraphNode::TechniqueFilter, parent)
+    , m_renderer(Q_NULLPTR)
+    , m_peer(Q_NULLPTR)
 {
 }
+
+void TechniqueFilter::setRenderer(Renderer *renderer)
+{
+    m_renderer = renderer;
+}
+
+void TechniqueFilter::setPeer(Qt3D::TechniqueFilter *peer)
+{
+    if (peer != m_peer) {
+        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
+        if (m_peer)
+            arbiter->unregisterObserver(this, m_peer);
+        m_peer = peer;
+        if (m_peer)
+            arbiter->registerObserver(this, m_peer);
+    }
+}
+
 QList<TechniqueCriterion*> TechniqueFilter::filters() const
 {
     return m_filters;
@@ -65,6 +90,26 @@ void TechniqueFilter::appendFilter(TechniqueCriterion *criterion)
 void TechniqueFilter::removeFilter(TechniqueCriterion *criterion)
 {
     m_filters.removeOne(criterion);
+}
+
+void TechniqueFilter::sceneChangeEvent(const QSceneChangePtr &e)
+{
+    switch (e->m_type) {
+    case ComponentAdded: {
+        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+        if (propertyChange->m_propertyName == QByteArrayLiteral("criteria"))
+            appendFilter(propertyChange->m_value.value<TechniqueCriterion*>());
+    }
+        break;
+    case ComponentRemoved: {
+        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+        if (propertyChange->m_propertyName == QByteArrayLiteral("criteria"))
+            removeFilter(propertyChange->m_value.value<TechniqueCriterion*>());
+    }
+        break;
+    default:
+        break;
+    }
 }
 
 } // Render

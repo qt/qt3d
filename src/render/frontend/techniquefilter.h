@@ -71,6 +71,7 @@ class QT3DRENDERERSHARED_EXPORT TechniqueFilter : public Node, public FrameGraph
 public:
     explicit TechniqueFilter(Node *parent = 0)
         : Node(parent)
+        , FrameGraphItem()
         , d_ptr(new TechniqueFilterPrivate(this))
     {}
 
@@ -88,6 +89,10 @@ public:
         Q_D(TechniqueFilter);
         d->m_criteriaList.append(criterion);
         emit criteriaChanged();
+        QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentAdded, this));
+        propertyChange->m_propertyName = QByteArrayLiteral("criteria");
+        propertyChange->m_value = QVariant::fromValue(criterion);
+        notifyObservers(propertyChange);
     }
 
     void removeCriterion(TechniqueCriterion *criterion)
@@ -95,6 +100,10 @@ public:
         Q_D(TechniqueFilter);
         d->m_criteriaList.removeOne(criterion);
         emit criteriaChanged();
+        QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentRemoved, this));
+        propertyChange->m_propertyName = QByteArrayLiteral("criteria");
+        propertyChange->m_value = QVariant::fromValue(criterion);
+        notifyObservers(propertyChange);
     }
 
 Q_SIGNALS:
