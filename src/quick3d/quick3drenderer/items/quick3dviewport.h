@@ -56,7 +56,7 @@ namespace Quick {
 
 // TO DO : Check if this is required or if this might as well be removed
 
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DViewport : public Qt3D::Quick::Quick3DNode
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DViewport : public QObject
 {
     Q_OBJECT
 public:
