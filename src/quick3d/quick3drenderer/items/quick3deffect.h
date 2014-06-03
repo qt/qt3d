@@ -43,7 +43,6 @@
 #define QT3D_RENDER_QUICK_QUICK3DEFFECT_H
 
 #include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
-#include <Qt3DQuick/quick3dnode.h>
 #include <Qt3DCore/qabstracteffect.h>
 #include <QQmlListProperty>
 #include <Qt3DRenderer/technique.h>
@@ -57,19 +56,17 @@ namespace Render {
 
 namespace Quick {
 
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DEffect : public Qt3D::Quick::Quick3DNode, public QAbstractEffect
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DEffect : public QObject
 {
     Q_OBJECT
-    Q_INTERFACES(Qt3D::QAbstractEffect)
     Q_PROPERTY(QQmlListProperty<Qt3D::Technique> techniques READ techniqueList)
 
 public:
-    explicit Quick3DEffect(Node *parent = 0);
+    explicit Quick3DEffect(QObject *parent = 0);
+
+    inline QAbstractEffect *parentEffect() const { return qobject_cast<QAbstractEffect*>(parent()); }
 
     QQmlListProperty<Qt3D::Technique> techniqueList();
-
-Q_SIGNALS:
-    void techniquesChanged() Q_DECL_OVERRIDE;
 
 private:
     static void appendTechnique(QQmlListProperty<Technique> *list, Technique *bar);

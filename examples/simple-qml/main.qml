@@ -222,9 +222,13 @@ Node {
             //            effect: adsEffect
 
             effect : Effect {
-                customproperty : "red"
-                ambient : "orange"
+//                customproperty : "red"
+//                ambient : "orange"
 
+                Node
+                {
+
+                }
             }
 
 

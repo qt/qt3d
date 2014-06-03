@@ -48,8 +48,7 @@ namespace Qt3D {
 
 
 Effect::Effect(Node *parent)
-    : Node(parent)
-    , QAbstractEffect()
+    : QAbstractEffect(parent)
 {
 }
 
@@ -57,7 +56,8 @@ void Effect::addTechnique(QAbstractTechnique *t)
 {
     // In the C++ API we are responsible for setting the parent
     // Qml API is automatically handled by the Qml Engine
-    t->setParent(this);
+    if (!t->parent())
+        t->setParent(this);
     QAbstractEffect::addTechnique(t);
 }
 

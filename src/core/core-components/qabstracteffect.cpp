@@ -46,8 +46,9 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QAbstractEffect::QAbstractEffect()
-    : QObservable()
+QAbstractEffect::QAbstractEffect(Node *parent)
+    : Node(parent)
+    , QObservable()
     , d_ptr(new QAbstractEffectPrivate(this))
 {
     qRegisterMetaType<Qt3D::QAbstractEffect*>();

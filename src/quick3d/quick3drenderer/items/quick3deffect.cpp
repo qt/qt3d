@@ -49,9 +49,8 @@ namespace Render {
 
 namespace Quick {
 
-Quick3DEffect::Quick3DEffect(Node *parent)
-    : Qt3D::Quick::Quick3DNode(parent),
-      QAbstractEffect()
+Quick3DEffect::Quick3DEffect(QObject *parent)
+    : QObject(parent)
 {
 }
 
@@ -66,35 +65,36 @@ QQmlListProperty<Technique> Quick3DEffect::techniqueList()
 
 void Quick3DEffect::appendTechnique(QQmlListProperty<Technique> *list, Technique *bar)
 {
-    QAbstractEffect *eff = qobject_cast<QAbstractEffect*>(list->object);
+    Quick3DEffect *eff = qobject_cast<Quick3DEffect*>(list->object);
     if (eff)
-        eff->addTechnique(bar);
+        eff->parentEffect()->addTechnique(bar);
 }
 
+// TO DO : Return a QAbstractTechnique once properly defined
 Technique *Quick3DEffect::techniqueAt(QQmlListProperty<Technique> *list, int index)
 {
-    QAbstractEffect *eff = qobject_cast<QAbstractEffect*>(list->object);
+    Quick3DEffect *eff = qobject_cast<Quick3DEffect*>(list->object);
     if (eff)
-        return qobject_cast<Technique*>(eff->techniques().at(index));
+        return qobject_cast<Technique*>(eff->parentEffect()->techniques().at(index));
     return Q_NULLPTR;
 }
 
 int Quick3DEffect::techniqueCount(QQmlListProperty<Technique> *list)
 {
-    QAbstractEffect *eff = qobject_cast<QAbstractEffect*>(list->object);
+    Quick3DEffect *eff = qobject_cast<Quick3DEffect*>(list->object);
     if (eff)
-        return eff->techniques().count();
+        return eff->parentEffect()->techniques().count();
     return 0;
 }
 
 void Quick3DEffect::clearTechniqueList(QQmlListProperty<Technique> *list)
 {
-    QAbstractEffect *eff = qobject_cast<QAbstractEffect*>(list->object);
+    Quick3DEffect *eff = qobject_cast<Quick3DEffect*>(list->object);
     if (eff) {
         // Ownership of techniques is handled by the QmlEngine so we shouldn't class clearTechniques
         // which deletes techniques
-        Q_FOREACH (QAbstractTechnique *tech, eff->techniques())
-            eff->removeTechnique(tech);
+        Q_FOREACH (QAbstractTechnique *tech, eff->parentEffect()->techniques())
+            eff->parentEffect()->removeTechnique(tech);
     }
 }
 

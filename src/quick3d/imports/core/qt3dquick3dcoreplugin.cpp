@@ -61,12 +61,12 @@ QT_BEGIN_NAMESPACE
 
 void Qt3DQuick3DCorePlugin::registerTypes(const char *uri)
 {
-    qmlRegisterInterface<Qt3D::QAbstractEffect>("QAbstractEffect");
     qmlRegisterUncreatableType<Qt3D::Component>(uri, 2, 0, "Component", "");
     qmlRegisterUncreatableType<Qt3D::QAbstractMesh>(uri, 2, 0, "QAbstractMesh", "");
     qmlRegisterUncreatableType<Qt3D::QAbstractMaterial>(uri, 2, 0, "QAbstractMaterial", "");
     qmlRegisterUncreatableType<Qt3D::QAbstractTechnique>(uri, 2, 0, "QAbstractTechnique", "");
     qmlRegisterUncreatableType<Qt3D::QAbstractRenderPass>(uri, 2, 0, "QAbstractRenderPass", "");
+    qmlRegisterUncreatableType<Qt3D::QAbstractEffect>(uri, 2, 0, "QAbstractEffect", "");
 
     qmlRegisterType<Qt3D::Quick::Quick3DConfiguration>(uri, 2, 0, "Configuration");
     qmlRegisterExtendedType<Qt3D::Entity, Qt3D::Quick::Quick3DEntity>(uri, 2, 0, "Entity");

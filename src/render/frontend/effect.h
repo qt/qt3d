@@ -52,19 +52,14 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QT3DRENDERERSHARED_EXPORT Effect
-        : public Node
-        , public QAbstractEffect
+        : public QAbstractEffect
 {
     Q_OBJECT
-    Q_INTERFACES(Qt3D::QAbstractEffect)
 public:
     explicit Effect(Node *parent = 0);
 
     void addTechnique(QAbstractTechnique *t) Q_DECL_OVERRIDE;
     void removeTechnique(QAbstractTechnique *t) Q_DECL_OVERRIDE;
-
-Q_SIGNALS:
-    void techniquesChanged() Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

@@ -65,12 +65,16 @@ public :
     QAbstractEffect *q_ptr;
 };
 
-class QT3DCORESHARED_EXPORT QAbstractEffect
-        : public QObservable
-{
+// TO DO : Abstract doesn't apply but that might evolve as we further define
+// the class
 
+class QT3DCORESHARED_EXPORT QAbstractEffect
+        : public Node
+        , public QObservable
+{
+    Q_OBJECT
 public:
-    QAbstractEffect();
+    explicit QAbstractEffect(Node *parent = 0);
 
     virtual void addTechnique(QAbstractTechnique *t);
     virtual void removeTechnique(QAbstractTechnique *t);
@@ -79,8 +83,8 @@ public:
 
     void clearTechniques();
 
-    // Signal
-    virtual void techniquesChanged() = 0;
+Q_SIGNALS:
+    void techniquesChanged();
 
 private:
     Q_DECLARE_PRIVATE(QAbstractEffect)
@@ -88,8 +92,6 @@ private:
 };
 
 } // Qt3D
-
-Q_DECLARE_INTERFACE(Qt3D::QAbstractEffect, "org.qt-project.Qt3D.Effect/2.0")
 
 QT_END_NAMESPACE
 
