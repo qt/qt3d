@@ -59,23 +59,10 @@ tests/auto/cmake/build
 *.Release
 
 # Examples and demoes
-examples/*/*/*
-!examples/*/*/*[.]*
-!examples/*/*/README
-examples/*/*/*[.]app
+examples/*/*
+!examples/*/*[.]*
+!examples/*/README
+examples/*/*[.]app
+examples/*/*[.]exe
 examples/*/*/*[.]exe
-examples/*/*/*/*[.]exe
-demos/*/*/*
-!demos/*/*/*[.]*
-demos/*/*/*[.]app
-demos/*/*/*[.]exe
-demos/*/*/*/*[.]exe
-tutorials/*/*/*
-!tutorials/*/*/*[.]*
-tutorials/*/*/*[.]app
-tutorials/*/*/*[.]exe
-tutorials/*/*/*/*[.]exe
 
-#unit tests executables (other than those named tst_*)
-tests/benchmarks/qarray/qarray
-tests/benchmarks/qglbuilder_perf/qglbuilder_perf
