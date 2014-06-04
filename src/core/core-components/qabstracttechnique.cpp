@@ -40,6 +40,7 @@
 ****************************************************************************/
 
 #include "qabstracttechnique.h"
+#include "qabstractrenderpass.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -47,6 +48,7 @@ namespace Qt3D {
 
 QAbstractTechnique::QAbstractTechnique(Node *parent)
     : Node(parent)
+    , QObservable()
     , d_ptr(new QAbstractTechniquePrivate(this))
 {
 }
@@ -64,6 +66,34 @@ QString QAbstractTechnique::name() const
 {
     Q_D(const QAbstractTechnique);
     return d->m_name;
+}
+
+void QAbstractTechnique::addPass(QAbstractRenderPass *pass)
+{
+    Q_D(QAbstractTechnique);
+    if (!d->m_renderPasses.contains(pass)) {
+        d->m_renderPasses.append(pass);
+        QScenePropertyChangePtr e(new QScenePropertyChange(ComponentAdded, this));
+        e->m_propertyName = QByteArrayLiteral("pass");
+        e->m_value = QVariant::fromValue(pass);
+        notifyObservers(e);
+    }
+}
+
+void QAbstractTechnique::removePass(QAbstractRenderPass *pass)
+{
+    Q_D(QAbstractTechnique);
+    d->m_renderPasses.removeOne(pass);
+    QScenePropertyChangePtr e(new QScenePropertyChange(ComponentRemoved, this));
+    e->m_propertyName = QByteArrayLiteral("pass");
+    e->m_value = QVariant::fromValue(pass);
+    notifyObservers(e);
+}
+
+QList<QAbstractRenderPass *> QAbstractTechnique::renderPasses() const
+{
+    Q_D(const QAbstractTechnique);
+    return d->m_renderPasses;
 }
 
 } // Qt3D

@@ -42,7 +42,7 @@
 #ifndef RENDERPASS_H
 #define RENDERPASS_H
 
-#include <Qt3DCore/node.h>
+#include <Qt3DCore/qabstractrenderpass.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 #include <Qt3DRenderer/shaderprogram.h>
@@ -57,11 +57,9 @@ namespace Qt3D {
 class Parameter;
 typedef QList<Parameter*> ParameterList;
 
-class QT3DRENDERERSHARED_EXPORT RenderPass : public Node
+class QT3DRENDERERSHARED_EXPORT RenderPass : public QAbstractRenderPass
 {
     Q_OBJECT
-
-    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(Qt3D::ShaderProgram * shaderProgram READ shaderProgram WRITE setShaderProgram NOTIFY shaderProgramChanged)
 
 public:
@@ -86,7 +84,6 @@ public:
     Render::DrawStateSet* stateSet() const;
 
 Q_SIGNALS:
-    void nameChanged();
     void shaderProgramChanged();
 
 protected:

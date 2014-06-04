@@ -170,7 +170,6 @@ private:
 class QT3DRENDERERSHARED_EXPORT Technique : public QAbstractTechnique
 {
     Q_OBJECT
-    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
 
 public:
     explicit Technique(Node *parent = 0);
@@ -184,11 +183,7 @@ public:
     bool containsCriterion(const QString &customTypeName) const;
     bool containsCriterion(TechniqueCriterion::CriterionType type) const;
 
-    void addPass(RenderPass* pass);
-    void removePass(RenderPass *pass);
-    QList<RenderPass *> renderPasses() const;
-
-    // QQmlListProperty<Qt3D::Parameter> parameters();
+    void addPass(QAbstractRenderPass* pass) Q_DECL_OVERRIDE;
 
     void addParameter(Parameter *p);
     void removeParameter(Parameter *p);
@@ -197,14 +192,10 @@ public:
 
     Parameter* parameterByName(QString name) const;
 
-Q_SIGNALS:
-    void nameChanged();
-
 private:
 
     QList<TechniqueCriterion *> m_criteriaList;
     QList<Parameter *> m_parameters;
-    QList<RenderPass *> m_renderPasses;
 };
 
 }

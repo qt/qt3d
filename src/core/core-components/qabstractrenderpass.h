@@ -65,14 +65,17 @@ public:
 class QT3DCORESHARED_EXPORT QAbstractRenderPass : public Node
 {
     Q_OBJECT
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+
 public:
-    QAbstractRenderPass(Node *parent = 0);
+    explicit QAbstractRenderPass(Node *parent = 0);
 
     virtual void setName(const QString &name);
     QString name() const;
 
-    // Signal
-    virtual void nameChanged() = 0;
+Q_SIGNALS:
+    void nameChanged();
+
 
 private:
     Q_DECLARE_PRIVATE(QAbstractRenderPass)
@@ -82,5 +85,7 @@ private:
 } // Qt3D
 
 QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE(Qt3D::QAbstractRenderPass *)
 
 #endif // QT3D_QABSTRACTRENDERPASS_H

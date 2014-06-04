@@ -49,7 +49,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 RenderPass::RenderPass(Node *parent)
-    : Node(parent)
+    : QAbstractRenderPass(parent)
     , m_name()
     , m_shaderProgram(0)
     , m_stateSet(0)

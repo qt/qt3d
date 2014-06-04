@@ -110,7 +110,7 @@ RenderPass *Quick3DTechnique::renderPassAt(QQmlListProperty<RenderPass> *list, i
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     if (technique)
-        return technique->parentTechnique()->renderPasses().at(index);
+        return qobject_cast<RenderPass *>(technique->parentTechnique()->renderPasses().at(index));
     return 0;
 }
 
@@ -126,7 +126,7 @@ void Quick3DTechnique::clearRenderPasses(QQmlListProperty<RenderPass> *list)
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     if (technique) {
-        Q_FOREACH (RenderPass *pass, technique->parentTechnique()->renderPasses())
+        Q_FOREACH (QAbstractRenderPass *pass, technique->parentTechnique()->renderPasses())
             technique->parentTechnique()->removePass(pass);
         emit technique->renderPassesChanged();
     }

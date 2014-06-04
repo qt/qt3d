@@ -44,6 +44,7 @@
 
 #include <QVector>
 #include <QStringList>
+#include <Qt3DCore/qchangearbiter.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -57,11 +58,14 @@ namespace Render {
 class RenderBin;
 class DrawStateSet;
 class RenderShader;
+class Renderer;
 
-class RenderTechnique
+class RenderTechnique : public QObserverInterface
 {
 public:
     RenderTechnique();
+
+    void setRenderer(Renderer *renderer);
 
     void setPeer(Technique* peer);
     Technique *peer() const;
@@ -82,7 +86,11 @@ public:
 
     // FIXME using front-end classes here, not ideal
     Parameter* parameterByName(QString name) const;
+
+    void sceneChangeEvent(const QSceneChangePtr &e);
+
 private:
+    Renderer *m_renderer;
     Technique* m_peer;
     unsigned int m_passCount;
 
@@ -91,6 +99,7 @@ private:
     QVector<RenderShader*> m_passShader;
     QVector<RenderBin*> m_passBin;
 //    QHash<QString, RenderShader*> m_passShader;
+
 };
 
 } // namespace Render

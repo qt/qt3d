@@ -532,6 +532,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> commands)
 
 RenderTechnique* Renderer::techniqueForMaterial(Material* mat)
 {
+    // TO DO: this has to be removed
     QAbstractEffect* eff = mat->effect();
     Technique *tech;
     if (eff) {
@@ -579,10 +580,14 @@ RenderBin* Renderer::getOrCreateBinForPass(Technique* t, RenderPass* p)
 
 RenderTechnique* Renderer::createTechnique(Technique* tech)
 {
+    // TO DO: This will be removed. Kept until know in order to be able to
+    // create the default technique
+
     RenderTechnique* rt = new RenderTechnique();
+    rt->setRenderer(this);
     rt->setPeer(tech);
     for (unsigned int p=0; p<rt->passCount(); ++p) {
-        RenderPass* frontendPass = tech->renderPasses().at(p);
+        RenderPass* frontendPass = qobject_cast<RenderPass*>(tech->renderPasses().at(p));
         RenderShader* rshader = getOrCreateShader(frontendPass->shaderProgram());
         rt->setShaderForPass(p, rshader);
 

@@ -239,6 +239,9 @@ void RenderView::setCommandShaderTechniqueEffect(RenderCommand *command)
             Technique *tech = Q_NULLPTR;
             if ((tech = qobject_cast<Technique*>(technique)) != Q_NULLPTR) {
                 bool foundMatchingTechnique = true;
+                // Can we fully perform the technique selection here ?
+                // If we need to check for extension / vendor / OpenGL Version we would need access to
+                // The QGraphicContext which is only avalaible in the Renderer's thread
                 Q_FOREACH (TechniqueCriterion *filterCriterion, m_techniqueFilter->filters()) {
                     bool findMatch = false;
                     Q_FOREACH (TechniqueCriterion *techCriterion, tech->criteria()) {
@@ -267,6 +270,7 @@ void RenderView::setCommandShaderTechniqueEffect(RenderCommand *command)
                 if (qobject_cast<Technique *>(t) && t->name() == techniqueName) {
                     command->m_technique = m_renderer->techniqueManager()->getOrAcquireHandle(EffectTechniquePair(fEffect, techniqueName));
                     technique = m_renderer->techniqueManager()->data(command->m_technique);
+                    technique->setRenderer(m_renderer);
                     technique->setPeer(qobject_cast<Technique *>(t));
                     break;
                 }
@@ -278,8 +282,9 @@ void RenderView::setCommandShaderTechniqueEffect(RenderCommand *command)
             // Load RenderPass and ShaderPrograms
             QString passName = m_passFilter->filter();
             if (technique != Q_NULLPTR)
-                Q_FOREACH (RenderPass *pass, technique->peer()->renderPasses()) {
-                    if (pass->name() == passName) {
+                Q_FOREACH (QAbstractRenderPass *p, technique->peer()->renderPasses()) {
+                    RenderPass *pass = qobject_cast<RenderPass *>(p);
+                    if (p != Q_NULLPTR && pass->name() == passName) {
                         // Index RenderShader by Shader UUID
                         command->m_shader = m_renderer->shaderManager()->lookupHandle(pass->shaderProgram()->uuid());
                         if (command->m_shader.isNull()) {

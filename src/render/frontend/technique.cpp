@@ -105,21 +105,11 @@ bool Technique::containsCriterion(TechniqueCriterion::CriterionType type) const
     return false;
 }
 
-void Technique::addPass(RenderPass *pass)
+void Technique::addPass(QAbstractRenderPass *pass)
 {
-    Q_ASSERT(pass);
+    Q_CHECK_PTR(pass);
     pass->setParent(this);
-    m_renderPasses.append(pass);
-}
-
-void Technique::removePass(RenderPass *pass)
-{
-    m_renderPasses.removeOne(pass);
-}
-
-QList<RenderPass *> Technique::renderPasses() const
-{
-    return m_renderPasses;
+    QAbstractTechnique::addPass(pass);
 }
 
 void Technique::addParameter(Parameter *p)
@@ -139,7 +129,6 @@ Parameter *Technique::parameterByName(QString name) const
         if (p->name() == name)
             return p;
     }
-
     return NULL;
 }
 
