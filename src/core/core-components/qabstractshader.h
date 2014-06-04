@@ -69,4 +69,6 @@ private:
 
 QT_END_NAMESPACE
 
+Q_DECLARE_METATYPE(Qt3D::QAbstractShader *)
+
 #endif // QT3D_QABSTRACTSHADER_H

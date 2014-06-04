@@ -39,72 +39,41 @@
 **
 ****************************************************************************/
 
-#include "qabstractrenderpass.h"
-#include "qabstractshader.h"
+#ifndef QT3D_RENDER_RENDERRENDERPASS_H
+#define QT3D_RENDER_RENDERRENDERPASS_H
+
+#include <Qt3DCore/qchangearbiter.h>
+#include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAbstractRenderPassPrivate
+class RenderPass;
+
+namespace Render {
+
+class Renderer;
+
+class RenderRenderPass : public QObserverInterface
 {
 public:
-    QAbstractRenderPassPrivate(QAbstractRenderPass *qq)
-        : q_ptr(qq)
-        , m_shader(Q_NULLPTR)
-    {}
+    RenderRenderPass();
 
-    Q_DECLARE_PUBLIC(QAbstractRenderPass)
-    QAbstractRenderPass *q_ptr;
-    QAbstractShader *m_shader;
-    QString m_name;
+    void setRenderer(Renderer *renderer);
+    void setPeer(RenderPass *peer);
+    void sceneChangeEvent(const QSceneChangePtr &e);
+
+private:
+    Renderer *m_renderer;
+    RenderPass *m_peer;
+
 };
 
-QAbstractRenderPass::QAbstractRenderPass(Node *parent)
-    : Node(parent)
-    , d_ptr(new QAbstractRenderPassPrivate(this))
-{
-}
-
-void QAbstractRenderPass::setName(const QString &name)
-{
-    Q_D(QAbstractRenderPass);
-    if (d->m_name != name) {
-        d->m_name = name;
-        emit nameChanged();
-    }
-}
-
-QString QAbstractRenderPass::name() const
-{
-    Q_D(const QAbstractRenderPass);
-    return d->m_name;
-}
-
-/*!
- * Sets the pass's \a shaderProgram. This posts a ComponentUpdated
- * QScenePropertyChange to the QChangeArbiter. The value is set to
- * the \a ShaderProgram and the property name to "shaderProgram".
- */
-void QAbstractRenderPass::setShaderProgram(QAbstractShader *shaderProgram)
-{
-    Q_D(QAbstractRenderPass);
-    if (d->m_shader != shaderProgram) {
-        d->m_shader = shaderProgram;
-        emit shaderProgramChanged();
-        QScenePropertyChangePtr e(new QScenePropertyChange(ComponentUpdated, this));
-        e->m_propertyName = QByteArrayLiteral("shaderProgram");
-        e->m_value = QVariant::fromValue(shaderProgram);
-        notifyObservers(e);
-    }
-}
-
-QAbstractShader *QAbstractRenderPass::shaderProgram() const
-{
-    Q_D(const QAbstractRenderPass);
-    return d->m_shader;
-}
+} // Render
 
 } // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_RENDER_RENDERRENDERPASS_H

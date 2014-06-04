@@ -39,71 +39,50 @@
 **
 ****************************************************************************/
 
-#include "qabstractrenderpass.h"
-#include "qabstractshader.h"
+#include "renderrenderpass.h"
+#include "renderer.h"
+#include "rendereraspect.h"
+#include <Qt3DCore/qaspectmanager.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAbstractRenderPassPrivate
-{
-public:
-    QAbstractRenderPassPrivate(QAbstractRenderPass *qq)
-        : q_ptr(qq)
-        , m_shader(Q_NULLPTR)
-    {}
+namespace Render {
 
-    Q_DECLARE_PUBLIC(QAbstractRenderPass)
-    QAbstractRenderPass *q_ptr;
-    QAbstractShader *m_shader;
-    QString m_name;
-};
-
-QAbstractRenderPass::QAbstractRenderPass(Node *parent)
-    : Node(parent)
-    , d_ptr(new QAbstractRenderPassPrivate(this))
+RenderRenderPass::RenderRenderPass()
+    : m_renderer(Q_NULLPTR)
+    , m_peer(Q_NULLPTR)
 {
 }
 
-void QAbstractRenderPass::setName(const QString &name)
+void RenderRenderPass::setRenderer(Renderer *renderer)
 {
-    Q_D(QAbstractRenderPass);
-    if (d->m_name != name) {
-        d->m_name = name;
-        emit nameChanged();
+    m_renderer = renderer;
+}
+
+void RenderRenderPass::setPeer(RenderPass *peer)
+{
+    if (m_peer != peer) {
+        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
+        if (m_peer)
+            arbiter->unregisterObserver(this, m_peer);
+        m_peer = peer;
+        if (m_peer)
+            arbiter->registerObserver(this, m_peer, ComponentUpdated);
     }
 }
 
-QString QAbstractRenderPass::name() const
+void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
 {
-    Q_D(const QAbstractRenderPass);
-    return d->m_name;
-}
-
-/*!
- * Sets the pass's \a shaderProgram. This posts a ComponentUpdated
- * QScenePropertyChange to the QChangeArbiter. The value is set to
- * the \a ShaderProgram and the property name to "shaderProgram".
- */
-void QAbstractRenderPass::setShaderProgram(QAbstractShader *shaderProgram)
-{
-    Q_D(QAbstractRenderPass);
-    if (d->m_shader != shaderProgram) {
-        d->m_shader = shaderProgram;
-        emit shaderProgramChanged();
-        QScenePropertyChangePtr e(new QScenePropertyChange(ComponentUpdated, this));
-        e->m_propertyName = QByteArrayLiteral("shaderProgram");
-        e->m_value = QVariant::fromValue(shaderProgram);
-        notifyObservers(e);
+    if (e->m_type == ComponentUpdated) {
+        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+        if (propertyChange->m_propertyName == QByteArrayLiteral("shaderProgram"))
+            ;// TO DO: to be completed
     }
 }
 
-QAbstractShader *QAbstractRenderPass::shaderProgram() const
-{
-    Q_D(const QAbstractRenderPass);
-    return d->m_shader;
-}
+} // Render
 
 } // Qt3D
 
