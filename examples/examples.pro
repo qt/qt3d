@@ -8,7 +8,8 @@ SUBDIRS += \
     cpp_example \
     multiviewport \
     torus-qml \
-    torus-cpp
+    torus-cpp \
+    bigmodel-qml
 
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d
