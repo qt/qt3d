@@ -58,6 +58,22 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class QAbstractMeshPrivate
+{
+public:
+    QAbstractMeshPrivate(QAbstractMesh *qq)
+        : q_ptr(qq)
+        , m_uuid(QUuid::createUuid())
+    {}
+
+
+    Q_DECLARE_PUBLIC(QAbstractMesh)
+    QAbstractMesh *q_ptr;
+
+    QString m_source;
+    const QUuid m_uuid;
+};
+
 QAbstractMesh::QAbstractMesh(Node *parent)
     : Component(parent)
     , d_ptr(new QAbstractMeshPrivate(this))

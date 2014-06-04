@@ -62,6 +62,19 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class QAbstractMaterialPrivate
+{
+public :
+    QAbstractMaterialPrivate(QAbstractMaterial *qq)
+        : q_ptr(qq)
+        , m_effect(Q_NULLPTR)
+    {}
+
+    Q_DECLARE_PUBLIC(QAbstractMaterial)
+    QAbstractMaterial *q_ptr;
+    QAbstractEffect *m_effect;
+};
+
 QAbstractMaterial::QAbstractMaterial(Node *parent)
     : Component(parent)
     , d_ptr(new QAbstractMaterialPrivate(this))

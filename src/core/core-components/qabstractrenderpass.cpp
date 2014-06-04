@@ -45,6 +45,18 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class QAbstractRenderPassPrivate
+{
+public:
+    QAbstractRenderPassPrivate(QAbstractRenderPass *qq)
+        : q_ptr(qq)
+    {}
+
+    QString m_name;
+    Q_DECLARE_PUBLIC(QAbstractRenderPass)
+    QAbstractRenderPass *q_ptr;
+};
+
 QAbstractRenderPass::QAbstractRenderPass(Node *parent)
     : Node(parent)
     , d_ptr(new QAbstractRenderPassPrivate(this))

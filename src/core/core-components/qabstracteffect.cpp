@@ -60,6 +60,19 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class QAbstractEffectPrivate
+{
+public :
+    QAbstractEffectPrivate(QAbstractEffect *qq)
+        : q_ptr(qq)
+    {}
+
+    QList<QAbstractTechnique *> m_techniques;
+
+    Q_DECLARE_PUBLIC(QAbstractEffect)
+    QAbstractEffect *q_ptr;
+};
+
 QAbstractEffect::QAbstractEffect(Node *parent)
     : Node(parent)
     , QObservable()

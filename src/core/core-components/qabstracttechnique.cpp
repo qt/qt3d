@@ -63,6 +63,19 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class QAbstractTechniquePrivate
+{
+public :
+    QAbstractTechniquePrivate(QAbstractTechnique *qq)
+        : q_ptr(qq)
+    {}
+
+    QString m_name;
+    Q_DECLARE_PUBLIC(QAbstractTechnique)
+    QAbstractTechnique *q_ptr;
+    QList<QAbstractRenderPass*> m_renderPasses;
+};
+
 QAbstractTechnique::QAbstractTechnique(Node *parent)
     : Node(parent)
     , QObservable()
