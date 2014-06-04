@@ -50,36 +50,8 @@ namespace Qt3D {
 
 RenderPass::RenderPass(Node *parent)
     : QAbstractRenderPass(parent)
-    , m_name()
-    , m_shaderProgram(0)
     , m_stateSet(0)
 {
-}
-
-void RenderPass::setName(const QString &name)
-{
-    if (name != m_name) {
-        m_name = name;
-        emit nameChanged();
-    }
-}
-
-QString RenderPass::name() const
-{
-    return m_name;
-}
-
-void RenderPass::setShaderProgram(Qt3D::ShaderProgram *shaderProgram)
-{
-    if (shaderProgram != m_shaderProgram) {
-        m_shaderProgram = shaderProgram;
-        emit shaderProgramChanged();
-    }
-}
-
-Qt3D::ShaderProgram *RenderPass::shaderProgram() const
-{
-    return m_shaderProgram;
 }
 
 void RenderPass::addUniformBinding(Parameter *param, QString glslUniformName)

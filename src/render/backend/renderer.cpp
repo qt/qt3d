@@ -588,7 +588,7 @@ RenderTechnique* Renderer::createTechnique(Technique* tech)
     rt->setPeer(tech);
     for (unsigned int p=0; p<rt->passCount(); ++p) {
         RenderPass* frontendPass = qobject_cast<RenderPass*>(tech->renderPasses().at(p));
-        RenderShader* rshader = getOrCreateShader(frontendPass->shaderProgram());
+        RenderShader* rshader = getOrCreateShader(qobject_cast<ShaderProgram*>(frontendPass->shaderProgram()));
         rt->setShaderForPass(p, rshader);
 
         RenderBin* bin = getOrCreateBinForPass(tech, frontendPass);

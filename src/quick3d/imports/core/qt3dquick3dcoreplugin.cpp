@@ -41,8 +41,6 @@
 
 #include <QtQml>
 #include "qt3dquick3dcoreplugin.h"
-#include <Qt3DQuick/quick3dentity.h>
-#include <Qt3DQuick/quick3dtransform.h>
 #include <Qt3DCore/cameralens.h>
 #include <Qt3DCore/camera.h>
 #include <Qt3DCore/scaletransform.h>
@@ -55,6 +53,9 @@
 #include <Qt3DCore/qabstracttechnique.h>
 #include <Qt3DCore/qabstractmesh.h>
 #include <Qt3DCore/qabstractrenderpass.h>
+#include <Qt3DCore/qabstractshader.h>
+#include <Qt3DQuick/quick3dentity.h>
+#include <Qt3DQuick/quick3dtransform.h>
 #include <Qt3DQuick/quick3dconfiguration.h>
 
 QT_BEGIN_NAMESPACE
@@ -67,6 +68,7 @@ void Qt3DQuick3DCorePlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<Qt3D::QAbstractTechnique>(uri, 2, 0, "QAbstractTechnique", "");
     qmlRegisterUncreatableType<Qt3D::QAbstractRenderPass>(uri, 2, 0, "QAbstractRenderPass", "");
     qmlRegisterUncreatableType<Qt3D::QAbstractEffect>(uri, 2, 0, "QAbstractEffect", "");
+    qmlRegisterUncreatableType<Qt3D::QAbstractShader>(uri, 2, 0, "QAbstractShader", "");
 
     qmlRegisterType<Qt3D::Quick::Quick3DConfiguration>(uri, 2, 0, "Configuration");
     qmlRegisterExtendedType<Qt3D::Entity, Qt3D::Quick::Quick3DEntity>(uri, 2, 0, "Entity");

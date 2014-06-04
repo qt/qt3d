@@ -40,6 +40,7 @@
 ****************************************************************************/
 
 #include "qabstractrenderpass.h"
+#include "qabstractshader.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -50,11 +51,13 @@ class QAbstractRenderPassPrivate
 public:
     QAbstractRenderPassPrivate(QAbstractRenderPass *qq)
         : q_ptr(qq)
+        , m_shader(Q_NULLPTR)
     {}
 
-    QString m_name;
     Q_DECLARE_PUBLIC(QAbstractRenderPass)
     QAbstractRenderPass *q_ptr;
+    QAbstractShader *m_shader;
+    QString m_name;
 };
 
 QAbstractRenderPass::QAbstractRenderPass(Node *parent)
@@ -76,6 +79,21 @@ QString QAbstractRenderPass::name() const
 {
     Q_D(const QAbstractRenderPass);
     return d->m_name;
+}
+
+void QAbstractRenderPass::setShaderProgram(QAbstractShader *shaderProgram)
+{
+    Q_D(QAbstractRenderPass);
+    if (d->m_shader != shaderProgram) {
+        d->m_shader = shaderProgram;
+        emit shaderProgramChanged();
+    }
+}
+
+QAbstractShader *QAbstractRenderPass::shaderProgram() const
+{
+    Q_D(const QAbstractRenderPass);
+    return d->m_shader;
 }
 
 } // Qt3D

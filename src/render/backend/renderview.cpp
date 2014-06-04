@@ -282,17 +282,17 @@ void RenderView::setCommandShaderTechniqueEffect(RenderCommand *command)
             // Load RenderPass and ShaderPrograms
             QString passName = m_passFilter->filter();
             if (technique != Q_NULLPTR)
-                Q_FOREACH (QAbstractRenderPass *p, technique->peer()->renderPasses()) {
-                    RenderPass *pass = qobject_cast<RenderPass *>(p);
-                    if (p != Q_NULLPTR && pass->name() == passName) {
+                Q_FOREACH (QAbstractRenderPass *pass, technique->peer()->renderPasses()) {
+                    if (pass->name() == passName && pass->shaderProgram() != Q_NULLPTR) {
                         // Index RenderShader by Shader UUID
                         command->m_shader = m_renderer->shaderManager()->lookupHandle(pass->shaderProgram()->uuid());
                         if (command->m_shader.isNull()) {
                             RenderShader *shader = m_renderer->shaderManager()->getOrCreateResource(pass->shaderProgram()->uuid());
-                            shader->setPeer(pass->shaderProgram());
+                            shader->setPeer(qobject_cast<ShaderProgram*>(pass->shaderProgram()));
                             command->m_shader = m_renderer->shaderManager()->lookupHandle(pass->shaderProgram()->uuid());
                         }
-                        command->m_stateSet = pass->stateSet();
+                        // TO DO : To be corrected later on
+                        command->m_stateSet = qobject_cast<RenderPass*>(pass)->stateSet();
                         break;
                     }
                 }

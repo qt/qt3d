@@ -48,12 +48,14 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class QAbstractShader;
 class QAbstractRenderPassPrivate;
 
 class QT3DCORESHARED_EXPORT QAbstractRenderPass : public Node
 {
     Q_OBJECT
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+    Q_PROPERTY(Qt3D::QAbstractShader * shaderProgram READ shaderProgram WRITE setShaderProgram NOTIFY shaderProgramChanged)
 
 public:
     explicit QAbstractRenderPass(Node *parent = 0);
@@ -61,9 +63,11 @@ public:
     virtual void setName(const QString &name);
     QString name() const;
 
+    virtual void setShaderProgram(QAbstractShader* shaderProgram);
+    QAbstractShader* shaderProgram() const;
 Q_SIGNALS:
     void nameChanged();
-
+    void shaderProgramChanged();
 
 private:
     Q_DECLARE_PRIVATE(QAbstractRenderPass)

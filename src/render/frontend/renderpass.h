@@ -60,16 +60,9 @@ typedef QList<Parameter*> ParameterList;
 class QT3DRENDERERSHARED_EXPORT RenderPass : public QAbstractRenderPass
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3D::ShaderProgram * shaderProgram READ shaderProgram WRITE setShaderProgram NOTIFY shaderProgramChanged)
 
 public:
     explicit RenderPass(Node *parent = 0);
-
-    void setName(const QString &name);
-    QString name() const;
-
-    void setShaderProgram(Qt3D::ShaderProgram* shaderProgram);
-    Qt3D::ShaderProgram* shaderProgram() const;
 
     void addUniformBinding(Parameter* param, QString glslUniformName);
 
@@ -83,12 +76,9 @@ public:
     void setStateSet(Render::DrawStateSet* ss);
     Render::DrawStateSet* stateSet() const;
 
-Q_SIGNALS:
-    void shaderProgramChanged();
+
 
 protected:
-    QString m_name;
-    ShaderProgram* m_shaderProgram;
     ParameterList m_attributes;
     ParameterList m_uniforms;
 
