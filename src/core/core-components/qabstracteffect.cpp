@@ -42,6 +42,20 @@
 #include "qabstracteffect.h"
 #include "qabstracttechnique.h"
 
+/*!
+ * \class QAbstractEffect
+ * \namespace Qt3D
+ *
+ * \brief Provides an abstract class that should be the base of all Effect element
+ * classes in a scene
+ *
+ * QAbstractEffect is bound to be linked by a Material. It is responsible for holding all the
+ * techniques that can be used to perform rendering.
+ *
+ * \sa QAbstractTechnique, Component
+ */
+
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
@@ -54,6 +68,11 @@ QAbstractEffect::QAbstractEffect(Node *parent)
     qRegisterMetaType<Qt3D::QAbstractEffect*>();
 }
 
+/*!
+ * Adds a new technique \a t to the effect. This posts a CommponentAdded
+ * QScenePropertyChange notification to the QChangeArbiter, the value is
+ * the added technique and the property name is "technique".
+ */
 void QAbstractEffect::addTechnique(QAbstractTechnique *t)
 {
     Q_ASSERT(t);
@@ -67,6 +86,11 @@ void QAbstractEffect::addTechnique(QAbstractTechnique *t)
     }
 }
 
+/*!
+ * Removes a technique \t from the effect. This posts a ComponentRemoved
+ * QScenePropertyChange notification to the QChangeArbiter, the valus is
+ * the removed technique and the property name is "technique".
+ */
 void QAbstractEffect::removeTechnique(QAbstractTechnique *t)
 {
     Q_D(QAbstractEffect);
@@ -77,12 +101,19 @@ void QAbstractEffect::removeTechnique(QAbstractTechnique *t)
     notifyObservers(e);
 }
 
+/*!
+ * Returns the list of techniques used by the effect.
+ */
 QList<QAbstractTechnique *> QAbstractEffect::techniques() const
 {
     Q_D(const QAbstractEffect);
     return d->m_techniques;
 }
 
+/*!
+ * Clears the list of techniques used by the effet.
+ * No notification is posted when using this method.
+ */
 void QAbstractEffect::clearTechniques()
 {
     Q_D(QAbstractEffect);
