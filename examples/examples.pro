@@ -6,7 +6,9 @@ SUBDIRS += \
     gltf \
     assimp \
     cpp_example \
-    multiviewport
+    multiviewport \
+    torus-qml \
+    torus-cpp
 
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d
