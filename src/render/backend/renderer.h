@@ -138,7 +138,6 @@ public:
     RenderTechnique* techniqueForMaterial(Material* mat);
 
     void buildMeshes(Mesh *mesh, Material *mat, const QMatrix4x4& mm);
-    void buildShape(Shape *shape, Material *mat, const QMatrix4x4 &mm);
 
     void setSurface(QSurface *s);
 

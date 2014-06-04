@@ -126,11 +126,13 @@ Renderer::Renderer()
     buildDefaultTechnique();
     buildDefaultMaterial();
 
-    QLoggingCategory::setFilterRules("Qt3D.Render.*.debug=false\n"
+    QLoggingCategory::setFilterRules(QString::fromUtf8( // multiline QStringLiteral doesn't compile on Windows...
+                                     "Qt3D.Render.*.debug=false\n"
                                      "Qt3D.Render.Rendering.debug=true\n"
                                      "Qt3D.Render.RenderNodes.debug=true\n"
                                      "Qt3D.Render.Frontend.debug=true\n"
-                                     "qml.debug=true\n");
+                                     "qml.debug=true\n"
+                                     ));
 }
 
 void Renderer::buildDefaultTechnique()
@@ -609,31 +611,6 @@ RenderMaterial* Renderer::getOrCreateMaterial(Material* mat)
     }
 
     return m_materialHash.value(mat);
-}
-
-void Renderer::buildShape(Shape* shape, Material* mat, const QMatrix4x4& mm)
-{
-    if (mat == NULL) {
-        mat = m_defaultMaterial;
-    }
-
-    MeshDataPtr shapeMeshData = shape->data();
-    RenderMaterial* rmat = getOrCreateMaterial(mat);
-    RenderTechnique* t = rmat->technique();
-
-    //    for (unsigned int p=0; p<t->passCount(); ++p) {
-    //        RenderBin* bin = t->binForPass(p);
-
-    //        RenderMesh* rmesh = new RenderMesh();
-    //        rmesh->setData(shapeMeshData);
-    //        rmesh->setTechniqueAndPass(t, p);
-    //        rmesh->setModelMatrix(mm);
-    //        rmesh->setMaterial(rmat);
-
-    //        m_initList.push_back(rmesh);
-    //        bin->addDrawable(rmesh);
-
-    //    } // of technique pass iteration
 }
 
 } // namespace Render
