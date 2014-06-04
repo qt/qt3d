@@ -39,21 +39,20 @@
 **
 ****************************************************************************/
 
-#ifndef SHADERPROGRAM_H
-#define SHADERPROGRAM_H
+#ifndef QT3D_SHADERPROGRAM_H
+#define QT3D_SHADERPROGRAM_H
 
 #include <QUuid>
-#include <Qt3DCore/node.h>
+#include <Qt3DCore/qabstractshader.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DRENDERERSHARED_EXPORT ShaderProgram : public Node
+class QT3DRENDERERSHARED_EXPORT ShaderProgram : public QAbstractShader
 {
     Q_OBJECT
-
     Q_PROPERTY(QString vertexSourceFile READ vertexSourceFile WRITE setVertexSourceFile NOTIFY vertexSourceFileChanged)
     Q_PROPERTY(QString fragmentSourceFile READ fragmentSourceFile WRITE setFragmentSourceFile NOTIFY fragmentSourceFileChanged)
     Q_PROPERTY(QByteArray vertexShader READ vertexSourceCode WRITE setVertexShader NOTIFY vertexShaderChanged)
@@ -62,7 +61,6 @@ class QT3DRENDERERSHARED_EXPORT ShaderProgram : public Node
 public:
     explicit ShaderProgram(Node *parent = 0);
 
-    QUuid uuid() const;
     void setVertexSourceFile(const QString &vertexSourceFile);
     QString vertexSourceFile() const;
 
@@ -96,12 +94,10 @@ private:
     bool m_sourcesDirty, m_isLoaded;
     QByteArray m_cachedVertexCode,
         m_cachedFragmentCode;
-
-    QUuid m_uuid;
 };
 
 }
 
 QT_END_NAMESPACE
 
-#endif // SHADERPROGRAM_H
+#endif // QT3D_SHADERPROGRAM_H

@@ -49,17 +49,11 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 ShaderProgram::ShaderProgram(Node *parent)
-    : Node(parent)
+    : QAbstractShader(parent)
     , m_vertexSourceFile()
     , m_fragmentSourceFile()
     , m_isLoaded(false)
 {
-    m_uuid = QUuid::createUuid();
-}
-
-QUuid ShaderProgram::uuid() const
-{
-    return m_uuid;
 }
 
 void ShaderProgram::setVertexSourceFile(const QString& vertexSourceFile)
