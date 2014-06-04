@@ -42,6 +42,23 @@
 #include "qabstracttechnique.h"
 #include "qabstractrenderpass.h"
 
+/*!
+ * \class QAbstractTechnique
+ * \namespace Qt3D
+ *
+ * \inherits Node
+ *
+ * \brief Provides an abstract class that should be the base of all
+ * Technique classes in a scene.
+ *
+ * A QAbstractTechnique is a container of QAbstractRenderPasses. If it contains
+ * several passes, that doesn't mean they will all be used during rendering. This
+ * depends on the aspect behind used for that purpose and any pass filtering set up
+ * by the QAbstractTechnique subclass.
+ *
+ * \sa QAbstractEffect, QAbstractRenderPass
+ */
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
@@ -53,6 +70,9 @@ QAbstractTechnique::QAbstractTechnique(Node *parent)
 {
 }
 
+/*!
+ * Sets the \a name of the technique
+ */
 void QAbstractTechnique::setName(const QString &name)
 {
     Q_D(QAbstractTechnique);
@@ -62,12 +82,20 @@ void QAbstractTechnique::setName(const QString &name)
     }
 }
 
+/*!
+ * Returns the name of the technique
+ */
 QString QAbstractTechnique::name() const
 {
     Q_D(const QAbstractTechnique);
     return d->m_name;
 }
 
+/*!
+ * Appends a \a pass to the technique. This posts a ComponentAdded
+ * QScenePropertyChange notification to the QChangeArbiter with the
+ * value being the \a pass and the property name being "pass".
+ */
 void QAbstractTechnique::addPass(QAbstractRenderPass *pass)
 {
     Q_D(QAbstractTechnique);
@@ -80,6 +108,11 @@ void QAbstractTechnique::addPass(QAbstractRenderPass *pass)
     }
 }
 
+/*!
+ * Removes a \a pass from the technique. This posts a ComponentRemoved
+ * QScenePropertyChange notification to the QChangeArbiter with the value
+ * being the \a pass and the property name being "pass".
+ */
 void QAbstractTechnique::removePass(QAbstractRenderPass *pass)
 {
     Q_D(QAbstractTechnique);
@@ -90,6 +123,9 @@ void QAbstractTechnique::removePass(QAbstractRenderPass *pass)
     notifyObservers(e);
 }
 
+/*!
+ * Returns the list of render passes contained in the technique.
+ */
 QList<QAbstractRenderPass *> QAbstractTechnique::renderPasses() const
 {
     Q_D(const QAbstractTechnique);
