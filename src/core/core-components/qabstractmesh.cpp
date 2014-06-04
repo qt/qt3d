@@ -41,6 +41,19 @@
 
 #include "qabstractmesh.h"
 
+/*!
+ * \class QAbstractMesh
+ * \namespace Qt3D
+ *
+ * \brief Provides an abstract class that should be the base of all Mesh
+ * primitives in a scene
+ *
+ * QAbstractMesh subclasses should encapsulate vertices needed to render a Mesh.
+ * These should match and be packed according to what the aspect they live in expects.
+ *
+ * \sa QAbstractTechnique, Component
+ */
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
@@ -51,6 +64,9 @@ QAbstractMesh::QAbstractMesh(Node *parent)
 {
 }
 
+/*!
+ * Sets the \a source of the mesh
+ */
 void QAbstractMesh::setSource(const QString &source)
 {
     Q_D(QAbstractMesh);
@@ -60,12 +76,18 @@ void QAbstractMesh::setSource(const QString &source)
     }
 }
 
+/*!
+ * Returns the source of a mesh.
+ */
 QString QAbstractMesh::source() const
 {
     Q_D(const QAbstractMesh);
     return d->m_source;
 }
 
+/*!
+ * Returns a QUuid uniquely identifying the mesh.
+ */
 const QUuid QAbstractMesh::uuid() const
 {
     Q_D(const QAbstractMesh);
