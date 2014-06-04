@@ -41,6 +41,23 @@
 
 #include "qabstractmaterial.h"
 
+/*!
+ * \class QAbstractMaterial
+ * \namespace Qt3D
+ *
+ * \inherits Component
+ *
+ * \brief Provides an abstract class that should be the base of all
+ * Material component classes in a scene.
+ *
+ * QAbstractMaterial provide a way to specify the rendering of an Entity.
+ * Any aspect can define its own subclass of QAbstractMaterial so that a
+ * Material can be used to describe a visual element, the way sound should
+ * reflect on an element, the temperature of a surface and so on.
+ *
+ * \sa QAbstractEffect, QAbstractMesh, Component
+ */
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
@@ -51,6 +68,9 @@ QAbstractMaterial::QAbstractMaterial(Node *parent)
 {
 }
 
+/*!
+ * Sets the \a effect to be used with the Material.
+ */
 void QAbstractMaterial::setEffect(QAbstractEffect *effect)
 {
     Q_D(QAbstractMaterial);
@@ -60,6 +80,9 @@ void QAbstractMaterial::setEffect(QAbstractEffect *effect)
     }
 }
 
+/*!
+ * Returns the effect used by the Material.
+ */
 QAbstractEffect *QAbstractMaterial::effect() const
 {
     Q_D(const QAbstractMaterial);
