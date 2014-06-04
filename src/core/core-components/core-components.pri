@@ -7,7 +7,9 @@ HEADERS += \
         $$PWD/qabstractmesh.h \
         $$PWD/qabstracttechnique.h \
         $$PWD/qabstractrenderpass.h \
-        $$PWD/qabstracteffect.h
+        $$PWD/qabstracteffect.h \
+        $$PWD/qabstractshader.h
+
 
 SOURCES += \
         $$PWD/camera.cpp \
@@ -16,6 +18,7 @@ SOURCES += \
         $$PWD/qabstractmesh.cpp \
         $$PWD/qabstracttechnique.cpp \
         $$PWD/qabstractrenderpass.cpp \
-        $$PWD/qabstracteffect.cpp
+        $$PWD/qabstracteffect.cpp \
+        $$PWD/qabstractshader.cpp
 
 INCLUDEPATH += $$PWD
