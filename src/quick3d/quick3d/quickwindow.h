@@ -73,6 +73,7 @@ public:
     void setCamera(Camera *camera);
     static QuickWindow *getInstance();
 
+    QQmlEngine *engine() const;
 
 Q_SIGNALS:
     void statusChanged(Status);

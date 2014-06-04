@@ -122,6 +122,11 @@ QuickWindow *QuickWindow::getInstance()
     return QuickWindow::m_instance;
 }
 
+QQmlEngine *QuickWindow::engine() const
+{
+    return m_engine.data();
+}
+
 void QuickWindow::continueExecute()
 {
     qDebug() << Q_FUNC_INFO;
