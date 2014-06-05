@@ -163,6 +163,43 @@ Parameter::StandardUniform parseSemanticName(const QByteArray& s)
     return Parameter::None;
 }
 
+Parameter::OpenGLTypes parseType(const QByteArray &s)
+{
+    if (s == "BYTE")                  return Parameter::Undefined;
+    if (s == "BYTE_VEC2")             return Parameter::Undefined;
+    if (s == "BYTE_VEC3")             return Parameter::Undefined;
+    if (s == "BYTE_VEC4")             return Parameter::Undefined;
+    if (s == "UNSIGNED_BYTE")         return Parameter::Undefined;
+    if (s == "UNSIGNED_BYTE_VEC2")    return Parameter::Undefined;
+    if (s == "UNSIGNED_BYTE_VEC3")    return Parameter::Undefined;
+    if (s == "UNSIGNED_BYTE_VEC4")    return Parameter::Undefined;
+    if (s == "SHORT")                 return Parameter::Undefined;
+    if (s == "SHORT_VEC2")            return Parameter::Undefined;
+    if (s == "SHORT_VEC3")            return Parameter::Undefined;
+    if (s == "SHORT_VEC4")            return Parameter::Undefined;
+    if (s == "UNSIGNED_SHORT")        return Parameter::Undefined;
+    if (s == "UNSIGNED_SHORT_VEC2")   return Parameter::Undefined;
+    if (s == "UNSIGNED_SHORT_VEC3")   return Parameter::Undefined;
+    if (s == "UNSIGNED_SHORT_VEC4")   return Parameter::Undefined;
+    if (s == "FLOAT")                 return Parameter::Float;
+    if (s == "FLOAT_VEC2")            return Parameter::FloatVec2;
+    if (s == "FLOAT_VEC3")            return Parameter::FloatVec3;
+    if (s == "FLOAT_VEC4")            return Parameter::FloatVec4;
+    if (s == "FLOAT_MAT2")            return Parameter::FloatMat2;
+    if (s == "FLOAT_MAT2")            return Parameter::FloatMat3;
+    if (s == "FLOAT_MAT2")            return Parameter::FloatMat4;
+    if (s == "INT")                   return Parameter::Int;
+    if (s == "INT_VEC2")              return Parameter::IntVec2;
+    if (s == "INT_VEC3")              return Parameter::IntVec3;
+    if (s == "INT_VEC4")              return Parameter::IntVec4;
+    if (s == "BOOL")                  return Parameter::Bool;
+    if (s == "BOOL_VEC2")             return Parameter::BoolVec2;
+    if (s == "BOOL_VEC3")             return Parameter::BoolVec3;
+    if (s == "BOOL_VEC4")             return Parameter::BoolVec4;
+
+    return Parameter::Undefined;
+}
+
 } // of anonymous namespace
 
 GLTFParser::GLTFParser() : AbstractSceneParser(),
@@ -756,10 +793,11 @@ void GLTFParser::processJSONTechnique( QString id, QJsonObject jsonObj )
     Q_FOREACH (QString pname, params.keys()) {
         QJsonObject po = params.value(pname).toObject();
 
-        int dataType = po.value(KEY_TYPE).toInt();
+//        int dataType = po.value(KEY_TYPE).toInt();
         QString semantic = po.value(KEY_SEMANTIC).toString();
-
-        Parameter* p = new Parameter(t, pname, dataType);
+        // The Standard has changed, it doesn't return the raw int value for a type
+        // But a string
+        Parameter* p = new Parameter(t, pname, parseType(po.value(KEY_TYPE).toString().toUtf8()));
         Parameter::StandardUniform su = parseSemanticName(semantic.toUtf8());
         if (su != Parameter::None) {
             p->setStandardUniform(su);

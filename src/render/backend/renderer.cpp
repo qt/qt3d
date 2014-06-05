@@ -155,46 +155,46 @@ void Renderer::buildDefaultTechnique()
 
     m_defaultTechnique->addPass(basicPass);
 
-    Parameter* vp = new Parameter(m_defaultTechnique, QStringLiteral("position"), GL_FLOAT_VEC3);
+    Parameter* vp = new Parameter(m_defaultTechnique, QStringLiteral("position"), Parameter::FloatVec3);
     vp->setMeshAttributeName(QStringLiteral("position"));
     m_defaultTechnique->addParameter(vp);
     basicPass->addAttributeBinding(vp, QStringLiteral("vertexPosition"));
 
-    Parameter* np = new Parameter(m_defaultTechnique, QStringLiteral("normal"), GL_FLOAT_VEC3);
+    Parameter* np = new Parameter(m_defaultTechnique, QStringLiteral("normal"), Parameter::FloatVec3);
     np->setMeshAttributeName(QStringLiteral("normal"));
     m_defaultTechnique->addParameter(np);
     basicPass->addAttributeBinding(np, QStringLiteral("vertexNormal"));
 
     // matrix uniforms from standard
-    Parameter* mvMat = new Parameter(m_defaultTechnique, QStringLiteral("modelView"), GL_FLOAT_MAT4);
+    Parameter* mvMat = new Parameter(m_defaultTechnique, QStringLiteral("modelView"), Parameter::FloatMat4);
     mvMat->setStandardUniform(Parameter::ModelView);
     m_defaultTechnique->addParameter(mvMat);
     basicPass->addUniformBinding(mvMat, QStringLiteral("modelViewMatrix"));
 
-    Parameter* nMat = new Parameter(m_defaultTechnique, QStringLiteral("normalMat"), GL_FLOAT_MAT3);
+    Parameter* nMat = new Parameter(m_defaultTechnique, QStringLiteral("normalMat"), Parameter::FloatMat3);
     nMat->setStandardUniform(Parameter::ModelViewNormal);
     m_defaultTechnique->addParameter(nMat);
     basicPass->addUniformBinding(nMat, QStringLiteral("normalMatrix"));
 
-    Parameter* mvpMat = new Parameter(m_defaultTechnique, QStringLiteral("mvp"), GL_FLOAT_MAT4);
+    Parameter* mvpMat = new Parameter(m_defaultTechnique, QStringLiteral("mvp"), Parameter::FloatMat4);
     mvpMat->setStandardUniform(Parameter::ModelViewProjection);
     m_defaultTechnique->addParameter(mvpMat);
     basicPass->addUniformBinding(mvpMat, QStringLiteral("mvp"));
 
     // diffuse lighting uniforms
-    Parameter* lightPos = new Parameter(m_defaultTechnique, QStringLiteral("lightPos"), GL_FLOAT_VEC4);
+    Parameter* lightPos = new Parameter(m_defaultTechnique, QStringLiteral("lightPos"), Parameter::FloatVec4);
     m_defaultTechnique->addParameter(lightPos);
     basicPass->addUniformBinding(lightPos, QStringLiteral("lightPosition"));
 
-    Parameter* lightIntensity = new Parameter(m_defaultTechnique, QStringLiteral("lightIntensity"), GL_FLOAT_VEC3);
+    Parameter* lightIntensity = new Parameter(m_defaultTechnique, QStringLiteral("lightIntensity"), Parameter::FloatVec3);
     m_defaultTechnique->addParameter(lightIntensity);
     basicPass->addUniformBinding(lightIntensity, QStringLiteral("lightIntensity"));
 
-    Parameter* kd = new Parameter(m_defaultTechnique, QStringLiteral("kd"), GL_FLOAT_VEC3);
+    Parameter* kd = new Parameter(m_defaultTechnique, QStringLiteral("kd"), Parameter::FloatVec3);
     m_defaultTechnique->addParameter(kd);
     basicPass->addUniformBinding(kd, QStringLiteral("kd"));
 
-    Parameter* ka = new Parameter(m_defaultTechnique, QStringLiteral("ka"), GL_FLOAT_VEC3);
+    Parameter* ka = new Parameter(m_defaultTechnique, QStringLiteral("ka"), Parameter::FloatVec3);
     m_defaultTechnique->addParameter(ka);
     basicPass->addUniformBinding(ka, QStringLiteral("ka"));
 }

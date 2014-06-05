@@ -44,8 +44,6 @@
 
 #include <QObject>
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <QOpenGLContext>
-// FIXME - move enum somewhere common so don't need to include this here
 #include <Qt3DRenderer/quniformvalue.h>
 
 QT_BEGIN_NAMESPACE
@@ -58,7 +56,7 @@ class QT3DRENDERERSHARED_EXPORT Parameter : public QObject
     Q_ENUMS(OpenGLTypes)
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString meshAttributeName READ meshAttributeName WRITE setMeshAttributeName NOTIFY meshAttributeNameChanged)
-    Q_PROPERTY(int datatype READ datatype() WRITE setDatatype() NOTIFY datatypeChanged())
+    Q_PROPERTY(OpenGLTypes datatype READ datatype() WRITE setDatatype() NOTIFY datatypeChanged())
 
 
 public:
@@ -87,26 +85,34 @@ public:
 
     enum OpenGLTypes
     {
-        Sampler1D = GL_SAMPLER_1D,
-        Sampler2D = GL_SAMPLER_2D,
-        Sampler3D = GL_SAMPLER_3D,
-        SamplerCube = GL_SAMPLER_CUBE,
-        Bool = GL_BOOL,
-        BoolVec2 = GL_BOOL_VEC2,
-        BoolVec3 = GL_BOOL_VEC3,
-        BoolVec4 = GL_BOOL_VEC4,
-        Double = GL_DOUBLE,
-        DoubleVec2 = GL_DOUBLE_VEC2,
-        DoubleVec3 = GL_DOUBLE_VEC3,
-        DoubleVec4 = GL_DOUBLE_VEC4,
-        Float = GL_FLOAT,
-        FloatVec2 = GL_FLOAT_VEC2,
-        FloatVec3 = GL_FLOAT_VEC3,
-        FloatVec4 = GL_FLOAT_VEC4,
-        FloatMat4 = GL_FLOAT_MAT4
+        Undefined = 0,
+        Sampler1D,
+        Sampler2D,
+        Sampler3D,
+        SamplerCube,
+        Bool,
+        BoolVec2,
+        BoolVec3,
+        BoolVec4,
+        Double,
+        DoubleVec2,
+        DoubleVec3,
+        DoubleVec4,
+        Float,
+        FloatVec2,
+        FloatVec3,
+        FloatVec4,
+        FloatMat2,
+        FloatMat3,
+        FloatMat4,
+        Int,
+        IntVec2,
+        IntVec3,
+        IntVec4
     };
 
-    Parameter(QObject* parent, QString name, int ty);
+    explicit Parameter(QObject *parent = 0);
+    Parameter(QObject* parent, QString name, OpenGLTypes ty);
 
     void setName(const QString &name);
     QString name() const
@@ -133,9 +139,9 @@ public:
 
     QVariant value() const;
 
-    int datatype() const
+    OpenGLTypes datatype() const
     { return m_type; }
-    void setDatatype(int type);
+    void setDatatype(OpenGLTypes type);
 
     bool isTextureType() const;
 
@@ -152,7 +158,7 @@ Q_SIGNALS:
 
 private:
     QString m_name;
-    int m_type;
+    OpenGLTypes m_type;
     QVariant m_value;
     QVariant m_defaultValue;
     QString m_meshName;

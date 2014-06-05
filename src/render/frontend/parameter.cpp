@@ -46,11 +46,19 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-Parameter::Parameter(QObject *parent, QString name, int ty) :
+Parameter::Parameter(QObject *parent, QString name, OpenGLTypes ty) :
     QObject(parent),
     m_name(name),
     m_type(ty),
     m_standardUniform(None)
+{
+
+}
+
+Parameter::Parameter(QObject *parent)
+    : QObject(parent)
+    , m_type(Undefined)
+    , m_standardUniform(None)
 {
 
 }
@@ -86,7 +94,7 @@ Parameter::StandardUniform Parameter::standardUniform() const
     return m_standardUniform;
 }
 
-void Parameter::setDatatype(int type)
+void Parameter::setDatatype(OpenGLTypes type)
 {
     if (m_type != type) {
         m_type = type;
@@ -97,10 +105,10 @@ void Parameter::setDatatype(int type)
 bool Parameter::isTextureType() const
 {
     switch (m_type) {
-    case GL_SAMPLER_1D:
-    case GL_SAMPLER_2D:
-    case GL_SAMPLER_3D:
-    case GL_SAMPLER_CUBE:
+    case Sampler1D:
+    case Sampler2D:
+    case Sampler3D:
+    case SamplerCube:
         return true;
     default:
         return false;
@@ -110,27 +118,26 @@ bool Parameter::isTextureType() const
 Render::QUniformValue::Type Parameter::uniformType() const
 {
     switch (m_type) {
-    case GL_BOOL:
-    case GL_BOOL_VEC2:
-    case GL_BOOL_VEC3:
-    case GL_BOOL_VEC4:
+    case Bool:
+    case BoolVec2:
+    case BoolVec3:
+    case BoolVec4:
         return Render::QUniformValue::Bool;
 
     // integers!
 
-    case GL_FLOAT:
-    case GL_FLOAT_VEC2:
-    case GL_FLOAT_VEC3:
-    case GL_FLOAT_VEC4:
-    case GL_FLOAT_MAT4:
+    case Float:
+    case FloatVec2:
+    case FloatVec3:
+    case FloatVec4:
+    case FloatMat3:
+    case FloatMat4:
         return Render::QUniformValue::Float;
 
-    case GL_DOUBLE:
-#ifdef GL_DOUBLE_VEC3 // Required to compile on pre GL 4.1 systems
-    case GL_DOUBLE_VEC2:
-    case GL_DOUBLE_VEC3:
-    case GL_DOUBLE_VEC4:
-#endif
+    case Double:
+    case DoubleVec2:
+    case DoubleVec3:
+    case DoubleVec4:
         return Render::QUniformValue::Double;
 
     default:
