@@ -253,6 +253,9 @@ void RenderView::setCommandShaderTechniqueEffect(RenderCommand *command)
                 // The QGraphicContext which is only avalaible in the Renderer's thread
                 // Current Plan : Have an interface accessible through the Renderer from that thread where we have
                 // all the needed information : Vendor, Extensions, GL Versions .... so that we can perform the checks here
+                // Also we could define that for defined criterionTypes (Vendor, GL_Version ...) the technique filtering doesn't
+                // depend on the TechniqueFilter but entirely on what the system GL interface gives us
+                // Furthermode, finding a way to perform this filtering as little as possible could provide some performance improvements
                 Q_FOREACH (TechniqueCriterion *filterCriterion, m_techniqueFilter->filters()) {
                     bool findMatch = false;
                     Q_FOREACH (TechniqueCriterion *techCriterion, tech->criteria()) {
@@ -270,7 +273,8 @@ void RenderView::setCommandShaderTechniqueEffect(RenderCommand *command)
                     qFatal("No Technique was found matching the criteria defined in the TechniqueFilter : Cannot Continue");
             }
         }
-
+        // We need locking at the moment to ensure that a single thread is creating the RenderTechnique
+        locker.relock();
         command->m_technique = m_renderer->techniqueManager()->lookupHandle(tech);
         if (effect != Q_NULLPTR && tech != Q_NULLPTR && m_renderer->techniqueManager()->data(command->m_technique) == Q_NULLPTR) {
             RenderTechnique *technique = Q_NULLPTR;
@@ -281,6 +285,7 @@ void RenderView::setCommandShaderTechniqueEffect(RenderCommand *command)
                     technique = m_renderer->techniqueManager()->data(command->m_technique);
                     technique->setRenderer(m_renderer);
                     technique->setPeer(qobject_cast<Technique *>(t));
+                    locker.unlock();
                     break;
                 }
             }
@@ -289,10 +294,10 @@ void RenderView::setCommandShaderTechniqueEffect(RenderCommand *command)
                 qCWarning(Render::Backend) << Q_FUNC_INFO << "No technique found for technique filter";
             }
             // Load RenderPass and ShaderPrograms
-            QString passName;// = m_passFilter->filter();
+            // Find all RenderPasses (in order) matching values set in the RenderPassFilter
             if (technique != Q_NULLPTR)
                 Q_FOREACH (QAbstractRenderPass *pass, technique->peer()->renderPasses()) {
-                    if (pass->name() == passName && pass->shaderProgram() != Q_NULLPTR) {
+                    if (pass->shaderProgram() != Q_NULLPTR) {
                         // Index RenderShader by Shader UUID
                         command->m_shader = m_renderer->shaderManager()->lookupHandle(pass->shaderProgram()->uuid());
                         if (command->m_shader.isNull()) {
