@@ -40,8 +40,7 @@
 ****************************************************************************/
 
 #include "renderpass.h"
-#include "technique.h"
-
+#include "parameter.h"
 #include <QDebug>
 
 QT_BEGIN_NAMESPACE

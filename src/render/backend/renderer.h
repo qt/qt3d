@@ -68,12 +68,12 @@ class Material;
 class ShaderProgram;
 class Mesh;
 class RenderPass;
-class RenderTextureProvider;
 class Shape;
 class RendererAspect;
 
 namespace Render {
 
+class RenderTextureProvider;
 class RenderCamera;
 class QGraphicsContext;
 class Drawable;

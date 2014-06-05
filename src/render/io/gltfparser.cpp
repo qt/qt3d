@@ -55,6 +55,7 @@
 #include <matrixtransform.h>
 #include <cameralens.h>
 #include <texture.h>
+#include <parameter.h>
 
 #include <QJsonDocument>
 #include <QJsonObject>

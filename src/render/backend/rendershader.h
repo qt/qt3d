@@ -46,7 +46,7 @@
 
 // for Parameter::StandardUniforms enum - maybe should move to
 // somewhere common to avoid this include?
-#include <Qt3DRenderer/technique.h>
+#include <Qt3DRenderer/parameter.h>
 
 QT_BEGIN_NAMESPACE
 

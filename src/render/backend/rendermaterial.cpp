@@ -45,7 +45,7 @@
 #include "qgraphicscontext.h"
 #include "rendertechnique.h"
 #include "rendertextureprovider.h"
-
+#include "parameter.h"
 #include <technique.h> // for Parameter
 #include <material.h>
 

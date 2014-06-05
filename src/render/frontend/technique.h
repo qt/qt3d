@@ -44,128 +44,18 @@
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DCore/node.h>
-#include <QOpenGLContext>
 #include <Qt3DRenderer/tag.h>
 #include <Qt3DRenderer/renderpass.h>
 #include <Qt3DCore/qabstracttechnique.h>
 #include <Qt3DRenderer/techniquecriterion.h>
 #include <QList>
-#include <QMap>
 #include <QSharedPointer>
-
-// FIXME - move enum somewhere common so don't need to include this here
-#include <Qt3DRenderer/quniformvalue.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DRENDERERSHARED_EXPORT Parameter : public QObject
-{
-    Q_OBJECT
-    Q_ENUMS(OpenGLTypes)
-    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
-    Q_PROPERTY(QString meshAttributeName READ meshAttributeName WRITE setMeshAttributeName NOTIFY meshAttributeNameChanged)
-    Q_PROPERTY(int datatype READ datatype() WRITE setDatatype() NOTIFY datatypeChanged())
-
-
-public:
-    // FIXME - sort this by frequency, to minimize the size of the
-    // vector in RenderShader. (We want to use compact storage, but we index
-    // by this enum, and resize to the largest value)
-    enum StandardUniform
-    {
-        None = -1,
-
-        ModelMatrix = 0,
-        ViewMatrix,
-        ProjectionMatrix,
-        ModelView,
-        ModelViewProjection,
-
-        ModelInverse,
-        ViewInverse,
-        ProjectionInverse,
-        ModelViewInverse,
-        ModelViewProjectionInverse,
-
-        ModelNormal,
-        ModelViewNormal
-    };
-
-    enum OpenGLTypes
-    {
-        Sampler1D = GL_SAMPLER_1D,
-        Sampler2D = GL_SAMPLER_2D,
-        Sampler3D = GL_SAMPLER_3D,
-        SamplerCube = GL_SAMPLER_CUBE,
-        Bool = GL_BOOL,
-        BoolVec2 = GL_BOOL_VEC2,
-        BoolVec3 = GL_BOOL_VEC3,
-        BoolVec4 = GL_BOOL_VEC4,
-        Double = GL_DOUBLE,
-        DoubleVec2 = GL_DOUBLE_VEC2,
-        DoubleVec3 = GL_DOUBLE_VEC3,
-        DoubleVec4 = GL_DOUBLE_VEC4,
-        Float = GL_FLOAT,
-        FloatVec2 = GL_FLOAT_VEC2,
-        FloatVec3 = GL_FLOAT_VEC3,
-        FloatVec4 = GL_FLOAT_VEC4,
-        FloatMat4 = GL_FLOAT_MAT4
-    };
-
-    Parameter(QObject* parent, QString name, int ty);
-
-    void setName(const QString &name);
-    QString name() const
-    { return m_name; }
-
-    // permit one extra level of indrection in mesh naming of
-    // attributes (glTf at least does this)
-    void setMeshAttributeName(QString name);
-    QString meshAttributeName() const
-    { return m_meshName; }
-
-    bool isStandardUniform() const;
-
-    void setStandardUniform(StandardUniform su);
-    StandardUniform standardUniform() const;
-
-    /**
-     * @brief setDefaultValue - for non-texture uniform parameters
-     * @param dv
-     */
-    void setDefaultValue(QVariant dv);
-
-    // setUniformValue();
-
-    QVariant value() const;
-
-    int datatype() const
-    { return m_type; }
-    void setDatatype(int type);
-
-    bool isTextureType() const;
-
-    /**
-     * @brief uniformType - map the data type to the primitive uniform type
-     * @return
-     */
-    Render::QUniformValue::Type uniformType() const;
-Q_SIGNALS:
-    void valueChanged();
-    void nameChanged();
-    void meshAttributeNameChanged();
-    void datatypeChanged();
-
-private:
-    QString m_name;
-    int m_type;
-    QVariant m_value;
-    QVariant m_defaultValue;
-    QString m_meshName;
-    StandardUniform m_standardUniform;
-};
+class Parameter;
 
 class QT3DRENDERERSHARED_EXPORT Technique : public QAbstractTechnique
 {
