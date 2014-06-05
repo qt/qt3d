@@ -105,8 +105,6 @@ Entity {
     Material {
         id: material
         effect : Effect {
-            customproperty : "red"
-            ambient : "orange"
         }
     }
 
