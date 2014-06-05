@@ -45,6 +45,7 @@
 #include <Qt3DQuick/quick3dnode.h>
 #include <Qt3DQuickRenderer/quick3dframegraphitem.h>
 #include <Qt3DRenderer/renderpassfilter.h>
+#include <Qt3DRenderer/renderpasscriterion.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -57,8 +58,19 @@ namespace Quick {
 class QT3DQUICKRENDERERSHARED_EXPORT Quick3DRenderPassFilter : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QQmlListProperty<Qt3D::RenderPassCriterion> criteria READ criteriaList)
 public:
     explicit Quick3DRenderPassFilter(QObject *parent = 0);
+
+    QQmlListProperty<Qt3D::RenderPassCriterion> criteriaList();
+
+    inline RenderPassFilter *parentRenderPassFilter() const { return qobject_cast<Qt3D::RenderPassFilter*>(parent()); }
+
+private:
+    static void appendCriterion(QQmlListProperty<RenderPassCriterion> *list, RenderPassCriterion *criterion);
+    static RenderPassCriterion *criterionAt(QQmlListProperty<RenderPassCriterion> *list, int index);
+    static int criteriaCount(QQmlListProperty<RenderPassCriterion> *list);
+    static void clearCriteria(QQmlListProperty<RenderPassCriterion> *list);
 };
 
 } // Quick

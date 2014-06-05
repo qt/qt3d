@@ -54,6 +54,49 @@ Quick3DRenderPassFilter::Quick3DRenderPassFilter(QObject *parent)
 {
 }
 
+QQmlListProperty<RenderPassCriterion> Quick3DRenderPassFilter::criteriaList()
+{
+    return QQmlListProperty<Qt3D::RenderPassCriterion>(this, 0,
+                                                       &Quick3DRenderPassFilter::appendCriterion,
+                                                       &Quick3DRenderPassFilter::criteriaCount,
+                                                       &Quick3DRenderPassFilter::criterionAt,
+                                                       &Quick3DRenderPassFilter::clearCriteria);
+}
+
+void Quick3DRenderPassFilter::appendCriterion(QQmlListProperty<RenderPassCriterion> *list, RenderPassCriterion *criterion)
+{
+    Quick3DRenderPassFilter *filter = qobject_cast<Quick3DRenderPassFilter *>(list->object);
+    if (filter) {
+        criterion->setParent(filter->parentRenderPassFilter());
+        filter->parentRenderPassFilter()->addCriterion(criterion);
+    }
+}
+
+RenderPassCriterion *Quick3DRenderPassFilter::criterionAt(QQmlListProperty<RenderPassCriterion> *list, int index)
+{
+    Quick3DRenderPassFilter *filter = qobject_cast<Quick3DRenderPassFilter *>(list->object);
+    if (filter)
+        return filter->parentRenderPassFilter()->criteria().at(index);
+    return 0;
+}
+
+int Quick3DRenderPassFilter::criteriaCount(QQmlListProperty<RenderPassCriterion> *list)
+{
+    Quick3DRenderPassFilter *filter = qobject_cast<Quick3DRenderPassFilter *>(list->object);
+    if (filter)
+        return filter->parentRenderPassFilter()->criteria().count();
+    return 0;
+}
+
+void Quick3DRenderPassFilter::clearCriteria(QQmlListProperty<RenderPassCriterion> *list)
+{
+    Quick3DRenderPassFilter *filter = qobject_cast<Quick3DRenderPassFilter *>(list->object);
+    if (filter) {
+        Q_FOREACH (RenderPassCriterion *criterion, filter->parentRenderPassFilter()->criteria())
+            filter->parentRenderPassFilter()->removeCriterion(criterion);
+    }
+}
+
 } // Quick
 
 } // Render

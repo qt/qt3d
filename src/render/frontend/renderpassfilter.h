@@ -44,7 +44,7 @@
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DRenderer/framegraphitem.h>
-
+#include <Qt3DRenderer/renderpasscriterion.h>
 #include <QString>
 
 QT_BEGIN_NAMESPACE
@@ -53,6 +53,7 @@ namespace Qt3D {
 
 class RenderPassFilter;
 
+// TO DO: Move that to a proper cpp file
 class RenderPassFilterPrivate
 {
 public:
@@ -63,6 +64,7 @@ public:
     Q_DECLARE_PUBLIC(RenderPassFilter)
     RenderPassFilter *q_ptr;
     QString m_renderPassName;
+    QList<RenderPassCriterion *> m_criteriaList;
 };
 
 class QT3DRENDERERSHARED_EXPORT RenderPassFilter : public Node, public FrameGraphItem
@@ -92,6 +94,35 @@ public:
     {
         Q_D(const RenderPassFilter);
         return d->m_renderPassName;
+    }
+
+    QList<RenderPassCriterion *> criteria() const
+    {
+        Q_D(const RenderPassFilter);
+        return d->m_criteriaList;
+    }
+
+    void addCriterion(RenderPassCriterion *criterion)
+    {
+        Q_D(RenderPassFilter);
+        if (!d->m_criteriaList.contains(criterion)) {
+            d->m_criteriaList.append(criterion);
+            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentAdded, this));
+            propertyChange->m_propertyName = QByteArrayLiteral("renderPassCriteria");
+            propertyChange->m_value = QVariant::fromValue(criterion);
+            notifyObservers(propertyChange);
+        }
+    }
+
+    void removeCriterion(RenderPassCriterion *criterion)
+    {
+        Q_D(RenderPassFilter);
+        d->m_criteriaList.removeOne(criterion);
+        QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentRemoved, this));
+        propertyChange->m_propertyName = QByteArrayLiteral("renderPassCriteria");
+        propertyChange->m_value = QVariant::fromValue(criterion);
+        notifyObservers(propertyChange);
+
     }
 
 Q_SIGNALS:

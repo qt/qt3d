@@ -289,7 +289,7 @@ void RenderView::setCommandShaderTechniqueEffect(RenderCommand *command)
                 qCWarning(Render::Backend) << Q_FUNC_INFO << "No technique found for technique filter";
             }
             // Load RenderPass and ShaderPrograms
-            QString passName = m_passFilter->filter();
+            QString passName;// = m_passFilter->filter();
             if (technique != Q_NULLPTR)
                 Q_FOREACH (QAbstractRenderPass *pass, technique->peer()->renderPasses()) {
                     if (pass->name() == passName && pass->shaderProgram() != Q_NULLPTR) {

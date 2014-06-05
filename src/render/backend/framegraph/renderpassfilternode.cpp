@@ -40,6 +40,11 @@
 ****************************************************************************/
 
 #include "renderpassfilternode.h"
+#include "rendereraspect.h"
+#include "renderer.h"
+#include "renderpasscriterion.h"
+#include "renderpassfilter.h"
+#include <Qt3DCore/qaspectmanager.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -48,17 +53,62 @@ namespace Render {
 
 RenderPassFilter::RenderPassFilter(FrameGraphNode *parent)
     : FrameGraphNode(FrameGraphNode::RenderPassFilter, parent)
+    , m_renderer(Q_NULLPTR)
+    , m_peer(Q_NULLPTR)
 {
 }
 
-QString RenderPassFilter::filter() const
+void RenderPassFilter::setRenderer(Renderer *renderer)
 {
-    return m_filter;
+    m_renderer = renderer;
 }
 
-void RenderPassFilter::setFilter(const QString &filter)
+void RenderPassFilter::setPeer(Qt3D::RenderPassFilter *peer)
 {
-    m_filter = filter;
+    if (m_peer != peer) {
+        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
+        if (m_peer)
+            arbiter->unregisterObserver(this, m_peer);
+        m_peer = peer;
+        if (m_peer)
+            arbiter->registerObserver(this, m_peer);
+    }
+}
+
+QList<RenderPassCriterion *> RenderPassFilter::filters() const
+{
+    return m_filters;
+}
+
+void RenderPassFilter::appendFilter(RenderPassCriterion *criterion)
+{
+    if (!m_filters.contains(criterion))
+        m_filters.append(criterion);
+}
+
+void RenderPassFilter::removeFilter(RenderPassCriterion *criterion)
+{
+    m_filters.removeOne(criterion);
+}
+
+void RenderPassFilter::sceneChangeEvent(const QSceneChangePtr &e)
+{
+    switch (e->m_type) {
+    case ComponentAdded: {
+        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+        if (propertyChange->m_propertyName == QByteArrayLiteral("renderPassCriteria"))
+            appendFilter(propertyChange->m_value.value<RenderPassCriterion*>());
+    }
+        break;
+    case ComponentRemoved: {
+        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+        if (propertyChange->m_propertyName == QByteArrayLiteral("renderPassCriteria"))
+            removeFilter(propertyChange->m_value.value<RenderPassCriterion*>());
+    }
+        break;
+    default:
+        break;
+    }
 }
 
 } // namespace Render

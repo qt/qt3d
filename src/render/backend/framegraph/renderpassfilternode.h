@@ -42,24 +42,39 @@
 #ifndef QT3D_RENDER_RENDERPASSFILTER_H
 #define QT3D_RENDER_RENDERPASSFILTER_H
 
+#include <Qt3DCore/qchangearbiter.h>
 #include <Qt3DRenderer/framegraphnode.h>
-#include <QStringList>
+#include <QList>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
+
+class RenderPassCriterion;
+class RenderPassFilter;
+
 namespace Render {
 
-class RenderPassFilter : public Render::FrameGraphNode
+class Renderer;
+
+class RenderPassFilter
+        : public Render::FrameGraphNode
+        , public QObserverInterface
 {
 public:
     RenderPassFilter(Render::FrameGraphNode *parent = 0);
 
-    QString filter() const;
-    void setFilter(const QString &filter);
+    void setRenderer(Renderer *renderer);
+    void setPeer(Qt3D::RenderPassFilter *peer);
+    QList<RenderPassCriterion *> filters() const;
+    void appendFilter(RenderPassCriterion *criterion);
+    void removeFilter(RenderPassCriterion *criterion);
+    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    QString m_filter;
+    Renderer *m_renderer;
+    Qt3D::RenderPassFilter *m_peer;
+    QList<RenderPassCriterion *> m_filters;
 };
 
 } // namespace Render
