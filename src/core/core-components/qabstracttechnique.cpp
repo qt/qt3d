@@ -78,7 +78,6 @@ public :
 
 QAbstractTechnique::QAbstractTechnique(Node *parent)
     : Node(parent)
-    , QObservable()
     , d_ptr(new QAbstractTechniquePrivate(this))
 {
 }

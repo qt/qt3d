@@ -52,7 +52,7 @@ namespace Qt3D {
 
 class FrameGraphItemPrivate;
 
-class QT3DRENDERERSHARED_EXPORT FrameGraphItem : public QObservable
+class QT3DRENDERERSHARED_EXPORT FrameGraphItem
 {
 public:
     FrameGraphItem();

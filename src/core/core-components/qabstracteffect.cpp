@@ -75,7 +75,6 @@ public :
 
 QAbstractEffect::QAbstractEffect(Node *parent)
     : Node(parent)
-    , QObservable()
     , d_ptr(new QAbstractEffectPrivate(this))
 {
     qRegisterMetaType<Qt3D::QAbstractEffect*>();

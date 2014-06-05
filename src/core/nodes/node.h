@@ -44,6 +44,7 @@
 
 #include <QObject>
 #include <Qt3DCore/qt3dcore_global.h>
+#include <Qt3DCore/qchangearbiter.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -55,7 +56,9 @@ class Entity;
 
 typedef QList<Node *> NodeList;
 
-class QT3DCORESHARED_EXPORT Node : public QObject
+class QT3DCORESHARED_EXPORT Node
+        : public QObject
+        , public QObservable
 {
     Q_OBJECT
 
@@ -85,5 +88,7 @@ private:
 } // namespace Qt3D
 
 QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE(Qt3D::Node *)
 
 #endif

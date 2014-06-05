@@ -105,22 +105,25 @@ void RenderNode::setHandle(HRenderNode handle)
 
 void RenderNode::setFrontEndPeer(Node *peer)
 {
-    m_frontEndPeer = peer;
-
-    if (!m_localTransform.isNull())
-        m_renderer->localMatrixManager()->release(m_localTransform);
-    if (!m_worldTransform.isNull())
-        m_renderer->worldMatrixManager()->release(m_worldTransform);
-
-    if (m_frontEndPeer->asEntity()) {
+    if (m_frontEndPeer != peer) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        arbiter->registerObserver(this, m_frontEndPeer->asEntity(), AllChanges);
-        m_localTransform = m_renderer->localMatrixManager()->getOrAcquireHandle(peer->asEntity()->uuid());
-        m_worldTransform = m_renderer->worldMatrixManager()->getOrAcquireHandle(peer->asEntity()->uuid());
-    }
-    else {
-        m_localTransform = m_renderer->localMatrixManager()->acquire();
-        m_worldTransform = m_renderer->worldMatrixManager()->acquire();
+
+        if (!m_localTransform.isNull())
+            m_renderer->localMatrixManager()->release(m_localTransform);
+        if (!m_worldTransform.isNull())
+            m_renderer->worldMatrixManager()->release(m_worldTransform);
+
+        m_frontEndPeer = peer;
+        if (m_frontEndPeer->asEntity()) {
+            arbiter->registerObserver(this, m_frontEndPeer, AllChanges);
+            m_localTransform = m_renderer->localMatrixManager()->getOrAcquireHandle(peer->asEntity()->uuid());
+            m_worldTransform = m_renderer->worldMatrixManager()->getOrAcquireHandle(peer->asEntity()->uuid());
+        }
+        else {
+            arbiter->registerObserver(this, m_frontEndPeer, NodeCreated|NodeAboutToBeDeleted|NodeDeleted);
+            m_localTransform = m_renderer->localMatrixManager()->acquire();
+            m_worldTransform = m_renderer->worldMatrixManager()->acquire();
+        }
     }
 }
 
@@ -144,6 +147,18 @@ void RenderNode::sceneChangeEvent(const QSceneChangePtr &e)
 {
     switch (e->m_type) {
 
+    case NodeCreated: {
+        qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "NodeCreated";
+        break;
+    }
+    case NodeAboutToBeDeleted: {
+        qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "NodeAboutToBeDeleted";
+        break;
+    }
+    case NodeDeleted: {
+        qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "NodeDeleted";
+        break;
+    }
     case ComponentUpdated: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         Component *component = propertyChange->m_subject.m_component;

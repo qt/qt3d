@@ -76,8 +76,6 @@ void Quick3DNode::appendData(QQmlListProperty<QObject> *list, QObject *obj)
         return;
 
     QObject *self = static_cast<QObject *>(list->object);
-    if (obj->parent() == self->parent())
-        obj->setParent(0);
 
     Node *parentNode = qobject_cast<Quick3DNode *>(self)->parentNode();
     Node *node = qobject_cast<Qt3D::Node *>(obj);

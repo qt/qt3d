@@ -54,7 +54,6 @@ namespace Qt3D {
 
 Entity::Entity(Node *parent)
     : Node(parent)
-    , QObservable()
     , d_ptr(new EntityPrivate(this))
 {
     Q_D(Entity);

@@ -54,7 +54,6 @@ class QAbstractRenderPassPrivate;
 
 class QT3DCORESHARED_EXPORT QAbstractRenderPass
         : public Node
-        , public QObservable
 {
     Q_OBJECT
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)

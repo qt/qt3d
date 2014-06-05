@@ -57,7 +57,6 @@ class QAbstractEffectPrivate;
 
 class QT3DCORESHARED_EXPORT QAbstractEffect
         : public Node
-        , public QObservable
 {
     Q_OBJECT
 public:

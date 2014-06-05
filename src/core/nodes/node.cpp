@@ -54,9 +54,10 @@ namespace Qt3D {
 
 Node::Node( Node* parent )
     : QObject( parent )
+    , QObservable()
 {
     if (parent)
-        parent->m_children.append(this);
+        parent->addChild(this);
 }
 
 Node::~Node()
@@ -94,11 +95,16 @@ NodeList Node::children() const
 void Node::addChild(Node *childNode)
 {
     Q_CHECK_PTR( childNode );
-    if (childNode->parent() == this)
-        return;
+
+    if (m_children.contains(childNode))
+        return ;
 
     m_children.append(childNode);
     childNode->setParent(this);
+    QScenePropertyChangePtr e(new QScenePropertyChange(NodeCreated, this));
+    e->m_propertyName = QByteArrayLiteral("node");
+    e->m_value = QVariant::fromValue(childNode);
+    notifyObservers(e);
 }
 
 void Node::removeChild(Node *childNode)
@@ -109,6 +115,10 @@ void Node::removeChild(Node *childNode)
 
     m_children.removeOne(childNode);
     childNode->setParent(NULL);
+    QScenePropertyChangePtr e(new QScenePropertyChange(NodeAboutToBeDeleted, this));
+    e->m_propertyName = QByteArrayLiteral("node");
+    e->m_value = QVariant::fromValue(childNode);
+    notifyObservers(e);
 }
 
 void Node::removeAllChildren()

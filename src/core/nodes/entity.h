@@ -84,7 +84,7 @@ public :
     bool m_enabled;
 };
 
-class QT3DCORESHARED_EXPORT Entity : public Node, public QObservable
+class QT3DCORESHARED_EXPORT Entity : public Node
 {
     Q_OBJECT
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
