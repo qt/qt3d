@@ -77,7 +77,7 @@ Node {
 
                 Timer {
                     running : true
-                    interval : 2000
+                    interval : 10000
                     repeat : true
                     property int count : 0
                     onTriggered:
@@ -119,7 +119,7 @@ Node {
             id : cameraViewport1
             property Transform transform : Transform {
                 LookAt {
-                    position: Qt.vector3d( 0.0, 0.0, -10.0 )
+                    position: Qt.vector3d( 0.0, 0.0, -20.0 )
                     upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
                     viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
                 }
@@ -137,7 +137,7 @@ Node {
                 LookAt {
                     position: Qt.vector3d( 0.0, 0.0, 20.0 )
                     upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
-                    viewCenter: Qt.vector3d( 5.0, 0.0, 10.0 )
+                    viewCenter: Qt.vector3d( -3.0, 0.0, 10.0 )
                 }
             }
             components : [cameraLens, transform]
@@ -147,9 +147,9 @@ Node {
             id : cameraViewport3
             property Transform transform : Transform {
                 LookAt {
-                    position: Qt.vector3d( 0.0, 0.0, -20.0 )
+                    position: Qt.vector3d( 0.0, 30.0, 30.0 )
                     upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
-                    viewCenter: Qt.vector3d( -5.0, 0.0, -10.0 )
+                    viewCenter: Qt.vector3d( -5.0, -20.0, -10.0 )
                 }
             }
             components : [cameraLens, transform]
@@ -159,9 +159,9 @@ Node {
             id : cameraViewport4
             property Transform transform : Transform {
                 LookAt {
-                    position: Qt.vector3d( 0.0, 5.0, -20.0 )
+                    position: Qt.vector3d( 0.0, 15.0, 20.0 )
                     upVector: Qt.vector3d( 0.0, 0.0, 1.0 )
-                    viewCenter: Qt.vector3d( 0.0, 30.0, 20.0 )
+                    viewCenter: Qt.vector3d( 0.0, -15.0, -20.0 )
                 }
             }
             components : [cameraLens, transform]
