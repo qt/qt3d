@@ -167,6 +167,8 @@ void RenderView::buildRenderCommands(RenderNode *node)
 {
     // Build renderCommand for current node
 
+    // 1 RenderCommand per RenderPass pass on an Entity with a Mesh
+
     Entity *frontEndEntity = Q_NULLPTR;
     if (node->frontEndPeer() != Q_NULLPTR
             && (frontEndEntity = node->frontEndPeer()->asEntity()) != Q_NULLPTR) {
@@ -235,13 +237,22 @@ void RenderView::setCommandShaderTechniqueEffect(RenderCommand *command)
         locker.unlock();
 
         // Check to see if the Effect contains a Technique matching the criteria defined in the Technique Filter
+        // Effect (RenderEffect) contains a list of QAbstractTechnique that is updated to reflect the one of its frontend Effect
+        // using the QChangeArbiter to avoid race conditions
+        // On the other hand, we should maybe rework the filtering below as it accesses the criteria of the Frontend QML texture
+        // meaning that those could be changed while we're reading them.
+        // That would imply creating a RenderTechnique for each Technique defined in the Effect and having each RenderTechnique contain
+        // a list of criteria
+        // If TechniqueCriteria and their values were defined as constant, the filtering below would be enough
+        Technique *tech = Q_NULLPTR;
         Q_FOREACH (QAbstractTechnique *technique, effect->techniques()) {
-            Technique *tech = Q_NULLPTR;
             if ((tech = qobject_cast<Technique*>(technique)) != Q_NULLPTR) {
                 bool foundMatchingTechnique = true;
                 // Can we fully perform the technique selection here ?
                 // If we need to check for extension / vendor / OpenGL Version we would need access to
                 // The QGraphicContext which is only avalaible in the Renderer's thread
+                // Current Plan : Have an interface accessible through the Renderer from that thread where we have
+                // all the needed information : Vendor, Extensions, GL Versions .... so that we can perform the checks here
                 Q_FOREACH (TechniqueCriterion *filterCriterion, m_techniqueFilter->filters()) {
                     bool findMatch = false;
                     Q_FOREACH (TechniqueCriterion *techCriterion, tech->criteria()) {
@@ -260,15 +271,13 @@ void RenderView::setCommandShaderTechniqueEffect(RenderCommand *command)
             }
         }
 
-        // This will be changed in the near future
-        QString techniqueName; //= m_techniqueFilter->filters().values().first().toString();
-        command->m_technique = m_renderer->techniqueManager()->lookupHandle(EffectTechniquePair(fEffect, techniqueName));
-        if (effect != Q_NULLPTR && m_renderer->techniqueManager()->data(command->m_technique) == Q_NULLPTR) {
+        command->m_technique = m_renderer->techniqueManager()->lookupHandle(tech);
+        if (effect != Q_NULLPTR && tech != Q_NULLPTR && m_renderer->techniqueManager()->data(command->m_technique) == Q_NULLPTR) {
             RenderTechnique *technique = Q_NULLPTR;
             // Tries to select technique based on criteria defined in the TechniqueFilter
             Q_FOREACH (QAbstractTechnique *t, effect->techniques()) {
-                if (qobject_cast<Technique *>(t) && t->name() == techniqueName) {
-                    command->m_technique = m_renderer->techniqueManager()->getOrAcquireHandle(EffectTechniquePair(fEffect, techniqueName));
+                if (qobject_cast<Technique *>(t) && t == tech) {
+                    command->m_technique = m_renderer->techniqueManager()->getOrAcquireHandle(t);
                     technique = m_renderer->techniqueManager()->data(command->m_technique);
                     technique->setRenderer(m_renderer);
                     technique->setPeer(qobject_cast<Technique *>(t));
@@ -296,6 +305,9 @@ void RenderView::setCommandShaderTechniqueEffect(RenderCommand *command)
                         break;
                     }
                 }
+        }
+        else {
+            qCWarning(Render::Backend) << Q_FUNC_INFO << "Using default effect as none was provided";
         }
     }
 }

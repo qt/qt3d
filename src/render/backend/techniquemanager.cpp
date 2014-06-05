@@ -40,6 +40,7 @@
 ****************************************************************************/
 
 #include "techniquemanager.h"
+#include <Qt3DCore/qabstracttechnique.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -47,7 +48,7 @@ namespace Qt3D {
 
 namespace Render {
 
-TechniqueManager::TechniqueManager() : QArrayResourcesManager<RenderTechnique, EffectTechniquePair, 16>()
+TechniqueManager::TechniqueManager() : QArrayResourcesManager<RenderTechnique, QAbstractTechnique*, 16>()
 {
 }
 
