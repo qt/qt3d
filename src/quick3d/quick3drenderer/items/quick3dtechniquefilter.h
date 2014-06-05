@@ -64,7 +64,7 @@ public:
     explicit Quick3DTechniqueFilter(QObject *parent = 0);
     QQmlListProperty<Qt3D::TechniqueCriterion> criteriaList();
 
-    inline TechniqueFilter *parentTechniqueFilter() { return qobject_cast<Qt3D::TechniqueFilter*>(parent()); }
+    inline TechniqueFilter *parentTechniqueFilter() const { return qobject_cast<Qt3D::TechniqueFilter*>(parent()); }
 
 private:
     static void appendCriterion(QQmlListProperty<TechniqueCriterion> *list, TechniqueCriterion *criterion);
