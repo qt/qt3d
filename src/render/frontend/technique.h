@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef TECHNIQUE_H
-#define TECHNIQUE_H
+#ifndef QT3D_TECHNIQUE_H
+#define QT3D_TECHNIQUE_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DCore/node.h>
@@ -92,4 +92,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // TECHNIQUE_H
+#endif // QT3D_TECHNIQUE_H
