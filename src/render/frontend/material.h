@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef MATERIAL_H
-#define MATERIAL_H
+#ifndef QT3D_MATERIAL_H
+#define QT3D_MATERIAL_H
 
 #include <QVariant>
 
@@ -90,4 +90,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // MATERIAL_H
+#endif // QT3D_MATERIAL_H
