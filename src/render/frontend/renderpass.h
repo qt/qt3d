@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef RENDERPASS_H
-#define RENDERPASS_H
+#ifndef QT3D_RENDERPASS_H
+#define QT3D_RENDERPASS_H
 
 #include <Qt3DCore/qabstractrenderpass.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
@@ -98,4 +98,4 @@ protected:
 
 QT_END_NAMESPACE
 
-#endif // RENDERPASS_H
+#endif // QT3D_RENDERPASS_H
