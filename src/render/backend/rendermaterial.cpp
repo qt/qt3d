@@ -151,22 +151,22 @@ void RenderMaterial::setTextureParameter(QString paramName, RenderTexturePtr tex
 
 void RenderMaterial::syncParametersFromPeer()
 {
+    // To be replace by sceneChangeEvent further on
     Q_ASSERT(m_peer);
-    foreach (QString nm, m_peer->parameterValues().keys()) {
-        QVariant val = m_peer->parameterValues().value(nm);
-        if (!val.isValid()) {
-            qWarning() << Q_FUNC_INFO << "bad value:" << val << "for parameter" << nm;
+    Q_FOREACH (Parameter *param, m_peer->parameters()) {
+        if (!param->value().isValid()) {
+            qWarning() << Q_FUNC_INFO << "bad value:" << param->value() << "for parameter" << param->name();
             continue;
         }
-        setParameter(nm, val);
+        setParameter(param->name(), param->value());
     }
 
-    // FIXME - should do this on demand, otherwise we're re-uploading
-    // for no good reason
-    foreach (QString nm, m_peer->textureValues().keys()) {
-        Texture* t = m_peer->textureValues().value(nm);
-        setTextureParameter(nm, m_textureProvider->get(t));
-    }
+// FIXME - should do this on demand, otherwise we're re-uploading
+// for no good reason
+//    foreach (QString nm, m_peer->textureValues().keys()) {
+//        Texture* t = m_peer->textureValues().value(nm);
+//        setTextureParameter(nm, m_textureProvider->get(t));
+//    }
 }
 
 void RenderMaterial::setTechnique(RenderTechnique *rt)

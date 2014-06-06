@@ -235,12 +235,10 @@ Node {
             //            effect: adsEffect
 
             parameters : [
-            Tag { name : "ambient"; value : Qt.vector4d(255, 0, 0, 1) }
+            Parameter { name : "ambient"; datatype: Parameter.FloatVec4; value : Qt.vector4d(255, 0, 0, 1) }
             ]
 
             effect : Effect {
-//                customproperty : "red"
-//                ambient : "orange"
 
                 techniques : [
 

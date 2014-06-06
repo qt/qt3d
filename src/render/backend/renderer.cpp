@@ -203,10 +203,10 @@ void Renderer::buildDefaultMaterial()
 {
     m_defaultMaterial = new Material();
     m_defaultMaterial->setObjectName(QStringLiteral("DefaultMaterial"));
-    m_defaultMaterial->setParameter(QStringLiteral("lightPos"), QVector4D(10.0f, 10.0f, 0.0f, 1.0f));
-    m_defaultMaterial->setParameter(QStringLiteral("lightIntensity"), QVector3D(0.5f, 0.5f, 0.5f));
-    m_defaultMaterial->setParameter(QStringLiteral("ka"), QVector3D(0.2f, 0.2f, 0.2f));
-    m_defaultMaterial->setParameter(QStringLiteral("kd"), QVector3D(1.0f, 0.5f, 0.0f));
+    m_defaultMaterial->addParameter(new Parameter(m_defaultMaterial, QStringLiteral("lightPos"), Parameter::FloatVec4, QVector4D(10.0f, 10.0f, 0.0f, 1.0f)));
+    m_defaultMaterial->addParameter(new Parameter(m_defaultMaterial, QStringLiteral("lightIntensity"), Parameter::FloatVec3, QVector3D(0.5f, 0.5f, 0.5f)));
+    m_defaultMaterial->addParameter(new Parameter(m_defaultMaterial, QStringLiteral("ka"), Parameter::FloatVec3, QVector3D(0.2f, 0.2f, 0.2f)));
+    m_defaultMaterial->addParameter(new Parameter(m_defaultMaterial, QStringLiteral("kd"), Parameter::FloatVec3, QVector3D(1.0f, 0.5f, 0.0f)));
 
     Effect* defEff = new Effect;
     defEff->addTechnique(m_defaultTechnique);

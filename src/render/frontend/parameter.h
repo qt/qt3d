@@ -56,8 +56,8 @@ class QT3DRENDERERSHARED_EXPORT Parameter : public QObject
     Q_ENUMS(OpenGLTypes)
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString meshAttributeName READ meshAttributeName WRITE setMeshAttributeName NOTIFY meshAttributeNameChanged)
-    Q_PROPERTY(OpenGLTypes datatype READ datatype() WRITE setDatatype() NOTIFY datatypeChanged())
-
+    Q_PROPERTY(OpenGLTypes datatype READ datatype WRITE setDatatype NOTIFY datatypeChanged)
+    Q_PROPERTY(QVariant value READ value WRITE setValue NOTIFY valueChanged)
 
 public:
     // FIXME - sort this by frequency, to minimize the size of the
@@ -112,7 +112,8 @@ public:
     };
 
     explicit Parameter(QObject *parent = 0);
-    Parameter(QObject* parent, QString name, OpenGLTypes ty);
+    Parameter(QObject* parent, const QString& name, OpenGLTypes ty);
+    Parameter(QObject* parent, const QString& name, OpenGLTypes ty, const QVariant& value);
 
     void setName(const QString &name);
     QString name() const
@@ -133,10 +134,7 @@ public:
      * @brief setDefaultValue - for non-texture uniform parameters
      * @param dv
      */
-    void setDefaultValue(QVariant dv);
-
-    // setUniformValue();
-
+    void setValue(const QVariant& dv);
     QVariant value() const;
 
     OpenGLTypes datatype() const
@@ -160,7 +158,6 @@ private:
     QString m_name;
     OpenGLTypes m_type;
     QVariant m_value;
-    QVariant m_defaultValue;
     QString m_meshName;
     StandardUniform m_standardUniform;
 };
@@ -168,5 +165,7 @@ private:
 } // Qt3D
 
 QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE(Qt3D::Parameter *)
 
 #endif // QT3D_PARAMETER_H

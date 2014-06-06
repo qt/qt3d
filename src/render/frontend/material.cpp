@@ -40,18 +40,33 @@
 ****************************************************************************/
 
 #include "material.h"
-
+//#include <Qt3DCore/qabstractmaterial_p.h>
 #include <qchangearbiter.h>
 #include <texture.h>
 #include "qabstracteffect.h"
 #include "renderlogging.h"
+#include "parameter.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class MaterialPrivate
+{
+public:
+    MaterialPrivate(Material *qq)
+        : q_ptr(qq)
+    {}
+
+    QList<Parameter *> m_parameters;
+    TextureDict m_textures;
+    Q_DECLARE_PUBLIC(Material)
+    Material *q_ptr;
+};
+
 Material::Material(Node *parent)
     : QAbstractMaterial(parent)
+    , d_ptr(new MaterialPrivate(this))
 {
 }
 
@@ -66,35 +81,45 @@ void Material::setEffect(QAbstractEffect *effect)
     notifySceneChange(change);
 }
 
-void Material::setParameter(QString name, QVariant val)
+void Material::addParameter(Parameter *parameter)
 {
-    m_parameters[name] = val;
+    Q_D(Material);
+    if (!d->m_parameters.contains(parameter)) {
+        d->m_parameters.append(parameter);
+        QScenePropertyChangePtr change(new QScenePropertyChange(ComponentAdded, this));
+        change->m_propertyName = QByteArrayLiteral("parameter");
+        change->m_value = QVariant::fromValue(parameter);
+        notifySceneChange(change);
+    }
+}
 
-    // schedule update to the backend
+void Material::removeParameter(Parameter *parameter)
+{
+    Q_D(Material);
+    d->m_parameters.removeOne(parameter);
     QScenePropertyChangePtr change(new QScenePropertyChange(ComponentUpdated, this));
-    change->m_propertyName = name.toLocal8Bit();
-    change->m_value = val;
+    change->m_propertyName = QByteArrayLiteral("parameter");
+    change->m_value = QVariant::fromValue(parameter);
     notifySceneChange(change);
 }
 
-QVariantMap Material::parameterValues() const
+QList<Parameter *> Material::parameters() const
 {
-    return m_parameters;
+    Q_D(const Material);
+    return d->m_parameters;
 }
 
-Material::TextureDict Material::textureValues() const
+TextureDict Material::textureValues() const
 {
-    return m_textures;
+    Q_D(const Material);
+    return d->m_textures;
 }
 
+// TO DO: Check if this is really needed
 void Material::setTextureParameter(QString name, Texture *tex)
 {
-    m_textures[name] = tex;
-}
-
-void Material::cleanParameters()
-{
-    m_parameters.clear();
+    Q_D(Material);
+    d->m_textures[name] = tex;
 }
 
 } // namespace Qt3D

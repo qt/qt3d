@@ -506,8 +506,8 @@ Material* GLTFParser::material(QString id)
                 mat->setTextureParameter(vName, m_textures.value(textureId));
             }
         } else {
-            QVariant var = parameterValueFromJSON(param, values.value(vName));
-            mat->setParameter(vName, var);
+//            QVariant var = parameterValueFromJSON(param, values.value(vName));
+            mat->addParameter(param);
         }
     } // of material technique-instance values iteration
 
@@ -918,23 +918,23 @@ GLTFParser::BufferData::BufferData(QJsonObject json)
 QVariant GLTFParser::parameterValueFromJSON(Parameter* p, QJsonValue val)
 {
     switch (p->datatype()) {
-    case GL_BOOL:
+    case Parameter::Bool:
         return val.toBool();
 
-    case GL_FLOAT:
+    case Parameter::Float:
         return val.toDouble();
 
-    case GL_FLOAT_VEC2: {
+    case Parameter::FloatVec2: {
         QJsonArray a = val.toArray();
         return QVector2D(a[0].toDouble(), a[1].toDouble());
     }
 
-    case GL_FLOAT_VEC3: {
+    case Parameter::FloatVec3: {
         QJsonArray a = val.toArray();
         return QVector3D(a[0].toDouble(), a[1].toDouble(), a[3].toDouble());
     }
 
-    case GL_FLOAT_VEC4: {
+    case Parameter::FloatVec4: {
         QJsonArray a = val.toArray();
         return QVector4D(a[0].toDouble(),
                         a[1].toDouble(),
@@ -942,7 +942,7 @@ QVariant GLTFParser::parameterValueFromJSON(Parameter* p, QJsonValue val)
                         a[3].toDouble());
     }
 
-    case GL_FLOAT_MAT4: {
+    case Parameter::FloatMat4: {
         QJsonArray a = val.toArray();
 
         QMatrix4x4 m;

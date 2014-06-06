@@ -56,65 +56,66 @@ Quick3DMaterial::Quick3DMaterial(QObject *parent)
 {
 }
 
-QQmlListProperty<Tag> Quick3DMaterial::qmlParameters()
+QQmlListProperty<Parameter> Quick3DMaterial::qmlParameters()
 {
-    return QQmlListProperty<Tag>(this, 0,
-                                       &Quick3DMaterial::appendTag,
-                                       &Quick3DMaterial::tagCount,
-                                       &Quick3DMaterial::tagAt,
-                                       &Quick3DMaterial::clearTags );
+    return QQmlListProperty<Parameter>(this, 0,
+                                       &Quick3DMaterial::appendParameter,
+                                       &Quick3DMaterial::parameterCount,
+                                       &Quick3DMaterial::parameterAt,
+                                       &Quick3DMaterial::clearParameters);
 }
 
-void Quick3DMaterial::appendTag(QQmlListProperty<Tag> *list, Tag *tag)
+void Quick3DMaterial::appendParameter(QQmlListProperty<Parameter> *list, Parameter *param)
 {
     Quick3DMaterial *mat = qobject_cast<Quick3DMaterial *>(list->object);
     if (mat) {
-        tag->setParent(mat->parentMaterial());
-        QObject::connect(tag, SIGNAL(valueChanged()), mat, SLOT(onTagValueChanged()));
-        mat->m_tagList.append(tag);
-        emit mat->parentMaterial()->parametersChanged();
+        param->setParent(mat->parentMaterial());
+        QObject::connect(param, SIGNAL(valueChanged()), mat, SLOT(onParameterValueChanged()));
+        mat->parentMaterial()->addParameter(param);
     }
 }
 
-Tag *Quick3DMaterial::tagAt(QQmlListProperty<Tag> *list, int index)
+Parameter *Quick3DMaterial::parameterAt(QQmlListProperty<Parameter> *list, int index)
 {
     Quick3DMaterial *mat = qobject_cast<Quick3DMaterial *>(list->object);
     if (mat)
-        return mat->m_tagList.value(index);
+        return mat->parentMaterial()->parameters().at(index);
     return 0;
 }
 
-int Quick3DMaterial::tagCount(QQmlListProperty<Tag> *list)
+int Quick3DMaterial::parameterCount(QQmlListProperty<Parameter> *list)
 {
     Quick3DMaterial *mat = qobject_cast<Quick3DMaterial *>(list->object);
     if (mat)
-        return mat->m_tagList.size();
+        return mat->parentMaterial()->parameters().count();
     return 0;
 }
 
-void Quick3DMaterial::clearTags(QQmlListProperty<Tag> *list)
+void Quick3DMaterial::clearParameters(QQmlListProperty<Parameter> *list)
 {
     Quick3DMaterial *mat = qobject_cast<Quick3DMaterial *>(list->object);
     if (mat) {
-        mat->m_tagList.clear();
-        mat->parentMaterial()->cleanParameters();
-        emit mat->parentMaterial()->parametersChanged();
+        Q_FOREACH (Parameter *p, mat->parentMaterial()->parameters()) {
+            QObject::disconnect(p, SIGNAL(valueChanged()), mat, SLOT(onParameterValueChanged()));
+            mat->parentMaterial()->removeParameter(p);
+        }
     }
 }
 
-void Quick3DMaterial::onTagValueChanged()
+// Try to use the QChangeArbiter for that
+void Quick3DMaterial::onParameterValueChanged()
 {
-    Tag* t = qobject_cast<Tag*>(sender());
-    Q_ASSERT(m_tagList.contains(t));
+    Parameter* t = qobject_cast<Parameter*>(sender());
+//    Q_ASSERT(m_tagList.contains(t));
 
-    QVariant v = t->value();
-    Texture* tex = v.value<Texture*>();
-    if (tex != Q_NULLPTR) {
-        qDebug() << "got texture parameter" << t->name();
-        parentMaterial()->setTextureParameter(t->name(), tex);
-    } else {
-        parentMaterial()->setParameter(t->name(), t->value());
-    }
+//    QVariant v = t->value();
+//    Texture* tex = v.value<Texture*>();
+//    if (tex != Q_NULLPTR) {
+//        qDebug() << "got texture parameter" << t->name();
+//        parentMaterial()->setTextureParameter(t->name(), tex);
+//    } else {
+//        parentMaterial()->setParameter(t->name(), t->value());
+//    }
 }
 
 } // Quick

@@ -44,6 +44,7 @@
 
 #include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
 #include <Qt3DRenderer/material.h>
+#include <Qt3DRenderer/parameter.h>
 #include <QQmlListProperty>
 
 QT_BEGIN_NAMESPACE
@@ -60,7 +61,7 @@ namespace Quick {
 class QT3DQUICKRENDERERSHARED_EXPORT Quick3DMaterial : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3D::Tag> parameters READ qmlParameters)
+    Q_PROPERTY(QQmlListProperty<Qt3D::Parameter> parameters READ qmlParameters)
 
 public:
     explicit Quick3DMaterial(QObject *parent = 0);
@@ -68,20 +69,19 @@ public:
     // TO DO : replace by QAbstractMaterial later on
     inline Material *parentMaterial() const { return qobject_cast<Material*>(parent()); }
 
-    QQmlListProperty<Tag> qmlParameters();
+    QQmlListProperty<Parameter> qmlParameters();
 
 private Q_SLOTS:
-    void onTagValueChanged();
+    void onParameterValueChanged();
 
 private:
     // FIXME - remove when we have a custom QML parser
-    static void appendTag(QQmlListProperty<Tag> *list, Tag *bar);
-    static Tag *tagAt(QQmlListProperty<Tag> *list, int index);
-    static int tagCount(QQmlListProperty<Tag> *list);
-    static void clearTags(QQmlListProperty<Tag> *list);
+    static void appendParameter(QQmlListProperty<Parameter> *list, Parameter *bar);
+    static Parameter *parameterAt(QQmlListProperty<Parameter> *list, int index);
+    static int parameterCount(QQmlListProperty<Parameter> *list);
+    static void clearParameters(QQmlListProperty<Parameter> *list);
 
     // FIXME - remove with tags
-    QList<Tag *> m_tagList;
 };
 
 } // Quick

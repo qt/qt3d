@@ -56,34 +56,30 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class Texture;
+class Parameter;
+class MaterialPrivate;
+typedef QMap<QString, Texture*> TextureDict;
 
 class QT3DRENDERERSHARED_EXPORT Material : public QAbstractMaterial
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3D::QAbstractEffect* effect READ effect WRITE setEffect NOTIFY effectChanged)
 
 public:
     explicit Material(Node *parent = 0);
 
     void setEffect(QAbstractEffect *effect) Q_DECL_OVERRIDE;
 
-    void setParameter(QString name, QVariant val);
+    void addParameter(Parameter *parameter);
+    void removeParameter(Parameter *parameter);
+    QList<Parameter *> parameters() const;
 
-    QVariantMap parameterValues() const;
-
-    typedef QMap<QString, Texture*> TextureDict;
     TextureDict textureValues() const;
 
     void setTextureParameter(QString name, Texture* tex);
-    void cleanParameters();
-
-Q_SIGNALS:
-    void effectChanged() Q_DECL_OVERRIDE;
-    void parametersChanged();
 
 private:
-    QVariantMap m_parameters;
-    TextureDict m_textures;
+    Q_DECLARE_PRIVATE(Material)
+    MaterialPrivate *d_ptr;
 };
 
 }

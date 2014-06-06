@@ -46,7 +46,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-Parameter::Parameter(QObject *parent, QString name, OpenGLTypes ty) :
+Parameter::Parameter(QObject *parent, const QString &name, OpenGLTypes ty) :
     QObject(parent),
     m_name(name),
     m_type(ty),
@@ -59,6 +59,15 @@ Parameter::Parameter(QObject *parent)
     : QObject(parent)
     , m_type(Undefined)
     , m_standardUniform(None)
+{
+
+}
+
+Parameter::Parameter(QObject *parent, const QString &name, Parameter::OpenGLTypes ty, const QVariant &value)
+    : QObject(parent)
+    , m_name(name)
+    , m_type(ty)
+    , m_value(value)
 {
 
 }
@@ -92,6 +101,20 @@ void Parameter::setStandardUniform(Parameter::StandardUniform su)
 Parameter::StandardUniform Parameter::standardUniform() const
 {
     return m_standardUniform;
+}
+
+void Parameter::setValue(const QVariant &dv)
+{
+    if (m_value != dv) {
+        m_value = dv;
+        emit valueChanged();
+        // TO DO: Add scene property change here to notify backend about the update
+    }
+}
+
+QVariant Parameter::value() const
+{
+    return m_value;
 }
 
 void Parameter::setDatatype(OpenGLTypes type)
