@@ -57,7 +57,6 @@ namespace Qt3D {
 class QT3DRENDERERSHARED_EXPORT Mesh : public QAbstractMesh
 {
     Q_OBJECT
-    Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
 
 public:
     Mesh(Node *parent = 0);
@@ -67,8 +66,6 @@ public:
 
     MeshDataPtr data() const;
     void setData(MeshDataPtr d);
-Q_SIGNALS:
-    void sourceChanged();
 
 private:
 

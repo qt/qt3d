@@ -54,6 +54,8 @@ class QAbstractMeshPrivate;
 class QT3DCORESHARED_EXPORT QAbstractMesh : public Component
 {
     Q_OBJECT
+    Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
+
 public:
     QAbstractMesh(Node *parent = 0);
 
@@ -63,8 +65,8 @@ public:
     const QUuid uuid() const;
 
 
-    // Signal
-    virtual void sourceChanged() = 0;
+Q_SIGNALS:
+    void sourceChanged();
 
 private:
     Q_DECLARE_PRIVATE(QAbstractMesh)
