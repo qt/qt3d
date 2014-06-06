@@ -39,68 +39,30 @@
 **
 ****************************************************************************/
 
-#include "qabstractmaterial.h"
-#include "qabstractmaterial_p.h"
+#ifndef Qt3D_QABSTRACTMATERIAL_P_H
+#define QT3D_QABSTRACTMATERIAL_P_H
 
-/*!
- * \class QAbstractMaterial
- * \namespace Qt3D
- *
- * \inherits Component
- *
- * \brief Provides an abstract class that should be the base of all
- * Material component classes in a scene.
- *
- * QAbstractMaterial provide a way to specify the rendering of an Entity.
- * Any aspect can define its own subclass of QAbstractMaterial so that a
- * Material can be used to describe a visual element, the way sound should
- * reflect on an element, the temperature of a surface and so on.
- *
- * \sa QAbstractEffect, QAbstractMesh, Component
- */
+#include <Qt3DCore/qt3dcore_global.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QAbstractMaterialPrivate::QAbstractMaterialPrivate(QAbstractMaterial *qq)
-    : q_ptr(qq)
-    , m_effect(Q_NULLPTR)
-{}
+class QAbstractMaterial;
+class QAbstractEffect;
 
-QAbstractMaterial::QAbstractMaterial(Node *parent)
-    : Component(parent)
-    , d_ptr(new QAbstractMaterialPrivate(this))
+class QAbstractMaterialPrivate
 {
-}
+public :
+    QAbstractMaterialPrivate(QAbstractMaterial *qq);
 
-/*!
- * Sets the \a effect to be used with the Material.
- */
-void QAbstractMaterial::setEffect(QAbstractEffect *effect)
-{
-    Q_D(QAbstractMaterial);
-    if (effect != d->m_effect) {
-        d->m_effect = effect;
-        emit effectChanged();
-    }
-}
-
-/*!
- * Returns the effect used by the Material.
- */
-QAbstractEffect *QAbstractMaterial::effect() const
-{
-    Q_D(const QAbstractMaterial);
-    return d->m_effect;
-}
-
-QAbstractMaterial::QAbstractMaterial(Node *parent, QAbstractMaterialPrivate *d)
-    : Component(parent)
-    , d_ptr(d)
-{
-}
+    Q_DECLARE_PUBLIC(QAbstractMaterial)
+    QAbstractMaterial *q_ptr;
+    QAbstractEffect *m_effect;
+};
 
 } // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_QABSTRACTMATERIAL_P_H

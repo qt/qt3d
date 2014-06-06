@@ -4,6 +4,7 @@ HEADERS += \
         $$PWD/cameralens.h \
         $$PWD/cameralens_p.h \
         $$PWD/qabstractmaterial.h \
+        $$PWD/qabstractmaterial_p.h \
         $$PWD/qabstractmesh.h \
         $$PWD/qabstracttechnique.h \
         $$PWD/qabstractrenderpass.h \
