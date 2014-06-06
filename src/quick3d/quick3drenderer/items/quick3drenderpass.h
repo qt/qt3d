@@ -39,63 +39,44 @@
 **
 ****************************************************************************/
 
-#ifndef RENDERPASS_H
-#define RENDERPASS_H
+#ifndef QT3D_RENDER_QUICK_QUICK3DRENDERPASS_H
+#define QT3D_RENDER_QUICK_QUICK3DRENDERPASS_H
 
-#include <Qt3DCore/qabstractrenderpass.h>
-#include <Qt3DRenderer/qt3drenderer_global.h>
-
-#include <Qt3DRenderer/shaderprogram.h>
-#include <Qt3DRenderer/drawstate.h>
-#include <Qt3DRenderer/renderpasscriterion.h>
-
-#include <QHash>
-#include <QList>
+#include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
+#include <Qt3DRenderer/renderpass.h>
+#include <QQmlListProperty>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class Parameter;
-typedef QList<Parameter*> ParameterList;
+namespace Render {
 
-class QT3DRENDERERSHARED_EXPORT RenderPass : public QAbstractRenderPass
+namespace Quick {
+
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DRenderPass : public QObject
 {
     Q_OBJECT
-
+    Q_PROPERTY(QQmlListProperty<Qt3D::RenderPassCriterion> criteria READ criteriaList)
 public:
-    explicit RenderPass(Node *parent = 0);
+    explicit Quick3DRenderPass(QObject *parent = 0);
 
-    void addUniformBinding(Parameter* param, QString glslUniformName);
+    QQmlListProperty<Qt3D::RenderPassCriterion> criteriaList();
+    inline RenderPass *parentRenderPass() const { return qobject_cast<RenderPass *>(parent()); }
 
-    void addAttributeBinding(Parameter* param, QString glslAttributeName);
-
-    QString glslNameForParameter(QString paramName) const;
-
-    ParameterList attributes() const;
-    ParameterList uniforms() const;
-
-    void setStateSet(Render::DrawStateSet* ss);
-    Render::DrawStateSet* stateSet() const;
-
-    void addCriterion(RenderPassCriterion *criterion);
-    void removeCriterion(RenderPassCriterion *criterion);
-    QList<RenderPassCriterion *> criteria() const;
-
-
-protected:
-    ParameterList m_attributes;
-    ParameterList m_uniforms;
-
-    // map Parameter names to GLSL names
-    QHash<QString, QString> m_parameterNameDict;
-    QList<RenderPassCriterion *> m_criteria;
-
-    Render::DrawStateSet* m_stateSet;
+private:
+    static void appendCriteria(QQmlListProperty<Qt3D::RenderPassCriterion> *list, RenderPassCriterion *criterion);
+    static RenderPassCriterion *criterionAt(QQmlListProperty<Qt3D::RenderPassCriterion> *list, int index);
+    static int criteriaCount(QQmlListProperty<Qt3D::RenderPassCriterion> *list);
+    static void clearCriteria(QQmlListProperty<Qt3D::RenderPassCriterion> *list);
 };
 
-}
+} // Quick
+
+} // Render
+
+} // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // RENDERPASS_H
+#endif // QT3D_RENDER_QUICK_QUICK3DRENDERPASS_H

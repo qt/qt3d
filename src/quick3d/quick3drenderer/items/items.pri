@@ -9,7 +9,8 @@ HEADERS += \
     $$PWD/quick3deffect.h \
     $$PWD/quick3dscene.h \
     $$PWD/shaderpropertyparser.h \
-    $$PWD/quick3dtexture.h
+    $$PWD/quick3dtexture.h \
+    $$PWD/quick3drenderpass.h
 
 SOURCES += \
     $$PWD/quick3dframegraphitem.cpp \
@@ -22,6 +23,7 @@ SOURCES += \
     $$PWD/quick3deffect.cpp \
     $$PWD/quick3dscene.cpp \
     $$PWD/shaderpropertyparser.cpp \
-    $$PWD/quick3dtexture.cpp
+    $$PWD/quick3dtexture.cpp \
+    $$PWD/quick3drenderpass.cpp
 
 INCLUDEPATH += $$PWD

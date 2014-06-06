@@ -41,6 +41,7 @@
 
 #include "renderpass.h"
 #include "parameter.h"
+#include "renderpasscriterion.h"
 #include <QDebug>
 
 QT_BEGIN_NAMESPACE
@@ -88,6 +89,25 @@ void RenderPass::setStateSet(Render::DrawStateSet *ss)
 Render::DrawStateSet *RenderPass::stateSet() const
 {
     return m_stateSet;
+}
+
+void RenderPass::addCriterion(RenderPassCriterion *criterion)
+{
+    if (!m_criteria.contains(criterion)) {
+        m_criteria.append(criterion);
+        // TO DO: Notify QChangeArbiter
+    }
+}
+
+void RenderPass::removeCriterion(RenderPassCriterion *criterion)
+{
+    m_criteria.removeOne(criterion);
+    // TO DO: Notify QChangeArbiter
+}
+
+QList<RenderPassCriterion *> RenderPass::criteria() const
+{
+    return m_criteria;
 }
 
 } // namespace Qt3D
