@@ -235,7 +235,8 @@ Node {
             //            effect: adsEffect
 
             parameters : [
-            Parameter { name : "ambient"; datatype: Parameter.FloatVec4; value : Qt.vector4d(255, 0, 0, 1) }
+                Parameter { name : "ambient"; datatype: Parameter.FloatVec4; value : Qt.vector4d(255, 0, 0, 1) },
+                Parameter { name : "position"; datatype: Parameter.FloatVec4; value : Qt.vector4d(0, 0, 0, 0); meshAttributeName: "position" }
             ]
 
             effect : Effect {
@@ -245,6 +246,18 @@ Node {
                     Technique {
                         criteria : [
                              TechniqueCriterion { criterionType : TechniqueCriterion.RenderingStyle; criterionValue : "forward"}
+                        ]
+
+                        renderPasses : [
+
+                            RenderPass {
+
+                                criteria : [
+
+                                ]
+
+                            }
+
                         ]
                     }
                 ]
