@@ -198,7 +198,7 @@ QMatrix4x4 QGraphicsContext::projectionMatrix() const
 
 QMatrix4x4 QGraphicsContext::viewMatrix() const
 {
-    return m_camera->view();
+    return m_camera->viewMatrix();
 }
 
 void QGraphicsContext::releaseOpenGL()
