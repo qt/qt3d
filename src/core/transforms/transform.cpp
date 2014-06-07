@@ -58,7 +58,7 @@ void Transform::setTransformsDirty()
     if (!m_transformsDirty.loadAcquire()) {
         m_transformsDirty.fetchAndStoreOrdered(1);
         QScenePropertyChangePtr e(new QScenePropertyChange(ComponentUpdated, this));
-        e->m_propertyName = QByteArrayLiteral("transforms");
+        e->m_propertyName = QByteArrayLiteral("matrix");
         e->m_value = matrix();
         notifySceneChange(e);
     }
