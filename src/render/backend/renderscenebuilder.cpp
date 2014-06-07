@@ -251,6 +251,8 @@ void RenderSceneBuilder::createRenderCamera(Entity *entity)
         // Retrieves or create RenderCamera for entity->uuid
         RenderCamera *camera = m_renderer->cameraManager()->getOrCreateRenderCamera(entity->uuid());
         camera->setRendererAspect(m_renderer->rendererAspect());
+
+        // Set the front end peer object for the lens
         camera->setPeer(cameraLenses.first());
         camera->setProjection(cameraLenses.first()->projectionMatrix());
     }
