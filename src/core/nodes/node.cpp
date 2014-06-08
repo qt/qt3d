@@ -160,7 +160,7 @@ void Node::unregisterObserver(QObserverInterface *observer)
 
     // For now we only care about the QChangeArbiter observing us
     QChangeArbiter *changeArbiter = dynamic_cast<QChangeArbiter *>(observer);
-    if (changeArbiter) {
+    if (changeArbiter == m_changeArbiter) {
         QWriteLocker locker(&m_observerLock);
         m_changeArbiter = Q_NULLPTR;
     }
