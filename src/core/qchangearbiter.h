@@ -107,7 +107,7 @@ private:
 
     typedef QPair<ChangeFlags, QObserverInterface *> QObserverPair;
     typedef QList<QObserverPair> QObserverList;
-    QHash<QObservableInterface *, QObserverList> m_observations;
+    QHash<QObservableInterface *, QObserverList> m_aspectObservations;
     QHash<Component *, QObserverList> m_componentObservations;
 
     // Each thread has a TLS ChangeQueue so we never need to lock whilst

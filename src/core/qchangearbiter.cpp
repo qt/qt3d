@@ -86,8 +86,8 @@ void QChangeArbiter::distributeQueueChanges(ChangeQueue *changeQueue)
         switch (change->m_subjectType) {
         case QSceneChange::ObservableType: {
             QObservableInterface *subject = change->m_subject.m_observable;
-            if (m_observations.contains(subject)) {
-                QObserverList &observers = m_observations[subject];
+            if (m_aspectObservations.contains(subject)) {
+                QObserverList &observers = m_aspectObservations[subject];
                 Q_FOREACH (const QObserverPair &observer, observers) {
                     if ((change->m_type & observer.first))
                         observer.second->sceneChangeEvent(change);
@@ -136,7 +136,7 @@ void QChangeArbiter::registerObserver(QObserverInterface *observer,
     // Store info about which observers are watching which observables.
     // Protect access as this could be called from any thread
     QMutexLocker locker(&m_mutex);
-    QObserverList &observers = m_observations[subject];
+    QObserverList &observers = m_aspectObservations[subject];
     observers.append(QObserverPair(changeFlags, observer));
 
     // Register ourselves with the observable as the intermediary
@@ -165,8 +165,8 @@ void QChangeArbiter::unregisterObserver(QObserverInterface *observer,
                                         QObservableInterface *subject)
 {
     QMutexLocker locker(&m_mutex);
-    if (m_observations.contains(subject)) {
-        QObserverList &observers = m_observations[subject];
+    if (m_aspectObservations.contains(subject)) {
+        QObserverList &observers = m_aspectObservations[subject];
         for (int i = observers.count() - 1; i >= 0; i--) {
             if (observers[i].second == observer)
                 observers.removeAt(i);
