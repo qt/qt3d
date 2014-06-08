@@ -40,9 +40,9 @@
 ****************************************************************************/
 
 #include "node.h"
+#include "node_p.h"
 
-#include "entity.h"
-
+#include <Qt3DCore/entity.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 #include <QEvent>
@@ -55,8 +55,14 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 Node::Node(Node *parent)
-    : QObject(parent)
-    , m_changeArbiter(Q_NULLPTR)
+    : QObject(*new NodePrivate, parent)
+{
+    if (parent)
+        parent->addChild(this);
+}
+
+Node::Node(NodePrivate &dd, Node *parent)
+    : QObject(dd, parent)
 {
     if (parent)
         parent->addChild(this);
@@ -91,18 +97,21 @@ void Node::dump()
 
 NodeList Node::children() const
 {
-    return m_children;
+    Q_D(const Node);
+    return d->m_children;
 }
 
 void Node::addChild(Node *childNode)
 {
-    Q_CHECK_PTR( childNode );
+    Q_ASSERT(childNode);
 
-    if (m_children.contains(childNode))
+    Q_D(Node);
+    if (d->m_children.contains(childNode))
         return ;
 
-    m_children.append(childNode);
+    d->m_children.append(childNode);
     childNode->setParent(this);
+
     QScenePropertyChangePtr e(new QScenePropertyChange(NodeCreated, this));
     e->m_propertyName = QByteArrayLiteral("node");
     e->m_value = QVariant::fromValue(childNode);
@@ -111,12 +120,14 @@ void Node::addChild(Node *childNode)
 
 void Node::removeChild(Node *childNode)
 {
-    Q_CHECK_PTR( childNode );
+    Q_ASSERT(childNode);
     if (childNode->parent() != this)
         qCWarning(Nodes) << Q_FUNC_INFO << "not a child";
 
-    m_children.removeOne(childNode);
+    Q_D(Node);
+    d->m_children.removeOne(childNode);
     childNode->setParent(NULL);
+
     QScenePropertyChangePtr e(new QScenePropertyChange(NodeAboutToBeDeleted, this));
     e->m_propertyName = QByteArrayLiteral("node");
     e->m_value = QVariant::fromValue(childNode);
@@ -128,8 +139,8 @@ void Node::removeAllChildren()
     foreach (QObject *child, children()) {
         child->deleteLater();
     }
-
-    m_children.clear();
+    Q_D(Node);
+    d->m_children.clear();
 }
 
 Entity *Node::asEntity()
@@ -149,8 +160,9 @@ void Node::registerObserver(QObserverInterface *observer)
     // For now we only care about the QChangeArbiter observing us
     QChangeArbiter *changeArbiter = dynamic_cast<QChangeArbiter *>(observer);
     if (changeArbiter) {
-        QWriteLocker locker(&m_observerLock);
-        m_changeArbiter = changeArbiter;
+        Q_D(Node);
+        QWriteLocker locker(&d->m_observerLock);
+        d->m_changeArbiter = changeArbiter;
     }
 }
 
@@ -159,19 +171,21 @@ void Node::unregisterObserver(QObserverInterface *observer)
     Q_CHECK_PTR(observer);
 
     // For now we only care about the QChangeArbiter observing us
+    Q_D(Node);
     QChangeArbiter *changeArbiter = dynamic_cast<QChangeArbiter *>(observer);
-    if (changeArbiter == m_changeArbiter) {
-        QWriteLocker locker(&m_observerLock);
-        m_changeArbiter = Q_NULLPTR;
+    if (changeArbiter == d->m_changeArbiter) {
+        QWriteLocker locker(&d->m_observerLock);
+        d->m_changeArbiter = Q_NULLPTR;
     }
 }
 
 void Node::notifyObservers(const QSceneChangePtr &change)
 {
     Q_CHECK_PTR(change);
-    QReadLocker locker(&m_observerLock);
-    if (m_changeArbiter)
-        m_changeArbiter->sceneChangeEventWithLock(change);
+    Q_D(Node);
+    QReadLocker locker(&d->m_observerLock);
+    if (d->m_changeArbiter)
+        d->m_changeArbiter->sceneChangeEventWithLock(change);
 }
 
 } // namespace Qt3D

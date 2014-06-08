@@ -2,6 +2,7 @@ INCLUDEPATH += $$PWD
 
 HEADERS += \
     $$PWD/node.h \
+    $$PWD/node_p.h \
     $$PWD/nodevisitor.h \
     $$PWD/component.h \
     $$PWD/entity.h
