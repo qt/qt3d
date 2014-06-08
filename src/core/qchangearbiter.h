@@ -76,11 +76,11 @@ public:
     void syncChanges();
 
     void registerObserver(QObserverInterface *observer,
-                          QObservableInterface *subject,
+                          QObservableInterface *observable,
                           ChangeFlags changeFlags = AllChanges);
 
     void registerObserver(QObserverInterface *observer,
-                          Node *node,
+                          Node *observable,
                           ChangeFlags changeFlags = AllChanges);
 
     void unregisterObserver(QObserverInterface *observer,
@@ -99,14 +99,27 @@ public:
 
 private:
     typedef QVector<QSceneChangePtr> ChangeQueue;
+    typedef QPair<ChangeFlags, QObserverInterface *> QObserverPair;
+    typedef QList<QObserverPair> QObserverList;
+
+    void registerObserverHelper(QObserverList &observerList,
+                                QObserverInterface *observer,
+                                QObservableInterface *observable,
+                                ChangeFlags changeFlags);
 
     void distributeQueueChanges(ChangeQueue *queue);
 
     QMutex m_mutex;
     QJobManagerInterface *m_jobManager;
 
-    typedef QPair<ChangeFlags, QObserverInterface *> QObserverPair;
-    typedef QList<QObserverPair> QObserverList;
+    // The lists of observers indexed by observable. We maintain two
+    // distinct hashes:
+    //
+    // m_aspectObservations is for observables owned by aspects
+    // m_componentObservations is for observables in the main thread's object tree
+    //
+    // We keep these distinct because we do not manage the main thread which means
+    // the mechanisms for working with objects there is different.
     QHash<QObservableInterface *, QObserverList> m_aspectObservations;
     QHash<Node *, QObserverList> m_componentObservations;
 

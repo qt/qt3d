@@ -126,39 +126,38 @@ void QChangeArbiter::syncChanges()
 }
 
 void QChangeArbiter::registerObserver(QObserverInterface *observer,
-                                      QObservableInterface *subject,
+                                      QObservableInterface *observable,
                                       ChangeFlags changeFlags)
 {
-    qCDebug(ChangeArbiter) << Q_FUNC_INFO;
-    if (!observer || !subject)
-        return;
-
-    // Store info about which observers are watching which observables.
-    // Protect access as this could be called from any thread
     QMutexLocker locker(&m_mutex);
-    QObserverList &observers = m_aspectObservations[subject];
-    observers.append(QObserverPair(changeFlags, observer));
-
-    // Register ourselves with the observable as the intermediary
-    subject->registerObserver(this);
+    QObserverList &observerList = m_aspectObservations[observable];
+    registerObserverHelper(observerList, observer, observable, changeFlags);
 }
 
 void QChangeArbiter::registerObserver(QObserverInterface *observer,
-                                      Node *node,
+                                      Node *observable,
                                       ChangeFlags changeFlags)
 {
+    QMutexLocker locker(&m_mutex);
+    QObserverList &observerList = m_componentObservations[observable];
+    registerObserverHelper(observerList, observer, observable, changeFlags);
+}
+
+void QChangeArbiter::registerObserverHelper(QObserverList &observerList,
+                                            QObserverInterface *observer,
+                                            QObservableInterface *observable,
+                                            ChangeFlags changeFlags)
+{
+    Q_ASSERT(observer);
+    Q_ASSERT(observable);
     qCDebug(ChangeArbiter) << Q_FUNC_INFO;
-    if (!observer || !node)
-        return;
 
     // Store info about which observers are watching which observables.
     // Protect access as this could be called from any thread
-    QMutexLocker locker(&m_mutex);
-    QObserverList &observers = m_componentObservations[node];
-    observers.append(QObserverPair(changeFlags, observer));
+    observerList.append(QObserverPair(changeFlags, observer));
 
     // Register ourselves with the observable as the intermediary
-    node->registerObserver(this);
+    observable->registerObserver(this);
 }
 
 void QChangeArbiter::unregisterObserver(QObserverInterface *observer,
