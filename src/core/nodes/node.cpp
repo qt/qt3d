@@ -134,7 +134,7 @@ void Node::removeAllChildren()
 
 Entity *Node::asEntity()
 {
-    return NULL;
+    return Q_NULLPTR;
 }
 
 Node *Node::parentNode() const
