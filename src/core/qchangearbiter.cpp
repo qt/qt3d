@@ -98,8 +98,8 @@ void QChangeArbiter::distributeQueueChanges(ChangeQueue *changeQueue)
 
         case QSceneChange::NodeType: {
             Node *subject = change->m_subject.m_node;
-            if (m_componentObservations.contains(subject)) {
-                QObserverList &observers = m_componentObservations[subject];
+            if (m_nodeObservations.contains(subject)) {
+                QObserverList &observers = m_nodeObservations[subject];
                 Q_FOREACH (const QObserverPair&observer, observers) {
                     if ((change->m_type & observer.first))
                         observer.second->sceneChangeEvent(change);
@@ -139,7 +139,7 @@ void QChangeArbiter::registerObserver(QObserverInterface *observer,
                                       ChangeFlags changeFlags)
 {
     QMutexLocker locker(&m_mutex);
-    QObserverList &observerList = m_componentObservations[observable];
+    QObserverList &observerList = m_nodeObservations[observable];
     registerObserverHelper(observerList, observer, observable, changeFlags);
 }
 
@@ -176,8 +176,8 @@ void QChangeArbiter::unregisterObserver(QObserverInterface *observer,
 void QChangeArbiter::unregisterObserver(QObserverInterface *observer, Node *subject)
 {
     QMutexLocker locker(&m_mutex);
-    if (m_componentObservations.contains(subject)) {
-        QObserverList &observers = m_componentObservations[subject];
+    if (m_nodeObservations.contains(subject)) {
+        QObserverList &observers = m_nodeObservations[subject];
         for (int i = observers.count() - 1; i >= 0; i--) {
             if (observers[i].second == observer)
                 observers.removeAt(i);

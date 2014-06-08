@@ -116,19 +116,19 @@ private:
     // distinct hashes:
     //
     // m_aspectObservations is for observables owned by aspects
-    // m_componentObservations is for observables in the main thread's object tree
+    // m_nodeObservations is for observables in the main thread's object tree
     //
     // We keep these distinct because we do not manage the main thread which means
     // the mechanisms for working with objects there is different.
     QHash<QObservableInterface *, QObserverList> m_aspectObservations;
-    QHash<Node *, QObserverList> m_componentObservations;
+    QHash<Node *, QObserverList> m_nodeObservations;
 
     // Each thread has a TLS ChangeQueue so we never need to lock whilst
     // receiving a QSceneChange.
     QThreadStorage<ChangeQueue *> m_tlsChangeQueue;
 
     // We store a list of the ChangeQueue's from each thread. This will only
-    // be accesses from the aspect thread during the syncChanges() phase.
+    // be accessed from the aspect thread during the syncChanges() phase.
     QList<ChangeQueue *> m_changeQueues;
     QList<ChangeQueue *> m_lockingChangeQueues;
 };
