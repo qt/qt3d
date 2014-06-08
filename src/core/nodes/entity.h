@@ -45,48 +45,25 @@
 #include <Qt3DCore/node.h>
 #include <Qt3DCore/qt3dcore_global.h>
 
-#include <QMatrix4x4>
+#include <QMetaType>
 #include <QUuid>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class AbstractTransform;
 class Component;
 class Entity;
+class EntityPrivate;
 
 typedef QList<Component*> ComponentList;
-
-class EntityPrivate
-{
-public :
-
-    EntityPrivate(Entity *qq)
-        : q_ptr(qq)
-        , m_uuid(QUuid::createUuid())
-    {}
-
-    Q_DECLARE_PUBLIC(Entity)
-    Entity *q_ptr;
-
-    ComponentList m_components;
-    bool m_visible;
-
-    const QUuid m_uuid;
-
-    mutable QMatrix4x4 m_matrix;
-    QMatrix4x4 m_sceneMatrix;
-
-    // TODO: Is a bool enough here or do we need additional states for entities?
-    // Perhaps aboutToBeDeleted would be useful?
-    bool m_enabled;
-};
 
 class QT3DCORESHARED_EXPORT Entity : public Node
 {
     Q_OBJECT
+
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
+
 public:
     explicit Entity(Node *parent = 0);
 
@@ -170,10 +147,9 @@ public:
 Q_SIGNALS:
     virtual void enabledChanged();
 
-private:
+protected:
     Q_DECLARE_PRIVATE(Entity)
-    EntityPrivate *d_ptr;
-
+    Entity(EntityPrivate &dd, Node *parent = 0);
 };
 
 } // namespace Qt3D

@@ -5,7 +5,8 @@ HEADERS += \
     $$PWD/node_p.h \
     $$PWD/nodevisitor.h \
     $$PWD/component.h \
-    $$PWD/entity.h
+    $$PWD/entity.h \
+    $$PWD/entity_p.h
 
 SOURCES += \
     $$PWD/node.cpp \
