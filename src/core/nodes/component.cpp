@@ -47,21 +47,7 @@ namespace Qt3D {
 
 Component::Component(Node *parent)
     : Node(parent)
-    , m_changeArbiter(0)
 {
-}
-
-void Component::registerChangeArbiter(QChangeArbiter *changeArbiter)
-{
-    Q_CHECK_PTR(changeArbiter);
-    m_changeArbiter = changeArbiter;
-}
-
-void Component::notifySceneChange(const QSceneChangePtr &change)
-{
-    Q_CHECK_PTR(change);
-    if (m_changeArbiter)
-        m_changeArbiter->sceneChangeEventWithLock(change);
 }
 
 } // namespace Qt3D

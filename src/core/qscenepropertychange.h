@@ -58,8 +58,8 @@ public:
     {
     }
 
-    QScenePropertyChange(ChangeFlag type, Component *component, Priority priority = Standard)
-        : QSceneChange(type, component, priority)
+    QScenePropertyChange(ChangeFlag type, Node *node, Priority priority = Standard)
+        : QSceneChange(type, node, priority)
     {
     }
 

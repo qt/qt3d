@@ -63,7 +63,7 @@ enum ChangeFlag {
 Q_DECLARE_FLAGS(ChangeFlags, ChangeFlag)
 Q_DECLARE_OPERATORS_FOR_FLAGS(ChangeFlags)
 
-class Component;
+class Node;
 class QObservableInterface;
 
 class QT3DCORESHARED_EXPORT QSceneChange
@@ -84,23 +84,23 @@ public:
         m_subjectType = ObservableType;
     }
 
-    QSceneChange(ChangeFlag type, Component *component, Priority priority = Standard)
+    QSceneChange(ChangeFlag type, Node *node, Priority priority = Standard)
         : m_type(type),
           m_priority(priority),
           m_timestamp(QDateTime::currentMSecsSinceEpoch())
     {
-        m_subject.m_component = component;
-        m_subjectType = ComponentType;
+        m_subject.m_node = node;
+        m_subjectType = NodeType;
     }
 
     union {
         QObservableInterface *m_observable;
-        Component *m_component;
+        Node *m_node;
     } m_subject;
 
     enum ObservableType {
         ObservableType,
-        ComponentType
+        NodeType
     } m_subjectType;
 
     ChangeFlag m_type;

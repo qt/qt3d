@@ -114,7 +114,7 @@ public:
             QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentAdded, this));
             propertyChange->m_propertyName = QByteArrayLiteral("renderPassCriteria");
             propertyChange->m_value = QVariant::fromValue(criterion);
-            notifyObservers(propertyChange);
+            notifySceneChange(propertyChange);
         }
     }
 
@@ -125,7 +125,7 @@ public:
         QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentRemoved, this));
         propertyChange->m_propertyName = QByteArrayLiteral("renderPassCriteria");
         propertyChange->m_value = QVariant::fromValue(criterion);
-        notifyObservers(propertyChange);
+        notifySceneChange(propertyChange);
 
     }
 

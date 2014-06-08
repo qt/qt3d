@@ -54,9 +54,9 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-Node::Node( Node* parent )
-    : QObject( parent )
-    , QObservable()
+Node::Node(Node *parent)
+    : QObject(parent)
+    , m_changeArbiter(Q_NULLPTR)
 {
     if (parent)
         parent->addChild(this);
@@ -106,7 +106,7 @@ void Node::addChild(Node *childNode)
     QScenePropertyChangePtr e(new QScenePropertyChange(NodeCreated, this));
     e->m_propertyName = QByteArrayLiteral("node");
     e->m_value = QVariant::fromValue(childNode);
-    notifyObservers(e);
+    notifySceneChange(e);
 }
 
 void Node::removeChild(Node *childNode)
@@ -120,7 +120,7 @@ void Node::removeChild(Node *childNode)
     QScenePropertyChangePtr e(new QScenePropertyChange(NodeAboutToBeDeleted, this));
     e->m_propertyName = QByteArrayLiteral("node");
     e->m_value = QVariant::fromValue(childNode);
-    notifyObservers(e);
+    notifySceneChange(e);
 }
 
 void Node::removeAllChildren()
@@ -148,6 +148,19 @@ bool Node::event(QEvent *e)
         qCDebug(Nodes) << "*** Dynamic Property Change ***";
     }
     return QObject::event(e);
+}
+
+void Node::registerChangeArbiter(QChangeArbiter *changeArbiter)
+{
+    Q_CHECK_PTR(changeArbiter);
+    m_changeArbiter = changeArbiter;
+}
+
+void Node::notifySceneChange(const QSceneChangePtr &change)
+{
+    Q_CHECK_PTR(change);
+    if (m_changeArbiter)
+        m_changeArbiter->sceneChangeEventWithLock(change);
 }
 
 } // namespace Qt3D

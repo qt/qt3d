@@ -45,8 +45,6 @@
 #include <Qt3DCore/node.h>
 #include <Qt3DCore/qt3dcore_global.h>
 
-#include <Qt3DCore/qchangearbiter.h>
-
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
@@ -56,14 +54,6 @@ class QT3DCORESHARED_EXPORT Component : public Node
     Q_OBJECT
 public:
     explicit Component(Node *parent = 0);
-
-    void registerChangeArbiter(QChangeArbiter *changeArbiter);
-
-protected:
-    virtual void notifySceneChange(const QSceneChangePtr &change);
-
-private:
-    QChangeArbiter *m_changeArbiter;
 };
 
 } // namespace Qt3D

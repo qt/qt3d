@@ -94,7 +94,7 @@ public:
             QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentUpdated, this));
             propertyChange->m_propertyName = QByteArrayLiteral("rect");
             propertyChange->m_value = QVariant::fromValue(d->m_rect);
-            notifyObservers(propertyChange);
+            notifySceneChange(propertyChange);
         }
     }
 

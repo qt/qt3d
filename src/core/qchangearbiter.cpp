@@ -96,8 +96,8 @@ void QChangeArbiter::distributeQueueChanges(ChangeQueue *changeQueue)
             break;
         }
 
-        case QSceneChange::ComponentType: {
-            Component *subject = change->m_subject.m_component;
+        case QSceneChange::NodeType: {
+            Node *subject = change->m_subject.m_node;
             if (m_componentObservations.contains(subject)) {
                 QObserverList &observers = m_componentObservations[subject];
                 Q_FOREACH (const QObserverPair&observer, observers) {
@@ -144,21 +144,21 @@ void QChangeArbiter::registerObserver(QObserverInterface *observer,
 }
 
 void QChangeArbiter::registerObserver(QObserverInterface *observer,
-                                      Component *component,
+                                      Node *node,
                                       ChangeFlags changeFlags)
 {
     qCDebug(ChangeArbiter) << Q_FUNC_INFO;
-    if (!observer || !component)
+    if (!observer || !node)
         return;
 
     // Store info about which observers are watching which observables.
     // Protect access as this could be called from any thread
     QMutexLocker locker(&m_mutex);
-    QObserverList &observers = m_componentObservations[component];
+    QObserverList &observers = m_componentObservations[node];
     observers.append(QObserverPair(changeFlags, observer));
 
     // Register ourselves with the observable as the intermediary
-    component->registerChangeArbiter(this);
+    node->registerChangeArbiter(this);
 }
 
 void QChangeArbiter::unregisterObserver(QObserverInterface *observer,
@@ -174,7 +174,7 @@ void QChangeArbiter::unregisterObserver(QObserverInterface *observer,
     }
 }
 
-void QChangeArbiter::unregisterObserver(QObserverInterface *observer, Component *subject)
+void QChangeArbiter::unregisterObserver(QObserverInterface *observer, Node *subject)
 {
     QMutexLocker locker(&m_mutex);
     if (m_componentObservations.contains(subject)) {

@@ -45,6 +45,7 @@
 #include <QObject>
 #include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qobservable.h>
+#include <Qt3DCore/qchangearbiter.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -56,9 +57,7 @@ class Entity;
 
 typedef QList<Node *> NodeList;
 
-class QT3DCORESHARED_EXPORT Node
-        : public QObject
-        , public QObservable
+class QT3DCORESHARED_EXPORT Node : public QObject
 {
     Q_OBJECT
 
@@ -78,11 +77,17 @@ public:
 
     Node* parentNode() const;
 
+    void registerChangeArbiter(QChangeArbiter *changeArbiter);
+
+protected:
+    virtual void notifySceneChange(const QSceneChangePtr &change);
+
 protected:
     bool event(QEvent *e);
 
 private:
     NodeList m_children;
+    QChangeArbiter *m_changeArbiter;
 };
 
 } // namespace Qt3D
