@@ -67,9 +67,6 @@ class QT3DCORESHARED_EXPORT Entity : public Node
 public:
     explicit Entity(Node *parent = 0);
 
-    virtual ~Entity()
-    {}
-
     const QUuid uuid() const;
 
     ComponentList components() const;
