@@ -158,7 +158,7 @@ void QChangeArbiter::registerObserver(QObserverInterface *observer,
     observers.append(QObserverPair(changeFlags, observer));
 
     // Register ourselves with the observable as the intermediary
-    node->registerChangeArbiter(this);
+    node->registerObserver(this);
 }
 
 void QChangeArbiter::unregisterObserver(QObserverInterface *observer,

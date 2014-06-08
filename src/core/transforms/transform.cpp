@@ -61,7 +61,7 @@ void Transform::setTransformsDirty()
         QScenePropertyChangePtr e(new QScenePropertyChange(ComponentUpdated, this));
         e->m_propertyName = QByteArrayLiteral("matrix");
         e->m_value = matrix();
-        notifySceneChange(e);
+        notifyObservers(e);
     }
 }
 

@@ -95,7 +95,7 @@ public:
         QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentAdded, this));
         propertyChange->m_propertyName = QByteArrayLiteral("techniqueCriteria");
         propertyChange->m_value = QVariant::fromValue(criterion);
-        notifySceneChange(propertyChange);
+        notifyObservers(propertyChange);
     }
 
     void removeCriterion(TechniqueCriterion *criterion)
@@ -106,7 +106,7 @@ public:
         QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentRemoved, this));
         propertyChange->m_propertyName = QByteArrayLiteral("techniqueCriteria");
         propertyChange->m_value = QVariant::fromValue(criterion);
-        notifySceneChange(propertyChange);
+        notifyObservers(propertyChange);
     }
 
 Q_SIGNALS:

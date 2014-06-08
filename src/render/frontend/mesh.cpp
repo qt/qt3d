@@ -74,7 +74,7 @@ void Mesh::setSource( const QString& source )
     QScenePropertyChangePtr e(new QScenePropertyChange(ComponentUpdated, this));
     e->m_propertyName = QByteArrayLiteral("source");
     e->m_value = QAbstractMesh::source();
-    notifySceneChange(e);
+    notifyObservers(e);
 }
 
 MeshDataPtr Mesh::data() const

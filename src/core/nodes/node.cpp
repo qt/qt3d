@@ -106,7 +106,7 @@ void Node::addChild(Node *childNode)
     QScenePropertyChangePtr e(new QScenePropertyChange(NodeCreated, this));
     e->m_propertyName = QByteArrayLiteral("node");
     e->m_value = QVariant::fromValue(childNode);
-    notifySceneChange(e);
+    notifyObservers(e);
 }
 
 void Node::removeChild(Node *childNode)
@@ -120,7 +120,7 @@ void Node::removeChild(Node *childNode)
     QScenePropertyChangePtr e(new QScenePropertyChange(NodeAboutToBeDeleted, this));
     e->m_propertyName = QByteArrayLiteral("node");
     e->m_value = QVariant::fromValue(childNode);
-    notifySceneChange(e);
+    notifyObservers(e);
 }
 
 void Node::removeAllChildren()
@@ -150,15 +150,34 @@ bool Node::event(QEvent *e)
     return QObject::event(e);
 }
 
-void Node::registerChangeArbiter(QChangeArbiter *changeArbiter)
+void Node::registerObserver(QObserverInterface *observer)
 {
-    Q_CHECK_PTR(changeArbiter);
-    m_changeArbiter = changeArbiter;
+    Q_CHECK_PTR(observer);
+
+    // For now we only care about the QChangeArbiter observing us
+    QChangeArbiter *changeArbiter = dynamic_cast<QChangeArbiter *>(observer);
+    if (changeArbiter) {
+        QWriteLocker locker(&m_observerLock);
+        m_changeArbiter = changeArbiter;
+    }
 }
 
-void Node::notifySceneChange(const QSceneChangePtr &change)
+void Node::unregisterObserver(QObserverInterface *observer)
+{
+    Q_CHECK_PTR(observer);
+
+    // For now we only care about the QChangeArbiter observing us
+    QChangeArbiter *changeArbiter = dynamic_cast<QChangeArbiter *>(observer);
+    if (changeArbiter) {
+        QWriteLocker locker(&m_observerLock);
+        m_changeArbiter = Q_NULLPTR;
+    }
+}
+
+void Node::notifyObservers(const QSceneChangePtr &change)
 {
     Q_CHECK_PTR(change);
+    QReadLocker locker(&m_observerLock);
     if (m_changeArbiter)
         m_changeArbiter->sceneChangeEventWithLock(change);
 }
