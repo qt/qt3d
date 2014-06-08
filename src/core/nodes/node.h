@@ -85,9 +85,6 @@ public:
 protected:
     virtual void notifyObservers(const QSceneChangePtr &change);
 
-protected:
-    bool event(QEvent *e);
-
 private:
     NodeList m_children;
 

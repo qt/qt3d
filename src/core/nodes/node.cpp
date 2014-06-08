@@ -142,14 +142,6 @@ Node *Node::parentNode() const
     return qobject_cast<Node*>(parent());
 }
 
-bool Node::event(QEvent *e)
-{
-    if (e->type() == QEvent::DynamicPropertyChange) {
-        qCDebug(Nodes) << "*** Dynamic Property Change ***";
-    }
-    return QObject::event(e);
-}
-
 void Node::registerObserver(QObserverInterface *observer)
 {
     Q_CHECK_PTR(observer);
