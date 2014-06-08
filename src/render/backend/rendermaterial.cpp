@@ -50,6 +50,7 @@
 #include <material.h>
 
 #include <qaspectmanager.h>
+#include <Qt3DCore/qscenepropertychange.h>
 
 #include <QOpenGLShaderProgram>
 

@@ -56,6 +56,7 @@
 #include <qaspectmanager.h>
 #include <sphere.h>
 #include <entity.h>
+#include <Qt3DCore/qscenepropertychange.h>
 
 #include <QMatrix4x4>
 #include <QString>

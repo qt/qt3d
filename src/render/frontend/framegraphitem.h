@@ -43,8 +43,7 @@
 #define QT3D_FRAMEGRAPHNODE_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DCore/node.h>
-#include <Qt3DCore/qchangearbiter.h>
+#include <QObject>
 
 QT_BEGIN_NAMESPACE
 
@@ -61,6 +60,7 @@ public:
     void setEnabled(bool enabled);
     bool isEnabled() const;
 
+    // TODO: Remove this
 Q_SIGNALS:
     virtual void enabledChanged() = 0;
 

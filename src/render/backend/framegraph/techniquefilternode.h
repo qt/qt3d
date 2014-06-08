@@ -43,6 +43,8 @@
 #define QT3D_RENDER_TECHNIQUEFILTER_H
 
 #include <Qt3DRenderer/framegraphnode.h>
+#include <Qt3DCore/qobserverinterface.h>
+
 #include <QList>
 #include <QString>
 #include <QVariant>

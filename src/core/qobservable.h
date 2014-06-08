@@ -39,82 +39,38 @@
 **
 ****************************************************************************/
 
-#include "techniquefilternode.h"
-#include "techniquecriterion.h"
-#include "techniquefilter.h"
-#include "renderer.h"
-#include "rendereraspect.h"
-#include <Qt3DCore/qaspectmanager.h>
-#include <Qt3DCore/qchangearbiter.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#ifndef QT3D_QOBSERVABLE_H
+#define QT3D_QOBSERVABLE_H
+
+#include <Qt3DCore/qobservableinterface.h>
+#include <QReadWriteLock>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
-namespace Render {
 
-TechniqueFilter::TechniqueFilter(FrameGraphNode *parent)
-    : FrameGraphNode(FrameGraphNode::TechniqueFilter, parent)
-    , m_renderer(Q_NULLPTR)
-    , m_peer(Q_NULLPTR)
+class QT3DCORESHARED_EXPORT QObservable : public QObservableInterface
 {
-}
+public:
+    QObservable();
 
-void TechniqueFilter::setRenderer(Renderer *renderer)
-{
-    m_renderer = renderer;
-}
+    // In most cases, only the QChangeArbiter should be able to call these
+    // Might be worth making them private and having a friend class
+    void registerObserver(QObserverInterface *observer) Q_DECL_OVERRIDE;
+    void unregisterObserver(QObserverInterface *observer) Q_DECL_OVERRIDE;
 
-void TechniqueFilter::setPeer(Qt3D::TechniqueFilter *peer)
-{
-    if (peer != m_peer) {
-        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        if (m_peer)
-            arbiter->unregisterObserver(this, m_peer);
-        m_peer = peer;
-        if (m_peer)
-            arbiter->registerObserver(this, m_peer);
-    }
-}
+protected:
+    void notifyObservers(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
-QList<TechniqueCriterion*> TechniqueFilter::filters() const
-{
-    return m_filters;
-}
+    const QList<QObserverInterface *> &observers() const { return m_observers; }
 
-void TechniqueFilter::appendFilter(TechniqueCriterion *criterion)
-{
-    if (!m_filters.contains(criterion))
-        m_filters.append(criterion);
-}
+private:
+    QList<QObserverInterface *> m_observers;
+    QReadWriteLock m_lock;
+};
 
-void TechniqueFilter::removeFilter(TechniqueCriterion *criterion)
-{
-    m_filters.removeOne(criterion);
-}
-
-void TechniqueFilter::sceneChangeEvent(const QSceneChangePtr &e)
-{
-    switch (e->m_type) {
-    case ComponentAdded: {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        if (propertyChange->m_propertyName == QByteArrayLiteral("techniqueCriteria"))
-            appendFilter(propertyChange->m_value.value<TechniqueCriterion*>());
-    }
-        break;
-    case ComponentRemoved: {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        if (propertyChange->m_propertyName == QByteArrayLiteral("techniqueCriteria"))
-            removeFilter(propertyChange->m_value.value<TechniqueCriterion*>());
-    }
-        break;
-    default:
-        break;
-    }
-}
-
-} // Render
-
-} // Qt3D
+} // namespace Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_QOBSERVABLE_H

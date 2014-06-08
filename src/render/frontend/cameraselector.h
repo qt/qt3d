@@ -45,6 +45,9 @@
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DRenderer/framegraphitem.h>
 
+#include <Qt3DCore/node.h>
+#include <Qt3DCore/qscenepropertychange.h>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {

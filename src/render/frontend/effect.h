@@ -44,7 +44,6 @@
 
 #include <Qt3DCore/qabstracteffect.h>
 #include <Qt3DCore/node.h>
-#include <Qt3DCore/qchangearbiter.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE

@@ -43,6 +43,8 @@
 #define QT3D_VIEWPORT_H
 
 #include <Qt3DRenderer/framegraphitem.h>
+#include <Qt3DCore/node.h>
+#include <Qt3DCore/qscenepropertychange.h>
 #include <QtCore/QRectF>
 
 QT_BEGIN_NAMESPACE

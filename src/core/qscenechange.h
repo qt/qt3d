@@ -39,82 +39,83 @@
 **
 ****************************************************************************/
 
-#include "techniquefilternode.h"
-#include "techniquecriterion.h"
-#include "techniquefilter.h"
-#include "renderer.h"
-#include "rendereraspect.h"
-#include <Qt3DCore/qaspectmanager.h>
-#include <Qt3DCore/qchangearbiter.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#ifndef QT3D_QSCENECHANGE_H
+#define QT3D_QSCENECHANGE_H
+
+#include <Qt3DCore/qt3dcore_global.h>
+#include <QDateTime>
+#include <QSharedPointer>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
-namespace Render {
 
-TechniqueFilter::TechniqueFilter(FrameGraphNode *parent)
-    : FrameGraphNode(FrameGraphNode::TechniqueFilter, parent)
-    , m_renderer(Q_NULLPTR)
-    , m_peer(Q_NULLPTR)
-{
-}
+enum ChangeFlag {
+    NodeCreated             = 0x00000001,
+    NodeAboutToBeDeleted    = 0x00000002,
+    NodeDeleted             = 0x00000004,
+    NodeStatus              = 0x00000008,
+    ComponentAdded          = 0x00000010,
+    ComponentRemoved        = 0x00000020,
+    ComponentUpdated        = 0x00000040,
+    AllChanges              = 0x00000FFF
+};
+Q_DECLARE_FLAGS(ChangeFlags, ChangeFlag)
+Q_DECLARE_OPERATORS_FOR_FLAGS(ChangeFlags)
 
-void TechniqueFilter::setRenderer(Renderer *renderer)
-{
-    m_renderer = renderer;
-}
+class Component;
+class QObservableInterface;
 
-void TechniqueFilter::setPeer(Qt3D::TechniqueFilter *peer)
+class QT3DCORESHARED_EXPORT QSceneChange
 {
-    if (peer != m_peer) {
-        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        if (m_peer)
-            arbiter->unregisterObserver(this, m_peer);
-        m_peer = peer;
-        if (m_peer)
-            arbiter->registerObserver(this, m_peer);
+public:
+    enum Priority {
+        High,
+        Standard,
+        Low
+    };
+
+    QSceneChange(ChangeFlag type, QObservableInterface *observable, Priority priority = Standard)
+        : m_type(type),
+          m_priority(priority),
+          m_timestamp(QDateTime::currentMSecsSinceEpoch())
+    {
+        m_subject.m_observable = observable;
+        m_subjectType = ObservableType;
     }
-}
 
-QList<TechniqueCriterion*> TechniqueFilter::filters() const
-{
-    return m_filters;
-}
-
-void TechniqueFilter::appendFilter(TechniqueCriterion *criterion)
-{
-    if (!m_filters.contains(criterion))
-        m_filters.append(criterion);
-}
-
-void TechniqueFilter::removeFilter(TechniqueCriterion *criterion)
-{
-    m_filters.removeOne(criterion);
-}
-
-void TechniqueFilter::sceneChangeEvent(const QSceneChangePtr &e)
-{
-    switch (e->m_type) {
-    case ComponentAdded: {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        if (propertyChange->m_propertyName == QByteArrayLiteral("techniqueCriteria"))
-            appendFilter(propertyChange->m_value.value<TechniqueCriterion*>());
+    QSceneChange(ChangeFlag type, Component *component, Priority priority = Standard)
+        : m_type(type),
+          m_priority(priority),
+          m_timestamp(QDateTime::currentMSecsSinceEpoch())
+    {
+        m_subject.m_component = component;
+        m_subjectType = ComponentType;
     }
-        break;
-    case ComponentRemoved: {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        if (propertyChange->m_propertyName == QByteArrayLiteral("techniqueCriteria"))
-            removeFilter(propertyChange->m_value.value<TechniqueCriterion*>());
-    }
-        break;
-    default:
-        break;
-    }
-}
 
-} // Render
+    union {
+        QObservableInterface *m_observable;
+        Component *m_component;
+    } m_subject;
 
-} // Qt3D
+    enum ObservableType {
+        ObservableType,
+        ComponentType
+    } m_subjectType;
+
+    ChangeFlag m_type;
+    Priority m_priority;
+    qint64 m_timestamp;
+
+    // TODO: add timestamp from central clock and priority level
+    // These can be used to resolve any conflicts between events
+    // posted from different aspects
+};
+
+typedef QSharedPointer<QSceneChange> QSceneChangePtr;
+
+} // namespace Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_QSCENECHANGE_H

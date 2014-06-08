@@ -42,7 +42,7 @@
 #ifndef QT3D_RENDER_RENDERPASSFILTER_H
 #define QT3D_RENDER_RENDERPASSFILTER_H
 
-#include <Qt3DCore/qchangearbiter.h>
+#include <Qt3DCore/qobserverinterface.h>
 #include <Qt3DRenderer/framegraphnode.h>
 #include <QList>
 

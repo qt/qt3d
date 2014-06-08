@@ -41,12 +41,13 @@
 
 #include "mesh.h"
 
-#include <qchangearbiter.h>
 #include <QDebug>
 #include <QFile>
 #include <QFileInfo>
 
 #include <objloader.h>
+
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 

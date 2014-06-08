@@ -43,7 +43,6 @@
 #define QT3D_QABSTRACTRENDERPASS_H
 
 #include <Qt3DCore/node.h>
-#include <Qt3DCore/qchangearbiter.h>
 
 QT_BEGIN_NAMESPACE
 

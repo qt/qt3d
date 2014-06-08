@@ -43,6 +43,8 @@
 
 #include "entity.h"
 
+#include <Qt3DCore/qscenepropertychange.h>
+
 #include <QEvent>
 #include <QMetaObject>
 #include <QMetaProperty>

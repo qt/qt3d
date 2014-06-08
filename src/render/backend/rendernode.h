@@ -42,7 +42,7 @@
 #ifndef QT3D_RENDER_RENDERNODE_H
 #define QT3D_RENDER_RENDERNODE_H
 
-#include <Qt3DCore/qchangearbiter.h>
+#include <Qt3DCore/qobserverinterface.h>
 #include <Qt3DCore/qhandle.h>
 #include <QVector>
 

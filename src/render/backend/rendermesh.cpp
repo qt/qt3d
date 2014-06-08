@@ -49,6 +49,8 @@
 #include <meshdata.h>
 #include <technique.h>
 
+#include <Qt3DCore/qscenepropertychange.h>
+
 #include <QOpenGLContext>
 #include <QOpenGLShaderProgram>
 #include <QReadWriteLock>

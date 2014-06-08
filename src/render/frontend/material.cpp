@@ -41,11 +41,11 @@
 
 #include "material.h"
 //#include <Qt3DCore/qabstractmaterial_p.h>
-#include <qchangearbiter.h>
 #include <texture.h>
 #include "qabstracteffect.h"
 #include "renderlogging.h"
 #include "parameter.h"
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 

@@ -44,7 +44,7 @@
 
 #include <QVector>
 #include <QStringList>
-#include <Qt3DCore/qchangearbiter.h>
+#include <Qt3DCore/qobserverinterface.h>
 
 QT_BEGIN_NAMESPACE
 

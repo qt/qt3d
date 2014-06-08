@@ -40,10 +40,14 @@
 ****************************************************************************/
 
 #include "viewportnode.h"
+
 #include <Qt3DRenderer/renderer.h>
 #include <Qt3DRenderer/rendereraspect.h>
-#include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DRenderer/viewport.h>
+
+#include <Qt3DCore/qaspectmanager.h>
+#include <Qt3DCore/qchangearbiter.h>
+
 #include <QDebug>
 
 QT_BEGIN_NAMESPACE

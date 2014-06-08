@@ -42,8 +42,8 @@
 #ifndef QT3D_RENDER_RENDERRENDERPASS_H
 #define QT3D_RENDER_RENDERRENDERPASS_H
 
-#include <Qt3DCore/qchangearbiter.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DCore/qobserverinterface.h>
 
 QT_BEGIN_NAMESPACE
 

@@ -44,7 +44,7 @@
 
 #include <QObject>
 #include <Qt3DCore/qt3dcore_global.h>
-#include <Qt3DCore/qchangearbiter.h>
+#include <Qt3DCore/qobservable.h>
 
 QT_BEGIN_NAMESPACE
 

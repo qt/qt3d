@@ -44,12 +44,13 @@
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <QObject>
-#include <QDateTime>
+#include <Qt3DCore/qobserverinterface.h>
+#include <Qt3DCore/qscenechange.h>
+
 #include <QDebug>
 #include <QFlags>
 #include <QMutex>
 #include <QReadWriteLock>
-#include <QSharedPointer>
 #include <QThreadStorage>
 #include <QVariant>
 #include <QVector>
@@ -60,135 +61,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class Component;
-
-enum ChangeFlag {
-    NodeCreated             = 0x00000001,
-    NodeAboutToBeDeleted    = 0x00000002,
-    NodeDeleted             = 0x00000004,
-    NodeStatus              = 0x00000008,
-    ComponentAdded          = 0x00000010,
-    ComponentRemoved        = 0x00000020,
-    ComponentUpdated        = 0x00000040,
-    AllChanges              = 0x00000FFF
-};
-Q_DECLARE_FLAGS(ChangeFlags, ChangeFlag)
-Q_DECLARE_OPERATORS_FOR_FLAGS(ChangeFlags)
-
-
-class QObserverInterface;
 class QObservableInterface;
-
-class QT3DCORESHARED_EXPORT QSceneChange
-{
-public:
-    enum Priority {
-        High,
-        Standard,
-        Low
-    };
-
-    QSceneChange(ChangeFlag type, QObservableInterface *observable, Priority priority = Standard)
-        : m_type(type),
-          m_priority(priority),
-          m_timestamp(QDateTime::currentMSecsSinceEpoch())
-    {
-        m_subject.m_observable = observable;
-        m_subjectType = ObservableType;
-    }
-
-    QSceneChange(ChangeFlag type, Component *component, Priority priority = Standard)
-        : m_type(type),
-          m_priority(priority),
-          m_timestamp(QDateTime::currentMSecsSinceEpoch())
-    {
-        m_subject.m_component = component;
-        m_subjectType = ComponentType;
-    }
-
-    union {
-        QObservableInterface *m_observable;
-        Component *m_component;
-    } m_subject;
-
-    enum ObservableType {
-        ObservableType,
-        ComponentType
-    } m_subjectType;
-
-    ChangeFlag m_type;
-    Priority m_priority;
-    qint64 m_timestamp;
-
-    // TODO: add timestamp from central clock and priority level
-    // These can be used to resolve any conflicts between events
-    // posted from different aspects
-};
-
-typedef QSharedPointer<QSceneChange> QSceneChangePtr;
-
-class QT3DCORESHARED_EXPORT QScenePropertyChange : public QSceneChange
-{
-public:
-    QScenePropertyChange(ChangeFlag type, QObservableInterface *subject, Priority priority = Standard)
-        : QSceneChange(type, subject, priority)
-    {
-    }
-
-    QScenePropertyChange(ChangeFlag type, Component *component, Priority priority = Standard)
-        : QSceneChange(type, component, priority)
-    {
-    }
-
-    QByteArray m_propertyName;
-    QVariant m_value;
-};
-
-typedef QSharedPointer<QScenePropertyChange> QScenePropertyChangePtr;
-
-
-class QT3DCORESHARED_EXPORT QObservableInterface
-{
-public:
-    virtual ~QObservableInterface() {}
-
-    virtual void registerObserver(QObserverInterface *observer) = 0;
-    virtual void unregisterObserver(QObserverInterface *observer) = 0;
-
-protected:
-    virtual void notifyObservers(const QSceneChangePtr &e) = 0;
-};
-
-
-class QT3DCORESHARED_EXPORT QObservable : public QObservableInterface
-{
-public:
-    QObservable();
-
-    // In most cases, only the QChangeArbiter should be able to call these
-    // Might be worth making them private and having a friend class
-    void registerObserver(QObserverInterface *observer) Q_DECL_OVERRIDE;
-    void unregisterObserver(QObserverInterface *observer) Q_DECL_OVERRIDE;
-
-protected:
-    void notifyObservers(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
-
-    const QList<QObserverInterface *> &observers() const { return m_observers; }
-
-private:
-    QList<QObserverInterface *> m_observers;
-    QReadWriteLock m_lock;
-};
-
-
-class QObserverInterface
-{
-public:
-    virtual ~QObserverInterface() {}
-
-    virtual void sceneChangeEvent(const QSceneChangePtr &e) = 0;
-};
-
-
 class QJobManagerInterface;
 
 class QT3DCORESHARED_EXPORT QChangeArbiter : public QObject,

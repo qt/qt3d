@@ -44,6 +44,7 @@
 #include "abstracttransform.h"
 #include "matrixtransform.h"
 
+#include <Qt3DCore/qscenepropertychange.h>
 #include <QMetaObject>
 #include <QMetaProperty>
 #include "corelogging.h"

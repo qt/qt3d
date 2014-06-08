@@ -43,6 +43,7 @@
 #define QT3D_RENDERTARGETSELECTOR_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DCore/node.h>
 #include <Qt3DRenderer/framegraphitem.h>
 
 QT_BEGIN_NAMESPACE

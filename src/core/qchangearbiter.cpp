@@ -53,34 +53,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QObservable::QObservable()
-    : m_observers()
-    , m_lock(QReadWriteLock::NonRecursive)
-{
-}
-
-void QObservable::registerObserver(QObserverInterface *observer)
-{
-    QWriteLocker locker(&m_lock);
-    if (!m_observers.contains(observer))
-        m_observers.append(observer);
-}
-
-void QObservable::unregisterObserver(QObserverInterface *observer)
-{
-    QWriteLocker locker(&m_lock);
-    m_observers.removeOne(observer);
-}
-
-// This calls sceneChangeEvent on the QChangeArbiter
-void QObservable::notifyObservers(const QSceneChangePtr &e)
-{
-    QReadLocker locker(&m_lock);
-    Q_FOREACH (QObserverInterface *observer, m_observers)
-        observer->sceneChangeEvent(e);
-}
-
-
 QChangeArbiter::QChangeArbiter(QObject *parent)
     : QObject(parent)
     , m_mutex(QMutex::Recursive)

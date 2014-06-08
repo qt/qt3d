@@ -41,6 +41,7 @@
 
 #include "qabstracteffect.h"
 #include "qabstracttechnique.h"
+#include <Qt3DCore/qscenepropertychange.h>
 
 /*!
  * \class QAbstractEffect

@@ -42,6 +42,8 @@
 #include "qabstracttechnique.h"
 #include "qabstractrenderpass.h"
 
+#include <Qt3DCore/qscenepropertychange.h>
+
 /*!
  * \class QAbstractTechnique
  * \namespace Qt3D

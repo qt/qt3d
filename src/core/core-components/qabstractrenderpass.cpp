@@ -41,6 +41,7 @@
 
 #include "qabstractrenderpass.h"
 #include "qabstractshader.h"
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 

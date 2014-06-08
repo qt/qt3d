@@ -45,6 +45,10 @@
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DRenderer/framegraphitem.h>
 #include <Qt3DRenderer/renderpasscriterion.h>
+
+#include <Qt3DCore/node.h>
+#include <Qt3DCore/qscenepropertychange.h>
+
 #include <QString>
 
 QT_BEGIN_NAMESPACE

@@ -22,7 +22,12 @@ HEADERS += \
     $$PWD/qscheduler.h \
     $$PWD/cameracontroller.h \
     $$PWD/qchangearbiter.h \
-    $$PWD/corelogging.h
+    $$PWD/corelogging.h \
+    $$PWD/qscenechange.h \
+    $$PWD/qscenepropertychange.h \
+    $$PWD/qobservableinterface.h \
+    $$PWD/qobservable.h \
+    $$PWD/qobserverinterface.h
 
 SOURCES += \
     $$PWD/window.cpp \
@@ -30,4 +35,7 @@ SOURCES += \
     $$PWD/qscheduler.cpp \
     $$PWD/cameracontroller.cpp \
     $$PWD/qchangearbiter.cpp \
-    $$PWD/corelogging.cpp
+    $$PWD/corelogging.cpp \
+    $$PWD/qobservableinterface.cpp \
+    $$PWD/qobservable.cpp \
+    $$PWD/qobserverinterface.cpp

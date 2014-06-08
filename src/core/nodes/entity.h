@@ -44,7 +44,6 @@
 
 #include <Qt3DCore/node.h>
 #include <Qt3DCore/qt3dcore_global.h>
-#include <Qt3DCore/qchangearbiter.h>
 
 #include <QMatrix4x4>
 #include <QUuid>

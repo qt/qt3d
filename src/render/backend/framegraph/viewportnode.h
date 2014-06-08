@@ -43,6 +43,7 @@
 #define QT3D_RENDER_VIEWPORTNODE_H
 
 #include <Qt3DRenderer/framegraphnode.h>
+#include <Qt3DCore/qobserverinterface.h>
 
 QT_BEGIN_NAMESPACE
 

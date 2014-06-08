@@ -44,7 +44,6 @@
 
 #include <qglobal.h>
 #include <QVector>
-#include <Qt3DCore/qchangearbiter.h>
 
 QT_BEGIN_NAMESPACE
 

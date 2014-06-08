@@ -39,82 +39,38 @@
 **
 ****************************************************************************/
 
-#include "techniquefilternode.h"
-#include "techniquecriterion.h"
-#include "techniquefilter.h"
-#include "renderer.h"
-#include "rendereraspect.h"
-#include <Qt3DCore/qaspectmanager.h>
-#include <Qt3DCore/qchangearbiter.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#ifndef QT3D_QSCENEPROPERTYCHANGE_H
+#define QT3D_QSCENEPROPERTYCHANGE_H
+
+#include <Qt3DCore/qscenechange.h>
+
+#include <QVariant>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
-namespace Render {
 
-TechniqueFilter::TechniqueFilter(FrameGraphNode *parent)
-    : FrameGraphNode(FrameGraphNode::TechniqueFilter, parent)
-    , m_renderer(Q_NULLPTR)
-    , m_peer(Q_NULLPTR)
+class QT3DCORESHARED_EXPORT QScenePropertyChange : public QSceneChange
 {
-}
-
-void TechniqueFilter::setRenderer(Renderer *renderer)
-{
-    m_renderer = renderer;
-}
-
-void TechniqueFilter::setPeer(Qt3D::TechniqueFilter *peer)
-{
-    if (peer != m_peer) {
-        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        if (m_peer)
-            arbiter->unregisterObserver(this, m_peer);
-        m_peer = peer;
-        if (m_peer)
-            arbiter->registerObserver(this, m_peer);
+public:
+    QScenePropertyChange(ChangeFlag type, QObservableInterface *subject, Priority priority = Standard)
+        : QSceneChange(type, subject, priority)
+    {
     }
-}
 
-QList<TechniqueCriterion*> TechniqueFilter::filters() const
-{
-    return m_filters;
-}
-
-void TechniqueFilter::appendFilter(TechniqueCriterion *criterion)
-{
-    if (!m_filters.contains(criterion))
-        m_filters.append(criterion);
-}
-
-void TechniqueFilter::removeFilter(TechniqueCriterion *criterion)
-{
-    m_filters.removeOne(criterion);
-}
-
-void TechniqueFilter::sceneChangeEvent(const QSceneChangePtr &e)
-{
-    switch (e->m_type) {
-    case ComponentAdded: {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        if (propertyChange->m_propertyName == QByteArrayLiteral("techniqueCriteria"))
-            appendFilter(propertyChange->m_value.value<TechniqueCriterion*>());
+    QScenePropertyChange(ChangeFlag type, Component *component, Priority priority = Standard)
+        : QSceneChange(type, component, priority)
+    {
     }
-        break;
-    case ComponentRemoved: {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        if (propertyChange->m_propertyName == QByteArrayLiteral("techniqueCriteria"))
-            removeFilter(propertyChange->m_value.value<TechniqueCriterion*>());
-    }
-        break;
-    default:
-        break;
-    }
-}
 
-} // Render
+    QByteArray m_propertyName;
+    QVariant m_value;
+};
 
-} // Qt3D
+typedef QSharedPointer<QScenePropertyChange> QScenePropertyChangePtr;
+
+} // namespace Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_QSCENEPROPERTYCHANGE_H

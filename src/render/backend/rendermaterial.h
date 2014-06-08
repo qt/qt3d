@@ -44,7 +44,7 @@
 
 #include <QVariant>
 
-#include <Qt3DCore/qchangearbiter.h>
+#include <Qt3DCore/qobserverinterface.h>
 
 #include <Qt3DRenderer/quniformvalue.h>
 #include <Qt3DRenderer/rendertextureprovider.h>

@@ -41,6 +41,7 @@
 
 #include "transform.h"
 
+#include <Qt3DCore/qscenepropertychange.h>
 #include <matrixtransform.h>
 
 QT_BEGIN_NAMESPACE
