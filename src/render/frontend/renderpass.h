@@ -57,6 +57,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class Parameter;
+class ParameterBinder;
 typedef QList<Parameter*> ParameterList;
 
 class QT3DRENDERERSHARED_EXPORT RenderPass : public QAbstractRenderPass
@@ -82,6 +83,10 @@ public:
     void removeCriterion(RenderPassCriterion *criterion);
     QList<RenderPassCriterion *> criteria() const;
 
+    void addBinding(ParameterBinder *binding);
+    void removeBinding(ParameterBinder *binding);
+    QList<ParameterBinder *> bindings() const;
+
 
 protected:
     ParameterList m_attributes;
@@ -90,6 +95,7 @@ protected:
     // map Parameter names to GLSL names
     QHash<QString, QString> m_parameterNameDict;
     QList<RenderPassCriterion *> m_criteria;
+    QList<ParameterBinder *> m_bindings;
 
     Render::DrawStateSet* m_stateSet;
 };

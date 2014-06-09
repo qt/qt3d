@@ -42,6 +42,7 @@
 #include "renderpass.h"
 #include "parameter.h"
 #include "renderpasscriterion.h"
+#include "parameterbinder.h"
 #include <QDebug>
 
 QT_BEGIN_NAMESPACE
@@ -108,6 +109,24 @@ void RenderPass::removeCriterion(RenderPassCriterion *criterion)
 QList<RenderPassCriterion *> RenderPass::criteria() const
 {
     return m_criteria;
+}
+
+void RenderPass::addBinding(ParameterBinder *binding)
+{
+    // TO DO: Notify QChangeArbiter
+    if (!m_bindings.contains(binding))
+        m_bindings.append(binding);
+}
+
+void RenderPass::removeBinding(ParameterBinder *binding)
+{
+    // TO DO: Notify QChangeArbiter
+    m_bindings.removeOne(binding);
+}
+
+QList<ParameterBinder *> RenderPass::bindings() const
+{
+    return m_bindings;
 }
 
 } // namespace Qt3D
