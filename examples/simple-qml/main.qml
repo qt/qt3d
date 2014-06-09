@@ -238,33 +238,26 @@ Node {
                 Parameter { name : "ambient"; datatype: Parameter.FloatVec4; value : Qt.vector4d(255, 0, 0, 1) },
                 Parameter { name : "position"; datatype: Parameter.FloatVec4; value : Qt.vector4d(0, 0, 0, 0); meshAttributeName: "position" }
             ]
+            // Custom properties go here
 
             effect : Effect {
-
                 techniques : [
-
                     Technique {
-                        criteria : [
-                             TechniqueCriterion { criterionType : TechniqueCriterion.RenderingStyle; criterionValue : "forward"}
-                        ]
-
+                        criteria : [TechniqueCriterion { criterionType : TechniqueCriterion.RenderingStyle; criterionValue : "forward"}]
                         renderPasses : [
-
                             RenderPass {
-
-                                criteria : [
-
-                                ]
-
+                                criteria : []
+                                bindings : [ParameterBinder {parameterName: "ambient"; shaderVariableName: "ka"; bindingType: ParameterBinder.Uniform}]
+                                shaderProgram : ShaderProgram {
+                                    id : diffuseShader
+                                    vertexSourceFile: ":/shaders/diffuse.vert"
+                                    fragmentSourceFile: ":/shaders/diffuse.frag"
+                                }
                             }
-
                         ]
                     }
                 ]
             }
-
-
-            // Custom properties go here
         }
 
         Scene
