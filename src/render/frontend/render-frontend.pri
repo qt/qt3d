@@ -24,7 +24,8 @@ HEADERS += \
     $$PWD/scene.h \
     $$PWD/techniquecriterion.h \
     $$PWD/renderpasscriterion.h \
-    $$PWD/parameter.h
+    $$PWD/parameter.h \
+    $$PWD/parameterbinder.h
 
 SOURCES += \
     $$PWD/material.cpp \
@@ -43,4 +44,5 @@ SOURCES += \
     $$PWD/scene.cpp \
     $$PWD/techniquecriterion.cpp \
     $$PWD/renderpasscriterion.cpp \
-    $$PWD/parameter.cpp
+    $$PWD/parameter.cpp \
+    $$PWD/parameterbinder.cpp
