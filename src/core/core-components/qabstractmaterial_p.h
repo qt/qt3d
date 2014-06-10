@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#ifndef Qt3D_QABSTRACTMATERIAL_P_H
+#ifndef QT3D_QABSTRACTMATERIAL_P_H
 #define QT3D_QABSTRACTMATERIAL_P_H
 
 #include <Qt3DCore/qt3dcore_global.h>
