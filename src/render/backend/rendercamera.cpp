@@ -42,11 +42,11 @@
 #include "rendercamera.h"
 #include "rendereraspect.h"
 #include "renderlogging.h"
-#include <transform.h>
-#include <cameralens.h>
 
-#include <entity.h>
-#include <qaspectmanager.h>
+#include <Qt3DCore/transform.h>
+#include <Qt3DCore/cameralens.h>
+#include <Qt3DCore/entity.h>
+#include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 #include <QOpenGLContext>

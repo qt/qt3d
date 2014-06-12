@@ -41,15 +41,15 @@
 
 #include "assimpparser.h"
 
-#include <transform.h>
+#include <Qt3DCore/transform.h>
 #include <parameter.h>
-#include <matrixtransform.h>
-#include <cameralens.h>
+#include <Qt3DCore/matrixtransform.h>
+#include <Qt3DCore/cameralens.h>
 #include <mesh.h>
 #include <QFileInfo>
 #include <QColor>
 #include <qmath.h>
-#include <entity.h>
+#include <Qt3DCore/entity.h>
 #include <material.h>
 #include <mesh.h>
 #include <texture.h>

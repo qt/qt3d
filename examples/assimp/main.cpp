@@ -41,8 +41,8 @@
 
 #include <exampleresources.h>
 
-#include <quickwindow.h>
-#include <rendereraspect.h>
+#include <Qt3DQuick/quickwindow.h>
+#include <Qt3DRenderer/rendereraspect.h>
 
 #include <QGuiApplication>
 #include <QtQml>

@@ -40,7 +40,7 @@
 ****************************************************************************/
 
 #include "rendermesh.h"
-#include "qaspectmanager.h"
+#include <Qt3DCore/qaspectmanager.h>
 #include "rendertechnique.h"
 #include "rendermaterial.h"
 #include "rendereraspect.h"

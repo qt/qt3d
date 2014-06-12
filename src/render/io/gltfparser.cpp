@@ -44,16 +44,16 @@
 #include "texturedata.h"
 #include "renderlogging.h"
 
-#include <entity.h>
+#include <Qt3DCore/entity.h>
 #include <mesh.h>
 #include <material.h>
 #include <technique.h>
 #include <shaderprogram.h>
 #include <effect.h>
-#include <camera.h>
-#include <transform.h>
-#include <matrixtransform.h>
-#include <cameralens.h>
+#include <Qt3DCore/camera.h>
+#include <Qt3DCore/transform.h>
+#include <Qt3DCore/matrixtransform.h>
+#include <Qt3DCore/cameralens.h>
 #include <texture.h>
 #include <parameter.h>
 

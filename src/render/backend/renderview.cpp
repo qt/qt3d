@@ -41,7 +41,6 @@
 
 #include "renderview.h"
 #include "material.h"
-#include "qabstracteffect.h"
 #include "renderer.h"
 #include "rendercamera.h"
 #include "rendercommand.h"
@@ -55,16 +54,18 @@
 #include "materialmanager.h"
 #include "techniquemanager.h"
 #include "shadermanager.h"
-#include <entity.h>
 #include <cameraselectornode.h>
 #include <framegraphnode.h>
 #include <renderpassfilternode.h>
 #include <techniquefilternode.h>
 #include <viewportnode.h>
-#include <qabstracttechnique.h>
+#include <Qt3DCore/qabstracttechnique.h>
 #include "rendereffect.h"
 #include "effectmanager.h"
 #include "renderlogging.h"
+
+#include <Qt3DCore/entity.h>
+#include <Qt3DCore/qabstracteffect.h>
 
 #include <QDebug>
 

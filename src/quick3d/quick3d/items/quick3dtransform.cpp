@@ -40,7 +40,7 @@
 ****************************************************************************/
 
 #include "quick3dtransform.h"
-#include "abstracttransform.h"
+#include <Qt3DCore/abstracttransform.h>
 
 QT_BEGIN_NAMESPACE
 

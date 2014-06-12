@@ -49,7 +49,7 @@
 #include <updateworldtransformjob.h>
 #include <updateboundingvolumejob.h>
 
-#include <node.h>
+#include <Qt3DCore/node.h>
 
 #include <QDebug>
 #include <QThread>

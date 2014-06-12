@@ -42,7 +42,7 @@
 #include "objloader.h"
 
 #include "mesh.h"
-#include "axisalignedboundingbox.h"
+#include <Qt3DCore/axisalignedboundingbox.h>
 
 #include "renderlogging.h"
 #include <QFile>

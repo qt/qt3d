@@ -46,7 +46,7 @@
 #include <QQmlContext>
 #include <QDebug>
 #include <QTimer>
-#include "cameracontroller.h"
+#include <Qt3DCore/cameracontroller.h>
 
 QT_BEGIN_NAMESPACE
 

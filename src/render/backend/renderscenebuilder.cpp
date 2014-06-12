@@ -50,13 +50,9 @@
 #include "renderlogging.h"
 #include "materialmanager.h"
 #include "qabstractscene.h"
-#include <camera.h>
-#include <cameralens.h>
 #include <material.h>
 #include <mesh.h>
 #include <shape.h>
-#include <transform.h>
-#include <entity.h>
 
 #include <framegraph.h>
 #include <viewport.h>
@@ -70,6 +66,11 @@
 #include <renderpassfilternode.h>
 #include <viewportnode.h>
 #include <rendertargetselectornode.h>
+
+#include <Qt3DCore/camera.h>
+#include <Qt3DCore/cameralens.h>
+#include <Qt3DCore/transform.h>
+#include <Qt3DCore/entity.h>
 
 QT_BEGIN_NAMESPACE
 

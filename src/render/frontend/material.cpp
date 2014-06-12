@@ -42,7 +42,7 @@
 #include "material.h"
 //#include <Qt3DCore/qabstractmaterial_p.h>
 #include <texture.h>
-#include "qabstracteffect.h"
+#include <Qt3DCore/qabstracteffect.h>
 #include "renderlogging.h"
 #include "parameter.h"
 #include <Qt3DCore/qscenepropertychange.h>

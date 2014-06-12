@@ -50,13 +50,13 @@
 #include "meshdatamanager.h"
 #include "mesh.h"
 #include "shape.h"
-#include <cameralens.h>
-#include <transform.h>
-
-#include <qaspectmanager.h>
 #include <sphere.h>
-#include <entity.h>
+
+#include <Qt3DCore/entity.h>
+#include <Qt3DCore/cameralens.h>
+#include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/transform.h>
 
 #include <QMatrix4x4>
 #include <QString>

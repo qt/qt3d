@@ -41,8 +41,8 @@
 
 #include "renderer.h"
 
-#include <nodevisitor.h>
-#include <entity.h>
+#include <Qt3DCore/nodevisitor.h>
+#include <Qt3DCore/entity.h>
 
 #include "framegraphvisitor.h"
 #include "cameraselectornode.h"
@@ -54,13 +54,10 @@
 
 #include <material.h>
 #include <mesh.h>
-#include <qabstracteffect.h>
 #include <technique.h>
 #include <shaderprogram.h>
 #include <renderpass.h>
-#include <cameralens.h>
 #include <shape.h>
-
 #include <cameramanager.h>
 #include <meshdatamanager.h>
 #include <meshmanager.h>
@@ -87,6 +84,10 @@
 #include <techniquemanager.h>
 #include <effectmanager.h>
 #include "renderlogging.h"
+
+#include <Qt3DCore/cameralens.h>
+#include <Qt3DCore/qabstracteffect.h>
+
 #include <effect.h>
 #include <QStack>
 #include <QSurface>

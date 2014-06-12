@@ -40,7 +40,7 @@
 ****************************************************************************/
 
 #include "framegraph.h"
-#include "entity.h"
+#include <Qt3DCore/entity.h>
 
 QT_BEGIN_NAMESPACE
 
