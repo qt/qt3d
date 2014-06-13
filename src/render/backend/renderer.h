@@ -96,6 +96,7 @@ class VAOManager;
 class ShaderManager;
 class TechniqueManager;
 class EffectManager;
+class RenderPassManager;
 
 class Renderer
 {
@@ -133,8 +134,9 @@ public:
     ShaderManager *shaderManager() const { return m_shaderManager; }
     TechniqueManager *techniqueManager() const { return m_techniqueManager; }
     EffectManager *effectManager() const { return m_effectManager; }
-    // temporary!
+    RenderPassManager *renderPassManager() const { return m_renderPassManager; }
 
+    // temporary!
     RenderTechnique* techniqueForMaterial(Material* mat);
 
     void buildMeshes(Mesh *mesh, Material *mat, const QMatrix4x4& mm);
@@ -188,6 +190,7 @@ private:
     ShaderManager *m_shaderManager;
     TechniqueManager *m_techniqueManager;
     EffectManager *m_effectManager;
+    RenderPassManager *m_renderPassManager;
 
     QTimer* m_frameTimer;
 

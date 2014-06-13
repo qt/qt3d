@@ -83,6 +83,7 @@
 #include <shadermanager.h>
 #include <techniquemanager.h>
 #include <effectmanager.h>
+#include <renderpassmanager.h>
 #include "renderlogging.h"
 
 #include <Qt3DCore/cameralens.h>
@@ -118,6 +119,7 @@ Renderer::Renderer()
     , m_shaderManager(new ShaderManager())
     , m_techniqueManager(new TechniqueManager())
     , m_effectManager(new EffectManager())
+    , m_renderPassManager(new RenderPassManager())
     , m_renderQueues(new RenderQueues())
     , m_frameCount(0)
 {
