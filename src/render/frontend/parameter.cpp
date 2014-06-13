@@ -68,6 +68,7 @@ Parameter::Parameter(QObject *parent, const QString &name, Parameter::OpenGLType
     , m_name(name)
     , m_type(ty)
     , m_value(value)
+    , m_standardUniform(None)
 {
 
 }
