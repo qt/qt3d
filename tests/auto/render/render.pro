@@ -1,3 +1,5 @@
 TEMPLATE = subdirs
 
-SUBDIRS = renderqueues
+contains(QT_CONFIG, private_tests) {
+    SUBDIRS = renderqueues
+}
