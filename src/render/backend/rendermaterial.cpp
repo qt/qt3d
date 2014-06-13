@@ -68,13 +68,6 @@ RenderMaterial::RenderMaterial()
 
 RenderMaterial::~RenderMaterial()
 {
-    qDeleteAll(m_packs);
-    m_packs.clear();
-}
-
-void RenderMaterial::setTextureProvider(RenderTextureProvider* rtp)
-{
-    m_textureProvider = rtp;
 }
 
 void RenderMaterial::setPeer(Material *mat)
@@ -100,60 +93,25 @@ void RenderMaterial::setRendererAspect(RendererAspect *rendererAspect)
     m_rendererAspect = rendererAspect;
 }
 
-void RenderMaterial::setEffectName(QString nm)
-{
-    Q_UNUSED(nm);
-}
+//void RenderMaterial::setTextureParameter(QString paramName, RenderTexturePtr tex)
+//{
+//    Q_ASSERT(tex);
+//    Parameter* param = m_technique->parameterByName(paramName);
+//    if (!param)
+//        return;
 
-void RenderMaterial::setParameter(QString paramName, QVariant varVal)
-{
-    Parameter* param = m_technique->parameterByName(paramName);
-    if (!param) {
-        return;
-    }
+//    Q_ASSERT(param->isTextureType());
 
-    if (param->isTextureType()) {
-        // handle samplers separately
-        return;
-    }
+//    QStringList names(m_technique->glslNamesForUniformParameter(paramName));
+//    Q_ASSERT(names.count() == (int) m_technique->passCount());
 
-    if (param->isStandardUniform()) {
-        qWarning() << Q_FUNC_INFO << "setting standard uniform explicit for" << paramName;
-        return;
-    }
+//    for (unsigned int p=0; p<m_technique->passCount(); ++p) {
+//        if (names.at(p).isEmpty())
+//            continue; // not set in this pass
 
-    Render::QUniformValue uval(param->uniformType(), varVal);
-
-    QStringList names(m_technique->glslNamesForUniformParameter(paramName));
-    Q_ASSERT(names.count() == (int) m_technique->passCount());
-
-    for (unsigned int p=0; p<m_technique->passCount(); ++p) {
-        if (names.at(p).isEmpty())
-            continue; // not set in this pass
-
-        m_packs.at(p)->setUniform(names.at(p), uval);
-    } // of pass iteration
-}
-
-void RenderMaterial::setTextureParameter(QString paramName, RenderTexturePtr tex)
-{
-    Q_ASSERT(tex);
-    Parameter* param = m_technique->parameterByName(paramName);
-    if (!param)
-        return;
-
-    Q_ASSERT(param->isTextureType());
-
-    QStringList names(m_technique->glslNamesForUniformParameter(paramName));
-    Q_ASSERT(names.count() == (int) m_technique->passCount());
-
-    for (unsigned int p=0; p<m_technique->passCount(); ++p) {
-        if (names.at(p).isEmpty())
-            continue; // not set in this pass
-
-        m_packs.at(p)->setTexture(names.at(p), tex);
-    } // of pass iteration
-}
+//        m_packs.at(p)->setTexture(names.at(p), tex);
+//    } // of pass iteration
+//}
 
 void RenderMaterial::syncParametersFromPeer()
 {
@@ -164,7 +122,7 @@ void RenderMaterial::syncParametersFromPeer()
             qWarning() << Q_FUNC_INFO << "bad value:" << param->value() << "for parameter" << param->name();
             continue;
         }
-        setParameter(param->name(), param->value());
+//        setParameter(param->name(), param->value());
     }
 
 // FIXME - should do this on demand, otherwise we're re-uploading
@@ -179,14 +137,6 @@ void RenderMaterial::setTechnique(RenderTechnique *rt)
 {
     m_technique = rt;
 
-    // could re-use packs, but techniques don't change often
-    qDeleteAll(m_packs);
-    m_packs.clear();
-
-    // allocate pack per pass - or should we do this lazily?
-    for (unsigned int p=0; p<rt->passCount(); ++p)
-        m_packs.append(new Render::QUniformPack);
-
     if (m_peer)
         syncParametersFromPeer();
 }
@@ -194,12 +144,6 @@ void RenderMaterial::setTechnique(RenderTechnique *rt)
 RenderTechnique *RenderMaterial::technique() const
 {
     return m_technique;
-}
-
-void RenderMaterial::setUniformsForPass(unsigned int pass, QGraphicsContext *gc)
-{
-    Q_ASSERT((int) pass < m_packs.size());
-    m_packs.at(pass)->apply(gc);
 }
 
 void RenderMaterial::sceneChangeEvent(const QSceneChangePtr &e)
@@ -215,7 +159,6 @@ void RenderMaterial::sceneChangeEvent(const QSceneChangePtr &e)
 
         }
         else {
-            setParameter(propertyName, propertyValue);
         }
         break;
     }

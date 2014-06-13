@@ -43,6 +43,7 @@
 #define QT3D_RENDER_RENDERER_H
 
 #include <Qt3DRenderer/technique.h>
+#include <Qt3DRenderer/quniformvalue.h>
 #include <Qt3DCore/qjob.h>
 
 #include <QHash>
@@ -143,9 +144,6 @@ public:
 
     void setSurface(QSurface *s);
 
-    void setDefaultTechnique(Technique* t);
-    void setDefaultMaterial(Material* mat);
-
     void enqueueRenderView(RenderView *renderView, int submitOrder);
     void submitRenderViews();
 
@@ -174,6 +172,13 @@ private:
 
     Material* m_defaultMaterial;
     Technique* m_defaultTechnique;
+
+    // Fail safe values that we can use if a RenderCommand
+    // is missing a shader
+    RenderShader *m_defaultRenderShader;
+    DrawStateSet *m_defaultDrawStateSet;
+    QHash<QString, QString> m_defaultParameterToGLSLAttributeNames;
+    QUniformPack m_defaultUniformPack;
 
     QGraphicsContext* m_graphicsContext;
     QSurface *m_surface;

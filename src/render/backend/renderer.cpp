@@ -85,6 +85,7 @@
 #include <effectmanager.h>
 #include <renderpassmanager.h>
 #include "renderlogging.h"
+#include "parameterbinder.h"
 
 #include <Qt3DCore/cameralens.h>
 #include <Qt3DCore/qabstracteffect.h>
@@ -130,12 +131,12 @@ Renderer::Renderer()
     buildDefaultMaterial();
 
     QLoggingCategory::setFilterRules(QString::fromUtf8( // multiline QStringLiteral doesn't compile on Windows...
-                                     "Qt3D.Render.*.debug=false\n"
-//                                     "Qt3D.Render.Rendering.debug=true\n"
-//                                     "Qt3D.Render.RenderNodes.debug=true\n"
-//                                     "Qt3D.Render.Frontend.debug=true\n"
-//                                     "qml.debug=true\n"
-                                     ));
+                                                        "Qt3D.Render.*.debug=false\n"
+                                                        //                                     "Qt3D.Render.Rendering.debug=true\n"
+                                                        //                                     "Qt3D.Render.RenderNodes.debug=true\n"
+                                                        //                                     "Qt3D.Render.Frontend.debug=true\n"
+                                                        //                                     "qml.debug=true\n"
+                                                        ));
 }
 
 void Renderer::buildDefaultTechnique()
@@ -148,58 +149,62 @@ void Renderer::buildDefaultTechnique()
     defaultShader->setFragmentSourceFile(QStringLiteral(":/shaders/diffuse.frag"));
     defaultShader->setObjectName(QStringLiteral("DefaultShader"));
 
+    m_defaultRenderShader = new RenderShader();
+    m_defaultRenderShader->setPeer(defaultShader);
+
     RenderPass* basicPass = new RenderPass;
     basicPass->setShaderProgram(defaultShader);
 
-    DrawStateSet* ss = new DrawStateSet;
-    ss->addState(DepthTest::getOrCreate(GL_LESS));
-    ss->addState(CullFace::getOrCreate(GL_BACK));
-    basicPass->setStateSet(ss);
+    m_defaultDrawStateSet = new DrawStateSet;
+    m_defaultDrawStateSet->addState(DepthTest::getOrCreate(GL_LESS));
+    m_defaultDrawStateSet->addState(CullFace::getOrCreate(GL_BACK));
+    basicPass->setStateSet(m_defaultDrawStateSet);
 
     m_defaultTechnique->addPass(basicPass);
 
     Parameter* vp = new Parameter(m_defaultTechnique, QStringLiteral("position"), Parameter::FloatVec3);
     vp->setMeshAttributeName(QStringLiteral("position"));
     m_defaultTechnique->addParameter(vp);
-    basicPass->addAttributeBinding(vp, QStringLiteral("vertexPosition"));
+    basicPass->addBinding(new ParameterBinder(QStringLiteral("position"), QStringLiteral("vertexPosition"), ParameterBinder::Attribute));
 
     Parameter* np = new Parameter(m_defaultTechnique, QStringLiteral("normal"), Parameter::FloatVec3);
     np->setMeshAttributeName(QStringLiteral("normal"));
     m_defaultTechnique->addParameter(np);
-    basicPass->addAttributeBinding(np, QStringLiteral("vertexNormal"));
+    basicPass->addBinding(new ParameterBinder(QStringLiteral("normal"), QStringLiteral("vertexNormal"), ParameterBinder::Attribute));
 
     // matrix uniforms from standard
     Parameter* mvMat = new Parameter(m_defaultTechnique, QStringLiteral("modelView"), Parameter::FloatMat4);
     mvMat->setStandardUniform(Parameter::ModelView);
     m_defaultTechnique->addParameter(mvMat);
-    basicPass->addUniformBinding(mvMat, QStringLiteral("modelViewMatrix"));
+    basicPass->addBinding(new ParameterBinder(QStringLiteral("modelView"), QStringLiteral("modelViewMatrix"), ParameterBinder::Uniform));
 
-    Parameter* nMat = new Parameter(m_defaultTechnique, QStringLiteral("normalMat"), Parameter::FloatMat3);
+    Parameter* nMat = new Parameter(m_defaultTechnique, QStringLiteral("normalMat"), Parameter::FloatMat4);
     nMat->setStandardUniform(Parameter::ModelViewNormal);
     m_defaultTechnique->addParameter(nMat);
-    basicPass->addUniformBinding(nMat, QStringLiteral("normalMatrix"));
+    basicPass->addBinding(new ParameterBinder(QStringLiteral("normalMat"), QStringLiteral("normalMatrix"), ParameterBinder::Uniform));
 
     Parameter* mvpMat = new Parameter(m_defaultTechnique, QStringLiteral("mvp"), Parameter::FloatMat4);
     mvpMat->setStandardUniform(Parameter::ModelViewProjection);
     m_defaultTechnique->addParameter(mvpMat);
-    basicPass->addUniformBinding(mvpMat, QStringLiteral("mvp"));
+    basicPass->addBinding(new ParameterBinder(QStringLiteral("mvp"), QStringLiteral("mvp"), ParameterBinder::Uniform));
 
     // diffuse lighting uniforms
-    Parameter* lightPos = new Parameter(m_defaultTechnique, QStringLiteral("lightPos"), Parameter::FloatVec4);
+    Parameter* lightPos = new Parameter(m_defaultTechnique, QStringLiteral("lightPos"), Parameter::FloatVec4, QVector4D(10.0f, 10.0f, 0.0f, 1.0f));
     m_defaultTechnique->addParameter(lightPos);
-    basicPass->addUniformBinding(lightPos, QStringLiteral("lightPosition"));
+    basicPass->addBinding(new ParameterBinder(QStringLiteral("lightPos"), QStringLiteral("lightPosition"), ParameterBinder::Uniform));
 
-    Parameter* lightIntensity = new Parameter(m_defaultTechnique, QStringLiteral("lightIntensity"), Parameter::FloatVec3);
+    Parameter* lightIntensity = new Parameter(m_defaultTechnique, QStringLiteral("lightIntensity"), Parameter::FloatVec3, QVector3D(0.5f, 0.5f, 0.5f));
     m_defaultTechnique->addParameter(lightIntensity);
-    basicPass->addUniformBinding(lightIntensity, QStringLiteral("lightIntensity"));
+    basicPass->addBinding(new ParameterBinder(QStringLiteral("lightIntensity"), QStringLiteral("lightIntensity"), ParameterBinder::Uniform));
 
-    Parameter* kd = new Parameter(m_defaultTechnique, QStringLiteral("kd"), Parameter::FloatVec3);
+    Parameter* kd = new Parameter(m_defaultTechnique, QStringLiteral("diffuse"), Parameter::FloatVec3, QVector3D(1.0f, 0.5f, 0.0f));
     m_defaultTechnique->addParameter(kd);
-    basicPass->addUniformBinding(kd, QStringLiteral("kd"));
+    basicPass->addBinding(new ParameterBinder(QStringLiteral("diffuse"), QStringLiteral("kd"), ParameterBinder::Uniform));
 
-    Parameter* ka = new Parameter(m_defaultTechnique, QStringLiteral("ka"), Parameter::FloatVec3);
+    Parameter* ka = new Parameter(m_defaultTechnique, QStringLiteral("ambient"), Parameter::FloatVec3, QVector3D(0.2f, 0.2f, 0.2f));
     m_defaultTechnique->addParameter(ka);
-    basicPass->addUniformBinding(ka, QStringLiteral("ka"));
+    basicPass->addBinding(new ParameterBinder(QStringLiteral("ambient"), QStringLiteral("ka"), ParameterBinder::Uniform));
+
 }
 
 void Renderer::buildDefaultMaterial()
@@ -208,12 +213,37 @@ void Renderer::buildDefaultMaterial()
     m_defaultMaterial->setObjectName(QStringLiteral("DefaultMaterial"));
     m_defaultMaterial->addParameter(new Parameter(m_defaultMaterial, QStringLiteral("lightPos"), Parameter::FloatVec4, QVector4D(10.0f, 10.0f, 0.0f, 1.0f)));
     m_defaultMaterial->addParameter(new Parameter(m_defaultMaterial, QStringLiteral("lightIntensity"), Parameter::FloatVec3, QVector3D(0.5f, 0.5f, 0.5f)));
-    m_defaultMaterial->addParameter(new Parameter(m_defaultMaterial, QStringLiteral("ka"), Parameter::FloatVec3, QVector3D(0.2f, 0.2f, 0.2f)));
-    m_defaultMaterial->addParameter(new Parameter(m_defaultMaterial, QStringLiteral("kd"), Parameter::FloatVec3, QVector3D(1.0f, 0.5f, 0.0f)));
+    m_defaultMaterial->addParameter(new Parameter(m_defaultMaterial, QStringLiteral("ambient"), Parameter::FloatVec3, QVector3D(0.2f, 0.2f, 0.2f)));
+    m_defaultMaterial->addParameter(new Parameter(m_defaultMaterial, QStringLiteral("diffuse"), Parameter::FloatVec3, QVector3D(1.0f, 0.5f, 0.0f)));
 
     Effect* defEff = new Effect;
     defEff->addTechnique(m_defaultTechnique);
     m_defaultMaterial->setEffect(defEff);
+
+    // TO DO : We use only the uniform values of the defaultTechnique
+    // We should look for values in Effect, Technique and Material and Material values have preference over Technique and Effect
+    // And Technique values have preference over Effect
+    Q_FOREACH (ParameterBinder *binding, qobject_cast<RenderPass *>(m_defaultTechnique->renderPasses().first())->bindings()) {
+        if (binding->bindingType() == ParameterBinder::Uniform) {
+            Q_FOREACH (Parameter *param, m_defaultTechnique->parameters()) {
+                if (param->name() == binding->parameterName()) {
+                    if (!param->isStandardUniform()) {
+                        if (param->datatype() >= Parameter::Float && param->datatype() <= Parameter::FloatMat4)
+                            m_defaultUniformPack.setUniform(binding->shaderVariableName(), QUniformValue(QUniformValue::Float, param->value()));
+                        else if (param->datatype() >= Parameter::Int)
+                            m_defaultUniformPack.setUniform(binding->shaderVariableName(), QUniformValue(QUniformValue::Int, param->value()));
+                    }
+                    else {
+                        m_defaultRenderShader->setStandardUniform(param->standardUniform(), binding->shaderVariableName());
+                    }
+                }
+            }
+        }
+        else {
+            m_defaultParameterToGLSLAttributeNames[binding->parameterName()] = binding->shaderVariableName();
+        }
+    }
+
 }
 
 Renderer::~Renderer()
@@ -279,24 +309,6 @@ void Renderer::setSurface(QSurface* s)
 {
     qCDebug(Backend) << Q_FUNC_INFO << QThread::currentThread();
     m_surface = s;
-}
-
-void Renderer::setDefaultTechnique(Technique *t)
-{
-    QAbstractEffect* defEff = m_defaultMaterial->effect();
-    bool materialWasUsing = (defEff->techniques().front() ==
-                             m_defaultTechnique);
-
-    m_defaultTechnique =  t;
-    if (materialWasUsing) {
-        defEff->clearTechniques();
-        defEff->addTechnique(t);
-    }
-}
-
-void Renderer::setDefaultMaterial(Material *mat)
-{
-    m_defaultMaterial = mat;
 }
 
 void Renderer::render()
@@ -440,17 +452,12 @@ void Renderer::executeCommands(const QVector<RenderCommand *> commands)
             qCWarning(Rendering) << "RenderCommand should have a mesh";
             continue ;
         }
-        RenderMaterial *mat = m_materialManager->data(command->m_material);
-        if (mat == Q_NULLPTR)
-            mat = getOrCreateMaterial(m_defaultMaterial);
-        RenderTechnique *technique = m_techniqueManager->data(command->m_technique);
-        if (technique == Q_NULLPTR) {
-            mat = getOrCreateMaterial(m_defaultMaterial);
-            technique = techniqueForMaterial(m_defaultMaterial);
-        }
         RenderShader *shader = m_shaderManager->data(command->m_shader);
-        if (shader == Q_NULLPTR)
-            shader = techniqueForMaterial(m_defaultMaterial)->shaderForPass(0);
+        if (shader == Q_NULLPTR) {
+            shader = m_defaultRenderShader;
+            command->m_parameterAttributeToShaderNames = m_defaultParameterToGLSLAttributeNames;
+            command->m_uniforms = m_defaultUniformPack;
+        }
 
         command->m_vao = m_vaoManager->lookupHandle(QPair<HMeshData, HShader>(command->m_meshData, command->m_shader));
         if (command->m_vao.isNull()) {
@@ -461,7 +468,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> commands)
             qCDebug(Backend) << Q_FUNC_INFO << "HShader " << command->m_shader;
             // Check if HShader exists. If it doesn't that means there is no RenderPass
             // Otherwise use a default renderpass name
-             command->m_vao = m_vaoManager->lookupHandle(QPair<HMeshData, HShader>(command->m_meshData, command->m_shader));
+            command->m_vao = m_vaoManager->lookupHandle(QPair<HMeshData, HShader>(command->m_meshData, command->m_shader));
             // Check if VAO pointer for the MeshData / RenderShader exists
             if (command->m_vao.isNull()) {
                 qCDebug(Rendering) << Q_FUNC_INFO << "Allocating new VAO";
@@ -505,10 +512,10 @@ void Renderer::executeCommands(const QVector<RenderCommand *> commands)
         if (command->m_stateSet != Q_NULLPTR)
             m_graphicsContext->setCurrentStateSet(command->m_stateSet);
         else
-            m_graphicsContext->setCurrentStateSet(qobject_cast<RenderPass*>(m_defaultTechnique->renderPasses().first())->stateSet());
+            m_graphicsContext->setCurrentStateSet(m_defaultDrawStateSet);
         m_graphicsContext->activateShader(shader);
         m_graphicsContext->setModelMatrix(command->m_worldMatrix);
-        m_graphicsContext->setActiveMaterial(mat);
+        //        m_graphicsContext->setActiveMaterial(mat);
 
         // All Uniforms for a pass are stored in the QUniformPack of the command
         // Uniforms for Effect, Material and Technique should already have been correctly resolved
@@ -534,94 +541,6 @@ void Renderer::executeCommands(const QVector<RenderCommand *> commands)
 
         vao->release();
     }
-}
-
-RenderTechnique* Renderer::techniqueForMaterial(Material* mat)
-{
-    // TO DO: this has to be removed
-    QAbstractEffect* eff = mat->effect();
-    Technique *tech;
-    if (eff) {
-        Q_ASSERT(!eff->techniques().empty());
-
-        // FIXME - technique selection happens in here, now we know
-        // the renderer characteristics
-        tech = qobject_cast<Technique*>(eff->techniques().front());
-    } else {
-        tech = m_defaultTechnique;
-    }
-
-    if (!m_techniqueHash.contains(tech)) {
-        RenderTechnique* rtech = createTechnique(tech);
-        m_techniqueHash[tech] = rtech;
-    }
-
-    return m_techniqueHash.value(tech);
-}
-
-RenderShader* Renderer::getOrCreateShader(ShaderProgram* sp)
-{
-    if (!m_shaderHash.contains(sp)) {
-        RenderShader* rs = new RenderShader();
-        rs->setPeer(sp);
-        m_shaderHash[sp] = rs;
-    }
-
-    return m_shaderHash.value(sp);
-}
-
-// To be removed, created by renderViewJobs and framegraph nodes
-RenderBin* Renderer::getOrCreateBinForPass(Technique* t, RenderPass* p)
-{
-    Q_UNUSED(t);
-    Q_UNUSED(p);
-
-    // TODO - select bins by priority
-
-    if (!m_temporaryAllBin)
-        m_temporaryAllBin = new OpaqueBin;
-
-    return m_temporaryAllBin;
-}
-
-RenderTechnique* Renderer::createTechnique(Technique* tech)
-{
-    // TO DO: This will be removed. Kept until know in order to be able to
-    // create the default technique
-
-    RenderTechnique* rt = new RenderTechnique();
-    rt->setRenderer(this);
-    rt->setPeer(tech);
-    for (unsigned int p=0; p<rt->passCount(); ++p) {
-        RenderPass* frontendPass = qobject_cast<RenderPass*>(tech->renderPasses().at(p));
-        RenderShader* rshader = getOrCreateShader(qobject_cast<ShaderProgram*>(frontendPass->shaderProgram()));
-        rt->setShaderForPass(p, rshader);
-
-        RenderBin* bin = getOrCreateBinForPass(tech, frontendPass);
-        rt->setBinForPass(p, bin);
-    }
-
-    return rt;
-}
-
-// To be removed and handled by the MaterialManager
-RenderMaterial* Renderer::getOrCreateMaterial(Material* mat)
-{
-    if (!m_materialHash.contains(mat)) {
-        qCDebug(Backend) << "creating render material for mat:" << mat->objectName();
-
-        RenderMaterial* rmat = new RenderMaterial();
-        rmat->setRendererAspect(m_rendererAspect);
-        rmat->setPeer(mat);
-        rmat->setTextureProvider(m_textureProvider);
-        m_materialHash[mat] = rmat;
-
-        // specifying technique will make the material sync parameter
-        // state from its peeer material.
-        rmat->setTechnique(techniqueForMaterial(mat));
-    }
-
-    return m_materialHash.value(mat);
 }
 
 } // namespace Render

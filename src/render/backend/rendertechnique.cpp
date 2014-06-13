@@ -75,10 +75,6 @@ void RenderTechnique::setPeer(Technique *peer)
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
         arbiter->unregisterObserver(this, m_peer);
         m_peer = peer;
-        // TO DO: Remove those variables
-        m_passCount = peer->renderPasses().count();
-        m_passBin.resize(m_passCount);
-        m_passShader.resize(m_passCount);
         if (m_peer)
             arbiter->registerObserver(this, m_peer);
     }
@@ -87,79 +83,6 @@ void RenderTechnique::setPeer(Technique *peer)
 Technique *RenderTechnique::peer() const
 {
     return m_peer;
-}
-
-unsigned int RenderTechnique::passCount() const
-{
-    return m_passCount;
-}
-
-// TO BE REMOVED SOON
-void RenderTechnique::setShaderForPass(unsigned int passIndex, RenderShader *s)
-{
-    Q_ASSERT(passIndex < passCount());
-    m_passShader[passIndex] = s;
-
-    // bind standard uniform names
-
-    RenderPass* pass =  qobject_cast<RenderPass*>(m_peer->renderPasses().at(passIndex));
-    if (pass) {
-        foreach (Parameter* p, m_peer->parameters()) {
-            if (!p->isStandardUniform())
-                continue;
-
-            QString glslName = pass->glslNameForParameter(p->name());
-            if (glslName.isEmpty())
-                continue;
-
-            s->setStandardUniform(p->standardUniform(), glslName);
-        } // of parameter iteration
-    }
-}
-
-// TO BE REMOVED
-RenderShader *RenderTechnique::shaderForPass(unsigned int pass)
-{
-    Q_ASSERT(pass < passCount());
-    return  m_passShader.at(pass);
-}
-
-// TO BE REMOVED
-void RenderTechnique::setBinForPass(unsigned int pass, RenderBin *bin)
-{
-    Q_ASSERT(pass < passCount());
-    m_passBin[pass] = bin;
-}
-
-// TO BE REMOVED
-RenderBin *RenderTechnique::binForPass(unsigned int pass) const
-{
-    return m_passBin.at(pass);
-}
-
-// TO BE REMOVED
-DrawStateSet *RenderTechnique::stateSetForPass(unsigned int pass) const
-{
-    return qobject_cast<RenderPass*>(m_peer->renderPasses().at(pass))->stateSet();
-}
-
-// TO BE REMOVED
-QString RenderTechnique::glslNameForMeshAttribute(unsigned int passIndex, QString meshAttributeName)
-{
-    // find the parameter
-    foreach (Parameter* p, m_peer->parameters()) {
-        if (p->meshAttributeName() != meshAttributeName) {
-            continue;
-        }
-
-        Q_ASSERT((int) passIndex < m_peer->renderPasses().count());
-        RenderPass* pass =  qobject_cast<RenderPass*>(m_peer->renderPasses().at(passIndex));
-
-        return pass->glslNameForParameter(p->name());
-    } // of parameter iteration
-
-    // mesh attribute is not referenced in this technique
-    return QString();
 }
 
 Parameter *RenderTechnique::parameterByName(QString name) const
@@ -197,24 +120,6 @@ void RenderTechnique::sceneChangeEvent(const QSceneChangePtr &e)
     default:
         break;
     }
-}
-
-QStringList RenderTechnique::glslNamesForUniformParameter(QString pName) const
-{
-    QStringList result;
-    Parameter* param = parameterByName(pName);
-    if (!param)
-        return result;
-
-    for (unsigned int p=0; p<m_passCount;++p) {
-        RenderPass* pass =  qobject_cast<RenderPass*>(m_peer->renderPasses().at(p));
-        // will return an empty QString if the pass doesn't use the parameter,
-        // but that's what we want so no probem.
-        QString glslName = pass->glslNameForParameter(pName);
-        result.append(glslName);
-    }
-
-    return result;
 }
 
 } // namespace Render

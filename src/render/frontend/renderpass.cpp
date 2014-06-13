@@ -55,22 +55,22 @@ RenderPass::RenderPass(Node *parent)
 {
 }
 
-void RenderPass::addUniformBinding(Parameter *param, QString glslUniformName)
-{
-    m_uniforms.append(param);
-    m_parameterNameDict[param->name()] = glslUniformName;
-}
+//void RenderPass::addUniformBinding(Parameter *param, QString glslUniformName)
+//{
+//    m_uniforms.append(param);
+//    m_parameterNameDict[param->name()] = glslUniformName;
+//}
 
-void RenderPass::addAttributeBinding(Parameter *param, QString glslAttributeName)
-{
-    m_attributes.append(param);
-    m_parameterNameDict[param->name()] = glslAttributeName;
-}
+//void RenderPass::addAttributeBinding(Parameter *param, QString glslAttributeName)
+//{
+//    m_attributes.append(param);
+//    m_parameterNameDict[param->name()] = glslAttributeName;
+//}
 
-QString RenderPass::glslNameForParameter(QString paramName) const
-{
-    return m_parameterNameDict.value(paramName);
-}
+//QString RenderPass::glslNameForParameter(QString paramName) const
+//{
+//    return m_parameterNameDict.value(paramName);
+//}
 
 ParameterList RenderPass::attributes() const
 {

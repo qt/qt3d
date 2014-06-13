@@ -73,12 +73,6 @@ public:
 
     Material *peer() const { return m_peer; }
 
-    void setEffectName(QString nm);
-
-    void setParameter(QString paramName, QVariant value);
-
-    void setTextureParameter(QString paramName, RenderTexturePtr tex);
-
     void syncParametersFromPeer();
 
     /**
@@ -88,10 +82,6 @@ public:
      */
     void setTechnique(RenderTechnique* rt);
     RenderTechnique* technique() const;
-
-    void setUniformsForPass(unsigned int pass, QGraphicsContext* gc);
-
-    void setTextureProvider(RenderTextureProvider *rtp);
 
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
@@ -105,8 +95,6 @@ private:
     RenderTextureProvider* m_textureProvider;
     QHash<QString, Parameter*> m_parameters;
 
-    // This should be moved out and store in the Render Passes
-    QVector<Render::QUniformPack*> m_packs;
 };
 
 } // Render
