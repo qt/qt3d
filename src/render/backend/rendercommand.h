@@ -94,6 +94,10 @@ public:
     HMaterial m_material;
     HTechnique m_technique;
     DrawStateSet *m_stateSet;
+
+    // A QAttribute pack might be interesting
+    // This is a temporary fix in the meantime, to remove the hacked methods in RenderTechnique
+    QHash<QString, QString> m_parameterAttributeToShaderNames;
 };
 
 } // Render

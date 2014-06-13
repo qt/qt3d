@@ -487,12 +487,13 @@ void Renderer::executeCommands(const QVector<RenderCommand *> commands)
 
             m_graphicsContext->activateShader(shader);
 
-            foreach (QString nm, meshData->attributeNames()) {
+            // TO DO : Do that in a better / nicer way
+            Q_FOREACH (QString nm, meshData->attributeNames()) {
                 AttributePtr attr(meshData->attributeByName(nm));
-                QString glsl = technique->glslNameForMeshAttribute(0, nm);
-                if (glsl.isEmpty())
-                    continue; // not used in this pass
-                m_graphicsContext->specifyAttribute(glsl, attr);
+                if (command->m_parameterAttributeToShaderNames.contains(nm))
+                    m_graphicsContext->specifyAttribute(command->m_parameterAttributeToShaderNames[nm], attr);
+                else
+                    qCWarning(Render::Rendering) << "Couldn't find a Parameter attribute named " << nm;
             }
             if (drawIndexed)
                 m_graphicsContext->specifyIndices(meshData->indexAttr());
@@ -501,16 +502,18 @@ void Renderer::executeCommands(const QVector<RenderCommand *> commands)
 
         //// Draw Calls
         // Set state
-//        if (command->m_stateSet != Q_NULLPTR)
-//            m_graphicsContext->setCurrentStateSet(command->m_stateSet);
-        m_graphicsContext->setCurrentStateSet(technique->stateSetForPass(0));
+        if (command->m_stateSet != Q_NULLPTR)
+            m_graphicsContext->setCurrentStateSet(command->m_stateSet);
+        else
+            m_graphicsContext->setCurrentStateSet(qobject_cast<RenderPass*>(m_defaultTechnique->renderPasses().first())->stateSet());
         m_graphicsContext->activateShader(shader);
         m_graphicsContext->setModelMatrix(command->m_worldMatrix);
         m_graphicsContext->setActiveMaterial(mat);
-        // 1) Set Uniforms from Effect
-        // 2) Set Uniforms from Technique
-        // 3) Set Uniforms from Material
-        mat->setUniformsForPass(0, m_graphicsContext);
+
+        // All Uniforms for a pass are stored in the QUniformPack of the command
+        // Uniforms for Effect, Material and Technique should already have been correctly resolved
+        // at that point
+        command->m_uniforms.apply(m_graphicsContext);
 
         vao->bind();
         GLint primType = meshData->primitiveType();

@@ -94,6 +94,7 @@ unsigned int RenderTechnique::passCount() const
     return m_passCount;
 }
 
+// TO BE REMOVED SOON
 void RenderTechnique::setShaderForPass(unsigned int passIndex, RenderShader *s)
 {
     Q_ASSERT(passIndex < passCount());
@@ -116,28 +117,33 @@ void RenderTechnique::setShaderForPass(unsigned int passIndex, RenderShader *s)
     }
 }
 
+// TO BE REMOVED
 RenderShader *RenderTechnique::shaderForPass(unsigned int pass)
 {
     Q_ASSERT(pass < passCount());
     return  m_passShader.at(pass);
 }
 
+// TO BE REMOVED
 void RenderTechnique::setBinForPass(unsigned int pass, RenderBin *bin)
 {
     Q_ASSERT(pass < passCount());
     m_passBin[pass] = bin;
 }
 
+// TO BE REMOVED
 RenderBin *RenderTechnique::binForPass(unsigned int pass) const
 {
     return m_passBin.at(pass);
 }
 
+// TO BE REMOVED
 DrawStateSet *RenderTechnique::stateSetForPass(unsigned int pass) const
 {
     return qobject_cast<RenderPass*>(m_peer->renderPasses().at(pass))->stateSet();
 }
 
+// TO BE REMOVED
 QString RenderTechnique::glslNameForMeshAttribute(unsigned int passIndex, QString meshAttributeName)
 {
     // find the parameter

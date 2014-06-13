@@ -59,13 +59,17 @@
 #include <renderpassfilternode.h>
 #include <techniquefilternode.h>
 #include <viewportnode.h>
-#include <Qt3DCore/qabstracttechnique.h>
 #include "rendereffect.h"
 #include "effectmanager.h"
 #include "renderlogging.h"
+#include "renderpassmanager.h"
+#include "renderrenderpass.h"
+#include "parameterbinder.h"
+#include "parameter.h"
 
 #include <Qt3DCore/entity.h>
 #include <Qt3DCore/qabstracteffect.h>
+#include <Qt3DCore/qabstracttechnique.h>
 
 #include <QDebug>
 
@@ -228,6 +232,7 @@ void RenderView::setCommandShaderTechniqueEffect(RenderCommand *command)
         // ShaderProgramManager[MaterialManager[frontentEntity->uuid()]->Effect->Techniques[TechniqueFilter->name]->RenderPasses[RenderPassFilter->name]];
         // The Renderer knows that if one of those is null, a default material / technique / effect as to be used
         QAbstractEffect *fEffect = material->peer()->effect();
+        // TO DO : Replace the locker by locking policies in the Resources Managers
         QMutexLocker locker(&RenderView::m_mutex);
         RenderEffect *effect = m_renderer->effectManager()->lookupResource(fEffect);
         if (effect == Q_NULLPTR) {
@@ -277,8 +282,8 @@ void RenderView::setCommandShaderTechniqueEffect(RenderCommand *command)
         // We need locking at the moment to ensure that a single thread is creating the RenderTechnique
         locker.relock();
         command->m_technique = m_renderer->techniqueManager()->lookupHandle(tech);
-        if (effect != Q_NULLPTR && tech != Q_NULLPTR && m_renderer->techniqueManager()->data(command->m_technique) == Q_NULLPTR) {
-            RenderTechnique *technique = Q_NULLPTR;
+        RenderTechnique *technique = Q_NULLPTR;
+        if ((technique = m_renderer->techniqueManager()->data(command->m_technique)) == Q_NULLPTR) {
             // Tries to select technique based on criteria defined in the TechniqueFilter
             Q_FOREACH (QAbstractTechnique *t, effect->techniques()) {
                 if (qobject_cast<Technique *>(t) && t == tech) {
@@ -292,27 +297,62 @@ void RenderView::setCommandShaderTechniqueEffect(RenderCommand *command)
             }
             if (technique == Q_NULLPTR) {
                 command->m_technique = HTechnique();
-                qCWarning(Render::Backend) << Q_FUNC_INFO << "No technique found for technique filter";
+                qCCritical(Render::Backend) << Q_FUNC_INFO << "No technique found for technique filter";
             }
-            // Load RenderPass and ShaderPrograms
-            // Find all RenderPasses (in order) matching values set in the RenderPassFilter
-            // Get list of parameters for the Material, Effect, and Technique
-            // For each ParameterBinder in the RenderPass -> create a QUniformPack
-            // Once that works, improve that to try and minimize QUniformPack updates
-            // Get Parameters only from Material as a first step
-            if (technique != Q_NULLPTR) {
-                Q_FOREACH (QAbstractRenderPass *pass, technique->peer()->renderPasses()) {
-                    if (pass->shaderProgram() != Q_NULLPTR) {
-                        // Index RenderShader by Shader UUID
-                        command->m_shader = m_renderer->shaderManager()->lookupHandle(pass->shaderProgram()->uuid());
-                        if (command->m_shader.isNull()) {
-                            RenderShader *shader = m_renderer->shaderManager()->getOrCreateResource(pass->shaderProgram()->uuid());
-                            shader->setPeer(qobject_cast<ShaderProgram*>(pass->shaderProgram()));
-                            command->m_shader = m_renderer->shaderManager()->lookupHandle(pass->shaderProgram()->uuid());
+        }
+        // Load RenderPass and ShaderPrograms
+        // Find all RenderPasses (in order) matching values set in the RenderPassFilter
+        // Get list of parameters for the Material, Effect, and Technique
+        // For each ParameterBinder in the RenderPass -> create a QUniformPack
+        // Once that works, improve that to try and minimize QUniformPack updates
+        // Get Parameters only from Material as a first step
+        if (technique != Q_NULLPTR) {
+            Q_FOREACH (QAbstractRenderPass *pass, technique->peer()->renderPasses()) {
+                locker.relock();
+                RenderRenderPass *rPass = m_renderer->renderPassManager()->lookupResource(pass);
+                if (rPass == Q_NULLPTR) {
+                    rPass = m_renderer->renderPassManager()->getOrCreateResource(pass);
+                    rPass->setRenderer(m_renderer);
+                    rPass->setPeer(qobject_cast<RenderPass*>(pass));
+                }
+                locker.unlock();
+
+                if (rPass->shaderProgram() != Q_NULLPTR) {
+                    // Index RenderShader by Shader UUID
+                    locker.relock();
+                    command->m_shader = m_renderer->shaderManager()->lookupHandle(rPass->shaderProgram()->uuid());
+                    RenderShader *shader = Q_NULLPTR;
+                    if ((shader = m_renderer->shaderManager()->data(command->m_shader)) == Q_NULLPTR) {
+                        shader = m_renderer->shaderManager()->getOrCreateResource(rPass->shaderProgram()->uuid());
+                        shader->setPeer(qobject_cast<ShaderProgram*>(rPass->shaderProgram()));
+                        command->m_shader = m_renderer->shaderManager()->lookupHandle(rPass->shaderProgram()->uuid());
+                    }
+                    locker.unlock();
+                    // TO DO : To be corrected later on
+                    command->m_stateSet = qobject_cast<RenderPass*>(pass)->stateSet();
+
+                    // Builds the QUniformPack, sets shader standard uniforms and store attributes name / glname bindings
+                    Q_FOREACH (ParameterBinder *binding, rPass->bindings()) {
+                        if (binding->bindingType() == ParameterBinder::Uniform) {
+                            if (!material->parameters().contains(binding->parameterName())) {
+                                qCCritical(Render::Backend) << Q_FUNC_INFO << "Trying to bind a Parameter that hasn't been defined " << binding->parameterName();
+                            }
+                            else {
+                                Parameter *param = material->parameters()[binding->parameterName()];
+                                if (!param->isStandardUniform()) {
+                                    if (param->datatype() >= Parameter::Float && param->datatype() <= Parameter::FloatMat4)
+                                        command->m_uniforms.setUniform(binding->shaderVariableName(), QUniformValue(QUniformValue::Float, param->value()));
+                                    else if (param->datatype() >= Parameter::Int)
+                                        command->m_uniforms.setUniform(binding->shaderVariableName(), QUniformValue(QUniformValue::Int, param->value()));
+                                }
+                                else {
+                                    shader->setStandardUniform(param->standardUniform(), binding->shaderVariableName());
+                                }
+                            }
                         }
-                        // TO DO : To be corrected later on
-                        command->m_stateSet = qobject_cast<RenderPass*>(pass)->stateSet();
-                        break;
+                        else { // Attribute
+                            command->m_parameterAttributeToShaderNames[binding->parameterName()] = binding->shaderVariableName();
+                        }
                     }
                 }
             }
