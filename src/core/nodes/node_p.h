@@ -52,10 +52,12 @@ namespace Qt3D {
 class NodePrivate : public QObjectPrivate
 {
 public:
-    NodePrivate()
+    NodePrivate(Node *qq)
         : QObjectPrivate()
         , m_changeArbiter(Q_NULLPTR)
-    {}
+    {
+        q_ptr = qq;
+    }
 
     NodeList m_children;
 

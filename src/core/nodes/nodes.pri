@@ -5,6 +5,7 @@ HEADERS += \
     $$PWD/node_p.h \
     $$PWD/nodevisitor.h \
     $$PWD/component.h \
+    $$PWD/component_p.h \
     $$PWD/entity.h \
     $$PWD/entity_p.h
 

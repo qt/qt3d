@@ -53,13 +53,12 @@ class EntityPrivate : public NodePrivate
 {
 public :
     EntityPrivate(Entity *qq)
-        : q_ptr(qq)
+        : NodePrivate(qq)
         , m_uuid(QUuid::createUuid())
         , m_enabled(true)
     {}
 
     Q_DECLARE_PUBLIC(Entity)
-    Entity *q_ptr;
 
     ComponentList m_components;
     bool m_visible;

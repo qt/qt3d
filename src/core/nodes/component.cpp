@@ -40,14 +40,36 @@
 ****************************************************************************/
 
 #include "component.h"
+#include "component_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-Component::Component(Node *parent)
-    : Node(parent)
+ComponentPrivate::ComponentPrivate(Component *qq)
+    : NodePrivate(qq)
+    , m_enabled(true)
 {
+}
+
+Component::Component(Node *parent)
+    : Node(*new ComponentPrivate(this), parent)
+{
+}
+
+void Component::setEnabled(bool enabled)
+{
+    Q_D(Component);
+    if (d->m_enabled != enabled) {
+        d->m_enabled = enabled;
+        emit enabledChanged();
+    }
+}
+
+bool Component::isEnabled() const
+{
+    Q_D(const Component);
+    return d->m_enabled;
 }
 
 } // namespace Qt3D

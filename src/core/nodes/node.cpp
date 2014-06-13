@@ -55,7 +55,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 Node::Node(Node *parent)
-    : QObject(*new NodePrivate, parent)
+    : QObject(*new NodePrivate(this), parent)
 {
     if (parent)
         parent->addChild(this);
