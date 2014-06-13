@@ -296,7 +296,11 @@ void RenderView::setCommandShaderTechniqueEffect(RenderCommand *command)
             }
             // Load RenderPass and ShaderPrograms
             // Find all RenderPasses (in order) matching values set in the RenderPassFilter
-            if (technique != Q_NULLPTR)
+            // Get list of parameters for the Material, Effect, and Technique
+            // For each ParameterBinder in the RenderPass -> create a QUniformPack
+            // Once that works, improve that to try and minimize QUniformPack updates
+            // Get Parameters only from Material as a first step
+            if (technique != Q_NULLPTR) {
                 Q_FOREACH (QAbstractRenderPass *pass, technique->peer()->renderPasses()) {
                     if (pass->shaderProgram() != Q_NULLPTR) {
                         // Index RenderShader by Shader UUID
@@ -311,6 +315,7 @@ void RenderView::setCommandShaderTechniqueEffect(RenderCommand *command)
                         break;
                     }
                 }
+            }
         }
         else {
             qCWarning(Render::Backend) << Q_FUNC_INFO << "Using default effect as none was provided";
