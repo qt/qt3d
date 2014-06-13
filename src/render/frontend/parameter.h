@@ -54,10 +54,12 @@ class QT3DRENDERERSHARED_EXPORT Parameter : public QObject
 {
     Q_OBJECT
     Q_ENUMS(OpenGLTypes)
+    Q_ENUMS(StandardUniform)
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString meshAttributeName READ meshAttributeName WRITE setMeshAttributeName NOTIFY meshAttributeNameChanged)
     Q_PROPERTY(OpenGLTypes datatype READ datatype WRITE setDatatype NOTIFY datatypeChanged)
     Q_PROPERTY(QVariant value READ value WRITE setValue NOTIFY valueChanged)
+    Q_PROPERTY(StandardUniform standardUniform WRITE setStandardUniform READ standardUniform CONSTANT)
 
 public:
     // FIXME - sort this by frequency, to minimize the size of the
