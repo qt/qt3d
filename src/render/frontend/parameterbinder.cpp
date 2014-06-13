@@ -51,6 +51,14 @@ ParameterBinder::ParameterBinder(QObject *parent)
 {
 }
 
+ParameterBinder::ParameterBinder(const QString &parameterName, const QString &shaderParameterName, ParameterBinder::Binding bindingType)
+    : QObject()
+    , m_parameterName(parameterName)
+    , m_shaderVariableName(shaderParameterName)
+    , m_bindingType(bindingType)
+{
+}
+
 void ParameterBinder::setParameterName(const QString &name)
 {
     if (m_parameterName != name) {

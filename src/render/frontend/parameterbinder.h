@@ -57,13 +57,14 @@ class QT3DRENDERERSHARED_EXPORT ParameterBinder : public QObject
     Q_PROPERTY(QString shaderVariableName READ shaderVariableName WRITE setShaderVariableName NOTIFY shaderVariableNameChanged)
     Q_PROPERTY(Binding bindingType READ bindingType WRITE setBindingType NOTIFY bindingTypeChanged)
 public:
-    explicit ParameterBinder(QObject *parent = 0);
-
     enum Binding
     {
         Uniform = 0,
         Attribute
     };
+
+    explicit ParameterBinder(QObject *parent = 0);
+    ParameterBinder(const QString &parameterName, const QString &shaderParameterName, ParameterBinder::Binding bindingType);
 
     void setParameterName(const QString &name);
     void setShaderVariableName(const QString &name);
