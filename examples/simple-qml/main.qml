@@ -192,7 +192,6 @@ Node {
 
             property Transform transform : ball2Transform;
             property Mesh mesh: ballMesh
-            property Material material: ballMaterial
             components : [mesh, ballMaterial, transform]
         }
 
@@ -235,8 +234,16 @@ Node {
             //            effect: adsEffect
 
             parameters : [
-                Parameter { name : "ambient"; datatype: Parameter.FloatVec4; value : Qt.vector4d(255, 0, 0, 1) },
-                Parameter { name : "position"; datatype: Parameter.FloatVec4; value : Qt.vector4d(0, 0, 0, 0); meshAttributeName: "position" }
+                // Maybe having a AttributeParameter, StandardUniformParameter, UniformParameter would be better
+                Parameter { name : "position"; datatype: Parameter.FloatVec3; meshAttributeName: "position" },
+                Parameter { name : "normal"; datatype: Parameter.FloatVec3; meshAttributeName: "normal" },
+                Parameter { name : "ambient"; datatype: Parameter.FloatVec3; value : Qt.vector3d(0.5, 0.0, 0.6) },
+                Parameter { name : "diffuse"; datatype: Parameter.FloatVec3; value : Qt.vector3d(0.9, 0.7, 0.4);},
+                Parameter { name : "lightPos"; datatype: Parameter.FloatVec4; value : Qt.vector4d(10.0, 10.0, 0.0, 1.0);},
+                Parameter { name : "lightIntensity"; datatype: Parameter.FloatVec3; value : Qt.vector3d(0.5, 0.5, 0.5);},
+                Parameter { name : "modelView"; datatype: Parameter.FloatMat4; standardUniform : Parameter.ModelView},
+                Parameter { name : "normalMat"; datatype: Parameter.FloatMat4; standardUniform : Parameter.ModelViewNormal},
+                Parameter { name : "mvp"; datatype: Parameter.FloatMat4; standardUniform : Parameter.ModelViewProjection}
             ]
             // Custom properties go here
 
@@ -247,7 +254,17 @@ Node {
                         renderPasses : [
                             RenderPass {
                                 criteria : []
-                                bindings : [ParameterBinder {parameterName: "ambient"; shaderVariableName: "ka"; bindingType: ParameterBinder.Uniform}]
+                                bindings : [ // Add only the bindings needed for a shader
+                                    ParameterBinder {parameterName: "normal"; shaderVariableName: "vertexNormal"; bindingType: ParameterBinder.Attribute},
+                                    ParameterBinder {parameterName: "position"; shaderVariableName: "vertexPosition"; bindingType: ParameterBinder.Attribute},
+                                    ParameterBinder {parameterName: "ambient"; shaderVariableName: "ka"; bindingType: ParameterBinder.Uniform},
+                                    ParameterBinder {parameterName: "diffuse"; shaderVariableName: "kd"; bindingType: ParameterBinder.Uniform},
+                                    ParameterBinder {parameterName: "lightPos"; shaderVariableName: "lightPosition"; bindingType: ParameterBinder.Uniform},
+                                    ParameterBinder {parameterName: "lightIntensity"; shaderVariableName: "lightIntensity"; bindingType: ParameterBinder.Uniform},
+                                    ParameterBinder {parameterName: "modelView"; shaderVariableName: "modelViewMatrix"; bindingType: ParameterBinder.Uniform},
+                                    ParameterBinder {parameterName: "normalMat"; shaderVariableName: "normalMatrix"; bindingType: ParameterBinder.Uniform},
+                                    ParameterBinder {parameterName: "mvp"; shaderVariableName: "mvp"; bindingType: ParameterBinder.Uniform}
+                                ]
                                 shaderProgram : ShaderProgram {
                                     id : diffuseShader
                                     vertexSourceFile: ":/shaders/diffuse.vert"
@@ -276,7 +293,6 @@ Node {
                 Scale {scale : 0.3}
             }
             property Mesh mesh: ballMesh
-            property Material material: ballMaterial
 
             components : [
                 transform,
@@ -294,12 +310,11 @@ Node {
                 Translate{ dx: 8; dy: 8; dz : 30 }
             }
             property Mesh mesh: ballMesh
-            property Material material: ballMaterial
 
             components: [
                 transform,
                 mesh,
-                material
+                ballMaterial
             ]
         }
 
