@@ -50,6 +50,8 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class RenderPass;
+class QAbstractShader;
+class ParameterBinder;
 
 namespace Render {
 
@@ -63,10 +65,14 @@ public:
     void setRenderer(Renderer *renderer);
     void setPeer(RenderPass *peer);
     void sceneChangeEvent(const QSceneChangePtr &e);
+    QAbstractShader *shaderProgram() const;
+    QList<ParameterBinder *> bindings() const;
 
 private:
     Renderer *m_renderer;
     RenderPass *m_peer;
+    QAbstractShader *m_shader;
+    QList<ParameterBinder *> m_bindings;
 
 };
 

@@ -45,6 +45,8 @@
 #include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/qchangearbiter.h>
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qabstractshader.h>
+#include <Qt3DRenderer/parameterbinder.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -55,6 +57,7 @@ namespace Render {
 RenderRenderPass::RenderRenderPass()
     : m_renderer(Q_NULLPTR)
     , m_peer(Q_NULLPTR)
+    , m_shader(Q_NULLPTR)
 {
 }
 
@@ -70,8 +73,13 @@ void RenderRenderPass::setPeer(RenderPass *peer)
         if (m_peer)
             arbiter->unregisterObserver(this, m_peer);
         m_peer = peer;
-        if (m_peer)
+        m_shader = Q_NULLPTR;
+        if (m_peer) {
             arbiter->registerObserver(this, m_peer, ComponentUpdated);
+            m_shader = m_peer->shaderProgram();
+            // TO DO -> Have backend classes for Bindings and Parameters so that we can easily monitor for updates
+            m_bindings = m_peer->bindings();
+        }
     }
 }
 
@@ -82,6 +90,16 @@ void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
         if (propertyChange->m_propertyName == QByteArrayLiteral("shaderProgram"))
             ;// TO DO: to be completed
     }
+}
+
+QAbstractShader *RenderRenderPass::shaderProgram() const
+{
+    return m_shader;
+}
+
+QList<ParameterBinder *> RenderRenderPass::bindings() const
+{
+    return m_bindings;
 }
 
 } // Render
