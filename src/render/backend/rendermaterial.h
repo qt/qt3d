@@ -55,6 +55,7 @@ namespace Qt3D {
 
 class Material;
 class RendererAspect;
+class Parameter;
 
 namespace Render {
 
@@ -94,13 +95,17 @@ public:
 
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
+    QHash<QString, Parameter *> parameters() const;
+
 private:
     RendererAspect *m_rendererAspect;
     Material* m_peer;
     QString m_effectName;
     RenderTechnique* m_technique;
     RenderTextureProvider* m_textureProvider;
+    QHash<QString, Parameter*> m_parameters;
 
+    // This should be moved out and store in the Render Passes
     QVector<Render::QUniformPack*> m_packs;
 };
 

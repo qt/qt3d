@@ -85,8 +85,13 @@ void RenderMaterial::setPeer(Material *mat)
             arbiter->unregisterObserver(this, m_peer);
         m_peer = mat;
         // Register for changes
-        if (m_peer)
+        if (m_peer) {
             arbiter->registerObserver(this, m_peer, ComponentUpdated);
+
+            m_parameters.clear();
+            Q_FOREACH (Parameter *p, m_peer->parameters())
+                m_parameters[p->name()] = p;
+        }
     }
 }
 
@@ -218,6 +223,11 @@ void RenderMaterial::sceneChangeEvent(const QSceneChangePtr &e)
     default:
         break;
     }
+}
+
+QHash<QString, Parameter *> RenderMaterial::parameters() const
+{
+    return m_parameters;
 }
 
 } // namespace Render
