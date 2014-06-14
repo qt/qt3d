@@ -39,42 +39,30 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_FRAMEGRAPH_H
-#define QT3D_FRAMEGRAPH_H
+#ifndef QT3D_FRAMEGRAPH_P_H
+#define QT3D_FRAMEGRAPH_P_H
 
-#include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DCore/component.h>
+#include <Qt3DCore/qt3dcore_global.h>
+#include <private/component_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class FrameGraphPrivate;
+class FrameGraph;
 
-class QT3DRENDERERSHARED_EXPORT FrameGraph : public Qt3D::Component
+class FrameGraphPrivate : public ComponentPrivate
 {
-    Q_OBJECT
-    // Note : The full namespace has to be used to define the property
-    // otherwise this results in an error "cannot assign object to property"
-    Q_PROPERTY(Qt3D::Node *activeFrameGraph READ activeFrameGraph WRITE setActiveFrameGraph NOTIFY activeFrameGraphChanged)
-    Q_CLASSINFO("DefaultProperty", "activeFrameGraph")
-
 public:
-    explicit FrameGraph(Node *parent = 0);
+    FrameGraphPrivate(FrameGraph *qq);
 
-    Node *activeFrameGraph() const;
-    void setActiveFrameGraph(Node *activeFrameGraph);
+    Q_DECLARE_PUBLIC(FrameGraph)
 
-Q_SIGNALS:
-    void activeFrameGraphChanged();
-
-protected:
-    Q_DECLARE_PRIVATE(FrameGraph)
-    FrameGraph(FrameGraphPrivate &dd, Node *parent = 0);
+    Node *m_activeFrameGraph;
 };
 
-} //Qt3D
+}
 
 QT_END_NAMESPACE
 
-#endif // QT3D_FRAMEGRAPH_H
+#endif // QT3D_FRAMEGRAPH_P_H

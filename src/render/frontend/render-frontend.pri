@@ -25,7 +25,8 @@ HEADERS += \
     $$PWD/techniquecriterion.h \
     $$PWD/renderpasscriterion.h \
     $$PWD/parameter.h \
-    $$PWD/parameterbinder.h
+    $$PWD/parameterbinder.h \
+    $$PWD/framegraph_p.h
 
 SOURCES += \
     $$PWD/material.cpp \

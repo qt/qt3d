@@ -40,11 +40,19 @@
 ****************************************************************************/
 
 #include "framegraph.h"
+#include "framegraph_p.h"
 #include <Qt3DCore/entity.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
+
+FrameGraphPrivate::FrameGraphPrivate(FrameGraph *qq)
+    : ComponentPrivate(qq)
+    , m_activeFrameGraph(Q_NULLPTR)
+{
+
+}
 
 /*!
  * \class FrameGraph
@@ -60,9 +68,13 @@ namespace Qt3D {
  * \namespace Qt3D
  */
 
-FrameGraph::FrameGraph(Node *parent) :
-    Qt3D::Component(parent),
-    m_activeFrameGraph(Q_NULLPTR)
+FrameGraph::FrameGraph(Node *parent)
+    : Component(*new FrameGraphPrivate(this), parent)
+{
+}
+
+FrameGraph::FrameGraph(FrameGraphPrivate &dd, Node *parent)
+    : Component(dd, parent)
 {
 }
 
@@ -71,7 +83,8 @@ FrameGraph::FrameGraph(Node *parent) :
  */
 Node *FrameGraph::activeFrameGraph() const
 {
-    return m_activeFrameGraph;
+    Q_D(const FrameGraph);
+    return d->m_activeFrameGraph;
 }
 
 /*!
@@ -79,8 +92,9 @@ Node *FrameGraph::activeFrameGraph() const
  */
 void FrameGraph::setActiveFrameGraph(Node *activeFrameGraph)
 {
-    if (activeFrameGraph != m_activeFrameGraph) {
-        m_activeFrameGraph = activeFrameGraph;
+    Q_D(FrameGraph);
+    if (activeFrameGraph != d->m_activeFrameGraph) {
+        d->m_activeFrameGraph = activeFrameGraph;
         emit activeFrameGraphChanged();
     }
 }
