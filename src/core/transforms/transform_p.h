@@ -39,62 +39,34 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_TRANSFORM_H
-#define QT3D_TRANSFORM_H
+#ifndef QT3D_TRANSFORM_P_H
+#define QT3D_TRANSFORM_P_H
 
-#include <Qt3DCore/component.h>
 #include <Qt3DCore/qt3dcore_global.h>
-#include <QAtomicInt>
-#include <QMatrix4x4>
+#include <private/component_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class AbstractTransform;
-class TransformPrivate;
+class Transform;
 
-class QT3DCORESHARED_EXPORT Transform : public Component
+class TransformPrivate : public ComponentPrivate
 {
-    Q_OBJECT
-
 public:
-    explicit Transform(Node *parent = 0);
+    TransformPrivate(Transform *qq);
 
-    QMatrix4x4 matrix() const;
-    void setMatrix(const QMatrix4x4 &m);
+    Q_DECLARE_PUBLIC(Transform)
 
-    QVector3D rotationCenter() const;
-    void setRotationCenter(const QVector3D &rc);
+    mutable QAtomicInt m_transformsDirty;
+    QList<AbstractTransform*> m_transforms;
 
-    QList<AbstractTransform*> transforms() const;
-
-    template <class T>
-    T *findFirstTransform() const
-    {
-        T *transform = Q_NULLPTR;
-        Q_FOREACH (AbstractTransform *trans, transformList())
-            if ((transform = qobject_cast<T*>(trans)) != Q_NULLPTR)
-                break;
-        return transform;
-    }
-
-    void appendTransform(AbstractTransform *xform);
-    void removeTransform(AbstractTransform *xform);
-
-private Q_SLOTS:
-    void setTransformsDirty();
-
-protected:
-    QMatrix4x4 applyTransforms() const;
-    QList<AbstractTransform *> transformList() const;
-
-    Q_DECLARE_PRIVATE(Transform)
-    Transform(TransformPrivate &dd, Node *parent = 0);
+    mutable QMatrix4x4 m_matrix;
+    QMatrix4x4 m_sceneMatrix;
 };
 
-} // namespace Qt3D
+}
 
 QT_END_NAMESPACE
 
-#endif // QT3D_TRANSFORM_H
+#endif // QT3D_TRANSFORM_P_H

@@ -15,6 +15,7 @@ HEADERS += \
         $$PWD/rotatetransform.h \
         $$PWD/translatetransform.h \
         $$PWD/scaletransform.h \
-        $$PWD/transform.h
+        $$PWD/transform.h \
+        $$PWD/transform_p.h
 
 INCLUDEPATH += $$PWD
