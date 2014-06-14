@@ -55,7 +55,7 @@ namespace Qt3D {
 
 class CameraLensPrivate;
 
-class QT3DCORESHARED_EXPORT CameraLens : public Qt3D::Component
+class QT3DCORESHARED_EXPORT CameraLens : public Component
 {
     Q_OBJECT
 
@@ -108,7 +108,6 @@ public:
     QMatrix4x4 projectionMatrix() const;
 
 public slots:
-
     void setOrthographicProjection(float left, float right,
                                    float bottom, float top,
                                    float nearPlane, float farPlane);
@@ -129,10 +128,7 @@ Q_SIGNALS:
 
 protected:
     Q_DECLARE_PRIVATE(CameraLens)
-
-private:
-    CameraLensPrivate* d_ptr;
-
+    CameraLens(CameraLensPrivate &dd, Node *parent = 0);
 };
 
 } // Qt3D

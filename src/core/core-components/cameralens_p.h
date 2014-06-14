@@ -42,52 +42,35 @@
 #ifndef QT3D_CAMERALENS_P_H
 #define QT3D_CAMERALENS_P_H
 
-#include <QMatrix4x4>
+#include <Qt3DCore/private/component_p.h>
+#include "cameralens.h"
+
+#include <QtGui/qmatrix4x4.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class CameraLensPrivate
+class CameraLensPrivate : public ComponentPrivate
 {
 public:
-    CameraLensPrivate( CameraLens *qq ) :
-        q_ptr(qq)
-      , m_projectionType( CameraLens::OrthogonalProjection )
-      , m_nearPlane( 0.1f )
-      , m_farPlane( 1024.0f )
-      , m_fieldOfView( 25.0f )
-      , m_aspectRatio( 1.0f )
-      , m_left( -0.5 )
-      , m_right( 0.5f )
-      , m_bottom( -0.5f )
-      , m_top( 0.5f )
-      , m_syncNeeded( false )
-    {
-        updateOrthogonalProjection();
-    }
-
-    ~CameraLensPrivate()
-    {
-    }
+    CameraLensPrivate(CameraLens *qq);
 
     inline void updatePerpectiveProjection()
     {
         m_projectionMatrix.setToIdentity();
-        m_projectionMatrix.perspective( m_fieldOfView, m_aspectRatio, m_nearPlane, m_farPlane );
+        m_projectionMatrix.perspective(m_fieldOfView, m_aspectRatio, m_nearPlane, m_farPlane);
         m_syncNeeded = true;
     }
 
     inline void updateOrthogonalProjection()
     {
         m_projectionMatrix.setToIdentity();
-        m_projectionMatrix.ortho( m_left, m_right, m_bottom, m_top, m_nearPlane, m_farPlane );
+        m_projectionMatrix.ortho(m_left, m_right, m_bottom, m_top, m_nearPlane, m_farPlane);
         m_syncNeeded = true;
     }
 
-
-    Q_DECLARE_PUBLIC( CameraLens )
-    CameraLens *q_ptr;
+    Q_DECLARE_PUBLIC(CameraLens)
 
     CameraLens::ProjectionType m_projectionType;
 
