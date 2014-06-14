@@ -77,9 +77,7 @@ Q_SIGNALS:
 
 protected:
     Q_DECLARE_PRIVATE(RigidBody)
-
-    // TODO: Add usual protected ctor to Component
-    RigidBodyPrivate *d_ptr;
+    RigidBody(RigidBodyPrivate &dd, Qt3D::Node *parent = 0);
 };
 
 } // namespace BulletPhysics

@@ -1,6 +1,6 @@
 TARGET = Qt3DBulletPhysics
 
-QT += core 3dcore
+QT += core 3dcore core-private 3dcore-private
 
 DEFINES += QT3DBULLETPHYSICS_LIBRARY
 

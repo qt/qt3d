@@ -48,7 +48,7 @@ namespace Qt3D {
 namespace BulletPhysics {
 
 RigidBodyPrivate::RigidBodyPrivate(RigidBody *qq)
-    : q_ptr(qq)
+    : Qt3D::ComponentPrivate(qq)
     , m_mass(0.0f)
     , m_centerOfMass()
 {
@@ -56,8 +56,12 @@ RigidBodyPrivate::RigidBodyPrivate(RigidBody *qq)
 
 
 RigidBody::RigidBody(Qt3D::Node *parent)
-    : Qt3D::Component(parent)
-    , d_ptr(new RigidBodyPrivate(this))
+    : Qt3D::Component(*new RigidBodyPrivate(this), parent)
+{
+}
+
+RigidBody::RigidBody(RigidBodyPrivate &dd, Qt3D::Node *parent)
+    : Qt3D::Component(dd, parent)
 {
 }
 

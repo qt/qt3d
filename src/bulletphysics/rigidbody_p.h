@@ -43,20 +43,20 @@
 #define QT3D_BULLETPHYSICS_RIGIDBODY_P_H
 
 #include <QtGui/qvector3d.h>
+#include <Qt3DCore/private/component_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 namespace BulletPhysics {
 
-class RigidBodyPrivate
+class RigidBodyPrivate : public Qt3D::ComponentPrivate
 {
 public:
     explicit RigidBodyPrivate(RigidBody *qq);
 
     Q_DECLARE_PUBLIC(RigidBody)
 
-    RigidBody *q_ptr;
     float m_mass;
     QVector3D m_centerOfMass;
 };
