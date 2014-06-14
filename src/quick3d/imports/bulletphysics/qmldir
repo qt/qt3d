@@ -1,0 +1,3 @@
+module Qt3D.BulletPhysics
+plugin quick3dbulletphysicsplugin
+classname Qt3DQuick3DBulletPhysicsPlugin
