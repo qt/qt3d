@@ -42,6 +42,7 @@
 #ifndef NODE_P_H
 #define NODE_P_H
 
+#include <Qt3DCore/qt3dcore_global.h>
 #include <private/qobject_p.h>
 #include <Qt3DCore/node.h>
 
@@ -49,7 +50,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class NodePrivate : public QObjectPrivate
+class QT3DCORESHARED_EXPORT NodePrivate : public QObjectPrivate
 {
 public:
     NodePrivate(Node *qq)

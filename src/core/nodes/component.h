@@ -68,8 +68,7 @@ Q_SIGNALS:
 
 protected:
     Q_DECLARE_PRIVATE(Component)
-    // TODO: Use usual protected ctor
-    ComponentPrivate *d_ptr;
+    Component(ComponentPrivate &dd, Node *parent = 0);
 };
 
 } // namespace Qt3D

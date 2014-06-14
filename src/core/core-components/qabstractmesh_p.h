@@ -39,28 +39,34 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_COMPONENT_P_H
-#define QT3D_COMPONENT_P_H
+#ifndef QT3D_QABSTRACTMESH_P_H
+#define QT3D_QABSTRACTMESH_P_H
 
 #include <Qt3DCore/qt3dcore_global.h>
-#include <private/node_p.h>
+#include <private/component_p.h>
+
+#include <QtCore/qstring.h>
+#include <QtCore/quuid.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DCORESHARED_EXPORT ComponentPrivate : public NodePrivate
+class QAbstractMesh;
+
+class QAbstractMeshPrivate : public ComponentPrivate
 {
 public:
-    explicit ComponentPrivate(Component *qq);
+    QAbstractMeshPrivate(QAbstractMesh *qq);
 
-    Q_DECLARE_PUBLIC(Component)
+    Q_DECLARE_PUBLIC(QAbstractMesh)
 
-    bool m_enabled;
+    QString m_source;
+    const QUuid m_uuid;
 };
 
 }
 
 QT_END_NAMESPACE
 
-#endif // QT3D_COMPONENT_P_H
+#endif // QT3D_QABSTRACTMESH_P_H

@@ -57,6 +57,11 @@ Component::Component(Node *parent)
 {
 }
 
+Component::Component(ComponentPrivate &dd, Node *parent)
+    : Node(dd, parent)
+{
+}
+
 void Component::setEnabled(bool enabled)
 {
     Q_D(Component);

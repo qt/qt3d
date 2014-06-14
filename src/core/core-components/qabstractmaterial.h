@@ -66,10 +66,8 @@ Q_SIGNALS:
     void effectChanged();
 
 protected:
-    QAbstractMaterial(Node *parent, QAbstractMaterialPrivate *d);
-
     Q_DECLARE_PRIVATE(QAbstractMaterial)
-    QAbstractMaterialPrivate *d_ptr;
+    QAbstractMaterial(QAbstractMaterialPrivate &dd, Node *parent = 0);
 };
 
 } // Qt3D

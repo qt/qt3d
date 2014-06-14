@@ -40,6 +40,7 @@
 ****************************************************************************/
 
 #include "qabstractmesh.h"
+#include "qabstractmesh_p.h"
 
 /*!
  * \class QAbstractMesh
@@ -58,25 +59,20 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAbstractMeshPrivate
+QAbstractMeshPrivate::QAbstractMeshPrivate(QAbstractMesh *qq)
+    : ComponentPrivate(qq)
+    , m_uuid(QUuid::createUuid())
 {
-public:
-    QAbstractMeshPrivate(QAbstractMesh *qq)
-        : q_ptr(qq)
-        , m_uuid(QUuid::createUuid())
-    {}
+}
 
-
-    Q_DECLARE_PUBLIC(QAbstractMesh)
-    QAbstractMesh *q_ptr;
-
-    QString m_source;
-    const QUuid m_uuid;
-};
 
 QAbstractMesh::QAbstractMesh(Node *parent)
-    : Component(parent)
-    , d_ptr(new QAbstractMeshPrivate(this))
+    : Component(*new QAbstractMeshPrivate(this), parent)
+{
+}
+
+QAbstractMesh::QAbstractMesh(QAbstractMeshPrivate &dd, Node *parent)
+    : Component(dd, parent)
 {
 }
 

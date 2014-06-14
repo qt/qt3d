@@ -9,7 +9,8 @@ HEADERS += \
         $$PWD/qabstracttechnique.h \
         $$PWD/qabstractrenderpass.h \
         $$PWD/qabstracteffect.h \
-        $$PWD/qabstractshader.h
+        $$PWD/qabstractshader.h \
+        $$PWD/qabstractmesh_p.h
 
 
 SOURCES += \

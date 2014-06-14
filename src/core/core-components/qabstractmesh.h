@@ -64,13 +64,12 @@ public:
 
     const QUuid uuid() const;
 
-
 Q_SIGNALS:
     void sourceChanged();
 
 private:
     Q_DECLARE_PRIVATE(QAbstractMesh)
-    QAbstractMeshPrivate *d_ptr;
+    QAbstractMesh(QAbstractMeshPrivate &dd, Node *parent = 0);
 };
 
 } // Qt3D

@@ -42,6 +42,7 @@
 #ifndef ENTITY_P_H
 #define ENTITY_P_H
 
+#include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/private/node_p.h>
 #include "entity.h"
 
@@ -49,7 +50,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class EntityPrivate : public NodePrivate
+class QT3DCORESHARED_EXPORT EntityPrivate : public NodePrivate
 {
 public :
     EntityPrivate(Entity *qq)

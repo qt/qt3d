@@ -43,6 +43,7 @@
 #define QT3D_QABSTRACTMATERIAL_P_H
 
 #include <Qt3DCore/qt3dcore_global.h>
+#include <private/component_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -51,13 +52,13 @@ namespace Qt3D {
 class QAbstractMaterial;
 class QAbstractEffect;
 
-class QAbstractMaterialPrivate
+class QAbstractMaterialPrivate : public ComponentPrivate
 {
 public :
     QAbstractMaterialPrivate(QAbstractMaterial *qq);
 
     Q_DECLARE_PUBLIC(QAbstractMaterial)
-    QAbstractMaterial *q_ptr;
+
     QAbstractEffect *m_effect;
 };
 
