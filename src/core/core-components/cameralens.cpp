@@ -57,7 +57,6 @@ CameraLensPrivate::CameraLensPrivate(CameraLens *qq)
   , m_right(0.5f)
   , m_bottom(-0.5f)
   , m_top(0.5f)
-  , m_syncNeeded(false)
 {
     updateOrthogonalProjection();
 }

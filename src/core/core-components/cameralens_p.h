@@ -60,14 +60,12 @@ public:
     {
         m_projectionMatrix.setToIdentity();
         m_projectionMatrix.perspective(m_fieldOfView, m_aspectRatio, m_nearPlane, m_farPlane);
-        m_syncNeeded = true;
     }
 
     inline void updateOrthogonalProjection()
     {
         m_projectionMatrix.setToIdentity();
         m_projectionMatrix.ortho(m_left, m_right, m_bottom, m_top, m_nearPlane, m_farPlane);
-        m_syncNeeded = true;
     }
 
     Q_DECLARE_PUBLIC(CameraLens)
@@ -86,7 +84,6 @@ public:
     float m_top;
 
     mutable QMatrix4x4 m_projectionMatrix;
-    mutable bool m_syncNeeded;
 };
 
 } // namespace Qt3D
