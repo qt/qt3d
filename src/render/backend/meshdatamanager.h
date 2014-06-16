@@ -58,7 +58,11 @@ namespace Render {
 
 typedef QHandle<MeshData, 16> HMeshData;
 
-class MeshDataManager : public QResourcesManager<MeshData, QUuid, 16>
+class MeshDataManager : public QResourcesManager<MeshData,
+                                                 QUuid,
+                                                 16,
+                                                 Qt3D::ListAllocatingPolicy,
+                                                 Qt3D::LockingPolicy>
 {
 public:
     MeshDataManager();
