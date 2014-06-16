@@ -56,7 +56,11 @@ namespace Render {
 
 typedef QHandle<RenderTechnique, 16> HTechnique;
 
-class TechniqueManager : public QResourcesManager<RenderTechnique, QAbstractTechnique*, 16>
+class TechniqueManager : public QResourcesManager<RenderTechnique,
+                                                  QAbstractTechnique*,
+                                                  16,
+                                                  Qt3D::ArrayAllocatingPolicy,
+                                                  Qt3D::LockingPolicy>
 {
 public:
     TechniqueManager();
