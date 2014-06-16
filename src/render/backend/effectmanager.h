@@ -56,7 +56,11 @@ namespace Render {
 
 typedef QHandle<RenderEffect, 16> HEffect;
 
-class EffectManager : public QResourcesManager<RenderEffect, QAbstractEffect*, 16>
+class EffectManager : public QResourcesManager<RenderEffect,
+                                               QAbstractEffect*,
+                                               16,
+                                               Qt3D::ArrayAllocatingPolicy,
+                                               Qt3D::LockingPolicy>
 {
 public:
     EffectManager();
