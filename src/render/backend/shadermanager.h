@@ -54,7 +54,11 @@ namespace Render {
 
 typedef QHandle<RenderShader, 16> HShader;
 
-class ShaderManager : public QResourcesManager<RenderShader, QUuid, 16>
+class ShaderManager : public QResourcesManager<RenderShader,
+                                               QUuid,
+                                               16,
+                                               Qt3D::ArrayAllocatingPolicy,
+                                               Qt3D::LockingPolicy>
 {
 public:
     ShaderManager();

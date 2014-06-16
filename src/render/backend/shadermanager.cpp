@@ -48,7 +48,12 @@ namespace Qt3D {
 
 namespace Render {
 
-ShaderManager::ShaderManager() : QResourcesManager<RenderShader, QUuid, 16>()
+ShaderManager::ShaderManager()
+    : QResourcesManager<RenderShader,
+                        QUuid,
+                        16,
+                        Qt3D::ArrayAllocatingPolicy,
+                        Qt3D::LockingPolicy>()
 {
 }
 
