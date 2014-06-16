@@ -55,7 +55,10 @@ namespace Render {
 
 typedef QHandle<RenderCamera, 8> HCamera;
 
-class CameraManager : public QResourcesManager<RenderCamera, QUuid, 8>
+class CameraManager : public QResourcesManager<RenderCamera,
+                                               QUuid,
+                                               8,
+                                               Qt3D::ListAllocatingPolicy>
 {
 public:
     CameraManager();
