@@ -78,8 +78,6 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
-QMutex RenderView::m_mutex;
-
 RenderView::RenderView()
     : m_renderer(Q_NULLPTR)
     , m_techniqueFilter(0)
@@ -233,14 +231,12 @@ void RenderView::setCommandShaderTechniqueEffect(RenderCommand *command)
         // The Renderer knows that if one of those is null, a default material / technique / effect as to be used
         QAbstractEffect *fEffect = material->peer()->effect();
         // TO DO : Replace the locker by locking policies in the Resources Managers
-        QMutexLocker locker(&RenderView::m_mutex);
         RenderEffect *effect = m_renderer->effectManager()->lookupResource(fEffect);
         if (effect == Q_NULLPTR) {
             effect = m_renderer->effectManager()->getOrCreateResource(fEffect);
             effect->setRendererAspect(m_renderer->rendererAspect());
             effect->setPeer(fEffect);
         }
-        locker.unlock();
 
         // Check to see if the Effect contains a Technique matching the criteria defined in the Technique Filter
         // Effect (RenderEffect) contains a list of QAbstractTechnique that is updated to reflect the one of its frontend Effect
@@ -279,8 +275,6 @@ void RenderView::setCommandShaderTechniqueEffect(RenderCommand *command)
                     qFatal("No Technique was found matching the criteria defined in the TechniqueFilter : Cannot Continue");
             }
         }
-        // We need locking at the moment to ensure that a single thread is creating the RenderTechnique
-        locker.relock();
         command->m_technique = m_renderer->techniqueManager()->lookupHandle(tech);
         RenderTechnique *technique = Q_NULLPTR;
         if ((technique = m_renderer->techniqueManager()->data(command->m_technique)) == Q_NULLPTR) {
@@ -291,7 +285,6 @@ void RenderView::setCommandShaderTechniqueEffect(RenderCommand *command)
                     technique = m_renderer->techniqueManager()->data(command->m_technique);
                     technique->setRenderer(m_renderer);
                     technique->setPeer(qobject_cast<Technique *>(t));
-                    locker.unlock();
                     break;
                 }
             }
@@ -308,18 +301,15 @@ void RenderView::setCommandShaderTechniqueEffect(RenderCommand *command)
         // Get Parameters only from Material as a first step
         if (technique != Q_NULLPTR) {
             Q_FOREACH (QAbstractRenderPass *pass, technique->peer()->renderPasses()) {
-                locker.relock();
                 RenderRenderPass *rPass = m_renderer->renderPassManager()->lookupResource(pass);
                 if (rPass == Q_NULLPTR) {
                     rPass = m_renderer->renderPassManager()->getOrCreateResource(pass);
                     rPass->setRenderer(m_renderer);
                     rPass->setPeer(qobject_cast<RenderPass*>(pass));
                 }
-                locker.unlock();
 
                 if (rPass->shaderProgram() != Q_NULLPTR) {
                     // Index RenderShader by Shader UUID
-                    locker.relock();
                     command->m_shader = m_renderer->shaderManager()->lookupHandle(rPass->shaderProgram()->uuid());
                     RenderShader *shader = Q_NULLPTR;
                     if ((shader = m_renderer->shaderManager()->data(command->m_shader)) == Q_NULLPTR) {
@@ -327,7 +317,6 @@ void RenderView::setCommandShaderTechniqueEffect(RenderCommand *command)
                         shader->setPeer(qobject_cast<ShaderProgram*>(rPass->shaderProgram()));
                         command->m_shader = m_renderer->shaderManager()->lookupHandle(rPass->shaderProgram()->uuid());
                     }
-                    locker.unlock();
                     // TO DO : To be corrected later on
                     command->m_stateSet = qobject_cast<RenderPass*>(pass)->stateSet();
 
