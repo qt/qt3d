@@ -48,7 +48,12 @@ namespace Qt3D {
 
 namespace Render {
 
-RenderPassManager::RenderPassManager() : QResourcesManager<RenderRenderPass, QAbstractRenderPass *, 16>()
+RenderPassManager::RenderPassManager()
+    : QResourcesManager<RenderRenderPass,
+                        QAbstractRenderPass *,
+                        16,
+                        Qt3D::ArrayAllocatingPolicy,
+                        Qt3D::LockingPolicy>()
 {
 }
 
