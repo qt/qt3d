@@ -62,10 +62,13 @@ class TechniqueFilter;
 class ViewportNode;
 class RenderCamera;
 class RenderMesh;
+class RenderEffect;
+class RenderRenderPass;
 
 typedef QHandle<RenderCamera, 8> HCamera;
 typedef QHandle<RenderMesh, 16> HMesh;
 typedef QHandle<RenderMaterial, 16> HMaterial;
+typedef QHandle<RenderTechnique, 16> HTechnique;
 
 // This class is kind of analogous to RenderBin but I want to avoid trampling
 // on that until we get this working
@@ -96,14 +99,21 @@ public:
     RenderCamera *camera() const;
 
 private:
-    void setCommandShaderTechniqueEffect(RenderCommand *command);
     void computeViewport(ViewportNode *viewportNode);
+
+    RenderMaterial *findMaterialForMeshNode(const QUuid &entityUuid);
+    RenderEffect *findEffectForMaterial(RenderMaterial *material);
+    RenderTechnique *findTechniqueForEffect(RenderEffect *effect);
+    QList<RenderRenderPass *> findRenderPassesForTechnique(RenderTechnique *technique);
+    void setShaderAndUniforms(RenderCommand *command, RenderRenderPass *pass, const QHash<QString, Parameter *> parameters);
+    QHash<QString, Parameter *> parametersFromMaterialEffectTechnique(RenderMaterial *material, RenderEffect *effect, RenderTechnique *technique);
 
     Renderer *m_renderer;
     HCamera m_camera;
     TechniqueFilter *m_techniqueFilter;
     RenderPassFilter *m_passFilter;
     QRectF m_viewport;
+
     // We do not use pointers to RenderNodes or Drawable's here so that the
     // render aspect is free to change the drawables on the next frame whilst
     // the render thread is submitting these commands.

@@ -181,26 +181,39 @@ void RenderView::buildRenderCommands(RenderNode *node)
             RenderMesh *mesh = m_renderer->meshManager()->data(meshHandle);
             if (mesh == Q_NULLPTR || mesh->peer() == Q_NULLPTR)
                 return ;
-            RenderCommand *command = new RenderCommand();
-            command->m_stateSet = Q_NULLPTR;
-            command->m_mesh = meshHandle;
             if (mesh->meshDirty()) {
                 mesh->setMeshData(m_renderer->meshDataManager()->lookupHandle(mesh->peer()->uuid()));
                 qCDebug(Backend) << Q_FUNC_INFO << "Updating RenderMesh -> MeshData handle";
             }
-            command->m_meshData = mesh->meshData();
-            command->m_instancesCount = 0;
-            command->m_worldMatrix = *(node->worldTransform());
-            // Sets handle to entity material. If there is no material associated to the entity,
-            // the handle will be invalid and a default material will be used during rendering
-            command->m_material = m_renderer->materialManager()->lookupHandle(frontEndEntity->uuid());
 
-            // The RenderTechnique && RenderPass instances have to be created in the RenderViewJobs
-            // As it offers a way to create instances only for techniques and passes that are used.
-            setCommandShaderTechniqueEffect(command);
+            RenderMaterial *material = findMaterialForMeshNode(frontEndEntity->uuid());
+            RenderEffect *effect = findEffectForMaterial(material);
+            RenderTechnique *technique = findTechniqueForEffect(effect);
+            QList<RenderRenderPass *> passes = findRenderPassesForTechnique(technique);
+            QHash<QString, Parameter *> parameters = parametersFromMaterialEffectTechnique(material, effect, technique);
 
-            // Append renderCommand
-            m_commands.append(command);
+            Q_FOREACH (RenderRenderPass *pass, passes) {
+                RenderCommand *command = new RenderCommand();
+                command->m_mesh = meshHandle;
+                command->m_meshData = mesh->meshData();
+                command->m_instancesCount = 0;
+                command->m_worldMatrix = *(node->worldTransform());
+                command->m_stateSet = Q_NULLPTR;
+                setShaderAndUniforms(command, pass, parameters);
+                m_commands.append(command);
+            }
+
+            if (passes.isEmpty()) {
+                qCritical() << "No RenderPasses found. Make sure you have properly set your Material, Technique and Effect. Rendering using default RenderPass";
+                RenderCommand *command = new RenderCommand();
+                command->m_mesh = meshHandle;
+                command->m_meshData = mesh->meshData();
+                command->m_instancesCount = 0;
+                command->m_worldMatrix = *(node->worldTransform());
+                command->m_stateSet = Q_NULLPTR;
+                m_commands.append(command);
+            }
+
         }
     }
 
@@ -220,44 +233,55 @@ RenderCamera *RenderView::camera() const
     return m_renderer->cameraManager()->data(m_camera);
 }
 
-void RenderView::setCommandShaderTechniqueEffect(RenderCommand *command)
+RenderMaterial *RenderView::findMaterialForMeshNode(const QUuid &entityUuid)
 {
-    RenderMaterial *material = m_renderer->materialManager()->data(command->m_material);
-    if (m_techniqueFilter != Q_NULLPTR && material != Q_NULLPTR &&
-            !m_techniqueFilter->filters().empty() && material->peer() != Q_NULLPTR) {
-        // The VAO Handle is set directly in the renderer thread so as to avoid having to use a mutex here
-        // Set shader, technique, and effect by basically doing :
-        // ShaderProgramManager[MaterialManager[frontentEntity->uuid()]->Effect->Techniques[TechniqueFilter->name]->RenderPasses[RenderPassFilter->name]];
-        // The Renderer knows that if one of those is null, a default material / technique / effect as to be used
+    // Material is created by the RenderSceneBuilder or RenderNode if it is appended through a change
+    // Therefore we only perform lookups in RenderView
+    return m_renderer->materialManager()->renderMaterial(entityUuid);
+}
+
+// The RenderTechnique && RenderPass instances have to be created in the RenderViewJobs
+// As it offers a way to create instances only for techniques and passes that are used.
+
+RenderEffect *RenderView::findEffectForMaterial(RenderMaterial *material)
+{
+    RenderEffect *effect = Q_NULLPTR;
+    if (material != Q_NULLPTR && material->peer() != Q_NULLPTR) {
         QAbstractEffect *fEffect = material->peer()->effect();
         // TO DO : Replace the locker by locking policies in the Resources Managers
-        RenderEffect *effect = m_renderer->effectManager()->lookupResource(fEffect);
-        if (effect == Q_NULLPTR) {
+        if (fEffect != Q_NULLPTR && (effect = m_renderer->effectManager()->lookupResource(fEffect)) == Q_NULLPTR) {
             effect = m_renderer->effectManager()->getOrCreateResource(fEffect);
             effect->setRendererAspect(m_renderer->rendererAspect());
             effect->setPeer(fEffect);
         }
+    }
+    return effect;
+}
 
-        // Check to see if the Effect contains a Technique matching the criteria defined in the Technique Filter
-        // Effect (RenderEffect) contains a list of QAbstractTechnique that is updated to reflect the one of its frontend Effect
-        // using the QChangeArbiter to avoid race conditions
-        // On the other hand, we should maybe rework the filtering below as it accesses the criteria of the Frontend QML texture
-        // meaning that those could be changed while we're reading them.
-        // That would imply creating a RenderTechnique for each Technique defined in the Effect and having each RenderTechnique contain
-        // a list of criteria
-        // If TechniqueCriteria and their values were defined as constant, the filtering below would be enough
+RenderTechnique *RenderView::findTechniqueForEffect(RenderEffect *effect)
+{
+    // Check to see if the Effect contains a Technique matching the criteria defined in the Technique Filter
+    // Effect (RenderEffect) contains a list of QAbstractTechnique that is updated to reflect the one of its frontend Effect
+    // using the QChangeArbiter to avoid race conditions
+    // On the other hand, we should maybe rework the filtering below as it accesses the criteria of the Frontend QML texture
+    // meaning that those could be changed while we're reading them.
+    // That would imply creating a RenderTechnique for each Technique defined in the Effect and having each RenderTechnique contain
+    // a list of criteria
+    // If TechniqueCriteria and their values were defined as constant, the filtering below would be enough
+
+    // Can we fully perform the technique selection here ?
+    // If we need to check for extension / vendor / OpenGL Version we would need access to
+    // The QGraphicContext which is only avalaible in the Renderer's thread
+    // Current Plan : Have an interface accessible through the Renderer from that thread where we have
+    // all the needed information : Vendor, Extensions, GL Versions .... so that we can perform the checks here
+    // Also we could define that for defined criterionTypes (Vendor, GL_Version ...) the technique filtering doesn't
+    // depend on the TechniqueFilter but entirely on what the system GL interface gives us
+    // Furthermode, finding a way to perform this filtering as little as possible could provide some performance improvements
+    if (effect != Q_NULLPTR) {
         Technique *tech = Q_NULLPTR;
         Q_FOREACH (QAbstractTechnique *technique, effect->techniques()) {
             if ((tech = qobject_cast<Technique*>(technique)) != Q_NULLPTR) {
                 bool foundMatchingTechnique = true;
-                // Can we fully perform the technique selection here ?
-                // If we need to check for extension / vendor / OpenGL Version we would need access to
-                // The QGraphicContext which is only avalaible in the Renderer's thread
-                // Current Plan : Have an interface accessible through the Renderer from that thread where we have
-                // all the needed information : Vendor, Extensions, GL Versions .... so that we can perform the checks here
-                // Also we could define that for defined criterionTypes (Vendor, GL_Version ...) the technique filtering doesn't
-                // depend on the TechniqueFilter but entirely on what the system GL interface gives us
-                // Furthermode, finding a way to perform this filtering as little as possible could provide some performance improvements
                 Q_FOREACH (TechniqueCriterion *filterCriterion, m_techniqueFilter->filters()) {
                     bool findMatch = false;
                     Q_FOREACH (TechniqueCriterion *techCriterion, tech->criteria()) {
@@ -275,80 +299,122 @@ void RenderView::setCommandShaderTechniqueEffect(RenderCommand *command)
                     qFatal("No Technique was found matching the criteria defined in the TechniqueFilter : Cannot Continue");
             }
         }
-        command->m_technique = m_renderer->techniqueManager()->lookupHandle(tech);
         RenderTechnique *technique = Q_NULLPTR;
-        if ((technique = m_renderer->techniqueManager()->data(command->m_technique)) == Q_NULLPTR) {
+        if ((technique = m_renderer->techniqueManager()->lookupResource(tech)) == Q_NULLPTR) {
             // Tries to select technique based on criteria defined in the TechniqueFilter
             Q_FOREACH (QAbstractTechnique *t, effect->techniques()) {
                 if (qobject_cast<Technique *>(t) && t == tech) {
-                    command->m_technique = m_renderer->techniqueManager()->getOrAcquireHandle(t);
-                    technique = m_renderer->techniqueManager()->data(command->m_technique);
+                    technique = m_renderer->techniqueManager()->getOrCreateResource(t);
                     technique->setRenderer(m_renderer);
                     technique->setPeer(qobject_cast<Technique *>(t));
                     break;
                 }
             }
-            if (technique == Q_NULLPTR) {
-                command->m_technique = HTechnique();
-                qCCritical(Render::Backend) << Q_FUNC_INFO << "No technique found for technique filter";
+        }
+        if (technique == Q_NULLPTR)
+            qCCritical(Render::Backend) << Q_FUNC_INFO << "No technique found for technique filter";
+        return technique;
+    }
+    return Q_NULLPTR;
+}
+
+QList<RenderRenderPass *> RenderView::findRenderPassesForTechnique(RenderTechnique *technique)
+{
+    QList<RenderRenderPass *> passes;
+    if (technique != Q_NULLPTR && technique->peer() != Q_NULLPTR) {
+        // TO DO : Improve so we handle the case where the peer or renderPasses in the peer change
+        Q_FOREACH (QAbstractRenderPass *pass, technique->peer()->renderPasses()) {
+            // TO DO : IF PASS MATCHES CRITERIA
+            RenderRenderPass *rPass = m_renderer->renderPassManager()->lookupResource(pass);
+            if (rPass == Q_NULLPTR) {
+                rPass = m_renderer->renderPassManager()->getOrCreateResource(pass);
+                rPass->setRenderer(m_renderer);
+                rPass->setPeer(qobject_cast<RenderPass*>(pass));
+            }
+            passes << rPass;
+        }
+    }
+    return passes;
+}
+
+QHash<QString, Parameter *> RenderView::parametersFromMaterialEffectTechnique(RenderMaterial *material,
+                                                                              RenderEffect *effect,
+                                                                              RenderTechnique *technique)
+{
+    QHash<QString, Parameter *> params;
+
+    // TO DO : To complete by addind parameters to effect and technique
+    // Material is preferred over Effect
+    // Effect is preferred over Technique
+    // By filling the hash in reverse preference order, we're ensured that we preserve preference
+
+    //    Q_FOREACH (Parameter *param, technique->parameters()) {
+    //
+    //    }
+
+    //    Q_FOREACH (Parameter *param, effect->parameters()) {
+    //
+    //    }
+
+    if (material != Q_NULLPTR)
+        Q_FOREACH (Parameter *param, material->parameters()) {
+            params[param->name()] = param;
+        }
+
+    return params;
+}
+
+void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *rPass, const QHash<QString, Parameter *> parameters)
+{
+    // The VAO Handle is set directly in the renderer thread so as to avoid having to use a mutex here
+    // Set shader, technique, and effect by basically doing :
+    // ShaderProgramManager[MaterialManager[frontentEntity->uuid()]->Effect->Techniques[TechniqueFilter->name]->RenderPasses[RenderPassFilter->name]];
+    // The Renderer knows that if one of those is null, a default material / technique / effect as to be used
+
+    // Find all RenderPasses (in order) matching values set in the RenderPassFilter
+    // Get list of parameters for the Material, Effect, and Technique
+    // For each ParameterBinder in the RenderPass -> create a QUniformPack
+    // Once that works, improve that to try and minimize QUniformPack updates
+    // Get Parameters only from Material as a first step
+
+    if (rPass != Q_NULLPTR && rPass->shaderProgram() != Q_NULLPTR) {
+        // Index RenderShader by Shader UUID
+        command->m_shader = m_renderer->shaderManager()->lookupHandle(rPass->shaderProgram()->uuid());
+        RenderShader *shader = Q_NULLPTR;
+        if ((shader = m_renderer->shaderManager()->data(command->m_shader)) == Q_NULLPTR) {
+            shader = m_renderer->shaderManager()->getOrCreateResource(rPass->shaderProgram()->uuid());
+            shader->setPeer(qobject_cast<ShaderProgram*>(rPass->shaderProgram()));
+            command->m_shader = m_renderer->shaderManager()->lookupHandle(rPass->shaderProgram()->uuid());
+        }
+        // TO DO : To be corrected later on
+        //        command->m_stateSet = qobject_cast<RenderPass*>(pass)->stateSet();
+
+        // Builds the QUniformPack, sets shader standard uniforms and store attributes name / glname bindings
+        Q_FOREACH (ParameterBinder *binding, rPass->bindings()) {
+            if (binding->bindingType() == ParameterBinder::Uniform) {
+                if (!parameters.contains(binding->parameterName())) {
+                    qCCritical(Render::Backend) << Q_FUNC_INFO << "Trying to bind a Parameter that hasn't been defined " << binding->parameterName();
+                }
+                else {
+                    Parameter *param = parameters[binding->parameterName()];
+                    if (!param->isStandardUniform()) {
+                        if (param->datatype() >= Parameter::Float && param->datatype() <= Parameter::FloatMat4)
+                            command->m_uniforms.setUniform(binding->shaderVariableName(), QUniformValue(QUniformValue::Float, param->value()));
+                        else if (param->datatype() >= Parameter::Int)
+                            command->m_uniforms.setUniform(binding->shaderVariableName(), QUniformValue(QUniformValue::Int, param->value()));
+                    }
+                    else {
+                        shader->setStandardUniform(param->standardUniform(), binding->shaderVariableName());
+                    }
+                }
+            }
+            else { // Attribute
+                command->m_parameterAttributeToShaderNames[binding->parameterName()] = binding->shaderVariableName();
             }
         }
-        // Load RenderPass and ShaderPrograms
-        // Find all RenderPasses (in order) matching values set in the RenderPassFilter
-        // Get list of parameters for the Material, Effect, and Technique
-        // For each ParameterBinder in the RenderPass -> create a QUniformPack
-        // Once that works, improve that to try and minimize QUniformPack updates
-        // Get Parameters only from Material as a first step
-        if (technique != Q_NULLPTR) {
-            Q_FOREACH (QAbstractRenderPass *pass, technique->peer()->renderPasses()) {
-                RenderRenderPass *rPass = m_renderer->renderPassManager()->lookupResource(pass);
-                if (rPass == Q_NULLPTR) {
-                    rPass = m_renderer->renderPassManager()->getOrCreateResource(pass);
-                    rPass->setRenderer(m_renderer);
-                    rPass->setPeer(qobject_cast<RenderPass*>(pass));
-                }
-
-                if (rPass->shaderProgram() != Q_NULLPTR) {
-                    // Index RenderShader by Shader UUID
-                    command->m_shader = m_renderer->shaderManager()->lookupHandle(rPass->shaderProgram()->uuid());
-                    RenderShader *shader = Q_NULLPTR;
-                    if ((shader = m_renderer->shaderManager()->data(command->m_shader)) == Q_NULLPTR) {
-                        shader = m_renderer->shaderManager()->getOrCreateResource(rPass->shaderProgram()->uuid());
-                        shader->setPeer(qobject_cast<ShaderProgram*>(rPass->shaderProgram()));
-                        command->m_shader = m_renderer->shaderManager()->lookupHandle(rPass->shaderProgram()->uuid());
-                    }
-                    // TO DO : To be corrected later on
-                    command->m_stateSet = qobject_cast<RenderPass*>(pass)->stateSet();
-
-                    // Builds the QUniformPack, sets shader standard uniforms and store attributes name / glname bindings
-                    Q_FOREACH (ParameterBinder *binding, rPass->bindings()) {
-                        if (binding->bindingType() == ParameterBinder::Uniform) {
-                            if (!material->parameters().contains(binding->parameterName())) {
-                                qCCritical(Render::Backend) << Q_FUNC_INFO << "Trying to bind a Parameter that hasn't been defined " << binding->parameterName();
-                            }
-                            else {
-                                Parameter *param = material->parameters()[binding->parameterName()];
-                                if (!param->isStandardUniform()) {
-                                    if (param->datatype() >= Parameter::Float && param->datatype() <= Parameter::FloatMat4)
-                                        command->m_uniforms.setUniform(binding->shaderVariableName(), QUniformValue(QUniformValue::Float, param->value()));
-                                    else if (param->datatype() >= Parameter::Int)
-                                        command->m_uniforms.setUniform(binding->shaderVariableName(), QUniformValue(QUniformValue::Int, param->value()));
-                                }
-                                else {
-                                    shader->setStandardUniform(param->standardUniform(), binding->shaderVariableName());
-                                }
-                            }
-                        }
-                        else { // Attribute
-                            command->m_parameterAttributeToShaderNames[binding->parameterName()] = binding->shaderVariableName();
-                        }
-                    }
-                }
-            }
-        }
-        else {
-            qCWarning(Render::Backend) << Q_FUNC_INFO << "Using default effect as none was provided";
-        }
+    }
+    else {
+        qCWarning(Render::Backend) << Q_FUNC_INFO << "Using default effect as none was provided";
     }
 }
 

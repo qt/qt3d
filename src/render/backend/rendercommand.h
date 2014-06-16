@@ -91,8 +91,6 @@ public:
     QUniformPack m_uniforms; // Might need to be reworked so as to be able to destroy the
                             // RenderTexture while submission is happening.
     GLint m_instancesCount; // Number of instances of the mesh, if 0 regular draw otherwise glDrawArraysInstanced or glDrawElementsInstanced
-    HMaterial m_material;
-    HTechnique m_technique;
     DrawStateSet *m_stateSet;
 
     // A QAttribute pack might be interesting
