@@ -45,7 +45,7 @@
 #include <QtGlobal>
 #include <QUuid>
 #include <Qt3DCore/qabstractrenderpass.h>
-#include <Qt3DCore/qabstractresourcesmanager.h>
+#include <Qt3DCore/qresourcesmanager.h>
 #include <Qt3DRenderer/rendernode.h>
 
 QT_BEGIN_NAMESPACE
@@ -56,7 +56,7 @@ namespace Render {
 
 typedef QHandle<RenderNode, 16> HRenderNode;
 
-class RenderNodesManager : public QAbstractResourcesManager<RenderNode, QUuid, 16>
+class RenderNodesManager : public QResourcesManager<RenderNode, QUuid, 16>
 {
 public:
     RenderNodesManager();

@@ -48,7 +48,7 @@ namespace Qt3D {
 namespace Render {
 
 CameraManager::CameraManager() :
-    QAbstractResourcesManager<RenderCamera, QUuid, 8>()
+    QResourcesManager<RenderCamera, QUuid, 8>()
 {
 }
 

@@ -48,7 +48,7 @@ namespace Qt3D {
 namespace Render {
 
 MaterialManager::MaterialManager() :
-    QAbstractResourcesManager<RenderMaterial, Material*, 16>()
+    QResourcesManager<RenderMaterial, Material*, 16>()
 {
 }
 

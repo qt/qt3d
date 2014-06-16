@@ -48,7 +48,7 @@ namespace Qt3D {
 namespace Render {
 
 RenderNodesManager::RenderNodesManager() :
-    QAbstractResourcesManager<RenderNode, QUuid, 16>()
+    QResourcesManager<RenderNode, QUuid, 16>()
 {
 }
 

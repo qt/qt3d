@@ -42,7 +42,7 @@
 #ifndef QT3D_RENDER_SHADERMANAGER_H
 #define QT3D_RENDER_SHADERMANAGER_H
 
-#include <Qt3DCore/qabstractresourcesmanager.h>
+#include <Qt3DCore/qresourcesmanager.h>
 #include <Qt3DCore/qhandle.h>
 #include <Qt3DRenderer/rendershader.h>
 
@@ -54,7 +54,7 @@ namespace Render {
 
 typedef QHandle<RenderShader, 16> HShader;
 
-class ShaderManager : public QAbstractResourcesManager<RenderShader, QUuid, 16>
+class ShaderManager : public QResourcesManager<RenderShader, QUuid, 16>
 {
 public:
     ShaderManager();

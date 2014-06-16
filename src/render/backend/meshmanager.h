@@ -44,7 +44,7 @@
 
 #include <Qt3DCore/qhandle.h>
 #include <Qt3DRenderer/rendermesh.h>
-#include <Qt3DCore/qabstractresourcesmanager.h>
+#include <Qt3DCore/qresourcesmanager.h>
 #include <QUuid>
 
 QT_BEGIN_NAMESPACE
@@ -55,7 +55,7 @@ namespace Render {
 
 typedef QHandle<RenderMesh, 16> HMesh;
 
-class MeshManager : public QAbstractResourcesManager<RenderMesh, QUuid, 16>
+class MeshManager : public QResourcesManager<RenderMesh, QUuid, 16>
 {
 public:
     MeshManager();

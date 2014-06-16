@@ -49,7 +49,7 @@ namespace Qt3D {
 namespace Render {
 
 EffectManager::EffectManager()
-    : QAbstractResourcesManager<RenderEffect, QAbstractEffect*, 16>()
+    : QResourcesManager<RenderEffect, QAbstractEffect*, 16>()
 {
 }
 

@@ -41,7 +41,7 @@
 
 #include <QtTest/QtTest>
 #include <QList>
-#include <Qt3DCore/qabstractresourcesmanager.h>
+#include <Qt3DCore/qresourcesmanager.h>
 #include <Qt3DCore/qhandle.h>
 
 class tst_ArrayResourcesManager : public QObject
@@ -77,9 +77,9 @@ typedef Qt3D::QHandle<tst_ArrayResource, 16> tHandle16;
 
 void tst_ArrayResourcesManager::createResourcesManager()
 {
-    Qt3D::QAbstractResourcesManager<tst_ArrayResource, int, 16> manager16;
-    Qt3D::QAbstractResourcesManager<tst_ArrayResource, int, 4> manager4;
-    Qt3D::QAbstractResourcesManager<tst_ArrayResource, int, 8> manager8;
+    Qt3D::QResourcesManager<tst_ArrayResource, int, 16> manager16;
+    Qt3D::QResourcesManager<tst_ArrayResource, int, 4> manager4;
+    Qt3D::QResourcesManager<tst_ArrayResource, int, 8> manager8;
     QVERIFY(manager16.maxResourcesEntries() == 65536);
     QVERIFY(manager8.maxResourcesEntries() == 256);
     QVERIFY(manager4.maxResourcesEntries() == 16);
@@ -91,7 +91,7 @@ void tst_ArrayResourcesManager::createResourcesManager()
  */
 void tst_ArrayResourcesManager::acquireResources()
 {
-    Qt3D::QAbstractResourcesManager<tst_ArrayResource, uint, 4> manager;
+    Qt3D::QResourcesManager<tst_ArrayResource, uint, 4> manager;
 
     QList<tHandle4> handles;
 
@@ -111,7 +111,7 @@ void tst_ArrayResourcesManager::acquireResources()
 void tst_ArrayResourcesManager::getResources()
 {
 
-    Qt3D::QAbstractResourcesManager<tst_ArrayResource, int, 8> manager;
+    Qt3D::QResourcesManager<tst_ArrayResource, int, 8> manager;
     QList<tst_ArrayResource *> resources;
     QList<tHandle8> handles;
 
@@ -142,7 +142,7 @@ void tst_ArrayResourcesManager::getResources()
  */
 void tst_ArrayResourcesManager::registerResourcesResize()
 {
-    Qt3D::QAbstractResourcesManager<tst_ArrayResource, uint, 16> manager;
+    Qt3D::QResourcesManager<tst_ArrayResource, uint, 16> manager;
     QList<tHandle16> handles;
 
     for (uint i = 0; i < 2; i++) {
@@ -170,7 +170,7 @@ void tst_ArrayResourcesManager::registerResourcesResize()
  */
 void tst_ArrayResourcesManager::removeResource()
 {
-    Qt3D::QAbstractResourcesManager<tst_ArrayResource, int> manager;
+    Qt3D::QResourcesManager<tst_ArrayResource, int> manager;
 
     QList<tst_ArrayResource *> resources;
     QList<tHandle> handles;
@@ -194,7 +194,7 @@ void tst_ArrayResourcesManager::removeResource()
  */
 void tst_ArrayResourcesManager::resetResource()
 {
-    Qt3D::QAbstractResourcesManager<tst_ArrayResource, uint> manager;
+    Qt3D::QResourcesManager<tst_ArrayResource, uint> manager;
 
     QList<tst_ArrayResource *> resources;
     QList<tHandle16> handles;
@@ -221,7 +221,7 @@ void tst_ArrayResourcesManager::resetResource()
 
 void tst_ArrayResourcesManager::lookupResource()
 {
-    Qt3D::QAbstractResourcesManager<tst_ArrayResource, uint> manager;
+    Qt3D::QResourcesManager<tst_ArrayResource, uint> manager;
 
     QList<tst_ArrayResource *> resources;
     QList<tHandle16> handles;

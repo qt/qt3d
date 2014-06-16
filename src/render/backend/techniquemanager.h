@@ -42,7 +42,7 @@
 #ifndef QT3D_RENDER_TECHNIQUEMANAGER_H
 #define QT3D_RENDER_TECHNIQUEMANAGER_H
 
-#include <Qt3DCore/qabstractresourcesmanager.h>
+#include <Qt3DCore/qresourcesmanager.h>
 #include <Qt3DCore/qhandle.h>
 #include <Qt3DRenderer/rendertechnique.h>
 
@@ -56,7 +56,7 @@ namespace Render {
 
 typedef QHandle<RenderTechnique, 16> HTechnique;
 
-class TechniqueManager : public QAbstractResourcesManager<RenderTechnique, QAbstractTechnique*, 16>
+class TechniqueManager : public QResourcesManager<RenderTechnique, QAbstractTechnique*, 16>
 {
 public:
     TechniqueManager();

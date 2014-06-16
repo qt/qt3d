@@ -48,7 +48,7 @@ namespace Qt3D {
 
 namespace Render {
 
-TechniqueManager::TechniqueManager() : QAbstractResourcesManager<RenderTechnique, QAbstractTechnique*, 16>()
+TechniqueManager::TechniqueManager() : QResourcesManager<RenderTechnique, QAbstractTechnique*, 16>()
 {
 }
 

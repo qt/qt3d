@@ -48,7 +48,7 @@ namespace Qt3D {
 
 namespace Render {
 
-VAOManager::VAOManager() : QAbstractResourcesManager<QOpenGLVertexArrayObject*, QPair<HMeshData, HShader>, 16>()
+VAOManager::VAOManager() : QResourcesManager<QOpenGLVertexArrayObject*, QPair<HMeshData, HShader>, 16>()
 {
 }
 

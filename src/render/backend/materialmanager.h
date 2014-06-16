@@ -44,7 +44,7 @@
 
 #include <QtGlobal>
 #include <QUuid>
-#include <Qt3DCore/qabstractresourcesmanager.h>
+#include <Qt3DCore/qresourcesmanager.h>
 #include <Qt3DRenderer/rendermaterial.h>
 
 QT_BEGIN_NAMESPACE
@@ -57,7 +57,7 @@ namespace Render {
 
 typedef QHandle<RenderMaterial, 16> HMaterial;
 
-class MaterialManager : public QAbstractResourcesManager<RenderMaterial, Material*, 16>
+class MaterialManager : public QResourcesManager<RenderMaterial, Material*, 16>
 {
 public:
     MaterialManager();

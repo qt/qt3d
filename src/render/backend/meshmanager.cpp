@@ -47,7 +47,7 @@ namespace Qt3D {
 
 namespace Render {
 
-MeshManager::MeshManager() : QAbstractResourcesManager<RenderMesh, QUuid, 16>()
+MeshManager::MeshManager() : QResourcesManager<RenderMesh, QUuid, 16>()
 {
 }
 

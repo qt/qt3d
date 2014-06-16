@@ -47,7 +47,7 @@ namespace Qt3D {
 
 namespace Render {
 
-MatrixManager::MatrixManager() : QAbstractResourcesManager<QMatrix4x4, QUuid, 16>()
+MatrixManager::MatrixManager() : QResourcesManager<QMatrix4x4, QUuid, 16>()
 {
 }
 

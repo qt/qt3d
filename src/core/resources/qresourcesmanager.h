@@ -166,18 +166,18 @@ template <typename T, typename C, int INDEXBITS = 16,
           template <typename, int> class AllocatingPolicy = ArrayAllocatingPolicy,
           class LockingPolicy = NonLockingPolicy
           >
-class QAbstractResourcesManager
+class QResourcesManager
         : public AllocatingPolicy<T, INDEXBITS>
         , public LockingPolicy
 {
 public:
-    QAbstractResourcesManager() :
+    QResourcesManager() :
         AllocatingPolicy<T, INDEXBITS>(),
         m_maxResourcesEntries(1 << INDEXBITS)
     {
     }
 
-    ~QAbstractResourcesManager()
+    ~QResourcesManager()
     {
     }
 
