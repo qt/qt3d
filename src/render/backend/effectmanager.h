@@ -43,7 +43,7 @@
 #define QT3D_RENDER_EFFECTMANAGER_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DCore/qarrayresourcesmanager.h>
+#include <Qt3DCore/qabstractresourcesmanager.h>
 #include <Qt3DRenderer/rendereffect.h>
 
 QT_BEGIN_NAMESPACE
@@ -56,7 +56,7 @@ namespace Render {
 
 typedef QHandle<RenderEffect, 16> HEffect;
 
-class EffectManager : public QArrayResourcesManager<RenderEffect, QAbstractEffect*, 16>
+class EffectManager : public QAbstractResourcesManager<RenderEffect, QAbstractEffect*, 16>
 {
 public:
     EffectManager();

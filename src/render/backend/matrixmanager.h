@@ -44,7 +44,8 @@
 
 #include <QMatrix4x4>
 #include <QUuid>
-#include <Qt3DCore/qarrayresourcesmanager.h>
+#include <Qt3DCore/qabstractresourcesmanager.h>
+#include <Qt3DCore/qabstractrenderpass.h>
 #include <Qt3DCore/qhandle.h>
 
 QT_BEGIN_NAMESPACE
@@ -55,7 +56,7 @@ typedef QHandle<QMatrix4x4, 16> HMatrix;
 
 namespace Render {
 
-class MatrixManager : public QArrayResourcesManager<QMatrix4x4, QUuid, 16>
+class MatrixManager : public QAbstractResourcesManager<QMatrix4x4, QUuid, 16>
 {
 public:
     MatrixManager();

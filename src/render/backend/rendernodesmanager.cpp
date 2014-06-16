@@ -48,17 +48,9 @@ namespace Qt3D {
 namespace Render {
 
 RenderNodesManager::RenderNodesManager() :
-    QArrayResourcesManager<RenderNode, QUuid, 16>()
+    QAbstractResourcesManager<RenderNode, QUuid, 16>()
 {
 }
-
-HRenderNode RenderNodesManager::acquire()
-{
-    HRenderNode handle = QArrayResourcesManager::acquire();
-    QArrayResourcesManager::data(handle)->setHandle(handle);
-    return handle;
-}
-
 
 /*!
  * Returns true if there is a RenderNode associated to the Entity

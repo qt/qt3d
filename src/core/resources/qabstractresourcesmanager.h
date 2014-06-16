@@ -43,6 +43,8 @@
 #define QT3D_QABSTRACTRESOURCESMANAGER_H
 
 #include <QtGlobal>
+#include <QReadWriteLock>
+#include <QHash>
 #include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qhandle.h>
 #include <Qt3DCore/qhandlemanager.h>
@@ -51,55 +53,211 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-template <typename T, typename C, int INDEXBITS = 16>
+struct QT3DCORESHARED_EXPORT NonLockingPolicy
+{
+    void lockForRead() {}
+    void lockForWrite() {}
+    void unlock() {}
+};
+
+class QT3DCORESHARED_EXPORT LockingPolicy
+{
+public :
+
+    void lockForRead()
+    {
+        m_lock.lockForRead();
+    }
+
+    void lockForWrite()
+    {
+        m_lock.lockForWrite();
+    }
+
+    void unlock()
+    {
+        m_lock.unlock();
+    }
+
+private:
+    QReadWriteLock m_lock;
+};
+
+template <typename T, int INDEXBITS>
+class ArrayAllocatingPolicy
+{
+public:
+    ArrayAllocatingPolicy()
+        : m_resourcesEntries(1 << INDEXBITS)
+    {
+        reset();
+    }
+
+    T* allocateResource()
+    {
+        int idx = m_freeEntryIndices.takeFirst();
+        T* newT = m_resourcesEntries.begin() + idx;
+        m_resourcesToIndices[newT] = idx;
+        return newT;
+    }
+
+    void releaseResource(T *r)
+    {
+        if (m_resourcesToIndices.contains(r)) {
+            int idx = m_resourcesToIndices.take(r);
+            // THIS CAN CAUSE A BUG SOMEHOW
+            // IF UNEXPECTED CRASHES HAPPEN, LOOK HERE
+            // STILL WE NEED THIS TO HAVE A CLEAN ITEM SET ON RELEASE
+            m_resourcesEntries[idx] = T();
+            m_freeEntryIndices.append(idx);
+        }
+    }
+
+    void reset()
+    {
+        m_resourcesToIndices.clear();
+        m_resourcesEntries.clear();
+        m_resourcesEntries.resize(1 << INDEXBITS);
+        for (int i = 0; i < m_resourcesEntries.size(); i++)
+            m_freeEntryIndices << i;
+    }
+
+private:
+    QVector<T> m_resourcesEntries;
+    QList<int> m_freeEntryIndices;
+    QHash<T*, int> m_resourcesToIndices;
+
+};
+
+template <typename T, int INDEXBITS>
+class ListAllocatingPolicy
+{
+public:
+    ListAllocatingPolicy()
+    {
+    }
+
+    T* allocateResource()
+    {
+        m_resourcesEntries << T();
+        int idx = m_resourcesEntries.size() - 1;
+        T* newT = &m_resourcesEntries.last();
+        m_resourcesToIndices[newT] = idx;
+        return newT;
+    }
+
+    void releaseResource(T *r)
+    {
+        if (m_resourcesToIndices.contains(r))
+            m_resourcesEntries.removeAt(m_resourcesToIndices[r]);
+    }
+
+    void reset()
+    {
+        m_resourcesEntries.clear();
+    }
+
+private:
+    QList<T> m_resourcesEntries;
+    QHash<T*, int> m_resourcesToIndices;
+};
+
+template <typename T, typename C, int INDEXBITS = 16,
+          template <typename, int> class AllocatingPolicy = ArrayAllocatingPolicy,
+          class LockingPolicy = NonLockingPolicy
+          >
 class QAbstractResourcesManager
+        : public AllocatingPolicy<T, INDEXBITS>
+        , public LockingPolicy
 {
 public:
     QAbstractResourcesManager() :
+        AllocatingPolicy<T, INDEXBITS>(),
         m_maxResourcesEntries(1 << INDEXBITS)
     {
     }
 
-    virtual ~QAbstractResourcesManager()
+    ~QAbstractResourcesManager()
     {
     }
 
-    virtual QHandle<T, INDEXBITS> acquire() = 0;
-    virtual T* data(const QHandle<T, INDEXBITS> &handle) = 0;
-    virtual void release(const QHandle<T, INDEXBITS> &handle) = 0;
-    virtual void reset() = 0;
-
-    bool contains(const C &id) const
+    QHandle<T, INDEXBITS> acquire()
     {
-        return m_handleToResourceMapper.contains(id);
+        LockingPolicy::lockForWrite();
+        QHandle<T, INDEXBITS> handle = m_handleManager.acquire(AllocatingPolicy<T, INDEXBITS>::allocateResource());
+        LockingPolicy::unlock();
+        return handle;
+    }
+
+    T* data(const QHandle<T, INDEXBITS> &handle)
+    {
+        LockingPolicy::lockForRead();
+        T* data = m_handleManager.data(handle);
+        LockingPolicy::unlock();
+        return data;
+    }
+
+    void release(const QHandle<T, INDEXBITS> &handle)
+    {
+        T *val = data(handle);
+        LockingPolicy::lockForWrite();
+        AllocatingPolicy<T, INDEXBITS>::releaseResource(val);
+        m_handleManager.release(handle);
+        LockingPolicy::unlock();
+    }
+
+    void reset()
+    {
+        LockingPolicy::lockForWrite();
+        m_handleManager.reset();
+        AllocatingPolicy<T, INDEXBITS>::reset();
+        LockingPolicy::unlock();
+    }
+
+    bool contains(const C &id)
+    {
+        LockingPolicy::lockForRead();
+        bool contained = m_handleToResourceMapper.contains(id);
+        LockingPolicy::unlock();
+        return contained;
     }
 
     QHandle<T, INDEXBITS> getOrAcquireHandle(const C &id)
     {
-        if (!m_handleToResourceMapper.contains(id))
+        if (!contains(id))
             m_handleToResourceMapper[id] = acquire();
-        return m_handleToResourceMapper[id];
+        LockingPolicy::lockForRead();
+        QHandle<T, INDEXBITS> handle = m_handleToResourceMapper[id];
+        LockingPolicy::unlock();
+        return handle;
     }
 
-    QHandle<T, INDEXBITS> lookupHandle(const C &id) const
+    QHandle<T, INDEXBITS> lookupHandle(const C &id)
     {
+        LockingPolicy::lockForRead();
+        QHandle<T, INDEXBITS> handle;
         if (m_handleToResourceMapper.contains(id))
-            return m_handleToResourceMapper[id];
-        return QHandle<T, INDEXBITS>();
+            handle = m_handleToResourceMapper[id];
+        LockingPolicy::unlock();
+        return handle;
     }
 
     T *lookupResource(const C &id)
     {
+        LockingPolicy::lockForRead();
+        T *ret = Q_NULLPTR;
         if (m_handleToResourceMapper.contains(id))
-            return data(m_handleToResourceMapper[id]);
-        return Q_NULLPTR;
+            ret = data(m_handleToResourceMapper[id]);
+        LockingPolicy::unlock();
+        return ret;
     }
 
     T *getOrCreateResource(const C &id)
     {
-        if (!m_handleToResourceMapper.contains(id))
+        if (!contains(id))
             m_handleToResourceMapper[id] = acquire();
-        return data(m_handleToResourceMapper[id]);
+        T *ret = data(m_handleToResourceMapper[id]);
+        return ret;
     }
 
     void releaseResource(const C &id)

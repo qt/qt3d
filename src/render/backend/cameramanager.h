@@ -43,7 +43,7 @@
 #define QT3D_RENDER_CAMERAMANAGER_H
 
 #include <QtGlobal>
-#include <Qt3DCore/qlistresourcesmanager.h>
+#include <Qt3DCore/qabstractresourcesmanager.h>
 #include <QUuid>
 #include <Qt3DRenderer/rendercamera.h>
 
@@ -55,11 +55,11 @@ namespace Render {
 
 typedef QHandle<RenderCamera, 8> HCamera;
 
-class CameraManager : public QListResourcesManager<RenderCamera, QUuid, 8>
+class CameraManager : public QAbstractResourcesManager<RenderCamera, QUuid, 8>
 {
 public:
     CameraManager();
-    inline bool hasCamera(const QUuid &id) const { return contains(id); }
+    inline bool hasCamera(const QUuid &id) { return contains(id); }
     inline RenderCamera *getOrCreateRenderCamera(const QUuid &id) { return getOrCreateResource(id); }
     inline RenderCamera *renderCamera(const QUuid &id) { return lookupResource(id); }
     inline void releaseRenderCamera(const QUuid &id) { releaseResource(id); }

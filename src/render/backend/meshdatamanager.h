@@ -44,7 +44,7 @@
 
 #include <Qt3DRenderer/mesh.h>
 #include <Qt3DRenderer/meshdata.h>
-#include <Qt3DCore/qarrayresourcesmanager.h>
+#include <Qt3DCore/qabstractresourcesmanager.h>
 
 #include <QHash>
 #include <QPair>
@@ -58,7 +58,7 @@ namespace Render {
 
 typedef QHandle<MeshData, 16> HMeshData;
 
-class MeshDataManager : public QArrayResourcesManager<MeshData, QUuid, 16>
+class MeshDataManager : public QAbstractResourcesManager<MeshData, QUuid, 16>
 {
 public:
     MeshDataManager();

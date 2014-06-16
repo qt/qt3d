@@ -44,7 +44,7 @@
 
 #include <QtGlobal>
 #include <QUuid>
-#include <Qt3DCore/qarrayresourcesmanager.h>
+#include <Qt3DCore/qabstractresourcesmanager.h>
 #include <Qt3DRenderer/rendermaterial.h>
 
 QT_BEGIN_NAMESPACE
@@ -57,13 +57,13 @@ namespace Render {
 
 typedef QHandle<RenderMaterial, 16> HMaterial;
 
-class MaterialManager : public QArrayResourcesManager<RenderMaterial, Material*, 16>
+class MaterialManager : public QAbstractResourcesManager<RenderMaterial, Material*, 16>
 {
 public:
     MaterialManager();
 
     inline bool hasRenderMaterial(const QUuid &id) const { return m_materialByEntity.contains(id); }
-    inline bool hasRenderMaterial(Material *id) const { return contains(id); }
+    inline bool hasRenderMaterial(Material *id) { return contains(id); }
     inline RenderMaterial *getOrCreateRenderMaterial(Material *id) { return getOrCreateResource(id); }
     inline RenderMaterial *renderMaterial(Material *id) { return lookupResource(id); }
     inline void releaseRenderMaterial(Material *id) { releaseResource(id); }

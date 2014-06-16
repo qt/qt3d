@@ -42,7 +42,7 @@
 #ifndef QT3D_RENDER_RENDERPASSMANAGER_H
 #define QT3D_RENDER_RENDERPASSMANAGER_H
 
-#include <Qt3DCore/qarrayresourcesmanager.h>
+#include <Qt3DCore/qabstractresourcesmanager.h>
 #include <Qt3DRenderer/renderrenderpass.h>
 
 QT_BEGIN_NAMESPACE
@@ -55,7 +55,7 @@ namespace Render {
 
 typedef QHandle<RenderRenderPass, 16> HRenderPass;
 
-class RenderPassManager : public QArrayResourcesManager<RenderRenderPass, QAbstractRenderPass*, 16>
+class RenderPassManager : public QAbstractResourcesManager<RenderRenderPass, QAbstractRenderPass*, 16>
 {
 public:
     RenderPassManager();

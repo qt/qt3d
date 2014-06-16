@@ -44,7 +44,8 @@
 
 #include <QtGlobal>
 #include <QUuid>
-#include <Qt3DCore/qarrayresourcesmanager.h>
+#include <Qt3DCore/qabstractrenderpass.h>
+#include <Qt3DCore/qabstractresourcesmanager.h>
 #include <Qt3DRenderer/rendernode.h>
 
 QT_BEGIN_NAMESPACE
@@ -55,13 +56,12 @@ namespace Render {
 
 typedef QHandle<RenderNode, 16> HRenderNode;
 
-class RenderNodesManager : public QArrayResourcesManager<RenderNode, QUuid, 16>
+class RenderNodesManager : public QAbstractResourcesManager<RenderNode, QUuid, 16>
 {
 public:
     RenderNodesManager();
 
-    HRenderNode acquire() Q_DECL_OVERRIDE;
-    inline bool hasRenderNode(const QUuid &id) const { return contains(id); }
+    inline bool hasRenderNode(const QUuid &id) { return contains(id); }
     inline RenderNode *getOrCreateRenderNode(const QUuid &id) { return getOrCreateResource(id); }
     inline RenderNode *renderNode(const QUuid &id) { return lookupResource(id); }
     inline void releaseRenderNode(const QUuid &id) { releaseResource(id); }
