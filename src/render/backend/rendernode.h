@@ -83,6 +83,7 @@ public:
 
     void dump() const;
 
+    void  setHandle(HRenderNode handle);
     HRenderNode handle() const { return m_handle; }
     RenderNode *parent() const;
     HRenderNode parentHandle() const { return m_parentHandle; }
@@ -98,10 +99,6 @@ public:
     Node *frontEndPeer() const { return m_frontEndPeer; }
 
 private:
-    friend class RenderNodesManager;
-    // Only called by RenderNodesManager when acquiring a new RenderNode
-    // so that the handle is stored in the RenderNode
-    void  setHandle(HRenderNode handle);
 
     Renderer *m_renderer;
     Transform *m_transform;

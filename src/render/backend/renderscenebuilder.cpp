@@ -234,6 +234,7 @@ HRenderNode RenderSceneBuilder::createRenderNode(Node *node)
     else
         renderNodeHandle = m_renderer->renderNodesManager()->acquire();
     RenderNode *renderNode = m_renderer->renderNodesManager()->data(renderNodeHandle);
+    renderNode->setHandle(renderNodeHandle);
     renderNode->setRenderer(m_renderer);
     renderNode->setFrontEndPeer(node);
 
