@@ -75,14 +75,6 @@ public:
 
     void syncParametersFromPeer();
 
-    /**
-     * @brief setTechnique - specify the effect technique to use for
-     * rendering this material.
-     * @param rt
-     */
-    void setTechnique(RenderTechnique* rt);
-    RenderTechnique* technique() const;
-
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     QHash<QString, Parameter *> parameters() const;

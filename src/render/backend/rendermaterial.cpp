@@ -133,19 +133,6 @@ void RenderMaterial::syncParametersFromPeer()
 //    }
 }
 
-void RenderMaterial::setTechnique(RenderTechnique *rt)
-{
-    m_technique = rt;
-
-    if (m_peer)
-        syncParametersFromPeer();
-}
-
-RenderTechnique *RenderMaterial::technique() const
-{
-    return m_technique;
-}
-
 void RenderMaterial::sceneChangeEvent(const QSceneChangePtr &e)
 {
     switch (e->m_type) {
