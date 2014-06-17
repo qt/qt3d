@@ -43,6 +43,7 @@
 
 #include "qgraphicshelpergl3.h"
 #include <QOpenGLFunctions_3_2_Core>
+#include "renderlogging.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -124,6 +125,34 @@ void QGraphicsHelperGL3::vertexAttribDivisor(GLuint index, GLuint divisor)
 void QGraphicsHelperGL3::blendEquation(GLenum mode)
 {
     m_funcs->glBlendEquation(mode);
+}
+
+void QGraphicsHelperGL3::alphaTest(GLenum, GLenum)
+{
+    qCWarning(Render::Rendering) << "AlphaTest not available with OpenGL 3.2 core";
+}
+
+void QGraphicsHelperGL3::depthTest(GLenum mode)
+{
+    m_funcs->glEnable(GL_DEPTH_TEST);
+    m_funcs->glDepthFunc(mode);
+}
+
+void QGraphicsHelperGL3::depthMask(GLenum mode)
+{
+    m_funcs->glDepthMask(mode);
+}
+
+void QGraphicsHelperGL3::cullFace(GLenum mode)
+{
+    m_funcs->glEnable(GL_CULL_FACE);
+    m_funcs->glCullFace(mode);
+}
+
+void QGraphicsHelperGL3::frontFace(GLenum mode)
+{
+    m_funcs->glFrontFace(mode);
+
 }
 
 } // Render

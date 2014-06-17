@@ -219,7 +219,7 @@ void QGraphicsContext::setOpenGLContext(QOpenGLContext* ctx)
 
     Q_ASSERT(m_surface);
     m_gl->makeCurrent(m_surface);
-    this->resolveHighestOpenGLFunctions();
+    resolveHighestOpenGLFunctions();
 }
 
 void QGraphicsContext::activateShader(RenderShader *shader)
@@ -382,13 +382,14 @@ void QGraphicsContext::resolveHighestOpenGLFunctions()
 
     QAbstractOpenGLFunctions *glFunctions = Q_NULLPTR;
 
+    if (m_gl->isOpenGLES()) {
 #if defined QT_OPENGL_ES_2
-    if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_ES2>()) != Q_NULLPTR) {
-        qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 2/ES2 Helper";
+        glFunctions = m_gl->versionFunctions<QOpenGLFunctions_ES2>();
         m_glHelper = new QGraphicsHelperES2();
+#endif
+        qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 2/ES2 Helper";
     }
-#else
-    if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_3_2_Core>()) != Q_NULLPTR) {
+    else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_3_2_Core>()) != Q_NULLPTR) {
         qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 3.2";
         m_glHelper = new QGraphicsHelperGL3();
     }
@@ -396,7 +397,6 @@ void QGraphicsContext::resolveHighestOpenGLFunctions()
         qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 2 Helper";
         m_glHelper = new QGraphicsHelperGL2();
     }
-#endif
     if (m_glHelper != Q_NULLPTR)
         m_glHelper->initializeHelper(m_gl, glFunctions);
 }
@@ -489,6 +489,31 @@ void QGraphicsContext::drawArrays(GLenum primitiveType,
 void QGraphicsContext::blendEquation(GLenum mode)
 {
     m_glHelper->blendEquation(mode);
+}
+
+void QGraphicsContext::alphaTest(GLenum mode1, GLenum mode2)
+{
+    m_glHelper->alphaTest(mode1, mode2);
+}
+
+void QGraphicsContext::depthTest(GLenum mode)
+{
+    m_glHelper->depthTest(mode);
+}
+
+void QGraphicsContext::depthMask(GLenum mode)
+{
+    m_glHelper->depthMask(mode);
+}
+
+void QGraphicsContext::cullFace(GLenum mode)
+{
+    m_glHelper->cullFace(mode);
+}
+
+void QGraphicsContext::frontFace(GLenum mode)
+{
+    m_glHelper->frontFace(mode);
 }
 
 GLint QGraphicsContext::assignUnitForTexture(RenderTexture *tex)

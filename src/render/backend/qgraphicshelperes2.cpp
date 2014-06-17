@@ -41,6 +41,7 @@
 
 #include "qgraphicshelperes2.h"
 #include "qopenglfunctions_es2.h"
+#include "renderlogging.h"
 
 #ifdef QT_OPENGL_ES_2
 
@@ -121,9 +122,36 @@ void QGraphicsHelperES2::vertexAttribDivisor(GLuint index, GLuint divisor)
     Q_UNUSED(divisor)
 }
 
-void Qt3D::QGraphicsHelperES2::blendEquation(GLenum mode)
+void QGraphicsHelperES2::blendEquation(GLenum mode)
 {
     m_funcs->glBlendEquation(mode);
+}
+
+void QGraphicsHelperES2::alphaTest(GLenum, GLenum)
+{
+    qCWarning(Render::Rendering) << Q_FUNC_INFO << "AlphaTest not available with OpenGL ES 2.0"
+}
+
+void QGraphicsHelperES2::depthTest(GLenum mode)
+{
+    m_funcs->glEnable(GL_DEPTH_TEST);
+    m_funcs->glDepthFunc(mode);
+}
+
+void QGraphicsHelperES2::depthMask(GLenum mode)
+{
+    m_funcs->glDepthMask(mode);
+}
+
+void QGraphicsHelperES2::cullFace(GLenum mode)
+{
+    m_funcs->glEnable(GL_CULL_FACE);
+    m_funcs->glCullFace(mode);
+}
+
+void QGraphicsHelperES2::frontFace(GLenum mode)
+{
+    m_funcs->glFrontFace(mode);
 }
 
 } // Render

@@ -154,6 +154,11 @@ public:
     void    drawElements(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices);
     void    drawArrays(GLenum primitiveType, GLint first, GLsizei count);
     void    blendEquation(GLenum mode);
+    void    alphaTest(GLenum mode1, GLenum mode2);
+    void    depthTest(GLenum mode);
+    void    depthMask(GLenum mode);
+    void    cullFace(GLenum mode);
+    void    frontFace(GLenum mode);
 
 private:
     void initialize();

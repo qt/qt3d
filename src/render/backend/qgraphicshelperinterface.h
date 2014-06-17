@@ -60,6 +60,12 @@ public:
     virtual void    useProgram(GLuint programId) = 0;
     virtual void    vertexAttribDivisor(GLuint index, GLuint divisor) = 0;
     virtual void    blendEquation(GLenum mode) = 0;
+    virtual void    alphaTest(GLenum mode1, GLenum mode2) = 0;
+    virtual void    depthTest(GLenum mode) = 0;
+    virtual void    depthMask(GLenum mode) = 0;
+    virtual void    cullFace(GLenum mode) = 0;
+    virtual void    frontFace(GLenum mode) = 0;
+
 };
 
 } // Render

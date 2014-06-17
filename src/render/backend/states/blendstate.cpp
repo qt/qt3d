@@ -105,9 +105,7 @@ BlendEquation::BlendEquation(GLenum func) :
 
 void AlphaFunc::apply(QGraphicsContext* gc) const
 {
-    Q_UNUSED(gc);
-    glEnable(GL_ALPHA_TEST);
-    glAlphaFunc( m_1, m_2 );
+    gc->alphaTest(m_1, m_2);
 }
 
 AlphaFunc *AlphaFunc::getOrCreate(GLenum func, GLclampf value)
@@ -123,9 +121,7 @@ AlphaFunc::AlphaFunc(GLenum func, GLclampf value) :
 
 void DepthTest::apply(QGraphicsContext *gc) const
 {
-    Q_UNUSED(gc);
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc( m_1 );
+    gc->depthTest(m_1);
 }
 
 DepthTest *DepthTest::getOrCreate(GLenum func)
@@ -141,9 +137,7 @@ DepthTest::DepthTest(GLenum func) :
 
 void CullFace::apply(QGraphicsContext *gc) const
 {
-    Q_UNUSED(gc);
-    glEnable(GL_CULL_FACE);
-    glCullFace( m_1 );
+    gc->cullFace(m_1);
 }
 
 CullFace *CullFace::getOrCreate(GLenum func)
@@ -158,8 +152,7 @@ CullFace::CullFace(GLenum func) :
 
 void FrontFace::apply(QGraphicsContext *gc) const
 {
-    Q_UNUSED(gc);
-    glFrontFace(m_1);
+    gc->frontFace(m_1);
 }
 
 FrontFace *FrontFace::getOrCreate(GLenum func)
@@ -174,8 +167,7 @@ FrontFace::FrontFace(GLenum func) :
 
 void DepthMask::apply(QGraphicsContext *gc) const
 {
-    Q_UNUSED(gc)
-    glDepthMask(m_1);
+   gc->depthMask(m_1);
 }
 
 DepthMask *DepthMask::getOrCreate(GLboolean flag)

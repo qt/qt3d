@@ -67,6 +67,11 @@ public:
     void useProgram(GLuint programId) Q_DECL_OVERRIDE;
     void vertexAttribDivisor(GLuint index, GLuint divisor) Q_DECL_OVERRIDE;
     void blendEquation(GLenum mode) Q_DECL_OVERRIDE;
+    void alphaTest(GLenum mode1, GLenum mode2) Q_DECL_OVERRIDE;
+    void depthTest(GLenum mode) Q_DECL_OVERRIDE;
+    void depthMask(GLenum mode) Q_DECL_OVERRIDE;
+    void cullFace(GLenum mode) Q_DECL_OVERRIDE;
+    void frontFace(GLenum mode) Q_DECL_OVERRIDE;
 private:
     QOpenGLFunctions_2_0 *m_funcs;
 

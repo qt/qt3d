@@ -56,7 +56,7 @@ QGraphicsHelperGL2::QGraphicsHelperGL2() :
 }
 
 void QGraphicsHelperGL2::initializeHelper(QOpenGLContext *context,
-                                         QAbstractOpenGLFunctions *functions)
+                                          QAbstractOpenGLFunctions *functions)
 {
     Q_UNUSED(context)
     m_funcs = static_cast<QOpenGLFunctions_2_0*>(functions);
@@ -68,47 +68,47 @@ void QGraphicsHelperGL2::initializeHelper(QOpenGLContext *context,
 }
 
 void QGraphicsHelperGL2::drawElementsInstanced(GLenum primitiveType,
-                                              GLsizei primitiveCount,
-                                              GLint indexType,
-                                              void *indices,
-                                              GLsizei instances)
+                                               GLsizei primitiveCount,
+                                               GLint indexType,
+                                               void *indices,
+                                               GLsizei instances)
 {
     for (GLint i = 0; i < instances; i++)
         drawElements(primitiveType,
-                           primitiveCount,
-                           indexType,
-                           indices);
+                     primitiveCount,
+                     indexType,
+                     indices);
 }
 
 void QGraphicsHelperGL2::drawArraysInstanced(GLenum primitiveType,
-                                            GLint first,
-                                            GLsizei count,
-                                            GLsizei instances)
+                                             GLint first,
+                                             GLsizei count,
+                                             GLsizei instances)
 {
     for (GLint i = 0; i < instances; i++)
         drawArrays(primitiveType,
-                         first,
-                         count);
+                   first,
+                   count);
 }
 
 void QGraphicsHelperGL2::drawElements(GLenum primitiveType,
-                                     GLsizei primitiveCount,
-                                     GLint indexType,
-                                     void *indices)
+                                      GLsizei primitiveCount,
+                                      GLint indexType,
+                                      void *indices)
 {
     m_funcs->glDrawElements(primitiveType,
-                                  primitiveCount,
-                                  indexType,
-                                  indices);
+                            primitiveCount,
+                            indexType,
+                            indices);
 }
 
 void QGraphicsHelperGL2::drawArrays(GLenum primitiveType,
-                                   GLint first,
-                                   GLsizei count)
+                                    GLint first,
+                                    GLsizei count)
 {
     m_funcs->glDrawArrays(primitiveType,
-                                first,
-                                count);
+                          first,
+                          count);
 }
 
 void QGraphicsHelperGL2::useProgram(GLuint programId)
@@ -117,7 +117,7 @@ void QGraphicsHelperGL2::useProgram(GLuint programId)
 }
 
 void QGraphicsHelperGL2::vertexAttribDivisor(GLuint index,
-                                            GLuint divisor)
+                                             GLuint divisor)
 {
     Q_UNUSED(index)
     Q_UNUSED(divisor)
@@ -126,6 +126,34 @@ void QGraphicsHelperGL2::vertexAttribDivisor(GLuint index,
 void QGraphicsHelperGL2::blendEquation(GLenum mode)
 {
     m_funcs->glBlendEquation(mode);
+}
+
+void QGraphicsHelperGL2::alphaTest(GLenum mode1, GLenum mode2)
+{
+    m_funcs->glEnable(GL_ALPHA_TEST);
+    m_funcs->glAlphaFunc(mode1, mode2);
+}
+
+void QGraphicsHelperGL2::depthTest(GLenum mode)
+{
+    m_funcs->glEnable(GL_DEPTH_TEST);
+    m_funcs->glDepthFunc(mode);
+}
+
+void QGraphicsHelperGL2::depthMask(GLenum mode)
+{
+    m_funcs->glDepthMask(mode);
+}
+
+void QGraphicsHelperGL2::cullFace(GLenum mode)
+{
+    m_funcs->glEnable(GL_CULL_FACE);
+    m_funcs->glCullFace(mode);
+}
+
+void QGraphicsHelperGL2::frontFace(GLenum mode)
+{
+    m_funcs->glFrontFace(mode);
 }
 
 } // Render
