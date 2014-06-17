@@ -74,7 +74,6 @@ voidpf ZCALLBACK fopen_file_func(voidpf opaque, const char* filename, int mode)
     (void)opaque; // Unused
     FILE* file = NULL;
     const char* mode_fopen = NULL;
-    (void)opaque; // Unused
     if ((mode & ZLIB_FILEFUNC_MODE_READWRITEFILTER)==ZLIB_FILEFUNC_MODE_READ)
         mode_fopen = "rb";
     else
@@ -94,7 +93,6 @@ uLong ZCALLBACK fread_file_func(voidpf opaque, voidpf stream, void* buf, uLong s
 {
     (void)opaque; // Unused
     uLong ret;
-    (void)opaque; // Unused
     ret = (uLong)fread(buf, 1, (size_t)size, (FILE *)stream);
     return ret;
 }
@@ -104,7 +102,6 @@ uLong ZCALLBACK fwrite_file_func(voidpf opaque, voidpf stream, const void* buf, 
 {
    (void)opaque; // Unused
     uLong ret;
-    (void)opaque; // Unused
     ret = (uLong)fwrite(buf, 1, (size_t)size, (FILE *)stream);
     return ret;
 }
@@ -113,7 +110,6 @@ long ZCALLBACK ftell_file_func(voidpf opaque, voidpf stream)
 {
    (void)opaque; // Unused
     long ret;
-    (void)opaque; // Unused
     ret = ftell((FILE *)stream);
     return ret;
 }
@@ -123,7 +119,6 @@ long ZCALLBACK fseek_file_func(voidpf opaque, voidpf stream, uLong offset, int o
    (void)opaque; // Unused
     int fseek_origin=0;
     long ret;
-    (void)opaque; // Unused
     switch (origin)
     {
     case ZLIB_FILEFUNC_SEEK_CUR :
@@ -146,7 +141,6 @@ int ZCALLBACK fclose_file_func(voidpf opaque, voidpf stream)
 {
    (void)opaque; // Unused
     int ret;
-    (void)opaque; // Unused
     ret = fclose((FILE *)stream);
     return ret;
 }
@@ -155,7 +149,6 @@ int ZCALLBACK ferror_file_func(voidpf opaque, voidpf stream)
 {
    (void)opaque; // Unused
     int ret;
-    (void)opaque; // Unused
     ret = ferror((FILE *)stream);
     return ret;
 }
