@@ -80,9 +80,9 @@ void Node::dump()
         const QMetaProperty metaProperty = meta->property(i);
         const QVariant value = property(metaProperty.name());
         result += QString(QStringLiteral("%1 %2 = %3;"))
-            .arg(QString::fromLatin1(metaProperty.typeName()))
-            .arg(QString::fromLatin1(metaProperty.name()))
-            .arg(value.toString());
+                .arg(QString::fromLatin1(metaProperty.typeName()))
+                .arg(QString::fromLatin1(metaProperty.name()))
+                .arg(value.toString());
     }
 
     qCDebug(Nodes) << result.join(QStringLiteral("\n"));
@@ -184,8 +184,14 @@ void Node::notifyObservers(const QSceneChangePtr &change)
     Q_CHECK_PTR(change);
     Q_D(Node);
     QReadLocker locker(&d->m_observerLock);
-    if (d->m_changeArbiter)
-        d->m_changeArbiter->sceneChangeEventWithLock(change);
+    QChangeArbiter *changeArbiter = d->m_changeArbiter;
+    locker.unlock();
+    // There is a deadlock issue as sceneChangeEventWithLock locks the QChangeArbiter's mutex
+    // while d->m_observerLock is locked by the locker right above.
+    // In the case that a call the QChangeArbiter registerObserver which locks the QChangeArviter's mutex
+    // and calls registerObserver on the same Node with locks d->m_observerLock
+    if (changeArbiter != Q_NULLPTR)
+        changeArbiter->sceneChangeEventWithLock(change);
 }
 
 } // namespace Qt3D
