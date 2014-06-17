@@ -55,7 +55,11 @@ namespace Render {
 
 typedef QHandle<RenderMesh, 16> HMesh;
 
-class MeshManager : public QResourcesManager<RenderMesh, QUuid, 16>
+class MeshManager : public QResourcesManager<RenderMesh,
+                                             QUuid,
+                                             16,
+                                             Qt3D::ArrayAllocatingPolicy,
+                                             Qt3D::ObjectLevelLockingPolicy>
 {
 public:
     MeshManager();
