@@ -60,6 +60,7 @@ class QT3DQUICKRENDERERSHARED_EXPORT Quick3DEffect : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Qt3D::Technique> techniques READ techniqueList)
+    Q_PROPERTY(QQmlListProperty<Qt3D::Parameter> parameters READ parameterList)
 
 public:
     explicit Quick3DEffect(QObject *parent = 0);
@@ -67,6 +68,7 @@ public:
     inline QAbstractEffect *parentEffect() const { return qobject_cast<QAbstractEffect*>(parent()); }
 
     QQmlListProperty<Qt3D::Technique> techniqueList();
+    QQmlListProperty<Qt3D::Parameter> parameterList();
 
 private:
     static void appendTechnique(QQmlListProperty<Technique> *list, Technique *bar);
@@ -74,6 +76,10 @@ private:
     static int techniqueCount(QQmlListProperty<Technique> *list);
     static void clearTechniqueList(QQmlListProperty<Technique> *list);
 
+    static void appendParameter(QQmlListProperty<Parameter> *list, Parameter *param);
+    static Parameter *parameterAt(QQmlListProperty<Parameter> *list, int index);
+    static int parametersCount(QQmlListProperty<Parameter> *list);
+    static void clearParameterList(QQmlListProperty<Parameter> *list);
 };
 
 } // Quick
