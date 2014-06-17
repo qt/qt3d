@@ -41,14 +41,27 @@
 
 #include "effect.h"
 #include "technique.h"
+#include "parameter.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class EffectPrivate
+{
+public :
+    EffectPrivate(Effect *qq)
+        : q_ptr(qq)
+    {}
+
+    QList<Parameter *> m_parameters;
+    Q_DECLARE_PUBLIC(Effect)
+    Effect *q_ptr;
+};
 
 Effect::Effect(Node *parent)
     : QAbstractEffect(parent)
+    , d_ptr(new EffectPrivate(this))
 {
 }
 
@@ -64,6 +77,26 @@ void Effect::addTechnique(QAbstractTechnique *t)
 void Effect::removeTechnique(QAbstractTechnique *t)
 {
     QAbstractEffect::removeTechnique(t);
+}
+
+void Effect::addParameter(Parameter *parameter)
+{
+    Q_D(Effect);
+    if (!d->m_parameters.contains(parameter)) {
+        d->m_parameters.append(parameter);
+    }
+}
+
+void Effect::removeParameter(Parameter *parameter)
+{
+    Q_D(Effect);
+    d->m_parameters.removeOne(parameter);
+}
+
+QList<Parameter *> Effect::parameters() const
+{
+    Q_D(const Effect);
+    return d->m_parameters;
 }
 
 } // Qt3D

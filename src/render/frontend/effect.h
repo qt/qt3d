@@ -50,6 +50,9 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class Parameter;
+class EffectPrivate;
+
 class QT3DRENDERERSHARED_EXPORT Effect
         : public QAbstractEffect
 {
@@ -59,6 +62,14 @@ public:
 
     void addTechnique(QAbstractTechnique *t) Q_DECL_OVERRIDE;
     void removeTechnique(QAbstractTechnique *t) Q_DECL_OVERRIDE;
+
+    void addParameter(Parameter *parameter);
+    void removeParameter(Parameter *parameter);
+    QList<Parameter *> parameters() const;
+
+private:
+    Q_DECLARE_PRIVATE(Effect)
+    EffectPrivate *d_ptr;
 };
 
 } // Qt3D
