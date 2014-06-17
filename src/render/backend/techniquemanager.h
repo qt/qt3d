@@ -60,7 +60,7 @@ class TechniqueManager : public QResourcesManager<RenderTechnique,
                                                   QAbstractTechnique*,
                                                   16,
                                                   Qt3D::ArrayAllocatingPolicy,
-                                                  Qt3D::LockingPolicy>
+                                                  Qt3D::ObjectLevelLockingPolicy>
 {
 public:
     TechniqueManager();

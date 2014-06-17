@@ -53,35 +53,88 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-struct QT3DCORESHARED_EXPORT NonLockingPolicy
+template <class Host>
+struct NonLockingPolicy
 {
     void lockForRead() {}
     void lockForWrite() {}
     void unlock() {}
+
+    struct WriteLocker
+    {
+        WriteLocker(NonLockingPolicy*) {}
+        void unlock() {}
+    };
+
+    struct ReadLocker
+    {
+        ReadLocker(NonLockingPolicy*) {}
+        void unlock() {}
+    };
 };
 
-class QT3DCORESHARED_EXPORT LockingPolicy
+template <class Host>
+class ObjectLevelLockingPolicy
 {
 public :
 
-    void lockForRead()
-    {
-        m_lock.lockForRead();
-    }
+    ObjectLevelLockingPolicy()
+        : m_lock(QReadWriteLock::Recursive)
+    {}
 
-    void lockForWrite()
-    {
-        m_lock.lockForWrite();
-    }
+    void lockForRead()    { m_lock.lockForRead(); }
+    void lockForWrite()   { m_lock.lockForWrite(); }
+    void unlock() { m_lock.unlock(); }
 
-    void unlock()
+    class WriteLocker
     {
-        m_lock.unlock();
-    }
+    public:
+        WriteLocker(ObjectLevelLockingPolicy *host)
+            : m_host(host)
+            , m_locked(true)
+        { m_host->lockForWrite(); }
+
+        ~WriteLocker() { unlock(); }
+        void unlock()
+        {
+            if (m_locked) {
+                m_host->unlock();
+                m_locked = false;
+            }
+        }
+
+    private:
+        ObjectLevelLockingPolicy *m_host;
+        bool m_locked;
+    };
+
+    class ReadLocker
+    {
+    public:
+        ReadLocker(ObjectLevelLockingPolicy *host)
+            : m_host(host)
+            , m_locked(true)
+        { m_host->lockForRead(); }
+
+        ~ReadLocker() { unlock(); }
+        void unlock()
+        {
+            if (m_locked) {
+                m_host->unlock();
+                m_locked = false;
+            }
+        }
+
+    private:
+        ObjectLevelLockingPolicy *m_host;
+        bool m_locked;
+    };
 
 private:
     QReadWriteLock m_lock;
 };
+
+
 
 template <typename T, int INDEXBITS>
 class ArrayAllocatingPolicy
@@ -164,11 +217,11 @@ private:
 
 template <typename T, typename C, int INDEXBITS = 16,
           template <typename, int> class AllocatingPolicy = ArrayAllocatingPolicy,
-          class LockingPolicy = NonLockingPolicy
+          template <class> class LockingPolicy = NonLockingPolicy
           >
 class QResourcesManager
         : public AllocatingPolicy<T, INDEXBITS>
-        , public LockingPolicy
+        , public LockingPolicy< QResourcesManager<T, C, INDEXBITS, AllocatingPolicy, LockingPolicy> >
 {
 public:
     QResourcesManager() :
@@ -178,90 +231,90 @@ public:
     }
 
     ~QResourcesManager()
-    {
-    }
+    {}
 
     QHandle<T, INDEXBITS> acquire()
     {
-        LockingPolicy::lockForWrite();
+        typename LockingPolicy<QResourcesManager>::WriteLocker(this);
         QHandle<T, INDEXBITS> handle = m_handleManager.acquire(AllocatingPolicy<T, INDEXBITS>::allocateResource());
-        LockingPolicy::unlock();
         return handle;
     }
 
     T* data(const QHandle<T, INDEXBITS> &handle)
     {
-        LockingPolicy::lockForRead();
+        typename LockingPolicy<QResourcesManager>::ReadLocker(this);
         T* data = m_handleManager.data(handle);
-        LockingPolicy::unlock();
         return data;
     }
 
     void release(const QHandle<T, INDEXBITS> &handle)
     {
-        T *val = data(handle);
-        LockingPolicy::lockForWrite();
+        typename LockingPolicy<QResourcesManager>::WriteLocker(this);
+        T *val = m_handleManager.data(handle);
         AllocatingPolicy<T, INDEXBITS>::releaseResource(val);
         m_handleManager.release(handle);
-        LockingPolicy::unlock();
     }
 
     void reset()
     {
-        LockingPolicy::lockForWrite();
+        typename LockingPolicy<QResourcesManager>::WriteLocker(this);
         m_handleManager.reset();
         AllocatingPolicy<T, INDEXBITS>::reset();
-        LockingPolicy::unlock();
     }
 
     bool contains(const C &id)
     {
-        LockingPolicy::lockForRead();
-        bool contained = m_handleToResourceMapper.contains(id);
-        LockingPolicy::unlock();
-        return contained;
+        typename LockingPolicy<QResourcesManager>::ReadLocker(this);
+        return m_handleToResourceMapper.contains(id);
     }
 
     QHandle<T, INDEXBITS> getOrAcquireHandle(const C &id)
     {
-        if (!contains(id))
-            m_handleToResourceMapper[id] = acquire();
-        LockingPolicy::lockForRead();
-        QHandle<T, INDEXBITS> handle = m_handleToResourceMapper[id];
-        LockingPolicy::unlock();
-        return handle;
+        if (!contains(id)) {
+            typename LockingPolicy<QResourcesManager>::WriteLocker(this);
+            if (!m_handleToResourceMapper.contains(id))
+                m_handleToResourceMapper[id] = acquire();
+        }
+        typename LockingPolicy<QResourcesManager>::ReadLocker(this);
+        return m_handleToResourceMapper[id];
     }
 
     QHandle<T, INDEXBITS> lookupHandle(const C &id)
     {
-        LockingPolicy::lockForRead();
+        typename LockingPolicy<QResourcesManager>::ReadLocker(this);
         QHandle<T, INDEXBITS> handle;
         if (m_handleToResourceMapper.contains(id))
             handle = m_handleToResourceMapper[id];
-        LockingPolicy::unlock();
         return handle;
     }
 
     T *lookupResource(const C &id)
     {
-        LockingPolicy::lockForRead();
         T *ret = Q_NULLPTR;
+        typename LockingPolicy<QResourcesManager>::ReadLocker(this);
         if (m_handleToResourceMapper.contains(id))
             ret = data(m_handleToResourceMapper[id]);
-        LockingPolicy::unlock();
         return ret;
     }
 
     T *getOrCreateResource(const C &id)
     {
-        if (!contains(id))
-            m_handleToResourceMapper[id] = acquire();
-        T *ret = data(m_handleToResourceMapper[id]);
-        return ret;
+        typename LockingPolicy<QResourcesManager>::ReadLocker readLock(this);
+        if (!m_handleToResourceMapper.contains(id)) {
+            readLock.unlock();
+            typename LockingPolicy<QResourcesManager>::WriteLocker(this);
+            if (!m_handleToResourceMapper.contains(id))
+                m_handleToResourceMapper[id] = acquire();
+            return m_handleManager.data(m_handleToResourceMapper[id]);
+        }
+        else {
+            return m_handleManager.data(m_handleToResourceMapper[id]);
+        }
     }
 
     void releaseResource(const C &id)
     {
+        typename LockingPolicy<QResourcesManager>::WriteLocker(this);
         if (m_handleToResourceMapper.contains(id))
             release(m_handleToResourceMapper[id]);
     }

@@ -60,7 +60,7 @@ class EffectManager : public QResourcesManager<RenderEffect,
                                                QAbstractEffect*,
                                                16,
                                                Qt3D::ArrayAllocatingPolicy,
-                                               Qt3D::LockingPolicy>
+                                               Qt3D::ObjectLevelLockingPolicy>
 {
 public:
     EffectManager();

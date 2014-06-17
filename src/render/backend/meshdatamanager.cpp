@@ -51,7 +51,7 @@ MeshDataManager::MeshDataManager()
                         QUuid,
                         16,
                         Qt3D::ListAllocatingPolicy,
-                        Qt3D::LockingPolicy>()
+                        Qt3D::ObjectLevelLockingPolicy>()
 {
 }
 
