@@ -123,6 +123,7 @@ Renderer::Renderer()
     , m_renderQueues(new RenderQueues())
     , m_frameCount(0)
 {
+    m_graphicContextInitialized.fetchAndStoreOrdered(0);
     m_textureProvider = new RenderTextureProvider;
 
     buildDefaultTechnique();
@@ -355,9 +356,7 @@ void Renderer::submitRenderViews()
     // as long as there is available space in the renderQueues.
     // Otherwise it waits for submission to be done so as to never miss
     // Any important state change that could be in a RenderView
-    locker.unlock();
-
-    if (m_graphicsContext == Q_NULLPTR || m_surface == Q_NULLPTR) {
+    if (m_graphicsContext == Q_NULLPTR && m_surface != Q_NULLPTR) {
         m_graphicsContext = new QGraphicsContext;
         QOpenGLContext* ctx = new QOpenGLContext;
         m_graphicsContext->setSurface(m_surface);
@@ -366,7 +365,9 @@ void Renderer::submitRenderViews()
         if (!ctx->create())
             qCWarning(Backend) << Q_FUNC_INFO << "OpenGL context creation failed";
         m_graphicsContext->setOpenGLContext(ctx);
+        m_graphicContextInitialized.fetchAndStoreOrdered(1);
     }
+    locker.unlock();
 
     QElapsedTimer timer;
     quint64 queueElapsed = 0;
@@ -419,9 +420,17 @@ QVector<QJobPtr> Renderer::createRenderBinJobs()
 
     QVector<QJobPtr> renderBinJobs;
 
-    FrameGraphVisitor visitor;
-    visitor.traverse(m_frameGraphRoot, this, &renderBinJobs);
-    m_renderQueues->setTargetRenderViewCount(renderBinJobs.size());
+    // We do not create jobs if the graphicContext hasn't been set.
+    // That way we will go in submitRenderView which will create the OpenGLContext in the
+    // correct thread so that later on Jobs can query for OpenGL Versions, Extensions ...
+    if (m_graphicContextInitialized.loadAcquire()) {
+        FrameGraphVisitor visitor;
+        visitor.traverse(m_frameGraphRoot, this, &renderBinJobs);
+        m_renderQueues->setTargetRenderViewCount(renderBinJobs.size());
+    }
+    else {
+        m_submitRenderViewsCondition.wakeOne();
+    }
     return renderBinJobs;
 }
 

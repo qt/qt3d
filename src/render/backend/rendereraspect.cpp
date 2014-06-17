@@ -85,38 +85,40 @@ QVector<QJobPtr> RendererAspect::jobsToExecute()
     QVector<QJobPtr> jobs;
 
     // Create jobs to load in any meshes that are pending
-    QList<Mesh *> meshSources = m_renderThread->renderer()->meshDataManager()->meshesPending();
-    QVector<QJobPtr> meshesJobs;
-    Q_FOREACH (Mesh *meshSource, meshSources) {
-        Render::LoadMeshDataJobPtr loadMeshJob(new Render::LoadMeshDataJob(meshSource));
-        loadMeshJob->setRenderer(m_renderThread->renderer());
-        meshesJobs.append(loadMeshJob);
-    }
-    m_renderThread->renderer()->meshDataManager()->clearMeshesPending();
+    if (m_renderThread->renderer() != Q_NULLPTR) {
+        QList<Mesh *> meshSources = m_renderThread->renderer()->meshDataManager()->meshesPending();
+        QVector<QJobPtr> meshesJobs;
+        Q_FOREACH (Mesh *meshSource, meshSources) {
+            Render::LoadMeshDataJobPtr loadMeshJob(new Render::LoadMeshDataJob(meshSource));
+            loadMeshJob->setRenderer(m_renderThread->renderer());
+            meshesJobs.append(loadMeshJob);
+        }
+        m_renderThread->renderer()->meshDataManager()->clearMeshesPending();
 
-    // Create jobs to update transforms and bounding volumes
-    Render::UpdateWorldTransformJobPtr worldTransformJob(new Render::UpdateWorldTransformJob(m_renderThread->renderer()->renderSceneRoot()));
-    Render::UpdateBoundingVolumeJobPtr boundingVolumeJob(new Render::UpdateBoundingVolumeJob(m_renderThread->renderer()->renderSceneRoot()));
+        // Create jobs to update transforms and bounding volumes
+        Render::UpdateWorldTransformJobPtr worldTransformJob(new Render::UpdateWorldTransformJob(m_renderThread->renderer()->renderSceneRoot()));
+        Render::UpdateBoundingVolumeJobPtr boundingVolumeJob(new Render::UpdateBoundingVolumeJob(m_renderThread->renderer()->renderSceneRoot()));
 
-    Q_FOREACH (QJobPtr meshJob, meshesJobs) {
-        worldTransformJob->addDependency(meshJob);
-        jobs.append(meshJob);
-    }
-    //    // We can only update bounding volumes once all world transforms are known
-    boundingVolumeJob->addDependency(worldTransformJob);
+        Q_FOREACH (QJobPtr meshJob, meshesJobs) {
+            worldTransformJob->addDependency(meshJob);
+            jobs.append(meshJob);
+        }
+        //    // We can only update bounding volumes once all world transforms are known
+        boundingVolumeJob->addDependency(worldTransformJob);
 
-    //    // Add all jobs to queue
-    jobs.append(worldTransformJob);
-    jobs.append(boundingVolumeJob);
+        //    // Add all jobs to queue
+        jobs.append(worldTransformJob);
+        jobs.append(boundingVolumeJob);
 
-    // Traverse the current framegraph and create jobs to populate
-    // RenderBins with RenderCommands
-    QVector<QJobPtr> renderBinJobs = m_renderThread->renderer()->createRenderBinJobs();
-    // TODO: Add wrapper around ThreadWeaver::Collection
-    for (int i = 0; i < renderBinJobs.size(); ++i) {
-        QJobPtr renderBinJob = renderBinJobs.at(i);
-        renderBinJob->addDependency(boundingVolumeJob);
-        jobs.append(renderBinJob);
+        // Traverse the current framegraph and create jobs to populate
+        // RenderBins with RenderCommands
+        QVector<QJobPtr> renderBinJobs = m_renderThread->renderer()->createRenderBinJobs();
+        // TODO: Add wrapper around ThreadWeaver::Collection
+        for (int i = 0; i < renderBinJobs.size(); ++i) {
+            QJobPtr renderBinJob = renderBinJobs.at(i);
+            renderBinJob->addDependency(boundingVolumeJob);
+            jobs.append(renderBinJob);
+        }
     }
     return jobs;
 }

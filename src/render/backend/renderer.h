@@ -56,6 +56,7 @@
 #include <QOpenGLBuffer>
 #include <QMutex>
 #include <QWaitCondition>
+#include <QAtomicInt>
 
 QT_BEGIN_NAMESPACE
 
@@ -201,6 +202,7 @@ private:
     QMutex m_mutex;
     QWaitCondition m_submitRenderViewsCondition;
     uint m_frameCount;
+    QAtomicInt m_graphicContextInitialized;
 };
 
 } // namespace Render
