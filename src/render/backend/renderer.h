@@ -77,9 +77,7 @@ namespace Render {
 class RenderTextureProvider;
 class RenderCamera;
 class QGraphicsContext;
-class Drawable;
 class FrameGraphNode;
-class RenderBin;
 class RenderMaterial;
 class RenderTechnique;
 class RenderShader;
@@ -113,7 +111,6 @@ public:
 
     void setSceneGraphRoot(Qt3D::Node *sgRoot);
     Qt3D::Node *sceneGraphRoot() const;
-
     RenderNode *renderSceneRoot() const { return m_renderSceneRoot; }
 
     void render();
@@ -164,8 +161,6 @@ private:
     QHash<Technique *, RenderTechnique*> m_techniqueHash;
     QHash<ShaderProgram*, RenderShader*> m_shaderHash;
 
-    RenderBin *getOrCreateBinForPass(Technique *t, RenderPass *p);
-
     RenderTechnique *createTechnique(Technique *tech);
     RenderShader *getOrCreateShader(ShaderProgram *sp);
     RenderMaterial *getOrCreateMaterial(Material *mat);
@@ -182,7 +177,6 @@ private:
 
     QGraphicsContext* m_graphicsContext;
     QSurface *m_surface;
-    RenderBin* m_temporaryAllBin;
     RenderTextureProvider* m_textureProvider;
     MeshDataManager *m_meshDataManager;
     MeshManager *m_meshManager;
@@ -198,9 +192,6 @@ private:
     RenderPassManager *m_renderPassManager;
 
     QTimer* m_frameTimer;
-
-    /// list of drawables to be initialized next frame
-    QList<Drawable*> m_initList;
 
     RenderQueues* m_renderQueues;
 

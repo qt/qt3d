@@ -10,10 +10,8 @@ HEADERS += \
     $$PWD/renderdevice.h \
     $$PWD/renderer.h \
     $$PWD/rendermaterial.h \
-    $$PWD/drawable.h \
     $$PWD/rendermesh.h \
     $$PWD/qgraphicscontext.h \
-    $$PWD/renderbin.h \
     $$PWD/rendershader.h \
     $$PWD/rendertechnique.h \
     $$PWD/rendercamera.h \
@@ -53,10 +51,8 @@ SOURCES += \
     $$PWD/renderdevice.cpp \
     $$PWD/renderer.cpp \
     $$PWD/rendermaterial.cpp \
-    $$PWD/drawable.cpp \
     $$PWD/rendermesh.cpp \
     $$PWD/qgraphicscontext.cpp \
-    $$PWD/renderbin.cpp \
     $$PWD/rendershader.cpp \
     $$PWD/rendertechnique.cpp \
     $$PWD/rendercamera.cpp \

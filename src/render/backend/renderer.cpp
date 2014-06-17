@@ -63,7 +63,6 @@
 #include <meshmanager.h>
 #include <rendermesh.h>
 #include <renderqueues.h>
-#include <renderbin.h>
 #include <rendermaterial.h>
 #include <rendernode.h>
 #include <rendertechnique.h>
@@ -124,7 +123,6 @@ Renderer::Renderer()
     , m_renderQueues(new RenderQueues())
     , m_frameCount(0)
 {
-    m_temporaryAllBin = NULL;
     m_textureProvider = new RenderTextureProvider;
 
     buildDefaultTechnique();
