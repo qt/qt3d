@@ -79,7 +79,7 @@ public:
     // SceneParserInterface interface
     void setFilePath(const QString& path) Q_DECL_OVERRIDE;
     bool isPathExtensionSupported(const QString &path) Q_DECL_OVERRIDE;
-    Entity *scene(QString id = QStringLiteral("")) Q_DECL_OVERRIDE;
+    Entity *scene(QString id = QString()) Q_DECL_OVERRIDE;
     Entity *node(QString id) Q_DECL_OVERRIDE;
 
     Entity *defaultScene();
