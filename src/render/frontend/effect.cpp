@@ -43,6 +43,8 @@
 #include "technique.h"
 #include "parameter.h"
 
+#include <Qt3DCore/qscenepropertychange.h>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
@@ -84,6 +86,10 @@ void Effect::addParameter(Parameter *parameter)
     Q_D(Effect);
     if (!d->m_parameters.contains(parameter)) {
         d->m_parameters.append(parameter);
+        QScenePropertyChangePtr change(new QScenePropertyChange(ComponentAdded, this));
+        change->m_propertyName = QByteArrayLiteral("parameter");
+        change->m_value = QVariant::fromValue(parameter);
+        notifyObservers(change);
     }
 }
 
@@ -91,6 +97,10 @@ void Effect::removeParameter(Parameter *parameter)
 {
     Q_D(Effect);
     d->m_parameters.removeOne(parameter);
+    QScenePropertyChangePtr change(new QScenePropertyChange(ComponentRemoved, this));
+    change->m_propertyName = QByteArrayLiteral("parameter");
+    change->m_value = QVariant::fromValue(parameter);
+    notifyObservers(change);
 }
 
 QList<Parameter *> Effect::parameters() const
