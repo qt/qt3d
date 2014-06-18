@@ -46,8 +46,8 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-Parameter::Parameter(QObject *parent, const QString &name, OpenGLTypes ty) :
-    QObject(parent),
+Parameter::Parameter(Node *parent, const QString &name, OpenGLTypes ty) :
+    Node(parent),
     m_name(name),
     m_type(ty),
     m_standardUniform(None)
@@ -55,16 +55,16 @@ Parameter::Parameter(QObject *parent, const QString &name, OpenGLTypes ty) :
 
 }
 
-Parameter::Parameter(QObject *parent)
-    : QObject(parent)
+Parameter::Parameter(Node *parent)
+    : Node(parent)
     , m_type(Undefined)
     , m_standardUniform(None)
 {
 
 }
 
-Parameter::Parameter(QObject *parent, const QString &name, Parameter::OpenGLTypes ty, const QVariant &value)
-    : QObject(parent)
+Parameter::Parameter(Node *parent, const QString &name, Parameter::OpenGLTypes ty, const QVariant &value)
+    : Node(parent)
     , m_name(name)
     , m_type(ty)
     , m_value(value)
