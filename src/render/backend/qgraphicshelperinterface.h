@@ -43,6 +43,8 @@
 #define QT3D_RENDER_QGRAPHICSHELPERINTERFACE_H
 
 #include <QOpenGLFunctions>
+#include <QVector>
+#include <QPair>
 
 QT_BEGIN_NAMESPACE
 
@@ -58,6 +60,8 @@ public:
     virtual void    drawElements(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices) = 0;
     virtual void    drawArrays(GLenum primitiveType, GLint first, GLsizei count) = 0;
     virtual void    useProgram(GLuint programId) = 0;
+    virtual QVector<QPair<QString, int> > programUniformsAndLocations(GLuint programId) = 0;
+    virtual QVector<QPair<QString, int> > programAttributesAndLocations(GLuint programId) = 0;
     virtual void    vertexAttribDivisor(GLuint index, GLuint divisor) = 0;
     virtual void    blendEquation(GLenum mode) = 0;
     virtual void    alphaTest(GLenum mode1, GLenum mode2) = 0;
@@ -65,7 +69,6 @@ public:
     virtual void    depthMask(GLenum mode) = 0;
     virtual void    cullFace(GLenum mode) = 0;
     virtual void    frontFace(GLenum mode) = 0;
-
 };
 
 } // Render

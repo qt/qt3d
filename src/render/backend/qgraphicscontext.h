@@ -48,7 +48,7 @@
 #include <QHash>
 #include <QMatrix4x4>
 #include <QBitArray>
-
+#include <Qt3DRenderer/quniformvalue.h>
 #include <Qt3DRenderer/rendercamera.h>
 #include <Qt3DRenderer/meshdata.h>
 
@@ -125,6 +125,8 @@ public:
 
     void specifyIndices(AttributePtr attr);
 
+    void setUniforms(const QUniformPack &uniforms);
+
     /**
      * @brief glBufferFor - given a client-side (CPU) buffer, provide the
      * context-specific object. Initial call will create the buffer.
@@ -178,7 +180,9 @@ private:
 
     RenderShader* m_activeShader;
     QHash<RenderShader*, QOpenGLShaderProgram*> m_shaderHash;
-    QHash<BufferPtr,QOpenGLBuffer> m_bufferHash;
+    QHash<RenderShader*, QVector<QPair<QString, int> > > m_shaderUniforms;
+    QHash<RenderShader*, QVector<QPair<QString, int> > > m_shaderAttributes;
+    QHash<BufferPtr, QOpenGLBuffer> m_bufferHash;
 
     // active textures, indexed by texture unit
     QVector<RenderTexture*> m_activeTextures;

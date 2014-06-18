@@ -222,6 +222,7 @@ void QGraphicsContext::setOpenGLContext(QOpenGLContext* ctx)
     resolveHighestOpenGLFunctions();
 }
 
+// That assumes that the shaderProgram in RenderShader stays the same
 void QGraphicsContext::activateShader(RenderShader *shader)
 {
     if (shader == NULL) {
@@ -235,6 +236,8 @@ void QGraphicsContext::activateShader(RenderShader *shader)
         QOpenGLShaderProgram* prog = shader->getOrCreateProgram();
         Q_ASSERT(prog);
         m_shaderHash[shader] = prog;
+        m_shaderUniforms[shader] = m_glHelper->programUniformsAndLocations(prog->programId());
+        m_shaderAttributes[shader] = m_glHelper->programAttributesAndLocations(prog->programId());
         m_activeShader = NULL;
     }
 
@@ -561,6 +564,11 @@ QOpenGLShaderProgram* QGraphicsContext::activeShader()
     return m_shaderHash[m_activeShader];
 }
 
+// It will be easier if the QGraphicContext applies the QUniformPack
+// than the other way around
+void QGraphicsContext::setUniforms(const QUniformPack &uniforms)
+{
+}
 
 void QGraphicsContext::specifyAttribute(QString nm, AttributePtr attr)
 {

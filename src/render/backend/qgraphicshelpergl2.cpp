@@ -116,6 +116,45 @@ void QGraphicsHelperGL2::useProgram(GLuint programId)
     m_funcs->glUseProgram(programId);
 }
 
+QVector<QPair<QString, int> > QGraphicsHelperGL2::programUniformsAndLocations(GLuint programId)
+{
+    QVector<QPair<QString, int> > uniforms;
+
+    GLint nbrActiveUniforms = 0;
+    m_funcs->glGetProgramiv(programId, GL_ACTIVE_UNIFORMS, &nbrActiveUniforms);
+    uniforms.resize(nbrActiveUniforms);
+    for (GLint i = 0; i < nbrActiveUniforms; i++) {
+        QByteArray uniformName(256, '\0');
+        GLenum type;
+        GLint size;
+        // Size is 1 for scalar and more for struct or arrays
+        // Type is the GL Type
+        m_funcs->glGetActiveUniform(programId, i, 256, NULL, &size, &type , uniformName.data());
+        GLint location = m_funcs->glGetUniformLocation(programId, uniformName.constData());
+        uniforms.append(QPair<QString, int>(QString::fromUtf8(uniformName), location));
+    }
+    return uniforms;
+}
+
+QVector<QPair<QString, int> > QGraphicsHelperGL2::programAttributesAndLocations(GLuint programId)
+{
+    QVector<QPair<QString, int> > attributes;
+
+    GLint nbrActiveAttributes = 0;
+    m_funcs->glGetProgramiv(programId, GL_ACTIVE_ATTRIBUTES, &nbrActiveAttributes);
+    for (GLint i = 0; i < nbrActiveAttributes; i++) {
+        QByteArray attributeName(256, '\0');
+        GLenum type;
+        GLint size;
+        // Size is 1 for scalar and more for struct or arrays
+        // Type is the GL Type
+        m_funcs->glGetActiveAttrib(programId, i, 256, NULL, &size, &type , attributeName.data());
+        GLint location = m_funcs->glGetAttribLocation(programId, attributeName.constData());
+        attributes.append(QPair<QString, int>(QString::fromUtf8(attributeName), location));
+    }
+    return attributes;
+}
+
 void QGraphicsHelperGL2::vertexAttribDivisor(GLuint index,
                                              GLuint divisor)
 {

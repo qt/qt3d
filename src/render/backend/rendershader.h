@@ -65,12 +65,6 @@ public:
 
     void setPeer(ShaderProgram* peer);
 
-    /**
-     * @brief getOrCreateProgram
-     * must be called with a valid, current QOpenGLContext
-     * @return
-     */
-    QOpenGLShaderProgram* getOrCreateProgram();
 
     /**
      * @brief setStandardUniform - set the program name of a uniform
@@ -100,6 +94,10 @@ private:
 
     QVector<QString> m_standardUniformNames;
     QVector<int> m_standardUniformLocations;
+
+    // Private so that only GraphicContext can call it
+    QOpenGLShaderProgram* getOrCreateProgram();
+    friend class QGraphicsContext;
 };
 
 } // Render

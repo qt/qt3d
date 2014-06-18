@@ -64,6 +64,9 @@ void RenderShader::setPeer(ShaderProgram *peer)
     m_peer = peer;
 }
 
+/*!
+ * Must be called with a valid, current QOpenGLContext
+ */
 QOpenGLShaderProgram *RenderShader::getOrCreateProgram()
 {
     if (!m_program) {
