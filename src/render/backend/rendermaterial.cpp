@@ -139,14 +139,14 @@ void RenderMaterial::syncParametersFromPeer()
 
 void RenderMaterial::sceneChangeEvent(const QSceneChangePtr &e)
 {
+    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+
     switch (e->m_type) {
     case ComponentUpdated: {
         // Check for shader parameter
         // Check for effect change
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        QString propertyName = QString::fromLatin1(propertyChange->m_propertyName);
-        QVariant propertyValue = propertyChange->m_value;
-        if (propertyName == QByteArrayLiteral("effect")) {
+//        QVariant propertyValue = propertyChange->m_value;
+        if (propertyChange->m_propertyName == QByteArrayLiteral("effect")) {
 
         }
         else {
@@ -154,19 +154,15 @@ void RenderMaterial::sceneChangeEvent(const QSceneChangePtr &e)
         break;
     }
     case ComponentAdded: {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        QString propertyName = QString::fromLatin1(propertyChange->m_propertyName);
         Parameter *param = Q_NULLPTR;
-        if (propertyName == QByteArrayLiteral("parameter") &&
+        if (propertyChange->m_propertyName == QByteArrayLiteral("parameter") &&
                 (param = propertyChange->m_value.value<Parameter*>()) != Q_NULLPTR)
             m_parameterPack.appendParameter(param);
         break;
     }
     case ComponentRemoved: {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        QString propertyName = QString::fromLatin1(propertyChange->m_propertyName);
         Parameter *param = Q_NULLPTR;
-        if (propertyName == QByteArrayLiteral("parameter") &&
+        if (propertyChange->m_propertyName == QByteArrayLiteral("parameter") &&
                 (param = propertyChange->m_value.value<Parameter*>()) != Q_NULLPTR)
             m_parameterPack.removeParameter(param);
         break;
