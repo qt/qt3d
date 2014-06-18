@@ -40,7 +40,7 @@
 ****************************************************************************/
 
 #include "techniquemanager.h"
-#include <Qt3DCore/qabstracttechnique.h>
+#include <Qt3DCore/qabstracteffect.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -50,7 +50,7 @@ namespace Render {
 
 TechniqueManager::TechniqueManager()
     : QResourcesManager<RenderTechnique,
-                        QAbstractTechnique*,
+                        QAbstractEffect*,
                         16,
                         Qt3D::ArrayAllocatingPolicy,
                         Qt3D::ObjectLevelLockingPolicy>()

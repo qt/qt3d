@@ -50,14 +50,14 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAbstractTechnique;
+class QAbstractEffect;
 
 namespace Render {
 
 typedef QHandle<RenderTechnique, 16> HTechnique;
 
 class TechniqueManager : public QResourcesManager<RenderTechnique,
-                                                  QAbstractTechnique*,
+                                                  QAbstractEffect*,
                                                   16,
                                                   Qt3D::ArrayAllocatingPolicy,
                                                   Qt3D::ObjectLevelLockingPolicy>

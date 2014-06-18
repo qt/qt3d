@@ -66,6 +66,7 @@ public:
     void setPeer(QAbstractEffect *effect);
     void setRendererAspect(RendererAspect *rendererAspect);
     void sceneChangeEvent(const QSceneChangePtr &e);
+    QAbstractEffect *peer() const { return m_peer; }
 
     QList<QAbstractTechnique *> techniques() const;
 

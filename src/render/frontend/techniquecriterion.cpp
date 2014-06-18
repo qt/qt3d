@@ -66,6 +66,11 @@ bool TechniqueCriterion::operator ==(const TechniqueCriterion &other)
     return false;
 }
 
+bool TechniqueCriterion::operator !=(const TechniqueCriterion &other)
+{
+    return !operator ==(other);
+}
+
 void TechniqueCriterion::setCriterionType(TechniqueCriterion::CriterionType type)
 {
     Q_D(TechniqueCriterion);

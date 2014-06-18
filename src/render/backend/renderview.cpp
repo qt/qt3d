@@ -154,6 +154,7 @@ void RenderView::sort()
     // 1) Shader
     // 2) DrawStateSet
     // 2) Texture
+
 }
 
 void RenderView::setRenderer(Renderer *renderer)
@@ -204,7 +205,7 @@ void RenderView::buildRenderCommands(RenderNode *node)
             }
 
             if (passes.isEmpty()) {
-                qCritical() << "No RenderPasses found. Make sure you have properly set your Material, Technique and Effect. Rendering using default RenderPass";
+                //                qCritical() << "No RenderPasses found. Make sure you have properly set your Material, Technique and Effect. Rendering using default RenderPass";
                 RenderCommand *command = new RenderCommand();
                 command->m_mesh = meshHandle;
                 command->m_meshData = mesh->meshData();
@@ -278,41 +279,44 @@ RenderTechnique *RenderView::findTechniqueForEffect(RenderEffect *effect)
     // depend on the TechniqueFilter but entirely on what the system GL interface gives us
     // Furthermode, finding a way to perform this filtering as little as possible could provide some performance improvements
     if (effect != Q_NULLPTR) {
-        Technique *tech = Q_NULLPTR;
-        Q_FOREACH (QAbstractTechnique *technique, effect->techniques()) {
-            if ((tech = qobject_cast<Technique*>(technique)) != Q_NULLPTR) {
-                bool foundMatchingTechnique = true;
-                Q_FOREACH (TechniqueCriterion *filterCriterion, m_techniqueFilter->filters()) {
-                    bool findMatch = false;
-                    Q_FOREACH (TechniqueCriterion *techCriterion, tech->criteria()) {
-                        if (*filterCriterion == *techCriterion) {
-                            findMatch = true;
-                            break;
+        RenderTechnique *technique = Q_NULLPTR;
+        // The filtering process happens only if there is no RenderTechnique found for the current Effect
+        // or if the m_techniqueFilter indicates that the filtering isDirty
+        if ((technique = m_renderer->techniqueManager()->lookupResource(effect->peer())) == Q_NULLPTR
+                && m_techniqueFilter != Q_NULLPTR) {
+            TechniqueManager::WriteLocker(m_renderer->techniqueManager());
+
+            // Tries to select first valid technique based on criteria defined in the TechniqueFilter
+            Technique *filteredTech = Q_NULLPTR;
+            Q_FOREACH (QAbstractTechnique *technique, effect->techniques()) {
+                Technique *tech = Q_NULLPTR;
+                if ((tech = qobject_cast<Technique*>(technique)) != Q_NULLPTR &&
+                        tech->criteria().size() == m_techniqueFilter->filters().count()) {
+                    bool findMatch = true;
+                    Q_FOREACH (TechniqueCriterion *filterCriterion, m_techniqueFilter->filters()) {
+                        Q_FOREACH (TechniqueCriterion *techCriterion, tech->criteria()) {
+                            if (*filterCriterion != *techCriterion) {
+                                findMatch = false;
+                                break;
+                            }
                         }
                     }
-                    if (!findMatch) {
-                        foundMatchingTechnique = false;
+                    if (findMatch) {
+                        filteredTech = tech;
                         break;
                     }
                 }
-                if (!foundMatchingTechnique)
-                    qFatal("No Technique was found matching the criteria defined in the TechniqueFilter : Cannot Continue");
             }
-        }
-        RenderTechnique *technique = Q_NULLPTR;
-        if ((technique = m_renderer->techniqueManager()->lookupResource(tech)) == Q_NULLPTR) {
-            // Tries to select technique based on criteria defined in the TechniqueFilter
-            Q_FOREACH (QAbstractTechnique *t, effect->techniques()) {
-                if (qobject_cast<Technique *>(t) && t == tech) {
-                    technique = m_renderer->techniqueManager()->getOrCreateResource(t);
-                    technique->setRenderer(m_renderer);
-                    technique->setPeer(qobject_cast<Technique *>(t));
-                    break;
-                }
+            if (filteredTech == Q_NULLPTR) {
+                qFatal("No Technique was found matching the criteria defined in the TechniqueFilter : Cannot Continue");
+            } else {
+                technique = m_renderer->techniqueManager()->getOrCreateResource(effect->peer());
+                technique->setRenderer(m_renderer);
+                technique->setPeer(qobject_cast<Technique *>(filteredTech));
             }
         }
         if (technique == Q_NULLPTR)
-            qCCritical(Render::Backend) << Q_FUNC_INFO << "No technique found for technique filter";
+            qCCritical(Render::Backend) << Q_FUNC_INFO << "No technique found for current Effect";
         return technique;
     }
     return Q_NULLPTR;
