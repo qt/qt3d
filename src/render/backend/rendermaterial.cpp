@@ -82,8 +82,11 @@ void RenderMaterial::setPeer(Material *mat)
             arbiter->registerObserver(this, m_peer, ComponentUpdated);
 
             m_parameters.clear();
-            Q_FOREACH (Parameter *p, m_peer->parameters())
+            m_parameterPack.clear();
+            Q_FOREACH (Parameter *p, m_peer->parameters()) {
                 m_parameters[p->name()] = p;
+                m_parameterPack.appendParameter(p);
+            }
         }
     }
 }
@@ -91,6 +94,7 @@ void RenderMaterial::setPeer(Material *mat)
 void RenderMaterial::setRendererAspect(RendererAspect *rendererAspect)
 {
     m_rendererAspect = rendererAspect;
+    m_parameterPack.setRendererAspect(m_rendererAspect);
 }
 
 //void RenderMaterial::setTextureParameter(QString paramName, RenderTexturePtr tex)
@@ -147,6 +151,24 @@ void RenderMaterial::sceneChangeEvent(const QSceneChangePtr &e)
         }
         else {
         }
+        break;
+    }
+    case ComponentAdded: {
+        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+        QString propertyName = QString::fromLatin1(propertyChange->m_propertyName);
+        Parameter *param = Q_NULLPTR;
+        if (propertyName == QByteArrayLiteral("parameter") &&
+                (param = propertyChange->m_value.value<Parameter*>()) != Q_NULLPTR)
+            m_parameterPack.appendParameter(param);
+        break;
+    }
+    case ComponentRemoved: {
+        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+        QString propertyName = QString::fromLatin1(propertyChange->m_propertyName);
+        Parameter *param = Q_NULLPTR;
+        if (propertyName == QByteArrayLiteral("parameter") &&
+                (param = propertyChange->m_value.value<Parameter*>()) != Q_NULLPTR)
+            m_parameterPack.removeParameter(param);
         break;
     }
 

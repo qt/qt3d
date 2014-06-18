@@ -48,6 +48,7 @@
 
 #include <Qt3DRenderer/quniformvalue.h>
 #include <Qt3DRenderer/rendertextureprovider.h>
+#include <Qt3DRenderer/parameterpack.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -86,6 +87,7 @@ private:
     RenderTechnique* m_technique;
     RenderTextureProvider* m_textureProvider;
     QHash<QString, Parameter*> m_parameters;
+    ParameterPack m_parameterPack;
 
 };
 
