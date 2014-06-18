@@ -42,7 +42,6 @@
 #include "parameterpack.h"
 #include "parameter.h"
 #include "rendereraspect.h"
-#include "renderer.h"
 
 #include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/qscenepropertychange.h>
@@ -54,20 +53,20 @@ namespace Qt3D {
 namespace Render {
 
 ParameterPack::ParameterPack()
-    : m_renderer(Q_NULLPTR)
+    : m_rendererAspect(Q_NULLPTR)
 {
 }
 
-void ParameterPack::setRenderer(Renderer *renderer)
+void ParameterPack::setRendererAspect(RendererAspect *rendererAspect)
 {
-    m_renderer = renderer;
+    m_rendererAspect = rendererAspect;
 }
 
 void ParameterPack::appendParameter(Parameter *param)
 {
     if (!m_peers.contains(param)) {
         m_peers << param;
-        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
+        QChangeArbiter *arbiter = m_rendererAspect->aspectManager()->changeArbiter();
         arbiter->registerObserver(this, param);
         m_namedValues[param->name()] = param->value();
     }
@@ -78,7 +77,7 @@ void ParameterPack::removeParameter(Parameter *param)
     if (m_peers.contains(param)) {
         m_peers.removeOne(param);
         m_namedValues.remove(param->name());
-        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
+        QChangeArbiter *arbiter = m_rendererAspect->aspectManager()->changeArbiter();
         arbiter->unregisterObserver(this, param);
     }
 }
@@ -86,7 +85,7 @@ void ParameterPack::removeParameter(Parameter *param)
 void ParameterPack::clear()
 {
     m_namedValues.clear();
-    QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
+    QChangeArbiter *arbiter = m_rendererAspect->aspectManager()->changeArbiter();
     Q_FOREACH (Parameter *param, m_peers) {
         arbiter->unregisterObserver(this, param);
     }
