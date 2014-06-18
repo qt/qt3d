@@ -42,7 +42,8 @@ HEADERS += \
     $$PWD/rendereffect.h \
     $$PWD/effectmanager.h \
     $$PWD/renderrenderpass.h \
-    $$PWD/renderpassmanager.h
+    $$PWD/renderpassmanager.h \
+    $$PWD/parameterpack.h
 
 SOURCES += \
     $$PWD/rendereraspect.cpp \
@@ -81,4 +82,5 @@ SOURCES += \
     $$PWD/rendereffect.cpp \
     $$PWD/effectmanager.cpp \
     $$PWD/renderrenderpass.cpp \
-    $$PWD/renderpassmanager.cpp
+    $$PWD/renderpassmanager.cpp \
+    $$PWD/parameterpack.cpp
