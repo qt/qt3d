@@ -51,6 +51,8 @@
 
 QT_BEGIN_NAMESPACE
 
+class QOpenGLShaderProgram;
+
 namespace Qt3D {
 namespace Render {
 
@@ -79,7 +81,7 @@ public:
     // QVariant boxing + unboxing. Add as needed if this proves useful
     explicit QUniformValue(const QVector4D& foo);
 
-    void apply(QGraphicsContext* gc, int location, QString nm) const;
+    void apply(QOpenGLShaderProgram* prog, int location) const;
 
 private:
     void convertToBytes() const;
@@ -107,18 +109,12 @@ public:
 
     void setTexture(QString glslName, RenderTexturePtr tex);
 
-    void apply(QGraphicsContext* gc);
+//    void apply(QGraphicsContext* gc);
+
+    QHash<QString, QUniformValue> uniforms() const { return m_uniforms; }
+
 private:
-
-    struct NamedUniform {
-        NamedUniform() : location(-1) { }
-
-        QString glslName;
-        int location;
-        QUniformValue uval;
-    };
-
-    QVector<NamedUniform> m_uniforms;
+    QHash<QString, QUniformValue> m_uniforms;
 
     struct NamedTexture {
         NamedTexture() : location(-1) {}

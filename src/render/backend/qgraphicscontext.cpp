@@ -261,6 +261,7 @@ void QGraphicsContext::setActiveMaterial(RenderMaterial *rmat)
     m_material = rmat;
 }
 
+// TO DO : Try to move what's in Renderer here
 void QGraphicsContext::executeCommand(const RenderCommand *command)
 {
 
@@ -568,6 +569,15 @@ QOpenGLShaderProgram* QGraphicsContext::activeShader()
 // than the other way around
 void QGraphicsContext::setUniforms(const QUniformPack &uniforms)
 {
+    QOpenGLShaderProgram *prog = activeShader();
+    QVector<NamedUniformLocation> &namedUniforms = m_shaderUniforms[m_activeShader];
+
+    for (int i = 0; i < namedUniforms.size(); i++) {
+        if (uniforms.uniforms().contains(namedUniforms[i].first))
+            uniforms.uniforms()[namedUniforms[i].first].apply(prog, namedUniforms[i].second);
+        else
+            qDebug() << "Unset Uniform " << namedUniforms[i].first;
+    }
 }
 
 void QGraphicsContext::specifyAttribute(QString nm, AttributePtr attr)

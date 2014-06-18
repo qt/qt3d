@@ -527,7 +527,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> commands)
         // All Uniforms for a pass are stored in the QUniformPack of the command
         // Uniforms for Effect, Material and Technique should already have been correctly resolved
         // at that point
-        command->m_uniforms.apply(m_graphicsContext);
+        m_graphicsContext->setUniforms(command->m_uniforms);
 
         vao->bind();
         GLint primType = meshData->primitiveType();

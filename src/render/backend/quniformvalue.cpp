@@ -203,7 +203,7 @@ void QUniformValue::setRawFromInts(const qint32* ptr, unsigned int count, unsign
     m_tupleSize = tupleSize;
 }
 
-void QUniformValue::apply(QGraphicsContext *gc, int location, QString nm) const
+void QUniformValue::apply(QOpenGLShaderProgram *prog, int location) const
 {
     switch (m_type) {
 #if 0
@@ -212,20 +212,20 @@ void QUniformValue::apply(QGraphicsContext *gc, int location, QString nm) const
 
         }
 
-        gc->activeShader()->setUniformValueArray(location,
+        prog->setUniformValueArray(location,
                                                  reinterpret_cast<const GLint*>(m_bytes.constData()),
                                                  m_count * m_tupleSize);
                 break;
 
     case UInt:
-        gc->activeShader()->setUniformValueArray(location,
+        prog->setUniformValueArray(location,
                                                  reinterpret_cast<const GLuint*>(m_bytes.constData()),
                                                  m_count * m_tupleSize);
         break;
 #endif
 
     case Float:
-        gc->activeShader()->setUniformValueArray(location,
+        prog->setUniformValueArray(location,
                                                  reinterpret_cast<const GLfloat*>(m_bytes.constData()),
                                                  m_count, m_tupleSize);
         break;
@@ -236,7 +236,7 @@ void QUniformValue::apply(QGraphicsContext *gc, int location, QString nm) const
 
     int err = glGetError();
     if (err) {
-        qWarning() << "error after setting uniform" << m_count << location << m_tupleSize << nm;
+        qWarning() << "error after setting uniform" << m_count << location << m_tupleSize;
     }
 }
 
@@ -248,19 +248,7 @@ void QUniformValue::convertToBytes() const
 
 void QUniformPack::setUniform(QString glslName, QUniformValue val)
 {
-    for (int u=0; u<m_uniforms.size(); ++u) {
-        if (m_uniforms[u].glslName != glslName) {
-            continue;
-        }
-
-        m_uniforms[u].uval = val;
-        return;
-    }
-
-    NamedUniform nu;
-    nu.glslName = glslName;
-    nu.uval = val;
-    m_uniforms.append(nu);
+        m_uniforms[glslName] = val;
 }
 
 void QUniformPack::setTexture(QString glslName, RenderTexturePtr tex)
@@ -277,29 +265,29 @@ void QUniformPack::setTexture(QString glslName, RenderTexturePtr tex)
     m_textures.append(NamedTexture(glslName, tex));
 }
 
-void QUniformPack::apply(QGraphicsContext *gc)
-{
-    for (int u=0; u<m_uniforms.size(); ++u) {
-        int loc = m_uniforms[u].location;
-        if (loc == -1) {
-            loc = gc->activeShader()->uniformLocation(m_uniforms[u].glslName);
-            m_uniforms[u].location = loc;
-        }
+//void QUniformPack::apply(QGraphicsContext *gc)
+//{
+//    for (int u=0; u<m_uniforms.size(); ++u) {
+//        int loc = m_uniforms[u].location;
+//        if (loc == -1) {
+//            loc = gc->activeShader()->uniformLocation(m_uniforms[u].glslName);
+//            m_uniforms[u].location = loc;
+//        }
 
-        m_uniforms[u].uval.apply(gc, loc, m_uniforms[u].glslName);
-    } // of uniforms iteration
+//        m_uniforms[u].uval.apply(gc, loc, m_uniforms[u].glslName);
+//    } // of uniforms iteration
 
-    for (int t=0; t<m_textures.size(); ++t) {
-        int loc = m_textures[t].location;
-        if (loc == -1) {
-            loc = gc->activeShader()->uniformLocation(m_textures[t].glslName);
-            m_textures[t].location = loc;
-        }
+//    for (int t=0; t<m_textures.size(); ++t) {
+//        int loc = m_textures[t].location;
+//        if (loc == -1) {
+//            loc = gc->activeShader()->uniformLocation(m_textures[t].glslName);
+//            m_textures[t].location = loc;
+//        }
 
-        int unit = gc->activateTexture(TextureScopeMaterial, m_textures[t].tex.data());
-        gc->activeShader()->setUniformValue(loc, unit);
-    } // of textures iteration
-}
+//        int unit = gc->activateTexture(TextureScopeMaterial, m_textures[t].tex.data());
+//        gc->activeShader()->setUniformValue(loc, unit);
+//    } // of textures iteration
+//}
 
 } // namespace Render
 } // namespace Qt3D

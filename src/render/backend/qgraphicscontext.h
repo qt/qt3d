@@ -75,6 +75,8 @@ enum TextureScope
     // per-pass for deferred rendering?
 };
 
+typedef QPair<QString, int> NamedUniformLocation;
+
 class QGraphicsContext
 {
 public:
