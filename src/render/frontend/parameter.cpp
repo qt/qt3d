@@ -41,6 +41,7 @@
 
 #include "parameter.h"
 #include "renderlogging.h"
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -109,7 +110,10 @@ void Parameter::setValue(const QVariant &dv)
     if (m_value != dv) {
         m_value = dv;
         emit valueChanged();
-        // TO DO: Add scene property change here to notify backend about the update
+        QScenePropertyChangePtr change(new QScenePropertyChange(ComponentUpdated, this));
+        change->m_propertyName = m_name.toUtf8();
+        change->m_value = m_value;
+        notifyObservers(change);
     }
 }
 
