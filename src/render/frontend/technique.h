@@ -56,6 +56,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class Parameter;
+class TechniquePrivate;
 
 class QT3DRENDERERSHARED_EXPORT Technique : public QAbstractTechnique
 {
@@ -67,7 +68,7 @@ public:
     void addCriterion(TechniqueCriterion *criterion);
     void removeCriterion(TechniqueCriterion *criterion);
     QVariant criterionValue(const QString &customTypeName) const;
-    QVariant criterionValue(TechniqueCriterion::CriterionType type);
+    QVariant criterionValue(TechniqueCriterion::CriterionType type) const;
     QList<TechniqueCriterion *> criteria() const;
     void clearCriteria();
     bool containsCriterion(const QString &customTypeName) const;
@@ -77,15 +78,13 @@ public:
 
     void addParameter(Parameter *p);
     void removeParameter(Parameter *p);
-    QList<Parameter *> parameters() const
-    { return m_parameters; }
+    QList<Parameter *> parameters() const;
 
     Parameter* parameterByName(QString name) const;
 
 private:
-
-    QList<TechniqueCriterion *> m_criteriaList;
-    QList<Parameter *> m_parameters;
+    Q_DECLARE_PRIVATE(Technique)
+    TechniquePrivate *d_ptr;
 };
 
 }
