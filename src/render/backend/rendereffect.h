@@ -44,6 +44,7 @@
 
 #include <QList>
 #include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRenderer/parameterpack.h>
 #include <Qt3DCore/qobserverinterface.h>
 
 QT_BEGIN_NAMESPACE
@@ -74,6 +75,7 @@ private:
     QList<QAbstractTechnique *> m_techniques;
     RendererAspect *m_rendererAspect;
     QAbstractEffect *m_peer;
+    ParameterPack m_parameterPack;
 };
 
 } // Render

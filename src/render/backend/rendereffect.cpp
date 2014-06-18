@@ -47,6 +47,8 @@
 #include <Qt3DCore/qabstracttechnique.h>
 #include <Qt3DCore/qchangearbiter.h>
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DRenderer/effect.h>
+#include <Qt3DRenderer/parameter.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -75,6 +77,10 @@ void RenderEffect::setPeer(QAbstractEffect *effect)
         if (m_peer) {
             arbiter->registerObserver(this, m_peer, ComponentUpdated);
             m_techniques.append(m_peer->techniques());
+            m_parameterPack.clear();
+            if (qobject_cast<Effect*>(m_peer))
+                Q_FOREACH (Parameter *p, qobject_cast<Effect*>(m_peer)->parameters())
+                    m_parameterPack.appendParameter(p);
         }
     }
 }
@@ -82,24 +88,30 @@ void RenderEffect::setPeer(QAbstractEffect *effect)
 void RenderEffect::setRendererAspect(RendererAspect *rendererAspect)
 {
     m_rendererAspect = rendererAspect;
+    m_parameterPack.setRendererAspect(m_rendererAspect);
 }
 
 void RenderEffect::sceneChangeEvent(const QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-    QString propertyName = QString::fromLatin1(propertyChange->m_propertyName);
     QVariant propertyValue = propertyChange->m_value;
     switch (e->m_type) {
 
     case ComponentAdded:
-        if (propertyName == QStringLiteral("technique")) {
+        if (propertyChange->m_propertyName == QByteArrayLiteral("technique")) {
             m_techniques.append(propertyValue.value<QAbstractTechnique *>());
+        }
+        else if (propertyChange->m_propertyName == QByteArrayLiteral("parameter")) {
+            m_parameterPack.appendParameter(propertyChange->m_value.value<Parameter*>());
         }
         break;
 
     case ComponentRemoved:
-        if (propertyName == QStringLiteral("technique")) {
+        if (propertyChange->m_propertyName == QByteArrayLiteral("technique")) {
             m_techniques.removeOne(propertyValue.value<QAbstractTechnique *>());
+        }
+        else if (propertyChange->m_propertyName == QByteArrayLiteral("parameter")) {
+            m_parameterPack.removeParameter(propertyChange->m_value.value<Parameter*>());
         }
         break;
 
