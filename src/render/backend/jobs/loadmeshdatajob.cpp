@@ -73,9 +73,8 @@ void LoadMeshDataJob::run()
         else {
             qCDebug(Jobs) << Q_FUNC_INFO << "Mesh has raw data";
             MeshData *meshData = m_renderer->meshDataManager()->getOrCreateResource(m_meshSource->uuid());
-            m_renderer->meshDataManager()->lockForWrite();
+            MeshDataManager::WriteLocker(m_renderer->meshDataManager());
             *meshData = *(m_meshSource->data().data());
-            m_renderer->meshDataManager()->unlock();
         }
     }
     else {
@@ -85,10 +84,8 @@ void LoadMeshDataJob::run()
         if (loader.load(m_meshSource->source())) {
             qCDebug(Jobs) << Q_FUNC_INFO << "Loaded OBJ ok";
             MeshData *meshData = m_renderer->meshDataManager()->getOrCreateResource(m_meshSource->uuid());
-            m_renderer->meshDataManager()->lockForWrite();
+            MeshDataManager::WriteLocker(m_renderer->meshDataManager());
             *meshData = *loader.mesh();
-            m_renderer->meshDataManager()->unlock();
-
             AttributePtr attr = meshData->attributeByName(QStringLiteral("position"));
             if (!attr) {
                 qCWarning(Jobs) << Q_FUNC_INFO << "unknown attribute: position";
