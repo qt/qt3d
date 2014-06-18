@@ -68,8 +68,7 @@ void ParameterPack::appendParameter(Parameter *param)
     if (!m_peers.contains(param)) {
         m_peers << param;
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        // Parameter needs to be a node
-//        arbiter->registerObserver(this, );
+        arbiter->registerObserver(this, param);
         m_namedValues[param->name()] = param->value();
     }
 }
@@ -80,8 +79,7 @@ void ParameterPack::removeParameter(Parameter *param)
         m_peers.removeOne(param);
         m_namedValues.remove(param->name());
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        // Parameter needs to be a node
-//        arbiter->unregisterObserver(this, );
+        arbiter->unregisterObserver(this, param);
     }
 }
 
@@ -90,8 +88,7 @@ void ParameterPack::clear()
     m_namedValues.clear();
     QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
     Q_FOREACH (Parameter *param, m_peers) {
-        // Parameter needs to be a node
-        //        arbiter->unregisterObserver(this, );
+        arbiter->unregisterObserver(this, param);
     }
 }
 
