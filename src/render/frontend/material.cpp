@@ -97,7 +97,7 @@ void Material::removeParameter(Parameter *parameter)
 {
     Q_D(Material);
     d->m_parameters.removeOne(parameter);
-    QScenePropertyChangePtr change(new QScenePropertyChange(ComponentUpdated, this));
+    QScenePropertyChangePtr change(new QScenePropertyChange(ComponentRemoved, this));
     change->m_propertyName = QByteArrayLiteral("parameter");
     change->m_value = QVariant::fromValue(parameter);
     notifyObservers(change);
