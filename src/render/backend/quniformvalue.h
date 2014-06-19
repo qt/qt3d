@@ -75,13 +75,14 @@ public:
 
     QUniformValue();
 
+    QUniformValue(QVariant value);
     QUniformValue(Type type, QVariant value);
 
     // explicit construction from various types without going through
     // QVariant boxing + unboxing. Add as needed if this proves useful
     explicit QUniformValue(const QVector4D& foo);
 
-    void apply(QOpenGLShaderProgram* prog, int location) const;
+    void apply(QOpenGLShaderProgram* prog, int location, const QString &name) const;
 
 private:
     void convertToBytes() const;

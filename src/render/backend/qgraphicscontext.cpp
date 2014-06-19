@@ -574,9 +574,9 @@ void QGraphicsContext::setUniforms(const QUniformPack &uniforms)
 
     for (int i = 0; i < namedUniforms.size(); i++) {
         if (uniforms.uniforms().contains(namedUniforms[i].first))
-            uniforms.uniforms()[namedUniforms[i].first].apply(prog, namedUniforms[i].second);
-        else
-            qDebug() << "Unset Uniform " << namedUniforms[i].first;
+            uniforms.uniforms()[namedUniforms[i].first].apply(prog, namedUniforms[i].second, namedUniforms[i].first);
+//        else
+//            qDebug() << "Unset Uniform " << namedUniforms[i].first;
     }
 }
 

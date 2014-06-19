@@ -48,6 +48,7 @@
 #include <QDebug>
 #include <QColor>
 #include <QQuaternion>
+#include "renderlogging.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -59,6 +60,15 @@ QUniformValue::QUniformValue() :
     m_count(-1),
     m_tupleSize(0)
 {
+}
+
+QUniformValue::QUniformValue(QVariant value) :
+    m_type(Float),
+    m_count(-1),
+    m_tupleSize(0)
+{
+    fromVariant(value);
+    Q_ASSERT((m_tupleSize >= 1) && (m_tupleSize <= 4));
 }
 
 QUniformValue::QUniformValue(Type type, QVariant value) :
@@ -203,7 +213,7 @@ void QUniformValue::setRawFromInts(const qint32* ptr, unsigned int count, unsign
     m_tupleSize = tupleSize;
 }
 
-void QUniformValue::apply(QOpenGLShaderProgram *prog, int location) const
+void QUniformValue::apply(QOpenGLShaderProgram *prog, int location, const QString &name) const
 {
     switch (m_type) {
 #if 0
@@ -236,7 +246,7 @@ void QUniformValue::apply(QOpenGLShaderProgram *prog, int location) const
 
     int err = glGetError();
     if (err) {
-        qWarning() << "error after setting uniform" << m_count << location << m_tupleSize;
+        qCWarning(Render::Backend) << Q_FUNC_INFO << "error after setting uniform" << m_count << location << m_tupleSize << name;
     }
 }
 
