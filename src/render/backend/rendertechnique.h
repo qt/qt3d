@@ -45,6 +45,7 @@
 #include <QVector>
 #include <QStringList>
 #include <Qt3DCore/qobserverinterface.h>
+#include <Qt3DRenderer/parameterpack.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -94,12 +95,7 @@ private:
     Technique* m_peer;
     unsigned int m_passCount;
 
-    // really need more than just the shader here, i.e other
-    // technique state
-    QVector<RenderShader*> m_passShader;
-    QVector<RenderBin*> m_passBin;
-//    QHash<QString, RenderShader*> m_passShader;
-
+    ParameterPack m_parameterPack;
 };
 
 } // namespace Render

@@ -67,6 +67,7 @@ RenderTechnique::RenderTechnique() :
 void RenderTechnique::setRenderer(Renderer *renderer)
 {
     m_renderer = renderer;
+    m_parameterPack.setRendererAspect(m_renderer->rendererAspect());
 }
 
 void RenderTechnique::setPeer(Technique *peer)
@@ -75,8 +76,12 @@ void RenderTechnique::setPeer(Technique *peer)
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
         arbiter->unregisterObserver(this, m_peer);
         m_peer = peer;
-        if (m_peer)
+        if (m_peer) {
             arbiter->registerObserver(this, m_peer);
+            m_parameterPack.clear();
+            Q_FOREACH (Parameter *p, m_peer->parameters())
+                m_parameterPack.appendParameter(p);
+        }
     }
 }
 
@@ -99,21 +104,26 @@ Parameter *RenderTechnique::parameterByName(QString name) const
 
 void RenderTechnique::sceneChangeEvent(const QSceneChangePtr &e)
 {
+    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     switch (e->m_type) {
 
     case ComponentAdded: {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        if (propertyChange->m_propertyName == QByteArrayLiteral("pass"))
-            ;
+        if (propertyChange->m_propertyName == QByteArrayLiteral("pass")) {
         // This will be filled when we have a proper backend RenderPass class
+        }
+        else if (propertyChange->m_propertyName == QByteArrayLiteral("parameter")) {
+            m_parameterPack.appendParameter(propertyChange->m_value.value<Parameter*>());
+        }
     }
         break;
 
     case ComponentRemoved: {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        if (propertyChange->m_propertyName == QByteArrayLiteral("pass"))
-            ;
+        if (propertyChange->m_propertyName == QByteArrayLiteral("pass")) {
         // See above
+        }
+        else if (propertyChange->m_propertyName == QByteArrayLiteral("parameter")) {
+            m_parameterPack.removeParameter(propertyChange->m_value.value<Parameter*>());
+        }
     }
         break;
 
