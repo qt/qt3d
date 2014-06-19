@@ -6,4 +6,5 @@ SUBDIRS = \
     arrayresourcesmanager \
     listresourcesmanager \
     qcircularbuffer \
-    qboundedcircularbuffer
+    qboundedcircularbuffer \
+    nodes
