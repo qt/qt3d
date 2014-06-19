@@ -64,6 +64,12 @@ RenderTechnique::RenderTechnique() :
 {
 }
 
+RenderTechnique::~RenderTechnique()
+{
+    if (m_renderer != Q_NULLPTR && m_peer != Q_NULLPTR)
+        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_peer);
+}
+
 void RenderTechnique::setRenderer(Renderer *renderer)
 {
     m_renderer = renderer;
