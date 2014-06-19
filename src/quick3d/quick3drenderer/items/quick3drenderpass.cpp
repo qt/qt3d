@@ -40,7 +40,7 @@
 ****************************************************************************/
 
 #include "quick3drenderpass.h"
-#include <Qt3DRenderer/parameterbinder.h>
+#include <Qt3DRenderer/parametermapper.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -64,9 +64,9 @@ QQmlListProperty<RenderPassCriterion> Quick3DRenderPass::criteriaList()
                                                        &Quick3DRenderPass::clearCriteria);
 }
 
-QQmlListProperty<ParameterBinder> Quick3DRenderPass::bindingList()
+QQmlListProperty<ParameterMapper> Quick3DRenderPass::bindingList()
 {
-    return QQmlListProperty<Qt3D::ParameterBinder>(this, 0,
+    return QQmlListProperty<Qt3D::ParameterMapper>(this, 0,
                                                    &Quick3DRenderPass::appendBinding,
                                                    &Quick3DRenderPass::bindingsCount,
                                                    &Quick3DRenderPass::bindingAt,
@@ -98,28 +98,28 @@ void Quick3DRenderPass::clearCriteria(QQmlListProperty<RenderPassCriterion> *lis
         rPass->parentRenderPass()->removeCriterion(c);
 }
 
-void Quick3DRenderPass::appendBinding(QQmlListProperty<ParameterBinder> *list, ParameterBinder *binding)
+void Quick3DRenderPass::appendBinding(QQmlListProperty<ParameterMapper> *list, ParameterMapper *binding)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
     rPass->parentRenderPass()->addBinding(binding);
 }
 
-ParameterBinder *Quick3DRenderPass::bindingAt(QQmlListProperty<ParameterBinder> *list, int index)
+ParameterMapper *Quick3DRenderPass::bindingAt(QQmlListProperty<ParameterMapper> *list, int index)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
     return rPass->parentRenderPass()->bindings().at(index);
 }
 
-int Quick3DRenderPass::bindingsCount(QQmlListProperty<ParameterBinder> *list)
+int Quick3DRenderPass::bindingsCount(QQmlListProperty<ParameterMapper> *list)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
     return rPass->parentRenderPass()->bindings().count();
 }
 
-void Quick3DRenderPass::clearBindings(QQmlListProperty<ParameterBinder> *list)
+void Quick3DRenderPass::clearBindings(QQmlListProperty<ParameterMapper> *list)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
-    Q_FOREACH (ParameterBinder *binding, rPass->parentRenderPass()->bindings())
+    Q_FOREACH (ParameterMapper *binding, rPass->parentRenderPass()->bindings())
         rPass->parentRenderPass()->removeBinding(binding);
 }
 

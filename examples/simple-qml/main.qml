@@ -274,12 +274,12 @@ Node {
                             RenderPass {
                                 criteria : []
                                 bindings : [ // Add only the bindings needed for a shader
-                                    ParameterBinder {parameterName: "normal"; shaderVariableName: "vertexNormal"; bindingType: ParameterBinder.Attribute},
-                                    ParameterBinder {parameterName: "position"; shaderVariableName: "vertexPosition"; bindingType: ParameterBinder.Attribute},
-                                    ParameterBinder {parameterName: "ambient"; shaderVariableName: "ka"; bindingType: ParameterBinder.Uniform},
-                                    ParameterBinder {parameterName: "diffuse"; shaderVariableName: "kd"; bindingType: ParameterBinder.Uniform},
-                                    ParameterBinder {parameterName: "lightPos"; shaderVariableName: "lightPosition"; bindingType: ParameterBinder.Uniform},
-                                    ParameterBinder {parameterName: "lightIntensity"; shaderVariableName: "lightIntensity"; bindingType: ParameterBinder.Uniform}
+                                    ParameterMapper {parameterName: "normal"; shaderVariableName: "vertexNormal"; bindingType: ParameterMapper.Attribute},
+                                    ParameterMapper {parameterName: "position"; shaderVariableName: "vertexPosition"; bindingType: ParameterMapper.Attribute},
+                                    ParameterMapper {parameterName: "ambient"; shaderVariableName: "ka"; bindingType: ParameterMapper.Uniform},
+                                    ParameterMapper {parameterName: "diffuse"; shaderVariableName: "kd"; bindingType: ParameterMapper.Uniform},
+                                    ParameterMapper {parameterName: "lightPos"; shaderVariableName: "lightPosition"; bindingType: ParameterMapper.Uniform},
+                                    ParameterMapper {parameterName: "lightIntensity"; shaderVariableName: "lightIntensity"; bindingType: ParameterMapper.Uniform}
                                 ]
                                 shaderProgram : ShaderProgram {
                                     id : diffuseShader

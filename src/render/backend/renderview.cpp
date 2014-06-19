@@ -64,7 +64,7 @@
 #include "renderlogging.h"
 #include "renderpassmanager.h"
 #include "renderrenderpass.h"
-#include "parameterbinder.h"
+#include "parametermapper.h"
 #include "parameter.h"
 
 #include <Qt3DCore/entity.h>
@@ -396,8 +396,8 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
         //        command->m_stateSet = qobject_cast<RenderPass*>(pass)->stateSet();
 
         // Builds the QUniformPack, sets shader standard uniforms and store attributes name / glname bindings
-        Q_FOREACH (ParameterBinder *binding, rPass->bindings()) {
-            if (binding->bindingType() == ParameterBinder::Uniform) {
+        Q_FOREACH (ParameterMapper *binding, rPass->bindings()) {
+            if (binding->bindingType() == ParameterMapper::Uniform) {
                 if (!parameters.contains(binding->parameterName())) {
                     qCCritical(Render::Backend) << Q_FUNC_INFO << "Trying to bind a Parameter that hasn't been defined " << binding->parameterName();
                 }

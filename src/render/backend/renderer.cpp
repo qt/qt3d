@@ -84,7 +84,7 @@
 #include <effectmanager.h>
 #include <renderpassmanager.h>
 #include "renderlogging.h"
-#include "parameterbinder.h"
+#include "parametermapper.h"
 
 #include <Qt3DCore/cameralens.h>
 #include <Qt3DCore/qabstracteffect.h>
@@ -167,41 +167,41 @@ void Renderer::buildDefaultTechnique()
 
     Parameter* vp = new Parameter(m_defaultTechnique, QStringLiteral("position"), Parameter::FloatVec3);
     m_defaultTechnique->addParameter(vp);
-    basicPass->addBinding(new ParameterBinder(QStringLiteral("position"), QStringLiteral("vertexPosition"), ParameterBinder::Attribute));
+    basicPass->addBinding(new ParameterMapper(QStringLiteral("position"), QStringLiteral("vertexPosition"), ParameterMapper::Attribute));
 
     Parameter* np = new Parameter(m_defaultTechnique, QStringLiteral("normal"), Parameter::FloatVec3);
     m_defaultTechnique->addParameter(np);
-    basicPass->addBinding(new ParameterBinder(QStringLiteral("normal"), QStringLiteral("vertexNormal"), ParameterBinder::Attribute));
+    basicPass->addBinding(new ParameterMapper(QStringLiteral("normal"), QStringLiteral("vertexNormal"), ParameterMapper::Attribute));
 
     // matrix uniforms from standard
     Parameter* mvMat = new Parameter(m_defaultTechnique, QStringLiteral("modelView"), Parameter::FloatMat4);
     m_defaultTechnique->addParameter(mvMat);
-    basicPass->addBinding(new ParameterBinder(QStringLiteral("modelView"), QStringLiteral("modelViewMatrix"), ParameterBinder::StandardUniform));
+    basicPass->addBinding(new ParameterMapper(QStringLiteral("modelView"), QStringLiteral("modelViewMatrix"), ParameterMapper::StandardUniform));
 
     Parameter* nMat = new Parameter(m_defaultTechnique, QStringLiteral("normalMat"), Parameter::FloatMat4);
     m_defaultTechnique->addParameter(nMat);
-    basicPass->addBinding(new ParameterBinder(QStringLiteral("normalMat"), QStringLiteral("normalMatrix"), ParameterBinder::StandardUniform));
+    basicPass->addBinding(new ParameterMapper(QStringLiteral("normalMat"), QStringLiteral("normalMatrix"), ParameterMapper::StandardUniform));
 
     Parameter* mvpMat = new Parameter(m_defaultTechnique, QStringLiteral("mvp"), Parameter::FloatMat4);
     m_defaultTechnique->addParameter(mvpMat);
-    basicPass->addBinding(new ParameterBinder(QStringLiteral("mvp"), QStringLiteral("mvp"), ParameterBinder::StandardUniform));
+    basicPass->addBinding(new ParameterMapper(QStringLiteral("mvp"), QStringLiteral("mvp"), ParameterMapper::StandardUniform));
 
     // diffuse lighting uniforms
     Parameter* lightPos = new Parameter(m_defaultTechnique, QStringLiteral("lightPos"), Parameter::FloatVec4, QVector4D(10.0f, 10.0f, 0.0f, 1.0f));
     m_defaultTechnique->addParameter(lightPos);
-    basicPass->addBinding(new ParameterBinder(QStringLiteral("lightPos"), QStringLiteral("lightPosition"), ParameterBinder::Uniform));
+    basicPass->addBinding(new ParameterMapper(QStringLiteral("lightPos"), QStringLiteral("lightPosition"), ParameterMapper::Uniform));
 
     Parameter* lightIntensity = new Parameter(m_defaultTechnique, QStringLiteral("lightIntensity"), Parameter::FloatVec3, QVector3D(0.5f, 0.5f, 0.5f));
     m_defaultTechnique->addParameter(lightIntensity);
-    basicPass->addBinding(new ParameterBinder(QStringLiteral("lightIntensity"), QStringLiteral("lightIntensity"), ParameterBinder::Uniform));
+    basicPass->addBinding(new ParameterMapper(QStringLiteral("lightIntensity"), QStringLiteral("lightIntensity"), ParameterMapper::Uniform));
 
     Parameter* kd = new Parameter(m_defaultTechnique, QStringLiteral("diffuse"), Parameter::FloatVec3, QVector3D(1.0f, 0.5f, 0.0f));
     m_defaultTechnique->addParameter(kd);
-    basicPass->addBinding(new ParameterBinder(QStringLiteral("diffuse"), QStringLiteral("kd"), ParameterBinder::Uniform));
+    basicPass->addBinding(new ParameterMapper(QStringLiteral("diffuse"), QStringLiteral("kd"), ParameterMapper::Uniform));
 
     Parameter* ka = new Parameter(m_defaultTechnique, QStringLiteral("ambient"), Parameter::FloatVec3, QVector3D(0.2f, 0.2f, 0.2f));
     m_defaultTechnique->addParameter(ka);
-    basicPass->addBinding(new ParameterBinder(QStringLiteral("ambient"), QStringLiteral("ka"), ParameterBinder::Uniform));
+    basicPass->addBinding(new ParameterMapper(QStringLiteral("ambient"), QStringLiteral("ka"), ParameterMapper::Uniform));
 
 }
 
@@ -221,8 +221,8 @@ void Renderer::buildDefaultMaterial()
     // TO DO : We use only the uniform values of the defaultTechnique
     // We should look for values in Effect, Technique and Material and Material values have preference over Technique and Effect
     // And Technique values have preference over Effect
-    Q_FOREACH (ParameterBinder *binding, qobject_cast<RenderPass *>(m_defaultTechnique->renderPasses().first())->bindings()) {
-        if (binding->bindingType() == ParameterBinder::Uniform) {
+    Q_FOREACH (ParameterMapper *binding, qobject_cast<RenderPass *>(m_defaultTechnique->renderPasses().first())->bindings()) {
+        if (binding->bindingType() == ParameterMapper::Uniform) {
             Q_FOREACH (Parameter *param, m_defaultTechnique->parameters()) {
                 if (param->name() == binding->parameterName()) {
                     if (param->datatype() >= Parameter::Float && param->datatype() <= Parameter::FloatMat4)

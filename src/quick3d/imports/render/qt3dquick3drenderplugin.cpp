@@ -59,7 +59,7 @@
 #include <Qt3DRenderer/effect.h>
 #include <Qt3DRenderer/parameter.h>
 #include <Qt3DRenderer/renderpasscriterion.h>
-#include <Qt3DRenderer/parameterbinder.h>
+#include <Qt3DRenderer/parametermapper.h>
 #include <Qt3DQuickRenderer/quick3dtechnique.h>
 #include <Qt3DQuickRenderer/quick3dmaterial.h>
 #include <Qt3DQuickRenderer/quick3dtechniquefilter.h>
@@ -85,7 +85,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3D::RenderPassCriterion>(uri, 2, 0, "RenderPassCriterion");
     qmlRegisterType<Qt3D::Tag>(uri, 2, 0, "Tag");
     qmlRegisterType<Qt3D::Parameter>(uri, 2, 0, "Parameter");
-    qmlRegisterType<Qt3D::ParameterBinder>(uri, 2, 0, "ParameterBinder");
+    qmlRegisterType<Qt3D::ParameterMapper>(uri, 2, 0, "ParameterMapper");
     qmlRegisterType<Qt3D::Mesh>(uri, 2, 0, "Mesh");
     qmlRegisterExtendedType<Qt3D::Material, Qt3D::Render::Quick::Quick3DMaterial>(uri, 2, 0, "Material");
     qmlRegisterExtendedType<Qt3D::RenderPass, Qt3D::Render::Quick::Quick3DRenderPass>(uri, 2, 0, "RenderPass");

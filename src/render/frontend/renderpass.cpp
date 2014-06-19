@@ -42,7 +42,7 @@
 #include "renderpass.h"
 #include "parameter.h"
 #include "renderpasscriterion.h"
-#include "parameterbinder.h"
+#include "parametermapper.h"
 #include <QDebug>
 
 QT_BEGIN_NAMESPACE
@@ -111,20 +111,20 @@ QList<RenderPassCriterion *> RenderPass::criteria() const
     return m_criteria;
 }
 
-void RenderPass::addBinding(ParameterBinder *binding)
+void RenderPass::addBinding(ParameterMapper *binding)
 {
     // TO DO: Notify QChangeArbiter
     if (!m_bindings.contains(binding))
         m_bindings.append(binding);
 }
 
-void RenderPass::removeBinding(ParameterBinder *binding)
+void RenderPass::removeBinding(ParameterMapper *binding)
 {
     // TO DO: Notify QChangeArbiter
     m_bindings.removeOne(binding);
 }
 
-QList<ParameterBinder *> RenderPass::bindings() const
+QList<ParameterMapper *> RenderPass::bindings() const
 {
     return m_bindings;
 }

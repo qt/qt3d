@@ -58,12 +58,12 @@ class QT3DQUICKRENDERERSHARED_EXPORT Quick3DRenderPass : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Qt3D::RenderPassCriterion> criteria READ criteriaList)
-    Q_PROPERTY(QQmlListProperty<Qt3D::ParameterBinder> bindings READ bindingList)
+    Q_PROPERTY(QQmlListProperty<Qt3D::ParameterMapper> bindings READ bindingList)
 public:
     explicit Quick3DRenderPass(QObject *parent = 0);
 
     QQmlListProperty<Qt3D::RenderPassCriterion> criteriaList();
-    QQmlListProperty<Qt3D::ParameterBinder> bindingList();
+    QQmlListProperty<Qt3D::ParameterMapper> bindingList();
     inline RenderPass *parentRenderPass() const { return qobject_cast<RenderPass *>(parent()); }
 
 private:
@@ -72,10 +72,10 @@ private:
     static int criteriaCount(QQmlListProperty<Qt3D::RenderPassCriterion> *list);
     static void clearCriteria(QQmlListProperty<Qt3D::RenderPassCriterion> *list);
 
-    static void appendBinding(QQmlListProperty<Qt3D::ParameterBinder> *list, ParameterBinder *binding);
-    static ParameterBinder *bindingAt(QQmlListProperty<Qt3D::ParameterBinder> *list, int index);
-    static int bindingsCount(QQmlListProperty<Qt3D::ParameterBinder> *list);
-    static void clearBindings(QQmlListProperty<Qt3D::ParameterBinder> *list);
+    static void appendBinding(QQmlListProperty<Qt3D::ParameterMapper> *list, ParameterMapper *binding);
+    static ParameterMapper *bindingAt(QQmlListProperty<Qt3D::ParameterMapper> *list, int index);
+    static int bindingsCount(QQmlListProperty<Qt3D::ParameterMapper> *list);
+    static void clearBindings(QQmlListProperty<Qt3D::ParameterMapper> *list);
 };
 
 } // Quick

@@ -39,55 +39,65 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_PARAMETERBINDER_H
-#define QT3D_PARAMETERBINDER_H
-
-#include <QObject>
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include "parametermapper.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DRENDERERSHARED_EXPORT ParameterBinder : public QObject
+ParameterMapper::ParameterMapper(QObject *parent)
+    : QObject(parent)
+    , m_bindingType(Uniform)
 {
-    Q_OBJECT
-    Q_ENUMS(Binding)
-    Q_PROPERTY(QString parameterName READ parameterName WRITE setParameterName NOTIFY parameterNameChanged)
-    Q_PROPERTY(QString shaderVariableName READ shaderVariableName WRITE setShaderVariableName NOTIFY shaderVariableNameChanged)
-    Q_PROPERTY(Binding bindingType READ bindingType WRITE setBindingType NOTIFY bindingTypeChanged)
-public:
-    enum Binding
-    {
-        Uniform = 0,
-        Attribute,
-        StandardUniform
-    };
+}
 
-    explicit ParameterBinder(QObject *parent = 0);
-    ParameterBinder(const QString &parameterName, const QString &shaderParameterName, ParameterBinder::Binding bindingType);
+ParameterMapper::ParameterMapper(const QString &parameterName, const QString &shaderParameterName, ParameterMapper::Binding bindingType)
+    : QObject()
+    , m_parameterName(parameterName)
+    , m_shaderVariableName(shaderParameterName)
+    , m_bindingType(bindingType)
+{
+}
 
-    void setParameterName(const QString &name);
-    void setShaderVariableName(const QString &name);
-    void setBindingType(Binding type);
+void ParameterMapper::setParameterName(const QString &name)
+{
+    if (m_parameterName != name) {
+        m_parameterName = name;
+        emit parameterNameChanged();
+    }
+}
 
-    QString parameterName() const;
-    QString shaderVariableName() const;
-    Binding bindingType() const;
+void ParameterMapper::setShaderVariableName(const QString &name)
+{
+    if (m_shaderVariableName != name) {
+        m_shaderVariableName = name;
+        emit shaderVariableNameChanged();
+    }
+}
 
-Q_SIGNALS:
-    void parameterNameChanged();
-    void shaderVariableNameChanged();
-    void bindingTypeChanged();
+void ParameterMapper::setBindingType(ParameterMapper::Binding type)
+{
+    if (m_bindingType != type) {
+        m_bindingType = type;
+        emit bindingTypeChanged();
+    }
+}
 
-private:
-    QString m_parameterName;
-    QString m_shaderVariableName;
-    Binding m_bindingType;
-};
+QString ParameterMapper::parameterName() const
+{
+    return m_parameterName;
+}
+
+QString ParameterMapper::shaderVariableName() const
+{
+    return m_shaderVariableName;
+}
+
+ParameterMapper::Binding ParameterMapper::bindingType() const
+{
+    return m_bindingType;
+}
 
 } // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_PARAMETERBINDER_H
