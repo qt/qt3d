@@ -191,7 +191,7 @@ void RenderView::buildRenderCommands(RenderNode *node)
             RenderEffect *effect = findEffectForMaterial(material);
             RenderTechnique *technique = findTechniqueForEffect(effect);
             QList<RenderRenderPass *> passes = findRenderPassesForTechnique(technique);
-            QHash<QString, Parameter *> parameters = parametersFromMaterialEffectTechnique(material, effect, technique);
+            QHash<QString, QVariant> parameters = parametersFromMaterialEffectTechnique(material, effect, technique);
 
             Q_FOREACH (RenderRenderPass *pass, passes) {
                 RenderCommand *command = new RenderCommand();
@@ -249,11 +249,11 @@ RenderEffect *RenderView::findEffectForMaterial(RenderMaterial *material)
     RenderEffect *effect = Q_NULLPTR;
     if (material != Q_NULLPTR && material->peer() != Q_NULLPTR) {
         QAbstractEffect *fEffect = material->peer()->effect();
-        // TO DO : Replace the locker by locking policies in the Resources Managers
         if (fEffect != Q_NULLPTR && (effect = m_renderer->effectManager()->lookupResource(fEffect)) == Q_NULLPTR) {
-            effect = m_renderer->effectManager()->getOrCreateResource(fEffect);
-            effect->setRendererAspect(m_renderer->rendererAspect());
-            effect->setPeer(fEffect);
+            if ((effect = m_renderer->effectManager()->getOrCreateResource(fEffect)) != Q_NULLPTR) {
+                effect->setRendererAspect(m_renderer->rendererAspect());
+                effect->setPeer(fEffect);
+            }
         }
     }
     return effect;
@@ -308,7 +308,7 @@ RenderTechnique *RenderView::findTechniqueForEffect(RenderEffect *effect)
                 }
             }
             if (filteredTech == Q_NULLPTR) {
-                qFatal("No Technique was found matching the criteria defined in the TechniqueFilter : Cannot Continue");
+                qCCritical(Render::Backend) << "No Technique was found matching the criteria defined in the TechniqueFilter : Cannot Continue";
             } else {
                 technique = m_renderer->techniqueManager()->getOrCreateResource(effect->peer());
                 technique->setRenderer(m_renderer);
@@ -341,11 +341,11 @@ QList<RenderRenderPass *> RenderView::findRenderPassesForTechnique(RenderTechniq
     return passes;
 }
 
-QHash<QString, Parameter *> RenderView::parametersFromMaterialEffectTechnique(RenderMaterial *material,
-                                                                              RenderEffect *effect,
-                                                                              RenderTechnique *technique)
+QHash<QString, QVariant> RenderView::parametersFromMaterialEffectTechnique(RenderMaterial *material,
+                                                                           RenderEffect *effect,
+                                                                           RenderTechnique *technique)
 {
-    QHash<QString, Parameter *> params;
+    QHash<QString, QVariant> params;
 
     // TO DO : To complete by addind parameters to effect and technique
     // Material is preferred over Effect
@@ -361,14 +361,14 @@ QHash<QString, Parameter *> RenderView::parametersFromMaterialEffectTechnique(Re
     //    }
 
     if (material != Q_NULLPTR)
-        Q_FOREACH (Parameter *param, material->parameters()) {
-            params[param->name()] = param;
+        Q_FOREACH (const QString key, material->parameters().keys()) {
+            params[key] = material->parameters()[key];
         }
 
     return params;
 }
 
-void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *rPass, const QHash<QString, Parameter *> parameters)
+void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *rPass, const QHash<QString, QVariant> parameters)
 {
     // The VAO Handle is set directly in the renderer thread so as to avoid having to use a mutex here
     // Set shader, technique, and effect by basically doing :
@@ -389,6 +389,10 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
             shader = m_renderer->shaderManager()->getOrCreateResource(rPass->shaderProgram()->uuid());
             shader->setPeer(qobject_cast<ShaderProgram*>(rPass->shaderProgram()));
             command->m_shader = m_renderer->shaderManager()->lookupHandle(rPass->shaderProgram()->uuid());
+            // TO DO : Clean that up
+            shader->setStandardUniform(Parameter::ModelView, QStringLiteral("modelViewMatrix"));
+            shader->setStandardUniform(Parameter::ModelViewNormal, QStringLiteral("normalMatrix"));
+            shader->setStandardUniform(Parameter::ModelViewProjection, QStringLiteral("mvp"));
         }
         // TO DO : To be corrected later on
         //        command->m_stateSet = qobject_cast<RenderPass*>(pass)->stateSet();
@@ -400,17 +404,10 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
                     qCCritical(Render::Backend) << Q_FUNC_INFO << "Trying to bind a Parameter that hasn't been defined " << binding->parameterName();
                 }
                 else {
-                    Parameter *param = parameters[binding->parameterName()];
-                    if (!param->isStandardUniform()) {
-                        if (param->datatype() >= Parameter::Float && param->datatype() <= Parameter::FloatMat4)
-                            command->m_uniforms.setUniform(binding->shaderVariableName(), QUniformValue(QUniformValue::Float, param->value()));
-                        else if (param->datatype() >= Parameter::Int)
-                            command->m_uniforms.setUniform(binding->shaderVariableName(), QUniformValue(QUniformValue::Int, param->value()));
-                    }
-                    else {
-                        shader->setStandardUniform(param->standardUniform(), binding->shaderVariableName());
-                    }
+                    // We assume float only at the moment
+                    command->m_uniforms.setUniform(binding->shaderVariableName(), QUniformValue(parameters[binding->parameterName()]));
                 }
+                // STANDARD UNIFORM ARE NOT SET BY THE QUNIFORMPACK
             }
             else { // Attribute
                 command->m_parameterAttributeToShaderNames[binding->parameterName()] = binding->shaderVariableName();

@@ -74,11 +74,9 @@ public:
 
     Material *peer() const { return m_peer; }
 
-    void syncParametersFromPeer();
-
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
-    QHash<QString, Parameter *> parameters() const;
+    const QHash<QString, QVariant> parameters() const;
 
 private:
     RendererAspect *m_rendererAspect;
@@ -86,7 +84,6 @@ private:
     QString m_effectName;
     RenderTechnique* m_technique;
     RenderTextureProvider* m_textureProvider;
-    QHash<QString, Parameter*> m_parameters;
     ParameterPack m_parameterPack;
 
 };

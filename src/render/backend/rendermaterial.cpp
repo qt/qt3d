@@ -68,6 +68,8 @@ RenderMaterial::RenderMaterial()
 
 RenderMaterial::~RenderMaterial()
 {
+    if (m_rendererAspect != Q_NULLPTR && m_peer != Q_NULLPTR)
+        m_rendererAspect->aspectManager()->changeArbiter()->unregisterObserver(this, m_peer);
 }
 
 void RenderMaterial::setPeer(Material *mat)
@@ -80,11 +82,8 @@ void RenderMaterial::setPeer(Material *mat)
         // Register for changes
         if (m_peer) {
             arbiter->registerObserver(this, m_peer, ComponentUpdated);
-
-            m_parameters.clear();
             m_parameterPack.clear();
             Q_FOREACH (Parameter *p, m_peer->parameters()) {
-                m_parameters[p->name()] = p;
                 m_parameterPack.appendParameter(p);
             }
         }
@@ -117,35 +116,13 @@ void RenderMaterial::setRendererAspect(RendererAspect *rendererAspect)
 //    } // of pass iteration
 //}
 
-void RenderMaterial::syncParametersFromPeer()
-{
-    // To be replace by sceneChangeEvent further on
-    Q_ASSERT(m_peer);
-    Q_FOREACH (Parameter *param, m_peer->parameters()) {
-        if (!param->value().isValid()) {
-            qWarning() << Q_FUNC_INFO << "bad value:" << param->value() << "for parameter" << param->name();
-            continue;
-        }
-//        setParameter(param->name(), param->value());
-    }
-
-// FIXME - should do this on demand, otherwise we're re-uploading
-// for no good reason
-//    foreach (QString nm, m_peer->textureValues().keys()) {
-//        Texture* t = m_peer->textureValues().value(nm);
-//        setTextureParameter(nm, m_textureProvider->get(t));
-//    }
-}
-
 void RenderMaterial::sceneChangeEvent(const QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
 
     switch (e->m_type) {
     case ComponentUpdated: {
-        // Check for shader parameter
         // Check for effect change
-//        QVariant propertyValue = propertyChange->m_value;
         if (propertyChange->m_propertyName == QByteArrayLiteral("effect")) {
 
         }
@@ -153,6 +130,7 @@ void RenderMaterial::sceneChangeEvent(const QSceneChangePtr &e)
         }
         break;
     }
+    // Check for shader parameter
     case ComponentAdded: {
         Parameter *param = Q_NULLPTR;
         if (propertyChange->m_propertyName == QByteArrayLiteral("parameter") &&
@@ -173,9 +151,9 @@ void RenderMaterial::sceneChangeEvent(const QSceneChangePtr &e)
     }
 }
 
-QHash<QString, Parameter *> RenderMaterial::parameters() const
+const QHash<QString, QVariant> RenderMaterial::parameters() const
 {
-    return m_parameters;
+    return m_parameterPack.namedValues();
 }
 
 } // namespace Render

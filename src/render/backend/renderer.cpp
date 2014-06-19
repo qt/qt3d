@@ -150,6 +150,10 @@ void Renderer::buildDefaultTechnique()
 
     m_defaultRenderShader = new RenderShader();
     m_defaultRenderShader->setPeer(defaultShader);
+    // TO DO : To be corrected
+    m_defaultRenderShader->setStandardUniform(Parameter::ModelView, QStringLiteral("modelViewMatrix"));
+    m_defaultRenderShader->setStandardUniform(Parameter::ModelViewNormal, QStringLiteral("normalMatrix"));
+    m_defaultRenderShader->setStandardUniform(Parameter::ModelViewProjection, QStringLiteral("mvp"));
 
     RenderPass* basicPass = new RenderPass;
     basicPass->setShaderProgram(defaultShader);
@@ -231,9 +235,6 @@ void Renderer::buildDefaultMaterial()
                             m_defaultUniformPack.setUniform(binding->shaderVariableName(), QUniformValue(QUniformValue::Float, param->value()));
                         else if (param->datatype() >= Parameter::Int)
                             m_defaultUniformPack.setUniform(binding->shaderVariableName(), QUniformValue(QUniformValue::Int, param->value()));
-                    }
-                    else {
-                        m_defaultRenderShader->setStandardUniform(param->standardUniform(), binding->shaderVariableName());
                     }
                 }
             }

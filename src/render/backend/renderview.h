@@ -105,8 +105,8 @@ private:
     RenderEffect *findEffectForMaterial(RenderMaterial *material);
     RenderTechnique *findTechniqueForEffect(RenderEffect *effect);
     QList<RenderRenderPass *> findRenderPassesForTechnique(RenderTechnique *technique);
-    void setShaderAndUniforms(RenderCommand *command, RenderRenderPass *pass, const QHash<QString, Parameter *> parameters);
-    QHash<QString, Parameter *> parametersFromMaterialEffectTechnique(RenderMaterial *material, RenderEffect *effect, RenderTechnique *technique);
+    void setShaderAndUniforms(RenderCommand *command, RenderRenderPass *pass, const QHash<QString, QVariant> parameters);
+    QHash<QString, QVariant> parametersFromMaterialEffectTechnique(RenderMaterial *material, RenderEffect *effect, RenderTechnique *technique);
 
     Renderer *m_renderer;
     HCamera m_camera;
