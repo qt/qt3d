@@ -56,15 +56,14 @@ class QT3DRENDERERSHARED_EXPORT Parameter : public Node
     Q_ENUMS(OpenGLTypes)
     Q_ENUMS(StandardUniform)
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
-    Q_PROPERTY(QString meshAttributeName READ meshAttributeName WRITE setMeshAttributeName NOTIFY meshAttributeNameChanged)
     Q_PROPERTY(OpenGLTypes datatype READ datatype WRITE setDatatype NOTIFY datatypeChanged)
     Q_PROPERTY(QVariant value READ value WRITE setValue NOTIFY valueChanged)
-    Q_PROPERTY(StandardUniform standardUniform WRITE setStandardUniform READ standardUniform CONSTANT)
 
 public:
     // FIXME - sort this by frequency, to minimize the size of the
     // vector in RenderShader. (We want to use compact storage, but we index
     // by this enum, and resize to the largest value)
+    // Will be moved out of parameter
     enum StandardUniform
     {
         None = -1,
@@ -121,17 +120,6 @@ public:
     QString name() const
     { return m_name; }
 
-    // permit one extra level of indrection in mesh naming of
-    // attributes (glTf at least does this)
-    void setMeshAttributeName(QString name);
-    QString meshAttributeName() const
-    { return m_meshName; }
-
-    bool isStandardUniform() const;
-
-    void setStandardUniform(StandardUniform su);
-    StandardUniform standardUniform() const;
-
     /**
      * @brief setDefaultValue - for non-texture uniform parameters
      * @param dv
@@ -153,7 +141,6 @@ public:
 Q_SIGNALS:
     void valueChanged();
     void nameChanged();
-    void meshAttributeNameChanged();
     void datatypeChanged();
 
 private:
@@ -161,7 +148,6 @@ private:
     OpenGLTypes m_type;
     QVariant m_value;
     QString m_meshName;
-    StandardUniform m_standardUniform;
 };
 
 } // Qt3D

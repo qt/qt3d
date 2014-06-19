@@ -166,30 +166,25 @@ void Renderer::buildDefaultTechnique()
     m_defaultTechnique->addPass(basicPass);
 
     Parameter* vp = new Parameter(m_defaultTechnique, QStringLiteral("position"), Parameter::FloatVec3);
-    vp->setMeshAttributeName(QStringLiteral("position"));
     m_defaultTechnique->addParameter(vp);
     basicPass->addBinding(new ParameterBinder(QStringLiteral("position"), QStringLiteral("vertexPosition"), ParameterBinder::Attribute));
 
     Parameter* np = new Parameter(m_defaultTechnique, QStringLiteral("normal"), Parameter::FloatVec3);
-    np->setMeshAttributeName(QStringLiteral("normal"));
     m_defaultTechnique->addParameter(np);
     basicPass->addBinding(new ParameterBinder(QStringLiteral("normal"), QStringLiteral("vertexNormal"), ParameterBinder::Attribute));
 
     // matrix uniforms from standard
     Parameter* mvMat = new Parameter(m_defaultTechnique, QStringLiteral("modelView"), Parameter::FloatMat4);
-    mvMat->setStandardUniform(Parameter::ModelView);
     m_defaultTechnique->addParameter(mvMat);
-    basicPass->addBinding(new ParameterBinder(QStringLiteral("modelView"), QStringLiteral("modelViewMatrix"), ParameterBinder::Uniform));
+    basicPass->addBinding(new ParameterBinder(QStringLiteral("modelView"), QStringLiteral("modelViewMatrix"), ParameterBinder::StandardUniform));
 
     Parameter* nMat = new Parameter(m_defaultTechnique, QStringLiteral("normalMat"), Parameter::FloatMat4);
-    nMat->setStandardUniform(Parameter::ModelViewNormal);
     m_defaultTechnique->addParameter(nMat);
-    basicPass->addBinding(new ParameterBinder(QStringLiteral("normalMat"), QStringLiteral("normalMatrix"), ParameterBinder::Uniform));
+    basicPass->addBinding(new ParameterBinder(QStringLiteral("normalMat"), QStringLiteral("normalMatrix"), ParameterBinder::StandardUniform));
 
     Parameter* mvpMat = new Parameter(m_defaultTechnique, QStringLiteral("mvp"), Parameter::FloatMat4);
-    mvpMat->setStandardUniform(Parameter::ModelViewProjection);
     m_defaultTechnique->addParameter(mvpMat);
-    basicPass->addBinding(new ParameterBinder(QStringLiteral("mvp"), QStringLiteral("mvp"), ParameterBinder::Uniform));
+    basicPass->addBinding(new ParameterBinder(QStringLiteral("mvp"), QStringLiteral("mvp"), ParameterBinder::StandardUniform));
 
     // diffuse lighting uniforms
     Parameter* lightPos = new Parameter(m_defaultTechnique, QStringLiteral("lightPos"), Parameter::FloatVec4, QVector4D(10.0f, 10.0f, 0.0f, 1.0f));
@@ -230,12 +225,10 @@ void Renderer::buildDefaultMaterial()
         if (binding->bindingType() == ParameterBinder::Uniform) {
             Q_FOREACH (Parameter *param, m_defaultTechnique->parameters()) {
                 if (param->name() == binding->parameterName()) {
-                    if (!param->isStandardUniform()) {
-                        if (param->datatype() >= Parameter::Float && param->datatype() <= Parameter::FloatMat4)
-                            m_defaultUniformPack.setUniform(binding->shaderVariableName(), QUniformValue(QUniformValue::Float, param->value()));
-                        else if (param->datatype() >= Parameter::Int)
-                            m_defaultUniformPack.setUniform(binding->shaderVariableName(), QUniformValue(QUniformValue::Int, param->value()));
-                    }
+                    if (param->datatype() >= Parameter::Float && param->datatype() <= Parameter::FloatMat4)
+                        m_defaultUniformPack.setUniform(binding->shaderVariableName(), QUniformValue(QUniformValue::Float, param->value()));
+                    else if (param->datatype() >= Parameter::Int)
+                        m_defaultUniformPack.setUniform(binding->shaderVariableName(), QUniformValue(QUniformValue::Int, param->value()));
                 }
             }
         }

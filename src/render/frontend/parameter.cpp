@@ -50,18 +50,14 @@ namespace Qt3D {
 Parameter::Parameter(Node *parent, const QString &name, OpenGLTypes ty) :
     Node(parent),
     m_name(name),
-    m_type(ty),
-    m_standardUniform(None)
+    m_type(ty)
 {
-
 }
 
 Parameter::Parameter(Node *parent)
     : Node(parent)
     , m_type(Undefined)
-    , m_standardUniform(None)
 {
-
 }
 
 Parameter::Parameter(Node *parent, const QString &name, Parameter::OpenGLTypes ty, const QVariant &value)
@@ -69,7 +65,6 @@ Parameter::Parameter(Node *parent, const QString &name, Parameter::OpenGLTypes t
     , m_name(name)
     , m_type(ty)
     , m_value(value)
-    , m_standardUniform(None)
 {
 
 }
@@ -80,29 +75,6 @@ void Parameter::setName(const QString &name)
         m_name = name;
         emit nameChanged();
     }
-}
-
-void Parameter::setMeshAttributeName(QString name)
-{
-    if (m_meshName != name) {
-        m_meshName = name;
-        emit meshAttributeNameChanged();
-    }
-}
-
-bool Parameter::isStandardUniform() const
-{
-    return (m_standardUniform != None);
-}
-
-void Parameter::setStandardUniform(Parameter::StandardUniform su)
-{
-    m_standardUniform = su;
-}
-
-Parameter::StandardUniform Parameter::standardUniform() const
-{
-    return m_standardUniform;
 }
 
 void Parameter::setValue(const QVariant &dv)

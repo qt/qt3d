@@ -60,7 +60,8 @@ public:
     enum Binding
     {
         Uniform = 0,
-        Attribute
+        Attribute,
+        StandardUniform
     };
 
     explicit ParameterBinder(QObject *parent = 0);

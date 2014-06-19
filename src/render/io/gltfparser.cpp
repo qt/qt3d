@@ -799,14 +799,14 @@ void GLTFParser::processJSONTechnique( QString id, QJsonObject jsonObj )
         // But a string
         Parameter* p = new Parameter(t, pname, parseType(po.value(KEY_TYPE).toString().toUtf8()));
         Parameter::StandardUniform su = parseSemanticName(semantic.toUtf8());
-        if (su != Parameter::None) {
-            p->setStandardUniform(su);
-        } else {
-            // should really verify it's an attribute parameter?
-            // but what would be the way to do that?
-            // check the accessor dict?
-            p->setMeshAttributeName(semantic);
-        }
+//        if (su != Parameter::None) {
+//            p->setStandardUniform(su);
+//        } else {
+//            // should really verify it's an attribute parameter?
+//            // but what would be the way to do that?
+//            // check the accessor dict?
+//            p->setMeshAttributeName(semantic);
+//        }
 
         t->addParameter(p);
 
