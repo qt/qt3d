@@ -57,6 +57,15 @@ ParameterPack::ParameterPack()
 {
 }
 
+ParameterPack::~ParameterPack()
+{
+    if (m_rendererAspect != Q_NULLPTR && !m_peers.empty()) {
+        QChangeArbiter *arbiter = m_rendererAspect->aspectManager()->changeArbiter();
+        Q_FOREACH (Parameter *peer, m_peers)
+            arbiter->unregisterObserver(this, peer);
+    }
+}
+
 void ParameterPack::setRendererAspect(RendererAspect *rendererAspect)
 {
     m_rendererAspect = rendererAspect;
@@ -100,6 +109,11 @@ void ParameterPack::sceneChangeEvent(const QSceneChangePtr &e)
         if (m_namedValues.contains(propertyName))
             m_namedValues[propertyName] = propertyValue;
     }
+}
+
+const QHash<QString, QVariant> ParameterPack::namedValues() const
+{
+    return m_namedValues;
 }
 
 } // Render

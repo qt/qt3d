@@ -61,11 +61,13 @@ class ParameterPack : public QObserverInterface
 {
 public:
     ParameterPack();
+    ~ParameterPack();
     void setRendererAspect(RendererAspect *rendererAspect);
     void appendParameter(Parameter *param);
     void removeParameter(Parameter *param);
     void clear();
     void sceneChangeEvent(const QSceneChangePtr &e);
+    const QHash<QString, QVariant> namedValues() const;
 
 private:
     QHash<QString, QVariant> m_namedValues;
