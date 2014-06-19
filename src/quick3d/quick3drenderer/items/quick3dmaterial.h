@@ -71,8 +71,6 @@ public:
 
     QQmlListProperty<Parameter> qmlParameters();
 
-private Q_SLOTS:
-    void onParameterValueChanged();
 
 private:
     // FIXME - remove when we have a custom QML parser
@@ -80,8 +78,6 @@ private:
     static Parameter *parameterAt(QQmlListProperty<Parameter> *list, int index);
     static int parameterCount(QQmlListProperty<Parameter> *list);
     static void clearParameters(QQmlListProperty<Parameter> *list);
-
-    // FIXME - remove with tags
 };
 
 } // Quick

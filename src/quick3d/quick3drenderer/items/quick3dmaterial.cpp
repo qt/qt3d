@@ -70,7 +70,6 @@ void Quick3DMaterial::appendParameter(QQmlListProperty<Parameter> *list, Paramet
     Quick3DMaterial *mat = qobject_cast<Quick3DMaterial *>(list->object);
     if (mat) {
         param->setParent(mat->parentMaterial());
-        QObject::connect(param, SIGNAL(valueChanged()), mat, SLOT(onParameterValueChanged()));
         mat->parentMaterial()->addParameter(param);
     }
 }
@@ -96,26 +95,9 @@ void Quick3DMaterial::clearParameters(QQmlListProperty<Parameter> *list)
     Quick3DMaterial *mat = qobject_cast<Quick3DMaterial *>(list->object);
     if (mat) {
         Q_FOREACH (Parameter *p, mat->parentMaterial()->parameters()) {
-            QObject::disconnect(p, SIGNAL(valueChanged()), mat, SLOT(onParameterValueChanged()));
             mat->parentMaterial()->removeParameter(p);
         }
     }
-}
-
-// Try to use the QChangeArbiter for that
-void Quick3DMaterial::onParameterValueChanged()
-{
-    Parameter* t = qobject_cast<Parameter*>(sender());
-//    Q_ASSERT(m_tagList.contains(t));
-
-//    QVariant v = t->value();
-//    Texture* tex = v.value<Texture*>();
-//    if (tex != Q_NULLPTR) {
-//        qDebug() << "got texture parameter" << t->name();
-//        parentMaterial()->setTextureParameter(t->name(), tex);
-//    } else {
-//        parentMaterial()->setParameter(t->name(), t->value());
-//    }
 }
 
 } // Quick
