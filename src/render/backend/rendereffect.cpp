@@ -120,6 +120,11 @@ void RenderEffect::sceneChangeEvent(const QSceneChangePtr &e)
     }
 }
 
+const QHash<QString, QVariant> RenderEffect::parameters() const
+{
+    return m_parameterPack.namedValues();
+}
+
 QList<QAbstractTechnique *> RenderEffect::techniques() const
 {
     return m_techniques;

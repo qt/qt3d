@@ -70,6 +70,7 @@ public:
     QAbstractEffect *peer() const { return m_peer; }
 
     QList<QAbstractTechnique *> techniques() const;
+    const QHash<QString, QVariant> parameters() const;
 
 private:
     QList<QAbstractTechnique *> m_techniques;
