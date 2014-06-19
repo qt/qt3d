@@ -71,14 +71,6 @@ public:
     void setPeer(Technique* peer);
     Technique *peer() const;
 
-    unsigned int passCount() const;
-
-    void setShaderForPass(unsigned int pass, RenderShader* s);
-    RenderShader* shaderForPass(unsigned int pass);
-
-    void setBinForPass(unsigned int pas, RenderBin* bin);
-    RenderBin* binForPass(unsigned int pass) const;
-
     DrawStateSet* stateSetForPass(unsigned int pass) const;
 
     QString glslNameForMeshAttribute(unsigned int pass, QString meshAttributeName);
@@ -89,6 +81,7 @@ public:
     Parameter* parameterByName(QString name) const;
 
     void sceneChangeEvent(const QSceneChangePtr &e);
+    const QHash<QString, QVariant> parameters() const;
 
 private:
     Renderer *m_renderer;

@@ -132,6 +132,11 @@ void RenderTechnique::sceneChangeEvent(const QSceneChangePtr &e)
     }
 }
 
+const QHash<QString, QVariant> RenderTechnique::parameters() const
+{
+    return m_parameterPack.namedValues();
+}
+
 } // namespace Render
 } // namespace Qt3D
 
