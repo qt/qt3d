@@ -165,16 +165,18 @@ void QUniformValue::fromVariantToFloat(QVariant v)
         break;
     }
 
+    // TO DO : Find a way to have colors working for vec3 and vec4
+    // At the moment if a vec3 is expected and a vec4 is provided it results in errors
     case QVariant::Color: {
         m_count = 1;
-        m_tupleSize = 4;
+        m_tupleSize = 3;
         m_bytes.resize(sizeof(float) * m_count * m_tupleSize);
         float* bufPtr = reinterpret_cast<float *>(m_bytes.data());
         QColor c = v.value<QColor>();
         *bufPtr++ = c.redF();
         *bufPtr++ = c.greenF();
-        *bufPtr++ = c.blueF();
-        *bufPtr = c.alphaF();
+        *bufPtr = c.blueF();
+//        *bufPtr = c.alphaF();
         break;
     }
 

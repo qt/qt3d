@@ -231,26 +231,45 @@ Node {
         Material {
             id: ballMaterial
             objectName: "ballMaterial"
-            //            effect: adsEffect
+
+            property color ambientColor : "#cc2200";
+            property color diffuseColor : "pink"
+            QQ2.ParallelAnimation {
+                running: true
+                loops : QQ2.Animation.Infinite
+                QQ2.SequentialAnimation {
+                    QQ2.ColorAnimation { target : ballMaterial; property : "ambientColor"; to: "lightsteelblue"; duration: 1000 }
+                    QQ2.ColorAnimation { target : ballMaterial; property : "ambientColor"; to: "purple"; duration: 1000 }
+                    QQ2.ColorAnimation { target : ballMaterial; property : "ambientColor"; to: "#cc2200"; duration: 1000 }
+
+                }
+                QQ2.SequentialAnimation {
+                    QQ2.ColorAnimation { target : ballMaterial; property : "diffuseColor"; to: "yellow"; duration: 1000 }
+                    QQ2.ColorAnimation { target : ballMaterial; property : "diffuseColor"; to: "orange"; duration: 1000 }
+                    QQ2.ColorAnimation { target : ballMaterial; property : "diffuseColor"; to: "pink"; duration: 1000 }
+                }
+            }
 
             parameters : [
                 // Maybe having a AttributeParameter, StandardUniformParameter, UniformParameter would be better
-                Parameter { name : "position"; datatype: Parameter.FloatVec3; meshAttributeName: "position" },
-                Parameter { name : "normal"; datatype: Parameter.FloatVec3; meshAttributeName: "normal" },
-                Parameter { name : "ambient"; datatype: Parameter.FloatVec3; value : Qt.vector3d(0.5, 0.0, 0.6) },
-                Parameter { name : "diffuse"; datatype: Parameter.FloatVec3; value : Qt.vector3d(0.9, 0.7, 0.4);},
-                Parameter { name : "lightPos"; datatype: Parameter.FloatVec4; value : Qt.vector4d(10.0, 10.0, 0.0, 1.0);},
-                Parameter { name : "lightIntensity"; datatype: Parameter.FloatVec3; value : Qt.vector3d(0.5, 0.5, 0.5);},
-                Parameter { name : "modelView"; datatype: Parameter.FloatMat4; standardUniform : Parameter.ModelView},
-                Parameter { name : "normalMat"; datatype: Parameter.FloatMat4; standardUniform : Parameter.ModelViewNormal},
-                Parameter { name : "mvp"; datatype: Parameter.FloatMat4; standardUniform : Parameter.ModelViewProjection}
+                Parameter { name : "ambient"; datatype: Parameter.FloatVec3; value : Qt.vector3d(ballMaterial.ambientColor.r, ballMaterial.ambientColor.g, ballMaterial.ambientColor.b) },
+                Parameter { name : "lightIntensity"; datatype: Parameter.FloatVec3; value : Qt.vector3d(0.5, 0.5, 0.5);}
             ]
             // Custom properties go here
 
             effect : Effect {
+                parameters : [
+                    Parameter { name : "diffuse"; datatype: Parameter.FloatVec3; value : ballMaterial.diffuseColor;}
+                ]
+
                 techniques : [
                     Technique {
                         criteria : [TechniqueCriterion { criterionType : TechniqueCriterion.RenderingStyle; criterionValue : "forward"}]
+
+                        parameters : [
+                            Parameter { name : "lightPos"; datatype: Parameter.FloatVec4; value : Qt.vector4d(10.0, 10.0, 0.0, 1.0);}
+                        ]
+
                         renderPasses : [
                             RenderPass {
                                 criteria : []
@@ -260,10 +279,7 @@ Node {
                                     ParameterBinder {parameterName: "ambient"; shaderVariableName: "ka"; bindingType: ParameterBinder.Uniform},
                                     ParameterBinder {parameterName: "diffuse"; shaderVariableName: "kd"; bindingType: ParameterBinder.Uniform},
                                     ParameterBinder {parameterName: "lightPos"; shaderVariableName: "lightPosition"; bindingType: ParameterBinder.Uniform},
-                                    ParameterBinder {parameterName: "lightIntensity"; shaderVariableName: "lightIntensity"; bindingType: ParameterBinder.Uniform},
-                                    ParameterBinder {parameterName: "modelView"; shaderVariableName: "modelViewMatrix"; bindingType: ParameterBinder.Uniform},
-                                    ParameterBinder {parameterName: "normalMat"; shaderVariableName: "normalMatrix"; bindingType: ParameterBinder.Uniform},
-                                    ParameterBinder {parameterName: "mvp"; shaderVariableName: "mvp"; bindingType: ParameterBinder.Uniform}
+                                    ParameterBinder {parameterName: "lightIntensity"; shaderVariableName: "lightIntensity"; bindingType: ParameterBinder.Uniform}
                                 ]
                                 shaderProgram : ShaderProgram {
                                     id : diffuseShader
