@@ -64,6 +64,8 @@ RenderEffect::RenderEffect()
 
 RenderEffect::~RenderEffect()
 {
+    if (m_rendererAspect != Q_NULLPTR && m_peer != Q_NULLPTR)
+        m_rendererAspect->aspectManager()->changeArbiter()->unregisterObserver(this, m_peer);
 }
 
 void RenderEffect::setPeer(QAbstractEffect *effect)
