@@ -45,6 +45,7 @@
 #include <Qt3DRenderer/technique.h>
 #include <Qt3DRenderer/quniformvalue.h>
 #include <Qt3DCore/qjob.h>
+#include <Qt3DCore/qhandle.h>
 
 #include <QHash>
 #include <QMatrix4x4>
@@ -97,6 +98,13 @@ class ShaderManager;
 class TechniqueManager;
 class EffectManager;
 class RenderPassManager;
+class RenderEffect;
+class RenderRenderPass;
+
+typedef QHandle<RenderMaterial, 16> HMaterial;
+typedef QHandle<RenderEffect, 16> HEffect;
+typedef QHandle<RenderRenderPass, 16> HRenderPass;
+typedef QHandle<RenderTechnique, 16> HTechnique;
 
 class Renderer
 {
@@ -121,25 +129,26 @@ public:
     QJobPtr createRenderViewJob(FrameGraphNode *node, int submitOrderIndex);
     void executeCommands(const QVector<RenderCommand *> commands);
 
-    RenderQueues* renderQueues() const { return m_renderQueues; }
-    MeshDataManager *meshDataManager() const { return m_meshDataManager; }
-    MeshManager *meshManager() const { return m_meshManager; }
-    CameraManager *cameraManager() const { return m_cameraManager; }
-    RenderNodesManager *renderNodesManager() const { return m_renderNodesManager; }
-    MaterialManager *materialManager() const { return m_materialManager; }
-    MatrixManager *worldMatrixManager() const { return m_worldMatrixManager; }
-    MatrixManager *localMatrixManager() const { return m_localMatrixManager; }
-    VAOManager *vaoManager() const { return m_vaoManager; }
-    ShaderManager *shaderManager() const { return m_shaderManager; }
-    TechniqueManager *techniqueManager() const { return m_techniqueManager; }
-    EffectManager *effectManager() const { return m_effectManager; }
-    RenderPassManager *renderPassManager() const { return m_renderPassManager; }
+    inline RenderQueues* renderQueues() const { return m_renderQueues; }
+    inline MeshDataManager *meshDataManager() const { return m_meshDataManager; }
+    inline MeshManager *meshManager() const { return m_meshManager; }
+    inline CameraManager *cameraManager() const { return m_cameraManager; }
+    inline RenderNodesManager *renderNodesManager() const { return m_renderNodesManager; }
+    inline MaterialManager *materialManager() const { return m_materialManager; }
+    inline MatrixManager *worldMatrixManager() const { return m_worldMatrixManager; }
+    inline MatrixManager *localMatrixManager() const { return m_localMatrixManager; }
+    inline VAOManager *vaoManager() const { return m_vaoManager; }
+    inline ShaderManager *shaderManager() const { return m_shaderManager; }
+    inline TechniqueManager *techniqueManager() const { return m_techniqueManager; }
+    inline EffectManager *effectManager() const { return m_effectManager; }
+    inline RenderPassManager *renderPassManager() const { return m_renderPassManager; }
 
-    // temporary!
-    RenderTechnique* techniqueForMaterial(Material* mat);
+    inline HMaterial defaultMaterialHandle() const { return m_defaultMaterialHandle; }
+    inline HEffect defaultEffectHandle() const { return m_defaultEffectHandle; }
+    inline HTechnique defaultTechniqueHandle() const { return m_defaultTechniqueHandle; }
+    inline HRenderPass defaultRenderPassHandle() const { return m_defaultRenderPassHandle; }
 
     void buildMeshes(Mesh *mesh, Material *mat, const QMatrix4x4& mm);
-
     void setSurface(QSurface *s);
 
     void enqueueRenderView(RenderView *renderView, int submitOrder);
@@ -168,6 +177,11 @@ private:
 
     Material* m_defaultMaterial;
     Technique* m_defaultTechnique;
+
+    HMaterial m_defaultMaterialHandle;
+    HEffect m_defaultEffectHandle;
+    HTechnique m_defaultTechniqueHandle;
+    HRenderPass m_defaultRenderPassHandle;
 
     // Fail safe values that we can use if a RenderCommand
     // is missing a shader

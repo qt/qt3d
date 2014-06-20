@@ -150,10 +150,6 @@ void Renderer::buildDefaultTechnique()
 
     m_defaultRenderShader = new RenderShader();
     m_defaultRenderShader->setPeer(defaultShader);
-    // TO DO : To be corrected
-    m_defaultRenderShader->setStandardUniform(Parameter::ModelView, QStringLiteral("modelViewMatrix"));
-    m_defaultRenderShader->setStandardUniform(Parameter::ModelViewNormal, QStringLiteral("normalMatrix"));
-    m_defaultRenderShader->setStandardUniform(Parameter::ModelViewProjection, QStringLiteral("mvp"));
 
     RenderPass* basicPass = new RenderPass;
     basicPass->setShaderProgram(defaultShader);
@@ -165,24 +161,19 @@ void Renderer::buildDefaultTechnique()
 
     m_defaultTechnique->addPass(basicPass);
 
-    Parameter* vp = new Parameter(m_defaultTechnique, QStringLiteral("position"), Parameter::FloatVec3);
-    m_defaultTechnique->addParameter(vp);
     basicPass->addBinding(new ParameterMapper(QStringLiteral("position"), QStringLiteral("vertexPosition"), ParameterMapper::Attribute));
-
-    Parameter* np = new Parameter(m_defaultTechnique, QStringLiteral("normal"), Parameter::FloatVec3);
-    m_defaultTechnique->addParameter(np);
     basicPass->addBinding(new ParameterMapper(QStringLiteral("normal"), QStringLiteral("vertexNormal"), ParameterMapper::Attribute));
 
     // matrix uniforms from standard
-    Parameter* mvMat = new Parameter(m_defaultTechnique, QStringLiteral("modelView"), Parameter::FloatMat4);
+    Parameter* mvMat = new Parameter(m_defaultTechnique, QStringLiteral("modelView"), Parameter::FloatMat4, Parameter::ModelView);
     m_defaultTechnique->addParameter(mvMat);
     basicPass->addBinding(new ParameterMapper(QStringLiteral("modelView"), QStringLiteral("modelViewMatrix"), ParameterMapper::StandardUniform));
 
-    Parameter* nMat = new Parameter(m_defaultTechnique, QStringLiteral("normalMat"), Parameter::FloatMat4);
+    Parameter* nMat = new Parameter(m_defaultTechnique, QStringLiteral("normalMat"), Parameter::FloatMat3, Parameter::ModelViewNormal);
     m_defaultTechnique->addParameter(nMat);
     basicPass->addBinding(new ParameterMapper(QStringLiteral("normalMat"), QStringLiteral("normalMatrix"), ParameterMapper::StandardUniform));
 
-    Parameter* mvpMat = new Parameter(m_defaultTechnique, QStringLiteral("mvp"), Parameter::FloatMat4);
+    Parameter* mvpMat = new Parameter(m_defaultTechnique, QStringLiteral("mvp"), Parameter::FloatMat4, Parameter::ModelViewProjection);
     m_defaultTechnique->addParameter(mvpMat);
     basicPass->addBinding(new ParameterMapper(QStringLiteral("mvp"), QStringLiteral("mvp"), ParameterMapper::StandardUniform));
 
@@ -218,25 +209,6 @@ void Renderer::buildDefaultMaterial()
     defEff->addTechnique(m_defaultTechnique);
     m_defaultMaterial->setEffect(defEff);
 
-    // TO DO : We use only the uniform values of the defaultTechnique
-    // We should look for values in Effect, Technique and Material and Material values have preference over Technique and Effect
-    // And Technique values have preference over Effect
-    Q_FOREACH (ParameterMapper *binding, qobject_cast<RenderPass *>(m_defaultTechnique->renderPasses().first())->bindings()) {
-        if (binding->bindingType() == ParameterMapper::Uniform) {
-            Q_FOREACH (Parameter *param, m_defaultTechnique->parameters()) {
-                if (param->name() == binding->parameterName()) {
-                    if (param->datatype() >= Parameter::Float && param->datatype() <= Parameter::FloatMat4)
-                        m_defaultUniformPack.setUniform(binding->shaderVariableName(), QUniformValue(QUniformValue::Float, param->value()));
-                    else if (param->datatype() >= Parameter::Int)
-                        m_defaultUniformPack.setUniform(binding->shaderVariableName(), QUniformValue(QUniformValue::Int, param->value()));
-                }
-            }
-        }
-        else {
-            m_defaultParameterToGLSLAttributeNames[binding->parameterName()] = binding->shaderVariableName();
-        }
-    }
-
 }
 
 Renderer::~Renderer()
@@ -248,6 +220,26 @@ Renderer::~Renderer()
 // Called in RenderAspect Thread context
 void Renderer::initialize()
 {
+
+    m_defaultMaterialHandle = m_materialManager->acquire();
+    RenderMaterial *rMaterial = m_materialManager->data(m_defaultMaterialHandle);
+    rMaterial->setRendererAspect(m_rendererAspect);
+    rMaterial->setPeer(m_defaultMaterial);
+
+    m_defaultEffectHandle = m_effectManager->acquire();
+    RenderEffect *rEffect = m_effectManager->data(m_defaultEffectHandle);
+    rEffect->setRendererAspect(m_rendererAspect);
+    rEffect->setPeer(m_defaultMaterial->effect());
+
+    m_defaultTechniqueHandle = m_techniqueManager->acquire();
+    RenderTechnique *rTech = m_techniqueManager->data(m_defaultTechniqueHandle);
+    rTech->setRenderer(this);
+    rTech->setPeer(m_defaultTechnique);
+
+    m_defaultRenderPassHandle = m_renderPassManager->acquire();
+    RenderRenderPass *rPass = m_renderPassManager->data(m_defaultRenderPassHandle);
+    rPass->setRenderer(this);
+    rPass->setPeer(qobject_cast<RenderPass*>(m_defaultTechnique->renderPasses().first()));
 
 }
 
@@ -378,12 +370,8 @@ void Renderer::submitRenderViews()
             // Set the Viewport
             m_graphicsContext->setViewport(renderViews[i]->viewport());
             // Set RenderTarget ...
-            // Set the Camera
-            RenderCamera *camera = renderViews[i]->camera();
-            Q_ASSERT(camera);
-            m_graphicsContext->setCamera(camera);
-            // Initialize QGraphicsContext for drawing
 
+            // Initialize QGraphicsContext for drawing
             executeCommands(renderViews[i]->commands());
             frameElapsed = timer.elapsed() - frameElapsed;
             qCDebug(Rendering) << Q_FUNC_INFO << "Submitted Renderview " << i + 1 << "/" << renderViewsCount  << "in " << frameElapsed << "ms";
@@ -515,8 +503,6 @@ void Renderer::executeCommands(const QVector<RenderCommand *> commands)
         else
             m_graphicsContext->setCurrentStateSet(m_defaultDrawStateSet);
         m_graphicsContext->activateShader(shader);
-        m_graphicsContext->setModelMatrix(command->m_worldMatrix);
-        //        m_graphicsContext->setActiveMaterial(mat);
 
         // All Uniforms for a pass are stored in the QUniformPack of the command
         // Uniforms for Effect, Material and Technique should already have been correctly resolved
