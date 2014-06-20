@@ -252,23 +252,23 @@ Node {
 
             parameters : [
                 // Maybe having a AttributeParameter, StandardUniformParameter, UniformParameter would be better
-                Parameter { name : "ambient"; datatype: Parameter.FloatVec3; value : Qt.vector3d(ballMaterial.ambientColor.r, ballMaterial.ambientColor.g, ballMaterial.ambientColor.b) },
-                Parameter { name : "lightIntensity"; datatype: Parameter.FloatVec3; value : Qt.vector3d(0.5, 0.5, 0.5);}
+                Parameter { name : "ambient"; value : Qt.vector3d(ballMaterial.ambientColor.r, ballMaterial.ambientColor.g, ballMaterial.ambientColor.b) },
+                Parameter { name : "lightIntensity"; value : Qt.vector3d(0.5, 0.5, 0.5);}
             ]
             // Custom properties go here
 
             effect : Effect {
-                parameters : [
-                    Parameter { name : "diffuse"; datatype: Parameter.FloatVec3; value : ballMaterial.diffuseColor;}
-                ]
+                parameters : [Parameter { name : "diffuse"; value : Qt.vector3d(ballMaterial.diffuseColor.r, ballMaterial.diffuseColor.g, ballMaterial.diffuseColor.b);}]
 
                 techniques : [
                     Technique {
                         criteria : [TechniqueCriterion { criterionType : TechniqueCriterion.RenderingStyle; criterionValue : "forward"}]
 
                         parameters : [
-                            Parameter { name : "lightPos"; datatype: Parameter.FloatVec4; value : Qt.vector4d(10.0, 10.0, 0.0, 1.0);}
-                        ]
+                            Parameter { name : "lightPos"; value : Qt.vector4d(10.0, 10.0, 0.0, 1.0);},
+                            Parameter { name : "mVM"; value : Parameter.ModelView},
+                            Parameter { name : "mNM"; value : Parameter.ModelViewNormal},
+                            Parameter { name : "mVP"; value : Parameter.ModelViewProjection}]
 
                         renderPasses : [
                             RenderPass {
@@ -279,7 +279,10 @@ Node {
                                     ParameterMapper {parameterName: "ambient"; shaderVariableName: "ka"; bindingType: ParameterMapper.Uniform},
                                     ParameterMapper {parameterName: "diffuse"; shaderVariableName: "kd"; bindingType: ParameterMapper.Uniform},
                                     ParameterMapper {parameterName: "lightPos"; shaderVariableName: "lightPosition"; bindingType: ParameterMapper.Uniform},
-                                    ParameterMapper {parameterName: "lightIntensity"; shaderVariableName: "lightIntensity"; bindingType: ParameterMapper.Uniform}
+                                    ParameterMapper {parameterName: "lightIntensity"; shaderVariableName: "lightIntensity"; bindingType: ParameterMapper.Uniform},
+                                    ParameterMapper {parameterName: "mVM"; shaderVariableName: "modelViewMatrix"; bindingType: ParameterMapper.StandardUniform},
+                                    ParameterMapper {parameterName: "mNM"; shaderVariableName: "normalMatrix"; bindingType: ParameterMapper.StandardUniform},
+                                    ParameterMapper {parameterName: "mVP"; shaderVariableName: "mvp"; bindingType: ParameterMapper.StandardUniform}
                                 ]
                                 shaderProgram : ShaderProgram {
                                     id : diffuseShader
