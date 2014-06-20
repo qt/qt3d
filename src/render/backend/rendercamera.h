@@ -64,19 +64,16 @@ public:
     void setRendererAspect(RendererAspect *rendererAspect);
     void setPeer(CameraLens *peer);
 
-    // manually sync state with the peer, for the moment
-    void sync();
-
     void setClearColor();
     QVector4D clearColor() const { return m_clearColor; }
 
     unsigned int clearMask() const;
 
     void setProjection(const QMatrix4x4 &projection);
-    QMatrix4x4 projection() const;
+    inline QMatrix4x4 projection() const { return m_projection; }
 
     void setViewMatrix(const QMatrix4x4 &view);
-    QMatrix4x4 viewMatrix() const;
+    inline QMatrix4x4 viewMatrix() const { return m_view; }
 
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 

@@ -82,11 +82,7 @@ void RenderCamera::setPeer(CameraLens *peer)
     }
 }
 
-void RenderCamera::sync()
-{
-
-}
-
+// TO DO : Move that else where
 unsigned int RenderCamera::clearMask() const
 {
     return GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
@@ -97,19 +93,9 @@ void RenderCamera::setProjection(const QMatrix4x4 &projection)
     m_projection = projection;
 }
 
-QMatrix4x4 RenderCamera::projection() const
-{
-    return m_projection;
-}
-
 void RenderCamera::setViewMatrix(const QMatrix4x4 &view)
 {
     m_view = view;
-}
-
-QMatrix4x4 RenderCamera::viewMatrix() const
-{
-    return m_view;
 }
 
 void RenderCamera::sceneChangeEvent(const QSceneChangePtr &e)
