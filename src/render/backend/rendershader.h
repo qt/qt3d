@@ -65,26 +65,10 @@ public:
 
     void setPeer(ShaderProgram* peer);
 
-
-    /**
-     * @brief setStandardUniform - set the program name of a uniform
-     * @param su - the standard uniform
-     * @param loc - the GLSL name corresponding to the uniform
-     */
-    void setStandardUniform(Parameter::StandardUniform su, QString name);
-
-    /**
-     * @brief standardUniformLocations - vecotr of uniform locations
-     * within the compiled program, corresponding to the standard uniforms
-     * [index the vector by the StandardUniform enum]
-     * @return
-     */
-    QVector<int> standardUniformLocations() const
-    {
-        return m_standardUniformLocations;
-    }
-
     QString name() const;
+    void updateUniforms(const QUniformPack &pack);
+
+
 private:
     QOpenGLShaderProgram* m_program;
     ShaderProgram* m_peer;
@@ -92,10 +76,10 @@ private:
     QOpenGLShaderProgram *createProgram();
     QOpenGLShaderProgram *createDefaultProgram();
 
-    QVector<QString> m_standardUniformNames;
-    QVector<int> m_standardUniformLocations;
+    QHash<QString, int> m_uniforms;
 
     // Private so that only GraphicContext can call it
+    void initializeUniforms(const QVector<QPair<QString, int> > &uniformsNameAndLocation);
     QOpenGLShaderProgram* getOrCreateProgram();
     friend class QGraphicsContext;
 };

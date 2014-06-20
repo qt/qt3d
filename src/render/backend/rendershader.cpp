@@ -44,7 +44,7 @@
 #include <QDebug>
 #include <QOpenGLContext>
 #include <QOpenGLShaderProgram>
-
+#include <Qt3DRenderer/QGraphicsContext>
 #include <shaderprogram.h>
 
 QT_BEGIN_NAMESPACE
@@ -86,19 +86,19 @@ QOpenGLShaderProgram *RenderShader::getOrCreateProgram()
     return m_program;
 }
 
-void RenderShader::setStandardUniform(Parameter::StandardUniform su, QString name)
-{
-    Q_ASSERT(su != Parameter::None);
-    Q_ASSERT(!name.isEmpty());
-    int index = static_cast<int>(su);
-    if (index >= m_standardUniformNames.size())
-        m_standardUniformNames.resize(index + 1);
-    m_standardUniformNames[index] = name;
-}
-
 QString RenderShader::name() const
 {
     return m_peer->objectName();
+}
+
+void RenderShader::updateUniforms(const QUniformPack &pack)
+{
+    const QHash<QString, const QUniformValue* > &values = pack.uniforms();
+    Q_FOREACH (const QString &uniformName, values.keys()) {
+        if (m_uniforms.contains(uniformName)) {
+            values[uniformName]->apply(m_program, m_uniforms[uniformName], uniformName);
+        }
+    }
 }
 
 QOpenGLShaderProgram* RenderShader::createProgram()
@@ -107,14 +107,14 @@ QOpenGLShaderProgram* RenderShader::createProgram()
     // scoped pointer so early-returns delete automatically
     QScopedPointer<QOpenGLShaderProgram> p(new QOpenGLShaderProgram);
     bool ok = p->addShaderFromSourceCode(QOpenGLShader::Vertex,
-                                       m_peer->vertexSourceCode());
+                                         m_peer->vertexSourceCode());
     if (!ok) {
         qWarning() << "bad vertex source:" << m_program->log();
         return NULL;
     }
 
     ok = p->addShaderFromSourceCode(QOpenGLShader::Fragment,
-                                       m_peer->fragmentSourceCode());
+                                    m_peer->fragmentSourceCode());
     if (!ok) {
         qWarning() << "bad fragment source:" << m_program->log();
         return NULL;
@@ -125,20 +125,6 @@ QOpenGLShaderProgram* RenderShader::createProgram()
         qWarning() << "program failed to link:" << m_program->log();
         return NULL;
     }
-
-    m_standardUniformLocations.resize(m_standardUniformNames.size());
-    for (int i=0; i<m_standardUniformNames.size(); ++i) {
-        QString n = m_standardUniformNames.at(i);
-        if (n.isEmpty()) {
-            m_standardUniformLocations[i] = -1;
-            continue;
-        }
-
-        m_standardUniformLocations[i] = p->uniformLocation(n);
-       // qDebug() << "resolved location" << m_standardUniformLocations[i] <<
-       //             "for uniform" << n;
-    }
-
     // take from scoped-pointer so it doesn't get deleted
     return p.take();
 }
@@ -155,6 +141,12 @@ QOpenGLShaderProgram* RenderShader::createDefaultProgram()
     p->link();
 
     return p;
+}
+
+void RenderShader::initializeUniforms(const QVector<QPair<QString, int> > &uniformsNamesAndLocations)
+{
+    for (int i = 0; i < uniformsNamesAndLocations.size(); i++)
+        m_uniforms[uniformsNamesAndLocations[i].first] = uniformsNamesAndLocations[i].second;
 }
 
 } // namespace Render
