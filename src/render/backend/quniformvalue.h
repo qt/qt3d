@@ -45,6 +45,8 @@
 #include <QVariant>
 #include <QByteArray>
 #include <QVector>
+#include <QOpenGLShaderProgram>
+#include <Qt3DRenderer/renderlogging.h>
 
 // for RenderTexturePtr
 #include <Qt3DRenderer/rendertextureprovider.h>
@@ -70,52 +72,89 @@ public:
         UInt = 2,
         Float = 3,
         Double = 4,
-        Bool
+        Bool,
+        Custom
     };
 
     QUniformValue();
+    virtual ~QUniformValue() {}
 
-    QUniformValue(QVariant value);
-    QUniformValue(Type type, QVariant value);
+    static QUniformValue *fromVariant(const QVariant &v);
 
-    // explicit construction from various types without going through
-    // QVariant boxing + unboxing. Add as needed if this proves useful
-    explicit QUniformValue(const QVector4D& foo);
+    virtual bool operator ==(const QUniformValue &other);
+    bool operator !=(const QUniformValue &other);
 
-    void apply(QOpenGLShaderProgram* prog, int location, const QString &name) const;
+    virtual bool isValid() const { return m_type != Invalid; }
+
+    virtual void apply(QOpenGLShaderProgram* prog, int location, const QString &name) const;
+
+    // For advanced use cases not handled by fromVariant
+    void setRawFromFloats(const float *ptr, unsigned int count, unsigned int tupleSize);
+    void setRawFromInts(const qint32 *ptr, unsigned int count, unsigned int tupleSize);
+
+protected:
+    Type m_type;
+    QVariant m_var;
 
 private:
     void convertToBytes() const;
-
-    Type m_type;
     int m_count;
     unsigned int m_tupleSize;
 
-    QVariant m_var;
     // value as data suitable for passing to glUniformfv/iv
     mutable QByteArray m_bytes;
 
-    void fromVariant(QVariant v);
-    void fromVariantToInt(QVariant v);
-    void fromVariantToFloat(QVariant v);
+};
 
-    void setRawFromFloats(const float *ptr, unsigned int count, unsigned int tupleSize);
-    void setRawFromInts(const qint32 *ptr, unsigned int count, unsigned int tupleSize);
+
+template <typename T>
+class SpecifiedUniform : public QUniformValue
+{
+public :
+    explicit SpecifiedUniform(const T &value)
+        : QUniformValue()
+        , m_value(value)
+    {
+        m_type = Custom;
+    }
+
+    bool operator ==(const QUniformValue &other) Q_DECL_OVERRIDE
+    {
+        Q_UNUSED(other);
+        // TO DO : find a way to improve that
+        return false;
+    }
+
+    bool isValid() const Q_DECL_OVERRIDE { return true; }
+
+    void apply(QOpenGLShaderProgram *prog, int location, const QString &name) const Q_DECL_OVERRIDE
+    {
+        prog->setUniformValue(location, (T)m_value);
+        int err = glGetError();
+        if (err) {
+            qCWarning(Render::Backend) << Q_FUNC_INFO << "error " << err << "after setting uniform" << name << "at location " << location;
+        }
+    }
+
+private :
+    T m_value;
 };
 
 class QUniformPack
 {
 public:
-    void setUniform(QString glslName, QUniformValue val);
+    ~QUniformPack();
+
+    void setUniform(QString glslName, const QUniformValue *val);
 
     void setTexture(QString glslName, RenderTexturePtr tex);
 
-//    void apply(QGraphicsContext* gc);
+    //    void apply(QGraphicsContext* gc);
 
-    QHash<QString, QUniformValue> uniforms() const { return m_uniforms; }
+    const QHash<QString, const QUniformValue* > &uniforms() const { return m_uniforms; }
 
 private:
-    QHash<QString, QUniformValue> m_uniforms;
+    QHash<QString, const QUniformValue* > m_uniforms;
 
     struct NamedTexture {
         NamedTexture() : location(-1) {}

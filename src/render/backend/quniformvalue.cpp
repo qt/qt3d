@@ -62,141 +62,38 @@ QUniformValue::QUniformValue() :
 {
 }
 
-QUniformValue::QUniformValue(QVariant value) :
-    m_type(Float),
-    m_count(-1),
-    m_tupleSize(0)
-{
-    fromVariant(value);
-    Q_ASSERT((m_tupleSize >= 1) && (m_tupleSize <= 4));
-}
-
-QUniformValue::QUniformValue(Type type, QVariant value) :
-    m_type(type),
-    m_count(-1),
-    m_tupleSize(0)
-{
-    fromVariant(value);
-    Q_ASSERT((m_tupleSize >= 1) && (m_tupleSize <= 4));
-}
-
-QUniformValue::QUniformValue(const QVector4D &f) :
-    m_type(Float)
-{
-    m_var = QVariant(f);
-    QVector4D v(f); // need to make a local copy to take the address
-    setRawFromFloats(&v[0], 1, 4);
-}
-
-void QUniformValue::fromVariant(QVariant v)
-{
-    if (!v.isValid())
-        return;
-
-    if (m_var == v)
-        return;
-    m_var = v;
-
-    switch (m_type) {
-    case Int:
-    case UInt:
-        fromVariantToInt(v);
-        break;
-
-    case Float:
-        fromVariantToFloat(v);
-        break;
-
-        // Handle doubles if extension supported
-
-    default:
-        qWarning() << Q_FUNC_INFO << "unsupported internal type" << m_type;
-    }
-}
-
-void QUniformValue::fromVariantToInt(QVariant v)
+QUniformValue *QUniformValue::fromVariant(const QVariant &v)
 {
     switch (v.type()) {
-    case QVariant::Int:
-    case QVariant::UInt:
-    case QVariant::Double: {
-        qint32 i = static_cast<qint32>(v.toInt());
-        setRawFromInts(&i, 1, 1);
-        break;
-    }
-
-    default:
-        qWarning() << Q_FUNC_INFO << "unsupported type" << v;
+    case QVariant::Int: return new SpecifiedUniform<int>(v.toInt());
+    case QVariant::UInt: return new SpecifiedUniform<uint>(v.toUInt());
+    case QVariant::Double: return new SpecifiedUniform<float>(v.toFloat());
+    case QVariant::Vector2D: return new SpecifiedUniform<QVector2D>(v.value<QVector2D>());
+    case QVariant::Vector3D: return new SpecifiedUniform<QVector3D>(v.value<QVector3D>());
+    case QVariant::Vector4D: return new SpecifiedUniform<QVector4D>(v.value<QVector4D>());
+    case QVariant::Matrix4x4: return new SpecifiedUniform<QMatrix4x4>(v.value<QMatrix4x4>());
+    case QVariant::Point: return new SpecifiedUniform<QPoint>(v.value<QPoint>());
+    case QVariant::PointF: return new SpecifiedUniform<QPointF>(v.value<QPointF>());
+    case QVariant::Size: return new SpecifiedUniform<QSize>(v.value<QSize>());
+    case QVariant::SizeF: return new SpecifiedUniform<QSizeF>(v.value<QSizeF>());
+    case QVariant::Transform: return new SpecifiedUniform<QTransform>(v.value<QTransform>());
+    case QVariant::Color: return new SpecifiedUniform<QColor>(v.value<QColor>());
+    case QVariant::Quaternion: return new SpecifiedUniform<QVector4D>(v.value<QVector4D>());
+    default: return new QUniformValue();
     }
 }
 
-void QUniformValue::fromVariantToFloat(QVariant v)
+bool QUniformValue::operator ==(const QUniformValue &other)
 {
-    switch (v.type()) {
-    case QVariant::Int:
-    case QVariant::UInt:
-    case QVariant::Double: {
-        float f = static_cast<float>(v.toDouble());
-        setRawFromFloats(&f, 1, 1);
-        break;
-    }
+    return (other.m_type == this->m_type &&
+            other.m_tupleSize == this->m_tupleSize &&
+            other.m_count == this->m_count &&
+            other.m_var == this->m_var);
+}
 
-    case QVariant::Vector2D: {
-        QVector2D v2 = v.value<QVector2D>();
-        setRawFromFloats(&v2[0], 1, 2);
-        break;
-    }
-
-    case QVariant::Vector3D: {
-        QVector3D v3 = v.value<QVector3D>();
-        setRawFromFloats(&v3[0], 1, 3);
-        break;
-    }
-
-    case QVariant::Vector4D: {
-        QVector4D v4 = v.value<QVector4D>();
-        setRawFromFloats(&v4[0], 1, 4);
-        break;
-    }
-
-    case QVariant::Matrix4x4: {
-        QMatrix4x4 m = v.value<QMatrix4x4>();
-        setRawFromFloats(m.constData(), 4, 4);
-        break;
-    }
-
-    // TO DO : Find a way to have colors working for vec3 and vec4
-    // At the moment if a vec3 is expected and a vec4 is provided it results in errors
-    case QVariant::Color: {
-        m_count = 1;
-        m_tupleSize = 3;
-        m_bytes.resize(sizeof(float) * m_count * m_tupleSize);
-        float* bufPtr = reinterpret_cast<float *>(m_bytes.data());
-        QColor c = v.value<QColor>();
-        *bufPtr++ = c.redF();
-        *bufPtr++ = c.greenF();
-        *bufPtr = c.blueF();
-//        *bufPtr = c.alphaF();
-        break;
-    }
-
-    case QVariant::Quaternion: {
-        QVector4D qv = v.value<QQuaternion>().toVector4D();
-        setRawFromFloats(&qv[0], 1, 4);
-        break;
-    }
-
-    case QVariant::List: {
-        QVariantList vl = v.toList();
-
-        // implement me ...
-
-        break;
-    }
-
-    default:
-        qWarning() << Q_FUNC_INFO << "unsupported QVariant type";
-    }
+bool QUniformValue::operator !=(const QUniformValue &other)
+{
+    return !operator ==(other);
 }
 
 void QUniformValue::setRawFromFloats(const float* ptr, unsigned int count, unsigned int tupleSize)
@@ -225,30 +122,30 @@ void QUniformValue::apply(QOpenGLShaderProgram *prog, int location, const QStrin
         }
 
         prog->setUniformValueArray(location,
-                                                 reinterpret_cast<const GLint*>(m_bytes.constData()),
-                                                 m_count * m_tupleSize);
-                break;
+                                   reinterpret_cast<const GLint*>(m_bytes.constData()),
+                                   m_count * m_tupleSize);
+        break;
 
     case UInt:
         prog->setUniformValueArray(location,
-                                                 reinterpret_cast<const GLuint*>(m_bytes.constData()),
-                                                 m_count * m_tupleSize);
+                                   reinterpret_cast<const GLuint*>(m_bytes.constData()),
+                                   m_count * m_tupleSize);
         break;
 #endif
 
     case Float:
         prog->setUniformValueArray(location,
-                                                 reinterpret_cast<const GLfloat*>(m_bytes.constData()),
-                                                 m_count, m_tupleSize);
+                                   reinterpret_cast<const GLfloat*>(m_bytes.constData()),
+                                   m_count, m_tupleSize);
         break;
 
     default:
-        qWarning() << Q_FUNC_INFO << "unsupported type:" << m_type;
+        qWarning() << Q_FUNC_INFO << "unsupported type:" << m_type << "for " << name;
     }
 
     int err = glGetError();
     if (err) {
-        qCWarning(Render::Backend) << Q_FUNC_INFO << "error after setting uniform" << m_count << location << m_tupleSize << name;
+//        qCWarning(Render::Backend) << Q_FUNC_INFO << "error " << err << "after setting uniform" << m_count << location << m_tupleSize << name;
     }
 }
 
@@ -258,9 +155,17 @@ void QUniformValue::convertToBytes() const
         return; // use cahced conversion
 }
 
-void QUniformPack::setUniform(QString glslName, QUniformValue val)
+QUniformPack::~QUniformPack()
 {
-        m_uniforms[glslName] = val;
+    // TO DO : Should be a qDeleteAll but crashes for some reason at the moment
+    // Will be fixed later as this is going to evolve
+
+    m_uniforms.clear();
+}
+
+void QUniformPack::setUniform(QString glslName, const QUniformValue *val)
+{
+    m_uniforms[glslName] = val;
 }
 
 void QUniformPack::setTexture(QString glslName, RenderTexturePtr tex)
@@ -276,30 +181,6 @@ void QUniformPack::setTexture(QString glslName, RenderTexturePtr tex)
 
     m_textures.append(NamedTexture(glslName, tex));
 }
-
-//void QUniformPack::apply(QGraphicsContext *gc)
-//{
-//    for (int u=0; u<m_uniforms.size(); ++u) {
-//        int loc = m_uniforms[u].location;
-//        if (loc == -1) {
-//            loc = gc->activeShader()->uniformLocation(m_uniforms[u].glslName);
-//            m_uniforms[u].location = loc;
-//        }
-
-//        m_uniforms[u].uval.apply(gc, loc, m_uniforms[u].glslName);
-//    } // of uniforms iteration
-
-//    for (int t=0; t<m_textures.size(); ++t) {
-//        int loc = m_textures[t].location;
-//        if (loc == -1) {
-//            loc = gc->activeShader()->uniformLocation(m_textures[t].glslName);
-//            m_textures[t].location = loc;
-//        }
-
-//        int unit = gc->activateTexture(TextureScopeMaterial, m_textures[t].tex.data());
-//        gc->activeShader()->setUniformValue(loc, unit);
-//    } // of textures iteration
-//}
 
 } // namespace Render
 } // namespace Qt3D
