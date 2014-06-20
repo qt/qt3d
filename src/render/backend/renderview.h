@@ -43,6 +43,8 @@
 #define QT3D_RENDER_RENDERVIEW_H
 
 #include <Qt3DRenderer/renderer.h>
+#include <Qt3DRenderer/rendercamera.h>
+#include <Qt3DRenderer/parameter.h>
 #include <Qt3DCore/qhandle.h>
 #include <QVector>
 #include <QMutex>
@@ -60,12 +62,10 @@ class RenderCommand;
 class RenderPassFilter;
 class TechniqueFilter;
 class ViewportNode;
-class RenderCamera;
 class RenderMesh;
 class RenderEffect;
 class RenderRenderPass;
 
-typedef QHandle<RenderCamera, 8> HCamera;
 typedef QHandle<RenderMesh, 16> HMesh;
 typedef QHandle<RenderMaterial, 16> HMaterial;
 typedef QHandle<RenderTechnique, 16> HTechnique;
@@ -95,8 +95,7 @@ public:
     void buildRenderCommands(RenderNode *node);
     QVector<RenderCommand *> commands() const { return m_commands; }
 
-    QRectF viewport() const;
-    RenderCamera *camera() const;
+    inline QRectF viewport() const { return m_viewport; }
 
 private:
     void computeViewport(ViewportNode *viewportNode);
@@ -105,11 +104,11 @@ private:
     RenderEffect *findEffectForMaterial(RenderMaterial *material);
     RenderTechnique *findTechniqueForEffect(RenderEffect *effect);
     QList<RenderRenderPass *> findRenderPassesForTechnique(RenderTechnique *technique);
-    void setShaderAndUniforms(RenderCommand *command, RenderRenderPass *pass, const QHash<QString, QVariant> parameters);
+    void setShaderAndUniforms(RenderCommand *command, RenderRenderPass *pass, QHash<QString, QVariant> &parameters);
     QHash<QString, QVariant> parametersFromMaterialEffectTechnique(RenderMaterial *material, RenderEffect *effect, RenderTechnique *technique);
 
     Renderer *m_renderer;
-    HCamera m_camera;
+    RenderCamera *m_renderCamera;
     TechniqueFilter *m_techniqueFilter;
     RenderPassFilter *m_passFilter;
     QRectF m_viewport;
@@ -118,6 +117,29 @@ private:
     // render aspect is free to change the drawables on the next frame whilst
     // the render thread is submitting these commands.
     QVector<RenderCommand *> m_commands;
+
+    // We cannot return a QUniformValue as otherwise callying apply will result in calling QUniformApply
+    // Instead of the SpecifiedUniform<T>apply
+    // This is due to the fact that storing in a QHash creates a copy of QUniformValue and therefore the SpecifiedUniform<T> gets lost
+    // A dedicated ResourcesManager might improve performances later on
+    // We could have pre allocated/persistent rendercommands that we reuse in the RenderQueue
+
+    typedef QHash<Parameter::StandardUniform, QUniformValue* (RenderView::*)(RenderCamera *c, const QMatrix4x4& model) const> standardUniformsPFuncsHash;
+    static  standardUniformsPFuncsHash m_standardUniformSetters;
+    static standardUniformsPFuncsHash initializeStandardUniformSetters();
+
+    inline QUniformValue *modelMatrix(RenderCamera *, const QMatrix4x4& model) const { return new SpecifiedUniform<QMatrix4x4>(model); }
+    inline QUniformValue *viewMatrix(RenderCamera *c, const QMatrix4x4&) const { return new SpecifiedUniform<QMatrix4x4>(c->viewMatrix());}
+    inline QUniformValue *projectionMatrix(RenderCamera *c, const QMatrix4x4&) const { return new SpecifiedUniform<QMatrix4x4>(c->projection()); }
+    inline QUniformValue *modelViewMatrix(RenderCamera *c, const QMatrix4x4& model) const { return new SpecifiedUniform<QMatrix4x4>(c->viewMatrix() * model); }
+    inline QUniformValue *modelViewProjectionMatrix(RenderCamera *c, const QMatrix4x4& model) const { return new SpecifiedUniform<QMatrix4x4>(c->projection() * c->viewMatrix() * model); }
+    inline QUniformValue *inversedModelMatrix(RenderCamera *, const QMatrix4x4& model) const { return new SpecifiedUniform<QMatrix4x4>(model.inverted()); }
+    inline QUniformValue *inversedViewMatrix(RenderCamera *c, const QMatrix4x4&) const { return new SpecifiedUniform<QMatrix4x4>(c->viewMatrix().inverted()); }
+    inline QUniformValue *inversedProjectionMatrix(RenderCamera *c, const QMatrix4x4&) const { return new SpecifiedUniform<QMatrix4x4>(c->projection().inverted()); }
+    inline QUniformValue *inversedModelViewMatrix(RenderCamera *c, const QMatrix4x4& model) const { return new SpecifiedUniform<QMatrix4x4>((c->viewMatrix() * model).inverted()); }
+    inline QUniformValue *inversedModelViewProjectionMatrix(RenderCamera *c, const QMatrix4x4& model) const { return new SpecifiedUniform<QMatrix4x4>((c->projection() * c->viewMatrix() * model).inverted()); }
+    inline QUniformValue *modelNormalMatrix(RenderCamera *, const QMatrix4x4& model) const { return new SpecifiedUniform<QMatrix3x3>(model.normalMatrix()); }
+    inline QUniformValue *modelViewNormalMatrix(RenderCamera *c, const QMatrix4x4& model) const { return new SpecifiedUniform<QMatrix3x3>((c->viewMatrix() * model).normalMatrix()); }
 };
 
 } // namespace Render

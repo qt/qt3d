@@ -78,8 +78,31 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
+RenderView::standardUniformsPFuncsHash RenderView::m_standardUniformSetters = RenderView::initializeStandardUniformSetters();
+
+RenderView::standardUniformsPFuncsHash RenderView::initializeStandardUniformSetters()
+{
+    RenderView::standardUniformsPFuncsHash setters;
+
+    setters[Parameter::ModelMatrix] = &RenderView::modelMatrix;
+    setters[Parameter::ViewMatrix] = &RenderView::viewMatrix;
+    setters[Parameter::ProjectionMatrix] = &RenderView::projectionMatrix;
+    setters[Parameter::ModelView] = &RenderView::modelViewMatrix;
+    setters[Parameter::ModelViewProjection] = &RenderView::modelViewProjectionMatrix;
+    setters[Parameter::ModelInverse] = &RenderView::inversedModelMatrix;
+    setters[Parameter::ViewInverse] = &RenderView::inversedViewMatrix;
+    setters[Parameter::ProjectionInverse] = &RenderView::inversedProjectionMatrix;
+    setters[Parameter::ModelViewInverse] = &RenderView::inversedModelViewMatrix;
+    setters[Parameter::ModelViewProjectionInverse] = &RenderView::inversedModelViewProjectionMatrix;
+    setters[Parameter::ModelNormal] = &RenderView::modelNormalMatrix;
+    setters[Parameter::ModelViewNormal] = &RenderView::modelViewNormalMatrix;
+
+    return setters;
+}
+
 RenderView::RenderView()
     : m_renderer(Q_NULLPTR)
+    , m_renderCamera(Q_NULLPTR)
     , m_techniqueFilter(0)
     , m_passFilter(0)
     , m_commands()
@@ -105,11 +128,10 @@ void RenderView::setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf)
             CameraSelector *cameraSelector = static_cast<CameraSelector *>(node);
             Entity *cameraEntity = cameraSelector->cameraEntity();
             if (cameraEntity != Q_NULLPTR) {
-                m_camera = m_renderer->cameraManager()->lookupHandle(cameraEntity->uuid());
-                RenderCamera *tmpCam = m_renderer->cameraManager()->data(m_camera);
+                m_renderCamera = m_renderer->cameraManager()->lookupResource(cameraEntity->uuid());
                 RenderNode *tmpCamNode = m_renderer->renderNodesManager()->lookupResource(cameraEntity->uuid());
-                if (tmpCam && tmpCamNode)
-                    tmpCam->setViewMatrix(*tmpCamNode->worldTransform());
+                if (m_renderCamera && tmpCamNode)
+                    m_renderCamera->setViewMatrix(*tmpCamNode->worldTransform());
             }
             break;
         }
@@ -174,7 +196,7 @@ void RenderView::buildRenderCommands(RenderNode *node)
     // 1 RenderCommand per RenderPass pass on an Entity with a Mesh
 
     Entity *frontEndEntity = Q_NULLPTR;
-    if (node->frontEndPeer() != Q_NULLPTR
+    if (m_renderCamera != Q_NULLPTR && node->frontEndPeer() != Q_NULLPTR
             && (frontEndEntity = node->frontEndPeer()->asEntity()) != Q_NULLPTR) {
         HMesh meshHandle;
         if (m_renderer->meshManager()->contains(frontEndEntity->uuid()) &&
@@ -191,6 +213,13 @@ void RenderView::buildRenderCommands(RenderNode *node)
             RenderEffect *effect = findEffectForMaterial(material);
             RenderTechnique *technique = findTechniqueForEffect(effect);
             QList<RenderRenderPass *> passes = findRenderPassesForTechnique(technique);
+
+            if (passes.isEmpty()) {
+                material = m_renderer->materialManager()->data(m_renderer->defaultMaterialHandle());
+                effect = m_renderer->effectManager()->data(m_renderer->defaultEffectHandle());
+                technique = m_renderer->techniqueManager()->data(m_renderer->defaultTechniqueHandle());
+                passes << m_renderer->renderPassManager()->data(m_renderer->defaultRenderPassHandle());
+            }
             QHash<QString, QVariant> parameters = parametersFromMaterialEffectTechnique(material, effect, technique);
 
             Q_FOREACH (RenderRenderPass *pass, passes) {
@@ -203,35 +232,12 @@ void RenderView::buildRenderCommands(RenderNode *node)
                 setShaderAndUniforms(command, pass, parameters);
                 m_commands.append(command);
             }
-
-            if (passes.isEmpty()) {
-                //                qCritical() << "No RenderPasses found. Make sure you have properly set your Material, Technique and Effect. Rendering using default RenderPass";
-                RenderCommand *command = new RenderCommand();
-                command->m_mesh = meshHandle;
-                command->m_meshData = mesh->meshData();
-                command->m_instancesCount = 0;
-                command->m_worldMatrix = *(node->worldTransform());
-                command->m_stateSet = Q_NULLPTR;
-                m_commands.append(command);
-            }
-
         }
     }
 
     // Traverse children
-    foreach (RenderNode *child, node->children()) {
+    Q_FOREACH (RenderNode *child, node->children())
         buildRenderCommands(child);
-    }
-}
-
-QRectF RenderView::viewport() const
-{
-    return m_viewport;
-}
-
-RenderCamera *RenderView::camera() const
-{
-    return m_renderer->cameraManager()->data(m_camera);
 }
 
 RenderMaterial *RenderView::findMaterialForMeshNode(const QUuid &entityUuid)
@@ -366,7 +372,7 @@ QHash<QString, QVariant> RenderView::parametersFromMaterialEffectTechnique(Rende
     return params;
 }
 
-void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *rPass, const QHash<QString, QVariant> parameters)
+void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *rPass, QHash<QString, QVariant> &parameters)
 {
     // The VAO Handle is set directly in the renderer thread so as to avoid having to use a mutex here
     // Set shader, technique, and effect by basically doing :
@@ -377,7 +383,6 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
     // Get list of parameters for the Material, Effect, and Technique
     // For each ParameterBinder in the RenderPass -> create a QUniformPack
     // Once that works, improve that to try and minimize QUniformPack updates
-    // Get Parameters only from Material as a first step
 
     if (rPass != Q_NULLPTR && rPass->shaderProgram() != Q_NULLPTR) {
         // Index RenderShader by Shader UUID
@@ -387,29 +392,35 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
             shader = m_renderer->shaderManager()->getOrCreateResource(rPass->shaderProgram()->uuid());
             shader->setPeer(qobject_cast<ShaderProgram*>(rPass->shaderProgram()));
             command->m_shader = m_renderer->shaderManager()->lookupHandle(rPass->shaderProgram()->uuid());
-            // TO DO : Clean that up
-            shader->setStandardUniform(Parameter::ModelView, QStringLiteral("modelViewMatrix"));
-            shader->setStandardUniform(Parameter::ModelViewNormal, QStringLiteral("normalMatrix"));
-            shader->setStandardUniform(Parameter::ModelViewProjection, QStringLiteral("mvp"));
         }
         // TO DO : To be corrected later on
         //        command->m_stateSet = qobject_cast<RenderPass*>(pass)->stateSet();
 
         // Builds the QUniformPack, sets shader standard uniforms and store attributes name / glname bindings
+        // If a parameter is defined and not found in the bindings it is assumed to be a binding of Uniform type with the glsl name
+        // equals to the parameter name
+
         Q_FOREACH (ParameterMapper *binding, rPass->bindings()) {
-            if (binding->bindingType() == ParameterMapper::Uniform) {
-                if (!parameters.contains(binding->parameterName())) {
-                    qCCritical(Render::Backend) << Q_FUNC_INFO << "Trying to bind a Parameter that hasn't been defined " << binding->parameterName();
-                }
-                else {
-                    // We assume float only at the moment
-                    command->m_uniforms.setUniform(binding->shaderVariableName(), QUniformValue(parameters[binding->parameterName()]));
-                }
-                // STANDARD UNIFORM ARE NOT SET BY THE QUNIFORMPACK
+            if (!parameters.contains(binding->parameterName())) {
+                if (binding->bindingType() == ParameterMapper::Attribute)
+                    command->m_parameterAttributeToShaderNames[binding->parameterName()] = binding->shaderVariableName();
+                else
+                    qCWarning(Render::Backend) << Q_FUNC_INFO << "Trying to bind a Parameter that hasn't been defined " << binding->parameterName();
             }
-            else { // Attribute
-                command->m_parameterAttributeToShaderNames[binding->parameterName()] = binding->shaderVariableName();
+            else {
+                if (binding->bindingType() == ParameterMapper::Uniform)
+                    command->m_uniforms.setUniform(binding->shaderVariableName(), QUniformValue::fromVariant(parameters.take(binding->parameterName())));
+                else if (binding->bindingType() == ParameterMapper::StandardUniform)
+                    command->m_uniforms.setUniform(binding->shaderVariableName(),
+                                                   (this->*m_standardUniformSetters[static_cast<Parameter::StandardUniform>(parameters.take(binding->parameterName()).toInt())])(m_renderCamera, command->m_worldMatrix));
             }
+        }
+        if (!parameters.empty()) {
+            qDebug() << "There are params remaining" << parameters.keys();
+
+            // Check for default uniform names
+            // Add them if found
+            // Otherwise consider additional parameters as user defined uniforms that did not require binding
         }
     }
     else {
