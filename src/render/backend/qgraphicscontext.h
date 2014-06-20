@@ -91,14 +91,8 @@ public:
 
     void endDrawing();
 
-    void setCamera(RenderCamera* rcam);
-    RenderCamera* camera() const;
-
     void setViewport(const QRectF &viewport);
     QRectF viewport() const { return m_viewport; }
-
-    QMatrix4x4 projectionMatrix() const;
-    QMatrix4x4 viewMatrix() const;
 
     /**
      * @brief releaseGL - release all OpenGL objects associated with
@@ -136,8 +130,6 @@ public:
      * @return
      */
     QOpenGLBuffer glBufferFor(BufferPtr buf);
-
-    void setModelMatrix(const QMatrix4x4 &modelMat);
 
     /**
      * @brief activateTexture - make a texture active on a hardware unit
@@ -182,8 +174,6 @@ private:
 
     RenderShader* m_activeShader;
     QHash<RenderShader*, QOpenGLShaderProgram*> m_shaderHash;
-    QHash<RenderShader*, QVector<QPair<QString, int> > > m_shaderUniforms;
-    QHash<RenderShader*, QVector<QPair<QString, int> > > m_shaderAttributes;
     QHash<BufferPtr, QOpenGLBuffer> m_bufferHash;
 
     // active textures, indexed by texture unit
@@ -200,6 +190,7 @@ private:
     QRectF m_viewport;
 
     DrawStateSet* m_stateSet;
+
 };
 
 } // Render

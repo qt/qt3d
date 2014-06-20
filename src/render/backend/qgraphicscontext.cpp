@@ -164,16 +164,6 @@ void QGraphicsContext::endDrawing()
     decayTextureScores();
 }
 
-void QGraphicsContext::setCamera(RenderCamera *rcam)
-{
-    m_camera = rcam;
-}
-
-RenderCamera *QGraphicsContext::camera() const
-{
-    return m_camera;
-}
-
 void QGraphicsContext::setViewport(const QRectF &viewport)
 {
     m_viewport = viewport;
@@ -189,17 +179,6 @@ void QGraphicsContext::setViewport(const QRectF &viewport)
                (1.0 - m_viewport.y() - m_viewport.height()) * m_surface->size().height(),
                m_viewport.width()* m_surface->size().width(),
                m_viewport.height() * m_surface->size().height());
-}
-
-
-QMatrix4x4 QGraphicsContext::projectionMatrix() const
-{
-    return m_camera->projection();
-}
-
-QMatrix4x4 QGraphicsContext::viewMatrix() const
-{
-    return m_camera->viewMatrix();
 }
 
 void QGraphicsContext::releaseOpenGL()
@@ -236,12 +215,13 @@ void QGraphicsContext::activateShader(RenderShader *shader)
         QOpenGLShaderProgram* prog = shader->getOrCreateProgram();
         Q_ASSERT(prog);
         m_shaderHash[shader] = prog;
-        m_shaderUniforms[shader] = m_glHelper->programUniformsAndLocations(prog->programId());
-        m_shaderAttributes[shader] = m_glHelper->programAttributesAndLocations(prog->programId());
+        shader->initializeUniforms(m_glHelper->programUniformsAndLocations(prog->programId()));
+        // TO DO : Set Attributes m_glHelper->programAttributesAndLocations(prog->programId());
         m_activeShader = NULL;
     }
 
     if (m_activeShader == shader) {
+
         // no op
     } else {
         m_activeShader = shader;
@@ -264,76 +244,6 @@ void QGraphicsContext::setActiveMaterial(RenderMaterial *rmat)
 // TO DO : Try to move what's in Renderer here
 void QGraphicsContext::executeCommand(const RenderCommand *command)
 {
-
-}
-
-void QGraphicsContext::setModelMatrix(const QMatrix4x4& modelMat)
-{
-    const QVector<int>& locs(m_activeShader->standardUniformLocations());
-    QOpenGLShaderProgram* prog = activeShader();
-
-    GLint progId = 0;
-    glGetIntegerv(GL_CURRENT_PROGRAM, &progId);
-    if (progId != (int) prog->programId()) {
-        qCWarning(Backend) << "current program mismatch, very bad:" << progId << prog->programId();
-        return;
-    }
-
-    int sz = locs.size();
-    for (int i=0; i<sz; ++i) {
-        Parameter::StandardUniform su = static_cast<Parameter::StandardUniform>(i);
-        int loc = locs.at(i);
-        if (loc == -1)
-            continue;
-
-        switch (su) {
-        case Parameter::None: break;
-
-        case Parameter::ModelMatrix:
-            prog->setUniformValue(loc, modelMat); break;
-
-        case Parameter::ViewMatrix:
-            prog->setUniformValue(loc, viewMatrix()); break;
-
-        case Parameter::ProjectionMatrix:
-            prog->setUniformValue(loc, projectionMatrix()); break;
-
-        case Parameter::ModelView:
-            prog->setUniformValue(loc, viewMatrix() * modelMat); break;
-
-        case Parameter::ModelViewProjection:
-            prog->setUniformValue(loc, projectionMatrix() * viewMatrix() * modelMat); break;
-
-        case Parameter::ModelInverse:
-            prog->setUniformValue(loc, modelMat.inverted()); break;
-
-        case Parameter::ViewInverse:
-            prog->setUniformValue(loc, viewMatrix().inverted()); break;
-
-        case Parameter::ProjectionInverse:
-            prog->setUniformValue(loc, projectionMatrix().inverted()); break;
-
-        case Parameter::ModelViewInverse:
-            prog->setUniformValue(loc, (viewMatrix() * modelMat).inverted()); break;
-
-        case Parameter::ModelViewProjectionInverse:
-            prog->setUniformValue(loc, (projectionMatrix() * viewMatrix() * modelMat).inverted());
-            break;
-
-        case Parameter::ModelNormal:
-            prog->setUniformValue(loc, modelMat.normalMatrix());
-            break;
-
-        case Parameter::ModelViewNormal:
-            prog->setUniformValue(loc, (viewMatrix() * modelMat).normalMatrix());
-            break;
-        }
-
-        int err = glGetError();
-        if (err)
-            qCWarning(Backend) << "GL error after setting matrix" << QString::number(err, 16) << i << loc;
-
-    } // of standard uniforms
 }
 
 int QGraphicsContext::activateTexture(TextureScope scope, RenderTexture *tex, int onUnit)
@@ -569,15 +479,7 @@ QOpenGLShaderProgram* QGraphicsContext::activeShader()
 // than the other way around
 void QGraphicsContext::setUniforms(const QUniformPack &uniforms)
 {
-    QOpenGLShaderProgram *prog = activeShader();
-    QVector<NamedUniformLocation> &namedUniforms = m_shaderUniforms[m_activeShader];
-
-    for (int i = 0; i < namedUniforms.size(); i++) {
-        if (uniforms.uniforms().contains(namedUniforms[i].first))
-            uniforms.uniforms()[namedUniforms[i].first].apply(prog, namedUniforms[i].second, namedUniforms[i].first);
-//        else
-//            qDebug() << "Unset Uniform " << namedUniforms[i].first;
-    }
+    m_activeShader->updateUniforms(uniforms);
 }
 
 void QGraphicsContext::specifyAttribute(QString nm, AttributePtr attr)
