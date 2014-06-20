@@ -155,5 +155,6 @@ private:
 QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(Qt3D::Parameter *)
+Q_DECLARE_METATYPE(Qt3D::Parameter::StandardUniform)
 
 #endif // QT3D_PARAMETER_H
