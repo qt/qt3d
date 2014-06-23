@@ -83,6 +83,7 @@
 #include <techniquemanager.h>
 #include <effectmanager.h>
 #include <renderpassmanager.h>
+#include <texturemanager.h>
 #include "renderlogging.h"
 #include "parametermapper.h"
 
@@ -120,6 +121,7 @@ Renderer::Renderer()
     , m_techniqueManager(new TechniqueManager())
     , m_effectManager(new EffectManager())
     , m_renderPassManager(new RenderPassManager())
+    , m_textureManager(new TextureManager())
     , m_renderQueues(new RenderQueues())
     , m_frameCount(0)
 {
