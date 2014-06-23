@@ -102,7 +102,7 @@ public:
     }
 
 Q_SIGNALS:
-    virtual void cameraChanged();
+    void cameraChanged();
     void enabledChanged() Q_DECL_OVERRIDE;
 
 private:
