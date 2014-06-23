@@ -66,6 +66,8 @@
 #include "renderrenderpass.h"
 #include "parametermapper.h"
 #include "parameter.h"
+#include "texturemanager.h"
+#include "texture.h"
 
 #include <Qt3DCore/entity.h>
 #include <Qt3DCore/qabstracteffect.h>
@@ -347,6 +349,15 @@ QList<RenderRenderPass *> RenderView::findRenderPassesForTechnique(RenderTechniq
     return passes;
 }
 
+void RenderView::createRenderTexture(Texture *tex)
+{
+    if (!m_renderer->textureManager()->contains(tex->uuid())) {
+        RenderTexture *rTex = m_renderer->textureManager()->getOrCreateResource(tex->uuid());
+        // TO DO : Improve when working to monitor for texture changes ...
+        rTex->setPeer(tex);
+    }
+}
+
 QHash<QString, QVariant> RenderView::parametersFromMaterialEffectTechnique(RenderMaterial *material,
                                                                            RenderEffect *effect,
                                                                            RenderTechnique *technique)
@@ -408,8 +419,17 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
                     qCWarning(Render::Backend) << Q_FUNC_INFO << "Trying to bind a Parameter that hasn't been defined " << binding->parameterName();
             }
             else {
-                if (binding->bindingType() == ParameterMapper::Uniform)
-                    command->m_uniforms.setUniform(binding->shaderVariableName(), QUniformValue::fromVariant(parameters.take(binding->parameterName())));
+                if (binding->bindingType() == ParameterMapper::Uniform) {
+                    QVariant value = parameters.take(binding->parameterName());
+                    Texture *tex = Q_NULLPTR;
+                    if (value.type() == QVariant::UserType && (tex = value.value<Qt3D::Texture*>()) != Q_NULLPTR) {
+                        command->m_uniforms.setTexture(binding->shaderVariableName(), tex->uuid());
+                        command->m_uniforms.setUniform(binding->shaderVariableName(), new TextureUniform(tex->uuid()));
+                    }
+                    else {
+                        command->m_uniforms.setUniform(binding->shaderVariableName(), QUniformValue::fromVariant(value));
+                    }
+                }
                 else if (binding->bindingType() == ParameterMapper::StandardUniform)
                     command->m_uniforms.setUniform(binding->shaderVariableName(),
                                                    (this->*m_standardUniformSetters[static_cast<Parameter::StandardUniform>(parameters.take(binding->parameterName()).toInt())])(m_renderCamera, command->m_worldMatrix));
