@@ -754,8 +754,8 @@ void GLTFParser::processJSONTexture( QString id, QJsonObject jsonObj)
     //int pixelFormat = jsonObj.value(KEY_FORMAT).toInt();
     //int internalFormat = jsonObj.value(KEY_INTERNAL_FORMAT).toInt();
 
-    tex->setTarget(static_cast<QOpenGLTexture::Target>(target));
-    tex->setInternalFormat(QOpenGLTexture::RGBA8_UNorm /* static_cast<QOpenGLTexture::TextureFormat>(internalFormat)*/);
+    tex->setTarget(static_cast<Texture::Target>(target));
+    tex->setInternalFormat(Texture::RGBA8_UNorm /* static_cast<QOpenGLTexture::TextureFormat>(internalFormat)*/);
 
     QString samplerId = jsonObj.value(KEY_SAMPLER).toString();
     QString source = jsonObj.value(KEY_SOURCE).toString();
@@ -774,11 +774,11 @@ void GLTFParser::processJSONTexture( QString id, QJsonObject jsonObj)
 
     QJsonObject sampler = samplersDict.value(samplerId).toObject();
 
-    tex->setWrapMode(static_cast<QOpenGLTexture::WrapMode>(sampler.value(KEY_WRAP_S).toInt()));
+    tex->setWrapMode(static_cast<Texture::WrapMode>(sampler.value(KEY_WRAP_S).toInt()));
     // tex->setWrapMode(sampler.value("wrapT").toInt());
 
-    tex->setMinificationFilter(static_cast<QOpenGLTexture::Filter>(sampler.value(KEY_MIN_FILTER).toInt()));
-    tex->setMagnificationFilter(static_cast<QOpenGLTexture::Filter>(sampler.value(KEY_MAG_FILTER).toInt()));
+    tex->setMinificationFilter(static_cast<Texture::Filter>(sampler.value(KEY_MIN_FILTER).toInt()));
+    tex->setMagnificationFilter(static_cast<Texture::Filter>(sampler.value(KEY_MAG_FILTER).toInt()));
 
     m_textures[id] = tex;
 }

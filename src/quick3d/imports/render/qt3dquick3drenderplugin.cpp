@@ -91,7 +91,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterExtendedType<Qt3D::RenderPass, Qt3D::Render::Quick::Quick3DRenderPass>(uri, 2, 0, "RenderPass");
     qmlRegisterType<Qt3D::ShaderProgram>(uri, 2, 0, "ShaderProgram");
     qmlRegisterType<Qt3D::Shape>(uri, 2, 0, "Shape");
-    qmlRegisterType<Qt3D::Render::Quick::Quick3DTexture>(uri, 2, 0, "Texture");
+    qmlRegisterExtendedType<Qt3D::Texture, Qt3D::Render::Quick::Quick3DTexture>(uri, 2, 0, "Texture");
     // Framegraph components - TODO RenderTarget, RenderTargetSelector
     qmlRegisterExtendedType<Qt3D::CameraSelector, Qt3D::Quick::Quick3DNode>(uri, 2, 0, "CameraSelector");
     qmlRegisterExtendedType<Qt3D::RenderPassFilter, Qt3D::Render::Quick::Quick3DRenderPassFilter>(uri, 2, 0, "RenderPassFilter");

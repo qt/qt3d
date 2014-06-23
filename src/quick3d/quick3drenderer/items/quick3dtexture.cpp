@@ -51,12 +51,11 @@ namespace Render {
 namespace Quick {
 
 
-Quick3DTexture::Quick3DTexture(Node *parent)
-    : Quick3DNode(parent)
-    , Texture()
+Quick3DTexture::Quick3DTexture(QObject *parent)
+    : QObject(parent)
 {
-    setTarget(QOpenGLTexture::Target2D);
-    setInternalFormat(QOpenGLTexture::RGBA8_UNorm);
+    parentTexture()->setTarget(Texture::Target2D);
+    parentTexture()->setInternalFormat(Texture::RGBA8_UNorm);
 }
 
 QUrl Quick3DTexture::source() const
@@ -71,11 +70,11 @@ void Quick3DTexture::setSource(QUrl arg)
 
         if (m_source.isLocalFile()) {
             QImage img(m_source.toLocalFile());
-            setInternalFormat(img.hasAlphaChannel() ?
-                                             QOpenGLTexture::RGBA8_UNorm :
-                                             QOpenGLTexture::RGB8_UNorm);
+            parentTexture()->setInternalFormat(img.hasAlphaChannel() ?
+                                             Texture::RGBA8_UNorm :
+                                             Texture::RGB8_UNorm);
 
-            setFromQImage(img);
+            parentTexture()->setFromQImage(img);
         } else {
             qWarning() << "implement loading from remote URLs";
         }
@@ -85,13 +84,13 @@ void Quick3DTexture::setSource(QUrl arg)
 
 void Quick3DTexture::setRectangle(bool r)
 {
-    setTarget(r ? QOpenGLTexture::TargetRectangle :
-                             QOpenGLTexture::Target2D);
+    parentTexture()->setTarget(r ? Texture::TargetRectangle :
+                             Texture::Target2D);
 }
 
 bool Quick3DTexture::isRectangle() const
 {
-    return (target() == QOpenGLTexture::TargetRectangle);
+    return (parentTexture()->target() == Texture::TargetRectangle);
 }
 
 } // Quick

@@ -50,94 +50,238 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-Texture::Texture() :
-    m_target(QOpenGLTexture::Target2D),
-    m_width(1),
-    m_height(1),
-    m_depth(1),
-    m_autoMipMap(false)
+class TexturePrivate
+{
+public :
+    TexturePrivate(Texture *qq)
+        : q_ptr(qq)
+        , m_target(Texture::Target2D)
+        , m_format(Texture::RGBA8U)
+        , m_width(1)
+        , m_height(1)
+        , m_depth(1)
+        , m_autoMipMap(false)
+        , m_minFilter(Texture::Nearest)
+        , m_magFilter(Texture::Nearest)
+        , m_wrapMode(Texture::ClampToEdge)
+        , m_status(Texture::Loading)
+    {}
+
+    Q_DECLARE_PUBLIC(Texture)
+    Texture *q_ptr;
+
+    Texture::Target m_target;
+    Texture::TextureFormat m_format;
+    int m_width, m_height, m_depth;
+    bool m_autoMipMap;
+
+    QList<TexImageDataPtr> m_data;
+
+    Texture::Filter m_minFilter, m_magFilter;
+    // FIXME, store per direction
+    Texture::WrapMode m_wrapMode;
+    Texture::Status m_status;
+};
+
+
+Texture::Texture(QObject *parent)
+    : QObject(parent)
+    , d_ptr(new TexturePrivate(this))
 {
 }
 
-void Texture::setTarget(QOpenGLTexture::Target target)
+Texture::~Texture()
 {
-    m_target = target;
+    delete d_ptr;
+}
+
+void Texture::setTarget(Target target)
+{
+    Q_D(Texture);
+    if (d->m_target != target) {
+        d->m_target = target;
+    }
 }
 
 void Texture::setSize(int w, int h, int d)
 {
-    m_width = w;
-    m_height = h;
-    m_depth = d;
+   setWidth(w);
+   setHeight(h);
+   setDepth(d);
+}
+
+void Texture::setWidth(int width)
+{
+    Q_D(Texture);
+    if (d->m_width != width) {
+        d->m_width = width;
+        emit widthChanged();
+    }
+}
+
+void Texture::setHeight(int height)
+{
+    Q_D(Texture);
+    if (d->m_height != height) {
+        d->m_height = height;
+        emit heightChanged();
+    }
+}
+
+void Texture::setDepth(int depth)
+{
+    Q_D(Texture);
+    if (d->m_depth != depth) {
+        d->m_depth = depth;
+        emit depthChanged();
+    }
 }
 
 int Texture::width() const
 {
-    return m_width;
+    Q_D(const Texture);
+    return d->m_width;
 }
 
 int Texture::height() const
 {
-    return m_height;
+    Q_D(const Texture);
+    return d->m_height;
 }
 
 int Texture::depth() const
 {
-    return m_depth;
+    Q_D(const Texture);
+    return d->m_depth;
 }
 
-void Texture::setInternalFormat(QOpenGLTexture::TextureFormat format)
+void Texture::setInternalFormat(TextureFormat format)
 {
-    m_format = format;
+    Q_D(Texture);
+    if (d->m_format != format) {
+        d->m_format = format;
+        emit formatChanged();
+    }
+}
+
+Texture::TextureFormat Texture::format() const
+{
+    Q_D(const Texture);
+    return d->m_format;
+}
+
+void Texture::setStatus(Status status)
+{
+    Q_D(Texture);
+    if (status != d->m_status) {
+        d->m_status = status;
+        emit statusChanged();
+    }
+}
+
+Texture::Status Texture::status() const
+{
+    Q_D(const Texture);
+    return d->m_status;
+}
+
+Texture::Target Texture::target() const
+{
+    Q_D(const Texture);
+    return d->m_target;
 }
 
 bool Texture::setFromQImage(QImage img, int layer)
 {
+    Q_D(Texture);
     setSize(img.width(), img.height());
 
-    if ((m_target != QOpenGLTexture::Target2D) &&
-        (m_target != QOpenGLTexture::Target2DArray) &&
-        (m_target == QOpenGLTexture::TargetRectangle))
+    if ((d->m_target != QOpenGLTexture::Target2D) &&
+        (d->m_target != QOpenGLTexture::Target2DArray) &&
+        (d->m_target == QOpenGLTexture::TargetRectangle))
     {
         qWarning() << Q_FUNC_INFO << "invalid texture target";
+        setStatus(Error);
         return false;
     }
 
     TexImageDataPtr dataPtr(new TexImageData(0, layer));
     dataPtr->setImage(img);
     addImageData(dataPtr);
-
+    setStatus(Loaded);
     return true;
 }
 
 void Texture::addImageData(TexImageDataPtr imgData)
 {
-    m_data.append(imgData);
+    Q_D(Texture);
+    d->m_data.append(imgData);
 }
 
 QList<TexImageDataPtr> Texture::imageData() const
 {
-    return m_data;
+    Q_D(const Texture);
+    return d->m_data;
 }
 
 void Texture::setGenerateMipMaps(bool gen)
 {
-    m_autoMipMap = gen;
+    Q_D(Texture);
+    if (d->m_autoMipMap != gen) {
+        d->m_autoMipMap = gen;
+        emit generateMipMapsChanged();
+    }
 }
 
-void Texture::setMinificationFilter(QOpenGLTexture::Filter f)
+bool Texture::generateMipMaps() const
 {
-    m_minFilter = f;
+    Q_D(const Texture);
+    return d->m_autoMipMap;
 }
 
-void Texture::setMagnificationFilter(QOpenGLTexture::Filter f)
+void Texture::setMinificationFilter(Filter f)
 {
-    m_magFilter = f;
+    Q_D(Texture);
+    if (d->m_minFilter != f) {
+        d->m_minFilter = f;
+        emit minificationFilterChanged();
+    }
 }
 
-void Texture::setWrapMode(QOpenGLTexture::WrapMode wrapMode)
+void Texture::setMagnificationFilter(Filter f)
 {
-    m_wrapMode = wrapMode;
+    Q_D(Texture);
+    if (d->m_magFilter != f) {
+        d->m_magFilter = f;
+        emit magnificationFilterChanged();
+    }
+}
+
+Texture::Filter Texture::minificationFilter() const
+{
+    Q_D(const Texture);
+    return d->m_minFilter;
+}
+
+Texture::Filter Texture::magnificationFilter() const
+{
+    Q_D(const Texture);
+    return d->m_magFilter;
+}
+
+void Texture::setWrapMode(WrapMode wrapMode)
+{
+    Q_D(Texture);
+    if (d->m_wrapMode != wrapMode) {
+        d->m_wrapMode = wrapMode;
+        emit wrapModeChanged();
+    }
+}
+
+Texture::WrapMode Texture::wrapMode() const
+{
+    Q_D(const Texture);
+    return d->m_wrapMode;
 }
 
 } // namespace Qt3D

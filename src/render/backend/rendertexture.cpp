@@ -95,8 +95,8 @@ QOpenGLTexture *RenderTexture::getOrCreateGLTexture()
 
 QOpenGLTexture *RenderTexture::buildGLTexture()
 {
-    QOpenGLTexture* glTex = new QOpenGLTexture(m_peer->target());
-    glTex->setFormat(m_peer->format());
+    QOpenGLTexture* glTex = new QOpenGLTexture(static_cast<QOpenGLTexture::Target>(m_peer->target()));
+    glTex->setFormat(static_cast<QOpenGLTexture::TextureFormat>(m_peer->format()));
     glTex->setSize(m_peer->width(),
                    m_peer->height(),
                    m_peer->depth());
@@ -106,9 +106,9 @@ QOpenGLTexture *RenderTexture::buildGLTexture()
         return NULL;
     }
 
-    glTex->setWrapMode(m_peer->wrapMode());
-    glTex->setMinMagFilters(m_peer->minificationFilter(),
-                            m_peer->magnificationFilter());
+    glTex->setWrapMode(static_cast<QOpenGLTexture::WrapMode>(m_peer->wrapMode()));
+    glTex->setMinMagFilters(static_cast<QOpenGLTexture::Filter>(m_peer->minificationFilter()),
+                            static_cast<QOpenGLTexture::Filter>(m_peer->magnificationFilter()));
 
     // FIXME : make this conditional on Qt version
     // work-around issue in QOpenGLTexture DSA emulaation which rasies
