@@ -479,6 +479,9 @@ QOpenGLShaderProgram* QGraphicsContext::activeShader()
 // than the other way around
 void QGraphicsContext::setUniforms(const QUniformPack &uniforms)
 {
+    // Activate textures and update TextureUniform in the pack
+    // with the correct textureUnit
+
     m_activeShader->updateUniforms(uniforms);
 }
 

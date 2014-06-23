@@ -145,7 +145,7 @@ void QUniformValue::apply(QOpenGLShaderProgram *prog, int location, const QStrin
 
     int err = glGetError();
     if (err) {
-//        qCWarning(Render::Backend) << Q_FUNC_INFO << "error " << err << "after setting uniform" << m_count << location << m_tupleSize << name;
+        qCWarning(Render::Backend) << Q_FUNC_INFO << "error " << err << "after setting uniform" << m_count << location << m_tupleSize << name;
     }
 }
 
@@ -168,18 +168,18 @@ void QUniformPack::setUniform(QString glslName, const QUniformValue *val)
     m_uniforms[glslName] = val;
 }
 
-void QUniformPack::setTexture(QString glslName, RenderTexturePtr tex)
+void QUniformPack::setTexture(QString glslName, const QUuid &texId)
 {
     for (int t=0; t<m_textures.size(); ++t) {
         if (m_textures[t].glslName != glslName) {
             continue;
         }
 
-        m_textures[t].tex = tex;
+        m_textures[t].texId = texId;
         return;
     }
 
-    m_textures.append(NamedTexture(glslName, tex));
+    m_textures.append(NamedTexture(glslName, texId));
 }
 
 } // namespace Render

@@ -46,6 +46,7 @@
 #include <QByteArray>
 #include <QVector>
 #include <QOpenGLShaderProgram>
+#include <QUuid>
 #include <Qt3DRenderer/renderlogging.h>
 
 // for RenderTexturePtr
@@ -73,6 +74,7 @@ public:
         Float = 3,
         Double = 4,
         Bool,
+        Texture,
         Custom
     };
 
@@ -140,6 +142,49 @@ private :
     T m_value;
 };
 
+class TextureUniform : public QUniformValue
+{
+public :
+    explicit TextureUniform(const QUuid &textureId)
+        : QUniformValue()
+        , m_textureId(textureId)
+        , m_textureUnit(-1)
+    {
+        m_type = Texture;
+    }
+
+    const QUuid textureId() const { return m_textureId; }
+
+    bool operator ==(const QUniformValue &other) Q_DECL_OVERRIDE
+    {
+        Q_UNUSED(other);
+        return false;
+    }
+
+    // Called by the QGraphicContext prior applying
+    void setTextureUnit(int textureUnit) { m_textureUnit = textureUnit; }
+
+    bool isValid() const Q_DECL_OVERRIDE { return true; }
+
+    void apply(QOpenGLShaderProgram *prog, int location, const QString &name) const
+    {
+        // We assume that the texture has been successfully bound and attache to a texture unit
+        if (m_textureUnit != -1) {
+            prog->setUniformValue(location, m_textureUnit);
+            int err = glGetError();
+            if (err) {
+                qCWarning(Render::Backend) << Q_FUNC_INFO << "error " << err << "after setting uniform" << name << "at location " << location;
+            }
+        }
+        else
+            qCWarning(Render::Backend) << Q_FUNC_INFO << "Invalid texture unit supplied for " << name;
+    }
+
+private:
+    const QUuid m_textureId;
+    int m_textureUnit;
+};
+
 class QUniformPack
 {
 public:
@@ -147,9 +192,7 @@ public:
 
     void setUniform(QString glslName, const QUniformValue *val);
 
-    void setTexture(QString glslName, RenderTexturePtr tex);
-
-    //    void apply(QGraphicsContext* gc);
+    void setTexture(QString glslName, const QUuid &id);
 
     const QHash<QString, const QUniformValue* > &uniforms() const { return m_uniforms; }
 
@@ -159,15 +202,14 @@ private:
     struct NamedTexture {
         NamedTexture() : location(-1) {}
 
-        NamedTexture(QString nm, RenderTexturePtr t) :
+        NamedTexture(QString nm, const QUuid &t) :
             glslName(nm),
-            location(-1),
-            tex(t)
+            texId(t)
         { }
 
         QString glslName;
         int location;
-        RenderTexturePtr tex;
+        QUuid texId;
     };
 
     QVector<NamedTexture> m_textures;
