@@ -42,6 +42,7 @@
 #include <Qt3DQuick/quickwindow.h>
 #include <Qt3DRenderer/rendereraspect.h>
 
+#include <exampleresources.h>
 
 #include <QGuiApplication>
 #include <QtQml>
@@ -49,6 +50,8 @@
 int main(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
+
+    initializeAssetResources("../exampleresources/example-assets.qrb");
 
     Qt3D::Quick::QuickWindow view;
     view.registerAspect(new Qt3D::RendererAspect());

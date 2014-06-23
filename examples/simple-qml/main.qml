@@ -232,7 +232,7 @@ Node {
         Material {
             id : ballTexturedMaterial
 
-            parameters : [Parameter { name : "tex"; value : Texture { source : "assets/Wood_Cherry_Original_.jpg" } }]
+            parameters : [Parameter { name : "tex"; value : Texture { source : "assets/gltf/wine/Wood_Cherry_Original_.jpg" } }]
 
             effect : Effect {
                 techniques : [

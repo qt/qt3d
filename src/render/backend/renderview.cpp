@@ -422,7 +422,9 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
                 if (binding->bindingType() == ParameterMapper::Uniform) {
                     QVariant value = parameters.take(binding->parameterName());
                     Texture *tex = Q_NULLPTR;
-                    if (value.type() == QVariant::UserType && (tex = value.value<Qt3D::Texture*>()) != Q_NULLPTR) {
+                    if (static_cast<QMetaType::Type>(value.type()) == QMetaType::QObjectStar &&
+                            (tex = value.value<Qt3D::Texture*>()) != Q_NULLPTR) {
+                        createRenderTexture(tex);
                         command->m_uniforms.setTexture(binding->shaderVariableName(), tex->uuid());
                         command->m_uniforms.setUniform(binding->shaderVariableName(), new TextureUniform(tex->uuid()));
                     }

@@ -204,9 +204,9 @@ bool Texture::setFromQImage(QImage img, int layer)
     Q_D(Texture);
     setSize(img.width(), img.height());
 
-    if ((d->m_target != QOpenGLTexture::Target2D) &&
-        (d->m_target != QOpenGLTexture::Target2DArray) &&
-        (d->m_target == QOpenGLTexture::TargetRectangle))
+    if ((d->m_target != Target2D) &&
+        (d->m_target != Target2DArray) &&
+        (d->m_target == TargetRectangle))
     {
         qWarning() << Q_FUNC_INFO << "invalid texture target";
         setStatus(Error);

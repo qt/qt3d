@@ -60,6 +60,7 @@ class QAbstractOpenGLFunctions;
 namespace Qt3D {
 namespace Render {
 
+class Renderer;
 class QGraphicsHelperInterface;
 class DrawStateSet;
 class RenderShader;
@@ -116,6 +117,8 @@ public:
      * @return
      */
     QOpenGLShaderProgram* activeShader();
+
+    void setRenderer(Renderer *renderer);
 
     void specifyAttribute(QString nm, AttributePtr attr);
 
@@ -190,6 +193,8 @@ private:
     QRectF m_viewport;
 
     DrawStateSet* m_stateSet;
+
+    Renderer *m_renderer;
 
 };
 

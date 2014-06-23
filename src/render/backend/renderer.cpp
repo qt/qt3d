@@ -350,6 +350,7 @@ void Renderer::submitRenderViews()
         m_graphicsContext = new QGraphicsContext;
         QOpenGLContext* ctx = new QOpenGLContext;
         m_graphicsContext->setSurface(m_surface);
+        m_graphicsContext->setRenderer(this);
         QSurfaceFormat sf = m_surface->format();
         ctx->setFormat(sf);
         if (!ctx->create())

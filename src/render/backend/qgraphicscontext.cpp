@@ -49,7 +49,8 @@
 #include "parameter.h"
 #include "drawstate.h"
 #include "qgraphicshelperinterface.h"
-
+#include "renderer.h"
+#include "texturemanager.h"
 #include "renderlogging.h"
 #include <QOpenGLShaderProgram>
 
@@ -265,7 +266,7 @@ int QGraphicsContext::activateTexture(TextureScope scope, RenderTexture *tex, in
     int err = glGetError();
     if (err)
         qCWarning(Backend) << "GL error after activating texture" << QString::number(err, 16)
-                   << tex->textureId() << "on unit" << onUnit;
+                           << tex->textureId() << "on unit" << onUnit;
 
     m_textureScores[tex] = 200;
     m_pinnedTextureUnits[onUnit] = true;
@@ -475,13 +476,32 @@ QOpenGLShaderProgram* QGraphicsContext::activeShader()
     return m_shaderHash[m_activeShader];
 }
 
+void QGraphicsContext::setRenderer(Renderer *renderer)
+{
+    m_renderer = renderer;
+}
+
 // It will be easier if the QGraphicContext applies the QUniformPack
 // than the other way around
 void QGraphicsContext::setUniforms(const QUniformPack &uniforms)
 {
     // Activate textures and update TextureUniform in the pack
     // with the correct textureUnit
+    deactivateTexturesWithScope(TextureScopeMaterial);
 
+    QHash<QString, const QUniformValue *> uniformValues = uniforms.uniforms();
+    Q_FOREACH (const QUniformPack::NamedTexture &namedTex, uniforms.textures()) {
+        RenderTexture *t = m_renderer->textureManager()->lookupResource(namedTex.texId);
+        int texUnit = -1;
+        const TextureUniform *texUniform = Q_NULLPTR;
+        // TO DO : Rework the way textures are loaded
+        if (t != Q_NULLPTR &&
+                (texUnit = activateTexture(TextureScopeMaterial, t)) != -1 &&
+                uniformValues.contains(namedTex.glslName) &&
+                (texUniform = static_cast<const TextureUniform *>(uniformValues[namedTex.glslName])) != Q_NULLPTR) {
+            const_cast<TextureUniform *>(texUniform)->setTextureUnit(texUnit);
+        }
+    }
     m_activeShader->updateUniforms(uniforms);
 }
 

@@ -67,14 +67,20 @@ void Quick3DTexture::setSource(QUrl arg)
 {
     if (m_source != arg) {
         m_source = arg;
+        // There is maybe a better way to check for resources files
+        if (m_source.isLocalFile() || m_source.scheme() == QStringLiteral("qrc")) {
+            QString source = m_source.toString().replace(QStringLiteral("qrc"), QStringLiteral(""));
+            QImage img;
+            if (img.load(source)) {
+                parentTexture()->setInternalFormat(img.hasAlphaChannel() ?
+                                                       Texture::RGBA8_UNorm :
+                                                       Texture::RGB8_UNorm);
+                parentTexture()->setFromQImage(img);
+            }
+            else {
+                qWarning() << "Failed to load image : " << source;
+            }
 
-        if (m_source.isLocalFile()) {
-            QImage img(m_source.toLocalFile());
-            parentTexture()->setInternalFormat(img.hasAlphaChannel() ?
-                                             Texture::RGBA8_UNorm :
-                                             Texture::RGB8_UNorm);
-
-            parentTexture()->setFromQImage(img);
         } else {
             qWarning() << "implement loading from remote URLs";
         }
@@ -85,7 +91,7 @@ void Quick3DTexture::setSource(QUrl arg)
 void Quick3DTexture::setRectangle(bool r)
 {
     parentTexture()->setTarget(r ? Texture::TargetRectangle :
-                             Texture::Target2D);
+                                   Texture::Target2D);
 }
 
 bool Quick3DTexture::isRectangle() const

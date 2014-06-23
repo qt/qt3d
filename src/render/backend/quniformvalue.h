@@ -191,26 +191,25 @@ public:
     ~QUniformPack();
 
     void setUniform(QString glslName, const QUniformValue *val);
-
     void setTexture(QString glslName, const QUuid &id);
 
     const QHash<QString, const QUniformValue* > &uniforms() const { return m_uniforms; }
 
-private:
-    QHash<QString, const QUniformValue* > m_uniforms;
-
     struct NamedTexture {
-        NamedTexture() : location(-1) {}
-
+        NamedTexture() {}
         NamedTexture(QString nm, const QUuid &t) :
             glslName(nm),
             texId(t)
         { }
 
         QString glslName;
-        int location;
         QUuid texId;
     };
+
+    QVector<NamedTexture> textures() const { return m_textures; }
+
+private:
+    QHash<QString, const QUniformValue* > m_uniforms;
 
     QVector<NamedTexture> m_textures;
 };
