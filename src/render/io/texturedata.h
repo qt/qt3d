@@ -69,9 +69,9 @@ public:
     bool isCompressed() const
     { return m_isCompressed; }
 
-    void setImage(QImage);
+    void setImage(const QImage &);
 
-    void setData(QByteArray data,
+    void setData(const QByteArray &data,
                  QOpenGLTexture::PixelFormat fmt,
                  QOpenGLTexture::PixelType ptype);
     void setCompressedData(QByteArray data, QOpenGLTexture::PixelFormat fmt);

@@ -56,16 +56,15 @@ TexImageData::TexImageData(int level, int layer) :
 {
 }
 
-void TexImageData::setImage(QImage image)
+void TexImageData::setImage(const QImage &image)
 {
     QImage glImage = image.convertToFormat(QImage::Format_RGBA8888);
-//    setData(0, QOpenGLTexture::RGBA, QOpenGLTexture::UInt8, glImage.bits(), &uploadOptions);
 
     QByteArray imageBytes((const char*) glImage.constBits(), glImage.byteCount());
     setData(imageBytes, QOpenGLTexture::RGBA, QOpenGLTexture::UInt8);
 }
 
-void TexImageData::setData(QByteArray data, QOpenGLTexture::PixelFormat fmt, QOpenGLTexture::PixelType ptype)
+void TexImageData::setData(const QByteArray &data, QOpenGLTexture::PixelFormat fmt, QOpenGLTexture::PixelType ptype)
 {
     m_isCompressed = false;
     m_data = data;
