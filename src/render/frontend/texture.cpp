@@ -65,6 +65,7 @@ public :
         , m_magFilter(Texture::Nearest)
         , m_wrapMode(Texture::ClampToEdge)
         , m_status(Texture::Loading)
+        , m_uuid(QUuid::createUuid())
     {}
 
     Q_DECLARE_PUBLIC(Texture)
@@ -81,6 +82,7 @@ public :
     // FIXME, store per direction
     Texture::WrapMode m_wrapMode;
     Texture::Status m_status;
+    const QUuid m_uuid;
 };
 
 
@@ -93,6 +95,12 @@ Texture::Texture(QObject *parent)
 Texture::~Texture()
 {
     delete d_ptr;
+}
+
+const QUuid Texture::uuid() const
+{
+    Q_D(const Texture);
+    return d->m_uuid;
 }
 
 void Texture::setTarget(Target target)

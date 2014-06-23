@@ -46,6 +46,8 @@
 #include <Qt3DQuick/quick3dnode.h>
 #include <Qt3DRenderer/texture.h>
 
+#include <QUrl>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {

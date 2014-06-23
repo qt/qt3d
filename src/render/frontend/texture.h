@@ -46,7 +46,7 @@
 #include <Qt3DRenderer/texturedata.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
-#include <QUrl>
+#include <QUuid>
 
 QT_BEGIN_NAMESPACE
 
@@ -233,6 +233,8 @@ public:
         ClampToEdge    = 0x812F, // GL_CLAMP_TO_EDGE
         ClampToBorder  = 0x812D  // GL_CLAMP_TO_BORDER
     };
+
+    const QUuid uuid() const;
 
     void setTarget(Target target);
     Target target() const;
