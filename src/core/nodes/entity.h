@@ -142,7 +142,7 @@ public:
     virtual Entity *asEntity() Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
-    virtual void enabledChanged();
+    void enabledChanged();
 
 protected:
     Q_DECLARE_PRIVATE(Entity)
