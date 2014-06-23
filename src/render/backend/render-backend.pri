@@ -44,7 +44,8 @@ HEADERS += \
     $$PWD/renderrenderpass.h \
     $$PWD/renderpassmanager.h \
     $$PWD/parameterpack.h \
-    $$PWD/texturemanager.h
+    $$PWD/texturemanager.h \
+    $$PWD/texturedatamanager.h
 
 SOURCES += \
     $$PWD/rendereraspect.cpp \
@@ -85,4 +86,5 @@ SOURCES += \
     $$PWD/renderrenderpass.cpp \
     $$PWD/renderpassmanager.cpp \
     $$PWD/parameterpack.cpp \
-    $$PWD/texturemanager.cpp
+    $$PWD/texturemanager.cpp \
+    $$PWD/texturedatamanager.cpp
