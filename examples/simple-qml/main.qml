@@ -228,6 +228,62 @@ Node {
             source : ":/assets/cube.obj"
         }
 
+
+        Material {
+            id : ballTexturedMaterial
+
+            parameters : [Parameter { name : "tex"; value : Texture { source : "assets/Wood_Cherry_Original_.jpg" } }]
+
+            effect : Effect {
+                techniques : [
+                    Technique {
+                        criteria : [TechniqueCriterion { criterionType : TechniqueCriterion.RenderingStyle; criterionValue : "forward"}]
+                        parameters : [Parameter { name : "mVP"; value : Parameter.ModelViewProjection}]
+                        renderPasses : [
+                            RenderPass {
+                                criteria : []
+                                bindings : [ // Add only the bindings needed for a shader
+                                    ParameterMapper {parameterName: "position"; shaderVariableName: "vertexPosition"; bindingType: ParameterMapper.Attribute},
+                                    ParameterMapper {parameterName: "texcoord"; shaderVariableName: "texCoord0"; bindingType: ParameterMapper.Attribute},
+                                    ParameterMapper {parameterName: "tex"; shaderVariableName: "texture"; bindingType: ParameterMapper.Uniform},
+                                    ParameterMapper {parameterName: "mVP"; shaderVariableName: "mvp"; bindingType: ParameterMapper.StandardUniform}
+                                ]
+                                shaderProgram : ShaderProgram {
+                                    id : textureShader
+                                    vertexShader: "
+                                    #version 140
+                                    in vec3 vertexPosition;
+                                    in vec3 vertexNormal;
+                                    in vec2 texCoord0;
+
+                                    out vec2 texCoord;
+
+                                    uniform mat4 mvp;
+
+                                    void main()
+                                    {
+                                        texCoord = texCoord0;
+                                        gl_Position  = mvp * vec4(vertexPosition, 1.0);
+                                    }"
+
+                                    fragmentShader: "
+                                    #version 140
+                                    in vec2 texCoord;
+
+                                    uniform sampler2D texture;
+
+                                    void main()
+                                    {
+                                        gl_FragColor = texture2D(texture, texCoord);
+                                    }"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+
         Material {
             id: ballMaterial
             objectName: "ballMaterial"
@@ -333,7 +389,7 @@ Node {
             components: [
                 transform,
                 mesh,
-                ballMaterial
+                ballTexturedMaterial
             ]
         }
 
