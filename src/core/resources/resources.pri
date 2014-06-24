@@ -4,7 +4,8 @@ HEADERS += \
     $$PWD/qresourcesmanager.h \
     $$PWD/qcircularbuffer.h \
     $$PWD/qboundedcircularbuffer.h \
-    $$PWD/qframeallocator.h
+    $$PWD/qframeallocator.h \
+    $$PWD/qframeallocator_p.h
 
 SOURCES += \
     $$PWD/qresourcesmanager.cpp \

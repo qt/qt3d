@@ -8,3 +8,7 @@ SUBDIRS = \
     qcircularbuffer \
     qboundedcircularbuffer \
     nodes
+
+contains(QT_CONFIG, private_tests) {
+    SUBDIRS += qframeallocator
+}
