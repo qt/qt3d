@@ -169,32 +169,32 @@ void Renderer::buildDefaultTechnique()
     basicPass->addBinding(new ParameterMapper(QStringLiteral("normal"), QStringLiteral("vertexNormal"), ParameterMapper::Attribute));
 
     // matrix uniforms from standard
-    Parameter* mvMat = new Parameter(m_defaultTechnique, QStringLiteral("modelView"), Parameter::FloatMat4, Parameter::ModelView);
+    Parameter* mvMat = new Parameter(m_defaultTechnique, QStringLiteral("modelView"), Parameter::ModelView);
     m_defaultTechnique->addParameter(mvMat);
     basicPass->addBinding(new ParameterMapper(QStringLiteral("modelView"), QStringLiteral("modelViewMatrix"), ParameterMapper::StandardUniform));
 
-    Parameter* nMat = new Parameter(m_defaultTechnique, QStringLiteral("normalMat"), Parameter::FloatMat3, Parameter::ModelViewNormal);
+    Parameter* nMat = new Parameter(m_defaultTechnique, QStringLiteral("normalMat"), Parameter::ModelViewNormal);
     m_defaultTechnique->addParameter(nMat);
     basicPass->addBinding(new ParameterMapper(QStringLiteral("normalMat"), QStringLiteral("normalMatrix"), ParameterMapper::StandardUniform));
 
-    Parameter* mvpMat = new Parameter(m_defaultTechnique, QStringLiteral("mvp"), Parameter::FloatMat4, Parameter::ModelViewProjection);
+    Parameter* mvpMat = new Parameter(m_defaultTechnique, QStringLiteral("mvp"), Parameter::ModelViewProjection);
     m_defaultTechnique->addParameter(mvpMat);
     basicPass->addBinding(new ParameterMapper(QStringLiteral("mvp"), QStringLiteral("mvp"), ParameterMapper::StandardUniform));
 
     // diffuse lighting uniforms
-    Parameter* lightPos = new Parameter(m_defaultTechnique, QStringLiteral("lightPos"), Parameter::FloatVec4, QVector4D(10.0f, 10.0f, 0.0f, 1.0f));
+    Parameter* lightPos = new Parameter(m_defaultTechnique, QStringLiteral("lightPos"), QVector4D(10.0f, 10.0f, 0.0f, 1.0f));
     m_defaultTechnique->addParameter(lightPos);
     basicPass->addBinding(new ParameterMapper(QStringLiteral("lightPos"), QStringLiteral("lightPosition"), ParameterMapper::Uniform));
 
-    Parameter* lightIntensity = new Parameter(m_defaultTechnique, QStringLiteral("lightIntensity"), Parameter::FloatVec3, QVector3D(0.5f, 0.5f, 0.5f));
+    Parameter* lightIntensity = new Parameter(m_defaultTechnique, QStringLiteral("lightIntensity"), QVector3D(0.5f, 0.5f, 0.5f));
     m_defaultTechnique->addParameter(lightIntensity);
     basicPass->addBinding(new ParameterMapper(QStringLiteral("lightIntensity"), QStringLiteral("lightIntensity"), ParameterMapper::Uniform));
 
-    Parameter* kd = new Parameter(m_defaultTechnique, QStringLiteral("diffuse"), Parameter::FloatVec3, QVector3D(1.0f, 0.5f, 0.0f));
+    Parameter* kd = new Parameter(m_defaultTechnique, QStringLiteral("diffuse"), QVector3D(1.0f, 0.5f, 0.0f));
     m_defaultTechnique->addParameter(kd);
     basicPass->addBinding(new ParameterMapper(QStringLiteral("diffuse"), QStringLiteral("kd"), ParameterMapper::Uniform));
 
-    Parameter* ka = new Parameter(m_defaultTechnique, QStringLiteral("ambient"), Parameter::FloatVec3, QVector3D(0.2f, 0.2f, 0.2f));
+    Parameter* ka = new Parameter(m_defaultTechnique, QStringLiteral("ambient"), QVector3D(0.2f, 0.2f, 0.2f));
     m_defaultTechnique->addParameter(ka);
     basicPass->addBinding(new ParameterMapper(QStringLiteral("ambient"), QStringLiteral("ka"), ParameterMapper::Uniform));
 
@@ -204,10 +204,10 @@ void Renderer::buildDefaultMaterial()
 {
     m_defaultMaterial = new Material();
     m_defaultMaterial->setObjectName(QStringLiteral("DefaultMaterial"));
-    m_defaultMaterial->addParameter(new Parameter(m_defaultMaterial, QStringLiteral("lightPos"), Parameter::FloatVec4, QVector4D(10.0f, 10.0f, 0.0f, 1.0f)));
-    m_defaultMaterial->addParameter(new Parameter(m_defaultMaterial, QStringLiteral("lightIntensity"), Parameter::FloatVec3, QVector3D(0.5f, 0.5f, 0.5f)));
-    m_defaultMaterial->addParameter(new Parameter(m_defaultMaterial, QStringLiteral("ambient"), Parameter::FloatVec3, QVector3D(0.2f, 0.2f, 0.2f)));
-    m_defaultMaterial->addParameter(new Parameter(m_defaultMaterial, QStringLiteral("diffuse"), Parameter::FloatVec3, QVector3D(1.0f, 0.5f, 0.0f)));
+    m_defaultMaterial->addParameter(new Parameter(m_defaultMaterial, QStringLiteral("lightPos"), QVector4D(10.0f, 10.0f, 0.0f, 1.0f)));
+    m_defaultMaterial->addParameter(new Parameter(m_defaultMaterial, QStringLiteral("lightIntensity"), QVector3D(0.5f, 0.5f, 0.5f)));
+    m_defaultMaterial->addParameter(new Parameter(m_defaultMaterial, QStringLiteral("ambient"), QVector3D(0.2f, 0.2f, 0.2f)));
+    m_defaultMaterial->addParameter(new Parameter(m_defaultMaterial, QStringLiteral("diffuse"), QVector3D(1.0f, 0.5f, 0.0f)));
 
     Effect* defEff = new Effect;
     defEff->addTechnique(m_defaultTechnique);

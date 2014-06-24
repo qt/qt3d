@@ -113,8 +113,8 @@ public:
     };
 
     explicit Parameter(Node *parent = 0);
-    Parameter(Node* parent, const QString& name, OpenGLTypes ty);
-    Parameter(Node* parent, const QString& name, OpenGLTypes ty, const QVariant& value);
+    Parameter(Node* parent, const QString& name, const QVariant& value);
+    Parameter(Node* parent, const QString& name, const QVariant& value, OpenGLTypes ty);
 
     void setName(const QString &name);
     QString name() const
