@@ -124,6 +124,9 @@ private :
     QMap<uint, Texture*> m_embeddedTextures;
     QMap<QString, Texture*> m_materialTextures;
     QMap<aiNode*, Entity*> m_cameras;
+
+    QHash<aiTextureType, QString> m_textureToParameterName;
+
 //    QMap<aiNode*, Light*> m_lights;
 
 };

@@ -81,6 +81,18 @@ const QString ASSIMP_MATERIAL_EMISSIVE_COLOR = QStringLiteral("emissive");
 const QString ASSIMP_MATERIAL_TRANSPARENT_COLOR = QStringLiteral("transparent");
 const QString ASSIMP_MATERIAL_REFLECTIVE_COLOR = QStringLiteral("reflective");
 
+const QString ASSIMP_MATERIAL_DIFFUSE_TEXTURE = QStringLiteral("diffuseTex");
+const QString ASSIMP_MATERIAL_AMBIENT_TEXTURE = QStringLiteral("ambientTex");
+const QString ASSIMP_MATERIAL_SPECULAR_TEXTURE = QStringLiteral("specularTex");
+const QString ASSIMP_MATERIAL_EMISSIVE_TEXTURE = QStringLiteral("emissiveTex");
+const QString ASSIMP_MATERIAL_NORMALS_TEXTURE = QStringLiteral("normalsTex");
+const QString ASSIMP_MATERIAL_OPACITY_TEXTURE = QStringLiteral("opacityTex");
+const QString ASSIMP_MATERIAL_REFLECTION_TEXTURE = QStringLiteral("reflectionTex");
+const QString ASSIMP_MATERIAL_HEIGHT_TEXTURE = QStringLiteral("heightTex");
+const QString ASSIMP_MATERIAL_LIGHTMAP_TEXTURE = QStringLiteral("opacityTex");
+const QString ASSIMP_MATERIAL_DISPLACEMENT_TEXTURE = QStringLiteral("displacementTex");
+const QString ASSIMP_MATERIAL_SHININESS_TEXTURE = QStringLiteral("shininessTex");
+
 const QString ASSIMP_MATERIAL_IS_TWOSIDED = QStringLiteral("twosided");
 const QString ASSIMP_MATERIAL_IS_WIREFRAME = QStringLiteral("wireframe");
 
@@ -95,7 +107,7 @@ const QString ASSIMP_MATERIAL_NAME = QStringLiteral("name");
 const QString VERTICES_ATTRIBUTE_NAME = QStringLiteral("position");
 const QString NORMAL_ATTRIBUTE_NAME = QStringLiteral("normal");
 const QString TANGENT_ATTRIBUTE_NAME = QStringLiteral("tangent");
-const QString TEXTCOOD_ATTRIBUTE_NAME = QStringLiteral("textcoord");
+const QString TEXTCOORD_ATTRIBUTE_NAME = QStringLiteral("textcoord");
 
 }
 
@@ -403,6 +415,8 @@ void AssimpParser::loadMaterial(uint materialIndex)
     // Add textures to materials dict
     copyMaterialTextures(material, assimpMaterial);
 
+    // TO DO : Set Material Effect and Technique
+
     m_materials[materialIndex] = material;
 }
 
@@ -482,7 +496,7 @@ void AssimpParser::loadMesh(uint meshIndex)
                                              6 * sizeof(float),
                                              chunkSize * sizeof(float)));
     if (hasTexture)
-        meshData->addAttribute(TEXTCOOD_ATTRIBUTE_NAME,
+        meshData->addAttribute(TEXTCOORD_ATTRIBUTE_NAME,
                                new Attribute(vbuffer,
                                              GL_FLOAT_VEC2,
                                              mesh->mNumVertices,
@@ -695,7 +709,22 @@ void AssimpParser::copyMaterialTextures(Material *material, aiMaterial *assimpMa
                                                 aiTextureType_REFLECTION,
                                                 aiTextureType_SHININESS,
                                                 aiTextureType_SPECULAR,
-                                                aiTextureType_UNKNOWN};
+                                                /*aiTextureType_UNKNOWN*/};
+
+    if (m_textureToParameterName.isEmpty()) {
+        m_textureToParameterName[aiTextureType_AMBIENT] = ASSIMP_MATERIAL_AMBIENT_TEXTURE;
+        m_textureToParameterName[aiTextureType_DIFFUSE] = ASSIMP_MATERIAL_DIFFUSE_TEXTURE;
+        m_textureToParameterName[aiTextureType_DISPLACEMENT] = ASSIMP_MATERIAL_DISPLACEMENT_TEXTURE;
+        m_textureToParameterName[aiTextureType_EMISSIVE] = ASSIMP_MATERIAL_EMISSIVE_TEXTURE;
+        m_textureToParameterName[aiTextureType_HEIGHT] = ASSIMP_MATERIAL_HEIGHT_TEXTURE;
+        m_textureToParameterName[aiTextureType_LIGHTMAP] = ASSIMP_MATERIAL_LIGHTMAP_TEXTURE;
+        m_textureToParameterName[aiTextureType_NORMALS] = ASSIMP_MATERIAL_NORMALS_TEXTURE;
+        m_textureToParameterName[aiTextureType_OPACITY] = ASSIMP_MATERIAL_OPACITY_TEXTURE;
+        m_textureToParameterName[aiTextureType_REFLECTION] = ASSIMP_MATERIAL_REFLECTION_TEXTURE;
+        m_textureToParameterName[aiTextureType_SHININESS] = ASSIMP_MATERIAL_SHININESS_TEXTURE;
+        m_textureToParameterName[aiTextureType_SPECULAR] = ASSIMP_MATERIAL_SPECULAR_TEXTURE;
+    }
+
     for (uint i = 0; i < sizeof(textureType); i++) {
         aiString path;
         if (assimpMaterial->GetTexture(textureType[i], 0, &path) == AI_SUCCESS) {
@@ -704,8 +733,8 @@ void AssimpParser::copyMaterialTextures(Material *material, aiMaterial *assimpMa
             bool textureLoaded = true;
             if (!m_materialTextures.contains(fullPath)) {
                 Texture *tex = new Texture();
-                QImage textureImage(fullPath);
-                if (!textureImage.isNull()) {
+                QImage textureImage;
+                if (!textureImage.load(fullPath) || !textureImage.isNull()) {
                     tex->setFromQImage(textureImage);
                     m_materialTextures[fullPath] = tex;
                     qWarning() << Q_FUNC_INFO << " Loaded Texture " << fullPath;
@@ -715,8 +744,10 @@ void AssimpParser::copyMaterialTextures(Material *material, aiMaterial *assimpMa
                     textureLoaded = false;
                 }
             }
-            if (textureLoaded)
-                material->setTextureParameter(fullPath, m_materialTextures[fullPath]);
+            if (textureLoaded) {
+                material->addParameter(new Parameter(material, m_textureToParameterName[textureType[i]],
+                                       QVariant::fromValue(m_materialTextures[fullPath])));
+            }
         }
     }
 }
