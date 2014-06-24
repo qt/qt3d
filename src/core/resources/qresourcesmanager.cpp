@@ -40,21 +40,22 @@
 ****************************************************************************/
 
 /*!
- * \class QAbstractResourcesManager
+ * \class QResourcesManager
  *
- * \brief The QAbstractResourcesManager allocates memory for resources that can be referenced by a
+ * \brief The QResourcesManager allocates memory for resources that can be referenced by a
  * QHandle.
  *
- * Using a QHandleManager for handles management, the QAbstractResourcesManager responsibility lies
- * in providing memory for a resource and offering ways to interact with the resource through
+ * Using a QHandleManager for handle management, the QResourcesManager's responsibility is
+ * to provide memory for resources and to offer ways to interact with the resource through
  * the QHandle.
  *
  * Using the QHandle obtained when acquiring a resource, the resource can be retrieved and
  * released when not needed any longer.
  *
  * Internally, memory can be reorganized for best performances while being transparent to the user.
- * QAbstractResourcesManager cannot be instanced directly. You should instanciate one of its subclasses
- * which implements a specific memory allocation scheme.
+ *
+ * The memory allocation scheme and locking policies can be customized by providing template
+ * parameters. The defaults are ArrayAllocationPolicy and NonLockingPolicy respectively.
  *
  * \since 5.3
  * \namespace Qt3D
@@ -62,34 +63,46 @@
 
 /*!
  *
- * \class QArrayResourcesManager
+ * \class ArrayAllocatingPolicy
  *
- * \brief Subclass of QAbstractResourcesManager which allocates memory in a contiguous space trying to
+ * \brief Allocates memory in a contiguous space trying to
  * minimize fragmentation and cache misses.
  *
- * Once the maximum number of entities reached, no more allocations can be made until some resources are
+ * Once the maximum number of entities is reached, no more allocations can be made until some resources are
  * released
  *
  * \since 5.3
  * \namespace Qt3D
- * \sa QAbstractResourcesManager
- * \sa QListResourcesManager
+ * \sa QResourcesManager
+ * \sa ListAllocatingPolicy
  */
 
 /*!
  *
- * \class QListResourcesManager
+ * \class ListAllocatingPolicy
  *
- * \brief Subclass of QAbstractResourcesManager which allocates resources in a list.
+ * \brief Allocates resources in a list.
  *
  * It is best to use it when you don't need to iterate over an entire set of resources, in which
- * case QArrayResourcesManager is faster. It can store a non predefined amount of resources, though
+ * case ArrayAllocatingPolicy is faster. It can store a non predefined amount of resources, though
  * there might not be enough handles at some point, depending on the INDEXBITS used.
  * It's main use case is to manage resources that are accessed in an independent manner from other
  * resources of the same type.
  *
  * \since 5.3
  * \namespace Qt3D
- * \sa QAbstractResourcesManager
- * \sa QArrayResourcesManager
+ * \sa QResourcesManager
+ * \sa ArrayAllocatingPolicy
+ */
+
+/*!
+ * \class ObjectLevelLockingPolicy
+ *
+ * \brief Provided locking access to a resource through the use of a QReadWriteLock.
+ *
+ * This policy should be used in a QResourcesManager when multiple thread might access the manager for
+ * read or write operations at the same time.
+ *
+ * It provides two convenience classes WriteLocker and ReadLocker that behave like QReadLocker and QWriteLocker.
+ *
  */
