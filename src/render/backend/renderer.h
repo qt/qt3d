@@ -111,7 +111,7 @@ typedef QHandle<RenderTechnique, 16> HTechnique;
 class Renderer
 {
 public:
-    Renderer();
+    explicit Renderer(int cachedFrames = 5);
     ~Renderer();
 
     void setRendererAspect(RendererAspect *rendererAspect) { m_rendererAspect = rendererAspect; }
@@ -151,6 +151,8 @@ public:
     inline HEffect defaultEffectHandle() const { return m_defaultEffectHandle; }
     inline HTechnique defaultTechniqueHandle() const { return m_defaultTechniqueHandle; }
     inline HRenderPass defaultRenderPassHandle() const { return m_defaultRenderPassHandle; }
+
+    inline const int cachedFramesCount() const { return m_cachedFramesCount; }
 
     void buildMeshes(Mesh *mesh, Material *mat, const QMatrix4x4& mm);
     void setSurface(QSurface *s);
@@ -223,6 +225,9 @@ private:
     QWaitCondition m_submitRenderViewsCondition;
     uint m_frameCount;
     QAtomicInt m_graphicContextInitialized;
+    QAtomicInt m_currentPreprocessingFrameIndex;
+
+    const int m_cachedFramesCount;
 };
 
 } // namespace Render

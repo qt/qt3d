@@ -55,7 +55,21 @@ void RenderViewJob::run()
 {
     qCDebug(Jobs) << Q_FUNC_INFO << m_index;
 
+    if (!m_tlsAllocators.hasLocalData()) {
+        QFrameAllocatorQueue *allocatorQueue = new QFrameAllocatorQueue();
+        m_tlsAllocators.setLocalData(allocatorQueue);
+
+        // RenderView has a sizeof 72
+        // RenderCommand has a sizeof 128
+        // QMatrix4x4 has a sizeof 68
+        // May need to fine tune parameters passed to QFrameAllocator for best performances
+        for (int i = 0; i < m_renderer->cachedFramesCount(); i++)
+            allocatorQueue->append(new QFrameAllocator(128, 16, 128));
+    }
+
     // Create a RenderView object
+    // The RenderView should be created from a QFrameAllocator stored in the current Thread local storage
+    // Store in an array or circular buffer that we can access using m_frameIndex.
     RenderView *renderView = new RenderView;
 
     renderView->setRenderer(m_renderer);
@@ -68,7 +82,6 @@ void RenderViewJob::run()
     // framegraph (e.g.render layer) to build list of
     // RenderNodes that need to be used to build the
     // list of RenderCommands
-    //buildRenderCommands(renderView, m_renderer);
 
     // When culling is implemented, pass the culled renderSceneRoot
     renderView->buildRenderCommands(m_renderer->renderSceneRoot());

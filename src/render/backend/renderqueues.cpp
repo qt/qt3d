@@ -119,7 +119,7 @@ void RenderQueues::pushFrameQueue()
 {
     // Only one RenderViewJob should be able to switch to the next work queue
     // It should cost less to have the mutex here and make a second check of timeToSubmit
-    // Than habing the QMutexLocker in the Renderer enqueueRenderView for each timeToSubmit
+    // Than having the QMutexLocker in the Renderer enqueueRenderView for each timeToSubmit
     QMutexLocker locker(&m_mutex);
     if (isFrameQueueComplete()) {
         m_currentRenderViewCount.fetchAndStoreOrdered(0);

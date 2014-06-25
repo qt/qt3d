@@ -105,7 +105,7 @@ namespace Qt3D {
 
 namespace Render {
 
-Renderer::Renderer()
+Renderer::Renderer(int cachedFrames)
     : m_rendererAspect(0)
     , m_frameGraphRoot(0)
     , m_graphicsContext(0)
@@ -124,10 +124,12 @@ Renderer::Renderer()
     , m_renderPassManager(new RenderPassManager())
     , m_textureManager(new TextureManager())
     , m_textureDataManager(new TextureDataManager())
-    , m_renderQueues(new RenderQueues())
+    , m_renderQueues(new RenderQueues(cachedFrames))
     , m_frameCount(0)
+    , m_cachedFramesCount(cachedFrames)
 {
     m_graphicContextInitialized.fetchAndStoreOrdered(0);
+    m_currentPreprocessingFrameIndex.fetchAndStoreOrdered(0);
     m_textureProvider = new RenderTextureProvider;
 
     buildDefaultTechnique();
@@ -332,6 +334,13 @@ void Renderer::enqueueRenderView(Render::RenderView *renderView, int submitOrder
     m_renderQueues->queueRenderView(renderView, submitOrder);
     if (m_renderQueues->isFrameQueueComplete()) {
         m_renderQueues->pushFrameQueue();
+        // We can increment the currentProcessingFrameIndex here
+        // That index will then be used by RenderViewJobs to know which QFrameAllocator to use
+        // Increasing the frameIndex at that point is safe because :
+        // - This method is called by the last RenderViewJobs in ThreadWeaver
+        // - A new call to generate new RenderViewJobs cannot happen before all RenderViewJobs have finished executing aka locking the AspectThread
+        // - The Renderer thread doesn't modify the currentPreprocessingFrameIndex value
+        m_currentPreprocessingFrameIndex.fetchAndStoreOrdered((m_currentPreprocessingFrameIndex.loadAcquire() + 1) % m_cachedFramesCount);
         m_submitRenderViewsCondition.wakeOne();
     }
 }
@@ -383,6 +392,9 @@ void Renderer::submitRenderViews()
             frameElapsed = timer.elapsed();
         }
         m_graphicsContext->endDrawing();
+        // Clear QFrameAllocatorUsed by current RenderView so that it is properly cleaned for used by other frames
+        // renderViews.last()->allocator()->clear();
+        // The qDeleteAll will have to be removed
         qDeleteAll(renderViews);
         queueElapsed = timer.elapsed() - queueElapsed;
         qCDebug(Rendering) << Q_FUNC_INFO << "Submission of Queue " << m_frameCount + 1 << "in " << queueElapsed << "ms <=> " << queueElapsed / renderViewsCount << "ms per RenderView <=> Avg " << 1000.0f / (queueElapsed * 1.0f/ renderViewsCount * 1.0f) << " RenderView/s";
@@ -428,6 +440,7 @@ QJobPtr Renderer::createRenderViewJob(FrameGraphNode *node, int submitOrderIndex
     job->setRenderer(this);
     job->setFrameGraphLeafNode(node);
     job->setSubmitOrderIndex(submitOrderIndex);
+    job->setFrameIndex(m_currentPreprocessingFrameIndex.loadAcquire());
     return job;
 }
 
