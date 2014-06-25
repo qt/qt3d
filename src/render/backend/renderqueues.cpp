@@ -85,6 +85,15 @@ void RenderQueues::queueRenderView(RenderView *renderView, uint submissionOrderI
 }
 
 /*!
+ * Called by the Rendering Thread to retrieve the a frame queue to render.
+ * A call to popFrameQueue is required after rendering of the frame.
+ */
+QVector<RenderView *> RenderQueues::nextFrameQueue()
+{
+    return m_queues.front();
+}
+
+/*!
  * Sets the number \a targetRenderViewCount of RenderView objects that make up a frame.
  */
 void RenderQueues::setTargetRenderViewCount(int targetRenderViewCount)
@@ -103,12 +112,12 @@ bool RenderQueues::isFrameQueueComplete() const
 }
 
 /*!
- * Called by the Rendering Thread to perform the rendering of the
- *  first frame queue stored.
+ * Called by the Rendering Thread to pop the frame queue that has just been rendered
+ * and allow the Jobs to restart if the bounded circular buffer had reached its limit.
  */
-QVector<RenderView *> RenderQueues::popFrameQueue()
+void RenderQueues::popFrameQueue()
 {
-    return m_queues.pop_front();
+    m_queues.pop_front();
 }
 
 /*!

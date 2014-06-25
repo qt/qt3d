@@ -54,6 +54,7 @@ Q_LOGGING_CATEGORY(Jobs, "Qt3D.Render.Jobs")
 Q_LOGGING_CATEGORY(Framegraph, "Qt3D.Render.Framegraph")
 Q_LOGGING_CATEGORY(RenderNodes, "Qt3D.Render.RenderNodes")
 Q_LOGGING_CATEGORY(Rendering, "Qt3D.Render.Rendering")
+Q_LOGGING_CATEGORY(Memory, "Qt3D.Render.Memory")
 
 } // Render
 

@@ -73,6 +73,9 @@ class Mesh;
 class RenderPass;
 class Shape;
 class RendererAspect;
+class QFrameAllocator;
+
+typedef QVector<QFrameAllocator *> QFrameAllocatorQueue;
 
 namespace Render {
 
@@ -129,7 +132,7 @@ public:
 
     QVector<QJobPtr> createRenderBinJobs();
     QJobPtr createRenderViewJob(FrameGraphNode *node, int submitOrderIndex);
-    void executeCommands(const QVector<RenderCommand *> commands);
+    void executeCommands(const QVector<RenderCommand *> &commands);
 
     inline RenderQueues* renderQueues() const { return m_renderQueues; }
     inline MeshDataManager *meshDataManager() const { return m_meshDataManager; }
@@ -152,7 +155,7 @@ public:
     inline HTechnique defaultTechniqueHandle() const { return m_defaultTechniqueHandle; }
     inline HRenderPass defaultRenderPassHandle() const { return m_defaultRenderPassHandle; }
 
-    inline const int cachedFramesCount() const { return m_cachedFramesCount; }
+    inline int cachedFramesCount() const { return m_cachedFramesCount; }
 
     void buildMeshes(Mesh *mesh, Material *mat, const QMatrix4x4& mm);
     void setSurface(QSurface *s);
@@ -161,6 +164,8 @@ public:
     void submitRenderViews();
 
     void initialize();
+
+    QFrameAllocator *currentFrameAllocator(int frameIndex);
 
     QMutex* mutex() { return &m_mutex; }
 
@@ -225,7 +230,9 @@ private:
     QWaitCondition m_submitRenderViewsCondition;
     uint m_frameCount;
     QAtomicInt m_graphicContextInitialized;
-    QAtomicInt m_currentPreprocessingFrameIndex;
+    int m_currentPreprocessingFrameIndex;
+
+    QThreadStorage< QPair<int, QFrameAllocatorQueue *> > m_tlsAllocators;
 
     const int m_cachedFramesCount;
 };

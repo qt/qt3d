@@ -69,7 +69,8 @@ public:
     int framesCapacity() const { return m_queues.capacity(); }
 
     void queueRenderView(RenderView *renderView, uint submissionOrderIndex);
-    QVector<RenderView *> popFrameQueue();
+    void popFrameQueue();
+    QVector<RenderView *> nextFrameQueue();
     void pushFrameQueue();
     void reset();
 

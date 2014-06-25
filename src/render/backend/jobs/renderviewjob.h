@@ -50,13 +50,11 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-
 namespace Render {
 
 class Renderer;
 class FrameGraphNode;
 
-typedef QVector<QFrameAllocator *> QFrameAllocatorQueue;
 
 class RenderViewJob : public QJob
 {
@@ -93,7 +91,6 @@ private:
     // We are currently processing that RenderView for.
     // This is useful to retrieve data index by frame index
     int m_frameIndex;
-    QThreadStorage<QFrameAllocatorQueue *> m_tlsAllocators;
 };
 
 typedef QSharedPointer<RenderViewJob> RenderViewJobPtr;

@@ -53,7 +53,8 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class RenderPass; // TODO Split into front/back ends
+class RenderPass;
+class QFrameAllocator;
 
 namespace Render {
 
@@ -76,7 +77,6 @@ class Q_AUTOTEST_EXPORT RenderView
 {
 public:
     RenderView();
-    ~RenderView();
 
     void setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf);
 
@@ -90,12 +90,15 @@ public:
     // TODO: Add RenderTarget
 
     void setRenderer(Renderer *renderer);
-
+    void setAllocator(QFrameAllocator *allocator);
 
     void buildRenderCommands(RenderNode *node);
     QVector<RenderCommand *> commands() const { return m_commands; }
 
     inline QRectF viewport() const { return m_viewport; }
+
+    void setFrameIndex(int frameIndex) { m_frameIndex = frameIndex; }
+    int frameIndex() const { return m_frameIndex; }
 
 private:
     void computeViewport(ViewportNode *viewportNode);
@@ -109,10 +112,13 @@ private:
     QHash<QString, QVariant> parametersFromMaterialEffectTechnique(RenderMaterial *material, RenderEffect *effect, RenderTechnique *technique);
 
     Renderer *m_renderer;
+    QFrameAllocator *m_allocator;
     RenderCamera *m_renderCamera;
     TechniqueFilter *m_techniqueFilter;
     RenderPassFilter *m_passFilter;
     QRectF m_viewport;
+
+    int m_frameIndex;
 
     // We do not use pointers to RenderNodes or Drawable's here so that the
     // render aspect is free to change the drawables on the next frame whilst
@@ -129,18 +135,18 @@ private:
     static  standardUniformsPFuncsHash m_standardUniformSetters;
     static standardUniformsPFuncsHash initializeStandardUniformSetters();
 
-    inline QUniformValue *modelMatrix(RenderCamera *, const QMatrix4x4& model) const { return new SpecifiedUniform<QMatrix4x4>(model); }
-    inline QUniformValue *viewMatrix(RenderCamera *c, const QMatrix4x4&) const { return new SpecifiedUniform<QMatrix4x4>(c->viewMatrix());}
-    inline QUniformValue *projectionMatrix(RenderCamera *c, const QMatrix4x4&) const { return new SpecifiedUniform<QMatrix4x4>(c->projection()); }
-    inline QUniformValue *modelViewMatrix(RenderCamera *c, const QMatrix4x4& model) const { return new SpecifiedUniform<QMatrix4x4>(c->viewMatrix() * model); }
-    inline QUniformValue *modelViewProjectionMatrix(RenderCamera *c, const QMatrix4x4& model) const { return new SpecifiedUniform<QMatrix4x4>(c->projection() * c->viewMatrix() * model); }
-    inline QUniformValue *inversedModelMatrix(RenderCamera *, const QMatrix4x4& model) const { return new SpecifiedUniform<QMatrix4x4>(model.inverted()); }
-    inline QUniformValue *inversedViewMatrix(RenderCamera *c, const QMatrix4x4&) const { return new SpecifiedUniform<QMatrix4x4>(c->viewMatrix().inverted()); }
-    inline QUniformValue *inversedProjectionMatrix(RenderCamera *c, const QMatrix4x4&) const { return new SpecifiedUniform<QMatrix4x4>(c->projection().inverted()); }
-    inline QUniformValue *inversedModelViewMatrix(RenderCamera *c, const QMatrix4x4& model) const { return new SpecifiedUniform<QMatrix4x4>((c->viewMatrix() * model).inverted()); }
-    inline QUniformValue *inversedModelViewProjectionMatrix(RenderCamera *c, const QMatrix4x4& model) const { return new SpecifiedUniform<QMatrix4x4>((c->projection() * c->viewMatrix() * model).inverted()); }
-    inline QUniformValue *modelNormalMatrix(RenderCamera *, const QMatrix4x4& model) const { return new SpecifiedUniform<QMatrix3x3>(model.normalMatrix()); }
-    inline QUniformValue *modelViewNormalMatrix(RenderCamera *c, const QMatrix4x4& model) const { return new SpecifiedUniform<QMatrix3x3>((c->viewMatrix() * model).normalMatrix()); }
+    QUniformValue *modelMatrix(RenderCamera *, const QMatrix4x4& model) const;
+    QUniformValue *viewMatrix(RenderCamera *c, const QMatrix4x4&) const;
+    QUniformValue *projectionMatrix(RenderCamera *c, const QMatrix4x4 &) const;
+    QUniformValue *modelViewMatrix(RenderCamera *c, const QMatrix4x4 &model) const;
+    QUniformValue *modelViewProjectionMatrix(RenderCamera *c, const QMatrix4x4 &model) const;
+    QUniformValue *inverseModelMatrix(RenderCamera *, const QMatrix4x4 &model) const;
+    QUniformValue *inverseViewMatrix(RenderCamera *c, const QMatrix4x4 &) const;
+    QUniformValue *inverseProjectionMatrix(RenderCamera *c, const QMatrix4x4 &) const;
+    QUniformValue *inverseModelViewMatrix(RenderCamera *c, const QMatrix4x4 &model) const;
+    QUniformValue *inverseModelViewProjectionMatrix(RenderCamera *c, const QMatrix4x4 &model) const;
+    QUniformValue *modelNormalMatrix(RenderCamera *, const QMatrix4x4 &model) const;
+    QUniformValue *modelViewNormalMatrix(RenderCamera *c, const QMatrix4x4 &model) const;
 };
 
 } // namespace Render

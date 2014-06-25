@@ -53,26 +53,18 @@ namespace Render {
 
 void RenderViewJob::run()
 {
-    qCDebug(Jobs) << Q_FUNC_INFO << m_index;
-
-    if (!m_tlsAllocators.hasLocalData()) {
-        QFrameAllocatorQueue *allocatorQueue = new QFrameAllocatorQueue();
-        m_tlsAllocators.setLocalData(allocatorQueue);
-
-        // RenderView has a sizeof 72
-        // RenderCommand has a sizeof 128
-        // QMatrix4x4 has a sizeof 68
-        // May need to fine tune parameters passed to QFrameAllocator for best performances
-        for (int i = 0; i < m_renderer->cachedFramesCount(); i++)
-            allocatorQueue->append(new QFrameAllocator(128, 16, 128));
-    }
+    qCDebug(Jobs) << Q_FUNC_INFO << m_index << " frame " << m_frameIndex;
 
     // Create a RenderView object
-    // The RenderView should be created from a QFrameAllocator stored in the current Thread local storage
-    // Store in an array or circular buffer that we can access using m_frameIndex.
-    RenderView *renderView = new RenderView;
+    // The RenderView are created from a QFrameAllocator stored in the current Thread local storage
 
+    QFrameAllocator *currentFrameAllocator = m_renderer->currentFrameAllocator(m_frameIndex);
+    RenderView *renderView = currentFrameAllocator->allocate<RenderView>();
+
+    // RenderView should allocate heap resources using only the currentFrameAllocator
+    renderView->setAllocator(currentFrameAllocator);
     renderView->setRenderer(m_renderer);
+    renderView->setFrameIndex(m_frameIndex);
     // Populate its configuration from the framegraph
     // using the root->leaf set of nodes
     renderView->setConfigFromFrameGraphLeafNode(m_fgLeaf);

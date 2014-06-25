@@ -57,6 +57,9 @@ QT_BEGIN_NAMESPACE
 class QOpenGLShaderProgram;
 
 namespace Qt3D {
+
+class QFrameAllocator;
+
 namespace Render {
 
 class QGraphicsContext;
@@ -81,7 +84,7 @@ public:
     QUniformValue();
     virtual ~QUniformValue() {}
 
-    static QUniformValue *fromVariant(const QVariant &v);
+    static QUniformValue *fromVariant(const QVariant &v, QFrameAllocator *allocator);
 
     virtual bool operator ==(const QUniformValue &other);
     bool operator !=(const QUniformValue &other);
@@ -113,12 +116,13 @@ template <typename T>
 class SpecifiedUniform : public QUniformValue
 {
 public :
-    explicit SpecifiedUniform(const T &value)
+    SpecifiedUniform()
         : QUniformValue()
-        , m_value(value)
     {
         m_type = Custom;
     }
+
+    void setValue(const T &value) { m_value = value; }
 
     bool operator ==(const QUniformValue &other) Q_DECL_OVERRIDE
     {
@@ -145,15 +149,19 @@ private :
 class TextureUniform : public QUniformValue
 {
 public :
-    explicit TextureUniform(const QUuid &textureId)
+    TextureUniform()
         : QUniformValue()
-        , m_textureId(textureId)
         , m_textureUnit(-1)
     {
         m_type = Texture;
     }
 
-    const QUuid textureId() const { return m_textureId; }
+    void setTextureId(const QUuid &textureId)
+    {
+        m_textureId = textureId;
+    }
+
+    QUuid textureId() const { return m_textureId; }
 
     bool operator ==(const QUniformValue &other) Q_DECL_OVERRIDE
     {
@@ -181,7 +189,7 @@ public :
     }
 
 private:
-    const QUuid m_textureId;
+    QUuid m_textureId;
     int m_textureUnit;
 };
 

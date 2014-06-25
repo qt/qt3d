@@ -72,6 +72,7 @@
 #include <Qt3DCore/entity.h>
 #include <Qt3DCore/qabstracteffect.h>
 #include <Qt3DCore/qabstracttechnique.h>
+#include <Qt3DCore/qframeallocator.h>
 
 #include <QDebug>
 
@@ -91,29 +92,109 @@ RenderView::standardUniformsPFuncsHash RenderView::initializeStandardUniformSett
     setters[Parameter::ProjectionMatrix] = &RenderView::projectionMatrix;
     setters[Parameter::ModelView] = &RenderView::modelViewMatrix;
     setters[Parameter::ModelViewProjection] = &RenderView::modelViewProjectionMatrix;
-    setters[Parameter::ModelInverse] = &RenderView::inversedModelMatrix;
-    setters[Parameter::ViewInverse] = &RenderView::inversedViewMatrix;
-    setters[Parameter::ProjectionInverse] = &RenderView::inversedProjectionMatrix;
-    setters[Parameter::ModelViewInverse] = &RenderView::inversedModelViewMatrix;
-    setters[Parameter::ModelViewProjectionInverse] = &RenderView::inversedModelViewProjectionMatrix;
+    setters[Parameter::ModelInverse] = &RenderView::inverseModelMatrix;
+    setters[Parameter::ViewInverse] = &RenderView::inverseViewMatrix;
+    setters[Parameter::ProjectionInverse] = &RenderView::inverseProjectionMatrix;
+    setters[Parameter::ModelViewInverse] = &RenderView::inverseModelViewMatrix;
+    setters[Parameter::ModelViewProjectionInverse] = &RenderView::inverseModelViewProjectionMatrix;
     setters[Parameter::ModelNormal] = &RenderView::modelNormalMatrix;
     setters[Parameter::ModelViewNormal] = &RenderView::modelViewNormalMatrix;
 
     return setters;
 }
 
+QUniformValue *RenderView::modelMatrix(RenderCamera *, const QMatrix4x4 &model) const
+{
+    SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
+    t->setValue(model);
+    return t;
+}
+
+QUniformValue *RenderView::viewMatrix(RenderCamera *c, const QMatrix4x4 &) const
+{
+    SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
+    t->setValue(c->viewMatrix());
+    return t;
+}
+
+QUniformValue *RenderView::projectionMatrix(RenderCamera *c, const QMatrix4x4 &) const
+{
+    SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
+    t->setValue(c->projection());
+    return t;
+}
+
+QUniformValue *RenderView::modelViewMatrix(RenderCamera *c, const QMatrix4x4 &model) const
+{
+    SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
+    t->setValue(c->viewMatrix() * model);
+    return t;
+}
+
+QUniformValue *RenderView::modelViewProjectionMatrix(RenderCamera *c, const QMatrix4x4 &model) const
+{
+    SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
+    t->setValue(c->projection() * c->viewMatrix() * model);
+    return t;
+}
+
+QUniformValue *RenderView::inverseModelMatrix(RenderCamera *, const QMatrix4x4 &model) const
+{
+    SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
+    t->setValue(model.inverted());
+    return t;
+}
+
+QUniformValue *RenderView::inverseViewMatrix(RenderCamera *c, const QMatrix4x4 &) const
+{
+    SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
+    t->setValue(c->viewMatrix().inverted());
+    return t;
+}
+
+QUniformValue *RenderView::inverseProjectionMatrix(RenderCamera *c, const QMatrix4x4 &) const
+{
+    SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
+    t->setValue(c->projection().inverted());
+    return t;
+}
+
+QUniformValue *RenderView::inverseModelViewMatrix(RenderCamera *c, const QMatrix4x4 &model) const
+{
+    SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
+    t->setValue((c->viewMatrix() * model).inverted());
+    return t;
+}
+
+QUniformValue *RenderView::inverseModelViewProjectionMatrix(RenderCamera *c, const QMatrix4x4 &model) const
+{
+    SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
+    t->setValue((c->projection() * c->viewMatrix() * model).inverted());
+    return t;
+}
+
+QUniformValue *RenderView::modelNormalMatrix(RenderCamera *, const QMatrix4x4 &model) const
+{
+    SpecifiedUniform<QMatrix3x3> *t = m_allocator->allocate<SpecifiedUniform<QMatrix3x3> >();
+    t->setValue(model.normalMatrix());
+    return t;
+}
+
+QUniformValue *RenderView::modelViewNormalMatrix(RenderCamera *c, const QMatrix4x4 &model) const
+{
+    SpecifiedUniform<QMatrix3x3> *t = m_allocator->allocate<SpecifiedUniform<QMatrix3x3> >();
+    t->setValue((c->viewMatrix() * model).normalMatrix());
+    return t;
+}
+
 RenderView::RenderView()
     : m_renderer(Q_NULLPTR)
+    , m_allocator(Q_NULLPTR)
     , m_renderCamera(Q_NULLPTR)
     , m_techniqueFilter(0)
     , m_passFilter(0)
     , m_commands()
 {
-}
-
-RenderView::~RenderView()
-{
-    qDeleteAll(m_commands);
 }
 
 void RenderView::setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf)
@@ -186,6 +267,11 @@ void RenderView::setRenderer(Renderer *renderer)
     m_renderer = renderer;
 }
 
+void RenderView::setAllocator(QFrameAllocator *allocator)
+{
+    m_allocator = allocator;
+}
+
 // Traverse Scene graphTree or culledSceneGraphTree
 // ideally m_commands has been sized properly after the
 // scene has been culled to the number of nodes in the culled
@@ -225,7 +311,7 @@ void RenderView::buildRenderCommands(RenderNode *node)
             QHash<QString, QVariant> parameters = parametersFromMaterialEffectTechnique(material, effect, technique);
 
             Q_FOREACH (RenderRenderPass *pass, passes) {
-                RenderCommand *command = new RenderCommand();
+                RenderCommand *command = m_allocator->allocate<RenderCommand>();
                 command->m_mesh = meshHandle;
                 command->m_meshData = mesh->meshData();
                 command->m_instancesCount = 0;
@@ -426,10 +512,12 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
                             (tex = value.value<Qt3D::Texture*>()) != Q_NULLPTR) {
                         createRenderTexture(tex);
                         command->m_uniforms.setTexture(binding->shaderVariableName(), tex->uuid());
-                        command->m_uniforms.setUniform(binding->shaderVariableName(), new TextureUniform(tex->uuid()));
+                        TextureUniform *texUniform = m_allocator->allocate<TextureUniform>();
+                        texUniform->setTextureId(tex->uuid());
+                        command->m_uniforms.setUniform(binding->shaderVariableName(), texUniform);
                     }
                     else {
-                        command->m_uniforms.setUniform(binding->shaderVariableName(), QUniformValue::fromVariant(value));
+                        command->m_uniforms.setUniform(binding->shaderVariableName(), QUniformValue::fromVariant(value, m_allocator));
                     }
                 }
                 else if (binding->bindingType() == ParameterMapper::StandardUniform)

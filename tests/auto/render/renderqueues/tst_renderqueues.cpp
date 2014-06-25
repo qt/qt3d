@@ -222,9 +222,10 @@ void tst_RenderQueues::concurrentQueueAccess()
 
         int count = 0;
         while (renderQueues->queuedFrames() > 0) {
-            QVector<Qt3D::Render::RenderView *> renderViews = renderQueues->popFrameQueue();
+            QVector<Qt3D::Render::RenderView *> renderViews = renderQueues->nextFrameQueue();
             qDeleteAll(renderViews);
             count++;
+            renderQueues->popFrameQueue();
         }
         QCOMPARE(count, 3);
         jobsThread->m_waitToFillQueue.wakeAll();

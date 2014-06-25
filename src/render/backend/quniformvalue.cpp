@@ -44,6 +44,8 @@
 #include "qgraphicscontext.h"
 #include "rendertexture.h"
 
+#include <Qt3DCore/qframeallocator.h>
+
 #include <QOpenGLShaderProgram>
 #include <QDebug>
 #include <QColor>
@@ -62,24 +64,81 @@ QUniformValue::QUniformValue() :
 {
 }
 
-QUniformValue *QUniformValue::fromVariant(const QVariant &v)
+QUniformValue *QUniformValue::fromVariant(const QVariant &v, QFrameAllocator *allocator)
 {
     switch (v.type()) {
-    case QVariant::Int: return new SpecifiedUniform<int>(v.toInt());
-    case QVariant::UInt: return new SpecifiedUniform<uint>(v.toUInt());
-    case QVariant::Double: return new SpecifiedUniform<float>(v.toFloat());
-    case QVariant::Vector2D: return new SpecifiedUniform<QVector2D>(v.value<QVector2D>());
-    case QVariant::Vector3D: return new SpecifiedUniform<QVector3D>(v.value<QVector3D>());
-    case QVariant::Vector4D: return new SpecifiedUniform<QVector4D>(v.value<QVector4D>());
-    case QVariant::Matrix4x4: return new SpecifiedUniform<QMatrix4x4>(v.value<QMatrix4x4>());
-    case QVariant::Point: return new SpecifiedUniform<QPoint>(v.value<QPoint>());
-    case QVariant::PointF: return new SpecifiedUniform<QPointF>(v.value<QPointF>());
-    case QVariant::Size: return new SpecifiedUniform<QSize>(v.value<QSize>());
-    case QVariant::SizeF: return new SpecifiedUniform<QSizeF>(v.value<QSizeF>());
-    case QVariant::Transform: return new SpecifiedUniform<QTransform>(v.value<QTransform>());
-    case QVariant::Color: return new SpecifiedUniform<QColor>(v.value<QColor>());
-    case QVariant::Quaternion: return new SpecifiedUniform<QVector4D>(v.value<QVector4D>());
-    default: return new QUniformValue();
+    case QVariant::Int: {
+        SpecifiedUniform<int> *t = allocator->allocate<SpecifiedUniform<int> >();
+        t->setValue(v.toInt());
+        return t;
+    }
+    case QVariant::UInt: {
+        SpecifiedUniform<uint> *t = allocator->allocate<SpecifiedUniform<uint> >();
+        t->setValue(v.toUInt());
+        return t;
+    }
+    case QVariant::Double: {
+        SpecifiedUniform<float> *t = allocator->allocate<SpecifiedUniform<float> >();
+        t->setValue(v.toFloat());
+        return t;
+    }
+    case QVariant::Vector2D: {
+        SpecifiedUniform<QVector2D> *t = allocator->allocate<SpecifiedUniform<QVector2D> >();
+        t->setValue(v.value<QVector2D>());
+        return t;
+    }
+    case QVariant::Vector3D: {
+        SpecifiedUniform<QVector3D> *t = allocator->allocate<SpecifiedUniform<QVector3D> >();
+        t->setValue(v.value<QVector3D>());
+        return t;
+    }
+    case QVariant::Vector4D: {
+        SpecifiedUniform<QVector4D> *t = allocator->allocate<SpecifiedUniform<QVector4D> >();
+        t->setValue(v.value<QVector4D>());
+        return t;
+    }
+    case QVariant::Matrix4x4: {
+        SpecifiedUniform<QMatrix4x4> *t = allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
+        t->setValue(v.value<QMatrix4x4>());
+        return t;
+    }
+    case QVariant::Point: {
+        SpecifiedUniform<QPoint> *t = allocator->allocate<SpecifiedUniform<QPoint> >();
+        t->setValue(v.value<QPoint>());
+        return t;
+    }
+    case QVariant::PointF: {
+        SpecifiedUniform<QPointF> *t = allocator->allocate<SpecifiedUniform<QPointF> >();
+        t->setValue(v.value<QPointF>());
+        return t;
+    }
+    case QVariant::Size: {
+        SpecifiedUniform<QSize> *t = allocator->allocate<SpecifiedUniform<QSize> >();
+        t->setValue(v.value<QSize>());
+        return t;
+    }
+    case QVariant::SizeF: {
+        SpecifiedUniform<QSizeF> *t = allocator->allocate<SpecifiedUniform<QSizeF> >();
+        t->setValue(v.value<QSizeF>());
+        return t;
+    }
+    case QVariant::Transform: {
+        SpecifiedUniform<QTransform> *t = allocator->allocate<SpecifiedUniform<QTransform> >();
+        t->setValue(v.value<QTransform>());
+        return t;
+    }
+    case QVariant::Color: {
+        SpecifiedUniform<QColor> *t = allocator->allocate<SpecifiedUniform<QColor> >();
+        t->setValue(v.value<QColor>());
+        return t;
+    }
+    case QVariant::Quaternion: {
+        SpecifiedUniform<QVector4D> *t = allocator->allocate<SpecifiedUniform<QVector4D> >();
+        t->setValue(v.value<QVector4D>());
+        return t;
+    }
+    default:
+        return allocator->allocate<QUniformValue>();
     }
 }
 
