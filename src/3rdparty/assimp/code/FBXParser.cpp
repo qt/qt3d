@@ -364,14 +364,24 @@ float ParseTokenAsFloat(const Token& t, const char*& err_out)
 		}
 
 		if (data[0] == 'F') {
-			ai_assert(t.end() - data == 5);
-			// no byte swapping needed for ieee floats
-			return *reinterpret_cast<const float*>(data+1);
+			// Actual size validation happens during Tokenization so
+			// this is valid as an assertion.
+			ai_assert(t.end() - data == sizeof(float) + 1);
+			// Initially, we did reinterpret_cast, breaking strict aliasing rules.
+			// This actually caused trouble on Android, so let's be safe this time.
+			// https://github.com/assimp/assimp/issues/24
+			
+			float out_float;
+			::memcpy(&out_float, data+1, sizeof(float));
+			return out_float;
 		}
 		else {
-			ai_assert(t.end() - data == 9);
-			// no byte swapping needed for ieee floats
-			return static_cast<float>(*reinterpret_cast<const double*>(data+1));
+			ai_assert(t.end() - data == sizeof(double) + 1);
+			
+			// Same
+			double out_double;
+			::memcpy(&out_double, data+1, sizeof(double));
+			return static_cast<float>(out_double);
 		}
 	}
 
@@ -496,7 +506,7 @@ void ReadBinaryDataArrayHead(const char*& data, const char* end, char& type, uin
 // read binary data array, assume cursor points to the 'compression mode' field (i.e. behind the header)
 void ReadBinaryDataArray(char type, uint32_t count, const char*& data, const char* end, 
 	std::vector<char>& buff, 
-	const Element& /*el*/)
+	const Element& el)
 {
 	ai_assert(static_cast<size_t>(end-data) >= 4); // runtime check for this happens at tokenization stage
 

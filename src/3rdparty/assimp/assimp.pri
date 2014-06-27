@@ -117,7 +117,6 @@ HEADERS += revision.h \
            code/LWOFileData.h \
            code/LWOLoader.h \
            code/LWSLoader.h \
-           code/M3Importer.h \
            code/MakeVerboseFormat.h \
            code/MaterialSystem.h \
            code/MD2FileData.h \
@@ -145,8 +144,6 @@ HEADERS += revision.h \
            code/ObjFileParser.h \
            code/ObjTools.h \
            code/OFFLoader.h \
-           code/OgreImporter.hpp \
-           code/OgreXmlHelper.hpp \
            code/OptimizeGraph.h \
            code/OptimizeMeshes.h \
            code/ParsingUtils.h \
@@ -157,7 +154,6 @@ HEADERS += revision.h \
            code/PretransformVertices.h \
            code/ProcessHelper.h \
            code/Profiler.h \
-           code/pstdint.h \
            code/Q3BSPFileData.h \
            code/Q3BSPFileImporter.h \
            code/Q3BSPFileParser.h \
@@ -246,6 +242,17 @@ HEADERS += revision.h \
            include/assimp/vector2.h \
            include/assimp/vector3.h \
            include/assimp/version.h \
+           include/assimp/vector2.inl \
+           include/assimp/vector3.inl \
+           include/assimp/color4.inl \
+           include/assimp/quaternion.inl \
+           include/assimp/matrix3x3.inl \
+           include/assimp/matrix4x4.inl \
+           include/assimp/material.inl \
+           include/assimp/metadata.h \
+           include/assimp/Compiler/poppack1.h \
+           include/assimp/Compiler/pushpack1.h \
+           include/assimp/Compiler/pstdint.h \
            code/BoostWorkaround/boost/foreach.hpp \
            code/BoostWorkaround/boost/format.hpp \
            code/BoostWorkaround/boost/lexical_cast.hpp \
@@ -259,8 +266,6 @@ HEADERS += revision.h \
            code/BoostWorkaround/boost/static_assert.hpp \
            code/BoostWorkaround/boost/timer.hpp \
            contrib/poly2tri/poly2tri/poly2tri.h \
-           include/assimp/Compiler/poppack1.h \
-           include/assimp/Compiler/pushpack1.h \
            code/BoostWorkaround/boost/math/common_factor_rt.hpp \
            code/BoostWorkaround/boost/tuple/tuple.hpp \
            contrib/poly2tri/poly2tri/common/shapes.h \
@@ -269,13 +274,6 @@ HEADERS += revision.h \
            contrib/poly2tri/poly2tri/sweep/cdt.h \
            contrib/poly2tri/poly2tri/sweep/sweep.h \
            contrib/poly2tri/poly2tri/sweep/sweep_context.h \
-           include/assimp/vector2.inl \
-           include/assimp/vector3.inl \
-           include/assimp/color4.inl \
-           include/assimp/quaternion.inl \
-           include/assimp/matrix3x3.inl \
-           include/assimp/matrix4x4.inl \
-           include/assimp/material.inl \
            code/SmoothingGroups.inl \
            code/BlenderDNA.inl \
            code/FBXConverter.h \
@@ -291,7 +289,9 @@ HEADERS += revision.h \
            code/OgreParsingUtils.h \
            code/FBXCompileConfig.h \
            code/STEPFileEncoding.h \
-           include/assimp/metadata.h
+           code/OgreBinarySerializer.h \
+           code/OgreStructs.h \
+           code/OgreXmlSerializer.h
 
 SOURCES += code/3DSConverter.cpp \
            code/3DSLoader.cpp \
@@ -353,7 +353,6 @@ SOURCES += code/3DSConverter.cpp \
            code/LWOLoader.cpp \
            code/LWOMaterial.cpp \
            code/LWSLoader.cpp \
-           code/M3Importer.cpp \
            code/MakeVerboseFormat.cpp \
            code/MaterialSystem.cpp \
            code/MD2Loader.cpp \
@@ -373,8 +372,6 @@ SOURCES += code/3DSConverter.cpp \
            code/OFFLoader.cpp \
            code/OgreImporter.cpp \
            code/OgreMaterial.cpp \
-           code/OgreMesh.cpp \
-           code/OgreSkeleton.cpp \
            code/OptimizeGraph.cpp \
            code/OptimizeMeshes.cpp \
            code/PlyExporter.cpp \
@@ -442,6 +439,10 @@ SOURCES += code/3DSConverter.cpp \
            code/IFCBoolean.cpp \
            code/IFCOpenings.cpp \
            code/FBXConverter.cpp \
-           code/STEPFileEncoding.cpp
+           code/STEPFileEncoding.cpp \
+           code/OgreBinarySerializer.cpp \
+           code/OgreStructs.cpp \
+           code/OgreXmlSerializer.cpp
+
 
 

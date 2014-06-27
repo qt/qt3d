@@ -146,7 +146,6 @@ inline T PropertyGet(const PropertyTable& in, const std::string& name,
 	const T& defaultValue, 
 	bool ignoreTemplate = false)
 {
-	(void)ignoreTemplate; // Unused
 	const Property* const prop = in.Get(name);
 	if(!prop) {
 		return defaultValue;
@@ -168,7 +167,6 @@ inline T PropertyGet(const PropertyTable& in, const std::string& name,
 	bool& result, 
 	bool ignoreTemplate = false)
 {
-	(void)ignoreTemplate; // Unused
 	const Property* const prop = in.Get(name);
 	if(!prop) {
 		result = false;

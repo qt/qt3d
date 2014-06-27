@@ -121,7 +121,7 @@ public:
 				if(mat) {
 
 					if (materials_converted.find(mat) == materials_converted.end()) {
-						ConvertMaterial(*mat);
+						ConvertMaterial(*mat, 0);
 					}
 				}
 			}
@@ -783,8 +783,8 @@ private:
 				data->Set(index++, prop.first, interpreted->Value());
 			else if (const TypedProperty<float>* interpreted = prop.second->As<TypedProperty<float> >())
 				data->Set(index++, prop.first, interpreted->Value());
-			else if (const TypedProperty<aiString>* interpreted = prop.second->As<TypedProperty<aiString> >())
-				data->Set(index++, prop.first, interpreted->Value());
+			else if (const TypedProperty<std::string>* interpreted = prop.second->As<TypedProperty<std::string> >())
+				data->Set(index++, prop.first, aiString(interpreted->Value()));
 			else if (const TypedProperty<aiVector3D>* interpreted = prop.second->As<TypedProperty<aiVector3D> >())
 				data->Set(index++, prop.first, interpreted->Value());
 			else
@@ -1320,7 +1320,7 @@ private:
 
 
 	// ------------------------------------------------------------------------------------------------
-	void ConvertCluster(std::vector<aiBone*>& bones, const Model& /*model*/, const Cluster& cl,		
+	void ConvertCluster(std::vector<aiBone*>& bones, const Model& model, const Cluster& cl, 		
 		std::vector<size_t>& out_indices,
 		std::vector<size_t>& index_out_indices,
 		std::vector<size_t>& count_out_indices,
@@ -1363,7 +1363,7 @@ private:
 
 
 	// ------------------------------------------------------------------------------------------------
-	void ConvertMaterialForMesh(aiMesh* out, const Model& model, const MeshGeometry& /*geo*/,
+	void ConvertMaterialForMesh(aiMesh* out, const Model& model, const MeshGeometry& geo, 
 		MatIndexArray::value_type materialIndex)
 	{
 		// locate source materials for this mesh
@@ -1381,7 +1381,7 @@ private:
 			return;
 		}
 
-		out->mMaterialIndex = ConvertMaterial(*mat);	
+		out->mMaterialIndex = ConvertMaterial(*mat, &geo);	
 		materials_converted[mat] = out->mMaterialIndex;
 	}
 
@@ -1411,7 +1411,7 @@ private:
 
 	// ------------------------------------------------------------------------------------------------
 	// Material -> aiMaterial
-	unsigned int ConvertMaterial(const Material& material)
+	unsigned int ConvertMaterial(const Material& material, const MeshGeometry* const mesh)
 	{
 		const PropertyTable& props = material.Props();
 
@@ -1440,8 +1440,8 @@ private:
 		SetShadingPropertiesCommon(out_mat,props);
 	
 		// texture assignments
-		SetTextureProperties(out_mat,material.Textures());
-		SetTextureProperties(out_mat,material.LayeredTextures());
+		SetTextureProperties(out_mat,material.Textures(), mesh);
+		SetTextureProperties(out_mat,material.LayeredTextures(), mesh);
 
 		return static_cast<unsigned int>(materials.size() - 1);
 	}
@@ -1450,7 +1450,7 @@ private:
 	// ------------------------------------------------------------------------------------------------
 	void TrySetTextureProperties(aiMaterial* out_mat, const TextureMap& textures, 
 		const std::string& propName, 
-		aiTextureType target)
+		aiTextureType target, const MeshGeometry* const mesh)
 	{
 		TextureMap::const_iterator it = textures.find(propName);
 		if(it == textures.end()) {
@@ -1495,18 +1495,48 @@ private:
 						std::find(materials.begin(),materials.end(),out_mat)
 					));
 
-					uvIndex = -1;
-					BOOST_FOREACH(const MeshMap::value_type& v,meshes_converted) {
-						const MeshGeometry* const mesh = dynamic_cast<const MeshGeometry*> (v.first);
-						if(!mesh) {
-							continue;
-						}
 
-						const MatIndexArray& mats = mesh->GetMaterialIndices();
-						if(std::find(mats.begin(),mats.end(),matIndex) == mats.end()) {
-							continue;
-						}
+          uvIndex = -1;
+          if (!mesh)
+          {					
+					  BOOST_FOREACH(const MeshMap::value_type& v,meshes_converted) {
+						  const MeshGeometry* const mesh = dynamic_cast<const MeshGeometry*> (v.first);
+						  if(!mesh) {
+							  continue;
+						  }
 
+						  const MatIndexArray& mats = mesh->GetMaterialIndices();
+						  if(std::find(mats.begin(),mats.end(),matIndex) == mats.end()) {
+							  continue;
+						  }
+
+						  int index = -1;
+						  for (unsigned int i = 0; i < AI_MAX_NUMBER_OF_TEXTURECOORDS; ++i) {
+							  if(mesh->GetTextureCoords(i).empty()) {
+								  break;
+							  }
+							  const std::string& name = mesh->GetTextureCoordChannelName(i);
+							  if(name == uvSet) {
+								  index = static_cast<int>(i);
+								  break;
+							  }
+						  }
+						  if(index == -1) {
+							  FBXImporter::LogWarn("did not find UV channel named " + uvSet + " in a mesh using this material");
+							  continue;
+						  }
+
+						  if(uvIndex == -1) {
+							  uvIndex = index;
+						  }
+						  else {
+							  FBXImporter::LogWarn("the UV channel named " + uvSet + 
+								  " appears at different positions in meshes, results will be wrong");
+						  }
+					  }
+          }
+          else
+          {
 						int index = -1;
 						for (unsigned int i = 0; i < AI_MAX_NUMBER_OF_TEXTURECOORDS; ++i) {
 							if(mesh->GetTextureCoords(i).empty()) {
@@ -1520,17 +1550,12 @@ private:
 						}
 						if(index == -1) {
 							FBXImporter::LogWarn("did not find UV channel named " + uvSet + " in a mesh using this material");
-							continue;
 						}
 
 						if(uvIndex == -1) {
 							uvIndex = index;
 						}
-						else {
-							FBXImporter::LogWarn("the UV channel named " + uvSet + 
-								" appears at different positions in meshes, results will be wrong");
-						}
-					}
+          }
 
 					if(uvIndex == -1) {
 						FBXImporter::LogWarn("failed to resolve UV channel " + uvSet + ", using first UV channel");
@@ -1546,7 +1571,7 @@ private:
 	// ------------------------------------------------------------------------------------------------
 	void TrySetTextureProperties(aiMaterial* out_mat, const LayeredTextureMap& layeredTextures, 
 		const std::string& propName, 
-		aiTextureType target)
+		aiTextureType target, const MeshGeometry* const mesh)
 	{
 		LayeredTextureMap::const_iterator it = layeredTextures.find(propName);
 		if(it == layeredTextures.end()) {
@@ -1590,18 +1615,47 @@ private:
 					std::find(materials.begin(),materials.end(),out_mat)
 					));
 
-				uvIndex = -1;
-				BOOST_FOREACH(const MeshMap::value_type& v,meshes_converted) {
-					const MeshGeometry* const mesh = dynamic_cast<const MeshGeometry*> (v.first);
-					if(!mesh) {
-						continue;
-					}
+			  uvIndex = -1;
+        if (!mesh)
+        {					
+					BOOST_FOREACH(const MeshMap::value_type& v,meshes_converted) {
+						const MeshGeometry* const mesh = dynamic_cast<const MeshGeometry*> (v.first);
+						if(!mesh) {
+							continue;
+						}
 
-					const MatIndexArray& mats = mesh->GetMaterialIndices();
-					if(std::find(mats.begin(),mats.end(),matIndex) == mats.end()) {
-						continue;
-					}
+						const MatIndexArray& mats = mesh->GetMaterialIndices();
+						if(std::find(mats.begin(),mats.end(),matIndex) == mats.end()) {
+							continue;
+						}
 
+						int index = -1;
+						for (unsigned int i = 0; i < AI_MAX_NUMBER_OF_TEXTURECOORDS; ++i) {
+							if(mesh->GetTextureCoords(i).empty()) {
+								break;
+							}
+							const std::string& name = mesh->GetTextureCoordChannelName(i);
+							if(name == uvSet) {
+								index = static_cast<int>(i);
+								break;
+							}
+						}
+						if(index == -1) {
+							FBXImporter::LogWarn("did not find UV channel named " + uvSet + " in a mesh using this material");
+							continue;
+						}
+
+						if(uvIndex == -1) {
+							uvIndex = index;
+						}
+						else {
+							FBXImporter::LogWarn("the UV channel named " + uvSet + 
+								" appears at different positions in meshes, results will be wrong");
+						}
+					}
+        }
+        else
+        {
 					int index = -1;
 					for (unsigned int i = 0; i < AI_MAX_NUMBER_OF_TEXTURECOORDS; ++i) {
 						if(mesh->GetTextureCoords(i).empty()) {
@@ -1615,17 +1669,12 @@ private:
 					}
 					if(index == -1) {
 						FBXImporter::LogWarn("did not find UV channel named " + uvSet + " in a mesh using this material");
-						continue;
 					}
 
 					if(uvIndex == -1) {
 						uvIndex = index;
 					}
-					else {
-						FBXImporter::LogWarn("the UV channel named " + uvSet + 
-							" appears at different positions in meshes, results will be wrong");
-					}
-				}
+        }
 
 				if(uvIndex == -1) {
 					FBXImporter::LogWarn("failed to resolve UV channel " + uvSet + ", using first UV channel");
@@ -1638,33 +1687,33 @@ private:
 	}
 
 	// ------------------------------------------------------------------------------------------------
-	void SetTextureProperties(aiMaterial* out_mat, const TextureMap& textures)
+	void SetTextureProperties(aiMaterial* out_mat, const TextureMap& textures, const MeshGeometry* const mesh)
 	{
-		TrySetTextureProperties(out_mat, textures, "DiffuseColor", aiTextureType_DIFFUSE);
-		TrySetTextureProperties(out_mat, textures, "AmbientColor", aiTextureType_AMBIENT);
-		TrySetTextureProperties(out_mat, textures, "EmissiveColor", aiTextureType_EMISSIVE);
-		TrySetTextureProperties(out_mat, textures, "SpecularColor", aiTextureType_SPECULAR);
-		TrySetTextureProperties(out_mat, textures, "TransparentColor", aiTextureType_OPACITY);
-		TrySetTextureProperties(out_mat, textures, "ReflectionColor", aiTextureType_REFLECTION);
-		TrySetTextureProperties(out_mat, textures, "DisplacementColor", aiTextureType_DISPLACEMENT);
-		TrySetTextureProperties(out_mat, textures, "NormalMap", aiTextureType_NORMALS);
-		TrySetTextureProperties(out_mat, textures, "Bump", aiTextureType_HEIGHT);
-		TrySetTextureProperties(out_mat, textures, "ShininessExponent", aiTextureType_SHININESS);
+		TrySetTextureProperties(out_mat, textures, "DiffuseColor", aiTextureType_DIFFUSE, mesh);
+		TrySetTextureProperties(out_mat, textures, "AmbientColor", aiTextureType_AMBIENT, mesh);
+		TrySetTextureProperties(out_mat, textures, "EmissiveColor", aiTextureType_EMISSIVE, mesh);
+		TrySetTextureProperties(out_mat, textures, "SpecularColor", aiTextureType_SPECULAR, mesh);
+		TrySetTextureProperties(out_mat, textures, "TransparentColor", aiTextureType_OPACITY, mesh);
+		TrySetTextureProperties(out_mat, textures, "ReflectionColor", aiTextureType_REFLECTION, mesh);
+		TrySetTextureProperties(out_mat, textures, "DisplacementColor", aiTextureType_DISPLACEMENT, mesh);
+		TrySetTextureProperties(out_mat, textures, "NormalMap", aiTextureType_NORMALS, mesh);
+		TrySetTextureProperties(out_mat, textures, "Bump", aiTextureType_HEIGHT, mesh);
+		TrySetTextureProperties(out_mat, textures, "ShininessExponent", aiTextureType_SHININESS, mesh);
 	}
 
 	// ------------------------------------------------------------------------------------------------
-	void SetTextureProperties(aiMaterial* out_mat, const LayeredTextureMap& layeredTextures)
+	void SetTextureProperties(aiMaterial* out_mat, const LayeredTextureMap& layeredTextures, const MeshGeometry* const mesh)
 	{
-		TrySetTextureProperties(out_mat, layeredTextures, "DiffuseColor", aiTextureType_DIFFUSE);
-		TrySetTextureProperties(out_mat, layeredTextures, "AmbientColor", aiTextureType_AMBIENT);
-		TrySetTextureProperties(out_mat, layeredTextures, "EmissiveColor", aiTextureType_EMISSIVE);
-		TrySetTextureProperties(out_mat, layeredTextures, "SpecularColor", aiTextureType_SPECULAR);
-		TrySetTextureProperties(out_mat, layeredTextures, "TransparentColor", aiTextureType_OPACITY);
-		TrySetTextureProperties(out_mat, layeredTextures, "ReflectionColor", aiTextureType_REFLECTION);
-		TrySetTextureProperties(out_mat, layeredTextures, "DisplacementColor", aiTextureType_DISPLACEMENT);
-		TrySetTextureProperties(out_mat, layeredTextures, "NormalMap", aiTextureType_NORMALS);
-		TrySetTextureProperties(out_mat, layeredTextures, "Bump", aiTextureType_HEIGHT);
-		TrySetTextureProperties(out_mat, layeredTextures, "ShininessExponent", aiTextureType_SHININESS);
+		TrySetTextureProperties(out_mat, layeredTextures, "DiffuseColor", aiTextureType_DIFFUSE, mesh);
+		TrySetTextureProperties(out_mat, layeredTextures, "AmbientColor", aiTextureType_AMBIENT, mesh);
+		TrySetTextureProperties(out_mat, layeredTextures, "EmissiveColor", aiTextureType_EMISSIVE, mesh);
+		TrySetTextureProperties(out_mat, layeredTextures, "SpecularColor", aiTextureType_SPECULAR, mesh);
+		TrySetTextureProperties(out_mat, layeredTextures, "TransparentColor", aiTextureType_OPACITY, mesh);
+		TrySetTextureProperties(out_mat, layeredTextures, "ReflectionColor", aiTextureType_REFLECTION, mesh);
+		TrySetTextureProperties(out_mat, layeredTextures, "DisplacementColor", aiTextureType_DISPLACEMENT, mesh);
+		TrySetTextureProperties(out_mat, layeredTextures, "NormalMap", aiTextureType_NORMALS, mesh);
+		TrySetTextureProperties(out_mat, layeredTextures, "Bump", aiTextureType_HEIGHT, mesh);
+		TrySetTextureProperties(out_mat, layeredTextures, "ShininessExponent", aiTextureType_SHININESS, mesh);
 	}
 
 
@@ -2298,8 +2347,8 @@ private:
 
 
 	// ------------------------------------------------------------------------------------------------
-	aiNodeAnim* GenerateScalingNodeAnim(const std::string& name,
-		const Model& /*target*/, 
+	aiNodeAnim* GenerateScalingNodeAnim(const std::string& name, 
+		const Model& target, 
 		const std::vector<const AnimationCurveNode*>& curves,
 		const LayerMap& layer_map,
 		double& max_time,
@@ -2329,8 +2378,8 @@ private:
 
 
 	// ------------------------------------------------------------------------------------------------
-	aiNodeAnim* GenerateTranslationNodeAnim(const std::string& name,
-		const Model& /*target*/, 
+	aiNodeAnim* GenerateTranslationNodeAnim(const std::string& name, 
+		const Model& target, 
 		const std::vector<const AnimationCurveNode*>& curves,
 		const LayerMap& layer_map,
 		double& max_time,
@@ -2782,7 +2831,7 @@ private:
 
 
 	// ------------------------------------------------------------------------------------------------
-	void ConvertScaleKeys(aiNodeAnim* na, const std::vector<const AnimationCurveNode*>& nodes, const LayerMap& /*layers*/,
+	void ConvertScaleKeys(aiNodeAnim* na, const std::vector<const AnimationCurveNode*>& nodes, const LayerMap& layers,
 		double& maxTime,
 		double& minTime)
 	{
@@ -2803,7 +2852,7 @@ private:
 
 	// ------------------------------------------------------------------------------------------------
 	void ConvertTranslationKeys(aiNodeAnim* na, const std::vector<const AnimationCurveNode*>& nodes, 
-		const LayerMap& /*layers*/,
+		const LayerMap& layers,
 		double& maxTime,
 		double& minTime)
 	{
@@ -2821,7 +2870,7 @@ private:
 
 	// ------------------------------------------------------------------------------------------------
 	void ConvertRotationKeys(aiNodeAnim* na, const std::vector<const AnimationCurveNode*>& nodes, 
-		const LayerMap& /*layers*/,
+		const LayerMap& layers, 
 		double& maxTime,
 		double& minTime,
 		Model::RotOrder order)

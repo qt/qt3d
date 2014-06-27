@@ -686,7 +686,7 @@ aiNode* ProcessSpatialStructure(aiNode* parent, const IfcProduct& el, Conversion
 	}
 
 	// add an output node for this spatial structure
-	std::unique_ptr<aiNode> nd(new aiNode());
+	std::auto_ptr<aiNode> nd(new aiNode());
 	nd->mName.Set(el.GetClassName()+"_"+(el.Name?el.Name.Get():"Unnamed")+"_"+el.GlobalId);
 	nd->mParent = parent;
 
@@ -773,7 +773,7 @@ aiNode* ProcessSpatialStructure(aiNode* parent, const IfcProduct& el, Conversion
 					const IfcFeatureElementSubtraction& open = fills->RelatedOpeningElement;
 
 					// move opening elements to a separate node since they are semantically different than elements that are just 'contained'
-					std::unique_ptr<aiNode> nd_aggr(new aiNode());
+					std::auto_ptr<aiNode> nd_aggr(new aiNode());
 					nd_aggr->mName.Set("$RelVoidsElement");
 					nd_aggr->mParent = nd.get();
 
@@ -818,7 +818,7 @@ aiNode* ProcessSpatialStructure(aiNode* parent, const IfcProduct& el, Conversion
 				}
 
 				// move aggregate elements to a separate node since they are semantically different than elements that are just 'contained'
-				std::unique_ptr<aiNode> nd_aggr(new aiNode());
+				std::auto_ptr<aiNode> nd_aggr(new aiNode());
 				nd_aggr->mName.Set("$RelAggregates");
 				nd_aggr->mParent = nd.get();
 

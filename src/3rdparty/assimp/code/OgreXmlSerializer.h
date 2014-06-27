@@ -38,61 +38,79 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ----------------------------------------------------------------------
 */
 
-#ifndef AI_OGREIMPORTER_H_INC
-#define AI_OGREIMPORTER_H_INC
+#ifndef AI_OGREXMLSERIALIZER_H_INC
+#define AI_OGREXMLSERIALIZER_H_INC
 
 #ifndef ASSIMP_BUILD_NO_OGRE_IMPORTER
 
-#include "BaseImporter.h"
-
 #include "OgreStructs.h"
-#include "OgreParsingUtils.h"
+#include "irrXMLWrapper.h"
 
 namespace Assimp
 {
 namespace Ogre
 {
 
-/**	Importer for Ogre mesh, skeleton and material formats.
-	@todo Support vertex colors.
-	@todo Support poses/animations from the mesh file. 
-	Currently only skeleton file animations are supported. */
-class OgreImporter : public BaseImporter
+typedef irr::io::IrrXMLReader XmlReader;
+typedef boost::shared_ptr<XmlReader> XmlReaderPtr;
+
+class OgreXmlSerializer
 {
 public:
-	/// BaseImporter override.
-	virtual bool CanRead(const std::string &pFile, IOSystem *pIOHandler, bool checkSig) const;
+	/// Imports mesh and returns the result.
+	/** @note Fatal unrecoverable errors will throw a DeadlyImportError. */
+	static MeshXml *ImportMesh(XmlReader *reader);
 	
-	/// BaseImporter override.
-	virtual void InternReadFile(const std::string &pFile, aiScene *pScene, IOSystem *pIOHandler);
-	
-	/// BaseImporter override.
-	virtual const aiImporterDesc *GetInfo() const;
-	
-	/// BaseImporter override.
-	virtual void SetupProperties(const Importer *pImp);
+	/// Imports skeleton to @c mesh.
+	/** If mesh does not have a skeleton reference or the skeleton file
+		cannot be found it is not a fatal DeadlyImportError.
+		@return If skeleton import was successful. */
+	static bool ImportSkeleton(Assimp::IOSystem *pIOHandler, MeshXml *mesh);
+	static bool ImportSkeleton(Assimp::IOSystem *pIOHandler, Mesh *mesh);
 
 private:
-	/// Read materials referenced by the @c mesh to @c pScene.
-	void ReadMaterials(const std::string &pFile, Assimp::IOSystem *pIOHandler, aiScene *pScene, Mesh *mesh);
-	void ReadMaterials(const std::string &pFile, Assimp::IOSystem *pIOHandler, aiScene *pScene, MeshXml *mesh);
-	void AssignMaterials(aiScene *pScene, std::vector<aiMaterial*> &materials);
+	OgreXmlSerializer(XmlReader *reader) :
+		m_reader(reader)
+	{
+	}
 	
-	/// Reads material
-	aiMaterial* ReadMaterial(const std::string &pFile, Assimp::IOSystem *pIOHandler, const std::string MaterialName);
+	static XmlReaderPtr OpenReader(Assimp::IOSystem *pIOHandler, const std::string &filename);
 
-	// These functions parse blocks from a material file from @c ss. Starting parsing from "{" and ending it to "}".
-	bool ReadTechnique(const std::string &techniqueName, std::stringstream &ss, aiMaterial *material);
-	bool ReadPass(const std::string &passName, std::stringstream &ss, aiMaterial *material);	
-	bool ReadTextureUnit(const std::string &textureUnitName, std::stringstream &ss, aiMaterial *material);
-
-	std::string m_userDefinedMaterialLibFile;
-	bool m_detectTextureTypeFromFilename;
+	// Mesh
+	void ReadMesh(MeshXml *mesh);
+	void ReadSubMesh(MeshXml *mesh);
 	
-	std::map<aiTextureType, unsigned int> m_textures;
+	void ReadGeometry(VertexDataXml *dest);
+	void ReadGeometryVertexBuffer(VertexDataXml *dest);
+	
+	void ReadBoneAssignments(VertexDataXml *dest);
+	
+	// Skeleton
+	void ReadSkeleton(Skeleton *skeleton);
+	
+	void ReadBones(Skeleton *skeleton);
+	void ReadBoneHierarchy(Skeleton *skeleton);
+	
+	void ReadAnimations(Skeleton *skeleton);
+	void ReadAnimationTracks(Animation *dest);
+	void ReadAnimationKeyFrames(Animation *anim, VertexAnimationTrack *dest);
+
+	template<typename T> 
+	T ReadAttribute(const std::string &name) const;
+	bool HasAttribute(const std::string &name) const;
+	
+	std::string &NextNode();
+	std::string &SkipCurrentNode();
+
+	bool CurrentNodeNameEquals(const std::string &name) const;
+	std::string CurrentNodeName(bool forceRead = false);
+		
+	XmlReader *m_reader;
+	std::string m_currentNodeName;
 };
+
 } // Ogre
 } // Assimp
 
 #endif // ASSIMP_BUILD_NO_OGRE_IMPORTER
-#endif // AI_OGREIMPORTER_H_INC
+#endif // AI_OGREXMLSERIALIZER_H_INC
