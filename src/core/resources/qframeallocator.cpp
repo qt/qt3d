@@ -48,7 +48,6 @@
  *
  */
 
-
 #include "qframeallocator.h"
 #include "qframeallocator_p.h"
 
@@ -240,6 +239,11 @@ void QFrameChunk::init(uint blockSize, uchar blocks)
     // Init each block with its position stored in its first byte
     for (uchar i = 0; i < blocks; p += blockSize)
         *p = ++i;
+#ifdef QFRAMEALLOCATOR_DEBUG
+    VALGRIND_CREATE_MEMPOOL(m_data, 0, true);
+    VALGRIND_MAKE_MEM_NOACCESS(m_data, blockSize * blocks);
+    VALGRIND_MEMPOOL_ALLOC(m_data, m_data, blockSize * blocks);
+#endif
 }
 
 void *QFrameChunk::allocate(uint blockSize)
@@ -284,6 +288,10 @@ void QFrameChunk::clear(uint blockSize, uchar blocks)
 
 void QFrameChunk::release()
 {
+#ifdef QFRAMEALLOCATOR_DEBUG
+    VALGRIND_MEMPOOL_FREE(m_data, m_data);
+    VALGRIND_DESTROY_MEMPOOL(m_data);
+#endif
     delete [] m_data;
 }
 

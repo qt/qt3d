@@ -42,6 +42,12 @@
 #ifndef QT3D_QFRAMEALLOCATOR_H
 #define QT3D_QFRAMEALLOCATOR_H
 
+
+#ifdef QFRAMEALLOCATOR_DEBUG
+#include <valgrind/valgrind.h>
+#include <valgrind/memcheck.h>
+#endif
+
 #include <QDebug>
 #include <QVector>
 #include <Qt3DCore/qt3dcore_global.h>
@@ -61,7 +67,6 @@ public:
     template<typename T>
     T* allocate()
     {
-#ifndef QFRAMEALLOCATOR_DEBUG
         uint allocatorIndex = allocatorIndexFromSize(sizeof(T)) - 1;
         if (allocatorIndex < allocatorIndexFromSize(maxObjectSize())) {
             T *ptr = static_cast<T*>(allocateAtChunk(allocatorIndex));
@@ -72,15 +77,11 @@ public:
             qWarning() << "Trying to allocate an object larger (" << sizeof(T) << ") than maxObjectSize (" << maxObjectSize() << ") Using operator new";
             return new T();
         }
-#else
-        return new T();
-#endif
     }
 
     template<typename T>
     void deallocate(T *ptr)
     {
-#ifndef QFRAMEALLOCATOR_DEBUG
         uint allocatorIndex = allocatorIndexFromSize(sizeof(T)) - 1;
         if (allocatorIndex < allocatorIndexFromSize(maxObjectSize())) {
             ptr->~T(); // Call destructor
@@ -90,9 +91,6 @@ public:
             qWarning() << "Trying to deallocate an object larger (" << sizeof(T) << ") than maxObjectSize (" << maxObjectSize() << ") Using operator delete";
             delete ptr;
         }
-#else
-        delete ptr;
-#endif
     }
 
     void clear();
