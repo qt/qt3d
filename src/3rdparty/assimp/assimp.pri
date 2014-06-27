@@ -20,6 +20,8 @@ DEFINES += ASSIMP_BUILD_NO_OWN_ZLIB
 # Stop compiler complaining about ignored qualifiers on return types
 gcc: QMAKE_CXXFLAGS += -Wno-ignored-qualifiers
 
+clang: CONFIG += warn_off
+
 VPATH += \
         $$PWD \
         $$PWD/code \
