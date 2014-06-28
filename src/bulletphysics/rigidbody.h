@@ -42,6 +42,8 @@
 #ifndef QT3D_BULLETPHYSICS_RIGIDBODY_H
 #define QT3D_BULLETPHYSICS_RIGIDBODY_H
 
+#include <Qt3DBulletPhysics/qt3dbulletphysics_global.h>
+
 #include <Qt3DCore/component.h>
 #include <QtGui/qvector3d.h>
 
@@ -55,7 +57,7 @@ namespace BulletPhysics {
 
 class RigidBodyPrivate;
 
-class RigidBody : public Qt3D::Component
+class QT3DBULLETPHYSICSSHARED_EXPORT RigidBody : public Qt3D::Component
 {
     Q_OBJECT
 
