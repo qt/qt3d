@@ -56,7 +56,7 @@
 #include <Qt3DRenderer/framegraph.h>
 #include <Qt3DRenderer/technique.h>
 #include <Qt3DRenderer/cameraselector.h>
-#include <Qt3DRenderer/effect.h>
+#include <Qt3DRenderer/qeffect.h>
 #include <Qt3DRenderer/parameter.h>
 #include <Qt3DRenderer/renderpasscriterion.h>
 #include <Qt3DRenderer/parametermapper.h>
@@ -81,7 +81,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterInterface<Qt3D::Render::QAbstractScene>("QAbstractScene");
     qmlRegisterExtendedType<Qt3D::Scene, Qt3D::Render::Quick::Quick3DScene>(uri, 2, 0, "Scene");
 //    qmlRegisterCustomType<Qt3D::Effect>(uri, 2, 0, "Effect", new Qt3D::Render::Quick::ShaderPropertyParser());
-    qmlRegisterExtendedType<Qt3D::Effect, Qt3D::Render::Quick::Quick3DEffect>(uri, 2, 0, "Effect");
+    qmlRegisterExtendedType<Qt3D::QEffect, Qt3D::Render::Quick::Quick3DEffect>(uri, 2, 0, "Effect");
     qmlRegisterExtendedType<Qt3D::Technique, Qt3D::Render::Quick::Quick3DTechnique>(uri, 2, 0, "Technique");
     qmlRegisterType<Qt3D::TechniqueCriterion>(uri, 2, 0, "TechniqueCriterion");
     qmlRegisterType<Qt3D::RenderPassCriterion>(uri, 2, 0, "RenderPassCriterion");

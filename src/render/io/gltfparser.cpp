@@ -49,7 +49,7 @@
 #include <qmaterial.h>
 #include <technique.h>
 #include <shaderprogram.h>
-#include <effect.h>
+#include <qeffect.h>
 #include <Qt3DCore/camera.h>
 #include <Qt3DCore/transform.h>
 #include <Qt3DCore/matrixtransform.h>
@@ -477,7 +477,7 @@ QMaterial* GLTFParser::material(QString id)
 
     Technique *technique = m_techniques.value(tname);
     if (!m_effectProxies.contains(tname)) {
-        Effect* eff = new Effect;
+        QEffect* eff = new QEffect;
         eff->setObjectName(tname);
         eff->addTechnique(technique);
         m_effectProxies[tname] = eff;

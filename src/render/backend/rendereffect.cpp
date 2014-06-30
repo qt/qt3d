@@ -47,7 +47,7 @@
 #include <Qt3DCore/qabstracttechnique.h>
 #include <Qt3DCore/qchangearbiter.h>
 #include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DRenderer/effect.h>
+#include <Qt3DRenderer/qeffect.h>
 #include <Qt3DRenderer/parameter.h>
 
 QT_BEGIN_NAMESPACE
@@ -80,8 +80,8 @@ void RenderEffect::setPeer(QAbstractEffect *effect)
             arbiter->registerObserver(this, m_peer, ComponentUpdated);
             m_techniques.append(m_peer->techniques());
             m_parameterPack.clear();
-            if (qobject_cast<Effect*>(m_peer))
-                Q_FOREACH (Parameter *p, qobject_cast<Effect*>(m_peer)->parameters())
+            if (qobject_cast<QEffect*>(m_peer))
+                Q_FOREACH (Parameter *p, qobject_cast<QEffect*>(m_peer)->parameters())
                     m_parameterPack.appendParameter(p);
         }
     }

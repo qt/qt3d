@@ -62,7 +62,7 @@ namespace Qt3D {
 
 class QMaterial;
 class ShaderProgram;
-class Effect;
+class QEffect;
 class Camera;
 class Texture;
 class QMesh;
@@ -120,7 +120,7 @@ private :
 
     QMap<uint, QMesh *> m_meshes;
     QMap<uint, QMaterial*> m_materials;
-    QMap<uint, Effect *> m_effects;
+    QMap<uint, QEffect *> m_effects;
     QMap<uint, Texture*> m_embeddedTextures;
     QMap<QString, Texture*> m_materialTextures;
     QMap<aiNode*, Entity*> m_cameras;

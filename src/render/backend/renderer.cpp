@@ -91,7 +91,7 @@
 #include <Qt3DCore/cameralens.h>
 #include <Qt3DCore/qabstracteffect.h>
 
-#include <effect.h>
+#include <qeffect.h>
 #include <QStack>
 #include <QSurface>
 #include <QElapsedTimer>
@@ -212,7 +212,7 @@ void Renderer::buildDefaultMaterial()
     m_defaultMaterial->addParameter(new Parameter(m_defaultMaterial, QStringLiteral("ambient"), QVector3D(0.2f, 0.2f, 0.2f)));
     m_defaultMaterial->addParameter(new Parameter(m_defaultMaterial, QStringLiteral("diffuse"), QVector3D(1.0f, 0.5f, 0.0f)));
 
-    Effect* defEff = new Effect;
+    QEffect* defEff = new QEffect;
     defEff->addTechnique(m_defaultTechnique);
     m_defaultMaterial->setEffect(defEff);
 

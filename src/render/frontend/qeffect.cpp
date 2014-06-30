@@ -39,41 +39,76 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_EFFECT_H
-#define QT3D_EFFECT_H
+#include "qeffect.h"
+#include "technique.h"
+#include "parameter.h"
 
-#include <Qt3DCore/qabstracteffect.h>
-#include <Qt3DCore/node.h>
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class Parameter;
-class EffectPrivate;
-
-class QT3DRENDERERSHARED_EXPORT Effect
-        : public QAbstractEffect
+class QEffectPrivate
 {
-    Q_OBJECT
-public:
-    explicit Effect(Node *parent = 0);
+public :
+    QEffectPrivate(QEffect *qq)
+        : q_ptr(qq)
+    {}
 
-    void addTechnique(QAbstractTechnique *t) Q_DECL_OVERRIDE;
-    void removeTechnique(QAbstractTechnique *t) Q_DECL_OVERRIDE;
-
-    void addParameter(Parameter *parameter);
-    void removeParameter(Parameter *parameter);
-    QList<Parameter *> parameters() const;
-
-private:
-    Q_DECLARE_PRIVATE(Effect)
-    EffectPrivate *d_ptr;
+    QList<Parameter *> m_parameters;
+    Q_DECLARE_PUBLIC(QEffect)
+    QEffect *q_ptr;
 };
+
+QEffect::QEffect(Node *parent)
+    : QAbstractEffect(parent)
+    , d_ptr(new QEffectPrivate(this))
+{
+}
+
+void QEffect::addTechnique(QAbstractTechnique *t)
+{
+    // In the C++ API we are responsible for setting the parent
+    // Qml API is automatically handled by the Qml Engine
+    if (!t->parent())
+        t->setParent(this);
+    QAbstractEffect::addTechnique(t);
+}
+
+void QEffect::removeTechnique(QAbstractTechnique *t)
+{
+    QAbstractEffect::removeTechnique(t);
+}
+
+void QEffect::addParameter(Parameter *parameter)
+{
+    Q_D(QEffect);
+    if (!d->m_parameters.contains(parameter)) {
+        d->m_parameters.append(parameter);
+        QScenePropertyChangePtr change(new QScenePropertyChange(ComponentAdded, this));
+        change->m_propertyName = QByteArrayLiteral("parameter");
+        change->m_value = QVariant::fromValue(parameter);
+        notifyObservers(change);
+    }
+}
+
+void QEffect::removeParameter(Parameter *parameter)
+{
+    Q_D(QEffect);
+    d->m_parameters.removeOne(parameter);
+    QScenePropertyChangePtr change(new QScenePropertyChange(ComponentRemoved, this));
+    change->m_propertyName = QByteArrayLiteral("parameter");
+    change->m_value = QVariant::fromValue(parameter);
+    notifyObservers(change);
+}
+
+QList<Parameter *> QEffect::parameters() const
+{
+    Q_D(const QEffect);
+    return d->m_parameters;
+}
 
 } // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_EFFECT_H

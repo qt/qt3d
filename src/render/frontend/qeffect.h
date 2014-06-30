@@ -39,76 +39,41 @@
 **
 ****************************************************************************/
 
-#include "effect.h"
-#include "technique.h"
-#include "parameter.h"
+#ifndef QT3D_QEFFECT_H
+#define QT3D_QEFFECT_H
 
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qabstracteffect.h>
+#include <Qt3DCore/node.h>
+#include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class EffectPrivate
-{
-public :
-    EffectPrivate(Effect *qq)
-        : q_ptr(qq)
-    {}
+class Parameter;
+class QEffectPrivate;
 
-    QList<Parameter *> m_parameters;
-    Q_DECLARE_PUBLIC(Effect)
-    Effect *q_ptr;
+class QT3DRENDERERSHARED_EXPORT QEffect
+        : public QAbstractEffect
+{
+    Q_OBJECT
+public:
+    explicit QEffect(Node *parent = 0);
+
+    void addTechnique(QAbstractTechnique *t) Q_DECL_OVERRIDE;
+    void removeTechnique(QAbstractTechnique *t) Q_DECL_OVERRIDE;
+
+    void addParameter(Parameter *parameter);
+    void removeParameter(Parameter *parameter);
+    QList<Parameter *> parameters() const;
+
+private:
+    Q_DECLARE_PRIVATE(QEffect)
+    QEffectPrivate *d_ptr;
 };
-
-Effect::Effect(Node *parent)
-    : QAbstractEffect(parent)
-    , d_ptr(new EffectPrivate(this))
-{
-}
-
-void Effect::addTechnique(QAbstractTechnique *t)
-{
-    // In the C++ API we are responsible for setting the parent
-    // Qml API is automatically handled by the Qml Engine
-    if (!t->parent())
-        t->setParent(this);
-    QAbstractEffect::addTechnique(t);
-}
-
-void Effect::removeTechnique(QAbstractTechnique *t)
-{
-    QAbstractEffect::removeTechnique(t);
-}
-
-void Effect::addParameter(Parameter *parameter)
-{
-    Q_D(Effect);
-    if (!d->m_parameters.contains(parameter)) {
-        d->m_parameters.append(parameter);
-        QScenePropertyChangePtr change(new QScenePropertyChange(ComponentAdded, this));
-        change->m_propertyName = QByteArrayLiteral("parameter");
-        change->m_value = QVariant::fromValue(parameter);
-        notifyObservers(change);
-    }
-}
-
-void Effect::removeParameter(Parameter *parameter)
-{
-    Q_D(Effect);
-    d->m_parameters.removeOne(parameter);
-    QScenePropertyChangePtr change(new QScenePropertyChange(ComponentRemoved, this));
-    change->m_propertyName = QByteArrayLiteral("parameter");
-    change->m_value = QVariant::fromValue(parameter);
-    notifyObservers(change);
-}
-
-QList<Parameter *> Effect::parameters() const
-{
-    Q_D(const Effect);
-    return d->m_parameters;
-}
 
 } // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_QEFFECT_H
