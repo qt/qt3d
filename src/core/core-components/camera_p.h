@@ -53,7 +53,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class CameraPrivate
+class QT3DCORESHARED_EXPORT CameraPrivate
 {
 public:
     CameraPrivate(Camera *qq)

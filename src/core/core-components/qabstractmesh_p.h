@@ -54,7 +54,7 @@ namespace Qt3D {
 
 class QAbstractMesh;
 
-class QAbstractMeshPrivate : public ComponentPrivate
+class QT3DCORESHARED_EXPORT QAbstractMeshPrivate : public ComponentPrivate
 {
 public:
     QAbstractMeshPrivate(QAbstractMesh *qq);

@@ -52,7 +52,7 @@ namespace Qt3D {
 class QAbstractMaterial;
 class QAbstractEffect;
 
-class QAbstractMaterialPrivate : public ComponentPrivate
+class QT3DCORESHARED_EXPORT QAbstractMaterialPrivate : public ComponentPrivate
 {
 public :
     QAbstractMaterialPrivate(QAbstractMaterial *qq);
