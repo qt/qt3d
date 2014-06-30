@@ -40,6 +40,7 @@
 ****************************************************************************/
 
 #include "qmaterial.h"
+#include "qmaterial_p.h"
 #include <texture.h>
 #include <Qt3DCore/qabstracteffect.h>
 #include "renderlogging.h"
@@ -50,22 +51,18 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QMaterialPrivate
-{
-public:
-    QMaterialPrivate(QMaterial *qq)
-        : q_ptr(qq)
+
+QMaterialPrivate::QMaterialPrivate(QMaterial *qq)
+        : QAbstractMaterialPrivate(qq)
     {}
 
-    QList<Parameter *> m_parameters;
-    TextureDict m_textures;
-    Q_DECLARE_PUBLIC(QMaterial)
-    QMaterial *q_ptr;
-};
+QMaterial::QMaterial(QMaterialPrivate &dd, Node *parent)
+    : QAbstractMaterial(dd, parent)
+{
+}
 
 QMaterial::QMaterial(Node *parent)
-    : QAbstractMaterial(parent)
-    , d_ptr(new QMaterialPrivate(this))
+    : QAbstractMaterial(*new QMaterialPrivate(this), parent)
 {
 }
 

@@ -39,51 +39,28 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QMATERIAL_H
-#define QT3D_QMATERIAL_H
+#ifndef QT3D_QMATERIAL_P_H
+#define QT3D_QMATERIAL_P_H
 
-#include <QVariant>
-
-#include <Qt3DCore/component.h>
-#include <Qt3DCore/qabstracteffect.h>
-#include <Qt3DCore/qabstractmaterial.h>
-
-#include <Qt3DRenderer/tag.h>
+#include <private/qabstractmaterial_p.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class Texture;
-class Parameter;
-class QMaterialPrivate;
-typedef QMap<QString, Texture*> TextureDict;
-
-class QT3DRENDERERSHARED_EXPORT QMaterial : public QAbstractMaterial
+class QT3DCORESHARED_EXPORT QMaterialPrivate : public QAbstractMaterialPrivate
 {
-    Q_OBJECT
-
 public:
-    explicit QMaterial(Node *parent = 0);
+    QMaterialPrivate(QMaterial *qq);
 
-    void setEffect(QAbstractEffect *effect) Q_DECL_OVERRIDE;
-
-    void addParameter(Parameter *parameter);
-    void removeParameter(Parameter *parameter);
-    QList<Parameter *> parameters() const;
-
-    TextureDict textureValues() const;
-
-    void setTextureParameter(QString name, Texture* tex);
-
-protected:
-    Q_DECLARE_PRIVATE(QMaterial)
-    QMaterial(QMaterialPrivate &dd, Node *parent = 0);
+    QList<Parameter *> m_parameters;
+    TextureDict m_textures;
+    Q_DECLARE_PUBLIC(QMaterial)
 };
 
-}
+} // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QMATERIAL_H
+#endif // QT3D_QMATERIAL_P_H
