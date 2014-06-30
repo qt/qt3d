@@ -39,90 +39,56 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_SHAPE_H
-#define QT3D_SHAPE_H
+#ifndef QT3D_QTORUSMESH_H
+#define QT3D_QTORUSMESH_H
 
-#include <Qt3DCore/component.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
-
-#include <Qt3DRenderer/meshdata.h>
+#include <Qt3DRenderer/qabstractshapemesh.h>
 
 QT_BEGIN_NAMESPACE
 
+
 namespace Qt3D {
 
-class Mesh;
+class QTorusMeshPrivate;
 
-class QT3DRENDERERSHARED_EXPORT Shape : public Qt3D::Component
+class QT3DRENDERERSHARED_EXPORT QTorusMesh : public Qt3D::QAbstractShapeMesh
 {
     Q_OBJECT
-
-    Q_ENUMS(ShapeType)
-
-    Q_PROPERTY(ShapeType type READ type WRITE setType NOTIFY typeChanged)
-
-    Q_PROPERTY(bool generateTangents READ generateTangents
-               WRITE setGenerateTangents
-               NOTIFY shapeChanged)
-
-    Q_PROPERTY(int rings READ rings WRITE setRings NOTIFY shapeChanged)
-    Q_PROPERTY(int slices READ slices WRITE setSlices NOTIFY shapeChanged)
-
-    Q_PROPERTY(double radius READ radius WRITE setRadius NOTIFY shapeChanged)
-    Q_PROPERTY(double minorRadius READ minorRadius WRITE setMinorRadius NOTIFY shapeChanged)
-
+    Q_PROPERTY(int rings READ rings WRITE setRings NOTIFY ringsChanged)
+    Q_PROPERTY(int slices READ slices WRITE setSlices NOTIFY slicesChanged)
+    Q_PROPERTY(float radius READ radius WRITE setRadius NOTIFY radiusChanged)
+    Q_PROPERTY(float minorRadius READ minorRadius WRITE setMinorRadius NOTIFY minorRadiusChanged)
 public:
-    explicit Shape(Node *parent = 0);
+    explicit QTorusMesh(Node *parent = 0);
 
-    enum ShapeType
-    {
-        ShapeCube,
-        ShapeSphere,
-        ShapeCylinder,
-        ShapeTorus
-    };
-
-    ShapeType type() const;
-
-    MeshDataPtr data() const;
-    Mesh *mesh();
+    void setRings(int rings);
+    void setSlices(int slices);
+    void setRadius(float radius);
+    void setMinorRadius(float minorRadius);
 
     int rings() const;
     int slices() const;
-    bool generateTangents() const;
-    double radius() const;
-    double minorRadius() const;
+    float radius() const;
+    float minorRadius() const;
+
+    MeshDataPtr data() const Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
 
-    void typeChanged(ShapeType arg);
-    void shapeChanged();
-
-public slots:
-
-    void setType(ShapeType arg);
-    void setRings(int arg);
-    void setSlices(int arg);
-
-    void setGenerateTangents(bool gen);
-
-    void setRadius(double arg);
-    void setMinorRadius(double arg);
+    void radiusChanged();
+    void minorRadiusChanged();
+    void ringsChanged();
+    void slicesChanged();
 
 private:
-    bool m_rebuildMesh,
-        m_generateTangents;
-    ShapeType m_type;
-    int m_rings,
-    m_slices;
-    double m_radius;
-    double m_minorRadius;
-    Mesh *m_mesh;
-    bool m_loaded;
+    Q_DECLARE_PRIVATE(QTorusMesh)
+
+    static MeshDataPtr createTorusMesh(double radius, double minorRadius, int rings, int sides);
 };
 
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_SHAPE_H
+#endif // QT3D_QTORUSMESH_H

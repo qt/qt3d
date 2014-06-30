@@ -51,7 +51,7 @@
 #include <Qt3DRenderer/renderpassfilter.h>
 #include <Qt3DRenderer/techniquefilter.h>
 #include <Qt3DRenderer/rendertargetselector.h>
-#include <Qt3DRenderer/shape.h>
+#include <Qt3DRenderer/qabstractshapemesh.h>
 #include <Qt3DRenderer/texture.h>
 #include <Qt3DRenderer/framegraph.h>
 #include <Qt3DRenderer/technique.h>
@@ -60,6 +60,8 @@
 #include <Qt3DRenderer/parameter.h>
 #include <Qt3DRenderer/renderpasscriterion.h>
 #include <Qt3DRenderer/parametermapper.h>
+#include <Qt3DRenderer/qspheremesh.h>
+#include <Qt3DRenderer/qtorusmesh.h>
 #include <Qt3DQuickRenderer/quick3dtechnique.h>
 #include <Qt3DQuickRenderer/quick3dmaterial.h>
 #include <Qt3DQuickRenderer/quick3dtechniquefilter.h>
@@ -90,7 +92,9 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterExtendedType<Qt3D::Material, Qt3D::Render::Quick::Quick3DMaterial>(uri, 2, 0, "Material");
     qmlRegisterExtendedType<Qt3D::RenderPass, Qt3D::Render::Quick::Quick3DRenderPass>(uri, 2, 0, "RenderPass");
     qmlRegisterType<Qt3D::ShaderProgram>(uri, 2, 0, "ShaderProgram");
-    qmlRegisterType<Qt3D::Shape>(uri, 2, 0, "Shape");
+    qmlRegisterUncreatableType<Qt3D::QAbstractShapeMesh>(uri, 2, 0, "Shape", QStringLiteral("Shape is an abstract base class"));
+    qmlRegisterType<Qt3D::QTorusMesh>(uri, 2, 0, "TorusMesh");
+    qmlRegisterType<Qt3D::QSphereMesh>(uri, 2, 0, "SphereMesh");
     qmlRegisterExtendedType<Qt3D::Texture, Qt3D::Render::Quick::Quick3DTexture>(uri, 2, 0, "Texture");
     // Framegraph components - TODO RenderTarget, RenderTargetSelector
     qmlRegisterExtendedType<Qt3D::CameraSelector, Qt3D::Quick::Quick3DNode>(uri, 2, 0, "CameraSelector");

@@ -57,7 +57,7 @@
 #include <technique.h>
 #include <shaderprogram.h>
 #include <renderpass.h>
-#include <shape.h>
+#include <qabstractshapemesh.h>
 #include <cameramanager.h>
 #include <meshdatamanager.h>
 #include <meshmanager.h>

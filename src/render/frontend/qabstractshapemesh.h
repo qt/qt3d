@@ -39,77 +39,39 @@
 **
 ****************************************************************************/
 
-import Qt3D 2.0
-import Qt3D.Render 2.0
+#ifndef QT3D_QABSTRACTSHAPEMESH_H
+#define QT3D_QABSTRACTSHAPEMESH_H
 
-// For Qt.vector3d() and friends. For some reason this is provided by
-// QQuickValueTypeProvider in QtQuick rather than the default value
-// type provider in QtQml. So we will need to replicate this in Qt3D
-// for the types that we wish to support. Otherwise we'll have to import
-// QtQuick 2.1 all over the place.
-import QtQuick 2.1 as QQ2
+#include <Qt3DCore/component.h>
+#include <Qt3DRenderer/qt3drenderer_global.h>
 
-Entity {
-    id: sceneRoot
+#include <Qt3DRenderer/meshdata.h>
 
-    Camera {
-        id: camera
-        lens : CameraLens {
-            projectionType: CameraLens.PerspectiveProjection
-            fieldOfView: 45
-            aspectRatio: 16/9
-            nearPlane : 0.1
-            farPlane : 1000.0
-        }
+QT_BEGIN_NAMESPACE
 
-        transform : Transform {
-            LookAt {
-                position: Qt.vector3d( 0.0, 0.0, -20.0 )
-                upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
-                viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
-            }
-        }
-    }
+namespace Qt3D {
 
-    Configuration  {
-        controlledCamera: camera
-    }
+class Mesh;
 
-    FrameGraph {
-        id : external_forward_renderer
-        activeFrameGraph : ForwardRenderer {
-            camera: camera
-        }
-    }
+class QAbstractShapeMeshPrivate;
 
-    components: [external_forward_renderer]
+class QT3DRENDERERSHARED_EXPORT QAbstractShapeMesh : public Qt3D::Component
+{
+    Q_OBJECT
 
-    TorusMesh {
-        id: mesh
-        radius: 5
-        minorRadius: 1
-        rings: 100
-        slices: 20
-    }
+public:
+    explicit QAbstractShapeMesh(Node *parent = 0);
 
-    Transform {
-        id: transform
-        Scale { scale3D: Qt.vector3d(1.5, 1, 0.5) }
-        Rotate {
-            angle: 45
-            axis: Qt.vector3d(1, 0, 0)
-        }
-    }
+    virtual MeshDataPtr data() const = 0;
+    Mesh *mesh();
 
-    Material {
-        id: material
-        effect : Effect {
-        }
-    }
+protected:
+    Q_DECLARE_PRIVATE(QAbstractShapeMesh)
+    QAbstractShapeMesh(QAbstractShapeMeshPrivate &dd, Node* parent = 0);
+};
 
-    Entity {
-        id: mainEntity
-        objectName: "mainEntity"
-        components: [ mesh, material, transform ]
-    }
-}
+} // namespace Qt3D
+
+QT_END_NAMESPACE
+
+#endif // QT3D_QABSTRACTSHAPEMESH_H

@@ -52,7 +52,7 @@
 #include "qabstractscene.h"
 #include <material.h>
 #include <mesh.h>
-#include <shape.h>
+#include <qabstractshapemesh.h>
 
 #include <framegraph.h>
 #include <viewport.h>
@@ -265,7 +265,7 @@ void RenderSceneBuilder::createRenderMesh(Entity *entity)
 {
     QList<Mesh *> meshes = entity->componentsOfType<Mesh>();
     // Build Meshes from Shapes
-    QList<Shape *> shapes = entity->componentsOfType<Shape>();
+    QList<QAbstractShapeMesh *> shapes = entity->componentsOfType<QAbstractShapeMesh>();
     if (!shapes.empty())
        meshes.append(shapes.first()->mesh());
     if (!meshes.isEmpty()) {

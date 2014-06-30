@@ -9,7 +9,7 @@ HEADERS += \
     $$PWD/technique.h \
     $$PWD/techniquefilter.h \
     $$PWD/tag.h \
-    $$PWD/shape.h \
+    $$PWD/qabstractshapemesh.h \
     $$PWD/qitemmodelbuffer.h \
     $$PWD/texture.h \
     $$PWD/sphere.h \
@@ -26,7 +26,10 @@ HEADERS += \
     $$PWD/renderpasscriterion.h \
     $$PWD/parameter.h \
     $$PWD/framegraph_p.h \
-    $$PWD/parametermapper.h
+    $$PWD/parametermapper.h \
+    $$PWD/qtorusmesh.h \
+    $$PWD/qspheremesh.h \
+    $$PWD/qabstractshapemesh_p.h
 
 SOURCES += \
     $$PWD/material.cpp \
@@ -34,7 +37,7 @@ SOURCES += \
     $$PWD/renderpass.cpp \
     $$PWD/shaderprogram.cpp \
     $$PWD/technique.cpp \
-    $$PWD/shape.cpp \
+    $$PWD/qabstractshapemesh.cpp \
     $$PWD/qitemmodelbuffer.cpp \
     $$PWD/texture.cpp \
     $$PWD/sphere.cpp \
@@ -46,4 +49,6 @@ SOURCES += \
     $$PWD/techniquecriterion.cpp \
     $$PWD/renderpasscriterion.cpp \
     $$PWD/parameter.cpp \
-    $$PWD/parametermapper.cpp
+    $$PWD/parametermapper.cpp \
+    $$PWD/qtorusmesh.cpp \
+    $$PWD/qspheremesh.cpp

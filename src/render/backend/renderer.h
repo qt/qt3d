@@ -71,7 +71,7 @@ class Material;
 class ShaderProgram;
 class Mesh;
 class RenderPass;
-class Shape;
+class QAbstractShapeMesh;
 class RendererAspect;
 class QFrameAllocator;
 

@@ -39,77 +39,43 @@
 **
 ****************************************************************************/
 
-import Qt3D 2.0
-import Qt3D.Render 2.0
+#include "qabstractshapemesh.h"
+#include "qabstractshapemesh_p.h"
+#include "mesh.h"
 
-// For Qt.vector3d() and friends. For some reason this is provided by
-// QQuickValueTypeProvider in QtQuick rather than the default value
-// type provider in QtQml. So we will need to replicate this in Qt3D
-// for the types that we wish to support. Otherwise we'll have to import
-// QtQuick 2.1 all over the place.
-import QtQuick 2.1 as QQ2
+#include "renderlogging.h"
 
-Entity {
-    id: sceneRoot
+QT_BEGIN_NAMESPACE
 
-    Camera {
-        id: camera
-        lens : CameraLens {
-            projectionType: CameraLens.PerspectiveProjection
-            fieldOfView: 45
-            aspectRatio: 16/9
-            nearPlane : 0.1
-            farPlane : 1000.0
-        }
+namespace Qt3D {
 
-        transform : Transform {
-            LookAt {
-                position: Qt.vector3d( 0.0, 0.0, -20.0 )
-                upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
-                viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
-            }
-        }
-    }
-
-    Configuration  {
-        controlledCamera: camera
-    }
-
-    FrameGraph {
-        id : external_forward_renderer
-        activeFrameGraph : ForwardRenderer {
-            camera: camera
-        }
-    }
-
-    components: [external_forward_renderer]
-
-    TorusMesh {
-        id: mesh
-        radius: 5
-        minorRadius: 1
-        rings: 100
-        slices: 20
-    }
-
-    Transform {
-        id: transform
-        Scale { scale3D: Qt.vector3d(1.5, 1, 0.5) }
-        Rotate {
-            angle: 45
-            axis: Qt.vector3d(1, 0, 0)
-        }
-    }
-
-    Material {
-        id: material
-        effect : Effect {
-        }
-    }
-
-    Entity {
-        id: mainEntity
-        objectName: "mainEntity"
-        components: [ mesh, material, transform ]
-    }
+QAbstractShapeMeshPrivate::QAbstractShapeMeshPrivate(QAbstractShapeMesh *qq)
+    : ComponentPrivate(qq)
+    , m_mesh(new Mesh())
+    , m_loaded(false)
+{
 }
+
+QAbstractShapeMesh::QAbstractShapeMesh(Node *parent) :
+    Qt3D::Component(*new QAbstractShapeMeshPrivate(this), parent)
+{
+}
+
+Mesh *QAbstractShapeMesh::mesh()
+{
+    Q_D(QAbstractShapeMesh);
+    if (!d->m_loaded) {
+        d->m_mesh->setData(data());
+        d->m_loaded = true;
+    }
+    return d->m_mesh;
+}
+
+QAbstractShapeMesh::QAbstractShapeMesh(QAbstractShapeMeshPrivate &dd, Node *parent)
+    : Component(dd, parent)
+{
+}
+
+} // namespace Qt3D
+
+QT_END_NAMESPACE

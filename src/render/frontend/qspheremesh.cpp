@@ -40,18 +40,105 @@
 ****************************************************************************/
 
 #define _USE_MATH_DEFINES // For MSVC
-#include "shape.h"
-#include "mesh.h"
-#include <cmath>
-
+#include "qspheremesh.h"
 #include "renderlogging.h"
+#include "qabstractshapemesh_p.h"
+
+#include <cmath>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
-namespace {
 
-MeshDataPtr createSphereMesh(double radius, int rings, int slices, bool hasTangents)
+class QSphereMeshPrivate : public QAbstractShapeMeshPrivate
+{
+    QSphereMeshPrivate(QSphereMesh *qq)
+        : QAbstractShapeMeshPrivate(qq)
+        , m_generateTangents(false)
+        , m_rings(16)
+        , m_slices(16)
+        , m_radius(1.0)
+    {}
+
+    Q_DECLARE_PUBLIC (QSphereMesh)
+    bool m_generateTangents;
+    int m_rings;
+    int m_slices;
+    float m_radius;
+};
+
+QSphereMesh::QSphereMesh(Node *parent)
+    : QAbstractShapeMesh(*new QSphereMeshPrivate(this), parent)
+{
+}
+
+void QSphereMesh::setRings(int rings)
+{
+    Q_D(QSphereMesh);
+    if (rings != d->m_rings) {
+        d->m_rings = rings;
+        emit ringsChanged();
+    }
+}
+
+void QSphereMesh::setSlices(int slices)
+{
+    Q_D(QSphereMesh);
+    if (slices != d->m_slices) {
+        d->m_slices = slices;
+        emit slicesChanged();
+    }
+}
+
+void QSphereMesh::setRadius(float radius)
+{
+    Q_D(QSphereMesh);
+    if (radius != d->m_radius) {
+        d->m_radius = radius;
+        emit radiusChanged();
+    }
+}
+
+void QSphereMesh::setGenerateTangents(bool gen)
+{
+    Q_D(QSphereMesh);
+    if (d->m_generateTangents != gen) {
+        d->m_generateTangents = gen;
+        emit generateTangentsChanged();
+    }
+}
+
+bool QSphereMesh::generateTangents() const
+{
+    Q_D(const QSphereMesh);
+    return d->m_generateTangents;
+}
+
+int QSphereMesh::rings() const
+{
+    Q_D(const QSphereMesh);
+    return d->m_rings;
+}
+
+int QSphereMesh::slices() const
+{
+    Q_D(const QSphereMesh);
+    return d->m_slices;
+}
+
+float QSphereMesh::radius() const
+{
+    Q_D(const QSphereMesh);
+    return d->m_radius;
+}
+
+MeshDataPtr QSphereMesh::data() const
+{
+    Q_D(const QSphereMesh);
+    return createSphereMesh(d->m_radius, d->m_rings, d->m_slices, d->m_generateTangents);
+}
+
+MeshDataPtr QSphereMesh::createSphereMesh(double radius, int rings, int slices, bool hasTangents)
 {
     MeshDataPtr mesh(new MeshData(GL_TRIANGLES));
 
@@ -183,218 +270,6 @@ MeshDataPtr createSphereMesh(double radius, int rings, int slices, bool hasTange
     return mesh;
 }
 
-
-MeshDataPtr createTorusMesh(double radius, double minorRadius,
-                            int rings, int sides)
-{
-    MeshDataPtr mesh(new MeshData(GL_TRIANGLES));
-
-    int nVerts  = sides * ( rings + 1 );
-    QByteArray bufferBytes;
-    // vec3 pos, vec2 texCoord, vec3 normal
-    quint32 elementSize = 3 + 2 + 3;
-    quint32 stride = elementSize * sizeof(float);
-    bufferBytes.resize(stride * nVerts);
-
-    float* fptr = reinterpret_cast<float*>(bufferBytes.data());
-
-    float ringFactor = (M_PI * 2) / static_cast<float>( rings );
-    float sideFactor = (M_PI * 2) / static_cast<float>( sides );
-
-    for ( int ring = 0; ring <= rings; ring++ )
-    {
-        float u = ring * ringFactor;
-        float cu = cos( u );
-        float su = sin( u );
-
-        for ( int side = 0; side < sides; side++ )
-        {
-            float v = side * sideFactor;
-            float cv = cos( v );
-            float sv = sin( v );
-            float r = ( radius + minorRadius * cv );
-
-            *fptr++ = r * cu;
-            *fptr++ = r * su;
-            *fptr++ = minorRadius * sv;
-
-
-            *fptr++ = u / (M_PI * 2);
-            *fptr++ = v / (M_PI * 2);
-
-            QVector3D n(cv * cu * r, cv * su * r, sv * r);
-            n.normalize();
-            *fptr++ = n.x();
-            *fptr++ = n.y();
-            *fptr++ = n.z();
-        }
-    }
-
-    BufferPtr buf(new Buffer(QOpenGLBuffer::VertexBuffer));
-    buf->setUsage(QOpenGLBuffer::StaticDraw);
-    buf->setData(bufferBytes);
-
-    mesh->addAttribute(QStringLiteral("position"), new Attribute(buf, GL_FLOAT_VEC3, nVerts, 0, stride));
-    quint32 offset = sizeof(float) * 3;
-
-    mesh->addAttribute(QStringLiteral("texcoord"), new Attribute(buf, GL_FLOAT_VEC2, nVerts, offset, stride));
-    offset += sizeof(float) * 2;
-
-    mesh->addAttribute(QStringLiteral("normal"), new Attribute(buf, GL_FLOAT_VEC3, nVerts, offset, stride));
-    offset += sizeof(float) * 3;
-
-    QByteArray indexBytes;
-    int faces = (sides * 2) * rings; // two tris per side, for all rings
-    int indices = faces * 3;
-    Q_ASSERT(indices < 65536);
-    indexBytes.resize(indices * sizeof(quint16));
-    quint16* indexPtr = reinterpret_cast<quint16*>(indexBytes.data());
-
-    for ( int ring = 0; ring < rings; ring++ )
-    {
-        int ringStart = ring * sides;
-        int nextRingStart = ( ring + 1 ) * sides;
-        for ( int side = 0; side < sides; side++ )
-        {
-            int nextSide = ( side + 1 ) % sides;
-            *indexPtr++ = ( ringStart + side );
-            *indexPtr++ = ( nextRingStart + side );
-            *indexPtr++ = ( nextRingStart + nextSide );
-            *indexPtr++ = ringStart + side;
-            *indexPtr++ = nextRingStart + nextSide;
-            *indexPtr++ = ( ringStart + nextSide );
-        }
-    }
-
-    BufferPtr indexBuffer(new Buffer(QOpenGLBuffer::IndexBuffer));
-    indexBuffer->setUsage(QOpenGLBuffer::StaticDraw);
-    indexBuffer->setData(indexBytes);
-    mesh->setIndexAttr(AttributePtr(new Attribute(indexBuffer, GL_UNSIGNED_SHORT, indices, 0, 0)));
-
-    mesh->computeBoundsFromAttribute(QStringLiteral("position"));
-
-    return mesh;
-}
-
-} // anonymous namespace
-
-Shape::Shape(Node *parent) :
-    Qt3D::Component(parent),
-    m_generateTangents(false),
-    m_type(ShapeSphere),
-    m_rings(16),
-    m_slices(16),
-    m_radius(1.0),
-    m_minorRadius(1.0),
-    m_mesh(new Mesh(this)),
-    m_loaded(false)
-{
-}
-
-Shape::ShapeType Shape::type() const
-{
-    return m_type;
-}
-
-MeshDataPtr Shape::data() const
-{
-    if (m_type == ShapeTorus)
-        return createTorusMesh(m_radius, m_minorRadius, m_rings, m_slices);
-
-    return createSphereMesh(m_radius, m_rings, m_slices, m_generateTangents);
-}
-
-Mesh *Shape::mesh()
-{
-    if (!m_loaded) {
-        m_mesh->setData(data());
-        m_loaded = true;
-    }
-    return m_mesh;
-}
-
-int Shape::rings() const
-{
-    return m_rings;
-}
-
-int Shape::slices() const
-{
-    return m_slices;
-}
-
-bool Shape::generateTangents() const
-{
-    return m_generateTangents;
-}
-
-double Shape::radius() const
-{
-    return m_radius;
-}
-
-double Shape::minorRadius() const
-{
-    return m_minorRadius;
-}
-
-void Shape::setType(Shape::ShapeType arg)
-{
-    if (m_type != arg) {
-        m_type = arg;
-        m_rebuildMesh = true;
-        emit typeChanged(arg);
-    }
-}
-
-void Shape::setRings(int arg)
-{
-    if (m_rings == arg)
-        return;
-
-    m_rings = arg;
-    m_rebuildMesh = true;
-    emit shapeChanged();
-}
-
-void Shape::setSlices(int arg)
-{
-    if (m_slices == arg)
-        return;
-
-    m_slices = arg;
-    m_rebuildMesh = true;
-    emit shapeChanged();
-}
-
-void Shape::setGenerateTangents(bool gen)
-{
-    if (m_generateTangents == gen)
-        return;
-
-    m_generateTangents = gen;
-    m_rebuildMesh = true;
-    emit shapeChanged();
-}
-
-void Shape::setRadius(double arg)
-{
-    if (m_radius != arg) {
-        m_radius = arg;
-        m_rebuildMesh = true;
-        emit shapeChanged();
-    }
-}
-
-void Shape::setMinorRadius(double arg)
-{
-    if (m_minorRadius != arg) {
-        m_minorRadius = arg;
-        m_rebuildMesh = true;
-        emit shapeChanged();
-    }
-}
-
-} // namespace Qt3D
+} //Qt3D
 
 QT_END_NAMESPACE

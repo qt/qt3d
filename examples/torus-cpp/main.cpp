@@ -46,7 +46,7 @@
 #include <Qt3DCore/entity.h>
 #include <Qt3DCore/cameralens.h>
 
-#include <Qt3DRenderer/shape.h>
+#include <Qt3DRenderer/qtorusmesh.h>
 #include <Qt3DRenderer/mesh.h>
 #include <Qt3DRenderer/technique.h>
 #include <Qt3DRenderer/material.h>
@@ -111,8 +111,7 @@ int main(int argc, char **argv)
 
 
     // Torus shape data
-    Qt3D::Shape *torus = new Qt3D::Shape();
-    torus->setType(Qt3D::Shape::ShapeTorus);
+    Qt3D::QTorusMesh *torus = new Qt3D::QTorusMesh();
     torus->setRadius(5);
     torus->setMinorRadius(1);
     torus->setRings(100);

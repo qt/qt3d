@@ -39,77 +39,31 @@
 **
 ****************************************************************************/
 
-import Qt3D 2.0
-import Qt3D.Render 2.0
+#ifndef QT3D_QABSTRACTSHAPEMESH_P_H
+#define QT3D_QABSTRACTSHAPEMESH_P_H
 
-// For Qt.vector3d() and friends. For some reason this is provided by
-// QQuickValueTypeProvider in QtQuick rather than the default value
-// type provider in QtQml. So we will need to replicate this in Qt3D
-// for the types that we wish to support. Otherwise we'll have to import
-// QtQuick 2.1 all over the place.
-import QtQuick 2.1 as QQ2
+#include <private/component_p.h>
+#include <Qt3DRenderer/qt3drenderer_global.h>
 
-Entity {
-    id: sceneRoot
+QT_BEGIN_NAMESPACE
 
-    Camera {
-        id: camera
-        lens : CameraLens {
-            projectionType: CameraLens.PerspectiveProjection
-            fieldOfView: 45
-            aspectRatio: 16/9
-            nearPlane : 0.1
-            farPlane : 1000.0
-        }
+namespace Qt3D {
 
-        transform : Transform {
-            LookAt {
-                position: Qt.vector3d( 0.0, 0.0, -20.0 )
-                upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
-                viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
-            }
-        }
-    }
+class QAbstractShapeMesh;
 
-    Configuration  {
-        controlledCamera: camera
-    }
+class QAbstractShapeMeshPrivate : public ComponentPrivate
+{
+public :
+    QAbstractShapeMeshPrivate(QAbstractShapeMesh *qq);
 
-    FrameGraph {
-        id : external_forward_renderer
-        activeFrameGraph : ForwardRenderer {
-            camera: camera
-        }
-    }
+    Q_DECLARE_PUBLIC(QAbstractShapeMesh)
 
-    components: [external_forward_renderer]
+    Mesh *m_mesh;
+    bool m_loaded;
+};
 
-    TorusMesh {
-        id: mesh
-        radius: 5
-        minorRadius: 1
-        rings: 100
-        slices: 20
-    }
+} // Qt3D
 
-    Transform {
-        id: transform
-        Scale { scale3D: Qt.vector3d(1.5, 1, 0.5) }
-        Rotate {
-            angle: 45
-            axis: Qt.vector3d(1, 0, 0)
-        }
-    }
+QT_END_NAMESPACE
 
-    Material {
-        id: material
-        effect : Effect {
-        }
-    }
-
-    Entity {
-        id: mainEntity
-        objectName: "mainEntity"
-        components: [ mesh, material, transform ]
-    }
-}
+#endif // QT3D_QABSTRACTSHAPEMESH_P_H
