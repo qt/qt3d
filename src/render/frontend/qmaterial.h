@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_MATERIAL_H
-#define QT3D_MATERIAL_H
+#ifndef QT3D_QMATERIAL_H
+#define QT3D_QMATERIAL_H
 
 #include <QVariant>
 
@@ -57,15 +57,15 @@ namespace Qt3D {
 
 class Texture;
 class Parameter;
-class MaterialPrivate;
+class QMaterialPrivate;
 typedef QMap<QString, Texture*> TextureDict;
 
-class QT3DRENDERERSHARED_EXPORT Material : public QAbstractMaterial
+class QT3DRENDERERSHARED_EXPORT QMaterial : public QAbstractMaterial
 {
     Q_OBJECT
 
 public:
-    explicit Material(Node *parent = 0);
+    explicit QMaterial(Node *parent = 0);
 
     void setEffect(QAbstractEffect *effect) Q_DECL_OVERRIDE;
 
@@ -78,12 +78,12 @@ public:
     void setTextureParameter(QString name, Texture* tex);
 
 private:
-    Q_DECLARE_PRIVATE(Material)
-    MaterialPrivate *d_ptr;
+    Q_DECLARE_PRIVATE(QMaterial)
+    QMaterialPrivate *d_ptr;
 };
 
 }
 
 QT_END_NAMESPACE
 
-#endif // QT3D_MATERIAL_H
+#endif // QT3D_QMATERIAL_H

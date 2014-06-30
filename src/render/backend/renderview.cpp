@@ -40,7 +40,7 @@
 ****************************************************************************/
 
 #include "renderview.h"
-#include "material.h"
+#include "qmaterial.h"
 #include "renderer.h"
 #include "rendercamera.h"
 #include "rendercommand.h"

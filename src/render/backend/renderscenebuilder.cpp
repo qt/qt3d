@@ -50,7 +50,7 @@
 #include "renderlogging.h"
 #include "materialmanager.h"
 #include "qabstractscene.h"
-#include <material.h>
+#include <qmaterial.h>
 #include <qmesh.h>
 #include <qabstractshapemesh.h>
 
@@ -286,8 +286,8 @@ void RenderSceneBuilder::createRenderMaterial(Entity *entity)
     // Techniques
     // RenderPass
     // ShaderPrograms
-    QList<Material *> materials = entity->componentsOfType<Material>();
-    foreach (Material *material, materials) {
+    QList<QMaterial *> materials = entity->componentsOfType<QMaterial>();
+    foreach (QMaterial *material, materials) {
         HMaterial rMaterialHandle = m_renderer->materialManager()->getOrAcquireHandle(material);
         m_renderer->materialManager()->linkMaterialToEntity(entity->uuid(), rMaterialHandle);
         RenderMaterial *rMaterial = m_renderer->materialManager()->data(rMaterialHandle);

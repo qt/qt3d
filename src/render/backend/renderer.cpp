@@ -52,7 +52,7 @@
 
 #include "jobs/renderviewjob.h"
 
-#include <material.h>
+#include <qmaterial.h>
 #include <qmesh.h>
 #include <technique.h>
 #include <shaderprogram.h>
@@ -205,7 +205,7 @@ void Renderer::buildDefaultTechnique()
 
 void Renderer::buildDefaultMaterial()
 {
-    m_defaultMaterial = new Material();
+    m_defaultMaterial = new QMaterial();
     m_defaultMaterial->setObjectName(QStringLiteral("DefaultMaterial"));
     m_defaultMaterial->addParameter(new Parameter(m_defaultMaterial, QStringLiteral("lightPos"), QVector4D(10.0f, 10.0f, 0.0f, 1.0f)));
     m_defaultMaterial->addParameter(new Parameter(m_defaultMaterial, QStringLiteral("lightIntensity"), QVector3D(0.5f, 0.5f, 0.5f)));

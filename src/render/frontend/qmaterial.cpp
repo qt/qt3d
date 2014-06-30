@@ -39,8 +39,7 @@
 **
 ****************************************************************************/
 
-#include "material.h"
-//#include <Qt3DCore/qabstractmaterial_p.h>
+#include "qmaterial.h"
 #include <texture.h>
 #include <Qt3DCore/qabstracteffect.h>
 #include "renderlogging.h"
@@ -51,26 +50,26 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class MaterialPrivate
+class QMaterialPrivate
 {
 public:
-    MaterialPrivate(Material *qq)
+    QMaterialPrivate(QMaterial *qq)
         : q_ptr(qq)
     {}
 
     QList<Parameter *> m_parameters;
     TextureDict m_textures;
-    Q_DECLARE_PUBLIC(Material)
-    Material *q_ptr;
+    Q_DECLARE_PUBLIC(QMaterial)
+    QMaterial *q_ptr;
 };
 
-Material::Material(Node *parent)
+QMaterial::QMaterial(Node *parent)
     : QAbstractMaterial(parent)
-    , d_ptr(new MaterialPrivate(this))
+    , d_ptr(new QMaterialPrivate(this))
 {
 }
 
-void Material::setEffect(QAbstractEffect *effect)
+void QMaterial::setEffect(QAbstractEffect *effect)
 {
     if (effect == QAbstractMaterial::effect())
         return ;
@@ -81,9 +80,9 @@ void Material::setEffect(QAbstractEffect *effect)
     notifyObservers(change);
 }
 
-void Material::addParameter(Parameter *parameter)
+void QMaterial::addParameter(Parameter *parameter)
 {
-    Q_D(Material);
+    Q_D(QMaterial);
     if (!d->m_parameters.contains(parameter)) {
         d->m_parameters.append(parameter);
         QScenePropertyChangePtr change(new QScenePropertyChange(ComponentAdded, this));
@@ -93,9 +92,9 @@ void Material::addParameter(Parameter *parameter)
     }
 }
 
-void Material::removeParameter(Parameter *parameter)
+void QMaterial::removeParameter(Parameter *parameter)
 {
-    Q_D(Material);
+    Q_D(QMaterial);
     d->m_parameters.removeOne(parameter);
     QScenePropertyChangePtr change(new QScenePropertyChange(ComponentRemoved, this));
     change->m_propertyName = QByteArrayLiteral("parameter");
@@ -103,22 +102,22 @@ void Material::removeParameter(Parameter *parameter)
     notifyObservers(change);
 }
 
-QList<Parameter *> Material::parameters() const
+QList<Parameter *> QMaterial::parameters() const
 {
-    Q_D(const Material);
+    Q_D(const QMaterial);
     return d->m_parameters;
 }
 
-TextureDict Material::textureValues() const
+TextureDict QMaterial::textureValues() const
 {
-    Q_D(const Material);
+    Q_D(const QMaterial);
     return d->m_textures;
 }
 
 // TO DO: Check if this is really needed
-void Material::setTextureParameter(QString name, Texture *tex)
+void QMaterial::setTextureParameter(QString name, Texture *tex)
 {
-    Q_D(Material);
+    Q_D(QMaterial);
     d->m_textures[name] = tex;
 }
 

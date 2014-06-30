@@ -46,7 +46,7 @@
 
 #include <Qt3DCore/entity.h>
 #include <qmesh.h>
-#include <material.h>
+#include <qmaterial.h>
 #include <technique.h>
 #include <shaderprogram.h>
 #include <effect.h>
@@ -452,7 +452,7 @@ CameraLens* GLTFParser::camera(QString id)
     }
 }
 
-Material* GLTFParser::material(QString id)
+QMaterial* GLTFParser::material(QString id)
 {
     parse();
 
@@ -483,7 +483,7 @@ Material* GLTFParser::material(QString id)
         m_effectProxies[tname] = eff;
     }
 
-    Material* mat = new Material;
+    QMaterial* mat = new QMaterial;
     mat->setEffect(m_effectProxies[tname]);
 
     processName(jsonObj, mat);

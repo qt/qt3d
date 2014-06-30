@@ -43,7 +43,7 @@
 #define QT3D_RENDER_QUICK_QUICK3DMATERIAL_H
 
 #include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
-#include <Qt3DRenderer/material.h>
+#include <Qt3DRenderer/qmaterial.h>
 #include <Qt3DRenderer/parameter.h>
 #include <QQmlListProperty>
 
@@ -67,7 +67,7 @@ public:
     explicit Quick3DMaterial(QObject *parent = 0);
 
     // TO DO : replace by QAbstractMaterial later on
-    inline Material *parentMaterial() const { return qobject_cast<Material*>(parent()); }
+    inline QMaterial *parentMaterial() const { return qobject_cast<QMaterial*>(parent()); }
 
     QQmlListProperty<Parameter> qmlParameters();
 

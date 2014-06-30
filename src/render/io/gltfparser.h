@@ -59,7 +59,7 @@ class QFile;
 
 namespace Qt3D {
 
-class Material;
+class QMaterial;
 class ShaderProgram;
 class Effect;
 class Camera;
@@ -90,7 +90,7 @@ public:
 
     Entity *defaultScene();
     MeshDataPtr mesh(QString id);
-    Material *material(QString id);
+    QMaterial *material(QString id);
     CameraLens *camera(QString id);
 
 private:
@@ -130,7 +130,7 @@ private:
         // type if ever useful
     };
 
-    QMap<QString, Material*> m_materialCache;
+    QMap<QString, QMaterial*> m_materialCache;
 
     QMap<QString, BufferData> m_bufferDatas;
     QMap<QString, BufferPtr> m_buffers;

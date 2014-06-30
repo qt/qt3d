@@ -1,7 +1,7 @@
 INCLUDEPATH += $$PWD
 
 HEADERS += \
-    $$PWD/material.h \
+    $$PWD/qmaterial.h \
     $$PWD/qmesh.h \
     $$PWD/renderpass.h \
     $$PWD/renderpassfilter.h \
@@ -41,7 +41,7 @@ HEADERS += \
     $$PWD/qpointlight_p.h
 
 SOURCES += \
-    $$PWD/material.cpp \
+    $$PWD/qmaterial.cpp \
     $$PWD/qmesh.cpp \
     $$PWD/renderpass.cpp \
     $$PWD/shaderprogram.cpp \

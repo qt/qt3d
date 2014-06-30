@@ -67,7 +67,7 @@ namespace Qt3D {
 
 class Camera;
 class Entity;
-class Material;
+class QMaterial;
 class ShaderProgram;
 class QMesh;
 class RenderPass;
@@ -157,7 +157,7 @@ public:
 
     inline int cachedFramesCount() const { return m_cachedFramesCount; }
 
-    void buildMeshes(QMesh *mesh, Material *mat, const QMatrix4x4& mm);
+    void buildMeshes(QMesh *mesh, QMaterial *mat, const QMatrix4x4& mm);
     void setSurface(QSurface *s);
 
     void enqueueRenderView(RenderView *renderView, int submitOrder);
@@ -178,15 +178,15 @@ private:
     Qt3D::Node *m_sceneGraphRoot;
     RenderNode *m_renderSceneRoot;
 
-    QHash<Material*, RenderMaterial*> m_materialHash;
+    QHash<QMaterial*, RenderMaterial*> m_materialHash;
     QHash<Technique *, RenderTechnique*> m_techniqueHash;
     QHash<ShaderProgram*, RenderShader*> m_shaderHash;
 
     RenderTechnique *createTechnique(Technique *tech);
     RenderShader *getOrCreateShader(ShaderProgram *sp);
-    RenderMaterial *getOrCreateMaterial(Material *mat);
+    RenderMaterial *getOrCreateMaterial(QMaterial *mat);
 
-    Material* m_defaultMaterial;
+    QMaterial* m_defaultMaterial;
     Technique* m_defaultTechnique;
 
     HMaterial m_defaultMaterialHandle;

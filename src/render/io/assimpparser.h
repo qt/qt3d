@@ -60,7 +60,7 @@ class QFile;
 
 namespace Qt3D {
 
-class Material;
+class QMaterial;
 class ShaderProgram;
 class Effect;
 class Camera;
@@ -84,7 +84,7 @@ public:
 
     Entity *defaultScene();
     MeshDataPtr mesh(QString id);
-    Material *material(QString id);
+    QMaterial *material(QString id);
     Camera *camera(QString id);
 
 private :
@@ -105,13 +105,13 @@ private :
     void loadCamera(uint cameraIndex);
     void loadAnimation(uint animationIndex);
 
-    void copyMaterialName(Material *material, aiMaterial *assimpMaterial);
-    void copyMaterialColorProperties(Material *material, aiMaterial *assimpMaterial);
-    void copyMaterialFloatProperties(Material *material, aiMaterial *assimpMaterial);
-    void copyMaterialBoolProperties(Material *material, aiMaterial *assimpMaterial);
-    void copyMaterialShadingModel(Material *material, aiMaterial *assimpMaterial);
-    void copyMaterialBlendingFunction(Material *material, aiMaterial *assimpMaterial);
-    void copyMaterialTextures(Material *material, aiMaterial *assimpMaterial);
+    void copyMaterialName(QMaterial *material, aiMaterial *assimpMaterial);
+    void copyMaterialColorProperties(QMaterial *material, aiMaterial *assimpMaterial);
+    void copyMaterialFloatProperties(QMaterial *material, aiMaterial *assimpMaterial);
+    void copyMaterialBoolProperties(QMaterial *material, aiMaterial *assimpMaterial);
+    void copyMaterialShadingModel(QMaterial *material, aiMaterial *assimpMaterial);
+    void copyMaterialBlendingFunction(QMaterial *material, aiMaterial *assimpMaterial);
+    void copyMaterialTextures(QMaterial *material, aiMaterial *assimpMaterial);
 
     QScopedPointer<aiScene> m_aiScene;
     QDir     m_sceneDir;
@@ -119,7 +119,7 @@ private :
     static QStringList assimpSupportedFormatsList;
 
     QMap<uint, QMesh *> m_meshes;
-    QMap<uint, Material*> m_materials;
+    QMap<uint, QMaterial*> m_materials;
     QMap<uint, Effect *> m_effects;
     QMap<uint, Texture*> m_embeddedTextures;
     QMap<QString, Texture*> m_materialTextures;

@@ -50,7 +50,7 @@
 #include <QColor>
 #include <qmath.h>
 #include <Qt3DCore/entity.h>
-#include <material.h>
+#include <qmaterial.h>
 #include <texture.h>
 #include "renderlogging.h"
 
@@ -403,7 +403,7 @@ void AssimpParser::parse()
  */
 void AssimpParser::loadMaterial(uint materialIndex)
 {
-    Material *material = new Material();
+    QMaterial *material = new QMaterial();
     aiMaterial *assimpMaterial = m_aiScene->mMaterials[materialIndex];
     // Material Name
     copyMaterialName(material, assimpMaterial);
@@ -631,7 +631,7 @@ void AssimpParser::loadAnimation(uint animationIndex)
 /*!
  *  Sets the object name of \a material to the name of \a assimpMaterial.
  */
-void AssimpParser::copyMaterialName(Material *material, aiMaterial *assimpMaterial)
+void AssimpParser::copyMaterialName(QMaterial *material, aiMaterial *assimpMaterial)
 {
     aiString name;
     if (assimpMaterial->Get(AI_MATKEY_NAME, name) == aiReturn_SUCCESS) {
@@ -645,7 +645,7 @@ void AssimpParser::copyMaterialName(Material *material, aiMaterial *assimpMateri
 /*!
  *  Fills \a material color properties with \a assimpMaterial color properties;
  */
-void AssimpParser::copyMaterialColorProperties(Material *material, aiMaterial *assimpMaterial)
+void AssimpParser::copyMaterialColorProperties(QMaterial *material, aiMaterial *assimpMaterial)
 {
     aiColor3D color;
     if (assimpMaterial->Get(AI_MATKEY_COLOR_DIFFUSE, color) == aiReturn_SUCCESS)
@@ -665,7 +665,7 @@ void AssimpParser::copyMaterialColorProperties(Material *material, aiMaterial *a
 /*!
  * Retrieves a\a material bool property;
  */
-void AssimpParser::copyMaterialBoolProperties(Material *material, aiMaterial *assimpMaterial)
+void AssimpParser::copyMaterialBoolProperties(QMaterial *material, aiMaterial *assimpMaterial)
 {
     int value;
     if (assimpMaterial->Get(AI_MATKEY_TWOSIDED, value) == aiReturn_SUCCESS)
@@ -674,7 +674,7 @@ void AssimpParser::copyMaterialBoolProperties(Material *material, aiMaterial *as
         material->addParameter(new Parameter(material, ASSIMP_MATERIAL_IS_WIREFRAME, (value == 0) ? false : true));
 }
 
-void AssimpParser::copyMaterialShadingModel(Material *material, aiMaterial *assimpMaterial)
+void AssimpParser::copyMaterialShadingModel(QMaterial *material, aiMaterial *assimpMaterial)
 {
     Q_UNUSED(material)
     Q_UNUSED(assimpMaterial)
@@ -685,7 +685,7 @@ void AssimpParser::copyMaterialShadingModel(Material *material, aiMaterial *assi
     //    AssimpParser::assimpMaterialAttributesMap[AI_MATKEY_BLEND_FUNC] = &AssimpParser::getMaterialBlendingFunction;
 }
 
-void AssimpParser::copyMaterialBlendingFunction(Material *material, aiMaterial *assimpMaterial)
+void AssimpParser::copyMaterialBlendingFunction(QMaterial *material, aiMaterial *assimpMaterial)
 {
     Q_UNUSED(material)
     Q_UNUSED(assimpMaterial)
@@ -695,7 +695,7 @@ void AssimpParser::copyMaterialBlendingFunction(Material *material, aiMaterial *
 /*!
  *
  */
-void AssimpParser::copyMaterialTextures(Material *material, aiMaterial *assimpMaterial)
+void AssimpParser::copyMaterialTextures(QMaterial *material, aiMaterial *assimpMaterial)
 {
     static const aiTextureType textureType[] = {aiTextureType_AMBIENT,
                                                 aiTextureType_DIFFUSE,
@@ -754,7 +754,7 @@ void AssimpParser::copyMaterialTextures(Material *material, aiMaterial *assimpMa
 /*!
  * Retrieves a\a material float property.
  */
-void AssimpParser::copyMaterialFloatProperties(Material *material, aiMaterial *assimpMaterial)
+void AssimpParser::copyMaterialFloatProperties(QMaterial *material, aiMaterial *assimpMaterial)
 {
     float value = 0;
     if (assimpMaterial->Get(AI_MATKEY_OPACITY, value) == aiReturn_SUCCESS)

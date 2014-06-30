@@ -54,7 +54,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class Material;
+class QMaterial;
 class RendererAspect;
 class Parameter;
 
@@ -69,10 +69,10 @@ public:
     RenderMaterial();
     ~RenderMaterial();
 
-    void setPeer(Material* mat);
+    void setPeer(QMaterial* mat);
     void setRendererAspect(RendererAspect *rendererAspect);
 
-    Material *peer() const { return m_peer; }
+    QMaterial *peer() const { return m_peer; }
 
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
@@ -80,7 +80,7 @@ public:
 
 private:
     RendererAspect *m_rendererAspect;
-    Material* m_peer;
+    QMaterial* m_peer;
     QString m_effectName;
     RenderTechnique* m_technique;
     RenderTextureProvider* m_textureProvider;

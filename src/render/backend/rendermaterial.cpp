@@ -47,7 +47,7 @@
 #include "rendertextureprovider.h"
 #include "parameter.h"
 #include <technique.h> // for Parameter
-#include <material.h>
+#include <qmaterial.h>
 
 #include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/qscenepropertychange.h>
@@ -72,7 +72,7 @@ RenderMaterial::~RenderMaterial()
         m_rendererAspect->aspectManager()->changeArbiter()->unregisterObserver(this, m_peer);
 }
 
-void RenderMaterial::setPeer(Material *mat)
+void RenderMaterial::setPeer(QMaterial *mat)
 {
     if (m_peer != mat) {
         QChangeArbiter *arbiter = m_rendererAspect->aspectManager()->changeArbiter();

@@ -51,22 +51,22 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class Material;
+class QMaterial;
 
 namespace Render {
 
 typedef QHandle<RenderMaterial, 16> HMaterial;
 
-class MaterialManager : public QResourcesManager<RenderMaterial, Material*, 16>
+class MaterialManager : public QResourcesManager<RenderMaterial, QMaterial*, 16>
 {
 public:
     MaterialManager();
 
     inline bool hasRenderMaterial(const QUuid &id) const { return m_materialByEntity.contains(id); }
-    inline bool hasRenderMaterial(Material *id) { return contains(id); }
-    inline RenderMaterial *getOrCreateRenderMaterial(Material *id) { return getOrCreateResource(id); }
-    inline RenderMaterial *renderMaterial(Material *id) { return lookupResource(id); }
-    inline void releaseRenderMaterial(Material *id) { releaseResource(id); }
+    inline bool hasRenderMaterial(QMaterial *id) { return contains(id); }
+    inline RenderMaterial *getOrCreateRenderMaterial(QMaterial *id) { return getOrCreateResource(id); }
+    inline RenderMaterial *renderMaterial(QMaterial *id) { return lookupResource(id); }
+    inline void releaseRenderMaterial(QMaterial *id) { releaseResource(id); }
 
     RenderMaterial *renderMaterial(const QUuid &id);
     void linkMaterialToEntity(const QUuid &id, HMaterial material);
