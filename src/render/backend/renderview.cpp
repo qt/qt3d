@@ -381,10 +381,10 @@ RenderTechnique *RenderView::findTechniqueForEffect(RenderEffect *effect)
             TechniqueManager::WriteLocker(m_renderer->techniqueManager());
 
             // Tries to select first valid technique based on criteria defined in the TechniqueFilter
-            Technique *filteredTech = Q_NULLPTR;
+            QTechnique *filteredTech = Q_NULLPTR;
             Q_FOREACH (QAbstractTechnique *technique, effect->techniques()) {
-                Technique *tech = Q_NULLPTR;
-                if ((tech = qobject_cast<Technique*>(technique)) != Q_NULLPTR &&
+                QTechnique *tech = Q_NULLPTR;
+                if ((tech = qobject_cast<QTechnique*>(technique)) != Q_NULLPTR &&
                         tech->criteria().size() == m_techniqueFilter->filters().count()) {
                     bool findMatch = true;
                     Q_FOREACH (TechniqueCriterion *filterCriterion, m_techniqueFilter->filters()) {
@@ -406,7 +406,7 @@ RenderTechnique *RenderView::findTechniqueForEffect(RenderEffect *effect)
             } else {
                 technique = m_renderer->techniqueManager()->getOrCreateResource(effect->peer());
                 technique->setRenderer(m_renderer);
-                technique->setPeer(qobject_cast<Technique *>(filteredTech));
+                technique->setPeer(qobject_cast<QTechnique *>(filteredTech));
             }
         }
         if (technique == Q_NULLPTR)

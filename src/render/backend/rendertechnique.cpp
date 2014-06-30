@@ -43,7 +43,7 @@
 #include "rendershader.h"
 
 #include <renderpass.h>
-#include <technique.h>
+#include <qtechnique.h>
 #include "rendereraspect.h"
 #include "renderer.h"
 #include <Qt3DCore/qaspectmanager.h>
@@ -76,7 +76,7 @@ void RenderTechnique::setRenderer(Renderer *renderer)
     m_parameterPack.setRendererAspect(m_renderer->rendererAspect());
 }
 
-void RenderTechnique::setPeer(Technique *peer)
+void RenderTechnique::setPeer(QTechnique *peer)
 {
     if (m_peer != peer) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
@@ -91,7 +91,7 @@ void RenderTechnique::setPeer(Technique *peer)
     }
 }
 
-Technique *RenderTechnique::peer() const
+QTechnique *RenderTechnique::peer() const
 {
     return m_peer;
 }

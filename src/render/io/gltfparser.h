@@ -45,7 +45,7 @@
 #include <Qt3DRenderer/meshdata.h>
 
 #include <Qt3DCore/entity.h>
-#include <Qt3DRenderer/technique.h>
+#include <Qt3DRenderer/qtechnique.h>
 
 #include <QJsonDocument>
 #include <QMultiHash>
@@ -138,7 +138,7 @@ private:
     QMap<QString, QString> m_shaderPaths;
     QMap<QString, ShaderProgram*> m_programs;
 
-    QMap<QString, Technique *> m_techniques;
+    QMap<QString, QTechnique *> m_techniques;
     // glTF doesn't deal in effects, but we need a trivial one to wrap
     // up our techniques
     QMap<QString, QEffect*> m_effectProxies;

@@ -55,9 +55,9 @@ Quick3DEffect::Quick3DEffect(QObject *parent)
 {
 }
 
-QQmlListProperty<Technique> Quick3DEffect::techniqueList()
+QQmlListProperty<QTechnique> Quick3DEffect::techniqueList()
 {
-    return QQmlListProperty<Technique>(this, 0,
+    return QQmlListProperty<QTechnique>(this, 0,
                                        &Quick3DEffect::appendTechnique,
                                        &Quick3DEffect::techniqueCount,
                                        &Quick3DEffect::techniqueAt,
@@ -73,7 +73,7 @@ QQmlListProperty<Parameter> Quick3DEffect::parameterList()
                                              &Quick3DEffect::clearParameterList);
 }
 
-void Quick3DEffect::appendTechnique(QQmlListProperty<Technique> *list, Technique *bar)
+void Quick3DEffect::appendTechnique(QQmlListProperty<QTechnique> *list, QTechnique *bar)
 {
     Quick3DEffect *eff = qobject_cast<Quick3DEffect*>(list->object);
     if (eff)
@@ -81,15 +81,15 @@ void Quick3DEffect::appendTechnique(QQmlListProperty<Technique> *list, Technique
 }
 
 // TO DO : Return a QAbstractTechnique once properly defined
-Technique *Quick3DEffect::techniqueAt(QQmlListProperty<Technique> *list, int index)
+QTechnique *Quick3DEffect::techniqueAt(QQmlListProperty<QTechnique> *list, int index)
 {
     Quick3DEffect *eff = qobject_cast<Quick3DEffect*>(list->object);
     if (eff)
-        return qobject_cast<Technique*>(eff->parentEffect()->techniques().at(index));
+        return qobject_cast<QTechnique*>(eff->parentEffect()->techniques().at(index));
     return Q_NULLPTR;
 }
 
-int Quick3DEffect::techniqueCount(QQmlListProperty<Technique> *list)
+int Quick3DEffect::techniqueCount(QQmlListProperty<QTechnique> *list)
 {
     Quick3DEffect *eff = qobject_cast<Quick3DEffect*>(list->object);
     if (eff)
@@ -97,7 +97,7 @@ int Quick3DEffect::techniqueCount(QQmlListProperty<Technique> *list)
     return 0;
 }
 
-void Quick3DEffect::clearTechniqueList(QQmlListProperty<Technique> *list)
+void Quick3DEffect::clearTechniqueList(QQmlListProperty<QTechnique> *list)
 {
     Quick3DEffect *eff = qobject_cast<Quick3DEffect*>(list->object);
     if (eff) {

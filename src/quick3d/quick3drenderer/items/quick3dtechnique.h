@@ -43,7 +43,7 @@
 #define QT3D_RENDER_QUICK_QUICK3DTECHNIQUE_H
 
 #include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
-#include <Qt3DRenderer/technique.h>
+#include <Qt3DRenderer/qtechnique.h>
 #include <QQmlListProperty>
 
 QT_BEGIN_NAMESPACE
@@ -68,7 +68,7 @@ public:
     QQmlListProperty<Qt3D::Parameter> parameterList();
 
     // Use QAbstractTechnique when it has been properly defined
-    inline Technique *parentTechnique() const { return qobject_cast<Technique*>(parent()); }
+    inline QTechnique *parentTechnique() const { return qobject_cast<QTechnique*>(parent()); }
 
 Q_SIGNALS:
     void criteriaChanged();

@@ -46,7 +46,7 @@
 #include "rendertechnique.h"
 #include "rendertextureprovider.h"
 #include "parameter.h"
-#include <technique.h> // for Parameter
+#include <qtechnique.h> // for Parameter
 #include <qmaterial.h>
 
 #include <Qt3DCore/qaspectmanager.h>

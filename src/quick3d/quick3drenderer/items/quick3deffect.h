@@ -45,7 +45,7 @@
 #include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
 #include <Qt3DCore/qabstracteffect.h>
 #include <QQmlListProperty>
-#include <Qt3DRenderer/technique.h>
+#include <Qt3DRenderer/qtechnique.h>
 
 
 QT_BEGIN_NAMESPACE
@@ -59,7 +59,7 @@ namespace Quick {
 class QT3DQUICKRENDERERSHARED_EXPORT Quick3DEffect : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3D::Technique> techniques READ techniqueList)
+    Q_PROPERTY(QQmlListProperty<Qt3D::QTechnique> techniques READ techniqueList)
     Q_PROPERTY(QQmlListProperty<Qt3D::Parameter> parameters READ parameterList)
 
 public:
@@ -67,14 +67,14 @@ public:
 
     inline QAbstractEffect *parentEffect() const { return qobject_cast<QAbstractEffect*>(parent()); }
 
-    QQmlListProperty<Qt3D::Technique> techniqueList();
+    QQmlListProperty<Qt3D::QTechnique> techniqueList();
     QQmlListProperty<Qt3D::Parameter> parameterList();
 
 private:
-    static void appendTechnique(QQmlListProperty<Technique> *list, Technique *bar);
-    static Technique *techniqueAt(QQmlListProperty<Technique> *list, int index);
-    static int techniqueCount(QQmlListProperty<Technique> *list);
-    static void clearTechniqueList(QQmlListProperty<Technique> *list);
+    static void appendTechnique(QQmlListProperty<QTechnique> *list, QTechnique *bar);
+    static QTechnique *techniqueAt(QQmlListProperty<QTechnique> *list, int index);
+    static int techniqueCount(QQmlListProperty<QTechnique> *list);
+    static void clearTechniqueList(QQmlListProperty<QTechnique> *list);
 
     static void appendParameter(QQmlListProperty<Parameter> *list, Parameter *param);
     static Parameter *parameterAt(QQmlListProperty<Parameter> *list, int index);

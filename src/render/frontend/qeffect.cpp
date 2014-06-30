@@ -41,7 +41,7 @@
 
 #include "qeffect.h"
 #include "qeffect_p.h"
-#include "technique.h"
+#include "qtechnique.h"
 #include "parameter.h"
 
 #include <Qt3DCore/qscenepropertychange.h>

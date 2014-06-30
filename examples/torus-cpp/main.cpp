@@ -48,7 +48,7 @@
 
 #include <Qt3DRenderer/qtorusmesh.h>
 #include <Qt3DRenderer/qmesh.h>
-#include <Qt3DRenderer/technique.h>
+#include <Qt3DRenderer/qtechnique.h>
 #include <Qt3DRenderer/qmaterial.h>
 #include <Qt3DCore/qabstracteffect.h>
 #include <Qt3DRenderer/texture.h>

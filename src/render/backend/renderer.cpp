@@ -54,7 +54,7 @@
 
 #include <qmaterial.h>
 #include <qmesh.h>
-#include <technique.h>
+#include <qtechnique.h>
 #include <shaderprogram.h>
 #include <renderpass.h>
 #include <qabstractshapemesh.h>
@@ -147,7 +147,7 @@ Renderer::Renderer(int cachedFrames)
 
 void Renderer::buildDefaultTechnique()
 {
-    m_defaultTechnique = new Technique;
+    m_defaultTechnique = new QTechnique;
     m_defaultTechnique->setObjectName(QStringLiteral("default-technique"));
 
     ShaderProgram* defaultShader = new ShaderProgram;

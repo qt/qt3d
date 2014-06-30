@@ -42,7 +42,7 @@
 #ifndef QT3D_RENDER_RENDERER_H
 #define QT3D_RENDER_RENDERER_H
 
-#include <Qt3DRenderer/technique.h>
+#include <Qt3DRenderer/qtechnique.h>
 #include <Qt3DRenderer/quniformvalue.h>
 #include <Qt3DCore/qjob.h>
 #include <Qt3DCore/qhandle.h>
@@ -179,15 +179,15 @@ private:
     RenderNode *m_renderSceneRoot;
 
     QHash<QMaterial*, RenderMaterial*> m_materialHash;
-    QHash<Technique *, RenderTechnique*> m_techniqueHash;
+    QHash<QTechnique *, RenderTechnique*> m_techniqueHash;
     QHash<ShaderProgram*, RenderShader*> m_shaderHash;
 
-    RenderTechnique *createTechnique(Technique *tech);
+    RenderTechnique *createTechnique(QTechnique *tech);
     RenderShader *getOrCreateShader(ShaderProgram *sp);
     RenderMaterial *getOrCreateMaterial(QMaterial *mat);
 
     QMaterial* m_defaultMaterial;
-    Technique* m_defaultTechnique;
+    QTechnique* m_defaultTechnique;
 
     HMaterial m_defaultMaterialHandle;
     HEffect m_defaultEffectHandle;

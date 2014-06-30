@@ -51,7 +51,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class Technique;
+class QTechnique;
 class Parameter;
 
 namespace Render {
@@ -69,8 +69,8 @@ public:
 
     void setRenderer(Renderer *renderer);
 
-    void setPeer(Technique* peer);
-    Technique *peer() const;
+    void setPeer(QTechnique* peer);
+    QTechnique *peer() const;
 
     DrawStateSet* stateSetForPass(unsigned int pass) const;
 
@@ -86,7 +86,7 @@ public:
 
 private:
     Renderer *m_renderer;
-    Technique* m_peer;
+    QTechnique* m_peer;
     unsigned int m_passCount;
 
     ParameterPack m_parameterPack;

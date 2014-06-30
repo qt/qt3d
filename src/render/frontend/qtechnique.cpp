@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "technique.h"
+#include "qtechnique.h"
 #include "parameter.h"
 #include <Qt3DCore/qscenepropertychange.h>
 #include <QDebug>
@@ -48,96 +48,96 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class TechniquePrivate
+class QTechniquePrivate
 {
 public :
-    TechniquePrivate(Technique *qq)
+    QTechniquePrivate(QTechnique *qq)
         : q_ptr(qq)
     {}
 
     QList<TechniqueCriterion *> m_criteriaList;
     QList<Parameter *> m_parameters;
-    Q_DECLARE_PUBLIC(Technique)
-    Technique *q_ptr;
+    Q_DECLARE_PUBLIC(QTechnique)
+    QTechnique *q_ptr;
 };
 
-Technique::Technique(Node *parent)
+QTechnique::QTechnique(Node *parent)
     : QAbstractTechnique(parent)
-    , d_ptr(new TechniquePrivate(this))
+    , d_ptr(new QTechniquePrivate(this))
 {
 }
 
-void Technique::addCriterion(TechniqueCriterion *criterion)
+void QTechnique::addCriterion(TechniqueCriterion *criterion)
 {
-    Q_D(Technique);
+    Q_D(QTechnique);
     if (!d->m_criteriaList.contains(criterion))
         d->m_criteriaList.append(criterion);
 }
 
-void Technique::removeCriterion(TechniqueCriterion *criterion)
+void QTechnique::removeCriterion(TechniqueCriterion *criterion)
 {
-    Q_D(Technique);
+    Q_D(QTechnique);
     d->m_criteriaList.removeOne(criterion);
 }
 
-QVariant Technique::criterionValue(const QString &customTypeName) const
+QVariant QTechnique::criterionValue(const QString &customTypeName) const
 {
-    Q_D(const Technique);
+    Q_D(const QTechnique);
     Q_FOREACH (TechniqueCriterion *criterion, d->m_criteriaList)
         if (criterion->criterionCustomType() == customTypeName)
             return criterion->criterionValue();
     return QVariant();
 }
 
-QVariant Technique::criterionValue(TechniqueCriterion::CriterionType type) const
+QVariant QTechnique::criterionValue(TechniqueCriterion::CriterionType type) const
 {
-    Q_D(const Technique);
+    Q_D(const QTechnique);
     Q_FOREACH (TechniqueCriterion *criterion, d->m_criteriaList)
         if (criterion->criterionType() == type)
             return criterion->criterionValue();
     return QVariant();
 }
 
-QList<TechniqueCriterion *> Technique::criteria() const
+QList<TechniqueCriterion *> QTechnique::criteria() const
 {
-    Q_D(const Technique);
+    Q_D(const QTechnique);
     return d->m_criteriaList;
 }
 
-void Technique::clearCriteria()
+void QTechnique::clearCriteria()
 {
-    Q_D(Technique);
+    Q_D(QTechnique);
     d->m_criteriaList.clear();
 }
 
-bool Technique::containsCriterion(const QString &customTypeName) const
+bool QTechnique::containsCriterion(const QString &customTypeName) const
 {
-    Q_D(const Technique);
+    Q_D(const QTechnique);
     Q_FOREACH (TechniqueCriterion *criterion, d->m_criteriaList)
         if (criterion->criterionCustomType() == customTypeName)
             return true;
     return false;
 }
 
-bool Technique::containsCriterion(TechniqueCriterion::CriterionType type) const
+bool QTechnique::containsCriterion(TechniqueCriterion::CriterionType type) const
 {
-    Q_D(const Technique);
+    Q_D(const QTechnique);
     Q_FOREACH (TechniqueCriterion *criterion, d->m_criteriaList)
         if (criterion->criterionType() == type)
             return true;
     return false;
 }
 
-void Technique::addPass(QAbstractRenderPass *pass)
+void QTechnique::addPass(QAbstractRenderPass *pass)
 {
     Q_CHECK_PTR(pass);
     pass->setParent(this);
     QAbstractTechnique::addPass(pass);
 }
 
-void Technique::addParameter(Parameter *parameter)
+void QTechnique::addParameter(Parameter *parameter)
 {
-    Q_D(Technique);
+    Q_D(QTechnique);
     if (!d->m_parameters.contains(parameter)) {
         d->m_parameters.append(parameter);
         QScenePropertyChangePtr change(new QScenePropertyChange(ComponentAdded, this));
@@ -147,9 +147,9 @@ void Technique::addParameter(Parameter *parameter)
     }
 }
 
-void Technique::removeParameter(Parameter *parameter)
+void QTechnique::removeParameter(Parameter *parameter)
 {
-    Q_D(Technique);
+    Q_D(QTechnique);
     d->m_parameters.removeOne(parameter);
     QScenePropertyChangePtr change(new QScenePropertyChange(ComponentRemoved, this));
     change->m_propertyName = QByteArrayLiteral("parameter");
@@ -157,15 +157,15 @@ void Technique::removeParameter(Parameter *parameter)
     notifyObservers(change);
 }
 
-QList<Parameter *> Technique::parameters() const
+QList<Parameter *> QTechnique::parameters() const
 {
-    Q_D(const Technique);
+    Q_D(const QTechnique);
     return d->m_parameters;
 }
 
-Parameter *Technique::parameterByName(QString name) const
+Parameter *QTechnique::parameterByName(QString name) const
 {
-    Q_D(const Technique);
+    Q_D(const QTechnique);
     foreach (Parameter* p, d->m_parameters) {
         if (p->name() == name)
             return p;

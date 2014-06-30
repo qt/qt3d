@@ -6,7 +6,7 @@ HEADERS += \
     $$PWD/renderpass.h \
     $$PWD/renderpassfilter.h \
     $$PWD/shaderprogram.h \
-    $$PWD/technique.h \
+    $$PWD/qtechnique.h \
     $$PWD/techniquefilter.h \
     $$PWD/tag.h \
     $$PWD/qabstractshapemesh.h \
@@ -47,7 +47,7 @@ SOURCES += \
     $$PWD/qmesh.cpp \
     $$PWD/renderpass.cpp \
     $$PWD/shaderprogram.cpp \
-    $$PWD/technique.cpp \
+    $$PWD/qtechnique.cpp \
     $$PWD/qabstractshapemesh.cpp \
     $$PWD/qitemmodelbuffer.cpp \
     $$PWD/texture.cpp \

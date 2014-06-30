@@ -47,7 +47,7 @@
 #include <Qt3DCore/entity.h>
 #include <qmesh.h>
 #include <qmaterial.h>
-#include <technique.h>
+#include <qtechnique.h>
 #include <shaderprogram.h>
 #include <qeffect.h>
 #include <Qt3DCore/camera.h>
@@ -475,7 +475,7 @@ QMaterial* GLTFParser::material(QString id)
         return NULL;
     }
 
-    Technique *technique = m_techniques.value(tname);
+    QTechnique *technique = m_techniques.value(tname);
     if (!m_effectProxies.contains(tname)) {
         QEffect* eff = new QEffect;
         eff->setObjectName(tname);
@@ -785,7 +785,7 @@ void GLTFParser::processJSONTexture( QString id, QJsonObject jsonObj)
 
 void GLTFParser::processJSONTechnique( QString id, QJsonObject jsonObj )
 {
-    Technique *t = new Technique;
+    QTechnique *t = new QTechnique;
     t->setObjectName(id);
 
     QHash<QString, Parameter*> paramDict;

@@ -47,7 +47,7 @@
 #include "qmesh.h"
 #include "qgraphicscontext.h"
 #include <meshdata.h>
-#include <technique.h>
+#include <qtechnique.h>
 
 #include <Qt3DCore/qscenepropertychange.h>
 

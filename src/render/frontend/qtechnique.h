@@ -56,14 +56,14 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class Parameter;
-class TechniquePrivate;
+class QTechniquePrivate;
 
-class QT3DRENDERERSHARED_EXPORT Technique : public QAbstractTechnique
+class QT3DRENDERERSHARED_EXPORT QTechnique : public QAbstractTechnique
 {
     Q_OBJECT
 
 public:
-    explicit Technique(Node *parent = 0);
+    explicit QTechnique(Node *parent = 0);
 
     void addCriterion(TechniqueCriterion *criterion);
     void removeCriterion(TechniqueCriterion *criterion);
@@ -83,8 +83,8 @@ public:
     Parameter* parameterByName(QString name) const;
 
 private:
-    Q_DECLARE_PRIVATE(Technique)
-    TechniquePrivate *d_ptr;
+    Q_DECLARE_PRIVATE(QTechnique)
+    QTechniquePrivate *d_ptr;
 };
 
 }
