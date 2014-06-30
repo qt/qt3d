@@ -50,30 +50,29 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 QAbstractShapeMeshPrivate::QAbstractShapeMeshPrivate(QAbstractShapeMesh *qq)
-    : ComponentPrivate(qq)
-    , m_mesh(new QMesh())
+    : QMeshPrivate(qq)
     , m_loaded(false)
 {
 }
 
 QAbstractShapeMesh::QAbstractShapeMesh(Node *parent) :
-    Qt3D::Component(*new QAbstractShapeMeshPrivate(this), parent)
+    QMesh(*new QAbstractShapeMeshPrivate(this), parent)
 {
-}
-
-QMesh *QAbstractShapeMesh::mesh()
-{
-    Q_D(QAbstractShapeMesh);
-    if (!d->m_loaded) {
-        d->m_mesh->setData(data());
-        d->m_loaded = true;
-    }
-    return d->m_mesh;
 }
 
 QAbstractShapeMesh::QAbstractShapeMesh(QAbstractShapeMeshPrivate &dd, Node *parent)
-    : Component(dd, parent)
+    : QMesh(dd, parent)
 {
+}
+
+MeshDataPtr QAbstractShapeMesh::data()
+{
+    Q_D(const QAbstractShapeMesh);
+    if (!d->m_loaded) {
+        QMesh::setData(buildMeshdata());
+        d->m_loaded = true;
+    }
+    return QMesh::data();
 }
 
 } // namespace Qt3D

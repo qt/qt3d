@@ -132,7 +132,7 @@ float QSphereMesh::radius() const
     return d->m_radius;
 }
 
-MeshDataPtr QSphereMesh::data() const
+MeshDataPtr QSphereMesh::buildMeshdata() const
 {
     Q_D(const QSphereMesh);
     return createSphereMesh(d->m_radius, d->m_rings, d->m_slices, d->m_generateTangents);

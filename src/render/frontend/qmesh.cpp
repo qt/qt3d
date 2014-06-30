@@ -84,7 +84,7 @@ void QMesh::setSource( const QString& source )
     notifyObservers(e);
 }
 
-MeshDataPtr QMesh::data() const
+MeshDataPtr QMesh::data()
 {
     Q_D(const QMesh);
     return d->m_data;

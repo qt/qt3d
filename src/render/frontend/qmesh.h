@@ -65,7 +65,9 @@ public:
 
     void setSource(const QString &source) Q_DECL_OVERRIDE;
 
-    MeshDataPtr data() const;
+    // Not const because subclasses may want to perform
+    // more than just returning a MeshData straight away
+    virtual MeshDataPtr data();
     void setData(MeshDataPtr d);
 
 protected:

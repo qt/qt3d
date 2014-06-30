@@ -72,7 +72,7 @@ public:
     float radius() const;
     float minorRadius() const;
 
-    MeshDataPtr data() const Q_DECL_OVERRIDE;
+    MeshDataPtr buildMeshdata() const Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
 

@@ -43,6 +43,7 @@
 #define QT3D_QABSTRACTSHAPEMESH_P_H
 
 #include <private/component_p.h>
+#include <private/qmesh_p.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
@@ -51,15 +52,14 @@ namespace Qt3D {
 
 class QAbstractShapeMesh;
 
-class QAbstractShapeMeshPrivate : public ComponentPrivate
+class QT3DRENDERERSHARED_EXPORT QAbstractShapeMeshPrivate : public QMeshPrivate
 {
 public :
     QAbstractShapeMeshPrivate(QAbstractShapeMesh *qq);
 
     Q_DECLARE_PUBLIC(QAbstractShapeMesh)
 
-    QMesh *m_mesh;
-    bool m_loaded;
+    mutable bool m_loaded;
 };
 
 } // Qt3D

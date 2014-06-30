@@ -131,7 +131,7 @@ float QTorusMesh::minorRadius() const
     return d->m_minorRadius;
 }
 
-MeshDataPtr QTorusMesh::data() const
+MeshDataPtr QTorusMesh::buildMeshdata() const
 {
     Q_D(const QTorusMesh);
     return createTorusMesh(d->m_radius, d->m_minorRadius, d->m_rings, d->m_slices);

@@ -44,8 +44,7 @@
 
 #include <Qt3DCore/component.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
-
-#include <Qt3DRenderer/meshdata.h>
+#include <Qt3DRenderer/qmesh.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -55,15 +54,15 @@ class QMesh;
 
 class QAbstractShapeMeshPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QAbstractShapeMesh : public Qt3D::Component
+class QT3DRENDERERSHARED_EXPORT QAbstractShapeMesh : public QMesh
 {
     Q_OBJECT
 
 public:
     explicit QAbstractShapeMesh(Node *parent = 0);
 
-    virtual MeshDataPtr data() const = 0;
-    QMesh *mesh();
+    virtual MeshDataPtr data() Q_DECL_OVERRIDE;
+    virtual MeshDataPtr buildMeshdata() const = 0;
 
 protected:
     Q_DECLARE_PRIVATE(QAbstractShapeMesh)

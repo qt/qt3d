@@ -185,12 +185,6 @@ void RenderNode::sceneChangeEvent(const QSceneChangePtr &e)
                     mesh->setPeer(qobject_cast<QMesh *>(component));
                     m_renderer->meshDataManager()->addMeshData(mesh->peer());
                 }
-            } else if (qobject_cast<QAbstractShapeMesh *>(component)) {
-                RenderMesh *mesh = m_renderer->meshManager()->lookupResource(m_frontEndPeer->asEntity()->uuid());
-                if (mesh != Q_NULLPTR) {
-                    mesh->setPeer(qobject_cast<QAbstractShapeMesh *>(component)->mesh());
-                    m_renderer->meshDataManager()->addMeshData(mesh->peer());
-                }
             }
         }
         break;
@@ -207,7 +201,7 @@ void RenderNode::sceneChangeEvent(const QSceneChangePtr &e)
                 RenderCamera *cam = m_renderer->cameraManager()->lookupResource(m_frontEndPeer->asEntity()->uuid());
                 if (cam != Q_NULLPTR)
                     cam->setPeer(Q_NULLPTR);
-            } else if (qobject_cast<QMesh *>(component) || qobject_cast<QAbstractShapeMesh *>(component)) {
+            } else if (qobject_cast<QMesh *>(component)) {
                 RenderMesh *mesh = m_renderer->meshManager()->lookupResource(m_frontEndPeer->asEntity()->uuid());
                 if (mesh != Q_NULLPTR)
                     mesh->setPeer(Q_NULLPTR);
