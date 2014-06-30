@@ -40,6 +40,7 @@
 ****************************************************************************/
 
 #include "qeffect.h"
+#include "qeffect_p.h"
 #include "technique.h"
 #include "parameter.h"
 
@@ -49,21 +50,17 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QEffectPrivate
-{
-public :
-    QEffectPrivate(QEffect *qq)
-        : q_ptr(qq)
-    {}
-
-    QList<Parameter *> m_parameters;
-    Q_DECLARE_PUBLIC(QEffect)
-    QEffect *q_ptr;
-};
+QEffectPrivate::QEffectPrivate(QEffect *qq)
+    : QAbstractEffectPrivate(qq)
+{}
 
 QEffect::QEffect(Node *parent)
-    : QAbstractEffect(parent)
-    , d_ptr(new QEffectPrivate(this))
+    : QAbstractEffect(*new QEffectPrivate(this), parent)
+{
+}
+
+QEffect::QEffect(QEffectPrivate &dd, Node *parent)
+    : QAbstractEffect(dd, parent)
 {
 }
 

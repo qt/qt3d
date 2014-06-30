@@ -39,41 +39,29 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QEFFECT_H
-#define QT3D_QEFFECT_H
+#ifndef QT3D_QEFFECT_P_H
+#define QT3D_QEFFECT_P_H
 
-#include <Qt3DCore/qabstracteffect.h>
-#include <Qt3DCore/node.h>
+#include <private/qabstracteffect_p.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class QEffect;
 class Parameter;
-class QEffectPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QEffect
-        : public QAbstractEffect
+class QT3DRENDERERSHARED_EXPORT QEffectPrivate : public QAbstractEffectPrivate
 {
-    Q_OBJECT
-public:
-    explicit QEffect(Node *parent = 0);
-
-    void addTechnique(QAbstractTechnique *t) Q_DECL_OVERRIDE;
-    void removeTechnique(QAbstractTechnique *t) Q_DECL_OVERRIDE;
-
-    void addParameter(Parameter *parameter);
-    void removeParameter(Parameter *parameter);
-    QList<Parameter *> parameters() const;
-
-protected:
-    Q_DECLARE_PRIVATE(QEffect)
-    QEffect(QEffectPrivate &dd, Node *parent = 0);
+public :
+    QEffectPrivate(QEffect *qq);
+    QList<Parameter *> m_parameters;
+    Q_DECLARE_PUBLIC(QEffect)
 };
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QEFFECT_H
+#endif // QT3D_QEFFECT_P_H

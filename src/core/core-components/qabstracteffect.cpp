@@ -40,6 +40,7 @@
 ****************************************************************************/
 
 #include "qabstracteffect.h"
+#include "qabstracteffect_p.h"
 #include "qabstracttechnique.h"
 #include <Qt3DCore/qscenepropertychange.h>
 
@@ -61,24 +62,19 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAbstractEffectPrivate
-{
-public :
-    QAbstractEffectPrivate(QAbstractEffect *qq)
-        : q_ptr(qq)
+
+QAbstractEffectPrivate::QAbstractEffectPrivate(QAbstractEffect *qq)
+        : NodePrivate(qq)
     {}
 
-    QList<QAbstractTechnique *> m_techniques;
-
-    Q_DECLARE_PUBLIC(QAbstractEffect)
-    QAbstractEffect *q_ptr;
-};
-
 QAbstractEffect::QAbstractEffect(Node *parent)
-    : Node(parent)
-    , d_ptr(new QAbstractEffectPrivate(this))
+    : Node(*new QAbstractEffectPrivate(this), parent)
 {
-    qRegisterMetaType<Qt3D::QAbstractEffect*>();
+}
+
+QAbstractEffect::QAbstractEffect(QAbstractEffectPrivate &dd, Node *parent)
+    : Node(dd, parent)
+{
 }
 
 /*!

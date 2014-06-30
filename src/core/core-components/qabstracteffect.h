@@ -71,9 +71,9 @@ public:
 Q_SIGNALS:
     void techniquesChanged();
 
-private:
+protected:
     Q_DECLARE_PRIVATE(QAbstractEffect)
-    QAbstractEffectPrivate *d_ptr;
+    QAbstractEffect(QAbstractEffectPrivate &dd, Node *parent = 0);
 };
 
 } // Qt3D
