@@ -43,7 +43,7 @@
 
 #include <objloader.h>
 #include <sphere.h>
-#include <mesh.h>
+#include <qmesh.h>
 #include <renderer.h>
 #include <meshdatamanager.h>
 
@@ -55,7 +55,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
-LoadMeshDataJob::LoadMeshDataJob(Mesh *mesh)
+LoadMeshDataJob::LoadMeshDataJob(QMesh *mesh)
     : QJob()
     , m_meshSource(mesh)
 {

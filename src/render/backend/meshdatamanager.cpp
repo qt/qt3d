@@ -55,7 +55,7 @@ MeshDataManager::MeshDataManager()
 {
 }
 
-void MeshDataManager::addMeshData(Mesh *mesh)
+void MeshDataManager::addMeshData(QMesh *mesh)
 {
     if (!contains(mesh->uuid()) && !m_meshesPending.contains(mesh))
         m_meshesPending.append(mesh);

@@ -49,7 +49,7 @@
 #include <Qt3DCore/cameralens.h>
 
 #include <Qt3DRenderer/qtorusmesh.h>
-#include <Qt3DRenderer/mesh.h>
+#include <Qt3DRenderer/qmesh.h>
 #include <Qt3DRenderer/technique.h>
 #include <Qt3DRenderer/material.h>
 #include <Qt3DCore/qabstracteffect.h>
@@ -91,7 +91,7 @@ int main(int ac, char **av)
     torus->setMinorRadius(15);
 
     // Torus mesh holding the shape's data
-    Qt3D::Mesh *torusMesh = new Qt3D::Mesh();
+    Qt3D::QMesh *torusMesh = new Qt3D::QMesh();
     torusMesh->setData(torus->data());
     torusEntity->addComponent(torusMesh);
 

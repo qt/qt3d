@@ -53,7 +53,7 @@
 #include "jobs/renderviewjob.h"
 
 #include <material.h>
-#include <mesh.h>
+#include <qmesh.h>
 #include <technique.h>
 #include <shaderprogram.h>
 #include <renderpass.h>

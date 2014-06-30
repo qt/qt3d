@@ -65,7 +65,7 @@ class ShaderProgram;
 class Effect;
 class Camera;
 class Texture;
-class Mesh;
+class QMesh;
 
 class AssimpParser : public AbstractSceneParser
 {
@@ -118,7 +118,7 @@ private :
     bool     m_sceneParsed;
     static QStringList assimpSupportedFormatsList;
 
-    QMap<uint, Mesh *> m_meshes;
+    QMap<uint, QMesh *> m_meshes;
     QMap<uint, Material*> m_materials;
     QMap<uint, Effect *> m_effects;
     QMap<uint, Texture*> m_embeddedTextures;

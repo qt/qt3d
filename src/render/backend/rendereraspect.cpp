@@ -86,9 +86,9 @@ QVector<QJobPtr> RendererAspect::jobsToExecute()
 
     // Create jobs to load in any meshes that are pending
     if (m_renderThread->renderer() != Q_NULLPTR) {
-        QList<Mesh *> meshSources = m_renderThread->renderer()->meshDataManager()->meshesPending();
+        QList<QMesh *> meshSources = m_renderThread->renderer()->meshDataManager()->meshesPending();
         QVector<QJobPtr> meshesJobs;
-        Q_FOREACH (Mesh *meshSource, meshSources) {
+        Q_FOREACH (QMesh *meshSource, meshSources) {
             Render::LoadMeshDataJobPtr loadMeshJob(new Render::LoadMeshDataJob(meshSource));
             loadMeshJob->setRenderer(m_renderThread->renderer());
             meshesJobs.append(loadMeshJob);

@@ -2,7 +2,7 @@ INCLUDEPATH += $$PWD
 
 HEADERS += \
     $$PWD/material.h \
-    $$PWD/mesh.h \
+    $$PWD/qmesh.h \
     $$PWD/renderpass.h \
     $$PWD/renderpassfilter.h \
     $$PWD/shaderprogram.h \
@@ -33,7 +33,7 @@ HEADERS += \
 
 SOURCES += \
     $$PWD/material.cpp \
-    $$PWD/mesh.cpp \
+    $$PWD/qmesh.cpp \
     $$PWD/renderpass.cpp \
     $$PWD/shaderprogram.cpp \
     $$PWD/technique.cpp \

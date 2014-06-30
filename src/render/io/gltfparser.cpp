@@ -45,7 +45,7 @@
 #include "renderlogging.h"
 
 #include <Qt3DCore/entity.h>
-#include <mesh.h>
+#include <qmesh.h>
 #include <material.h>
 #include <technique.h>
 #include <shaderprogram.h>
@@ -339,7 +339,7 @@ Entity* GLTFParser::node(QString id)
 
     if ( jsonObj.contains(KEY_MESHES) )
     {
-        typedef QList<Mesh*> MeshList;
+        typedef QList<QMesh*> MeshList;
         QMap<QString, MeshList> materialDict;
 
         foreach (QJsonValue m, jsonObj.value(KEY_MESHES).toArray())
@@ -351,7 +351,7 @@ Entity* GLTFParser::node(QString id)
 
             foreach (MeshDataPtr md, m_meshDict.values(m.toString())) {
                 QString matId = m_meshMaterialDict[md.data()];
-                Mesh* meshComp = new Mesh;
+                QMesh* meshComp = new QMesh;
                 meshComp->setData(md);
                 materialDict[matId].append(meshComp);
             }
@@ -360,7 +360,7 @@ Entity* GLTFParser::node(QString id)
         if (materialDict.size() == 1) {
             // common case
             result->addComponent(material(materialDict.firstKey()));
-            foreach (Mesh* m, materialDict.first())
+            foreach (QMesh* m, materialDict.first())
                 result->addComponent(m);
         } else {
             // need to make a child entity per material
@@ -369,7 +369,7 @@ Entity* GLTFParser::node(QString id)
                 result->addChild(subEntity);
 
                 subEntity->addComponent(material(matId));
-                foreach (Mesh* m, materialDict.value(matId))
+                foreach (QMesh* m, materialDict.value(matId))
                     subEntity->addComponent(m);
             } // of distinct material iteration
         } // of multiple materials case

@@ -69,7 +69,7 @@ class Camera;
 class Entity;
 class Material;
 class ShaderProgram;
-class Mesh;
+class QMesh;
 class RenderPass;
 class QAbstractShapeMesh;
 class RendererAspect;
@@ -157,7 +157,7 @@ public:
 
     inline int cachedFramesCount() const { return m_cachedFramesCount; }
 
-    void buildMeshes(Mesh *mesh, Material *mat, const QMatrix4x4& mm);
+    void buildMeshes(QMesh *mesh, Material *mat, const QMatrix4x4& mm);
     void setSurface(QSurface *s);
 
     void enqueueRenderView(RenderView *renderView, int submitOrder);

@@ -41,7 +41,7 @@
 
 #include "qabstractshapemesh.h"
 #include "qabstractshapemesh_p.h"
-#include "mesh.h"
+#include "qmesh.h"
 
 #include "renderlogging.h"
 
@@ -51,7 +51,7 @@ namespace Qt3D {
 
 QAbstractShapeMeshPrivate::QAbstractShapeMeshPrivate(QAbstractShapeMesh *qq)
     : ComponentPrivate(qq)
-    , m_mesh(new Mesh())
+    , m_mesh(new QMesh())
     , m_loaded(false)
 {
 }
@@ -61,7 +61,7 @@ QAbstractShapeMesh::QAbstractShapeMesh(Node *parent) :
 {
 }
 
-Mesh *QAbstractShapeMesh::mesh()
+QMesh *QAbstractShapeMesh::mesh()
 {
     Q_D(QAbstractShapeMesh);
     if (!d->m_loaded) {

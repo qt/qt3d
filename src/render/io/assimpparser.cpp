@@ -45,13 +45,12 @@
 #include <parameter.h>
 #include <Qt3DCore/matrixtransform.h>
 #include <Qt3DCore/cameralens.h>
-#include <mesh.h>
+#include <qmesh.h>
 #include <QFileInfo>
 #include <QColor>
 #include <qmath.h>
 #include <Qt3DCore/entity.h>
 #include <material.h>
-#include <mesh.h>
 #include <texture.h>
 #include "renderlogging.h"
 
@@ -293,7 +292,7 @@ Entity *AssimpParser::node(aiNode *node)
     // Add Meshes to the node
     for (uint i = 0; i < node->mNumMeshes; i++) {
         uint meshIdx = node->mMeshes[i];
-        Mesh * mesh = m_meshes[meshIdx];
+        QMesh * mesh = m_meshes[meshIdx];
         // mesh material
         if (m_materials.contains(meshIdx))
             entityNode->addComponent(m_materials[meshIdx]);
@@ -537,7 +536,7 @@ void AssimpParser::loadMesh(uint meshIndex)
 
     meshData->computeBoundsFromAttribute(VERTICES_ATTRIBUTE_NAME);
 
-    Mesh *storedMesh = new Mesh();
+    QMesh *storedMesh = new QMesh();
     storedMesh->setData(meshData);
     m_meshes[meshIndex] = storedMesh;
 

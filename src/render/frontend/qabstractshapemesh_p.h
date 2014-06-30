@@ -58,7 +58,7 @@ public :
 
     Q_DECLARE_PUBLIC(QAbstractShapeMesh)
 
-    Mesh *m_mesh;
+    QMesh *m_mesh;
     bool m_loaded;
 };
 

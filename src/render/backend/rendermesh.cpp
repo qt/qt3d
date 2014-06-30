@@ -44,7 +44,7 @@
 #include "rendertechnique.h"
 #include "rendermaterial.h"
 #include "rendereraspect.h"
-#include "mesh.h"
+#include "qmesh.h"
 #include "qgraphicscontext.h"
 #include <meshdata.h>
 #include <technique.h>
@@ -81,7 +81,7 @@ RenderMesh::RenderMesh() :
 {
 }
 
-void RenderMesh::setPeer(Mesh *peer)
+void RenderMesh::setPeer(QMesh *peer)
 {
     if (m_peer != peer) {
         QChangeArbiter *arbiter = m_rendererAspect->aspectManager()->changeArbiter();

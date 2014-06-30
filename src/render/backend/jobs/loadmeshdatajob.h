@@ -52,7 +52,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class Mesh;
+class QMesh;
 typedef QHandle<MeshData, 16> HMeshData;
 
 namespace Render {
@@ -62,14 +62,14 @@ class Renderer;
 class LoadMeshDataJob : public Qt3D::QJob
 {
 public:
-    LoadMeshDataJob(Mesh *mesh);
+    LoadMeshDataJob(QMesh *mesh);
 
     void setRenderer(Renderer *renderer) { m_renderer = renderer; }
 protected:
     void run() Q_DECL_OVERRIDE;
 
 private:
-    Mesh *m_meshSource;
+    QMesh *m_meshSource;
     Renderer *m_renderer;
 };
 

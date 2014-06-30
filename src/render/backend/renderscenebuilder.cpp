@@ -51,7 +51,7 @@
 #include "materialmanager.h"
 #include "qabstractscene.h"
 #include <material.h>
-#include <mesh.h>
+#include <qmesh.h>
 #include <qabstractshapemesh.h>
 
 #include <framegraph.h>
@@ -263,7 +263,7 @@ void RenderSceneBuilder::createRenderCamera(Entity *entity)
 
 void RenderSceneBuilder::createRenderMesh(Entity *entity)
 {
-    QList<Mesh *> meshes = entity->componentsOfType<Mesh>();
+    QList<QMesh *> meshes = entity->componentsOfType<QMesh>();
     // Build Meshes from Shapes
     QList<QAbstractShapeMesh *> shapes = entity->componentsOfType<QAbstractShapeMesh>();
     if (!shapes.empty())

@@ -42,7 +42,7 @@
 #ifndef QT3D_RENDER_MESHDATAMANAGER_H
 #define QT3D_RENDER_MESHDATAMANAGER_H
 
-#include <Qt3DRenderer/mesh.h>
+#include <Qt3DRenderer/qmesh.h>
 #include <Qt3DRenderer/meshdata.h>
 #include <Qt3DCore/qresourcesmanager.h>
 
@@ -70,15 +70,15 @@ public:
     inline bool hasMeshData(const QUuid &id) { return contains(id); }
     inline MeshData* getOrCreateMeshData(const QUuid &id) { return getOrCreateResource(id); }
     inline MeshData* meshData(const QUuid &id) { return lookupResource(id); }
-    void addMeshData(Mesh *mesh);
+    void addMeshData(QMesh *mesh);
 
-    QList<Mesh *> meshesPending() const { return m_meshesPending; }
+    QList<QMesh *> meshesPending() const { return m_meshesPending; }
     void clearMeshesPending() { m_meshesPending.clear(); }
 
 private:
     // List of meshes that we need to schedule jobs to load
     // and calculate bounds for.
-    QList<Mesh *> m_meshesPending;
+    QList<QMesh *> m_meshesPending;
 };
 
 } // namespace Render

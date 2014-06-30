@@ -52,7 +52,7 @@ class QReadWriteLock;
 
 namespace Qt3D {
 
-class Mesh;
+class QMesh;
 class RenderPass;
 class RendererAspect;
 class MeshData;
@@ -70,9 +70,9 @@ class RenderMesh : public QObserverInterface
 public:
     RenderMesh();
 
-    void setPeer(Mesh *peer);
+    void setPeer(QMesh *peer);
     void setRendererAspect(RendererAspect *rendererAspect);
-    Mesh *peer() const { return m_peer; }
+    QMesh *peer() const { return m_peer; }
 
     void sceneChangeEvent(const QSceneChangePtr &e);
     bool meshDirty() const;
@@ -91,7 +91,7 @@ protected:
 
 private:
     RendererAspect *m_rendererAspect;
-    Mesh* m_peer;
+    QMesh* m_peer;
     QString m_source;
 
     bool m_meshDirty;

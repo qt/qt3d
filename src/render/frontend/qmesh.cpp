@@ -39,43 +39,54 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_MESH_H
-#define QT3D_MESH_H
+#include "qmesh.h"
 
-#include <Qt3DCore/qabstractmesh.h>
-#include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/meshdata.h>
+#include <QDebug>
+#include <QFile>
+#include <QFileInfo>
+
+#include <objloader.h>
+
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-/**
-* @brief Simple static mesh
-*
-*/
-class QT3DRENDERERSHARED_EXPORT Mesh : public QAbstractMesh
+QMesh::QMesh(Node *parent)
+    : QAbstractMesh( parent )
+    , m_sourceDirty( false )
 {
-    Q_OBJECT
-
-public:
-    Mesh(Node *parent = 0);
-    virtual ~Mesh();
-
-    void setSource(const QString &source) Q_DECL_OVERRIDE;
-
-    MeshDataPtr data() const;
-    void setData(MeshDataPtr d);
-
-private:
-
-    MeshDataPtr m_data;
-    QString m_source;
-    bool m_sourceDirty;
-};
-
 }
 
-QT_END_NAMESPACE
+QMesh::~QMesh()
+{
+}
 
-#endif // of QT3D_MESH_H
+void QMesh::setSource( const QString& source )
+{
+    if (QAbstractMesh::source() == source)
+        return;
+    QAbstractMesh::setSource(source);
+    m_sourceDirty = true;
+
+    // Let aspects know about the change
+    QScenePropertyChangePtr e(new QScenePropertyChange(ComponentUpdated, this));
+    e->m_propertyName = QByteArrayLiteral("source");
+    e->m_value = QAbstractMesh::source();
+    notifyObservers(e);
+}
+
+MeshDataPtr QMesh::data() const
+{
+    return m_data;
+}
+
+void QMesh::setData(MeshDataPtr d)
+{
+    m_data = d;
+}
+
+} // namespace Qt3D
+
+QT_END_NAMESPACE

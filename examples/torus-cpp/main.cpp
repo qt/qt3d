@@ -47,7 +47,7 @@
 #include <Qt3DCore/cameralens.h>
 
 #include <Qt3DRenderer/qtorusmesh.h>
-#include <Qt3DRenderer/mesh.h>
+#include <Qt3DRenderer/qmesh.h>
 #include <Qt3DRenderer/technique.h>
 #include <Qt3DRenderer/material.h>
 #include <Qt3DCore/qabstracteffect.h>

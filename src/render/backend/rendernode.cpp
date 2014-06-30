@@ -48,7 +48,7 @@
 #include "materialmanager.h"
 #include "meshmanager.h"
 #include "meshdatamanager.h"
-#include "mesh.h"
+#include "qmesh.h"
 #include "qabstractshapemesh.h"
 #include <sphere.h>
 
@@ -179,10 +179,10 @@ void RenderNode::sceneChangeEvent(const QSceneChangePtr &e)
                 RenderCamera *cam = m_renderer->cameraManager()->lookupResource(m_frontEndPeer->asEntity()->uuid());
                 if (cam != Q_NULLPTR)
                     cam->setPeer(qobject_cast<CameraLens *>(component));
-            } else if (qobject_cast<Mesh *>(component)) {
+            } else if (qobject_cast<QMesh *>(component)) {
                 RenderMesh *mesh = m_renderer->meshManager()->lookupResource(m_frontEndPeer->asEntity()->uuid());
                 if (mesh != Q_NULLPTR) {
-                    mesh->setPeer(qobject_cast<Mesh *>(component));
+                    mesh->setPeer(qobject_cast<QMesh *>(component));
                     m_renderer->meshDataManager()->addMeshData(mesh->peer());
                 }
             } else if (qobject_cast<QAbstractShapeMesh *>(component)) {
@@ -207,7 +207,7 @@ void RenderNode::sceneChangeEvent(const QSceneChangePtr &e)
                 RenderCamera *cam = m_renderer->cameraManager()->lookupResource(m_frontEndPeer->asEntity()->uuid());
                 if (cam != Q_NULLPTR)
                     cam->setPeer(Q_NULLPTR);
-            } else if (qobject_cast<Mesh *>(component) || qobject_cast<QAbstractShapeMesh *>(component)) {
+            } else if (qobject_cast<QMesh *>(component) || qobject_cast<QAbstractShapeMesh *>(component)) {
                 RenderMesh *mesh = m_renderer->meshManager()->lookupResource(m_frontEndPeer->asEntity()->uuid());
                 if (mesh != Q_NULLPTR)
                     mesh->setPeer(Q_NULLPTR);

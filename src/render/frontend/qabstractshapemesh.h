@@ -51,7 +51,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class Mesh;
+class QMesh;
 
 class QAbstractShapeMeshPrivate;
 
@@ -63,7 +63,7 @@ public:
     explicit QAbstractShapeMesh(Node *parent = 0);
 
     virtual MeshDataPtr data() const = 0;
-    Mesh *mesh();
+    QMesh *mesh();
 
 protected:
     Q_DECLARE_PRIVATE(QAbstractShapeMesh)
