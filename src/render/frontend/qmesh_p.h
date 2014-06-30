@@ -39,10 +39,10 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QMESH_H
-#define QT3D_QMESH_H
+#ifndef QT3D_QMESH_P_H
+#define QT3D_QMESH_P_H
 
-#include <Qt3DCore/qabstractmesh.h>
+#include <private/qabstractmesh_p.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DRenderer/meshdata.h>
 
@@ -50,32 +50,21 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QMeshPrivate;
+class QMesh;
 
-/**
-* @brief Simple static mesh
-*
-*/
-class QT3DRENDERERSHARED_EXPORT QMesh : public QAbstractMesh
+class QT3DRENDERERSHARED_EXPORT QMeshPrivate : public QAbstractMeshPrivate
 {
-    Q_OBJECT
-
 public:
-    explicit QMesh(Node *parent = 0);
+    QMeshPrivate(QMesh *qq);
 
-    void setSource(const QString &source) Q_DECL_OVERRIDE;
+    Q_DECLARE_PUBLIC(QMesh)
 
-    MeshDataPtr data() const;
-    void setData(MeshDataPtr d);
-
-protected:
-    Q_DECLARE_PRIVATE(QMesh)
-    QMesh(QMeshPrivate &dd, Node *parent = 0);
-
+    MeshDataPtr m_data;
+    bool m_sourceDirty;
 };
 
-}
+} // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // of QT3D_QMESH_H
+#endif // QT3D_QMESH_P_H

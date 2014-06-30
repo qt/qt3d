@@ -40,6 +40,7 @@
 ****************************************************************************/
 
 #include "qmesh.h"
+#include "qmesh_p.h"
 
 #include <QDebug>
 #include <QFile>
@@ -53,22 +54,28 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+QMeshPrivate::QMeshPrivate(QMesh *qq)
+    : QAbstractMeshPrivate(qq)
+    , m_sourceDirty(false)
+{}
+
 QMesh::QMesh(Node *parent)
-    : QAbstractMesh( parent )
-    , m_sourceDirty( false )
+    : QAbstractMesh(*new QMeshPrivate(this), parent)
 {
 }
 
-QMesh::~QMesh()
+QMesh::QMesh(QMeshPrivate &dd, Node *parent)
+    : QAbstractMesh(dd, parent)
 {
 }
 
 void QMesh::setSource( const QString& source )
 {
+    Q_D(QMesh);
     if (QAbstractMesh::source() == source)
         return;
     QAbstractMesh::setSource(source);
-    m_sourceDirty = true;
+    d->m_sourceDirty = true;
 
     // Let aspects know about the change
     QScenePropertyChangePtr e(new QScenePropertyChange(ComponentUpdated, this));
@@ -79,12 +86,14 @@ void QMesh::setSource( const QString& source )
 
 MeshDataPtr QMesh::data() const
 {
-    return m_data;
+    Q_D(const QMesh);
+    return d->m_data;
 }
 
-void QMesh::setData(MeshDataPtr d)
+void QMesh::setData(MeshDataPtr data)
 {
-    m_data = d;
+    Q_D(QMesh);
+    d->m_data = data;
 }
 
 } // namespace Qt3D

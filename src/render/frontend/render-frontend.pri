@@ -29,7 +29,8 @@ HEADERS += \
     $$PWD/parametermapper.h \
     $$PWD/qtorusmesh.h \
     $$PWD/qspheremesh.h \
-    $$PWD/qabstractshapemesh_p.h
+    $$PWD/qabstractshapemesh_p.h \
+    $$PWD/qmesh_p.h
 
 SOURCES += \
     $$PWD/material.cpp \

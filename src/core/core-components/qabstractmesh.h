@@ -67,7 +67,7 @@ public:
 Q_SIGNALS:
     void sourceChanged();
 
-private:
+protected:
     Q_DECLARE_PRIVATE(QAbstractMesh)
     QAbstractMesh(QAbstractMeshPrivate &dd, Node *parent = 0);
 };
