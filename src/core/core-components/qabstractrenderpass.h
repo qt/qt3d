@@ -70,9 +70,9 @@ Q_SIGNALS:
     void nameChanged();
     void shaderProgramChanged();
 
-private:
+protected:
     Q_DECLARE_PRIVATE(QAbstractRenderPass)
-    QAbstractRenderPassPrivate *d_ptr;
+    QAbstractRenderPass(QAbstractRenderPassPrivate &dd, Node *parent = 0);
 };
 
 } // Qt3D

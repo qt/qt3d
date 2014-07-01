@@ -39,47 +39,63 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERRENDERPASS_H
-#define QT3D_RENDER_RENDERRENDERPASS_H
+#ifndef QT3D_QRENDERPASS_H
+#define QT3D_QRENDERPASS_H
 
+#include <Qt3DCore/qabstractrenderpass.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DCore/qobserverinterface.h>
+
+#include <Qt3DRenderer/shaderprogram.h>
+#include <Qt3DRenderer/drawstate.h>
+#include <Qt3DRenderer/renderpasscriterion.h>
+
+#include <QHash>
+#include <QList>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QRenderPass;
-class QAbstractShader;
+class Parameter;
 class ParameterMapper;
+typedef QList<Parameter*> ParameterList;
 
-namespace Render {
+class QRenderPassPrivate;
 
-class Renderer;
-
-class RenderRenderPass : public QObserverInterface
+class QT3DRENDERERSHARED_EXPORT QRenderPass : public QAbstractRenderPass
 {
-public:
-    RenderRenderPass();
+    Q_OBJECT
 
-    void setRenderer(Renderer *renderer);
-    void setPeer(QRenderPass *peer);
-    void sceneChangeEvent(const QSceneChangePtr &e);
-    QAbstractShader *shaderProgram() const;
+public:
+    explicit QRenderPass(Node *parent = 0);
+
+    void addUniformBinding(Parameter* param, QString glslUniformName);
+
+    void addAttributeBinding(Parameter* param, QString glslAttributeName);
+
+    QString glslNameForParameter(QString paramName) const;
+
+    ParameterList attributes() const;
+    ParameterList uniforms() const;
+
+    void setStateSet(Render::DrawStateSet* ss);
+    Render::DrawStateSet* stateSet() const;
+
+    void addCriterion(RenderPassCriterion *criterion);
+    void removeCriterion(RenderPassCriterion *criterion);
+    QList<RenderPassCriterion *> criteria() const;
+
+    void addBinding(ParameterMapper *binding);
+    void removeBinding(ParameterMapper *binding);
     QList<ParameterMapper *> bindings() const;
 
-private:
-    Renderer *m_renderer;
-    QRenderPass *m_peer;
-    QAbstractShader *m_shader;
-    QList<ParameterMapper *> m_bindings;
-
+protected:
+    Q_DECLARE_PRIVATE(QRenderPass)
+    QRenderPass(QRenderPassPrivate &dd, Node *parent = 0);
 };
 
-} // Render
-
-} // Qt3D
+}
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERRENDERPASS_H
+#endif // QT3D_QRENDERPASS_H

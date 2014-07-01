@@ -12,7 +12,8 @@ HEADERS += \
         $$PWD/qabstractshader.h \
         $$PWD/qabstractmesh_p.h \
         $$PWD/qabstracteffect_p.h \
-        $$PWD/qabstracttechnique_p.h
+        $$PWD/qabstracttechnique_p.h \
+        $$PWD/qabstractrenderpass_p.h
 
 SOURCES += \
         $$PWD/camera.cpp \

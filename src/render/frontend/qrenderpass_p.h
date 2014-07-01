@@ -39,47 +39,45 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERRENDERPASS_H
-#define QT3D_RENDER_RENDERRENDERPASS_H
+#ifndef QT3D_QRENDERPASS_P_H
+#define QT3D_QRENDERPASS_P_H
 
+#include <private/qabstractrenderpass_p.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DCore/qobserverinterface.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
 class QRenderPass;
-class QAbstractShader;
+class Parameter;
 class ParameterMapper;
+typedef QList<Parameter*> ParameterList;
 
-namespace Render {
+namespace Render
+{
+class DrawStateSet;
+}
 
-class Renderer;
-
-class RenderRenderPass : public QObserverInterface
+class QT3DRENDERERSHARED_EXPORT QRenderPassPrivate : public QAbstractRenderPassPrivate
 {
 public:
-    RenderRenderPass();
+    QRenderPassPrivate(QRenderPass *qq);
 
-    void setRenderer(Renderer *renderer);
-    void setPeer(QRenderPass *peer);
-    void sceneChangeEvent(const QSceneChangePtr &e);
-    QAbstractShader *shaderProgram() const;
-    QList<ParameterMapper *> bindings() const;
+    Q_DECLARE_PUBLIC(QRenderPass)
+    ParameterList m_attributes;
+    ParameterList m_uniforms;
 
-private:
-    Renderer *m_renderer;
-    QRenderPass *m_peer;
-    QAbstractShader *m_shader;
+    // map Parameter names to GLSL names
+    QHash<QString, QString> m_parameterNameDict;
+    QList<RenderPassCriterion *> m_criteria;
     QList<ParameterMapper *> m_bindings;
 
+    Render::DrawStateSet* m_stateSet;
 };
-
-} // Render
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERRENDERPASS_H
+#endif // QRENDERPASS_P_H

@@ -5,7 +5,7 @@ include(framegraph-components/framegraph-components.pri)
 HEADERS += \
     $$PWD/qmaterial.h \
     $$PWD/qmesh.h \
-    $$PWD/renderpass.h \
+    $$PWD/qrenderpass.h \
     $$PWD/shaderprogram.h \
     $$PWD/qtechnique.h \
     $$PWD/tag.h \
@@ -36,11 +36,12 @@ HEADERS += \
     $$PWD/qeffect_p.h \
     $$PWD/qtechnique_p.h \
     $$PWD/qabstractscene_p.h \
+    $$PWD/qrenderpass_p.h
 
 SOURCES += \
     $$PWD/qmaterial.cpp \
     $$PWD/qmesh.cpp \
-    $$PWD/renderpass.cpp \
+    $$PWD/qrenderpass.cpp \
     $$PWD/shaderprogram.cpp \
     $$PWD/qtechnique.cpp \
     $$PWD/qabstractshapemesh.cpp \

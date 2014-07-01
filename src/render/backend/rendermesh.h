@@ -53,7 +53,7 @@ class QReadWriteLock;
 namespace Qt3D {
 
 class QMesh;
-class RenderPass;
+class QRenderPass;
 class RendererAspect;
 class MeshData;
 

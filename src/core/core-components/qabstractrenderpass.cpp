@@ -40,6 +40,7 @@
 ****************************************************************************/
 
 #include "qabstractrenderpass.h"
+#include "qabstractrenderpass_p.h"
 #include "qabstractshader.h"
 #include <Qt3DCore/qscenepropertychange.h>
 
@@ -47,23 +48,19 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAbstractRenderPassPrivate
+QAbstractRenderPassPrivate::QAbstractRenderPassPrivate(QAbstractRenderPass *qq)
+    : NodePrivate(qq)
+    , m_shader(Q_NULLPTR)
 {
-public:
-    QAbstractRenderPassPrivate(QAbstractRenderPass *qq)
-        : q_ptr(qq)
-        , m_shader(Q_NULLPTR)
-    {}
-
-    Q_DECLARE_PUBLIC(QAbstractRenderPass)
-    QAbstractRenderPass *q_ptr;
-    QAbstractShader *m_shader;
-    QString m_name;
-};
+}
 
 QAbstractRenderPass::QAbstractRenderPass(Node *parent)
-    : Node(parent)
-    , d_ptr(new QAbstractRenderPassPrivate(this))
+    : Node(*new QAbstractRenderPassPrivate(this), parent)
+{
+}
+
+QAbstractRenderPass::QAbstractRenderPass(QAbstractRenderPassPrivate &dd, Node *parent)
+    : Node(dd, parent)
 {
 }
 

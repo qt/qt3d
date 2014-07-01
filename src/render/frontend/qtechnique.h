@@ -45,7 +45,7 @@
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DCore/node.h>
 #include <Qt3DRenderer/tag.h>
-#include <Qt3DRenderer/renderpass.h>
+#include <Qt3DRenderer/qrenderpass.h>
 #include <Qt3DCore/qabstracttechnique.h>
 #include <Qt3DRenderer/techniquecriterion.h>
 #include <QList>

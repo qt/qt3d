@@ -58,13 +58,13 @@ class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTechnique : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Qt3D::TechniqueCriterion> criteria READ criteriaList NOTIFY criteriaChanged)
-    Q_PROPERTY(QQmlListProperty<Qt3D::RenderPass> renderPasses READ renderPassList NOTIFY renderPassesChanged)
+    Q_PROPERTY(QQmlListProperty<Qt3D::QRenderPass> renderPasses READ renderPassList NOTIFY renderPassesChanged)
     Q_PROPERTY(QQmlListProperty<Qt3D::Parameter> parameters READ parameterList)
 public:
     explicit Quick3DTechnique(QObject *parent = 0);
 
     QQmlListProperty<Qt3D::TechniqueCriterion> criteriaList();
-    QQmlListProperty<Qt3D::RenderPass> renderPassList();
+    QQmlListProperty<Qt3D::QRenderPass> renderPassList();
     QQmlListProperty<Qt3D::Parameter> parameterList();
 
     // Use QAbstractTechnique when it has been properly defined
@@ -86,10 +86,10 @@ private:
     static int criteriaCount(QQmlListProperty<TechniqueCriterion> *list);
     static void clearCriteriaList(QQmlListProperty<TechniqueCriterion> *list);
 
-    static void appendRenderPass(QQmlListProperty<RenderPass> *list, RenderPass* renderPass);
-    static RenderPass *renderPassAt(QQmlListProperty<RenderPass> *list, int index);
-    static int renderPassCount(QQmlListProperty<RenderPass> *list);
-    static void clearRenderPasses( QQmlListProperty<RenderPass> *list);
+    static void appendRenderPass(QQmlListProperty<QRenderPass> *list, QRenderPass* renderPass);
+    static QRenderPass *renderPassAt(QQmlListProperty<QRenderPass> *list, int index);
+    static int renderPassCount(QQmlListProperty<QRenderPass> *list);
+    static void clearRenderPasses( QQmlListProperty<QRenderPass> *list);
 };
 
 } // Quick

@@ -53,7 +53,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class RenderPass;
+class QRenderPass;
 class QFrameAllocator;
 
 namespace Render {

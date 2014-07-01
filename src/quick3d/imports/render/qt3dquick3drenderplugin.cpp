@@ -45,7 +45,7 @@
 #include <Qt3DRenderer/qscene.h>
 #include <Qt3DRenderer/tag.h>
 #include <Qt3DRenderer/qmesh.h>
-#include <Qt3DRenderer/renderpass.h>
+#include <Qt3DRenderer/qrenderpass.h>
 #include <Qt3DRenderer/shaderprogram.h>
 #include <Qt3DRenderer/qviewport.h>
 #include <Qt3DRenderer/qrenderpassfilter.h>
@@ -90,7 +90,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3D::ParameterMapper>(uri, 2, 0, "ParameterMapper");
     qmlRegisterType<Qt3D::QMesh>(uri, 2, 0, "Mesh");
     qmlRegisterExtendedType<Qt3D::QMaterial, Qt3D::Render::Quick::Quick3DMaterial>(uri, 2, 0, "Material");
-    qmlRegisterExtendedType<Qt3D::RenderPass, Qt3D::Render::Quick::Quick3DRenderPass>(uri, 2, 0, "RenderPass");
+    qmlRegisterExtendedType<Qt3D::QRenderPass, Qt3D::Render::Quick::Quick3DRenderPass>(uri, 2, 0, "RenderPass");
     qmlRegisterType<Qt3D::ShaderProgram>(uri, 2, 0, "ShaderProgram");
     qmlRegisterUncreatableType<Qt3D::QAbstractShapeMesh>(uri, 2, 0, "Shape", QStringLiteral("Shape is an abstract base class"));
     qmlRegisterType<Qt3D::QTorusMesh>(uri, 2, 0, "TorusMesh");

@@ -39,96 +39,30 @@
 **
 ****************************************************************************/
 
-#include "renderpass.h"
-#include "parameter.h"
-#include "renderpasscriterion.h"
-#include "parametermapper.h"
-#include <QDebug>
+#ifndef QT3D_QABSTRACTRENDERPASS_P_H
+#define QT3D_QABSTRACTRENDERPASS_P_H
+
+#include <private/node_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-RenderPass::RenderPass(Node *parent)
-    : QAbstractRenderPass(parent)
-    , m_stateSet(0)
+class QAbstractRenderPass;
+class QAbstractShader;
+
+class QT3DCORESHARED_EXPORT QAbstractRenderPassPrivate : public NodePrivate
 {
-}
+public:
+    QAbstractRenderPassPrivate(QAbstractRenderPass *qq);
 
-//void RenderPass::addUniformBinding(Parameter *param, QString glslUniformName)
-//{
-//    m_uniforms.append(param);
-//    m_parameterNameDict[param->name()] = glslUniformName;
-//}
+    Q_DECLARE_PUBLIC(QAbstractRenderPass)
+    QAbstractShader *m_shader;
+    QString m_name;
+};
 
-//void RenderPass::addAttributeBinding(Parameter *param, QString glslAttributeName)
-//{
-//    m_attributes.append(param);
-//    m_parameterNameDict[param->name()] = glslAttributeName;
-//}
-
-//QString RenderPass::glslNameForParameter(QString paramName) const
-//{
-//    return m_parameterNameDict.value(paramName);
-//}
-
-ParameterList RenderPass::attributes() const
-{
-    return m_attributes;
-}
-
-ParameterList RenderPass::uniforms() const
-{
-    return m_uniforms;
-}
-
-void RenderPass::setStateSet(Render::DrawStateSet *ss)
-{
-    m_stateSet = ss;
-}
-
-Render::DrawStateSet *RenderPass::stateSet() const
-{
-    return m_stateSet;
-}
-
-void RenderPass::addCriterion(RenderPassCriterion *criterion)
-{
-    if (!m_criteria.contains(criterion)) {
-        m_criteria.append(criterion);
-        // TO DO: Notify QChangeArbiter
-    }
-}
-
-void RenderPass::removeCriterion(RenderPassCriterion *criterion)
-{
-    m_criteria.removeOne(criterion);
-    // TO DO: Notify QChangeArbiter
-}
-
-QList<RenderPassCriterion *> RenderPass::criteria() const
-{
-    return m_criteria;
-}
-
-void RenderPass::addBinding(ParameterMapper *binding)
-{
-    // TO DO: Notify QChangeArbiter
-    if (!m_bindings.contains(binding))
-        m_bindings.append(binding);
-}
-
-void RenderPass::removeBinding(ParameterMapper *binding)
-{
-    // TO DO: Notify QChangeArbiter
-    m_bindings.removeOne(binding);
-}
-
-QList<ParameterMapper *> RenderPass::bindings() const
-{
-    return m_bindings;
-}
-
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_QABSTRACTRENDERPASS_P_H

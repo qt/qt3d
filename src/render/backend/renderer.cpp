@@ -56,7 +56,7 @@
 #include <qmesh.h>
 #include <qtechnique.h>
 #include <shaderprogram.h>
-#include <renderpass.h>
+#include <qrenderpass.h>
 #include <qabstractshapemesh.h>
 #include <cameramanager.h>
 #include <meshdatamanager.h>
@@ -158,7 +158,7 @@ void Renderer::buildDefaultTechnique()
     m_defaultRenderShader = new RenderShader();
     m_defaultRenderShader->setPeer(defaultShader);
 
-    RenderPass* basicPass = new RenderPass;
+    QRenderPass* basicPass = new QRenderPass;
     basicPass->setShaderProgram(defaultShader);
 
     m_defaultDrawStateSet = new DrawStateSet;
@@ -246,7 +246,7 @@ void Renderer::initialize()
     m_defaultRenderPassHandle = m_renderPassManager->acquire();
     RenderRenderPass *rPass = m_renderPassManager->data(m_defaultRenderPassHandle);
     rPass->setRenderer(this);
-    rPass->setPeer(qobject_cast<RenderPass*>(m_defaultTechnique->renderPasses().first()));
+    rPass->setPeer(qobject_cast<QRenderPass*>(m_defaultTechnique->renderPasses().first()));
 
 }
 

@@ -66,7 +66,7 @@ void RenderRenderPass::setRenderer(Renderer *renderer)
     m_renderer = renderer;
 }
 
-void RenderRenderPass::setPeer(RenderPass *peer)
+void RenderRenderPass::setPeer(QRenderPass *peer)
 {
     if (m_peer != peer) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();

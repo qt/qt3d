@@ -54,9 +54,9 @@ Quick3DTechnique::Quick3DTechnique(QObject *parent)
 {
 }
 
-QQmlListProperty<Qt3D::RenderPass> Quick3DTechnique::renderPassList()
+QQmlListProperty<Qt3D::QRenderPass> Quick3DTechnique::renderPassList()
 {
-    return QQmlListProperty<Qt3D::RenderPass>(this, 0,
+    return QQmlListProperty<Qt3D::QRenderPass>(this, 0,
                                               &Quick3DTechnique::appendRenderPass,
                                               &Quick3DTechnique::renderPassCount,
                                               &Quick3DTechnique::renderPassAt,
@@ -97,7 +97,7 @@ void Quick3DTechnique::clearParameterList(QQmlListProperty<Parameter> *list)
         technique->parentTechnique()->removeParameter(p);
 }
 
-void Quick3DTechnique::appendRenderPass(QQmlListProperty<RenderPass> *list, RenderPass *renderPass)
+void Quick3DTechnique::appendRenderPass(QQmlListProperty<QRenderPass> *list, QRenderPass *renderPass)
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     if (technique) {
@@ -106,15 +106,15 @@ void Quick3DTechnique::appendRenderPass(QQmlListProperty<RenderPass> *list, Rend
     }
 }
 
-RenderPass *Quick3DTechnique::renderPassAt(QQmlListProperty<RenderPass> *list, int index)
+QRenderPass *Quick3DTechnique::renderPassAt(QQmlListProperty<QRenderPass> *list, int index)
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     if (technique)
-        return qobject_cast<RenderPass *>(technique->parentTechnique()->renderPasses().at(index));
+        return qobject_cast<QRenderPass *>(technique->parentTechnique()->renderPasses().at(index));
     return 0;
 }
 
-int Quick3DTechnique::renderPassCount(QQmlListProperty<RenderPass> *list)
+int Quick3DTechnique::renderPassCount(QQmlListProperty<QRenderPass> *list)
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     if (technique)
@@ -122,7 +122,7 @@ int Quick3DTechnique::renderPassCount(QQmlListProperty<RenderPass> *list)
     return 0;
 }
 
-void Quick3DTechnique::clearRenderPasses(QQmlListProperty<RenderPass> *list)
+void Quick3DTechnique::clearRenderPasses(QQmlListProperty<QRenderPass> *list)
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     if (technique) {

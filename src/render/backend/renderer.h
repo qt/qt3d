@@ -70,7 +70,7 @@ class Entity;
 class QMaterial;
 class ShaderProgram;
 class QMesh;
-class RenderPass;
+class QRenderPass;
 class QAbstractShapeMesh;
 class RendererAspect;
 class QFrameAllocator;

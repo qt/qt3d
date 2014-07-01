@@ -42,7 +42,7 @@
 #include "rendertechnique.h"
 #include "rendershader.h"
 
-#include <renderpass.h>
+#include <qrenderpass.h>
 #include <qtechnique.h>
 #include "rendereraspect.h"
 #include "renderer.h"

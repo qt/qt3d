@@ -427,7 +427,7 @@ QList<RenderRenderPass *> RenderView::findRenderPassesForTechnique(RenderTechniq
             if (rPass == Q_NULLPTR) {
                 rPass = m_renderer->renderPassManager()->getOrCreateResource(pass);
                 rPass->setRenderer(m_renderer);
-                rPass->setPeer(qobject_cast<RenderPass*>(pass));
+                rPass->setPeer(qobject_cast<QRenderPass*>(pass));
             }
             passes << rPass;
         }

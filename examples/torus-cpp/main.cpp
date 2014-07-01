@@ -52,7 +52,7 @@
 #include <Qt3DRenderer/qmaterial.h>
 #include <Qt3DCore/qabstracteffect.h>
 #include <Qt3DRenderer/texture.h>
-#include <Qt3DRenderer/renderpass.h>
+#include <Qt3DRenderer/qrenderpass.h>
 #include <Qt3DRenderer/qscene.h>
 
 #include <Qt3DCore/scaletransform.h>

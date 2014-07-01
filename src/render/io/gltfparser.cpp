@@ -825,7 +825,7 @@ void GLTFParser::processJSONTechnique( QString id, QJsonObject jsonObj )
             continue;
         }
 
-        RenderPass* pass = new RenderPass;
+        QRenderPass* pass = new QRenderPass;
         pass->setShaderProgram(m_programs[programName]);
 
         QJsonObject attrs = ip.value(KEY_ATTRIBUTES).toObject();

@@ -43,7 +43,7 @@
 #define QT3D_RENDER_QUICK_QUICK3DRENDERPASS_H
 
 #include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
-#include <Qt3DRenderer/renderpass.h>
+#include <Qt3DRenderer/qrenderpass.h>
 #include <QQmlListProperty>
 
 QT_BEGIN_NAMESPACE
@@ -64,7 +64,7 @@ public:
 
     QQmlListProperty<Qt3D::RenderPassCriterion> criteriaList();
     QQmlListProperty<Qt3D::ParameterMapper> bindingList();
-    inline RenderPass *parentRenderPass() const { return qobject_cast<RenderPass *>(parent()); }
+    inline QRenderPass *parentRenderPass() const { return qobject_cast<QRenderPass *>(parent()); }
 
 private:
     static void appendCriteria(QQmlListProperty<Qt3D::RenderPassCriterion> *list, RenderPassCriterion *criterion);
