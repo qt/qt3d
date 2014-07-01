@@ -40,9 +40,9 @@
 ****************************************************************************/
 
 #include "qabstractscene.h"
-
+#include "qabstractscene_p.h"
 #include "renderlogging.h"
-
+#include "abstractsceneparser.h"
 #include <gltfparser.h>
 #include <assimpparser.h>
 
@@ -52,11 +52,24 @@ namespace Qt3D {
 
 namespace Render {
 
-QAbstractScene::QAbstractScene(Node *sceneNode)
-    : d_ptr(new QAbstractScenePrivate(this))
+QAbstractScenePrivate::QAbstractScenePrivate(QAbstractScene *qq)
+    : EntityPrivate(qq)
+    , m_sceneNode(Q_NULLPTR)
+    , m_sceneChild(Q_NULLPTR)
+    , m_currentParser(Q_NULLPTR)
+{
+}
+
+QAbstractScene::QAbstractScene(QAbstractScenePrivate &dd, Node *parent)
+    : Entity(dd, parent)
+{
+}
+
+QAbstractScene::QAbstractScene(Node *parent)
+    : Entity(*new QAbstractScenePrivate(this), parent)
 {
     Q_D(QAbstractScene);
-    d->m_sceneNode = sceneNode;
+    d->m_sceneNode = this;
 }
 
 QString QAbstractScene::source() const

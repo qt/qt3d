@@ -42,7 +42,7 @@
 #include <QtQml>
 #include "qt3dquick3drenderplugin.h"
 #include <Qt3DRenderer/qabstractscene.h>
-#include <Qt3DRenderer/scene.h>
+#include <Qt3DRenderer/qscene.h>
 #include <Qt3DRenderer/tag.h>
 #include <Qt3DRenderer/qmesh.h>
 #include <Qt3DRenderer/renderpass.h>
@@ -78,8 +78,8 @@ QT_BEGIN_NAMESPACE
 
 void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
 {
-    qmlRegisterInterface<Qt3D::Render::QAbstractScene>("QAbstractScene");
-    qmlRegisterExtendedType<Qt3D::Scene, Qt3D::Render::Quick::Quick3DScene>(uri, 2, 0, "Scene");
+    qmlRegisterUncreatableType<Qt3D::Render::QAbstractScene>(uri, 2, 0, "QAbstractScene", "QAbstractScene is abstract");
+    qmlRegisterExtendedType<Qt3D::QScene, Qt3D::Render::Quick::Quick3DScene>(uri, 2, 0, "Scene");
 //    qmlRegisterCustomType<Qt3D::Effect>(uri, 2, 0, "Effect", new Qt3D::Render::Quick::ShaderPropertyParser());
     qmlRegisterExtendedType<Qt3D::QEffect, Qt3D::Render::Quick::Quick3DEffect>(uri, 2, 0, "Effect");
     qmlRegisterExtendedType<Qt3D::QTechnique, Qt3D::Render::Quick::Quick3DTechnique>(uri, 2, 0, "Technique");

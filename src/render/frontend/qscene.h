@@ -39,18 +39,24 @@
 **
 ****************************************************************************/
 
-#include "scene.h"
+#ifndef QT3D_QSCENE_H
+#define QT3D_QSCENE_H
+
+#include <Qt3DRenderer/qabstractscene.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-Scene::Scene(Node *parent)
-    : Entity(parent)
-    , Render::QAbstractScene(this)
+class QT3DRENDERERSHARED_EXPORT QScene : public Render::QAbstractScene
 {
-}
+    Q_OBJECT
+public:
+    explicit QScene(Node *parent = 0);
+};
 
 } // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_QSCENE_H

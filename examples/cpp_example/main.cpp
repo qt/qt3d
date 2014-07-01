@@ -55,7 +55,7 @@
 #include <Qt3DCore/qabstracteffect.h>
 #include <Qt3DRenderer/texture.h>
 #include <Qt3DRenderer/renderpass.h>
-#include <Qt3DRenderer/scene.h>
+#include <Qt3DRenderer/qscene.h>
 
 #include <Qt3DCore/translatetransform.h>
 #include <Qt3DCore/matrixtransform.h>
@@ -108,7 +108,7 @@ int main(int ac, char **av)
     torusEntity->addComponent(torusTransforms);
 
     // Scene file
-    Qt3D::Scene  *scene = new Qt3D::Scene();
+    Qt3D::QScene  *scene = new Qt3D::QScene();
     scene->setObjectName(QStringLiteral("scene"));
     Qt3D::Transform *sceneTransform = new Qt3D::Transform();
     Qt3D::TranslateTransform *sceneTranslateTransform = new Qt3D::TranslateTransform();

@@ -21,7 +21,7 @@ HEADERS += \
     $$PWD/viewport.h \
     $$PWD/cameraselector.h \
     $$PWD/qeffect.h \
-    $$PWD/scene.h \
+    $$PWD/qscene.h \
     $$PWD/techniquecriterion.h \
     $$PWD/renderpasscriterion.h \
     $$PWD/parameter.h \
@@ -41,7 +41,8 @@ HEADERS += \
     $$PWD/qpointlight_p.h \
     $$PWD/qmaterial_p.h \
     $$PWD/qeffect_p.h \
-    $$PWD/qtechnique_p.h
+    $$PWD/qtechnique_p.h \
+    $$PWD/qabstractscene_p.h
 
 SOURCES += \
     $$PWD/qmaterial.cpp \
@@ -57,7 +58,7 @@ SOURCES += \
     $$PWD/framegraph.cpp \
     $$PWD/framegraphitem.cpp \
     $$PWD/qeffect.cpp \
-    $$PWD/scene.cpp \
+    $$PWD/qscene.cpp \
     $$PWD/techniquecriterion.cpp \
     $$PWD/renderpasscriterion.cpp \
     $$PWD/parameter.cpp \

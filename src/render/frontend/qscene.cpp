@@ -39,64 +39,17 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QABSTRACTSCENE_H
-#define QT3D_QABSTRACTSCENE_H
-
-#include <Qt3DCore/entity.h>
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include "qscene.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class AbstractSceneParser;
-
-namespace Render {
-
-class QAbstractScene;
-class QAbstractScenePrivate;
-
-class QT3DRENDERERSHARED_EXPORT QAbstractScene : public Entity
+QScene::QScene(Node *parent)
+    : Render::QAbstractScene(parent)
 {
-    Q_OBJECT
-    Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
-    Q_PROPERTY(QString sceneId READ sceneId WRITE setSceneId NOTIFY sceneIdChanged)
-public:
-    explicit QAbstractScene(Node *parent = 0);
+}
 
-    QString source() const;
-    void setSource(QString arg);
-
-    QString sceneId() const;
-    void setSceneId(QString arg);
-
-    virtual Node *node(QString id);
-    virtual Node *scene(QString id);
-
-    void clear();
-
-    /**
-     * @brief findInTree - given a Node* object rooting a tree, find
-     * the top-most Scene entity within.
-     * @param root - the found Scene or NULL if no Scene was found
-     * @return
-     */
-    static QAbstractScene* findInTree(Node* root);
-Q_SIGNALS:
-
-    void sourceChanged(QString arg);
-    void sceneIdChanged(QString arg);
-
-protected:
-    void rebuild();
-    Q_DECLARE_PRIVATE(QAbstractScene)
-    QAbstractScene(QAbstractScenePrivate &dd, Node *parent = 0);
-};
-
-} // Render
-
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_QABSTRACTSCENE_H

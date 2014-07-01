@@ -39,31 +39,40 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_SCENE_H
-#define QT3D_SCENE_H
+#ifndef QT3D_QABSTRACTSCENE_P_H
+#define QT3D_QABSTRACTSCENE_P_H
 
-#include <Qt3DRenderer/qabstractscene.h>
+#include <private/entity_p.h>
+#include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DRENDERERSHARED_EXPORT Scene : public Entity, public Render::QAbstractScene
-{
-    Q_OBJECT
-    Q_INTERFACES(Qt3D::Render::QAbstractScene)
-    Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
-    Q_PROPERTY(QString sceneId READ sceneId WRITE setSceneId NOTIFY sceneIdChanged)
-public:
-    explicit Scene(Node *parent = 0);
+class AbstractSceneParser;
 
-Q_SIGNALS:
-    void sourceChanged(QString arg);
-    void sceneIdChanged(QString arg);
+namespace Render {
+
+class QAbstractScene;
+
+class QT3DRENDERERSHARED_EXPORT QAbstractScenePrivate : public EntityPrivate
+{
+public:
+    QAbstractScenePrivate(QAbstractScene *qq);
+
+    Q_DECLARE_PUBLIC(QAbstractScene)
+
+    QString m_source;
+    QString m_sceneId;
+    Node *m_sceneNode;
+    Node *m_sceneChild;
+    AbstractSceneParser *m_currentParser;
 };
+
+} // Render
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_SCENE_H
+#endif // QT3D_QABSTRACTSCENE_P_H
