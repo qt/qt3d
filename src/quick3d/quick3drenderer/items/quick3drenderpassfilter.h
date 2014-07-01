@@ -43,7 +43,7 @@
 #define QT3D_RENDER_QUICK_QUICK3DRENDERPASSFILTER_H
 
 #include <Qt3DQuick/quick3dnode.h>
-#include <Qt3DRenderer/renderpassfilter.h>
+#include <Qt3DRenderer/qrenderpassfilter.h>
 #include <Qt3DRenderer/renderpasscriterion.h>
 #include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
 
@@ -64,7 +64,7 @@ public:
 
     QQmlListProperty<Qt3D::RenderPassCriterion> criteriaList();
 
-    inline RenderPassFilter *parentRenderPassFilter() const { return qobject_cast<Qt3D::RenderPassFilter*>(parent()); }
+    inline QRenderPassFilter *parentRenderPassFilter() const { return qobject_cast<Qt3D::QRenderPassFilter*>(parent()); }
 
 private:
     static void appendCriterion(QQmlListProperty<RenderPassCriterion> *list, RenderPassCriterion *criterion);

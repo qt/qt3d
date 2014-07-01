@@ -54,12 +54,12 @@
 #include <qmesh.h>
 #include <qabstractshapemesh.h>
 
-#include <framegraph.h>
-#include <viewport.h>
-#include <techniquefilter.h>
-#include <renderpassfilter.h>
-#include <cameraselector.h>
-#include <rendertargetselector.h>
+#include <qframegraph.h>
+#include <qviewport.h>
+#include <qtechniquefilter.h>
+#include <qrenderpassfilter.h>
+#include <qcameraselector.h>
+#include <qrendertargetselector.h>
 
 #include <techniquefilternode.h>
 #include <cameraselectornode.h>
@@ -95,7 +95,7 @@ void RenderSceneBuilder::initializeFrameGraph()
     // Into the scenegraph
     qCDebug(Render::Backend) << Q_FUNC_INFO << "FrameGraph";
     // Retrieve and set Renderer FrameGraph
-    FrameGraph *fg = Entity::findComponentInTree<FrameGraph>(rootNode()->frontEndPeer());
+    QFrameGraph *fg = Entity::findComponentInTree<QFrameGraph>(rootNode()->frontEndPeer());
     m_frameGraphEntityNode = m_renderer->renderNodesManager()->lookupHandle(fg->parentNode()->asEntity()->uuid());
     createFrameGraph(fg);
 }
@@ -112,9 +112,9 @@ Render::FrameGraphNode *RenderSceneBuilder::buildFrameGraph(Node *node)
     qCDebug(Backend) << Q_FUNC_INFO << node->objectName();
 
     Render::FrameGraphNode *fgNode = Q_NULLPTR;
-    Qt3D::FrameGraphItem *fgItem = Q_NULLPTR;
+    Qt3D::QFrameGraphItem *fgItem = Q_NULLPTR;
 
-    if ((fgItem = qobject_cast<Qt3D::FrameGraphItem *>(node)) != Q_NULLPTR) {
+    if ((fgItem = qobject_cast<Qt3D::QFrameGraphItem *>(node)) != Q_NULLPTR) {
         // Instantiate proper backend node corresponding to the frontend node
         fgNode = backendFrameGraphNode(node);
     }
@@ -147,8 +147,8 @@ Render::FrameGraphNode *RenderSceneBuilder::buildFrameGraph(Node *node)
  */
 Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(Node *block)
 {
-    if (qobject_cast<Qt3D::TechniqueFilter*>(block) != Q_NULLPTR) {
-        Qt3D::TechniqueFilter* techniqueFilter = qobject_cast<Qt3D::TechniqueFilter*>(block);
+    if (qobject_cast<Qt3D::QTechniqueFilter*>(block) != Q_NULLPTR) {
+        Qt3D::QTechniqueFilter* techniqueFilter = qobject_cast<Qt3D::QTechniqueFilter*>(block);
         Render::TechniqueFilter *techniqueFilterNode = new Render::TechniqueFilter();
 
         qCDebug(Backend) << Q_FUNC_INFO << "TechniqueFilter";
@@ -156,8 +156,8 @@ Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(Node *block)
             techniqueFilterNode->appendFilter(criterion);
         return techniqueFilterNode;
     }
-    else if (qobject_cast<Qt3D::Viewport*>(block) != Q_NULLPTR) {
-        Qt3D::Viewport *viewport = qobject_cast<Qt3D::Viewport*>(block);
+    else if (qobject_cast<Qt3D::QViewport*>(block) != Q_NULLPTR) {
+        Qt3D::QViewport *viewport = qobject_cast<Qt3D::QViewport*>(block);
         Render::ViewportNode *viewportNode = new Render::ViewportNode();
         viewportNode->setRenderer(m_renderer);
         viewportNode->setPeer(viewport);
@@ -168,8 +168,8 @@ Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(Node *block)
         viewportNode->setYMax(viewport->rect().height());
         return viewportNode;
     }
-    else if (qobject_cast<Qt3D::RenderPassFilter*>(block) != Q_NULLPTR) {
-        Qt3D::RenderPassFilter *renderPassFilter = qobject_cast<Qt3D::RenderPassFilter*>(block);
+    else if (qobject_cast<Qt3D::QRenderPassFilter*>(block) != Q_NULLPTR) {
+        Qt3D::QRenderPassFilter *renderPassFilter = qobject_cast<Qt3D::QRenderPassFilter*>(block);
         Render::RenderPassFilter *renderPassFilterNode = new Render::RenderPassFilter();
 
         qCDebug(Backend) << Q_FUNC_INFO << "RenderPassFilter";
@@ -177,8 +177,8 @@ Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(Node *block)
             renderPassFilterNode->appendFilter(criterion);
         return renderPassFilterNode;
     }
-    else if (qobject_cast<Qt3D::CameraSelector*>(block) != Q_NULLPTR) {
-        Qt3D::CameraSelector *cameraSelector = qobject_cast<Qt3D::CameraSelector*>(block);
+    else if (qobject_cast<Qt3D::QCameraSelector*>(block) != Q_NULLPTR) {
+        Qt3D::QCameraSelector *cameraSelector = qobject_cast<Qt3D::QCameraSelector*>(block);
         Render::CameraSelector *cameraSelectorNode = new Render::CameraSelector();
         cameraSelectorNode->setRenderer(m_renderer);
         cameraSelectorNode->setPeer(cameraSelector);
@@ -198,8 +198,8 @@ Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(Node *block)
             qCWarning(Backend) << Q_FUNC_INFO << "No camera or camera lens present in the referenced entity";
         return cameraSelectorNode;
     }
-    else if (qobject_cast<Qt3D::RenderTargetSelector*>(block) != Q_NULLPTR) {
-        Qt3D::RenderTargetSelector *renderTargetSelector = qobject_cast<Qt3D::RenderTargetSelector*>(block);
+    else if (qobject_cast<Qt3D::QRenderTargetSelector*>(block) != Q_NULLPTR) {
+        Qt3D::QRenderTargetSelector *renderTargetSelector = qobject_cast<Qt3D::QRenderTargetSelector*>(block);
         Render::RenderTargetSelector *renderTargetSelectorNode = new Render::RenderTargetSelector();
 
         // TO DO
@@ -296,7 +296,7 @@ void RenderSceneBuilder::createRenderMaterial(Entity *entity)
     }
 }
 
-void RenderSceneBuilder::createFrameGraph(FrameGraph *fg)
+void RenderSceneBuilder::createFrameGraph(QFrameGraph *fg)
 {
     // Entity has a reference to a framegraph configuration
     // Build a tree of FrameGraphNodes by reading the tree of FrameGraphBuildingBlocks

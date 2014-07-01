@@ -1,4 +1,3 @@
-
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
@@ -40,59 +39,39 @@
 **
 ****************************************************************************/
 
-#include "techniquefilter.h"
-#include "techniquefilter_p.h"
+#ifndef QT3D_QFRAMEGRAPHNODE_H
+#define QT3D_QFRAMEGRAPHNODE_H
 
-#include <Qt3DRenderer/techniquecriterion.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/node.h>
+#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <QObject>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-TechniqueFilterPrivate::TechniqueFilterPrivate(TechniqueFilter *qq)
-    : FrameGraphItemPrivate(qq)
-{
-}
+class QFrameGraphItemPrivate;
 
-TechniqueFilter::TechniqueFilter(Node *parent)
-    : FrameGraphItem(*new TechniqueFilterPrivate(this), parent)
+class QT3DRENDERERSHARED_EXPORT QFrameGraphItem : public Node
 {
-}
+    Q_OBJECT
+public:
+    explicit QFrameGraphItem(Node *parent = 0);
 
-TechniqueFilter::TechniqueFilter(TechniqueFilterPrivate &dd, Node *parent)
-    : FrameGraphItem(dd, parent)
-{
-}
+    void setEnabled(bool enabled);
+    bool isEnabled() const;
 
-QList<TechniqueCriterion *> TechniqueFilter::criteria() const
-{
-    Q_D(const TechniqueFilter);
-    return d->m_criteriaList;
-}
+    // TODO: Remove this
+Q_SIGNALS:
+    virtual void enabledChanged() = 0;
 
-void TechniqueFilter::addCriterion(TechniqueCriterion *criterion)
-{
-    Q_D(TechniqueFilter);
-    d->m_criteriaList.append(criterion);
-    emit criteriaChanged();
-    QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentAdded, this));
-    propertyChange->m_propertyName = QByteArrayLiteral("techniqueCriteria");
-    propertyChange->m_value = QVariant::fromValue(criterion);
-    notifyObservers(propertyChange);
-}
-
-void TechniqueFilter::removeCriterion(TechniqueCriterion *criterion)
-{
-    Q_D(TechniqueFilter);
-    d->m_criteriaList.removeOne(criterion);
-    emit criteriaChanged();
-    QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentRemoved, this));
-    propertyChange->m_propertyName = QByteArrayLiteral("techniqueCriteria");
-    propertyChange->m_value = QVariant::fromValue(criterion);
-    notifyObservers(propertyChange);
-}
+protected:
+    Q_DECLARE_PRIVATE(QFrameGraphItem)
+    QFrameGraphItem(QFrameGraphItemPrivate &dd, Node *parent = 0);
+};
 
 } // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_QFRAMEGRAPHNODE_H

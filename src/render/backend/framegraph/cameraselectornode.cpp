@@ -41,7 +41,7 @@
 
 #include "cameraselectornode.h"
 #include "rendercamera.h"
-#include <Qt3DRenderer/cameraselector.h>
+#include <Qt3DRenderer/qcameraselector.h>
 #include <Qt3DRenderer/renderer.h>
 #include <Qt3DRenderer/rendereraspect.h>
 #include <Qt3DCore/qaspectmanager.h>
@@ -68,7 +68,7 @@ void CameraSelector::setRenderer(Renderer *renderer)
     m_renderer = renderer;
 }
 
-void CameraSelector::setPeer(Qt3D::CameraSelector *peer)
+void CameraSelector::setPeer(Qt3D::QCameraSelector *peer)
 {
     if (m_peer != peer) {
         if (m_peer)

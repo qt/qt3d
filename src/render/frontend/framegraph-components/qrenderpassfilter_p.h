@@ -39,30 +39,31 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_FRAMEGRAPH_P_H
-#define QT3D_FRAMEGRAPH_P_H
+#ifndef QT3D_QRENDERPASSFILTER_P_H
+#define QT3D_QRENDERPASSFILTER_P_H
 
-#include <Qt3DCore/qt3dcore_global.h>
-#include <private/component_p.h>
+#include <private/qframegraphitem_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class FrameGraph;
+class QRenderPassFilter;
 
-class FrameGraphPrivate : public ComponentPrivate
+class QRenderPassFilterPrivate : public QFrameGraphItemPrivate
 {
 public:
-    FrameGraphPrivate(FrameGraph *qq);
+    QRenderPassFilterPrivate(QRenderPassFilter *qq)
+        : QFrameGraphItemPrivate(qq)
+    {}
 
-    Q_DECLARE_PUBLIC(FrameGraph)
-
-    Node *m_activeFrameGraph;
+    Q_DECLARE_PUBLIC(QRenderPassFilter)
+    QString m_renderPassName;
+    QList<RenderPassCriterion *> m_criteriaList;
 };
 
-}
+} // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_FRAMEGRAPH_P_H
+#endif // QT3D_QRENDERPASSFILTER_P_H

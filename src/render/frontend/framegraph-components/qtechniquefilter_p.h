@@ -39,66 +39,28 @@
 **
 ****************************************************************************/
 
-#include "framegraph.h"
-#include "framegraph_p.h"
-#include <Qt3DCore/entity.h>
+#ifndef QT3D_QTECHNIQUEFILTER_P_H
+#define QT3D_QTECHNIQUEFILTER_P_H
+
+#include <private/qframegraphitem_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-FrameGraphPrivate::FrameGraphPrivate(FrameGraph *qq)
-    : ComponentPrivate(qq)
-    , m_activeFrameGraph(Q_NULLPTR)
+class QTechniqueFilter;
+
+class QTechniqueFilterPrivate : public QFrameGraphItemPrivate
 {
+public :
+    QTechniqueFilterPrivate(QTechniqueFilter *qq);
 
-}
-
-/*!
- * \class FrameGraph
- *
- * \brief Component that has an activeFrameGraph property that should
- * reference the root FrameGraphItem of a frame graph tree. The Entity
- * that contains a FrameGraph property defines the rendering method to
- * be used by the renderer.
- *
- * Note that only a single FrameGraph can be active at any moment.
- *
- * \since 5.3
- * \namespace Qt3D
- */
-
-FrameGraph::FrameGraph(Node *parent)
-    : Component(*new FrameGraphPrivate(this), parent)
-{
-}
-
-FrameGraph::FrameGraph(FrameGraphPrivate &dd, Node *parent)
-    : Component(dd, parent)
-{
-}
-
-/*!
- * Returns the current activeFrameGraph root node.
- */
-Node *FrameGraph::activeFrameGraph() const
-{
-    Q_D(const FrameGraph);
-    return d->m_activeFrameGraph;
-}
-
-/*!
- * Sets the root node \a activeFrameGraph of the FrameGraph.
- */
-void FrameGraph::setActiveFrameGraph(Node *activeFrameGraph)
-{
-    Q_D(FrameGraph);
-    if (activeFrameGraph != d->m_activeFrameGraph) {
-        d->m_activeFrameGraph = activeFrameGraph;
-        emit activeFrameGraphChanged();
-    }
-}
+    Q_DECLARE_PUBLIC(QTechniqueFilter)
+    QList<TechniqueCriterion *> m_criteriaList;
+};
 
 } // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_QTECHNIQUEFILTER_P_H

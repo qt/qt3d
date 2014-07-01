@@ -43,7 +43,7 @@
 
 #include <Qt3DRenderer/renderer.h>
 #include <Qt3DRenderer/rendereraspect.h>
-#include <Qt3DRenderer/viewport.h>
+#include <Qt3DRenderer/qviewport.h>
 
 #include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/qchangearbiter.h>
@@ -70,7 +70,7 @@ void ViewportNode::setRenderer(Renderer *renderer)
     m_renderer = renderer;
 }
 
-void ViewportNode::setPeer(Qt3D::Viewport *peer)
+void ViewportNode::setPeer(Qt3D::QViewport *peer)
 {
     if (m_peer != peer) {
         if (m_peer)

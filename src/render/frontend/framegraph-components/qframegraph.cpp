@@ -39,35 +39,66 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDERTARGETSELECTOR_H
-#define QT3D_RENDERTARGETSELECTOR_H
-
-#include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DCore/node.h>
-#include <Qt3DRenderer/framegraphitem.h>
+#include "qframegraph.h"
+#include "qframegraph_p.h"
+#include <Qt3DCore/entity.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class RenderTargetSelectorPrivate;
-
-class QT3DRENDERERSHARED_EXPORT RenderTargetSelector : public FrameGraphItem
+QFrameGraphPrivate::QFrameGraphPrivate(QFrameGraph *qq)
+    : ComponentPrivate(qq)
+    , m_activeFrameGraph(Q_NULLPTR)
 {
-    Q_OBJECT
-public:
-    explicit RenderTargetSelector(Node *parent = 0);
 
-Q_SIGNALS:
-    void enabledChanged() Q_DECL_OVERRIDE;
+}
 
-protected:
-    Q_DECLARE_PRIVATE(RenderTargetSelector)
-    RenderTargetSelector(RenderTargetSelectorPrivate &dd, Node *parent = 0);
-};
+/*!
+ * \class FrameGraph
+ *
+ * \brief Component that has an activeFrameGraph property that should
+ * reference the root FrameGraphItem of a frame graph tree. The Entity
+ * that contains a FrameGraph property defines the rendering method to
+ * be used by the renderer.
+ *
+ * Note that only a single FrameGraph can be active at any moment.
+ *
+ * \since 5.3
+ * \namespace Qt3D
+ */
+
+QFrameGraph::QFrameGraph(Node *parent)
+    : Component(*new QFrameGraphPrivate(this), parent)
+{
+}
+
+QFrameGraph::QFrameGraph(QFrameGraphPrivate &dd, Node *parent)
+    : Component(dd, parent)
+{
+}
+
+/*!
+ * Returns the current activeFrameGraph root node.
+ */
+Node *QFrameGraph::activeFrameGraph() const
+{
+    Q_D(const QFrameGraph);
+    return d->m_activeFrameGraph;
+}
+
+/*!
+ * Sets the root node \a activeFrameGraph of the FrameGraph.
+ */
+void QFrameGraph::setActiveFrameGraph(Node *activeFrameGraph)
+{
+    Q_D(QFrameGraph);
+    if (activeFrameGraph != d->m_activeFrameGraph) {
+        d->m_activeFrameGraph = activeFrameGraph;
+        emit activeFrameGraphChanged();
+    }
+}
 
 } // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_RENDERTARGETSELECTOR_H

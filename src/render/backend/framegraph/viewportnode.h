@@ -49,7 +49,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class Viewport;
+class QViewport;
 
 namespace Render {
 
@@ -61,8 +61,8 @@ public:
     ViewportNode(Render::FrameGraphNode *parent = 0);
 
     void setRenderer(Renderer *renderer);
-    void setPeer(Qt3D::Viewport *peer);
-    Qt3D::Viewport *peer() const { return m_peer; }
+    void setPeer(Qt3D::QViewport *peer);
+    Qt3D::QViewport *peer() const { return m_peer; }
 
     float xMin() const;
     void setXMin(float xMin);
@@ -80,7 +80,7 @@ public:
 
 private:
     Renderer *m_renderer;
-    Qt3D::Viewport *m_peer;
+    Qt3D::QViewport *m_peer;
     float m_xMin;
     float m_yMin;
     float m_xMax;

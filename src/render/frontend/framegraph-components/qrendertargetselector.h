@@ -39,29 +39,35 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_CAMERASELECTOR_P_H
-#define QT3D_CAMERASELECTOR_P_H
+#ifndef QT3D_QRENDERTARGETSELECTOR_H
+#define QT3D_QRENDERTARGETSELECTOR_H
 
-#include <private/framegraphitem_p.h>
+#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DCore/node.h>
+#include <Qt3DRenderer/qframegraphitem.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class CameraSelector;
+class QRenderTargetSelectorPrivate;
 
-class CameraSelectorPrivate : public FrameGraphItemPrivate
+class QT3DRENDERERSHARED_EXPORT QRenderTargetSelector : public QFrameGraphItem
 {
+    Q_OBJECT
 public:
-    CameraSelectorPrivate(CameraSelector *qq);
+    explicit QRenderTargetSelector(Node *parent = 0);
 
-    Q_DECLARE_PUBLIC(CameraSelector)
-    Node *m_camera;
+Q_SIGNALS:
+    void enabledChanged() Q_DECL_OVERRIDE;
+
+protected:
+    Q_DECLARE_PRIVATE(QRenderTargetSelector)
+    QRenderTargetSelector(QRenderTargetSelectorPrivate &dd, Node *parent = 0);
 };
-
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_CAMERASELECTOR_P_H
+#endif // QT3D_QRENDERTARGETSELECTOR_H

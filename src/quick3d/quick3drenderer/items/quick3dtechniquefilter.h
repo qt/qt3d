@@ -43,7 +43,7 @@
 #define QT3D_RENDER_QUICK_QUICK3DTECHNIQUEFILTER_H
 
 #include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
-#include <Qt3DRenderer/techniquefilter.h>
+#include <Qt3DRenderer/qtechniquefilter.h>
 #include <Qt3DRenderer/techniquecriterion.h>
 #include <Qt3DQuick/quick3dnode.h>
 #include <QQmlListProperty>
@@ -65,7 +65,7 @@ public:
     explicit Quick3DTechniqueFilter(QObject *parent = 0);
     QQmlListProperty<Qt3D::TechniqueCriterion> criteriaList();
 
-    inline TechniqueFilter *parentTechniqueFilter() const { return qobject_cast<Qt3D::TechniqueFilter*>(parent()); }
+    inline QTechniqueFilter *parentTechniqueFilter() const { return qobject_cast<Qt3D::QTechniqueFilter*>(parent()); }
 
 private:
     static void appendCriterion(QQmlListProperty<TechniqueCriterion> *list, TechniqueCriterion *criterion);

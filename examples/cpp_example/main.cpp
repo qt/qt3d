@@ -63,12 +63,12 @@
 #include <Qt3DCore/lookattransform.h>
 #include <Qt3DCore/transform.h>
 
-#include <Qt3DRenderer/cameraselector.h>
-#include <Qt3DRenderer/renderpassfilter.h>
-#include <Qt3DRenderer/techniquefilter.h>
-#include <Qt3DRenderer/viewport.h>
+#include <Qt3DRenderer/qcameraselector.h>
+#include <Qt3DRenderer/qrenderpassfilter.h>
+#include <Qt3DRenderer/qtechniquefilter.h>
+#include <Qt3DRenderer/qviewport.h>
 #include <Qt3DRenderer/rendereraspect.h>
-#include <Qt3DRenderer/framegraph.h>
+#include <Qt3DRenderer/qframegraph.h>
 
 int main(int ac, char **av)
 {
@@ -137,11 +137,11 @@ int main(int ac, char **av)
     view.setCamera(cameraEntity);
 
     // FrameGraph
-    Qt3D::FrameGraph *frameGraph = new Qt3D::FrameGraph();
-    Qt3D::TechniqueFilter *techniqueFilter = new Qt3D::TechniqueFilter();
-    Qt3D::CameraSelector *cameraSelector = new Qt3D::CameraSelector();
-    Qt3D::RenderPassFilter *defaultRenderPassFilter = new Qt3D::RenderPassFilter();
-    Qt3D::Viewport *viewport = new Qt3D::Viewport();
+    Qt3D::QFrameGraph *frameGraph = new Qt3D::QFrameGraph();
+    Qt3D::QTechniqueFilter *techniqueFilter = new Qt3D::QTechniqueFilter();
+    Qt3D::QCameraSelector *cameraSelector = new Qt3D::QCameraSelector();
+    Qt3D::QRenderPassFilter *defaultRenderPassFilter = new Qt3D::QRenderPassFilter();
+    Qt3D::QViewport *viewport = new Qt3D::QViewport();
 
     // TechiqueFilter and renderPassFilter are not implement yet
 

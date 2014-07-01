@@ -39,57 +39,28 @@
 **
 ****************************************************************************/
 
-#include "framegraphitem.h"
-#include "framegraphitem_p.h"
+#ifndef QT3D_QVIEWPORT_P_H
+#define QT3D_QVIEWPORT_P_H
 
-/*!
- * \class FrameGraphNode
- *
- * \brief Base class of all FrameGraph configuration nodes.
- *
- * This is an abstract class so it cannot be instanced directly
- * but rather through one of its subclasses.
- *
- * \since 5.3
- * \namespace Qt3D
- */
+#include <private/qframegraphitem_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-FrameGraphItemPrivate::FrameGraphItemPrivate(FrameGraphItem *qq)
-    : NodePrivate(qq)
-    , m_enabled(true)
-{
-}
+class QViewport;
 
-FrameGraphItem::FrameGraphItem(Node *parent)
-    : Node(*new FrameGraphItemPrivate(this), parent)
+class QViewportPrivate : public QFrameGraphItemPrivate
 {
-}
+public :
+    QViewportPrivate(QViewport *qq);
 
-FrameGraphItem::FrameGraphItem(FrameGraphItemPrivate &dd, Node *parent)
-    : Node(dd, parent)
-{
-}
-
-void FrameGraphItem::setEnabled(bool enabled)
-{
-    Q_D(FrameGraphItem);
-    if (d->m_enabled != enabled) {
-        d->m_enabled = enabled;
-        emit enabledChanged();
-    }
-}
-
-bool FrameGraphItem::isEnabled() const
-{
-    Q_D(const FrameGraphItem);
-    return d->m_enabled;
-}
-
+    Q_DECLARE_PUBLIC(QViewport)
+    QRectF m_rect;
+};
 
 } // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_QVIEWPORT_P_H

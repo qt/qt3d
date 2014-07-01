@@ -39,28 +39,48 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_TECHNIQUEFILTER_P_H
-#define QT3D_TECHNIQUEFILTER_P_H
+#include "qcameraselector.h"
+#include "qcameraselector_p.h"
 
-#include <private/framegraphitem_p.h>
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class TechniqueFilter;
-
-class TechniqueFilterPrivate : public FrameGraphItemPrivate
+QCameraSelector::QCameraSelector(QCameraSelectorPrivate &dd, Node *parent)
+    : QFrameGraphItem(dd, parent)
 {
-public :
-    TechniqueFilterPrivate(TechniqueFilter *qq);
+}
 
-    Q_DECLARE_PUBLIC(TechniqueFilter)
-    QList<TechniqueCriterion *> m_criteriaList;
-};
+QCameraSelectorPrivate::QCameraSelectorPrivate(Qt3D::QCameraSelector *qq)
+    : QFrameGraphItemPrivate(qq)
+    , m_camera(Q_NULLPTR)
+{}
+
+QCameraSelector::QCameraSelector(Qt3D::Node *parent)
+    :   QFrameGraphItem(*new QCameraSelectorPrivate(this), parent)
+{}
+
+void QCameraSelector::setCamera(Qt3D::Node *camera)
+{
+    Q_D(QCameraSelector);
+    if (d->m_camera != camera) {
+        d->m_camera = camera;
+        emit cameraChanged();
+        QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentUpdated, this));
+        propertyChange->m_propertyName = QByteArrayLiteral("camera");
+        propertyChange->m_value = QVariant::fromValue(d->m_camera);
+        notifyObservers(propertyChange);
+    }
+}
+
+Node *QCameraSelector::camera() const
+{
+    Q_D(const QCameraSelector);
+    return d->m_camera;
+}
 
 } // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_TECHNIQUEFILTER_P_H

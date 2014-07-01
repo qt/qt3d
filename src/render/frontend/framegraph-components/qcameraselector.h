@@ -39,42 +39,42 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_FRAMEGRAPH_H
-#define QT3D_FRAMEGRAPH_H
+#ifndef QT3D_QCAMERASELECTOR_H
+#define QT3D_QCAMERASELECTOR_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DCore/component.h>
+#include <Qt3DRenderer/qframegraphitem.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class FrameGraphPrivate;
+class Camera;
+class QCameraSelectorPrivate;
 
-class QT3DRENDERERSHARED_EXPORT FrameGraph : public Qt3D::Component
+class QT3DRENDERERSHARED_EXPORT QCameraSelector : public QFrameGraphItem
 {
     Q_OBJECT
-    // Note : The full namespace has to be used to define the property
-    // otherwise this results in an error "cannot assign object to property"
-    Q_PROPERTY(Qt3D::Node *activeFrameGraph READ activeFrameGraph WRITE setActiveFrameGraph NOTIFY activeFrameGraphChanged)
-    Q_CLASSINFO("DefaultProperty", "activeFrameGraph")
+    Q_PROPERTY(Qt3D::Node *camera READ camera WRITE setCamera NOTIFY cameraChanged)
 
 public:
-    explicit FrameGraph(Node *parent = 0);
+    explicit QCameraSelector(Node *parent = 0);
 
-    Node *activeFrameGraph() const;
-    void setActiveFrameGraph(Node *activeFrameGraph);
+    void setCamera(Qt3D::Node *camera);
+    Node *camera() const;
 
 Q_SIGNALS:
-    void activeFrameGraphChanged();
+    void cameraChanged();
+    void enabledChanged() Q_DECL_OVERRIDE;
 
 protected:
-    Q_DECLARE_PRIVATE(FrameGraph)
-    FrameGraph(FrameGraphPrivate &dd, Node *parent = 0);
+    Q_DECLARE_PRIVATE(QCameraSelector)
+    QCameraSelector(QCameraSelectorPrivate &dd, Node *parent = 0);
 };
 
-} //Qt3D
+} // namespace Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_FRAMEGRAPH_H
+
+#endif // QT3D_QCAMERASELECTOR_H

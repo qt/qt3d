@@ -39,48 +39,56 @@
 **
 ****************************************************************************/
 
-#include "viewport.h"
-#include "viewport_p.h"
+#include "qframegraphitem.h"
+#include "qframegraphitem_p.h"
 
-#include <Qt3DCore/qscenepropertychange.h>
+/*!
+ * \class FrameGraphNode
+ *
+ * \brief Base class of all FrameGraph configuration nodes.
+ *
+ * This is an abstract class so it cannot be instanced directly
+ * but rather through one of its subclasses.
+ *
+ * \since 5.3
+ * \namespace Qt3D
+ */
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-ViewportPrivate::ViewportPrivate(Viewport *qq) :
-    FrameGraphItemPrivate(qq)
+QFrameGraphItemPrivate::QFrameGraphItemPrivate(QFrameGraphItem *qq)
+    : NodePrivate(qq)
+    , m_enabled(true)
 {
 }
 
-Viewport::Viewport(Node *parent)
-    : FrameGraphItem(*new ViewportPrivate(this), parent)
+QFrameGraphItem::QFrameGraphItem(Node *parent)
+    : Node(*new QFrameGraphItemPrivate(this), parent)
 {
 }
 
-Viewport::Viewport(ViewportPrivate &dd, Node *parent)
-    : FrameGraphItem(dd, parent)
+QFrameGraphItem::QFrameGraphItem(QFrameGraphItemPrivate &dd, Node *parent)
+    : Node(dd, parent)
 {
 }
 
-QRectF Viewport::rect() const
+void QFrameGraphItem::setEnabled(bool enabled)
 {
-    Q_D(const Viewport);
-    return d->m_rect;
-}
-
-void Viewport::setRect(const QRectF &rect)
-{
-    Q_D(Viewport);
-    if (rect != d->m_rect) {
-        d->m_rect = rect;
-        emit rectChanged();
-        QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentUpdated, this));
-        propertyChange->m_propertyName = QByteArrayLiteral("rect");
-        propertyChange->m_value = QVariant::fromValue(d->m_rect);
-        notifyObservers(propertyChange);
+    Q_D(QFrameGraphItem);
+    if (d->m_enabled != enabled) {
+        d->m_enabled = enabled;
+        emit enabledChanged();
     }
 }
+
+bool QFrameGraphItem::isEnabled() const
+{
+    Q_D(const QFrameGraphItem);
+    return d->m_enabled;
+}
+
 
 } // Qt3D
 

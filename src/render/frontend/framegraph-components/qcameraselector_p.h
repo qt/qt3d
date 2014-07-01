@@ -1,4 +1,3 @@
-
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
@@ -40,68 +39,29 @@
 **
 ****************************************************************************/
 
-#include "renderpassfilter.h"
-#include "renderpassfilter_p.h"
+#ifndef QT3D_QCAMERASELECTOR_P_H
+#define QT3D_QCAMERASELECTOR_P_H
 
-#include "renderpasscriterion.h"
-#include <Qt3DCore/qscenepropertychange.h>
+#include <private/qframegraphitem_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-RenderPassFilter::RenderPassFilter(Node *parent)
-    : FrameGraphItem(*new RenderPassFilterPrivate(this), parent)
-{}
+class QCameraSelector;
 
-RenderPassFilter::RenderPassFilter(RenderPassFilterPrivate &dd, Node *parent)
-    : FrameGraphItem(dd, parent)
+class QCameraSelectorPrivate : public QFrameGraphItemPrivate
 {
-}
+public:
+    QCameraSelectorPrivate(QCameraSelector *qq);
 
-void RenderPassFilter::setRenderPassName(const QString &renderpassName)
-{
-    Q_D(RenderPassFilter);
-    if (renderpassName != d->m_renderPassName) {
-        d->m_renderPassName = renderpassName;
-        emit renderPassNameChanged();
-    }
-}
+    Q_DECLARE_PUBLIC(QCameraSelector)
+    Node *m_camera;
+};
 
-QString RenderPassFilter::renderPassName() const
-{
-    Q_D(const RenderPassFilter);
-    return d->m_renderPassName;
-}
-
-QList<RenderPassCriterion *> RenderPassFilter::criteria() const
-{
-    Q_D(const RenderPassFilter);
-    return d->m_criteriaList;
-}
-
-void RenderPassFilter::addCriterion(RenderPassCriterion *criterion)
-{
-    Q_D(RenderPassFilter);
-    if (!d->m_criteriaList.contains(criterion)) {
-        d->m_criteriaList.append(criterion);
-        QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentAdded, this));
-        propertyChange->m_propertyName = QByteArrayLiteral("renderPassCriteria");
-        propertyChange->m_value = QVariant::fromValue(criterion);
-        notifyObservers(propertyChange);
-    }
-}
-
-void RenderPassFilter::removeCriterion(RenderPassCriterion *criterion)
-{
-    Q_D(RenderPassFilter);
-    d->m_criteriaList.removeOne(criterion);
-    QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentRemoved, this));
-    propertyChange->m_propertyName = QByteArrayLiteral("renderPassCriteria");
-    propertyChange->m_value = QVariant::fromValue(criterion);
-    notifyObservers(propertyChange);
-}
 
 } // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_QCAMERASELECTOR_P_H

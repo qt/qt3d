@@ -39,40 +39,27 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_TECHNIQUEFILTER_H
-#define QT3D_TECHNIQUEFILTER_H
+#ifndef QT3D_QRENDERTARGETSELECTOR_P_H
+#define QT3D_QRENDERTARGETSELECTOR_P_H
 
-#include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/framegraphitem.h>
+#include <private/qframegraphitem_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class TechniqueFilterPrivate;
-class TechniqueCriterion;
+class QRenderTargetSelector;
 
-class QT3DRENDERERSHARED_EXPORT TechniqueFilter : public FrameGraphItem
+class QRenderTargetSelectorPrivate : public QFrameGraphItemPrivate
 {
-    Q_OBJECT
 public:
-    explicit TechniqueFilter(Node *parent = 0);
+    QRenderTargetSelectorPrivate(QRenderTargetSelector *qq);
 
-    QList<TechniqueCriterion *> criteria() const;
-    void addCriterion(TechniqueCriterion *criterion);
-    void removeCriterion(TechniqueCriterion *criterion);
-
-Q_SIGNALS:
-    void criteriaChanged();
-    void enabledChanged() Q_DECL_OVERRIDE;
-
-protected:
-    Q_DECLARE_PRIVATE(TechniqueFilter)
-    TechniqueFilter(TechniqueFilterPrivate &dd, Node *parent = 0);
+    Q_DECLARE_PUBLIC(QRenderTargetSelector)
 };
 
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_TECHNIQUEFILTER_H
+#endif // QT3D_QRENDERTARGETSELECTOR_P_H

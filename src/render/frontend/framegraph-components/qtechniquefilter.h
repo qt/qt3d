@@ -39,46 +39,40 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDERPASSFILTER_H
-#define QT3D_RENDERPASSFILTER_H
+#ifndef QT3D_QTECHNIQUEFILTER_H
+#define QT3D_QTECHNIQUEFILTER_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/framegraphitem.h>
-#include <QString>
-
+#include <Qt3DRenderer/qframegraphitem.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class RenderPassFilterPrivate;
-class RenderPassCriterion;
+class QTechniqueFilterPrivate;
+class TechniqueCriterion;
 
-class QT3DRENDERERSHARED_EXPORT RenderPassFilter : public FrameGraphItem
+class QT3DRENDERERSHARED_EXPORT QTechniqueFilter : public QFrameGraphItem
 {
     Q_OBJECT
-    Q_PROPERTY(QString renderPassName READ renderPassName WRITE setRenderPassName NOTIFY renderPassNameChanged)
-
 public:
-    explicit RenderPassFilter(Node *parent = 0);
+    explicit QTechniqueFilter(Node *parent = 0);
 
-    void setRenderPassName(const QString &renderpassName);
-    QString renderPassName() const;
-    QList<RenderPassCriterion *> criteria() const;
-    void addCriterion(RenderPassCriterion *criterion);
-    void removeCriterion(RenderPassCriterion *criterion);
+    QList<TechniqueCriterion *> criteria() const;
+    void addCriterion(TechniqueCriterion *criterion);
+    void removeCriterion(TechniqueCriterion *criterion);
 
 Q_SIGNALS:
-    void renderPassNameChanged();
+    void criteriaChanged();
     void enabledChanged() Q_DECL_OVERRIDE;
 
 protected:
-    Q_DECLARE_PRIVATE(RenderPassFilter)
-    RenderPassFilter(RenderPassFilterPrivate &dd, Node *parent = 0);
+    Q_DECLARE_PRIVATE(QTechniqueFilter)
+    QTechniqueFilter(QTechniqueFilterPrivate &dd, Node *parent = 0);
 };
 
 } // namespace Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDERPASSFILTER_H
+#endif // QT3D_QTECHNIQUEFILTER_H

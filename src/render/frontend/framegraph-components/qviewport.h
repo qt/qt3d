@@ -39,27 +39,41 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDERTARGETSELECTOR_P_H
-#define QT3D_RENDERTARGETSELECTOR_P_H
+#ifndef QT3D_QVIEWPORT_H
+#define QT3D_QVIEWPORT_H
 
-#include <private/framegraphitem_p.h>
+#include <Qt3DRenderer/qframegraphitem.h>
+#include <QtCore/QRectF>
+
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class RenderTargetSelector;
+class QViewportPrivate;
 
-class RenderTargetSelectorPrivate : public FrameGraphItemPrivate
+class QT3DRENDERERSHARED_EXPORT QViewport : public QFrameGraphItem
 {
-public:
-    RenderTargetSelectorPrivate(RenderTargetSelector *qq);
+    Q_OBJECT
+    Q_PROPERTY(QRectF rect READ rect WRITE setRect NOTIFY rectChanged)
 
-    Q_DECLARE_PUBLIC(RenderTargetSelector)
+public:
+    explicit QViewport(Node *parent = 0);
+
+    QRectF rect() const;
+    void setRect(const QRectF& rect);
+
+Q_SIGNALS:
+    void rectChanged();
+    void enabledChanged() Q_DECL_OVERRIDE;
+
+protected:
+    Q_DECLARE_PRIVATE(QViewport)
+    QViewport(QViewportPrivate &dd, Node *parent = 0);
 };
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDERTARGETSELECTOR_P_H
+#endif // QT3D_QVIEWPORT_H

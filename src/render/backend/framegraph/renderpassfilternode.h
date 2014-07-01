@@ -51,7 +51,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class RenderPassCriterion;
-class RenderPassFilter;
+class QRenderPassFilter;
 
 namespace Render {
 
@@ -65,7 +65,7 @@ public:
     RenderPassFilter(Render::FrameGraphNode *parent = 0);
 
     void setRenderer(Renderer *renderer);
-    void setPeer(Qt3D::RenderPassFilter *peer);
+    void setPeer(Qt3D::QRenderPassFilter *peer);
     QList<RenderPassCriterion *> filters() const;
     void appendFilter(RenderPassCriterion *criterion);
     void removeFilter(RenderPassCriterion *criterion);
@@ -73,7 +73,7 @@ public:
 
 private:
     Renderer *m_renderer;
-    Qt3D::RenderPassFilter *m_peer;
+    Qt3D::QRenderPassFilter *m_peer;
     QList<RenderPassCriterion *> m_filters;
 };
 

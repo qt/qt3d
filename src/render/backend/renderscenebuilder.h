@@ -50,8 +50,8 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class FrameGraphItem;
-class FrameGraph;
+class QFrameGraphItem;
+class QFrameGraph;
 
 namespace Render {
 class RenderNode;
@@ -90,7 +90,7 @@ private:
     void createRenderMesh(Entity *entity);
     void createRenderCamera(Entity *entity);
     void createRenderMaterial(Entity *entity);
-    void createFrameGraph(FrameGraph *frameGraph);
+    void createFrameGraph(QFrameGraph *frameGraph);
 
 
 };

@@ -39,29 +39,46 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_FRAMEGRAPHITEM_P_H
-#define QT3D_FRAMEGRAPHITEM_P_H
+#ifndef QT3D_QRENDERPASSFILTER_H
+#define QT3D_QRENDERPASSFILTER_H
 
-#include <QtCore/QtGlobal>
-#include <private/node_p.h>
+#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRenderer/qframegraphitem.h>
+#include <QString>
+
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class FrameGraphItem;
+class QRenderPassFilterPrivate;
+class RenderPassCriterion;
 
-class FrameGraphItemPrivate : public NodePrivate
+class QT3DRENDERERSHARED_EXPORT QRenderPassFilter : public QFrameGraphItem
 {
-public:
-    FrameGraphItemPrivate(FrameGraphItem *qq);
+    Q_OBJECT
+    Q_PROPERTY(QString renderPassName READ renderPassName WRITE setRenderPassName NOTIFY renderPassNameChanged)
 
-    Q_DECLARE_PUBLIC(FrameGraphItem)
-    bool m_enabled;
+public:
+    explicit QRenderPassFilter(Node *parent = 0);
+
+    void setRenderPassName(const QString &renderpassName);
+    QString renderPassName() const;
+    QList<RenderPassCriterion *> criteria() const;
+    void addCriterion(RenderPassCriterion *criterion);
+    void removeCriterion(RenderPassCriterion *criterion);
+
+Q_SIGNALS:
+    void renderPassNameChanged();
+    void enabledChanged() Q_DECL_OVERRIDE;
+
+protected:
+    Q_DECLARE_PRIVATE(QRenderPassFilter)
+    QRenderPassFilter(QRenderPassFilterPrivate &dd, Node *parent = 0);
 };
 
-} // Qt3D
+} // namespace Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_FRAMEGRAPHITEM_P_H
+#endif // QT3D_QRENDERPASSFILTER_H

@@ -39,48 +39,42 @@
 **
 ****************************************************************************/
 
-#include "cameraselector.h"
-#include "cameraselector_p.h"
+#ifndef QT3D_QFRAMEGRAPH_H
+#define QT3D_QFRAMEGRAPH_H
 
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DCore/component.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-CameraSelector::CameraSelector(CameraSelectorPrivate &dd, Node *parent)
-    : FrameGraphItem(dd, parent)
+class QFrameGraphPrivate;
+
+class QT3DRENDERERSHARED_EXPORT QFrameGraph : public Qt3D::Component
 {
-}
+    Q_OBJECT
+    // Note : The full namespace has to be used to define the property
+    // otherwise this results in an error "cannot assign object to property"
+    Q_PROPERTY(Qt3D::Node *activeFrameGraph READ activeFrameGraph WRITE setActiveFrameGraph NOTIFY activeFrameGraphChanged)
+    Q_CLASSINFO("DefaultProperty", "activeFrameGraph")
 
-CameraSelectorPrivate::CameraSelectorPrivate(Qt3D::CameraSelector *qq)
-    : FrameGraphItemPrivate(qq)
-    , m_camera(Q_NULLPTR)
-{}
+public:
+    explicit QFrameGraph(Node *parent = 0);
 
-CameraSelector::CameraSelector(Qt3D::Node *parent)
-    :   FrameGraphItem(*new CameraSelectorPrivate(this), parent)
-{}
+    Node *activeFrameGraph() const;
+    void setActiveFrameGraph(Node *activeFrameGraph);
 
-void CameraSelector::setCamera(Qt3D::Node *camera)
-{
-    Q_D(CameraSelector);
-    if (d->m_camera != camera) {
-        d->m_camera = camera;
-        emit cameraChanged();
-        QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentUpdated, this));
-        propertyChange->m_propertyName = QByteArrayLiteral("camera");
-        propertyChange->m_value = QVariant::fromValue(d->m_camera);
-        notifyObservers(propertyChange);
-    }
-}
+Q_SIGNALS:
+    void activeFrameGraphChanged();
 
-Node *CameraSelector::camera() const
-{
-    Q_D(const CameraSelector);
-    return d->m_camera;
-}
+protected:
+    Q_DECLARE_PRIVATE(QFrameGraph)
+    QFrameGraph(QFrameGraphPrivate &dd, Node *parent = 0);
+};
 
-} // Qt3D
+} //Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_QFRAMEGRAPH_H

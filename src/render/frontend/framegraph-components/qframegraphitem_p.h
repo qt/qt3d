@@ -39,28 +39,29 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_VIEWPORT_P_H
-#define QT3D_VIEWPORT_P_H
+#ifndef QT3D_QFRAMEGRAPHITEM_P_H
+#define QT3D_QFRAMEGRAPHITEM_P_H
 
-#include <private/framegraphitem_p.h>
+#include <QtCore/QtGlobal>
+#include <private/node_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class Viewport;
+class QFrameGraphItem;
 
-class ViewportPrivate : public FrameGraphItemPrivate
+class QFrameGraphItemPrivate : public NodePrivate
 {
-public :
-    ViewportPrivate(Viewport *qq);
+public:
+    QFrameGraphItemPrivate(QFrameGraphItem *qq);
 
-    Q_DECLARE_PUBLIC(Viewport)
-    QRectF m_rect;
+    Q_DECLARE_PUBLIC(QFrameGraphItem)
+    bool m_enabled;
 };
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_VIEWPORT_P_H
+#endif // QT3D_QFRAMEGRAPHITEM_P_H

@@ -39,28 +39,30 @@
 **
 ****************************************************************************/
 
-#include "rendertargetselector.h"
-#include "rendertargetselector_p.h"
+#ifndef QT3D_QFRAMEGRAPH_P_H
+#define QT3D_QFRAMEGRAPH_P_H
+
+#include <Qt3DCore/qt3dcore_global.h>
+#include <private/component_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-RenderTargetSelectorPrivate::RenderTargetSelectorPrivate(RenderTargetSelector *qq)
-    : FrameGraphItemPrivate(qq)
-{
-}
+class QFrameGraph;
 
-RenderTargetSelector::RenderTargetSelector(Node *parent)
-    : FrameGraphItem(*new RenderTargetSelectorPrivate(this), parent)
+class QFrameGraphPrivate : public ComponentPrivate
 {
-}
+public:
+    QFrameGraphPrivate(QFrameGraph *qq);
 
-RenderTargetSelector::RenderTargetSelector(RenderTargetSelectorPrivate &dd, Node *parent)
-    : FrameGraphItem(dd, parent)
-{
-}
+    Q_DECLARE_PUBLIC(QFrameGraph)
 
-} // Qt3D
+    Node *m_activeFrameGraph;
+};
+
+}
 
 QT_END_NAMESPACE
+
+#endif // QT3D_QFRAMEGRAPH_P_H

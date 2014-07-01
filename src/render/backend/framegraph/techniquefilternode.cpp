@@ -41,7 +41,7 @@
 
 #include "techniquefilternode.h"
 #include "techniquecriterion.h"
-#include "techniquefilter.h"
+#include "qtechniquefilter.h"
 #include "renderer.h"
 #include "rendereraspect.h"
 #include <Qt3DCore/qaspectmanager.h>
@@ -65,7 +65,7 @@ void TechniqueFilter::setRenderer(Renderer *renderer)
     m_renderer = renderer;
 }
 
-void TechniqueFilter::setPeer(Qt3D::TechniqueFilter *peer)
+void TechniqueFilter::setPeer(Qt3D::QTechniqueFilter *peer)
 {
     if (peer != m_peer) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();

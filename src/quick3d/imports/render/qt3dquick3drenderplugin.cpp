@@ -47,15 +47,15 @@
 #include <Qt3DRenderer/qmesh.h>
 #include <Qt3DRenderer/renderpass.h>
 #include <Qt3DRenderer/shaderprogram.h>
-#include <Qt3DRenderer/viewport.h>
-#include <Qt3DRenderer/renderpassfilter.h>
-#include <Qt3DRenderer/techniquefilter.h>
-#include <Qt3DRenderer/rendertargetselector.h>
+#include <Qt3DRenderer/qviewport.h>
+#include <Qt3DRenderer/qrenderpassfilter.h>
+#include <Qt3DRenderer/qtechniquefilter.h>
+#include <Qt3DRenderer/qrendertargetselector.h>
 #include <Qt3DRenderer/qabstractshapemesh.h>
 #include <Qt3DRenderer/texture.h>
-#include <Qt3DRenderer/framegraph.h>
+#include <Qt3DRenderer/qframegraph.h>
 #include <Qt3DRenderer/qtechnique.h>
-#include <Qt3DRenderer/cameraselector.h>
+#include <Qt3DRenderer/qcameraselector.h>
 #include <Qt3DRenderer/qeffect.h>
 #include <Qt3DRenderer/parameter.h>
 #include <Qt3DRenderer/renderpasscriterion.h>
@@ -97,12 +97,12 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3D::QSphereMesh>(uri, 2, 0, "SphereMesh");
     qmlRegisterExtendedType<Qt3D::Texture, Qt3D::Render::Quick::Quick3DTexture>(uri, 2, 0, "Texture");
     // Framegraph components - TODO RenderTarget, RenderTargetSelector
-    qmlRegisterExtendedType<Qt3D::CameraSelector, Qt3D::Quick::Quick3DNode>(uri, 2, 0, "CameraSelector");
-    qmlRegisterExtendedType<Qt3D::RenderPassFilter, Qt3D::Render::Quick::Quick3DRenderPassFilter>(uri, 2, 0, "RenderPassFilter");
-    qmlRegisterExtendedType<Qt3D::TechniqueFilter, Qt3D::Render::Quick::Quick3DTechniqueFilter>(uri, 2, 0, "TechniqueFilter");
-    qmlRegisterExtendedType<Qt3D::Viewport, Qt3D::Render::Quick::Quick3DViewport>(uri, 2, 0, "Viewport");
-    qmlRegisterExtendedType<Qt3D::RenderTargetSelector, Qt3D::Render::Quick::Quick3DRenderTargetSelector>(uri, 2, 0, "RenderTargetSelector");
-    qmlRegisterType<Qt3D::FrameGraph>(uri, 2, 0, "FrameGraph");
+    qmlRegisterExtendedType<Qt3D::QCameraSelector, Qt3D::Quick::Quick3DNode>(uri, 2, 0, "CameraSelector");
+    qmlRegisterExtendedType<Qt3D::QRenderPassFilter, Qt3D::Render::Quick::Quick3DRenderPassFilter>(uri, 2, 0, "RenderPassFilter");
+    qmlRegisterExtendedType<Qt3D::QTechniqueFilter, Qt3D::Render::Quick::Quick3DTechniqueFilter>(uri, 2, 0, "TechniqueFilter");
+    qmlRegisterExtendedType<Qt3D::QViewport, Qt3D::Render::Quick::Quick3DViewport>(uri, 2, 0, "Viewport");
+    qmlRegisterExtendedType<Qt3D::QRenderTargetSelector, Qt3D::Render::Quick::Quick3DRenderTargetSelector>(uri, 2, 0, "RenderTargetSelector");
+    qmlRegisterType<Qt3D::QFrameGraph>(uri, 2, 0, "FrameGraph");
 }
 
 QT_END_NAMESPACE

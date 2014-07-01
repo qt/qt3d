@@ -1,3 +1,4 @@
+
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
@@ -39,42 +40,68 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_CAMERASELECTOR_H
-#define QT3D_CAMERASELECTOR_H
+#include "qrenderpassfilter.h"
+#include "qrenderpassfilter_p.h"
 
-#include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/framegraphitem.h>
+#include "renderpasscriterion.h"
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class Camera;
-class CameraSelectorPrivate;
+QRenderPassFilter::QRenderPassFilter(Node *parent)
+    : QFrameGraphItem(*new QRenderPassFilterPrivate(this), parent)
+{}
 
-class QT3DRENDERERSHARED_EXPORT CameraSelector : public FrameGraphItem
+QRenderPassFilter::QRenderPassFilter(QRenderPassFilterPrivate &dd, Node *parent)
+    : QFrameGraphItem(dd, parent)
 {
-    Q_OBJECT
-    Q_PROPERTY(Qt3D::Node *camera READ camera WRITE setCamera NOTIFY cameraChanged)
+}
 
-public:
-    explicit CameraSelector(Node *parent = 0);
+void QRenderPassFilter::setRenderPassName(const QString &renderpassName)
+{
+    Q_D(QRenderPassFilter);
+    if (renderpassName != d->m_renderPassName) {
+        d->m_renderPassName = renderpassName;
+        emit renderPassNameChanged();
+    }
+}
 
-    void setCamera(Qt3D::Node *camera);
-    Node *camera() const;
+QString QRenderPassFilter::renderPassName() const
+{
+    Q_D(const QRenderPassFilter);
+    return d->m_renderPassName;
+}
 
-Q_SIGNALS:
-    void cameraChanged();
-    void enabledChanged() Q_DECL_OVERRIDE;
+QList<RenderPassCriterion *> QRenderPassFilter::criteria() const
+{
+    Q_D(const QRenderPassFilter);
+    return d->m_criteriaList;
+}
 
-protected:
-    Q_DECLARE_PRIVATE(CameraSelector)
-    CameraSelector(CameraSelectorPrivate &dd, Node *parent = 0);
-};
+void QRenderPassFilter::addCriterion(RenderPassCriterion *criterion)
+{
+    Q_D(QRenderPassFilter);
+    if (!d->m_criteriaList.contains(criterion)) {
+        d->m_criteriaList.append(criterion);
+        QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentAdded, this));
+        propertyChange->m_propertyName = QByteArrayLiteral("renderPassCriteria");
+        propertyChange->m_value = QVariant::fromValue(criterion);
+        notifyObservers(propertyChange);
+    }
+}
 
-} // namespace Qt3D
+void QRenderPassFilter::removeCriterion(RenderPassCriterion *criterion)
+{
+    Q_D(QRenderPassFilter);
+    d->m_criteriaList.removeOne(criterion);
+    QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentRemoved, this));
+    propertyChange->m_propertyName = QByteArrayLiteral("renderPassCriteria");
+    propertyChange->m_value = QVariant::fromValue(criterion);
+    notifyObservers(propertyChange);
+}
+
+} // Qt3D
 
 QT_END_NAMESPACE
-
-
-#endif // QT3D_CAMERASELECTOR_H
