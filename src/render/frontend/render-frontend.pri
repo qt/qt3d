@@ -1,31 +1,24 @@
 INCLUDEPATH += $$PWD
 
+include(framegraph-components/framegraph-components.pri)
+
 HEADERS += \
     $$PWD/qmaterial.h \
     $$PWD/qmesh.h \
     $$PWD/renderpass.h \
-    $$PWD/renderpassfilter.h \
     $$PWD/shaderprogram.h \
     $$PWD/qtechnique.h \
-    $$PWD/techniquefilter.h \
     $$PWD/tag.h \
     $$PWD/qabstractshapemesh.h \
     $$PWD/qitemmodelbuffer.h \
     $$PWD/texture.h \
     $$PWD/sphere.h \
     $$PWD/qabstractscene.h \
-    $$PWD/framegraph.h \
-    $$PWD/framegraphitem.h \
-    $$PWD/rendertargetselector.h \
-    $$PWD/framegraphitem_p.h \
-    $$PWD/viewport.h \
-    $$PWD/cameraselector.h \
     $$PWD/qeffect.h \
     $$PWD/qscene.h \
     $$PWD/techniquecriterion.h \
     $$PWD/renderpasscriterion.h \
     $$PWD/parameter.h \
-    $$PWD/framegraph_p.h \
     $$PWD/parametermapper.h \
     $$PWD/qtorusmesh.h \
     $$PWD/qspheremesh.h \
@@ -42,7 +35,7 @@ HEADERS += \
     $$PWD/qmaterial_p.h \
     $$PWD/qeffect_p.h \
     $$PWD/qtechnique_p.h \
-    $$PWD/qabstractscene_p.h
+    $$PWD/qabstractscene_p.h \
 
 SOURCES += \
     $$PWD/qmaterial.cpp \
@@ -55,8 +48,6 @@ SOURCES += \
     $$PWD/texture.cpp \
     $$PWD/sphere.cpp \
     $$PWD/qabstractscene.cpp \
-    $$PWD/framegraph.cpp \
-    $$PWD/framegraphitem.cpp \
     $$PWD/qeffect.cpp \
     $$PWD/qscene.cpp \
     $$PWD/techniquecriterion.cpp \

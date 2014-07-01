@@ -45,69 +45,31 @@
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DRenderer/framegraphitem.h>
 
-#include <Qt3DCore/node.h>
-#include <Qt3DCore/qscenepropertychange.h>
-
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
 class Camera;
-class CameraSelector;
+class CameraSelectorPrivate;
 
-class CameraSelectorPrivate
-{
-public:
-    CameraSelectorPrivate(CameraSelector *qq)
-        : q_ptr(qq)
-        , m_camera(Q_NULLPTR)
-    {}
-
-    Q_DECLARE_PUBLIC(CameraSelector)
-    CameraSelector *q_ptr;
-    Node *m_camera;
-};
-
-class QT3DRENDERERSHARED_EXPORT CameraSelector : public Node, public FrameGraphItem
+class QT3DRENDERERSHARED_EXPORT CameraSelector : public FrameGraphItem
 {
     Q_OBJECT
-    Q_INTERFACES(Qt3D::FrameGraphItem)
     Q_PROPERTY(Qt3D::Node *camera READ camera WRITE setCamera NOTIFY cameraChanged)
 
 public:
-    explicit CameraSelector(Node *parent = 0)
-        :   Node(parent)
-        ,   d_ptr(new CameraSelectorPrivate(this))
-    {}
+    explicit CameraSelector(Node *parent = 0);
 
-    virtual ~CameraSelector() {}
-
-    void setCamera(Qt3D::Node *camera)
-    {
-        Q_D(CameraSelector);
-        if (d->m_camera != camera) {
-          d->m_camera = camera;
-          emit cameraChanged();
-          QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentUpdated, this));
-          propertyChange->m_propertyName = QByteArrayLiteral("camera");
-          propertyChange->m_value = QVariant::fromValue(d->m_camera);
-          notifyObservers(propertyChange);
-        }
-    }
-
-    Node *camera() const
-    {
-        Q_D(const CameraSelector);
-        return d->m_camera;
-    }
+    void setCamera(Qt3D::Node *camera);
+    Node *camera() const;
 
 Q_SIGNALS:
     void cameraChanged();
     void enabledChanged() Q_DECL_OVERRIDE;
 
-private:
+protected:
     Q_DECLARE_PRIVATE(CameraSelector)
-    CameraSelectorPrivate *d_ptr;
+    CameraSelector(CameraSelectorPrivate &dd, Node *parent = 0);
 };
 
 } // namespace Qt3D

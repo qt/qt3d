@@ -39,58 +39,28 @@
 **
 ****************************************************************************/
 
-#include "cameraselectornode.h"
-#include "rendercamera.h"
-#include <Qt3DRenderer/cameraselector.h>
-#include <Qt3DRenderer/renderer.h>
-#include <Qt3DRenderer/rendereraspect.h>
-#include <Qt3DCore/qaspectmanager.h>
-#include <Qt3DCore/qchangearbiter.h>
-#include <Qt3DCore/entity.h>
-#include <Qt3DCore/qscenepropertychange.h>
-#include "renderlogging.h"
+#ifndef QT3D_TECHNIQUEFILTER_P_H
+#define QT3D_TECHNIQUEFILTER_P_H
+
+#include <private/framegraphitem_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-namespace Render {
+class TechniqueFilter;
 
-CameraSelector::CameraSelector(FrameGraphNode *parent)
-    : FrameGraphNode(FrameGraphNode::CameraSelector, parent)
-    , m_renderer(Q_NULLPTR)
-    , m_peer(Q_NULLPTR)
+class TechniqueFilterPrivate : public FrameGraphItemPrivate
 {
-}
+public :
+    TechniqueFilterPrivate(TechniqueFilter *qq);
 
-void CameraSelector::setRenderer(Renderer *renderer)
-{
-    m_renderer = renderer;
-}
-
-void CameraSelector::setPeer(Qt3D::CameraSelector *peer)
-{
-    if (m_peer != peer) {
-        if (m_peer)
-            m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_peer);
-        m_peer = peer;
-        if (m_peer)
-            m_renderer->rendererAspect()->aspectManager()->changeArbiter()->registerObserver(this, m_peer, ComponentUpdated);
-    }
-}
-
-void CameraSelector::sceneChangeEvent(const QSceneChangePtr &e)
-{
-    qCDebug(Render::Framegraph) << Q_FUNC_INFO;
-    if (e->m_type == ComponentUpdated) {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        if (propertyChange->m_propertyName == QByteArrayLiteral("camera"))
-            setCameraEntity(qobject_cast<Entity*>(propertyChange->m_value.value<Node*>()));
-    }
-}
-
-} // Render
+    Q_DECLARE_PUBLIC(TechniqueFilter)
+    QList<TechniqueCriterion *> m_criteriaList;
+};
 
 } // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_TECHNIQUEFILTER_P_H

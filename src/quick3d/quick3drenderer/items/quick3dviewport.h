@@ -42,8 +42,8 @@
 #ifndef QT3D_RENDER_QUICK_QUICK3DVIEWPORT_H
 #define QT3D_RENDER_QUICK_QUICK3DVIEWPORT_H
 
+#include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
 #include <Qt3DQuick/quick3dnode.h>
-#include <Qt3DQuickRenderer/quick3dframegraphitem.h>
 #include <Qt3DRenderer/viewport.h>
 
 QT_BEGIN_NAMESPACE

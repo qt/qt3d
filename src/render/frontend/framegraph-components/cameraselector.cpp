@@ -39,57 +39,47 @@
 **
 ****************************************************************************/
 
-#include "cameraselectornode.h"
-#include "rendercamera.h"
-#include <Qt3DRenderer/cameraselector.h>
-#include <Qt3DRenderer/renderer.h>
-#include <Qt3DRenderer/rendereraspect.h>
-#include <Qt3DCore/qaspectmanager.h>
-#include <Qt3DCore/qchangearbiter.h>
-#include <Qt3DCore/entity.h>
+#include "cameraselector.h"
+#include "cameraselector_p.h"
+
 #include <Qt3DCore/qscenepropertychange.h>
-#include "renderlogging.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-namespace Render {
-
-CameraSelector::CameraSelector(FrameGraphNode *parent)
-    : FrameGraphNode(FrameGraphNode::CameraSelector, parent)
-    , m_renderer(Q_NULLPTR)
-    , m_peer(Q_NULLPTR)
+CameraSelector::CameraSelector(CameraSelectorPrivate &dd, Node *parent)
+    : FrameGraphItem(dd, parent)
 {
 }
 
-void CameraSelector::setRenderer(Renderer *renderer)
-{
-    m_renderer = renderer;
-}
+CameraSelectorPrivate::CameraSelectorPrivate(Qt3D::CameraSelector *qq)
+    : FrameGraphItemPrivate(qq)
+    , m_camera(Q_NULLPTR)
+{}
 
-void CameraSelector::setPeer(Qt3D::CameraSelector *peer)
+CameraSelector::CameraSelector(Qt3D::Node *parent)
+    :   FrameGraphItem(*new CameraSelectorPrivate(this), parent)
+{}
+
+void CameraSelector::setCamera(Qt3D::Node *camera)
 {
-    if (m_peer != peer) {
-        if (m_peer)
-            m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_peer);
-        m_peer = peer;
-        if (m_peer)
-            m_renderer->rendererAspect()->aspectManager()->changeArbiter()->registerObserver(this, m_peer, ComponentUpdated);
+    Q_D(CameraSelector);
+    if (d->m_camera != camera) {
+        d->m_camera = camera;
+        emit cameraChanged();
+        QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentUpdated, this));
+        propertyChange->m_propertyName = QByteArrayLiteral("camera");
+        propertyChange->m_value = QVariant::fromValue(d->m_camera);
+        notifyObservers(propertyChange);
     }
 }
 
-void CameraSelector::sceneChangeEvent(const QSceneChangePtr &e)
+Node *CameraSelector::camera() const
 {
-    qCDebug(Render::Framegraph) << Q_FUNC_INFO;
-    if (e->m_type == ComponentUpdated) {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        if (propertyChange->m_propertyName == QByteArrayLiteral("camera"))
-            setCameraEntity(qobject_cast<Entity*>(propertyChange->m_value.value<Node*>()));
-    }
+    Q_D(const CameraSelector);
+    return d->m_camera;
 }
-
-} // Render
 
 } // Qt3D
 

@@ -15,3 +15,5 @@ SOURCES += \
     $$PWD/techniquefilternode.cpp \
     $$PWD/viewportnode.cpp \
     $$PWD/rendertargetselectornode.cpp
+
+INCLUDEPATH += $$PWD

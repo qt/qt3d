@@ -39,12 +39,10 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDERTARGETSELECTOR_H
-#define QT3D_RENDERTARGETSELECTOR_H
+#ifndef QT3D_RENDERTARGETSELECTOR_P_H
+#define QT3D_RENDERTARGETSELECTOR_P_H
 
-#include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DCore/node.h>
-#include <Qt3DRenderer/framegraphitem.h>
+#include <private/framegraphitem_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -52,37 +50,16 @@ namespace Qt3D {
 
 class RenderTargetSelector;
 
-class RenderTargetSelectorPrivate
+class RenderTargetSelectorPrivate : public FrameGraphItemPrivate
 {
 public:
-    RenderTargetSelectorPrivate(RenderTargetSelector *qq)
-        : q_ptr(qq)
-    {}
+    RenderTargetSelectorPrivate(RenderTargetSelector *qq);
 
     Q_DECLARE_PUBLIC(RenderTargetSelector)
-    RenderTargetSelector *q_ptr;
-};
-
-class QT3DRENDERERSHARED_EXPORT RenderTargetSelector : public Node, public FrameGraphItem
-{
-    Q_OBJECT
-    Q_INTERFACES(Qt3D::FrameGraphItem)
-public:
-    explicit RenderTargetSelector(Node *parent = 0)
-        : Node(parent)
-        , d_ptr(new RenderTargetSelectorPrivate(this))
-    {}
-
-Q_SIGNALS:
-    void enabledChanged() Q_DECL_OVERRIDE;
-
-private:
-    Q_DECLARE_PRIVATE(RenderTargetSelector)
-    RenderTargetSelectorPrivate *d_ptr;
 };
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDERTARGETSELECTOR_H
+#endif // QT3D_RENDERTARGETSELECTOR_P_H

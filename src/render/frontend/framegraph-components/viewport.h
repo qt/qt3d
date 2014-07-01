@@ -43,69 +43,33 @@
 #define QT3D_VIEWPORT_H
 
 #include <Qt3DRenderer/framegraphitem.h>
-#include <Qt3DCore/node.h>
-#include <Qt3DCore/qscenepropertychange.h>
 #include <QtCore/QRectF>
+
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class Viewport;
+class ViewportPrivate;
 
-class ViewportPrivate
-{
-public :
-    ViewportPrivate(Viewport *qq) :
-        q_ptr(qq)
-    {}
-
-    Q_DECLARE_PUBLIC(Viewport)
-    Viewport *q_ptr;
-    QRectF m_rect;
-};
-
-class QT3DRENDERERSHARED_EXPORT Viewport : public Node, public FrameGraphItem
+class QT3DRENDERERSHARED_EXPORT Viewport : public FrameGraphItem
 {
     Q_OBJECT
-    Q_INTERFACES(Qt3D::FrameGraphItem)
     Q_PROPERTY(QRectF rect READ rect WRITE setRect NOTIFY rectChanged)
 
 public:
-    explicit Viewport(Node *parent = 0)
-        : Node(parent)
-        , d_ptr(new ViewportPrivate(this))
-    {}
+    explicit Viewport(Node *parent = 0);
 
-    virtual ~Viewport() {}
-
-    QRectF rect() const
-    {
-        Q_D(const Viewport);
-        return d->m_rect;
-    }
-
-    void setRect(const QRectF& rect)
-    {
-        Q_D(Viewport);
-        if (rect != d->m_rect) {
-            d->m_rect = rect;
-            emit rectChanged();
-            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentUpdated, this));
-            propertyChange->m_propertyName = QByteArrayLiteral("rect");
-            propertyChange->m_value = QVariant::fromValue(d->m_rect);
-            notifyObservers(propertyChange);
-        }
-    }
+    QRectF rect() const;
+    void setRect(const QRectF& rect);
 
 Q_SIGNALS:
     void rectChanged();
     void enabledChanged() Q_DECL_OVERRIDE;
 
-
-private:
+protected:
     Q_DECLARE_PRIVATE(Viewport)
-    ViewportPrivate *d_ptr;
+    Viewport(ViewportPrivate &dd, Node *parent = 0);
 };
 
 } // Qt3D

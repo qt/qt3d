@@ -1,3 +1,4 @@
+
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
@@ -39,57 +40,67 @@
 **
 ****************************************************************************/
 
-#include "cameraselectornode.h"
-#include "rendercamera.h"
-#include <Qt3DRenderer/cameraselector.h>
-#include <Qt3DRenderer/renderer.h>
-#include <Qt3DRenderer/rendereraspect.h>
-#include <Qt3DCore/qaspectmanager.h>
-#include <Qt3DCore/qchangearbiter.h>
-#include <Qt3DCore/entity.h>
+#include "renderpassfilter.h"
+#include "renderpassfilter_p.h"
+
+#include "renderpasscriterion.h"
 #include <Qt3DCore/qscenepropertychange.h>
-#include "renderlogging.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-namespace Render {
+RenderPassFilter::RenderPassFilter(Node *parent)
+    : FrameGraphItem(*new RenderPassFilterPrivate(this), parent)
+{}
 
-CameraSelector::CameraSelector(FrameGraphNode *parent)
-    : FrameGraphNode(FrameGraphNode::CameraSelector, parent)
-    , m_renderer(Q_NULLPTR)
-    , m_peer(Q_NULLPTR)
+RenderPassFilter::RenderPassFilter(RenderPassFilterPrivate &dd, Node *parent)
+    : FrameGraphItem(dd, parent)
 {
 }
 
-void CameraSelector::setRenderer(Renderer *renderer)
+void RenderPassFilter::setRenderPassName(const QString &renderpassName)
 {
-    m_renderer = renderer;
-}
-
-void CameraSelector::setPeer(Qt3D::CameraSelector *peer)
-{
-    if (m_peer != peer) {
-        if (m_peer)
-            m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_peer);
-        m_peer = peer;
-        if (m_peer)
-            m_renderer->rendererAspect()->aspectManager()->changeArbiter()->registerObserver(this, m_peer, ComponentUpdated);
+    Q_D(RenderPassFilter);
+    if (renderpassName != d->m_renderPassName) {
+        d->m_renderPassName = renderpassName;
+        emit renderPassNameChanged();
     }
 }
 
-void CameraSelector::sceneChangeEvent(const QSceneChangePtr &e)
+QString RenderPassFilter::renderPassName() const
 {
-    qCDebug(Render::Framegraph) << Q_FUNC_INFO;
-    if (e->m_type == ComponentUpdated) {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        if (propertyChange->m_propertyName == QByteArrayLiteral("camera"))
-            setCameraEntity(qobject_cast<Entity*>(propertyChange->m_value.value<Node*>()));
+    Q_D(const RenderPassFilter);
+    return d->m_renderPassName;
+}
+
+QList<RenderPassCriterion *> RenderPassFilter::criteria() const
+{
+    Q_D(const RenderPassFilter);
+    return d->m_criteriaList;
+}
+
+void RenderPassFilter::addCriterion(RenderPassCriterion *criterion)
+{
+    Q_D(RenderPassFilter);
+    if (!d->m_criteriaList.contains(criterion)) {
+        d->m_criteriaList.append(criterion);
+        QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentAdded, this));
+        propertyChange->m_propertyName = QByteArrayLiteral("renderPassCriteria");
+        propertyChange->m_value = QVariant::fromValue(criterion);
+        notifyObservers(propertyChange);
     }
 }
 
-} // Render
+void RenderPassFilter::removeCriterion(RenderPassCriterion *criterion)
+{
+    Q_D(RenderPassFilter);
+    d->m_criteriaList.removeOne(criterion);
+    QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentRemoved, this));
+    propertyChange->m_propertyName = QByteArrayLiteral("renderPassCriteria");
+    propertyChange->m_value = QVariant::fromValue(criterion);
+    notifyObservers(propertyChange);
+}
 
 } // Qt3D
 

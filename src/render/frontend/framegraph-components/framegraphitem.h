@@ -39,30 +39,39 @@
 **
 ****************************************************************************/
 
-#include "quick3dframegraphitem.h"
+#ifndef QT3D_FRAMEGRAPHNODE_H
+#define QT3D_FRAMEGRAPHNODE_H
+
+#include <Qt3DCore/node.h>
+#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <QObject>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-namespace Render {
+class FrameGraphItemPrivate;
 
-namespace Quick {
-
-Quick3DFrameGraphItem::Quick3DFrameGraphItem(QObject *parent)
-    : Qt3D::Quick::Quick3DNode(parent)
-    , FrameGraphItem()
+class QT3DRENDERERSHARED_EXPORT FrameGraphItem : public Node
 {
-}
+    Q_OBJECT
+public:
+    explicit FrameGraphItem(Node *parent = 0);
 
-Quick3DFrameGraphItem::~Quick3DFrameGraphItem()
-{
-}
+    void setEnabled(bool enabled);
+    bool isEnabled() const;
 
-} // Quick
+    // TODO: Remove this
+Q_SIGNALS:
+    virtual void enabledChanged() = 0;
 
-} // Render
+protected:
+    Q_DECLARE_PRIVATE(FrameGraphItem)
+    FrameGraphItem(FrameGraphItemPrivate &dd, Node *parent = 0);
+};
 
 } // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_FRAMEGRAPHNODE_H

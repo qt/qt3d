@@ -1,5 +1,4 @@
 HEADERS += \
-    $$PWD/quick3dframegraphitem.h \
     $$PWD/quick3drenderpassfilter.h \
     $$PWD/quick3drendertargetselector.h \
     $$PWD/quick3dtechniquefilter.h \
@@ -13,7 +12,6 @@ HEADERS += \
     $$PWD/quick3drenderpass.h
 
 SOURCES += \
-    $$PWD/quick3dframegraphitem.cpp \
     $$PWD/quick3drenderpassfilter.cpp \
     $$PWD/quick3drendertargetselector.cpp \
     $$PWD/quick3dtechniquefilter.cpp \

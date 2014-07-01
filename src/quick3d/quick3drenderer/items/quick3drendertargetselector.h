@@ -42,7 +42,7 @@
 #ifndef QT3D_RENDER_QUICK_QUICK3DRENDERTARGETSELECTOR_H
 #define QT3D_RENDER_QUICK_QUICK3DRENDERTARGETSELECTOR_H
 
-#include <Qt3DQuickRenderer/quick3dframegraphitem.h>
+#include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
 #include <Qt3DRenderer/rendertargetselector.h>
 
 QT_BEGIN_NAMESPACE

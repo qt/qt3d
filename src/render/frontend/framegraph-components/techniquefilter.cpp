@@ -1,3 +1,4 @@
+
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
@@ -39,87 +40,59 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_TECHNIQUEFILTER_H
-#define QT3D_TECHNIQUEFILTER_H
+#include "techniquefilter.h"
+#include "techniquefilter_p.h"
 
-#include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/framegraphitem.h>
 #include <Qt3DRenderer/techniquecriterion.h>
-
-#include <Qt3DCore/node.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class TechniqueFilter;
-
-class TechniqueFilterPrivate
+TechniqueFilterPrivate::TechniqueFilterPrivate(TechniqueFilter *qq)
+    : FrameGraphItemPrivate(qq)
 {
-public :
-    TechniqueFilterPrivate(TechniqueFilter *qq) :
-        q_ptr(qq)
-    {}
+}
 
-    Q_DECLARE_PUBLIC(TechniqueFilter)
-    TechniqueFilter *q_ptr;
-    QList<TechniqueCriterion *> m_criteriaList;
-};
-
-class QT3DRENDERERSHARED_EXPORT TechniqueFilter : public Node, public FrameGraphItem
+TechniqueFilter::TechniqueFilter(Node *parent)
+    : FrameGraphItem(*new TechniqueFilterPrivate(this), parent)
 {
-    Q_OBJECT
-    Q_INTERFACES(Qt3D::FrameGraphItem)
-public:
-    explicit TechniqueFilter(Node *parent = 0)
-        : Node(parent)
-        , FrameGraphItem()
-        , d_ptr(new TechniqueFilterPrivate(this))
-    {}
+}
 
-    virtual ~TechniqueFilter()
-    {}
+TechniqueFilter::TechniqueFilter(TechniqueFilterPrivate &dd, Node *parent)
+    : FrameGraphItem(dd, parent)
+{
+}
 
-    QList<TechniqueCriterion *> criteria() const
-    {
-        Q_D(const TechniqueFilter);
-        return d->m_criteriaList;
-    }
+QList<TechniqueCriterion *> TechniqueFilter::criteria() const
+{
+    Q_D(const TechniqueFilter);
+    return d->m_criteriaList;
+}
 
-    void addCriterion(TechniqueCriterion *criterion)
-    {
-        Q_D(TechniqueFilter);
-        d->m_criteriaList.append(criterion);
-        emit criteriaChanged();
-        QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentAdded, this));
-        propertyChange->m_propertyName = QByteArrayLiteral("techniqueCriteria");
-        propertyChange->m_value = QVariant::fromValue(criterion);
-        notifyObservers(propertyChange);
-    }
+void TechniqueFilter::addCriterion(TechniqueCriterion *criterion)
+{
+    Q_D(TechniqueFilter);
+    d->m_criteriaList.append(criterion);
+    emit criteriaChanged();
+    QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentAdded, this));
+    propertyChange->m_propertyName = QByteArrayLiteral("techniqueCriteria");
+    propertyChange->m_value = QVariant::fromValue(criterion);
+    notifyObservers(propertyChange);
+}
 
-    void removeCriterion(TechniqueCriterion *criterion)
-    {
-        Q_D(TechniqueFilter);
-        d->m_criteriaList.removeOne(criterion);
-        emit criteriaChanged();
-        QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentRemoved, this));
-        propertyChange->m_propertyName = QByteArrayLiteral("techniqueCriteria");
-        propertyChange->m_value = QVariant::fromValue(criterion);
-        notifyObservers(propertyChange);
-    }
+void TechniqueFilter::removeCriterion(TechniqueCriterion *criterion)
+{
+    Q_D(TechniqueFilter);
+    d->m_criteriaList.removeOne(criterion);
+    emit criteriaChanged();
+    QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentRemoved, this));
+    propertyChange->m_propertyName = QByteArrayLiteral("techniqueCriteria");
+    propertyChange->m_value = QVariant::fromValue(criterion);
+    notifyObservers(propertyChange);
+}
 
-Q_SIGNALS:
-    void criteriaChanged();
-    void enabledChanged() Q_DECL_OVERRIDE;
-
-private:
-    Q_DECLARE_PRIVATE(TechniqueFilter)
-    TechniqueFilterPrivate *d_ptr;
-};
-
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_TECHNIQUEFILTER_H

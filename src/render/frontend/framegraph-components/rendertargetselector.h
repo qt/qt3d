@@ -39,58 +39,35 @@
 **
 ****************************************************************************/
 
-#include "cameraselectornode.h"
-#include "rendercamera.h"
-#include <Qt3DRenderer/cameraselector.h>
-#include <Qt3DRenderer/renderer.h>
-#include <Qt3DRenderer/rendereraspect.h>
-#include <Qt3DCore/qaspectmanager.h>
-#include <Qt3DCore/qchangearbiter.h>
-#include <Qt3DCore/entity.h>
-#include <Qt3DCore/qscenepropertychange.h>
-#include "renderlogging.h"
+#ifndef QT3D_RENDERTARGETSELECTOR_H
+#define QT3D_RENDERTARGETSELECTOR_H
+
+#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DCore/node.h>
+#include <Qt3DRenderer/framegraphitem.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-namespace Render {
+class RenderTargetSelectorPrivate;
 
-CameraSelector::CameraSelector(FrameGraphNode *parent)
-    : FrameGraphNode(FrameGraphNode::CameraSelector, parent)
-    , m_renderer(Q_NULLPTR)
-    , m_peer(Q_NULLPTR)
+class QT3DRENDERERSHARED_EXPORT RenderTargetSelector : public FrameGraphItem
 {
-}
+    Q_OBJECT
+public:
+    explicit RenderTargetSelector(Node *parent = 0);
 
-void CameraSelector::setRenderer(Renderer *renderer)
-{
-    m_renderer = renderer;
-}
+Q_SIGNALS:
+    void enabledChanged() Q_DECL_OVERRIDE;
 
-void CameraSelector::setPeer(Qt3D::CameraSelector *peer)
-{
-    if (m_peer != peer) {
-        if (m_peer)
-            m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_peer);
-        m_peer = peer;
-        if (m_peer)
-            m_renderer->rendererAspect()->aspectManager()->changeArbiter()->registerObserver(this, m_peer, ComponentUpdated);
-    }
-}
-
-void CameraSelector::sceneChangeEvent(const QSceneChangePtr &e)
-{
-    qCDebug(Render::Framegraph) << Q_FUNC_INFO;
-    if (e->m_type == ComponentUpdated) {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        if (propertyChange->m_propertyName == QByteArrayLiteral("camera"))
-            setCameraEntity(qobject_cast<Entity*>(propertyChange->m_value.value<Node*>()));
-    }
-}
-
-} // Render
+protected:
+    Q_DECLARE_PRIVATE(RenderTargetSelector)
+    RenderTargetSelector(RenderTargetSelectorPrivate &dd, Node *parent = 0);
+};
 
 } // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_RENDERTARGETSELECTOR_H

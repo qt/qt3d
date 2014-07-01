@@ -39,42 +39,28 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QUICK_QUICK3DFRAMEGRAPHITEM_H
-#define QT3D_RENDER_QUICK_QUICK3DFRAMEGRAPHITEM_H
-
-#include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
-#include <Qt3DQuick/quick3dnode.h>
-#include <Qt3DRenderer/framegraphitem.h>
+#include "rendertargetselector.h"
+#include "rendertargetselector_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-namespace Render {
-
-namespace Quick {
-
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DFrameGraphItem : public Qt3D::Quick::Quick3DNode, public FrameGraphItem
+RenderTargetSelectorPrivate::RenderTargetSelectorPrivate(RenderTargetSelector *qq)
+    : FrameGraphItemPrivate(qq)
 {
-    Q_OBJECT
-    Q_INTERFACES(Qt3D::FrameGraphItem)
-    Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
+}
 
-public:
-    explicit Quick3DFrameGraphItem(QObject *parent = 0);
-    virtual ~Quick3DFrameGraphItem();
+RenderTargetSelector::RenderTargetSelector(Node *parent)
+    : FrameGraphItem(*new RenderTargetSelectorPrivate(this), parent)
+{
+}
 
-
-Q_SIGNALS:
-    void enabledChanged() Q_DECL_OVERRIDE;
-};
-
-} // Quick
-
-} // Render
+RenderTargetSelector::RenderTargetSelector(RenderTargetSelectorPrivate &dd, Node *parent)
+    : FrameGraphItem(dd, parent)
+{
+}
 
 } // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_RENDER_QUICK_QUICK3DFRAMEGRAPHITEM_H

@@ -39,49 +39,46 @@
 **
 ****************************************************************************/
 
-#include "framegraphitem.h"
-#include "framegraphitem_p.h"
+#ifndef QT3D_RENDERPASSFILTER_H
+#define QT3D_RENDERPASSFILTER_H
 
-/*!
- * \class FrameGraphNode
- *
- * \brief Base class of all FrameGraph configuration nodes.
- *
- * This is an abstract class so it cannot be instanced directly
- * but rather through one of its subclasses.
- *
- * \since 5.3
- * \namespace Qt3D
- */
+#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRenderer/framegraphitem.h>
+#include <QString>
+
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-FrameGraphItem::FrameGraphItem()
-    : d_ptr(new FrameGraphItemPrivate(this))
-{
-}
+class RenderPassFilterPrivate;
+class RenderPassCriterion;
 
-FrameGraphItem::~FrameGraphItem()
+class QT3DRENDERERSHARED_EXPORT RenderPassFilter : public FrameGraphItem
 {
-}
+    Q_OBJECT
+    Q_PROPERTY(QString renderPassName READ renderPassName WRITE setRenderPassName NOTIFY renderPassNameChanged)
 
-void FrameGraphItem::setEnabled(bool enabled)
-{
-    Q_D(FrameGraphItem);
-    if (d->m_enabled != enabled) {
-        d->m_enabled = enabled;
-        emit enabledChanged();
-    }
-}
+public:
+    explicit RenderPassFilter(Node *parent = 0);
 
-bool FrameGraphItem::isEnabled() const
-{
-    Q_D(const FrameGraphItem);
-    return d->m_enabled;
-}
+    void setRenderPassName(const QString &renderpassName);
+    QString renderPassName() const;
+    QList<RenderPassCriterion *> criteria() const;
+    void addCriterion(RenderPassCriterion *criterion);
+    void removeCriterion(RenderPassCriterion *criterion);
 
-} // Qt3D
+Q_SIGNALS:
+    void renderPassNameChanged();
+    void enabledChanged() Q_DECL_OVERRIDE;
+
+protected:
+    Q_DECLARE_PRIVATE(RenderPassFilter)
+    RenderPassFilter(RenderPassFilterPrivate &dd, Node *parent = 0);
+};
+
+} // namespace Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_RENDERPASSFILTER_H

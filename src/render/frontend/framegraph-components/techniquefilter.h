@@ -39,40 +39,40 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_FRAMEGRAPHNODE_H
-#define QT3D_FRAMEGRAPHNODE_H
+#ifndef QT3D_TECHNIQUEFILTER_H
+#define QT3D_TECHNIQUEFILTER_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <QObject>
+#include <Qt3DRenderer/framegraphitem.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class FrameGraphItemPrivate;
+class TechniqueFilterPrivate;
+class TechniqueCriterion;
 
-class QT3DRENDERERSHARED_EXPORT FrameGraphItem
+class QT3DRENDERERSHARED_EXPORT TechniqueFilter : public FrameGraphItem
 {
+    Q_OBJECT
 public:
-    FrameGraphItem();
-    virtual ~FrameGraphItem();
+    explicit TechniqueFilter(Node *parent = 0);
 
-    void setEnabled(bool enabled);
-    bool isEnabled() const;
+    QList<TechniqueCriterion *> criteria() const;
+    void addCriterion(TechniqueCriterion *criterion);
+    void removeCriterion(TechniqueCriterion *criterion);
 
-    // TODO: Remove this
 Q_SIGNALS:
-    virtual void enabledChanged() = 0;
+    void criteriaChanged();
+    void enabledChanged() Q_DECL_OVERRIDE;
 
-private:
-    FrameGraphItemPrivate* d_ptr;
-    Q_DECLARE_PRIVATE(FrameGraphItem)
+protected:
+    Q_DECLARE_PRIVATE(TechniqueFilter)
+    TechniqueFilter(TechniqueFilterPrivate &dd, Node *parent = 0);
 };
 
-} // Qt3D
-
-Q_DECLARE_INTERFACE(Qt3D::FrameGraphItem, "org.qt-project.Qt3D.Render.FrameGraphItem/2.0")
+} // namespace Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_FRAMEGRAPHNODE_H
+#endif // QT3D_TECHNIQUEFILTER_H

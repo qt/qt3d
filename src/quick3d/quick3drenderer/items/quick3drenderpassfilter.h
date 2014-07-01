@@ -43,9 +43,9 @@
 #define QT3D_RENDER_QUICK_QUICK3DRENDERPASSFILTER_H
 
 #include <Qt3DQuick/quick3dnode.h>
-#include <Qt3DQuickRenderer/quick3dframegraphitem.h>
 #include <Qt3DRenderer/renderpassfilter.h>
 #include <Qt3DRenderer/renderpasscriterion.h>
+#include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 

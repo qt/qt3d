@@ -39,57 +39,56 @@
 **
 ****************************************************************************/
 
-#include "cameraselectornode.h"
-#include "rendercamera.h"
-#include <Qt3DRenderer/cameraselector.h>
-#include <Qt3DRenderer/renderer.h>
-#include <Qt3DRenderer/rendereraspect.h>
-#include <Qt3DCore/qaspectmanager.h>
-#include <Qt3DCore/qchangearbiter.h>
-#include <Qt3DCore/entity.h>
-#include <Qt3DCore/qscenepropertychange.h>
-#include "renderlogging.h"
+#include "framegraphitem.h"
+#include "framegraphitem_p.h"
+
+/*!
+ * \class FrameGraphNode
+ *
+ * \brief Base class of all FrameGraph configuration nodes.
+ *
+ * This is an abstract class so it cannot be instanced directly
+ * but rather through one of its subclasses.
+ *
+ * \since 5.3
+ * \namespace Qt3D
+ */
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-namespace Render {
-
-CameraSelector::CameraSelector(FrameGraphNode *parent)
-    : FrameGraphNode(FrameGraphNode::CameraSelector, parent)
-    , m_renderer(Q_NULLPTR)
-    , m_peer(Q_NULLPTR)
+FrameGraphItemPrivate::FrameGraphItemPrivate(FrameGraphItem *qq)
+    : NodePrivate(qq)
+    , m_enabled(true)
 {
 }
 
-void CameraSelector::setRenderer(Renderer *renderer)
+FrameGraphItem::FrameGraphItem(Node *parent)
+    : Node(*new FrameGraphItemPrivate(this), parent)
 {
-    m_renderer = renderer;
 }
 
-void CameraSelector::setPeer(Qt3D::CameraSelector *peer)
+FrameGraphItem::FrameGraphItem(FrameGraphItemPrivate &dd, Node *parent)
+    : Node(dd, parent)
 {
-    if (m_peer != peer) {
-        if (m_peer)
-            m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_peer);
-        m_peer = peer;
-        if (m_peer)
-            m_renderer->rendererAspect()->aspectManager()->changeArbiter()->registerObserver(this, m_peer, ComponentUpdated);
+}
+
+void FrameGraphItem::setEnabled(bool enabled)
+{
+    Q_D(FrameGraphItem);
+    if (d->m_enabled != enabled) {
+        d->m_enabled = enabled;
+        emit enabledChanged();
     }
 }
 
-void CameraSelector::sceneChangeEvent(const QSceneChangePtr &e)
+bool FrameGraphItem::isEnabled() const
 {
-    qCDebug(Render::Framegraph) << Q_FUNC_INFO;
-    if (e->m_type == ComponentUpdated) {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        if (propertyChange->m_propertyName == QByteArrayLiteral("camera"))
-            setCameraEntity(qobject_cast<Entity*>(propertyChange->m_value.value<Node*>()));
-    }
+    Q_D(const FrameGraphItem);
+    return d->m_enabled;
 }
 
-} // Render
 
 } // Qt3D
 
