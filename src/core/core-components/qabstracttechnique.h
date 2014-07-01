@@ -70,9 +70,9 @@ public:
 Q_SIGNALS:
     void nameChanged();
 
-private:
+protected:
     Q_DECLARE_PRIVATE(QAbstractTechnique)
-    QAbstractTechniquePrivate *d_ptr;
+    QAbstractTechnique(QAbstractTechniquePrivate &dd, Node *parent = 0);
 };
 
 } // Qt3D

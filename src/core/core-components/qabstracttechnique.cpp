@@ -41,6 +41,7 @@
 
 #include "qabstracttechnique.h"
 #include "qabstractrenderpass.h"
+#include "qabstracttechnique_p.h"
 
 #include <Qt3DCore/qscenepropertychange.h>
 
@@ -65,22 +66,20 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAbstractTechniquePrivate
-{
-public :
-    QAbstractTechniquePrivate(QAbstractTechnique *qq)
-        : q_ptr(qq)
-    {}
 
-    QString m_name;
-    Q_DECLARE_PUBLIC(QAbstractTechnique)
-    QAbstractTechnique *q_ptr;
-    QList<QAbstractRenderPass*> m_renderPasses;
-};
+QAbstractTechniquePrivate::QAbstractTechniquePrivate(QAbstractTechnique *qq)
+    : NodePrivate(qq)
+{
+}
 
 QAbstractTechnique::QAbstractTechnique(Node *parent)
-    : Node(parent)
-    , d_ptr(new QAbstractTechniquePrivate(this))
+    : Node(*new QAbstractTechniquePrivate(this), parent)
+{
+}
+
+
+QAbstractTechnique::QAbstractTechnique(QAbstractTechniquePrivate &dd, Node *parent)
+    : Node(dd, parent)
 {
 }
 

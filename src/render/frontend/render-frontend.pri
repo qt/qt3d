@@ -40,7 +40,8 @@ HEADERS += \
     $$PWD/qdirectionallight_p.h \
     $$PWD/qpointlight_p.h \
     $$PWD/qmaterial_p.h \
-    $$PWD/qeffect_p.h
+    $$PWD/qeffect_p.h \
+    $$PWD/qtechnique_p.h
 
 SOURCES += \
     $$PWD/qmaterial.cpp \

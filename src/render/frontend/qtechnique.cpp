@@ -40,6 +40,7 @@
 ****************************************************************************/
 
 #include "qtechnique.h"
+#include "qtechnique_p.h"
 #include "parameter.h"
 #include <Qt3DCore/qscenepropertychange.h>
 #include <QDebug>
@@ -48,22 +49,18 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QTechniquePrivate
+QTechniquePrivate::QTechniquePrivate(QTechnique *qq)
+    : QAbstractTechniquePrivate(qq)
 {
-public :
-    QTechniquePrivate(QTechnique *qq)
-        : q_ptr(qq)
-    {}
-
-    QList<TechniqueCriterion *> m_criteriaList;
-    QList<Parameter *> m_parameters;
-    Q_DECLARE_PUBLIC(QTechnique)
-    QTechnique *q_ptr;
-};
+}
 
 QTechnique::QTechnique(Node *parent)
-    : QAbstractTechnique(parent)
-    , d_ptr(new QTechniquePrivate(this))
+    : QAbstractTechnique(*new QTechniquePrivate(this), parent)
+{
+}
+
+QTechnique::QTechnique(QTechniquePrivate &dd, Node *parent)
+    : QAbstractTechnique(dd, parent)
 {
 }
 

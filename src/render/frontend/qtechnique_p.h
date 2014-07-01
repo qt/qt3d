@@ -39,56 +39,31 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_TECHNIQUE_H
-#define QT3D_TECHNIQUE_H
+#ifndef QT3D_QTECHNIQUE_P_H
+#define QT3D_QTECHNIQUE_P_H
 
+#include <private/qabstracttechnique_p.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DCore/node.h>
-#include <Qt3DRenderer/tag.h>
-#include <Qt3DRenderer/renderpass.h>
-#include <Qt3DCore/qabstracttechnique.h>
-#include <Qt3DRenderer/techniquecriterion.h>
-#include <QList>
-#include <QSharedPointer>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class QTechnique;
+class TechniqueCriterion;
 class Parameter;
-class QTechniquePrivate;
 
-class QT3DRENDERERSHARED_EXPORT QTechnique : public QAbstractTechnique
+class QT3DRENDERERSHARED_EXPORT QTechniquePrivate : public QAbstractTechniquePrivate
 {
-    Q_OBJECT
-
 public:
-    explicit QTechnique(Node *parent = 0);
-
-    void addCriterion(TechniqueCriterion *criterion);
-    void removeCriterion(TechniqueCriterion *criterion);
-    QVariant criterionValue(const QString &customTypeName) const;
-    QVariant criterionValue(TechniqueCriterion::CriterionType type) const;
-    QList<TechniqueCriterion *> criteria() const;
-    void clearCriteria();
-    bool containsCriterion(const QString &customTypeName) const;
-    bool containsCriterion(TechniqueCriterion::CriterionType type) const;
-
-    void addPass(QAbstractRenderPass* pass) Q_DECL_OVERRIDE;
-
-    void addParameter(Parameter *p);
-    void removeParameter(Parameter *p);
-    QList<Parameter *> parameters() const;
-
-    Parameter* parameterByName(QString name) const;
-
-protected:
-    Q_DECLARE_PRIVATE(QTechnique)
-    QTechnique(QTechniquePrivate &dd, Node *parent = 0);
+    QTechniquePrivate(QTechnique *dd);
+    Q_DECLARE_PUBLIC(QTechnique)
+    QList<TechniqueCriterion *> m_criteriaList;
+    QList<Parameter *> m_parameters;
 };
 
-}
+} // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_TECHNIQUE_H
+#endif // QT3D_QTECHNIQUE_P_H
