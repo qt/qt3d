@@ -36,7 +36,9 @@ HEADERS += \
     $$PWD/qeffect_p.h \
     $$PWD/qtechnique_p.h \
     $$PWD/qabstractscene_p.h \
-    $$PWD/qrenderpass_p.h
+    $$PWD/qrenderpass_p.h \
+    $$PWD/qlayer.h \
+    $$PWD/qlayer_p.h
 
 SOURCES += \
     $$PWD/qmaterial.cpp \
@@ -60,4 +62,5 @@ SOURCES += \
     $$PWD/qabstractlight.cpp \
     $$PWD/qpointlight.cpp \
     $$PWD/qspotlight.cpp \
-    $$PWD/qdirectionallight.cpp
+    $$PWD/qdirectionallight.cpp \
+    $$PWD/qlayer.cpp
