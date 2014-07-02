@@ -12,7 +12,9 @@ HEADERS += \
         $$PWD/qrendertargetselector.h \
         $$PWD/qrendertargetselector_p.h \
         $$PWD/qcameraselector.h \
-        $$PWD/qcameraselector_p.h
+        $$PWD/qcameraselector_p.h \
+        $$PWD/qlayerfilter.h \
+        $$PWD/qlayerfilter_p.h
 
 SOURCES += \
         $$PWD/qframegraph.cpp \
@@ -21,6 +23,7 @@ SOURCES += \
         $$PWD/qviewport.cpp \
         $$PWD/qtechniquefilter.cpp \
         $$PWD/qcameraselector.cpp \
-        $$PWD/qrendertargetselector.cpp
+        $$PWD/qrendertargetselector.cpp \
+        $$PWD/qlayerfilter.cpp
 
 INCLUDEPATH += $$PWD
