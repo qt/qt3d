@@ -55,7 +55,7 @@ namespace Render {
 
 class Renderer;
 
-class ViewportNode : public Render::FrameGraphNode, public QObserverInterface
+class ViewportNode : public Render::FrameGraphNode
 {
 public:
     ViewportNode(Render::FrameGraphNode *parent = 0);

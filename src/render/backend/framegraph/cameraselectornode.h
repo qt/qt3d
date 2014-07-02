@@ -58,7 +58,7 @@ class Renderer;
 
 class RenderCamera;
 
-class CameraSelector : public FrameGraphNode, public QObserverInterface
+class CameraSelector : public FrameGraphNode
 {
 public:
     CameraSelector(FrameGraphNode *parent = 0);

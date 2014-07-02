@@ -54,6 +54,8 @@ class RenderTargetSelector : public FrameGraphNode
 public:
     RenderTargetSelector(FrameGraphNode *parent = 0);
 
+    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+
 private:
 
 };

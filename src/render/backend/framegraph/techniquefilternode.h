@@ -62,7 +62,6 @@ class Renderer;
 
 class TechniqueFilter
         : public Render::FrameGraphNode
-        , public QObserverInterface
 {
 public:
     TechniqueFilter(Render::FrameGraphNode *parent = 0);

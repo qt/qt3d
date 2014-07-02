@@ -131,10 +131,8 @@ Render::FrameGraphNode *RenderSceneBuilder::buildFrameGraph(Node *node)
         if (fgNode == Q_NULLPTR && fgChildNodes.size() == 1) {
             fgNode = fgChildNodes.first();
         }
-        else {
-            if (fgNode == Q_NULLPTR)
-                fgNode = new FrameGraphNode();
-            foreach (FrameGraphNode *fgChildNode, fgChildNodes)
+        else if (fgNode != Q_NULLPTR) {
+            Q_FOREACH (FrameGraphNode *fgChildNode, fgChildNodes)
                 fgNode->appendChild(fgChildNode);
         }
     }

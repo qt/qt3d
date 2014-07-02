@@ -42,6 +42,8 @@
 #ifndef QT3D_RENDER_FRAMEGRAPHNODE_H
 #define QT3D_RENDER_FRAMEGRAPHNODE_H
 
+#include <Qt3DCore/qobserverinterface.h>
+
 #include <qglobal.h>
 #include <QVector>
 
@@ -50,7 +52,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
-class FrameGraphNode
+class FrameGraphNode : public QObserverInterface
 {
 public:
     FrameGraphNode(FrameGraphNode *parent = 0);

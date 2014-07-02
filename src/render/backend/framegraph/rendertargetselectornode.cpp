@@ -52,6 +52,11 @@ RenderTargetSelector::RenderTargetSelector(FrameGraphNode *parent) :
 {
 }
 
+void RenderTargetSelector::sceneChangeEvent(const QSceneChangePtr &)
+{
+
+}
+
 } // Render
 } // Qt3D
 
