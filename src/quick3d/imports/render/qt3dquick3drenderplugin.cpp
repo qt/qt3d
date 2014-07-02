@@ -88,13 +88,16 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3D::Tag>(uri, 2, 0, "Tag");
     qmlRegisterType<Qt3D::Parameter>(uri, 2, 0, "Parameter");
     qmlRegisterType<Qt3D::ParameterMapper>(uri, 2, 0, "ParameterMapper");
-    qmlRegisterType<Qt3D::QMesh>(uri, 2, 0, "Mesh");
     qmlRegisterExtendedType<Qt3D::QMaterial, Qt3D::Render::Quick::Quick3DMaterial>(uri, 2, 0, "Material");
     qmlRegisterExtendedType<Qt3D::QRenderPass, Qt3D::Render::Quick::Quick3DRenderPass>(uri, 2, 0, "RenderPass");
     qmlRegisterType<Qt3D::ShaderProgram>(uri, 2, 0, "ShaderProgram");
-    qmlRegisterUncreatableType<Qt3D::QAbstractShapeMesh>(uri, 2, 0, "Shape", QStringLiteral("Shape is an abstract base class"));
+
+    qmlRegisterUncreatableType<Qt3D::QAbstractMesh>(uri, 2, 0, "QAbstractMesh", QString("QAbstractMesh is abstract"));
+    qmlRegisterType<Qt3D::QMesh>(uri, 2, 0, "Mesh");
+    qmlRegisterUncreatableType<Qt3D::QAbstractShapeMesh>(uri, 2, 0, "QAbstractShapeMesh", QStringLiteral("Shape is an abstract base class"));
     qmlRegisterType<Qt3D::QTorusMesh>(uri, 2, 0, "TorusMesh");
     qmlRegisterType<Qt3D::QSphereMesh>(uri, 2, 0, "SphereMesh");
+
     qmlRegisterExtendedType<Qt3D::Texture, Qt3D::Render::Quick::Quick3DTexture>(uri, 2, 0, "Texture");
     // Framegraph components - TODO RenderTarget, RenderTargetSelector
     qmlRegisterExtendedType<Qt3D::QCameraSelector, Qt3D::Quick::Quick3DNode>(uri, 2, 0, "CameraSelector");

@@ -69,10 +69,7 @@ public:
     void setSource(const QString &source);
     QString source() const;
 
-    // Not const because subclasses may want to perform
-    // more than just returning a MeshData straight away
-    virtual QAbstractMeshDataPtr data() Q_DECL_OVERRIDE;
-    void setData(QAbstractMeshDataPtr d) Q_DECL_OVERRIDE;
+    bool load() Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
     void sourceChanged();

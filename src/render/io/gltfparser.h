@@ -49,6 +49,7 @@
 #include <Qt3DRenderer/qbuffer.h>
 #include <QJsonDocument>
 #include <QMultiHash>
+#include <Qt3DCore/qabstractmesh.h>
 #include <QImage>
 
 #include <Qt3DRenderer/abstractsceneparser.h>
@@ -69,6 +70,7 @@ class Texture;
 class GLTFParser : public AbstractSceneParser
 {
     Q_OBJECT
+
 public:
     GLTFParser();
 
@@ -94,6 +96,17 @@ public:
     CameraLens *camera(QString id);
 
 private:
+
+
+    class GLTFParserMesh : public QAbstractMesh
+    {
+    public:
+        GLTFParserMesh(Node *parent = 0);
+
+        bool load() Q_DECL_OVERRIDE;
+        void setData(MeshDataPtr data);
+    };
+
     void parse();
 
     void processJSONMesh( QString id, QJsonObject jsonObj );

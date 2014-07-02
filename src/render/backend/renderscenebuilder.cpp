@@ -263,7 +263,7 @@ void RenderSceneBuilder::createRenderCamera(Entity *entity)
 
 void RenderSceneBuilder::createRenderMesh(Entity *entity)
 {
-    QList<QMesh *> meshes = entity->componentsOfType<QMesh>();
+    QList<QAbstractMesh *> meshes = entity->componentsOfType<QAbstractMesh>();
     if (!meshes.isEmpty()) {
         HMesh meshHandle = m_renderer->meshManager()->getOrAcquireHandle(entity->uuid());
         RenderMesh *renderMesh = m_renderer->meshManager()->data(meshHandle);

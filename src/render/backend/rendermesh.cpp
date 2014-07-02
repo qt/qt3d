@@ -81,7 +81,7 @@ RenderMesh::RenderMesh() :
 {
 }
 
-void RenderMesh::setPeer(QMesh *peer)
+void RenderMesh::setPeer(QAbstractMesh *peer)
 {
     if (m_peer != peer) {
         QChangeArbiter *arbiter = m_rendererAspect->aspectManager()->changeArbiter();
@@ -104,10 +104,14 @@ void RenderMesh::sceneChangeEvent(const QSceneChangePtr &e)
     switch (e->m_type) {
     case ComponentUpdated: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        //        QString propertyName = QString::fromLatin1(propertyChange->m_propertyName);
-        QVariant propertyValue = propertyChange->m_value;
-        m_source = propertyValue.toString();
-        m_meshDirty = true;
+        if (propertyChange->m_propertyName == QByteArrayLiteral("source") && qobject_cast<QMesh*>(m_peer)) // Mesh with source
+        {
+            QVariant propertyValue = propertyChange->m_value;
+            m_source = propertyValue.toString();
+            m_meshDirty = true;
+            // TO DO Try to use and monitor for changes the peer dirty property to check if a mesh has to be reloaded
+            m_peer->setDirty(true);
+        }
         break;
     }
 

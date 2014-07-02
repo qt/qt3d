@@ -56,7 +56,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
-LoadMeshDataJob::LoadMeshDataJob(QMesh *mesh)
+LoadMeshDataJob::LoadMeshDataJob(QAbstractMesh *mesh)
     : QJob()
     , m_meshSource(mesh)
 {
@@ -68,38 +68,25 @@ void LoadMeshDataJob::run()
 
     // Load the mesh from disk (or wherever)
 
-    if (m_meshSource->source().isEmpty()) {
-        if (m_meshSource->data().isNull())
-            qCWarning(Jobs) << Q_FUNC_INFO << "Mesh is empty, no source nor data set";
-        else {
-            qCDebug(Jobs) << Q_FUNC_INFO << "Mesh has raw data";
-            MeshData *meshData = m_renderer->meshDataManager()->getOrCreateResource(m_meshSource->uuid());
-            MeshDataManager::WriteLocker(m_renderer->meshDataManager());
-            *meshData = *(m_meshSource->data().staticCast<MeshData>().data());
-        }
-    }
-    else {
-        ObjLoader loader;
-        loader.setLoadTextureCoordinatesEnabled(true);
-        qCDebug(Jobs) << Q_FUNC_INFO << "Loading mesh from" << m_meshSource->source();
-        if (loader.load(m_meshSource->source())) {
-            qCDebug(Jobs) << Q_FUNC_INFO << "Loaded OBJ ok";
-            MeshData *meshData = m_renderer->meshDataManager()->getOrCreateResource(m_meshSource->uuid());
-            MeshDataManager::WriteLocker(m_renderer->meshDataManager());
-            *meshData = *loader.mesh();
-            AttributePtr attr = meshData->attributeByName(QStringLiteral("position")).staticCast<Attribute>();
-            if (!attr) {
-                qCWarning(Jobs) << Q_FUNC_INFO << "unknown attribute: position";
-                return;
-            }
-        } else {
-            qCWarning(Jobs) << Q_FUNC_INFO << "OBJ load failure for:" << m_meshSource->source();
-        }
+    if (!m_meshSource->load()) {
+        qCDebug(Jobs) << Q_FUNC_INFO << "Mesh failed to load";
+        return ;
     }
 
-    //Qt3D::Sphere sphere = Qt3D::Sphere::fromPoints(loader.vertices());
+    MeshDataPtr meshDataPtr = m_meshSource->data().staticCast<MeshData>();
+    if (meshDataPtr.isNull()) {
+        qCDebug(Jobs) << Q_FUNC_INFO << "Mesh has no raw data";
+        return ;
+    }
 
-    qCDebug(Jobs) << "Exiting" << Q_FUNC_INFO << QThread::currentThread();
+    // TO DO try to use QAbstractMeshData if possible
+    MeshData *meshData = m_renderer->meshDataManager()->getOrCreateResource(m_meshSource->uuid());
+    MeshDataManager::WriteLocker(m_renderer->meshDataManager());
+    *meshData = *meshDataPtr.data();
+
+    AttributePtr attr = meshData->attributeByName(QStringLiteral("position")).staticCast<Attribute>();
+    if (!attr)
+        qCWarning(Jobs) << Q_FUNC_INFO << "unknown attribute: position";
 }
 
 } // namespace Render

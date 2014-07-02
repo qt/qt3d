@@ -49,6 +49,7 @@
 #include <objloader.h>
 
 #include <Qt3DCore/qscenepropertychange.h>
+#include "renderlogging.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -88,16 +89,27 @@ QString QMesh::source() const
     return d->m_source;
 }
 
-QAbstractMeshDataPtr QMesh::data()
-{
-    Q_D(const QMesh);
-    return d->m_data;
-}
-
-void QMesh::setData(QAbstractMeshDataPtr data)
+bool QMesh::load()
 {
     Q_D(QMesh);
-    d->m_data = data.staticCast<MeshData>();
+
+    if (d->m_source.isEmpty()) {
+        qCWarning(Render::Jobs) << Q_FUNC_INFO << "Mesh is empty, nothing to load";
+        return false;
+    }
+
+    // TO DO : Maybe use Assimp instead of ObjLoader to handle more sources
+    ObjLoader loader;
+    loader.setLoadTextureCoordinatesEnabled(true);
+    qCDebug(Render::Jobs) << Q_FUNC_INFO << "Loading mesh from" << d->m_source;
+
+    if (loader.load(d->m_source)) {
+        QAbstractMesh::setData(QAbstractMeshDataPtr(loader.mesh()));
+        return true;
+    }
+
+    qCWarning(Render::Jobs) << Q_FUNC_INFO << "OBJ load failure for:" << d->m_source;
+    return false;
 }
 
 } // namespace Qt3D

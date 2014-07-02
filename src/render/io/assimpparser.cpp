@@ -294,7 +294,7 @@ Entity *AssimpParser::node(aiNode *node)
     // Add Meshes to the node
     for (uint i = 0; i < node->mNumMeshes; i++) {
         uint meshIdx = node->mMeshes[i];
-        QMesh * mesh = m_meshes[meshIdx];
+        AssimpMesh * mesh = m_meshes[meshIdx];
         // mesh material
         if (m_materials.contains(meshIdx))
             entityNode->addComponent(m_materials[meshIdx]);
@@ -538,7 +538,7 @@ void AssimpParser::loadMesh(uint meshIndex)
 
     meshData->computeBoundsFromAttribute(VERTICES_ATTRIBUTE_NAME);
 
-    QMesh *storedMesh = new QMesh();
+    AssimpMesh *storedMesh = new AssimpMesh();
     storedMesh->setData(meshData);
     m_meshes[meshIndex] = storedMesh;
 
@@ -769,6 +769,21 @@ void AssimpParser::copyMaterialFloatProperties(QMaterial *material, aiMaterial *
         material->addParameter(new Parameter(material, ASSIMP_MATERIAL_REFRACTI, value));
     if (assimpMaterial->Get(AI_MATKEY_REFLECTIVITY, value) == aiReturn_SUCCESS)
         material->addParameter(new Parameter(material, ASSIMP_MATERIAL_REFLECTIVITY, value));
+}
+
+AssimpParser::AssimpMesh::AssimpMesh(Node *parent)
+    : QAbstractMesh(parent)
+{
+}
+
+bool AssimpParser::AssimpMesh::load()
+{
+    return true;
+}
+
+void AssimpParser::AssimpMesh::setData(MeshDataPtr data)
+{
+    QAbstractMesh::setData(data.staticCast<QAbstractMeshData>());
 }
 
 } // Qt3D

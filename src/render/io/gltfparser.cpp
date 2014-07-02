@@ -339,7 +339,7 @@ Entity* GLTFParser::node(QString id)
 
     if ( jsonObj.contains(KEY_MESHES) )
     {
-        typedef QList<QMesh*> MeshList;
+        typedef QList<GLTFParserMesh *> MeshList;
         QMap<QString, MeshList> materialDict;
 
         foreach (QJsonValue m, jsonObj.value(KEY_MESHES).toArray())
@@ -351,7 +351,7 @@ Entity* GLTFParser::node(QString id)
 
             foreach (MeshDataPtr md, m_meshDict.values(m.toString())) {
                 QString matId = m_meshMaterialDict[md.data()];
-                QMesh* meshComp = new QMesh;
+                GLTFParserMesh* meshComp = new GLTFParserMesh;
                 meshComp->setData(md);
                 materialDict[matId].append(meshComp);
             }
@@ -360,7 +360,7 @@ Entity* GLTFParser::node(QString id)
         if (materialDict.size() == 1) {
             // common case
             result->addComponent(material(materialDict.firstKey()));
-            foreach (QMesh* m, materialDict.first())
+            foreach (GLTFParserMesh* m, materialDict.first())
                 result->addComponent(m);
         } else {
             // need to make a child entity per material
@@ -369,7 +369,7 @@ Entity* GLTFParser::node(QString id)
                 result->addChild(subEntity);
 
                 subEntity->addComponent(material(matId));
-                foreach (QMesh* m, materialDict.value(matId))
+                foreach (GLTFParserMesh* m, materialDict.value(matId))
                     subEntity->addComponent(m);
             } // of distinct material iteration
         } // of multiple materials case
@@ -958,6 +958,21 @@ QVariant GLTFParser::parameterValueFromJSON(Parameter* p, QJsonValue val)
     }
 
     return QVariant();
+}
+
+GLTFParser::GLTFParserMesh::GLTFParserMesh(Node *parent)
+    : QAbstractMesh(parent)
+{
+}
+
+bool GLTFParser::GLTFParserMesh::load()
+{
+    return true;
+}
+
+void GLTFParser::GLTFParserMesh::setData(MeshDataPtr data)
+{
+    QAbstractMesh::setData(data.staticCast<QAbstractMeshData>());
 }
 
 } // of namespace Qt3D

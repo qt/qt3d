@@ -47,6 +47,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <assimp/DefaultLogger.hpp>
+#include <Qt3DCore/qabstractmesh.h>
 #include <Qt3DRenderer/meshdata.h>
 #include <Qt3DRenderer/assimphelpers.h>
 #include <Qt3DRenderer/abstractsceneparser.h>
@@ -88,6 +89,16 @@ public:
     Camera *camera(QString id);
 
 private :
+
+    class AssimpMesh : public QAbstractMesh
+    {
+    public :
+        AssimpMesh(Node *parent = 0);
+
+        bool load() Q_DECL_OVERRIDE;
+        void setData(MeshDataPtr data);
+    };
+
     static QStringList assimpSupportedFormats();
     static QMatrix4x4 aiMatrix4x4ToQMatrix4x4(const aiMatrix4x4 &matrix);
 
@@ -118,7 +129,7 @@ private :
     bool     m_sceneParsed;
     static QStringList assimpSupportedFormatsList;
 
-    QMap<uint, QMesh *> m_meshes;
+    QMap<uint, AssimpMesh *> m_meshes;
     QMap<uint, QMaterial*> m_materials;
     QMap<uint, QEffect *> m_effects;
     QMap<uint, Texture*> m_embeddedTextures;

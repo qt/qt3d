@@ -179,7 +179,7 @@ void RenderNode::sceneChangeEvent(const QSceneChangePtr &e)
                 RenderCamera *cam = m_renderer->cameraManager()->lookupResource(m_frontEndPeer->asEntity()->uuid());
                 if (cam != Q_NULLPTR)
                     cam->setPeer(qobject_cast<CameraLens *>(component));
-            } else if (qobject_cast<QMesh *>(component)) {
+            } else if (qobject_cast<QAbstractMesh *>(component)) {
                 RenderMesh *mesh = m_renderer->meshManager()->lookupResource(m_frontEndPeer->asEntity()->uuid());
                 if (mesh != Q_NULLPTR) {
                     mesh->setPeer(qobject_cast<QMesh *>(component));
@@ -201,7 +201,7 @@ void RenderNode::sceneChangeEvent(const QSceneChangePtr &e)
                 RenderCamera *cam = m_renderer->cameraManager()->lookupResource(m_frontEndPeer->asEntity()->uuid());
                 if (cam != Q_NULLPTR)
                     cam->setPeer(Q_NULLPTR);
-            } else if (qobject_cast<QMesh *>(component)) {
+            } else if (qobject_cast<QAbstractMesh *>(component)) {
                 RenderMesh *mesh = m_renderer->meshManager()->lookupResource(m_frontEndPeer->asEntity()->uuid());
                 if (mesh != Q_NULLPTR)
                     mesh->setPeer(Q_NULLPTR);

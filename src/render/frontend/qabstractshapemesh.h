@@ -54,19 +54,21 @@ class QMesh;
 
 class QAbstractShapeMeshPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QAbstractShapeMesh : public QMesh
+class QT3DRENDERERSHARED_EXPORT QAbstractShapeMesh : public QAbstractMesh
 {
     Q_OBJECT
 
 public:
     explicit QAbstractShapeMesh(Node *parent = 0);
 
-    virtual QAbstractMeshDataPtr data() Q_DECL_OVERRIDE;
+    bool load() Q_DECL_OVERRIDE;
+
     virtual QAbstractMeshDataPtr buildMeshdata() const = 0;
 
 protected:
     Q_DECLARE_PRIVATE(QAbstractShapeMesh)
     QAbstractShapeMesh(QAbstractShapeMeshPrivate &dd, Node* parent = 0);
+
 };
 
 } // namespace Qt3D

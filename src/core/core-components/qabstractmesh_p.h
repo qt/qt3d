@@ -45,14 +45,16 @@
 #include <Qt3DCore/qt3dcore_global.h>
 #include <private/component_p.h>
 
-#include <QtCore/qstring.h>
-#include <QtCore/quuid.h>
+#include <QString>
+#include <QUuid>
+#include <QSharedPointer>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
 class QAbstractMesh;
+class QAbstractMeshData;
 
 class QT3DCORESHARED_EXPORT QAbstractMeshPrivate : public ComponentPrivate
 {
@@ -62,6 +64,8 @@ public:
     Q_DECLARE_PUBLIC(QAbstractMesh)
 
     const QUuid m_uuid;
+    bool m_dirty;
+    QSharedPointer<QAbstractMeshData> m_data;
 };
 
 }

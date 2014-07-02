@@ -63,8 +63,11 @@ public:
 
     const QUuid uuid() const;
 
-    virtual QAbstractMeshDataPtr data() = 0;
-    virtual void setData(QAbstractMeshDataPtr data) = 0;
+    bool isDirty() const;
+    void setDirty(bool dirty);
+
+    virtual bool load() = 0;
+    virtual QAbstractMeshDataPtr data() const;
 
 Q_SIGNALS:
     void sourceChanged();
@@ -72,6 +75,8 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QAbstractMesh)
     QAbstractMesh(QAbstractMeshPrivate &dd, Node *parent = 0);
+
+    void setData(QAbstractMeshDataPtr data);
 };
 
 } // Qt3D

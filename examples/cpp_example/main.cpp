@@ -90,10 +90,7 @@ int main(int ac, char **av)
     torus->setRadius(40);
     torus->setMinorRadius(15);
 
-    // Torus mesh holding the shape's data
-    Qt3D::QMesh *torusMesh = new Qt3D::QMesh();
-    torusMesh->setData(torus->data());
-    torusEntity->addComponent(torusMesh);
+    torusEntity->addComponent(torus);
 
     // TorusMesh Transform
     Qt3D::TranslateTransform *torusTranslation = new Qt3D::TranslateTransform();
