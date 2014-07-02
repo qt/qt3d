@@ -63,6 +63,7 @@
 #include <Qt3DRenderer/qspheremesh.h>
 #include <Qt3DRenderer/qtorusmesh.h>
 #include <Qt3DRenderer/qlayer.h>
+#include <Qt3DRenderer/qlayerfilter.h>
 #include <Qt3DQuickRenderer/quick3dtechnique.h>
 #include <Qt3DQuickRenderer/quick3dmaterial.h>
 #include <Qt3DQuickRenderer/quick3dtechniquefilter.h>
@@ -100,6 +101,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3D::QSphereMesh>(uri, 2, 0, "SphereMesh");
 
     qmlRegisterType<Qt3D::QLayer>(uri, 2, 0, "Layer");
+    qmlRegisterType<Qt3D::QLayerFilter>(uri, 2, 0, "LayerFilter");
 
     qmlRegisterExtendedType<Qt3D::Texture, Qt3D::Render::Quick::Quick3DTexture>(uri, 2, 0, "Texture");
     // Framegraph components - TODO RenderTarget, RenderTargetSelector
