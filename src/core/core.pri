@@ -14,6 +14,8 @@ include (./bounds/bounds.pri)
 include (./transforms/transforms.pri)
 # Resources Management
 include (./resources/resources.pri)
+# IO
+include (./io/io.pri)
 
 HEADERS += \
     $$PWD/qt3dcore_global.h \

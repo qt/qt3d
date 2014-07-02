@@ -148,12 +148,9 @@ public:
     GLsizei primitiveCount() const;
 
     QStringList attributeNames() const;
-
     AttributePtr attributeByName(QString nm) const;
 
     AttributePtr indexAttr() const;
-
-    QString materialName() const;
 
     QList<BufferPtr> buffers() const;
 
@@ -166,7 +163,6 @@ public:
     { return m_box; }
 private:
     QMap<QString, AttributePtr> m_attributes;
-    QString m_materialName;
 
     int m_primitiveType;
     AttributePtr m_indexAttr;
