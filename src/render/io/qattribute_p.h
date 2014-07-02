@@ -39,42 +39,28 @@
 **
 ****************************************************************************/
 
-#include "qabstractshapemesh.h"
-#include "qabstractshapemesh_p.h"
-#include "qmesh.h"
+#ifndef QT3D_QATTRIBUTE_P_H
+#define QT3D_QATTRIBUTE_P_H
 
-#include "renderlogging.h"
+#include <private/qabstractattribute_p.h>
+#include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QAbstractShapeMeshPrivate::QAbstractShapeMeshPrivate(QAbstractShapeMesh *qq)
-    : QMeshPrivate(qq)
-    , m_loaded(false)
-{
-}
+class Attribute;
 
-QAbstractShapeMesh::QAbstractShapeMesh(Node *parent) :
-    QMesh(*new QAbstractShapeMeshPrivate(this), parent)
+class QT3DRENDERERSHARED_EXPORT AttributePrivate : public QAbstractAttributePrivate
 {
-}
+public:
+    AttributePrivate(Attribute *qq);
 
-QAbstractShapeMesh::QAbstractShapeMesh(QAbstractShapeMeshPrivate &dd, Node *parent)
-    : QMesh(dd, parent)
-{
-}
+    Q_DECLARE_PUBLIC(Attribute)
+};
 
-QAbstractMeshDataPtr QAbstractShapeMesh::data()
-{
-    Q_D(const QAbstractShapeMesh);
-    if (!d->m_loaded) {
-        QMesh::setData(buildMeshdata());
-        d->m_loaded = true;
-    }
-    return QMesh::data();
-}
-
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_QATTRIBUTE_P_H

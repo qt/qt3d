@@ -61,8 +61,8 @@ class QT3DRENDERERSHARED_EXPORT QAbstractShapeMesh : public QMesh
 public:
     explicit QAbstractShapeMesh(Node *parent = 0);
 
-    virtual MeshDataPtr data() Q_DECL_OVERRIDE;
-    virtual MeshDataPtr buildMeshdata() const = 0;
+    virtual QAbstractMeshDataPtr data() Q_DECL_OVERRIDE;
+    virtual QAbstractMeshDataPtr buildMeshdata() const = 0;
 
 protected:
     Q_DECLARE_PRIVATE(QAbstractShapeMesh)

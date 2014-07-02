@@ -73,7 +73,7 @@ public:
     float radius() const;
     bool generateTangents() const;
 
-    MeshDataPtr buildMeshdata() const Q_DECL_OVERRIDE;
+    QAbstractMeshDataPtr buildMeshdata() const Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
 

@@ -39,135 +39,38 @@
 **
 ****************************************************************************/
 
-#ifndef MESHDATA_H
-#define MESHDATA_H
+#ifndef QT3D_MESHDATA_H
+#define QT3D_MESHDATA_H
 
 #include <QSharedPointer>
-#include <QList>
-#include <QMap>
-#include <QOpenGLBuffer>
-#include <QVector2D>
-
-#include <Qt3DCore/axisalignedboundingbox.h>
+#include <Qt3DCore/qabstractmeshdata.h>
+#include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
-
-GLint elementType(GLint type);
-GLint tupleSizeFromType(GLint type);
-GLuint byteSizeFromType(GLint type);
-
-class Buffer
-{
-public:
-    Buffer(QOpenGLBuffer::Type ty);
-
-    void setUsage(QOpenGLBuffer::UsagePattern usage);
-
-    void setData(QByteArray bytes);
-    QByteArray data() const;
-
-    QOpenGLBuffer::Type type() const
-    { return m_type; }
-
-    void bind();
-
-    QOpenGLBuffer createGL() const;
-    void upload(QOpenGLBuffer b);
-
-    // make a QObject and signal when contents change?
-    // GraphicsContext could listen, orphan the QOpenGLBuffer and hence
-    // reupload next time it's need
-private:
-    const QOpenGLBuffer::Type m_type;
-    QOpenGLBuffer::UsagePattern m_usage;
-    QByteArray m_clientSideBytes;
-};
-
-typedef QSharedPointer<Buffer> BufferPtr;
-
-class Attribute
-{
-public:
-    Attribute(BufferPtr buf, int type, int count, int offset=0, int stride = 0);
-
-    void setDivisor(unsigned int divisor);
-
-    unsigned int divisor() const
-    { return m_divisor; }
-
-    BufferPtr buffer() const;
-
-    int type() const
-    { return m_type; }
-
-    unsigned int count() const
-    { return m_count; }
-
-    unsigned int byteStride() const
-    { return m_stride; }
-
-    unsigned int byteOffset() const
-    { return m_offset; }
-
-    QVector<QVector3D> asVector3D() const;
-    QVector<QVector2D> asVector2D() const;
-
-    void dump(int count);
-private:
-    BufferPtr m_buffer;
-    int m_type, m_count;
-    unsigned int m_stride, m_offset; // both in bytes
-    // AxisAlignedBoundBox m_range;
-    unsigned int m_divisor;
-};
-
-typedef QSharedPointer<Attribute> AttributePtr;
 
 /**
  * @brief The MeshData class is shared by all instances of a RenderMesh,
  * and holds the actual client (CPU)-side buffers representing mesh attributes
  * and indices.
  */
-class MeshData
+
+class MeshDataPrivate;
+
+class QT3DRENDERERSHARED_EXPORT MeshData : public QAbstractMeshData
 {
 public:
     MeshData();
     explicit MeshData(int primitiveType);
 
-    void addAttribute(QString name, AttributePtr attr);
+    void setPrimitiveType(int primitiveType) Q_DECL_OVERRIDE;
+    int primitiveType() const Q_DECL_OVERRIDE;
 
-    // permit inline 'new' call, will take ownership
-    void addAttribute(QString name, Attribute* attr);
+protected:
+    Q_DECLARE_PRIVATE(MeshData)
+    MeshData(MeshDataPrivate &dd);
 
-    void setIndexAttr(AttributePtr indexAttr);
-    void setIndexData(BufferPtr buf, int type, int count, int offset = 0);
-
-    GLint primitiveType() const;
-    GLsizei primitiveCount() const;
-
-    QStringList attributeNames() const;
-    AttributePtr attributeByName(QString nm) const;
-
-    AttributePtr indexAttr() const;
-
-    QList<BufferPtr> buffers() const;
-
-    // specify the bounding box explicitly
-    void setBoundingBox(const AxisAlignedBoundingBox& bbox);
-
-    void computeBoundsFromAttribute(QString name);
-
-    AxisAlignedBoundingBox boundingBox() const
-    { return m_box; }
-private:
-    QMap<QString, AttributePtr> m_attributes;
-
-    int m_primitiveType;
-    AttributePtr m_indexAttr;
-
-    AxisAlignedBoundingBox m_box;
 };
 
 typedef QSharedPointer<MeshData> MeshDataPtr;
@@ -176,4 +79,4 @@ typedef QSharedPointer<MeshData> MeshDataPtr;
 
 QT_END_NAMESPACE
 
-#endif // MESHDATA_H
+#endif // QT3D_MESHDATA_H

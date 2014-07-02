@@ -60,7 +60,7 @@ public:
     Q_DECLARE_PUBLIC(QMesh)
 
     MeshDataPtr m_data;
-    bool m_sourceDirty;
+    QString m_source;
 };
 
 } // Qt3D

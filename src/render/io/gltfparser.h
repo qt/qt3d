@@ -43,10 +43,10 @@
 #define GLTFPARSER_H
 
 #include <Qt3DRenderer/meshdata.h>
-
+#include <Qt3DRenderer/qattribute.h>
 #include <Qt3DCore/entity.h>
 #include <Qt3DRenderer/qtechnique.h>
-
+#include <Qt3DRenderer/qbuffer.h>
 #include <QJsonDocument>
 #include <QMultiHash>
 #include <QImage>

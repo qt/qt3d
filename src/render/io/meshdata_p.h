@@ -39,42 +39,29 @@
 **
 ****************************************************************************/
 
-#include "qabstractshapemesh.h"
-#include "qabstractshapemesh_p.h"
-#include "qmesh.h"
+#ifndef QT3D_MESHDATA_P_H
+#define QT3D_MESHDATA_P_H
 
-#include "renderlogging.h"
+#include <private/qabstractmeshdata_p.h>
+#include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QAbstractShapeMeshPrivate::QAbstractShapeMeshPrivate(QAbstractShapeMesh *qq)
-    : QMeshPrivate(qq)
-    , m_loaded(false)
-{
-}
+class MeshData;
 
-QAbstractShapeMesh::QAbstractShapeMesh(Node *parent) :
-    QMesh(*new QAbstractShapeMeshPrivate(this), parent)
+class QT3DRENDERERSHARED_EXPORT MeshDataPrivate : public QAbstractMeshDataPrivate
 {
-}
+public:
+    MeshDataPrivate(MeshData *qq);
 
-QAbstractShapeMesh::QAbstractShapeMesh(QAbstractShapeMeshPrivate &dd, Node *parent)
-    : QMesh(dd, parent)
-{
-}
+    Q_DECLARE_PUBLIC(MeshData)
+    int m_primitiveType;
+};
 
-QAbstractMeshDataPtr QAbstractShapeMesh::data()
-{
-    Q_D(const QAbstractShapeMesh);
-    if (!d->m_loaded) {
-        QMesh::setData(buildMeshdata());
-        d->m_loaded = true;
-    }
-    return QMesh::data();
-}
-
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_MESHDATA_P_H

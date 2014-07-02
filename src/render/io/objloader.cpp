@@ -42,6 +42,8 @@
 #include "objloader.h"
 
 #include "qmesh.h"
+#include "qbuffer.h"
+#include "qattribute.h"
 #include <Qt3DCore/axisalignedboundingbox.h>
 
 #include "renderlogging.h"
@@ -252,21 +254,21 @@ MeshData *ObjLoader::mesh() const
     buf->setData(bufferBytes);
 
 
-    mesh->addAttribute(QStringLiteral("position"), new Attribute(buf, GL_FLOAT_VEC3, count, 0, stride));
+    mesh->addAttribute(QStringLiteral("position"), AttributePtr(new Attribute(buf, GL_FLOAT_VEC3, count, 0, stride)));
     quint32 offset = sizeof(float) * 3;
 
     if (hasTextureCoordinates()) {
-        mesh->addAttribute(QStringLiteral("texcoord"), new Attribute(buf, GL_FLOAT_VEC2, count, offset, stride));
+        mesh->addAttribute(QStringLiteral("texcoord"), AttributePtr(new Attribute(buf, GL_FLOAT_VEC2, count, offset, stride)));
         offset += sizeof(float) * 2;
     }
 
     if (hasNormals()) {
-        mesh->addAttribute(QStringLiteral("normal"), new Attribute(buf, GL_FLOAT_VEC3, count, offset, stride));
+        mesh->addAttribute(QStringLiteral("normal"), AttributePtr(new Attribute(buf, GL_FLOAT_VEC3, count, offset, stride)));
         offset += sizeof(float) * 3;
     }
 
     if (hasTangents()) {
-        mesh->addAttribute(QStringLiteral("tangent"), new Attribute(buf, GL_FLOAT_VEC4, count, offset, stride));
+        mesh->addAttribute(QStringLiteral("tangent"), AttributePtr(new Attribute(buf, GL_FLOAT_VEC4, count, offset, stride)));
         offset += sizeof(float) * 4;
     }
 
@@ -290,7 +292,7 @@ MeshData *ObjLoader::mesh() const
     BufferPtr indexBuffer(new Buffer(QOpenGLBuffer::IndexBuffer));
     indexBuffer->setUsage(QOpenGLBuffer::StaticDraw);
     indexBuffer->setData(indexBytes);
-    mesh->setIndexAttr(AttributePtr(new Attribute(indexBuffer, ty, m_indices.size(), 0, 0)));
+    mesh->setIndexAttribute(AttributePtr(new Attribute(indexBuffer, ty, m_indices.size(), 0, 0)));
 
     mesh->computeBoundsFromAttribute(QStringLiteral("position"));
     qCDebug(Render::Io) << "computed bounds is:" << mesh->boundingBox();

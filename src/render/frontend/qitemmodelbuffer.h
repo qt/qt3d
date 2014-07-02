@@ -46,6 +46,8 @@
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 #include <Qt3DRenderer/meshdata.h>
+#include <Qt3DRenderer/qbuffer.h>
+#include <Qt3DRenderer/qattribute.h>
 
 #include <QAbstractItemModel>
 #include <QMap>

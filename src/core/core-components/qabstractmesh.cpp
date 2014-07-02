@@ -77,27 +77,6 @@ QAbstractMesh::QAbstractMesh(QAbstractMeshPrivate &dd, Node *parent)
 }
 
 /*!
- * Sets the \a source of the mesh
- */
-void QAbstractMesh::setSource(const QString &source)
-{
-    Q_D(QAbstractMesh);
-    if (d->m_source != source) {
-        d->m_source = source;
-        emit sourceChanged();
-    }
-}
-
-/*!
- * Returns the source of a mesh.
- */
-QString QAbstractMesh::source() const
-{
-    Q_D(const QAbstractMesh);
-    return d->m_source;
-}
-
-/*!
  * Returns a QUuid uniquely identifying the mesh.
  */
 const QUuid QAbstractMesh::uuid() const

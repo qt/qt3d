@@ -51,6 +51,8 @@
 #include <Qt3DRenderer/quniformvalue.h>
 #include <Qt3DRenderer/rendercamera.h>
 #include <Qt3DRenderer/meshdata.h>
+#include <Qt3DRenderer/qattribute.h>
+#include <Qt3DRenderer/qbuffer.h>
 
 QT_BEGIN_NAMESPACE
 

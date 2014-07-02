@@ -518,7 +518,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
         // Manager should have a VAO Manager that are indexed by MeshData and Shader
         // RenderCommand should have a handle to the corresponding VAO for the Mesh and Shader
 
-        bool drawIndexed = !meshData->indexAttr().isNull();
+        bool drawIndexed = !meshData->indexAttribute().isNull();
 
         //// Initialize GL
         if (!vao->isCreated()) {
@@ -531,14 +531,14 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
 
             // TO DO : Do that in a better / nicer way
             Q_FOREACH (QString nm, meshData->attributeNames()) {
-                AttributePtr attr(meshData->attributeByName(nm));
+                AttributePtr attr(meshData->attributeByName(nm).staticCast<Attribute>());
                 if (command->m_parameterAttributeToShaderNames.contains(nm))
                     m_graphicsContext->specifyAttribute(command->m_parameterAttributeToShaderNames[nm], attr);
                 else
                     qCWarning(Render::Rendering) << "Couldn't find a Parameter attribute named " << nm;
             }
             if (drawIndexed)
-                m_graphicsContext->specifyIndices(meshData->indexAttr());
+                m_graphicsContext->specifyIndices(meshData->indexAttribute().staticCast<Attribute>());
             vao->release();
         }
 
@@ -558,13 +558,13 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
         vao->bind();
         GLint primType = meshData->primitiveType();
         GLint primCount = meshData->primitiveCount();
-        GLint indexType = drawIndexed ? meshData->indexAttr()->type() : 0;
+        GLint indexType = drawIndexed ? meshData->indexAttribute()->type() : 0;
 
         if (drawIndexed)
             m_graphicsContext->drawElements(primType,
                                             primCount,
                                             indexType,
-                                            reinterpret_cast<void*>(meshData->indexAttr()->byteOffset()));
+                                            reinterpret_cast<void*>(meshData->indexAttribute()->byteOffset()));
         else
             m_graphicsContext->drawArrays(primType, 0, primCount);
 

@@ -61,7 +61,6 @@ public:
 
     Q_DECLARE_PUBLIC(QAbstractMesh)
 
-    QString m_source;
     const QUuid m_uuid;
 };
 

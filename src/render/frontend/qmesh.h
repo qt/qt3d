@@ -51,7 +51,9 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QMeshPrivate;
+class QAbstractMeshData;
 
+typedef QSharedPointer<QAbstractMeshData> QAbstractMeshDataPtr;
 /**
 * @brief Simple static mesh
 *
@@ -59,16 +61,21 @@ class QMeshPrivate;
 class QT3DRENDERERSHARED_EXPORT QMesh : public QAbstractMesh
 {
     Q_OBJECT
+    Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
 
 public:
     explicit QMesh(Node *parent = 0);
 
-    void setSource(const QString &source) Q_DECL_OVERRIDE;
+    void setSource(const QString &source);
+    QString source() const;
 
     // Not const because subclasses may want to perform
     // more than just returning a MeshData straight away
-    virtual MeshDataPtr data();
-    void setData(MeshDataPtr d);
+    virtual QAbstractMeshDataPtr data() Q_DECL_OVERRIDE;
+    void setData(QAbstractMeshDataPtr d) Q_DECL_OVERRIDE;
+
+Q_SIGNALS:
+    void sourceChanged();
 
 protected:
     Q_DECLARE_PRIVATE(QMesh)

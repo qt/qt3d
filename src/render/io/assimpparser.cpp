@@ -53,6 +53,8 @@
 #include <qmaterial.h>
 #include <texture.h>
 #include "renderlogging.h"
+#include "qbuffer.h"
+#include "qattribute.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -476,31 +478,31 @@ void AssimpParser::loadMesh(uint meshIndex)
 
     // Add vertex attributes to the mesh with the right array
     meshData->addAttribute(VERTICES_ATTRIBUTE_NAME,
-                           new Attribute(vbuffer,
+                           AttributePtr(new Attribute(vbuffer,
                                          GL_FLOAT_VEC3,
                                          mesh->mNumVertices,
                                          0,
-                                         chunkSize * sizeof(float)));
+                                         chunkSize * sizeof(float))));
     meshData->addAttribute(NORMAL_ATTRIBUTE_NAME,
-                           new Attribute(vbuffer,
+                           AttributePtr(new Attribute(vbuffer,
                                          GL_FLOAT_VEC3,
                                          mesh->mNumVertices,
                                          3 * sizeof(float),
-                                         chunkSize * sizeof(float)));
+                                         chunkSize * sizeof(float))));
     if (hasTangent)
         meshData->addAttribute(TANGENT_ATTRIBUTE_NAME,
-                               new Attribute(vbuffer,
+                               AttributePtr(new Attribute(vbuffer,
                                              GL_FLOAT_VEC3,
                                              mesh->mNumVertices,
                                              6 * sizeof(float),
-                                             chunkSize * sizeof(float)));
+                                             chunkSize * sizeof(float))));
     if (hasTexture)
         meshData->addAttribute(TEXTCOORD_ATTRIBUTE_NAME,
-                               new Attribute(vbuffer,
+                               AttributePtr(new Attribute(vbuffer,
                                              GL_FLOAT_VEC2,
                                              mesh->mNumVertices,
                                              (hasTangent ? 9 : 6) * sizeof(float),
-                                             chunkSize * sizeof(float)));
+                                             chunkSize * sizeof(float))));
     GLuint indiceType;
     QByteArray ibufferContent;
     uint indices = mesh->mNumFaces * 3;
@@ -532,7 +534,7 @@ void AssimpParser::loadMesh(uint meshIndex)
     ibuffer->setData(ibufferContent);
 
     // Add indices attributes
-    meshData->setIndexAttr(AttributePtr(new Attribute(ibuffer, indiceType, indices, 0, 0)));
+    meshData->setIndexAttribute(AttributePtr(new Attribute(ibuffer, indiceType, indices, 0, 0)));
 
     meshData->computeBoundsFromAttribute(VERTICES_ATTRIBUTE_NAME);
 

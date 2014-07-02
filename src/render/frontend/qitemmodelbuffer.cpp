@@ -40,7 +40,6 @@
 ****************************************************************************/
 
 #include "qitemmodelbuffer.h"
-
 #include <QDebug>
 #include <QColor>
 

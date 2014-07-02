@@ -676,7 +676,7 @@ void GLTFParser::processJSONMesh( QString id, QJsonObject jsonObj )
             if (!m_attributeDict.contains(k)) {
                 qCWarning(Render::Io) << "unknown index accessor:" << k << "on mesh" << id;
             } else {
-                md->setIndexAttr(m_attributeDict[k]);
+                md->setIndexAttribute(m_attributeDict[k]);
                 //    m_attributeDict[k]->dump(100);
             }
         } // of has indices

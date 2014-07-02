@@ -56,7 +56,6 @@ namespace Qt3D {
 
 QMeshPrivate::QMeshPrivate(QMesh *qq)
     : QAbstractMeshPrivate(qq)
-    , m_sourceDirty(false)
 {}
 
 QMesh::QMesh(Node *parent)
@@ -72,28 +71,33 @@ QMesh::QMesh(QMeshPrivate &dd, Node *parent)
 void QMesh::setSource( const QString& source )
 {
     Q_D(QMesh);
-    if (QAbstractMesh::source() == source)
+    if (d->m_source == source)
         return;
-    QAbstractMesh::setSource(source);
-    d->m_sourceDirty = true;
-
+    d->m_source = source;
+    emit sourceChanged();
     // Let aspects know about the change
     QScenePropertyChangePtr e(new QScenePropertyChange(ComponentUpdated, this));
     e->m_propertyName = QByteArrayLiteral("source");
-    e->m_value = QAbstractMesh::source();
+    e->m_value = d->m_source;
     notifyObservers(e);
 }
 
-MeshDataPtr QMesh::data()
+QString QMesh::source() const
+{
+    Q_D(const QMesh);
+    return d->m_source;
+}
+
+QAbstractMeshDataPtr QMesh::data()
 {
     Q_D(const QMesh);
     return d->m_data;
 }
 
-void QMesh::setData(MeshDataPtr data)
+void QMesh::setData(QAbstractMeshDataPtr data)
 {
     Q_D(QMesh);
-    d->m_data = data;
+    d->m_data = data.staticCast<MeshData>();
 }
 
 } // namespace Qt3D

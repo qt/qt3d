@@ -39,42 +39,50 @@
 **
 ****************************************************************************/
 
-#include "qabstractshapemesh.h"
-#include "qabstractshapemesh_p.h"
-#include "qmesh.h"
+#ifndef QT3D_QBUFFER_H
+#define QT3D_QBUFFER_H
 
-#include "renderlogging.h"
+#include <Qt3DCore/qabstractbuffer.h>
+#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <QSharedPointer>
+#include <QOpenGLBuffer>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QAbstractShapeMeshPrivate::QAbstractShapeMeshPrivate(QAbstractShapeMesh *qq)
-    : QMeshPrivate(qq)
-    , m_loaded(false)
-{
-}
+GLint elementType(GLint type);
+GLint tupleSizeFromType(GLint type);
+GLuint byteSizeFromType(GLint type);
 
-QAbstractShapeMesh::QAbstractShapeMesh(Node *parent) :
-    QMesh(*new QAbstractShapeMeshPrivate(this), parent)
-{
-}
+class BufferPrivate;
 
-QAbstractShapeMesh::QAbstractShapeMesh(QAbstractShapeMeshPrivate &dd, Node *parent)
-    : QMesh(dd, parent)
+class QT3DRENDERERSHARED_EXPORT Buffer : public QAbstractBuffer
 {
-}
+public:
+    explicit Buffer(QOpenGLBuffer::Type ty);
 
-QAbstractMeshDataPtr QAbstractShapeMesh::data()
-{
-    Q_D(const QAbstractShapeMesh);
-    if (!d->m_loaded) {
-        QMesh::setData(buildMeshdata());
-        d->m_loaded = true;
-    }
-    return QMesh::data();
-}
+    void setUsage(QOpenGLBuffer::UsagePattern usage);
+    QOpenGLBuffer::Type type() const;
 
-} // namespace Qt3D
+    void bind() Q_DECL_OVERRIDE;
+    void create() Q_DECL_OVERRIDE;
+
+    QOpenGLBuffer createGL() const;
+    void upload(QOpenGLBuffer b);
+
+    // make a QObject and signal when contents change?
+    // GraphicsContext could listen, orphan the QOpenGLBuffer and hence
+    // reupload next time it's need
+protected:
+    Q_DECLARE_PRIVATE(Buffer)
+    Buffer(BufferPrivate &dd, QOpenGLBuffer::Type ty);
+};
+
+typedef QSharedPointer<Buffer> BufferPtr;
+
+} // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_QBUFFER_H

@@ -42,6 +42,8 @@
 #define _USE_MATH_DEFINES // For MSVC
 #include "qtorusmesh.h"
 #include "qabstractshapemesh_p.h"
+#include "qbuffer.h"
+#include "qattribute.h"
 
 #include <cmath>
 
@@ -131,16 +133,16 @@ float QTorusMesh::minorRadius() const
     return d->m_minorRadius;
 }
 
-MeshDataPtr QTorusMesh::buildMeshdata() const
+QAbstractMeshDataPtr QTorusMesh::buildMeshdata() const
 {
     Q_D(const QTorusMesh);
     return createTorusMesh(d->m_radius, d->m_minorRadius, d->m_rings, d->m_slices);
 }
 
-MeshDataPtr QTorusMesh::createTorusMesh(double radius, double minorRadius,
+QAbstractMeshDataPtr QTorusMesh::createTorusMesh(double radius, double minorRadius,
                             int rings, int sides)
 {
-    MeshDataPtr mesh(new MeshData(GL_TRIANGLES));
+    QAbstractMeshDataPtr mesh(new MeshData(GL_TRIANGLES));
 
     int nVerts  = sides * ( rings + 1 );
     QByteArray bufferBytes;
@@ -187,13 +189,13 @@ MeshDataPtr QTorusMesh::createTorusMesh(double radius, double minorRadius,
     buf->setUsage(QOpenGLBuffer::StaticDraw);
     buf->setData(bufferBytes);
 
-    mesh->addAttribute(QStringLiteral("position"), new Attribute(buf, GL_FLOAT_VEC3, nVerts, 0, stride));
+    mesh->addAttribute(QStringLiteral("position"), QAbstractAttributePtr(new Attribute(buf, GL_FLOAT_VEC3, nVerts, 0, stride)));
     quint32 offset = sizeof(float) * 3;
 
-    mesh->addAttribute(QStringLiteral("texcoord"), new Attribute(buf, GL_FLOAT_VEC2, nVerts, offset, stride));
+    mesh->addAttribute(QStringLiteral("texcoord"), QAbstractAttributePtr(new Attribute(buf, GL_FLOAT_VEC2, nVerts, offset, stride)));
     offset += sizeof(float) * 2;
 
-    mesh->addAttribute(QStringLiteral("normal"), new Attribute(buf, GL_FLOAT_VEC3, nVerts, offset, stride));
+    mesh->addAttribute(QStringLiteral("normal"), QAbstractAttributePtr(new Attribute(buf, GL_FLOAT_VEC3, nVerts, offset, stride)));
     offset += sizeof(float) * 3;
 
     QByteArray indexBytes;
@@ -222,7 +224,7 @@ MeshDataPtr QTorusMesh::createTorusMesh(double radius, double minorRadius,
     BufferPtr indexBuffer(new Buffer(QOpenGLBuffer::IndexBuffer));
     indexBuffer->setUsage(QOpenGLBuffer::StaticDraw);
     indexBuffer->setData(indexBytes);
-    mesh->setIndexAttr(AttributePtr(new Attribute(indexBuffer, GL_UNSIGNED_SHORT, indices, 0, 0)));
+    mesh->setIndexAttribute(AttributePtr(new Attribute(indexBuffer, GL_UNSIGNED_SHORT, indices, 0, 0)));
 
     mesh->computeBoundsFromAttribute(QStringLiteral("position"));
 

@@ -39,42 +39,38 @@
 **
 ****************************************************************************/
 
-#include "qabstractshapemesh.h"
-#include "qabstractshapemesh_p.h"
-#include "qmesh.h"
+#ifndef QT3D_QATTRIBUTE_H
+#define QT3D_QATTRIBUTE_H
 
-#include "renderlogging.h"
+#include <Qt3DCore/qabstractattribute.h>
+#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <QOpenGLBuffer>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QAbstractShapeMeshPrivate::QAbstractShapeMeshPrivate(QAbstractShapeMesh *qq)
-    : QMeshPrivate(qq)
-    , m_loaded(false)
-{
-}
+class AttributePrivate;
 
-QAbstractShapeMesh::QAbstractShapeMesh(Node *parent) :
-    QMesh(*new QAbstractShapeMeshPrivate(this), parent)
+class QT3DRENDERERSHARED_EXPORT Attribute : public QAbstractAttribute
 {
-}
+public:
+    Attribute(QAbstractBufferPtr buf, int type, int count, int offset=0, int stride = 0);
 
-QAbstractShapeMesh::QAbstractShapeMesh(QAbstractShapeMeshPrivate &dd, Node *parent)
-    : QMesh(dd, parent)
-{
-}
+    QVector<QVector3D> asVector3D() const Q_DECL_OVERRIDE;
+    QVector<QVector2D> asVector2D() const Q_DECL_OVERRIDE;
 
-QAbstractMeshDataPtr QAbstractShapeMesh::data()
-{
-    Q_D(const QAbstractShapeMesh);
-    if (!d->m_loaded) {
-        QMesh::setData(buildMeshdata());
-        d->m_loaded = true;
-    }
-    return QMesh::data();
-}
+    void dump(int count) Q_DECL_OVERRIDE;
 
-} // namespace Qt3D
+protected:
+    Q_DECLARE_PRIVATE(Attribute)
+    Attribute(AttributePrivate &dd, QAbstractBufferPtr buf, int type, int count, int offset=0, int stride = 0);
+};
+
+typedef QSharedPointer<Attribute> AttributePtr;
+
+} // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QATTRIBUTE_H

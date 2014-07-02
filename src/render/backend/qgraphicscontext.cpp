@@ -507,7 +507,7 @@ void QGraphicsContext::setUniforms(const QUniformPack &uniforms)
 
 void QGraphicsContext::specifyAttribute(QString nm, AttributePtr attr)
 {
-    QOpenGLBuffer buf = glBufferFor(attr->buffer());
+    QOpenGLBuffer buf = glBufferFor(attr->buffer().staticCast<Buffer>());
     buf.bind();
 
     QOpenGLShaderProgram* prog = activeShader();
@@ -533,12 +533,12 @@ void QGraphicsContext::specifyAttribute(QString nm, AttributePtr attr)
 
 void QGraphicsContext::specifyIndices(AttributePtr attr)
 {
-    if (attr->buffer()->type() != QOpenGLBuffer::IndexBuffer) {
+    if (attr->buffer().staticCast<Buffer>()->type() != QOpenGLBuffer::IndexBuffer) {
         qCWarning(Backend) << Q_FUNC_INFO << "provided buffer is not correct type";
         return;
     }
 
-    QOpenGLBuffer buf = glBufferFor(attr->buffer());
+    QOpenGLBuffer buf = glBufferFor(attr->buffer().staticCast<Buffer>());
     if (!buf.bind())
         qCWarning(Backend) << Q_FUNC_INFO << "binding index buffer failed";
 

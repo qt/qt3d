@@ -50,19 +50,21 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QAbstractMeshPrivate;
+class QAbstractMeshData;
+
+typedef QSharedPointer<QAbstractMeshData> QAbstractMeshDataPtr;
 
 class QT3DCORESHARED_EXPORT QAbstractMesh : public Component
 {
     Q_OBJECT
-    Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
 
 public:
     QAbstractMesh(Node *parent = 0);
 
-    virtual void setSource(const QString &source);
-    QString source() const;
-
     const QUuid uuid() const;
+
+    virtual QAbstractMeshDataPtr data() = 0;
+    virtual void setData(QAbstractMeshDataPtr data) = 0;
 
 Q_SIGNALS:
     void sourceChanged();

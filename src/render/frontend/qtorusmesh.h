@@ -72,7 +72,7 @@ public:
     float radius() const;
     float minorRadius() const;
 
-    MeshDataPtr buildMeshdata() const Q_DECL_OVERRIDE;
+    QAbstractMeshDataPtr buildMeshdata() const Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
 
@@ -84,7 +84,7 @@ Q_SIGNALS:
 private:
     Q_DECLARE_PRIVATE(QTorusMesh)
 
-    static MeshDataPtr createTorusMesh(double radius, double minorRadius, int rings, int sides);
+    static QAbstractMeshDataPtr createTorusMesh(double radius, double minorRadius, int rings, int sides);
 };
 
 } // Qt3D

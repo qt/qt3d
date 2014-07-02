@@ -39,42 +39,31 @@
 **
 ****************************************************************************/
 
-#include "qabstractshapemesh.h"
-#include "qabstractshapemesh_p.h"
-#include "qmesh.h"
+#ifndef QT3D_QBUFFER_P_H
+#define QT3D_QBUFFER_P_H
 
-#include "renderlogging.h"
+#include <private/qabstractbuffer_p.h>
+#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <QOpenGLBuffer>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QAbstractShapeMeshPrivate::QAbstractShapeMeshPrivate(QAbstractShapeMesh *qq)
-    : QMeshPrivate(qq)
-    , m_loaded(false)
-{
-}
+class Buffer;
 
-QAbstractShapeMesh::QAbstractShapeMesh(Node *parent) :
-    QMesh(*new QAbstractShapeMeshPrivate(this), parent)
+class QT3DRENDERERSHARED_EXPORT BufferPrivate : public QAbstractBufferPrivate
 {
-}
+public:
+    BufferPrivate(Buffer *qq);
 
-QAbstractShapeMesh::QAbstractShapeMesh(QAbstractShapeMeshPrivate &dd, Node *parent)
-    : QMesh(dd, parent)
-{
-}
+    Q_DECLARE_PUBLIC(Buffer)
+    QOpenGLBuffer::Type m_type;
+    QOpenGLBuffer::UsagePattern m_usage;
+};
 
-QAbstractMeshDataPtr QAbstractShapeMesh::data()
-{
-    Q_D(const QAbstractShapeMesh);
-    if (!d->m_loaded) {
-        QMesh::setData(buildMeshdata());
-        d->m_loaded = true;
-    }
-    return QMesh::data();
-}
-
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_QBUFFER_P_H

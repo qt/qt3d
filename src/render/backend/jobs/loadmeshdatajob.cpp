@@ -46,6 +46,7 @@
 #include <qmesh.h>
 #include <renderer.h>
 #include <meshdatamanager.h>
+#include <qattribute.h>
 
 #include <QThread>
 #include "renderlogging.h"
@@ -74,7 +75,7 @@ void LoadMeshDataJob::run()
             qCDebug(Jobs) << Q_FUNC_INFO << "Mesh has raw data";
             MeshData *meshData = m_renderer->meshDataManager()->getOrCreateResource(m_meshSource->uuid());
             MeshDataManager::WriteLocker(m_renderer->meshDataManager());
-            *meshData = *(m_meshSource->data().data());
+            *meshData = *(m_meshSource->data().staticCast<MeshData>().data());
         }
     }
     else {
@@ -86,7 +87,7 @@ void LoadMeshDataJob::run()
             MeshData *meshData = m_renderer->meshDataManager()->getOrCreateResource(m_meshSource->uuid());
             MeshDataManager::WriteLocker(m_renderer->meshDataManager());
             *meshData = *loader.mesh();
-            AttributePtr attr = meshData->attributeByName(QStringLiteral("position"));
+            AttributePtr attr = meshData->attributeByName(QStringLiteral("position")).staticCast<Attribute>();
             if (!attr) {
                 qCWarning(Jobs) << Q_FUNC_INFO << "unknown attribute: position";
                 return;
