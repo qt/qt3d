@@ -65,7 +65,6 @@ public:
 
 Q_SIGNALS:
     void rectChanged();
-    void enabledChanged() Q_DECL_OVERRIDE;
 
 protected:
     Q_DECLARE_PRIVATE(QViewport)

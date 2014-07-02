@@ -70,7 +70,6 @@ public:
 
 Q_SIGNALS:
     void renderPassNameChanged();
-    void enabledChanged() Q_DECL_OVERRIDE;
 
 protected:
     Q_DECLARE_PRIVATE(QRenderPassFilter)

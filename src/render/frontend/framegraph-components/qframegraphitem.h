@@ -61,9 +61,8 @@ public:
     void setEnabled(bool enabled);
     bool isEnabled() const;
 
-    // TODO: Remove this
 Q_SIGNALS:
-    virtual void enabledChanged() = 0;
+    void enabledChanged();
 
 protected:
     Q_DECLARE_PRIVATE(QFrameGraphItem)

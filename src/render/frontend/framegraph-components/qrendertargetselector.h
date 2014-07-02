@@ -58,9 +58,6 @@ class QT3DRENDERERSHARED_EXPORT QRenderTargetSelector : public QFrameGraphItem
 public:
     explicit QRenderTargetSelector(Node *parent = 0);
 
-Q_SIGNALS:
-    void enabledChanged() Q_DECL_OVERRIDE;
-
 protected:
     Q_DECLARE_PRIVATE(QRenderTargetSelector)
     QRenderTargetSelector(QRenderTargetSelectorPrivate &dd, Node *parent = 0);
