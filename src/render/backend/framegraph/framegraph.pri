@@ -5,7 +5,8 @@ HEADERS += \
     $$PWD/renderpassfilternode.h \
     $$PWD/techniquefilternode.h \
     $$PWD/viewportnode.h \
-    $$PWD/rendertargetselectornode.h
+    $$PWD/rendertargetselectornode.h \
+    $$PWD/layerfilternode.h
 
 SOURCES += \
     $$PWD/cameraselectornode.cpp \
@@ -14,6 +15,7 @@ SOURCES += \
     $$PWD/renderpassfilternode.cpp \
     $$PWD/techniquefilternode.cpp \
     $$PWD/viewportnode.cpp \
-    $$PWD/rendertargetselectornode.cpp
+    $$PWD/rendertargetselectornode.cpp \
+    $$PWD/layerfilternode.cpp
 
 INCLUDEPATH += $$PWD

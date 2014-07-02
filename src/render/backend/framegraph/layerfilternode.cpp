@@ -39,62 +39,66 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_FRAMEGRAPHNODE_H
-#define QT3D_RENDER_FRAMEGRAPHNODE_H
+#include "layerfilternode.h"
+#include "renderer.h"
+#include "rendereraspect.h"
+#include "qlayerfilter.h"
+#include <Qt3DCore/qchangearbiter.h>
+#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qaspectmanager.h>
 
-#include <Qt3DCore/qobserverinterface.h>
-
-#include <qglobal.h>
-#include <QVector>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
+
 namespace Render {
 
-class FrameGraphNode : public QObserverInterface
+LayerFilterNode::LayerFilterNode(FrameGraphNode *parent)
+    : FrameGraphNode(FrameGraphNode::LayerFilter, parent)
+    , m_renderer(Q_NULLPTR)
+    , m_peer(Q_NULLPTR)
 {
-public:
-    FrameGraphNode(FrameGraphNode *parent = 0);
-    virtual ~FrameGraphNode();
+}
 
-    enum FrameGraphNodeType {
-        InvalidNodeType = 0,
-        CameraSelector,
-        LayerFilter,
-        RenderPassFilter,
-        RenderTarget,   // TODO: Add class
-        TechniqueFilter,
-        Viewport
-    };
-    FrameGraphNodeType nodeType() const { return m_nodeType; }
+void LayerFilterNode::setRenderer(Renderer *renderer)
+{
+    m_renderer = renderer;
+}
 
-    FrameGraphNode *parent() const { return m_parent; }
-    void setParent(FrameGraphNode *parent) { m_parent = parent; }
+void LayerFilterNode::setPeer(QLayerFilter *peer)
+{
+    if (m_peer != peer) {
+        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
+        if (m_peer)
+            arbiter->unregisterObserver(this, m_peer);
+        m_peer = peer;
+        if (m_peer)
+            arbiter->registerObserver(this, m_peer);
+    }
+}
 
-    int childCount() const { return m_children.count(); }
-    FrameGraphNode * child(int index) const { return m_children.at(index); }
-    void appendChild(FrameGraphNode *child) { child->setParent(this); m_children.append(child); }
+void LayerFilterNode::sceneChangeEvent(const QSceneChangePtr &e)
+{
+    if (e->m_type == ComponentUpdated) {
+        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+        if (propertyChange->m_propertyName == QByteArrayLiteral("layers"))
+            setLayers(propertyChange->m_value.value<QStringList>());
+    }
+}
 
-    void setEnabled(bool enabled) { m_enabled = enabled; }
-    bool isEnabled() const { return m_enabled; }
+QStringList LayerFilterNode::layers() const
+{
+    return m_layers;
+}
 
-protected:
-    FrameGraphNode(FrameGraphNodeType nodeType, FrameGraphNode *parent = 0);
+void LayerFilterNode::setLayers(const QStringList &list)
+{
+    m_layers = list;
+}
 
-private:
-    FrameGraphNode *m_parent;
-    QVector<FrameGraphNode *> m_children;
+} // Render
 
-    FrameGraphNodeType m_nodeType;
-    bool m_enabled;
-
-    friend class FrameGraphVisitor;
-};
-
-} // namespace Render
-} // namespace Qt3D
+} //Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_RENDER_FRAMEGRAPHNODE_H
