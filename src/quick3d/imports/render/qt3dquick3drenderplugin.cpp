@@ -64,6 +64,10 @@
 #include <Qt3DRenderer/qtorusmesh.h>
 #include <Qt3DRenderer/qlayer.h>
 #include <Qt3DRenderer/qlayerfilter.h>
+#include <Qt3DRenderer/qabstractlight.h>
+#include <Qt3DRenderer/qspotlight.h>
+#include <Qt3DRenderer/qdirectionallight.h>
+#include <Qt3DRenderer/qpointlight.h>
 #include <Qt3DQuickRenderer/quick3dtechnique.h>
 #include <Qt3DQuickRenderer/quick3dmaterial.h>
 #include <Qt3DQuickRenderer/quick3dtechniquefilter.h>
@@ -94,7 +98,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterExtendedType<Qt3D::QRenderPass, Qt3D::Render::Quick::Quick3DRenderPass>(uri, 2, 0, "RenderPass");
     qmlRegisterType<Qt3D::ShaderProgram>(uri, 2, 0, "ShaderProgram");
 
-    qmlRegisterUncreatableType<Qt3D::QAbstractMesh>(uri, 2, 0, "QAbstractMesh", QString("QAbstractMesh is abstract"));
+    qmlRegisterUncreatableType<Qt3D::QAbstractMesh>(uri, 2, 0, "QAbstractMesh", QStringLiteral("QAbstractMesh is abstract"));
     qmlRegisterType<Qt3D::QMesh>(uri, 2, 0, "Mesh");
     qmlRegisterUncreatableType<Qt3D::QAbstractShapeMesh>(uri, 2, 0, "QAbstractShapeMesh", QStringLiteral("Shape is an abstract base class"));
     qmlRegisterType<Qt3D::QTorusMesh>(uri, 2, 0, "TorusMesh");
@@ -102,6 +106,11 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
 
     qmlRegisterType<Qt3D::QLayer>(uri, 2, 0, "Layer");
     qmlRegisterType<Qt3D::QLayerFilter>(uri, 2, 0, "LayerFilter");
+
+    qmlRegisterUncreatableType<Qt3D::QAbstractLight>(uri, 2, 0, "QAbstractLight", QStringLiteral("QAbstractLight is abstract"));
+    qmlRegisterType<Qt3D::QPointLight>(uri, 2, 0, "PointLight");
+    qmlRegisterType<Qt3D::QDirectionalLight>(uri, 2, 0, "DirectionalLight");
+    qmlRegisterType<Qt3D::QSpotLight>(uri, 2, 0, "SpotLight");
 
     qmlRegisterExtendedType<Qt3D::Texture, Qt3D::Render::Quick::Quick3DTexture>(uri, 2, 0, "Texture");
     // Framegraph components - TODO RenderTarget, RenderTargetSelector
