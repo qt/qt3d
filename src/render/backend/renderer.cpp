@@ -85,6 +85,7 @@
 #include <renderpassmanager.h>
 #include <texturemanager.h>
 #include <texturedatamanager.h>
+#include <layermanager.h>
 #include "renderlogging.h"
 #include "parametermapper.h"
 
@@ -124,6 +125,7 @@ Renderer::Renderer(int cachedFrames)
     , m_renderPassManager(new RenderPassManager())
     , m_textureManager(new TextureManager())
     , m_textureDataManager(new TextureDataManager())
+    , m_layerManager(new LayerManager())
     , m_renderQueues(new RenderQueues(cachedFrames - 1))
     , m_frameCount(0)
     , m_cachedFramesCount(cachedFrames)
