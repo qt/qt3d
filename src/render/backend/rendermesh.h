@@ -54,13 +54,13 @@ namespace Qt3D {
 
 class QAbstractMesh;
 class QRenderPass;
-class RendererAspect;
 class MeshData;
 
 typedef QHandle<MeshData, 16> HMeshData;
 
 namespace Render {
 
+class Renderer;
 class RenderNode;
 class RenderMaterial;
 class RenderTechnique;
@@ -69,9 +69,10 @@ class RenderMesh : public QObserverInterface
 {
 public:
     RenderMesh();
+    ~RenderMesh();
 
     void setPeer(QAbstractMesh *peer);
-    void setRendererAspect(RendererAspect *rendererAspect);
+    void setRenderer(Renderer *renderer);
     QAbstractMesh *peer() const { return m_peer; }
 
     void sceneChangeEvent(const QSceneChangePtr &e);
@@ -90,7 +91,7 @@ protected:
 
 
 private:
-    RendererAspect *m_rendererAspect;
+    Renderer *m_renderer;
     QAbstractMesh* m_peer;
     QString m_source;
 

@@ -40,15 +40,17 @@
 ****************************************************************************/
 
 #include "rendermesh.h"
-#include <Qt3DCore/qaspectmanager.h>
 #include "rendertechnique.h"
 #include "rendermaterial.h"
 #include "rendereraspect.h"
+#include "renderer.h"
+#include "meshdatamanager.h"
 #include "qmesh.h"
 #include "qgraphicscontext.h"
 #include <meshdata.h>
 #include <qtechnique.h>
 
+#include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 #include <QOpenGLContext>
@@ -74,29 +76,37 @@ namespace Render {
  */
 
 RenderMesh::RenderMesh() :
-    m_rendererAspect(0),
-    m_peer(0),
+    m_renderer(Q_NULLPTR),
+    m_peer(Q_NULLPTR),
     m_meshDirty(true),
     m_lock(new QReadWriteLock())
 {
 }
 
+RenderMesh::~RenderMesh()
+{
+    if (m_peer)
+        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_peer);
+}
+
 void RenderMesh::setPeer(QAbstractMesh *peer)
 {
     if (m_peer != peer) {
-        QChangeArbiter *arbiter = m_rendererAspect->aspectManager()->changeArbiter();
+        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
         if (m_peer)
             arbiter->unregisterObserver(this, m_peer);
         m_peer = peer;
         m_meshDirty = true;
-        if (m_peer)
+        if (m_peer) {
             arbiter->registerObserver(this, m_peer, ComponentUpdated);
+            m_renderer->meshDataManager()->addMeshData(m_peer);
+        }
     }
 }
 
-void RenderMesh::setRendererAspect(RendererAspect *rendererAspect)
+void RenderMesh::setRenderer(Renderer *renderer)
 {
-    m_rendererAspect = rendererAspect;
+    m_renderer = renderer;
 }
 
 void RenderMesh::sceneChangeEvent(const QSceneChangePtr &e)

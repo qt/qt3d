@@ -46,6 +46,7 @@
 #include "meshmanager.h"
 #include "cameramanager.h"
 #include "layermanager.h"
+#include "lightmanager.h"
 #include "renderer.h"
 #include "rendernode.h"
 #include "renderlogging.h"
@@ -55,6 +56,7 @@
 #include <qmesh.h>
 #include <qabstractshapemesh.h>
 #include <qlayer.h>
+#include <qabstractlight.h>
 
 #include <qframegraph.h>
 #include <qviewport.h>
@@ -70,6 +72,7 @@
 #include <viewportnode.h>
 #include <rendertargetselectornode.h>
 #include <layerfilternode.h>
+
 
 #include <Qt3DCore/camera.h>
 #include <Qt3DCore/cameralens.h>
@@ -191,7 +194,7 @@ Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(Node *block)
         if (cameraEntity && m_renderer->cameraManager()->lookupHandle(cameraEntity->uuid()).isNull()) {
             HRenderNode nodeHandle = createRenderNode(cameraSelector->camera());
             m_renderer->renderNodesManager()->data(nodeHandle)->setParentHandle(m_frameGraphEntityNode);
-            createRenderCamera(cameraEntity);
+            createRenderElement<CameraLens, RenderCamera, CameraManager>(cameraEntity, m_renderer->cameraManager());
         }
         cameraSelectorNode->setCameraEntity(cameraEntity);
         qCDebug(Backend) << Q_FUNC_INFO << "CameraSelector" << cameraSelectorNode->cameraEntity();
@@ -259,36 +262,6 @@ HRenderNode RenderSceneBuilder::createRenderNode(Node *node)
     return renderNodeHandle;
 }
 
-void RenderSceneBuilder::createRenderCamera(Entity *entity)
-{
-    QList<CameraLens*> cameraLenses = entity->componentsOfType<CameraLens>();
-    if (!cameraLenses.isEmpty()) {
-        // Retrieves or create RenderCamera for entity->uuid
-        RenderCamera *camera = m_renderer->cameraManager()->getOrCreateRenderCamera(entity->uuid());
-        camera->setRendererAspect(m_renderer->rendererAspect());
-
-        // Set the front end peer object for the lens
-        camera->setPeer(cameraLenses.first());
-        camera->setProjection(cameraLenses.first()->projectionMatrix());
-    }
-}
-
-void RenderSceneBuilder::createRenderMesh(Entity *entity)
-{
-    QList<QAbstractMesh *> meshes = entity->componentsOfType<QAbstractMesh>();
-    if (!meshes.isEmpty()) {
-        HMesh meshHandle = m_renderer->meshManager()->getOrAcquireHandle(entity->uuid());
-        RenderMesh *renderMesh = m_renderer->meshManager()->data(meshHandle);
-        renderMesh->setRendererAspect(m_renderer->rendererAspect());
-        renderMesh->setPeer(meshes.first());
-        // That should be done here initially as we might have
-        // missed prior QChangeArbiter notifications
-        m_renderer->meshDataManager()->addMeshData(meshes.first());
-        // If MeshData is updated afterward, it should be handled directly by a notification
-        // Through the QChangeArbiter
-    }
-}
-
 void RenderSceneBuilder::createRenderMaterial(Entity *entity)
 {
     // Parse Materials to retrieve
@@ -305,16 +278,6 @@ void RenderSceneBuilder::createRenderMaterial(Entity *entity)
         RenderMaterial *rMaterial = m_renderer->materialManager()->data(rMaterialHandle);
         rMaterial->setRendererAspect(m_renderer->rendererAspect());
         rMaterial->setPeer(material);
-    }
-}
-
-void RenderSceneBuilder::createRenderLayer(Entity *entity)
-{
-    QList<QLayer *>layers = entity->componentsOfType<QLayer>();
-    if (!layers.isEmpty()) {
-        RenderLayer *rLayer = m_renderer->layerManager()->getOrCreateResource(entity->uuid());
-        rLayer->setRenderer(m_renderer);
-        rLayer->setPeer(layers.first());
     }
 }
 
@@ -348,19 +311,17 @@ void RenderSceneBuilder::visitEntity(Qt3D::Entity *entity)
     m_nodeStack.push(renderNodeHandle);
 
     // Retrieve Material from Entity
+    // TO DO : See if it can be converted to work with createRenderElement
     createRenderMaterial(entity);
-    // Retrieve Mesh from Entity
-    createRenderMesh(entity);
-    // Retrieve Camera from Entity
-    createRenderCamera(entity);
-    // Retrieve Layer from Entity
-    createRenderLayer(entity);
 
-    // Check if entity is a Scene and if so parses the scene
-    QAbstractScene *sceneEntity = Q_NULLPTR;
-    if ((sceneEntity = qobject_cast<QAbstractScene *>(entity)) != Q_NULLPTR) {
-        qDebug() << Q_FUNC_INFO << "Found a Scene";
-    }
+    // Retrieve Mesh from Entity
+    createRenderElement<QAbstractMesh, RenderMesh, MeshManager>(entity, m_renderer->meshManager());
+    // Retrieve Camera from Entity
+    createRenderElement<CameraLens, RenderCamera, CameraManager>(entity, m_renderer->cameraManager());
+    // Retrieve Layer from Entity
+    createRenderElement<QLayer, RenderLayer, LayerManager>(entity, m_renderer->layerManager());
+    // Retrieve Lights from Entity
+    createRenderElement<QAbstractLight, RenderLight, LightManager>(entity, m_renderer->lightManager());
 
     NodeVisitor::visitEntity(entity);
 

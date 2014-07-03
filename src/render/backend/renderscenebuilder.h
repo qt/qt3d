@@ -45,6 +45,7 @@
 #include <Qt3DCore/nodevisitor.h>
 #include <Qt3DCore/qhandle.h>
 #include <QStack>
+#include <Qt3DCore/entity.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -87,13 +88,19 @@ private:
     Render::FrameGraphNode* backendFrameGraphNode(Node *);
 
     HRenderNode createRenderNode(Node *node);
-    void createRenderMesh(Entity *entity);
-    void createRenderCamera(Entity *entity);
     void createRenderMaterial(Entity *entity);
-    void createRenderLayer(Entity *entity);
     void createFrameGraph(QFrameGraph *frameGraph);
 
-
+    template<class Frontend, class Backend, class Manager>
+    void createRenderElement(Entity *entity, Manager *manager)
+    {
+        QList<Frontend *> elems = entity->componentsOfType<Frontend>();
+        if (!elems.isEmpty()) {
+            Backend *backend = manager->getOrCreateResource(entity->uuid());
+            backend->setRenderer(m_renderer);
+            backend->setPeer(elems.first());
+        }
+    }
 };
 
 } // namespace Render

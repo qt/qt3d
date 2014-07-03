@@ -52,16 +52,18 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class CameraLens;
-class RendererAspect;
 
 namespace Render {
+
+class Renderer;
 
 class RenderCamera : public QObserverInterface
 {
 public:
     RenderCamera();
+    ~RenderCamera();
 
-    void setRendererAspect(RendererAspect *rendererAspect);
+    void setRenderer(Renderer *renderer);
     void setPeer(CameraLens *peer);
 
     void setClearColor();
@@ -78,7 +80,7 @@ public:
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    RendererAspect *m_rendererAspect;
+    Renderer *m_renderer;
     CameraLens *m_peer;
 
     QVector4D m_clearColor;

@@ -48,6 +48,7 @@
 #include <Qt3DCore/entity.h>
 #include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DRenderer/renderer.h>
 
 #include <QOpenGLContext>
 
@@ -57,27 +58,34 @@ namespace Qt3D {
 namespace Render {
 
 RenderCamera::RenderCamera()
-    : m_rendererAspect(Q_NULLPTR)
+    : m_renderer(Q_NULLPTR)
     , m_peer(Q_NULLPTR)
 {
     m_clearColor = QVector4D(0.5, 0.5, 1.0, 1.0);
 }
 
-void RenderCamera::setRendererAspect(RendererAspect *rendererAspect)
+RenderCamera::~RenderCamera()
 {
-    m_rendererAspect = rendererAspect;
+    if (m_peer)
+        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_peer);
+}
+
+void RenderCamera::setRenderer(Renderer *renderer)
+{
+    m_renderer = renderer;
 }
 
 void RenderCamera::setPeer(CameraLens *peer)
 {
     if (peer != m_peer) {
-        QChangeArbiter *arbiter = m_rendererAspect->aspectManager()->changeArbiter();
+        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
         if (m_peer)
             arbiter->unregisterObserver(this, m_peer);
         m_peer = peer;
         if (m_peer) {
             // Register for changes
             arbiter->registerObserver(this, m_peer, ComponentUpdated);
+            setProjection(m_peer->projectionMatrix());
         }
     }
 }

@@ -183,7 +183,6 @@ void RenderNode::sceneChangeEvent(const QSceneChangePtr &e)
                 RenderMesh *mesh = m_renderer->meshManager()->lookupResource(m_frontEndPeer->asEntity()->uuid());
                 if (mesh != Q_NULLPTR) {
                     mesh->setPeer(qobject_cast<QMesh *>(component));
-                    m_renderer->meshDataManager()->addMeshData(mesh->peer());
                 }
             }
         }
