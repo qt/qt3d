@@ -106,6 +106,7 @@ class RenderRenderPass;
 class TextureManager;
 class TextureDataManager;
 class LayerManager;
+class LightManager;
 
 typedef QHandle<RenderMaterial, 16> HMaterial;
 typedef QHandle<RenderEffect, 16> HEffect;
@@ -151,6 +152,7 @@ public:
     inline TextureManager *textureManager() const { return m_textureManager; }
     inline TextureDataManager *textureDataManager() const { return m_textureDataManager; }
     inline LayerManager *layerManager() const { return m_layerManager; }
+    inline LightManager *lightManager() const { return m_lightManager; }
 
     inline HMaterial defaultMaterialHandle() const { return m_defaultMaterialHandle; }
     inline HEffect defaultEffectHandle() const { return m_defaultEffectHandle; }
@@ -221,6 +223,7 @@ private:
     TextureManager *m_textureManager;
     TextureDataManager *m_textureDataManager;
     LayerManager *m_layerManager;
+    LightManager *m_lightManager;
 
     QTimer* m_frameTimer;
 
