@@ -56,6 +56,7 @@ class QT3DRENDERERSHARED_EXPORT QPointLight : public QAbstractLight
 
 public:
     explicit QPointLight(Node *parent = 0);
+    QHash<QString, QVariant> lightProperties() const;
 
 protected:
     Q_DECLARE_PRIVATE(QPointLight)

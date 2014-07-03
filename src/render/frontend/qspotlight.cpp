@@ -41,6 +41,7 @@
 
 #include "qspotlight.h"
 #include "qspotlight_p.h"
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -82,6 +83,10 @@ void QSpotLight::setDirection(const QVector3D &direction)
     if (direction != d->m_direction) {
         d->m_direction = direction;
         emit directionChanged();
+        QScenePropertyChangePtr change(new QScenePropertyChange(ComponentAdded, this));
+        change->m_propertyName = QByteArrayLiteral("direction");
+        change->m_value = d->m_direction;
+        notifyObservers(change);
     }
 }
 
@@ -91,7 +96,20 @@ void QSpotLight::setCutOffAngle(float cutOffAngle)
     if (d->m_cutOffAngle != cutOffAngle) {
         d->m_cutOffAngle = cutOffAngle;
         emit cutOffAngleChanged();
+        QScenePropertyChangePtr change(new QScenePropertyChange(ComponentAdded, this));
+        change->m_propertyName = QByteArrayLiteral("cutOffAngle");
+        change->m_value = d->m_cutOffAngle;
+        notifyObservers(change);
     }
+}
+
+QHash<QString, QVariant> QSpotLight::lightProperties() const
+{
+    Q_D(const QSpotLight);
+    QHash<QString, QVariant> props;
+    props[QStringLiteral("direction")] = d->m_direction;
+    props[QStringLiteral("cutOffAngle")] = d->m_cutOffAngle;
+    return props;
 }
 
 } // Qt3D

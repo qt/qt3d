@@ -56,6 +56,11 @@ QPointLight::QPointLight(Node *parent)
 {
 }
 
+QHash<QString, QVariant> QPointLight::lightProperties() const
+{
+    return QHash<QString, QVariant>();
+}
+
 QPointLight::QPointLight(QPointLightPrivate &dd, Node *parent)
     : QAbstractLight(dd, parent)
 {

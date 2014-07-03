@@ -71,6 +71,8 @@ public :
     float intensity() const;
     void setIntensity(float intensity);
 
+    virtual QHash<QString, QVariant> lightProperties() const = 0;
+
 protected :
     Q_DECLARE_PRIVATE(QAbstractLight)
     QAbstractLight(QAbstractLightPrivate &dd, Node *parent = 0);

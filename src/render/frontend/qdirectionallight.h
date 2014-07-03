@@ -61,6 +61,8 @@ public:
     void setDirection(const QVector3D &direction);
     QVector3D direction() const;
 
+    QHash<QString, QVariant> lightProperties() const;
+
 Q_SIGNALS:
     void directionChanged();
 

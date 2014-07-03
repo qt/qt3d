@@ -65,6 +65,8 @@ public:
     void setDirection(const QVector3D &direction);
     void setCutOffAngle(float cutOffAngle);
 
+    QHash<QString, QVariant> lightProperties() const;
+
 Q_SIGNALS:
     void directionChanged();
     void cutOffAngleChanged();

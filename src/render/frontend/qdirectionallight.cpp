@@ -41,6 +41,7 @@
 
 #include "qdirectionallight.h"
 #include "qdirectionallight_p.h"
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -68,6 +69,10 @@ void QDirectionalLight::setDirection(const QVector3D &direction)
     if (direction != d->m_direction) {
         d->m_direction = direction;
         emit directionChanged();
+        QScenePropertyChangePtr change(new QScenePropertyChange(ComponentAdded, this));
+        change->m_propertyName = QByteArrayLiteral("direction");
+        change->m_value = d->m_direction;
+        notifyObservers(change);
     }
 }
 
@@ -75,6 +80,14 @@ QVector3D QDirectionalLight::direction() const
 {
     Q_D(const QDirectionalLight);
     return d->m_direction;
+}
+
+QHash<QString, QVariant> QDirectionalLight::lightProperties() const
+{
+    Q_D(const QDirectionalLight);
+    QHash<QString, QVariant> props;
+    props[QStringLiteral("direction")] = d->m_direction;
+    return props;
 }
 
 } // Qt3D
