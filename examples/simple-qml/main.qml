@@ -67,6 +67,7 @@ Node {
             ball2.mesh = test ? null : ballMesh
             ball1.mesh = test ? cubeMesh : ballMesh
             test = !test
+            external_forward_renderer.activeFrameGraph.layerFilters = test ? ["balls"] : []
         }
     }
 
@@ -359,6 +360,8 @@ Node {
             objectName: "dae_scene"
         }
 
+        Layer { id: ballLayer; name : "balls" }
+
         Entity {
             id: ball
             objectName: "ball"
@@ -372,9 +375,11 @@ Node {
             components : [
                 transform,
                 ballMesh,
-                ballMaterial
+                ballMaterial,
+                ballLayer
             ]
         }
+
 
         Entity {
             id: ball1
@@ -389,7 +394,8 @@ Node {
             components: [
                 transform,
                 mesh,
-                ballTexturedMaterial
+                ballTexturedMaterial,
+                ballLayer
             ]
         }
 

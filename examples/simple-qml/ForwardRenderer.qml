@@ -57,6 +57,7 @@ TechniqueFilter {
     property alias viewportRect: viewport.rect
     property alias cameraViewportTopRight: cameraSelectorTopRight.camera
     property alias cameraViewportBottomLeft: cameraSelectorBottomLeft.camera
+    property alias layerFilters : layerFilter.layers
 
     criteria : [
         TechniqueCriterion { criterionType : TechniqueCriterion.RenderingStyle; criterionValue : "forward"}
@@ -73,8 +74,11 @@ TechniqueFilter {
             CameraSelector {
                 id : cameraSelectorTopRight
                 objectName : "cameraSelector"
-                RenderPassFilter { renderPassName: "zFill" }
-                RenderPassFilter { renderPassName: "lighting" }
+                LayerFilter {
+                    id : layerFilter
+                    RenderPassFilter { renderPassName: "zFill" }
+                    RenderPassFilter { renderPassName: "lighting" }
+                }
             }
         }
 
