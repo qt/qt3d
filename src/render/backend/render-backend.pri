@@ -47,7 +47,8 @@ HEADERS += \
     $$PWD/texturemanager.h \
     $$PWD/texturedatamanager.h \
     $$PWD/renderlayer.h \
-    $$PWD/layermanager.h
+    $$PWD/layermanager.h \
+    $$PWD/renderlight.h
 
 SOURCES += \
     $$PWD/rendereraspect.cpp \
@@ -91,4 +92,5 @@ SOURCES += \
     $$PWD/texturemanager.cpp \
     $$PWD/texturedatamanager.cpp \
     $$PWD/renderlayer.cpp \
-    $$PWD/layermanager.cpp
+    $$PWD/layermanager.cpp \
+    $$PWD/renderlight.cpp
