@@ -90,6 +90,7 @@ private:
     void createRenderMesh(Entity *entity);
     void createRenderCamera(Entity *entity);
     void createRenderMaterial(Entity *entity);
+    void createRenderLayer(Entity *entity);
     void createFrameGraph(QFrameGraph *frameGraph);
 
 

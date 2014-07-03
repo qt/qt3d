@@ -45,6 +45,7 @@
 #include "meshdatamanager.h"
 #include "meshmanager.h"
 #include "cameramanager.h"
+#include "layermanager.h"
 #include "renderer.h"
 #include "rendernode.h"
 #include "renderlogging.h"
@@ -53,6 +54,7 @@
 #include <qmaterial.h>
 #include <qmesh.h>
 #include <qabstractshapemesh.h>
+#include <qlayer.h>
 
 #include <qframegraph.h>
 #include <qviewport.h>
@@ -60,12 +62,14 @@
 #include <qrenderpassfilter.h>
 #include <qcameraselector.h>
 #include <qrendertargetselector.h>
+#include <qlayerfilter.h>
 
 #include <techniquefilternode.h>
 #include <cameraselectornode.h>
 #include <renderpassfilternode.h>
 #include <viewportnode.h>
 #include <rendertargetselectornode.h>
+#include <layerfilternode.h>
 
 #include <Qt3DCore/camera.h>
 #include <Qt3DCore/cameralens.h>
@@ -122,7 +126,7 @@ Render::FrameGraphNode *RenderSceneBuilder::buildFrameGraph(Node *node)
     // we need to travel the node's children tree to find either the FG root Node or
     // its children
     QList<FrameGraphNode *> fgChildNodes;
-    foreach (Node *child, node->children()) {
+    Q_FOREACH (Node *child, node->children()) {
         FrameGraphNode* fgChildNode = buildFrameGraph(child);
         if (fgChildNode != Q_NULLPTR)
             fgChildNodes << fgChildNode;
@@ -203,6 +207,16 @@ Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(Node *block)
         // TO DO
         qCDebug(Backend) << Q_FUNC_INFO << "RenderTargetSelector";
         return renderTargetSelectorNode;
+    }
+    else if (qobject_cast<Qt3D::QLayerFilter*>(block) != Q_NULLPTR) {
+        QLayerFilter *layerFilter = qobject_cast<Qt3D::QLayerFilter *>(block);
+        LayerFilterNode *layerFilterNode = new LayerFilterNode();
+
+        layerFilterNode->setRenderer(m_renderer);
+        layerFilterNode->setPeer(layerFilter);
+        // Done here once, layers are then updated by QChangeArbiter notifications
+        layerFilterNode->setLayers(layerFilter->layers());
+        return layerFilterNode;
     }
     return Q_NULLPTR;
 }
@@ -294,6 +308,16 @@ void RenderSceneBuilder::createRenderMaterial(Entity *entity)
     }
 }
 
+void RenderSceneBuilder::createRenderLayer(Entity *entity)
+{
+    QList<QLayer *>layers = entity->componentsOfType<QLayer>();
+    if (!layers.isEmpty()) {
+        RenderLayer *rLayer = m_renderer->layerManager()->getOrCreateResource(entity->uuid());
+        rLayer->setRenderer(m_renderer);
+        rLayer->setPeer(layers.first());
+    }
+}
+
 void RenderSceneBuilder::createFrameGraph(QFrameGraph *fg)
 {
     // Entity has a reference to a framegraph configuration
@@ -329,6 +353,8 @@ void RenderSceneBuilder::visitEntity(Qt3D::Entity *entity)
     createRenderMesh(entity);
     // Retrieve Camera from Entity
     createRenderCamera(entity);
+    // Retrieve Layer from Entity
+    createRenderLayer(entity);
 
     // Check if entity is a Scene and if so parses the scene
     QAbstractScene *sceneEntity = Q_NULLPTR;

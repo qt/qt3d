@@ -102,6 +102,7 @@ public:
 
 private:
     void computeViewport(ViewportNode *viewportNode);
+    bool checkContainedWithinLayer(const QUuid &entityUuid);
 
     RenderMaterial *findMaterialForMeshNode(const QUuid &entityUuid);
     RenderEffect *findEffectForMaterial(RenderMaterial *material);
@@ -117,6 +118,7 @@ private:
     TechniqueFilter *m_techniqueFilter;
     RenderPassFilter *m_passFilter;
     QRectF m_viewport;
+    QStringList m_layers;
 
     int m_frameIndex;
 

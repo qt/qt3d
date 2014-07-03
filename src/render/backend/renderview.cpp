@@ -59,6 +59,7 @@
 #include <renderpassfilternode.h>
 #include <techniquefilternode.h>
 #include <viewportnode.h>
+#include <layerfilternode.h>
 #include "rendereffect.h"
 #include "effectmanager.h"
 #include "renderlogging.h"
@@ -68,6 +69,8 @@
 #include "parameter.h"
 #include "texturemanager.h"
 #include "texture.h"
+#include "renderlayer.h"
+#include "layermanager.h"
 
 #include <Qt3DCore/entity.h>
 #include <Qt3DCore/qabstracteffect.h>
@@ -220,7 +223,7 @@ void RenderView::setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf)
         }
 
         case FrameGraphNode::LayerFilter:
-            qCWarning(Backend) << "LayerFilter not implemented yet";
+            m_layers << static_cast<LayerFilterNode *>(node)->layers();
             break;
 
         case FrameGraphNode::RenderPassFilter:
@@ -285,7 +288,8 @@ void RenderView::buildRenderCommands(RenderNode *node)
 
     Entity *frontEndEntity = Q_NULLPTR;
     if (m_renderCamera != Q_NULLPTR && node->frontEndPeer() != Q_NULLPTR
-            && (frontEndEntity = node->frontEndPeer()->asEntity()) != Q_NULLPTR) {
+            && (frontEndEntity = node->frontEndPeer()->asEntity()) != Q_NULLPTR
+            && checkContainedWithinLayer(frontEndEntity->uuid())) {
         HMesh meshHandle;
         if (m_renderer->meshManager()->contains(frontEndEntity->uuid()) &&
                 (meshHandle = m_renderer->meshManager()->lookupHandle(frontEndEntity->uuid())) != HMesh()) {
@@ -554,6 +558,16 @@ void RenderView::computeViewport(ViewportNode *viewportNode)
                             tmpViewport.width() * oldViewport.width(),
                             tmpViewport.height() * oldViewport.height());
     }
+}
+
+bool RenderView::checkContainedWithinLayer(const QUuid &entityUuid)
+{
+    if (m_layers.isEmpty())
+        return true;
+    RenderLayer *renderLayer = m_renderer->layerManager()->lookupResource(entityUuid);
+    if (renderLayer == Q_NULLPTR || !m_layers.contains(renderLayer->layer()))
+        return false;
+    return true;
 }
 
 } // namespace Render
