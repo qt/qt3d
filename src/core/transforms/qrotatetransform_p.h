@@ -39,52 +39,30 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QROTATETRANSFORM_H
-#define QT3D_QROTATETRANSFORM_H
+#ifndef QT3D_QROTATETRANSFORM_P_H
+#define QT3D_QROTATETRANSFORM_P_H
 
-#include <Qt3DCore/qabstracttransform.h>
-#include <Qt3DCore/qt3dcore_global.h>
-
-#include <QVector3D>
+#include <private/qabstracttransform_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QRotateTransformPrivate;
+class QRotateTransform;
 
-class QT3DCORESHARED_EXPORT QRotateTransform : public QAbstractTransform
+class QRotateTransformPrivate : public QAbstractTransformPrivate
 {
-    Q_OBJECT
-    Q_PROPERTY(float angle READ angleDeg WRITE setAngleDeg NOTIFY angleChanged)
-    Q_PROPERTY(float angleRad READ angleRad WRITE setAngleRad NOTIFY angleChanged)
-    Q_PROPERTY(QVector3D axis READ axis WRITE setAxis NOTIFY axisChanged)
-
 public:
-    explicit QRotateTransform(QNode *parent = 0);
+    QRotateTransformPrivate(QRotateTransform *qq);
 
-    float angleDeg() const;
-    float angleRad() const;
-    QVector3D axis() const;
-    QMatrix4x4 matrix() const Q_DECL_OVERRIDE;
+    Q_DECLARE_PUBLIC(QRotateTransform)
 
-    void setAngleDeg(float arg);
-    void setAngleRad(float arg);
-    void setAxis(const QVector3D& arg);
-
-Q_SIGNALS:
-
-    void axisChanged();
-    void angleChanged();
-
-protected:
-    Q_DECLARE_PRIVATE(QRotateTransform)
-    QRotateTransform(QRotateTransformPrivate &dd, QNode *parent = 0);
-
+    float m_angleDeg;
+    QVector3D m_axis;
 };
 
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QROTATETRANSFORM_H
+#endif // QT3D_QROTATETRANSFORM_P_H

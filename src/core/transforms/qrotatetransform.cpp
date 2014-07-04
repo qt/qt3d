@@ -41,6 +41,7 @@
 
 #define _USE_MATH_DEFINES // For MSVC
 #include "qrotatetransform.h"
+#include "qrotatetransform_p.h"
 
 #include <cmath>
 
@@ -48,38 +49,54 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+QRotateTransformPrivate::QRotateTransformPrivate(QRotateTransform *qq)
+    : QAbstractTransformPrivate(qq)
+    , m_angleDeg(0)
+{
+}
+
 QRotateTransform::QRotateTransform(QNode *parent)
-    : QAbstractTransform(parent),
-      m_angleDeg(0)
+    : QAbstractTransform(*new QRotateTransformPrivate(this), parent)
+{
+}
+
+
+QRotateTransform::QRotateTransform(QRotateTransformPrivate &dd, QNode *parent)
+    : QAbstractTransform(dd, parent)
 {
 }
 
 float QRotateTransform::angleDeg() const
 {
-    return m_angleDeg;
+    Q_D(const QRotateTransform);
+    return d->m_angleDeg;
 }
 
 float Qt3D::QRotateTransform::angleRad() const
 {
-    return (m_angleDeg / 180.0) * M_PI;
+    Q_D(const QRotateTransform);
+    return (d->m_angleDeg / 180.0) * M_PI;
 }
 
 QVector3D QRotateTransform::axis() const
 {
-    return m_axis;
+    Q_D(const QRotateTransform);
+    return d->m_axis;
 }
 
 QMatrix4x4 QRotateTransform::matrix() const
 {
+    Q_D(const QRotateTransform);
     QMatrix4x4 m;
-    m.rotate(m_angleDeg, m_axis);
+    m.rotate(d->m_angleDeg, d->m_axis);
     return m;
 }
 
 void QRotateTransform::setAngleDeg(float arg)
 {
-    if (m_angleDeg != arg) {
-        m_angleDeg = arg;
+    Q_D(QRotateTransform);
+    if (d->m_angleDeg != arg) {
+        d->m_angleDeg = arg;
         emit angleChanged();
         emit transformUpdated();
     }
@@ -93,8 +110,9 @@ void QRotateTransform::setAngleRad(float arg)
 
 void QRotateTransform::setAxis(const QVector3D& arg)
 {
-    if (m_axis != arg) {
-        m_axis = arg;
+    Q_D(QRotateTransform);
+    if (d->m_axis != arg) {
+        d->m_axis = arg;
         emit axisChanged();
         emit transformUpdated();
     }
