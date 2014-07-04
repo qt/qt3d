@@ -48,7 +48,7 @@
 #include "qjobmanagerinterface.h"
 #include "qscheduler.h"
 #include "qtickclock.h"
-#include "node.h"
+#include "entity.h"
 
 #include "corelogging.h"
 #include <QEventLoop>
@@ -91,7 +91,11 @@ void QAspectManager::setRoot(QObject *rootObject, QWaitCondition *waitCondition)
 {
     qCDebug(Aspects) << Q_FUNC_INFO;
 
-    Node *root = qobject_cast<Node *>(rootObject);
+    Entity *root = qobject_cast<Entity *>(rootObject);
+
+    if (!root)
+        qWarning() << "Root object is not an Entity";
+
     if (root == m_root)
         return;
 
@@ -113,8 +117,7 @@ void QAspectManager::setRoot(QObject *rootObject, QWaitCondition *waitCondition)
 
     m_root = root;
 
-    if (rootObject) {
-        // TODO Load all aspect plugins that are found and required.
+    if (m_root) {
 
         Q_FOREACH (AbstractAspect *aspect, m_aspects)
             aspect->initialize(this);

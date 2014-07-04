@@ -62,12 +62,12 @@ QVector<QJobPtr> OpenALAspect::jobsToExecute()
     return jobs;
 }
 
-void OpenALAspect::registerAspectHelper(Node *rootObject)
+void OpenALAspect::registerAspectHelper(Entity *rootObject)
 {
 
 }
 
-void OpenALAspect::unregisterAspectHelper(Node *rootObject)
+void OpenALAspect::unregisterAspectHelper(Entity *rootObject)
 {
 
 }

@@ -125,8 +125,8 @@ public:
     void setFrameGraphRoot(Render::FrameGraphNode *fgRoot);
     Render::FrameGraphNode *frameGraphRoot() const;
 
-    void setSceneGraphRoot(Qt3D::Node *sgRoot);
-    Qt3D::Node *sceneGraphRoot() const;
+    void setSceneGraphRoot(Entity *sgRoot);
+    Entity *sceneGraphRoot() const;
     RenderNode *renderSceneRoot() const { return m_renderSceneRoot; }
 
     void render();
@@ -179,7 +179,7 @@ private:
     // Frame graph root
     Render::FrameGraphNode *m_frameGraphRoot;
 
-    Qt3D::Node *m_sceneGraphRoot;
+    Entity *m_sceneGraphRoot;
     RenderNode *m_renderSceneRoot;
 
     QHash<QMaterial*, RenderMaterial*> m_materialHash;

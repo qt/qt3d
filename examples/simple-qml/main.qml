@@ -50,7 +50,7 @@ import Qt3D.Render 2.0
 // QtQuick 2.1 all over the place.
 import QtQuick 2.1 as QQ2
 
-Node {
+Entity {
     id: root
     objectName: "root"
 

@@ -126,17 +126,6 @@ void Window::setRootObject( QObject* obj )
         m_controller->setCamera(m_camera);
         m_updateTimer->start();
     }
-
-//
-//    Entity *ball = node->findChild<Entity *>(QStringLiteral("ball"));
-//    if (ball) {
-//        QList<Component *> components = ball->components();
-//        qDebug() << components;
-//    }
-
-    //Node *node = qobject_cast<Node *>(m_root.data());
-    //if (node)
-        //node->dump();
 }
 
 void Window::resizeEvent( QResizeEvent* e )

@@ -293,7 +293,7 @@ Render::FrameGraphNode *Renderer::frameGraphRoot() const
 }
 
 // QAspectThread context
-void Renderer::setSceneGraphRoot(Node *sgRoot)
+void Renderer::setSceneGraphRoot(Entity *sgRoot)
 {
     Q_ASSERT(sgRoot);
 
@@ -321,7 +321,7 @@ void Renderer::setSceneGraphRoot(Node *sgRoot)
     //  - World bounding volumes
 }
 
-Node *Renderer::sceneGraphRoot() const
+Entity *Renderer::sceneGraphRoot() const
 {
     return m_sceneGraphRoot;
 }

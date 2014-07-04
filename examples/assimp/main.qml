@@ -43,40 +43,34 @@ import Qt3D 2.0
 import Qt3D.Render 2.0
 import QtQuick 2.1 as QQ2
 
-Node
+Entity
 {
-    id: root
-    objectName: "root"
-
-    Entity
-    {
-        components: FrameGraph {
-            activeFrameGraph: Viewport {
-                rect: Qt.rect(0, 0, 1, 1)
-                CameraSelector {
-                    camera: Entity {
-                        id : camera
-                        components : [
-                            Transform {
-                                LookAt {
-                                    position: Qt.vector3d( 0.0, 0.0, -20.0 )
-                                    upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
-                                    viewCenter: Qt.vector3d( 0.0, 0.0, 10.0 )
-                                }
-                                Rotate {
-                                    angle : -30
-                                    axis : Qt.vector3d(0, 1, 0)
-                                }
-                            },
-                            CameraLens {
-                                projectionType: CameraLens.PerspectiveProjection
-                                fieldOfView: 60
-                                aspectRatio: 16/9
-                                nearPlane : 0.01
-                                farPlane : 1000.0
+    components: FrameGraph {
+        activeFrameGraph: Viewport {
+            rect: Qt.rect(0, 0, 1, 1)
+            CameraSelector {
+                camera: Entity {
+                    id : camera
+                    components : [
+                        Transform {
+                            LookAt {
+                                position: Qt.vector3d( 0.0, 0.0, -20.0 )
+                                upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
+                                viewCenter: Qt.vector3d( 0.0, 0.0, 10.0 )
                             }
-                        ]
-                    }
+                            Rotate {
+                                angle : -30
+                                axis : Qt.vector3d(0, 1, 0)
+                            }
+                        },
+                        CameraLens {
+                            projectionType: CameraLens.PerspectiveProjection
+                            fieldOfView: 60
+                            aspectRatio: 16/9
+                            nearPlane : 0.01
+                            farPlane : 1000.0
+                        }
+                    ]
                 }
             }
         }

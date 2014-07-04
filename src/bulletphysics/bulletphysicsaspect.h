@@ -62,8 +62,8 @@ public:
 
     // AbstractAspect interface
 protected:
-    void registerAspectHelper(Node *rootObject) Q_DECL_OVERRIDE;
-    void unregisterAspectHelper(Node *rootObject) Q_DECL_OVERRIDE;
+    void registerAspectHelper(Entity *rootObject) Q_DECL_OVERRIDE;
+    void unregisterAspectHelper(Entity *rootObject) Q_DECL_OVERRIDE;
     void initializeHelper(QAspectManager *aspectManager) Q_DECL_OVERRIDE;
     void cleanupHelper() Q_DECL_OVERRIDE;
 };
