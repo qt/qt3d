@@ -39,41 +39,28 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QMATRIXTRANSFORM_H
-#define QT3D_QMATRIXTRANSFORM_H
+#ifndef QT3D_QMATRIXTRANSFORM_P_H
+#define QT3D_QMATRIXTRANSFORM_P_H
 
-#include <Qt3DCore/qabstracttransform.h>
-#include <Qt3DCore/qt3dcore_global.h>
-
-#include <QMatrix4x4>
+#include <private/qabstracttransform_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QMatrixTransformPrivate;
+class QMatrixTransform;
 
-class QT3DCORESHARED_EXPORT QMatrixTransform : public Qt3D::QAbstractTransform
+class QMatrixTransformPrivate : public QAbstractTransformPrivate
 {
-    Q_OBJECT
-    Q_PROPERTY(QMatrix4x4 matrix READ matrix WRITE setMatrix NOTIFY matrixChanged)
 public:
-    explicit QMatrixTransform(QNode *parent = 0);
-    QMatrixTransform(const QMatrix4x4& m, QNode *parent = 0);
+    QMatrixTransformPrivate(QMatrixTransform *qq);
 
-    QMatrix4x4 matrix() const Q_DECL_OVERRIDE;
-    void setMatrix(const QMatrix4x4 &matrix);
-
-Q_SIGNALS:
-    void matrixChanged();
-
-protected:
-    Q_DECLARE_PRIVATE(QMatrixTransform)
-    QMatrixTransform(QMatrixTransformPrivate &dd, QNode *parent = 0);
+    Q_DECLARE_PUBLIC(QMatrixTransform)
+    QMatrix4x4 m_matrix;
 };
 
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QMATRIXTRANSFORM_H
+#endif // QT3D_QMATRIXTRANSFORM_P_H

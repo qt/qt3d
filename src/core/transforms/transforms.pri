@@ -18,6 +18,7 @@ HEADERS += \
         $$PWD/qtransform.h \
         $$PWD/qtransform_p.h \
         $$PWD/qabstracttransform_p.h \
-        $$PWD/qlookattransform_p.h
+        $$PWD/qlookattransform_p.h \
+        $$PWD/qmatrixtransform_p.h
 
 INCLUDEPATH += $$PWD

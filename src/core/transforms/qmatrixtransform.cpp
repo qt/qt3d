@@ -40,23 +40,48 @@
 ****************************************************************************/
 
 #include "qmatrixtransform.h"
+#include "qmatrixtransform_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QMatrixTransform::QMatrixTransform()
+QMatrixTransformPrivate::QMatrixTransformPrivate(QMatrixTransform *qq)
+    : QAbstractTransformPrivate(qq)
 {
 }
 
-QMatrixTransform::QMatrixTransform(const QMatrix4x4& m) :
-    m_matrix(m)
+QMatrixTransform::QMatrixTransform(QMatrixTransformPrivate &dd, QNode *parent)
+    : QAbstractTransform(dd, parent)
 {
+}
+
+QMatrixTransform::QMatrixTransform(QNode *parent)
+    : QAbstractTransform(*new QMatrixTransformPrivate(this), parent)
+{
+}
+
+QMatrixTransform::QMatrixTransform(const QMatrix4x4& m, QNode *parent)
+    : QAbstractTransform(*new QMatrixTransformPrivate(this), parent)
+{
+    Q_D(QMatrixTransform);
+    d->m_matrix = m;
 }
 
 QMatrix4x4 QMatrixTransform::matrix() const
 {
-    return m_matrix;
+    Q_D(const QMatrixTransform);
+    return d->m_matrix;
+}
+
+void QMatrixTransform::setMatrix(const QMatrix4x4 &matrix)
+{
+    Q_D(QMatrixTransform);
+    if (d->m_matrix != matrix) {
+        d->m_matrix = matrix;
+        emit matrixChanged();
+        emit transformUpdated();
+    }
 }
 
 } // namespace Qt3D
