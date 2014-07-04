@@ -68,7 +68,7 @@ typedef QHandle<Render::RenderEntity, 16> HRenderNode;
 namespace Render {
 
 class Renderer;
-class RenderNodesManager;
+class EntityManager;
 
 class RenderEntity : public QObserverInterface
 {

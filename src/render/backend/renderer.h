@@ -91,7 +91,7 @@ class MeshDataManager;
 class MeshManager;
 class RenderCommand;
 class CameraManager;
-class RenderNodesManager;
+class EntityManager;
 class RenderQueues;
 class RenderView;
 class MaterialManager;
@@ -140,7 +140,7 @@ public:
     inline MeshDataManager *meshDataManager() const { return m_meshDataManager; }
     inline MeshManager *meshManager() const { return m_meshManager; }
     inline CameraManager *cameraManager() const { return m_cameraManager; }
-    inline RenderNodesManager *renderNodesManager() const { return m_renderNodesManager; }
+    inline EntityManager *renderNodesManager() const { return m_renderNodesManager; }
     inline MaterialManager *materialManager() const { return m_materialManager; }
     inline MatrixManager *worldMatrixManager() const { return m_worldMatrixManager; }
     inline MatrixManager *localMatrixManager() const { return m_localMatrixManager; }
@@ -211,7 +211,7 @@ private:
     MeshDataManager *m_meshDataManager;
     MeshManager *m_meshManager;
     CameraManager *m_cameraManager;
-    RenderNodesManager *m_renderNodesManager;
+    EntityManager *m_renderNodesManager;
     MaterialManager *m_materialManager;
     MatrixManager *m_worldMatrixManager;
     MatrixManager *m_localMatrixManager;

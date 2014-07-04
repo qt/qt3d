@@ -42,7 +42,7 @@
 #include "renderentity.h"
 #include "rendereraspect.h"
 #include "renderer.h"
-#include "rendernodesmanager.h"
+#include "entitymanager.h"
 #include "matrixmanager.h"
 #include "cameramanager.h"
 #include "materialmanager.h"

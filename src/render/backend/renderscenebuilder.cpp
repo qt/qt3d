@@ -41,7 +41,7 @@
 
 #include "renderscenebuilder.h"
 
-#include "rendernodesmanager.h"
+#include "entitymanager.h"
 #include "meshdatamanager.h"
 #include "meshmanager.h"
 #include "cameramanager.h"

@@ -39,14 +39,7 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERNODESMANAGER_H
-#define QT3D_RENDER_RENDERNODESMANAGER_H
-
-#include <QtGlobal>
-#include <QUuid>
-#include <Qt3DCore/qabstractrenderpass.h>
-#include <Qt3DCore/qresourcesmanager.h>
-#include <Qt3DRenderer/renderentity.h>
+#include "entitymanager.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -54,23 +47,37 @@ namespace Qt3D {
 
 namespace Render {
 
-typedef QHandle<RenderEntity, 16> HRenderNode;
-
-class RenderNodesManager : public QResourcesManager<RenderEntity, QUuid, 16>
+EntityManager::EntityManager() :
+    QResourcesManager<RenderEntity, QUuid, 16>()
 {
-public:
-    RenderNodesManager();
+}
 
-    inline bool hasRenderNode(const QUuid &id) { return contains(id); }
-    inline RenderEntity *getOrCreateRenderNode(const QUuid &id) { return getOrCreateResource(id); }
-    inline RenderEntity *renderNode(const QUuid &id) { return lookupResource(id); }
-    inline void releaseRenderNode(const QUuid &id) { releaseResource(id); }
-};
+/*!
+ * Returns true if there is a RenderNode associated to the Entity
+ * identified by \a id. Returns false otherwise.
+ * \fn bool RenderNodesManager::hasRenderNode(const QUuid &id) const
+ */
+
+/*!
+ * Returns a RenderNode from an entity \a id. The RenderNode is
+ * created if needed but Q_NULLPTR can be returned if internally
+ * the RenderNode has been released.
+ * \fn RenderNode *RenderNodesManager::getOrCreateRenderNode(const QUuid &id)
+ */
+
+/*!
+ * Returns the RenderNode associated with the Entity of id \a id.
+ * Q_NULLPTR if none could be found.
+ * \fn RenderNode *RenderNodesManager::renderNode(const QUuid &id)
+ */
+
+/*!
+ * Releases the RenderNode resource associated to the Entity of id \a id.
+ * \fn void RenderNodesManager::releaseRenderNode(const QUuid &id)
+ */
 
 } // Render
 
 } // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_RENDER_RENDERNODESMANAGER_H

@@ -73,7 +73,7 @@
 #include <rendertextureprovider.h>
 #include <drawstate.h>
 #include <states/blendstate.h>
-#include <rendernodesmanager.h>
+#include <entitymanager.h>
 #include <renderview.h>
 #include <rendercommand.h>
 #include <materialmanager.h>
@@ -115,7 +115,7 @@ Renderer::Renderer(int cachedFrames)
     , m_meshDataManager(new MeshDataManager())
     , m_meshManager(new MeshManager())
     , m_cameraManager(new CameraManager())
-    , m_renderNodesManager(new RenderNodesManager())
+    , m_renderNodesManager(new EntityManager())
     , m_materialManager(new MaterialManager())
     , m_worldMatrixManager(new MatrixManager())
     , m_localMatrixManager(new MatrixManager())

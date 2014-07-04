@@ -50,7 +50,7 @@
 #include "meshmanager.h"
 #include "meshdata.h"
 #include "cameramanager.h"
-#include "rendernodesmanager.h"
+#include "entitymanager.h"
 #include "materialmanager.h"
 #include "techniquemanager.h"
 #include "shadermanager.h"

@@ -29,7 +29,6 @@ HEADERS += \
     $$PWD/qgraphicshelpergl2.h \
     $$PWD/renderview.h \
     $$PWD/rendercommand.h \
-    $$PWD/rendernodesmanager.h \
     $$PWD/cameramanager.h \
     $$PWD/renderqueues.h \
     $$PWD/materialmanager.h \
@@ -49,7 +48,8 @@ HEADERS += \
     $$PWD/layermanager.h \
     $$PWD/renderlight.h \
     $$PWD/lightmanager.h \
-    $$PWD/renderentity.h
+    $$PWD/renderentity.h \
+    $$PWD/entitymanager.h
 
 SOURCES += \
     $$PWD/rendereraspect.cpp \
@@ -75,7 +75,6 @@ SOURCES += \
     $$PWD/qgraphicshelpergl2.cpp \
     $$PWD/renderview.cpp \
     $$PWD/rendercommand.cpp \
-    $$PWD/rendernodesmanager.cpp \
     $$PWD/cameramanager.cpp \
     $$PWD/renderqueues.cpp \
     $$PWD/materialmanager.cpp \
@@ -95,4 +94,5 @@ SOURCES += \
     $$PWD/layermanager.cpp \
     $$PWD/renderlight.cpp \
     $$PWD/lightmanager.cpp \
-    $$PWD/renderentity.cpp
+    $$PWD/renderentity.cpp \
+    $$PWD/entitymanager.cpp
