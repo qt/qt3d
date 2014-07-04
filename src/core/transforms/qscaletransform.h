@@ -48,12 +48,14 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class QScaleTransformPrivate;
+
 class QT3DCORESHARED_EXPORT QScaleTransform : public QAbstractTransform
 {
     Q_OBJECT
-
     Q_PROPERTY(QVector3D scale3D READ scale3D WRITE setScale3D NOTIFY scale3DChanged)
     Q_PROPERTY(float scale READ scale WRITE setScale NOTIFY scaleChanged)
+
 public:
     explicit QScaleTransform(QNode *parent = 0);
 
@@ -69,8 +71,9 @@ Q_SIGNALS:
     void    scale3DChanged();
     void    scaleChanged();
 
-private:
-    QVector3D m_scale3D;
+protected:
+    Q_DECLARE_PRIVATE(QScaleTransform)
+    QScaleTransform(QScaleTransformPrivate &dd, QNode *parent = 0);
 };
 
 } // Qt3D
