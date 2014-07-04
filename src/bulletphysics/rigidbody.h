@@ -44,7 +44,7 @@
 
 #include <Qt3DBulletPhysics/qt3dbulletphysics_global.h>
 
-#include <Qt3DCore/component.h>
+#include <Qt3DCore/qcomponent.h>
 #include <QtGui/qvector3d.h>
 
 QT_BEGIN_NAMESPACE
@@ -57,7 +57,7 @@ namespace BulletPhysics {
 
 class RigidBodyPrivate;
 
-class QT3DBULLETPHYSICSSHARED_EXPORT RigidBody : public Qt3D::Component
+class QT3DBULLETPHYSICSSHARED_EXPORT RigidBody : public Qt3D::QComponent
 {
     Q_OBJECT
 

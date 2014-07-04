@@ -42,7 +42,7 @@
 #ifndef QT3D_QABSTRACTLIGHT_H
 #define QT3D_QABSTRACTLIGHT_H
 
-#include <Qt3DCore/component.h>
+#include <Qt3DCore/qcomponent.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 #include <QVector3D>
@@ -55,7 +55,7 @@ namespace Qt3D
 
 class QAbstractLightPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QAbstractLight : public Component
+class QT3DRENDERERSHARED_EXPORT QAbstractLight : public QComponent
 {
     Q_OBJECT
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)

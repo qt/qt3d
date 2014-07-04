@@ -47,17 +47,17 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 QLayerPrivate::QLayerPrivate(QLayer *qq)
-    : ComponentPrivate(qq)
+    : QComponentPrivate(qq)
 {
 }
 
 QLayer::QLayer(QNode *parent)
-    : Component(*new QLayerPrivate(this), parent)
+    : QComponent(*new QLayerPrivate(this), parent)
 {
 }
 
 QLayer::QLayer(QLayerPrivate &dd, QNode *parent)
-    : Component(dd, parent)
+    : QComponent(dd, parent)
 {
 }
 

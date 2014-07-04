@@ -64,17 +64,17 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 QAbstractMaterialPrivate::QAbstractMaterialPrivate(QAbstractMaterial *qq)
-    : ComponentPrivate(qq)
+    : QComponentPrivate(qq)
     , m_effect(Q_NULLPTR)
 {}
 
 QAbstractMaterial::QAbstractMaterial(QNode *parent)
-    : Component(*new QAbstractMaterialPrivate(this), parent)
+    : QComponent(*new QAbstractMaterialPrivate(this), parent)
 {
 }
 
 QAbstractMaterial::QAbstractMaterial(QAbstractMaterialPrivate &dd, QNode *parent)
-    : Component(dd, parent)
+    : QComponent(dd, parent)
 {
 }
 

@@ -43,7 +43,7 @@
 #define QT3D_BULLETPHYSICS_QABSTRACTCOLLIDER_H
 
 #include <Qt3DBulletPhysics/qt3dbulletphysics_global.h>
-#include <Qt3DCore/component.h>
+#include <Qt3DCore/qcomponent.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -52,7 +52,7 @@ namespace BulletPhysics {
 
 class QAbstractColliderPrivate;
 
-class QT3DBULLETPHYSICSSHARED_EXPORT QAbstractCollider : public Qt3D::Component
+class QT3DBULLETPHYSICSSHARED_EXPORT QAbstractCollider : public Qt3D::QComponent
 {
     Q_OBJECT
 

@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_COMPONENT_P_H
-#define QT3D_COMPONENT_P_H
+#ifndef QT3D_QCOMPONENT_P_H
+#define QT3D_QCOMPONENT_P_H
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <private/qnode_p.h>
@@ -49,12 +49,12 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DCORESHARED_EXPORT ComponentPrivate : public QNodePrivate
+class QT3DCORESHARED_EXPORT QComponentPrivate : public QNodePrivate
 {
 public:
-    explicit ComponentPrivate(Component *qq);
+    explicit QComponentPrivate(QComponent *qq);
 
-    Q_DECLARE_PUBLIC(Component)
+    Q_DECLARE_PUBLIC(QComponent)
 
     bool m_enabled;
 };
@@ -63,4 +63,4 @@ public:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_COMPONENT_P_H
+#endif // QT3D_QCOMPONENT_P_H

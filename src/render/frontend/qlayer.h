@@ -42,7 +42,7 @@
 #ifndef QT3D_QLAYER_H
 #define QT3D_QLAYER_H
 
-#include <Qt3DCore/component.h>
+#include <Qt3DCore/qcomponent.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
@@ -51,7 +51,7 @@ namespace Qt3D {
 
 class QLayerPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QLayer : public Component
+class QT3DRENDERERSHARED_EXPORT QLayer : public QComponent
 {
     Q_OBJECT
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)

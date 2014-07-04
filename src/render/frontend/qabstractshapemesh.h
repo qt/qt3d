@@ -42,7 +42,7 @@
 #ifndef QT3D_QABSTRACTSHAPEMESH_H
 #define QT3D_QABSTRACTSHAPEMESH_H
 
-#include <Qt3DCore/component.h>
+#include <Qt3DCore/qcomponent.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DRenderer/qmesh.h>
 

@@ -62,7 +62,7 @@ QT_BEGIN_NAMESPACE
 
 void Qt3DQuick3DCorePlugin::registerTypes(const char *uri)
 {
-    qmlRegisterUncreatableType<Qt3D::Component>(uri, 2, 0, "Component", "");
+    qmlRegisterUncreatableType<Qt3D::QComponent>(uri, 2, 0, "Component", "");
     qmlRegisterUncreatableType<Qt3D::QAbstractMesh>(uri, 2, 0, "QAbstractMesh", "");
     qmlRegisterUncreatableType<Qt3D::QAbstractMaterial>(uri, 2, 0, "QAbstractMaterial", "");
     qmlRegisterUncreatableType<Qt3D::QAbstractTechnique>(uri, 2, 0, "QAbstractTechnique", "");

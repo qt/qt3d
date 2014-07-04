@@ -42,7 +42,7 @@
 #ifndef QT3D_QABSTRACTMESH_H
 #define QT3D_QABSTRACTMESH_H
 
-#include <Qt3DCore/component.h>
+#include <Qt3DCore/qcomponent.h>
 #include <QUuid>
 
 QT_BEGIN_NAMESPACE
@@ -54,7 +54,7 @@ class QAbstractMeshData;
 
 typedef QSharedPointer<QAbstractMeshData> QAbstractMeshDataPtr;
 
-class QT3DCORESHARED_EXPORT QAbstractMesh : public Component
+class QT3DCORESHARED_EXPORT QAbstractMesh : public QComponent
 {
     Q_OBJECT
 

@@ -43,7 +43,7 @@
 #define QT3D_TRANSFORM_P_H
 
 #include <Qt3DCore/qt3dcore_global.h>
-#include <private/component_p.h>
+#include <private/qcomponent_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -51,7 +51,7 @@ namespace Qt3D {
 
 class Transform;
 
-class TransformPrivate : public ComponentPrivate
+class TransformPrivate : public QComponentPrivate
 {
 public:
     TransformPrivate(Transform *qq);

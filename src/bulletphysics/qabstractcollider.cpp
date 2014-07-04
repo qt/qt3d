@@ -48,18 +48,18 @@ namespace Qt3D {
 namespace BulletPhysics {
 
 QAbstractColliderPrivate::QAbstractColliderPrivate(QAbstractCollider *qq)
-    : Qt3D::ComponentPrivate(qq)
+    : Qt3D::QComponentPrivate(qq)
     , m_collisionBehavior(QAbstractCollider::SolidColliderBehavior)
 {
 }
 
 QAbstractCollider::QAbstractCollider(QNode *parent)
-    : Qt3D::Component(*new QAbstractColliderPrivate(this), parent)
+    : Qt3D::QComponent(*new QAbstractColliderPrivate(this), parent)
 {
 }
 
 QAbstractCollider::QAbstractCollider(QAbstractColliderPrivate &dd, Qt3D::QNode *parent)
-    : Qt3D::Component(dd, parent)
+    : Qt3D::QComponent(dd, parent)
 {
 }
 

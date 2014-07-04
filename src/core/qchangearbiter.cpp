@@ -40,7 +40,7 @@
 ****************************************************************************/
 
 #include "qchangearbiter.h"
-#include "component.h"
+#include "qcomponent.h"
 #include "qjobmanagerinterface.h"
 
 #include "corelogging.h"

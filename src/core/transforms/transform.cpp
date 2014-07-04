@@ -50,7 +50,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 TransformPrivate::TransformPrivate(Transform *qq)
-    : ComponentPrivate(qq)
+    : QComponentPrivate(qq)
     , m_transforms()
     , m_matrix()
     , m_sceneMatrix()
@@ -58,14 +58,14 @@ TransformPrivate::TransformPrivate(Transform *qq)
 }
 
 Transform::Transform(QNode *parent)
-    : Qt3D::Component(*new TransformPrivate(this), parent)
+    : Qt3D::QComponent(*new TransformPrivate(this), parent)
 {
     Q_D(Transform);
     d->m_transformsDirty.fetchAndStoreOrdered(0);
 }
 
 Transform::Transform(TransformPrivate &dd, QNode *parent)
-    : Component(dd, parent)
+    : QComponent(dd, parent)
 {
 
 }

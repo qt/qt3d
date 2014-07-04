@@ -47,7 +47,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 CameraLensPrivate::CameraLensPrivate(CameraLens *qq)
-  : ComponentPrivate(qq)
+  : QComponentPrivate(qq)
   , m_projectionType(CameraLens::OrthogonalProjection)
   , m_nearPlane(0.1f)
   , m_farPlane(1024.0f)
@@ -63,12 +63,12 @@ CameraLensPrivate::CameraLensPrivate(CameraLens *qq)
 
 
 CameraLens::CameraLens(QNode *parent)
-    : Component(*new CameraLensPrivate(this), parent)
+    : QComponent(*new CameraLensPrivate(this), parent)
 {
 }
 
 CameraLens::CameraLens(CameraLensPrivate &dd, QNode *parent)
-    : Component(dd, parent)
+    : QComponent(dd, parent)
 {
 }
 

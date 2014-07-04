@@ -39,40 +39,44 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_COMPONENT_H
-#define QT3D_COMPONENT_H
-
-#include <Qt3DCore/qnode.h>
-#include <Qt3DCore/qt3dcore_global.h>
+#include "qcomponent.h"
+#include "qcomponent_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class ComponentPrivate;
-
-class QT3DCORESHARED_EXPORT Component : public QNode
+QComponentPrivate::QComponentPrivate(QComponent *qq)
+    : QNodePrivate(qq)
+    , m_enabled(true)
 {
-    Q_OBJECT
+}
 
-    Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
+QComponent::QComponent(QNode *parent)
+    : QNode(*new QComponentPrivate(this), parent)
+{
+}
 
-public:
-    explicit Component(QNode *parent = 0);
+QComponent::QComponent(QComponentPrivate &dd, QNode *parent)
+    : QNode(dd, parent)
+{
+}
 
-    void setEnabled(bool enabled);
-    bool isEnabled() const;
+void QComponent::setEnabled(bool enabled)
+{
+    Q_D(QComponent);
+    if (d->m_enabled != enabled) {
+        d->m_enabled = enabled;
+        emit enabledChanged();
+    }
+}
 
-Q_SIGNALS:
-    void enabledChanged();
-
-protected:
-    Q_DECLARE_PRIVATE(Component)
-    Component(ComponentPrivate &dd, QNode *parent = 0);
-};
+bool QComponent::isEnabled() const
+{
+    Q_D(const QComponent);
+    return d->m_enabled;
+}
 
 } // namespace Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_COMPONENT_H

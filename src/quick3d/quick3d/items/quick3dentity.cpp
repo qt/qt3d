@@ -40,7 +40,7 @@
 ****************************************************************************/
 
 #include "quick3dentity.h"
-#include <Qt3DCore/component.h>
+#include <Qt3DCore/qcomponent.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -53,16 +53,16 @@ Quick3DEntity::Quick3DEntity(QObject *parent)
 {
 }
 
-QQmlListProperty<Component> Quick3DEntity::componentList()
+QQmlListProperty<QComponent> Quick3DEntity::componentList()
 {
-    return QQmlListProperty<Qt3D::Component>(this, 0,
+    return QQmlListProperty<Qt3D::QComponent>(this, 0,
                                              Quick3DEntity::qmlAppendComponent,
                                              Quick3DEntity::qmlComponentsCount,
                                              Quick3DEntity::qmlComponentAt,
                                              Quick3DEntity::qmlClearComponents);
 }
 
-void Quick3DEntity::qmlAppendComponent(QQmlListProperty<Component> *list, Component *comp)
+void Quick3DEntity::qmlAppendComponent(QQmlListProperty<QComponent> *list, QComponent *comp)
 {
     if (comp == Q_NULLPTR)
         return;
@@ -70,23 +70,23 @@ void Quick3DEntity::qmlAppendComponent(QQmlListProperty<Component> *list, Compon
     self->parentEntity()->addComponent(comp);
 }
 
-Component *Quick3DEntity::qmlComponentAt(QQmlListProperty<Component> *list, int index)
+QComponent *Quick3DEntity::qmlComponentAt(QQmlListProperty<QComponent> *list, int index)
 {
     Quick3DEntity *self = static_cast<Quick3DEntity *>(list->object);
     return self->parentEntity()->components().at(index);
 }
 
-int Quick3DEntity::qmlComponentsCount(QQmlListProperty<Component> *list)
+int Quick3DEntity::qmlComponentsCount(QQmlListProperty<QComponent> *list)
 {
     Quick3DEntity *self = static_cast<Quick3DEntity *>(list->object);
     return self->parentEntity()->components().count();
 }
 
-void Quick3DEntity::qmlClearComponents(QQmlListProperty<Component> *list)
+void Quick3DEntity::qmlClearComponents(QQmlListProperty<QComponent> *list)
 {
     Quick3DEntity *self = static_cast<Quick3DEntity *>(list->object);
     ComponentList components = self->parentEntity()->components();
-    Q_FOREACH (Component *comp, components) {
+    Q_FOREACH (QComponent *comp, components) {
         self->parentEntity()->removeComponent(comp);
     }
 }

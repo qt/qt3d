@@ -44,7 +44,7 @@
 
 #include <QVariant>
 
-#include <Qt3DCore/component.h>
+#include <Qt3DCore/qcomponent.h>
 #include <Qt3DCore/qabstracteffect.h>
 #include <Qt3DCore/qabstractmaterial.h>
 

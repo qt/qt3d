@@ -42,7 +42,7 @@
 #ifndef QT3D_QLAYER_P_H
 #define QT3D_QLAYER_P_H
 
-#include <private/component_p.h>
+#include <private/qcomponent_p.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 
@@ -50,7 +50,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DRENDERERSHARED_EXPORT QLayerPrivate : ComponentPrivate
+class QT3DRENDERERSHARED_EXPORT QLayerPrivate : QComponentPrivate
 {
 public:
     QLayerPrivate(QLayer *qq);

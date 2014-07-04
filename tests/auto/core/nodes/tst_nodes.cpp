@@ -42,7 +42,7 @@
 #include <QtTest/QtTest>
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qentity.h>
-#include <Qt3DCore/component.h>
+#include <Qt3DCore/qcomponent.h>
 
 class tst_Nodes : public QObject
 {
@@ -77,8 +77,8 @@ void tst_Nodes::defaultNodeConstruction()
 
 void tst_Nodes::defaultComponentConstruction()
 {
-    Qt3D::Component *comp = new Qt3D::Component();
-    Qt3D::Component comp2(comp);
+    Qt3D::QComponent *comp = new Qt3D::QComponent();
+    Qt3D::QComponent comp2(comp);
 
     QVERIFY(comp != Q_NULLPTR);
     QVERIFY(comp2.parent() == comp);
@@ -210,9 +210,9 @@ void tst_Nodes::appendingComponentsToEntity()
 
     Qt3D::QEntity *entity = new Qt3D::QEntity(root);
 
-    Qt3D::Component *comp1 = new Qt3D::Component(root);
-    Qt3D::Component *comp2 = new Qt3D::Component(entity);
-    Qt3D::Component *comp3 = new Qt3D::Component();
+    Qt3D::QComponent *comp1 = new Qt3D::QComponent(root);
+    Qt3D::QComponent *comp2 = new Qt3D::QComponent(entity);
+    Qt3D::QComponent *comp3 = new Qt3D::QComponent();
 
     QVERIFY(entity->parentNode() == root);
     QVERIFY(root->children().count() == 2);
@@ -250,9 +250,9 @@ void tst_Nodes::removingComponentsFromEntity()
     Qt3D::QNode *root = new Qt3D::QNode();
     Qt3D::QEntity *entity = new Qt3D::QEntity(root);
 
-    Qt3D::Component *comp1 = new Qt3D::Component(root);
-    Qt3D::Component *comp2 = new Qt3D::Component(entity);
-    Qt3D::Component *comp3 = new Qt3D::Component();
+    Qt3D::QComponent *comp1 = new Qt3D::QComponent(root);
+    Qt3D::QComponent *comp2 = new Qt3D::QComponent(entity);
+    Qt3D::QComponent *comp3 = new Qt3D::QComponent();
 
 
     entity->addComponent(comp1);

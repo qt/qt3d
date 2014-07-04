@@ -43,7 +43,7 @@
 #define QT3D_QABSTRACTLIGHT_P_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <private/component_p.h>
+#include <private/qcomponent_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -51,7 +51,7 @@ namespace Qt3D {
 
 class QAbstractLight;
 
-class QT3DRENDERERSHARED_EXPORT QAbstractLightPrivate : public ComponentPrivate
+class QT3DRENDERERSHARED_EXPORT QAbstractLightPrivate : public QComponentPrivate
 {
 public:
     QAbstractLightPrivate(QAbstractLight *qq);

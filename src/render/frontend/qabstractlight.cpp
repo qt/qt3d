@@ -56,7 +56,7 @@ namespace Qt3D
 
 
 QAbstractLightPrivate::QAbstractLightPrivate(QAbstractLight *qq)
-        : ComponentPrivate(qq)
+        : QComponentPrivate(qq)
         , m_color(QColor(255, 255, 255))
         , m_intensity(1.0f)
     {}
@@ -65,12 +65,12 @@ QAbstractLightPrivate::QAbstractLightPrivate(QAbstractLight *qq)
  * Constructs a new QAbstractLight with the given \a parent.
  */
 QAbstractLight::QAbstractLight(Qt3D::QNode *parent) :
-    Component(*new QAbstractLightPrivate(this), parent)
+    QComponent(*new QAbstractLightPrivate(this), parent)
 {
 }
 
 QAbstractLight::QAbstractLight(QAbstractLightPrivate &dd, QNode *parent)
-    : Component(dd, parent)
+    : QComponent(dd, parent)
 {
 }
 

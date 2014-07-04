@@ -42,7 +42,7 @@
 #ifndef QT3D_QABSTRACTSHAPEMESH_P_H
 #define QT3D_QABSTRACTSHAPEMESH_P_H
 
-#include <private/component_p.h>
+#include <private/qcomponent_p.h>
 #include <private/qabstractmesh_p.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DRenderer/meshdata.h>

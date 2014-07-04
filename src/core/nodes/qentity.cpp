@@ -41,7 +41,7 @@
 
 #include "qentity.h"
 #include "qentity_p.h"
-#include "component.h"
+#include "qcomponent.h"
 #include "abstracttransform.h"
 #include "matrixtransform.h"
 
@@ -70,13 +70,13 @@ const QUuid QEntity::uuid() const
     return d->m_uuid;
 }
 
-QList<Component *> QEntity::components() const
+QList<QComponent *> QEntity::components() const
 {
     Q_D(const QEntity);
     return d->m_components;
 }
 
-void QEntity::addComponent(Component *comp)
+void QEntity::addComponent(QComponent *comp)
 {
     Q_D(QEntity);
     Q_CHECK_PTR( comp );
@@ -92,7 +92,7 @@ void QEntity::addComponent(Component *comp)
         addChild(comp);
 }
 
-void QEntity::removeComponent(Component *comp)
+void QEntity::removeComponent(QComponent *comp)
 {
     Q_CHECK_PTR(comp);
     qCDebug(Nodes) << Q_FUNC_INFO << comp;

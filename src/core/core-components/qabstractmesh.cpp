@@ -60,7 +60,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 QAbstractMeshPrivate::QAbstractMeshPrivate(QAbstractMesh *qq)
-    : ComponentPrivate(qq)
+    : QComponentPrivate(qq)
     , m_uuid(QUuid::createUuid())
     , m_dirty(true)
 {
@@ -68,12 +68,12 @@ QAbstractMeshPrivate::QAbstractMeshPrivate(QAbstractMesh *qq)
 
 
 QAbstractMesh::QAbstractMesh(QNode *parent)
-    : Component(*new QAbstractMeshPrivate(this), parent)
+    : QComponent(*new QAbstractMeshPrivate(this), parent)
 {
 }
 
 QAbstractMesh::QAbstractMesh(QAbstractMeshPrivate &dd, QNode *parent)
-    : Component(dd, parent)
+    : QComponent(dd, parent)
 {
 }
 

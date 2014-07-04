@@ -42,7 +42,7 @@
 #ifndef QT3D_QABSTRACTMATERIAL_H
 #define QT3D_QABSTRACTMATERIAL_H
 
-#include <Qt3DCore/component.h>
+#include <Qt3DCore/qcomponent.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -52,7 +52,7 @@ namespace Qt3D
 class QAbstractEffect;
 class QAbstractMaterialPrivate;
 
-class QT3DCORESHARED_EXPORT QAbstractMaterial : public Component
+class QT3DCORESHARED_EXPORT QAbstractMaterial : public QComponent
 {
     Q_OBJECT
     Q_PROPERTY(Qt3D::QAbstractEffect* effect READ effect WRITE setEffect NOTIFY effectChanged)

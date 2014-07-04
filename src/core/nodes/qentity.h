@@ -52,10 +52,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class Component;
+class QComponent;
 class QEntityPrivate;
 
-typedef QList<Component*> ComponentList;
+typedef QList<QComponent*> ComponentList;
 
 class QT3DCORESHARED_EXPORT QEntity : public QNode
 {
@@ -74,7 +74,7 @@ public:
     QList<T*> componentsOfType() const
     {
         QList<T*> result;
-        foreach (Component* comp, components()) {
+        foreach (QComponent* comp, components()) {
             T* i = qobject_cast<T*>(comp);
             if (i)
                 result.append(i);
@@ -90,7 +90,7 @@ public:
             return Q_NULLPTR;
 
         if (root->asEntity()) {
-            foreach (Component* comp, root->asEntity()->components()) {
+            foreach (QComponent* comp, root->asEntity()->components()) {
                 T* i = qobject_cast<T*>(comp);
                 if (i)
                     return i;
@@ -131,8 +131,8 @@ public:
         return Q_NULLPTR;
     }
 
-    virtual void addComponent(Component *comp);
-    virtual void removeComponent(Component *comp);
+    virtual void addComponent(QComponent *comp);
+    virtual void removeComponent(QComponent *comp);
 
     bool isEnabled() const;
     void setEnabled(bool on);

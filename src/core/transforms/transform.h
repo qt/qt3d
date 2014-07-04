@@ -42,7 +42,7 @@
 #ifndef QT3D_TRANSFORM_H
 #define QT3D_TRANSFORM_H
 
-#include <Qt3DCore/component.h>
+#include <Qt3DCore/qcomponent.h>
 #include <Qt3DCore/qt3dcore_global.h>
 #include <QAtomicInt>
 #include <QMatrix4x4>
@@ -54,7 +54,7 @@ namespace Qt3D {
 class AbstractTransform;
 class TransformPrivate;
 
-class QT3DCORESHARED_EXPORT Transform : public Component
+class QT3DCORESHARED_EXPORT Transform : public QComponent
 {
     Q_OBJECT
 

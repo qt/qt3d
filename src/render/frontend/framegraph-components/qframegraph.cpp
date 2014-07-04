@@ -48,7 +48,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 QFrameGraphPrivate::QFrameGraphPrivate(QFrameGraph *qq)
-    : ComponentPrivate(qq)
+    : QComponentPrivate(qq)
     , m_activeFrameGraph(Q_NULLPTR)
 {
 
@@ -69,12 +69,12 @@ QFrameGraphPrivate::QFrameGraphPrivate(QFrameGraph *qq)
  */
 
 QFrameGraph::QFrameGraph(QNode *parent)
-    : Component(*new QFrameGraphPrivate(this), parent)
+    : QComponent(*new QFrameGraphPrivate(this), parent)
 {
 }
 
 QFrameGraph::QFrameGraph(QFrameGraphPrivate &dd, QNode *parent)
-    : Component(dd, parent)
+    : QComponent(dd, parent)
 {
 }
 

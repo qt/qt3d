@@ -42,7 +42,7 @@
 #ifndef QT3D_CAMERALENS_H
 #define QT3D_CAMERALENS_H
 
-#include <Qt3DCore/component.h>
+#include <Qt3DCore/qcomponent.h>
 #include <Qt3DCore/qt3dcore_global.h>
 
 #include <QMatrix4x4>
@@ -55,7 +55,7 @@ namespace Qt3D {
 
 class CameraLensPrivate;
 
-class QT3DCORESHARED_EXPORT CameraLens : public Component
+class QT3DCORESHARED_EXPORT CameraLens : public QComponent
 {
     Q_OBJECT
 

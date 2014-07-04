@@ -52,27 +52,27 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QEntity;
-class Component;
+class QComponent;
 
 namespace Quick {
 
 class QT3DQUICKSHARED_EXPORT Quick3DEntity : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3D::Component> components READ componentList)
+    Q_PROPERTY(QQmlListProperty<Qt3D::QComponent> components READ componentList)
 
 public:
     explicit Quick3DEntity(QObject *parent = 0);
-    QQmlListProperty<Qt3D::Component> componentList();
+    QQmlListProperty<Qt3D::QComponent> componentList();
 
     inline QEntity *parentEntity() const { return qobject_cast<QEntity*>(parent()); }
 
 private:
 
-    static void qmlAppendComponent(QQmlListProperty<Qt3D::Component> *list, Qt3D::Component *comp);
-    static Component *qmlComponentAt(QQmlListProperty<Qt3D::Component> *list, int index);
-    static int qmlComponentsCount(QQmlListProperty<Qt3D::Component> *list);
-    static void qmlClearComponents(QQmlListProperty<Qt3D::Component> *list);
+    static void qmlAppendComponent(QQmlListProperty<Qt3D::QComponent> *list, Qt3D::QComponent *comp);
+    static QComponent *qmlComponentAt(QQmlListProperty<Qt3D::QComponent> *list, int index);
+    static int qmlComponentsCount(QQmlListProperty<Qt3D::QComponent> *list);
+    static void qmlClearComponents(QQmlListProperty<Qt3D::QComponent> *list);
 };
 
 } // Quick
