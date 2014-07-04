@@ -56,7 +56,7 @@ public:
     QCameraSelectorPrivate(QCameraSelector *qq);
 
     Q_DECLARE_PUBLIC(QCameraSelector)
-    Node *m_camera;
+    Entity *m_camera;
 };
 
 

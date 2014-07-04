@@ -75,7 +75,6 @@ public:
     void        initializeFrameGraph();
 
 protected:
-    void visitNode(Qt3D::Node *node) Q_DECL_OVERRIDE;
     void visitEntity(Qt3D::Entity *entity) Q_DECL_OVERRIDE;
 
 private:
@@ -87,7 +86,7 @@ private:
     Render::FrameGraphNode* buildFrameGraph(Node *node);
     Render::FrameGraphNode* backendFrameGraphNode(Node *);
 
-    HRenderNode createRenderNode(Node *node);
+    HRenderNode createRenderNode(Entity *node);
     void createRenderMaterial(Entity *entity);
     void createFrameGraph(QFrameGraph *frameGraph);
 
