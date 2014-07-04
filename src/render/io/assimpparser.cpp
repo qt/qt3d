@@ -41,7 +41,7 @@
 
 #include "assimpparser.h"
 
-#include <Qt3DCore/transform.h>
+#include <Qt3DCore/qtransform.h>
 #include <parameter.h>
 #include <Qt3DCore/matrixtransform.h>
 #include <Qt3DCore/cameralens.h>
@@ -312,7 +312,7 @@ QEntity *AssimpParser::node(aiNode *node)
     }
 
     // Add Transformations
-    Transform *transform = new Transform();
+    QTransform *transform = new QTransform();
     QMatrix4x4 qTransformMatrix = AssimpParser::aiMatrix4x4ToQMatrix4x4(node->mTransformation);
     transform->setMatrix(qTransformMatrix);
     entityNode->addComponent(transform);
@@ -612,7 +612,7 @@ void AssimpParser::loadCamera(uint cameraIndex)
     // View Matrix defines camera position & up vector relative to the associated
     // node in the scene. This is computed in AssimpParser::node
     //    camera->lookAt()->setViewMatrix();
-    Transform *transform = new Transform();
+    QTransform *transform = new QTransform();
     QMatrix4x4 viewMatrix = AssimpParser::aiMatrix4x4ToQMatrix4x4(cm);
     // CHECK THAT THIS WORKS
     qCDebug(Render::Io) << Q_FUNC_INFO << "IF CAMERA NOT BEHAVING CORRECTLY LOOK HERE";

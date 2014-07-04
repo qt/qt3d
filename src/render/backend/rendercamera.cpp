@@ -43,7 +43,7 @@
 #include "rendereraspect.h"
 #include "renderlogging.h"
 
-#include <Qt3DCore/transform.h>
+#include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/cameralens.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qaspectmanager.h>

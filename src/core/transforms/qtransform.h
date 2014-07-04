@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_TRANSFORM_H
-#define QT3D_TRANSFORM_H
+#ifndef QT3D_QTRANSFORM_H
+#define QT3D_QTRANSFORM_H
 
 #include <Qt3DCore/qcomponent.h>
 #include <Qt3DCore/qt3dcore_global.h>
@@ -52,14 +52,14 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class AbstractTransform;
-class TransformPrivate;
+class QTransformPrivate;
 
-class QT3DCORESHARED_EXPORT Transform : public QComponent
+class QT3DCORESHARED_EXPORT QTransform : public QComponent
 {
     Q_OBJECT
 
 public:
-    explicit Transform(QNode *parent = 0);
+    explicit QTransform(QNode *parent = 0);
 
     QMatrix4x4 matrix() const;
     void setMatrix(const QMatrix4x4 &m);
@@ -89,12 +89,12 @@ protected:
     QMatrix4x4 applyTransforms() const;
     QList<AbstractTransform *> transformList() const;
 
-    Q_DECLARE_PRIVATE(Transform)
-    Transform(TransformPrivate &dd, QNode *parent = 0);
+    Q_DECLARE_PRIVATE(QTransform)
+    QTransform(QTransformPrivate &dd, QNode *parent = 0);
 };
 
 } // namespace Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_TRANSFORM_H
+#endif // QT3D_QTRANSFORM_H

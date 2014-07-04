@@ -56,7 +56,7 @@
 #include <Qt3DCore/cameralens.h>
 #include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DCore/transform.h>
+#include <Qt3DCore/qtransform.h>
 
 #include <QMatrix4x4>
 #include <QString>
@@ -123,7 +123,7 @@ void RenderEntity::setPeer(QEntity *peer)
     }
 }
 
-void RenderEntity::setTransform(Transform *transform)
+void RenderEntity::setTransform(QTransform *transform)
 {
     if (transform != m_transform) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
@@ -167,8 +167,8 @@ void RenderEntity::sceneChangeEvent(const QSceneChangePtr &e)
     case ComponentAdded: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         QComponent *component = propertyChange->m_value.value<QComponent*>();
-        if (m_transform == Q_NULLPTR && qobject_cast<Transform*>(component) != Q_NULLPTR) {
-            setTransform(qobject_cast<Transform *>(component));
+        if (m_transform == Q_NULLPTR && qobject_cast<QTransform*>(component) != Q_NULLPTR) {
+            setTransform(qobject_cast<QTransform *>(component));
         }
         else if (qobject_cast<CameraLens *>(component)) {
             RenderCamera *cam = m_renderer->cameraManager()->lookupResource(m_frontEndPeer->asEntity()->uuid());

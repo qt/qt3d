@@ -47,7 +47,7 @@
 
 #include <Qt3DCore/cameralens.h>
 #include <Qt3DCore/lookattransform.h>
-#include <Qt3DCore/transform.h>
+#include <Qt3DCore/qtransform.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -67,7 +67,7 @@ public:
     Camera *q_ptr;
 
     CameraLens *m_lens;
-    Transform *m_transform;
+    QTransform *m_transform;
 };
 
 } // namespace Qt3D

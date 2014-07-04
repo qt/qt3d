@@ -42,7 +42,7 @@
 #include "camera.h"
 #include "camera_p.h"
 #include "cameralens.h"
-#include <transform.h>
+#include <qtransform.h>
 #include <lookattransform.h>
 
 QT_BEGIN_NAMESPACE
@@ -74,13 +74,13 @@ void Camera::setLens(CameraLens *lens)
     }
 }
 
-Transform *Camera::transform() const
+QTransform *Camera::transform() const
 {
     Q_D(const Camera);
     return d->m_transform;
 }
 
-void Camera::setTransform(Transform *transform)
+void Camera::setTransform(QTransform *transform)
 {
     Q_D(Camera);
     if (d->m_transform != transform) {

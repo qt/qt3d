@@ -56,7 +56,7 @@ class RendererAspect;
 class Sphere;
 class QNode;
 class QEntity;
-class Transform;
+class QTransform;
 
 typedef QHandle<QMatrix4x4, 16> HMatrix;
 
@@ -76,7 +76,7 @@ public:
     RenderEntity();
     ~RenderEntity();
 
-    void setTransform(Transform *transform);
+    void setTransform(QTransform *transform);
     void setParentHandle(HRenderNode parentHandle);
     void setRenderer(Renderer *renderer);
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
@@ -102,7 +102,7 @@ public:
 private:
 
     Renderer *m_renderer;
-    Transform *m_transform;
+    QTransform *m_transform;
     HRenderNode m_handle;
     HRenderNode m_parentHandle;
     QVector<HRenderNode > m_childrenHandles;

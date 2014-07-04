@@ -45,13 +45,13 @@
 #include <QtCore/QtGlobal>
 #include <QQmlListProperty>
 #include <Qt3DQuick/qt3dquick_global.h>
-#include <Qt3DCore/transform.h>
+#include <Qt3DCore/qtransform.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class Transform;
+class QTransform;
 
 namespace Quick {
 
@@ -64,7 +64,7 @@ public:
     explicit Quick3DTransform(QObject *parent = 0);
     QQmlListProperty<Qt3D::AbstractTransform> transformList();
 
-    inline Transform *parentTransform() const { return qobject_cast<Qt3D::Transform *>(parent()); }
+    inline QTransform *parentTransform() const { return qobject_cast<Qt3D::QTransform *>(parent()); }
 
 private:
     static void qmlAppendTransform(QQmlListProperty<Qt3D::AbstractTransform> *list, Qt3D::AbstractTransform *bar);

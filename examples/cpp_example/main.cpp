@@ -61,7 +61,7 @@
 #include <Qt3DCore/matrixtransform.h>
 #include <Qt3DCore/rotatetransform.h>
 #include <Qt3DCore/lookattransform.h>
-#include <Qt3DCore/transform.h>
+#include <Qt3DCore/qtransform.h>
 
 #include <Qt3DRenderer/qcameraselector.h>
 #include <Qt3DRenderer/qrenderpassfilter.h>
@@ -95,7 +95,7 @@ int main(int ac, char **av)
     // TorusMesh Transform
     Qt3D::TranslateTransform *torusTranslation = new Qt3D::TranslateTransform();
     Qt3D::RotateTransform *torusRotation = new Qt3D::RotateTransform();
-    Qt3D::Transform *torusTransforms = new Qt3D::Transform();
+    Qt3D::QTransform *torusTransforms = new Qt3D::QTransform();
 
     torusTranslation->setTranslation(QVector3D(-5.0f, 3.5f, 2.0f));
     torusRotation->setAxis(QVector3D(1, 0, 0));
@@ -107,7 +107,7 @@ int main(int ac, char **av)
     // Scene file
     Qt3D::QScene  *scene = new Qt3D::QScene();
     scene->setObjectName(QStringLiteral("scene"));
-    Qt3D::Transform *sceneTransform = new Qt3D::Transform();
+    Qt3D::QTransform *sceneTransform = new Qt3D::QTransform();
     Qt3D::TranslateTransform *sceneTranslateTransform = new Qt3D::TranslateTransform();
     sceneTranslateTransform->setDx(2.5);
     sceneTranslateTransform->setDy(0.5);
@@ -121,7 +121,7 @@ int main(int ac, char **av)
     Qt3D::Camera *cameraEntity = new Qt3D::Camera();
     cameraEntity->setObjectName(QStringLiteral("cameraEntity"));
     Qt3D::CameraLens *cameraLens = new Qt3D::CameraLens();
-    Qt3D::Transform *cameraTransform = new Qt3D::Transform();
+    Qt3D::QTransform *cameraTransform = new Qt3D::QTransform();
     Qt3D::LookAtTransform *cameraLookAtTransform = new Qt3D::LookAtTransform();
 
     cameraLens->setPerspectiveProjection(60.0f, 16.0f/9.0f, 0.1f, 1000.0f);

@@ -55,13 +55,13 @@ namespace Qt3D {
 
 class CameraPrivate;
 class CameraLens;
-class Transform;
+class QTransform;
 
 class QT3DCORESHARED_EXPORT Camera : public QEntity
 {
     Q_OBJECT
     Q_PROPERTY(Qt3D::CameraLens *lens READ lens WRITE setLens NOTIFY lensChanged)
-    Q_PROPERTY(Qt3D::Transform *transform READ transform WRITE setTransform NOTIFY transformChanged)
+    Q_PROPERTY(Qt3D::QTransform *transform READ transform WRITE setTransform NOTIFY transformChanged)
 
 public:
     explicit Camera(QNode *parent = 0);
@@ -75,8 +75,8 @@ public:
     CameraLens* lens() const;
     void setLens(CameraLens *lens);
 
-    Transform *transform() const;
-    void setTransform(Transform* lookAt);
+    QTransform *transform() const;
+    void setTransform(QTransform* lookAt);
 
     QQuaternion tiltRotation(float angle) const;
     QQuaternion panRotation(float angle) const;

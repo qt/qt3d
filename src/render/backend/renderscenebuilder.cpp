@@ -76,7 +76,7 @@
 
 #include <Qt3DCore/camera.h>
 #include <Qt3DCore/cameralens.h>
-#include <Qt3DCore/transform.h>
+#include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/qentity.h>
 
 QT_BEGIN_NAMESPACE
@@ -233,7 +233,7 @@ HRenderNode RenderSceneBuilder::createRenderNode(QEntity *entity)
     renderNode->setRenderer(m_renderer);
     renderNode->setPeer(entity);
 
-    QList<Transform *> transforms = entity->componentsOfType<Transform>();
+    QList<QTransform *> transforms = entity->componentsOfType<QTransform>();
     if (!transforms.isEmpty())
         renderNode->setTransform(transforms.first());
 

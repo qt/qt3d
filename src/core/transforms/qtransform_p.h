@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_TRANSFORM_P_H
-#define QT3D_TRANSFORM_P_H
+#ifndef QT3D_QTRANSFORM_P_H
+#define QT3D_QTRANSFORM_P_H
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <private/qcomponent_p.h>
@@ -49,14 +49,14 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class Transform;
+class QTransform;
 
-class TransformPrivate : public QComponentPrivate
+class QTransformPrivate : public QComponentPrivate
 {
 public:
-    TransformPrivate(Transform *qq);
+    QTransformPrivate(QTransform *qq);
 
-    Q_DECLARE_PUBLIC(Transform)
+    Q_DECLARE_PUBLIC(QTransform)
 
     mutable QAtomicInt m_transformsDirty;
     QList<AbstractTransform*> m_transforms;
@@ -69,4 +69,4 @@ public:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_TRANSFORM_P_H
+#endif // QT3D_QTRANSFORM_P_H
