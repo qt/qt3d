@@ -40,38 +40,52 @@
 ****************************************************************************/
 
 #include "qlookattransform.h"
+#include "qlookattransform_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QLookAtTransform::QLookAtTransform(QNode *parent)
-    : QAbstractTransform(parent)
+QLookAtTransformPrivate::QLookAtTransformPrivate(QLookAtTransform *qq)
+    : QAbstractTransformPrivate(qq)
     , m_matrixDirty(true)
+{
+}
+
+QLookAtTransform::QLookAtTransform(QNode *parent)
+    : QAbstractTransform(*new QLookAtTransformPrivate(this), parent)
+{
+}
+
+QLookAtTransform::QLookAtTransform(QLookAtTransformPrivate &dd, QNode *parent)
+    : QAbstractTransform(dd, parent)
 {
 }
 
 QMatrix4x4 QLookAtTransform::matrix() const
 {
-    if (m_matrixDirty) {
-        m_matrix.setToIdentity();
-        m_matrix.lookAt(m_position, m_viewCenter, m_upVector);
-        m_matrixDirty = false;
+    Q_D(const QLookAtTransform);
+    if (d->m_matrixDirty) {
+        d->m_matrix.setToIdentity();
+        d->m_matrix.lookAt(d->m_position, d->m_viewCenter, d->m_upVector);
+        d->m_matrixDirty = false;
     }
-    return m_matrix;
+    return d->m_matrix;
 }
 
 QVector3D QLookAtTransform::position() const
 {
-    return m_position;
+    Q_D(const QLookAtTransform);
+    return d->m_position;
 }
 
 void QLookAtTransform::setPosition(const QVector3D &position)
 {
-    if (m_position != position) {
-        m_position = position;
-        m_viewVector = m_viewCenter - position;
-        m_matrixDirty = true;
+    Q_D(QLookAtTransform);
+    if (d->m_position != position) {
+        d->m_position = position;
+        d->m_viewVector = d->m_viewCenter - position;
+        d->m_matrixDirty = true;
         emit positionChanged();
         emit viewVectorChanged();
         emit transformUpdated();
@@ -80,9 +94,10 @@ void QLookAtTransform::setPosition(const QVector3D &position)
 
 void QLookAtTransform::setUpVector(const QVector3D &upVector)
 {
-    if (m_upVector != upVector) {
-        m_upVector = upVector;
-        m_matrixDirty = true;
+    Q_D(QLookAtTransform);
+    if (d->m_upVector != upVector) {
+        d->m_upVector = upVector;
+        d->m_matrixDirty = true;
         emit upVectorChanged();
         emit transformUpdated();
     }
@@ -90,15 +105,17 @@ void QLookAtTransform::setUpVector(const QVector3D &upVector)
 
 QVector3D QLookAtTransform::upVector() const
 {
-    return m_upVector;
+    Q_D(const QLookAtTransform);
+    return d->m_upVector;
 }
 
 void QLookAtTransform::setViewCenter(const QVector3D &viewCenter)
 {
-    if (m_viewCenter != viewCenter) {
-        m_viewCenter = viewCenter;
-        m_viewVector = viewCenter - m_position;
-        m_matrixDirty = true;
+    Q_D(QLookAtTransform);
+    if (d->m_viewCenter != viewCenter) {
+        d->m_viewCenter = viewCenter;
+        d->m_viewVector = viewCenter - d->m_position;
+        d->m_matrixDirty = true;
         emit viewCenterChanged();
         emit viewVectorChanged();
         emit transformUpdated();
@@ -107,17 +124,20 @@ void QLookAtTransform::setViewCenter(const QVector3D &viewCenter)
 
 QVector3D QLookAtTransform::viewCenter() const
 {
-    return m_viewCenter;
+    Q_D(const QLookAtTransform);
+    return d->m_viewCenter;
 }
 
 void QLookAtTransform::setViewVector(const QVector3D &viewVector)
 {
-    m_viewVector = viewVector;
+    Q_D(QLookAtTransform);
+    d->m_viewVector = viewVector;
 }
 
 QVector3D QLookAtTransform::viewVector() const
 {
-    return m_viewVector;
+    Q_D(const QLookAtTransform);
+    return d->m_viewVector;
 }
 
 } // namespace Qt3D

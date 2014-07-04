@@ -39,58 +39,31 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QLOOKATTRANSFORM_H
-#define QT3D_QLOOKATTRANSFORM_H
+#ifndef QT3D_QLOOKATTRANSFORM_P_H
+#define QT3D_QLOOKATTRANSFORM_P_H
 
-#include <Qt3DCore/qabstracttransform.h>
-#include <Qt3DCore/qt3dcore_global.h>
-
-#include <QVector3D>
+#include <private/qabstracttransform_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QLookAtTransformPrivate;
-
-class QT3DCORESHARED_EXPORT QLookAtTransform : public Qt3D::QAbstractTransform
+class QLookAtTransformPrivate : public QAbstractTransformPrivate
 {
-    Q_OBJECT
-    Q_PROPERTY(QVector3D position READ position WRITE setPosition)
-    Q_PROPERTY(QVector3D upVector READ upVector WRITE setUpVector)
-    Q_PROPERTY(QVector3D viewCenter READ viewCenter WRITE setViewCenter)
-    Q_PROPERTY(QVector3D viewVector READ viewVector NOTIFY viewVectorChanged)
+public :
+    QLookAtTransformPrivate(QLookAtTransform *qq);
 
-public:
-    explicit QLookAtTransform(QNode *parent = 0);
-
-    QMatrix4x4 matrix() const Q_DECL_OVERRIDE;
-
-    void setPosition(const QVector3D &position);
-    QVector3D position() const;
-
-    void setUpVector(const QVector3D &upVector);
-    QVector3D upVector() const;
-
-    void setViewCenter(const QVector3D &viewCenter);
-    QVector3D viewCenter() const;
-
-    void setViewVector(const QVector3D &viewVector);
-    QVector3D viewVector() const;
-
-Q_SIGNALS:
-    void positionChanged();
-    void upVectorChanged();
-    void viewCenterChanged();
-    void viewVectorChanged();
-
-protected:
-    Q_DECLARE_PRIVATE(QLookAtTransform)
-    QLookAtTransform(QLookAtTransformPrivate &dd, QNode *parent = 0);
+    Q_DECLARE_PUBLIC(QLookAtTransform)
+    mutable QMatrix4x4 m_matrix;
+    QVector3D m_position;
+    QVector3D m_upVector;
+    QVector3D m_viewCenter;
+    QVector3D m_viewVector; // From "camera" position to view center
+    mutable bool m_matrixDirty;
 };
 
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QLOOKATTRANSFORM_H
+#endif // QT3D_QLOOKATTRANSFORM_P_H
