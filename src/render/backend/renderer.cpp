@@ -64,7 +64,7 @@
 #include <rendermesh.h>
 #include <renderqueues.h>
 #include <rendermaterial.h>
-#include <rendernode.h>
+#include <renderentity.h>
 #include <rendertechnique.h>
 #include <renderscenebuilder.h>
 #include <rendershader.h>

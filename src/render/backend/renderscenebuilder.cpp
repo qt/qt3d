@@ -48,7 +48,7 @@
 #include "layermanager.h"
 #include "lightmanager.h"
 #include "renderer.h"
-#include "rendernode.h"
+#include "renderentity.h"
 #include "renderlogging.h"
 #include "materialmanager.h"
 #include "qabstractscene.h"
@@ -90,7 +90,7 @@ RenderSceneBuilder::RenderSceneBuilder(Renderer *renderer)
 {
 }
 
-RenderNode *RenderSceneBuilder::rootNode() const
+RenderEntity *RenderSceneBuilder::rootNode() const
 {
     return m_renderer->renderNodesManager()->data(m_rootNodeHandle);
 }
@@ -228,7 +228,7 @@ HRenderNode RenderSceneBuilder::createRenderNode(Entity *entity)
 {
     HRenderNode renderNodeHandle;
     renderNodeHandle = m_renderer->renderNodesManager()->getOrAcquireHandle(entity->uuid());
-    RenderNode *renderNode = m_renderer->renderNodesManager()->data(renderNodeHandle);
+    RenderEntity *renderNode = m_renderer->renderNodesManager()->data(renderNodeHandle);
     renderNode->setHandle(renderNodeHandle);
     renderNode->setRenderer(m_renderer);
     renderNode->setPeer(entity);

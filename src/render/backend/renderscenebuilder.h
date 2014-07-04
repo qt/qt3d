@@ -55,10 +55,10 @@ class QFrameGraphItem;
 class QFrameGraph;
 
 namespace Render {
-class RenderNode;
+class RenderEntity;
 }
 
-typedef QHandle<Render::RenderNode, 16> HRenderNode;
+typedef QHandle<Render::RenderEntity, 16> HRenderNode;
 
 namespace Render {
 
@@ -70,7 +70,7 @@ class RenderSceneBuilder : public Qt3D::NodeVisitor
 public:
     explicit RenderSceneBuilder(Renderer *renderer);
 
-    RenderNode *rootNode() const;
+    RenderEntity *rootNode() const;
     HRenderNode rootHandle() const { return m_rootNodeHandle; }
     void        initializeFrameGraph();
 

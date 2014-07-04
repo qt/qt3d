@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "rendernode.h"
+#include "renderentity.h"
 #include "rendereraspect.h"
 #include "renderer.h"
 #include "rendernodesmanager.h"
@@ -70,7 +70,7 @@ namespace Render {
 // TODO: Create custom allocators for each of the matrices and
 // bounding volumes to that they end up in contiguous arrays.
 
-RenderNode::RenderNode()
+RenderEntity::RenderEntity()
     : m_renderer(Q_NULLPTR)
     , m_transform(Q_NULLPTR)
     , m_localBoundingVolume(new Qt3D::Sphere)
@@ -79,32 +79,32 @@ RenderNode::RenderNode()
 {
 }
 
-RenderNode::~RenderNode()
+RenderEntity::~RenderEntity()
 {
     delete m_localBoundingVolume;
     delete m_worldBoundingVolume;
 }
 
-void RenderNode::setParentHandle(HRenderNode parentHandle)
+void RenderEntity::setParentHandle(HRenderNode parentHandle)
 {
     Q_ASSERT(m_renderer);
     m_parentHandle = parentHandle;
-    RenderNode *parent = m_renderer->renderNodesManager()->data(parentHandle);
+    RenderEntity *parent = m_renderer->renderNodesManager()->data(parentHandle);
     if (parent != Q_NULLPTR && !parent->m_childrenHandles.contains(m_handle))
         parent->m_childrenHandles.append(m_handle);
 }
 
-void RenderNode::setRenderer(Renderer *renderer)
+void RenderEntity::setRenderer(Renderer *renderer)
 {
     m_renderer = renderer;
 }
 
-void RenderNode::setHandle(HRenderNode handle)
+void RenderEntity::setHandle(HRenderNode handle)
 {
     m_handle = handle;
 }
 
-void RenderNode::setPeer(Entity *peer)
+void RenderEntity::setPeer(Entity *peer)
 {
     if (m_frontEndPeer != peer) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
@@ -123,7 +123,7 @@ void RenderNode::setPeer(Entity *peer)
     }
 }
 
-void RenderNode::setTransform(Transform *transform)
+void RenderEntity::setTransform(Transform *transform)
 {
     if (transform != m_transform) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
@@ -139,7 +139,7 @@ void RenderNode::setTransform(Transform *transform)
     }
 }
 
-void RenderNode::sceneChangeEvent(const QSceneChangePtr &e)
+void RenderEntity::sceneChangeEvent(const QSceneChangePtr &e)
 {
     switch (e->m_type) {
 
@@ -208,46 +208,46 @@ void RenderNode::sceneChangeEvent(const QSceneChangePtr &e)
     }
 }
 
-void RenderNode::dump() const
+void RenderEntity::dump() const
 {
     static int depth = 0;
     QString indent(2 * depth++, QChar::fromLatin1(' '));
     qCDebug(Backend) << indent + m_frontEndPeer->objectName();
-    foreach (const RenderNode *child, children())
+    foreach (const RenderEntity *child, children())
         child->dump();
     --depth;
 }
 
-RenderNode *RenderNode::parent() const
+RenderEntity *RenderEntity::parent() const
 {
     return m_renderer->renderNodesManager()->data(m_parentHandle);
 }
 
-void RenderNode::appendChildHandle(HRenderNode childHandle)
+void RenderEntity::appendChildHandle(HRenderNode childHandle)
 {
     if (!m_childrenHandles.contains(childHandle)) {
         m_childrenHandles.append(childHandle);
-        RenderNode *child = m_renderer->renderNodesManager()->data(childHandle);
+        RenderEntity *child = m_renderer->renderNodesManager()->data(childHandle);
         if (child != Q_NULLPTR)
             child->m_parentHandle = m_handle;
     }
 }
 
-QVector<RenderNode *> RenderNode::children() const
+QVector<RenderEntity *> RenderEntity::children() const
 {
-    QVector<RenderNode *> childrenVector;
+    QVector<RenderEntity *> childrenVector;
     childrenVector.reserve(m_childrenHandles.size());
     foreach (HRenderNode handle, m_childrenHandles) {
-        RenderNode *child = m_renderer->renderNodesManager()->data(handle);
+        RenderEntity *child = m_renderer->renderNodesManager()->data(handle);
         if (child != Q_NULLPTR)
             childrenVector.append(child);
     }
     return childrenVector;
 }
 
-QMatrix4x4 *RenderNode::localTransform() { return m_renderer->localMatrixManager()->data(m_localTransform); }
+QMatrix4x4 *RenderEntity::localTransform() { return m_renderer->localMatrixManager()->data(m_localTransform); }
 
-QMatrix4x4 *RenderNode::worldTransform() { return m_renderer->worldMatrixManager()->data(m_worldTransform); }
+QMatrix4x4 *RenderEntity::worldTransform() { return m_renderer->worldMatrixManager()->data(m_worldTransform); }
 
 } // namespace Render
 } // namespace Qt3D

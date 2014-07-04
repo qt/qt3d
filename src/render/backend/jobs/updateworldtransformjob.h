@@ -51,18 +51,18 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
-class RenderNode;
+class RenderEntity;
 
 class UpdateWorldTransformJob : public QJob
 {
 public:
-    explicit UpdateWorldTransformJob(RenderNode *node);
+    explicit UpdateWorldTransformJob(RenderEntity *node);
 
 protected:
     void run() Q_DECL_OVERRIDE;
 
 private:
-    RenderNode *m_node;
+    RenderEntity *m_node;
 };
 
 typedef QSharedPointer<UpdateWorldTransformJob> UpdateWorldTransformJobPtr;

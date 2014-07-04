@@ -41,7 +41,7 @@
 
 #include "updateboundingvolumejob.h"
 
-#include <rendernode.h>
+#include <renderentity.h>
 #include <sphere.h>
 
 #include "renderlogging.h"
@@ -56,9 +56,9 @@ namespace Render {
 
 namespace {
 
-void expandWorldBoundingVolume(Qt3D::Render::RenderNode *node)
+void expandWorldBoundingVolume(Qt3D::Render::RenderEntity *node)
 {
-    Qt3D::Render::RenderNode *currentNode = node;
+    Qt3D::Render::RenderEntity *currentNode = node;
     QStack<int> childIndexStack;
     forever {
 
@@ -72,12 +72,12 @@ void expandWorldBoundingVolume(Qt3D::Render::RenderNode *node)
             return;
 
         // Initialize parent bounding volume to be equal to that of the first child
-        Qt3D::Render::RenderNode *parentNode = currentNode->parent();
+        Qt3D::Render::RenderEntity *parentNode = currentNode->parent();
         Qt3D::Sphere *parentBoundingVolume = parentNode->worldBoundingVolume();
         *(parentBoundingVolume) = *(currentNode->worldBoundingVolume());
 
         // Expand the parent bounding volume by each of remaining the siblings
-        QVector<RenderNode *> siblings = parentNode->children();
+        QVector<RenderEntity *> siblings = parentNode->children();
         const int siblingCount = siblings.count();
         for (int i = 1; i < siblingCount; ++i) {
             Qt3D::Sphere *siblingBoundingVolume = siblings.at(i)->worldBoundingVolume();
@@ -89,7 +89,7 @@ void expandWorldBoundingVolume(Qt3D::Render::RenderNode *node)
         currentNode = Q_NULLPTR;
         if (!childIndexStack.empty() && parentNode->parent()) {
             const int nextSiblingIndex = childIndexStack.top()++;
-            QVector<RenderNode *> parentSiblings = parentNode->parent()->children();
+            QVector<RenderEntity *> parentSiblings = parentNode->parent()->children();
             if (nextSiblingIndex < parentSiblings.size())
                 currentNode = parentSiblings.at(nextSiblingIndex);
         }
@@ -98,7 +98,7 @@ void expandWorldBoundingVolume(Qt3D::Render::RenderNode *node)
 
 }
 
-UpdateBoundingVolumeJob::UpdateBoundingVolumeJob(RenderNode *node)
+UpdateBoundingVolumeJob::UpdateBoundingVolumeJob(RenderEntity *node)
     : m_node(node)
 {
 }

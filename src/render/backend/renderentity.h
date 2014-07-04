@@ -61,20 +61,20 @@ class Transform;
 typedef QHandle<QMatrix4x4, 16> HMatrix;
 
 namespace Render {
-class RenderNode;
+class RenderEntity;
 }
-typedef QHandle<Render::RenderNode, 16> HRenderNode;
+typedef QHandle<Render::RenderEntity, 16> HRenderNode;
 
 namespace Render {
 
 class Renderer;
 class RenderNodesManager;
 
-class RenderNode : public QObserverInterface
+class RenderEntity : public QObserverInterface
 {
 public:
-    RenderNode();
-    ~RenderNode();
+    RenderEntity();
+    ~RenderEntity();
 
     void setTransform(Transform *transform);
     void setParentHandle(HRenderNode parentHandle);
@@ -86,12 +86,12 @@ public:
 
     void  setHandle(HRenderNode handle);
     HRenderNode handle() const { return m_handle; }
-    RenderNode *parent() const;
+    RenderEntity *parent() const;
     HRenderNode parentHandle() const { return m_parentHandle; }
 
     void appendChildHandle(HRenderNode childHandle);
     QVector<HRenderNode> childrenHandles() const { return m_childrenHandles; }
-    QVector<RenderNode *> children() const;
+    QVector<RenderEntity *> children() const;
 
     QMatrix4x4 *localTransform();
     QMatrix4x4 *worldTransform();

@@ -61,7 +61,7 @@ typedef QHandle<MeshData, 16> HMeshData;
 namespace Render {
 
 class Renderer;
-class RenderNode;
+class RenderEntity;
 class RenderMaterial;
 class RenderTechnique;
 

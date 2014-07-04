@@ -44,7 +44,7 @@
 #include "renderer.h"
 #include "rendercamera.h"
 #include "rendercommand.h"
-#include "rendernode.h"
+#include "renderentity.h"
 #include "meshdatamanager.h"
 #include "vaomanager.h"
 #include "meshmanager.h"
@@ -215,7 +215,7 @@ void RenderView::setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf)
             Entity *cameraEntity = cameraSelector->cameraEntity();
             if (cameraEntity != Q_NULLPTR) {
                 m_renderCamera = m_renderer->cameraManager()->lookupResource(cameraEntity->uuid());
-                RenderNode *tmpCamNode = m_renderer->renderNodesManager()->lookupResource(cameraEntity->uuid());
+                RenderEntity *tmpCamNode = m_renderer->renderNodesManager()->lookupResource(cameraEntity->uuid());
                 if (m_renderCamera && tmpCamNode)
                     m_renderCamera->setViewMatrix(*tmpCamNode->worldTransform());
             }
@@ -280,7 +280,7 @@ void RenderView::setAllocator(QFrameAllocator *allocator)
 // scene has been culled to the number of nodes in the culled
 // scene using reserve().
 // Tries to order renderCommand by shader so as to minimize shader changes
-void RenderView::buildRenderCommands(RenderNode *node)
+void RenderView::buildRenderCommands(RenderEntity *node)
 {
     // Build renderCommand for current node
 
@@ -328,7 +328,7 @@ void RenderView::buildRenderCommands(RenderNode *node)
     }
 
     // Traverse children
-    Q_FOREACH (RenderNode *child, node->children())
+    Q_FOREACH (RenderEntity *child, node->children())
         buildRenderCommands(child);
 }
 

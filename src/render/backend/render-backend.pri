@@ -16,7 +16,6 @@ HEADERS += \
     $$PWD/rendertechnique.h \
     $$PWD/rendercamera.h \
     $$PWD/quniformvalue.h \
-    $$PWD/rendernode.h \
     $$PWD/renderscenebuilder.h \
     $$PWD/rendertexture.h \
     $$PWD/rendertextureprovider.h \
@@ -49,7 +48,8 @@ HEADERS += \
     $$PWD/renderlayer.h \
     $$PWD/layermanager.h \
     $$PWD/renderlight.h \
-    $$PWD/lightmanager.h
+    $$PWD/lightmanager.h \
+    $$PWD/renderentity.h
 
 SOURCES += \
     $$PWD/rendereraspect.cpp \
@@ -64,7 +64,6 @@ SOURCES += \
     $$PWD/rendertechnique.cpp \
     $$PWD/rendercamera.cpp \
     $$PWD/quniformvalue.cpp \
-    $$PWD/rendernode.cpp \
     $$PWD/renderscenebuilder.cpp \
     $$PWD/rendertexture.cpp \
     $$PWD/rendertextureprovider.cpp \
@@ -95,4 +94,5 @@ SOURCES += \
     $$PWD/renderlayer.cpp \
     $$PWD/layermanager.cpp \
     $$PWD/renderlight.cpp \
-    $$PWD/lightmanager.cpp
+    $$PWD/lightmanager.cpp \
+    $$PWD/renderentity.cpp

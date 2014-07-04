@@ -92,7 +92,7 @@ public:
     void setRenderer(Renderer *renderer);
     void setAllocator(QFrameAllocator *allocator);
 
-    void buildRenderCommands(RenderNode *node);
+    void buildRenderCommands(RenderEntity *node);
     QVector<RenderCommand *> commands() const { return m_commands; }
 
     inline QRectF viewport() const { return m_viewport; }

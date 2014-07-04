@@ -42,7 +42,7 @@
 #include "updateworldtransformjob.h"
 
 #include <renderer.h>
-#include <rendernode.h>
+#include <renderentity.h>
 #include <sphere.h>
 
 #include "renderlogging.h"
@@ -55,7 +55,7 @@ namespace Render {
 
 namespace {
 
-void updateWorldTransformAndBounds(Qt3D::Render::RenderNode *node)
+void updateWorldTransformAndBounds(Qt3D::Render::RenderEntity *node)
 {
     QMatrix4x4 parentTransform;
     if (node->parent())
@@ -64,13 +64,13 @@ void updateWorldTransformAndBounds(Qt3D::Render::RenderNode *node)
     *(node->worldTransform()) = parentTransform * *(node->localTransform());
     *(node->worldBoundingVolume()) = node->localBoundingVolume()->transformed(*(node->worldTransform()));
 
-    Q_FOREACH (Qt3D::Render::RenderNode *child, node->children())
+    Q_FOREACH (Qt3D::Render::RenderEntity *child, node->children())
         updateWorldTransformAndBounds(child);
 }
 
 }
 
-UpdateWorldTransformJob::UpdateWorldTransformJob(RenderNode *node)
+UpdateWorldTransformJob::UpdateWorldTransformJob(RenderEntity *node)
     : Qt3D::QJob()
     , m_node(node)
 {

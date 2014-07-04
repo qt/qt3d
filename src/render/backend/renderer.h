@@ -86,7 +86,7 @@ class FrameGraphNode;
 class RenderMaterial;
 class RenderTechnique;
 class RenderShader;
-class RenderNode;
+class RenderEntity;
 class MeshDataManager;
 class MeshManager;
 class RenderCommand;
@@ -127,7 +127,7 @@ public:
 
     void setSceneGraphRoot(Entity *sgRoot);
     Entity *sceneGraphRoot() const;
-    RenderNode *renderSceneRoot() const { return m_renderSceneRoot; }
+    RenderEntity *renderSceneRoot() const { return m_renderSceneRoot; }
 
     void render();
     void doRender();
@@ -180,7 +180,7 @@ private:
     Render::FrameGraphNode *m_frameGraphRoot;
 
     Entity *m_sceneGraphRoot;
-    RenderNode *m_renderSceneRoot;
+    RenderEntity *m_renderSceneRoot;
 
     QHash<QMaterial*, RenderMaterial*> m_materialHash;
     QHash<QTechnique *, RenderTechnique*> m_techniqueHash;
