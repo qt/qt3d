@@ -39,54 +39,87 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_TRANSLATETRANSFORM_H
-#define QT3D_TRANSLATETRANSFORM_H
-
-#include <Qt3DCore/abstracttransform.h>
-#include <Qt3DCore/qt3dcore_global.h>
-
-#include <QVector3D>
+#include "qlookattransform.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DCORESHARED_EXPORT TranslateTransform : public AbstractTransform
+QLookAtTransform::QLookAtTransform(QNode *parent)
+    : QAbstractTransform(parent)
+    , m_matrixDirty(true)
 {
-    Q_OBJECT
+}
 
-    Q_PROPERTY(float dx READ dx WRITE setDx NOTIFY translateChanged)
-    Q_PROPERTY(float dy READ dy WRITE setDy NOTIFY translateChanged)
-    Q_PROPERTY(float dz READ dz WRITE setDz NOTIFY translateChanged)
-    Q_PROPERTY(QVector3D t READ translation WRITE setTranslation NOTIFY translateChanged)
+QMatrix4x4 QLookAtTransform::matrix() const
+{
+    if (m_matrixDirty) {
+        m_matrix.setToIdentity();
+        m_matrix.lookAt(m_position, m_viewCenter, m_upVector);
+        m_matrixDirty = false;
+    }
+    return m_matrix;
+}
 
-public:
-    explicit TranslateTransform(QNode *parent = 0);
+QVector3D QLookAtTransform::position() const
+{
+    return m_position;
+}
 
-    float dx() const;
-    float dy() const;
-    float dz() const;
+void QLookAtTransform::setPosition(const QVector3D &position)
+{
+    if (m_position != position) {
+        m_position = position;
+        m_viewVector = m_viewCenter - position;
+        m_matrixDirty = true;
+        emit positionChanged();
+        emit viewVectorChanged();
+        emit transformUpdated();
+    }
+}
 
-    QVector3D translation() const;
+void QLookAtTransform::setUpVector(const QVector3D &upVector)
+{
+    if (m_upVector != upVector) {
+        m_upVector = upVector;
+        m_matrixDirty = true;
+        emit upVectorChanged();
+        emit transformUpdated();
+    }
+}
 
-    virtual QMatrix4x4 matrix() const;
+QVector3D QLookAtTransform::upVector() const
+{
+    return m_upVector;
+}
 
-public slots:
-    void setDx(float arg);
-    void setDy(float arg);
-    void setDz(float arg);
+void QLookAtTransform::setViewCenter(const QVector3D &viewCenter)
+{
+    if (m_viewCenter != viewCenter) {
+        m_viewCenter = viewCenter;
+        m_viewVector = viewCenter - m_position;
+        m_matrixDirty = true;
+        emit viewCenterChanged();
+        emit viewVectorChanged();
+        emit transformUpdated();
+    }
+}
 
-    void setTranslation(QVector3D arg);
+QVector3D QLookAtTransform::viewCenter() const
+{
+    return m_viewCenter;
+}
 
-Q_SIGNALS:
-    void translateChanged();
+void QLookAtTransform::setViewVector(const QVector3D &viewVector)
+{
+    m_viewVector = viewVector;
+}
 
-private:
-    QVector3D m_translation;
-};
+QVector3D QLookAtTransform::viewVector() const
+{
+    return m_viewVector;
+}
 
 } // namespace Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_TRANSLATETRANSFORM_H

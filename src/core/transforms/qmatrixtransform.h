@@ -39,26 +39,32 @@
 **
 ****************************************************************************/
 
-#include "matrixtransform.h"
+#ifndef QT3D_QMATRIXTRANSFORM_H
+#define QT3D_QMATRIXTRANSFORM_H
+
+#include <Qt3DCore/qabstracttransform.h>
+#include <Qt3DCore/qt3dcore_global.h>
+
+#include <QMatrix4x4>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-MatrixTransform::MatrixTransform()
+class QT3DCORESHARED_EXPORT QMatrixTransform : public QAbstractTransform
 {
-}
+public:
+    QMatrixTransform();
 
-MatrixTransform::MatrixTransform(const QMatrix4x4& m) :
-    m_matrix(m)
-{
-}
+    QMatrixTransform( const QMatrix4x4& m );
 
-QMatrix4x4 MatrixTransform::matrix() const
-{
-    return m_matrix;
-}
+    virtual QMatrix4x4 matrix() const;
+private:
+    QMatrix4x4 m_matrix;
+};
 
 } // namespace Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_QMATRIXTRANSFORM_H

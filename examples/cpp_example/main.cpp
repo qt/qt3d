@@ -57,10 +57,10 @@
 #include <Qt3DRenderer/qrenderpass.h>
 #include <Qt3DRenderer/qscene.h>
 
-#include <Qt3DCore/translatetransform.h>
-#include <Qt3DCore/matrixtransform.h>
-#include <Qt3DCore/rotatetransform.h>
-#include <Qt3DCore/lookattransform.h>
+#include <Qt3DCore/qtranslatetransform.h>
+#include <Qt3DCore/qmatrixtransform.h>
+#include <Qt3DCore/qrotatetransform.h>
+#include <Qt3DCore/qlookattransform.h>
 #include <Qt3DCore/qtransform.h>
 
 #include <Qt3DRenderer/qcameraselector.h>
@@ -93,8 +93,8 @@ int main(int ac, char **av)
     torusEntity->addComponent(torus);
 
     // TorusMesh Transform
-    Qt3D::TranslateTransform *torusTranslation = new Qt3D::TranslateTransform();
-    Qt3D::RotateTransform *torusRotation = new Qt3D::RotateTransform();
+    Qt3D::QTranslateTransform *torusTranslation = new Qt3D::QTranslateTransform();
+    Qt3D::QRotateTransform *torusRotation = new Qt3D::QRotateTransform();
     Qt3D::QTransform *torusTransforms = new Qt3D::QTransform();
 
     torusTranslation->setTranslation(QVector3D(-5.0f, 3.5f, 2.0f));
@@ -108,7 +108,7 @@ int main(int ac, char **av)
     Qt3D::QScene  *scene = new Qt3D::QScene();
     scene->setObjectName(QStringLiteral("scene"));
     Qt3D::QTransform *sceneTransform = new Qt3D::QTransform();
-    Qt3D::TranslateTransform *sceneTranslateTransform = new Qt3D::TranslateTransform();
+    Qt3D::QTranslateTransform *sceneTranslateTransform = new Qt3D::QTranslateTransform();
     sceneTranslateTransform->setDx(2.5);
     sceneTranslateTransform->setDy(0.5);
     sceneTranslateTransform->setDz(-10);
@@ -122,7 +122,7 @@ int main(int ac, char **av)
     cameraEntity->setObjectName(QStringLiteral("cameraEntity"));
     Qt3D::CameraLens *cameraLens = new Qt3D::CameraLens();
     Qt3D::QTransform *cameraTransform = new Qt3D::QTransform();
-    Qt3D::LookAtTransform *cameraLookAtTransform = new Qt3D::LookAtTransform();
+    Qt3D::QLookAtTransform *cameraLookAtTransform = new Qt3D::QLookAtTransform();
 
     cameraLens->setPerspectiveProjection(60.0f, 16.0f/9.0f, 0.1f, 1000.0f);
     cameraLookAtTransform->setPosition(QVector3D(-5, 0, -20.0f));

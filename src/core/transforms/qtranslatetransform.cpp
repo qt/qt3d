@@ -39,57 +39,79 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_ROTATETRANSFORM_H
-#define QT3D_ROTATETRANSFORM_H
-
-#include <Qt3DCore/abstracttransform.h>
-#include <Qt3DCore/qt3dcore_global.h>
-
-#include <QVector3D>
+#include "qtranslatetransform.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DCORESHARED_EXPORT RotateTransform : public AbstractTransform
+QTranslateTransform::QTranslateTransform(QNode *parent)
+    : QAbstractTransform(parent)
 {
-    Q_OBJECT
+}
 
-    Q_PROPERTY(float angle READ angleDeg WRITE setAngleDeg NOTIFY angleChanged)
-    Q_PROPERTY(float angleRad READ angleRad WRITE setAngleRad NOTIFY angleChanged)
+float QTranslateTransform::dx() const
+{
+    return m_translation.x();
+}
 
-    Q_PROPERTY(QVector3D axis READ axis WRITE setAxis NOTIFY axisChanged)
+float QTranslateTransform::dy() const
+{
+    return m_translation.y();
+}
 
-public:
-    explicit RotateTransform(QNode *parent = 0);
+float QTranslateTransform::dz() const
+{
+    return m_translation.z();
+}
 
-    float angleDeg() const;
+QVector3D QTranslateTransform::translation() const
+{
+    return m_translation;
+}
 
-    float angleRad() const;
+QMatrix4x4 QTranslateTransform::matrix() const
+{
+    QMatrix4x4 r;
+    r.translate(m_translation);
+    return r;
+}
 
-    QVector3D axis() const;
+void QTranslateTransform::setDx(float arg)
+{
+    if (arg != m_translation.x()) {
+        m_translation.setX(arg);
+        emit translateChanged();
+        emit transformUpdated();
+    }
+}
 
-    virtual QMatrix4x4 matrix() const;
+void QTranslateTransform::setDy(float arg)
+{
+    if (arg != m_translation.y()) {
+        m_translation.setY(arg);
+        emit translateChanged();
+        emit transformUpdated();
+    }
+}
 
-public slots:
-    void setAngleDeg(float arg);
+void QTranslateTransform::setDz(float arg)
+{
+    if (arg != m_translation.z()) {
+        m_translation.setZ(arg);
+        emit translateChanged();
+        emit transformUpdated();
+    }
+}
 
-    void setAngleRad(float arg);
-
-    void setAxis(const QVector3D& arg);
-
-Q_SIGNALS:
-
-    void axisChanged();
-    void angleChanged();
-
-private:
-    float m_angleDeg;
-    QVector3D m_axis;
-};
+void QTranslateTransform::setTranslation(QVector3D arg)
+{
+    if (m_translation != arg) {
+        m_translation = arg;
+        emit translateChanged();
+    }
+}
 
 } // namespace Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_ROTATETRANSFORM_H

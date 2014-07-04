@@ -39,77 +39,30 @@
 **
 ****************************************************************************/
 
-#include "translatetransform.h"
+#include "qabstracttransform.h"
+#include "qabstracttransform_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-TranslateTransform::TranslateTransform(QNode *parent)
-    : AbstractTransform(parent)
+QAbstractTransformPrivate::QAbstractTransformPrivate(QAbstractTransform *qq)
+    : QNodePrivate(qq)
 {
 }
 
-float TranslateTransform::dx() const
+QAbstractTransform::QAbstractTransform(QNode *parent)
+    : QNode(*new QAbstractTransformPrivate(this), parent)
 {
-    return m_translation.x();
 }
 
-float TranslateTransform::dy() const
+QAbstractTransform::~QAbstractTransform()
 {
-    return m_translation.y();
 }
 
-float TranslateTransform::dz() const
+QAbstractTransform::QAbstractTransform(QAbstractTransformPrivate &dd, QNode *parent)
+    : QNode(dd, parent)
 {
-    return m_translation.z();
-}
-
-QVector3D TranslateTransform::translation() const
-{
-    return m_translation;
-}
-
-QMatrix4x4 TranslateTransform::matrix() const
-{
-    QMatrix4x4 r;
-    r.translate(m_translation);
-    return r;
-}
-
-void TranslateTransform::setDx(float arg)
-{
-    if (arg != m_translation.x()) {
-        m_translation.setX(arg);
-        emit translateChanged();
-        emit transformUpdated();
-    }
-}
-
-void TranslateTransform::setDy(float arg)
-{
-    if (arg != m_translation.y()) {
-        m_translation.setY(arg);
-        emit translateChanged();
-        emit transformUpdated();
-    }
-}
-
-void TranslateTransform::setDz(float arg)
-{
-    if (arg != m_translation.z()) {
-        m_translation.setZ(arg);
-        emit translateChanged();
-        emit transformUpdated();
-    }
-}
-
-void TranslateTransform::setTranslation(QVector3D arg)
-{
-    if (m_translation != arg) {
-        m_translation = arg;
-        emit translateChanged();
-    }
 }
 
 } // namespace Qt3D

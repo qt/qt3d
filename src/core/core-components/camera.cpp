@@ -43,7 +43,7 @@
 #include "camera_p.h"
 #include "cameralens.h"
 #include <qtransform.h>
-#include <lookattransform.h>
+#include <qlookattransform.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -96,7 +96,7 @@ void Camera::setTransform(QTransform *transform)
 void Camera::translate( const QVector3D& vLocal, CameraTranslationOption option )
 {
     Q_D(Camera);
-    LookAtTransform *lookAt = d->m_transform->findFirstTransform<LookAtTransform>();
+    QLookAtTransform *lookAt = d->m_transform->findFirstTransform<QLookAtTransform>();
     if (lookAt == Q_NULLPTR)
         return;
 
@@ -138,7 +138,7 @@ void Camera::translate( const QVector3D& vLocal, CameraTranslationOption option 
 void Camera::translateWorld(const QVector3D& vWorld , CameraTranslationOption option )
 {
     Q_D(Camera);
-    LookAtTransform *lookAt = d->m_transform->findFirstTransform<LookAtTransform>();
+    QLookAtTransform *lookAt = d->m_transform->findFirstTransform<QLookAtTransform>();
     if (lookAt == Q_NULLPTR)
         return ;
 
@@ -156,7 +156,7 @@ void Camera::translateWorld(const QVector3D& vWorld , CameraTranslationOption op
 QQuaternion Camera::tiltRotation(float angle) const
 {
     Q_D(const Camera);
-    LookAtTransform *lookAt = d->m_transform->findFirstTransform<LookAtTransform>();
+    QLookAtTransform *lookAt = d->m_transform->findFirstTransform<QLookAtTransform>();
     if (lookAt == Q_NULLPTR)
         return QQuaternion();
     QVector3D xBasis = QVector3D::crossProduct( lookAt->upVector(),
@@ -167,7 +167,7 @@ QQuaternion Camera::tiltRotation(float angle) const
 QQuaternion Camera::panRotation(float angle) const
 {
     Q_D(const Camera);
-    LookAtTransform *lookAt = d->m_transform->findFirstTransform<LookAtTransform>();
+    QLookAtTransform *lookAt = d->m_transform->findFirstTransform<QLookAtTransform>();
     if (lookAt == Q_NULLPTR)
         return QQuaternion();
     return QQuaternion::fromAxisAndAngle( lookAt->upVector(), angle );
@@ -176,7 +176,7 @@ QQuaternion Camera::panRotation(float angle) const
 QQuaternion Camera::rollRotation(float angle) const
 {
     Q_D(const Camera);
-    LookAtTransform *lookAt = d->m_transform->findFirstTransform<LookAtTransform>();
+    QLookAtTransform *lookAt = d->m_transform->findFirstTransform<QLookAtTransform>();
     if (lookAt == Q_NULLPTR)
         return QQuaternion();
     return QQuaternion::fromAxisAndAngle( lookAt->viewVector(), -angle );
@@ -221,7 +221,7 @@ void Camera::rollAboutViewCenter( const float& angle )
 void Camera::rotate( const QQuaternion& q )
 {
     Q_D(Camera);
-    LookAtTransform *lookAt = d->m_transform->findFirstTransform<LookAtTransform>();
+    QLookAtTransform *lookAt = d->m_transform->findFirstTransform<QLookAtTransform>();
     if (lookAt == Q_NULLPTR)
         return ;
     lookAt->setUpVector(q.rotatedVector(lookAt->upVector()));
@@ -232,7 +232,7 @@ void Camera::rotate( const QQuaternion& q )
 void Camera::rotateAboutViewCenter( const QQuaternion& q )
 {
     Q_D(Camera);
-    LookAtTransform *lookAt = d->m_transform->findFirstTransform<LookAtTransform>();
+    QLookAtTransform *lookAt = d->m_transform->findFirstTransform<QLookAtTransform>();
     if (lookAt == Q_NULLPTR)
         return ;
     lookAt->setUpVector(q.rotatedVector(lookAt->upVector()));

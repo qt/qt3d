@@ -46,7 +46,7 @@
 #include <QVector3D>
 
 #include <Qt3DCore/cameralens.h>
-#include <Qt3DCore/lookattransform.h>
+#include <Qt3DCore/qlookattransform.h>
 #include <Qt3DCore/qtransform.h>
 
 QT_BEGIN_NAMESPACE

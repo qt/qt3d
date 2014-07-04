@@ -43,7 +43,7 @@
 #include "qtransform_p.h"
 
 #include <Qt3DCore/qscenepropertychange.h>
-#include <matrixtransform.h>
+#include <qmatrixtransform.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -97,7 +97,7 @@ void QTransform::setMatrix(const QMatrix4x4 &m)
     Q_D(QTransform);
     qDeleteAll(d->m_transforms);
     d->m_transforms.clear();
-    appendTransform(new MatrixTransform(m));
+    appendTransform(new QMatrixTransform(m));
     setTransformsDirty();
 }
 
@@ -109,7 +109,7 @@ QVector3D QTransform::rotationCenter() const
     return QVector3D();
 }
 
-QList<AbstractTransform *> QTransform::transforms() const
+QList<QAbstractTransform *> QTransform::transforms() const
 {
     Q_D(const QTransform);
     return d->m_transforms;
@@ -123,7 +123,7 @@ void QTransform::setRotationCenter(const QVector3D &rc)
     Q_UNUSED(rc);
 }
 
-void QTransform::appendTransform(AbstractTransform *transform)
+void QTransform::appendTransform(QAbstractTransform *transform)
 {
     Q_D(QTransform);
     d->m_transforms.append(transform);
@@ -131,7 +131,7 @@ void QTransform::appendTransform(AbstractTransform *transform)
     setTransformsDirty();
 }
 
-void QTransform::removeTransform(AbstractTransform *transform)
+void QTransform::removeTransform(QAbstractTransform *transform)
 {
     Q_D(QTransform);
     d->m_transforms.removeOne(transform);
@@ -143,12 +143,12 @@ QMatrix4x4 QTransform::applyTransforms() const
 {
     Q_D(const QTransform);
     QMatrix4x4 m;
-    Q_FOREACH (const AbstractTransform *t, d->m_transforms)
+    Q_FOREACH (const QAbstractTransform *t, d->m_transforms)
         m = t->matrix() * m;
     return m;
 }
 
-QList<AbstractTransform *> QTransform::transformList() const
+QList<QAbstractTransform *> QTransform::transformList() const
 {
     Q_D(const QTransform);
     return d->m_transforms;

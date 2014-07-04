@@ -55,9 +55,9 @@
 #include <Qt3DRenderer/qrenderpass.h>
 #include <Qt3DRenderer/qscene.h>
 
-#include <Qt3DCore/scaletransform.h>
-#include <Qt3DCore/rotatetransform.h>
-#include <Qt3DCore/lookattransform.h>
+#include <Qt3DCore/qscaletransform.h>
+#include <Qt3DCore/qrotatetransform.h>
+#include <Qt3DCore/qlookattransform.h>
 #include <Qt3DCore/qtransform.h>
 
 #include <Qt3DRenderer/qcameraselector.h>
@@ -82,7 +82,7 @@ int main(int argc, char **argv)
     cameraEntity->setObjectName(QStringLiteral("cameraEntity"));
     Qt3D::CameraLens *cameraLens = new Qt3D::CameraLens();
     Qt3D::QTransform *cameraTransform = new Qt3D::QTransform();
-    Qt3D::LookAtTransform *cameraLookAtTransform = new Qt3D::LookAtTransform();
+    Qt3D::QLookAtTransform *cameraLookAtTransform = new Qt3D::QLookAtTransform();
 
     cameraLens->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
     cameraLookAtTransform->setPosition(QVector3D(0, 0, -20.0f));
@@ -118,8 +118,8 @@ int main(int argc, char **argv)
     torus->setSlices(20);
 
     // TorusMesh Transform
-    Qt3D::ScaleTransform *torusScale = new Qt3D::ScaleTransform();
-    Qt3D::RotateTransform *torusRotation = new Qt3D::RotateTransform();
+    Qt3D::QScaleTransform *torusScale = new Qt3D::QScaleTransform();
+    Qt3D::QRotateTransform *torusRotation = new Qt3D::QRotateTransform();
     Qt3D::QTransform *torusTransforms = new Qt3D::QTransform();
 
     torusScale->setScale3D(QVector3D(1.5f, 1.0f, 0.5f));

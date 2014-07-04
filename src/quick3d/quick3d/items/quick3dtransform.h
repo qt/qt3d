@@ -58,19 +58,19 @@ namespace Quick {
 class QT3DQUICKSHARED_EXPORT Quick3DTransform : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3D::AbstractTransform> transforms READ transformList)
+    Q_PROPERTY(QQmlListProperty<Qt3D::QAbstractTransform> transforms READ transformList)
     Q_CLASSINFO("DefaultProperty", "transforms")
 public:
     explicit Quick3DTransform(QObject *parent = 0);
-    QQmlListProperty<Qt3D::AbstractTransform> transformList();
+    QQmlListProperty<Qt3D::QAbstractTransform> transformList();
 
     inline QTransform *parentTransform() const { return qobject_cast<Qt3D::QTransform *>(parent()); }
 
 private:
-    static void qmlAppendTransform(QQmlListProperty<Qt3D::AbstractTransform> *list, Qt3D::AbstractTransform *bar);
-    static AbstractTransform* transformAt(QQmlListProperty<Qt3D::AbstractTransform> *list, int index);
-    static int transformCount(QQmlListProperty<Qt3D::AbstractTransform> *list);
-    static void qmlClearTransforms(QQmlListProperty<Qt3D::AbstractTransform> *list);
+    static void qmlAppendTransform(QQmlListProperty<Qt3D::QAbstractTransform> *list, Qt3D::QAbstractTransform *bar);
+    static QAbstractTransform* transformAt(QQmlListProperty<Qt3D::QAbstractTransform> *list, int index);
+    static int transformCount(QQmlListProperty<Qt3D::QAbstractTransform> *list);
+    static void qmlClearTransforms(QQmlListProperty<Qt3D::QAbstractTransform> *list);
 };
 
 } //Quick

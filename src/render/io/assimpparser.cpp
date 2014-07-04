@@ -43,7 +43,7 @@
 
 #include <Qt3DCore/qtransform.h>
 #include <parameter.h>
-#include <Qt3DCore/matrixtransform.h>
+#include <Qt3DCore/qmatrixtransform.h>
 #include <Qt3DCore/cameralens.h>
 #include <qmesh.h>
 #include <QFileInfo>

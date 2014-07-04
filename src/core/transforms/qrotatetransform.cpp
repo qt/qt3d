@@ -40,7 +40,7 @@
 ****************************************************************************/
 
 #define _USE_MATH_DEFINES // For MSVC
-#include "rotatetransform.h"
+#include "qrotatetransform.h"
 
 #include <cmath>
 
@@ -48,35 +48,35 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-RotateTransform::RotateTransform(QNode *parent)
-    : AbstractTransform(parent),
+QRotateTransform::QRotateTransform(QNode *parent)
+    : QAbstractTransform(parent),
       m_angleDeg(0)
 {
 }
 
-float RotateTransform::angleDeg() const
+float QRotateTransform::angleDeg() const
 {
     return m_angleDeg;
 }
 
-float Qt3D::RotateTransform::angleRad() const
+float Qt3D::QRotateTransform::angleRad() const
 {
     return (m_angleDeg / 180.0) * M_PI;
 }
 
-QVector3D RotateTransform::axis() const
+QVector3D QRotateTransform::axis() const
 {
     return m_axis;
 }
 
-QMatrix4x4 RotateTransform::matrix() const
+QMatrix4x4 QRotateTransform::matrix() const
 {
     QMatrix4x4 m;
     m.rotate(m_angleDeg, m_axis);
     return m;
 }
 
-void RotateTransform::setAngleDeg(float arg)
+void QRotateTransform::setAngleDeg(float arg)
 {
     if (m_angleDeg != arg) {
         m_angleDeg = arg;
@@ -85,13 +85,13 @@ void RotateTransform::setAngleDeg(float arg)
     }
 }
 
-void RotateTransform::setAngleRad(float arg)
+void QRotateTransform::setAngleRad(float arg)
 {
     float angleDeg = (arg * M_PI) / 180.0f;
     setAngleDeg(angleDeg);
 }
 
-void RotateTransform::setAxis(const QVector3D& arg)
+void QRotateTransform::setAxis(const QVector3D& arg)
 {
     if (m_axis != arg) {
         m_axis = arg;

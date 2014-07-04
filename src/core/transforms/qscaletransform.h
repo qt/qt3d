@@ -39,32 +39,42 @@
 **
 ****************************************************************************/
 
-#ifndef MATRIXTRANSFORM_H
-#define MATRIXTRANSFORM_H
+#ifndef QT3D_SCALETRANSFORM_H
+#define QT3D_SCALETRANSFORM_H
 
-#include <Qt3DCore/abstracttransform.h>
-#include <Qt3DCore/qt3dcore_global.h>
-
-#include <QMatrix4x4>
+#include <Qt3DCore/qabstracttransform.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DCORESHARED_EXPORT MatrixTransform : public AbstractTransform
+class QT3DCORESHARED_EXPORT QScaleTransform : public QAbstractTransform
 {
+    Q_OBJECT
+
+    Q_PROPERTY(QVector3D scale3D READ scale3D WRITE setScale3D NOTIFY scale3DChanged)
+    Q_PROPERTY(float scale READ scale WRITE setScale NOTIFY scaleChanged)
 public:
-    MatrixTransform();
+    explicit QScaleTransform(QNode *parent = 0);
 
-    MatrixTransform( const QMatrix4x4& m );
+    QVector3D scale3D() const;
+    void    setScale3D(const QVector3D &scale3D);
 
-    virtual QMatrix4x4 matrix() const;
+    float   scale() const;
+    void    setScale(float scale);
+
+    QMatrix4x4 matrix() const Q_DECL_OVERRIDE;
+
+Q_SIGNALS:
+    void    scale3DChanged();
+    void    scaleChanged();
+
 private:
-    QMatrix4x4 m_matrix;
+    QVector3D m_scale3D;
 };
 
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // MATRIXTRANSFORM_H
+#endif // QT3D_SCALETRANSFORM_H

@@ -40,7 +40,7 @@
 ****************************************************************************/
 
 #include "quick3dtransform.h"
-#include <Qt3DCore/abstracttransform.h>
+#include <Qt3DCore/qabstracttransform.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -53,16 +53,16 @@ Quick3DTransform::Quick3DTransform(QObject *parent)
 {
 }
 
-QQmlListProperty<AbstractTransform> Quick3DTransform::transformList()
+QQmlListProperty<QAbstractTransform> Quick3DTransform::transformList()
 {
-    return QQmlListProperty<AbstractTransform>(this, 0,
+    return QQmlListProperty<QAbstractTransform>(this, 0,
                                                Quick3DTransform::qmlAppendTransform,
                                                Quick3DTransform::transformCount,
                                                Quick3DTransform::transformAt,
                                                Quick3DTransform::qmlClearTransforms);
 }
 
-void Quick3DTransform::qmlAppendTransform(QQmlListProperty<AbstractTransform> *list, AbstractTransform *obj  )
+void Quick3DTransform::qmlAppendTransform(QQmlListProperty<QAbstractTransform> *list, QAbstractTransform *obj  )
 {
     if ( !obj )
         return;
@@ -71,22 +71,22 @@ void Quick3DTransform::qmlAppendTransform(QQmlListProperty<AbstractTransform> *l
     self->parentTransform()->appendTransform(obj);
 }
 
-AbstractTransform* Quick3DTransform::transformAt(QQmlListProperty<AbstractTransform> *list, int index)
+QAbstractTransform* Quick3DTransform::transformAt(QQmlListProperty<QAbstractTransform> *list, int index)
 {
     Quick3DTransform *self = static_cast<Quick3DTransform *>(list->object);
     return self->parentTransform()->transforms().at(index);
 }
 
-int Quick3DTransform::transformCount(QQmlListProperty<AbstractTransform> *list)
+int Quick3DTransform::transformCount(QQmlListProperty<QAbstractTransform> *list)
 {
     Quick3DTransform *self = static_cast<Quick3DTransform *>(list->object);
     return self->parentTransform()->transforms().count();
 }
 
-void Quick3DTransform::qmlClearTransforms(QQmlListProperty<AbstractTransform> *list)
+void Quick3DTransform::qmlClearTransforms(QQmlListProperty<QAbstractTransform> *list)
 {
     Quick3DTransform *self = static_cast<Quick3DTransform *>(list->object);
-    Q_FOREACH (AbstractTransform *trans, self->parentTransform()->transforms())
+    Q_FOREACH (QAbstractTransform *trans, self->parentTransform()->transforms())
         self->parentTransform()->removeTransform(trans);
 }
 

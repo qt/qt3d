@@ -39,32 +39,26 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_ABSTRACT_TRANSFORM_H
-#define QT3D_ABSTRACT_TRANSFORM_H
-
-#include <Qt3DCore/qnode.h>
-#include <Qt3DCore/qt3dcore_global.h>
-
-#include <QMatrix4x4>
+#include "qmatrixtransform.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DCORESHARED_EXPORT AbstractTransform : public QNode
+QMatrixTransform::QMatrixTransform()
 {
-    Q_OBJECT
-public:
-    explicit AbstractTransform(QNode *parent = 0);
-    virtual ~AbstractTransform();
+}
 
-    virtual QMatrix4x4 matrix() const = 0;
-Q_SIGNALS:
-    void transformUpdated();
-};
+QMatrixTransform::QMatrixTransform(const QMatrix4x4& m) :
+    m_matrix(m)
+{
+}
+
+QMatrix4x4 QMatrixTransform::matrix() const
+{
+    return m_matrix;
+}
 
 } // namespace Qt3D
 
 QT_END_NAMESPACE
-
-#endif // of QT3D_ABSTRACT_TRANSFORM_H

@@ -39,60 +39,37 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_LOOKATTRANSFORM_H
-#define QT3D_LOOKATTRANSFORM_H
+#ifndef QT3D_QABSTRACT_TRANSFORM_H
+#define QT3D_QABSTRACT_TRANSFORM_H
 
-#include <Qt3DCore/abstracttransform.h>
+#include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qt3dcore_global.h>
 
-#include <QVector3D>
+#include <QMatrix4x4>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DCORESHARED_EXPORT LookAtTransform : public Qt3D::AbstractTransform
+class QAbstractTransformPrivate;
+
+class QT3DCORESHARED_EXPORT QAbstractTransform : public QNode
 {
     Q_OBJECT
-    Q_PROPERTY(QVector3D position READ position WRITE setPosition)
-    Q_PROPERTY(QVector3D upVector READ upVector WRITE setUpVector)
-    Q_PROPERTY(QVector3D viewCenter READ viewCenter WRITE setViewCenter)
-    Q_PROPERTY(QVector3D viewVector READ viewVector NOTIFY viewVectorChanged)
-
 public:
-    explicit LookAtTransform(QNode *parent = 0);
+    explicit QAbstractTransform(QNode *parent = 0);
+    virtual ~QAbstractTransform();
 
-    QMatrix4x4 matrix() const Q_DECL_OVERRIDE;
-
-    void setPosition(const QVector3D &position);
-    QVector3D position() const;
-
-    void setUpVector(const QVector3D &upVector);
-    QVector3D upVector() const;
-
-    void setViewCenter(const QVector3D &viewCenter);
-    QVector3D viewCenter() const;
-
-    void setViewVector(const QVector3D &viewVector);
-    QVector3D viewVector() const;
-
+    virtual QMatrix4x4 matrix() const = 0;
 Q_SIGNALS:
-    void positionChanged();
-    void upVectorChanged();
-    void viewCenterChanged();
-    void viewVectorChanged();
-
-private:
-    mutable QMatrix4x4 m_matrix;
-    QVector3D m_position;
-    QVector3D m_upVector;
-    QVector3D m_viewCenter;
-    QVector3D m_viewVector; // From "camera" position to view center
-    mutable bool m_matrixDirty;
+    void transformUpdated();
+protected:
+    Q_DECLARE_PRIVATE(QAbstractTransform)
+    QAbstractTransform(QAbstractTransformPrivate &dd, QNode *parent = 0);
 };
 
 } // namespace Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_LOOKATTRANSFORM_H
+#endif // of QT3D_QABSTRACT_TRANSFORM_H

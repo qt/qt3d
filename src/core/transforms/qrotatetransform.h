@@ -39,42 +39,57 @@
 **
 ****************************************************************************/
 
-#ifndef SCALETRANSFORM_H
-#define SCALETRANSFORM_H
+#ifndef QT3D_QROTATETRANSFORM_H
+#define QT3D_QROTATETRANSFORM_H
 
-#include <Qt3DCore/abstracttransform.h>
+#include <Qt3DCore/qabstracttransform.h>
+#include <Qt3DCore/qt3dcore_global.h>
+
+#include <QVector3D>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DCORESHARED_EXPORT ScaleTransform : public AbstractTransform
+class QT3DCORESHARED_EXPORT QRotateTransform : public QAbstractTransform
 {
     Q_OBJECT
 
-    Q_PROPERTY(QVector3D scale3D READ scale3D WRITE setScale3D NOTIFY scale3DChanged)
-    Q_PROPERTY(float scale READ scale WRITE setScale NOTIFY scaleChanged)
+    Q_PROPERTY(float angle READ angleDeg WRITE setAngleDeg NOTIFY angleChanged)
+    Q_PROPERTY(float angleRad READ angleRad WRITE setAngleRad NOTIFY angleChanged)
+
+    Q_PROPERTY(QVector3D axis READ axis WRITE setAxis NOTIFY axisChanged)
+
 public:
-    explicit ScaleTransform(QNode *parent = 0);
+    explicit QRotateTransform(QNode *parent = 0);
 
-    QVector3D scale3D() const;
-    void    setScale3D(const QVector3D &scale3D);
+    float angleDeg() const;
 
-    float   scale() const;
-    void    setScale(float scale);
+    float angleRad() const;
 
-    QMatrix4x4 matrix() const Q_DECL_OVERRIDE;
+    QVector3D axis() const;
+
+    virtual QMatrix4x4 matrix() const;
+
+public slots:
+    void setAngleDeg(float arg);
+
+    void setAngleRad(float arg);
+
+    void setAxis(const QVector3D& arg);
 
 Q_SIGNALS:
-    void    scale3DChanged();
-    void    scaleChanged();
+
+    void axisChanged();
+    void angleChanged();
 
 private:
-    QVector3D m_scale3D;
+    float m_angleDeg;
+    QVector3D m_axis;
 };
 
-} // Qt3D
+} // namespace Qt3D
 
 QT_END_NAMESPACE
 
-#endif // SCALETRANSFORM_H
+#endif // QT3D_QROTATETRANSFORM_H

@@ -39,52 +39,28 @@
 **
 ****************************************************************************/
 
-#include "scaletransform.h"
+#ifndef QT3D_QABSTRACTTRANSFORM_P_H
+#define QT3D_QABSTRACTTRANSFORM_P_H
+
+#include <private/qnode_p.h>
+#include <Qt3DCore/qt3dcore_global.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D
-{
+namespace Qt3D {
 
-ScaleTransform::ScaleTransform(QNode *parent) :
-    AbstractTransform(parent)
-{
-}
+class QAbstractTransform;
 
-QVector3D ScaleTransform::scale3D() const
+class QT3DCORESHARED_EXPORT QAbstractTransformPrivate : public QNodePrivate
 {
-    return m_scale3D;
-}
-
-void ScaleTransform::setScale3D(const QVector3D &scale3D)
-{
-    if (scale3D != m_scale3D) {
-        m_scale3D = scale3D;
-        emit scale3DChanged();
-        emit transformUpdated();
-    }
-}
-
-float ScaleTransform::scale() const
-{
-    return m_scale3D.x();
-}
-
-void ScaleTransform::setScale(float scale)
-{
-    if (scale != m_scale3D.x()) {
-        setScale3D(QVector3D(scale, scale, scale));
-        emit scaleChanged();
-    }
-}
-
-QMatrix4x4 ScaleTransform::matrix() const
-{
-    QMatrix4x4 mat;
-    mat.scale(m_scale3D);
-    return mat;
-}
+public:
+    QAbstractTransformPrivate(QAbstractTransform *qq);
+    Q_DECLARE_PUBLIC(QAbstractTransform)
+};
 
 } // Qt3D
 
 QT_END_NAMESPACE
+
+
+#endif // QT3D_QABSTRACTTRANSFORM_P_H

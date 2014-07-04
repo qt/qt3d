@@ -39,21 +39,54 @@
 **
 ****************************************************************************/
 
-#include "abstracttransform.h"
+#ifndef QT3D_QTRANSLATETRANSFORM_H
+#define QT3D_QTRANSLATETRANSFORM_H
+
+#include <Qt3DCore/qabstracttransform.h>
+#include <Qt3DCore/qt3dcore_global.h>
+
+#include <QVector3D>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-AbstractTransform::AbstractTransform(QNode *parent)
-    : QNode(parent)
+class QT3DCORESHARED_EXPORT QTranslateTransform : public QAbstractTransform
 {
-}
+    Q_OBJECT
 
-AbstractTransform::~AbstractTransform()
-{
-}
+    Q_PROPERTY(float dx READ dx WRITE setDx NOTIFY translateChanged)
+    Q_PROPERTY(float dy READ dy WRITE setDy NOTIFY translateChanged)
+    Q_PROPERTY(float dz READ dz WRITE setDz NOTIFY translateChanged)
+    Q_PROPERTY(QVector3D t READ translation WRITE setTranslation NOTIFY translateChanged)
+
+public:
+    explicit QTranslateTransform(QNode *parent = 0);
+
+    float dx() const;
+    float dy() const;
+    float dz() const;
+
+    QVector3D translation() const;
+
+    virtual QMatrix4x4 matrix() const;
+
+public slots:
+    void setDx(float arg);
+    void setDy(float arg);
+    void setDz(float arg);
+
+    void setTranslation(QVector3D arg);
+
+Q_SIGNALS:
+    void translateChanged();
+
+private:
+    QVector3D m_translation;
+};
 
 } // namespace Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_QTRANSLATETRANSFORM_H

@@ -39,87 +39,52 @@
 **
 ****************************************************************************/
 
-#include "lookattransform.h"
+#include "qscaletransform.h"
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3D
+{
 
-LookAtTransform::LookAtTransform(QNode *parent)
-    : AbstractTransform(parent)
-    , m_matrixDirty(true)
+QScaleTransform::QScaleTransform(QNode *parent) :
+    QAbstractTransform(parent)
 {
 }
 
-QMatrix4x4 LookAtTransform::matrix() const
+QVector3D QScaleTransform::scale3D() const
 {
-    if (m_matrixDirty) {
-        m_matrix.setToIdentity();
-        m_matrix.lookAt(m_position, m_viewCenter, m_upVector);
-        m_matrixDirty = false;
-    }
-    return m_matrix;
+    return m_scale3D;
 }
 
-QVector3D LookAtTransform::position() const
+void QScaleTransform::setScale3D(const QVector3D &scale3D)
 {
-    return m_position;
-}
-
-void LookAtTransform::setPosition(const QVector3D &position)
-{
-    if (m_position != position) {
-        m_position = position;
-        m_viewVector = m_viewCenter - position;
-        m_matrixDirty = true;
-        emit positionChanged();
-        emit viewVectorChanged();
+    if (scale3D != m_scale3D) {
+        m_scale3D = scale3D;
+        emit scale3DChanged();
         emit transformUpdated();
     }
 }
 
-void LookAtTransform::setUpVector(const QVector3D &upVector)
+float QScaleTransform::scale() const
 {
-    if (m_upVector != upVector) {
-        m_upVector = upVector;
-        m_matrixDirty = true;
-        emit upVectorChanged();
-        emit transformUpdated();
+    return m_scale3D.x();
+}
+
+void QScaleTransform::setScale(float scale)
+{
+    if (scale != m_scale3D.x()) {
+        setScale3D(QVector3D(scale, scale, scale));
+        emit scaleChanged();
     }
 }
 
-QVector3D LookAtTransform::upVector() const
+QMatrix4x4 QScaleTransform::matrix() const
 {
-    return m_upVector;
+    QMatrix4x4 mat;
+    mat.scale(m_scale3D);
+    return mat;
 }
 
-void LookAtTransform::setViewCenter(const QVector3D &viewCenter)
-{
-    if (m_viewCenter != viewCenter) {
-        m_viewCenter = viewCenter;
-        m_viewVector = viewCenter - m_position;
-        m_matrixDirty = true;
-        emit viewCenterChanged();
-        emit viewVectorChanged();
-        emit transformUpdated();
-    }
-}
-
-QVector3D LookAtTransform::viewCenter() const
-{
-    return m_viewCenter;
-}
-
-void LookAtTransform::setViewVector(const QVector3D &viewVector)
-{
-    m_viewVector = viewVector;
-}
-
-QVector3D LookAtTransform::viewVector() const
-{
-    return m_viewVector;
-}
-
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE

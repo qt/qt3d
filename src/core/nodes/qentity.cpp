@@ -42,8 +42,8 @@
 #include "qentity.h"
 #include "qentity_p.h"
 #include "qcomponent.h"
-#include "abstracttransform.h"
-#include "matrixtransform.h"
+#include "qabstracttransform.h"
+#include "qmatrixtransform.h"
 
 #include <Qt3DCore/qscenepropertychange.h>
 #include <QMetaObject>

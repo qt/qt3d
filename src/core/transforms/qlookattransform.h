@@ -39,62 +39,60 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QTRANSFORM_H
-#define QT3D_QTRANSFORM_H
+#ifndef QT3D_QLOOKATTRANSFORM_H
+#define QT3D_QLOOKATTRANSFORM_H
 
-#include <Qt3DCore/qcomponent.h>
+#include <Qt3DCore/qabstracttransform.h>
 #include <Qt3DCore/qt3dcore_global.h>
-#include <QAtomicInt>
-#include <QMatrix4x4>
+
+#include <QVector3D>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAbstractTransform;
-class QTransformPrivate;
-
-class QT3DCORESHARED_EXPORT QTransform : public QComponent
+class QT3DCORESHARED_EXPORT QLookAtTransform : public Qt3D::QAbstractTransform
 {
     Q_OBJECT
+    Q_PROPERTY(QVector3D position READ position WRITE setPosition)
+    Q_PROPERTY(QVector3D upVector READ upVector WRITE setUpVector)
+    Q_PROPERTY(QVector3D viewCenter READ viewCenter WRITE setViewCenter)
+    Q_PROPERTY(QVector3D viewVector READ viewVector NOTIFY viewVectorChanged)
 
 public:
-    explicit QTransform(QNode *parent = 0);
+    explicit QLookAtTransform(QNode *parent = 0);
 
-    QMatrix4x4 matrix() const;
-    void setMatrix(const QMatrix4x4 &m);
+    QMatrix4x4 matrix() const Q_DECL_OVERRIDE;
 
-    QVector3D rotationCenter() const;
-    void setRotationCenter(const QVector3D &rc);
+    void setPosition(const QVector3D &position);
+    QVector3D position() const;
 
-    QList<QAbstractTransform*> transforms() const;
+    void setUpVector(const QVector3D &upVector);
+    QVector3D upVector() const;
 
-    template <class T>
-    T *findFirstTransform() const
-    {
-        T *transform = Q_NULLPTR;
-        Q_FOREACH (QAbstractTransform *trans, transformList())
-            if ((transform = qobject_cast<T*>(trans)) != Q_NULLPTR)
-                break;
-        return transform;
-    }
+    void setViewCenter(const QVector3D &viewCenter);
+    QVector3D viewCenter() const;
 
-    void appendTransform(QAbstractTransform *xform);
-    void removeTransform(QAbstractTransform *xform);
+    void setViewVector(const QVector3D &viewVector);
+    QVector3D viewVector() const;
 
-private Q_SLOTS:
-    void setTransformsDirty();
+Q_SIGNALS:
+    void positionChanged();
+    void upVectorChanged();
+    void viewCenterChanged();
+    void viewVectorChanged();
 
-protected:
-    QMatrix4x4 applyTransforms() const;
-    QList<QAbstractTransform *> transformList() const;
-
-    Q_DECLARE_PRIVATE(QTransform)
-    QTransform(QTransformPrivate &dd, QNode *parent = 0);
+private:
+    mutable QMatrix4x4 m_matrix;
+    QVector3D m_position;
+    QVector3D m_upVector;
+    QVector3D m_viewCenter;
+    QVector3D m_viewVector; // From "camera" position to view center
+    mutable bool m_matrixDirty;
 };
 
 } // namespace Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QTRANSFORM_H
+#endif // QT3D_QLOOKATTRANSFORM_H

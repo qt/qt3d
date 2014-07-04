@@ -52,7 +52,7 @@
 #include <qeffect.h>
 #include <Qt3DCore/camera.h>
 #include <Qt3DCore/qtransform.h>
-#include <Qt3DCore/matrixtransform.h>
+#include <Qt3DCore/qmatrixtransform.h>
 #include <Qt3DCore/cameralens.h>
 #include <texture.h>
 #include <parameter.h>
@@ -389,7 +389,7 @@ QEntity* GLTFParser::node(QString id)
 
         // ADD MATRIX TRANSFORM COMPONENT TO ENTITY
         QTransform *trans = new QTransform();
-        trans->appendTransform(new MatrixTransform(m));
+        trans->appendTransform(new QMatrixTransform(m));
         result->addComponent(trans);
     }
 
