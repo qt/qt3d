@@ -51,6 +51,8 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class QTranslateTransformPrivate;
+
 class QT3DCORESHARED_EXPORT QTranslateTransform : public QAbstractTransform
 {
     Q_OBJECT
@@ -69,7 +71,7 @@ public:
 
     QVector3D translation() const;
 
-    virtual QMatrix4x4 matrix() const;
+    QMatrix4x4 matrix() const Q_DECL_OVERRIDE;
 
 public slots:
     void setDx(float arg);
@@ -81,8 +83,9 @@ public slots:
 Q_SIGNALS:
     void translateChanged();
 
-private:
-    QVector3D m_translation;
+protected:
+    Q_DECLARE_PRIVATE(QTranslateTransform)
+    QTranslateTransform(QTranslateTransformPrivate &dd, QNode *parent = 0);
 };
 
 } // namespace Qt3D
