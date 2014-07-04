@@ -72,7 +72,7 @@
 #include "renderlayer.h"
 #include "layermanager.h"
 
-#include <Qt3DCore/entity.h>
+#include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qabstracteffect.h>
 #include <Qt3DCore/qabstracttechnique.h>
 #include <Qt3DCore/qframeallocator.h>
@@ -212,7 +212,7 @@ void RenderView::setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf)
         switch (type) {
         case FrameGraphNode::CameraSelector: {
             CameraSelector *cameraSelector = static_cast<CameraSelector *>(node);
-            Entity *cameraEntity = cameraSelector->cameraEntity();
+            QEntity *cameraEntity = cameraSelector->cameraEntity();
             if (cameraEntity != Q_NULLPTR) {
                 m_renderCamera = m_renderer->cameraManager()->lookupResource(cameraEntity->uuid());
                 RenderEntity *tmpCamNode = m_renderer->renderNodesManager()->lookupResource(cameraEntity->uuid());
@@ -286,7 +286,7 @@ void RenderView::buildRenderCommands(RenderEntity *node)
 
     // 1 RenderCommand per RenderPass pass on an Entity with a Mesh
 
-    Entity *frontEndEntity = Q_NULLPTR;
+    QEntity *frontEndEntity = Q_NULLPTR;
     if (m_renderCamera != Q_NULLPTR && node->frontEndPeer() != Q_NULLPTR
             && (frontEndEntity = node->frontEndPeer()->asEntity()) != Q_NULLPTR
             && checkContainedWithinLayer(frontEndEntity->uuid())) {

@@ -57,7 +57,7 @@ namespace Qt3D
 {
 
 class Camera;
-class Entity;
+class QEntity;
 
 class QT3DCORESHARED_EXPORT CameraController : public QObject
 {
@@ -107,7 +107,7 @@ Q_SIGNALS:
 private:
 
     Camera* m_camera;
-    Entity* m_cameraEntity;
+    QEntity* m_cameraEntity;
 
     float m_vx;
     float m_vy;

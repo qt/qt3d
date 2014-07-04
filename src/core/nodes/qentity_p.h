@@ -39,95 +39,40 @@
 **
 ****************************************************************************/
 
-#include "entity.h"
-#include "entity_p.h"
-#include "component.h"
-#include "abstracttransform.h"
-#include "matrixtransform.h"
+#ifndef QT3D_QENTITY_P_H
+#define QT3D_QENTITY_P_H
 
-#include <Qt3DCore/qscenepropertychange.h>
-#include <QMetaObject>
-#include <QMetaProperty>
-#include "corelogging.h"
+#include <Qt3DCore/qt3dcore_global.h>
+#include <Qt3DCore/private/qnode_p.h>
+#include "qentity.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-Entity::Entity(QNode *parent)
-    : QNode(*new EntityPrivate(this), parent)
+class QT3DCORESHARED_EXPORT QEntityPrivate : public QNodePrivate
 {
-}
+public :
+    QEntityPrivate(QEntity *qq)
+        : QNodePrivate(qq)
+        , m_uuid(QUuid::createUuid())
+        , m_enabled(true)
+    {}
 
-Entity::Entity(EntityPrivate &dd, QNode *parent)
-    : QNode(dd, parent)
-{
-}
+    Q_DECLARE_PUBLIC(QEntity)
 
-const QUuid Entity::uuid() const
-{
-    Q_D(const Entity);
-    return d->m_uuid;
-}
+    ComponentList m_components;
+    bool m_visible;
 
-QList<Component *> Entity::components() const
-{
-    Q_D(const Entity);
-    return d->m_components;
-}
+    const QUuid m_uuid;
 
-void Entity::addComponent(Component *comp)
-{
-    Q_D(Entity);
-    Q_CHECK_PTR( comp );
-    qCDebug(Nodes) << Q_FUNC_INFO << comp;
-    Q_ASSERT(d->m_components.count(comp) == 0);
-    d->m_components.append(comp);
-    QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentAdded, this));
-    propertyChange->m_value = QVariant::fromValue(comp);
-    notifyObservers(propertyChange);
-    // We only set the Entity as the Component's parent when it has no parent
-    // This will be the case mostly on C++ but rarely in QML
-    if (!comp->parent())
-        addChild(comp);
-}
+    // TODO: Is a bool enough here or do we need additional states for entities?
+    // Perhaps aboutToBeDeleted would be useful?
+    bool m_enabled;
+};
 
-void Entity::removeComponent(Component *comp)
-{
-    Q_CHECK_PTR(comp);
-    qCDebug(Nodes) << Q_FUNC_INFO << comp;
-    Q_D(Entity);
-    d->m_components.removeOne(comp);
-    QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentRemoved, this));
-    propertyChange->m_value = QVariant::fromValue(comp);
-    notifyObservers(propertyChange);
 }
-
-bool Entity::isEnabled() const
-{
-    Q_D(const Entity);
-    return d->m_enabled;
-}
-
-void Entity::setEnabled(bool on)
-{
-    Q_D(Entity);
-    if (d->m_enabled != on) {
-        d->m_enabled = on;
-        emit enabledChanged();
-    }
-}
-
-Entity *Entity::parentEntity()
-{
-    return qobject_cast<Entity*>(QNode::parent());
-}
-
-Entity *Entity::asEntity()
-{
-    return this;
-}
-
-} // namespace Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_QENTITY_P_H

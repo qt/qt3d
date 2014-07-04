@@ -6,11 +6,11 @@ HEADERS += \
     $$PWD/nodevisitor.h \
     $$PWD/component.h \
     $$PWD/component_p.h \
-    $$PWD/entity.h \
-    $$PWD/entity_p.h
+    $$PWD/qentity.h \
+    $$PWD/qentity_p.h
 
 SOURCES += \
     $$PWD/qnode.cpp \
     $$PWD/nodevisitor.cpp \
     $$PWD/component.cpp \
-    $$PWD/entity.cpp
+    $$PWD/qentity.cpp

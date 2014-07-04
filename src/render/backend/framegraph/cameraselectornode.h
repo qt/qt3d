@@ -49,7 +49,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class Entity;
+class QEntity;
 class QCameraSelector;
 
 namespace Render {
@@ -67,12 +67,12 @@ public:
     void setPeer(Qt3D::QCameraSelector *peer);
     Qt3D::QCameraSelector *peer() const { return m_peer; }
 
-    void setCameraEntity(Entity *cameraEntity) { m_cameraEntity = cameraEntity; }
-    Entity *cameraEntity() const { return m_cameraEntity; }
+    void setCameraEntity(QEntity *cameraEntity) { m_cameraEntity = cameraEntity; }
+    QEntity *cameraEntity() const { return m_cameraEntity; }
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    Entity *m_cameraEntity;
+    QEntity *m_cameraEntity;
     Renderer *m_renderer;
     Qt3D::QCameraSelector *m_peer;
 

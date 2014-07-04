@@ -66,7 +66,7 @@ class QSurface;
 namespace Qt3D {
 
 class Camera;
-class Entity;
+class QEntity;
 class QMaterial;
 class ShaderProgram;
 class QMesh;
@@ -125,8 +125,8 @@ public:
     void setFrameGraphRoot(Render::FrameGraphNode *fgRoot);
     Render::FrameGraphNode *frameGraphRoot() const;
 
-    void setSceneGraphRoot(Entity *sgRoot);
-    Entity *sceneGraphRoot() const;
+    void setSceneGraphRoot(QEntity *sgRoot);
+    QEntity *sceneGraphRoot() const;
     RenderEntity *renderSceneRoot() const { return m_renderSceneRoot; }
 
     void render();
@@ -179,7 +179,7 @@ private:
     // Frame graph root
     Render::FrameGraphNode *m_frameGraphRoot;
 
-    Entity *m_sceneGraphRoot;
+    QEntity *m_sceneGraphRoot;
     RenderEntity *m_renderSceneRoot;
 
     QHash<QMaterial*, RenderMaterial*> m_materialHash;

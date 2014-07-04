@@ -46,7 +46,7 @@
 
 #include <camera.h>
 #include <cameralens.h>
-#include <entity.h>
+#include <qentity.h>
 #include <matrixtransform.h>
 
 QT_BEGIN_NAMESPACE

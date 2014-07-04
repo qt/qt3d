@@ -48,7 +48,7 @@
 
 #include "qnode.h"
 #include "camera.h"
-#include "entity.h"
+#include "qentity.h"
 #include "corelogging.h"
 #include "qaspectengine.h"
 #include "cameracontroller.h"

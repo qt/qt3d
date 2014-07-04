@@ -40,7 +40,7 @@
 ****************************************************************************/
 
 #include "abstractaspect.h"
-#include "entity.h"
+#include "qentity.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -53,7 +53,7 @@ AbstractAspect::AbstractAspect(AspectType aspectType, QObject *parent)
 {
 }
 
-void AbstractAspect::registerAspect(Entity *rootObject)
+void AbstractAspect::registerAspect(QEntity *rootObject)
 {
     if (rootObject == m_root)
         return;
@@ -62,7 +62,7 @@ void AbstractAspect::registerAspect(Entity *rootObject)
     registerAspectHelper(rootObject);
 }
 
-void AbstractAspect::unregisterAspect(Entity *rootObject)
+void AbstractAspect::unregisterAspect(QEntity *rootObject)
 {
     unregisterAspectHelper(rootObject);
     m_root = rootObject;

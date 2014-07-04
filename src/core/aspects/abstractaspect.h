@@ -55,7 +55,7 @@ namespace Qt3D {
 
 class QAspectManager;
 class QNode;
-class Entity;
+class QEntity;
 
 class QT3DCORESHARED_EXPORT AbstractAspect : public QObject, public QJobProviderInterface
 {
@@ -78,8 +78,8 @@ public:
     AspectType aspectType() const { return m_aspectType; }
     QAspectManager *aspectManager() const { return m_aspectManager; }
 
-    void registerAspect(Entity *rootObject);
-    void unregisterAspect(Entity *rootObject);
+    void registerAspect(QEntity *rootObject);
+    void unregisterAspect(QEntity *rootObject);
 
     void initialize(QAspectManager *aspectManager);
     void cleanup();
@@ -87,15 +87,15 @@ public:
     virtual void setWindow(QWindow* win);
 
 protected:
-    virtual void registerAspectHelper(Entity *rootObject) = 0;
-    virtual void unregisterAspectHelper(Entity *rootObject) = 0;
+    virtual void registerAspectHelper(QEntity *rootObject) = 0;
+    virtual void unregisterAspectHelper(QEntity *rootObject) = 0;
 
     virtual void initializeHelper(QAspectManager *aspectManager) = 0;
     virtual void cleanupHelper() = 0;
 
 private:
     QAspectManager *m_aspectManager;
-    Entity *m_root;
+    QEntity *m_root;
     AspectType m_aspectType;
 };
 

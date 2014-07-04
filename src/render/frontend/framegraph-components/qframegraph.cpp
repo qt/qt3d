@@ -41,7 +41,7 @@
 
 #include "qframegraph.h"
 #include "qframegraph_p.h"
-#include <Qt3DCore/entity.h>
+#include <Qt3DCore/qentity.h>
 
 QT_BEGIN_NAMESPACE
 

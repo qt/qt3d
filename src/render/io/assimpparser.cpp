@@ -49,7 +49,7 @@
 #include <QFileInfo>
 #include <QColor>
 #include <qmath.h>
-#include <Qt3DCore/entity.h>
+#include <Qt3DCore/qentity.h>
 #include <qmaterial.h>
 #include <texture.h>
 #include "renderlogging.h"
@@ -248,7 +248,7 @@ bool AssimpParser::isPathExtensionSupported(const QString &path)
  *
  * Returns Q_NULLPTR if \a id was specified but not node matching it can be found.
  */
-Entity *AssimpParser::scene(QString id)
+QEntity *AssimpParser::scene(QString id)
 {
     // m_aiScene shouldn't be null.
     // If it is either, the file failed to be imported or
@@ -273,7 +273,7 @@ Entity *AssimpParser::scene(QString id)
  *  Returns a Node from the scene identified by \a id.
  *  Returns Q_NULLPTR if no node can be found.
  */
-Entity *AssimpParser::node(QString id)
+QEntity *AssimpParser::node(QString id)
 {
     if (m_aiScene.isNull())
         return Q_NULLPTR;
@@ -285,11 +285,11 @@ Entity *AssimpParser::node(QString id)
 /*!
  * Returns a Node from an Assimp aiNode \a node.
  */
-Entity *AssimpParser::node(aiNode *node)
+QEntity *AssimpParser::node(aiNode *node)
 {
     if (node == Q_NULLPTR)
         return Q_NULLPTR;
-    Entity *entityNode = new Entity();
+    QEntity *entityNode = new QEntity();
 
     // Add Meshes to the node
     for (uint i = 0; i < node->mNumMeshes; i++) {
@@ -306,7 +306,7 @@ Entity *AssimpParser::node(aiNode *node)
     for (uint i = 0; i < node->mNumChildren; i++) {
         // this-> is necessary here otherwise
         // it conflicts with the variable node
-        Entity *child = this->node(node->mChildren[i]);
+        QEntity *child = this->node(node->mChildren[i]);
         if (child != Q_NULLPTR)
             entityNode->addChild(child);
     }
@@ -598,7 +598,7 @@ void AssimpParser::loadCamera(uint cameraIndex)
     if (cameraNode == Q_NULLPTR)
         return ;
 
-    Entity  *camera = new Entity();
+    QEntity  *camera = new QEntity();
     CameraLens *lens = new CameraLens();
     aiMatrix4x4 cm;
 

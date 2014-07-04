@@ -41,7 +41,7 @@
 
 #include <QtTest/QtTest>
 #include <Qt3DCore/qnode.h>
-#include <Qt3DCore/entity.h>
+#include <Qt3DCore/qentity.h>
 #include <Qt3DCore/component.h>
 
 class tst_Nodes : public QObject
@@ -86,8 +86,8 @@ void tst_Nodes::defaultComponentConstruction()
 
 void tst_Nodes::defaultEntityConstrution()
 {
-    Qt3D::Entity *entity = new Qt3D::Entity();
-    Qt3D::Entity entity2(entity);
+    Qt3D::QEntity *entity = new Qt3D::QEntity();
+    Qt3D::QEntity entity2(entity);
 
     QVERIFY(entity->components().isEmpty());
     QVERIFY(entity2.components().isEmpty());
@@ -180,7 +180,7 @@ void tst_Nodes::appendingChildEntitiesToNode()
 {
     Qt3D::QNode *root = new Qt3D::QNode();
 
-    Qt3D::Entity *childEntity = new Qt3D::Entity(root);
+    Qt3D::QEntity *childEntity = new Qt3D::QEntity(root);
 
     QVERIFY(root->children().first() == childEntity);
     QVERIFY(childEntity->parentEntity() == Q_NULLPTR);
@@ -191,7 +191,7 @@ void tst_Nodes::removingChildEntitiesFromNode()
 {
     Qt3D::QNode *root = new Qt3D::QNode();
 
-    Qt3D::Entity *childEntity = new Qt3D::Entity(root);
+    Qt3D::QEntity *childEntity = new Qt3D::QEntity(root);
 
     QVERIFY(root->children().first() == childEntity);
     QVERIFY(childEntity->parentEntity() == Q_NULLPTR);
@@ -208,7 +208,7 @@ void tst_Nodes::appendingComponentsToEntity()
 {
     Qt3D::QNode *root = new Qt3D::QNode();
 
-    Qt3D::Entity *entity = new Qt3D::Entity(root);
+    Qt3D::QEntity *entity = new Qt3D::QEntity(root);
 
     Qt3D::Component *comp1 = new Qt3D::Component(root);
     Qt3D::Component *comp2 = new Qt3D::Component(entity);
@@ -248,7 +248,7 @@ void tst_Nodes::appendingComponentsToEntity()
 void tst_Nodes::removingComponentsFromEntity()
 {
     Qt3D::QNode *root = new Qt3D::QNode();
-    Qt3D::Entity *entity = new Qt3D::Entity(root);
+    Qt3D::QEntity *entity = new Qt3D::QEntity(root);
 
     Qt3D::Component *comp1 = new Qt3D::Component(root);
     Qt3D::Component *comp2 = new Qt3D::Component(entity);

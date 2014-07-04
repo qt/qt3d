@@ -41,7 +41,7 @@
 
 #include "qcameraselector.h"
 #include "qcameraselector_p.h"
-#include <Qt3DCore/entity.h>
+#include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -62,7 +62,7 @@ QCameraSelector::QCameraSelector(Qt3D::QNode *parent)
     :   QFrameGraphItem(*new QCameraSelectorPrivate(this), parent)
 {}
 
-void QCameraSelector::setCamera(Entity *camera)
+void QCameraSelector::setCamera(QEntity *camera)
 {
     Q_D(QCameraSelector);
     if (d->m_camera != camera) {
@@ -75,7 +75,7 @@ void QCameraSelector::setCamera(Entity *camera)
     }
 }
 
-Entity *QCameraSelector::camera() const
+QEntity *QCameraSelector::camera() const
 {
     Q_D(const QCameraSelector);
     return d->m_camera;

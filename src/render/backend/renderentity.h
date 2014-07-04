@@ -55,7 +55,7 @@ namespace Qt3D {
 class RendererAspect;
 class Sphere;
 class QNode;
-class Entity;
+class QEntity;
 class Transform;
 
 typedef QHandle<QMatrix4x4, 16> HMatrix;
@@ -80,7 +80,7 @@ public:
     void setParentHandle(HRenderNode parentHandle);
     void setRenderer(Renderer *renderer);
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    void setPeer(Entity *peer);
+    void setPeer(QEntity *peer);
 
     void dump() const;
 
@@ -97,7 +97,7 @@ public:
     QMatrix4x4 *worldTransform();
     Sphere *localBoundingVolume() { return m_localBoundingVolume; }
     Sphere *worldBoundingVolume() { return m_worldBoundingVolume; }
-    Entity *frontEndPeer() const { return m_frontEndPeer; }
+    QEntity *frontEndPeer() const { return m_frontEndPeer; }
 
 private:
 
@@ -114,7 +114,7 @@ private:
 
     // TODO: Do we want to force this to be an Entity?
     // That would mean forcing an Entity for the root on the main thread's scene
-    Entity *m_frontEndPeer;
+    QEntity *m_frontEndPeer;
 
     // TODO: Add pointer to Drawable or references to VBO's and other info needed to draw
 };

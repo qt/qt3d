@@ -42,7 +42,7 @@
 #include "qnode.h"
 #include "qnode_p.h"
 
-#include <Qt3DCore/entity.h>
+#include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 #include <QEvent>
@@ -143,7 +143,7 @@ void QNode::removeAllChildren()
     d->m_children.clear();
 }
 
-Entity *QNode::asEntity()
+QEntity *QNode::asEntity()
 {
     return Q_NULLPTR;
 }

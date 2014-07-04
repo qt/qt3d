@@ -45,7 +45,7 @@
 #include <Qt3DCore/nodevisitor.h>
 #include <Qt3DCore/qhandle.h>
 #include <QStack>
-#include <Qt3DCore/entity.h>
+#include <Qt3DCore/qentity.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -75,7 +75,7 @@ public:
     void        initializeFrameGraph();
 
 protected:
-    void visitEntity(Qt3D::Entity *entity) Q_DECL_OVERRIDE;
+    void visitEntity(Qt3D::QEntity *entity) Q_DECL_OVERRIDE;
 
 private:
     Renderer *m_renderer;
@@ -86,12 +86,12 @@ private:
     Render::FrameGraphNode* buildFrameGraph(QNode *node);
     Render::FrameGraphNode* backendFrameGraphNode(QNode *);
 
-    HRenderNode createRenderNode(Entity *node);
-    void createRenderMaterial(Entity *entity);
+    HRenderNode createRenderNode(QEntity *node);
+    void createRenderMaterial(QEntity *entity);
     void createFrameGraph(QFrameGraph *frameGraph);
 
     template<class Frontend, class Backend, class Manager>
-    void createRenderElement(Entity *entity, Manager *manager)
+    void createRenderElement(QEntity *entity, Manager *manager)
     {
         QList<Frontend *> elems = entity->componentsOfType<Frontend>();
         if (!elems.isEmpty()) {

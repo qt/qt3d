@@ -55,7 +55,7 @@ namespace Qt3D {
 
 class QNode;
 class QNodePrivate;
-class Entity;
+class QEntity;
 
 typedef QList<QNode *> NodeList;
 
@@ -75,7 +75,7 @@ public:
 
     void removeAllChildren();
 
-    virtual Entity* asEntity();
+    virtual QEntity* asEntity();
 
     QNode *parentNode() const;
 

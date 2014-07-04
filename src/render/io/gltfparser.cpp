@@ -44,7 +44,7 @@
 #include "texturedata.h"
 #include "renderlogging.h"
 
-#include <Qt3DCore/entity.h>
+#include <Qt3DCore/qentity.h>
 #include <qmesh.h>
 #include <qmaterial.h>
 #include <qtechnique.h>
@@ -280,7 +280,7 @@ MeshDataPtr GLTFParser::mesh(QString id)
     return MeshDataPtr();
 }
 
-Entity* GLTFParser::defaultScene()
+QEntity* GLTFParser::defaultScene()
 {
     parse();
     if (m_defaultScene.isEmpty()) {
@@ -291,7 +291,7 @@ Entity* GLTFParser::defaultScene()
     return scene(m_defaultScene);
 }
 
-Entity* GLTFParser::scene(QString id)
+QEntity* GLTFParser::scene(QString id)
 {
     parse();
 
@@ -302,10 +302,10 @@ Entity* GLTFParser::scene(QString id)
     }
 
     QJsonObject sceneObj = scenes.value(id).toObject();
-    Entity* sceneEntity = new Entity;
+    QEntity* sceneEntity = new QEntity;
     foreach (QJsonValue nnv, sceneObj.value(KEY_NODES).toArray()) {
         QString nodeName = nnv.toString();
-        Entity* child = node(nodeName);
+        QEntity* child = node(nodeName);
         if (!child)
             continue;
 
@@ -315,7 +315,7 @@ Entity* GLTFParser::scene(QString id)
     return sceneEntity;
 }
 
-Entity* GLTFParser::node(QString id)
+QEntity* GLTFParser::node(QString id)
 {
     QJsonObject nodes = m_json.object().value(KEY_NODES).toObject();
     if (!nodes.contains(id)) {
@@ -324,13 +324,13 @@ Entity* GLTFParser::node(QString id)
     }
 
     QJsonObject jsonObj = nodes.value(id).toObject();
-    Entity* result( new Entity );
+    QEntity* result( new QEntity );
     parse();
 
     if ( jsonObj.contains(KEY_CHILDREN) )
     {
         foreach (QJsonValue c, jsonObj.value(KEY_CHILDREN).toArray()) {
-            Entity* child = node(c.toString());
+            QEntity* child = node(c.toString());
             if (!child)
                 continue;
             result->addChild(child);
@@ -365,7 +365,7 @@ Entity* GLTFParser::node(QString id)
         } else {
             // need to make a child entity per material
             foreach (QString matId, materialDict.keys()) {
-                Entity* subEntity(new Entity);
+                QEntity* subEntity(new QEntity);
                 result->addChild(subEntity);
 
                 subEntity->addComponent(material(matId));

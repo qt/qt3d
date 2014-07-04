@@ -80,10 +80,10 @@ public:
     // SceneParserInterface interface
     void setFilePath(const QString& path) Q_DECL_OVERRIDE;
     bool isPathExtensionSupported(const QString &path) Q_DECL_OVERRIDE;
-    Entity *scene(QString id = QString()) Q_DECL_OVERRIDE;
-    Entity *node(QString id) Q_DECL_OVERRIDE;
+    QEntity *scene(QString id = QString()) Q_DECL_OVERRIDE;
+    QEntity *node(QString id) Q_DECL_OVERRIDE;
 
-    Entity *defaultScene();
+    QEntity *defaultScene();
     MeshDataPtr mesh(QString id);
     QMaterial *material(QString id);
     Camera *camera(QString id);
@@ -102,7 +102,7 @@ private :
     static QStringList assimpSupportedFormats();
     static QMatrix4x4 aiMatrix4x4ToQMatrix4x4(const aiMatrix4x4 &matrix);
 
-    Entity *node(aiNode *node);
+    QEntity *node(aiNode *node);
 
     void readSceneFile(const QString &file);
 
@@ -134,7 +134,7 @@ private :
     QMap<uint, QEffect *> m_effects;
     QMap<uint, Texture*> m_embeddedTextures;
     QMap<QString, Texture*> m_materialTextures;
-    QMap<aiNode*, Entity*> m_cameras;
+    QMap<aiNode*, QEntity*> m_cameras;
 
     QHash<aiTextureType, QString> m_textureToParameterName;
 

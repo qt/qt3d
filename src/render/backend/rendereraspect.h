@@ -66,8 +66,8 @@ public:
     QVector<QJobPtr> jobsToExecute() Q_DECL_OVERRIDE;
 
 protected:
-    void registerAspectHelper(Entity *rootObject) Q_DECL_OVERRIDE;
-    void unregisterAspectHelper(Entity *rootObject) Q_DECL_OVERRIDE;
+    void registerAspectHelper(QEntity *rootObject) Q_DECL_OVERRIDE;
+    void unregisterAspectHelper(QEntity *rootObject) Q_DECL_OVERRIDE;
 
     void initializeHelper(QAspectManager *aspectManager);
     void cleanupHelper();

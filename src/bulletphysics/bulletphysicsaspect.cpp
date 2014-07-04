@@ -62,12 +62,12 @@ QVector<QJobPtr> BulletPhysicsAspect::jobsToExecute()
     return jobs;
 }
 
-void BulletPhysicsAspect::registerAspectHelper(Entity *rootObject)
+void BulletPhysicsAspect::registerAspectHelper(QEntity *rootObject)
 {
 
 }
 
-void BulletPhysicsAspect::unregisterAspectHelper(Entity *rootObject)
+void BulletPhysicsAspect::unregisterAspectHelper(QEntity *rootObject)
 {
 
 }

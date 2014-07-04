@@ -45,7 +45,7 @@
 
 #include <Qt3DCore/window.h>
 #include <Qt3DCore/camera.h>
-#include <Qt3DCore/entity.h>
+#include <Qt3DCore/qentity.h>
 #include <Qt3DCore/cameralens.h>
 
 #include <Qt3DRenderer/qtorusmesh.h>
@@ -80,10 +80,10 @@ int main(int ac, char **av)
     view.registerAspect(new Qt3D::RendererAspect());
 
     // Root entity
-    Qt3D::Entity *rootEntity = new Qt3D::Entity();
+    Qt3D::QEntity *rootEntity = new Qt3D::QEntity();
     rootEntity->setObjectName(QStringLiteral("rootEntity"));
     // Torus
-    Qt3D::Entity *torusEntity = new Qt3D::Entity();
+    Qt3D::QEntity *torusEntity = new Qt3D::QEntity();
 
     // Torus shape data
     Qt3D::QTorusMesh *torus = new Qt3D::QTorusMesh();

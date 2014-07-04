@@ -42,7 +42,7 @@
 #ifndef QT3D_QABSTRACTSCENE_H
 #define QT3D_QABSTRACTSCENE_H
 
-#include <Qt3DCore/entity.h>
+#include <Qt3DCore/qentity.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
@@ -56,7 +56,7 @@ namespace Render {
 class QAbstractScene;
 class QAbstractScenePrivate;
 
-class QT3DRENDERERSHARED_EXPORT QAbstractScene : public Entity
+class QT3DRENDERERSHARED_EXPORT QAbstractScene : public QEntity
 {
     Q_OBJECT
     Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)

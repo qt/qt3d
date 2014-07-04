@@ -48,7 +48,7 @@
 #include "qjobmanagerinterface.h"
 #include "qscheduler.h"
 #include "qtickclock.h"
-#include "entity.h"
+#include "qentity.h"
 
 #include "corelogging.h"
 #include <QEventLoop>
@@ -91,7 +91,7 @@ void QAspectManager::setRoot(QObject *rootObject, QWaitCondition *waitCondition)
 {
     qCDebug(Aspects) << Q_FUNC_INFO;
 
-    Entity *root = qobject_cast<Entity *>(rootObject);
+    QEntity *root = qobject_cast<QEntity *>(rootObject);
 
     if (!root)
         qWarning() << "Root object is not an Entity";

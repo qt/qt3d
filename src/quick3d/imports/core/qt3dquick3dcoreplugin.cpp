@@ -71,7 +71,7 @@ void Qt3DQuick3DCorePlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<Qt3D::QAbstractShader>(uri, 2, 0, "QAbstractShader", "");
 
     qmlRegisterType<Qt3D::Quick::Quick3DConfiguration>(uri, 2, 0, "Configuration");
-    qmlRegisterExtendedType<Qt3D::Entity, Qt3D::Quick::Quick3DEntity>(uri, 2, 0, "Entity");
+    qmlRegisterExtendedType<Qt3D::QEntity, Qt3D::Quick::Quick3DEntity>(uri, 2, 0, "Entity");
     qmlRegisterExtendedType<Qt3D::Transform, Qt3D::Quick::Quick3DTransform>(uri, 2, 0, "Transform");
     // Ideally we want to make Node an uncreatable type
     // We would need qmlRegisterUncreatableExtendedType for that

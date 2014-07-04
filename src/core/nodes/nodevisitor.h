@@ -51,7 +51,7 @@ namespace Qt3D
 {
 
 class QNode;
-class Entity;
+class QEntity;
 
 typedef QList<QNode *> NodeList;
 
@@ -74,7 +74,7 @@ public:
 
 protected:
     virtual void visitNode(QNode *nd);
-    virtual void visitEntity(Entity *ent);
+    virtual void visitEntity(QEntity *ent);
 
     void traverseChildren();
 

@@ -42,7 +42,7 @@
 #include "nodevisitor.h"
 
 #include "qnode.h"
-#include "entity.h"
+#include "qentity.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -58,7 +58,7 @@ void NodeVisitor::traverse(QNode *rootNode)
     m_path = NodeList() << rootNode;
 
     m_matrixStack.clear();
-    Entity* rootEntity = rootNode->asEntity();
+    QEntity* rootEntity = rootNode->asEntity();
 
 //    m_matrixStack.append(rootEntity ? rootEntity->matrix() : QMatrix4x4());
 
@@ -99,7 +99,7 @@ void NodeVisitor::visitNode(QNode *nd)
     traverseChildren();
 }
 
-void NodeVisitor::visitEntity(Entity *nd)
+void NodeVisitor::visitEntity(QEntity *nd)
 {
     visitNode(nd);
 }
@@ -114,7 +114,7 @@ void NodeVisitor::traverseChildren()
 void NodeVisitor::outerVisitNode(QNode *n)
 {
     m_path.append(n);
-    Entity* e = n->asEntity();
+    QEntity* e = n->asEntity();
     if (e) {
 //        QMatrix4x4 m = m_matrixStack.back() * e->matrix();
 //        m_matrixStack.push_back(m);

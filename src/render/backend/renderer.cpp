@@ -42,7 +42,7 @@
 #include "renderer.h"
 
 #include <Qt3DCore/nodevisitor.h>
-#include <Qt3DCore/entity.h>
+#include <Qt3DCore/qentity.h>
 
 #include "framegraphvisitor.h"
 #include "cameraselectornode.h"
@@ -293,7 +293,7 @@ Render::FrameGraphNode *Renderer::frameGraphRoot() const
 }
 
 // QAspectThread context
-void Renderer::setSceneGraphRoot(Entity *sgRoot)
+void Renderer::setSceneGraphRoot(QEntity *sgRoot)
 {
     Q_ASSERT(sgRoot);
 
@@ -321,7 +321,7 @@ void Renderer::setSceneGraphRoot(Entity *sgRoot)
     //  - World bounding volumes
 }
 
-Entity *Renderer::sceneGraphRoot() const
+QEntity *Renderer::sceneGraphRoot() const
 {
     return m_sceneGraphRoot;
 }

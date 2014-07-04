@@ -77,7 +77,7 @@
 #include <Qt3DCore/camera.h>
 #include <Qt3DCore/cameralens.h>
 #include <Qt3DCore/transform.h>
-#include <Qt3DCore/entity.h>
+#include <Qt3DCore/qentity.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -102,7 +102,7 @@ void RenderSceneBuilder::initializeFrameGraph()
     // Into the scenegraph
     qCDebug(Render::Backend) << Q_FUNC_INFO << "FrameGraph";
     // Retrieve and set Renderer FrameGraph
-    QFrameGraph *fg = Entity::findComponentInTree<QFrameGraph>(rootNode()->frontEndPeer());
+    QFrameGraph *fg = QEntity::findComponentInTree<QFrameGraph>(rootNode()->frontEndPeer());
     m_frameGraphEntityNode = m_renderer->renderNodesManager()->lookupHandle(fg->parentNode()->asEntity()->uuid());
     createFrameGraph(fg);
 }
@@ -188,7 +188,7 @@ Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(QNode *block)
         cameraSelectorNode->setRenderer(m_renderer);
         cameraSelectorNode->setPeer(cameraSelector);
         // TO DO : We might as well store an Entity in CameraSelector
-        Entity *cameraEntity = cameraSelector->camera()->asEntity();
+        QEntity *cameraEntity = cameraSelector->camera()->asEntity();
         // If the Entity is declared inline on the QML Side, the Entity is not set as part of the Scene tree
         // So we need to make sure the RenderNode for the given Entity exists in the RenderNodesMananger
         if (cameraEntity && m_renderer->cameraManager()->lookupHandle(cameraEntity->uuid()).isNull()) {
@@ -224,7 +224,7 @@ Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(QNode *block)
     return Q_NULLPTR;
 }
 
-HRenderNode RenderSceneBuilder::createRenderNode(Entity *entity)
+HRenderNode RenderSceneBuilder::createRenderNode(QEntity *entity)
 {
     HRenderNode renderNodeHandle;
     renderNodeHandle = m_renderer->renderNodesManager()->getOrAcquireHandle(entity->uuid());
@@ -240,7 +240,7 @@ HRenderNode RenderSceneBuilder::createRenderNode(Entity *entity)
     return renderNodeHandle;
 }
 
-void RenderSceneBuilder::createRenderMaterial(Entity *entity)
+void RenderSceneBuilder::createRenderMaterial(QEntity *entity)
 {
     // Parse Materials to retrieve
     // Material
@@ -268,7 +268,7 @@ void RenderSceneBuilder::createFrameGraph(QFrameGraph *fg)
     m_renderer->setFrameGraphRoot(frameGraphRootNode);
 }
 
-void RenderSceneBuilder::visitEntity(Qt3D::Entity *entity)
+void RenderSceneBuilder::visitEntity(Qt3D::QEntity *entity)
 {
     // Create a RenderNode corresponding to the Entity. Most data will
     // be calculated later by jobs

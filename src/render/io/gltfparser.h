@@ -44,7 +44,7 @@
 
 #include <Qt3DRenderer/meshdata.h>
 #include <Qt3DRenderer/qattribute.h>
-#include <Qt3DCore/entity.h>
+#include <Qt3DCore/qentity.h>
 #include <Qt3DRenderer/qtechnique.h>
 #include <Qt3DRenderer/qbuffer.h>
 #include <QJsonDocument>
@@ -86,11 +86,11 @@ public:
      * @brief instantiate Create Nodes based on glTf JSON document
      * @return A new scene-graph fragment based on the provided glTf
      */
-    Entity *node(QString id) Q_DECL_OVERRIDE;
-    Entity *scene(QString id) Q_DECL_OVERRIDE;
+    QEntity *node(QString id) Q_DECL_OVERRIDE;
+    QEntity *scene(QString id) Q_DECL_OVERRIDE;
 
 
-    Entity *defaultScene();
+    QEntity *defaultScene();
     MeshDataPtr mesh(QString id);
     QMaterial *material(QString id);
     CameraLens *camera(QString id);

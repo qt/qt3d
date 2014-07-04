@@ -53,7 +53,7 @@ namespace Qt3D {
 namespace Render {
 
 QAbstractScenePrivate::QAbstractScenePrivate(QAbstractScene *qq)
-    : EntityPrivate(qq)
+    : QEntityPrivate(qq)
     , m_sceneNode(Q_NULLPTR)
     , m_sceneChild(Q_NULLPTR)
     , m_currentParser(Q_NULLPTR)
@@ -61,12 +61,12 @@ QAbstractScenePrivate::QAbstractScenePrivate(QAbstractScene *qq)
 }
 
 QAbstractScene::QAbstractScene(QAbstractScenePrivate &dd, QNode *parent)
-    : Entity(dd, parent)
+    : QEntity(dd, parent)
 {
 }
 
 QAbstractScene::QAbstractScene(QNode *parent)
-    : Entity(*new QAbstractScenePrivate(this), parent)
+    : QEntity(*new QAbstractScenePrivate(this), parent)
 {
     Q_D(QAbstractScene);
     d->m_sceneNode = this;

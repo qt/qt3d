@@ -46,7 +46,7 @@
 #include <Qt3DRenderer/rendereraspect.h>
 #include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/qchangearbiter.h>
-#include <Qt3DCore/entity.h>
+#include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include "renderlogging.h"
 
@@ -85,7 +85,7 @@ void CameraSelector::sceneChangeEvent(const QSceneChangePtr &e)
     if (e->m_type == ComponentUpdated) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->m_propertyName == QByteArrayLiteral("camera"))
-            setCameraEntity(qobject_cast<Entity*>(propertyChange->m_value.value<QNode*>()));
+            setCameraEntity(qobject_cast<QEntity*>(propertyChange->m_value.value<QNode*>()));
     }
 }
 

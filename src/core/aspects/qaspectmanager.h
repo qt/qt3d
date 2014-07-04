@@ -58,7 +58,7 @@ class QNode;
 class QChangeArbiter;
 class QJobManagerInterface;
 class QScheduler;
-class Entity;
+class QEntity;
 
 class QAspectManager : public QObject
 {
@@ -82,7 +82,7 @@ public slots:
 
 private:
     QList<AbstractAspect *> m_aspects;
-    Entity *m_root;
+    QEntity *m_root;
     QWindow *m_window;
     QScheduler *m_scheduler;
     QJobManagerInterface *m_jobManager;

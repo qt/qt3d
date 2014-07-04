@@ -52,7 +52,7 @@
 #include "qabstractshapemesh.h"
 #include <sphere.h>
 
-#include <Qt3DCore/entity.h>
+#include <Qt3DCore/qentity.h>
 #include <Qt3DCore/cameralens.h>
 #include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/qscenepropertychange.h>
@@ -104,7 +104,7 @@ void RenderEntity::setHandle(HRenderNode handle)
     m_handle = handle;
 }
 
-void RenderEntity::setPeer(Entity *peer)
+void RenderEntity::setPeer(QEntity *peer)
 {
     if (m_frontEndPeer != peer) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();

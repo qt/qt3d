@@ -123,13 +123,13 @@ QVector<QJobPtr> RendererAspect::jobsToExecute()
     return jobs;
 }
 
-void RendererAspect::registerAspectHelper(Entity *rootObject)
+void RendererAspect::registerAspectHelper(QEntity *rootObject)
 {
     Render::Renderer *renderer = m_renderThread->renderer();
     renderer->setSceneGraphRoot(rootObject);
 }
 
-void RendererAspect::unregisterAspectHelper(Entity *rootObject)
+void RendererAspect::unregisterAspectHelper(QEntity *rootObject)
 {
     Q_UNUSED(rootObject);
 }

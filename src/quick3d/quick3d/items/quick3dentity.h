@@ -43,7 +43,7 @@
 #define QT3D_QUICK_QUICK3DENTITY_H
 
 #include <QQmlListProperty>
-#include <Qt3DCore/entity.h>
+#include <Qt3DCore/qentity.h>
 #include <Qt3DQuick/quick3dnode.h>
 #include <Qt3DQuick/qt3dquick_global.h>
 
@@ -51,7 +51,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class Entity;
+class QEntity;
 class Component;
 
 namespace Quick {
@@ -65,7 +65,7 @@ public:
     explicit Quick3DEntity(QObject *parent = 0);
     QQmlListProperty<Qt3D::Component> componentList();
 
-    inline Entity *parentEntity() const { return qobject_cast<Entity*>(parent()); }
+    inline QEntity *parentEntity() const { return qobject_cast<QEntity*>(parent()); }
 
 private:
 

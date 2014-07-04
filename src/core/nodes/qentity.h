@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_ENTITY_H
-#define QT3D_ENTITY_H
+#ifndef QT3D_QENTITY_H
+#define QT3D_QENTITY_H
 
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qt3dcore_global.h>
@@ -53,19 +53,18 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class Component;
-class Entity;
-class EntityPrivate;
+class QEntityPrivate;
 
 typedef QList<Component*> ComponentList;
 
-class QT3DCORESHARED_EXPORT Entity : public QNode
+class QT3DCORESHARED_EXPORT QEntity : public QNode
 {
     Q_OBJECT
 
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
 
 public:
-    explicit Entity(QNode *parent = 0);
+    explicit QEntity(QNode *parent = 0);
 
     const QUuid uuid() const;
 
@@ -115,7 +114,7 @@ public:
 
         if (root->asEntity()) {
             foreach (QNode* child, root->children()) {
-                if (!qobject_cast<Entity*>(child))
+                if (!qobject_cast<QEntity*>(child))
                     continue;
                 T* i = qobject_cast<T*>(child);
                 if (i)
@@ -138,21 +137,21 @@ public:
     bool isEnabled() const;
     void setEnabled(bool on);
 
-    virtual Entity *parentEntity();
-    virtual Entity *asEntity() Q_DECL_OVERRIDE;
+    virtual QEntity *parentEntity();
+    virtual QEntity *asEntity() Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
     void enabledChanged();
 
 protected:
-    Q_DECLARE_PRIVATE(Entity)
-    Entity(EntityPrivate &dd, QNode *parent = 0);
+    Q_DECLARE_PRIVATE(QEntity)
+    QEntity(QEntityPrivate &dd, QNode *parent = 0);
 };
 
 } // namespace Qt3D
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3D::Entity *)
+Q_DECLARE_METATYPE(Qt3D::QEntity *)
 
-#endif // QT3D_ENTITY_H
+#endif // QT3D_QENTITY_H
