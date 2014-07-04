@@ -64,16 +64,16 @@ namespace Qt3D {
 
 
 QAbstractEffectPrivate::QAbstractEffectPrivate(QAbstractEffect *qq)
-        : NodePrivate(qq)
+        : QNodePrivate(qq)
     {}
 
-QAbstractEffect::QAbstractEffect(Node *parent)
-    : Node(*new QAbstractEffectPrivate(this), parent)
+QAbstractEffect::QAbstractEffect(QNode *parent)
+    : QNode(*new QAbstractEffectPrivate(this), parent)
 {
 }
 
-QAbstractEffect::QAbstractEffect(QAbstractEffectPrivate &dd, Node *parent)
-    : Node(dd, parent)
+QAbstractEffect::QAbstractEffect(QAbstractEffectPrivate &dd, QNode *parent)
+    : QNode(dd, parent)
 {
 }
 

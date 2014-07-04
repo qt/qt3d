@@ -61,7 +61,7 @@ class QT3DCORESHARED_EXPORT RotateTransform : public AbstractTransform
     Q_PROPERTY(QVector3D axis READ axis WRITE setAxis NOTIFY axisChanged)
 
 public:
-    explicit RotateTransform(Node *parent = 0);
+    explicit RotateTransform(QNode *parent = 0);
 
     float angleDeg() const;
 

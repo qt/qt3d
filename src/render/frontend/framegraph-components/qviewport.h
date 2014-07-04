@@ -58,7 +58,7 @@ class QT3DRENDERERSHARED_EXPORT QViewport : public QFrameGraphItem
     Q_PROPERTY(QRectF rect READ rect WRITE setRect NOTIFY rectChanged)
 
 public:
-    explicit QViewport(Node *parent = 0);
+    explicit QViewport(QNode *parent = 0);
 
     QRectF rect() const;
     void setRect(const QRectF& rect);
@@ -68,7 +68,7 @@ Q_SIGNALS:
 
 protected:
     Q_DECLARE_PRIVATE(QViewport)
-    QViewport(QViewportPrivate &dd, Node *parent = 0);
+    QViewport(QViewportPrivate &dd, QNode *parent = 0);
 };
 
 } // Qt3D

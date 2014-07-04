@@ -42,7 +42,7 @@
 #ifndef QT3D_QABSTRACTEFFECT_P_H
 #define QT3D_QABSTRACTEFFECT_P_H
 
-#include <private/node_p.h>
+#include <private/qnode_p.h>
 #include <Qt3DCore/qt3dcore_global.h>
 
 QT_BEGIN_NAMESPACE
@@ -52,7 +52,7 @@ namespace Qt3D {
 class QAbstractEffect;
 class QAbstractTechnique;
 
-class QT3DCORESHARED_EXPORT QAbstractEffectPrivate : public NodePrivate
+class QT3DCORESHARED_EXPORT QAbstractEffectPrivate : public QNodePrivate
 {
 public :
     QAbstractEffectPrivate(QAbstractEffect *qq);

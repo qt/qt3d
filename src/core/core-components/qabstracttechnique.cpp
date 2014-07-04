@@ -68,18 +68,18 @@ namespace Qt3D {
 
 
 QAbstractTechniquePrivate::QAbstractTechniquePrivate(QAbstractTechnique *qq)
-    : NodePrivate(qq)
+    : QNodePrivate(qq)
 {
 }
 
-QAbstractTechnique::QAbstractTechnique(Node *parent)
-    : Node(*new QAbstractTechniquePrivate(this), parent)
+QAbstractTechnique::QAbstractTechnique(QNode *parent)
+    : QNode(*new QAbstractTechniquePrivate(this), parent)
 {
 }
 
 
-QAbstractTechnique::QAbstractTechnique(QAbstractTechniquePrivate &dd, Node *parent)
-    : Node(dd, parent)
+QAbstractTechnique::QAbstractTechnique(QAbstractTechniquePrivate &dd, QNode *parent)
+    : QNode(dd, parent)
 {
 }
 

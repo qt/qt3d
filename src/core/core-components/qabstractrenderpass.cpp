@@ -49,18 +49,18 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 QAbstractRenderPassPrivate::QAbstractRenderPassPrivate(QAbstractRenderPass *qq)
-    : NodePrivate(qq)
+    : QNodePrivate(qq)
     , m_shader(Q_NULLPTR)
 {
 }
 
-QAbstractRenderPass::QAbstractRenderPass(Node *parent)
-    : Node(*new QAbstractRenderPassPrivate(this), parent)
+QAbstractRenderPass::QAbstractRenderPass(QNode *parent)
+    : QNode(*new QAbstractRenderPassPrivate(this), parent)
 {
 }
 
-QAbstractRenderPass::QAbstractRenderPass(QAbstractRenderPassPrivate &dd, Node *parent)
-    : Node(dd, parent)
+QAbstractRenderPass::QAbstractRenderPass(QAbstractRenderPassPrivate &dd, QNode *parent)
+    : QNode(dd, parent)
 {
 }
 

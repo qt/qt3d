@@ -67,7 +67,7 @@ class QT3DRENDERERSHARED_EXPORT QRenderPass : public QAbstractRenderPass
     Q_OBJECT
 
 public:
-    explicit QRenderPass(Node *parent = 0);
+    explicit QRenderPass(QNode *parent = 0);
 
     void addUniformBinding(Parameter* param, QString glslUniformName);
 
@@ -91,7 +91,7 @@ public:
 
 protected:
     Q_DECLARE_PRIVATE(QRenderPass)
-    QRenderPass(QRenderPassPrivate &dd, Node *parent = 0);
+    QRenderPass(QRenderPassPrivate &dd, QNode *parent = 0);
 };
 
 }

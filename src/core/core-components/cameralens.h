@@ -71,7 +71,7 @@ class QT3DCORESHARED_EXPORT CameraLens : public Component
     Q_PROPERTY(float top READ top WRITE setTop NOTIFY topChanged)
 
 public:
-    explicit CameraLens(Node *parent = 0);
+    explicit CameraLens(QNode *parent = 0);
 
     enum ProjectionType {
         OrthogonalProjection,
@@ -128,7 +128,7 @@ Q_SIGNALS:
 
 protected:
     Q_DECLARE_PRIVATE(CameraLens)
-    CameraLens(CameraLensPrivate &dd, Node *parent = 0);
+    CameraLens(CameraLensPrivate &dd, QNode *parent = 0);
 };
 
 } // Qt3D

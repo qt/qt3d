@@ -61,7 +61,7 @@ class QT3DCORESHARED_EXPORT TranslateTransform : public AbstractTransform
     Q_PROPERTY(QVector3D t READ translation WRITE setTranslation NOTIFY translateChanged)
 
 public:
-    explicit TranslateTransform(Node *parent = 0);
+    explicit TranslateTransform(QNode *parent = 0);
 
     float dx() const;
     float dy() const;

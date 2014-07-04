@@ -57,7 +57,7 @@ class QT3DCORESHARED_EXPORT QAbstractMaterial : public Component
     Q_OBJECT
     Q_PROPERTY(Qt3D::QAbstractEffect* effect READ effect WRITE setEffect NOTIFY effectChanged)
 public:
-    QAbstractMaterial(Node *parent = 0);
+    QAbstractMaterial(QNode *parent = 0);
 
     virtual void setEffect(Qt3D::QAbstractEffect *effect);
     QAbstractEffect *effect() const;
@@ -67,7 +67,7 @@ Q_SIGNALS:
 
 protected:
     Q_DECLARE_PRIVATE(QAbstractMaterial)
-    QAbstractMaterial(QAbstractMaterialPrivate &dd, Node *parent = 0);
+    QAbstractMaterial(QAbstractMaterialPrivate &dd, QNode *parent = 0);
 };
 
 } // Qt3D

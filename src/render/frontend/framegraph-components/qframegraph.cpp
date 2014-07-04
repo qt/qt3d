@@ -68,12 +68,12 @@ QFrameGraphPrivate::QFrameGraphPrivate(QFrameGraph *qq)
  * \namespace Qt3D
  */
 
-QFrameGraph::QFrameGraph(Node *parent)
+QFrameGraph::QFrameGraph(QNode *parent)
     : Component(*new QFrameGraphPrivate(this), parent)
 {
 }
 
-QFrameGraph::QFrameGraph(QFrameGraphPrivate &dd, Node *parent)
+QFrameGraph::QFrameGraph(QFrameGraphPrivate &dd, QNode *parent)
     : Component(dd, parent)
 {
 }
@@ -81,7 +81,7 @@ QFrameGraph::QFrameGraph(QFrameGraphPrivate &dd, Node *parent)
 /*!
  * Returns the current activeFrameGraph root node.
  */
-Node *QFrameGraph::activeFrameGraph() const
+QNode *QFrameGraph::activeFrameGraph() const
 {
     Q_D(const QFrameGraph);
     return d->m_activeFrameGraph;
@@ -90,7 +90,7 @@ Node *QFrameGraph::activeFrameGraph() const
 /*!
  * Sets the root node \a activeFrameGraph of the FrameGraph.
  */
-void QFrameGraph::setActiveFrameGraph(Node *activeFrameGraph)
+void QFrameGraph::setActiveFrameGraph(QNode *activeFrameGraph)
 {
     Q_D(QFrameGraph);
     if (activeFrameGraph != d->m_activeFrameGraph) {

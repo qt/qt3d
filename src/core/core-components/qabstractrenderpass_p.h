@@ -42,7 +42,7 @@
 #ifndef QT3D_QABSTRACTRENDERPASS_P_H
 #define QT3D_QABSTRACTRENDERPASS_P_H
 
-#include <private/node_p.h>
+#include <private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -51,7 +51,7 @@ namespace Qt3D {
 class QAbstractRenderPass;
 class QAbstractShader;
 
-class QT3DCORESHARED_EXPORT QAbstractRenderPassPrivate : public NodePrivate
+class QT3DCORESHARED_EXPORT QAbstractRenderPassPrivate : public QNodePrivate
 {
 public:
     QAbstractRenderPassPrivate(QAbstractRenderPass *qq);

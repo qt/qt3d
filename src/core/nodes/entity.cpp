@@ -54,13 +54,13 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-Entity::Entity(Node *parent)
-    : Node(*new EntityPrivate(this), parent)
+Entity::Entity(QNode *parent)
+    : QNode(*new EntityPrivate(this), parent)
 {
 }
 
-Entity::Entity(EntityPrivate &dd, Node *parent)
-    : Node(dd, parent)
+Entity::Entity(EntityPrivate &dd, QNode *parent)
+    : QNode(dd, parent)
 {
 }
 
@@ -120,7 +120,7 @@ void Entity::setEnabled(bool on)
 
 Entity *Entity::parentEntity()
 {
-    return qobject_cast<Entity*>(Node::parent());
+    return qobject_cast<Entity*>(QNode::parent());
 }
 
 Entity *Entity::asEntity()

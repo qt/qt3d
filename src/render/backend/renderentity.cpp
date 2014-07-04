@@ -157,7 +157,7 @@ void RenderEntity::sceneChangeEvent(const QSceneChangePtr &e)
     }
     case ComponentUpdated: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        Node *node = propertyChange->m_subject.m_node;
+        QNode *node = propertyChange->m_subject.m_node;
         if (node == m_transform
                 && propertyChange->m_propertyName == QByteArrayLiteral("matrix"))
             *localTransform() = propertyChange->m_value.value<QMatrix4x4>();

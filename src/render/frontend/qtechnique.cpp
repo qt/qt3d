@@ -54,12 +54,12 @@ QTechniquePrivate::QTechniquePrivate(QTechnique *qq)
 {
 }
 
-QTechnique::QTechnique(Node *parent)
+QTechnique::QTechnique(QNode *parent)
     : QAbstractTechnique(*new QTechniquePrivate(this), parent)
 {
 }
 
-QTechnique::QTechnique(QTechniquePrivate &dd, Node *parent)
+QTechnique::QTechnique(QTechniquePrivate &dd, QNode *parent)
     : QAbstractTechnique(dd, parent)
 {
 }

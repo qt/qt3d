@@ -60,7 +60,7 @@ class QT3DCORESHARED_EXPORT LookAtTransform : public Qt3D::AbstractTransform
     Q_PROPERTY(QVector3D viewVector READ viewVector NOTIFY viewVectorChanged)
 
 public:
-    explicit LookAtTransform(Node *parent = 0);
+    explicit LookAtTransform(QNode *parent = 0);
 
     QMatrix4x4 matrix() const Q_DECL_OVERRIDE;
 

@@ -48,7 +48,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-RotateTransform::RotateTransform(Node *parent)
+RotateTransform::RotateTransform(QNode *parent)
     : AbstractTransform(parent),
       m_angleDeg(0)
 {

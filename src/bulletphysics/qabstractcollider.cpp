@@ -53,12 +53,12 @@ QAbstractColliderPrivate::QAbstractColliderPrivate(QAbstractCollider *qq)
 {
 }
 
-QAbstractCollider::QAbstractCollider(Node *parent)
+QAbstractCollider::QAbstractCollider(QNode *parent)
     : Qt3D::Component(*new QAbstractColliderPrivate(this), parent)
 {
 }
 
-QAbstractCollider::QAbstractCollider(QAbstractColliderPrivate &dd, Qt3D::Node *parent)
+QAbstractCollider::QAbstractCollider(QAbstractColliderPrivate &dd, Qt3D::QNode *parent)
     : Qt3D::Component(dd, parent)
 {
 }

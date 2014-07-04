@@ -48,7 +48,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-ShaderProgram::ShaderProgram(Node *parent)
+ShaderProgram::ShaderProgram(QNode *parent)
     : QAbstractShader(parent)
     , m_vertexSourceFile()
     , m_fragmentSourceFile()

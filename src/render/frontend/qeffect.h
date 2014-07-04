@@ -43,7 +43,7 @@
 #define QT3D_QEFFECT_H
 
 #include <Qt3DCore/qabstracteffect.h>
-#include <Qt3DCore/node.h>
+#include <Qt3DCore/qnode.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
@@ -58,7 +58,7 @@ class QT3DRENDERERSHARED_EXPORT QEffect
 {
     Q_OBJECT
 public:
-    explicit QEffect(Node *parent = 0);
+    explicit QEffect(QNode *parent = 0);
 
     void addTechnique(QAbstractTechnique *t) Q_DECL_OVERRIDE;
     void removeTechnique(QAbstractTechnique *t) Q_DECL_OVERRIDE;
@@ -69,7 +69,7 @@ public:
 
 protected:
     Q_DECLARE_PRIVATE(QEffect)
-    QEffect(QEffectPrivate &dd, Node *parent = 0);
+    QEffect(QEffectPrivate &dd, QNode *parent = 0);
 };
 
 } // Qt3D

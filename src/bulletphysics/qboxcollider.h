@@ -62,7 +62,7 @@ class QBoxCollider : public Qt3D::BulletPhysics::QAbstractCollider
     Q_PROPERTY(QVector3D halfExtents READ halfExtents WRITE setHalfExtents NOTIFY halfExtentsChanged)
 
 public:
-    explicit QBoxCollider(Qt3D::Node *parent = 0);
+    explicit QBoxCollider(Qt3D::QNode *parent = 0);
 
     void setCenter(const QVector3D &center);
     QVector3D center() const;
@@ -76,7 +76,7 @@ Q_SIGNALS:
 
 protected:
     Q_DECLARE_PRIVATE(QBoxCollider)
-    QBoxCollider(QBoxColliderPrivate &dd, Node *parent = 0);
+    QBoxCollider(QBoxColliderPrivate &dd, QNode *parent = 0);
 };
 
 } // namespace BulletPhysics

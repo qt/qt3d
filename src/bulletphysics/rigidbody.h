@@ -51,7 +51,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class Node;
+class QNode;
 
 namespace BulletPhysics {
 
@@ -65,7 +65,7 @@ class QT3DBULLETPHYSICSSHARED_EXPORT RigidBody : public Qt3D::Component
     Q_PROPERTY(QVector3D centerOfMass READ centerOfMass WRITE setCenterOfMass NOTIFY centerOfMassChanged)
 
 public:
-    explicit RigidBody(Qt3D::Node *parent = 0);
+    explicit RigidBody(Qt3D::QNode *parent = 0);
 
     void setMass(float mass);
     float mass() const;
@@ -79,7 +79,7 @@ Q_SIGNALS:
 
 protected:
     Q_DECLARE_PRIVATE(RigidBody)
-    RigidBody(RigidBodyPrivate &dd, Qt3D::Node *parent = 0);
+    RigidBody(RigidBodyPrivate &dd, Qt3D::QNode *parent = 0);
 };
 
 } // namespace BulletPhysics

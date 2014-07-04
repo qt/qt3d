@@ -52,7 +52,7 @@ class QT3DRENDERERSHARED_EXPORT QScene : public Render::QAbstractScene
 {
     Q_OBJECT
 public:
-    explicit QScene(Node *parent = 0);
+    explicit QScene(QNode *parent = 0);
 };
 
 } // Qt3D

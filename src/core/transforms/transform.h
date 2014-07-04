@@ -59,7 +59,7 @@ class QT3DCORESHARED_EXPORT Transform : public Component
     Q_OBJECT
 
 public:
-    explicit Transform(Node *parent = 0);
+    explicit Transform(QNode *parent = 0);
 
     QMatrix4x4 matrix() const;
     void setMatrix(const QMatrix4x4 &m);
@@ -90,7 +90,7 @@ protected:
     QList<AbstractTransform *> transformList() const;
 
     Q_DECLARE_PRIVATE(Transform)
-    Transform(TransformPrivate &dd, Node *parent = 0);
+    Transform(TransformPrivate &dd, QNode *parent = 0);
 };
 
 } // namespace Qt3D

@@ -55,7 +55,7 @@ class QT3DCORESHARED_EXPORT ScaleTransform : public AbstractTransform
     Q_PROPERTY(QVector3D scale3D READ scale3D WRITE setScale3D NOTIFY scale3DChanged)
     Q_PROPERTY(float scale READ scale WRITE setScale NOTIFY scaleChanged)
 public:
-    explicit ScaleTransform(Node *parent = 0);
+    explicit ScaleTransform(QNode *parent = 0);
 
     QVector3D scale3D() const;
     void    setScale3D(const QVector3D &scale3D);

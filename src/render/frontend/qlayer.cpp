@@ -51,12 +51,12 @@ QLayerPrivate::QLayerPrivate(QLayer *qq)
 {
 }
 
-QLayer::QLayer(Node *parent)
+QLayer::QLayer(QNode *parent)
     : Component(*new QLayerPrivate(this), parent)
 {
 }
 
-QLayer::QLayer(QLayerPrivate &dd, Node *parent)
+QLayer::QLayer(QLayerPrivate &dd, QNode *parent)
     : Component(dd, parent)
 {
 }

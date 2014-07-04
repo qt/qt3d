@@ -63,7 +63,7 @@ class QT3DRENDERERSHARED_EXPORT QAbstractLight : public Component
 
 public :
 
-    explicit QAbstractLight(Node *parent = 0);
+    explicit QAbstractLight(QNode *parent = 0);
 
     QColor color() const;
     void setColor(const QColor &color);
@@ -75,7 +75,7 @@ public :
 
 protected :
     Q_DECLARE_PRIVATE(QAbstractLight)
-    QAbstractLight(QAbstractLightPrivate &dd, Node *parent = 0);
+    QAbstractLight(QAbstractLightPrivate &dd, QNode *parent = 0);
 
 Q_SIGNALS:
     void colorChanged();

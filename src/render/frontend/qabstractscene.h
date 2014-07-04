@@ -62,7 +62,7 @@ class QT3DRENDERERSHARED_EXPORT QAbstractScene : public Entity
     Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
     Q_PROPERTY(QString sceneId READ sceneId WRITE setSceneId NOTIFY sceneIdChanged)
 public:
-    explicit QAbstractScene(Node *parent = 0);
+    explicit QAbstractScene(QNode *parent = 0);
 
     QString source() const;
     void setSource(QString arg);
@@ -70,8 +70,8 @@ public:
     QString sceneId() const;
     void setSceneId(QString arg);
 
-    virtual Node *node(QString id);
-    virtual Node *scene(QString id);
+    virtual QNode *node(QString id);
+    virtual QNode *scene(QString id);
 
     void clear();
 
@@ -81,7 +81,7 @@ public:
      * @param root - the found Scene or NULL if no Scene was found
      * @return
      */
-    static QAbstractScene* findInTree(Node* root);
+    static QAbstractScene* findInTree(QNode* root);
 Q_SIGNALS:
 
     void sourceChanged(QString arg);
@@ -90,7 +90,7 @@ Q_SIGNALS:
 protected:
     void rebuild();
     Q_DECLARE_PRIVATE(QAbstractScene)
-    QAbstractScene(QAbstractScenePrivate &dd, Node *parent = 0);
+    QAbstractScene(QAbstractScenePrivate &dd, QNode *parent = 0);
 };
 
 } // Render

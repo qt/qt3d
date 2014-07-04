@@ -59,18 +59,18 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 QFrameGraphItemPrivate::QFrameGraphItemPrivate(QFrameGraphItem *qq)
-    : NodePrivate(qq)
+    : QNodePrivate(qq)
     , m_enabled(true)
 {
 }
 
-QFrameGraphItem::QFrameGraphItem(Node *parent)
-    : Node(*new QFrameGraphItemPrivate(this), parent)
+QFrameGraphItem::QFrameGraphItem(QNode *parent)
+    : QNode(*new QFrameGraphItemPrivate(this), parent)
 {
 }
 
-QFrameGraphItem::QFrameGraphItem(QFrameGraphItemPrivate &dd, Node *parent)
-    : Node(dd, parent)
+QFrameGraphItem::QFrameGraphItem(QFrameGraphItemPrivate &dd, QNode *parent)
+    : QNode(dd, parent)
 {
 }
 

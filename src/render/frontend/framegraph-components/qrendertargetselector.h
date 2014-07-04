@@ -43,7 +43,7 @@
 #define QT3D_QRENDERTARGETSELECTOR_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DCore/node.h>
+#include <Qt3DCore/qnode.h>
 #include <Qt3DRenderer/qframegraphitem.h>
 
 QT_BEGIN_NAMESPACE
@@ -56,11 +56,11 @@ class QT3DRENDERERSHARED_EXPORT QRenderTargetSelector : public QFrameGraphItem
 {
     Q_OBJECT
 public:
-    explicit QRenderTargetSelector(Node *parent = 0);
+    explicit QRenderTargetSelector(QNode *parent = 0);
 
 protected:
     Q_DECLARE_PRIVATE(QRenderTargetSelector)
-    QRenderTargetSelector(QRenderTargetSelectorPrivate &dd, Node *parent = 0);
+    QRenderTargetSelector(QRenderTargetSelectorPrivate &dd, QNode *parent = 0);
 };
 
 } // Qt3D

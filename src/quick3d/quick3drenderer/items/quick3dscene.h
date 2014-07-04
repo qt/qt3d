@@ -62,8 +62,8 @@ public:
 
     inline QAbstractScene *parentScene() const { return qobject_cast<QAbstractScene*>(parent()); }
 
-    Q_INVOKABLE Node *node(QString id);
-    Q_INVOKABLE Node *scene(QString id);
+    Q_INVOKABLE QNode *node(QString id);
+    Q_INVOKABLE QNode *scene(QString id);
 };
 
 } // Quick

@@ -55,12 +55,12 @@ QRenderPassPrivate::QRenderPassPrivate(QRenderPass *qq)
 {
 }
 
-QRenderPass::QRenderPass(Node *parent)
+QRenderPass::QRenderPass(QNode *parent)
     : QAbstractRenderPass(*new QRenderPassPrivate(this), parent)
 {
 }
 
-QRenderPass::QRenderPass(QRenderPassPrivate &dd, Node *parent)
+QRenderPass::QRenderPass(QRenderPassPrivate &dd, QNode *parent)
     : QAbstractRenderPass(dd, parent)
 {
 }

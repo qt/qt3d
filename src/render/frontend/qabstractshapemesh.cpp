@@ -54,12 +54,12 @@ QAbstractShapeMeshPrivate::QAbstractShapeMeshPrivate(QAbstractShapeMesh *qq)
 {
 }
 
-QAbstractShapeMesh::QAbstractShapeMesh(Node *parent) :
+QAbstractShapeMesh::QAbstractShapeMesh(QNode *parent) :
     QAbstractMesh(*new QAbstractShapeMeshPrivate(this), parent)
 {
 }
 
-QAbstractShapeMesh::QAbstractShapeMesh(QAbstractShapeMeshPrivate &dd, Node *parent)
+QAbstractShapeMesh::QAbstractShapeMesh(QAbstractShapeMeshPrivate &dd, QNode *parent)
     : QAbstractMesh(dd, parent)
 {
 }

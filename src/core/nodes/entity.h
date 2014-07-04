@@ -42,7 +42,7 @@
 #ifndef QT3D_ENTITY_H
 #define QT3D_ENTITY_H
 
-#include <Qt3DCore/node.h>
+#include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qt3dcore_global.h>
 
 #include <QMetaType>
@@ -58,14 +58,14 @@ class EntityPrivate;
 
 typedef QList<Component*> ComponentList;
 
-class QT3DCORESHARED_EXPORT Entity : public Node
+class QT3DCORESHARED_EXPORT Entity : public QNode
 {
     Q_OBJECT
 
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
 
 public:
-    explicit Entity(Node *parent = 0);
+    explicit Entity(QNode *parent = 0);
 
     const QUuid uuid() const;
 
@@ -85,7 +85,7 @@ public:
     }
 
     template <class T>
-    static T* findComponentInTree(Node* root)
+    static T* findComponentInTree(QNode* root)
     {
         if (!root)
             return Q_NULLPTR;
@@ -98,7 +98,7 @@ public:
             } // of component iteration
         } // of is-entity
 
-        foreach (Node* child, root->children()) {
+        foreach (QNode* child, root->children()) {
             T* i = findComponentInTree<T>(child);
             if (i)
                 return i;
@@ -108,13 +108,13 @@ public:
     }
 
     template <class T>
-    static T* findEntityInTree(Node* root)
+    static T* findEntityInTree(QNode* root)
     {
         if (!root)
             return Q_NULLPTR;
 
         if (root->asEntity()) {
-            foreach (Node* child, root->children()) {
+            foreach (QNode* child, root->children()) {
                 if (!qobject_cast<Entity*>(child))
                     continue;
                 T* i = qobject_cast<T*>(child);
@@ -123,7 +123,7 @@ public:
             } // of child iteration
         } // of is-entity
 
-        foreach (Node* child, root->children()) {
+        foreach (QNode* child, root->children()) {
             T* i = findEntityInTree<T>(child);
             if (i)
                 return i;
@@ -146,7 +146,7 @@ Q_SIGNALS:
 
 protected:
     Q_DECLARE_PRIVATE(Entity)
-    Entity(EntityPrivate &dd, Node *parent = 0);
+    Entity(EntityPrivate &dd, QNode *parent = 0);
 };
 
 } // namespace Qt3D

@@ -64,7 +64,7 @@ class QT3DRENDERERSHARED_EXPORT QMesh : public QAbstractMesh
     Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
 
 public:
-    explicit QMesh(Node *parent = 0);
+    explicit QMesh(QNode *parent = 0);
 
     void setSource(const QString &source);
     QString source() const;
@@ -76,7 +76,7 @@ Q_SIGNALS:
 
 protected:
     Q_DECLARE_PRIVATE(QMesh)
-    QMesh(QMeshPrivate &dd, Node *parent = 0);
+    QMesh(QMeshPrivate &dd, QNode *parent = 0);
 
 };
 

@@ -62,7 +62,7 @@ class QT3DBULLETPHYSICSSHARED_EXPORT QSphereCollider : public Qt3D::BulletPhysic
     Q_PROPERTY(float radius READ radius WRITE setRadius NOTIFY radiusChanged)
 
 public:
-    explicit QSphereCollider(Qt3D::Node *parent = 0);
+    explicit QSphereCollider(Qt3D::QNode *parent = 0);
 
     void setCenter(const QVector3D &center);
     QVector3D center() const;
@@ -76,7 +76,7 @@ Q_SIGNALS:
 
 protected:
     Q_DECLARE_PRIVATE(QSphereCollider)
-    QSphereCollider(QSphereColliderPrivate &dd, Node *parent = 0);
+    QSphereCollider(QSphereColliderPrivate &dd, QNode *parent = 0);
 };
 
 } // namespace BulletPhysics

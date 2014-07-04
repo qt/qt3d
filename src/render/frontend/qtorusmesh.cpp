@@ -68,7 +68,7 @@ class QTorusMeshPrivate : public QAbstractShapeMeshPrivate
     float m_minorRadius;
 };
 
-QTorusMesh::QTorusMesh(Node *parent)
+QTorusMesh::QTorusMesh(QNode *parent)
     : QAbstractShapeMesh(*new QTorusMeshPrivate(this), parent)
 {
 }

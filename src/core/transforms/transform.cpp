@@ -57,14 +57,14 @@ TransformPrivate::TransformPrivate(Transform *qq)
 {
 }
 
-Transform::Transform(Node *parent)
+Transform::Transform(QNode *parent)
     : Qt3D::Component(*new TransformPrivate(this), parent)
 {
     Q_D(Transform);
     d->m_transformsDirty.fetchAndStoreOrdered(0);
 }
 
-Transform::Transform(TransformPrivate &dd, Node *parent)
+Transform::Transform(TransformPrivate &dd, QNode *parent)
     : Component(dd, parent)
 {
 

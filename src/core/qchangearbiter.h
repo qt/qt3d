@@ -60,7 +60,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class Node;
+class QNode;
 class QObservableInterface;
 class QJobManagerInterface;
 
@@ -80,14 +80,14 @@ public:
                           ChangeFlags changeFlags = AllChanges);
 
     void registerObserver(QObserverInterface *observer,
-                          Node *observable,
+                          QNode *observable,
                           ChangeFlags changeFlags = AllChanges);
 
     void unregisterObserver(QObserverInterface *observer,
                             QObservableInterface *subject);
 
     void unregisterObserver(QObserverInterface *observer,
-                            Node *subject);
+                            QNode *subject);
 
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;                 // QObserverInterface impl
     void sceneChangeEventWithLock(const QSceneChangePtr &e);
@@ -121,7 +121,7 @@ private:
     // We keep these distinct because we do not manage the main thread which means
     // the mechanisms for working with objects there is different.
     QHash<QObservableInterface *, QObserverList> m_aspectObservations;
-    QHash<Node *, QObserverList> m_nodeObservations;
+    QHash<QNode *, QObserverList> m_nodeObservations;
 
     // Each thread has a TLS ChangeQueue so we never need to lock whilst
     // receiving a QSceneChange.

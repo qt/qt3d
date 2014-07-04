@@ -67,12 +67,12 @@ QAbstractMeshPrivate::QAbstractMeshPrivate(QAbstractMesh *qq)
 }
 
 
-QAbstractMesh::QAbstractMesh(Node *parent)
+QAbstractMesh::QAbstractMesh(QNode *parent)
     : Component(*new QAbstractMeshPrivate(this), parent)
 {
 }
 
-QAbstractMesh::QAbstractMesh(QAbstractMeshPrivate &dd, Node *parent)
+QAbstractMesh::QAbstractMesh(QAbstractMeshPrivate &dd, QNode *parent)
     : Component(dd, parent)
 {
 }

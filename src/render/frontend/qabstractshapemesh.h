@@ -59,7 +59,7 @@ class QT3DRENDERERSHARED_EXPORT QAbstractShapeMesh : public QAbstractMesh
     Q_OBJECT
 
 public:
-    explicit QAbstractShapeMesh(Node *parent = 0);
+    explicit QAbstractShapeMesh(QNode *parent = 0);
 
     bool load() Q_DECL_OVERRIDE;
 
@@ -67,7 +67,7 @@ public:
 
 protected:
     Q_DECLARE_PRIVATE(QAbstractShapeMesh)
-    QAbstractShapeMesh(QAbstractShapeMeshPrivate &dd, Node* parent = 0);
+    QAbstractShapeMesh(QAbstractShapeMeshPrivate &dd, QNode* parent = 0);
 
 };
 

@@ -55,12 +55,12 @@ QSphereColliderPrivate::QSphereColliderPrivate(QSphereCollider *qq)
 }
 
 
-QSphereCollider::QSphereCollider(Qt3D::Node *parent)
+QSphereCollider::QSphereCollider(Qt3D::QNode *parent)
     : QAbstractCollider(*new QSphereColliderPrivate(this), parent)
 {
 }
 
-QSphereCollider::QSphereCollider(QSphereColliderPrivate &dd, Node *parent)
+QSphereCollider::QSphereCollider(QSphereColliderPrivate &dd, QNode *parent)
     : QAbstractCollider(dd, parent)
 {
 }

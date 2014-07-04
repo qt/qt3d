@@ -49,7 +49,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-Camera::Camera(Node *parent) : Entity(parent)
+Camera::Camera(QNode *parent) : Entity(parent)
   , d_ptr(new CameraPrivate(this))
 {
     qDebug() << Q_FUNC_INFO;

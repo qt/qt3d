@@ -69,7 +69,7 @@ class QSphereMeshPrivate : public QAbstractShapeMeshPrivate
     float m_radius;
 };
 
-QSphereMesh::QSphereMesh(Node *parent)
+QSphereMesh::QSphereMesh(QNode *parent)
     : QAbstractShapeMesh(*new QSphereMeshPrivate(this), parent)
 {
 }

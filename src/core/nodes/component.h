@@ -42,7 +42,7 @@
 #ifndef QT3D_COMPONENT_H
 #define QT3D_COMPONENT_H
 
-#include <Qt3DCore/node.h>
+#include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qt3dcore_global.h>
 
 QT_BEGIN_NAMESPACE
@@ -51,14 +51,14 @@ namespace Qt3D {
 
 class ComponentPrivate;
 
-class QT3DCORESHARED_EXPORT Component : public Node
+class QT3DCORESHARED_EXPORT Component : public QNode
 {
     Q_OBJECT
 
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
 
 public:
-    explicit Component(Node *parent = 0);
+    explicit Component(QNode *parent = 0);
 
     void setEnabled(bool enabled);
     bool isEnabled() const;
@@ -68,7 +68,7 @@ Q_SIGNALS:
 
 protected:
     Q_DECLARE_PRIVATE(Component)
-    Component(ComponentPrivate &dd, Node *parent = 0);
+    Component(ComponentPrivate &dd, QNode *parent = 0);
 };
 
 } // namespace Qt3D

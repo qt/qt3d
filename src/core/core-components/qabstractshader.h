@@ -42,7 +42,7 @@
 #ifndef QT3D_QABSTRACTSHADER_H
 #define QT3D_QABSTRACTSHADER_H
 
-#include <Qt3DCore/node.h>
+#include <Qt3DCore/qnode.h>
 #include <QUuid>
 
 QT_BEGIN_NAMESPACE
@@ -52,11 +52,11 @@ namespace Qt3D {
 class QAbstractShaderPrivate;
 
 class QT3DCORESHARED_EXPORT QAbstractShader
-        : public Node
+        : public QNode
 {
     Q_OBJECT
 public:
-    explicit QAbstractShader(Node *parent = 0);
+    explicit QAbstractShader(QNode *parent = 0);
 
     QUuid uuid() const;
 

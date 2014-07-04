@@ -39,60 +39,37 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_NODE_H
-#define QT3D_NODE_H
+#ifndef QT3D_QNODE_P_H
+#define QT3D_QNODE_P_H
 
-#include <QObject>
 #include <Qt3DCore/qt3dcore_global.h>
-#include <Qt3DCore/qobservableinterface.h>
-#include <Qt3DCore/qchangearbiter.h>
-
-#include <QReadWriteLock>
+#include <private/qobject_p.h>
+#include <Qt3DCore/qnode.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class Node;
-class NodePrivate;
-class Entity;
-
-typedef QList<Node *> NodeList;
-
-class QT3DCORESHARED_EXPORT Node : public QObject, public QObservableInterface
+class QT3DCORESHARED_EXPORT QNodePrivate : public QObjectPrivate
 {
-    Q_OBJECT
-
 public:
-    explicit Node(Node *parent = 0);
-    ~Node();
+    QNodePrivate(QNode *qq)
+        : QObjectPrivate()
+        , m_changeArbiter(Q_NULLPTR)
+    {
+        q_ptr = qq;
+    }
 
-    void dump();
+    NodeList m_children;
 
-    NodeList children() const;
-    void addChild(Node *childNode);
-    void removeChild(Node *childNode);
-
-    void removeAllChildren();
-
-    virtual Entity* asEntity();
-
-    Node *parentNode() const;
-
-    void registerObserver(QObserverInterface *observer) Q_DECL_OVERRIDE;
-    void unregisterObserver(QObserverInterface *observer) Q_DECL_OVERRIDE;
-
-protected:
-    virtual void notifyObservers(const QSceneChangePtr &change);
-
-    Q_DECLARE_PRIVATE(Node)
-    Node(NodePrivate &dd, Node *parent = 0);
+    // For now this just protects access to the m_changeArbiter.
+    // Later on we may decide to extend support for multiple observers.
+    QReadWriteLock m_observerLock;
+    QChangeArbiter *m_changeArbiter;
 };
 
 } // namespace Qt3D
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3D::Node *)
-
-#endif
+#endif // QT3D_NODE_P_H

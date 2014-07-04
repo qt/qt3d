@@ -83,8 +83,8 @@ private:
     QStack<HRenderNode> m_nodeStack;
     HRenderNode m_frameGraphEntityNode;
 
-    Render::FrameGraphNode* buildFrameGraph(Node *node);
-    Render::FrameGraphNode* backendFrameGraphNode(Node *);
+    Render::FrameGraphNode* buildFrameGraph(QNode *node);
+    Render::FrameGraphNode* backendFrameGraphNode(QNode *);
 
     HRenderNode createRenderNode(Entity *node);
     void createRenderMaterial(Entity *entity);

@@ -54,7 +54,7 @@ class QWindow;
 namespace Qt3D {
 
 class AbstractAspect;
-class Node;
+class QNode;
 class QChangeArbiter;
 class QJobManagerInterface;
 class QScheduler;

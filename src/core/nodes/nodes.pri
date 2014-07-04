@@ -1,8 +1,8 @@
 INCLUDEPATH += $$PWD
 
 HEADERS += \
-    $$PWD/node.h \
-    $$PWD/node_p.h \
+    $$PWD/qnode.h \
+    $$PWD/qnode_p.h \
     $$PWD/nodevisitor.h \
     $$PWD/component.h \
     $$PWD/component_p.h \
@@ -10,7 +10,7 @@ HEADERS += \
     $$PWD/entity_p.h
 
 SOURCES += \
-    $$PWD/node.cpp \
+    $$PWD/qnode.cpp \
     $$PWD/nodevisitor.cpp \
     $$PWD/component.cpp \
     $$PWD/entity.cpp

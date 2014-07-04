@@ -43,7 +43,7 @@
 #define QT3D_QFRAMEGRAPHITEM_P_H
 
 #include <QtCore/QtGlobal>
-#include <private/node_p.h>
+#include <private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -51,7 +51,7 @@ namespace Qt3D {
 
 class QFrameGraphItem;
 
-class QFrameGraphItemPrivate : public NodePrivate
+class QFrameGraphItemPrivate : public QNodePrivate
 {
 public:
     QFrameGraphItemPrivate(QFrameGraphItem *qq);

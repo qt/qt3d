@@ -68,12 +68,12 @@ QAbstractMaterialPrivate::QAbstractMaterialPrivate(QAbstractMaterial *qq)
     , m_effect(Q_NULLPTR)
 {}
 
-QAbstractMaterial::QAbstractMaterial(Node *parent)
+QAbstractMaterial::QAbstractMaterial(QNode *parent)
     : Component(*new QAbstractMaterialPrivate(this), parent)
 {
 }
 
-QAbstractMaterial::QAbstractMaterial(QAbstractMaterialPrivate &dd, Node *parent)
+QAbstractMaterial::QAbstractMaterial(QAbstractMaterialPrivate &dd, QNode *parent)
     : Component(dd, parent)
 {
 }

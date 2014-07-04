@@ -61,7 +61,7 @@ class QT3DRENDERERSHARED_EXPORT QSphereMesh : public Qt3D::QAbstractShapeMesh
     Q_PROPERTY(bool generateTangents READ generateTangents WRITE setGenerateTangents NOTIFY generateTangentsChanged)
 
 public:
-    explicit QSphereMesh(Node *parent = 0);
+    explicit QSphereMesh(QNode *parent = 0);
 
     void setRings(int rings);
     void setSlices(int slices);

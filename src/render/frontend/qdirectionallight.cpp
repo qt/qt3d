@@ -53,12 +53,12 @@ QDirectionalLightPrivate::QDirectionalLightPrivate(QDirectionalLight *qq)
 {
 }
 
-QDirectionalLight::QDirectionalLight(Node *parent)
+QDirectionalLight::QDirectionalLight(QNode *parent)
     : QAbstractLight(*new QDirectionalLightPrivate(this), parent)
 {
 }
 
-QDirectionalLight::QDirectionalLight(QDirectionalLightPrivate &dd, Node *parent)
+QDirectionalLight::QDirectionalLight(QDirectionalLightPrivate &dd, QNode *parent)
     : QAbstractLight(dd, parent)
 {
 }

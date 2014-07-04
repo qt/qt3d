@@ -42,7 +42,7 @@
 #ifndef QT3D_PARAMETER_H
 #define QT3D_PARAMETER_H
 
-#include <Qt3DCore/node.h>
+#include <Qt3DCore/qnode.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DRenderer/quniformvalue.h>
 
@@ -50,7 +50,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DRENDERERSHARED_EXPORT Parameter : public Node
+class QT3DRENDERERSHARED_EXPORT Parameter : public QNode
 {
     Q_OBJECT
     Q_ENUMS(OpenGLTypes)
@@ -112,9 +112,9 @@ public:
         IntVec4
     };
 
-    explicit Parameter(Node *parent = 0);
-    Parameter(Node* parent, const QString& name, const QVariant& value);
-    Parameter(Node* parent, const QString& name, const QVariant& value, OpenGLTypes ty);
+    explicit Parameter(QNode *parent = 0);
+    Parameter(QNode* parent, const QString& name, const QVariant& value);
+    Parameter(QNode* parent, const QString& name, const QVariant& value, OpenGLTypes ty);
 
     void setName(const QString &name);
     QString name() const

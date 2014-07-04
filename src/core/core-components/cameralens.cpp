@@ -62,12 +62,12 @@ CameraLensPrivate::CameraLensPrivate(CameraLens *qq)
 }
 
 
-CameraLens::CameraLens(Node *parent)
+CameraLens::CameraLens(QNode *parent)
     : Component(*new CameraLensPrivate(this), parent)
 {
 }
 
-CameraLens::CameraLens(CameraLensPrivate &dd, Node *parent)
+CameraLens::CameraLens(CameraLensPrivate &dd, QNode *parent)
     : Component(dd, parent)
 {
 }

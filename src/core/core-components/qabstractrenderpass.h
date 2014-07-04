@@ -42,7 +42,7 @@
 #ifndef QT3D_QABSTRACTRENDERPASS_H
 #define QT3D_QABSTRACTRENDERPASS_H
 
-#include <Qt3DCore/node.h>
+#include <Qt3DCore/qnode.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -52,14 +52,14 @@ class QAbstractShader;
 class QAbstractRenderPassPrivate;
 
 class QT3DCORESHARED_EXPORT QAbstractRenderPass
-        : public Node
+        : public QNode
 {
     Q_OBJECT
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(Qt3D::QAbstractShader * shaderProgram READ shaderProgram WRITE setShaderProgram NOTIFY shaderProgramChanged)
 
 public:
-    explicit QAbstractRenderPass(Node *parent = 0);
+    explicit QAbstractRenderPass(QNode *parent = 0);
 
     virtual void setName(const QString &name);
     QString name() const;
@@ -72,7 +72,7 @@ Q_SIGNALS:
 
 protected:
     Q_DECLARE_PRIVATE(QAbstractRenderPass)
-    QAbstractRenderPass(QAbstractRenderPassPrivate &dd, Node *parent = 0);
+    QAbstractRenderPass(QAbstractRenderPassPrivate &dd, QNode *parent = 0);
 };
 
 } // Qt3D

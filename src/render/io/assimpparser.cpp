@@ -771,7 +771,7 @@ void AssimpParser::copyMaterialFloatProperties(QMaterial *material, aiMaterial *
         material->addParameter(new Parameter(material, ASSIMP_MATERIAL_REFLECTIVITY, value));
 }
 
-AssimpParser::AssimpMesh::AssimpMesh(Node *parent)
+AssimpParser::AssimpMesh::AssimpMesh(QNode *parent)
     : QAbstractMesh(parent)
 {
 }

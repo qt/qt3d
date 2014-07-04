@@ -55,12 +55,12 @@ QTechniqueFilterPrivate::QTechniqueFilterPrivate(QTechniqueFilter *qq)
 {
 }
 
-QTechniqueFilter::QTechniqueFilter(Node *parent)
+QTechniqueFilter::QTechniqueFilter(QNode *parent)
     : QFrameGraphItem(*new QTechniqueFilterPrivate(this), parent)
 {
 }
 
-QTechniqueFilter::QTechniqueFilter(QTechniqueFilterPrivate &dd, Node *parent)
+QTechniqueFilter::QTechniqueFilter(QTechniqueFilterPrivate &dd, QNode *parent)
     : QFrameGraphItem(dd, parent)
 {
 }

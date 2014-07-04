@@ -56,12 +56,12 @@ QMaterialPrivate::QMaterialPrivate(QMaterial *qq)
         : QAbstractMaterialPrivate(qq)
     {}
 
-QMaterial::QMaterial(QMaterialPrivate &dd, Node *parent)
+QMaterial::QMaterial(QMaterialPrivate &dd, QNode *parent)
     : QAbstractMaterial(dd, parent)
 {
 }
 
-QMaterial::QMaterial(Node *parent)
+QMaterial::QMaterial(QNode *parent)
     : QAbstractMaterial(*new QMaterialPrivate(this), parent)
 {
 }

@@ -69,8 +69,8 @@ public:
     QAbstractShader *q_ptr;
 };
 
-QAbstractShader::QAbstractShader(Node *parent)
-    : Node(parent)
+QAbstractShader::QAbstractShader(QNode *parent)
+    : QNode(parent)
     , d_ptr(new QAbstractShaderPrivate(this))
 {
 }

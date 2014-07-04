@@ -48,7 +48,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QCameraSelector::QCameraSelector(QCameraSelectorPrivate &dd, Node *parent)
+QCameraSelector::QCameraSelector(QCameraSelectorPrivate &dd, QNode *parent)
     : QFrameGraphItem(dd, parent)
 {
 }
@@ -58,7 +58,7 @@ QCameraSelectorPrivate::QCameraSelectorPrivate(Qt3D::QCameraSelector *qq)
     , m_camera(Q_NULLPTR)
 {}
 
-QCameraSelector::QCameraSelector(Qt3D::Node *parent)
+QCameraSelector::QCameraSelector(Qt3D::QNode *parent)
     :   QFrameGraphItem(*new QCameraSelectorPrivate(this), parent)
 {}
 

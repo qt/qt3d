@@ -51,7 +51,7 @@ QPointLightPrivate::QPointLightPrivate(QPointLight *qq)
 {
 }
 
-QPointLight::QPointLight(Node *parent)
+QPointLight::QPointLight(QNode *parent)
     : QAbstractLight(*new QPointLightPrivate(this), parent)
 {
 }
@@ -61,7 +61,7 @@ QHash<QString, QVariant> QPointLight::lightProperties() const
     return QHash<QString, QVariant>();
 }
 
-QPointLight::QPointLight(QPointLightPrivate &dd, Node *parent)
+QPointLight::QPointLight(QPointLightPrivate &dd, QNode *parent)
     : QAbstractLight(dd, parent)
 {
 }

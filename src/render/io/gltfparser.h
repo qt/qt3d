@@ -101,7 +101,7 @@ private:
     class GLTFParserMesh : public QAbstractMesh
     {
     public:
-        GLTFParserMesh(Node *parent = 0);
+        GLTFParserMesh(QNode *parent = 0);
 
         bool load() Q_DECL_OVERRIDE;
         void setData(MeshDataPtr data);

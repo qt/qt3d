@@ -50,21 +50,21 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D
 {
 
-class Node;
+class QNode;
 class Entity;
 
-typedef QList<Node *> NodeList;
+typedef QList<QNode *> NodeList;
 
 class QT3DCORESHARED_EXPORT NodeVisitor
 {
 public:
     NodeVisitor();
 
-    void traverse(Node *rootNode);
+    void traverse(QNode *rootNode);
 
-    Node *rootNode() const;
+    QNode *rootNode() const;
 
-    Node *currentNode() const;
+    QNode *currentNode() const;
 
     QMatrix4x4 currentMatrix() const;
 
@@ -73,7 +73,7 @@ public:
     void setTraverseDisabled(bool on);
 
 protected:
-    virtual void visitNode(Node *nd);
+    virtual void visitNode(QNode *nd);
     virtual void visitEntity(Entity *ent);
 
     void traverseChildren();
@@ -83,7 +83,7 @@ private:
     QVector<QMatrix4x4> m_matrixStack;
     bool m_traverseDisabled;
 
-    void outerVisitNode(Node *n);
+    void outerVisitNode(QNode *n);
 };
 
 } // namespace Qt3D

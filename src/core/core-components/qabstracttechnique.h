@@ -42,7 +42,7 @@
 #ifndef QT3D_QABSTRACTTECHNIQUE_H
 #define QT3D_QABSTRACTTECHNIQUE_H
 
-#include <Qt3DCore/node.h>
+#include <Qt3DCore/qnode.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -52,13 +52,13 @@ class QAbstractRenderPass;
 class QAbstractTechniquePrivate;
 
 class QT3DCORESHARED_EXPORT QAbstractTechnique
-        : public Node
+        : public QNode
 {
     Q_OBJECT
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
 
 public:
-    explicit QAbstractTechnique(Node *parent = 0);
+    explicit QAbstractTechnique(QNode *parent = 0);
 
     virtual void setName(const QString &name);
     QString name() const;
@@ -72,7 +72,7 @@ Q_SIGNALS:
 
 protected:
     Q_DECLARE_PRIVATE(QAbstractTechnique)
-    QAbstractTechnique(QAbstractTechniquePrivate &dd, Node *parent = 0);
+    QAbstractTechnique(QAbstractTechniquePrivate &dd, QNode *parent = 0);
 };
 
 } // Qt3D

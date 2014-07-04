@@ -45,7 +45,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-LookAtTransform::LookAtTransform(Node *parent)
+LookAtTransform::LookAtTransform(QNode *parent)
     : AbstractTransform(parent)
     , m_matrixDirty(true)
 {

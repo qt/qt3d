@@ -43,18 +43,18 @@
 #define ENTITY_P_H
 
 #include <Qt3DCore/qt3dcore_global.h>
-#include <Qt3DCore/private/node_p.h>
+#include <Qt3DCore/private/qnode_p.h>
 #include "entity.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DCORESHARED_EXPORT EntityPrivate : public NodePrivate
+class QT3DCORESHARED_EXPORT EntityPrivate : public QNodePrivate
 {
 public :
     EntityPrivate(Entity *qq)
-        : NodePrivate(qq)
+        : QNodePrivate(qq)
         , m_uuid(QUuid::createUuid())
         , m_enabled(true)
     {}

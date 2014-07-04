@@ -93,7 +93,7 @@ private :
     class AssimpMesh : public QAbstractMesh
     {
     public :
-        AssimpMesh(Node *parent = 0);
+        AssimpMesh(QNode *parent = 0);
 
         bool load() Q_DECL_OVERRIDE;
         void setData(MeshDataPtr data);

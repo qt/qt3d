@@ -64,7 +64,7 @@ class QT3DCORESHARED_EXPORT Camera : public Entity
     Q_PROPERTY(Qt3D::Transform *transform READ transform WRITE setTransform NOTIFY transformChanged)
 
 public:
-    explicit Camera(Node *parent = 0);
+    explicit Camera(QNode *parent = 0);
 
 
     enum CameraTranslationOption {

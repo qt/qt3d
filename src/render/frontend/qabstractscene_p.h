@@ -64,8 +64,8 @@ public:
 
     QString m_source;
     QString m_sceneId;
-    Node *m_sceneNode;
-    Node *m_sceneChild;
+    QNode *m_sceneNode;
+    QNode *m_sceneChild;
     AbstractSceneParser *m_currentParser;
 };
 

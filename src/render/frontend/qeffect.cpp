@@ -54,12 +54,12 @@ QEffectPrivate::QEffectPrivate(QEffect *qq)
     : QAbstractEffectPrivate(qq)
 {}
 
-QEffect::QEffect(Node *parent)
+QEffect::QEffect(QNode *parent)
     : QAbstractEffect(*new QEffectPrivate(this), parent)
 {
 }
 
-QEffect::QEffect(QEffectPrivate &dd, Node *parent)
+QEffect::QEffect(QEffectPrivate &dd, QNode *parent)
     : QAbstractEffect(dd, parent)
 {
 }

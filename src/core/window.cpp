@@ -46,7 +46,7 @@
 #include <QMouseEvent>
 #include <QGuiApplication>
 
-#include "node.h"
+#include "qnode.h"
 #include "camera.h"
 #include "entity.h"
 #include "corelogging.h"

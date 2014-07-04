@@ -55,12 +55,12 @@ QSpotLightPrivate::QSpotLightPrivate(QSpotLight *qq)
 }
 
 
-QSpotLight::QSpotLight(Node *parent)
+QSpotLight::QSpotLight(QNode *parent)
     : QAbstractLight(*new QSpotLightPrivate(this), parent)
 {
 }
 
-QSpotLight::QSpotLight(QSpotLightPrivate &dd, Node *parent)
+QSpotLight::QSpotLight(QSpotLightPrivate &dd, QNode *parent)
     : QAbstractLight(dd, parent)
 {
 }

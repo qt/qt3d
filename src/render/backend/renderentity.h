@@ -54,7 +54,7 @@ namespace Qt3D {
 
 class RendererAspect;
 class Sphere;
-class Node;
+class QNode;
 class Entity;
 class Transform;
 

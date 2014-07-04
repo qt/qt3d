@@ -45,13 +45,13 @@
 #include <QDebug>
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DCore/node.h>
+#include <Qt3DCore/qnode.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DRENDERERSHARED_EXPORT Tag : public Node
+class QT3DRENDERERSHARED_EXPORT Tag : public QNode
 {
     Q_OBJECT
 
@@ -59,8 +59,8 @@ class QT3DRENDERERSHARED_EXPORT Tag : public Node
     Q_PROPERTY(QVariant value READ value WRITE setValue NOTIFY valueChanged)
 
 public:
-    Tag(Node *parent = 0)
-        : Node(parent)
+    Tag(QNode *parent = 0)
+        : QNode(parent)
         , m_name()
         , m_value()
     {}

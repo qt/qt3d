@@ -42,7 +42,7 @@
 #ifndef QT3D_QABSTRACTEFFECT_H
 #define QT3D_QABSTRACTEFFECT_H
 
-#include <Qt3DCore/node.h>
+#include <Qt3DCore/qnode.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -55,11 +55,11 @@ class QAbstractEffectPrivate;
 // the class
 
 class QT3DCORESHARED_EXPORT QAbstractEffect
-        : public Node
+        : public QNode
 {
     Q_OBJECT
 public:
-    explicit QAbstractEffect(Node *parent = 0);
+    explicit QAbstractEffect(QNode *parent = 0);
 
     virtual void addTechnique(QAbstractTechnique *t);
     virtual void removeTechnique(QAbstractTechnique *t);
@@ -73,7 +73,7 @@ Q_SIGNALS:
 
 protected:
     Q_DECLARE_PRIVATE(QAbstractEffect)
-    QAbstractEffect(QAbstractEffectPrivate &dd, Node *parent = 0);
+    QAbstractEffect(QAbstractEffectPrivate &dd, QNode *parent = 0);
 };
 
 } // Qt3D

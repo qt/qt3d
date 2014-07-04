@@ -52,13 +52,13 @@ QLayerFilterPrivate::QLayerFilterPrivate(QLayerFilter *qq)
 {
 }
 
-QLayerFilter::QLayerFilter(Node *parent)
+QLayerFilter::QLayerFilter(QNode *parent)
     : QFrameGraphItem(*new QLayerFilterPrivate(this), parent)
 {
 }
 
 
-QLayerFilter::QLayerFilter(QLayerFilterPrivate &dd, Node *parent)
+QLayerFilter::QLayerFilter(QLayerFilterPrivate &dd, QNode *parent)
     : QFrameGraphItem(dd, parent)
 {
 }

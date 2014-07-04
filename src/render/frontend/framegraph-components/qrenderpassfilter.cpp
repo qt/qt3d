@@ -50,11 +50,11 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QRenderPassFilter::QRenderPassFilter(Node *parent)
+QRenderPassFilter::QRenderPassFilter(QNode *parent)
     : QFrameGraphItem(*new QRenderPassFilterPrivate(this), parent)
 {}
 
-QRenderPassFilter::QRenderPassFilter(QRenderPassFilterPrivate &dd, Node *parent)
+QRenderPassFilter::QRenderPassFilter(QRenderPassFilterPrivate &dd, QNode *parent)
     : QFrameGraphItem(dd, parent)
 {
 }

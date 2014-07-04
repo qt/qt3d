@@ -53,12 +53,12 @@ QViewportPrivate::QViewportPrivate(QViewport *qq) :
 {
 }
 
-QViewport::QViewport(Node *parent)
+QViewport::QViewport(QNode *parent)
     : QFrameGraphItem(*new QViewportPrivate(this), parent)
 {
 }
 
-QViewport::QViewport(QViewportPrivate &dd, Node *parent)
+QViewport::QViewport(QViewportPrivate &dd, QNode *parent)
     : QFrameGraphItem(dd, parent)
 {
 }

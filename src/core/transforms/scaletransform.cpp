@@ -46,7 +46,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D
 {
 
-ScaleTransform::ScaleTransform(Node *parent) :
+ScaleTransform::ScaleTransform(QNode *parent) :
     AbstractTransform(parent)
 {
 }

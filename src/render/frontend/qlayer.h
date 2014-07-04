@@ -56,7 +56,7 @@ class QT3DRENDERERSHARED_EXPORT QLayer : public Component
     Q_OBJECT
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
 public:
-    explicit QLayer(Node *parent = 0);
+    explicit QLayer(QNode *parent = 0);
 
     QString name() const;
     void setName(const QString &name);
@@ -66,7 +66,7 @@ Q_SIGNALS:
 
 protected:
     Q_DECLARE_PRIVATE(QLayer)
-    QLayer(QLayerPrivate &dd, Node *parent = 0);
+    QLayer(QLayerPrivate &dd, QNode *parent = 0);
 };
 
 } // Qt3D

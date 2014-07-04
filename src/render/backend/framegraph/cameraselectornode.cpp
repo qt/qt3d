@@ -85,7 +85,7 @@ void CameraSelector::sceneChangeEvent(const QSceneChangePtr &e)
     if (e->m_type == ComponentUpdated) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->m_propertyName == QByteArrayLiteral("camera"))
-            setCameraEntity(qobject_cast<Entity*>(propertyChange->m_value.value<Node*>()));
+            setCameraEntity(qobject_cast<Entity*>(propertyChange->m_value.value<QNode*>()));
     }
 }
 

@@ -64,12 +64,12 @@ QAbstractLightPrivate::QAbstractLightPrivate(QAbstractLight *qq)
 /*!
  * Constructs a new QAbstractLight with the given \a parent.
  */
-QAbstractLight::QAbstractLight(Qt3D::Node *parent) :
+QAbstractLight::QAbstractLight(Qt3D::QNode *parent) :
     Component(*new QAbstractLightPrivate(this), parent)
 {
 }
 
-QAbstractLight::QAbstractLight(QAbstractLightPrivate &dd, Node *parent)
+QAbstractLight::QAbstractLight(QAbstractLightPrivate &dd, QNode *parent)
     : Component(dd, parent)
 {
 }

@@ -42,7 +42,7 @@
 #ifndef QT3D_ABSTRACT_TRANSFORM_H
 #define QT3D_ABSTRACT_TRANSFORM_H
 
-#include <Qt3DCore/node.h>
+#include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qt3dcore_global.h>
 
 #include <QMatrix4x4>
@@ -51,11 +51,11 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DCORESHARED_EXPORT AbstractTransform : public Node
+class QT3DCORESHARED_EXPORT AbstractTransform : public QNode
 {
     Q_OBJECT
 public:
-    explicit AbstractTransform(Node *parent = 0);
+    explicit AbstractTransform(QNode *parent = 0);
     virtual ~AbstractTransform();
 
     virtual QMatrix4x4 matrix() const = 0;

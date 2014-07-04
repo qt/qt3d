@@ -55,12 +55,12 @@ QBoxColliderPrivate::QBoxColliderPrivate(QBoxCollider *qq)
 }
 
 
-QBoxCollider::QBoxCollider(Qt3D::Node *parent)
+QBoxCollider::QBoxCollider(Qt3D::QNode *parent)
     : QAbstractCollider(*new QBoxColliderPrivate(this), parent)
 {
 }
 
-QBoxCollider::QBoxCollider(QBoxColliderPrivate &dd, Node *parent)
+QBoxCollider::QBoxCollider(QBoxColliderPrivate &dd, QNode *parent)
     : QAbstractCollider(dd, parent)
 {
 }

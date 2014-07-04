@@ -54,7 +54,7 @@ class QWindow;
 namespace Qt3D {
 
 class QAspectManager;
-class Node;
+class QNode;
 class Entity;
 
 class QT3DCORESHARED_EXPORT AbstractAspect : public QObject, public QJobProviderInterface

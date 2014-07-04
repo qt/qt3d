@@ -40,7 +40,7 @@
 ****************************************************************************/
 
 #include <QtTest/QtTest>
-#include <Qt3DCore/node.h>
+#include <Qt3DCore/qnode.h>
 #include <Qt3DCore/entity.h>
 #include <Qt3DCore/component.h>
 
@@ -66,8 +66,8 @@ private slots:
 
 void tst_Nodes::defaultNodeConstruction()
 {
-    Qt3D::Node *node = new Qt3D::Node();
-    Qt3D::Node node2(node);
+    Qt3D::QNode *node = new Qt3D::QNode();
+    Qt3D::QNode node2(node);
 
     QVERIFY(node != Q_NULLPTR);
     QVERIFY(!node->children().isEmpty());
@@ -96,10 +96,10 @@ void tst_Nodes::defaultEntityConstrution()
 
 void tst_Nodes::appendChildNodesToNode()
 {
-    Qt3D::Node *node = new Qt3D::Node();
+    Qt3D::QNode *node = new Qt3D::QNode();
 
     for (int i = 0; i < 10; i++) {
-        Qt3D::Node *child = new Qt3D::Node();
+        Qt3D::QNode *child = new Qt3D::QNode();
         QVERIFY(child->parent() == Q_NULLPTR);
         node->addChild(child);
         QVERIFY(child->parent() == node);
@@ -107,17 +107,17 @@ void tst_Nodes::appendChildNodesToNode()
     }
     QVERIFY(node->children().count() == 10);
     for (int i = 0; i < 10; i++) {
-        Qt3D::Node *child = new Qt3D::Node(node);
+        Qt3D::QNode *child = new Qt3D::QNode(node);
         QVERIFY(child->parent() == node);
         QVERIFY(child->parentNode() == node);
     }
     QVERIFY(node->children().count() == 20);
-    Qt3D::Node *child = node->children().first();
-    Qt3D::Node *parent = node;
+    Qt3D::QNode *child = node->children().first();
+    Qt3D::QNode *parent = node;
     for (int i = 0; i < 10; i++) {
         QVERIFY(child->parent() == parent);
         QVERIFY(child->parentNode() == parent);
-        child->addChild(new Qt3D::Node());
+        child->addChild(new Qt3D::QNode());
         parent = child;
         child = child->children().first();
     }
@@ -136,8 +136,8 @@ void tst_Nodes::appendChildNodesToNode()
 
 void tst_Nodes::removingChildNodesFromNode()
 {
-    Qt3D::Node *root = new Qt3D::Node();
-    Qt3D::Node *child = new Qt3D::Node();
+    Qt3D::QNode *root = new Qt3D::QNode();
+    Qt3D::QNode *child = new Qt3D::QNode();
 
     root->addChild(child);
     QVERIFY(root->children().count() == 1);
@@ -146,22 +146,22 @@ void tst_Nodes::removingChildNodesFromNode()
     QVERIFY(child->parent() == Q_NULLPTR);
 
     for (int i = 0; i < 10; i++) {
-        root->addChild(new Qt3D::Node());
+        root->addChild(new Qt3D::QNode());
     }
     QVERIFY(root->children().count() == 10);
     root->removeAllChildren();
     QVERIFY(root->children().count() == 0);
 
-    Qt3D::Node *firstChild = child;
+    Qt3D::QNode *firstChild = child;
     for (int i = 0; i < 10; i++) {
-        child->addChild(new Qt3D::Node());
+        child->addChild(new Qt3D::QNode());
         child = child->children().first();
     }
     QVERIFY(root->children().count() == 0);
     root->addChild(firstChild);
     QVERIFY(root->children().count() == 1);
 
-    Qt3D::Node *parent = child->parentNode();
+    Qt3D::QNode *parent = child->parentNode();
     for (int i = 0; i < 10; i++) {
         QVERIFY(parent->children().count() == 1);
         QVERIFY(child->parentNode() == parent);
@@ -178,7 +178,7 @@ void tst_Nodes::removingChildNodesFromNode()
 
 void tst_Nodes::appendingChildEntitiesToNode()
 {
-    Qt3D::Node *root = new Qt3D::Node();
+    Qt3D::QNode *root = new Qt3D::QNode();
 
     Qt3D::Entity *childEntity = new Qt3D::Entity(root);
 
@@ -189,7 +189,7 @@ void tst_Nodes::appendingChildEntitiesToNode()
 
 void tst_Nodes::removingChildEntitiesFromNode()
 {
-    Qt3D::Node *root = new Qt3D::Node();
+    Qt3D::QNode *root = new Qt3D::QNode();
 
     Qt3D::Entity *childEntity = new Qt3D::Entity(root);
 
@@ -206,7 +206,7 @@ void tst_Nodes::removingChildEntitiesFromNode()
 
 void tst_Nodes::appendingComponentsToEntity()
 {
-    Qt3D::Node *root = new Qt3D::Node();
+    Qt3D::QNode *root = new Qt3D::QNode();
 
     Qt3D::Entity *entity = new Qt3D::Entity(root);
 
@@ -247,7 +247,7 @@ void tst_Nodes::appendingComponentsToEntity()
 
 void tst_Nodes::removingComponentsFromEntity()
 {
-    Qt3D::Node *root = new Qt3D::Node();
+    Qt3D::QNode *root = new Qt3D::QNode();
     Qt3D::Entity *entity = new Qt3D::Entity(root);
 
     Qt3D::Component *comp1 = new Qt3D::Component(root);

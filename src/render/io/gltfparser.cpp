@@ -960,7 +960,7 @@ QVariant GLTFParser::parameterValueFromJSON(Parameter* p, QJsonValue val)
     return QVariant();
 }
 
-GLTFParser::GLTFParserMesh::GLTFParserMesh(Node *parent)
+GLTFParser::GLTFParserMesh::GLTFParserMesh(QNode *parent)
     : QAbstractMesh(parent)
 {
 }

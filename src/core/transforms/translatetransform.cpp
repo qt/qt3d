@@ -45,7 +45,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-TranslateTransform::TranslateTransform(Node *parent)
+TranslateTransform::TranslateTransform(QNode *parent)
     : AbstractTransform(parent)
 {
 }

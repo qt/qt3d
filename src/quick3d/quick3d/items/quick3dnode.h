@@ -43,7 +43,7 @@
 #define QT3D_QUICK_QUICK3DNODE_H
 
 #include <QQmlListProperty>
-#include <Qt3DCore/node.h>
+#include <Qt3DCore/qnode.h>
 #include <Qt3DQuick/qt3dquick_global.h>
 
 QT_BEGIN_NAMESPACE
@@ -56,15 +56,15 @@ class QT3DQUICKSHARED_EXPORT Quick3DNode : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<QObject> data READ data)
-    Q_PROPERTY(QQmlListProperty<Qt3D::Node> childNodes READ childNodes)
+    Q_PROPERTY(QQmlListProperty<Qt3D::QNode> childNodes READ childNodes)
     Q_CLASSINFO("DefaultProperty", "data")
 public:
     explicit Quick3DNode(QObject *parent = 0);
 
     QQmlListProperty<QObject> data();
-    QQmlListProperty<Qt3D::Node> childNodes();
+    QQmlListProperty<Qt3D::QNode> childNodes();
 
-    inline Node *parentNode() const { return qobject_cast<Node*>(parent()); }
+    inline QNode *parentNode() const { return qobject_cast<QNode*>(parent()); }
 
 private:
     static void appendData(QQmlListProperty<QObject> *list, QObject *obj);
@@ -72,10 +72,10 @@ private:
     static int dataCount(QQmlListProperty<QObject> *list);
     static void clearData(QQmlListProperty<QObject> *list);
 
-    static void appendChild(QQmlListProperty<Qt3D::Node> *list, Qt3D::Node *obj);
-    static Node *childAt(QQmlListProperty<Qt3D::Node> *list, int index);
-    static int childCount(QQmlListProperty<Qt3D::Node> *list);
-    static void clearChildren(QQmlListProperty<Qt3D::Node> *list);
+    static void appendChild(QQmlListProperty<Qt3D::QNode> *list, Qt3D::QNode *obj);
+    static QNode *childAt(QQmlListProperty<Qt3D::QNode> *list, int index);
+    static int childCount(QQmlListProperty<Qt3D::QNode> *list);
+    static void clearChildren(QQmlListProperty<Qt3D::QNode> *list);
 };
 
 } // Quick;

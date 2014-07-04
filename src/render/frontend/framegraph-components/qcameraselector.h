@@ -58,7 +58,7 @@ class QT3DRENDERERSHARED_EXPORT QCameraSelector : public QFrameGraphItem
     Q_PROPERTY(Qt3D::Entity *camera READ camera WRITE setCamera NOTIFY cameraChanged)
 
 public:
-    explicit QCameraSelector(Node *parent = 0);
+    explicit QCameraSelector(QNode *parent = 0);
 
     void setCamera(Entity *camera);
     Entity *camera() const;
@@ -68,7 +68,7 @@ Q_SIGNALS:
 
 protected:
     Q_DECLARE_PRIVATE(QCameraSelector)
-    QCameraSelector(QCameraSelectorPrivate &dd, Node *parent = 0);
+    QCameraSelector(QCameraSelectorPrivate &dd, QNode *parent = 0);
 };
 
 } // namespace Qt3D

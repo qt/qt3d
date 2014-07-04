@@ -43,7 +43,7 @@
 #define QT3D_TECHNIQUE_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DCore/node.h>
+#include <Qt3DCore/qnode.h>
 #include <Qt3DRenderer/tag.h>
 #include <Qt3DRenderer/qrenderpass.h>
 #include <Qt3DCore/qabstracttechnique.h>
@@ -63,7 +63,7 @@ class QT3DRENDERERSHARED_EXPORT QTechnique : public QAbstractTechnique
     Q_OBJECT
 
 public:
-    explicit QTechnique(Node *parent = 0);
+    explicit QTechnique(QNode *parent = 0);
 
     void addCriterion(TechniqueCriterion *criterion);
     void removeCriterion(TechniqueCriterion *criterion);
@@ -84,7 +84,7 @@ public:
 
 protected:
     Q_DECLARE_PRIVATE(QTechnique)
-    QTechnique(QTechniquePrivate &dd, Node *parent = 0);
+    QTechnique(QTechniquePrivate &dd, QNode *parent = 0);
 };
 
 }

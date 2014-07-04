@@ -112,7 +112,7 @@ void RenderSceneBuilder::initializeFrameGraph()
  * Returns Q_NULLPTR if \a is also Q_NULLPTR or if there is no FrameGraphComponent
  * in node's children tree.
  */
-Render::FrameGraphNode *RenderSceneBuilder::buildFrameGraph(Node *node)
+Render::FrameGraphNode *RenderSceneBuilder::buildFrameGraph(QNode *node)
 {
     Q_ASSERT(node);
 
@@ -129,7 +129,7 @@ Render::FrameGraphNode *RenderSceneBuilder::buildFrameGraph(Node *node)
     // we need to travel the node's children tree to find either the FG root Node or
     // its children
     QList<FrameGraphNode *> fgChildNodes;
-    Q_FOREACH (Node *child, node->children()) {
+    Q_FOREACH (QNode *child, node->children()) {
         FrameGraphNode* fgChildNode = buildFrameGraph(child);
         if (fgChildNode != Q_NULLPTR)
             fgChildNodes << fgChildNode;
@@ -150,7 +150,7 @@ Render::FrameGraphNode *RenderSceneBuilder::buildFrameGraph(Node *node)
  * Returns a proper FrameGraphNode subclass instance from \a block.
  * If no subclass corresponds, Q_NULLPTR is returned.
  */
-Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(Node *block)
+Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(QNode *block)
 {
     if (qobject_cast<Qt3D::QTechniqueFilter*>(block) != Q_NULLPTR) {
         Qt3D::QTechniqueFilter* techniqueFilter = qobject_cast<Qt3D::QTechniqueFilter*>(block);
@@ -263,7 +263,7 @@ void RenderSceneBuilder::createFrameGraph(QFrameGraph *fg)
 {
     // Entity has a reference to a framegraph configuration
     // Build a tree of FrameGraphNodes by reading the tree of FrameGraphBuildingBlocks
-    Render::FrameGraphNode* frameGraphRootNode = buildFrameGraph(qobject_cast<Node*>(fg->activeFrameGraph()));
+    Render::FrameGraphNode* frameGraphRootNode = buildFrameGraph(qobject_cast<QNode*>(fg->activeFrameGraph()));
     qCDebug(Backend) << Q_FUNC_INFO << "FrameGraphRoot" <<  frameGraphRootNode;
     m_renderer->setFrameGraphRoot(frameGraphRootNode);
 }

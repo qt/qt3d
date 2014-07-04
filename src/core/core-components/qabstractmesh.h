@@ -59,7 +59,7 @@ class QT3DCORESHARED_EXPORT QAbstractMesh : public Component
     Q_OBJECT
 
 public:
-    QAbstractMesh(Node *parent = 0);
+    QAbstractMesh(QNode *parent = 0);
 
     const QUuid uuid() const;
 
@@ -74,7 +74,7 @@ Q_SIGNALS:
 
 protected:
     Q_DECLARE_PRIVATE(QAbstractMesh)
-    QAbstractMesh(QAbstractMeshPrivate &dd, Node *parent = 0);
+    QAbstractMesh(QAbstractMeshPrivate &dd, QNode *parent = 0);
 
     void setData(QAbstractMeshDataPtr data);
 };

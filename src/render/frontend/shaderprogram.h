@@ -59,7 +59,7 @@ class QT3DRENDERERSHARED_EXPORT ShaderProgram : public QAbstractShader
     Q_PROPERTY(QByteArray fragmentShader READ fragmentSourceCode WRITE setFragmentShader NOTIFY fragmentShaderChanged)
 
 public:
-    explicit ShaderProgram(Node *parent = 0);
+    explicit ShaderProgram(QNode *parent = 0);
 
     void setVertexSourceFile(const QString &vertexSourceFile);
     QString vertexSourceFile() const;

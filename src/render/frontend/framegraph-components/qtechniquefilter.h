@@ -56,7 +56,7 @@ class QT3DRENDERERSHARED_EXPORT QTechniqueFilter : public QFrameGraphItem
 {
     Q_OBJECT
 public:
-    explicit QTechniqueFilter(Node *parent = 0);
+    explicit QTechniqueFilter(QNode *parent = 0);
 
     QList<TechniqueCriterion *> criteria() const;
     void addCriterion(TechniqueCriterion *criterion);
@@ -67,7 +67,7 @@ Q_SIGNALS:
 
 protected:
     Q_DECLARE_PRIVATE(QTechniqueFilter)
-    QTechniqueFilter(QTechniqueFilterPrivate &dd, Node *parent = 0);
+    QTechniqueFilter(QTechniqueFilterPrivate &dd, QNode *parent = 0);
 };
 
 } // namespace Qt3D

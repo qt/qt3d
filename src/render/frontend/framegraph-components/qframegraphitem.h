@@ -42,7 +42,7 @@
 #ifndef QT3D_QFRAMEGRAPHNODE_H
 #define QT3D_QFRAMEGRAPHNODE_H
 
-#include <Qt3DCore/node.h>
+#include <Qt3DCore/qnode.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <QObject>
 
@@ -52,11 +52,11 @@ namespace Qt3D {
 
 class QFrameGraphItemPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QFrameGraphItem : public Node
+class QT3DRENDERERSHARED_EXPORT QFrameGraphItem : public QNode
 {
     Q_OBJECT
 public:
-    explicit QFrameGraphItem(Node *parent = 0);
+    explicit QFrameGraphItem(QNode *parent = 0);
 
     void setEnabled(bool enabled);
     bool isEnabled() const;
@@ -66,7 +66,7 @@ Q_SIGNALS:
 
 protected:
     Q_DECLARE_PRIVATE(QFrameGraphItem)
-    QFrameGraphItem(QFrameGraphItemPrivate &dd, Node *parent = 0);
+    QFrameGraphItem(QFrameGraphItemPrivate &dd, QNode *parent = 0);
 };
 
 } // Qt3D

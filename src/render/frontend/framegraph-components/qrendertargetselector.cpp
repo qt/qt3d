@@ -51,12 +51,12 @@ QRenderTargetSelectorPrivate::QRenderTargetSelectorPrivate(QRenderTargetSelector
 {
 }
 
-QRenderTargetSelector::QRenderTargetSelector(Node *parent)
+QRenderTargetSelector::QRenderTargetSelector(QNode *parent)
     : QFrameGraphItem(*new QRenderTargetSelectorPrivate(this), parent)
 {
 }
 
-QRenderTargetSelector::QRenderTargetSelector(QRenderTargetSelectorPrivate &dd, Node *parent)
+QRenderTargetSelector::QRenderTargetSelector(QRenderTargetSelectorPrivate &dd, QNode *parent)
     : QFrameGraphItem(dd, parent)
 {
 }

@@ -55,12 +55,12 @@ RigidBodyPrivate::RigidBodyPrivate(RigidBody *qq)
 }
 
 
-RigidBody::RigidBody(Qt3D::Node *parent)
+RigidBody::RigidBody(Qt3D::QNode *parent)
     : Qt3D::Component(*new RigidBodyPrivate(this), parent)
 {
 }
 
-RigidBody::RigidBody(RigidBodyPrivate &dd, Qt3D::Node *parent)
+RigidBody::RigidBody(RigidBodyPrivate &dd, Qt3D::QNode *parent)
     : Qt3D::Component(dd, parent)
 {
 }

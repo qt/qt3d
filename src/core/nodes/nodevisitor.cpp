@@ -41,7 +41,7 @@
 
 #include "nodevisitor.h"
 
-#include "node.h"
+#include "qnode.h"
 #include "entity.h"
 
 QT_BEGIN_NAMESPACE
@@ -53,7 +53,7 @@ NodeVisitor::NodeVisitor()
 {
 }
 
-void NodeVisitor::traverse(Node *rootNode)
+void NodeVisitor::traverse(QNode *rootNode)
 {
     m_path = NodeList() << rootNode;
 
@@ -68,12 +68,12 @@ void NodeVisitor::traverse(Node *rootNode)
         visitNode(rootNode);
 }
 
-Node* NodeVisitor::rootNode() const
+QNode* NodeVisitor::rootNode() const
 {
     return m_path.front();
 }
 
-Node* NodeVisitor::currentNode() const
+QNode* NodeVisitor::currentNode() const
 {
     return m_path.back();
 }
@@ -93,7 +93,7 @@ void NodeVisitor::setTraverseDisabled(bool on)
     m_traverseDisabled = on;
 }
 
-void NodeVisitor::visitNode(Node *nd)
+void NodeVisitor::visitNode(QNode *nd)
 {
     Q_UNUSED(nd);
     traverseChildren();
@@ -106,12 +106,12 @@ void NodeVisitor::visitEntity(Entity *nd)
 
 void NodeVisitor::traverseChildren()
 {
-    foreach (Node* n, currentNode()->children()) {
+    foreach (QNode* n, currentNode()->children()) {
         outerVisitNode(n);
     } // of children iteration
 }
 
-void NodeVisitor::outerVisitNode(Node *n)
+void NodeVisitor::outerVisitNode(QNode *n)
 {
     m_path.append(n);
     Entity* e = n->asEntity();

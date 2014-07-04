@@ -45,7 +45,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QScene::QScene(Node *parent)
+QScene::QScene(QNode *parent)
     : Render::QAbstractScene(parent)
 {
 }

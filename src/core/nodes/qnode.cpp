@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#include "node.h"
-#include "node_p.h"
+#include "qnode.h"
+#include "qnode_p.h"
 
 #include <Qt3DCore/entity.h>
 #include <Qt3DCore/qscenepropertychange.h>
@@ -54,25 +54,25 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-Node::Node(Node *parent)
-    : QObject(*new NodePrivate(this), parent)
+QNode::QNode(QNode *parent)
+    : QObject(*new QNodePrivate(this), parent)
 {
     if (parent)
         parent->addChild(this);
 }
 
-Node::Node(NodePrivate &dd, Node *parent)
+QNode::QNode(QNodePrivate &dd, QNode *parent)
     : QObject(dd, parent)
 {
     if (parent)
         parent->addChild(this);
 }
 
-Node::~Node()
+QNode::~QNode()
 {
 }
 
-void Node::dump()
+void QNode::dump()
 {
     const QMetaObject *meta = metaObject();
     QStringList result;
@@ -88,24 +88,24 @@ void Node::dump()
     qCDebug(Nodes) << result.join(QStringLiteral("\n"));
 
     foreach (QObject *child, children()) {
-        Node *node = qobject_cast<Node *>(child);
+        QNode *node = qobject_cast<QNode *>(child);
         if (!node)
             continue;
         node->dump();
     }
 }
 
-NodeList Node::children() const
+NodeList QNode::children() const
 {
-    Q_D(const Node);
+    Q_D(const QNode);
     return d->m_children;
 }
 
-void Node::addChild(Node *childNode)
+void QNode::addChild(QNode *childNode)
 {
     Q_ASSERT(childNode);
 
-    Q_D(Node);
+    Q_D(QNode);
     if (d->m_children.contains(childNode))
         return ;
 
@@ -118,13 +118,13 @@ void Node::addChild(Node *childNode)
     notifyObservers(e);
 }
 
-void Node::removeChild(Node *childNode)
+void QNode::removeChild(QNode *childNode)
 {
     Q_ASSERT(childNode);
     if (childNode->parent() != this)
         qCWarning(Nodes) << Q_FUNC_INFO << "not a child";
 
-    Q_D(Node);
+    Q_D(QNode);
     d->m_children.removeOne(childNode);
     childNode->setParent(NULL);
 
@@ -134,44 +134,44 @@ void Node::removeChild(Node *childNode)
     notifyObservers(e);
 }
 
-void Node::removeAllChildren()
+void QNode::removeAllChildren()
 {
     foreach (QObject *child, children()) {
         child->deleteLater();
     }
-    Q_D(Node);
+    Q_D(QNode);
     d->m_children.clear();
 }
 
-Entity *Node::asEntity()
+Entity *QNode::asEntity()
 {
     return Q_NULLPTR;
 }
 
-Node *Node::parentNode() const
+QNode *QNode::parentNode() const
 {
-    return qobject_cast<Node*>(parent());
+    return qobject_cast<QNode*>(parent());
 }
 
-void Node::registerObserver(QObserverInterface *observer)
+void QNode::registerObserver(QObserverInterface *observer)
 {
     Q_CHECK_PTR(observer);
 
     // For now we only care about the QChangeArbiter observing us
     QChangeArbiter *changeArbiter = dynamic_cast<QChangeArbiter *>(observer);
     if (changeArbiter) {
-        Q_D(Node);
+        Q_D(QNode);
         QWriteLocker locker(&d->m_observerLock);
         d->m_changeArbiter = changeArbiter;
     }
 }
 
-void Node::unregisterObserver(QObserverInterface *observer)
+void QNode::unregisterObserver(QObserverInterface *observer)
 {
     Q_CHECK_PTR(observer);
 
     // For now we only care about the QChangeArbiter observing us
-    Q_D(Node);
+    Q_D(QNode);
     QChangeArbiter *changeArbiter = dynamic_cast<QChangeArbiter *>(observer);
     if (changeArbiter == d->m_changeArbiter) {
         QWriteLocker locker(&d->m_observerLock);
@@ -179,10 +179,10 @@ void Node::unregisterObserver(QObserverInterface *observer)
     }
 }
 
-void Node::notifyObservers(const QSceneChangePtr &change)
+void QNode::notifyObservers(const QSceneChangePtr &change)
 {
     Q_CHECK_PTR(change);
-    Q_D(Node);
+    Q_D(QNode);
     QReadLocker locker(&d->m_observerLock);
     QChangeArbiter *changeArbiter = d->m_changeArbiter;
     locker.unlock();

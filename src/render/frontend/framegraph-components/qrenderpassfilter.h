@@ -60,7 +60,7 @@ class QT3DRENDERERSHARED_EXPORT QRenderPassFilter : public QFrameGraphItem
     Q_PROPERTY(QString renderPassName READ renderPassName WRITE setRenderPassName NOTIFY renderPassNameChanged)
 
 public:
-    explicit QRenderPassFilter(Node *parent = 0);
+    explicit QRenderPassFilter(QNode *parent = 0);
 
     void setRenderPassName(const QString &renderpassName);
     QString renderPassName() const;
@@ -73,7 +73,7 @@ Q_SIGNALS:
 
 protected:
     Q_DECLARE_PRIVATE(QRenderPassFilter)
-    QRenderPassFilter(QRenderPassFilterPrivate &dd, Node *parent = 0);
+    QRenderPassFilter(QRenderPassFilterPrivate &dd, QNode *parent = 0);
 };
 
 } // namespace Qt3D

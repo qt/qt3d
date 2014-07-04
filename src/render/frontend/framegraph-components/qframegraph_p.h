@@ -58,7 +58,7 @@ public:
 
     Q_DECLARE_PUBLIC(QFrameGraph)
 
-    Node *m_activeFrameGraph;
+    QNode *m_activeFrameGraph;
 };
 
 }

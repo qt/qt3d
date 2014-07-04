@@ -60,12 +60,12 @@ QAbstractScenePrivate::QAbstractScenePrivate(QAbstractScene *qq)
 {
 }
 
-QAbstractScene::QAbstractScene(QAbstractScenePrivate &dd, Node *parent)
+QAbstractScene::QAbstractScene(QAbstractScenePrivate &dd, QNode *parent)
     : Entity(dd, parent)
 {
 }
 
-QAbstractScene::QAbstractScene(Node *parent)
+QAbstractScene::QAbstractScene(QNode *parent)
     : Entity(*new QAbstractScenePrivate(this), parent)
 {
     Q_D(QAbstractScene);
@@ -84,7 +84,7 @@ QString QAbstractScene::sceneId() const
     return d->m_sceneId;
 }
 
-QAbstractScene *QAbstractScene::findInTree(Node *root)
+QAbstractScene *QAbstractScene::findInTree(QNode *root)
 {
     if (!root)
         return Q_NULLPTR;
@@ -94,7 +94,7 @@ QAbstractScene *QAbstractScene::findInTree(Node *root)
         return s;
 
     // recursive walk down the tree
-    foreach (Node* nd, root->children()) {
+    foreach (QNode* nd, root->children()) {
         s = findInTree(nd);
         if (s)
             return s;
@@ -129,7 +129,7 @@ void QAbstractScene::setSceneId(QString arg)
     }
 }
 
-Node *QAbstractScene::node(QString id)
+QNode *QAbstractScene::node(QString id)
 {
     Q_D(QAbstractScene);
     if (d->m_currentParser)
@@ -137,7 +137,7 @@ Node *QAbstractScene::node(QString id)
     return Q_NULLPTR;
 }
 
-Node *QAbstractScene::scene(QString id)
+QNode *QAbstractScene::scene(QString id)
 {
     Q_D(QAbstractScene);
     if (d->m_currentParser)

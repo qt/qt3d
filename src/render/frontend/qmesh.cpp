@@ -59,12 +59,12 @@ QMeshPrivate::QMeshPrivate(QMesh *qq)
     : QAbstractMeshPrivate(qq)
 {}
 
-QMesh::QMesh(Node *parent)
+QMesh::QMesh(QNode *parent)
     : QAbstractMesh(*new QMeshPrivate(this), parent)
 {
 }
 
-QMesh::QMesh(QMeshPrivate &dd, Node *parent)
+QMesh::QMesh(QMeshPrivate &dd, QNode *parent)
     : QAbstractMesh(dd, parent)
 {
 }
