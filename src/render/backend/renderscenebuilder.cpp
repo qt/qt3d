@@ -103,6 +103,7 @@ void RenderSceneBuilder::initializeFrameGraph()
     qCDebug(Render::Backend) << Q_FUNC_INFO << "FrameGraph";
     // Retrieve and set Renderer FrameGraph
     QFrameGraph *fg = QEntity::findComponentInTree<QFrameGraph>(rootNode()->frontEndPeer());
+    Q_ASSERT_X(fg, Q_FUNC_INFO, "No FrameGraph component found. The FrameGraph defines the renderer configuration. Cannot continue");
     m_frameGraphEntityNode = m_renderer->renderNodesManager()->lookupHandle(fg->parentNode()->asEntity()->uuid());
     createFrameGraph(fg);
 }
