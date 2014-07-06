@@ -1,5 +1,8 @@
 #requires(qtHaveModule(opengl))
 
+load(configure)
+qtCompileTest(bullet)
+
 load(qt_parts)
 
 #module_qt3d_tutorials.subdir = tutorials

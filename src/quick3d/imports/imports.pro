@@ -4,6 +4,7 @@ CONFIG += ordered
 qtHaveModule(3dcore) {
 SUBDIRS+= \
     core \
-    render \
-    bulletphysics
+    render
 }
+
+qtHaveModule(3dbulletphysics): SUBDIRS += bulletphysics

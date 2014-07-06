@@ -3,6 +3,9 @@ CONFIG += ordered
 SUBDIRS += \
     core \
     render \
-    openal \
-    bulletphysics \
-    quick3d
+    openal
+
+config_bullet: SUBDIRS += bulletphysics
+
+# Build the quick3d plugins last
+SUBDIRS += quick3d

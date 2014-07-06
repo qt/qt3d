@@ -2,6 +2,8 @@ TARGET = Qt3DBulletPhysics
 
 QT += core 3dcore core-private 3dcore-private
 
+LIBS += -lBulletDynamics -lBulletCollision -lLinearMath
+
 DEFINES += QT3DBULLETPHYSICS_LIBRARY
 
 MODULE = 3dbulletphysics
