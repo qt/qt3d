@@ -39,15 +39,15 @@
 **
 ****************************************************************************/
 
-#include "rigidbody.h"
-#include "rigidbody_p.h"
+#include "qrigidbody.h"
+#include "qrigidbody_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 namespace BulletPhysics {
 
-RigidBodyPrivate::RigidBodyPrivate(RigidBody *qq)
+QRigidBodyPrivate::QRigidBodyPrivate(QRigidBody *qq)
     : Qt3D::QComponentPrivate(qq)
     , m_mass(0.0f)
     , m_centerOfMass()
@@ -55,43 +55,43 @@ RigidBodyPrivate::RigidBodyPrivate(RigidBody *qq)
 }
 
 
-RigidBody::RigidBody(Qt3D::QNode *parent)
-    : Qt3D::QComponent(*new RigidBodyPrivate(this), parent)
+QRigidBody::QRigidBody(Qt3D::QNode *parent)
+    : Qt3D::QComponent(*new QRigidBodyPrivate(this), parent)
 {
 }
 
-RigidBody::RigidBody(RigidBodyPrivate &dd, Qt3D::QNode *parent)
+QRigidBody::QRigidBody(QRigidBodyPrivate &dd, Qt3D::QNode *parent)
     : Qt3D::QComponent(dd, parent)
 {
 }
 
-void RigidBody::setMass(float mass)
+void QRigidBody::setMass(float mass)
 {
-    Q_D(RigidBody);
+    Q_D(QRigidBody);
     if (!qFuzzyCompare(d->m_mass, mass)) {
         d->m_mass = mass;
         emit massChanged();
     }
 }
 
-float RigidBody::mass() const
+float QRigidBody::mass() const
 {
-    Q_D(const RigidBody);
+    Q_D(const QRigidBody);
     return d->m_mass;
 }
 
-void RigidBody::setCenterOfMass(const QVector3D &centerOfMass)
+void QRigidBody::setCenterOfMass(const QVector3D &centerOfMass)
 {
-    Q_D(RigidBody);
+    Q_D(QRigidBody);
     if (!qFuzzyCompare(d->m_centerOfMass,centerOfMass)) {
         d->m_centerOfMass = centerOfMass;
         emit centerOfMassChanged();
     }
 }
 
-QVector3D RigidBody::centerOfMass() const
+QVector3D QRigidBody::centerOfMass() const
 {
-    Q_D(const RigidBody);
+    Q_D(const QRigidBody);
     return d->m_centerOfMass;
 }
 

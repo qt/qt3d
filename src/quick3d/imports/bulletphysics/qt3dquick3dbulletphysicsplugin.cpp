@@ -44,7 +44,7 @@
 
 #include <Qt3DBulletPhysics/qabstractcollider.h>
 #include <Qt3DBulletPhysics/qspherecollider.h>
-#include <Qt3DBulletPhysics/rigidbody.h>
+#include <Qt3DBulletPhysics/qrigidbody.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -52,7 +52,7 @@ void Qt3DQuick3DBulletPhysicsPlugin::registerTypes(const char *uri)
 {
     qmlRegisterInterface<Qt3D::BulletPhysics::QAbstractCollider>("QAbstractCollider");
     qmlRegisterType<Qt3D::BulletPhysics::QSphereCollider>(uri, 2, 0, "SphereCollider");
-    qmlRegisterType<Qt3D::BulletPhysics::RigidBody>(uri, 2, 0, "RigidBody");
+    qmlRegisterType<Qt3D::BulletPhysics::QRigidBody>(uri, 2, 0, "RigidBody");
 }
 
 QT_END_NAMESPACE

@@ -2,8 +2,8 @@ INCLUDEPATH += $$PWD
 
 HEADERS += \
     $$PWD/bulletphysicsaspect.h \
-    $$PWD/rigidbody.h \
-    $$PWD/rigidbody_p.h \
+    $$PWD/qrigidbody.h \
+    $$PWD/qrigidbody_p.h \
     $$PWD/qabstractcollider.h \
     $$PWD/qabstractcollider_p.h \
     $$PWD/qspherecollider.h \
@@ -13,7 +13,7 @@ HEADERS += \
 
 SOURCES += \
     $$PWD/bulletphysicsaspect.cpp \
-    $$PWD/rigidbody.cpp \
+    $$PWD/qrigidbody.cpp \
     $$PWD/qabstractcollider.cpp \
     $$PWD/qspherecollider.cpp \
     $$PWD/qboxcollider.cpp

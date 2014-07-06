@@ -39,52 +39,31 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_BULLETPHYSICS_RIGIDBODY_H
-#define QT3D_BULLETPHYSICS_RIGIDBODY_H
+#ifndef QT3D_BULLETPHYSICS_QRIGIDBODY_P_H
+#define QT3D_BULLETPHYSICS_QRIGIDBODY_P_H
 
-#include <Qt3DBulletPhysics/qt3dbulletphysics_global.h>
-
-#include <Qt3DCore/qcomponent.h>
 #include <QtGui/qvector3d.h>
+#include <Qt3DCore/private/qcomponent_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
-
-class QNode;
-
 namespace BulletPhysics {
 
-class RigidBodyPrivate;
-
-class QT3DBULLETPHYSICSSHARED_EXPORT RigidBody : public Qt3D::QComponent
+class QRigidBodyPrivate : public Qt3D::QComponentPrivate
 {
-    Q_OBJECT
-
-    Q_PROPERTY(float mass READ mass WRITE setMass NOTIFY massChanged)
-    Q_PROPERTY(QVector3D centerOfMass READ centerOfMass WRITE setCenterOfMass NOTIFY centerOfMassChanged)
-
 public:
-    explicit RigidBody(Qt3D::QNode *parent = 0);
+    explicit QRigidBodyPrivate(QRigidBody *qq);
 
-    void setMass(float mass);
-    float mass() const;
+    Q_DECLARE_PUBLIC(QRigidBody)
 
-    void setCenterOfMass(const QVector3D &centerOfMass);
-    QVector3D centerOfMass() const;
-
-Q_SIGNALS:
-    void massChanged();
-    void centerOfMassChanged();
-
-protected:
-    Q_DECLARE_PRIVATE(RigidBody)
-    RigidBody(RigidBodyPrivate &dd, Qt3D::QNode *parent = 0);
+    float m_mass;
+    QVector3D m_centerOfMass;
 };
 
-} // namespace BulletPhysics
-} // namespace Qt3D
+}
+}
 
 QT_END_NAMESPACE
 
-#endif // QT3D_BULLETPHYSICS_RIGIDBODY_H
+#endif // QT3D_BULLETPHYSICS_QRIGIDBODY_P_H
