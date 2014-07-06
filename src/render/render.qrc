@@ -4,5 +4,7 @@
         <file>shaders/basic.vert</file>
         <file>shaders/diffuse.frag</file>
         <file>shaders/diffuse.vert</file>
+        <file>shaders/phong.frag</file>
+        <file>shaders/phong.vert</file>
     </qresource>
 </RCC>

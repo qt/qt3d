@@ -35,6 +35,10 @@ src_bigmodelqml.subdir = $$PWD/bigmodel-qml
 src_bigmodelqml.target = sub-bigmodelqml
 src_bigmodelqml.depends = src_exampleresources
 
+src_rollerball.subdir = $$PWD/rollerball
+src_rollerball.target = sub-rollerball
+src_rollerball.depends = src_exampleresources
+
 
 SUBDIRS += \
     src_exampleresources \
@@ -50,3 +54,7 @@ SUBDIRS += \
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d
 #qtHaveModule(qml): SUBDIRS += quick3d
+
+qtHaveModule(3dbulletphysics) {
+    SUBDIRS += src_rollerball
+}

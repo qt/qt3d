@@ -17,7 +17,7 @@ include(../3rdparty/assimp/assimp.pri)
 RESOURCES += $$PWD/render.qrc
 
 OTHER_FILES += \
-    $$PWD/shaders/*
+    $$PWD/shaders/* \
 
 gcov {
     CONFIG += static
