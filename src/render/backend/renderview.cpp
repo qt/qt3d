@@ -85,25 +85,39 @@ namespace Qt3D {
 namespace Render {
 
 RenderView::standardUniformsPFuncsHash RenderView::m_standardUniformSetters = RenderView::initializeStandardUniformSetters();
+QStringList RenderView::m_standardAttributesNames = RenderView::initializeStandardAttributeNames();
 
 RenderView::standardUniformsPFuncsHash RenderView::initializeStandardUniformSetters()
 {
     RenderView::standardUniformsPFuncsHash setters;
 
-    setters[Parameter::ModelMatrix] = &RenderView::modelMatrix;
-    setters[Parameter::ViewMatrix] = &RenderView::viewMatrix;
-    setters[Parameter::ProjectionMatrix] = &RenderView::projectionMatrix;
-    setters[Parameter::ModelView] = &RenderView::modelViewMatrix;
-    setters[Parameter::ModelViewProjection] = &RenderView::modelViewProjectionMatrix;
-    setters[Parameter::ModelInverse] = &RenderView::inverseModelMatrix;
-    setters[Parameter::ViewInverse] = &RenderView::inverseViewMatrix;
-    setters[Parameter::ProjectionInverse] = &RenderView::inverseProjectionMatrix;
-    setters[Parameter::ModelViewInverse] = &RenderView::inverseModelViewMatrix;
-    setters[Parameter::ModelViewProjectionInverse] = &RenderView::inverseModelViewProjectionMatrix;
-    setters[Parameter::ModelNormal] = &RenderView::modelNormalMatrix;
-    setters[Parameter::ModelViewNormal] = &RenderView::modelViewNormalMatrix;
+    setters[QStringLiteral("modelMatrix")] = &RenderView::modelMatrix;
+    setters[QStringLiteral("viewMatrix")] = &RenderView::viewMatrix;
+    setters[QStringLiteral("projectionMatrix")] = &RenderView::projectionMatrix;
+    setters[QStringLiteral("modelView")] = &RenderView::modelViewMatrix;
+    setters[QStringLiteral("modelViewProjection")] = &RenderView::modelViewProjectionMatrix;
+    setters[QStringLiteral("mvp")] = &RenderView::modelViewProjectionMatrix;
+    setters[QStringLiteral("inverseModelMatrix")] = &RenderView::inverseModelMatrix;
+    setters[QStringLiteral("inverViewMatrix")] = &RenderView::inverseViewMatrix;
+    setters[QStringLiteral("inverseProjectionMatrix")] = &RenderView::inverseProjectionMatrix;
+    setters[QStringLiteral("inverseModelView")] = &RenderView::inverseModelViewMatrix;
+    setters[QStringLiteral("inverseModelViewProjection")] = &RenderView::inverseModelViewProjectionMatrix;
+    setters[QStringLiteral("modelNormalMatrix")] = &RenderView::modelNormalMatrix;
+    setters[QStringLiteral("modelViewNormal")] = &RenderView::modelViewNormalMatrix;
 
     return setters;
+}
+
+QStringList RenderView::initializeStandardAttributeNames()
+{
+    QStringList attributesNames;
+
+    attributesNames << QStringLiteral("vertexPosition");
+    attributesNames << QStringLiteral("vertexNormal");
+    attributesNames << QStringLiteral("vertexColor");
+    attributesNames << QStringLiteral("vertexTextCoord");
+
+    return attributesNames;
 }
 
 QUniformValue *RenderView::modelMatrix(RenderCamera *, const QMatrix4x4 &model) const
@@ -507,42 +521,58 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
 
         if (!uniformNames.isEmpty() && !attributeNames.isEmpty()) {
 
+            // Set default standard uniforms without bindings
+            Q_FOREACH (const QString &uniformName, uniformNames) {
+                if (m_standardUniformSetters.contains(uniformName))
+                    command->m_uniforms.setUniform(uniformName,
+                                                   (this->*m_standardUniformSetters[uniformName])(m_renderCamera, command->m_worldMatrix));
+            }
+
+            // Set default attributes
+            Q_FOREACH (const QString &attributeName, attributeNames) {
+                if (m_standardAttributesNames.contains(attributeName))
+                    command->m_parameterAttributeToShaderNames[attributeName] = attributeName;
+            }
+
+            // Set uniforms and attributes explicitly binded
             Q_FOREACH (ParameterMapper *binding, rPass->bindings()) {
                 if (!parameters.contains(binding->parameterName())) {
-                    if (binding->bindingType() == ParameterMapper::Attribute)
+                    if (binding->bindingType() == ParameterMapper::Attribute
+                            && attributeNames.contains(binding->shaderVariableName()))
                         command->m_parameterAttributeToShaderNames[binding->parameterName()] = binding->shaderVariableName();
+                    else if (binding->bindingType() == ParameterMapper::StandardUniform
+                             && uniformNames.contains(binding->shaderVariableName())
+                             && m_standardUniformSetters.contains(binding->parameterName()))
+                        command->m_uniforms.setUniform(binding->shaderVariableName(),
+                                                       (this->*m_standardUniformSetters[binding->parameterName()])(m_renderCamera, command->m_worldMatrix));
                     else
                         qCWarning(Render::Backend) << Q_FUNC_INFO << "Trying to bind a Parameter that hasn't been defined " << binding->parameterName();
                 }
                 else {
-                    if (binding->bindingType() == ParameterMapper::Uniform) {
-                        QVariant value = parameters.take(binding->parameterName());
-                        Texture *tex = Q_NULLPTR;
-                        if (static_cast<QMetaType::Type>(value.type()) == QMetaType::QObjectStar &&
-                                (tex = value.value<Qt3D::Texture*>()) != Q_NULLPTR) {
-                            createRenderTexture(tex);
-                            command->m_uniforms.setTexture(binding->shaderVariableName(), tex->uuid());
-                            TextureUniform *texUniform = m_allocator->allocate<TextureUniform>();
-                            texUniform->setTextureId(tex->uuid());
-                            command->m_uniforms.setUniform(binding->shaderVariableName(), texUniform);
-                        }
-                        else {
-                            command->m_uniforms.setUniform(binding->shaderVariableName(), QUniformValue::fromVariant(value, m_allocator));
-                        }
+                    QVariant value = parameters.take(binding->parameterName());
+                    Texture *tex = Q_NULLPTR;
+                    if (static_cast<QMetaType::Type>(value.type()) == QMetaType::QObjectStar &&
+                            (tex = value.value<Qt3D::Texture*>()) != Q_NULLPTR) {
+                        createRenderTexture(tex);
+                        command->m_uniforms.setTexture(binding->shaderVariableName(), tex->uuid());
+                        TextureUniform *texUniform = m_allocator->allocate<TextureUniform>();
+                        texUniform->setTextureId(tex->uuid());
+                        command->m_uniforms.setUniform(binding->shaderVariableName(), texUniform);
                     }
-                    else if (binding->bindingType() == ParameterMapper::StandardUniform)
-                        command->m_uniforms.setUniform(binding->shaderVariableName(),
-                                                       (this->*m_standardUniformSetters[static_cast<Parameter::StandardUniform>(parameters.take(binding->parameterName()).toInt())])(m_renderCamera, command->m_worldMatrix));
+                    else {
+                        command->m_uniforms.setUniform(binding->shaderVariableName(), QUniformValue::fromVariant(value, m_allocator));
+                    }
                 }
             }
 
-            if (!parameters.empty()) {
-                // Check for default uniform names
-                // Add them if found
-                // Otherwise consider additional parameters as user defined uniforms that did not require binding
-                qDebug() << "There are params remaining" << parameters.keys();
+            // If there are remaining parameters, those are set as uniforms
+            Q_FOREACH (const QString &paramName, parameters.keys()) {
+                // TO DO : Handle textures here as well
+                if (uniformNames.contains(paramName))
+                    command->m_uniforms.setUniform(paramName, QUniformValue::fromVariant(parameters[paramName], m_allocator));
+                else
+                    qWarning() << paramName << "is unused by the current shader";
             }
-
         }
 
     }

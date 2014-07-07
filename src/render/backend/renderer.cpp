@@ -175,19 +175,6 @@ void Renderer::buildDefaultTechnique()
     basicPass->addBinding(new ParameterMapper(QStringLiteral("position"), QStringLiteral("vertexPosition"), ParameterMapper::Attribute));
     basicPass->addBinding(new ParameterMapper(QStringLiteral("normal"), QStringLiteral("vertexNormal"), ParameterMapper::Attribute));
 
-    // matrix uniforms from standard
-    Parameter* mvMat = new Parameter(m_defaultTechnique, QStringLiteral("modelView"), Parameter::ModelView);
-    m_defaultTechnique->addParameter(mvMat);
-    basicPass->addBinding(new ParameterMapper(QStringLiteral("modelView"), QStringLiteral("modelViewMatrix"), ParameterMapper::StandardUniform));
-
-    Parameter* nMat = new Parameter(m_defaultTechnique, QStringLiteral("normalMat"), Parameter::ModelViewNormal);
-    m_defaultTechnique->addParameter(nMat);
-    basicPass->addBinding(new ParameterMapper(QStringLiteral("normalMat"), QStringLiteral("normalMatrix"), ParameterMapper::StandardUniform));
-
-    Parameter* mvpMat = new Parameter(m_defaultTechnique, QStringLiteral("mvp"), Parameter::ModelViewProjection);
-    m_defaultTechnique->addParameter(mvpMat);
-    basicPass->addBinding(new ParameterMapper(QStringLiteral("mvp"), QStringLiteral("mvp"), ParameterMapper::StandardUniform));
-
     // diffuse lighting uniforms
     Parameter* lightPos = new Parameter(m_defaultTechnique, QStringLiteral("lightPos"), QVector4D(10.0f, 10.0f, 0.0f, 1.0f));
     m_defaultTechnique->addParameter(lightPos);

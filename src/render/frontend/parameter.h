@@ -54,35 +54,11 @@ class QT3DRENDERERSHARED_EXPORT Parameter : public QNode
 {
     Q_OBJECT
     Q_ENUMS(OpenGLTypes)
-    Q_ENUMS(StandardUniform)
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(OpenGLTypes datatype READ datatype WRITE setDatatype NOTIFY datatypeChanged)
     Q_PROPERTY(QVariant value READ value WRITE setValue NOTIFY valueChanged)
 
 public:
-    // FIXME - sort this by frequency, to minimize the size of the
-    // vector in RenderShader. (We want to use compact storage, but we index
-    // by this enum, and resize to the largest value)
-    // Will be moved out of parameter
-    enum StandardUniform
-    {
-        None = -1,
-
-        ModelMatrix = 0,
-        ViewMatrix,
-        ProjectionMatrix,
-        ModelView,
-        ModelViewProjection,
-
-        ModelInverse,
-        ViewInverse,
-        ProjectionInverse,
-        ModelViewInverse,
-        ModelViewProjectionInverse,
-
-        ModelNormal,
-        ModelViewNormal
-    };
 
     enum OpenGLTypes
     {
@@ -155,6 +131,5 @@ private:
 QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(Qt3D::Parameter *)
-Q_DECLARE_METATYPE(Qt3D::Parameter::StandardUniform)
 
 #endif // QT3D_PARAMETER_H

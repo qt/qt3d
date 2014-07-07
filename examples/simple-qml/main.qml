@@ -239,7 +239,6 @@ Entity {
                 techniques : [
                     Technique {
                         criteria : [TechniqueCriterion { criterionType : TechniqueCriterion.RenderingStyle; criterionValue : "forward"}]
-                        parameters : [Parameter { name : "mVP"; value : Parameter.ModelViewProjection}]
                         renderPasses : [
                             RenderPass {
                                 criteria : []
@@ -247,24 +246,24 @@ Entity {
                                     ParameterMapper {parameterName: "position"; shaderVariableName: "vertexPosition"; bindingType: ParameterMapper.Attribute},
                                     ParameterMapper {parameterName: "texcoord"; shaderVariableName: "texCoord0"; bindingType: ParameterMapper.Attribute},
                                     ParameterMapper {parameterName: "tex"; shaderVariableName: "texture"; bindingType: ParameterMapper.Uniform},
-                                    ParameterMapper {parameterName: "mVP"; shaderVariableName: "mvp"; bindingType: ParameterMapper.StandardUniform}
+                                    ParameterMapper {parameterName: "modelViewProjection"; shaderVariableName: "customMvp"; bindingType: ParameterMapper.StandardUniform}
                                 ]
                                 shaderProgram : ShaderProgram {
                                     id : textureShader
                                     vertexShader: "
                                     #version 140
-                                    in vec3 vertexPosition;
+                                    in vec4 vertexPosition;
                                     in vec3 vertexNormal;
                                     in vec2 texCoord0;
 
                                     out vec2 texCoord;
 
-                                    uniform mat4 mvp;
+                                    uniform mat4 customMvp;
 
                                     void main()
                                     {
                                         texCoord = texCoord0;
-                                        gl_Position  = mvp * vec4(vertexPosition, 1.0);
+                                        gl_Position  = customMvp * vertexPosition;
                                     }"
 
                                     fragmentShader: "
@@ -321,11 +320,7 @@ Entity {
                     Technique {
                         criteria : [TechniqueCriterion { criterionType : TechniqueCriterion.RenderingStyle; criterionValue : "forward"}]
 
-                        parameters : [
-                            Parameter { name : "lightPos"; value : Qt.vector4d(10.0, 10.0, 0.0, 1.0);},
-                            Parameter { name : "mVM"; value : Parameter.ModelView},
-                            Parameter { name : "mNM"; value : Parameter.ModelViewNormal},
-                            Parameter { name : "mVP"; value : Parameter.ModelViewProjection}]
+                        parameters : [Parameter { name : "lightPos"; value : Qt.vector4d(10.0, 10.0, 0.0, 1.0);}]
 
                         renderPasses : [
                             RenderPass {
@@ -336,10 +331,7 @@ Entity {
                                     ParameterMapper {parameterName: "ambient"; shaderVariableName: "ka"; bindingType: ParameterMapper.Uniform},
                                     ParameterMapper {parameterName: "diffuse"; shaderVariableName: "kd"; bindingType: ParameterMapper.Uniform},
                                     ParameterMapper {parameterName: "lightPos"; shaderVariableName: "lightPosition"; bindingType: ParameterMapper.Uniform},
-                                    ParameterMapper {parameterName: "lightIntensity"; shaderVariableName: "lightIntensity"; bindingType: ParameterMapper.Uniform},
-                                    ParameterMapper {parameterName: "mVM"; shaderVariableName: "modelViewMatrix"; bindingType: ParameterMapper.StandardUniform},
-                                    ParameterMapper {parameterName: "mNM"; shaderVariableName: "normalMatrix"; bindingType: ParameterMapper.StandardUniform},
-                                    ParameterMapper {parameterName: "mVP"; shaderVariableName: "mvp"; bindingType: ParameterMapper.StandardUniform}
+                                    ParameterMapper {parameterName: "lightIntensity"; shaderVariableName: "lightIntensity"; bindingType: ParameterMapper.Uniform}
                                 ]
                                 shaderProgram : ShaderProgram {
                                     id : diffuseShader

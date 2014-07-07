@@ -137,31 +137,31 @@ const QString KEY_VERTEX_SHADER   = QStringLiteral("vertexShader");
 const QString KEY_FRAGMENT_SHADER = QStringLiteral("fragmentShader");
 const QString KEY_INTERNAL_FORMAT = QStringLiteral("internalFormat");
 
-Parameter::StandardUniform parseSemanticName(const QByteArray& s)
-{
-    if (s == "MODEL")           return Parameter::ModelMatrix;
-    if (s == "VIEW")            return Parameter::ViewMatrix;
-    if (s == "PROJECTION")      return Parameter::ProjectionMatrix;
-    if (s == "MODELVIEW")       return Parameter::ModelView;
-    if (s == "MODELVIEWPROJECTION")
-        return Parameter::ModelViewProjection;
+//Parameter::StandardUniform parseSemanticName(const QByteArray& s)
+//{
+//    if (s == "MODEL")           return Parameter::ModelMatrix;
+//    if (s == "VIEW")            return Parameter::ViewMatrix;
+//    if (s == "PROJECTION")      return Parameter::ProjectionMatrix;
+//    if (s == "MODELVIEW")       return Parameter::ModelView;
+//    if (s == "MODELVIEWPROJECTION")
+//        return Parameter::ModelViewProjection;
 
-    if (s == "MODELINVERSE")    return Parameter::ModelInverse;
-    if (s == "VIEWINVERSE")     return Parameter::ViewInverse;
-    if (s == "PROJECTIONINVERSE")
-        return Parameter::ProjectionInverse;
-    if (s == "MODELVIEWINVERSE")
-        return Parameter::ModelViewInverse;
-    if (s == "MODELVIEWPROJECTIONINVERSE")
-        return Parameter::ModelViewProjectionInverse;
+//    if (s == "MODELINVERSE")    return Parameter::ModelInverse;
+//    if (s == "VIEWINVERSE")     return Parameter::ViewInverse;
+//    if (s == "PROJECTIONINVERSE")
+//        return Parameter::ProjectionInverse;
+//    if (s == "MODELVIEWINVERSE")
+//        return Parameter::ModelViewInverse;
+//    if (s == "MODELVIEWPROJECTIONINVERSE")
+//        return Parameter::ModelViewProjectionInverse;
 
-    if (s == "MODELINVERSETRANSPOSE")
-        return Parameter::ModelNormal;
-    if (s == "MODELVIEWINVERSETRANSPOSE")
-        return Parameter::ModelViewNormal;
+//    if (s == "MODELINVERSETRANSPOSE")
+//        return Parameter::ModelNormal;
+//    if (s == "MODELVIEWINVERSETRANSPOSE")
+//        return Parameter::ModelViewNormal;
 
-    return Parameter::None;
-}
+//    return Parameter::None;
+//}
 
 Parameter::OpenGLTypes parseType(const QByteArray &s)
 {
@@ -798,7 +798,7 @@ void GLTFParser::processJSONTechnique( QString id, QJsonObject jsonObj )
         // The Standard has changed, it doesn't return the raw int value for a type
         // But a string
         Parameter* p = new Parameter(t, pname, parseType(po.value(KEY_TYPE).toString().toUtf8()));
-        Parameter::StandardUniform su = parseSemanticName(semantic.toUtf8());
+//        Parameter::StandardUniform su = parseSemanticName(semantic.toUtf8());
 //        if (su != Parameter::None) {
 //            p->setStandardUniform(su);
 //        } else {

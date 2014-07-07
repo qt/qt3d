@@ -101,6 +101,7 @@ public:
     int frameIndex() const { return m_frameIndex; }
 
 private:
+
     void computeViewport(ViewportNode *viewportNode);
     bool checkContainedWithinLayer(const QUuid &entityUuid);
 
@@ -133,9 +134,11 @@ private:
     // A dedicated ResourcesManager might improve performances later on
     // We could have pre allocated/persistent rendercommands that we reuse in the RenderQueue
 
-    typedef QHash<Parameter::StandardUniform, QUniformValue* (RenderView::*)(RenderCamera *c, const QMatrix4x4& model) const> standardUniformsPFuncsHash;
+    typedef QHash<QString, QUniformValue* (RenderView::*)(RenderCamera *c, const QMatrix4x4& model) const> standardUniformsPFuncsHash;
     static  standardUniformsPFuncsHash m_standardUniformSetters;
     static standardUniformsPFuncsHash initializeStandardUniformSetters();
+    static QStringList m_standardAttributesNames;
+    static QStringList initializeStandardAttributeNames();
 
     QUniformValue *modelMatrix(RenderCamera *, const QMatrix4x4& model) const;
     QUniformValue *viewMatrix(RenderCamera *c, const QMatrix4x4&) const;
