@@ -172,9 +172,6 @@ void Renderer::buildDefaultTechnique()
 
     m_defaultTechnique->addPass(basicPass);
 
-    basicPass->addBinding(new ParameterMapper(QStringLiteral("position"), QStringLiteral("vertexPosition"), ParameterMapper::Attribute));
-    basicPass->addBinding(new ParameterMapper(QStringLiteral("normal"), QStringLiteral("vertexNormal"), ParameterMapper::Attribute));
-
     // diffuse lighting uniforms
     Parameter* lightPos = new Parameter(m_defaultTechnique, QStringLiteral("lightPos"), QVector4D(10.0f, 10.0f, 0.0f, 1.0f));
     m_defaultTechnique->addParameter(lightPos);
@@ -182,7 +179,6 @@ void Renderer::buildDefaultTechnique()
 
     Parameter* lightIntensity = new Parameter(m_defaultTechnique, QStringLiteral("lightIntensity"), QVector3D(0.5f, 0.5f, 0.5f));
     m_defaultTechnique->addParameter(lightIntensity);
-    basicPass->addBinding(new ParameterMapper(QStringLiteral("lightIntensity"), QStringLiteral("lightIntensity"), ParameterMapper::Uniform));
 
     Parameter* kd = new Parameter(m_defaultTechnique, QStringLiteral("diffuse"), QVector3D(1.0f, 0.5f, 0.0f));
     m_defaultTechnique->addParameter(kd);

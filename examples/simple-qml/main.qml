@@ -243,8 +243,7 @@ Entity {
                             RenderPass {
                                 criteria : []
                                 bindings : [ // Add only the bindings needed for a shader
-                                    ParameterMapper {parameterName: "position"; shaderVariableName: "vertexPosition"; bindingType: ParameterMapper.Attribute},
-                                    ParameterMapper {parameterName: "texcoord"; shaderVariableName: "texCoord0"; bindingType: ParameterMapper.Attribute},
+                                    ParameterMapper {parameterName: "vertexTexCoord"; shaderVariableName: "texCoord0"; bindingType: ParameterMapper.Attribute},
                                     ParameterMapper {parameterName: "tex"; shaderVariableName: "texture"; bindingType: ParameterMapper.Uniform},
                                     ParameterMapper {parameterName: "modelViewProjection"; shaderVariableName: "customMvp"; bindingType: ParameterMapper.StandardUniform}
                                 ]
@@ -326,8 +325,6 @@ Entity {
                             RenderPass {
                                 criteria : []
                                 bindings : [ // Add only the bindings needed for a shader
-                                    ParameterMapper {parameterName: "normal"; shaderVariableName: "vertexNormal"; bindingType: ParameterMapper.Attribute},
-                                    ParameterMapper {parameterName: "position"; shaderVariableName: "vertexPosition"; bindingType: ParameterMapper.Attribute},
                                     ParameterMapper {parameterName: "ambient"; shaderVariableName: "ka"; bindingType: ParameterMapper.Uniform},
                                     ParameterMapper {parameterName: "diffuse"; shaderVariableName: "kd"; bindingType: ParameterMapper.Uniform},
                                     ParameterMapper {parameterName: "lightPos"; shaderVariableName: "lightPosition"; bindingType: ParameterMapper.Uniform},

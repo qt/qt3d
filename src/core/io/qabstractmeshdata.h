@@ -70,6 +70,12 @@ public:
     QAbstractAttributePtr attributeByName(QString name) const;
     QAbstractAttributePtr indexAttribute() const;
 
+    static const QString defaultPositionAttributeName() { return QStringLiteral("vertexPosition"); }
+    static const QString defaultNormalAttributeName() { return QStringLiteral("vertexNormal"); }
+    static const QString defaultColorAttributeName() { return QStringLiteral("vertexColor"); }
+    static const QString defaultTextureCoordinateAttributeName() { return QStringLiteral("vertexTexCoord"); }
+    static const QString defaultTangentAttributeName() { return QStringLiteral("vertexTangent"); }
+
     virtual void setPrimitiveType(int primitiveType) = 0;
     virtual int primitiveType() const = 0;
 

@@ -105,10 +105,11 @@ const QString ASSIMP_MATERIAL_REFLECTIVITY = QStringLiteral("reflectivity");
 
 const QString ASSIMP_MATERIAL_NAME = QStringLiteral("name");
 
-const QString VERTICES_ATTRIBUTE_NAME = QStringLiteral("position");
-const QString NORMAL_ATTRIBUTE_NAME = QStringLiteral("normal");
-const QString TANGENT_ATTRIBUTE_NAME = QStringLiteral("tangent");
-const QString TEXTCOORD_ATTRIBUTE_NAME = QStringLiteral("textcoord");
+const QString VERTICES_ATTRIBUTE_NAME = QAbstractMeshData::defaultPositionAttributeName();
+const QString NORMAL_ATTRIBUTE_NAME =  QAbstractMeshData::defaultNormalAttributeName();
+const QString TANGENT_ATTRIBUTE_NAME = QAbstractMeshData::defaultTangentAttributeName();
+const QString TEXTCOORD_ATTRIBUTE_NAME = QAbstractMeshData::defaultTextureCoordinateAttributeName();
+const QString COLOR_ATTRIBUTE_NAME = QAbstractMeshData::defaultColorAttributeName();
 
 }
 
@@ -438,14 +439,16 @@ void AssimpParser::loadMesh(uint meshIndex)
     // Vertices and Normals always present with the current Assimp's configuration
     aiVector3D *vertices = mesh->mVertices;
     aiVector3D *normals = mesh->mNormals;
+    aiColor4D *colors = mesh->mColors[0];
     // Tangents and TextureCoord not always present
     bool hasTangent = mesh->HasTangentsAndBitangents();
     bool hasTexture = mesh->HasTextureCoords(0);
+    bool hasColor = (colors != NULL); // NULL defined by Assimp
     aiVector3D *tangents = hasTangent ? mesh->mTangents : Q_NULLPTR;
     aiVector3D *textureCoord = hasTexture ? mesh->mTextureCoords[0] : Q_NULLPTR;
 
     // Add values in raw float array
-    ushort chunkSize = 6 + (hasTangent ? 3 : 0) + (hasTexture ? 2 : 0);
+    ushort chunkSize = 6 + (hasTangent ? 3 : 0) + (hasTexture ? 2 : 0) + (hasColor ? 4 : 0);
     QByteArray bufferArray;
     bufferArray.resize(chunkSize * mesh->mNumVertices * sizeof(float));
     float *vbufferContent = reinterpret_cast<float*>(bufferArray.data());
@@ -469,6 +472,13 @@ void AssimpParser::loadMesh(uint meshIndex)
             char offset =  (hasTangent ? 9 : 6);
             vbufferContent[idx + offset] = textureCoord[i].x;
             vbufferContent[idx + offset + 1] = textureCoord[i].y;
+        }
+        if (hasColor) {
+            char offset = 6 + (hasTangent ? 3 : 0) + (hasTexture ? 2 : 0);
+            vbufferContent[idx + offset] = colors[i].r;
+            vbufferContent[idx + offset + 1] = colors[i].g;
+            vbufferContent[idx + offset + 2] = colors[i].b;
+            vbufferContent[idx + offset + 3] = colors[i].a;
         }
     }
     // Create a Buffer from the raw array
@@ -503,6 +513,13 @@ void AssimpParser::loadMesh(uint meshIndex)
                                              mesh->mNumVertices,
                                              (hasTangent ? 9 : 6) * sizeof(float),
                                              chunkSize * sizeof(float))));
+    if (hasColor)
+        meshData->addAttribute(COLOR_ATTRIBUTE_NAME,
+                               AttributePtr(new Attribute(vbuffer,
+                                                          GL_FLOAT_VEC4,
+                                                          mesh->mNumVertices,
+                                                          (6 + (hasTangent ? 3 : 0) + (hasTexture ? 2 : 0)) * sizeof(float),
+                                                          chunkSize * sizeof(float))));
     GLuint indiceType;
     QByteArray ibufferContent;
     uint indices = mesh->mNumFaces * 3;

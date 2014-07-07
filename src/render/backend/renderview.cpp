@@ -112,10 +112,11 @@ QStringList RenderView::initializeStandardAttributeNames()
 {
     QStringList attributesNames;
 
-    attributesNames << QStringLiteral("vertexPosition");
-    attributesNames << QStringLiteral("vertexNormal");
-    attributesNames << QStringLiteral("vertexColor");
-    attributesNames << QStringLiteral("vertexTextCoord");
+    attributesNames << QAbstractMeshData::defaultPositionAttributeName();
+    attributesNames << QAbstractMeshData::defaultTextureCoordinateAttributeName();
+    attributesNames << QAbstractMeshData::defaultNormalAttributeName();
+    attributesNames << QAbstractMeshData::defaultColorAttributeName();
+    attributesNames << QAbstractMeshData::defaultTangentAttributeName();
 
     return attributesNames;
 }
@@ -516,8 +517,8 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
         // equals to the parameter name
 
 
-        QList<QString> uniformNames = shader->uniformsNames();
-        QList<QString> attributeNames = shader->attributesNames();
+        QStringList uniformNames = shader->uniformsNames();
+        QStringList attributeNames = shader->attributesNames();
 
         if (!uniformNames.isEmpty() && !attributeNames.isEmpty()) {
 
