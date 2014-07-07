@@ -68,6 +68,8 @@ public:
     QString name() const;
     void updateUniforms(const QUniformPack &pack);
 
+    QStringList uniformsNames() const;
+    QStringList attributesNames() const;
 
 private:
     QOpenGLShaderProgram* m_program;
@@ -77,9 +79,11 @@ private:
     QOpenGLShaderProgram *createDefaultProgram();
 
     QHash<QString, int> m_uniforms;
+    QHash<QString, int> m_attributes;
 
     // Private so that only GraphicContext can call it
     void initializeUniforms(const QVector<QPair<QString, int> > &uniformsNameAndLocation);
+    void initializeAttributes(const QVector<QPair<QString, int> > &attributesNameAndLocation);
     QOpenGLShaderProgram* getOrCreateProgram();
     friend class QGraphicsContext;
 };

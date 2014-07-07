@@ -524,8 +524,18 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
 
         bool drawIndexed = !meshData->indexAttribute().isNull();
 
+
+        //// We activate the shader here
+        // This will fill the attributes & uniforms info the first time the shader is loaded
+        m_graphicsContext->activateShader(shader);
+
         //// Initialize GL
-        if (!vao->isCreated()) {
+        // The initialization is performed only once parameters in the command are set
+        // Which indicates that the shader has been initialized and that renderview jobs were able to retrieve
+        // Uniform and Attributes info from the shader
+        // Otherwise we might create a VAO without attribute bindings as the RenderCommand had no way to know about attributes
+        // Before the shader was loader
+        if (!command->m_parameterAttributeToShaderNames.isEmpty() && !vao->isCreated()) {
             vao->create();
             vao->bind();
 
@@ -546,18 +556,19 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
             vao->release();
         }
 
+        //// Update program uniforms
+        m_graphicsContext->setUniforms(command->m_uniforms);
+
         //// Draw Calls
         // Set state
         if (command->m_stateSet != Q_NULLPTR)
             m_graphicsContext->setCurrentStateSet(command->m_stateSet);
         else
             m_graphicsContext->setCurrentStateSet(m_defaultDrawStateSet);
-        m_graphicsContext->activateShader(shader);
 
         // All Uniforms for a pass are stored in the QUniformPack of the command
         // Uniforms for Effect, Material and Technique should already have been correctly resolved
         // at that point
-        m_graphicsContext->setUniforms(command->m_uniforms);
 
         vao->bind();
         GLint primType = meshData->primitiveType();

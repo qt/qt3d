@@ -149,6 +149,22 @@ void RenderShader::initializeUniforms(const QVector<QPair<QString, int> > &unifo
         m_uniforms[uniformsNamesAndLocations[i].first] = uniformsNamesAndLocations[i].second;
 }
 
+void RenderShader::initializeAttributes(const QVector<QPair<QString, int> > &attributesNameAndLocation)
+{
+    for (int i = 0; i < attributesNameAndLocation.size(); i++)
+        m_attributes[attributesNameAndLocation[i].first] = attributesNameAndLocation[i].second;
+}
+
+QStringList RenderShader::uniformsNames() const
+{
+    return m_uniforms.keys();
+}
+
+QStringList RenderShader::attributesNames() const
+{
+    return m_attributes.keys();
+}
+
 } // namespace Render
 } // namespace Qt3D
 

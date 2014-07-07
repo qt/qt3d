@@ -217,6 +217,7 @@ void QGraphicsContext::activateShader(RenderShader *shader)
         Q_ASSERT(prog);
         m_shaderHash[shader] = prog;
         shader->initializeUniforms(m_glHelper->programUniformsAndLocations(prog->programId()));
+        shader->initializeAttributes(m_glHelper->programAttributesAndLocations(prog->programId()));
         // TO DO : Set Attributes m_glHelper->programAttributesAndLocations(prog->programId());
         m_activeShader = NULL;
     }
