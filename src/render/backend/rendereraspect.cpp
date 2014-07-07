@@ -50,6 +50,7 @@
 #include <updateboundingvolumejob.h>
 
 #include <Qt3DCore/qnode.h>
+#include <Qt3DCore/qaspectmanager.h>
 
 #include <QDebug>
 #include <QThread>
@@ -65,18 +66,10 @@ RendererAspect::RendererAspect(QObject *parent)
 {
     qRegisterMetaType<QSurface*>("QSurface*");
     qRegisterMetaType< QSharedPointer<QObject> >("QObjectPtr");
+    // TO DO : Check whether it would make sense to have the Renderer create a private thread
+    // To perform its rendering and remove this one.
     m_renderThread->waitForStart();
     m_renderThread->renderer()->setRendererAspect(this);
-}
-
-void RendererAspect::setWindow(QWindow *window)
-{
-    Q_ASSERT(window);
-    QSurface* surface = window;
-
-    Render::Renderer *renderer = m_renderThread->renderer();
-    // Renderer no longer uses an exec loop, no more QMetaObject::invoke
-    renderer->setSurface(surface);
 }
 
 QVector<QJobPtr> RendererAspect::jobsToExecute()
@@ -136,11 +129,10 @@ void RendererAspect::unregisterAspectHelper(QEntity *rootObject)
 
 void RendererAspect::initializeHelper(QAspectManager *aspectManager)
 {
-    Q_UNUSED(aspectManager);
     Render::Renderer *renderer = m_renderThread->renderer();
 
-    // No more exec loop so method cannot be invoked
     renderer->initialize();
+    renderer->setSurface(aspectManager->window());
 }
 
 void RendererAspect::cleanupHelper()

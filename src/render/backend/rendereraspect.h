@@ -61,8 +61,6 @@ class QT3DRENDERERSHARED_EXPORT RendererAspect : public AbstractAspect
 public:
     explicit RendererAspect(QObject *parent = 0);
 
-    virtual void setWindow(QWindow *window);
-
     QVector<QJobPtr> jobsToExecute() Q_DECL_OVERRIDE;
 
 protected:

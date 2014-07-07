@@ -73,6 +73,7 @@ public slots:
     void setRoot(QObject *rootObject, QWaitCondition *waitCondition);
     void setWindow(QWindow* window);
     void registerAspect(QObject *aspect);
+    QWindow *window() const { return m_window; }
 
     void exec();
 

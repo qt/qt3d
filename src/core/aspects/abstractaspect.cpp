@@ -79,11 +79,6 @@ void AbstractAspect::cleanup()
     cleanupHelper();
 }
 
-void AbstractAspect::setWindow(QWindow *win)
-{
-    Q_UNUSED(win);
-}
-
 } // of namespace Qt3D
 
 QT_END_NAMESPACE

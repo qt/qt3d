@@ -55,8 +55,6 @@ class QT3DBULLETPHYSICSSHARED_EXPORT BulletPhysicsAspect : public AbstractAspect
 public:
     explicit BulletPhysicsAspect(QObject *parent = 0);
 
-    virtual void setWindow(QWindow *window) Q_DECL_OVERRIDE;
-
     // QJobProviderInterface interface
     QVector<QJobPtr> jobsToExecute() Q_DECL_OVERRIDE;
 

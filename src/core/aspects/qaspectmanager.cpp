@@ -120,14 +120,6 @@ void QAspectManager::setRoot(QObject *rootObject, QWaitCondition *waitCondition)
     if (m_root) {
 
         Q_FOREACH (AbstractAspect *aspect, m_aspects)
-            aspect->initialize(this);
-
-        if (m_window) {
-            Q_FOREACH (AbstractAspect *aspect, m_aspects)
-                aspect->setWindow(m_window);
-        }
-
-        Q_FOREACH (AbstractAspect *aspect, m_aspects)
             aspect->registerAspect(m_root);
 
         m_runMainLoop = true;
@@ -137,16 +129,11 @@ void QAspectManager::setRoot(QObject *rootObject, QWaitCondition *waitCondition)
         waitCondition->wakeOne();
 }
 
+// Called before register aspect
 void QAspectManager::setWindow(QWindow *window)
 {
     qCDebug(Aspects) << Q_FUNC_INFO;
-
     m_window = window;
-
-    if (m_window) {
-        Q_FOREACH (AbstractAspect *aspect, m_aspects)
-            aspect->setWindow(m_window);
-    }
 }
 
 /*!
@@ -157,10 +144,13 @@ void QAspectManager::registerAspect(QObject *aspect)
     qCDebug(Aspects) << Q_FUNC_INFO << "Registering aspect libraries";
 
     AbstractAspect *aspectImpl = Q_NULLPTR;
-    if ((aspectImpl = qobject_cast<AbstractAspect*>(aspect)) != Q_NULLPTR)
+    if ((aspectImpl = qobject_cast<AbstractAspect*>(aspect)) != Q_NULLPTR) {
         m_aspects.append(aspectImpl);
-    else
+        aspectImpl->initialize(this);
+    }
+    else {
        qCWarning(Aspects) << Q_FUNC_INFO << "Failed to register aspect";
+    }
 }
 
 void QAspectManager::exec()
@@ -194,8 +184,6 @@ void QAspectManager::exec()
             //            const qint64 dt = t1 - t;
             //            t = t1;
             //            qDebug() << "dt =" << dt;
-
-
 
             // For each Aspect
             // Ask them to launch set of jobs for the current frame

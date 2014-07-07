@@ -84,8 +84,6 @@ public:
     void initialize(QAspectManager *aspectManager);
     void cleanup();
 
-    virtual void setWindow(QWindow* win);
-
 protected:
     virtual void registerAspectHelper(QEntity *rootObject) = 0;
     virtual void unregisterAspectHelper(QEntity *rootObject) = 0;

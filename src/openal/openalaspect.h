@@ -55,8 +55,6 @@ class QT3DOPENALSHARED_EXPORT OpenALAspect : public AbstractAspect
 public:
     explicit OpenALAspect(QObject *parent = 0);
 
-    virtual void setWindow(QWindow *window) Q_DECL_OVERRIDE;
-
     // QJobProviderInterface interface
     QVector<QJobPtr> jobsToExecute() Q_DECL_OVERRIDE;
 

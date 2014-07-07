@@ -50,11 +50,6 @@ BulletPhysicsAspect::BulletPhysicsAspect(QObject *parent)
 {
 }
 
-void BulletPhysicsAspect::setWindow(QWindow *window)
-{
-
-}
-
 QVector<QJobPtr> BulletPhysicsAspect::jobsToExecute()
 {
     QVector<QJobPtr> jobs;

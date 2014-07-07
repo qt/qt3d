@@ -50,11 +50,6 @@ OpenALAspect::OpenALAspect(QObject *parent)
 {
 }
 
-void OpenALAspect::setWindow(QWindow *window)
-{
-
-}
-
 QVector<QJobPtr> OpenALAspect::jobsToExecute()
 {
     QVector<QJobPtr> jobs;
