@@ -50,7 +50,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QTechnique;
-class TechniqueCriterion;
+class QTechniqueCriterion;
 class QParameter;
 
 class QT3DRENDERERSHARED_EXPORT QTechniquePrivate : public QAbstractTechniquePrivate
@@ -58,7 +58,7 @@ class QT3DRENDERERSHARED_EXPORT QTechniquePrivate : public QAbstractTechniquePri
 public:
     QTechniquePrivate(QTechnique *dd);
     Q_DECLARE_PUBLIC(QTechnique)
-    QList<TechniqueCriterion *> m_criteriaList;
+    QList<QTechniqueCriterion *> m_criteriaList;
     QList<QParameter *> m_parameters;
 };
 

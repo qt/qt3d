@@ -40,7 +40,7 @@
 ****************************************************************************/
 
 #include "techniquefilternode.h"
-#include "techniquecriterion.h"
+#include "qtechniquecriterion.h"
 #include "qtechniquefilter.h"
 #include "renderer.h"
 #include "rendereraspect.h"
@@ -77,18 +77,18 @@ void TechniqueFilter::setPeer(Qt3D::QTechniqueFilter *peer)
     }
 }
 
-QList<TechniqueCriterion*> TechniqueFilter::filters() const
+QList<QTechniqueCriterion*> TechniqueFilter::filters() const
 {
     return m_filters;
 }
 
-void TechniqueFilter::appendFilter(TechniqueCriterion *criterion)
+void TechniqueFilter::appendFilter(QTechniqueCriterion *criterion)
 {
     if (!m_filters.contains(criterion))
         m_filters.append(criterion);
 }
 
-void TechniqueFilter::removeFilter(TechniqueCriterion *criterion)
+void TechniqueFilter::removeFilter(QTechniqueCriterion *criterion)
 {
     m_filters.removeOne(criterion);
 }
@@ -99,13 +99,13 @@ void TechniqueFilter::sceneChangeEvent(const QSceneChangePtr &e)
     case ComponentAdded: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("techniqueCriteria"))
-            appendFilter(propertyChange->value().value<TechniqueCriterion*>());
+            appendFilter(propertyChange->value().value<QTechniqueCriterion*>());
     }
         break;
     case ComponentRemoved: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("techniqueCriteria"))
-            removeFilter(propertyChange->value().value<TechniqueCriterion*>());
+            removeFilter(propertyChange->value().value<QTechniqueCriterion*>());
     }
         break;
     default:

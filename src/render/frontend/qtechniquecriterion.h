@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_TECHNIQUECRITERION_H
-#define QT3D_TECHNIQUECRITERION_H
+#ifndef QT3D_QTECHNIQUECRITERION_H
+#define QT3D_QTECHNIQUECRITERION_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <QObject>
@@ -50,17 +50,17 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class TechniqueCriterionPrivate;
+class QTechniqueCriterionPrivate;
 
-class QT3DRENDERERSHARED_EXPORT TechniqueCriterion : public QObject
+class QT3DRENDERERSHARED_EXPORT QTechniqueCriterion : public QObject
 {
     Q_OBJECT
     Q_ENUMS(CriterionType)
-    Q_PROPERTY(Qt3D::TechniqueCriterion::CriterionType criterionType READ criterionType WRITE setCriterionType NOTIFY criterionTypeChanged)
+    Q_PROPERTY(Qt3D::QTechniqueCriterion::CriterionType criterionType READ criterionType WRITE setCriterionType NOTIFY criterionTypeChanged)
     Q_PROPERTY(QVariant criterionValue READ criterionValue WRITE setCriterionValue NOTIFY criterionValueChanged)
     Q_PROPERTY(QString criterionCustomType READ criterionCustomType WRITE setCriterionCustomType NOTIFY criterionCustomTypeChanged)
 public:
-    explicit TechniqueCriterion(QObject *parent = 0);
+    explicit QTechniqueCriterion(QObject *parent = 0);
 
     enum CriterionType
     {
@@ -71,8 +71,8 @@ public:
         Vendor
     };
 
-    bool operator ==(const TechniqueCriterion &other);
-    bool operator !=(const TechniqueCriterion &other);
+    bool operator ==(const QTechniqueCriterion &other);
+    bool operator !=(const QTechniqueCriterion &other);
     void setCriterionType(CriterionType type);
     void setCriterionValue(const QVariant &value);
     void setCriterionCustomType(const QString &customType);
@@ -87,31 +87,15 @@ Q_SIGNALS:
     void criterionCustomTypeChanged();
 
 private:
-    Q_DECLARE_PRIVATE(TechniqueCriterion)
-    TechniqueCriterionPrivate *d_ptr;
+    Q_DECLARE_PRIVATE(QTechniqueCriterion)
+    QTechniqueCriterionPrivate *d_ptr;
 
 };
-
-class TechniqueCriterionPrivate
-{
-public:
-    TechniqueCriterionPrivate(TechniqueCriterion *qq)
-        : q_ptr(qq)
-        , m_criterionType(TechniqueCriterion::CustomType)
-    {}
-
-    Q_DECLARE_PUBLIC(TechniqueCriterion)
-    TechniqueCriterion *q_ptr;
-    TechniqueCriterion::CriterionType m_criterionType;
-    QString m_criterionCustomType;
-    QVariant m_criterionValue;
-};
-
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3D::TechniqueCriterion *)
+Q_DECLARE_METATYPE(Qt3D::QTechniqueCriterion *)
 
-#endif // QT3D_TECHNIQUECRITERION_H
+#endif // QT3D_QTECHNIQUECRITERION_H

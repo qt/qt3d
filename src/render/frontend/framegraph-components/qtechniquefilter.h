@@ -50,7 +50,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QTechniqueFilterPrivate;
-class TechniqueCriterion;
+class QTechniqueCriterion;
 
 class QT3DRENDERERSHARED_EXPORT QTechniqueFilter : public QFrameGraphItem
 {
@@ -58,9 +58,9 @@ class QT3DRENDERERSHARED_EXPORT QTechniqueFilter : public QFrameGraphItem
 public:
     explicit QTechniqueFilter(QNode *parent = 0);
 
-    QList<TechniqueCriterion *> criteria() const;
-    void addCriterion(TechniqueCriterion *criterion);
-    void removeCriterion(TechniqueCriterion *criterion);
+    QList<QTechniqueCriterion *> criteria() const;
+    void addCriterion(QTechniqueCriterion *criterion);
+    void removeCriterion(QTechniqueCriterion *criterion);
 
 Q_SIGNALS:
     void criteriaChanged();

@@ -406,8 +406,8 @@ RenderTechnique *RenderView::findTechniqueForEffect(RenderEffect *effect)
                 if ((tech = qobject_cast<QTechnique*>(technique)) != Q_NULLPTR &&
                         tech->criteria().size() == m_techniqueFilter->filters().count()) {
                     bool findMatch = true;
-                    Q_FOREACH (TechniqueCriterion *filterCriterion, m_techniqueFilter->filters()) {
-                        Q_FOREACH (TechniqueCriterion *techCriterion, tech->criteria()) {
+                    Q_FOREACH (QTechniqueCriterion *filterCriterion, m_techniqueFilter->filters()) {
+                        Q_FOREACH (QTechniqueCriterion *techCriterion, tech->criteria()) {
                             if (*filterCriterion != *techCriterion) {
                                 findMatch = false;
                                 break;

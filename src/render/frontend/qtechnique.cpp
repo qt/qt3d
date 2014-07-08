@@ -64,14 +64,14 @@ QTechnique::QTechnique(QTechniquePrivate &dd, QNode *parent)
 {
 }
 
-void QTechnique::addCriterion(TechniqueCriterion *criterion)
+void QTechnique::addCriterion(QTechniqueCriterion *criterion)
 {
     Q_D(QTechnique);
     if (!d->m_criteriaList.contains(criterion))
         d->m_criteriaList.append(criterion);
 }
 
-void QTechnique::removeCriterion(TechniqueCriterion *criterion)
+void QTechnique::removeCriterion(QTechniqueCriterion *criterion)
 {
     Q_D(QTechnique);
     d->m_criteriaList.removeOne(criterion);
@@ -80,22 +80,22 @@ void QTechnique::removeCriterion(TechniqueCriterion *criterion)
 QVariant QTechnique::criterionValue(const QString &customTypeName) const
 {
     Q_D(const QTechnique);
-    Q_FOREACH (TechniqueCriterion *criterion, d->m_criteriaList)
+    Q_FOREACH (QTechniqueCriterion *criterion, d->m_criteriaList)
         if (criterion->criterionCustomType() == customTypeName)
             return criterion->criterionValue();
     return QVariant();
 }
 
-QVariant QTechnique::criterionValue(TechniqueCriterion::CriterionType type) const
+QVariant QTechnique::criterionValue(QTechniqueCriterion::CriterionType type) const
 {
     Q_D(const QTechnique);
-    Q_FOREACH (TechniqueCriterion *criterion, d->m_criteriaList)
+    Q_FOREACH (QTechniqueCriterion *criterion, d->m_criteriaList)
         if (criterion->criterionType() == type)
             return criterion->criterionValue();
     return QVariant();
 }
 
-QList<TechniqueCriterion *> QTechnique::criteria() const
+QList<QTechniqueCriterion *> QTechnique::criteria() const
 {
     Q_D(const QTechnique);
     return d->m_criteriaList;
@@ -110,16 +110,16 @@ void QTechnique::clearCriteria()
 bool QTechnique::containsCriterion(const QString &customTypeName) const
 {
     Q_D(const QTechnique);
-    Q_FOREACH (TechniqueCriterion *criterion, d->m_criteriaList)
+    Q_FOREACH (QTechniqueCriterion *criterion, d->m_criteriaList)
         if (criterion->criterionCustomType() == customTypeName)
             return true;
     return false;
 }
 
-bool QTechnique::containsCriterion(TechniqueCriterion::CriterionType type) const
+bool QTechnique::containsCriterion(QTechniqueCriterion::CriterionType type) const
 {
     Q_D(const QTechnique);
-    Q_FOREACH (TechniqueCriterion *criterion, d->m_criteriaList)
+    Q_FOREACH (QTechniqueCriterion *criterion, d->m_criteriaList)
         if (criterion->criterionType() == type)
             return true;
     return false;

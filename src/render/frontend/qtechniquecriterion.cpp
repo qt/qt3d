@@ -39,20 +39,34 @@
 **
 ****************************************************************************/
 
-#include "techniquecriterion.h"
+#include "qtechniquecriterion.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-TechniqueCriterion::TechniqueCriterion(QObject *parent)
-    : QObject(parent)
-    , d_ptr(new TechniqueCriterionPrivate(this))
+class QTechniqueCriterionPrivate
 {
+public:
+    QTechniqueCriterionPrivate(QTechniqueCriterion *qq)
+        : q_ptr(qq)
+        , m_criterionType(QTechniqueCriterion::CustomType)
+    {}
 
+    Q_DECLARE_PUBLIC(QTechniqueCriterion)
+    QTechniqueCriterion *q_ptr;
+    QTechniqueCriterion::CriterionType m_criterionType;
+    QString m_criterionCustomType;
+    QVariant m_criterionValue;
+};
+
+QTechniqueCriterion::QTechniqueCriterion(QObject *parent)
+    : QObject(parent)
+    , d_ptr(new QTechniqueCriterionPrivate(this))
+{
 }
 
-bool TechniqueCriterion::operator ==(const TechniqueCriterion &other)
+bool QTechniqueCriterion::operator ==(const QTechniqueCriterion &other)
 {
     if (&other == this)
         return true;
@@ -66,53 +80,53 @@ bool TechniqueCriterion::operator ==(const TechniqueCriterion &other)
     return false;
 }
 
-bool TechniqueCriterion::operator !=(const TechniqueCriterion &other)
+bool QTechniqueCriterion::operator !=(const QTechniqueCriterion &other)
 {
     return !operator ==(other);
 }
 
-void TechniqueCriterion::setCriterionType(TechniqueCriterion::CriterionType type)
+void QTechniqueCriterion::setCriterionType(QTechniqueCriterion::CriterionType type)
 {
-    Q_D(TechniqueCriterion);
+    Q_D(QTechniqueCriterion);
     if (type != d->m_criterionType) {
         d->m_criterionType = type;
         emit criterionTypeChanged();
     }
 }
 
-void TechniqueCriterion::setCriterionValue(const QVariant &value)
+void QTechniqueCriterion::setCriterionValue(const QVariant &value)
 {
-    Q_D(TechniqueCriterion);
+    Q_D(QTechniqueCriterion);
     if (value != d->m_criterionValue) {
         d->m_criterionValue = value;
         emit criterionValueChanged();
     }
 }
 
-void TechniqueCriterion::setCriterionCustomType(const QString &customType)
+void QTechniqueCriterion::setCriterionCustomType(const QString &customType)
 {
-    Q_D(TechniqueCriterion);
+    Q_D(QTechniqueCriterion);
     if (customType != d->m_criterionCustomType) {
         d->m_criterionCustomType = customType;
         emit criterionCustomTypeChanged();
     }
 }
 
-TechniqueCriterion::CriterionType TechniqueCriterion::criterionType() const
+QTechniqueCriterion::CriterionType QTechniqueCriterion::criterionType() const
 {
-    Q_D(const TechniqueCriterion);
+    Q_D(const QTechniqueCriterion);
     return d->m_criterionType;
 }
 
-QVariant TechniqueCriterion::criterionValue() const
+QVariant QTechniqueCriterion::criterionValue() const
 {
-    Q_D(const TechniqueCriterion);
+    Q_D(const QTechniqueCriterion);
     return d->m_criterionValue;
 }
 
-QString TechniqueCriterion::criterionCustomType() const
+QString QTechniqueCriterion::criterionCustomType() const
 {
-    Q_D(const TechniqueCriterion);
+    Q_D(const QTechniqueCriterion);
     return d->m_criterionCustomType;
 }
 
