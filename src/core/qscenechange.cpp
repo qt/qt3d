@@ -39,81 +39,81 @@
 **
 ****************************************************************************/
 
-#include "renderpassfilternode.h"
-#include "rendereraspect.h"
-#include "renderer.h"
-#include "renderpasscriterion.h"
-#include "qrenderpassfilter.h"
-#include <Qt3DCore/qaspectmanager.h>
-#include <Qt3DCore/qchangearbiter.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include "qscenechange.h"
+#include "qscenechange_p.h"
+#include <QDateTime>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
-namespace Render {
 
-RenderPassFilter::RenderPassFilter(FrameGraphNode *parent)
-    : FrameGraphNode(FrameGraphNode::RenderPassFilter, parent)
-    , m_renderer(Q_NULLPTR)
-    , m_peer(Q_NULLPTR)
+QSceneChangePrivate::QSceneChangePrivate(QSceneChange *qq)
+    : q_ptr(qq)
 {
 }
 
-void RenderPassFilter::setRenderer(Renderer *renderer)
+QSceneChange::QSceneChange(ChangeFlag type, QObservableInterface *observable, QSceneChange::Priority priority)
+    : d_ptr(new QSceneChangePrivate(this))
 {
-    m_renderer = renderer;
+    Q_D(QSceneChange);
+    d->m_type = type;
+    d->m_priority = priority;
+    d->m_timestamp = QDateTime::currentMSecsSinceEpoch();
+    d->m_subject.m_observable = observable;
+    d->m_subjectType = Observable;
 }
 
-void RenderPassFilter::setPeer(Qt3D::QRenderPassFilter *peer)
+QSceneChange::QSceneChange(ChangeFlag type, QNode *node, QSceneChange::Priority priority)
+    : d_ptr(new QSceneChangePrivate(this))
 {
-    if (m_peer != peer) {
-        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        if (m_peer)
-            arbiter->unregisterObserver(this, m_peer);
-        m_peer = peer;
-        if (m_peer)
-            arbiter->registerObserver(this, m_peer);
-    }
+    Q_D(QSceneChange);
+    d->m_type = type;
+    d->m_priority = priority;
+    d->m_timestamp = QDateTime::currentMSecsSinceEpoch();
+    d->m_subject.m_node = node;
+    d->m_subjectType = Node;
 }
 
-QList<RenderPassCriterion *> RenderPassFilter::filters() const
+QSceneChange::~QSceneChange()
 {
-    return m_filters;
+    delete d_ptr;
 }
 
-void RenderPassFilter::appendFilter(RenderPassCriterion *criterion)
+QSceneChange::QSceneChange(QSceneChangePrivate &dd)
+    : d_ptr(&dd)
 {
-    if (!m_filters.contains(criterion))
-        m_filters.append(criterion);
 }
 
-void RenderPassFilter::removeFilter(RenderPassCriterion *criterion)
+ChangeFlag QSceneChange::type() const
 {
-    m_filters.removeOne(criterion);
+    Q_D(const QSceneChange);
+    return d->m_type;
 }
 
-void RenderPassFilter::sceneChangeEvent(const QSceneChangePtr &e)
+QSceneChange::Priority QSceneChange::priority() const
 {
-    switch (e->type()) {
-    case ComponentAdded: {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        if (propertyChange->m_propertyName == QByteArrayLiteral("renderPassCriteria"))
-            appendFilter(propertyChange->m_value.value<RenderPassCriterion*>());
-    }
-        break;
-    case ComponentRemoved: {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        if (propertyChange->m_propertyName == QByteArrayLiteral("renderPassCriteria"))
-            removeFilter(propertyChange->m_value.value<RenderPassCriterion*>());
-    }
-        break;
-    default:
-        break;
-    }
+    Q_D(const QSceneChange);
+    return d->m_priority;
 }
 
-} // namespace Render
-} // namespace Qt3D
+qint64 QSceneChange::timestamp() const
+{
+    Q_D(const QSceneChange);
+    return d->m_timestamp;
+}
+
+QSceneChange::ObservableType QSceneChange::observableType() const
+{
+    Q_D(const QSceneChange);
+    return d->m_subjectType;
+}
+
+QSceneChange::SubjectUnion QSceneChange::subject() const
+{
+    Q_D(const QSceneChange);
+    return d->m_subject;
+}
+
+} // Qt3D
 
 QT_END_NAMESPACE

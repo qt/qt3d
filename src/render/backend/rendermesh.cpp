@@ -111,7 +111,7 @@ void RenderMesh::setRenderer(Renderer *renderer)
 
 void RenderMesh::sceneChangeEvent(const QSceneChangePtr &e)
 {
-    switch (e->m_type) {
+    switch (e->type()) {
     case ComponentUpdated: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->m_propertyName == QByteArrayLiteral("source") && qobject_cast<QMesh*>(m_peer)) // Mesh with source

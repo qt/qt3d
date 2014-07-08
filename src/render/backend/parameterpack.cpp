@@ -102,7 +102,7 @@ void ParameterPack::clear()
 
 void ParameterPack::sceneChangeEvent(const QSceneChangePtr &e)
 {
-    if (e->m_type == ComponentUpdated) {
+    if (e->type() == ComponentUpdated) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         QString propertyName = QString::fromLatin1(propertyChange->m_propertyName);
         QVariant propertyValue = propertyChange->m_value;

@@ -85,7 +85,7 @@ void RenderRenderPass::setPeer(QRenderPass *peer)
 
 void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
 {
-    if (e->m_type == ComponentUpdated) {
+    if (e->type() == ComponentUpdated) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->m_propertyName == QByteArrayLiteral("shaderProgram"))
             ;// TO DO: to be completed

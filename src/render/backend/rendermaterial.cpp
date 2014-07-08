@@ -120,7 +120,7 @@ void RenderMaterial::sceneChangeEvent(const QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
 
-    switch (e->m_type) {
+    switch (e->type()) {
     case ComponentUpdated: {
         // Check for effect change
         if (propertyChange->m_propertyName == QByteArrayLiteral("effect")) {

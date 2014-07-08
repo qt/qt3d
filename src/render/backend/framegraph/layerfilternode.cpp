@@ -80,7 +80,7 @@ void LayerFilterNode::setPeer(QLayerFilter *peer)
 
 void LayerFilterNode::sceneChangeEvent(const QSceneChangePtr &e)
 {
-    if (e->m_type == ComponentUpdated) {
+    if (e->type() == ComponentUpdated) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->m_propertyName == QByteArrayLiteral("layers"))
             setLayers(propertyChange->m_value.value<QStringList>());

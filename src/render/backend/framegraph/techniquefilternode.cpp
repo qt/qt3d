@@ -95,7 +95,7 @@ void TechniqueFilter::removeFilter(TechniqueCriterion *criterion)
 
 void TechniqueFilter::sceneChangeEvent(const QSceneChangePtr &e)
 {
-    switch (e->m_type) {
+    switch (e->type()) {
     case ComponentAdded: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->m_propertyName == QByteArrayLiteral("techniqueCriteria"))

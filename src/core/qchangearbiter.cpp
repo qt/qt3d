@@ -100,25 +100,25 @@ void QChangeArbiter::distributeQueueChanges(ChangeQueue *changeQueue)
         // and distribute the change to them
         if (change.isNull())
             continue;
-        switch (change->m_subjectType) {
-        case QSceneChange::ObservableType: {
-            QObservableInterface *subject = change->m_subject.m_observable;
+        switch (change->observableType()) {
+        case QSceneChange::Observable: {
+            QObservableInterface *subject = change->subject().m_observable;
             if (d->m_aspectObservations.contains(subject)) {
                 QObserverList &observers = d->m_aspectObservations[subject];
                 Q_FOREACH (const QObserverPair &observer, observers) {
-                    if ((change->m_type & observer.first))
+                    if ((change->type() & observer.first))
                         observer.second->sceneChangeEvent(change);
                 }
             }
             break;
         }
 
-        case QSceneChange::NodeType: {
-            QNode *subject = change->m_subject.m_node;
+        case QSceneChange::Node: {
+            QNode *subject = change->subject().m_node;
             if (d->m_nodeObservations.contains(subject)) {
                 QObserverList &observers = d->m_nodeObservations[subject];
                 Q_FOREACH (const QObserverPair&observer, observers) {
-                    if ((change->m_type & observer.first))
+                    if ((change->type() & observer.first))
                         observer.second->sceneChangeEvent(change);
                 }
             }

@@ -97,7 +97,7 @@ void RenderEffect::sceneChangeEvent(const QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     QVariant propertyValue = propertyChange->m_value;
-    switch (e->m_type) {
+    switch (e->type()) {
 
     case ComponentAdded:
         if (propertyChange->m_propertyName == QByteArrayLiteral("technique")) {

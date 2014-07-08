@@ -39,70 +39,35 @@
 **
 ****************************************************************************/
 
-#include "renderlight.h"
-#include "renderer.h"
-#include "rendereraspect.h"
-#include "qabstractlight.h"
-#include <Qt3DCore/qchangearbiter.h>
-#include <Qt3DCore/qaspectmanager.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#ifndef QT3D_QSCENECHANGE_P_H
+#define QT3D_QSCENECHANGE_P_H
+
+#include <QtGlobal>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-namespace Render {
+class QSceneChange;
 
-RenderLight::RenderLight()
-    : m_renderer(Q_NULLPTR)
-    , m_peer(Q_NULLPTR)
+class QSceneChangePrivate
 {
-}
+public :
+    QSceneChangePrivate(QSceneChange *qq);
 
-RenderLight::~RenderLight()
-{
-    if (m_peer)
-        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_peer);
-}
+    Q_DECLARE_PUBLIC(QSceneChange)
 
-void RenderLight::setPeer(QAbstractLight *peer)
-{
-    if (m_peer != peer) {
-        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        if (m_peer) {
-            arbiter->unregisterObserver(this, m_peer);
-            m_lightProperties.clear();
-        }
-        m_peer = peer;
-        if (m_peer) {
-            arbiter->registerObserver(this, m_peer, ComponentUpdated);
-            m_lightProperties = m_peer->lightProperties();
-            m_lightProperties[QStringLiteral("color")] = m_peer->color();
-            m_lightProperties[QStringLiteral("intensity")] = m_peer->intensity();
-        }
-    }
-}
+    QSceneChange *q_ptr;
 
-void RenderLight::setRenderer(Renderer *renderer)
-{
-    m_renderer = renderer;
-}
-
-QHash<QString, QVariant> RenderLight::lightProperties() const
-{
-    return m_lightProperties;
-}
-
-void RenderLight::sceneChangeEvent(const QSceneChangePtr &e)
-{
-    if (e->type() == ComponentUpdated && e->subject().m_observable == m_peer) {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        m_lightProperties[QString::fromUtf8(propertyChange->m_propertyName)] = propertyChange->m_value;
-    }
-}
+    QSceneChange::SubjectUnion m_subject;
+    QSceneChange::ObservableType m_subjectType;
+    ChangeFlag m_type;
+    QSceneChange::Priority m_priority;
+    qint64 m_timestamp;
+};
 
 } // Qt3D
 
-} // Render
-
 QT_END_NAMESPACE
+
+#endif // QT3D_QSCENECHANGE_P_H

@@ -108,7 +108,7 @@ void RenderCamera::setViewMatrix(const QMatrix4x4 &view)
 
 void RenderCamera::sceneChangeEvent(const QSceneChangePtr &e)
 {
-    switch (e->m_type) {
+    switch (e->type()) {
     case ComponentUpdated: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         QMatrix4x4 projectionMatrix = propertyChange->m_value.value<QMatrix4x4>();

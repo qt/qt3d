@@ -43,7 +43,6 @@
 #define QT3D_QSCENECHANGE_H
 
 #include <Qt3DCore/qt3dcore_global.h>
-#include <QDateTime>
 #include <QSharedPointer>
 
 QT_BEGIN_NAMESPACE
@@ -65,6 +64,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(ChangeFlags)
 
 class QNode;
 class QObservableInterface;
+class QSceneChangePrivate;
 
 class QT3DCORESHARED_EXPORT QSceneChange
 {
@@ -75,37 +75,30 @@ public:
         Low
     };
 
-    QSceneChange(ChangeFlag type, QObservableInterface *observable, Priority priority = Standard)
-        : m_type(type),
-          m_priority(priority),
-          m_timestamp(QDateTime::currentMSecsSinceEpoch())
-    {
-        m_subject.m_observable = observable;
-        m_subjectType = ObservableType;
-    }
+    enum ObservableType {
+        Observable,
+        Node
+    };
 
-    QSceneChange(ChangeFlag type, QNode *node, Priority priority = Standard)
-        : m_type(type),
-          m_priority(priority),
-          m_timestamp(QDateTime::currentMSecsSinceEpoch())
-    {
-        m_subject.m_node = node;
-        m_subjectType = NodeType;
-    }
-
-    union {
+    union SubjectUnion {
         QObservableInterface *m_observable;
         QNode *m_node;
-    } m_subject;
+    };
 
-    enum ObservableType {
-        ObservableType,
-        NodeType
-    } m_subjectType;
+    QSceneChange(ChangeFlag type, QObservableInterface *observable, Priority priority = Standard);
+    QSceneChange(ChangeFlag type, QNode *node, Priority priority = Standard);
+    virtual ~QSceneChange();
 
-    ChangeFlag m_type;
-    Priority m_priority;
-    qint64 m_timestamp;
+    ChangeFlag type() const;
+    qint64 timestamp() const;
+    QSceneChange::Priority priority() const;
+    QSceneChange::ObservableType observableType() const;
+    QSceneChange::SubjectUnion subject() const;
+
+protected:
+    Q_DECLARE_PRIVATE(QSceneChange)
+    QSceneChangePrivate *d_ptr;
+    QSceneChange(QSceneChangePrivate &dd);
 
     // TODO: add timestamp from central clock and priority level
     // These can be used to resolve any conflicts between events

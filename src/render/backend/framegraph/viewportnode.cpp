@@ -120,7 +120,7 @@ void ViewportNode::setYMax(float yMax)
 
 void ViewportNode::sceneChangeEvent(const QSceneChangePtr &e)
 {
-    if (e->m_type == ComponentUpdated) {
+    if (e->type() == ComponentUpdated) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->m_propertyName == QByteArrayLiteral("rect")) {
             QRectF rect = propertyChange->m_value.value<QRectF>();

@@ -111,7 +111,7 @@ QParameter *RenderTechnique::parameterByName(QString name) const
 void RenderTechnique::sceneChangeEvent(const QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-    switch (e->m_type) {
+    switch (e->type()) {
 
     case ComponentAdded: {
         if (propertyChange->m_propertyName == QByteArrayLiteral("pass")) {
