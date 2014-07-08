@@ -49,7 +49,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class RenderPassCriterion;
+class QRenderPassCriterion;
 class QRenderPassFilter;
 
 namespace Render {
@@ -64,15 +64,15 @@ public:
 
     void setRenderer(Renderer *renderer);
     void setPeer(Qt3D::QRenderPassFilter *peer);
-    QList<RenderPassCriterion *> filters() const;
-    void appendFilter(RenderPassCriterion *criterion);
-    void removeFilter(RenderPassCriterion *criterion);
+    QList<QRenderPassCriterion *> filters() const;
+    void appendFilter(QRenderPassCriterion *criterion);
+    void removeFilter(QRenderPassCriterion *criterion);
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
     Renderer *m_renderer;
     Qt3D::QRenderPassFilter *m_peer;
-    QList<RenderPassCriterion *> m_filters;
+    QList<QRenderPassCriterion *> m_filters;
 };
 
 } // namespace Render

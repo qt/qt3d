@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDERPASSCRITERION_H
-#define QT3D_RENDERPASSCRITERION_H
+#ifndef QT3D_QRENDERPASSCRITERION_H
+#define QT3D_QRENDERPASSCRITERION_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <QObject>
@@ -50,15 +50,15 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class RenderPassCriterionPrivate;
+class QRenderPassCriterionPrivate;
 
-class QT3DRENDERERSHARED_EXPORT RenderPassCriterion : public QObject
+class QT3DRENDERERSHARED_EXPORT QRenderPassCriterion : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString criterionType READ criterionType WRITE setCriterionType NOTIFY criterionTypeChanged)
     Q_PROPERTY(QVariant criterionValue READ criterionValue WRITE setCriterionValue NOTIFY criterionValueChanged)
 public:
-    explicit RenderPassCriterion(QObject *parent = 0);
+    explicit QRenderPassCriterion(QObject *parent = 0);
 
     void setCriterionType(const QString &type);
     void setCriterionValue(const QVariant &value);
@@ -71,14 +71,14 @@ Q_SIGNALS:
     void criterionValueChanged();
 
 private:
-    Q_DECLARE_PRIVATE(RenderPassCriterion)
-    RenderPassCriterionPrivate *d_ptr;
+    Q_DECLARE_PRIVATE(QRenderPassCriterion)
+    QRenderPassCriterionPrivate *d_ptr;
 };
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3D::RenderPassCriterion *)
+Q_DECLARE_METATYPE(Qt3D::QRenderPassCriterion *)
 
-#endif // QT3D_RENDERPASSCRITERION_H
+#endif // QT3D_QRENDERPASSCRITERION_H

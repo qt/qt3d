@@ -42,7 +42,7 @@
 #include "renderpassfilternode.h"
 #include "rendereraspect.h"
 #include "renderer.h"
-#include "renderpasscriterion.h"
+#include "qrenderpasscriterion.h"
 #include "qrenderpassfilter.h"
 #include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/qchangearbiter.h>
@@ -77,18 +77,18 @@ void RenderPassFilter::setPeer(Qt3D::QRenderPassFilter *peer)
     }
 }
 
-QList<RenderPassCriterion *> RenderPassFilter::filters() const
+QList<QRenderPassCriterion *> RenderPassFilter::filters() const
 {
     return m_filters;
 }
 
-void RenderPassFilter::appendFilter(RenderPassCriterion *criterion)
+void RenderPassFilter::appendFilter(QRenderPassCriterion *criterion)
 {
     if (!m_filters.contains(criterion))
         m_filters.append(criterion);
 }
 
-void RenderPassFilter::removeFilter(RenderPassCriterion *criterion)
+void RenderPassFilter::removeFilter(QRenderPassCriterion *criterion)
 {
     m_filters.removeOne(criterion);
 }
@@ -99,13 +99,13 @@ void RenderPassFilter::sceneChangeEvent(const QSceneChangePtr &e)
     case ComponentAdded: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("renderPassCriteria"))
-            appendFilter(propertyChange->value().value<RenderPassCriterion*>());
+            appendFilter(propertyChange->value().value<QRenderPassCriterion*>());
     }
         break;
     case ComponentRemoved: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("renderPassCriteria"))
-            removeFilter(propertyChange->value().value<RenderPassCriterion*>());
+            removeFilter(propertyChange->value().value<QRenderPassCriterion*>());
     }
         break;
     default:

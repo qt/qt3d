@@ -39,58 +39,58 @@
 **
 ****************************************************************************/
 
-#include "renderpasscriterion.h"
+#include "qrenderpasscriterion.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class RenderPassCriterionPrivate
+class QRenderPassCriterionPrivate
 {
 public :
-    RenderPassCriterionPrivate(RenderPassCriterion *qq)
+    QRenderPassCriterionPrivate(QRenderPassCriterion *qq)
         : q_ptr(qq)
     {}
 
-    Q_DECLARE_PUBLIC(RenderPassCriterion)
-    RenderPassCriterion *q_ptr;
+    Q_DECLARE_PUBLIC(QRenderPassCriterion)
+    QRenderPassCriterion *q_ptr;
     QString m_type;
     QVariant m_value;
 };
 
-RenderPassCriterion::RenderPassCriterion(QObject *parent)
+QRenderPassCriterion::QRenderPassCriterion(QObject *parent)
     : QObject(parent)
-    , d_ptr(new RenderPassCriterionPrivate(this))
+    , d_ptr(new QRenderPassCriterionPrivate(this))
 {
 }
 
-void RenderPassCriterion::setCriterionType(const QString &type)
+void QRenderPassCriterion::setCriterionType(const QString &type)
 {
-    Q_D(RenderPassCriterion);
+    Q_D(QRenderPassCriterion);
     if (d->m_type != type) {
         d->m_type = type;
         emit criterionTypeChanged();
     }
 }
 
-void RenderPassCriterion::setCriterionValue(const QVariant &value)
+void QRenderPassCriterion::setCriterionValue(const QVariant &value)
 {
-    Q_D(RenderPassCriterion);
+    Q_D(QRenderPassCriterion);
     if (d->m_value != value) {
         d->m_value = value;
         emit criterionValueChanged();
     }
 }
 
-QVariant RenderPassCriterion::criterionValue() const
+QVariant QRenderPassCriterion::criterionValue() const
 {
-    Q_D(const RenderPassCriterion);
+    Q_D(const QRenderPassCriterion);
     return d->m_value;
 }
 
-QString RenderPassCriterion::criterionType() const
+QString QRenderPassCriterion::criterionType() const
 {
-    Q_D(const RenderPassCriterion);
+    Q_D(const QRenderPassCriterion);
     return d->m_type;
 }
 

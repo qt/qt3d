@@ -55,9 +55,9 @@ Quick3DRenderPass::Quick3DRenderPass(QObject *parent)
 {
 }
 
-QQmlListProperty<RenderPassCriterion> Quick3DRenderPass::criteriaList()
+QQmlListProperty<QRenderPassCriterion> Quick3DRenderPass::criteriaList()
 {
-    return QQmlListProperty<Qt3D::RenderPassCriterion>(this, 0,
+    return QQmlListProperty<Qt3D::QRenderPassCriterion>(this, 0,
                                                        &Quick3DRenderPass::appendCriteria,
                                                        &Quick3DRenderPass::criteriaCount,
                                                        &Quick3DRenderPass::criterionAt,
@@ -73,28 +73,28 @@ QQmlListProperty<QParameterMapper> Quick3DRenderPass::bindingList()
                                                    &Quick3DRenderPass::clearBindings);
 }
 
-void Quick3DRenderPass::appendCriteria(QQmlListProperty<RenderPassCriterion> *list, RenderPassCriterion *criterion)
+void Quick3DRenderPass::appendCriteria(QQmlListProperty<QRenderPassCriterion> *list, QRenderPassCriterion *criterion)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
     rPass->parentRenderPass()->addCriterion(criterion);
 }
 
-RenderPassCriterion *Quick3DRenderPass::criterionAt(QQmlListProperty<RenderPassCriterion> *list, int index)
+QRenderPassCriterion *Quick3DRenderPass::criterionAt(QQmlListProperty<QRenderPassCriterion> *list, int index)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
     return rPass->parentRenderPass()->criteria().at(index);
 }
 
-int Quick3DRenderPass::criteriaCount(QQmlListProperty<RenderPassCriterion> *list)
+int Quick3DRenderPass::criteriaCount(QQmlListProperty<QRenderPassCriterion> *list)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
     return rPass->parentRenderPass()->criteria().count();
 }
 
-void Quick3DRenderPass::clearCriteria(QQmlListProperty<RenderPassCriterion> *list)
+void Quick3DRenderPass::clearCriteria(QQmlListProperty<QRenderPassCriterion> *list)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
-    Q_FOREACH (RenderPassCriterion *c, rPass->parentRenderPass()->criteria())
+    Q_FOREACH (QRenderPassCriterion *c, rPass->parentRenderPass()->criteria())
         rPass->parentRenderPass()->removeCriterion(c);
 }
 

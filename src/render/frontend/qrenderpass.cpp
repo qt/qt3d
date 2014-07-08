@@ -42,7 +42,7 @@
 #include "qrenderpass.h"
 #include "qrenderpass_p.h"
 #include "qparameter.h"
-#include "renderpasscriterion.h"
+#include "qrenderpasscriterion.h"
 #include "qparametermapper.h"
 
 QT_BEGIN_NAMESPACE
@@ -89,7 +89,7 @@ Render::DrawStateSet *QRenderPass::stateSet() const
     return d->m_stateSet;
 }
 
-void QRenderPass::addCriterion(RenderPassCriterion *criterion)
+void QRenderPass::addCriterion(QRenderPassCriterion *criterion)
 {
     Q_D(QRenderPass);
     if (!d->m_criteria.contains(criterion)) {
@@ -98,14 +98,14 @@ void QRenderPass::addCriterion(RenderPassCriterion *criterion)
     }
 }
 
-void QRenderPass::removeCriterion(RenderPassCriterion *criterion)
+void QRenderPass::removeCriterion(QRenderPassCriterion *criterion)
 {
     Q_D(QRenderPass);
     d->m_criteria.removeOne(criterion);
     // TO DO: Notify QChangeArbiter
 }
 
-QList<RenderPassCriterion *> QRenderPass::criteria() const
+QList<QRenderPassCriterion *> QRenderPass::criteria() const
 {
     Q_D(const QRenderPass);
     return d->m_criteria;

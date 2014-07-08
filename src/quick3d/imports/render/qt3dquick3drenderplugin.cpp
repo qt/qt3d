@@ -58,7 +58,7 @@
 #include <Qt3DRenderer/qcameraselector.h>
 #include <Qt3DRenderer/qeffect.h>
 #include <Qt3DRenderer/qparameter.h>
-#include <Qt3DRenderer/renderpasscriterion.h>
+#include <Qt3DRenderer/qrenderpasscriterion.h>
 #include <Qt3DRenderer/qparametermapper.h>
 #include <Qt3DRenderer/qspheremesh.h>
 #include <Qt3DRenderer/qtorusmesh.h>
@@ -90,7 +90,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterExtendedType<Qt3D::QEffect, Qt3D::Render::Quick::Quick3DEffect>(uri, 2, 0, "Effect");
     qmlRegisterExtendedType<Qt3D::QTechnique, Qt3D::Render::Quick::Quick3DTechnique>(uri, 2, 0, "Technique");
     qmlRegisterType<Qt3D::TechniqueCriterion>(uri, 2, 0, "TechniqueCriterion");
-    qmlRegisterType<Qt3D::RenderPassCriterion>(uri, 2, 0, "RenderPassCriterion");
+    qmlRegisterType<Qt3D::QRenderPassCriterion>(uri, 2, 0, "RenderPassCriterion");
     qmlRegisterType<Qt3D::Tag>(uri, 2, 0, "Tag");
     qmlRegisterType<Qt3D::QParameter>(uri, 2, 0, "Parameter");
     qmlRegisterType<Qt3D::QParameterMapper>(uri, 2, 0, "ParameterMapper");
