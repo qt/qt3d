@@ -88,8 +88,6 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QTechniqueCriterion)
-    QTechniqueCriterionPrivate *d_ptr;
-
 };
 
 } // Qt3D

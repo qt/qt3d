@@ -40,29 +40,30 @@
 ****************************************************************************/
 
 #include "qtechniquecriterion.h"
+#include <private/qobject_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QTechniqueCriterionPrivate
+class QTechniqueCriterionPrivate : public QObjectPrivate
 {
 public:
     QTechniqueCriterionPrivate(QTechniqueCriterion *qq)
-        : q_ptr(qq)
+        : QObjectPrivate()
         , m_criterionType(QTechniqueCriterion::CustomType)
-    {}
+    {
+        q_ptr = qq;
+    }
 
     Q_DECLARE_PUBLIC(QTechniqueCriterion)
-    QTechniqueCriterion *q_ptr;
     QTechniqueCriterion::CriterionType m_criterionType;
     QString m_criterionCustomType;
     QVariant m_criterionValue;
 };
 
 QTechniqueCriterion::QTechniqueCriterion(QObject *parent)
-    : QObject(parent)
-    , d_ptr(new QTechniqueCriterionPrivate(this))
+    : QObject(*new QTechniqueCriterionPrivate(this), parent)
 {
 }
 
