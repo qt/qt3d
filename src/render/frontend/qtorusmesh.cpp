@@ -189,13 +189,13 @@ QAbstractMeshDataPtr QTorusMesh::createTorusMesh(double radius, double minorRadi
     buf->setUsage(QOpenGLBuffer::StaticDraw);
     buf->setData(bufferBytes);
 
-    mesh->addAttribute(QStringLiteral("position"), QAbstractAttributePtr(new Attribute(buf, GL_FLOAT_VEC3, nVerts, 0, stride)));
+    mesh->addAttribute(QAbstractMeshData::defaultPositionAttributeName(), QAbstractAttributePtr(new Attribute(buf, GL_FLOAT_VEC3, nVerts, 0, stride)));
     quint32 offset = sizeof(float) * 3;
 
-    mesh->addAttribute(QStringLiteral("texcoord"), QAbstractAttributePtr(new Attribute(buf, GL_FLOAT_VEC2, nVerts, offset, stride)));
+    mesh->addAttribute(QAbstractMeshData::defaultTextureCoordinateAttributeName(), QAbstractAttributePtr(new Attribute(buf, GL_FLOAT_VEC2, nVerts, offset, stride)));
     offset += sizeof(float) * 2;
 
-    mesh->addAttribute(QStringLiteral("normal"), QAbstractAttributePtr(new Attribute(buf, GL_FLOAT_VEC3, nVerts, offset, stride)));
+    mesh->addAttribute(QAbstractMeshData::defaultNormalAttributeName(), QAbstractAttributePtr(new Attribute(buf, GL_FLOAT_VEC3, nVerts, offset, stride)));
     offset += sizeof(float) * 3;
 
     QByteArray indexBytes;
@@ -226,7 +226,7 @@ QAbstractMeshDataPtr QTorusMesh::createTorusMesh(double radius, double minorRadi
     indexBuffer->setData(indexBytes);
     mesh->setIndexAttribute(AttributePtr(new Attribute(indexBuffer, GL_UNSIGNED_SHORT, indices, 0, 0)));
 
-    mesh->computeBoundsFromAttribute(QStringLiteral("position"));
+    mesh->computeBoundsFromAttribute(QAbstractMeshData::defaultPositionAttributeName());
 
     return mesh;
 }
