@@ -19,6 +19,7 @@ HEADERS += \
     $$PWD/techniquecriterion.h \
     $$PWD/renderpasscriterion.h \
     $$PWD/qparameter.h \
+    $$PWD/qparameter_p.h \
     $$PWD/qparametermapper.h \
     $$PWD/qtorusmesh.h \
     $$PWD/qspheremesh.h \

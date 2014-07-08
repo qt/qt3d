@@ -42,69 +42,92 @@
 #include "qparameter.h"
 #include "renderlogging.h"
 #include <Qt3DCore/qscenepropertychange.h>
+#include <private/qparameter_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QParameter::QParameter(QNode *parent, const QString &name, const QVariant &value)
-    : QNode(parent)
-    , m_name(name)
-    , m_value(value)
+
+QParameterPrivate::QParameterPrivate(QParameter *qq)
+    : QNodePrivate(qq)
+    , m_type(QParameter::Undefined)
+{
+}
+
+QParameter::QParameter(QParameterPrivate &dd, QNode *parent)
+    : QNode(dd, parent)
+
 {
 }
 
 QParameter::QParameter(QNode *parent)
-    : QNode(parent)
-    , m_type(Undefined)
+    : QNode(*new QParameterPrivate(this), parent)
 {
 }
 
 QParameter::QParameter(QNode *parent, const QString &name, const QVariant &value, QParameter::OpenGLTypes ty)
-    : QNode(parent)
-    , m_name(name)
-    , m_type(ty)
-    , m_value(value)
+    : QNode(*new QParameterPrivate(this), parent)
 {
-
+    Q_D(QParameter);
+    d->m_name = name;
+    d->m_value = value;
+    d->m_type = ty;
 }
 
 void QParameter::setName(const QString &name)
 {
-    if (m_name != name) {
-        m_name = name;
+    Q_D(QParameter);
+    if (d->m_name != name) {
+        d->m_name = name;
         emit nameChanged();
     }
 }
 
+QString QParameter::name() const
+{
+    Q_D(const QParameter);
+    return d->m_name;
+}
+
 void QParameter::setValue(const QVariant &dv)
 {
-    if (m_value != dv) {
-        m_value = dv;
+    Q_D(QParameter);
+    if (d->m_value != dv) {
+        d->m_value = dv;
         emit valueChanged();
         QScenePropertyChangePtr change(new QScenePropertyChange(ComponentUpdated, this));
-        change->m_propertyName = m_name.toUtf8();
-        change->m_value = m_value;
+        change->m_propertyName = d->m_name.toUtf8();
+        change->m_value = d->m_value;
         notifyObservers(change);
     }
 }
 
 QVariant QParameter::value() const
 {
-    return m_value;
+    Q_D(const QParameter);
+    return d->m_value;
+}
+
+QParameter::OpenGLTypes QParameter::datatype() const
+{
+    Q_D(const QParameter);
+    return d->m_type;
 }
 
 void QParameter::setDatatype(OpenGLTypes type)
 {
-    if (m_type != type) {
-        m_type = type;
+    Q_D(QParameter);
+    if (d->m_type != type) {
+        d->m_type = type;
         emit datatypeChanged();
     }
 }
 
 bool QParameter::isTextureType() const
 {
-    switch (m_type) {
+    Q_D(const QParameter);
+    switch (d->m_type) {
     case Sampler1D:
     case Sampler2D:
     case Sampler3D:
@@ -117,7 +140,8 @@ bool QParameter::isTextureType() const
 
 Render::QUniformValue::Type QParameter::uniformType() const
 {
-    switch (m_type) {
+    Q_D(const QParameter);
+    switch (d->m_type) {
     case Bool:
     case BoolVec2:
     case BoolVec3:
@@ -141,7 +165,7 @@ Render::QUniformValue::Type QParameter::uniformType() const
         return Render::QUniformValue::Double;
 
     default:
-        qCWarning(Render::Backend) << Q_FUNC_INFO << "couldn't map datatype:" << QString::number(m_type, 16);
+        qCWarning(Render::Backend) << Q_FUNC_INFO << "couldn't map datatype:" << QString::number(d->m_type, 16);
         return Render::QUniformValue::Invalid;
     }
 }

@@ -39,95 +39,32 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QPARAMETER_H
-#define QT3D_QPARAMETER_H
+#ifndef QT3D_QPARAMETER_P_H
+#define QT3D_QPARAMETER_P_H
 
-#include <Qt3DCore/qnode.h>
-#include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/quniformvalue.h>
+#include <private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QParameterPrivate;
+class QParameter;
 
-class QT3DRENDERERSHARED_EXPORT QParameter : public QNode
+class QParameterPrivate : public QNodePrivate
 {
-    Q_OBJECT
-    Q_ENUMS(OpenGLTypes)
-    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
-    Q_PROPERTY(OpenGLTypes datatype READ datatype WRITE setDatatype NOTIFY datatypeChanged)
-    Q_PROPERTY(QVariant value READ value WRITE setValue NOTIFY valueChanged)
-
 public:
+    QParameterPrivate(QParameter *qq);
 
-    enum OpenGLTypes
-    {
-        Undefined = 0,
-        Sampler1D,
-        Sampler2D,
-        Sampler3D,
-        SamplerCube,
-        Bool,
-        BoolVec2,
-        BoolVec3,
-        BoolVec4,
-        Double,
-        DoubleVec2,
-        DoubleVec3,
-        DoubleVec4,
-        Float,
-        FloatVec2,
-        FloatVec3,
-        FloatVec4,
-        FloatMat2,
-        FloatMat3,
-        FloatMat4,
-        Int,
-        IntVec2,
-        IntVec3,
-        IntVec4
-    };
+    Q_DECLARE_PUBLIC(QParameter)
 
-    explicit QParameter(QNode *parent = 0);
-    QParameter(QNode* parent, const QString& name, const QVariant& value, OpenGLTypes ty = Undefined);
-
-    void setName(const QString &name);
-    QString name() const;
-
-    /**
-     * @brief setDefaultValue - for non-texture uniform parameters
-     * @param dv
-     */
-    void setValue(const QVariant& dv);
-    QVariant value() const;
-
-    OpenGLTypes datatype() const;
-    void setDatatype(OpenGLTypes type);
-
-    bool isTextureType() const;
-
-    /**
-     * @brief uniformType - map the data type to the primitive uniform type
-     * @return
-     */
-    Render::QUniformValue::Type uniformType() const;
-Q_SIGNALS:
-    void valueChanged();
-    void nameChanged();
-    void datatypeChanged();
-
-protected:
-    Q_DECLARE_PRIVATE(QParameter)
-    QParameter(QParameterPrivate &dd, QNode *parent = 0);
-
+    QString m_name;
+    QParameter::OpenGLTypes m_type;
+    QVariant m_value;
+    QString m_meshName;
 };
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3D::QParameter *)
-
-#endif // QT3D_PARAMETER_H
+#endif // QT3D_QPARAMETER_P_H
