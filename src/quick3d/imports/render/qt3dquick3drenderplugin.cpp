@@ -46,7 +46,7 @@
 #include <Qt3DRenderer/tag.h>
 #include <Qt3DRenderer/qmesh.h>
 #include <Qt3DRenderer/qrenderpass.h>
-#include <Qt3DRenderer/shaderprogram.h>
+#include <Qt3DRenderer/qshaderprogram.h>
 #include <Qt3DRenderer/qviewport.h>
 #include <Qt3DRenderer/qrenderpassfilter.h>
 #include <Qt3DRenderer/qtechniquefilter.h>
@@ -96,7 +96,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3D::QParameterMapper>(uri, 2, 0, "ParameterMapper");
     qmlRegisterExtendedType<Qt3D::QMaterial, Qt3D::Render::Quick::Quick3DMaterial>(uri, 2, 0, "Material");
     qmlRegisterExtendedType<Qt3D::QRenderPass, Qt3D::Render::Quick::Quick3DRenderPass>(uri, 2, 0, "RenderPass");
-    qmlRegisterType<Qt3D::ShaderProgram>(uri, 2, 0, "ShaderProgram");
+    qmlRegisterType<Qt3D::QShaderProgram>(uri, 2, 0, "ShaderProgram");
 
     qmlRegisterUncreatableType<Qt3D::QAbstractMesh>(uri, 2, 0, "QAbstractMesh", QStringLiteral("QAbstractMesh is abstract"));
     qmlRegisterType<Qt3D::QMesh>(uri, 2, 0, "Mesh");

@@ -506,7 +506,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
         RenderShader *shader = Q_NULLPTR;
         if ((shader = m_renderer->shaderManager()->data(command->m_shader)) == Q_NULLPTR) {
             shader = m_renderer->shaderManager()->getOrCreateResource(rPass->shaderProgram()->uuid());
-            shader->setPeer(qobject_cast<ShaderProgram*>(rPass->shaderProgram()));
+            shader->setPeer(qobject_cast<QShaderProgram*>(rPass->shaderProgram()));
             command->m_shader = m_renderer->shaderManager()->lookupHandle(rPass->shaderProgram()->uuid());
         }
         // TO DO : To be corrected later on

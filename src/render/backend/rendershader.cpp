@@ -45,7 +45,7 @@
 #include <QOpenGLContext>
 #include <QOpenGLShaderProgram>
 #include <Qt3DRenderer/QGraphicsContext>
-#include <shaderprogram.h>
+#include <qshaderprogram.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -58,7 +58,7 @@ RenderShader::RenderShader() :
 {
 }
 
-void RenderShader::setPeer(ShaderProgram *peer)
+void RenderShader::setPeer(QShaderProgram *peer)
 {
     Q_ASSERT(peer);
     m_peer = peer;

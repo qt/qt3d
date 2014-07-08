@@ -45,7 +45,7 @@
 #include <Qt3DCore/qabstractrenderpass.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
-#include <Qt3DRenderer/shaderprogram.h>
+#include <Qt3DRenderer/qshaderprogram.h>
 #include <Qt3DRenderer/drawstate.h>
 #include <Qt3DRenderer/renderpasscriterion.h>
 

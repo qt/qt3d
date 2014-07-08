@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "shaderprogram.h"
+#include "qshaderprogram.h"
 
 #include <QDebug>
 #include <QFile>
@@ -48,7 +48,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-ShaderProgram::ShaderProgram(QNode *parent)
+QShaderProgram::QShaderProgram(QNode *parent)
     : QAbstractShader(parent)
     , m_vertexSourceFile()
     , m_fragmentSourceFile()
@@ -56,7 +56,7 @@ ShaderProgram::ShaderProgram(QNode *parent)
 {
 }
 
-void ShaderProgram::setVertexSourceFile(const QString& vertexSourceFile)
+void QShaderProgram::setVertexSourceFile(const QString& vertexSourceFile)
 {
     if (vertexSourceFile != m_vertexSourceFile) {
         m_vertexSourceFile = vertexSourceFile;
@@ -65,12 +65,12 @@ void ShaderProgram::setVertexSourceFile(const QString& vertexSourceFile)
     }
 }
 
-QString ShaderProgram::vertexSourceFile() const
+QString QShaderProgram::vertexSourceFile() const
 {
     return m_vertexSourceFile;
 }
 
-void ShaderProgram::setFragmentSourceFile(const QString& fragmentSourceFile)
+void QShaderProgram::setFragmentSourceFile(const QString& fragmentSourceFile)
 {
     if (fragmentSourceFile != m_fragmentSourceFile) {
         m_fragmentSourceFile = fragmentSourceFile;
@@ -79,7 +79,7 @@ void ShaderProgram::setFragmentSourceFile(const QString& fragmentSourceFile)
     }
 }
 
-QString ShaderProgram::fragmentSourceFile() const
+QString QShaderProgram::fragmentSourceFile() const
 {
     return m_fragmentSourceFile;
 }
@@ -89,7 +89,7 @@ QString ShaderProgram::fragmentSourceFile() const
  * Note that if vertexSourceFile is set, when load is called,
  * the shader code will be replaced by the shader located at vertexSourceFile.
  */
-void ShaderProgram::setVertexShader(const QByteArray &vertexShader)
+void QShaderProgram::setVertexShader(const QByteArray &vertexShader)
 {
     if (vertexShader != m_cachedVertexCode) {
         m_cachedVertexCode = vertexShader;
@@ -103,7 +103,7 @@ void ShaderProgram::setVertexShader(const QByteArray &vertexShader)
  * Note that if a fragmentSourceFile is set, when load is called,
  * the shader code will be replaced by the shader located at fragmentSourceFile.
  */
-void ShaderProgram::setFragmentShader(const QByteArray &fragmentShader)
+void QShaderProgram::setFragmentShader(const QByteArray &fragmentShader)
 {
     if (fragmentShader != m_cachedFragmentCode) {
         m_cachedFragmentCode = fragmentShader;
@@ -112,7 +112,7 @@ void ShaderProgram::setFragmentShader(const QByteArray &fragmentShader)
     }
 }
 
-QByteArray ShaderProgram::vertexSourceCode() const
+QByteArray QShaderProgram::vertexSourceCode() const
 {
     if (!isLoaded() && m_cachedVertexCode.isEmpty())
         return QByteArray();
@@ -120,7 +120,7 @@ QByteArray ShaderProgram::vertexSourceCode() const
     return m_cachedVertexCode;
 }
 
-QByteArray ShaderProgram::fragmentSourceCode() const
+QByteArray QShaderProgram::fragmentSourceCode() const
 {
     if (!isLoaded() && m_cachedFragmentCode.isEmpty())
         return QByteArray();
@@ -128,12 +128,12 @@ QByteArray ShaderProgram::fragmentSourceCode() const
     return m_cachedFragmentCode;
 }
 
-bool ShaderProgram::isLoaded() const
+bool QShaderProgram::isLoaded() const
 {
     return m_isLoaded;
 }
 
-void ShaderProgram::load()
+void QShaderProgram::load()
 {
     if (m_isLoaded)
         return;

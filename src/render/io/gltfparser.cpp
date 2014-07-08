@@ -48,7 +48,7 @@
 #include <qmesh.h>
 #include <qmaterial.h>
 #include <qtechnique.h>
-#include <shaderprogram.h>
+#include <qshaderprogram.h>
 #include <qeffect.h>
 #include <Qt3DCore/qcamera.h>
 #include <Qt3DCore/qtransform.h>
@@ -695,7 +695,7 @@ void GLTFParser::processName(const QJsonObject &json, QObject *ins)
 
 void GLTFParser::processJSONProgram( QString id, QJsonObject jsonObj)
 {
-    ShaderProgram* prog = new ShaderProgram;
+    QShaderProgram* prog = new QShaderProgram;
     prog->setObjectName(id);
 
     QString fragName = jsonObj.value(KEY_FRAGMENT_SHADER).toString(),

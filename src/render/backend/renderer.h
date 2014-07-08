@@ -68,7 +68,7 @@ namespace Qt3D {
 class QCamera;
 class QEntity;
 class QMaterial;
-class ShaderProgram;
+class QShaderProgram;
 class QMesh;
 class QRenderPass;
 class QAbstractShapeMesh;
@@ -184,10 +184,10 @@ private:
 
     QHash<QMaterial*, RenderMaterial*> m_materialHash;
     QHash<QTechnique *, RenderTechnique*> m_techniqueHash;
-    QHash<ShaderProgram*, RenderShader*> m_shaderHash;
+    QHash<QShaderProgram*, RenderShader*> m_shaderHash;
 
     RenderTechnique *createTechnique(QTechnique *tech);
-    RenderShader *getOrCreateShader(ShaderProgram *sp);
+    RenderShader *getOrCreateShader(QShaderProgram *sp);
     RenderMaterial *getOrCreateMaterial(QMaterial *mat);
 
     QMaterial* m_defaultMaterial;

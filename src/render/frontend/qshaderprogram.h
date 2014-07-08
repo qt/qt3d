@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_SHADERPROGRAM_H
-#define QT3D_SHADERPROGRAM_H
+#ifndef QT3D_QSHADERPROGRAM_H
+#define QT3D_QSHADERPROGRAM_H
 
 #include <QUuid>
 #include <Qt3DCore/qabstractshader.h>
@@ -50,7 +50,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DRENDERERSHARED_EXPORT ShaderProgram : public QAbstractShader
+class QT3DRENDERERSHARED_EXPORT QShaderProgram : public QAbstractShader
 {
     Q_OBJECT
     Q_PROPERTY(QString vertexSourceFile READ vertexSourceFile WRITE setVertexSourceFile NOTIFY vertexSourceFileChanged)
@@ -59,7 +59,7 @@ class QT3DRENDERERSHARED_EXPORT ShaderProgram : public QAbstractShader
     Q_PROPERTY(QByteArray fragmentShader READ fragmentSourceCode WRITE setFragmentShader NOTIFY fragmentShaderChanged)
 
 public:
-    explicit ShaderProgram(QNode *parent = 0);
+    explicit QShaderProgram(QNode *parent = 0);
 
     void setVertexSourceFile(const QString &vertexSourceFile);
     QString vertexSourceFile() const;
@@ -100,4 +100,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_SHADERPROGRAM_H
+#endif // QT3D_QSHADERPROGRAM_H

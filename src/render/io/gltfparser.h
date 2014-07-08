@@ -61,7 +61,7 @@ class QFile;
 namespace Qt3D {
 
 class QMaterial;
-class ShaderProgram;
+class QShaderProgram;
 class QEffect;
 class QCamera;
 class QCameraLens;
@@ -149,7 +149,7 @@ private:
     QMap<QString, BufferPtr> m_buffers;
 
     QMap<QString, QString> m_shaderPaths;
-    QMap<QString, ShaderProgram*> m_programs;
+    QMap<QString, QShaderProgram*> m_programs;
 
     QMap<QString, QTechnique *> m_techniques;
     // glTF doesn't deal in effects, but we need a trivial one to wrap

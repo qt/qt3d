@@ -54,7 +54,7 @@ class QOpenGLShaderProgram;
 
 namespace Qt3D {
 
-class ShaderProgram;
+class QShaderProgram;
 
 namespace Render {
 
@@ -63,7 +63,7 @@ class RenderShader
 public:
     RenderShader();
 
-    void setPeer(ShaderProgram* peer);
+    void setPeer(QShaderProgram* peer);
 
     QString name() const;
     void updateUniforms(const QUniformPack &pack);
@@ -73,7 +73,7 @@ public:
 
 private:
     QOpenGLShaderProgram* m_program;
-    ShaderProgram* m_peer;
+    QShaderProgram* m_peer;
 
     QOpenGLShaderProgram *createProgram();
     QOpenGLShaderProgram *createDefaultProgram();

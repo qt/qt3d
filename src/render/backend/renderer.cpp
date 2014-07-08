@@ -55,7 +55,7 @@
 #include <qmaterial.h>
 #include <qmesh.h>
 #include <qtechnique.h>
-#include <shaderprogram.h>
+#include <qshaderprogram.h>
 #include <qrenderpass.h>
 #include <qabstractshapemesh.h>
 #include <cameramanager.h>
@@ -153,7 +153,7 @@ void Renderer::buildDefaultTechnique()
     m_defaultTechnique = new QTechnique;
     m_defaultTechnique->setObjectName(QStringLiteral("default-technique"));
 
-    ShaderProgram* defaultShader = new ShaderProgram;
+    QShaderProgram* defaultShader = new QShaderProgram;
     defaultShader->setVertexSourceFile(QStringLiteral(":/shaders/diffuse.vert"));
     defaultShader->setFragmentSourceFile(QStringLiteral(":/shaders/diffuse.frag"));
     defaultShader->setObjectName(QStringLiteral("DefaultShader"));
