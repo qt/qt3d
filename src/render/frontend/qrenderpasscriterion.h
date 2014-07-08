@@ -72,7 +72,6 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QRenderPassCriterion)
-    QRenderPassCriterionPrivate *d_ptr;
 };
 
 } // Qt3D

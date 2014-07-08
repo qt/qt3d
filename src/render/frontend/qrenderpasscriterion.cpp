@@ -40,27 +40,28 @@
 ****************************************************************************/
 
 #include "qrenderpasscriterion.h"
+#include <private/qobject_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QRenderPassCriterionPrivate
+class QRenderPassCriterionPrivate : public QObjectPrivate
 {
 public :
     QRenderPassCriterionPrivate(QRenderPassCriterion *qq)
-        : q_ptr(qq)
-    {}
+        : QObjectPrivate()
+    {
+        q_ptr = qq;
+    }
 
     Q_DECLARE_PUBLIC(QRenderPassCriterion)
-    QRenderPassCriterion *q_ptr;
     QString m_type;
     QVariant m_value;
 };
 
 QRenderPassCriterion::QRenderPassCriterion(QObject *parent)
-    : QObject(parent)
-    , d_ptr(new QRenderPassCriterionPrivate(this))
+    : QObject(*new QRenderPassCriterionPrivate(this), parent)
 {
 }
 
