@@ -49,7 +49,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class Camera;
+class QCamera;
 class QCameraSelectorPrivate;
 
 class QT3DRENDERERSHARED_EXPORT QCameraSelector : public QFrameGraphItem

@@ -42,7 +42,7 @@
 #include <QtQml>
 #include "qt3dquick3dcoreplugin.h"
 #include <Qt3DCore/qcameralens.h>
-#include <Qt3DCore/camera.h>
+#include <Qt3DCore/qcamera.h>
 #include <Qt3DCore/qscaletransform.h>
 #include <Qt3DCore/qlookattransform.h>
 #include <Qt3DCore/qmatrixtransform.h>
@@ -77,7 +77,7 @@ void Qt3DQuick3DCorePlugin::registerTypes(const char *uri)
     // Ideally we want to make Node an uncreatable type
     // We would need qmlRegisterUncreatableExtendedType for that
     qmlRegisterExtendedType<Qt3D::QNode, Qt3D::Quick::Quick3DNode>(uri, 2, 0, "Node");
-    qmlRegisterExtendedType<Qt3D::Camera, Qt3D::Quick::Quick3DNode>(uri, 2, 0, "Camera");
+    qmlRegisterExtendedType<Qt3D::QCamera, Qt3D::Quick::Quick3DNode>(uri, 2, 0, "Camera");
     qmlRegisterType<Qt3D::QCameraLens>(uri, 2, 0, "CameraLens");
 
     qmlRegisterType<Qt3D::QMatrixTransform>(uri, 2, 0, "MatrixTransform");

@@ -1,6 +1,6 @@
 HEADERS += \
-        $$PWD/camera_p.h \
-        $$PWD/camera.h \
+        $$PWD/qcamera_p.h \
+        $$PWD/qcamera.h \
         $$PWD/qcameralens.h \
         $$PWD/qcameralens_p.h \
         $$PWD/qabstractmaterial.h \
@@ -16,7 +16,7 @@ HEADERS += \
         $$PWD/qabstractrenderpass_p.h
 
 SOURCES += \
-        $$PWD/camera.cpp \
+        $$PWD/qcamera.cpp \
         $$PWD/qcameralens.cpp \
         $$PWD/qabstractmaterial.cpp \
         $$PWD/qabstractmesh.cpp \

@@ -49,25 +49,25 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class Camera;
+class QCamera;
 
 namespace Quick {
 
 class QT3DQUICKSHARED_EXPORT Quick3DConfiguration : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3D::Camera *controlledCamera READ controlledCamera WRITE setControlledCamera NOTIFY controlledCameraChanged)
+    Q_PROPERTY(Qt3D::QCamera *controlledCamera READ controlledCamera WRITE setControlledCamera NOTIFY controlledCameraChanged)
 public:
     explicit Quick3DConfiguration(QObject *parent = 0);
 
-    void setControlledCamera(Camera *camera);
-    Camera *controlledCamera() const;
+    void setControlledCamera(QCamera *camera);
+    QCamera *controlledCamera() const;
 
 Q_SIGNALS:
     void controlledCameraChanged();
 
 private:
-    Camera *m_camera;
+    QCamera *m_camera;
 };
 
 } // Quick

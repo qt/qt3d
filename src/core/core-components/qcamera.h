@@ -53,18 +53,18 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class CameraPrivate;
+class QCameraPrivate;
 class QCameraLens;
 class QTransform;
 
-class QT3DCORESHARED_EXPORT Camera : public QEntity
+class QT3DCORESHARED_EXPORT QCamera : public QEntity
 {
     Q_OBJECT
     Q_PROPERTY(Qt3D::QCameraLens *lens READ lens WRITE setLens NOTIFY lensChanged)
     Q_PROPERTY(Qt3D::QTransform *transform READ transform WRITE setTransform NOTIFY transformChanged)
 
 public:
-    explicit Camera(QNode *parent = 0);
+    explicit QCamera(QNode *parent = 0);
 
 
     enum CameraTranslationOption {
@@ -106,10 +106,10 @@ Q_SIGNALS:
     void transformChanged();
 
 protected:
-    Q_DECLARE_PRIVATE(Camera)
+    Q_DECLARE_PRIVATE(QCamera)
 
 private:
-    CameraPrivate* d_ptr;
+    QCameraPrivate* d_ptr;
 };
 
 } // namespace Qt3D

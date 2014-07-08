@@ -44,7 +44,7 @@
 #include <QMouseEvent>
 #include <QKeyEvent>
 
-#include <camera.h>
+#include <qcamera.h>
 #include <qcameralens.h>
 #include <qentity.h>
 #include <qmatrixtransform.h>
@@ -79,7 +79,7 @@ CameraController::CameraController() :
  * an Entity, a CameraLens and a Transform instead of using the
  * ready made Camera element, it won't work.
  */
-void CameraController::setCamera( Camera* cam )
+void CameraController::setCamera( QCamera* cam )
 {
     m_camera = cam;
     m_camera->lens()->setPerspectiveProjection( 25.0, 1.0, 0.1, 1000 );
@@ -137,9 +137,9 @@ void CameraController::update(double dt)
         dt *= 10;
 
     // Update the camera position and orientation
-    Camera::CameraTranslationOption option = m_viewCenterFixed
-                                               ? Camera::DontTranslateViewCenter
-                                               : Camera::TranslateViewCenter;
+    QCamera::CameraTranslationOption option = m_viewCenterFixed
+                                               ? QCamera::DontTranslateViewCenter
+                                               : QCamera::TranslateViewCenter;
     m_camera->translate(dt * QVector3D(m_vx, m_vy, m_vz), option);
 
     if (!qFuzzyIsNull(m_panAngle)) {

@@ -65,7 +65,7 @@ class QSurface;
 
 namespace Qt3D {
 
-class Camera;
+class QCamera;
 class QEntity;
 class QMaterial;
 class ShaderProgram;

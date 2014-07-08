@@ -63,7 +63,7 @@ namespace Qt3D {
 class QMaterial;
 class ShaderProgram;
 class QEffect;
-class Camera;
+class QCamera;
 class QCameraLens;
 class Texture;
 

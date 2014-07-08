@@ -50,7 +50,7 @@
 #include <qtechnique.h>
 #include <shaderprogram.h>
 #include <qeffect.h>
-#include <Qt3DCore/camera.h>
+#include <Qt3DCore/qcamera.h>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/qmatrixtransform.h>
 #include <Qt3DCore/qcameralens.h>

@@ -56,7 +56,7 @@ class QKeyEvent;
 namespace Qt3D
 {
 
-class Camera;
+class QCamera;
 class QEntity;
 
 class QT3DCORESHARED_EXPORT CameraController : public QObject
@@ -71,7 +71,7 @@ class QT3DCORESHARED_EXPORT CameraController : public QObject
 public:
     CameraController();
 
-    void setCamera( Camera* cam );
+    void setCamera( QCamera* cam );
     void setLinearSpeed( float speed );
     float linearSpeed() const;
 
@@ -106,7 +106,7 @@ Q_SIGNALS:
     void multisampleEnabledChanged();
 private:
 
-    Camera* m_camera;
+    QCamera* m_camera;
     QEntity* m_cameraEntity;
 
     float m_vx;

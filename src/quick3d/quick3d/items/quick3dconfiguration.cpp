@@ -55,7 +55,7 @@ Quick3DConfiguration::Quick3DConfiguration(QObject *parent)
 {
 }
 
-void Quick3DConfiguration::setControlledCamera(Camera *camera)
+void Quick3DConfiguration::setControlledCamera(QCamera *camera)
 {
     if (m_camera != camera) {
         m_camera = camera;
@@ -64,7 +64,7 @@ void Quick3DConfiguration::setControlledCamera(Camera *camera)
     }
 }
 
-Camera *Quick3DConfiguration::controlledCamera() const
+QCamera *Quick3DConfiguration::controlledCamera() const
 {
     return m_camera;
 }

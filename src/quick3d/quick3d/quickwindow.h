@@ -70,7 +70,7 @@ public:
     Status status() const;
     void setSource(const QUrl& url);
 
-    void setCamera(Camera *camera);
+    void setCamera(QCamera *camera);
     static QuickWindow *getInstance();
 
     QQmlEngine *engine() const;

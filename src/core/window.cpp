@@ -47,7 +47,7 @@
 #include <QGuiApplication>
 
 #include "qnode.h"
-#include "camera.h"
+#include "qcamera.h"
 #include "qentity.h"
 #include "corelogging.h"
 #include "qaspectengine.h"
@@ -134,7 +134,7 @@ void Window::resizeEvent( QResizeEvent* e )
 
 }
 
-void Window::setCamera(Camera *camera)
+void Window::setCamera(QCamera *camera)
 {
     m_camera = camera;
 }

@@ -64,7 +64,7 @@ namespace Qt3D {
 class QMaterial;
 class ShaderProgram;
 class QEffect;
-class Camera;
+class QCamera;
 class Texture;
 class QMesh;
 
@@ -86,7 +86,7 @@ public:
     QEntity *defaultScene();
     MeshDataPtr mesh(QString id);
     QMaterial *material(QString id);
-    Camera *camera(QString id);
+    QCamera *camera(QString id);
 
 private :
 

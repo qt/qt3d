@@ -42,7 +42,7 @@
 #include <QGuiApplication>
 
 #include <Qt3DCore/window.h>
-#include <Qt3DCore/camera.h>
+#include <Qt3DCore/qcamera.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qcameralens.h>
 
@@ -78,7 +78,7 @@ int main(int argc, char **argv)
     Qt3D::QEntity *rootEntity = new Qt3D::QEntity();
 
     // Camera
-    Qt3D::Camera *cameraEntity = new Qt3D::Camera();
+    Qt3D::QCamera *cameraEntity = new Qt3D::QCamera();
     cameraEntity->setObjectName(QStringLiteral("cameraEntity"));
     Qt3D::QCameraLens *cameraLens = new Qt3D::QCameraLens();
     Qt3D::QTransform *cameraTransform = new Qt3D::QTransform();

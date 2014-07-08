@@ -53,18 +53,18 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DCORESHARED_EXPORT CameraPrivate
+class QT3DCORESHARED_EXPORT QCameraPrivate
 {
 public:
-    CameraPrivate(Camera *qq)
+    QCameraPrivate(QCamera *qq)
         : q_ptr(qq),
           m_lens(Q_NULLPTR),
           m_transform(Q_NULLPTR)
     {
     }
 
-    Q_DECLARE_PUBLIC(Camera)
-    Camera *q_ptr;
+    Q_DECLARE_PUBLIC(QCamera)
+    QCamera *q_ptr;
 
     QCameraLens *m_lens;
     QTransform *m_transform;

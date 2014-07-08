@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#include "camera.h"
-#include "camera_p.h"
+#include "qcamera.h"
+#include "qcamera_p.h"
 #include "qcameralens.h"
 #include <qtransform.h>
 #include <qlookattransform.h>
@@ -49,21 +49,21 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-Camera::Camera(QNode *parent) : QEntity(parent)
-  , d_ptr(new CameraPrivate(this))
+QCamera::QCamera(QNode *parent) : QEntity(parent)
+  , d_ptr(new QCameraPrivate(this))
 {
     qDebug() << Q_FUNC_INFO;
 }
 
-QCameraLens *Camera::lens() const
+QCameraLens *QCamera::lens() const
 {
-    Q_D(const Camera);
+    Q_D(const QCamera);
     return d->m_lens;
 }
 
-void Camera::setLens(QCameraLens *lens)
+void QCamera::setLens(QCameraLens *lens)
 {
-    Q_D(Camera);
+    Q_D(QCamera);
     if (d->m_lens != lens) {
         if (d->m_lens)
             removeComponent(d->m_lens);
@@ -74,15 +74,15 @@ void Camera::setLens(QCameraLens *lens)
     }
 }
 
-QTransform *Camera::transform() const
+QTransform *QCamera::transform() const
 {
-    Q_D(const Camera);
+    Q_D(const QCamera);
     return d->m_transform;
 }
 
-void Camera::setTransform(QTransform *transform)
+void QCamera::setTransform(QTransform *transform)
 {
-    Q_D(Camera);
+    Q_D(QCamera);
     if (d->m_transform != transform) {
         if (d->m_transform)
             removeComponent(d->m_transform);
@@ -93,9 +93,9 @@ void Camera::setTransform(QTransform *transform)
     }
 }
 
-void Camera::translate( const QVector3D& vLocal, CameraTranslationOption option )
+void QCamera::translate( const QVector3D& vLocal, CameraTranslationOption option )
 {
-    Q_D(Camera);
+    Q_D(QCamera);
     QLookAtTransform *lookAt = d->m_transform->findFirstTransform<QLookAtTransform>();
     if (lookAt == Q_NULLPTR)
         return;
@@ -135,9 +135,9 @@ void Camera::translate( const QVector3D& vLocal, CameraTranslationOption option 
     lookAt->setUpVector(QVector3D::crossProduct( x, lookAt->viewVector() ).normalized());
 }
 
-void Camera::translateWorld(const QVector3D& vWorld , CameraTranslationOption option )
+void QCamera::translateWorld(const QVector3D& vWorld , CameraTranslationOption option )
 {
-    Q_D(Camera);
+    Q_D(QCamera);
     QLookAtTransform *lookAt = d->m_transform->findFirstTransform<QLookAtTransform>();
     if (lookAt == Q_NULLPTR)
         return ;
@@ -153,9 +153,9 @@ void Camera::translateWorld(const QVector3D& vWorld , CameraTranslationOption op
     lookAt->setViewVector(lookAt->viewCenter() - lookAt->position());
 }
 
-QQuaternion Camera::tiltRotation(float angle) const
+QQuaternion QCamera::tiltRotation(float angle) const
 {
-    Q_D(const Camera);
+    Q_D(const QCamera);
     QLookAtTransform *lookAt = d->m_transform->findFirstTransform<QLookAtTransform>();
     if (lookAt == Q_NULLPTR)
         return QQuaternion();
@@ -164,63 +164,63 @@ QQuaternion Camera::tiltRotation(float angle) const
     return QQuaternion::fromAxisAndAngle( xBasis, -angle );
 }
 
-QQuaternion Camera::panRotation(float angle) const
+QQuaternion QCamera::panRotation(float angle) const
 {
-    Q_D(const Camera);
+    Q_D(const QCamera);
     QLookAtTransform *lookAt = d->m_transform->findFirstTransform<QLookAtTransform>();
     if (lookAt == Q_NULLPTR)
         return QQuaternion();
     return QQuaternion::fromAxisAndAngle( lookAt->upVector(), angle );
 }
 
-QQuaternion Camera::rollRotation(float angle) const
+QQuaternion QCamera::rollRotation(float angle) const
 {
-    Q_D(const Camera);
+    Q_D(const QCamera);
     QLookAtTransform *lookAt = d->m_transform->findFirstTransform<QLookAtTransform>();
     if (lookAt == Q_NULLPTR)
         return QQuaternion();
     return QQuaternion::fromAxisAndAngle( lookAt->viewVector(), -angle );
 }
 
-void Camera::tilt( const float& angle )
+void QCamera::tilt( const float& angle )
 {
     QQuaternion q = tiltRotation( angle );
     rotate( q );
 }
 
-void Camera::pan( const float& angle )
+void QCamera::pan( const float& angle )
 {
     QQuaternion q = panRotation( -angle );
     rotate( q );
 }
 
-void Camera::roll( const float& angle )
+void QCamera::roll( const float& angle )
 {
     QQuaternion q = rollRotation( -angle );
     rotate( q );
 }
 
-void Camera::tiltAboutViewCenter( const float& angle )
+void QCamera::tiltAboutViewCenter( const float& angle )
 {
     QQuaternion q = tiltRotation( -angle );
     rotateAboutViewCenter( q );
 }
 
-void Camera::panAboutViewCenter( const float& angle )
+void QCamera::panAboutViewCenter( const float& angle )
 {
     QQuaternion q = panRotation( angle );
     rotateAboutViewCenter( q );
 }
 
-void Camera::rollAboutViewCenter( const float& angle )
+void QCamera::rollAboutViewCenter( const float& angle )
 {
     QQuaternion q = rollRotation( angle );
     rotateAboutViewCenter( q );
 }
 
-void Camera::rotate( const QQuaternion& q )
+void QCamera::rotate( const QQuaternion& q )
 {
-    Q_D(Camera);
+    Q_D(QCamera);
     QLookAtTransform *lookAt = d->m_transform->findFirstTransform<QLookAtTransform>();
     if (lookAt == Q_NULLPTR)
         return ;
@@ -229,9 +229,9 @@ void Camera::rotate( const QQuaternion& q )
     lookAt->setViewCenter(lookAt->position() + cameraToCenter);
 }
 
-void Camera::rotateAboutViewCenter( const QQuaternion& q )
+void QCamera::rotateAboutViewCenter( const QQuaternion& q )
 {
-    Q_D(Camera);
+    Q_D(QCamera);
     QLookAtTransform *lookAt = d->m_transform->findFirstTransform<QLookAtTransform>();
     if (lookAt == Q_NULLPTR)
         return ;

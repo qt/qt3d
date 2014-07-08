@@ -53,7 +53,7 @@ namespace Qt3D {
 
 class QAbstractAspect;
 class QAspectEngine;
-class Camera;
+class QCamera;
 
 // temporary solution to get control over camera
 class CameraController;
@@ -69,7 +69,7 @@ public:
 
     QSharedPointer<QObject> rootObject() { return m_root; }
     void    registerAspect(QAbstractAspect *aspect);
-    virtual void    setCamera(Camera *camera);
+    virtual void    setCamera(QCamera *camera);
 
 protected:
     virtual void keyPressEvent(QKeyEvent *e);
@@ -90,7 +90,7 @@ protected:
     // The various aspects (subsystems) that will be interested in (parts)
     // of the objects in the object tree.
     QAspectEngine *m_aspectEngine;
-    Camera* m_camera;
+    QCamera* m_camera;
 
     // temporary, borrowed from training material
     CameraController* m_controller;

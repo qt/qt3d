@@ -74,7 +74,7 @@
 #include <layerfilternode.h>
 
 
-#include <Qt3DCore/camera.h>
+#include <Qt3DCore/qcamera.h>
 #include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/qentity.h>

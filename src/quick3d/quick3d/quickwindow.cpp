@@ -108,7 +108,7 @@ void QuickWindow::setSource(const QUrl& source)
     }
 }
 
-void QuickWindow::setCamera(Camera *camera)
+void QuickWindow::setCamera(QCamera *camera)
 {
     Window::setCamera(camera);
     if (m_camera) {
