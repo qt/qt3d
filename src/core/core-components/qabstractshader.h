@@ -60,9 +60,9 @@ public:
 
     QUuid uuid() const;
 
-private:
+protected:
     Q_DECLARE_PRIVATE(QAbstractShader)
-    QAbstractShaderPrivate *d_ptr;
+    QAbstractShader(QAbstractShaderPrivate &dd, QNode *parent = 0);
 };
 
 } // Qt3D

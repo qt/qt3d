@@ -39,48 +39,27 @@
 **
 ****************************************************************************/
 
-#include "qabstractshader.h"
-#include "qabstractshader_p.h"
+#ifndef QT3D_QABSTRACTSHADER_P_H
+#define QT3D_QABSTRACTSHADER_P_H
 
-/*!
- * \class QAbstractShader
- *
- * \namespace Qt3D
- * \inherits Node
- *
- * \brief QAbstractShader is the base class of all Shader element classes.
- *
- */
+#include <private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QAbstractShaderPrivate::QAbstractShaderPrivate(QAbstractShader *qq)
-    : QNodePrivate(qq)
+class QT3DCORESHARED_EXPORT QAbstractShaderPrivate : public QNodePrivate
 {
-    m_uuid = QUuid::createUuid();
-}
+public:
+    QAbstractShaderPrivate(QAbstractShader *qq);
 
-QAbstractShader::QAbstractShader(QNode *parent)
-    : QNode(*new QAbstractShaderPrivate(this), parent)
-{
-}
-
-QAbstractShader::QAbstractShader(QAbstractShaderPrivate &dd, QNode *parent)
-    : QNode(dd, parent)
-{
-}
-
-/*!
- * Returns the uuid that uniquely identifies the shader.
- */
-QUuid QAbstractShader::uuid() const
-{
-    Q_D(const QAbstractShader);
-    return d->m_uuid;
-}
+    QUuid m_uuid;
+    Q_DECLARE_PUBLIC(QAbstractShader)
+};
 
 } // Qt3D
 
 QT_END_NAMESPACE
+
+
+#endif // QT3D_QABSTRACTSHADER_P_H
