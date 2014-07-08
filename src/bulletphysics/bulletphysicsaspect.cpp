@@ -46,7 +46,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 BulletPhysicsAspect::BulletPhysicsAspect(QObject *parent)
-    : AbstractAspect(AbstractAspect::AspectAudio, parent)
+    : QAbstractAspect(QAbstractAspect::AspectAudio, parent)
 {
 }
 

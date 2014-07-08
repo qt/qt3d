@@ -54,7 +54,7 @@ class QWindow;
 
 namespace Qt3D {
 
-class AbstractAspect;
+class QAbstractAspect;
 class QAspectThread;
 
 class QT3DCORESHARED_EXPORT QAspectEngine : public QObject
@@ -68,7 +68,7 @@ public:
 
     void setRoot(QObject *rootObject);
     void setWindow(QWindow *window);
-    void registerAspect(AbstractAspect *aspect);
+    void registerAspect(QAbstractAspect *aspect);
 private:
     QAspectThread *m_aspectThread;
     QMutex m_mutex;

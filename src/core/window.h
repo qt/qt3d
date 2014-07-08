@@ -51,7 +51,7 @@ class QTimer;
 
 namespace Qt3D {
 
-class AbstractAspect;
+class QAbstractAspect;
 class QAspectEngine;
 class Camera;
 
@@ -68,7 +68,7 @@ public:
     void setRootObject( QObject* obj );
 
     QSharedPointer<QObject> rootObject() { return m_root; }
-    void    registerAspect(AbstractAspect *aspect);
+    void    registerAspect(QAbstractAspect *aspect);
     virtual void    setCamera(Camera *camera);
 
 protected:

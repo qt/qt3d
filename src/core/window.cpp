@@ -93,7 +93,7 @@ Window::~Window()
 /*!
  * Registers an Aspect module to the AspectEngine;
  */
-void Window::registerAspect(AbstractAspect *aspect)
+void Window::registerAspect(QAbstractAspect *aspect)
 {
     m_aspectEngine->registerAspect(aspect);
 }

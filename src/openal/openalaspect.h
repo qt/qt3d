@@ -43,13 +43,13 @@
 #define QT3D_OPENALASPECT_H
 
 #include <Qt3DOpenAL/qt3dopenal_global.h>
-#include <Qt3DCore/abstractaspect.h>
+#include <Qt3DCore/qabstractaspect.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DOPENALSHARED_EXPORT OpenALAspect : public AbstractAspect
+class QT3DOPENALSHARED_EXPORT OpenALAspect : public QAbstractAspect
 {
     Q_OBJECT
 public:

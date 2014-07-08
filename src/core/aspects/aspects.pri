@@ -1,13 +1,13 @@
 
 SOURCES += \
-        $$PWD/abstractaspect.cpp \
+        $$PWD/qabstractaspect.cpp \
         $$PWD/qaspectengine.cpp \
         $$PWD/qaspectmanager.cpp \
         $$PWD/qaspectscheduler.cpp \
         $$PWD/qaspectthread.cpp
 
 HEADERS += \
-        $$PWD/abstractaspect.h \
+        $$PWD/qabstractaspect.h \
         $$PWD/qaspectengine.h \
         $$PWD/qaspectmanager.h \
         $$PWD/qaspectscheduler.h \

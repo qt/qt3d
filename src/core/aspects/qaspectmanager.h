@@ -53,7 +53,7 @@ class QWindow;
 
 namespace Qt3D {
 
-class AbstractAspect;
+class QAbstractAspect;
 class QNode;
 class QChangeArbiter;
 class QJobManagerInterface;
@@ -77,12 +77,12 @@ public slots:
 
     void exec();
 
-    const QList<AbstractAspect *> &aspects() const { return m_aspects; }
+    const QList<QAbstractAspect *> &aspects() const { return m_aspects; }
     QJobManagerInterface *jobManager() const { return m_jobManager; }
     QChangeArbiter *changeArbiter() const { return m_changeArbiter; }
 
 private:
-    QList<AbstractAspect *> m_aspects;
+    QList<QAbstractAspect *> m_aspects;
     QEntity *m_root;
     QWindow *m_window;
     QScheduler *m_scheduler;

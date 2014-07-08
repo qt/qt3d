@@ -43,13 +43,13 @@
 #define QT3D_BULLETPHYSICSASPECT_H
 
 #include <Qt3DBulletPhysics/qt3dbulletphysics_global.h>
-#include <Qt3DCore/abstractaspect.h>
+#include <Qt3DCore/qabstractaspect.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DBULLETPHYSICSSHARED_EXPORT BulletPhysicsAspect : public AbstractAspect
+class QT3DBULLETPHYSICSSHARED_EXPORT BulletPhysicsAspect : public QAbstractAspect
 {
     Q_OBJECT
 public:

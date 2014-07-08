@@ -39,11 +39,11 @@
 **
 ****************************************************************************/
 
-#ifndef RENDERERASPECT_H
-#define RENDERERASPECT_H
+#ifndef QT3D_RENDERERASPECT_H
+#define QT3D_RENDERERASPECT_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DCore/abstractaspect.h>
+#include <Qt3DCore/qabstractaspect.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -55,7 +55,7 @@ class QWindow;
 
 namespace Qt3D {
 
-class QT3DRENDERERSHARED_EXPORT RendererAspect : public AbstractAspect
+class QT3DRENDERERSHARED_EXPORT RendererAspect : public QAbstractAspect
 {
     Q_OBJECT
 public:
@@ -78,4 +78,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // RENDERERASPECT_H
+#endif // QT3D_RENDERERASPECT_H

@@ -61,7 +61,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 RendererAspect::RendererAspect(QObject *parent)
-    : AbstractAspect(AbstractAspect::AspectRenderer, parent)
+    : QAbstractAspect(QAbstractAspect::AspectRenderer, parent)
     , m_renderThread(new RenderThread)
 {
     qRegisterMetaType<QSurface*>("QSurface*");

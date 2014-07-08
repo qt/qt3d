@@ -41,7 +41,7 @@
 
 #include "qaspectmanager.h"
 
-#include "abstractaspect.h"
+#include "qabstractaspect.h"
 #include "qchangearbiter.h"
 // TODO Make the kind of job manager configurable (e.g. ThreadWeaver vs Intel TBB)
 #include "qjobmanager.h"
@@ -101,11 +101,11 @@ void QAspectManager::setRoot(QObject *rootObject, QWaitCondition *waitCondition)
 
     if (m_root) {
         // Allow each aspect chance to cleanup any resources from this scene
-        Q_FOREACH (AbstractAspect *aspect, m_aspects)
+        Q_FOREACH (QAbstractAspect *aspect, m_aspects)
             aspect->unregisterAspect(m_root);
 
         // Allow each aspect chance to cleanup any scene-independent resources
-        Q_FOREACH (AbstractAspect *aspect, m_aspects)
+        Q_FOREACH (QAbstractAspect *aspect, m_aspects)
             aspect->cleanup();
 
         // Destroy all aspects
@@ -119,7 +119,7 @@ void QAspectManager::setRoot(QObject *rootObject, QWaitCondition *waitCondition)
 
     if (m_root) {
 
-        Q_FOREACH (AbstractAspect *aspect, m_aspects)
+        Q_FOREACH (QAbstractAspect *aspect, m_aspects)
             aspect->registerAspect(m_root);
 
         m_runMainLoop = true;
@@ -147,8 +147,8 @@ void QAspectManager::registerAspect(QObject *aspect)
 {
     qCDebug(Aspects) << Q_FUNC_INFO << "Registering aspect libraries";
 
-    AbstractAspect *aspectImpl = Q_NULLPTR;
-    if ((aspectImpl = qobject_cast<AbstractAspect*>(aspect)) != Q_NULLPTR) {
+    QAbstractAspect *aspectImpl = Q_NULLPTR;
+    if ((aspectImpl = qobject_cast<QAbstractAspect*>(aspect)) != Q_NULLPTR) {
         m_aspects.append(aspectImpl);
         aspectImpl->initialize(this);
     }

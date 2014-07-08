@@ -84,7 +84,7 @@ void QAspectEngine::setWindow(QWindow *window)
  * Passing as a QObject* as abstracts like AbstractAspect
  * cannot be registered as a meta type.
  */
-void QAspectEngine::registerAspect(AbstractAspect *aspect)
+void QAspectEngine::registerAspect(QAbstractAspect *aspect)
 {
     QMetaObject::invokeMethod(m_aspectThread->aspectManager(),
                               "registerAspect",

@@ -39,66 +39,46 @@
 **
 ****************************************************************************/
 
-#ifndef ABSTRACTASPECT_H
-#define ABSTRACTASPECT_H
-
-#include <QObject>
-#include <QSharedPointer>
-#include <Qt3DCore/qt3dcore_global.h>
-#include <Qt3DCore/qjobproviderinterface.h>
+#include "qabstractaspect.h"
+#include "qentity.h"
 
 QT_BEGIN_NAMESPACE
 
-class QWindow;
-
 namespace Qt3D {
 
-class QAspectManager;
-class QNode;
-class QEntity;
-
-class QT3DCORESHARED_EXPORT AbstractAspect : public QObject, public QJobProviderInterface
+QAbstractAspect::QAbstractAspect(AspectType aspectType, QObject *parent)
+    : QObject(parent)
+    , m_root(Q_NULLPTR)
+    , m_aspectType(aspectType)
 {
-    Q_OBJECT
+}
 
-public:
-    enum AspectType {
-        AspectRenderer,
-        AspectAnimation,
-        AspectCollision,
-        AspectPhysics,
-        AspectPhysicsAndCollision,
-        AspectAI,
-        AspectAudio,
-        AspectOther
-    };
+void QAbstractAspect::registerAspect(QEntity *rootObject)
+{
+    if (rootObject == m_root)
+        return;
 
-    explicit AbstractAspect(AspectType aspectType, QObject *parent = 0);
+    m_root = rootObject;
+    registerAspectHelper(rootObject);
+}
 
-    AspectType aspectType() const { return m_aspectType; }
-    QAspectManager *aspectManager() const { return m_aspectManager; }
+void QAbstractAspect::unregisterAspect(QEntity *rootObject)
+{
+    unregisterAspectHelper(rootObject);
+    m_root = rootObject;
+}
 
-    void registerAspect(QEntity *rootObject);
-    void unregisterAspect(QEntity *rootObject);
+void QAbstractAspect::initialize(QAspectManager *aspectManager)
+{
+    m_aspectManager = aspectManager;
+    initializeHelper(aspectManager);
+}
 
-    void initialize(QAspectManager *aspectManager);
-    void cleanup();
+void QAbstractAspect::cleanup()
+{
+    cleanupHelper();
+}
 
-protected:
-    virtual void registerAspectHelper(QEntity *rootObject) = 0;
-    virtual void unregisterAspectHelper(QEntity *rootObject) = 0;
-
-    virtual void initializeHelper(QAspectManager *aspectManager) = 0;
-    virtual void cleanupHelper() = 0;
-
-private:
-    QAspectManager *m_aspectManager;
-    QEntity *m_root;
-    AspectType m_aspectType;
-};
-
-} // namespace Qt3D
+} // of namespace Qt3D
 
 QT_END_NAMESPACE
-
-#endif // ABSTRACTASPECT_H

@@ -41,7 +41,7 @@
 
 #include "qscheduler.h"
 
-#include "abstractaspect.h"
+#include "qabstractaspect.h"
 #include "qaspectmanager.h"
 #include "qjobmanagerinterface.h"
 
@@ -69,9 +69,9 @@ void QScheduler::update(qint64 time)
     Q_UNUSED(time);
 
     // Get tasks for this frame from each aspect
-    const QList<AbstractAspect *> &aspects = m_aspectManager->aspects();
-    QHash<AbstractAspect::AspectType, QVector<QJobPtr> > jobs;
-    Q_FOREACH (AbstractAspect *aspect, aspects) {
+    const QList<QAbstractAspect *> &aspects = m_aspectManager->aspects();
+    QHash<QAbstractAspect::AspectType, QVector<QJobPtr> > jobs;
+    Q_FOREACH (QAbstractAspect *aspect, aspects) {
         QVector<QJobPtr> aspectJobs = aspect->jobsToExecute();
         jobs.insert(aspect->aspectType(), aspectJobs);
     }
@@ -79,8 +79,8 @@ void QScheduler::update(qint64 time)
     // TODO: Set up dependencies between jobs as needed
     // For now just queue them up as they are with render tasks first
     QVector<QJobPtr> jobQueue;
-    for (int i = AbstractAspect::AspectRenderer; i <= AbstractAspect::AspectOther; ++i) {
-        AbstractAspect::AspectType aspectType = static_cast<AbstractAspect::AspectType>(i);
+    for (int i = QAbstractAspect::AspectRenderer; i <= QAbstractAspect::AspectOther; ++i) {
+        QAbstractAspect::AspectType aspectType = static_cast<QAbstractAspect::AspectType>(i);
         if (jobs.contains(aspectType))
             jobQueue += jobs.value(aspectType);
     }
