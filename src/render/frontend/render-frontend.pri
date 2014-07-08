@@ -7,6 +7,7 @@ HEADERS += \
     $$PWD/qmesh.h \
     $$PWD/qrenderpass.h \
     $$PWD/qshaderprogram.h \
+    $$PWD/qshaderprogram_p.h \
     $$PWD/qtechnique.h \
     $$PWD/tag.h \
     $$PWD/qabstractshapemesh.h \

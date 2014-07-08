@@ -39,63 +39,34 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QSHADERPROGRAM_H
-#define QT3D_QSHADERPROGRAM_H
+#ifndef QT3D_QSHADERPROGRAM_P_H
+#define QT3D_QSHADERPROGRAM_P_H
 
-#include <QUuid>
-#include <Qt3DCore/qabstractshader.h>
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <private/qabstractshader_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QShaderProgramPrivate;
+class QShaderProgram;
 
-class QT3DRENDERERSHARED_EXPORT QShaderProgram : public QAbstractShader
+class QShaderProgramPrivate : public QAbstractShaderPrivate
 {
-    Q_OBJECT
-    Q_PROPERTY(QString vertexSourceFile READ vertexSourceFile WRITE setVertexSourceFile NOTIFY vertexSourceFileChanged)
-    Q_PROPERTY(QString fragmentSourceFile READ fragmentSourceFile WRITE setFragmentSourceFile NOTIFY fragmentSourceFileChanged)
-    Q_PROPERTY(QByteArray vertexShader READ vertexSourceCode WRITE setVertexShader NOTIFY vertexShaderChanged)
-    Q_PROPERTY(QByteArray fragmentShader READ fragmentSourceCode WRITE setFragmentShader NOTIFY fragmentShaderChanged)
-
 public:
-    explicit QShaderProgram(QNode *parent = 0);
+    QShaderProgramPrivate(QShaderProgram *qq);
 
-    void setVertexSourceFile(const QString &vertexSourceFile);
-    QString vertexSourceFile() const;
+    Q_DECLARE_PUBLIC(QShaderProgram)
+    QString m_vertexSourceFile;
+    QString m_fragmentSourceFile;
 
-    void setFragmentSourceFile(const QString &fragmentSource);
-    QString fragmentSourceFile() const;
-
-    void setVertexShader(const QByteArray &vertexShader);
-    void setFragmentShader(const QByteArray &fragmentShader);
-
-    QByteArray vertexSourceCode() const;
-    QByteArray fragmentSourceCode() const;
-
-    bool isLoaded() const;
-
-    /**
-     * @brief load - call from main / worker thread to do synchronous
-     * loading of shader source files
-     */
-    void load();
-
-Q_SIGNALS:
-    void vertexSourceFileChanged();
-    void fragmentSourceFileChanged();
-    void vertexShaderChanged();
-    void fragmentShaderChanged();
-
-protected:
-    Q_DECLARE_PRIVATE(QShaderProgram)
-    QShaderProgram(QShaderProgramPrivate &dd, QNode *parent = 0);
+    bool m_sourcesDirty;
+    bool m_isLoaded;
+    QByteArray m_cachedVertexCode;
+    QByteArray m_cachedFragmentCode;
 };
 
-}
+} // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QSHADERPROGRAM_H
+#endif // QT3D_QSHADERPROGRAM_P_H
