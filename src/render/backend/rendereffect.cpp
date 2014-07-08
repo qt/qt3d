@@ -96,24 +96,24 @@ void RenderEffect::setRendererAspect(RendererAspect *rendererAspect)
 void RenderEffect::sceneChangeEvent(const QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-    QVariant propertyValue = propertyChange->m_value;
+    QVariant propertyValue = propertyChange->value();
     switch (e->type()) {
 
     case ComponentAdded:
-        if (propertyChange->m_propertyName == QByteArrayLiteral("technique")) {
+        if (propertyChange->propertyName() == QByteArrayLiteral("technique")) {
             m_techniques.append(propertyValue.value<QAbstractTechnique *>());
         }
-        else if (propertyChange->m_propertyName == QByteArrayLiteral("parameter")) {
-            m_parameterPack.appendParameter(propertyChange->m_value.value<QParameter*>());
+        else if (propertyChange->propertyName() == QByteArrayLiteral("parameter")) {
+            m_parameterPack.appendParameter(propertyValue.value<QParameter*>());
         }
         break;
 
     case ComponentRemoved:
-        if (propertyChange->m_propertyName == QByteArrayLiteral("technique")) {
+        if (propertyChange->propertyName() == QByteArrayLiteral("technique")) {
             m_techniques.removeOne(propertyValue.value<QAbstractTechnique *>());
         }
-        else if (propertyChange->m_propertyName == QByteArrayLiteral("parameter")) {
-            m_parameterPack.removeParameter(propertyChange->m_value.value<QParameter*>());
+        else if (propertyChange->propertyName() == QByteArrayLiteral("parameter")) {
+            m_parameterPack.removeParameter(propertyValue.value<QParameter*>());
         }
         break;
 

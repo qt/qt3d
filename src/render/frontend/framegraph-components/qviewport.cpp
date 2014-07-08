@@ -76,8 +76,8 @@ void QViewport::setRect(const QRectF &rect)
         d->m_rect = rect;
         emit rectChanged();
         QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentUpdated, this));
-        propertyChange->m_propertyName = QByteArrayLiteral("rect");
-        propertyChange->m_value = QVariant::fromValue(d->m_rect);
+        propertyChange->setPropertyName(QByteArrayLiteral("rect"));
+        propertyChange->setValue(QVariant::fromValue(d->m_rect));
         notifyObservers(propertyChange);
     }
 }

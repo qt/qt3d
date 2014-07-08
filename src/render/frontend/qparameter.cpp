@@ -97,8 +97,8 @@ void QParameter::setValue(const QVariant &dv)
         d->m_value = dv;
         emit valueChanged();
         QScenePropertyChangePtr change(new QScenePropertyChange(ComponentUpdated, this));
-        change->m_propertyName = d->m_name.toUtf8();
-        change->m_value = d->m_value;
+        change->setPropertyName(d->m_name.toUtf8());
+        change->setValue(d->m_value);
         notifyObservers(change);
     }
 }

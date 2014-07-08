@@ -89,8 +89,8 @@ void QAbstractEffect::addTechnique(QAbstractTechnique *t)
     if (!d->m_techniques.contains(t)) {
         d->m_techniques.append(t);
         QScenePropertyChangePtr e(new QScenePropertyChange(ComponentAdded, this));
-        e->m_propertyName = QByteArrayLiteral("technique");
-        e->m_value = QVariant::fromValue(t);
+        e->setPropertyName(QByteArrayLiteral("technique"));
+        e->setValue(QVariant::fromValue(t));
         notifyObservers(e);
     }
 }
@@ -105,8 +105,8 @@ void QAbstractEffect::removeTechnique(QAbstractTechnique *t)
     Q_D(QAbstractEffect);
     d->m_techniques.removeOne(t);
     QScenePropertyChangePtr e(new QScenePropertyChange(ComponentRemoved, this));
-    e->m_propertyName = QByteArrayLiteral("technique");
-    e->m_value = QVariant::fromValue(t);
+    e->setPropertyName(QByteArrayLiteral("technique"));
+    e->setValue(QVariant::fromValue(t));
     notifyObservers(e);
 }
 

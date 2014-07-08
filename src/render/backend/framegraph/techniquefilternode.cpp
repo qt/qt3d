@@ -98,14 +98,14 @@ void TechniqueFilter::sceneChangeEvent(const QSceneChangePtr &e)
     switch (e->type()) {
     case ComponentAdded: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        if (propertyChange->m_propertyName == QByteArrayLiteral("techniqueCriteria"))
-            appendFilter(propertyChange->m_value.value<TechniqueCriterion*>());
+        if (propertyChange->propertyName() == QByteArrayLiteral("techniqueCriteria"))
+            appendFilter(propertyChange->value().value<TechniqueCriterion*>());
     }
         break;
     case ComponentRemoved: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        if (propertyChange->m_propertyName == QByteArrayLiteral("techniqueCriteria"))
-            removeFilter(propertyChange->m_value.value<TechniqueCriterion*>());
+        if (propertyChange->propertyName() == QByteArrayLiteral("techniqueCriteria"))
+            removeFilter(propertyChange->value().value<TechniqueCriterion*>());
     }
         break;
     default:

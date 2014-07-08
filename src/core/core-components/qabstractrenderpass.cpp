@@ -91,8 +91,8 @@ void QAbstractRenderPass::setShaderProgram(QAbstractShader *shaderProgram)
         d->m_shader = shaderProgram;
         emit shaderProgramChanged();
         QScenePropertyChangePtr e(new QScenePropertyChange(ComponentUpdated, this));
-        e->m_propertyName = QByteArrayLiteral("shaderProgram");
-        e->m_value = QVariant::fromValue(shaderProgram);
+        e->setPropertyName(QByteArrayLiteral("shaderProgram"));
+        e->setValue(QVariant::fromValue(shaderProgram));
         notifyObservers(e);
     }
 }

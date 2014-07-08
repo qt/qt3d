@@ -97,7 +97,7 @@ void RenderLight::sceneChangeEvent(const QSceneChangePtr &e)
 {
     if (e->type() == ComponentUpdated && e->subject().m_observable == m_peer) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        m_lightProperties[QString::fromUtf8(propertyChange->m_propertyName)] = propertyChange->m_value;
+        m_lightProperties[QString::fromUtf8(propertyChange->propertyName())] = propertyChange->value();
     }
 }
 

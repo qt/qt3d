@@ -39,78 +39,62 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QSCENECHANGE_H
-#define QT3D_QSCENECHANGE_H
-
-#include <Qt3DCore/qt3dcore_global.h>
-#include <QSharedPointer>
+#include "qscenepropertychange.h"
+#include "qscenepropertychange_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-enum ChangeFlag {
-    NodeCreated             = 0x00000001,
-    NodeAboutToBeDeleted    = 0x00000002,
-    NodeDeleted             = 0x00000004,
-    NodeStatus              = 0x00000008,
-    ComponentAdded          = 0x00000010,
-    ComponentRemoved        = 0x00000020,
-    ComponentUpdated        = 0x00000040,
-    AllChanges              = 0x00000FFF
-};
-Q_DECLARE_FLAGS(ChangeFlags, ChangeFlag)
-Q_DECLARE_OPERATORS_FOR_FLAGS(ChangeFlags)
-
-class QNode;
-class QObservableInterface;
-class QSceneChangePrivate;
-
-class QT3DCORESHARED_EXPORT QSceneChange
+QScenePropertyChangePrivate::QScenePropertyChangePrivate(QScenePropertyChange *qq)
+    : QSceneChangePrivate(qq)
 {
-public:
-    enum Priority {
-        High,
-        Standard,
-        Low
-    };
+}
 
-    enum ObservableType {
-        Observable,
-        Node
-    };
+QScenePropertyChange::QScenePropertyChange(ChangeFlag type, QObservableInterface *subject, QSceneChange::Priority priority)
+    : QSceneChange(*new QScenePropertyChangePrivate(this), type, subject, priority)
+{
+}
 
-    union SubjectUnion {
-        QObservableInterface *m_observable;
-        QNode *m_node;
-    };
+QScenePropertyChange::QScenePropertyChange(ChangeFlag type, QNode *node, QSceneChange::Priority priority)
+    : QSceneChange(*new QScenePropertyChangePrivate(this), type, node, priority)
+{
+}
 
-    QSceneChange(ChangeFlag type, QObservableInterface *observable, Priority priority = Standard);
-    QSceneChange(ChangeFlag type, QNode *node, Priority priority = Standard);
-    virtual ~QSceneChange();
+QScenePropertyChange::QScenePropertyChange(QScenePropertyChangePrivate &dd, ChangeFlag type, QObservableInterface *subject, QSceneChange::Priority priority)
+    : QSceneChange(dd, type, subject, priority)
+{
+}
 
-    ChangeFlag type() const;
-    qint64 timestamp() const;
-    QSceneChange::Priority priority() const;
-    QSceneChange::ObservableType observableType() const;
-    QSceneChange::SubjectUnion subject() const;
+QScenePropertyChange::QScenePropertyChange(QScenePropertyChangePrivate &dd, ChangeFlag type, QNode *node, QSceneChange::Priority priority)
+    : QSceneChange(dd, type, node, priority)
+{
+}
 
-protected:
-    Q_DECLARE_PRIVATE(QSceneChange)
-    QSceneChangePrivate *d_ptr;
-    QSceneChange(QSceneChangePrivate &dd);
-    QSceneChange(QSceneChangePrivate &dd, ChangeFlag type, QObservableInterface *observable, Priority priority = Standard);
-    QSceneChange(QSceneChangePrivate &dd, ChangeFlag type, QNode *node, Priority priority = Standard);
+QByteArray QScenePropertyChange::propertyName() const
+{
+    Q_D(const QScenePropertyChange);
+    return d->m_propertyName;
+}
 
-    // TODO: add timestamp from central clock and priority level
-    // These can be used to resolve any conflicts between events
-    // posted from different aspects
-};
+QVariant QScenePropertyChange::value() const
+{
+    Q_D(const QScenePropertyChange);
+    return d->m_value;
+}
 
-typedef QSharedPointer<QSceneChange> QSceneChangePtr;
+void QScenePropertyChange::setPropertyName(const QByteArray &name)
+{
+    Q_D(QScenePropertyChange);
+    d->m_propertyName = name;
+}
 
-} // namespace Qt3D
+void QScenePropertyChange::setValue(const QVariant &value)
+{
+    Q_D(QScenePropertyChange);
+    d->m_value = value;
+}
+
+} // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_QSCENECHANGE_H

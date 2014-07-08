@@ -70,8 +70,8 @@ void QLayerFilter::setLayers(const QStringList &layers)
         d->m_layers = layers;
         emit layersChanged();
         QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentUpdated, this));
-        propertyChange->m_propertyName = QByteArrayLiteral("layers");
-        propertyChange->m_value = QVariant::fromValue(d->m_layers);
+        propertyChange->setPropertyName(QByteArrayLiteral("layers"));
+        propertyChange->setValue(QVariant::fromValue(d->m_layers));
         notifyObservers(propertyChange);
     }
 }

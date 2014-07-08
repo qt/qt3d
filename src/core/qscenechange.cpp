@@ -84,6 +84,28 @@ QSceneChange::QSceneChange(QSceneChangePrivate &dd)
 {
 }
 
+QSceneChange::QSceneChange(QSceneChangePrivate &dd, ChangeFlag type, QObservableInterface *observable, QSceneChange::Priority priority)
+    : d_ptr(&dd)
+{
+    Q_D(QSceneChange);
+    d->m_type = type;
+    d->m_priority = priority;
+    d->m_timestamp = QDateTime::currentMSecsSinceEpoch();
+    d->m_subject.m_observable = observable;
+    d->m_subjectType = Observable;
+}
+
+QSceneChange::QSceneChange(QSceneChangePrivate &dd, ChangeFlag type, QNode *node, QSceneChange::Priority priority)
+    : d_ptr(&dd)
+{
+    Q_D(QSceneChange);
+    d->m_type = type;
+    d->m_priority = priority;
+    d->m_timestamp = QDateTime::currentMSecsSinceEpoch();
+    d->m_subject.m_node = node;
+    d->m_subjectType = Node;
+}
+
 ChangeFlag QSceneChange::type() const
 {
     Q_D(const QSceneChange);

@@ -86,8 +86,8 @@ void QRenderPassFilter::addCriterion(RenderPassCriterion *criterion)
     if (!d->m_criteriaList.contains(criterion)) {
         d->m_criteriaList.append(criterion);
         QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentAdded, this));
-        propertyChange->m_propertyName = QByteArrayLiteral("renderPassCriteria");
-        propertyChange->m_value = QVariant::fromValue(criterion);
+        propertyChange->setPropertyName(QByteArrayLiteral("renderPassCriteria"));
+        propertyChange->setValue(QVariant::fromValue(criterion));
         notifyObservers(propertyChange);
     }
 }
@@ -97,8 +97,8 @@ void QRenderPassFilter::removeCriterion(RenderPassCriterion *criterion)
     Q_D(QRenderPassFilter);
     d->m_criteriaList.removeOne(criterion);
     QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentRemoved, this));
-    propertyChange->m_propertyName = QByteArrayLiteral("renderPassCriteria");
-    propertyChange->m_value = QVariant::fromValue(criterion);
+    propertyChange->setPropertyName(QByteArrayLiteral("renderPassCriteria"));
+    propertyChange->setValue(QVariant::fromValue(criterion));
     notifyObservers(propertyChange);
 }
 

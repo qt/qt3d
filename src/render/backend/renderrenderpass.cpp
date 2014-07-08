@@ -87,7 +87,7 @@ void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
 {
     if (e->type() == ComponentUpdated) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        if (propertyChange->m_propertyName == QByteArrayLiteral("shaderProgram"))
+        if (propertyChange->propertyName() == QByteArrayLiteral("shaderProgram"))
             ;// TO DO: to be completed
     }
 }

@@ -114,21 +114,21 @@ void RenderTechnique::sceneChangeEvent(const QSceneChangePtr &e)
     switch (e->type()) {
 
     case ComponentAdded: {
-        if (propertyChange->m_propertyName == QByteArrayLiteral("pass")) {
+        if (propertyChange->propertyName() == QByteArrayLiteral("pass")) {
         // This will be filled when we have a proper backend RenderPass class
         }
-        else if (propertyChange->m_propertyName == QByteArrayLiteral("parameter")) {
-            m_parameterPack.appendParameter(propertyChange->m_value.value<QParameter*>());
+        else if (propertyChange->propertyName() == QByteArrayLiteral("parameter")) {
+            m_parameterPack.appendParameter(propertyChange->value().value<QParameter*>());
         }
     }
         break;
 
     case ComponentRemoved: {
-        if (propertyChange->m_propertyName == QByteArrayLiteral("pass")) {
+        if (propertyChange->propertyName() == QByteArrayLiteral("pass")) {
         // See above
         }
-        else if (propertyChange->m_propertyName == QByteArrayLiteral("parameter")) {
-            m_parameterPack.removeParameter(propertyChange->m_value.value<QParameter*>());
+        else if (propertyChange->propertyName() == QByteArrayLiteral("parameter")) {
+            m_parameterPack.removeParameter(propertyChange->value().value<QParameter*>());
         }
     }
         break;

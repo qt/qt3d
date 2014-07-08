@@ -122,8 +122,8 @@ void ViewportNode::sceneChangeEvent(const QSceneChangePtr &e)
 {
     if (e->type() == ComponentUpdated) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        if (propertyChange->m_propertyName == QByteArrayLiteral("rect")) {
-            QRectF rect = propertyChange->m_value.value<QRectF>();
+        if (propertyChange->propertyName() == QByteArrayLiteral("rect")) {
+            QRectF rect = propertyChange->value().value<QRectF>();
             setXMin(rect.x());
             setYMin(rect.y());
             setXMax(rect.width());

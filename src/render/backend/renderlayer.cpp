@@ -94,8 +94,8 @@ QString RenderLayer::layer() const
 void RenderLayer::sceneChangeEvent(const QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-    if (e->type() == ComponentUpdated && propertyChange->m_propertyName == QByteArrayLiteral("layer"))
-        m_layer = propertyChange->m_value.toString();
+    if (e->type() == ComponentUpdated && propertyChange->propertyName() == QByteArrayLiteral("layer"))
+        m_layer = propertyChange->value().toString();
 }
 
 } // Render

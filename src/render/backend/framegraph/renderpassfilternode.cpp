@@ -98,14 +98,14 @@ void RenderPassFilter::sceneChangeEvent(const QSceneChangePtr &e)
     switch (e->type()) {
     case ComponentAdded: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        if (propertyChange->m_propertyName == QByteArrayLiteral("renderPassCriteria"))
-            appendFilter(propertyChange->m_value.value<RenderPassCriterion*>());
+        if (propertyChange->propertyName() == QByteArrayLiteral("renderPassCriteria"))
+            appendFilter(propertyChange->value().value<RenderPassCriterion*>());
     }
         break;
     case ComponentRemoved: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        if (propertyChange->m_propertyName == QByteArrayLiteral("renderPassCriteria"))
-            removeFilter(propertyChange->m_value.value<RenderPassCriterion*>());
+        if (propertyChange->propertyName() == QByteArrayLiteral("renderPassCriteria"))
+            removeFilter(propertyChange->value().value<RenderPassCriterion*>());
     }
         break;
     default:

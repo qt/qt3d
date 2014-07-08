@@ -123,7 +123,7 @@ void RenderMaterial::sceneChangeEvent(const QSceneChangePtr &e)
     switch (e->type()) {
     case ComponentUpdated: {
         // Check for effect change
-        if (propertyChange->m_propertyName == QByteArrayLiteral("effect")) {
+        if (propertyChange->propertyName() == QByteArrayLiteral("effect")) {
 
         }
         else {
@@ -133,15 +133,15 @@ void RenderMaterial::sceneChangeEvent(const QSceneChangePtr &e)
     // Check for shader parameter
     case ComponentAdded: {
         QParameter *param = Q_NULLPTR;
-        if (propertyChange->m_propertyName == QByteArrayLiteral("parameter") &&
-                (param = propertyChange->m_value.value<QParameter*>()) != Q_NULLPTR)
+        if (propertyChange->propertyName() == QByteArrayLiteral("parameter") &&
+                (param = propertyChange->value().value<QParameter*>()) != Q_NULLPTR)
             m_parameterPack.appendParameter(param);
         break;
     }
     case ComponentRemoved: {
         QParameter *param = Q_NULLPTR;
-        if (propertyChange->m_propertyName == QByteArrayLiteral("parameter") &&
-                (param = propertyChange->m_value.value<QParameter*>()) != Q_NULLPTR)
+        if (propertyChange->propertyName() == QByteArrayLiteral("parameter") &&
+                (param = propertyChange->value().value<QParameter*>()) != Q_NULLPTR)
             m_parameterPack.removeParameter(param);
         break;
     }

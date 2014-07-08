@@ -78,8 +78,8 @@ void QMesh::setSource( const QString& source )
     emit sourceChanged();
     // Let aspects know about the change
     QScenePropertyChangePtr e(new QScenePropertyChange(ComponentUpdated, this));
-    e->m_propertyName = QByteArrayLiteral("source");
-    e->m_value = d->m_source;
+    e->setPropertyName(QByteArrayLiteral("source"));
+    e->setValue(d->m_source);
     notifyObservers(e);
 }
 

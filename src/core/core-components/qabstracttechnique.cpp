@@ -115,8 +115,8 @@ void QAbstractTechnique::addPass(QAbstractRenderPass *pass)
     if (!d->m_renderPasses.contains(pass)) {
         d->m_renderPasses.append(pass);
         QScenePropertyChangePtr e(new QScenePropertyChange(ComponentAdded, this));
-        e->m_propertyName = QByteArrayLiteral("pass");
-        e->m_value = QVariant::fromValue(pass);
+        e->setPropertyName(QByteArrayLiteral("pass"));
+        e->setValue(QVariant::fromValue(pass));
         notifyObservers(e);
     }
 }
@@ -131,8 +131,8 @@ void QAbstractTechnique::removePass(QAbstractRenderPass *pass)
     Q_D(QAbstractTechnique);
     d->m_renderPasses.removeOne(pass);
     QScenePropertyChangePtr e(new QScenePropertyChange(ComponentRemoved, this));
-    e->m_propertyName = QByteArrayLiteral("pass");
-    e->m_value = QVariant::fromValue(pass);
+    e->setPropertyName(QByteArrayLiteral("pass"));
+    e->setValue(QVariant::fromValue(pass));
     notifyObservers(e);
 }
 

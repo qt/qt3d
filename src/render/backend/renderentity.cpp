@@ -159,14 +159,14 @@ void RenderEntity::sceneChangeEvent(const QSceneChangePtr &e)
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         QNode *node = propertyChange->subject().m_node;
         if (node == m_transform
-                && propertyChange->m_propertyName == QByteArrayLiteral("matrix"))
-            *localTransform() = propertyChange->m_value.value<QMatrix4x4>();
+                && propertyChange->propertyName() == QByteArrayLiteral("matrix"))
+            *localTransform() = propertyChange->value().value<QMatrix4x4>();
         break;
     }
 
     case ComponentAdded: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        QComponent *component = propertyChange->m_value.value<QComponent*>();
+        QComponent *component = propertyChange->value().value<QComponent*>();
         if (m_transform == Q_NULLPTR && qobject_cast<QTransform*>(component) != Q_NULLPTR) {
             setTransform(qobject_cast<QTransform *>(component));
         }
@@ -186,7 +186,7 @@ void RenderEntity::sceneChangeEvent(const QSceneChangePtr &e)
 
     case ComponentRemoved: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        QComponent *component = propertyChange->m_value.value<QComponent*>();
+        QComponent *component = propertyChange->value().value<QComponent*>();
         if (component == m_transform) {
             setTransform(Q_NULLPTR);
         }

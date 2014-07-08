@@ -84,7 +84,7 @@ void QEntity::addComponent(QComponent *comp)
     Q_ASSERT(d->m_components.count(comp) == 0);
     d->m_components.append(comp);
     QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentAdded, this));
-    propertyChange->m_value = QVariant::fromValue(comp);
+    propertyChange->setValue(QVariant::fromValue(comp));
     notifyObservers(propertyChange);
     // We only set the Entity as the Component's parent when it has no parent
     // This will be the case mostly on C++ but rarely in QML
@@ -99,7 +99,7 @@ void QEntity::removeComponent(QComponent *comp)
     Q_D(QEntity);
     d->m_components.removeOne(comp);
     QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentRemoved, this));
-    propertyChange->m_value = QVariant::fromValue(comp);
+    propertyChange->setValue(QVariant::fromValue(comp));
     notifyObservers(propertyChange);
 }
 

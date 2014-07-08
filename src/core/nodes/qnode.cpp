@@ -113,8 +113,8 @@ void QNode::addChild(QNode *childNode)
     childNode->setParent(this);
 
     QScenePropertyChangePtr e(new QScenePropertyChange(NodeCreated, this));
-    e->m_propertyName = QByteArrayLiteral("node");
-    e->m_value = QVariant::fromValue(childNode);
+    e->setPropertyName(QByteArrayLiteral("node"));
+    e->setValue(QVariant::fromValue(childNode));
     notifyObservers(e);
 }
 
@@ -129,8 +129,8 @@ void QNode::removeChild(QNode *childNode)
     childNode->setParent(NULL);
 
     QScenePropertyChangePtr e(new QScenePropertyChange(NodeAboutToBeDeleted, this));
-    e->m_propertyName = QByteArrayLiteral("node");
-    e->m_value = QVariant::fromValue(childNode);
+    e->setPropertyName(QByteArrayLiteral("node"));
+    e->setValue(QVariant::fromValue(childNode));
     notifyObservers(e);
 }
 

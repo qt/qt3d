@@ -44,27 +44,29 @@
 
 #include <Qt3DCore/qscenechange.h>
 
-#include <QVariant>
-
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class QScenePropertyChangePrivate;
+
 class QT3DCORESHARED_EXPORT QScenePropertyChange : public QSceneChange
 {
 public:
-    QScenePropertyChange(ChangeFlag type, QObservableInterface *subject, Priority priority = Standard)
-        : QSceneChange(type, subject, priority)
-    {
-    }
+    QScenePropertyChange(ChangeFlag type, QObservableInterface *subject, Priority priority = Standard);
+    QScenePropertyChange(ChangeFlag type, QNode *node, Priority priority = Standard);
 
-    QScenePropertyChange(ChangeFlag type, QNode *node, Priority priority = Standard)
-        : QSceneChange(type, node, priority)
-    {
-    }
+    QByteArray propertyName() const;
+    QVariant value() const;
 
-    QByteArray m_propertyName;
-    QVariant m_value;
+    void setPropertyName(const QByteArray &name);
+    void setValue(const QVariant &value);
+
+protected:
+    Q_DECLARE_PRIVATE(QScenePropertyChange)
+    QScenePropertyChange(QScenePropertyChangePrivate &dd);
+    QScenePropertyChange(QScenePropertyChangePrivate &dd, ChangeFlag type, QObservableInterface *subject, Priority priority = Standard);
+    QScenePropertyChange(QScenePropertyChangePrivate &dd, ChangeFlag type, QNode *node, Priority priority = Standard);
 };
 
 typedef QSharedPointer<QScenePropertyChange> QScenePropertyChangePtr;

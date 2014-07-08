@@ -114,9 +114,9 @@ void RenderMesh::sceneChangeEvent(const QSceneChangePtr &e)
     switch (e->type()) {
     case ComponentUpdated: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        if (propertyChange->m_propertyName == QByteArrayLiteral("source") && qobject_cast<QMesh*>(m_peer)) // Mesh with source
+        if (propertyChange->propertyName() == QByteArrayLiteral("source") && qobject_cast<QMesh*>(m_peer)) // Mesh with source
         {
-            QVariant propertyValue = propertyChange->m_value;
+            QVariant propertyValue = propertyChange->value();
             m_source = propertyValue.toString();
             m_meshDirty = true;
             // TO DO Try to use and monitor for changes the peer dirty property to check if a mesh has to be reloaded

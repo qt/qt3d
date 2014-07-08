@@ -77,8 +77,8 @@ void QTechniqueFilter::addCriterion(TechniqueCriterion *criterion)
     d->m_criteriaList.append(criterion);
     emit criteriaChanged();
     QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentAdded, this));
-    propertyChange->m_propertyName = QByteArrayLiteral("techniqueCriteria");
-    propertyChange->m_value = QVariant::fromValue(criterion);
+    propertyChange->setPropertyName(QByteArrayLiteral("techniqueCriteria"));
+    propertyChange->setValue(QVariant::fromValue(criterion));
     notifyObservers(propertyChange);
 }
 
@@ -88,8 +88,8 @@ void QTechniqueFilter::removeCriterion(TechniqueCriterion *criterion)
     d->m_criteriaList.removeOne(criterion);
     emit criteriaChanged();
     QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentRemoved, this));
-    propertyChange->m_propertyName = QByteArrayLiteral("techniqueCriteria");
-    propertyChange->m_value = QVariant::fromValue(criterion);
+    propertyChange->setPropertyName(QByteArrayLiteral("techniqueCriteria"));
+    propertyChange->setValue(QVariant::fromValue(criterion));
     notifyObservers(propertyChange);
 }
 

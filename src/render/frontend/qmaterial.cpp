@@ -72,8 +72,8 @@ void QMaterial::setEffect(QAbstractEffect *effect)
         return ;
     QAbstractMaterial::setEffect(effect);
     QScenePropertyChangePtr change(new QScenePropertyChange(ComponentUpdated, this));
-    change->m_propertyName = QByteArrayLiteral("effect");
-    change->m_value = QVariant::fromValue(QAbstractMaterial::effect());
+    change->setPropertyName(QByteArrayLiteral("effect"));
+    change->setValue(QVariant::fromValue(QAbstractMaterial::effect()));
     notifyObservers(change);
 }
 
@@ -83,8 +83,8 @@ void QMaterial::addParameter(QParameter *parameter)
     if (!d->m_parameters.contains(parameter)) {
         d->m_parameters.append(parameter);
         QScenePropertyChangePtr change(new QScenePropertyChange(ComponentAdded, this));
-        change->m_propertyName = QByteArrayLiteral("parameter");
-        change->m_value = QVariant::fromValue(parameter);
+        change->setPropertyName(QByteArrayLiteral("parameter"));
+        change->setValue(QVariant::fromValue(parameter));
         notifyObservers(change);
     }
 }
@@ -94,8 +94,8 @@ void QMaterial::removeParameter(QParameter *parameter)
     Q_D(QMaterial);
     d->m_parameters.removeOne(parameter);
     QScenePropertyChangePtr change(new QScenePropertyChange(ComponentRemoved, this));
-    change->m_propertyName = QByteArrayLiteral("parameter");
-    change->m_value = QVariant::fromValue(parameter);
+    change->setPropertyName(QByteArrayLiteral("parameter"));
+    change->setValue(QVariant::fromValue(parameter));
     notifyObservers(change);
 }
 
