@@ -49,14 +49,23 @@
 #include <QThread>
 #include <QWriteLocker>
 
+#include <private/qchangearbiter_p.h>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QChangeArbiter::QChangeArbiter(QObject *parent)
-    : QObject(parent)
+
+QChangeArbiterPrivate::QChangeArbiterPrivate(QChangeArbiter *qq)
+    : QObjectPrivate()
     , m_mutex(QMutex::Recursive)
-    , m_jobManager(0)
+    , m_jobManager(Q_NULLPTR)
+{
+    q_ptr = qq;
+}
+
+QChangeArbiter::QChangeArbiter(QObject *parent)
+    : QObject(*new QChangeArbiterPrivate(this), parent)
 {
     // The QMutex has to be recursive to handle the case where :
     // 1) SyncChanges is called, mutex is locked
@@ -67,17 +76,25 @@ QChangeArbiter::QChangeArbiter(QObject *parent)
     // 6) Mutex is unlocked - leaving SyncChanges
 }
 
+
+QChangeArbiter::QChangeArbiter(QChangeArbiterPrivate &dd, QObject *parent)
+    : QObject(dd, parent)
+{
+}
+
 void QChangeArbiter::initialize(QJobManagerInterface *jobManager)
 {
     Q_CHECK_PTR(jobManager);
-    m_jobManager = jobManager;
+    Q_D(QChangeArbiter);
+    d->m_jobManager = jobManager;
 
     // Init TLS for the change queues
-    m_jobManager->waitForPerThreadFunction(QChangeArbiter::createThreadLocalChangeQueue, this);
+    d->m_jobManager->waitForPerThreadFunction(QChangeArbiter::createThreadLocalChangeQueue, this);
 }
 
 void QChangeArbiter::distributeQueueChanges(ChangeQueue *changeQueue)
 {
+    Q_D(QChangeArbiter);
     Q_FOREACH (const QSceneChangePtr &change, *changeQueue) {
         // Lookup which observers care about the subject this change came from
         // and distribute the change to them
@@ -86,8 +103,8 @@ void QChangeArbiter::distributeQueueChanges(ChangeQueue *changeQueue)
         switch (change->m_subjectType) {
         case QSceneChange::ObservableType: {
             QObservableInterface *subject = change->m_subject.m_observable;
-            if (m_aspectObservations.contains(subject)) {
-                QObserverList &observers = m_aspectObservations[subject];
+            if (d->m_aspectObservations.contains(subject)) {
+                QObserverList &observers = d->m_aspectObservations[subject];
                 Q_FOREACH (const QObserverPair &observer, observers) {
                     if ((change->m_type & observer.first))
                         observer.second->sceneChangeEvent(change);
@@ -98,8 +115,8 @@ void QChangeArbiter::distributeQueueChanges(ChangeQueue *changeQueue)
 
         case QSceneChange::NodeType: {
             QNode *subject = change->m_subject.m_node;
-            if (m_nodeObservations.contains(subject)) {
-                QObserverList &observers = m_nodeObservations[subject];
+            if (d->m_nodeObservations.contains(subject)) {
+                QObserverList &observers = d->m_nodeObservations[subject];
                 Q_FOREACH (const QObserverPair&observer, observers) {
                     if ((change->m_type & observer.first))
                         observer.second->sceneChangeEvent(change);
@@ -111,15 +128,36 @@ void QChangeArbiter::distributeQueueChanges(ChangeQueue *changeQueue)
     }
 }
 
+QThreadStorage<QChangeArbiter::ChangeQueue *> *QChangeArbiter::tlsChangeQueue()
+{
+    Q_D(QChangeArbiter);
+    return &(d->m_tlsChangeQueue);
+}
+
+void QChangeArbiter::appendChangeQueue(QChangeArbiter::ChangeQueue *queue)
+{
+    Q_D(QChangeArbiter);
+    QMutexLocker locker(&(d->m_mutex));
+    d->m_changeQueues.append(queue);
+}
+
+void QChangeArbiter::appendLockingChangeQueue(QChangeArbiter::ChangeQueue *queue)
+{
+    Q_D(QChangeArbiter);
+    QMutexLocker locker(&(d->m_mutex));
+    d->m_lockingChangeQueues.append(queue);
+}
+
 void QChangeArbiter::syncChanges()
 {
-    QMutexLocker locker(&m_mutex);
-    Q_FOREACH (QChangeArbiter::ChangeQueue *changeQueue, m_changeQueues) {
+    Q_D(QChangeArbiter);
+    QMutexLocker locker(&d->m_mutex);
+    Q_FOREACH (QChangeArbiter::ChangeQueue *changeQueue, d->m_changeQueues) {
         distributeQueueChanges(changeQueue);
         changeQueue->clear();
     }
 
-    Q_FOREACH (ChangeQueue *changeQueue, m_lockingChangeQueues) {
+    Q_FOREACH (ChangeQueue *changeQueue, d->m_lockingChangeQueues) {
         distributeQueueChanges(changeQueue);
         changeQueue->clear();
     }
@@ -129,8 +167,9 @@ void QChangeArbiter::registerObserver(QObserverInterface *observer,
                                       QObservableInterface *observable,
                                       ChangeFlags changeFlags)
 {
-    QMutexLocker locker(&m_mutex);
-    QObserverList &observerList = m_aspectObservations[observable];
+    Q_D(QChangeArbiter);
+    QMutexLocker locker(&d->m_mutex);
+    QObserverList &observerList = d->m_aspectObservations[observable];
     registerObserverHelper(observerList, observer, observable, changeFlags);
 }
 
@@ -138,8 +177,9 @@ void QChangeArbiter::registerObserver(QObserverInterface *observer,
                                       QNode *observable,
                                       ChangeFlags changeFlags)
 {
-    QMutexLocker locker(&m_mutex);
-    QObserverList &observerList = m_nodeObservations[observable];
+    Q_D(QChangeArbiter);
+    QMutexLocker locker(&d->m_mutex);
+    QObserverList &observerList = d->m_nodeObservations[observable];
     registerObserverHelper(observerList, observer, observable, changeFlags);
 }
 
@@ -163,9 +203,10 @@ void QChangeArbiter::registerObserverHelper(QObserverList &observerList,
 void QChangeArbiter::unregisterObserver(QObserverInterface *observer,
                                         QObservableInterface *subject)
 {
-    QMutexLocker locker(&m_mutex);
-    if (m_aspectObservations.contains(subject)) {
-        QObserverList &observers = m_aspectObservations[subject];
+    Q_D(QChangeArbiter);
+    QMutexLocker locker(&d->m_mutex);
+    if (d->m_aspectObservations.contains(subject)) {
+        QObserverList &observers = d->m_aspectObservations[subject];
         for (int i = observers.count() - 1; i >= 0; i--) {
             if (observers[i].second == observer)
                 observers.removeAt(i);
@@ -175,9 +216,10 @@ void QChangeArbiter::unregisterObserver(QObserverInterface *observer,
 
 void QChangeArbiter::unregisterObserver(QObserverInterface *observer, QNode *subject)
 {
-    QMutexLocker locker(&m_mutex);
-    if (m_nodeObservations.contains(subject)) {
-        QObserverList &observers = m_nodeObservations[subject];
+    Q_D(QChangeArbiter);
+    QMutexLocker locker(&d->m_mutex);
+    if (d->m_nodeObservations.contains(subject)) {
+        QObserverList &observers = d->m_nodeObservations[subject];
         for (int i = observers.count() - 1; i >= 0; i--) {
             if (observers[i].second == observer)
                 observers.removeAt(i);
@@ -189,8 +231,10 @@ void QChangeArbiter::sceneChangeEvent(const QSceneChangePtr &e)
 {
     //    qCDebug(ChangeArbiter) << Q_FUNC_INFO << QThread::currentThread();
 
+    Q_D(QChangeArbiter);
+    QMutexLocker locker(&d->m_mutex);
     // Add the change to the thread local storage queue - no locking required => yay!
-    ChangeQueue *localChangeQueue = m_tlsChangeQueue.localData();
+    ChangeQueue *localChangeQueue = d->m_tlsChangeQueue.localData();
     localChangeQueue->append(e);
 
     //    qCDebug(ChangeArbiter) << "Change queue for thread" << QThread::currentThread() << "now contains" << localChangeQueue->count() << "items";
@@ -198,7 +242,8 @@ void QChangeArbiter::sceneChangeEvent(const QSceneChangePtr &e)
 
 void QChangeArbiter::sceneChangeEventWithLock(const QSceneChangePtr &e)
 {
-    QMutexLocker locker(&m_mutex);
+    Q_D(QChangeArbiter);
+    QMutexLocker locker(&d->m_mutex);
     sceneChangeEvent(e);
 }
 
@@ -209,12 +254,10 @@ void QChangeArbiter::createUnmanagedThreadLocalChangeQueue(void *changeArbiter)
     QChangeArbiter *arbiter = static_cast<QChangeArbiter *>(changeArbiter);
 
     qCDebug(ChangeArbiter) << Q_FUNC_INFO << QThread::currentThread();
-    if (!arbiter->m_tlsChangeQueue.hasLocalData()) {
+    if (!arbiter->tlsChangeQueue()->hasLocalData()) {
         ChangeQueue *localChangeQueue = new ChangeQueue;
-        arbiter->m_tlsChangeQueue.setLocalData(localChangeQueue);
-
-        QMutexLocker locker(&(arbiter->m_mutex));
-        arbiter->m_lockingChangeQueues.append(localChangeQueue);
+        arbiter->tlsChangeQueue()->setLocalData(localChangeQueue);
+        arbiter->appendLockingChangeQueue(localChangeQueue);
     }
 }
 
@@ -231,12 +274,10 @@ void QChangeArbiter::createThreadLocalChangeQueue(void *changeArbiter)
     QChangeArbiter *arbiter = static_cast<QChangeArbiter *>(changeArbiter);
 
     qCDebug(ChangeArbiter) << Q_FUNC_INFO << QThread::currentThread();
-    if (!arbiter->m_tlsChangeQueue.hasLocalData()) {
+    if (!arbiter->tlsChangeQueue()->hasLocalData()) {
         ChangeQueue *localChangeQueue = new ChangeQueue;
-        arbiter->m_tlsChangeQueue.setLocalData(localChangeQueue);
-
-        QMutexLocker locker(&(arbiter->m_mutex));
-        arbiter->m_changeQueues.append(localChangeQueue);
+        arbiter->tlsChangeQueue()->setLocalData(localChangeQueue);
+        arbiter->appendChangeQueue(localChangeQueue);
     }
 }
 

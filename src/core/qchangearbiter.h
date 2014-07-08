@@ -47,14 +47,12 @@
 #include <Qt3DCore/qobserverinterface.h>
 #include <Qt3DCore/qscenechange.h>
 
-#include <QDebug>
 #include <QFlags>
-#include <QMutex>
 #include <QReadWriteLock>
-#include <QThreadStorage>
 #include <QVariant>
 #include <QVector>
 #include <QPair>
+#include <QThreadStorage>
 
 QT_BEGIN_NAMESPACE
 
@@ -63,6 +61,7 @@ namespace Qt3D {
 class QNode;
 class QObservableInterface;
 class QJobManagerInterface;
+class QChangeArbiterPrivate;
 
 class QT3DCORESHARED_EXPORT QChangeArbiter : public QObject,
                                              public QObserverInterface
@@ -97,7 +96,7 @@ public:
     static void createThreadLocalChangeQueue(void *changeArbiter);
     static void destroyThreadLocalChangeQueue(void *changeArbiter);
 
-private:
+protected:
     typedef QVector<QSceneChangePtr> ChangeQueue;
     typedef QPair<ChangeFlags, QObserverInterface *> QObserverPair;
     typedef QList<QObserverPair> QObserverList;
@@ -109,28 +108,12 @@ private:
 
     void distributeQueueChanges(ChangeQueue *queue);
 
-    QMutex m_mutex;
-    QJobManagerInterface *m_jobManager;
+    QThreadStorage<ChangeQueue *> *tlsChangeQueue();
+    void appendChangeQueue(ChangeQueue *queue);
+    void appendLockingChangeQueue(ChangeQueue *queue);
 
-    // The lists of observers indexed by observable. We maintain two
-    // distinct hashes:
-    //
-    // m_aspectObservations is for observables owned by aspects
-    // m_nodeObservations is for observables in the main thread's object tree
-    //
-    // We keep these distinct because we do not manage the main thread which means
-    // the mechanisms for working with objects there is different.
-    QHash<QObservableInterface *, QObserverList> m_aspectObservations;
-    QHash<QNode *, QObserverList> m_nodeObservations;
-
-    // Each thread has a TLS ChangeQueue so we never need to lock whilst
-    // receiving a QSceneChange.
-    QThreadStorage<ChangeQueue *> m_tlsChangeQueue;
-
-    // We store a list of the ChangeQueue's from each thread. This will only
-    // be accessed from the aspect thread during the syncChanges() phase.
-    QList<ChangeQueue *> m_changeQueues;
-    QList<ChangeQueue *> m_lockingChangeQueues;
+    Q_DECLARE_PRIVATE(QChangeArbiter)
+    QChangeArbiter(QChangeArbiterPrivate &dd, QObject *parent = 0);
 };
 
 } // namespace Qt3D
