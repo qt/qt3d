@@ -49,22 +49,40 @@
 #include <QMetaObject>
 #include <QMutexLocker>
 
+#include <private/qaspectengine_p.h>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+QAspectEnginePrivate::QAspectEnginePrivate(QAspectEngine *qq)
+    : QObjectPrivate()
+{
+    q_ptr = qq;
+    qRegisterMetaType<QWaitCondition *>();
+}
+
 QAspectEngine::QAspectEngine(QObject *parent)
-    : QObject(parent)
-    , m_aspectThread(new QAspectThread(this))
+    : QObject(*new QAspectEnginePrivate(this), parent)
 {
     qCDebug(Aspects) << Q_FUNC_INFO;
-    qRegisterMetaType<QWaitCondition *>();
-    m_aspectThread->waitForStart(QThread::HighestPriority);
+    Q_D(QAspectEngine);
+    d->m_aspectThread = new QAspectThread(this);
+    d->m_aspectThread->waitForStart(QThread::HighestPriority);
+}
+
+QAspectEngine::QAspectEngine(QAspectEnginePrivate &dd, QObject *parent)
+    : QObject(dd, parent)
+{
+    Q_D(QAspectEngine);
+    d->m_aspectThread = new QAspectThread(this);
+    d->m_aspectThread->waitForStart(QThread::HighestPriority);
 }
 
 void QAspectEngine::initialize()
 {
-    QChangeArbiter *arbiter = m_aspectThread->aspectManager()->changeArbiter();
+    Q_D(QAspectEngine);
+    QChangeArbiter *arbiter = d->m_aspectThread->aspectManager()->changeArbiter();
     QChangeArbiter::createUnmanagedThreadLocalChangeQueue(arbiter);
 }
 
@@ -74,7 +92,8 @@ void QAspectEngine::shutdown()
 
 void QAspectEngine::setWindow(QWindow *window)
 {
-    QMetaObject::invokeMethod(m_aspectThread->aspectManager(),
+    Q_D(QAspectEngine);
+    QMetaObject::invokeMethod(d->m_aspectThread->aspectManager(),
                               "setWindow",
                               Q_ARG(QWindow *, window));
 }
@@ -86,21 +105,23 @@ void QAspectEngine::setWindow(QWindow *window)
  */
 void QAspectEngine::registerAspect(QAbstractAspect *aspect)
 {
-    QMetaObject::invokeMethod(m_aspectThread->aspectManager(),
+    Q_D(QAspectEngine);
+    QMetaObject::invokeMethod(d->m_aspectThread->aspectManager(),
                               "registerAspect",
                               Q_ARG(QObject *, reinterpret_cast<QObject*>(aspect)));
 }
 
 void QAspectEngine::setRoot(QObject *rootObject)
 {
-    QMutexLocker locker(&m_mutex);
-    QMetaObject::invokeMethod(m_aspectThread->aspectManager(),
+    Q_D(QAspectEngine);
+    QMutexLocker locker(&d->m_mutex);
+    QMetaObject::invokeMethod(d->m_aspectThread->aspectManager(),
                               "setRoot",
                               Q_ARG(QObject *, rootObject),
-                              Q_ARG(QWaitCondition *, &m_waitCondition));
+                              Q_ARG(QWaitCondition *, &d->m_waitCondition));
 
     qCDebug(Aspects) << "Putting main thread to sleep whilst aspects build their local scenes...";
-    m_waitCondition.wait(&m_mutex);
+    d->m_waitCondition.wait(&d->m_mutex);
     qCDebug(Aspects) << "Main thread is now awake again";
 }
 

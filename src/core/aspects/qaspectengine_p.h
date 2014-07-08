@@ -39,44 +39,36 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QASPECTENGINE_H
-#define QT3D_QASPECTENGINE_H
+#ifndef QT3D_QASPECTENGINE_P_H
+#define QT3D_QASPECTENGINE_P_H
 
-#include <QObject>
-#include <Qt3DCore/qt3dcore_global.h>
-#include <QList>
+#include <private/qobject_p.h>
+#include <QMutex>
+#include <QWaitCondition>
 
 QT_BEGIN_NAMESPACE
 
-class QWindow;
-
 namespace Qt3D {
 
-class QAbstractAspect;
+class QAspectEngine;
 class QAspectThread;
-class QAspectEnginePrivate;
 
-class QT3DCORESHARED_EXPORT QAspectEngine : public QObject
+class QAspectEnginePrivate : public QObjectPrivate
 {
-    Q_OBJECT
 public:
-    explicit QAspectEngine(QObject *parent = 0);
+    QAspectEnginePrivate(QAspectEngine *qq);
 
-    void initialize();
-    void shutdown();
+    Q_DECLARE_PUBLIC(QAspectEngine)
 
-    void setRoot(QObject *rootObject);
-    void setWindow(QWindow *window);
-    void registerAspect(QAbstractAspect *aspect);
-
-protected:
-    Q_DECLARE_PRIVATE(QAspectEngine)
-    QAspectEngine(QAspectEnginePrivate &dd, QObject *parent = 0);
+    QAspectThread *m_aspectThread;
+    QMutex m_mutex;
+    QWaitCondition m_waitCondition;
 };
 
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE
 
+Q_DECLARE_METATYPE(QWaitCondition *)
 
-#endif // QT3D_QASPECTENGINE_H
+#endif // QT3D_QASPECTENGINE_P_H

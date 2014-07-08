@@ -12,6 +12,7 @@ HEADERS += \
         $$PWD/qaspectmanager.h \
         $$PWD/qaspectscheduler.h \
         $$PWD/qaspectthread.h \
-        $$PWD/qabstractaspect_p.h
+        $$PWD/qabstractaspect_p.h \
+        $$PWD/qaspectengine_p.h
 
 INCLUDEPATH += $$PWD
