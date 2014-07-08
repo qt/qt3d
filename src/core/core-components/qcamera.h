@@ -107,9 +107,7 @@ Q_SIGNALS:
 
 protected:
     Q_DECLARE_PRIVATE(QCamera)
-
-private:
-    QCameraPrivate* d_ptr;
+    QCamera(QCameraPrivate &dd, QNode *parent = 0);
 };
 
 } // namespace Qt3D

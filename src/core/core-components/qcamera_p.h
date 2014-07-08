@@ -48,23 +48,18 @@
 #include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/qlookattransform.h>
 #include <Qt3DCore/qtransform.h>
+#include <private/qentity_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DCORESHARED_EXPORT QCameraPrivate
+class QT3DCORESHARED_EXPORT QCameraPrivate : public QEntityPrivate
 {
 public:
-    QCameraPrivate(QCamera *qq)
-        : q_ptr(qq),
-          m_lens(Q_NULLPTR),
-          m_transform(Q_NULLPTR)
-    {
-    }
+    QCameraPrivate(QCamera *qq);
 
     Q_DECLARE_PUBLIC(QCamera)
-    QCamera *q_ptr;
 
     QCameraLens *m_lens;
     QTransform *m_transform;

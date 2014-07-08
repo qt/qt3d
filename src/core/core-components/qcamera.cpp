@@ -49,10 +49,22 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QCamera::QCamera(QNode *parent) : QEntity(parent)
-  , d_ptr(new QCameraPrivate(this))
+QCameraPrivate::QCameraPrivate(QCamera *qq)
+    : QEntityPrivate(qq),
+      m_lens(Q_NULLPTR),
+      m_transform(Q_NULLPTR)
+{
+}
+
+QCamera::QCamera(QNode *parent) :
+    QEntity(*new QCameraPrivate(this), parent)
 {
     qDebug() << Q_FUNC_INFO;
+}
+
+QCamera::QCamera(QCameraPrivate &dd, QNode *parent)
+    : QEntity(dd, parent)
+{
 }
 
 QCameraLens *QCamera::lens() const
