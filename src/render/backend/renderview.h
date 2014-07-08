@@ -44,7 +44,7 @@
 
 #include <Qt3DRenderer/renderer.h>
 #include <Qt3DRenderer/rendercamera.h>
-#include <Qt3DRenderer/parameter.h>
+#include <Qt3DRenderer/qparameter.h>
 #include <Qt3DCore/qhandle.h>
 #include <QVector>
 #include <QMutex>

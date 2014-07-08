@@ -56,7 +56,7 @@ namespace Qt3D {
 
 class QMaterial;
 class RendererAspect;
-class Parameter;
+class QParameter;
 
 namespace Render {
 

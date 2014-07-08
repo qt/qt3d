@@ -41,7 +41,7 @@
 
 #include "qtechnique.h"
 #include "qtechnique_p.h"
-#include "parameter.h"
+#include "qparameter.h"
 #include <Qt3DCore/qscenepropertychange.h>
 #include <QDebug>
 
@@ -132,7 +132,7 @@ void QTechnique::addPass(QAbstractRenderPass *pass)
     QAbstractTechnique::addPass(pass);
 }
 
-void QTechnique::addParameter(Parameter *parameter)
+void QTechnique::addParameter(QParameter *parameter)
 {
     Q_D(QTechnique);
     if (!d->m_parameters.contains(parameter)) {
@@ -144,7 +144,7 @@ void QTechnique::addParameter(Parameter *parameter)
     }
 }
 
-void QTechnique::removeParameter(Parameter *parameter)
+void QTechnique::removeParameter(QParameter *parameter)
 {
     Q_D(QTechnique);
     d->m_parameters.removeOne(parameter);
@@ -154,16 +154,16 @@ void QTechnique::removeParameter(Parameter *parameter)
     notifyObservers(change);
 }
 
-QList<Parameter *> QTechnique::parameters() const
+QList<QParameter *> QTechnique::parameters() const
 {
     Q_D(const QTechnique);
     return d->m_parameters;
 }
 
-Parameter *QTechnique::parameterByName(QString name) const
+QParameter *QTechnique::parameterByName(QString name) const
 {
     Q_D(const QTechnique);
-    foreach (Parameter* p, d->m_parameters) {
+    foreach (QParameter* p, d->m_parameters) {
         if (p->name() == name)
             return p;
     }

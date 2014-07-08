@@ -55,7 +55,7 @@
 #include <Qt3DCore/qmatrixtransform.h>
 #include <Qt3DCore/cameralens.h>
 #include <texture.h>
-#include <parameter.h>
+#include <qparameter.h>
 
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -163,41 +163,41 @@ const QString KEY_INTERNAL_FORMAT = QStringLiteral("internalFormat");
 //    return Parameter::None;
 //}
 
-Parameter::OpenGLTypes parseType(const QByteArray &s)
+QParameter::OpenGLTypes parseType(const QByteArray &s)
 {
-    if (s == "BYTE")                  return Parameter::Undefined;
-    if (s == "BYTE_VEC2")             return Parameter::Undefined;
-    if (s == "BYTE_VEC3")             return Parameter::Undefined;
-    if (s == "BYTE_VEC4")             return Parameter::Undefined;
-    if (s == "UNSIGNED_BYTE")         return Parameter::Undefined;
-    if (s == "UNSIGNED_BYTE_VEC2")    return Parameter::Undefined;
-    if (s == "UNSIGNED_BYTE_VEC3")    return Parameter::Undefined;
-    if (s == "UNSIGNED_BYTE_VEC4")    return Parameter::Undefined;
-    if (s == "SHORT")                 return Parameter::Undefined;
-    if (s == "SHORT_VEC2")            return Parameter::Undefined;
-    if (s == "SHORT_VEC3")            return Parameter::Undefined;
-    if (s == "SHORT_VEC4")            return Parameter::Undefined;
-    if (s == "UNSIGNED_SHORT")        return Parameter::Undefined;
-    if (s == "UNSIGNED_SHORT_VEC2")   return Parameter::Undefined;
-    if (s == "UNSIGNED_SHORT_VEC3")   return Parameter::Undefined;
-    if (s == "UNSIGNED_SHORT_VEC4")   return Parameter::Undefined;
-    if (s == "FLOAT")                 return Parameter::Float;
-    if (s == "FLOAT_VEC2")            return Parameter::FloatVec2;
-    if (s == "FLOAT_VEC3")            return Parameter::FloatVec3;
-    if (s == "FLOAT_VEC4")            return Parameter::FloatVec4;
-    if (s == "FLOAT_MAT2")            return Parameter::FloatMat2;
-    if (s == "FLOAT_MAT2")            return Parameter::FloatMat3;
-    if (s == "FLOAT_MAT2")            return Parameter::FloatMat4;
-    if (s == "INT")                   return Parameter::Int;
-    if (s == "INT_VEC2")              return Parameter::IntVec2;
-    if (s == "INT_VEC3")              return Parameter::IntVec3;
-    if (s == "INT_VEC4")              return Parameter::IntVec4;
-    if (s == "BOOL")                  return Parameter::Bool;
-    if (s == "BOOL_VEC2")             return Parameter::BoolVec2;
-    if (s == "BOOL_VEC3")             return Parameter::BoolVec3;
-    if (s == "BOOL_VEC4")             return Parameter::BoolVec4;
+    if (s == "BYTE")                  return QParameter::Undefined;
+    if (s == "BYTE_VEC2")             return QParameter::Undefined;
+    if (s == "BYTE_VEC3")             return QParameter::Undefined;
+    if (s == "BYTE_VEC4")             return QParameter::Undefined;
+    if (s == "UNSIGNED_BYTE")         return QParameter::Undefined;
+    if (s == "UNSIGNED_BYTE_VEC2")    return QParameter::Undefined;
+    if (s == "UNSIGNED_BYTE_VEC3")    return QParameter::Undefined;
+    if (s == "UNSIGNED_BYTE_VEC4")    return QParameter::Undefined;
+    if (s == "SHORT")                 return QParameter::Undefined;
+    if (s == "SHORT_VEC2")            return QParameter::Undefined;
+    if (s == "SHORT_VEC3")            return QParameter::Undefined;
+    if (s == "SHORT_VEC4")            return QParameter::Undefined;
+    if (s == "UNSIGNED_SHORT")        return QParameter::Undefined;
+    if (s == "UNSIGNED_SHORT_VEC2")   return QParameter::Undefined;
+    if (s == "UNSIGNED_SHORT_VEC3")   return QParameter::Undefined;
+    if (s == "UNSIGNED_SHORT_VEC4")   return QParameter::Undefined;
+    if (s == "FLOAT")                 return QParameter::Float;
+    if (s == "FLOAT_VEC2")            return QParameter::FloatVec2;
+    if (s == "FLOAT_VEC3")            return QParameter::FloatVec3;
+    if (s == "FLOAT_VEC4")            return QParameter::FloatVec4;
+    if (s == "FLOAT_MAT2")            return QParameter::FloatMat2;
+    if (s == "FLOAT_MAT2")            return QParameter::FloatMat3;
+    if (s == "FLOAT_MAT2")            return QParameter::FloatMat4;
+    if (s == "INT")                   return QParameter::Int;
+    if (s == "INT_VEC2")              return QParameter::IntVec2;
+    if (s == "INT_VEC3")              return QParameter::IntVec3;
+    if (s == "INT_VEC4")              return QParameter::IntVec4;
+    if (s == "BOOL")                  return QParameter::Bool;
+    if (s == "BOOL_VEC2")             return QParameter::BoolVec2;
+    if (s == "BOOL_VEC3")             return QParameter::BoolVec3;
+    if (s == "BOOL_VEC4")             return QParameter::BoolVec4;
 
-    return Parameter::Undefined;
+    return QParameter::Undefined;
 }
 
 } // of anonymous namespace
@@ -490,7 +490,7 @@ QMaterial* GLTFParser::material(QString id)
 
     QJsonObject values = tech.value(KEY_VALUES).toObject();
     foreach (QString vName, values.keys()) {
-        Parameter* param = technique->parameterByName(vName);
+        QParameter* param = technique->parameterByName(vName);
         if (!param) {
             qWarning() << "unknown parameter:" << vName << "in technique" << tname
                        << "processing material" << id;
@@ -788,7 +788,7 @@ void GLTFParser::processJSONTechnique( QString id, QJsonObject jsonObj )
     QTechnique *t = new QTechnique;
     t->setObjectName(id);
 
-    QHash<QString, Parameter*> paramDict;
+    QHash<QString, QParameter*> paramDict;
     QJsonObject params = jsonObj.value(KEY_PARAMETERS).toObject();
     Q_FOREACH (QString pname, params.keys()) {
         QJsonObject po = params.value(pname).toObject();
@@ -797,7 +797,7 @@ void GLTFParser::processJSONTechnique( QString id, QJsonObject jsonObj )
         QString semantic = po.value(KEY_SEMANTIC).toString();
         // The Standard has changed, it doesn't return the raw int value for a type
         // But a string
-        Parameter* p = new Parameter(t, pname, parseType(po.value(KEY_TYPE).toString().toUtf8()));
+        QParameter* p = new QParameter(t, pname, parseType(po.value(KEY_TYPE).toString().toUtf8()));
 //        Parameter::StandardUniform su = parseSemanticName(semantic.toUtf8());
 //        if (su != Parameter::None) {
 //            p->setStandardUniform(su);
@@ -916,26 +916,26 @@ GLTFParser::BufferData::BufferData(QJsonObject json)
     // url
 }
 
-QVariant GLTFParser::parameterValueFromJSON(Parameter* p, QJsonValue val)
+QVariant GLTFParser::parameterValueFromJSON(QParameter* p, QJsonValue val)
 {
     switch (p->datatype()) {
-    case Parameter::Bool:
+    case QParameter::Bool:
         return val.toBool();
 
-    case Parameter::Float:
+    case QParameter::Float:
         return val.toDouble();
 
-    case Parameter::FloatVec2: {
+    case QParameter::FloatVec2: {
         QJsonArray a = val.toArray();
         return QVector2D(a[0].toDouble(), a[1].toDouble());
     }
 
-    case Parameter::FloatVec3: {
+    case QParameter::FloatVec3: {
         QJsonArray a = val.toArray();
         return QVector3D(a[0].toDouble(), a[1].toDouble(), a[3].toDouble());
     }
 
-    case Parameter::FloatVec4: {
+    case QParameter::FloatVec4: {
         QJsonArray a = val.toArray();
         return QVector4D(a[0].toDouble(),
                 a[1].toDouble(),
@@ -943,7 +943,7 @@ QVariant GLTFParser::parameterValueFromJSON(Parameter* p, QJsonValue val)
                 a[3].toDouble());
     }
 
-    case Parameter::FloatMat4: {
+    case QParameter::FloatMat4: {
         QJsonArray a = val.toArray();
 
         QMatrix4x4 m;

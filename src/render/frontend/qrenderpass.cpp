@@ -41,7 +41,7 @@
 
 #include "qrenderpass.h"
 #include "qrenderpass_p.h"
-#include "parameter.h"
+#include "qparameter.h"
 #include "renderpasscriterion.h"
 #include "parametermapper.h"
 

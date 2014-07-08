@@ -42,7 +42,7 @@
 #include "assimpparser.h"
 
 #include <Qt3DCore/qtransform.h>
-#include <parameter.h>
+#include <qparameter.h>
 #include <Qt3DCore/qmatrixtransform.h>
 #include <Qt3DCore/cameralens.h>
 #include <qmesh.h>
@@ -668,17 +668,17 @@ void AssimpParser::copyMaterialColorProperties(QMaterial *material, aiMaterial *
 {
     aiColor3D color;
     if (assimpMaterial->Get(AI_MATKEY_COLOR_DIFFUSE, color) == aiReturn_SUCCESS)
-        material->addParameter(new Parameter(material, ASSIMP_MATERIAL_DIFFUSE_COLOR, QColor::fromRgbF(color.r, color.g, color.b)));
+        material->addParameter(new QParameter(material, ASSIMP_MATERIAL_DIFFUSE_COLOR, QColor::fromRgbF(color.r, color.g, color.b)));
     if (assimpMaterial->Get(AI_MATKEY_COLOR_SPECULAR, color) == aiReturn_SUCCESS)
-        material->addParameter(new Parameter(material, ASSIMP_MATERIAL_SPECULAR_COLOR, QColor::fromRgbF(color.r, color.g, color.b)));
+        material->addParameter(new QParameter(material, ASSIMP_MATERIAL_SPECULAR_COLOR, QColor::fromRgbF(color.r, color.g, color.b)));
     if (assimpMaterial->Get(AI_MATKEY_COLOR_AMBIENT, color) == aiReturn_SUCCESS)
-        material->addParameter(new Parameter(material, ASSIMP_MATERIAL_AMBIENT_COLOR, QColor::fromRgbF(color.r, color.g, color.b)));
+        material->addParameter(new QParameter(material, ASSIMP_MATERIAL_AMBIENT_COLOR, QColor::fromRgbF(color.r, color.g, color.b)));
     if (assimpMaterial->Get(AI_MATKEY_COLOR_EMISSIVE, color) == aiReturn_SUCCESS)
-        material->addParameter(new Parameter(material, ASSIMP_MATERIAL_EMISSIVE_COLOR, QColor::fromRgbF(color.r, color.g, color.b)));
+        material->addParameter(new QParameter(material, ASSIMP_MATERIAL_EMISSIVE_COLOR, QColor::fromRgbF(color.r, color.g, color.b)));
     if (assimpMaterial->Get(AI_MATKEY_COLOR_TRANSPARENT, color) == aiReturn_SUCCESS)
-        material->addParameter(new Parameter(material, ASSIMP_MATERIAL_TRANSPARENT_COLOR, QColor::fromRgbF(color.r, color.g, color.b)));
+        material->addParameter(new QParameter(material, ASSIMP_MATERIAL_TRANSPARENT_COLOR, QColor::fromRgbF(color.r, color.g, color.b)));
     if (assimpMaterial->Get(AI_MATKEY_COLOR_REFLECTIVE, color) == aiReturn_SUCCESS)
-        material->addParameter(new Parameter(material, ASSIMP_MATERIAL_REFLECTIVE_COLOR, QColor::fromRgbF(color.r, color.g, color.b)));
+        material->addParameter(new QParameter(material, ASSIMP_MATERIAL_REFLECTIVE_COLOR, QColor::fromRgbF(color.r, color.g, color.b)));
 }
 
 /*!
@@ -688,9 +688,9 @@ void AssimpParser::copyMaterialBoolProperties(QMaterial *material, aiMaterial *a
 {
     int value;
     if (assimpMaterial->Get(AI_MATKEY_TWOSIDED, value) == aiReturn_SUCCESS)
-        material->addParameter(new Parameter(material, ASSIMP_MATERIAL_IS_TWOSIDED, (value == 0) ? false : true));
+        material->addParameter(new QParameter(material, ASSIMP_MATERIAL_IS_TWOSIDED, (value == 0) ? false : true));
     if (assimpMaterial->Get(AI_MATKEY_ENABLE_WIREFRAME, value) == aiReturn_SUCCESS)
-        material->addParameter(new Parameter(material, ASSIMP_MATERIAL_IS_WIREFRAME, (value == 0) ? false : true));
+        material->addParameter(new QParameter(material, ASSIMP_MATERIAL_IS_WIREFRAME, (value == 0) ? false : true));
 }
 
 void AssimpParser::copyMaterialShadingModel(QMaterial *material, aiMaterial *assimpMaterial)
@@ -763,7 +763,7 @@ void AssimpParser::copyMaterialTextures(QMaterial *material, aiMaterial *assimpM
                 }
             }
             if (textureLoaded) {
-                material->addParameter(new Parameter(material, m_textureToParameterName[textureType[i]],
+                material->addParameter(new QParameter(material, m_textureToParameterName[textureType[i]],
                                        QVariant::fromValue(m_materialTextures[fullPath])));
             }
         }
@@ -777,15 +777,15 @@ void AssimpParser::copyMaterialFloatProperties(QMaterial *material, aiMaterial *
 {
     float value = 0;
     if (assimpMaterial->Get(AI_MATKEY_OPACITY, value) == aiReturn_SUCCESS)
-        material->addParameter(new Parameter(material, ASSIMP_MATERIAL_OPACITY, value));
+        material->addParameter(new QParameter(material, ASSIMP_MATERIAL_OPACITY, value));
     if (assimpMaterial->Get(AI_MATKEY_SHININESS, value) == aiReturn_SUCCESS)
-        material->addParameter(new Parameter(material, ASSIMP_MATERIAL_SHININESS,value));
+        material->addParameter(new QParameter(material, ASSIMP_MATERIAL_SHININESS,value));
     if (assimpMaterial->Get(AI_MATKEY_SHININESS_STRENGTH, value) == aiReturn_SUCCESS)
-        material->addParameter(new Parameter(material, ASSIMP_MATERIAL_SHININESS_STRENGTH, value));
+        material->addParameter(new QParameter(material, ASSIMP_MATERIAL_SHININESS_STRENGTH, value));
     if (assimpMaterial->Get(AI_MATKEY_REFRACTI, value) == aiReturn_SUCCESS)
-        material->addParameter(new Parameter(material, ASSIMP_MATERIAL_REFRACTI, value));
+        material->addParameter(new QParameter(material, ASSIMP_MATERIAL_REFRACTI, value));
     if (assimpMaterial->Get(AI_MATKEY_REFLECTIVITY, value) == aiReturn_SUCCESS)
-        material->addParameter(new Parameter(material, ASSIMP_MATERIAL_REFLECTIVITY, value));
+        material->addParameter(new QParameter(material, ASSIMP_MATERIAL_REFLECTIVITY, value));
 }
 
 AssimpParser::AssimpMesh::AssimpMesh(QNode *parent)

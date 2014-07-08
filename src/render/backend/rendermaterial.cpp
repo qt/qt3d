@@ -45,7 +45,7 @@
 #include "qgraphicscontext.h"
 #include "rendertechnique.h"
 #include "rendertextureprovider.h"
-#include "parameter.h"
+#include "qparameter.h"
 #include <qtechnique.h> // for Parameter
 #include <qmaterial.h>
 
@@ -83,7 +83,7 @@ void RenderMaterial::setPeer(QMaterial *mat)
         if (m_peer) {
             arbiter->registerObserver(this, m_peer, ComponentUpdated);
             m_parameterPack.clear();
-            Q_FOREACH (Parameter *p, m_peer->parameters()) {
+            Q_FOREACH (QParameter *p, m_peer->parameters()) {
                 m_parameterPack.appendParameter(p);
             }
         }
@@ -132,16 +132,16 @@ void RenderMaterial::sceneChangeEvent(const QSceneChangePtr &e)
     }
     // Check for shader parameter
     case ComponentAdded: {
-        Parameter *param = Q_NULLPTR;
+        QParameter *param = Q_NULLPTR;
         if (propertyChange->m_propertyName == QByteArrayLiteral("parameter") &&
-                (param = propertyChange->m_value.value<Parameter*>()) != Q_NULLPTR)
+                (param = propertyChange->m_value.value<QParameter*>()) != Q_NULLPTR)
             m_parameterPack.appendParameter(param);
         break;
     }
     case ComponentRemoved: {
-        Parameter *param = Q_NULLPTR;
+        QParameter *param = Q_NULLPTR;
         if (propertyChange->m_propertyName == QByteArrayLiteral("parameter") &&
-                (param = propertyChange->m_value.value<Parameter*>()) != Q_NULLPTR)
+                (param = propertyChange->m_value.value<QParameter*>()) != Q_NULLPTR)
             m_parameterPack.removeParameter(param);
         break;
     }

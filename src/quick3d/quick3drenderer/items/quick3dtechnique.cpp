@@ -63,37 +63,37 @@ QQmlListProperty<Qt3D::QRenderPass> Quick3DTechnique::renderPassList()
                                               &Quick3DTechnique::clearRenderPasses);
 }
 
-QQmlListProperty<Parameter> Quick3DTechnique::parameterList()
+QQmlListProperty<QParameter> Quick3DTechnique::parameterList()
 {
-    return QQmlListProperty<Qt3D::Parameter>(this, 0,
+    return QQmlListProperty<Qt3D::QParameter>(this, 0,
                                              &Quick3DTechnique::appendParameter,
                                              &Quick3DTechnique::parametersCount,
                                              &Quick3DTechnique::parameterAt,
                                              &Quick3DTechnique::clearParameterList);
 }
 
-void Quick3DTechnique::appendParameter(QQmlListProperty<Parameter> *list, Parameter *param)
+void Quick3DTechnique::appendParameter(QQmlListProperty<QParameter> *list, QParameter *param)
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     technique->parentTechnique()->addParameter(param);
 }
 
-Parameter *Quick3DTechnique::parameterAt(QQmlListProperty<Parameter> *list, int index)
+QParameter *Quick3DTechnique::parameterAt(QQmlListProperty<QParameter> *list, int index)
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     return technique->parentTechnique()->parameters().at(index);
 }
 
-int Quick3DTechnique::parametersCount(QQmlListProperty<Parameter> *list)
+int Quick3DTechnique::parametersCount(QQmlListProperty<QParameter> *list)
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     return technique->parentTechnique()->parameters().count();
 }
 
-void Quick3DTechnique::clearParameterList(QQmlListProperty<Parameter> *list)
+void Quick3DTechnique::clearParameterList(QQmlListProperty<QParameter> *list)
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
-    Q_FOREACH (Parameter *p, technique->parentTechnique()->parameters())
+    Q_FOREACH (QParameter *p, technique->parentTechnique()->parameters())
         technique->parentTechnique()->removeParameter(p);
 }
 

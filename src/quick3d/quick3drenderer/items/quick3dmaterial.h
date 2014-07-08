@@ -44,7 +44,7 @@
 
 #include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
 #include <Qt3DRenderer/qmaterial.h>
-#include <Qt3DRenderer/parameter.h>
+#include <Qt3DRenderer/qparameter.h>
 #include <QQmlListProperty>
 
 QT_BEGIN_NAMESPACE
@@ -61,7 +61,7 @@ namespace Quick {
 class QT3DQUICKRENDERERSHARED_EXPORT Quick3DMaterial : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3D::Parameter> parameters READ qmlParameters)
+    Q_PROPERTY(QQmlListProperty<Qt3D::QParameter> parameters READ qmlParameters)
 
 public:
     explicit Quick3DMaterial(QObject *parent = 0);
@@ -69,15 +69,15 @@ public:
     // TO DO : replace by QAbstractMaterial later on
     inline QMaterial *parentMaterial() const { return qobject_cast<QMaterial*>(parent()); }
 
-    QQmlListProperty<Parameter> qmlParameters();
+    QQmlListProperty<QParameter> qmlParameters();
 
 
 private:
     // FIXME - remove when we have a custom QML parser
-    static void appendParameter(QQmlListProperty<Parameter> *list, Parameter *bar);
-    static Parameter *parameterAt(QQmlListProperty<Parameter> *list, int index);
-    static int parameterCount(QQmlListProperty<Parameter> *list);
-    static void clearParameters(QQmlListProperty<Parameter> *list);
+    static void appendParameter(QQmlListProperty<QParameter> *list, QParameter *bar);
+    static QParameter *parameterAt(QQmlListProperty<QParameter> *list, int index);
+    static int parameterCount(QQmlListProperty<QParameter> *list);
+    static void clearParameters(QQmlListProperty<QParameter> *list);
 };
 
 } // Quick

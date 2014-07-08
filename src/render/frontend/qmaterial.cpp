@@ -44,7 +44,7 @@
 #include <texture.h>
 #include <Qt3DCore/qabstracteffect.h>
 #include "renderlogging.h"
-#include "parameter.h"
+#include "qparameter.h"
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -77,7 +77,7 @@ void QMaterial::setEffect(QAbstractEffect *effect)
     notifyObservers(change);
 }
 
-void QMaterial::addParameter(Parameter *parameter)
+void QMaterial::addParameter(QParameter *parameter)
 {
     Q_D(QMaterial);
     if (!d->m_parameters.contains(parameter)) {
@@ -89,7 +89,7 @@ void QMaterial::addParameter(Parameter *parameter)
     }
 }
 
-void QMaterial::removeParameter(Parameter *parameter)
+void QMaterial::removeParameter(QParameter *parameter)
 {
     Q_D(QMaterial);
     d->m_parameters.removeOne(parameter);
@@ -99,7 +99,7 @@ void QMaterial::removeParameter(Parameter *parameter)
     notifyObservers(change);
 }
 
-QList<Parameter *> QMaterial::parameters() const
+QList<QParameter *> QMaterial::parameters() const
 {
     Q_D(const QMaterial);
     return d->m_parameters;

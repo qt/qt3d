@@ -50,9 +50,9 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QRenderPass;
-class Parameter;
+class QParameter;
 class ParameterMapper;
-typedef QList<Parameter*> ParameterList;
+typedef QList<QParameter*> ParameterList;
 
 namespace Render
 {

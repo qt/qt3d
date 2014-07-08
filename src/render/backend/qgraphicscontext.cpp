@@ -46,7 +46,7 @@
 #include "rendermaterial.h"
 #include "rendertexture.h"
 #include "rendercommand.h"
-#include "parameter.h"
+#include "qparameter.h"
 #include "drawstate.h"
 #include "qgraphicshelperinterface.h"
 #include "renderer.h"

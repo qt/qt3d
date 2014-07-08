@@ -60,7 +60,7 @@ class QT3DQUICKRENDERERSHARED_EXPORT Quick3DEffect : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Qt3D::QTechnique> techniques READ techniqueList)
-    Q_PROPERTY(QQmlListProperty<Qt3D::Parameter> parameters READ parameterList)
+    Q_PROPERTY(QQmlListProperty<Qt3D::QParameter> parameters READ parameterList)
 
 public:
     explicit Quick3DEffect(QObject *parent = 0);
@@ -68,7 +68,7 @@ public:
     inline QAbstractEffect *parentEffect() const { return qobject_cast<QAbstractEffect*>(parent()); }
 
     QQmlListProperty<Qt3D::QTechnique> techniqueList();
-    QQmlListProperty<Qt3D::Parameter> parameterList();
+    QQmlListProperty<Qt3D::QParameter> parameterList();
 
 private:
     static void appendTechnique(QQmlListProperty<QTechnique> *list, QTechnique *bar);
@@ -76,10 +76,10 @@ private:
     static int techniqueCount(QQmlListProperty<QTechnique> *list);
     static void clearTechniqueList(QQmlListProperty<QTechnique> *list);
 
-    static void appendParameter(QQmlListProperty<Parameter> *list, Parameter *param);
-    static Parameter *parameterAt(QQmlListProperty<Parameter> *list, int index);
-    static int parametersCount(QQmlListProperty<Parameter> *list);
-    static void clearParameterList(QQmlListProperty<Parameter> *list);
+    static void appendParameter(QQmlListProperty<QParameter> *list, QParameter *param);
+    static QParameter *parameterAt(QQmlListProperty<QParameter> *list, int index);
+    static int parametersCount(QQmlListProperty<QParameter> *list);
+    static void clearParameterList(QQmlListProperty<QParameter> *list);
 };
 
 } // Quick

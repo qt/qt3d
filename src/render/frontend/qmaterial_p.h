@@ -54,7 +54,7 @@ class QT3DCORESHARED_EXPORT QMaterialPrivate : public QAbstractMaterialPrivate
 public:
     QMaterialPrivate(QMaterial *qq);
 
-    QList<Parameter *> m_parameters;
+    QList<QParameter *> m_parameters;
     TextureDict m_textures;
     Q_DECLARE_PUBLIC(QMaterial)
 };

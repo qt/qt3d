@@ -56,16 +56,16 @@ Quick3DMaterial::Quick3DMaterial(QObject *parent)
 {
 }
 
-QQmlListProperty<Parameter> Quick3DMaterial::qmlParameters()
+QQmlListProperty<QParameter> Quick3DMaterial::qmlParameters()
 {
-    return QQmlListProperty<Parameter>(this, 0,
+    return QQmlListProperty<QParameter>(this, 0,
                                        &Quick3DMaterial::appendParameter,
                                        &Quick3DMaterial::parameterCount,
                                        &Quick3DMaterial::parameterAt,
                                        &Quick3DMaterial::clearParameters);
 }
 
-void Quick3DMaterial::appendParameter(QQmlListProperty<Parameter> *list, Parameter *param)
+void Quick3DMaterial::appendParameter(QQmlListProperty<QParameter> *list, QParameter *param)
 {
     Quick3DMaterial *mat = qobject_cast<Quick3DMaterial *>(list->object);
     if (mat) {
@@ -74,7 +74,7 @@ void Quick3DMaterial::appendParameter(QQmlListProperty<Parameter> *list, Paramet
     }
 }
 
-Parameter *Quick3DMaterial::parameterAt(QQmlListProperty<Parameter> *list, int index)
+QParameter *Quick3DMaterial::parameterAt(QQmlListProperty<QParameter> *list, int index)
 {
     Quick3DMaterial *mat = qobject_cast<Quick3DMaterial *>(list->object);
     if (mat)
@@ -82,7 +82,7 @@ Parameter *Quick3DMaterial::parameterAt(QQmlListProperty<Parameter> *list, int i
     return 0;
 }
 
-int Quick3DMaterial::parameterCount(QQmlListProperty<Parameter> *list)
+int Quick3DMaterial::parameterCount(QQmlListProperty<QParameter> *list)
 {
     Quick3DMaterial *mat = qobject_cast<Quick3DMaterial *>(list->object);
     if (mat)
@@ -90,11 +90,11 @@ int Quick3DMaterial::parameterCount(QQmlListProperty<Parameter> *list)
     return 0;
 }
 
-void Quick3DMaterial::clearParameters(QQmlListProperty<Parameter> *list)
+void Quick3DMaterial::clearParameters(QQmlListProperty<QParameter> *list)
 {
     Quick3DMaterial *mat = qobject_cast<Quick3DMaterial *>(list->object);
     if (mat) {
-        Q_FOREACH (Parameter *p, mat->parentMaterial()->parameters()) {
+        Q_FOREACH (QParameter *p, mat->parentMaterial()->parameters()) {
             mat->parentMaterial()->removeParameter(p);
         }
     }

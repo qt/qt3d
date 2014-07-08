@@ -48,7 +48,7 @@
 #include <Qt3DCore/qchangearbiter.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRenderer/qeffect.h>
-#include <Qt3DRenderer/parameter.h>
+#include <Qt3DRenderer/qparameter.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -81,7 +81,7 @@ void RenderEffect::setPeer(QAbstractEffect *effect)
             m_techniques.append(m_peer->techniques());
             m_parameterPack.clear();
             if (qobject_cast<QEffect*>(m_peer))
-                Q_FOREACH (Parameter *p, qobject_cast<QEffect*>(m_peer)->parameters())
+                Q_FOREACH (QParameter *p, qobject_cast<QEffect*>(m_peer)->parameters())
                     m_parameterPack.appendParameter(p);
         }
     }
@@ -104,7 +104,7 @@ void RenderEffect::sceneChangeEvent(const QSceneChangePtr &e)
             m_techniques.append(propertyValue.value<QAbstractTechnique *>());
         }
         else if (propertyChange->m_propertyName == QByteArrayLiteral("parameter")) {
-            m_parameterPack.appendParameter(propertyChange->m_value.value<Parameter*>());
+            m_parameterPack.appendParameter(propertyChange->m_value.value<QParameter*>());
         }
         break;
 
@@ -113,7 +113,7 @@ void RenderEffect::sceneChangeEvent(const QSceneChangePtr &e)
             m_techniques.removeOne(propertyValue.value<QAbstractTechnique *>());
         }
         else if (propertyChange->m_propertyName == QByteArrayLiteral("parameter")) {
-            m_parameterPack.removeParameter(propertyChange->m_value.value<Parameter*>());
+            m_parameterPack.removeParameter(propertyChange->m_value.value<QParameter*>());
         }
         break;
 

@@ -85,7 +85,7 @@ void RenderTechnique::setPeer(QTechnique *peer)
         if (m_peer) {
             arbiter->registerObserver(this, m_peer);
             m_parameterPack.clear();
-            Q_FOREACH (Parameter *p, m_peer->parameters())
+            Q_FOREACH (QParameter *p, m_peer->parameters())
                 m_parameterPack.appendParameter(p);
         }
     }
@@ -96,9 +96,9 @@ QTechnique *RenderTechnique::peer() const
     return m_peer;
 }
 
-Parameter *RenderTechnique::parameterByName(QString name) const
+QParameter *RenderTechnique::parameterByName(QString name) const
 {
-    foreach (Parameter* p, m_peer->parameters()) {
+    foreach (QParameter* p, m_peer->parameters()) {
         if (p->name() == name)
             return p;
     }
@@ -118,7 +118,7 @@ void RenderTechnique::sceneChangeEvent(const QSceneChangePtr &e)
         // This will be filled when we have a proper backend RenderPass class
         }
         else if (propertyChange->m_propertyName == QByteArrayLiteral("parameter")) {
-            m_parameterPack.appendParameter(propertyChange->m_value.value<Parameter*>());
+            m_parameterPack.appendParameter(propertyChange->m_value.value<QParameter*>());
         }
     }
         break;
@@ -128,7 +128,7 @@ void RenderTechnique::sceneChangeEvent(const QSceneChangePtr &e)
         // See above
         }
         else if (propertyChange->m_propertyName == QByteArrayLiteral("parameter")) {
-            m_parameterPack.removeParameter(propertyChange->m_value.value<Parameter*>());
+            m_parameterPack.removeParameter(propertyChange->m_value.value<QParameter*>());
         }
     }
         break;

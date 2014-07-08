@@ -56,7 +56,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class Texture;
-class Parameter;
+class QParameter;
 class QMaterialPrivate;
 typedef QMap<QString, Texture*> TextureDict;
 
@@ -69,9 +69,9 @@ public:
 
     void setEffect(QAbstractEffect *effect) Q_DECL_OVERRIDE;
 
-    void addParameter(Parameter *parameter);
-    void removeParameter(Parameter *parameter);
-    QList<Parameter *> parameters() const;
+    void addParameter(QParameter *parameter);
+    void removeParameter(QParameter *parameter);
+    QList<QParameter *> parameters() const;
 
     TextureDict textureValues() const;
 

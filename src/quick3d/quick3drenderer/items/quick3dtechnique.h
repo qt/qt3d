@@ -59,13 +59,13 @@ class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTechnique : public QObject
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Qt3D::TechniqueCriterion> criteria READ criteriaList NOTIFY criteriaChanged)
     Q_PROPERTY(QQmlListProperty<Qt3D::QRenderPass> renderPasses READ renderPassList NOTIFY renderPassesChanged)
-    Q_PROPERTY(QQmlListProperty<Qt3D::Parameter> parameters READ parameterList)
+    Q_PROPERTY(QQmlListProperty<Qt3D::QParameter> parameters READ parameterList)
 public:
     explicit Quick3DTechnique(QObject *parent = 0);
 
     QQmlListProperty<Qt3D::TechniqueCriterion> criteriaList();
     QQmlListProperty<Qt3D::QRenderPass> renderPassList();
-    QQmlListProperty<Qt3D::Parameter> parameterList();
+    QQmlListProperty<Qt3D::QParameter> parameterList();
 
     // Use QAbstractTechnique when it has been properly defined
     inline QTechnique *parentTechnique() const { return qobject_cast<QTechnique*>(parent()); }
@@ -76,10 +76,10 @@ Q_SIGNALS:
 
 private:
 
-    static void appendParameter(QQmlListProperty<Parameter> *list, Parameter *param);
-    static Parameter *parameterAt(QQmlListProperty<Parameter> *list, int index);
-    static int parametersCount(QQmlListProperty<Parameter> *list);
-    static void clearParameterList(QQmlListProperty<Parameter> *list);
+    static void appendParameter(QQmlListProperty<QParameter> *list, QParameter *param);
+    static QParameter *parameterAt(QQmlListProperty<QParameter> *list, int index);
+    static int parametersCount(QQmlListProperty<QParameter> *list);
+    static void clearParameterList(QQmlListProperty<QParameter> *list);
 
     static void appendCriterion(QQmlListProperty<TechniqueCriterion> *list, TechniqueCriterion *criterion);
     static TechniqueCriterion *criterionAt(QQmlListProperty<TechniqueCriterion> *list, int index);

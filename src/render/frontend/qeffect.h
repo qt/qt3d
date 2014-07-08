@@ -50,7 +50,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class Parameter;
+class QParameter;
 class QEffectPrivate;
 
 class QT3DRENDERERSHARED_EXPORT QEffect
@@ -63,9 +63,9 @@ public:
     void addTechnique(QAbstractTechnique *t) Q_DECL_OVERRIDE;
     void removeTechnique(QAbstractTechnique *t) Q_DECL_OVERRIDE;
 
-    void addParameter(Parameter *parameter);
-    void removeParameter(Parameter *parameter);
-    QList<Parameter *> parameters() const;
+    void addParameter(QParameter *parameter);
+    void removeParameter(QParameter *parameter);
+    QList<QParameter *> parameters() const;
 
 protected:
     Q_DECLARE_PRIVATE(QEffect)

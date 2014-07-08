@@ -66,7 +66,7 @@
 #include "renderpassmanager.h"
 #include "renderrenderpass.h"
 #include "parametermapper.h"
-#include "parameter.h"
+#include "qparameter.h"
 #include "texturemanager.h"
 #include "texture.h"
 #include "renderlayer.h"

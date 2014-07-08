@@ -55,7 +55,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class Parameter;
+class QParameter;
 class QTechniquePrivate;
 
 class QT3DRENDERERSHARED_EXPORT QTechnique : public QAbstractTechnique
@@ -76,11 +76,11 @@ public:
 
     void addPass(QAbstractRenderPass* pass) Q_DECL_OVERRIDE;
 
-    void addParameter(Parameter *p);
-    void removeParameter(Parameter *p);
-    QList<Parameter *> parameters() const;
+    void addParameter(QParameter *p);
+    void removeParameter(QParameter *p);
+    QList<QParameter *> parameters() const;
 
-    Parameter* parameterByName(QString name) const;
+    QParameter* parameterByName(QString name) const;
 
 protected:
     Q_DECLARE_PRIVATE(QTechnique)

@@ -64,9 +64,9 @@ QQmlListProperty<QTechnique> Quick3DEffect::techniqueList()
                                        &Quick3DEffect::clearTechniqueList);
 }
 
-QQmlListProperty<Parameter> Quick3DEffect::parameterList()
+QQmlListProperty<QParameter> Quick3DEffect::parameterList()
 {
-    return QQmlListProperty<Qt3D::Parameter>(this, 0,
+    return QQmlListProperty<Qt3D::QParameter>(this, 0,
                                              &Quick3DEffect::appendParameter,
                                              &Quick3DEffect::parametersCount,
                                              &Quick3DEffect::parameterAt,
@@ -108,28 +108,28 @@ void Quick3DEffect::clearTechniqueList(QQmlListProperty<QTechnique> *list)
     }
 }
 
-void Quick3DEffect::appendParameter(QQmlListProperty<Parameter> *list, Parameter *param)
+void Quick3DEffect::appendParameter(QQmlListProperty<QParameter> *list, QParameter *param)
 {
     Quick3DEffect *effect = qobject_cast<Quick3DEffect *>(list->object);
     qobject_cast<QEffect *>(effect->parentEffect())->addParameter(param);
 }
 
-Parameter *Quick3DEffect::parameterAt(QQmlListProperty<Parameter> *list, int index)
+QParameter *Quick3DEffect::parameterAt(QQmlListProperty<QParameter> *list, int index)
 {
     Quick3DEffect *effect = qobject_cast<Quick3DEffect *>(list->object);
     return qobject_cast<QEffect *>(effect->parentEffect())->parameters().at(index);
 }
 
-int Quick3DEffect::parametersCount(QQmlListProperty<Parameter> *list)
+int Quick3DEffect::parametersCount(QQmlListProperty<QParameter> *list)
 {
     Quick3DEffect *effect = qobject_cast<Quick3DEffect *>(list->object);
     return qobject_cast<QEffect *>(effect->parentEffect())->parameters().count();
 }
 
-void Quick3DEffect::clearParameterList(QQmlListProperty<Parameter> *list)
+void Quick3DEffect::clearParameterList(QQmlListProperty<QParameter> *list)
 {
     Quick3DEffect *effect = qobject_cast<Quick3DEffect *>(list->object);
-    Q_FOREACH (Parameter *p, qobject_cast<QEffect *>(effect->parentEffect())->parameters())
+    Q_FOREACH (QParameter *p, qobject_cast<QEffect *>(effect->parentEffect())->parameters())
         qobject_cast<QEffect *>(effect->parentEffect())->removeParameter(p);
 }
 

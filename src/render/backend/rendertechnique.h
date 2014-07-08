@@ -52,7 +52,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QTechnique;
-class Parameter;
+class QParameter;
 
 namespace Render {
 
@@ -79,7 +79,7 @@ public:
     QStringList glslNamesForUniformParameter(QString pName) const;
 
     // FIXME using front-end classes here, not ideal
-    Parameter* parameterByName(QString name) const;
+    QParameter* parameterByName(QString name) const;
 
     void sceneChangeEvent(const QSceneChangePtr &e);
     const QHash<QString, QVariant> parameters() const;

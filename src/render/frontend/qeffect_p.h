@@ -50,13 +50,13 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QEffect;
-class Parameter;
+class QParameter;
 
 class QT3DRENDERERSHARED_EXPORT QEffectPrivate : public QAbstractEffectPrivate
 {
 public :
     QEffectPrivate(QEffect *qq);
-    QList<Parameter *> m_parameters;
+    QList<QParameter *> m_parameters;
     Q_DECLARE_PUBLIC(QEffect)
 };
 

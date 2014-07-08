@@ -18,7 +18,7 @@ HEADERS += \
     $$PWD/qscene.h \
     $$PWD/techniquecriterion.h \
     $$PWD/renderpasscriterion.h \
-    $$PWD/parameter.h \
+    $$PWD/qparameter.h \
     $$PWD/parametermapper.h \
     $$PWD/qtorusmesh.h \
     $$PWD/qspheremesh.h \
@@ -55,7 +55,7 @@ SOURCES += \
     $$PWD/qscene.cpp \
     $$PWD/techniquecriterion.cpp \
     $$PWD/renderpasscriterion.cpp \
-    $$PWD/parameter.cpp \
+    $$PWD/qparameter.cpp \
     $$PWD/parametermapper.cpp \
     $$PWD/qtorusmesh.cpp \
     $$PWD/qspheremesh.cpp \

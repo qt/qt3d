@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "parameter.h"
+#include "qparameter.h"
 #include "renderlogging.h"
 #include <Qt3DCore/qscenepropertychange.h>
 
@@ -47,20 +47,20 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-Parameter::Parameter(QNode *parent, const QString &name, const QVariant &value)
+QParameter::QParameter(QNode *parent, const QString &name, const QVariant &value)
     : QNode(parent)
     , m_name(name)
     , m_value(value)
 {
 }
 
-Parameter::Parameter(QNode *parent)
+QParameter::QParameter(QNode *parent)
     : QNode(parent)
     , m_type(Undefined)
 {
 }
 
-Parameter::Parameter(QNode *parent, const QString &name, const QVariant &value, Parameter::OpenGLTypes ty)
+QParameter::QParameter(QNode *parent, const QString &name, const QVariant &value, QParameter::OpenGLTypes ty)
     : QNode(parent)
     , m_name(name)
     , m_type(ty)
@@ -69,7 +69,7 @@ Parameter::Parameter(QNode *parent, const QString &name, const QVariant &value, 
 
 }
 
-void Parameter::setName(const QString &name)
+void QParameter::setName(const QString &name)
 {
     if (m_name != name) {
         m_name = name;
@@ -77,7 +77,7 @@ void Parameter::setName(const QString &name)
     }
 }
 
-void Parameter::setValue(const QVariant &dv)
+void QParameter::setValue(const QVariant &dv)
 {
     if (m_value != dv) {
         m_value = dv;
@@ -89,12 +89,12 @@ void Parameter::setValue(const QVariant &dv)
     }
 }
 
-QVariant Parameter::value() const
+QVariant QParameter::value() const
 {
     return m_value;
 }
 
-void Parameter::setDatatype(OpenGLTypes type)
+void QParameter::setDatatype(OpenGLTypes type)
 {
     if (m_type != type) {
         m_type = type;
@@ -102,7 +102,7 @@ void Parameter::setDatatype(OpenGLTypes type)
     }
 }
 
-bool Parameter::isTextureType() const
+bool QParameter::isTextureType() const
 {
     switch (m_type) {
     case Sampler1D:
@@ -115,7 +115,7 @@ bool Parameter::isTextureType() const
     }
 }
 
-Render::QUniformValue::Type Parameter::uniformType() const
+Render::QUniformValue::Type QParameter::uniformType() const
 {
     switch (m_type) {
     case Bool:

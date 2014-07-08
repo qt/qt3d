@@ -168,7 +168,7 @@ private:
     void processJSONImage(QString id, QJsonObject jsonObj);
     void processJSONTexture(QString id, QJsonObject jsonObj);
 
-    QVariant parameterValueFromJSON(Parameter *p, QJsonValue val);
+    QVariant parameterValueFromJSON(QParameter *p, QJsonValue val);
 
     Render::DrawState *buildState(const QByteArray& nm, QJsonValue obj);
 };

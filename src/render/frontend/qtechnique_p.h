@@ -51,7 +51,7 @@ namespace Qt3D {
 
 class QTechnique;
 class TechniqueCriterion;
-class Parameter;
+class QParameter;
 
 class QT3DRENDERERSHARED_EXPORT QTechniquePrivate : public QAbstractTechniquePrivate
 {
@@ -59,7 +59,7 @@ public:
     QTechniquePrivate(QTechnique *dd);
     Q_DECLARE_PUBLIC(QTechnique)
     QList<TechniqueCriterion *> m_criteriaList;
-    QList<Parameter *> m_parameters;
+    QList<QParameter *> m_parameters;
 };
 
 } // Qt3D

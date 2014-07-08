@@ -56,9 +56,9 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class Parameter;
+class QParameter;
 class ParameterMapper;
-typedef QList<Parameter*> ParameterList;
+typedef QList<QParameter*> ParameterList;
 
 class QRenderPassPrivate;
 
@@ -69,9 +69,9 @@ class QT3DRENDERERSHARED_EXPORT QRenderPass : public QAbstractRenderPass
 public:
     explicit QRenderPass(QNode *parent = 0);
 
-    void addUniformBinding(Parameter* param, QString glslUniformName);
+    void addUniformBinding(QParameter* param, QString glslUniformName);
 
-    void addAttributeBinding(Parameter* param, QString glslAttributeName);
+    void addAttributeBinding(QParameter* param, QString glslAttributeName);
 
     QString glslNameForParameter(QString paramName) const;
 

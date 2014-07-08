@@ -42,7 +42,7 @@
 #include "qeffect.h"
 #include "qeffect_p.h"
 #include "qtechnique.h"
-#include "parameter.h"
+#include "qparameter.h"
 
 #include <Qt3DCore/qscenepropertychange.h>
 
@@ -78,7 +78,7 @@ void QEffect::removeTechnique(QAbstractTechnique *t)
     QAbstractEffect::removeTechnique(t);
 }
 
-void QEffect::addParameter(Parameter *parameter)
+void QEffect::addParameter(QParameter *parameter)
 {
     Q_D(QEffect);
     if (!d->m_parameters.contains(parameter)) {
@@ -90,7 +90,7 @@ void QEffect::addParameter(Parameter *parameter)
     }
 }
 
-void QEffect::removeParameter(Parameter *parameter)
+void QEffect::removeParameter(QParameter *parameter)
 {
     Q_D(QEffect);
     d->m_parameters.removeOne(parameter);
@@ -100,7 +100,7 @@ void QEffect::removeParameter(Parameter *parameter)
     notifyObservers(change);
 }
 
-QList<Parameter *> QEffect::parameters() const
+QList<QParameter *> QEffect::parameters() const
 {
     Q_D(const QEffect);
     return d->m_parameters;
