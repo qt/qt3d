@@ -132,7 +132,6 @@ Renderer::Renderer(int cachedFrames)
     , m_frameCount(0)
     , m_cachedFramesCount(cachedFrames)
 {
-    m_graphicContextInitialized.fetchAndStoreOrdered(0);
     m_currentPreprocessingFrameIndex = 0;
     m_textureProvider = new RenderTextureProvider;
 
@@ -211,9 +210,22 @@ Renderer::~Renderer()
     delete m_textureProvider;
 }
 
-// Called in RenderAspect Thread context
+// Called in RenderThread context by the run method of RenderThread
+// RenderThread has locked the mutex already and unlocks it when this
+// method termintates
 void Renderer::initialize()
 {
+    m_waitForWindowToBeSetCondition.wait(mutex());
+
+    m_graphicsContext = new QGraphicsContext;
+    QOpenGLContext* ctx = new QOpenGLContext;
+    m_graphicsContext->setSurface(m_surface);
+    m_graphicsContext->setRenderer(this);
+    QSurfaceFormat sf = m_surface->format();
+    ctx->setFormat(sf);
+    if (!ctx->create())
+        qCWarning(Backend) << Q_FUNC_INFO << "OpenGL context creation failed";
+    m_graphicsContext->setOpenGLContext(ctx);
 
     m_defaultMaterialHandle = m_materialManager->acquire();
     RenderMaterial *rMaterial = m_materialManager->data(m_defaultMaterialHandle);
@@ -235,6 +247,8 @@ void Renderer::initialize()
     rPass->setRenderer(this);
     rPass->setPeer(qobject_cast<QRenderPass*>(m_defaultTechnique->renderPasses().first()));
 
+    // Awake setScenegraphRoot in case it was waiting
+    m_waitForInitializationToBeCompleted.wakeOne();
 }
 
 QFrameAllocator *Renderer::currentFrameAllocator(int frameIndex)
@@ -276,17 +290,18 @@ Render::FrameGraphNode *Renderer::frameGraphRoot() const
 }
 
 // QAspectThread context
+// Order of execution :
+// 1) Initialize -> waiting for Window
+// 2) setWindow -> waking Initialize || setSceneGraphRoot waiting
+// 3) setWindow -> waking Initialize if setSceneGraphRoot was called before
+// 4) Initialize resuming, performing initialization and waking up setSceneGraphRoot
+// 5) setSceneGraphRoot called || setSceneGraphRoot resuming if it was waiting
 void Renderer::setSceneGraphRoot(QEntity *sgRoot)
 {
     Q_ASSERT(sgRoot);
-
-    //    Scene *scene = Scene::findInTree(sgRoot);
-    // Scene needs to be built with scene parsers
-    // For each scene parser, check whether scene source format
-    // is supported, filter if there is a preference toward which
-    // parser should parse the file if two parsers support the same
-    // format
-
+    QMutexLocker lock(&m_mutex); // This waits until initialize and setSurface have been called
+    if (m_graphicsContext == Q_NULLPTR) // If initialization hasn't been completed we must wait
+        m_waitForInitializationToBeCompleted.wait(&m_mutex);
     m_sceneGraphRoot = sgRoot;
     RenderSceneBuilder builder(this);
     builder.traverse(m_sceneGraphRoot);
@@ -296,12 +311,6 @@ void Renderer::setSceneGraphRoot(QEntity *sgRoot)
         qCWarning(Backend) << "Failed to build render scene";
     qCDebug(Backend) << Q_FUNC_INFO << "DUMPING SCENE";
     m_renderSceneRoot->dump();
-
-    // Queue up jobs to do initial full updates of
-    //  - Mesh loading + bounding volume calculation
-    //  - Local bounding volumes
-    //  - World transforms
-    //  - World bounding volumes
 }
 
 QEntity *Renderer::sceneGraphRoot() const
@@ -314,7 +323,9 @@ QEntity *Renderer::sceneGraphRoot() const
 void Renderer::setSurface(QSurface* s)
 {
     qCDebug(Backend) << Q_FUNC_INFO << QThread::currentThread();
+    QMutexLocker locker(&m_mutex); // The will wait until initialize has been called by RenderThread::run
     m_surface = s;
+    m_waitForWindowToBeSetCondition.wakeOne();
 }
 
 void Renderer::render()
@@ -371,18 +382,6 @@ void Renderer::submitRenderViews()
     // as long as there is available space in the renderQueues.
     // Otherwise it waits for submission to be done so as to never miss
     // Any important state change that could be in a RenderView
-    if (m_graphicsContext == Q_NULLPTR && m_surface != Q_NULLPTR) {
-        m_graphicsContext = new QGraphicsContext;
-        QOpenGLContext* ctx = new QOpenGLContext;
-        m_graphicsContext->setSurface(m_surface);
-        m_graphicsContext->setRenderer(this);
-        QSurfaceFormat sf = m_surface->format();
-        ctx->setFormat(sf);
-        if (!ctx->create())
-            qCWarning(Backend) << Q_FUNC_INFO << "OpenGL context creation failed";
-        m_graphicsContext->setOpenGLContext(ctx);
-        m_graphicContextInitialized.fetchAndStoreOrdered(1);
-    }
     locker.unlock();
 
     QElapsedTimer timer;
@@ -437,14 +436,10 @@ QVector<QJobPtr> Renderer::createRenderBinJobs()
     // We do not create jobs if the graphicContext hasn't been set.
     // That way we will go in submitRenderView which will create the OpenGLContext in the
     // correct thread so that later on Jobs can query for OpenGL Versions, Extensions ...
-    if (m_graphicContextInitialized.loadAcquire()) {
-        FrameGraphVisitor visitor;
-        visitor.traverse(m_frameGraphRoot, this, &renderBinJobs);
-        m_renderQueues->setTargetRenderViewCount(renderBinJobs.size());
-    }
-    else {
-        m_submitRenderViewsCondition.wakeOne();
-    }
+    FrameGraphVisitor visitor;
+    visitor.traverse(m_frameGraphRoot, this, &renderBinJobs);
+    m_renderQueues->setTargetRenderViewCount(renderBinJobs.size());
+
     return renderBinJobs;
 }
 

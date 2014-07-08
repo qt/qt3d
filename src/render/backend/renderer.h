@@ -234,8 +234,9 @@ private:
 
     QMutex m_mutex;
     QWaitCondition m_submitRenderViewsCondition;
+    QWaitCondition m_waitForWindowToBeSetCondition;
+    QWaitCondition m_waitForInitializationToBeCompleted;
     uint m_frameCount;
-    QAtomicInt m_graphicContextInitialized;
     int m_currentPreprocessingFrameIndex;
 
     QThreadStorage< QPair<int, QFrameAllocatorQueue *> > m_tlsAllocators;

@@ -134,6 +134,10 @@ void QAspectManager::setWindow(QWindow *window)
 {
     qCDebug(Aspects) << Q_FUNC_INFO;
     m_window = window;
+    // We need to create the window
+    // Otherwise aspects won't be able to initialize the glContext
+    // As show (which calls create) is only called after they're initialized
+    m_window->create();
 }
 
 /*!

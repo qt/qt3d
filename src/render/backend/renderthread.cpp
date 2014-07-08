@@ -72,14 +72,18 @@ void RenderThread::run()
 {
     m_mutex.lock();
 
-// Create worker objects
+    // Create worker objects
     m_renderer = new Render::Renderer;
-    //m_eventHandler = new RenderEventProcessor;
-
+    // We lock the renderer's mutex before unlocking the render thread mutex
+    // To ensure that the Renderer's initialize waitCondition is setup while other threads
+    // are still waiting for this RenderThread's waitCondition to be satisfied
+    QMutexLocker locker(m_renderer->mutex());
     m_waitCondition.wakeOne();
     m_mutex.unlock();
+    // Renderer waits for a surface to be set
+    m_renderer->initialize();
+    locker.unlock();
 
-    // Enter the rendering loop
     while (true) {
         m_renderer->render();
     }

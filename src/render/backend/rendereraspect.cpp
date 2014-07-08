@@ -68,8 +68,11 @@ RendererAspect::RendererAspect(QObject *parent)
     qRegisterMetaType< QSharedPointer<QObject> >("QObjectPtr");
     // TO DO : Check whether it would make sense to have the Renderer create a private thread
     // To perform its rendering and remove this one.
+
+    // Won't return until RenderThread and Renderer have been created
+    // The Renderer is set to wait the surface with a wait condition
+    // Threads modifying the Renderer should be synchronized using the Renderer's mutex
     m_renderThread->waitForStart();
-    m_renderThread->renderer()->setRendererAspect(this);
 }
 
 QVector<QJobPtr> RendererAspect::jobsToExecute()
@@ -119,6 +122,7 @@ QVector<QJobPtr> RendererAspect::jobsToExecute()
 void RendererAspect::registerAspectHelper(QEntity *rootObject)
 {
     Render::Renderer *renderer = m_renderThread->renderer();
+    // setSceneGraphRoot is synchronized using the Renderer's mutex
     renderer->setSceneGraphRoot(rootObject);
 }
 
@@ -130,8 +134,8 @@ void RendererAspect::unregisterAspectHelper(QEntity *rootObject)
 void RendererAspect::initializeHelper(QAspectManager *aspectManager)
 {
     Render::Renderer *renderer = m_renderThread->renderer();
-
-    renderer->initialize();
+    renderer->setRendererAspect(this);
+    // setSurface is synchronized using the Renderer's mutex
     renderer->setSurface(aspectManager->window());
 }
 
