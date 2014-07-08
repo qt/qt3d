@@ -39,66 +39,33 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QABSTRACTASPECT_H
-#define QT3D_QABSTRACTASPECT_H
+#ifndef QT3D_QABSTRACTASPECT_P_H
+#define QT3D_QABSTRACTASPECT_P_H
 
-#include <QObject>
-#include <QSharedPointer>
-#include <Qt3DCore/qt3dcore_global.h>
-#include <Qt3DCore/qjobproviderinterface.h>
+#include <private/qobject_p.h>
 
 QT_BEGIN_NAMESPACE
 
-class QWindow;
-
 namespace Qt3D {
 
-class QAspectManager;
-class QNode;
+class QAbstractAspect;
 class QEntity;
-class QAbstractAspectPrivate;
+class QAspectManager;
 
-class QT3DCORESHARED_EXPORT QAbstractAspect : public QObject, public QJobProviderInterface
+class QAbstractAspectPrivate : public QObjectPrivate
 {
-    Q_OBJECT
-
 public:
-    enum AspectType {
-        AspectRenderer,
-        AspectAnimation,
-        AspectCollision,
-        AspectPhysics,
-        AspectPhysicsAndCollision,
-        AspectAI,
-        AspectAudio,
-        AspectOther
-    };
+    QAbstractAspectPrivate(QAbstractAspect *qq);
 
-    explicit QAbstractAspect(AspectType aspectType, QObject *parent = 0);
+    Q_DECLARE_PUBLIC(QAbstractAspect)
 
-    AspectType aspectType() const;
-    QAspectManager *aspectManager() const;
-
-    void registerAspect(QEntity *rootObject);
-    void unregisterAspect(QEntity *rootObject);
-
-    void initialize(QAspectManager *aspectManager);
-    void cleanup();
-
-protected:
-
-    Q_DECLARE_PRIVATE(QAbstractAspect)
-    QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent = 0);
-
-    virtual void registerAspectHelper(QEntity *rootObject) = 0;
-    virtual void unregisterAspectHelper(QEntity *rootObject) = 0;
-
-    virtual void initializeHelper(QAspectManager *aspectManager) = 0;
-    virtual void cleanupHelper() = 0;
+    QAspectManager *m_aspectManager;
+    QEntity *m_root;
+    QAbstractAspect::AspectType m_aspectType;
 };
 
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_ABSTRACTASPECT_H
+#endif // QT3D_QABSTRACTASPECT_P_H

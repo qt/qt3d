@@ -41,36 +41,64 @@
 
 #include "qabstractaspect.h"
 #include "qentity.h"
+#include <private/qabstractaspect_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QAbstractAspect::QAbstractAspect(AspectType aspectType, QObject *parent)
-    : QObject(parent)
+QAbstractAspectPrivate::QAbstractAspectPrivate(QAbstractAspect *qq)
+    : QObjectPrivate()
     , m_root(Q_NULLPTR)
-    , m_aspectType(aspectType)
 {
+    q_ptr = qq;
+}
+
+QAbstractAspect::QAbstractAspect(AspectType aspectType, QObject *parent)
+    : QObject(*new QAbstractAspectPrivate(this), parent)
+{
+    Q_D(QAbstractAspect);
+    d->m_aspectType = aspectType;
+}
+
+QAbstractAspect::QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent)
+    : QObject(dd, parent)
+{
+}
+
+QAbstractAspect::AspectType QAbstractAspect::aspectType() const
+{
+    Q_D(const QAbstractAspect);
+    return d->m_aspectType;
+}
+
+QAspectManager *QAbstractAspect::aspectManager() const
+{
+    Q_D(const QAbstractAspect);
+    return d->m_aspectManager;
 }
 
 void QAbstractAspect::registerAspect(QEntity *rootObject)
 {
-    if (rootObject == m_root)
+    Q_D(QAbstractAspect);
+    if (rootObject == d->m_root)
         return;
 
-    m_root = rootObject;
+    d->m_root = rootObject;
     registerAspectHelper(rootObject);
 }
 
 void QAbstractAspect::unregisterAspect(QEntity *rootObject)
 {
+    Q_D(QAbstractAspect);
     unregisterAspectHelper(rootObject);
-    m_root = rootObject;
+    d->m_root = rootObject;
 }
 
 void QAbstractAspect::initialize(QAspectManager *aspectManager)
 {
-    m_aspectManager = aspectManager;
+    Q_D(QAbstractAspect);
+    d->m_aspectManager = aspectManager;
     initializeHelper(aspectManager);
 }
 
