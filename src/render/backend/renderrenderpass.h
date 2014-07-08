@@ -51,7 +51,7 @@ namespace Qt3D {
 
 class QRenderPass;
 class QAbstractShader;
-class ParameterMapper;
+class QParameterMapper;
 
 namespace Render {
 
@@ -66,13 +66,13 @@ public:
     void setPeer(QRenderPass *peer);
     void sceneChangeEvent(const QSceneChangePtr &e);
     QAbstractShader *shaderProgram() const;
-    QList<ParameterMapper *> bindings() const;
+    QList<QParameterMapper *> bindings() const;
 
 private:
     Renderer *m_renderer;
     QRenderPass *m_peer;
     QAbstractShader *m_shader;
-    QList<ParameterMapper *> m_bindings;
+    QList<QParameterMapper *> m_bindings;
 
 };
 

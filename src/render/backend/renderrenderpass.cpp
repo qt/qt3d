@@ -46,7 +46,7 @@
 #include <Qt3DCore/qchangearbiter.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qabstractshader.h>
-#include <Qt3DRenderer/parametermapper.h>
+#include <Qt3DRenderer/qparametermapper.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -97,7 +97,7 @@ QAbstractShader *RenderRenderPass::shaderProgram() const
     return m_shader;
 }
 
-QList<ParameterMapper *> RenderRenderPass::bindings() const
+QList<QParameterMapper *> RenderRenderPass::bindings() const
 {
     return m_bindings;
 }

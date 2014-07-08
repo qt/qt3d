@@ -88,7 +88,7 @@
 #include <layermanager.h>
 #include <lightmanager.h>
 #include "renderlogging.h"
-#include "parametermapper.h"
+#include "qparametermapper.h"
 
 #include <Qt3DCore/cameralens.h>
 #include <Qt3DCore/qabstracteffect.h>
@@ -174,18 +174,18 @@ void Renderer::buildDefaultTechnique()
     // diffuse lighting uniforms
     QParameter* lightPos = new QParameter(m_defaultTechnique, QStringLiteral("lightPos"), QVector4D(10.0f, 10.0f, 0.0f, 1.0f));
     m_defaultTechnique->addParameter(lightPos);
-    basicPass->addBinding(new ParameterMapper(QStringLiteral("lightPos"), QStringLiteral("lightPosition"), ParameterMapper::Uniform));
+    basicPass->addBinding(new QParameterMapper(QStringLiteral("lightPos"), QStringLiteral("lightPosition"), QParameterMapper::Uniform));
 
     QParameter* lightIntensity = new QParameter(m_defaultTechnique, QStringLiteral("lightIntensity"), QVector3D(0.5f, 0.5f, 0.5f));
     m_defaultTechnique->addParameter(lightIntensity);
 
     QParameter* kd = new QParameter(m_defaultTechnique, QStringLiteral("diffuse"), QVector3D(1.0f, 0.5f, 0.0f));
     m_defaultTechnique->addParameter(kd);
-    basicPass->addBinding(new ParameterMapper(QStringLiteral("diffuse"), QStringLiteral("kd"), ParameterMapper::Uniform));
+    basicPass->addBinding(new QParameterMapper(QStringLiteral("diffuse"), QStringLiteral("kd"), QParameterMapper::Uniform));
 
     QParameter* ka = new QParameter(m_defaultTechnique, QStringLiteral("ambient"), QVector3D(0.2f, 0.2f, 0.2f));
     m_defaultTechnique->addParameter(ka);
-    basicPass->addBinding(new ParameterMapper(QStringLiteral("ambient"), QStringLiteral("ka"), ParameterMapper::Uniform));
+    basicPass->addBinding(new QParameterMapper(QStringLiteral("ambient"), QStringLiteral("ka"), QParameterMapper::Uniform));
 
 }
 

@@ -65,7 +65,7 @@
 #include "renderlogging.h"
 #include "renderpassmanager.h"
 #include "renderrenderpass.h"
-#include "parametermapper.h"
+#include "qparametermapper.h"
 #include "qparameter.h"
 #include "texturemanager.h"
 #include "texture.h"
@@ -536,12 +536,12 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
             }
 
             // Set uniforms and attributes explicitly binded
-            Q_FOREACH (ParameterMapper *binding, rPass->bindings()) {
+            Q_FOREACH (QParameterMapper *binding, rPass->bindings()) {
                 if (!parameters.contains(binding->parameterName())) {
-                    if (binding->bindingType() == ParameterMapper::Attribute
+                    if (binding->bindingType() == QParameterMapper::Attribute
                             && attributeNames.contains(binding->shaderVariableName()))
                         command->m_parameterAttributeToShaderNames[binding->parameterName()] = binding->shaderVariableName();
-                    else if (binding->bindingType() == ParameterMapper::StandardUniform
+                    else if (binding->bindingType() == QParameterMapper::StandardUniform
                              && uniformNames.contains(binding->shaderVariableName())
                              && m_standardUniformSetters.contains(binding->parameterName()))
                         command->m_uniforms.setUniform(binding->shaderVariableName(),

@@ -39,19 +39,19 @@
 **
 ****************************************************************************/
 
-#include "parametermapper.h"
+#include "qparametermapper.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-ParameterMapper::ParameterMapper(QObject *parent)
+QParameterMapper::QParameterMapper(QObject *parent)
     : QObject(parent)
     , m_bindingType(Uniform)
 {
 }
 
-ParameterMapper::ParameterMapper(const QString &parameterName, const QString &shaderParameterName, ParameterMapper::Binding bindingType)
+QParameterMapper::QParameterMapper(const QString &parameterName, const QString &shaderParameterName, QParameterMapper::Binding bindingType)
     : QObject()
     , m_parameterName(parameterName)
     , m_shaderVariableName(shaderParameterName)
@@ -59,7 +59,7 @@ ParameterMapper::ParameterMapper(const QString &parameterName, const QString &sh
 {
 }
 
-void ParameterMapper::setParameterName(const QString &name)
+void QParameterMapper::setParameterName(const QString &name)
 {
     if (m_parameterName != name) {
         m_parameterName = name;
@@ -67,7 +67,7 @@ void ParameterMapper::setParameterName(const QString &name)
     }
 }
 
-void ParameterMapper::setShaderVariableName(const QString &name)
+void QParameterMapper::setShaderVariableName(const QString &name)
 {
     if (m_shaderVariableName != name) {
         m_shaderVariableName = name;
@@ -75,7 +75,7 @@ void ParameterMapper::setShaderVariableName(const QString &name)
     }
 }
 
-void ParameterMapper::setBindingType(ParameterMapper::Binding type)
+void QParameterMapper::setBindingType(QParameterMapper::Binding type)
 {
     if (m_bindingType != type) {
         m_bindingType = type;
@@ -83,17 +83,17 @@ void ParameterMapper::setBindingType(ParameterMapper::Binding type)
     }
 }
 
-QString ParameterMapper::parameterName() const
+QString QParameterMapper::parameterName() const
 {
     return m_parameterName;
 }
 
-QString ParameterMapper::shaderVariableName() const
+QString QParameterMapper::shaderVariableName() const
 {
     return m_shaderVariableName;
 }
 
-ParameterMapper::Binding ParameterMapper::bindingType() const
+QParameterMapper::Binding QParameterMapper::bindingType() const
 {
     return m_bindingType;
 }

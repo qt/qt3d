@@ -19,7 +19,7 @@ HEADERS += \
     $$PWD/techniquecriterion.h \
     $$PWD/renderpasscriterion.h \
     $$PWD/qparameter.h \
-    $$PWD/parametermapper.h \
+    $$PWD/qparametermapper.h \
     $$PWD/qtorusmesh.h \
     $$PWD/qspheremesh.h \
     $$PWD/qabstractshapemesh_p.h \
@@ -56,7 +56,7 @@ SOURCES += \
     $$PWD/techniquecriterion.cpp \
     $$PWD/renderpasscriterion.cpp \
     $$PWD/qparameter.cpp \
-    $$PWD/parametermapper.cpp \
+    $$PWD/qparametermapper.cpp \
     $$PWD/qtorusmesh.cpp \
     $$PWD/qspheremesh.cpp \
     $$PWD/qabstractlight.cpp \

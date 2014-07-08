@@ -57,7 +57,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QParameter;
-class ParameterMapper;
+class QParameterMapper;
 typedef QList<QParameter*> ParameterList;
 
 class QRenderPassPrivate;
@@ -85,9 +85,9 @@ public:
     void removeCriterion(RenderPassCriterion *criterion);
     QList<RenderPassCriterion *> criteria() const;
 
-    void addBinding(ParameterMapper *binding);
-    void removeBinding(ParameterMapper *binding);
-    QList<ParameterMapper *> bindings() const;
+    void addBinding(QParameterMapper *binding);
+    void removeBinding(QParameterMapper *binding);
+    QList<QParameterMapper *> bindings() const;
 
 protected:
     Q_DECLARE_PRIVATE(QRenderPass)

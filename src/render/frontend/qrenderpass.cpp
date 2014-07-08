@@ -43,7 +43,7 @@
 #include "qrenderpass_p.h"
 #include "qparameter.h"
 #include "renderpasscriterion.h"
-#include "parametermapper.h"
+#include "qparametermapper.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -111,7 +111,7 @@ QList<RenderPassCriterion *> QRenderPass::criteria() const
     return d->m_criteria;
 }
 
-void QRenderPass::addBinding(ParameterMapper *binding)
+void QRenderPass::addBinding(QParameterMapper *binding)
 {
     Q_D(QRenderPass);
     // TO DO: Notify QChangeArbiter
@@ -119,14 +119,14 @@ void QRenderPass::addBinding(ParameterMapper *binding)
         d->m_bindings.append(binding);
 }
 
-void QRenderPass::removeBinding(ParameterMapper *binding)
+void QRenderPass::removeBinding(QParameterMapper *binding)
 {
     Q_D(QRenderPass);
     // TO DO: Notify QChangeArbiter
     d->m_bindings.removeOne(binding);
 }
 
-QList<ParameterMapper *> QRenderPass::bindings() const
+QList<QParameterMapper *> QRenderPass::bindings() const
 {
     Q_D(const QRenderPass);
     return d->m_bindings;

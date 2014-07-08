@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_PARAMETERBINDER_H
-#define QT3D_PARAMETERBINDER_H
+#ifndef QT3D_QPARAMETERBINDER_H
+#define QT3D_QPARAMETERBINDER_H
 
 #include <QObject>
 #include <Qt3DRenderer/qt3drenderer_global.h>
@@ -49,7 +49,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DRENDERERSHARED_EXPORT ParameterMapper : public QObject
+class QT3DRENDERERSHARED_EXPORT QParameterMapper : public QObject
 {
     Q_OBJECT
     Q_ENUMS(Binding)
@@ -64,8 +64,8 @@ public:
         StandardUniform
     };
 
-    explicit ParameterMapper(QObject *parent = 0);
-    ParameterMapper(const QString &parameterName, const QString &shaderParameterName, ParameterMapper::Binding bindingType);
+    explicit QParameterMapper(QObject *parent = 0);
+    QParameterMapper(const QString &parameterName, const QString &shaderParameterName, QParameterMapper::Binding bindingType);
 
     void setParameterName(const QString &name);
     void setShaderVariableName(const QString &name);
@@ -90,4 +90,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_PARAMETERBINDER_H
+#endif // QT3D_QPARAMETERBINDER_H

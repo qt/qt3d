@@ -51,7 +51,7 @@ namespace Qt3D {
 
 class QRenderPass;
 class QParameter;
-class ParameterMapper;
+class QParameterMapper;
 typedef QList<QParameter*> ParameterList;
 
 namespace Render
@@ -71,7 +71,7 @@ public:
     // map Parameter names to GLSL names
     QHash<QString, QString> m_parameterNameDict;
     QList<RenderPassCriterion *> m_criteria;
-    QList<ParameterMapper *> m_bindings;
+    QList<QParameterMapper *> m_bindings;
 
     Render::DrawStateSet* m_stateSet;
 };
