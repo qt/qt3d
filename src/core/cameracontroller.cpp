@@ -45,7 +45,7 @@
 #include <QKeyEvent>
 
 #include <camera.h>
-#include <cameralens.h>
+#include <qcameralens.h>
 #include <qentity.h>
 #include <qmatrixtransform.h>
 

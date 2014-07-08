@@ -51,7 +51,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class CameraLens;
+class QCameraLens;
 
 namespace Render {
 
@@ -64,7 +64,7 @@ public:
     ~RenderCamera();
 
     void setRenderer(Renderer *renderer);
-    void setPeer(CameraLens *peer);
+    void setPeer(QCameraLens *peer);
 
     void setClearColor();
     QVector4D clearColor() const { return m_clearColor; }
@@ -81,7 +81,7 @@ public:
 
 private:
     Renderer *m_renderer;
-    CameraLens *m_peer;
+    QCameraLens *m_peer;
 
     QVector4D m_clearColor;
 

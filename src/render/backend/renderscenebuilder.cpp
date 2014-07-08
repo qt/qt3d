@@ -75,7 +75,7 @@
 
 
 #include <Qt3DCore/camera.h>
-#include <Qt3DCore/cameralens.h>
+#include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/qentity.h>
 
@@ -195,12 +195,12 @@ Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(QNode *block)
         if (cameraEntity && m_renderer->cameraManager()->lookupHandle(cameraEntity->uuid()).isNull()) {
             HRenderNode nodeHandle = createRenderNode(cameraSelector->camera());
             m_renderer->renderNodesManager()->data(nodeHandle)->setParentHandle(m_frameGraphEntityNode);
-            createRenderElement<CameraLens, RenderCamera, CameraManager>(cameraEntity, m_renderer->cameraManager());
+            createRenderElement<QCameraLens, RenderCamera, CameraManager>(cameraEntity, m_renderer->cameraManager());
         }
         cameraSelectorNode->setCameraEntity(cameraEntity);
         qCDebug(Backend) << Q_FUNC_INFO << "CameraSelector" << cameraSelectorNode->cameraEntity();
         if (cameraSelectorNode->cameraEntity() == Q_NULLPTR ||
-                cameraSelectorNode->cameraEntity()->componentsOfType<CameraLens>().isEmpty())
+                cameraSelectorNode->cameraEntity()->componentsOfType<QCameraLens>().isEmpty())
             qCWarning(Backend) << Q_FUNC_INFO << "No camera or camera lens present in the referenced entity";
         return cameraSelectorNode;
     }
@@ -292,7 +292,7 @@ void RenderSceneBuilder::visitEntity(Qt3D::QEntity *entity)
     // Retrieve Mesh from Entity
     createRenderElement<QAbstractMesh, RenderMesh, MeshManager>(entity, m_renderer->meshManager());
     // Retrieve Camera from Entity
-    createRenderElement<CameraLens, RenderCamera, CameraManager>(entity, m_renderer->cameraManager());
+    createRenderElement<QCameraLens, RenderCamera, CameraManager>(entity, m_renderer->cameraManager());
     // Retrieve Layer from Entity
     createRenderElement<QLayer, RenderLayer, LayerManager>(entity, m_renderer->layerManager());
     // Retrieve Lights from Entity

@@ -53,7 +53,7 @@
 #include <Qt3DCore/camera.h>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/qmatrixtransform.h>
-#include <Qt3DCore/cameralens.h>
+#include <Qt3DCore/qcameralens.h>
 #include <texture.h>
 #include <qparameter.h>
 
@@ -395,7 +395,7 @@ QEntity* GLTFParser::node(QString id)
 
     if ( jsonObj.contains(KEY_CAMERA) )
     {
-        CameraLens* cam = camera( jsonObj.value(KEY_CAMERA).toString() );
+        QCameraLens* cam = camera( jsonObj.value(KEY_CAMERA).toString() );
         if (!cam) {
             qWarning() << "failed to build camera:" << jsonObj.value(KEY_CAMERA)
                        << "on node" << id;
@@ -416,7 +416,7 @@ QEntity* GLTFParser::node(QString id)
 #undef far
 #endif
 
-CameraLens* GLTFParser::camera(QString id)
+QCameraLens* GLTFParser::camera(QString id)
 {
     parse();
     QJsonObject cams = m_json.object().value(KEY_CAMERAS).toObject();
@@ -439,7 +439,7 @@ CameraLens* GLTFParser::camera(QString id)
         double near = pObj.value(KEY_ZNEAR).toDouble();
         double far = pObj.value(KEY_ZFAR).toDouble();
 
-        CameraLens* result = new CameraLens;
+        QCameraLens* result = new QCameraLens;
         result->setPerspectiveProjection(yfov, 1.0, near, far);
         return result;
     } else if (camTy == "orthographic") {

@@ -44,7 +44,7 @@
 #include "renderlogging.h"
 
 #include <Qt3DCore/qtransform.h>
-#include <Qt3DCore/cameralens.h>
+#include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/qscenepropertychange.h>
@@ -75,7 +75,7 @@ void RenderCamera::setRenderer(Renderer *renderer)
     m_renderer = renderer;
 }
 
-void RenderCamera::setPeer(CameraLens *peer)
+void RenderCamera::setPeer(QCameraLens *peer)
 {
     if (peer != m_peer) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();

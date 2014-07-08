@@ -64,7 +64,7 @@ class QMaterial;
 class ShaderProgram;
 class QEffect;
 class Camera;
-class CameraLens;
+class QCameraLens;
 class Texture;
 
 class GLTFParser : public AbstractSceneParser
@@ -93,7 +93,7 @@ public:
     QEntity *defaultScene();
     MeshDataPtr mesh(QString id);
     QMaterial *material(QString id);
-    CameraLens *camera(QString id);
+    QCameraLens *camera(QString id);
 
 private:
 

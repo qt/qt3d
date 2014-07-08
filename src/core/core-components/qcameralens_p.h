@@ -43,7 +43,7 @@
 #define QT3D_CAMERALENS_P_H
 
 #include <Qt3DCore/private/qcomponent_p.h>
-#include "cameralens.h"
+#include "qcameralens.h"
 
 #include <QtGui/qmatrix4x4.h>
 
@@ -51,10 +51,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DCORESHARED_EXPORT CameraLensPrivate : public QComponentPrivate
+class QT3DCORESHARED_EXPORT QCameraLensPrivate : public QComponentPrivate
 {
 public:
-    CameraLensPrivate(CameraLens *qq);
+    QCameraLensPrivate(QCameraLens *qq);
 
     inline void updatePerpectiveProjection()
     {
@@ -68,9 +68,9 @@ public:
         m_projectionMatrix.ortho(m_left, m_right, m_bottom, m_top, m_nearPlane, m_farPlane);
     }
 
-    Q_DECLARE_PUBLIC(CameraLens)
+    Q_DECLARE_PUBLIC(QCameraLens)
 
-    CameraLens::ProjectionType m_projectionType;
+    QCameraLens::ProjectionType m_projectionType;
 
     float m_nearPlane;
     float m_farPlane;

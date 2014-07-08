@@ -41,7 +41,7 @@
 
 #include "camera.h"
 #include "camera_p.h"
-#include "cameralens.h"
+#include "qcameralens.h"
 #include <qtransform.h>
 #include <qlookattransform.h>
 
@@ -55,13 +55,13 @@ Camera::Camera(QNode *parent) : QEntity(parent)
     qDebug() << Q_FUNC_INFO;
 }
 
-CameraLens *Camera::lens() const
+QCameraLens *Camera::lens() const
 {
     Q_D(const Camera);
     return d->m_lens;
 }
 
-void Camera::setLens(CameraLens *lens)
+void Camera::setLens(QCameraLens *lens)
 {
     Q_D(Camera);
     if (d->m_lens != lens) {

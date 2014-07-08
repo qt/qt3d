@@ -53,7 +53,7 @@
 #include <sphere.h>
 
 #include <Qt3DCore/qentity.h>
-#include <Qt3DCore/cameralens.h>
+#include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qtransform.h>
@@ -170,10 +170,10 @@ void RenderEntity::sceneChangeEvent(const QSceneChangePtr &e)
         if (m_transform == Q_NULLPTR && qobject_cast<QTransform*>(component) != Q_NULLPTR) {
             setTransform(qobject_cast<QTransform *>(component));
         }
-        else if (qobject_cast<CameraLens *>(component)) {
+        else if (qobject_cast<QCameraLens *>(component)) {
             RenderCamera *cam = m_renderer->cameraManager()->lookupResource(m_frontEndPeer->asEntity()->uuid());
             if (cam != Q_NULLPTR)
-                cam->setPeer(qobject_cast<CameraLens *>(component));
+                cam->setPeer(qobject_cast<QCameraLens *>(component));
         }
         else if (qobject_cast<QAbstractMesh *>(component)) {
             RenderMesh *mesh = m_renderer->meshManager()->lookupResource(m_frontEndPeer->asEntity()->uuid());
@@ -190,7 +190,7 @@ void RenderEntity::sceneChangeEvent(const QSceneChangePtr &e)
         if (component == m_transform) {
             setTransform(Q_NULLPTR);
         }
-        else if (qobject_cast<CameraLens *>(component)) {
+        else if (qobject_cast<QCameraLens *>(component)) {
             RenderCamera *cam = m_renderer->cameraManager()->lookupResource(m_frontEndPeer->asEntity()->uuid());
             if (cam != Q_NULLPTR)
                 cam->setPeer(Q_NULLPTR);

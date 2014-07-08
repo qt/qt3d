@@ -90,7 +90,7 @@
 #include "renderlogging.h"
 #include "qparametermapper.h"
 
-#include <Qt3DCore/cameralens.h>
+#include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/qabstracteffect.h>
 
 #include <qeffect.h>

@@ -54,13 +54,13 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class CameraPrivate;
-class CameraLens;
+class QCameraLens;
 class QTransform;
 
 class QT3DCORESHARED_EXPORT Camera : public QEntity
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3D::CameraLens *lens READ lens WRITE setLens NOTIFY lensChanged)
+    Q_PROPERTY(Qt3D::QCameraLens *lens READ lens WRITE setLens NOTIFY lensChanged)
     Q_PROPERTY(Qt3D::QTransform *transform READ transform WRITE setTransform NOTIFY transformChanged)
 
 public:
@@ -72,8 +72,8 @@ public:
         DontTranslateViewCenter
     };
 
-    CameraLens* lens() const;
-    void setLens(CameraLens *lens);
+    QCameraLens* lens() const;
+    void setLens(QCameraLens *lens);
 
     QTransform *transform() const;
     void setTransform(QTransform* lookAt);

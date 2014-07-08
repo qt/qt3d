@@ -39,13 +39,13 @@
 **
 ****************************************************************************/
 
-#ifndef CAMERA_P_H
-#define CAMERA_P_H
+#ifndef QT3D_CAMERA_P_H
+#define QT3D_CAMERA_P_H
 
 #include <QMatrix4x4>
 #include <QVector3D>
 
-#include <Qt3DCore/cameralens.h>
+#include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/qlookattransform.h>
 #include <Qt3DCore/qtransform.h>
 
@@ -66,7 +66,7 @@ public:
     Q_DECLARE_PUBLIC(Camera)
     Camera *q_ptr;
 
-    CameraLens *m_lens;
+    QCameraLens *m_lens;
     QTransform *m_transform;
 };
 
@@ -74,4 +74,4 @@ public:
 
 QT_END_NAMESPACE
 
-#endif // CAMERA_P_H
+#endif // QT3D_CAMERA_P_H

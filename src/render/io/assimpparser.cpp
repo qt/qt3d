@@ -44,7 +44,7 @@
 #include <Qt3DCore/qtransform.h>
 #include <qparameter.h>
 #include <Qt3DCore/qmatrixtransform.h>
-#include <Qt3DCore/cameralens.h>
+#include <Qt3DCore/qcameralens.h>
 #include <qmesh.h>
 #include <QFileInfo>
 #include <QColor>
@@ -616,7 +616,7 @@ void AssimpParser::loadCamera(uint cameraIndex)
         return ;
 
     QEntity  *camera = new QEntity();
-    CameraLens *lens = new CameraLens();
+    QCameraLens *lens = new QCameraLens();
     aiMatrix4x4 cm;
 
     assimpCamera->GetCameraMatrix(cm);

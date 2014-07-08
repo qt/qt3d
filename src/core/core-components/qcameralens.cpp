@@ -39,16 +39,16 @@
 **
 ****************************************************************************/
 
-#include "cameralens.h"
-#include "cameralens_p.h"
+#include "qcameralens.h"
+#include "qcameralens_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-CameraLensPrivate::CameraLensPrivate(CameraLens *qq)
+QCameraLensPrivate::QCameraLensPrivate(QCameraLens *qq)
   : QComponentPrivate(qq)
-  , m_projectionType(CameraLens::OrthogonalProjection)
+  , m_projectionType(QCameraLens::OrthogonalProjection)
   , m_nearPlane(0.1f)
   , m_farPlane(1024.0f)
   , m_fieldOfView(25.0f)
@@ -62,36 +62,36 @@ CameraLensPrivate::CameraLensPrivate(CameraLens *qq)
 }
 
 
-CameraLens::CameraLens(QNode *parent)
-    : QComponent(*new CameraLensPrivate(this), parent)
+QCameraLens::QCameraLens(QNode *parent)
+    : QComponent(*new QCameraLensPrivate(this), parent)
 {
 }
 
-CameraLens::CameraLens(CameraLensPrivate &dd, QNode *parent)
+QCameraLens::QCameraLens(QCameraLensPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
 {
 }
 
-void CameraLens::setProjectionType(CameraLens::ProjectionType projectionType)
+void QCameraLens::setProjectionType(QCameraLens::ProjectionType projectionType)
 {
-    Q_D(CameraLens);
+    Q_D(QCameraLens);
     if (d->m_projectionType != projectionType) {
         d->m_projectionType = projectionType;
         emit projectionTypeChanged();
     }
 }
 
-CameraLens::ProjectionType CameraLens::projectionType() const
+QCameraLens::ProjectionType QCameraLens::projectionType() const
 {
-    Q_D(const CameraLens);
+    Q_D(const QCameraLens);
     return d->m_projectionType;
 }
 
-void CameraLens::setOrthographicProjection( float left, float right,
+void QCameraLens::setOrthographicProjection( float left, float right,
                                         float bottom, float top,
                                         float nearPlane, float farPlane )
 {
-    Q_D(CameraLens);
+    Q_D(QCameraLens);
     d->m_left = left;
     d->m_right = right;
     d->m_bottom = bottom;
@@ -102,10 +102,10 @@ void CameraLens::setOrthographicProjection( float left, float right,
     d->updateOrthogonalProjection();
 }
 
-void CameraLens::setPerspectiveProjection( float fieldOfView, float aspectRatio,
+void QCameraLens::setPerspectiveProjection( float fieldOfView, float aspectRatio,
                                        float nearPlane, float farPlane )
 {
-    Q_D(CameraLens);
+    Q_D(QCameraLens);
     d->m_fieldOfView = fieldOfView;
     d->m_aspectRatio = aspectRatio;
     d->m_nearPlane = nearPlane;
@@ -114,9 +114,9 @@ void CameraLens::setPerspectiveProjection( float fieldOfView, float aspectRatio,
     d->updatePerpectiveProjection();
 }
 
-void CameraLens::setNearPlane(float nearPlane)
+void QCameraLens::setNearPlane(float nearPlane)
 {
-    Q_D(CameraLens);
+    Q_D(QCameraLens);
     if (qFuzzyCompare(d->m_nearPlane, nearPlane))
         return;
     d->m_nearPlane = nearPlane;
@@ -125,15 +125,15 @@ void CameraLens::setNearPlane(float nearPlane)
     emit nearPlaneChanged();
 }
 
-float CameraLens::nearPlane() const
+float QCameraLens::nearPlane() const
 {
-    Q_D(const CameraLens);
+    Q_D(const QCameraLens);
     return d->m_nearPlane;
 }
 
-void CameraLens::setFarPlane(float farPlane)
+void QCameraLens::setFarPlane(float farPlane)
 {
-    Q_D(CameraLens);
+    Q_D(QCameraLens);
     if (qFuzzyCompare(d->m_farPlane, farPlane))
         return;
     d->m_farPlane = farPlane;
@@ -142,15 +142,15 @@ void CameraLens::setFarPlane(float farPlane)
     emit farPlaneChanged();
 }
 
-float CameraLens::farPlane() const
+float QCameraLens::farPlane() const
 {
-    Q_D(const CameraLens);
+    Q_D(const QCameraLens);
     return d->m_farPlane;
 }
 
-void CameraLens::setFieldOfView(float fieldOfView)
+void QCameraLens::setFieldOfView(float fieldOfView)
 {
-    Q_D(CameraLens);
+    Q_D(QCameraLens);
     if (qFuzzyCompare(d->m_fieldOfView, fieldOfView))
         return;
     d->m_fieldOfView = fieldOfView;
@@ -159,15 +159,15 @@ void CameraLens::setFieldOfView(float fieldOfView)
     emit fieldOfViewChanged();
 }
 
-float CameraLens::fieldOfView() const
+float QCameraLens::fieldOfView() const
 {
-    Q_D(const CameraLens);
+    Q_D(const QCameraLens);
     return d->m_fieldOfView;
 }
 
-void CameraLens::setAspectRatio(float aspectRatio)
+void QCameraLens::setAspectRatio(float aspectRatio)
 {
-    Q_D(CameraLens);
+    Q_D(QCameraLens);
     if (qFuzzyCompare(d->m_aspectRatio, aspectRatio))
         return;
     d->m_aspectRatio = aspectRatio;
@@ -176,15 +176,15 @@ void CameraLens::setAspectRatio(float aspectRatio)
     emit aspectRatioChanged();
 }
 
-float CameraLens::aspectRatio() const
+float QCameraLens::aspectRatio() const
 {
-    Q_D(const CameraLens);
+    Q_D(const QCameraLens);
     return d->m_aspectRatio;
 }
 
-void CameraLens::setLeft(float left)
+void QCameraLens::setLeft(float left)
 {
-    Q_D(CameraLens);
+    Q_D(QCameraLens);
     if (qFuzzyCompare(d->m_left, left))
         return;
     d->m_left = left;
@@ -193,15 +193,15 @@ void CameraLens::setLeft(float left)
     emit leftChanged();
 }
 
-float CameraLens::left() const
+float QCameraLens::left() const
 {
-    Q_D(const CameraLens);
+    Q_D(const QCameraLens);
     return d->m_left;
 }
 
-void CameraLens::setRight(float right)
+void QCameraLens::setRight(float right)
 {
-    Q_D(CameraLens);
+    Q_D(QCameraLens);
     if (qFuzzyCompare(d->m_right, right))
         return;
     d->m_right = right;
@@ -210,15 +210,15 @@ void CameraLens::setRight(float right)
     emit rightChanged();
 }
 
-float CameraLens::right() const
+float QCameraLens::right() const
 {
-    Q_D(const CameraLens);
+    Q_D(const QCameraLens);
     return d->m_right;
 }
 
-void CameraLens::setBottom(float bottom)
+void QCameraLens::setBottom(float bottom)
 {
-    Q_D(CameraLens);
+    Q_D(QCameraLens);
     if (qFuzzyCompare(d->m_bottom, bottom))
         return;
     d->m_bottom = bottom;
@@ -227,15 +227,15 @@ void CameraLens::setBottom(float bottom)
     emit bottomChanged();
 }
 
-float CameraLens::bottom() const
+float QCameraLens::bottom() const
 {
-    Q_D(const CameraLens);
+    Q_D(const QCameraLens);
     return d->m_bottom;
 }
 
-void CameraLens::setTop(float top)
+void QCameraLens::setTop(float top)
 {
-    Q_D(CameraLens);
+    Q_D(QCameraLens);
     if (qFuzzyCompare(d->m_top, top))
         return;
     d->m_top = top;
@@ -244,15 +244,15 @@ void CameraLens::setTop(float top)
     emit topChanged();
 }
 
-float CameraLens::top() const
+float QCameraLens::top() const
 {
-    Q_D(const CameraLens);
+    Q_D(const QCameraLens);
     return d->m_top;
 }
 
-QMatrix4x4 CameraLens::projectionMatrix() const
+QMatrix4x4 QCameraLens::projectionMatrix() const
 {
-    Q_D(const CameraLens);
+    Q_D(const QCameraLens);
     return d->m_projectionMatrix;
 }
 

@@ -53,9 +53,9 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class CameraLensPrivate;
+class QCameraLensPrivate;
 
-class QT3DCORESHARED_EXPORT CameraLens : public QComponent
+class QT3DCORESHARED_EXPORT QCameraLens : public QComponent
 {
     Q_OBJECT
 
@@ -71,7 +71,7 @@ class QT3DCORESHARED_EXPORT CameraLens : public QComponent
     Q_PROPERTY(float top READ top WRITE setTop NOTIFY topChanged)
 
 public:
-    explicit CameraLens(QNode *parent = 0);
+    explicit QCameraLens(QNode *parent = 0);
 
     enum ProjectionType {
         OrthogonalProjection,
@@ -127,8 +127,8 @@ Q_SIGNALS:
     void topChanged();
 
 protected:
-    Q_DECLARE_PRIVATE(CameraLens)
-    CameraLens(CameraLensPrivate &dd, QNode *parent = 0);
+    Q_DECLARE_PRIVATE(QCameraLens)
+    QCameraLens(QCameraLensPrivate &dd, QNode *parent = 0);
 };
 
 } // Qt3D

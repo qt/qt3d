@@ -44,7 +44,7 @@
 #include <Qt3DCore/window.h>
 #include <Qt3DCore/camera.h>
 #include <Qt3DCore/qentity.h>
-#include <Qt3DCore/cameralens.h>
+#include <Qt3DCore/qcameralens.h>
 
 #include <Qt3DRenderer/qtorusmesh.h>
 #include <Qt3DRenderer/qmesh.h>
@@ -80,7 +80,7 @@ int main(int argc, char **argv)
     // Camera
     Qt3D::Camera *cameraEntity = new Qt3D::Camera();
     cameraEntity->setObjectName(QStringLiteral("cameraEntity"));
-    Qt3D::CameraLens *cameraLens = new Qt3D::CameraLens();
+    Qt3D::QCameraLens *cameraLens = new Qt3D::QCameraLens();
     Qt3D::QTransform *cameraTransform = new Qt3D::QTransform();
     Qt3D::QLookAtTransform *cameraLookAtTransform = new Qt3D::QLookAtTransform();
 
