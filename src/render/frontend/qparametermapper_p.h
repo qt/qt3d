@@ -39,84 +39,31 @@
 **
 ****************************************************************************/
 
-#include "qparametermapper.h"
-#include <private/qparametermapper_p.h>
+#ifndef QT3D_QPARAMETERMAPPER_P_H
+#define QT3D_QPARAMETERMAPPER_P_H
+
+#include <private/qobject_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QParameterMapperPrivate::QParameterMapperPrivate(QParameterMapper *qq)
-    : QObjectPrivate()
-    , m_bindingType(QParameterMapper::Uniform)
-{
-    q_ptr = qq;
-}
+class QParameterMapper;
 
-QParameterMapper::QParameterMapper(QObject *parent)
-    : QObject(*new QParameterMapperPrivate(this), parent)
+class QParameterMapperPrivate : public QObjectPrivate
 {
-}
+public:
+    QParameterMapperPrivate(QParameterMapper *qq);
 
-QParameterMapper::QParameterMapper(QParameterMapperPrivate &dd, QObject *parent)
-    : QObject(dd, parent)
-{
-}
+    Q_DECLARE_PUBLIC(QParameterMapper)
 
-QParameterMapper::QParameterMapper(const QString &parameterName, const QString &shaderParameterName, QParameterMapper::Binding bindingType, QObject *parent)
-    : QObject(*new QParameterMapperPrivate(this), parent)
-{
-    Q_D(QParameterMapper);
-    d->m_parameterName = parameterName;
-    d->m_shaderVariableName = shaderParameterName;
-    d->m_bindingType = bindingType;
-}
-
-void QParameterMapper::setParameterName(const QString &name)
-{
-    Q_D(QParameterMapper);
-    if (d->m_parameterName != name) {
-        d->m_parameterName = name;
-        emit parameterNameChanged();
-    }
-}
-
-void QParameterMapper::setShaderVariableName(const QString &name)
-{
-    Q_D(QParameterMapper);
-    if (d->m_shaderVariableName != name) {
-        d->m_shaderVariableName = name;
-        emit shaderVariableNameChanged();
-    }
-}
-
-void QParameterMapper::setBindingType(QParameterMapper::Binding type)
-{
-    Q_D(QParameterMapper);
-    if (d->m_bindingType != type) {
-        d->m_bindingType = type;
-        emit bindingTypeChanged();
-    }
-}
-
-QString QParameterMapper::parameterName() const
-{
-    Q_D(const QParameterMapper);
-    return d->m_parameterName;
-}
-
-QString QParameterMapper::shaderVariableName() const
-{
-    Q_D(const QParameterMapper);
-    return d->m_shaderVariableName;
-}
-
-QParameterMapper::Binding QParameterMapper::bindingType() const
-{
-    Q_D(const QParameterMapper);
-    return d->m_bindingType;
-}
+    QString m_parameterName;
+    QString m_shaderVariableName;
+    QParameterMapper::Binding m_bindingType;
+};
 
 } // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_QPARAMETERMAPPER_P_H

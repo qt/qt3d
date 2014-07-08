@@ -49,6 +49,8 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class QParameterMapperPrivate;
+
 class QT3DRENDERERSHARED_EXPORT QParameterMapper : public QObject
 {
     Q_OBJECT
@@ -65,7 +67,7 @@ public:
     };
 
     explicit QParameterMapper(QObject *parent = 0);
-    QParameterMapper(const QString &parameterName, const QString &shaderParameterName, QParameterMapper::Binding bindingType);
+    QParameterMapper(const QString &parameterName, const QString &shaderParameterName, QParameterMapper::Binding bindingType, QObject *parent = 0);
 
     void setParameterName(const QString &name);
     void setShaderVariableName(const QString &name);
@@ -80,10 +82,9 @@ Q_SIGNALS:
     void shaderVariableNameChanged();
     void bindingTypeChanged();
 
-private:
-    QString m_parameterName;
-    QString m_shaderVariableName;
-    Binding m_bindingType;
+protected:
+    QParameterMapper(QParameterMapperPrivate &dd, QObject *parent = 0);
+    Q_DECLARE_PRIVATE(QParameterMapper)
 };
 
 } // Qt3D

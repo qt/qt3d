@@ -39,7 +39,8 @@ HEADERS += \
     $$PWD/qabstractscene_p.h \
     $$PWD/qrenderpass_p.h \
     $$PWD/qlayer.h \
-    $$PWD/qlayer_p.h
+    $$PWD/qlayer_p.h \
+    $$PWD/qparametermapper_p.h
 
 SOURCES += \
     $$PWD/qmaterial.cpp \
