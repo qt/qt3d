@@ -30,7 +30,8 @@ HEADERS += \
     $$PWD/qobservableinterface.h \
     $$PWD/qobservable.h \
     $$PWD/qobserverinterface.h \
-    $$PWD/qchangearbiter_p.h
+    $$PWD/qchangearbiter_p.h \
+    $$PWD/qobservable_p.h
 
 SOURCES += \
     $$PWD/window.cpp \

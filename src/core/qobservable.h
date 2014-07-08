@@ -43,11 +43,12 @@
 #define QT3D_QOBSERVABLE_H
 
 #include <Qt3DCore/qobservableinterface.h>
-#include <QReadWriteLock>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
+
+class QObservablePrivate;
 
 class QT3DCORESHARED_EXPORT QObservable : public QObservableInterface
 {
@@ -61,12 +62,11 @@ public:
 
 protected:
     void notifyObservers(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    const QList<QObserverInterface *> &observers() const;
 
-    const QList<QObserverInterface *> &observers() const { return m_observers; }
-
-private:
-    QList<QObserverInterface *> m_observers;
-    QReadWriteLock m_lock;
+    Q_DECLARE_PRIVATE(QObservable)
+    QObservable(QObservablePrivate &dd);
+    QObservablePrivate *d_ptr;
 };
 
 } // namespace Qt3D
