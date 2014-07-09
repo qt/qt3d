@@ -165,15 +165,14 @@ void QAspectManager::setWindow(QWindow *window)
 /*!
  * Registers a new \a aspect.
  */
-void QAspectManager::registerAspect(QObject *aspect)
+void QAspectManager::registerAspect(QAbstractAspect *aspect)
 {
     Q_D(QAspectManager);
     qCDebug(Aspects) << Q_FUNC_INFO << "Registering aspect libraries";
 
-    QAbstractAspect *aspectImpl = Q_NULLPTR;
-    if ((aspectImpl = qobject_cast<QAbstractAspect*>(aspect)) != Q_NULLPTR) {
-        d->m_aspects.append(aspectImpl);
-        aspectImpl->initialize(this);
+    if (aspect != Q_NULLPTR) {
+        d->m_aspects.append(aspect);
+        aspect->initialize(this);
     }
     else {
        qCWarning(Aspects) << Q_FUNC_INFO << "Failed to register aspect";

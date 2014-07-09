@@ -44,7 +44,7 @@
 #include "qaspectthread.h"
 #include "qaspectmanager.h"
 #include "qchangearbiter.h"
-
+#include "qabstractaspect.h"
 #include "corelogging.h"
 #include <QMetaObject>
 #include <QMutexLocker>
@@ -60,6 +60,7 @@ QAspectEnginePrivate::QAspectEnginePrivate(QAspectEngine *qq)
 {
     q_ptr = qq;
     qRegisterMetaType<QWaitCondition *>();
+    qRegisterMetaType<Qt3D::QAbstractAspect *>();
 }
 
 QAspectEngine::QAspectEngine(QObject *parent)
@@ -108,7 +109,7 @@ void QAspectEngine::registerAspect(QAbstractAspect *aspect)
     Q_D(QAspectEngine);
     QMetaObject::invokeMethod(d->m_aspectThread->aspectManager(),
                               "registerAspect",
-                              Q_ARG(QObject *, reinterpret_cast<QObject*>(aspect)));
+                              Q_ARG(Qt3D::QAbstractAspect *, aspect));
 }
 
 void QAspectEngine::setRoot(QObject *rootObject)

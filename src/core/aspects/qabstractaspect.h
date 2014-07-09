@@ -101,4 +101,6 @@ protected:
 
 QT_END_NAMESPACE
 
+Q_DECLARE_METATYPE(Qt3D::QAbstractAspect *)
+
 #endif // QT3D_ABSTRACTASPECT_H
