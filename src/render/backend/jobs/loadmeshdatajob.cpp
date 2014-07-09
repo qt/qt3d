@@ -84,7 +84,7 @@ void LoadMeshDataJob::run()
     MeshDataManager::WriteLocker(m_renderer->meshDataManager());
     *meshData = *meshDataPtr.data();
 
-    AttributePtr attr = meshData->attributeByName(QStringLiteral("position")).staticCast<Attribute>();
+    AttributePtr attr = meshData->attributeByName(QAbstractMeshData::defaultPositionAttributeName()).staticCast<Attribute>();
     if (!attr)
         qCWarning(Jobs) << Q_FUNC_INFO << "unknown attribute: position";
 }
