@@ -50,6 +50,11 @@ RenderCommand::RenderCommand()
 {
 }
 
+bool operator <(const RenderCommand &r1, const RenderCommand &r2)
+{
+    return r1.m_shader.handle() < r2.m_shader.handle();
+}
+
 } // namespace Render
 } // namespace Qt3D
 

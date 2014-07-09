@@ -77,6 +77,8 @@
 #include <Qt3DCore/qabstracttechnique.h>
 #include <Qt3DCore/qframeallocator.h>
 
+#include <algorithm>
+
 #include <QDebug>
 
 QT_BEGIN_NAMESPACE
@@ -277,6 +279,8 @@ void RenderView::sort()
     // 1) Shader
     // 2) DrawStateSet
     // 2) Texture
+
+    std::sort(m_commands.begin(), m_commands.end());
 
 }
 

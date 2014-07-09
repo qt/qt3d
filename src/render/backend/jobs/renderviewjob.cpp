@@ -78,6 +78,9 @@ void RenderViewJob::run()
     // When culling is implemented, pass the culled renderSceneRoot
     renderView->buildRenderCommands(m_renderer->renderSceneRoot());
 
+    // Sorts RenderCommand
+    renderView->sort();
+
     // Enqueue our fully populated RenderView with the RenderThread
     m_renderer->enqueueRenderView(renderView, m_index);
 }

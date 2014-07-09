@@ -82,6 +82,7 @@ public:
 //    void setIntanceCount(uint instanceCount);
 //    void setTechnique(); // Do we really need the technique ?, isn't a shader enough
 
+
 //private:
     HVao m_vao; // VAO used during the submission step to store all states and VBOs
     QMatrix4x4 m_worldMatrix; // modelMatrix for the mesh -> could maybe be stored directly with other uniform
@@ -97,6 +98,8 @@ public:
     // This is a temporary fix in the meantime, to remove the hacked methods in RenderTechnique
     QHash<QString, QString> m_parameterAttributeToShaderNames;
 };
+
+bool operator < (const RenderCommand &r1, const RenderCommand &r2);
 
 } // Render
 
