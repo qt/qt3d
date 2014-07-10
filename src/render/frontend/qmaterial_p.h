@@ -49,7 +49,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DCORESHARED_EXPORT QMaterialPrivate : public QAbstractMaterialPrivate
+class QT3DRENDERERSHARED_EXPORT QMaterialPrivate : public QAbstractMaterialPrivate
 {
 public:
     QMaterialPrivate(QMaterial *qq);
