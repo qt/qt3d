@@ -48,6 +48,7 @@
 #include <Qt3DCore/qchangearbiter.h>
 
 #include <QReadWriteLock>
+#include <QUuid>
 
 QT_BEGIN_NAMESPACE
 
@@ -68,6 +69,8 @@ public:
     ~QNode();
 
     void dump();
+
+    const QUuid uuid() const;
 
     NodeList children() const;
     void addChild(QNode *childNode);

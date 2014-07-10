@@ -46,6 +46,8 @@
 #include <Qt3DCore/qobserverinterface.h>
 #include <Qt3DCore/qhandle.h>
 
+#include <QUuid>
+
 QT_BEGIN_NAMESPACE
 
 class QReadWriteLock;
@@ -80,15 +82,14 @@ public:
     HMeshData meshData() const;
     void setMeshData(HMeshData handle);
 
+    QUuid meshUuid() const { return m_meshUuid; }
+
     /**
      * @brief mapAttributeNames - resolve mapping of mesh-data attribute
      * names to parameters.
      * @param t
      */
     void mapAttributeNames();
-
-protected:
-
 
 private:
     Renderer *m_renderer;
@@ -98,6 +99,7 @@ private:
     bool m_meshDirty;
     HMeshData m_meshDataHandle;
     QReadWriteLock *m_lock;
+    QUuid m_meshUuid;
 };
 
 } // Render

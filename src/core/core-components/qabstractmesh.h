@@ -61,8 +61,6 @@ class QT3DCORESHARED_EXPORT QAbstractMesh : public QComponent
 public:
     QAbstractMesh(QNode *parent = 0);
 
-    const QUuid uuid() const;
-
     bool isDirty() const;
     void setDirty(bool dirty);
 

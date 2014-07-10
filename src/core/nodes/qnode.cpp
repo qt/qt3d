@@ -70,6 +70,7 @@ QNode::QNode(QNodePrivate &dd, QNode *parent)
 
 QNode::~QNode()
 {
+    removeAllChildren();
 }
 
 void QNode::dump()
@@ -95,6 +96,12 @@ void QNode::dump()
     }
 }
 
+const QUuid QNode::uuid() const
+{
+    Q_D(const QNode);
+    return d->m_uuid;
+}
+
 NodeList QNode::children() const
 {
     Q_D(const QNode);
@@ -104,7 +111,6 @@ NodeList QNode::children() const
 void QNode::addChild(QNode *childNode)
 {
     Q_ASSERT(childNode);
-
     Q_D(QNode);
     if (d->m_children.contains(childNode))
         return ;
@@ -122,7 +128,7 @@ void QNode::removeChild(QNode *childNode)
 {
     Q_ASSERT(childNode);
     if (childNode->parent() != this)
-        qCWarning(Nodes) << Q_FUNC_INFO << "not a child";
+        qCWarning(Nodes) << Q_FUNC_INFO << "not a child of " << this;
 
     Q_D(QNode);
     d->m_children.removeOne(childNode);
@@ -130,17 +136,15 @@ void QNode::removeChild(QNode *childNode)
 
     QScenePropertyChangePtr e(new QScenePropertyChange(NodeAboutToBeDeleted, this));
     e->setPropertyName(QByteArrayLiteral("node"));
-    e->setValue(QVariant::fromValue(childNode));
+    e->setValue(QVariant::fromValue(childNode->uuid()));
     notifyObservers(e);
 }
 
 void QNode::removeAllChildren()
 {
-    foreach (QObject *child, children()) {
-        child->deleteLater();
-    }
-    Q_D(QNode);
-    d->m_children.clear();
+    Q_FOREACH (QObject *child, children())
+        if (qobject_cast<QNode *>(child))
+            removeChild(qobject_cast<QNode *>(child));
 }
 
 QEntity *QNode::asEntity()

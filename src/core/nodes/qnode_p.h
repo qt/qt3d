@@ -56,6 +56,7 @@ public:
     QNodePrivate(QNode *qq)
         : QObjectPrivate()
         , m_changeArbiter(Q_NULLPTR)
+        , m_uuid(QUuid::createUuid())
     {
         q_ptr = qq;
     }
@@ -66,6 +67,7 @@ public:
     // Later on we may decide to extend support for multiple observers.
     QReadWriteLock m_observerLock;
     QChangeArbiter *m_changeArbiter;
+    const QUuid m_uuid;
 };
 
 } // namespace Qt3D

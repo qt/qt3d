@@ -61,7 +61,6 @@ namespace Qt3D {
 
 QAbstractMeshPrivate::QAbstractMeshPrivate(QAbstractMesh *qq)
     : QComponentPrivate(qq)
-    , m_uuid(QUuid::createUuid())
     , m_dirty(true)
 {
 }
@@ -81,15 +80,6 @@ void QAbstractMesh::setData(QAbstractMeshDataPtr data)
 {
     Q_D(QAbstractMesh);
     d->m_data = data;
-}
-
-/*!
- * Returns a QUuid uniquely identifying the mesh.
- */
-const QUuid QAbstractMesh::uuid() const
-{
-    Q_D(const QAbstractMesh);
-    return d->m_uuid;
 }
 
 bool QAbstractMesh::isDirty() const

@@ -81,6 +81,17 @@ RenderEntity::RenderEntity()
 
 RenderEntity::~RenderEntity()
 {
+    if (m_renderer != Q_NULLPTR) {
+        RenderEntity *parentEntity = parent();
+        qCDebug(Render::RenderNodes) << Q_FUNC_INFO << m_handle;
+        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_frontEndPeer);
+        if (parentEntity != Q_NULLPTR)
+            parentEntity->removeChildHandle(m_handle);
+        for (int i = 0; i < m_childrenHandles.size(); i++)
+            m_renderer->renderNodesManager()->release(m_childrenHandles[i]);
+        m_renderer->localMatrixManager()->release(m_localTransform);
+        m_renderer->worldMatrixManager()->release(m_worldTransform);
+    }
     delete m_localBoundingVolume;
     delete m_worldBoundingVolume;
 }
@@ -108,15 +119,20 @@ void RenderEntity::setPeer(QEntity *peer)
 {
     if (m_frontEndPeer != peer) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-
         if (!m_localTransform.isNull())
             m_renderer->localMatrixManager()->release(m_localTransform);
         if (!m_worldTransform.isNull())
             m_renderer->worldMatrixManager()->release(m_worldTransform);
 
+        if (m_frontEndPeer) {
+            arbiter->unregisterObserver(this, m_frontEndPeer);
+            m_frontendUuid = QUuid();
+        }
+
         m_frontEndPeer = peer;
         if (m_frontEndPeer) {
             arbiter->registerObserver(this, m_frontEndPeer, AllChanges);
+            m_frontendUuid = peer->uuid();
             m_localTransform = m_renderer->localMatrixManager()->getOrAcquireHandle(peer->uuid());
             m_worldTransform = m_renderer->worldMatrixManager()->getOrAcquireHandle(peer->uuid());
         }
@@ -141,14 +157,32 @@ void RenderEntity::setTransform(QTransform *transform)
 
 void RenderEntity::sceneChangeEvent(const QSceneChangePtr &e)
 {
+    // TO DO: There must be a way to have this code share some part of RenderSceneBuilder
+    // Try to see what's the best way to do so
+
+    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     switch (e->type()) {
 
     case NodeCreated: {
         qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "NodeCreated";
+        QEntity *entity = propertyChange->value().value<QEntity *>();
+        if (entity != Q_NULLPTR) {
+            qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "NodeCreated" << entity->objectName();
+            HRenderNode renderNodeHandle;
+            renderNodeHandle = m_renderer->renderNodesManager()->getOrAcquireHandle(entity->uuid());
+            RenderEntity *renderNode = m_renderer->renderNodesManager()->data(renderNodeHandle);
+            renderNode->setHandle(renderNodeHandle);
+            renderNode->setRenderer(m_renderer);
+            renderNode->setPeer(entity);
+            renderNode->setParentHandle(m_handle);
+        }
         break;
     }
     case NodeAboutToBeDeleted: {
         qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "NodeAboutToBeDeleted";
+        QUuid entityId = propertyChange->value().value<QUuid>();
+        m_renderer->renderNodesManager()->releaseRenderNode(entityId);
+        // We also need to cleanup all Components and other resources associated with thise entity;
         break;
     }
     case NodeDeleted: {
@@ -156,7 +190,6 @@ void RenderEntity::sceneChangeEvent(const QSceneChangePtr &e)
         break;
     }
     case ComponentUpdated: {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         QNode *node = propertyChange->subject().m_node;
         if (node == m_transform
                 && propertyChange->propertyName() == QByteArrayLiteral("matrix"))
@@ -165,40 +198,39 @@ void RenderEntity::sceneChangeEvent(const QSceneChangePtr &e)
     }
 
     case ComponentAdded: {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         QComponent *component = propertyChange->value().value<QComponent*>();
         if (m_transform == Q_NULLPTR && qobject_cast<QTransform*>(component) != Q_NULLPTR) {
             setTransform(qobject_cast<QTransform *>(component));
         }
         else if (qobject_cast<QCameraLens *>(component)) {
-            RenderCamera *cam = m_renderer->cameraManager()->lookupResource(m_frontEndPeer->asEntity()->uuid());
+            RenderCamera *cam = m_renderer->cameraManager()->lookupResource(m_frontendUuid);
             if (cam != Q_NULLPTR)
                 cam->setPeer(qobject_cast<QCameraLens *>(component));
         }
         else if (qobject_cast<QAbstractMesh *>(component)) {
-            RenderMesh *mesh = m_renderer->meshManager()->lookupResource(m_frontEndPeer->asEntity()->uuid());
+            RenderMesh *mesh = m_renderer->meshManager()->lookupResource(m_frontendUuid);
+            qCDebug(Render::RenderNodes) << Q_FUNC_INFO << " Mesh Component Added " << component << component->objectName();
             if (mesh != Q_NULLPTR) {
-                mesh->setPeer(qobject_cast<QMesh *>(component));
+                qDebug() << component << component->objectName();
+                mesh->setPeer(qobject_cast<QAbstractMesh *>(component));
             }
         }
         break;
     }
 
     case ComponentRemoved: {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         QComponent *component = propertyChange->value().value<QComponent*>();
         if (component == m_transform) {
             setTransform(Q_NULLPTR);
         }
         else if (qobject_cast<QCameraLens *>(component)) {
-            RenderCamera *cam = m_renderer->cameraManager()->lookupResource(m_frontEndPeer->asEntity()->uuid());
+            RenderCamera *cam = m_renderer->cameraManager()->lookupResource(m_frontendUuid);
             if (cam != Q_NULLPTR)
                 cam->setPeer(Q_NULLPTR);
         }
         else if (qobject_cast<QAbstractMesh *>(component)) {
-            RenderMesh *mesh = m_renderer->meshManager()->lookupResource(m_frontEndPeer->asEntity()->uuid());
-            if (mesh != Q_NULLPTR)
-                mesh->setPeer(Q_NULLPTR);
+            qCDebug(Render::RenderNodes) << Q_FUNC_INFO << " Mesh Component Removed " << component << component->objectName();
+            m_renderer->meshManager()->releaseRenderMesh(m_frontendUuid);
         }
         break;
     }
@@ -230,6 +262,14 @@ void RenderEntity::appendChildHandle(HRenderNode childHandle)
         RenderEntity *child = m_renderer->renderNodesManager()->data(childHandle);
         if (child != Q_NULLPTR)
             child->m_parentHandle = m_handle;
+    }
+}
+
+void RenderEntity::removeChildHandle(HRenderNode childHandle)
+{
+    // TO DO : Check if a QList here wouldn't be more performant
+    if (m_childrenHandles.contains(childHandle)) {
+        m_childrenHandles.removeAt(m_childrenHandles.indexOf(childHandle));
     }
 }
 

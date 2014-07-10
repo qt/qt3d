@@ -93,13 +93,15 @@ void RenderMesh::setPeer(QAbstractMesh *peer)
 {
     if (m_peer != peer) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        if (m_peer)
+        if (m_peer) {
             arbiter->unregisterObserver(this, m_peer);
+            m_meshUuid = QUuid();
+        }
         m_peer = peer;
         m_meshDirty = true;
         if (m_peer) {
             arbiter->registerObserver(this, m_peer, ComponentUpdated);
-            m_renderer->meshDataManager()->addMeshData(m_peer);
+            m_meshUuid = m_peer->uuid();
         }
     }
 }

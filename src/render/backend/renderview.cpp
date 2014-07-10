@@ -305,47 +305,42 @@ void RenderView::buildRenderCommands(RenderEntity *node)
 
     // 1 RenderCommand per RenderPass pass on an Entity with a Mesh
 
-    QEntity *frontEndEntity = Q_NULLPTR;
-    if (m_renderCamera != Q_NULLPTR && node->frontEndPeer() != Q_NULLPTR
-            && (frontEndEntity = node->frontEndPeer()->asEntity()) != Q_NULLPTR
-            && checkContainedWithinLayer(frontEndEntity->uuid())) {
+    if (m_renderCamera != Q_NULLPTR && checkContainedWithinLayer(node->entityUuid())) {
         HMesh meshHandle;
-        if (m_renderer->meshManager()->contains(frontEndEntity->uuid()) &&
-                (meshHandle = m_renderer->meshManager()->lookupHandle(frontEndEntity->uuid())) != HMesh()) {
-            RenderMesh *mesh = m_renderer->meshManager()->data(meshHandle);
-            if (mesh == Q_NULLPTR || mesh->peer() == Q_NULLPTR)
-                return ;
+        RenderMesh *mesh = Q_NULLPTR;
+        if (m_renderer->meshManager()->contains(node->entityUuid()) &&
+                (meshHandle = m_renderer->meshManager()->lookupHandle(node->entityUuid())) != HMesh() &&
+                (mesh = m_renderer->meshManager()->data(meshHandle)) != Q_NULLPTR) {
             if (mesh->meshDirty()) {
-                mesh->setMeshData(m_renderer->meshDataManager()->lookupHandle(mesh->peer()->uuid()));
-                qCDebug(Backend) << Q_FUNC_INFO << "Updating RenderMesh -> MeshData handle";
+                m_renderer->meshDataManager()->addMeshData(node->entityUuid());
             }
+            else {
+                RenderMaterial *material = findMaterialForMeshNode(node->entityUuid());
+                RenderEffect *effect = findEffectForMaterial(material);
+                RenderTechnique *technique = findTechniqueForEffect(effect);
+                QList<RenderRenderPass *> passes = findRenderPassesForTechnique(technique);
 
-            RenderMaterial *material = findMaterialForMeshNode(frontEndEntity->uuid());
-            RenderEffect *effect = findEffectForMaterial(material);
-            RenderTechnique *technique = findTechniqueForEffect(effect);
-            QList<RenderRenderPass *> passes = findRenderPassesForTechnique(technique);
+                if (passes.isEmpty()) {
+                    material = m_renderer->materialManager()->data(m_renderer->defaultMaterialHandle());
+                    effect = m_renderer->effectManager()->data(m_renderer->defaultEffectHandle());
+                    technique = m_renderer->techniqueManager()->data(m_renderer->defaultTechniqueHandle());
+                    passes << m_renderer->renderPassManager()->data(m_renderer->defaultRenderPassHandle());
+                }
+                QHash<QString, QVariant> parameters = parametersFromMaterialEffectTechnique(material, effect, technique);
 
-            if (passes.isEmpty()) {
-                material = m_renderer->materialManager()->data(m_renderer->defaultMaterialHandle());
-                effect = m_renderer->effectManager()->data(m_renderer->defaultEffectHandle());
-                technique = m_renderer->techniqueManager()->data(m_renderer->defaultTechniqueHandle());
-                passes << m_renderer->renderPassManager()->data(m_renderer->defaultRenderPassHandle());
-            }
-            QHash<QString, QVariant> parameters = parametersFromMaterialEffectTechnique(material, effect, technique);
-
-            Q_FOREACH (RenderRenderPass *pass, passes) {
-                RenderCommand *command = m_allocator->allocate<RenderCommand>();
-                command->m_mesh = meshHandle;
-                command->m_meshData = mesh->meshData();
-                command->m_instancesCount = 0;
-                command->m_worldMatrix = *(node->worldTransform());
-                command->m_stateSet = Q_NULLPTR;
-                setShaderAndUniforms(command, pass, parameters);
-                m_commands.append(command);
+                Q_FOREACH (RenderRenderPass *pass, passes) {
+                    RenderCommand *command = m_allocator->allocate<RenderCommand>();
+                    command->m_mesh = meshHandle;
+                    command->m_meshData = mesh->meshData();
+                    command->m_instancesCount = 0;
+                    command->m_worldMatrix = *(node->worldTransform());
+                    command->m_stateSet = Q_NULLPTR;
+                    setShaderAndUniforms(command, pass, parameters);
+                    m_commands.append(command);
+                }
             }
         }
     }
-
     // Traverse children
     Q_FOREACH (RenderEntity *child, node->children())
         buildRenderCommands(child);
@@ -365,6 +360,7 @@ RenderEffect *RenderView::findEffectForMaterial(RenderMaterial *material)
 {
     RenderEffect *effect = Q_NULLPTR;
     if (material != Q_NULLPTR && material->peer() != Q_NULLPTR) {
+        // TO DO Change that, fEffect should be a QUuid
         QAbstractEffect *fEffect = material->peer()->effect();
         if (fEffect != Q_NULLPTR && (effect = m_renderer->effectManager()->lookupResource(fEffect)) == Q_NULLPTR) {
             if ((effect = m_renderer->effectManager()->getOrCreateResource(fEffect)) != Q_NULLPTR) {

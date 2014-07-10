@@ -70,15 +70,15 @@ public:
     inline bool hasMeshData(const QUuid &id) { return contains(id); }
     inline MeshData* getOrCreateMeshData(const QUuid &id) { return getOrCreateResource(id); }
     inline MeshData* meshData(const QUuid &id) { return lookupResource(id); }
-    void addMeshData(QAbstractMesh *mesh);
+    void addMeshData(QUuid meshEntityId);
 
-    QList<QAbstractMesh *> meshesPending() const { return m_meshesPending; }
-    void clearMeshesPending() { m_meshesPending.clear(); }
+    QList<QUuid> meshesPending() const;
+    void clearMeshesPending();
 
 private:
     // List of meshes that we need to schedule jobs to load
     // and calculate bounds for.
-    QList<QAbstractMesh *> m_meshesPending;
+    QList<QUuid> m_meshesPending;
 };
 
 } // namespace Render

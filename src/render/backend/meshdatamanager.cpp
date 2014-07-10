@@ -55,12 +55,25 @@ MeshDataManager::MeshDataManager()
 {
 }
 
-void MeshDataManager::addMeshData(QAbstractMesh *mesh)
+// Called concurrently by multiple Jobs when building RenderCommands
+void MeshDataManager::addMeshData(QUuid meshEntityId)
 {
-    if (!contains(mesh->uuid()) && !m_meshesPending.contains(mesh))
-        m_meshesPending.append(mesh);
+    MeshDataManager::WriteLocker(this);
+    if (!m_meshesPending.contains(meshEntityId))
+        m_meshesPending.append(meshEntityId);
 }
 
+// Called by single thread in RendererAspect
+QList<QUuid> MeshDataManager::meshesPending() const
+{
+    return m_meshesPending;
+}
+
+// Called by single thread in RendererAspect
+void MeshDataManager::clearMeshesPending()
+{
+    m_meshesPending.clear();
+}
 
 } // namespace Render
 } // namespace Qt3D

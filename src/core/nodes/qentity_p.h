@@ -55,7 +55,6 @@ class QT3DCORESHARED_EXPORT QEntityPrivate : public QNodePrivate
 public :
     QEntityPrivate(QEntity *qq)
         : QNodePrivate(qq)
-        , m_uuid(QUuid::createUuid())
         , m_enabled(true)
     {}
 
@@ -63,8 +62,6 @@ public :
 
     ComponentList m_components;
     bool m_visible;
-
-    const QUuid m_uuid;
 
     // TODO: Is a bool enough here or do we need additional states for entities?
     // Perhaps aboutToBeDeleted would be useful?

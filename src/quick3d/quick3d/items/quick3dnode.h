@@ -76,6 +76,10 @@ private:
     static QNode *childAt(QQmlListProperty<Qt3D::QNode> *list, int index);
     static int childCount(QQmlListProperty<Qt3D::QNode> *list);
     static void clearChildren(QQmlListProperty<Qt3D::QNode> *list);
+
+private slots:
+    void childAppended(int idx, QObject *child);
+    void childRemoved(int idx, QObject *child);
 };
 
 } // Quick;

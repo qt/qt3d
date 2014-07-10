@@ -143,7 +143,9 @@ public:
     ArrayAllocatingPolicy()
         : m_resourcesEntries(1 << INDEXBITS)
     {
-        reset();
+        m_resourcesEntries.resize(1 << INDEXBITS);
+        for (int i = 0; i < m_resourcesEntries.size(); i++)
+            m_freeEntryIndices << i;
     }
 
     T* allocateResource()
@@ -158,9 +160,6 @@ public:
     {
         if (m_resourcesToIndices.contains(r)) {
             int idx = m_resourcesToIndices.take(r);
-            // THIS CAN CAUSE A BUG SOMEHOW
-            // IF UNEXPECTED CRASHES HAPPEN, LOOK HERE
-            // STILL WE NEED THIS TO HAVE A CLEAN ITEM SET ON RELEASE
             m_resourcesEntries[idx] = T();
             m_freeEntryIndices.append(idx);
         }
@@ -201,8 +200,9 @@ public:
 
     void releaseResource(T *r)
     {
-        if (m_resourcesToIndices.contains(r))
+        if (m_resourcesToIndices.contains(r)) {
             m_resourcesEntries.removeAt(m_resourcesToIndices[r]);
+        }
     }
 
     void reset()
@@ -250,6 +250,7 @@ public:
     void release(const QHandle<T, INDEXBITS> &handle)
     {
         typename LockingPolicy<QResourcesManager>::WriteLocker(this);
+        m_handleToResourceMapper.remove(m_handleToResourceMapper.key(handle));
         T *val = m_handleManager.data(handle);
         AllocatingPolicy<T, INDEXBITS>::releaseResource(val);
         m_handleManager.release(handle);

@@ -48,7 +48,8 @@ import Qt3D.Render 2.0
 // type provider in QtQml. So we will need to replicate this in Qt3D
 // for the types that we wish to support. Otherwise we'll have to import
 // QtQuick 2.1 all over the place.
-import QtQuick 2.1 as QQ2
+import QtQuick 2.2 as QQ2
+import QtQml 2.2
 
 Entity {
     id: root
@@ -67,9 +68,28 @@ Entity {
             ball2.mesh = test ? null : ballMesh
             ball1.mesh = test ? cubeMesh : ballMesh
             test = !test
+            instanciator.model = (test) ? 1 : 0
             external_forward_renderer.activeFrameGraph.layerFilters = test ? ["balls"] : []
         }
     }
+
+    Instantiator {
+        id : instanciator
+        model : 1
+
+        delegate : Entity {
+            objectName : "toto"
+            components : [TorusMesh {
+                    id: mesh
+                    objectName : "instancedMesh"
+                    radius: 5
+                    minorRadius: 1
+                    rings: 100
+                    slices: 20
+                }]
+        }
+    }
+
 
     // Scene graph
     Entity {

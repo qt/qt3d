@@ -45,6 +45,7 @@
 #include <Qt3DCore/qobserverinterface.h>
 #include <Qt3DCore/qhandle.h>
 #include <QVector>
+#include <QUuid>
 
 QT_BEGIN_NAMESPACE
 
@@ -90,6 +91,7 @@ public:
     HRenderNode parentHandle() const { return m_parentHandle; }
 
     void appendChildHandle(HRenderNode childHandle);
+    void removeChildHandle(HRenderNode childHandle);
     QVector<HRenderNode> childrenHandles() const { return m_childrenHandles; }
     QVector<RenderEntity *> children() const;
 
@@ -97,7 +99,7 @@ public:
     QMatrix4x4 *worldTransform();
     Sphere *localBoundingVolume() { return m_localBoundingVolume; }
     Sphere *worldBoundingVolume() { return m_worldBoundingVolume; }
-    QEntity *frontEndPeer() const { return m_frontEndPeer; }
+    QUuid entityUuid() const { return m_frontendUuid; }
 
 private:
 
@@ -115,6 +117,7 @@ private:
     // TODO: Do we want to force this to be an Entity?
     // That would mean forcing an Entity for the root on the main thread's scene
     QEntity *m_frontEndPeer;
+    QUuid m_frontendUuid;
 
     // TODO: Add pointer to Drawable or references to VBO's and other info needed to draw
 };

@@ -59,15 +59,14 @@ QEntity::QEntity(QNode *parent)
 {
 }
 
+QEntity::~QEntity()
+{
+    removeAllComponents();
+}
+
 QEntity::QEntity(QEntityPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
-}
-
-const QUuid QEntity::uuid() const
-{
-    Q_D(const QEntity);
-    return d->m_uuid;
 }
 
 QList<QComponent *> QEntity::components() const
@@ -92,6 +91,9 @@ void QEntity::addComponent(QComponent *comp)
         addChild(comp);
 }
 
+// As in most cases Components are children of the Entity
+// They shouldn't therefore also be called in the removeAllChildren of QNode
+// How to handle QML inline declaration however ?
 void QEntity::removeComponent(QComponent *comp)
 {
     Q_CHECK_PTR(comp);
@@ -101,6 +103,13 @@ void QEntity::removeComponent(QComponent *comp)
     QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentRemoved, this));
     propertyChange->setValue(QVariant::fromValue(comp));
     notifyObservers(propertyChange);
+}
+
+void QEntity::removeAllComponents()
+{
+    Q_D(const QEntity);
+    Q_FOREACH (QComponent *comp, d->m_components)
+        removeComponent(comp);
 }
 
 bool QEntity::isEnabled() const

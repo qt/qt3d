@@ -42,6 +42,7 @@
 #ifndef QT3D_RENDER_LOADMESHDATAJOB_H
 #define QT3D_RENDER_LOADMESHDATAJOB_H
 
+#include <QUuid>
 #include <Qt3DCore/qjob.h>
 #include <Qt3DCore/qhandle.h>
 #include <Qt3DRenderer/meshdata.h>
@@ -62,14 +63,14 @@ class Renderer;
 class LoadMeshDataJob : public Qt3D::QJob
 {
 public:
-    LoadMeshDataJob(QAbstractMesh *mesh);
+    LoadMeshDataJob(const QUuid &meshEntityId);
 
     void setRenderer(Renderer *renderer) { m_renderer = renderer; }
 protected:
     void run() Q_DECL_OVERRIDE;
 
 private:
-    QAbstractMesh *m_meshSource;
+    QUuid m_meshSourceId;
     Renderer *m_renderer;
 };
 

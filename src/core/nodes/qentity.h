@@ -46,7 +46,6 @@
 #include <Qt3DCore/qt3dcore_global.h>
 
 #include <QMetaType>
-#include <QUuid>
 
 QT_BEGIN_NAMESPACE
 
@@ -65,8 +64,7 @@ class QT3DCORESHARED_EXPORT QEntity : public QNode
 
 public:
     explicit QEntity(QNode *parent = 0);
-
-    const QUuid uuid() const;
+    virtual ~QEntity();
 
     ComponentList components() const;
 
@@ -133,6 +131,7 @@ public:
 
     virtual void addComponent(QComponent *comp);
     virtual void removeComponent(QComponent *comp);
+    void removeAllComponents();
 
     bool isEnabled() const;
     void setEnabled(bool on);
