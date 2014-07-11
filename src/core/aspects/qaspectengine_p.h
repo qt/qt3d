@@ -61,8 +61,6 @@ public:
     Q_DECLARE_PUBLIC(QAspectEngine)
 
     QAspectThread *m_aspectThread;
-    QMutex m_mutex;
-    QWaitCondition m_waitCondition;
 };
 
 } // Qt3D

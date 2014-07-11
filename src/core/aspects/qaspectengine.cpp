@@ -60,7 +60,6 @@ QAspectEnginePrivate::QAspectEnginePrivate(QAspectEngine *qq)
     : QObjectPrivate()
 {
     q_ptr = qq;
-    qRegisterMetaType<QWaitCondition *>();
     qRegisterMetaType<Qt3D::QAbstractAspect *>();
 }
 
@@ -118,15 +117,12 @@ void QAspectEngine::registerAspect(QAbstractAspect *aspect)
 void QAspectEngine::setRoot(QObject *rootObject)
 {
     Q_D(QAspectEngine);
-    QMutexLocker locker(&d->m_mutex);
+    qCDebug(Aspects) << "Setting scene root on aspect manager";
     QMetaObject::invokeMethod(d->m_aspectThread->aspectManager(),
                               "setRoot",
-                              Q_ARG(QObject *, rootObject),
-                              Q_ARG(QWaitCondition *, &d->m_waitCondition));
-
-    qCDebug(Aspects) << "Putting main thread to sleep whilst aspects build their local scenes...";
-    d->m_waitCondition.wait(&d->m_mutex);
-    qCDebug(Aspects) << "Main thread is now awake again";
+                              Qt::BlockingQueuedConnection,
+                              Q_ARG(QObject *, rootObject));
+    qCDebug(Aspects) << "Done setting scene root on aspect manager";
 }
 
 } // namespace Qt3D

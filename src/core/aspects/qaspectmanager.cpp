@@ -107,7 +107,7 @@ void QAspectManager::shutdown()
 }
 
 
-void QAspectManager::setRoot(QObject *rootObject, QWaitCondition *waitCondition)
+void QAspectManager::setRoot(QObject *rootObject)
 {
     Q_D(QAspectManager);
     qCDebug(Aspects) << Q_FUNC_INFO;
@@ -145,9 +145,6 @@ void QAspectManager::setRoot(QObject *rootObject, QWaitCondition *waitCondition)
 
         d->m_runMainLoop = true;
     }
-
-    if (waitCondition)
-        waitCondition->wakeOne();
 }
 
 // Called before register aspect
