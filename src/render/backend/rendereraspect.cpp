@@ -131,12 +131,12 @@ void RendererAspect::unregisterAspectHelper(QEntity *rootObject)
     Q_UNUSED(rootObject);
 }
 
-void RendererAspect::initializeHelper(QAspectManager *aspectManager)
+void RendererAspect::onInitialize()
 {
     Render::Renderer *renderer = m_renderThread->renderer();
     renderer->setRendererAspect(this);
     // setSurface is synchronized using the Renderer's mutex
-    renderer->setSurface(aspectManager->window());
+    renderer->setSurface(aspectManager()->window());
 }
 
 void RendererAspect::cleanupHelper()

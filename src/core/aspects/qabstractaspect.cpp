@@ -99,7 +99,7 @@ void QAbstractAspect::initialize(QAspectManager *aspectManager)
 {
     Q_D(QAbstractAspect);
     d->m_aspectManager = aspectManager;
-    initializeHelper(aspectManager);
+    onInitialize();
 }
 
 void QAbstractAspect::cleanup()

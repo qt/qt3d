@@ -62,7 +62,7 @@ public:
 protected:
     void registerAspectHelper(QEntity *rootObject) Q_DECL_OVERRIDE;
     void unregisterAspectHelper(QEntity *rootObject) Q_DECL_OVERRIDE;
-    void initializeHelper(QAspectManager *aspectManager) Q_DECL_OVERRIDE;
+    void onInitialize() Q_DECL_OVERRIDE;
     void cleanupHelper() Q_DECL_OVERRIDE;
 };
 

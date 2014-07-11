@@ -67,7 +67,7 @@ void BulletPhysicsAspect::unregisterAspectHelper(QEntity *rootObject)
 
 }
 
-void BulletPhysicsAspect::initializeHelper(QAspectManager *aspectManager)
+void BulletPhysicsAspect::onInitialize()
 {
 
 }

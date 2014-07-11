@@ -94,7 +94,7 @@ protected:
     virtual void registerAspectHelper(QEntity *rootObject) = 0;
     virtual void unregisterAspectHelper(QEntity *rootObject) = 0;
 
-    virtual void initializeHelper(QAspectManager *aspectManager) = 0;
+    virtual void onInitialize() = 0;
     virtual void cleanupHelper() = 0;
 };
 

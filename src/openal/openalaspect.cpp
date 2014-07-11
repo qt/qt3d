@@ -67,7 +67,7 @@ void OpenALAspect::unregisterAspectHelper(QEntity *rootObject)
 
 }
 
-void OpenALAspect::initializeHelper(QAspectManager *aspectManager)
+void OpenALAspect::onInitialize()
 {
 
 }
