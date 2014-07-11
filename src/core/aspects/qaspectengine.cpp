@@ -41,6 +41,7 @@
 
 #include "qaspectengine.h"
 
+#include "qabstractaspect.h"
 #include "qaspectthread.h"
 #include "qaspectmanager.h"
 #include "qchangearbiter.h"
@@ -107,6 +108,7 @@ void QAspectEngine::setWindow(QWindow *window)
 void QAspectEngine::registerAspect(QAbstractAspect *aspect)
 {
     Q_D(QAspectEngine);
+    aspect->moveToThread(d->m_aspectThread);
     QMetaObject::invokeMethod(d->m_aspectThread->aspectManager(),
                               "registerAspect",
                               Qt::BlockingQueuedConnection,
