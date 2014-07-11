@@ -61,7 +61,9 @@ QEntity::QEntity(QNode *parent)
 
 QEntity::~QEntity()
 {
-    removeAllComponents();
+    // If all children are removed
+    // That includes the components that are parented by this entity
+//    removeAllComponents();
 }
 
 QEntity::QEntity(QEntityPrivate &dd, QNode *parent)
@@ -82,13 +84,15 @@ void QEntity::addComponent(QComponent *comp)
     qCDebug(Nodes) << Q_FUNC_INFO << comp;
     Q_ASSERT(d->m_components.count(comp) == 0);
     d->m_components.append(comp);
-    QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentAdded, this));
-    propertyChange->setValue(QVariant::fromValue(comp));
-    notifyObservers(propertyChange);
     // We only set the Entity as the Component's parent when it has no parent
     // This will be the case mostly on C++ but rarely in QML
     if (!comp->parent())
         addChild(comp);
+
+    QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentAdded, this));
+    propertyChange->setPropertyName(QByteArrayLiteral("component"));
+    propertyChange->setValue(QVariant::fromValue(comp));
+    notifyObservers(propertyChange);
 }
 
 // As in most cases Components are children of the Entity
@@ -102,6 +106,7 @@ void QEntity::removeComponent(QComponent *comp)
     d->m_components.removeOne(comp);
     QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentRemoved, this));
     propertyChange->setValue(QVariant::fromValue(comp));
+    propertyChange->setPropertyName(QByteArrayLiteral("component"));
     notifyObservers(propertyChange);
 }
 
