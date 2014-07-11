@@ -48,52 +48,9 @@ namespace Qt3D {
 namespace Render {
 
 MaterialManager::MaterialManager() :
-    QResourcesManager<RenderMaterial, QMaterial*, 16>()
+    QResourcesManager<RenderMaterial, QUuid, 16>()
 {
 }
-
-RenderMaterial *MaterialManager::renderMaterial(const QUuid &id)
-{
-    if (m_materialByEntity.contains(id))
-        return data(m_materialByEntity[id]);
-    return Q_NULLPTR;
-}
-
-void MaterialManager::linkMaterialToEntity(const QUuid &id, HMaterial material)
-{
-    m_materialByEntity[id] = material;
-}
-
-HMaterial MaterialManager::lookupHandle(const QUuid &id)
-{
-    if (m_materialByEntity.contains(id))
-        return m_materialByEntity[id];
-    return HMaterial();
-}
-
-/*!
- * Returns true if there is a RenderMaterial associated to the Entity
- * identified by \a id. Returns false otherwise.
- * \fn bool MaterialManager::hasRenderMaterial(const QUuid &id) const
- */
-
-/*!
- * Returns a pointer to a RenderMaterial from an entity \a id. The RenderMaterial is
- * created if needed but Q_NULLPTR can be returned if internally
- * the RenderMaterial has been released.
- * \fn RenderMaterial *MaterialManager::getOrCreateRenderMaterial(const QUuid &id)
- */
-
-/*!
- * Returns the RenderMaterial associated with the Entity of id \a id.
- * Q_NULLPTR if none could be found.
- * \fn RenderMaterial *MaterialManager::renderMaterial(const QUuid &id)
- */
-
-/*!
- * Releases the RenderMaterial resource associated to the Entity of id \a id.
- * \fn void MaterialManager::releaseRenderMaterial(const QUuid &id)
- */
 
 } // Render
 
