@@ -87,20 +87,9 @@ private:
     Render::FrameGraphNode* buildFrameGraph(QNode *node);
     Render::FrameGraphNode* backendFrameGraphNode(QNode *);
 
-    HRenderNode createRenderNode(QEntity *node);
-    void createRenderMaterial(QEntity *entity);
+    RenderEntity* createRenderNode(QEntity *node);
     void createFrameGraph(QFrameGraph *frameGraph);
 
-    template<class Frontend, class Backend, class Manager>
-    void createRenderElement(QEntity *entity, Manager *manager)
-    {
-        QList<Frontend *> elems = entity->componentsOfType<Frontend>();
-        if (!elems.isEmpty()) {
-            Backend *backend = manager->getOrCreateResource(entity->uuid());
-            backend->setRenderer(m_renderer);
-            backend->setPeer(elems.first());
-        }
-    }
 };
 
 } // namespace Render

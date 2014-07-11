@@ -193,9 +193,11 @@ Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(QNode *block)
         // If the Entity is declared inline on the QML Side, the Entity is not set as part of the Scene tree
         // So we need to make sure the RenderNode for the given Entity exists in the RenderNodesMananger
         if (cameraEntity && m_renderer->cameraManager()->lookupHandle(cameraEntity->uuid()).isNull()) {
-            HRenderNode nodeHandle = createRenderNode(cameraSelector->camera());
-            m_renderer->renderNodesManager()->data(nodeHandle)->setParentHandle(m_frameGraphEntityNode);
-            createRenderElement<QCameraLens, RenderCamera, CameraManager>(cameraEntity, m_renderer->cameraManager());
+            RenderEntity *rEntity = createRenderNode(cameraSelector->camera());
+            rEntity->setParentHandle(m_frameGraphEntityNode);
+            QList<QCameraLens *> lenses = cameraEntity->componentsOfType<QCameraLens>();
+            if (!lenses.isEmpty())
+                rEntity->createRenderComponent<QCameraLens, RenderCamera, CameraManager>(lenses.first(), m_renderer->cameraManager());
         }
         cameraSelectorNode->setCameraEntity(cameraEntity);
         qCDebug(Backend) << Q_FUNC_INFO << "CameraSelector" << cameraSelectorNode->cameraEntity();
@@ -225,7 +227,7 @@ Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(QNode *block)
     return Q_NULLPTR;
 }
 
-HRenderNode RenderSceneBuilder::createRenderNode(QEntity *entity)
+RenderEntity* RenderSceneBuilder::createRenderNode(QEntity *entity)
 {
     HRenderNode renderNodeHandle;
     renderNodeHandle = m_renderer->renderNodesManager()->getOrAcquireHandle(entity->uuid());
@@ -238,26 +240,7 @@ HRenderNode RenderSceneBuilder::createRenderNode(QEntity *entity)
     if (!transforms.isEmpty())
         renderNode->setTransform(transforms.first());
 
-    return renderNodeHandle;
-}
-
-void RenderSceneBuilder::createRenderMaterial(QEntity *entity)
-{
-    // Parse Materials to retrieve
-    // Material
-    // Using Material, we can create the following at runtime
-    // Effect
-    // Techniques
-    // RenderPass
-    // ShaderPrograms
-    QList<QMaterial *> materials = entity->componentsOfType<QMaterial>();
-    foreach (QMaterial *material, materials) {
-        HMaterial rMaterialHandle = m_renderer->materialManager()->getOrAcquireHandle(material);
-        m_renderer->materialManager()->linkMaterialToEntity(entity->uuid(), rMaterialHandle);
-        RenderMaterial *rMaterial = m_renderer->materialManager()->data(rMaterialHandle);
-        rMaterial->setRendererAspect(m_renderer->rendererAspect());
-        rMaterial->setPeer(material);
-    }
+    return renderNode;
 }
 
 void RenderSceneBuilder::createFrameGraph(QFrameGraph *fg)
@@ -277,26 +260,38 @@ void RenderSceneBuilder::visitEntity(Qt3D::QEntity *entity)
     // Retrieve or created RenderNode for entity
 
     // Create RenderNode and Transforms
-    HRenderNode renderNodeHandle = createRenderNode(entity);
+    RenderEntity *rEntity = createRenderNode(entity);
 
     if (m_rootNodeHandle.isNull())
-        m_rootNodeHandle = renderNodeHandle;
+        m_rootNodeHandle = rEntity->handle();
     else
-        m_renderer->renderNodesManager()->data(renderNodeHandle)->setParentHandle(m_nodeStack.top());
-    m_nodeStack.push(renderNodeHandle);
+        rEntity->setParentHandle(m_nodeStack.top());
+    m_nodeStack.push(rEntity->handle());
+
+    // TO DO : See if it can be converted to work with createRenderElement
+    //    createRenderMaterial(entity);
+
+    QList<QMaterial *> materials = entity->componentsOfType<QMaterial>();
+    QList<QAbstractMesh *> meshes = entity->componentsOfType<QAbstractMesh>();
+    QList<QCameraLens *> lenses = entity->componentsOfType<QCameraLens>();
+    QList<QLayer *> layers = entity->componentsOfType<QLayer>();
+    QList<QAbstractLight *> lights = entity->componentsOfType<QAbstractLight>();
 
     // Retrieve Material from Entity
-    // TO DO : See if it can be converted to work with createRenderElement
-    createRenderMaterial(entity);
-
+    if (!materials.isEmpty())
+        rEntity->createRenderComponent<QMaterial, RenderMaterial, MaterialManager>(materials.first(), m_renderer->materialManager());
     // Retrieve Mesh from Entity
-    createRenderElement<QAbstractMesh, RenderMesh, MeshManager>(entity, m_renderer->meshManager());
+    if (!meshes.isEmpty())
+        rEntity->createRenderComponent<QAbstractMesh, RenderMesh, MeshManager>(meshes.first(), m_renderer->meshManager());
     // Retrieve Camera from Entity
-    createRenderElement<QCameraLens, RenderCamera, CameraManager>(entity, m_renderer->cameraManager());
+    if (!lenses.isEmpty())
+        rEntity->createRenderComponent<QCameraLens, RenderCamera, CameraManager>(lenses.first(), m_renderer->cameraManager());
     // Retrieve Layer from Entity
-    createRenderElement<QLayer, RenderLayer, LayerManager>(entity, m_renderer->layerManager());
+    if (!layers.isEmpty())
+        rEntity->createRenderComponent<QLayer, RenderLayer, LayerManager>(layers.first(), m_renderer->layerManager());
     // Retrieve Lights from Entity
-    createRenderElement<QAbstractLight, RenderLight, LightManager>(entity, m_renderer->lightManager());
+    if (!lights.isEmpty())
+        rEntity->createRenderComponent<QAbstractLight, RenderLight, LightManager>(lights.first(), m_renderer->lightManager());
 
     NodeVisitor::visitEntity(entity);
 
