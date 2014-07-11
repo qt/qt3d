@@ -95,12 +95,15 @@ void QChangeArbiter::initialize(QJobManagerInterface *jobManager)
 void QChangeArbiter::distributeQueueChanges(ChangeQueue *changeQueue)
 {
     Q_D(QChangeArbiter);
-    Q_FOREACH (const QSceneChangePtr &change, *changeQueue) {
+    for (int i = 0; i < changeQueue->size(); i++) {
+        QSceneChangePtr change = changeQueue->takeFirst();
         // Lookup which observers care about the subject this change came from
         // and distribute the change to them
         if (change.isNull())
             continue;
+
         switch (change->observableType()) {
+
         case QSceneChange::Observable: {
             QObservableInterface *subject = change->subject().m_observable;
             if (d->m_aspectObservations.contains(subject)) {
@@ -124,6 +127,7 @@ void QChangeArbiter::distributeQueueChanges(ChangeQueue *changeQueue)
             }
             break;
         }
+
         }
     }
 }
@@ -154,12 +158,10 @@ void QChangeArbiter::syncChanges()
     QMutexLocker locker(&d->m_mutex);
     Q_FOREACH (QChangeArbiter::ChangeQueue *changeQueue, d->m_changeQueues) {
         distributeQueueChanges(changeQueue);
-        changeQueue->clear();
     }
 
     Q_FOREACH (ChangeQueue *changeQueue, d->m_lockingChangeQueues) {
         distributeQueueChanges(changeQueue);
-        changeQueue->clear();
     }
 }
 
@@ -190,7 +192,7 @@ void QChangeArbiter::registerObserverHelper(QObserverList &observerList,
 {
     Q_ASSERT(observer);
     Q_ASSERT(observable);
-    qCDebug(ChangeArbiter) << Q_FUNC_INFO;
+    qCDebug(ChangeArbiter) << Q_FUNC_INFO << observable;
 
     // Store info about which observers are watching which observables.
     // Protect access as this could be called from any thread
@@ -229,15 +231,14 @@ void QChangeArbiter::unregisterObserver(QObserverInterface *observer, QNode *sub
 
 void QChangeArbiter::sceneChangeEvent(const QSceneChangePtr &e)
 {
-    //    qCDebug(ChangeArbiter) << Q_FUNC_INFO << QThread::currentThread();
+//    qCDebug(ChangeArbiter) << Q_FUNC_INFO << QThread::currentThread();
 
     Q_D(QChangeArbiter);
-    QMutexLocker locker(&d->m_mutex);
     // Add the change to the thread local storage queue - no locking required => yay!
     ChangeQueue *localChangeQueue = d->m_tlsChangeQueue.localData();
     localChangeQueue->append(e);
 
-    //    qCDebug(ChangeArbiter) << "Change queue for thread" << QThread::currentThread() << "now contains" << localChangeQueue->count() << "items";
+//    qCDebug(ChangeArbiter) << "Change queue for thread" << QThread::currentThread() << "now contains" << localChangeQueue->count() << "items";
 }
 
 void QChangeArbiter::sceneChangeEventWithLock(const QSceneChangePtr &e)
