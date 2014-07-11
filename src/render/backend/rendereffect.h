@@ -53,9 +53,10 @@ namespace Qt3D {
 
 class QAbstractTechnique;
 class QAbstractEffect;
-class RendererAspect;
 
 namespace Render {
+
+class Renderer;
 
 class RenderEffect
         : public QObserverInterface
@@ -65,7 +66,7 @@ public:
     ~RenderEffect();
 
     void setPeer(QAbstractEffect *effect);
-    void setRendererAspect(RendererAspect *rendererAspect);
+    void setRenderer(Renderer *renderer);
     void sceneChangeEvent(const QSceneChangePtr &e);
     QAbstractEffect *peer() const { return m_peer; }
 
@@ -74,7 +75,7 @@ public:
 
 private:
     QList<QAbstractTechnique *> m_techniques;
-    RendererAspect *m_rendererAspect;
+    Renderer *m_renderer;
     QAbstractEffect *m_peer;
     ParameterPack m_parameterPack;
 };

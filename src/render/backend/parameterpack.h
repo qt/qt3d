@@ -53,16 +53,17 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QParameter;
-class RendererAspect;
 
 namespace Render {
+
+class Renderer;
 
 class ParameterPack : public QObserverInterface
 {
 public:
     ParameterPack();
     ~ParameterPack();
-    void setRendererAspect(RendererAspect *rendererAspect);
+    void setRenderer(Renderer *renderer);
     void appendParameter(QParameter *param);
     void removeParameter(QParameter *param);
     void clear();
@@ -72,7 +73,7 @@ public:
 private:
     QHash<QString, QVariant> m_namedValues;
     QList<QParameter *> m_peers;
-    RendererAspect *m_rendererAspect;
+    Renderer *m_renderer;
 
 };
 

@@ -55,11 +55,11 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QMaterial;
-class RendererAspect;
 class QParameter;
 
 namespace Render {
 
+class Renderer;
 class QGraphicsContext;
 class RenderTechnique;
 
@@ -70,7 +70,7 @@ public:
     ~RenderMaterial();
 
     void setPeer(QMaterial* mat);
-    void setRendererAspect(RendererAspect *rendererAspect);
+    void setRenderer(Renderer *renderer);
 
     QMaterial *peer() const { return m_peer; }
 
@@ -79,7 +79,7 @@ public:
     const QHash<QString, QVariant> parameters() const;
 
 private:
-    RendererAspect *m_rendererAspect;
+    Renderer *m_renderer;
     QMaterial* m_peer;
     QString m_effectName;
     RenderTechnique* m_technique;

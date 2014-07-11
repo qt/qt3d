@@ -42,6 +42,7 @@
 #include <QVariant>
 #include "rendereffect.h"
 #include "rendereraspect.h"
+#include "renderer.h"
 #include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/qabstracteffect.h>
 #include <Qt3DCore/qabstracttechnique.h>
@@ -57,21 +58,21 @@ namespace Qt3D {
 namespace Render {
 
 RenderEffect::RenderEffect()
-    : m_rendererAspect(Q_NULLPTR)
+    : m_renderer(Q_NULLPTR)
     , m_peer(Q_NULLPTR)
 {
 }
 
 RenderEffect::~RenderEffect()
 {
-    if (m_rendererAspect != Q_NULLPTR && m_peer != Q_NULLPTR)
-        m_rendererAspect->aspectManager()->changeArbiter()->unregisterObserver(this, m_peer);
+    if (m_renderer != Q_NULLPTR && m_peer != Q_NULLPTR)
+        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_peer);
 }
 
 void RenderEffect::setPeer(QAbstractEffect *effect)
 {
     if (effect != m_peer) {
-        QChangeArbiter *arbiter = m_rendererAspect->aspectManager()->changeArbiter();
+        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
         m_techniques.clear();
         if (m_peer)
             arbiter->unregisterObserver(this, m_peer);
@@ -87,10 +88,10 @@ void RenderEffect::setPeer(QAbstractEffect *effect)
     }
 }
 
-void RenderEffect::setRendererAspect(RendererAspect *rendererAspect)
+void RenderEffect::setRenderer(Renderer *renderer)
 {
-    m_rendererAspect = rendererAspect;
-    m_parameterPack.setRendererAspect(m_rendererAspect);
+    m_renderer = renderer;
+    m_parameterPack.setRenderer(m_renderer);
 }
 
 void RenderEffect::sceneChangeEvent(const QSceneChangePtr &e)

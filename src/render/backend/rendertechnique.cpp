@@ -73,7 +73,7 @@ RenderTechnique::~RenderTechnique()
 void RenderTechnique::setRenderer(Renderer *renderer)
 {
     m_renderer = renderer;
-    m_parameterPack.setRendererAspect(m_renderer->rendererAspect());
+    m_parameterPack.setRenderer(m_renderer);
 }
 
 void RenderTechnique::setPeer(QTechnique *peer)

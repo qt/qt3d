@@ -46,9 +46,9 @@
 #include "rendertechnique.h"
 #include "rendertextureprovider.h"
 #include "qparameter.h"
+#include "renderer.h"
 #include <qtechnique.h> // for Parameter
 #include <qmaterial.h>
-
 #include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
@@ -60,7 +60,7 @@ namespace Qt3D {
 namespace Render {
 
 RenderMaterial::RenderMaterial()
-    : m_rendererAspect(Q_NULLPTR)
+    : m_renderer(Q_NULLPTR)
     , m_peer(Q_NULLPTR)
     , m_textureProvider(Q_NULLPTR)
 {
@@ -68,14 +68,14 @@ RenderMaterial::RenderMaterial()
 
 RenderMaterial::~RenderMaterial()
 {
-    if (m_rendererAspect != Q_NULLPTR && m_peer != Q_NULLPTR)
-        m_rendererAspect->aspectManager()->changeArbiter()->unregisterObserver(this, m_peer);
+    if (m_renderer != Q_NULLPTR && m_peer != Q_NULLPTR)
+        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_peer);
 }
 
 void RenderMaterial::setPeer(QMaterial *mat)
 {
     if (m_peer != mat) {
-        QChangeArbiter *arbiter = m_rendererAspect->aspectManager()->changeArbiter();
+        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
         if (m_peer)
             arbiter->unregisterObserver(this, m_peer);
         m_peer = mat;
@@ -90,10 +90,10 @@ void RenderMaterial::setPeer(QMaterial *mat)
     }
 }
 
-void RenderMaterial::setRendererAspect(RendererAspect *rendererAspect)
+void RenderMaterial::setRenderer(Renderer *renderer)
 {
-    m_rendererAspect = rendererAspect;
-    m_parameterPack.setRendererAspect(m_rendererAspect);
+    m_renderer = renderer;
+    m_parameterPack.setRenderer(m_renderer);
 }
 
 //void RenderMaterial::setTextureParameter(QString paramName, RenderTexturePtr tex)

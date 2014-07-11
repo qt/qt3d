@@ -42,6 +42,7 @@
 #include "parameterpack.h"
 #include "qparameter.h"
 #include "rendereraspect.h"
+#include "renderer.h"
 
 #include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/qscenepropertychange.h>
@@ -53,29 +54,29 @@ namespace Qt3D {
 namespace Render {
 
 ParameterPack::ParameterPack()
-    : m_rendererAspect(Q_NULLPTR)
+    : m_renderer(Q_NULLPTR)
 {
 }
 
 ParameterPack::~ParameterPack()
 {
-    if (m_rendererAspect != Q_NULLPTR && !m_peers.empty()) {
-        QChangeArbiter *arbiter = m_rendererAspect->aspectManager()->changeArbiter();
+    if (m_renderer != Q_NULLPTR && !m_peers.empty()) {
+        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
         Q_FOREACH (QParameter *peer, m_peers)
             arbiter->unregisterObserver(this, peer);
     }
 }
 
-void ParameterPack::setRendererAspect(RendererAspect *rendererAspect)
+void ParameterPack::setRenderer(Renderer *renderer)
 {
-    m_rendererAspect = rendererAspect;
+    m_renderer = renderer;
 }
 
 void ParameterPack::appendParameter(QParameter *param)
 {
     if (!m_peers.contains(param)) {
         m_peers << param;
-        QChangeArbiter *arbiter = m_rendererAspect->aspectManager()->changeArbiter();
+        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
         arbiter->registerObserver(this, param);
         m_namedValues[param->name()] = param->value();
     }
@@ -86,7 +87,7 @@ void ParameterPack::removeParameter(QParameter *param)
     if (m_peers.contains(param)) {
         m_peers.removeOne(param);
         m_namedValues.remove(param->name());
-        QChangeArbiter *arbiter = m_rendererAspect->aspectManager()->changeArbiter();
+        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
         arbiter->unregisterObserver(this, param);
     }
 }
@@ -94,7 +95,7 @@ void ParameterPack::removeParameter(QParameter *param)
 void ParameterPack::clear()
 {
     m_namedValues.clear();
-    QChangeArbiter *arbiter = m_rendererAspect->aspectManager()->changeArbiter();
+    QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
     Q_FOREACH (QParameter *param, m_peers) {
         arbiter->unregisterObserver(this, param);
     }
