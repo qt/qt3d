@@ -82,14 +82,14 @@ public:
     void registerAspect(QEntity *rootObject);
     void unregisterAspect(QEntity *rootObject);
 
-    void cleanup();
-
 protected:
     Q_DECLARE_PRIVATE(QAbstractAspect)
     QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent = 0);
 
+    // These are only called by the aspect manager
     friend class QAspectManager;
     void initialize(QAspectManager *aspectManager);
+    void cleanup();
 
     virtual void registerAspectHelper(QEntity *rootObject) = 0;
     virtual void unregisterAspectHelper(QEntity *rootObject) = 0;
