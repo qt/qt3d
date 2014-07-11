@@ -58,7 +58,7 @@ Entity {
     QQ2.Timer
     {
         property bool test : false;
-        interval : 1500
+        interval : 2000
         repeat : true
         running: true
         onTriggered:
@@ -68,14 +68,14 @@ Entity {
             ball2.mesh = test ? null : ballMesh
             ball1.mesh = test ? cubeMesh : ballMesh
             test = !test
-            instanciator.model = (test) ? 1 : 0
+            instanciator.active = test
             external_forward_renderer.activeFrameGraph.layerFilters = test ? ["balls"] : []
         }
     }
 
     Instantiator {
         id : instanciator
-        model : 1
+        model : 5
 
         delegate : Entity {
             objectName : "toto"
@@ -86,10 +86,18 @@ Entity {
                     minorRadius: 1
                     rings: 100
                     slices: 20
-                }]
+                },
+                Transform {
+                    objectName : "transformInstanciator"
+
+                    Translate {
+                        id : translate_0
+                        dx : 15 * index
+                    }
+                }
+            ]
         }
     }
-
 
     // Scene graph
     Entity {
