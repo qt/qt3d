@@ -72,7 +72,7 @@ void BulletPhysicsAspect::onInitialize()
 
 }
 
-void BulletPhysicsAspect::cleanupHelper()
+void BulletPhysicsAspect::onCleanup()
 {
 
 }

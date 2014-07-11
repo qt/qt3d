@@ -63,7 +63,7 @@ protected:
     void registerAspectHelper(QEntity *rootObject) Q_DECL_OVERRIDE;
     void unregisterAspectHelper(QEntity *rootObject) Q_DECL_OVERRIDE;
     void onInitialize() Q_DECL_OVERRIDE;
-    void cleanupHelper() Q_DECL_OVERRIDE;
+    void onCleanup() Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

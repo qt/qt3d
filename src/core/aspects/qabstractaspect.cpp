@@ -104,7 +104,7 @@ void QAbstractAspect::initialize(QAspectManager *aspectManager)
 
 void QAbstractAspect::cleanup()
 {
-    cleanupHelper();
+    onCleanup();
 }
 
 } // of namespace Qt3D

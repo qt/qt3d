@@ -139,7 +139,7 @@ void RendererAspect::onInitialize()
     renderer->setSurface(aspectManager()->window());
 }
 
-void RendererAspect::cleanupHelper()
+void RendererAspect::onCleanup()
 {
     //Render::Renderer *renderer = m_renderThread->renderer();
     //QMetaObject::invokeMethod(renderer, "cleanup");

@@ -68,7 +68,7 @@ protected:
     void unregisterAspectHelper(QEntity *rootObject) Q_DECL_OVERRIDE;
 
     void onInitialize();
-    void cleanupHelper();
+    void onCleanup();
 
 private:
     RenderThread* m_renderThread;

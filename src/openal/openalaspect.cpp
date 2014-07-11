@@ -72,7 +72,7 @@ void OpenALAspect::onInitialize()
 
 }
 
-void OpenALAspect::cleanupHelper()
+void OpenALAspect::onCleanup()
 {
 
 }

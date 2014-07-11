@@ -95,7 +95,7 @@ protected:
     virtual void unregisterAspectHelper(QEntity *rootObject) = 0;
 
     virtual void onInitialize() = 0;
-    virtual void cleanupHelper() = 0;
+    virtual void onCleanup() = 0;
 };
 
 } // namespace Qt3D
