@@ -350,7 +350,7 @@ RenderMaterial *RenderView::findMaterialForMeshNode(const QUuid &entityUuid)
 {
     // Material is created by the RenderSceneBuilder or RenderNode if it is appended through a change
     // Therefore we only perform lookups in RenderView
-    return m_renderer->materialManager()->renderMaterial(entityUuid);
+    return m_renderer->materialManager()->lookupResource(entityUuid);
 }
 
 // The RenderTechnique && RenderPass instances have to be created in the RenderViewJobs
@@ -364,7 +364,7 @@ RenderEffect *RenderView::findEffectForMaterial(RenderMaterial *material)
         QAbstractEffect *fEffect = material->peer()->effect();
         if (fEffect != Q_NULLPTR && (effect = m_renderer->effectManager()->lookupResource(fEffect)) == Q_NULLPTR) {
             if ((effect = m_renderer->effectManager()->getOrCreateResource(fEffect)) != Q_NULLPTR) {
-                effect->setRendererAspect(m_renderer->rendererAspect());
+                effect->setRenderer(m_renderer);
                 effect->setPeer(fEffect);
             }
         }

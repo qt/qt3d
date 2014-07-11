@@ -68,6 +68,7 @@
 #include <rendertechnique.h>
 #include <renderscenebuilder.h>
 #include <rendershader.h>
+#include <rendereraspect.h>
 #include <qgraphicscontext.h>
 #include <rendercamera.h>
 #include <rendertextureprovider.h>
@@ -92,6 +93,7 @@
 
 #include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/qabstracteffect.h>
+#include <Qt3DCore/qaspectmanager.h>
 
 #include <qeffect.h>
 #include <QStack>
@@ -227,26 +229,6 @@ void Renderer::initialize()
         qCWarning(Backend) << Q_FUNC_INFO << "OpenGL context creation failed";
     m_graphicsContext->setOpenGLContext(ctx);
 
-    m_defaultMaterialHandle = m_materialManager->acquire();
-    RenderMaterial *rMaterial = m_materialManager->data(m_defaultMaterialHandle);
-    rMaterial->setRendererAspect(m_rendererAspect);
-    rMaterial->setPeer(m_defaultMaterial);
-
-    m_defaultEffectHandle = m_effectManager->acquire();
-    RenderEffect *rEffect = m_effectManager->data(m_defaultEffectHandle);
-    rEffect->setRendererAspect(m_rendererAspect);
-    rEffect->setPeer(m_defaultMaterial->effect());
-
-    m_defaultTechniqueHandle = m_techniqueManager->acquire();
-    RenderTechnique *rTech = m_techniqueManager->data(m_defaultTechniqueHandle);
-    rTech->setRenderer(this);
-    rTech->setPeer(m_defaultTechnique);
-
-    m_defaultRenderPassHandle = m_renderPassManager->acquire();
-    RenderRenderPass *rPass = m_renderPassManager->data(m_defaultRenderPassHandle);
-    rPass->setRenderer(this);
-    rPass->setPeer(qobject_cast<QRenderPass*>(m_defaultTechnique->renderPasses().first()));
-
     // Awake setScenegraphRoot in case it was waiting
     m_waitForInitializationToBeCompleted.wakeOne();
 }
@@ -302,6 +284,7 @@ void Renderer::setSceneGraphRoot(QEntity *sgRoot)
     QMutexLocker lock(&m_mutex); // This waits until initialize and setSurface have been called
     if (m_graphicsContext == Q_NULLPTR) // If initialization hasn't been completed we must wait
         m_waitForInitializationToBeCompleted.wait(&m_mutex);
+
     m_sceneGraphRoot = sgRoot;
     RenderSceneBuilder builder(this);
     builder.traverse(m_sceneGraphRoot);
@@ -311,6 +294,26 @@ void Renderer::setSceneGraphRoot(QEntity *sgRoot)
         qCWarning(Backend) << "Failed to build render scene";
     qCDebug(Backend) << Q_FUNC_INFO << "DUMPING SCENE";
     m_renderSceneRoot->dump();
+
+    m_defaultMaterialHandle = m_materialManager->acquire();
+    RenderMaterial *rMaterial = m_materialManager->data(m_defaultMaterialHandle);
+    rMaterial->setRenderer(this);
+    rMaterial->setPeer(m_defaultMaterial);
+
+    m_defaultEffectHandle = m_effectManager->acquire();
+    RenderEffect *rEffect = m_effectManager->data(m_defaultEffectHandle);
+    rEffect->setRenderer(this);
+    rEffect->setPeer(m_defaultMaterial->effect());
+
+    m_defaultTechniqueHandle = m_techniqueManager->acquire();
+    RenderTechnique *rTech = m_techniqueManager->data(m_defaultTechniqueHandle);
+    rTech->setRenderer(this);
+    rTech->setPeer(m_defaultTechnique);
+
+    m_defaultRenderPassHandle = m_renderPassManager->acquire();
+    RenderRenderPass *rPass = m_renderPassManager->data(m_defaultRenderPassHandle);
+    rPass->setRenderer(this);
+    rPass->setPeer(qobject_cast<QRenderPass*>(m_defaultTechnique->renderPasses().first()));
 }
 
 QEntity *Renderer::sceneGraphRoot() const
