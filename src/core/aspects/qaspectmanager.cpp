@@ -168,15 +168,16 @@ void QAspectManager::setWindow(QWindow *window)
 void QAspectManager::registerAspect(QAbstractAspect *aspect)
 {
     Q_D(QAspectManager);
-    qCDebug(Aspects) << Q_FUNC_INFO << "Registering aspect libraries";
+    qCDebug(Aspects) << "Registering aspect";
 
     if (aspect != Q_NULLPTR) {
         d->m_aspects.append(aspect);
         aspect->initialize(this);
     }
     else {
-       qCWarning(Aspects) << Q_FUNC_INFO << "Failed to register aspect";
+        qCWarning(Aspects) << "Failed to register aspect";
     }
+    qCDebug(Aspects) << "Completed registering aspect";
 }
 
 QWindow *QAspectManager::window() const

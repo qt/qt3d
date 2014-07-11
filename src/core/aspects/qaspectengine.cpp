@@ -109,6 +109,7 @@ void QAspectEngine::registerAspect(QAbstractAspect *aspect)
     Q_D(QAspectEngine);
     QMetaObject::invokeMethod(d->m_aspectThread->aspectManager(),
                               "registerAspect",
+                              Qt::BlockingQueuedConnection,
                               Q_ARG(Qt3D::QAbstractAspect *, aspect));
 }
 
