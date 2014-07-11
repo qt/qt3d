@@ -68,6 +68,7 @@ public:
     QReadWriteLock m_observerLock;
     QChangeArbiter *m_changeArbiter;
     const QUuid m_uuid;
+    QList<QSceneChangePtr> m_queuedChanges;
 };
 
 } // namespace Qt3D

@@ -157,6 +157,7 @@ QNode *QNode::parentNode() const
     return qobject_cast<QNode*>(parent());
 }
 
+// Called in the QAspectThread context
 void QNode::registerObserver(QObserverInterface *observer)
 {
     Q_CHECK_PTR(observer);
@@ -167,6 +168,13 @@ void QNode::registerObserver(QObserverInterface *observer)
         Q_D(QNode);
         QWriteLocker locker(&d->m_observerLock);
         d->m_changeArbiter = changeArbiter;
+
+        // We send queued changes to the changeArbiter
+        qCDebug(Nodes) << Q_FUNC_INFO << objectName() << " has " << d->m_queuedChanges.size() << "awaiting changes";
+
+        Q_FOREACH (const QSceneChangePtr &change, d->m_queuedChanges)
+            changeArbiter->sceneChangeEvent(change);
+        d->m_queuedChanges.clear();
     }
 }
 
@@ -183,6 +191,7 @@ void QNode::unregisterObserver(QObserverInterface *observer)
     }
 }
 
+// Called by the main thread
 void QNode::notifyObservers(const QSceneChangePtr &change)
 {
     Q_CHECK_PTR(change);
@@ -194,8 +203,11 @@ void QNode::notifyObservers(const QSceneChangePtr &change)
     // while d->m_observerLock is locked by the locker right above.
     // In the case that a call the QChangeArbiter registerObserver which locks the QChangeArviter's mutex
     // and calls registerObserver on the same Node with locks d->m_observerLock
+
     if (changeArbiter != Q_NULLPTR)
         changeArbiter->sceneChangeEventWithLock(change);
+    else
+        d->m_queuedChanges.append(change);
 }
 
 } // namespace Qt3D
