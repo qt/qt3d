@@ -101,6 +101,14 @@ public:
     Sphere *worldBoundingVolume() { return m_worldBoundingVolume; }
     QUuid entityUuid() const { return m_frontendUuid; }
 
+    template<class Frontend, class Backend, class Manager>
+    void createRenderComponent(Frontend *frontend, Manager *manager)
+    {
+        Backend *backend = manager->getOrCreateResource(m_frontendUuid);
+        backend->setRenderer(m_renderer);
+        backend->setPeer(frontend);
+    }
+
 private:
 
     Renderer *m_renderer;

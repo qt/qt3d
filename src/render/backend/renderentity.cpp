@@ -46,10 +46,14 @@
 #include "matrixmanager.h"
 #include "cameramanager.h"
 #include "materialmanager.h"
+#include "lightmanager.h"
+#include "layermanager.h"
 #include "meshmanager.h"
 #include "meshdatamanager.h"
 #include "qmesh.h"
 #include "qabstractshapemesh.h"
+#include "renderscenebuilder.h"
+#include "qmaterial.h"
 #include <sphere.h>
 
 #include <Qt3DCore/qentity.h>
@@ -57,6 +61,8 @@
 #include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qtransform.h>
+#include <Qt3DRenderer/qlayer.h>
+#include <Qt3DRenderer/qabstractlight.h>
 
 #include <QMatrix4x4>
 #include <QString>
@@ -83,7 +89,6 @@ RenderEntity::~RenderEntity()
 {
     if (m_renderer != Q_NULLPTR) {
         RenderEntity *parentEntity = parent();
-        qCDebug(Render::RenderNodes) << Q_FUNC_INFO << m_handle;
         m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_frontEndPeer);
         if (parentEntity != Q_NULLPTR)
             parentEntity->removeChildHandle(m_handle);
@@ -167,7 +172,6 @@ void RenderEntity::sceneChangeEvent(const QSceneChangePtr &e)
         qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "NodeCreated";
         QEntity *entity = propertyChange->value().value<QEntity *>();
         if (entity != Q_NULLPTR) {
-            qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "NodeCreated" << entity->objectName();
             HRenderNode renderNodeHandle;
             renderNodeHandle = m_renderer->renderNodesManager()->getOrAcquireHandle(entity->uuid());
             RenderEntity *renderNode = m_renderer->renderNodesManager()->data(renderNodeHandle);
@@ -199,34 +203,31 @@ void RenderEntity::sceneChangeEvent(const QSceneChangePtr &e)
 
     case ComponentAdded: {
         QComponent *component = propertyChange->value().value<QComponent*>();
+        qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "Component Added" << m_frontEndPeer->objectName() << component->objectName();
         if (m_transform == Q_NULLPTR && qobject_cast<QTransform*>(component) != Q_NULLPTR) {
             setTransform(qobject_cast<QTransform *>(component));
         }
-        else if (qobject_cast<QCameraLens *>(component)) {
-            RenderCamera *cam = m_renderer->cameraManager()->lookupResource(m_frontendUuid);
-            if (cam != Q_NULLPTR)
-                cam->setPeer(qobject_cast<QCameraLens *>(component));
-        }
-        else if (qobject_cast<QAbstractMesh *>(component)) {
-            RenderMesh *mesh = m_renderer->meshManager()->lookupResource(m_frontendUuid);
-            qCDebug(Render::RenderNodes) << Q_FUNC_INFO << " Mesh Component Added " << component << component->objectName();
-            if (mesh != Q_NULLPTR) {
-                qDebug() << component << component->objectName();
-                mesh->setPeer(qobject_cast<QAbstractMesh *>(component));
-            }
-        }
+        else if (qobject_cast<QAbstractMesh *>(component))
+            RenderEntity::createRenderComponent<QAbstractMesh, RenderMesh, MeshManager>(qobject_cast<QAbstractMesh *>(component), m_renderer->meshManager());
+        else if (qobject_cast<QCameraLens *>(component))
+            RenderEntity::createRenderComponent<QCameraLens, RenderCamera, CameraManager>(qobject_cast<QCameraLens *>(component), m_renderer->cameraManager());
+        else if (qobject_cast<QLayer *>(component))
+            RenderEntity::createRenderComponent<QLayer, RenderLayer, LayerManager>(qobject_cast<QLayer *>(component), m_renderer->layerManager());
+        else if (qobject_cast<QAbstractLight *>(component))
+            RenderEntity::createRenderComponent<QAbstractLight, RenderLight, LightManager>(qobject_cast<QAbstractLight *>(component), m_renderer->lightManager());
+        else if (qobject_cast<QMaterial *>(component))
+            RenderEntity::createRenderComponent<QMaterial, RenderMaterial, MaterialManager>(qobject_cast<QMaterial *>(component), m_renderer->materialManager());
         break;
     }
 
     case ComponentRemoved: {
         QComponent *component = propertyChange->value().value<QComponent*>();
+        qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "Component Removed" << component->objectName();
         if (component == m_transform) {
             setTransform(Q_NULLPTR);
         }
         else if (qobject_cast<QCameraLens *>(component)) {
-            RenderCamera *cam = m_renderer->cameraManager()->lookupResource(m_frontendUuid);
-            if (cam != Q_NULLPTR)
-                cam->setPeer(Q_NULLPTR);
+            m_renderer->cameraManager()->releaseResource(m_frontendUuid);
         }
         else if (qobject_cast<QAbstractMesh *>(component)) {
             qCDebug(Render::RenderNodes) << Q_FUNC_INFO << " Mesh Component Removed " << component << component->objectName();
