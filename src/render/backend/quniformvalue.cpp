@@ -123,8 +123,8 @@ QUniformValue *QUniformValue::fromVariant(const QVariant &v, QFrameAllocator *al
         return t;
     }
     case QVariant::Transform: {
-        SpecifiedUniform<QTransform> *t = allocator->allocate<SpecifiedUniform<QTransform> >();
-        t->setValue(v.value<QTransform>());
+        SpecifiedUniform<QT_PREPEND_NAMESPACE(QTransform)> *t = allocator->allocate<SpecifiedUniform<QT_PREPEND_NAMESPACE(QTransform)> >();
+        t->setValue(v.value<QT_PREPEND_NAMESPACE(QTransform)>());
         return t;
     }
     case QVariant::Color: {
