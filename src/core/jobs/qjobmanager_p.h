@@ -39,44 +39,33 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QJOBMANAGER_H
-#define QT3D_QJOBMANAGER_H
+#ifndef QT3D_QJOBMANAGER_P_H
+#define QT3D_QJOBMANAGER_P_H
 
-#include <Qt3DCore/qjobmanagerinterface.h>
-#include <Qt3DCore/qt3dcore_global.h>
+#include <private/qobject_p.h>
 
-#include <Qt3DCore/qjob.h>
-
-#include <QVector>
+namespace ThreadWeaver {
+class Queue;
+}
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QJobManagerPrivate;
+class QJobManager;
 
-class QJobManager : public QJobManagerInterface
+class QJobManagerPrivate : public QObjectPrivate
 {
-    Q_OBJECT
 public:
-    explicit QJobManager(QObject *parent = 0);
+    QJobManagerPrivate(QJobManager *qq);
 
-    void initialize() Q_DECL_OVERRIDE;
-
-    void enqueueJobs(const QVector<QJobPtr> &jobQueue) Q_DECL_OVERRIDE;
-
-    void waitForAllJobs() Q_DECL_OVERRIDE;
-
-    void waitForPerThreadFunction(JobFunction func, void *arg) Q_DECL_OVERRIDE;
-
-protected:
-    QJobManager(QJobManagerPrivate &dd, QObject *parent);
-    Q_DECLARE_PRIVATE(QJobManager)
-    QJobManagerPrivate *d_ptr;
+    Q_DECLARE_PUBLIC(QJobManager)
+    QJobManager *q_ptr;
+    ThreadWeaver::Queue *m_weaver;
 };
 
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QJOBMANAGER_H
+#endif // QT3D_QJOBMANAGER_P_H

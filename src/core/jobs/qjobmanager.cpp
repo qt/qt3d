@@ -39,27 +39,88 @@
 **
 ****************************************************************************/
 
-#include "qjobmanager.h"
-
-#include "weaverjob_p.h"
-
 #include <threadweaver.h>
 #include <dependencypolicy.h>
 #include <thread.h>
+
+#include "qjobmanager.h"
+#include "job.h"
+#include "weaverjob_p.h"
+#include "qjobmanager_p.h"
 
 #include <QAtomicInt>
 #include <QDebug>
 #include <QThread>
 
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+namespace {
+
+class SynchronizedJob : public ThreadWeaver::Job
+{
+public:
+    SynchronizedJob(QJobManagerInterface::JobFunction func, void *arg, QAtomicInt *atomicCount)
+        : m_func(func)
+        , m_arg(arg)
+        , m_atomicCount(atomicCount)
+    {}
+
+protected:
+    void run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
+
+private:
+    QJobManagerInterface::JobFunction m_func;
+    void *m_arg;
+    QAtomicInt *m_atomicCount;
+};
+
+typedef QSharedPointer<SynchronizedJob> SynchronizedJobPtr;
+
+void SynchronizedJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
+{
+    Q_UNUSED(self);
+    Q_CHECK_PTR(m_func);
+    Q_CHECK_PTR(thread);
+
+    // Call the function
+    m_func(m_arg);
+
+    // Decrement the atomic counter to let others know we've done our bit
+    m_atomicCount->deref();
+
+    // Wait for the other worker threads to be done
+    while (m_atomicCount->load() > 0)
+        thread->yieldCurrentThread();
+}
+
+} // anonymous
+
+QJobManagerPrivate::QJobManagerPrivate(QJobManager *qq)
+    : QObjectPrivate()
+    , q_ptr(qq)
+    , m_weaver(Q_NULLPTR)
+{
+}
+
 QJobManager::QJobManager(QObject *parent)
     : QJobManagerInterface(parent)
-    , m_weaver(new ThreadWeaver::Queue(this))
+    , d_ptr(new QJobManagerPrivate(this))
 {
-    m_weaver->setMaximumNumberOfThreads(QThread::idealThreadCount());
+    Q_D(QJobManager);
+    d->m_weaver = new ThreadWeaver::Queue(this);
+    d->m_weaver->setMaximumNumberOfThreads(QThread::idealThreadCount());
+}
+
+QJobManager::QJobManager(QJobManagerPrivate &dd, QObject *parent)
+    : QJobManagerInterface(parent)
+    , d_ptr(&dd)
+{
+    Q_D(QJobManager);
+    d->m_weaver = new ThreadWeaver::Queue(this);
+    d->m_weaver->setMaximumNumberOfThreads(QThread::idealThreadCount());
 }
 
 void QJobManager::initialize()
@@ -68,6 +129,7 @@ void QJobManager::initialize()
 
 void QJobManager::enqueueJobs(const QVector<QJobPtr> &jobQueue)
 {
+    Q_D(QJobManager);
     // Convert QJobs to ThreadWeaver::Jobs
     QHash<QJob *, QSharedPointer<WeaverJob> > jobsMap;
     Q_FOREACH (const QJobPtr &job, jobQueue) {
@@ -93,43 +155,28 @@ void QJobManager::enqueueJobs(const QVector<QJobPtr> &jobQueue)
 
     Q_FOREACH (const QJobPtr &job, jobQueue) {
         QSharedPointer<WeaverJob> weaverJob = jobsMap.value(job.data());
-        m_weaver->enqueue(weaverJob);
+        d->m_weaver->enqueue(weaverJob);
     }
 }
 
 void QJobManager::waitForAllJobs()
 {
-    m_weaver->finish();
-}
-
-void QJobManager::SynchronizedJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
-{
-    Q_UNUSED(self);
-    Q_CHECK_PTR(m_func);
-    Q_CHECK_PTR(thread);
-
-    // Call the function
-    m_func(m_arg);
-
-    // Decrement the atomic counter to let others know we've done our bit
-    m_atomicCount->deref();
-
-    // Wait for the other worker threads to be done
-    while (m_atomicCount->load() > 0)
-        thread->yieldCurrentThread();
+    Q_D(QJobManager);
+    d->m_weaver->finish();
 }
 
 void QJobManager::waitForPerThreadFunction(JobFunction func, void *arg)
 {
-    const int threadCount = m_weaver->maximumNumberOfThreads();
+    Q_D(QJobManager);
+    const int threadCount = d->m_weaver->maximumNumberOfThreads();
     QAtomicInt atomicCount(threadCount);
 
     for (int i = 0; i < threadCount; ++i) {
-        QJobManager::SynchronizedJobPtr syncJob(new QJobManager::SynchronizedJob(func, arg, &atomicCount));
-        m_weaver->enqueue(syncJob);
+        SynchronizedJobPtr syncJob(new SynchronizedJob(func, arg, &atomicCount));
+        d->m_weaver->enqueue(syncJob);
     }
 
-    m_weaver->finish();
+    d->m_weaver->finish();
 }
 
 } // namespace Qt3D

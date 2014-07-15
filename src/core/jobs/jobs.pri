@@ -9,6 +9,7 @@ HEADERS += \
            $$PWD/qjobmanager.h \
            $$PWD/qjobmanagerinterface.h \
            $$PWD/qjobproviderinterface.h \
-           $$PWD/weaverjob_p.h
+           $$PWD/weaverjob_p.h \
+           $$PWD/qjobmanager_p.h
 
 INCLUDEPATH += $$PWD
