@@ -90,13 +90,24 @@ public:
 
 private :
 
+    class AssimpMeshFunctor : public QAbstractMeshFunctor
+    {
+    public:
+        explicit AssimpMeshFunctor(MeshDataPtr meshData);
+        QAbstractMeshDataPtr operator()() Q_DECL_OVERRIDE;
+    private:
+        MeshDataPtr m_meshData;
+    };
+
     class AssimpMesh : public QAbstractMesh
     {
     public :
-        AssimpMesh(QNode *parent = 0);
+        explicit AssimpMesh(QNode *parent = 0);
 
-        bool load() Q_DECL_OVERRIDE;
+        QAbstractMeshFunctorPtr meshFunctor() const Q_DECL_OVERRIDE;
         void setData(MeshDataPtr data);
+    private:
+        MeshDataPtr m_meshData;
     };
 
     static QStringList assimpSupportedFormats();

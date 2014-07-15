@@ -54,7 +54,6 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QAbstractMesh;
-class QAbstractMeshData;
 
 class QT3DCORESHARED_EXPORT QAbstractMeshPrivate : public QComponentPrivate
 {
@@ -65,7 +64,6 @@ public:
 
     const QUuid m_uuid;
     bool m_dirty;
-    QSharedPointer<QAbstractMeshData> m_data;
 };
 
 }

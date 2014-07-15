@@ -793,16 +793,30 @@ AssimpParser::AssimpMesh::AssimpMesh(QNode *parent)
 {
 }
 
-bool AssimpParser::AssimpMesh::load()
-{
-    return true;
-}
-
 void AssimpParser::AssimpMesh::setData(MeshDataPtr data)
 {
-    QAbstractMesh::setData(data.staticCast<QAbstractMeshData>());
+    m_meshData = data;
+    QAbstractMesh::setDirty(this);
+}
+
+QAbstractMeshFunctorPtr AssimpParser::AssimpMesh::meshFunctor() const
+{
+    return QAbstractMeshFunctorPtr(new AssimpMeshFunctor(m_meshData));
+}
+
+AssimpParser::AssimpMeshFunctor::AssimpMeshFunctor(MeshDataPtr meshData)
+    : QAbstractMeshFunctor()
+    , m_meshData(meshData)
+{
+}
+
+QAbstractMeshDataPtr AssimpParser::AssimpMeshFunctor::operator()()
+{
+    return m_meshData;
 }
 
 } // Qt3D
 
 QT_END_NAMESPACE
+
+

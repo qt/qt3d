@@ -41,6 +41,7 @@
 
 #include "qabstractmesh.h"
 #include "qabstractmesh_p.h"
+#include <Qt3DCore/qscenepropertychange.h>
 
 /*!
  * \class QAbstractMesh
@@ -61,7 +62,7 @@ namespace Qt3D {
 
 QAbstractMeshPrivate::QAbstractMeshPrivate(QAbstractMesh *qq)
     : QComponentPrivate(qq)
-    , m_dirty(true)
+    , m_dirty(false)
 {
 }
 
@@ -76,12 +77,6 @@ QAbstractMesh::QAbstractMesh(QAbstractMeshPrivate &dd, QNode *parent)
 {
 }
 
-void QAbstractMesh::setData(QAbstractMeshDataPtr data)
-{
-    Q_D(QAbstractMesh);
-    d->m_data = data;
-}
-
 bool QAbstractMesh::isDirty() const
 {
     Q_D(const QAbstractMesh);
@@ -91,13 +86,17 @@ bool QAbstractMesh::isDirty() const
 void QAbstractMesh::setDirty(bool dirty)
 {
     Q_D(QAbstractMesh);
-    d->m_dirty = dirty;
-}
-
-QAbstractMeshDataPtr QAbstractMesh::data() const
-{
-    Q_D(const QAbstractMesh);
-    return d->m_data;
+    if (dirty != d->m_dirty) {
+        d->m_dirty = dirty;
+        QScenePropertyChangePtr change(new QScenePropertyChange(ComponentUpdated, this));
+        change->setPropertyName(QByteArrayLiteral("meshFunctor"));
+        change->setValue(QVariant::fromValue(meshFunctor()));
+        notifyObservers(change);
+        // TO DO see if we can clear the d->m_dirty on request.
+        // This would allow to send a single notification for classes that have several property changes occur
+        // over a single given frame
+        d->m_dirty = false;
+    }
 }
 
 } // Qt3D

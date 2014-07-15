@@ -116,13 +116,13 @@ void RenderMesh::sceneChangeEvent(const QSceneChangePtr &e)
     switch (e->type()) {
     case ComponentUpdated: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("source") && qobject_cast<QMesh*>(m_peer)) // Mesh with source
+        if (propertyChange->propertyName() == QByteArrayLiteral("meshFunctor")) // Mesh with source
         {
-            QVariant propertyValue = propertyChange->value();
-            m_source = propertyValue.toString();
-            m_meshDirty = true;
-            // TO DO Try to use and monitor for changes the peer dirty property to check if a mesh has to be reloaded
-            m_peer->setDirty(true);
+            QAbstractMeshFunctorPtr functor = propertyChange->value().value<QAbstractMeshFunctorPtr>();
+            if (m_functor != functor) {
+                m_functor = functor;
+                m_renderer->meshDataManager()->addMeshData(m_functor, m_meshUuid);
+            }
         }
         break;
     }
@@ -132,23 +132,9 @@ void RenderMesh::sceneChangeEvent(const QSceneChangePtr &e)
     }
 }
 
-bool RenderMesh::meshDirty() const
-{
-    QReadLocker lock(m_lock);
-    return m_meshDirty;
-}
-
 HMeshData RenderMesh::meshData() const
 {
-    QReadLocker lock(m_lock);
-    return m_meshDataHandle;
-}
-
-void RenderMesh::setMeshData(HMeshData handle)
-{
-    QWriteLocker lock(m_lock);
-    m_meshDataHandle = handle;
-    m_meshDirty = false;
+   return m_renderer->meshDataManager()->lookupHandle(m_meshUuid);
 }
 
 //DrawStateSet *RenderMesh::stateSet()

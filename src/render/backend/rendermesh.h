@@ -55,9 +55,11 @@ class QReadWriteLock;
 namespace Qt3D {
 
 class QAbstractMesh;
+class QAbstractMeshFunctor;
 class QRenderPass;
 class MeshData;
 
+typedef QSharedPointer<QAbstractMeshFunctor> QAbstractMeshFunctorPtr;
 typedef QHandle<MeshData, 16> HMeshData;
 
 namespace Render {
@@ -78,11 +80,11 @@ public:
     QAbstractMesh *peer() const { return m_peer; }
 
     void sceneChangeEvent(const QSceneChangePtr &e);
-    bool meshDirty() const;
     HMeshData meshData() const;
     void setMeshData(HMeshData handle);
 
     QUuid meshUuid() const { return m_meshUuid; }
+    QAbstractMeshFunctorPtr meshFunctor() const { return m_functor; }
 
     /**
      * @brief mapAttributeNames - resolve mapping of mesh-data attribute
@@ -94,7 +96,7 @@ public:
 private:
     Renderer *m_renderer;
     QAbstractMesh* m_peer;
-    QString m_source;
+    QAbstractMeshFunctorPtr m_functor;
 
     bool m_meshDirty;
     HMeshData m_meshDataHandle;

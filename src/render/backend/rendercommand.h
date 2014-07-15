@@ -86,7 +86,6 @@ public:
 //private:
     HVao m_vao; // VAO used during the submission step to store all states and VBOs
     QMatrix4x4 m_worldMatrix; // modelMatrix for the mesh -> could maybe be stored directly with other uniform
-    HMesh m_mesh;
     HMeshData m_meshData;
     HShader m_shader; // Shader for given pass and mesh
     QUniformPack m_uniforms; // Might need to be reworked so as to be able to destroy the

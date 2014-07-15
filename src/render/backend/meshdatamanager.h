@@ -45,6 +45,7 @@
 #include <Qt3DCore/qabstractmesh.h>
 #include <Qt3DCore/qresourcesmanager.h>
 #include <Qt3DRenderer/meshdata.h>
+#include <Qt3DRenderer/rendermesh.h>
 
 #include <QHash>
 #include <QPair>
@@ -57,6 +58,7 @@ namespace Qt3D {
 namespace Render {
 
 typedef QHandle<MeshData, 16> HMeshData;
+typedef QHandle<RenderMesh, 16> HMesh;
 
 class MeshDataManager : public QResourcesManager<MeshData,
                                                  QUuid,
@@ -70,15 +72,15 @@ public:
     inline bool hasMeshData(const QUuid &id) { return contains(id); }
     inline MeshData* getOrCreateMeshData(const QUuid &id) { return getOrCreateResource(id); }
     inline MeshData* meshData(const QUuid &id) { return lookupResource(id); }
-    void addMeshData(QUuid meshEntityId);
+    void addMeshData(QAbstractMeshFunctorPtr functor, const QUuid &meshUuid);
 
-    QList<QUuid> meshesPending() const;
-    void clearMeshesPending();
+    QHash<QUuid, QAbstractMeshFunctorPtr> meshesPending();
 
 private:
     // List of meshes that we need to schedule jobs to load
     // and calculate bounds for.
-    QList<QUuid> m_meshesPending;
+
+    QHash<QUuid, QAbstractMeshFunctorPtr> m_meshesPending;
 };
 
 } // namespace Render

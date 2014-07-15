@@ -46,31 +46,32 @@
 #include <Qt3DCore/qjob.h>
 #include <Qt3DCore/qhandle.h>
 #include <Qt3DRenderer/meshdata.h>
-
+#include <Qt3DCore/qabstractmesh.h>
 #include <QSharedPointer>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAbstractMesh;
 typedef QHandle<MeshData, 16> HMeshData;
 
 namespace Render {
 
 class Renderer;
+class RenderMesh;
+typedef QHandle<RenderMesh, 16> HMesh;
 
 class LoadMeshDataJob : public Qt3D::QJob
 {
 public:
-    LoadMeshDataJob(const QUuid &meshEntityId);
-
+    LoadMeshDataJob(QAbstractMeshFunctorPtr functor, const QUuid &meshUuid);
     void setRenderer(Renderer *renderer) { m_renderer = renderer; }
 protected:
     void run() Q_DECL_OVERRIDE;
 
 private:
-    QUuid m_meshSourceId;
+    QUuid m_meshUuid;
+    QAbstractMeshFunctorPtr m_functor;
     Renderer *m_renderer;
 };
 

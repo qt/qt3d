@@ -51,6 +51,19 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class TorusMeshFunctor : public QAbstractMeshFunctor
+{
+public:
+    TorusMeshFunctor(int rings, int slices, float radius, float minorRadius);
+    QAbstractMeshDataPtr operator ()() Q_DECL_OVERRIDE;
+
+private:
+    int m_rings;
+    int m_slices;
+    float m_radius;
+    float m_minorRadius;
+};
+
 class QTorusMeshPrivate : public QAbstractShapeMeshPrivate
 {
     QTorusMeshPrivate(QTorusMesh *qq)
@@ -79,6 +92,7 @@ void QTorusMesh::setRings(int rings)
     if (rings != d->m_rings) {
         d->m_rings = rings;
         emit ringsChanged();
+        QAbstractMesh::setDirty(true);
     }
 }
 
@@ -88,6 +102,7 @@ void QTorusMesh::setSlices(int slices)
     if (slices != d->m_slices) {
         d->m_slices = slices;
         emit slicesChanged();
+        QAbstractMesh::setDirty(true);
     }
 }
 
@@ -97,6 +112,7 @@ void QTorusMesh::setRadius(float radius)
     if (radius != d->m_radius) {
         d->m_radius = radius;
         emit radiusChanged();
+        QAbstractMesh::setDirty(true);
     }
 }
 
@@ -106,6 +122,7 @@ void QTorusMesh::setMinorRadius(float minorRadius)
     if (minorRadius != d->m_minorRadius) {
         d->m_minorRadius = minorRadius;
         emit minorRadiusChanged();
+        QAbstractMesh::setDirty(true);
     }
 }
 
@@ -133,13 +150,7 @@ float QTorusMesh::minorRadius() const
     return d->m_minorRadius;
 }
 
-QAbstractMeshDataPtr QTorusMesh::buildMeshdata() const
-{
-    Q_D(const QTorusMesh);
-    return createTorusMesh(d->m_radius, d->m_minorRadius, d->m_rings, d->m_slices);
-}
-
-QAbstractMeshDataPtr QTorusMesh::createTorusMesh(double radius, double minorRadius,
+QAbstractMeshDataPtr createTorusMesh(double radius, double minorRadius,
                             int rings, int sides)
 {
     QAbstractMeshDataPtr mesh(new MeshData(GL_TRIANGLES));
@@ -229,6 +240,26 @@ QAbstractMeshDataPtr QTorusMesh::createTorusMesh(double radius, double minorRadi
     mesh->computeBoundsFromAttribute(QAbstractMeshData::defaultPositionAttributeName());
 
     return mesh;
+}
+
+QAbstractMeshFunctorPtr QTorusMesh::meshFunctor() const
+{
+    Q_D(const QTorusMesh);
+    return QAbstractMeshFunctorPtr(new TorusMeshFunctor(d->m_rings, d->m_slices, d->m_radius, d->m_minorRadius));
+}
+
+TorusMeshFunctor::TorusMeshFunctor(int rings, int slices, float radius, float minorRadius)
+    : QAbstractMeshFunctor()
+    , m_rings(rings)
+    , m_slices(slices)
+    , m_radius(radius)
+    , m_minorRadius(minorRadius)
+{
+}
+
+QAbstractMeshDataPtr TorusMeshFunctor::operator ()()
+{
+    return createTorusMesh(m_radius, m_minorRadius, m_rings, m_slices);
 }
 
 } // Qt3D

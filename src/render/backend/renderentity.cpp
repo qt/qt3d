@@ -89,13 +89,15 @@ RenderEntity::~RenderEntity()
 {
     if (m_renderer != Q_NULLPTR) {
         RenderEntity *parentEntity = parent();
-        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_frontEndPeer);
         if (parentEntity != Q_NULLPTR)
             parentEntity->removeChildHandle(m_handle);
         for (int i = 0; i < m_childrenHandles.size(); i++)
             m_renderer->renderNodesManager()->release(m_childrenHandles[i]);
+        setTransform(Q_NULLPTR);
         m_renderer->localMatrixManager()->release(m_localTransform);
         m_renderer->worldMatrixManager()->release(m_worldTransform);
+        m_renderer->meshManager()->releaseRenderMesh(m_frontendUuid);
+        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_frontEndPeer);
     }
     delete m_localBoundingVolume;
     delete m_worldBoundingVolume;

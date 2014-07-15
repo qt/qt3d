@@ -54,6 +54,15 @@ class QAbstractMeshData;
 
 typedef QSharedPointer<QAbstractMeshData> QAbstractMeshDataPtr;
 
+class QT3DCORESHARED_EXPORT QAbstractMeshFunctor
+{
+public:
+    virtual QAbstractMeshDataPtr operator()() = 0;
+    virtual ~QAbstractMeshFunctor() {}
+};
+
+typedef QSharedPointer<QAbstractMeshFunctor> QAbstractMeshFunctorPtr;
+
 class QT3DCORESHARED_EXPORT QAbstractMesh : public QComponent
 {
     Q_OBJECT
@@ -64,8 +73,7 @@ public:
     bool isDirty() const;
     void setDirty(bool dirty);
 
-    virtual bool load() = 0;
-    virtual QAbstractMeshDataPtr data() const;
+    virtual QAbstractMeshFunctorPtr meshFunctor() const = 0;
 
 Q_SIGNALS:
     void sourceChanged();
@@ -73,12 +81,12 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QAbstractMesh)
     QAbstractMesh(QAbstractMeshPrivate &dd, QNode *parent = 0);
-
-    void setData(QAbstractMeshDataPtr data);
 };
 
 } // Qt3D
 
 QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE(Qt3D::QAbstractMeshFunctorPtr)
 
 #endif // QABSTRACTMESH_H

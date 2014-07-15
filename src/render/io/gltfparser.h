@@ -100,11 +100,25 @@ private:
 
     class GLTFParserMesh : public QAbstractMesh
     {
+    private:
+        class GLTFParserMeshFunctor : public QAbstractMeshFunctor
+        {
+        public:
+            explicit GLTFParserMeshFunctor(MeshDataPtr meshData);
+            QAbstractMeshDataPtr operator ()();
+
+        private:
+            MeshDataPtr m_meshData;
+        };
+
     public:
         GLTFParserMesh(QNode *parent = 0);
 
-        bool load() Q_DECL_OVERRIDE;
         void setData(MeshDataPtr data);
+        QAbstractMeshFunctorPtr meshFunctor() const Q_DECL_OVERRIDE;
+
+    private:
+        MeshDataPtr m_meshData;
     };
 
     void parse();

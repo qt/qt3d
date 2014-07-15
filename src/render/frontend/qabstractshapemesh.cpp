@@ -64,12 +64,6 @@ QAbstractShapeMesh::QAbstractShapeMesh(QAbstractShapeMeshPrivate &dd, QNode *par
 {
 }
 
-bool QAbstractShapeMesh::load()
-{
-    QAbstractMesh::setData(buildMeshdata().staticCast<QAbstractMeshData>());
-    return true;
-}
-
 } // namespace Qt3D
 
 QT_END_NAMESPACE

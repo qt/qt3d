@@ -57,9 +57,10 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
-LoadMeshDataJob::LoadMeshDataJob(const QUuid &meshEntityId)
+LoadMeshDataJob::LoadMeshDataJob(QAbstractMeshFunctorPtr functor, const QUuid &meshUuid)
     : QJob()
-    , m_meshSourceId(meshEntityId)
+    , m_meshUuid(meshUuid)
+    , m_functor(functor)
 {
 }
 
@@ -67,39 +68,19 @@ void LoadMeshDataJob::run()
 {
     qCDebug(Jobs) << "Entering" << Q_FUNC_INFO << QThread::currentThread();
 
+    if (m_functor.isNull())
+        return ;
     // Load the mesh from disk (or wherever)
-
-    RenderMesh *rMesh =  m_renderer->meshManager()->lookupResource(m_meshSourceId);
-    if (rMesh == Q_NULLPTR)
-        return ;
-    // TO DO : Find a way to make that secure
-    // Either loading has to be done somewhere, either we have to be sure a QAbstractMesh
-    // Will stay valid up until that point
-    QAbstractMesh *meshSource = rMesh->peer();
-    if (meshSource == Q_NULLPTR)
-    {
-        qCDebug(Jobs) << Q_FUNC_INFO << " Mesh is null, why ?";
-        return ;
-    }
-
-    if (!meshSource->load()) {
-        qCDebug(Jobs) << Q_FUNC_INFO << "Mesh failed to load";
-        return ;
-    }
-
-    MeshDataPtr meshDataPtr = meshSource->data().staticCast<MeshData>();
+    MeshDataPtr meshDataPtr = m_functor->operator ()().staticCast<MeshData>();
     if (meshDataPtr.isNull()) {
         qCDebug(Jobs) << Q_FUNC_INFO << "Mesh has no raw data";
         return ;
     }
 
     // TO DO try to use QAbstractMeshData if possible
-    // This is not properly thread synched
-    MeshData *meshData = m_renderer->meshDataManager()->getOrCreateResource(rMesh->meshUuid());
-    MeshDataManager::WriteLocker(m_renderer->meshDataManager());
-    *meshData = *meshDataPtr.data();
-    MeshManager::WriteLocker(m_renderer->meshManager());
-    rMesh->setMeshData(m_renderer->meshDataManager()->lookupHandle(rMesh->meshUuid()));
+    QMutexLocker lock(m_renderer->mutex());
+    MeshData *meshData = m_renderer->meshDataManager()->getOrCreateResource(m_meshUuid);
+    *meshData = *(meshDataPtr.data());
 
     AttributePtr attr = meshData->attributeByName(QAbstractMeshData::defaultPositionAttributeName()).staticCast<Attribute>();
     if (!attr)

@@ -965,14 +965,26 @@ GLTFParser::GLTFParserMesh::GLTFParserMesh(QNode *parent)
 {
 }
 
-bool GLTFParser::GLTFParserMesh::load()
-{
-    return true;
-}
-
 void GLTFParser::GLTFParserMesh::setData(MeshDataPtr data)
 {
-    QAbstractMesh::setData(data.staticCast<QAbstractMeshData>());
+   m_meshData = data;
+   QAbstractMesh::setDirty(this);
+}
+
+QAbstractMeshFunctorPtr GLTFParser::GLTFParserMesh::meshFunctor() const
+{
+    return QAbstractMeshFunctorPtr(new GLTFParserMesh::GLTFParserMeshFunctor(m_meshData));
+}
+
+GLTFParser::GLTFParserMesh::GLTFParserMeshFunctor::GLTFParserMeshFunctor(MeshDataPtr meshData)
+    : QAbstractMeshFunctor()
+    , m_meshData(meshData)
+{
+}
+
+QAbstractMeshDataPtr GLTFParser::GLTFParserMesh::GLTFParserMeshFunctor::operator ()()
+{
+    return m_meshData;
 }
 
 } // of namespace Qt3D

@@ -311,10 +311,8 @@ void RenderView::buildRenderCommands(RenderEntity *node)
         if (m_renderer->meshManager()->contains(node->entityUuid()) &&
                 (meshHandle = m_renderer->meshManager()->lookupHandle(node->entityUuid())) != HMesh() &&
                 (mesh = m_renderer->meshManager()->data(meshHandle)) != Q_NULLPTR) {
-            if (mesh->meshDirty()) {
-                m_renderer->meshDataManager()->addMeshData(node->entityUuid());
-            }
-            else {
+            if (!mesh->meshData().isNull())
+            {
                 RenderMaterial *material = findMaterialForMeshNode(node->entityUuid());
                 RenderEffect *effect = findEffectForMaterial(material);
                 RenderTechnique *technique = findTechniqueForEffect(effect);
@@ -330,7 +328,6 @@ void RenderView::buildRenderCommands(RenderEntity *node)
 
                 Q_FOREACH (RenderRenderPass *pass, passes) {
                     RenderCommand *command = m_allocator->allocate<RenderCommand>();
-                    command->m_mesh = meshHandle;
                     command->m_meshData = mesh->meshData();
                     command->m_instancesCount = 0;
                     command->m_worldMatrix = *(node->worldTransform());

@@ -55,6 +55,17 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class MeshFunctor : public QAbstractMeshFunctor
+{
+public :
+    MeshFunctor(const QString &sourcePath);
+    QAbstractMeshDataPtr operator()() Q_DECL_OVERRIDE;
+
+private:
+    QString m_sourcePath;
+};
+
+
 QMeshPrivate::QMeshPrivate(QMesh *qq)
     : QAbstractMeshPrivate(qq)
 {}
@@ -77,10 +88,7 @@ void QMesh::setSource( const QString& source )
     d->m_source = source;
     emit sourceChanged();
     // Let aspects know about the change
-    QScenePropertyChangePtr e(new QScenePropertyChange(ComponentUpdated, this));
-    e->setPropertyName(QByteArrayLiteral("source"));
-    e->setValue(d->m_source);
-    notifyObservers(e);
+    QAbstractMesh::setDirty(true);
 }
 
 QString QMesh::source() const
@@ -89,27 +97,35 @@ QString QMesh::source() const
     return d->m_source;
 }
 
-bool QMesh::load()
+QAbstractMeshFunctorPtr QMesh::meshFunctor() const
 {
-    Q_D(QMesh);
+    Q_D(const QMesh);
+    return QAbstractMeshFunctorPtr(new MeshFunctor(d->m_source));
+}
 
-    if (d->m_source.isEmpty()) {
+MeshFunctor::MeshFunctor(const QString &sourcePath)
+    : QAbstractMeshFunctor()
+    , m_sourcePath(sourcePath)
+{
+}
+
+QAbstractMeshDataPtr MeshFunctor::operator()()
+{
+    if (m_sourcePath.isEmpty()) {
         qCWarning(Render::Jobs) << Q_FUNC_INFO << "Mesh is empty, nothing to load";
-        return false;
+        return MeshDataPtr();
     }
 
     // TO DO : Maybe use Assimp instead of ObjLoader to handle more sources
     ObjLoader loader;
     loader.setLoadTextureCoordinatesEnabled(true);
-    qCDebug(Render::Jobs) << Q_FUNC_INFO << "Loading mesh from" << d->m_source;
+    qCDebug(Render::Jobs) << Q_FUNC_INFO << "Loading mesh from" << m_sourcePath;
 
-    if (loader.load(d->m_source)) {
-        QAbstractMesh::setData(QAbstractMeshDataPtr(loader.mesh()));
-        return true;
-    }
+    if (loader.load(m_sourcePath))
+        return MeshDataPtr(loader.mesh());
 
-    qCWarning(Render::Jobs) << Q_FUNC_INFO << "OBJ load failure for:" << d->m_source;
-    return false;
+    qCWarning(Render::Jobs) << Q_FUNC_INFO << "OBJ load failure for:" << m_sourcePath;
+    return MeshDataPtr();
 }
 
 } // namespace Qt3D

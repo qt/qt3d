@@ -55,24 +55,19 @@ MeshDataManager::MeshDataManager()
 {
 }
 
-// Called concurrently by multiple Jobs when building RenderCommands
-void MeshDataManager::addMeshData(QUuid meshEntityId)
+// Called by aspect thread when RenderMesh receive a new functor in syncChanges
+void MeshDataManager::addMeshData(QAbstractMeshFunctorPtr functor, const QUuid &meshUuid)
 {
-    MeshDataManager::WriteLocker(this);
-    if (!m_meshesPending.contains(meshEntityId))
-        m_meshesPending.append(meshEntityId);
+    m_meshesPending[meshUuid] = functor;
 }
 
 // Called by single thread in RendererAspect
-QList<QUuid> MeshDataManager::meshesPending() const
+// Needs to be protected as we ways call it while addMeshData is called
+QHash<QUuid, QAbstractMeshFunctorPtr> MeshDataManager::meshesPending()
 {
-    return m_meshesPending;
-}
-
-// Called by single thread in RendererAspect
-void MeshDataManager::clearMeshesPending()
-{
+    QHash<QUuid, QAbstractMeshFunctorPtr> meshFunctors = m_meshesPending;
     m_meshesPending.clear();
+    return meshFunctors;
 }
 
 } // namespace Render

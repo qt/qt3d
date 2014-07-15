@@ -52,6 +52,20 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class SphereMeshFunctor : public QAbstractMeshFunctor
+{
+public:
+    SphereMeshFunctor(int rings, int slices, float radius, bool generateTangents);
+    QAbstractMeshDataPtr operator ()() Q_DECL_OVERRIDE;
+
+private:
+    int m_rings;
+    int m_slices;
+    float m_radius;
+    bool m_generateTangents;
+
+};
+
 class QSphereMeshPrivate : public QAbstractShapeMeshPrivate
 {
     QSphereMeshPrivate(QSphereMesh *qq)
@@ -80,6 +94,7 @@ void QSphereMesh::setRings(int rings)
     if (rings != d->m_rings) {
         d->m_rings = rings;
         emit ringsChanged();
+        QAbstractMesh::setDirty(true);
     }
 }
 
@@ -89,6 +104,7 @@ void QSphereMesh::setSlices(int slices)
     if (slices != d->m_slices) {
         d->m_slices = slices;
         emit slicesChanged();
+        QAbstractMesh::setDirty(true);
     }
 }
 
@@ -98,6 +114,7 @@ void QSphereMesh::setRadius(float radius)
     if (radius != d->m_radius) {
         d->m_radius = radius;
         emit radiusChanged();
+        QAbstractMesh::setDirty(true);
     }
 }
 
@@ -107,6 +124,7 @@ void QSphereMesh::setGenerateTangents(bool gen)
     if (d->m_generateTangents != gen) {
         d->m_generateTangents = gen;
         emit generateTangentsChanged();
+        QAbstractMesh::setDirty(true);
     }
 }
 
@@ -114,6 +132,12 @@ bool QSphereMesh::generateTangents() const
 {
     Q_D(const QSphereMesh);
     return d->m_generateTangents;
+}
+
+QAbstractMeshFunctorPtr QSphereMesh::meshFunctor() const
+{
+    Q_D(const QSphereMesh);
+    return QAbstractMeshFunctorPtr(new SphereMeshFunctor(d->m_rings, d->m_slices, d->m_radius, d->m_generateTangents));
 }
 
 int QSphereMesh::rings() const
@@ -134,13 +158,7 @@ float QSphereMesh::radius() const
     return d->m_radius;
 }
 
-QAbstractMeshDataPtr QSphereMesh::buildMeshdata() const
-{
-    Q_D(const QSphereMesh);
-    return createSphereMesh(d->m_radius, d->m_rings, d->m_slices, d->m_generateTangents);
-}
-
-MeshDataPtr QSphereMesh::createSphereMesh(double radius, int rings, int slices, bool hasTangents)
+MeshDataPtr createSphereMesh(double radius, int rings, int slices, bool hasTangents)
 {
     MeshDataPtr mesh(new MeshData(GL_TRIANGLES));
 
@@ -270,6 +288,20 @@ MeshDataPtr QSphereMesh::createSphereMesh(double radius, int rings, int slices, 
     qCDebug(Render::Frontend) << "computed sphere bounds is:" << mesh->boundingBox();
 
     return mesh;
+}
+
+SphereMeshFunctor::SphereMeshFunctor(int rings, int slices, float radius, bool generateTangents)
+    : QAbstractMeshFunctor()
+    , m_rings(rings)
+    , m_slices(slices)
+    , m_radius(radius)
+    , m_generateTangents(generateTangents)
+{
+}
+
+QAbstractMeshDataPtr SphereMeshFunctor::operator ()()
+{
+    return createSphereMesh(m_radius, m_rings, m_slices, m_generateTangents);
 }
 
 } //Qt3D

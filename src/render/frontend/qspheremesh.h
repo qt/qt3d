@@ -73,7 +73,7 @@ public:
     float radius() const;
     bool generateTangents() const;
 
-    QAbstractMeshDataPtr buildMeshdata() const Q_DECL_OVERRIDE;
+    QAbstractMeshFunctorPtr meshFunctor() const Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
 
@@ -83,10 +83,7 @@ Q_SIGNALS:
     void generateTangentsChanged();
 
 private:
-
     Q_DECLARE_PRIVATE(QSphereMesh)
-
-    static MeshDataPtr createSphereMesh(double radius, int rings, int slices, bool hasTangents);
 
 };
 

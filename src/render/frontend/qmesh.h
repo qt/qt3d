@@ -69,7 +69,7 @@ public:
     void setSource(const QString &source);
     QString source() const;
 
-    bool load() Q_DECL_OVERRIDE;
+    QAbstractMeshFunctorPtr meshFunctor() const Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
     void sourceChanged();
