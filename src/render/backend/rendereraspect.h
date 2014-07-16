@@ -47,13 +47,13 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-class RenderThread;
-}
-
 class QWindow;
 
 namespace Qt3D {
+
+namespace Render {
+class Renderer;
+}
 
 class QT3DRENDERERSHARED_EXPORT RendererAspect : public QAbstractAspect
 {
@@ -71,7 +71,7 @@ protected:
     void onCleanup();
 
 private:
-    RenderThread* m_renderThread;
+    Render::Renderer* m_renderer;
 };
 
 }

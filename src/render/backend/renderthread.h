@@ -50,23 +50,20 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
-namespace Render {
-class Renderer;
-}
 
-class RenderEventProcessor;
+namespace Render {
+
+class Renderer;
 
 class Q_AUTOTEST_EXPORT RenderThread : public QThread
 {
     Q_OBJECT
 public:
-    explicit RenderThread( QObject* parent = 0 );
+    explicit RenderThread(Renderer *renderer);
 
     void waitForStart( Priority priority = InheritPriority );
 
     Render::Renderer* renderer() const { return m_renderer; }
-
-    RenderEventProcessor* eventHandler() const { return m_eventHandler; }
 
 protected:
     void run();
@@ -74,11 +71,12 @@ protected:
 private:
     QMutex m_mutex;
     QWaitCondition m_waitCondition;
-    Render::Renderer* m_renderer;
-    RenderEventProcessor* m_eventHandler;
+    Renderer* m_renderer;
 };
 
-}
+} // Render
+
+} // Qt3D
 
 QT_END_NAMESPACE
 

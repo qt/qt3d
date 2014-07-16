@@ -90,6 +90,7 @@
 #include <lightmanager.h>
 #include "renderlogging.h"
 #include "qparametermapper.h"
+#include "renderthread.h"
 
 #include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/qabstracteffect.h>
@@ -131,11 +132,14 @@ Renderer::Renderer(int cachedFrames)
     , m_layerManager(new LayerManager())
     , m_lightManager(new LightManager())
     , m_renderQueues(new RenderQueues(cachedFrames - 1))
+    , m_renderThread(new RenderThread(this))
     , m_frameCount(0)
     , m_cachedFramesCount(cachedFrames)
 {
     m_currentPreprocessingFrameIndex = 0;
     m_textureProvider = new RenderTextureProvider;
+
+    m_renderThread->waitForStart();
 
     buildDefaultTechnique();
     buildDefaultMaterial();

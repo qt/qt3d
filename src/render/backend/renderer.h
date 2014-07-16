@@ -107,6 +107,7 @@ class TextureManager;
 class TextureDataManager;
 class LayerManager;
 class LightManager;
+class RenderThread;
 
 typedef QHandle<RenderMaterial, 16> HMaterial;
 typedef QHandle<RenderEffect, 16> HEffect;
@@ -228,6 +229,7 @@ private:
     QTimer* m_frameTimer;
 
     RenderQueues* m_renderQueues;
+    RenderThread* m_renderThread;
 
     void buildDefaultMaterial();
     void buildDefaultTechnique();

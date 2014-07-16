@@ -45,7 +45,6 @@
 #include "meshmanager.h"
 #include "meshdatamanager.h"
 #include "renderer.h"
-#include "renderthread.h"
 
 #include <loadmeshdatajob.h>
 #include <updateworldtransformjob.h>
@@ -64,17 +63,11 @@ namespace Qt3D {
 
 RendererAspect::RendererAspect(QObject *parent)
     : QAbstractAspect(QAbstractAspect::AspectRenderer, parent)
-    , m_renderThread(new RenderThread)
+    , m_renderer(new Render::Renderer())
 {
-    qRegisterMetaType<QSurface*>("QSurface*");
-    qRegisterMetaType< QSharedPointer<QObject> >("QObjectPtr");
-    // TO DO : Check whether it would make sense to have the Renderer create a private thread
-    // To perform its rendering and remove this one.
-
-    // Won't return until RenderThread and Renderer have been created
+    // Won't return until the private RenderThread in Renderer has been created
     // The Renderer is set to wait the surface with a wait condition
     // Threads modifying the Renderer should be synchronized using the Renderer's mutex
-    m_renderThread->waitForStart();
 }
 
 QVector<QJobPtr> RendererAspect::jobsToExecute()
@@ -83,33 +76,33 @@ QVector<QJobPtr> RendererAspect::jobsToExecute()
     QVector<QJobPtr> jobs;
 
     // Create jobs to load in any meshes that are pending
-    if (m_renderThread->renderer() != Q_NULLPTR) {
-        QHash<QUuid, QAbstractMeshFunctorPtr> meshSources = m_renderThread->renderer()->meshDataManager()->meshesPending();
+    if (m_renderer != Q_NULLPTR) {
+        QHash<QUuid, QAbstractMeshFunctorPtr> meshSources = m_renderer->meshDataManager()->meshesPending();
         QVector<QJobPtr> meshesJobs;
         Q_FOREACH (const QUuid &meshId, meshSources.keys()) {
             Render::LoadMeshDataJobPtr loadMeshJob(new Render::LoadMeshDataJob(meshSources[meshId], meshId));
-            loadMeshJob->setRenderer(m_renderThread->renderer());
+            loadMeshJob->setRenderer(m_renderer);
             meshesJobs.append(loadMeshJob);
         }
 
         // Create jobs to update transforms and bounding volumes
-        Render::UpdateWorldTransformJobPtr worldTransformJob(new Render::UpdateWorldTransformJob(m_renderThread->renderer()->renderSceneRoot()));
-        Render::UpdateBoundingVolumeJobPtr boundingVolumeJob(new Render::UpdateBoundingVolumeJob(m_renderThread->renderer()->renderSceneRoot()));
+        Render::UpdateWorldTransformJobPtr worldTransformJob(new Render::UpdateWorldTransformJob(m_renderer->renderSceneRoot()));
+        Render::UpdateBoundingVolumeJobPtr boundingVolumeJob(new Render::UpdateBoundingVolumeJob(m_renderer->renderSceneRoot()));
 
         Q_FOREACH (QJobPtr meshJob, meshesJobs) {
             worldTransformJob->addDependency(meshJob);
             jobs.append(meshJob);
         }
-        //    // We can only update bounding volumes once all world transforms are known
+        // We can only update bounding volumes once all world transforms are known
         boundingVolumeJob->addDependency(worldTransformJob);
 
-        //    // Add all jobs to queue
+        // Add all jobs to queue
         jobs.append(worldTransformJob);
         jobs.append(boundingVolumeJob);
 
         // Traverse the current framegraph and create jobs to populate
         // RenderBins with RenderCommands
-        QVector<QJobPtr> renderBinJobs = m_renderThread->renderer()->createRenderBinJobs();
+        QVector<QJobPtr> renderBinJobs = m_renderer->createRenderBinJobs();
         // TODO: Add wrapper around ThreadWeaver::Collection
         for (int i = 0; i < renderBinJobs.size(); ++i) {
             QJobPtr renderBinJob = renderBinJobs.at(i);
@@ -122,9 +115,8 @@ QVector<QJobPtr> RendererAspect::jobsToExecute()
 
 void RendererAspect::registerAspectHelper(QEntity *rootObject)
 {
-    Render::Renderer *renderer = m_renderThread->renderer();
     // setSceneGraphRoot is synchronized using the Renderer's mutex
-    renderer->setSceneGraphRoot(rootObject);
+    m_renderer->setSceneGraphRoot(rootObject);
 }
 
 void RendererAspect::unregisterAspectHelper(QEntity *rootObject)
@@ -134,10 +126,9 @@ void RendererAspect::unregisterAspectHelper(QEntity *rootObject)
 
 void RendererAspect::onInitialize()
 {
-    Render::Renderer *renderer = m_renderThread->renderer();
-    renderer->setRendererAspect(this);
+    m_renderer->setRendererAspect(this);
     // setSurface is synchronized using the Renderer's mutex
-    renderer->setSurface(aspectManager()->window());
+    m_renderer->setSurface(aspectManager()->window());
 }
 
 void RendererAspect::onCleanup()

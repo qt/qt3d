@@ -52,28 +52,28 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-RenderThread::RenderThread( QObject* parent )
-    : QThread( parent ),
-      m_renderer( 0 ),
-      m_eventHandler( 0 )
+namespace Render {
+
+RenderThread::RenderThread(Renderer *renderer)
+    : QThread()
+    , m_renderer(renderer)
 {
 }
 
+// Called by Renderer in the AspectThread
 void RenderThread::waitForStart( Priority priority )
 {
     qCDebug(Render::Backend) << "Starting Render thread and then going to sleep until it is ready for us...";
-    m_mutex.lock();
+    QMutexLocker lock(&m_mutex);
     start( priority );
     m_waitCondition.wait( &m_mutex );
     qCDebug(Render::Backend) << "Render thread is now ready & calling thread is now awake again";
 }
 
+// RenderThread context
 void RenderThread::run()
 {
     m_mutex.lock();
-
-    // Create worker objects
-    m_renderer = new Render::Renderer;
     // We lock the renderer's mutex before unlocking the render thread mutex
     // To ensure that the Renderer's initialize waitCondition is setup while other threads
     // are still waiting for this RenderThread's waitCondition to be satisfied
@@ -87,9 +87,10 @@ void RenderThread::run()
     while (true) {
         m_renderer->render();
     }
-    delete m_renderer;
 }
 
-}
+} // Render
+
+} // Qt3D
 
 QT_END_NAMESPACE
