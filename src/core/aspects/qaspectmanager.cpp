@@ -66,8 +66,9 @@ QAspectManagerPrivate::QAspectManagerPrivate(QAspectManager *qq)
     : QObjectPrivate()
     , m_root(Q_NULLPTR)
     , m_window(Q_NULLPTR)
-    , m_runMainLoop(false)
 {
+    m_runMainLoop.fetchAndStoreOrdered(0);
+    m_terminated.fetchAndStoreOrdered(0);
     q_ptr = qq;
     qRegisterMetaType<QWindow*>("QWindow*");
 }
@@ -80,6 +81,14 @@ QAspectManager::QAspectManager(QObject *parent)
     d->m_jobManager = new QJobManager(this);
     d->m_changeArbiter = new QChangeArbiter(this);
     qCDebug(Aspects) << Q_FUNC_INFO;
+}
+
+QAspectManager::~QAspectManager()
+{
+    Q_D(QAspectManager);
+    delete d->m_changeArbiter;
+    delete d->m_jobManager;
+    delete d->m_scheduler;
 }
 
 QAspectManager::QAspectManager(QAspectManagerPrivate &dd, QObject *parent)
@@ -103,7 +112,13 @@ void QAspectManager::initialize()
 
 void QAspectManager::shutdown()
 {
+    Q_D(QAspectManager);
     qCDebug(Aspects) << Q_FUNC_INFO;
+    Q_FOREACH (QAbstractAspect *aspect, d->m_aspects) {
+        aspect->unregisterAspect(d->m_root);
+        aspect->cleanup();
+    }
+    qDeleteAll(d->m_aspects);
 }
 
 
@@ -143,7 +158,7 @@ void QAspectManager::setRoot(QObject *rootObject)
         Q_FOREACH (QAbstractAspect *aspect, d->m_aspects)
             aspect->registerAspect(d->m_root);
 
-        d->m_runMainLoop = true;
+        d->m_runMainLoop.fetchAndStoreOrdered(1);
     }
 }
 
@@ -196,13 +211,13 @@ void QAspectManager::exec()
     tickClock.start();
 
     // Enter the main loop
-    while (1)
+    while (!d->m_terminated.load())
     {
         // Process any pending events, waiting for more to arrive if queue is empty
         eventLoop.processEvents(QEventLoop::WaitForMoreEvents, 16);
 
         // Only enter main render loop once the renderer and other aspects are initialized
-        while (d->m_runMainLoop)
+        while (d->m_runMainLoop.load())
         {
             // Process any pending events
             eventLoop.processEvents();
@@ -225,6 +240,13 @@ void QAspectManager::exec()
             d->m_changeArbiter->syncChanges();
         }
     }
+}
+
+void QAspectManager::quit()
+{
+    Q_D(QAspectManager);
+    d->m_runMainLoop.fetchAndStoreOrdered(0);
+    d->m_terminated.fetchAndStoreOrdered(1);
 }
 
 const QList<QAbstractAspect *> &QAspectManager::aspects() const

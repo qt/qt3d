@@ -138,7 +138,7 @@ Renderer::Renderer(int cachedFrames)
 {
     m_currentPreprocessingFrameIndex = 0;
     m_textureProvider = new RenderTextureProvider;
-
+    m_running.fetchAndStoreOrdered(1);
     m_renderThread->waitForStart();
 
     buildDefaultTechnique();
@@ -212,6 +212,9 @@ void Renderer::buildDefaultMaterial()
 
 Renderer::~Renderer()
 {
+    m_running.fetchAndStoreOrdered(0);
+    m_renderThread->wait();
+    delete m_renderThread;
     delete m_graphicsContext;
     delete m_textureProvider;
 }
@@ -351,7 +354,9 @@ void Renderer::render()
     // One scene description
     // One framegraph description
 
-    doRender();
+    while (m_running.load() > 0) {
+        doRender();
+    }
 }
 
 void Renderer::doRender()

@@ -133,6 +133,7 @@ void RendererAspect::onInitialize()
 
 void RendererAspect::onCleanup()
 {
+    delete m_renderer;
     //Render::Renderer *renderer = m_renderThread->renderer();
     //QMetaObject::invokeMethod(renderer, "cleanup");
 }

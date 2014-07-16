@@ -69,6 +69,7 @@ class QT3DCORESHARED_EXPORT QChangeArbiter : public QObject,
     Q_OBJECT
 public:
     explicit QChangeArbiter(QObject *parent = 0);
+    ~QChangeArbiter();
 
     void initialize(Qt3D::QJobManagerInterface *jobManager);
 

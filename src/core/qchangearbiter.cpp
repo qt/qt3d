@@ -76,6 +76,15 @@ QChangeArbiter::QChangeArbiter(QObject *parent)
     // 6) Mutex is unlocked - leaving SyncChanges
 }
 
+QChangeArbiter::~QChangeArbiter()
+{
+    Q_D(QChangeArbiter);
+    if (d->m_jobManager != Q_NULLPTR)
+        d->m_jobManager->waitForPerThreadFunction(QChangeArbiter::destroyThreadLocalChangeQueue, this);
+    d->m_lockingChangeQueues.clear();
+    d->m_changeQueues.clear();
+}
+
 
 QChangeArbiter::QChangeArbiter(QChangeArbiterPrivate &dd, QObject *parent)
     : QObject(dd, parent)
@@ -262,7 +271,7 @@ void QChangeArbiter::createUnmanagedThreadLocalChangeQueue(void *changeArbiter)
     }
 }
 
-static void destroyUnmanagedThreadLocalChangeQueue(void *changeArbiter)
+void QChangeArbiter::destroyUnmanagedThreadLocalChangeQueue(void *changeArbiter)
 {
     // TODO: Implement me!
     Q_UNUSED(changeArbiter);
@@ -282,7 +291,7 @@ void QChangeArbiter::createThreadLocalChangeQueue(void *changeArbiter)
     }
 }
 
-static void destroyThreadLocalChangeQueue(void *changeArbiter)
+void QChangeArbiter::destroyThreadLocalChangeQueue(void *changeArbiter)
 {
     // TODO: Implement me!
     Q_UNUSED(changeArbiter);

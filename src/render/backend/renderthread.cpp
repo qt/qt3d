@@ -84,9 +84,9 @@ void RenderThread::run()
     m_renderer->initialize();
     locker.unlock();
 
-    while (true) {
-        m_renderer->render();
-    }
+    m_renderer->render();
+
+    qCDebug(Render::Backend) << "Exiting RenderThread";
 }
 
 } // Render

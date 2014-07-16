@@ -70,7 +70,8 @@ public :
     QScheduler *m_scheduler;
     QJobManagerInterface *m_jobManager;
     QChangeArbiter *m_changeArbiter;
-    bool m_runMainLoop;
+    QAtomicInt m_runMainLoop;
+    QAtomicInt m_terminated;
 };
 
 } // Qt3D

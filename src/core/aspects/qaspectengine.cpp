@@ -89,6 +89,11 @@ void QAspectEngine::initialize()
 
 void QAspectEngine::shutdown()
 {
+    Q_D(QAspectEngine);
+    qCDebug(Aspects) << Q_FUNC_INFO;
+    QMetaObject::invokeMethod(d->m_aspectThread->aspectManager(),
+                              "quit");
+    d->m_aspectThread->wait();
 }
 
 void QAspectEngine::setWindow(QWindow *window)

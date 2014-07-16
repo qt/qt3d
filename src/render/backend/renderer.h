@@ -162,7 +162,6 @@ public:
 
     inline int cachedFramesCount() const { return m_cachedFramesCount; }
 
-    void buildMeshes(QMesh *mesh, QMaterial *mat, const QMatrix4x4& mm);
     void setSurface(QSurface *s);
 
     void enqueueRenderView(RenderView *renderView, int submitOrder);
@@ -244,6 +243,7 @@ private:
     QThreadStorage< QPair<int, QFrameAllocatorQueue *> > m_tlsAllocators;
 
     const int m_cachedFramesCount;
+    QAtomicInt m_running;
 };
 
 } // namespace Render

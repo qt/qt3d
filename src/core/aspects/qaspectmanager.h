@@ -64,6 +64,7 @@ class QT3DCORESHARED_EXPORT QAspectManager : public QObject
     Q_OBJECT
 public:
     explicit QAspectManager(QObject *parent = 0);
+    ~QAspectManager();
 
 public slots:
     void initialize();
@@ -75,6 +76,7 @@ public slots:
     QWindow *window() const;
 
     void exec();
+    void quit();
 
     const QList<QAbstractAspect *> &aspects() const;
     QJobManagerInterface *jobManager() const;
