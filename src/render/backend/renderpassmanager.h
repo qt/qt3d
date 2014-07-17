@@ -63,9 +63,12 @@ class RenderPassManager : public QResourcesManager<RenderRenderPass,
 {
 public:
     RenderPassManager();
+
 };
 
 } // Render
+
+Q_DECLARE_RESOURCE_INFO(Render::RenderRenderPass, Q_REQUIRES_CLEANUP);
 
 } // Qt3D
 

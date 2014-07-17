@@ -134,6 +134,47 @@ private:
     QReadWriteLock m_lock;
 };
 
+template <typename T>
+struct QResourceInfo
+{
+    enum
+    {
+        needsCleanup = false
+    };
+};
+
+template <>
+struct QResourceInfo<void>
+{
+    enum
+    {
+        needsCleanup = false
+    };
+};
+
+enum
+{
+    Q_REQUIRES_CLEANUP = 0
+};
+
+#define Q_DECLARE_RESOURCE_INFO(TYPE, FLAGS) \
+template<> \
+struct QResourceInfo<TYPE > \
+{ \
+    enum \
+    { \
+        needsCleanup = ((FLAGS & Q_REQUIRES_CLEANUP) == 0) \
+    }; \
+}
+
+template <int v>
+struct Int2Type
+{
+    enum
+    {
+        value = v
+    };
+};
 
 
 template <typename T, int INDEXBITS>
@@ -160,6 +201,7 @@ public:
     {
         if (m_resourcesToIndices.contains(r)) {
             int idx = m_resourcesToIndices.take(r);
+            performCleanup(r, Int2Type<QResourceInfo<T>::needsCleanup>());
             m_resourcesEntries[idx] = T();
             m_freeEntryIndices.append(idx);
         }
@@ -178,6 +220,14 @@ private:
     QVector<T> m_resourcesEntries;
     QList<int> m_freeEntryIndices;
     QHash<T*, int> m_resourcesToIndices;
+
+    void performCleanup(T *r, Int2Type<true>)
+    {
+        r->cleanup();
+    }
+
+    void performCleanup(T *, Int2Type<false>)
+    {}
 
 };
 
@@ -201,6 +251,7 @@ public:
     void releaseResource(T *r)
     {
         if (m_resourcesToIndices.contains(r)) {
+            performCleanup(r, Int2Type<QResourceInfo<T>::needsCleanup>());
             m_resourcesEntries.removeAt(m_resourcesToIndices[r]);
         }
     }
@@ -213,6 +264,14 @@ public:
 private:
     QList<T> m_resourcesEntries;
     QHash<T*, int> m_resourcesToIndices;
+
+    void performCleanup(T *r, Int2Type<true>)
+    {
+        r->cleanup();
+    }
+
+    void performCleanup(T *, Int2Type<false>)
+    {}
 };
 
 template <typename T, typename C, int INDEXBITS = 16,
@@ -252,8 +311,8 @@ public:
         typename LockingPolicy<QResourcesManager>::WriteLocker(this);
         m_handleToResourceMapper.remove(m_handleToResourceMapper.key(handle));
         T *val = m_handleManager.data(handle);
-        AllocatingPolicy<T, INDEXBITS>::releaseResource(val);
         m_handleManager.release(handle);
+        AllocatingPolicy<T, INDEXBITS>::releaseResource(val);
     }
 
     void reset()
@@ -326,6 +385,7 @@ protected:
     QHandleManager<T, INDEXBITS> m_handleManager;
     QHash<C, QHandle<T, INDEXBITS> > m_handleToResourceMapper;
     int m_maxResourcesEntries;
+
 };
 
 }// Qt3D

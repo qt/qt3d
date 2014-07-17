@@ -62,6 +62,7 @@ class RenderCamera : public QObserverInterface
 public:
     RenderCamera();
     ~RenderCamera();
+    void cleanup();
 
     void setRenderer(Renderer *renderer);
     void setPeer(QCameraLens *peer);

@@ -60,6 +60,7 @@ class RenderLight : public QObserverInterface
 public:
     RenderLight();
     ~RenderLight();
+    void cleanup();
 
     void setPeer(QAbstractLight *peer);
     void setRenderer(Renderer *renderer);

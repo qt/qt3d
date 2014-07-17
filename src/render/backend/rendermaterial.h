@@ -68,6 +68,7 @@ class RenderMaterial : public QObserverInterface
 public:
     RenderMaterial();
     ~RenderMaterial();
+    void cleanup();
 
     void setPeer(QMaterial* mat);
     void setRenderer(Renderer *renderer);

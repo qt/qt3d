@@ -85,6 +85,11 @@ RenderMesh::RenderMesh() :
 
 RenderMesh::~RenderMesh()
 {
+    cleanup();
+}
+
+void RenderMesh::cleanup()
+{
     if (m_peer)
         m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_peer);
 }

@@ -61,6 +61,11 @@ RenderLight::RenderLight()
 
 RenderLight::~RenderLight()
 {
+    cleanup();
+}
+
+void RenderLight::cleanup()
+{
     if (m_peer)
         m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_peer);
 }

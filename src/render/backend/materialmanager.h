@@ -57,13 +57,19 @@ namespace Render {
 
 typedef QHandle<RenderMaterial, 16> HMaterial;
 
-class MaterialManager : public QResourcesManager<RenderMaterial, QUuid, 16>
+class MaterialManager : public QResourcesManager<RenderMaterial,
+                                                QUuid,
+                                                16,
+                                                Qt3D::ArrayAllocatingPolicy,
+                                                Qt3D::ObjectLevelLockingPolicy>
 {
 public:
     MaterialManager();
 };
 
 } // Render
+
+Q_DECLARE_RESOURCE_INFO(Render::RenderMaterial, Q_REQUIRES_CLEANUP);
 
 } // Qt3D
 

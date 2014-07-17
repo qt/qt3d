@@ -66,6 +66,11 @@ RenderTechnique::RenderTechnique() :
 
 RenderTechnique::~RenderTechnique()
 {
+    cleanup();
+}
+
+void RenderTechnique::cleanup()
+{
     if (m_renderer != Q_NULLPTR && m_peer != Q_NULLPTR)
         m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_peer);
 }

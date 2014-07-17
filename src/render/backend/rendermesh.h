@@ -74,6 +74,7 @@ class RenderMesh : public QObserverInterface
 public:
     RenderMesh();
     ~RenderMesh();
+    void cleanup();
 
     void setPeer(QAbstractMesh *peer);
     void setRenderer(Renderer *renderer);

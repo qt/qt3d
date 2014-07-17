@@ -66,6 +66,11 @@ RenderCamera::RenderCamera()
 
 RenderCamera::~RenderCamera()
 {
+    cleanup();
+}
+
+void RenderCamera::cleanup()
+{
     if (m_peer)
         m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_peer);
 }

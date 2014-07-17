@@ -60,6 +60,7 @@ class RenderLayer : public QObserverInterface
 public:
     RenderLayer();
     ~RenderLayer();
+    void cleanup();
 
     void setPeer(QLayer *peer);
     void setRenderer(Renderer *renderer);

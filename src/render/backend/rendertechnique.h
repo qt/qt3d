@@ -66,6 +66,7 @@ class RenderTechnique : public QObserverInterface
 public:
     RenderTechnique();
     ~RenderTechnique();
+    void cleanup();
 
     void setRenderer(Renderer *renderer);
 

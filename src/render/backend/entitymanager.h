@@ -65,11 +65,16 @@ public:
     inline RenderEntity *getOrCreateRenderNode(const QUuid &id) { return getOrCreateResource(id); }
     inline RenderEntity *renderNode(const QUuid &id) { return lookupResource(id); }
     inline void releaseRenderNode(const QUuid &id) { releaseResource(id); }
+
+
 };
 
 } // Render
 
+Q_DECLARE_RESOURCE_INFO(Render::RenderEntity, Q_REQUIRES_CLEANUP);
+
 } // Qt3D
+
 
 QT_END_NAMESPACE
 

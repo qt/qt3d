@@ -64,6 +64,7 @@ class RenderEffect
 public:
     RenderEffect();
     ~RenderEffect();
+    void cleanup();
 
     void setPeer(QAbstractEffect *effect);
     void setRenderer(Renderer *renderer);

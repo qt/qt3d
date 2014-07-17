@@ -68,9 +68,12 @@ public:
     inline RenderMesh *getOrCreateRenderMesh(const QUuid &id) { return getOrCreateResource(id); }
     inline RenderMesh *renderMesh(const QUuid &id) { return lookupResource(id); }
     inline void releaseRenderMesh(const QUuid &id) { releaseResource(id); }
+
 };
 
 } // Render
+
+Q_DECLARE_RESOURCE_INFO(Render::RenderMesh, Q_REQUIRES_CLEANUP);
 
 } // Qt3D
 

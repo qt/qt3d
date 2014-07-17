@@ -61,6 +61,8 @@ class RenderRenderPass : public QObserverInterface
 {
 public:
     RenderRenderPass();
+    ~RenderRenderPass();
+    void cleanup();
 
     void setRenderer(Renderer *renderer);
     void setPeer(QRenderPass *peer);

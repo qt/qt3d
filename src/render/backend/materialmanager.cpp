@@ -48,7 +48,11 @@ namespace Qt3D {
 namespace Render {
 
 MaterialManager::MaterialManager() :
-    QResourcesManager<RenderMaterial, QUuid, 16>()
+    QResourcesManager<RenderMaterial,
+                      QUuid,
+                      16,
+                      Qt3D::ArrayAllocatingPolicy,
+                      Qt3D::ObjectLevelLockingPolicy>()
 {
 }
 

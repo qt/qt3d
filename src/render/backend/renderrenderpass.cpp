@@ -61,6 +61,17 @@ RenderRenderPass::RenderRenderPass()
 {
 }
 
+RenderRenderPass::~RenderRenderPass()
+{
+    cleanup();
+}
+
+void RenderRenderPass::cleanup()
+{
+    if (m_renderer != Q_NULLPTR && m_peer != Q_NULLPTR)
+        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_peer);
+}
+
 void RenderRenderPass::setRenderer(Renderer *renderer)
 {
     m_renderer = renderer;

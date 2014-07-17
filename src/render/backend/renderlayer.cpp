@@ -61,6 +61,11 @@ RenderLayer::RenderLayer()
 
 RenderLayer::~RenderLayer()
 {
+    cleanup();
+}
+
+void RenderLayer::cleanup()
+{
     if (m_peer) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
         arbiter->unregisterObserver(this, m_peer);

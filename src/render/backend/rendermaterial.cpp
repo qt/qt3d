@@ -68,21 +68,29 @@ RenderMaterial::RenderMaterial()
 
 RenderMaterial::~RenderMaterial()
 {
-    if (m_renderer != Q_NULLPTR && m_peer != Q_NULLPTR)
+    cleanup();
+}
+
+void RenderMaterial::cleanup()
+{
+    if (m_renderer != Q_NULLPTR && m_peer != Q_NULLPTR) {
+        m_parameterPack.clear(); // Has to be done before the RenderMaterial is deleted
         m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_peer);
+    }
 }
 
 void RenderMaterial::setPeer(QMaterial *mat)
 {
     if (m_peer != mat) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        if (m_peer)
+        if (m_peer) {
+            m_parameterPack.clear();
             arbiter->unregisterObserver(this, m_peer);
+        }
         m_peer = mat;
         // Register for changes
         if (m_peer) {
             arbiter->registerObserver(this, m_peer, ComponentUpdated);
-            m_parameterPack.clear();
             Q_FOREACH (QParameter *p, m_peer->parameters()) {
                 m_parameterPack.appendParameter(p);
             }
@@ -130,7 +138,7 @@ void RenderMaterial::sceneChangeEvent(const QSceneChangePtr &e)
         }
         break;
     }
-    // Check for shader parameter
+        // Check for shader parameter
     case ComponentAdded: {
         QParameter *param = Q_NULLPTR;
         if (propertyChange->propertyName() == QByteArrayLiteral("parameter") &&
