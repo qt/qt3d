@@ -57,6 +57,7 @@ class RendererAspect;
 class Sphere;
 class QNode;
 class QEntity;
+class QComponent;
 class QTransform;
 
 typedef QHandle<QMatrix4x4, 16> HMatrix;
@@ -64,7 +65,8 @@ typedef QHandle<QMatrix4x4, 16> HMatrix;
 namespace Render {
 class RenderEntity;
 }
-typedef QHandle<Render::RenderEntity, 16> HRenderNode;
+
+typedef QHandle<Render::RenderEntity, 16> HEntity;
 
 namespace Render {
 
@@ -76,23 +78,24 @@ class RenderEntity : public QObserverInterface
 public:
     RenderEntity();
     ~RenderEntity();
+    void cleanup();
 
     void setTransform(QTransform *transform);
-    void setParentHandle(HRenderNode parentHandle);
+    void setParentHandle(HEntity parentHandle);
     void setRenderer(Renderer *renderer);
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
     void setPeer(QEntity *peer);
 
     void dump() const;
 
-    void  setHandle(HRenderNode handle);
-    HRenderNode handle() const { return m_handle; }
+    void  setHandle(HEntity handle);
+    HEntity handle() const { return m_handle; }
     RenderEntity *parent() const;
-    HRenderNode parentHandle() const { return m_parentHandle; }
+    HEntity parentHandle() const { return m_parentHandle; }
 
-    void appendChildHandle(HRenderNode childHandle);
-    void removeChildHandle(HRenderNode childHandle);
-    QVector<HRenderNode> childrenHandles() const { return m_childrenHandles; }
+    void appendChildHandle(HEntity childHandle);
+    void removeChildHandle(HEntity childHandle);
+    QVector<HEntity> childrenHandles() const { return m_childrenHandles; }
     QVector<RenderEntity *> children() const;
 
     QMatrix4x4 *localTransform();
@@ -101,35 +104,62 @@ public:
     Sphere *worldBoundingVolume() { return m_worldBoundingVolume; }
     QUuid entityUuid() const { return m_frontendUuid; }
 
-    template<class Frontend, class Backend, class Manager>
-    void createRenderComponent(Frontend *frontend, Manager *manager)
+    template<class Frontend>
+    void createRenderComponent(Frontend *)
     {
-        Backend *backend = manager->getOrCreateResource(m_frontendUuid);
-        backend->setRenderer(m_renderer);
-        backend->setPeer(frontend);
+    }
+
+    template<class Backend>
+    void releaseRenderComponent()
+    {
+    }
+
+    template<class Backend, int INDEXBITS = 16>
+    QHandle<Backend, INDEXBITS> componentHandle()
+    {
+        return QHandle<Backend, INDEXBITS>();
+    }
+
+    template<class Backend>
+    Backend* renderComponent()
+    {
+        return Q_NULLPTR;
     }
 
 private:
 
+    template<class Frontend, class Backend, class Manager>
+    void createRenderComponentHelper(Frontend *frontend, Manager *manager)
+    {
+        // We index using the Frontend uuid
+        if (!manager->contains(frontend->uuid())) {
+            Backend *backend = manager->getOrCreateResource(frontend->uuid());
+            backend->setRenderer(m_renderer);
+            backend->setPeer(frontend);
+        }
+    }
+
     Renderer *m_renderer;
     QTransform *m_transform;
-    HRenderNode m_handle;
-    HRenderNode m_parentHandle;
-    QVector<HRenderNode > m_childrenHandles;
+    HEntity m_handle;
+    HEntity m_parentHandle;
+    QVector<HEntity > m_childrenHandles;
 
     HMatrix m_localTransform;
     HMatrix m_worldTransform;
     Sphere *m_localBoundingVolume;
     Sphere *m_worldBoundingVolume;
 
-    // TODO: Do we want to force this to be an Entity?
-    // That would mean forcing an Entity for the root on the main thread's scene
     QEntity *m_frontEndPeer;
     QUuid m_frontendUuid;
 
-    // TODO: Add pointer to Drawable or references to VBO's and other info needed to draw
+    // Handles to Components
+    QUuid m_meshComponent;
+    QUuid m_materialComponent;
+    QUuid m_layerComponent;
+    QUuid m_lightComponent;
+    QUuid m_cameraComponent;
 };
-
 
 } // namespace Render
 } // namespace Qt3D

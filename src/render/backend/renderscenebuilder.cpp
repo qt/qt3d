@@ -168,10 +168,6 @@ Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(QNode *block)
         viewportNode->setRenderer(m_renderer);
         viewportNode->setPeer(viewport);
         qCDebug(Backend) << Q_FUNC_INFO << "Viewport";
-        viewportNode->setXMin(viewport->rect().x());
-        viewportNode->setXMax(viewport->rect().width());
-        viewportNode->setYMin(viewport->rect().y());
-        viewportNode->setYMax(viewport->rect().height());
         return viewportNode;
     }
     else if (qobject_cast<Qt3D::QRenderPassFilter*>(block) != Q_NULLPTR) {
@@ -188,22 +184,7 @@ Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(QNode *block)
         Render::CameraSelector *cameraSelectorNode = new Render::CameraSelector();
         cameraSelectorNode->setRenderer(m_renderer);
         cameraSelectorNode->setPeer(cameraSelector);
-        // TO DO : We might as well store an Entity in CameraSelector
-        QEntity *cameraEntity = cameraSelector->camera()->asEntity();
-        // If the Entity is declared inline on the QML Side, the Entity is not set as part of the Scene tree
-        // So we need to make sure the RenderNode for the given Entity exists in the RenderNodesMananger
-        if (cameraEntity && m_renderer->cameraManager()->lookupHandle(cameraEntity->uuid()).isNull()) {
-            RenderEntity *rEntity = createRenderNode(cameraSelector->camera());
-            rEntity->setParentHandle(m_frameGraphEntityNode);
-            QList<QCameraLens *> lenses = cameraEntity->componentsOfType<QCameraLens>();
-            if (!lenses.isEmpty())
-                rEntity->createRenderComponent<QCameraLens, RenderCamera, CameraManager>(lenses.first(), m_renderer->cameraManager());
-        }
-        cameraSelectorNode->setCameraEntity(cameraEntity);
-        qCDebug(Backend) << Q_FUNC_INFO << "CameraSelector" << cameraSelectorNode->cameraEntity();
-        if (cameraSelectorNode->cameraEntity() == Q_NULLPTR ||
-                cameraSelectorNode->cameraEntity()->componentsOfType<QCameraLens>().isEmpty())
-            qCWarning(Backend) << Q_FUNC_INFO << "No camera or camera lens present in the referenced entity";
+        qCDebug(Backend) << Q_FUNC_INFO << "CameraSelector";
         return cameraSelectorNode;
     }
     else if (qobject_cast<Qt3D::QRenderTargetSelector*>(block) != Q_NULLPTR) {
@@ -269,7 +250,6 @@ void RenderSceneBuilder::visitEntity(Qt3D::QEntity *entity)
     m_nodeStack.push(rEntity->handle());
 
     // TO DO : See if it can be converted to work with createRenderElement
-    //    createRenderMaterial(entity);
 
     QList<QMaterial *> materials = entity->componentsOfType<QMaterial>();
     QList<QAbstractMesh *> meshes = entity->componentsOfType<QAbstractMesh>();
@@ -279,19 +259,19 @@ void RenderSceneBuilder::visitEntity(Qt3D::QEntity *entity)
 
     // Retrieve Material from Entity
     if (!materials.isEmpty())
-        rEntity->createRenderComponent<QMaterial, RenderMaterial, MaterialManager>(materials.first(), m_renderer->materialManager());
+        rEntity->createRenderComponent<QMaterial>(materials.first());
     // Retrieve Mesh from Entity
     if (!meshes.isEmpty())
-        rEntity->createRenderComponent<QAbstractMesh, RenderMesh, MeshManager>(meshes.first(), m_renderer->meshManager());
+        rEntity->createRenderComponent<QAbstractMesh>(meshes.first());
     // Retrieve Camera from Entity
     if (!lenses.isEmpty())
-        rEntity->createRenderComponent<QCameraLens, RenderCamera, CameraManager>(lenses.first(), m_renderer->cameraManager());
+        rEntity->createRenderComponent<QCameraLens>(lenses.first());
     // Retrieve Layer from Entity
     if (!layers.isEmpty())
-        rEntity->createRenderComponent<QLayer, RenderLayer, LayerManager>(layers.first(), m_renderer->layerManager());
+        rEntity->createRenderComponent<QLayer>(layers.first());
     // Retrieve Lights from Entity
     if (!lights.isEmpty())
-        rEntity->createRenderComponent<QAbstractLight, RenderLight, LightManager>(lights.first(), m_renderer->lightManager());
+        rEntity->createRenderComponent<QAbstractLight>(lights.first());
 
     NodeVisitor::visitEntity(entity);
 

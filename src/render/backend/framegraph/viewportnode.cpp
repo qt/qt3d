@@ -76,8 +76,13 @@ void ViewportNode::setPeer(Qt3D::QViewport *peer)
         if (m_peer)
             m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_peer);
         m_peer = peer;
-        if (m_peer)
+        if (m_peer) {
             m_renderer->rendererAspect()->aspectManager()->changeArbiter()->registerObserver(this, m_peer, ComponentUpdated);
+            setXMin(m_peer->rect().x());
+            setXMax(m_peer->rect().width());
+            setYMin(m_peer->rect().y());
+            setYMax(m_peer->rect().height());
+        }
     }
 }
 

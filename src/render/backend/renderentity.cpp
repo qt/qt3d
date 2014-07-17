@@ -87,6 +87,11 @@ RenderEntity::RenderEntity()
 
 RenderEntity::~RenderEntity()
 {
+    cleanup();
+}
+
+void RenderEntity::cleanup()
+{
     if (m_renderer != Q_NULLPTR) {
         RenderEntity *parentEntity = parent();
         if (parentEntity != Q_NULLPTR)
@@ -96,14 +101,18 @@ RenderEntity::~RenderEntity()
         setTransform(Q_NULLPTR);
         m_renderer->localMatrixManager()->release(m_localTransform);
         m_renderer->worldMatrixManager()->release(m_worldTransform);
-        m_renderer->meshManager()->releaseRenderMesh(m_frontendUuid);
+
+        // Release all component will have to perform their own release when they receive the
+        // NodeDeleted/NodeAboutToBeDeleted notification
+        qCDebug(Render::RenderNodes) << Q_FUNC_INFO;
+
         m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_frontEndPeer);
     }
     delete m_localBoundingVolume;
     delete m_worldBoundingVolume;
 }
 
-void RenderEntity::setParentHandle(HRenderNode parentHandle)
+void RenderEntity::setParentHandle(HEntity parentHandle)
 {
     Q_ASSERT(m_renderer);
     m_parentHandle = parentHandle;
@@ -117,7 +126,7 @@ void RenderEntity::setRenderer(Renderer *renderer)
     m_renderer = renderer;
 }
 
-void RenderEntity::setHandle(HRenderNode handle)
+void RenderEntity::setHandle(HEntity handle)
 {
     m_handle = handle;
 }
@@ -162,11 +171,43 @@ void RenderEntity::setTransform(QTransform *transform)
     }
 }
 
+template<>
+void RenderEntity::createRenderComponent<QAbstractMesh>(QAbstractMesh *frontend)
+{
+    m_meshComponent = frontend->uuid();
+    createRenderComponentHelper<QAbstractMesh, RenderMesh, MeshManager>(frontend, m_renderer->meshManager());
+}
+
+template<>
+void RenderEntity::createRenderComponent<QCameraLens>(QCameraLens *frontend)
+{
+    m_cameraComponent = frontend->uuid();
+    createRenderComponentHelper<QCameraLens, RenderCamera, CameraManager>(frontend, m_renderer->cameraManager());
+}
+
+template<>
+void RenderEntity::createRenderComponent<QLayer>(QLayer *frontend)
+{
+    m_layerComponent = frontend->uuid();
+    createRenderComponentHelper<QLayer, RenderLayer, LayerManager>(frontend, m_renderer->layerManager());
+}
+
+template<>
+void RenderEntity::createRenderComponent<QAbstractLight>(QAbstractLight *frontend)
+{
+    m_lightComponent = frontend->uuid();
+    createRenderComponentHelper<QAbstractLight, RenderLight, LightManager>(frontend, m_renderer->lightManager());
+}
+
+template<>
+void RenderEntity::createRenderComponent<QMaterial>(QMaterial *frontend)
+{
+    m_materialComponent = frontend->uuid();
+    createRenderComponentHelper<QMaterial, RenderMaterial, MaterialManager>(frontend, m_renderer->materialManager());
+}
+
 void RenderEntity::sceneChangeEvent(const QSceneChangePtr &e)
 {
-    // TO DO: There must be a way to have this code share some part of RenderSceneBuilder
-    // Try to see what's the best way to do so
-
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     switch (e->type()) {
 
@@ -174,7 +215,7 @@ void RenderEntity::sceneChangeEvent(const QSceneChangePtr &e)
         qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "NodeCreated";
         QEntity *entity = propertyChange->value().value<QEntity *>();
         if (entity != Q_NULLPTR) {
-            HRenderNode renderNodeHandle;
+            HEntity renderNodeHandle;
             renderNodeHandle = m_renderer->renderNodesManager()->getOrAcquireHandle(entity->uuid());
             RenderEntity *renderNode = m_renderer->renderNodesManager()->data(renderNodeHandle);
             renderNode->setHandle(renderNodeHandle);
@@ -188,13 +229,13 @@ void RenderEntity::sceneChangeEvent(const QSceneChangePtr &e)
         qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "NodeAboutToBeDeleted";
         QUuid entityId = propertyChange->value().value<QUuid>();
         m_renderer->renderNodesManager()->releaseRenderNode(entityId);
-        // We also need to cleanup all Components and other resources associated with thise entity;
         break;
     }
     case NodeDeleted: {
         qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "NodeDeleted";
         break;
     }
+    // Other component types are
     case ComponentUpdated: {
         QNode *node = propertyChange->subject().m_node;
         if (node == m_transform
@@ -206,35 +247,36 @@ void RenderEntity::sceneChangeEvent(const QSceneChangePtr &e)
     case ComponentAdded: {
         QComponent *component = propertyChange->value().value<QComponent*>();
         qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "Component Added" << m_frontEndPeer->objectName() << component->objectName();
-        if (m_transform == Q_NULLPTR && qobject_cast<QTransform*>(component) != Q_NULLPTR) {
+        if (m_transform == Q_NULLPTR && qobject_cast<QTransform*>(component) != Q_NULLPTR)
             setTransform(qobject_cast<QTransform *>(component));
-        }
         else if (qobject_cast<QAbstractMesh *>(component))
-            RenderEntity::createRenderComponent<QAbstractMesh, RenderMesh, MeshManager>(qobject_cast<QAbstractMesh *>(component), m_renderer->meshManager());
+            createRenderComponent<QAbstractMesh>(qobject_cast<QAbstractMesh *>(component));
         else if (qobject_cast<QCameraLens *>(component))
-            RenderEntity::createRenderComponent<QCameraLens, RenderCamera, CameraManager>(qobject_cast<QCameraLens *>(component), m_renderer->cameraManager());
+            createRenderComponent<QCameraLens>(qobject_cast<QCameraLens *>(component));
         else if (qobject_cast<QLayer *>(component))
-            RenderEntity::createRenderComponent<QLayer, RenderLayer, LayerManager>(qobject_cast<QLayer *>(component), m_renderer->layerManager());
+            createRenderComponent<QLayer>(qobject_cast<QLayer *>(component));
         else if (qobject_cast<QAbstractLight *>(component))
-            RenderEntity::createRenderComponent<QAbstractLight, RenderLight, LightManager>(qobject_cast<QAbstractLight *>(component), m_renderer->lightManager());
+            createRenderComponent<QAbstractLight>(qobject_cast<QAbstractLight *>(component));
         else if (qobject_cast<QMaterial *>(component))
-            RenderEntity::createRenderComponent<QMaterial, RenderMaterial, MaterialManager>(qobject_cast<QMaterial *>(component), m_renderer->materialManager());
+            createRenderComponent<QMaterial>(qobject_cast<QMaterial *>(component));
         break;
     }
 
     case ComponentRemoved: {
         QComponent *component = propertyChange->value().value<QComponent*>();
-        qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "Component Removed" << component->objectName();
-        if (component == m_transform) {
+        qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "Component Removed";
+        if (component == m_transform)
             setTransform(Q_NULLPTR);
-        }
-        else if (qobject_cast<QCameraLens *>(component)) {
-            m_renderer->cameraManager()->releaseResource(m_frontendUuid);
-        }
-        else if (qobject_cast<QAbstractMesh *>(component)) {
-            qCDebug(Render::RenderNodes) << Q_FUNC_INFO << " Mesh Component Removed " << component << component->objectName();
-            m_renderer->meshManager()->releaseRenderMesh(m_frontendUuid);
-        }
+        else if (qobject_cast<QAbstractMesh *>(component))
+            m_meshComponent = QUuid();
+        else if (qobject_cast<QCameraLens *>(component))
+            m_cameraComponent = QUuid();
+        else if (qobject_cast<QLayer *>(component))
+            m_layerComponent = QUuid();
+        else if (qobject_cast<QAbstractLight *>(component))
+            m_lightComponent = QUuid();
+        else if (qobject_cast<QMaterial *>(component))
+            m_materialComponent = QUuid();
         break;
     }
 
@@ -258,7 +300,7 @@ RenderEntity *RenderEntity::parent() const
     return m_renderer->renderNodesManager()->data(m_parentHandle);
 }
 
-void RenderEntity::appendChildHandle(HRenderNode childHandle)
+void RenderEntity::appendChildHandle(HEntity childHandle)
 {
     if (!m_childrenHandles.contains(childHandle)) {
         m_childrenHandles.append(childHandle);
@@ -268,7 +310,7 @@ void RenderEntity::appendChildHandle(HRenderNode childHandle)
     }
 }
 
-void RenderEntity::removeChildHandle(HRenderNode childHandle)
+void RenderEntity::removeChildHandle(HEntity childHandle)
 {
     // TO DO : Check if a QList here wouldn't be more performant
     if (m_childrenHandles.contains(childHandle)) {
@@ -280,7 +322,7 @@ QVector<RenderEntity *> RenderEntity::children() const
 {
     QVector<RenderEntity *> childrenVector;
     childrenVector.reserve(m_childrenHandles.size());
-    foreach (HRenderNode handle, m_childrenHandles) {
+    foreach (HEntity handle, m_childrenHandles) {
         RenderEntity *child = m_renderer->renderNodesManager()->data(handle);
         if (child != Q_NULLPTR)
             childrenVector.append(child);
@@ -291,6 +333,96 @@ QVector<RenderEntity *> RenderEntity::children() const
 QMatrix4x4 *RenderEntity::localTransform() { return m_renderer->localMatrixManager()->data(m_localTransform); }
 
 QMatrix4x4 *RenderEntity::worldTransform() { return m_renderer->worldMatrixManager()->data(m_worldTransform); }
+
+template<>
+HMesh RenderEntity::componentHandle<RenderMesh>()
+{
+    return m_renderer->meshManager()->lookupHandle(m_meshComponent);
+}
+
+template<>
+RenderMesh *RenderEntity::renderComponent<RenderMesh>()
+{
+    return m_renderer->meshManager()->lookupResource(m_meshComponent);
+}
+
+template<>
+void RenderEntity::releaseRenderComponent<RenderMesh>()
+{
+    m_renderer->meshManager()->releaseRenderMesh(m_meshComponent);
+}
+
+template<>
+HMaterial RenderEntity::componentHandle<RenderMaterial>()
+{
+    return m_renderer->materialManager()->lookupHandle(m_materialComponent);
+}
+
+template<>
+RenderMaterial *RenderEntity::renderComponent<RenderMaterial>()
+{
+    return m_renderer->materialManager()->lookupResource(m_materialComponent);
+}
+
+template<>
+void RenderEntity::releaseRenderComponent<RenderMaterial>()
+{
+    m_renderer->materialManager()->releaseResource(m_materialComponent);
+}
+
+template<>
+HLayer RenderEntity::componentHandle<RenderLayer>()
+{
+    return m_renderer->layerManager()->lookupHandle(m_layerComponent);
+}
+
+template<>
+RenderLayer *RenderEntity::renderComponent<RenderLayer>()
+{
+    return m_renderer->layerManager()->lookupResource(m_layerComponent);
+}
+
+template<>
+void RenderEntity::releaseRenderComponent<RenderLayer>()
+{
+    m_renderer->layerManager()->releaseResource(m_layerComponent);
+}
+
+template<>
+HLight RenderEntity::componentHandle<RenderLight>()
+{
+    return m_renderer->lightManager()->lookupHandle(m_lightComponent);
+}
+
+template<>
+RenderLight *RenderEntity::renderComponent<RenderLight>()
+{
+    return m_renderer->lightManager()->lookupResource(m_lightComponent);
+}
+
+template<>
+void RenderEntity::releaseRenderComponent<RenderLight>()
+{
+    m_renderer->lightManager()->releaseResource(m_lightComponent);
+}
+
+template<>
+HCamera RenderEntity::componentHandle<RenderCamera>()
+{
+    return m_renderer->cameraManager()->lookupHandle(m_cameraComponent);
+}
+
+template<>
+RenderCamera *RenderEntity::renderComponent<RenderCamera>()
+{
+    return m_renderer->cameraManager()->lookupResource(m_cameraComponent);
+}
+
+template<>
+void RenderEntity::releaseRenderComponent<RenderCamera>()
+{
+    m_renderer->cameraManager()->releaseResource(m_cameraComponent);
+}
 
 } // namespace Render
 } // namespace Qt3D

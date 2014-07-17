@@ -123,87 +123,87 @@ QStringList RenderView::initializeStandardAttributeNames()
     return attributesNames;
 }
 
-QUniformValue *RenderView::modelMatrix(RenderCamera *, const QMatrix4x4 &model) const
+QUniformValue *RenderView::modelMatrix(const QMatrix4x4 &model) const
 {
     SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
     t->setValue(model);
     return t;
 }
 
-QUniformValue *RenderView::viewMatrix(RenderCamera *c, const QMatrix4x4 &) const
+QUniformValue *RenderView::viewMatrix(const QMatrix4x4 &) const
 {
     SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
-    t->setValue(c->viewMatrix());
+    t->setValue(*m_viewMatrix);
     return t;
 }
 
-QUniformValue *RenderView::projectionMatrix(RenderCamera *c, const QMatrix4x4 &) const
+QUniformValue *RenderView::projectionMatrix(const QMatrix4x4 &) const
 {
     SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
-    t->setValue(c->projection());
+    t->setValue(m_renderCamera->projection());
     return t;
 }
 
-QUniformValue *RenderView::modelViewMatrix(RenderCamera *c, const QMatrix4x4 &model) const
+QUniformValue *RenderView::modelViewMatrix(const QMatrix4x4 &model) const
 {
     SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
-    t->setValue(c->viewMatrix() * model);
+    t->setValue(*m_viewMatrix * model);
     return t;
 }
 
-QUniformValue *RenderView::modelViewProjectionMatrix(RenderCamera *c, const QMatrix4x4 &model) const
+QUniformValue *RenderView::modelViewProjectionMatrix(const QMatrix4x4 &model) const
 {
     SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
-    t->setValue(c->projection() * c->viewMatrix() * model);
+    t->setValue(m_renderCamera->projection() * *m_viewMatrix * model);
     return t;
 }
 
-QUniformValue *RenderView::inverseModelMatrix(RenderCamera *, const QMatrix4x4 &model) const
+QUniformValue *RenderView::inverseModelMatrix(const QMatrix4x4 &model) const
 {
     SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
     t->setValue(model.inverted());
     return t;
 }
 
-QUniformValue *RenderView::inverseViewMatrix(RenderCamera *c, const QMatrix4x4 &) const
+QUniformValue *RenderView::inverseViewMatrix(const QMatrix4x4 &) const
 {
     SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
-    t->setValue(c->viewMatrix().inverted());
+    t->setValue(m_viewMatrix->inverted());
     return t;
 }
 
-QUniformValue *RenderView::inverseProjectionMatrix(RenderCamera *c, const QMatrix4x4 &) const
+QUniformValue *RenderView::inverseProjectionMatrix(const QMatrix4x4 &) const
 {
     SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
-    t->setValue(c->projection().inverted());
+    t->setValue(m_renderCamera->projection().inverted());
     return t;
 }
 
-QUniformValue *RenderView::inverseModelViewMatrix(RenderCamera *c, const QMatrix4x4 &model) const
+QUniformValue *RenderView::inverseModelViewMatrix(const QMatrix4x4 &model) const
 {
     SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
-    t->setValue((c->viewMatrix() * model).inverted());
+    t->setValue((*m_viewMatrix * model).inverted());
     return t;
 }
 
-QUniformValue *RenderView::inverseModelViewProjectionMatrix(RenderCamera *c, const QMatrix4x4 &model) const
+QUniformValue *RenderView::inverseModelViewProjectionMatrix(const QMatrix4x4 &model) const
 {
     SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
-    t->setValue((c->projection() * c->viewMatrix() * model).inverted());
+    t->setValue((m_renderCamera->projection() * *m_viewMatrix * model).inverted());
     return t;
 }
 
-QUniformValue *RenderView::modelNormalMatrix(RenderCamera *, const QMatrix4x4 &model) const
+QUniformValue *RenderView::modelNormalMatrix(const QMatrix4x4 &model) const
 {
     SpecifiedUniform<QMatrix3x3> *t = m_allocator->allocate<SpecifiedUniform<QMatrix3x3> >();
     t->setValue(model.normalMatrix());
     return t;
 }
 
-QUniformValue *RenderView::modelViewNormalMatrix(RenderCamera *c, const QMatrix4x4 &model) const
+QUniformValue *RenderView::modelViewNormalMatrix(const QMatrix4x4 &model) const
 {
     SpecifiedUniform<QMatrix3x3> *t = m_allocator->allocate<SpecifiedUniform<QMatrix3x3> >();
-    t->setValue((c->viewMatrix() * model).normalMatrix());
+    t->setValue((*m_viewMatrix * model).normalMatrix());
     return t;
 }
 
@@ -229,12 +229,13 @@ void RenderView::setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf)
         switch (type) {
         case FrameGraphNode::CameraSelector: {
             CameraSelector *cameraSelector = static_cast<CameraSelector *>(node);
-            QEntity *cameraEntity = cameraSelector->cameraEntity();
-            if (cameraEntity != Q_NULLPTR) {
-                m_renderCamera = m_renderer->cameraManager()->lookupResource(cameraEntity->uuid());
-                RenderEntity *tmpCamNode = m_renderer->renderNodesManager()->lookupResource(cameraEntity->uuid());
-                if (m_renderCamera && tmpCamNode)
-                    m_renderCamera->setViewMatrix(*tmpCamNode->worldTransform());
+            RenderEntity *tmpCamNode = m_renderer->renderNodesManager()->lookupResource(cameraSelector->cameraUuid());
+            if (tmpCamNode) {
+                m_renderCamera = tmpCamNode->renderComponent<RenderCamera>();
+                // If we have a viewMatrix pointer instead of directly a QMatrix4x4 object in RenderView
+                // This allows us to keep the size of RenderView smaller and avoid huge block fragmentation
+                m_viewMatrix = m_allocator->allocate<QMatrix4x4>();
+                *m_viewMatrix = *tmpCamNode->worldTransform();
             }
             break;
         }
@@ -305,15 +306,13 @@ void RenderView::buildRenderCommands(RenderEntity *node)
 
     // 1 RenderCommand per RenderPass pass on an Entity with a Mesh
 
-    if (m_renderCamera != Q_NULLPTR && checkContainedWithinLayer(node->entityUuid())) {
-        HMesh meshHandle;
+    if (m_renderCamera != Q_NULLPTR && checkContainedWithinLayer(node)) {
         RenderMesh *mesh = Q_NULLPTR;
-        if (m_renderer->meshManager()->contains(node->entityUuid()) &&
-                (meshHandle = m_renderer->meshManager()->lookupHandle(node->entityUuid())) != HMesh() &&
-                (mesh = m_renderer->meshManager()->data(meshHandle)) != Q_NULLPTR) {
+        if (node->componentHandle<RenderMesh>() != HMesh()
+                && (mesh = node->renderComponent<RenderMesh>()) != Q_NULLPTR) {
             if (!mesh->meshData().isNull())
             {
-                RenderMaterial *material = findMaterialForMeshNode(node->entityUuid());
+                RenderMaterial *material = node->renderComponent<RenderMaterial>();
                 RenderEffect *effect = findEffectForMaterial(material);
                 RenderTechnique *technique = findTechniqueForEffect(effect);
                 QList<RenderRenderPass *> passes = findRenderPassesForTechnique(technique);
@@ -341,13 +340,6 @@ void RenderView::buildRenderCommands(RenderEntity *node)
     // Traverse children
     Q_FOREACH (RenderEntity *child, node->children())
         buildRenderCommands(child);
-}
-
-RenderMaterial *RenderView::findMaterialForMeshNode(const QUuid &entityUuid)
-{
-    // Material is created by the RenderSceneBuilder or RenderNode if it is appended through a change
-    // Therefore we only perform lookups in RenderView
-    return m_renderer->materialManager()->lookupResource(entityUuid);
 }
 
 // The RenderTechnique && RenderPass instances have to be created in the RenderViewJobs
@@ -523,7 +515,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
             Q_FOREACH (const QString &uniformName, uniformNames) {
                 if (m_standardUniformSetters.contains(uniformName))
                     command->m_uniforms.setUniform(uniformName,
-                                                   (this->*m_standardUniformSetters[uniformName])(m_renderCamera, command->m_worldMatrix));
+                                                   (this->*m_standardUniformSetters[uniformName])(command->m_worldMatrix));
             }
 
             // Set default attributes
@@ -542,7 +534,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
                              && uniformNames.contains(binding->shaderVariableName())
                              && m_standardUniformSetters.contains(binding->parameterName()))
                         command->m_uniforms.setUniform(binding->shaderVariableName(),
-                                                       (this->*m_standardUniformSetters[binding->parameterName()])(m_renderCamera, command->m_worldMatrix));
+                                                       (this->*m_standardUniformSetters[binding->parameterName()])(command->m_worldMatrix));
                     else
                         qCWarning(Render::Backend) << Q_FUNC_INFO << "Trying to bind a Parameter that hasn't been defined " << binding->parameterName();
                 }
@@ -597,11 +589,11 @@ void RenderView::computeViewport(ViewportNode *viewportNode)
     }
 }
 
-bool RenderView::checkContainedWithinLayer(const QUuid &entityUuid)
+bool RenderView::checkContainedWithinLayer(RenderEntity *node)
 {
     if (m_layers.isEmpty())
         return true;
-    RenderLayer *renderLayer = m_renderer->layerManager()->lookupResource(entityUuid);
+    RenderLayer *renderLayer = node->renderComponent<RenderLayer>();
     if (renderLayer == Q_NULLPTR || !m_layers.contains(renderLayer->layer()))
         return false;
     return true;

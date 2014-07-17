@@ -106,11 +106,6 @@ void RenderCamera::setProjection(const QMatrix4x4 &projection)
     m_projection = projection;
 }
 
-void RenderCamera::setViewMatrix(const QMatrix4x4 &view)
-{
-    m_view = view;
-}
-
 void RenderCamera::sceneChangeEvent(const QSceneChangePtr &e)
 {
     switch (e->type()) {

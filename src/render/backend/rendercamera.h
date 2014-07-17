@@ -75,9 +75,6 @@ public:
     void setProjection(const QMatrix4x4 &projection);
     inline QMatrix4x4 projection() const { return m_projection; }
 
-    void setViewMatrix(const QMatrix4x4 &view);
-    inline QMatrix4x4 viewMatrix() const { return m_view; }
-
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:

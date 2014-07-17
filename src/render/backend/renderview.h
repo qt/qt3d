@@ -103,9 +103,8 @@ public:
 private:
 
     void computeViewport(ViewportNode *viewportNode);
-    bool checkContainedWithinLayer(const QUuid &entityUuid);
+    bool checkContainedWithinLayer(RenderEntity *node);
 
-    RenderMaterial *findMaterialForMeshNode(const QUuid &entityUuid);
     RenderEffect *findEffectForMaterial(RenderMaterial *material);
     RenderTechnique *findTechniqueForEffect(RenderEffect *effect);
     QList<RenderRenderPass *> findRenderPassesForTechnique(RenderTechnique *technique);
@@ -120,6 +119,7 @@ private:
     RenderPassFilter *m_passFilter;
     QRectF m_viewport;
     QStringList m_layers;
+    QMatrix4x4 *m_viewMatrix;
 
     int m_frameIndex;
 
@@ -134,24 +134,24 @@ private:
     // A dedicated ResourcesManager might improve performances later on
     // We could have pre allocated/persistent rendercommands that we reuse in the RenderQueue
 
-    typedef QHash<QString, QUniformValue* (RenderView::*)(RenderCamera *c, const QMatrix4x4& model) const> standardUniformsPFuncsHash;
+    typedef QHash<QString, QUniformValue* (RenderView::*)(const QMatrix4x4& model) const> standardUniformsPFuncsHash;
     static  standardUniformsPFuncsHash m_standardUniformSetters;
     static standardUniformsPFuncsHash initializeStandardUniformSetters();
     static QStringList m_standardAttributesNames;
     static QStringList initializeStandardAttributeNames();
 
-    QUniformValue *modelMatrix(RenderCamera *, const QMatrix4x4& model) const;
-    QUniformValue *viewMatrix(RenderCamera *c, const QMatrix4x4&) const;
-    QUniformValue *projectionMatrix(RenderCamera *c, const QMatrix4x4 &) const;
-    QUniformValue *modelViewMatrix(RenderCamera *c, const QMatrix4x4 &model) const;
-    QUniformValue *modelViewProjectionMatrix(RenderCamera *c, const QMatrix4x4 &model) const;
-    QUniformValue *inverseModelMatrix(RenderCamera *, const QMatrix4x4 &model) const;
-    QUniformValue *inverseViewMatrix(RenderCamera *c, const QMatrix4x4 &) const;
-    QUniformValue *inverseProjectionMatrix(RenderCamera *c, const QMatrix4x4 &) const;
-    QUniformValue *inverseModelViewMatrix(RenderCamera *c, const QMatrix4x4 &model) const;
-    QUniformValue *inverseModelViewProjectionMatrix(RenderCamera *c, const QMatrix4x4 &model) const;
-    QUniformValue *modelNormalMatrix(RenderCamera *, const QMatrix4x4 &model) const;
-    QUniformValue *modelViewNormalMatrix(RenderCamera *c, const QMatrix4x4 &model) const;
+    QUniformValue *modelMatrix(const QMatrix4x4& model) const;
+    QUniformValue *viewMatrix(const QMatrix4x4&) const;
+    QUniformValue *projectionMatrix(const QMatrix4x4 &) const;
+    QUniformValue *modelViewMatrix(const QMatrix4x4 &model) const;
+    QUniformValue *modelViewProjectionMatrix(const QMatrix4x4 &model) const;
+    QUniformValue *inverseModelMatrix(const QMatrix4x4 &model) const;
+    QUniformValue *inverseViewMatrix(const QMatrix4x4 &) const;
+    QUniformValue *inverseProjectionMatrix(const QMatrix4x4 &) const;
+    QUniformValue *inverseModelViewMatrix(const QMatrix4x4 &model) const;
+    QUniformValue *inverseModelViewProjectionMatrix(const QMatrix4x4 &model) const;
+    QUniformValue *modelNormalMatrix(const QMatrix4x4 &model) const;
+    QUniformValue *modelViewNormalMatrix(const QMatrix4x4 &model) const;
 };
 
 } // namespace Render

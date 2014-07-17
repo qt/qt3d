@@ -54,7 +54,7 @@ namespace Qt3D {
 
 namespace Render {
 
-typedef QHandle<RenderEntity, 16> HRenderNode;
+typedef QHandle<RenderEntity, 16> HEntity;
 
 class EntityManager : public QResourcesManager<RenderEntity, QUuid, 16>
 {

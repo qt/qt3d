@@ -44,6 +44,7 @@
 
 #include <Qt3DRenderer/framegraphnode.h>
 #include <Qt3DCore/qobserverinterface.h>
+#include <QUuid>
 
 QT_BEGIN_NAMESPACE
 
@@ -67,14 +68,13 @@ public:
     void setPeer(Qt3D::QCameraSelector *peer);
     Qt3D::QCameraSelector *peer() const { return m_peer; }
 
-    void setCameraEntity(QEntity *cameraEntity) { m_cameraEntity = cameraEntity; }
-    QEntity *cameraEntity() const { return m_cameraEntity; }
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    QUuid cameraUuid() const;
 
 private:
-    QEntity *m_cameraEntity;
     Renderer *m_renderer;
     Qt3D::QCameraSelector *m_peer;
+    QUuid m_cameraUuid;
 
 };
 

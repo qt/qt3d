@@ -70,7 +70,7 @@ void QCameraSelector::setCamera(QEntity *camera)
         emit cameraChanged();
         QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentUpdated, this));
         propertyChange->setPropertyName(QByteArrayLiteral("camera"));
-        propertyChange->setValue(QVariant::fromValue(d->m_camera));
+        propertyChange->setValue(QVariant::fromValue(d->m_camera->uuid()));
         notifyObservers(propertyChange);
     }
 }
