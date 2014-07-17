@@ -27,15 +27,15 @@ src_quick3d_render.depends = src_render
 
 
 # Quick3D imports
-src_quick3d_core_imports.subdir = $$PWD/quick3d/imports/core
+src_quick3d_core_imports.file = $$PWD/quick3d/imports/core/importscore.pro
 src_quick3d_core_imports.target = sub-quick3d-imports-core
 src_quick3d_core_imports.depends = src_quick3d_core
 
-src_quick3d_imports_render.subdir = $$PWD/quick3d/imports/render
+src_quick3d_imports_render.file = $$PWD/quick3d/imports/render/importsrender.pro
 src_quick3d_imports_render.target = sub-quick3d-imports-render
 src_quick3d_imports_render.depends = src_quick3d_render
 
-src_quick3d_imports_bulletphysics.subdir = $$PWD/quick3d/imports/bulletphysics
+src_quick3d_imports_bulletphysics.file = $$PWD/quick3d/imports/bulletphysics/importsbulletphysics.pro
 src_quick3d_imports_bulletphysics.target = sub-quick3d-imports-bulletphysics
 src_quick3d_imports_bulletphysics.depends = src_bulletphysics
 
