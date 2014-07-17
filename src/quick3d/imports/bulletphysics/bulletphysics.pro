@@ -2,7 +2,7 @@ CXX_MODULE = qml
 TARGET = quick3dbulletphysicsplugin
 TARGETPATH = Qt3D/BulletPhysics
 
-QT += core-private qml 3dcore 3dbulletphysics 3dquick
+QT += core-private qml 3dcore 3dbulletphysics
 
 HEADERS += \
     qt3dquick3dbulletphysicsplugin.h
