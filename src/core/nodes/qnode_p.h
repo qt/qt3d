@@ -61,6 +61,11 @@ public:
         q_ptr = qq;
     }
 
+    Q_DECLARE_PUBLIC(QNode)
+
+    // private slots
+    void _q_sendQueuedChanges();
+
     NodeList m_children;
 
     // For now this just protects access to the m_changeArbiter.

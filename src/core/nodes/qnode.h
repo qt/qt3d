@@ -90,6 +90,9 @@ protected:
 
     Q_DECLARE_PRIVATE(QNode)
     QNode(QNodePrivate &dd, QNode *parent = 0);
+
+private:
+    Q_PRIVATE_SLOT(d_func(), void _q_sendQueuedChanges())
 };
 
 } // namespace Qt3D

@@ -54,6 +54,19 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+void QNodePrivate::_q_sendQueuedChanges()
+{
+    Q_Q(QNode);
+    QReadLocker locker(&m_observerLock);
+    QChangeArbiter *changeArbiter = m_changeArbiter;
+    locker.unlock();
+    qCDebug(Nodes) << Q_FUNC_INFO << q->objectName() << " sending " << m_queuedChanges.size() << "queued changes";
+    Q_FOREACH (const QSceneChangePtr &change, m_queuedChanges)
+        changeArbiter->sceneChangeEventWithLock(change);
+    m_queuedChanges.clear();
+}
+
+
 QNode::QNode(QNode *parent)
     : QObject(*new QNodePrivate(this), parent)
 {
@@ -169,12 +182,10 @@ void QNode::registerObserver(QObserverInterface *observer)
         QWriteLocker locker(&d->m_observerLock);
         d->m_changeArbiter = changeArbiter;
 
-        // We send queued changes to the changeArbiter
+        // We send queued changes to the changeArbiter from the thread this object
+        // has affinity with. Usually the main thread
         qCDebug(Nodes) << Q_FUNC_INFO << objectName() << " has " << d->m_queuedChanges.size() << "awaiting changes";
-
-        Q_FOREACH (const QSceneChangePtr &change, d->m_queuedChanges)
-            changeArbiter->sceneChangeEvent(change);
-        d->m_queuedChanges.clear();
+        QMetaObject::invokeMethod(this, "_q_sendQueuedChanges", Qt::QueuedConnection);
     }
 }
 
@@ -213,3 +224,5 @@ void QNode::notifyObservers(const QSceneChangePtr &change)
 } // namespace Qt3D
 
 QT_END_NAMESPACE
+
+#include "moc_qnode.cpp"
