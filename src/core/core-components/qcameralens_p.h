@@ -45,6 +45,8 @@
 #include <Qt3DCore/private/qcomponent_p.h>
 #include "qcameralens.h"
 
+#include <Qt3DCore/qscenepropertychange.h>
+
 #include <QtGui/qmatrix4x4.h>
 
 QT_BEGIN_NAMESPACE
@@ -60,12 +62,24 @@ public:
     {
         m_projectionMatrix.setToIdentity();
         m_projectionMatrix.perspective(m_fieldOfView, m_aspectRatio, m_nearPlane, m_farPlane);
+        notifyObservers();
     }
 
     inline void updateOrthogonalProjection()
     {
         m_projectionMatrix.setToIdentity();
         m_projectionMatrix.ortho(m_left, m_right, m_bottom, m_top, m_nearPlane, m_farPlane);
+        notifyObservers();
+    }
+
+    inline void notifyObservers()
+    {
+        // Notify the aspects
+        Q_Q(QCameraLens);
+        QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentUpdated, q));
+        propertyChange->setPropertyName(QByteArrayLiteral("projectionMatrix"));
+        propertyChange->setValue(QVariant::fromValue(m_projectionMatrix));
+        q->notifyObservers(propertyChange);
     }
 
     Q_DECLARE_PUBLIC(QCameraLens)

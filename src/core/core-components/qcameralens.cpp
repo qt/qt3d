@@ -58,18 +58,21 @@ QCameraLensPrivate::QCameraLensPrivate(QCameraLens *qq)
   , m_bottom(-0.5f)
   , m_top(0.5f)
 {
-    updateOrthogonalProjection();
 }
 
 
 QCameraLens::QCameraLens(QNode *parent)
     : QComponent(*new QCameraLensPrivate(this), parent)
 {
+    Q_D(QCameraLens);
+    d->updateOrthogonalProjection();
 }
 
 QCameraLens::QCameraLens(QCameraLensPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
 {
+    Q_D(QCameraLens);
+    d->updateOrthogonalProjection();
 }
 
 void QCameraLens::setProjectionType(QCameraLens::ProjectionType projectionType)
