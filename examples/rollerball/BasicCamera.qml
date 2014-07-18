@@ -56,7 +56,8 @@ Camera {
     lens: CameraLens {
         projectionType: CameraLens.PerspectiveProjection
         fieldOfView: 22.5
-        aspectRatio: 16 / 9 // TODO: Hook up to window aspect ratio
+        aspectRatio: _window.width / _window.height // TODO: Hook up to backend
+        onAspectRatioChanged: console.log( "aspectRatio = " + aspectRatio )
         nearPlane:   0.01
         farPlane:    1000.0
     }

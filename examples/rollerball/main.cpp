@@ -57,6 +57,10 @@ int main(int argc, char* argv[])
     Qt3D::Quick::QuickWindow view;
     view.registerAspect(new Qt3D::RendererAspect());
     view.registerAspect(new Qt3D::BulletPhysicsAspect());
+
+    // Expose the window as a context property so we can set the aspect ratio
+    view.engine()->rootContext()->setContextProperty("_window", &view);
+
     // There should be some synchronising mechanism to make sure
     // the source is set after all aspects have been completely initialized
     // Otherwise we might encounter cases where an Aspect's QML elements have
