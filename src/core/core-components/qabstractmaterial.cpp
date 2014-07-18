@@ -41,6 +41,8 @@
 
 #include "qabstractmaterial.h"
 #include "qabstractmaterial_p.h"
+#include "qscenepropertychange.h"
+#include "qabstracteffect.h"
 
 /*!
  * \class QAbstractMaterial
@@ -87,6 +89,10 @@ void QAbstractMaterial::setEffect(QAbstractEffect *effect)
     if (effect != d->m_effect) {
         d->m_effect = effect;
         emit effectChanged();
+        QScenePropertyChangePtr change(new QScenePropertyChange(ComponentUpdated, this));
+        change->setPropertyName(QByteArrayLiteral("effect"));
+        change->setValue(QVariant::fromValue(effect));
+        notifyObservers(change);
     }
 }
 

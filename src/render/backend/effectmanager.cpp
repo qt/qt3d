@@ -40,7 +40,6 @@
 ****************************************************************************/
 
 #include "effectmanager.h"
-#include <Qt3DCore/qabstracteffect.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -50,7 +49,7 @@ namespace Render {
 
 EffectManager::EffectManager()
     : QResourcesManager<RenderEffect,
-                        QAbstractEffect*,
+                        QUuid,
                         16,
                         Qt3D::ArrayAllocatingPolicy,
                         Qt3D::ObjectLevelLockingPolicy>()

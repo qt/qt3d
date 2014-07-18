@@ -312,8 +312,10 @@ void RenderView::buildRenderCommands(RenderEntity *node)
                 && (mesh = node->renderComponent<RenderMesh>()) != Q_NULLPTR) {
             if (!mesh->meshData().isNull())
             {
-                RenderMaterial *material = node->renderComponent<RenderMaterial>();
-                RenderEffect *effect = findEffectForMaterial(material);
+                RenderMaterial *material = Q_NULLPTR;
+                RenderEffect *effect = Q_NULLPTR;
+                if ((material = node->renderComponent<RenderMaterial>()) != Q_NULLPTR)
+                    effect = material->effect();
                 RenderTechnique *technique = findTechniqueForEffect(effect);
                 QList<RenderRenderPass *> passes = findRenderPassesForTechnique(technique);
 
@@ -340,25 +342,6 @@ void RenderView::buildRenderCommands(RenderEntity *node)
     // Traverse children
     Q_FOREACH (RenderEntity *child, node->children())
         buildRenderCommands(child);
-}
-
-// The RenderTechnique && RenderPass instances have to be created in the RenderViewJobs
-// As it offers a way to create instances only for techniques and passes that are used.
-
-RenderEffect *RenderView::findEffectForMaterial(RenderMaterial *material)
-{
-    RenderEffect *effect = Q_NULLPTR;
-    if (material != Q_NULLPTR && material->peer() != Q_NULLPTR) {
-        // TO DO Change that, fEffect should be a QUuid
-        QAbstractEffect *fEffect = material->peer()->effect();
-        if (fEffect != Q_NULLPTR && (effect = m_renderer->effectManager()->lookupResource(fEffect)) == Q_NULLPTR) {
-            if ((effect = m_renderer->effectManager()->getOrCreateResource(fEffect)) != Q_NULLPTR) {
-                effect->setRenderer(m_renderer);
-                effect->setPeer(fEffect);
-            }
-        }
-    }
-    return effect;
 }
 
 RenderTechnique *RenderView::findTechniqueForEffect(RenderEffect *effect)

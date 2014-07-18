@@ -40,15 +40,17 @@
 ****************************************************************************/
 
 #include "rendermaterial.h"
-
 #include "rendereraspect.h"
 #include "qgraphicscontext.h"
 #include "rendertechnique.h"
 #include "rendertextureprovider.h"
 #include "qparameter.h"
 #include "renderer.h"
+#include "effectmanager.h"
+#include "rendereffect.h"
 #include <qtechnique.h> // for Parameter
 #include <qmaterial.h>
+#include <Qt3DCore/qabstracteffect.h>
 #include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
@@ -132,7 +134,16 @@ void RenderMaterial::sceneChangeEvent(const QSceneChangePtr &e)
     case ComponentUpdated: {
         // Check for effect change
         if (propertyChange->propertyName() == QByteArrayLiteral("effect")) {
-
+            Qt3D::QAbstractEffect *eff = propertyChange->value().value<Qt3D::QAbstractEffect *>();
+            m_effectUuid = QUuid();
+            if (eff != Q_NULLPTR) {
+                m_effectUuid = eff->uuid();
+                if (!m_renderer->effectManager()->contains(m_effectUuid)) {
+                    RenderEffect *rEffect = m_renderer->effectManager()->getOrCreateResource(m_effectUuid);
+                    rEffect->setRenderer(m_renderer);
+                    rEffect->setPeer(eff);
+                }
+            }
         }
         else {
         }
@@ -162,6 +173,11 @@ void RenderMaterial::sceneChangeEvent(const QSceneChangePtr &e)
 const QHash<QString, QVariant> RenderMaterial::parameters() const
 {
     return m_parameterPack.namedValues();
+}
+
+RenderEffect *RenderMaterial::effect() const
+{
+    return m_renderer->effectManager()->lookupResource(m_effectUuid);
 }
 
 } // namespace Render

@@ -43,21 +43,20 @@
 #define QT3D_RENDER_EFFECTMANAGER_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DCore/qresourcesmanager.h>
 #include <Qt3DRenderer/rendereffect.h>
+#include <Qt3DCore/qresourcesmanager.h>
+#include <QUuid>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
-
-class QAbstractEffect;
 
 namespace Render {
 
 typedef QHandle<RenderEffect, 16> HEffect;
 
 class EffectManager : public QResourcesManager<RenderEffect,
-                                               QAbstractEffect*,
+                                               QUuid,
                                                16,
                                                Qt3D::ArrayAllocatingPolicy,
                                                Qt3D::ObjectLevelLockingPolicy>

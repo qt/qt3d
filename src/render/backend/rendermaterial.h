@@ -62,6 +62,7 @@ namespace Render {
 class Renderer;
 class QGraphicsContext;
 class RenderTechnique;
+class RenderEffect;
 
 class RenderMaterial : public QObserverInterface
 {
@@ -72,21 +73,17 @@ public:
 
     void setPeer(QMaterial* mat);
     void setRenderer(Renderer *renderer);
-
-    QMaterial *peer() const { return m_peer; }
-
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     const QHash<QString, QVariant> parameters() const;
+    RenderEffect *effect() const;
 
 private:
     Renderer *m_renderer;
     QMaterial* m_peer;
-    QString m_effectName;
-    RenderTechnique* m_technique;
     RenderTextureProvider* m_textureProvider;
     ParameterPack m_parameterPack;
-
+    QUuid m_effectUuid;
 };
 
 } // Render

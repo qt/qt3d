@@ -105,7 +105,6 @@ private:
     void computeViewport(ViewportNode *viewportNode);
     bool checkContainedWithinLayer(RenderEntity *node);
 
-    RenderEffect *findEffectForMaterial(RenderMaterial *material);
     RenderTechnique *findTechniqueForEffect(RenderEffect *effect);
     QList<RenderRenderPass *> findRenderPassesForTechnique(RenderTechnique *technique);
     void    createRenderTexture(Texture *tex);
