@@ -43,7 +43,7 @@
 #define QT3D_QTECHNIQUECRITERION_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <QObject>
+#include <Qt3DCore/qnode.h>
 #include <QVariant>
 
 QT_BEGIN_NAMESPACE
@@ -52,7 +52,7 @@ namespace Qt3D {
 
 class QTechniqueCriterionPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QTechniqueCriterion : public QObject
+class QT3DRENDERERSHARED_EXPORT QTechniqueCriterion : public QNode
 {
     Q_OBJECT
     Q_ENUMS(CriterionType)
@@ -60,10 +60,11 @@ class QT3DRENDERERSHARED_EXPORT QTechniqueCriterion : public QObject
     Q_PROPERTY(QVariant criterionValue READ criterionValue WRITE setCriterionValue NOTIFY criterionValueChanged)
     Q_PROPERTY(QString criterionCustomType READ criterionCustomType WRITE setCriterionCustomType NOTIFY criterionCustomTypeChanged)
 public:
-    explicit QTechniqueCriterion(QObject *parent = 0);
+    explicit QTechniqueCriterion(QNode *parent = 0);
 
     enum CriterionType
     {
+        Unknown = -1,
         CustomType = 0,
         RenderingStyle,
         OpenGLVersion,
@@ -71,8 +72,6 @@ public:
         Vendor
     };
 
-    bool operator ==(const QTechniqueCriterion &other);
-    bool operator !=(const QTechniqueCriterion &other);
     void setCriterionType(CriterionType type);
     void setCriterionValue(const QVariant &value);
     void setCriterionCustomType(const QString &customType);

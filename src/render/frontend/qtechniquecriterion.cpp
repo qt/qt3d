@@ -40,20 +40,20 @@
 ****************************************************************************/
 
 #include "qtechniquecriterion.h"
-#include <private/qobject_p.h>
+#include <private/qnode_p.h>
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QTechniqueCriterionPrivate : public QObjectPrivate
+class QTechniqueCriterionPrivate : public QNodePrivate
 {
 public:
     QTechniqueCriterionPrivate(QTechniqueCriterion *qq)
-        : QObjectPrivate()
+        : QNodePrivate(qq)
         , m_criterionType(QTechniqueCriterion::CustomType)
     {
-        q_ptr = qq;
     }
 
     Q_DECLARE_PUBLIC(QTechniqueCriterion)
@@ -62,28 +62,9 @@ public:
     QVariant m_criterionValue;
 };
 
-QTechniqueCriterion::QTechniqueCriterion(QObject *parent)
-    : QObject(*new QTechniqueCriterionPrivate(this), parent)
+QTechniqueCriterion::QTechniqueCriterion(QNode *parent)
+    : QNode(*new QTechniqueCriterionPrivate(this), parent)
 {
-}
-
-bool QTechniqueCriterion::operator ==(const QTechniqueCriterion &other)
-{
-    if (&other == this)
-        return true;
-    if (other.criterionType() == criterionType()) {
-        if (other.criterionType() == CustomType)
-            return (other.criterionCustomType() == criterionCustomType())
-                    && (other.criterionValue() == criterionValue());
-        else
-            return other.criterionValue() == criterionValue();
-    }
-    return false;
-}
-
-bool QTechniqueCriterion::operator !=(const QTechniqueCriterion &other)
-{
-    return !operator ==(other);
 }
 
 void QTechniqueCriterion::setCriterionType(QTechniqueCriterion::CriterionType type)
@@ -92,6 +73,10 @@ void QTechniqueCriterion::setCriterionType(QTechniqueCriterion::CriterionType ty
     if (type != d->m_criterionType) {
         d->m_criterionType = type;
         emit criterionTypeChanged();
+        QScenePropertyChangePtr change(new QScenePropertyChange(ComponentAdded, this));
+        change->setPropertyName(QByteArrayLiteral("criterionType"));
+        change->setValue(QVariant::fromValue(static_cast<int>(type)));
+        notifyObservers(change);
     }
 }
 
@@ -101,6 +86,10 @@ void QTechniqueCriterion::setCriterionValue(const QVariant &value)
     if (value != d->m_criterionValue) {
         d->m_criterionValue = value;
         emit criterionValueChanged();
+        QScenePropertyChangePtr change(new QScenePropertyChange(ComponentAdded, this));
+        change->setPropertyName(QByteArrayLiteral("criterionValue"));
+        change->setValue(value);
+        notifyObservers(change);
     }
 }
 
@@ -110,6 +99,10 @@ void QTechniqueCriterion::setCriterionCustomType(const QString &customType)
     if (customType != d->m_criterionCustomType) {
         d->m_criterionCustomType = customType;
         emit criterionCustomTypeChanged();
+        QScenePropertyChangePtr change(new QScenePropertyChange(ComponentAdded, this));
+        change->setPropertyName(QByteArrayLiteral("criterionCustomType"));
+        change->setValue(QVariant(customType));
+        notifyObservers(change);
     }
 }
 
