@@ -49,7 +49,8 @@ HEADERS += \
     $$PWD/renderlight.h \
     $$PWD/lightmanager.h \
     $$PWD/renderentity.h \
-    $$PWD/entitymanager.h
+    $$PWD/entitymanager.h \
+    $$PWD/rendercriterion.h
 
 SOURCES += \
     $$PWD/rendereraspect.cpp \
@@ -95,4 +96,5 @@ SOURCES += \
     $$PWD/renderlight.cpp \
     $$PWD/lightmanager.cpp \
     $$PWD/renderentity.cpp \
-    $$PWD/entitymanager.cpp
+    $$PWD/entitymanager.cpp \
+    $$PWD/rendercriterion.cpp
