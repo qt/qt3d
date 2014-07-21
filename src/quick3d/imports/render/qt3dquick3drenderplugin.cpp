@@ -68,6 +68,7 @@
 #include <Qt3DRenderer/qspotlight.h>
 #include <Qt3DRenderer/qdirectionallight.h>
 #include <Qt3DRenderer/qpointlight.h>
+#include <Qt3DRenderer/qopenglfilter.h>
 #include <Qt3DQuickRenderer/quick3dtechnique.h>
 #include <Qt3DQuickRenderer/quick3dmaterial.h>
 #include <Qt3DQuickRenderer/quick3dtechniquefilter.h>
@@ -90,6 +91,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterExtendedType<Qt3D::QEffect, Qt3D::Render::Quick::Quick3DEffect>(uri, 2, 0, "Effect");
     qmlRegisterExtendedType<Qt3D::QTechnique, Qt3D::Render::Quick::Quick3DTechnique>(uri, 2, 0, "Technique");
     qmlRegisterType<Qt3D::QTechniqueCriterion>(uri, 2, 0, "TechniqueCriterion");
+    qmlRegisterType<Qt3D::QOpenGLFilter>(uri, 2, 0, "OpenGLFilter");
     qmlRegisterType<Qt3D::QRenderPassCriterion>(uri, 2, 0, "RenderPassCriterion");
     qmlRegisterType<Qt3D::Tag>(uri, 2, 0, "Tag");
     qmlRegisterType<Qt3D::QParameter>(uri, 2, 0, "Parameter");
