@@ -43,6 +43,7 @@
 #include "rendereffect.h"
 #include "rendereraspect.h"
 #include "renderer.h"
+#include "techniquemanager.h"
 #include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/qabstracteffect.h>
 #include <Qt3DCore/qabstracttechnique.h>
@@ -84,7 +85,8 @@ void RenderEffect::setPeer(QAbstractEffect *effect)
         m_peer = effect;
         if (m_peer) {
             arbiter->registerObserver(this, m_peer, ComponentUpdated);
-            m_techniques.append(m_peer->techniques());
+            Q_FOREACH (QAbstractTechnique *t, m_peer->techniques())
+                appendRenderTechnique(t);
             m_parameterPack.clear();
             if (qobject_cast<QEffect*>(m_peer))
                 Q_FOREACH (QParameter *p, qobject_cast<QEffect*>(m_peer)->parameters())
@@ -107,8 +109,9 @@ void RenderEffect::sceneChangeEvent(const QSceneChangePtr &e)
 
     case ComponentAdded:
         if (propertyChange->propertyName() == QByteArrayLiteral("technique")) {
-            m_techniques.append(propertyValue.value<QAbstractTechnique *>());
+            appendRenderTechnique(propertyValue.value<QAbstractTechnique *>());
         }
+        // We don't need a RenderParameter as we store them in a QHash[QString name] = QVariant value
         else if (propertyChange->propertyName() == QByteArrayLiteral("parameter")) {
             m_parameterPack.appendParameter(propertyValue.value<QParameter*>());
         }
@@ -116,7 +119,8 @@ void RenderEffect::sceneChangeEvent(const QSceneChangePtr &e)
 
     case ComponentRemoved:
         if (propertyChange->propertyName() == QByteArrayLiteral("technique")) {
-            m_techniques.removeOne(propertyValue.value<QAbstractTechnique *>());
+            QUuid techniqueUuid = propertyValue.value<QUuid>();
+            m_techniques.removeOne(m_renderer->techniqueManager()->lookupHandle(techniqueUuid));
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("parameter")) {
             m_parameterPack.removeParameter(propertyValue.value<QParameter*>());
@@ -128,12 +132,28 @@ void RenderEffect::sceneChangeEvent(const QSceneChangePtr &e)
     }
 }
 
+void RenderEffect::appendRenderTechnique(QAbstractTechnique *t)
+{
+    QTechnique *technique = static_cast<QTechnique *>(t);
+    if (!technique)
+        return ;
+    HTechnique techHandle = m_renderer->techniqueManager()->lookupHandle(technique->uuid());
+    if (techHandle.isNull()) {
+        techHandle = m_renderer->techniqueManager()->getOrAcquireHandle(technique->uuid());
+        RenderTechnique *tech = m_renderer->techniqueManager()->data(techHandle);
+        tech->setRenderer(m_renderer);
+        tech->setPeer(technique);
+    }
+    if (!m_techniques.contains(techHandle))
+        m_techniques.append(techHandle);
+}
+
 const QHash<QString, QVariant> RenderEffect::parameters() const
 {
     return m_parameterPack.namedValues();
 }
 
-QList<QAbstractTechnique *> RenderEffect::techniques() const
+QList<HTechnique> RenderEffect::techniques() const
 {
     return m_techniques;
 }

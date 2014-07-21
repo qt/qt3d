@@ -54,7 +54,14 @@ namespace Qt3D {
 class QAbstractTechnique;
 class QAbstractEffect;
 
+template <typename T, int INDEXBITS>
+class QHandle;
+
 namespace Render {
+
+class RenderTechnique;
+
+typedef QHandle<RenderTechnique, 16> HTechnique;
 
 class Renderer;
 
@@ -70,12 +77,13 @@ public:
     void setRenderer(Renderer *renderer);
     void sceneChangeEvent(const QSceneChangePtr &e);
     QAbstractEffect *peer() const { return m_peer; }
+    void appendRenderTechnique(QAbstractTechnique *t);
 
-    QList<QAbstractTechnique *> techniques() const;
+    QList<HTechnique> techniques() const;
     const QHash<QString, QVariant> parameters() const;
 
 private:
-    QList<QAbstractTechnique *> m_techniques;
+    QList<HTechnique> m_techniques;
     Renderer *m_renderer;
     QAbstractEffect *m_peer;
     ParameterPack m_parameterPack;

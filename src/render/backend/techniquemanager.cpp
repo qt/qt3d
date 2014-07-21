@@ -50,7 +50,7 @@ namespace Render {
 
 TechniqueManager::TechniqueManager()
     : QResourcesManager<RenderTechnique,
-                        QAbstractEffect*,
+                        QUuid,
                         16,
                         Qt3D::ArrayAllocatingPolicy,
                         Qt3D::ObjectLevelLockingPolicy>()

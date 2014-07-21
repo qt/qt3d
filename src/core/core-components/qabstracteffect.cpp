@@ -97,8 +97,8 @@ void QAbstractEffect::addTechnique(QAbstractTechnique *t)
 
 /*!
  * Removes a technique \t from the effect. This posts a ComponentRemoved
- * QScenePropertyChange notification to the QChangeArbiter, the valus is
- * the removed technique and the property name is "technique".
+ * QScenePropertyChange notification to the QChangeArbiter, the value is
+ * the removed technique's uuid and the property name is "technique".
  */
 void QAbstractEffect::removeTechnique(QAbstractTechnique *t)
 {
@@ -106,7 +106,7 @@ void QAbstractEffect::removeTechnique(QAbstractTechnique *t)
     d->m_techniques.removeOne(t);
     QScenePropertyChangePtr e(new QScenePropertyChange(ComponentRemoved, this));
     e->setPropertyName(QByteArrayLiteral("technique"));
-    e->setValue(QVariant::fromValue(t));
+    e->setValue(QVariant::fromValue(t->uuid()));
     notifyObservers(e);
 }
 
