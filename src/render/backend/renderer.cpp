@@ -112,10 +112,10 @@ namespace Qt3D {
 namespace Render {
 
 Renderer::Renderer(int cachedFrames)
-    : m_rendererAspect(0)
-    , m_frameGraphRoot(0)
-    , m_graphicsContext(0)
-    , m_surface(0)
+    : m_rendererAspect(Q_NULLPTR)
+    , m_frameGraphRoot(Q_NULLPTR)
+    , m_graphicsContext(Q_NULLPTR)
+    , m_surface(Q_NULLPTR)
     , m_meshDataManager(new MeshDataManager())
     , m_meshManager(new MeshManager())
     , m_cameraManager(new CameraManager())

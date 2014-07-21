@@ -88,13 +88,13 @@ unsigned int nextFreeContextId()
 QGraphicsContext::QGraphicsContext()
     : m_initialized(false)
     , m_id(nextFreeContextId())
-    , m_gl(0)
-    , m_surface(0)
-    , m_glHelper(0)
-    , m_activeShader(0)
-    , m_camera(0)
-    , m_material(0)
-    , m_stateSet(0)
+    , m_gl(Q_NULLPTR)
+    , m_surface(Q_NULLPTR)
+    , m_glHelper(Q_NULLPTR)
+    , m_activeShader(Q_NULLPTR)
+    , m_camera(Q_NULLPTR)
+    , m_material(Q_NULLPTR)
+    , m_stateSet(Q_NULLPTR)
 {
     static_contexts[m_id] = this;
 }
@@ -205,9 +205,9 @@ void QGraphicsContext::setOpenGLContext(QOpenGLContext* ctx)
 // That assumes that the shaderProgram in RenderShader stays the same
 void QGraphicsContext::activateShader(RenderShader *shader)
 {
-    if (shader == NULL) {
-        m_activeShader = NULL;
-        m_material = NULL;
+    if (shader == Q_NULLPTR) {
+        m_activeShader = Q_NULLPTR;
+        m_material = Q_NULLPTR;
         m_glHelper->useProgram(0);
         return;
     }
@@ -219,7 +219,7 @@ void QGraphicsContext::activateShader(RenderShader *shader)
         shader->initializeUniforms(m_glHelper->programUniformsAndLocations(prog->programId()));
         shader->initializeAttributes(m_glHelper->programAttributesAndLocations(prog->programId()));
         // TO DO : Set Attributes m_glHelper->programAttributesAndLocations(prog->programId());
-        m_activeShader = NULL;
+        m_activeShader = Q_NULLPTR;
     }
 
     if (m_activeShader == shader) {
@@ -230,7 +230,7 @@ void QGraphicsContext::activateShader(RenderShader *shader)
         QOpenGLShaderProgram* prog = m_shaderHash[shader];
         prog->bind();
         // ensure material uniforms are re-applied
-        m_material = NULL;
+        m_material = Q_NULLPTR;
     }
 }
 
