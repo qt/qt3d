@@ -71,6 +71,7 @@
 #include "texture.h"
 #include "renderlayer.h"
 #include "layermanager.h"
+#include "techniquecriterionmanager.h"
 
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qabstracteffect.h>
@@ -346,15 +347,6 @@ void RenderView::buildRenderCommands(RenderEntity *node)
 
 RenderTechnique *RenderView::findTechniqueForEffect(RenderEffect *effect)
 {
-    // Check to see if the Effect contains a Technique matching the criteria defined in the Technique Filter
-    // Effect (RenderEffect) contains a list of QAbstractTechnique that is updated to reflect the one of its frontend Effect
-    // using the QChangeArbiter to avoid race conditions
-    // On the other hand, we should maybe rework the filtering below as it accesses the criteria of the Frontend QML texture
-    // meaning that those could be changed while we're reading them.
-    // That would imply creating a RenderTechnique for each Technique defined in the Effect and having each RenderTechnique contain
-    // a list of criteria
-    // If TechniqueCriteria and their values were defined as constant, the filtering below would be enough
-
     // Can we fully perform the technique selection here ?
     // If we need to check for extension / vendor / OpenGL Version we would need access to
     // The QGraphicContext which is only avalaible in the Renderer's thread
@@ -364,45 +356,44 @@ RenderTechnique *RenderView::findTechniqueForEffect(RenderEffect *effect)
     // depend on the TechniqueFilter but entirely on what the system GL interface gives us
     // Furthermode, finding a way to perform this filtering as little as possible could provide some performance improvements
     if (effect != Q_NULLPTR) {
-        RenderTechnique *technique = Q_NULLPTR;
-        // The filtering process happens only if there is no RenderTechnique found for the current Effect
-        // or if the m_techniqueFilter indicates that the filtering isDirty
-        if ((technique = m_renderer->techniqueManager()->lookupResource(effect->peer())) == Q_NULLPTR
-                && m_techniqueFilter != Q_NULLPTR) {
-            TechniqueManager::WriteLocker(m_renderer->techniqueManager());
 
-            // Tries to select first valid technique based on criteria defined in the TechniqueFilter
-            QTechnique *filteredTech = Q_NULLPTR;
-            Q_FOREACH (QAbstractTechnique *technique, effect->techniques()) {
-                QTechnique *tech = Q_NULLPTR;
-                if ((tech = qobject_cast<QTechnique*>(technique)) != Q_NULLPTR &&
-                        tech->criteria().size() == m_techniqueFilter->filters().count()) {
-                    bool findMatch = true;
-                    Q_FOREACH (QTechniqueCriterion *filterCriterion, m_techniqueFilter->filters()) {
-                        Q_FOREACH (QTechniqueCriterion *techCriterion, tech->criteria()) {
-                            if (*filterCriterion != *techCriterion) {
+        Q_FOREACH (HTechnique tHandle, effect->techniques()) {
+            RenderTechnique *technique = m_renderer->techniqueManager()->data(tHandle);
+
+            if (technique->criteria().size() >= m_techniqueFilter->filters().size()) {
+                bool findMatch;
+                Q_FOREACH (HTechniqueCriterion refCritHandle, m_techniqueFilter->filters()) {
+                    RenderCriterion *refCriterion = m_renderer->techniqueCriterionManager()->data(refCritHandle);
+                    findMatch = false;
+                    Q_FOREACH (HTechniqueCriterion critHandle, technique->criteria()) {
+                        RenderCriterion *rCrit = m_renderer->techniqueCriterionManager()->data(critHandle);
+
+                        if (refCriterion->criterionType() == rCrit->criterionType()) {
+                            switch (refCriterion->criterionType()) {
+                            case QTechniqueCriterion::OpenGLVersion:
                                 findMatch = false;
                                 break;
+                            case QTechniqueCriterion::Extension:
+                                findMatch = false;
+                                break;
+                            case QTechniqueCriterion::Vendor:
+                                findMatch = false;
+                                break;
+                            default:
+                                findMatch = (*rCrit == *refCriterion);
+                                break;
                             }
+                            if (findMatch)
+                                break;
                         }
                     }
-                    if (findMatch) {
-                        filteredTech = tech;
+                    if (!findMatch) // No match for TechniqueFilter criterion in any of the technique's criteria
                         break;
-                    }
                 }
-            }
-            if (filteredTech == Q_NULLPTR) {
-                qCCritical(Render::Backend) << "No Technique was found matching the criteria defined in the TechniqueFilter : Cannot Continue";
-            } else {
-                technique = m_renderer->techniqueManager()->getOrCreateResource(effect->peer());
-                technique->setRenderer(m_renderer);
-                technique->setPeer(qobject_cast<QTechnique *>(filteredTech));
+                if (findMatch) // If all criteria matched
+                    return technique;
             }
         }
-        if (technique == Q_NULLPTR)
-            qCCritical(Render::Backend) << Q_FUNC_INFO << "No technique found for current Effect";
-        return technique;
     }
     return Q_NULLPTR;
 }
