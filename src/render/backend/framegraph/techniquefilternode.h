@@ -56,9 +56,16 @@ namespace Qt3D {
 class QTechniqueCriterion;
 class QTechniqueFilter;
 
+template <typename T, int INDEXBITS>
+class QHandle;
+
 namespace Render {
 
 class Renderer;
+class RenderCriterion;
+
+typedef QHandle<RenderCriterion, 16> HTechniqueCriterion;
+
 
 class TechniqueFilter
         : public Render::FrameGraphNode
@@ -68,15 +75,16 @@ public:
     void setRenderer(Renderer *renderer);
     void setPeer(Qt3D::QTechniqueFilter *peer);
 
-    QList<QTechniqueCriterion*> filters() const;
-    void appendFilter(QTechniqueCriterion *criterion);
-    void removeFilter(QTechniqueCriterion *criterion);
+    QList<HTechniqueCriterion> filters() const;
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
+    void appendFilter(QTechniqueCriterion *criterion);
+    void removeFilter(const QUuid &criterionId);
+
     Renderer *m_renderer;
     Qt3D::QTechniqueFilter *m_peer;
-    QList<QTechniqueCriterion *> m_filters;
+    QList<HTechniqueCriterion> m_filters;
 };
 
 } // Render
