@@ -46,6 +46,8 @@
 #include <qtechnique.h>
 #include "rendereraspect.h"
 #include "renderer.h"
+#include "rendercriterion.h"
+#include "techniquecriterionmanager.h"
 #include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/qchangearbiter.h>
 #include <Qt3DCore/qscenepropertychange.h>
@@ -120,32 +122,52 @@ void RenderTechnique::sceneChangeEvent(const QSceneChangePtr &e)
 
     case ComponentAdded: {
         if (propertyChange->propertyName() == QByteArrayLiteral("pass")) {
-        // This will be filled when we have a proper backend RenderPass class
+            // This will be filled when we have a proper backend RenderPass class
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("parameter")) {
             m_parameterPack.appendParameter(propertyChange->value().value<QParameter*>());
         }
-    }
+        else if (propertyChange->propertyName() == QByteArrayLiteral("criterion")) {
+            QTechniqueCriterion *crit = propertyChange->value().value<QTechniqueCriterion *>();
+            HTechniqueCriterion critHandle = m_renderer->techniqueCriterionManager()->lookupHandle(crit->uuid());
+            if (critHandle.isNull()) {
+                critHandle = m_renderer->techniqueCriterionManager()->getOrAcquireHandle(crit->uuid());
+                RenderCriterion *renderCriterion = m_renderer->techniqueCriterionManager()->data(critHandle);
+                renderCriterion->setRenderer(m_renderer);
+                renderCriterion->setPeer(crit);
+            }
+            if (!m_criteriaList.contains(critHandle))
+                m_criteriaList.append(critHandle);
+        }
         break;
 
     case ComponentRemoved: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("pass")) {
-        // See above
+            if (propertyChange->propertyName() == QByteArrayLiteral("pass")) {
+                // See above
+            }
+            else if (propertyChange->propertyName() == QByteArrayLiteral("parameter")) {
+                m_parameterPack.removeParameter(propertyChange->value().value<QParameter*>());
+            }
+            else if (propertyChange->propertyName() == QByteArrayLiteral("criterion")) {
+                m_criteriaList.removeOne(m_renderer->techniqueCriterionManager()->lookupHandle(propertyChange->value().toUuid()));
+            }
         }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("parameter")) {
-            m_parameterPack.removeParameter(propertyChange->value().value<QParameter*>());
-        }
-    }
-        break;
+            break;
 
-    default:
-        break;
+        default:
+            break;
+        }
     }
 }
 
 const QHash<QString, QVariant> RenderTechnique::parameters() const
 {
     return m_parameterPack.namedValues();
+}
+
+QList<HTechniqueCriterion> RenderTechnique::criteria() const
+{
+    return m_criteriaList;
 }
 
 } // namespace Render

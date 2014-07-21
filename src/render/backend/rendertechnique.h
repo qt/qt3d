@@ -46,6 +46,7 @@
 #include <QStringList>
 #include <Qt3DCore/qobserverinterface.h>
 #include <Qt3DRenderer/parameterpack.h>
+#include <Qt3DRenderer/qtechniquecriterion.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -54,12 +55,18 @@ namespace Qt3D {
 class QTechnique;
 class QParameter;
 
+template <typename T, int INDEXBITS>
+class QHandle;
+
 namespace Render {
 
 class RenderBin;
 class DrawStateSet;
 class RenderShader;
 class Renderer;
+class RenderCriterion;
+
+typedef QHandle<RenderCriterion, 16> HTechniqueCriterion;
 
 class RenderTechnique : public QObserverInterface
 {
@@ -85,12 +92,19 @@ public:
     void sceneChangeEvent(const QSceneChangePtr &e);
     const QHash<QString, QVariant> parameters() const;
 
+    QList<HTechniqueCriterion> criteria() const;
+    QVariant criterionValue(const QString &customTypeName) const;
+    QVariant criterionValue(QTechniqueCriterion::CriterionType type) const;
+    bool containsCriterion(const QString &customTypeName) const;
+    bool containsCriterion(QTechniqueCriterion::CriterionType type) const;
+
 private:
     Renderer *m_renderer;
     QTechnique* m_peer;
     unsigned int m_passCount;
 
     ParameterPack m_parameterPack;
+    QList<HTechniqueCriterion> m_criteriaList;
 };
 
 } // namespace Render

@@ -67,32 +67,23 @@ QTechnique::QTechnique(QTechniquePrivate &dd, QNode *parent)
 void QTechnique::addCriterion(QTechniqueCriterion *criterion)
 {
     Q_D(QTechnique);
-    if (!d->m_criteriaList.contains(criterion))
+    if (!d->m_criteriaList.contains(criterion)) {
         d->m_criteriaList.append(criterion);
+        QScenePropertyChangePtr change(new QScenePropertyChange(ComponentAdded, this));
+        change->setPropertyName(QByteArrayLiteral("criterion"));
+        change->setValue(QVariant::fromValue(criterion));
+        notifyObservers(change);
+    }
 }
 
 void QTechnique::removeCriterion(QTechniqueCriterion *criterion)
 {
     Q_D(QTechnique);
     d->m_criteriaList.removeOne(criterion);
-}
-
-QVariant QTechnique::criterionValue(const QString &customTypeName) const
-{
-    Q_D(const QTechnique);
-    Q_FOREACH (QTechniqueCriterion *criterion, d->m_criteriaList)
-        if (criterion->criterionCustomType() == customTypeName)
-            return criterion->criterionValue();
-    return QVariant();
-}
-
-QVariant QTechnique::criterionValue(QTechniqueCriterion::CriterionType type) const
-{
-    Q_D(const QTechnique);
-    Q_FOREACH (QTechniqueCriterion *criterion, d->m_criteriaList)
-        if (criterion->criterionType() == type)
-            return criterion->criterionValue();
-    return QVariant();
+    QScenePropertyChangePtr change(new QScenePropertyChange(ComponentAdded, this));
+    change->setPropertyName(QByteArrayLiteral("criterion"));
+    change->setValue(QVariant::fromValue(criterion->uuid()));
+    notifyObservers(change);
 }
 
 QList<QTechniqueCriterion *> QTechnique::criteria() const
@@ -104,25 +95,8 @@ QList<QTechniqueCriterion *> QTechnique::criteria() const
 void QTechnique::clearCriteria()
 {
     Q_D(QTechnique);
-    d->m_criteriaList.clear();
-}
-
-bool QTechnique::containsCriterion(const QString &customTypeName) const
-{
-    Q_D(const QTechnique);
-    Q_FOREACH (QTechniqueCriterion *criterion, d->m_criteriaList)
-        if (criterion->criterionCustomType() == customTypeName)
-            return true;
-    return false;
-}
-
-bool QTechnique::containsCriterion(QTechniqueCriterion::CriterionType type) const
-{
-    Q_D(const QTechnique);
-    Q_FOREACH (QTechniqueCriterion *criterion, d->m_criteriaList)
-        if (criterion->criterionType() == type)
-            return true;
-    return false;
+    while (d->m_criteriaList.size() > 0)
+        removeCriterion(d->m_criteriaList.takeFirst());
 }
 
 void QTechnique::addPass(QAbstractRenderPass *pass)

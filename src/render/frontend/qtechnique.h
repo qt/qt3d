@@ -67,12 +67,8 @@ public:
 
     void addCriterion(QTechniqueCriterion *criterion);
     void removeCriterion(QTechniqueCriterion *criterion);
-    QVariant criterionValue(const QString &customTypeName) const;
-    QVariant criterionValue(QTechniqueCriterion::CriterionType type) const;
     QList<QTechniqueCriterion *> criteria() const;
     void clearCriteria();
-    bool containsCriterion(const QString &customTypeName) const;
-    bool containsCriterion(QTechniqueCriterion::CriterionType type) const;
 
     void addPass(QAbstractRenderPass* pass) Q_DECL_OVERRIDE;
 
