@@ -50,7 +50,8 @@ HEADERS += \
     $$PWD/lightmanager.h \
     $$PWD/renderentity.h \
     $$PWD/entitymanager.h \
-    $$PWD/rendercriterion.h
+    $$PWD/rendercriterion.h \
+    $$PWD/techniquecriterionmanager.h
 
 SOURCES += \
     $$PWD/rendereraspect.cpp \
@@ -97,4 +98,5 @@ SOURCES += \
     $$PWD/lightmanager.cpp \
     $$PWD/renderentity.cpp \
     $$PWD/entitymanager.cpp \
-    $$PWD/rendercriterion.cpp
+    $$PWD/rendercriterion.cpp \
+    $$PWD/techniquecriterionmanager.cpp
