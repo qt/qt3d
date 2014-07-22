@@ -48,6 +48,7 @@
 #include "renderer.h"
 #include "rendercriterion.h"
 #include "techniquecriterionmanager.h"
+#include "qopenglfilter.h"
 #include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/qchangearbiter.h>
 #include <Qt3DCore/qscenepropertychange.h>
@@ -62,7 +63,8 @@ namespace Render {
 RenderTechnique::RenderTechnique() :
     m_renderer(Q_NULLPTR),
     m_peer(Q_NULLPTR),
-    m_passCount(0)
+    m_passCount(0),
+    m_openglFilter(new QOpenGLFilter())
 {
 }
 
@@ -73,8 +75,10 @@ RenderTechnique::~RenderTechnique()
 
 void RenderTechnique::cleanup()
 {
-    if (m_renderer != Q_NULLPTR && m_peer != Q_NULLPTR)
+    if (m_renderer != Q_NULLPTR && m_peer != Q_NULLPTR) {
         m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_peer);
+        delete m_openglFilter;
+    }
 }
 
 void RenderTechnique::setRenderer(Renderer *renderer)
@@ -94,6 +98,16 @@ void RenderTechnique::setPeer(QTechnique *peer)
             m_parameterPack.clear();
             Q_FOREACH (QParameter *p, m_peer->parameters())
                 m_parameterPack.appendParameter(p);
+
+            QOpenGLFilter *peerFilter = peer->openGLFilter();
+            // Copy OpenGLFilter info from frontend OpenGLFilter
+            // QObject doesn't allow copying directly
+            m_openglFilter->setMinorVersion(peerFilter->minorVersion());
+            m_openglFilter->setMajorVersion(peerFilter->majorVersion());
+            m_openglFilter->setExtensions(peerFilter->extensions());
+            m_openglFilter->setVendor(peerFilter->vendor());
+            m_openglFilter->setApi(peerFilter->api());
+            m_openglFilter->setProfile(peerFilter->profile());
         }
     }
 }
@@ -168,6 +182,11 @@ const QHash<QString, QVariant> RenderTechnique::parameters() const
 QList<HTechniqueCriterion> RenderTechnique::criteria() const
 {
     return m_criteriaList;
+}
+
+QOpenGLFilter *RenderTechnique::openGLFilter() const
+{
+    return m_openglFilter;
 }
 
 } // namespace Render

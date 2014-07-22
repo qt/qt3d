@@ -54,6 +54,7 @@ namespace Qt3D {
 
 class QTechnique;
 class QParameter;
+class QOpenGLFilter;
 
 template <typename T, int INDEXBITS>
 class QHandle;
@@ -97,11 +98,13 @@ public:
     QVariant criterionValue(QTechniqueCriterion::CriterionType type) const;
     bool containsCriterion(const QString &customTypeName) const;
     bool containsCriterion(QTechniqueCriterion::CriterionType type) const;
+    QOpenGLFilter *openGLFilter() const;
 
 private:
     Renderer *m_renderer;
     QTechnique* m_peer;
     unsigned int m_passCount;
+    QOpenGLFilter *m_openglFilter;
 
     ParameterPack m_parameterPack;
     QList<HTechniqueCriterion> m_criteriaList;
