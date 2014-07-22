@@ -346,6 +346,7 @@ Entity {
 
                 techniques : [
                     Technique {
+                        openGLFilter {api : OpenGLFilter.Desktop; profile : OpenGLFilter.Core; minorVersion : 1; majorVersion : 3 }
                         criteria : [TechniqueCriterion { criterionType : TechniqueCriterion.RenderingStyle; criterionValue : "forward"}]
 
                         parameters : [Parameter { name : "lightPos"; value : Qt.vector4d(10.0, 10.0, 0.0, 1.0);}]

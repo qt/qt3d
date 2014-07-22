@@ -361,28 +361,16 @@ RenderTechnique *RenderView::findTechniqueForEffect(RenderEffect *effect)
         Q_FOREACH (HTechnique tHandle, effect->techniques()) {
             RenderTechnique *technique = m_renderer->techniqueManager()->data(tHandle);
 
-            if (technique->criteria().size() >= m_techniqueFilter->filters().size()) {
+            if (*m_renderer->contextInfo() == *technique->openGLFilter() &&
+                    technique->criteria().size() >= m_techniqueFilter->filters().size()) {
                 bool findMatch;
                 Q_FOREACH (HTechniqueCriterion refCritHandle, m_techniqueFilter->filters()) {
                     RenderCriterion *refCriterion = m_renderer->techniqueCriterionManager()->data(refCritHandle);
                     findMatch = false;
                     Q_FOREACH (HTechniqueCriterion critHandle, technique->criteria()) {
                         RenderCriterion *rCrit = m_renderer->techniqueCriterionManager()->data(critHandle);
-
-                        if (refCriterion->criterionType() == rCrit->criterionType()) {
-                            switch (refCriterion->criterionType()) {
-                            case QTechniqueCriterion::OpenGLVersion: {
-                                QOpenGLFilter *filter = refCriterion->criterionValue().value<QOpenGLFilter *>();
-                                findMatch = (filter != Q_NULLPTR && (*m_renderer->contextInfo() == *filter));
-                                break;
-                            }
-                            default:
-                                findMatch = (*rCrit == *refCriterion);
-                                break;
-                            }
-                            if (findMatch)
-                                break;
-                        }
+                        if ((findMatch = (*rCrit == *refCriterion)))
+                            break;
                     }
                     if (!findMatch) // No match for TechniqueFilter criterion in any of the technique's criteria
                         break;
