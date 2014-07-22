@@ -168,7 +168,7 @@ void QGraphicsHelperES2::blendEquation(GLenum mode)
 
 void QGraphicsHelperES2::alphaTest(GLenum, GLenum)
 {
-    qCWarning(Render::Rendering) << Q_FUNC_INFO << "AlphaTest not available with OpenGL ES 2.0"
+    qCWarning(Render::Rendering) << Q_FUNC_INFO << "AlphaTest not available with OpenGL ES 2.0";
 }
 
 void QGraphicsHelperES2::depthTest(GLenum mode)

@@ -40,6 +40,7 @@
 ****************************************************************************/
 
 #include "qitemmodelbuffer.h"
+#include "qgraphicscontext.h"
 #include <QDebug>
 #include <QColor>
 
@@ -176,7 +177,7 @@ BufferPtr QItemModelBuffer::buffer()
                                             rowCount,
                                             offset, m_itemStride));
             m_attributes[mapping.attribute] = attr;
-            offset += byteSizeFromType(mapping.type);
+            offset += Render::QGraphicsContext::byteSizeFromType(mapping.type);
         } // of mappings iteration
 
         m_buffer->setData(computeBufferData());
@@ -284,7 +285,7 @@ QItemModelBuffer::RoleMapping::RoleMapping(QByteArray rnm, QString nm, int ty) :
     attribute(nm),
     type(ty)
 {
-    byteSize = byteSizeFromType(ty);
+    byteSize = Render::QGraphicsContext::byteSizeFromType(ty);
 }
 
 } // namespace Qt3D

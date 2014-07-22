@@ -165,6 +165,11 @@ public:
     void    cullFace(GLenum mode);
     void    frontFace(GLenum mode);
 
+    // Helper methods
+    static GLint elementType(GLint type);
+    static GLint tupleSizeFromType(GLint type);
+    static GLuint byteSizeFromType(GLint type);
+
 private:
     void initialize();
 

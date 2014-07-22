@@ -300,14 +300,13 @@ void QGraphicsContext::resolveHighestOpenGLFunctions()
 
     QAbstractOpenGLFunctions *glFunctions = Q_NULLPTR;
 
-    if (m_gl->isOpenGLES()) {
 #if defined QT_OPENGL_ES_2
-        glFunctions = m_gl->versionFunctions<QOpenGLFunctions_ES2>();
-        m_glHelper = new QGraphicsHelperES2();
-#endif
-        qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 2/ES2 Helper";
-    }
-    else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_3_2_Core>()) != Q_NULLPTR) {
+    glFunctions = m_gl->versionFunctions<QOpenGLFunctions_ES2>();
+    m_glHelper = new QGraphicsHelperES2();
+
+    qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 2/ES2 Helper";
+#else
+    if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_3_2_Core>()) != Q_NULLPTR) {
         qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 3.2";
         m_glHelper = new QGraphicsHelperGL3();
     }
@@ -315,8 +314,9 @@ void QGraphicsContext::resolveHighestOpenGLFunctions()
         qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 2 Helper";
         m_glHelper = new QGraphicsHelperGL2();
     }
-    if (m_glHelper != Q_NULLPTR)
-        m_glHelper->initializeHelper(m_gl, glFunctions);
+#endif
+    Q_ASSERT_X(m_glHelper, "QGraphicsContext::resolveHighestOpenGLFunctions", "unable to create valid helper for available OpenGL version");
+    m_glHelper->initializeHelper(m_gl, glFunctions);
 
     // Set Vendor and Extensions of reference OpenGLFilter
     QStringList extensions;
@@ -537,9 +537,9 @@ void QGraphicsContext::specifyAttribute(QString nm, AttributePtr attr)
     }
     prog->enableAttributeArray(location);
     prog->setAttributeBuffer(location,
-                             elementType(attr->type()),
+                             QGraphicsContext::elementType(attr->type()),
                              attr->byteOffset(),
-                             tupleSizeFromType(attr->type()),
+                             QGraphicsContext::tupleSizeFromType(attr->type()),
                              attr->byteStride());
 
     if (attr->divisor() != 0) {
@@ -574,6 +574,92 @@ QOpenGLBuffer QGraphicsContext::glBufferFor(BufferPtr buf)
     buf->upload(glbuf);
 
     return glbuf;
+}
+
+GLint QGraphicsContext::elementType(GLint type)
+{
+    switch (type) {
+    case GL_FLOAT:
+    case GL_FLOAT_VEC2:
+    case GL_FLOAT_VEC3:
+    case GL_FLOAT_VEC4:
+        return GL_FLOAT;
+
+#ifndef QT_OPENGL_ES_2 // Otherwise compile error as Qt defines GL_DOUBLE as GL_FLOAT when using ES2
+    case GL_DOUBLE:
+#ifdef GL_DOUBLE_VEC3 // For compiling on pre GL 4.1 systems
+    case GL_DOUBLE_VEC2:
+    case GL_DOUBLE_VEC3:
+    case GL_DOUBLE_VEC4:
+#endif
+        return GL_DOUBLE;
+#endif
+    default:
+        qWarning() << Q_FUNC_INFO << "unsupported:" << QString::number(type, 16);
+    }
+
+    return GL_INVALID_VALUE;
+}
+
+GLint QGraphicsContext::tupleSizeFromType(GLint type)
+{
+    switch (type) {
+    case GL_FLOAT:
+#ifndef QT_OPENGL_ES_2 // Otherwise compile error as Qt defines GL_DOUBLE as GL_FLOAT when using ES2
+    case GL_DOUBLE:
+#endif
+    case GL_UNSIGNED_BYTE:
+    case GL_UNSIGNED_INT:
+        break; // fall through
+
+    case GL_FLOAT_VEC2:
+#ifdef GL_DOUBLE_VEC2 // For compiling on pre GL 4.1 systems.
+    case GL_DOUBLE_VEC2:
+#endif
+        return 2;
+
+    case GL_FLOAT_VEC3:
+#ifdef GL_DOUBLE_VEC3 // For compiling on pre GL 4.1 systems.
+    case GL_DOUBLE_VEC3:
+#endif
+        return 3;
+
+    case GL_FLOAT_VEC4:
+#ifdef GL_DOUBLE_VEC4 // For compiling on pre GL 4.1 systems.
+    case GL_DOUBLE_VEC4:
+#endif
+        return 4;
+
+    default:
+        qWarning() << Q_FUNC_INFO << "unsupported:" << QString::number(type, 16);
+    }
+
+    return 1;
+}
+
+GLuint QGraphicsContext::byteSizeFromType(GLint type)
+{
+    switch (type) {
+    case GL_FLOAT:          return sizeof(float);
+#ifndef QT_OPENGL_ES_2 // Otherwise compile error as Qt defines GL_DOUBLE as GL_FLOAT when using ES2
+    case GL_DOUBLE:         return sizeof(double);
+#endif
+    case GL_UNSIGNED_BYTE:  return sizeof(unsigned char);
+    case GL_UNSIGNED_INT:   return sizeof(GLuint);
+
+    case GL_FLOAT_VEC2:     return sizeof(float) * 2;
+    case GL_FLOAT_VEC3:     return sizeof(float) * 3;
+    case GL_FLOAT_VEC4:     return sizeof(float) * 4;
+#ifdef GL_DOUBLE_VEC3 // Required to compile on pre GL 4.1 systems
+    case GL_DOUBLE_VEC2:    return sizeof(double) * 2;
+    case GL_DOUBLE_VEC3:    return sizeof(double) * 3;
+    case GL_DOUBLE_VEC4:    return sizeof(double) * 4;
+#endif
+    default:
+        qWarning() << Q_FUNC_INFO << "unsupported:" << QString::number(type, 16);
+    }
+
+    return 0;
 }
 
 } // Render
