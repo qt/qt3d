@@ -67,9 +67,7 @@ public:
         Unknown = -1,
         CustomType = 0,
         RenderingStyle,
-        OpenGLVersion,
-        Extension,
-        Vendor
+        OpenGLVersion
     };
 
     void setCriterionType(CriterionType type);
