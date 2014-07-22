@@ -49,6 +49,7 @@
 #include "qparameter.h"
 #include "drawstate.h"
 #include "qgraphicshelperinterface.h"
+#include "qopenglfilter.h"
 #include "renderer.h"
 #include "texturemanager.h"
 #include "renderlogging.h"
@@ -95,6 +96,7 @@ QGraphicsContext::QGraphicsContext()
     , m_camera(Q_NULLPTR)
     , m_material(Q_NULLPTR)
     , m_stateSet(Q_NULLPTR)
+    , m_contextInfo(new QOpenGLFilter())
 {
     static_contexts[m_id] = this;
 }
@@ -315,6 +317,17 @@ void QGraphicsContext::resolveHighestOpenGLFunctions()
     }
     if (m_glHelper != Q_NULLPTR)
         m_glHelper->initializeHelper(m_gl, glFunctions);
+
+    // Set Vendor and Extensions of reference OpenGLFilter
+    QStringList extensions;
+    Q_FOREACH (const QByteArray &ext, m_gl->extensions().values())
+        extensions << QString::fromUtf8(ext);
+    m_contextInfo->setMajorVersion(m_gl->format().version().first);
+    m_contextInfo->setMinorVersion(m_gl->format().version().second);
+    m_contextInfo->setApi(m_gl->isOpenGLES() ? QOpenGLFilter::ES : QOpenGLFilter::Desktop);
+    m_contextInfo->setProfile(static_cast<QOpenGLFilter::Profile>(m_gl->format().profile()));
+    m_contextInfo->setExtensions(extensions);
+    m_contextInfo->setVendor(QString::fromUtf8(reinterpret_cast<const char *>(glGetString(GL_VENDOR))));
 }
 
 void QGraphicsContext::deactivateTexture(RenderTexture* tex)
@@ -342,6 +355,11 @@ void QGraphicsContext::setCurrentStateSet(DrawStateSet *ss)
 DrawStateSet *QGraphicsContext::currentStateSet() const
 {
     return m_stateSet;
+}
+
+QOpenGLFilter *QGraphicsContext::contextInfo() const
+{
+    return m_contextInfo;
 }
 
 /*!

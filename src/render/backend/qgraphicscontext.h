@@ -60,6 +60,9 @@ class QOpenGLShaderProgram;
 class QAbstractOpenGLFunctions;
 
 namespace Qt3D {
+
+class QOpenGLFilter;
+
 namespace Render {
 
 class Renderer;
@@ -147,7 +150,8 @@ public:
     void deactivateTexture(RenderTexture *tex);
 
     void setCurrentStateSet(DrawStateSet* ss);
-    DrawStateSet* currentStateSet() const;
+    DrawStateSet *currentStateSet() const;
+    QOpenGLFilter *contextInfo() const;
 
     // Wrapper methods
     void    drawElementsInstanced(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices, GLsizei instances);
@@ -197,7 +201,7 @@ private:
     DrawStateSet* m_stateSet;
 
     Renderer *m_renderer;
-
+    QOpenGLFilter *m_contextInfo;
 };
 
 } // Render
