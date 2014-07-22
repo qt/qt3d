@@ -59,7 +59,7 @@ public:
 
     Q_DECLARE_PUBLIC(QRenderPassFilter)
     QString m_renderPassName;
-    QList<QRenderPassCriterion *> m_criteriaList;
+    QList<QTechniqueCriterion *> m_criteriaList;
 };
 
 } // Qt3D

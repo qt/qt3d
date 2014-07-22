@@ -43,7 +43,7 @@
 #include "qrenderpassfilter.h"
 #include "qrenderpassfilter_p.h"
 
-#include "qrenderpasscriterion.h"
+#include "qtechniquecriterion.h"
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -74,30 +74,30 @@ QString QRenderPassFilter::renderPassName() const
     return d->m_renderPassName;
 }
 
-QList<QRenderPassCriterion *> QRenderPassFilter::criteria() const
+QList<QTechniqueCriterion *> QRenderPassFilter::criteria() const
 {
     Q_D(const QRenderPassFilter);
     return d->m_criteriaList;
 }
 
-void QRenderPassFilter::addCriterion(QRenderPassCriterion *criterion)
+void QRenderPassFilter::addCriterion(QTechniqueCriterion *criterion)
 {
     Q_D(QRenderPassFilter);
     if (!d->m_criteriaList.contains(criterion)) {
         d->m_criteriaList.append(criterion);
         QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentAdded, this));
-        propertyChange->setPropertyName(QByteArrayLiteral("renderPassCriteria"));
+        propertyChange->setPropertyName(QByteArrayLiteral("renderPassCriterion"));
         propertyChange->setValue(QVariant::fromValue(criterion));
         notifyObservers(propertyChange);
     }
 }
 
-void QRenderPassFilter::removeCriterion(QRenderPassCriterion *criterion)
+void QRenderPassFilter::removeCriterion(QTechniqueCriterion *criterion)
 {
     Q_D(QRenderPassFilter);
     d->m_criteriaList.removeOne(criterion);
     QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentRemoved, this));
-    propertyChange->setPropertyName(QByteArrayLiteral("renderPassCriteria"));
+    propertyChange->setPropertyName(QByteArrayLiteral("renderPassCriterion"));
     propertyChange->setValue(QVariant::fromValue(criterion));
     notifyObservers(propertyChange);
 }

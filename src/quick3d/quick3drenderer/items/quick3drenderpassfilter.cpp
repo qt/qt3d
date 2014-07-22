@@ -54,16 +54,16 @@ Quick3DRenderPassFilter::Quick3DRenderPassFilter(QObject *parent)
 {
 }
 
-QQmlListProperty<QRenderPassCriterion> Quick3DRenderPassFilter::criteriaList()
+QQmlListProperty<QTechniqueCriterion> Quick3DRenderPassFilter::criteriaList()
 {
-    return QQmlListProperty<Qt3D::QRenderPassCriterion>(this, 0,
+    return QQmlListProperty<Qt3D::QTechniqueCriterion>(this, 0,
                                                        &Quick3DRenderPassFilter::appendCriterion,
                                                        &Quick3DRenderPassFilter::criteriaCount,
                                                        &Quick3DRenderPassFilter::criterionAt,
                                                        &Quick3DRenderPassFilter::clearCriteria);
 }
 
-void Quick3DRenderPassFilter::appendCriterion(QQmlListProperty<QRenderPassCriterion> *list, QRenderPassCriterion *criterion)
+void Quick3DRenderPassFilter::appendCriterion(QQmlListProperty<QTechniqueCriterion> *list, QTechniqueCriterion *criterion)
 {
     Quick3DRenderPassFilter *filter = qobject_cast<Quick3DRenderPassFilter *>(list->object);
     if (filter) {
@@ -72,7 +72,7 @@ void Quick3DRenderPassFilter::appendCriterion(QQmlListProperty<QRenderPassCriter
     }
 }
 
-QRenderPassCriterion *Quick3DRenderPassFilter::criterionAt(QQmlListProperty<QRenderPassCriterion> *list, int index)
+QTechniqueCriterion *Quick3DRenderPassFilter::criterionAt(QQmlListProperty<QTechniqueCriterion> *list, int index)
 {
     Quick3DRenderPassFilter *filter = qobject_cast<Quick3DRenderPassFilter *>(list->object);
     if (filter)
@@ -80,7 +80,7 @@ QRenderPassCriterion *Quick3DRenderPassFilter::criterionAt(QQmlListProperty<QRen
     return 0;
 }
 
-int Quick3DRenderPassFilter::criteriaCount(QQmlListProperty<QRenderPassCriterion> *list)
+int Quick3DRenderPassFilter::criteriaCount(QQmlListProperty<QTechniqueCriterion> *list)
 {
     Quick3DRenderPassFilter *filter = qobject_cast<Quick3DRenderPassFilter *>(list->object);
     if (filter)
@@ -88,11 +88,11 @@ int Quick3DRenderPassFilter::criteriaCount(QQmlListProperty<QRenderPassCriterion
     return 0;
 }
 
-void Quick3DRenderPassFilter::clearCriteria(QQmlListProperty<QRenderPassCriterion> *list)
+void Quick3DRenderPassFilter::clearCriteria(QQmlListProperty<QTechniqueCriterion> *list)
 {
     Quick3DRenderPassFilter *filter = qobject_cast<Quick3DRenderPassFilter *>(list->object);
     if (filter) {
-        Q_FOREACH (QRenderPassCriterion *criterion, filter->parentRenderPassFilter()->criteria())
+        Q_FOREACH (QTechniqueCriterion *criterion, filter->parentRenderPassFilter()->criteria())
             filter->parentRenderPassFilter()->removeCriterion(criterion);
     }
 }

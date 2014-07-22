@@ -42,6 +42,8 @@
 #include "renderrenderpass.h"
 #include "renderer.h"
 #include "rendereraspect.h"
+#include "rendercriterion.h"
+#include "techniquecriterionmanager.h"
 #include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/qchangearbiter.h>
 #include <Qt3DCore/qscenepropertychange.h>
@@ -86,7 +88,7 @@ void RenderRenderPass::setPeer(QRenderPass *peer)
         m_peer = peer;
         m_shader = Q_NULLPTR;
         if (m_peer) {
-            arbiter->registerObserver(this, m_peer, ComponentUpdated);
+            arbiter->registerObserver(this, m_peer);
             m_shader = m_peer->shaderProgram();
             // TO DO -> Have backend classes for Bindings and Parameters so that we can easily monitor for updates
             m_bindings = m_peer->bindings();
@@ -96,11 +98,41 @@ void RenderRenderPass::setPeer(QRenderPass *peer)
 
 void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
 {
-    if (e->type() == ComponentUpdated) {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+    switch (e->type()) {
+    case ComponentUpdated: {
         if (propertyChange->propertyName() == QByteArrayLiteral("shaderProgram"))
             ;// TO DO: to be completed
+        break;
     }
+
+    case ComponentAdded: {
+        if (propertyChange->propertyName() == QByteArrayLiteral("criterion")) {
+            QTechniqueCriterion *crit = propertyChange->value().value<QTechniqueCriterion *>();
+            HTechniqueCriterion critHandle = m_renderer->techniqueCriterionManager()->lookupHandle(crit->uuid());
+            if (critHandle.isNull()) {
+                critHandle = m_renderer->techniqueCriterionManager()->getOrAcquireHandle(crit->uuid());
+                RenderCriterion *renderCriterion = m_renderer->techniqueCriterionManager()->data(critHandle);
+                renderCriterion->setRenderer(m_renderer);
+                renderCriterion->setPeer(crit);
+            }
+            if (!m_criteriaList.contains(critHandle))
+                m_criteriaList.append(critHandle);
+        }
+        break;
+    }
+
+    case ComponentRemoved: {
+        if (propertyChange->propertyName() == QByteArrayLiteral("criterion")) {
+            m_criteriaList.removeOne(m_renderer->techniqueCriterionManager()->lookupHandle(propertyChange->value().toUuid()));
+        }
+        break;
+    }
+
+    default:
+        break;
+    }
+
 }
 
 QAbstractShader *RenderRenderPass::shaderProgram() const

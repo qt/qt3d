@@ -52,7 +52,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QRenderPassFilterPrivate;
-class QRenderPassCriterion;
+class QTechniqueCriterion;
 
 class QT3DRENDERERSHARED_EXPORT QRenderPassFilter : public QFrameGraphItem
 {
@@ -64,9 +64,9 @@ public:
 
     void setRenderPassName(const QString &renderpassName);
     QString renderPassName() const;
-    QList<QRenderPassCriterion *> criteria() const;
-    void addCriterion(QRenderPassCriterion *criterion);
-    void removeCriterion(QRenderPassCriterion *criterion);
+    QList<QTechniqueCriterion *> criteria() const;
+    void addCriterion(QTechniqueCriterion *criterion);
+    void removeCriterion(QTechniqueCriterion *criterion);
 
 Q_SIGNALS:
     void renderPassNameChanged();

@@ -53,9 +53,16 @@ class QRenderPass;
 class QAbstractShader;
 class QParameterMapper;
 
+template <typename T, int INDEXBITS>
+class QHandle;
+
 namespace Render {
 
 class Renderer;
+class RenderCriterion;
+
+typedef QHandle<RenderCriterion, 16> HTechniqueCriterion;
+
 
 class RenderRenderPass : public QObserverInterface
 {
@@ -75,7 +82,7 @@ private:
     QRenderPass *m_peer;
     QAbstractShader *m_shader;
     QList<QParameterMapper *> m_bindings;
-
+    QList<HTechniqueCriterion> m_criteriaList;
 };
 
 } // Render

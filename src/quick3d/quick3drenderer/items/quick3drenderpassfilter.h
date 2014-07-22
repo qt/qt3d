@@ -44,7 +44,7 @@
 
 #include <Qt3DQuick/quick3dnode.h>
 #include <Qt3DRenderer/qrenderpassfilter.h>
-#include <Qt3DRenderer/qrenderpasscriterion.h>
+#include <Qt3DRenderer/qtechniquecriterion.h>
 #include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
 
 QT_BEGIN_NAMESPACE
@@ -58,19 +58,19 @@ namespace Quick {
 class QT3DQUICKRENDERERSHARED_EXPORT Quick3DRenderPassFilter : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3D::QRenderPassCriterion> criteria READ criteriaList)
+    Q_PROPERTY(QQmlListProperty<Qt3D::QTechniqueCriterion> criteria READ criteriaList)
 public:
     explicit Quick3DRenderPassFilter(QObject *parent = 0);
 
-    QQmlListProperty<Qt3D::QRenderPassCriterion> criteriaList();
+    QQmlListProperty<Qt3D::QTechniqueCriterion> criteriaList();
 
     inline QRenderPassFilter *parentRenderPassFilter() const { return qobject_cast<Qt3D::QRenderPassFilter*>(parent()); }
 
 private:
-    static void appendCriterion(QQmlListProperty<QRenderPassCriterion> *list, QRenderPassCriterion *criterion);
-    static QRenderPassCriterion *criterionAt(QQmlListProperty<QRenderPassCriterion> *list, int index);
-    static int criteriaCount(QQmlListProperty<QRenderPassCriterion> *list);
-    static void clearCriteria(QQmlListProperty<QRenderPassCriterion> *list);
+    static void appendCriterion(QQmlListProperty<QTechniqueCriterion> *list, QTechniqueCriterion *criterion);
+    static QTechniqueCriterion *criterionAt(QQmlListProperty<QTechniqueCriterion> *list, int index);
+    static int criteriaCount(QQmlListProperty<QTechniqueCriterion> *list);
+    static void clearCriteria(QQmlListProperty<QTechniqueCriterion> *list);
 };
 
 } // Quick

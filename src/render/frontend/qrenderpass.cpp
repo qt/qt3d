@@ -42,8 +42,9 @@
 #include "qrenderpass.h"
 #include "qrenderpass_p.h"
 #include "qparameter.h"
-#include "qrenderpasscriterion.h"
+#include "qtechniquecriterion.h"
 #include "qparametermapper.h"
+#include "qscenepropertychange.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -89,26 +90,39 @@ Render::DrawStateSet *QRenderPass::stateSet() const
     return d->m_stateSet;
 }
 
-void QRenderPass::addCriterion(QRenderPassCriterion *criterion)
+void QRenderPass::addCriterion(QTechniqueCriterion *criterion)
 {
     Q_D(QRenderPass);
-    if (!d->m_criteria.contains(criterion)) {
-        d->m_criteria.append(criterion);
-        // TO DO: Notify QChangeArbiter
+    if (!d->m_criteriaList.contains(criterion)) {
+        d->m_criteriaList.append(criterion);
+        QScenePropertyChangePtr change(new QScenePropertyChange(ComponentAdded, this));
+        change->setPropertyName(QByteArrayLiteral("criterion"));
+        change->setValue(QVariant::fromValue(criterion));
+        notifyObservers(change);
     }
 }
 
-void QRenderPass::removeCriterion(QRenderPassCriterion *criterion)
+void QRenderPass::removeCriterion(QTechniqueCriterion *criterion)
 {
     Q_D(QRenderPass);
-    d->m_criteria.removeOne(criterion);
-    // TO DO: Notify QChangeArbiter
+    d->m_criteriaList.removeOne(criterion);
+    QScenePropertyChangePtr change(new QScenePropertyChange(ComponentAdded, this));
+    change->setPropertyName(QByteArrayLiteral("criterion"));
+    change->setValue(QVariant::fromValue(criterion->uuid()));
+    notifyObservers(change);
 }
 
-QList<QRenderPassCriterion *> QRenderPass::criteria() const
+QList<QTechniqueCriterion *> QRenderPass::criteria() const
 {
     Q_D(const QRenderPass);
-    return d->m_criteria;
+    return d->m_criteriaList;
+}
+
+void QRenderPass::clearCriteria()
+{
+    Q_D(QRenderPass);
+    while (d->m_criteriaList.size() > 0)
+        removeCriterion(d->m_criteriaList.takeFirst());
 }
 
 void QRenderPass::addBinding(QParameterMapper *binding)

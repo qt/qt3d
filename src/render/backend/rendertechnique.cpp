@@ -154,23 +154,23 @@ void RenderTechnique::sceneChangeEvent(const QSceneChangePtr &e)
                 m_criteriaList.append(critHandle);
         }
         break;
+    }
 
     case ComponentRemoved: {
-            if (propertyChange->propertyName() == QByteArrayLiteral("pass")) {
-                // See above
-            }
-            else if (propertyChange->propertyName() == QByteArrayLiteral("parameter")) {
-                m_parameterPack.removeParameter(propertyChange->value().value<QParameter*>());
-            }
-            else if (propertyChange->propertyName() == QByteArrayLiteral("criterion")) {
-                m_criteriaList.removeOne(m_renderer->techniqueCriterionManager()->lookupHandle(propertyChange->value().toUuid()));
-            }
+        if (propertyChange->propertyName() == QByteArrayLiteral("pass")) {
+            // See above
         }
-            break;
+        else if (propertyChange->propertyName() == QByteArrayLiteral("parameter")) {
+            m_parameterPack.removeParameter(propertyChange->value().value<QParameter*>());
+        }
+        else if (propertyChange->propertyName() == QByteArrayLiteral("criterion")) {
+            m_criteriaList.removeOne(m_renderer->techniqueCriterionManager()->lookupHandle(propertyChange->value().toUuid()));
+        }
+        break;
+    }
 
-        default:
-            break;
-        }
+    default:
+        break;
     }
 }
 
