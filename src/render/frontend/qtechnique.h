@@ -57,10 +57,12 @@ namespace Qt3D {
 
 class QParameter;
 class QTechniquePrivate;
+class QOpenGLFilter;
 
 class QT3DRENDERERSHARED_EXPORT QTechnique : public QAbstractTechnique
 {
     Q_OBJECT
+    Q_PROPERTY(Qt3D::QOpenGLFilter *openGLFilter READ openGLFilter)
 
 public:
     explicit QTechnique(QNode *parent = 0);
@@ -77,6 +79,7 @@ public:
     QList<QParameter *> parameters() const;
 
     QParameter* parameterByName(QString name) const;
+    QOpenGLFilter *openGLFilter() const;
 
 protected:
     Q_DECLARE_PRIVATE(QTechnique)

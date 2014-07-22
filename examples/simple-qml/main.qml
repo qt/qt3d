@@ -267,6 +267,7 @@ Entity {
                 techniques : [
                     Technique {
                         criteria : [TechniqueCriterion { criterionType : TechniqueCriterion.RenderingStyle; criterionValue : "forward"}]
+                        openGLFilter {api : OpenGLFilter.Desktop; profile : OpenGLFilter.Core; minorVersion : 1; majorVersion : 3 }
                         renderPasses : [
                             RenderPass {
                                 criteria : []

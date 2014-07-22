@@ -52,6 +52,7 @@ namespace Qt3D {
 class QTechnique;
 class QTechniqueCriterion;
 class QParameter;
+class QOpenGLFilter;
 
 class QT3DRENDERERSHARED_EXPORT QTechniquePrivate : public QAbstractTechniquePrivate
 {
@@ -60,6 +61,7 @@ public:
     Q_DECLARE_PUBLIC(QTechnique)
     QList<QTechniqueCriterion *> m_criteriaList;
     QList<QParameter *> m_parameters;
+    QOpenGLFilter *m_openGLFilter;
 };
 
 } // Qt3D

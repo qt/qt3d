@@ -42,6 +42,7 @@
 #include "qtechnique.h"
 #include "qtechnique_p.h"
 #include "qparameter.h"
+#include "qopenglfilter.h"
 #include <Qt3DCore/qscenepropertychange.h>
 #include <QDebug>
 
@@ -51,6 +52,7 @@ namespace Qt3D {
 
 QTechniquePrivate::QTechniquePrivate(QTechnique *qq)
     : QAbstractTechniquePrivate(qq)
+    , m_openGLFilter(new QOpenGLFilter())
 {
 }
 
@@ -142,6 +144,12 @@ QParameter *QTechnique::parameterByName(QString name) const
             return p;
     }
     return NULL;
+}
+
+QOpenGLFilter *QTechnique::openGLFilter() const
+{
+    Q_D(const QTechnique);
+    return d->m_openGLFilter;
 }
 
 } // of namespace Qt3D
