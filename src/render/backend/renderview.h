@@ -43,7 +43,7 @@
 #define QT3D_RENDER_RENDERVIEW_H
 
 #include <Qt3DRenderer/renderer.h>
-#include <Qt3DRenderer/rendercamera.h>
+#include <Qt3DRenderer/rendercameralens.h>
 #include <Qt3DRenderer/qparameter.h>
 #include <Qt3DCore/qhandle.h>
 #include <QVector>
@@ -113,7 +113,7 @@ private:
 
     Renderer *m_renderer;
     QFrameAllocator *m_allocator;
-    RenderCamera *m_renderCamera;
+    RenderCameraLens *m_renderCamera;
     TechniqueFilter *m_techniqueFilter;
     RenderPassFilter *m_passFilter;
     QRectF m_viewport;

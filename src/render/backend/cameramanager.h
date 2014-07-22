@@ -45,7 +45,7 @@
 #include <QtGlobal>
 #include <Qt3DCore/qresourcesmanager.h>
 #include <QUuid>
-#include <Qt3DRenderer/rendercamera.h>
+#include <Qt3DRenderer/rendercameralens.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -53,9 +53,9 @@ namespace Qt3D {
 
 namespace Render {
 
-typedef QHandle<RenderCamera, 8> HCamera;
+typedef QHandle<RenderCameraLens, 8> HCamera;
 
-class CameraManager : public QResourcesManager<RenderCamera,
+class CameraManager : public QResourcesManager<RenderCameraLens,
                                                QUuid,
                                                8,
                                                Qt3D::ListAllocatingPolicy>
@@ -63,8 +63,8 @@ class CameraManager : public QResourcesManager<RenderCamera,
 public:
     CameraManager();
     inline bool hasCamera(const QUuid &id) { return contains(id); }
-    inline RenderCamera *getOrCreateRenderCamera(const QUuid &id) { return getOrCreateResource(id); }
-    inline RenderCamera *renderCamera(const QUuid &id) { return lookupResource(id); }
+    inline RenderCameraLens *getOrCreateRenderCamera(const QUuid &id) { return getOrCreateResource(id); }
+    inline RenderCameraLens *renderCamera(const QUuid &id) { return lookupResource(id); }
     inline void releaseRenderCamera(const QUuid &id) { releaseResource(id); }
 };
 

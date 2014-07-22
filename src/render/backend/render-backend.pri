@@ -14,7 +14,7 @@ HEADERS += \
     $$PWD/qgraphicscontext.h \
     $$PWD/rendershader.h \
     $$PWD/rendertechnique.h \
-    $$PWD/rendercamera.h \
+    $$PWD/rendercameralens.h \
     $$PWD/quniformvalue.h \
     $$PWD/renderscenebuilder.h \
     $$PWD/rendertexture.h \
@@ -64,7 +64,7 @@ SOURCES += \
     $$PWD/qgraphicscontext.cpp \
     $$PWD/rendershader.cpp \
     $$PWD/rendertechnique.cpp \
-    $$PWD/rendercamera.cpp \
+    $$PWD/rendercameralens.cpp \
     $$PWD/quniformvalue.cpp \
     $$PWD/renderscenebuilder.cpp \
     $$PWD/rendertexture.cpp \

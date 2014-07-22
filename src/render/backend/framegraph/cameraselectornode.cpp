@@ -40,7 +40,6 @@
 ****************************************************************************/
 
 #include "cameraselectornode.h"
-#include "rendercamera.h"
 #include <Qt3DRenderer/qcameraselector.h>
 #include <Qt3DRenderer/renderer.h>
 #include <Qt3DRenderer/rendereraspect.h>

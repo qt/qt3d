@@ -70,7 +70,7 @@
 #include <rendershader.h>
 #include <rendereraspect.h>
 #include <qgraphicscontext.h>
-#include <rendercamera.h>
+#include <rendercameralens.h>
 #include <rendertextureprovider.h>
 #include <drawstate.h>
 #include <states/blendstate.h>

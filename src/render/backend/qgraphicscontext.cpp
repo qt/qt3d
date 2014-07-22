@@ -41,7 +41,6 @@
 
 #include "qgraphicscontext.h"
 
-#include "rendercamera.h"
 #include "rendershader.h"
 #include "rendermaterial.h"
 #include "rendertexture.h"
@@ -93,7 +92,6 @@ QGraphicsContext::QGraphicsContext()
     , m_surface(Q_NULLPTR)
     , m_glHelper(Q_NULLPTR)
     , m_activeShader(Q_NULLPTR)
-    , m_camera(Q_NULLPTR)
     , m_material(Q_NULLPTR)
     , m_stateSet(Q_NULLPTR)
     , m_contextInfo(new QOpenGLFilter())

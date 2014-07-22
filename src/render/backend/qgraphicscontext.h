@@ -49,7 +49,6 @@
 #include <QMatrix4x4>
 #include <QBitArray>
 #include <Qt3DRenderer/quniformvalue.h>
-#include <Qt3DRenderer/rendercamera.h>
 #include <Qt3DRenderer/meshdata.h>
 #include <Qt3DRenderer/qattribute.h>
 #include <Qt3DRenderer/qbuffer.h>
@@ -69,7 +68,6 @@ class Renderer;
 class QGraphicsHelperInterface;
 class DrawStateSet;
 class RenderShader;
-class RenderCamera;
 class RenderMaterial;
 class RenderTexture;
 class RenderCommand;
@@ -199,7 +197,6 @@ private:
     // mean more recently used.
     QHash<RenderTexture*, int> m_textureScores;
 
-    RenderCamera* m_camera;
     RenderMaterial* m_material;
     QRectF m_viewport;
 

@@ -81,7 +81,7 @@ typedef QVector<QFrameAllocator *> QFrameAllocatorQueue;
 namespace Render {
 
 class RenderTextureProvider;
-class RenderCamera;
+class RenderCameraLens;
 class QGraphicsContext;
 class FrameGraphNode;
 class RenderMaterial;

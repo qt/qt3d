@@ -57,8 +57,6 @@ namespace Render {
 
 class Renderer;
 
-class RenderCamera;
-
 class CameraSelector : public FrameGraphNode
 {
 public:

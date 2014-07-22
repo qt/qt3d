@@ -39,57 +39,89 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERCAMERA_H
-#define QT3D_RENDER_RENDERCAMERA_H
+#include "rendercameralens.h"
+#include "rendereraspect.h"
+#include "renderlogging.h"
 
-#include <Qt3DCore/qobserverinterface.h>
+#include <Qt3DCore/qtransform.h>
+#include <Qt3DCore/qcameralens.h>
+#include <Qt3DCore/qentity.h>
+#include <Qt3DCore/qaspectmanager.h>
+#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DRenderer/renderer.h>
 
-#include <QMatrix4x4>
-#include <QRectF>
+#include <QOpenGLContext>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
-
-class QCameraLens;
-
 namespace Render {
 
-class Renderer;
-
-class RenderCamera : public QObserverInterface
+RenderCameraLens::RenderCameraLens()
+    : m_renderer(Q_NULLPTR)
+    , m_peer(Q_NULLPTR)
 {
-public:
-    RenderCamera();
-    ~RenderCamera();
-    void cleanup();
+    m_clearColor = QVector4D(0.5, 0.5, 1.0, 1.0);
+}
 
-    void setRenderer(Renderer *renderer);
-    void setPeer(QCameraLens *peer);
+RenderCameraLens::~RenderCameraLens()
+{
+    cleanup();
+}
 
-    void setClearColor();
-    QVector4D clearColor() const { return m_clearColor; }
+void RenderCameraLens::cleanup()
+{
+    if (m_peer)
+        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_peer);
+}
 
-    unsigned int clearMask() const;
+void RenderCameraLens::setRenderer(Renderer *renderer)
+{
+    m_renderer = renderer;
+}
 
-    void setProjection(const QMatrix4x4 &projection);
-    inline QMatrix4x4 projection() const { return m_projection; }
+void RenderCameraLens::setPeer(QCameraLens *peer)
+{
+    if (peer != m_peer) {
+        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
+        if (m_peer)
+            arbiter->unregisterObserver(this, m_peer);
+        m_peer = peer;
+        if (m_peer) {
+            // Register for changes
+            arbiter->registerObserver(this, m_peer, ComponentUpdated);
+            setProjection(m_peer->projectionMatrix());
+        }
+    }
+}
 
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+// TO DO : Move that else where
+unsigned int RenderCameraLens::clearMask() const
+{
+    return GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
+}
 
-private:
-    Renderer *m_renderer;
-    QCameraLens *m_peer;
+void RenderCameraLens::setProjection(const QMatrix4x4 &projection)
+{
+    m_projection = projection;
+}
 
-    QVector4D m_clearColor;
+void RenderCameraLens::sceneChangeEvent(const QSceneChangePtr &e)
+{
+    switch (e->type()) {
+    case ComponentUpdated: {
+        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+        QMatrix4x4 projectionMatrix = propertyChange->value().value<QMatrix4x4>();
+        m_projection = projectionMatrix;
+        }
+        break;
 
-    QMatrix4x4 m_projection;
-    QMatrix4x4 m_view;
-};
+    default:
+        break;
+    }
+}
 
 } // Render
 } // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_RENDER_RENDERCAMERA_H

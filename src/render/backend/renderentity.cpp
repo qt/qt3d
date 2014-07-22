@@ -182,7 +182,7 @@ template<>
 void RenderEntity::createRenderComponent<QCameraLens>(QCameraLens *frontend)
 {
     m_cameraComponent = frontend->uuid();
-    createRenderComponentHelper<QCameraLens, RenderCamera, CameraManager>(frontend, m_renderer->cameraManager());
+    createRenderComponentHelper<QCameraLens, RenderCameraLens, CameraManager>(frontend, m_renderer->cameraManager());
 }
 
 template<>
@@ -407,19 +407,19 @@ void RenderEntity::releaseRenderComponent<RenderLight>()
 }
 
 template<>
-HCamera RenderEntity::componentHandle<RenderCamera>()
+HCamera RenderEntity::componentHandle<RenderCameraLens>()
 {
     return m_renderer->cameraManager()->lookupHandle(m_cameraComponent);
 }
 
 template<>
-RenderCamera *RenderEntity::renderComponent<RenderCamera>()
+RenderCameraLens *RenderEntity::renderComponent<RenderCameraLens>()
 {
     return m_renderer->cameraManager()->lookupResource(m_cameraComponent);
 }
 
 template<>
-void RenderEntity::releaseRenderComponent<RenderCamera>()
+void RenderEntity::releaseRenderComponent<RenderCameraLens>()
 {
     m_renderer->cameraManager()->releaseResource(m_cameraComponent);
 }

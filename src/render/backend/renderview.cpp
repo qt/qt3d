@@ -42,7 +42,7 @@
 #include "renderview.h"
 #include "qmaterial.h"
 #include "renderer.h"
-#include "rendercamera.h"
+#include "rendercameralens.h"
 #include "rendercommand.h"
 #include "renderentity.h"
 #include "meshdatamanager.h"
@@ -233,7 +233,7 @@ void RenderView::setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf)
             CameraSelector *cameraSelector = static_cast<CameraSelector *>(node);
             RenderEntity *tmpCamNode = m_renderer->renderNodesManager()->lookupResource(cameraSelector->cameraUuid());
             if (tmpCamNode) {
-                m_renderCamera = tmpCamNode->renderComponent<RenderCamera>();
+                m_renderCamera = tmpCamNode->renderComponent<RenderCameraLens>();
                 // If we have a viewMatrix pointer instead of directly a QMatrix4x4 object in RenderView
                 // This allows us to keep the size of RenderView smaller and avoid huge block fragmentation
                 m_viewMatrix = m_allocator->allocate<QMatrix4x4>();
