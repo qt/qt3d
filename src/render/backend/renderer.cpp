@@ -583,6 +583,11 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
     }
 }
 
+QOpenGLFilter *Renderer::contextInfo() const
+{
+    return m_graphicsContext->contextInfo();
+}
+
 } // namespace Render
 } // namespace Qt3D
 

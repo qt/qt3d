@@ -72,6 +72,7 @@
 #include "renderlayer.h"
 #include "layermanager.h"
 #include "techniquecriterionmanager.h"
+#include "qopenglfilter.h"
 
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qabstracteffect.h>
@@ -370,15 +371,11 @@ RenderTechnique *RenderView::findTechniqueForEffect(RenderEffect *effect)
 
                         if (refCriterion->criterionType() == rCrit->criterionType()) {
                             switch (refCriterion->criterionType()) {
-                            case QTechniqueCriterion::OpenGLVersion:
-                                findMatch = false;
+                            case QTechniqueCriterion::OpenGLVersion: {
+                                QOpenGLFilter *filter = refCriterion->criterionValue().value<QOpenGLFilter *>();
+                                findMatch = (filter != Q_NULLPTR && (*m_renderer->contextInfo() == *filter));
                                 break;
-                            case QTechniqueCriterion::Extension:
-                                findMatch = false;
-                                break;
-                            case QTechniqueCriterion::Vendor:
-                                findMatch = false;
-                                break;
+                            }
                             default:
                                 findMatch = (*rCrit == *refCriterion);
                                 break;
@@ -390,6 +387,8 @@ RenderTechnique *RenderView::findTechniqueForEffect(RenderEffect *effect)
                     if (!findMatch) // No match for TechniqueFilter criterion in any of the technique's criteria
                         break;
                 }
+                // TO DO, store the technique's OpenGL version
+                // If multiple technique match, keep the one with the highest OpenGL version supported
                 if (findMatch) // If all criteria matched
                     return technique;
             }

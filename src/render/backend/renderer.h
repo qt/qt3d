@@ -74,6 +74,7 @@ class QRenderPass;
 class QAbstractShapeMesh;
 class RendererAspect;
 class QFrameAllocator;
+class QOpenGLFilter;
 
 typedef QVector<QFrameAllocator *> QFrameAllocatorQueue;
 
@@ -162,6 +163,8 @@ public:
     inline HTechnique defaultTechniqueHandle() const { return m_defaultTechniqueHandle; }
     inline HRenderPass defaultRenderPassHandle() const { return m_defaultRenderPassHandle; }
 
+    QOpenGLFilter *contextInfo() const;
+
     inline int cachedFramesCount() const { return m_cachedFramesCount; }
 
     void setSurface(QSurface *s);
@@ -228,10 +231,10 @@ private:
     LightManager *m_lightManager;
     TechniqueCriterionManager *m_techniqueCriterionManager;
 
-    QTimer* m_frameTimer;
+    QTimer *m_frameTimer;
 
-    RenderQueues* m_renderQueues;
-    RenderThread* m_renderThread;
+    RenderQueues *m_renderQueues;
+    RenderThread *m_renderThread;
 
     void buildDefaultMaterial();
     void buildDefaultTechnique();
