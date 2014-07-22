@@ -56,7 +56,7 @@ TechniqueFilter {
     property alias camera: cameraSelector.camera
 
     criteria : [
-        TechniqueCriterion { name : "RenderingStyle"; value : "forward"}
+        Criterion { name : "RenderingStyle"; value : "forward"}
     ]
 
     Viewport {
