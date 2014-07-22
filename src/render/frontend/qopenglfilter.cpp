@@ -162,6 +162,29 @@ void QOpenGLFilter::setVendor(const QString &vendor)
     }
 }
 
+bool operator ==(const QOpenGLFilter &reference, const QOpenGLFilter &sample)
+{
+    if (sample.api() == reference.api() &&
+            sample.profile() == reference.profile() &&
+            sample.majorVersion() <= reference.majorVersion() &&
+            sample.minorVersion() <= reference.minorVersion()) {
+        Q_FOREACH (const QString &neededExt, sample.extensions())
+            if (!reference.extensions().contains(neededExt))
+                return false;
+        // If a vendor name was specified in sample, we perform comparison,
+        // otherwise we assume the vendor name doesn't matter
+        if (!sample.vendor().isEmpty())
+            return (sample.vendor() == reference.vendor());
+        return true;
+    }
+    return false;
+}
+
+bool operator !=(const QOpenGLFilter &reference, const QOpenGLFilter &sample)
+{
+    return !(reference == sample);
+}
+
 } // Qt3D
 
 QT_END_NAMESPACE

@@ -108,6 +108,9 @@ private:
     Q_DECLARE_PRIVATE(QOpenGLFilter)
 };
 
+bool operator ==(const QOpenGLFilter &reference, const QOpenGLFilter &sample);
+bool operator !=(const QOpenGLFilter &reference, const QOpenGLFilter &sample);
+
 } // Qt3D
 
 QT_END_NAMESPACE
