@@ -142,7 +142,7 @@ void RenderTechnique::sceneChangeEvent(const QSceneChangePtr &e)
             m_parameterPack.appendParameter(propertyChange->value().value<QParameter*>());
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("criterion")) {
-            QTechniqueCriterion *crit = propertyChange->value().value<QTechniqueCriterion *>();
+            QCriterion *crit = propertyChange->value().value<QCriterion *>();
             HTechniqueCriterion critHandle = m_renderer->techniqueCriterionManager()->lookupHandle(crit->uuid());
             if (critHandle.isNull()) {
                 critHandle = m_renderer->techniqueCriterionManager()->getOrAcquireHandle(crit->uuid());

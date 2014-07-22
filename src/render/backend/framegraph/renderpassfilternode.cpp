@@ -43,7 +43,7 @@
 #include "rendereraspect.h"
 #include "renderer.h"
 #include "techniquecriterionmanager.h"
-#include "qtechniquecriterion.h"
+#include "qcriterion.h"
 #include "qrenderpassfilter.h"
 #include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/qchangearbiter.h>
@@ -75,7 +75,7 @@ void RenderPassFilter::setPeer(Qt3D::QRenderPassFilter *peer)
         m_peer = peer;
         if (m_peer) {
             arbiter->registerObserver(this, m_peer);
-            Q_FOREACH (QTechniqueCriterion *criterion, m_peer->criteria())
+            Q_FOREACH (QCriterion *criterion, m_peer->criteria())
                 appendFilter(criterion);
         }
     }
@@ -86,7 +86,7 @@ QList<HTechniqueCriterion> RenderPassFilter::filters() const
     return m_filters;
 }
 
-void RenderPassFilter::appendFilter(QTechniqueCriterion *criterion)
+void RenderPassFilter::appendFilter(QCriterion *criterion)
 {
     HTechniqueCriterion critHandle = m_renderer->techniqueCriterionManager()->lookupHandle(criterion->uuid());
     if (critHandle.isNull()) {
@@ -110,7 +110,7 @@ void RenderPassFilter::sceneChangeEvent(const QSceneChangePtr &e)
     case ComponentAdded: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("renderPassCriterion"))
-            appendFilter(propertyChange->value().value<QTechniqueCriterion*>());
+            appendFilter(propertyChange->value().value<QCriterion *>());
     }
         break;
     case ComponentRemoved: {

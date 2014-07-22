@@ -47,7 +47,7 @@
 
 #include <Qt3DRenderer/qshaderprogram.h>
 #include <Qt3DRenderer/drawstate.h>
-#include <Qt3DRenderer/qtechniquecriterion.h>
+#include <Qt3DRenderer/qcriterion.h>
 
 #include <QHash>
 #include <QList>
@@ -81,9 +81,9 @@ public:
     void setStateSet(Render::DrawStateSet* ss);
     Render::DrawStateSet* stateSet() const;
 
-    void addCriterion(QTechniqueCriterion *criterion);
-    void removeCriterion(QTechniqueCriterion *criterion);
-    QList<QTechniqueCriterion *> criteria() const;
+    void addCriterion(QCriterion *criterion);
+    void removeCriterion(QCriterion *criterion);
+    QList<QCriterion *> criteria() const;
     void clearCriteria();
 
     void addBinding(QParameterMapper *binding);

@@ -43,7 +43,7 @@
 #include "qtechniquefilter.h"
 #include "qtechniquefilter_p.h"
 
-#include <Qt3DRenderer/qtechniquecriterion.h>
+#include <Qt3DRenderer/qcriterion.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -65,13 +65,13 @@ QTechniqueFilter::QTechniqueFilter(QTechniqueFilterPrivate &dd, QNode *parent)
 {
 }
 
-QList<QTechniqueCriterion *> QTechniqueFilter::criteria() const
+QList<QCriterion *> QTechniqueFilter::criteria() const
 {
     Q_D(const QTechniqueFilter);
     return d->m_criteriaList;
 }
 
-void QTechniqueFilter::addCriterion(QTechniqueCriterion *criterion)
+void QTechniqueFilter::addCriterion(QCriterion *criterion)
 {
     Q_D(QTechniqueFilter);
     d->m_criteriaList.append(criterion);
@@ -82,7 +82,7 @@ void QTechniqueFilter::addCriterion(QTechniqueCriterion *criterion)
     notifyObservers(propertyChange);
 }
 
-void QTechniqueFilter::removeCriterion(QTechniqueCriterion *criterion)
+void QTechniqueFilter::removeCriterion(QCriterion *criterion)
 {
     Q_D(QTechniqueFilter);
     d->m_criteriaList.removeOne(criterion);

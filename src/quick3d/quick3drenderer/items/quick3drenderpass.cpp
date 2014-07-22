@@ -55,9 +55,9 @@ Quick3DRenderPass::Quick3DRenderPass(QObject *parent)
 {
 }
 
-QQmlListProperty<QTechniqueCriterion> Quick3DRenderPass::criteriaList()
+QQmlListProperty<QCriterion> Quick3DRenderPass::criteriaList()
 {
-    return QQmlListProperty<Qt3D::QTechniqueCriterion>(this, 0,
+    return QQmlListProperty<Qt3D::QCriterion>(this, 0,
                                                        &Quick3DRenderPass::appendCriteria,
                                                        &Quick3DRenderPass::criteriaCount,
                                                        &Quick3DRenderPass::criterionAt,
@@ -73,28 +73,28 @@ QQmlListProperty<QParameterMapper> Quick3DRenderPass::bindingList()
                                                    &Quick3DRenderPass::clearBindings);
 }
 
-void Quick3DRenderPass::appendCriteria(QQmlListProperty<QTechniqueCriterion> *list, QTechniqueCriterion *criterion)
+void Quick3DRenderPass::appendCriteria(QQmlListProperty<QCriterion> *list, QCriterion *criterion)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
     rPass->parentRenderPass()->addCriterion(criterion);
 }
 
-QTechniqueCriterion *Quick3DRenderPass::criterionAt(QQmlListProperty<QTechniqueCriterion> *list, int index)
+QCriterion *Quick3DRenderPass::criterionAt(QQmlListProperty<QCriterion> *list, int index)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
     return rPass->parentRenderPass()->criteria().at(index);
 }
 
-int Quick3DRenderPass::criteriaCount(QQmlListProperty<QTechniqueCriterion> *list)
+int Quick3DRenderPass::criteriaCount(QQmlListProperty<QCriterion> *list)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
     return rPass->parentRenderPass()->criteria().count();
 }
 
-void Quick3DRenderPass::clearCriteria(QQmlListProperty<QTechniqueCriterion> *list)
+void Quick3DRenderPass::clearCriteria(QQmlListProperty<QCriterion> *list)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
-    Q_FOREACH (QTechniqueCriterion *c, rPass->parentRenderPass()->criteria())
+    Q_FOREACH (QCriterion *c, rPass->parentRenderPass()->criteria())
         rPass->parentRenderPass()->removeCriterion(c);
 }
 

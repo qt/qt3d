@@ -54,16 +54,16 @@ Quick3DTechniqueFilter::Quick3DTechniqueFilter(QObject *parent)
 {
 }
 
-QQmlListProperty<Qt3D::QTechniqueCriterion> Quick3DTechniqueFilter::criteriaList()
+QQmlListProperty<Qt3D::QCriterion> Quick3DTechniqueFilter::criteriaList()
 {
-    return QQmlListProperty<Qt3D::QTechniqueCriterion>(this, 0,
+    return QQmlListProperty<Qt3D::QCriterion>(this, 0,
                                        &Quick3DTechniqueFilter::appendCriterion,
                                        &Quick3DTechniqueFilter::criteriaCount,
                                        &Quick3DTechniqueFilter::criterionAt,
                                        &Quick3DTechniqueFilter::clearCriteria);
 }
 
-void Quick3DTechniqueFilter::appendCriterion(QQmlListProperty<QTechniqueCriterion> *list, QTechniqueCriterion *criterion)
+void Quick3DTechniqueFilter::appendCriterion(QQmlListProperty<QCriterion> *list, QCriterion *criterion)
 {
     Quick3DTechniqueFilter *filter = qobject_cast<Quick3DTechniqueFilter *>(list->object);
     if (filter) {
@@ -72,7 +72,7 @@ void Quick3DTechniqueFilter::appendCriterion(QQmlListProperty<QTechniqueCriterio
     }
 }
 
-QTechniqueCriterion *Quick3DTechniqueFilter::criterionAt(QQmlListProperty<QTechniqueCriterion> *list, int index)
+QCriterion *Quick3DTechniqueFilter::criterionAt(QQmlListProperty<QCriterion> *list, int index)
 {
     Quick3DTechniqueFilter *filter = qobject_cast<Quick3DTechniqueFilter *>(list->object);
     if (filter)
@@ -80,7 +80,7 @@ QTechniqueCriterion *Quick3DTechniqueFilter::criterionAt(QQmlListProperty<QTechn
     return 0;
 }
 
-int Quick3DTechniqueFilter::criteriaCount(QQmlListProperty<QTechniqueCriterion> *list)
+int Quick3DTechniqueFilter::criteriaCount(QQmlListProperty<QCriterion> *list)
 {
     Quick3DTechniqueFilter *filter = qobject_cast<Quick3DTechniqueFilter *>(list->object);
     if (filter)
@@ -88,11 +88,11 @@ int Quick3DTechniqueFilter::criteriaCount(QQmlListProperty<QTechniqueCriterion> 
     return 0;
 }
 
-void Quick3DTechniqueFilter::clearCriteria(QQmlListProperty<QTechniqueCriterion> *list)
+void Quick3DTechniqueFilter::clearCriteria(QQmlListProperty<QCriterion> *list)
 {
     Quick3DTechniqueFilter *filter = qobject_cast<Quick3DTechniqueFilter *>(list->object);
     if (filter) {
-        Q_FOREACH (QTechniqueCriterion *criterion, filter->parentTechniqueFilter()->criteria())
+        Q_FOREACH (QCriterion *criterion, filter->parentTechniqueFilter()->criteria())
             filter->parentTechniqueFilter()->removeCriterion(criterion);
     }
 }

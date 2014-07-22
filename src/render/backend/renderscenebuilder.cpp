@@ -175,7 +175,7 @@ Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(QNode *block)
         Render::RenderPassFilter *renderPassFilterNode = new Render::RenderPassFilter();
 
         qCDebug(Backend) << Q_FUNC_INFO << "RenderPassFilter";
-        Q_FOREACH (QTechniqueCriterion *criterion, renderPassFilter->criteria())
+        Q_FOREACH (QCriterion *criterion, renderPassFilter->criteria())
             renderPassFilterNode->appendFilter(criterion);
         return renderPassFilterNode;
     }

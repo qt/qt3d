@@ -42,14 +42,14 @@
 #ifndef QT3D_RENDER_RENDERCRITERION_H
 #define QT3D_RENDER_RENDERCRITERION_H
 
-#include <Qt3DRenderer/qtechniquecriterion.h>
+#include <Qt3DRenderer/qcriterion.h>
 #include <Qt3DCore/qobserverinterface.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QTechniqueCriterion;
+class QCriterion;
 
 namespace Render {
 
@@ -61,7 +61,7 @@ public:
     RenderCriterion();
     ~RenderCriterion();
     void cleanup();
-    void setPeer(QTechniqueCriterion *criterion);
+    void setPeer(QCriterion *criterion);
     void setRenderer(Renderer *renderer);
 
     QVariant criterionValue() const;
@@ -73,7 +73,7 @@ public:
 
 private:
     Renderer *m_renderer;
-    QTechniqueCriterion *m_peer;
+    QCriterion *m_peer;
     QVariant m_value;
     QString m_name;
     QUuid m_criterionUuid;

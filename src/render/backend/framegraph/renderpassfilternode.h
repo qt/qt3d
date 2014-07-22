@@ -49,7 +49,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QTechniqueCriterion;
+class QCriterion;
 class QRenderPassFilter;
 
 template <typename T, int INDEXBITS>
@@ -71,7 +71,7 @@ public:
     void setRenderer(Renderer *renderer);
     void setPeer(Qt3D::QRenderPassFilter *peer);
     QList<HTechniqueCriterion> filters() const;
-    void appendFilter(QTechniqueCriterion *criterion);
+    void appendFilter(QCriterion *criterion);
     void removeFilter(const QUuid &criterionId);
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 

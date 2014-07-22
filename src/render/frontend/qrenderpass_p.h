@@ -70,7 +70,7 @@ public:
 
     // map Parameter names to GLSL names
     QHash<QString, QString> m_parameterNameDict;
-    QList<QTechniqueCriterion *> m_criteriaList;
+    QList<QCriterion *> m_criteriaList;
     QList<QParameterMapper *> m_bindings;
 
     Render::DrawStateSet* m_stateSet;

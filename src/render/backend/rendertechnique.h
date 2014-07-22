@@ -46,7 +46,7 @@
 #include <QStringList>
 #include <Qt3DCore/qobserverinterface.h>
 #include <Qt3DRenderer/parameterpack.h>
-#include <Qt3DRenderer/qtechniquecriterion.h>
+#include <Qt3DRenderer/qcriterion.h>
 
 QT_BEGIN_NAMESPACE
 

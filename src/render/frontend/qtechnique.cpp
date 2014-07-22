@@ -66,7 +66,7 @@ QTechnique::QTechnique(QTechniquePrivate &dd, QNode *parent)
 {
 }
 
-void QTechnique::addCriterion(QTechniqueCriterion *criterion)
+void QTechnique::addCriterion(QCriterion *criterion)
 {
     Q_D(QTechnique);
     if (!d->m_criteriaList.contains(criterion)) {
@@ -78,7 +78,7 @@ void QTechnique::addCriterion(QTechniqueCriterion *criterion)
     }
 }
 
-void QTechnique::removeCriterion(QTechniqueCriterion *criterion)
+void QTechnique::removeCriterion(QCriterion *criterion)
 {
     Q_D(QTechnique);
     d->m_criteriaList.removeOne(criterion);
@@ -88,7 +88,7 @@ void QTechnique::removeCriterion(QTechniqueCriterion *criterion)
     notifyObservers(change);
 }
 
-QList<QTechniqueCriterion *> QTechnique::criteria() const
+QList<QCriterion *> QTechnique::criteria() const
 {
     Q_D(const QTechnique);
     return d->m_criteriaList;

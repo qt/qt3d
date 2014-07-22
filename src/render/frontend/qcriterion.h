@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QTECHNIQUECRITERION_H
-#define QT3D_QTECHNIQUECRITERION_H
+#ifndef QT3D_QCRITERION_H
+#define QT3D_QCRITERION_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DCore/qnode.h>
@@ -50,15 +50,15 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QTechniqueCriterionPrivate;
+class QCriterionPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QTechniqueCriterion : public QNode
+class QT3DRENDERERSHARED_EXPORT QCriterion : public QNode
 {
     Q_OBJECT
     Q_PROPERTY(QVariant value READ value WRITE setValue NOTIFY valueChanged)
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
 public:
-    explicit QTechniqueCriterion(QNode *parent = 0);
+    explicit QCriterion(QNode *parent = 0);
 
     void setValue(const QVariant &value);
     void setName(const QString &customType);
@@ -71,13 +71,13 @@ Q_SIGNALS:
     void valueChanged();
 
 private:
-    Q_DECLARE_PRIVATE(QTechniqueCriterion)
+    Q_DECLARE_PRIVATE(QCriterion)
 };
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3D::QTechniqueCriterion *)
+Q_DECLARE_METATYPE(Qt3D::QCriterion *)
 
-#endif // QT3D_QTECHNIQUECRITERION_H
+#endif // QT3D_QCRITERION_H

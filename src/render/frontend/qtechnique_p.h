@@ -50,7 +50,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QTechnique;
-class QTechniqueCriterion;
+class QCriterion;
 class QParameter;
 class QOpenGLFilter;
 
@@ -59,7 +59,7 @@ class QT3DRENDERERSHARED_EXPORT QTechniquePrivate : public QAbstractTechniquePri
 public:
     QTechniquePrivate(QTechnique *dd);
     Q_DECLARE_PUBLIC(QTechnique)
-    QList<QTechniqueCriterion *> m_criteriaList;
+    QList<QCriterion *> m_criteriaList;
     QList<QParameter *> m_parameters;
     QOpenGLFilter *m_openGLFilter;
 };

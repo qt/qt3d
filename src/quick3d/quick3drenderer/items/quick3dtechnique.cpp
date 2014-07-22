@@ -132,16 +132,16 @@ void Quick3DTechnique::clearRenderPasses(QQmlListProperty<QRenderPass> *list)
     }
 }
 
-QQmlListProperty<Qt3D::QTechniqueCriterion> Quick3DTechnique::criteriaList()
+QQmlListProperty<Qt3D::QCriterion> Quick3DTechnique::criteriaList()
 {
-    return QQmlListProperty<Qt3D::QTechniqueCriterion>(this, 0,
+    return QQmlListProperty<Qt3D::QCriterion>(this, 0,
                                        &Quick3DTechnique::appendCriterion,
                                        &Quick3DTechnique::criteriaCount,
                                        &Quick3DTechnique::criterionAt,
                                        &Quick3DTechnique::clearCriteriaList);
 }
 
-void Quick3DTechnique::appendCriterion(QQmlListProperty<QTechniqueCriterion> *list, QTechniqueCriterion *criterion)
+void Quick3DTechnique::appendCriterion(QQmlListProperty<QCriterion> *list, QCriterion *criterion)
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     if (technique) {
@@ -152,7 +152,7 @@ void Quick3DTechnique::appendCriterion(QQmlListProperty<QTechniqueCriterion> *li
     }
 }
 
-QTechniqueCriterion *Quick3DTechnique::criterionAt(QQmlListProperty<QTechniqueCriterion> *list, int index)
+QCriterion *Quick3DTechnique::criterionAt(QQmlListProperty<QCriterion> *list, int index)
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     if (technique)
@@ -160,7 +160,7 @@ QTechniqueCriterion *Quick3DTechnique::criterionAt(QQmlListProperty<QTechniqueCr
     return 0;
 }
 
-int Quick3DTechnique::criteriaCount(QQmlListProperty<QTechniqueCriterion> *list)
+int Quick3DTechnique::criteriaCount(QQmlListProperty<QCriterion> *list)
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     if (technique)
@@ -168,7 +168,7 @@ int Quick3DTechnique::criteriaCount(QQmlListProperty<QTechniqueCriterion> *list)
     return 0;
 }
 
-void Quick3DTechnique::clearCriteriaList(QQmlListProperty<QTechniqueCriterion> *list)
+void Quick3DTechnique::clearCriteriaList(QQmlListProperty<QCriterion> *list)
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     if (technique) {

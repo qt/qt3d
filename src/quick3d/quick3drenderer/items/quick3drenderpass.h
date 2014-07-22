@@ -57,20 +57,20 @@ namespace Quick {
 class QT3DQUICKRENDERERSHARED_EXPORT Quick3DRenderPass : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3D::QTechniqueCriterion> criteria READ criteriaList)
+    Q_PROPERTY(QQmlListProperty<Qt3D::QCriterion> criteria READ criteriaList)
     Q_PROPERTY(QQmlListProperty<Qt3D::QParameterMapper> bindings READ bindingList)
 public:
     explicit Quick3DRenderPass(QObject *parent = 0);
 
-    QQmlListProperty<Qt3D::QTechniqueCriterion> criteriaList();
+    QQmlListProperty<Qt3D::QCriterion> criteriaList();
     QQmlListProperty<Qt3D::QParameterMapper> bindingList();
     inline QRenderPass *parentRenderPass() const { return qobject_cast<QRenderPass *>(parent()); }
 
 private:
-    static void appendCriteria(QQmlListProperty<Qt3D::QTechniqueCriterion> *list, QTechniqueCriterion *criterion);
-    static QTechniqueCriterion *criterionAt(QQmlListProperty<Qt3D::QTechniqueCriterion> *list, int index);
-    static int criteriaCount(QQmlListProperty<Qt3D::QTechniqueCriterion> *list);
-    static void clearCriteria(QQmlListProperty<Qt3D::QTechniqueCriterion> *list);
+    static void appendCriteria(QQmlListProperty<Qt3D::QCriterion> *list, QCriterion *criterion);
+    static QCriterion *criterionAt(QQmlListProperty<Qt3D::QCriterion> *list, int index);
+    static int criteriaCount(QQmlListProperty<Qt3D::QCriterion> *list);
+    static void clearCriteria(QQmlListProperty<Qt3D::QCriterion> *list);
 
     static void appendBinding(QQmlListProperty<Qt3D::QParameterMapper> *list, QParameterMapper *binding);
     static QParameterMapper *bindingAt(QQmlListProperty<Qt3D::QParameterMapper> *list, int index);

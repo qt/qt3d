@@ -47,7 +47,7 @@
 #include <Qt3DRenderer/tag.h>
 #include <Qt3DRenderer/qrenderpass.h>
 #include <Qt3DCore/qabstracttechnique.h>
-#include <Qt3DRenderer/qtechniquecriterion.h>
+#include <Qt3DRenderer/qcriterion.h>
 #include <QList>
 #include <QSharedPointer>
 
@@ -67,9 +67,9 @@ class QT3DRENDERERSHARED_EXPORT QTechnique : public QAbstractTechnique
 public:
     explicit QTechnique(QNode *parent = 0);
 
-    void addCriterion(QTechniqueCriterion *criterion);
-    void removeCriterion(QTechniqueCriterion *criterion);
-    QList<QTechniqueCriterion *> criteria() const;
+    void addCriterion(QCriterion *criterion);
+    void removeCriterion(QCriterion *criterion);
+    QList<QCriterion *> criteria() const;
     void clearCriteria();
 
     void addPass(QAbstractRenderPass* pass) Q_DECL_OVERRIDE;

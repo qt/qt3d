@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "qtechniquecriterion.h"
+#include "qcriterion.h"
 #include <private/qnode_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
@@ -47,44 +47,44 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QTechniqueCriterionPrivate : public QNodePrivate
+class QCriterionPrivate : public QNodePrivate
 {
 public:
-    QTechniqueCriterionPrivate(QTechniqueCriterion *qq)
+    QCriterionPrivate(QCriterion *qq)
         : QNodePrivate(qq)
     {
     }
 
-    Q_DECLARE_PUBLIC(QTechniqueCriterion)
+    Q_DECLARE_PUBLIC(QCriterion)
     QString m_name;
     QVariant m_value;
 };
 
-QTechniqueCriterion::QTechniqueCriterion(QNode *parent)
-    : QNode(*new QTechniqueCriterionPrivate(this), parent)
+QCriterion::QCriterion(QNode *parent)
+    : QNode(*new QCriterionPrivate(this), parent)
 {
 }
 
-void QTechniqueCriterion::setValue(const QVariant &value)
+void QCriterion::setValue(const QVariant &value)
 {
-    Q_D(QTechniqueCriterion);
+    Q_D(QCriterion);
     if (value != d->m_value) {
         d->m_value = value;
         emit valueChanged();
-        QScenePropertyChangePtr change(new QScenePropertyChange(ComponentAdded, this));
+        QScenePropertyChangePtr change(new QScenePropertyChange(ComponentUpdated, this));
         change->setPropertyName(QByteArrayLiteral("criterionValue"));
         change->setValue(value);
         notifyObservers(change);
     }
 }
 
-void QTechniqueCriterion::setName(const QString &name)
+void QCriterion::setName(const QString &name)
 {
-    Q_D(QTechniqueCriterion);
+    Q_D(QCriterion);
     if (name != d->m_name) {
         d->m_name = name;
         emit nameChanged();
-        QScenePropertyChangePtr change(new QScenePropertyChange(ComponentAdded, this));
+        QScenePropertyChangePtr change(new QScenePropertyChange(ComponentUpdated, this));
         change->setPropertyName(QByteArrayLiteral("criterionName"));
         change->setValue(QVariant(name));
         notifyObservers(change);
@@ -92,15 +92,15 @@ void QTechniqueCriterion::setName(const QString &name)
 }
 
 
-QVariant QTechniqueCriterion::value() const
+QVariant QCriterion::value() const
 {
-    Q_D(const QTechniqueCriterion);
+    Q_D(const QCriterion);
     return d->m_value;
 }
 
-QString QTechniqueCriterion::name() const
+QString QCriterion::name() const
 {
-    Q_D(const QTechniqueCriterion);
+    Q_D(const QCriterion);
     return d->m_name;
 }
 

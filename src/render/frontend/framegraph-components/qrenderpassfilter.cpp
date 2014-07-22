@@ -43,7 +43,7 @@
 #include "qrenderpassfilter.h"
 #include "qrenderpassfilter_p.h"
 
-#include "qtechniquecriterion.h"
+#include "qcriterion.h"
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -74,13 +74,13 @@ QString QRenderPassFilter::renderPassName() const
     return d->m_renderPassName;
 }
 
-QList<QTechniqueCriterion *> QRenderPassFilter::criteria() const
+QList<QCriterion *> QRenderPassFilter::criteria() const
 {
     Q_D(const QRenderPassFilter);
     return d->m_criteriaList;
 }
 
-void QRenderPassFilter::addCriterion(QTechniqueCriterion *criterion)
+void QRenderPassFilter::addCriterion(QCriterion *criterion)
 {
     Q_D(QRenderPassFilter);
     if (!d->m_criteriaList.contains(criterion)) {
@@ -92,7 +92,7 @@ void QRenderPassFilter::addCriterion(QTechniqueCriterion *criterion)
     }
 }
 
-void QRenderPassFilter::removeCriterion(QTechniqueCriterion *criterion)
+void QRenderPassFilter::removeCriterion(QCriterion *criterion)
 {
     Q_D(QRenderPassFilter);
     d->m_criteriaList.removeOne(criterion);

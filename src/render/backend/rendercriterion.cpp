@@ -69,7 +69,7 @@ void RenderCriterion::cleanup()
         m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_peer);
 }
 
-void RenderCriterion::setPeer(QTechniqueCriterion *criterion)
+void RenderCriterion::setPeer(QCriterion *criterion)
 {
     if (m_peer != criterion) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();

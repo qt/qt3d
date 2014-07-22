@@ -42,7 +42,7 @@
 #include "qrenderpass.h"
 #include "qrenderpass_p.h"
 #include "qparameter.h"
-#include "qtechniquecriterion.h"
+#include "qcriterion.h"
 #include "qparametermapper.h"
 #include "qscenepropertychange.h"
 
@@ -90,7 +90,7 @@ Render::DrawStateSet *QRenderPass::stateSet() const
     return d->m_stateSet;
 }
 
-void QRenderPass::addCriterion(QTechniqueCriterion *criterion)
+void QRenderPass::addCriterion(QCriterion *criterion)
 {
     Q_D(QRenderPass);
     if (!d->m_criteriaList.contains(criterion)) {
@@ -102,7 +102,7 @@ void QRenderPass::addCriterion(QTechniqueCriterion *criterion)
     }
 }
 
-void QRenderPass::removeCriterion(QTechniqueCriterion *criterion)
+void QRenderPass::removeCriterion(QCriterion *criterion)
 {
     Q_D(QRenderPass);
     d->m_criteriaList.removeOne(criterion);
@@ -112,7 +112,7 @@ void QRenderPass::removeCriterion(QTechniqueCriterion *criterion)
     notifyObservers(change);
 }
 
-QList<QTechniqueCriterion *> QRenderPass::criteria() const
+QList<QCriterion *> QRenderPass::criteria() const
 {
     Q_D(const QRenderPass);
     return d->m_criteriaList;
