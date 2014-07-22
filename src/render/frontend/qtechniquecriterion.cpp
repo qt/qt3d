@@ -52,14 +52,12 @@ class QTechniqueCriterionPrivate : public QNodePrivate
 public:
     QTechniqueCriterionPrivate(QTechniqueCriterion *qq)
         : QNodePrivate(qq)
-        , m_criterionType(QTechniqueCriterion::CustomType)
     {
     }
 
     Q_DECLARE_PUBLIC(QTechniqueCriterion)
-    QTechniqueCriterion::CriterionType m_criterionType;
-    QString m_criterionCustomType;
-    QVariant m_criterionValue;
+    QString m_name;
+    QVariant m_value;
 };
 
 QTechniqueCriterion::QTechniqueCriterion(QNode *parent)
@@ -67,25 +65,12 @@ QTechniqueCriterion::QTechniqueCriterion(QNode *parent)
 {
 }
 
-void QTechniqueCriterion::setCriterionType(QTechniqueCriterion::CriterionType type)
+void QTechniqueCriterion::setValue(const QVariant &value)
 {
     Q_D(QTechniqueCriterion);
-    if (type != d->m_criterionType) {
-        d->m_criterionType = type;
-        emit criterionTypeChanged();
-        QScenePropertyChangePtr change(new QScenePropertyChange(ComponentAdded, this));
-        change->setPropertyName(QByteArrayLiteral("criterionType"));
-        change->setValue(QVariant::fromValue(static_cast<int>(type)));
-        notifyObservers(change);
-    }
-}
-
-void QTechniqueCriterion::setCriterionValue(const QVariant &value)
-{
-    Q_D(QTechniqueCriterion);
-    if (value != d->m_criterionValue) {
-        d->m_criterionValue = value;
-        emit criterionValueChanged();
+    if (value != d->m_value) {
+        d->m_value = value;
+        emit valueChanged();
         QScenePropertyChangePtr change(new QScenePropertyChange(ComponentAdded, this));
         change->setPropertyName(QByteArrayLiteral("criterionValue"));
         change->setValue(value);
@@ -93,35 +78,30 @@ void QTechniqueCriterion::setCriterionValue(const QVariant &value)
     }
 }
 
-void QTechniqueCriterion::setCriterionCustomType(const QString &customType)
+void QTechniqueCriterion::setName(const QString &name)
 {
     Q_D(QTechniqueCriterion);
-    if (customType != d->m_criterionCustomType) {
-        d->m_criterionCustomType = customType;
-        emit criterionCustomTypeChanged();
+    if (name != d->m_name) {
+        d->m_name = name;
+        emit nameChanged();
         QScenePropertyChangePtr change(new QScenePropertyChange(ComponentAdded, this));
-        change->setPropertyName(QByteArrayLiteral("criterionCustomType"));
-        change->setValue(QVariant(customType));
+        change->setPropertyName(QByteArrayLiteral("criterionName"));
+        change->setValue(QVariant(name));
         notifyObservers(change);
     }
 }
 
-QTechniqueCriterion::CriterionType QTechniqueCriterion::criterionType() const
+
+QVariant QTechniqueCriterion::value() const
 {
     Q_D(const QTechniqueCriterion);
-    return d->m_criterionType;
+    return d->m_value;
 }
 
-QVariant QTechniqueCriterion::criterionValue() const
+QString QTechniqueCriterion::name() const
 {
     Q_D(const QTechniqueCriterion);
-    return d->m_criterionValue;
-}
-
-QString QTechniqueCriterion::criterionCustomType() const
-{
-    Q_D(const QTechniqueCriterion);
-    return d->m_criterionCustomType;
+    return d->m_name;
 }
 
 } // Qt3D

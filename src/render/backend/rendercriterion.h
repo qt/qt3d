@@ -65,8 +65,7 @@ public:
     void setRenderer(Renderer *renderer);
 
     QVariant criterionValue() const;
-    QTechniqueCriterion::CriterionType criterionType() const;
-    QString customType() const;
+    QString criterionName() const;
     void sceneChangeEvent(const QSceneChangePtr &e);
     QUuid criterionUuid() const;
     bool operator ==(const RenderCriterion &other);
@@ -75,9 +74,8 @@ public:
 private:
     Renderer *m_renderer;
     QTechniqueCriterion *m_peer;
-    QTechniqueCriterion::CriterionType m_type;
     QVariant m_value;
-    QString m_customType;
+    QString m_name;
     QUuid m_criterionUuid;
 };
 

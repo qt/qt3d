@@ -94,10 +94,6 @@ public:
     const QHash<QString, QVariant> parameters() const;
 
     QList<HTechniqueCriterion> criteria() const;
-    QVariant criterionValue(const QString &customTypeName) const;
-    QVariant criterionValue(QTechniqueCriterion::CriterionType type) const;
-    bool containsCriterion(const QString &customTypeName) const;
-    bool containsCriterion(QTechniqueCriterion::CriterionType type) const;
     QOpenGLFilter *openGLFilter() const;
 
 private:

@@ -55,33 +55,20 @@ class QTechniqueCriterionPrivate;
 class QT3DRENDERERSHARED_EXPORT QTechniqueCriterion : public QNode
 {
     Q_OBJECT
-    Q_ENUMS(CriterionType)
-    Q_PROPERTY(Qt3D::QTechniqueCriterion::CriterionType criterionType READ criterionType WRITE setCriterionType NOTIFY criterionTypeChanged)
-    Q_PROPERTY(QVariant criterionValue READ criterionValue WRITE setCriterionValue NOTIFY criterionValueChanged)
-    Q_PROPERTY(QString criterionCustomType READ criterionCustomType WRITE setCriterionCustomType NOTIFY criterionCustomTypeChanged)
+    Q_PROPERTY(QVariant value READ value WRITE setValue NOTIFY valueChanged)
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
 public:
     explicit QTechniqueCriterion(QNode *parent = 0);
 
-    enum CriterionType
-    {
-        Unknown = -1,
-        CustomType = 0,
-        RenderingStyle,
-        OpenGLVersion
-    };
+    void setValue(const QVariant &value);
+    void setName(const QString &customType);
 
-    void setCriterionType(CriterionType type);
-    void setCriterionValue(const QVariant &value);
-    void setCriterionCustomType(const QString &customType);
-
-    CriterionType criterionType() const;
-    QVariant criterionValue() const;
-    QString criterionCustomType() const;
+    QVariant value() const;
+    QString name() const;
 
 Q_SIGNALS:
-    void criterionTypeChanged();
-    void criterionValueChanged();
-    void criterionCustomTypeChanged();
+    void nameChanged();
+    void valueChanged();
 
 private:
     Q_DECLARE_PRIVATE(QTechniqueCriterion)

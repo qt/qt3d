@@ -55,7 +55,6 @@ namespace Render {
 RenderCriterion::RenderCriterion()
     : m_renderer(Q_NULLPTR)
     , m_peer(Q_NULLPTR)
-    , m_type(QTechniqueCriterion::Unknown)
 {
 }
 
@@ -81,9 +80,8 @@ void RenderCriterion::setPeer(QTechniqueCriterion *criterion)
         if (m_peer) {
             arbiter->registerObserver(this, m_peer, ComponentUpdated);
             m_criterionUuid = criterion->uuid();
-            m_type = m_peer->criterionType();
-            m_value = m_peer->criterionValue();
-            m_customType = m_peer->criterionCustomType();
+            m_value = m_peer->value();
+            m_name = m_peer->name();
         }
     }
 }
@@ -98,25 +96,19 @@ QVariant RenderCriterion::criterionValue() const
     return m_value;
 }
 
-QTechniqueCriterion::CriterionType RenderCriterion::criterionType() const
-{
-    return m_type;
-}
 
-QString RenderCriterion::customType() const
+QString RenderCriterion::criterionName() const
 {
-    return m_customType;
+    return m_name;
 }
 
 void RenderCriterion::sceneChangeEvent(const QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-    if (propertyChange->propertyName() == QByteArrayLiteral("criterionType"))
-        m_type = static_cast<QTechniqueCriterion::CriterionType>(propertyChange->value().toInt());
-    else if (propertyChange->propertyName() == QByteArrayLiteral("criterionValue"))
+    if (propertyChange->propertyName() == QByteArrayLiteral("criterionValue"))
         m_value = propertyChange->value();
-    else if (propertyChange->propertyName() == QByteArrayLiteral("criterionCustomType"))
-        m_customType = propertyChange->value().toString();
+    else if (propertyChange->propertyName() == QByteArrayLiteral("criterionName"))
+        m_name = propertyChange->value().toString();
 }
 
 QUuid RenderCriterion::criterionUuid() const
@@ -128,11 +120,8 @@ bool RenderCriterion::operator ==(const RenderCriterion &other)
 {
     if (&other == this)
         return true;
-    if (other.criterionType() == criterionType()) {
-        if ((criterionType() != QTechniqueCriterion::CustomType) || (other.criterionType() == QTechniqueCriterion::CustomType && other.customType() == customType()))
-            return (other.criterionValue() == criterionValue());
-    }
-    return false;
+    return ((other.criterionName() == criterionName()) &&
+            (other.criterionValue() == criterionValue()));
 }
 
 bool RenderCriterion::operator !=(const RenderCriterion &other)
