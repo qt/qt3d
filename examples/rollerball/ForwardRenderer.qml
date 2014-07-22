@@ -51,10 +51,7 @@ TechniqueFilter {
 
     // Select the forward rendering Technique of any used Effect
     criteria : [
-        TechniqueCriterion {
-            criterionType: TechniqueCriterion.RenderingStyle;
-            criterionValue : "forward"
-        }
+            TechniqueCriterion { name : "RenderingStyle"; value : "forward"}
     ]
 
     // Use the whole viewport

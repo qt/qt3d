@@ -70,10 +70,7 @@ Effect {
     techniques: [
         Technique {
             criteria : [
-                TechniqueCriterion {
-                    criterionType: TechniqueCriterion.RenderingStyle
-                    criterionValue : "forward"
-                }
+                TechniqueCriterion { name : "RenderingStyle"; value : "forward"}
             ]
 
             parameters : [

@@ -266,7 +266,7 @@ Entity {
             effect : Effect {
                 techniques : [
                     Technique {
-                        criteria : [TechniqueCriterion { criterionType : TechniqueCriterion.RenderingStyle; criterionValue : "forward"}]
+                        criteria : [TechniqueCriterion { name : "RenderingStyle"; value : "forward"}]
                         openGLFilter {api : OpenGLFilter.Desktop; profile : OpenGLFilter.Core; minorVersion : 1; majorVersion : 3 }
                         renderPasses : [
                             RenderPass {
@@ -347,7 +347,7 @@ Entity {
                 techniques : [
                     Technique {
                         openGLFilter {api : OpenGLFilter.Desktop; profile : OpenGLFilter.Core; minorVersion : 1; majorVersion : 3 }
-                        criteria : [TechniqueCriterion { criterionType : TechniqueCriterion.RenderingStyle; criterionValue : "forward"}]
+                        criteria : [TechniqueCriterion { name : "RenderingStyle"; value : "forward"}]
 
                         parameters : [Parameter { name : "lightPos"; value : Qt.vector4d(10.0, 10.0, 0.0, 1.0);}]
 
