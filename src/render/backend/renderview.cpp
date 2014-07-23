@@ -392,13 +392,13 @@ QList<RenderRenderPass *> RenderView::findRenderPassesForTechnique(RenderTechniq
         // TO DO : Improve so we handle the case where the peer or renderPasses in the peer change
         Q_FOREACH (QAbstractRenderPass *pass, technique->peer()->renderPasses()) {
             // TO DO : IF PASS MATCHES CRITERIA
-            RenderRenderPass *rPass = m_renderer->renderPassManager()->lookupResource(pass);
-            if (rPass == Q_NULLPTR) {
-                rPass = m_renderer->renderPassManager()->getOrCreateResource(pass);
-                rPass->setRenderer(m_renderer);
-                rPass->setPeer(qobject_cast<QRenderPass*>(pass));
-            }
-            passes << rPass;
+//            RenderRenderPass *rPass = m_renderer->renderPassManager()->lookupResource(pass);
+//            if (rPass == Q_NULLPTR) {
+//                rPass = m_renderer->renderPassManager()->getOrCreateResource(pass);
+//                rPass->setRenderer(m_renderer);
+//                rPass->setPeer(qobject_cast<QRenderPass*>(pass));
+//            }
+//            passes << rPass;
         }
     }
     return passes;

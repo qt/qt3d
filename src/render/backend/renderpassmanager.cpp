@@ -50,7 +50,7 @@ namespace Render {
 
 RenderPassManager::RenderPassManager()
     : QResourcesManager<RenderRenderPass,
-                        QAbstractRenderPass *,
+                        QUuid,
                         16,
                         Qt3D::ArrayAllocatingPolicy,
                         Qt3D::ObjectLevelLockingPolicy>()

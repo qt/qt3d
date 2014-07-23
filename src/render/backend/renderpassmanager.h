@@ -56,7 +56,7 @@ namespace Render {
 typedef QHandle<RenderRenderPass, 16> HRenderPass;
 
 class RenderPassManager : public QResourcesManager<RenderRenderPass,
-                                                   QAbstractRenderPass*,
+                                                   QUuid,
                                                    16,
                                                    Qt3D::ArrayAllocatingPolicy,
                                                    Qt3D::ObjectLevelLockingPolicy>
