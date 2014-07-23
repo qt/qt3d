@@ -77,8 +77,7 @@ TechniqueFilter {
                 objectName : "cameraSelector"
                 LayerFilter {
                     id : layerFilter
-                    RenderPassFilter { renderPassName: "zFill" }
-                    RenderPassFilter { renderPassName: "lighting" }
+                    RenderPassFilter { criteria : [Criterion {name : "Name"; value : "Texture" }] }
                 }
             }
         }

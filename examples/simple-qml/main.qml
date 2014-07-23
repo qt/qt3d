@@ -274,7 +274,7 @@ Entity {
                         openGLFilter {api : OpenGLFilter.Desktop; profile : OpenGLFilter.Core; minorVersion : 1; majorVersion : 3 }
                         renderPasses : [
                             RenderPass {
-                                criteria : []
+                                criteria : [Criterion {name : "Name"; value : "Texture" }]
                                 bindings : [ // Add only the bindings needed for a shader
                                     ParameterMapper {parameterName: "vertexTexCoord"; shaderVariableName: "texCoord0"; bindingType: ParameterMapper.Attribute},
                                     ParameterMapper {parameterName: "tex"; shaderVariableName: "texture"; bindingType: ParameterMapper.Uniform},
