@@ -114,7 +114,7 @@ public:
     {
     }
 
-    template<class Backend, int INDEXBITS = 16>
+    template<class Backend, int INDEXBITS>
     QHandle<Backend, INDEXBITS> componentHandle()
     {
         return QHandle<Backend, INDEXBITS>();

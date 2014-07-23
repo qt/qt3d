@@ -310,7 +310,7 @@ void RenderView::buildRenderCommands(RenderEntity *node)
 
     if (m_renderCamera != Q_NULLPTR && checkContainedWithinLayer(node)) {
         RenderMesh *mesh = Q_NULLPTR;
-        if (node->componentHandle<RenderMesh>() != HMesh()
+        if (node->componentHandle<RenderMesh, 16>() != HMesh()
                 && (mesh = node->renderComponent<RenderMesh>()) != Q_NULLPTR) {
             if (!mesh->meshData().isNull())
             {
