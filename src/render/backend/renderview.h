@@ -97,6 +97,7 @@ public:
 
     inline QRectF viewport() const { return m_viewport; }
 
+    // This can be removed once we're 100% sure the QFrameAllocator is death proof
     void setFrameIndex(int frameIndex) { m_frameIndex = frameIndex; }
     int frameIndex() const { return m_frameIndex; }
 
@@ -126,12 +127,6 @@ private:
     // render aspect is free to change the drawables on the next frame whilst
     // the render thread is submitting these commands.
     QVector<RenderCommand *> m_commands;
-
-    // We cannot return a QUniformValue as otherwise callying apply will result in calling QUniformApply
-    // Instead of the SpecifiedUniform<T>apply
-    // This is due to the fact that storing in a QHash creates a copy of QUniformValue and therefore the SpecifiedUniform<T> gets lost
-    // A dedicated ResourcesManager might improve performances later on
-    // We could have pre allocated/persistent rendercommands that we reuse in the RenderQueue
 
     typedef QHash<QString, QUniformValue* (RenderView::*)(const QMatrix4x4& model) const> standardUniformsPFuncsHash;
     static  standardUniformsPFuncsHash m_standardUniformSetters;

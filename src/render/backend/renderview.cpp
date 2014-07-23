@@ -213,8 +213,8 @@ RenderView::RenderView()
     : m_renderer(Q_NULLPTR)
     , m_allocator(Q_NULLPTR)
     , m_renderCamera(Q_NULLPTR)
-    , m_techniqueFilter(0)
-    , m_passFilter(0)
+    , m_techniqueFilter(Q_NULLPTR)
+    , m_passFilter(Q_NULLPTR)
     , m_commands()
 {
 }
@@ -348,36 +348,27 @@ void RenderView::buildRenderCommands(RenderEntity *node)
 
 RenderTechnique *RenderView::findTechniqueForEffect(RenderEffect *effect)
 {
-    // Can we fully perform the technique selection here ?
-    // If we need to check for extension / vendor / OpenGL Version we would need access to
-    // The QGraphicContext which is only avalaible in the Renderer's thread
-    // Current Plan : Have an interface accessible through the Renderer from that thread where we have
-    // all the needed information : Vendor, Extensions, GL Versions .... so that we can perform the checks here
-    // Also we could define that for defined criterionTypes (Vendor, GL_Version ...) the technique filtering doesn't
-    // depend on the TechniqueFilter but entirely on what the system GL interface gives us
-    // Furthermode, finding a way to perform this filtering as little as possible could provide some performance improvements
     if (effect != Q_NULLPTR) {
-
         Q_FOREACH (HTechnique tHandle, effect->techniques()) {
             RenderTechnique *technique = m_renderer->techniqueManager()->data(tHandle);
 
             if (technique != Q_NULLPTR &&
-                    *m_renderer->contextInfo() == *technique->openGLFilter() &&
-                    technique->criteria().size() >= m_techniqueFilter->filters().size()) {
-                bool findMatch;
-                Q_FOREACH (HTechniqueCriterion refCritHandle, m_techniqueFilter->filters()) {
-                    RenderCriterion *refCriterion = m_renderer->techniqueCriterionManager()->data(refCritHandle);
-                    findMatch = false;
-                    Q_FOREACH (HTechniqueCriterion critHandle, technique->criteria()) {
-                        RenderCriterion *rCrit = m_renderer->techniqueCriterionManager()->data(critHandle);
-                        if ((findMatch = (*rCrit == *refCriterion)))
+                    *m_renderer->contextInfo() == *technique->openGLFilter()) {
+                // If no techniqueFilter is present, we return the technique as it satisfies OpenGL version
+                bool findMatch = (m_techniqueFilter == Q_NULLPTR) ? true : false;
+                if (!findMatch && technique->criteria().size() >= m_techniqueFilter->filters().size()) {
+                    Q_FOREACH (HTechniqueCriterion refCritHandle, m_techniqueFilter->filters()) {
+                        RenderCriterion *refCriterion = m_renderer->techniqueCriterionManager()->data(refCritHandle);
+                        findMatch = false;
+                        Q_FOREACH (HTechniqueCriterion critHandle, technique->criteria()) {
+                            RenderCriterion *rCrit = m_renderer->techniqueCriterionManager()->data(critHandle);
+                            if ((findMatch = (*rCrit == *refCriterion)))
+                                break;
+                        }
+                        if (!findMatch) // No match for TechniqueFilter criterion in any of the technique's criteria
                             break;
                     }
-                    if (!findMatch) // No match for TechniqueFilter criterion in any of the technique's criteria
-                        break;
                 }
-                // TO DO, store the technique's OpenGL version
-                // If multiple technique match, keep the one with the highest OpenGL version supported
                 if (findMatch) // If all criteria matched
                     return technique;
             }
