@@ -47,11 +47,18 @@
 #include "cameramanager.h"
 #include "layermanager.h"
 #include "lightmanager.h"
+#include "techniquemanager.h"
+#include "effectmanager.h"
+#include "renderpassmanager.h"
 #include "renderer.h"
 #include "renderentity.h"
 #include "renderlogging.h"
 #include "materialmanager.h"
 #include "qabstractscene.h"
+#include "qparameter.h"
+#include "qparametermapper.h"
+#include "rendercriterion.h"
+#include "criterionmanager.h"
 #include <qmaterial.h>
 #include <qmesh.h>
 #include <qabstractshapemesh.h>
@@ -72,7 +79,6 @@
 #include <viewportnode.h>
 #include <rendertargetselectornode.h>
 #include <layerfilternode.h>
-
 
 #include <Qt3DCore/qcamera.h>
 #include <Qt3DCore/qcameralens.h>
@@ -104,49 +110,24 @@ void RenderSceneBuilder::initializeFrameGraph()
     // Retrieve and set Renderer FrameGraph
     QFrameGraph *fg = QEntity::findComponentInTree<QFrameGraph>(m_renderer->sceneGraphRoot());
     Q_ASSERT_X(fg, Q_FUNC_INFO, "No FrameGraph component found. The FrameGraph defines the renderer configuration. Cannot continue");
-    m_frameGraphEntityNode = m_renderer->renderNodesManager()->lookupHandle(fg->parentNode()->asEntity()->uuid());
-    createFrameGraph(fg);
+    //    m_frameGraphEntityNode = m_renderer->renderNodesManager()->lookupHandle(fg->parentNode()->asEntity()->uuid());
+    //    createFrameGraph(fg);
+    if (fg->activeFrameGraph() != Q_NULLPTR) {
+        buildFrameGraph(fg->activeFrameGraph());
+        FrameGraphNode **fgRootNode = m_renderer->frameGraphManager()->lookupResource(fg->activeFrameGraph()->uuid());
+        Q_ASSERT(fgRootNode);
+        m_renderer->setFrameGraphRoot(*fgRootNode);
+    }
+    else
+        qWarning() << Q_FUNC_INFO << "ActiveFrameGraph not set";
 }
 
-/*!
- * Returns a FrameGraphNode and all its children from \a node which points to the activeFrameGraph.
- * Returns Q_NULLPTR if \a is also Q_NULLPTR or if there is no FrameGraphComponent
- * in node's children tree.
- */
-Render::FrameGraphNode *RenderSceneBuilder::buildFrameGraph(QNode *node)
+void RenderSceneBuilder::buildFrameGraph(QFrameGraphItem *root)
 {
-    Q_ASSERT(node);
-
-    qCDebug(Backend) << Q_FUNC_INFO << node->objectName();
-
-    Render::FrameGraphNode *fgNode = Q_NULLPTR;
-    Qt3D::QFrameGraphItem *fgItem = Q_NULLPTR;
-
-    if ((fgItem = qobject_cast<Qt3D::QFrameGraphItem *>(node)) != Q_NULLPTR) {
-        // Instantiate proper backend node corresponding to the frontend node
-        fgNode = backendFrameGraphNode(node);
-    }
-
-    // we need to travel the node's children tree to find either the FG root Node or
-    // its children
-    QList<FrameGraphNode *> fgChildNodes;
-    Q_FOREACH (QNode *child, node->children()) {
-        FrameGraphNode* fgChildNode = buildFrameGraph(child);
-        if (fgChildNode != Q_NULLPTR)
-            fgChildNodes << fgChildNode;
-    }
-    if (!fgChildNodes.isEmpty()) {
-        if (fgNode == Q_NULLPTR && fgChildNodes.size() == 1) {
-            fgNode = fgChildNodes.first();
-        }
-        else if (fgNode != Q_NULLPTR) {
-            Q_FOREACH (FrameGraphNode *fgChildNode, fgChildNodes)
-                fgNode->appendChild(fgChildNode);
-        }
-    }
-    return fgNode;
+    createRenderElement(root);
+    Q_FOREACH (QFrameGraphItem *child, root->frameGraphChildren())
+        buildFrameGraph(child);
 }
-
 /*!
  * Returns a proper FrameGraphNode subclass instance from \a block.
  * If no subclass corresponds, Q_NULLPTR is returned.
@@ -184,6 +165,85 @@ Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(QNode *block)
     return Q_NULLPTR;
 }
 
+void RenderSceneBuilder::createRenderElement(QNode *frontend)
+{
+    if (qobject_cast<QEntity *>(frontend)) {
+        QEntity *entity = qobject_cast<QEntity *>(frontend);
+        QEntity *parentEntity = entity->parentEntity();
+        RenderEntity *rEntity = createRenderElementHelper<QEntity, RenderEntity, EntityManager>(frontend,
+                                                                                                m_renderer->renderNodesManager());
+        rEntity->setHandle(m_renderer->renderNodesManager()->lookupHandle(frontend->uuid()));
+        if (parentEntity)
+            rEntity->setParentHandle(m_renderer->renderNodesManager()->lookupHandle(parentEntity->uuid()));
+    }
+    else if (qobject_cast<QAbstractMesh *>(frontend)) {
+        createRenderElementHelper<QAbstractMesh, RenderMesh, MeshManager>(frontend,
+                                                                          m_renderer->meshManager());
+    }
+    else if (qobject_cast<QCameraLens *>(frontend)) {
+        createRenderElementHelper<QCameraLens, RenderCameraLens, CameraManager>(frontend,
+                                                                                m_renderer->cameraManager());
+    }
+    else if (qobject_cast<QLayer *>(frontend)) {
+        createRenderElementHelper<QLayer, RenderLayer, LayerManager>(frontend,
+                                                                     m_renderer->layerManager());
+    }
+    else if (qobject_cast<QAbstractLight *>(frontend)) {
+        createRenderElementHelper<QAbstractLight, RenderLight, LightManager>(frontend,
+                                                                             m_renderer->lightManager());
+    }
+    else if (qobject_cast<QMaterial *>(frontend)) {
+        createRenderElementHelper<QMaterial, RenderMaterial, MaterialManager>(frontend,
+                                                                              m_renderer->materialManager());
+    }
+    else if (qobject_cast<QTechnique *>(frontend)) {
+        createRenderElementHelper<QTechnique, RenderTechnique, TechniqueManager>(frontend,
+                                                                                 m_renderer->techniqueManager());
+    }
+    else if (qobject_cast<QAbstractEffect *>(frontend)) {
+        createRenderElementHelper<QAbstractEffect, RenderEffect, EffectManager>(frontend,
+                                                                                m_renderer->effectManager());
+    }
+    else if (qobject_cast<QAbstractRenderPass *>(frontend)) {
+        createRenderElementHelper<QRenderPass, RenderRenderPass, RenderPassManager>(frontend,
+                                                                                    m_renderer->renderPassManager());
+    }
+    else if (qobject_cast<QParameter *>(frontend)) {
+
+    }
+    else if (qobject_cast<QParameterMapper *>(frontend)) {
+
+    }
+    else if (qobject_cast<QCriterion *>(frontend)) {
+        createRenderElementHelper<QCriterion, RenderCriterion, CriterionManager>(frontend,
+                                                                                 m_renderer->criterionManager());
+    }
+    else if (qobject_cast<QFrameGraphItem *>(frontend)) {
+        FrameGraphNode *fgNode = backendFrameGraphNode(frontend);
+        if (qobject_cast<QFrameGraphItem *>(frontend->parentNode()))
+            fgNode->setParentHandle(m_renderer->frameGraphManager()->lookupHandle(frontend->parentNode()->uuid()));
+    }
+}
+
+void RenderSceneBuilder::releaseRenderElement(const QUuid &id)
+{
+    // TO DO : A way to mapping an id to a type would be nice
+    // We can send the Node when it is about to be deleted to check the type
+    // as this would cause crashes when qobject_cast is used
+
+    m_renderer->renderNodesManager()->releaseResource(id);
+    m_renderer->meshDataManager()->releaseResource(id);
+    m_renderer->cameraManager()->releaseResource(id);
+    m_renderer->layerManager()->releaseResource(id);
+    m_renderer->lightManager()->releaseResource(id);
+    m_renderer->materialManager()->releaseResource(id);
+    m_renderer->techniqueManager()->releaseResource(id);
+    m_renderer->effectManager()->releaseResource(id);
+    m_renderer->renderPassManager()->releaseResource(id);
+    m_renderer->criterionManager()->releaseResource(id);
+    m_renderer->frameGraphManager()->releaseResource(id);
+}
+
 RenderEntity* RenderSceneBuilder::createRenderNode(QEntity *entity)
 {
     HRenderNode renderNodeHandle;
@@ -198,15 +258,6 @@ RenderEntity* RenderSceneBuilder::createRenderNode(QEntity *entity)
         renderNode->setTransform(transforms.first());
 
     return renderNode;
-}
-
-void RenderSceneBuilder::createFrameGraph(QFrameGraph *fg)
-{
-    // Entity has a reference to a framegraph configuration
-    // Build a tree of FrameGraphNodes by reading the tree of FrameGraphBuildingBlocks
-    Render::FrameGraphNode* frameGraphRootNode = buildFrameGraph(qobject_cast<QNode*>(fg->activeFrameGraph()));
-    qCDebug(Backend) << Q_FUNC_INFO << "FrameGraphRoot" <<  frameGraphRootNode;
-    m_renderer->setFrameGraphRoot(frameGraphRootNode);
 }
 
 void RenderSceneBuilder::visitEntity(Qt3D::QEntity *entity)
@@ -225,8 +276,6 @@ void RenderSceneBuilder::visitEntity(Qt3D::QEntity *entity)
         rEntity->setParentHandle(m_nodeStack.top());
     m_nodeStack.push(rEntity->handle());
 
-    // TO DO : See if it can be converted to work with createRenderElement
-
     QList<QMaterial *> materials = entity->componentsOfType<QMaterial>();
     QList<QAbstractMesh *> meshes = entity->componentsOfType<QAbstractMesh>();
     QList<QCameraLens *> lenses = entity->componentsOfType<QCameraLens>();
@@ -234,20 +283,30 @@ void RenderSceneBuilder::visitEntity(Qt3D::QEntity *entity)
     QList<QAbstractLight *> lights = entity->componentsOfType<QAbstractLight>();
 
     // Retrieve Material from Entity
-    if (!materials.isEmpty())
-        rEntity->createRenderComponent<QMaterial>(materials.first());
+    if (!materials.isEmpty()) {
+        createRenderElement(materials.first());
+        rEntity->addComponent(materials.first());
+    }
     // Retrieve Mesh from Entity
-    if (!meshes.isEmpty())
-        rEntity->createRenderComponent<QAbstractMesh>(meshes.first());
+    if (!meshes.isEmpty()) {
+        createRenderElement(meshes.first());
+        rEntity->addComponent(meshes.first());
+    }
     // Retrieve Camera from Entity
-    if (!lenses.isEmpty())
-        rEntity->createRenderComponent<QCameraLens>(lenses.first());
+    if (!lenses.isEmpty()) {
+        createRenderElement(lenses.first());
+        rEntity->addComponent(lenses.first());
+    }
     // Retrieve Layer from Entity
-    if (!layers.isEmpty())
-        rEntity->createRenderComponent<QLayer>(layers.first());
+    if (!layers.isEmpty()) {
+        createRenderElement(layers.first());
+        rEntity->addComponent(layers.first());
+    }
     // Retrieve Lights from Entity
-    if (!lights.isEmpty())
-        rEntity->createRenderComponent<QAbstractLight>(lights.first());
+    if (!lights.isEmpty()) {
+        createRenderElement(lights.first());
+        rEntity->addComponent(lights.first());
+    }
 
     NodeVisitor::visitEntity(entity);
 

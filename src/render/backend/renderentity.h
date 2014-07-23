@@ -104,15 +104,8 @@ public:
     Sphere *worldBoundingVolume() { return m_worldBoundingVolume; }
     QUuid entityUuid() const { return m_frontendUuid; }
 
-    template<class Frontend>
-    void createRenderComponent(Frontend *)
-    {
-    }
-
-    template<class Backend>
-    void releaseRenderComponent()
-    {
-    }
+    void addComponent(QComponent *component);
+    void removeComponent(QComponent *component);
 
     template<class Backend, int INDEXBITS>
     QHandle<Backend, INDEXBITS> componentHandle()

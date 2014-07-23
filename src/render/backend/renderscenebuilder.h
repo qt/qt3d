@@ -45,7 +45,9 @@
 #include <Qt3DCore/nodevisitor.h>
 #include <Qt3DCore/qhandle.h>
 #include <QStack>
+#include <Qt3DRenderer/renderer.h>
 #include <Qt3DCore/qentity.h>
+#include <Qt3DRenderer/framegraphmanager.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -56,14 +58,15 @@ class QFrameGraph;
 
 namespace Render {
 class RenderEntity;
+class FrameGraphNode;
 }
 
 typedef QHandle<Render::RenderEntity, 16> HRenderNode;
+typedef QHandle<Render::FrameGraphNode, 8> HFrameGraphNode;
 
 namespace Render {
 
 class Renderer;
-class FrameGraphNode;
 
 class RenderSceneBuilder : public Qt3D::NodeVisitor
 {
@@ -73,6 +76,8 @@ public:
     RenderEntity *rootNode() const;
     HRenderNode rootHandle() const { return m_rootNodeHandle; }
     void        initializeFrameGraph();
+    void        createRenderElement(QNode *frontend);
+    void        releaseRenderElement(const QUuid &id);
 
 protected:
     void visitEntity(Qt3D::QEntity *entity) Q_DECL_OVERRIDE;
@@ -84,25 +89,44 @@ private:
     HRenderNode m_frameGraphEntityNode;
     QFrameGraph *m_frameGraphRoot;
 
-    Render::FrameGraphNode* buildFrameGraph(QNode *node);
-    Render::FrameGraphNode* backendFrameGraphNode(QNode *);
+    void buildFrameGraph(QFrameGraphItem *root);
+    Render::FrameGraphNode* backendFrameGraphNode(QNode *node);
+
 
     template<typename Backend, typename Frontend>
     Backend *createBackendFrameGraphNode(QNode *n)
     {
         Frontend *f = qobject_cast<Frontend *>(n);
         if (n != Q_NULLPTR) {
-            Backend *backend = new Backend();
-            backend->setRenderer(m_renderer);
-            backend->setPeer(f);
-            return backend;
+            HFrameGraphNode handle = m_renderer->frameGraphManager()->lookupHandle(n->uuid());
+            if (handle.isNull()) {
+                handle = m_renderer->frameGraphManager()->getOrAcquireHandle(n->uuid());
+                Backend *backend = new Backend();
+                *m_renderer->frameGraphManager()->data(handle) = backend;
+                backend->setRenderer(m_renderer);
+                backend->setHandle(handle);
+                backend->setPeer(f);
+                return backend;
+            }
+            return static_cast<Backend *>(*m_renderer->frameGraphManager()->data(handle));
         }
         return Q_NULLPTR;
     }
 
-    RenderEntity* createRenderNode(QEntity *node);
-    void createFrameGraph(QFrameGraph *frameGraph);
+    template<class Frontend, class Backend, class Manager>
+    Backend *createRenderElementHelper(QNode *frontend, Manager *manager)
+    {
+        // We index using the Frontend uuid
+        if (!manager->contains(frontend->uuid())) {
+            Backend *backend = manager->getOrCreateResource(frontend->uuid());
+            backend->setRenderer(m_renderer);
+            backend->setPeer(qobject_cast<Frontend *>(frontend));
+            return backend;
+        }
+        return manager->lookupResource(frontend->uuid());
+    }
 
+    RenderEntity* createRenderNode(QEntity *node);
 };
 
 } // namespace Render
