@@ -355,7 +355,7 @@ RenderTechnique *RenderView::findTechniqueForEffect(RenderEffect *effect)
             if (technique != Q_NULLPTR &&
                     *m_renderer->contextInfo() == *technique->openGLFilter()) {
                 // If no techniqueFilter is present, we return the technique as it satisfies OpenGL version
-                bool findMatch = (m_techniqueFilter == Q_NULLPTR) ? true : false;
+                bool findMatch = (m_techniqueFilter == Q_NULLPTR || m_techniqueFilter->filters().size() == 0) ? true : false;
                 if (!findMatch && technique->criteria().size() >= m_techniqueFilter->filters().size()) {
                     Q_FOREACH (HTechniqueCriterion refCritHandle, m_techniqueFilter->filters()) {
                         RenderCriterion *refCriterion = m_renderer->techniqueCriterionManager()->data(refCritHandle);
@@ -383,9 +383,26 @@ QList<RenderRenderPass *> RenderView::findRenderPassesForTechnique(RenderTechniq
     if (technique != Q_NULLPTR) {
         Q_FOREACH (HRenderPass rPassHandle, technique->renderPasses()) {
             RenderRenderPass *renderPass = m_renderer->renderPassManager()->data(rPassHandle);
-            // TO DO : IF PASS MATCHES CRITERIA
-            if (renderPass != Q_NULLPTR)
-                passes << renderPass;
+
+            if (renderPass != Q_NULLPTR) {
+                bool findMatch = (m_passFilter == Q_NULLPTR || m_passFilter->filters().size() == 0) ? true : false;
+                if (!findMatch && renderPass->criteria().size() >= m_passFilter->filters().size())
+                {
+                    Q_FOREACH (HTechniqueCriterion refCritHandle, m_passFilter->filters()) {
+                        RenderCriterion *refCriterion = m_renderer->techniqueCriterionManager()->data(refCritHandle);
+                        findMatch = false;
+                        Q_FOREACH (HTechniqueCriterion critHandle, renderPass->criteria()) {
+                            RenderCriterion *rCrit = m_renderer->techniqueCriterionManager()->data(critHandle);
+                            if ((findMatch = (*rCrit == *refCriterion)))
+                                break;
+                        }
+                        if (!findMatch) // No match for TechniqueFilter criterion in any of the technique's criteria
+                            break;
+                    }
+                }
+                if (findMatch)
+                    passes << renderPass;
+            }
         }
     }
     return passes;

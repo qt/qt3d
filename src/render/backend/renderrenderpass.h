@@ -76,6 +76,7 @@ public:
     void sceneChangeEvent(const QSceneChangePtr &e);
     QAbstractShader *shaderProgram() const;
     QList<QParameterMapper *> bindings() const;
+    QList<HTechniqueCriterion> criteria() const;
 
 private:
     Renderer *m_renderer;

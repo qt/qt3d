@@ -145,6 +145,11 @@ QList<QParameterMapper *> RenderRenderPass::bindings() const
     return m_bindings;
 }
 
+QList<HTechniqueCriterion> RenderRenderPass::criteria() const
+{
+    return m_criteriaList;
+}
+
 } // Render
 
 } // Qt3D
