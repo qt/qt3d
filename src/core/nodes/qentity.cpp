@@ -134,7 +134,14 @@ void QEntity::setEnabled(bool on)
 
 QEntity *QEntity::parentEntity()
 {
-    return qobject_cast<QEntity*>(QNode::parent());
+    QNode *parentNode = QNode::parentNode();
+    QEntity *parentEntity = qobject_cast<QEntity*>(parentNode);
+
+    while (parentEntity == Q_NULLPTR && parentNode != Q_NULLPTR) {
+        parentNode = parentNode->parentNode();
+        parentEntity = qobject_cast<QEntity*>(parentNode);
+    }
+    return parentEntity;
 }
 
 QEntity *QEntity::asEntity()
