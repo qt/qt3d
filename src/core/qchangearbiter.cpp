@@ -44,11 +44,11 @@
 #include "qjobmanagerinterface.h"
 
 #include "corelogging.h"
+#include "qsceneobserverinterface.h"
 #include <QMutexLocker>
 #include <QReadLocker>
 #include <QThread>
 #include <QWriteLocker>
-
 #include <private/qchangearbiter_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -111,33 +111,53 @@ void QChangeArbiter::distributeQueueChanges(ChangeQueue *changeQueue)
         if (change.isNull())
             continue;
 
-        switch (change->observableType()) {
+        switch (change->type()) {
 
-        case QSceneChange::Observable: {
-            QObservableInterface *subject = change->subject().m_observable;
-            if (d->m_aspectObservations.contains(subject)) {
-                QObserverList &observers = d->m_aspectObservations[subject];
-                Q_FOREACH (const QObserverPair &observer, observers) {
-                    if ((change->type() & observer.first))
-                        observer.second->sceneChangeEvent(change);
-                }
-            }
+        case NodeCreated: {
+            Q_FOREACH (QSceneObserverInterface *observer, d->m_sceneObservers)
+                observer->sceneNodeAdded(change);
             break;
         }
 
-        case QSceneChange::Node: {
-            QNode *subject = change->subject().m_node;
-            if (d->m_nodeObservations.contains(subject)) {
-                QObserverList &observers = d->m_nodeObservations[subject];
-                Q_FOREACH (const QObserverPair&observer, observers) {
-                    if ((change->type() & observer.first))
-                        observer.second->sceneChangeEvent(change);
-                }
-            }
+        case NodeDeleted:
+        case NodeAboutToBeDeleted: {
+            Q_FOREACH (QSceneObserverInterface *observer, d->m_sceneObservers)
+                observer->sceneNodeRemoved(change);
             break;
         }
 
-        }
+        default : {
+            switch (change->observableType()) {
+
+            case QSceneChange::Observable: {
+                QObservableInterface *subject = change->subject().m_observable;
+                if (d->m_aspectObservations.contains(subject)) {
+                    QObserverList &observers = d->m_aspectObservations[subject];
+                    Q_FOREACH (const QObserverPair &observer, observers) {
+                        if ((change->type() & observer.first))
+                            observer.second->sceneChangeEvent(change);
+                    }
+                }
+                break;
+            }
+
+            case QSceneChange::Node: {
+                QNode *subject = change->subject().m_node;
+                if (d->m_nodeObservations.contains(subject)) {
+                    QObserverList &observers = d->m_nodeObservations[subject];
+                    Q_FOREACH (const QObserverPair&observer, observers) {
+                        if ((change->type() & observer.first))
+                            observer.second->sceneChangeEvent(change);
+                    }
+                }
+                break;
+            }
+
+            } // observableType switch
+            break;
+        } // default
+
+        } // change type switch
     }
 }
 
@@ -260,14 +280,14 @@ void QChangeArbiter::unregisterSceneObserver(QSceneObserverInterface *observer)
 
 void QChangeArbiter::sceneChangeEvent(const QSceneChangePtr &e)
 {
-//    qCDebug(ChangeArbiter) << Q_FUNC_INFO << QThread::currentThread();
+    //    qCDebug(ChangeArbiter) << Q_FUNC_INFO << QThread::currentThread();
 
     Q_D(QChangeArbiter);
     // Add the change to the thread local storage queue - no locking required => yay!
     ChangeQueue *localChangeQueue = d->m_tlsChangeQueue.localData();
     localChangeQueue->append(e);
 
-//    qCDebug(ChangeArbiter) << "Change queue for thread" << QThread::currentThread() << "now contains" << localChangeQueue->count() << "items";
+    //    qCDebug(ChangeArbiter) << "Change queue for thread" << QThread::currentThread() << "now contains" << localChangeQueue->count() << "items";
 }
 
 void QChangeArbiter::sceneChangeEventWithLock(const QSceneChangePtr &e)
