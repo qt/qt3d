@@ -85,8 +85,11 @@ void RenderEffect::setPeer(QAbstractEffect *effect)
         m_peer = effect;
         if (m_peer) {
             arbiter->registerObserver(this, m_peer, ComponentUpdated);
+
+            m_techniques.clear();
             Q_FOREACH (QAbstractTechnique *t, m_peer->techniques())
                 appendRenderTechnique(t);
+
             m_parameterPack.clear();
             if (qobject_cast<QEffect*>(m_peer))
                 Q_FOREACH (QParameter *p, qobject_cast<QEffect*>(m_peer)->parameters())
@@ -134,7 +137,7 @@ void RenderEffect::sceneChangeEvent(const QSceneChangePtr &e)
 
 void RenderEffect::appendRenderTechnique(QAbstractTechnique *t)
 {
-    QTechnique *technique = static_cast<QTechnique *>(t);
+    QTechnique *technique = qobject_cast<QTechnique *>(t);
     if (!technique)
         return ;
     HTechnique techHandle = m_renderer->techniqueManager()->lookupHandle(technique->uuid());
