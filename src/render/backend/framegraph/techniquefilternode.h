@@ -64,7 +64,7 @@ namespace Render {
 class Renderer;
 class RenderCriterion;
 
-typedef QHandle<RenderCriterion, 16> HTechniqueCriterion;
+typedef QHandle<RenderCriterion, 16> HCriterion;
 
 
 class TechniqueFilter
@@ -75,7 +75,7 @@ public:
     void setRenderer(Renderer *renderer);
     void setPeer(Qt3D::QTechniqueFilter *peer);
 
-    QList<HTechniqueCriterion> filters() const;
+    QList<HCriterion> filters() const;
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
@@ -84,7 +84,7 @@ private:
 
     Renderer *m_renderer;
     Qt3D::QTechniqueFilter *m_peer;
-    QList<HTechniqueCriterion> m_filters;
+    QList<HCriterion> m_filters;
 };
 
 } // Render

@@ -61,7 +61,7 @@ namespace Render {
 class Renderer;
 class RenderCriterion;
 
-typedef QHandle<RenderCriterion, 16> HTechniqueCriterion;
+typedef QHandle<RenderCriterion, 16> HCriterion;
 
 
 class RenderRenderPass : public QObserverInterface
@@ -76,14 +76,14 @@ public:
     void sceneChangeEvent(const QSceneChangePtr &e);
     QAbstractShader *shaderProgram() const;
     QList<QParameterMapper *> bindings() const;
-    QList<HTechniqueCriterion> criteria() const;
+    QList<HCriterion> criteria() const;
 
 private:
     Renderer *m_renderer;
     QRenderPass *m_peer;
     QAbstractShader *m_shader;
     QList<QParameterMapper *> m_bindings;
-    QList<HTechniqueCriterion> m_criteriaList;
+    QList<HCriterion> m_criteriaList;
 };
 
 } // Render

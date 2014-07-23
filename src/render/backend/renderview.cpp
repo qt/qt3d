@@ -71,7 +71,7 @@
 #include "texture.h"
 #include "renderlayer.h"
 #include "layermanager.h"
-#include "techniquecriterionmanager.h"
+#include "criterionmanager.h"
 #include "qopenglfilter.h"
 
 #include <Qt3DCore/qentity.h>
@@ -357,11 +357,11 @@ RenderTechnique *RenderView::findTechniqueForEffect(RenderEffect *effect)
                 // If no techniqueFilter is present, we return the technique as it satisfies OpenGL version
                 bool findMatch = (m_techniqueFilter == Q_NULLPTR || m_techniqueFilter->filters().size() == 0) ? true : false;
                 if (!findMatch && technique->criteria().size() >= m_techniqueFilter->filters().size()) {
-                    Q_FOREACH (HTechniqueCriterion refCritHandle, m_techniqueFilter->filters()) {
-                        RenderCriterion *refCriterion = m_renderer->techniqueCriterionManager()->data(refCritHandle);
+                    Q_FOREACH (HCriterion refCritHandle, m_techniqueFilter->filters()) {
+                        RenderCriterion *refCriterion = m_renderer->criterionManager()->data(refCritHandle);
                         findMatch = false;
-                        Q_FOREACH (HTechniqueCriterion critHandle, technique->criteria()) {
-                            RenderCriterion *rCrit = m_renderer->techniqueCriterionManager()->data(critHandle);
+                        Q_FOREACH (HCriterion critHandle, technique->criteria()) {
+                            RenderCriterion *rCrit = m_renderer->criterionManager()->data(critHandle);
                             if ((findMatch = (*rCrit == *refCriterion)))
                                 break;
                         }
@@ -388,11 +388,11 @@ QList<RenderRenderPass *> RenderView::findRenderPassesForTechnique(RenderTechniq
                 bool findMatch = (m_passFilter == Q_NULLPTR || m_passFilter->filters().size() == 0) ? true : false;
                 if (!findMatch && renderPass->criteria().size() >= m_passFilter->filters().size())
                 {
-                    Q_FOREACH (HTechniqueCriterion refCritHandle, m_passFilter->filters()) {
-                        RenderCriterion *refCriterion = m_renderer->techniqueCriterionManager()->data(refCritHandle);
+                    Q_FOREACH (HCriterion refCritHandle, m_passFilter->filters()) {
+                        RenderCriterion *refCriterion = m_renderer->criterionManager()->data(refCritHandle);
                         findMatch = false;
-                        Q_FOREACH (HTechniqueCriterion critHandle, renderPass->criteria()) {
-                            RenderCriterion *rCrit = m_renderer->techniqueCriterionManager()->data(critHandle);
+                        Q_FOREACH (HCriterion critHandle, renderPass->criteria()) {
+                            RenderCriterion *rCrit = m_renderer->criterionManager()->data(critHandle);
                             if ((findMatch = (*rCrit == *refCriterion)))
                                 break;
                         }

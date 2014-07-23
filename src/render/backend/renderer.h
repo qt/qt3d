@@ -109,7 +109,7 @@ class TextureDataManager;
 class LayerManager;
 class LightManager;
 class RenderThread;
-class TechniqueCriterionManager;
+class CriterionManager;
 
 typedef QHandle<RenderMaterial, 16> HMaterial;
 typedef QHandle<RenderEffect, 16> HEffect;
@@ -156,7 +156,7 @@ public:
     inline TextureDataManager *textureDataManager() const { return m_textureDataManager; }
     inline LayerManager *layerManager() const { return m_layerManager; }
     inline LightManager *lightManager() const { return m_lightManager; }
-    inline TechniqueCriterionManager *techniqueCriterionManager() const { return m_techniqueCriterionManager; }
+    inline CriterionManager *criterionManager() const { return m_criterionManager; }
 
     inline HMaterial defaultMaterialHandle() const { return m_defaultMaterialHandle; }
     inline HEffect defaultEffectHandle() const { return m_defaultEffectHandle; }
@@ -229,7 +229,7 @@ private:
     TextureDataManager *m_textureDataManager;
     LayerManager *m_layerManager;
     LightManager *m_lightManager;
-    TechniqueCriterionManager *m_techniqueCriterionManager;
+    CriterionManager *m_criterionManager;
 
     QTimer *m_frameTimer;
 

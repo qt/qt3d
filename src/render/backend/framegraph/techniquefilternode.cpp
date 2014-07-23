@@ -44,7 +44,7 @@
 #include "qtechniquefilter.h"
 #include "renderer.h"
 #include "rendereraspect.h"
-#include "techniquecriterionmanager.h"
+#include "criterionmanager.h"
 #include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/qchangearbiter.h>
 #include <Qt3DCore/qscenepropertychange.h>
@@ -82,17 +82,17 @@ void TechniqueFilter::setPeer(Qt3D::QTechniqueFilter *peer)
     }
 }
 
-QList<HTechniqueCriterion> TechniqueFilter::filters() const
+QList<HCriterion> TechniqueFilter::filters() const
 {
     return m_filters;
 }
 
 void TechniqueFilter::appendFilter(QCriterion *criterion)
 {
-    HTechniqueCriterion critHandle = m_renderer->techniqueCriterionManager()->lookupHandle(criterion->uuid());
+    HCriterion critHandle = m_renderer->criterionManager()->lookupHandle(criterion->uuid());
     if (critHandle.isNull()) {
-        critHandle = m_renderer->techniqueCriterionManager()->getOrAcquireHandle(criterion->uuid());
-        RenderCriterion *rCrit = m_renderer->techniqueCriterionManager()->data(critHandle);
+        critHandle = m_renderer->criterionManager()->getOrAcquireHandle(criterion->uuid());
+        RenderCriterion *rCrit = m_renderer->criterionManager()->data(critHandle);
         rCrit->setRenderer(m_renderer);
         rCrit->setPeer(criterion);
     }
@@ -102,7 +102,7 @@ void TechniqueFilter::appendFilter(QCriterion *criterion)
 
 void TechniqueFilter::removeFilter(const QUuid &criterionId)
 {
-    m_filters.removeOne(m_renderer->techniqueCriterionManager()->lookupHandle(criterionId));
+    m_filters.removeOne(m_renderer->criterionManager()->lookupHandle(criterionId));
 }
 
 void TechniqueFilter::sceneChangeEvent(const QSceneChangePtr &e)

@@ -42,7 +42,7 @@
 #include "renderpassfilternode.h"
 #include "rendereraspect.h"
 #include "renderer.h"
-#include "techniquecriterionmanager.h"
+#include "criterionmanager.h"
 #include "qcriterion.h"
 #include "qrenderpassfilter.h"
 #include <Qt3DCore/qaspectmanager.h>
@@ -81,17 +81,17 @@ void RenderPassFilter::setPeer(Qt3D::QRenderPassFilter *peer)
     }
 }
 
-QList<HTechniqueCriterion> RenderPassFilter::filters() const
+QList<HCriterion> RenderPassFilter::filters() const
 {
     return m_filters;
 }
 
 void RenderPassFilter::appendFilter(QCriterion *criterion)
 {
-    HTechniqueCriterion critHandle = m_renderer->techniqueCriterionManager()->lookupHandle(criterion->uuid());
+    HCriterion critHandle = m_renderer->criterionManager()->lookupHandle(criterion->uuid());
     if (critHandle.isNull()) {
-        critHandle = m_renderer->techniqueCriterionManager()->getOrAcquireHandle(criterion->uuid());
-        RenderCriterion *rCrit = m_renderer->techniqueCriterionManager()->data(critHandle);
+        critHandle = m_renderer->criterionManager()->getOrAcquireHandle(criterion->uuid());
+        RenderCriterion *rCrit = m_renderer->criterionManager()->data(critHandle);
         rCrit->setRenderer(m_renderer);
         rCrit->setPeer(criterion);
     }
@@ -101,7 +101,7 @@ void RenderPassFilter::appendFilter(QCriterion *criterion)
 
 void RenderPassFilter::removeFilter(const QUuid &criterionId)
 {
-    m_filters.removeOne(m_renderer->techniqueCriterionManager()->lookupHandle(criterionId));
+    m_filters.removeOne(m_renderer->criterionManager()->lookupHandle(criterionId));
 }
 
 void RenderPassFilter::sceneChangeEvent(const QSceneChangePtr &e)

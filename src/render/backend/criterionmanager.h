@@ -39,7 +39,11 @@
 **
 ****************************************************************************/
 
-#include "techniquecriterionmanager.h"
+#ifndef QT3D_RENDER_CRITERIONMANAGER_H
+#define QT3D_RENDER_CRITERIONMANAGER_H
+
+#include <Qt3DCore/qresourcesmanager.h>
+#include <Qt3DRenderer/rendercriterion.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -47,17 +51,25 @@ namespace Qt3D {
 
 namespace Render {
 
-TechniqueCriterionManager::TechniqueCriterionManager()
-    : QResourcesManager<RenderCriterion,
-                        QUuid,
-                        16,
-                        Qt3D::ArrayAllocatingPolicy,
-                        Qt3D::ObjectLevelLockingPolicy>()
+typedef QHandle<RenderCriterion, 16> HCriterion;
+
+class CriterionManager : public QResourcesManager<RenderCriterion,
+                                                           QUuid,
+                                                           16,
+                                                           Qt3D::ArrayAllocatingPolicy,
+                                                           Qt3D::ObjectLevelLockingPolicy>
+
 {
-}
+public:
+    CriterionManager();
+};
 
 } // Render
+
+Q_DECLARE_RESOURCE_INFO(Render::RenderCriterion, Q_REQUIRES_CLEANUP);
 
 } // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_RENDER_CRITERIONMANAGER_H

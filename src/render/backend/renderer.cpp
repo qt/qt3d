@@ -91,7 +91,7 @@
 #include "renderlogging.h"
 #include "qparametermapper.h"
 #include "renderthread.h"
-#include "techniquecriterionmanager.h"
+#include "criterionmanager.h"
 
 #include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/qabstracteffect.h>
@@ -132,7 +132,7 @@ Renderer::Renderer(int cachedFrames)
     , m_textureDataManager(new TextureDataManager())
     , m_layerManager(new LayerManager())
     , m_lightManager(new LightManager())
-    , m_techniqueCriterionManager(new TechniqueCriterionManager())
+    , m_criterionManager(new CriterionManager())
     , m_renderQueues(new RenderQueues(cachedFrames - 1))
     , m_renderThread(new RenderThread(this))
     , m_frameCount(0)

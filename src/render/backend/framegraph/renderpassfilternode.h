@@ -60,7 +60,7 @@ namespace Render {
 class Renderer;
 class RenderCriterion;
 
-typedef QHandle<RenderCriterion, 16> HTechniqueCriterion;
+typedef QHandle<RenderCriterion, 16> HCriterion;
 
 class RenderPassFilter
         : public Render::FrameGraphNode
@@ -70,7 +70,7 @@ public:
 
     void setRenderer(Renderer *renderer);
     void setPeer(Qt3D::QRenderPassFilter *peer);
-    QList<HTechniqueCriterion> filters() const;
+    QList<HCriterion> filters() const;
     void appendFilter(QCriterion *criterion);
     void removeFilter(const QUuid &criterionId);
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
@@ -78,7 +78,7 @@ public:
 private:
     Renderer *m_renderer;
     Qt3D::QRenderPassFilter *m_peer;
-    QList<HTechniqueCriterion> m_filters;
+    QList<HCriterion> m_filters;
 };
 
 } // namespace Render

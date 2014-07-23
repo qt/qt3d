@@ -69,7 +69,7 @@ class Renderer;
 class RenderCriterion;
 class RenderRenderPass;
 
-typedef QHandle<RenderCriterion, 16> HTechniqueCriterion;
+typedef QHandle<RenderCriterion, 16> HCriterion;
 typedef QHandle<RenderRenderPass, 16> HRenderPass;
 
 class RenderTechnique : public QObserverInterface
@@ -98,7 +98,7 @@ public:
     void appendRenderPass(QAbstractRenderPass *rPass);
     void removeRenderPass(const QUuid &renderPassId);
 
-    QList<HTechniqueCriterion> criteria() const;
+    QList<HCriterion> criteria() const;
     QList<HRenderPass> renderPasses() const;
     QOpenGLFilter *openGLFilter() const;
 
@@ -109,7 +109,7 @@ private:
     QOpenGLFilter *m_openglFilter;
 
     ParameterPack m_parameterPack;
-    QList<HTechniqueCriterion> m_criteriaList;
+    QList<HCriterion> m_criteriaList;
     QList<HRenderPass> m_renderPasses;
 };
 

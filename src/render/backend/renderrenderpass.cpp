@@ -43,7 +43,7 @@
 #include "renderer.h"
 #include "rendereraspect.h"
 #include "rendercriterion.h"
-#include "techniquecriterionmanager.h"
+#include "criterionmanager.h"
 #include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/qchangearbiter.h>
 #include <Qt3DCore/qscenepropertychange.h>
@@ -109,10 +109,10 @@ void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
     case ComponentAdded: {
         if (propertyChange->propertyName() == QByteArrayLiteral("criterion")) {
             QCriterion *crit = propertyChange->value().value<QCriterion *>();
-            HTechniqueCriterion critHandle = m_renderer->techniqueCriterionManager()->lookupHandle(crit->uuid());
+            HCriterion critHandle = m_renderer->criterionManager()->lookupHandle(crit->uuid());
             if (critHandle.isNull()) {
-                critHandle = m_renderer->techniqueCriterionManager()->getOrAcquireHandle(crit->uuid());
-                RenderCriterion *renderCriterion = m_renderer->techniqueCriterionManager()->data(critHandle);
+                critHandle = m_renderer->criterionManager()->getOrAcquireHandle(crit->uuid());
+                RenderCriterion *renderCriterion = m_renderer->criterionManager()->data(critHandle);
                 renderCriterion->setRenderer(m_renderer);
                 renderCriterion->setPeer(crit);
             }
@@ -124,7 +124,7 @@ void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
 
     case ComponentRemoved: {
         if (propertyChange->propertyName() == QByteArrayLiteral("criterion")) {
-            m_criteriaList.removeOne(m_renderer->techniqueCriterionManager()->lookupHandle(propertyChange->value().toUuid()));
+            m_criteriaList.removeOne(m_renderer->criterionManager()->lookupHandle(propertyChange->value().toUuid()));
         }
         break;
     }
@@ -145,7 +145,7 @@ QList<QParameterMapper *> RenderRenderPass::bindings() const
     return m_bindings;
 }
 
-QList<HTechniqueCriterion> RenderRenderPass::criteria() const
+QList<HCriterion> RenderRenderPass::criteria() const
 {
     return m_criteriaList;
 }

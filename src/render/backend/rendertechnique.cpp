@@ -47,7 +47,7 @@
 #include "rendereraspect.h"
 #include "renderer.h"
 #include "rendercriterion.h"
-#include "techniquecriterionmanager.h"
+#include "criterionmanager.h"
 #include "renderpassmanager.h"
 #include "qopenglfilter.h"
 #include <Qt3DCore/qaspectmanager.h>
@@ -144,10 +144,10 @@ void RenderTechnique::sceneChangeEvent(const QSceneChangePtr &e)
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("criterion")) {
             QCriterion *crit = propertyChange->value().value<QCriterion *>();
-            HTechniqueCriterion critHandle = m_renderer->techniqueCriterionManager()->lookupHandle(crit->uuid());
+            HCriterion critHandle = m_renderer->criterionManager()->lookupHandle(crit->uuid());
             if (critHandle.isNull()) {
-                critHandle = m_renderer->techniqueCriterionManager()->getOrAcquireHandle(crit->uuid());
-                RenderCriterion *renderCriterion = m_renderer->techniqueCriterionManager()->data(critHandle);
+                critHandle = m_renderer->criterionManager()->getOrAcquireHandle(crit->uuid());
+                RenderCriterion *renderCriterion = m_renderer->criterionManager()->data(critHandle);
                 renderCriterion->setRenderer(m_renderer);
                 renderCriterion->setPeer(crit);
             }
@@ -165,7 +165,7 @@ void RenderTechnique::sceneChangeEvent(const QSceneChangePtr &e)
             m_parameterPack.removeParameter(propertyChange->value().value<QParameter*>());
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("criterion")) {
-            m_criteriaList.removeOne(m_renderer->techniqueCriterionManager()->lookupHandle(propertyChange->value().toUuid()));
+            m_criteriaList.removeOne(m_renderer->criterionManager()->lookupHandle(propertyChange->value().toUuid()));
         }
         break;
     }
@@ -201,7 +201,7 @@ void RenderTechnique::removeRenderPass(const QUuid &renderPassId)
     m_renderPasses.removeOne(m_renderer->renderPassManager()->lookupHandle(renderPassId));
 }
 
-QList<HTechniqueCriterion> RenderTechnique::criteria() const
+QList<HCriterion> RenderTechnique::criteria() const
 {
     return m_criteriaList;
 }
