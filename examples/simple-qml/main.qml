@@ -57,6 +57,7 @@ Entity {
 
     QQ2.Timer
     {
+        id : timer
         property bool test : false;
         interval : 2000
         repeat : true
@@ -266,7 +267,10 @@ Entity {
             effect : Effect {
                 techniques : [
                     Technique {
-                        criteria : [Criterion { name : "RenderingStyle"; value : "forward"}]
+                        criteria : [
+                            Criterion { name : "RenderingStyle"; value : "forward"},
+                            Criterion { name : "Enabled"; value : true}
+                        ]
                         openGLFilter {api : OpenGLFilter.Desktop; profile : OpenGLFilter.Core; minorVersion : 1; majorVersion : 3 }
                         renderPasses : [
                             RenderPass {
@@ -347,7 +351,10 @@ Entity {
                 techniques : [
                     Technique {
                         openGLFilter {api : OpenGLFilter.Desktop; profile : OpenGLFilter.Core; minorVersion : 1; majorVersion : 3 }
-                        criteria : [Criterion { name : "RenderingStyle"; value : "forward"}]
+                        criteria : [
+                            Criterion { name : "RenderingStyle"; value : "forward"},
+                            Criterion { name : "Enabled"; value : timer.test; onValueChanged: console.log("VALUE " + value)}
+                        ]
 
                         parameters : [Parameter { name : "lightPos"; value : Qt.vector4d(10.0, 10.0, 0.0, 1.0);}]
 

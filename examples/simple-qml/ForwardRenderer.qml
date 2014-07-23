@@ -60,7 +60,8 @@ TechniqueFilter {
     property alias layerFilters : layerFilter.layers
 
     criteria : [
-        Criterion { name : "RenderingStyle"; value : "forward"}
+        Criterion { name : "RenderingStyle"; value : "forward"},
+        Criterion { name : "Enabled"; value : true}
     ]
 
     Viewport {
