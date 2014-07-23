@@ -55,6 +55,7 @@ namespace Qt3D {
 class QTechnique;
 class QParameter;
 class QOpenGLFilter;
+class QAbstractRenderPass;
 
 template <typename T, int INDEXBITS>
 class QHandle;
@@ -66,8 +67,10 @@ class DrawStateSet;
 class RenderShader;
 class Renderer;
 class RenderCriterion;
+class RenderRenderPass;
 
 typedef QHandle<RenderCriterion, 16> HTechniqueCriterion;
+typedef QHandle<RenderRenderPass, 16> HRenderPass;
 
 class RenderTechnique : public QObserverInterface
 {
@@ -79,7 +82,6 @@ public:
     void setRenderer(Renderer *renderer);
 
     void setPeer(QTechnique* peer);
-    QTechnique *peer() const;
 
     DrawStateSet* stateSetForPass(unsigned int pass) const;
 
@@ -93,7 +95,11 @@ public:
     void sceneChangeEvent(const QSceneChangePtr &e);
     const QHash<QString, QVariant> parameters() const;
 
+    void appendRenderPass(QAbstractRenderPass *rPass);
+    void removeRenderPass(const QUuid &renderPassId);
+
     QList<HTechniqueCriterion> criteria() const;
+    QList<HRenderPass> renderPasses() const;
     QOpenGLFilter *openGLFilter() const;
 
 private:
@@ -104,6 +110,7 @@ private:
 
     ParameterPack m_parameterPack;
     QList<HTechniqueCriterion> m_criteriaList;
+    QList<HRenderPass> m_renderPasses;
 };
 
 } // namespace Render

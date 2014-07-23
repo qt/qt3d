@@ -124,7 +124,7 @@ void QAbstractTechnique::addPass(QAbstractRenderPass *pass)
 /*!
  * Removes a \a pass from the technique. This posts a ComponentRemoved
  * QScenePropertyChange notification to the QChangeArbiter with the value
- * being the \a pass and the property name being "pass".
+ * being the \a pass' uuid and the property name being "pass".
  */
 void QAbstractTechnique::removePass(QAbstractRenderPass *pass)
 {
@@ -132,7 +132,7 @@ void QAbstractTechnique::removePass(QAbstractRenderPass *pass)
     d->m_renderPasses.removeOne(pass);
     QScenePropertyChangePtr e(new QScenePropertyChange(ComponentRemoved, this));
     e->setPropertyName(QByteArrayLiteral("pass"));
-    e->setValue(QVariant::fromValue(pass));
+    e->setValue(QVariant::fromValue(pass->uuid()));
     notifyObservers(e);
 }
 

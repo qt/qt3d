@@ -48,6 +48,7 @@
 #include "renderer.h"
 #include "rendercriterion.h"
 #include "techniquecriterionmanager.h"
+#include "renderpassmanager.h"
 #include "qopenglfilter.h"
 #include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/qchangearbiter.h>
@@ -95,13 +96,18 @@ void RenderTechnique::setPeer(QTechnique *peer)
         m_peer = peer;
         if (m_peer) {
             arbiter->registerObserver(this, m_peer);
+
             m_parameterPack.clear();
             Q_FOREACH (QParameter *p, m_peer->parameters())
                 m_parameterPack.appendParameter(p);
 
-            QOpenGLFilter *peerFilter = peer->openGLFilter();
+            m_renderPasses.clear();
+            Q_FOREACH (QAbstractRenderPass *rPass, m_peer->renderPasses())
+                appendRenderPass(rPass);
+
             // Copy OpenGLFilter info from frontend OpenGLFilter
             // QObject doesn't allow copying directly
+            QOpenGLFilter *peerFilter = peer->openGLFilter();
             m_openglFilter->setMinorVersion(peerFilter->minorVersion());
             m_openglFilter->setMajorVersion(peerFilter->majorVersion());
             m_openglFilter->setExtensions(peerFilter->extensions());
@@ -110,11 +116,6 @@ void RenderTechnique::setPeer(QTechnique *peer)
             m_openglFilter->setProfile(peerFilter->profile());
         }
     }
-}
-
-QTechnique *RenderTechnique::peer() const
-{
-    return m_peer;
 }
 
 QParameter *RenderTechnique::parameterByName(QString name) const
@@ -136,7 +137,7 @@ void RenderTechnique::sceneChangeEvent(const QSceneChangePtr &e)
 
     case ComponentAdded: {
         if (propertyChange->propertyName() == QByteArrayLiteral("pass")) {
-            // This will be filled when we have a proper backend RenderPass class
+            appendRenderPass(propertyChange->value().value<QAbstractRenderPass *>());
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("parameter")) {
             m_parameterPack.appendParameter(propertyChange->value().value<QParameter*>());
@@ -158,7 +159,7 @@ void RenderTechnique::sceneChangeEvent(const QSceneChangePtr &e)
 
     case ComponentRemoved: {
         if (propertyChange->propertyName() == QByteArrayLiteral("pass")) {
-            // See above
+            removeRenderPass(propertyChange->value().toUuid());
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("parameter")) {
             m_parameterPack.removeParameter(propertyChange->value().value<QParameter*>());
@@ -179,9 +180,35 @@ const QHash<QString, QVariant> RenderTechnique::parameters() const
     return m_parameterPack.namedValues();
 }
 
+void RenderTechnique::appendRenderPass(QAbstractRenderPass *rPass)
+{
+    QRenderPass *renderPass = qobject_cast<QRenderPass *>(rPass);
+    if (!renderPass)
+        return;
+    HRenderPass rPassHandle = m_renderer->renderPassManager()->lookupHandle(rPass->uuid());
+    if (rPassHandle.isNull()) {
+        rPassHandle = m_renderer->renderPassManager()->getOrAcquireHandle(rPass->uuid());
+        RenderRenderPass *renderRPass = m_renderer->renderPassManager()->data(rPassHandle);
+        renderRPass->setRenderer(m_renderer);
+        renderRPass->setPeer(renderPass);
+    }
+    if (!m_renderPasses.contains(rPassHandle))
+        m_renderPasses.append(rPassHandle);
+}
+
+void RenderTechnique::removeRenderPass(const QUuid &renderPassId)
+{
+    m_renderPasses.removeOne(m_renderer->renderPassManager()->lookupHandle(renderPassId));
+}
+
 QList<HTechniqueCriterion> RenderTechnique::criteria() const
 {
     return m_criteriaList;
+}
+
+QList<HRenderPass> RenderTechnique::renderPasses() const
+{
+    return m_renderPasses;
 }
 
 QOpenGLFilter *RenderTechnique::openGLFilter() const

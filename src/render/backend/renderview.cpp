@@ -361,7 +361,8 @@ RenderTechnique *RenderView::findTechniqueForEffect(RenderEffect *effect)
         Q_FOREACH (HTechnique tHandle, effect->techniques()) {
             RenderTechnique *technique = m_renderer->techniqueManager()->data(tHandle);
 
-            if (*m_renderer->contextInfo() == *technique->openGLFilter() &&
+            if (technique != Q_NULLPTR &&
+                    *m_renderer->contextInfo() == *technique->openGLFilter() &&
                     technique->criteria().size() >= m_techniqueFilter->filters().size()) {
                 bool findMatch;
                 Q_FOREACH (HTechniqueCriterion refCritHandle, m_techniqueFilter->filters()) {
@@ -388,17 +389,12 @@ RenderTechnique *RenderView::findTechniqueForEffect(RenderEffect *effect)
 QList<RenderRenderPass *> RenderView::findRenderPassesForTechnique(RenderTechnique *technique)
 {
     QList<RenderRenderPass *> passes;
-    if (technique != Q_NULLPTR && technique->peer() != Q_NULLPTR) {
-        // TO DO : Improve so we handle the case where the peer or renderPasses in the peer change
-        Q_FOREACH (QAbstractRenderPass *pass, technique->peer()->renderPasses()) {
+    if (technique != Q_NULLPTR) {
+        Q_FOREACH (HRenderPass rPassHandle, technique->renderPasses()) {
+            RenderRenderPass *renderPass = m_renderer->renderPassManager()->data(rPassHandle);
             // TO DO : IF PASS MATCHES CRITERIA
-//            RenderRenderPass *rPass = m_renderer->renderPassManager()->lookupResource(pass);
-//            if (rPass == Q_NULLPTR) {
-//                rPass = m_renderer->renderPassManager()->getOrCreateResource(pass);
-//                rPass->setRenderer(m_renderer);
-//                rPass->setPeer(qobject_cast<QRenderPass*>(pass));
-//            }
-//            passes << rPass;
+            if (renderPass != Q_NULLPTR)
+                passes << renderPass;
         }
     }
     return passes;
