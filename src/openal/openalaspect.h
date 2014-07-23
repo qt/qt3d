@@ -57,6 +57,7 @@ public:
 
     // QJobProviderInterface interface
     QVector<QJobPtr> jobsToExecute() Q_DECL_OVERRIDE;
+    QSceneObserverInterface *sceneObserver() const Q_DECL_OVERRIDE;
 
     // AbstractAspect interface
 protected:

@@ -57,6 +57,7 @@ class QAspectManager;
 class QNode;
 class QEntity;
 class QAbstractAspectPrivate;
+class QSceneObserverInterface;
 
 class QT3DCORESHARED_EXPORT QAbstractAspect : public QObject, public QJobProviderInterface
 {
@@ -81,6 +82,8 @@ public:
 
     void registerAspect(QEntity *rootObject);
     void unregisterAspect(QEntity *rootObject);
+
+    virtual QSceneObserverInterface *sceneObserver() const = 0;
 
 protected:
     Q_DECLARE_PRIVATE(QAbstractAspect)

@@ -62,13 +62,14 @@ public:
     explicit RendererAspect(QObject *parent = 0);
 
     QVector<QJobPtr> jobsToExecute() Q_DECL_OVERRIDE;
+    QSceneObserverInterface *sceneObserver() const Q_DECL_OVERRIDE;
 
 protected:
     void registerAspectHelper(QEntity *rootObject) Q_DECL_OVERRIDE;
     void unregisterAspectHelper(QEntity *rootObject) Q_DECL_OVERRIDE;
 
-    void onInitialize();
-    void onCleanup();
+    void onInitialize() Q_DECL_OVERRIDE;
+    void onCleanup() Q_DECL_OVERRIDE;
 
 private:
     Render::Renderer* m_renderer;

@@ -113,6 +113,11 @@ QVector<QJobPtr> RendererAspect::jobsToExecute()
     return jobs;
 }
 
+QSceneObserverInterface *RendererAspect::sceneObserver() const
+{
+    return Q_NULLPTR;
+}
+
 void RendererAspect::registerAspectHelper(QEntity *rootObject)
 {
     // setSceneGraphRoot is synchronized using the Renderer's mutex

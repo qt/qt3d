@@ -57,6 +57,11 @@ QVector<QJobPtr> OpenALAspect::jobsToExecute()
     return jobs;
 }
 
+QSceneObserverInterface *OpenALAspect::sceneObserver() const
+{
+    return Q_NULLPTR;
+}
+
 void OpenALAspect::registerAspectHelper(QEntity *rootObject)
 {
 

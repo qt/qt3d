@@ -57,6 +57,11 @@ QVector<QJobPtr> BulletPhysicsAspect::jobsToExecute()
     return jobs;
 }
 
+QSceneObserverInterface *BulletPhysicsAspect::sceneObserver() const
+{
+    return Q_NULLPTR;
+}
+
 void BulletPhysicsAspect::registerAspectHelper(QEntity *rootObject)
 {
 
