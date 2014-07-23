@@ -62,6 +62,7 @@ class QNode;
 class QObservableInterface;
 class QJobManagerInterface;
 class QChangeArbiterPrivate;
+class QSceneObserverInterface;
 
 class QT3DCORESHARED_EXPORT QChangeArbiter : public QObject,
                                              public QObserverInterface
@@ -83,11 +84,15 @@ public:
                           QNode *observable,
                           ChangeFlags changeFlags = AllChanges);
 
+    void registerSceneObserver(QSceneObserverInterface *interface);
+
     void unregisterObserver(QObserverInterface *observer,
                             QObservableInterface *subject);
 
     void unregisterObserver(QObserverInterface *observer,
                             QNode *subject);
+
+    void unregisterSceneObserver(QSceneObserverInterface *interface);
 
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;                 // QObserverInterface impl
     void sceneChangeEventWithLock(const QSceneChangePtr &e);

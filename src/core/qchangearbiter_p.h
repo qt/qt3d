@@ -54,6 +54,7 @@ class QNode;
 class QChangeArbiter;
 class QObservableInterface;
 class QJobManagerInterface;
+class QSceneObserverInterface;
 
 typedef QVector<QSceneChangePtr> ChangeQueue;
 typedef QPair<ChangeFlags, QObserverInterface *> QObserverPair;
@@ -79,6 +80,7 @@ public:
     // the mechanisms for working with objects there is different.
     QHash<QObservableInterface *, QObserverList> m_aspectObservations;
     QHash<QNode *, QObserverList> m_nodeObservations;
+    QList<QSceneObserverInterface *> m_sceneObservers;
 
     // Each thread has a TLS ChangeQueue so we never need to lock whilst
     // receiving a QSceneChange.

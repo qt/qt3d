@@ -117,6 +117,7 @@ void QAspectManager::shutdown()
     Q_FOREACH (QAbstractAspect *aspect, d->m_aspects) {
         aspect->unregisterAspect(d->m_root);
         aspect->cleanup();
+        d->m_changeArbiter->unregisterSceneObserver(aspect->sceneObserver());
     }
     qDeleteAll(d->m_aspects);
 }
@@ -185,6 +186,8 @@ void QAspectManager::registerAspect(QAbstractAspect *aspect)
     if (aspect != Q_NULLPTR) {
         d->m_aspects.append(aspect);
         aspect->initialize(this);
+        // Register sceneObserver with the QChangeArbiter
+        d->m_changeArbiter->registerSceneObserver(aspect->sceneObserver());
     }
     else {
         qCWarning(Aspects) << "Failed to register aspect";

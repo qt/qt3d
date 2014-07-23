@@ -194,6 +194,18 @@ void QChangeArbiter::registerObserver(QObserverInterface *observer,
     registerObserverHelper(observerList, observer, observable, changeFlags);
 }
 
+// Called from the QAspectThread context, no need to lock
+void QChangeArbiter::registerSceneObserver(QSceneObserverInterface *observer)
+{
+    if (observer == Q_NULLPTR) {
+        qCWarning(ChangeArbiter) << Q_FUNC_INFO << "SceneObserverInterface is null";
+        return ;
+    }
+    Q_D(QChangeArbiter);
+    if (!d->m_sceneObservers.contains(observer))
+        d->m_sceneObservers << observer;
+}
+
 void QChangeArbiter::registerObserverHelper(QObserverList &observerList,
                                             QObserverInterface *observer,
                                             QObservableInterface *observable,
@@ -236,6 +248,14 @@ void QChangeArbiter::unregisterObserver(QObserverInterface *observer, QNode *sub
                 observers.removeAt(i);
         }
     }
+}
+
+// Called from the QAspectThread context, no need to lock
+void QChangeArbiter::unregisterSceneObserver(QSceneObserverInterface *observer)
+{
+    Q_D(QChangeArbiter);
+    if (observer != Q_NULLPTR)
+        d->m_sceneObservers.removeOne(observer);
 }
 
 void QChangeArbiter::sceneChangeEvent(const QSceneChangePtr &e)
