@@ -173,10 +173,10 @@ Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(QNode *block)
     else if (qobject_cast<Qt3D::QRenderPassFilter*>(block) != Q_NULLPTR) {
         Qt3D::QRenderPassFilter *renderPassFilter = qobject_cast<Qt3D::QRenderPassFilter*>(block);
         Render::RenderPassFilter *renderPassFilterNode = new Render::RenderPassFilter();
-
+        renderPassFilterNode->setRenderer(m_renderer);
+        renderPassFilterNode->setPeer(renderPassFilter);
         qCDebug(Backend) << Q_FUNC_INFO << "RenderPassFilter";
-        Q_FOREACH (QCriterion *criterion, renderPassFilter->criteria())
-            renderPassFilterNode->appendFilter(criterion);
+
         return renderPassFilterNode;
     }
     else if (qobject_cast<Qt3D::QCameraSelector*>(block) != Q_NULLPTR) {
