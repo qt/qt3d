@@ -45,6 +45,7 @@
 #include "meshmanager.h"
 #include "meshdatamanager.h"
 #include "renderer.h"
+#include "rendersceneobserver.h"
 
 #include <loadmeshdatajob.h>
 #include <updateworldtransformjob.h>
@@ -64,10 +65,12 @@ namespace Qt3D {
 RendererAspect::RendererAspect(QObject *parent)
     : QAbstractAspect(QAbstractAspect::AspectRenderer, parent)
     , m_renderer(new Render::Renderer())
+    , m_sceneObserver(new Render::RenderSceneObserver)
 {
     // Won't return until the private RenderThread in Renderer has been created
     // The Renderer is set to wait the surface with a wait condition
     // Threads modifying the Renderer should be synchronized using the Renderer's mutex
+    m_sceneObserver->setRenderer(m_renderer);
 }
 
 QVector<QJobPtr> RendererAspect::jobsToExecute()
@@ -115,7 +118,7 @@ QVector<QJobPtr> RendererAspect::jobsToExecute()
 
 QSceneObserverInterface *RendererAspect::sceneObserver() const
 {
-    return Q_NULLPTR;
+    return m_sceneObserver;
 }
 
 void RendererAspect::registerAspectHelper(QEntity *rootObject)

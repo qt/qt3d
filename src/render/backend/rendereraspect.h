@@ -53,6 +53,7 @@ namespace Qt3D {
 
 namespace Render {
 class Renderer;
+class RenderSceneObserver;
 }
 
 class QT3DRENDERERSHARED_EXPORT RendererAspect : public QAbstractAspect
@@ -72,7 +73,8 @@ protected:
     void onCleanup() Q_DECL_OVERRIDE;
 
 private:
-    Render::Renderer* m_renderer;
+    Render::Renderer *m_renderer;
+    Render::RenderSceneObserver *m_sceneObserver;
 };
 
 }
