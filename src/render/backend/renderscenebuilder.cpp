@@ -154,38 +154,20 @@ Render::FrameGraphNode *RenderSceneBuilder::buildFrameGraph(QNode *node)
 Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(QNode *block)
 {
     if (qobject_cast<Qt3D::QTechniqueFilter*>(block) != Q_NULLPTR) {
-        Qt3D::QTechniqueFilter* techniqueFilter = qobject_cast<Qt3D::QTechniqueFilter*>(block);
-        Render::TechniqueFilter *techniqueFilterNode = new Render::TechniqueFilter();
-
-        techniqueFilterNode->setRenderer(m_renderer);
-        techniqueFilterNode->setPeer(techniqueFilter);
         qCDebug(Backend) << Q_FUNC_INFO << "TechniqueFilter";
-        return techniqueFilterNode;
+        return createBackendFrameGraphNode<TechniqueFilter, QTechniqueFilter>(block);
     }
     else if (qobject_cast<Qt3D::QViewport*>(block) != Q_NULLPTR) {
-        Qt3D::QViewport *viewport = qobject_cast<Qt3D::QViewport*>(block);
-        Render::ViewportNode *viewportNode = new Render::ViewportNode();
-        viewportNode->setRenderer(m_renderer);
-        viewportNode->setPeer(viewport);
         qCDebug(Backend) << Q_FUNC_INFO << "Viewport";
-        return viewportNode;
+        return createBackendFrameGraphNode<ViewportNode, QViewport>(block);
     }
     else if (qobject_cast<Qt3D::QRenderPassFilter*>(block) != Q_NULLPTR) {
-        Qt3D::QRenderPassFilter *renderPassFilter = qobject_cast<Qt3D::QRenderPassFilter*>(block);
-        Render::RenderPassFilter *renderPassFilterNode = new Render::RenderPassFilter();
-        renderPassFilterNode->setRenderer(m_renderer);
-        renderPassFilterNode->setPeer(renderPassFilter);
         qCDebug(Backend) << Q_FUNC_INFO << "RenderPassFilter";
-
-        return renderPassFilterNode;
+        return createBackendFrameGraphNode<RenderPassFilter, QRenderPassFilter>(block);
     }
     else if (qobject_cast<Qt3D::QCameraSelector*>(block) != Q_NULLPTR) {
-        Qt3D::QCameraSelector *cameraSelector = qobject_cast<Qt3D::QCameraSelector*>(block);
-        Render::CameraSelector *cameraSelectorNode = new Render::CameraSelector();
-        cameraSelectorNode->setRenderer(m_renderer);
-        cameraSelectorNode->setPeer(cameraSelector);
         qCDebug(Backend) << Q_FUNC_INFO << "CameraSelector";
-        return cameraSelectorNode;
+        return createBackendFrameGraphNode<CameraSelector, QCameraSelector>(block);
     }
     else if (qobject_cast<Qt3D::QRenderTargetSelector*>(block) != Q_NULLPTR) {
         Qt3D::QRenderTargetSelector *renderTargetSelector = qobject_cast<Qt3D::QRenderTargetSelector*>(block);
@@ -196,14 +178,8 @@ Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(QNode *block)
         return renderTargetSelectorNode;
     }
     else if (qobject_cast<Qt3D::QLayerFilter*>(block) != Q_NULLPTR) {
-        QLayerFilter *layerFilter = qobject_cast<Qt3D::QLayerFilter *>(block);
-        LayerFilterNode *layerFilterNode = new LayerFilterNode();
-
-        layerFilterNode->setRenderer(m_renderer);
-        layerFilterNode->setPeer(layerFilter);
-        // Done here once, layers are then updated by QChangeArbiter notifications
-        layerFilterNode->setLayers(layerFilter->layers());
-        return layerFilterNode;
+        qCDebug(Backend) << Q_FUNC_INFO << "LayerFilter";
+        return createBackendFrameGraphNode<LayerFilterNode, QLayerFilter>(block);
     }
     return Q_NULLPTR;
 }

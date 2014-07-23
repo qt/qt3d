@@ -87,6 +87,19 @@ private:
     Render::FrameGraphNode* buildFrameGraph(QNode *node);
     Render::FrameGraphNode* backendFrameGraphNode(QNode *);
 
+    template<typename Backend, typename Frontend>
+    Backend *createBackendFrameGraphNode(QNode *n)
+    {
+        Frontend *f = qobject_cast<Frontend *>(n);
+        if (n != Q_NULLPTR) {
+            Backend *backend = new Backend();
+            backend->setRenderer(m_renderer);
+            backend->setPeer(f);
+            return backend;
+        }
+        return Q_NULLPTR;
+    }
+
     RenderEntity* createRenderNode(QEntity *node);
     void createFrameGraph(QFrameGraph *frameGraph);
 

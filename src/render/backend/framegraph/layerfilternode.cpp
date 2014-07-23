@@ -73,8 +73,11 @@ void LayerFilterNode::setPeer(QLayerFilter *peer)
         if (m_peer)
             arbiter->unregisterObserver(this, m_peer);
         m_peer = peer;
-        if (m_peer)
+        m_layers.clear();
+        if (m_peer) {
             arbiter->registerObserver(this, m_peer);
+            m_layers = peer->layers();
+        }
     }
 }
 
