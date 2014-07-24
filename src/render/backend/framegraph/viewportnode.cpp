@@ -54,20 +54,14 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
-ViewportNode::ViewportNode(FrameGraphNode *parent)
-    : FrameGraphNode(FrameGraphNode::Viewport, parent)
-    , m_renderer(Q_NULLPTR)
+ViewportNode::ViewportNode()
+    : FrameGraphNode(FrameGraphNode::Viewport)
     , m_peer(Q_NULLPTR)
     , m_xMin(0.0f)
     , m_yMin(0.0f)
     , m_xMax(1.0f)
     , m_yMax(1.0f)
 {
-}
-
-void ViewportNode::setRenderer(Renderer *renderer)
-{
-    m_renderer = renderer;
 }
 
 void ViewportNode::setPeer(Qt3D::QViewport *peer)

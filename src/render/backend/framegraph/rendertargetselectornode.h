@@ -52,7 +52,7 @@ namespace Render {
 class RenderTargetSelector : public FrameGraphNode
 {
 public:
-    RenderTargetSelector(FrameGraphNode *parent = 0);
+    RenderTargetSelector();
 
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 

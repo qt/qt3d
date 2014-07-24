@@ -55,16 +55,10 @@ namespace Qt3D {
 
 namespace Render {
 
-CameraSelector::CameraSelector(FrameGraphNode *parent)
-    : FrameGraphNode(FrameGraphNode::CameraSelector, parent)
-    , m_renderer(Q_NULLPTR)
+CameraSelector::CameraSelector()
+    : FrameGraphNode(FrameGraphNode::CameraSelector)
     , m_peer(Q_NULLPTR)
 {
-}
-
-void CameraSelector::setRenderer(Renderer *renderer)
-{
-    m_renderer = renderer;
 }
 
 void CameraSelector::setPeer(Qt3D::QCameraSelector *peer)

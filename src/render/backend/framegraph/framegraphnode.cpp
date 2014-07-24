@@ -40,32 +40,99 @@
 ****************************************************************************/
 
 #include "framegraphnode.h"
+#include "renderer.h"
+#include "framegraphmanager.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 namespace Render {
 
-FrameGraphNode::FrameGraphNode(FrameGraphNode *parent)
-    : m_parent(parent)
+FrameGraphNode::FrameGraphNode()
+    : m_renderer(Q_NULLPTR)
     , m_nodeType(InvalidNodeType)
     , m_enabled(true)
 {
-    if (parent)
-        parent->m_children.append(this);
 }
 
-FrameGraphNode::FrameGraphNode(FrameGraphNodeType nodeType, FrameGraphNode *parent)
-    : m_parent(parent)
-    , m_nodeType(nodeType)
+FrameGraphNode::FrameGraphNode(FrameGraphNodeType nodeType)
+    : m_nodeType(nodeType)
     , m_enabled(true)
 {
-    if (parent)
-        parent->m_children.append(this);
 }
 
 FrameGraphNode::~FrameGraphNode()
 {
+}
+
+void FrameGraphNode::setRenderer(Renderer *renderer)
+{
+    m_renderer = renderer;
+}
+
+void FrameGraphNode::setHandle(HFrameGraphNode handle)
+{
+    m_handle = handle;
+}
+
+void FrameGraphNode::setParentHandle(HFrameGraphNode parentHandle)
+{
+    m_parentHandle = parentHandle;
+    FrameGraphNode **parent = m_renderer->frameGraphManager()->data(m_parentHandle);
+    if (parent != Q_NULLPTR && !(*parent)->m_childrenHandles.contains(m_handle))
+        (*parent)->m_childrenHandles.append(m_handle);
+}
+
+void FrameGraphNode::appendChildHandle(HFrameGraphNode childHandle)
+{
+    if (!m_childrenHandles.contains(childHandle)) {
+        FrameGraphNode **child = m_renderer->frameGraphManager()->data(childHandle);
+        if (child != Q_NULLPTR) {
+            m_childrenHandles.append(childHandle);
+            (*child)->m_parentHandle = m_handle;
+        }
+    }
+}
+
+void FrameGraphNode::removeChildHandle(HFrameGraphNode childHandle)
+{
+    if (m_childrenHandles.contains(childHandle))
+        m_childrenHandles.removeAll(childHandle);
+}
+
+HFrameGraphNode FrameGraphNode::handle() const
+{
+    return m_handle;
+}
+
+HFrameGraphNode FrameGraphNode::parentHandle() const
+{
+    return m_parentHandle;
+}
+
+QList<HFrameGraphNode> FrameGraphNode::childrenHandles() const
+{
+    return m_childrenHandles;
+}
+
+FrameGraphNode *FrameGraphNode::parent() const
+{
+    FrameGraphNode **parent = m_renderer->frameGraphManager()->data(m_parentHandle);
+    if (parent != Q_NULLPTR)
+        return *parent;
+    return Q_NULLPTR;
+}
+
+QList<FrameGraphNode *> FrameGraphNode::children() const
+{
+    QList<FrameGraphNode *> children;
+
+    Q_FOREACH (HFrameGraphNode handle, m_childrenHandles) {
+        FrameGraphNode **child = m_renderer->frameGraphManager()->data(handle);
+        if (child != Q_NULLPTR)
+            children << *child;
+    }
+    return children;
 }
 
 } // namespace Render

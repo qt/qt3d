@@ -58,9 +58,8 @@ class Renderer;
 class ViewportNode : public Render::FrameGraphNode
 {
 public:
-    ViewportNode(Render::FrameGraphNode *parent = 0);
+    ViewportNode();
 
-    void setRenderer(Renderer *renderer);
     void setPeer(Qt3D::QViewport *peer);
     Qt3D::QViewport *peer() const { return m_peer; }
 
@@ -79,7 +78,6 @@ public:
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    Renderer *m_renderer;
     Qt3D::QViewport *m_peer;
     float m_xMin;
     float m_yMin;

@@ -54,16 +54,10 @@ namespace Qt3D {
 
 namespace Render {
 
-LayerFilterNode::LayerFilterNode(FrameGraphNode *parent)
-    : FrameGraphNode(FrameGraphNode::LayerFilter, parent)
-    , m_renderer(Q_NULLPTR)
+LayerFilterNode::LayerFilterNode()
+    : FrameGraphNode(FrameGraphNode::LayerFilter)
     , m_peer(Q_NULLPTR)
 {
-}
-
-void LayerFilterNode::setRenderer(Renderer *renderer)
-{
-    m_renderer = renderer;
 }
 
 void LayerFilterNode::setPeer(QLayerFilter *peer)

@@ -60,9 +60,8 @@ class Renderer;
 class CameraSelector : public FrameGraphNode
 {
 public:
-    CameraSelector(FrameGraphNode *parent = 0);
+    CameraSelector();
 
-    void setRenderer(Renderer *renderer);
     void setPeer(Qt3D::QCameraSelector *peer);
     Qt3D::QCameraSelector *peer() const { return m_peer; }
 
@@ -70,10 +69,8 @@ public:
     QUuid cameraUuid() const;
 
 private:
-    Renderer *m_renderer;
     Qt3D::QCameraSelector *m_peer;
     QUuid m_cameraUuid;
-
 };
 
 } // namespace Render

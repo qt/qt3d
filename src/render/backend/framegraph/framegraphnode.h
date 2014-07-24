@@ -43,19 +43,28 @@
 #define QT3D_RENDER_FRAMEGRAPHNODE_H
 
 #include <Qt3DCore/qobserverinterface.h>
-
+#include <Qt3DCore/qhandle.h>
 #include <qglobal.h>
 #include <QVector>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
+
+template<typename T, int INDEXBITS>
+class QHandle;
+
 namespace Render {
+
+class Renderer;
+class FrameGraphNode;
+
+typedef QHandle<FrameGraphNode *, 8> HFrameGraphNode;
 
 class FrameGraphNode : public QObserverInterface
 {
 public:
-    FrameGraphNode(FrameGraphNode *parent = 0);
+    FrameGraphNode();
     virtual ~FrameGraphNode();
 
     enum FrameGraphNodeType {
@@ -69,25 +78,33 @@ public:
     };
     FrameGraphNodeType nodeType() const { return m_nodeType; }
 
-    FrameGraphNode *parent() const { return m_parent; }
-    void setParent(FrameGraphNode *parent) { m_parent = parent; }
-
-    int childCount() const { return m_children.count(); }
-    FrameGraphNode * child(int index) const { return m_children.at(index); }
-    void appendChild(FrameGraphNode *child) { child->setParent(this); m_children.append(child); }
 
     void setEnabled(bool enabled) { m_enabled = enabled; }
     bool isEnabled() const { return m_enabled; }
 
+    void setRenderer(Renderer *renderer);
+    void setHandle(HFrameGraphNode handle);
+    void setParentHandle(HFrameGraphNode parentHandle);
+    void appendChildHandle(HFrameGraphNode childHandle);
+    void removeChildHandle(HFrameGraphNode childHandle);
+
+    HFrameGraphNode handle() const;
+    HFrameGraphNode parentHandle() const;
+    QList<HFrameGraphNode> childrenHandles() const;
+
+    FrameGraphNode *parent() const;
+    QList<FrameGraphNode *> children() const;
+
 protected:
-    FrameGraphNode(FrameGraphNodeType nodeType, FrameGraphNode *parent = 0);
+    FrameGraphNode(FrameGraphNodeType nodeType);
+    Renderer *m_renderer;
 
 private:
-    FrameGraphNode *m_parent;
-    QVector<FrameGraphNode *> m_children;
-
     FrameGraphNodeType m_nodeType;
     bool m_enabled;
+    HFrameGraphNode m_handle;
+    HFrameGraphNode m_parentHandle;
+    QList<HFrameGraphNode> m_childrenHandles;
 
     friend class FrameGraphVisitor;
 };

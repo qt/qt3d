@@ -71,8 +71,7 @@ class TechniqueFilter
         : public Render::FrameGraphNode
 {
 public:
-    TechniqueFilter(Render::FrameGraphNode *parent = 0);
-    void setRenderer(Renderer *renderer);
+    TechniqueFilter();
     void setPeer(Qt3D::QTechniqueFilter *peer);
 
     QList<HCriterion> filters() const;
@@ -82,7 +81,6 @@ private:
     void appendFilter(QCriterion *criterion);
     void removeFilter(const QUuid &criterionId);
 
-    Renderer *m_renderer;
     Qt3D::QTechniqueFilter *m_peer;
     QList<HCriterion> m_filters;
 };

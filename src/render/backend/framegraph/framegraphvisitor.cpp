@@ -67,6 +67,7 @@ void FrameGraphVisitor::traverse(FrameGraphNode *root,
 
     Q_ASSERT(m_renderer);
     Q_ASSERT(m_jobs);
+    Q_ASSERT_X(root, Q_FUNC_INFO, "The FrameGraphRoot is null");
 
     // Kick off the traversal
     Render::FrameGraphNode *node = root;
@@ -79,15 +80,12 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
 {
     // Recurse to children (if we have any), otherwise if this is a leaf node,
     // initiate a rendering from the current camera
-    if (node->childCount()) {
-        for (int i = 0; i < node->childCount(); ++i) {
-            Render::FrameGraphNode *n = node->child(i);
-            visit(n);
-        }
-    } else {
-        // Leaf node - create a RenderView ready to be populated
-        // TODO: Pass in only framegraph config that has changed from previous
-        // index RenderViewJob.
+    Q_FOREACH (Render::FrameGraphNode *n, node->children())
+        visit(n);
+    // Leaf node - create a RenderView ready to be populated
+    // TODO: Pass in only framegraph config that has changed from previous
+    // index RenderViewJob.
+    if (node->childrenHandles().empty()) {
         QJobPtr job = m_renderer->createRenderViewJob(node, m_renderviewIndex++);
         m_jobs->append(job);
     }

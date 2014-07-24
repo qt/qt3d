@@ -54,16 +54,10 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
-TechniqueFilter::TechniqueFilter(FrameGraphNode *parent)
-    : FrameGraphNode(FrameGraphNode::TechniqueFilter, parent)
-    , m_renderer(Q_NULLPTR)
+TechniqueFilter::TechniqueFilter()
+    : FrameGraphNode(FrameGraphNode::TechniqueFilter)
     , m_peer(Q_NULLPTR)
 {
-}
-
-void TechniqueFilter::setRenderer(Renderer *renderer)
-{
-    m_renderer = renderer;
 }
 
 void TechniqueFilter::setPeer(Qt3D::QTechniqueFilter *peer)

@@ -66,9 +66,8 @@ class RenderPassFilter
         : public Render::FrameGraphNode
 {
 public:
-    RenderPassFilter(Render::FrameGraphNode *parent = 0);
+    RenderPassFilter();
 
-    void setRenderer(Renderer *renderer);
     void setPeer(Qt3D::QRenderPassFilter *peer);
     QList<HCriterion> filters() const;
     void appendFilter(QCriterion *criterion);
@@ -76,7 +75,6 @@ public:
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    Renderer *m_renderer;
     Qt3D::QRenderPassFilter *m_peer;
     QList<HCriterion> m_filters;
 };

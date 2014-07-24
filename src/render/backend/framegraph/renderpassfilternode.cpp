@@ -54,16 +54,10 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
-RenderPassFilter::RenderPassFilter(FrameGraphNode *parent)
-    : FrameGraphNode(FrameGraphNode::RenderPassFilter, parent)
-    , m_renderer(Q_NULLPTR)
+RenderPassFilter::RenderPassFilter()
+    : FrameGraphNode(FrameGraphNode::RenderPassFilter)
     , m_peer(Q_NULLPTR)
 {
-}
-
-void RenderPassFilter::setRenderer(Renderer *renderer)
-{
-    m_renderer = renderer;
 }
 
 void RenderPassFilter::setPeer(Qt3D::QRenderPassFilter *peer)

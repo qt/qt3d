@@ -58,16 +58,14 @@ class Renderer;
 class LayerFilterNode : public FrameGraphNode
 {
 public:
-    LayerFilterNode(FrameGraphNode *parent = 0);
+    LayerFilterNode();
 
-    void setRenderer(Renderer *renderer);
     void setPeer(QLayerFilter *peer);
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
     QStringList layers() const;
     void setLayers(const QStringList &list);
 
 private:
-    Renderer *m_renderer;
     QLayerFilter *m_peer;
     QStringList m_layers;
 };
