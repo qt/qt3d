@@ -58,6 +58,7 @@ public:
 
     Q_DECLARE_PUBLIC(QFrameGraphItem)
     bool m_enabled;
+    QList<QFrameGraphItem *> m_fgChildren;
 };
 
 } // Qt3D

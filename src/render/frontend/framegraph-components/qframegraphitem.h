@@ -61,6 +61,10 @@ public:
     void setEnabled(bool enabled);
     bool isEnabled() const;
 
+    void appendFrameGraphItem(QFrameGraphItem *item);
+    void removeFrameGraphItem(QFrameGraphItem *item);
+    QList<QFrameGraphItem *> frameGraphChildren() const;
+
 Q_SIGNALS:
     void enabledChanged();
 

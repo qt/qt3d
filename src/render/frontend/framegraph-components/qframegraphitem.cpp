@@ -89,6 +89,30 @@ bool QFrameGraphItem::isEnabled() const
     return d->m_enabled;
 }
 
+void QFrameGraphItem::appendFrameGraphItem(QFrameGraphItem *item)
+{
+    Q_D(QFrameGraphItem);
+    if (!d->m_fgChildren.contains(item)) {
+        QNode::addChild(item);
+        d->m_fgChildren.append(item);
+    }
+}
+
+void QFrameGraphItem::removeFrameGraphItem(QFrameGraphItem *item)
+{
+    Q_D(QFrameGraphItem);
+    if (!d->m_fgChildren.contains(item)) {
+        d->m_fgChildren.removeOne(item);
+        QNode::removeChild(item);
+    }
+}
+
+QList<QFrameGraphItem *> QFrameGraphItem::frameGraphChildren() const
+{
+    Q_D(const QFrameGraphItem);
+    return d->m_fgChildren;
+}
+
 
 } // Qt3D
 

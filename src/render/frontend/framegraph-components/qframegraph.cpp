@@ -81,7 +81,7 @@ QFrameGraph::QFrameGraph(QFrameGraphPrivate &dd, QNode *parent)
 /*!
  * Returns the current activeFrameGraph root node.
  */
-QNode *QFrameGraph::activeFrameGraph() const
+QFrameGraphItem *QFrameGraph::activeFrameGraph() const
 {
     Q_D(const QFrameGraph);
     return d->m_activeFrameGraph;
@@ -90,7 +90,7 @@ QNode *QFrameGraph::activeFrameGraph() const
 /*!
  * Sets the root node \a activeFrameGraph of the FrameGraph.
  */
-void QFrameGraph::setActiveFrameGraph(QNode *activeFrameGraph)
+void QFrameGraph::setActiveFrameGraph(QFrameGraphItem *activeFrameGraph)
 {
     Q_D(QFrameGraph);
     if (activeFrameGraph != d->m_activeFrameGraph) {
