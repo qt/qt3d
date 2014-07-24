@@ -68,6 +68,8 @@ void QCameraSelector::setCamera(QEntity *camera)
     if (d->m_camera != camera) {
         d->m_camera = camera;
         emit cameraChanged();
+        if (camera->parent() == this)
+            QNode::addChild(camera);
         QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentUpdated, this));
         propertyChange->setPropertyName(QByteArrayLiteral("camera"));
         propertyChange->setValue(QVariant::fromValue(d->m_camera->uuid()));

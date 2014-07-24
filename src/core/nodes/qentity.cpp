@@ -86,7 +86,7 @@ void QEntity::addComponent(QComponent *comp)
     d->m_components.append(comp);
     // We only set the Entity as the Component's parent when it has no parent
     // This will be the case mostly on C++ but rarely in QML
-    if (!comp->parent())
+    if (!comp->parent() || comp->parent() == this)
         addChild(comp);
 
     QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentAdded, this));
