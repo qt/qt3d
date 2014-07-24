@@ -80,6 +80,7 @@
 #include <Qt3DQuickRenderer/quick3dtexture.h>
 #include <Qt3DQuickRenderer/shaderpropertyparser.h>
 #include <Qt3DQuickRenderer/quick3drenderpass.h>
+#include <Qt3DQuickRenderer/quick3dframegraphitem.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -120,6 +121,8 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterExtendedType<Qt3D::QTechniqueFilter, Qt3D::Render::Quick::Quick3DTechniqueFilter>(uri, 2, 0, "TechniqueFilter");
     qmlRegisterExtendedType<Qt3D::QViewport, Qt3D::Render::Quick::Quick3DViewport>(uri, 2, 0, "Viewport");
     qmlRegisterExtendedType<Qt3D::QRenderTargetSelector, Qt3D::Render::Quick::Quick3DRenderTargetSelector>(uri, 2, 0, "RenderTargetSelector");
+    // Should be uncreatable extended type
+    qmlRegisterExtendedType<Qt3D::QFrameGraphItem, Qt3D::Render::Quick::Quick3DFrameGraphItem>(uri, 2, 0, "FrameGraphItem");
     qmlRegisterType<Qt3D::QFrameGraph>(uri, 2, 0, "FrameGraph");
 }
 
