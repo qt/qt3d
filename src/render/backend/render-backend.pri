@@ -52,7 +52,8 @@ HEADERS += \
     $$PWD/entitymanager.h \
     $$PWD/rendercriterion.h \
     $$PWD/criterionmanager.h \
-    $$PWD/rendersceneobserver.h
+    $$PWD/rendersceneobserver.h \
+    $$PWD/framegraphmanager.h
 
 SOURCES += \
     $$PWD/rendereraspect.cpp \
@@ -101,4 +102,5 @@ SOURCES += \
     $$PWD/entitymanager.cpp \
     $$PWD/rendercriterion.cpp \
     $$PWD/criterionmanager.cpp \
-    $$PWD/rendersceneobserver.cpp
+    $$PWD/rendersceneobserver.cpp \
+    $$PWD/framegraphmanager.cpp
