@@ -41,6 +41,8 @@
 
 #include "rendersceneobserver.h"
 #include "renderer.h"
+#include "renderscenebuilder.h"
+#include "qscenepropertychange.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -61,13 +63,16 @@ void RenderSceneObserver::setRenderer(Renderer *renderer)
 void RenderSceneObserver::sceneNodeAdded(QSceneChangePtr &e)
 {
     if (m_renderer) {
-
+        QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
+        m_renderer->renderSceneBuilder()->createRenderElement(propertyChange->value().value<QNode *>());
     }
 }
 
 void RenderSceneObserver::sceneNodeRemoved(QSceneChangePtr &e)
 {
     if (m_renderer) {
+        QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
+        m_renderer->renderSceneBuilder()->releaseRenderElement(propertyChange->value().toUuid());
 
     }
 }
