@@ -111,6 +111,7 @@ class LightManager;
 class RenderThread;
 class CriterionManager;
 class RenderSceneBuilder;
+class FrameGraphManager;
 
 typedef QHandle<RenderMaterial, 16> HMaterial;
 typedef QHandle<RenderEffect, 16> HEffect;
@@ -158,6 +159,7 @@ public:
     inline LayerManager *layerManager() const { return m_layerManager; }
     inline LightManager *lightManager() const { return m_lightManager; }
     inline CriterionManager *criterionManager() const { return m_criterionManager; }
+    inline FrameGraphManager *frameGraphManager() const { return m_frameGraphManager; }
 
     inline HMaterial defaultMaterialHandle() const { return m_defaultMaterialHandle; }
     inline HEffect defaultEffectHandle() const { return m_defaultEffectHandle; }
@@ -233,6 +235,7 @@ private:
     LayerManager *m_layerManager;
     LightManager *m_lightManager;
     CriterionManager *m_criterionManager;
+    FrameGraphManager *m_frameGraphManager;
 
     QTimer *m_frameTimer;
 
