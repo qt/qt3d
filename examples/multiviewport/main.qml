@@ -67,50 +67,52 @@ Entity {
             NumberAnimation {target : sceneRoot; property : "rotationAngle"; to : 360; duration : 2000;}
         }
 
+        property var cameras : [cameraViewport1, cameraViewport2, cameraViewport3, cameraViewport4]
+
+        Timer {
+            running : true
+            interval : 10000
+            repeat : true
+            property int count : 0
+            onTriggered:
+            {
+                cameraSelectorTopLeftViewport.camera = sceneRoot.cameras[count++ % 4];
+                cameraSelectorTopRightViewport.camera = sceneRoot.cameras[count % 4];
+                cameraSelectorBottomLeftViewport.camera = sceneRoot.cameras[(count + 1) % 4];
+                cameraSelectorBottomRightViewport.camera = sceneRoot.cameras[(count + 2) % 4];
+            }
+        }
+
         FrameGraph {
             id : frameGraph
-            activeFrameGraph: Viewport {
+
+            Viewport {
                 id : mainViewport
                 rect: Qt.rect(0, 0, 1, 1)
 
-                property var cameras : [cameraViewport1, cameraViewport2, cameraViewport3, cameraViewport4]
-
-                Timer {
-                    running : true
-                    interval : 10000
-                    repeat : true
-                    property int count : 0
-                    onTriggered:
-                    {
-                        cameraSelectorTopLeftViewport.camera = mainViewport.cameras[count++ % 4];
-                        cameraSelectorTopRightViewport.camera = mainViewport.cameras[count % 4];
-                        cameraSelectorBottomLeftViewport.camera = mainViewport.cameras[(count + 1) % 4];
-                        cameraSelectorBottomRightViewport.camera = mainViewport.cameras[(count + 2) % 4];
-                    }
-                }
 
                 Viewport {
                     id : topLeftViewport
                     rect : Qt.rect(0, 0, 0.5, 0.5)
-                    CameraSelector {id : cameraSelectorTopLeftViewport; camera : mainViewport.cameras[0]}
+                    CameraSelector {id : cameraSelectorTopLeftViewport; camera : sceneRoot.cameras[0]}
                 }
 
                 Viewport {
                     id : topRightViewport
                     rect : Qt.rect(0.5, 0, 0.5, 0.5)
-                    CameraSelector {id : cameraSelectorTopRightViewport;camera : mainViewport.cameras[1]}
+                    CameraSelector {id : cameraSelectorTopRightViewport;camera : sceneRoot.cameras[1]}
                 }
 
                 Viewport {
                     id : bottomLeftViewport
                     rect : Qt.rect(0, 0.5, 0.5, 0.5)
-                    CameraSelector {id : cameraSelectorBottomLeftViewport; camera : mainViewport.cameras[2]}
+                    CameraSelector {id : cameraSelectorBottomLeftViewport; camera : sceneRoot.cameras[2]}
                 }
 
                 Viewport {
                     id : bottomRightViewport
                     rect : Qt.rect(0.5, 0.5, 0.5, 0.5)
-                    CameraSelector {id : cameraSelectorBottomRightViewport; camera : mainViewport.cameras[3]}
+                    CameraSelector {id : cameraSelectorBottomRightViewport; camera : sceneRoot.cameras[3]}
                 }
             } // mainViewport
         } // frameGraph
