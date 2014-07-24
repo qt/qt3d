@@ -110,6 +110,7 @@ class LayerManager;
 class LightManager;
 class RenderThread;
 class CriterionManager;
+class RenderSceneBuilder;
 
 typedef QHandle<RenderMaterial, 16> HMaterial;
 typedef QHandle<RenderEffect, 16> HEffect;
@@ -162,6 +163,8 @@ public:
     inline HEffect defaultEffectHandle() const { return m_defaultEffectHandle; }
     inline HTechnique defaultTechniqueHandle() const { return m_defaultTechniqueHandle; }
     inline HRenderPass defaultRenderPassHandle() const { return m_defaultRenderPassHandle; }
+
+    inline RenderSceneBuilder *renderSceneBuilder() const { return m_renderSceneBuilder; }
 
     QOpenGLFilter *contextInfo() const;
 
@@ -235,6 +238,7 @@ private:
 
     RenderQueues *m_renderQueues;
     RenderThread *m_renderThread;
+    RenderSceneBuilder *m_renderSceneBuilder;
 
     void buildDefaultMaterial();
     void buildDefaultTechnique();

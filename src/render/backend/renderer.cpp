@@ -135,6 +135,7 @@ Renderer::Renderer(int cachedFrames)
     , m_criterionManager(new CriterionManager())
     , m_renderQueues(new RenderQueues(cachedFrames - 1))
     , m_renderThread(new RenderThread(this))
+    , m_renderSceneBuilder(new RenderSceneBuilder(this))
     , m_frameCount(0)
     , m_cachedFramesCount(cachedFrames)
 {
@@ -295,10 +296,9 @@ void Renderer::setSceneGraphRoot(QEntity *sgRoot)
         m_waitForInitializationToBeCompleted.wait(&m_mutex);
 
     m_sceneGraphRoot = sgRoot;
-    RenderSceneBuilder builder(this);
-    builder.traverse(m_sceneGraphRoot);
-    m_renderSceneRoot = builder.rootNode();
-    builder.initializeFrameGraph();
+    m_renderSceneBuilder->traverse(m_sceneGraphRoot);
+    m_renderSceneRoot = m_renderSceneBuilder->rootNode();
+    m_renderSceneBuilder->initializeFrameGraph();
     if (!m_renderSceneRoot)
         qCWarning(Backend) << "Failed to build render scene";
     qCDebug(Backend) << Q_FUNC_INFO << "DUMPING SCENE";
