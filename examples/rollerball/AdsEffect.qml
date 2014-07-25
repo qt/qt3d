@@ -69,18 +69,23 @@ Effect {
 
     techniques: [
         Technique {
-            criteria : [
-                Criterion { name : "RenderingStyle"; value : "forward"}
-            ]
+            openGLFilter {
+                api: OpenGLFilter.Desktop
+                profile: OpenGLFilter.Core
+                majorVersion: 3
+                minorVersion: 1
+            }
 
-            parameters : [
+            criteria: [ Criterion { name : "renderingStyle"; value : "forward" } ]
+
+            parameters: [
                 Parameter { name: "lightPosition";  value: Qt.vector4d( 0.0, 0.0, 0.0, 1.0 ) },
                 Parameter { name: "lightIntensity"; value: Qt.vector3d( 0.7, 0.7, 0.7 ) }
             ]
 
             renderPasses: [
                 RenderPass {
-                    criteria: []
+                    name: "lighting"
 
                     // The bindings property allows us to map from names of parameters (uniforms or vertex attributes)
                     // within a shader to more friendly names in QML. By default the parameter names are exposed from
@@ -88,9 +93,9 @@ Effect {
                     // ka uniform name in the shader to a property called ambient
                     bindings: [
                         // Uniforms (those provided by the user)
-                        ParameterMapper { parameterName: "ambient";  shaderVariableName: "ka"; bindingType: ParameterMapper.Uniform},
-                        ParameterMapper { parameterName: "diffuse";  shaderVariableName: "kd"; bindingType: ParameterMapper.Uniform},
-                        ParameterMapper { parameterName: "specular"; shaderVariableName: "ks"; bindingType: ParameterMapper.Uniform}
+                        ParameterMapper { parameterName: "ambient";  shaderVariableName: "ka"; bindingType: ParameterMapper.Uniform },
+                        ParameterMapper { parameterName: "diffuse";  shaderVariableName: "kd"; bindingType: ParameterMapper.Uniform },
+                        ParameterMapper { parameterName: "specular"; shaderVariableName: "ks"; bindingType: ParameterMapper.Uniform }
                     ]
 
                     shaderProgram: ShaderProgram {
