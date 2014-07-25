@@ -79,8 +79,9 @@ public:
     // We keep these distinct because we do not manage the main thread which means
     // the mechanisms for working with objects there is different.
     QHash<QObservableInterface *, QObserverList> m_aspectObservations;
-    QHash<QNode *, QObserverList> m_nodeObservations;
+    QHash<QUuid, QObserverList> m_nodeObservations;
     QList<QSceneObserverInterface *> m_sceneObservers;
+    QHash<QUuid, QNode *> m_idToNodeObservable;
 
     // Each thread has a TLS ChangeQueue so we never need to lock whilst
     // receiving a QSceneChange.

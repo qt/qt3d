@@ -143,8 +143,8 @@ void QChangeArbiter::distributeQueueChanges(ChangeQueue *changeQueue)
 
             case QSceneChange::Node: {
                 QNode *subject = change->subject().m_node;
-                if (d->m_nodeObservations.contains(subject)) {
-                    QObserverList &observers = d->m_nodeObservations[subject];
+                if (d->m_nodeObservations.contains(subject->uuid())) {
+                    QObserverList &observers = d->m_nodeObservations[subject->uuid()];
                     Q_FOREACH (const QObserverPair&observer, observers) {
                         if ((change->type() & observer.first))
                             observer.second->sceneChangeEvent(change);
@@ -195,6 +195,16 @@ void QChangeArbiter::syncChanges()
 }
 
 void QChangeArbiter::registerObserver(QObserverInterface *observer,
+                                      const QUuid &nodeId,
+                                      ChangeFlags changeFlags)
+{
+    Q_D(QChangeArbiter);
+    QMutexLocker locker(&d->m_mutex);
+    QObserverList &observerList = d->m_nodeObservations[nodeId];
+    observerList.append(QObserverPair(changeFlags, observer));
+}
+
+void QChangeArbiter::registerObserver(QObserverInterface *observer,
                                       QObservableInterface *observable,
                                       ChangeFlags changeFlags)
 {
@@ -210,7 +220,9 @@ void QChangeArbiter::registerObserver(QObserverInterface *observer,
 {
     Q_D(QChangeArbiter);
     QMutexLocker locker(&d->m_mutex);
-    QObserverList &observerList = d->m_nodeObservations[observable];
+    if (!observable)
+        return;
+    QObserverList &observerList = d->m_nodeObservations[observable->uuid()];
     registerObserverHelper(observerList, observer, observable, changeFlags);
 }
 
@@ -259,10 +271,15 @@ void QChangeArbiter::unregisterObserver(QObserverInterface *observer,
 
 void QChangeArbiter::unregisterObserver(QObserverInterface *observer, QNode *subject)
 {
+    unregisterObserver(observer, subject->uuid());
+}
+
+void QChangeArbiter::unregisterObserver(QObserverInterface *observer, const QUuid &nodeId)
+{
     Q_D(QChangeArbiter);
     QMutexLocker locker(&d->m_mutex);
-    if (d->m_nodeObservations.contains(subject)) {
-        QObserverList &observers = d->m_nodeObservations[subject];
+    if (d->m_nodeObservations.contains(nodeId)) {
+        QObserverList &observers = d->m_nodeObservations[nodeId];
         for (int i = observers.count() - 1; i >= 0; i--) {
             if (observers[i].second == observer)
                 observers.removeAt(i);

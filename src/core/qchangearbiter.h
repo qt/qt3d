@@ -77,6 +77,10 @@ public:
     void syncChanges();
 
     void registerObserver(QObserverInterface *observer,
+                          const QUuid &nodeId,
+                          ChangeFlags changeFlags = AllChanges);
+
+    void registerObserver(QObserverInterface *observer,
                           QObservableInterface *observable,
                           ChangeFlags changeFlags = AllChanges);
 
@@ -91,6 +95,9 @@ public:
 
     void unregisterObserver(QObserverInterface *observer,
                             QNode *subject);
+
+    void unregisterObserver(QObserverInterface *observer,
+                            const QUuid &nodeId);
 
     void unregisterSceneObserver(QSceneObserverInterface *interface);
 
