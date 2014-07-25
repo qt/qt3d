@@ -15,7 +15,7 @@ contains(QT_CONFIG, system-zlib) {
     INCLUDEPATH += $$[QT_INSTALL_HEADERS/get]/QtZlib
 }
 
-DEFINES += ASSIMP_BUILD_NO_OWN_ZLIB
+DEFINES += ASSIMP_BUILD_NO_OWN_ZLIB ASSIMP_BUILD_NO_COMPRESSED_IFC ASSIMP_BUILD_NO_Q3BSP_IMPORTER
 
 # Stop compiler complaining about ignored qualifiers on return types
 gcc: QMAKE_CXXFLAGS += -Wno-ignored-qualifiers
