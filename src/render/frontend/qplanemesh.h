@@ -39,36 +39,52 @@
 **
 ****************************************************************************/
 
-import Qt3D 2.0
-import Qt3D.Render 2.0
+#ifndef QT3D_QPLANEMESH_H
+#define QT3D_QPLANEMESH_H
 
-// For Qt.vector3d() and friends. For some reason this is provided by
-// QQuickValueTypeProvider in QtQuick rather than the default value
-// type provider in QtQml. So we will need to replicate this in Qt3D
-// for the types that we wish to support. Otherwise we'll have to import
-// QtQuick 2.1 all over the place.
-import QtQuick 2.1 as QQ2
+#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRenderer/qabstractshapemesh.h>
 
-Entity {
-    id: root
+QT_BEGIN_NAMESPACE
 
-    property real x: 0.0
-    property real y: 1.0
-    property real z: 0.0
-    property real scale: 1.0
-    property Material material
+namespace Qt3D {
 
-    components: [ transform, mesh, root.material ]
+class QPlaneMeshPrivate;
 
-    Transform {
-        id: transform
-        Translate { dx: root.x; dy: root.y; dz: root.z }
-        Scale { scale: root.scale }
-    }
+class QT3DRENDERERSHARED_EXPORT QPlaneMesh : public Qt3D::QAbstractShapeMesh
+{
+    Q_OBJECT
 
-    SphereMesh {
-        id: mesh
-        rings: 50
-        slices: 100
-    }
-}
+    Q_PROPERTY(float width READ width WRITE setWidth NOTIFY widthChanged)
+    Q_PROPERTY(float height READ height WRITE setHeight NOTIFY heightChanged)
+    Q_PROPERTY(QSize meshResolution READ meshResolution WRITE setMeshResolution NOTIFY meshResolutionChanged)
+
+public:
+    explicit QPlaneMesh(QNode *parent = 0);
+
+    void setWidth(float width);
+    float width() const;
+
+    void setHeight(float height);
+    float height() const;
+
+    void setMeshResolution(const QSize &resolution);
+    QSize meshResolution() const;
+
+    QAbstractMeshFunctorPtr meshFunctor() const Q_DECL_OVERRIDE;
+
+Q_SIGNALS:
+    void widthChanged();
+    void heightChanged();
+    void meshResolutionChanged();
+
+protected:
+    QPlaneMesh(QPlaneMeshPrivate &dd, QNode *parent = 0);
+    Q_DECLARE_PRIVATE(QPlaneMesh)
+};
+
+} // namespace Qt3D
+
+QT_END_NAMESPACE
+
+#endif // QT3D_QPLANEMESH_H

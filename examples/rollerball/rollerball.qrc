@@ -6,5 +6,6 @@
         <file>BasicCamera.qml</file>
         <file>AdsMaterial.qml</file>
         <file>BallEntity.qml</file>
+        <file>PlaneEntity.qml</file>
     </qresource>
 </RCC>

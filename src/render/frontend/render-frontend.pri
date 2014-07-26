@@ -41,7 +41,9 @@ HEADERS += \
     $$PWD/qlayer.h \
     $$PWD/qlayer_p.h \
     $$PWD/qparametermapper_p.h \
-    $$PWD/qopenglfilter.h
+    $$PWD/qopenglfilter.h \
+    $$PWD/qplanemesh.h \
+    $$PWD/qplanemesh_p.h
 
 SOURCES += \
     $$PWD/qmaterial.cpp \
@@ -66,4 +68,5 @@ SOURCES += \
     $$PWD/qspotlight.cpp \
     $$PWD/qdirectionallight.cpp \
     $$PWD/qlayer.cpp \
-    $$PWD/qopenglfilter.cpp
+    $$PWD/qopenglfilter.cpp \
+    $$PWD/qplanemesh.cpp

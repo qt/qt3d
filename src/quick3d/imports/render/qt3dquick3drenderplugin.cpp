@@ -60,6 +60,7 @@
 #include <Qt3DRenderer/qparameter.h>
 #include <Qt3DRenderer/qcriterion.h>
 #include <Qt3DRenderer/qparametermapper.h>
+#include <Qt3DRenderer/qplanemesh.h>
 #include <Qt3DRenderer/qspheremesh.h>
 #include <Qt3DRenderer/qtorusmesh.h>
 #include <Qt3DRenderer/qlayer.h>
@@ -86,6 +87,7 @@ QT_BEGIN_NAMESPACE
 
 void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
 {
+    // @uri Qt3D.Render
     qmlRegisterUncreatableType<Qt3D::Render::QAbstractScene>(uri, 2, 0, "QAbstractScene", "QAbstractScene is abstract");
     qmlRegisterExtendedType<Qt3D::QScene, Qt3D::Render::Quick::Quick3DScene>(uri, 2, 0, "Scene");
 //    qmlRegisterCustomType<Qt3D::Effect>(uri, 2, 0, "Effect", new Qt3D::Render::Quick::ShaderPropertyParser());
@@ -103,6 +105,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<Qt3D::QAbstractMesh>(uri, 2, 0, "QAbstractMesh", QStringLiteral("QAbstractMesh is abstract"));
     qmlRegisterType<Qt3D::QMesh>(uri, 2, 0, "Mesh");
     qmlRegisterUncreatableType<Qt3D::QAbstractShapeMesh>(uri, 2, 0, "QAbstractShapeMesh", QStringLiteral("Shape is an abstract base class"));
+    qmlRegisterType<Qt3D::QPlaneMesh>(uri, 2, 0, "PlaneMesh");
     qmlRegisterType<Qt3D::QTorusMesh>(uri, 2, 0, "TorusMesh");
     qmlRegisterType<Qt3D::QSphereMesh>(uri, 2, 0, "SphereMesh");
 

@@ -76,6 +76,15 @@ Entity {
         id: adsEffect
     }
 
+    PlaneEntity {
+        id: floor
+        scale: 50
+        material: AdsMaterial {
+            effect: adsEffect
+            ambient: Qt.rgba( 1.0, 1.0, 1.0, 1.0 )
+        }
+    }
+
     AdsMaterial {
         id: redMaterial
         effect: adsEffect

@@ -39,36 +39,33 @@
 **
 ****************************************************************************/
 
-import Qt3D 2.0
-import Qt3D.Render 2.0
+#ifndef QPLANEMESH_P_H
+#define QPLANEMESH_P_H
 
-// For Qt.vector3d() and friends. For some reason this is provided by
-// QQuickValueTypeProvider in QtQuick rather than the default value
-// type provider in QtQml. So we will need to replicate this in Qt3D
-// for the types that we wish to support. Otherwise we'll have to import
-// QtQuick 2.1 all over the place.
-import QtQuick 2.1 as QQ2
+#include "qabstractshapemesh_p.h"
 
-Entity {
-    id: root
+#include <QtCore/qsize.h>
 
-    property real x: 0.0
-    property real y: 1.0
-    property real z: 0.0
-    property real scale: 1.0
-    property Material material
+QT_BEGIN_NAMESPACE
 
-    components: [ transform, mesh, root.material ]
+namespace Qt3D {
 
-    Transform {
-        id: transform
-        Translate { dx: root.x; dy: root.y; dz: root.z }
-        Scale { scale: root.scale }
-    }
+class QPlaneMesh;
 
-    SphereMesh {
-        id: mesh
-        rings: 50
-        slices: 100
-    }
+class QPlaneMeshPrivate : public QAbstractShapeMeshPrivate
+{
+public:
+    QPlaneMeshPrivate(QPlaneMesh *qq);
+
+    Q_DECLARE_PUBLIC(QPlaneMesh)
+
+    float m_width;
+    float m_height;
+    QSize m_meshResolution;
+};
+
 }
+
+QT_END_NAMESPACE
+
+#endif // QPLANEMESH_P_H
