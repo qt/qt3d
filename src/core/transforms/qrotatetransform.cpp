@@ -52,6 +52,7 @@ namespace Qt3D {
 QRotateTransformPrivate::QRotateTransformPrivate(QRotateTransform *qq)
     : QAbstractTransformPrivate(qq)
     , m_angleDeg(0)
+    , m_axis(0.0f, 1.0f, 0.0f)
 {
 }
 
