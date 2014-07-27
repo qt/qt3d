@@ -49,6 +49,7 @@ namespace Qt3D
 
 QScaleTransformPrivate::QScaleTransformPrivate(QScaleTransform *qq)
     : QAbstractTransformPrivate(qq)
+    , m_scale3D(1.0f, 1.0f, 1.0f)
 {
 }
 
