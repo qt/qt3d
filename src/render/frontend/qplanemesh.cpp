@@ -51,8 +51,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class PlaneMeshFunctor;
-
 QPlaneMeshPrivate::QPlaneMeshPrivate(QPlaneMesh *qq)
     : QAbstractShapeMeshPrivate(qq)
     , m_width(1.0f)
@@ -64,11 +62,13 @@ QPlaneMeshPrivate::QPlaneMeshPrivate(QPlaneMesh *qq)
 QPlaneMesh::QPlaneMesh(QNode *parent)
     : QAbstractShapeMesh(*new QPlaneMeshPrivate(this), parent)
 {
+    setDirty(true);
 }
 
 QPlaneMesh::QPlaneMesh(QPlaneMeshPrivate &dd, QNode *parent)
     : QAbstractShapeMesh(dd, parent)
 {
+    setDirty(true);
 }
 
 void QPlaneMesh::setWidth(float width)
