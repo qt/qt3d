@@ -69,8 +69,8 @@ Entity {
 
     Transform {
         id: transform
-        Scale { id: scaleTransform; scale: 1.0 }
-        Rotate { id: rotateTransform; angle: 0; axis: Qt.vector3d(0, 1, 0) }
+        Scale { id: scaleTransform }
+        Rotate { id: rotateTransform }
         Translate { id: translateTransform }
     }
 
