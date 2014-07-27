@@ -66,6 +66,7 @@ Entity {
 
     BasicCamera {
         id: mainCamera
+        position: Qt.vector3d( 0.0, 20.0, 70.0 )
     }
 
     Configuration  {
@@ -82,25 +83,78 @@ Entity {
         material: AdsMaterial {
             effect: adsEffect
             ambient: Qt.rgba( 1.0, 1.0, 1.0, 1.0 )
+            diffuse: Qt.rgba( 1.0, 1.0, 1.0, 1.0 )
         }
+    }
+
+    AdsMaterial {
+        id: wallMaterial
+        effect: adsEffect
+        ambient: Qt.rgba( 0.1, 0.0, 0.1, 1.0 )
+        diffuse: Qt.rgba( 1.0, 0.0, 1.0, 1.0 )
+    }
+
+    BoxEntity {
+        id: eastWall
+        width: 3
+        height: 4
+        depth: floor.scale + 2 * width
+        x: (floor.scale + width) / 2.0
+        y: height / 2
+        material: wallMaterial
+    }
+
+    BoxEntity {
+        id: westWall
+        width: 3
+        height: 4
+        depth: floor.scale + 2 * width
+        x: -(floor.scale + width) / 2.0
+        y: height / 2
+        material: wallMaterial
+    }
+
+    BoxEntity {
+        id: northWall
+        width: 3
+        height: 4
+        depth: floor.scale
+        z: (floor.scale + width) / 2.0
+        y: height / 2
+        angle: 90
+        material: wallMaterial
+    }
+
+    BoxEntity {
+        id: southWall
+        width: 3
+        height: 4
+        depth: floor.scale
+        z: -(floor.scale + width) / 2.0
+        y: height / 2
+        angle: 90
+        material: wallMaterial
     }
 
     AdsMaterial {
         id: redMaterial
         effect: adsEffect
-        ambient: Qt.rgba( 0.5, 0.0, 0.0, 1.0 )
+        ambient: Qt.rgba( 0.2, 0.0, 0.0, 1.0 )
+        diffuse: Qt.rgba( 0.8, 0.0, 0.0, 1.0 )
     }
 
     AdsMaterial {
         id: greenMaterial
         effect: adsEffect
-        ambient: Qt.rgba( 0.0, 0.5, 0.0, 1.0 )
+        ambient: Qt.rgba( 0.0, 0.2, 0.0, 1.0 )
+        diffuse: Qt.rgba( 0.0, 0.8, 0.0, 1.0 )
     }
 
     AdsMaterial {
         id: blueMaterial
         effect: adsEffect
-        ambient: Qt.rgba( 0.0, 0.0, 0.5, 1.0 )
+        ambient: Qt.rgba( 0.0, 0.0, 0.2, 1.0 )
+        diffuse: Qt.rgba( 0.0, 0.0, 0.8, 1.0 )
     }
 
     BallEntity {

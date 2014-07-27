@@ -80,7 +80,7 @@ Effect {
 
             parameters: [
                 Parameter { name: "lightPosition";  value: Qt.vector4d( 0.0, 0.0, 0.0, 1.0 ) },
-                Parameter { name: "lightIntensity"; value: Qt.vector3d( 0.7, 0.7, 0.7 ) }
+                Parameter { name: "lightIntensity"; value: Qt.vector3d( 1.0, 1.0, 1.0 ) }
             ]
 
             renderPasses: [

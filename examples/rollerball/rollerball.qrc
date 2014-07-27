@@ -7,5 +7,6 @@
         <file>AdsMaterial.qml</file>
         <file>BallEntity.qml</file>
         <file>PlaneEntity.qml</file>
+        <file>BoxEntity.qml</file>
     </qresource>
 </RCC>

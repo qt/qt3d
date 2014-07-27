@@ -39,38 +39,39 @@
 **
 ****************************************************************************/
 
-import Qt3D 2.0
-import Qt3D.Render 2.0
+#ifndef QCUBOIDMESH_P_H
+#define QCUBOIDMESH_P_H
 
-// For Qt.vector3d() and friends. For some reason this is provided by
-// QQuickValueTypeProvider in QtQuick rather than the default value
-// type provider in QtQml. So we will need to replicate this in Qt3D
-// for the types that we wish to support. Otherwise we'll have to import
-// QtQuick 2.1 all over the place.
-import QtQuick 2.1 as QQ2
+#include "qabstractshapemesh_p.h"
 
-Camera {
-    id: mainCamera
-    objectName: "mainCamera"
+#include <QtCore/qsize.h>
 
-    property alias position: lookAtTransform.position
-    property alias viewCenter: lookAtTransform.viewCenter
-    property alias upVector: lookAtTransform.upVector
+QT_BEGIN_NAMESPACE
 
-    lens: CameraLens {
-        projectionType: CameraLens.PerspectiveProjection
-        fieldOfView: 22.5
-        aspectRatio: _window.width / _window.height
-        onAspectRatioChanged: console.log( "aspectRatio = " + aspectRatio )
-        nearPlane:   0.01
-        farPlane:    1000.0
-    }
+namespace Qt3D {
 
-    transform: Transform {
-        LookAt {
-            id: lookAtTransform
-            viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
-            upVector:   Qt.vector3d( 0.0, 1.0, 0.0 )
-        }
-    }
+class QCuboidMesh;
+
+class QCuboidMeshPrivate : QAbstractShapeMeshPrivate
+{
+public:
+    QCuboidMeshPrivate(QCuboidMesh *qq);
+
+    Q_DECLARE_PUBLIC(QCuboidMesh)
+
+    // Dimensions
+    float m_xExtent;
+    float m_yExtent;
+    float m_zExtent;
+
+    // Resolutions of faces with normal x, y, and z
+    QSize m_yzFaceResolution;
+    QSize m_xzFaceResolution;
+    QSize m_xyFaceResolution;
+};
+
 }
+
+QT_END_NAMESPACE
+
+#endif // QCUBOIDMESH_P_H

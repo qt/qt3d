@@ -39,38 +39,69 @@
 **
 ****************************************************************************/
 
-import Qt3D 2.0
-import Qt3D.Render 2.0
+#ifndef QT3D_CUBOIDMESH_H
+#define QT3D_CUBOIDMESH_H
 
-// For Qt.vector3d() and friends. For some reason this is provided by
-// QQuickValueTypeProvider in QtQuick rather than the default value
-// type provider in QtQml. So we will need to replicate this in Qt3D
-// for the types that we wish to support. Otherwise we'll have to import
-// QtQuick 2.1 all over the place.
-import QtQuick 2.1 as QQ2
+#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRenderer/qabstractshapemesh.h>
 
-Camera {
-    id: mainCamera
-    objectName: "mainCamera"
+QT_BEGIN_NAMESPACE
 
-    property alias position: lookAtTransform.position
-    property alias viewCenter: lookAtTransform.viewCenter
-    property alias upVector: lookAtTransform.upVector
+namespace Qt3D {
 
-    lens: CameraLens {
-        projectionType: CameraLens.PerspectiveProjection
-        fieldOfView: 22.5
-        aspectRatio: _window.width / _window.height
-        onAspectRatioChanged: console.log( "aspectRatio = " + aspectRatio )
-        nearPlane:   0.01
-        farPlane:    1000.0
-    }
+class QCuboidMeshPrivate;
 
-    transform: Transform {
-        LookAt {
-            id: lookAtTransform
-            viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
-            upVector:   Qt.vector3d( 0.0, 1.0, 0.0 )
-        }
-    }
-}
+class QT3DRENDERERSHARED_EXPORT QCuboidMesh : public Qt3D::QAbstractShapeMesh
+{
+    Q_OBJECT
+
+    Q_PROPERTY(float xExtent READ xExtent WRITE setXExtent NOTIFY xExtentChanged)
+    Q_PROPERTY(float yExtent READ yExtent WRITE setYExtent NOTIFY yExtentChanged)
+    Q_PROPERTY(float zExtent READ zExtent WRITE setZExtent NOTIFY zExtentChanged)
+    Q_PROPERTY(QSize yzMeshResolution READ yzMeshResolution WRITE setYZMeshResolution NOTIFY yzMeshResolutionChanged)
+    Q_PROPERTY(QSize xzMeshResolution READ xzMeshResolution WRITE setXZMeshResolution NOTIFY xzMeshResolutionChanged)
+    Q_PROPERTY(QSize xyMeshResolution READ xyMeshResolution WRITE setXYMeshResolution NOTIFY xyMeshResolutionChanged)
+
+public:
+    explicit QCuboidMesh(QNode *parent = 0);
+
+    void setXExtent(float xExtent);
+    float xExtent() const;
+
+    void setYExtent(float yExtent);
+    float yExtent() const;
+
+    void setZExtent(float zExtent);
+    float zExtent() const;
+
+    void setYZMeshResolution(const QSize &resolution);
+    QSize yzMeshResolution() const;
+
+    void setXZMeshResolution(const QSize &resolution);
+    QSize xzMeshResolution() const;
+
+    void setXYMeshResolution(const QSize &resolution);
+    QSize xyMeshResolution() const;
+
+    QAbstractMeshFunctorPtr meshFunctor() const Q_DECL_OVERRIDE;
+
+Q_SIGNALS:
+    void xExtentChanged();
+    void yExtentChanged();
+    void zExtentChanged();
+
+    void yzMeshResolutionChanged();
+    void xzMeshResolutionChanged();
+    void xyMeshResolutionChanged();
+
+protected:
+    QCuboidMesh(QCuboidMeshPrivate &dd, QNode *parent = 0);
+    Q_DECLARE_PRIVATE(QCuboidMesh)
+
+};
+
+} // namespace Qt3D
+
+QT_END_NAMESPACE
+
+#endif // QT3D_CUBOIDMESH_H

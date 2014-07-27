@@ -70,6 +70,6 @@ Entity {
         id: mesh
         width: 1.0
         height: 1.0
-        meshResolution: Qt.size(20, 20)
+        meshResolution: Qt.size(2, 2)
     }
 }

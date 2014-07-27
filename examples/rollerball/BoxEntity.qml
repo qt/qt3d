@@ -49,28 +49,35 @@ import Qt3D.Render 2.0
 // QtQuick 2.1 all over the place.
 import QtQuick 2.1 as QQ2
 
-Camera {
-    id: mainCamera
-    objectName: "mainCamera"
+Entity {
+    id: root
 
-    property alias position: lookAtTransform.position
-    property alias viewCenter: lookAtTransform.viewCenter
-    property alias upVector: lookAtTransform.upVector
+    property alias width: mesh.xExtent
+    property alias height: mesh.yExtent
+    property alias depth: mesh.zExtent
 
-    lens: CameraLens {
-        projectionType: CameraLens.PerspectiveProjection
-        fieldOfView: 22.5
-        aspectRatio: _window.width / _window.height
-        onAspectRatioChanged: console.log( "aspectRatio = " + aspectRatio )
-        nearPlane:   0.01
-        farPlane:    1000.0
+    property alias x: translateTransform.dx
+    property alias y: translateTransform.dy
+    property alias z: translateTransform.dz
+    property alias angle: rotateTransform.angle
+    property alias axis: rotateTransform.axis
+    property alias scale: scaleTransform.scale
+
+    property Material material
+
+    components: [ transform, mesh, root.material ]
+
+    Transform {
+        id: transform
+        Scale { id: scaleTransform; scale: 1.0 }
+        Rotate { id: rotateTransform; angle: 0; axis: Qt.vector3d(0, 1, 0) }
+        Translate { id: translateTransform }
     }
 
-    transform: Transform {
-        LookAt {
-            id: lookAtTransform
-            viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
-            upVector:   Qt.vector3d( 0.0, 1.0, 0.0 )
-        }
+    CuboidMesh {
+        id: mesh
+        yzMeshResolution: Qt.size(2, 2)
+        xzMeshResolution: Qt.size(2, 2)
+        xyMeshResolution: Qt.size(2, 2)
     }
 }

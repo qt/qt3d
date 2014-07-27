@@ -60,6 +60,7 @@
 #include <Qt3DRenderer/qparameter.h>
 #include <Qt3DRenderer/qcriterion.h>
 #include <Qt3DRenderer/qparametermapper.h>
+#include <Qt3DRenderer/qcuboidmesh.h>
 #include <Qt3DRenderer/qplanemesh.h>
 #include <Qt3DRenderer/qspheremesh.h>
 #include <Qt3DRenderer/qtorusmesh.h>
@@ -105,6 +106,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<Qt3D::QAbstractMesh>(uri, 2, 0, "QAbstractMesh", QStringLiteral("QAbstractMesh is abstract"));
     qmlRegisterType<Qt3D::QMesh>(uri, 2, 0, "Mesh");
     qmlRegisterUncreatableType<Qt3D::QAbstractShapeMesh>(uri, 2, 0, "QAbstractShapeMesh", QStringLiteral("Shape is an abstract base class"));
+    qmlRegisterType<Qt3D::QCuboidMesh>(uri, 2, 0, "CuboidMesh");
     qmlRegisterType<Qt3D::QPlaneMesh>(uri, 2, 0, "PlaneMesh");
     qmlRegisterType<Qt3D::QTorusMesh>(uri, 2, 0, "TorusMesh");
     qmlRegisterType<Qt3D::QSphereMesh>(uri, 2, 0, "SphereMesh");
