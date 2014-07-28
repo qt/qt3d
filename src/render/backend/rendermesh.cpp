@@ -90,23 +90,23 @@ RenderMesh::~RenderMesh()
 
 void RenderMesh::cleanup()
 {
-    if (m_peer)
-        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_peer);
+    if (!m_meshUuid.isNull())
+        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_meshUuid);
 }
 
 void RenderMesh::setPeer(QAbstractMesh *peer)
 {
     if (m_peer != peer) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        if (m_peer) {
-            arbiter->unregisterObserver(this, m_peer);
+        if (!m_meshUuid.isNull()) {
+            arbiter->unregisterObserver(this, m_meshUuid);
             m_meshUuid = QUuid();
         }
         m_peer = peer;
         m_meshDirty = true;
         if (m_peer) {
-            arbiter->registerObserver(this, m_peer, ComponentUpdated);
             m_meshUuid = m_peer->uuid();
+            arbiter->registerObserver(this, m_meshUuid, ComponentUpdated);
         }
     }
 }
