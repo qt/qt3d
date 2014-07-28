@@ -58,9 +58,24 @@ QDirectionalLight::QDirectionalLight(QNode *parent)
 {
 }
 
+void QDirectionalLight::copy(const QNode *ref)
+{
+    Q_D(QDirectionalLight);
+    QAbstractLight::copy(ref);
+    const QDirectionalLight *light = qobject_cast<const QDirectionalLight *>(ref);
+    if (ref != Q_NULLPTR) {
+        d->m_direction = light->direction();
+    }
+}
+
 QDirectionalLight::QDirectionalLight(QDirectionalLightPrivate &dd, QNode *parent)
     : QAbstractLight(dd, parent)
 {
+}
+
+QDirectionalLight *QDirectionalLight::doClone(QNode *clonedParent) const
+{
+    return new QDirectionalLight(clonedParent);
 }
 
 void QDirectionalLight::setDirection(const QVector3D &direction)
