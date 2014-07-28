@@ -53,13 +53,7 @@ namespace Qt3D {
 class QT3DCORESHARED_EXPORT QNodePrivate : public QObjectPrivate
 {
 public:
-    QNodePrivate(QNode *qq)
-        : QObjectPrivate()
-        , m_changeArbiter(Q_NULLPTR)
-        , m_uuid(QUuid::createUuid())
-    {
-        q_ptr = qq;
-    }
+    QNodePrivate(QNode *qq);
 
     Q_DECLARE_PUBLIC(QNode)
 
@@ -72,7 +66,7 @@ public:
     // Later on we may decide to extend support for multiple observers.
     QReadWriteLock m_observerLock;
     QChangeArbiter *m_changeArbiter;
-    const QUuid m_uuid;
+    mutable QUuid m_uuid;
     QList<QSceneChangePtr> m_queuedChanges;
 };
 

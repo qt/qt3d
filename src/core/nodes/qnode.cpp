@@ -54,6 +54,14 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+QNodePrivate::QNodePrivate(QNode *qq)
+    : QObjectPrivate()
+    , m_changeArbiter(Q_NULLPTR)
+    , m_uuid(QUuid::createUuid())
+{
+    q_ptr = qq;
+}
+
 void QNodePrivate::_q_sendQueuedChanges()
 {
     Q_Q(QNode);
@@ -83,6 +91,7 @@ QNode::QNode(QNodePrivate &dd, QNode *parent)
 
 QNode::~QNode()
 {
+    // TO DO should unregister itself from the QChangeArbiter
     removeAllChildren();
 }
 
@@ -151,6 +160,23 @@ void QNode::removeChild(QNode *childNode)
     e->setPropertyName(QByteArrayLiteral("node"));
     e->setValue(QVariant::fromValue(childNode->uuid()));
     notifyObservers(e);
+}
+
+QNode *QNode::clone(QNode *clonedParent) const
+{
+    Q_D(const QNode);
+
+    QNode *nodeClone = doClone(clonedParent);
+    nodeClone->copy(this);
+    Q_FOREACH (QNode *children, d->m_children)
+        nodeClone->addChild(children->clone(nodeClone));
+    return nodeClone;
+}
+
+void QNode::copy(const QNode *ref)
+{
+    Q_D(QNode);
+    d->m_uuid = ref->uuid();
 }
 
 void QNode::removeAllChildren()

@@ -76,6 +76,9 @@ public:
     void addChild(QNode *childNode);
     void removeChild(QNode *childNode);
 
+    QNode *clone(QNode *clonedParent = 0) const;
+    virtual void copy(const QNode *ref);
+
     void removeAllChildren();
 
     virtual QEntity* asEntity();
@@ -87,6 +90,7 @@ public:
 
 protected:
     virtual void notifyObservers(const QSceneChangePtr &change);
+    virtual QNode *doClone(QNode *clonedParent = 0) const = 0;
 
     Q_DECLARE_PRIVATE(QNode)
     QNode(QNodePrivate &dd, QNode *parent = 0);
