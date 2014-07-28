@@ -67,6 +67,8 @@ class QT3DRENDERERSHARED_EXPORT QMaterial : public QAbstractMaterial
 public:
     explicit QMaterial(QNode *parent = 0);
 
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
     void setEffect(QAbstractEffect *effect) Q_DECL_OVERRIDE;
 
     void addParameter(QParameter *parameter);
@@ -80,6 +82,7 @@ public:
 protected:
     Q_DECLARE_PRIVATE(QMaterial)
     QMaterial(QMaterialPrivate &dd, QNode *parent = 0);
+    QMaterial *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
 };
 
 }

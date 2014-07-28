@@ -51,19 +51,38 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-
 QMaterialPrivate::QMaterialPrivate(QMaterial *qq)
-        : QAbstractMaterialPrivate(qq)
-    {}
+    : QAbstractMaterialPrivate(qq)
+{
+}
 
 QMaterial::QMaterial(QMaterialPrivate &dd, QNode *parent)
     : QAbstractMaterial(dd, parent)
 {
 }
 
+QMaterial *QMaterial::doClone(QNode *clonedParent) const
+{
+    Q_D(const QMaterial);
+    QMaterial *mat = new QMaterial(clonedParent);
+
+    Q_FOREACH (QParameter *p, d->m_parameters)
+        mat->clone(qobject_cast<QParameter *>(p->clone(mat)));
+
+    if (d->m_effect != Q_NULLPTR)
+        mat->setEffect(qobject_cast<QAbstractEffect *>(d->m_effect->clone(mat)));
+
+    return mat;
+}
+
 QMaterial::QMaterial(QNode *parent)
     : QAbstractMaterial(*new QMaterialPrivate(this), parent)
 {
+}
+
+void QMaterial::copy(const QNode *ref)
+{
+    QAbstractMaterial::copy(ref);
 }
 
 void QMaterial::setEffect(QAbstractEffect *effect)
