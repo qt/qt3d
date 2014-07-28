@@ -57,10 +57,25 @@ QTranslateTransform::QTranslateTransform(QNode *parent)
 {
 }
 
+void QTranslateTransform::copy(const QNode *ref)
+{
+    Q_D(QTranslateTransform);
+    QAbstractTransform::copy(ref);
+    const QTranslateTransform *transform = qobject_cast<const QTranslateTransform *>(ref);
+    if (transform != Q_NULLPTR) {
+        d->m_translation = transform->translation();
+    }
+}
+
 
 QTranslateTransform::QTranslateTransform(QTranslateTransformPrivate &dd, QNode *parent)
     : QAbstractTransform(dd, parent)
 {
+}
+
+QTranslateTransform *QTranslateTransform::doClone(QNode *clonedParent) const
+{
+    return new QTranslateTransform(clonedParent);
 }
 
 
