@@ -44,6 +44,7 @@
 
 #include <QtGlobal>
 #include <Qt3DCore/qobserverinterface.h>
+#include <QUuid>
 
 QT_BEGIN_NAMESPACE
 
@@ -67,12 +68,13 @@ public:
 
     QHash<QString, QVariant> lightProperties() const;
     void sceneChangeEvent(const QSceneChangePtr &e);
+    QUuid lightUuid() const;
 
 private:
     Renderer *m_renderer;
     QAbstractLight *m_peer;
     QHash<QString, QVariant> m_lightProperties;
-
+    QUuid m_lightUuid;
 };
 
 } // Render

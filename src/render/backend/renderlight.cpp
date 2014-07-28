@@ -66,24 +66,26 @@ RenderLight::~RenderLight()
 
 void RenderLight::cleanup()
 {
-    if (m_peer)
-        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_peer);
+    if (!m_lightUuid.isNull())
+        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_lightUuid);
 }
 
 void RenderLight::setPeer(QAbstractLight *peer)
 {
     if (m_peer != peer) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        if (m_peer) {
-            arbiter->unregisterObserver(this, m_peer);
+        if (!m_lightUuid.isNull()) {
+            arbiter->unregisterObserver(this, m_lightUuid);
             m_lightProperties.clear();
+            m_lightUuid = QUuid();
         }
         m_peer = peer;
         if (m_peer) {
-            arbiter->registerObserver(this, m_peer, ComponentUpdated);
             m_lightProperties = m_peer->lightProperties();
             m_lightProperties[QStringLiteral("color")] = m_peer->color();
             m_lightProperties[QStringLiteral("intensity")] = m_peer->intensity();
+            m_lightUuid = m_peer->uuid();
+            arbiter->registerObserver(this, m_lightUuid, ComponentUpdated);
         }
     }
 }
@@ -104,6 +106,11 @@ void RenderLight::sceneChangeEvent(const QSceneChangePtr &e)
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         m_lightProperties[QString::fromUtf8(propertyChange->propertyName())] = propertyChange->value();
     }
+}
+
+QUuid RenderLight::lightUuid() const
+{
+    return m_lightUuid;
 }
 
 } // Qt3D
