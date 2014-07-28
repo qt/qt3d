@@ -176,6 +176,30 @@ QStringList AssimpParser::assimpSupportedFormats()
     return formats;
 }
 
+class AssimpMesh : public QAbstractMesh
+{
+    Q_OBJECT
+public :
+    explicit AssimpMesh(QNode *parent = 0);
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
+    QAbstractMeshFunctorPtr meshFunctor() const Q_DECL_OVERRIDE;
+    void setData(MeshDataPtr data);
+
+private:
+    MeshDataPtr m_meshData;
+    AssimpMesh *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
+
+    class AssimpMeshFunctor : public QAbstractMeshFunctor
+    {
+    public:
+        explicit AssimpMeshFunctor(MeshDataPtr meshData);
+        QAbstractMeshDataPtr operator()() Q_DECL_OVERRIDE;
+    private:
+        MeshDataPtr m_meshData;
+    };
+};
+
 /*!
  *  Initialized a new instance of AssimpParser.
  */
@@ -788,29 +812,43 @@ void AssimpParser::copyMaterialFloatProperties(QMaterial *material, aiMaterial *
         material->addParameter(new QParameter(material, ASSIMP_MATERIAL_REFLECTIVITY, value));
 }
 
-AssimpParser::AssimpMesh::AssimpMesh(QNode *parent)
+AssimpMesh::AssimpMesh(QNode *parent)
     : QAbstractMesh(parent)
 {
 }
 
-void AssimpParser::AssimpMesh::setData(MeshDataPtr data)
+void AssimpMesh::copy(const QNode *ref)
+{
+    QAbstractMesh::copy(ref);
+    const AssimpMesh *mesh = qobject_cast<const AssimpMesh *>(ref);
+    if (mesh != Q_NULLPTR) {
+        m_meshData = mesh->m_meshData;
+    }
+}
+
+void AssimpMesh::setData(MeshDataPtr data)
 {
     m_meshData = data;
     QAbstractMesh::setDirty(this);
 }
 
-QAbstractMeshFunctorPtr AssimpParser::AssimpMesh::meshFunctor() const
+AssimpMesh *AssimpMesh::doClone(QNode *clonedParent) const
+{
+    return new AssimpMesh(clonedParent);
+}
+
+QAbstractMeshFunctorPtr AssimpMesh::meshFunctor() const
 {
     return QAbstractMeshFunctorPtr(new AssimpMeshFunctor(m_meshData));
 }
 
-AssimpParser::AssimpMeshFunctor::AssimpMeshFunctor(MeshDataPtr meshData)
+AssimpMesh::AssimpMeshFunctor::AssimpMeshFunctor(MeshDataPtr meshData)
     : QAbstractMeshFunctor()
     , m_meshData(meshData)
 {
 }
 
-QAbstractMeshDataPtr AssimpParser::AssimpMeshFunctor::operator()()
+QAbstractMeshDataPtr AssimpMesh::AssimpMeshFunctor::operator()()
 {
     return m_meshData;
 }
@@ -819,4 +857,4 @@ QAbstractMeshDataPtr AssimpParser::AssimpMeshFunctor::operator()()
 
 QT_END_NAMESPACE
 
-
+#include "assimpparser.moc"

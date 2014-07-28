@@ -67,6 +67,7 @@ class QEffect;
 class QCamera;
 class Texture;
 class QMesh;
+class AssimpMesh;
 
 class AssimpParser : public AbstractSceneParser
 {
@@ -89,26 +90,6 @@ public:
     QCamera *camera(QString id);
 
 private :
-
-    class AssimpMeshFunctor : public QAbstractMeshFunctor
-    {
-    public:
-        explicit AssimpMeshFunctor(MeshDataPtr meshData);
-        QAbstractMeshDataPtr operator()() Q_DECL_OVERRIDE;
-    private:
-        MeshDataPtr m_meshData;
-    };
-
-    class AssimpMesh : public QAbstractMesh
-    {
-    public :
-        explicit AssimpMesh(QNode *parent = 0);
-
-        QAbstractMeshFunctorPtr meshFunctor() const Q_DECL_OVERRIDE;
-        void setData(MeshDataPtr data);
-    private:
-        MeshDataPtr m_meshData;
-    };
 
     static QStringList assimpSupportedFormats();
     static QMatrix4x4 aiMatrix4x4ToQMatrix4x4(const aiMatrix4x4 &matrix);
