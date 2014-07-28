@@ -106,7 +106,7 @@ void RenderEntity::cleanup()
         // NodeDeleted/NodeAboutToBeDeleted notification
         qCDebug(Render::RenderNodes) << Q_FUNC_INFO;
 
-        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_frontEndPeer);
+        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_frontendUuid);
     }
     delete m_localBoundingVolume;
     delete m_worldBoundingVolume;
@@ -141,16 +141,16 @@ void RenderEntity::setPeer(QEntity *peer)
             m_renderer->worldMatrixManager()->release(m_worldTransform);
 
         if (m_frontEndPeer) {
-            arbiter->unregisterObserver(this, m_frontEndPeer);
+            arbiter->unregisterObserver(this, m_frontendUuid);
             m_frontendUuid = QUuid();
         }
 
         m_frontEndPeer = peer;
         if (m_frontEndPeer) {
-            arbiter->registerObserver(this, m_frontEndPeer, AllChanges);
             m_frontendUuid = peer->uuid();
-            m_localTransform = m_renderer->localMatrixManager()->getOrAcquireHandle(peer->uuid());
-            m_worldTransform = m_renderer->worldMatrixManager()->getOrAcquireHandle(peer->uuid());
+            arbiter->registerObserver(this, m_frontendUuid, AllChanges);
+            m_localTransform = m_renderer->localMatrixManager()->getOrAcquireHandle(m_frontendUuid);
+            m_worldTransform = m_renderer->worldMatrixManager()->getOrAcquireHandle(m_frontendUuid);
         }
     }
 }
@@ -161,11 +161,11 @@ void RenderEntity::setTransform(QTransform *transform)
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
         // Unregister from changes of the previous transform
         if (m_transform)
-            arbiter->unregisterObserver(this, m_transform);
+            arbiter->unregisterObserver(this, m_transform->uuid());
         m_transform = transform;
         // Register for changes
         if (m_transform) {
-            arbiter->registerObserver(this, m_transform, ComponentUpdated);
+            arbiter->registerObserver(this, m_transform->uuid(), ComponentUpdated);
             *localTransform() = m_transform->matrix();
         }
     }
