@@ -65,6 +65,22 @@ QCriterion::QCriterion(QNode *parent)
 {
 }
 
+void QCriterion::copy(const QNode *ref)
+{
+    Q_D(QCriterion);
+    QNode::copy(ref);
+    const QCriterion *criterion = qobject_cast<const QCriterion *>(ref);
+    if (criterion != Q_NULLPTR) {
+        d->m_name = criterion->name();
+        d->m_value = criterion->value();
+    }
+}
+
+QCriterion *QCriterion::doClone(QNode *clonedParent) const
+{
+    return new QCriterion(clonedParent);
+}
+
 void QCriterion::setValue(const QVariant &value)
 {
     Q_D(QCriterion);
