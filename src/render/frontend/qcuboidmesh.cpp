@@ -68,10 +68,30 @@ QCuboidMesh::QCuboidMesh(QNode *parent)
     setDirty(true);
 }
 
+void QCuboidMesh::copy(const QNode *ref)
+{
+    Q_D(QCuboidMesh);
+    QAbstractShapeMesh::copy(ref);
+    const QCuboidMesh *mesh = qobject_cast<const QCuboidMesh *>(mesh);
+    if (mesh != Q_NULLPTR) {
+        d->m_xExtent = mesh->xExtent();
+        d->m_yExtent = mesh->yExtent();
+        d->m_zExtent = mesh->zExtent();
+        d->m_yzFaceResolution = mesh->yzMeshResolution();
+        d->m_xzFaceResolution = mesh->xzMeshResolution();
+        d->m_xyFaceResolution = mesh->xyMeshResolution();
+    }
+}
+
 QCuboidMesh::QCuboidMesh(QCuboidMeshPrivate &dd, QNode *parent)
     : QAbstractShapeMesh(dd, parent)
 {
     setDirty(true);
+}
+
+QCuboidMesh *QCuboidMesh::doClone(QNode *clonedParent) const
+{
+    return new QCuboidMesh(clonedParent);
 }
 
 void QCuboidMesh::setXExtent(float xExtent)
