@@ -56,11 +56,12 @@ class QT3DRENDERERSHARED_EXPORT QPointLight : public QAbstractLight
 
 public:
     explicit QPointLight(QNode *parent = 0);
-    QHash<QString, QVariant> lightProperties() const;
+    QHash<QString, QVariant> lightProperties() const Q_DECL_OVERRIDE;
 
 protected:
     Q_DECLARE_PRIVATE(QPointLight)
     QPointLight(QPointLightPrivate &dd, QNode *parent);
+    QPointLight *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

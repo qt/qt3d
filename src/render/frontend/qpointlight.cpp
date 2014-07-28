@@ -66,6 +66,11 @@ QPointLight::QPointLight(QPointLightPrivate &dd, QNode *parent)
 {
 }
 
+QPointLight *QPointLight::doClone(QNode *clonedParent) const
+{
+    return new QPointLight(clonedParent);
+}
+
 } // Qt3D
 
 QT_END_NAMESPACE
