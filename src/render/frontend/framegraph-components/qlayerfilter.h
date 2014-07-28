@@ -57,6 +57,8 @@ class QT3DRENDERERSHARED_EXPORT QLayerFilter : public QFrameGraphItem
 public:
     explicit QLayerFilter(QNode *parent = 0);
 
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
     void setLayers(const QStringList &layers);
     QStringList layers() const;
 
@@ -66,6 +68,7 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QLayerFilter)
     QLayerFilter(QLayerFilterPrivate &dd, QNode *parent = 0);
+    QLayerFilter *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D
