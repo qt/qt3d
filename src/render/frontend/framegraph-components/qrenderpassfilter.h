@@ -57,6 +57,7 @@ class QCriterion;
 class QT3DRENDERERSHARED_EXPORT QRenderPassFilter : public QFrameGraphItem
 {
     Q_OBJECT
+    // TO DO : Remove the renderPassName
     Q_PROPERTY(QString renderPassName READ renderPassName WRITE setRenderPassName NOTIFY renderPassNameChanged)
 
 public:
@@ -74,6 +75,7 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QRenderPassFilter)
     QRenderPassFilter(QRenderPassFilterPrivate &dd, QNode *parent = 0);
+    QRenderPassFilter *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3D

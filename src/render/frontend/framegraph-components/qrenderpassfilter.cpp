@@ -59,6 +59,19 @@ QRenderPassFilter::QRenderPassFilter(QRenderPassFilterPrivate &dd, QNode *parent
 {
 }
 
+QRenderPassFilter *QRenderPassFilter::doClone(QNode *clonedParent) const
+{
+    Q_D(const QRenderPassFilter);
+    QRenderPassFilter *clone = new QRenderPassFilter(clonedParent);
+
+    Q_FOREACH (QFrameGraphItem *fgChild, d->m_fgChildren)
+        clone->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(fgChild->clone(clone)));
+    Q_FOREACH (QCriterion *c, d->m_criteriaList)
+        clone->addCriterion(qobject_cast<QCriterion *>(c->clone(clone)));
+
+    return clone;
+}
+
 void QRenderPassFilter::setRenderPassName(const QString &renderpassName)
 {
     Q_D(QRenderPassFilter);
