@@ -116,14 +116,10 @@ void NodeVisitor::outerVisitNode(QNode *n)
     m_path.append(n);
     QEntity* e = n->asEntity();
     if (e) {
-//        QMatrix4x4 m = m_matrixStack.back() * e->matrix();
-//        m_matrixStack.push_back(m);
-
         visitEntity(e);
-
         m_path.pop_back();
-//        m_matrixStack.pop_back();
-    } else {
+    }
+    else {
         visitNode(n);
     }
 }
