@@ -67,6 +67,7 @@ public:
     virtual ~QEntity();
 
     ComponentList components() const;
+    virtual void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
     template <class T>
     QList<T*> componentsOfType() const
@@ -129,15 +130,15 @@ public:
         return Q_NULLPTR;
     }
 
-    virtual void addComponent(QComponent *comp);
-    virtual void removeComponent(QComponent *comp);
+    void addComponent(QComponent *comp);
+    void removeComponent(QComponent *comp);
     void removeAllComponents();
 
     bool isEnabled() const;
     void setEnabled(bool on);
 
-    virtual QEntity *parentEntity();
-    virtual QEntity *asEntity() Q_DECL_OVERRIDE;
+    QEntity *parentEntity();
+    QEntity *asEntity() Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
     void enabledChanged();
@@ -145,6 +146,7 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QEntity)
     QEntity(QEntityPrivate &dd, QNode *parent = 0);
+    QEntity *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3D

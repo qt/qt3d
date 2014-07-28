@@ -54,6 +54,11 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+QEntityPrivate::QEntityPrivate(QEntity *qq)
+    : QNodePrivate(qq)
+    , m_enabled(true)
+{}
+
 QEntity::QEntity(QNode *parent)
     : QNode(*new QEntityPrivate(this), parent)
 {
@@ -63,12 +68,32 @@ QEntity::~QEntity()
 {
     // If all children are removed
     // That includes the components that are parented by this entity
-//    removeAllComponents();
+    //    removeAllComponents();
 }
 
 QEntity::QEntity(QEntityPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
+}
+
+QEntity *QEntity::doClone(QNode *clonedParent) const
+{
+    Q_D(const QEntity);
+    QEntity *clone = new QEntity(clonedParent);
+    Q_FOREACH (QComponent *c, d->m_components)
+        clone->d_func()->m_components.append(qobject_cast<QComponent *>(c->clone(clone)));
+    return clone;
+}
+
+void QEntity::copy(const QNode *ref)
+{
+    Q_D(QEntity);
+    QNode::copy(ref);
+    const QEntity *entity = qobject_cast<const QEntity *>(ref);
+    if (entity != Q_NULLPTR) {
+        d->m_enabled = entity->d_func()->m_enabled;
+        d->m_visible = entity->d_func()->m_visible;
+    }
 }
 
 QList<QComponent *> QEntity::components() const
