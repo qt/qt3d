@@ -53,6 +53,20 @@ QCameraSelector::QCameraSelector(QCameraSelectorPrivate &dd, QNode *parent)
 {
 }
 
+QCameraSelector *QCameraSelector::doClone(QNode *clonedParent) const
+{
+    Q_D(const QCameraSelector);
+    QCameraSelector *cameraSelector = new QCameraSelector(clonedParent);
+
+    Q_FOREACH (const QFrameGraphItem *fgChild, d->m_fgChildren)
+        cameraSelector->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(fgChild->clone(cameraSelector)));
+
+    if (d->m_camera != Q_NULLPTR)
+        cameraSelector->setCamera(qobject_cast<QEntity *>(d->m_camera->clone(cameraSelector)));
+
+    return cameraSelector;
+}
+
 QCameraSelectorPrivate::QCameraSelectorPrivate(Qt3D::QCameraSelector *qq)
     : QFrameGraphItemPrivate(qq)
     , m_camera(Q_NULLPTR)
