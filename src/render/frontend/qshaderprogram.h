@@ -63,6 +63,8 @@ class QT3DRENDERERSHARED_EXPORT QShaderProgram : public QAbstractShader
 public:
     explicit QShaderProgram(QNode *parent = 0);
 
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
     void setVertexSourceFile(const QString &vertexSourceFile);
     QString vertexSourceFile() const;
 
@@ -92,6 +94,7 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QShaderProgram)
     QShaderProgram(QShaderProgramPrivate &dd, QNode *parent = 0);
+    QShaderProgram *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
 };
 
 }

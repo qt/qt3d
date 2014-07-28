@@ -60,10 +60,29 @@ QShaderProgram::QShaderProgram(QNode *parent)
 {
 }
 
+void QShaderProgram::copy(const QNode *ref)
+{
+    Q_D(QShaderProgram);
+    QAbstractShader::copy(ref);
+    const QShaderProgram *prog = qobject_cast<const QShaderProgram *>(ref);
+    if (prog != Q_NULLPTR) {
+        // TO DO : Move loading to the backend
+        d->m_vertexSourceFile = prog->vertexSourceFile();
+        d->m_isLoaded = prog->isLoaded();
+        d->m_fragmentSourceFile = prog->fragmentSourceFile();
+        d->m_cachedFragmentCode = prog->d_func()->m_cachedFragmentCode;
+        d->m_cachedVertexCode = prog->d_func()->m_cachedVertexCode;
+    }
+}
 
 QShaderProgram::QShaderProgram(QShaderProgramPrivate &dd, QNode *parent)
     : QAbstractShader(dd, parent)
 {
+}
+
+QShaderProgram *QShaderProgram::doClone(QNode *clonedParent) const
+{
+    return new QShaderProgram(clonedParent);
 }
 
 void QShaderProgram::setVertexSourceFile(const QString& vertexSourceFile)
