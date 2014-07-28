@@ -93,6 +93,7 @@ public:
 protected:
     Q_DECLARE_PRIVATE(QRenderPass)
     QRenderPass(QRenderPassPrivate &dd, QNode *parent = 0);
+    QRenderPass *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
 };
 
 }

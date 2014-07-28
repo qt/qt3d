@@ -66,6 +66,20 @@ QRenderPass::QRenderPass(QRenderPassPrivate &dd, QNode *parent)
 {
 }
 
+QRenderPass *QRenderPass::doClone(QNode *clonedParent) const
+{
+    Q_D(const QRenderPass);
+    QRenderPass *pass = new QRenderPass(clonedParent);
+
+    Q_FOREACH (QCriterion *crit, d->m_criteriaList)
+        pass->addCriterion(qobject_cast<QCriterion *>(crit->clone(pass)));
+    // TO DO : Make QParameterMapper a QNode
+//    Q_FOREACH (QParameterMapper *mapper, d->m_bindings)
+//        pass->addBinding(qobject_cast<QParameterMapper *>(mapper->cl));
+
+    return pass;
+}
+
 ParameterList QRenderPass::attributes() const
 {
     Q_D(const QRenderPass);
