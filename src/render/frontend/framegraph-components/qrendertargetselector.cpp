@@ -61,6 +61,17 @@ QRenderTargetSelector::QRenderTargetSelector(QRenderTargetSelectorPrivate &dd, Q
 {
 }
 
+QRenderTargetSelector *QRenderTargetSelector::doClone(QNode *clonedParent) const
+{
+    Q_D(const QRenderTargetSelector);
+    QRenderTargetSelector *clone = new QRenderTargetSelector(clonedParent);
+
+    Q_FOREACH (QFrameGraphItem *fgChild, d->m_fgChildren)
+        clone->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(fgChild->clone(clone)));
+
+    return clone;
+}
+
 } // Qt3D
 
 QT_END_NAMESPACE
