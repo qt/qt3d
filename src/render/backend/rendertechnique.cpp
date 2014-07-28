@@ -108,12 +108,7 @@ void RenderTechnique::setPeer(QTechnique *peer)
             // Copy OpenGLFilter info from frontend OpenGLFilter
             // QObject doesn't allow copying directly
             QOpenGLFilter *peerFilter = peer->openGLFilter();
-            m_openglFilter->setMinorVersion(peerFilter->minorVersion());
-            m_openglFilter->setMajorVersion(peerFilter->majorVersion());
-            m_openglFilter->setExtensions(peerFilter->extensions());
-            m_openglFilter->setVendor(peerFilter->vendor());
-            m_openglFilter->setApi(peerFilter->api());
-            m_openglFilter->setProfile(peerFilter->profile());
+            m_openglFilter->copy(peerFilter);
         }
     }
 }
