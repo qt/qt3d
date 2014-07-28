@@ -75,9 +75,24 @@ QMesh::QMesh(QNode *parent)
 {
 }
 
+void QMesh::copy(const QNode *ref)
+{
+    Q_D(QMesh);
+    QAbstractMesh::copy(ref);
+    const QMesh *mesh = qobject_cast<const QMesh *>(ref);
+    if (mesh != Q_NULLPTR) {
+        d->m_source = mesh->source();
+    }
+}
+
 QMesh::QMesh(QMeshPrivate &dd, QNode *parent)
     : QAbstractMesh(dd, parent)
 {
+}
+
+QMesh *QMesh::doClone(QNode *clonedParent) const
+{
+    return new QMesh(clonedParent);
 }
 
 void QMesh::setSource( const QString& source )
