@@ -44,6 +44,7 @@
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DCore/qobserverinterface.h>
+#include <QUuid>
 
 QT_BEGIN_NAMESPACE
 
@@ -77,11 +78,13 @@ public:
     QAbstractShader *shaderProgram() const;
     QList<QParameterMapper *> bindings() const;
     QList<HCriterion> criteria() const;
+    QUuid renderPassUuid() const;
 
 private:
     Renderer *m_renderer;
     QRenderPass *m_peer;
     QAbstractShader *m_shader;
+    QUuid m_passUuid;
     QList<QParameterMapper *> m_bindings;
     QList<HCriterion> m_criteriaList;
 };

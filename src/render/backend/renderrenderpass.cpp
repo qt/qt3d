@@ -70,8 +70,8 @@ RenderRenderPass::~RenderRenderPass()
 
 void RenderRenderPass::cleanup()
 {
-    if (m_renderer != Q_NULLPTR && m_peer != Q_NULLPTR)
-        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_peer);
+    if (m_renderer != Q_NULLPTR && !m_passUuid.isNull())
+        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_passUuid);
 }
 
 void RenderRenderPass::setRenderer(Renderer *renderer)
@@ -83,13 +83,16 @@ void RenderRenderPass::setPeer(QRenderPass *peer)
 {
     if (m_peer != peer) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        if (m_peer)
-            arbiter->unregisterObserver(this, m_peer);
+        if (!m_passUuid.isNull()) {
+            arbiter->unregisterObserver(this, m_passUuid);
+            m_passUuid = QUuid();
+            m_shader = Q_NULLPTR;
+        }
         m_peer = peer;
-        m_shader = Q_NULLPTR;
         if (m_peer) {
-            arbiter->registerObserver(this, m_peer);
             m_shader = m_peer->shaderProgram();
+            m_passUuid = m_peer->uuid();
+            arbiter->registerObserver(this, m_passUuid);
             // TO DO -> Have backend classes for Bindings and Parameters so that we can easily monitor for updates
             m_bindings = m_peer->bindings();
         }
@@ -148,6 +151,11 @@ QList<QParameterMapper *> RenderRenderPass::bindings() const
 QList<HCriterion> RenderRenderPass::criteria() const
 {
     return m_criteriaList;
+}
+
+QUuid RenderRenderPass::renderPassUuid() const
+{
+    return m_passUuid;
 }
 
 } // Render
