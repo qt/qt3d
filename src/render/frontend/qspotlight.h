@@ -59,13 +59,15 @@ class QT3DRENDERERSHARED_EXPORT QSpotLight : public QAbstractLight
 public:
     explicit QSpotLight(QNode *parent = 0);
 
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
     QVector3D direction() const;
     float cutOffAngle() const;
 
     void setDirection(const QVector3D &direction);
     void setCutOffAngle(float cutOffAngle);
 
-    QHash<QString, QVariant> lightProperties() const;
+    QHash<QString, QVariant> lightProperties() const Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
     void directionChanged();
@@ -74,6 +76,7 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QSpotLight)
     QSpotLight(QSpotLightPrivate &dd, QNode *parent = 0);
+    QSpotLight *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

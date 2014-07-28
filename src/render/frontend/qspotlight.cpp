@@ -60,9 +60,25 @@ QSpotLight::QSpotLight(QNode *parent)
 {
 }
 
+void QSpotLight::copy(const QNode *ref)
+{
+    Q_D(QSpotLight);
+    QAbstractLight::copy(ref);
+    const QSpotLight *light = qobject_cast<const QSpotLight *>(ref);
+    if (light != Q_NULLPTR) {
+        d->m_direction = light->direction();
+        d->m_cutOffAngle = light->cutOffAngle();
+    }
+}
+
 QSpotLight::QSpotLight(QSpotLightPrivate &dd, QNode *parent)
     : QAbstractLight(dd, parent)
 {
+}
+
+QSpotLight *QSpotLight::doClone(QNode *clonedParent) const
+{
+    return new QSpotLight(clonedParent);
 }
 
 QVector3D QSpotLight::direction() const
