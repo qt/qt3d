@@ -72,7 +72,7 @@ void RenderSceneObserver::sceneNodeRemoved(QSceneChangePtr &e)
 {
     if (m_renderer) {
         QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
-        m_renderer->renderSceneBuilder()->releaseRenderElement(propertyChange->value().toUuid());
+        m_renderer->renderSceneBuilder()->releaseRenderElement(propertyChange->value().value<QNode *>());
 
     }
 }

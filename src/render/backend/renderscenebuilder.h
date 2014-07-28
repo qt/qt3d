@@ -68,7 +68,7 @@ namespace Render {
 
 class Renderer;
 
-class RenderSceneBuilder : public Qt3D::NodeVisitor
+class RenderSceneBuilder : public NodeVisitor
 {
 public:
     explicit RenderSceneBuilder(Renderer *renderer);
@@ -77,10 +77,10 @@ public:
     HRenderNode rootHandle() const { return m_rootNodeHandle; }
     void        initializeFrameGraph();
     void        createRenderElement(QNode *frontend);
-    void        releaseRenderElement(const QUuid &id);
+    void        releaseRenderElement(QNode *frontend);
 
 protected:
-    void visitEntity(Qt3D::QEntity *entity) Q_DECL_OVERRIDE;
+    void visitNode(QNode *nd) Q_DECL_OVERRIDE;
 
 private:
     Renderer *m_renderer;
