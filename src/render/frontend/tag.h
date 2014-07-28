@@ -85,6 +85,16 @@ public:
 
     QVariant value() const { return m_value; }
 
+    void copy(const QNode *ref) Q_DECL_OVERRIDE
+    {
+        QNode::copy(ref);
+        const Tag *tag = qobject_cast<const Tag *>(ref);
+        if (tag != Q_NULLPTR) {
+            m_name = tag->name();
+            m_value = tag->value();
+        }
+    }
+
 Q_SIGNALS:
     void nameChanged();
     void valueChanged();
@@ -92,6 +102,7 @@ Q_SIGNALS:
 private:
     QString m_name;
     QVariant m_value;
+    Tag *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE { return new Tag(clonedParent); }
 };
 
 } // namespace Qt3D
