@@ -75,9 +75,9 @@ RenderMaterial::~RenderMaterial()
 
 void RenderMaterial::cleanup()
 {
-    if (m_renderer != Q_NULLPTR && m_peer != Q_NULLPTR) {
+    if (m_renderer != Q_NULLPTR && !m_materialUuid.isNull()) {
         m_parameterPack.clear(); // Has to be done before the RenderMaterial is deleted
-        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_peer);
+        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_materialUuid);
     }
 }
 
@@ -85,14 +85,16 @@ void RenderMaterial::setPeer(QMaterial *mat)
 {
     if (m_peer != mat) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        if (m_peer) {
+        if (!m_materialUuid.isNull()) {
             m_parameterPack.clear();
-            arbiter->unregisterObserver(this, m_peer);
+            arbiter->unregisterObserver(this, m_materialUuid);
+            m_materialUuid = QUuid();
         }
         m_peer = mat;
         // Register for changes
         if (m_peer) {
-            arbiter->registerObserver(this, m_peer, ComponentUpdated);
+            m_materialUuid = m_peer->uuid();
+            arbiter->registerObserver(this, m_materialUuid, ComponentUpdated);
             Q_FOREACH (QParameter *p, m_peer->parameters()) {
                 m_parameterPack.appendParameter(p);
             }
@@ -178,6 +180,11 @@ const QHash<QString, QVariant> RenderMaterial::parameters() const
 RenderEffect *RenderMaterial::effect() const
 {
     return m_renderer->effectManager()->lookupResource(m_effectUuid);
+}
+
+QUuid RenderMaterial::materialUuid() const
+{
+    return m_materialUuid;
 }
 
 } // namespace Render

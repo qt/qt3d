@@ -77,12 +77,14 @@ public:
 
     const QHash<QString, QVariant> parameters() const;
     RenderEffect *effect() const;
+    QUuid materialUuid() const;
 
 private:
     Renderer *m_renderer;
     QMaterial* m_peer;
     RenderTextureProvider* m_textureProvider;
     ParameterPack m_parameterPack;
+    QUuid m_materialUuid;
     QUuid m_effectUuid;
 };
 
