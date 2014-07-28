@@ -202,6 +202,32 @@ QParameter::OpenGLTypes parseType(const QByteArray &s)
 
 } // of anonymous namespace
 
+class GLTFParserMesh : public QAbstractMesh
+{
+    Q_OBJECT
+private:
+    class GLTFParserMeshFunctor : public QAbstractMeshFunctor
+    {
+    public:
+        explicit GLTFParserMeshFunctor(MeshDataPtr meshData);
+        QAbstractMeshDataPtr operator ()() Q_DECL_OVERRIDE;
+
+    private:
+        MeshDataPtr m_meshData;
+    };
+
+public:
+    explicit GLTFParserMesh(QNode *parent = 0);
+
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    void setData(MeshDataPtr data);
+    QAbstractMeshFunctorPtr meshFunctor() const Q_DECL_OVERRIDE;
+
+private:
+    MeshDataPtr m_meshData;
+    GLTFParserMesh *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
+};
+
 GLTFParser::GLTFParser() : AbstractSceneParser(),
     m_parseDone(false)
 {
@@ -960,29 +986,43 @@ QVariant GLTFParser::parameterValueFromJSON(QParameter* p, QJsonValue val)
     return QVariant();
 }
 
-GLTFParser::GLTFParserMesh::GLTFParserMesh(QNode *parent)
+GLTFParserMesh::GLTFParserMesh(QNode *parent)
     : QAbstractMesh(parent)
 {
 }
 
-void GLTFParser::GLTFParserMesh::setData(MeshDataPtr data)
+void GLTFParserMesh::copy(const QNode *ref)
+{
+    QAbstractMesh::copy(ref);
+    const GLTFParserMesh *gltfMesh = qobject_cast<const GLTFParserMesh *>(ref);
+    if (gltfMesh != Q_NULLPTR) {
+        m_meshData = gltfMesh->m_meshData;
+    }
+}
+
+void GLTFParserMesh::setData(MeshDataPtr data)
 {
    m_meshData = data;
    QAbstractMesh::setDirty(this);
 }
 
-QAbstractMeshFunctorPtr GLTFParser::GLTFParserMesh::meshFunctor() const
+QAbstractMeshFunctorPtr GLTFParserMesh::meshFunctor() const
 {
-    return QAbstractMeshFunctorPtr(new GLTFParserMesh::GLTFParserMeshFunctor(m_meshData));
+    return QAbstractMeshFunctorPtr(new GLTFParserMeshFunctor(m_meshData));
 }
 
-GLTFParser::GLTFParserMesh::GLTFParserMeshFunctor::GLTFParserMeshFunctor(MeshDataPtr meshData)
+GLTFParserMesh *GLTFParserMesh::doClone(QNode *clonedParent) const
+{
+    return new GLTFParserMesh(clonedParent);
+}
+
+GLTFParserMesh::GLTFParserMeshFunctor::GLTFParserMeshFunctor(MeshDataPtr meshData)
     : QAbstractMeshFunctor()
     , m_meshData(meshData)
 {
 }
 
-QAbstractMeshDataPtr GLTFParser::GLTFParserMesh::GLTFParserMeshFunctor::operator ()()
+QAbstractMeshDataPtr GLTFParserMesh::GLTFParserMeshFunctor::operator ()()
 {
     return m_meshData;
 }
@@ -990,3 +1030,5 @@ QAbstractMeshDataPtr GLTFParser::GLTFParserMesh::GLTFParserMeshFunctor::operator
 } // of namespace Qt3D
 
 QT_END_NAMESPACE
+
+#include "gltfparser.moc"
