@@ -58,6 +58,8 @@ class QT3DRENDERERSHARED_EXPORT QLayer : public QComponent
 public:
     explicit QLayer(QNode *parent = 0);
 
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
     QString name() const;
     void setName(const QString &name);
 
@@ -67,6 +69,7 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QLayer)
     QLayer(QLayerPrivate &dd, QNode *parent = 0);
+    QLayer *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

@@ -56,9 +56,24 @@ QLayer::QLayer(QNode *parent)
 {
 }
 
+void QLayer::copy(const QNode *ref)
+{
+    Q_D(QLayer);
+    QComponent::copy(ref);
+    const QLayer *layer = qobject_cast<const QLayer *>(ref);
+    if (layer != Q_NULLPTR) {
+        d->m_name = layer->name();
+    }
+}
+
 QLayer::QLayer(QLayerPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
 {
+}
+
+QLayer *QLayer::doClone(QNode *clonedParent) const
+{
+    return new QLayer(clonedParent);
 }
 
 QString QLayer::name() const
