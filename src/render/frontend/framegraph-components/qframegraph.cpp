@@ -42,6 +42,7 @@
 #include "qframegraph.h"
 #include "qframegraph_p.h"
 #include <Qt3DCore/qentity.h>
+#include <Qt3DRenderer/qframegraphitem.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -76,6 +77,16 @@ QFrameGraph::QFrameGraph(QNode *parent)
 QFrameGraph::QFrameGraph(QFrameGraphPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
 {
+}
+
+QFrameGraph *QFrameGraph::doClone(QNode *clonedParent) const
+{
+    Q_D(const QFrameGraph);
+    QFrameGraph *frameGraph = new QFrameGraph(clonedParent);
+
+    frameGraph->setActiveFrameGraph(qobject_cast<QFrameGraphItem *>(d->m_activeFrameGraph->clone(clonedParent)));
+
+    return frameGraph;
 }
 
 /*!
