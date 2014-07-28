@@ -71,8 +71,9 @@ RenderCameraLens::~RenderCameraLens()
 
 void RenderCameraLens::cleanup()
 {
-    if (m_peer)
-        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_peer);
+    if (!m_lensUuid.isNull()) {
+        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_lensUuid);
+    }
 }
 
 void RenderCameraLens::setRenderer(Renderer *renderer)
@@ -84,12 +85,15 @@ void RenderCameraLens::setPeer(QCameraLens *peer)
 {
     if (peer != m_peer) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        if (m_peer)
-            arbiter->unregisterObserver(this, m_peer);
+        if (!m_lensUuid.isNull()) {
+            arbiter->unregisterObserver(this, m_lensUuid);
+            m_lensUuid = QUuid();
+        }
         m_peer = peer;
         if (m_peer) {
             // Register for changes
-            arbiter->registerObserver(this, m_peer, ComponentUpdated);
+            m_lensUuid = m_peer->uuid();
+            arbiter->registerObserver(this, m_lensUuid, ComponentUpdated);
             setProjection(m_peer->projectionMatrix());
         }
     }
@@ -119,6 +123,11 @@ void RenderCameraLens::sceneChangeEvent(const QSceneChangePtr &e)
     default:
         break;
     }
+}
+
+QUuid RenderCameraLens::lensUuid() const
+{
+    return m_lensUuid;
 }
 
 } // Render

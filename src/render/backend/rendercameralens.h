@@ -46,6 +46,7 @@
 
 #include <QMatrix4x4>
 #include <QRectF>
+#include <QUuid>
 
 QT_BEGIN_NAMESPACE
 
@@ -76,10 +77,12 @@ public:
     inline QMatrix4x4 projection() const { return m_projection; }
 
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    QUuid lensUuid() const;
 
 private:
     Renderer *m_renderer;
     QCameraLens *m_peer;
+    QUuid m_lensUuid;
 
     QVector4D m_clearColor;
     QMatrix4x4 m_projection;
