@@ -66,22 +66,23 @@ RenderLayer::~RenderLayer()
 
 void RenderLayer::cleanup()
 {
-    if (m_peer) {
-        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        arbiter->unregisterObserver(this, m_peer);
-    }
+    if (!m_layerUuid.isNull())
+        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_layerUuid);
 }
 
 void RenderLayer::setPeer(QLayer *peer)
 {
     if (m_peer != peer) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        if (m_peer)
-            arbiter->unregisterObserver(this, m_peer);
+        if (!m_layerUuid.isNull()) {
+            arbiter->unregisterObserver(this, m_layerUuid);
+            m_layerUuid = QUuid();
+        }
         m_peer = peer;
         if (m_peer) {
-            arbiter->registerObserver(this, m_peer, ComponentUpdated);
+            m_layerUuid = m_peer->uuid();
             m_layer = m_peer->name();
+            arbiter->registerObserver(this, m_layerUuid, ComponentUpdated);
         }
     }
 }
@@ -89,6 +90,11 @@ void RenderLayer::setPeer(QLayer *peer)
 void RenderLayer::setRenderer(Renderer *renderer)
 {
     m_renderer = renderer;
+}
+
+QUuid RenderLayer::layerUuid() const
+{
+    return m_layerUuid;
 }
 
 QString RenderLayer::layer() const

@@ -44,6 +44,7 @@
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DCore/qobserverinterface.h>
+#include <QUuid>
 
 QT_BEGIN_NAMESPACE
 
@@ -64,6 +65,7 @@ public:
 
     void setPeer(QLayer *peer);
     void setRenderer(Renderer *renderer);
+    QUuid layerUuid() const;
 
     QString layer() const;
     void sceneChangeEvent(const QSceneChangePtr &e);
@@ -72,6 +74,7 @@ private:
     QLayer *m_peer;
     Renderer *m_renderer;
     QString m_layer;
+    QUuid m_layerUuid;
 };
 
 } // Render
