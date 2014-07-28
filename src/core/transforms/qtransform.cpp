@@ -64,10 +64,28 @@ QTransform::QTransform(QNode *parent)
     d->m_transformsDirty.fetchAndStoreOrdered(0);
 }
 
+void QTransform::copy(const QNode *ref)
+{
+    Q_D(QTransform);
+    QComponent::copy(ref);
+    const QTransform *transform = qobject_cast<const QTransform *>(ref);
+    if (transform != Q_NULLPTR) {
+        d->m_matrix = transform->matrix();
+    }
+}
+
 QTransform::QTransform(QTransformPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
 {
+}
 
+QTransform *QTransform::doClone(QNode *clonedParent) const
+{
+    Q_D(const QTransform);
+    QTransform *clone = new QTransform(clonedParent);
+    Q_FOREACH (QAbstractTransform *t, d->m_transforms)
+        clone->appendTransform(qobject_cast<QAbstractTransform *>(t->clone(clone)));
+    return clone;
 }
 
 void QTransform::setTransformsDirty()

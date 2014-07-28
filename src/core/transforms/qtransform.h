@@ -61,6 +61,8 @@ class QT3DCORESHARED_EXPORT QTransform : public QComponent
 public:
     explicit QTransform(QNode *parent = 0);
 
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
     QMatrix4x4 matrix() const;
     void setMatrix(const QMatrix4x4 &m);
 
@@ -91,6 +93,7 @@ protected:
 
     Q_DECLARE_PRIVATE(QTransform)
     QTransform(QTransformPrivate &dd, QNode *parent = 0);
+    QTransform *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3D
