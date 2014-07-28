@@ -57,9 +57,28 @@ QLookAtTransform::QLookAtTransform(QNode *parent)
 {
 }
 
+void QLookAtTransform::copy(const QNode *ref)
+{
+    Q_D(QLookAtTransform);
+    QAbstractTransform::copy(ref);
+    const QLookAtTransform *transform = qobject_cast<const QLookAtTransform *>(ref);
+    if (transform != Q_NULLPTR) {
+        d->m_matrix = matrix();
+        d->m_position = position();
+        d->m_upVector = upVector();
+        d->m_viewCenter = viewCenter();
+        d->m_viewVector = viewVector();
+    }
+}
+
 QLookAtTransform::QLookAtTransform(QLookAtTransformPrivate &dd, QNode *parent)
     : QAbstractTransform(dd, parent)
 {
+}
+
+QLookAtTransform *QLookAtTransform::doClone(QNode *clonedParent) const
+{
+    return new QLookAtTransform(clonedParent);
 }
 
 QMatrix4x4 QLookAtTransform::matrix() const
