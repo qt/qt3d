@@ -93,6 +93,8 @@ public:
     explicit QParameter(QNode *parent = 0);
     QParameter(QNode* parent, const QString& name, const QVariant& value, OpenGLTypes ty = Undefined);
 
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
     void setName(const QString &name);
     QString name() const;
 
@@ -121,7 +123,7 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QParameter)
     QParameter(QParameterPrivate &dd, QNode *parent = 0);
-
+    QParameter *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

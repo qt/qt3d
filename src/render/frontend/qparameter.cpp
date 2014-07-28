@@ -61,6 +61,11 @@ QParameter::QParameter(QParameterPrivate &dd, QNode *parent)
 {
 }
 
+QParameter *QParameter::doClone(QNode *clonedParent) const
+{
+    return new QParameter(clonedParent);
+}
+
 QParameter::QParameter(QNode *parent)
     : QNode(*new QParameterPrivate(this), parent)
 {
@@ -73,6 +78,18 @@ QParameter::QParameter(QNode *parent, const QString &name, const QVariant &value
     d->m_name = name;
     d->m_value = value;
     d->m_type = ty;
+}
+
+void QParameter::copy(const QNode *ref)
+{
+    Q_D(QParameter);
+    QNode::copy(ref);
+    const QParameter *param = qobject_cast<const QParameter *>(ref);
+    if (param != Q_NULLPTR) {
+        d->m_name = param->name();
+        d->m_value = param->value();
+        d->m_type = param->d_func()->m_type;
+    }
 }
 
 void QParameter::setName(const QString &name)
