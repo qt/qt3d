@@ -63,6 +63,8 @@ class QT3DRENDERERSHARED_EXPORT QSphereMesh : public Qt3D::QAbstractShapeMesh
 public:
     explicit QSphereMesh(QNode *parent = 0);
 
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
     void setRings(int rings);
     void setSlices(int slices);
     void setRadius(float radius);
@@ -84,7 +86,7 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QSphereMesh)
-
+    QSphereMesh *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

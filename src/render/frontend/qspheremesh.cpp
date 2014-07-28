@@ -86,6 +86,20 @@ class QSphereMeshPrivate : public QAbstractShapeMeshPrivate
 QSphereMesh::QSphereMesh(QNode *parent)
     : QAbstractShapeMesh(*new QSphereMeshPrivate(this), parent)
 {
+    setDirty(true);
+}
+
+void QSphereMesh::copy(const QNode *ref)
+{
+    Q_D(QSphereMesh);
+    QAbstractShapeMesh::copy(ref);
+    const QSphereMesh *mesh = qobject_cast<const QSphereMesh *>(ref);
+    if (mesh != Q_NULLPTR) {
+        d->m_generateTangents = mesh->generateTangents();
+        d->m_rings = mesh->rings();
+        d->m_slices = mesh->slices();
+        d->m_radius = mesh->radius();
+    }
 }
 
 void QSphereMesh::setRings(int rings)
@@ -138,6 +152,11 @@ QAbstractMeshFunctorPtr QSphereMesh::meshFunctor() const
 {
     Q_D(const QSphereMesh);
     return QAbstractMeshFunctorPtr(new SphereMeshFunctor(d->m_rings, d->m_slices, d->m_radius, d->m_generateTangents));
+}
+
+QSphereMesh *QSphereMesh::doClone(QNode *clonedParent) const
+{
+    return new QSphereMesh(clonedParent);
 }
 
 int QSphereMesh::rings() const
