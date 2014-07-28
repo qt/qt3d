@@ -78,15 +78,11 @@ void QNodePrivate::_q_sendQueuedChanges()
 QNode::QNode(QNode *parent)
     : QObject(*new QNodePrivate(this), parent)
 {
-    if (parent)
-        parent->addChild(this);
 }
 
 QNode::QNode(QNodePrivate &dd, QNode *parent)
     : QObject(dd, parent)
 {
-    if (parent)
-        parent->addChild(this);
 }
 
 QNode::~QNode()
@@ -142,7 +138,7 @@ void QNode::addChild(QNode *childNode)
 
     QScenePropertyChangePtr e(new QScenePropertyChange(NodeCreated, this));
     e->setPropertyName(QByteArrayLiteral("node"));
-    e->setValue(QVariant::fromValue(childNode));
+    e->setValue(QVariant::fromValue(childNode->clone()));
     notifyObservers(e);
 }
 
@@ -158,7 +154,7 @@ void QNode::removeChild(QNode *childNode)
 
     QScenePropertyChangePtr e(new QScenePropertyChange(NodeAboutToBeDeleted, this));
     e->setPropertyName(QByteArrayLiteral("node"));
-    e->setValue(QVariant::fromValue(childNode->uuid()));
+    e->setValue(QVariant::fromValue(childNode->clone()));
     notifyObservers(e);
 }
 
