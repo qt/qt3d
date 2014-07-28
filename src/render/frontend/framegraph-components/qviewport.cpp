@@ -58,9 +58,30 @@ QViewport::QViewport(QNode *parent)
 {
 }
 
+void QViewport::copy(const QNode *ref)
+{
+    Q_D(QViewport);
+    QFrameGraphItem::copy(ref);
+    const QViewport *viewport = qobject_cast<const QViewport *>(ref);
+    if (viewport != Q_NULLPTR) {
+        d->m_rect = viewport->rect();
+    }
+}
+
 QViewport::QViewport(QViewportPrivate &dd, QNode *parent)
     : QFrameGraphItem(dd, parent)
 {
+}
+
+QViewport *QViewport::doClone(QNode *clonedParent) const
+{
+    Q_D(const QViewport);
+    QViewport *clone = new QViewport(clonedParent);
+
+    Q_FOREACH (QFrameGraphItem *fgChild, d->m_fgChildren)
+        clone->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(fgChild->clone(clone)));
+
+    return clone;
 }
 
 QRectF QViewport::rect() const
