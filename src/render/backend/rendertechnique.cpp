@@ -76,8 +76,8 @@ RenderTechnique::~RenderTechnique()
 
 void RenderTechnique::cleanup()
 {
-    if (m_renderer != Q_NULLPTR && m_peer != Q_NULLPTR) {
-        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_peer);
+    if (m_renderer != Q_NULLPTR && !m_techniqueUuid.isNull()) {
+        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_techniqueUuid);
         delete m_openglFilter;
     }
 }
@@ -92,10 +92,14 @@ void RenderTechnique::setPeer(QTechnique *peer)
 {
     if (m_peer != peer) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        arbiter->unregisterObserver(this, m_peer);
+        if (!m_techniqueUuid.isNull()) {
+            arbiter->unregisterObserver(this, m_techniqueUuid);
+            m_techniqueUuid = QUuid();
+        }
         m_peer = peer;
         if (m_peer) {
-            arbiter->registerObserver(this, m_peer);
+            m_techniqueUuid = m_peer->uuid();
+            arbiter->registerObserver(this, m_techniqueUuid);
 
             m_parameterPack.clear();
             Q_FOREACH (QParameter *p, m_peer->parameters())
@@ -209,6 +213,11 @@ QList<HRenderPass> RenderTechnique::renderPasses() const
 QOpenGLFilter *RenderTechnique::openGLFilter() const
 {
     return m_openglFilter;
+}
+
+QUuid RenderTechnique::techniqueUuid() const
+{
+    return m_techniqueUuid;
 }
 
 } // namespace Render
