@@ -69,6 +69,17 @@ QAbstractLight::QAbstractLight(Qt3D::QNode *parent) :
 {
 }
 
+void QAbstractLight::copy(const QNode *ref)
+{
+    Q_D(QAbstractLight);
+    QComponent::copy(ref);
+    const QAbstractLight *light = qobject_cast<const QAbstractLight *>(ref);
+    if (ref != Q_NULLPTR) {
+        d->m_color = light->color();
+        d->m_intensity = light->intensity();
+    }
+}
+
 QAbstractLight::QAbstractLight(QAbstractLightPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
 {

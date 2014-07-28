@@ -65,6 +65,8 @@ public :
 
     explicit QAbstractLight(QNode *parent = 0);
 
+    virtual void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
     QColor color() const;
     void setColor(const QColor &color);
 
