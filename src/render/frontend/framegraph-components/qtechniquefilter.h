@@ -68,6 +68,7 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QTechniqueFilter)
     QTechniqueFilter(QTechniqueFilterPrivate &dd, QNode *parent = 0);
+    QTechniqueFilter *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3D
