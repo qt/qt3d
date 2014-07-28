@@ -42,10 +42,11 @@
 #ifndef QT3D_RENDER_RENDEREFFECT_H
 #define QT3D_RENDER_RENDEREFFECT_H
 
-#include <QList>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DRenderer/parameterpack.h>
 #include <Qt3DCore/qobserverinterface.h>
+#include <QList>
+#include <QUuid>
 
 QT_BEGIN_NAMESPACE
 
@@ -81,11 +82,13 @@ public:
 
     QList<HTechnique> techniques() const;
     const QHash<QString, QVariant> parameters() const;
+    QUuid effectUuid() const;
 
 private:
     QList<HTechnique> m_techniques;
     Renderer *m_renderer;
     QAbstractEffect *m_peer;
+    QUuid m_effectUuid;
     ParameterPack m_parameterPack;
 };
 

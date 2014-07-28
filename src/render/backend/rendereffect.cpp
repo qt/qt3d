@@ -71,8 +71,8 @@ RenderEffect::~RenderEffect()
 
 void RenderEffect::cleanup()
 {
-    if (m_renderer != Q_NULLPTR && m_peer != Q_NULLPTR)
-        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_peer);
+    if (m_renderer != Q_NULLPTR && !m_effectUuid.isNull())
+        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_effectUuid);
 }
 
 void RenderEffect::setPeer(QAbstractEffect *effect)
@@ -80,11 +80,14 @@ void RenderEffect::setPeer(QAbstractEffect *effect)
     if (effect != m_peer) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
         m_techniques.clear();
-        if (m_peer)
-            arbiter->unregisterObserver(this, m_peer);
+        if (!m_effectUuid.isNull()) {
+            arbiter->unregisterObserver(this, m_effectUuid);
+            m_effectUuid = QUuid();
+        }
         m_peer = effect;
         if (m_peer) {
-            arbiter->registerObserver(this, m_peer, ComponentUpdated);
+            m_effectUuid = m_peer->uuid();
+            arbiter->registerObserver(this, m_effectUuid, ComponentUpdated);
 
             m_techniques.clear();
             Q_FOREACH (QAbstractTechnique *t, m_peer->techniques())
@@ -154,6 +157,11 @@ void RenderEffect::appendRenderTechnique(QAbstractTechnique *t)
 const QHash<QString, QVariant> RenderEffect::parameters() const
 {
     return m_parameterPack.namedValues();
+}
+
+QUuid RenderEffect::effectUuid() const
+{
+    return m_effectUuid;
 }
 
 QList<HTechnique> RenderEffect::techniques() const
