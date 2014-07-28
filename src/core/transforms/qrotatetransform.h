@@ -63,6 +63,8 @@ class QT3DCORESHARED_EXPORT QRotateTransform : public QAbstractTransform
 public:
     explicit QRotateTransform(QNode *parent = 0);
 
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
     float angleDeg() const;
     float angleRad() const;
     QVector3D axis() const;
@@ -80,7 +82,7 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QRotateTransform)
     QRotateTransform(QRotateTransformPrivate &dd, QNode *parent = 0);
-
+    QRotateTransform *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3D

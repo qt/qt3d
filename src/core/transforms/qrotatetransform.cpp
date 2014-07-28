@@ -61,10 +61,25 @@ QRotateTransform::QRotateTransform(QNode *parent)
 {
 }
 
+void QRotateTransform::copy(const QNode *ref)
+{
+    Q_D(QRotateTransform);
+    QAbstractTransform::copy(ref);
+    const QRotateTransform *transform = qobject_cast<const QRotateTransform *>(ref);
+    if (ref != Q_NULLPTR) {
+        d->m_axis = transform->axis();
+        d->m_angleDeg = transform->angleDeg();
+    }
+}
 
 QRotateTransform::QRotateTransform(QRotateTransformPrivate &dd, QNode *parent)
     : QAbstractTransform(dd, parent)
 {
+}
+
+QRotateTransform *QRotateTransform::doClone(QNode *clonedParent) const
+{
+    return new QRotateTransform(clonedParent);
 }
 
 float QRotateTransform::angleDeg() const
