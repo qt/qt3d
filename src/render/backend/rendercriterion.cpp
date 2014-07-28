@@ -65,21 +65,22 @@ RenderCriterion::~RenderCriterion()
 
 void RenderCriterion::cleanup()
 {
-    if (m_renderer != Q_NULLPTR && m_peer != Q_NULLPTR)
-        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_peer);
+    if (m_renderer != Q_NULLPTR && !m_criterionUuid.isNull())
+        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_criterionUuid);
 }
 
 void RenderCriterion::setPeer(QCriterion *criterion)
 {
     if (m_peer != criterion) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        if (m_peer)
-            arbiter->unregisterObserver(this, m_peer);
-        m_criterionUuid = QUuid();
+        if (!m_criterionUuid.isNull()) {
+            arbiter->unregisterObserver(this, m_criterionUuid);
+            m_criterionUuid = QUuid();
+        }
         m_peer = criterion;
         if (m_peer) {
-            arbiter->registerObserver(this, m_peer, ComponentUpdated);
             m_criterionUuid = criterion->uuid();
+            arbiter->registerObserver(this, m_criterionUuid, ComponentUpdated);
             m_value = m_peer->value();
             m_name = m_peer->name();
         }
