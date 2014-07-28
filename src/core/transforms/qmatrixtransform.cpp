@@ -56,6 +56,11 @@ QMatrixTransform::QMatrixTransform(QMatrixTransformPrivate &dd, QNode *parent)
 {
 }
 
+QMatrixTransform *QMatrixTransform::doClone(QNode *clonedParent) const
+{
+    return new QMatrixTransform(clonedParent);
+}
+
 QMatrixTransform::QMatrixTransform(QNode *parent)
     : QAbstractTransform(*new QMatrixTransformPrivate(this), parent)
 {
@@ -81,6 +86,16 @@ void QMatrixTransform::setMatrix(const QMatrix4x4 &matrix)
         d->m_matrix = matrix;
         emit matrixChanged();
         emit transformUpdated();
+    }
+}
+
+void QMatrixTransform::copy(const QNode *ref)
+{
+    Q_D(QMatrixTransform);
+    QAbstractTransform::copy(ref);
+    const QMatrixTransform *matrix = qobject_cast<const QMatrixTransform *>(ref);
+    if (ref != Q_NULLPTR) {
+        d->m_matrix = matrix->matrix();
     }
 }
 
