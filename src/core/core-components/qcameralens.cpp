@@ -68,11 +68,34 @@ QCameraLens::QCameraLens(QNode *parent)
     d->updateOrthogonalProjection();
 }
 
+void QCameraLens::copy(const QNode *ref)
+{
+    Q_D(QCameraLens);
+    QComponent::copy(ref);
+    const QCameraLens *lens = qobject_cast<const QCameraLens *>(ref);
+    if (lens != Q_NULLPTR) {
+        d->m_projectionType = lens->projectionType();
+        d->m_nearPlane = lens->nearPlane();
+        d->m_farPlane = lens->farPlane();
+        d->m_fieldOfView = lens->fieldOfView();
+        d->m_aspectRatio = lens->aspectRatio();
+        d->m_left = lens->left();
+        d->m_right = lens->right();
+        d->m_bottom = lens->bottom();
+        d->m_top = lens->top();
+    }
+}
+
 QCameraLens::QCameraLens(QCameraLensPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
 {
     Q_D(QCameraLens);
     d->updateOrthogonalProjection();
+}
+
+QCameraLens *QCameraLens::doClone(QNode *clonedParent) const
+{
+    return new QCameraLens(clonedParent);
 }
 
 void QCameraLens::setProjectionType(QCameraLens::ProjectionType projectionType)
