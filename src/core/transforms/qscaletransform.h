@@ -59,6 +59,8 @@ class QT3DCORESHARED_EXPORT QScaleTransform : public QAbstractTransform
 public:
     explicit QScaleTransform(QNode *parent = 0);
 
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
     QVector3D scale3D() const;
     void    setScale3D(const QVector3D &scale3D);
 
@@ -74,6 +76,7 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QScaleTransform)
     QScaleTransform(QScaleTransformPrivate &dd, QNode *parent = 0);
+    QScaleTransform *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

@@ -58,10 +58,24 @@ QScaleTransform::QScaleTransform(QNode *parent) :
 {
 }
 
+void QScaleTransform::copy(const QNode *ref)
+{
+    Q_D(QScaleTransform);
+    QAbstractTransform::copy(ref);
+    const QScaleTransform *transform = qobject_cast<const QScaleTransform *>(ref);
+    if (ref != Q_NULLPTR) {
+        d->m_scale3D = transform->scale3D();
+    }
+}
 
 QScaleTransform::QScaleTransform(QScaleTransformPrivate &dd, QNode *parent)
     : QAbstractTransform(dd, parent)
 {
+}
+
+QScaleTransform *QScaleTransform::doClone(QNode *clonedParent) const
+{
+    return new QScaleTransform(clonedParent);
 }
 
 QVector3D QScaleTransform::scale3D() const
