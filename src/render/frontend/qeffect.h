@@ -60,6 +60,8 @@ class QT3DRENDERERSHARED_EXPORT QEffect
 public:
     explicit QEffect(QNode *parent = 0);
 
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
     void addTechnique(QAbstractTechnique *t) Q_DECL_OVERRIDE;
     void removeTechnique(QAbstractTechnique *t) Q_DECL_OVERRIDE;
 
@@ -70,6 +72,7 @@ public:
 protected:
     Q_DECLARE_PRIVATE(QEffect)
     QEffect(QEffectPrivate &dd, QNode *parent = 0);
+    QEffect *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

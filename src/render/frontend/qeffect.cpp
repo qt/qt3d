@@ -59,9 +59,28 @@ QEffect::QEffect(QNode *parent)
 {
 }
 
+void QEffect::copy(const QNode *ref)
+{
+    QAbstractEffect::copy(ref);
+}
+
 QEffect::QEffect(QEffectPrivate &dd, QNode *parent)
     : QAbstractEffect(dd, parent)
 {
+}
+
+QEffect *QEffect::doClone(QNode *clonedParent) const
+{
+    Q_D(const QEffect);
+    QEffect *effect = new QEffect(clonedParent);
+
+    Q_FOREACH (QParameter *p, d->m_parameters)
+        effect->addParameter(qobject_cast<QParameter *>(p->clone(effect)));
+
+    Q_FOREACH (QAbstractTechnique *t, d->m_techniques)
+        effect->addTechnique(qobject_cast<QAbstractTechnique *>(t->clone(effect)));
+
+    return effect;
 }
 
 void QEffect::addTechnique(QAbstractTechnique *t)
