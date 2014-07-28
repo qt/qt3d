@@ -61,9 +61,34 @@ QTechnique::QTechnique(QNode *parent)
 {
 }
 
+void QTechnique::copy(const QNode *ref)
+{
+    Q_D(QTechnique);
+    QAbstractTechnique::copy(ref);
+    const QTechnique *tech = qobject_cast<const QTechnique *>(ref);
+    if (tech != Q_NULLPTR) {
+        d->m_openGLFilter->copy(tech->openGLFilter());
+    }
+}
+
 QTechnique::QTechnique(QTechniquePrivate &dd, QNode *parent)
     : QAbstractTechnique(dd, parent)
 {
+}
+
+QTechnique *QTechnique::doClone(QNode *clonedParent) const
+{
+    Q_D(const QTechnique);
+    QTechnique *technique = new QTechnique(clonedParent);
+
+    Q_FOREACH (QCriterion *criterion, d->m_criteriaList)
+        technique->addCriterion(qobject_cast<QCriterion *>(criterion->clone(technique)));
+    Q_FOREACH (QAbstractRenderPass *pass, d->m_renderPasses)
+        technique->addPass(qobject_cast<QAbstractRenderPass *>(pass->clone(technique)));
+    Q_FOREACH (QParameter *p, d->m_parameters)
+        technique->addParameter(qobject_cast<QParameter *>(p->clone(technique)));
+
+    return technique;
 }
 
 void QTechnique::addCriterion(QCriterion *criterion)

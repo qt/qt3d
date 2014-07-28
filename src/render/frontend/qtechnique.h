@@ -67,8 +67,11 @@ class QT3DRENDERERSHARED_EXPORT QTechnique : public QAbstractTechnique
 public:
     explicit QTechnique(QNode *parent = 0);
 
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
     void addCriterion(QCriterion *criterion);
     void removeCriterion(QCriterion *criterion);
+
     QList<QCriterion *> criteria() const;
     void clearCriteria();
 
@@ -84,6 +87,7 @@ public:
 protected:
     Q_DECLARE_PRIVATE(QTechnique)
     QTechnique(QTechniquePrivate &dd, QNode *parent = 0);
+    QTechnique *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
 };
 
 }
