@@ -82,6 +82,8 @@ public:
 
     explicit QOpenGLFilter(QObject *parent = 0);
 
+    void copy(const QOpenGLFilter *ref);
+
     Api api() const;
     Profile profile() const;
     int minorVersion() const;

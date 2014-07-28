@@ -72,6 +72,17 @@ QOpenGLFilter::QOpenGLFilter(QObject *parent)
 {
 }
 
+void QOpenGLFilter::copy(const QOpenGLFilter *ref)
+{
+    Q_D(QOpenGLFilter);
+    d->m_api = ref->api();
+    d->m_profile = ref->profile();
+    d->m_major = ref->majorVersion();
+    d->m_minor = ref->minorVersion();
+    d->m_extensions = ref->extensions();
+    d->m_vendor = ref->vendor();
+}
+
 QOpenGLFilter::Api QOpenGLFilter::api() const
 {
     Q_D(const QOpenGLFilter);
