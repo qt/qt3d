@@ -88,14 +88,16 @@ void QAbstractMesh::setDirty(bool dirty)
     Q_D(QAbstractMesh);
     if (dirty != d->m_dirty) {
         d->m_dirty = dirty;
-        QScenePropertyChangePtr change(new QScenePropertyChange(ComponentUpdated, this));
-        change->setPropertyName(QByteArrayLiteral("meshFunctor"));
-        change->setValue(QVariant::fromValue(meshFunctor()));
-        notifyObservers(change);
-        // TO DO see if we can clear the d->m_dirty on request.
-        // This would allow to send a single notification for classes that have several property changes occur
-        // over a single given frame
-        d->m_dirty = false;
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr change(new QScenePropertyChange(ComponentUpdated, this));
+            change->setPropertyName(QByteArrayLiteral("meshFunctor"));
+            change->setValue(QVariant::fromValue(meshFunctor()));
+            notifyObservers(change);
+            // TO DO see if we can clear the d->m_dirty on request.
+            // This would allow to send a single notification for classes that have several property changes occur
+            // over a single given frame or maybe that's the job of the QChangeArbiter
+            d->m_dirty = false;
+        }
     }
 }
 
