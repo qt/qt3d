@@ -55,20 +55,13 @@ class QT3DCORESHARED_EXPORT QAbstractTechnique
         : public QNode
 {
     Q_OBJECT
-    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
 
 public:
     explicit QAbstractTechnique(QNode *parent = 0);
 
-    virtual void setName(const QString &name);
-    QString name() const;
-
     virtual void addPass(QAbstractRenderPass *pass);
     virtual void removePass(QAbstractRenderPass *pass);
     QList<QAbstractRenderPass *> renderPasses() const;
-
-Q_SIGNALS:
-    void nameChanged();
 
 protected:
     Q_DECLARE_PRIVATE(QAbstractTechnique)

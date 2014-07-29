@@ -84,27 +84,6 @@ QAbstractTechnique::QAbstractTechnique(QAbstractTechniquePrivate &dd, QNode *par
 }
 
 /*!
- * Sets the \a name of the technique
- */
-void QAbstractTechnique::setName(const QString &name)
-{
-    Q_D(QAbstractTechnique);
-    if (d->m_name != name) {
-        d->m_name = name;
-        emit nameChanged();
-    }
-}
-
-/*!
- * Returns the name of the technique
- */
-QString QAbstractTechnique::name() const
-{
-    Q_D(const QAbstractTechnique);
-    return d->m_name;
-}
-
-/*!
  * Appends a \a pass to the technique. This posts a ComponentAdded
  * QScenePropertyChange notification to the QChangeArbiter with the
  * value being the \a pass and the property name being "pass".
@@ -114,10 +93,20 @@ void QAbstractTechnique::addPass(QAbstractRenderPass *pass)
     Q_D(QAbstractTechnique);
     if (!d->m_renderPasses.contains(pass)) {
         d->m_renderPasses.append(pass);
-        QScenePropertyChangePtr e(new QScenePropertyChange(ComponentAdded, this));
-        e->setPropertyName(QByteArrayLiteral("pass"));
-        e->setValue(QVariant::fromValue(pass));
-        notifyObservers(e);
+
+        // We need to add it as a child of the current node if it has been declared inline
+        // Or not previously added as a child of the current node so that
+        // 1) The backend gets notified about it's creation
+        // 2) When the current node is destroyed, it gets destroyed as well
+        if (!pass->parent() || pass->parent() == this)
+            QNode::addChild(pass);
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr e(new QScenePropertyChange(NodeAdded, this));
+            e->setPropertyName(QByteArrayLiteral("pass"));
+            e->setValue(QVariant::fromValue(pass));
+            notifyObservers(e);
+        }
     }
 }
 
@@ -129,11 +118,13 @@ void QAbstractTechnique::addPass(QAbstractRenderPass *pass)
 void QAbstractTechnique::removePass(QAbstractRenderPass *pass)
 {
     Q_D(QAbstractTechnique);
+    if (d->m_changeArbiter) {
+        QScenePropertyChangePtr e(new QScenePropertyChange(NodeRemoved, this));
+        e->setPropertyName(QByteArrayLiteral("pass"));
+        e->setValue(QVariant::fromValue(pass->uuid()));
+        notifyObservers(e);
+    }
     d->m_renderPasses.removeOne(pass);
-    QScenePropertyChangePtr e(new QScenePropertyChange(ComponentRemoved, this));
-    e->setPropertyName(QByteArrayLiteral("pass"));
-    e->setValue(QVariant::fromValue(pass->uuid()));
-    notifyObservers(e);
 }
 
 /*!
