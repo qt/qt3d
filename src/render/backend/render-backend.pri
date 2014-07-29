@@ -54,7 +54,8 @@ HEADERS += \
     $$PWD/criterionmanager.h \
     $$PWD/rendersceneobserver.h \
     $$PWD/framegraphmanager.h \
-    $$PWD/rendertransform.h
+    $$PWD/rendertransform.h \
+    $$PWD/transformmanager.h
 
 SOURCES += \
     $$PWD/rendereraspect.cpp \
@@ -105,4 +106,5 @@ SOURCES += \
     $$PWD/criterionmanager.cpp \
     $$PWD/rendersceneobserver.cpp \
     $$PWD/framegraphmanager.cpp \
-    $$PWD/rendertransform.cpp
+    $$PWD/rendertransform.cpp \
+    $$PWD/transformmanager.cpp
