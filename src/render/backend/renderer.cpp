@@ -93,6 +93,7 @@
 #include "renderthread.h"
 #include "criterionmanager.h"
 #include "framegraphmanager.h"
+#include "transformmanager.h"
 
 #include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/qabstracteffect.h>
@@ -135,6 +136,7 @@ Renderer::Renderer(int cachedFrames)
     , m_lightManager(new LightManager())
     , m_criterionManager(new CriterionManager())
     , m_frameGraphManager(new FrameGraphManager())
+    , m_transformManager(new TransformManager())
     , m_renderQueues(new RenderQueues(cachedFrames - 1))
     , m_renderThread(new RenderThread(this))
     , m_renderSceneBuilder(new RenderSceneBuilder(this))
