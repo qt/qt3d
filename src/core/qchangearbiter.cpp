@@ -111,53 +111,42 @@ void QChangeArbiter::distributeQueueChanges(ChangeQueue *changeQueue)
         if (change.isNull())
             continue;
 
-        switch (change->type()) {
-
-        case NodeCreated: {
+        if (change->type() == NodeCreated) {
             Q_FOREACH (QSceneObserverInterface *observer, d->m_sceneObservers)
                 observer->sceneNodeAdded(change);
-            break;
         }
-
-        case NodeDeleted:
-        case NodeAboutToBeDeleted: {
+        else if (change->type() == NodeAboutToBeDeleted || change->type() == NodeDeleted) {
             Q_FOREACH (QSceneObserverInterface *observer, d->m_sceneObservers)
                 observer->sceneNodeRemoved(change);
+        }
+
+        switch (change->observableType()) {
+
+        case QSceneChange::Observable: {
+            QObservableInterface *subject = change->subject().m_observable;
+            if (d->m_aspectObservations.contains(subject)) {
+                QObserverList &observers = d->m_aspectObservations[subject];
+                Q_FOREACH (const QObserverPair &observer, observers) {
+                    if ((change->type() & observer.first))
+                        observer.second->sceneChangeEvent(change);
+                }
+            }
             break;
         }
 
-        default : {
-            switch (change->observableType()) {
-
-            case QSceneChange::Observable: {
-                QObservableInterface *subject = change->subject().m_observable;
-                if (d->m_aspectObservations.contains(subject)) {
-                    QObserverList &observers = d->m_aspectObservations[subject];
-                    Q_FOREACH (const QObserverPair &observer, observers) {
-                        if ((change->type() & observer.first))
-                            observer.second->sceneChangeEvent(change);
-                    }
+        case QSceneChange::Node: {
+            QNode *subject = change->subject().m_node;
+            if (d->m_nodeObservations.contains(subject->uuid())) {
+                QObserverList &observers = d->m_nodeObservations[subject->uuid()];
+                Q_FOREACH (const QObserverPair&observer, observers) {
+                    if ((change->type() & observer.first))
+                        observer.second->sceneChangeEvent(change);
                 }
-                break;
             }
-
-            case QSceneChange::Node: {
-                QNode *subject = change->subject().m_node;
-                if (d->m_nodeObservations.contains(subject->uuid())) {
-                    QObserverList &observers = d->m_nodeObservations[subject->uuid()];
-                    Q_FOREACH (const QObserverPair&observer, observers) {
-                        if ((change->type() & observer.first))
-                            observer.second->sceneChangeEvent(change);
-                    }
-                }
-                break;
-            }
-
-            } // observableType switch
             break;
-        } // default
+        }
 
-        } // change type switch
+        } // observableType switch
     }
 }
 
