@@ -50,14 +50,16 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 enum ChangeFlag {
-    NodeCreated             = 0x00000001,
-    NodeAboutToBeDeleted    = 0x00000002,
-    NodeDeleted             = 0x00000004,
-    NodeStatus              = 0x00000008,
-    ComponentAdded          = 0x00000010,
-    ComponentRemoved        = 0x00000020,
-    ComponentUpdated        = 0x00000040,
-    AllChanges              = 0x00000FFF
+    NodeCreated             = 1 << 0,
+    NodeAboutToBeDeleted    = 1 << 1,
+    NodeDeleted             = 1 << 2,
+    NodeUpdated             = 1 << 3,
+    NodeAdded               = 1 << 4,
+    NodeRemoved             = 1 << 5,
+    ComponentAdded          = 1 << 6,
+    ComponentRemoved        = 1 << 7,
+    ComponentUpdated        = 1 << 8,
+    AllChanges              = 0xFFFFFFFF
 };
 Q_DECLARE_FLAGS(ChangeFlags, ChangeFlag)
 Q_DECLARE_OPERATORS_FOR_FLAGS(ChangeFlags)
