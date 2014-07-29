@@ -87,12 +87,23 @@ void QAbstractMaterial::setEffect(QAbstractEffect *effect)
 {
     Q_D(QAbstractMaterial);
     if (effect != d->m_effect) {
+
         d->m_effect = effect;
         emit effectChanged();
-        QScenePropertyChangePtr change(new QScenePropertyChange(ComponentUpdated, this));
-        change->setPropertyName(QByteArrayLiteral("effect"));
-        change->setValue(QVariant::fromValue(effect));
-        notifyObservers(change);
+
+        // We need to add it as a child of the current node if it has been declared inline
+        // Or not previously added as a child of the current node so that
+        // 1) The backend gets notified about it's creation
+        // 2) When the current node is destroyed, it gets destroyed as well
+        if (!effect->parent() || effect->parent() == this)
+            QNode::addChild(effect);
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr change(new QScenePropertyChange(ComponentUpdated, this));
+            change->setPropertyName(QByteArrayLiteral("effect"));
+            change->setValue(QVariant::fromValue(effect));
+            notifyObservers(change);
+        }
     }
 }
 
