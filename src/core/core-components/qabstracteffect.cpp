@@ -64,8 +64,8 @@ namespace Qt3D {
 
 
 QAbstractEffectPrivate::QAbstractEffectPrivate(QAbstractEffect *qq)
-        : QNodePrivate(qq)
-    {}
+    : QNodePrivate(qq)
+{}
 
 QAbstractEffect::QAbstractEffect(QNode *parent)
     : QNode(*new QAbstractEffectPrivate(this), parent)
@@ -88,10 +88,20 @@ void QAbstractEffect::addTechnique(QAbstractTechnique *t)
     Q_D(QAbstractEffect);
     if (!d->m_techniques.contains(t)) {
         d->m_techniques.append(t);
-        QScenePropertyChangePtr e(new QScenePropertyChange(ComponentAdded, this));
-        e->setPropertyName(QByteArrayLiteral("technique"));
-        e->setValue(QVariant::fromValue(t));
-        notifyObservers(e);
+
+        // We need to add it as a child of the current node if it has been declared inline
+        // Or not previously added as a child of the current node so that
+        // 1) The backend gets notified about it's creation
+        // 2) When the current node is destroyed, tit gets destroyed as well
+        if (!t->parent() || t->parent() == this)
+            QNode::addChild(t);
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr e(new QScenePropertyChange(NodeAdded, this));
+            e->setPropertyName(QByteArrayLiteral("technique"));
+            e->setValue(QVariant::fromValue(t));
+            notifyObservers(e);
+        }
     }
 }
 
@@ -103,11 +113,13 @@ void QAbstractEffect::addTechnique(QAbstractTechnique *t)
 void QAbstractEffect::removeTechnique(QAbstractTechnique *t)
 {
     Q_D(QAbstractEffect);
+    if (d->m_changeArbiter != Q_NULLPTR) {
+        QScenePropertyChangePtr e(new QScenePropertyChange(NodeRemoved, this));
+        e->setPropertyName(QByteArrayLiteral("technique"));
+        e->setValue(QVariant::fromValue(t->uuid()));
+        notifyObservers(e);
+    }
     d->m_techniques.removeOne(t);
-    QScenePropertyChangePtr e(new QScenePropertyChange(ComponentRemoved, this));
-    e->setPropertyName(QByteArrayLiteral("technique"));
-    e->setValue(QVariant::fromValue(t->uuid()));
-    notifyObservers(e);
 }
 
 /*!
