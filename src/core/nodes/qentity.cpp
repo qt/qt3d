@@ -68,7 +68,7 @@ QEntity::~QEntity()
 {
     // If all children are removed
     // That includes the components that are parented by this entity
-    //    removeAllComponents();
+    removeAllComponents();
 }
 
 QEntity::QEntity(QEntityPrivate &dd, QNode *parent)
@@ -114,10 +114,12 @@ void QEntity::addComponent(QComponent *comp)
     if (!comp->parent() || comp->parent() == this)
         addChild(comp);
 
-    QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentAdded, this));
-    propertyChange->setPropertyName(QByteArrayLiteral("component"));
-    propertyChange->setValue(QVariant::fromValue(comp));
-    notifyObservers(propertyChange);
+    if (d->m_changeArbiter != Q_NULLPTR) {
+        QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentAdded, this));
+        propertyChange->setPropertyName(QByteArrayLiteral("component"));
+        propertyChange->setValue(QVariant::fromValue(comp->clone()));
+        notifyObservers(propertyChange);
+    }
 }
 
 // As in most cases Components are children of the Entity
@@ -128,11 +130,13 @@ void QEntity::removeComponent(QComponent *comp)
     Q_CHECK_PTR(comp);
     qCDebug(Nodes) << Q_FUNC_INFO << comp;
     Q_D(QEntity);
+    if (d->m_changeArbiter != Q_NULLPTR) {
+        QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentRemoved, this));
+        propertyChange->setValue(QVariant::fromValue(comp->clone()));
+        propertyChange->setPropertyName(QByteArrayLiteral("component"));
+        notifyObservers(propertyChange);
+    }
     d->m_components.removeOne(comp);
-    QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentRemoved, this));
-    propertyChange->setValue(QVariant::fromValue(comp));
-    propertyChange->setPropertyName(QByteArrayLiteral("component"));
-    notifyObservers(propertyChange);
 }
 
 void QEntity::removeAllComponents()
