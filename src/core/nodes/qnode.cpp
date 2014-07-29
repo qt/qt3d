@@ -62,19 +62,6 @@ QNodePrivate::QNodePrivate(QNode *qq)
     q_ptr = qq;
 }
 
-void QNodePrivate::_q_sendQueuedChanges()
-{
-    Q_Q(QNode);
-    QReadLocker locker(&m_observerLock);
-    QChangeArbiter *changeArbiter = m_changeArbiter;
-    locker.unlock();
-    qCDebug(Nodes) << Q_FUNC_INFO << q->objectName() << " sending " << m_queuedChanges.size() << "queued changes";
-    Q_FOREACH (const QSceneChangePtr &change, m_queuedChanges)
-        changeArbiter->sceneChangeEventWithLock(change);
-    m_queuedChanges.clear();
-}
-
-
 QNode::QNode(QNode *parent)
     : QObject(*new QNodePrivate(this), parent)
 {
@@ -136,10 +123,22 @@ void QNode::addChild(QNode *childNode)
     d->m_children.append(childNode);
     childNode->setParent(this);
 
-    QScenePropertyChangePtr e(new QScenePropertyChange(NodeCreated, this));
-    e->setPropertyName(QByteArrayLiteral("node"));
-    e->setValue(QVariant::fromValue(childNode->clone()));
-    notifyObservers(e);
+    if (d->m_changeArbiter != Q_NULLPTR) {
+        QScenePropertyChangePtr e(new QScenePropertyChange(NodeCreated, this));
+        e->setPropertyName(QByteArrayLiteral("node"));
+        // We need to clone the parent of the childNode we send
+        QNode *parentClone = clone();
+        QNode *childClone = Q_NULLPTR;
+        Q_FOREACH (QNode *clone, parentClone->children()) {
+            if (clone->uuid() == childNode->uuid()) {
+                childClone = clone;
+                break;
+            }
+        }
+        e->setValue(QVariant::fromValue(childClone));
+        notifyObservers(e);
+        childNode->registerObserver(d->m_changeArbiter);
+    }
 }
 
 void QNode::removeChild(QNode *childNode)
@@ -149,13 +148,26 @@ void QNode::removeChild(QNode *childNode)
         qCWarning(Nodes) << Q_FUNC_INFO << "not a child of " << this;
 
     Q_D(QNode);
+
+    if (d->m_changeArbiter != Q_NULLPTR) {
+        QScenePropertyChangePtr e(new QScenePropertyChange(NodeAboutToBeDeleted, this));
+        e->setPropertyName(QByteArrayLiteral("node"));
+        // We need to clone the parent of the childNode we send
+        QNode *parentClone = clone();
+        QNode *childClone = Q_NULLPTR;
+        Q_FOREACH (QNode *clone, parentClone->children()) {
+            if (clone->uuid() == childNode->uuid()) {
+                childClone = clone;
+                break;
+            }
+        }
+        e->setValue(QVariant::fromValue(childClone));
+        notifyObservers(e);
+        childNode->unregisterObserver(d->m_changeArbiter);
+    }
+
     d->m_children.removeOne(childNode);
     childNode->setParent(NULL);
-
-    QScenePropertyChangePtr e(new QScenePropertyChange(NodeAboutToBeDeleted, this));
-    e->setPropertyName(QByteArrayLiteral("node"));
-    e->setValue(QVariant::fromValue(childNode->clone()));
-    notifyObservers(e);
 }
 
 QNode *QNode::clone(QNode *clonedParent) const
@@ -203,11 +215,6 @@ void QNode::registerObserver(QObserverInterface *observer)
         Q_D(QNode);
         QWriteLocker locker(&d->m_observerLock);
         d->m_changeArbiter = changeArbiter;
-
-        // We send queued changes to the changeArbiter from the thread this object
-        // has affinity with. Usually the main thread
-        qCDebug(Nodes) << Q_FUNC_INFO << objectName() << " has " << d->m_queuedChanges.size() << "awaiting changes";
-        QMetaObject::invokeMethod(this, "_q_sendQueuedChanges", Qt::QueuedConnection);
     }
 }
 
@@ -239,12 +246,8 @@ void QNode::notifyObservers(const QSceneChangePtr &change)
 
     if (changeArbiter != Q_NULLPTR)
         changeArbiter->sceneChangeEventWithLock(change);
-    else
-        d->m_queuedChanges.append(change);
 }
 
 } // namespace Qt3D
 
 QT_END_NAMESPACE
-
-#include "moc_qnode.cpp"

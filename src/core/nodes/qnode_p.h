@@ -50,15 +50,14 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class QNode;
+
 class QT3DCORESHARED_EXPORT QNodePrivate : public QObjectPrivate
 {
 public:
     QNodePrivate(QNode *qq);
 
     Q_DECLARE_PUBLIC(QNode)
-
-    // private slots
-    void _q_sendQueuedChanges();
 
     NodeList m_children;
 
@@ -67,7 +66,6 @@ public:
     QReadWriteLock m_observerLock;
     QChangeArbiter *m_changeArbiter;
     mutable QUuid m_uuid;
-    QList<QSceneChangePtr> m_queuedChanges;
 };
 
 } // namespace Qt3D
