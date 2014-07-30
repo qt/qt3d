@@ -62,9 +62,6 @@ TechniqueFilter {
         CameraSelector {
             id : cameraSelector
             objectName : "cameraSelector"
-
-            // Use a single pass called "lighting" from the selected Technique
-            RenderPassFilter { renderPassName: "lighting" }
         }
     }
 }

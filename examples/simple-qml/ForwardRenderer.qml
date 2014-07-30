@@ -60,8 +60,8 @@ TechniqueFilter {
     property alias layerFilters : layerFilter.layers
 
     criteria : [
-        Criterion { name : "RenderingStyle"; value : "forward"},
-        Criterion { name : "Enabled"; value : true}
+        Criterion { name : "RenderingStyle"; value : "forward";},
+        Criterion { name : "Enabled"; value : true;}
     ]
 
     Viewport {
@@ -72,24 +72,25 @@ TechniqueFilter {
         Viewport {
             id : top_right_viewport
             rect: Qt.rect(0.5, 0, 0.5, 0.5)
+            objectName : "topRightViewport"
             CameraSelector {
                 id : cameraSelectorTopRight
                 objectName : "cameraSelector"
                 LayerFilter {
                     id : layerFilter
-                    RenderPassFilter { criteria : [Criterion {name : "Name"; value : "Texture" }] }
+                    objectName : "layerFilter"
+                    RenderPassFilter { criteria : [Criterion {name : "Name"; value : "Texture";}] }
                 }
             }
         }
 
         Viewport {
             id : bottom_left_viewport
+            objectName : "bottomLeftViewport"
             rect: Qt.rect(0.0, 0.5, 0.5, 0.5)
             CameraSelector {
                 id: cameraSelectorBottomLeft
                 objectName : "cameraSelector"
-                RenderPassFilter { renderPassName: "zFill" }
-                RenderPassFilter { renderPassName: "lighting" }
             }
         }
     }
