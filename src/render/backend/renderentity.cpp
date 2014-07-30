@@ -50,6 +50,7 @@
 #include "layermanager.h"
 #include "meshmanager.h"
 #include "meshdatamanager.h"
+#include "transformmanager.h"
 #include "qmesh.h"
 #include "qabstractshapemesh.h"
 #include "renderscenebuilder.h"
@@ -98,8 +99,6 @@ void RenderEntity::cleanup()
             parentEntity->removeChildHandle(m_handle);
         for (int i = 0; i < m_childrenHandles.size(); i++)
             m_renderer->renderNodesManager()->release(m_childrenHandles[i]);
-        setTransform(Q_NULLPTR);
-        m_renderer->localMatrixManager()->release(m_localTransform);
         m_renderer->worldMatrixManager()->release(m_worldTransform);
 
         // Release all component will have to perform their own release when they receive the
@@ -135,8 +134,6 @@ void RenderEntity::setPeer(QEntity *peer)
 {
     if (m_frontEndPeer != peer) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        if (!m_localTransform.isNull())
-            m_renderer->localMatrixManager()->release(m_localTransform);
         if (!m_worldTransform.isNull())
             m_renderer->worldMatrixManager()->release(m_worldTransform);
 
@@ -149,24 +146,7 @@ void RenderEntity::setPeer(QEntity *peer)
         if (m_frontEndPeer) {
             m_frontendUuid = peer->uuid();
             arbiter->registerObserver(this, m_frontendUuid, AllChanges);
-            m_localTransform = m_renderer->localMatrixManager()->getOrAcquireHandle(m_frontendUuid);
             m_worldTransform = m_renderer->worldMatrixManager()->getOrAcquireHandle(m_frontendUuid);
-        }
-    }
-}
-
-void RenderEntity::setTransform(QTransform *transform)
-{
-    if (transform != m_transform) {
-        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        // Unregister from changes of the previous transform
-        if (m_transform)
-            arbiter->unregisterObserver(this, m_transform->uuid());
-        m_transform = transform;
-        // Register for changes
-        if (m_transform) {
-            arbiter->registerObserver(this, m_transform->uuid(), ComponentUpdated);
-            *localTransform() = m_transform->matrix();
         }
     }
 }
@@ -175,15 +155,6 @@ void RenderEntity::sceneChangeEvent(const QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     switch (e->type()) {
-
-    // Other component types are
-    case ComponentUpdated: {
-        QNode *node = propertyChange->subject().m_node;
-        if (node == m_transform
-                && propertyChange->propertyName() == QByteArrayLiteral("matrix"))
-            *localTransform() = propertyChange->value().value<QMatrix4x4>();
-        break;
-    }
 
     case ComponentAdded: {
         QComponent *component = propertyChange->value().value<QComponent*>();
@@ -249,8 +220,6 @@ QVector<RenderEntity *> RenderEntity::children() const
     return childrenVector;
 }
 
-QMatrix4x4 *RenderEntity::localTransform() { return m_renderer->localMatrixManager()->data(m_localTransform); }
-
 QMatrix4x4 *RenderEntity::worldTransform() { return m_renderer->worldMatrixManager()->data(m_worldTransform); }
 
 void RenderEntity::addComponent(QComponent *component)
@@ -258,94 +227,106 @@ void RenderEntity::addComponent(QComponent *component)
     // The backend element is always created when this method is called
     // If that's not the case something has gone wrong
 
-    if (m_transform == Q_NULLPTR && qobject_cast<QTransform*>(component) != Q_NULLPTR)
-        setTransform(qobject_cast<QTransform *>(component));
-    else if (qobject_cast<QAbstractMesh *>(component))
+    if (qobject_cast<QTransform*>(component) != Q_NULLPTR)
+        m_transformComponent = component->uuid();
+    else if (qobject_cast<QAbstractMesh *>(component) != Q_NULLPTR)
         m_meshComponent = component->uuid();
-    else if (qobject_cast<QCameraLens *>(component))
+    else if (qobject_cast<QCameraLens *>(component) != Q_NULLPTR)
         m_cameraComponent = component->uuid();
-    else if (qobject_cast<QLayer *>(component))
+    else if (qobject_cast<QLayer *>(component) != Q_NULLPTR)
         m_layerComponent = component->uuid();
-    else if (qobject_cast<QAbstractLight *>(component))
+    else if (qobject_cast<QAbstractLight *>(component) != Q_NULLPTR)
         m_lightComponent = component->uuid();
-    else if (qobject_cast<QMaterial *>(component))
+    else if (qobject_cast<QMaterial *>(component) != Q_NULLPTR)
         m_materialComponent = component->uuid();
 }
 
 void RenderEntity::removeComponent(QComponent *component)
 {
-    if (component == m_transform)
-        setTransform(Q_NULLPTR);
-    else if (qobject_cast<QAbstractMesh *>(component))
+    if (qobject_cast<QTransform *>(component) != Q_NULLPTR)
+        m_transformComponent = QUuid();
+    else if (qobject_cast<QAbstractMesh *>(component) != Q_NULLPTR)
         m_meshComponent = QUuid();
-    else if (qobject_cast<QCameraLens *>(component))
+    else if (qobject_cast<QCameraLens *>(component) != Q_NULLPTR)
         m_cameraComponent = QUuid();
-    else if (qobject_cast<QLayer *>(component))
+    else if (qobject_cast<QLayer *>(component) != Q_NULLPTR)
         m_layerComponent = QUuid();
-    else if (qobject_cast<QAbstractLight *>(component))
+    else if (qobject_cast<QAbstractLight *>(component) != Q_NULLPTR)
         m_lightComponent = QUuid();
-    else if (qobject_cast<QMaterial *>(component))
+    else if (qobject_cast<QMaterial *>(component) != Q_NULLPTR)
         m_materialComponent = QUuid();
 }
 
 template<>
-HMesh RenderEntity::componentHandle<RenderMesh>()
+HMesh RenderEntity::componentHandle<RenderMesh>() const
 {
     return m_renderer->meshManager()->lookupHandle(m_meshComponent);
 }
 
 template<>
-RenderMesh *RenderEntity::renderComponent<RenderMesh>()
+RenderMesh *RenderEntity::renderComponent<RenderMesh>() const
 {
     return m_renderer->meshManager()->lookupResource(m_meshComponent);
 }
 
 template<>
-HMaterial RenderEntity::componentHandle<RenderMaterial>()
+HMaterial RenderEntity::componentHandle<RenderMaterial>() const
 {
     return m_renderer->materialManager()->lookupHandle(m_materialComponent);
 }
 
 template<>
-RenderMaterial *RenderEntity::renderComponent<RenderMaterial>()
+RenderMaterial *RenderEntity::renderComponent<RenderMaterial>() const
 {
     return m_renderer->materialManager()->lookupResource(m_materialComponent);
 }
 
 template<>
-HLayer RenderEntity::componentHandle<RenderLayer>()
+HLayer RenderEntity::componentHandle<RenderLayer>() const
 {
     return m_renderer->layerManager()->lookupHandle(m_layerComponent);
 }
 
 template<>
-RenderLayer *RenderEntity::renderComponent<RenderLayer>()
+RenderLayer *RenderEntity::renderComponent<RenderLayer>() const
 {
     return m_renderer->layerManager()->lookupResource(m_layerComponent);
 }
 
 template<>
-HLight RenderEntity::componentHandle<RenderLight>()
+HLight RenderEntity::componentHandle<RenderLight>() const
 {
     return m_renderer->lightManager()->lookupHandle(m_lightComponent);
 }
 
 template<>
-RenderLight *RenderEntity::renderComponent<RenderLight>()
+RenderLight *RenderEntity::renderComponent<RenderLight>() const
 {
     return m_renderer->lightManager()->lookupResource(m_lightComponent);
 }
 
 template<>
-HCamera RenderEntity::componentHandle<RenderCameraLens>()
+HCamera RenderEntity::componentHandle<RenderCameraLens>() const
 {
     return m_renderer->cameraManager()->lookupHandle(m_cameraComponent);
 }
 
 template<>
-RenderCameraLens *RenderEntity::renderComponent<RenderCameraLens>()
+RenderCameraLens *RenderEntity::renderComponent<RenderCameraLens>() const
 {
     return m_renderer->cameraManager()->lookupResource(m_cameraComponent);
+}
+
+template<>
+HTransform RenderEntity::componentHandle<RenderTransform>() const
+{
+    return m_renderer->transformManager()->lookupHandle(m_transformComponent);
+}
+
+template<>
+RenderTransform *RenderEntity::renderComponent<RenderTransform>() const
+{
+    return m_renderer->transformManager()->lookupResource(m_transformComponent);
 }
 
 } // namespace Render

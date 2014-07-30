@@ -44,7 +44,7 @@
 #include <renderer.h>
 #include <renderentity.h>
 #include <sphere.h>
-
+#include <rendertransform.h>
 #include "renderlogging.h"
 #include <QThread>
 
@@ -57,11 +57,16 @@ namespace {
 
 void updateWorldTransformAndBounds(Qt3D::Render::RenderEntity *node)
 {
+    QMatrix4x4 localTransform;
     QMatrix4x4 parentTransform;
     if (node->parent())
         parentTransform = *(node->parent()->worldTransform());
 
-    *(node->worldTransform()) = parentTransform * *(node->localTransform());
+    RenderTransform *nodeTransform = node->renderComponent<RenderTransform>();
+    if (nodeTransform != Q_NULLPTR)
+        localTransform = nodeTransform->transformMatrix();
+
+    *(node->worldTransform()) = parentTransform * localTransform;
     *(node->worldBoundingVolume()) = node->localBoundingVolume()->transformed(*(node->worldTransform()));
 
     Q_FOREACH (Qt3D::Render::RenderEntity *child, node->children())

@@ -80,7 +80,6 @@ public:
     ~RenderEntity();
     void cleanup();
 
-    void setTransform(QTransform *transform);
     void setParentHandle(HEntity parentHandle);
     void setRenderer(Renderer *renderer);
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
@@ -98,7 +97,6 @@ public:
     QVector<HEntity> childrenHandles() const { return m_childrenHandles; }
     QVector<RenderEntity *> children() const;
 
-    QMatrix4x4 *localTransform();
     QMatrix4x4 *worldTransform();
     Sphere *localBoundingVolume() { return m_localBoundingVolume; }
     Sphere *worldBoundingVolume() { return m_worldBoundingVolume; }
@@ -108,13 +106,13 @@ public:
     void removeComponent(QComponent *component);
 
     template<class Backend, int INDEXBITS>
-    QHandle<Backend, INDEXBITS> componentHandle()
+    QHandle<Backend, INDEXBITS> componentHandle() const
     {
         return QHandle<Backend, INDEXBITS>();
     }
 
     template<class Backend>
-    Backend* renderComponent()
+    Backend* renderComponent() const
     {
         return Q_NULLPTR;
     }
@@ -138,7 +136,6 @@ private:
     HEntity m_parentHandle;
     QVector<HEntity > m_childrenHandles;
 
-    HMatrix m_localTransform;
     HMatrix m_worldTransform;
     Sphere *m_localBoundingVolume;
     Sphere *m_worldBoundingVolume;
@@ -147,6 +144,7 @@ private:
     QUuid m_frontendUuid;
 
     // Handles to Components
+    QUuid m_transformComponent;
     QUuid m_meshComponent;
     QUuid m_materialComponent;
     QUuid m_layerComponent;
