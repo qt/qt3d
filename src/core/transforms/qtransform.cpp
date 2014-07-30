@@ -93,10 +93,12 @@ void QTransform::setTransformsDirty()
     Q_D(QTransform);
     if (!d->m_transformsDirty.loadAcquire()) {
         d->m_transformsDirty.fetchAndStoreOrdered(1);
-        QScenePropertyChangePtr e(new QScenePropertyChange(ComponentUpdated, this));
-        e->setPropertyName(QByteArrayLiteral("matrix"));
-        e->setValue(matrix());
-        notifyObservers(e);
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr e(new QScenePropertyChange(ComponentUpdated, this));
+            e->setPropertyName(QByteArrayLiteral("matrix"));
+            e->setValue(matrix());
+            notifyObservers(e);
+        }
     }
 }
 
