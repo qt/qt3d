@@ -103,6 +103,8 @@ private:
     HMeshData m_meshDataHandle;
     QReadWriteLock *m_lock;
     QUuid m_meshUuid;
+
+    void setMeshFunctor(QAbstractMeshFunctorPtr);
 };
 
 } // Render

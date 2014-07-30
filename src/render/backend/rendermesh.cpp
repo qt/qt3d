@@ -107,6 +107,7 @@ void RenderMesh::setPeer(QAbstractMesh *peer)
         if (m_peer) {
             m_meshUuid = m_peer->uuid();
             arbiter->registerObserver(this, m_meshUuid, ComponentUpdated);
+            setMeshFunctor(m_peer->meshFunctor());
         }
     }
 }
@@ -122,13 +123,7 @@ void RenderMesh::sceneChangeEvent(const QSceneChangePtr &e)
     case ComponentUpdated: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("meshFunctor")) // Mesh with source
-        {
-            QAbstractMeshFunctorPtr functor = propertyChange->value().value<QAbstractMeshFunctorPtr>();
-            if (m_functor != functor) {
-                m_functor = functor;
-                m_renderer->meshDataManager()->addMeshData(m_functor, m_meshUuid);
-            }
-        }
+            setMeshFunctor(propertyChange->value().value<QAbstractMeshFunctorPtr>());
         break;
     }
 
@@ -139,7 +134,15 @@ void RenderMesh::sceneChangeEvent(const QSceneChangePtr &e)
 
 HMeshData RenderMesh::meshData() const
 {
-   return m_renderer->meshDataManager()->lookupHandle(m_meshUuid);
+    return m_renderer->meshDataManager()->lookupHandle(m_meshUuid);
+}
+
+void RenderMesh::setMeshFunctor(QAbstractMeshFunctorPtr functor)
+{
+    if (m_functor != functor) {
+        m_functor = functor;
+        m_renderer->meshDataManager()->addMeshData(m_functor, m_meshUuid);
+    }
 }
 
 //DrawStateSet *RenderMesh::stateSet()
