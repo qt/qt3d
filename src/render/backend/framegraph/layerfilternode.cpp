@@ -64,12 +64,15 @@ void LayerFilterNode::setPeer(QLayerFilter *peer)
 {
     if (m_peer != peer) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        if (m_peer)
-            arbiter->unregisterObserver(this, m_peer);
+        if (!m_frontendUuid.isNull()) {
+            arbiter->unregisterObserver(this, m_frontendUuid);
+            m_frontendUuid = QUuid();
+        }
         m_peer = peer;
         m_layers.clear();
         if (m_peer) {
-            arbiter->registerObserver(this, m_peer);
+            m_frontendUuid = m_peer->uuid();
+            arbiter->registerObserver(this, m_frontendUuid, NodeUpdated);
             m_layers = peer->layers();
         }
     }
@@ -77,7 +80,7 @@ void LayerFilterNode::setPeer(QLayerFilter *peer)
 
 void LayerFilterNode::sceneChangeEvent(const QSceneChangePtr &e)
 {
-    if (e->type() == ComponentUpdated) {
+    if (e->type() == NodeUpdated) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("layers"))
             setLayers(propertyChange->value().value<QStringList>());
