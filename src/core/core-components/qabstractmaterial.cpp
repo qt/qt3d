@@ -88,6 +88,13 @@ void QAbstractMaterial::setEffect(QAbstractEffect *effect)
     Q_D(QAbstractMaterial);
     if (effect != d->m_effect) {
 
+        if (d->m_effect != Q_NULLPTR && d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, this));
+            change->setPropertyName(QByteArrayLiteral("effect"));
+            change->setValue(QVariant::fromValue(effect));
+            notifyObservers(change);
+        }
+
         d->m_effect = effect;
         emit effectChanged();
 
@@ -99,7 +106,7 @@ void QAbstractMaterial::setEffect(QAbstractEffect *effect)
             QNode::addChild(effect);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(ComponentUpdated, this));
+            QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
             change->setPropertyName(QByteArrayLiteral("effect"));
             change->setValue(QVariant::fromValue(effect));
             notifyObservers(change);

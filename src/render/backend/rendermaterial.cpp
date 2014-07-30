@@ -137,30 +137,32 @@ void RenderMaterial::sceneChangeEvent(const QSceneChangePtr &e)
     switch (e->type()) {
     case ComponentUpdated: {
         // Check for effect change
-        if (propertyChange->propertyName() == QByteArrayLiteral("effect")) {
-            Qt3D::QAbstractEffect *eff = propertyChange->value().value<Qt3D::QAbstractEffect *>();
-            m_effectUuid = QUuid();
-            if (eff != Q_NULLPTR) {
-                m_effectUuid = eff->uuid();
-            }
-        }
-        else {
-        }
         break;
     }
         // Check for shader parameter
     case NodeAdded: {
         QParameter *param = Q_NULLPTR;
         if (propertyChange->propertyName() == QByteArrayLiteral("parameter") &&
-                (param = propertyChange->value().value<QParameter*>()) != Q_NULLPTR)
+                (param = propertyChange->value().value<QParameter*>()) != Q_NULLPTR) {
             m_parameterPack.appendParameter(param);
+        }
+        else if (propertyChange->propertyName() == QByteArrayLiteral("effect")) {
+            Qt3D::QAbstractEffect *eff = propertyChange->value().value<Qt3D::QAbstractEffect *>();
+            m_effectUuid = QUuid();
+            if (eff != Q_NULLPTR)
+                m_effectUuid = eff->uuid();
+        }
         break;
     }
     case NodeRemoved: {
         QParameter *param = Q_NULLPTR;
         if (propertyChange->propertyName() == QByteArrayLiteral("parameter") &&
-                (param = propertyChange->value().value<QParameter*>()) != Q_NULLPTR)
+                (param = propertyChange->value().value<QParameter*>()) != Q_NULLPTR) {
             m_parameterPack.removeParameter(param);
+        }
+        else if (propertyChange->propertyName() == QByteArrayLiteral("effect")) {
+            m_effectUuid = QUuid();
+        }
         break;
     }
 
