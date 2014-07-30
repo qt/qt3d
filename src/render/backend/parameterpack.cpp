@@ -62,7 +62,7 @@ ParameterPack::~ParameterPack()
 {
     if (m_renderer != Q_NULLPTR && !m_peers.empty()) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        Q_FOREACH (QParameter *peer, m_peers)
+        Q_FOREACH (const QUuid peer, m_peers)
             arbiter->unregisterObserver(this, peer);
     }
 }
@@ -74,21 +74,21 @@ void ParameterPack::setRenderer(Renderer *renderer)
 
 void ParameterPack::appendParameter(QParameter *param)
 {
-    if (!m_peers.contains(param)) {
-        m_peers << param;
+    if (!m_peers.contains(param->uuid())) {
+        m_peers << param->uuid();
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        arbiter->registerObserver(this, param);
+        arbiter->registerObserver(this, param->uuid(), NodeUpdated);
         m_namedValues[param->name()] = param->value();
     }
 }
 
 void ParameterPack::removeParameter(QParameter *param)
 {
-    if (m_peers.contains(param)) {
-        m_peers.removeOne(param);
+    if (m_peers.contains(param->uuid())) {
+        m_peers.removeOne(param->uuid());
         m_namedValues.remove(param->name());
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        arbiter->unregisterObserver(this, param);
+        arbiter->unregisterObserver(this, param->uuid());
     }
 }
 
@@ -96,14 +96,14 @@ void ParameterPack::clear()
 {
     m_namedValues.clear();
     QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-    Q_FOREACH (QParameter *param, m_peers) {
-        arbiter->unregisterObserver(this, param);
+    Q_FOREACH (const QUuid &peerId, m_peers) {
+        arbiter->unregisterObserver(this, peerId);
     }
 }
 
 void ParameterPack::sceneChangeEvent(const QSceneChangePtr &e)
 {
-    if (e->type() == ComponentUpdated) {
+    if (e->type() == NodeUpdated) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         QString propertyName = QString::fromLatin1(propertyChange->propertyName());
         QVariant propertyValue = propertyChange->value();

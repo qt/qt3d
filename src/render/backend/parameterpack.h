@@ -72,7 +72,7 @@ public:
 
 private:
     QHash<QString, QVariant> m_namedValues;
-    QList<QParameter *> m_peers;
+    QList<QUuid> m_peers;
     Renderer *m_renderer;
 
 };
