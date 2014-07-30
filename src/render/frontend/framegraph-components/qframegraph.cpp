@@ -107,6 +107,13 @@ void QFrameGraph::setActiveFrameGraph(QFrameGraphItem *activeFrameGraph)
     if (activeFrameGraph != d->m_activeFrameGraph) {
         d->m_activeFrameGraph = activeFrameGraph;
         emit activeFrameGraphChanged();
+
+        if (!activeFrameGraph->parent() || activeFrameGraph->parent() == this)
+            QNode::addChild(activeFrameGraph);
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+        // TO DO : Add QChangeArbiterNotification
+        }
     }
 }
 
