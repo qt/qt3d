@@ -64,51 +64,47 @@ void TechniqueFilter::setPeer(Qt3D::QTechniqueFilter *peer)
 {
     if (peer != m_peer) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        if (m_peer)
-            arbiter->unregisterObserver(this, m_peer);
-        m_filters.clear();
+        if (!m_frontendUuid.isNull()) {
+            arbiter->unregisterObserver(this, m_frontendUuid);
+            m_filters.clear();
+            m_frontendUuid = QUuid();
+        }
         m_peer = peer;
         if (m_peer) {
-            arbiter->registerObserver(this, m_peer);
+            m_frontendUuid = m_peer->uuid();
+            arbiter->registerObserver(this, m_frontendUuid, NodeAdded|NodeRemoved);
             Q_FOREACH (QCriterion *criterion, m_peer->criteria())
                 appendFilter(criterion);
         }
     }
 }
 
-QList<HCriterion> TechniqueFilter::filters() const
+QList<QUuid> TechniqueFilter::filters() const
 {
     return m_filters;
 }
 
 void TechniqueFilter::appendFilter(QCriterion *criterion)
 {
-    HCriterion critHandle = m_renderer->criterionManager()->lookupHandle(criterion->uuid());
-    if (critHandle.isNull()) {
-        critHandle = m_renderer->criterionManager()->getOrAcquireHandle(criterion->uuid());
-        RenderCriterion *rCrit = m_renderer->criterionManager()->data(critHandle);
-        rCrit->setRenderer(m_renderer);
-        rCrit->setPeer(criterion);
-    }
-    if (!m_filters.contains(critHandle))
-        m_filters.append(critHandle);
+    if (!m_filters.contains(criterion->uuid()))
+        m_filters.append(criterion->uuid());
 }
 
 void TechniqueFilter::removeFilter(const QUuid &criterionId)
 {
-    m_filters.removeOne(m_renderer->criterionManager()->lookupHandle(criterionId));
+    m_filters.removeOne(criterionId);
 }
 
 void TechniqueFilter::sceneChangeEvent(const QSceneChangePtr &e)
 {
     switch (e->type()) {
-    case ComponentAdded: {
+    case NodeAdded: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("techniqueCriterion"))
             appendFilter(propertyChange->value().value<QCriterion *>());
     }
         break;
-    case ComponentRemoved: {
+    case NodeRemoved: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("techniqueCriterion"))
             removeFilter(propertyChange->value().toUuid());

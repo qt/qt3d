@@ -74,7 +74,7 @@ public:
     TechniqueFilter();
     void setPeer(Qt3D::QTechniqueFilter *peer);
 
-    QList<HCriterion> filters() const;
+    QList<QUuid> filters() const;
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
@@ -82,7 +82,7 @@ private:
     void removeFilter(const QUuid &criterionId);
 
     Qt3D::QTechniqueFilter *m_peer;
-    QList<HCriterion> m_filters;
+    QList<QUuid> m_filters;
 };
 
 } // Render
