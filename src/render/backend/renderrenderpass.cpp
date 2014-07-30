@@ -92,9 +92,11 @@ void RenderRenderPass::setPeer(QRenderPass *peer)
         if (m_peer) {
             m_shader = m_peer->shaderProgram();
             m_passUuid = m_peer->uuid();
-            arbiter->registerObserver(this, m_passUuid);
+            arbiter->registerObserver(this, m_passUuid, NodeAdded|NodeRemoved|NodeUpdated);
             // TO DO -> Have backend classes for Bindings and Parameters so that we can easily monitor for updates
             m_bindings = m_peer->bindings();
+            Q_FOREACH (QCriterion *c, m_peer->criteria())
+                appendCriterion(c);
         }
     }
 }
@@ -103,31 +105,22 @@ void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     switch (e->type()) {
-    case ComponentUpdated: {
+    case NodeUpdated: {
         if (propertyChange->propertyName() == QByteArrayLiteral("shaderProgram"))
             ;// TO DO: to be completed
         break;
     }
 
-    case ComponentAdded: {
+    case NodeAdded: {
         if (propertyChange->propertyName() == QByteArrayLiteral("criterion")) {
-            QCriterion *crit = propertyChange->value().value<QCriterion *>();
-            HCriterion critHandle = m_renderer->criterionManager()->lookupHandle(crit->uuid());
-            if (critHandle.isNull()) {
-                critHandle = m_renderer->criterionManager()->getOrAcquireHandle(crit->uuid());
-                RenderCriterion *renderCriterion = m_renderer->criterionManager()->data(critHandle);
-                renderCriterion->setRenderer(m_renderer);
-                renderCriterion->setPeer(crit);
-            }
-            if (!m_criteriaList.contains(critHandle))
-                m_criteriaList.append(critHandle);
+            appendCriterion(propertyChange->value().value<QCriterion *>());
         }
         break;
     }
 
-    case ComponentRemoved: {
+    case NodeRemoved: {
         if (propertyChange->propertyName() == QByteArrayLiteral("criterion")) {
-            m_criteriaList.removeOne(m_renderer->criterionManager()->lookupHandle(propertyChange->value().toUuid()));
+            removeCriterion(propertyChange->value().toUuid());
         }
         break;
     }
@@ -135,7 +128,6 @@ void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
     default:
         break;
     }
-
 }
 
 QAbstractShader *RenderRenderPass::shaderProgram() const
@@ -148,7 +140,7 @@ QList<QParameterMapper *> RenderRenderPass::bindings() const
     return m_bindings;
 }
 
-QList<HCriterion> RenderRenderPass::criteria() const
+QList<QUuid> RenderRenderPass::criteria() const
 {
     return m_criteriaList;
 }
@@ -156,6 +148,17 @@ QList<HCriterion> RenderRenderPass::criteria() const
 QUuid RenderRenderPass::renderPassUuid() const
 {
     return m_passUuid;
+}
+
+void RenderRenderPass::appendCriterion(QCriterion *criterion)
+{
+    if (!m_criteriaList.contains(criterion->uuid()))
+        m_criteriaList.append(criterion->uuid());
+}
+
+void RenderRenderPass::removeCriterion(const QUuid &criterionId)
+{
+    m_criteriaList.removeOne(criterionId);
 }
 
 } // Render

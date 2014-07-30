@@ -53,17 +53,11 @@ namespace Qt3D {
 class QRenderPass;
 class QAbstractShader;
 class QParameterMapper;
-
-template <typename T, int INDEXBITS>
-class QHandle;
+class QCriterion;
 
 namespace Render {
 
 class Renderer;
-class RenderCriterion;
-
-typedef QHandle<RenderCriterion, 16> HCriterion;
-
 
 class RenderRenderPass : public QObserverInterface
 {
@@ -77,8 +71,11 @@ public:
     void sceneChangeEvent(const QSceneChangePtr &e);
     QAbstractShader *shaderProgram() const;
     QList<QParameterMapper *> bindings() const;
-    QList<HCriterion> criteria() const;
+    QList<QUuid> criteria() const;
     QUuid renderPassUuid() const;
+
+    void appendCriterion(QCriterion *criterion);
+    void removeCriterion(const QUuid &criterionId);
 
 private:
     Renderer *m_renderer;
@@ -86,7 +83,7 @@ private:
     QAbstractShader *m_shader;
     QUuid m_passUuid;
     QList<QParameterMapper *> m_bindings;
-    QList<HCriterion> m_criteriaList;
+    QList<QUuid> m_criteriaList;
 };
 
 } // Render
