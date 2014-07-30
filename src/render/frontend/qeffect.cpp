@@ -83,40 +83,39 @@ QEffect *QEffect::doClone(QNode *clonedParent) const
     return effect;
 }
 
-void QEffect::addTechnique(QAbstractTechnique *t)
-{
-    // In the C++ API we are responsible for setting the parent
-    // Qml API is automatically handled by the Qml Engine
-    if (!t->parent())
-        t->setParent(this);
-    QAbstractEffect::addTechnique(t);
-}
-
-void QEffect::removeTechnique(QAbstractTechnique *t)
-{
-    QAbstractEffect::removeTechnique(t);
-}
-
 void QEffect::addParameter(QParameter *parameter)
 {
     Q_D(QEffect);
     if (!d->m_parameters.contains(parameter)) {
         d->m_parameters.append(parameter);
-        QScenePropertyChangePtr change(new QScenePropertyChange(ComponentAdded, this));
-        change->setPropertyName(QByteArrayLiteral("parameter"));
-        change->setValue(QVariant::fromValue(parameter));
-        notifyObservers(change);
+
+        // We need to add it as a child of the current node if it has been declared inline
+        // Or not previously added as a child of the current node so that
+        // 1) The backend gets notified about it's creation
+        // 2) When the current node is destroyed, it gets destroyed as well
+        if (!parameter->parent() || parameter->parent() == this)
+            addChild(parameter);
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
+            change->setPropertyName(QByteArrayLiteral("parameter"));
+            change->setValue(QVariant::fromValue(parameter));
+            notifyObservers(change);
+        }
     }
 }
 
 void QEffect::removeParameter(QParameter *parameter)
 {
     Q_D(QEffect);
+
+    if (d->m_changeArbiter != Q_NULLPTR) {
+        QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, this));
+        change->setPropertyName(QByteArrayLiteral("parameter"));
+        change->setValue(QVariant::fromValue(parameter));
+        notifyObservers(change);
+    }
     d->m_parameters.removeOne(parameter);
-    QScenePropertyChangePtr change(new QScenePropertyChange(ComponentRemoved, this));
-    change->setPropertyName(QByteArrayLiteral("parameter"));
-    change->setValue(QVariant::fromValue(parameter));
-    notifyObservers(change);
 }
 
 QList<QParameter *> QEffect::parameters() const

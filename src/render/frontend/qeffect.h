@@ -62,9 +62,6 @@ public:
 
     void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
-    void addTechnique(QAbstractTechnique *t) Q_DECL_OVERRIDE;
-    void removeTechnique(QAbstractTechnique *t) Q_DECL_OVERRIDE;
-
     void addParameter(QParameter *parameter);
     void removeParameter(QParameter *parameter);
     QList<QParameter *> parameters() const;
