@@ -90,10 +90,13 @@ void QLayerFilter::setLayers(const QStringList &layers)
     if (d->m_layers != layers) {
         d->m_layers = layers;
         emit layersChanged();
-        QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentUpdated, this));
-        propertyChange->setPropertyName(QByteArrayLiteral("layers"));
-        propertyChange->setValue(QVariant::fromValue(d->m_layers));
-        notifyObservers(propertyChange);
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
+            propertyChange->setPropertyName(QByteArrayLiteral("layers"));
+            propertyChange->setValue(QVariant::fromValue(d->m_layers));
+            notifyObservers(propertyChange);
+        }
     }
 }
 
