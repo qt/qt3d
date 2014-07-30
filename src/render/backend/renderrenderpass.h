@@ -69,7 +69,7 @@ public:
     void setRenderer(Renderer *renderer);
     void setPeer(QRenderPass *peer);
     void sceneChangeEvent(const QSceneChangePtr &e);
-    QAbstractShader *shaderProgram() const;
+    QUuid shaderProgram() const;
     QList<QParameterMapper *> bindings() const;
     QList<QUuid> criteria() const;
     QUuid renderPassUuid() const;
@@ -80,8 +80,8 @@ public:
 private:
     Renderer *m_renderer;
     QRenderPass *m_peer;
-    QAbstractShader *m_shader;
     QUuid m_passUuid;
+    QUuid m_shaderUuid;
     QList<QParameterMapper *> m_bindings;
     QList<QUuid> m_criteriaList;
 };

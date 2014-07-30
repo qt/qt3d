@@ -59,7 +59,6 @@ namespace Render {
 RenderRenderPass::RenderRenderPass()
     : m_renderer(Q_NULLPTR)
     , m_peer(Q_NULLPTR)
-    , m_shader(Q_NULLPTR)
 {
 }
 
@@ -86,13 +85,14 @@ void RenderRenderPass::setPeer(QRenderPass *peer)
         if (!m_passUuid.isNull()) {
             arbiter->unregisterObserver(this, m_passUuid);
             m_passUuid = QUuid();
-            m_shader = Q_NULLPTR;
+            m_shaderUuid = QUuid();
         }
         m_peer = peer;
         if (m_peer) {
-            m_shader = m_peer->shaderProgram();
+            if (m_peer->shaderProgram() != Q_NULLPTR)
+                m_shaderUuid = m_peer->shaderProgram()->uuid();
             m_passUuid = m_peer->uuid();
-            arbiter->registerObserver(this, m_passUuid, NodeAdded|NodeRemoved|NodeUpdated);
+            arbiter->registerObserver(this, m_passUuid, NodeAdded|NodeRemoved);
             // TO DO -> Have backend classes for Bindings and Parameters so that we can easily monitor for updates
             m_bindings = m_peer->bindings();
             Q_FOREACH (QCriterion *c, m_peer->criteria())
@@ -105,15 +105,13 @@ void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     switch (e->type()) {
-    case NodeUpdated: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("shaderProgram"))
-            ;// TO DO: to be completed
-        break;
-    }
 
     case NodeAdded: {
         if (propertyChange->propertyName() == QByteArrayLiteral("criterion")) {
             appendCriterion(propertyChange->value().value<QCriterion *>());
+        }
+        else if (propertyChange->propertyName() == QByteArrayLiteral("shaderProgram")) {
+            m_shaderUuid = propertyChange->value().toUuid();
         }
         break;
     }
@@ -121,6 +119,9 @@ void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
     case NodeRemoved: {
         if (propertyChange->propertyName() == QByteArrayLiteral("criterion")) {
             removeCriterion(propertyChange->value().toUuid());
+        }
+        else if (propertyChange->propertyName() == QByteArrayLiteral("shaderProgram")) {
+            m_shaderUuid = QUuid();
         }
         break;
     }
@@ -130,9 +131,9 @@ void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
     }
 }
 
-QAbstractShader *RenderRenderPass::shaderProgram() const
+QUuid RenderRenderPass::shaderProgram() const
 {
-    return m_shader;
+    return m_shaderUuid;
 }
 
 QList<QParameterMapper *> RenderRenderPass::bindings() const

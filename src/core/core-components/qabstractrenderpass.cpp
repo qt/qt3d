@@ -88,12 +88,30 @@ void QAbstractRenderPass::setShaderProgram(QAbstractShader *shaderProgram)
 {
     Q_D(QAbstractRenderPass);
     if (d->m_shader != shaderProgram) {
+
+        if (d->m_shader != Q_NULLPTR && d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr e(new QScenePropertyChange(NodeRemoved, this));
+            e->setPropertyName(QByteArrayLiteral("shaderProgram"));
+            e->setValue(QVariant::fromValue(shaderProgram->uuid()));
+            notifyObservers(e);
+        }
+
         d->m_shader = shaderProgram;
         emit shaderProgramChanged();
-        QScenePropertyChangePtr e(new QScenePropertyChange(ComponentUpdated, this));
-        e->setPropertyName(QByteArrayLiteral("shaderProgram"));
-        e->setValue(QVariant::fromValue(shaderProgram));
-        notifyObservers(e);
+
+        // We need to add it as a child of the current node if it has been declared inline
+        // Or not previously added as a child of the current node so that
+        // 1) The backend gets notified about it's creation
+        // 2) When the current node is destroyed, it gets destroyed as well
+        if (!shaderProgram->parent() || shaderProgram->parent() == this)
+            QNode::addChild(shaderProgram);
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr e(new QScenePropertyChange(NodeAdded, this));
+            e->setPropertyName(QByteArrayLiteral("shaderProgram"));
+            e->setValue(QVariant::fromValue(shaderProgram->uuid()));
+            notifyObservers(e);
+        }
     }
 }
 

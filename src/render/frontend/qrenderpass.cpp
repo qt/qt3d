@@ -73,6 +73,8 @@ QRenderPass *QRenderPass::doClone(QNode *clonedParent) const
 
     Q_FOREACH (QCriterion *crit, d->m_criteriaList)
         pass->addCriterion(qobject_cast<QCriterion *>(crit->clone(pass)));
+    pass->d_func()->m_shader = qobject_cast<QShaderProgram *>(d->m_shader->clone(pass));
+
     // TO DO : Make QParameterMapper a QNode
     //    Q_FOREACH (QParameterMapper *mapper, d->m_bindings)
     //        pass->addBinding(qobject_cast<QParameterMapper *>(mapper->cl));
