@@ -82,12 +82,19 @@ void QCameraSelector::setCamera(QEntity *camera)
     if (d->m_camera != camera) {
         d->m_camera = camera;
         emit cameraChanged();
-        if (camera->parent() == this)
+
+        // We need to add it as a child of the current node if it has been declared inline
+        // Or not previously added as a child of the current node so that
+        // 1) The backend gets notified about it's creation
+        // 2) When the current node is destroyed, it gets destroyed as well
+        if (!camera->parent() || camera->parent() == this)
             QNode::addChild(camera);
-        QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentUpdated, this));
-        propertyChange->setPropertyName(QByteArrayLiteral("camera"));
-        propertyChange->setValue(QVariant::fromValue(d->m_camera->uuid()));
-        notifyObservers(propertyChange);
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
+            propertyChange->setPropertyName(QByteArrayLiteral("camera"));
+            propertyChange->setValue(QVariant::fromValue(d->m_camera->uuid()));
+            notifyObservers(propertyChange);
+        }
     }
 }
 
