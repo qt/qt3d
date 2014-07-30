@@ -75,8 +75,6 @@ public:
     QList<QCriterion *> criteria() const;
     void clearCriteria();
 
-    void addPass(QAbstractRenderPass* pass) Q_DECL_OVERRIDE;
-
     void addParameter(QParameter *p);
     void removeParameter(QParameter *p);
     QList<QParameter *> parameters() const;
@@ -88,6 +86,9 @@ protected:
     Q_DECLARE_PRIVATE(QTechnique)
     QTechnique(QTechniquePrivate &dd, QNode *parent = 0);
     QTechnique *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
+
+protected slots:
+    void openGLFilterChanged();
 };
 
 }

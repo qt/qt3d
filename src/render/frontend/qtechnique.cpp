@@ -59,6 +59,8 @@ QTechniquePrivate::QTechniquePrivate(QTechnique *qq)
 QTechnique::QTechnique(QNode *parent)
     : QAbstractTechnique(*new QTechniquePrivate(this), parent)
 {
+    Q_D(QTechnique);
+    QObject::connect(d->m_openGLFilter, SIGNAL(openGLFilterChanged()), this, SLOT(openGLFilterChanged()));
 }
 
 void QTechnique::copy(const QNode *ref)
@@ -74,6 +76,8 @@ void QTechnique::copy(const QNode *ref)
 QTechnique::QTechnique(QTechniquePrivate &dd, QNode *parent)
     : QAbstractTechnique(dd, parent)
 {
+    Q_D(QTechnique);
+    QObject::connect(d->m_openGLFilter, SIGNAL(openGLFilterChanged()), this, SLOT(openGLFilterChanged()));
 }
 
 QTechnique *QTechnique::doClone(QNode *clonedParent) const
@@ -91,26 +95,51 @@ QTechnique *QTechnique::doClone(QNode *clonedParent) const
     return technique;
 }
 
+void QTechnique::openGLFilterChanged()
+{
+    Q_D(QTechnique);
+    if (d->m_changeArbiter != Q_NULLPTR) {
+        QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
+        change->setPropertyName(QByteArrayLiteral("openGLFilter"));
+        QOpenGLFilter *clone = new QOpenGLFilter();
+        clone->copy(d->m_openGLFilter);
+        change->setValue(QVariant::fromValue(clone));
+        notifyObservers(change);
+    }
+}
+
 void QTechnique::addCriterion(QCriterion *criterion)
 {
     Q_D(QTechnique);
     if (!d->m_criteriaList.contains(criterion)) {
         d->m_criteriaList.append(criterion);
-        QScenePropertyChangePtr change(new QScenePropertyChange(ComponentAdded, this));
-        change->setPropertyName(QByteArrayLiteral("criterion"));
-        change->setValue(QVariant::fromValue(criterion));
-        notifyObservers(change);
+
+        // We need to add it as a child of the current node if it has been declared inline
+        // Or not previously added as a child of the current node so that
+        // 1) The backend gets notified about it's creation
+        // 2) When the current node is destroyed, it gets destroyed as well
+        if (!criterion->parent() || criterion->parent() == this)
+            QNode::addChild(criterion);
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
+            change->setPropertyName(QByteArrayLiteral("criterion"));
+            change->setValue(QVariant::fromValue(criterion));
+            notifyObservers(change);
+        }
     }
 }
 
 void QTechnique::removeCriterion(QCriterion *criterion)
 {
     Q_D(QTechnique);
+    if (d->m_changeArbiter != Q_NULLPTR) {
+        QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, this));
+        change->setPropertyName(QByteArrayLiteral("criterion"));
+        change->setValue(QVariant::fromValue(criterion->uuid()));
+        notifyObservers(change);
+    }
     d->m_criteriaList.removeOne(criterion);
-    QScenePropertyChangePtr change(new QScenePropertyChange(ComponentAdded, this));
-    change->setPropertyName(QByteArrayLiteral("criterion"));
-    change->setValue(QVariant::fromValue(criterion->uuid()));
-    notifyObservers(change);
 }
 
 QList<QCriterion *> QTechnique::criteria() const
@@ -126,33 +155,39 @@ void QTechnique::clearCriteria()
         removeCriterion(d->m_criteriaList.takeFirst());
 }
 
-void QTechnique::addPass(QAbstractRenderPass *pass)
-{
-    Q_CHECK_PTR(pass);
-    pass->setParent(this);
-    QAbstractTechnique::addPass(pass);
-}
-
 void QTechnique::addParameter(QParameter *parameter)
 {
     Q_D(QTechnique);
     if (!d->m_parameters.contains(parameter)) {
         d->m_parameters.append(parameter);
-        QScenePropertyChangePtr change(new QScenePropertyChange(ComponentAdded, this));
-        change->setPropertyName(QByteArrayLiteral("parameter"));
-        change->setValue(QVariant::fromValue(parameter));
-        notifyObservers(change);
+
+        // We need to add it as a child of the current node if it has been declared inline
+        // Or not previously added as a child of the current node so that
+        // 1) The backend gets notified about it's creation
+        // 2) When the current node is destroyed, the child parameters get destroyed as well
+        if (!parameter->parent() || parameter->parent() == this)
+            QNode::addChild(parameter);
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
+            change->setPropertyName(QByteArrayLiteral("parameter"));
+            change->setValue(QVariant::fromValue(parameter));
+            notifyObservers(change);
+        }
     }
 }
 
 void QTechnique::removeParameter(QParameter *parameter)
 {
     Q_D(QTechnique);
+
+    if (d->m_changeArbiter != Q_NULLPTR) {
+        QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, this));
+        change->setPropertyName(QByteArrayLiteral("parameter"));
+        change->setValue(QVariant::fromValue(parameter));
+        notifyObservers(change);
+    }
     d->m_parameters.removeOne(parameter);
-    QScenePropertyChangePtr change(new QScenePropertyChange(ComponentRemoved, this));
-    change->setPropertyName(QByteArrayLiteral("parameter"));
-    change->setValue(QVariant::fromValue(parameter));
-    notifyObservers(change);
 }
 
 QList<QParameter *> QTechnique::parameters() const
