@@ -99,7 +99,7 @@ void RenderTechnique::setPeer(QTechnique *peer)
         m_peer = peer;
         if (m_peer) {
             m_techniqueUuid = m_peer->uuid();
-            arbiter->registerObserver(this, m_techniqueUuid);
+            arbiter->registerObserver(this, m_techniqueUuid, NodeAdded|NodeRemoved|ComponentUpdated);
 
             m_parameterPack.clear();
             Q_FOREACH (QParameter *p, m_peer->parameters())
@@ -109,10 +109,14 @@ void RenderTechnique::setPeer(QTechnique *peer)
             Q_FOREACH (QAbstractRenderPass *rPass, m_peer->renderPasses())
                 appendRenderPass(rPass);
 
+            m_criteriaList.clear();
+            Q_FOREACH (QCriterion *criterion, m_peer->criteria())
+                appendCriterion(criterion);
+
             // Copy OpenGLFilter info from frontend OpenGLFilter
-            // QObject doesn't allow copying directly
             QOpenGLFilter *peerFilter = peer->openGLFilter();
             m_openglFilter->copy(peerFilter);
+
         }
     }
 }
@@ -134,7 +138,18 @@ void RenderTechnique::sceneChangeEvent(const QSceneChangePtr &e)
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     switch (e->type()) {
 
-    case ComponentAdded: {
+    case ComponentUpdated: {
+        if (propertyChange->propertyName() == QByteArrayLiteral("openGLFilter")) {
+            QOpenGLFilter *filter = propertyChange->value().value<QOpenGLFilter *>();
+            if (filter != Q_NULLPTR) {
+                m_openglFilter->copy(filter);
+                delete filter;
+            }
+        }
+        break;
+    }
+
+    case NodeAdded: {
         if (propertyChange->propertyName() == QByteArrayLiteral("pass")) {
             appendRenderPass(propertyChange->value().value<QAbstractRenderPass *>());
         }
@@ -142,21 +157,12 @@ void RenderTechnique::sceneChangeEvent(const QSceneChangePtr &e)
             m_parameterPack.appendParameter(propertyChange->value().value<QParameter*>());
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("criterion")) {
-            QCriterion *crit = propertyChange->value().value<QCriterion *>();
-            HCriterion critHandle = m_renderer->criterionManager()->lookupHandle(crit->uuid());
-            if (critHandle.isNull()) {
-                critHandle = m_renderer->criterionManager()->getOrAcquireHandle(crit->uuid());
-                RenderCriterion *renderCriterion = m_renderer->criterionManager()->data(critHandle);
-                renderCriterion->setRenderer(m_renderer);
-                renderCriterion->setPeer(crit);
-            }
-            if (!m_criteriaList.contains(critHandle))
-                m_criteriaList.append(critHandle);
+            appendCriterion(propertyChange->value().value<QCriterion *>());
         }
         break;
     }
 
-    case ComponentRemoved: {
+    case NodeRemoved: {
         if (propertyChange->propertyName() == QByteArrayLiteral("pass")) {
             removeRenderPass(propertyChange->value().toUuid());
         }
@@ -164,7 +170,7 @@ void RenderTechnique::sceneChangeEvent(const QSceneChangePtr &e)
             m_parameterPack.removeParameter(propertyChange->value().value<QParameter*>());
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("criterion")) {
-            m_criteriaList.removeOne(m_renderer->criterionManager()->lookupHandle(propertyChange->value().toUuid()));
+            removeCriterion(propertyChange->value().toUuid());
         }
         break;
     }
@@ -184,28 +190,21 @@ void RenderTechnique::appendRenderPass(QAbstractRenderPass *rPass)
     QRenderPass *renderPass = qobject_cast<QRenderPass *>(rPass);
     if (!renderPass)
         return;
-    HRenderPass rPassHandle = m_renderer->renderPassManager()->lookupHandle(rPass->uuid());
-    if (rPassHandle.isNull()) {
-        rPassHandle = m_renderer->renderPassManager()->getOrAcquireHandle(rPass->uuid());
-        RenderRenderPass *renderRPass = m_renderer->renderPassManager()->data(rPassHandle);
-        renderRPass->setRenderer(m_renderer);
-        renderRPass->setPeer(renderPass);
-    }
-    if (!m_renderPasses.contains(rPassHandle))
-        m_renderPasses.append(rPassHandle);
+    if (!m_renderPasses.contains(renderPass->uuid()))
+        m_renderPasses.append(renderPass->uuid());
 }
 
 void RenderTechnique::removeRenderPass(const QUuid &renderPassId)
 {
-    m_renderPasses.removeOne(m_renderer->renderPassManager()->lookupHandle(renderPassId));
+    m_renderPasses.removeOne(renderPassId);
 }
 
-QList<HCriterion> RenderTechnique::criteria() const
+QList<QUuid> RenderTechnique::criteria() const
 {
     return m_criteriaList;
 }
 
-QList<HRenderPass> RenderTechnique::renderPasses() const
+QList<QUuid> RenderTechnique::renderPasses() const
 {
     return m_renderPasses;
 }
@@ -218,6 +217,17 @@ QOpenGLFilter *RenderTechnique::openGLFilter() const
 QUuid RenderTechnique::techniqueUuid() const
 {
     return m_techniqueUuid;
+}
+
+void RenderTechnique::appendCriterion(QCriterion *criterion)
+{
+    if (!m_criteriaList.contains(criterion->uuid()))
+        m_criteriaList.append(criterion->uuid());
+}
+
+void RenderTechnique::removeCriterion(const QUuid &criterionId)
+{
+    m_criteriaList.removeOne(criterionId);
 }
 
 } // namespace Render
