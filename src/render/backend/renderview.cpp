@@ -452,82 +452,79 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
     // For each ParameterBinder in the RenderPass -> create a QUniformPack
     // Once that works, improve that to try and minimize QUniformPack updates
 
-    if (rPass != Q_NULLPTR && rPass->shaderProgram() != Q_NULLPTR) {
+    if (rPass != Q_NULLPTR)
+    {
         // Index RenderShader by Shader UUID
-        command->m_shader = m_renderer->shaderManager()->lookupHandle(rPass->shaderProgram()->uuid());
+        command->m_shader = m_renderer->shaderManager()->lookupHandle(rPass->shaderProgram());
         RenderShader *shader = Q_NULLPTR;
-        if ((shader = m_renderer->shaderManager()->data(command->m_shader)) == Q_NULLPTR) {
-            shader = m_renderer->shaderManager()->getOrCreateResource(rPass->shaderProgram()->uuid());
-            shader->setPeer(qobject_cast<QShaderProgram*>(rPass->shaderProgram()));
-            command->m_shader = m_renderer->shaderManager()->lookupHandle(rPass->shaderProgram()->uuid());
-        }
-        // TO DO : To be corrected later on
-        //        command->m_stateSet = qobject_cast<RenderPass*>(pass)->stateSet();
+        if ((shader = m_renderer->shaderManager()->data(command->m_shader)) != Q_NULLPTR) {
+            // TO DO : To be corrected later on
+            //        command->m_stateSet = qobject_cast<RenderPass*>(pass)->stateSet();
 
-        // Builds the QUniformPack, sets shader standard uniforms and store attributes name / glname bindings
-        // If a parameter is defined and not found in the bindings it is assumed to be a binding of Uniform type with the glsl name
-        // equals to the parameter name
+            // Builds the QUniformPack, sets shader standard uniforms and store attributes name / glname bindings
+            // If a parameter is defined and not found in the bindings it is assumed to be a binding of Uniform type with the glsl name
+            // equals to the parameter name
 
 
-        QStringList uniformNames = shader->uniformsNames();
-        QStringList attributeNames = shader->attributesNames();
+            QStringList uniformNames = shader->uniformsNames();
+            QStringList attributeNames = shader->attributesNames();
 
-        if (!uniformNames.isEmpty() && !attributeNames.isEmpty()) {
+            if (!uniformNames.isEmpty() && !attributeNames.isEmpty()) {
 
-            // Set default standard uniforms without bindings
-            Q_FOREACH (const QString &uniformName, uniformNames) {
-                if (m_standardUniformSetters.contains(uniformName))
-                    command->m_uniforms.setUniform(uniformName,
-                                                   (this->*m_standardUniformSetters[uniformName])(command->m_worldMatrix));
-            }
-
-            // Set default attributes
-            Q_FOREACH (const QString &attributeName, attributeNames) {
-                if (m_standardAttributesNames.contains(attributeName))
-                    command->m_parameterAttributeToShaderNames[attributeName] = attributeName;
-            }
-
-            // Set uniforms and attributes explicitly binded
-            Q_FOREACH (QParameterMapper *binding, rPass->bindings()) {
-                if (!parameters.contains(binding->parameterName())) {
-                    if (binding->bindingType() == QParameterMapper::Attribute
-                            && attributeNames.contains(binding->shaderVariableName()))
-                        command->m_parameterAttributeToShaderNames[binding->parameterName()] = binding->shaderVariableName();
-                    else if (binding->bindingType() == QParameterMapper::StandardUniform
-                             && uniformNames.contains(binding->shaderVariableName())
-                             && m_standardUniformSetters.contains(binding->parameterName()))
-                        command->m_uniforms.setUniform(binding->shaderVariableName(),
-                                                       (this->*m_standardUniformSetters[binding->parameterName()])(command->m_worldMatrix));
-                    else
-                        qCWarning(Render::Backend) << Q_FUNC_INFO << "Trying to bind a Parameter that hasn't been defined " << binding->parameterName();
+                // Set default standard uniforms without bindings
+                Q_FOREACH (const QString &uniformName, uniformNames) {
+                    if (m_standardUniformSetters.contains(uniformName))
+                        command->m_uniforms.setUniform(uniformName,
+                                                       (this->*m_standardUniformSetters[uniformName])(command->m_worldMatrix));
                 }
-                else {
-                    QVariant value = parameters.take(binding->parameterName());
-                    Texture *tex = Q_NULLPTR;
-                    if (static_cast<QMetaType::Type>(value.type()) == QMetaType::QObjectStar &&
-                            (tex = value.value<Qt3D::Texture*>()) != Q_NULLPTR) {
-                        createRenderTexture(tex);
-                        command->m_uniforms.setTexture(binding->shaderVariableName(), tex->uuid());
-                        TextureUniform *texUniform = m_allocator->allocate<TextureUniform>();
-                        texUniform->setTextureId(tex->uuid());
-                        command->m_uniforms.setUniform(binding->shaderVariableName(), texUniform);
+
+                // Set default attributes
+                Q_FOREACH (const QString &attributeName, attributeNames) {
+                    if (m_standardAttributesNames.contains(attributeName))
+                        command->m_parameterAttributeToShaderNames[attributeName] = attributeName;
+                }
+
+                // Set uniforms and attributes explicitly binded
+                Q_FOREACH (QParameterMapper *binding, rPass->bindings()) {
+                    if (!parameters.contains(binding->parameterName())) {
+                        if (binding->bindingType() == QParameterMapper::Attribute
+                                && attributeNames.contains(binding->shaderVariableName()))
+                            command->m_parameterAttributeToShaderNames[binding->parameterName()] = binding->shaderVariableName();
+                        else if (binding->bindingType() == QParameterMapper::StandardUniform
+                                 && uniformNames.contains(binding->shaderVariableName())
+                                 && m_standardUniformSetters.contains(binding->parameterName()))
+                            command->m_uniforms.setUniform(binding->shaderVariableName(),
+                                                           (this->*m_standardUniformSetters[binding->parameterName()])(command->m_worldMatrix));
+                        else
+                            qCWarning(Render::Backend) << Q_FUNC_INFO << "Trying to bind a Parameter that hasn't been defined " << binding->parameterName();
                     }
                     else {
-                        command->m_uniforms.setUniform(binding->shaderVariableName(), QUniformValue::fromVariant(value, m_allocator));
+                        QVariant value = parameters.take(binding->parameterName());
+                        Texture *tex = Q_NULLPTR;
+                        if (static_cast<QMetaType::Type>(value.type()) == QMetaType::QObjectStar &&
+                                (tex = value.value<Qt3D::Texture*>()) != Q_NULLPTR) {
+                            createRenderTexture(tex);
+                            command->m_uniforms.setTexture(binding->shaderVariableName(), tex->uuid());
+                            TextureUniform *texUniform = m_allocator->allocate<TextureUniform>();
+                            texUniform->setTextureId(tex->uuid());
+                            command->m_uniforms.setUniform(binding->shaderVariableName(), texUniform);
+                        }
+                        else {
+                            command->m_uniforms.setUniform(binding->shaderVariableName(), QUniformValue::fromVariant(value, m_allocator));
+                        }
                     }
                 }
-            }
 
-            // If there are remaining parameters, those are set as uniforms
-            Q_FOREACH (const QString &paramName, parameters.keys()) {
-                // TO DO : Handle textures here as well
-                if (uniformNames.contains(paramName))
-                    command->m_uniforms.setUniform(paramName, QUniformValue::fromVariant(parameters[paramName], m_allocator));
-                else
-                    qWarning() << paramName << "is unused by the current shader";
+                // If there are remaining parameters, those are set as uniforms
+                Q_FOREACH (const QString &paramName, parameters.keys()) {
+                    // TO DO : Handle textures here as well
+                    if (uniformNames.contains(paramName))
+                        command->m_uniforms.setUniform(paramName, QUniformValue::fromVariant(parameters[paramName], m_allocator));
+                    else
+                        qWarning() << paramName << "is unused by the current shader";
+                }
             }
         }
-
     }
     else {
         qCWarning(Render::Backend) << Q_FUNC_INFO << "Using default effect as none was provided";

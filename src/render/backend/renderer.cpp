@@ -170,9 +170,6 @@ void Renderer::buildDefaultTechnique()
     defaultShader->setFragmentSourceFile(QStringLiteral(":/shaders/diffuse.frag"));
     defaultShader->setObjectName(QStringLiteral("DefaultShader"));
 
-    m_defaultRenderShader = new RenderShader();
-    m_defaultRenderShader->setPeer(defaultShader);
-
     QRenderPass* basicPass = new QRenderPass;
     basicPass->setShaderProgram(defaultShader);
 
@@ -307,25 +304,17 @@ void Renderer::setSceneGraphRoot(QEntity *sgRoot)
     qCDebug(Backend) << Q_FUNC_INFO << "DUMPING SCENE";
     m_renderSceneRoot->dump();
 
-    m_defaultMaterialHandle = m_materialManager->acquire();
-    RenderMaterial *rMaterial = m_materialManager->data(m_defaultMaterialHandle);
-    rMaterial->setRenderer(this);
-    rMaterial->setPeer(m_defaultMaterial);
+    m_renderSceneBuilder->createRenderElement(m_defaultMaterial);
+    m_renderSceneBuilder->createRenderElement(m_defaultMaterial->effect());
+    m_renderSceneBuilder->createRenderElement(m_defaultTechnique);
+    m_renderSceneBuilder->createRenderElement(m_defaultTechnique->renderPasses().first());
+    m_renderSceneBuilder->createRenderElement(m_defaultTechnique->renderPasses().first()->shaderProgram());
 
-    m_defaultEffectHandle = m_effectManager->acquire();
-    RenderEffect *rEffect = m_effectManager->data(m_defaultEffectHandle);
-    rEffect->setRenderer(this);
-    rEffect->setPeer(m_defaultMaterial->effect());
-
-    m_defaultTechniqueHandle = m_techniqueManager->acquire();
-    RenderTechnique *rTech = m_techniqueManager->data(m_defaultTechniqueHandle);
-    rTech->setRenderer(this);
-    rTech->setPeer(m_defaultTechnique);
-
-    m_defaultRenderPassHandle = m_renderPassManager->acquire();
-    RenderRenderPass *rPass = m_renderPassManager->data(m_defaultRenderPassHandle);
-    rPass->setRenderer(this);
-    rPass->setPeer(qobject_cast<QRenderPass*>(m_defaultTechnique->renderPasses().first()));
+    m_defaultMaterialHandle = m_materialManager->lookupHandle(m_defaultMaterial->uuid());
+    m_defaultEffectHandle = m_effectManager->lookupHandle(m_defaultMaterial->effect()->uuid());
+    m_defaultTechniqueHandle = m_techniqueManager->lookupHandle(m_defaultTechnique->uuid());
+    m_defaultRenderPassHandle = m_renderPassManager->lookupHandle(m_defaultTechnique->renderPasses().first()->uuid());
+    m_defaultRenderShader = m_shaderManager->lookupResource(m_defaultTechnique->renderPasses().first()->shaderProgram()->uuid());
 }
 
 QEntity *Renderer::sceneGraphRoot() const
