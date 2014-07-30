@@ -60,6 +60,7 @@
 #include "rendercriterion.h"
 #include "criterionmanager.h"
 #include "rendereraspect.h"
+#include "transformmanager.h"
 #include <qmaterial.h>
 #include <qmesh.h>
 #include <qabstractshapemesh.h>
@@ -177,6 +178,10 @@ void RenderSceneBuilder::createRenderElement(QNode *frontend)
         if (m_rootNodeHandle.isNull())
             m_rootNodeHandle = rEntity->handle();
     }
+    else if (qobject_cast<QTransform *>(frontend)) {
+        createRenderElementHelper<QTransform, RenderTransform, TransformManager>(frontend,
+                                                                                m_renderer->transformManager());
+    }
     else if (qobject_cast<QAbstractMesh *>(frontend)) {
         createRenderElementHelper<QAbstractMesh, RenderMesh, MeshManager>(frontend,
                                                                           m_renderer->meshManager());
@@ -262,15 +267,17 @@ RenderEntity* RenderSceneBuilder::createRenderNode(QEntity *entity)
     rEntity->setPeer(entity);
 
     QList<QTransform *> transforms = entity->componentsOfType<QTransform>();
-    if (!transforms.isEmpty())
-        rEntity->setTransform(transforms.first());
-
     QList<QMaterial *> materials = entity->componentsOfType<QMaterial>();
     QList<QAbstractMesh *> meshes = entity->componentsOfType<QAbstractMesh>();
     QList<QCameraLens *> lenses = entity->componentsOfType<QCameraLens>();
     QList<QLayer *> layers = entity->componentsOfType<QLayer>();
     QList<QAbstractLight *> lights = entity->componentsOfType<QAbstractLight>();
 
+    // Retrieve Transform from Entity
+    if (!transforms.isEmpty()) {
+        createRenderElement(transforms.first());
+        rEntity->addComponent(transforms.first());
+    }
     // Retrieve Material from Entity
     if (!materials.isEmpty()) {
         createRenderElement(materials.first());
