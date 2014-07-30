@@ -83,6 +83,7 @@ void QCameraLens::copy(const QNode *ref)
         d->m_right = lens->right();
         d->m_bottom = lens->bottom();
         d->m_top = lens->top();
+        d->m_projectionMatrix = lens->projectionMatrix();
     }
 }
 

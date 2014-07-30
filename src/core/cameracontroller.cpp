@@ -82,10 +82,6 @@ CameraController::CameraController() :
 void CameraController::setCamera( QCamera* cam )
 {
     m_camera = cam;
-    m_camera->lens()->setPerspectiveProjection( 25.0, 1.0, 0.1, 1000 );
-
-//    Entity* cameraEntity = cam->parentNode()->asEntity();
-//    Q_ASSERT(cameraEntity);
     m_cameraEntity = cam;
 }
 

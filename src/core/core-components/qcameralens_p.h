@@ -76,10 +76,12 @@ public:
     {
         // Notify the aspects
         Q_Q(QCameraLens);
-        QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentUpdated, q));
-        propertyChange->setPropertyName(QByteArrayLiteral("projectionMatrix"));
-        propertyChange->setValue(QVariant::fromValue(m_projectionMatrix));
-        q->notifyObservers(propertyChange);
+        if (m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentUpdated, q));
+            propertyChange->setPropertyName(QByteArrayLiteral("projectionMatrix"));
+            propertyChange->setValue(QVariant::fromValue(m_projectionMatrix));
+            q->notifyObservers(propertyChange);
+        }
     }
 
     Q_DECLARE_PUBLIC(QCameraLens)
