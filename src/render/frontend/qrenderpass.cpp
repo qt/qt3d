@@ -74,8 +74,8 @@ QRenderPass *QRenderPass::doClone(QNode *clonedParent) const
     Q_FOREACH (QCriterion *crit, d->m_criteriaList)
         pass->addCriterion(qobject_cast<QCriterion *>(crit->clone(pass)));
     // TO DO : Make QParameterMapper a QNode
-//    Q_FOREACH (QParameterMapper *mapper, d->m_bindings)
-//        pass->addBinding(qobject_cast<QParameterMapper *>(mapper->cl));
+    //    Q_FOREACH (QParameterMapper *mapper, d->m_bindings)
+    //        pass->addBinding(qobject_cast<QParameterMapper *>(mapper->cl));
 
     return pass;
 }
@@ -109,21 +109,33 @@ void QRenderPass::addCriterion(QCriterion *criterion)
     Q_D(QRenderPass);
     if (!d->m_criteriaList.contains(criterion)) {
         d->m_criteriaList.append(criterion);
-        QScenePropertyChangePtr change(new QScenePropertyChange(ComponentAdded, this));
-        change->setPropertyName(QByteArrayLiteral("criterion"));
-        change->setValue(QVariant::fromValue(criterion));
-        notifyObservers(change);
+
+        // We need to add it as a child of the current node if it has been declared inline
+        // Or not previously added as a child of the current node so that
+        // 1) The backend gets notified about it's creation
+        // 2) When the current node is destroyed, it gets destroyed as well
+        if (!criterion->parent() || criterion->parent() == this)
+            QNode::addChild(criterion);
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
+            change->setPropertyName(QByteArrayLiteral("criterion"));
+            change->setValue(QVariant::fromValue(criterion));
+            notifyObservers(change);
+        }
     }
 }
 
 void QRenderPass::removeCriterion(QCriterion *criterion)
 {
     Q_D(QRenderPass);
+    if (d->m_changeArbiter != Q_NULLPTR) {
+        QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, this));
+        change->setPropertyName(QByteArrayLiteral("criterion"));
+        change->setValue(QVariant::fromValue(criterion->uuid()));
+        notifyObservers(change);
+    }
     d->m_criteriaList.removeOne(criterion);
-    QScenePropertyChangePtr change(new QScenePropertyChange(ComponentAdded, this));
-    change->setPropertyName(QByteArrayLiteral("criterion"));
-    change->setValue(QVariant::fromValue(criterion->uuid()));
-    notifyObservers(change);
 }
 
 QList<QCriterion *> QRenderPass::criteria() const
