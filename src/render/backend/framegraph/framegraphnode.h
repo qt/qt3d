@@ -46,6 +46,7 @@
 #include <Qt3DCore/qhandle.h>
 #include <qglobal.h>
 #include <QVector>
+#include <QUuid>
 
 QT_BEGIN_NAMESPACE
 
@@ -94,10 +95,12 @@ public:
 
     FrameGraphNode *parent() const;
     QList<FrameGraphNode *> children() const;
+    QUuid frontendUuid() const { return m_frontendUuid; }
 
 protected:
     FrameGraphNode(FrameGraphNodeType nodeType);
     Renderer *m_renderer;
+    QUuid m_frontendUuid;
 
 private:
     FrameGraphNodeType m_nodeType;
