@@ -69,14 +69,14 @@ public:
     RenderPassFilter();
 
     void setPeer(Qt3D::QRenderPassFilter *peer);
-    QList<HCriterion> filters() const;
+    QList<QUuid> filters() const;
     void appendFilter(QCriterion *criterion);
     void removeFilter(const QUuid &criterionId);
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
     Qt3D::QRenderPassFilter *m_peer;
-    QList<HCriterion> m_filters;
+    QList<QUuid> m_filters;
 };
 
 } // namespace Render
