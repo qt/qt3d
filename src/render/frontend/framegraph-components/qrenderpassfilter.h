@@ -57,20 +57,13 @@ class QCriterion;
 class QT3DRENDERERSHARED_EXPORT QRenderPassFilter : public QFrameGraphItem
 {
     Q_OBJECT
-    // TO DO : Remove the renderPassName
-    Q_PROPERTY(QString renderPassName READ renderPassName WRITE setRenderPassName NOTIFY renderPassNameChanged)
 
 public:
     explicit QRenderPassFilter(QNode *parent = 0);
 
-    void setRenderPassName(const QString &renderpassName);
-    QString renderPassName() const;
     QList<QCriterion *> criteria() const;
     void addCriterion(QCriterion *criterion);
     void removeCriterion(QCriterion *criterion);
-
-Q_SIGNALS:
-    void renderPassNameChanged();
 
 protected:
     Q_DECLARE_PRIVATE(QRenderPassFilter)
