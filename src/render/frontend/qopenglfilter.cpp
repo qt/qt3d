@@ -125,6 +125,7 @@ void QOpenGLFilter::setApi(QOpenGLFilter::Api api)
     if (d->m_api != api) {
         d->m_api = api;
         emit apiChanged();
+        emit openGLFilterChanged();
     }
 }
 
@@ -134,6 +135,7 @@ void QOpenGLFilter::setProfile(QOpenGLFilter::Profile profile)
     if (d->m_profile != profile) {
         d->m_profile = profile;
         emit profileChanged();
+        emit openGLFilterChanged();
     }
 }
 
@@ -143,6 +145,7 @@ void QOpenGLFilter::setMinorVersion(int minorVersion)
     if (minorVersion != d->m_minor) {
         d->m_minor = minorVersion;
         emit minorVersionChanged();
+        emit openGLFilterChanged();
     }
 }
 
@@ -152,6 +155,7 @@ void QOpenGLFilter::setMajorVersion(int majorVersion)
     if (d->m_major != majorVersion) {
         d->m_major = majorVersion;
         emit majorVersionChanged();
+        emit openGLFilterChanged();
     }
 }
 
@@ -161,6 +165,7 @@ void QOpenGLFilter::setExtensions(const QStringList &extensions)
     if (d->m_extensions != extensions) {
         d->m_extensions = extensions;
         emit extensionsChanged();
+        emit openGLFilterChanged();
     }
 }
 
@@ -170,6 +175,7 @@ void QOpenGLFilter::setVendor(const QString &vendor)
     if (d->m_vendor != vendor) {
         d->m_vendor = vendor;
         emit vendorChanged();
+        emit openGLFilterChanged();
     }
 }
 

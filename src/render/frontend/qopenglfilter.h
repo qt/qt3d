@@ -105,6 +105,7 @@ Q_SIGNALS:
     void majorVersionChanged();
     void extensionsChanged();
     void vendorChanged();
+    void openGLFilterChanged();
 
 private:
     Q_DECLARE_PRIVATE(QOpenGLFilter)
