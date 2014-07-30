@@ -81,7 +81,6 @@ public:
 
 private:
     Renderer *m_renderer;
-    QMaterial* m_peer;
     RenderTextureProvider* m_textureProvider;
     ParameterPack m_parameterPack;
     QUuid m_materialUuid;

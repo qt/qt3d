@@ -63,7 +63,6 @@ namespace Render {
 
 RenderMaterial::RenderMaterial()
     : m_renderer(Q_NULLPTR)
-    , m_peer(Q_NULLPTR)
     , m_textureProvider(Q_NULLPTR)
 {
 }
@@ -83,23 +82,23 @@ void RenderMaterial::cleanup()
 
 void RenderMaterial::setPeer(QMaterial *mat)
 {
-    if (m_peer != mat) {
+    QUuid peerUuid;
+    if (mat != Q_NULLPTR)
+        peerUuid = mat->uuid();
+    if (m_materialUuid != peerUuid) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
         if (!m_materialUuid.isNull()) {
             m_parameterPack.clear();
+            m_effectUuid = QUuid();
             arbiter->unregisterObserver(this, m_materialUuid);
-            m_materialUuid = QUuid();
         }
-        m_peer = mat;
-        // Register for changes
-        if (m_peer) {
-            m_materialUuid = m_peer->uuid();
-            if (m_peer->effect() != Q_NULLPTR)
-                m_effectUuid = m_peer->effect()->uuid();
+        m_materialUuid = peerUuid;
+        if (!m_materialUuid.isNull()) {
             arbiter->registerObserver(this, m_materialUuid, ComponentUpdated|NodeAdded|NodeRemoved);
-            Q_FOREACH (QParameter *p, m_peer->parameters()) {
+            if (mat->effect() != Q_NULLPTR)
+                m_effectUuid = mat->effect()->uuid();
+            Q_FOREACH (QParameter *p, mat->parameters())
                 m_parameterPack.appendParameter(p);
-            }
         }
     }
 }
