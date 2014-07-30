@@ -58,8 +58,6 @@ class QT3DCORESHARED_EXPORT QAbstractShader
 public:
     explicit QAbstractShader(QNode *parent = 0);
 
-    QUuid uuid() const;
-
 protected:
     Q_DECLARE_PRIVATE(QAbstractShader)
     QAbstractShader(QAbstractShaderPrivate &dd, QNode *parent = 0);

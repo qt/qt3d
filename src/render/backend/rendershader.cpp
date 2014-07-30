@@ -42,10 +42,16 @@
 #include "rendershader.h"
 
 #include <QDebug>
+#include <QFile>
 #include <QOpenGLContext>
 #include <QOpenGLShaderProgram>
-#include <Qt3DRenderer/QGraphicsContext>
 #include <qshaderprogram.h>
+#include <Qt3DRenderer/QGraphicsContext>
+#include <Qt3DRenderer/renderer.h>
+#include <Qt3DRenderer/rendereraspect.h>
+#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qaspectmanager.h>
+#include <Qt3DCore/qchangearbiter.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -54,14 +60,89 @@ namespace Render {
 
 RenderShader::RenderShader() :
     m_program(Q_NULLPTR),
-    m_peer(Q_NULLPTR)
+    m_renderer(Q_NULLPTR),
+    m_isLoaded(false)
 {
+}
+
+RenderShader::~RenderShader()
+{
+    cleanup();
+}
+
+void RenderShader::cleanup()
+{
+    m_isLoaded = false;
 }
 
 void RenderShader::setPeer(QShaderProgram *peer)
 {
     Q_ASSERT(peer);
-    m_peer = peer;
+
+    QUuid peerUuid = peer->uuid();
+
+    if (peerUuid != m_shaderUuid) {
+        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
+
+        if (!m_shaderUuid.isNull()) {
+            arbiter->unregisterObserver(this, m_shaderUuid);
+            m_shaderUuid = QUuid();
+            m_vertexSourceCode.clear();
+            m_fragmentSourceCode.clear();
+        }
+        m_isLoaded = false;
+        m_shaderUuid = peerUuid;
+        arbiter->registerObserver(this, m_shaderUuid, NodeUpdated);
+        m_vertexSourceCode = peer->vertexSourceCode();
+        m_vertexSourceFile = peer->vertexSourceFile();
+        m_fragmentSourceCode = peer->fragmentSourceCode();
+        m_fragmentSourceFile = peer->fragmentSourceFile();
+    }
+}
+
+void RenderShader::setRenderer(Renderer *renderer)
+{
+    m_renderer = renderer;
+}
+
+QStringList RenderShader::uniformsNames() const
+{
+    return m_uniforms.keys();
+}
+
+QStringList RenderShader::attributesNames() const
+{
+    return m_attributes.keys();
+}
+
+QUuid RenderShader::shaderUuid() const
+{
+    return m_shaderUuid;
+}
+
+void RenderShader::sceneChangeEvent(const QSceneChangePtr &e)
+{
+    QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
+    QVariant propertyValue = propertyChange->value();
+
+    if (e->type() == NodeUpdated) {
+        if (propertyChange->propertyName() == QByteArrayLiteral("vertexSourceCode")) {
+            m_vertexSourceCode = propertyValue.toByteArray();
+            m_isLoaded = false;
+        }
+        else if (propertyChange->propertyName() == QByteArrayLiteral("fragmentSourceCode")) {
+            m_fragmentSourceCode = propertyValue.toByteArray();
+            m_isLoaded = false;
+        }
+        else if (propertyChange->propertyName() == QByteArrayLiteral("vertexSourceFile")) {
+            m_vertexSourceFile = propertyValue.toString();
+            m_isLoaded = false;
+        }
+        else if (propertyChange->propertyName() == QByteArrayLiteral("fragmentSourceFile")) {
+            m_fragmentSourceFile = propertyValue.toString();
+            m_isLoaded = false;
+        }
+    }
 }
 
 /*!
@@ -69,26 +150,14 @@ void RenderShader::setPeer(QShaderProgram *peer)
  */
 QOpenGLShaderProgram *RenderShader::getOrCreateProgram()
 {
-    if (!m_program) {
-        // waiting for shader source to be loaded
-        if (!m_peer->isLoaded()) {
-
-            // FIXME - should not be done in the backend!
-            m_peer->load();
-            //return NULL;
-        }
-
+    if (!m_isLoaded) {
+        delete m_program;
         m_program = createProgram();
         if (!m_program)
             m_program = createDefaultProgram();
+        m_isLoaded = true;
     }
-
     return m_program;
-}
-
-QString RenderShader::name() const
-{
-    return m_peer->objectName();
 }
 
 void RenderShader::updateUniforms(const QUniformPack &pack)
@@ -106,24 +175,46 @@ QOpenGLShaderProgram* RenderShader::createProgram()
     Q_ASSERT(QOpenGLContext::currentContext());
     // scoped pointer so early-returns delete automatically
     QScopedPointer<QOpenGLShaderProgram> p(new QOpenGLShaderProgram);
+
+    if (!m_fragmentSourceFile.isEmpty()) {
+        QFile f(m_fragmentSourceFile);
+        if (!f.exists()) {
+            qWarning() << "couldn't find shader source file:" << m_fragmentSourceFile;
+        } else {
+            f.open(QIODevice::ReadOnly);
+            m_fragmentSourceCode = f.readAll();
+            f.close();
+        }
+    }
+    if (!m_vertexSourceFile.isEmpty()) {
+        QFile vs(m_vertexSourceFile);
+        if (!vs.exists()) {
+            qWarning() << "couldn't find shader source file:" << m_vertexSourceFile;
+        } else {
+            vs.open(QIODevice::ReadOnly);
+            m_vertexSourceCode = vs.readAll();
+            vs.close();
+        }
+    }
+
     bool ok = p->addShaderFromSourceCode(QOpenGLShader::Vertex,
-                                         m_peer->vertexSourceCode());
+                                         m_vertexSourceCode);
     if (!ok) {
-        qWarning() << "bad vertex source:" << m_program->log();
-        return NULL;
+        qWarning() << "bad vertex source:" << p->log();
+        return Q_NULLPTR;
     }
 
     ok = p->addShaderFromSourceCode(QOpenGLShader::Fragment,
-                                    m_peer->fragmentSourceCode());
+                                    m_fragmentSourceCode);
     if (!ok) {
-        qWarning() << "bad fragment source:" << m_program->log();
-        return NULL;
+        qWarning() << "bad fragment source:" << p->log();
+        return Q_NULLPTR;
     }
 
     ok = p->link();
     if (!ok) {
-        qWarning() << "program failed to link:" << m_program->log();
-        return NULL;
+        qWarning() << "program failed to link:" << p->log();
+        return Q_NULLPTR;
     }
     // take from scoped-pointer so it doesn't get deleted
     return p.take();
@@ -153,16 +244,6 @@ void RenderShader::initializeAttributes(const QVector<QPair<QString, int> > &att
 {
     for (int i = 0; i < attributesNameAndLocation.size(); i++)
         m_attributes[attributesNameAndLocation[i].first] = attributesNameAndLocation[i].second;
-}
-
-QStringList RenderShader::uniformsNames() const
-{
-    return m_uniforms.keys();
-}
-
-QStringList RenderShader::attributesNames() const
-{
-    return m_attributes.keys();
 }
 
 } // namespace Render

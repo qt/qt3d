@@ -41,7 +41,7 @@
 
 #include "qshaderprogram.h"
 #include "qshaderprogram_p.h"
-
+#include <Qt3DCore/qscenepropertychange.h>
 #include <QDebug>
 #include <QFile>
 
@@ -51,7 +51,6 @@ namespace Qt3D {
 
 QShaderProgramPrivate::QShaderProgramPrivate(QShaderProgram *qq)
     : QAbstractShaderPrivate(qq)
-    , m_isLoaded(false)
 {
 }
 
@@ -68,7 +67,6 @@ void QShaderProgram::copy(const QNode *ref)
     if (prog != Q_NULLPTR) {
         // TO DO : Move loading to the backend
         d->m_vertexSourceFile = prog->vertexSourceFile();
-        d->m_isLoaded = prog->isLoaded();
         d->m_fragmentSourceFile = prog->fragmentSourceFile();
         d->m_cachedFragmentCode = prog->d_func()->m_cachedFragmentCode;
         d->m_cachedVertexCode = prog->d_func()->m_cachedVertexCode;
@@ -90,8 +88,14 @@ void QShaderProgram::setVertexSourceFile(const QString& vertexSourceFile)
     Q_D(QShaderProgram);
     if (vertexSourceFile != d->m_vertexSourceFile) {
         d->m_vertexSourceFile = vertexSourceFile;
-        d->m_isLoaded = false;
         emit vertexSourceFileChanged();
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr e(new QScenePropertyChange(NodeUpdated, this));
+            e->setPropertyName(QByteArrayLiteral("vertexSourceFile"));
+            e->setValue(vertexSourceFile);
+            notifyObservers(e);
+        }
     }
 }
 
@@ -106,8 +110,14 @@ void QShaderProgram::setFragmentSourceFile(const QString& fragmentSourceFile)
     Q_D(QShaderProgram);
     if (fragmentSourceFile != d->m_fragmentSourceFile) {
         d->m_fragmentSourceFile = fragmentSourceFile;
-        d->m_isLoaded = false;
         emit fragmentSourceFileChanged();
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr e(new QScenePropertyChange(NodeUpdated, this));
+            e->setPropertyName(QByteArrayLiteral("fragmentSourceFile"));
+            e->setValue(fragmentSourceFile);
+            notifyObservers(e);
+        }
     }
 }
 
@@ -119,86 +129,52 @@ QString QShaderProgram::fragmentSourceFile() const
 
 /*!
  * Sets the vertexShader from raw data in \a vertexShader.
- * Note that if vertexSourceFile is set, when load is called,
- * the shader code will be replaced by the shader located at vertexSourceFile.
  */
 void QShaderProgram::setVertexShader(const QByteArray &vertexShader)
 {
     Q_D(QShaderProgram);
     if (vertexShader != d->m_cachedVertexCode) {
         d->m_cachedVertexCode = vertexShader;
-        d->m_isLoaded = false;
         emit vertexShaderChanged();
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr e(new QScenePropertyChange(NodeUpdated, this));
+            e->setPropertyName(QByteArrayLiteral("vertexSourceCode"));
+            e->setValue(d->m_cachedVertexCode);
+            notifyObservers(e);
+        }
     }
 }
 
 /*!
  * Sets the fragmentShader from raw data in \a fragmentShader.
- * Note that if a fragmentSourceFile is set, when load is called,
- * the shader code will be replaced by the shader located at fragmentSourceFile.
  */
 void QShaderProgram::setFragmentShader(const QByteArray &fragmentShader)
 {
     Q_D(QShaderProgram);
     if (fragmentShader != d->m_cachedFragmentCode) {
         d->m_cachedFragmentCode = fragmentShader;
-        d->m_isLoaded = false;
         emit fragmentShaderChanged();
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr e(new QScenePropertyChange(NodeUpdated, this));
+            e->setPropertyName(QByteArrayLiteral("fragmentSourceCode"));
+            e->setValue(d->m_cachedFragmentCode);
+            notifyObservers(e);
+        }
     }
 }
 
 QByteArray QShaderProgram::vertexSourceCode() const
 {
     Q_D(const QShaderProgram);
-    if (!isLoaded() && d->m_cachedVertexCode.isEmpty())
-        return QByteArray();
-
     return d->m_cachedVertexCode;
 }
 
 QByteArray QShaderProgram::fragmentSourceCode() const
 {
     Q_D(const QShaderProgram);
-    if (!isLoaded() && d->m_cachedFragmentCode.isEmpty())
-        return QByteArray();
-
     return d->m_cachedFragmentCode;
-}
-
-bool QShaderProgram::isLoaded() const
-{
-    Q_D(const QShaderProgram);
-    return d->m_isLoaded;
-}
-
-void QShaderProgram::load()
-{
-    Q_D(QShaderProgram);
-    if (d->m_isLoaded)
-        return;
-
-    d->m_isLoaded = true;
-
-    if (!d->m_fragmentSourceFile.isEmpty()) {
-        QFile f(d->m_fragmentSourceFile);
-        if (!f.exists()) {
-            qWarning() << "couldn't find shader source file:" << d->m_fragmentSourceFile;
-            return;
-        } else {
-            f.open(QIODevice::ReadOnly);
-            d->m_cachedFragmentCode = f.readAll();
-        }
-    }
-    if (!d->m_vertexSourceFile.isEmpty()) {
-        QFile vs(d->m_vertexSourceFile);
-        if (!vs.exists()) {
-            qWarning() << "couldn't find shader source file:" << d->m_vertexSourceFile;
-            return;
-        } else {
-            vs.open(QIODevice::ReadOnly);
-            d->m_cachedVertexCode = vs.readAll();
-        }
-    }
 }
 
 } // of namespace Qt3D

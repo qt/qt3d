@@ -58,9 +58,6 @@ public:
     Q_DECLARE_PUBLIC(QShaderProgram)
     QString m_vertexSourceFile;
     QString m_fragmentSourceFile;
-
-    bool m_sourcesDirty;
-    bool m_isLoaded;
     QByteArray m_cachedVertexCode;
     QByteArray m_cachedFragmentCode;
 };

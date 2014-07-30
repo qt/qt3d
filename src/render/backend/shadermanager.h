@@ -62,9 +62,12 @@ class ShaderManager : public QResourcesManager<RenderShader,
 {
 public:
     ShaderManager();
+
 };
 
 } // Render
+
+Q_DECLARE_RESOURCE_INFO(Render::RenderShader, Q_REQUIRES_CLEANUP);
 
 } // Qt3D
 

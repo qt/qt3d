@@ -48,6 +48,7 @@
 // somewhere common to avoid this include?
 #include <Qt3DRenderer/qparameter.h>
 
+
 QT_BEGIN_NAMESPACE
 
 class QOpenGLShaderProgram;
@@ -58,28 +59,46 @@ class QShaderProgram;
 
 namespace Render {
 
-class RenderShader
+class Renderer;
+
+class RenderShader : public QObserverInterface
 {
 public:
     RenderShader();
+    ~RenderShader();
+
+    void cleanup();
 
     void setPeer(QShaderProgram* peer);
-
-    QString name() const;
+    void setRenderer(Renderer *renderer);
     void updateUniforms(const QUniformPack &pack);
 
     QStringList uniformsNames() const;
     QStringList attributesNames() const;
 
+    QUuid shaderUuid() const;
+
+    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+
 private:
+
     QOpenGLShaderProgram* m_program;
-    QShaderProgram* m_peer;
+    Renderer *m_renderer;
 
     QOpenGLShaderProgram *createProgram();
     QOpenGLShaderProgram *createDefaultProgram();
 
     QHash<QString, int> m_uniforms;
     QHash<QString, int> m_attributes;
+
+    QByteArray m_vertexSourceCode;
+    QByteArray m_fragmentSourceCode;
+    QString m_vertexSourceFile;
+    QString m_fragmentSourceFile;
+
+    QUuid m_shaderUuid;
+
+    bool m_isLoaded;
 
     // Private so that only GraphicContext can call it
     void initializeUniforms(const QVector<QPair<QString, int> > &uniformsNameAndLocation);

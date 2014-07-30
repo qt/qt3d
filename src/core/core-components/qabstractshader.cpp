@@ -59,7 +59,6 @@ namespace Qt3D {
 QAbstractShaderPrivate::QAbstractShaderPrivate(QAbstractShader *qq)
     : QNodePrivate(qq)
 {
-    m_uuid = QUuid::createUuid();
 }
 
 QAbstractShader::QAbstractShader(QNode *parent)
@@ -70,15 +69,6 @@ QAbstractShader::QAbstractShader(QNode *parent)
 QAbstractShader::QAbstractShader(QAbstractShaderPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
-}
-
-/*!
- * Returns the uuid that uniquely identifies the shader.
- */
-QUuid QAbstractShader::uuid() const
-{
-    Q_D(const QAbstractShader);
-    return d->m_uuid;
 }
 
 } // Qt3D
