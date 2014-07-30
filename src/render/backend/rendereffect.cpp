@@ -51,6 +51,7 @@
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRenderer/qeffect.h>
 #include <Qt3DRenderer/qparameter.h>
+#include <Qt3DRenderer/renderscenebuilder.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -87,7 +88,7 @@ void RenderEffect::setPeer(QAbstractEffect *effect)
         m_peer = effect;
         if (m_peer) {
             m_effectUuid = m_peer->uuid();
-            arbiter->registerObserver(this, m_effectUuid, ComponentUpdated);
+            arbiter->registerObserver(this, m_effectUuid, NodeAdded|NodeRemoved|ComponentUpdated);
 
             m_techniques.clear();
             Q_FOREACH (QAbstractTechnique *t, m_peer->techniques())
@@ -113,7 +114,7 @@ void RenderEffect::sceneChangeEvent(const QSceneChangePtr &e)
     QVariant propertyValue = propertyChange->value();
     switch (e->type()) {
 
-    case ComponentAdded:
+    case NodeAdded:
         if (propertyChange->propertyName() == QByteArrayLiteral("technique")) {
             appendRenderTechnique(propertyValue.value<QAbstractTechnique *>());
         }
@@ -123,10 +124,10 @@ void RenderEffect::sceneChangeEvent(const QSceneChangePtr &e)
         }
         break;
 
-    case ComponentRemoved:
+    case NodeRemoved:
         if (propertyChange->propertyName() == QByteArrayLiteral("technique")) {
             QUuid techniqueUuid = propertyValue.value<QUuid>();
-            m_techniques.removeOne(m_renderer->techniqueManager()->lookupHandle(techniqueUuid));
+            m_techniques.removeOne(techniqueUuid);
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("parameter")) {
             m_parameterPack.removeParameter(propertyValue.value<QParameter*>());
@@ -143,15 +144,8 @@ void RenderEffect::appendRenderTechnique(QAbstractTechnique *t)
     QTechnique *technique = qobject_cast<QTechnique *>(t);
     if (!technique)
         return ;
-    HTechnique techHandle = m_renderer->techniqueManager()->lookupHandle(technique->uuid());
-    if (techHandle.isNull()) {
-        techHandle = m_renderer->techniqueManager()->getOrAcquireHandle(technique->uuid());
-        RenderTechnique *tech = m_renderer->techniqueManager()->data(techHandle);
-        tech->setRenderer(m_renderer);
-        tech->setPeer(technique);
-    }
-    if (!m_techniques.contains(techHandle))
-        m_techniques.append(techHandle);
+    if (!m_techniques.contains(technique->uuid()))
+        m_techniques.append(technique->uuid());
 }
 
 const QHash<QString, QVariant> RenderEffect::parameters() const
@@ -164,7 +158,7 @@ QUuid RenderEffect::effectUuid() const
     return m_effectUuid;
 }
 
-QList<HTechnique> RenderEffect::techniques() const
+QList<QUuid> RenderEffect::techniques() const
 {
     return m_techniques;
 }

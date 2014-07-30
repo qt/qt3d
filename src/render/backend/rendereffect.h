@@ -80,12 +80,12 @@ public:
     QAbstractEffect *peer() const { return m_peer; }
     void appendRenderTechnique(QAbstractTechnique *t);
 
-    QList<HTechnique> techniques() const;
+    QList<QUuid> techniques() const;
     const QHash<QString, QVariant> parameters() const;
     QUuid effectUuid() const;
 
 private:
-    QList<HTechnique> m_techniques;
+    QList<QUuid> m_techniques;
     Renderer *m_renderer;
     QAbstractEffect *m_peer;
     QUuid m_effectUuid;
