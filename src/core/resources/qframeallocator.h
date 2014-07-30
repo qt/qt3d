@@ -73,11 +73,10 @@ public:
             new (ptr) T(); // Don't forget to call the constructor of the object using the placement new operator
             return ptr;
         }
-        else {
-            qWarning() << "Trying to allocate an object larger (" << sizeof(T) << ") than maxObjectSize (" << maxObjectSize() << ") Using operator new";
-            return new T();
-        }
+        qWarning() << "Trying to allocate an object larger (" << sizeof(T) << ") than maxObjectSize (" << maxObjectSize() << ") Using operator new";
+        return new T();
     }
+
 
     template<typename T>
     void deallocate(T *ptr)
@@ -91,6 +90,24 @@ public:
             qWarning() << "Trying to deallocate an object larger (" << sizeof(T) << ") than maxObjectSize (" << maxObjectSize() << ") Using operator delete";
             delete ptr;
         }
+    }
+
+    template<typename T>
+    T* allocateRawMemory()
+    {
+        uint allocatorIndex = allocatorIndexFromSize(sizeof(T)) - 1;
+        if (allocatorIndex < allocatorIndexFromSize(maxObjectSize()))
+            return static_cast<T*>(allocateAtChunk(allocatorIndex));
+        qCritical() << "Allocation size too large for QFrameAllocator";
+        return Q_NULLPTR;
+    }
+
+    template<typename T>
+    void deallocateRawMemory(T *ptr)
+    {
+        uint allocatorIndex = allocatorIndexFromSize(sizeof(T)) - 1;
+        if (allocatorIndex < allocatorIndexFromSize(maxObjectSize()))
+            deallocateAtChunck(ptr, allocatorIndex);
     }
 
     void clear();

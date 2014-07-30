@@ -67,7 +67,7 @@ QFrameAllocator::QFrameAllocator(uint maxObjectSize, uint alignment, uint pageSi
     d->m_maxObjectSize = maxObjectSize;
     d->m_alignment = alignment;
     d->m_allocatorPoolSize = allocatorIndexFromSize(maxObjectSize);
-    Q_ASSERT(alignment && pageSize);
+    Q_ASSERT(alignment && pageSize && pageSize < UCHAR_MAX);
     d->m_allocatorPool.resize(d->m_allocatorPoolSize);
     for (int i = 0; i < d->m_allocatorPoolSize; i++) {
         d->m_allocatorPool[i].init((i + 1) * d->m_alignment, pageSize);
