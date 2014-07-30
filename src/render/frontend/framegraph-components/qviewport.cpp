@@ -96,10 +96,12 @@ void QViewport::setRect(const QRectF &rect)
     if (rect != d->m_rect) {
         d->m_rect = rect;
         emit rectChanged();
-        QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentUpdated, this));
-        propertyChange->setPropertyName(QByteArrayLiteral("rect"));
-        propertyChange->setValue(QVariant::fromValue(d->m_rect));
-        notifyObservers(propertyChange);
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
+            propertyChange->setPropertyName(QByteArrayLiteral("rect"));
+            propertyChange->setValue(QVariant::fromValue(d->m_rect));
+            notifyObservers(propertyChange);
+        }
     }
 }
 
