@@ -55,12 +55,16 @@ class QT3DCORESHARED_EXPORT QScenePropertyChange : public QSceneChange
 public:
     QScenePropertyChange(ChangeFlag type, QObservableInterface *subject, Priority priority = Standard);
     QScenePropertyChange(ChangeFlag type, QNode *node, Priority priority = Standard);
+    virtual ~QScenePropertyChange();
 
     QByteArray propertyName() const;
     QVariant value() const;
 
     void setPropertyName(const QByteArray &name);
     void setValue(const QVariant &value);
+
+    static void *operator new(size_t size);
+    static void operator delete(void *ptr);
 
 protected:
     Q_DECLARE_PRIVATE(QScenePropertyChange)

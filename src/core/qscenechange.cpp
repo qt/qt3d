@@ -52,6 +52,10 @@ QSceneChangePrivate::QSceneChangePrivate(QSceneChange *qq)
 {
 }
 
+QSceneChangePrivate::~QSceneChangePrivate()
+{
+}
+
 QSceneChange::QSceneChange(ChangeFlag type, QObservableInterface *observable, QSceneChange::Priority priority)
     : d_ptr(new QSceneChangePrivate(this))
 {

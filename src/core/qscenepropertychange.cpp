@@ -41,14 +41,35 @@
 
 #include "qscenepropertychange.h"
 #include "qscenepropertychange_p.h"
+#include <Qt3DCore/qframeallocator.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+QFrameAllocator *QScenePropertyChangePrivate::m_allocator = new QFrameAllocator(sizeof(QScenePropertyChangePrivate), sizeof(QScenePropertyChange), sizeof(QScenePropertyChangePrivate) * 2);
+QMutex QScenePropertyChangePrivate::m_mutex;
+
 QScenePropertyChangePrivate::QScenePropertyChangePrivate(QScenePropertyChange *qq)
     : QSceneChangePrivate(qq)
 {
+}
+
+QScenePropertyChangePrivate::~QScenePropertyChangePrivate()
+{
+
+}
+
+void *QScenePropertyChangePrivate::operator new(size_t size)
+{
+    QMutexLocker locker(&QScenePropertyChangePrivate::m_mutex);
+    return QScenePropertyChangePrivate::m_allocator->allocateRawMemory<QScenePropertyChangePrivate>();
+}
+
+void QScenePropertyChangePrivate::operator delete(void *ptr)
+{
+    QMutexLocker locker(&QScenePropertyChangePrivate::m_mutex);
+    QScenePropertyChangePrivate::m_allocator->deallocateRawMemory<QScenePropertyChangePrivate>(static_cast<QScenePropertyChangePrivate *>(ptr));
 }
 
 QScenePropertyChange::QScenePropertyChange(ChangeFlag type, QObservableInterface *subject, QSceneChange::Priority priority)
@@ -58,6 +79,10 @@ QScenePropertyChange::QScenePropertyChange(ChangeFlag type, QObservableInterface
 
 QScenePropertyChange::QScenePropertyChange(ChangeFlag type, QNode *node, QSceneChange::Priority priority)
     : QSceneChange(*new QScenePropertyChangePrivate(this), type, node, priority)
+{
+}
+
+QScenePropertyChange::~QScenePropertyChange()
 {
 }
 
@@ -93,6 +118,18 @@ void QScenePropertyChange::setValue(const QVariant &value)
 {
     Q_D(QScenePropertyChange);
     d->m_value = value;
+}
+
+void *QScenePropertyChange::operator new(size_t size)
+{
+    QMutexLocker locker(&QScenePropertyChangePrivate::m_mutex);
+    return QScenePropertyChangePrivate::m_allocator->allocateRawMemory<QScenePropertyChange>();
+}
+
+void QScenePropertyChange::operator delete(void *ptr)
+{
+    QMutexLocker locker(&QScenePropertyChangePrivate::m_mutex);
+    QScenePropertyChangePrivate::m_allocator->deallocateRawMemory<QScenePropertyChange>(static_cast<QScenePropertyChange *>(ptr));
 }
 
 } // Qt3D

@@ -54,6 +54,7 @@ class QSceneChangePrivate
 {
 public :
     QSceneChangePrivate(QSceneChange *qq);
+    virtual ~QSceneChangePrivate();
 
     Q_DECLARE_PUBLIC(QSceneChange)
 

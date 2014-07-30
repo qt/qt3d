@@ -44,22 +44,31 @@
 
 #include <private/qscenechange_p.h>
 #include <QVariant>
+#include <QMutex>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
 class QScenePropertyChange;
+class QFrameAllocator;
 
 class QScenePropertyChangePrivate : QSceneChangePrivate
 {
 public:
     QScenePropertyChangePrivate(QScenePropertyChange *qq);
+    virtual ~QScenePropertyChangePrivate();
+
+    static void *operator new(size_t);
+    static void operator delete(void *ptr);
 
     Q_DECLARE_PUBLIC(QScenePropertyChange)
 
     QByteArray m_propertyName;
     QVariant m_value;
+
+    static QFrameAllocator *m_allocator;
+    static QMutex m_mutex;
 };
 
 } // Qt3D
