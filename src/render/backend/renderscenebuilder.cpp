@@ -61,6 +61,7 @@
 #include "criterionmanager.h"
 #include "rendereraspect.h"
 #include "transformmanager.h"
+#include "shadermanager.h"
 #include <qmaterial.h>
 #include <qmesh.h>
 #include <qabstractshapemesh.h>
@@ -214,6 +215,10 @@ void RenderSceneBuilder::createRenderElement(QNode *frontend)
         createRenderElementHelper<QRenderPass, RenderRenderPass, RenderPassManager>(frontend,
                                                                                     m_renderer->renderPassManager());
     }
+    else if (qobject_cast<QAbstractShader *>(frontend)) {
+        createRenderElementHelper<QShaderProgram, RenderShader, ShaderManager>(frontend,
+                                                                               m_renderer->shaderManager());
+    }
     else if (qobject_cast<QParameter *>(frontend)) {
 
     }
@@ -255,6 +260,8 @@ void RenderSceneBuilder::releaseRenderElement(QNode *frontend)
         m_renderer->criterionManager()->releaseResource(frontend->uuid());
     else if (qobject_cast<QFrameGraphItem *>(frontend))
         m_renderer->frameGraphManager()->releaseResource(frontend->uuid());
+    else if (qobject_cast<QAbstractShader *>(frontend))
+        m_renderer->shaderManager()->releaseResource(frontend->uuid());
 }
 
 RenderEntity* RenderSceneBuilder::createRenderNode(QEntity *entity)
