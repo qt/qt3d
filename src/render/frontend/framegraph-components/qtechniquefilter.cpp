@@ -88,22 +88,32 @@ void QTechniqueFilter::addCriterion(QCriterion *criterion)
 {
     Q_D(QTechniqueFilter);
     d->m_criteriaList.append(criterion);
-    emit criteriaChanged();
-    QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentAdded, this));
-    propertyChange->setPropertyName(QByteArrayLiteral("techniqueCriterion"));
-    propertyChange->setValue(QVariant::fromValue(criterion));
-    notifyObservers(propertyChange);
+
+    // We need to add it as a child of the current node if it has been declared inline
+    // Or not previously added as a child of the current node so that
+    // 1) The backend gets notified about it's creation
+    // 2) When the current node is destroyed, it gets destroyed as well
+    if (!criterion->parent() || criterion->parent() == this)
+        QNode::addChild(criterion);
+
+    if (d->m_changeArbiter != Q_NULLPTR) {
+        QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeAdded, this));
+        propertyChange->setPropertyName(QByteArrayLiteral("techniqueCriterion"));
+        propertyChange->setValue(QVariant::fromValue(criterion));
+        notifyObservers(propertyChange);
+    }
 }
 
 void QTechniqueFilter::removeCriterion(QCriterion *criterion)
 {
     Q_D(QTechniqueFilter);
+    if (d->m_changeArbiter != Q_NULLPTR) {
+        QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeRemoved, this));
+        propertyChange->setPropertyName(QByteArrayLiteral("techniqueCriterion"));
+        propertyChange->setValue(QVariant::fromValue(criterion->uuid()));
+        notifyObservers(propertyChange);
+    }
     d->m_criteriaList.removeOne(criterion);
-    emit criteriaChanged();
-    QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentRemoved, this));
-    propertyChange->setPropertyName(QByteArrayLiteral("techniqueCriterion"));
-    propertyChange->setValue(QVariant::fromValue(criterion->uuid()));
-    notifyObservers(propertyChange);
 }
 
 } // Qt3D

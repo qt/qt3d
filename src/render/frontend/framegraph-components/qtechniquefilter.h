@@ -62,9 +62,6 @@ public:
     void addCriterion(QCriterion *criterion);
     void removeCriterion(QCriterion *criterion);
 
-Q_SIGNALS:
-    void criteriaChanged();
-
 protected:
     Q_DECLARE_PRIVATE(QTechniqueFilter)
     QTechniqueFilter(QTechniqueFilterPrivate &dd, QNode *parent = 0);
