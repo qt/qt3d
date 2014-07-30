@@ -94,7 +94,9 @@ void RenderMaterial::setPeer(QMaterial *mat)
         // Register for changes
         if (m_peer) {
             m_materialUuid = m_peer->uuid();
-            arbiter->registerObserver(this, m_materialUuid, ComponentUpdated);
+            if (m_peer->effect() != Q_NULLPTR)
+                m_effectUuid = m_peer->effect()->uuid();
+            arbiter->registerObserver(this, m_materialUuid, ComponentUpdated|NodeAdded|NodeRemoved);
             Q_FOREACH (QParameter *p, m_peer->parameters()) {
                 m_parameterPack.appendParameter(p);
             }
@@ -140,11 +142,6 @@ void RenderMaterial::sceneChangeEvent(const QSceneChangePtr &e)
             m_effectUuid = QUuid();
             if (eff != Q_NULLPTR) {
                 m_effectUuid = eff->uuid();
-                if (!m_renderer->effectManager()->contains(m_effectUuid)) {
-                    RenderEffect *rEffect = m_renderer->effectManager()->getOrCreateResource(m_effectUuid);
-                    rEffect->setRenderer(m_renderer);
-                    rEffect->setPeer(eff);
-                }
             }
         }
         else {
@@ -152,14 +149,14 @@ void RenderMaterial::sceneChangeEvent(const QSceneChangePtr &e)
         break;
     }
         // Check for shader parameter
-    case ComponentAdded: {
+    case NodeAdded: {
         QParameter *param = Q_NULLPTR;
         if (propertyChange->propertyName() == QByteArrayLiteral("parameter") &&
                 (param = propertyChange->value().value<QParameter*>()) != Q_NULLPTR)
             m_parameterPack.appendParameter(param);
         break;
     }
-    case ComponentRemoved: {
+    case NodeRemoved: {
         QParameter *param = Q_NULLPTR;
         if (propertyChange->propertyName() == QByteArrayLiteral("parameter") &&
                 (param = propertyChange->value().value<QParameter*>()) != Q_NULLPTR)
