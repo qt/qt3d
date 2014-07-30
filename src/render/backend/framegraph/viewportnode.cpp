@@ -67,11 +67,14 @@ ViewportNode::ViewportNode()
 void ViewportNode::setPeer(Qt3D::QViewport *peer)
 {
     if (m_peer != peer) {
-        if (m_peer)
-            m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_peer);
+        if (!m_frontendUuid.isNull()) {
+            m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_frontendUuid);
+            m_frontendUuid = QUuid();
+        }
         m_peer = peer;
         if (m_peer) {
-            m_renderer->rendererAspect()->aspectManager()->changeArbiter()->registerObserver(this, m_peer, ComponentUpdated);
+            m_frontendUuid = m_peer->uuid();
+            m_renderer->rendererAspect()->aspectManager()->changeArbiter()->registerObserver(this, m_frontendUuid, NodeUpdated);
             setXMin(m_peer->rect().x());
             setXMax(m_peer->rect().width());
             setYMin(m_peer->rect().y());
@@ -119,7 +122,7 @@ void ViewportNode::setYMax(float yMax)
 
 void ViewportNode::sceneChangeEvent(const QSceneChangePtr &e)
 {
-    if (e->type() == ComponentUpdated) {
+    if (e->type() == NodeUpdated) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("rect")) {
             QRectF rect = propertyChange->value().value<QRectF>();
