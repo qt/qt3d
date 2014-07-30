@@ -149,7 +149,6 @@ public:
     inline EntityManager *renderNodesManager() const { return m_renderNodesManager; }
     inline MaterialManager *materialManager() const { return m_materialManager; }
     inline MatrixManager *worldMatrixManager() const { return m_worldMatrixManager; }
-    inline MatrixManager *localMatrixManager() const { return m_localMatrixManager; }
     inline VAOManager *vaoManager() const { return m_vaoManager; }
     inline ShaderManager *shaderManager() const { return m_shaderManager; }
     inline TechniqueManager *techniqueManager() const { return m_techniqueManager; }
@@ -226,7 +225,6 @@ private:
     EntityManager *m_renderNodesManager;
     MaterialManager *m_materialManager;
     MatrixManager *m_worldMatrixManager;
-    MatrixManager *m_localMatrixManager;
     VAOManager *m_vaoManager;
     ShaderManager *m_shaderManager;
     TechniqueManager *m_techniqueManager;
