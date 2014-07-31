@@ -61,7 +61,6 @@ namespace Render {
 
 RenderEffect::RenderEffect()
     : m_renderer(Q_NULLPTR)
-    , m_peer(Q_NULLPTR)
 {
 }
 
@@ -78,25 +77,25 @@ void RenderEffect::cleanup()
 
 void RenderEffect::setPeer(QAbstractEffect *effect)
 {
-    if (effect != m_peer) {
+    QUuid peerUuid;
+    if (effect != Q_NULLPTR)
+        peerUuid = effect->uuid();
+    if (peerUuid != m_effectUuid) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        m_techniques.clear();
         if (!m_effectUuid.isNull()) {
             arbiter->unregisterObserver(this, m_effectUuid);
-            m_effectUuid = QUuid();
+            m_techniques.clear();
+            m_parameterPack.clear();
         }
-        m_peer = effect;
-        if (m_peer) {
-            m_effectUuid = m_peer->uuid();
+        m_effectUuid = peerUuid;
+        if (!m_effectUuid.isNull()) {
             arbiter->registerObserver(this, m_effectUuid, NodeAdded|NodeRemoved|ComponentUpdated);
 
-            m_techniques.clear();
-            Q_FOREACH (QAbstractTechnique *t, m_peer->techniques())
+            Q_FOREACH (QAbstractTechnique *t, effect->techniques())
                 appendRenderTechnique(t);
 
-            m_parameterPack.clear();
-            if (qobject_cast<QEffect*>(m_peer))
-                Q_FOREACH (QParameter *p, qobject_cast<QEffect*>(m_peer)->parameters())
+            if (qobject_cast<QEffect*>(effect))
+                Q_FOREACH (QParameter *p, qobject_cast<QEffect*>(effect)->parameters())
                     m_parameterPack.appendParameter(p);
         }
     }

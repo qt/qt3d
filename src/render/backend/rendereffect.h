@@ -77,7 +77,6 @@ public:
     void setPeer(QAbstractEffect *effect);
     void setRenderer(Renderer *renderer);
     void sceneChangeEvent(const QSceneChangePtr &e);
-    QAbstractEffect *peer() const { return m_peer; }
     void appendRenderTechnique(QAbstractTechnique *t);
 
     QList<QUuid> techniques() const;
@@ -87,7 +86,6 @@ public:
 private:
     QList<QUuid> m_techniques;
     Renderer *m_renderer;
-    QAbstractEffect *m_peer;
     QUuid m_effectUuid;
     ParameterPack m_parameterPack;
 };
