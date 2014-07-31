@@ -58,7 +58,6 @@ namespace Render {
 
 RenderRenderPass::RenderRenderPass()
     : m_renderer(Q_NULLPTR)
-    , m_peer(Q_NULLPTR)
 {
 }
 
@@ -80,22 +79,24 @@ void RenderRenderPass::setRenderer(Renderer *renderer)
 
 void RenderRenderPass::setPeer(QRenderPass *peer)
 {
-    if (m_peer != peer) {
+    QUuid peerUuid;
+    if (peer != Q_NULLPTR)
+        peerUuid = peer->uuid();
+    if (m_passUuid != peerUuid) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
         if (!m_passUuid.isNull()) {
             arbiter->unregisterObserver(this, m_passUuid);
-            m_passUuid = QUuid();
+            m_criteriaList.clear();
             m_shaderUuid = QUuid();
         }
-        m_peer = peer;
-        if (m_peer) {
-            if (m_peer->shaderProgram() != Q_NULLPTR)
-                m_shaderUuid = m_peer->shaderProgram()->uuid();
-            m_passUuid = m_peer->uuid();
+        m_passUuid = peerUuid;
+        if (!m_passUuid.isNull()) {
             arbiter->registerObserver(this, m_passUuid, NodeAdded|NodeRemoved);
+            if (peer->shaderProgram() != Q_NULLPTR)
+                m_shaderUuid = peer->shaderProgram()->uuid();
             // TO DO -> Have backend classes for Bindings and Parameters so that we can easily monitor for updates
-            m_bindings = m_peer->bindings();
-            Q_FOREACH (QCriterion *c, m_peer->criteria())
+            m_bindings = peer->bindings();
+            Q_FOREACH (QCriterion *c, peer->criteria())
                 appendCriterion(c);
         }
     }

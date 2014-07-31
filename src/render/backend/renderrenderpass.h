@@ -79,7 +79,6 @@ public:
 
 private:
     Renderer *m_renderer;
-    QRenderPass *m_peer;
     QUuid m_passUuid;
     QUuid m_shaderUuid;
     QList<QParameterMapper *> m_bindings;
