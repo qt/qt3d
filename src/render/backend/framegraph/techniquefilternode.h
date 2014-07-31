@@ -81,7 +81,6 @@ private:
     void appendFilter(QCriterion *criterion);
     void removeFilter(const QUuid &criterionId);
 
-    Qt3D::QTechniqueFilter *m_peer;
     QList<QUuid> m_filters;
 };
 

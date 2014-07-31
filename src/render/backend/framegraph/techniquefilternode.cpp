@@ -56,24 +56,24 @@ namespace Render {
 
 TechniqueFilter::TechniqueFilter()
     : FrameGraphNode(FrameGraphNode::TechniqueFilter)
-    , m_peer(Q_NULLPTR)
 {
 }
 
 void TechniqueFilter::setPeer(Qt3D::QTechniqueFilter *peer)
 {
-    if (peer != m_peer) {
+    QUuid peerUuid;
+    if (peer != Q_NULLPTR)
+        peerUuid = peer->uuid();
+    if (m_frontendUuid != peerUuid) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
         if (!m_frontendUuid.isNull()) {
             arbiter->unregisterObserver(this, m_frontendUuid);
             m_filters.clear();
-            m_frontendUuid = QUuid();
         }
-        m_peer = peer;
-        if (m_peer) {
-            m_frontendUuid = m_peer->uuid();
+        m_frontendUuid = peerUuid;
+        if (!m_frontendUuid.isNull()) {
             arbiter->registerObserver(this, m_frontendUuid, NodeAdded|NodeRemoved);
-            Q_FOREACH (QCriterion *criterion, m_peer->criteria())
+            Q_FOREACH (QCriterion *criterion, peer->criteria())
                 appendFilter(criterion);
         }
     }
