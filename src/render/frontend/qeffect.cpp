@@ -99,7 +99,7 @@ void QEffect::addParameter(QParameter *parameter)
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
             change->setPropertyName(QByteArrayLiteral("parameter"));
-            change->setValue(QVariant::fromValue(parameter));
+            change->setValue(QVariant::fromValue(parameter->clone()));
             notifyObservers(change);
         }
     }
@@ -112,7 +112,7 @@ void QEffect::removeParameter(QParameter *parameter)
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, this));
         change->setPropertyName(QByteArrayLiteral("parameter"));
-        change->setValue(QVariant::fromValue(parameter));
+        change->setValue(QVariant::fromValue(parameter->clone()));
         notifyObservers(change);
     }
     d->m_parameters.removeOne(parameter);
