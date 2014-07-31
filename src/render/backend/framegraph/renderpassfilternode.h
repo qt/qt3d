@@ -75,7 +75,6 @@ public:
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    Qt3D::QRenderPassFilter *m_peer;
     QList<QUuid> m_filters;
 };
 
