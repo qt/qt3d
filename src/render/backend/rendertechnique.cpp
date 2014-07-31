@@ -63,7 +63,6 @@ namespace Render {
 
 RenderTechnique::RenderTechnique() :
     m_renderer(Q_NULLPTR),
-    m_peer(Q_NULLPTR),
     m_passCount(0),
     m_openglFilter(new QOpenGLFilter())
 {
@@ -72,14 +71,13 @@ RenderTechnique::RenderTechnique() :
 RenderTechnique::~RenderTechnique()
 {
     cleanup();
+    delete m_openglFilter;
 }
 
 void RenderTechnique::cleanup()
 {
-    if (m_renderer != Q_NULLPTR && !m_techniqueUuid.isNull()) {
+    if (m_renderer != Q_NULLPTR && !m_techniqueUuid.isNull())
         m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_techniqueUuid);
-        delete m_openglFilter;
-    }
 }
 
 void RenderTechnique::setRenderer(Renderer *renderer)
@@ -90,47 +88,33 @@ void RenderTechnique::setRenderer(Renderer *renderer)
 
 void RenderTechnique::setPeer(QTechnique *peer)
 {
-    if (m_peer != peer) {
+    QUuid peerUuid;
+    if (peer != Q_NULLPTR)
+        peerUuid = peer->uuid();
+    if (m_techniqueUuid != peerUuid) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
         if (!m_techniqueUuid.isNull()) {
             arbiter->unregisterObserver(this, m_techniqueUuid);
-            m_techniqueUuid = QUuid();
-        }
-        m_peer = peer;
-        if (m_peer) {
-            m_techniqueUuid = m_peer->uuid();
-            arbiter->registerObserver(this, m_techniqueUuid, NodeAdded|NodeRemoved|ComponentUpdated);
-
             m_parameterPack.clear();
-            Q_FOREACH (QParameter *p, m_peer->parameters())
-                m_parameterPack.appendParameter(p);
-
             m_renderPasses.clear();
-            Q_FOREACH (QAbstractRenderPass *rPass, m_peer->renderPasses())
-                appendRenderPass(rPass);
-
             m_criteriaList.clear();
-            Q_FOREACH (QCriterion *criterion, m_peer->criteria())
+       }
+        m_techniqueUuid = peerUuid;
+        if (!m_techniqueUuid.isNull()) {
+            arbiter->registerObserver(this, m_techniqueUuid, NodeAdded|NodeRemoved|NodeUpdated);
+
+            Q_FOREACH (QParameter *p, peer->parameters())
+                m_parameterPack.appendParameter(p);
+            Q_FOREACH (QAbstractRenderPass *rPass, peer->renderPasses())
+                appendRenderPass(rPass);
+            Q_FOREACH (QCriterion *criterion, peer->criteria())
                 appendCriterion(criterion);
 
             // Copy OpenGLFilter info from frontend OpenGLFilter
             QOpenGLFilter *peerFilter = peer->openGLFilter();
             m_openglFilter->copy(peerFilter);
-
         }
     }
-}
-
-QParameter *RenderTechnique::parameterByName(QString name) const
-{
-    foreach (QParameter* p, m_peer->parameters()) {
-        if (p->name() == name)
-            return p;
-    }
-
-    qWarning() << Q_FUNC_INFO << "couldn't find parameter:" << name
-               << "in technique" << m_peer->objectName();
-    return NULL;
 }
 
 void RenderTechnique::sceneChangeEvent(const QSceneChangePtr &e)
@@ -138,7 +122,7 @@ void RenderTechnique::sceneChangeEvent(const QSceneChangePtr &e)
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     switch (e->type()) {
 
-    case ComponentUpdated: {
+    case NodeUpdated: {
         if (propertyChange->propertyName() == QByteArrayLiteral("openGLFilter")) {
             QOpenGLFilter *filter = propertyChange->value().value<QOpenGLFilter *>();
             if (filter != Q_NULLPTR) {

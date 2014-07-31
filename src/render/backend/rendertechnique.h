@@ -102,7 +102,6 @@ public:
 private:
 
     Renderer *m_renderer;
-    QTechnique* m_peer;
     unsigned int m_passCount;
     QOpenGLFilter *m_openglFilter;
     QUuid m_techniqueUuid;
