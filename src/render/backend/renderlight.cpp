@@ -55,7 +55,6 @@ namespace Render {
 
 RenderLight::RenderLight()
     : m_renderer(Q_NULLPTR)
-    , m_peer(Q_NULLPTR)
 {
 }
 
@@ -72,20 +71,21 @@ void RenderLight::cleanup()
 
 void RenderLight::setPeer(QAbstractLight *peer)
 {
-    if (m_peer != peer) {
+    QUuid peerUuid;
+    if (peer != Q_NULLPTR)
+        peerUuid = peer->uuid();
+    if (peerUuid != m_lightUuid) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
         if (!m_lightUuid.isNull()) {
             arbiter->unregisterObserver(this, m_lightUuid);
             m_lightProperties.clear();
-            m_lightUuid = QUuid();
         }
-        m_peer = peer;
-        if (m_peer) {
-            m_lightProperties = m_peer->lightProperties();
-            m_lightProperties[QStringLiteral("color")] = m_peer->color();
-            m_lightProperties[QStringLiteral("intensity")] = m_peer->intensity();
-            m_lightUuid = m_peer->uuid();
+        m_lightUuid = peerUuid;
+        if (!m_lightUuid.isNull()) {
             arbiter->registerObserver(this, m_lightUuid, ComponentUpdated);
+            m_lightProperties = peer->lightProperties();
+            m_lightProperties[QStringLiteral("color")] = peer->color();
+            m_lightProperties[QStringLiteral("intensity")] = peer->intensity();
         }
     }
 }
@@ -102,7 +102,7 @@ QHash<QString, QVariant> RenderLight::lightProperties() const
 
 void RenderLight::sceneChangeEvent(const QSceneChangePtr &e)
 {
-    if (e->type() == ComponentUpdated && e->subject().m_observable == m_peer) {
+    if (e->type() == ComponentUpdated) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         m_lightProperties[QString::fromUtf8(propertyChange->propertyName())] = propertyChange->value();
     }
