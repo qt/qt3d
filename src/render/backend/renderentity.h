@@ -131,7 +131,6 @@ private:
     }
 
     Renderer *m_renderer;
-    QTransform *m_transform;
     HEntity m_handle;
     HEntity m_parentHandle;
     QVector<HEntity > m_childrenHandles;
@@ -140,7 +139,6 @@ private:
     Sphere *m_localBoundingVolume;
     Sphere *m_worldBoundingVolume;
 
-    QEntity *m_frontEndPeer;
     QUuid m_frontendUuid;
 
     // Handles to Components
@@ -150,6 +148,8 @@ private:
     QUuid m_layerComponent;
     QUuid m_lightComponent;
     QUuid m_cameraComponent;
+
+    QString m_objectName;
 };
 
 } // namespace Render

@@ -79,10 +79,8 @@ namespace Render {
 
 RenderEntity::RenderEntity()
     : m_renderer(Q_NULLPTR)
-    , m_transform(Q_NULLPTR)
     , m_localBoundingVolume(new Qt3D::Sphere)
     , m_worldBoundingVolume(new Qt3D::Sphere)
-    , m_frontEndPeer(0)
 {
 }
 
@@ -132,20 +130,23 @@ void RenderEntity::setHandle(HEntity handle)
 
 void RenderEntity::setPeer(QEntity *peer)
 {
-    if (m_frontEndPeer != peer) {
+    QUuid peerUuid;
+    if (peer != Q_NULLPTR)
+        peerUuid = peer->uuid();
+    if (m_frontendUuid != peerUuid) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
         if (!m_worldTransform.isNull())
             m_renderer->worldMatrixManager()->release(m_worldTransform);
 
-        if (m_frontEndPeer) {
+        if (m_frontendUuid.isNull()) {
             arbiter->unregisterObserver(this, m_frontendUuid);
-            m_frontendUuid = QUuid();
+            m_objectName.clear();
         }
 
-        m_frontEndPeer = peer;
-        if (m_frontEndPeer) {
-            m_frontendUuid = peer->uuid();
+        m_frontendUuid = peerUuid;
+        if (!m_frontendUuid.isNull()) {
             arbiter->registerObserver(this, m_frontendUuid, AllChanges);
+            m_objectName = peer->objectName();
             m_worldTransform = m_renderer->worldMatrixManager()->getOrAcquireHandle(m_frontendUuid);
         }
     }
@@ -158,7 +159,7 @@ void RenderEntity::sceneChangeEvent(const QSceneChangePtr &e)
 
     case ComponentAdded: {
         QComponent *component = propertyChange->value().value<QComponent*>();
-        qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "Component Added" << m_frontEndPeer->objectName() << component->objectName();
+        qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "Component Added" << m_objectName << component->objectName();
         addComponent(component);
         break;
     }
@@ -179,7 +180,7 @@ void RenderEntity::dump() const
 {
     static int depth = 0;
     QString indent(2 * depth++, QChar::fromLatin1(' '));
-    qCDebug(Backend) << indent + m_frontEndPeer->objectName();
+    qCDebug(Backend) << indent + m_objectName;
     foreach (const RenderEntity *child, children())
         child->dump();
     --depth;
