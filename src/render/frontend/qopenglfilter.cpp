@@ -52,6 +52,8 @@ public:
 
     QOpenGLFilterPrivate(QOpenGLFilter *qq)
         : QObjectPrivate()
+        , m_api(QOpenGLFilter::Desktop)
+        , m_profile(QOpenGLFilter::Compatibility)
         , m_minor(0)
         , m_major(0)
     {
