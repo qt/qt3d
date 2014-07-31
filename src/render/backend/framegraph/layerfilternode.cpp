@@ -56,22 +56,22 @@ namespace Render {
 
 LayerFilterNode::LayerFilterNode()
     : FrameGraphNode(FrameGraphNode::LayerFilter)
-    , m_peer(Q_NULLPTR)
 {
 }
 
 void LayerFilterNode::setPeer(QLayerFilter *peer)
 {
-    if (m_peer != peer) {
+    QUuid peerUuid;
+    if (peer != Q_NULLPTR)
+        peerUuid = peer->uuid();
+    if (m_frontendUuid != peerUuid) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
         if (!m_frontendUuid.isNull()) {
             arbiter->unregisterObserver(this, m_frontendUuid);
-            m_frontendUuid = QUuid();
+            m_layers.clear();
         }
-        m_peer = peer;
-        m_layers.clear();
-        if (m_peer) {
-            m_frontendUuid = m_peer->uuid();
+        m_frontendUuid = peerUuid;
+        if (!m_frontendUuid.isNull()) {
             arbiter->registerObserver(this, m_frontendUuid, NodeUpdated);
             m_layers = peer->layers();
         }

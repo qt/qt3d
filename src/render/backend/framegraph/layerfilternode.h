@@ -66,7 +66,6 @@ public:
     void setLayers(const QStringList &list);
 
 private:
-    QLayerFilter *m_peer;
     QStringList m_layers;
 };
 
