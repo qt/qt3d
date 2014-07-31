@@ -61,7 +61,6 @@ public:
     ViewportNode();
 
     void setPeer(Qt3D::QViewport *peer);
-    Qt3D::QViewport *peer() const { return m_peer; }
 
     float xMin() const;
     void setXMin(float xMin);
@@ -78,7 +77,6 @@ public:
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    Qt3D::QViewport *m_peer;
     float m_xMin;
     float m_yMin;
     float m_xMax;

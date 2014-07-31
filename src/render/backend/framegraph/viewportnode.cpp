@@ -56,7 +56,6 @@ namespace Render {
 
 ViewportNode::ViewportNode()
     : FrameGraphNode(FrameGraphNode::Viewport)
-    , m_peer(Q_NULLPTR)
     , m_xMin(0.0f)
     , m_yMin(0.0f)
     , m_xMax(1.0f)
@@ -66,19 +65,20 @@ ViewportNode::ViewportNode()
 
 void ViewportNode::setPeer(Qt3D::QViewport *peer)
 {
-    if (m_peer != peer) {
+    QUuid peerUuid;
+    if (peer != Q_NULLPTR)
+        peerUuid = peer->uuid();
+    if (m_frontendUuid != peerUuid) {
         if (!m_frontendUuid.isNull()) {
             m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_frontendUuid);
-            m_frontendUuid = QUuid();
         }
-        m_peer = peer;
-        if (m_peer) {
-            m_frontendUuid = m_peer->uuid();
+        m_frontendUuid = peerUuid;
+        if (!m_frontendUuid.isNull()) {
             m_renderer->rendererAspect()->aspectManager()->changeArbiter()->registerObserver(this, m_frontendUuid, NodeUpdated);
-            setXMin(m_peer->rect().x());
-            setXMax(m_peer->rect().width());
-            setYMin(m_peer->rect().y());
-            setYMax(m_peer->rect().height());
+            setXMin(peer->rect().x());
+            setXMax(peer->rect().width());
+            setYMin(peer->rect().y());
+            setYMax(peer->rect().height());
         }
     }
 }
