@@ -63,13 +63,11 @@ public:
     CameraSelector();
 
     void setPeer(Qt3D::QCameraSelector *peer);
-    Qt3D::QCameraSelector *peer() const { return m_peer; }
 
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
     QUuid cameraUuid() const;
 
 private:
-    Qt3D::QCameraSelector *m_peer;
     QUuid m_cameraUuid;
 };
 

@@ -57,24 +57,24 @@ namespace Render {
 
 CameraSelector::CameraSelector()
     : FrameGraphNode(FrameGraphNode::CameraSelector)
-    , m_peer(Q_NULLPTR)
 {
 }
 
 void CameraSelector::setPeer(Qt3D::QCameraSelector *peer)
 {
-    if (m_peer != peer) {
+    QUuid peerUuid;
+    if (peer != Q_NULLPTR)
+        peerUuid = peer->uuid();
+    if (m_frontendUuid != peerUuid) {
         if (!m_frontendUuid.isNull()) {
             m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_frontendUuid);
             m_cameraUuid = QUuid();
-            m_frontendUuid = QUuid();
         }
-        m_peer = peer;
-        if (m_peer) {
-            m_frontendUuid = m_peer->uuid();
+        m_frontendUuid = peerUuid;
+        if (!m_frontendUuid.isNull()) {
             m_renderer->rendererAspect()->aspectManager()->changeArbiter()->registerObserver(this, m_frontendUuid, NodeUpdated);
-            if (m_peer->camera())
-                m_cameraUuid = m_peer->camera()->uuid();
+            if (peer->camera() != Q_NULLPTR)
+                m_cameraUuid = peer->camera()->uuid();
         }
     }
 }
