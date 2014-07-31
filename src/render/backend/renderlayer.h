@@ -71,7 +71,6 @@ public:
     void sceneChangeEvent(const QSceneChangePtr &e);
 
 private:
-    QLayer *m_peer;
     Renderer *m_renderer;
     QString m_layer;
     QUuid m_layerUuid;

@@ -54,8 +54,7 @@ namespace Qt3D {
 namespace Render {
 
 RenderLayer::RenderLayer()
-    : m_peer(Q_NULLPTR)
-    , m_renderer(Q_NULLPTR)
+    : m_renderer(Q_NULLPTR)
 {
 }
 
@@ -72,17 +71,18 @@ void RenderLayer::cleanup()
 
 void RenderLayer::setPeer(QLayer *peer)
 {
-    if (m_peer != peer) {
+    QUuid peerUuid;
+    if (peer != Q_NULLPTR)
+        peerUuid = peer->uuid();
+    if (m_layerUuid != peerUuid) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
         if (!m_layerUuid.isNull()) {
             arbiter->unregisterObserver(this, m_layerUuid);
-            m_layerUuid = QUuid();
         }
-        m_peer = peer;
-        if (m_peer) {
-            m_layerUuid = m_peer->uuid();
-            m_layer = m_peer->name();
+        m_layerUuid = peerUuid;
+        if (!m_layerUuid.isNull()) {
             arbiter->registerObserver(this, m_layerUuid, ComponentUpdated);
+            m_layer = peer->name();
         }
     }
 }
