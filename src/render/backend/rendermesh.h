@@ -78,7 +78,6 @@ public:
 
     void setPeer(QAbstractMesh *peer);
     void setRenderer(Renderer *renderer);
-    QAbstractMesh *peer() const { return m_peer; }
 
     void sceneChangeEvent(const QSceneChangePtr &e);
     HMeshData meshData() const;
@@ -96,7 +95,6 @@ public:
 
 private:
     Renderer *m_renderer;
-    QAbstractMesh* m_peer;
     QAbstractMeshFunctorPtr m_functor;
 
     bool m_meshDirty;

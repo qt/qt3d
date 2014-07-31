@@ -77,7 +77,6 @@ namespace Render {
 
 RenderMesh::RenderMesh() :
     m_renderer(Q_NULLPTR),
-    m_peer(Q_NULLPTR),
     m_meshDirty(true),
     m_lock(new QReadWriteLock())
 {
@@ -96,18 +95,19 @@ void RenderMesh::cleanup()
 
 void RenderMesh::setPeer(QAbstractMesh *peer)
 {
-    if (m_peer != peer) {
+    QUuid peerUuid;
+    if (peer != Q_NULLPTR)
+        peerUuid = peer->uuid();
+    if (m_meshUuid != peerUuid) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
         if (!m_meshUuid.isNull()) {
             arbiter->unregisterObserver(this, m_meshUuid);
-            m_meshUuid = QUuid();
         }
-        m_peer = peer;
-        m_meshDirty = true;
-        if (m_peer) {
-            m_meshUuid = m_peer->uuid();
+        m_meshUuid = peerUuid;
+        if (!m_meshUuid.isNull()) {
             arbiter->registerObserver(this, m_meshUuid, ComponentUpdated);
-            setMeshFunctor(m_peer->meshFunctor());
+            m_meshDirty = true;
+            setMeshFunctor(peer->meshFunctor());
         }
     }
 }
