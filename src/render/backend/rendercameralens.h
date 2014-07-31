@@ -81,7 +81,6 @@ public:
 
 private:
     Renderer *m_renderer;
-    QCameraLens *m_peer;
     QUuid m_lensUuid;
 
     QVector4D m_clearColor;

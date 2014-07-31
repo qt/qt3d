@@ -59,7 +59,6 @@ namespace Render {
 
 RenderCameraLens::RenderCameraLens()
     : m_renderer(Q_NULLPTR)
-    , m_peer(Q_NULLPTR)
 {
     m_clearColor = QVector4D(0.5, 0.5, 1.0, 1.0);
 }
@@ -83,18 +82,20 @@ void RenderCameraLens::setRenderer(Renderer *renderer)
 
 void RenderCameraLens::setPeer(QCameraLens *peer)
 {
-    if (peer != m_peer) {
+    QUuid peerUuid;
+    if (peer != Q_NULLPTR)
+        peerUuid = peer->uuid();
+    if (peerUuid != m_lensUuid) {
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
         if (!m_lensUuid.isNull()) {
             arbiter->unregisterObserver(this, m_lensUuid);
             m_lensUuid = QUuid();
         }
-        m_peer = peer;
-        if (m_peer) {
+        m_lensUuid = peerUuid;
+        if (!m_lensUuid.isNull()) {
             // Register for changes
-            m_lensUuid = m_peer->uuid();
             arbiter->registerObserver(this, m_lensUuid, ComponentUpdated);
-            setProjection(m_peer->projectionMatrix());
+            setProjection(peer->projectionMatrix());
         }
     }
 }
