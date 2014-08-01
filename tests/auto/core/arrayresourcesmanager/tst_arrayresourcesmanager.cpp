@@ -59,6 +59,10 @@ private slots:
     void removeResource();
     void resetResource();
     void lookupResource();
+    void releaseResource();
+    void heavyDutyMultiThreadedAccess();
+    void heavyDutyMultiThreadedAccessRelease();
+    void maximumNumberOfResources();
 };
 
 class tst_ArrayResource
@@ -80,9 +84,9 @@ void tst_ArrayResourcesManager::createResourcesManager()
     Qt3D::QResourcesManager<tst_ArrayResource, int, 16> manager16;
     Qt3D::QResourcesManager<tst_ArrayResource, int, 4> manager4;
     Qt3D::QResourcesManager<tst_ArrayResource, int, 8> manager8;
-    QVERIFY(manager16.maxResourcesEntries() == 65536);
-    QVERIFY(manager8.maxResourcesEntries() == 256);
-    QVERIFY(manager4.maxResourcesEntries() == 16);
+    QVERIFY(manager16.maxResourcesEntries() == 65535);
+    QVERIFY(manager8.maxResourcesEntries() == 255);
+    QVERIFY(manager4.maxResourcesEntries() == 15);
 }
 
 /*!
@@ -183,7 +187,7 @@ void tst_ArrayResourcesManager::removeResource()
     manager.release(handles.at(2));
     QVERIFY(manager.data(handles.at(2)) == Q_NULLPTR);
     // Triggers QASSERT so commented
-//    manager.release(handles.at(2));
+    //    manager.release(handles.at(2));
 
     tHandle nHandle = manager.acquire();
     QVERIFY(manager.data(nHandle) != Q_NULLPTR);
@@ -242,6 +246,193 @@ void tst_ArrayResourcesManager::lookupResource()
     QVERIFY(t == manager.getOrAcquireHandle(2));
     QVERIFY(resource == manager.getOrCreateResource(2));
     QVERIFY(manager.data(t) == resource);
+}
+
+void tst_ArrayResourcesManager::releaseResource()
+{
+    Qt3D::QResourcesManager<tst_ArrayResource, uint> manager;
+    QList<tst_ArrayResource *> resources;
+
+    for (int i = 0; i < 5; i++) {
+        resources << manager.getOrCreateResource(i);
+    }
+
+    for (int i = 0; i < 5; i++) {
+        QVERIFY(resources.at(i) == manager.lookupResource(i));
+    }
+
+    for (int i = 0; i < 5; i++) {
+        manager.releaseResource(i);
+        QVERIFY(manager.lookupResource(i) == Q_NULLPTR);
+    }
+}
+
+class tst_Thread : public QThread
+{
+    Q_OBJECT
+public:
+
+    typedef Qt3D::QResourcesManager<tst_ArrayResource,
+    int,
+    16,
+    Qt3D::ArrayAllocatingPolicy,
+    Qt3D::ObjectLevelLockingPolicy> Manager;
+
+    tst_Thread()
+        : QThread()
+    {
+    }
+
+    void setManager(Manager *manager)
+    {
+        m_manager = manager;
+    }
+
+    // QThread interface
+protected:
+    void run()
+    {
+        int i = 0;
+        int max = tHandle::maxIndex();
+        while (i < max) {
+            tst_ArrayResource *r = m_manager->getOrCreateResource(i);
+            i++;
+            QVERIFY(r != Q_NULLPTR);
+            Manager::WriteLocker lock(m_manager);
+            r->m_value++;
+        }
+        qDebug() << QThread::currentThread() << "Done";
+    }
+
+    Manager *m_manager;
+};
+
+void tst_ArrayResourcesManager::heavyDutyMultiThreadedAccess()
+{
+    tst_Thread::Manager *manager = new tst_Thread::Manager();
+
+    QList<tst_Thread *> threads;
+
+    int iterations = 8;
+    int max = tHandle16::maxIndex();
+
+    for (int i = 0; i < iterations; i++) {
+        tst_Thread *thread = new tst_Thread();
+        thread->setManager(manager);
+        threads << thread;
+    }
+
+    for (int i = 0; i < iterations; i++) {
+        threads[i]->start();
+    }
+
+    for (int i = 0; i < iterations; i++) {
+        threads[i]->wait();
+    }
+
+    for (int i = 0; i < max; i++) {
+        QVERIFY(manager->lookupResource(i) != Q_NULLPTR);
+        QVERIFY(manager->lookupResource(i)->m_value = iterations);
+    }
+
+    qDeleteAll(threads);
+    delete manager;
+}
+
+class tst_Thread2 : public QThread
+{
+    Q_OBJECT
+public:
+
+    typedef Qt3D::QResourcesManager<tst_ArrayResource,
+    int,
+    16,
+    Qt3D::ArrayAllocatingPolicy,
+    Qt3D::ObjectLevelLockingPolicy> Manager;
+
+    tst_Thread2(int releaseAbove = 7)
+        : QThread()
+        , m_releaseAbove(releaseAbove)
+    {
+    }
+
+    void setManager(Manager *manager)
+    {
+        m_manager = manager;
+    }
+
+    // QThread interface
+protected:
+    void run()
+    {
+        int i = 0;
+        int max = tHandle::maxIndex();
+        while (i < max) {
+            tst_ArrayResource *r = m_manager->getOrCreateResource(i);
+            QVERIFY(r != Q_NULLPTR);
+            Manager::WriteLocker lock(m_manager);
+            r->m_value++;
+            if (r->m_value > m_releaseAbove)
+                m_manager->releaseResource(i);
+            i++;
+        }
+        qDebug() << QThread::currentThread() << "Done";
+    }
+
+    Manager *m_manager;
+    int m_releaseAbove;
+};
+
+void tst_ArrayResourcesManager::heavyDutyMultiThreadedAccessRelease()
+{
+    tst_Thread2::Manager *manager = new tst_Thread2::Manager();
+
+    QList<tst_Thread2 *> threads;
+
+    int iterations = 8;
+    int max = tHandle16::maxIndex();
+
+    for (int u = 0; u < 2; u++) {
+
+        for (int i = 0; i < iterations; i++) {
+            tst_Thread2 *thread = new tst_Thread2();
+            thread->setManager(manager);
+            threads << thread;
+        }
+
+        for (int i = 0; i < iterations; i++) {
+            threads[i]->start();
+        }
+
+        for (int i = 0; i < iterations; i++) {
+            threads[i]->wait();
+        }
+
+        for (int i = 0; i < max; i++) {
+            QVERIFY(manager->lookupResource(i) == Q_NULLPTR);
+        }
+
+        qDeleteAll(threads);
+        threads.clear();
+    }
+
+    delete manager;
+}
+
+void tst_ArrayResourcesManager::maximumNumberOfResources()
+{
+    Qt3D::QResourcesManager<tst_ArrayResource, uint> manager;
+
+    QList<tst_ArrayResource *> resources;
+    QList<tHandle16> handles;
+
+    QCOMPARE(tHandle16::maxIndex(), (uint)manager.maxResourcesEntries());
+
+    for (int i = 0; i < manager.maxResourcesEntries(); i++) {
+        handles << manager.acquire();
+        resources << manager.data(handles.at(i));
+        resources.at(i)->m_value = 4;
+    }
 }
 
 QTEST_APPLESS_MAIN(tst_ArrayResourcesManager)

@@ -59,6 +59,7 @@ private slots:
     void validHandleForReplacementEntry();
     void updateChangesValue();
     void resetRemovesAllEntries();
+    void maximumEntries();
 };
 
 class SimpleResource
@@ -188,6 +189,27 @@ void tst_HandleManager::resetRemovesAllEntries()
 
     QVERIFY(manager.activeEntries() == 100);
 
+    manager.reset();
+    QVERIFY(manager.activeEntries() == 0);
+}
+
+void tst_HandleManager::maximumEntries()
+{
+    Qt3D::QHandleManager<SimpleResource> manager;
+
+    QCOMPARE(Handle::maxIndex(), (uint)((1 << 16) - 1));
+
+    for (int i = 0; i < (int)Handle::maxIndex(); ++i) {
+        SimpleResource *p = (SimpleResource *) 0xdead0000 + i;
+        const Handle h = manager.acquire(p);
+
+        bool ok = false;
+        SimpleResource *q = manager.data(h, &ok);
+        QVERIFY(ok == true);
+        QVERIFY(p == q);
+    }
+
+    QVERIFY(manager.activeEntries() == Handle::maxIndex());
     manager.reset();
     QVERIFY(manager.activeEntries() == 0);
 }
