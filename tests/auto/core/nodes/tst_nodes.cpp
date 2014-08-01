@@ -61,6 +61,8 @@ private slots:
     void removingChildEntitiesFromNode();
     void appendingComponentsToEntity();
     void removingComponentsFromEntity();
+    void checkCloning();
+    void checkDestruction();
 };
 
 class MyQNode : public Qt3D::QNode
@@ -70,12 +72,25 @@ public:
     explicit MyQNode(Qt3D::QNode *parent = 0) : QNode(parent)
     {}
 
-    // QNode interface
+    void copy(const Qt3D::QNode *ref)
+    {
+        QNode::copy(ref);
+        if (qobject_cast<const MyQNode *>(ref) != Q_NULLPTR) {
+            m_customProperty = qobject_cast<const MyQNode *>(ref)->customProperty();
+        }
+    }
+
+    void setCustomProperty(const QString &s) { m_customProperty = s; }
+    QString customProperty() const { return m_customProperty; }
+
 protected:
     Qt3D::QNode *doClone(Qt3D::QNode *clonedParent) const Q_DECL_OVERRIDE
     {
         return new MyQNode(clonedParent);
     }
+
+    QString m_customProperty;
+
 };
 
 class MyQComponent : public Qt3D::QComponent
@@ -100,9 +115,11 @@ void tst_Nodes::defaultNodeConstruction()
     MyQNode node2(node);
 
     QVERIFY(node != Q_NULLPTR);
+    QVERIFY(node->children().isEmpty());
+    QVERIFY(node2.parent() == node);
+    node->addChild(&node2);
     QVERIFY(!node->children().isEmpty());
     QVERIFY(node2.children().isEmpty());
-    QVERIFY(node2.parent() == node);
 }
 
 void tst_Nodes::defaultComponentConstruction()
@@ -137,7 +154,8 @@ void tst_Nodes::appendChildNodesToNode()
     }
     QVERIFY(node->children().count() == 10);
     for (int i = 0; i < 10; i++) {
-        MyQNode *child = new MyQNode(node);
+        MyQNode *child = new MyQNode();
+        node->addChild(child);
         QVERIFY(child->parent() == node);
         QVERIFY(child->parentNode() == node);
     }
@@ -210,7 +228,8 @@ void tst_Nodes::appendingChildEntitiesToNode()
 {
     MyQNode *root = new MyQNode();
 
-    Qt3D::QEntity *childEntity = new Qt3D::QEntity(root);
+    Qt3D::QEntity *childEntity = new Qt3D::QEntity();
+    root->addChild(childEntity);
 
     QVERIFY(root->children().first() == childEntity);
     QVERIFY(childEntity->parentEntity() == Q_NULLPTR);
@@ -221,7 +240,8 @@ void tst_Nodes::removingChildEntitiesFromNode()
 {
     MyQNode *root = new MyQNode();
 
-    Qt3D::QEntity *childEntity = new Qt3D::QEntity(root);
+    Qt3D::QEntity *childEntity = new Qt3D::QEntity();
+    root->addChild(childEntity);
 
     QVERIFY(root->children().first() == childEntity);
     QVERIFY(childEntity->parentEntity() == Q_NULLPTR);
@@ -239,9 +259,13 @@ void tst_Nodes::appendingComponentsToEntity()
     MyQNode *root = new MyQNode();
 
     Qt3D::QEntity *entity = new Qt3D::QEntity(root);
+    root->addChild(entity);
 
     MyQComponent *comp1 = new MyQComponent(root);
+    root->addChild(comp1);
+
     MyQComponent *comp2 = new MyQComponent(entity);
+    entity->addChild(comp2);
     MyQComponent *comp3 = new MyQComponent();
 
     QVERIFY(entity->parentNode() == root);
@@ -313,6 +337,62 @@ void tst_Nodes::removingComponentsFromEntity()
     entity->removeAllChildren();
     QCOMPARE(entity->components().count(), 3);
     QCOMPARE(entity->children().count(), 0);
+}
+
+void tst_Nodes::checkCloning()
+{
+    MyQNode *root = new MyQNode();
+    Qt3D::QEntity *entity = new Qt3D::QEntity(root);
+
+    MyQComponent *comp1 = new MyQComponent();
+    MyQComponent *comp2 = new MyQComponent();
+    MyQComponent *comp3 = new MyQComponent();
+
+    MyQNode *childNode = new MyQNode();
+    entity->addChild(childNode);
+
+
+    entity->addComponent(comp1);
+    entity->addComponent(comp2);
+    entity->addComponent(comp3);
+
+    root->addChild(entity);
+    root->setCustomProperty(QStringLiteral("Corvette"));
+
+    QVERIFY(root->customProperty() == QStringLiteral("Corvette"));
+    QCOMPARE(root->children().count(), 1);
+    QCOMPARE(entity->children().count(), 4);
+    QCOMPARE(entity->components().count(), 3);
+
+    Qt3D::QNode *rootClone = root->clone();
+    QVERIFY(rootClone->uuid() == root->uuid());
+    QVERIFY(qobject_cast<MyQNode *>(rootClone) != Q_NULLPTR);
+    QVERIFY(qobject_cast<MyQNode *>(rootClone)->customProperty() == root->customProperty());
+
+    Qt3D::QEntity *entityClone = qobject_cast<Qt3D::QEntity *>(rootClone->children().first());
+    QVERIFY(entity->uuid() == entityClone->uuid());
+    QCOMPARE(root->children().count(), rootClone->children().count());
+    QCOMPARE(entityClone->children().count(), entity->children().count());
+    QCOMPARE(entityClone->components().count(), entity->components().count());
+}
+
+void tst_Nodes::checkDestruction()
+{
+    MyQNode *root = new MyQNode();
+    Qt3D::QEntity *entity = new Qt3D::QEntity(root);
+
+    MyQComponent *comp1 = new MyQComponent();
+    MyQComponent *comp2 = new MyQComponent();
+    MyQComponent *comp3 = new MyQComponent();
+
+
+    entity->addComponent(comp1);
+    entity->addComponent(comp2);
+    entity->addComponent(comp3);
+
+    root->addChild(entity);
+
+    delete root;
 }
 
 QTEST_APPLESS_MAIN(tst_Nodes)
