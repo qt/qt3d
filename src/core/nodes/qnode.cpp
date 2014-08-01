@@ -117,6 +117,8 @@ void QNode::addChild(QNode *childNode)
 {
     Q_ASSERT(childNode);
     Q_D(QNode);
+    if (childNode == this)
+        return ;
     if (d->m_children.contains(childNode))
         return ;
 
