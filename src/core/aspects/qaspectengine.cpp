@@ -48,7 +48,6 @@
 #include "qabstractaspect.h"
 #include "corelogging.h"
 #include <QMetaObject>
-#include <QMutexLocker>
 
 #include <private/qaspectengine_p.h>
 
