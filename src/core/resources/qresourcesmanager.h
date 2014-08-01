@@ -158,13 +158,13 @@ enum
 };
 
 #define Q_DECLARE_RESOURCE_INFO(TYPE, FLAGS) \
-template<> \
-struct QResourceInfo<TYPE > \
+    template<> \
+    struct QResourceInfo<TYPE > \
 { \
     enum \
-    { \
-        needsCleanup = ((FLAGS & Q_REQUIRES_CLEANUP) == 0) \
-    }; \
+{ \
+    needsCleanup = ((FLAGS & Q_REQUIRES_CLEANUP) == 0) \
+}; \
 }
 
 template <int v>
@@ -241,9 +241,20 @@ public:
 
     T* allocateResource()
     {
-        m_resourcesEntries << T();
-        int idx = m_resourcesEntries.size() - 1;
-        T* newT = &m_resourcesEntries.last();
+        int idx;
+        T *newT;
+        if (!m_freeEntries.isEmpty()) {
+            idx = m_freeEntries.takeFirst();
+            m_resourcesEntries[idx] = T();
+            newT = &m_resourcesEntries[idx];
+        }
+        else {
+            m_resourcesEntries.append(T());
+            idx = m_resourcesEntries.size() - 1;
+            newT = &m_resourcesEntries.last();
+        }
+        // If elements are added to the list, we're not sure the address
+        // that was returned here for previous elements stays valid
         m_resourcesToIndices[newT] = idx;
         return newT;
     }
@@ -252,18 +263,20 @@ public:
     {
         if (m_resourcesToIndices.contains(r)) {
             performCleanup(r, Int2Type<QResourceInfo<T>::needsCleanup>());
-            m_resourcesEntries.removeAt(m_resourcesToIndices[r]);
+            m_freeEntries.append(m_resourcesToIndices.take(r));
         }
     }
 
     void reset()
     {
         m_resourcesEntries.clear();
+        m_resourcesToIndices.clear();
     }
 
 private:
     QList<T> m_resourcesEntries;
     QHash<T*, int> m_resourcesToIndices;
+    QList<int> m_freeEntries;
 
     void performCleanup(T *r, Int2Type<true>)
     {
@@ -285,7 +298,7 @@ class QResourcesManager
 public:
     QResourcesManager() :
         AllocatingPolicy<T, INDEXBITS>(),
-        m_maxResourcesEntries(1 << INDEXBITS)
+        m_maxResourcesEntries((1 << INDEXBITS) - 1)
     {
     }
 
@@ -294,22 +307,21 @@ public:
 
     QHandle<T, INDEXBITS> acquire()
     {
-        typename LockingPolicy<QResourcesManager>::WriteLocker(this);
+        typename LockingPolicy<QResourcesManager>::WriteLocker writeLock(this);
         QHandle<T, INDEXBITS> handle = m_handleManager.acquire(AllocatingPolicy<T, INDEXBITS>::allocateResource());
         return handle;
     }
 
     T* data(const QHandle<T, INDEXBITS> &handle)
     {
-        typename LockingPolicy<QResourcesManager>::ReadLocker(this);
+        typename LockingPolicy<QResourcesManager>::ReadLocker readLock(this);
         T* data = m_handleManager.data(handle);
         return data;
     }
 
     void release(const QHandle<T, INDEXBITS> &handle)
     {
-        typename LockingPolicy<QResourcesManager>::WriteLocker(this);
-        m_handleToResourceMapper.remove(m_handleToResourceMapper.key(handle));
+        typename LockingPolicy<QResourcesManager>::WriteLocker writeLock(this);
         T *val = m_handleManager.data(handle);
         m_handleManager.release(handle);
         AllocatingPolicy<T, INDEXBITS>::releaseResource(val);
@@ -317,31 +329,31 @@ public:
 
     void reset()
     {
-        typename LockingPolicy<QResourcesManager>::WriteLocker(this);
+        typename LockingPolicy<QResourcesManager>::WriteLocker writeLock(this);
         m_handleManager.reset();
         AllocatingPolicy<T, INDEXBITS>::reset();
     }
 
     bool contains(const C &id)
     {
-        typename LockingPolicy<QResourcesManager>::ReadLocker(this);
+        typename LockingPolicy<QResourcesManager>::ReadLocker readLock(this);
         return m_handleToResourceMapper.contains(id);
     }
 
     QHandle<T, INDEXBITS> getOrAcquireHandle(const C &id)
     {
         if (!contains(id)) {
-            typename LockingPolicy<QResourcesManager>::WriteLocker(this);
+            typename LockingPolicy<QResourcesManager>::WriteLocker writeLock(this);
             if (!m_handleToResourceMapper.contains(id))
                 m_handleToResourceMapper[id] = acquire();
         }
-        typename LockingPolicy<QResourcesManager>::ReadLocker(this);
+        typename LockingPolicy<QResourcesManager>::ReadLocker readLock(this);
         return m_handleToResourceMapper[id];
     }
 
     QHandle<T, INDEXBITS> lookupHandle(const C &id)
     {
-        typename LockingPolicy<QResourcesManager>::ReadLocker(this);
+        typename LockingPolicy<QResourcesManager>::ReadLocker readLock(this);
         QHandle<T, INDEXBITS> handle;
         if (m_handleToResourceMapper.contains(id))
             handle = m_handleToResourceMapper[id];
@@ -351,7 +363,7 @@ public:
     T *lookupResource(const C &id)
     {
         T *ret = Q_NULLPTR;
-        typename LockingPolicy<QResourcesManager>::ReadLocker(this);
+        typename LockingPolicy<QResourcesManager>::ReadLocker readLock(this);
         if (m_handleToResourceMapper.contains(id))
             ret = data(m_handleToResourceMapper[id]);
         return ret;
@@ -362,21 +374,18 @@ public:
         typename LockingPolicy<QResourcesManager>::ReadLocker readLock(this);
         if (!m_handleToResourceMapper.contains(id)) {
             readLock.unlock();
-            typename LockingPolicy<QResourcesManager>::WriteLocker(this);
+            typename LockingPolicy<QResourcesManager>::WriteLocker writeLock(this);
             if (!m_handleToResourceMapper.contains(id))
                 m_handleToResourceMapper[id] = acquire();
-            return m_handleManager.data(m_handleToResourceMapper[id]);
         }
-        else {
-            return m_handleManager.data(m_handleToResourceMapper[id]);
-        }
+        return m_handleManager.data(m_handleToResourceMapper[id]);
     }
 
     void releaseResource(const C &id)
     {
-        typename LockingPolicy<QResourcesManager>::WriteLocker(this);
+        typename LockingPolicy<QResourcesManager>::WriteLocker writeLock(this);
         if (m_handleToResourceMapper.contains(id))
-            release(m_handleToResourceMapper[id]);
+            release(m_handleToResourceMapper.take(id));
     }
 
     int maxResourcesEntries() const { return m_maxResourcesEntries; }
