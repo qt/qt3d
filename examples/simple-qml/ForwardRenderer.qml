@@ -58,6 +58,7 @@ TechniqueFilter {
     property alias cameraViewportTopRight: cameraSelectorTopRight.camera
     property alias cameraViewportBottomLeft: cameraSelectorBottomLeft.camera
     property alias layerFilters : layerFilter.layers
+    property alias clearColor : viewport.clearColor
 
     criteria : [
         Criterion { name : "RenderingStyle"; value : "forward";},

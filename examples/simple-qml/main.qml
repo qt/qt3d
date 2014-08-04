@@ -111,6 +111,7 @@ Entity {
                 objectName : "externalRenderer"
                 cameraViewportBottomLeft: camera1
                 cameraViewportTopRight: camera2
+                clearColor: ballMaterial.diffuseColor
             }
         }
 
