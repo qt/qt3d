@@ -77,11 +77,14 @@ public:
     void appendCriterion(QCriterion *criterion);
     void removeCriterion(const QUuid &criterionId);
 
+    void appendBinding(QParameterMapper *binding);
+    void removeBinding(const QUuid &bindingId);
+
 private:
     Renderer *m_renderer;
     QUuid m_passUuid;
     QUuid m_shaderUuid;
-    QList<QParameterMapper *> m_bindings;
+    QHash<QUuid, QParameterMapper *> m_bindings;
     QList<QUuid> m_criteriaList;
 };
 

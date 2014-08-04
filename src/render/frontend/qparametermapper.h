@@ -42,7 +42,7 @@
 #ifndef QT3D_QPARAMETERBINDER_H
 #define QT3D_QPARAMETERBINDER_H
 
-#include <QObject>
+#include <Qt3DCore/qnode.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
@@ -51,7 +51,7 @@ namespace Qt3D {
 
 class QParameterMapperPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QParameterMapper : public QObject
+class QT3DRENDERERSHARED_EXPORT QParameterMapper : public QNode
 {
     Q_OBJECT
     Q_ENUMS(Binding)
@@ -66,8 +66,10 @@ public:
         StandardUniform
     };
 
-    explicit QParameterMapper(QObject *parent = 0);
-    QParameterMapper(const QString &parameterName, const QString &shaderParameterName, QParameterMapper::Binding bindingType, QObject *parent = 0);
+    explicit QParameterMapper(QNode *parent = 0);
+    QParameterMapper(const QString &parameterName, const QString &shaderParameterName, QParameterMapper::Binding bindingType, QNode *parent = 0);
+
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
     void setParameterName(const QString &name);
     void setShaderVariableName(const QString &name);
@@ -83,7 +85,8 @@ Q_SIGNALS:
     void bindingTypeChanged();
 
 protected:
-    QParameterMapper(QParameterMapperPrivate &dd, QObject *parent = 0);
+    QParameterMapper(QParameterMapperPrivate &dd, QNode *parent = 0);
+    QNode *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
     Q_DECLARE_PRIVATE(QParameterMapper)
 };
 

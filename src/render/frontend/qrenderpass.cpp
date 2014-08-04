@@ -122,7 +122,7 @@ void QRenderPass::addCriterion(QCriterion *criterion)
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
             change->setPropertyName(QByteArrayLiteral("criterion"));
-            change->setValue(QVariant::fromValue(criterion));
+            change->setValue(QVariant::fromValue(criterion->clone()));
             notifyObservers(change);
         }
     }
@@ -157,14 +157,31 @@ void QRenderPass::addBinding(QParameterMapper *binding)
 {
     Q_D(QRenderPass);
     // TO DO: Notify QChangeArbiter
-    if (!d->m_bindings.contains(binding))
+    if (!d->m_bindings.contains(binding)) {
         d->m_bindings.append(binding);
+
+        if (!binding->parent() || binding->parent() == this)
+            QNode::addChild(binding);
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
+            change->setPropertyName(QByteArrayLiteral("binding"));
+            change->setValue(QVariant::fromValue(binding->clone()));
+            notifyObservers(change);
+        }
+    }
 }
 
 void QRenderPass::removeBinding(QParameterMapper *binding)
 {
     Q_D(QRenderPass);
     // TO DO: Notify QChangeArbiter
+    if (d->m_changeArbiter != Q_NULLPTR) {
+        QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, this));
+        change->setPropertyName(QByteArrayLiteral("binding"));
+        change->setValue(QVariant::fromValue(binding->uuid()));
+        notifyObservers(change);
+    }
     d->m_bindings.removeOne(binding);
 }
 

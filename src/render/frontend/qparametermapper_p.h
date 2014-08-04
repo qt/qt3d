@@ -42,7 +42,7 @@
 #ifndef QT3D_QPARAMETERMAPPER_P_H
 #define QT3D_QPARAMETERMAPPER_P_H
 
-#include <private/qobject_p.h>
+#include <private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -50,7 +50,7 @@ namespace Qt3D {
 
 class QParameterMapper;
 
-class QParameterMapperPrivate : public QObjectPrivate
+class QParameterMapperPrivate : public QNodePrivate
 {
 public:
     QParameterMapperPrivate(QParameterMapper *qq);

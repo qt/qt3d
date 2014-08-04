@@ -87,6 +87,7 @@ void RenderRenderPass::setPeer(QRenderPass *peer)
         if (!m_passUuid.isNull()) {
             arbiter->unregisterObserver(this, m_passUuid);
             m_criteriaList.clear();
+            m_bindings.clear();
             m_shaderUuid = QUuid();
         }
         m_passUuid = peerUuid;
@@ -94,8 +95,9 @@ void RenderRenderPass::setPeer(QRenderPass *peer)
             arbiter->registerObserver(this, m_passUuid, NodeAdded|NodeRemoved);
             if (peer->shaderProgram() != Q_NULLPTR)
                 m_shaderUuid = peer->shaderProgram()->uuid();
-            // TO DO -> Have backend classes for Bindings and Parameters so that we can easily monitor for updates
-            m_bindings = peer->bindings();
+            // The RenderPass clones frontend bindings in case the frontend ever removes them
+            Q_FOREACH (QParameterMapper *binding, peer->bindings())
+                appendBinding(qobject_cast<QParameterMapper *>(binding->clone()));
             Q_FOREACH (QCriterion *c, peer->criteria())
                 appendCriterion(c);
         }
@@ -114,6 +116,9 @@ void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
         else if (propertyChange->propertyName() == QByteArrayLiteral("shaderProgram")) {
             m_shaderUuid = propertyChange->value().toUuid();
         }
+        else if (propertyChange->propertyName() == QByteArrayLiteral("binding")) {
+            appendBinding(propertyChange->value().value<QParameterMapper *>());
+        }
         break;
     }
 
@@ -123,6 +128,9 @@ void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("shaderProgram")) {
             m_shaderUuid = QUuid();
+        }
+        else if (propertyChange->propertyName() == QByteArrayLiteral("binding")) {
+            removeBinding(propertyChange->value().toUuid());
         }
         break;
     }
@@ -139,7 +147,7 @@ QUuid RenderRenderPass::shaderProgram() const
 
 QList<QParameterMapper *> RenderRenderPass::bindings() const
 {
-    return m_bindings;
+    return m_bindings.values();
 }
 
 QList<QUuid> RenderRenderPass::criteria() const
@@ -161,6 +169,17 @@ void RenderRenderPass::appendCriterion(QCriterion *criterion)
 void RenderRenderPass::removeCriterion(const QUuid &criterionId)
 {
     m_criteriaList.removeOne(criterionId);
+}
+
+void RenderRenderPass::appendBinding(QParameterMapper *binding)
+{
+    if (!m_bindings.contains(binding->uuid()))
+        m_bindings[binding->uuid()] = binding;
+}
+
+void RenderRenderPass::removeBinding(const QUuid &bindingId)
+{
+    m_bindings.remove(bindingId);
 }
 
 } // Render
