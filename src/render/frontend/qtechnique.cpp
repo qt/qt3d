@@ -124,7 +124,7 @@ void QTechnique::addCriterion(QCriterion *criterion)
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
             change->setPropertyName(QByteArrayLiteral("criterion"));
-            change->setValue(QVariant::fromValue(criterion));
+            change->setValue(QVariant::fromValue(criterion->clone()));
             notifyObservers(change);
         }
     }
