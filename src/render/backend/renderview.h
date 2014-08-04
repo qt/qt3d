@@ -48,6 +48,7 @@
 #include <Qt3DCore/qhandle.h>
 #include <QVector>
 #include <QMutex>
+#include <QColor>
 
 QT_BEGIN_NAMESPACE
 
@@ -96,6 +97,7 @@ public:
     QVector<RenderCommand *> commands() const { return m_commands; }
 
     inline QRectF viewport() const { return m_viewport; }
+    inline QColor clearColor() const { return m_clearColor; }
 
     // This can be removed once we're 100% sure the QFrameAllocator is death proof
     void setFrameIndex(int frameIndex) { m_frameIndex = frameIndex; }
@@ -120,6 +122,7 @@ private:
     QRectF m_viewport;
     QStringList m_layers;
     QMatrix4x4 *m_viewMatrix;
+    QColor m_clearColor;
 
     int m_frameIndex;
 

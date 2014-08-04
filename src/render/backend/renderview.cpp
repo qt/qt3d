@@ -547,6 +547,8 @@ void RenderView::computeViewport(ViewportNode *viewportNode)
                             tmpViewport.width() * oldViewport.width(),
                             tmpViewport.height() * oldViewport.height());
     }
+    // So that we use the color of the highest viewport
+    m_clearColor = viewportNode->clearColor();
 }
 
 bool RenderView::checkContainedWithinLayer(RenderEntity *node)

@@ -44,6 +44,7 @@
 
 #include <Qt3DRenderer/framegraphnode.h>
 #include <Qt3DCore/qobserverinterface.h>
+#include <QColor>
 
 QT_BEGIN_NAMESPACE
 
@@ -74,6 +75,8 @@ public:
     float yMax() const;
     void setYMax(float yMax);
 
+    QColor clearColor() const;
+
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
@@ -81,7 +84,7 @@ private:
     float m_yMin;
     float m_xMax;
     float m_yMax;
-
+    QColor m_clearColor;
 };
 
 } // Render

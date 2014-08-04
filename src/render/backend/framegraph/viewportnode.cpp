@@ -79,6 +79,7 @@ void ViewportNode::setPeer(Qt3D::QViewport *peer)
             setXMax(peer->rect().width());
             setYMin(peer->rect().y());
             setYMax(peer->rect().height());
+            m_clearColor = peer->clearColor();
         }
     }
 }
@@ -120,6 +121,11 @@ void ViewportNode::setYMax(float yMax)
     m_yMax = yMax;
 }
 
+QColor ViewportNode::clearColor() const
+{
+    return m_clearColor;
+}
+
 void ViewportNode::sceneChangeEvent(const QSceneChangePtr &e)
 {
     if (e->type() == NodeUpdated) {
@@ -130,6 +136,9 @@ void ViewportNode::sceneChangeEvent(const QSceneChangePtr &e)
             setYMin(rect.y());
             setXMax(rect.width());
             setYMax(rect.height());
+        }
+        else if (propertyChange->propertyName() == QByteArrayLiteral("clearColor")) {
+            m_clearColor = propertyChange->value().value<QColor>();
         }
     }
 }

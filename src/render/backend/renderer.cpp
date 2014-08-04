@@ -399,7 +399,11 @@ void Renderer::submitRenderViews()
         int renderViewsCount = renderViews.size();
         quint64 frameElapsed = queueElapsed;
 
-        m_graphicsContext->beginDrawing();
+        if (renderViewsCount <= 0)
+            continue;
+
+        // The clear color is the same for all RenderViews
+        m_graphicsContext->beginDrawing(renderViews.first()->clearColor());
         qCDebug(Memory) << Q_FUNC_INFO << "rendering frame " << renderViews.last()->frameIndex() << " Queue " << m_renderQueues->queuedFrames();
         for (int i = 0; i < renderViewsCount; i++) {
             // Set the Viewport

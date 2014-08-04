@@ -46,6 +46,7 @@
 #include <QOpenGLBuffer>
 #include <QOpenGLVertexArrayObject>
 #include <QHash>
+#include <QColor>
 #include <QMatrix4x4>
 #include <QBitArray>
 #include <Qt3DRenderer/quniformvalue.h>
@@ -91,7 +92,7 @@ public:
 
     int id() const; // unique, small integer ID of this context
 
-    void beginDrawing();
+    void beginDrawing(const QColor &clearColor);
 
     void endDrawing();
 

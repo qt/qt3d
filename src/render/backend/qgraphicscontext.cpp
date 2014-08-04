@@ -128,7 +128,7 @@ void QGraphicsContext::initialize()
     m_textureScopes.resize(numTexUnits);
 }
 
-void QGraphicsContext::beginDrawing()
+void QGraphicsContext::beginDrawing(const QColor &clearColor)
 {
     if (!m_gl || !m_surface) {
         qCWarning(Backend) << Q_FUNC_INFO << "no content or surface provided";
@@ -149,8 +149,7 @@ void QGraphicsContext::beginDrawing()
         initialize();
     }
 
-    QVector4D cc(0.5, 0.5, 1.0, 1.0);
-    glClearColor(cc[0], cc[1], cc[2], cc[3]);
+    glClearColor(clearColor.redF(), clearColor.greenF(), clearColor.blueF(), clearColor.alphaF());
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     if (m_activeShader)
