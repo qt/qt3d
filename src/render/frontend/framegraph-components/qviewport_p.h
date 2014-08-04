@@ -57,6 +57,7 @@ public :
 
     Q_DECLARE_PUBLIC(QViewport)
     QRectF m_rect;
+    QColor m_clearColor;
 };
 
 } // Qt3D

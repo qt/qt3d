@@ -105,6 +105,27 @@ void QViewport::setRect(const QRectF &rect)
     }
 }
 
+QColor QViewport::clearColor() const
+{
+    Q_D(const QViewport);
+    return d->m_clearColor;
+}
+
+void QViewport::setClearColor(const QColor &color)
+{
+    Q_D(QViewport);
+    if (color != d->m_clearColor) {
+        d->m_clearColor = color;
+        emit clearColorChanged();
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
+            propertyChange->setPropertyName(QByteArrayLiteral("clearColor"));
+            propertyChange->setValue(QVariant::fromValue(d->m_clearColor));
+            notifyObservers(propertyChange);
+        }
+    }
+}
+
 } // Qt3D
 
 QT_END_NAMESPACE

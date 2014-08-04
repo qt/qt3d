@@ -43,8 +43,8 @@
 #define QT3D_QVIEWPORT_H
 
 #include <Qt3DRenderer/qframegraphitem.h>
-#include <QtCore/QRectF>
-
+#include <QRectF>
+#include <QColor>
 
 QT_BEGIN_NAMESPACE
 
@@ -56,6 +56,7 @@ class QT3DRENDERERSHARED_EXPORT QViewport : public QFrameGraphItem
 {
     Q_OBJECT
     Q_PROPERTY(QRectF rect READ rect WRITE setRect NOTIFY rectChanged)
+    Q_PROPERTY(QColor clearColor READ clearColor WRITE setClearColor NOTIFY clearColorChanged)
 
 public:
     explicit QViewport(QNode *parent = 0);
@@ -65,8 +66,12 @@ public:
     QRectF rect() const;
     void setRect(const QRectF& rect);
 
+    QColor clearColor() const;
+    void setClearColor(const QColor &color);
+
 Q_SIGNALS:
     void rectChanged();
+    void clearColorChanged();
 
 protected:
     Q_DECLARE_PRIVATE(QViewport)
