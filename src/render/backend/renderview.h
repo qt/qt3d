@@ -78,6 +78,9 @@ class Q_AUTOTEST_EXPORT RenderView
 {
 public:
     RenderView();
+    ~RenderView();
+
+    static void operator delete(void *ptr);
 
     void setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf);
 

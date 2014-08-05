@@ -419,6 +419,7 @@ void Renderer::submitRenderViews()
             frameElapsed = timer.elapsed();
         }
         m_graphicsContext->endDrawing();
+        qDeleteAll(renderViews);
         m_renderQueues->popFrameQueue();
         queueElapsed = timer.elapsed() - queueElapsed;
         qCDebug(Rendering) << Q_FUNC_INFO << "Submission of Queue " << m_frameCount + 1 << "in " << queueElapsed << "ms <=> " << queueElapsed / renderViewsCount << "ms per RenderView <=> Avg " << 1000.0f / (queueElapsed * 1.0f/ renderViewsCount * 1.0f) << " RenderView/s";

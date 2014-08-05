@@ -219,6 +219,27 @@ RenderView::RenderView()
 {
 }
 
+RenderView::~RenderView()
+{
+    Q_FOREACH (RenderCommand *command, m_commands) {
+        // Deallocate all uniform values of the QUniformPack of each RenderCommand
+        Q_FOREACH (const QUniformValue *v, command->m_uniforms.uniforms().values())
+            m_allocator->deallocate<QUniformValue>(const_cast<QUniformValue *>(v));
+        // Deallocate RenderCommand
+        m_allocator->deallocate<RenderCommand>(command);
+    }
+    // Deallocate viewMatrix
+    m_allocator->deallocate<QMatrix4x4>(m_viewMatrix);
+}
+
+// We need to overload the delete operator so that when the Renderer deletes the list of RenderViews, each RenderView
+// can clear itself with the frame allocator and deletes its RenderViews
+void RenderView::operator delete(void *ptr)
+{
+    RenderView *rView = static_cast<RenderView *>(ptr);
+    rView->m_allocator->deallocateRawMemory<RenderView>(rView);
+}
+
 void RenderView::setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf)
 {
     // The specific RenderPass to be used is also dependent upon the Effect and TechniqueFilter
