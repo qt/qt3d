@@ -77,8 +77,7 @@ namespace Render {
 
 RenderMesh::RenderMesh() :
     m_renderer(Q_NULLPTR),
-    m_meshDirty(true),
-    m_lock(new QReadWriteLock())
+    m_meshDirty(true)
 {
 }
 
