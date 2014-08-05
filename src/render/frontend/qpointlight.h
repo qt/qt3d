@@ -57,6 +57,8 @@ class QT3DRENDERERSHARED_EXPORT QPointLight : public QAbstractLight
 public:
     explicit QPointLight(QNode *parent = 0);
     QHash<QString, QVariant> lightProperties() const Q_DECL_OVERRIDE;
+    const QString lightBlockName() const Q_DECL_OVERRIDE { return QStringLiteral("PointLight"); }
+    const QString lightUniformName() const Q_DECL_OVERRIDE { return QStringLiteral("pointLights"); }
 
 protected:
     Q_DECLARE_PRIVATE(QPointLight)

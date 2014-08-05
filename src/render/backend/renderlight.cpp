@@ -84,8 +84,11 @@ void RenderLight::setPeer(QAbstractLight *peer)
         if (!m_lightUuid.isNull()) {
             arbiter->registerObserver(this, m_lightUuid, ComponentUpdated);
             m_lightProperties = peer->lightProperties();
+            // Properties common to all lights
             m_lightProperties[QStringLiteral("color")] = peer->color();
             m_lightProperties[QStringLiteral("intensity")] = peer->intensity();
+            m_lightUniformName = peer->lightUniformName();
+            m_lightBlockName = peer->lightBlockName();
         }
     }
 }
@@ -111,6 +114,16 @@ void RenderLight::sceneChangeEvent(const QSceneChangePtr &e)
 QUuid RenderLight::lightUuid() const
 {
     return m_lightUuid;
+}
+
+QString RenderLight::lightBlockName() const
+{
+    return m_lightBlockName;
+}
+
+QString RenderLight::lightUniformName() const
+{
+    return m_lightUniformName;
 }
 
 } // Qt3D

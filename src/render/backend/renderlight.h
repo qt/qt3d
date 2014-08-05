@@ -69,11 +69,15 @@ public:
     QHash<QString, QVariant> lightProperties() const;
     void sceneChangeEvent(const QSceneChangePtr &e);
     QUuid lightUuid() const;
+    QString lightUniformName() const;
+    QString lightBlockName() const;
 
 private:
     Renderer *m_renderer;
     QHash<QString, QVariant> m_lightProperties;
     QUuid m_lightUuid;
+    QString m_lightUniformName;
+    QString m_lightBlockName;
 };
 
 } // Render

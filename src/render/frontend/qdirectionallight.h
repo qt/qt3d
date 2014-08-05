@@ -64,6 +64,8 @@ public:
     QVector3D direction() const;
 
     QHash<QString, QVariant> lightProperties() const Q_DECL_OVERRIDE;
+    const QString lightBlockName() const Q_DECL_OVERRIDE { return QStringLiteral("DirectionnalLight"); }
+    const QString lightUniformName() const Q_DECL_OVERRIDE { return QStringLiteral("directionnalLights"); }
 
 Q_SIGNALS:
     void directionChanged();

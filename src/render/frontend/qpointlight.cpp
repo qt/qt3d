@@ -46,6 +46,24 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+ *
+ * Expected Shader struct
+ *
+ * \code
+ *
+ * struct PointLight
+ * {
+ *  vec3 position;
+ *  vec4 color;
+ *  float intensity;
+ * };
+ *
+ * uniform PointLight pointLights[10];
+ *
+ * \endcode
+ */
+
 QPointLightPrivate::QPointLightPrivate(QPointLight *qq)
     : QAbstractLightPrivate(qq)
 {

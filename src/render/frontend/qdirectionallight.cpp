@@ -47,6 +47,24 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+ *
+ * Expected Shader struct
+ *
+ * \code
+ *
+ * struct DirectionalLight
+ * {
+ *  vec3 position;
+ *  vec3 direction;
+ *  vec4 color;
+ *  float intensity;
+ * };
+ *
+ * uniform DirectionalLight directionalLights[10];
+ *
+ * \endcode
+ */
 
 QDirectionalLightPrivate::QDirectionalLightPrivate(QDirectionalLight *qq)
     : QAbstractLightPrivate(qq)

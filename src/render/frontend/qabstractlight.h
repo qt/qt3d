@@ -73,7 +73,14 @@ public :
     float intensity() const;
     void setIntensity(float intensity);
 
+    // All properties returned here will be used to set the shader's Light struct
+    // members. In addition all Light have an implicit vec3 position attributes that
+    // is set at runtime with the light's current world position in the scene.
     virtual QHash<QString, QVariant> lightProperties() const = 0;
+
+    // Returns the name used as the struct name for a given lightType to be used in shaders
+    virtual const QString lightBlockName() const = 0;
+    virtual const QString lightUniformName() const = 0;
 
 protected :
     Q_DECLARE_PRIVATE(QAbstractLight)

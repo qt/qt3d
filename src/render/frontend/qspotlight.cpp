@@ -48,12 +48,31 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 
+/*!
+ *
+ * Expected Shader struct
+ *
+ * \code
+ *
+ * struct SpotLight
+ * {
+ *  vec3 position;
+ *  vec3 direction;
+ *  vec4 color;
+ *  float intensity;
+ *  float cutOffAngle;
+ * };
+ *
+ * uniform SpotLight spotLights[10];
+ *
+ * \endcode
+ */
+
 QSpotLightPrivate::QSpotLightPrivate(QSpotLight *qq)
     :QAbstractLightPrivate(qq)
     , m_cutOffAngle(45.0f)
 {
 }
-
 
 QSpotLight::QSpotLight(QNode *parent)
     : QAbstractLight(*new QSpotLightPrivate(this), parent)
