@@ -73,6 +73,7 @@
 #include "layermanager.h"
 #include "criterionmanager.h"
 #include "qopenglfilter.h"
+#include "renderlight.h"
 
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qabstracteffect.h>
@@ -325,10 +326,18 @@ void RenderView::setAllocator(QFrameAllocator *allocator)
 // Tries to order renderCommand by shader so as to minimize shader changes
 void RenderView::buildRenderCommands(RenderEntity *node)
 {
+    // Retrieve light for the currentNode and append it to list of current lights
+    // As only light components of an Entity are considered active
+    HLight lightHandle = node->componentHandle<RenderLight, 16>();
+    if (!lightHandle.isNull())
+        m_lights.append(QPair<HLight, QMatrix4x4>(lightHandle, *node->worldTransform()));
+
+    // Traverse children
+    // We traverse first so that we can retrieve all lights
+    Q_FOREACH (RenderEntity *child, node->children())
+        buildRenderCommands(child);
+
     // Build renderCommand for current node
-
-    // 1 RenderCommand per RenderPass pass on an Entity with a Mesh
-
     if (m_renderCamera != Q_NULLPTR && checkContainedWithinLayer(node)) {
         RenderMesh *mesh = Q_NULLPTR;
         if (node->componentHandle<RenderMesh, 16>() != HMesh()
@@ -349,6 +358,7 @@ void RenderView::buildRenderCommands(RenderEntity *node)
                 }
                 QHash<QString, QVariant> parameters = parametersFromMaterialEffectTechnique(material, effect, technique);
 
+                // 1 RenderCommand per RenderPass pass on an Entity with a Mesh
                 Q_FOREACH (RenderRenderPass *pass, passes) {
                     RenderCommand *command = m_allocator->allocate<RenderCommand>();
                     command->m_meshData = mesh->meshData();
@@ -361,9 +371,6 @@ void RenderView::buildRenderCommands(RenderEntity *node)
             }
         }
     }
-    // Traverse children
-    Q_FOREACH (RenderEntity *child, node->children())
-        buildRenderCommands(child);
 }
 
 RenderTechnique *RenderView::findTechniqueForEffect(RenderEffect *effect)
@@ -540,10 +547,12 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
                 Q_FOREACH (const QString &paramName, parameters.keys()) {
                     // TO DO : Handle textures here as well
                     if (uniformNames.contains(paramName))
-                        command->m_uniforms.setUniform(paramName, QUniformValue::fromVariant(parameters[paramName], m_allocator));
+                        command->m_uniforms.setUniform(paramName, QUniformValue::fromVariant(parameters.take(paramName), m_allocator));
                     else
                         qWarning() << paramName << "is unused by the current shader";
                 }
+
+
             }
         }
     }

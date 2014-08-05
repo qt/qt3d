@@ -67,10 +67,12 @@ class ViewportNode;
 class RenderMesh;
 class RenderEffect;
 class RenderRenderPass;
+class RenderLight;
 
 typedef QHandle<RenderMesh, 16> HMesh;
 typedef QHandle<RenderMaterial, 16> HMaterial;
 typedef QHandle<RenderTechnique, 16> HTechnique;
+typedef QHandle<RenderLight, 16> HLight;
 
 // This class is kind of analogous to RenderBin but I want to avoid trampling
 // on that until we get this working
@@ -126,6 +128,7 @@ private:
     QStringList m_layers;
     QMatrix4x4 *m_viewMatrix;
     QColor m_clearColor;
+    QList<QPair<HLight, QMatrix4x4> > m_lights;
 
     int m_frameIndex;
 

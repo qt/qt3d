@@ -300,6 +300,9 @@ RenderEntity* RenderSceneBuilder::createRenderNode(QEntity *entity)
         createRenderElement(lenses.first());
         rEntity->addComponent(lenses.first());
     }
+
+    // Lights and Layers do not have to be limited to one per entity
+
     // Retrieve Layer from Entity
     if (!layers.isEmpty()) {
         createRenderElement(layers.first());
