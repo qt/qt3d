@@ -69,6 +69,7 @@ public:
     virtual void    depthMask(GLenum mode) = 0;
     virtual void    cullFace(GLenum mode) = 0;
     virtual void    frontFace(GLenum mode) = 0;
+    virtual bool    supportUniformBlock() const = 0;
 };
 
 } // Render

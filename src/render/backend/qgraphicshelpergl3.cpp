@@ -193,6 +193,11 @@ void QGraphicsHelperGL3::frontFace(GLenum mode)
 
 }
 
+bool QGraphicsHelperGL3::supportUniformBlock() const
+{
+    return true;
+}
+
 } // Render
 } // Qt3D
 

@@ -193,6 +193,11 @@ void QGraphicsHelperES2::frontFace(GLenum mode)
     m_funcs->glFrontFace(mode);
 }
 
+bool QGraphicsHelperES2::supportUniformBlock() const
+{
+    return false;
+}
+
 } // Render
 } //Qt3D
 

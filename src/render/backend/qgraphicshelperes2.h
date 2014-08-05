@@ -75,10 +75,10 @@ public:
     void depthMask(GLenum mode) Q_DECL_OVERRIDE;
     void cullFace(GLenum mode) Q_DECL_OVERRIDE;
     void frontFace(GLenum mode) Q_DECL_OVERRIDE;
+    bool supportUniformBlock() const Q_DECL_OVERRIDE;
 
 private:
     QOpenGLFunctions_ES2 *m_funcs;
-
 };
 
 } // Render
