@@ -81,7 +81,7 @@ public:
     template<typename T>
     void deallocate(T *ptr)
     {
-        uint allocatorIndex = allocatorIndexFromSize(sizeof(T)) - 1;
+        uint allocatorIndex = allocatorIndexFromSize(sizeof(*ptr)) - 1;
         if (allocatorIndex < allocatorIndexFromSize(maxObjectSize())) {
             ptr->~T(); // Call destructor
             deallocateAtChunck(ptr, allocatorIndex);
@@ -105,7 +105,7 @@ public:
     template<typename T>
     void deallocateRawMemory(T *ptr)
     {
-        uint allocatorIndex = allocatorIndexFromSize(sizeof(T)) - 1;
+        uint allocatorIndex = allocatorIndexFromSize(sizeof(*ptr)) - 1;
         if (allocatorIndex < allocatorIndexFromSize(maxObjectSize()))
             deallocateAtChunck(ptr, allocatorIndex);
     }
