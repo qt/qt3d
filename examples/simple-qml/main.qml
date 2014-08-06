@@ -69,7 +69,7 @@ Entity {
             ball2.mesh = test ? null : ballMesh
             ball1.mesh = test ? cubeMesh : ballMesh
             test = !test
-            instanciator.active = test
+            //            instanciator.active = test
             external_forward_renderer.activeFrameGraph.layerFilters = test ? ["balls"] : []
         }
     }
@@ -92,7 +92,7 @@ Entity {
                     objectName : "transformInstanciator"
 
                     Translate {
-                        id : translate_0
+                        id : translate_inst
                         dx : 15 * index
                     }
                 }
@@ -111,7 +111,7 @@ Entity {
                 objectName : "externalRenderer"
                 cameraViewportBottomLeft: camera1
                 cameraViewportTopRight: camera2
-                clearColor: ballMaterial.diffuseColor
+                clearColor: "black"
             }
         }
 
@@ -206,10 +206,6 @@ Entity {
             }
         }
 
-        Configuration  {
-            controlledCamera: camera1
-        }
-
         Entity {
             id: camera2
             objectName: "camera2"
@@ -217,35 +213,10 @@ Entity {
             property Transform transform : transform_1
             components : [default_lens, transform]
         }
-        Entity {
-            id: ball2
-            objectName: "ball2"
 
-            property Transform transform : ball2Transform;
-            property Mesh mesh: ballMesh
-            components : [mesh, ballMaterial, transform]
+        Configuration  {
+            controlledCamera: camera1
         }
-
-
-        //        Camera {
-        //            id : camera2
-        //            objectName : "camera2"
-        //            lens : CameraLens {
-        //                projectionType: CameraLens.PerspectiveProjection
-        //                fieldOfView: 45
-        //                aspectRatio: 16/9
-        //                nearPlane : 0.01
-        //                farPlane : 1000.0
-        //            }
-
-        //            transform : transform_1
-
-        //        }
-
-        //        AdsEffect {
-        //            id: adsEffect
-        //            objectName: "adsEffect"
-        //        }
 
         Mesh {
             id: ballMesh
@@ -275,14 +246,15 @@ Entity {
                         openGLFilter {api : OpenGLFilter.Desktop; profile : OpenGLFilter.Core; minorVersion : 1; majorVersion : 3 }
                         renderPasses : [
                             RenderPass {
-                                criteria : [Criterion {name : "Name"; value : "Texture" }]
+                                criteria : [Criterion {name : "Name"; value : "TextureLighting" }]
                                 bindings : [ // Add only the bindings needed for a shader
                                     ParameterMapper {parameterName: "vertexTexCoord"; shaderVariableName: "texCoord0"; bindingType: ParameterMapper.Attribute},
                                     ParameterMapper {parameterName: "tex"; shaderVariableName: "texture"; bindingType: ParameterMapper.Uniform},
                                     ParameterMapper {parameterName: "modelViewProjection"; shaderVariableName: "customMvp"; bindingType: ParameterMapper.StandardUniform}
                                 ]
+
                                 shaderProgram : ShaderProgram {
-                                    id : textureShader
+                                    id : textureShaderLighting
                                     vertexShader: "
                                     #version 140
                                     in vec4 vertexPosition;
@@ -290,24 +262,48 @@ Entity {
                                     in vec2 texCoord0;
 
                                     out vec2 texCoord;
+                                    out vec3 worldPosition;
+                                    out vec3 normal;
 
                                     uniform mat4 customMvp;
+                                    uniform mat4 modelView;
+                                    uniform mat3 modelViewNormal;
 
                                     void main()
                                     {
                                         texCoord = texCoord0;
+                                        worldPosition = vec3(modelView * vertexPosition);
+                                        normal = normalize(modelViewNormal * vertexNormal);
                                         gl_Position  = customMvp * vertexPosition;
                                     }"
 
                                     fragmentShader: "
                                     #version 140
                                     in vec2 texCoord;
+                                    in vec3 worldPosition;
+                                    in vec3 normal;
 
+                                    struct PointLight
+                                    {
+                                        vec3 position;
+                                        vec3 direction;
+                                        vec4 color;
+                                        float intensity;
+                                    };
+
+                                    const int lightCount = 3;
+                                    uniform PointLight pointLights[lightCount];
                                     uniform sampler2D texture;
 
                                     void main()
                                     {
-                                        gl_FragColor = texture2D(texture, texCoord);
+                                        vec4 color;
+                                        for (int i = 0; i < lightCount; i++) {
+                                            vec3 s = normalize(pointLights[i].position - worldPosition);
+                                            color += pointLights[i].color * (pointLights[i].intensity * max(dot(s, normal), 0.0));
+                                        }
+                                        color /= float(lightCount);
+                                        gl_FragColor = texture2D(texture, texCoord) * color;
                                     }"
                                 }
                             }
@@ -385,6 +381,18 @@ Entity {
             id: scene
             source: ":/assets/test_scene.dae"
             objectName: "dae_scene"
+            property Transform scaleSceneTransform : Transform { Scale {id: sceneScale; scale : 1} }
+
+//            QQ2.NumberAnimation {
+//                target : sceneScale
+//                property : "scale"
+//                from : 1
+//                to : 5
+//                duration : 1000
+//                loops : QQ2.Animation.Infinite
+//                running: true
+//            }
+            components : [scaleSceneTransform]
         }
 
         Layer { id: ballLayer; name : "balls" }
@@ -399,11 +407,17 @@ Entity {
             }
             property Mesh mesh: ballMesh
 
+            property PointLight light : PointLight {
+                color : "dodgerblue"
+                intensity : 1.0
+            }
+
             components : [
                 transform,
                 ballMesh,
                 ballMaterial,
-                ballLayer
+                ballLayer,
+                light
             ]
         }
 
@@ -418,12 +432,30 @@ Entity {
             }
             property Mesh mesh: ballMesh
 
+            property PointLight light : PointLight {
+                color : "red"
+                intensity : 1.0
+            }
+
             components: [
                 transform,
                 mesh,
                 ballTexturedMaterial,
                 ballLayer
             ]
+        }
+
+        Entity {
+            id: ball2
+            objectName: "ball2"
+
+            property Transform transform : ball2Transform;
+            property Mesh mesh: ballMesh
+            property PointLight light : PointLight {
+                color : "white"
+                intensity : 2
+            }
+            components : [mesh, ballMaterial, transform, light]
         }
 
         QQ2.SequentialAnimation {
