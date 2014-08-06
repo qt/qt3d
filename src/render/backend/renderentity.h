@@ -117,6 +117,57 @@ public:
         return Q_NULLPTR;
     }
 
+    template<class Backend>
+    QUuid componentUuid() const
+    {
+        return QUuid();
+    }
+
+    template<class Backend>
+    QList<QUuid> componentUuidInTree() const
+    {
+        QList<QUuid> componentList;
+
+        QUuid componentId = componentUuid<Backend>();
+        if (!componentId.isNull())
+            componentList.append(componentId);
+
+        Q_FOREACH (RenderEntity *child, children())
+            componentList.append(child->componentUuidInTree<Backend>());
+
+        return componentList;
+    }
+
+    template<class Backend, int INDEXBITS>
+    QList<QHandle<Backend, INDEXBITS> > componentHandlesInTree() const
+    {
+        QList<QHandle<Backend, INDEXBITS> > handles;
+
+        QHandle<Backend, INDEXBITS> handle = componentHandle<Backend, INDEXBITS>();
+        if (!handle.isNull())
+            handles.append(handle);
+
+        Q_FOREACH (RenderEntity *child, children())
+            handles.append(child->componentHandlesInTree<Backend, INDEXBITS>());
+
+        return handles;
+    }
+
+    template<class Backend>
+    QList<Backend *> renderComponentsInTree() const
+    {
+        QList<Backend *> components;
+
+        Backend *component = renderComponent<Backend>();
+        if (component != Q_NULLPTR)
+            components.append(component);
+
+        Q_FOREACH (RenderEntity *child, children())
+            components.append(child->renderComponentsInTree<Backend>());
+
+        return components;
+    }
+
 private:
 
     template<class Frontend, class Backend, class Manager>

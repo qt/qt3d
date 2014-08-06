@@ -330,6 +330,25 @@ RenderTransform *RenderEntity::renderComponent<RenderTransform>() const
     return m_renderer->transformManager()->lookupResource(m_transformComponent);
 }
 
+template<>
+QUuid RenderEntity::componentUuid<RenderTransform>() const { return m_transformComponent; }
+
+template<>
+QUuid RenderEntity::componentUuid<RenderCameraLens>() const { return m_cameraComponent; }
+
+template<>
+QUuid RenderEntity::componentUuid<RenderLayer>() const { return m_layerComponent; }
+
+template<>
+QUuid RenderEntity::componentUuid<RenderMaterial>() const { return m_materialComponent; }
+
+template<>
+QUuid RenderEntity::componentUuid<RenderLight>() const { return m_lightComponent; }
+
+template<>
+QUuid RenderEntity::componentUuid<RenderMesh>() const { return m_meshComponent; }
+
+
 } // namespace Render
 } // namespace Qt3D
 
