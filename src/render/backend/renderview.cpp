@@ -72,6 +72,7 @@
 #include "renderlayer.h"
 #include "layermanager.h"
 #include "criterionmanager.h"
+#include "lightmanager.h"
 #include "qopenglfilter.h"
 #include "renderlight.h"
 
@@ -319,24 +320,24 @@ void RenderView::setAllocator(QFrameAllocator *allocator)
     m_allocator = allocator;
 }
 
-// Traverse Scene graphTree or culledSceneGraphTree
-// ideally m_commands has been sized properly after the
-// scene has been culled to the number of nodes in the culled
-// scene using reserve().
-// Tries to order renderCommand by shader so as to minimize shader changes
-void RenderView::buildRenderCommands(RenderEntity *node)
+void RenderView::preprocessRenderTree(RenderEntity *node)
 {
     // Retrieve light for the currentNode and append it to list of current lights
     // As only light components of an Entity are considered active
-    HLight lightHandle = node->componentHandle<RenderLight, 16>();
-    if (!lightHandle.isNull())
-        m_lights.append(QPair<HLight, QMatrix4x4>(lightHandle, *node->worldTransform()));
+    if (checkContainedWithinLayer(node)) {
+        HLight lightHandle = node->componentHandle<RenderLight, 16>();
+        if (!lightHandle.isNull())
+            m_lights.append(LightPair(lightHandle, *node->worldTransform()));
+    }
 
     // Traverse children
-    // We traverse first so that we can retrieve all lights
     Q_FOREACH (RenderEntity *child, node->children())
-        buildRenderCommands(child);
+        preprocessRenderTree(child);
+}
 
+// Tries to order renderCommand by shader so as to minimize shader changes
+void RenderView::buildRenderCommands(RenderEntity *node)
+{
     // Build renderCommand for current node
     if (m_renderCamera != Q_NULLPTR && checkContainedWithinLayer(node)) {
         RenderMesh *mesh = Q_NULLPTR;
@@ -344,6 +345,8 @@ void RenderView::buildRenderCommands(RenderEntity *node)
                 && (mesh = node->renderComponent<RenderMesh>()) != Q_NULLPTR) {
             if (!mesh->meshData().isNull())
             {
+                // Perform culling here
+
                 RenderMaterial *material = Q_NULLPTR;
                 RenderEffect *effect = Q_NULLPTR;
                 if ((material = node->renderComponent<RenderMaterial>()) != Q_NULLPTR)
@@ -371,6 +374,10 @@ void RenderView::buildRenderCommands(RenderEntity *node)
             }
         }
     }
+
+    // Traverse children
+    Q_FOREACH (RenderEntity *child, node->children())
+        buildRenderCommands(child);
 }
 
 RenderTechnique *RenderView::findTechniqueForEffect(RenderEffect *effect)
@@ -552,7 +559,27 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
                         qWarning() << paramName << "is unused by the current shader";
                 }
 
+                // Sets lights in shader
+                // Maybe we should provide a flag in the shader to specify if it needs lights
+                // that might save a bit of performances
+                QHash<QString, int> m_countOfLightTypes;
+                Q_FOREACH (const LightPair &lightPair, m_lights) {
+                    RenderLight *light = m_renderer->lightManager()->data(lightPair.first);
+                    if (light != Q_NULLPTR) {
+                        if (!m_countOfLightTypes.contains(light->lightBlockName()))
+                            m_countOfLightTypes[light->lightBlockName()] = 0;
+                        int lightIdx = m_countOfLightTypes[light->lightBlockName()]++;
 
+                        QHash<QString, QVariant> lightProperties = light->lightProperties();
+                        lightProperties[QStringLiteral("position")] = lightPair.second.map(QVector3D());
+                        Q_FOREACH (const QString &propertyName, lightProperties.keys()) {
+                            QString lightShaderUniform(light->lightUniformName() + QStringLiteral("[") + QString::number(lightIdx) + QStringLiteral("].") + propertyName);
+                            if (uniformNames.contains(lightShaderUniform)) {
+                                command->m_uniforms.setUniform(lightShaderUniform, QUniformValue::fromVariant(lightProperties[propertyName], m_allocator));
+                            }
+                        }
+                    }
+                }
             }
         }
     }

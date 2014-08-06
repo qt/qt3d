@@ -74,6 +74,8 @@ typedef QHandle<RenderMaterial, 16> HMaterial;
 typedef QHandle<RenderTechnique, 16> HTechnique;
 typedef QHandle<RenderLight, 16> HLight;
 
+typedef QPair<HLight, QMatrix4x4> LightPair;
+
 // This class is kind of analogous to RenderBin but I want to avoid trampling
 // on that until we get this working
 class Q_AUTOTEST_EXPORT RenderView
@@ -98,7 +100,10 @@ public:
     void setRenderer(Renderer *renderer);
     void setAllocator(QFrameAllocator *allocator);
 
-    void buildRenderCommands(RenderEntity *node);
+    // Gather resources
+    void preprocessRenderTree(RenderEntity *sceneGraphRoot);
+
+    void buildRenderCommands(RenderEntity *preprocessedTreeRoot);
     QVector<RenderCommand *> commands() const { return m_commands; }
 
     inline QRectF viewport() const { return m_viewport; }
@@ -128,7 +133,7 @@ private:
     QStringList m_layers;
     QMatrix4x4 *m_viewMatrix;
     QColor m_clearColor;
-    QList<QPair<HLight, QMatrix4x4> > m_lights;
+    QList<LightPair> m_lights;
 
     int m_frameIndex;
 

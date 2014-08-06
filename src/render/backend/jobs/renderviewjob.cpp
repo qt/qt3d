@@ -69,13 +69,12 @@ void RenderViewJob::run()
     // using the root->leaf set of nodes
     renderView->setConfigFromFrameGraphLeafNode(m_fgLeaf);
 
-    // Perform a view-frustum cull of the scenegraph
-    // along with any additional filtering based on the
-    // framegraph (e.g.render layer) to build list of
-    // RenderNodes that need to be used to build the
-    // list of RenderCommands
+    // Gather resources needed for buildRenderCommand
+    // Ex lights, we need all lights in the scene before we can buildRenderCommands
+    renderView->preprocessRenderTree(m_renderer->renderSceneRoot());
 
-    // When culling is implemented, pass the culled renderSceneRoot
+    // Build RenderCommand should perform the culling as we have no way to determine
+    // if a child has a mesh in the view frustrum while its parent isn't contained in it.
     renderView->buildRenderCommands(m_renderer->renderSceneRoot());
 
     // Sorts RenderCommand
