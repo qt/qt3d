@@ -66,7 +66,7 @@ QUniformValue::QUniformValue() :
 
 QUniformValue *QUniformValue::fromVariant(const QVariant &v, QFrameAllocator *allocator)
 {
-    switch (v.type()) {
+    switch (static_cast<QMetaType::Type>(v.type())) {
     case QVariant::Int: {
         SpecifiedUniform<int> *t = allocator->allocate<SpecifiedUniform<int> >();
         t->setValue(v.toInt());
@@ -78,6 +78,11 @@ QUniformValue *QUniformValue::fromVariant(const QVariant &v, QFrameAllocator *al
         return t;
     }
     case QVariant::Double: {
+        SpecifiedUniform<float> *t = allocator->allocate<SpecifiedUniform<float> >();
+        t->setValue(v.toFloat());
+        return t;
+    }
+    case QMetaType::Float: {
         SpecifiedUniform<float> *t = allocator->allocate<SpecifiedUniform<float> >();
         t->setValue(v.toFloat());
         return t;
