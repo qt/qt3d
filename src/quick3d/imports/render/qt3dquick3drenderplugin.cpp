@@ -72,6 +72,7 @@
 #include <Qt3DRenderer/qpointlight.h>
 #include <Qt3DRenderer/qopenglfilter.h>
 #include <Qt3DRenderer/qdrawstate.h>
+#include <Qt3DRenderer/qblendstate.h>
 #include <Qt3DQuickRenderer/quick3dtechnique.h>
 #include <Qt3DQuickRenderer/quick3dmaterial.h>
 #include <Qt3DQuickRenderer/quick3dtechniquefilter.h>
@@ -133,6 +134,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
 
     // DrawStates
     qmlRegisterUncreatableType<Qt3D::QDrawState>(uri, 2, 0, "DrawState", QStringLiteral("QDrawState is a base class"));
+    qmlRegisterType<Qt3D::QBlendState>(uri, 2, 0, "BlendState");
 }
 
 QT_END_NAMESPACE
