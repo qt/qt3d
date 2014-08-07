@@ -78,6 +78,7 @@
 #include <Qt3DRenderer/qdepthtest.h>
 #include <Qt3DRenderer/qdepthmask.h>
 #include <Qt3DRenderer/qcullface.h>
+#include <Qt3DRenderer/qfrontface.h>
 #include <Qt3DQuickRenderer/quick3dtechnique.h>
 #include <Qt3DQuickRenderer/quick3dmaterial.h>
 #include <Qt3DQuickRenderer/quick3dtechniquefilter.h>
@@ -145,6 +146,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3D::QDepthTest>(uri, 2, 0, "DepthTest");
     qmlRegisterType<Qt3D::QDepthMask>(uri, 2, 0, "DepthMask");
     qmlRegisterType<Qt3D::QCullFace>(uri, 2, 0, "CullFace");
+    qmlRegisterType<Qt3D::QFrontFace>(uri, 2, 0, "FrontFace");
 }
 
 QT_END_NAMESPACE
