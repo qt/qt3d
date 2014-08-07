@@ -50,7 +50,8 @@ HEADERS += \
     $$PWD/qblendstate.h \
     $$PWD/qblendequation.h \
     $$PWD/qalphatest.h \
-    $$PWD/qdepthtest.h
+    $$PWD/qdepthtest.h \
+    $$PWD/qdepthmask.h
 
 SOURCES += \
     $$PWD/qmaterial.cpp \
@@ -82,4 +83,5 @@ SOURCES += \
     $$PWD/qblendstate.cpp \
     $$PWD/qblendequation.cpp \
     $$PWD/qalphatest.cpp \
-    $$PWD/qdepthtest.cpp
+    $$PWD/qdepthtest.cpp \
+    $$PWD/qdepthmask.cpp
