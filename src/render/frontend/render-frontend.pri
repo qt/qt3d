@@ -45,7 +45,8 @@ HEADERS += \
     $$PWD/qplanemesh.h \
     $$PWD/qplanemesh_p.h \
     $$PWD/qcuboidmesh.h \
-    $$PWD/qcuboidmesh_p.h
+    $$PWD/qcuboidmesh_p.h \
+    $$PWD/qdrawstate.h
 
 SOURCES += \
     $$PWD/qmaterial.cpp \
@@ -72,4 +73,5 @@ SOURCES += \
     $$PWD/qlayer.cpp \
     $$PWD/qopenglfilter.cpp \
     $$PWD/qplanemesh.cpp \
-    $$PWD/qcuboidmesh.cpp
+    $$PWD/qcuboidmesh.cpp \
+    $$PWD/qdrawstate.cpp
