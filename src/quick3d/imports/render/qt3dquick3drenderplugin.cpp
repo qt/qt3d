@@ -71,6 +71,7 @@
 #include <Qt3DRenderer/qdirectionallight.h>
 #include <Qt3DRenderer/qpointlight.h>
 #include <Qt3DRenderer/qopenglfilter.h>
+#include <Qt3DRenderer/qdrawstate.h>
 #include <Qt3DQuickRenderer/quick3dtechnique.h>
 #include <Qt3DQuickRenderer/quick3dmaterial.h>
 #include <Qt3DQuickRenderer/quick3dtechniquefilter.h>
@@ -129,6 +130,9 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     // Should be uncreatable extended type
     qmlRegisterExtendedUncreatableType<Qt3D::QFrameGraphItem, Qt3D::Render::Quick::Quick3DFrameGraphItem>(uri, 2, 0, "FrameGraphItem", QStringLiteral("FrameGraphItem is a base class"));
     qmlRegisterType<Qt3D::QFrameGraph>(uri, 2, 0, "FrameGraph");
+
+    // DrawStates
+    qmlRegisterUncreatableType<Qt3D::QDrawState>(uri, 2, 0, "DrawState", QStringLiteral("QDrawState is a base class"));
 }
 
 QT_END_NAMESPACE
