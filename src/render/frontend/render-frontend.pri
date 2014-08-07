@@ -47,7 +47,8 @@ HEADERS += \
     $$PWD/qcuboidmesh.h \
     $$PWD/qcuboidmesh_p.h \
     $$PWD/qdrawstate.h \
-    $$PWD/qblendstate.h
+    $$PWD/qblendstate.h \
+    $$PWD/qblendequation.h
 
 SOURCES += \
     $$PWD/qmaterial.cpp \
@@ -76,4 +77,5 @@ SOURCES += \
     $$PWD/qplanemesh.cpp \
     $$PWD/qcuboidmesh.cpp \
     $$PWD/qdrawstate.cpp \
-    $$PWD/qblendstate.cpp
+    $$PWD/qblendstate.cpp \
+    $$PWD/qblendequation.cpp
