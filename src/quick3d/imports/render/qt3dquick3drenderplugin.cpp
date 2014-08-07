@@ -75,6 +75,7 @@
 #include <Qt3DRenderer/qblendstate.h>
 #include <Qt3DRenderer/qblendequation.h>
 #include <Qt3DRenderer/qalphatest.h>
+#include <Qt3DRenderer/qdepthtest.h>
 #include <Qt3DQuickRenderer/quick3dtechnique.h>
 #include <Qt3DQuickRenderer/quick3dmaterial.h>
 #include <Qt3DQuickRenderer/quick3dtechniquefilter.h>
@@ -139,6 +140,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3D::QBlendState>(uri, 2, 0, "BlendState");
     qmlRegisterType<Qt3D::QBlendEquation>(uri, 2, 0, "BlendEquation");
     qmlRegisterType<Qt3D::QAlphaTest>(uri, 2, 0, "AlphaTest");
+    qmlRegisterType<Qt3D::QDepthTest>(uri, 2, 0, "DepthTest");
 }
 
 QT_END_NAMESPACE
