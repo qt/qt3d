@@ -53,7 +53,8 @@ HEADERS += \
     $$PWD/qdepthtest.h \
     $$PWD/qdepthmask.h \
     $$PWD/qcullface.h \
-    $$PWD/qfrontface.h
+    $$PWD/qfrontface.h \
+    $$PWD/qstenciltest.h
 
 SOURCES += \
     $$PWD/qmaterial.cpp \
@@ -88,4 +89,5 @@ SOURCES += \
     $$PWD/qdepthtest.cpp \
     $$PWD/qdepthmask.cpp \
     $$PWD/qcullface.cpp \
-    $$PWD/qfrontface.cpp
+    $$PWD/qfrontface.cpp \
+    $$PWD/qstenciltest.cpp
