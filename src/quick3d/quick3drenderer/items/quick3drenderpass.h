@@ -59,11 +59,13 @@ class QT3DQUICKRENDERERSHARED_EXPORT Quick3DRenderPass : public QObject
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Qt3D::QCriterion> criteria READ criteriaList)
     Q_PROPERTY(QQmlListProperty<Qt3D::QParameterMapper> bindings READ bindingList)
+    Q_PROPERTY(QQmlListProperty<Qt3D::QDrawState> drawStates READ drawStateList)
 public:
     explicit Quick3DRenderPass(QObject *parent = 0);
 
     QQmlListProperty<Qt3D::QCriterion> criteriaList();
     QQmlListProperty<Qt3D::QParameterMapper> bindingList();
+    QQmlListProperty<Qt3D::QDrawState> drawStateList();
     inline QRenderPass *parentRenderPass() const { return qobject_cast<QRenderPass *>(parent()); }
 
 private:
@@ -76,6 +78,11 @@ private:
     static QParameterMapper *bindingAt(QQmlListProperty<Qt3D::QParameterMapper> *list, int index);
     static int bindingsCount(QQmlListProperty<Qt3D::QParameterMapper> *list);
     static void clearBindings(QQmlListProperty<Qt3D::QParameterMapper> *list);
+
+    static void appendDrawState(QQmlListProperty<Qt3D::QDrawState> *list, QDrawState *state);
+    static QDrawState *drawStateAt(QQmlListProperty<Qt3D::QDrawState> *list, int index);
+    static int drawStateCount(QQmlListProperty<Qt3D::QDrawState> *list);
+    static void clearDrawStates(QQmlListProperty<Qt3D::QDrawState> *list);
 };
 
 } // Quick

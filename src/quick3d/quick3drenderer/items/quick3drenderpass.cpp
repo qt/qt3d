@@ -58,19 +58,28 @@ Quick3DRenderPass::Quick3DRenderPass(QObject *parent)
 QQmlListProperty<QCriterion> Quick3DRenderPass::criteriaList()
 {
     return QQmlListProperty<Qt3D::QCriterion>(this, 0,
-                                                       &Quick3DRenderPass::appendCriteria,
-                                                       &Quick3DRenderPass::criteriaCount,
-                                                       &Quick3DRenderPass::criterionAt,
-                                                       &Quick3DRenderPass::clearCriteria);
+                                              &Quick3DRenderPass::appendCriteria,
+                                              &Quick3DRenderPass::criteriaCount,
+                                              &Quick3DRenderPass::criterionAt,
+                                              &Quick3DRenderPass::clearCriteria);
 }
 
 QQmlListProperty<QParameterMapper> Quick3DRenderPass::bindingList()
 {
     return QQmlListProperty<Qt3D::QParameterMapper>(this, 0,
-                                                   &Quick3DRenderPass::appendBinding,
-                                                   &Quick3DRenderPass::bindingsCount,
-                                                   &Quick3DRenderPass::bindingAt,
-                                                   &Quick3DRenderPass::clearBindings);
+                                                    &Quick3DRenderPass::appendBinding,
+                                                    &Quick3DRenderPass::bindingsCount,
+                                                    &Quick3DRenderPass::bindingAt,
+                                                    &Quick3DRenderPass::clearBindings);
+}
+
+QQmlListProperty<QDrawState> Quick3DRenderPass::drawStateList()
+{
+    return QQmlListProperty<Qt3D::QDrawState>(this, 0,
+                                              &Quick3DRenderPass::appendDrawState,
+                                              &Quick3DRenderPass::drawStateCount,
+                                              &Quick3DRenderPass::drawStateAt,
+                                              &Quick3DRenderPass::clearDrawStates);
 }
 
 void Quick3DRenderPass::appendCriteria(QQmlListProperty<QCriterion> *list, QCriterion *criterion)
@@ -121,6 +130,31 @@ void Quick3DRenderPass::clearBindings(QQmlListProperty<QParameterMapper> *list)
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
     Q_FOREACH (QParameterMapper *binding, rPass->parentRenderPass()->bindings())
         rPass->parentRenderPass()->removeBinding(binding);
+}
+
+void Quick3DRenderPass::appendDrawState(QQmlListProperty<QDrawState> *list, QDrawState *state)
+{
+    Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
+    rPass->parentRenderPass()->addDrawState(state);
+}
+
+QDrawState *Quick3DRenderPass::drawStateAt(QQmlListProperty<QDrawState> *list, int index)
+{
+    Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
+    return rPass->parentRenderPass()->drawStates().at(index);
+}
+
+int Quick3DRenderPass::drawStateCount(QQmlListProperty<QDrawState> *list)
+{
+    Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
+    return rPass->parentRenderPass()->drawStates().count();
+}
+
+void Quick3DRenderPass::clearDrawStates(QQmlListProperty<QDrawState> *list)
+{
+    Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
+    Q_FOREACH (QDrawState *s, rPass->parentRenderPass()->drawStates())
+        rPass->parentRenderPass()->removeDrawState(s);
 }
 
 } // Quick
