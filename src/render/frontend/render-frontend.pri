@@ -55,7 +55,8 @@ HEADERS += \
     $$PWD/qcullface.h \
     $$PWD/qfrontface.h \
     $$PWD/qstenciltest.h \
-    $$PWD/qscissortest.h
+    $$PWD/qscissortest.h \
+    $$PWD/qdithering.h
 
 SOURCES += \
     $$PWD/qmaterial.cpp \
@@ -92,4 +93,5 @@ SOURCES += \
     $$PWD/qcullface.cpp \
     $$PWD/qfrontface.cpp \
     $$PWD/qstenciltest.cpp \
-    $$PWD/qscissortest.cpp
+    $$PWD/qscissortest.cpp \
+    $$PWD/qdithering.cpp
