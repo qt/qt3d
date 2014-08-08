@@ -45,6 +45,7 @@
 #include "qcriterion.h"
 #include "qparametermapper.h"
 #include "qscenepropertychange.h"
+#include "qdrawstate.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -189,6 +190,43 @@ QList<QParameterMapper *> QRenderPass::bindings() const
 {
     Q_D(const QRenderPass);
     return d->m_bindings;
+}
+
+void QRenderPass::addDrawState(QDrawState *state)
+{
+    Q_D(QRenderPass);
+
+    if (!d->m_drawStates.contains(state)) {
+        d->m_drawStates.append(state);
+
+        if (!state->parent() || state->parent() == this)
+            QNode::addChild(state);
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
+            change->setPropertyName(QByteArrayLiteral("drawState"));
+            change->setValue(QVariant::fromValue(state->clone()));
+            notifyObservers(change);
+        }
+    }
+}
+
+void QRenderPass::removeDrawState(QDrawState *state)
+{
+    Q_D(QRenderPass);
+    if (d->m_changeArbiter != Q_NULLPTR) {
+        QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, this));
+        change->setPropertyName(QByteArrayLiteral("drawState"));
+        change->setValue(QVariant::fromValue(state->clone()));
+        notifyObservers(change);
+    }
+    d->m_drawStates.removeOne(state);
+}
+
+QList<QDrawState *> QRenderPass::drawStates() const
+{
+    Q_D(const QRenderPass);
+    return d->m_drawStates;
 }
 
 } // namespace Qt3D

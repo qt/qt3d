@@ -57,6 +57,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QParameter;
+class QDrawState;
 class QParameterMapper;
 typedef QList<QParameter*> ParameterList;
 
@@ -89,6 +90,10 @@ public:
     void addBinding(QParameterMapper *binding);
     void removeBinding(QParameterMapper *binding);
     QList<QParameterMapper *> bindings() const;
+
+    void addDrawState(QDrawState *state);
+    void removeDrawState(QDrawState *state);
+    QList<QDrawState *> drawStates() const;
 
 protected:
     Q_DECLARE_PRIVATE(QRenderPass)

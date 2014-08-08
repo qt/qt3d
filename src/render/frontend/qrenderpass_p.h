@@ -52,6 +52,7 @@ namespace Qt3D {
 class QRenderPass;
 class QParameter;
 class QParameterMapper;
+class QDrawState;
 typedef QList<QParameter*> ParameterList;
 
 namespace Render
@@ -72,6 +73,7 @@ public:
     QHash<QString, QString> m_parameterNameDict;
     QList<QCriterion *> m_criteriaList;
     QList<QParameterMapper *> m_bindings;
+    QList<QDrawState *> m_drawStates;
 
     Render::DrawStateSet* m_stateSet;
 };
