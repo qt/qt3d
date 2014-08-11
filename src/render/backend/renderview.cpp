@@ -76,6 +76,18 @@
 #include "qopenglfilter.h"
 #include "renderlight.h"
 
+#include "qalphatest.h"
+#include "qblendequation.h"
+#include "qblendstate.h"
+#include "qcullface.h"
+#include "qdepthmask.h"
+#include "qdepthtest.h"
+#include "qdithering.h"
+#include "qfrontface.h"
+#include "qscissortest.h"
+#include "qstenciltest.h"
+#include "blendstate.h"
+
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qabstracteffect.h>
 #include <Qt3DCore/qabstracttechnique.h>
@@ -227,6 +239,8 @@ RenderView::~RenderView()
         // Deallocate all uniform values of the QUniformPack of each RenderCommand
         Q_FOREACH (const QUniformValue *v, command->m_uniforms.uniforms().values())
             m_allocator->deallocate<QUniformValue>(const_cast<QUniformValue *>(v));
+        if (command->m_stateSet != Q_NULLPTR) // We do not delete the DrawState as there are stored statically
+            m_allocator->deallocate<DrawStateSet>(command->m_stateSet);
         // Deallocate RenderCommand
         m_allocator->deallocate<RenderCommand>(command);
     }
@@ -367,7 +381,7 @@ void RenderView::buildRenderCommands(RenderEntity *node)
                     command->m_meshData = mesh->meshData();
                     command->m_instancesCount = 0;
                     command->m_worldMatrix = *(node->worldTransform());
-                    command->m_stateSet = Q_NULLPTR;
+                    command->m_stateSet = buildDrawStateSet(pass);
                     setShaderAndUniforms(command, pass, parameters);
                     m_commands.append(command);
                 }
@@ -475,6 +489,65 @@ QHash<QString, QVariant> RenderView::parametersFromMaterialEffectTechnique(Rende
     return params;
 }
 
+// Build a DrawStateSet from the QDrawState stored in the RenderRenderPass
+DrawStateSet *RenderView::buildDrawStateSet(RenderRenderPass *pass)
+{
+    if (pass != Q_NULLPTR && pass->drawStates().count() > 0) {
+        DrawStateSet *stateSet = m_allocator->allocate<DrawStateSet>();
+
+        Q_FOREACH (QDrawState *drawState, pass->drawStates()) {
+            if (qobject_cast<QAlphaTest *>(drawState) != Q_NULLPTR) {
+                QAlphaTest *alphaTest = qobject_cast<QAlphaTest *>(drawState);
+                stateSet->addState(AlphaFunc::getOrCreate(alphaTest->func(), alphaTest->clamp()));
+            }
+            else if (qobject_cast<QBlendEquation *>(drawState) != Q_NULLPTR) {
+                QBlendEquation *blendEquation = qobject_cast<QBlendEquation *>(drawState);
+                stateSet->addState(BlendEquation::getOrCreate(blendEquation->mode()));
+            }
+            else if (qobject_cast<QBlendState *>(drawState) != Q_NULLPTR) {
+                QBlendState *blendState = qobject_cast<QBlendState *>(drawState);
+                // TO DO : Handle Alpha here as weel
+                stateSet->addState(BlendState::getOrCreate(blendState->srcRGB(), blendState->dstRGB()));
+            }
+            else if (qobject_cast<QCullFace *>(drawState) != Q_NULLPTR) {
+                QCullFace *cullFace = qobject_cast<QCullFace *>(drawState);
+                stateSet->addState(CullFace::getOrCreate(cullFace->mode()));
+            }
+            else if (qobject_cast<QDepthMask *>(drawState) != Q_NULLPTR) {
+                QDepthMask *depthMask = qobject_cast<QDepthMask *>(drawState);
+                stateSet->addState(DepthMask::getOrCreate(depthMask->mask()));
+            }
+            else if (qobject_cast<QDepthTest *>(drawState) != Q_NULLPTR) {
+                QDepthTest *depthTest = qobject_cast<QDepthTest *>(drawState);
+                stateSet->addState(DepthTest::getOrCreate(depthTest->func()));
+            }
+            else if (qobject_cast<QDithering *>(drawState) != Q_NULLPTR) {
+                stateSet->addState(Dithering::getOrCreate());
+            }
+            else if (qobject_cast<QFrontFace *>(drawState) != Q_NULLPTR) {
+                QFrontFace *frontFace = qobject_cast<QFrontFace *>(drawState);
+                stateSet->addState(FrontFace::getOrCreate(frontFace->direction()));
+            }
+            else if (qobject_cast<QScissorTest *>(drawState) != Q_NULLPTR) {
+                QScissorTest *scissorTest = qobject_cast<QScissorTest *>(drawState);
+                stateSet->addState(ScissorTest::getOrCreate(scissorTest->left(),
+                                                            scissorTest->bottom(),
+                                                            scissorTest->width(),
+                                                            scissorTest->height()));
+            }
+            else if (qobject_cast<QStencilTest *>(drawState) != Q_NULLPTR) {
+                QStencilTest *stencilTest = qobject_cast<QStencilTest*>(drawState);
+                stateSet->addState(StencilTest::getOrCreate(stencilTest->mask(),
+                                                            stencilTest->func(),
+                                                            stencilTest->faceMode()));
+            }
+        }
+
+        return stateSet;
+    }
+    return Q_NULLPTR;
+}
+
 void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *rPass, QHash<QString, QVariant> &parameters)
 {
     // The VAO Handle is set directly in the renderer thread so as to avoid having to use a mutex here
@@ -552,11 +625,23 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
 
                 // If there are remaining parameters, those are set as uniforms
                 Q_FOREACH (const QString &paramName, parameters.keys()) {
-                    // TO DO : Handle textures here as well
                     if (uniformNames.contains(paramName))
-                        command->m_uniforms.setUniform(paramName, QUniformValue::fromVariant(parameters.take(paramName), m_allocator));
-                    else
-                        qWarning() << paramName << "is unused by the current shader";
+                    {
+                        QVariant value = parameters.take(paramName);
+                        Texture *tex = Q_NULLPTR;
+                        if (static_cast<QMetaType::Type>(value.type()) == QMetaType::QObjectStar &&
+                                (tex = value.value<Qt3D::Texture*>()) != Q_NULLPTR) {
+                            createRenderTexture(tex);
+                            command->m_uniforms.setTexture(paramName, tex->uuid());
+                            TextureUniform *texUniform = m_allocator->allocate<TextureUniform>();
+                            texUniform->setTextureId(tex->uuid());
+                            command->m_uniforms.setUniform(paramName, texUniform);
+                        }
+                        else {
+                            command->m_uniforms.setUniform(paramName, QUniformValue::fromVariant(value, m_allocator));
+                        }
+                    }
+                    // Else param unused by current shader
                 }
 
                 // Sets lights in shader

@@ -160,7 +160,7 @@ void QGraphicsContext::endDrawing()
 {
     m_gl->doneCurrent();
     m_gl->swapBuffers(m_surface);
-
+    m_stateSet = Q_NULLPTR;
     decayTextureScores();
 }
 

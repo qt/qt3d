@@ -123,6 +123,7 @@ private:
     void    createRenderTexture(Texture *tex);
     void setShaderAndUniforms(RenderCommand *command, RenderRenderPass *pass, QHash<QString, QVariant> &parameters);
     QHash<QString, QVariant> parametersFromMaterialEffectTechnique(RenderMaterial *material, RenderEffect *effect, RenderTechnique *technique);
+    DrawStateSet *buildDrawStateSet(RenderRenderPass *pass);
 
     Renderer *m_renderer;
     QFrameAllocator *m_allocator;
