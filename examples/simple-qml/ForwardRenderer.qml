@@ -80,7 +80,7 @@ TechniqueFilter {
                 LayerFilter {
                     id : layerFilter
                     objectName : "layerFilter"
-                    RenderPassFilter { criteria : [Criterion {name : "Name"; value : "Texture";}] }
+                    RenderPassFilter { criteria : [Criterion {name : "Name"; value : "TextureLighting";}] }
                 }
             }
         }
@@ -92,6 +92,8 @@ TechniqueFilter {
             CameraSelector {
                 id: cameraSelectorBottomLeft
                 objectName : "cameraSelector"
+                RenderPassFilter { criteria : [Criterion {name : "Name"; value : "Texture";}] }
+                RenderPassFilter { criteria : [Criterion {name : "Name"; value : "Lighting";}] }
             }
         }
     }

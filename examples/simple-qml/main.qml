@@ -69,7 +69,7 @@ Entity {
             ball2.mesh = test ? null : ballMesh
             ball1.mesh = test ? cubeMesh : ballMesh
             test = !test
-            //            instanciator.active = test
+//                        instanciator.active = test
             external_forward_renderer.activeFrameGraph.layerFilters = test ? ["balls"] : []
         }
     }
@@ -304,6 +304,91 @@ Entity {
                                         }
                                         color /= float(lightCount);
                                         gl_FragColor = texture2D(texture, texCoord) * color;
+                                    }"
+                                }
+                            },
+                            RenderPass {
+                                criteria : [Criterion {name : "Name"; value : "Texture" }]
+                                shaderProgram : ShaderProgram {
+                                    vertexShader : "
+                                    #version 140
+                                    in vec4 vertexPosition;
+                                    in vec2 vertexTexCoord;
+                                    out vec2 texCoord;
+
+                                    uniform mat4 mvp;
+
+                                    void main()
+                                    {
+                                        texCoord = vertexTexCoord;
+                                        gl_Position = mvp * vertexPosition;
+                                    }"
+
+                                    fragmentShader: "
+                                    #version 140
+                                    in vec2 texCoord;
+                                    uniform sampler2D tex;
+
+                                    void main()
+                                    {
+                                        gl_FragColor = texture2D(tex, texCoord);
+                                    }
+                                    "
+                                }
+                            },
+                            RenderPass {
+                                criteria : [Criterion {name : "Name"; value : "Lighting" }]
+                                drawStates : [BlendState {srcRGB: BlendState.One; dstRGB : BlendState.One},
+                                              BlendEquation {mode: BlendEquation.FuncAdd},
+                                              CullFace { mode : CullFace.Back },
+                                              DepthTest { func : DepthTest.LessOrEqual}
+                                ]
+                                shaderProgram : ShaderProgram {
+                                    vertexShader: "
+                                    #version 140
+                                    in vec4 vertexPosition;
+                                    in vec3 vertexNormal;
+
+                                    out vec3 worldPosition;
+                                    out vec3 normal;
+
+                                    uniform mat4 modelViewProjection;
+                                    uniform mat4 modelView;
+                                    uniform mat3 modelViewNormal;
+
+                                    void main()
+                                    {
+                                        worldPosition = vec3(modelView * vertexPosition);
+                                        normal = normalize(modelViewNormal * vertexNormal);
+                                        gl_Position = modelViewProjection * vertexPosition;
+                                    }
+                                    "
+
+                                    fragmentShader: "
+                                    #version 140
+                                    in vec3 worldPosition;
+                                    in vec3 normal;
+
+                                    struct PointLight
+                                    {
+                                        vec3 position;
+                                        vec3 direction;
+                                        vec4 color;
+                                        float intensity;
+                                    };
+
+                                    const int lightCount = 3;
+                                    uniform PointLight pointLights[lightCount];
+
+                                    void main()
+                                    {
+                                        vec4 color;
+                                        for (int i = 0; i < lightCount; i++) {
+                                            vec3 s = normalize(pointLights[i].position - worldPosition);
+                                            color += pointLights[i].color * (pointLights[i].intensity * max(dot(s, normal), 0.0));
+                                        }
+                                        color /= float(lightCount);
+                                        gl_FragColor = color;
                                     }"
                                 }
                             }
