@@ -59,11 +59,11 @@ public:
 
     enum BlendMode
     {
-        FuncAdd = 0,
-        FuncSubstract,
-        FuncReverseSubstract,
-        Min,
-        Max
+        FuncAdd = 0x8006,
+        FuncSubstract = 0x800A,
+        FuncReverseSubstract = 0x800B,
+        Min = 0x8007,
+        Max = 0x8008
     };
 
     explicit QBlendEquation(QNode *parent = 0);

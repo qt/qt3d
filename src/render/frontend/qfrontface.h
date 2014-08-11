@@ -59,8 +59,8 @@ public:
 
     enum FaceDir
     {
-        ClockWise = 0,
-        CounterClockWise
+        ClockWise = 0x0900,
+        CounterClockWise = 0x0901
     };
 
     explicit QFrontFace(QNode *parent = 0);

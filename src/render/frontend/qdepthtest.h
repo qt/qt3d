@@ -58,14 +58,14 @@ class QT3DRENDERERSHARED_EXPORT QDepthTest : public QDrawState
 public:
 
     enum DepthFunc {
-        Never = 0,
-        Always,
-        Less,
-        LessOrEqual,
-        Equal,
-        GreaterOrEqual,
-        Greater,
-        NotEqual
+        Never = 0x0200,
+        Always = 0x0207,
+        Less = 0x0201,
+        LessOrEqual = 0x0203,
+        Equal = 0x0202,
+        GreaterOrEqual = 0x0206,
+        Greater = 0x0204,
+        NotEqual = 0x0205
     };
 
     explicit QDepthTest(QNode *parent = 0);

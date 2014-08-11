@@ -61,9 +61,9 @@ public:
 
     enum CullingMode
     {
-        Front = 0,
-        Back,
-        FrontAndBack
+        Front = 0x0404,
+        Back = 0x0405,
+        FrontAndBack = 0x0408
     };
 
     explicit QCullFace(QNode *parent = 0);
