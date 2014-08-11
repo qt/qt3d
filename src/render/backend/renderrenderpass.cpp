@@ -49,6 +49,7 @@
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qabstractshader.h>
 #include <Qt3DRenderer/qparametermapper.h>
+#include <Qt3DRenderer/qdrawstate.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -100,6 +101,8 @@ void RenderRenderPass::setPeer(QRenderPass *peer)
                 appendBinding(qobject_cast<QParameterMapper *>(binding->clone()));
             Q_FOREACH (QCriterion *c, peer->criteria())
                 appendCriterion(c);
+            Q_FOREACH (QDrawState *drawState, peer->drawStates())
+                appendDrawState(drawState);
         }
     }
 }
@@ -119,6 +122,9 @@ void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
         else if (propertyChange->propertyName() == QByteArrayLiteral("binding")) {
             appendBinding(propertyChange->value().value<QParameterMapper *>());
         }
+        else if (propertyChange->propertyName() == QByteArrayLiteral("drawState")) {
+            appendDrawState(propertyChange->value().value<QDrawState *>());
+        }
         break;
     }
 
@@ -131,6 +137,9 @@ void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("binding")) {
             removeBinding(propertyChange->value().toUuid());
+        }
+        else if (propertyChange->propertyName() == QByteArrayLiteral("drawState")) {
+            removeDrawState(propertyChange->value().toUuid());
         }
         break;
     }
@@ -160,6 +169,11 @@ QUuid RenderRenderPass::renderPassUuid() const
     return m_passUuid;
 }
 
+QList<QDrawState *> RenderRenderPass::drawStates() const
+{
+    return m_drawStates.values();
+}
+
 void RenderRenderPass::appendCriterion(QCriterion *criterion)
 {
     if (!m_criteriaList.contains(criterion->uuid()))
@@ -180,6 +194,17 @@ void RenderRenderPass::appendBinding(QParameterMapper *binding)
 void RenderRenderPass::removeBinding(const QUuid &bindingId)
 {
     m_bindings.remove(bindingId);
+}
+
+void RenderRenderPass::appendDrawState(QDrawState *drawState)
+{
+    if (!m_drawStates.contains(drawState->uuid()))
+        m_drawStates[drawState->uuid()] = drawState;
+}
+
+void RenderRenderPass::removeDrawState(const QUuid &drawStateId)
+{
+    m_drawStates.remove(drawStateId);
 }
 
 } // Render

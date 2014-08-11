@@ -54,6 +54,7 @@ class QRenderPass;
 class QAbstractShader;
 class QParameterMapper;
 class QCriterion;
+class QDrawState;
 
 namespace Render {
 
@@ -73,6 +74,7 @@ public:
     QList<QParameterMapper *> bindings() const;
     QList<QUuid> criteria() const;
     QUuid renderPassUuid() const;
+    QList<QDrawState *> drawStates() const;
 
     void appendCriterion(QCriterion *criterion);
     void removeCriterion(const QUuid &criterionId);
@@ -80,11 +82,15 @@ public:
     void appendBinding(QParameterMapper *binding);
     void removeBinding(const QUuid &bindingId);
 
+    void appendDrawState(QDrawState *drawState);
+    void removeDrawState(const QUuid &drawStateId);
+
 private:
     Renderer *m_renderer;
     QUuid m_passUuid;
     QUuid m_shaderUuid;
     QHash<QUuid, QParameterMapper *> m_bindings;
+    QHash<QUuid, QDrawState *> m_drawStates;
     QList<QUuid> m_criteriaList;
 };
 
