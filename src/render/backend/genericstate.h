@@ -92,7 +92,7 @@ protected:
 };
 
 template <typename Derived, typename T, typename S, typename U>
-class GenericState3
+class GenericState3 : public DrawState
 {
 public:
     bool isEqual(const Derived& i) const
@@ -108,7 +108,27 @@ protected:
     T m_1;
     S m_2;
     U m_3;
+};
 
+template <typename Derived, typename T, typename S, typename U, typename Z>
+class GenericState4 : public DrawState
+{
+public:
+    bool isEqual(const Derived& i) const
+    { return (m_1 == i.m_1) && (m_2 == i.m_2) && (m_3 == i.m_3) && (m_4 == i.m_4); }
+
+protected:
+    GenericState4(T t, S s, U u, Z z) :
+        m_1(t),
+        m_2(s),
+        m_3(u),
+        m_4(z)
+    {}
+
+    T m_1;
+    S m_2;
+    U m_3;
+    Z m_4;
 };
 
 } // Render

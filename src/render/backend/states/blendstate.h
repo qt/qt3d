@@ -55,10 +55,10 @@ namespace Render {
 class BlendState : public GenericState2<BlendState, GLenum, GLenum>
 {
 public:
-    virtual void apply(QGraphicsContext* gc) const;
-    virtual StateMaskSet mask() const;
+    virtual void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
+    virtual StateMaskSet mask() const Q_DECL_OVERRIDE;
 
-    static BlendState* getOrCreate(GLenum src, GLenum dst);
+    static BlendState *getOrCreate(GLenum src, GLenum dst);
 private:
     BlendState(GLenum src, GLenum dst);
 };
@@ -66,12 +66,12 @@ private:
 class BlendEquation : public GenericState1<BlendEquation, GLenum>
 {
 public:
-    virtual void apply(QGraphicsContext* gc) const;
+    virtual void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
 
-    virtual StateMaskSet mask() const
+    virtual StateMaskSet mask() const Q_DECL_OVERRIDE
     { return BlendStateMask; }
 
-    static BlendEquation* getOrCreate(GLenum func);
+    static BlendEquation *getOrCreate(GLenum func);
 
 private:
     BlendEquation(GLenum func);
@@ -81,12 +81,12 @@ private:
 class AlphaFunc : public GenericState2<AlphaFunc, GLenum, GLclampf>
 {
 public:
-    virtual void apply(QGraphicsContext* gc) const;
+    virtual void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
 
-    virtual StateMaskSet mask() const
+    virtual StateMaskSet mask() const Q_DECL_OVERRIDE
     { return AlphaTestMask; }
 
-    static AlphaFunc* getOrCreate(GLenum func, GLclampf value);
+    static AlphaFunc *getOrCreate(GLenum func, GLclampf value);
 private:
     AlphaFunc(GLenum func, GLclampf value);
 };
@@ -94,12 +94,12 @@ private:
 class DepthTest : public GenericState1<DepthTest, GLenum>
 {
 public:
-    virtual void apply(QGraphicsContext* gc) const;
+    virtual void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
 
-    virtual StateMaskSet mask() const
+    virtual StateMaskSet mask() const Q_DECL_OVERRIDE
     { return DepthTestStateMask; }
 
-    static DepthTest* getOrCreate(GLenum func);
+    static DepthTest *getOrCreate(GLenum func);
 
 private:
     DepthTest(GLenum func);
@@ -108,12 +108,12 @@ private:
 class DepthMask : public GenericState1<DepthMask, GLboolean>
 {
 public:
-    virtual void apply(QGraphicsContext* gc) const;
+    virtual void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
 
-    virtual StateMaskSet mask() const
+    virtual StateMaskSet mask() const  Q_DECL_OVERRIDE
     { return DepthWriteStateMask; }
 
-    static DepthMask* getOrCreate(GLboolean func);
+    static DepthMask *getOrCreate(GLboolean func);
 
 private:
     DepthMask(GLboolean func);
@@ -122,12 +122,12 @@ private:
 class CullFace : public GenericState1<CullFace, GLenum>
 {
 public:
-    virtual void apply(QGraphicsContext* gc) const;
+    virtual void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
 
-    virtual StateMaskSet mask() const
+    virtual StateMaskSet mask() const Q_DECL_OVERRIDE
     { return CullFaceStateMask; }
 
-    static CullFace* getOrCreate(GLenum func);
+    static CullFace *getOrCreate(GLenum func);
 
 private:
     CullFace(GLenum func);
@@ -136,15 +136,53 @@ private:
 class FrontFace : public GenericState1<FrontFace, GLenum>
 {
 public:
-    virtual void apply(QGraphicsContext* gc) const;
+    virtual void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
 
-    virtual StateMaskSet mask() const
+    virtual StateMaskSet mask() const Q_DECL_OVERRIDE
     { return FrontFaceStateMask; }
-
-    static FrontFace* getOrCreate(GLenum func);
+    static FrontFace *getOrCreate(GLenum func);
 
 private:
     FrontFace(GLenum func);
+};
+
+class Dithering : public DrawState
+{
+public:
+    virtual void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
+    virtual StateMaskSet mask() const Q_DECL_OVERRIDE
+    { return DitheringStateMask; }
+
+    bool isEqual(const Dithering &) { return true; }
+
+    static Dithering *getOrCreate();
+private:
+    Dithering();
+};
+
+class ScissorTest : public GenericState4<ScissorTest, int, int, int, int>
+{
+public:
+    virtual void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
+    virtual StateMaskSet mask() const Q_DECL_OVERRIDE
+    { return ScissorStateMask; }
+
+    static ScissorTest *getOrCreate(int left, int bottom, int width, int height);
+
+private:
+    ScissorTest(int left, int bottom, int width, int height);
+};
+
+class StencilTest : public GenericState3<StencilTest, uint, GLenum, GLenum>
+{
+public:
+    virtual void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
+    virtual StateMaskSet mask() const Q_DECL_OVERRIDE
+    { return StencilTestStateMask|StencilWriteStateMask; }
+    static StencilTest *getOrCreate(uint mask, GLenum func, GLenum faceMode);
+
+private:
+    StencilTest(uint mask, GLenum func, GLenum faceMode);
 };
 
 } // Render

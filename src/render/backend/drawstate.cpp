@@ -141,6 +141,7 @@ StateMaskSet DrawStateSet::stateMask() const
 void DrawStateSet::resetMasked(StateMaskSet maskOfStatesToReset, QGraphicsContext *gc)
 {
     Q_UNUSED(gc);
+    // TO DO -> Call gcHelper methods instead of raw GL
 
     if (maskOfStatesToReset & ScissorStateMask) {
         glDisable(GL_SCISSOR_TEST);
@@ -172,6 +173,10 @@ void DrawStateSet::resetMasked(StateMaskSet maskOfStatesToReset, QGraphicsContex
 
     if (maskOfStatesToReset & CullFaceStateMask) {
         glDisable(GL_CULL_FACE);
+    }
+
+    if (maskOfStatesToReset & DitheringStateMask) {
+        glDisable(GL_DITHER);
     }
 }
 

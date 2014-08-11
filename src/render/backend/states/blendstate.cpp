@@ -180,6 +180,53 @@ DepthMask::DepthMask(GLboolean flag) :
 {
 }
 
+Dithering::Dithering()
+    : DrawState()
+{
+}
+
+void Dithering::apply(QGraphicsContext *) const
+{
+    glEnable(GL_DITHER);
+}
+
+Dithering *Dithering::getOrCreate()
+{
+    return getOrCreateImpl(Dithering());
+}
+
+ScissorTest::ScissorTest(int left, int bottom, int width, int height)
+    : GenericState4(left, bottom, width, height)
+{
+}
+
+void ScissorTest::apply(QGraphicsContext *gc) const
+{
+    glEnable(GL_SCISSOR_TEST);
+    glScissor(m_1, m_2, m_3, m_4);
+}
+
+ScissorTest *ScissorTest::getOrCreate(int left, int bottom, int width, int height)
+{
+    return getOrCreateImpl(ScissorTest(left, bottom, width, height));
+}
+
+StencilTest *StencilTest::getOrCreate(uint mask, GLenum func, GLenum faceMode)
+{
+    return getOrCreateImpl(StencilTest(mask, func, faceMode));
+}
+
+StencilTest::StencilTest(uint mask, GLenum func, GLenum faceMode)
+    : GenericState3(mask, func, faceMode)
+{
+}
+
+void StencilTest::apply(QGraphicsContext *gc) const
+{
+    glEnable(GL_STENCIL);
+    glStencilFunc(m_2, m_3, m_1);
+}
+
 } // Render
 } // Qt3D
 

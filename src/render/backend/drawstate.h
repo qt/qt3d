@@ -62,7 +62,8 @@ enum StateMask
     DepthWriteStateMask     = 1 << 5,
     CullFaceStateMask       = 1 << 6,
     AlphaTestMask           = 1 << 7,
-    FrontFaceStateMask      = 1 << 8
+    FrontFaceStateMask      = 1 << 8,
+    DitheringStateMask      = 1 << 9
 };
 
 typedef quint64 StateMaskSet;
