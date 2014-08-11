@@ -74,11 +74,11 @@ QRenderPass *QRenderPass::doClone(QNode *clonedParent) const
 
     Q_FOREACH (QCriterion *crit, d->m_criteriaList)
         pass->addCriterion(qobject_cast<QCriterion *>(crit->clone(pass)));
+    Q_FOREACH (QParameterMapper *binding, d->m_bindings)
+        pass->addBinding(qobject_cast<QParameterMapper *>(binding->clone(pass)));
+    Q_FOREACH (QDrawState *drawState, d->m_drawStates)
+        pass->addDrawState(qobject_cast<QDrawState *>(drawState->clone(pass)));
     pass->d_func()->m_shader = qobject_cast<QShaderProgram *>(d->m_shader->clone(pass));
-
-    // TO DO : Make QParameterMapper a QNode
-    //    Q_FOREACH (QParameterMapper *mapper, d->m_bindings)
-    //        pass->addBinding(qobject_cast<QParameterMapper *>(mapper->cl));
 
     return pass;
 }
@@ -157,7 +157,6 @@ void QRenderPass::clearCriteria()
 void QRenderPass::addBinding(QParameterMapper *binding)
 {
     Q_D(QRenderPass);
-    // TO DO: Notify QChangeArbiter
     if (!d->m_bindings.contains(binding)) {
         d->m_bindings.append(binding);
 
@@ -176,7 +175,6 @@ void QRenderPass::addBinding(QParameterMapper *binding)
 void QRenderPass::removeBinding(QParameterMapper *binding)
 {
     Q_D(QRenderPass);
-    // TO DO: Notify QChangeArbiter
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, this));
         change->setPropertyName(QByteArrayLiteral("binding"));
@@ -217,7 +215,7 @@ void QRenderPass::removeDrawState(QDrawState *state)
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, this));
         change->setPropertyName(QByteArrayLiteral("drawState"));
-        change->setValue(QVariant::fromValue(state->clone()));
+        change->setValue(QVariant::fromValue(state->uuid()));
         notifyObservers(change);
     }
     d->m_drawStates.removeOne(state);
