@@ -65,6 +65,23 @@ QBoxCollider::QBoxCollider(QBoxColliderPrivate &dd, QNode *parent)
 {
 }
 
+void QBoxCollider::copy(const QNode *ref)
+{
+    Q_D(QBoxCollider);
+    QAbstractCollider::copy(ref);
+    const QBoxCollider *other = qobject_cast<const QBoxCollider *>(ref);
+    if (other != Q_NULLPTR) {
+        const QBoxColliderPrivate *d_other = other->d_func();
+        d->m_center = d_other->m_center;
+        d->m_halfExtents = d_other->m_halfExtents;
+    }
+}
+
+QBoxCollider *QBoxCollider::doClone(QNode *clonedParent) const
+{
+    return new QBoxCollider(clonedParent);
+}
+
 void QBoxCollider::setCenter(const QVector3D &center)
 {
     Q_D(QBoxCollider);

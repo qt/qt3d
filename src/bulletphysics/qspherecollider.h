@@ -64,6 +64,8 @@ class QT3DBULLETPHYSICSSHARED_EXPORT QSphereCollider : public Qt3D::BulletPhysic
 public:
     explicit QSphereCollider(Qt3D::QNode *parent = 0);
 
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
     void setCenter(const QVector3D &center);
     QVector3D center() const;
 
@@ -77,6 +79,7 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QSphereCollider)
     QSphereCollider(QSphereColliderPrivate &dd, QNode *parent = 0);
+    QSphereCollider *doClone(QNode *clonedParent = 0) const Q_DECL_OVERRIDE;
 };
 
 } // namespace BulletPhysics

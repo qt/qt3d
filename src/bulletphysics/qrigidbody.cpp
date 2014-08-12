@@ -65,6 +65,23 @@ QRigidBody::QRigidBody(QRigidBodyPrivate &dd, Qt3D::QNode *parent)
 {
 }
 
+void QRigidBody::copy(const QNode *ref)
+{
+    Q_D(QRigidBody);
+    QComponent::copy(ref);
+    const QRigidBody *other = qobject_cast<const QRigidBody *>(ref);
+    if (other != Q_NULLPTR) {
+        const QRigidBodyPrivate *d_other = other->d_func();
+        d->m_mass = d_other->m_mass;
+        d->m_centerOfMass = d_other->m_centerOfMass;
+    }
+}
+
+QRigidBody *QRigidBody::doClone(QNode *clonedParent) const
+{
+    return new QRigidBody(clonedParent);
+}
+
 void QRigidBody::setMass(float mass)
 {
     Q_D(QRigidBody);

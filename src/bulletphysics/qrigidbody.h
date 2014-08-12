@@ -67,6 +67,8 @@ class QT3DBULLETPHYSICSSHARED_EXPORT QRigidBody : public Qt3D::QComponent
 public:
     explicit QRigidBody(Qt3D::QNode *parent = 0);
 
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
     void setMass(float mass);
     float mass() const;
 
@@ -80,6 +82,7 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QRigidBody)
     QRigidBody(QRigidBodyPrivate &dd, Qt3D::QNode *parent = 0);
+    QRigidBody *doClone(QNode *clonedParent = 0) const Q_DECL_OVERRIDE;
 };
 
 } // namespace BulletPhysics
