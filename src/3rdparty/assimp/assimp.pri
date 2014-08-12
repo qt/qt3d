@@ -6,6 +6,8 @@
 CONFIG(debug, debug|release) : DEFINES+=_DEBUG
 CONFIG += exceptions
 
+CONFIG -= precompile_header
+
 win32:DEFINES+=_CRT_SECURE_NO_WARNINGS
 
 contains(QT_CONFIG, system-zlib) {
