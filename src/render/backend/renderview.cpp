@@ -235,6 +235,8 @@ RenderView::RenderView()
 
 RenderView::~RenderView()
 {
+    if (m_allocator == Q_NULLPTR) // Mainly needed for unit tests
+        return ;
     Q_FOREACH (RenderCommand *command, m_commands) {
         // Deallocate all uniform values of the QUniformPack of each RenderCommand
         Q_FOREACH (const QUniformValue *v, command->m_uniforms.uniforms().values())
@@ -253,7 +255,8 @@ RenderView::~RenderView()
 void RenderView::operator delete(void *ptr)
 {
     RenderView *rView = static_cast<RenderView *>(ptr);
-    rView->m_allocator->deallocateRawMemory<RenderView>(rView);
+    if (rView != Q_NULLPTR && rView->m_allocator != Q_NULLPTR)
+        rView->m_allocator->deallocateRawMemory<RenderView>(rView);
 }
 
 void RenderView::setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf)
