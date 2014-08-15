@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -41,6 +42,17 @@
 
 #ifndef QT3D_RENDER_RENDERNODE_H
 #define QT3D_RENDER_RENDERNODE_H
+
+#include "rendermesh.h"
+#include "meshmanager.h"
+#include "renderlayer.h"
+#include "renderer.h"
+#include "layermanager.h"
+#include "lightmanager.h"
+#include "cameramanager.h"
+#include "rendertransform.h"
+#include "transformmanager.h"
+#include "materialmanager.h"
 
 #include <Qt3DCore/qobserverinterface.h>
 #include <Qt3DCore/qhandle.h>
@@ -202,6 +214,60 @@ private:
 
     QString m_objectName;
 };
+
+template<>
+HMesh RenderEntity::componentHandle<RenderMesh>() const;
+
+template<>
+RenderMesh *RenderEntity::renderComponent<RenderMesh>() const;
+
+template<>
+HMaterial RenderEntity::componentHandle<RenderMaterial>() const;
+
+template<>
+RenderMaterial *RenderEntity::renderComponent<RenderMaterial>() const;
+
+template<>
+HLayer RenderEntity::componentHandle<RenderLayer>() const;
+
+template<>
+RenderLayer *RenderEntity::renderComponent<RenderLayer>() const;
+
+template<>
+HLight RenderEntity::componentHandle<RenderLight>() const;
+
+template<>
+RenderLight *RenderEntity::renderComponent<RenderLight>() const;
+
+template<>
+HCamera RenderEntity::componentHandle<RenderCameraLens>() const;
+
+template<>
+RenderCameraLens *RenderEntity::renderComponent<RenderCameraLens>() const;
+
+template<>
+HTransform RenderEntity::componentHandle<RenderTransform>() const;
+
+template<>
+RenderTransform *RenderEntity::renderComponent<RenderTransform>() const;
+
+template<>
+QUuid RenderEntity::componentUuid<RenderTransform>() const;
+
+template<>
+QUuid RenderEntity::componentUuid<RenderCameraLens>() const;
+
+template<>
+QUuid RenderEntity::componentUuid<RenderLayer>() const;
+
+template<>
+QUuid RenderEntity::componentUuid<RenderMaterial>() const;
+
+template<>
+QUuid RenderEntity::componentUuid<RenderLight>() const;
+
+template<>
+QUuid RenderEntity::componentUuid<RenderMesh>() const;
 
 } // namespace Render
 } // namespace Qt3D
