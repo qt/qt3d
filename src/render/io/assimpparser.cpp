@@ -767,7 +767,7 @@ void AssimpParser::copyMaterialTextures(QMaterial *material, aiMaterial *assimpM
         m_textureToParameterName[aiTextureType_SPECULAR] = ASSIMP_MATERIAL_SPECULAR_TEXTURE;
     }
 
-    for (uint i = 0; i < sizeof(textureType); i++) {
+    for (unsigned int i = 0; i < sizeof(textureType)/sizeof(textureType[0]); i++) {
         aiString path;
         if (assimpMaterial->GetTexture(textureType[i], 0, &path) == AI_SUCCESS) {
             QString fullPath = m_sceneDir.absoluteFilePath(QString::fromUtf8(path.data));
