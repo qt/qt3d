@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -39,7 +40,10 @@
 **
 ****************************************************************************/
 
-#define _USE_MATH_DEFINES // For MSVC
+#ifndef _USE_MATH_DEFINES
+# define _USE_MATH_DEFINES // For MSVC
+#endif
+
 #include "qtorusmesh.h"
 #include "qabstractshapemesh_p.h"
 #include "qbuffer.h"
