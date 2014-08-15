@@ -88,7 +88,7 @@ public:
                           QNode *observable,
                           ChangeFlags changeFlags = AllChanges);
 
-    void registerSceneObserver(QSceneObserverInterface *interface);
+    void registerSceneObserver(QSceneObserverInterface *observer);
 
     void unregisterObserver(QObserverInterface *observer,
                             QObservableInterface *subject);
@@ -99,7 +99,7 @@ public:
     void unregisterObserver(QObserverInterface *observer,
                             const QUuid &nodeId);
 
-    void unregisterSceneObserver(QSceneObserverInterface *interface);
+    void unregisterSceneObserver(QSceneObserverInterface *observer);
 
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;                 // QObserverInterface impl
     void sceneChangeEventWithLock(const QSceneChangePtr &e);
