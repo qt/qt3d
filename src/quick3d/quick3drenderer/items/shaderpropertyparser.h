@@ -44,6 +44,7 @@
 
 #include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
 #include <QtQml/private/qqmlcustomparser_p.h>
+#include <QtQml/private/qv4compileddata_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -58,8 +59,11 @@ class QT3DQUICKRENDERERSHARED_EXPORT ShaderPropertyParser : public QQmlCustomPar
 public:
     ShaderPropertyParser();
 
-    QByteArray compile(const QV4::CompiledData::QmlUnit *qmlUnit, const QList<const QV4::CompiledData::Binding *> &bindings);
+    QByteArray compile(const QV4::CompiledData::Unit *qmlUnit, const QList<const QV4::CompiledData::Binding *> &bindings);
     void setCustomData(QObject *, const QByteArray &, QQmlCompiledData *);
+
+    void verifyBindings(const QV4::CompiledData::Unit *, const QList<const QV4::CompiledData::Binding *> &) Q_DECL_OVERRIDE;
+    void applyBindings(QObject *, QQmlCompiledData *, const QList<const QV4::CompiledData::Binding *> &) Q_DECL_OVERRIDE;
 };
 
 } // Quick

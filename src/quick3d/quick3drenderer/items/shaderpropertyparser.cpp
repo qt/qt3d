@@ -54,14 +54,12 @@ ShaderPropertyParser::ShaderPropertyParser()
 {
 }
 
-QByteArray ShaderPropertyParser::compile(const QV4::CompiledData::QmlUnit *qmlUnit, const QList<const QV4::CompiledData::Binding *> &bindings)
+void ShaderPropertyParser::verifyBindings(const QV4::CompiledData::Unit *qmlUnit,
+                                          const QList<const QV4::CompiledData::Binding *> &bindings)
 {
-    QByteArray data;
-
-    // TO DO : Complete below when a proper Uniform API is defined
-
+    // TODO: Complete below when a proper Uniform API is defined
     Q_FOREACH (const QV4::CompiledData::Binding *binding, bindings) {
-        QString propertyName = qmlUnit->header.stringAt(binding->propertyNameIndex);
+        QString propertyName = qmlUnit->stringAt(binding->propertyNameIndex);
         qDebug() << Q_FUNC_INFO << "propertyName " << propertyName;
 
         if (binding->type == QV4::CompiledData::Binding::Type_Object) {
@@ -86,13 +84,11 @@ QByteArray ShaderPropertyParser::compile(const QV4::CompiledData::QmlUnit *qmlUn
             qDebug() << Q_FUNC_INFO << "Script property";
         }
     }
-
-    return data;
 }
 
-void ShaderPropertyParser::setCustomData(QObject *, const QByteArray &, QQmlCompiledData *)
+void ShaderPropertyParser::applyBindings(QObject *, QQmlCompiledData *, const QList<const QV4::CompiledData::Binding *> &)
 {
-
+    // TODO: Implement me
 }
 
 } // Quick
