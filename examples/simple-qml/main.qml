@@ -338,7 +338,7 @@ Entity {
                             },
                             RenderPass {
                                 criteria : [Criterion {name : "Name"; value : "Lighting" }]
-                                drawStates : [BlendState {srcRGB: BlendState.One; dstRGB : BlendState.One},
+                                renderStates : [BlendState {srcRGB: BlendState.One; dstRGB : BlendState.One},
                                               BlendEquation {mode: BlendEquation.FuncAdd},
                                               CullFace { mode : CullFace.Back },
                                               DepthTest { func : DepthTest.LessOrEqual}
