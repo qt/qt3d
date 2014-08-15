@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -60,14 +61,14 @@ public:
 };
 
 QBlendEquation::QBlendEquation(QNode *parent)
-    : QDrawState(*new QBlendEquationPrivate(this), parent)
+    : QRenderState(*new QBlendEquationPrivate(this), parent)
 {
 }
 
 void QBlendEquation::copy(const QNode *ref)
 {
     Q_D(QBlendEquation);
-    QDrawState::copy(ref);
+    QRenderState::copy(ref);
     const QBlendEquation *refState = qobject_cast<const QBlendEquation *>(ref);
     if (refState != Q_NULLPTR) {
         d->m_mode = refState->mode();

@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -45,7 +46,7 @@
 #include "qcriterion.h"
 #include "qparametermapper.h"
 #include "qscenepropertychange.h"
-#include "qdrawstate.h"
+#include "qrenderstate.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -76,8 +77,8 @@ QRenderPass *QRenderPass::doClone(QNode *clonedParent) const
         pass->addCriterion(qobject_cast<QCriterion *>(crit->clone(pass)));
     Q_FOREACH (QParameterMapper *binding, d->m_bindings)
         pass->addBinding(qobject_cast<QParameterMapper *>(binding->clone(pass)));
-    Q_FOREACH (QDrawState *drawState, d->m_drawStates)
-        pass->addDrawState(qobject_cast<QDrawState *>(drawState->clone(pass)));
+    Q_FOREACH (QRenderState *renderState, d->m_renderStates)
+        pass->addRenderState(qobject_cast<QRenderState *>(renderState->clone(pass)));
     pass->d_func()->m_shader = qobject_cast<QShaderProgram *>(d->m_shader->clone(pass));
 
     return pass;
@@ -95,13 +96,13 @@ ParameterList QRenderPass::uniforms() const
     return d->m_uniforms;
 }
 
-void QRenderPass::setStateSet(Render::DrawStateSet *ss)
+void QRenderPass::setStateSet(Render::RenderStateSet *ss)
 {
     Q_D(QRenderPass);
     d->m_stateSet = ss;
 }
 
-Render::DrawStateSet *QRenderPass::stateSet() const
+Render::RenderStateSet *QRenderPass::stateSet() const
 {
     Q_D(const QRenderPass);
     return d->m_stateSet;
@@ -190,41 +191,41 @@ QList<QParameterMapper *> QRenderPass::bindings() const
     return d->m_bindings;
 }
 
-void QRenderPass::addDrawState(QDrawState *state)
+void QRenderPass::addRenderState(QRenderState *state)
 {
     Q_D(QRenderPass);
 
-    if (!d->m_drawStates.contains(state)) {
-        d->m_drawStates.append(state);
+    if (!d->m_renderStates.contains(state)) {
+        d->m_renderStates.append(state);
 
         if (!state->parent() || state->parent() == this)
             QNode::addChild(state);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
-            change->setPropertyName(QByteArrayLiteral("drawState"));
+            change->setPropertyName(QByteArrayLiteral("renderState"));
             change->setValue(QVariant::fromValue(state->clone()));
             notifyObservers(change);
         }
     }
 }
 
-void QRenderPass::removeDrawState(QDrawState *state)
+void QRenderPass::removeRenderState(QRenderState *state)
 {
     Q_D(QRenderPass);
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, this));
-        change->setPropertyName(QByteArrayLiteral("drawState"));
+        change->setPropertyName(QByteArrayLiteral("renderState"));
         change->setValue(QVariant::fromValue(state->uuid()));
         notifyObservers(change);
     }
-    d->m_drawStates.removeOne(state);
+    d->m_renderStates.removeOne(state);
 }
 
-QList<QDrawState *> QRenderPass::drawStates() const
+QList<QRenderState *> QRenderPass::renderStates() const
 {
     Q_D(const QRenderPass);
-    return d->m_drawStates;
+    return d->m_renderStates;
 }
 
 } // namespace Qt3D

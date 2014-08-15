@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -46,7 +47,7 @@
 #include "rendertexture.h"
 #include "rendercommand.h"
 #include "qparameter.h"
-#include "drawstate.h"
+#include "renderstate.h"
 #include "qgraphicshelperinterface.h"
 #include "qopenglfilter.h"
 #include "renderer.h"
@@ -340,7 +341,7 @@ void QGraphicsContext::deactivateTexture(RenderTexture* tex)
     qCWarning(Backend) << Q_FUNC_INFO << "texture not active:" << tex;
 }
 
-void QGraphicsContext::setCurrentStateSet(DrawStateSet *ss)
+void QGraphicsContext::setCurrentStateSet(RenderStateSet *ss)
 {
     if (ss == m_stateSet)
         return;
@@ -349,7 +350,7 @@ void QGraphicsContext::setCurrentStateSet(DrawStateSet *ss)
     m_stateSet = ss;
 }
 
-DrawStateSet *QGraphicsContext::currentStateSet() const
+RenderStateSet *QGraphicsContext::currentStateSet() const
 {
     return m_stateSet;
 }

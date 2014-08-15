@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -63,7 +64,7 @@ class RenderMaterial;
 class RenderMesh;
 class RenderShader;
 class RenderTechnique;
-class DrawStateSet;
+class RenderStateSet;
 
 typedef QHandle<QOpenGLVertexArrayObject*, 16> HVao;
 typedef QHandle<RenderMaterial, 16> HMaterial;
@@ -91,7 +92,7 @@ public:
     QUniformPack m_uniforms; // Might need to be reworked so as to be able to destroy the
                             // RenderTexture while submission is happening.
     GLint m_instancesCount; // Number of instances of the mesh, if 0 regular draw otherwise glDrawArraysInstanced or glDrawElementsInstanced
-    DrawStateSet *m_stateSet;
+    RenderStateSet *m_stateSet;
 
     // A QAttribute pack might be interesting
     // This is a temporary fix in the meantime, to remove the hacked methods in RenderTechnique

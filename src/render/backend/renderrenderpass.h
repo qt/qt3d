@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -54,7 +55,7 @@ class QRenderPass;
 class QAbstractShader;
 class QParameterMapper;
 class QCriterion;
-class QDrawState;
+class QRenderState;
 
 namespace Render {
 
@@ -74,7 +75,7 @@ public:
     QList<QParameterMapper *> bindings() const;
     QList<QUuid> criteria() const;
     QUuid renderPassUuid() const;
-    QList<QDrawState *> drawStates() const;
+    QList<QRenderState *> renderStates() const;
 
     void appendCriterion(QCriterion *criterion);
     void removeCriterion(const QUuid &criterionId);
@@ -82,15 +83,15 @@ public:
     void appendBinding(QParameterMapper *binding);
     void removeBinding(const QUuid &bindingId);
 
-    void appendDrawState(QDrawState *drawState);
-    void removeDrawState(const QUuid &drawStateId);
+    void appendRenderState(QRenderState *renderState);
+    void removeRenderState(const QUuid &renderStateId);
 
 private:
     Renderer *m_renderer;
     QUuid m_passUuid;
     QUuid m_shaderUuid;
     QHash<QUuid, QParameterMapper *> m_bindings;
-    QHash<QUuid, QDrawState *> m_drawStates;
+    QHash<QUuid, QRenderState *> m_renderStates;
     QList<QUuid> m_criteriaList;
 };
 

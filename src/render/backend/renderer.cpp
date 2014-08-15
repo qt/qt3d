@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -72,7 +73,7 @@
 #include <qgraphicscontext.h>
 #include <rendercameralens.h>
 #include <rendertextureprovider.h>
-#include <drawstate.h>
+#include <renderstate.h>
 #include <states/blendstate.h>
 #include <entitymanager.h>
 #include <renderview.h>
@@ -173,10 +174,10 @@ void Renderer::buildDefaultTechnique()
     QRenderPass* basicPass = new QRenderPass;
     basicPass->setShaderProgram(defaultShader);
 
-    m_defaultDrawStateSet = new DrawStateSet;
-    m_defaultDrawStateSet->addState(DepthTest::getOrCreate(GL_LESS));
-    m_defaultDrawStateSet->addState(CullFace::getOrCreate(GL_BACK));
-    basicPass->setStateSet(m_defaultDrawStateSet);
+    m_defaultRenderStateSet = new RenderStateSet;
+    m_defaultRenderStateSet->addState(DepthTest::getOrCreate(GL_LESS));
+    m_defaultRenderStateSet->addState(CullFace::getOrCreate(GL_BACK));
+    basicPass->setStateSet(m_defaultRenderStateSet);
 
     m_defaultTechnique->addPass(basicPass);
 
@@ -553,7 +554,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
         if (command->m_stateSet != Q_NULLPTR)
             m_graphicsContext->setCurrentStateSet(command->m_stateSet);
         else
-            m_graphicsContext->setCurrentStateSet(m_defaultDrawStateSet);
+            m_graphicsContext->setCurrentStateSet(m_defaultRenderStateSet);
 
         // All Uniforms for a pass are stored in the QUniformPack of the command
         // Uniforms for Effect, Material and Technique should already have been correctly resolved

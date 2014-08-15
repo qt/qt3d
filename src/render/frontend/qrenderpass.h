@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -46,7 +47,7 @@
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 #include <Qt3DRenderer/qshaderprogram.h>
-#include <Qt3DRenderer/drawstate.h>
+#include <Qt3DRenderer/renderstate.h>
 #include <Qt3DRenderer/qcriterion.h>
 
 #include <QHash>
@@ -57,7 +58,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QParameter;
-class QDrawState;
+class QRenderState;
 class QParameterMapper;
 typedef QList<QParameter*> ParameterList;
 
@@ -79,8 +80,8 @@ public:
     ParameterList attributes() const;
     ParameterList uniforms() const;
 
-    void setStateSet(Render::DrawStateSet* ss);
-    Render::DrawStateSet* stateSet() const;
+    void setStateSet(Render::RenderStateSet* ss);
+    Render::RenderStateSet* stateSet() const;
 
     void addCriterion(QCriterion *criterion);
     void removeCriterion(QCriterion *criterion);
@@ -91,9 +92,9 @@ public:
     void removeBinding(QParameterMapper *binding);
     QList<QParameterMapper *> bindings() const;
 
-    void addDrawState(QDrawState *state);
-    void removeDrawState(QDrawState *state);
-    QList<QDrawState *> drawStates() const;
+    void addRenderState(QRenderState *state);
+    void removeRenderState(QRenderState *state);
+    QList<QRenderState *> renderStates() const;
 
 protected:
     Q_DECLARE_PRIVATE(QRenderPass)

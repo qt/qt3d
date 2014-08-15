@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -52,12 +53,12 @@ namespace Qt3D {
 class QRenderPass;
 class QParameter;
 class QParameterMapper;
-class QDrawState;
+class QRenderState;
 typedef QList<QParameter*> ParameterList;
 
 namespace Render
 {
-class DrawStateSet;
+class RenderStateSet;
 }
 
 class QT3DRENDERERSHARED_EXPORT QRenderPassPrivate : public QAbstractRenderPassPrivate
@@ -73,9 +74,9 @@ public:
     QHash<QString, QString> m_parameterNameDict;
     QList<QCriterion *> m_criteriaList;
     QList<QParameterMapper *> m_bindings;
-    QList<QDrawState *> m_drawStates;
+    QList<QRenderState *> m_renderStates;
 
-    Render::DrawStateSet* m_stateSet;
+    Render::RenderStateSet* m_stateSet;
 };
 
 } // Qt3D

@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -61,13 +62,13 @@ public:
 };
 
 QDepthMask::QDepthMask(QNode *parent)
-    : QDrawState(*new QDepthMaskPrivate(this), parent)
+    : QRenderState(*new QDepthMaskPrivate(this), parent)
 {
 }
 
 void QDepthMask::copy(const QNode *ref)
 {
-    QDrawState::copy(ref);
+    QRenderState::copy(ref);
     Q_D(QDepthMask);
     const QDepthMask *refState = qobject_cast<const QDepthMask *>(ref);
     if (refState != Q_NULLPTR) {

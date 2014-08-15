@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -123,7 +124,7 @@ private:
     void    createRenderTexture(Texture *tex);
     void setShaderAndUniforms(RenderCommand *command, RenderRenderPass *pass, QHash<QString, QVariant> &parameters);
     QHash<QString, QVariant> parametersFromMaterialEffectTechnique(RenderMaterial *material, RenderEffect *effect, RenderTechnique *technique);
-    DrawStateSet *buildDrawStateSet(RenderRenderPass *pass);
+    RenderStateSet *buildRenderStateSet(RenderRenderPass *pass);
 
     Renderer *m_renderer;
     QFrameAllocator *m_allocator;

@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -241,8 +242,8 @@ RenderView::~RenderView()
         // Deallocate all uniform values of the QUniformPack of each RenderCommand
         Q_FOREACH (const QUniformValue *v, command->m_uniforms.uniforms().values())
             m_allocator->deallocate<QUniformValue>(const_cast<QUniformValue *>(v));
-        if (command->m_stateSet != Q_NULLPTR) // We do not delete the DrawState as there are stored statically
-            m_allocator->deallocate<DrawStateSet>(command->m_stateSet);
+        if (command->m_stateSet != Q_NULLPTR) // We do not delete the RenderState as there are stored statically
+            m_allocator->deallocate<RenderStateSet>(command->m_stateSet);
         // Deallocate RenderCommand
         m_allocator->deallocate<RenderCommand>(command);
     }
@@ -320,7 +321,7 @@ void RenderView::sort()
 
     // The goal here is to sort RenderCommand by :
     // 1) Shader
-    // 2) DrawStateSet
+    // 2) RenderStateSet
     // 2) Texture
 
     std::sort(m_commands.begin(), m_commands.end());
@@ -384,7 +385,7 @@ void RenderView::buildRenderCommands(RenderEntity *node)
                     command->m_meshData = mesh->meshData();
                     command->m_instancesCount = 0;
                     command->m_worldMatrix = *(node->worldTransform());
-                    command->m_stateSet = buildDrawStateSet(pass);
+                    command->m_stateSet = buildRenderStateSet(pass);
                     setShaderAndUniforms(command, pass, parameters);
                     m_commands.append(command);
                 }
@@ -492,54 +493,54 @@ QHash<QString, QVariant> RenderView::parametersFromMaterialEffectTechnique(Rende
     return params;
 }
 
-// Build a DrawStateSet from the QDrawState stored in the RenderRenderPass
-DrawStateSet *RenderView::buildDrawStateSet(RenderRenderPass *pass)
+// Build a RenderStateSet from the QRenderState stored in the RenderRenderPass
+RenderStateSet *RenderView::buildRenderStateSet(RenderRenderPass *pass)
 {
-    if (pass != Q_NULLPTR && pass->drawStates().count() > 0) {
-        DrawStateSet *stateSet = m_allocator->allocate<DrawStateSet>();
+    if (pass != Q_NULLPTR && pass->renderStates().count() > 0) {
+        RenderStateSet *stateSet = m_allocator->allocate<RenderStateSet>();
 
-        Q_FOREACH (QDrawState *drawState, pass->drawStates()) {
-            if (qobject_cast<QAlphaTest *>(drawState) != Q_NULLPTR) {
-                QAlphaTest *alphaTest = qobject_cast<QAlphaTest *>(drawState);
+        Q_FOREACH (QRenderState *renderState, pass->renderStates()) {
+            if (qobject_cast<QAlphaTest *>(renderState) != Q_NULLPTR) {
+                QAlphaTest *alphaTest = qobject_cast<QAlphaTest *>(renderState);
                 stateSet->addState(AlphaFunc::getOrCreate(alphaTest->func(), alphaTest->clamp()));
             }
-            else if (qobject_cast<QBlendEquation *>(drawState) != Q_NULLPTR) {
-                QBlendEquation *blendEquation = qobject_cast<QBlendEquation *>(drawState);
+            else if (qobject_cast<QBlendEquation *>(renderState) != Q_NULLPTR) {
+                QBlendEquation *blendEquation = qobject_cast<QBlendEquation *>(renderState);
                 stateSet->addState(BlendEquation::getOrCreate(blendEquation->mode()));
             }
-            else if (qobject_cast<QBlendState *>(drawState) != Q_NULLPTR) {
-                QBlendState *blendState = qobject_cast<QBlendState *>(drawState);
+            else if (qobject_cast<QBlendState *>(renderState) != Q_NULLPTR) {
+                QBlendState *blendState = qobject_cast<QBlendState *>(renderState);
                 // TO DO : Handle Alpha here as weel
                 stateSet->addState(BlendState::getOrCreate(blendState->srcRGB(), blendState->dstRGB()));
             }
-            else if (qobject_cast<QCullFace *>(drawState) != Q_NULLPTR) {
-                QCullFace *cullFace = qobject_cast<QCullFace *>(drawState);
+            else if (qobject_cast<QCullFace *>(renderState) != Q_NULLPTR) {
+                QCullFace *cullFace = qobject_cast<QCullFace *>(renderState);
                 stateSet->addState(CullFace::getOrCreate(cullFace->mode()));
             }
-            else if (qobject_cast<QDepthMask *>(drawState) != Q_NULLPTR) {
-                QDepthMask *depthMask = qobject_cast<QDepthMask *>(drawState);
+            else if (qobject_cast<QDepthMask *>(renderState) != Q_NULLPTR) {
+                QDepthMask *depthMask = qobject_cast<QDepthMask *>(renderState);
                 stateSet->addState(DepthMask::getOrCreate(depthMask->mask()));
             }
-            else if (qobject_cast<QDepthTest *>(drawState) != Q_NULLPTR) {
-                QDepthTest *depthTest = qobject_cast<QDepthTest *>(drawState);
+            else if (qobject_cast<QDepthTest *>(renderState) != Q_NULLPTR) {
+                QDepthTest *depthTest = qobject_cast<QDepthTest *>(renderState);
                 stateSet->addState(DepthTest::getOrCreate(depthTest->func()));
             }
-            else if (qobject_cast<QDithering *>(drawState) != Q_NULLPTR) {
+            else if (qobject_cast<QDithering *>(renderState) != Q_NULLPTR) {
                 stateSet->addState(Dithering::getOrCreate());
             }
-            else if (qobject_cast<QFrontFace *>(drawState) != Q_NULLPTR) {
-                QFrontFace *frontFace = qobject_cast<QFrontFace *>(drawState);
+            else if (qobject_cast<QFrontFace *>(renderState) != Q_NULLPTR) {
+                QFrontFace *frontFace = qobject_cast<QFrontFace *>(renderState);
                 stateSet->addState(FrontFace::getOrCreate(frontFace->direction()));
             }
-            else if (qobject_cast<QScissorTest *>(drawState) != Q_NULLPTR) {
-                QScissorTest *scissorTest = qobject_cast<QScissorTest *>(drawState);
+            else if (qobject_cast<QScissorTest *>(renderState) != Q_NULLPTR) {
+                QScissorTest *scissorTest = qobject_cast<QScissorTest *>(renderState);
                 stateSet->addState(ScissorTest::getOrCreate(scissorTest->left(),
                                                             scissorTest->bottom(),
                                                             scissorTest->width(),
                                                             scissorTest->height()));
             }
-            else if (qobject_cast<QStencilTest *>(drawState) != Q_NULLPTR) {
-                QStencilTest *stencilTest = qobject_cast<QStencilTest*>(drawState);
+            else if (qobject_cast<QStencilTest *>(renderState) != Q_NULLPTR) {
+                QStencilTest *stencilTest = qobject_cast<QStencilTest*>(renderState);
                 stateSet->addState(StencilTest::getOrCreate(stencilTest->mask(),
                                                             stencilTest->func(),
                                                             stencilTest->faceMode()));

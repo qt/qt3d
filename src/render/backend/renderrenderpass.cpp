@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -49,7 +50,7 @@
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qabstractshader.h>
 #include <Qt3DRenderer/qparametermapper.h>
-#include <Qt3DRenderer/qdrawstate.h>
+#include <Qt3DRenderer/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -101,8 +102,8 @@ void RenderRenderPass::setPeer(QRenderPass *peer)
                 appendBinding(qobject_cast<QParameterMapper *>(binding->clone()));
             Q_FOREACH (QCriterion *c, peer->criteria())
                 appendCriterion(c);
-            Q_FOREACH (QDrawState *drawState, peer->drawStates())
-                appendDrawState(drawState);
+            Q_FOREACH (QRenderState *renderState, peer->renderStates())
+                appendRenderState(renderState);
         }
     }
 }
@@ -122,8 +123,8 @@ void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
         else if (propertyChange->propertyName() == QByteArrayLiteral("binding")) {
             appendBinding(propertyChange->value().value<QParameterMapper *>());
         }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("drawState")) {
-            appendDrawState(propertyChange->value().value<QDrawState *>());
+        else if (propertyChange->propertyName() == QByteArrayLiteral("renderState")) {
+            appendRenderState(propertyChange->value().value<QRenderState *>());
         }
         break;
     }
@@ -138,8 +139,8 @@ void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
         else if (propertyChange->propertyName() == QByteArrayLiteral("binding")) {
             removeBinding(propertyChange->value().toUuid());
         }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("drawState")) {
-            removeDrawState(propertyChange->value().toUuid());
+        else if (propertyChange->propertyName() == QByteArrayLiteral("renderState")) {
+            removeRenderState(propertyChange->value().toUuid());
         }
         break;
     }
@@ -169,9 +170,9 @@ QUuid RenderRenderPass::renderPassUuid() const
     return m_passUuid;
 }
 
-QList<QDrawState *> RenderRenderPass::drawStates() const
+QList<QRenderState *> RenderRenderPass::renderStates() const
 {
-    return m_drawStates.values();
+    return m_renderStates.values();
 }
 
 void RenderRenderPass::appendCriterion(QCriterion *criterion)
@@ -196,15 +197,15 @@ void RenderRenderPass::removeBinding(const QUuid &bindingId)
     m_bindings.remove(bindingId);
 }
 
-void RenderRenderPass::appendDrawState(QDrawState *drawState)
+void RenderRenderPass::appendRenderState(QRenderState *renderState)
 {
-    if (!m_drawStates.contains(drawState->uuid()))
-        m_drawStates[drawState->uuid()] = drawState;
+    if (!m_renderStates.contains(renderState->uuid()))
+        m_renderStates[renderState->uuid()] = renderState;
 }
 
-void RenderRenderPass::removeDrawState(const QUuid &drawStateId)
+void RenderRenderPass::removeRenderState(const QUuid &renderStateId)
 {
-    m_drawStates.remove(drawStateId);
+    m_renderStates.remove(renderStateId);
 }
 
 } // Render

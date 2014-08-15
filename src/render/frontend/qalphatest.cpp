@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -63,13 +64,13 @@ public:
 };
 
 QAlphaTest::QAlphaTest(QNode *parent)
-    : QDrawState(*new QAlphaTestPrivate(this), parent)
+    : QRenderState(*new QAlphaTestPrivate(this), parent)
 {
 }
 
 void QAlphaTest::copy(const QNode *ref)
 {
-    QDrawState::copy(ref);
+    QRenderState::copy(ref);
     Q_D(QAlphaTest);
     const QAlphaTest *refState = qobject_cast<const QAlphaTest *>(ref);
     if (refState != Q_NULLPTR) {

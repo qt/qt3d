@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -61,13 +62,13 @@ public :
 };
 
 QDepthTest::QDepthTest(QNode *parent)
-    : QDrawState(*new QDepthTestPrivate(this), parent)
+    : QRenderState(*new QDepthTestPrivate(this), parent)
 {
 }
 
 void QDepthTest::copy(const QNode *ref)
 {
-    QDrawState::copy(ref);
+    QRenderState::copy(ref);
     Q_D(QDepthTest);
     const QDepthTest *refState = qobject_cast<const QDepthTest *>(ref);
     if (refState != Q_NULLPTR) {

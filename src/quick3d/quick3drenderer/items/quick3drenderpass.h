@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -59,13 +60,13 @@ class QT3DQUICKRENDERERSHARED_EXPORT Quick3DRenderPass : public QObject
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Qt3D::QCriterion> criteria READ criteriaList)
     Q_PROPERTY(QQmlListProperty<Qt3D::QParameterMapper> bindings READ bindingList)
-    Q_PROPERTY(QQmlListProperty<Qt3D::QDrawState> drawStates READ drawStateList)
+    Q_PROPERTY(QQmlListProperty<Qt3D::QRenderState> renderStates READ renderStateList)
 public:
     explicit Quick3DRenderPass(QObject *parent = 0);
 
     QQmlListProperty<Qt3D::QCriterion> criteriaList();
     QQmlListProperty<Qt3D::QParameterMapper> bindingList();
-    QQmlListProperty<Qt3D::QDrawState> drawStateList();
+    QQmlListProperty<Qt3D::QRenderState> renderStateList();
     inline QRenderPass *parentRenderPass() const { return qobject_cast<QRenderPass *>(parent()); }
 
 private:
@@ -79,10 +80,10 @@ private:
     static int bindingsCount(QQmlListProperty<Qt3D::QParameterMapper> *list);
     static void clearBindings(QQmlListProperty<Qt3D::QParameterMapper> *list);
 
-    static void appendDrawState(QQmlListProperty<Qt3D::QDrawState> *list, QDrawState *state);
-    static QDrawState *drawStateAt(QQmlListProperty<Qt3D::QDrawState> *list, int index);
-    static int drawStateCount(QQmlListProperty<Qt3D::QDrawState> *list);
-    static void clearDrawStates(QQmlListProperty<Qt3D::QDrawState> *list);
+    static void appendRenderState(QQmlListProperty<Qt3D::QRenderState> *list, QRenderState *state);
+    static QRenderState *renderStateAt(QQmlListProperty<Qt3D::QRenderState> *list, int index);
+    static int renderStateCount(QQmlListProperty<Qt3D::QRenderState> *list);
+    static void clearRenderStates(QQmlListProperty<Qt3D::QRenderState> *list);
 };
 
 } // Quick

@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -73,13 +74,13 @@ QQmlListProperty<QParameterMapper> Quick3DRenderPass::bindingList()
                                                     &Quick3DRenderPass::clearBindings);
 }
 
-QQmlListProperty<QDrawState> Quick3DRenderPass::drawStateList()
+QQmlListProperty<QRenderState> Quick3DRenderPass::renderStateList()
 {
-    return QQmlListProperty<Qt3D::QDrawState>(this, 0,
-                                              &Quick3DRenderPass::appendDrawState,
-                                              &Quick3DRenderPass::drawStateCount,
-                                              &Quick3DRenderPass::drawStateAt,
-                                              &Quick3DRenderPass::clearDrawStates);
+    return QQmlListProperty<Qt3D::QRenderState>(this, 0,
+                                              &Quick3DRenderPass::appendRenderState,
+                                              &Quick3DRenderPass::renderStateCount,
+                                              &Quick3DRenderPass::renderStateAt,
+                                              &Quick3DRenderPass::clearRenderStates);
 }
 
 void Quick3DRenderPass::appendCriteria(QQmlListProperty<QCriterion> *list, QCriterion *criterion)
@@ -132,29 +133,29 @@ void Quick3DRenderPass::clearBindings(QQmlListProperty<QParameterMapper> *list)
         rPass->parentRenderPass()->removeBinding(binding);
 }
 
-void Quick3DRenderPass::appendDrawState(QQmlListProperty<QDrawState> *list, QDrawState *state)
+void Quick3DRenderPass::appendRenderState(QQmlListProperty<QRenderState> *list, QRenderState *state)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
-    rPass->parentRenderPass()->addDrawState(state);
+    rPass->parentRenderPass()->addRenderState(state);
 }
 
-QDrawState *Quick3DRenderPass::drawStateAt(QQmlListProperty<QDrawState> *list, int index)
+QRenderState *Quick3DRenderPass::renderStateAt(QQmlListProperty<QRenderState> *list, int index)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
-    return rPass->parentRenderPass()->drawStates().at(index);
+    return rPass->parentRenderPass()->renderStates().at(index);
 }
 
-int Quick3DRenderPass::drawStateCount(QQmlListProperty<QDrawState> *list)
+int Quick3DRenderPass::renderStateCount(QQmlListProperty<QRenderState> *list)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
-    return rPass->parentRenderPass()->drawStates().count();
+    return rPass->parentRenderPass()->renderStates().count();
 }
 
-void Quick3DRenderPass::clearDrawStates(QQmlListProperty<QDrawState> *list)
+void Quick3DRenderPass::clearRenderStates(QQmlListProperty<QRenderState> *list)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
-    Q_FOREACH (QDrawState *s, rPass->parentRenderPass()->drawStates())
-        rPass->parentRenderPass()->removeDrawState(s);
+    Q_FOREACH (QRenderState *s, rPass->parentRenderPass()->renderStates())
+        rPass->parentRenderPass()->removeRenderState(s);
 }
 
 } // Quick

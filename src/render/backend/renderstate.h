@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -39,8 +40,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_DRAWSTATE_H
-#define QT3D_RENDER_DRAWSTATE_H
+#ifndef QT3D_RENDER_RENDERSTATE_H
+#define QT3D_RENDER_RENDERSTATE_H
 
 #include <QList>
 #include <QSet>
@@ -68,12 +69,7 @@ enum StateMask
 
 typedef quint64 StateMaskSet;
 
-// winuser.h has a #define called DrawState. Let's get rid of it
-#if defined(DrawState)
-#undef DrawState
-#endif
-
-class DrawState
+class RenderState
 {
 public:
     virtual void apply(QGraphicsContext* gc) const = 0;
@@ -83,12 +79,12 @@ public:
 protected:
 };
 
-class DrawStateSet
+class RenderStateSet
 {
 public:
-    DrawStateSet();
+    RenderStateSet();
 
-    void addState(DrawState* ds);
+    void addState(RenderState* ds);
 
     /**
      * @brief changeCost - metric of cost to change to this state-set from
@@ -97,7 +93,7 @@ public:
      * @param previousState
      * @return
      */
-    int changeCost(DrawStateSet* previousState);
+    int changeCost(RenderStateSet* previousState);
 
     void apply(QGraphicsContext* gc);
 
@@ -110,14 +106,14 @@ private:
      * @param ds
      * @return
      */
-    bool contains(DrawState* ds) const;
+    bool contains(RenderState* ds) const;
 
-    QSet<DrawState*> m_states;
+    QSet<RenderState*> m_states;
 
     StateMaskSet m_stateMask;
 
-    DrawStateSet* m_cachedPrevious;
-    QList<DrawState*> m_cachedDeltaStates;
+    RenderStateSet* m_cachedPrevious;
+    QList<RenderState*> m_cachedDeltaStates;
 };
 
 } // Render
@@ -125,4 +121,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_DRAWSTATE_H
+#endif // QT3D_RENDER_RENDERSTATE_H

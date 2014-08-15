@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -181,7 +182,7 @@ DepthMask::DepthMask(GLboolean flag) :
 }
 
 Dithering::Dithering()
-    : DrawState()
+    : RenderState()
 {
 }
 

@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -70,7 +71,7 @@
 #include <QVector3D>
 
 // need to move these to somewhere common?
-#include <drawstate.h>
+#include <renderstate.h>
 #include <states/blendstate.h>
 
 QT_BEGIN_NAMESPACE
@@ -869,10 +870,10 @@ void GLTFParser::processJSONTechnique( QString id, QJsonObject jsonObj )
         } // of program-instance attributes
 
         QJsonObject states = po.value(KEY_STATES).toObject();
-        Render::DrawStateSet* ss = new Render::DrawStateSet;
+        Render::RenderStateSet* ss = new Render::RenderStateSet;
 
         Q_FOREACH (QString stateName, states.keys()) {
-            Render::DrawState* s= buildState(stateName.toUtf8(), states.value(stateName));
+            Render::RenderState* s= buildState(stateName.toUtf8(), states.value(stateName));
             if (!s)
                 continue;
 
@@ -886,7 +887,7 @@ void GLTFParser::processJSONTechnique( QString id, QJsonObject jsonObj )
     m_techniques[id] = t;
 }
 
-Render::DrawState* GLTFParser::buildState(const QByteArray& nm, QJsonValue v)
+Render::RenderState* GLTFParser::buildState(const QByteArray& nm, QJsonValue v)
 {
     if (nm == "blendEnable") {
         return NULL; // will see a blendEquation spec too

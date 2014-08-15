@@ -46,7 +46,6 @@ HEADERS += \
     $$PWD/qplanemesh_p.h \
     $$PWD/qcuboidmesh.h \
     $$PWD/qcuboidmesh_p.h \
-    $$PWD/qdrawstate.h \
     $$PWD/qblendstate.h \
     $$PWD/qblendequation.h \
     $$PWD/qalphatest.h \
@@ -56,7 +55,8 @@ HEADERS += \
     $$PWD/qfrontface.h \
     $$PWD/qstenciltest.h \
     $$PWD/qscissortest.h \
-    $$PWD/qdithering.h
+    $$PWD/qdithering.h \
+    $$PWD/qrenderstate.h
 
 SOURCES += \
     $$PWD/qmaterial.cpp \
@@ -84,7 +84,6 @@ SOURCES += \
     $$PWD/qopenglfilter.cpp \
     $$PWD/qplanemesh.cpp \
     $$PWD/qcuboidmesh.cpp \
-    $$PWD/qdrawstate.cpp \
     $$PWD/qblendstate.cpp \
     $$PWD/qblendequation.cpp \
     $$PWD/qalphatest.cpp \
@@ -94,4 +93,5 @@ SOURCES += \
     $$PWD/qfrontface.cpp \
     $$PWD/qstenciltest.cpp \
     $$PWD/qscissortest.cpp \
-    $$PWD/qdithering.cpp
+    $$PWD/qdithering.cpp \
+    $$PWD/qrenderstate.cpp

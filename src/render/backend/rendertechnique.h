@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -61,7 +62,7 @@ class QAbstractRenderPass;
 namespace Render {
 
 class RenderBin;
-class DrawStateSet;
+class RenderStateSet;
 class RenderShader;
 class Renderer;
 
@@ -76,7 +77,7 @@ public:
 
     void setPeer(QTechnique* peer);
 
-    DrawStateSet* stateSetForPass(unsigned int pass) const;
+    RenderStateSet* stateSetForPass(unsigned int pass) const;
 
     QString glslNameForMeshAttribute(unsigned int pass, QString meshAttributeName);
 

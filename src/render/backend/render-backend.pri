@@ -20,7 +20,6 @@ HEADERS += \
     $$PWD/rendertexture.h \
     $$PWD/rendertextureprovider.h \
     $$PWD/meshdatamanager.h \
-    $$PWD/drawstate.h \
     $$PWD/states/blendstate.h \
     $$PWD/genericstate.h \
     $$PWD/qgraphicshelperinterface.h \
@@ -55,7 +54,8 @@ HEADERS += \
     $$PWD/rendersceneobserver.h \
     $$PWD/framegraphmanager.h \
     $$PWD/rendertransform.h \
-    $$PWD/transformmanager.h
+    $$PWD/transformmanager.h \
+    $$PWD/renderstate.h
 
 SOURCES += \
     $$PWD/rendereraspect.cpp \
@@ -74,7 +74,6 @@ SOURCES += \
     $$PWD/rendertexture.cpp \
     $$PWD/rendertextureprovider.cpp \
     $$PWD/meshdatamanager.cpp \
-    $$PWD/drawstate.cpp \
     $$PWD/states/blendstate.cpp \
     $$PWD/qgraphicshelpergl3.cpp \
     $$PWD/qgraphicshelperes2.cpp \
@@ -107,4 +106,5 @@ SOURCES += \
     $$PWD/rendersceneobserver.cpp \
     $$PWD/framegraphmanager.cpp \
     $$PWD/rendertransform.cpp \
-    $$PWD/transformmanager.cpp
+    $$PWD/transformmanager.cpp \
+    $$PWD/renderstate.cpp

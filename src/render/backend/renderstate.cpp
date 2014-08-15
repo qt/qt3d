@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -39,7 +40,7 @@
 **
 ****************************************************************************/
 
-#include "drawstate.h"
+#include "renderstate.h"
 
 #include <bitset>
 
@@ -55,21 +56,21 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
-DrawStateSet::DrawStateSet()
+RenderStateSet::RenderStateSet()
     : m_stateMask(0)
     , m_cachedPrevious(0)
 {
 
 }
 
-void DrawStateSet::addState(DrawState *ds)
+void RenderStateSet::addState(RenderState *ds)
 {
     Q_ASSERT(ds);
     m_states.insert(ds);
     m_stateMask |= ds->mask();
 }
 
-int DrawStateSet::changeCost(DrawStateSet *previousState)
+int RenderStateSet::changeCost(RenderStateSet *previousState)
 {
     if (previousState == this)
         return 0;
@@ -84,7 +85,7 @@ int DrawStateSet::changeCost(DrawStateSet *previousState)
     cost += bs.count();
 
 // now, find out how many states we're changing
-    foreach (DrawState* ds, m_states) {
+    foreach (RenderState* ds, m_states) {
         // if the other state contains matching, then doesn't
         // contribute to cost at all
         if (previousState->contains(ds)) {
@@ -92,16 +93,16 @@ int DrawStateSet::changeCost(DrawStateSet *previousState)
         }
 
         // flat cost for now; could be replaced with a cost() method on
-        // DrawState
+        // RenderState
         cost += 2;
     }
 
     return cost;
 }
 
-void DrawStateSet::apply(QGraphicsContext *gc)
+void RenderStateSet::apply(QGraphicsContext *gc)
 {
-    DrawStateSet* previousStates = gc->currentStateSet();
+    RenderStateSet* previousStates = gc->currentStateSet();
 
     StateMaskSet invOurState = ~stateMask();
     // generate a mask for each set bit in previous, where we do not have
@@ -114,7 +115,7 @@ void DrawStateSet::apply(QGraphicsContext *gc)
 
     if (m_cachedPrevious && previousStates == m_cachedPrevious) {
         // state-change cache hit
-        foreach (DrawState* ds, m_cachedDeltaStates) {
+        foreach (RenderState* ds, m_cachedDeltaStates) {
             ds->apply(gc);
         }
     } else {
@@ -122,7 +123,7 @@ void DrawStateSet::apply(QGraphicsContext *gc)
         m_cachedDeltaStates.clear();
         m_cachedPrevious = previousStates;
 
-        foreach (DrawState* ds, m_states) {
+        foreach (RenderState* ds, m_states) {
             if (previousStates && previousStates->contains(ds)) {
                 continue;
             }
@@ -133,12 +134,12 @@ void DrawStateSet::apply(QGraphicsContext *gc)
     }
 }
 
-StateMaskSet DrawStateSet::stateMask() const
+StateMaskSet RenderStateSet::stateMask() const
 {
     return m_stateMask;
 }
 
-void DrawStateSet::resetMasked(StateMaskSet maskOfStatesToReset, QGraphicsContext *gc)
+void RenderStateSet::resetMasked(StateMaskSet maskOfStatesToReset, QGraphicsContext *gc)
 {
     Q_UNUSED(gc);
     // TO DO -> Call gcHelper methods instead of raw GL
@@ -180,7 +181,7 @@ void DrawStateSet::resetMasked(StateMaskSet maskOfStatesToReset, QGraphicsContex
     }
 }
 
-bool DrawStateSet::contains(DrawState *ds) const
+bool RenderStateSet::contains(RenderState *ds) const
 {
     // trivial reject using the state mask bits
     if (!(ds->mask() & stateMask()))

@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -71,7 +72,7 @@
 #include <Qt3DRenderer/qdirectionallight.h>
 #include <Qt3DRenderer/qpointlight.h>
 #include <Qt3DRenderer/qopenglfilter.h>
-#include <Qt3DRenderer/qdrawstate.h>
+#include <Qt3DRenderer/qrenderstate.h>
 #include <Qt3DRenderer/qblendstate.h>
 #include <Qt3DRenderer/qblendequation.h>
 #include <Qt3DRenderer/qalphatest.h>
@@ -141,8 +142,8 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterExtendedUncreatableType<Qt3D::QFrameGraphItem, Qt3D::Render::Quick::Quick3DFrameGraphItem>(uri, 2, 0, "FrameGraphItem", QStringLiteral("FrameGraphItem is a base class"));
     qmlRegisterType<Qt3D::QFrameGraph>(uri, 2, 0, "FrameGraph");
 
-    // DrawStates
-    qmlRegisterUncreatableType<Qt3D::QDrawState>(uri, 2, 0, "DrawState", QStringLiteral("QDrawState is a base class"));
+    // RenderStates
+    qmlRegisterUncreatableType<Qt3D::QRenderState>(uri, 2, 0, "RenderState", QStringLiteral("QRenderState is a base class"));
     qmlRegisterType<Qt3D::QBlendState>(uri, 2, 0, "BlendState");
     qmlRegisterType<Qt3D::QBlendEquation>(uri, 2, 0, "BlendEquation");
     qmlRegisterType<Qt3D::QAlphaTest>(uri, 2, 0, "AlphaTest");

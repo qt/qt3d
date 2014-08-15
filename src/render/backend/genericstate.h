@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -44,12 +45,7 @@
 
 #include <QList>
 
-#include <Qt3DRenderer/drawstate.h>
-
-// winuser.h has a #define called DrawState. Let's get rid of it
-#if defined(DrawState)
-#undef DrawState
-#endif
+#include <Qt3DRenderer/renderstate.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -57,7 +53,7 @@ namespace Qt3D {
 namespace Render {
 
 template <typename Derived, typename T>
-class GenericState1 : public DrawState
+class GenericState1 : public RenderState
 {
 public:
 
@@ -75,7 +71,7 @@ protected:
 };
 
 template <typename Derived, typename T, typename S>
-class GenericState2 : public DrawState
+class GenericState2 : public RenderState
 {
 public:
     bool isEqual(const Derived& i) const
@@ -92,7 +88,7 @@ protected:
 };
 
 template <typename Derived, typename T, typename S, typename U>
-class GenericState3 : public DrawState
+class GenericState3 : public RenderState
 {
 public:
     bool isEqual(const Derived& i) const
@@ -111,7 +107,7 @@ protected:
 };
 
 template <typename Derived, typename T, typename S, typename U, typename Z>
-class GenericState4 : public DrawState
+class GenericState4 : public RenderState
 {
 public:
     bool isEqual(const Derived& i) const

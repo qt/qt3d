@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -113,6 +114,7 @@ class CriterionManager;
 class RenderSceneBuilder;
 class FrameGraphManager;
 class TransformManager;
+class RenderStateSet;
 
 typedef QHandle<RenderMaterial, 16> HMaterial;
 typedef QHandle<RenderEffect, 16> HEffect;
@@ -212,7 +214,7 @@ private:
     // Fail safe values that we can use if a RenderCommand
     // is missing a shader
     RenderShader *m_defaultRenderShader;
-    DrawStateSet *m_defaultDrawStateSet;
+    RenderStateSet *m_defaultRenderStateSet;
     QHash<QString, QString> m_defaultParameterToGLSLAttributeNames;
     QUniformPack m_defaultUniformPack;
 

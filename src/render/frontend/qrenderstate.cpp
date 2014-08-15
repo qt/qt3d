@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -39,18 +40,18 @@
 **
 ****************************************************************************/
 
-#include "qdrawstate.h"
+#include "qrenderstate.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QDrawState::QDrawState(QNode *parent)
+QRenderState::QRenderState(QNode *parent)
     : QNode(parent)
 {
 }
 
-QDrawState::QDrawState(QNodePrivate &dd, QNode *parent)
+QRenderState::QRenderState(QNodePrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
 }
