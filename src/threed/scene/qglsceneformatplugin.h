@@ -53,6 +53,7 @@ QT_BEGIN_NAMESPACE
 class QGLAbstractScene;
 class QGLSceneFormatHandlerPrivate;
 class QDownloadManager;
+class QIODevice;
 
 class Q_QT3D_EXPORT QGLSceneFormatHandler : public QObject
 {
