@@ -72,7 +72,7 @@ void QCuboidMesh::copy(const QNode *ref)
 {
     Q_D(QCuboidMesh);
     QAbstractShapeMesh::copy(ref);
-    const QCuboidMesh *mesh = qobject_cast<const QCuboidMesh *>(mesh);
+    const QCuboidMesh *mesh = qobject_cast<const QCuboidMesh *>(ref);
     if (mesh != Q_NULLPTR) {
         d->m_xExtent = mesh->xExtent();
         d->m_yExtent = mesh->yExtent();
