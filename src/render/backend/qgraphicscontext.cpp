@@ -244,7 +244,7 @@ void QGraphicsContext::setActiveMaterial(RenderMaterial *rmat)
 }
 
 // TO DO : Try to move what's in Renderer here
-void QGraphicsContext::executeCommand(const RenderCommand *command)
+void QGraphicsContext::executeCommand(const RenderCommand *)
 {
 }
 

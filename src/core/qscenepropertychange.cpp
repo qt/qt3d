@@ -60,7 +60,7 @@ QScenePropertyChangePrivate::~QScenePropertyChangePrivate()
 
 }
 
-void *QScenePropertyChangePrivate::operator new(size_t size)
+void *QScenePropertyChangePrivate::operator new(size_t)
 {
     QMutexLocker locker(&QScenePropertyChangePrivate::m_mutex);
     return QScenePropertyChangePrivate::m_allocator->allocateRawMemory<QScenePropertyChangePrivate>();
@@ -120,7 +120,7 @@ void QScenePropertyChange::setValue(const QVariant &value)
     d->m_value = value;
 }
 
-void *QScenePropertyChange::operator new(size_t size)
+void *QScenePropertyChange::operator new(size_t)
 {
     QMutexLocker locker(&QScenePropertyChangePrivate::m_mutex);
     return QScenePropertyChangePrivate::m_allocator->allocateRawMemory<QScenePropertyChange>();

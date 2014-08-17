@@ -201,7 +201,7 @@ ScissorTest::ScissorTest(int left, int bottom, int width, int height)
 {
 }
 
-void ScissorTest::apply(QGraphicsContext *gc) const
+void ScissorTest::apply(QGraphicsContext *) const
 {
     glEnable(GL_SCISSOR_TEST);
     glScissor(m_1, m_2, m_3, m_4);
@@ -222,7 +222,7 @@ StencilTest::StencilTest(uint mask, GLenum func, GLenum faceMode)
 {
 }
 
-void StencilTest::apply(QGraphicsContext *gc) const
+void StencilTest::apply(QGraphicsContext *) const
 {
     glEnable(GL_STENCIL);
     glStencilFunc(m_2, m_3, m_1);

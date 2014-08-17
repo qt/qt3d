@@ -62,12 +62,12 @@ QSceneObserverInterface *OpenALAspect::sceneObserver() const
     return Q_NULLPTR;
 }
 
-void OpenALAspect::registerAspectHelper(QEntity *rootObject)
+void OpenALAspect::registerAspectHelper(QEntity *)
 {
 
 }
 
-void OpenALAspect::unregisterAspectHelper(QEntity *rootObject)
+void OpenALAspect::unregisterAspectHelper(QEntity *)
 {
 
 }
