@@ -42,9 +42,9 @@
 #include "techniquefilternode.h"
 #include "qcriterion.h"
 #include "qtechniquefilter.h"
-#include "renderer.h"
 #include "rendereraspect.h"
-#include "criterionmanager.h"
+#include <Qt3DRenderer/private/renderer_p.h>
+#include <Qt3DRenderer/private/criterionmanager_p.h>
 #include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/qchangearbiter.h>
 #include <Qt3DCore/qscenepropertychange.h>

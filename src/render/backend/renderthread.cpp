@@ -39,9 +39,9 @@
 **
 ****************************************************************************/
 
-#include "renderthread.h"
-#include "renderer.h"
-#include "renderview.h"
+#include "renderthread_p.h"
+#include <Qt3DRenderer/private/renderer_p.h>
+#include <Qt3DRenderer/private/renderview_p.h>
 
 #include "renderlogging.h"
 #include <QEventLoop>

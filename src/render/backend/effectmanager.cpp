@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "effectmanager.h"
+#include "effectmanager_p.h"
 
 QT_BEGIN_NAMESPACE
 

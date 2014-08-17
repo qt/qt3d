@@ -43,11 +43,11 @@
 #define QT3D_RENDER_RENDERSCENEBUILDER_H
 
 #include <Qt3DCore/nodevisitor.h>
+#include <Qt3DRenderer/private/renderer_p.h>
+#include <Qt3DRenderer/private/framegraphmanager_p.h>
 #include <Qt3DCore/qhandle.h>
-#include <QStack>
-#include <Qt3DRenderer/renderer.h>
 #include <Qt3DCore/qentity.h>
-#include <Qt3DRenderer/framegraphmanager.h>
+#include <QStack>
 
 QT_BEGIN_NAMESPACE
 

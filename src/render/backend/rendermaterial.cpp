@@ -39,16 +39,16 @@
 **
 ****************************************************************************/
 
-#include "rendermaterial.h"
-#include "rendereraspect.h"
-#include "qgraphicscontext.h"
-#include "rendertechnique.h"
-#include "rendertextureprovider.h"
-#include "qparameter.h"
-#include "renderer.h"
-#include "effectmanager.h"
-#include "rendereffect.h"
-#include <qtechnique.h> // for Parameter
+#include "rendermaterial_p.h"
+#include <Qt3DRenderer/rendereraspect.h>
+#include <Qt3DRenderer/private/qgraphicscontext_p.h>
+#include <Qt3DRenderer/private/rendertechnique_p.h>
+#include <Qt3DRenderer/private/rendertextureprovider_p.h>
+#include <Qt3DRenderer/private/renderer_p.h>
+#include <Qt3DRenderer/private/effectmanager_p.h>
+#include <Qt3DRenderer/private/rendereffect_p.h>
+#include <qparameter.h>
+#include <qtechnique.h>
 #include <qmaterial.h>
 #include <Qt3DCore/qabstracteffect.h>
 #include <Qt3DCore/qaspectmanager.h>

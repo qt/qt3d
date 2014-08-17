@@ -47,7 +47,7 @@
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 #include <Qt3DRenderer/qshaderprogram.h>
-#include <Qt3DRenderer/renderstate.h>
+#include <Qt3DRenderer/qrenderstate.h>
 #include <Qt3DRenderer/qcriterion.h>
 
 #include <QHash>
@@ -79,9 +79,6 @@ public:
 
     ParameterList attributes() const;
     ParameterList uniforms() const;
-
-    void setStateSet(Render::RenderStateSet* ss);
-    Render::RenderStateSet* stateSet() const;
 
     void addCriterion(QCriterion *criterion);
     void removeCriterion(QCriterion *criterion);

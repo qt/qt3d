@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "layermanager.h"
+#include "layermanager_p.h"
 
 QT_BEGIN_NAMESPACE
 

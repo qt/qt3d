@@ -43,6 +43,8 @@
 #define QT3D_QABSTRACTMESHDATA_P_H
 
 #include <Qt3DCore/qt3dcore_global.h>
+#include <Qt3DCore/axisalignedboundingbox.h>
+
 #include <QMap>
 #include <QSharedPointer>
 
@@ -53,7 +55,6 @@ namespace Qt3D {
 class QAbstractMeshData;
 class QAbstractAttribute;
 class QAbstractBuffer;
-class AxisAlignedBoundingBox;
 
 typedef QSharedPointer<QAbstractAttribute> QAbstractAttributePtr;
 

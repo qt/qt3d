@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "techniquemanager.h"
+#include "techniquemanager_p.h"
 #include <Qt3DCore/qabstracteffect.h>
 
 QT_BEGIN_NAMESPACE

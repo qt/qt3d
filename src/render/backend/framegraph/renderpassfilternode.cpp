@@ -41,8 +41,8 @@
 
 #include "renderpassfilternode.h"
 #include "rendereraspect.h"
-#include "renderer.h"
-#include "criterionmanager.h"
+#include <Qt3DRenderer/private/renderer_p.h>
+#include <Qt3DRenderer/private/criterionmanager_p.h>
 #include "qcriterion.h"
 #include "qrenderpassfilter.h"
 #include <Qt3DCore/qaspectmanager.h>

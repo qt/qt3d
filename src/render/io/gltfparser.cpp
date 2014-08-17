@@ -71,8 +71,8 @@
 #include <QVector3D>
 
 // need to move these to somewhere common?
-#include <renderstate.h>
-#include <states/blendstate.h>
+#include <Qt3DRenderer/private/renderstate_p.h>
+#include <Qt3DRenderer/private/blendstate_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -869,56 +869,57 @@ void GLTFParser::processJSONTechnique( QString id, QJsonObject jsonObj )
             //            pass->addUniformBinding(paramDict[pname], uniformName);
         } // of program-instance attributes
 
-        QJsonObject states = po.value(KEY_STATES).toObject();
-        Render::RenderStateSet* ss = new Render::RenderStateSet;
+        // TODO: Use public state api only here
+//        QJsonObject states = po.value(KEY_STATES).toObject();
+//        Render::RenderStateSet* ss = new Render::RenderStateSet;
 
-        Q_FOREACH (QString stateName, states.keys()) {
-            Render::RenderState* s= buildState(stateName.toUtf8(), states.value(stateName));
-            if (!s)
-                continue;
+//        Q_FOREACH (QString stateName, states.keys()) {
+//            Render::RenderState* s= buildState(stateName.toUtf8(), states.value(stateName));
+//            if (!s)
+//                continue;
 
-            ss->addState(s);
-        } // of program-instance attributes
+//            ss->addState(s);
+//        } // of program-instance attributes
 
-        pass->setStateSet(ss);
+//        pass->setStateSet(ss);
         t->addPass(pass);
     } // of passes iteration
 
     m_techniques[id] = t;
 }
 
-Render::RenderState* GLTFParser::buildState(const QByteArray& nm, QJsonValue v)
-{
-    if (nm == "blendEnable") {
-        return NULL; // will see a blendEquation spec too
-    }
+//Render::RenderState* GLTFParser::buildState(const QByteArray& nm, QJsonValue v)
+//{
+//    if (nm == "blendEnable") {
+//        return NULL; // will see a blendEquation spec too
+//    }
 
-    if (nm == "blendFunc") {
-        QJsonObject obj =  v.toObject();
-        GLenum srcF = static_cast<GLenum>(obj.value(QStringLiteral("sfactor")).toInt());
-        GLenum dstF = static_cast<GLenum>(obj.value(QStringLiteral("dfactor")).toInt());
-        return Render::BlendState::getOrCreate(srcF, dstF);
-    }
+//    if (nm == "blendFunc") {
+//        QJsonObject obj =  v.toObject();
+//        GLenum srcF = static_cast<GLenum>(obj.value(QStringLiteral("sfactor")).toInt());
+//        GLenum dstF = static_cast<GLenum>(obj.value(QStringLiteral("dfactor")).toInt());
+//        return Render::BlendState::getOrCreate(srcF, dstF);
+//    }
 
-    if (nm == "blendEquation") {
-        return Render::BlendEquation::getOrCreate(static_cast<GLenum>(v.toInt()));
-    }
+//    if (nm == "blendEquation") {
+//        return Render::BlendEquation::getOrCreate(static_cast<GLenum>(v.toInt()));
+//    }
 
-    if (nm == "cullFaceEnable" && v.toInt()) {
-        return Render::CullFace::getOrCreate(GL_BACK);
-    }
+//    if (nm == "cullFaceEnable" && v.toInt()) {
+//        return Render::CullFace::getOrCreate(GL_BACK);
+//    }
 
-    if (nm == "depthTestEnable" && v.toInt()) {
-        return Render::DepthTest::getOrCreate(GL_LESS);
-    }
+//    if (nm == "depthTestEnable" && v.toInt()) {
+//        return Render::DepthTest::getOrCreate(GL_LESS);
+//    }
 
-    if (nm == "depthMask") {
-        return Render::DepthMask::getOrCreate(v.toInt() ? GL_TRUE : GL_FALSE);
-    }
+//    if (nm == "depthMask") {
+//        return Render::DepthMask::getOrCreate(v.toInt() ? GL_TRUE : GL_FALSE);
+//    }
 
-    qCWarning(Render::Io) << Q_FUNC_INFO << "unsupported gltf state:" << nm;
-    return NULL;
-}
+//    qCWarning(Render::Io) << Q_FUNC_INFO << "unsupported gltf state:" << nm;
+//    return NULL;
+//}
 
 QFile *GLTFParser::resolveLocalData(QString path)
 {

@@ -40,96 +40,81 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_STATE_IMPLS_H
-#define QT3D_RENDER_STATE_IMPLS_H
+#ifndef QT3D_RENDER_RENDERTECHNIQUE_H
+#define QT3D_RENDER_RENDERTECHNIQUE_H
 
-#include <QList>
-
-#include <Qt3DRenderer/renderstate.h>
+#include <QVector>
+#include <QStringList>
+#include <Qt3DCore/qobserverinterface.h>
+#include <Qt3DRenderer/private/parameterpack_p.h>
+#include <Qt3DRenderer/qcriterion.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
+
+class QTechnique;
+class QParameter;
+class QOpenGLFilter;
+class QCriterion;
+class QAbstractRenderPass;
+
 namespace Render {
 
-template <typename Derived, typename T>
-class GenericState1 : public RenderState
+class RenderBin;
+class RenderStateSet;
+class RenderShader;
+class Renderer;
+
+class RenderTechnique : public QObserverInterface
 {
 public:
+    RenderTechnique();
+    ~RenderTechnique();
+    void cleanup();
 
-    bool isEqual(const Derived& i) const
-    { return (m_1 == i.m_1); }
+    void setRenderer(Renderer *renderer);
 
+    void setPeer(QTechnique* peer);
 
-protected:
-    GenericState1(T t) :
-        m_1(t)
-    {}
+    RenderStateSet* stateSetForPass(unsigned int pass) const;
 
-    T m_1;
+    QString glslNameForMeshAttribute(unsigned int pass, QString meshAttributeName);
 
+    QStringList glslNamesForUniformParameter(QString pName) const;
+
+    // FIXME using front-end classes here, not ideal
+    QParameter* parameterByName(QString name) const;
+
+    void sceneChangeEvent(const QSceneChangePtr &e);
+    const QHash<QString, QVariant> parameters() const;
+
+    void appendRenderPass(QAbstractRenderPass *rPass);
+    void removeRenderPass(const QUuid &renderPassId);
+
+    void appendCriterion(QCriterion *criterion);
+    void removeCriterion(const QUuid &criterionId);
+
+    QList<QUuid> criteria() const;
+    QList<QUuid> renderPasses() const;
+    QOpenGLFilter *openGLFilter() const;
+    QUuid techniqueUuid() const;
+
+private:
+
+    Renderer *m_renderer;
+    unsigned int m_passCount;
+    QOpenGLFilter *m_openglFilter;
+    QUuid m_techniqueUuid;
+
+    ParameterPack m_parameterPack;
+    QList<QUuid> m_criteriaList;
+    QList<QUuid> m_renderPasses;
 };
 
-template <typename Derived, typename T, typename S>
-class GenericState2 : public RenderState
-{
-public:
-    bool isEqual(const Derived& i) const
-    { return (m_1 == i.m_1) && (m_2 == i.m_2); }
-protected:
-    GenericState2(T t, S s) :
-        m_1(t),
-        m_2(s)
-    {}
-
-
-    T m_1;
-    S m_2;
-};
-
-template <typename Derived, typename T, typename S, typename U>
-class GenericState3 : public RenderState
-{
-public:
-    bool isEqual(const Derived& i) const
-    { return (m_1 == i.m_1) && (m_2 == i.m_2) && (m_3 == i.m_3); }
-
-protected:
-    GenericState3(T t, S s, U u) :
-        m_1(t),
-        m_2(s),
-        m_3(u)
-    {}
-
-    T m_1;
-    S m_2;
-    U m_3;
-};
-
-template <typename Derived, typename T, typename S, typename U, typename Z>
-class GenericState4 : public RenderState
-{
-public:
-    bool isEqual(const Derived& i) const
-    { return (m_1 == i.m_1) && (m_2 == i.m_2) && (m_3 == i.m_3) && (m_4 == i.m_4); }
-
-protected:
-    GenericState4(T t, S s, U u, Z z) :
-        m_1(t),
-        m_2(s),
-        m_3(u),
-        m_4(z)
-    {}
-
-    T m_1;
-    S m_2;
-    U m_3;
-    Z m_4;
-};
-
-} // Render
-} // Qt3D of namespace
+} // namespace Render
+} // namespace Qt3D
 
 QT_END_NAMESPACE
 
-#endif // STATE_IMPLS_H
+#endif // QT3D_RENDER_RENDERTECHNIQUE_H

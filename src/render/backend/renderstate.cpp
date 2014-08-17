@@ -40,16 +40,15 @@
 **
 ****************************************************************************/
 
-#include "renderstate.h"
+#include "renderstate_p.h"
 
 #include <bitset>
 
 #include <QDebug>
 #include <QOpenGLContext>
 
-#include "qgraphicscontext.h"
-
-#include "states/blendstate.h"
+#include <Qt3DRenderer/private/qgraphicscontext_p.h>
+#include <Qt3DRenderer/private/blendstate_p.h>
 
 QT_BEGIN_NAMESPACE
 

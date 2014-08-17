@@ -39,12 +39,11 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_LIGHTMANAGER_H
-#define QT3D_RENDER_LIGHTMANAGER_H
+#ifndef QT3D_RENDER_CRITERIONMANAGER_H
+#define QT3D_RENDER_CRITERIONMANAGER_H
 
 #include <Qt3DCore/qresourcesmanager.h>
-#include <Qt3DRenderer/renderlight.h>
-#include <QUuid>
+#include <Qt3DRenderer/private/rendercriterion_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -52,24 +51,25 @@ namespace Qt3D {
 
 namespace Render {
 
-typedef QHandle<RenderLight, 16> HLight;
+typedef QHandle<RenderCriterion, 16> HCriterion;
 
-class LightManager : public QResourcesManager<RenderLight,
-                                              QUuid,
-                                              16,
-                                              Qt3D::ArrayAllocatingPolicy,
-                                              Qt3D::ObjectLevelLockingPolicy>
+class CriterionManager : public QResourcesManager<RenderCriterion,
+                                                           QUuid,
+                                                           16,
+                                                           Qt3D::ArrayAllocatingPolicy,
+                                                           Qt3D::ObjectLevelLockingPolicy>
+
 {
 public:
-    LightManager();
+    CriterionManager();
 };
 
 } // Render
 
-Q_DECLARE_RESOURCE_INFO(Render::RenderLight, Q_REQUIRES_CLEANUP);
+Q_DECLARE_RESOURCE_INFO(Render::RenderCriterion, Q_REQUIRES_CLEANUP);
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_LIGHTMANAGER_H
+#endif // QT3D_RENDER_CRITERIONMANAGER_H

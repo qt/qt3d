@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "criterionmanager.h"
+#include "criterionmanager_p.h"
 
 QT_BEGIN_NAMESPACE
 

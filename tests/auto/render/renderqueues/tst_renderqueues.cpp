@@ -43,8 +43,8 @@
 #include <QMutex>
 #include <QWaitCondition>
 #include <QThread>
-#include <Qt3DRenderer/renderqueues.h>
-#include <Qt3DRenderer/renderview.h>
+#include <Qt3DRenderer/private/renderqueues_p.h>
+#include <Qt3DRenderer/private/renderview_p.h>
 
 class tst_RenderQueues : public QObject
 {

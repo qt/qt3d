@@ -40,16 +40,16 @@
 **
 ****************************************************************************/
 
-#include "rendermesh.h"
-#include "rendertechnique.h"
-#include "rendermaterial.h"
+#include "rendermesh_p.h"
 #include "rendereraspect.h"
-#include "renderer.h"
-#include "meshdatamanager.h"
-#include "qmesh.h"
-#include "qgraphicscontext.h"
-#include <meshdata.h>
 #include <qtechnique.h>
+#include <Qt3DRenderer/private/rendertechnique_p.h>
+#include <Qt3DRenderer/private/rendermaterial_p.h>
+#include <Qt3DRenderer/private/renderer_p.h>
+#include <Qt3DRenderer/private/meshdatamanager_p.h>
+#include "qmesh.h"
+#include <Qt3DRenderer/private/qgraphicscontext_p.h>
+#include <meshdata.h>
 
 #include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/qscenepropertychange.h>

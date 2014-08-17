@@ -2,7 +2,7 @@ TEMPLATE = app
 
 TARGET = tst_renderqueues
 
-QT += 3dcore 3drenderer testlib
+QT += 3dcore 3drenderer 3drenderer-private testlib
 
 CONFIG += testcase
 

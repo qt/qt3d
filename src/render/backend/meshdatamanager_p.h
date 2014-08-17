@@ -39,37 +39,53 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_CRITERIONMANAGER_H
-#define QT3D_RENDER_CRITERIONMANAGER_H
+#ifndef QT3D_RENDER_MESHDATAMANAGER_H
+#define QT3D_RENDER_MESHDATAMANAGER_H
 
+#include <Qt3DCore/qabstractmesh.h>
 #include <Qt3DCore/qresourcesmanager.h>
-#include <Qt3DRenderer/rendercriterion.h>
+#include <Qt3DRenderer/meshdata.h>
+#include <Qt3DRenderer/private/rendermesh_p.h>
+
+#include <QHash>
+#include <QPair>
+#include <QString>
+#include <QUuid>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
-
 namespace Render {
 
-typedef QHandle<RenderCriterion, 16> HCriterion;
+typedef QHandle<MeshData, 16> HMeshData;
+typedef QHandle<RenderMesh, 16> HMesh;
 
-class CriterionManager : public QResourcesManager<RenderCriterion,
-                                                           QUuid,
-                                                           16,
-                                                           Qt3D::ArrayAllocatingPolicy,
-                                                           Qt3D::ObjectLevelLockingPolicy>
-
+class MeshDataManager : public QResourcesManager<MeshData,
+                                                 QUuid,
+                                                 16,
+                                                 Qt3D::ListAllocatingPolicy,
+                                                 Qt3D::ObjectLevelLockingPolicy>
 {
 public:
-    CriterionManager();
+    MeshDataManager();
+
+    inline bool hasMeshData(const QUuid &id) { return contains(id); }
+    inline MeshData* getOrCreateMeshData(const QUuid &id) { return getOrCreateResource(id); }
+    inline MeshData* meshData(const QUuid &id) { return lookupResource(id); }
+    void addMeshData(QAbstractMeshFunctorPtr functor, const QUuid &meshUuid);
+
+    QHash<QUuid, QAbstractMeshFunctorPtr> meshesPending();
+
+private:
+    // List of meshes that we need to schedule jobs to load
+    // and calculate bounds for.
+
+    QHash<QUuid, QAbstractMeshFunctorPtr> m_meshesPending;
 };
 
-} // Render
-
-Q_DECLARE_RESOURCE_INFO(Render::RenderCriterion, Q_REQUIRES_CLEANUP);
-
-} // Qt3D
+} // namespace Render
+} // namespace Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_CRITERIONMANAGER_H
+#endif // QT3D_RENDER_MESHDATAMANAGER_H

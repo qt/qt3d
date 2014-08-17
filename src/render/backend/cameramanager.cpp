@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "cameramanager.h"
+#include "cameramanager_p.h"
 
 QT_BEGIN_NAMESPACE
 

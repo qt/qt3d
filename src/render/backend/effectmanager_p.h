@@ -43,7 +43,7 @@
 #define QT3D_RENDER_EFFECTMANAGER_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/rendereffect.h>
+#include <Qt3DRenderer/private/rendereffect_p.h>
 #include <Qt3DCore/qresourcesmanager.h>
 #include <QUuid>
 

@@ -41,7 +41,7 @@
 
 #ifndef QT_OPENGL_ES_2
 
-#include "qgraphicshelpergl2.h"
+#include "qgraphicshelpergl2_p.h"
 #include <QOpenGLFunctions_2_0>
 
 QT_BEGIN_NAMESPACE

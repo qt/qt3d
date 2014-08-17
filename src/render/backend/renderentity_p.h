@@ -43,16 +43,16 @@
 #ifndef QT3D_RENDER_RENDERNODE_H
 #define QT3D_RENDER_RENDERNODE_H
 
-#include "rendermesh.h"
-#include "meshmanager.h"
-#include "renderlayer.h"
-#include "renderer.h"
-#include "layermanager.h"
-#include "lightmanager.h"
-#include "cameramanager.h"
-#include "rendertransform.h"
-#include "transformmanager.h"
-#include "materialmanager.h"
+#include <Qt3DRenderer/private/rendermesh_p.h>
+#include <Qt3DRenderer/private/meshmanager_p.h>
+#include <Qt3DRenderer/private/renderlayer_p.h>
+#include <Qt3DRenderer/private/renderer_p.h>
+#include <Qt3DRenderer/private/layermanager_p.h>
+#include <Qt3DRenderer/private/lightmanager_p.h>
+#include <Qt3DRenderer/private/cameramanager_p.h>
+#include <Qt3DRenderer/private/rendertransform_p.h>
+#include <Qt3DRenderer/private/transformmanager_p.h>
+#include <Qt3DRenderer/private/materialmanager_p.h>
 
 #include <Qt3DCore/qobserverinterface.h>
 #include <Qt3DCore/qhandle.h>

@@ -39,19 +39,21 @@
 **
 ****************************************************************************/
 
-#include <QVariant>
-#include "rendereffect.h"
-#include "rendereraspect.h"
-#include "renderer.h"
-#include "techniquemanager.h"
+#include <Qt3DRenderer/private/rendereffect_p.h>
+#include <Qt3DRenderer/private/renderer_p.h>
+#include <Qt3DRenderer/private/renderscenebuilder_p.h>
+#include <Qt3DRenderer/private/techniquemanager_p.h>
+#include <Qt3DRenderer/qeffect.h>
+#include <Qt3DRenderer/qparameter.h>
+#include <Qt3DRenderer/rendereraspect.h>
+
 #include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/qabstracteffect.h>
 #include <Qt3DCore/qabstracttechnique.h>
 #include <Qt3DCore/qchangearbiter.h>
 #include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DRenderer/qeffect.h>
-#include <Qt3DRenderer/qparameter.h>
-#include <Qt3DRenderer/renderscenebuilder.h>
+
+#include <QVariant>
 
 QT_BEGIN_NAMESPACE
 

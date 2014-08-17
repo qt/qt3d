@@ -41,7 +41,7 @@
 
 #include "viewportnode.h"
 
-#include <Qt3DRenderer/renderer.h>
+#include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/rendereraspect.h>
 #include <Qt3DRenderer/qviewport.h>
 

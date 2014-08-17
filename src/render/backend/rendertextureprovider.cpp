@@ -39,9 +39,9 @@
 **
 ****************************************************************************/
 
-#include "rendertextureprovider.h"
+#include "rendertextureprovider_p.h"
 #include "texture.h"
-#include "rendertexture.h"
+#include <Qt3DRenderer/private/rendertexture_p.h>
 
 QT_BEGIN_NAMESPACE
 

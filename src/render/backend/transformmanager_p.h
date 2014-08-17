@@ -39,39 +39,34 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_TECHNIQUEMANAGER_H
-#define QT3D_RENDER_TECHNIQUEMANAGER_H
+#ifndef QT3D_RENDER_TRANSFORMMANAGER_H
+#define QT3D_RENDER_TRANSFORMMANAGER_H
 
 #include <Qt3DCore/qresourcesmanager.h>
-#include <Qt3DCore/qhandle.h>
-#include <Qt3DRenderer/rendertechnique.h>
+#include <Qt3DRenderer/private/rendertransform_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAbstractEffect;
-
 namespace Render {
 
-typedef QHandle<RenderTechnique, 16> HTechnique;
+typedef QHandle<RenderTransform, 16> HTransform;
 
-class TechniqueManager : public QResourcesManager<RenderTechnique,
+class TransformManager : public QResourcesManager<RenderTransform,
                                                   QUuid,
                                                   16,
                                                   Qt3D::ArrayAllocatingPolicy,
                                                   Qt3D::ObjectLevelLockingPolicy>
 {
 public:
-    TechniqueManager();
+    TransformManager();
 };
 
 } // Render
-
-Q_DECLARE_RESOURCE_INFO(Render::RenderTechnique, Q_REQUIRES_CLEANUP);
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_TECHNIQUEMANAGER_H
+#endif // QT3D_RENDER_TRANSFORMMANAGER_H

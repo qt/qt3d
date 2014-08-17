@@ -39,10 +39,10 @@
 **
 ****************************************************************************/
 
-#include "rendersceneobserver.h"
-#include "renderer.h"
-#include "renderscenebuilder.h"
-#include "qscenepropertychange.h"
+#include "rendersceneobserver_p.h"
+#include <Qt3DRenderer/private/renderer_p.h>
+#include <Qt3DRenderer/private/renderscenebuilder_p.h>
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 

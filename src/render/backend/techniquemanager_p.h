@@ -39,36 +39,39 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_TEXTUREMANAGER_H
-#define QT3D_RENDER_TEXTUREMANAGER_H
+#ifndef QT3D_RENDER_TECHNIQUEMANAGER_H
+#define QT3D_RENDER_TECHNIQUEMANAGER_H
 
 #include <Qt3DCore/qresourcesmanager.h>
-#include <Qt3DRenderer/rendertexture.h>
-
-#include <QUuid>
+#include <Qt3DCore/qhandle.h>
+#include <Qt3DRenderer/private/rendertechnique_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class QAbstractEffect;
+
 namespace Render {
 
-typedef QHandle<RenderTexture, 16> HTexture;
+typedef QHandle<RenderTechnique, 16> HTechnique;
 
-class TextureManager : public QResourcesManager<RenderTexture,
-                                                QUuid,
-                                                16,
-                                                Qt3D::ArrayAllocatingPolicy,
-                                                Qt3D::ObjectLevelLockingPolicy>
+class TechniqueManager : public QResourcesManager<RenderTechnique,
+                                                  QUuid,
+                                                  16,
+                                                  Qt3D::ArrayAllocatingPolicy,
+                                                  Qt3D::ObjectLevelLockingPolicy>
 {
 public:
-    TextureManager();
+    TechniqueManager();
 };
 
 } // Render
+
+Q_DECLARE_RESOURCE_INFO(Render::RenderTechnique, Q_REQUIRES_CLEANUP);
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_TEXTUREMANAGER_H
+#endif // QT3D_RENDER_TECHNIQUEMANAGER_H

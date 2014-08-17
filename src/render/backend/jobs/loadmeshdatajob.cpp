@@ -42,12 +42,12 @@
 #include "loadmeshdatajob.h"
 
 #include <objloader.h>
-#include <sphere.h>
-#include <qmesh.h>
-#include <renderer.h>
-#include <meshdatamanager.h>
-#include <meshmanager.h>
 #include <qattribute.h>
+#include <qmesh.h>
+#include <sphere.h>
+#include <Qt3DRenderer/private/renderer_p.h>
+#include <Qt3DRenderer/private/meshdatamanager_p.h>
+#include <Qt3DRenderer/private/meshmanager_p.h>
 
 #include <QThread>
 #include "renderlogging.h"

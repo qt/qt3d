@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "meshmanager.h"
+#include "meshmanager_p.h"
 
 QT_BEGIN_NAMESPACE
 

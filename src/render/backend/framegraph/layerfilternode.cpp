@@ -40,7 +40,7 @@
 ****************************************************************************/
 
 #include "layerfilternode.h"
-#include "renderer.h"
+#include <Qt3DRenderer/private/renderer_p.h>
 #include "rendereraspect.h"
 #include "qlayerfilter.h"
 #include <Qt3DCore/qchangearbiter.h>

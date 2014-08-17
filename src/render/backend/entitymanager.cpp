@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "entitymanager.h"
+#include "entitymanager_p.h"
 
 QT_BEGIN_NAMESPACE
 

@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "vaomanager.h"
+#include "vaomanager_p.h"
 #include <QOpenGLVertexArrayObject>
 
 QT_BEGIN_NAMESPACE

@@ -40,9 +40,9 @@
 **
 ****************************************************************************/
 
-#include "blendstate.h"
+#include "blendstate_p.h"
 
-#include "qgraphicscontext.h"
+#include <Qt3DRenderer/private/qgraphicscontext_p.h>
 
 #include <QOpenGLFunctions_3_2_Core>
 

@@ -155,38 +155,6 @@ bool QParameter::isTextureType() const
     }
 }
 
-Render::QUniformValue::Type QParameter::uniformType() const
-{
-    Q_D(const QParameter);
-    switch (d->m_type) {
-    case Bool:
-    case BoolVec2:
-    case BoolVec3:
-    case BoolVec4:
-        return Render::QUniformValue::Bool;
-
-    // integers!
-
-    case Float:
-    case FloatVec2:
-    case FloatVec3:
-    case FloatVec4:
-    case FloatMat3:
-    case FloatMat4:
-        return Render::QUniformValue::Float;
-
-    case Double:
-    case DoubleVec2:
-    case DoubleVec3:
-    case DoubleVec4:
-        return Render::QUniformValue::Double;
-
-    default:
-        qCWarning(Render::Backend) << Q_FUNC_INFO << "couldn't map datatype:" << QString::number(d->m_type, 16);
-        return Render::QUniformValue::Invalid;
-    }
-}
-
 } // Qt3D
 
 QT_END_NAMESPACE

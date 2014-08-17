@@ -40,29 +40,29 @@
 **
 ****************************************************************************/
 
-#include "qgraphicscontext.h"
+#include "qgraphicscontext_p.h"
 
-#include "rendershader.h"
-#include "rendermaterial.h"
-#include "rendertexture.h"
-#include "rendercommand.h"
-#include "qparameter.h"
-#include "renderstate.h"
-#include "qgraphicshelperinterface.h"
-#include "qopenglfilter.h"
-#include "renderer.h"
-#include "texturemanager.h"
-#include "renderlogging.h"
+#include <Qt3DRenderer/qopenglfilter.h>
+#include <Qt3DRenderer/qparameter.h>
+#include <Qt3DRenderer/renderlogging.h>
+#include <Qt3DRenderer/private/rendershader_p.h>
+#include <Qt3DRenderer/private/rendermaterial_p.h>
+#include <Qt3DRenderer/private/rendertexture_p.h>
+#include <Qt3DRenderer/private/rendercommand_p.h>
+#include <Qt3DRenderer/private/renderstate_p.h>
+#include <Qt3DRenderer/private/qgraphicshelperinterface_p.h>
+#include <Qt3DRenderer/private/renderer_p.h>
+#include <Qt3DRenderer/private/texturemanager_p.h>
 #include <QOpenGLShaderProgram>
 
 #if !defined(QT_OPENGL_ES_2)
 #include <QOpenGLFunctions_2_0>
 #include <QOpenGLFunctions_3_2_Core>
-#include "qgraphicshelpergl2.h"
-#include "qgraphicshelpergl3.h"
+#include <Qt3DRenderer/private/qgraphicshelpergl2_p.h>
+#include <Qt3DRenderer/private/qgraphicshelpergl3_p.h>
 #else
 #include <QOpenGLFunctions_ES2>
-#include "qgraphicshelperes2.h"
+#include <Qt3DRenderer/private/qgraphicshelperes2_p.h>
 #endif
 
 #include <QSurface>

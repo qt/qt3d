@@ -40,7 +40,7 @@
 **
 ****************************************************************************/
 
-#include "renderer.h"
+#include "renderer_p.h"
 
 #include <Qt3DCore/nodevisitor.h>
 #include <Qt3DCore/qentity.h>
@@ -53,48 +53,48 @@
 
 #include "jobs/renderviewjob.h"
 
-#include <qmaterial.h>
-#include <qmesh.h>
-#include <qtechnique.h>
-#include <qshaderprogram.h>
-#include <qrenderpass.h>
-#include <qabstractshapemesh.h>
-#include <cameramanager.h>
-#include <meshdatamanager.h>
-#include <meshmanager.h>
-#include <rendermesh.h>
-#include <renderqueues.h>
-#include <rendermaterial.h>
-#include <renderentity.h>
-#include <rendertechnique.h>
-#include <renderscenebuilder.h>
-#include <rendershader.h>
-#include <rendereraspect.h>
-#include <qgraphicscontext.h>
-#include <rendercameralens.h>
-#include <rendertextureprovider.h>
-#include <renderstate.h>
-#include <states/blendstate.h>
-#include <entitymanager.h>
-#include <renderview.h>
-#include <rendercommand.h>
-#include <materialmanager.h>
-#include <matrixmanager.h>
-#include <vaomanager.h>
-#include <shadermanager.h>
-#include <techniquemanager.h>
-#include <effectmanager.h>
-#include <renderpassmanager.h>
-#include <texturemanager.h>
-#include <texturedatamanager.h>
-#include <layermanager.h>
-#include <lightmanager.h>
-#include "renderlogging.h"
-#include "qparametermapper.h"
-#include "renderthread.h"
-#include "criterionmanager.h"
-#include "framegraphmanager.h"
-#include "transformmanager.h"
+#include <Qt3DRenderer/qabstractshapemesh.h>
+#include <Qt3DRenderer/qmaterial.h>
+#include <Qt3DRenderer/qmesh.h>
+#include <Qt3DRenderer/qtechnique.h>
+#include <Qt3DRenderer/qshaderprogram.h>
+#include <Qt3DRenderer/qrenderpass.h>
+#include <Qt3DRenderer/rendereraspect.h>
+#include <Qt3DRenderer/renderlogging.h>
+#include <Qt3DRenderer/qparametermapper.h>
+#include <Qt3DRenderer/private/cameramanager_p.h>
+#include <Qt3DRenderer/private/meshdatamanager_p.h>
+#include <Qt3DRenderer/private/meshmanager_p.h>
+#include <Qt3DRenderer/private/rendermesh_p.h>
+#include <Qt3DRenderer/private/renderqueues_p.h>
+#include <Qt3DRenderer/private/rendermaterial_p.h>
+#include <Qt3DRenderer/private/renderentity_p.h>
+#include <Qt3DRenderer/private/rendertechnique_p.h>
+#include <Qt3DRenderer/private/renderscenebuilder_p.h>
+#include <Qt3DRenderer/private/rendershader_p.h>
+#include <Qt3DRenderer/private/qgraphicscontext_p.h>
+#include <Qt3DRenderer/private/rendercameralens_p.h>
+#include <Qt3DRenderer/private/rendertextureprovider_p.h>
+#include <Qt3DRenderer/private/renderstate_p.h>
+#include <Qt3DRenderer/private/blendstate_p.h>
+#include <Qt3DRenderer/private/entitymanager_p.h>
+#include <Qt3DRenderer/private/renderview_p.h>
+#include <Qt3DRenderer/private/rendercommand_p.h>
+#include <Qt3DRenderer/private/materialmanager_p.h>
+#include <Qt3DRenderer/private/matrixmanager_p.h>
+#include <Qt3DRenderer/private/vaomanager_p.h>
+#include <Qt3DRenderer/private/shadermanager_p.h>
+#include <Qt3DRenderer/private/techniquemanager_p.h>
+#include <Qt3DRenderer/private/effectmanager_p.h>
+#include <Qt3DRenderer/private/renderpassmanager_p.h>
+#include <Qt3DRenderer/private/texturemanager_p.h>
+#include <Qt3DRenderer/private/texturedatamanager_p.h>
+#include <Qt3DRenderer/private/layermanager_p.h>
+#include <Qt3DRenderer/private/lightmanager_p.h>
+#include <Qt3DRenderer/private/renderthread_p.h>
+#include <Qt3DRenderer/private/criterionmanager_p.h>
+#include <Qt3DRenderer/private/framegraphmanager_p.h>
+#include <Qt3DRenderer/private/transformmanager_p.h>
 
 #include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/qabstracteffect.h>
@@ -163,6 +163,7 @@ Renderer::Renderer(int cachedFrames)
 
 void Renderer::buildDefaultTechnique()
 {
+    // TODO: Either use public API only or just go direct to the private backend API here
     m_defaultTechnique = new QTechnique;
     m_defaultTechnique->setObjectName(QStringLiteral("default-technique"));
 
@@ -177,7 +178,7 @@ void Renderer::buildDefaultTechnique()
     m_defaultRenderStateSet = new RenderStateSet;
     m_defaultRenderStateSet->addState(DepthTest::getOrCreate(GL_LESS));
     m_defaultRenderStateSet->addState(CullFace::getOrCreate(GL_BACK));
-    basicPass->setStateSet(m_defaultRenderStateSet);
+    //basicPass->setStateSet(m_defaultRenderStateSet);
 
     m_defaultTechnique->addPass(basicPass);
 

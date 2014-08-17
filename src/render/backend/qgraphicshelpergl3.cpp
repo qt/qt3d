@@ -41,7 +41,7 @@
 
 #ifndef QT_OPENGL_ES_2
 
-#include "qgraphicshelpergl3.h"
+#include "qgraphicshelpergl3_p.h"
 #include <QOpenGLFunctions_3_2_Core>
 #include "renderlogging.h"
 

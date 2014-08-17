@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -39,43 +40,96 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERNODESMANAGER_H
-#define QT3D_RENDER_RENDERNODESMANAGER_H
+#ifndef QT3D_RENDER_STATE_IMPLS_H
+#define QT3D_RENDER_STATE_IMPLS_H
 
-#include <QtGlobal>
-#include <QUuid>
-#include <Qt3DCore/qabstractrenderpass.h>
-#include <Qt3DCore/qresourcesmanager.h>
-#include <Qt3DRenderer/renderentity.h>
+#include <QList>
+
+#include <Qt3DRenderer/private/renderstate_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
-
 namespace Render {
 
-typedef QHandle<RenderEntity, 16> HEntity;
-
-class EntityManager : public QResourcesManager<RenderEntity, QUuid, 16>
+template <typename Derived, typename T>
+class GenericState1 : public RenderState
 {
 public:
-    EntityManager();
 
-    inline bool hasRenderNode(const QUuid &id) { return contains(id); }
-    inline RenderEntity *getOrCreateRenderNode(const QUuid &id) { return getOrCreateResource(id); }
-    inline RenderEntity *renderNode(const QUuid &id) { return lookupResource(id); }
-    inline void releaseRenderNode(const QUuid &id) { releaseResource(id); }
+    bool isEqual(const Derived& i) const
+    { return (m_1 == i.m_1); }
 
+
+protected:
+    GenericState1(T t) :
+        m_1(t)
+    {}
+
+    T m_1;
 
 };
 
+template <typename Derived, typename T, typename S>
+class GenericState2 : public RenderState
+{
+public:
+    bool isEqual(const Derived& i) const
+    { return (m_1 == i.m_1) && (m_2 == i.m_2); }
+protected:
+    GenericState2(T t, S s) :
+        m_1(t),
+        m_2(s)
+    {}
+
+
+    T m_1;
+    S m_2;
+};
+
+template <typename Derived, typename T, typename S, typename U>
+class GenericState3 : public RenderState
+{
+public:
+    bool isEqual(const Derived& i) const
+    { return (m_1 == i.m_1) && (m_2 == i.m_2) && (m_3 == i.m_3); }
+
+protected:
+    GenericState3(T t, S s, U u) :
+        m_1(t),
+        m_2(s),
+        m_3(u)
+    {}
+
+    T m_1;
+    S m_2;
+    U m_3;
+};
+
+template <typename Derived, typename T, typename S, typename U, typename Z>
+class GenericState4 : public RenderState
+{
+public:
+    bool isEqual(const Derived& i) const
+    { return (m_1 == i.m_1) && (m_2 == i.m_2) && (m_3 == i.m_3) && (m_4 == i.m_4); }
+
+protected:
+    GenericState4(T t, S s, U u, Z z) :
+        m_1(t),
+        m_2(s),
+        m_3(u),
+        m_4(z)
+    {}
+
+    T m_1;
+    S m_2;
+    U m_3;
+    Z m_4;
+};
+
 } // Render
-
-Q_DECLARE_RESOURCE_INFO(Render::RenderEntity, Q_REQUIRES_CLEANUP);
-
-} // Qt3D
-
+} // Qt3D of namespace
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERNODESMANAGER_H
+#endif // STATE_IMPLS_H

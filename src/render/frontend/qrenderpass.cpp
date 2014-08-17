@@ -54,7 +54,6 @@ namespace Qt3D {
 
 QRenderPassPrivate::QRenderPassPrivate(QRenderPass *qq)
     : QAbstractRenderPassPrivate(qq)
-    , m_stateSet(0)
 {
 }
 
@@ -94,18 +93,6 @@ ParameterList QRenderPass::uniforms() const
 {
     Q_D(const QRenderPass);
     return d->m_uniforms;
-}
-
-void QRenderPass::setStateSet(Render::RenderStateSet *ss)
-{
-    Q_D(QRenderPass);
-    d->m_stateSet = ss;
-}
-
-Render::RenderStateSet *QRenderPass::stateSet() const
-{
-    Q_D(const QRenderPass);
-    return d->m_stateSet;
 }
 
 void QRenderPass::addCriterion(QCriterion *criterion)

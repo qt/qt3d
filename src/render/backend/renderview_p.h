@@ -43,8 +43,8 @@
 #ifndef QT3D_RENDER_RENDERVIEW_H
 #define QT3D_RENDER_RENDERVIEW_H
 
-#include <Qt3DRenderer/renderer.h>
-#include <Qt3DRenderer/rendercameralens.h>
+#include <Qt3DRenderer/private/renderer_p.h>
+#include <Qt3DRenderer/private/rendercameralens_p.h>
 #include <Qt3DRenderer/qparameter.h>
 #include <Qt3DCore/qhandle.h>
 #include <QVector>

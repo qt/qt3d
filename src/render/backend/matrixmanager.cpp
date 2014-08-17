@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "matrixmanager.h"
+#include "matrixmanager_p.h"
 
 QT_BEGIN_NAMESPACE
 

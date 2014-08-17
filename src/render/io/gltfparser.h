@@ -160,7 +160,7 @@ private:
 
     QVariant parameterValueFromJSON(QParameter *p, QJsonValue val);
 
-    Render::RenderState *buildState(const QByteArray& nm, QJsonValue obj);
+    //Render::RenderState *buildState(const QByteArray& nm, QJsonValue obj);
 };
 
 }

@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "rendercameralens.h"
+#include "rendercameralens_p.h"
 #include "rendereraspect.h"
 #include "renderlogging.h"
 
@@ -48,7 +48,7 @@
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DRenderer/renderer.h>
+#include <Qt3DRenderer/private/renderer_p.h>
 
 #include <QOpenGLContext>
 

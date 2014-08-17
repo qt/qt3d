@@ -42,7 +42,7 @@
 #include "framegraphvisitor.h"
 
 #include "framegraphnode.h"
-#include "renderer.h"
+#include <Qt3DRenderer/private/renderer_p.h>
 
 QT_BEGIN_NAMESPACE
 

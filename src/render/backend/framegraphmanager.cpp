@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "framegraphmanager.h"
+#include "framegraphmanager_p.h"
 
 QT_BEGIN_NAMESPACE
 

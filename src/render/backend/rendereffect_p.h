@@ -39,39 +39,61 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERPASSMANAGER_H
-#define QT3D_RENDER_RENDERPASSMANAGER_H
+#ifndef QT3D_RENDER_RENDEREFFECT_H
+#define QT3D_RENDER_RENDEREFFECT_H
 
-#include <Qt3DCore/qresourcesmanager.h>
-#include <Qt3DRenderer/renderrenderpass.h>
+#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRenderer/private/parameterpack_p.h>
+#include <Qt3DCore/qobserverinterface.h>
+#include <QList>
+#include <QUuid>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAbstractRenderPass;
+class QAbstractTechnique;
+class QAbstractEffect;
+
+template <typename T, int INDEXBITS>
+class QHandle;
 
 namespace Render {
 
-typedef QHandle<RenderRenderPass, 16> HRenderPass;
+class RenderTechnique;
 
-class RenderPassManager : public QResourcesManager<RenderRenderPass,
-                                                   QUuid,
-                                                   16,
-                                                   Qt3D::ArrayAllocatingPolicy,
-                                                   Qt3D::ObjectLevelLockingPolicy>
+typedef QHandle<RenderTechnique, 16> HTechnique;
+
+class Renderer;
+
+class RenderEffect
+        : public QObserverInterface
 {
 public:
-    RenderPassManager();
+    RenderEffect();
+    ~RenderEffect();
+    void cleanup();
 
+    void setPeer(QAbstractEffect *effect);
+    void setRenderer(Renderer *renderer);
+    void sceneChangeEvent(const QSceneChangePtr &e);
+    void appendRenderTechnique(QAbstractTechnique *t);
+
+    QList<QUuid> techniques() const;
+    const QHash<QString, QVariant> parameters() const;
+    QUuid effectUuid() const;
+
+private:
+    QList<QUuid> m_techniques;
+    Renderer *m_renderer;
+    QUuid m_effectUuid;
+    ParameterPack m_parameterPack;
 };
 
 } // Render
-
-Q_DECLARE_RESOURCE_INFO(Render::RenderRenderPass, Q_REQUIRES_CLEANUP);
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERPASSMANAGER_H
+#endif // QT3D_RENDER_RENDEREFFECT_H

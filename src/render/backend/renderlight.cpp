@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#include "renderlight.h"
-#include "renderer.h"
+#include "renderlight_p.h"
+#include "renderer_p.h"
 #include "rendereraspect.h"
 #include "qabstractlight.h"
 #include <Qt3DCore/qchangearbiter.h>

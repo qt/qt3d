@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "transformmanager.h"
+#include "transformmanager_p.h"
 
 QT_BEGIN_NAMESPACE
 

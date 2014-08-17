@@ -46,9 +46,9 @@
 
 #include <Qt3DCore/qobserverinterface.h>
 
-#include <Qt3DRenderer/quniformvalue.h>
-#include <Qt3DRenderer/rendertextureprovider.h>
-#include <Qt3DRenderer/parameterpack.h>
+#include <Qt3DRenderer/private/quniformvalue_p.h>
+#include <Qt3DRenderer/private/rendertextureprovider_p.h>
+#include <Qt3DRenderer/private/parameterpack_p.h>
 
 QT_BEGIN_NAMESPACE
 

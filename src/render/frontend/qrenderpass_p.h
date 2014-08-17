@@ -75,8 +75,6 @@ public:
     QList<QCriterion *> m_criteriaList;
     QList<QParameterMapper *> m_bindings;
     QList<QRenderState *> m_renderStates;
-
-    Render::RenderStateSet* m_stateSet;
 };
 
 } // Qt3D

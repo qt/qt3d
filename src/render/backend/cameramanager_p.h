@@ -45,7 +45,7 @@
 #include <QtGlobal>
 #include <Qt3DCore/qresourcesmanager.h>
 #include <QUuid>
-#include <Qt3DRenderer/rendercameralens.h>
+#include <Qt3DRenderer/private/rendercameralens_p.h>
 
 QT_BEGIN_NAMESPACE
 

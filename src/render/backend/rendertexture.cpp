@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "rendertexture.h"
+#include "rendertexture_p.h"
 
 #include <QDebug>
 #include <QOpenGLTexture>

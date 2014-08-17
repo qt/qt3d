@@ -39,77 +39,39 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERSHADER_H
-#define QT3D_RENDER_RENDERSHADER_H
+#ifndef QT3D_RENDER_RENDERPASSMANAGER_H
+#define QT3D_RENDER_RENDERPASSMANAGER_H
 
-#include <QVector>
-
-// for Parameter::StandardUniforms enum - maybe should move to
-// somewhere common to avoid this include?
-#include <Qt3DRenderer/qparameter.h>
-
+#include <Qt3DCore/qresourcesmanager.h>
+#include <Qt3DRenderer/private/renderrenderpass_p.h>
 
 QT_BEGIN_NAMESPACE
 
-class QOpenGLShaderProgram;
-
 namespace Qt3D {
 
-class QShaderProgram;
+class QAbstractRenderPass;
 
 namespace Render {
 
-class Renderer;
+typedef QHandle<RenderRenderPass, 16> HRenderPass;
 
-class RenderShader : public QObserverInterface
+class RenderPassManager : public QResourcesManager<RenderRenderPass,
+                                                   QUuid,
+                                                   16,
+                                                   Qt3D::ArrayAllocatingPolicy,
+                                                   Qt3D::ObjectLevelLockingPolicy>
 {
 public:
-    RenderShader();
-    ~RenderShader();
+    RenderPassManager();
 
-    void cleanup();
-
-    void setPeer(QShaderProgram* peer);
-    void setRenderer(Renderer *renderer);
-    void updateUniforms(const QUniformPack &pack);
-
-    QStringList uniformsNames() const;
-    QStringList attributesNames() const;
-
-    QUuid shaderUuid() const;
-
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
-
-private:
-
-    QOpenGLShaderProgram* m_program;
-    Renderer *m_renderer;
-
-    QOpenGLShaderProgram *createProgram();
-    QOpenGLShaderProgram *createDefaultProgram();
-
-    QHash<QString, int> m_uniforms;
-    QHash<QString, int> m_attributes;
-
-    QByteArray m_vertexSourceCode;
-    QByteArray m_fragmentSourceCode;
-    QString m_vertexSourceFile;
-    QString m_fragmentSourceFile;
-
-    QUuid m_shaderUuid;
-
-    bool m_isLoaded;
-
-    // Private so that only GraphicContext can call it
-    void initializeUniforms(const QVector<QPair<QString, int> > &uniformsNameAndLocation);
-    void initializeAttributes(const QVector<QPair<QString, int> > &attributesNameAndLocation);
-    QOpenGLShaderProgram* getOrCreateProgram();
-    friend class QGraphicsContext;
 };
 
 } // Render
+
+Q_DECLARE_RESOURCE_INFO(Render::RenderRenderPass, Q_REQUIRES_CLEANUP);
+
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERSHADER_H
+#endif // QT3D_RENDER_RENDERPASSMANAGER_H

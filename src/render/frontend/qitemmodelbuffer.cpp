@@ -40,7 +40,7 @@
 ****************************************************************************/
 
 #include "qitemmodelbuffer.h"
-#include "qgraphicscontext.h"
+#include <Qt3DRenderer/private/qgraphicscontext_p.h>
 #include <QDebug>
 #include <QColor>
 

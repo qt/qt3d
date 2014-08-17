@@ -41,11 +41,11 @@
 
 #include "rendereraspect.h"
 
-#include "rendermesh.h"
-#include "meshmanager.h"
-#include "meshdatamanager.h"
-#include "renderer.h"
-#include "rendersceneobserver.h"
+#include <Qt3DRenderer/private/rendermesh_p.h>
+#include <Qt3DRenderer/private/meshmanager_p.h>
+#include <Qt3DRenderer/private/meshdatamanager_p.h>
+#include <Qt3DRenderer/private/renderer_p.h>
+#include <Qt3DRenderer/private/rendersceneobserver_p.h>
 
 #include <loadmeshdatajob.h>
 #include <updateworldtransformjob.h>

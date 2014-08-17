@@ -1,7 +1,6 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
-** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -40,71 +39,44 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERCOMMAND_H
-#define QT3D_RENDER_RENDERCOMMAND_H
+#ifndef QT3D_RENDER_MESHMANAGER_H
+#define QT3D_RENDER_MESHMANAGER_H
 
-#include <qglobal.h>
-#include <Qt3DRenderer/quniformvalue.h>
-#include <Qt3DRenderer/meshdata.h>
 #include <Qt3DCore/qhandle.h>
-#include <QOpenGLShaderProgram>
-#include <QOpenGLTexture>
-#include <QMatrix4x4>
+#include <Qt3DCore/qresourcesmanager.h>
+#include <Qt3DRenderer/private/rendermesh_p.h>
+#include <QUuid>
 
 QT_BEGIN_NAMESPACE
-
-class QOpenGLVertexArrayObject;
 
 namespace Qt3D {
 
 namespace Render {
 
-class RenderTarget;
-class RenderMaterial;
-class RenderMesh;
-class RenderShader;
-class RenderTechnique;
-class RenderStateSet;
-
-typedef QHandle<QOpenGLVertexArrayObject*, 16> HVao;
-typedef QHandle<RenderMaterial, 16> HMaterial;
 typedef QHandle<RenderMesh, 16> HMesh;
-typedef QHandle<RenderShader, 16> HShader;
-typedef QHandle<MeshData, 16> HMeshData;
-typedef QHandle<RenderTechnique, 16> HTechnique;
 
-class RenderCommand
+class MeshManager : public QResourcesManager<RenderMesh,
+                                             QUuid,
+                                             16,
+                                             Qt3D::ArrayAllocatingPolicy,
+                                             Qt3D::ObjectLevelLockingPolicy>
 {
 public:
-    RenderCommand();
+    MeshManager();
 
-//    void setMaterial(HMaterial material);
-//    void setModelMatrix(HMatrix matrix);
-//    void setIntanceCount(uint instanceCount);
-//    void setTechnique(); // Do we really need the technique ?, isn't a shader enough
+    inline bool hasRenderMesh(const QUuid &id) { return contains(id); }
+    inline RenderMesh *getOrCreateRenderMesh(const QUuid &id) { return getOrCreateResource(id); }
+    inline RenderMesh *renderMesh(const QUuid &id) { return lookupResource(id); }
+    inline void releaseRenderMesh(const QUuid &id) { releaseResource(id); }
 
-
-//private:
-    HVao m_vao; // VAO used during the submission step to store all states and VBOs
-    QMatrix4x4 m_worldMatrix; // modelMatrix for the mesh -> could maybe be stored directly with other uniform
-    HMeshData m_meshData;
-    HShader m_shader; // Shader for given pass and mesh
-    QUniformPack m_uniforms; // Might need to be reworked so as to be able to destroy the
-                            // RenderTexture while submission is happening.
-    GLint m_instancesCount; // Number of instances of the mesh, if 0 regular draw otherwise glDrawArraysInstanced or glDrawElementsInstanced
-    RenderStateSet *m_stateSet;
-
-    // A QAttribute pack might be interesting
-    // This is a temporary fix in the meantime, to remove the hacked methods in RenderTechnique
-    QHash<QString, QString> m_parameterAttributeToShaderNames;
 };
 
-bool operator < (const RenderCommand &r1, const RenderCommand &r2);
-
 } // Render
+
+Q_DECLARE_RESOURCE_INFO(Render::RenderMesh, Q_REQUIRES_CLEANUP);
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERCOMMAND_H
+#endif // QT3D_RENDER_MESHMANAGER_H

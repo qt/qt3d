@@ -39,38 +39,40 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_SHADERMANAGER_H
-#define QT3D_RENDER_SHADERMANAGER_H
+#ifndef QT3D_RENDER_MATERIALMANAGER_H
+#define QT3D_RENDER_MATERIALMANAGER_H
 
+#include <QtGlobal>
+#include <QUuid>
 #include <Qt3DCore/qresourcesmanager.h>
-#include <Qt3DCore/qhandle.h>
-#include <Qt3DRenderer/rendershader.h>
+#include <Qt3DRenderer/private/rendermaterial_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class QMaterial;
+
 namespace Render {
 
-typedef QHandle<RenderShader, 16> HShader;
+typedef QHandle<RenderMaterial, 16> HMaterial;
 
-class ShaderManager : public QResourcesManager<RenderShader,
-                                               QUuid,
-                                               16,
-                                               Qt3D::ArrayAllocatingPolicy,
-                                               Qt3D::ObjectLevelLockingPolicy>
+class MaterialManager : public QResourcesManager<RenderMaterial,
+                                                QUuid,
+                                                16,
+                                                Qt3D::ArrayAllocatingPolicy,
+                                                Qt3D::ObjectLevelLockingPolicy>
 {
 public:
-    ShaderManager();
-
+    MaterialManager();
 };
 
 } // Render
 
-Q_DECLARE_RESOURCE_INFO(Render::RenderShader, Q_REQUIRES_CLEANUP);
+Q_DECLARE_RESOURCE_INFO(Render::RenderMaterial, Q_REQUIRES_CLEANUP);
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_SHADERMANAGER_H
+#endif // QT3D_RENDER_MATERIALMANAGER_H

@@ -39,15 +39,15 @@
 **
 ****************************************************************************/
 
-#include "rendershader.h"
+#include "rendershader_p.h"
 
 #include <QDebug>
 #include <QFile>
 #include <QOpenGLContext>
 #include <QOpenGLShaderProgram>
 #include <qshaderprogram.h>
-#include <Qt3DRenderer/QGraphicsContext>
-#include <Qt3DRenderer/renderer.h>
+#include <Qt3DRenderer/private/qgraphicscontext_p.h>
+#include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/rendereraspect.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qaspectmanager.h>

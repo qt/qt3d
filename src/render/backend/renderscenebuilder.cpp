@@ -39,42 +39,42 @@
 **
 ****************************************************************************/
 
-#include "renderscenebuilder.h"
+#include "renderscenebuilder_p.h"
 
-#include "entitymanager.h"
-#include "meshdatamanager.h"
-#include "meshmanager.h"
-#include "cameramanager.h"
-#include "layermanager.h"
-#include "lightmanager.h"
-#include "techniquemanager.h"
-#include "effectmanager.h"
-#include "renderpassmanager.h"
-#include "renderer.h"
-#include "renderentity.h"
-#include "renderlogging.h"
-#include "materialmanager.h"
-#include "qabstractscene.h"
-#include "qparameter.h"
-#include "qparametermapper.h"
-#include "rendercriterion.h"
-#include "criterionmanager.h"
-#include "rendereraspect.h"
-#include "transformmanager.h"
-#include "shadermanager.h"
-#include <qmaterial.h>
-#include <qmesh.h>
-#include <qabstractshapemesh.h>
-#include <qlayer.h>
-#include <qabstractlight.h>
+#include <Qt3DRenderer/qabstractlight.h>
+#include <Qt3DRenderer/qabstractscene.h>
+#include <Qt3DRenderer/qabstractshapemesh.h>
+#include <Qt3DRenderer/qcameraselector.h>
+#include <Qt3DRenderer/qframegraph.h>
+#include <Qt3DRenderer/qlayer.h>
+#include <Qt3DRenderer/qlayerfilter.h>
+#include <Qt3DRenderer/qmaterial.h>
+#include <Qt3DRenderer/qmesh.h>
+#include <Qt3DRenderer/qparameter.h>
+#include <Qt3DRenderer/qparametermapper.h>
+#include <Qt3DRenderer/qrenderpassfilter.h>
+#include <Qt3DRenderer/qrendertargetselector.h>
+#include <Qt3DRenderer/qtechniquefilter.h>
+#include <Qt3DRenderer/qviewport.h>
+#include <Qt3DRenderer/rendereraspect.h>
+#include <Qt3DRenderer/renderlogging.h>
 
-#include <qframegraph.h>
-#include <qviewport.h>
-#include <qtechniquefilter.h>
-#include <qrenderpassfilter.h>
-#include <qcameraselector.h>
-#include <qrendertargetselector.h>
-#include <qlayerfilter.h>
+#include <Qt3DRenderer/private/cameramanager_p.h>
+#include <Qt3DRenderer/private/criterionmanager_p.h>
+#include <Qt3DRenderer/private/effectmanager_p.h>
+#include <Qt3DRenderer/private/entitymanager_p.h>
+#include <Qt3DRenderer/private/layermanager_p.h>
+#include <Qt3DRenderer/private/lightmanager_p.h>
+#include <Qt3DRenderer/private/materialmanager_p.h>
+#include <Qt3DRenderer/private/meshdatamanager_p.h>
+#include <Qt3DRenderer/private/meshmanager_p.h>
+#include <Qt3DRenderer/private/rendercriterion_p.h>
+#include <Qt3DRenderer/private/renderentity_p.h>
+#include <Qt3DRenderer/private/renderer_p.h>
+#include <Qt3DRenderer/private/renderpassmanager_p.h>
+#include <Qt3DRenderer/private/shadermanager_p.h>
+#include <Qt3DRenderer/private/techniquemanager_p.h>
+#include <Qt3DRenderer/private/transformmanager_p.h>
 
 #include <techniquefilternode.h>
 #include <cameraselectornode.h>

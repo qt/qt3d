@@ -40,17 +40,19 @@
 **
 ****************************************************************************/
 
-#include "renderrenderpass.h"
-#include "renderer.h"
-#include "rendereraspect.h"
-#include "rendercriterion.h"
-#include "criterionmanager.h"
+#include "renderrenderpass_p.h"
+#include <Qt3DRenderer/private/criterionmanager_p.h>
+#include <Qt3DRenderer/private/rendercriterion_p.h>
+#include <Qt3DRenderer/private/renderer_p.h>
+#include <Qt3DRenderer/qparametermapper.h>
+#include <Qt3DRenderer/qrenderstate.h>
+#include <Qt3DRenderer/rendereraspect.h>
+
 #include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/qchangearbiter.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qabstractshader.h>
-#include <Qt3DRenderer/qparametermapper.h>
-#include <Qt3DRenderer/qrenderstate.h>
+
 
 QT_BEGIN_NAMESPACE
 

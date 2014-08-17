@@ -39,10 +39,10 @@
 **
 ****************************************************************************/
 
-#include "quniformvalue.h"
+#include "quniformvalue_p.h"
 
-#include "qgraphicscontext.h"
-#include "rendertexture.h"
+#include <Qt3DRenderer/private/qgraphicscontext_p.h>
+#include <Qt3DRenderer/private/rendertexture_p.h>
 
 #include <Qt3DCore/qframeallocator.h>
 

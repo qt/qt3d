@@ -39,52 +39,43 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QGRAPHICSHELPERGL2_H
-#define QT3D_RENDER_QGRAPHICSHELPERGL2_H
+#ifndef QT3D_RENDER_RENDERNODESMANAGER_H
+#define QT3D_RENDER_RENDERNODESMANAGER_H
 
-#ifndef QT_OPENGL_ES_2
-
-#include <Qt3DRenderer/qgraphicshelperinterface.h>
+#include <QtGlobal>
+#include <QUuid>
+#include <Qt3DCore/qabstractrenderpass.h>
+#include <Qt3DCore/qresourcesmanager.h>
+#include <Qt3DRenderer/private/renderentity_p.h>
 
 QT_BEGIN_NAMESPACE
 
-class QOpenGLFunctions_2_0;
-
 namespace Qt3D {
+
 namespace Render {
 
-class QGraphicsHelperGL2 : public QGraphicsHelperInterface
+typedef QHandle<RenderEntity, 16> HEntity;
+
+class EntityManager : public QResourcesManager<RenderEntity, QUuid, 16>
 {
 public:
-    QGraphicsHelperGL2();
+    EntityManager();
 
-    // QGraphicHelperInterface interface
-    void initializeHelper(QOpenGLContext *context, QAbstractOpenGLFunctions *functions) Q_DECL_OVERRIDE;
-    void drawElementsInstanced(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void *indices, GLsizei instances) Q_DECL_OVERRIDE;
-    void drawArraysInstanced(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances) Q_DECL_OVERRIDE;
-    void drawElements(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void *indices) Q_DECL_OVERRIDE;
-    void drawArrays(GLenum primitiveType, GLint first, GLsizei count) Q_DECL_OVERRIDE;
-    void useProgram(GLuint programId) Q_DECL_OVERRIDE;
-    QVector<QPair<QString, int> > programUniformsAndLocations(GLuint programId) Q_DECL_OVERRIDE;
-    QVector<QPair<QString, int> > programAttributesAndLocations(GLuint programId) Q_DECL_OVERRIDE;
-    void vertexAttribDivisor(GLuint index, GLuint divisor) Q_DECL_OVERRIDE;
-    void blendEquation(GLenum mode) Q_DECL_OVERRIDE;
-    void alphaTest(GLenum mode1, GLenum mode2) Q_DECL_OVERRIDE;
-    void depthTest(GLenum mode) Q_DECL_OVERRIDE;
-    void depthMask(GLenum mode) Q_DECL_OVERRIDE;
-    void cullFace(GLenum mode) Q_DECL_OVERRIDE;
-    void frontFace(GLenum mode) Q_DECL_OVERRIDE;
-    bool supportUniformBlock() const Q_DECL_OVERRIDE;
+    inline bool hasRenderNode(const QUuid &id) { return contains(id); }
+    inline RenderEntity *getOrCreateRenderNode(const QUuid &id) { return getOrCreateResource(id); }
+    inline RenderEntity *renderNode(const QUuid &id) { return lookupResource(id); }
+    inline void releaseRenderNode(const QUuid &id) { releaseResource(id); }
 
-private:
-    QOpenGLFunctions_2_0 *m_funcs;
+
 };
 
 } // Render
+
+Q_DECLARE_RESOURCE_INFO(Render::RenderEntity, Q_REQUIRES_CLEANUP);
+
 } // Qt3D
+
 
 QT_END_NAMESPACE
 
-#endif // !QT_OPENGL_ES_2
-
-#endif // QT3D_RENDER_QGRAPHICSHELPERGL2_H
+#endif // QT3D_RENDER_RENDERNODESMANAGER_H

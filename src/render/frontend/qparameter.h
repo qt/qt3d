@@ -44,7 +44,6 @@
 
 #include <Qt3DCore/qnode.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/quniformvalue.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -110,11 +109,6 @@ public:
 
     bool isTextureType() const;
 
-    /**
-     * @brief uniformType - map the data type to the primitive uniform type
-     * @return
-     */
-    Render::QUniformValue::Type uniformType() const;
 Q_SIGNALS:
     void valueChanged();
     void nameChanged();

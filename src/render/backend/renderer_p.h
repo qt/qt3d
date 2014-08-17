@@ -44,7 +44,7 @@
 #define QT3D_RENDER_RENDERER_H
 
 #include <Qt3DRenderer/qtechnique.h>
-#include <Qt3DRenderer/quniformvalue.h>
+#include <Qt3DRenderer/private/quniformvalue_p.h>
 #include <Qt3DCore/qjob.h>
 #include <Qt3DCore/qhandle.h>
 

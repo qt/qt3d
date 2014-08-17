@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#include "renderlayer.h"
-#include "renderer.h"
+#include "renderlayer_p.h"
+#include "renderer_p.h"
 #include "rendereraspect.h"
 #include "qlayer.h"
 #include <Qt3DCore/qaspectmanager.h>

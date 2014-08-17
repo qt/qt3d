@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "texturedatamanager.h"
+#include "texturedatamanager_p.h"
 
 QT_BEGIN_NAMESPACE
 

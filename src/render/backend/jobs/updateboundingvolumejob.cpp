@@ -41,7 +41,8 @@
 
 #include "updateboundingvolumejob.h"
 
-#include <renderentity.h>
+#include <Qt3DRenderer/private/renderer_p.h>
+#include <Qt3DRenderer/private/renderentity_p.h>
 #include <sphere.h>
 
 #include "renderlogging.h"

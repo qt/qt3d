@@ -39,17 +39,17 @@
 **
 ****************************************************************************/
 
-#include "rendertechnique.h"
-#include "rendershader.h"
+#include "rendertechnique_p.h"
 
-#include <qrenderpass.h>
-#include <qtechnique.h>
-#include "rendereraspect.h"
-#include "renderer.h"
-#include "rendercriterion.h"
-#include "criterionmanager.h"
-#include "renderpassmanager.h"
-#include "qopenglfilter.h"
+#include <Qt3DRenderer/qrenderpass.h>
+#include <Qt3DRenderer/qtechnique.h>
+#include <Qt3DRenderer/qopenglfilter.h>
+#include <Qt3DRenderer/rendereraspect.h>
+#include <Qt3DRenderer/private/criterionmanager_p.h>
+#include <Qt3DRenderer/private/renderer_p.h>
+#include <Qt3DRenderer/private/rendercriterion_p.h>
+#include <Qt3DRenderer/private/renderpassmanager_p.h>
+#include <Qt3DRenderer/private/rendershader_p.h>
 #include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/qchangearbiter.h>
 #include <Qt3DCore/qscenepropertychange.h>

@@ -42,7 +42,7 @@
 #ifndef QT3D_RENDER_QGRAPHICSHELPERES2_H
 #define QT3D_RENDER_QGRAPHICSHELPERES2_H
 
-#include <Qt3DRenderer/qgraphicshelperinterface.h>
+#include <Qt3DRenderer/private/qgraphicshelperinterface_p.h>
 #include <QOpenGLContext>
 
 #ifdef QT_OPENGL_ES_2

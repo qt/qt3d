@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "renderdevice.h"
+#include "renderdevice_p.h"
 
 QT_BEGIN_NAMESPACE
 

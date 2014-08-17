@@ -50,8 +50,8 @@
 #include <QColor>
 #include <QMatrix4x4>
 #include <QBitArray>
-#include <Qt3DRenderer/quniformvalue.h>
-#include <Qt3DRenderer/meshdata.h>
+#include <Qt3DRenderer/private/quniformvalue_p.h>
+#include <Qt3DRenderer/private/meshdata_p.h>
 #include <Qt3DRenderer/qattribute.h>
 #include <Qt3DRenderer/qbuffer.h>
 

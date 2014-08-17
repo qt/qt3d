@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "qgraphicshelperes2.h"
+#include "qgraphicshelperes2_p.h"
 #include "qopenglfunctions_es2.h"
 #include "renderlogging.h"
 

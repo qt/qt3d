@@ -39,53 +39,77 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_MESHDATAMANAGER_H
-#define QT3D_RENDER_MESHDATAMANAGER_H
+#ifndef QT3D_RENDER_RENDERSHADER_H
+#define QT3D_RENDER_RENDERSHADER_H
 
-#include <Qt3DCore/qabstractmesh.h>
-#include <Qt3DCore/qresourcesmanager.h>
-#include <Qt3DRenderer/meshdata.h>
-#include <Qt3DRenderer/rendermesh.h>
+#include <QVector>
 
-#include <QHash>
-#include <QPair>
-#include <QString>
-#include <QUuid>
+// for Parameter::StandardUniforms enum - maybe should move to
+// somewhere common to avoid this include?
+#include <Qt3DRenderer/qparameter.h>
+#include <Qt3DRenderer/private/quniformvalue_p.h>
 
 QT_BEGIN_NAMESPACE
 
+class QOpenGLShaderProgram;
+
 namespace Qt3D {
+
+class QShaderProgram;
+
 namespace Render {
 
-typedef QHandle<MeshData, 16> HMeshData;
-typedef QHandle<RenderMesh, 16> HMesh;
+class Renderer;
 
-class MeshDataManager : public QResourcesManager<MeshData,
-                                                 QUuid,
-                                                 16,
-                                                 Qt3D::ListAllocatingPolicy,
-                                                 Qt3D::ObjectLevelLockingPolicy>
+class RenderShader : public QObserverInterface
 {
 public:
-    MeshDataManager();
+    RenderShader();
+    ~RenderShader();
 
-    inline bool hasMeshData(const QUuid &id) { return contains(id); }
-    inline MeshData* getOrCreateMeshData(const QUuid &id) { return getOrCreateResource(id); }
-    inline MeshData* meshData(const QUuid &id) { return lookupResource(id); }
-    void addMeshData(QAbstractMeshFunctorPtr functor, const QUuid &meshUuid);
+    void cleanup();
 
-    QHash<QUuid, QAbstractMeshFunctorPtr> meshesPending();
+    void setPeer(QShaderProgram* peer);
+    void setRenderer(Renderer *renderer);
+    void updateUniforms(const QUniformPack &pack);
+
+    QStringList uniformsNames() const;
+    QStringList attributesNames() const;
+
+    QUuid shaderUuid() const;
+
+    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    // List of meshes that we need to schedule jobs to load
-    // and calculate bounds for.
 
-    QHash<QUuid, QAbstractMeshFunctorPtr> m_meshesPending;
+    QOpenGLShaderProgram* m_program;
+    Renderer *m_renderer;
+
+    QOpenGLShaderProgram *createProgram();
+    QOpenGLShaderProgram *createDefaultProgram();
+
+    QHash<QString, int> m_uniforms;
+    QHash<QString, int> m_attributes;
+
+    QByteArray m_vertexSourceCode;
+    QByteArray m_fragmentSourceCode;
+    QString m_vertexSourceFile;
+    QString m_fragmentSourceFile;
+
+    QUuid m_shaderUuid;
+
+    bool m_isLoaded;
+
+    // Private so that only GraphicContext can call it
+    void initializeUniforms(const QVector<QPair<QString, int> > &uniformsNameAndLocation);
+    void initializeAttributes(const QVector<QPair<QString, int> > &attributesNameAndLocation);
+    QOpenGLShaderProgram* getOrCreateProgram();
+    friend class QGraphicsContext;
 };
 
-} // namespace Render
-} // namespace Qt3D
+} // Render
+} // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_MESHDATAMANAGER_H
+#endif // QT3D_RENDER_RENDERSHADER_H

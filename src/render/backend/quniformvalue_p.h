@@ -50,7 +50,7 @@
 #include <Qt3DRenderer/renderlogging.h>
 
 // for RenderTexturePtr
-#include <Qt3DRenderer/rendertextureprovider.h>
+#include <Qt3DRenderer/private/rendertextureprovider_p.h>
 
 QT_BEGIN_NAMESPACE
 

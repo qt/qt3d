@@ -40,8 +40,8 @@
 ****************************************************************************/
 
 #include "framegraphnode.h"
-#include "renderer.h"
-#include "framegraphmanager.h"
+#include <Qt3DRenderer/private/renderer_p.h>
+#include <Qt3DRenderer/private/framegraphmanager_p.h>
 
 QT_BEGIN_NAMESPACE
 

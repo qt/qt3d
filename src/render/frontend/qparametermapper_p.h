@@ -43,12 +43,11 @@
 #define QT3D_QPARAMETERMAPPER_P_H
 
 #include <private/qnode_p.h>
+#include <Qt3DRenderer/QParameterMapper>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
-
-class QParameterMapper;
 
 class QParameterMapperPrivate : public QNodePrivate
 {

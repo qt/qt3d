@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "lightmanager.h"
+#include "lightmanager_p.h"
 
 QT_BEGIN_NAMESPACE
 

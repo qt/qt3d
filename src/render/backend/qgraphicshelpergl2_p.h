@@ -39,44 +39,52 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_MESHMANAGER_H
-#define QT3D_RENDER_MESHMANAGER_H
+#ifndef QT3D_RENDER_QGRAPHICSHELPERGL2_H
+#define QT3D_RENDER_QGRAPHICSHELPERGL2_H
 
-#include <Qt3DCore/qhandle.h>
-#include <Qt3DRenderer/rendermesh.h>
-#include <Qt3DCore/qresourcesmanager.h>
-#include <QUuid>
+#ifndef QT_OPENGL_ES_2
+
+#include <Qt3DRenderer/private/qgraphicshelperinterface_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+class QOpenGLFunctions_2_0;
 
+namespace Qt3D {
 namespace Render {
 
-typedef QHandle<RenderMesh, 16> HMesh;
-
-class MeshManager : public QResourcesManager<RenderMesh,
-                                             QUuid,
-                                             16,
-                                             Qt3D::ArrayAllocatingPolicy,
-                                             Qt3D::ObjectLevelLockingPolicy>
+class QGraphicsHelperGL2 : public QGraphicsHelperInterface
 {
 public:
-    MeshManager();
+    QGraphicsHelperGL2();
 
-    inline bool hasRenderMesh(const QUuid &id) { return contains(id); }
-    inline RenderMesh *getOrCreateRenderMesh(const QUuid &id) { return getOrCreateResource(id); }
-    inline RenderMesh *renderMesh(const QUuid &id) { return lookupResource(id); }
-    inline void releaseRenderMesh(const QUuid &id) { releaseResource(id); }
+    // QGraphicHelperInterface interface
+    void initializeHelper(QOpenGLContext *context, QAbstractOpenGLFunctions *functions) Q_DECL_OVERRIDE;
+    void drawElementsInstanced(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void *indices, GLsizei instances) Q_DECL_OVERRIDE;
+    void drawArraysInstanced(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances) Q_DECL_OVERRIDE;
+    void drawElements(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void *indices) Q_DECL_OVERRIDE;
+    void drawArrays(GLenum primitiveType, GLint first, GLsizei count) Q_DECL_OVERRIDE;
+    void useProgram(GLuint programId) Q_DECL_OVERRIDE;
+    QVector<QPair<QString, int> > programUniformsAndLocations(GLuint programId) Q_DECL_OVERRIDE;
+    QVector<QPair<QString, int> > programAttributesAndLocations(GLuint programId) Q_DECL_OVERRIDE;
+    void vertexAttribDivisor(GLuint index, GLuint divisor) Q_DECL_OVERRIDE;
+    void blendEquation(GLenum mode) Q_DECL_OVERRIDE;
+    void alphaTest(GLenum mode1, GLenum mode2) Q_DECL_OVERRIDE;
+    void depthTest(GLenum mode) Q_DECL_OVERRIDE;
+    void depthMask(GLenum mode) Q_DECL_OVERRIDE;
+    void cullFace(GLenum mode) Q_DECL_OVERRIDE;
+    void frontFace(GLenum mode) Q_DECL_OVERRIDE;
+    bool supportUniformBlock() const Q_DECL_OVERRIDE;
 
+private:
+    QOpenGLFunctions_2_0 *m_funcs;
 };
 
 } // Render
-
-Q_DECLARE_RESOURCE_INFO(Render::RenderMesh, Q_REQUIRES_CLEANUP);
-
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_MESHMANAGER_H
+#endif // !QT_OPENGL_ES_2
+
+#endif // QT3D_RENDER_QGRAPHICSHELPERGL2_H

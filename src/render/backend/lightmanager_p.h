@@ -1,7 +1,6 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
-** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -40,81 +39,37 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERTECHNIQUE_H
-#define QT3D_RENDER_RENDERTECHNIQUE_H
+#ifndef QT3D_RENDER_LIGHTMANAGER_H
+#define QT3D_RENDER_LIGHTMANAGER_H
 
-#include <QVector>
-#include <QStringList>
-#include <Qt3DCore/qobserverinterface.h>
-#include <Qt3DRenderer/parameterpack.h>
-#include <Qt3DRenderer/qcriterion.h>
+#include <Qt3DCore/qresourcesmanager.h>
+#include <Qt3DRenderer/private/renderlight_p.h>
+#include <QUuid>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QTechnique;
-class QParameter;
-class QOpenGLFilter;
-class QCriterion;
-class QAbstractRenderPass;
-
 namespace Render {
 
-class RenderBin;
-class RenderStateSet;
-class RenderShader;
-class Renderer;
+typedef QHandle<RenderLight, 16> HLight;
 
-class RenderTechnique : public QObserverInterface
+class LightManager : public QResourcesManager<RenderLight,
+                                              QUuid,
+                                              16,
+                                              Qt3D::ArrayAllocatingPolicy,
+                                              Qt3D::ObjectLevelLockingPolicy>
 {
 public:
-    RenderTechnique();
-    ~RenderTechnique();
-    void cleanup();
-
-    void setRenderer(Renderer *renderer);
-
-    void setPeer(QTechnique* peer);
-
-    RenderStateSet* stateSetForPass(unsigned int pass) const;
-
-    QString glslNameForMeshAttribute(unsigned int pass, QString meshAttributeName);
-
-    QStringList glslNamesForUniformParameter(QString pName) const;
-
-    // FIXME using front-end classes here, not ideal
-    QParameter* parameterByName(QString name) const;
-
-    void sceneChangeEvent(const QSceneChangePtr &e);
-    const QHash<QString, QVariant> parameters() const;
-
-    void appendRenderPass(QAbstractRenderPass *rPass);
-    void removeRenderPass(const QUuid &renderPassId);
-
-    void appendCriterion(QCriterion *criterion);
-    void removeCriterion(const QUuid &criterionId);
-
-    QList<QUuid> criteria() const;
-    QList<QUuid> renderPasses() const;
-    QOpenGLFilter *openGLFilter() const;
-    QUuid techniqueUuid() const;
-
-private:
-
-    Renderer *m_renderer;
-    unsigned int m_passCount;
-    QOpenGLFilter *m_openglFilter;
-    QUuid m_techniqueUuid;
-
-    ParameterPack m_parameterPack;
-    QList<QUuid> m_criteriaList;
-    QList<QUuid> m_renderPasses;
+    LightManager();
 };
 
-} // namespace Render
-} // namespace Qt3D
+} // Render
+
+Q_DECLARE_RESOURCE_INFO(Render::RenderLight, Q_REQUIRES_CLEANUP);
+
+} // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERTECHNIQUE_H
+#endif // QT3D_RENDER_LIGHTMANAGER_H
