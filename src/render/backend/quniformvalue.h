@@ -138,7 +138,8 @@ public :
         prog->setUniformValue(location, (T)m_value);
         int err = glGetError();
         if (err) {
-            qCWarning(Render::Backend) << Q_FUNC_INFO << "error " << err << "after setting uniform" << name << "at location " << location;
+            qCWarning(Render::Backend, "Error %d after setting uniform \"%s\" at location %d",
+                      err, qUtf8Printable(name), location);
         }
     }
 
@@ -181,11 +182,13 @@ public :
             prog->setUniformValue(location, m_textureUnit);
             int err = glGetError();
             if (err) {
-                qCWarning(Render::Backend) << Q_FUNC_INFO << "error " << err << "after setting uniform" << name << "at location " << location;
+                qCWarning(Render::Backend, "Error %d after setting uniform \"%s\" at location %d",
+                          err, qUtf8Printable(name), location);
             }
+        } else {
+            qCWarning(Render::Backend, "Invalid texture unit supplied for \"%s\"",
+                      qUtf8Printable(name));
         }
-        else
-            qCWarning(Render::Backend) << Q_FUNC_INFO << "Invalid texture unit supplied for " << name;
     }
 
 private:
