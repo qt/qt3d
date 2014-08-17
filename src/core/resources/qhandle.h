@@ -61,8 +61,8 @@ public:
     {}
 
 
-    quint32 index() const { return m_index; }
-    quint32 counter() const { return m_counter; }
+    quint32 index() const { return d.m_index; }
+    quint32 counter() const { return d.m_counter; }
     quint32 handle() const { return m_handle; }
     bool isNull() const { return !m_handle; }
 
@@ -84,10 +84,10 @@ private:
     };
 
     QHandle(quint32 i, quint32 count)
-        : m_index(i)
-        , m_counter(count)
-        , m_unused(0)
     {
+        d.m_index = i;
+        d.m_counter = count;
+        d.m_unused = 0;
         Q_ASSERT(i < MaxIndex);
         Q_ASSERT(count < MaxCounter);
     }
@@ -95,12 +95,13 @@ private:
 
     friend class QHandleManager<T, INDEXBITS>;
 
+    struct Data {
+        quint32 m_index : IndexBits;
+        quint32 m_counter : CounterBits;
+        quint32 m_unused : 2;
+    };
     union {
-        struct {
-            quint32 m_index : IndexBits;
-            quint32 m_counter : CounterBits;
-            quint32 m_unused : 2;
-        };
+        Data d;
         quint32 m_handle;
     };
 };
