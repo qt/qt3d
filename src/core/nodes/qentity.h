@@ -73,7 +73,7 @@ public:
     QList<T*> componentsOfType() const
     {
         QList<T*> result;
-        foreach (QComponent* comp, components()) {
+        Q_FOREACH (QComponent* comp, components()) {
             T* i = qobject_cast<T*>(comp);
             if (i)
                 result.append(i);
@@ -89,14 +89,14 @@ public:
             return Q_NULLPTR;
 
         if (root->asEntity()) {
-            foreach (QComponent* comp, root->asEntity()->components()) {
+            Q_FOREACH (QComponent* comp, root->asEntity()->components()) {
                 T* i = qobject_cast<T*>(comp);
                 if (i)
                     return i;
             } // of component iteration
         } // of is-entity
 
-        foreach (QNode* child, root->children()) {
+        Q_FOREACH (QNode* child, root->children()) {
             T* i = findComponentInTree<T>(child);
             if (i)
                 return i;
@@ -112,7 +112,7 @@ public:
             return Q_NULLPTR;
 
         if (root->asEntity()) {
-            foreach (QNode* child, root->children()) {
+            Q_FOREACH (QNode* child, root->children()) {
                 if (!qobject_cast<QEntity*>(child))
                     continue;
                 T* i = qobject_cast<T*>(child);
@@ -121,7 +121,7 @@ public:
             } // of child iteration
         } // of is-entity
 
-        foreach (QNode* child, root->children()) {
+        Q_FOREACH (QNode* child, root->children()) {
             T* i = findEntityInTree<T>(child);
             if (i)
                 return i;

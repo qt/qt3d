@@ -64,10 +64,10 @@ public:
           m_radius(r)
     {}
 
-    void setCenter(const QVector3D &center);
+    void setCenter(const QVector3D &c);
     QVector3D center() const;
 
-    void setRadius(float radius);
+    void setRadius(float r);
     float radius() const;
 
     void clear();
@@ -97,9 +97,9 @@ private:
     static const float ms_epsilon;
 };
 
-inline void Sphere::setCenter(const QVector3D &center)
+inline void Sphere::setCenter(const QVector3D &c)
 {
-    m_center = center;
+    m_center = c;
 }
 
 inline QVector3D Sphere::center() const
@@ -107,9 +107,9 @@ inline QVector3D Sphere::center() const
     return m_center;
 }
 
-inline void Sphere::setRadius(float radius)
+inline void Sphere::setRadius(float r)
 {
-    m_radius = radius;
+    m_radius = r;
 }
 
 inline float Sphere::radius() const

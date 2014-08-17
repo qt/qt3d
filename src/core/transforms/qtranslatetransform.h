@@ -75,7 +75,7 @@ public:
 
     QMatrix4x4 matrix() const Q_DECL_OVERRIDE;
 
-public slots:
+public Q_SLOTS:
     void setDx(float arg);
     void setDy(float arg);
     void setDz(float arg);

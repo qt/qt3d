@@ -156,9 +156,9 @@ public :
         m_type = Texture;
     }
 
-    void setTextureId(const QUuid &textureId)
+    void setTextureId(const QUuid &id)
     {
-        m_textureId = textureId;
+        m_textureId = id;
     }
 
     QUuid textureId() const { return m_textureId; }

@@ -59,27 +59,27 @@ class QT3DRENDERERSHARED_EXPORT Tag : public QNode
     Q_PROPERTY(QVariant value READ value WRITE setValue NOTIFY valueChanged)
 
 public:
-    Tag(QNode *parent = 0)
-        : QNode(parent)
+    Tag(QNode *p = 0)
+        : QNode(p)
         , m_name()
         , m_value()
     {}
 
-    void setName( const QString& name )
+    void setName(const QString &n)
     {
-        if (name != m_name) {
-            m_name = name;
-            emit nameChanged();
+        if (n != m_name) {
+            m_name = n;
+            Q_EMIT nameChanged();
         }
     }
 
     QString name() const { return m_name; }
 
-    void setValue( const QVariant& value )
+    void setValue(const QVariant &newValue)
     {
-        if (value != m_value) {
-            m_value = value;
-            emit valueChanged();
+        if (newValue != m_value) {
+            m_value = newValue;
+            Q_EMIT valueChanged();
         }
     }
 

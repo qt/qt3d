@@ -87,7 +87,7 @@ protected:
     QTechnique(QTechniquePrivate &dd, QNode *parent = 0);
     QTechnique *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
 
-protected slots:
+protected Q_SLOTS:
     void openGLFilterChanged();
 };
 

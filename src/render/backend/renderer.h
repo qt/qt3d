@@ -127,7 +127,7 @@ public:
     explicit Renderer(int cachedFrames = 5);
     ~Renderer();
 
-    void setRendererAspect(RendererAspect *rendererAspect) { m_rendererAspect = rendererAspect; }
+    void setRendererAspect(RendererAspect *aspect) { m_rendererAspect = aspect; }
     RendererAspect *rendererAspect() const { return m_rendererAspect; }
 
     void setFrameGraphRoot(Render::FrameGraphNode *fgRoot);

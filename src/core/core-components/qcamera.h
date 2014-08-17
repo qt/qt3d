@@ -82,7 +82,7 @@ public:
     QQuaternion panRotation(float angle) const;
     QQuaternion rollRotation(float angle) const;
 
-public slots:
+public Q_SLOTS:
 
     // Translate relative to camera orientation axes
     void translate( const QVector3D& vLocal, CameraTranslationOption option = TranslateViewCenter );

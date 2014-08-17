@@ -109,7 +109,7 @@ public:
 
     QMatrix4x4 projectionMatrix() const;
 
-public slots:
+public Q_SLOTS:
     void setOrthographicProjection(float left, float right,
                                    float bottom, float top,
                                    float nearPlane, float farPlane);

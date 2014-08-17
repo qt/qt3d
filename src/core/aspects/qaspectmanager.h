@@ -66,7 +66,7 @@ public:
     explicit QAspectManager(QObject *parent = 0);
     ~QAspectManager();
 
-public slots:
+public Q_SLOTS:
     void initialize();
     void shutdown();
 

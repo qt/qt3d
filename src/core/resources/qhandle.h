@@ -83,13 +83,13 @@ private:
         MaxCounter = (1 << CounterBits) - 1
     };
 
-    QHandle(quint32 index, quint32 counter)
-        : m_index(index)
-        , m_counter(counter)
+    QHandle(quint32 i, quint32 count)
+        : m_index(i)
+        , m_counter(count)
         , m_unused(0)
     {
-        Q_ASSERT(index < MaxIndex);
-        Q_ASSERT(counter < MaxCounter);
+        Q_ASSERT(i < MaxIndex);
+        Q_ASSERT(count < MaxCounter);
     }
 
 

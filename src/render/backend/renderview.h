@@ -111,7 +111,7 @@ public:
     inline QColor clearColor() const { return m_clearColor; }
 
     // This can be removed once we're 100% sure the QFrameAllocator is death proof
-    void setFrameIndex(int frameIndex) { m_frameIndex = frameIndex; }
+    void setFrameIndex(int index) { m_frameIndex = index; }
     int frameIndex() const { return m_frameIndex; }
 
 private:

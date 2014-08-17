@@ -155,9 +155,9 @@ public:
     {
         QList<QHandle<Backend, INDEXBITS> > handles;
 
-        QHandle<Backend, INDEXBITS> handle = componentHandle<Backend, INDEXBITS>();
-        if (!handle.isNull())
-            handles.append(handle);
+        QHandle<Backend, INDEXBITS> h = componentHandle<Backend, INDEXBITS>();
+        if (!h.isNull())
+            handles.append(h);
 
         Q_FOREACH (RenderEntity *child, children())
             handles.append(child->componentHandlesInTree<Backend, INDEXBITS>());

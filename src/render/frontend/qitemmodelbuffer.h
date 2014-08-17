@@ -73,7 +73,7 @@ public:
     QStringList attributeNames() const;
     AttributePtr attributeByName(QString nm) const;
 
-private slots:
+private Q_SLOTS:
 
     void onModelReset();
 

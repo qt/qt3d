@@ -156,7 +156,7 @@ public:
     inline void deallocate(void *p) { return CircularBufferData::deallocate(p); }
 #endif
     T *data() const { return static_cast<T*>(CircularBufferData::data); }
-    void setData(T *data) { CircularBufferData::data = static_cast<void*>(data); }
+    void setData(T *newdata) { CircularBufferData::data = static_cast<void*>(newdata); }
 };
 
 template <typename T>
@@ -182,8 +182,8 @@ public:
     {}
 #endif
     template <typename ForwardIterator>
-    explicit QCircularBuffer(ForwardIterator first, ForwardIterator last)
-        : d(new Data(first, last, typename std::iterator_traits<ForwardIterator>::iterator_category()))
+    explicit QCircularBuffer(ForwardIterator f, ForwardIterator l)
+        : d(new Data(f, l, typename std::iterator_traits<ForwardIterator>::iterator_category()))
     {}
 
     QCircularBuffer(const QCircularBuffer<T> &other)

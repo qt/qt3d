@@ -93,7 +93,7 @@ public:
     void update( double t );
 
     bool isMultisampleEnabled() const;
-public slots:
+public Q_SLOTS:
     void toggleMSAA();
 
 

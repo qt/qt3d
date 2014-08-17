@@ -54,8 +54,8 @@ class QJobManagerInterface : public QObject
 {
     Q_OBJECT
 public:
-    explicit QJobManagerInterface(QObject *parent = 0)
-        : QObject(parent)
+    explicit QJobManagerInterface(QObject *p = 0)
+        : QObject(p)
     {}
 
     virtual void initialize() {}

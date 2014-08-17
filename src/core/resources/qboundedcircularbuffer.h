@@ -57,12 +57,12 @@ template <class T>
 class QBoundedCircularBuffer
 {
 public:
-    explicit QBoundedCircularBuffer(int capacity)
-         : m_free( capacity ),
-           m_used( capacity ),
-           m_buffer( capacity )
+    explicit QBoundedCircularBuffer(int capacity_)
+         : m_free( capacity_ ),
+           m_used( capacity_ ),
+           m_buffer( capacity_ )
     {
-        m_used.acquire(capacity);
+        m_used.acquire(capacity_);
     }
 
     int capacity() const { return m_buffer.capacity(); }

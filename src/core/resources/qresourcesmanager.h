@@ -315,8 +315,8 @@ public:
     T* data(const QHandle<T, INDEXBITS> &handle)
     {
         typename LockingPolicy<QResourcesManager>::ReadLocker readLock(this);
-        T* data = m_handleManager.data(handle);
-        return data;
+        T* d = m_handleManager.data(handle);
+        return d;
     }
 
     void release(const QHandle<T, INDEXBITS> &handle)

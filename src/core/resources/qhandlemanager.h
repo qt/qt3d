@@ -67,9 +67,9 @@ public:
     quint32 activeEntries() const { return m_activeEntryCount; }
 
     void reset();
-    QHandle<T, INDEXBITS> acquire(T *data);
+    QHandle<T, INDEXBITS> acquire(T *d);
     void release(const QHandle<T, INDEXBITS> &handle);
-    void update(const QHandle<T, INDEXBITS> &, T *data);
+    void update(const QHandle<T, INDEXBITS> &, T *d);
     T *data(const QHandle<T, INDEXBITS> &handle, bool *ok = 0);
     const T *constData(const QHandle<T, INDEXBITS> &handle, bool *ok = 0) const;
 
@@ -120,7 +120,7 @@ void QHandleManager<T, INDEXBITS>::reset()
 }
 
 template <typename T, int INDEXBITS>
-QHandle<T, INDEXBITS> QHandleManager<T, INDEXBITS>::acquire(T *data)
+QHandle<T, INDEXBITS> QHandleManager<T, INDEXBITS>::acquire(T *d)
 {
     typedef QHandle<T, INDEXBITS> qHandle;
     Q_ASSERT(m_activeEntryCount < qHandle::MaxIndex);
@@ -136,11 +136,11 @@ QHandle<T, INDEXBITS> QHandleManager<T, INDEXBITS>::acquire(T *data)
     if (m_entries[newIndex].m_counter == 0)
         m_entries[newIndex].m_counter = 1;
     m_entries[newIndex].m_active = true;
-    m_entries[newIndex].m_data = data;
+    m_entries[newIndex].m_data = d;
 
     ++m_activeEntryCount;
 
-    return QHandle<T, INDEXBITS>(newIndex, m_entries[newIndex].m_counter);
+    return qHandle(newIndex, m_entries[newIndex].m_counter);
 }
 
 template <typename T, int INDEXBITS>
@@ -160,12 +160,12 @@ void QHandleManager<T, INDEXBITS>::release(const QHandle<T, INDEXBITS> &handle)
 // Needed in case the QResourcesManager has reordered
 // memory so that the handle still points to valid data
 template <typename T, int INDEXBITS>
-void QHandleManager<T, INDEXBITS>::update(const QHandle<T, INDEXBITS> &handle, T *data)
+void QHandleManager<T, INDEXBITS>::update(const QHandle<T, INDEXBITS> &handle, T *d)
 {
     const quint32 index = handle.index();
     Q_ASSERT(m_entries[index].m_counter == handle.counter());
     Q_ASSERT(m_entries[index].m_active == true);
-    m_entries[index].m_data = data;
+    m_entries[index].m_data = d;
 }
 
 template <typename T, int INDEXBITS>
@@ -179,10 +179,10 @@ T *QHandleManager<T, INDEXBITS>::data(const QHandle<T, INDEXBITS> &handle, bool 
         return Q_NULLPTR;
     }
 
-    T *data = m_entries[index].m_data;
+    T *d = m_entries[index].m_data;
     if (ok)
         *ok = true;
-    return data;
+    return d;
 }
 
 template <typename T, int INDEXBITS>
@@ -196,10 +196,10 @@ const T *QHandleManager<T, INDEXBITS>::constData(const QHandle<T, INDEXBITS> &ha
         return Q_NULLPTR;
     }
 
-    const T *data = m_entries[index].m_data;
+    const T *d = m_entries[index].m_data;
     if (ok)
         *ok = true;
-    return data;
+    return d;
 }
 
 } // Qt3D

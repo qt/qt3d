@@ -81,7 +81,7 @@ protected:
     virtual void resizeEvent(QResizeEvent *e);
 
 
-private slots:
+private Q_SLOTS:
     void onUpdate();
 
 protected:
