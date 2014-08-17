@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "shaderpropertyparser.h"
+#include "shaderpropertyparser_p.h"
 
 QT_BEGIN_NAMESPACE
 

@@ -7,7 +7,7 @@ HEADERS += \
     $$PWD/quick3dtechnique.h \
     $$PWD/quick3deffect.h \
     $$PWD/quick3dscene.h \
-    $$PWD/shaderpropertyparser.h \
+    $$PWD/shaderpropertyparser_p.h \
     $$PWD/quick3dtexture.h \
     $$PWD/quick3drenderpass.h \
     $$PWD/quick3dframegraphitem.h

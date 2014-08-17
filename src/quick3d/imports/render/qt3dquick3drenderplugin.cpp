@@ -92,7 +92,7 @@
 #include <Qt3DQuickRenderer/quick3deffect.h>
 #include <Qt3DQuickRenderer/quick3dscene.h>
 #include <Qt3DQuickRenderer/quick3dtexture.h>
-#include <Qt3DQuickRenderer/shaderpropertyparser.h>
+#include <Qt3DQuickRenderer/private/shaderpropertyparser_p.h>
 #include <Qt3DQuickRenderer/quick3drenderpass.h>
 #include <Qt3DQuickRenderer/quick3dframegraphitem.h>
 
