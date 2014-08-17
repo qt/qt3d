@@ -54,6 +54,7 @@ namespace Render {
 class QGraphicsHelperInterface
 {
 public:
+    virtual ~QGraphicsHelperInterface() {}
     virtual void    initializeHelper(QOpenGLContext *context, QAbstractOpenGLFunctions *functions) = 0;
     virtual void    drawElementsInstanced(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices, GLsizei instances) = 0;
     virtual void    drawArraysInstanced(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances) = 0;

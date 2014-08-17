@@ -58,6 +58,7 @@ class QGraphicsHelperES2 : public QGraphicsHelperInterface
 {
 public:
     QGraphicsHelperES2();
+    virtual ~QGraphicsHelperES2();
 
     // QGraphicHelperInterface interface
     void initializeHelper(QOpenGLContext *context, QAbstractOpenGLFunctions *functions) Q_DECL_OVERRIDE;

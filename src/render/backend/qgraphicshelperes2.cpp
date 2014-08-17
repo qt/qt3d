@@ -55,6 +55,10 @@ QGraphicsHelperES2::QGraphicsHelperES2() :
 {
 }
 
+QGraphicsHelperES2::~QGraphicsHelperES2()
+{
+}
+
 void QGraphicsHelperES2::initializeHelper(QOpenGLContext *context,
                                          QAbstractOpenGLFunctions *functions)
 {

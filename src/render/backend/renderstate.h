@@ -72,6 +72,8 @@ typedef quint64 StateMaskSet;
 class RenderState
 {
 public:
+    virtual ~RenderState() {}
+
     virtual void apply(QGraphicsContext* gc) const = 0;
 
     virtual StateMaskSet mask() const = 0;

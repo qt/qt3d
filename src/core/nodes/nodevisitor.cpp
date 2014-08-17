@@ -53,6 +53,10 @@ NodeVisitor::NodeVisitor()
 {
 }
 
+NodeVisitor::~NodeVisitor()
+{
+}
+
 void NodeVisitor::traverse(QNode *rootNode)
 {
     m_path = NodeList() << rootNode;

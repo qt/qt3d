@@ -59,6 +59,7 @@ class QT3DCORESHARED_EXPORT NodeVisitor
 {
 public:
     NodeVisitor();
+    virtual ~NodeVisitor();
 
     void traverse(QNode *rootNode);
 

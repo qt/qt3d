@@ -54,6 +54,7 @@ namespace Qt3D {
 class QJobProviderInterface
 {
 public:
+    virtual ~QJobProviderInterface() {}
     virtual QVector<QJobPtr> jobsToExecute() = 0;
 };
 
