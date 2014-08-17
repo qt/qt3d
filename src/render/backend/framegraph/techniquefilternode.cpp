@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "techniquefilternode.h"
+#include "techniquefilternode_p.h"
 #include "qcriterion.h"
 #include "qtechniquefilter.h"
 #include "rendereraspect.h"

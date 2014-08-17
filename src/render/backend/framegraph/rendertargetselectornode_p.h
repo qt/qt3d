@@ -39,58 +39,30 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_VIEWPORTNODE_H
-#define QT3D_RENDER_VIEWPORTNODE_H
+#ifndef QT3D_RENDER_RENDERTARGETSELECTOR_H
+#define QT3D_RENDER_RENDERTARGETSELECTOR_H
 
-#include <Qt3DRenderer/framegraphnode.h>
-#include <Qt3DCore/qobserverinterface.h>
-#include <QColor>
+#include <Qt3DRenderer/private/framegraphnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
-
-class QViewport;
-
 namespace Render {
 
-class Renderer;
-
-class ViewportNode : public Render::FrameGraphNode
+class RenderTargetSelector : public FrameGraphNode
 {
 public:
-    ViewportNode();
-
-    void setPeer(Qt3D::QViewport *peer);
-
-    float xMin() const;
-    void setXMin(float xMin);
-
-    float yMin() const;
-    void setYMin(float yMin);
-
-    float xMax() const;
-    void setXMax(float xMax);
-
-    float yMax() const;
-    void setYMax(float yMax);
-
-    QColor clearColor() const;
+    RenderTargetSelector();
 
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    float m_xMin;
-    float m_yMin;
-    float m_xMax;
-    float m_yMax;
-    QColor m_clearColor;
+
 };
 
 } // Render
-
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_VIEWPORTNODE_H
+#endif // QT3D_RENDER_RENDERTARGETSELECTOR_H

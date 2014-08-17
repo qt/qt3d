@@ -43,7 +43,7 @@
 #define QT3D_RENDER_FRAMEGRAPHMANAGER_H
 
 #include <Qt3DCore/qresourcesmanager.h>
-#include <Qt3DRenderer/framegraphnode.h>
+#include <Qt3DRenderer/private/framegraphnode_p.h>
 #include <QUuid>
 
 QT_BEGIN_NAMESPACE

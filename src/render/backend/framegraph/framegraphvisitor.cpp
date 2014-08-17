@@ -39,9 +39,9 @@
 **
 ****************************************************************************/
 
-#include "framegraphvisitor.h"
+#include "framegraphvisitor_p.h"
 
-#include "framegraphnode.h"
+#include "framegraphnode_p.h"
 #include <Qt3DRenderer/private/renderer_p.h>
 
 QT_BEGIN_NAMESPACE

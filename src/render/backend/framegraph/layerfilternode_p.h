@@ -39,30 +39,40 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERTARGETSELECTOR_H
-#define QT3D_RENDER_RENDERTARGETSELECTOR_H
+#ifndef QT3D_RENDER_LAYERFILTERNODE_H
+#define QT3D_RENDER_LAYERFILTERNODE_H
 
-#include <Qt3DRenderer/framegraphnode.h>
+#include <Qt3DRenderer/private/framegraphnode_p.h>
+#include <QStringList>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
+
+class QLayerFilter;
+
 namespace Render {
 
-class RenderTargetSelector : public FrameGraphNode
+class Renderer;
+
+class LayerFilterNode : public FrameGraphNode
 {
 public:
-    RenderTargetSelector();
+    LayerFilterNode();
 
+    void setPeer(QLayerFilter *peer);
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    QStringList layers() const;
+    void setLayers(const QStringList &list);
 
 private:
-
+    QStringList m_layers;
 };
 
 } // Render
+
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERTARGETSELECTOR_H
+#endif // QT3D_RENDER_LAYERFILTERNODE_H

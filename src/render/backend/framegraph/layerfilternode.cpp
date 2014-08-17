@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "layerfilternode.h"
+#include "layerfilternode_p.h"
 #include <Qt3DRenderer/private/renderer_p.h>
 #include "rendereraspect.h"
 #include "qlayerfilter.h"

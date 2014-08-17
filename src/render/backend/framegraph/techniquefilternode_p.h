@@ -39,41 +39,55 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_CAMERASELECTOR_H
-#define QT3D_RENDER_CAMERASELECTOR_H
+#ifndef QT3D_RENDER_TECHNIQUEFILTER_H
+#define QT3D_RENDER_TECHNIQUEFILTER_H
 
-#include <Qt3DRenderer/framegraphnode.h>
+#include <Qt3DRenderer/private/framegraphnode_p.h>
 #include <Qt3DCore/qobserverinterface.h>
-#include <QUuid>
+
+#include <QList>
+#include <QString>
+#include <QVariant>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QEntity;
-class QCameraSelector;
+class QCriterion;
+class QTechniqueFilter;
+
+template <typename T, int INDEXBITS>
+class QHandle;
 
 namespace Render {
 
 class Renderer;
+class RenderCriterion;
 
-class CameraSelector : public FrameGraphNode
+typedef QHandle<RenderCriterion, 16> HCriterion;
+
+
+class TechniqueFilter
+        : public Render::FrameGraphNode
 {
 public:
-    CameraSelector();
+    TechniqueFilter();
+    void setPeer(Qt3D::QTechniqueFilter *peer);
 
-    void setPeer(Qt3D::QCameraSelector *peer);
-
+    QList<QUuid> filters() const;
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    QUuid cameraUuid() const;
 
 private:
-    QUuid m_cameraUuid;
+    void appendFilter(QCriterion *criterion);
+    void removeFilter(const QUuid &criterionId);
+
+    QList<QUuid> m_filters;
 };
 
-} // namespace Render
-} // namespace Qt3D
+} // Render
+
+} // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_CAMERASELECTOR_H
+#endif // QT3D_RENDER_TECHNIQUEFILTER_H

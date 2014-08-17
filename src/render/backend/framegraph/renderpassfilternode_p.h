@@ -39,22 +39,18 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_TECHNIQUEFILTER_H
-#define QT3D_RENDER_TECHNIQUEFILTER_H
+#ifndef QT3D_RENDER_RENDERPASSFILTER_H
+#define QT3D_RENDER_RENDERPASSFILTER_H
 
-#include <Qt3DRenderer/framegraphnode.h>
-#include <Qt3DCore/qobserverinterface.h>
-
+#include <Qt3DRenderer/private/framegraphnode_p.h>
 #include <QList>
-#include <QString>
-#include <QVariant>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
 class QCriterion;
-class QTechniqueFilter;
+class QRenderPassFilter;
 
 template <typename T, int INDEXBITS>
 class QHandle;
@@ -66,28 +62,25 @@ class RenderCriterion;
 
 typedef QHandle<RenderCriterion, 16> HCriterion;
 
-
-class TechniqueFilter
+class RenderPassFilter
         : public Render::FrameGraphNode
 {
 public:
-    TechniqueFilter();
-    void setPeer(Qt3D::QTechniqueFilter *peer);
+    RenderPassFilter();
 
+    void setPeer(Qt3D::QRenderPassFilter *peer);
     QList<QUuid> filters() const;
+    void appendFilter(QCriterion *criterion);
+    void removeFilter(const QUuid &criterionId);
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    void appendFilter(QCriterion *criterion);
-    void removeFilter(const QUuid &criterionId);
-
     QList<QUuid> m_filters;
 };
 
-} // Render
-
-} // Qt3D
+} // namespace Render
+} // namespace Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_TECHNIQUEFILTER_H
+#endif // QT3D_RENDER_RENDERPASSFILTER_H

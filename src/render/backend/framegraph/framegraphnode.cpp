@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "framegraphnode.h"
+#include "framegraphnode_p.h"
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/private/framegraphmanager_p.h>
 

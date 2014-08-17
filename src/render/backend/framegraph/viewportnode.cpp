@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "viewportnode.h"
+#include "viewportnode_p.h"
 
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/rendereraspect.h>

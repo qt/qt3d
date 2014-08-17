@@ -44,6 +44,7 @@
 
 #include <QtCore/QtGlobal>
 #include <private/qnode_p.h>
+#include <Qt3DRenderer/qframegraphitem.h>
 
 QT_BEGIN_NAMESPACE
 

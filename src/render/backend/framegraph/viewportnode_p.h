@@ -39,48 +39,58 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERPASSFILTER_H
-#define QT3D_RENDER_RENDERPASSFILTER_H
+#ifndef QT3D_RENDER_VIEWPORTNODE_H
+#define QT3D_RENDER_VIEWPORTNODE_H
 
-#include <Qt3DRenderer/framegraphnode.h>
-#include <QList>
+#include <Qt3DRenderer/private/framegraphnode_p.h>
+#include <Qt3DCore/qobserverinterface.h>
+#include <QColor>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QCriterion;
-class QRenderPassFilter;
-
-template <typename T, int INDEXBITS>
-class QHandle;
+class QViewport;
 
 namespace Render {
 
 class Renderer;
-class RenderCriterion;
 
-typedef QHandle<RenderCriterion, 16> HCriterion;
-
-class RenderPassFilter
-        : public Render::FrameGraphNode
+class ViewportNode : public Render::FrameGraphNode
 {
 public:
-    RenderPassFilter();
+    ViewportNode();
 
-    void setPeer(Qt3D::QRenderPassFilter *peer);
-    QList<QUuid> filters() const;
-    void appendFilter(QCriterion *criterion);
-    void removeFilter(const QUuid &criterionId);
+    void setPeer(Qt3D::QViewport *peer);
+
+    float xMin() const;
+    void setXMin(float xMin);
+
+    float yMin() const;
+    void setYMin(float yMin);
+
+    float xMax() const;
+    void setXMax(float xMax);
+
+    float yMax() const;
+    void setYMax(float yMax);
+
+    QColor clearColor() const;
+
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    QList<QUuid> m_filters;
+    float m_xMin;
+    float m_yMin;
+    float m_xMax;
+    float m_yMax;
+    QColor m_clearColor;
 };
 
-} // namespace Render
-} // namespace Qt3D
+} // Render
+
+} // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERPASSFILTER_H
+#endif // QT3D_RENDER_VIEWPORTNODE_H

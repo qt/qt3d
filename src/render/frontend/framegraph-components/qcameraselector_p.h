@@ -43,6 +43,7 @@
 #define QT3D_QCAMERASELECTOR_P_H
 
 #include <private/qframegraphitem_p.h>
+#include <Qt3DRenderer/qcameraselector.h>
 
 QT_BEGIN_NAMESPACE
 

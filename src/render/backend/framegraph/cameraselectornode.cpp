@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#include "cameraselectornode.h"
-#include <Qt3DRenderer/qcameraselector.h>
+#include "cameraselectornode_p.h"
+#include <Qt3DRenderer/private/qcameraselector_p.h>
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/rendereraspect.h>
 #include <Qt3DCore/qaspectmanager.h>

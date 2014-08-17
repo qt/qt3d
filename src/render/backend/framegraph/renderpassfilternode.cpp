@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "renderpassfilternode.h"
+#include "renderpassfilternode_p.h"
 #include "rendereraspect.h"
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/private/criterionmanager_p.h>

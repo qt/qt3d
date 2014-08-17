@@ -60,9 +60,11 @@
 #include <Qt3DRenderer/renderlogging.h>
 
 #include <Qt3DRenderer/private/cameramanager_p.h>
+#include <Qt3DRenderer/private/cameraselectornode_p.h>
 #include <Qt3DRenderer/private/criterionmanager_p.h>
 #include <Qt3DRenderer/private/effectmanager_p.h>
 #include <Qt3DRenderer/private/entitymanager_p.h>
+#include <Qt3DRenderer/private/layerfilternode_p.h>
 #include <Qt3DRenderer/private/layermanager_p.h>
 #include <Qt3DRenderer/private/lightmanager_p.h>
 #include <Qt3DRenderer/private/materialmanager_p.h>
@@ -71,17 +73,14 @@
 #include <Qt3DRenderer/private/rendercriterion_p.h>
 #include <Qt3DRenderer/private/renderentity_p.h>
 #include <Qt3DRenderer/private/renderer_p.h>
+#include <Qt3DRenderer/private/renderpassfilternode_p.h>
 #include <Qt3DRenderer/private/renderpassmanager_p.h>
+#include <Qt3DRenderer/private/rendertargetselectornode_p.h>
 #include <Qt3DRenderer/private/shadermanager_p.h>
+#include <Qt3DRenderer/private/techniquefilternode_p.h>
 #include <Qt3DRenderer/private/techniquemanager_p.h>
 #include <Qt3DRenderer/private/transformmanager_p.h>
-
-#include <techniquefilternode.h>
-#include <cameraselectornode.h>
-#include <renderpassfilternode.h>
-#include <viewportnode.h>
-#include <rendertargetselectornode.h>
-#include <layerfilternode.h>
+#include <Qt3DRenderer/private/viewportnode_p.h>
 
 #include <Qt3DCore/qcamera.h>
 #include <Qt3DCore/qcameralens.h>

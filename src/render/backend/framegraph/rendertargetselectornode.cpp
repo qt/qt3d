@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "rendertargetselectornode.h"
+#include "rendertargetselectornode_p.h"
 
 
 QT_BEGIN_NAMESPACE

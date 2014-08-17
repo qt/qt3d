@@ -39,40 +39,41 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_LAYERFILTERNODE_H
-#define QT3D_RENDER_LAYERFILTERNODE_H
+#ifndef QT3D_RENDER_CAMERASELECTOR_H
+#define QT3D_RENDER_CAMERASELECTOR_H
 
-#include <Qt3DRenderer/framegraphnode.h>
-#include <QStringList>
+#include <Qt3DRenderer/private/framegraphnode_p.h>
+#include <Qt3DCore/qobserverinterface.h>
+#include <QUuid>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QLayerFilter;
+class QEntity;
+class QCameraSelector;
 
 namespace Render {
 
 class Renderer;
 
-class LayerFilterNode : public FrameGraphNode
+class CameraSelector : public FrameGraphNode
 {
 public:
-    LayerFilterNode();
+    CameraSelector();
 
-    void setPeer(QLayerFilter *peer);
+    void setPeer(Qt3D::QCameraSelector *peer);
+
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    QStringList layers() const;
-    void setLayers(const QStringList &list);
+    QUuid cameraUuid() const;
 
 private:
-    QStringList m_layers;
+    QUuid m_cameraUuid;
 };
 
-} // Render
-
-} // Qt3D
+} // namespace Render
+} // namespace Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_LAYERFILTERNODE_H
+#endif // QT3D_RENDER_CAMERASELECTOR_H

@@ -1,12 +1,12 @@
 HEADERS += \
-    $$PWD/cameraselectornode.h \
-    $$PWD/framegraphnode.h \
-    $$PWD/framegraphvisitor.h \
-    $$PWD/renderpassfilternode.h \
-    $$PWD/techniquefilternode.h \
-    $$PWD/viewportnode.h \
-    $$PWD/rendertargetselectornode.h \
-    $$PWD/layerfilternode.h
+    $$PWD/cameraselectornode_p.h \
+    $$PWD/framegraphnode_p.h \
+    $$PWD/framegraphvisitor_p.h \
+    $$PWD/renderpassfilternode_p.h \
+    $$PWD/techniquefilternode_p.h \
+    $$PWD/viewportnode_p.h \
+    $$PWD/rendertargetselectornode_p.h \
+    $$PWD/layerfilternode_p.h
 
 SOURCES += \
     $$PWD/cameraselectornode.cpp \
