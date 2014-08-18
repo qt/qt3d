@@ -40,7 +40,7 @@
 **
 ****************************************************************************/
 
-#include "gltfparser.h"
+#include "gltfparser_p.h"
 
 #include "texturedata.h"
 #include "renderlogging.h"

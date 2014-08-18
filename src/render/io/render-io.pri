@@ -2,7 +2,7 @@ INCLUDEPATH += $$PWD
 
 HEADERS += \
     $$PWD/meshdata.h \
-    $$PWD/gltfparser.h \
+    $$PWD/gltfparser_p.h \
     $$PWD/objloader.h \
     $$PWD/texturedata.h \
     $$PWD/assimpparser_p.h \

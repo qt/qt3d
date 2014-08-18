@@ -43,7 +43,7 @@
 #include "qabstractscene_p.h"
 #include "renderlogging.h"
 #include <Qt3DRenderer/private/abstractsceneparser_p.h>
-#include <gltfparser.h>
+#include <Qt3DRenderer/private/gltfparser_p.h>
 #include <Qt3DRenderer/private/assimpparser_p.h>
 
 QT_BEGIN_NAMESPACE
