@@ -104,6 +104,7 @@
 #include <QStack>
 #include <QSurface>
 #include <QElapsedTimer>
+#include <QOpenGLDebugLogger>
 
 // For Debug purposes only
 #include <QThread>
@@ -113,6 +114,11 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 namespace Render {
+
+static void logOpenGLDebugMessage(const QOpenGLDebugMessage &debugMessage)
+{
+    qDebug() << "OpenGL debug message:" << debugMessage;
+}
 
 Renderer::Renderer(int cachedFrames)
     : m_rendererAspect(Q_NULLPTR)
@@ -142,6 +148,7 @@ Renderer::Renderer(int cachedFrames)
     , m_renderSceneBuilder(new RenderSceneBuilder(this))
     , m_frameCount(0)
     , m_cachedFramesCount(cachedFrames)
+    , m_debugLogger(Q_NULLPTR)
 {
     m_currentPreprocessingFrameIndex = 0;
     m_textureProvider = new RenderTextureProvider;
@@ -222,6 +229,7 @@ Renderer::~Renderer()
     delete m_renderThread;
     delete m_graphicsContext;
     delete m_textureProvider;
+    delete m_debugLogger;
 }
 
 // Called in RenderThread context by the run method of RenderThread
@@ -231,15 +239,40 @@ void Renderer::initialize()
 {
     m_waitForWindowToBeSetCondition.wait(mutex());
 
+    QByteArray debugLoggingMode = qgetenv("QT3D_DEBUG_LOGGING");
+    bool enableDebugLogging = !debugLoggingMode.isEmpty();
+
     m_graphicsContext = new QGraphicsContext;
-    QOpenGLContext* ctx = new QOpenGLContext;
     m_graphicsContext->setSurface(m_surface);
     m_graphicsContext->setRenderer(this);
+
     QSurfaceFormat sf = m_surface->format();
+    if (enableDebugLogging)
+        sf.setOption(QSurfaceFormat::DebugContext);
+
+    QOpenGLContext* ctx = new QOpenGLContext;
     ctx->setFormat(sf);
     if (!ctx->create())
         qCWarning(Backend) << Q_FUNC_INFO << "OpenGL context creation failed";
     m_graphicsContext->setOpenGLContext(ctx);
+
+    if (enableDebugLogging) {
+        bool supported = ctx->hasExtension("GL_KHR_debug");
+        if (supported) {
+            qCDebug(Backend) << "Qt3D: Enabling OpenGL debug logging";
+            m_debugLogger = new QOpenGLDebugLogger;
+            if (m_debugLogger->initialize()) {
+                m_debugLogger->enableMessages();
+                QObject::connect(m_debugLogger, &QOpenGLDebugLogger::messageLogged, &logOpenGLDebugMessage);
+                QString mode = QString::fromLocal8Bit(debugLoggingMode);
+                m_debugLogger->startLogging(mode.toLower().startsWith(QLatin1String("sync"))
+                                                ? QOpenGLDebugLogger::SynchronousLogging
+                                                : QOpenGLDebugLogger::AsynchronousLogging);
+            }
+        } else {
+            qCDebug(Backend) << "Qt3D: OpenGL debug logging requested but GL_KHR_debug not supported";
+        }
+    }
 
     // Awake setScenegraphRoot in case it was waiting
     m_waitForInitializationToBeCompleted.wakeOne();

@@ -63,6 +63,7 @@
 QT_BEGIN_NAMESPACE
 
 class QSurface;
+class QOpenGLDebugLogger;
 
 namespace Qt3D {
 
@@ -260,6 +261,8 @@ private:
 
     const int m_cachedFramesCount;
     QAtomicInt m_running;
+
+    QOpenGLDebugLogger *m_debugLogger;
 };
 
 } // namespace Render
