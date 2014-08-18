@@ -56,7 +56,9 @@ HEADERS += \
     $$PWD/qstenciltest.h \
     $$PWD/qscissortest.h \
     $$PWD/qdithering.h \
-    $$PWD/qrenderstate.h
+    $$PWD/qrenderstate.h \
+    $$PWD/qrenderattachment.h \
+    $$PWD/qrenderattachment_p.h
 
 SOURCES += \
     $$PWD/qmaterial.cpp \
@@ -94,4 +96,5 @@ SOURCES += \
     $$PWD/qstenciltest.cpp \
     $$PWD/qscissortest.cpp \
     $$PWD/qdithering.cpp \
-    $$PWD/qrenderstate.cpp
+    $$PWD/qrenderstate.cpp \
+    $$PWD/qrenderattachment.cpp
