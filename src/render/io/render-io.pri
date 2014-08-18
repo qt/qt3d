@@ -3,7 +3,7 @@ INCLUDEPATH += $$PWD
 HEADERS += \
     $$PWD/qmeshdata.h \
     $$PWD/gltfparser_p.h \
-    $$PWD/objloader.h \
+    $$PWD/objloader_p.h \
     $$PWD/texturedata.h \
     $$PWD/assimpparser_p.h \
     $$PWD/assimphelpers_p.h \

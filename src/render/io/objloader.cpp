@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "objloader.h"
+#include "objloader_p.h"
 
 #include "qmesh.h"
 #include "qbuffer.h"

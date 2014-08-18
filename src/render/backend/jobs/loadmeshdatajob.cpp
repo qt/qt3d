@@ -41,7 +41,6 @@
 
 #include "loadmeshdatajob.h"
 
-#include <objloader.h>
 #include <qattribute.h>
 #include <qmesh.h>
 #include <sphere.h>
