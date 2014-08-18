@@ -48,9 +48,6 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
-
-class AbstractSceneParser;
-
 namespace Render {
 
 class QAbstractScene;

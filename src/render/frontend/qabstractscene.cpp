@@ -42,7 +42,7 @@
 #include "qabstractscene.h"
 #include "qabstractscene_p.h"
 #include "renderlogging.h"
-#include "abstractsceneparser.h"
+#include <Qt3DRenderer/private/abstractsceneparser_p.h>
 #include <gltfparser.h>
 #include <assimpparser.h>
 

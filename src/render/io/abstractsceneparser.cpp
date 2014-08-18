@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "abstractsceneparser.h"
+#include "abstractsceneparser_p.h"
 #include "renderlogging.h"
 #include <QStringList>
 

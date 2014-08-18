@@ -50,7 +50,7 @@
 #include <Qt3DCore/qabstractmesh.h>
 #include <Qt3DRenderer/meshdata.h>
 #include <Qt3DRenderer/assimphelpers.h>
-#include <Qt3DRenderer/abstractsceneparser.h>
+#include <Qt3DRenderer/private/abstractsceneparser_p.h>
 
 #include <QMap>
 #include <QDir>

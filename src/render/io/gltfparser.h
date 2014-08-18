@@ -53,7 +53,7 @@
 #include <Qt3DCore/qabstractmesh.h>
 #include <QImage>
 
-#include <Qt3DRenderer/abstractsceneparser.h>
+#include <Qt3DRenderer/private/abstractsceneparser_p.h>
 
 QT_BEGIN_NAMESPACE
 

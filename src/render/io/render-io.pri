@@ -7,7 +7,7 @@ HEADERS += \
     $$PWD/texturedata.h \
     $$PWD/assimpparser.h \
     $$PWD/assimphelpers.h \
-    $$PWD/abstractsceneparser.h \
+    $$PWD/abstractsceneparser_p.h \
     $$PWD/qattribute.h \
     $$PWD/qattribute_p.h \
     $$PWD/qbuffer.h \
