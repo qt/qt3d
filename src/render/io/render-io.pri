@@ -5,8 +5,8 @@ HEADERS += \
     $$PWD/gltfparser.h \
     $$PWD/objloader.h \
     $$PWD/texturedata.h \
-    $$PWD/assimpparser.h \
-    $$PWD/assimphelpers.h \
+    $$PWD/assimpparser_p.h \
+    $$PWD/assimphelpers_p.h \
     $$PWD/abstractsceneparser_p.h \
     $$PWD/qattribute.h \
     $$PWD/qattribute_p.h \

@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "assimpparser.h"
+#include "assimpparser_p.h"
 
 #include <Qt3DCore/qtransform.h>
 #include <qparameter.h>

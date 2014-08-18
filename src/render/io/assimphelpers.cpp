@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "assimphelpers.h"
+#include "assimphelpers_p.h"
 
 #include <QFileInfo>
 #include <QUrl>
