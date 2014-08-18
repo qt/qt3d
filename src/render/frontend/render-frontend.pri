@@ -58,7 +58,9 @@ HEADERS += \
     $$PWD/qdithering.h \
     $$PWD/qrenderstate.h \
     $$PWD/qrenderattachment.h \
-    $$PWD/qrenderattachment_p.h
+    $$PWD/qrenderattachment_p.h \
+    $$PWD/qrendertarget.h \
+    $$PWD/qrendertarget_p.h
 
 SOURCES += \
     $$PWD/qmaterial.cpp \
@@ -97,4 +99,5 @@ SOURCES += \
     $$PWD/qscissortest.cpp \
     $$PWD/qdithering.cpp \
     $$PWD/qrenderstate.cpp \
-    $$PWD/qrenderattachment.cpp
+    $$PWD/qrenderattachment.cpp \
+    $$PWD/qrendertarget.cpp
