@@ -56,7 +56,7 @@
 #include <Qt3DRenderer/private/layermanager_p.h>
 #include <Qt3DRenderer/private/lightmanager_p.h>
 #include <Qt3DRenderer/private/materialmanager_p.h>
-#include <Qt3DRenderer/private/meshdata_p.h>
+#include <Qt3DRenderer/private/qmeshdata_p.h>
 #include <Qt3DRenderer/private/meshdatamanager_p.h>
 #include <Qt3DRenderer/private/meshmanager_p.h>
 #include <Qt3DRenderer/private/qparameter_p.h>

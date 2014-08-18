@@ -71,7 +71,7 @@ void LoadMeshDataJob::run()
     if (m_functor.isNull())
         return ;
     // Load the mesh from disk (or wherever)
-    MeshDataPtr meshDataPtr = m_functor->operator ()().staticCast<MeshData>();
+    QMeshDataPtr meshDataPtr = m_functor->operator ()().staticCast<QMeshData>();
     if (meshDataPtr.isNull()) {
         qCDebug(Jobs) << Q_FUNC_INFO << "Mesh has no raw data";
         return ;
@@ -79,7 +79,7 @@ void LoadMeshDataJob::run()
 
     // TO DO try to use QAbstractMeshData if possible
     QMutexLocker lock(m_renderer->mutex());
-    MeshData *meshData = m_renderer->meshDataManager()->getOrCreateResource(m_meshUuid);
+    QMeshData *meshData = m_renderer->meshDataManager()->getOrCreateResource(m_meshUuid);
     *meshData = *(meshDataPtr.data());
 
     AttributePtr attr = meshData->attributeByName(QAbstractMeshData::defaultPositionAttributeName()).staticCast<Attribute>();

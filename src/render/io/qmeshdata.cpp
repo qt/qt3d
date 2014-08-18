@@ -39,30 +39,54 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_MESHDATA_P_H
-#define QT3D_MESHDATA_P_H
+#include "qmeshdata.h"
+#include "qmeshdata_p.h"
 
-#include <private/qabstractmeshdata_p.h>
-#include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/meshdata.h>
+#include <QSet>
+#include "renderlogging.h"
+#include <QOpenGLVertexArrayObject>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class MeshData;
-
-class QT3DRENDERERSHARED_EXPORT MeshDataPrivate : public QAbstractMeshDataPrivate
+QMeshDataPrivate::QMeshDataPrivate(QMeshData *qq)
+    : QAbstractMeshDataPrivate(qq)
+    , m_primitiveType(0)
 {
-public:
-    MeshDataPrivate(MeshData *qq);
+}
 
-    Q_DECLARE_PUBLIC(MeshData)
-    int m_primitiveType;
-};
+QMeshData::QMeshData()
+    : QAbstractMeshData(*new QMeshDataPrivate(this))
+{
+}
 
-} // Qt3D
+QMeshData::QMeshData(QMeshDataPrivate &dd)
+    : QAbstractMeshData(dd)
+{
+}
+
+QMeshData::QMeshData(int primitiveType)
+    : QAbstractMeshData(*new QMeshDataPrivate(this))
+{
+    setPrimitiveType(primitiveType);
+}
+
+void QMeshData::setPrimitiveType(int primitiveType)
+{
+    Q_D(QMeshData);
+    Q_ASSERT((d->m_primitiveType == GL_TRIANGLES) ||
+             (d->m_primitiveType == GL_LINES) ||
+             (d->m_primitiveType == GL_POINTS));
+    d->m_primitiveType = primitiveType;
+}
+
+int QMeshData::primitiveType() const
+{
+    Q_D(const QMeshData);
+    return d->m_primitiveType;
+}
+
+} // of namespace
 
 QT_END_NAMESPACE
-
-#endif // QT3D_MESHDATA_P_H

@@ -45,7 +45,7 @@
 
 #include <qglobal.h>
 #include <Qt3DRenderer/private/quniformvalue_p.h>
-#include <Qt3DRenderer/private/meshdata_p.h>
+#include <Qt3DRenderer/private/qmeshdata_p.h>
 #include <Qt3DCore/qhandle.h>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
@@ -70,7 +70,7 @@ typedef QHandle<QOpenGLVertexArrayObject*, 16> HVao;
 typedef QHandle<RenderMaterial, 16> HMaterial;
 typedef QHandle<RenderMesh, 16> HMesh;
 typedef QHandle<RenderShader, 16> HShader;
-typedef QHandle<MeshData, 16> HMeshData;
+typedef QHandle<QMeshData, 16> HMeshData;
 typedef QHandle<RenderTechnique, 16> HTechnique;
 
 class RenderCommand

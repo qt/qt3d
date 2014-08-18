@@ -128,7 +128,7 @@ QAbstractMeshDataPtr MeshFunctor::operator()()
 {
     if (m_sourcePath.isEmpty()) {
         qCWarning(Render::Jobs) << Q_FUNC_INFO << "Mesh is empty, nothing to load";
-        return MeshDataPtr();
+        return QMeshDataPtr();
     }
 
     // TO DO : Maybe use Assimp instead of ObjLoader to handle more sources
@@ -137,10 +137,10 @@ QAbstractMeshDataPtr MeshFunctor::operator()()
     qCDebug(Render::Jobs) << Q_FUNC_INFO << "Loading mesh from" << m_sourcePath;
 
     if (loader.load(m_sourcePath))
-        return MeshDataPtr(loader.mesh());
+        return QMeshDataPtr(loader.mesh());
 
     qCWarning(Render::Jobs) << Q_FUNC_INFO << "OBJ load failure for:" << m_sourcePath;
-    return MeshDataPtr();
+    return QMeshDataPtr();
 }
 
 } // namespace Qt3D

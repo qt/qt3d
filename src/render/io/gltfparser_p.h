@@ -43,7 +43,7 @@
 #ifndef GLTFPARSER_H
 #define GLTFPARSER_H
 
-#include <Qt3DRenderer/meshdata.h>
+#include <Qt3DRenderer/qmeshdata.h>
 #include <Qt3DRenderer/qattribute.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DRenderer/qtechnique.h>
@@ -92,7 +92,7 @@ public:
 
 
     QEntity *defaultScene();
-    MeshDataPtr mesh(QString id);
+    QMeshDataPtr mesh(QString id);
     QMaterial *material(QString id);
     QCameraLens *camera(QString id);
 
@@ -111,13 +111,13 @@ private:
     bool m_parseDone;
     QString m_defaultScene;
 
-    // multi-hash because our MeshData corresponds to a single primitive
+    // multi-hash because our QMeshData corresponds to a single primitive
     // in glTf.
-    QMultiHash<QString, MeshDataPtr> m_meshDict;
+    QMultiHash<QString, QMeshDataPtr> m_meshDict;
 
     // GLTF assigns materials at the mesh level, but we do them as siblings,
     // so record the association here for when we instantiate meshes
-    QMap<MeshData*, QString> m_meshMaterialDict;
+    QMap<QMeshData*, QString> m_meshMaterialDict;
 
     QMap<QString, AttributePtr> m_attributeDict;
 

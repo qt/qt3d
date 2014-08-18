@@ -39,54 +39,43 @@
 **
 ****************************************************************************/
 
-#include "meshdata.h"
-#include "meshdata_p.h"
+#ifndef QT3D_QMESHDATA_H
+#define QT3D_QMESHDATA_H
 
-#include <QSet>
-#include "renderlogging.h"
-#include <QOpenGLVertexArrayObject>
+#include <QSharedPointer>
+#include <Qt3DCore/qabstractmeshdata.h>
+#include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-MeshDataPrivate::MeshDataPrivate(MeshData *qq)
-    : QAbstractMeshDataPrivate(qq)
-    , m_primitiveType(0)
-{
-}
+/**
+ * @brief The QMeshData class is shared by all instances of a RenderMesh,
+ * and holds the actual client (CPU)-side buffers representing mesh attributes
+ * and indices.
+ */
 
-MeshData::MeshData()
-    : QAbstractMeshData(*new MeshDataPrivate(this))
-{
-}
+class QMeshDataPrivate;
 
-MeshData::MeshData(MeshDataPrivate &dd)
-    : QAbstractMeshData(dd)
+class QT3DRENDERERSHARED_EXPORT QMeshData : public QAbstractMeshData
 {
-}
+public:
+    QMeshData();
+    explicit QMeshData(int primitiveType);
 
-MeshData::MeshData(int primitiveType)
-    : QAbstractMeshData(*new MeshDataPrivate(this))
-{
-    setPrimitiveType(primitiveType);
-}
+    void setPrimitiveType(int primitiveType) Q_DECL_OVERRIDE;
+    int primitiveType() const Q_DECL_OVERRIDE;
 
-void MeshData::setPrimitiveType(int primitiveType)
-{
-    Q_D(MeshData);
-    Q_ASSERT((d->m_primitiveType == GL_TRIANGLES) ||
-             (d->m_primitiveType == GL_LINES) ||
-             (d->m_primitiveType == GL_POINTS));
-    d->m_primitiveType = primitiveType;
-}
+protected:
+    Q_DECLARE_PRIVATE(QMeshData)
+    QMeshData(QMeshDataPrivate &dd);
+};
 
-int MeshData::primitiveType() const
-{
-    Q_D(const MeshData);
-    return d->m_primitiveType;
-}
+typedef QSharedPointer<QMeshData> QMeshDataPtr;
 
-} // of namespace
+}
 
 QT_END_NAMESPACE
+
+#endif // QT3D_QMESHDATA_H

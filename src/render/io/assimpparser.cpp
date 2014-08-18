@@ -184,19 +184,19 @@ public :
     void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
     QAbstractMeshFunctorPtr meshFunctor() const Q_DECL_OVERRIDE;
-    void setData(MeshDataPtr data);
+    void setData(QMeshDataPtr data);
 
 private:
-    MeshDataPtr m_meshData;
+    QMeshDataPtr m_meshData;
     AssimpMesh *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
 
     class AssimpMeshFunctor : public QAbstractMeshFunctor
     {
     public:
-        explicit AssimpMeshFunctor(MeshDataPtr meshData);
+        explicit AssimpMeshFunctor(QMeshDataPtr meshData);
         QAbstractMeshDataPtr operator()() Q_DECL_OVERRIDE;
     private:
-        MeshDataPtr m_meshData;
+        QMeshDataPtr m_meshData;
     };
 };
 
@@ -447,15 +447,15 @@ void AssimpParser::loadMaterial(uint materialIndex)
 }
 
 /*!
- * Converts the Assimp aiMesh mesh identified by \a meshIndex to a MeshData
- * \sa MeshData and adds it to a dictionary of meshes.
+ * Converts the Assimp aiMesh mesh identified by \a meshIndex to a QMeshData
+ * \sa QMeshData and adds it to a dictionary of meshes.
  */
 void AssimpParser::loadMesh(uint meshIndex)
 {
     aiMesh *mesh = m_aiScene->mMeshes[meshIndex];
 
     // Primitive are always triangles with the current Assimp's configuration
-    MeshDataPtr meshData(new MeshData(GL_TRIANGLES));
+    QMeshDataPtr meshData(new QMeshData(GL_TRIANGLES));
 
     // Mesh Name
     QString meshName = QString::fromUtf8(mesh->mName.data);
@@ -826,7 +826,7 @@ void AssimpMesh::copy(const QNode *ref)
     }
 }
 
-void AssimpMesh::setData(MeshDataPtr data)
+void AssimpMesh::setData(QMeshDataPtr data)
 {
     m_meshData = data;
     QAbstractMesh::setDirty(this);
@@ -842,7 +842,7 @@ QAbstractMeshFunctorPtr AssimpMesh::meshFunctor() const
     return QAbstractMeshFunctorPtr(new AssimpMeshFunctor(m_meshData));
 }
 
-AssimpMesh::AssimpMeshFunctor::AssimpMeshFunctor(MeshDataPtr meshData)
+AssimpMesh::AssimpMeshFunctor::AssimpMeshFunctor(QMeshDataPtr meshData)
     : QAbstractMeshFunctor()
     , m_meshData(meshData)
 {

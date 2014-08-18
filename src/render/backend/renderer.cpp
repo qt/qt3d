@@ -477,7 +477,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
 
     Q_FOREACH (RenderCommand *command, commands) {
 
-        MeshData *meshData = m_meshDataManager->data(command->m_meshData);
+        QMeshData *meshData = m_meshDataManager->data(command->m_meshData);
         if (meshData == Q_NULLPTR || meshData->attributeNames().empty()) {
             qCWarning(Rendering) << "RenderCommand should have a mesh";
             continue ;
@@ -491,7 +491,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
 
         command->m_vao = m_vaoManager->lookupHandle(QPair<HMeshData, HShader>(command->m_meshData, command->m_shader));
         if (command->m_vao.isNull()) {
-            // Either VAO has not been created for MeshData and RenderPass
+            // Either VAO has not been created for QMeshData and RenderPass
             // Or there is no RenderPass
             // Tries to use vao for Mesh source and Default Technique
             qCDebug(Backend) << Q_FUNC_INFO << "VAO Handle is null";
@@ -499,7 +499,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
             // Check if HShader exists. If it doesn't that means there is no RenderPass
             // Otherwise use a default renderpass name
             command->m_vao = m_vaoManager->lookupHandle(QPair<HMeshData, HShader>(command->m_meshData, command->m_shader));
-            // Check if VAO pointer for the MeshData / RenderShader exists
+            // Check if VAO pointer for the QMeshData / RenderShader exists
             if (command->m_vao.isNull()) {
                 qCDebug(Rendering) << Q_FUNC_INFO << "Allocating new VAO";
                 command->m_vao = m_vaoManager->getOrAcquireHandle(QPair<HMeshData, HShader>(command->m_meshData, command->m_shader));
@@ -509,8 +509,8 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
         QOpenGLVertexArrayObject *vao = *(m_vaoManager->data(command->m_vao));
         Q_ASSERT(vao);
 
-        // The VAO should be created only once for a MeshData and a ShaderProgram
-        // Manager should have a VAO Manager that are indexed by MeshData and Shader
+        // The VAO should be created only once for a QMeshData and a ShaderProgram
+        // Manager should have a VAO Manager that are indexed by QMeshData and Shader
         // RenderCommand should have a handle to the corresponding VAO for the Mesh and Shader
 
         bool drawIndexed = !meshData->indexAttribute().isNull();

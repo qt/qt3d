@@ -45,7 +45,7 @@
 #include <QUuid>
 #include <Qt3DCore/qjob.h>
 #include <Qt3DCore/qhandle.h>
-#include <Qt3DRenderer/meshdata.h>
+#include <Qt3DRenderer/qmeshdata.h>
 #include <Qt3DCore/qabstractmesh.h>
 #include <QSharedPointer>
 
@@ -53,7 +53,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-typedef QHandle<MeshData, 16> HMeshData;
+typedef QHandle<QMeshData, 16> HMeshData;
 
 namespace Render {
 

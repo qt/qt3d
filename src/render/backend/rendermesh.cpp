@@ -49,7 +49,7 @@
 #include <Qt3DRenderer/private/meshdatamanager_p.h>
 #include "qmesh.h"
 #include <Qt3DRenderer/private/qgraphicscontext_p.h>
-#include <meshdata.h>
+#include <Qt3DRenderer/qmeshdata.h>
 
 #include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/qscenepropertychange.h>
@@ -69,11 +69,11 @@ namespace Render {
  * \class RenderMesh
  *
  * Monitor a frontend Mesh for source changes. If the source is changed,
- * the MeshData returned is either a valid MeshData corresponding to the source
- * or null if the new MeshData hasn't been loaded. If this is the case the meshDirty
+ * the QMeshData returned is either a valid QMeshData corresponding to the source
+ * or null if the new QMeshData hasn't been loaded. If this is the case the meshDirty
  * flag is set to true.
  *
- * \sa MeshData
+ * \sa QMeshData
  */
 
 RenderMesh::RenderMesh() :

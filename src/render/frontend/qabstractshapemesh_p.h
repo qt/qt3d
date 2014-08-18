@@ -45,7 +45,7 @@
 #include <private/qcomponent_p.h>
 #include <private/qabstractmesh_p.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/meshdata.h>
+#include <Qt3DRenderer/qmeshdata.h>
 
 QT_BEGIN_NAMESPACE
 

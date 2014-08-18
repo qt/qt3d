@@ -45,7 +45,7 @@
 #include <Qt3DRenderer/renderlogging.h>
 #include <Qt3DRenderer/qattribute.h>
 #include <Qt3DRenderer/qbuffer.h>
-#include <Qt3DRenderer/meshdata.h>
+#include <Qt3DRenderer/qmeshdata.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -137,7 +137,7 @@ QSize QPlaneMesh::meshResolution() const
     return d->m_meshResolution;
 }
 
-MeshDataPtr createPlaneMesh(float w, float h, const QSize &resolution);
+QMeshDataPtr createPlaneMesh(float w, float h, const QSize &resolution);
 
 class PlaneMeshFunctor : public QAbstractMeshFunctor
 {
@@ -160,7 +160,7 @@ private:
     QSize m_meshResolution;
 };
 
-MeshDataPtr createPlaneMesh(float w, float h, const QSize &resolution)
+QMeshDataPtr createPlaneMesh(float w, float h, const QSize &resolution)
 {
     Q_ASSERT(w > 0.0f);
     Q_ASSERT(h > 0.0f);
@@ -222,7 +222,7 @@ MeshDataPtr createPlaneMesh(float w, float h, const QSize &resolution)
     buf->setData(bufferBytes);
 
     // Create the mesh data, specify the vertex format and data
-    MeshDataPtr mesh(new MeshData(GL_TRIANGLES));
+    QMeshDataPtr mesh(new QMeshData(GL_TRIANGLES));
     quint32 offset = 0;
     mesh->addAttribute(QAbstractMeshData::defaultPositionAttributeName(),
                        AttributePtr(new Attribute(buf, GL_FLOAT_VEC3, nVerts, offset, stride)));

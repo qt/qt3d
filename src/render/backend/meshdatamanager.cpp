@@ -47,7 +47,7 @@ namespace Qt3D {
 namespace Render {
 
 MeshDataManager::MeshDataManager()
-    : QResourcesManager<MeshData,
+    : QResourcesManager<QMeshData,
                         QUuid,
                         16,
                         Qt3D::ListAllocatingPolicy,

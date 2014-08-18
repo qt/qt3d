@@ -171,7 +171,7 @@ float QTorusMesh::minorRadius() const
 QAbstractMeshDataPtr createTorusMesh(double radius, double minorRadius,
                             int rings, int sides)
 {
-    QAbstractMeshDataPtr mesh(new MeshData(GL_TRIANGLES));
+    QAbstractMeshDataPtr mesh(new QMeshData(GL_TRIANGLES));
 
     int nVerts  = sides * ( rings + 1 );
     QByteArray bufferBytes;

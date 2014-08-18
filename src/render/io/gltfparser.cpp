@@ -210,22 +210,22 @@ private:
     class GLTFParserMeshFunctor : public QAbstractMeshFunctor
     {
     public:
-        explicit GLTFParserMeshFunctor(MeshDataPtr meshData);
+        explicit GLTFParserMeshFunctor(QMeshDataPtr meshData);
         QAbstractMeshDataPtr operator ()() Q_DECL_OVERRIDE;
 
     private:
-        MeshDataPtr m_meshData;
+        QMeshDataPtr m_meshData;
     };
 
 public:
     explicit GLTFParserMesh(QNode *parent = 0);
 
     void copy(const QNode *ref) Q_DECL_OVERRIDE;
-    void setData(MeshDataPtr data);
+    void setData(QMeshDataPtr data);
     QAbstractMeshFunctorPtr meshFunctor() const Q_DECL_OVERRIDE;
 
 private:
-    MeshDataPtr m_meshData;
+    QMeshDataPtr m_meshData;
     GLTFParserMesh *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
 };
 
@@ -297,14 +297,14 @@ bool GLTFParser::isPathExtensionSupported(const QString &path)
     return GLTFParser::isGLTFPath(path);
 }
 
-MeshDataPtr GLTFParser::mesh(QString id)
+QMeshDataPtr GLTFParser::mesh(QString id)
 {
     parse();
     if (m_meshDict.contains(id))
         return m_meshDict.value(id);
 
     qWarning() << "Unknown mesh" << id << "in GLTF file" << m_basePath;
-    return MeshDataPtr();
+    return QMeshDataPtr();
 }
 
 QEntity* GLTFParser::defaultScene()
@@ -376,7 +376,7 @@ QEntity* GLTFParser::node(QString id)
                 continue;
             }
 
-            foreach (MeshDataPtr md, m_meshDict.values(m.toString())) {
+            foreach (QMeshDataPtr md, m_meshDict.values(m.toString())) {
                 QString matId = m_meshMaterialDict[md.data()];
                 GLTFParserMesh* meshComp = new GLTFParserMesh;
                 meshComp->setData(md);
@@ -681,7 +681,7 @@ void GLTFParser::processJSONMesh( QString id, QJsonObject jsonObj )
             continue;
         }
 
-        MeshDataPtr md( new MeshData( type ) );
+        QMeshDataPtr md( new QMeshData( type ) );
         m_meshMaterialDict[md.data()] = material;
 
         QJsonObject attrs = primObj.value(KEY_ATTRIBUTES).toObject();
@@ -1002,7 +1002,7 @@ void GLTFParserMesh::copy(const QNode *ref)
     }
 }
 
-void GLTFParserMesh::setData(MeshDataPtr data)
+void GLTFParserMesh::setData(QMeshDataPtr data)
 {
    m_meshData = data;
    QAbstractMesh::setDirty(this);
@@ -1018,7 +1018,7 @@ GLTFParserMesh *GLTFParserMesh::doClone(QNode *clonedParent) const
     return new GLTFParserMesh(clonedParent);
 }
 
-GLTFParserMesh::GLTFParserMeshFunctor::GLTFParserMeshFunctor(MeshDataPtr meshData)
+GLTFParserMesh::GLTFParserMeshFunctor::GLTFParserMeshFunctor(QMeshDataPtr meshData)
     : QAbstractMeshFunctor()
     , m_meshData(meshData)
 {

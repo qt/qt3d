@@ -39,44 +39,28 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_MESHDATA_H
-#define QT3D_MESHDATA_H
+#ifndef QT3D_QMESHDATA_P_H
+#define QT3D_QMESHDATA_P_H
 
-#include <QSharedPointer>
-#include <Qt3DCore/qabstractmeshdata.h>
+#include <private/qabstractmeshdata_p.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRenderer/qmeshdata.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-/**
- * @brief The MeshData class is shared by all instances of a RenderMesh,
- * and holds the actual client (CPU)-side buffers representing mesh attributes
- * and indices.
- */
-
-class MeshDataPrivate;
-
-class QT3DRENDERERSHARED_EXPORT MeshData : public QAbstractMeshData
+class QT3DRENDERERSHARED_EXPORT QMeshDataPrivate : public QAbstractMeshDataPrivate
 {
 public:
-    MeshData();
-    explicit MeshData(int primitiveType);
+    QMeshDataPrivate(QMeshData *qq);
 
-    void setPrimitiveType(int primitiveType) Q_DECL_OVERRIDE;
-    int primitiveType() const Q_DECL_OVERRIDE;
-
-protected:
-    Q_DECLARE_PRIVATE(MeshData)
-    MeshData(MeshDataPrivate &dd);
-
+    Q_DECLARE_PUBLIC(QMeshData)
+    int m_primitiveType;
 };
 
-typedef QSharedPointer<MeshData> MeshDataPtr;
-
-}
+} // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_MESHDATA_H
+#endif // QT3D_QMESHDATA_P_H

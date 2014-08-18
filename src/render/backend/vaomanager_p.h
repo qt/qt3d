@@ -51,14 +51,14 @@ class QOpenGLVertexArrayObject;
 
 namespace Qt3D {
 
-class MeshData;
+class QMeshData;
 
 namespace Render {
 
 class RenderShader;
 
 typedef QHandle<QOpenGLVertexArrayObject*, 16> HVao;
-typedef QHandle<MeshData, 16> HMeshData;
+typedef QHandle<QMeshData, 16> HMeshData;
 typedef QHandle<RenderShader, 16> HShader;
 
 class VAOManager : public QResourcesManager<QOpenGLVertexArrayObject*, QPair<HMeshData, HShader>, 16>

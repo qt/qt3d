@@ -42,7 +42,7 @@
 #ifndef OBJLOADER_H
 #define OBJLOADER_H
 
-#include <Qt3DRenderer/meshdata.h>
+#include <Qt3DRenderer/qmeshdata.h>
 
 #include <QVector>
 #include <QVector2D>
@@ -111,7 +111,7 @@ public:
     QVector<QVector4D> tangents() const { return m_tangents; }
     QVector<unsigned int> indices() const { return m_indices; }
 
-    MeshData *mesh() const;
+    QMeshData *mesh() const;
 
 private:
     void updateIndices(const QVector<QVector3D> &positions,

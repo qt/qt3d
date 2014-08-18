@@ -1,7 +1,7 @@
 INCLUDEPATH += $$PWD
 
 HEADERS += \
-    $$PWD/meshdata.h \
+    $$PWD/qmeshdata.h \
     $$PWD/gltfparser_p.h \
     $$PWD/objloader.h \
     $$PWD/texturedata.h \
@@ -12,10 +12,10 @@ HEADERS += \
     $$PWD/qattribute_p.h \
     $$PWD/qbuffer.h \
     $$PWD/qbuffer_p.h \
-    $$PWD/meshdata_p.h
+    $$PWD/qmeshdata_p.h
 
 SOURCES += \
-    $$PWD/meshdata.cpp \
+    $$PWD/qmeshdata.cpp \
     $$PWD/gltfparser.cpp \
     $$PWD/objloader.cpp \
     $$PWD/texturedata.cpp \

@@ -57,10 +57,10 @@ namespace Qt3D {
 class QAbstractMesh;
 class QAbstractMeshFunctor;
 class QRenderPass;
-class MeshData;
+class QMeshData;
 
 typedef QSharedPointer<QAbstractMeshFunctor> QAbstractMeshFunctorPtr;
-typedef QHandle<MeshData, 16> HMeshData;
+typedef QHandle<QMeshData, 16> HMeshData;
 
 namespace Render {
 

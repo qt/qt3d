@@ -45,7 +45,7 @@
 #include <Qt3DRenderer/renderlogging.h>
 #include <Qt3DRenderer/qattribute.h>
 #include <Qt3DRenderer/qbuffer.h>
-#include <Qt3DRenderer/meshdata.h>
+#include <Qt3DRenderer/qmeshdata.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -190,12 +190,12 @@ QSize QCuboidMesh::xyMeshResolution() const
     return d->m_xyFaceResolution;
 }
 
-MeshDataPtr createCuboidMesh(float xExtent,
-                             float yExtent,
-                             float zExtent,
-                             const QSize &yzResolution,
-                             const QSize &xzResolution,
-                             const QSize &xyResolution);
+QMeshDataPtr createCuboidMesh(float xExtent,
+                              float yExtent,
+                              float zExtent,
+                              const QSize &yzResolution,
+                              const QSize &xzResolution,
+                              const QSize &xyResolution);
 
 class CuboidMeshFunctor : public QAbstractMeshFunctor
 {
@@ -413,12 +413,12 @@ void generatePlaneData(float w, float h, const QSize &resolution,
     baseVertex += resolution.width() * resolution.height();
 }
 
-MeshDataPtr createCuboidMesh(float xExtent,
-                             float yExtent,
-                             float zExtent,
-                             const QSize &yzResolution,
-                             const QSize &xzResolution,
-                             const QSize &xyResolution)
+QMeshDataPtr createCuboidMesh(float xExtent,
+                              float yExtent,
+                              float zExtent,
+                              const QSize &yzResolution,
+                              const QSize &xzResolution,
+                              const QSize &xyResolution)
 {
     Q_ASSERT(xExtent > 0.0f && yExtent > 0.0f && zExtent > 0.0);
     Q_ASSERT(yzResolution.width() >= 2 && yzResolution.height() >=2);
@@ -491,7 +491,7 @@ MeshDataPtr createCuboidMesh(float xExtent,
     indexBuffer->setUsage(QOpenGLBuffer::StaticDraw);
     indexBuffer->setData(indexBytes);
 
-    MeshDataPtr mesh(new MeshData(GL_TRIANGLES));
+    QMeshDataPtr mesh(new QMeshData(GL_TRIANGLES));
     quint32 offset = 0;
     mesh->addAttribute(QAbstractMeshData::defaultPositionAttributeName(),
                        AttributePtr(new Attribute(vertexBuffer, GL_FLOAT_VEC3, nVerts, offset, stride)));
