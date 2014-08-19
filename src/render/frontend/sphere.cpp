@@ -110,7 +110,7 @@ inline void constructRitterSphere(Qt3D::Sphere &s, const QVector<QVector3D> &poi
 
 namespace Qt3D {
 
-const float Sphere::ms_epsilon = 1.0e-7;
+const float Sphere::ms_epsilon = 1.0e-7f;
 
 Sphere Sphere::fromPoints(const QVector<QVector3D> &points)
 {
