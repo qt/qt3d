@@ -112,6 +112,8 @@ QRenderTarget *QRenderTarget::doClone(QNode *clonedParent) const
 
     Q_FOREACH (QRenderAttachment *attachment, d->m_attachments)
         clone->addAttachment(qobject_cast<QRenderAttachment *>(attachment->clone()));
+
+    return clone;
 }
 
 } // Qt3D
