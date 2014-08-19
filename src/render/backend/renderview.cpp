@@ -352,9 +352,12 @@ void RenderView::setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf)
             }
             ViewportNode *vpNode = static_cast<ViewportNode *>(node);
             *m_viewport = computeViewport(*m_viewport, vpNode);
+
+            // We take the clear color from the viewport node nearest the leaf
             if (!m_clearColor)
                 m_clearColor = m_allocator->allocate<QColor>();
-            *m_clearColor = vpNode->clearColor();
+            if (!m_clearColor->isValid())
+                *m_clearColor = vpNode->clearColor();
             break;
         }
 
