@@ -126,8 +126,24 @@ void ViewportNode::sceneChangeEvent(const QSceneChangePtr &e)
     }
 }
 
-} // Render
+QRectF computeViewport(const QRectF &childViewport, const ViewportNode *parentViewport)
+{
+    QRectF vp(parentViewport->xMin(),
+              parentViewport->yMin(),
+              parentViewport->xMax(),
+              parentViewport->yMax());
 
+    if (childViewport.isEmpty()) {
+        return vp;
+    } else {
+        return QRectF(vp.x() + vp.width() * childViewport.x(),
+                      vp.y() + vp.height() * childViewport.y(),
+                      vp.width() * childViewport.width(),
+                      vp.height() * childViewport.height());
+    }
+}
+
+} // Render
 } // Qt3D
 
 QT_END_NAMESPACE

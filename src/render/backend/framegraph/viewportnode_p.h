@@ -86,8 +86,9 @@ private:
     QColor m_clearColor;
 };
 
-} // Render
+QRectF computeViewport(const QRectF &childViewport, const ViewportNode *parentViewport);
 
+} // Render
 } // Qt3D
 
 QT_END_NAMESPACE

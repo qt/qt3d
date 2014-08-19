@@ -115,8 +115,6 @@ public:
     HTarget renderTarget() const;
 
 private:
-
-    void computeViewport(ViewportNode *viewportNode);
     bool checkContainedWithinLayer(RenderEntity *node);
 
     RenderTechnique *findTechniqueForEffect(RenderEffect *effect);

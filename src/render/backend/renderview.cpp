@@ -342,12 +342,21 @@ void RenderView::setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf)
                 m_data->m_techniqueFilter = static_cast<TechniqueFilter *>(node);
             break;
 
-        case FrameGraphNode::Viewport: // Can be set multiple times in the tree
+        case FrameGraphNode::Viewport: {
             // If the Viewport has already been set in a lower node
             // Make it so that the new viewport is actually
             // a subregion relative to that of the parent viewport
-            computeViewport(static_cast<ViewportNode *>(node));
+            if (!m_viewport) {
+                m_viewport = m_allocator->allocate<QRectF>();
+                *m_viewport = QRectF(0.0f, 0.0f, 1.0f, 1.0f);
+            }
+            ViewportNode *vpNode = static_cast<ViewportNode *>(node);
+            *m_viewport = computeViewport(*m_viewport, vpNode);
+            if (!m_clearColor)
+                m_clearColor = m_allocator->allocate<QColor>();
+            *m_clearColor = vpNode->clearColor();
             break;
+        }
 
         case FrameGraphNode::SortMethod:
             Render::SortMethod *sM;
@@ -758,28 +767,6 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
     else {
         qCWarning(Render::Backend) << Q_FUNC_INFO << "Using default effect as none was provided";
     }
-}
-
-void RenderView::computeViewport(ViewportNode *viewportNode)
-{
-    QRectF tmpViewport(viewportNode->xMin(),
-                       viewportNode->yMin(),
-                       viewportNode->xMax(),
-                       viewportNode->yMax());
-    if (m_viewport == Q_NULLPTR) {
-        m_viewport = m_allocator->allocate<QRectF>();
-        *m_viewport = tmpViewport;
-    }
-    else {
-        QRectF oldViewport = *m_viewport;
-        *m_viewport = QRectF(tmpViewport.x() + tmpViewport.width() * oldViewport.x(),
-                             tmpViewport.y() + tmpViewport.height() * oldViewport.y(),
-                             tmpViewport.width() * oldViewport.width(),
-                             tmpViewport.height() * oldViewport.height());
-    }
-    // So that we use the color of the highest viewport
-    m_clearColor = m_allocator->allocate<QColor>();
-    *m_clearColor = viewportNode->clearColor();
 }
 
 bool RenderView::checkContainedWithinLayer(RenderEntity *node)
