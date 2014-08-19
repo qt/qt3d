@@ -592,25 +592,26 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
         // All Uniforms for a pass are stored in the QUniformPack of the command
         // Uniforms for Effect, Material and Technique should already have been correctly resolved
         // at that point
+        if (vao->isCreated()) {
+            vao->bind();
+            GLint primType = meshData->primitiveType();
+            GLint primCount = meshData->primitiveCount();
+            GLint indexType = drawIndexed ? meshData->indexAttribute()->type() : 0;
 
-        vao->bind();
-        GLint primType = meshData->primitiveType();
-        GLint primCount = meshData->primitiveCount();
-        GLint indexType = drawIndexed ? meshData->indexAttribute()->type() : 0;
+            if (drawIndexed)
+                m_graphicsContext->drawElements(primType,
+                                                primCount,
+                                                indexType,
+                                                reinterpret_cast<void*>(meshData->indexAttribute()->byteOffset()));
+            else
+                m_graphicsContext->drawArrays(primType, 0, primCount);
 
-        if (drawIndexed)
-            m_graphicsContext->drawElements(primType,
-                                            primCount,
-                                            indexType,
-                                            reinterpret_cast<void*>(meshData->indexAttribute()->byteOffset()));
-        else
-            m_graphicsContext->drawArrays(primType, 0, primCount);
+            int err = glGetError();
+            if (err)
+                qCWarning(Rendering) << "GL error after drawing mesh:" << QString::number(err, 16);
 
-        int err = glGetError();
-        if (err)
-            qCWarning(Rendering) << "GL error after drawing mesh:" << QString::number(err, 16);
-
-        vao->release();
+            vao->release();
+        }
     }
 }
 
