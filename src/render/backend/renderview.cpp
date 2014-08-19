@@ -97,6 +97,28 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
+namespace  {
+
+// TODO: Should we treat lack of layer data as implicitly meaning that an
+// entity is in all layers?
+bool isEntityInLayers(const RenderEntity *entity, const QStringList &layers)
+{
+    if (layers.isEmpty())
+        return true;
+
+    // TODO: find all RenderLayer components associated to node, not just the first one
+    RenderLayer *renderLayer = entity->renderComponent<RenderLayer>();
+    if (renderLayer) {
+        Q_FOREACH (const QString &layerName, renderLayer->layers())
+            if (layers.contains(layerName))
+                return true;
+    }
+
+    return false;
+}
+
+} // anonymouse namespace
+
 RenderView::standardUniformsPFuncsHash RenderView::m_standardUniformSetters = RenderView::initializeStandardUniformSetters();
 QStringList RenderView::m_standardAttributesNames = RenderView::initializeStandardAttributeNames();
 
@@ -414,7 +436,7 @@ void RenderView::preprocessRenderTree(RenderEntity *node)
 void RenderView::buildRenderCommands(RenderEntity *node)
 {
     // Build renderCommand for current node
-    if (checkContainedWithinLayer(node)) {
+    if (isEntityInLayers(node, m_data->m_layers)) {
         RenderMesh *mesh = Q_NULLPTR;
         if (node->componentHandle<RenderMesh, 16>() != HMesh()
                 && (mesh = node->renderComponent<RenderMesh>()) != Q_NULLPTR) {
@@ -770,20 +792,6 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
     else {
         qCWarning(Render::Backend) << Q_FUNC_INFO << "Using default effect as none was provided";
     }
-}
-
-bool RenderView::checkContainedWithinLayer(RenderEntity *node)
-{
-    if (m_data->m_layers.isEmpty())
-        return true;
-    // TO DO: find all RenderLayer components associated to node, not just the first one
-    RenderLayer *renderLayer = node->renderComponent<RenderLayer>();
-    if (renderLayer != Q_NULLPTR) {
-        Q_FOREACH (const QString &layerName, renderLayer->layers())
-            if (m_data->m_layers.contains(layerName))
-                return true;
-    }
-    return false;
 }
 
 } // namespace Render

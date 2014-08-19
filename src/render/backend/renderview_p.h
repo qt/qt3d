@@ -115,8 +115,6 @@ public:
     HTarget renderTarget() const;
 
 private:
-    bool checkContainedWithinLayer(RenderEntity *node);
-
     RenderTechnique *findTechniqueForEffect(RenderEffect *effect);
     QList<RenderRenderPass *> findRenderPassesForTechnique(RenderTechnique *technique);
     void setShaderAndUniforms(RenderCommand *command, RenderRenderPass *pass, QHash<QString, QVariant> &parameters, const QMatrix4x4 &worldTransform);
