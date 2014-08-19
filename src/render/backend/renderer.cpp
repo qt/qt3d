@@ -268,6 +268,10 @@ void Renderer::initialize()
                 m_debugLogger->startLogging(mode.toLower().startsWith(QLatin1String("sync"))
                                                 ? QOpenGLDebugLogger::SynchronousLogging
                                                 : QOpenGLDebugLogger::AsynchronousLogging);
+
+                Q_FOREACH (const QOpenGLDebugMessage &msg, m_debugLogger->loggedMessages())
+                    logOpenGLDebugMessage(msg);
+
             }
         } else {
             qCDebug(Backend) << "Qt3D: OpenGL debug logging requested but GL_KHR_debug not supported";
