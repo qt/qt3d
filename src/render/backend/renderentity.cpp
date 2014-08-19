@@ -213,7 +213,15 @@ QVector<RenderEntity *> RenderEntity::children() const
     return childrenVector;
 }
 
-QMatrix4x4 *RenderEntity::worldTransform() { return m_renderer->worldMatrixManager()->data(m_worldTransform); }
+QMatrix4x4 *RenderEntity::worldTransform()
+{
+    return m_renderer->worldMatrixManager()->data(m_worldTransform);
+}
+
+const QMatrix4x4 *RenderEntity::worldTransform() const
+{
+    return m_renderer->worldMatrixManager()->data(m_worldTransform);
+}
 
 void RenderEntity::addComponent(QComponent *component)
 {

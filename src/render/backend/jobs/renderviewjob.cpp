@@ -166,6 +166,34 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
     }
 }
 
+/*!
+    \internal
+    Walks the scene graph of RenderEntities rooted at \p node and collects
+    together any resources needed by the \p rv.
+*/
+void preprocessRenderTree(RenderView *rv, const RenderEntity *node)
+{
+    // TODO: Reimplement this without any reference to lights. At the lowest common
+    // level this boils down to assembling uniform arrays or uniform buffers to pass
+    // into the shader programs. Qt3D may provide some default light types but they
+    // should use the same generic methods as any user data that needs to get into
+    // uniforms.
+
+    // Retrieve light for the currentNode and append it to list of current lights
+    // As only light components of an Entity are considered active
+    // Note : Layer filtering isn't applied there
+    //
+    // TODO: Perhaps make this block of code configurable by allowing the Technique
+    // or similar to provide a functor?
+    HLight lightHandle = node->componentHandle<RenderLight, 16>();
+    if (!lightHandle.isNull())
+        rv->appendLight(lightHandle, *node->worldTransform());
+
+    // Traverse children
+    Q_FOREACH (RenderEntity *child, node->children())
+        preprocessRenderTree(rv, child);
+}
+
 void RenderViewJob::run()
 {
     qCDebug(Jobs) << Q_FUNC_INFO << m_index << " frame " << m_frameIndex;
@@ -186,7 +214,7 @@ void RenderViewJob::run()
 
     // Gather resources needed for buildRenderCommand
     // Ex lights, we need all lights in the scene before we can buildRenderCommands
-    renderView->preprocessRenderTree(m_renderer->renderSceneRoot());
+    preprocessRenderTree(renderView, m_renderer->renderSceneRoot());
 
     // Build RenderCommand should perform the culling as we have no way to determine
     // if a child has a mesh in the view frustrum while its parent isn't contained in it.

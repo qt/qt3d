@@ -91,6 +91,7 @@ public:
     QVector<RenderEntity *> children() const;
 
     QMatrix4x4 *worldTransform();
+    const QMatrix4x4 *worldTransform() const;
     Sphere *localBoundingVolume() { return m_localBoundingVolume; }
     Sphere *worldBoundingVolume() { return m_worldBoundingVolume; }
 

@@ -169,8 +169,10 @@ public:
     inline void setClearBuffer(QClearBuffer::BufferType clearBuffer) { m_clearBuffer = clearBuffer; }
     inline QClearBuffer::BufferType clearBuffer() const { return m_clearBuffer; }
 
-    // Gather resources
-    void preprocessRenderTree(RenderEntity *sceneGraphRoot);
+    inline void appendLight(HLight lightHandle, const QMatrix4x4 &worldMatrix)
+    {
+        m_data->m_lights.append(LightPair(lightHandle, worldMatrix));
+    }
 
     void buildRenderCommands(RenderEntity *preprocessedTreeRoot);
     QVector<RenderCommand *> commands() const { return m_commands; }

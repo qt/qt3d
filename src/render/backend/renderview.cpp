@@ -317,20 +317,6 @@ void RenderView::sort()
     std::sort(m_commands.begin(), m_commands.end());
 }
 
-void RenderView::preprocessRenderTree(RenderEntity *node)
-{
-    // Retrieve light for the currentNode and append it to list of current lights
-    // As only light components of an Entity are considered active
-    // Note : Layer filtering isn't applied there
-    HLight lightHandle = node->componentHandle<RenderLight, 16>();
-    if (!lightHandle.isNull())
-        m_data->m_lights.append(LightPair(lightHandle, *node->worldTransform()));
-
-    // Traverse children
-    Q_FOREACH (RenderEntity *child, node->children())
-        preprocessRenderTree(child);
-}
-
 // Tries to order renderCommand by shader so as to minimize shader changes
 void RenderView::buildRenderCommands(RenderEntity *node)
 {
