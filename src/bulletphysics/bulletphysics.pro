@@ -12,6 +12,11 @@ load(qt_module)
 
 include(bulletphysics.pri)
 
+unix {
+    CONFIG += link_pkgconfig
+    PKGCONFIG += bullet
+}
+
 gcov {
     CONFIG += static
     QMAKE_CXXFLAGS += -fprofile-arcs -ftest-coverage
