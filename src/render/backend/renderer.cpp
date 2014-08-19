@@ -262,7 +262,6 @@ void Renderer::initialize()
             qCDebug(Backend) << "Qt3D: Enabling OpenGL debug logging";
             m_debugLogger = new QOpenGLDebugLogger;
             if (m_debugLogger->initialize()) {
-                m_debugLogger->enableMessages();
                 QObject::connect(m_debugLogger, &QOpenGLDebugLogger::messageLogged, &logOpenGLDebugMessage);
                 QString mode = QString::fromLocal8Bit(debugLoggingMode);
                 m_debugLogger->startLogging(mode.toLower().startsWith(QLatin1String("sync"))
