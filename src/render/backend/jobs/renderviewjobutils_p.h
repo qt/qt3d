@@ -39,53 +39,28 @@
 **
 ****************************************************************************/
 
-#include "renderviewjob.h"
+#ifndef QT3D_RENDERVIEWJOBUTILS_P_H
+#define QT3D_RENDERVIEWJOBUTILS_P_H
 
-#include <Qt3DRenderer/private/renderview_p.h>
-#include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DRenderer/private/renderviewjobutils_p.h>
-
-#include "renderlogging.h"
+#include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 namespace Render {
 
-void RenderViewJob::run()
-{
-    qCDebug(Jobs) << Q_FUNC_INFO << m_index << " frame " << m_frameIndex;
+class RenderEntity;
+class RenderView;
+class FrameGraphNode;
 
-    // Create a RenderView object
-    // The RenderView are created from a QFrameAllocator stored in the current Thread local storage
+Q_AUTOTEST_EXPORT void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv,
+                                                                 const FrameGraphNode *fgLeaf);
 
-    QFrameAllocator *currentFrameAllocator = m_renderer->currentFrameAllocator(m_frameIndex);
-    RenderView *renderView = currentFrameAllocator->allocate<RenderView>();
-
-    // RenderView should allocate heap resources using only the currentFrameAllocator
-    renderView->setAllocator(currentFrameAllocator);
-    renderView->setRenderer(m_renderer);
-    renderView->setFrameIndex(m_frameIndex);
-
-    // Populate the renderview's configuration from the framegraph
-    setRenderViewConfigFromFrameGraphLeafNode(renderView, m_fgLeaf);
-
-    // Gather resources needed for buildRenderCommand
-    // Ex lights, we need all lights in the scene before we can buildRenderCommands
-    preprocessRenderTree(renderView, m_renderer->renderSceneRoot());
-
-    // Build RenderCommand should perform the culling as we have no way to determine
-    // if a child has a mesh in the view frustrum while its parent isn't contained in it.
-    renderView->buildRenderCommands(m_renderer->renderSceneRoot());
-
-    // Sorts RenderCommand
-    renderView->sort();
-
-    // Enqueue our fully populated RenderView with the RenderThread
-    m_renderer->enqueueRenderView(renderView, m_index);
-}
+Q_AUTOTEST_EXPORT void preprocessRenderTree(RenderView *rv, const RenderEntity *node);
 
 } // namespace Render
 } // namespace Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_RENDERVIEWJOBUTILS_P_H
