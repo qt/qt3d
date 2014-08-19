@@ -55,10 +55,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class Texture;
+class QTexture;
 class QParameter;
 class QMaterialPrivate;
-typedef QMap<QString, Texture*> TextureDict;
+typedef QMap<QString, QTexture*> TextureDict;
 
 class QT3DRENDERERSHARED_EXPORT QMaterial : public QAbstractMaterial
 {
@@ -77,7 +77,7 @@ public:
 
     TextureDict textureValues() const;
 
-    void setTextureParameter(QString name, Texture* tex);
+    void setTextureParameter(QString name, QTexture* tex);
 
 protected:
     Q_DECLARE_PRIVATE(QMaterial)

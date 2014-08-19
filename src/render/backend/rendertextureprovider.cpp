@@ -40,7 +40,7 @@
 ****************************************************************************/
 
 #include "rendertextureprovider_p.h"
-#include "texture.h"
+#include "qtexture.h"
 #include <Qt3DRenderer/private/rendertexture_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -52,7 +52,7 @@ RenderTextureProvider::RenderTextureProvider()
 {
 }
 
-RenderTexturePtr RenderTextureProvider::get(Texture *t)
+RenderTexturePtr RenderTextureProvider::get(QTexture *t)
 {
     if (m_dict.contains(t))
         return m_dict.value(t);

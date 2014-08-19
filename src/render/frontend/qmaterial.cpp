@@ -41,7 +41,7 @@
 
 #include "qmaterial.h"
 #include "qmaterial_p.h"
-#include <texture.h>
+#include <qtexture.h>
 #include <Qt3DCore/qabstracteffect.h>
 #include "renderlogging.h"
 #include "qparameter.h"
@@ -139,7 +139,7 @@ TextureDict QMaterial::textureValues() const
 }
 
 // TO DO: Check if this is really needed
-void QMaterial::setTextureParameter(QString name, Texture *tex)
+void QMaterial::setTextureParameter(QString name, QTexture *tex)
 {
     Q_D(QMaterial);
     d->m_textures[name] = tex;

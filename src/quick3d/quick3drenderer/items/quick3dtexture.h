@@ -44,7 +44,7 @@
 
 #include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
 #include <Qt3DQuick/quick3dnode.h>
-#include <Qt3DRenderer/texture.h>
+#include <Qt3DRenderer/qtexture.h>
 
 #include <QUrl>
 
@@ -77,7 +77,7 @@ Q_SIGNALS:
 
 private:
     QUrl m_source;
-    inline Qt3D::Texture *parentTexture() const { return qobject_cast<Qt3D::Texture *>(parent()); }
+    inline Qt3D::QTexture *parentTexture() const { return qobject_cast<Qt3D::QTexture *>(parent()); }
 };
 
 } // Quick

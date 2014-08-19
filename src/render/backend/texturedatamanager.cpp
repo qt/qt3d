@@ -56,7 +56,7 @@ TextureDataManager::TextureDataManager()
 {
 }
 
-void Qt3D::Render::TextureDataManager::addTextureData(Qt3D::Texture *texture)
+void Qt3D::Render::TextureDataManager::addTextureData(Qt3D::QTexture *texture)
 {
     if (!contains(texture->uuid()) && !m_texturesPending.contains(texture))
         m_texturesPending.append(texture);

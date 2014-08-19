@@ -44,7 +44,7 @@
 #include <QDebug>
 #include <QOpenGLTexture>
 #include <QOpenGLPixelTransferOptions>
-#include <texture.h>
+#include <qtexture.h>
 #include <texturedata.h>
 
 QT_BEGIN_NAMESPACE
@@ -58,7 +58,7 @@ RenderTexture::RenderTexture() :
 {
 }
 
-void RenderTexture::setPeer(Texture *peer)
+void RenderTexture::setPeer(QTexture *peer)
 {
     m_peer = peer;
 }

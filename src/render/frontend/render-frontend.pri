@@ -12,7 +12,7 @@ HEADERS += \
     $$PWD/tag.h \
     $$PWD/qabstractshapemesh.h \
     $$PWD/qitemmodelbuffer.h \
-    $$PWD/texture.h \
+    $$PWD/qtexture.h \
     $$PWD/sphere.h \
     $$PWD/qabstractscene.h \
     $$PWD/qeffect.h \
@@ -66,7 +66,7 @@ SOURCES += \
     $$PWD/qtechnique.cpp \
     $$PWD/qabstractshapemesh.cpp \
     $$PWD/qitemmodelbuffer.cpp \
-    $$PWD/texture.cpp \
+    $$PWD/qtexture.cpp \
     $$PWD/sphere.cpp \
     $$PWD/qabstractscene.cpp \
     $$PWD/qeffect.cpp \

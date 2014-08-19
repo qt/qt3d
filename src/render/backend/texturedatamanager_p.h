@@ -43,7 +43,7 @@
 #define QT3D_RENDER_TEXTUREDATAMANAGER_H
 
 #include <Qt3DCore/QResourcesManager>
-#include <Qt3DRenderer/texture.h>
+#include <Qt3DRenderer/qtexture.h>
 #include <Qt3DRenderer/texturedata.h>
 
 #include <QUuid>
@@ -65,13 +65,13 @@ class TextureDataManager : public QResourcesManager<TexImageData,
 public:
     TextureDataManager();
 
-    void addTextureData(Texture *texture);
+    void addTextureData(QTexture *texture);
 
-    QList<Texture *> texturesPending() const { return m_texturesPending; }
+    QList<QTexture *> texturesPending() const { return m_texturesPending; }
     void clearTexturesPending() { m_texturesPending.clear(); }
 
 private:
-    QList<Texture *> m_texturesPending;
+    QList<QTexture *> m_texturesPending;
 };
 
 } // Render

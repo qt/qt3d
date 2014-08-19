@@ -52,7 +52,7 @@ class QOpenGLTexture;
 
 namespace Qt3D {
 
-class Texture;
+class QTexture;
 
 namespace Render {
 
@@ -61,12 +61,12 @@ class RenderTexture
 public:
     RenderTexture();
 
-    void setPeer(Texture* peer);
+    void setPeer(QTexture* peer);
     QOpenGLTexture* getOrCreateGLTexture() ;
 
     GLint textureId();
 private:
-    Texture* m_peer;
+    QTexture* m_peer;
     QOpenGLTexture* m_gl;
 
     QOpenGLTexture *buildGLTexture();

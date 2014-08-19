@@ -54,8 +54,8 @@ namespace Quick {
 Quick3DTexture::Quick3DTexture(QObject *parent)
     : QObject(parent)
 {
-    parentTexture()->setTarget(Texture::Target2D);
-    parentTexture()->setFormat(Texture::RGBA8_UNorm);
+    parentTexture()->setTarget(QTexture::Target2D);
+    parentTexture()->setFormat(QTexture::RGBA8_UNorm);
 }
 
 QUrl Quick3DTexture::source() const
@@ -73,8 +73,8 @@ void Quick3DTexture::setSource(QUrl arg)
             QImage img;
             if (img.load(source)) {
                 parentTexture()->setFormat(img.hasAlphaChannel() ?
-                                                       Texture::RGBA8_UNorm :
-                                                       Texture::RGB8_UNorm);
+                                                       QTexture::RGBA8_UNorm :
+                                                       QTexture::RGB8_UNorm);
                 parentTexture()->setFromQImage(img);
             }
             else {
@@ -90,13 +90,13 @@ void Quick3DTexture::setSource(QUrl arg)
 
 void Quick3DTexture::setRectangle(bool r)
 {
-    parentTexture()->setTarget(r ? Texture::TargetRectangle :
-                                   Texture::Target2D);
+    parentTexture()->setTarget(r ? QTexture::TargetRectangle :
+                                   QTexture::Target2D);
 }
 
 bool Quick3DTexture::isRectangle() const
 {
-    return (parentTexture()->target() == Texture::TargetRectangle);
+    return (parentTexture()->target() == QTexture::TargetRectangle);
 }
 
 } // Quick

@@ -65,7 +65,7 @@ class QMaterial;
 class QShaderProgram;
 class QEffect;
 class QCamera;
-class Texture;
+class QTexture;
 class QMesh;
 class AssimpMesh;
 
@@ -124,8 +124,8 @@ private :
     QMap<uint, AssimpMesh *> m_meshes;
     QMap<uint, QMaterial*> m_materials;
     QMap<uint, QEffect *> m_effects;
-    QMap<uint, Texture*> m_embeddedTextures;
-    QMap<QString, Texture*> m_materialTextures;
+    QMap<uint, QTexture*> m_embeddedTextures;
+    QMap<QString, QTexture*> m_materialTextures;
     QMap<aiNode*, QEntity*> m_cameras;
 
     QHash<aiTextureType, QString> m_textureToParameterName;

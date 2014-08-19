@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_TEXTURE_H
-#define QT3D_TEXTURE_H
+#ifndef QT3D_QTEXTURE_H
+#define QT3D_QTEXTURE_H
 
 #include <QOpenGLTexture>
 #include <Qt3DRenderer/texturedata.h>
@@ -51,9 +51,9 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class TexturePrivate;
+class QTexturePrivate;
 
-class QT3DRENDERERSHARED_EXPORT Texture : public QNode
+class QT3DRENDERERSHARED_EXPORT QTexture : public QNode
 {
     Q_OBJECT
     Q_ENUMS(Target)
@@ -61,20 +61,20 @@ class QT3DRENDERERSHARED_EXPORT Texture : public QNode
     Q_ENUMS(Filter)
     Q_ENUMS(WrapMode)
     Q_ENUMS(Status)
-    Q_PROPERTY(Texture::Target target READ target WRITE setTarget NOTIFY targetChanged)
-    Q_PROPERTY(Texture::TextureFormat format READ format WRITE setFormat NOTIFY formatChanged)
+    Q_PROPERTY(QTexture::Target target READ target WRITE setTarget NOTIFY targetChanged)
+    Q_PROPERTY(QTexture::TextureFormat format READ format WRITE setFormat NOTIFY formatChanged)
     Q_PROPERTY(bool generateMipMaps READ generateMipMaps WRITE setGenerateMipMaps NOTIFY generateMipMapsChanged)
-    Q_PROPERTY(Texture::WrapMode wrapMode READ wrapMode WRITE setWrapMode NOTIFY wrapModeChanged)
-    Q_PROPERTY(Texture::Status status READ status NOTIFY statusChanged)
+    Q_PROPERTY(QTexture::WrapMode wrapMode READ wrapMode WRITE setWrapMode NOTIFY wrapModeChanged)
+    Q_PROPERTY(QTexture::Status status READ status NOTIFY statusChanged)
     Q_PROPERTY(int width READ width WRITE setWidth NOTIFY widthChanged)
     Q_PROPERTY(int height READ height WRITE setHeight NOTIFY heightChanged)
     Q_PROPERTY(int depth READ depth WRITE setDepth NOTIFY depthChanged)
-    Q_PROPERTY(Texture::Filter magnificationFilter READ magnificationFilter WRITE setMagnificationFilter NOTIFY magnificationFilterChanged)
-    Q_PROPERTY(Texture::Filter minificationFilter READ minificationFilter WRITE setMinificationFilter NOTIFY minificationFilterChanged)
+    Q_PROPERTY(QTexture::Filter magnificationFilter READ magnificationFilter WRITE setMagnificationFilter NOTIFY magnificationFilterChanged)
+    Q_PROPERTY(QTexture::Filter minificationFilter READ minificationFilter WRITE setMinificationFilter NOTIFY minificationFilterChanged)
 
 public:
-    explicit Texture(QNode *parent = 0);
-    ~Texture();
+    explicit QTexture(QNode *parent = 0);
+    ~QTexture();
 
     enum Status {
         Loading = 0,
@@ -288,8 +288,8 @@ Q_SIGNALS:
 
 protected:
 
-    Q_DECLARE_PRIVATE(Texture)
-    Texture(TexturePrivate &dd, QNode *parent = 0);
+    Q_DECLARE_PRIVATE(QTexture)
+    QTexture(QTexturePrivate &dd, QNode *parent = 0);
     void setStatus(Status status);
     QNode *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
 };
@@ -298,6 +298,6 @@ protected:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3D::Texture*)
+Q_DECLARE_METATYPE(Qt3D::QTexture*)
 
-#endif // QT3D_TEXTURE_H
+#endif // QT3D_QTEXTURE_H

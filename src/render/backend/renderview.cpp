@@ -44,7 +44,7 @@
 #include <Qt3DRenderer/qmaterial.h>
 #include <Qt3DRenderer/qopenglfilter.h>
 #include <Qt3DRenderer/renderlogging.h>
-#include <Qt3DRenderer/texture.h>
+#include <Qt3DRenderer/qtexture.h>
 
 #include <Qt3DRenderer/private/cameramanager_p.h>
 #include <Qt3DRenderer/private/cameraselectornode_p.h>
@@ -460,7 +460,7 @@ QList<RenderRenderPass *> RenderView::findRenderPassesForTechnique(RenderTechniq
     return passes;
 }
 
-void RenderView::createRenderTexture(Texture *tex)
+void RenderView::createRenderTexture(QTexture *tex)
 {
     if (!m_renderer->textureManager()->contains(tex->uuid())) {
         RenderTexture *rTex = m_renderer->textureManager()->getOrCreateResource(tex->uuid());
@@ -613,9 +613,9 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
                     }
                     else {
                         QVariant value = parameters.take(binding->parameterName());
-                        Texture *tex = Q_NULLPTR;
+                        QTexture *tex = Q_NULLPTR;
                         if (static_cast<QMetaType::Type>(value.type()) == QMetaType::QObjectStar &&
-                                (tex = value.value<Qt3D::Texture*>()) != Q_NULLPTR) {
+                                (tex = value.value<Qt3D::QTexture *>()) != Q_NULLPTR) {
                             createRenderTexture(tex);
                             command->m_uniforms.setTexture(binding->shaderVariableName(), tex->uuid());
                             TextureUniform *texUniform = m_allocator->allocate<TextureUniform>();
@@ -633,9 +633,9 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
                     if (uniformNames.contains(paramName))
                     {
                         QVariant value = parameters.take(paramName);
-                        Texture *tex = Q_NULLPTR;
+                        QTexture *tex = Q_NULLPTR;
                         if (static_cast<QMetaType::Type>(value.type()) == QMetaType::QObjectStar &&
-                                (tex = value.value<Qt3D::Texture*>()) != Q_NULLPTR) {
+                                (tex = value.value<Qt3D::QTexture *>()) != Q_NULLPTR) {
                             createRenderTexture(tex);
                             command->m_uniforms.setTexture(paramName, tex->uuid());
                             TextureUniform *texUniform = m_allocator->allocate<TextureUniform>();

@@ -121,7 +121,7 @@ private:
 
     RenderTechnique *findTechniqueForEffect(RenderEffect *effect);
     QList<RenderRenderPass *> findRenderPassesForTechnique(RenderTechnique *technique);
-    void    createRenderTexture(Texture *tex);
+    void    createRenderTexture(QTexture *tex);
     void setShaderAndUniforms(RenderCommand *command, RenderRenderPass *pass, QHash<QString, QVariant> &parameters);
     QHash<QString, QVariant> parametersFromMaterialEffectTechnique(RenderMaterial *material, RenderEffect *effect, RenderTechnique *technique);
     RenderStateSet *buildRenderStateSet(RenderRenderPass *pass);

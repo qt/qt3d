@@ -51,7 +51,7 @@
 #include <qmath.h>
 #include <Qt3DCore/qentity.h>
 #include <qmaterial.h>
-#include <texture.h>
+#include <qtexture.h>
 #include "renderlogging.h"
 #include "qbuffer.h"
 #include "qattribute.h"
@@ -594,7 +594,7 @@ void AssimpParser::loadMesh(uint meshIndex)
 void AssimpParser::loadEmbeddedTexture(uint textureIndex)
 {
     aiTexture *assimpTexture = m_aiScene->mTextures[textureIndex];
-    Texture *texture = new Texture();
+    QTexture *texture = new QTexture();
     TexImageDataPtr textureData(new TexImageData(0, 0));
 
     bool isCompressed = assimpTexture->mHeight == 0;
@@ -774,7 +774,7 @@ void AssimpParser::copyMaterialTextures(QMaterial *material, aiMaterial *assimpM
             // Load texture if not already loaded
             bool textureLoaded = true;
             if (!m_materialTextures.contains(fullPath)) {
-                Texture *tex = new Texture();
+                QTexture *tex = new QTexture();
                 QImage textureImage;
                 if (!textureImage.load(fullPath) || !textureImage.isNull()) {
                     tex->setFromQImage(textureImage);

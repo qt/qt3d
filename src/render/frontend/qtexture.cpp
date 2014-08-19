@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "texture.h"
+#include "qtexture.h"
 
 #include <texturedata.h>
 
@@ -51,57 +51,57 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class TexturePrivate : public QNodePrivate
+class QTexturePrivate : public QNodePrivate
 {
 public :
-    TexturePrivate(Texture *qq)
+    QTexturePrivate(QTexture *qq)
         : QNodePrivate(qq)
-        , m_target(Texture::Target2D)
-        , m_format(Texture::RGBA8U)
+        , m_target(QTexture::Target2D)
+        , m_format(QTexture::RGBA8U)
         , m_width(1)
         , m_height(1)
         , m_depth(1)
         , m_autoMipMap(false)
-        , m_minFilter(Texture::Nearest)
-        , m_magFilter(Texture::Nearest)
-        , m_wrapMode(Texture::ClampToEdge)
-        , m_status(Texture::Loading)
+        , m_minFilter(QTexture::Nearest)
+        , m_magFilter(QTexture::Nearest)
+        , m_wrapMode(QTexture::ClampToEdge)
+        , m_status(QTexture::Loading)
     {}
 
-    Q_DECLARE_PUBLIC(Texture)
+    Q_DECLARE_PUBLIC(QTexture)
 
-    Texture::Target m_target;
-    Texture::TextureFormat m_format;
+    QTexture::Target m_target;
+    QTexture::TextureFormat m_format;
     int m_width, m_height, m_depth;
     bool m_autoMipMap;
 
     QList<TexImageDataPtr> m_data;
 
-    Texture::Filter m_minFilter, m_magFilter;
+    QTexture::Filter m_minFilter, m_magFilter;
     // FIXME, store per direction
-    Texture::WrapMode m_wrapMode;
-    Texture::Status m_status;
+    QTexture::WrapMode m_wrapMode;
+    QTexture::Status m_status;
 };
 
 
-Texture::Texture(QNode *parent)
-    : QNode(*new TexturePrivate(this), parent)
+QTexture::QTexture(QNode *parent)
+    : QNode(*new QTexturePrivate(this), parent)
 {
 }
 
-Texture::Texture(TexturePrivate &dd, QNode *parent)
+QTexture::QTexture(QTexturePrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
 }
 
-Texture::~Texture()
+QTexture::~QTexture()
 {
 }
 
-void Texture::copy(const QNode *ref)
+void QTexture::copy(const QNode *ref)
 {
     QNode::copy(ref);
-    const Texture *t = qobject_cast<const Texture *>(t);
+    const QTexture *t = qobject_cast<const QTexture *>(ref);
     if (t != Q_NULLPTR) {
         setTarget(t->target());
         setSize(t->width(), t->height(), t->depth());
@@ -114,111 +114,111 @@ void Texture::copy(const QNode *ref)
     }
 }
 
-void Texture::setTarget(Target target)
+void QTexture::setTarget(Target target)
 {
-    Q_D(Texture);
+    Q_D(QTexture);
     if (d->m_target != target) {
         d->m_target = target;
     }
 }
 
-void Texture::setSize(int w, int h, int d)
+void QTexture::setSize(int w, int h, int d)
 {
    setWidth(w);
    setHeight(h);
    setDepth(d);
 }
 
-void Texture::setWidth(int width)
+void QTexture::setWidth(int width)
 {
-    Q_D(Texture);
+    Q_D(QTexture);
     if (d->m_width != width) {
         d->m_width = width;
         emit widthChanged();
     }
 }
 
-void Texture::setHeight(int height)
+void QTexture::setHeight(int height)
 {
-    Q_D(Texture);
+    Q_D(QTexture);
     if (d->m_height != height) {
         d->m_height = height;
         emit heightChanged();
     }
 }
 
-void Texture::setDepth(int depth)
+void QTexture::setDepth(int depth)
 {
-    Q_D(Texture);
+    Q_D(QTexture);
     if (d->m_depth != depth) {
         d->m_depth = depth;
         emit depthChanged();
     }
 }
 
-int Texture::width() const
+int QTexture::width() const
 {
-    Q_D(const Texture);
+    Q_D(const QTexture);
     return d->m_width;
 }
 
-int Texture::height() const
+int QTexture::height() const
 {
-    Q_D(const Texture);
+    Q_D(const QTexture);
     return d->m_height;
 }
 
-int Texture::depth() const
+int QTexture::depth() const
 {
-    Q_D(const Texture);
+    Q_D(const QTexture);
     return d->m_depth;
 }
 
-void Texture::setFormat(TextureFormat format)
+void QTexture::setFormat(TextureFormat format)
 {
-    Q_D(Texture);
+    Q_D(QTexture);
     if (d->m_format != format) {
         d->m_format = format;
         emit formatChanged();
     }
 }
 
-Texture::TextureFormat Texture::format() const
+QTexture::TextureFormat QTexture::format() const
 {
-    Q_D(const Texture);
+    Q_D(const QTexture);
     return d->m_format;
 }
 
-void Texture::setStatus(Status status)
+void QTexture::setStatus(Status status)
 {
-    Q_D(Texture);
+    Q_D(QTexture);
     if (status != d->m_status) {
         d->m_status = status;
         emit statusChanged();
     }
 }
 
-QNode *Texture::doClone(QNode *clonedParent) const
+QNode *QTexture::doClone(QNode *clonedParent) const
 {
     // TO DO: Copy TexImageDataPtr
-    return new Texture(clonedParent);
+    return new QTexture(clonedParent);
 }
 
-Texture::Status Texture::status() const
+QTexture::Status QTexture::status() const
 {
-    Q_D(const Texture);
+    Q_D(const QTexture);
     return d->m_status;
 }
 
-Texture::Target Texture::target() const
+QTexture::Target QTexture::target() const
 {
-    Q_D(const Texture);
+    Q_D(const QTexture);
     return d->m_target;
 }
 
-bool Texture::setFromQImage(QImage img, int layer)
+bool QTexture::setFromQImage(QImage img, int layer)
 {
-    Q_D(Texture);
+    Q_D(QTexture);
     setSize(img.width(), img.height());
 
     if ((d->m_target != Target2D) &&
@@ -237,21 +237,21 @@ bool Texture::setFromQImage(QImage img, int layer)
     return true;
 }
 
-void Texture::addImageData(TexImageDataPtr imgData)
+void QTexture::addImageData(TexImageDataPtr imgData)
 {
-    Q_D(Texture);
+    Q_D(QTexture);
     d->m_data.append(imgData);
 }
 
-QList<TexImageDataPtr> Texture::imageData() const
+QList<TexImageDataPtr> QTexture::imageData() const
 {
-    Q_D(const Texture);
+    Q_D(const QTexture);
     return d->m_data;
 }
 
-void Texture::setGenerateMipMaps(bool gen)
+void QTexture::setGenerateMipMaps(bool gen)
 {
-    Q_D(Texture);
+    Q_D(QTexture);
     if (d->m_autoMipMap != gen) {
         d->m_autoMipMap = gen;
         emit generateMipMapsChanged();
@@ -259,15 +259,15 @@ void Texture::setGenerateMipMaps(bool gen)
     }
 }
 
-bool Texture::generateMipMaps() const
+bool QTexture::generateMipMaps() const
 {
-    Q_D(const Texture);
+    Q_D(const QTexture);
     return d->m_autoMipMap;
 }
 
-void Texture::setMinificationFilter(Filter f)
+void QTexture::setMinificationFilter(Filter f)
 {
-    Q_D(Texture);
+    Q_D(QTexture);
     if (d->m_minFilter != f) {
         d->m_minFilter = f;
         emit minificationFilterChanged();
@@ -275,9 +275,9 @@ void Texture::setMinificationFilter(Filter f)
     }
 }
 
-void Texture::setMagnificationFilter(Filter f)
+void QTexture::setMagnificationFilter(Filter f)
 {
-    Q_D(Texture);
+    Q_D(QTexture);
     if (d->m_magFilter != f) {
         d->m_magFilter = f;
         emit magnificationFilterChanged();
@@ -285,21 +285,21 @@ void Texture::setMagnificationFilter(Filter f)
     }
 }
 
-Texture::Filter Texture::minificationFilter() const
+QTexture::Filter QTexture::minificationFilter() const
 {
-    Q_D(const Texture);
+    Q_D(const QTexture);
     return d->m_minFilter;
 }
 
-Texture::Filter Texture::magnificationFilter() const
+QTexture::Filter QTexture::magnificationFilter() const
 {
-    Q_D(const Texture);
+    Q_D(const QTexture);
     return d->m_magFilter;
 }
 
-void Texture::setWrapMode(WrapMode wrapMode)
+void QTexture::setWrapMode(WrapMode wrapMode)
 {
-    Q_D(Texture);
+    Q_D(QTexture);
     if (d->m_wrapMode != wrapMode) {
         d->m_wrapMode = wrapMode;
         emit wrapModeChanged();
@@ -307,9 +307,9 @@ void Texture::setWrapMode(WrapMode wrapMode)
     }
 }
 
-Texture::WrapMode Texture::wrapMode() const
+QTexture::WrapMode QTexture::wrapMode() const
 {
-    Q_D(const Texture);
+    Q_D(const QTexture);
     return d->m_wrapMode;
 }
 

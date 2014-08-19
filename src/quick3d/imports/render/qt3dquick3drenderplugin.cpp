@@ -53,7 +53,7 @@
 #include <Qt3DRenderer/qtechniquefilter.h>
 #include <Qt3DRenderer/qrendertargetselector.h>
 #include <Qt3DRenderer/qabstractshapemesh.h>
-#include <Qt3DRenderer/texture.h>
+#include <Qt3DRenderer/qtexture.h>
 #include <Qt3DRenderer/qframegraph.h>
 #include <Qt3DRenderer/qtechnique.h>
 #include <Qt3DRenderer/qcameraselector.h>
@@ -131,7 +131,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3D::QDirectionalLight>(uri, 2, 0, "DirectionalLight");
     qmlRegisterType<Qt3D::QSpotLight>(uri, 2, 0, "SpotLight");
 
-    qmlRegisterExtendedType<Qt3D::Texture, Qt3D::Render::Quick::Quick3DTexture>(uri, 2, 0, "Texture");
+    qmlRegisterExtendedType<Qt3D::QTexture, Qt3D::Render::Quick::Quick3DTexture>(uri, 2, 0, "Texture");
     // Framegraph components - TODO RenderTarget, RenderTargetSelector
     qmlRegisterExtendedType<Qt3D::QCameraSelector, Qt3D::Quick::Quick3DNode>(uri, 2, 0, "CameraSelector");
     qmlRegisterExtendedType<Qt3D::QRenderPassFilter, Qt3D::Render::Quick::Quick3DRenderPassFilter>(uri, 2, 0, "RenderPassFilter");
