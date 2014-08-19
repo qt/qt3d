@@ -45,16 +45,17 @@
 
 #include <QImage>
 #include <QDebug>
+#include <Qt3DCore/private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class TexturePrivate
+class TexturePrivate : public QNodePrivate
 {
 public :
     TexturePrivate(Texture *qq)
-        : q_ptr(qq)
+        : QNodePrivate(qq)
         , m_target(Texture::Target2D)
         , m_format(Texture::RGBA8U)
         , m_width(1)
@@ -65,11 +66,9 @@ public :
         , m_magFilter(Texture::Nearest)
         , m_wrapMode(Texture::ClampToEdge)
         , m_status(Texture::Loading)
-        , m_uuid(QUuid::createUuid())
     {}
 
     Q_DECLARE_PUBLIC(Texture)
-    Texture *q_ptr;
 
     Texture::Target m_target;
     Texture::TextureFormat m_format;
@@ -82,25 +81,37 @@ public :
     // FIXME, store per direction
     Texture::WrapMode m_wrapMode;
     Texture::Status m_status;
-    const QUuid m_uuid;
 };
 
 
-Texture::Texture(QObject *parent)
-    : QObject(parent)
-    , d_ptr(new TexturePrivate(this))
+Texture::Texture(QNode *parent)
+    : QNode(*new TexturePrivate(this), parent)
+{
+}
+
+Texture::Texture(TexturePrivate &dd, QNode *parent)
+    : QNode(dd, parent)
 {
 }
 
 Texture::~Texture()
 {
-    delete d_ptr;
 }
 
-const QUuid Texture::uuid() const
+void Texture::copy(const QNode *ref)
 {
-    Q_D(const Texture);
-    return d->m_uuid;
+    QNode::copy(ref);
+    const Texture *t = qobject_cast<const Texture *>(t);
+    if (t != Q_NULLPTR) {
+        setTarget(t->target());
+        setSize(t->width(), t->height(), t->depth());
+        setFormat(t->format());
+        setTarget(t->target());
+        setWrapMode(t->wrapMode());
+        setMinificationFilter(t->minificationFilter());
+        setMagnificationFilter(t->magnificationFilter());
+        setGenerateMipMaps(t->generateMipMaps());
+    }
 }
 
 void Texture::setTarget(Target target)
@@ -163,7 +174,7 @@ int Texture::depth() const
     return d->m_depth;
 }
 
-void Texture::setInternalFormat(TextureFormat format)
+void Texture::setFormat(TextureFormat format)
 {
     Q_D(Texture);
     if (d->m_format != format) {
@@ -185,6 +196,12 @@ void Texture::setStatus(Status status)
         d->m_status = status;
         emit statusChanged();
     }
+}
+
+QNode *Texture::doClone(QNode *clonedParent) const
+{
+    // TO DO: Copy TexImageDataPtr
+    return new Texture(clonedParent);
 }
 
 Texture::Status Texture::status() const
@@ -238,6 +255,7 @@ void Texture::setGenerateMipMaps(bool gen)
     if (d->m_autoMipMap != gen) {
         d->m_autoMipMap = gen;
         emit generateMipMapsChanged();
+        // TO DO: Sent scene notification
     }
 }
 
@@ -253,6 +271,7 @@ void Texture::setMinificationFilter(Filter f)
     if (d->m_minFilter != f) {
         d->m_minFilter = f;
         emit minificationFilterChanged();
+        // TO DO: Sent scene notification
     }
 }
 
@@ -262,6 +281,7 @@ void Texture::setMagnificationFilter(Filter f)
     if (d->m_magFilter != f) {
         d->m_magFilter = f;
         emit magnificationFilterChanged();
+        // TO DO: Sent scene notification
     }
 }
 
@@ -283,6 +303,7 @@ void Texture::setWrapMode(WrapMode wrapMode)
     if (d->m_wrapMode != wrapMode) {
         d->m_wrapMode = wrapMode;
         emit wrapModeChanged();
+        // TO DO: Sent scene notification
     }
 }
 

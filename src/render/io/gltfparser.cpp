@@ -782,7 +782,7 @@ void GLTFParser::processJSONTexture( QString id, QJsonObject jsonObj)
     //int internalFormat = jsonObj.value(KEY_INTERNAL_FORMAT).toInt();
 
     tex->setTarget(static_cast<Texture::Target>(target));
-    tex->setInternalFormat(Texture::RGBA8_UNorm /* static_cast<QOpenGLTexture::TextureFormat>(internalFormat)*/);
+    tex->setFormat(Texture::RGBA8_UNorm /* static_cast<QOpenGLTexture::TextureFormat>(internalFormat)*/);
 
     QString samplerId = jsonObj.value(KEY_SAMPLER).toString();
     QString source = jsonObj.value(KEY_SOURCE).toString();

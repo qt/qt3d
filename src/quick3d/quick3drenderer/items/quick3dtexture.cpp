@@ -50,12 +50,12 @@ namespace Render {
 
 namespace Quick {
 
-
+// TO DO: This needs to be reworked to handle more than just 2D images
 Quick3DTexture::Quick3DTexture(QObject *parent)
     : QObject(parent)
 {
     parentTexture()->setTarget(Texture::Target2D);
-    parentTexture()->setInternalFormat(Texture::RGBA8_UNorm);
+    parentTexture()->setFormat(Texture::RGBA8_UNorm);
 }
 
 QUrl Quick3DTexture::source() const
@@ -72,7 +72,7 @@ void Quick3DTexture::setSource(QUrl arg)
             QString source = m_source.toString().replace(QStringLiteral("qrc"), QStringLiteral(""));
             QImage img;
             if (img.load(source)) {
-                parentTexture()->setInternalFormat(img.hasAlphaChannel() ?
+                parentTexture()->setFormat(img.hasAlphaChannel() ?
                                                        Texture::RGBA8_UNorm :
                                                        Texture::RGB8_UNorm);
                 parentTexture()->setFromQImage(img);

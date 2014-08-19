@@ -45,8 +45,7 @@
 #include <QOpenGLTexture>
 #include <Qt3DRenderer/texturedata.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
-
-#include <QUuid>
+#include <Qt3DCore/qnode.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -54,7 +53,7 @@ namespace Qt3D {
 
 class TexturePrivate;
 
-class QT3DRENDERERSHARED_EXPORT Texture : public QObject
+class QT3DRENDERERSHARED_EXPORT Texture : public QNode
 {
     Q_OBJECT
     Q_ENUMS(Target)
@@ -63,7 +62,7 @@ class QT3DRENDERERSHARED_EXPORT Texture : public QObject
     Q_ENUMS(WrapMode)
     Q_ENUMS(Status)
     Q_PROPERTY(Texture::Target target READ target WRITE setTarget NOTIFY targetChanged)
-    Q_PROPERTY(Texture::TextureFormat format READ format WRITE setInternalFormat NOTIFY formatChanged)
+    Q_PROPERTY(Texture::TextureFormat format READ format WRITE setFormat NOTIFY formatChanged)
     Q_PROPERTY(bool generateMipMaps READ generateMipMaps WRITE setGenerateMipMaps NOTIFY generateMipMapsChanged)
     Q_PROPERTY(Texture::WrapMode wrapMode READ wrapMode WRITE setWrapMode NOTIFY wrapModeChanged)
     Q_PROPERTY(Texture::Status status READ status NOTIFY statusChanged)
@@ -74,18 +73,16 @@ class QT3DRENDERERSHARED_EXPORT Texture : public QObject
     Q_PROPERTY(Texture::Filter minificationFilter READ minificationFilter WRITE setMinificationFilter NOTIFY minificationFilterChanged)
 
 public:
-    explicit Texture(QObject *parent = 0);
+    explicit Texture(QNode *parent = 0);
     ~Texture();
 
-    enum Status
-    {
+    enum Status {
         Loading = 0,
         Loaded,
         Error
     };
 
-    enum Target
-    {
+    enum Target {
         Target1D                   = 0x0DE0,    // GL_TEXTURE_1D
         Target1DArray              = 0x8C18,    // GL_TEXTURE_1D_ARRAY
         Target2D                   = 0x0DE1,    // GL_TEXTURE_2D
@@ -99,8 +96,7 @@ public:
         TargetBuffer               = 0x8C2A     // GL_TEXTURE_BUFFER
     };
 
-    enum TextureFormat
-    {
+    enum TextureFormat {
         NoFormat               = 0,         // GL_NONE
 
         // Unsigned normalized formats
@@ -216,8 +212,7 @@ public:
         LuminanceAlphaFormat   = 0x190A
     };
 
-    enum Filter
-    {
+    enum Filter {
         Nearest                 = 0x2600,   // GL_NEAREST
         Linear                  = 0x2601,   // GL_LINEAR
         NearestMipMapNearest    = 0x2700,   // GL_NEAREST_MIPMAP_NEAREST
@@ -226,20 +221,19 @@ public:
         LinearMipMapLinear      = 0x2703    // GL_LINEAR_MIPMAP_LINEAR
     };
 
-    enum WrapMode
-    {
+    enum WrapMode {
         Repeat         = 0x2901, // GL_REPEAT
         MirroredRepeat = 0x8370, // GL_MIRRORED_REPEAT
         ClampToEdge    = 0x812F, // GL_CLAMP_TO_EDGE
         ClampToBorder  = 0x812D  // GL_CLAMP_TO_BORDER
     };
 
-    const QUuid uuid() const;
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
     void setTarget(Target target);
     Target target() const;
 
-    void setInternalFormat(TextureFormat format);
+    void setFormat(TextureFormat format);
     TextureFormat format() const;
 
     Status status() const;
@@ -292,12 +286,12 @@ Q_SIGNALS:
     void magnificationFilterChanged();
     void minificationFilterChanged();
 
-private:
-
-    void setStatus(Status status);
+protected:
 
     Q_DECLARE_PRIVATE(Texture)
-    TexturePrivate *d_ptr;
+    Texture(TexturePrivate &dd, QNode *parent = 0);
+    void setStatus(Status status);
+    QNode *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3D
