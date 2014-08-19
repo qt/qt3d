@@ -149,9 +149,9 @@ Renderer::Renderer(int cachedFrames)
     , m_frameCount(0)
     , m_cachedFramesCount(cachedFrames)
     , m_debugLogger(Q_NULLPTR)
+    , m_textureProvider(new RenderTextureProvider)
 {
     m_currentPreprocessingFrameIndex = 0;
-    m_textureProvider = new RenderTextureProvider;
     m_running.fetchAndStoreOrdered(1);
     m_renderThread->waitForStart();
 
@@ -226,10 +226,6 @@ Renderer::~Renderer()
 {
     m_running.fetchAndStoreOrdered(0);
     m_renderThread->wait();
-    delete m_renderThread;
-    delete m_graphicsContext;
-    delete m_textureProvider;
-    delete m_debugLogger;
 }
 
 // Called in RenderThread context by the run method of RenderThread
@@ -242,7 +238,7 @@ void Renderer::initialize()
     QByteArray debugLoggingMode = qgetenv("QT3D_DEBUG_LOGGING");
     bool enableDebugLogging = !debugLoggingMode.isEmpty();
 
-    m_graphicsContext = new QGraphicsContext;
+    m_graphicsContext.reset(new QGraphicsContext);
     m_graphicsContext->setSurface(m_surface);
     m_graphicsContext->setRenderer(this);
 
@@ -260,9 +256,9 @@ void Renderer::initialize()
         bool supported = ctx->hasExtension("GL_KHR_debug");
         if (supported) {
             qCDebug(Backend) << "Qt3D: Enabling OpenGL debug logging";
-            m_debugLogger = new QOpenGLDebugLogger;
+            m_debugLogger.reset(new QOpenGLDebugLogger);
             if (m_debugLogger->initialize()) {
-                QObject::connect(m_debugLogger, &QOpenGLDebugLogger::messageLogged, &logOpenGLDebugMessage);
+                QObject::connect(m_debugLogger.data(), &QOpenGLDebugLogger::messageLogged, &logOpenGLDebugMessage);
                 QString mode = QString::fromLocal8Bit(debugLoggingMode);
                 m_debugLogger->startLogging(mode.toLower().startsWith(QLatin1String("sync"))
                                                 ? QOpenGLDebugLogger::SynchronousLogging

@@ -59,6 +59,7 @@
 #include <QMutex>
 #include <QWaitCondition>
 #include <QAtomicInt>
+#include <QScopedPointer>
 
 QT_BEGIN_NAMESPACE
 
@@ -219,9 +220,9 @@ private:
     QHash<QString, QString> m_defaultParameterToGLSLAttributeNames;
     QUniformPack m_defaultUniformPack;
 
-    QGraphicsContext* m_graphicsContext;
+    QScopedPointer<QGraphicsContext> m_graphicsContext;
     QSurface *m_surface;
-    RenderTextureProvider* m_textureProvider;
+    QScopedPointer<RenderTextureProvider> m_textureProvider;
     MeshDataManager *m_meshDataManager;
     MeshManager *m_meshManager;
     CameraManager *m_cameraManager;
@@ -244,7 +245,7 @@ private:
     QTimer *m_frameTimer;
 
     RenderQueues *m_renderQueues;
-    RenderThread *m_renderThread;
+    QScopedPointer<RenderThread> m_renderThread;
     RenderSceneBuilder *m_renderSceneBuilder;
 
     void buildDefaultMaterial();
@@ -262,7 +263,7 @@ private:
     const int m_cachedFramesCount;
     QAtomicInt m_running;
 
-    QOpenGLDebugLogger *m_debugLogger;
+    QScopedPointer<QOpenGLDebugLogger> m_debugLogger;
 };
 
 } // namespace Render
