@@ -2,7 +2,7 @@
 
 load(configure)
 qtCompileTest(bullet)
-
+qtCompileTest(assimp)
 load(qt_parts)
 
 #module_qt3d_tutorials.subdir = tutorials

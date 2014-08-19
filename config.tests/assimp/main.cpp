@@ -39,68 +39,19 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_TEXTUREDATA_H
-#define QT3D_TEXTUREDATA_H
+#include <assimp/cimport.h>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+#include <assimp/Importer.hpp>
+#include <assimp/DefaultLogger.hpp>
 
-#include <QOpenGLTexture>
-#include <QImage>
-#include <QSharedPointer>
-#include <Qt3DRenderer/qt3drenderer_global.h>
-
-QT_BEGIN_NAMESPACE
-
-namespace Qt3D {
-
-class QT3DRENDERERSHARED_EXPORT TexImageData
+int main(int , char **)
 {
-public:
-    TexImageData(int level, int layer);
+  Assimp::Importer importer;
+  Assimp::DefaultLogger::create("AssimpLog.txt", Assimp::Logger::VERBOSE);
 
-    QOpenGLTexture::CubeMapFace cubeFace() const
-    { return m_cubeFace; }
+  // SET THIS TO REMOVE POINTS AND LINES -> HAVE ONLY TRIANGLES
+  importer.SetPropertyInteger(AI_CONFIG_PP_SBP_REMOVE, aiPrimitiveType_LINE|aiPrimitiveType_POINT);
 
-    void setCubeFace(QOpenGLTexture::CubeMapFace face);
-
-    int layer() const
-    { return m_layer; }
-
-    int mipMapLevel() const
-    { return m_mipMapLevel; }
-
-    bool isCompressed() const
-    { return m_isCompressed; }
-
-    void setImage(const QImage &);
-
-    void setData(const QByteArray &data,
-                 QOpenGLTexture::PixelFormat fmt,
-                 QOpenGLTexture::PixelType ptype);
-    void setCompressedData(QByteArray data, QOpenGLTexture::PixelFormat fmt);
-
-    QByteArray data() const
-    { return m_data; }
-
-    QOpenGLTexture::PixelFormat pixelFormat() const
-    { return m_pixelFormat; }
-
-    QOpenGLTexture::PixelType pixelType() const
-    { return m_pixelType; }
-
-private:
-    int m_layer, m_mipMapLevel;
-    QOpenGLTexture::CubeMapFace m_cubeFace;
-    QOpenGLTexture::PixelFormat m_pixelFormat;
-    QOpenGLTexture::PixelType m_pixelType;
-
-    bool m_isCompressed;
-    QByteArray m_data;
-};
-
-typedef QSharedPointer<TexImageData> TexImageDataPtr;
-
-} // namespace Qt3D
-
-
-QT_END_NAMESPACE
-
-#endif // QT3D_TEXTUREDATA_H
+  return 0;
+}

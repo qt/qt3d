@@ -44,7 +44,6 @@
 #include "renderlogging.h"
 #include <Qt3DRenderer/private/abstractsceneparser_p.h>
 #include <Qt3DRenderer/private/gltfparser_p.h>
-#include <Qt3DRenderer/private/assimpparser_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -155,10 +154,9 @@ void QAbstractScene::rebuild()
 
     // Make scene parsers plugins
     QList<AbstractSceneParser *> parsers;
-    parsers << new GLTFParser() << new AssimpParser();
+    parsers << new GLTFParser();// << new AssimpParser();
 
-    // Maybe move scene parsers to plugins
-    // And handle priority if a format is handled by more than one parser
+    // TO DO: Load Scene Parsers
 
     bool parserFound = false;
     Q_FOREACH (AbstractSceneParser *parser, parsers) {

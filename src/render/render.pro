@@ -6,13 +6,14 @@ DEFINES += QT3DRENDERER_LIBRARY
 
 MODULE   = 3drenderer
 
+MODULE_PLUGIN_TYPES = \
+    sceneparsers
+
 load(qt_module)
 
 include (backend/render-backend.pri)
 include (frontend/render-frontend.pri)
 include (io/render-io.pri)
-include(../3rdparty/assimp/assimp.pri)
-
 
 RESOURCES += $$PWD/render.qrc
 

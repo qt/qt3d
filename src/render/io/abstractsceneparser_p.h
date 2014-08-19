@@ -44,6 +44,8 @@
 
 #include <QObject>
 #include <QStringList>
+#include <QLoggingCategory>
+#include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -51,7 +53,9 @@ namespace Qt3D {
 
 class QEntity;
 
-class AbstractSceneParser : public QObject
+Q_DECLARE_LOGGING_CATEGORY(SceneParsers)
+
+class QT3DRENDERERSHARED_EXPORT AbstractSceneParser : public QObject
 {
     Q_OBJECT
     Q_ENUMS(ParserStatus)
