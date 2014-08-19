@@ -158,9 +158,9 @@ private:
     QVector<RenderCommand *> m_commands;
 
     typedef QHash<QString, QUniformValue* (RenderView::*)(const QMatrix4x4& model) const> standardUniformsPFuncsHash;
-    static  standardUniformsPFuncsHash m_standardUniformSetters;
+    static  standardUniformsPFuncsHash ms_standardUniformSetters;
     static standardUniformsPFuncsHash initializeStandardUniformSetters();
-    static QStringList m_standardAttributesNames;
+    static QStringList ms_standardAttributesNames;
     static QStringList initializeStandardAttributeNames();
 
     QUniformValue *modelMatrix(const QMatrix4x4& model) const;

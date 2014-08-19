@@ -119,8 +119,8 @@ bool isEntityInLayers(const RenderEntity *entity, const QStringList &layers)
 
 } // anonymouse namespace
 
-RenderView::standardUniformsPFuncsHash RenderView::m_standardUniformSetters = RenderView::initializeStandardUniformSetters();
-QStringList RenderView::m_standardAttributesNames = RenderView::initializeStandardAttributeNames();
+RenderView::standardUniformsPFuncsHash RenderView::ms_standardUniformSetters = RenderView::initializeStandardUniformSetters();
+QStringList RenderView::ms_standardAttributesNames = RenderView::initializeStandardAttributeNames();
 
 RenderView::standardUniformsPFuncsHash RenderView::initializeStandardUniformSetters()
 {
@@ -718,14 +718,14 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
 
                 // Set default standard uniforms without bindings
                 Q_FOREACH (const QString &uniformName, uniformNames) {
-                    if (m_standardUniformSetters.contains(uniformName))
+                    if (ms_standardUniformSetters.contains(uniformName))
                         command->m_uniforms.setUniform(uniformName,
-                                                       (this->*m_standardUniformSetters[uniformName])(worldTransform));
+                                                       (this->*ms_standardUniformSetters[uniformName])(worldTransform));
                 }
 
                 // Set default attributes
                 Q_FOREACH (const QString &attributeName, attributeNames) {
-                    if (m_standardAttributesNames.contains(attributeName))
+                    if (ms_standardAttributesNames.contains(attributeName))
                         command->m_parameterAttributeToShaderNames[attributeName] = attributeName;
                 }
 
@@ -737,9 +737,9 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
                             command->m_parameterAttributeToShaderNames.insert(binding->parameterName(), binding->shaderVariableName());
                         else if (binding->bindingType() == QParameterMapping::StandardUniform
                                  && uniformNames.contains(binding->shaderVariableName())
-                                 && m_standardUniformSetters.contains(binding->parameterName()))
+                                 && ms_standardUniformSetters.contains(binding->parameterName()))
                             command->m_uniforms.setUniform(binding->shaderVariableName(),
-                                                           (this->*m_standardUniformSetters[binding->parameterName()])(worldTransform));
+                                                           (this->*ms_standardUniformSetters[binding->parameterName()])(worldTransform));
                         else if (binding->bindingType() == QParameterMapping::FragmentOutput && fragOutputs.contains(binding->parameterName()))
                             fragOutputs.insert(binding->shaderVariableName(), fragOutputs.take(binding->parameterName()));
                         else
