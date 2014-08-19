@@ -125,6 +125,7 @@ Renderer::Renderer(int cachedFrames)
     , m_frameGraphRoot(Q_NULLPTR)
     , m_graphicsContext(Q_NULLPTR)
     , m_surface(Q_NULLPTR)
+    , m_textureProvider(new RenderTextureProvider)
     , m_meshDataManager(new MeshDataManager())
     , m_meshManager(new MeshManager())
     , m_cameraManager(new CameraManager())
@@ -149,7 +150,6 @@ Renderer::Renderer(int cachedFrames)
     , m_frameCount(0)
     , m_cachedFramesCount(cachedFrames)
     , m_debugLogger(Q_NULLPTR)
-    , m_textureProvider(new RenderTextureProvider)
 {
     m_currentPreprocessingFrameIndex = 0;
     m_running.fetchAndStoreOrdered(1);
