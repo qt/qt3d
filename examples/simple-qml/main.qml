@@ -282,6 +282,7 @@ Entity {
                                     in vec2 texCoord;
                                     in vec3 worldPosition;
                                     in vec3 normal;
+                                    out vec4 fragColor;
 
                                     struct PointLight
                                     {
@@ -303,7 +304,7 @@ Entity {
                                             color += pointLights[i].color * (pointLights[i].intensity * max(dot(s, normal), 0.0));
                                         }
                                         color /= float(lightCount);
-                                        gl_FragColor = texture2D(texture, texCoord) * color;
+                                        fragColor = texture2D(texture, texCoord) * color;
                                     }"
                                 }
                             },
@@ -327,11 +328,12 @@ Entity {
                                     fragmentShader: "
                                     #version 140
                                     in vec2 texCoord;
+                                    out vec4 fragColor;
                                     uniform sampler2D tex;
 
                                     void main()
                                     {
-                                        gl_FragColor = texture2D(tex, texCoord);
+                                        fragColor = texture2D(tex, texCoord);
                                     }
                                     "
                                 }
@@ -368,6 +370,7 @@ Entity {
                                     #version 140
                                     in vec3 worldPosition;
                                     in vec3 normal;
+                                    out vec4 fragColor;
 
                                     struct PointLight
                                     {
@@ -388,7 +391,7 @@ Entity {
                                             color += pointLights[i].color * (pointLights[i].intensity * max(dot(s, normal), 0.0));
                                         }
                                         color /= float(lightCount);
-                                        gl_FragColor = color;
+                                        fragColor = color;
                                     }"
                                 }
                             }
