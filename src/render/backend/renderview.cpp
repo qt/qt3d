@@ -46,6 +46,7 @@
 #include <Qt3DRenderer/renderlogging.h>
 #include <Qt3DRenderer/qtexture.h>
 #include <Qt3DRenderer/qrendertarget.h>
+#include <Qt3DRenderer/sphere.h>
 
 #include <Qt3DRenderer/private/cameraselectornode_p.h>
 #include <Qt3DRenderer/private/framegraphnode_p.h>
@@ -64,10 +65,6 @@
 #include <Qt3DRenderer/private/renderrenderpass_p.h>
 #include <Qt3DRenderer/private/techniquefilternode_p.h>
 #include <Qt3DRenderer/private/viewportnode_p.h>
-#include <Qt3DRenderer/private/rendertargetselectornode_p.h>
-#include <Qt3DRenderer/private/clearbuffer_p.h>
-#include <Qt3DRenderer/private/sortmethod_p.h>
-#include <Qt3DRenderer/sphere.h>
 
 #include <Qt3DRenderer/qparametermapping.h>
 #include <Qt3DRenderer/qalphatest.h>
@@ -84,7 +81,6 @@
 #include <Qt3DRenderer/private/blendstate_p.h>
 
 #include <Qt3DCore/qentity.h>
-#include <Qt3DCore/qframeallocator.h>
 
 #include <QtGui/qsurface.h>
 
@@ -265,22 +261,27 @@ RenderView::RenderView()
     , m_clearColor(Q_NULLPTR)
     , m_viewport(Q_NULLPTR)
     , m_clearBuffer(QClearBuffer::None)
+    , m_commands()
 {
 }
 
 RenderView::~RenderView()
 {
     if (m_allocator == Q_NULLPTR) // Mainly needed for unit tests
-        return ;
+        return;
+
     Q_FOREACH (RenderCommand *command, m_commands) {
         // Deallocate all uniform values of the QUniformPack of each RenderCommand
         Q_FOREACH (const QUniformValue *v, command->m_uniforms.uniforms().values())
             m_allocator->deallocate<QUniformValue>(const_cast<QUniformValue *>(v));
-        if (command->m_stateSet != Q_NULLPTR) // We do not delete the RenderState as there are stored statically
+
+        if (command->m_stateSet != Q_NULLPTR) // We do not delete the RenderState as that is stored statically
             m_allocator->deallocate<RenderStateSet>(command->m_stateSet);
+
         // Deallocate RenderCommand
         m_allocator->deallocate<RenderCommand>(command);
     }
+
     // Deallocate viewMatrix
     m_allocator->deallocate<QMatrix4x4>(m_data->m_viewMatrix);
     // Deallocate viewport rect
@@ -308,114 +309,12 @@ void RenderView::operator delete(void *ptr, void *)
         rView->m_allocator->deallocateRawMemory<RenderView>(rView);
 }
 
-void RenderView::setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf)
-{
-    // The specific RenderPass to be used is also dependent upon the Effect and TechniqueFilter
-    // which is referenced by the Material which is referenced by the RenderMesh. So we can
-    // only store the filter info in the RenderView structure and use it to do the resolving
-    // when we build the RenderCommand list.
-    FrameGraphNode *node = fgLeaf;
-    while (node != Q_NULLPTR) {
-        FrameGraphNode::FrameGraphNodeType type = node->nodeType();
-        switch (type) {
-        case FrameGraphNode::CameraSelector: // Can be set once
-            if (m_data->m_renderCamera == Q_NULLPTR) {
-                CameraSelector *cameraSelector = static_cast<CameraSelector *>(node);
-                RenderEntity *tmpCamNode = m_renderer->renderNodesManager()->lookupResource(cameraSelector->cameraUuid());
-                if (tmpCamNode) {
-                    m_data->m_renderCamera = tmpCamNode->renderComponent<RenderCameraLens>();
-                    // If we have a viewMatrix pointer instead of directly a QMatrix4x4 object in RenderView
-                    // This allows us to keep the size of RenderView smaller and avoid huge block fragmentation
-                    *m_data->m_viewMatrix = *tmpCamNode->worldTransform();
-                    m_data->m_eyePos = tmpCamNode->worldBoundingVolume()->center();
-                }
-                break;
-            }
-
-        case FrameGraphNode::LayerFilter: // Can be set multiple times in the tree
-            m_data->m_layers << static_cast<LayerFilterNode *>(node)->layers();
-            break;
-
-        case FrameGraphNode::RenderPassFilter:
-            if (m_data->m_passFilter == Q_NULLPTR) // Can be set once
-                m_data->m_passFilter = static_cast<RenderPassFilter *>(node);
-            break;
-
-        case FrameGraphNode::RenderTarget:
-            if (m_renderTarget.isNull()) // Can be set once
-                m_renderTarget = m_renderer->renderTargetManager()->lookupHandle(static_cast<RenderTargetSelector *>(node)->renderTargetUuid());
-            RenderTarget *renderTarget;
-            if ((renderTarget = m_renderer->renderTargetManager()->data(m_renderTarget)) != Q_NULLPTR) {
-                // Add renderTarget Handle and build renderCommand AttachmentPack
-                Q_FOREACH (const QNodeUuid &attachmentId, renderTarget->renderAttachments()) {
-                    RenderAttachment *attachment = m_renderer->attachmentManager()->lookupResource(attachmentId);
-                    if (attachment != Q_NULLPTR)
-                        m_attachmentPack.addAttachment(attachment->attachment());
-                }
-            }
-            break;
-
-        case FrameGraphNode::ClearBuffer:
-            m_clearBuffer = static_cast<ClearBuffer *>(node)->type();
-            break;
-
-        case FrameGraphNode::TechniqueFilter:
-            if (m_data->m_techniqueFilter == Q_NULLPTR) // Can be set once
-                m_data->m_techniqueFilter = static_cast<TechniqueFilter *>(node);
-            break;
-
-        case FrameGraphNode::Viewport: {
-            // If the Viewport has already been set in a lower node
-            // Make it so that the new viewport is actually
-            // a subregion relative to that of the parent viewport
-            if (!m_viewport) {
-                m_viewport = m_allocator->allocate<QRectF>();
-                *m_viewport = QRectF(0.0f, 0.0f, 1.0f, 1.0f);
-            }
-            ViewportNode *vpNode = static_cast<ViewportNode *>(node);
-            *m_viewport = computeViewport(*m_viewport, vpNode);
-
-            // We take the clear color from the viewport node nearest the leaf
-            if (!m_clearColor)
-                m_clearColor = m_allocator->allocate<QColor>();
-            if (!m_clearColor->isValid())
-                *m_clearColor = vpNode->clearColor();
-            break;
-        }
-
-        case FrameGraphNode::SortMethod:
-            Render::SortMethod *sM;
-            sM = static_cast<Render::SortMethod *>(node);
-            m_data->m_sortingCriteria.append(sM->criteria());
-            break;
-
-        default:
-            // Should never get here
-            qCWarning(Backend) << "Unhandled FrameGraphNode type";
-        }
-
-        node = node->parent();
-    }
-}
-
 void RenderView::sort()
 {
     // Compares the bitsetKey of the RenderCommands
     // Key[Depth | StateCost | Shader]
 
     std::sort(m_commands.begin(), m_commands.end());
-}
-
-void RenderView::setRenderer(Renderer *renderer)
-{
-    m_renderer = renderer;
-}
-
-void RenderView::setAllocator(QFrameAllocator *allocator)
-{
-    m_allocator = allocator;
-    m_data = m_allocator->allocate<InnerData>();
-    m_data->m_viewMatrix = m_allocator->allocate<QMatrix4x4>();
 }
 
 void RenderView::preprocessRenderTree(RenderEntity *node)
@@ -485,11 +384,6 @@ void RenderView::buildRenderCommands(RenderEntity *node)
 const AttachmentPack &RenderView::attachmentPack() const
 {
     return m_attachmentPack;
-}
-
-HTarget RenderView::renderTarget() const
-{
-    return m_renderTarget;
 }
 
 RenderTechnique *RenderView::findTechniqueForEffect(RenderEffect *effect)

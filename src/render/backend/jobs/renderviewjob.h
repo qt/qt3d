@@ -53,7 +53,11 @@ namespace Qt3D {
 namespace Render {
 
 class Renderer;
+class RenderView;
 class FrameGraphNode;
+
+Q_AUTOTEST_EXPORT void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv,
+                                                                 const FrameGraphNode *fgLeaf);
 
 
 class RenderViewJob : public QAspectJob

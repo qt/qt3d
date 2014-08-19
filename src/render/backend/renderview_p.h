@@ -49,6 +49,10 @@
 #include <Qt3DRenderer/private/rendercameralens_p.h>
 #include <Qt3DRenderer/private/attachmentpack_p.h>
 #include <Qt3DRenderer/private/handle_types_p.h>
+#include <Qt3DRenderer/qparameter.h>
+
+#include <Qt3DCore/qframeallocator.h>
+
 #include <QVector>
 #include <QMutex>
 #include <QColor>
@@ -83,19 +87,87 @@ public:
     static void operator delete(void *ptr);
     static void operator delete(void *ptr, void *);
 
-    void setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf);
-
     // TODO: Add a way to specify a sort predicate for the RenderCommands
     void sort();
 
-    // These pointers define the configuration that needs to be
-    // set for this RenderView before it's contained RenderCommands
-    // can be submitted. If a pointer is null, that pice of state
-    // does not need to be changed.
-    // TODO: Add RenderTarget
+    inline void setRenderer(Renderer *renderer) { m_renderer = renderer; }
+    inline Renderer *renderer() const { return m_renderer; }
 
-    void setRenderer(Renderer *renderer);
-    void setAllocator(QFrameAllocator *allocator);
+    inline void setAllocator(QFrameAllocator *allocator)
+    {
+        m_allocator = allocator;
+        m_data = m_allocator->allocate<InnerData>();
+        // If we have a viewMatrix pointer instead of directly a QMatrix4x4 object in RenderView
+        // This allows us to keep the size of RenderView smaller and avoid huge block fragmentation
+        //
+        // TODO: Is this worth it here. We don't have that many RenderViews to iterate over. This
+        // level of memory management would be better in RenderEntity's matrices as they will
+        // help cache performance during iteration
+        m_data->m_viewMatrix = m_allocator->allocate<QMatrix4x4>();
+    }
+    inline QFrameAllocator *allocator() const { return m_allocator; }
+
+    inline void setRenderCamera(RenderCameraLens *renderCamera) { m_data->m_renderCamera = renderCamera; }
+    inline RenderCameraLens *renderCamera() const { return m_data->m_renderCamera; }
+
+    inline void setViewMatrix(const QMatrix4x4 viewMatrix) { *(m_data->m_viewMatrix) = viewMatrix; }
+    inline QMatrix4x4 viewmatrix() const { Q_ASSERT(m_data->m_viewMatrix); return *(m_data->m_viewMatrix); }
+
+    inline void setEyePosition(const QVector3D &eyePos) { m_data->m_eyePos = eyePos; }
+    inline QVector3D eyePosition() const { return m_data->m_eyePos; }
+
+    inline void appendLayerFilter(const QStringList &layers) { m_data->m_layers << layers; }
+    inline QStringList layerFilters() const { return m_data->m_layers; }
+
+    inline void setRenderPassFilter(const RenderPassFilter *rpFilter) { m_data->m_passFilter = rpFilter; }
+    inline const RenderPassFilter *renderPassFilter() const { return m_data->m_passFilter; }
+
+    inline void setTechniqueFilter(const TechniqueFilter *filter) { m_data->m_techniqueFilter = filter; }
+    inline const TechniqueFilter *techniqueFilter() const { return m_data->m_techniqueFilter; }
+
+    // TODO: Get rid of this overly complex memory management by splitting out the
+    // InnerData as a RenderViewConfig struct. This can be created by setRenderViewConfigFromFrameGraphLeafNode
+    // and passed along with the RenderView to the functions that populate the renderview
+    inline void setViewport(const QRectF &vp)
+    {
+        if (!m_viewport) {
+            Q_ASSERT(m_allocator);
+            m_viewport = m_allocator->allocate<QRectF>();
+            *m_viewport = QRectF(0.0f, 0.0f, 1.0f, 1.0f);
+        }
+        *m_viewport = vp;
+    }
+    inline QRectF viewport() const
+    {
+        if (!m_viewport) {
+            Q_ASSERT(m_allocator);
+            m_viewport = m_allocator->allocate<QRectF>();
+            *m_viewport = QRectF(0.0f, 0.0f, 1.0f, 1.0f);
+        }
+        return *m_viewport;
+    }
+
+    inline void setClearColor(const QColor &c)
+    {
+        if (!m_clearColor) {
+            Q_ASSERT(m_allocator);
+            m_clearColor = m_allocator->allocate<QColor>();
+            *m_clearColor = QColor(QColor::Invalid);
+        }
+        *m_clearColor = c;
+    }
+    inline QColor clearColor() const
+    {
+        if (!m_clearColor) {
+            Q_ASSERT(m_allocator);
+            m_clearColor = m_allocator->allocate<QColor>();
+            *m_clearColor = QColor(QColor::Invalid);
+        }
+        return *m_clearColor;
+    }
+
+    inline void setClearBuffer(QClearBuffer::BufferType clearBuffer) { m_clearBuffer = clearBuffer; }
+    inline QClearBuffer::BufferType clearBuffer() const { return m_clearBuffer; }
 
     // Gather resources
     void preprocessRenderTree(RenderEntity *sceneGraphRoot);
@@ -103,16 +175,18 @@ public:
     void buildRenderCommands(RenderEntity *preprocessedTreeRoot);
     QVector<RenderCommand *> commands() const { return m_commands; }
 
-    inline QRectF viewport() const { return *m_viewport; }
-    inline QColor clearColor() const { return *m_clearColor; }
-    inline QClearBuffer::BufferType clearBuffer() const { return m_clearBuffer; }
 
     // This can be removed once we're 100% sure the QFrameAllocator is death proof
     void setFrameIndex(int index) { m_frameIndex = index; }
     int frameIndex() const { return m_frameIndex; }
 
+    void addRenderAttachment(Attachment attachment) { m_attachmentPack.addAttachment(attachment); }
     const AttachmentPack &attachmentPack() const;
-    HTarget renderTarget() const;
+
+    void setRenderTargetHandle(HTarget renderTargetHandle) { m_renderTarget = renderTargetHandle; }
+    HTarget renderTargetHandle() const { return m_renderTarget; }
+
+    void addSortCriteria(const QList<QNodeUuid> &sortMethodUid) { m_data->m_sortingCriteria.append(sortMethodUid); }
 
 private:
     RenderTechnique *findTechniqueForEffect(RenderEffect *effect);
@@ -136,8 +210,8 @@ private:
         {
         }
         RenderCameraLens *m_renderCamera;
-        TechniqueFilter *m_techniqueFilter;
-        RenderPassFilter *m_passFilter;
+        const TechniqueFilter *m_techniqueFilter;
+        const RenderPassFilter *m_passFilter;
         QMatrix4x4 *m_viewMatrix;
         QStringList m_layers;
         QList<LightPair> m_lights;
@@ -145,8 +219,8 @@ private:
         QVector3D m_eyePos;
     } *m_data;
 
-    QColor *m_clearColor;
-    QRectF *m_viewport;
+    mutable QColor *m_clearColor;
+    mutable QRectF *m_viewport;
     HTarget m_renderTarget;
     AttachmentPack m_attachmentPack;
     QClearBuffer::BufferType m_clearBuffer;

@@ -520,7 +520,7 @@ void Renderer::submitRenderViews()
         for (int i = 0; i < renderViewsCount; i++) {
             // Set RenderTarget ...
             // Activate RenderTarget
-            m_graphicsContext->activateRenderTarget(m_renderTargetManager->data(renderViews[i]->renderTarget()),
+            m_graphicsContext->activateRenderTarget(m_renderTargetManager->data(renderViews[i]->renderTargetHandle()),
                                                     renderViews[i]->attachmentPack());
             // Clear BackBuffer
             m_graphicsContext->clearBackBuffer(renderViews[i]->clearBuffer());
