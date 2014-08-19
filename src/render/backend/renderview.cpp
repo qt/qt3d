@@ -261,6 +261,14 @@ void RenderView::operator delete(void *ptr)
         rView->m_allocator->deallocateRawMemory<RenderView>(rView);
 }
 
+// Since placement new is used we need a matching operator delete, at least MSVC complains otherwise
+void RenderView::operator delete(void *ptr, void *)
+{
+    RenderView *rView = static_cast<RenderView *>(ptr);
+    if (rView != Q_NULLPTR && rView->m_allocator != Q_NULLPTR)
+        rView->m_allocator->deallocateRawMemory<RenderView>(rView);
+}
+
 void RenderView::setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf)
 {
     // The specific RenderPass to be used is also dependent upon the Effect and TechniqueFilter

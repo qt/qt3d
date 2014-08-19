@@ -86,6 +86,7 @@ public:
     ~RenderView();
 
     static void operator delete(void *ptr);
+    static void operator delete(void *ptr, void *);
 
     void setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf);
 
