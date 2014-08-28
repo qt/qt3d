@@ -55,7 +55,8 @@ HEADERS += \
     $$PWD/framegraphmanager_p.h \
     $$PWD/rendertransform_p.h \
     $$PWD/transformmanager_p.h \
-    $$PWD/renderstate_p.h
+    $$PWD/renderstate_p.h \
+    $$PWD/rendertarget_p.h
 
 SOURCES += \
     $$PWD/rendereraspect.cpp \
@@ -107,4 +108,5 @@ SOURCES += \
     $$PWD/framegraphmanager.cpp \
     $$PWD/rendertransform.cpp \
     $$PWD/transformmanager.cpp \
-    $$PWD/renderstate.cpp
+    $$PWD/renderstate.cpp \
+    $$PWD/rendertarget.cpp
