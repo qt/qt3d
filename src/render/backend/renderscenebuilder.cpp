@@ -221,6 +221,9 @@ void RenderSceneBuilder::createRenderElement(QNode *frontend)
         createRenderElementHelper<QShaderProgram, RenderShader, ShaderManager>(frontend,
                                                                                m_renderer->shaderManager());
     }
+    else if (qobject_cast<QAbstractScene *>(frontend)) {
+
+    }
     else if (qobject_cast<QParameter *>(frontend)) {
 
     }

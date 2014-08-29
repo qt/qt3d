@@ -42,7 +42,7 @@
 #ifndef QT3D_QABSTRACTSCENE_H
 #define QT3D_QABSTRACTSCENE_H
 
-#include <Qt3DCore/qentity.h>
+#include <Qt3DCore/qcomponent.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
@@ -53,13 +53,15 @@ namespace Render {
 class QAbstractScene;
 class QAbstractScenePrivate;
 
-class QT3DRENDERERSHARED_EXPORT QAbstractScene : public QEntity
+class QT3DRENDERERSHARED_EXPORT QAbstractScene : public QComponent
 {
     Q_OBJECT
     Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
     Q_PROPERTY(QString sceneId READ sceneId WRITE setSceneId NOTIFY sceneIdChanged)
 public:
     explicit QAbstractScene(QNode *parent = 0);
+
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
     QString source() const;
     void setSource(QString arg);

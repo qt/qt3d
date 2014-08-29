@@ -50,6 +50,11 @@ QScene::QScene(QNode *parent)
 {
 }
 
+QNode *QScene::doClone(QNode *clonedParent) const
+{
+    return new QScene(clonedParent);
+}
+
 } // Qt3D
 
 QT_END_NAMESPACE

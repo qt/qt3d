@@ -480,7 +480,7 @@ Entity {
 //                loops : QQ2.Animation.Infinite
 //                running: true
 //            }
-            components : [scaleSceneTransform]
+//            components : [scaleSceneTransform]
         }
 
         Layer { id: ballLayer; name : "balls" }

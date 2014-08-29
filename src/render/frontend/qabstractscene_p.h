@@ -42,7 +42,7 @@
 #ifndef QT3D_QABSTRACTSCENE_P_H
 #define QT3D_QABSTRACTSCENE_P_H
 
-#include <private/qentity_p.h>
+#include <private/qcomponent_p.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
@@ -55,7 +55,7 @@ namespace Render {
 
 class QAbstractScene;
 
-class QT3DRENDERERSHARED_EXPORT QAbstractScenePrivate : public QEntityPrivate
+class QT3DRENDERERSHARED_EXPORT QAbstractScenePrivate : public QComponentPrivate
 {
 public:
     QAbstractScenePrivate(QAbstractScene *qq);

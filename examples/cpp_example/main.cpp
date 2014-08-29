@@ -105,6 +105,7 @@ int main(int ac, char **av)
     torusEntity->addComponent(torusTransforms);
 
     // Scene file
+    Qt3D::QEntity *sceneEntity = new Qt3D::QEntity();
     Qt3D::QScene  *scene = new Qt3D::QScene();
     scene->setObjectName(QStringLiteral("scene"));
     Qt3D::QTransform *sceneTransform = new Qt3D::QTransform();
@@ -113,9 +114,10 @@ int main(int ac, char **av)
     sceneTranslateTransform->setDy(0.5);
     sceneTranslateTransform->setDz(-10);
     sceneTransform->appendTransform(sceneTranslateTransform);
-    scene->addComponent(sceneTransform);
+    sceneEntity->addComponent(sceneTransform);
 //    scene->setSource(":/assets/gltf/wine/wine.json");
     scene->setSource(":/assets/test_scene.dae");
+    sceneEntity->addComponent(scene);
 
     // Camera
     Qt3D::QCamera *cameraEntity = new Qt3D::QCamera();
@@ -155,7 +157,7 @@ int main(int ac, char **av)
     // Build Node Tree
     rootEntity->addChild(cameraEntity);
     rootEntity->addChild(torusEntity);
-    rootEntity->addChild(scene);
+    rootEntity->addChild(sceneEntity);
 
     // Set root object of the scene
     view.setRootObject(rootEntity);

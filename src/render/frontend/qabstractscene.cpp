@@ -52,7 +52,7 @@ namespace Qt3D {
 namespace Render {
 
 QAbstractScenePrivate::QAbstractScenePrivate(QAbstractScene *qq)
-    : QEntityPrivate(qq)
+    : QComponentPrivate(qq)
     , m_sceneNode(Q_NULLPTR)
     , m_sceneChild(Q_NULLPTR)
     , m_currentParser(Q_NULLPTR)
@@ -60,15 +60,25 @@ QAbstractScenePrivate::QAbstractScenePrivate(QAbstractScene *qq)
 }
 
 QAbstractScene::QAbstractScene(QAbstractScenePrivate &dd, QNode *parent)
-    : QEntity(dd, parent)
+    : QComponent(dd, parent)
 {
 }
 
 QAbstractScene::QAbstractScene(QNode *parent)
-    : QEntity(*new QAbstractScenePrivate(this), parent)
+    : QComponent(*new QAbstractScenePrivate(this), parent)
 {
     Q_D(QAbstractScene);
     d->m_sceneNode = this;
+}
+
+void QAbstractScene::copy(const QNode *ref)
+{
+    Q_D(QAbstractScene);
+    const QAbstractScene *s = qobject_cast<const QAbstractScene *>(ref);
+    if (s != Q_NULLPTR) {
+        d->m_sceneId = s->sceneId();
+        d->m_source = s->source();
+    }
 }
 
 QString QAbstractScene::source() const

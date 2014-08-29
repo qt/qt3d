@@ -53,6 +53,9 @@ class QT3DRENDERERSHARED_EXPORT QScene : public Render::QAbstractScene
     Q_OBJECT
 public:
     explicit QScene(QNode *parent = 0);
+
+protected:
+    QNode *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D
