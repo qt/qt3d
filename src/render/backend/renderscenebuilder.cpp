@@ -58,6 +58,7 @@
 #include <Qt3DRenderer/qviewport.h>
 #include <Qt3DRenderer/rendereraspect.h>
 #include <Qt3DRenderer/renderlogging.h>
+#include <Qt3DRenderer/qrendertarget.h>
 
 #include <Qt3DRenderer/private/cameramanager_p.h>
 #include <Qt3DRenderer/private/cameraselectornode_p.h>
@@ -81,6 +82,8 @@
 #include <Qt3DRenderer/private/techniquemanager_p.h>
 #include <Qt3DRenderer/private/transformmanager_p.h>
 #include <Qt3DRenderer/private/viewportnode_p.h>
+#include <Qt3DRenderer/private/rendertarget_p.h>
+#include <Qt3DRenderer/private/rendertargetmanager_p.h>
 
 #include <Qt3DCore/qcamera.h>
 #include <Qt3DCore/qcameralens.h>
@@ -224,6 +227,10 @@ void RenderSceneBuilder::createRenderElement(QNode *frontend)
     else if (qobject_cast<QParameterMapper *>(frontend)) {
 
     }
+    else if (qobject_cast<QRenderTarget *>(frontend)) {
+        createRenderElementHelper<QRenderTarget, RenderTarget, RenderTargetManager>(frontend,
+                                                                                    m_renderer->renderTargetManager());
+    }
     else if (qobject_cast<QCriterion *>(frontend)) {
         createRenderElementHelper<QCriterion, RenderCriterion, CriterionManager>(frontend,
                                                                                  m_renderer->criterionManager());
@@ -261,6 +268,8 @@ void RenderSceneBuilder::releaseRenderElement(QNode *frontend)
         m_renderer->frameGraphManager()->releaseResource(frontend->uuid());
     else if (qobject_cast<QAbstractShader *>(frontend))
         m_renderer->shaderManager()->releaseResource(frontend->uuid());
+    else if (qobject_cast<QRenderTarget *>(frontend))
+        m_renderer->renderTargetManager()->releaseResource(frontend->uuid());
 }
 
 RenderEntity* RenderSceneBuilder::createRenderNode(QEntity *entity)
