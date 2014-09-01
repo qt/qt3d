@@ -34,7 +34,8 @@ HEADERS += \
     $$PWD/qobservable_p.h \
     $$PWD/qscenechange_p.h \
     $$PWD/qscenepropertychange_p.h \
-    $$PWD/qsceneobserverinterface.h
+    $$PWD/qsceneobserverinterface.h \
+    $$PWD/qfrontendsceneobserver_p.h
 
 SOURCES += \
     $$PWD/window.cpp \
@@ -48,4 +49,5 @@ SOURCES += \
     $$PWD/qobserverinterface.cpp \
     $$PWD/qscenechange.cpp \
     $$PWD/qscenepropertychange.cpp \
-    $$PWD/qsceneobserverinterface.cpp
+    $$PWD/qsceneobserverinterface.cpp \
+    $$PWD/qfrontendsceneobserver.cpp
