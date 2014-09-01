@@ -44,6 +44,7 @@
 #include "renderlogging.h"
 #include <Qt3DRenderer/private/abstractsceneparser_p.h>
 #include <Qt3DRenderer/private/gltfparser_p.h>
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -125,6 +126,10 @@ void QAbstractScene::setSource(QString arg)
         d->m_source = arg;
         rebuild();
         emit sourceChanged(arg);
+        QScenePropertyChangePtr change(new QScenePropertyChange(ComponentUpdated, this));
+        change->setPropertyName(QByteArrayLiteral("source"));
+        change->setValue(d->m_source);
+        notifyObservers(change);
     }
 }
 
@@ -154,6 +159,7 @@ QNode *QAbstractScene::scene(QString id)
     return Q_NULLPTR;
 }
 
+// Move that into a jobs
 void QAbstractScene::rebuild()
 {
     Q_D(QAbstractScene);

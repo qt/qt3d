@@ -58,7 +58,8 @@ HEADERS += \
     $$PWD/renderstate_p.h \
     $$PWD/rendertarget_p.h \
     $$PWD/renderattachment_p.h \
-    $$PWD/rendertargetmanager_p.h
+    $$PWD/rendertargetmanager_p.h \
+    $$PWD/renderscene_p.h
 
 SOURCES += \
     $$PWD/rendereraspect.cpp \
@@ -113,4 +114,5 @@ SOURCES += \
     $$PWD/renderstate.cpp \
     $$PWD/rendertarget.cpp \
     $$PWD/renderattachment.cpp \
-    $$PWD/rendertargetmanager.cpp
+    $$PWD/rendertargetmanager.cpp \
+    $$PWD/renderscene.cpp
