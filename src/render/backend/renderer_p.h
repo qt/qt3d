@@ -117,6 +117,7 @@ class RenderSceneBuilder;
 class FrameGraphManager;
 class TransformManager;
 class RenderStateSet;
+class RenderTargetManager;
 
 typedef QHandle<RenderMaterial, 16> HMaterial;
 typedef QHandle<RenderEffect, 16> HEffect;
@@ -165,6 +166,7 @@ public:
     inline CriterionManager *criterionManager() const { return m_criterionManager; }
     inline FrameGraphManager *frameGraphManager() const { return m_frameGraphManager; }
     inline TransformManager *transformManager() const { return m_transformManager; }
+    inline RenderTargetManager *renderTargetManager() const { return m_renderTargetManager; }
 
     inline HMaterial defaultMaterialHandle() const { return m_defaultMaterialHandle; }
     inline HEffect defaultEffectHandle() const { return m_defaultEffectHandle; }
@@ -241,6 +243,7 @@ private:
     CriterionManager *m_criterionManager;
     FrameGraphManager *m_frameGraphManager;
     TransformManager *m_transformManager;
+    RenderTargetManager *m_renderTargetManager;
 
     QTimer *m_frameTimer;
 
