@@ -94,6 +94,7 @@
 #include <Qt3DRenderer/private/texturemanager_p.h>
 #include <Qt3DRenderer/private/transformmanager_p.h>
 #include <Qt3DRenderer/private/rendertargetmanager_p.h>
+#include <Qt3DRenderer/private/scenemanager_p.h>
 #include <Qt3DRenderer/private/vaomanager_p.h>
 #include <Qt3DRenderer/private/viewportnode_p.h>
 
@@ -146,6 +147,7 @@ Renderer::Renderer(int cachedFrames)
     , m_frameGraphManager(new FrameGraphManager())
     , m_transformManager(new TransformManager())
     , m_renderTargetManager(new RenderTargetManager())
+    , m_sceneManager(new SceneManager())
     , m_renderQueues(new RenderQueues(cachedFrames - 1))
     , m_renderThread(new RenderThread(this))
     , m_renderSceneBuilder(new RenderSceneBuilder(this))
