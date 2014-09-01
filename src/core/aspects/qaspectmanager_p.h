@@ -56,6 +56,7 @@ class QScheduler;
 class QEntity;
 class QChangeArbiter;
 class QJobManagerInterface;
+class QSceneObserverInterface;
 
 class QAspectManagerPrivate : public QObjectPrivate
 {
@@ -70,6 +71,7 @@ public :
     QScheduler *m_scheduler;
     QJobManagerInterface *m_jobManager;
     QChangeArbiter *m_changeArbiter;
+    QSceneObserverInterface *m_frontendSceneObserver;
     QAtomicInt m_runMainLoop;
     QAtomicInt m_terminated;
 };

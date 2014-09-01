@@ -52,6 +52,7 @@ namespace Qt3D {
 
 class QAspectEngine;
 class QAspectThread;
+class QFrontendSceneObserver;
 
 class QAspectEnginePrivate : public QObjectPrivate
 {
@@ -61,6 +62,7 @@ public:
     Q_DECLARE_PUBLIC(QAspectEngine)
 
     QAspectThread *m_aspectThread;
+    QFrontendSceneObserver *m_frontendSceneObserver;
 };
 
 } // Qt3D

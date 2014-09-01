@@ -57,6 +57,7 @@
 #include <QWindow>
 
 #include <private/qaspectmanager_p.h>
+#include "qsceneobserverinterface.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -66,6 +67,7 @@ QAspectManagerPrivate::QAspectManagerPrivate(QAspectManager *qq)
     : QObjectPrivate()
     , m_root(Q_NULLPTR)
     , m_window(Q_NULLPTR)
+    , m_frontendSceneObserver(Q_NULLPTR)
 {
     m_runMainLoop.fetchAndStoreOrdered(0);
     m_terminated.fetchAndStoreOrdered(0);
@@ -120,8 +122,8 @@ void QAspectManager::shutdown()
         d->m_changeArbiter->unregisterSceneObserver(aspect->sceneObserver());
     }
     qDeleteAll(d->m_aspects);
+    d->m_changeArbiter->unregisterSceneObserver(d->m_frontendSceneObserver);
 }
-
 
 void QAspectManager::setRoot(QObject *rootObject)
 {
@@ -173,6 +175,15 @@ void QAspectManager::setWindow(QWindow *window)
     // Otherwise aspects won't be able to initialize the glContext
     // As show (which calls create) is only called after they're initialized
     d->m_window->create();
+}
+
+void QAspectManager::setFrontendSceneObserver(QSceneObserverInterface *f)
+{
+    Q_D(QAspectManager);
+    qCDebug(Aspects) << Q_FUNC_INFO;
+    d->m_changeArbiter->unregisterSceneObserver(d->m_frontendSceneObserver);
+    d->m_frontendSceneObserver = f;
+    d->m_changeArbiter->registerSceneObserver(f);
 }
 
 /*!

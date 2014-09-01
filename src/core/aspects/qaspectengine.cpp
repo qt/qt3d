@@ -48,7 +48,7 @@
 #include "qabstractaspect.h"
 #include "corelogging.h"
 #include <QMetaObject>
-
+#include <private/qfrontendsceneobserver_p.h>
 #include <private/qaspectengine_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -57,9 +57,11 @@ namespace Qt3D {
 
 QAspectEnginePrivate::QAspectEnginePrivate(QAspectEngine *qq)
     : QObjectPrivate()
+    , m_frontendSceneObserver(new QFrontendSceneObserver())
 {
     q_ptr = qq;
     qRegisterMetaType<Qt3D::QAbstractAspect *>();
+    qRegisterMetaType<Qt3D::QSceneObserverInterface *>();
 }
 
 QAspectEngine::QAspectEngine(QObject *parent)
@@ -84,6 +86,9 @@ void QAspectEngine::initialize()
     Q_D(QAspectEngine);
     QChangeArbiter *arbiter = d->m_aspectThread->aspectManager()->changeArbiter();
     QChangeArbiter::createUnmanagedThreadLocalChangeQueue(arbiter);
+    QMetaObject::invokeMethod(d->m_aspectThread->aspectManager(),
+                              "setFrontendSceneObserver",
+                              Q_ARG(Qt3D::QSceneObserverInterface *, d->m_frontendSceneObserver));
 }
 
 void QAspectEngine::shutdown()

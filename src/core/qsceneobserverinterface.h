@@ -62,4 +62,6 @@ public:
 
 QT_END_NAMESPACE
 
+Q_DECLARE_METATYPE(Qt3D::QSceneObserverInterface *)
+
 #endif // QT3D_QSCENEOBSERVERINTERFACE_H
