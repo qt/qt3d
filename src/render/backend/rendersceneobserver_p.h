@@ -61,6 +61,7 @@ public:
     // QSceneObserverInterface interface
     void sceneNodeAdded(QSceneChangePtr &e) Q_DECL_OVERRIDE;
     void sceneNodeRemoved(QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneNodeUpdated(QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
     Renderer *m_renderer;

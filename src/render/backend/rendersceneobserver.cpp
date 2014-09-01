@@ -77,6 +77,10 @@ void RenderSceneObserver::sceneNodeRemoved(QSceneChangePtr &e)
     }
 }
 
+void RenderSceneObserver::sceneNodeUpdated(QSceneChangePtr &)
+{
+}
+
 } // Render
 
 } // Qt3D
