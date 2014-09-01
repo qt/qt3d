@@ -84,6 +84,7 @@
 #include <Qt3DRenderer/private/viewportnode_p.h>
 #include <Qt3DRenderer/private/rendertarget_p.h>
 #include <Qt3DRenderer/private/rendertargetmanager_p.h>
+#include <Qt3DRenderer/private/scenemanager_p.h>
 
 #include <Qt3DCore/qcamera.h>
 #include <Qt3DCore/qcameralens.h>
@@ -222,7 +223,8 @@ void RenderSceneBuilder::createRenderElement(QNode *frontend)
                                                                                m_renderer->shaderManager());
     }
     else if (qobject_cast<QAbstractScene *>(frontend)) {
-
+        createRenderElementHelper<QAbstractScene, RenderScene, SceneManager>(frontend,
+                                                                            m_renderer->sceneManager());
     }
     else if (qobject_cast<QParameter *>(frontend)) {
 
@@ -273,6 +275,8 @@ void RenderSceneBuilder::releaseRenderElement(QNode *frontend)
         m_renderer->shaderManager()->releaseResource(frontend->uuid());
     else if (qobject_cast<QRenderTarget *>(frontend))
         m_renderer->renderTargetManager()->releaseResource(frontend->uuid());
+    else if (qobject_cast<QAbstractScene *>(frontend))
+        m_renderer->sceneManager()->releaseResource(frontend->uuid());
 }
 
 RenderEntity* RenderSceneBuilder::createRenderNode(QEntity *entity)
