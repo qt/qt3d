@@ -40,7 +40,14 @@
 ****************************************************************************/
 
 #include "rendertargetselectornode_p.h"
-
+#include <Qt3DRenderer/private/renderer_p.h>
+#include <Qt3DRenderer/rendereraspect.h>
+#include <Qt3DCore/qaspectmanager.h>
+#include <Qt3DCore/qchangearbiter.h>
+#include <Qt3DRenderer/qrendertargetselector.h>
+#include <Qt3DRenderer/qrendertarget.h>
+#include <Qt3DCore/qscenepropertychange.h>
+#include "renderlogging.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -52,9 +59,38 @@ RenderTargetSelector::RenderTargetSelector() :
 {
 }
 
-void RenderTargetSelector::sceneChangeEvent(const QSceneChangePtr &)
+void RenderTargetSelector::setPeer(QRenderTargetSelector *peer)
 {
+    QUuid peerUuid;
+    if (peer != Q_NULLPTR)
+        peerUuid = peer->uuid();
+    if (m_frontendUuid != peerUuid) {
+        if (!m_frontendUuid.isNull()) {
+            m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_frontendUuid);
+            m_renderTargetUuid = QUuid();
+        }
+        m_frontendUuid = peerUuid;
+        if (!m_frontendUuid.isNull()) {
+            m_renderer->rendererAspect()->aspectManager()->changeArbiter()->registerObserver(this, m_frontendUuid, NodeUpdated);
+            if (peer->target() != Q_NULLPTR)
+                m_renderTargetUuid = peer->target()->uuid();
+        }
+    }
+}
 
+void RenderTargetSelector::sceneChangeEvent(const QSceneChangePtr &e)
+{
+    qCDebug(Render::Framegraph) << Q_FUNC_INFO;
+    if (e->type() == NodeUpdated) {
+        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+        if (propertyChange->propertyName() == QByteArrayLiteral("target"))
+            m_renderTargetUuid = propertyChange->value().toUuid();
+    }
+}
+
+QUuid RenderTargetSelector::renderTargetUuid() const
+{
+    return m_renderTargetUuid;
 }
 
 } // Render

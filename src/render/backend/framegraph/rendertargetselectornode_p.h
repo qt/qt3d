@@ -47,6 +47,9 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
+
+class QRenderTargetSelector;
+
 namespace Render {
 
 class RenderTargetSelector : public FrameGraphNode
@@ -54,10 +57,12 @@ class RenderTargetSelector : public FrameGraphNode
 public:
     RenderTargetSelector();
 
+    void setPeer(QRenderTargetSelector *peer);
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    QUuid renderTargetUuid() const;
 
 private:
-
+    QUuid m_renderTargetUuid;
 };
 
 } // Render
