@@ -50,7 +50,7 @@ namespace Qt3D {
 QRenderAttachmentPrivate::QRenderAttachmentPrivate(QRenderAttachment *qq)
     : QNodePrivate(qq)
     , m_texture(Q_NULLPTR)
-    , m_type(QRenderAttachment::ColorAttachment)
+    , m_type(QRenderAttachment::ColorAttachment0)
     , m_mipLevel(0)
     , m_layer(0)
     , m_face(QRenderAttachment::CubeMapNegativeX)

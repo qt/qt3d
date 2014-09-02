@@ -65,7 +65,22 @@ class QT3DRENDERERSHARED_EXPORT QRenderAttachment : public QNode
 
 public:
     enum RenderAttachmentType {
-        ColorAttachment,
+        ColorAttachment0,
+        ColorAttachment1,
+        ColorAttachment2,
+        ColorAttachment3,
+        ColorAttachment4,
+        ColorAttachment5,
+        ColorAttachment6,
+        ColorAttachment7,
+        ColorAttachment8,
+        ColorAttachment9,
+        ColorAttachment10,
+        ColorAttachment11,
+        ColorAttachment12,
+        ColorAttachment13,
+        ColorAttachment14,
+        ColorAttachment15,
         DepthAttachment,
         StencilAttachment,
         DepthStencilAttachment
