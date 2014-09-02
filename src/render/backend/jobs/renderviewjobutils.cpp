@@ -48,6 +48,7 @@
 #include <Qt3DRenderer/private/clearbuffer_p.h>
 #include <Qt3DRenderer/private/layerfilternode_p.h>
 #include <Qt3DRenderer/private/managers_p.h>
+#include <Qt3DRenderer/private/rendereffect_p.h>
 #include <Qt3DRenderer/private/renderpassfilternode_p.h>
 #include <Qt3DRenderer/private/rendertargetselectornode_p.h>
 #include <Qt3DRenderer/private/renderview_p.h>
@@ -252,6 +253,54 @@ RenderTechnique *findTechniqueForEffect(Renderer *renderer,
 
     // We failed to find a suitable technique to use :(
     return Q_NULLPTR;
+}
+
+
+QVector<RenderRenderPass *> findRenderPassesForTechnique(Renderer *renderer,
+                                                         RenderView *renderView,
+                                                         RenderTechnique *technique)
+{
+    Q_ASSERT(renderer);
+    Q_ASSERT(technique);
+
+    QVector<RenderRenderPass *> passes;
+    passes.reserve(3); // We rarely get more than 2 or 3 passes
+    Q_FOREACH (const QUuid &passId, technique->renderPasses()) {
+        RenderRenderPass *renderPass = renderer->renderPassManager()->lookupResource(passId);
+
+        if (renderPass) {
+            const RenderPassFilter *passFilter = renderView->renderPassFilter();
+            bool foundMatch = (!passFilter || passFilter->filters().size() == 0);
+
+            // A pass filter is present so we need to check for matching criteria
+            if (!foundMatch && renderPass->annotations().size() >= passFilter->filters().size()) {
+
+                // Iterate through the filter criteria and look for render passes with criteria that satisfy them
+                Q_FOREACH (const QUuid &filterAnnotationId, passFilter->filters()) {
+                    foundMatch = false;
+                    RenderAnnotation *filterAnnotation = renderer->criterionManager()->lookupResource(filterAnnotationId);
+
+                    Q_FOREACH (const QUuid &passAnnotationId, renderPass->annotations()) {
+                        RenderAnnotation *passAnnotation = renderer->criterionManager()->lookupResource(passAnnotationId);
+                        if ((foundMatch = (*passAnnotation == *filterAnnotation)))
+                            break;
+                    }
+
+                    if (!foundMatch) {
+                        // No match for criterion in any of the render pass' criteria
+                        break;
+                    }
+                }
+            }
+
+            if (foundMatch) {
+                // Found a renderpass that satisfies our needs. Add it in order
+                passes << renderPass;
+            }
+        }
+    }
+
+    return passes;
 }
 
 } // namespace Render

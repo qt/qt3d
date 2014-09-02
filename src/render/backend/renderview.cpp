@@ -333,19 +333,24 @@ void RenderView::buildRenderCommands(RenderEntity *node)
                 // As shaders may be deforming, transforming the mesh
                 // We might want to make that optional or dependent on an explicit bounding box item
 
+                // Find the material, effect, technique and set of render passes to use
                 RenderMaterial *material = Q_NULLPTR;
                 RenderEffect *effect = Q_NULLPTR;
                 if ((material = node->renderComponent<RenderMaterial>()) != Q_NULLPTR)
                     effect = m_renderer->effectManager()->lookupResource(material->effect());
                 RenderTechnique *technique = findTechniqueForEffect(m_renderer, this, effect);
 
-                QList<RenderRenderPass *> passes = findRenderPassesForTechnique(technique);
-                if (passes.isEmpty()) {
+                QVector<RenderRenderPass *> passes;
+                if (technique) {
+                    passes = findRenderPassesForTechnique(m_renderer, this, technique);
+                } else {
                     material = m_renderer->materialManager()->data(m_renderer->defaultMaterialHandle());
                     effect = m_renderer->effectManager()->data(m_renderer->defaultEffectHandle());
                     technique = m_renderer->techniqueManager()->data(m_renderer->defaultTechniqueHandle());
                     passes << m_renderer->renderPassManager()->data(m_renderer->defaultRenderPassHandle());
                 }
+
+                // Get the parameters for our selected rendering setup
                 QHash<QString, QVariant> parameters = parametersFromMaterialEffectTechnique(material, effect, technique);
 
                 // 1 RenderCommand per RenderPass pass on an Entity with a Mesh
@@ -373,37 +378,6 @@ void RenderView::buildRenderCommands(RenderEntity *node)
 const AttachmentPack &RenderView::attachmentPack() const
 {
     return m_attachmentPack;
-}
-
-QList<RenderRenderPass *> RenderView::findRenderPassesForTechnique(RenderTechnique *technique)
-{
-    QList<RenderRenderPass *> passes;
-    if (technique != Q_NULLPTR) {
-        Q_FOREACH (const QNodeUuid &passId, technique->renderPasses()) {
-            RenderRenderPass *renderPass = m_renderer->renderPassManager()->lookupResource(passId);
-
-            if (renderPass != Q_NULLPTR) {
-                bool findMatch = (m_data->m_passFilter == Q_NULLPTR || m_data->m_passFilter->filters().size() == 0) ? true : false;
-                if (!findMatch && renderPass->annotations().size() >= m_data->m_passFilter->filters().size())
-                {
-                    Q_FOREACH (const QNodeUuid &refCritId, m_data->m_passFilter->filters()) {
-                        RenderAnnotation *refCriterion = m_renderer->criterionManager()->lookupResource(refCritId);
-                        findMatch = false;
-                        Q_FOREACH (const QNodeUuid &critId, renderPass->annotations()) {
-                            RenderAnnotation *rCrit = m_renderer->criterionManager()->lookupResource(critId);
-                            if ((findMatch = (*rCrit == *refCriterion)))
-                                break;
-                        }
-                        if (!findMatch) // No match for TechniqueFilter criterion in any of the technique's criteria
-                            break;
-                    }
-                }
-                if (findMatch)
-                    passes << renderPass;
-            }
-        }
-    }
-    return passes;
 }
 
 static void addParametersForIds(QHash<QString, QVariant> *params, ParameterManager* manager,
