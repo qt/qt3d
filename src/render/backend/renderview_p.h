@@ -191,7 +191,6 @@ public:
     void addSortCriteria(const QList<QNodeUuid> &sortMethodUid) { m_data->m_sortingCriteria.append(sortMethodUid); }
 
 private:
-    RenderTechnique *findTechniqueForEffect(RenderEffect *effect);
     QList<RenderRenderPass *> findRenderPassesForTechnique(RenderTechnique *technique);
     void setShaderAndUniforms(RenderCommand *command, RenderRenderPass *pass, QHash<QString, QVariant> &parameters, const QMatrix4x4 &worldTransform);
     QHash<QString, QVariant> parametersFromMaterialEffectTechnique(RenderMaterial *material, RenderEffect *effect, RenderTechnique *technique);

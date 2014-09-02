@@ -42,7 +42,6 @@
 
 #include "renderview_p.h"
 #include <Qt3DRenderer/qmaterial.h>
-#include <Qt3DRenderer/qopenglfilter.h>
 #include <Qt3DRenderer/renderlogging.h>
 #include <Qt3DRenderer/qtexture.h>
 #include <Qt3DRenderer/qrendertarget.h>
@@ -78,6 +77,9 @@
 #include <Qt3DRenderer/qscissortest.h>
 #include <Qt3DRenderer/qstenciltest.h>
 #include <Qt3DRenderer/qalphacoverage.h>
+
+// TODO: Move out once this is all refactored
+#include <Qt3DRenderer/private/renderviewjobutils_p.h>
 #include <Qt3DRenderer/private/blendstate_p.h>
 
 #include <Qt3DCore/qentity.h>
@@ -335,7 +337,8 @@ void RenderView::buildRenderCommands(RenderEntity *node)
                 RenderEffect *effect = Q_NULLPTR;
                 if ((material = node->renderComponent<RenderMaterial>()) != Q_NULLPTR)
                     effect = m_renderer->effectManager()->lookupResource(material->effect());
-                RenderTechnique *technique = findTechniqueForEffect(effect);
+                RenderTechnique *technique = findTechniqueForEffect(m_renderer, this, effect);
+
                 QList<RenderRenderPass *> passes = findRenderPassesForTechnique(technique);
                 if (passes.isEmpty()) {
                     material = m_renderer->materialManager()->data(m_renderer->defaultMaterialHandle());
@@ -370,36 +373,6 @@ void RenderView::buildRenderCommands(RenderEntity *node)
 const AttachmentPack &RenderView::attachmentPack() const
 {
     return m_attachmentPack;
-}
-
-RenderTechnique *RenderView::findTechniqueForEffect(RenderEffect *effect)
-{
-    if (effect != Q_NULLPTR) {
-        Q_FOREACH (const QNodeUuid &techniqueId, effect->techniques()) {
-            RenderTechnique *technique = m_renderer->techniqueManager()->lookupResource(techniqueId);
-            if (technique != Q_NULLPTR &&
-                    *m_renderer->contextInfo() == *technique->openGLFilter()) {
-                // If no techniqueFilter is present, we return the technique as it satisfies OpenGL version
-                bool findMatch = (m_data->m_techniqueFilter == Q_NULLPTR || m_data->m_techniqueFilter->filters().size() == 0) ? true : false;
-                if (!findMatch && technique->annotations().size() >= m_data->m_techniqueFilter->filters().size()) {
-                    Q_FOREACH (const QNodeUuid &refCritId, m_data->m_techniqueFilter->filters()) {
-                        RenderAnnotation *refCriterion = m_renderer->criterionManager()->lookupResource(refCritId);
-                        findMatch = false;
-                        Q_FOREACH (const QNodeUuid &critId, technique->annotations()) {
-                            RenderAnnotation *rCrit = m_renderer->criterionManager()->lookupResource(critId);
-                            if ((findMatch = (*rCrit == *refCriterion)))
-                                break;
-                        }
-                        if (!findMatch) // No match for TechniqueFilter criterion in any of the technique's criteria
-                            break;
-                    }
-                }
-                if (findMatch) // If all criteria matched
-                    return technique;
-            }
-        }
-    }
-    return Q_NULLPTR;
 }
 
 QList<RenderRenderPass *> RenderView::findRenderPassesForTechnique(RenderTechnique *technique)

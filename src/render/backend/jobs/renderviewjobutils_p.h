@@ -49,7 +49,10 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
+class RenderEffect;
 class RenderEntity;
+class Renderer;
+class RenderTechnique;
 class RenderView;
 class FrameGraphNode;
 
@@ -57,6 +60,10 @@ Q_AUTOTEST_EXPORT void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv,
                                                                  const FrameGraphNode *fgLeaf);
 
 Q_AUTOTEST_EXPORT void preprocessRenderTree(RenderView *rv, const RenderEntity *node);
+
+Q_AUTOTEST_EXPORT RenderTechnique *findTechniqueForEffect(Renderer *renderer,
+                                                          RenderView *renderView,
+                                                          RenderEffect *effect);
 
 } // namespace Render
 } // namespace Qt3D

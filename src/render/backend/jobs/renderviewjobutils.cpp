@@ -41,6 +41,7 @@
 
 #include "renderviewjobutils_p.h"
 
+#include <Qt3DRenderer/qopenglfilter.h>
 #include <Qt3DRenderer/sphere.h>
 
 #include <Qt3DRenderer/private/cameraselectornode_p.h>
@@ -53,6 +54,7 @@
 #include <Qt3DRenderer/private/sortmethod_p.h>
 #include <Qt3DRenderer/private/techniquefilternode_p.h>
 #include <Qt3DRenderer/private/viewportnode_p.h>
+
 
 QT_BEGIN_NAMESPACE
 
@@ -189,6 +191,67 @@ void preprocessRenderTree(RenderView *rv, const RenderEntity *node)
     // Traverse children
     Q_FOREACH (RenderEntity *child, node->children())
         preprocessRenderTree(rv, child);
+}
+
+/*!
+    \internal
+    Searches the \a renderer for the best matching RenderTechnique from
+    \a effect specified by the \a renderView.
+*/
+RenderTechnique *findTechniqueForEffect(Renderer *renderer,
+                                        RenderView *renderView,
+                                        RenderEffect *effect)
+{
+    if (!effect)
+        return Q_NULLPTR;
+
+    // Iterate through the techniques in the effect
+    Q_FOREACH (const QNodeUuid &techniqueId, effect->techniques()) {
+        RenderTechnique *technique = renderer->techniqueManager()->lookupResource(techniqueId);
+
+        if (!technique)
+            continue;
+
+        if (*renderer->contextInfo() == *technique->openGLFilter()) {
+
+            // If no techniqueFilter is present, we return the technique as it satisfies OpenGL version
+            const TechniqueFilter *techniqueFilter = renderView->techniqueFilter();
+            bool foundMatch = (techniqueFilter == Q_NULLPTR || techniqueFilter->filters().isEmpty());
+            if (foundMatch)
+                return technique;
+
+            // There is a technique filter so we need to check for a technique with suitable criteria.
+            // Check for early bail out if the technique doesn't have sufficient number of criteria and
+            // can therefore never satisfy the filter
+            if (technique->annotations().size() < techniqueFilter->filters().size())
+                continue;
+
+            // Iterate through the filter criteria and for each one search for a criteria on the
+            // technique that satisfies it
+            Q_FOREACH (const QUuid &filterAnnotationId, techniqueFilter->filters()) {
+                foundMatch = false;
+                RenderAnnotation *filterAnnotation = renderer->criterionManager()->lookupResource(filterAnnotationId);
+
+                Q_FOREACH (const QUuid &techniqueAnnotationId, technique->annotations()) {
+                    RenderAnnotation *techniqueAnnotation = renderer->criterionManager()->lookupResource(techniqueAnnotationId);
+                    if ((foundMatch = (*techniqueAnnotation == *filterAnnotation)))
+                        break;
+                }
+
+                if (!foundMatch) {
+                    // No match for TechniqueFilter criterion in any of the technique's criteria.
+                    // So no way this can match. Don't bother checking the rest of the criteria.
+                    break;
+                }
+            }
+
+            if (foundMatch)
+                return technique; // All criteria matched - we have a winner!
+        }
+    }
+
+    // We failed to find a suitable technique to use :(
+    return Q_NULLPTR;
 }
 
 } // namespace Render
