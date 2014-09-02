@@ -184,6 +184,27 @@ QRenderAttachment::CubeMapFace QRenderAttachment::face() const
     return d->m_face;
 }
 
+void QRenderAttachment::setName(const QString &name)
+{
+    Q_D(QRenderAttachment);
+    if (d->m_name != name) {
+        d->m_name = name;
+        emit nameChanged();
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
+            change->setPropertyName(QByteArrayLiteral("name"));
+            change->setValue(name);
+            notifyObservers(change);
+        }
+    }
+}
+
+QString QRenderAttachment::name() const
+{
+    Q_D(const QRenderAttachment);
+    return d->m_name;
+}
+
 QNode *QRenderAttachment::doClone(QNode *clonedParent) const
 {
     return new QRenderAttachment(clonedParent);

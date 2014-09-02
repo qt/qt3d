@@ -62,6 +62,7 @@ public:
     int m_mipLevel;
     int m_layer;
     QRenderAttachment::CubeMapFace m_face;
+    QString m_name;
 };
 
 } // Qt3D

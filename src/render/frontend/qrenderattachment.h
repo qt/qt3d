@@ -62,6 +62,7 @@ class QT3DRENDERERSHARED_EXPORT QRenderAttachment : public QNode
     Q_PROPERTY(int mipLevel READ mipLevel WRITE setMipLevel NOTIFY mipLevelChanged)
     Q_PROPERTY(int layer READ layer WRITE setLayer NOTIFY layerChanged)
     Q_PROPERTY(CubeMapFace face READ face WRITE setFace NOTIFY faceChanged)
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
 
 public:
     enum RenderAttachmentType {
@@ -113,12 +114,16 @@ public:
     void setFace(CubeMapFace face);
     CubeMapFace face() const;
 
+    void setName(const QString &name);
+    QString name() const;
+
 Q_SIGNALS:
     void typeChanged();
     void textureChanged();
     void mipLevelChanged();
     void layerChanged();
     void faceChanged();
+    void nameChanged();
 
 protected:
     Q_DECLARE_PRIVATE(QRenderAttachment)
