@@ -49,6 +49,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QRenderTargetSelector;
+class QRenderTarget;
 
 class QRenderTargetSelectorPrivate : public QFrameGraphItemPrivate
 {
@@ -56,6 +57,7 @@ public:
     QRenderTargetSelectorPrivate(QRenderTargetSelector *qq);
 
     Q_DECLARE_PUBLIC(QRenderTargetSelector)
+    QRenderTarget *m_target;
 };
 
 } // Qt3D

@@ -51,12 +51,20 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QRenderTargetSelectorPrivate;
+class QRenderTarget;
 
 class QT3DRENDERERSHARED_EXPORT QRenderTargetSelector : public QFrameGraphItem
 {
     Q_OBJECT
+    Q_PROPERTY(Qt3D::QRenderTarget *target READ target WRITE setTarget NOTIFY targetChanged)
 public:
     explicit QRenderTargetSelector(QNode *parent = 0);
+
+    void setTarget(QRenderTarget *target);
+    QRenderTarget *target() const;
+
+Q_SIGNALS:
+    void targetChanged();
 
 protected:
     Q_DECLARE_PRIVATE(QRenderTargetSelector)
