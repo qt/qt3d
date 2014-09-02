@@ -46,6 +46,7 @@
 #include "qaspectmanager.h"
 #include "qchangearbiter.h"
 #include "qabstractaspect.h"
+#include "qnode.h"
 #include "corelogging.h"
 #include <QMetaObject>
 #include <private/qfrontendsceneobserver_p.h>
@@ -62,6 +63,7 @@ QAspectEnginePrivate::QAspectEnginePrivate(QAspectEngine *qq)
     q_ptr = qq;
     qRegisterMetaType<Qt3D::QAbstractAspect *>();
     qRegisterMetaType<Qt3D::QSceneObserverInterface *>();
+    qRegisterMetaType<Qt3D::QNode *>();
 }
 
 QAspectEngine::QAspectEngine(QObject *parent)
@@ -71,6 +73,7 @@ QAspectEngine::QAspectEngine(QObject *parent)
     Q_D(QAspectEngine);
     d->m_aspectThread = new QAspectThread(this);
     d->m_aspectThread->waitForStart(QThread::HighestPriority);
+    d->m_frontendSceneObserver->setAspectEngine(this);
 }
 
 QAspectEngine::QAspectEngine(QAspectEnginePrivate &dd, QObject *parent)
@@ -79,6 +82,16 @@ QAspectEngine::QAspectEngine(QAspectEnginePrivate &dd, QObject *parent)
     Q_D(QAspectEngine);
     d->m_aspectThread = new QAspectThread(this);
     d->m_aspectThread->waitForStart(QThread::HighestPriority);
+    d->m_frontendSceneObserver->setAspectEngine(this);
+}
+
+void QAspectEngine::initNodeTree(QNode *node)
+{
+    node->setAspectEngine(this);
+    // Add to QAspectEngine lookupTable
+    addNodeLookup(node);
+    Q_FOREACH (QNode *c, node->children())
+        initNodeTree(c);
 }
 
 void QAspectEngine::initialize()
@@ -123,14 +136,33 @@ void QAspectEngine::registerAspect(QAbstractAspect *aspect)
                               Q_ARG(Qt3D::QAbstractAspect *, aspect));
 }
 
-void QAspectEngine::setRoot(QObject *rootObject)
+void QAspectEngine::addNodeLookup(QNode *node)
+{
+    Q_D(QAspectEngine);
+    d->m_nodeLookups.insert(node->uuid(), node);
+}
+
+void QAspectEngine::removeNodeLookup(QNode *node)
+{
+    Q_D(QAspectEngine);
+    d->m_nodeLookups.remove(node->uuid());
+}
+
+QNode *QAspectEngine::lookupNode(const QUuid &id) const
+{
+    Q_D(const QAspectEngine);
+    return d->m_nodeLookups.value(id);
+}
+
+void QAspectEngine::setRoot(QNode *rootObject)
 {
     Q_D(QAspectEngine);
     qCDebug(Aspects) << "Setting scene root on aspect manager";
+    initNodeTree(rootObject);
     QMetaObject::invokeMethod(d->m_aspectThread->aspectManager(),
                               "setRoot",
                               Qt::BlockingQueuedConnection,
-                              Q_ARG(QObject *, rootObject));
+                              Q_ARG(Qt3D::QNode *, rootObject));
     qCDebug(Aspects) << "Done setting scene root on aspect manager";
 }
 

@@ -113,7 +113,7 @@ void Window::setRootObject( QObject* obj )
         m_root = QSharedPointer<QObject>(obj);
     }
 
-    m_aspectEngine->setRoot(obj);
+    m_aspectEngine->setRoot(qobject_cast<QNode *>(obj));
 
     // Hook up controller input to camera
     // TODO: Do this more generically as we may want keyboard ot control an Entity etc

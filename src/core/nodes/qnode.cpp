@@ -44,6 +44,7 @@
 
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qaspectengine.h>
 
 #include <QEvent>
 #include <QMetaObject>
@@ -57,7 +58,9 @@ namespace Qt3D {
 QNodePrivate::QNodePrivate(QNode *qq)
     : QObjectPrivate()
     , m_changeArbiter(Q_NULLPTR)
+    , m_engine(Q_NULLPTR)
     , m_uuid(QUuid::createUuid())
+    , m_isClone(false)
 {
     q_ptr = qq;
 }
@@ -124,6 +127,10 @@ void QNode::addChild(QNode *childNode)
 
     d->m_children.append(childNode);
     childNode->setParent(this);
+    childNode->setAspectEngine(aspectEngine());
+
+    if (!isClone() && !childNode->isClone() && d->m_engine != Q_NULLPTR)
+        d->m_engine->addNodeLookup(childNode);
 
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr e(new QScenePropertyChange(NodeCreated, this));
@@ -151,6 +158,9 @@ void QNode::removeChild(QNode *childNode)
 
     Q_D(QNode);
 
+    if (!isClone() && !childNode->isClone() && d->m_engine != Q_NULLPTR)
+        d->m_engine->removeNodeLookup(childNode);
+
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr e(new QScenePropertyChange(NodeAboutToBeDeleted, this));
         e->setPropertyName(QByteArrayLiteral("node"));
@@ -170,6 +180,7 @@ void QNode::removeChild(QNode *childNode)
 
     d->m_children.removeOne(childNode);
     childNode->setParent(NULL);
+    childNode->setAspectEngine(Q_NULLPTR);
 }
 
 QNode *QNode::clone(QNode *clonedParent) const
@@ -178,6 +189,7 @@ QNode *QNode::clone(QNode *clonedParent) const
 
     QNode *nodeClone = doClone(clonedParent);
     nodeClone->copy(this);
+    nodeClone->d_func()->m_isClone = true;
     Q_FOREACH (QNode *children, d->m_children)
         nodeClone->addChild(children->clone(nodeClone));
     return nodeClone;
@@ -187,6 +199,12 @@ void QNode::copy(const QNode *ref)
 {
     Q_D(QNode);
     d->m_uuid = ref->uuid();
+}
+
+bool QNode::isClone() const
+{
+    Q_D(const QNode);
+    return d->m_isClone;
 }
 
 void QNode::removeAllChildren()
@@ -231,6 +249,19 @@ void QNode::unregisterObserver(QObserverInterface *observer)
         QWriteLocker locker(&d->m_observerLock);
         d->m_changeArbiter = Q_NULLPTR;
     }
+}
+
+void QNode::setAspectEngine(QAspectEngine *engine)
+{
+    Q_D(QNode);
+    if (d->m_engine != engine)
+        d->m_engine = engine;
+}
+
+QAspectEngine *QNode::aspectEngine() const
+{
+    Q_D(const QNode);
+    return d->m_engine;
 }
 
 // Called by the main thread

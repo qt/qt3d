@@ -40,29 +40,59 @@
 ****************************************************************************/
 
 #include "qfrontendsceneobserver_p.h"
+#include <private/qobject_p.h>
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QFrontendSceneObserver::QFrontendSceneObserver(QObject *parent)
-    : QObject(parent)
+class QFrontendSceneObserverPrivate : public QObjectPrivate
 {
+public:
+    QFrontendSceneObserverPrivate(QFrontendSceneObserver *qq)
+        : QObjectPrivate()
+        , m_engine(Q_NULLPTR)
+    {
+        q_ptr = qq;
+    }
+
+    Q_DECLARE_PUBLIC(QFrontendSceneObserver)
+    QAspectEngine *m_engine;
+};
+
+QFrontendSceneObserver::QFrontendSceneObserver(QObject *parent)
+    : QObject(*new QFrontendSceneObserverPrivate(this), parent)
+{
+    qRegisterMetaType<QSharedPointer<QSceneChange> >("QSharedPointer<QSceneChanged>");
 }
 
+void QFrontendSceneObserver::setAspectEngine(QAspectEngine *engine)
+{
+    Q_D(QFrontendSceneObserver);
+    d->m_engine = engine;
+}
+
+// No real use in the frontendSceneObserver case
 void QFrontendSceneObserver::sceneNodeAdded(QSceneChangePtr &)
 {
-
 }
 
+// No real use in the frontendSceneObserver case
 void QFrontendSceneObserver::sceneNodeRemoved(QSceneChangePtr &)
 {
-
 }
 
-void QFrontendSceneObserver::sceneNodeUpdated(QSceneChangePtr &)
+void QFrontendSceneObserver::sceneNodeUpdated(QSceneChangePtr &e)
 {
+    QMetaObject::invokeMethod(this,
+                              "notifyFrontendNode",
+                              Q_ARG(QSharedPointer<QSceneChange>, e));
+}
 
+void QFrontendSceneObserver::notifyFrontendNode(QSceneChangePtr &e)
+{
+    // TO DO: Lookup in the engine's table if a node for the current
 }
 
 } //Qt3D

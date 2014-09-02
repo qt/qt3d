@@ -45,11 +45,14 @@
 #include <private/qobject_p.h>
 #include <QMutex>
 #include <QWaitCondition>
+#include <QUuid>
+#include <QHash>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class QNode;
 class QAspectEngine;
 class QAspectThread;
 class QFrontendSceneObserver;
@@ -63,6 +66,7 @@ public:
 
     QAspectThread *m_aspectThread;
     QFrontendSceneObserver *m_frontendSceneObserver;
+    QHash<QUuid, QNode *> m_nodeLookups;
 };
 
 } // Qt3D

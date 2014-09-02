@@ -51,6 +51,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QNode;
+class QAspectEngine;
 
 class QT3DCORESHARED_EXPORT QNodePrivate : public QObjectPrivate
 {
@@ -65,7 +66,9 @@ public:
     // Later on we may decide to extend support for multiple observers.
     QReadWriteLock m_observerLock;
     QChangeArbiter *m_changeArbiter;
+    QAspectEngine *m_engine;
     mutable QUuid m_uuid;
+    bool m_isClone;
 };
 
 } // namespace Qt3D

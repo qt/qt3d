@@ -125,7 +125,7 @@ void QAspectManager::shutdown()
     d->m_changeArbiter->unregisterSceneObserver(d->m_frontendSceneObserver);
 }
 
-void QAspectManager::setRoot(QObject *rootObject)
+void QAspectManager::setRoot(QNode *rootObject)
 {
     Q_D(QAspectManager);
     qCDebug(Aspects) << Q_FUNC_INFO;

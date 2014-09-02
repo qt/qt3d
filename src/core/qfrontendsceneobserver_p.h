@@ -48,6 +48,9 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class QAspectEngine;
+class QFrontendSceneObserverPrivate;
+
 class QFrontendSceneObserver
         : public QObject
         , public QSceneObserverInterface
@@ -56,10 +59,16 @@ class QFrontendSceneObserver
 public:
     explicit QFrontendSceneObserver(QObject *parent = 0);
 
+    void setAspectEngine(QAspectEngine *engine);
+
     // QSceneObserverInterface interface
     void sceneNodeAdded(QSceneChangePtr &e) Q_DECL_OVERRIDE;
     void sceneNodeRemoved(QSceneChangePtr &e) Q_DECL_OVERRIDE;
     void sceneNodeUpdated(QSceneChangePtr &e) Q_DECL_OVERRIDE;
+
+private:
+    Q_DECLARE_PRIVATE(QFrontendSceneObserver)
+    Q_INVOKABLE void notifyFrontendNode(QSceneChangePtr &e);
 };
 
 } // Qt3D

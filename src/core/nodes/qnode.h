@@ -57,6 +57,7 @@ namespace Qt3D {
 class QNode;
 class QNodePrivate;
 class QEntity;
+class QAspectEngine;
 
 typedef QList<QNode *> NodeList;
 
@@ -79,6 +80,8 @@ public:
     QNode *clone(QNode *clonedParent = 0) const;
     virtual void copy(const QNode *ref);
 
+    bool isClone() const;
+
     void removeAllChildren();
 
     virtual QEntity* asEntity();
@@ -87,6 +90,9 @@ public:
 
     void registerObserver(QObserverInterface *observer) Q_DECL_OVERRIDE;
     void unregisterObserver(QObserverInterface *observer) Q_DECL_OVERRIDE;
+
+    void setAspectEngine(QAspectEngine *engine);
+    QAspectEngine *aspectEngine() const;
 
 protected:
     virtual void notifyObservers(const QSceneChangePtr &change);

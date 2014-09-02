@@ -53,6 +53,7 @@ class QWindow;
 
 namespace Qt3D {
 
+class QNode;
 class QAbstractAspect;
 class QChangeArbiter;
 class QJobManagerInterface;
@@ -70,7 +71,7 @@ public Q_SLOTS:
     void initialize();
     void shutdown();
 
-    void setRoot(QObject *rootObject);
+    void setRoot(Qt3D::QNode *rootObject);
     void setWindow(QWindow* window);
     void setFrontendSceneObserver(Qt3D::QSceneObserverInterface *f);
     void registerAspect(Qt3D::QAbstractAspect *aspect);
