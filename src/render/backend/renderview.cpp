@@ -407,9 +407,8 @@ void RenderView::buildRenderCommands(RenderEntity *node)
                     RenderCommand *command = m_allocator->allocate<RenderCommand>();
                     command->m_meshData = mesh->meshData();
                     command->m_instancesCount = 0;
-                    command->m_worldMatrix = *(node->worldTransform());
                     command->m_stateSet = buildRenderStateSet(pass);
-                    setShaderAndUniforms(command, pass, parameters);
+                    setShaderAndUniforms(command, pass, parameters, *(node->worldTransform()));
                     m_commands.append(command);
                 }
             }
@@ -575,7 +574,7 @@ RenderStateSet *RenderView::buildRenderStateSet(RenderRenderPass *pass)
     return Q_NULLPTR;
 }
 
-void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *rPass, QHash<QString, QVariant> &parameters)
+void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *rPass, QHash<QString, QVariant> &parameters, const QMatrix4x4 &worldTransform)
 {
     // The VAO Handle is set directly in the renderer thread so as to avoid having to use a mutex here
     // Set shader, technique, and effect by basically doing :
@@ -608,7 +607,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
                 Q_FOREACH (const QString &uniformName, uniformNames) {
                     if (m_standardUniformSetters.contains(uniformName))
                         command->m_uniforms.setUniform(uniformName,
-                                                       (this->*m_standardUniformSetters[uniformName])(command->m_worldMatrix));
+                                                       (this->*m_standardUniformSetters[uniformName])(worldTransform));
                 }
 
                 // Set default attributes
@@ -627,7 +626,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
                                  && uniformNames.contains(binding->shaderVariableName())
                                  && m_standardUniformSetters.contains(binding->parameterName()))
                             command->m_uniforms.setUniform(binding->shaderVariableName(),
-                                                           (this->*m_standardUniformSetters[binding->parameterName()])(command->m_worldMatrix));
+                                                           (this->*m_standardUniformSetters[binding->parameterName()])(worldTransform));
                         else
                             qCWarning(Render::Backend) << Q_FUNC_INFO << "Trying to bind a Parameter that hasn't been defined " << binding->parameterName();
                     }
