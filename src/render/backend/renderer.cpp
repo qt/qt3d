@@ -568,8 +568,6 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
 
             qCDebug(Rendering) << Q_FUNC_INFO << "Creating new VAO";
 
-            m_graphicsContext->activateShader(shader);
-
             // TO DO : Do that in a better / nicer way
             Q_FOREACH (QString nm, meshData->attributeNames()) {
                 AttributePtr attr(meshData->attributeByName(nm).staticCast<Attribute>());
