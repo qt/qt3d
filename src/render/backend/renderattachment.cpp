@@ -55,10 +55,6 @@ namespace Render {
 
 RenderAttachment::RenderAttachment()
     : m_renderer(Q_NULLPTR)
-    , m_mipLevel(0)
-    , m_layer(0)
-    , m_face(QRenderAttachment::CubeMapNegativeX)
-    , m_type(QRenderAttachment::ColorAttachment)
 {
 }
 
@@ -71,21 +67,17 @@ void RenderAttachment::setPeer(QRenderAttachment *peer)
         QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
         if (!m_attachmentUuid.isNull()) {
             arbiter->unregisterObserver(this, peerUuid);
-            m_mipLevel = 0;
-            m_layer = 0;
-            m_type = QRenderAttachment::ColorAttachment;
-            m_face = QRenderAttachment::CubeMapNegativeX;
-            m_textureUuid = QUuid();
+            m_attachmentData = Attachment();
         }
         m_attachmentUuid = peerUuid;
         if (!m_attachmentUuid.isNull()) {
             arbiter->registerObserver(this, peer, NodeUpdated);
-            m_mipLevel = peer->mipLevel();
-            m_layer = peer->layer();
-            m_type = peer->type();
-            m_face = peer->face();
+            m_attachmentData.m_mipLevel = peer->mipLevel();
+            m_attachmentData.m_layer = peer->layer();
+            m_attachmentData.m_type = peer->type();
+            m_attachmentData.m_face = peer->face();
             if (peer->texture())
-                m_textureUuid = peer->texture()->uuid();
+                m_attachmentData.m_textureUuid = peer->texture()->uuid();
         }
     }
 }
@@ -102,27 +94,32 @@ QUuid RenderAttachment::attachmentUuid() const
 
 QUuid RenderAttachment::textureUuid() const
 {
-    return m_textureUuid;
+    return m_attachmentData.m_textureUuid;
 }
 
 int RenderAttachment::mipLevel() const
 {
-    return m_mipLevel;
+    return m_attachmentData.m_mipLevel;
 }
 
 int RenderAttachment::layer() const
 {
-    return m_layer;
+    return m_attachmentData.m_layer;
+}
+
+QString RenderAttachment::name() const
+{
+    return m_attachmentData.m_name;
 }
 
 QRenderAttachment::CubeMapFace RenderAttachment::face() const
 {
-    return m_face;
+    return m_attachmentData.m_face;
 }
 
 QRenderAttachment::RenderAttachmentType RenderAttachment::type() const
 {
-    return m_type;
+    return m_attachmentData.m_type;
 }
 
 void RenderAttachment::sceneChangeEvent(const QSceneChangePtr &e)
@@ -130,21 +127,29 @@ void RenderAttachment::sceneChangeEvent(const QSceneChangePtr &e)
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     if (e->type() == NodeUpdated) {
         if (propertyChange->propertyName() == QByteArrayLiteral("type")) {
-            m_type = static_cast<QRenderAttachment::RenderAttachmentType>(propertyChange->value().toInt());
+            m_attachmentData.m_type = static_cast<QRenderAttachment::RenderAttachmentType>(propertyChange->value().toInt());
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("texture")) {
-            m_textureUuid = propertyChange->value().value<QTexture *>()->uuid();
+            m_attachmentData.m_textureUuid = propertyChange->value().value<QTexture *>()->uuid();
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("mipLevel")) {
-            m_mipLevel = propertyChange->value().toInt();
+            m_attachmentData.m_mipLevel = propertyChange->value().toInt();
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("layer")) {
-            m_layer = propertyChange->value().toInt();
+            m_attachmentData.m_layer = propertyChange->value().toInt();
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("face")) {
-            m_face = static_cast<QRenderAttachment::CubeMapFace>(propertyChange->value().toInt());
+            m_attachmentData.m_face = static_cast<QRenderAttachment::CubeMapFace>(propertyChange->value().toInt());
+        }
+        else if (propertyChange->propertyName() == QByteArrayLiteral("name")) {
+            m_attachmentData.m_name = propertyChange->value().toString();
         }
     }
+}
+
+Attachment RenderAttachment::attachment() const
+{
+    return m_attachmentData;
 }
 
 } // Render

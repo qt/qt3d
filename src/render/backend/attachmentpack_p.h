@@ -53,6 +53,7 @@ namespace Render {
 struct Attachment
 {
     Attachment();
+    QString m_name;
     int m_mipLevel;
     int m_layer;
     QUuid m_textureUuid;

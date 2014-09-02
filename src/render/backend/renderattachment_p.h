@@ -44,6 +44,7 @@
 
 #include <Qt3DCore/qobserverinterface.h>
 #include <Qt3DRenderer/qrenderattachment.h>
+#include <Qt3DRenderer/private/attachmentpack_p.h>
 #include <QUuid>
 
 QT_BEGIN_NAMESPACE
@@ -68,18 +69,16 @@ public:
     QUuid textureUuid() const;
     int mipLevel() const;
     int layer() const;
+    QString name() const;
     QRenderAttachment::CubeMapFace face() const;
     QRenderAttachment::RenderAttachmentType type() const;
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    Attachment attachment() const;
 
 private:
     QUuid m_attachmentUuid;
     Renderer *m_renderer;
-    int m_mipLevel;
-    int m_layer;
-    QRenderAttachment::CubeMapFace m_face;
-    QRenderAttachment::RenderAttachmentType m_type;
-    QUuid m_textureUuid;
+    Attachment m_attachmentData;
 };
 
 } // Render
