@@ -69,6 +69,7 @@ class RenderMesh;
 class RenderEffect;
 class RenderRenderPass;
 class RenderLight;
+class RenderTarget;
 
 typedef QHandle<RenderMesh, 16> HMesh;
 typedef QHandle<RenderMaterial, 16> HMaterial;
@@ -108,8 +109,8 @@ public:
     void buildRenderCommands(RenderEntity *preprocessedTreeRoot);
     QVector<RenderCommand *> commands() const { return m_commands; }
 
-    inline QRectF viewport() const { return m_viewport; }
-    inline QColor clearColor() const { return m_clearColor; }
+    inline QRectF viewport() const { return *m_viewport; }
+    inline QColor clearColor() const { return *m_clearColor; }
 
     // This can be removed once we're 100% sure the QFrameAllocator is death proof
     void setFrameIndex(int index) { m_frameIndex = index; }
@@ -132,10 +133,11 @@ private:
     RenderCameraLens *m_renderCamera;
     TechniqueFilter *m_techniqueFilter;
     RenderPassFilter *m_passFilter;
-    QRectF m_viewport;
+    RenderTarget *m_renderTarget;
+    QRectF *m_viewport;
     QStringList m_layers;
     QMatrix4x4 *m_viewMatrix;
-    QColor m_clearColor;
+    QColor *m_clearColor;
     QList<LightPair> m_lights;
 
     int m_frameIndex;

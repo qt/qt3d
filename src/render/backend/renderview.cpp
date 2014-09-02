@@ -45,6 +45,7 @@
 #include <Qt3DRenderer/qopenglfilter.h>
 #include <Qt3DRenderer/renderlogging.h>
 #include <Qt3DRenderer/qtexture.h>
+#include <Qt3DRenderer/qrendertarget.h>
 
 #include <Qt3DRenderer/private/cameramanager_p.h>
 #include <Qt3DRenderer/private/cameraselectornode_p.h>
@@ -77,6 +78,8 @@
 #include <Qt3DRenderer/private/texturemanager_p.h>
 #include <Qt3DRenderer/private/vaomanager_p.h>
 #include <Qt3DRenderer/private/viewportnode_p.h>
+#include <Qt3DRenderer/private/rendertargetselectornode_p.h>
+#include <Qt3DRenderer/private/rendertargetmanager_p.h>
 
 #include "qalphatest.h"
 #include "qblendequation.h"
@@ -231,7 +234,10 @@ RenderView::RenderView()
     , m_renderCamera(Q_NULLPTR)
     , m_techniqueFilter(Q_NULLPTR)
     , m_passFilter(Q_NULLPTR)
-    , m_commands()
+    , m_renderTarget(Q_NULLPTR)
+    , m_viewport(Q_NULLPTR)
+    , m_viewMatrix(Q_NULLPTR)
+    , m_clearColor(Q_NULLPTR)
 {
 }
 
@@ -250,6 +256,10 @@ RenderView::~RenderView()
     }
     // Deallocate viewMatrix
     m_allocator->deallocate<QMatrix4x4>(m_viewMatrix);
+    // Deallocate viewport rect
+    m_allocator->deallocate<QRectF>(m_viewport);
+    // Deallocate clearColor
+    m_allocator->deallocate<QColor>(m_clearColor);
 }
 
 // We need to overload the delete operator so that when the Renderer deletes the list of RenderViews, each RenderView
@@ -301,7 +311,7 @@ void RenderView::setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf)
             break;
 
         case FrameGraphNode::RenderTarget:
-            qCWarning(Backend) << "RenderTarget not implemented yet";
+            m_renderTarget = m_renderer->renderTargetManager()->lookupResource(static_cast<RenderTargetSelector *>(node)->renderTargetUuid());
             break;
 
         case FrameGraphNode::TechniqueFilter:
@@ -327,6 +337,8 @@ void RenderView::setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf)
 void RenderView::sort()
 {
     // TODO: Implement me!
+    // Find a way to let user specify the sorting to perform
+    // Maybe a Sorting tree within the FrameGraph or some predicates
 
     // The goal here is to sort RenderCommand by :
     // 1) Shader
@@ -373,6 +385,8 @@ void RenderView::buildRenderCommands(RenderEntity *node)
             if (!mesh->meshData().isNull())
             {
                 // Perform culling here
+                // As shaders may be deforming, transforming the mesh
+                // We might want to make that optional or dependent on an explicit bounding box item
 
                 RenderMaterial *material = Q_NULLPTR;
                 RenderEffect *effect = Q_NULLPTR;
@@ -579,14 +593,12 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
         command->m_shader = m_renderer->shaderManager()->lookupHandle(rPass->shaderProgram());
         RenderShader *shader = Q_NULLPTR;
         if ((shader = m_renderer->shaderManager()->data(command->m_shader)) != Q_NULLPTR) {
-            // TO DO : To be corrected later on
-            //        command->m_stateSet = qobject_cast<RenderPass*>(pass)->stateSet();
+
+
 
             // Builds the QUniformPack, sets shader standard uniforms and store attributes name / glname bindings
             // If a parameter is defined and not found in the bindings it is assumed to be a binding of Uniform type with the glsl name
             // equals to the parameter name
-
-
             QStringList uniformNames = shader->uniformsNames();
             QStringList attributeNames = shader->attributesNames();
 
@@ -692,18 +704,20 @@ void RenderView::computeViewport(ViewportNode *viewportNode)
                        viewportNode->yMin(),
                        viewportNode->xMax(),
                        viewportNode->yMax());
-    if (m_viewport.isEmpty()) {
-        m_viewport = tmpViewport;
+    if (m_viewport == Q_NULLPTR) {
+        m_viewport = m_allocator->allocate<QRectF>();
+        *m_viewport = tmpViewport;
     }
     else {
-        QRectF oldViewport = m_viewport;
-        m_viewport = QRectF(tmpViewport.x() + tmpViewport.width() * oldViewport.x(),
+        QRectF oldViewport = *m_viewport;
+        *m_viewport = QRectF(tmpViewport.x() + tmpViewport.width() * oldViewport.x(),
                             tmpViewport.y() + tmpViewport.height() * oldViewport.y(),
                             tmpViewport.width() * oldViewport.width(),
                             tmpViewport.height() * oldViewport.height());
     }
     // So that we use the color of the highest viewport
-    m_clearColor = viewportNode->clearColor();
+    m_clearColor = m_allocator->allocate<QColor>();
+    *m_clearColor = viewportNode->clearColor();
 }
 
 bool RenderView::checkContainedWithinLayer(RenderEntity *node)
