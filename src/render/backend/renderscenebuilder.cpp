@@ -157,12 +157,8 @@ Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(QNode *block)
         return createBackendFrameGraphNode<CameraSelector, QCameraSelector>(block);
     }
     else if (qobject_cast<Qt3D::QRenderTargetSelector*>(block) != Q_NULLPTR) {
-        Qt3D::QRenderTargetSelector *renderTargetSelector = qobject_cast<Qt3D::QRenderTargetSelector*>(block);
-        Render::RenderTargetSelector *renderTargetSelectorNode = new Render::RenderTargetSelector();
-
-        // TO DO
         qCDebug(Backend) << Q_FUNC_INFO << "RenderTargetSelector";
-        return renderTargetSelectorNode;
+        return createBackendFrameGraphNode<RenderTargetSelector, QRenderTargetSelector>(block);
     }
     else if (qobject_cast<Qt3D::QLayerFilter*>(block) != Q_NULLPTR) {
         qCDebug(Backend) << Q_FUNC_INFO << "LayerFilter";
