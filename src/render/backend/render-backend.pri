@@ -60,7 +60,8 @@ HEADERS += \
     $$PWD/renderattachment_p.h \
     $$PWD/rendertargetmanager_p.h \
     $$PWD/renderscene_p.h \
-    $$PWD/scenemanager_p.h
+    $$PWD/scenemanager_p.h \
+    $$PWD/attachmentpack_p.h
 
 SOURCES += \
     $$PWD/rendereraspect.cpp \
@@ -117,4 +118,5 @@ SOURCES += \
     $$PWD/renderattachment.cpp \
     $$PWD/rendertargetmanager.cpp \
     $$PWD/renderscene.cpp \
-    $$PWD/scenemanager.cpp
+    $$PWD/scenemanager.cpp \
+    $$PWD/attachmentpack.cpp
