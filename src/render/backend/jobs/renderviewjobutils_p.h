@@ -44,14 +44,19 @@
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
+#include <QtCore/qhash.h>
+#include <QtCore/qvariant.h>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 namespace Render {
 
 class FrameGraphNode;
+class ParameterManager;
 class RenderEffect;
 class RenderEntity;
+class RenderMaterial;
 class RenderRenderPass;
 class RenderTechnique;
 class RenderView;
@@ -69,6 +74,11 @@ Q_AUTOTEST_EXPORT RenderTechnique *findTechniqueForEffect(Renderer *renderer,
 Q_AUTOTEST_EXPORT QVector<RenderRenderPass *> findRenderPassesForTechnique(Renderer *renderer,
                                                                            RenderView *renderView,
                                                                            RenderTechnique *technique);
+
+Q_AUTOTEST_EXPORT QHash<QString, QVariant> parametersFromMaterialEffectTechnique(ParameterManager *manager,
+                                                                                 RenderMaterial *material,
+                                                                                 RenderEffect *effect,
+                                                                                 RenderTechnique *technique);
 
 } // namespace Render
 } // namespace Qt3D

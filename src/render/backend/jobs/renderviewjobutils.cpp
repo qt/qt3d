@@ -303,6 +303,39 @@ QVector<RenderRenderPass *> findRenderPassesForTechnique(Renderer *renderer,
     return passes;
 }
 
+static void addParametersForIds(QHash<QString, QVariant> *params, ParameterManager *manager,
+                                const QList<QNodeUuid> &parameterIds)
+{
+    Q_FOREACH (const QNodeUuid &paramId, parameterIds) {
+        RenderParameter *param = manager->lookupResource(paramId);
+        if (param != Q_NULLPTR)
+            params->insert(param->name(), param->value());
+    }
+}
+
+QHash<QString, QVariant> parametersFromMaterialEffectTechnique(ParameterManager *manager,
+                                                               RenderMaterial *material,
+                                                               RenderEffect *effect,
+                                                               RenderTechnique *technique)
+{
+    QHash<QString, QVariant> params;
+
+    // Material is preferred over Effect
+    // Effect is preferred over Technique
+    // By filling the hash in reverse preference order, we ensure that we preserve preference
+
+    if (effect)
+        addParametersForIds(&params, manager, effect->parameters());
+
+    if (technique)
+        addParametersForIds(&params, manager, technique->parameters());
+
+    if (material)
+        addParametersForIds(&params, manager, material->parameters());
+
+    return params;
+}
+
 } // namespace Render
 } // namespace Qt3D
 

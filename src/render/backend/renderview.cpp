@@ -351,7 +351,8 @@ void RenderView::buildRenderCommands(RenderEntity *node)
                 }
 
                 // Get the parameters for our selected rendering setup
-                QHash<QString, QVariant> parameters = parametersFromMaterialEffectTechnique(material, effect, technique);
+                QHash<QString, QVariant> parameters =
+                    parametersFromMaterialEffectTechnique(m_renderer->parameterManager(), material, effect, technique);
 
                 // 1 RenderCommand per RenderPass pass on an Entity with a Mesh
                 Q_FOREACH (RenderRenderPass *pass, passes) {
@@ -378,38 +379,6 @@ void RenderView::buildRenderCommands(RenderEntity *node)
 const AttachmentPack &RenderView::attachmentPack() const
 {
     return m_attachmentPack;
-}
-
-static void addParametersForIds(QHash<QString, QVariant> *params, ParameterManager* manager,
-                                const QList<QNodeUuid> &parameterIds)
-{
-    Q_FOREACH (const QNodeUuid &paramId, parameterIds) {
-        RenderParameter *param = manager->lookupResource(paramId);
-        if (param != Q_NULLPTR)
-            params->insert(param->name(), param->value());
-    }
-}
-
-QHash<QString, QVariant> RenderView::parametersFromMaterialEffectTechnique(RenderMaterial *material,
-                                                                           RenderEffect *effect,
-                                                                           RenderTechnique *technique)
-{
-    QHash<QString, QVariant> params;
-
-    // Material is preferred over Effect
-    // Effect is preferred over Technique
-    // By filling the hash in reverse preference order, we're ensured that we preserve preference
-
-    if (effect != Q_NULLPTR)
-        addParametersForIds(&params, m_renderer->parameterManager(), effect->parameters());
-
-    if (technique != Q_NULLPTR)
-        addParametersForIds(&params, m_renderer->parameterManager(), technique->parameters());
-
-    if (material != Q_NULLPTR)
-        addParametersForIds(&params, m_renderer->parameterManager(), material->parameters());
-
-    return params;
 }
 
 // Build a RenderStateSet from the QRenderState stored in the RenderRenderPass
