@@ -6,16 +6,25 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>375</width>
-    <height>456</height>
+    <width>340</width>
+    <height>266</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>About</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="sizeConstraint">
+    <enum>QLayout::SetFixedSize</enum>
+   </property>
    <item>
     <widget class="QLabel" name="label">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="maximumSize">
       <size>
        <width>400</width>
@@ -24,16 +33,13 @@
      </property>
      <property name="text">
       <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Lucida Grande'; font-size:20pt;&quot;&gt;QGL Info Tool&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Lucida Grande'; font-size:20pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Lucida Grande'; font-size:12pt;&quot;&gt;Copyright (C) 2014 Digia Corporation and/or its subsidiary(-ies).&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Lucida Grande'; font-size:14pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Lucida Grande'; font-size:12pt;&quot;&gt;Qt3D gratefully acknowledges the&lt;/span&gt;&lt;span style=&quot; font-family:'Lucida Grande'; font-size:14pt;&quot;&gt; &lt;/span&gt;&lt;a href=&quot;http://assimp.sourceforge.net/&quot;&gt;&lt;span style=&quot; font-family:'Lucida Grande'; font-size:13pt; text-decoration: underline; color:#0000ff;&quot;&gt;The Open Asset Importer Library&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'Lucida Grande'; font-size:14pt;&quot;&gt; &lt;/span&gt;&lt;span style=&quot; font-family:'Lucida Grande'; font-size:12pt;&quot;&gt;project (AssImp) which provides all 3D asset file loading in the Qt3D project.  Qt3D ships with AssImp which in turn includes code from Info-ZIP (by Mark Adler et al), PStdInt (by Paul Hsieh), PicoModel (by Randy Reddig &amp;amp; seaw0lf).&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Lucida Grande'; font-size:12pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Lucida Grande'; font-size:12pt;&quot;&gt;See the file licensing.html in your documentation package or &lt;/span&gt;&lt;a href=&quot;http://doc-snapshot.qt-project.org/qt3d-1.0/licensing.html&quot;&gt;&lt;span style=&quot; font-family:'Lucida Grande'; font-size:13pt; text-decoration: underline; color:#0000ff;&quot;&gt;on-line&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'Lucida Grande'; font-size:12pt;&quot;&gt; for further details.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;html&gt;
+&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;
+&lt;h3&gt;QGL Info Tool&lt;/h3&gt;
+&lt;p&gt;Copyright (C) 2014 Digia Corporation and/or its subsidiary(-ies).&lt;/p&gt;
+&lt;p&gt;Qt3D gratefully acknowledges the &lt;a href=&quot;http://assimp.sourceforge.net/&quot;&gt;The Open Asset Importer Library&lt;/a&gt; project (AssImp) which provides all 3D asset file loading in the Qt3D project.  Qt3D ships with AssImp which in turn includes code from Info-ZIP (by Mark Adler et al), PStdInt (by Paul Hsieh), PicoModel (by Randy Reddig &amp;amp; seaw0lf).&lt;/p&gt;
+&lt;p&gt;See the file licensing.html in your documentation package or &lt;a href=&quot;http://doc-snapshot.qt-project.org/qt3d-1.0/licensing.html&quot;&gt;on-line&lt;/a&gt; for further details.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
@@ -54,11 +60,28 @@ p, li { white-space: pre-wrap; }
     </widget>
    </item>
    <item>
-    <widget class="QPushButton" name="pushButton">
-     <property name="text">
-      <string>Ok</string>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton">
+       <property name="text">
+        <string>&amp;Close</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
