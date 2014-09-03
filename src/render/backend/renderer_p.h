@@ -119,6 +119,7 @@ class TransformManager;
 class RenderStateSet;
 class RenderTargetManager;
 class SceneManager;
+class AttachmentManager;
 
 typedef QHandle<RenderMaterial, 16> HMaterial;
 typedef QHandle<RenderEffect, 16> HEffect;
@@ -169,6 +170,7 @@ public:
     inline TransformManager *transformManager() const { return m_transformManager; }
     inline RenderTargetManager *renderTargetManager() const { return m_renderTargetManager; }
     inline SceneManager *sceneManager() const { return m_sceneManager; }
+    inline AttachmentManager *attachmentManager() const { return m_attachmentManager; }
 
     inline HMaterial defaultMaterialHandle() const { return m_defaultMaterialHandle; }
     inline HEffect defaultEffectHandle() const { return m_defaultEffectHandle; }
@@ -247,6 +249,7 @@ private:
     TransformManager *m_transformManager;
     RenderTargetManager *m_renderTargetManager;
     SceneManager *m_sceneManager;
+    AttachmentManager *m_attachmentManager;
 
     QTimer *m_frameTimer;
 
