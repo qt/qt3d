@@ -80,6 +80,7 @@
 #include <Qt3DRenderer/private/viewportnode_p.h>
 #include <Qt3DRenderer/private/rendertargetselectornode_p.h>
 #include <Qt3DRenderer/private/rendertargetmanager_p.h>
+#include <Qt3DRenderer/private/attachmentmanager_p.h>
 
 #include "qalphatest.h"
 #include "qblendequation.h"
@@ -593,7 +594,16 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
         RenderShader *shader = Q_NULLPTR;
         if ((shader = m_renderer->shaderManager()->data(command->m_shader)) != Q_NULLPTR) {
 
-
+            // Add renderTarget Handle and build renderCommand attachment Pack
+            // TO DO: This could be done once for all RenderCommand, will correct when working
+            if (m_renderTarget != Q_NULLPTR) {
+                command->m_renderTarget = m_renderer->renderTargetManager()->lookupHandle(m_renderTarget->renderTargetUuid());
+                Q_FOREACH (const QUuid &attachmentId, m_renderTarget->renderAttachments()) {
+                    RenderAttachment *attachment = m_renderer->attachmentManager()->lookupResource(attachmentId);
+                    if (attachment != Q_NULLPTR)
+                        command->m_attachments.addAttachment(attachment->attachment());
+                }
+            }
 
             // Builds the QUniformPack, sets shader standard uniforms and store attributes name / glname bindings
             // If a parameter is defined and not found in the bindings it is assumed to be a binding of Uniform type with the glsl name
