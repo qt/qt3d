@@ -85,6 +85,7 @@
 #include <Qt3DRenderer/private/rendertarget_p.h>
 #include <Qt3DRenderer/private/rendertargetmanager_p.h>
 #include <Qt3DRenderer/private/scenemanager_p.h>
+#include <Qt3DRenderer/private/attachmentmanager_p.h>
 
 #include <Qt3DCore/qcamera.h>
 #include <Qt3DCore/qcameralens.h>
@@ -231,6 +232,10 @@ void RenderSceneBuilder::createRenderElement(QNode *frontend)
     else if (qobject_cast<QRenderTarget *>(frontend)) {
         createRenderElementHelper<QRenderTarget, RenderTarget, RenderTargetManager>(frontend,
                                                                                     m_renderer->renderTargetManager());
+    }
+    else if (qobject_cast<QRenderAttachment *>(frontend)) {
+        createRenderElementHelper<QRenderAttachment, RenderAttachment, AttachmentManager>(frontend,
+                                                                                          m_renderer->attachmentManager());
     }
     else if (qobject_cast<QCriterion *>(frontend)) {
         createRenderElementHelper<QCriterion, RenderCriterion, CriterionManager>(frontend,
