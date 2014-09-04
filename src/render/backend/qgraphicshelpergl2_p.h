@@ -49,6 +49,7 @@
 QT_BEGIN_NAMESPACE
 
 class QOpenGLFunctions_2_0;
+class QOpenGLExtension_ARB_framebuffer_object;
 
 namespace Qt3D {
 namespace Render {
@@ -75,9 +76,15 @@ public:
     void cullFace(GLenum mode) Q_DECL_OVERRIDE;
     void frontFace(GLenum mode) Q_DECL_OVERRIDE;
     bool supportUniformBlock() const Q_DECL_OVERRIDE;
+    GLuint createFrameBufferObject() Q_DECL_OVERRIDE;
+    void releaseFrameBufferObject(GLuint frameBufferId) Q_DECL_OVERRIDE;
+    void bindFrameBufferObject(GLuint frameBufferId) Q_DECL_OVERRIDE;
+    bool checkFrameBufferComplete() Q_DECL_OVERRIDE;
+    void bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment) Q_DECL_OVERRIDE;
 
 private:
     QOpenGLFunctions_2_0 *m_funcs;
+    QOpenGLExtension_ARB_framebuffer_object *m_fboFuncs;
 };
 
 } // Render

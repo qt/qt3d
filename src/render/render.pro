@@ -1,6 +1,6 @@
 TARGET   = Qt3DRenderer
 
-QT      += core-private gui-private 3dcore 3dcore-private
+QT      += core-private gui-private 3dcore 3dcore-private opengl openglextensions
 
 DEFINES += QT3DRENDERER_LIBRARY
 

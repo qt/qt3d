@@ -44,6 +44,7 @@
 #include "qgraphicshelpergl3_p.h"
 #include <QOpenGLFunctions_3_2_Core>
 #include "renderlogging.h"
+#include <private/attachmentpack_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -56,7 +57,7 @@ QGraphicsHelperGL3::QGraphicsHelperGL3() :
 }
 
 void QGraphicsHelperGL3::initializeHelper(QOpenGLContext *context,
-                                         QAbstractOpenGLFunctions *functions)
+                                          QAbstractOpenGLFunctions *functions)
 {
     Q_UNUSED(context)
     m_funcs = static_cast<QOpenGLFunctions_3_2_Core*>(functions);
@@ -66,49 +67,49 @@ void QGraphicsHelperGL3::initializeHelper(QOpenGLContext *context,
 }
 
 void QGraphicsHelperGL3::drawElementsInstanced(GLenum primitiveType,
-                                              GLsizei primitiveCount,
-                                              GLint indexType,
-                                              void *indices,
-                                              GLsizei instances)
+                                               GLsizei primitiveCount,
+                                               GLint indexType,
+                                               void *indices,
+                                               GLsizei instances)
 {
     // glDrawElements OpenGL 3.1 or greater
     m_funcs->glDrawElementsInstanced(primitiveType,
-                                           primitiveCount,
-                                           indexType,
-                                           indices,
-                                           instances);
+                                     primitiveCount,
+                                     indexType,
+                                     indices,
+                                     instances);
 }
 
 void QGraphicsHelperGL3::drawArraysInstanced(GLenum primitiveType,
-                                            GLint first,
-                                            GLsizei count,
-                                            GLsizei instances)
+                                             GLint first,
+                                             GLsizei count,
+                                             GLsizei instances)
 {
     // glDrawArraysInstanced OpenGL 3.1 or greater
     m_funcs->glDrawArraysInstanced(primitiveType,
-                                         first,
-                                         count,
-                                         instances);
+                                   first,
+                                   count,
+                                   instances);
 }
 
 void QGraphicsHelperGL3::drawElements(GLenum primitiveType,
-                                     GLsizei primitiveCount,
-                                     GLint indexType,
-                                     void *indices)
+                                      GLsizei primitiveCount,
+                                      GLint indexType,
+                                      void *indices)
 {
     m_funcs->glDrawElements(primitiveType,
-                                  primitiveCount,
-                                  indexType,
-                                  indices);
+                            primitiveCount,
+                            indexType,
+                            indices);
 }
 
 void QGraphicsHelperGL3::drawArrays(GLenum primitiveType,
-                                   GLint first,
-                                   GLsizei count)
+                                    GLint first,
+                                    GLsizei count)
 {
     m_funcs->glDrawArrays(primitiveType,
-                                first,
-                                count);
+                          first,
+                          count);
 }
 
 void QGraphicsHelperGL3::useProgram(GLuint programId)
@@ -196,6 +197,55 @@ void QGraphicsHelperGL3::frontFace(GLenum mode)
 bool QGraphicsHelperGL3::supportUniformBlock() const
 {
     return true;
+}
+
+GLuint QGraphicsHelperGL3::createFrameBufferObject()
+{
+    qDebug() << Q_FUNC_INFO;
+    GLuint id;
+    m_funcs->glGenFramebuffers(1, &id);
+    qDebug() << Q_FUNC_INFO << id;
+    return id;
+}
+
+void QGraphicsHelperGL3::releaseFrameBufferObject(GLuint frameBufferId)
+{
+    m_funcs->glDeleteFramebuffers(1, &frameBufferId);
+}
+
+void QGraphicsHelperGL3::bindFrameBufferObject(GLuint frameBufferId)
+{
+    m_funcs->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, frameBufferId);
+}
+
+bool QGraphicsHelperGL3::checkFrameBufferComplete()
+{
+    return (m_funcs->glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
+}
+
+void QGraphicsHelperGL3::bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment)
+{
+    GLenum attr = GL_DEPTH_STENCIL_ATTACHMENT;
+
+    if (attachment.m_type <= QRenderAttachment::ColorAttachment15)
+        attr = GL_COLOR_ATTACHMENT0 + attachment.m_type;
+    else if (attachment.m_type == QRenderAttachment::DepthAttachment)
+        attr = GL_DEPTH_ATTACHMENT;
+    else if (attachment.m_type == QRenderAttachment::StencilAttachment)
+        attr = GL_STENCIL_ATTACHMENT;
+
+    texture->bind();
+    QOpenGLTexture::Target target = texture->target();
+    if (target == QOpenGLTexture::Target1DArray || target == QOpenGLTexture::Target2DArray ||
+            target == QOpenGLTexture::Target2DMultisampleArray || target == QOpenGLTexture::Target3D)
+        m_funcs->glFramebufferTextureLayer(GL_DRAW_FRAMEBUFFER, attr, texture->textureId(), attachment.m_mipLevel, attachment.m_layer);
+    else if (target == QOpenGLTexture::TargetCubeMapArray)
+        m_funcs->glFramebufferTexture3D(GL_DRAW_FRAMEBUFFER, attr, attachment.m_face, texture->textureId(), attachment.m_mipLevel, attachment.m_layer);
+    else if (target == QOpenGLTexture::TargetCubeMap)
+        m_funcs->glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, attr, attachment.m_face, texture->textureId(), attachment.m_mipLevel);
+    else
+        m_funcs->glFramebufferTexture(GL_DRAW_FRAMEBUFFER, attr, texture->textureId(), attachment.m_mipLevel);
+    texture->release();
 }
 
 } // Render

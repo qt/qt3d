@@ -73,6 +73,8 @@ class RenderShader;
 class RenderMaterial;
 class RenderTexture;
 class RenderCommand;
+class RenderTarget;
+class AttachmentPack;
 
 enum TextureScope
 {
@@ -109,6 +111,9 @@ public:
     QOpenGLContext *openGLContext() { return m_gl; }
 
     void activateShader(RenderShader* shader);
+
+    void activateRenderTarget(RenderTarget *renderTarget);
+    void activateAttachments(const AttachmentPack &attachments);
 
     RenderMaterial* activeMaterial() const
     { return m_material; }
@@ -189,6 +194,7 @@ private:
     RenderShader* m_activeShader;
     QHash<RenderShader*, QOpenGLShaderProgram*> m_shaderHash;
     QHash<BufferPtr, QOpenGLBuffer> m_bufferHash;
+    QHash<QUuid, GLuint> m_renderTargets;
 
     // active textures, indexed by texture unit
     QVector<RenderTexture*> m_activeTextures;

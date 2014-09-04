@@ -42,6 +42,7 @@
 #include "qgraphicshelperes2_p.h"
 #include "qopenglfunctions_es2.h"
 #include "renderlogging.h"
+#include <private/attachmentpack_p.h>
 
 #ifdef QT_OPENGL_ES_2
 
@@ -200,6 +201,52 @@ void QGraphicsHelperES2::frontFace(GLenum mode)
 bool QGraphicsHelperES2::supportUniformBlock() const
 {
     return false;
+}
+
+GLuint QGraphicsHelperES2::createFrameBufferObject()
+{
+    GLuint id;
+    m_funcs->glGenFramebuffers(1, &id);
+    return id;
+}
+
+void QGraphicsHelperES2::releaseFrameBufferObject(GLuint frameBufferId)
+{
+    m_funcs->glDeleteFramebuffers(1, &frameBufferId);
+}
+
+void QGraphicsHelperES2::bindFrameBufferObject(GLuint frameBufferId)
+{
+    m_funcs->glBindFramebuffer(GL_FRAMEBUFFER, frameBufferId);
+}
+
+bool QGraphicsHelperES2::checkFrameBufferComplete()
+{
+    return (m_funcs->glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
+}
+
+void QGraphicsHelperES2::bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment)
+{
+    GLenum attr = GL_COLOR_ATTACHMENT0;
+
+    if (attachment.m_type == QRenderAttachment::ColorAttachment0)
+        attr = GL_COLOR_ATTACHMENT0;
+    else if (attachment.m_type == QRenderAttachment::DepthAttachment)
+        attr = GL_DEPTH_ATTACHMENT;
+    else if (attachment.m_type == QRenderAttachment::StencilAttachment)
+        attr = GL_STENCIL_ATTACHMENT;
+    else
+        qCritical() << "Unsupported FBO attachment OpenGL ES 2.0";
+
+    texture->bind();
+    QOpenGLTexture::Target target = texture->target();
+    if (target == QOpenGLTexture::Target2D)
+        m_funcs->glFramebufferTexture2D(GL_FRAMEBUFFER, attr, target, texture->textureId(), attachment.m_mipLevel);
+    else if (target == QOpenGLTexture::TargetCubeMap)
+        m_funcs->glFramebufferTexture2D(GL_FRAMEBUFFER, attr, attachment.m_face, texture->textureId(), attachment.m_mipLevel);
+    else
+        qCritical() << "Unsupported Texture FBO attachment format";
+    texture->release();
 }
 
 } // Render

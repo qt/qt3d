@@ -50,9 +50,11 @@
 #include <Qt3DRenderer/private/rendertexture_p.h>
 #include <Qt3DRenderer/private/rendercommand_p.h>
 #include <Qt3DRenderer/private/renderstate_p.h>
+#include <Qt3DRenderer/private/rendertarget_p.h>
 #include <Qt3DRenderer/private/qgraphicshelperinterface_p.h>
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/private/texturemanager_p.h>
+#include <Qt3DRenderer/private/attachmentpack_p.h>
 #include <QOpenGLShaderProgram>
 
 #if !defined(QT_OPENGL_ES_2)
@@ -230,6 +232,40 @@ void QGraphicsContext::activateShader(RenderShader *shader)
         prog->bind();
         // ensure material uniforms are re-applied
         m_material = Q_NULLPTR;
+    }
+}
+
+void QGraphicsContext::activateRenderTarget(RenderTarget *renderTarget)
+{
+    GLuint fboId = 0;
+    if (renderTarget != Q_NULLPTR) {
+        if (!m_renderTargets.contains(renderTarget->renderTargetUuid())) {
+            fboId = m_glHelper->createFrameBufferObject();
+            if (fboId != 0)
+                m_renderTargets.insert(renderTarget->renderTargetUuid(), fboId);
+            else
+                qCritical() << "Failed to create FBO";
+        }
+        else {
+            fboId = m_renderTargets.value(renderTarget->renderTargetUuid());
+        }
+    }
+    m_glHelper->bindFrameBufferObject(fboId);
+}
+
+void QGraphicsContext::activateAttachments(const AttachmentPack &attachments)
+{
+    Q_FOREACH (const Attachment &attachment, attachments.attachments()) {
+        RenderTexture *rTex = m_renderer->textureManager()->lookupResource(attachment.m_textureUuid);
+        if (rTex != Q_NULLPTR) {
+            QOpenGLTexture *glTex = rTex->getOrCreateGLTexture();
+            m_glHelper->bindFrameBufferAttachment(glTex, attachment);
+            if (m_glHelper->checkFrameBufferComplete()) {
+            // Set up MRT
+            }
+            else
+                qWarning() << "FBO incomplete";
+        }
     }
 }
 

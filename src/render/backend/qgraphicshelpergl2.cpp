@@ -43,14 +43,18 @@
 
 #include "qgraphicshelpergl2_p.h"
 #include <QOpenGLFunctions_2_0>
+#include <private/attachmentpack_p.h>
+#include <QtOpenGLExtensions/QOpenGLExtensions>
+#include <QDebug>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 namespace Render {
 
-QGraphicsHelperGL2::QGraphicsHelperGL2() :
-    m_funcs(0)
+QGraphicsHelperGL2::QGraphicsHelperGL2()
+    : m_funcs(Q_NULLPTR)
+    , m_fboFuncs(Q_NULLPTR)
 {
 
 }
@@ -65,6 +69,11 @@ void QGraphicsHelperGL2::initializeHelper(QOpenGLContext *context,
     Q_UNUSED(ok);
     // Check Vertex Array Object extension is present
     Q_ASSERT(context->hasExtension(QByteArrayLiteral("GL_ARB_vertex_array_object")));
+    if (context->hasExtension(QByteArrayLiteral("GL_EXT_framebuffer_object"))) {
+        m_fboFuncs = new QOpenGLExtension_ARB_framebuffer_object();
+        const bool extensionOk = m_fboFuncs->initializeOpenGLFunctions();
+        Q_ASSERT(extensionOk);
+    }
 }
 
 void QGraphicsHelperGL2::drawElementsInstanced(GLenum primitiveType,
@@ -198,6 +207,70 @@ void QGraphicsHelperGL2::frontFace(GLenum mode)
 bool QGraphicsHelperGL2::supportUniformBlock() const
 {
     return false;
+}
+
+GLuint QGraphicsHelperGL2::createFrameBufferObject()
+{
+    if (m_fboFuncs != Q_NULLPTR) {
+        GLuint id;
+        m_fboFuncs->glGenFramebuffers(1, &id);
+        return id;
+    }
+    qWarning() << "FBO not supported by your OpenGL hardware";
+    return 0;
+}
+
+void QGraphicsHelperGL2::releaseFrameBufferObject(GLuint frameBufferId)
+{
+    if (m_fboFuncs != Q_NULLPTR)
+        m_fboFuncs->glDeleteFramebuffers(1, &frameBufferId);
+    else
+        qWarning() << "FBO not supported by your OpenGL hardware";
+}
+
+bool QGraphicsHelperGL2::checkFrameBufferComplete()
+{
+    if (m_fboFuncs != Q_NULLPTR)
+        return (m_fboFuncs->glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
+    return false;
+}
+
+void QGraphicsHelperGL2::bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment)
+{
+    if (m_fboFuncs != Q_NULLPTR) {
+        GLenum attr = GL_DEPTH_STENCIL_ATTACHMENT;
+
+        if (attachment.m_type <= QRenderAttachment::ColorAttachment15)
+            attr = GL_COLOR_ATTACHMENT0 + attachment.m_type;
+        else if (attachment.m_type == QRenderAttachment::DepthAttachment)
+            attr = GL_DEPTH_ATTACHMENT;
+        else if (attachment.m_type == QRenderAttachment::StencilAttachment)
+            attr = GL_STENCIL_ATTACHMENT;
+        else
+            qCritical() << "DepthStencil Attachment not supported on OpenGL 2.0";
+
+        texture->bind();
+        QOpenGLTexture::Target target = texture->target();
+        if (target == QOpenGLTexture::Target3D)
+            m_fboFuncs->glFramebufferTexture3D(GL_DRAW_FRAMEBUFFER, attr, target, texture->textureId(), attachment.m_mipLevel, attachment.m_layer);
+        else if (target == QOpenGLTexture::TargetCubeMap)
+            m_fboFuncs->glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, attr, attachment.m_face, texture->textureId(), attachment.m_mipLevel);
+        else if (target == QOpenGLTexture::Target1D)
+            m_fboFuncs->glFramebufferTexture1D(GL_DRAW_FRAMEBUFFER, attr, target, texture->textureId(), attachment.m_mipLevel);
+        else if (target == QOpenGLTexture::Target2D || target == QOpenGLTexture::TargetRectangle)
+            m_fboFuncs->glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, attr, target, texture->textureId(), attachment.m_mipLevel);
+        else
+            qCritical() << "Texture format not supported for Attachment on OpenGL 2.0";
+        texture->release();
+    }
+}
+
+void QGraphicsHelperGL2::bindFrameBufferObject(GLuint frameBufferId)
+{
+    if (m_fboFuncs != Q_NULLPTR)
+        m_fboFuncs->glBindFramebuffer(GL_READ_FRAMEBUFFER, frameBufferId);
+    else
+        qWarning() << "FBO not supported by your OpenGL hardware";
 }
 
 } // Render

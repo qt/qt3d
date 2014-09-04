@@ -77,6 +77,11 @@ public:
     void cullFace(GLenum mode) Q_DECL_OVERRIDE;
     void frontFace(GLenum mode) Q_DECL_OVERRIDE;
     bool supportUniformBlock() const Q_DECL_OVERRIDE;
+    GLuint createFrameBufferObject() Q_DECL_OVERRIDE;
+    void releaseFrameBufferObject(GLuint frameBufferId) Q_DECL_OVERRIDE;
+    void bindFrameBufferObject(GLuint frameBufferId) Q_DECL_OVERRIDE;
+    bool checkFrameBufferComplete() Q_DECL_OVERRIDE;
+    void bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment) Q_DECL_OVERRIDE;
 
 private:
     QOpenGLFunctions_ES2 *m_funcs;

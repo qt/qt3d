@@ -43,6 +43,7 @@
 #define QT3D_RENDER_QGRAPHICSHELPERINTERFACE_H
 
 #include <QOpenGLFunctions>
+#include <QOpenGLTexture>
 #include <QVector>
 #include <QPair>
 
@@ -50,6 +51,8 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 namespace Render {
+
+class Attachment;
 
 class QGraphicsHelperInterface
 {
@@ -71,6 +74,12 @@ public:
     virtual void    cullFace(GLenum mode) = 0;
     virtual void    frontFace(GLenum mode) = 0;
     virtual bool    supportUniformBlock() const = 0;
+    virtual GLuint  createFrameBufferObject() = 0;
+    virtual void    releaseFrameBufferObject(GLuint frameBufferId) = 0;
+    virtual void    bindFrameBufferObject(GLuint frameBufferId) = 0;
+    virtual bool    checkFrameBufferComplete() = 0;
+    virtual void    bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment) = 0;
+
 };
 
 } // Render
