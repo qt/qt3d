@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "quick3drendertargetselector.h"
+#include "quick3drendertarget.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -49,9 +49,50 @@ namespace Render {
 
 namespace Quick {
 
-Quick3DRenderTargetSelector::Quick3DRenderTargetSelector(QObject * parent)
+Quick3DRenderTarget::Quick3DRenderTarget(QObject * parent)
     : QObject(parent)
 {
+}
+
+QQmlListProperty<QRenderAttachment> Quick3DRenderTarget::qmlAttachments()
+{
+    return QQmlListProperty<QRenderAttachment>(this, 0,
+                                               &Quick3DRenderTarget::appendRenderAttachment,
+                                               &Quick3DRenderTarget::renderAttachmentCount,
+                                               &Quick3DRenderTarget::renderAttachmentAt,
+                                               &Quick3DRenderTarget::clearRenderAttachments);
+}
+
+void Quick3DRenderTarget::appendRenderAttachment(QQmlListProperty<QRenderAttachment> *list, QRenderAttachment *attachment)
+{
+    Quick3DRenderTarget *rT = qobject_cast<Quick3DRenderTarget *>(list->object);
+    if (rT)
+        rT->parentRenderTarget()->addAttachment(attachment);
+}
+
+QRenderAttachment *Quick3DRenderTarget::renderAttachmentAt(QQmlListProperty<QRenderAttachment> *list, int index)
+{
+    Quick3DRenderTarget *rT = qobject_cast<Quick3DRenderTarget *>(list->object);
+    if (rT)
+        return rT->parentRenderTarget()->attachments().at(index);
+    return Q_NULLPTR;
+}
+
+int Quick3DRenderTarget::renderAttachmentCount(QQmlListProperty<QRenderAttachment> *list)
+{
+    Quick3DRenderTarget *rT = qobject_cast<Quick3DRenderTarget *>(list->object);
+    if (rT)
+        return rT->parentRenderTarget()->attachments().count();
+    return -1;
+}
+
+void Quick3DRenderTarget::clearRenderAttachments(QQmlListProperty<QRenderAttachment> *list)
+{
+    Quick3DRenderTarget *rT = qobject_cast<Quick3DRenderTarget *>(list->object);
+    if (rT) {
+        Q_FOREACH (QRenderAttachment *att, rT->parentRenderTarget()->attachments())
+            rT->parentRenderTarget()->removeAttachment(att);
+    }
 }
 
 } // Quick

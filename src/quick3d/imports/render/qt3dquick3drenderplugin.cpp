@@ -83,12 +83,13 @@
 #include <Qt3DRenderer/qstenciltest.h>
 #include <Qt3DRenderer/qscissortest.h>
 #include <Qt3DRenderer/qdithering.h>
+#include <Qt3DRenderer/qrenderattachment.h>
 #include <Qt3DQuickRenderer/quick3dtechnique.h>
 #include <Qt3DQuickRenderer/quick3dmaterial.h>
 #include <Qt3DQuickRenderer/quick3dtechniquefilter.h>
 #include <Qt3DQuickRenderer/quick3dviewport.h>
 #include <Qt3DQuickRenderer/quick3drenderpassfilter.h>
-#include <Qt3DQuickRenderer/quick3drendertargetselector.h>
+#include <Qt3DQuickRenderer/quick3drendertarget.h>
 #include <Qt3DQuickRenderer/quick3deffect.h>
 #include <Qt3DQuickRenderer/quick3dscene.h>
 #include <Qt3DQuickRenderer/quick3dtexture.h>
@@ -137,10 +138,14 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterExtendedType<Qt3D::QRenderPassFilter, Qt3D::Render::Quick::Quick3DRenderPassFilter>(uri, 2, 0, "RenderPassFilter");
     qmlRegisterExtendedType<Qt3D::QTechniqueFilter, Qt3D::Render::Quick::Quick3DTechniqueFilter>(uri, 2, 0, "TechniqueFilter");
     qmlRegisterExtendedType<Qt3D::QViewport, Qt3D::Render::Quick::Quick3DViewport>(uri, 2, 0, "Viewport");
-    qmlRegisterExtendedType<Qt3D::QRenderTargetSelector, Qt3D::Render::Quick::Quick3DRenderTargetSelector>(uri, 2, 0, "RenderTargetSelector");
+    qmlRegisterType<Qt3D::QRenderTargetSelector>(uri, 2, 0, "RenderTargetSelector");
     // Should be uncreatable extended type
     qmlRegisterExtendedUncreatableType<Qt3D::QFrameGraphItem, Qt3D::Render::Quick::Quick3DFrameGraphItem>(uri, 2, 0, "FrameGraphItem", QStringLiteral("FrameGraphItem is a base class"));
     qmlRegisterType<Qt3D::QFrameGraph>(uri, 2, 0, "FrameGraph");
+
+    // RenderTarget
+    qmlRegisterType<Qt3D::QRenderAttachment>(uri, 2, 0, "RenderAttachment");
+    qmlRegisterExtendedType<Qt3D::QRenderTarget, Qt3D::Render::Quick::Quick3DRenderTarget>(uri, 2, 0, "RenderTarget");
 
     // RenderStates
     qmlRegisterUncreatableType<Qt3D::QRenderState>(uri, 2, 0, "RenderState", QStringLiteral("QRenderState is a base class"));

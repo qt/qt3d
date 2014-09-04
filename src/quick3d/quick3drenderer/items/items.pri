@@ -1,6 +1,6 @@
 HEADERS += \
     $$PWD/quick3drenderpassfilter.h \
-    $$PWD/quick3drendertargetselector.h \
+    $$PWD/quick3drendertarget.h \
     $$PWD/quick3dtechniquefilter.h \
     $$PWD/quick3dviewport.h \
     $$PWD/quick3dmaterial.h \
@@ -14,7 +14,7 @@ HEADERS += \
 
 SOURCES += \
     $$PWD/quick3drenderpassfilter.cpp \
-    $$PWD/quick3drendertargetselector.cpp \
+    $$PWD/quick3drendertarget.cpp \
     $$PWD/quick3dtechniquefilter.cpp \
     $$PWD/quick3dviewport.cpp \
     $$PWD/quick3dmaterial.cpp \

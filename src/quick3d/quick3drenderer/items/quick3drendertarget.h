@@ -39,11 +39,13 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QUICK_QUICK3DRENDERTARGETSELECTOR_H
-#define QT3D_RENDER_QUICK_QUICK3DRENDERTARGETSELECTOR_H
+#ifndef QT3D_RENDER_QUICK_QUICK3DRENDERTARGET_H
+#define QT3D_RENDER_QUICK_QUICK3DRENDERTARGET_H
 
 #include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
-#include <Qt3DRenderer/qrendertargetselector.h>
+#include <Qt3DRenderer/qrendertarget.h>
+#include <Qt3DRenderer/qrenderattachment.h>
+#include <QQmlListProperty>
 
 QT_BEGIN_NAMESPACE
 
@@ -53,12 +55,21 @@ namespace Render {
 
 namespace Quick {
 
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DRenderTargetSelector : public QObject
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DRenderTarget : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QQmlListProperty<Qt3D::QRenderAttachment> attachments READ qmlAttachments)
 public:
-    explicit Quick3DRenderTargetSelector(QObject *parent = 0);
+    explicit Quick3DRenderTarget(QObject *parent = 0);
 
+    inline QRenderTarget *parentRenderTarget() const { return qobject_cast<QRenderTarget *>(parent()); }
+    QQmlListProperty<QRenderAttachment> qmlAttachments();
+
+private:
+    static void appendRenderAttachment(QQmlListProperty<QRenderAttachment> *list, QRenderAttachment *attachment);
+    static QRenderAttachment *renderAttachmentAt(QQmlListProperty<QRenderAttachment> *list, int index);
+    static int renderAttachmentCount(QQmlListProperty<QRenderAttachment> *list);
+    static void clearRenderAttachments(QQmlListProperty<QRenderAttachment> *list);
 };
 
 } // Quick
@@ -69,4 +80,4 @@ public:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_QUICK_QUICK3DRENDERTARGETSELECTOR_H
+#endif // QT3D_RENDER_QUICK_QUICK3DRENDERTARGET_H
