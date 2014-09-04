@@ -211,6 +211,9 @@ QOpenGLShaderProgram* RenderShader::createProgram()
         return Q_NULLPTR;
     }
 
+    // glBindFragDataLocation at that point
+
+
     ok = p->link();
     if (!ok) {
         qWarning() << "program failed to link:" << p->log();

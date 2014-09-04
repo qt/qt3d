@@ -235,7 +235,6 @@ RenderView::RenderView()
     , m_renderCamera(Q_NULLPTR)
     , m_techniqueFilter(Q_NULLPTR)
     , m_passFilter(Q_NULLPTR)
-    , m_renderTarget(Q_NULLPTR)
     , m_viewport(Q_NULLPTR)
     , m_viewMatrix(Q_NULLPTR)
     , m_clearColor(Q_NULLPTR)
@@ -290,36 +289,49 @@ void RenderView::setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf)
     while (node != Q_NULLPTR) {
         FrameGraphNode::FrameGraphNodeType type = node->nodeType();
         switch (type) {
-        case FrameGraphNode::CameraSelector: {
-            CameraSelector *cameraSelector = static_cast<CameraSelector *>(node);
-            RenderEntity *tmpCamNode = m_renderer->renderNodesManager()->lookupResource(cameraSelector->cameraUuid());
-            if (tmpCamNode) {
-                m_renderCamera = tmpCamNode->renderComponent<RenderCameraLens>();
-                // If we have a viewMatrix pointer instead of directly a QMatrix4x4 object in RenderView
-                // This allows us to keep the size of RenderView smaller and avoid huge block fragmentation
-                m_viewMatrix = m_allocator->allocate<QMatrix4x4>();
-                *m_viewMatrix = *tmpCamNode->worldTransform();
+        case FrameGraphNode::CameraSelector: // Can be set once
+            if (m_renderCamera == Q_NULLPTR) {
+                CameraSelector *cameraSelector = static_cast<CameraSelector *>(node);
+                RenderEntity *tmpCamNode = m_renderer->renderNodesManager()->lookupResource(cameraSelector->cameraUuid());
+                if (tmpCamNode) {
+                    m_renderCamera = tmpCamNode->renderComponent<RenderCameraLens>();
+                    // If we have a viewMatrix pointer instead of directly a QMatrix4x4 object in RenderView
+                    // This allows us to keep the size of RenderView smaller and avoid huge block fragmentation
+                    m_viewMatrix = m_allocator->allocate<QMatrix4x4>();
+                    *m_viewMatrix = *tmpCamNode->worldTransform();
+                }
+                break;
             }
-            break;
-        }
 
-        case FrameGraphNode::LayerFilter:
+        case FrameGraphNode::LayerFilter: // Can be set multiple times in the tree
             m_layers << static_cast<LayerFilterNode *>(node)->layers();
             break;
 
         case FrameGraphNode::RenderPassFilter:
-            m_passFilter = static_cast<RenderPassFilter *>(node);
+            if (m_passFilter == Q_NULLPTR) // Can be set once
+                m_passFilter = static_cast<RenderPassFilter *>(node);
             break;
 
         case FrameGraphNode::RenderTarget:
-            m_renderTarget = m_renderer->renderTargetManager()->lookupResource(static_cast<RenderTargetSelector *>(node)->renderTargetUuid());
+            if (m_renderTarget.isNull()) // Can be set once
+                m_renderTarget = m_renderer->renderTargetManager()->lookupHandle(static_cast<RenderTargetSelector *>(node)->renderTargetUuid());
+                RenderTarget *renderTarget;
+                if ((renderTarget = m_renderer->renderTargetManager()->data(m_renderTarget)) != Q_NULLPTR) {
+                    // Add renderTarget Handle and build renderCommand AttachmentPack
+                    Q_FOREACH (const QUuid &attachmentId, renderTarget->renderAttachments()) {
+                        RenderAttachment *attachment = m_renderer->attachmentManager()->lookupResource(attachmentId);
+                        if (attachment != Q_NULLPTR)
+                            m_attachmentPack.addAttachment(attachment->attachment());
+                    }
+                }
             break;
 
         case FrameGraphNode::TechniqueFilter:
-            m_techniqueFilter = static_cast<TechniqueFilter *>(node);
+            if (m_techniqueFilter == Q_NULLPTR) // Can be set once
+                m_techniqueFilter = static_cast<TechniqueFilter *>(node);
             break;
 
-        case FrameGraphNode::Viewport:
+        case FrameGraphNode::Viewport: // Can be set multiple times in the tree
             // If the Viewport has already been set in a lower node
             // Make it so that the new viewport is actually
             // a subregion relative to that of the parent viewport
@@ -421,6 +433,16 @@ void RenderView::buildRenderCommands(RenderEntity *node)
         buildRenderCommands(child);
 }
 
+const AttachmentPack &RenderView::attachmentPack() const
+{
+    return m_attachmentPack;
+}
+
+HTarget RenderView::renderTarget() const
+{
+    return m_renderTarget;
+}
+
 RenderTechnique *RenderView::findTechniqueForEffect(RenderEffect *effect)
 {
     if (effect != Q_NULLPTR) {
@@ -480,15 +502,6 @@ QList<RenderRenderPass *> RenderView::findRenderPassesForTechnique(RenderTechniq
         }
     }
     return passes;
-}
-
-void RenderView::createRenderTexture(QTexture *tex)
-{
-    if (!m_renderer->textureManager()->contains(tex->uuid())) {
-        RenderTexture *rTex = m_renderer->textureManager()->getOrCreateResource(tex->uuid());
-        // TO DO : Improve when working to monitor for texture changes ...
-        rTex->setPeer(tex);
-    }
 }
 
 QHash<QString, QVariant> RenderView::parametersFromMaterialEffectTechnique(RenderMaterial *material,
@@ -575,6 +588,21 @@ RenderStateSet *RenderView::buildRenderStateSet(RenderRenderPass *pass)
     return Q_NULLPTR;
 }
 
+void RenderView::setUniformValue(QUniformPack &uniformPack, const QString &name, const QVariant &value)
+{
+    QTexture *tex = Q_NULLPTR;
+    if (static_cast<QMetaType::Type>(value.type()) == QMetaType::QObjectStar &&
+            (tex = value.value<Qt3D::QTexture *>()) != Q_NULLPTR) {
+        uniformPack.setTexture(name, tex->uuid());
+        TextureUniform *texUniform = m_allocator->allocate<TextureUniform>();
+        texUniform->setTextureId(tex->uuid());
+        uniformPack.setUniform(name, texUniform);
+    }
+    else {
+        uniformPack.setUniform(name, QUniformValue::fromVariant(value, m_allocator));
+    }
+}
+
 void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *rPass, QHash<QString, QVariant> &parameters, const QMatrix4x4 &worldTransform)
 {
     // The VAO Handle is set directly in the renderer thread so as to avoid having to use a mutex here
@@ -593,17 +621,6 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
         command->m_shader = m_renderer->shaderManager()->lookupHandle(rPass->shaderProgram());
         RenderShader *shader = Q_NULLPTR;
         if ((shader = m_renderer->shaderManager()->data(command->m_shader)) != Q_NULLPTR) {
-
-            // Add renderTarget Handle and build renderCommand attachment Pack
-            // TO DO: This could be done once for all RenderCommand, will correct when working
-            if (m_renderTarget != Q_NULLPTR) {
-                command->m_renderTarget = m_renderer->renderTargetManager()->lookupHandle(m_renderTarget->renderTargetUuid());
-                Q_FOREACH (const QUuid &attachmentId, m_renderTarget->renderAttachments()) {
-                    RenderAttachment *attachment = m_renderer->attachmentManager()->lookupResource(attachmentId);
-                    if (attachment != Q_NULLPTR)
-                        command->m_attachments.addAttachment(attachment->attachment());
-                }
-            }
 
             // Builds the QUniformPack, sets shader standard uniforms and store attributes name / glname bindings
             // If a parameter is defined and not found in the bindings it is assumed to be a binding of Uniform type with the glsl name
@@ -631,7 +648,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
                     if (!parameters.contains(binding->parameterName())) {
                         if (binding->bindingType() == QParameterMapper::Attribute
                                 && attributeNames.contains(binding->shaderVariableName()))
-                            command->m_parameterAttributeToShaderNames[binding->parameterName()] = binding->shaderVariableName();
+                            command->m_parameterAttributeToShaderNames.insert(binding->parameterName(), binding->shaderVariableName());
                         else if (binding->bindingType() == QParameterMapper::StandardUniform
                                  && uniformNames.contains(binding->shaderVariableName())
                                  && m_standardUniformSetters.contains(binding->parameterName()))
@@ -641,40 +658,14 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
                             qCWarning(Render::Backend) << Q_FUNC_INFO << "Trying to bind a Parameter that hasn't been defined " << binding->parameterName();
                     }
                     else {
-                        QVariant value = parameters.take(binding->parameterName());
-                        QTexture *tex = Q_NULLPTR;
-                        if (static_cast<QMetaType::Type>(value.type()) == QMetaType::QObjectStar &&
-                                (tex = value.value<Qt3D::QTexture *>()) != Q_NULLPTR) {
-                            createRenderTexture(tex);
-                            command->m_uniforms.setTexture(binding->shaderVariableName(), tex->uuid());
-                            TextureUniform *texUniform = m_allocator->allocate<TextureUniform>();
-                            texUniform->setTextureId(tex->uuid());
-                            command->m_uniforms.setUniform(binding->shaderVariableName(), texUniform);
-                        }
-                        else {
-                            command->m_uniforms.setUniform(binding->shaderVariableName(), QUniformValue::fromVariant(value, m_allocator));
-                        }
+                        setUniformValue(command->m_uniforms, binding->shaderVariableName(), parameters.take(binding->parameterName()));
                     }
                 }
 
                 // If there are remaining parameters, those are set as uniforms
                 Q_FOREACH (const QString &paramName, parameters.keys()) {
                     if (uniformNames.contains(paramName))
-                    {
-                        QVariant value = parameters.take(paramName);
-                        QTexture *tex = Q_NULLPTR;
-                        if (static_cast<QMetaType::Type>(value.type()) == QMetaType::QObjectStar &&
-                                (tex = value.value<Qt3D::QTexture *>()) != Q_NULLPTR) {
-                            createRenderTexture(tex);
-                            command->m_uniforms.setTexture(paramName, tex->uuid());
-                            TextureUniform *texUniform = m_allocator->allocate<TextureUniform>();
-                            texUniform->setTextureId(tex->uuid());
-                            command->m_uniforms.setUniform(paramName, texUniform);
-                        }
-                        else {
-                            command->m_uniforms.setUniform(paramName, QUniformValue::fromVariant(value, m_allocator));
-                        }
-                    }
+                        setUniformValue(command->m_uniforms, paramName, parameters.take(paramName));
                     // Else param unused by current shader
                 }
 
@@ -720,9 +711,9 @@ void RenderView::computeViewport(ViewportNode *viewportNode)
     else {
         QRectF oldViewport = *m_viewport;
         *m_viewport = QRectF(tmpViewport.x() + tmpViewport.width() * oldViewport.x(),
-                            tmpViewport.y() + tmpViewport.height() * oldViewport.y(),
-                            tmpViewport.width() * oldViewport.width(),
-                            tmpViewport.height() * oldViewport.height());
+                             tmpViewport.y() + tmpViewport.height() * oldViewport.y(),
+                             tmpViewport.width() * oldViewport.width(),
+                             tmpViewport.height() * oldViewport.height());
     }
     // So that we use the color of the highest viewport
     m_clearColor = m_allocator->allocate<QColor>();

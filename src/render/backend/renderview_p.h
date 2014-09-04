@@ -47,6 +47,7 @@
 #include <Qt3DRenderer/private/rendercameralens_p.h>
 #include <Qt3DRenderer/qparameter.h>
 #include <Qt3DCore/qhandle.h>
+#include <Qt3DRenderer/private/attachmentpack_p.h>
 #include <QVector>
 #include <QMutex>
 #include <QColor>
@@ -75,6 +76,7 @@ typedef QHandle<RenderMesh, 16> HMesh;
 typedef QHandle<RenderMaterial, 16> HMaterial;
 typedef QHandle<RenderTechnique, 16> HTechnique;
 typedef QHandle<RenderLight, 16> HLight;
+typedef QHandle<RenderTarget, 8> HTarget;
 
 typedef QPair<HLight, QMatrix4x4> LightPair;
 
@@ -116,6 +118,9 @@ public:
     void setFrameIndex(int index) { m_frameIndex = index; }
     int frameIndex() const { return m_frameIndex; }
 
+    const AttachmentPack &attachmentPack() const;
+    HTarget renderTarget() const;
+
 private:
 
     void computeViewport(ViewportNode *viewportNode);
@@ -123,7 +128,6 @@ private:
 
     RenderTechnique *findTechniqueForEffect(RenderEffect *effect);
     QList<RenderRenderPass *> findRenderPassesForTechnique(RenderTechnique *technique);
-    void    createRenderTexture(QTexture *tex);
     void setShaderAndUniforms(RenderCommand *command, RenderRenderPass *pass, QHash<QString, QVariant> &parameters, const QMatrix4x4 &worldTransform);
     QHash<QString, QVariant> parametersFromMaterialEffectTechnique(RenderMaterial *material, RenderEffect *effect, RenderTechnique *technique);
     RenderStateSet *buildRenderStateSet(RenderRenderPass *pass);
@@ -133,7 +137,8 @@ private:
     RenderCameraLens *m_renderCamera;
     TechniqueFilter *m_techniqueFilter;
     RenderPassFilter *m_passFilter;
-    RenderTarget *m_renderTarget;
+    HTarget m_renderTarget;
+    AttachmentPack m_attachmentPack;
     QRectF *m_viewport;
     QStringList m_layers;
     QMatrix4x4 *m_viewMatrix;
@@ -165,6 +170,8 @@ private:
     QUniformValue *inverseModelViewProjectionMatrix(const QMatrix4x4 &model) const;
     QUniformValue *modelNormalMatrix(const QMatrix4x4 &model) const;
     QUniformValue *modelViewNormalMatrix(const QMatrix4x4 &model) const;
+
+    void setUniformValue(QUniformPack &uniformPack, const QString &name, const QVariant &value);
 };
 
 } // namespace Render

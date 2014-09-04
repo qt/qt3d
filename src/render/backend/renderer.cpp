@@ -449,10 +449,14 @@ void Renderer::submitRenderViews()
             // Set the Viewport
             m_graphicsContext->setViewport(renderViews[i]->viewport());
             // Set RenderTarget ...
+            // Activate RenderTarget
+            m_graphicsContext->activateRenderTarget(m_renderTargetManager->data(renderViews[i]->renderTarget()));
+
+            // Active RenderAttachments
+            m_graphicsContext->activateAttachments(renderViews[i]->attachmentPack());
 
             // Initialize QGraphicsContext for drawing
             executeCommands(renderViews.at(i)->commands());
-
 
             frameElapsed = timer.elapsed() - frameElapsed;
             qCDebug(Rendering) << Q_FUNC_INFO << "Submitted Renderview " << i + 1 << "/" << renderViewsCount  << "in " << frameElapsed << "ms";
@@ -552,7 +556,6 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
         // RenderCommand should have a handle to the corresponding VAO for the Mesh and Shader
 
         bool drawIndexed = !meshData->indexAttribute().isNull();
-
 
         //// We activate the shader here
         // This will fill the attributes & uniforms info the first time the shader is loaded

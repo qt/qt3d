@@ -86,6 +86,8 @@
 #include <Qt3DRenderer/private/rendertargetmanager_p.h>
 #include <Qt3DRenderer/private/scenemanager_p.h>
 #include <Qt3DRenderer/private/attachmentmanager_p.h>
+#include <Qt3DRenderer/private/texturemanager_p.h>
+#include <Qt3DRenderer/qtexture.h>
 
 #include <Qt3DCore/qcamera.h>
 #include <Qt3DCore/qcameralens.h>
@@ -223,6 +225,10 @@ void RenderSceneBuilder::createRenderElement(QNode *frontend)
         createRenderElementHelper<QAbstractScene, RenderScene, SceneManager>(frontend,
                                                                             m_renderer->sceneManager());
     }
+    else if (qobject_cast<QTexture *>(frontend)) {
+        createRenderElementHelper<QTexture, RenderTexture, TextureManager>(frontend,
+                                                                           m_renderer->textureManager());
+    }
     else if (qobject_cast<QParameter *>(frontend)) {
 
     }
@@ -276,8 +282,12 @@ void RenderSceneBuilder::releaseRenderElement(QNode *frontend)
         m_renderer->shaderManager()->releaseResource(frontend->uuid());
     else if (qobject_cast<QRenderTarget *>(frontend))
         m_renderer->renderTargetManager()->releaseResource(frontend->uuid());
+    else if (qobject_cast<QRenderAttachment *>(frontend))
+        m_renderer->attachmentManager()->releaseResource(frontend->uuid());
     else if (qobject_cast<QAbstractScene *>(frontend))
         m_renderer->sceneManager()->releaseResource(frontend->uuid());
+    else if (qobject_cast<QTexture *>(frontend))
+        m_renderer->textureManager()->releaseResource(frontend->uuid());
 }
 
 RenderEntity* RenderSceneBuilder::createRenderNode(QEntity *entity)

@@ -66,7 +66,7 @@ class QT3DRENDERERSHARED_EXPORT QRenderAttachment : public QNode
 
 public:
     enum RenderAttachmentType {
-        ColorAttachment0,
+        ColorAttachment0 = 0,
         ColorAttachment1,
         ColorAttachment2,
         ColorAttachment3,
