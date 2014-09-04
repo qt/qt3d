@@ -105,6 +105,11 @@ void QRenderAttachment::setTexture(QTexture *texture)
     if (texture != d->m_texture) {
         d->m_texture = texture;
         emit textureChanged();
+
+        // Handle inline declaration
+        if (!texture->parent() || texture->parent() == this)
+            QNode::addChild(texture);
+
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
             change->setPropertyName(QByteArrayLiteral("texture"));

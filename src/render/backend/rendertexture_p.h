@@ -56,18 +56,22 @@ class QTexture;
 
 namespace Render {
 
+class Renderer;
+
 class RenderTexture
 {
 public:
     RenderTexture();
 
     void setPeer(QTexture* peer);
+    void setRenderer(Renderer *renderer);
     QOpenGLTexture* getOrCreateGLTexture() ;
 
     GLint textureId();
 private:
-    QTexture* m_peer;
-    QOpenGLTexture* m_gl;
+    QTexture *m_peer;
+    QOpenGLTexture *m_gl;
+    Renderer *m_renderer;
 
     QOpenGLTexture *buildGLTexture();
     void setToGLTexture(TexImageDataPtr imgData);

@@ -43,6 +43,7 @@
 #include "renderlogging.h"
 #include <Qt3DCore/qscenepropertychange.h>
 #include <private/qparameter_p.h>
+#include <Qt3DRenderer/qtexture.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -113,6 +114,12 @@ void QParameter::setValue(const QVariant &dv)
     if (d->m_value != dv) {
         d->m_value = dv;
         emit valueChanged();
+
+        // In case texture are declared inline
+        QTexture *txt = dv.value<QTexture *>();
+        if (txt != Q_NULLPTR && (!txt->parent() || txt->parent() == this))
+            QNode::addChild(txt);
+
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
         change->setPropertyName(d->m_name.toUtf8());
         change->setValue(d->m_value);

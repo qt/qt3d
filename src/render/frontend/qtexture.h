@@ -61,16 +61,16 @@ class QT3DRENDERERSHARED_EXPORT QTexture : public QNode
     Q_ENUMS(Filter)
     Q_ENUMS(WrapMode)
     Q_ENUMS(Status)
-    Q_PROPERTY(QTexture::Target target READ target WRITE setTarget NOTIFY targetChanged)
-    Q_PROPERTY(QTexture::TextureFormat format READ format WRITE setFormat NOTIFY formatChanged)
+    Q_PROPERTY(Target target READ target WRITE setTarget NOTIFY targetChanged)
+    Q_PROPERTY(TextureFormat format READ format WRITE setFormat NOTIFY formatChanged)
     Q_PROPERTY(bool generateMipMaps READ generateMipMaps WRITE setGenerateMipMaps NOTIFY generateMipMapsChanged)
-    Q_PROPERTY(QTexture::WrapMode wrapMode READ wrapMode WRITE setWrapMode NOTIFY wrapModeChanged)
-    Q_PROPERTY(QTexture::Status status READ status NOTIFY statusChanged)
+    Q_PROPERTY(WrapMode wrapMode READ wrapMode WRITE setWrapMode NOTIFY wrapModeChanged)
+    Q_PROPERTY(Status status READ status NOTIFY statusChanged)
     Q_PROPERTY(int width READ width WRITE setWidth NOTIFY widthChanged)
     Q_PROPERTY(int height READ height WRITE setHeight NOTIFY heightChanged)
     Q_PROPERTY(int depth READ depth WRITE setDepth NOTIFY depthChanged)
-    Q_PROPERTY(QTexture::Filter magnificationFilter READ magnificationFilter WRITE setMagnificationFilter NOTIFY magnificationFilterChanged)
-    Q_PROPERTY(QTexture::Filter minificationFilter READ minificationFilter WRITE setMinificationFilter NOTIFY minificationFilterChanged)
+    Q_PROPERTY(Filter magnificationFilter READ magnificationFilter WRITE setMagnificationFilter NOTIFY magnificationFilterChanged)
+    Q_PROPERTY(Filter minificationFilter READ minificationFilter WRITE setMinificationFilter NOTIFY minificationFilterChanged)
 
 public:
     explicit QTexture(QNode *parent = 0);
