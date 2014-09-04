@@ -39,6 +39,9 @@ src_rollerball.subdir = $$PWD/rollerball
 src_rollerball.target = sub-rollerball
 src_rollerball.depends = src_exampleresources
 
+src_deferredrenderer.subdir = $$PWD/deferred-renderer
+src_deferredrenderer.target = sub-deferredrenderer
+src_deferredrenderer.depends = src_exampleresources
 
 SUBDIRS += \
     src_exampleresources \
@@ -49,7 +52,8 @@ SUBDIRS += \
     src_multiviewport \
     src_torusqml \
     src_toruscpp \
-    src_bigmodelqml
+    src_bigmodelqml \
+    src_deferredrenderer
 
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d
