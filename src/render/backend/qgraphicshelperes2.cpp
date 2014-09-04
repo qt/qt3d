@@ -249,6 +249,20 @@ void QGraphicsHelperES2::bindFrameBufferAttachment(QOpenGLTexture *texture, cons
     texture->release();
 }
 
+bool QGraphicsHelperES2::supportsFeature(QGraphicsHelperInterface::Feature feature) const
+{
+    switch (feature) {
+    case MRT:
+        return false;
+    default:
+        return false;
+    }
+}
+void QGraphicsHelperES2::drawBuffers(GLsizei , const int *)
+{
+    qCritical() << "drawBuffers is not supported by ES 2.0"
+}
+
 } // Render
 } //Qt3D
 

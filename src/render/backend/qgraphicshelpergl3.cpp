@@ -248,6 +248,26 @@ void QGraphicsHelperGL3::bindFrameBufferAttachment(QOpenGLTexture *texture, cons
     texture->release();
 }
 
+bool QGraphicsHelperGL3::supportsFeature(QGraphicsHelperInterface::Feature feature) const
+{
+    switch (feature) {
+    case MRT:
+        return true;
+    default:
+        return false;
+    }
+}
+
+
+void QGraphicsHelperGL3::drawBuffers(GLsizei n, const int *bufs)
+{
+    GLenum drawBufs[n];
+
+    for (int i = 0; i < n; i++)
+        drawBufs[i] = GL_COLOR_ATTACHMENT0 + bufs[i];
+    m_funcs->glDrawBuffers(n, drawBufs);
+}
+
 } // Render
 } // Qt3D
 

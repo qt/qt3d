@@ -57,6 +57,11 @@ class Attachment;
 class QGraphicsHelperInterface
 {
 public:
+
+    enum Feature {
+        MRT = 0
+    };
+
     virtual ~QGraphicsHelperInterface() {}
     virtual void    initializeHelper(QOpenGLContext *context, QAbstractOpenGLFunctions *functions) = 0;
     virtual void    drawElementsInstanced(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices, GLsizei instances) = 0;
@@ -79,7 +84,8 @@ public:
     virtual void    bindFrameBufferObject(GLuint frameBufferId) = 0;
     virtual bool    checkFrameBufferComplete() = 0;
     virtual void    bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment) = 0;
-
+    virtual bool    supportsFeature(Feature feature) const = 0;
+    virtual void    drawBuffers(GLsizei n, const int *bufs) = 0;
 };
 
 } // Render

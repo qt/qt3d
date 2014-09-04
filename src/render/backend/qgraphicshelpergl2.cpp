@@ -69,7 +69,7 @@ void QGraphicsHelperGL2::initializeHelper(QOpenGLContext *context,
     Q_UNUSED(ok);
     // Check Vertex Array Object extension is present
     Q_ASSERT(context->hasExtension(QByteArrayLiteral("GL_ARB_vertex_array_object")));
-    if (context->hasExtension(QByteArrayLiteral("GL_EXT_framebuffer_object"))) {
+    if (context->hasExtension(QByteArrayLiteral("GL_ARB_framebuffer_object"))) {
         m_fboFuncs = new QOpenGLExtension_ARB_framebuffer_object();
         const bool extensionOk = m_fboFuncs->initializeOpenGLFunctions();
         Q_ASSERT(extensionOk);
@@ -263,6 +263,25 @@ void QGraphicsHelperGL2::bindFrameBufferAttachment(QOpenGLTexture *texture, cons
             qCritical() << "Texture format not supported for Attachment on OpenGL 2.0";
         texture->release();
     }
+}
+
+bool QGraphicsHelperGL2::supportsFeature(QGraphicsHelperInterface::Feature feature) const
+{
+    switch (feature) {
+    case MRT:
+        return (m_fboFuncs != Q_NULLPTR);
+    default:
+        return false;
+    }
+}
+
+void QGraphicsHelperGL2::drawBuffers(GLsizei n, const int *bufs)
+{
+    GLenum drawBufs[n];
+
+    for (int i = 0; i < n; i++)
+        drawBufs[i] = GL_COLOR_ATTACHMENT0 + bufs[i];
+    m_funcs->glDrawBuffers(n, drawBufs);
 }
 
 void QGraphicsHelperGL2::bindFrameBufferObject(GLuint frameBufferId)
