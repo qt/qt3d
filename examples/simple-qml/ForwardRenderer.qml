@@ -59,6 +59,7 @@ TechniqueFilter {
     property alias cameraViewportBottomLeft: cameraSelectorBottomLeft.camera
     property alias layerFilters : layerFilter.layers
     property alias clearColor : viewport.clearColor
+    property alias colorAttachmentTexture : defaultColorAttachment.texture
 
     criteria : [
         Criterion { name : "RenderingStyle"; value : "forward";},
@@ -92,8 +93,20 @@ TechniqueFilter {
             CameraSelector {
                 id: cameraSelectorBottomLeft
                 objectName : "cameraSelector"
-                RenderPassFilter { criteria : [Criterion {name : "Name"; value : "Texture";}] }
-                RenderPassFilter { criteria : [Criterion {name : "Name"; value : "Lighting";}] }
+                RenderTargetSelector {
+                    target : RenderTarget {
+                        attachments : [
+                            RenderAttachment {
+                                id : defaultColorAttachment
+                                type : RenderAttachment.ColorAttachment0
+                                name : "diffuse"
+                            }
+                        ]
+                    }
+                    RenderPassFilter { criteria : [Criterion {name : "Name"; value : "Texture";}] }
+                    RenderPassFilter { criteria : [Criterion {name : "Name"; value : "Lighting";}] }
+                }
+                RenderPassFilter { criteria : [Criterion {name : "Name"; value : "Final";}] }
             }
         }
     }

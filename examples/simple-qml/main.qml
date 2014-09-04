@@ -74,6 +74,7 @@ Entity {
         }
     }
 
+
     Instantiator {
         id : instanciator
         model : 5
@@ -112,7 +113,21 @@ Entity {
                 cameraViewportBottomLeft: camera1
                 cameraViewportTopRight: camera2
                 clearColor: "black"
+                colorAttachmentTexture: colorAttachment
             }
+        }
+
+        Texture
+        {
+            id : colorAttachment
+            target : Texture.Target2D
+            width : 512
+            height : 512
+            format : Texture.RGBA32F
+            generateMipMaps : false
+            magnificationFilter : Texture.Linear
+            minificationFilter : Texture.Linear
+            wrapMode : Texture.ClampToEdge
         }
 
         components: [external_forward_renderer]
@@ -234,7 +249,9 @@ Entity {
         Material {
             id : ballTexturedMaterial
 
-            parameters : [Parameter { name : "tex"; value : Texture { source : "assets/gltf/wine/Wood_Cherry_Original_.jpg" } }]
+            parameters : [Parameter { name : "tex"; value : Texture { source : "assets/gltf/wine/Wood_Cherry_Original_.jpg" } },
+            Parameter { name : "gBuffer"; value : colorAttachment }
+            ]
 
             effect : Effect {
                 techniques : [
@@ -394,7 +411,38 @@ Entity {
                                         fragColor = color;
                                     }"
                                 }
+                            },
+                            RenderPass {
+                                criteria : Criterion {name : "Name"; value : "Final" }
+                                shaderProgram : ShaderProgram {
+                                    vertexShader: "
+                                    #version 140
+                                    in vec4 vertexPosition;
+                                    in vec2 vertexTexCoord;
+                                    out vec2 texCoord;
+                                    uniform mat4 modelViewProjection;
+
+                                    void main()
+                                    {
+                                        texCoord = vertexTexCoord;
+                                        gl_Position = modelViewProjection * vertexPosition;
+                                    }
+                                    "
+
+                                    fragmentShader: "
+                                    #version 140
+                                    in vec2 texCoord;
+                                    out vec4 fragColor;
+                                    uniform sampler2D gBuffer;
+
+                                    void main()
+                                    {
+                                        fragColor = texture2D(gBuffer, texCoord);
+                                    }
+                                    "
+                                }
                             }
+
                         ]
                     }
                 ]
