@@ -90,6 +90,7 @@ private:
 
     QHash<QString, int> m_uniforms;
     QHash<QString, int> m_attributes;
+    QHash<QString, int> m_fragOutputs;
 
     QByteArray m_vertexSourceCode;
     QByteArray m_fragmentSourceCode;

@@ -63,7 +63,8 @@ public:
     {
         Uniform = 0,
         Attribute,
-        StandardUniform
+        StandardUniform,
+        FragmentOutput
     };
 
     explicit QParameterMapper(QNode *parent = 0);

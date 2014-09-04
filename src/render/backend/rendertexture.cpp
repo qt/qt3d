@@ -71,6 +71,7 @@ void RenderTexture::setRenderer(Renderer *renderer)
 
 QOpenGLTexture *RenderTexture::getOrCreateGLTexture()
 {
+    // We need to handle texture resize
     if (m_gl)
         return m_gl;
 
