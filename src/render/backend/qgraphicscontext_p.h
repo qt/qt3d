@@ -112,8 +112,7 @@ public:
 
     void activateShader(RenderShader* shader);
 
-    void activateRenderTarget(RenderTarget *renderTarget);
-    void activateAttachments(const AttachmentPack &attachments);
+    void activateRenderTarget(RenderTarget *renderTarget, const AttachmentPack &attachments);
 
     RenderMaterial* activeMaterial() const
     { return m_material; }

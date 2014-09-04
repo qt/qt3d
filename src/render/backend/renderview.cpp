@@ -176,7 +176,10 @@ QUniformValue *RenderView::modelViewMatrix(const QMatrix4x4 &model) const
 QUniformValue *RenderView::modelViewProjectionMatrix(const QMatrix4x4 &model) const
 {
     SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
-    t->setValue(m_renderCamera->projection() * *m_viewMatrix * model);
+    QMatrix4x4 projection;
+    if (m_renderCamera)
+        projection = m_renderCamera->projection();
+    t->setValue(projection * *m_viewMatrix * model);
     return t;
 }
 
@@ -197,7 +200,10 @@ QUniformValue *RenderView::inverseViewMatrix(const QMatrix4x4 &) const
 QUniformValue *RenderView::inverseProjectionMatrix(const QMatrix4x4 &) const
 {
     SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
-    t->setValue(m_renderCamera->projection().inverted());
+    QMatrix4x4 projection;
+    if (m_renderCamera)
+        projection = m_renderCamera->projection();
+    t->setValue(projection.inverted());
     return t;
 }
 
@@ -211,7 +217,10 @@ QUniformValue *RenderView::inverseModelViewMatrix(const QMatrix4x4 &model) const
 QUniformValue *RenderView::inverseModelViewProjectionMatrix(const QMatrix4x4 &model) const
 {
     SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
-    t->setValue((m_renderCamera->projection() * *m_viewMatrix * model).inverted());
+    QMatrix4x4 projection;
+    if (m_renderCamera)
+        projection = m_renderCamera->projection();
+    t->setValue((projection * *m_viewMatrix * model).inverted());
     return t;
 }
 
@@ -297,7 +306,6 @@ void RenderView::setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf)
                     m_renderCamera = tmpCamNode->renderComponent<RenderCameraLens>();
                     // If we have a viewMatrix pointer instead of directly a QMatrix4x4 object in RenderView
                     // This allows us to keep the size of RenderView smaller and avoid huge block fragmentation
-                    m_viewMatrix = m_allocator->allocate<QMatrix4x4>();
                     *m_viewMatrix = *tmpCamNode->worldTransform();
                 }
                 break;
@@ -315,15 +323,15 @@ void RenderView::setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf)
         case FrameGraphNode::RenderTarget:
             if (m_renderTarget.isNull()) // Can be set once
                 m_renderTarget = m_renderer->renderTargetManager()->lookupHandle(static_cast<RenderTargetSelector *>(node)->renderTargetUuid());
-                RenderTarget *renderTarget;
-                if ((renderTarget = m_renderer->renderTargetManager()->data(m_renderTarget)) != Q_NULLPTR) {
-                    // Add renderTarget Handle and build renderCommand AttachmentPack
-                    Q_FOREACH (const QUuid &attachmentId, renderTarget->renderAttachments()) {
-                        RenderAttachment *attachment = m_renderer->attachmentManager()->lookupResource(attachmentId);
-                        if (attachment != Q_NULLPTR)
-                            m_attachmentPack.addAttachment(attachment->attachment());
-                    }
+            RenderTarget *renderTarget;
+            if ((renderTarget = m_renderer->renderTargetManager()->data(m_renderTarget)) != Q_NULLPTR) {
+                // Add renderTarget Handle and build renderCommand AttachmentPack
+                Q_FOREACH (const QUuid &attachmentId, renderTarget->renderAttachments()) {
+                    RenderAttachment *attachment = m_renderer->attachmentManager()->lookupResource(attachmentId);
+                    if (attachment != Q_NULLPTR)
+                        m_attachmentPack.addAttachment(attachment->attachment());
                 }
+            }
             break;
 
         case FrameGraphNode::TechniqueFilter:
@@ -370,6 +378,7 @@ void RenderView::setRenderer(Renderer *renderer)
 void RenderView::setAllocator(QFrameAllocator *allocator)
 {
     m_allocator = allocator;
+    m_viewMatrix = m_allocator->allocate<QMatrix4x4>();
 }
 
 void RenderView::preprocessRenderTree(RenderEntity *node)
@@ -391,7 +400,7 @@ void RenderView::preprocessRenderTree(RenderEntity *node)
 void RenderView::buildRenderCommands(RenderEntity *node)
 {
     // Build renderCommand for current node
-    if (m_renderCamera != Q_NULLPTR && checkContainedWithinLayer(node)) {
+    if (checkContainedWithinLayer(node)) {
         RenderMesh *mesh = Q_NULLPTR;
         if (node->componentHandle<RenderMesh, 16>() != HMesh()
                 && (mesh = node->renderComponent<RenderMesh>()) != Q_NULLPTR) {

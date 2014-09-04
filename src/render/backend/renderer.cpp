@@ -450,10 +450,8 @@ void Renderer::submitRenderViews()
             m_graphicsContext->setViewport(renderViews[i]->viewport());
             // Set RenderTarget ...
             // Activate RenderTarget
-            m_graphicsContext->activateRenderTarget(m_renderTargetManager->data(renderViews[i]->renderTarget()));
-
-            // Active RenderAttachments
-            m_graphicsContext->activateAttachments(renderViews[i]->attachmentPack());
+            m_graphicsContext->activateRenderTarget(m_renderTargetManager->data(renderViews[i]->renderTarget()),
+                                                    renderViews[i]->attachmentPack());
 
             // Initialize QGraphicsContext for drawing
             executeCommands(renderViews.at(i)->commands());

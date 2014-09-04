@@ -161,6 +161,8 @@ void QGraphicsContext::beginDrawing(const QColor &clearColor)
 
 void QGraphicsContext::endDrawing()
 {
+    // Restore default FBO
+    m_glHelper->bindFrameBufferObject(0);
     m_gl->doneCurrent();
     m_gl->swapBuffers(m_surface);
     m_stateSet = Q_NULLPTR;
@@ -235,14 +237,42 @@ void QGraphicsContext::activateShader(RenderShader *shader)
     }
 }
 
-void QGraphicsContext::activateRenderTarget(RenderTarget *renderTarget)
+void QGraphicsContext::activateRenderTarget(RenderTarget *renderTarget, const AttachmentPack &attachments)
 {
     GLuint fboId = 0;
     if (renderTarget != Q_NULLPTR) {
+        // New RenderTarget
         if (!m_renderTargets.contains(renderTarget->renderTargetUuid())) {
-            fboId = m_glHelper->createFrameBufferObject();
-            if (fboId != 0)
+            // The FBO is created and its attachments are set once
+            if ((fboId = m_glHelper->createFrameBufferObject()) != 0) {
+                // Insert FBO into hash
                 m_renderTargets.insert(renderTarget->renderTargetUuid(), fboId);
+                // Bind FBO
+                m_glHelper->bindFrameBufferObject(fboId);
+                // Set FBO attachments
+                int drawBuffers[QRenderAttachment::ColorAttachment15 + 1];
+                int i = 0;
+                Q_FOREACH (const Attachment &attachment, attachments.attachments()) {
+                    RenderTexture *rTex = m_renderer->textureManager()->lookupResource(attachment.m_textureUuid);
+                    if (rTex != Q_NULLPTR) {
+                        QOpenGLTexture *glTex = rTex->getOrCreateGLTexture();
+                        m_glHelper->bindFrameBufferAttachment(glTex, attachment);
+                        if (attachment.m_type <= QRenderAttachment::ColorAttachment15)
+                            drawBuffers[i++] = attachment.m_type;
+                    }
+                }
+                if (m_glHelper->checkFrameBufferComplete()) {
+                    if (i > 1) {// We need MRT
+                        if (m_glHelper->supportsFeature(QGraphicsHelperInterface::MRT)) {
+                            // Set up MRT, glDrawBuffers...
+                            m_glHelper->drawBuffers(i, drawBuffers);
+                        }
+                        qDebug() << "FBO Complete";
+                    }
+                }
+                else
+                    qWarning() << "FBO incomplete";
+            }
             else
                 qCritical() << "Failed to create FBO";
         }
@@ -251,22 +281,6 @@ void QGraphicsContext::activateRenderTarget(RenderTarget *renderTarget)
         }
     }
     m_glHelper->bindFrameBufferObject(fboId);
-}
-
-void QGraphicsContext::activateAttachments(const AttachmentPack &attachments)
-{
-    Q_FOREACH (const Attachment &attachment, attachments.attachments()) {
-        RenderTexture *rTex = m_renderer->textureManager()->lookupResource(attachment.m_textureUuid);
-        if (rTex != Q_NULLPTR) {
-            QOpenGLTexture *glTex = rTex->getOrCreateGLTexture();
-            m_glHelper->bindFrameBufferAttachment(glTex, attachment);
-            if (m_glHelper->checkFrameBufferComplete()) {
-            // Set up MRT
-            }
-            else
-                qWarning() << "FBO incomplete";
-        }
-    }
 }
 
 void QGraphicsContext::setActiveMaterial(RenderMaterial *rmat)
