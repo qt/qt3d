@@ -84,6 +84,7 @@
 #include <Qt3DRenderer/qscissortest.h>
 #include <Qt3DRenderer/qdithering.h>
 #include <Qt3DRenderer/qrenderattachment.h>
+#include <Qt3DRenderer/qclearbuffer.h>
 #include <Qt3DQuickRenderer/quick3dtechnique.h>
 #include <Qt3DQuickRenderer/quick3dmaterial.h>
 #include <Qt3DQuickRenderer/quick3dtechniquefilter.h>
@@ -139,7 +140,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterExtendedType<Qt3D::QTechniqueFilter, Qt3D::Render::Quick::Quick3DTechniqueFilter>(uri, 2, 0, "TechniqueFilter");
     qmlRegisterExtendedType<Qt3D::QViewport, Qt3D::Render::Quick::Quick3DViewport>(uri, 2, 0, "Viewport");
     qmlRegisterType<Qt3D::QRenderTargetSelector>(uri, 2, 0, "RenderTargetSelector");
-    // Should be uncreatable extended type
+    qmlRegisterType<Qt3D::QClearBuffer>(uri, 2, 0, "ClearBuffer");
     qmlRegisterExtendedUncreatableType<Qt3D::QFrameGraphItem, Qt3D::Render::Quick::Quick3DFrameGraphItem>(uri, 2, 0, "FrameGraphItem", QStringLiteral("FrameGraphItem is a base class"));
     qmlRegisterType<Qt3D::QFrameGraph>(uri, 2, 0, "FrameGraph");
 
