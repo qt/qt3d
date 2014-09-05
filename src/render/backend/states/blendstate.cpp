@@ -224,7 +224,7 @@ StencilTest::StencilTest(uint mask, GLenum func, GLenum faceMode)
 
 void StencilTest::apply(QGraphicsContext *) const
 {
-    glEnable(GL_STENCIL);
+    glEnable(GL_STENCIL_TEST);
     glStencilFunc(m_2, m_3, m_1);
 }
 
