@@ -91,7 +91,7 @@ void QAbstractMaterial::setEffect(QAbstractEffect *effect)
         if (d->m_effect != Q_NULLPTR && d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, this));
             change->setPropertyName(QByteArrayLiteral("effect"));
-            change->setValue(QVariant::fromValue(effect));
+            change->setValue(QVariant::fromValue(d->m_effect));
             notifyObservers(change);
         }
 
