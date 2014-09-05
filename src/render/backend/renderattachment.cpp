@@ -76,6 +76,7 @@ void RenderAttachment::setPeer(QRenderAttachment *peer)
             m_attachmentData.m_layer = peer->layer();
             m_attachmentData.m_type = peer->type();
             m_attachmentData.m_face = peer->face();
+            m_attachmentData.m_name = peer->name();
             if (peer->texture())
                 m_attachmentData.m_textureUuid = peer->texture()->uuid();
         }
