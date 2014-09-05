@@ -62,6 +62,9 @@ TechniqueFilter {
         CameraSelector {
             id : cameraSelector
             objectName : "cameraSelector"
+            ClearBuffer {
+                buffers : ClearBuffer.ColorDepthBuffer
+            }
         }
     }
 }

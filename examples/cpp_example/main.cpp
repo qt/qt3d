@@ -69,6 +69,7 @@
 #include <Qt3DRenderer/qviewport.h>
 #include <Qt3DRenderer/rendereraspect.h>
 #include <Qt3DRenderer/qframegraph.h>
+#include <Qt3DRenderer/qclearbuffer.h>
 
 int main(int ac, char **av)
 {
@@ -141,11 +142,14 @@ int main(int ac, char **av)
     Qt3D::QCameraSelector *cameraSelector = new Qt3D::QCameraSelector();
     Qt3D::QRenderPassFilter *defaultRenderPassFilter = new Qt3D::QRenderPassFilter();
     Qt3D::QViewport *viewport = new Qt3D::QViewport();
+    Qt3D::QClearBuffer *clearBuffer = new Qt3D::QClearBuffer();
 
     // TechiqueFilter and renderPassFilter are not implement yet
 
     viewport->setRect(QRectF(0, 0, 1, 1));
-    viewport->addChild(cameraSelector);
+    viewport->addChild(clearBuffer);
+    clearBuffer->setBuffers(Qt3D::QClearBuffer::ColorDepthBuffer);
+    clearBuffer->addChild(cameraSelector);
     cameraSelector->setCamera(cameraEntity);
     cameraSelector->addChild(defaultRenderPassFilter);
     techniqueFilter->addChild(viewport);

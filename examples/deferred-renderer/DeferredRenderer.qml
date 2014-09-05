@@ -54,12 +54,16 @@ Viewport {
         RenderTargetSelector {
             id : gBufferTargetSelector
 
-            RenderPassFilter {
-                id : geometryPass
-                criteria : Criterion { name : "pass"; value : "geometry" }
+            ClearBuffer {
+                buffers: ClearBuffer.ColorDepthBuffer
 
-                CameraSelector {
-                    id : sceneCameraSelector
+                RenderPassFilter {
+                    id : geometryPass
+                    criteria : Criterion { name : "pass"; value : "geometry" }
+
+                    CameraSelector {
+                        id : sceneCameraSelector
+                    }
                 }
             }
         }
@@ -67,9 +71,15 @@ Viewport {
 
     LayerFilter {
         layers : "screenQuad"
-        RenderPassFilter {
-            id : finalPass
-            criteria : Criterion { name : "pass"; value : "final" }
+
+        ClearBuffer {
+            buffers: ClearBuffer.ColorDepthBuffer
+
+            RenderPassFilter {
+                id : finalPass
+                criteria : Criterion { name : "pass"; value : "final" }
+            }
+
         }
     }
 }

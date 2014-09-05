@@ -63,8 +63,11 @@ TechniqueFilter {
         id: viewport
         rect: Qt.rect(0.0, 0.0, 1.0, 1.0) // From Top Left
 
-        CameraSelector {
-            id : cameraSelector
+        ClearBuffer {
+            buffers : ClearBuffer.ColorDepthBuffer
+            CameraSelector {
+                id : cameraSelector
+            }
         }
     }
 }

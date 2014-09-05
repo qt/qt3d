@@ -90,29 +90,32 @@ Entity {
                 id : mainViewport
                 rect: Qt.rect(0, 0, 1, 1)
 
+                ClearBuffer {
+                    buffers : ClearBuffer.ColorDepthBuffer
 
-                Viewport {
-                    id : topLeftViewport
-                    rect : Qt.rect(0, 0, 0.5, 0.5)
-                    CameraSelector {id : cameraSelectorTopLeftViewport; camera : sceneRoot.cameras[0]}
-                }
+                    Viewport {
+                        id : topLeftViewport
+                        rect : Qt.rect(0, 0, 0.5, 0.5)
+                        CameraSelector {id : cameraSelectorTopLeftViewport; camera : sceneRoot.cameras[0]}
+                    }
 
-                Viewport {
-                    id : topRightViewport
-                    rect : Qt.rect(0.5, 0, 0.5, 0.5)
-                    CameraSelector {id : cameraSelectorTopRightViewport;camera : sceneRoot.cameras[1]}
-                }
+                    Viewport {
+                        id : topRightViewport
+                        rect : Qt.rect(0.5, 0, 0.5, 0.5)
+                        CameraSelector {id : cameraSelectorTopRightViewport;camera : sceneRoot.cameras[1]}
+                    }
 
-                Viewport {
-                    id : bottomLeftViewport
-                    rect : Qt.rect(0, 0.5, 0.5, 0.5)
-                    CameraSelector {id : cameraSelectorBottomLeftViewport; camera : sceneRoot.cameras[2]}
-                }
+                    Viewport {
+                        id : bottomLeftViewport
+                        rect : Qt.rect(0, 0.5, 0.5, 0.5)
+                        CameraSelector {id : cameraSelectorBottomLeftViewport; camera : sceneRoot.cameras[2]}
+                    }
 
-                Viewport {
-                    id : bottomRightViewport
-                    rect : Qt.rect(0.5, 0.5, 0.5, 0.5)
-                    CameraSelector {id : cameraSelectorBottomRightViewport; camera : sceneRoot.cameras[3]}
+                    Viewport {
+                        id : bottomRightViewport
+                        rect : Qt.rect(0.5, 0.5, 0.5, 0.5)
+                        CameraSelector {id : cameraSelectorBottomRightViewport; camera : sceneRoot.cameras[3]}
+                    }
                 }
             } // mainViewport
         } // frameGraph

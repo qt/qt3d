@@ -66,48 +66,52 @@ TechniqueFilter {
         Criterion { name : "Enabled"; value : true;}
     ]
 
-    Viewport {
-        id: viewport
-        objectName : "viewport"
-        rect: Qt.rect(0.0, 0.0, 1.0, 1.0) // From Top Left
+    ClearBuffer {
+        buffers : ClearBuffer.ColorDepthBuffer
 
         Viewport {
-            id : top_right_viewport
-            rect: Qt.rect(0.5, 0, 0.5, 0.5)
-            objectName : "topRightViewport"
-            CameraSelector {
-                id : cameraSelectorTopRight
-                objectName : "cameraSelector"
-                LayerFilter {
-                    id : layerFilter
-                    objectName : "layerFilter"
-                    RenderPassFilter { criteria : [Criterion {name : "Name"; value : "TextureLighting";}] }
+            id: viewport
+            objectName : "viewport"
+            rect: Qt.rect(0.0, 0.0, 1.0, 1.0) // From Top Left
+
+            Viewport {
+                id : top_right_viewport
+                rect: Qt.rect(0.5, 0, 0.5, 0.5)
+                objectName : "topRightViewport"
+                CameraSelector {
+                    id : cameraSelectorTopRight
+                    objectName : "cameraSelector"
+                    LayerFilter {
+                        id : layerFilter
+                        objectName : "layerFilter"
+                        RenderPassFilter { criteria : [Criterion {name : "Name"; value : "TextureLighting";}] }
+                    }
                 }
             }
         }
+    }
 
-        Viewport {
-            id : bottom_left_viewport
-            objectName : "bottomLeftViewport"
-            rect: Qt.rect(0.0, 0.5, 0.5, 0.5)
-            CameraSelector {
-                id: cameraSelectorBottomLeft
-                objectName : "cameraSelector"
-                RenderTargetSelector {
-                    target : RenderTarget {
-                        attachments : [
-                            RenderAttachment {
-                                id : defaultColorAttachment
-                                type : RenderAttachment.ColorAttachment0
-                                name : "diffuse"
-                            }
-                        ]
-                    }
-                    RenderPassFilter { criteria : [Criterion {name : "Name"; value : "Texture";}] }
-                    RenderPassFilter { criteria : [Criterion {name : "Name"; value : "Lighting";}] }
+    Viewport {
+        id : bottom_left_viewport
+        objectName : "bottomLeftViewport"
+        rect: Qt.rect(0.0, 0.5, 0.5, 0.5)
+        CameraSelector {
+            id: cameraSelectorBottomLeft
+            objectName : "cameraSelector"
+            RenderTargetSelector {
+                target : RenderTarget {
+                    attachments : [
+                        RenderAttachment {
+                            id : defaultColorAttachment
+                            type : RenderAttachment.ColorAttachment0
+                            name : "diffuse"
+                        }
+                    ]
                 }
-                RenderPassFilter { criteria : [Criterion {name : "Name"; value : "Final";}] }
+                RenderPassFilter { criteria : [Criterion {name : "Name"; value : "Texture";}] }
+                RenderPassFilter { criteria : [Criterion {name : "Name"; value : "Lighting";}] }
             }
+            RenderPassFilter { criteria : [Criterion {name : "Name"; value : "Final";}] }
         }
     }
 }
