@@ -268,6 +268,12 @@ void QGraphicsHelperGL3::drawBuffers(GLsizei n, const int *bufs)
     m_funcs->glDrawBuffers(n, drawBufs);
 }
 
+void QGraphicsHelperGL3::bindFragDataLocation(GLuint shader, const QHash<QString, int> &outputs)
+{
+    Q_FOREACH (const QString &name, outputs.keys())
+        m_funcs->glBindFragDataLocation(shader, outputs.value(name), name.toStdString().c_str());
+}
+
 } // Render
 } // Qt3D
 

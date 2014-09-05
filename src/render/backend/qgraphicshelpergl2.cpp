@@ -284,6 +284,11 @@ void QGraphicsHelperGL2::drawBuffers(GLsizei n, const int *bufs)
     m_funcs->glDrawBuffers(n, drawBufs);
 }
 
+void QGraphicsHelperGL2::bindFragDataLocation(GLuint, const QHash<QString, int> &)
+{
+    qCritical() << "bindFragDataLocation is not supported by GL 2.0";
+}
+
 void QGraphicsHelperGL2::bindFrameBufferObject(GLuint frameBufferId)
 {
     if (m_fboFuncs != Q_NULLPTR)

@@ -61,7 +61,7 @@ QGraphicsHelperES2::~QGraphicsHelperES2()
 }
 
 void QGraphicsHelperES2::initializeHelper(QOpenGLContext *context,
-                                         QAbstractOpenGLFunctions *functions)
+                                          QAbstractOpenGLFunctions *functions)
 {
     Q_UNUSED(context)
     m_funcs = static_cast<QOpenGLFunctions_ES2*>(functions);
@@ -73,47 +73,47 @@ void QGraphicsHelperES2::initializeHelper(QOpenGLContext *context,
 }
 
 void QGraphicsHelperES2::drawElementsInstanced(GLenum primitiveType,
-                                              GLsizei primitiveCount,
-                                              GLint indexType,
-                                              void *indices,
-                                              GLsizei instances)
+                                               GLsizei primitiveCount,
+                                               GLint indexType,
+                                               void *indices,
+                                               GLsizei instances)
 {
     for (GLint i = 0; i < instances; i++)
         drawElements(primitiveType,
-                           primitiveCount,
-                           indexType,
-                           indices);
+                     primitiveCount,
+                     indexType,
+                     indices);
 }
 
 void QGraphicsHelperES2::drawArraysInstanced(GLenum primitiveType,
-                                            GLint first,
-                                            GLsizei count,
-                                            GLsizei instances)
+                                             GLint first,
+                                             GLsizei count,
+                                             GLsizei instances)
 {
     for (GLint i = 0; i < instances; i++)
         drawArrays(primitiveType,
-                         first,
-                         count);
+                   first,
+                   count);
 }
 
 void QGraphicsHelperES2::drawElements(GLenum primitiveType,
-                                     GLsizei primitiveCount,
-                                     GLint indexType,
-                                     void *indices)
+                                      GLsizei primitiveCount,
+                                      GLint indexType,
+                                      void *indices)
 {
     m_funcs->glDrawElements(primitiveType,
-                                  primitiveCount,
-                                  indexType,
-                                  indices);
+                            primitiveCount,
+                            indexType,
+                            indices);
 }
 
 void QGraphicsHelperES2::drawArrays(GLenum primitiveType,
-                                   GLint first,
-                                   GLsizei count)
+                                    GLint first,
+                                    GLsizei count)
 {
     m_funcs->glDrawArrays(primitiveType,
-                                first,
-                                count);
+                          first,
+                          count);
 }
 
 void QGraphicsHelperES2::useProgram(GLuint programId)
@@ -260,7 +260,12 @@ bool QGraphicsHelperES2::supportsFeature(QGraphicsHelperInterface::Feature featu
 }
 void QGraphicsHelperES2::drawBuffers(GLsizei , const int *)
 {
-    qCritical() << "drawBuffers is not supported by ES 2.0"
+    qCritical() << "drawBuffers is not supported by ES 2.0";
+}
+
+void QGraphicsHelperES2::bindFragDataLocation(GLuint , const QHash<QString, int> &)
+{
+    qCritical() << "bindFragDataLocation is not supported by ES 2.0";
 }
 
 } // Render

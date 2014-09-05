@@ -385,11 +385,10 @@ void RenderView::preprocessRenderTree(RenderEntity *node)
 {
     // Retrieve light for the currentNode and append it to list of current lights
     // As only light components of an Entity are considered active
-    if (checkContainedWithinLayer(node)) {
-        HLight lightHandle = node->componentHandle<RenderLight, 16>();
-        if (!lightHandle.isNull())
-            m_lights.append(LightPair(lightHandle, *node->worldTransform()));
-    }
+    // Note : Layer filtering isn't applied there
+    HLight lightHandle = node->componentHandle<RenderLight, 16>();
+    if (!lightHandle.isNull())
+        m_lights.append(LightPair(lightHandle, *node->worldTransform()));
 
     // Traverse children
     Q_FOREACH (RenderEntity *child, node->children())
@@ -637,7 +636,18 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
             QStringList uniformNames = shader->uniformsNames();
             QStringList attributeNames = shader->attributesNames();
 
-            if (!uniformNames.isEmpty() && !attributeNames.isEmpty()) {
+            // Set fragData Name and index
+            // Later on we might want to relink the shader if attachments have changed
+            // But for now we set them once and for all
+            QHash<QString, int> fragOutputs;
+            if (!m_renderTarget.isNull() && !shader->isLoaded()) {
+                Q_FOREACH (const Attachment &att, m_attachmentPack.attachments()) {
+                    if (att.m_type <= QRenderAttachment::ColorAttachment15)
+                        fragOutputs.insert(att.m_name, att.m_type);
+                }
+            }
+
+            if (!uniformNames.isEmpty() || !attributeNames.isEmpty()) {
 
                 // Set default standard uniforms without bindings
                 Q_FOREACH (const QString &uniformName, uniformNames) {
@@ -663,6 +673,8 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
                                  && m_standardUniformSetters.contains(binding->parameterName()))
                             command->m_uniforms.setUniform(binding->shaderVariableName(),
                                                            (this->*m_standardUniformSetters[binding->parameterName()])(worldTransform));
+                        else if (binding->bindingType() == QParameterMapper::FragmentOutput && fragOutputs.contains(binding->parameterName()))
+                            fragOutputs.insert(binding->shaderVariableName(), fragOutputs.take(binding->parameterName()));
                         else
                             qCWarning(Render::Backend) << Q_FUNC_INFO << "Trying to bind a Parameter that hasn't been defined " << binding->parameterName();
                     }
@@ -700,6 +712,9 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
                     }
                 }
             }
+            // Set frag outputs in the shaders if hash not empty
+            if (!fragOutputs.empty())
+                shader->setFragOutputs(fragOutputs);
         }
     }
     else {

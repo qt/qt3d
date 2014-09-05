@@ -60,6 +60,7 @@ class QShaderProgram;
 namespace Render {
 
 class Renderer;
+class AttachmentPack;
 
 class RenderShader : public QObserverInterface
 {
@@ -72,6 +73,7 @@ public:
     void setPeer(QShaderProgram* peer);
     void setRenderer(Renderer *renderer);
     void updateUniforms(const QUniformPack &pack);
+    void setFragOutputs(const QHash<QString, int> &fragOutputs);
 
     QStringList uniformsNames() const;
     QStringList attributesNames() const;
@@ -79,13 +81,14 @@ public:
     QUuid shaderUuid() const;
 
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    bool isLoaded() const;
 
 private:
 
-    QOpenGLShaderProgram* m_program;
+    QOpenGLShaderProgram *m_program;
     Renderer *m_renderer;
 
-    QOpenGLShaderProgram *createProgram();
+    QOpenGLShaderProgram *createProgram(QGraphicsContext *context);
     QOpenGLShaderProgram *createDefaultProgram();
 
     QHash<QString, int> m_uniforms;
@@ -104,7 +107,7 @@ private:
     // Private so that only GraphicContext can call it
     void initializeUniforms(const QVector<QPair<QString, int> > &uniformsNameAndLocation);
     void initializeAttributes(const QVector<QPair<QString, int> > &attributesNameAndLocation);
-    QOpenGLShaderProgram* getOrCreateProgram();
+    QOpenGLShaderProgram *getOrCreateProgram(QGraphicsContext *ctx);
     friend class QGraphicsContext;
 };
 

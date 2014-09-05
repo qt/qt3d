@@ -168,6 +168,7 @@ public:
     void    depthMask(GLenum mode);
     void    cullFace(GLenum mode);
     void    frontFace(GLenum mode);
+    void    bindFragOutputs(GLuint shader, const QHash<QString, int> &outputs);
 
     // Helper methods
     static GLint elementType(GLint type);

@@ -48,6 +48,7 @@
 #include <qshaderprogram.h>
 #include <Qt3DRenderer/private/qgraphicscontext_p.h>
 #include <Qt3DRenderer/private/renderer_p.h>
+#include <Qt3DRenderer/private/attachmentpack_p.h>
 #include <Qt3DRenderer/rendereraspect.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qaspectmanager.h>
@@ -145,14 +146,19 @@ void RenderShader::sceneChangeEvent(const QSceneChangePtr &e)
     }
 }
 
+bool RenderShader::isLoaded() const
+{
+    return m_isLoaded;
+}
+
 /*!
  * Must be called with a valid, current QOpenGLContext
  */
-QOpenGLShaderProgram *RenderShader::getOrCreateProgram()
+QOpenGLShaderProgram *RenderShader::getOrCreateProgram(QGraphicsContext *ctx)
 {
     if (!m_isLoaded) {
         delete m_program;
-        m_program = createProgram();
+        m_program = createProgram(ctx);
         if (!m_program)
             m_program = createDefaultProgram();
         m_isLoaded = true;
@@ -170,7 +176,12 @@ void RenderShader::updateUniforms(const QUniformPack &pack)
     }
 }
 
-QOpenGLShaderProgram* RenderShader::createProgram()
+void RenderShader::setFragOutputs(const QHash<QString, int> &fragOutputs)
+{
+    m_fragOutputs = fragOutputs;
+}
+
+QOpenGLShaderProgram* RenderShader::createProgram(QGraphicsContext *context)
 {
     Q_ASSERT(QOpenGLContext::currentContext());
     // scoped pointer so early-returns delete automatically
@@ -212,7 +223,7 @@ QOpenGLShaderProgram* RenderShader::createProgram()
     }
 
     // glBindFragDataLocation at that point
-
+    context->bindFragOutputs(p->programId(), m_fragOutputs);
 
     ok = p->link();
     if (!ok) {

@@ -86,6 +86,7 @@ public:
     virtual void    bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment) = 0;
     virtual bool    supportsFeature(Feature feature) const = 0;
     virtual void    drawBuffers(GLsizei n, const int *bufs) = 0;
+    virtual void    bindFragDataLocation(GLuint shader, const QHash<QString, int> &outputs) = 0;
 };
 
 } // Render

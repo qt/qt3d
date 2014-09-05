@@ -217,7 +217,7 @@ void QGraphicsContext::activateShader(RenderShader *shader)
     }
 
     if (!m_shaderHash.contains(shader)) {
-        QOpenGLShaderProgram* prog = shader->getOrCreateProgram();
+        QOpenGLShaderProgram *prog = shader->getOrCreateProgram(this);
         Q_ASSERT(prog);
         m_shaderHash[shader] = prog;
         shader->initializeUniforms(m_glHelper->programUniformsAndLocations(prog->programId()));
@@ -281,6 +281,8 @@ void QGraphicsContext::activateRenderTarget(RenderTarget *renderTarget, const At
         }
     }
     m_glHelper->bindFrameBufferObject(fboId);
+    // Temporary, will be replaced by dedicated FrameGraph element
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 }
 
 void QGraphicsContext::setActiveMaterial(RenderMaterial *rmat)
@@ -495,6 +497,12 @@ void QGraphicsContext::cullFace(GLenum mode)
 void QGraphicsContext::frontFace(GLenum mode)
 {
     m_glHelper->frontFace(mode);
+}
+
+void QGraphicsContext::bindFragOutputs(GLuint shader, const QHash<QString, int> &outputs)
+{
+    if (m_glHelper->supportsFeature(QGraphicsHelperInterface::MRT))
+        m_glHelper->bindFragDataLocation(shader, outputs);
 }
 
 GLint QGraphicsContext::assignUnitForTexture(RenderTexture *tex)
