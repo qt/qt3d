@@ -39,83 +39,35 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_FRAMEGRAPHNODE_H
-#define QT3D_RENDER_FRAMEGRAPHNODE_H
+#ifndef QT3D_RENDER_CLEARBUFFER_P_H
+#define QT3D_RENDER_CLEARBUFFER_P_H
 
-#include <Qt3DCore/qobserverinterface.h>
-#include <Qt3DCore/qhandle.h>
-#include <qglobal.h>
-#include <QVector>
-#include <QUuid>
+#include <Qt3DRenderer/private/framegraphnode_p.h>
+#include <Qt3DRenderer/qclearbuffer.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-template<typename T, int INDEXBITS>
-class QHandle;
-
 namespace Render {
 
-class Renderer;
-class FrameGraphNode;
-
-typedef QHandle<FrameGraphNode *, 8> HFrameGraphNode;
-
-class FrameGraphNode : public QObserverInterface
+class ClearBuffer : public FrameGraphNode
 {
 public:
-    FrameGraphNode();
-    virtual ~FrameGraphNode();
+    ClearBuffer();
 
-    enum FrameGraphNodeType {
-        InvalidNodeType = 0,
-        CameraSelector,
-        LayerFilter,
-        RenderPassFilter,
-        RenderTarget,
-        TechniqueFilter,
-        Viewport,
-        ClearBuffer
-    };
-    FrameGraphNodeType nodeType() const { return m_nodeType; }
-
-
-    void setEnabled(bool enabled) { m_enabled = enabled; }
-    bool isEnabled() const { return m_enabled; }
-
-    void setRenderer(Renderer *renderer);
-    void setHandle(HFrameGraphNode handle);
-    void setParentHandle(HFrameGraphNode parentHandle);
-    void appendChildHandle(HFrameGraphNode childHandle);
-    void removeChildHandle(HFrameGraphNode childHandle);
-
-    HFrameGraphNode handle() const;
-    HFrameGraphNode parentHandle() const;
-    QList<HFrameGraphNode> childrenHandles() const;
-
-    FrameGraphNode *parent() const;
-    QList<FrameGraphNode *> children() const;
-    QUuid frontendUuid() const { return m_frontendUuid; }
-
-protected:
-    FrameGraphNode(FrameGraphNodeType nodeType);
-    Renderer *m_renderer;
-    QUuid m_frontendUuid;
+    void setPeer(QClearBuffer *peer);
+    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    QClearBuffer::BufferType type() const;
 
 private:
-    FrameGraphNodeType m_nodeType;
-    bool m_enabled;
-    HFrameGraphNode m_handle;
-    HFrameGraphNode m_parentHandle;
-    QList<HFrameGraphNode> m_childrenHandles;
-
-    friend class FrameGraphVisitor;
+    QClearBuffer::BufferType m_type;
 };
 
-} // namespace Render
-} // namespace Qt3D
+} // Render
+
+} // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_FRAMEGRAPHNODE_H
+#endif // QT3D_RENDER_CLEARBUFFER_P_H

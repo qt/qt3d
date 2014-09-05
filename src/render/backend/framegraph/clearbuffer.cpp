@@ -39,83 +39,58 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_FRAMEGRAPHNODE_H
-#define QT3D_RENDER_FRAMEGRAPHNODE_H
-
-#include <Qt3DCore/qobserverinterface.h>
-#include <Qt3DCore/qhandle.h>
-#include <qglobal.h>
-#include <QVector>
-#include <QUuid>
+#include "clearbuffer_p.h"
+#include <Qt3DCore/qchangearbiter.h>
+#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qaspectmanager.h>
+#include <Qt3DRenderer/rendereraspect.h>
+#include <Qt3DRenderer/private/renderer_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-template<typename T, int INDEXBITS>
-class QHandle;
-
 namespace Render {
 
-class Renderer;
-class FrameGraphNode;
-
-typedef QHandle<FrameGraphNode *, 8> HFrameGraphNode;
-
-class FrameGraphNode : public QObserverInterface
+ClearBuffer::ClearBuffer()
+    : FrameGraphNode(FrameGraphNode::ClearBuffer)
+    , m_type(QClearBuffer::None)
 {
-public:
-    FrameGraphNode();
-    virtual ~FrameGraphNode();
+}
 
-    enum FrameGraphNodeType {
-        InvalidNodeType = 0,
-        CameraSelector,
-        LayerFilter,
-        RenderPassFilter,
-        RenderTarget,
-        TechniqueFilter,
-        Viewport,
-        ClearBuffer
-    };
-    FrameGraphNodeType nodeType() const { return m_nodeType; }
+void ClearBuffer::setPeer(QClearBuffer *peer)
+{
+    QUuid peerUuid;
+    if (peer != Q_NULLPTR)
+        peerUuid = peer->uuid();
+    if (m_frontendUuid != peerUuid) {
+        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
+        if (!m_frontendUuid.isNull())
+            arbiter->unregisterObserver(this, m_frontendUuid);
+        m_frontendUuid = peerUuid;
+        if (!m_frontendUuid.isNull()) {
+            arbiter->registerObserver(this, m_frontendUuid, NodeUpdated);
+            m_type = peer->buffers();
+        }
+    }
+}
 
+void ClearBuffer::sceneChangeEvent(const QSceneChangePtr &e)
+{
+    if (e->type() == NodeUpdated) {
+        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+        if (propertyChange->propertyName() == QByteArrayLiteral("buffers"))
+            m_type = static_cast<QClearBuffer::BufferType>(propertyChange->value().toInt());
+    }
+}
 
-    void setEnabled(bool enabled) { m_enabled = enabled; }
-    bool isEnabled() const { return m_enabled; }
+QClearBuffer::BufferType ClearBuffer::type() const
+{
+    return m_type;
+}
 
-    void setRenderer(Renderer *renderer);
-    void setHandle(HFrameGraphNode handle);
-    void setParentHandle(HFrameGraphNode parentHandle);
-    void appendChildHandle(HFrameGraphNode childHandle);
-    void removeChildHandle(HFrameGraphNode childHandle);
+} // Render
 
-    HFrameGraphNode handle() const;
-    HFrameGraphNode parentHandle() const;
-    QList<HFrameGraphNode> childrenHandles() const;
-
-    FrameGraphNode *parent() const;
-    QList<FrameGraphNode *> children() const;
-    QUuid frontendUuid() const { return m_frontendUuid; }
-
-protected:
-    FrameGraphNode(FrameGraphNodeType nodeType);
-    Renderer *m_renderer;
-    QUuid m_frontendUuid;
-
-private:
-    FrameGraphNodeType m_nodeType;
-    bool m_enabled;
-    HFrameGraphNode m_handle;
-    HFrameGraphNode m_parentHandle;
-    QList<HFrameGraphNode> m_childrenHandles;
-
-    friend class FrameGraphVisitor;
-};
-
-} // namespace Render
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_RENDER_FRAMEGRAPHNODE_H
