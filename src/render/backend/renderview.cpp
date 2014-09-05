@@ -248,6 +248,7 @@ RenderView::RenderView()
     , m_viewport(Q_NULLPTR)
     , m_viewMatrix(Q_NULLPTR)
     , m_clearColor(Q_NULLPTR)
+    , m_clearBuffer(QClearBuffer::None)
 {
 }
 

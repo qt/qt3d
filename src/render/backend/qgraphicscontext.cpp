@@ -153,16 +153,29 @@ void QGraphicsContext::beginDrawing(const QColor &clearColor)
     }
 
     glClearColor(clearColor.redF(), clearColor.greenF(), clearColor.blueF(), clearColor.alphaF());
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     if (m_activeShader)
         m_activeShader = NULL;
 }
 
+void QGraphicsContext::clearBackBuffer(QClearBuffer::BufferType buffers)
+{
+    if (buffers != QClearBuffer::None) {
+        GLbitfield mask = 0;
+
+        if (buffers & QClearBuffer::ColorBuffer)
+            mask |= GL_COLOR_BUFFER_BIT;
+        if (buffers & QClearBuffer::DepthBuffer)
+            mask |= GL_DEPTH_BUFFER_BIT;
+        if (buffers & QClearBuffer::StencilBuffer)
+            mask |= GL_STENCIL_BUFFER_BIT;
+
+        glClear(mask);
+    }
+}
+
 void QGraphicsContext::endDrawing()
 {
-    // Restore default FBO
-    m_glHelper->bindFrameBufferObject(0);
     m_gl->doneCurrent();
     m_gl->swapBuffers(m_surface);
     m_stateSet = Q_NULLPTR;
@@ -281,8 +294,6 @@ void QGraphicsContext::activateRenderTarget(RenderTarget *renderTarget, const At
         }
     }
     m_glHelper->bindFrameBufferObject(fboId);
-    // Temporary, will be replaced by dedicated FrameGraph element
-    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 }
 
 void QGraphicsContext::setActiveMaterial(RenderMaterial *rmat)

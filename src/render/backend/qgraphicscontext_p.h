@@ -54,6 +54,7 @@
 #include <Qt3DRenderer/private/qmeshdata_p.h>
 #include <Qt3DRenderer/qattribute.h>
 #include <Qt3DRenderer/qbuffer.h>
+#include <Qt3DRenderer/qclearbuffer.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -96,7 +97,7 @@ public:
     int id() const; // unique, small integer ID of this context
 
     void beginDrawing(const QColor &clearColor);
-
+    void clearBackBuffer(QClearBuffer::BufferType buffers);
     void endDrawing();
 
     void setViewport(const QRectF &viewport);

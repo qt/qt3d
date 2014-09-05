@@ -453,6 +453,9 @@ void Renderer::submitRenderViews()
             m_graphicsContext->activateRenderTarget(m_renderTargetManager->data(renderViews[i]->renderTarget()),
                                                     renderViews[i]->attachmentPack());
 
+            // Clear BackBuffer
+            m_graphicsContext->clearBackBuffer(renderViews[i]->clearBuffer());
+
             // Initialize QGraphicsContext for drawing
             executeCommands(renderViews.at(i)->commands());
 
