@@ -14,7 +14,9 @@ HEADERS += \
         $$PWD/qcameraselector.h \
         $$PWD/qcameraselector_p.h \
         $$PWD/qlayerfilter.h \
-        $$PWD/qlayerfilter_p.h
+        $$PWD/qlayerfilter_p.h \
+        $$PWD/qclearbuffer.h \
+        $$PWD/qclearbuffer_p.h
 
 SOURCES += \
         $$PWD/qframegraph.cpp \
@@ -24,6 +26,7 @@ SOURCES += \
         $$PWD/qtechniquefilter.cpp \
         $$PWD/qcameraselector.cpp \
         $$PWD/qrendertargetselector.cpp \
-        $$PWD/qlayerfilter.cpp
+        $$PWD/qlayerfilter.cpp \
+        $$PWD/qclearbuffer.cpp
 
 INCLUDEPATH += $$PWD
