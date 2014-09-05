@@ -81,6 +81,7 @@
 #include <Qt3DRenderer/private/rendertargetselectornode_p.h>
 #include <Qt3DRenderer/private/rendertargetmanager_p.h>
 #include <Qt3DRenderer/private/attachmentmanager_p.h>
+#include <Qt3DRenderer/private/clearbuffer_p.h>
 
 #include "qalphatest.h"
 #include "qblendequation.h"
@@ -332,6 +333,10 @@ void RenderView::setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf)
                         m_attachmentPack.addAttachment(attachment->attachment());
                 }
             }
+            break;
+
+        case FrameGraphNode::ClearBuffer:
+            m_clearBuffer = static_cast<ClearBuffer *>(node)->type();
             break;
 
         case FrameGraphNode::TechniqueFilter:

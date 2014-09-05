@@ -59,6 +59,8 @@
 #include <Qt3DRenderer/rendereraspect.h>
 #include <Qt3DRenderer/renderlogging.h>
 #include <Qt3DRenderer/qrendertarget.h>
+#include <Qt3DRenderer/qclearbuffer.h>
+#include <Qt3DRenderer/qtexture.h>
 
 #include <Qt3DRenderer/private/cameramanager_p.h>
 #include <Qt3DRenderer/private/cameraselectornode_p.h>
@@ -87,7 +89,7 @@
 #include <Qt3DRenderer/private/scenemanager_p.h>
 #include <Qt3DRenderer/private/attachmentmanager_p.h>
 #include <Qt3DRenderer/private/texturemanager_p.h>
-#include <Qt3DRenderer/qtexture.h>
+#include <Qt3DRenderer/private/clearbuffer_p.h>
 
 #include <Qt3DCore/qcamera.h>
 #include <Qt3DCore/qcameralens.h>
@@ -166,6 +168,10 @@ Render::FrameGraphNode *RenderSceneBuilder::backendFrameGraphNode(QNode *block)
     else if (qobject_cast<Qt3D::QLayerFilter*>(block) != Q_NULLPTR) {
         qCDebug(Backend) << Q_FUNC_INFO << "LayerFilter";
         return createBackendFrameGraphNode<LayerFilterNode, QLayerFilter>(block);
+    }
+    else if (qobject_cast<Qt3D::QClearBuffer*>(block) != Q_NULLPTR) {
+        qCDebug(Backend) << Q_FUNC_INFO << "ClearBuffer";
+        return createBackendFrameGraphNode<ClearBuffer, QClearBuffer>(block);
     }
     return Q_NULLPTR;
 }

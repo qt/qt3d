@@ -48,6 +48,7 @@
 #include <Qt3DRenderer/qparameter.h>
 #include <Qt3DCore/qhandle.h>
 #include <Qt3DRenderer/private/attachmentpack_p.h>
+#include <Qt3DRenderer/qclearbuffer.h>
 #include <QVector>
 #include <QMutex>
 #include <QColor>
@@ -113,6 +114,7 @@ public:
 
     inline QRectF viewport() const { return *m_viewport; }
     inline QColor clearColor() const { return *m_clearColor; }
+    inline QClearBuffer::BufferType clearBuffer() const { return m_clearBuffer; }
 
     // This can be removed once we're 100% sure the QFrameAllocator is death proof
     void setFrameIndex(int index) { m_frameIndex = index; }
@@ -144,6 +146,7 @@ private:
     QMatrix4x4 *m_viewMatrix;
     QColor *m_clearColor;
     QList<LightPair> m_lights;
+    QClearBuffer::BufferType m_clearBuffer;
 
     int m_frameIndex;
 
