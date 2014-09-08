@@ -46,6 +46,7 @@
 #include <QImage>
 #include <QDebug>
 #include <Qt3DCore/private/qnode_p.h>
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -119,6 +120,14 @@ void QTexture::setTarget(Target target)
     Q_D(QTexture);
     if (d->m_target != target) {
         d->m_target = target;
+        emit targetChanged();
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
+            change->setPropertyName(QByteArrayLiteral("target"));
+            change->setValue(target);
+            notifyObservers(change);
+        }
     }
 }
 
@@ -135,6 +144,13 @@ void QTexture::setWidth(int width)
     if (d->m_width != width) {
         d->m_width = width;
         emit widthChanged();
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
+            change->setPropertyName(QByteArrayLiteral("width"));
+            change->setValue(width);
+            notifyObservers(change);
+        }
     }
 }
 
@@ -144,6 +160,13 @@ void QTexture::setHeight(int height)
     if (d->m_height != height) {
         d->m_height = height;
         emit heightChanged();
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
+            change->setPropertyName(QByteArrayLiteral("height"));
+            change->setValue(height);
+            notifyObservers(change);
+        }
     }
 }
 
@@ -153,6 +176,13 @@ void QTexture::setDepth(int depth)
     if (d->m_depth != depth) {
         d->m_depth = depth;
         emit depthChanged();
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
+            change->setPropertyName(QByteArrayLiteral("depth"));
+            change->setValue(depth);
+            notifyObservers(change);
+        }
     }
 }
 
@@ -180,6 +210,13 @@ void QTexture::setFormat(TextureFormat format)
     if (d->m_format != format) {
         d->m_format = format;
         emit formatChanged();
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
+            change->setPropertyName(QByteArrayLiteral("format"));
+            change->setValue(format);
+            notifyObservers(change);
+        }
     }
 }
 
@@ -255,7 +292,13 @@ void QTexture::setGenerateMipMaps(bool gen)
     if (d->m_autoMipMap != gen) {
         d->m_autoMipMap = gen;
         emit generateMipMapsChanged();
-        // TO DO: Sent scene notification
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
+            change->setPropertyName(QByteArrayLiteral("mipmaps"));
+            change->setValue(gen);
+            notifyObservers(change);
+        }
     }
 }
 
@@ -271,7 +314,13 @@ void QTexture::setMinificationFilter(Filter f)
     if (d->m_minFilter != f) {
         d->m_minFilter = f;
         emit minificationFilterChanged();
-        // TO DO: Sent scene notification
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
+            change->setPropertyName(QByteArrayLiteral("minificationFilter"));
+            change->setValue(f);
+            notifyObservers(change);
+        }
     }
 }
 
@@ -281,7 +330,13 @@ void QTexture::setMagnificationFilter(Filter f)
     if (d->m_magFilter != f) {
         d->m_magFilter = f;
         emit magnificationFilterChanged();
-        // TO DO: Sent scene notification
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
+            change->setPropertyName(QByteArrayLiteral("magnificationFilter"));
+            change->setValue(f);
+            notifyObservers(change);
+        }
     }
 }
 
@@ -303,7 +358,13 @@ void QTexture::setWrapMode(WrapMode wrapMode)
     if (d->m_wrapMode != wrapMode) {
         d->m_wrapMode = wrapMode;
         emit wrapModeChanged();
-        // TO DO: Sent scene notification
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
+            change->setPropertyName(QByteArrayLiteral("wrapMode"));
+            change->setValue(wrapMode);
+            notifyObservers(change);
+        }
     }
 }
 
