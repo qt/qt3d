@@ -60,6 +60,7 @@ class QEntity;
 class QAspectEngine;
 
 typedef QList<QNode *> NodeList;
+typedef QSharedPointer<QNode> QNodePtr;
 
 class QT3DCORESHARED_EXPORT QNode : public QObject, public QObservableInterface
 {

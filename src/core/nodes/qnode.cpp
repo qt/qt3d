@@ -132,7 +132,7 @@ void QNode::addChild(QNode *childNode)
     if (!isClone() && !childNode->isClone() && d->m_engine != Q_NULLPTR)
         d->m_engine->addNodeLookup(childNode);
 
-    if (d->m_changeArbiter != Q_NULLPTR) {
+    if (!isClone() && !childNode->isClone() && d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr e(new QScenePropertyChange(NodeCreated, this));
         e->setPropertyName(QByteArrayLiteral("node"));
         // We need to clone the parent of the childNode we send
@@ -144,7 +144,7 @@ void QNode::addChild(QNode *childNode)
                 break;
             }
         }
-        e->setValue(QVariant::fromValue(childClone));
+        e->setValue(QVariant::fromValue(QNodePtr(childClone)));
         notifyObservers(e);
         childNode->registerObserver(d->m_changeArbiter);
     }
@@ -161,7 +161,8 @@ void QNode::removeChild(QNode *childNode)
     if (!isClone() && !childNode->isClone() && d->m_engine != Q_NULLPTR)
         d->m_engine->removeNodeLookup(childNode);
 
-    if (d->m_changeArbiter != Q_NULLPTR) {
+    // Notify only if child isn't a clone
+    if (!isClone() && !childNode->isClone() && d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr e(new QScenePropertyChange(NodeAboutToBeDeleted, this));
         e->setPropertyName(QByteArrayLiteral("node"));
         // We need to clone the parent of the childNode we send
@@ -173,13 +174,14 @@ void QNode::removeChild(QNode *childNode)
                 break;
             }
         }
-        e->setValue(QVariant::fromValue(childClone));
+        e->setValue(QVariant::fromValue(QNodePtr(childClone)));
         notifyObservers(e);
         childNode->unregisterObserver(d->m_changeArbiter);
     }
 
     d->m_children.removeOne(childNode);
-    childNode->setParent(NULL);
+    if (!childNode->isClone())
+        childNode->setParent(NULL);
     childNode->setAspectEngine(Q_NULLPTR);
 }
 

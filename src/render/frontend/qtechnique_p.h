@@ -58,6 +58,7 @@ class QT3DRENDERERSHARED_EXPORT QTechniquePrivate : public QAbstractTechniquePri
 {
 public:
     QTechniquePrivate(QTechnique *dd);
+    ~QTechniquePrivate();
     Q_DECLARE_PUBLIC(QTechnique)
     QList<QCriterion *> m_criteriaList;
     QList<QParameter *> m_parameters;

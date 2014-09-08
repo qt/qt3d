@@ -114,10 +114,10 @@ void QEntity::addComponent(QComponent *comp)
     if (!comp->parent() || comp->parent() == this)
         addChild(comp);
 
-    if (d->m_changeArbiter != Q_NULLPTR) {
+    if (!isClone() && !comp->isClone() && d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentAdded, this));
         propertyChange->setPropertyName(QByteArrayLiteral("component"));
-        propertyChange->setValue(QVariant::fromValue(comp->clone()));
+        propertyChange->setValue(QVariant::fromValue(QNodePtr(comp->clone())));
         notifyObservers(propertyChange);
     }
 }
@@ -130,9 +130,9 @@ void QEntity::removeComponent(QComponent *comp)
     Q_CHECK_PTR(comp);
     qCDebug(Nodes) << Q_FUNC_INFO << comp;
     Q_D(QEntity);
-    if (d->m_changeArbiter != Q_NULLPTR) {
+    if (!isClone() && !comp->isClone() && d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentRemoved, this));
-        propertyChange->setValue(QVariant::fromValue(comp->clone()));
+        propertyChange->setValue(QVariant::fromValue(QNodePtr(comp->clone())));
         propertyChange->setPropertyName(QByteArrayLiteral("component"));
         notifyObservers(propertyChange);
     }

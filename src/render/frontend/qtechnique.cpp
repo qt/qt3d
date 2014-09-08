@@ -56,6 +56,11 @@ QTechniquePrivate::QTechniquePrivate(QTechnique *qq)
 {
 }
 
+QTechniquePrivate::~QTechniquePrivate()
+{
+    delete m_openGLFilter;
+}
+
 QTechnique::QTechnique(QNode *parent)
     : QAbstractTechnique(*new QTechniquePrivate(this), parent)
 {
