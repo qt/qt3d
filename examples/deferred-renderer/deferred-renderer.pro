@@ -9,7 +9,10 @@ HEADERS += \
 
 OTHER_FILES += \
     main.qml \
-    DeferredRenderer.qml
+    DeferredRenderer.qml \
+    FinalEffect.qml \
+    SceneEffect.qml \
+    GBuffer.qml
 
 RESOURCES += \
     deferred-renderer.qrc

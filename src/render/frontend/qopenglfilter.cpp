@@ -184,7 +184,7 @@ void QOpenGLFilter::setVendor(const QString &vendor)
 bool operator ==(const QOpenGLFilter &reference, const QOpenGLFilter &sample)
 {
     if (sample.api() == reference.api() &&
-            sample.profile() == reference.profile() &&
+            sample.profile() <= reference.profile() &&
             sample.majorVersion() <= reference.majorVersion() &&
             sample.minorVersion() <= reference.minorVersion()) {
         Q_FOREACH (const QString &neededExt, sample.extensions())

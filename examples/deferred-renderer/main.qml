@@ -46,78 +46,15 @@ import Qt3D.Render 2.0
 Entity {
     id : root
 
-    RenderTarget {
+    GBuffer {
         id : gBuffer
-        attachments : [
-
-            RenderAttachment {
-                name : "color"
-                type : RenderAttachment.ColorAttachment0
-                texture : Texture {
-                    id : colorAttachment
-                    target : Texture.Target2D
-                    width : 1024
-                    height : 768
-                    format : Texture.RGBA32F
-                    generateMipMaps : false
-                    magnificationFilter : Texture.Linear
-                    minificationFilter : Texture.Linear
-                    wrapMode : Texture.ClampToEdge
-                }
-            },
-            RenderAttachment {
-                name : "position"
-                type : RenderAttachment.ColorAttachment1
-                texture : Texture {
-                    id : positionAttachment
-                    target : Texture.Target2D
-                    width : 1024
-                    height : 768
-                    format : Texture.RGB32F
-                    generateMipMaps : false
-                    magnificationFilter : Texture.Linear
-                    minificationFilter : Texture.Linear
-                    wrapMode : Texture.ClampToEdge
-                }
-            },
-            RenderAttachment {
-                name : "normal"
-                type : RenderAttachment.ColorAttachment2
-                texture : Texture {
-                    id : normalAttachment
-                    target : Texture.Target2D
-                    width : 1024
-                    height : 768
-                    format : Texture.RGB16F
-                    generateMipMaps : false
-                    magnificationFilter : Texture.Linear
-                    minificationFilter : Texture.Linear
-                    wrapMode : Texture.ClampToEdge
-                }
-            },
-            RenderAttachment {
-                name : "depth"
-                type : RenderAttachment.DepthAttachment
-                texture : Texture {
-                    id : depthAttachment
-                    target : Texture.Target2D
-                    width : 1024
-                    height : 768
-                    format : Texture.D32F
-                    generateMipMaps : false
-                    magnificationFilter : Texture.Linear
-                    minificationFilter : Texture.Linear
-                    wrapMode : Texture.ClampToEdge
-                }
-            }
-        ] // attachments
     }
 
     components : FrameGraph {
         id : deferredFrameGraphComponent
         activeFrameGraph: DeferredRenderer {
-            gBuffer : gBuffer
             camera : camera
+            gBuffer: gBuffer
         }
     }
 
@@ -144,72 +81,12 @@ Entity {
             },
             Material {
                 parameters : [
-                    Parameter { name : "color"; value : colorAttachment },
-                    Parameter { name : "position"; value : positionAttachment },
-                    Parameter { name : "normal"; value : normalAttachment },
-                    Parameter { name : "winSize"; value : Qt.size(1024, 768) }
+                    Parameter { name : "color"; value : gBuffer.color },
+                    Parameter { name : "position"; value : gBuffer.position },
+                    Parameter { name : "normal"; value : gBuffer.normal },
+                    Parameter { name : "winSize"; value : Qt.size(1024, 1024) }
                 ]
-                effect : Effect {
-                    techniques : Technique {
-                        openGLFilter {api : OpenGLFilter.Desktop; profile : OpenGLFilter.Core; minorVersion : 1; majorVersion : 3 }
-                        renderPasses : RenderPass {
-                            criteria : Criterion { name : "pass"; value : "final" }
-                            shaderProgram : ShaderProgram {
-                                id : finalShader
-                                vertexShader:
-                                    "
-                                    #version 140
-
-                                    in vec4 vertexPosition;
-                                    uniform mat4 modelMatrix;
-
-                                    void main()
-                                    {
-                                        gl_Position = modelMatrix * vertexPosition;
-                                    }
-                                "
-                                fragmentShader:
-                                    "
-                                    #version 140
-
-                                    uniform sampler2D color;
-                                    uniform sampler2D position;
-                                    uniform sampler2D normal;
-                                    uniform vec2 winSize;
-
-                                    out vec4 fragColor;
-
-                                    struct PointLight
-                                    {
-                                        vec3 position;
-                                        vec3 direction;
-                                        vec4 color;
-                                        float intensity;
-                                    };
-
-                                    const int lightCount = 3;
-                                    uniform PointLight pointLights[lightCount];
-
-                                    void main()
-                                    {
-                                        vec2 texCoord = gl_FragCoord.xy / winSize;
-                                        vec4 col = texture2D(color, texCoord);
-                                        vec3 pos = texture2D(position, texCoord).xyz;
-                                        vec3 norm = texture2D(normal, texCoord).xyz;
-
-                                        vec4 lightColor;
-                                        for (int i = 0; i < 3; i++) {
-                                            vec3 s = normalize(pointLights[i].position - pos);
-                                            lightColor += pointLights[i].color * (pointLights[i].intensity * max(dot(s, norm), 0.0));
-                                        }
-                                        lightColor /= float(lightCount);
-                                        fragColor = col * lightColor;
-                                    }
-                                "
-                            }
-                        }
-                    }
-                }
+                effect : FinalEffect {}
             }
         ]
 
@@ -252,60 +129,8 @@ Entity {
             slices: 100
         }
 
-        Effect {
+        SceneEffect {
             id : sceneMaterialEffect
-            techniques : Technique {
-                openGLFilter {api : OpenGLFilter.Desktop; profile : OpenGLFilter.Core; minorVersion : 1; majorVersion : 3 }
-                renderPasses : RenderPass {
-                    criteria : Criterion { name : "pass"; value : "geometry" }
-                    shaderProgram : ShaderProgram {
-                        id : sceneShader
-                        vertexShader:
-                            "
-                                #version 140
-
-                                in vec4 vertexPosition;
-                                in vec3 vertexNormal;
-
-                                out vec4 color0;
-                                out vec3 position0;
-                                out vec3 normal0;
-
-                                uniform mat4 mvp;
-                                uniform mat4 modelView;
-                                uniform mat3 modelViewNormal;
-                                uniform vec4 meshColor;
-
-                                void main()
-                                {
-                                    color0 = meshColor;
-                                    position0 = vec3(modelView * vertexPosition);
-                                    normal0 = normalize(modelViewNormal * vertexNormal);
-                                    gl_Position = mvp * vertexPosition;
-                                }
-                            "
-                        fragmentShader:
-                            "
-                                #version 140
-
-                                in vec4 color0;
-                                in vec3 position0;
-                                in vec3 normal0;
-
-                                out vec4 color;
-                                out vec3 position;
-                                out vec3 normal;
-
-                                void main()
-                                {
-                                    color = color0;
-                                    position = position0;
-                                    normal = normal0;
-                                }
-                            "
-                    }
-                }
-            }
         }
 
         Entity {

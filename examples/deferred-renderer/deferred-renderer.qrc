@@ -2,5 +2,8 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>DeferredRenderer.qml</file>
+        <file>FinalEffect.qml</file>
+        <file>SceneEffect.qml</file>
+        <file>GBuffer.qml</file>
     </qresource>
 </RCC>
