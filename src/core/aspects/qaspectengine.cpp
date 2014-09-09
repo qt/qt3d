@@ -50,6 +50,7 @@
 #include "corelogging.h"
 #include <QMetaObject>
 #include <private/qpostman_p.h>
+#include "qscenelookup.h"
 #include <private/qaspectengine_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -59,8 +60,10 @@ namespace Qt3D {
 QAspectEnginePrivate::QAspectEnginePrivate(QAspectEngine *qq)
     : QObjectPrivate()
     , m_postman(new QPostman())
+    , m_sceneLookup(new QSceneLookup())
 {
     q_ptr = qq;
+    m_postman->setSceneLookup(m_sceneLookup);
     qRegisterMetaType<Qt3D::QAbstractAspect *>();
     qRegisterMetaType<Qt3D::QPostman *>();
     qRegisterMetaType<Qt3D::QNode *>();
@@ -73,7 +76,6 @@ QAspectEngine::QAspectEngine(QObject *parent)
     Q_D(QAspectEngine);
     d->m_aspectThread = new QAspectThread(this);
     d->m_aspectThread->waitForStart(QThread::HighestPriority);
-    d->m_postman->setAspectEngine(this);
 }
 
 QAspectEngine::QAspectEngine(QAspectEnginePrivate &dd, QObject *parent)
@@ -82,14 +84,14 @@ QAspectEngine::QAspectEngine(QAspectEnginePrivate &dd, QObject *parent)
     Q_D(QAspectEngine);
     d->m_aspectThread = new QAspectThread(this);
     d->m_aspectThread->waitForStart(QThread::HighestPriority);
-    d->m_postman->setAspectEngine(this);
 }
 
-void QAspectEngine::initNodeTree(QNode *node)
+void QAspectEngine::initNodeTree(QNode *node) const
 {
-    node->setAspectEngine(this);
+    Q_D(const QAspectEngine);
+    node->setSceneLookup(d->m_sceneLookup);
     // Add to QAspectEngine lookupTable
-    addNodeLookup(node);
+    d->m_sceneLookup->addNodeLookup(node);
     Q_FOREACH (QNode *c, node->children())
         initNodeTree(c);
 }
@@ -134,24 +136,6 @@ void QAspectEngine::registerAspect(QAbstractAspect *aspect)
                               "registerAspect",
                               Qt::BlockingQueuedConnection,
                               Q_ARG(Qt3D::QAbstractAspect *, aspect));
-}
-
-void QAspectEngine::addNodeLookup(QNode *node)
-{
-    Q_D(QAspectEngine);
-    d->m_nodeLookups.insert(node->uuid(), node);
-}
-
-void QAspectEngine::removeNodeLookup(QNode *node)
-{
-    Q_D(QAspectEngine);
-    d->m_nodeLookups.remove(node->uuid());
-}
-
-QNode *QAspectEngine::lookupNode(const QUuid &id) const
-{
-    Q_D(const QAspectEngine);
-    return d->m_nodeLookups.value(id);
 }
 
 void QAspectEngine::setRoot(QNode *rootObject)

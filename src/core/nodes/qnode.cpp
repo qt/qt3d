@@ -45,7 +45,7 @@
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qaspectengine.h>
-
+#include <Qt3DCore/qscenelookup.h>
 #include <QEvent>
 #include <QMetaObject>
 #include <QMetaProperty>
@@ -58,7 +58,7 @@ namespace Qt3D {
 QNodePrivate::QNodePrivate(QNode *qq)
     : QObjectPrivate()
     , m_changeArbiter(Q_NULLPTR)
-    , m_engine(Q_NULLPTR)
+    , m_sceneLookup(Q_NULLPTR)
     , m_uuid(QUuid::createUuid())
     , m_isClone(false)
 {
@@ -127,10 +127,10 @@ void QNode::addChild(QNode *childNode)
 
     d->m_children.append(childNode);
     childNode->setParent(this);
-    childNode->setAspectEngine(aspectEngine());
+    childNode->setSceneLookup(sceneLookup());
 
-    if (!isClone() && !childNode->isClone() && d->m_engine != Q_NULLPTR)
-        d->m_engine->addNodeLookup(childNode);
+    if (!isClone() && !childNode->isClone() && d->m_sceneLookup != Q_NULLPTR)
+        d->m_sceneLookup->addNodeLookup(childNode);
 
     if (!isClone() && !childNode->isClone() && d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr e(new QScenePropertyChange(NodeCreated, this));
@@ -158,8 +158,8 @@ void QNode::removeChild(QNode *childNode)
 
     Q_D(QNode);
 
-    if (!isClone() && !childNode->isClone() && d->m_engine != Q_NULLPTR)
-        d->m_engine->removeNodeLookup(childNode);
+    if (!isClone() && !childNode->isClone() && d->m_sceneLookup != Q_NULLPTR)
+        d->m_sceneLookup->removeNodeLookup(childNode);
 
     // Notify only if child isn't a clone
     if (!isClone() && !childNode->isClone() && d->m_changeArbiter != Q_NULLPTR) {
@@ -181,8 +181,8 @@ void QNode::removeChild(QNode *childNode)
 
     d->m_children.removeOne(childNode);
     if (!childNode->isClone())
-        childNode->setParent(NULL);
-    childNode->setAspectEngine(Q_NULLPTR);
+        childNode->setParent(Q_NULLPTR);
+    childNode->setSceneLookup(Q_NULLPTR);
 }
 
 QNode *QNode::clone(QNode *clonedParent) const
@@ -253,17 +253,17 @@ void QNode::unregisterObserver(QObserverInterface *observer)
     }
 }
 
-void QNode::setAspectEngine(QAspectEngine *engine)
+void QNode::setSceneLookup(QSceneLookup *scene)
 {
     Q_D(QNode);
-    if (d->m_engine != engine)
-        d->m_engine = engine;
+    if (d->m_sceneLookup != scene)
+        d->m_sceneLookup = scene;
 }
 
-QAspectEngine *QNode::aspectEngine() const
+QSceneLookup *QNode::sceneLookup() const
 {
     Q_D(const QNode);
-    return d->m_engine;
+    return d->m_sceneLookup;
 }
 
 void QNode::notifyPropertyChange(const QByteArray &name, const QVariant &value)

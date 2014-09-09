@@ -70,16 +70,12 @@ public:
     void setWindow(QWindow *window);
     void registerAspect(QAbstractAspect *aspect);
 
-    void addNodeLookup(QNode *node);
-    void removeNodeLookup(QNode *node);
-    QNode *lookupNode(const QUuid &id) const;
-
 protected:
     Q_DECLARE_PRIVATE(QAspectEngine)
     QAspectEngine(QAspectEnginePrivate &dd, QObject *parent = 0);
 
 private:
-    void initNodeTree(QNode *node);
+    void initNodeTree(QNode *node) const;
 };
 
 } // namespace Qt3D
