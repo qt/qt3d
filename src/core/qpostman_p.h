@@ -39,40 +39,37 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QFRONTENDSCENEOBSERVER_P_H
-#define QT3D_QFRONTENDSCENEOBSERVER_P_H
+#ifndef QT3D_QPOSTMAN_P_H
+#define QT3D_QPOSTMAN_P_H
 
-#include <Qt3DCore/qsceneobserverinterface.h>
+#include <Qt3DCore/qobserverinterface.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
 class QAspectEngine;
-class QFrontendSceneObserverPrivate;
+class QPostmanPrivate;
 
-class QFrontendSceneObserver
+class QPostman
         : public QObject
-        , public QSceneObserverInterface
+        , public QObserverInterface
 {
     Q_OBJECT
 public:
-    explicit QFrontendSceneObserver(QObject *parent = 0);
+    explicit QPostman(QObject *parent = 0);
 
     void setAspectEngine(QAspectEngine *engine);
-
-    // QSceneObserverInterface interface
-    void sceneNodeAdded(QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    void sceneNodeRemoved(QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    void sceneNodeUpdated(QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    Q_DECLARE_PRIVATE(QFrontendSceneObserver)
+    Q_DECLARE_PRIVATE(QPostman)
     Q_INVOKABLE void notifyFrontendNode(QSceneChangePtr &e);
+
 };
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QFRONTENDSCENEOBSERVER_P_H
+#endif // QT3D_QPOSTMAN_P_H

@@ -55,6 +55,7 @@ class QChangeArbiter;
 class QObservableInterface;
 class QJobManagerInterface;
 class QSceneObserverInterface;
+class QPostman;
 
 typedef QVector<QSceneChangePtr> ChangeQueue;
 typedef QPair<ChangeFlags, QObserverInterface *> QObserverPair;
@@ -91,6 +92,7 @@ public:
     // be accessed from the aspect thread during the syncChanges() phase.
     QList<ChangeQueue *> m_changeQueues;
     QList<ChangeQueue *> m_lockingChangeQueues;
+    QPostman *m_postman;
 };
 
 } // Qt3D

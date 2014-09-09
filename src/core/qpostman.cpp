@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "qfrontendsceneobserver_p.h"
+#include "qpostman_p.h"
 #include <private/qobject_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
@@ -47,50 +47,45 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QFrontendSceneObserverPrivate : public QObjectPrivate
+class QPostmanPrivate : public QObjectPrivate
 {
 public:
-    QFrontendSceneObserverPrivate(QFrontendSceneObserver *qq)
+    QPostmanPrivate(QPostman *qq)
         : QObjectPrivate()
         , m_engine(Q_NULLPTR)
     {
         q_ptr = qq;
     }
 
-    Q_DECLARE_PUBLIC(QFrontendSceneObserver)
+    Q_DECLARE_PUBLIC(QPostman)
     QAspectEngine *m_engine;
 };
 
-QFrontendSceneObserver::QFrontendSceneObserver(QObject *parent)
-    : QObject(*new QFrontendSceneObserverPrivate(this), parent)
+QPostman::QPostman(QObject *parent)
+    : QObject(*new QPostmanPrivate(this), parent)
 {
     qRegisterMetaType<QSharedPointer<QSceneChange> >("QSharedPointer<QSceneChanged>");
 }
 
-void QFrontendSceneObserver::setAspectEngine(QAspectEngine *engine)
+void QPostman::setAspectEngine(QAspectEngine *engine)
 {
-    Q_D(QFrontendSceneObserver);
+    Q_D(QPostman);
     d->m_engine = engine;
 }
 
-// No real use in the frontendSceneObserver case
-void QFrontendSceneObserver::sceneNodeAdded(QSceneChangePtr &)
+void QPostman::sceneChangeEvent(const QSceneChangePtr &)
 {
+
 }
 
-// No real use in the frontendSceneObserver case
-void QFrontendSceneObserver::sceneNodeRemoved(QSceneChangePtr &)
-{
-}
+//void QPostman::sceneNodeUpdated(QSceneChangePtr &e)
+//{
+//    QMetaObject::invokeMethod(this,
+//                              "notifyFrontendNode",
+//                              Q_ARG(QSharedPointer<QSceneChange>, e));
+//}
 
-void QFrontendSceneObserver::sceneNodeUpdated(QSceneChangePtr &e)
-{
-    QMetaObject::invokeMethod(this,
-                              "notifyFrontendNode",
-                              Q_ARG(QSharedPointer<QSceneChange>, e));
-}
-
-void QFrontendSceneObserver::notifyFrontendNode(QSceneChangePtr &e)
+void QPostman::notifyFrontendNode(QSceneChangePtr &)
 {
     // TO DO: Lookup in the engine's table if a node for the current
 }

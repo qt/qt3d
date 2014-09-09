@@ -73,7 +73,6 @@ public Q_SLOTS:
 
     void setRoot(Qt3D::QNode *rootObject);
     void setWindow(QWindow* window);
-    void setFrontendSceneObserver(Qt3D::QSceneObserverInterface *f);
     void registerAspect(Qt3D::QAbstractAspect *aspect);
     QWindow *window() const;
 

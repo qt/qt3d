@@ -50,6 +50,7 @@
 #include <QThread>
 #include <QWriteLocker>
 #include <private/qchangearbiter_p.h>
+#include <private/qpostman_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -60,6 +61,7 @@ QChangeArbiterPrivate::QChangeArbiterPrivate(QChangeArbiter *qq)
     : QObjectPrivate()
     , m_mutex(QMutex::Recursive)
     , m_jobManager(Q_NULLPTR)
+    , m_postman(Q_NULLPTR)
 {
     q_ptr = qq;
 }
@@ -301,6 +303,15 @@ void QChangeArbiter::sceneChangeEventWithLock(const QSceneChangePtr &e)
     Q_D(QChangeArbiter);
     QMutexLocker locker(&d->m_mutex);
     sceneChangeEvent(e);
+}
+
+void QChangeArbiter::setPostman(QPostman *postman)
+{
+    Q_D(QChangeArbiter);
+    if (d->m_postman != postman) {
+        // Unregister old postman here if needed
+        d->m_postman = postman;
+    }
 }
 
 void QChangeArbiter::createUnmanagedThreadLocalChangeQueue(void *changeArbiter)

@@ -49,7 +49,7 @@
 #include "qnode.h"
 #include "corelogging.h"
 #include <QMetaObject>
-#include <private/qfrontendsceneobserver_p.h>
+#include <private/qpostman_p.h>
 #include <private/qaspectengine_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -58,11 +58,11 @@ namespace Qt3D {
 
 QAspectEnginePrivate::QAspectEnginePrivate(QAspectEngine *qq)
     : QObjectPrivate()
-    , m_frontendSceneObserver(new QFrontendSceneObserver())
+    , m_postman(new QPostman())
 {
     q_ptr = qq;
     qRegisterMetaType<Qt3D::QAbstractAspect *>();
-    qRegisterMetaType<Qt3D::QSceneObserverInterface *>();
+    qRegisterMetaType<Qt3D::QPostman *>();
     qRegisterMetaType<Qt3D::QNode *>();
 }
 
@@ -73,7 +73,7 @@ QAspectEngine::QAspectEngine(QObject *parent)
     Q_D(QAspectEngine);
     d->m_aspectThread = new QAspectThread(this);
     d->m_aspectThread->waitForStart(QThread::HighestPriority);
-    d->m_frontendSceneObserver->setAspectEngine(this);
+    d->m_postman->setAspectEngine(this);
 }
 
 QAspectEngine::QAspectEngine(QAspectEnginePrivate &dd, QObject *parent)
@@ -82,7 +82,7 @@ QAspectEngine::QAspectEngine(QAspectEnginePrivate &dd, QObject *parent)
     Q_D(QAspectEngine);
     d->m_aspectThread = new QAspectThread(this);
     d->m_aspectThread->waitForStart(QThread::HighestPriority);
-    d->m_frontendSceneObserver->setAspectEngine(this);
+    d->m_postman->setAspectEngine(this);
 }
 
 void QAspectEngine::initNodeTree(QNode *node)
@@ -99,9 +99,9 @@ void QAspectEngine::initialize()
     Q_D(QAspectEngine);
     QChangeArbiter *arbiter = d->m_aspectThread->aspectManager()->changeArbiter();
     QChangeArbiter::createUnmanagedThreadLocalChangeQueue(arbiter);
-    QMetaObject::invokeMethod(d->m_aspectThread->aspectManager(),
-                              "setFrontendSceneObserver",
-                              Q_ARG(Qt3D::QSceneObserverInterface *, d->m_frontendSceneObserver));
+    QMetaObject::invokeMethod(arbiter,
+                              "setPostman",
+                              Q_ARG(Qt3D::QPostman *, d->m_postman));
 }
 
 void QAspectEngine::shutdown()

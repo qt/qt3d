@@ -63,6 +63,7 @@ class QObservableInterface;
 class QJobManagerInterface;
 class QChangeArbiterPrivate;
 class QSceneObserverInterface;
+class QPostman;
 
 class QT3DCORESHARED_EXPORT QChangeArbiter : public QObject,
                                              public QObserverInterface
@@ -103,6 +104,8 @@ public:
 
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;                 // QObserverInterface impl
     void sceneChangeEventWithLock(const QSceneChangePtr &e);
+
+    Q_INVOKABLE void setPostman(Qt3D::QPostman *postman);
 
     static void createUnmanagedThreadLocalChangeQueue(void *changeArbiter);
     static void destroyUnmanagedThreadLocalChangeQueue(void *changeArbiter);
