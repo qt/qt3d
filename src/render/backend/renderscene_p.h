@@ -54,7 +54,7 @@ namespace Qt3D {
 namespace Render {
 
 class Renderer;
-class QAbstractScene;
+class QAbstractSceneLoader;
 
 class RenderScene
         : public QObserverInterface
@@ -64,7 +64,7 @@ public:
     RenderScene();
 
     void setRenderer(Renderer *renderer);
-    void setPeer(QAbstractScene *peer);
+    void setPeer(QAbstractSceneLoader *peer);
 
     // QObserverInterface interface
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;

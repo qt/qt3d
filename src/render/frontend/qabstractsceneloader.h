@@ -39,40 +39,63 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QABSTRACTSCENE_P_H
-#define QT3D_QABSTRACTSCENE_P_H
+#ifndef QT3D_QABSTRACTSCENE_H
+#define QT3D_QABSTRACTSCENE_H
 
-#include <private/qcomponent_p.h>
+#include <Qt3DCore/qcomponent.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
-
-class AbstractSceneParser;
-
 namespace Render {
 
-class QAbstractScene;
+class QAbstractSceneLoader;
+class QAbstractSceneLoaderPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QAbstractScenePrivate : public QComponentPrivate
+class QT3DRENDERERSHARED_EXPORT QAbstractSceneLoader : public QComponent
 {
+    Q_OBJECT
+    Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(QString sceneId READ sceneId WRITE setSceneId NOTIFY sceneIdChanged)
 public:
-    QAbstractScenePrivate(QAbstractScene *qq);
+    explicit QAbstractSceneLoader(QNode *parent = 0);
 
-    Q_DECLARE_PUBLIC(QAbstractScene)
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
-    QString m_source;
-    QString m_sceneId;
-    QNode *m_sceneNode;
-    QNode *m_sceneChild;
-    AbstractSceneParser *m_currentParser;
+    QString source() const;
+    void setSource(QString arg);
+
+    QString sceneId() const;
+    void setSceneId(QString arg);
+
+    virtual QNode *node(QString id);
+    virtual QNode *scene(QString id);
+
+    void clear();
+
+    /**
+     * @brief findInTree - given a Node* object rooting a tree, find
+     * the top-most Scene entity within.
+     * @param root - the found Scene or NULL if no Scene was found
+     * @return
+     */
+    static QAbstractSceneLoader* findInTree(QNode* root);
+Q_SIGNALS:
+
+    void sourceChanged(QString arg);
+    void sceneIdChanged(QString arg);
+
+protected:
+    void rebuild();
+    Q_DECLARE_PRIVATE(QAbstractSceneLoader)
+    QAbstractSceneLoader(QAbstractSceneLoaderPrivate &dd, QNode *parent = 0);
 };
 
 } // Render
 
-} // Qt3D
+} // namespace Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QABSTRACTSCENE_P_H
+#endif // QT3D_QABSTRACTSCENE_H

@@ -44,7 +44,7 @@
 
 #include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
 #include <Qt3DQuick/quick3dentity.h>
-#include <Qt3DRenderer/qabstractscene.h>
+#include <Qt3DRenderer/qabstractsceneloader.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -60,7 +60,7 @@ class QT3DQUICKRENDERERSHARED_EXPORT Quick3DScene : public QObject
 public:
     explicit Quick3DScene(QObject *parent = 0);
 
-    inline QAbstractScene *parentScene() const { return qobject_cast<QAbstractScene*>(parent()); }
+    inline QAbstractSceneLoader *parentScene() const { return qobject_cast<QAbstractSceneLoader *>(parent()); }
 
     Q_INVOKABLE QNode *node(QString id);
     Q_INVOKABLE QNode *scene(QString id);

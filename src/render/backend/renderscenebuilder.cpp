@@ -42,7 +42,7 @@
 #include "renderscenebuilder_p.h"
 
 #include <Qt3DRenderer/qabstractlight.h>
-#include <Qt3DRenderer/qabstractscene.h>
+#include <Qt3DRenderer/qabstractsceneloader.h>
 #include <Qt3DRenderer/qabstractshapemesh.h>
 #include <Qt3DRenderer/qcameraselector.h>
 #include <Qt3DRenderer/qframegraph.h>
@@ -227,8 +227,8 @@ void RenderSceneBuilder::createRenderElement(QNode *frontend)
         createRenderElementHelper<QShaderProgram, RenderShader, ShaderManager>(frontend,
                                                                                m_renderer->shaderManager());
     }
-    else if (qobject_cast<QAbstractScene *>(frontend)) {
-        createRenderElementHelper<QAbstractScene, RenderScene, SceneManager>(frontend,
+    else if (qobject_cast<QAbstractSceneLoader *>(frontend)) {
+        createRenderElementHelper<QAbstractSceneLoader, RenderScene, SceneManager>(frontend,
                                                                             m_renderer->sceneManager());
     }
     else if (qobject_cast<QTexture *>(frontend)) {
@@ -290,7 +290,7 @@ void RenderSceneBuilder::releaseRenderElement(QNode *frontend)
         m_renderer->renderTargetManager()->releaseResource(frontend->uuid());
     else if (qobject_cast<QRenderAttachment *>(frontend))
         m_renderer->attachmentManager()->releaseResource(frontend->uuid());
-    else if (qobject_cast<QAbstractScene *>(frontend))
+    else if (qobject_cast<QAbstractSceneLoader *>(frontend))
         m_renderer->sceneManager()->releaseResource(frontend->uuid());
     else if (qobject_cast<QTexture *>(frontend))
         m_renderer->textureManager()->releaseResource(frontend->uuid());

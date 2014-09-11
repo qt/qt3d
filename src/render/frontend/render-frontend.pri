@@ -14,7 +14,7 @@ HEADERS += \
     $$PWD/qitemmodelbuffer.h \
     $$PWD/qtexture.h \
     $$PWD/sphere.h \
-    $$PWD/qabstractscene.h \
+    $$PWD/qabstractsceneloader.h \
     $$PWD/qeffect.h \
     $$PWD/qscene.h \
     $$PWD/qcriterion.h \
@@ -37,7 +37,7 @@ HEADERS += \
     $$PWD/qmaterial_p.h \
     $$PWD/qeffect_p.h \
     $$PWD/qtechnique_p.h \
-    $$PWD/qabstractscene_p.h \
+    $$PWD/qabstractsceneloader_p.h \
     $$PWD/qrenderpass_p.h \
     $$PWD/qlayer.h \
     $$PWD/qlayer_p.h \
@@ -73,7 +73,7 @@ SOURCES += \
     $$PWD/qitemmodelbuffer.cpp \
     $$PWD/qtexture.cpp \
     $$PWD/sphere.cpp \
-    $$PWD/qabstractscene.cpp \
+    $$PWD/qabstractsceneloader.cpp \
     $$PWD/qeffect.cpp \
     $$PWD/qscene.cpp \
     $$PWD/qcriterion.cpp \

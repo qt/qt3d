@@ -45,7 +45,7 @@
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/rendereraspect.h>
-#include <Qt3DRenderer/qabstractscene.h>
+#include <Qt3DRenderer/qabstractsceneloader.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -64,7 +64,7 @@ void RenderScene::setRenderer(Renderer *renderer)
     m_renderer = renderer;
 }
 
-void RenderScene::setPeer(QAbstractScene *peer)
+void RenderScene::setPeer(QAbstractSceneLoader *peer)
 {
     QUuid peerUuid;
     if (peer)

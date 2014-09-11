@@ -42,13 +42,13 @@
 #ifndef QT3D_QSCENE_H
 #define QT3D_QSCENE_H
 
-#include <Qt3DRenderer/qabstractscene.h>
+#include <Qt3DRenderer/qabstractsceneloader.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DRENDERERSHARED_EXPORT QScene : public Render::QAbstractScene
+class QT3DRENDERERSHARED_EXPORT QScene : public Render::QAbstractSceneLoader
 {
     Q_OBJECT
 public:
