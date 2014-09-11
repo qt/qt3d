@@ -56,7 +56,7 @@ class QNode;
 class QAspectEngine;
 class QAspectThread;
 class QPostman;
-class QSceneLookup;
+class QScene;
 
 class QAspectEnginePrivate : public QObjectPrivate
 {
@@ -67,7 +67,7 @@ public:
 
     QAspectThread *m_aspectThread;
     QPostman *m_postman;
-    QSceneLookup *m_sceneLookup;
+    QScene *m_sceneLookup;
 };
 
 } // Qt3D

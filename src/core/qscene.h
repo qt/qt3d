@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QSCENELOOKUP_H
-#define QT3D_QSCENELOOKUP_H
+#ifndef QT3D_QSCENE_H
+#define QT3D_QSCENE_H
 
 #include <QUuid>
 #include <Qt3DCore/qt3dcore_global.h>
@@ -50,24 +50,24 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QNode;
-class QSceneLookupPrivate;
+class QScenePrivate;
 
-class QSceneLookup
+class QScene
 {
 public:
-    QSceneLookup();
+    QScene();
 
     void addNodeLookup(QNode *node);
     void removeNodeLookup(QNode *node);
     QNode *lookupNode(const QUuid &id) const;
 
 private:
-    Q_DECLARE_PRIVATE(QSceneLookup)
-    QSceneLookupPrivate *d_ptr;
+    Q_DECLARE_PRIVATE(QScene)
+    QScenePrivate *d_ptr;
 };
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QSCENELOOKUP_H
+#endif // QT3D_QSCENE_H

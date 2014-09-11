@@ -42,7 +42,7 @@
 #include "qpostman_p.h"
 #include <private/qobject_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DCore/qscenelookup.h>
+#include <Qt3DCore/qscene.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,7 +59,7 @@ public:
     }
 
     Q_DECLARE_PUBLIC(QPostman)
-    QSceneLookup *m_sceneLookup;
+    QScene *m_sceneLookup;
 };
 
 QPostman::QPostman(QObject *parent)
@@ -68,7 +68,7 @@ QPostman::QPostman(QObject *parent)
     qRegisterMetaType<QSharedPointer<QSceneChange> >("QSharedPointer<QSceneChanged>");
 }
 
-void QPostman::setSceneLookup(QSceneLookup *scene)
+void QPostman::setSceneLookup(QScene *scene)
 {
     Q_D(QPostman);
     d->m_sceneLookup = scene;

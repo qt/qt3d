@@ -45,7 +45,7 @@
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qaspectengine.h>
-#include <Qt3DCore/qscenelookup.h>
+#include <Qt3DCore/qscene.h>
 #include <QEvent>
 #include <QMetaObject>
 #include <QMetaProperty>
@@ -253,14 +253,14 @@ void QNode::unregisterObserver(QObserverInterface *observer)
     }
 }
 
-void QNode::setSceneLookup(QSceneLookup *scene)
+void QNode::setSceneLookup(QScene *scene)
 {
     Q_D(QNode);
     if (d->m_sceneLookup != scene)
         d->m_sceneLookup = scene;
 }
 
-QSceneLookup *QNode::sceneLookup() const
+QScene *QNode::sceneLookup() const
 {
     Q_D(const QNode);
     return d->m_sceneLookup;

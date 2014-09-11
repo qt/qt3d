@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "qscenelookup.h"
+#include "qscene.h"
 #include <QHash>
 #include <Qt3DCore/qnode.h>
 
@@ -47,40 +47,40 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QSceneLookupPrivate
+class QScenePrivate
 {
 public:
-    QSceneLookupPrivate(QSceneLookup *qq)
+    QScenePrivate(QScene *qq)
         : q_ptr(qq)
     {
     }
 
-    Q_DECLARE_PUBLIC(QSceneLookup)
-    QSceneLookup *q_ptr;
+    Q_DECLARE_PUBLIC(QScene)
+    QScene *q_ptr;
     QHash<QUuid, QNode *> m_nodeLookupTable;
 };
 
 
-QSceneLookup::QSceneLookup()
-    : d_ptr(new QSceneLookupPrivate(this))
+QScene::QScene()
+    : d_ptr(new QScenePrivate(this))
 {
 }
 
-void QSceneLookup::addNodeLookup(QNode *node)
+void QScene::addNodeLookup(QNode *node)
 {
-    Q_D(QSceneLookup);
+    Q_D(QScene);
     d->m_nodeLookupTable.insert(node->uuid(), node);
 }
 
-void QSceneLookup::removeNodeLookup(QNode *node)
+void QScene::removeNodeLookup(QNode *node)
 {
-    Q_D(QSceneLookup);
+    Q_D(QScene);
     d->m_nodeLookupTable.remove(node->uuid());
 }
 
-QNode *QSceneLookup::lookupNode(const QUuid &id) const
+QNode *QScene::lookupNode(const QUuid &id) const
 {
-    Q_D(const QSceneLookup);
+    Q_D(const QScene);
     return d->m_nodeLookupTable.value(id);
 }
 

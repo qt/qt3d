@@ -50,7 +50,7 @@
 #include "corelogging.h"
 #include <QMetaObject>
 #include <private/qpostman_p.h>
-#include "qscenelookup.h"
+#include "qscene.h"
 #include <private/qaspectengine_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -60,7 +60,7 @@ namespace Qt3D {
 QAspectEnginePrivate::QAspectEnginePrivate(QAspectEngine *qq)
     : QObjectPrivate()
     , m_postman(new QPostman())
-    , m_sceneLookup(new QSceneLookup())
+    , m_sceneLookup(new QScene())
 {
     q_ptr = qq;
     m_postman->setSceneLookup(m_sceneLookup);

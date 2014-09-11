@@ -36,7 +36,7 @@ HEADERS += \
     $$PWD/qscenepropertychange_p.h \
     $$PWD/qsceneobserverinterface.h \
     $$PWD/qpostman_p.h \
-    $$PWD/qscenelookup.h \
+    $$PWD/qscene.h \
     $$PWD/qbackendobservable.h
 
 SOURCES += \
@@ -53,5 +53,5 @@ SOURCES += \
     $$PWD/qscenepropertychange.cpp \
     $$PWD/qsceneobserverinterface.cpp \
     $$PWD/qpostman.cpp \
-    $$PWD/qscenelookup.cpp \
+    $$PWD/qscene.cpp \
     $$PWD/qbackendobservable.cpp

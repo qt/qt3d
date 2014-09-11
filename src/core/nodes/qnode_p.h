@@ -66,7 +66,7 @@ public:
     // Later on we may decide to extend support for multiple observers.
     QReadWriteLock m_observerLock;
     QChangeArbiter *m_changeArbiter;
-    QSceneLookup *m_sceneLookup;
+    QScene *m_sceneLookup;
     mutable QUuid m_uuid;
     bool m_isClone;
 };
