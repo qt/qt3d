@@ -45,6 +45,7 @@
 #include <QtGlobal>
 #include <QUuid>
 #include <Qt3DCore/qobserverinterface.h>
+#include <Qt3DCore/qbackendobservable.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -55,7 +56,9 @@ namespace Render {
 class Renderer;
 class QAbstractScene;
 
-class RenderScene : public QObserverInterface
+class RenderScene
+        : public QObserverInterface
+        , public QBackendObservable
 {
 public:
     RenderScene();

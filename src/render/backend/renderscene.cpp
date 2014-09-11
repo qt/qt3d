@@ -54,7 +54,8 @@ namespace Qt3D {
 namespace Render {
 
 RenderScene::RenderScene()
-    : m_renderer(Q_NULLPTR)
+    : QBackendObservable()
+    , m_renderer(Q_NULLPTR)
 {
 }
 
