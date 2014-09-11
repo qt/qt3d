@@ -67,6 +67,7 @@ QAspectEnginePrivate::QAspectEnginePrivate(QAspectEngine *qq)
     qRegisterMetaType<Qt3D::QAbstractAspect *>();
     qRegisterMetaType<Qt3D::QPostman *>();
     qRegisterMetaType<Qt3D::QNode *>();
+    qRegisterMetaType<Qt3D::QSceneInterface *>();
 }
 
 QAspectEngine::QAspectEngine(QObject *parent)
@@ -104,6 +105,9 @@ void QAspectEngine::initialize()
     QMetaObject::invokeMethod(arbiter,
                               "setPostman",
                               Q_ARG(Qt3D::QPostman *, d->m_postman));
+    QMetaObject::invokeMethod(arbiter,
+                              "setScene",
+                              Q_ARG(Qt3D::QSceneInterface *, d->m_scene));
 }
 
 void QAspectEngine::shutdown()

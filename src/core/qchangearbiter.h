@@ -64,6 +64,7 @@ class QJobManagerInterface;
 class QChangeArbiterPrivate;
 class QSceneObserverInterface;
 class QPostman;
+class QSceneInterface;
 
 class QT3DCORESHARED_EXPORT QChangeArbiter : public QObject,
                                              public QObserverInterface
@@ -80,32 +81,17 @@ public:
     void registerObserver(QObserverInterface *observer,
                           const QUuid &nodeId,
                           ChangeFlags changeFlags = AllChanges);
-
-    void registerObserver(QObserverInterface *observer,
-                          QObservableInterface *observable,
-                          ChangeFlags changeFlags = AllChanges);
-
-    void registerObserver(QObserverInterface *observer,
-                          QNode *observable,
-                          ChangeFlags changeFlags = AllChanges);
-
-    void registerSceneObserver(QSceneObserverInterface *observer);
-
-    void unregisterObserver(QObserverInterface *observer,
-                            QObservableInterface *subject);
-
-    void unregisterObserver(QObserverInterface *observer,
-                            QNode *subject);
-
     void unregisterObserver(QObserverInterface *observer,
                             const QUuid &nodeId);
 
+    void registerSceneObserver(QSceneObserverInterface *observer);
     void unregisterSceneObserver(QSceneObserverInterface *observer);
 
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;                 // QObserverInterface impl
     void sceneChangeEventWithLock(const QSceneChangePtr &e);
 
     Q_INVOKABLE void setPostman(Qt3D::QPostman *postman);
+    Q_INVOKABLE void setScene(Qt3D::QSceneInterface *scene);
 
     static void createUnmanagedThreadLocalChangeQueue(void *changeArbiter);
     static void destroyUnmanagedThreadLocalChangeQueue(void *changeArbiter);
@@ -116,11 +102,6 @@ protected:
     typedef QVector<QSceneChangePtr> ChangeQueue;
     typedef QPair<ChangeFlags, QObserverInterface *> QObserverPair;
     typedef QList<QObserverPair> QObserverList;
-
-    void registerObserverHelper(QObserverList &observerList,
-                                QObserverInterface *observer,
-                                QObservableInterface *observable,
-                                ChangeFlags changeFlags);
 
     void distributeQueueChanges(ChangeQueue *queue);
 

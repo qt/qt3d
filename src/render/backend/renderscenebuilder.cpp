@@ -352,7 +352,6 @@ RenderEntity* RenderSceneBuilder::createRenderNode(QEntity *entity)
 void RenderSceneBuilder::visitNode(QNode *nd)
 {
     // Each real frontend node is registered with the QChangeArbiter
-    nd->registerObserver(m_renderer->rendererAspect()->aspectManager()->changeArbiter());
     createRenderElement(nd);
     NodeVisitor::visitNode(nd);
 }

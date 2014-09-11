@@ -56,6 +56,7 @@ class QObservableInterface;
 class QJobManagerInterface;
 class QSceneObserverInterface;
 class QPostman;
+class QSceneInterface;
 
 typedef QVector<QSceneChangePtr> ChangeQueue;
 typedef QPair<ChangeFlags, QObserverInterface *> QObserverPair;
@@ -79,10 +80,14 @@ public:
     //
     // We keep these distinct because we do not manage the main thread which means
     // the mechanisms for working with objects there is different.
-    QHash<QObservableInterface *, QObserverList> m_aspectObservations;
     QHash<QUuid, QObserverList> m_nodeObservations;
     QList<QSceneObserverInterface *> m_sceneObservers;
-    QHash<QUuid, QNode *> m_idToNodeObservable;
+
+    // Observable to QUuid,
+    QHash<QObservableInterface *, QUuid> m_observableToNodeId;
+
+
+    QHash<QUuid, QObserverList> observersForNodeId;
 
     // Each thread has a TLS ChangeQueue so we never need to lock whilst
     // receiving a QSceneChange.
@@ -93,6 +98,7 @@ public:
     QList<ChangeQueue *> m_changeQueues;
     QList<ChangeQueue *> m_lockingChangeQueues;
     QPostman *m_postman;
+    QSceneInterface *m_scene;
 };
 
 } // Qt3D

@@ -56,12 +56,31 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+ * \class QChangeArbiter
+ * \namespace Qt3D
+ * \since 5.4
+ *
+ * \brief Act as a messages router between observables and observers.
+ * Observables can be of two types : QNode observables and QObservableInterfaces.
+ * QNode observables notifications are sent from the frontend QNode to the backend observers.
+ * QObservableInterface notifications are sent from backend to backend observers and/or backend to  QPostman,
+ * the QPostman to deliver the messages to the frontend QNode.
+ *
+ * QNode observables are registered automatically. However QObservableInterface have to be registered manually
+ * by providing the QUuid of the frontend QNode that observables is mapped to.
+ *
+ * Observers can be registered to receive messages from a QObservableInterface/QNode observable by providing a QNode QUuid.
+ * When a notification from a QObservableInterface is received, it is then sent to all observers observing the
+ * QNode QUuid as well as the QPostman to update the frontend QNode.
+ */
 
 QChangeArbiterPrivate::QChangeArbiterPrivate(QChangeArbiter *qq)
     : QObjectPrivate()
     , m_mutex(QMutex::Recursive)
     , m_jobManager(Q_NULLPTR)
     , m_postman(Q_NULLPTR)
+    , m_scene(Q_NULLPTR)
 {
     q_ptr = qq;
 }
@@ -126,12 +145,15 @@ void QChangeArbiter::distributeQueueChanges(ChangeQueue *changeQueue)
 
         case QSceneChange::Observable: {
             QObservableInterface *subject = change->subject().m_observable;
-            if (d->m_aspectObservations.contains(subject)) {
-                QObserverList &observers = d->m_aspectObservations[subject];
-                Q_FOREACH (const QObserverPair &observer, observers) {
+            QUuid nodeId = d->m_observableToNodeId.value(subject);
+            if (d->m_nodeObservations.contains(nodeId)) {
+                QObserverList &observers = d->m_nodeObservations[nodeId];
+                Q_FOREACH (const QObserverPair&observer, observers) {
                     if ((change->type() & observer.first))
                         observer.second->sceneChangeEvent(change);
                 }
+                // Also send change to the postman
+                d->m_postman->sceneChangeEvent(change);
             }
             break;
         }
@@ -185,6 +207,12 @@ void QChangeArbiter::syncChanges()
     }
 }
 
+void QChangeArbiter::setScene(QSceneInterface *scene)
+{
+    Q_D(QChangeArbiter);
+    d->m_scene = scene;
+}
+
 void QChangeArbiter::registerObserver(QObserverInterface *observer,
                                       const QUuid &nodeId,
                                       ChangeFlags changeFlags)
@@ -193,28 +221,6 @@ void QChangeArbiter::registerObserver(QObserverInterface *observer,
     QMutexLocker locker(&d->m_mutex);
     QObserverList &observerList = d->m_nodeObservations[nodeId];
     observerList.append(QObserverPair(changeFlags, observer));
-}
-
-void QChangeArbiter::registerObserver(QObserverInterface *observer,
-                                      QObservableInterface *observable,
-                                      ChangeFlags changeFlags)
-{
-    Q_D(QChangeArbiter);
-    QMutexLocker locker(&d->m_mutex);
-    QObserverList &observerList = d->m_aspectObservations[observable];
-    registerObserverHelper(observerList, observer, observable, changeFlags);
-}
-
-void QChangeArbiter::registerObserver(QObserverInterface *observer,
-                                      QNode *observable,
-                                      ChangeFlags changeFlags)
-{
-    Q_D(QChangeArbiter);
-    QMutexLocker locker(&d->m_mutex);
-    if (!observable)
-        return;
-    QObserverList &observerList = d->m_nodeObservations[observable->uuid()];
-    registerObserverHelper(observerList, observer, observable, changeFlags);
 }
 
 // Called from the QAspectThread context, no need to lock
@@ -227,42 +233,6 @@ void QChangeArbiter::registerSceneObserver(QSceneObserverInterface *observer)
     Q_D(QChangeArbiter);
     if (!d->m_sceneObservers.contains(observer))
         d->m_sceneObservers << observer;
-}
-
-void QChangeArbiter::registerObserverHelper(QObserverList &observerList,
-                                            QObserverInterface *observer,
-                                            QObservableInterface *observable,
-                                            ChangeFlags changeFlags)
-{
-    Q_ASSERT(observer);
-    Q_ASSERT(observable);
-    qCDebug(ChangeArbiter) << Q_FUNC_INFO << observable;
-
-    // Store info about which observers are watching which observables.
-    // Protect access as this could be called from any thread
-    observerList.append(QObserverPair(changeFlags, observer));
-
-    // Register ourselves with the observable as the intermediary
-    observable->registerObserver(this);
-}
-
-void QChangeArbiter::unregisterObserver(QObserverInterface *observer,
-                                        QObservableInterface *subject)
-{
-    Q_D(QChangeArbiter);
-    QMutexLocker locker(&d->m_mutex);
-    if (d->m_aspectObservations.contains(subject)) {
-        QObserverList &observers = d->m_aspectObservations[subject];
-        for (int i = observers.count() - 1; i >= 0; i--) {
-            if (observers[i].second == observer)
-                observers.removeAt(i);
-        }
-    }
-}
-
-void QChangeArbiter::unregisterObserver(QObserverInterface *observer, QNode *subject)
-{
-    unregisterObserver(observer, subject->uuid());
 }
 
 void QChangeArbiter::unregisterObserver(QObserverInterface *observer, const QUuid &nodeId)
@@ -305,6 +275,8 @@ void QChangeArbiter::sceneChangeEventWithLock(const QSceneChangePtr &e)
     sceneChangeEvent(e);
 }
 
+// Either we have the postman or we could make the QChangeArbiter agnostic to the postman
+// but that would require adding it to every QObserverList in m_aspectObservations.
 void QChangeArbiter::setPostman(QPostman *postman)
 {
     Q_D(QChangeArbiter);
