@@ -44,6 +44,7 @@
 
 #include <QUuid>
 #include <Qt3DCore/qt3dcore_global.h>
+#include <Qt3DCore/qsceneinterface.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -52,14 +53,18 @@ namespace Qt3D {
 class QNode;
 class QScenePrivate;
 
-class QScene
+class QScene : public QSceneInterface
 {
 public:
     QScene();
 
-    void addNodeLookup(QNode *node);
-    void removeNodeLookup(QNode *node);
-    QNode *lookupNode(const QUuid &id) const;
+    void addObservable(QObservableInterface *observable, const QUuid &uuid) Q_DECL_OVERRIDE;
+    void addObservable(QNode *observable) Q_DECL_OVERRIDE;
+    void removeObservable(QObservableInterface *observable, const QUuid &uuid) Q_DECL_OVERRIDE;
+    void removeObservable(QNode *observable) Q_DECL_OVERRIDE;
+    QObservableList lookupObservables(const QUuid &uuid) const Q_DECL_OVERRIDE;
+    QNode *lookupNode(const QUuid &uuid) const Q_DECL_OVERRIDE;
+    void setArbiter(QChangeArbiter *arbiter) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QScene)

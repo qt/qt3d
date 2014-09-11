@@ -53,13 +53,13 @@ class QPostmanPrivate : public QObjectPrivate
 public:
     QPostmanPrivate(QPostman *qq)
         : QObjectPrivate()
-        , m_sceneLookup(Q_NULLPTR)
+        , m_scene(Q_NULLPTR)
     {
         q_ptr = qq;
     }
 
     Q_DECLARE_PUBLIC(QPostman)
-    QScene *m_sceneLookup;
+    QSceneInterface *m_scene;
 };
 
 QPostman::QPostman(QObject *parent)
@@ -68,10 +68,10 @@ QPostman::QPostman(QObject *parent)
     qRegisterMetaType<QSharedPointer<QSceneChange> >("QSharedPointer<QSceneChanged>");
 }
 
-void QPostman::setSceneLookup(QScene *scene)
+void QPostman::setScene(QSceneInterface *scene)
 {
     Q_D(QPostman);
-    d->m_sceneLookup = scene;
+    d->m_scene = scene;
 }
 
 void QPostman::sceneChangeEvent(const QSceneChangePtr &)

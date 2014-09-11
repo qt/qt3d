@@ -58,7 +58,7 @@ namespace Qt3D {
 QNodePrivate::QNodePrivate(QNode *qq)
     : QObjectPrivate()
     , m_changeArbiter(Q_NULLPTR)
-    , m_sceneLookup(Q_NULLPTR)
+    , m_scene(Q_NULLPTR)
     , m_uuid(QUuid::createUuid())
     , m_isClone(false)
 {
@@ -127,10 +127,10 @@ void QNode::addChild(QNode *childNode)
 
     d->m_children.append(childNode);
     childNode->setParent(this);
-    childNode->setSceneLookup(sceneLookup());
+    childNode->setScene(scene());
 
-    if (!isClone() && !childNode->isClone() && d->m_sceneLookup != Q_NULLPTR)
-        d->m_sceneLookup->addNodeLookup(childNode);
+    if (!isClone() && !childNode->isClone() && d->m_scene != Q_NULLPTR)
+        d->m_scene->addObservable(childNode);
 
     if (!isClone() && !childNode->isClone() && d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr e(new QScenePropertyChange(NodeCreated, this));
@@ -158,8 +158,8 @@ void QNode::removeChild(QNode *childNode)
 
     Q_D(QNode);
 
-    if (!isClone() && !childNode->isClone() && d->m_sceneLookup != Q_NULLPTR)
-        d->m_sceneLookup->removeNodeLookup(childNode);
+    if (!isClone() && !childNode->isClone() && d->m_scene != Q_NULLPTR)
+        d->m_scene->removeObservable(childNode);
 
     // Notify only if child isn't a clone
     if (!isClone() && !childNode->isClone() && d->m_changeArbiter != Q_NULLPTR) {
@@ -182,7 +182,7 @@ void QNode::removeChild(QNode *childNode)
     d->m_children.removeOne(childNode);
     if (!childNode->isClone())
         childNode->setParent(Q_NULLPTR);
-    childNode->setSceneLookup(Q_NULLPTR);
+    childNode->setScene(Q_NULLPTR);
 }
 
 QNode *QNode::clone(QNode *clonedParent) const
@@ -253,17 +253,17 @@ void QNode::unregisterObserver(QObserverInterface *observer)
     }
 }
 
-void QNode::setSceneLookup(QScene *scene)
+void QNode::setScene(QSceneInterface *scene)
 {
     Q_D(QNode);
-    if (d->m_sceneLookup != scene)
-        d->m_sceneLookup = scene;
+    if (d->m_scene != scene)
+        d->m_scene = scene;
 }
 
-QScene *QNode::sceneLookup() const
+QSceneInterface *QNode::scene() const
 {
     Q_D(const QNode);
-    return d->m_sceneLookup;
+    return d->m_scene;
 }
 
 void QNode::notifyPropertyChange(const QByteArray &name, const QVariant &value)

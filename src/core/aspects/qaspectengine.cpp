@@ -60,10 +60,10 @@ namespace Qt3D {
 QAspectEnginePrivate::QAspectEnginePrivate(QAspectEngine *qq)
     : QObjectPrivate()
     , m_postman(new QPostman())
-    , m_sceneLookup(new QScene())
+    , m_scene(new QScene())
 {
     q_ptr = qq;
-    m_postman->setSceneLookup(m_sceneLookup);
+    m_postman->setScene(m_scene);
     qRegisterMetaType<Qt3D::QAbstractAspect *>();
     qRegisterMetaType<Qt3D::QPostman *>();
     qRegisterMetaType<Qt3D::QNode *>();
@@ -89,9 +89,8 @@ QAspectEngine::QAspectEngine(QAspectEnginePrivate &dd, QObject *parent)
 void QAspectEngine::initNodeTree(QNode *node) const
 {
     Q_D(const QAspectEngine);
-    node->setSceneLookup(d->m_sceneLookup);
-    // Add to QAspectEngine lookupTable
-    d->m_sceneLookup->addNodeLookup(node);
+    node->setScene(d->m_scene);
+    d->m_scene->addObservable(node);
     Q_FOREACH (QNode *c, node->children())
         initNodeTree(c);
 }
@@ -100,6 +99,7 @@ void QAspectEngine::initialize()
 {
     Q_D(QAspectEngine);
     QChangeArbiter *arbiter = d->m_aspectThread->aspectManager()->changeArbiter();
+    d->m_scene->setArbiter(arbiter);
     QChangeArbiter::createUnmanagedThreadLocalChangeQueue(arbiter);
     QMetaObject::invokeMethod(arbiter,
                               "setPostman",

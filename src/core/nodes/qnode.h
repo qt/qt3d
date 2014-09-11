@@ -58,7 +58,7 @@ class QNode;
 class QNodePrivate;
 class QEntity;
 class QAspectEngine;
-class QScene;
+class QSceneInterface;
 
 typedef QList<QNode *> NodeList;
 typedef QSharedPointer<QNode> QNodePtr;
@@ -93,8 +93,8 @@ public:
     void registerObserver(QObserverInterface *observer) Q_DECL_OVERRIDE;
     void unregisterObserver(QObserverInterface *observer) Q_DECL_OVERRIDE;
 
-    void setSceneLookup(QScene *scene);
-    QScene *sceneLookup() const;
+    void setScene(QSceneInterface *scene);
+    QSceneInterface *scene() const;
 
 protected:
     void notifyPropertyChange(const QByteArray &name, const QVariant &value);
