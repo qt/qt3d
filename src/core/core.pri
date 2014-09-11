@@ -37,7 +37,8 @@ HEADERS += \
     $$PWD/qsceneobserverinterface.h \
     $$PWD/qpostman_p.h \
     $$PWD/qscene.h \
-    $$PWD/qbackendobservable.h
+    $$PWD/qbackendobservable.h \
+    $$PWD/qsceneinterface.h
 
 SOURCES += \
     $$PWD/window.cpp \
