@@ -53,7 +53,7 @@
 #include <Qt3DCore/qabstracteffect.h>
 #include <Qt3DRenderer/qtexture.h>
 #include <Qt3DRenderer/qrenderpass.h>
-#include <Qt3DRenderer/qscene.h>
+#include <Qt3DRenderer/qsceneloader.h>
 
 #include <Qt3DCore/qscaletransform.h>
 #include <Qt3DCore/qrotatetransform.h>

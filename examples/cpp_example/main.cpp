@@ -55,7 +55,7 @@
 #include <Qt3DCore/qabstracteffect.h>
 #include <Qt3DRenderer/qtexture.h>
 #include <Qt3DRenderer/qrenderpass.h>
-#include <Qt3DRenderer/qscene.h>
+#include <Qt3DRenderer/qsceneloader.h>
 
 #include <Qt3DCore/qtranslatetransform.h>
 #include <Qt3DCore/qmatrixtransform.h>
@@ -107,7 +107,7 @@ int main(int ac, char **av)
 
     // Scene file
     Qt3D::QEntity *sceneEntity = new Qt3D::QEntity();
-    Qt3D::QScene  *scene = new Qt3D::QScene();
+    Qt3D::QSceneLoader  *scene = new Qt3D::QSceneLoader();
     scene->setObjectName(QStringLiteral("scene"));
     Qt3D::QTransform *sceneTransform = new Qt3D::QTransform();
     Qt3D::QTranslateTransform *sceneTranslateTransform = new Qt3D::QTranslateTransform();

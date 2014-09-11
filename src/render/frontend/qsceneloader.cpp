@@ -39,27 +39,22 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QSCENE_H
-#define QT3D_QSCENE_H
-
-#include <Qt3DRenderer/qabstractsceneloader.h>
+#include "qsceneloader.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DRENDERERSHARED_EXPORT QScene : public Render::QAbstractSceneLoader
+QSceneLoader::QSceneLoader(QNode *parent)
+    : Render::QAbstractSceneLoader(parent)
 {
-    Q_OBJECT
-public:
-    explicit QScene(QNode *parent = 0);
+}
 
-protected:
-    QNode *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
-};
+QNode *QSceneLoader::doClone(QNode *clonedParent) const
+{
+    return new QSceneLoader(clonedParent);
+}
 
 } // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_QSCENE_H

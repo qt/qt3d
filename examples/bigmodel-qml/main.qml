@@ -87,6 +87,6 @@ Entity {
 
     Instantiator {
         model: _meshFileNames
-        delegate: Scene { source: modelData; }
+        delegate: SceneLoader { source: modelData; }
     }
 }

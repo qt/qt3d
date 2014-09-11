@@ -16,7 +16,7 @@ HEADERS += \
     $$PWD/sphere.h \
     $$PWD/qabstractsceneloader.h \
     $$PWD/qeffect.h \
-    $$PWD/qscene.h \
+    $$PWD/qsceneloader.h \
     $$PWD/qcriterion.h \
     $$PWD/qparameter.h \
     $$PWD/qparameter_p.h \
@@ -75,7 +75,7 @@ SOURCES += \
     $$PWD/sphere.cpp \
     $$PWD/qabstractsceneloader.cpp \
     $$PWD/qeffect.cpp \
-    $$PWD/qscene.cpp \
+    $$PWD/qsceneloader.cpp \
     $$PWD/qcriterion.cpp \
     $$PWD/qparameter.cpp \
     $$PWD/qparametermapper.cpp \
