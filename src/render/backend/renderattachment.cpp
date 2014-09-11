@@ -71,7 +71,7 @@ void RenderAttachment::setPeer(QRenderAttachment *peer)
         }
         m_attachmentUuid = peerUuid;
         if (!m_attachmentUuid.isNull()) {
-            arbiter->registerObserver(this, peer, NodeUpdated);
+            arbiter->registerObserver(this, m_attachmentUuid, NodeUpdated);
             m_attachmentData.m_mipLevel = peer->mipLevel();
             m_attachmentData.m_layer = peer->layer();
             m_attachmentData.m_type = peer->type();
