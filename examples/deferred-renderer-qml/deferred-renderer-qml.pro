@@ -15,7 +15,7 @@ OTHER_FILES += \
     GBuffer.qml
 
 RESOURCES += \
-    deferred-renderer.qrc
+    deferred-renderer-qml.qrc
 
 SOURCES += \
     main.cpp

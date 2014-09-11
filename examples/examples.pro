@@ -47,9 +47,9 @@ src_rollerball.subdir = $$PWD/rollerball
 src_rollerball.target = sub-rollerball
 src_rollerball.depends = src_exampleresources
 
-src_deferredrenderer.subdir = $$PWD/deferred-renderer
-src_deferredrenderer.target = sub-deferredrenderer
-src_deferredrenderer.depends = src_exampleresources
+src_deferredrendererqml.subdir = $$PWD/deferred-renderer-qml
+src_deferredrendererqml.target = sub-deferredrendererqml
+src_deferredrendererqml.depends = src_exampleresources
 
 src_wireframe.subdir = $$PWD/wireframe
 src_wireframe.target = sub-wireframe
@@ -58,6 +58,9 @@ src_wireframe.depends = src_exampleresources
 src_tessellationmodes.subdir = $$PWD/tessellation-modes
 src_tessellationmodes.target = sub-tessellationmodes
 src_tessellationmodes.depends = src_exampleresources
+
+src_deferredrenderercpp.subdir = $$PWD/deferred-renderer-cpp
+src_deferredrenderercpp.target = sub-deferredrenderercpp
 
 SUBDIRS += \
     src_exampleresources \
@@ -71,9 +74,11 @@ SUBDIRS += \
     src_cylinderqml \
     src_cylindercpp \
     src_bigmodelqml \
-    src_deferredrenderer \
     src_wireframe \
-    src_tessellationmodes
+    src_tessellationmodes \
+    src_bigmodelqml \
+    src_deferredrendererqml \
+    src_deferredrenderercpp
 
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d
