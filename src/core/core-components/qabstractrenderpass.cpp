@@ -92,7 +92,7 @@ void QAbstractRenderPass::setShaderProgram(QAbstractShader *shaderProgram)
         if (d->m_shader != Q_NULLPTR && d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr e(new QScenePropertyChange(NodeRemoved, this));
             e->setPropertyName(QByteArrayLiteral("shaderProgram"));
-            e->setValue(QVariant::fromValue(shaderProgram->uuid()));
+            e->setValue(QVariant::fromValue(d->m_shader->uuid()));
             notifyObservers(e);
         }
 
