@@ -61,6 +61,7 @@ src_tessellationmodes.depends = src_exampleresources
 
 src_deferredrenderercpp.subdir = $$PWD/deferred-renderer-cpp
 src_deferredrenderercpp.target = sub-deferredrenderercpp
+src_deferredrenderercpp.depends = src_exampleresources
 
 SUBDIRS += \
     src_exampleresources \
@@ -76,7 +77,6 @@ SUBDIRS += \
     src_bigmodelqml \
     src_wireframe \
     src_tessellationmodes \
-    src_bigmodelqml \
     src_deferredrendererqml \
     src_deferredrenderercpp
 
