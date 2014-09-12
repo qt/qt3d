@@ -642,8 +642,7 @@ RenderStateSet *RenderView::buildRenderStateSet(RenderRenderPass *pass)
 void RenderView::setUniformValue(QUniformPack &uniformPack, const QString &name, const QVariant &value)
 {
     QTexture *tex = Q_NULLPTR;
-    if (static_cast<QMetaType::Type>(value.type()) == QMetaType::QObjectStar &&
-            (tex = value.value<Qt3D::QTexture *>()) != Q_NULLPTR) {
+    if ((tex = value.value<Qt3D::QTexture *>()) != Q_NULLPTR) {
         uniformPack.setTexture(name, tex->uuid());
         TextureUniform *texUniform = m_allocator->allocate<TextureUniform>();
         texUniform->setTextureId(tex->uuid());
