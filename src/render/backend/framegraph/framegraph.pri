@@ -7,7 +7,8 @@ HEADERS += \
     $$PWD/viewportnode_p.h \
     $$PWD/rendertargetselectornode_p.h \
     $$PWD/layerfilternode_p.h \
-    $$PWD/clearbuffer_p.h
+    $$PWD/clearbuffer_p.h \
+    $$PWD/sortmethod_p.h
 
 SOURCES += \
     $$PWD/cameraselectornode.cpp \
@@ -18,6 +19,7 @@ SOURCES += \
     $$PWD/viewportnode.cpp \
     $$PWD/rendertargetselectornode.cpp \
     $$PWD/layerfilternode.cpp \
-    $$PWD/clearbuffer.cpp
+    $$PWD/clearbuffer.cpp \
+    $$PWD/sortmethod.cpp
 
 INCLUDEPATH += $$PWD

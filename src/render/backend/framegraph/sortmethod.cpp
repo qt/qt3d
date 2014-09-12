@@ -39,84 +39,64 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_FRAMEGRAPHNODE_H
-#define QT3D_RENDER_FRAMEGRAPHNODE_H
-
-#include <Qt3DCore/qobserverinterface.h>
-#include <Qt3DCore/qhandle.h>
-#include <qglobal.h>
-#include <QVector>
-#include <QUuid>
+#include "sortmethod_p.h"
+#include <Qt3DRenderer/qsortcriterion.h>
+#include <Qt3DCore/qchangearbiter.h>
+#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qaspectmanager.h>
+#include <Qt3DRenderer/rendereraspect.h>
+#include <Qt3DRenderer/private/renderer_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-template<typename T, int INDEXBITS>
-class QHandle;
-
 namespace Render {
 
-class Renderer;
-class FrameGraphNode;
-
-typedef QHandle<FrameGraphNode *, 8> HFrameGraphNode;
-
-class FrameGraphNode : public QObserverInterface
+SortMethod::SortMethod()
+    : FrameGraphNode(FrameGraphNode::SortMethod)
 {
-public:
-    FrameGraphNode();
-    virtual ~FrameGraphNode();
+}
 
-    enum FrameGraphNodeType {
-        InvalidNodeType = 0,
-        CameraSelector,
-        LayerFilter,
-        RenderPassFilter,
-        RenderTarget,
-        TechniqueFilter,
-        Viewport,
-        ClearBuffer,
-        SortMethod
-    };
-    FrameGraphNodeType nodeType() const { return m_nodeType; }
+void SortMethod::setPeer(QSortMethod *peer)
+{
+    QUuid peerUuid;
+    if (peer != Q_NULLPTR)
+        peerUuid = peer->uuid();
+    if (m_frontendUuid != peerUuid) {
+        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
+        if (!m_frontendUuid.isNull())
+            arbiter->unregisterObserver(this, m_frontendUuid);
+        m_frontendUuid = peerUuid;
+        if (!m_frontendUuid.isNull()) {
+            arbiter->registerObserver(this, m_frontendUuid, NodeAdded|NodeRemoved);
+            Q_FOREACH (QSortCriterion *c, peer->criteria())
+                m_criteria.append(c->uuid());
+        }
+    }
+}
 
+void SortMethod::sceneChangeEvent(const QSceneChangePtr &e)
+{
+    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+    if (propertyChange->propertyName() == QByteArrayLiteral("sortCriterion")) {
+        QSortCriterion *c = propertyChange->value().value<QSortCriterion *>();
+        if (c != Q_NULLPTR) {
+            if (e->type() == NodeAdded)
+                m_criteria.append(c->uuid());
+            else if (e->type() == NodeRemoved)
+                m_criteria.removeAll(c->uuid());
+        }
+    }
+}
 
-    void setEnabled(bool enabled) { m_enabled = enabled; }
-    bool isEnabled() const { return m_enabled; }
+QList<QUuid> SortMethod::criteria() const
+{
+    return m_criteria;
+}
 
-    void setRenderer(Renderer *renderer);
-    void setHandle(HFrameGraphNode handle);
-    void setParentHandle(HFrameGraphNode parentHandle);
-    void appendChildHandle(HFrameGraphNode childHandle);
-    void removeChildHandle(HFrameGraphNode childHandle);
+} // Render
 
-    HFrameGraphNode handle() const;
-    HFrameGraphNode parentHandle() const;
-    QList<HFrameGraphNode> childrenHandles() const;
-
-    FrameGraphNode *parent() const;
-    QList<FrameGraphNode *> children() const;
-    QUuid frontendUuid() const { return m_frontendUuid; }
-
-protected:
-    FrameGraphNode(FrameGraphNodeType nodeType);
-    Renderer *m_renderer;
-    QUuid m_frontendUuid;
-
-private:
-    FrameGraphNodeType m_nodeType;
-    bool m_enabled;
-    HFrameGraphNode m_handle;
-    HFrameGraphNode m_parentHandle;
-    QList<HFrameGraphNode> m_childrenHandles;
-
-    friend class FrameGraphVisitor;
-};
-
-} // namespace Render
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_RENDER_FRAMEGRAPHNODE_H
