@@ -64,6 +64,23 @@ QTransform::QTransform(QNode *parent)
     d->m_transformsDirty.fetchAndStoreOrdered(0);
 }
 
+QTransform::QTransform(QList<QAbstractTransform *> transforms, QNode *parent)
+    : Qt3D::QComponent(*new QTransformPrivate(this), parent)
+{
+    Q_D(QTransform);
+    d->m_transformsDirty.fetchAndStoreOrdered(0);
+    Q_FOREACH (QAbstractTransform *t, transforms)
+        appendTransform(t);
+}
+
+QTransform::QTransform(QAbstractTransform *transform, QNode *parent)
+    : Qt3D::QComponent(*new QTransformPrivate(this), parent)
+{
+    Q_D(QTransform);
+    d->m_transformsDirty.fetchAndStoreOrdered(0);
+    appendTransform(transform);
+}
+
 void QTransform::copy(const QNode *ref)
 {
     Q_D(QTransform);

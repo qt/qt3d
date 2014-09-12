@@ -61,6 +61,8 @@ class QT3DCORESHARED_EXPORT QTransform : public QComponent
 
 public:
     explicit QTransform(QNode *parent = 0);
+    QTransform(QList<QAbstractTransform *> transforms, QNode *parent = 0);
+    QTransform(QAbstractTransform *transform, QNode *parent = 0);
 
     void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
