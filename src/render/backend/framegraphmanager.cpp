@@ -54,6 +54,8 @@ FrameGraphManager::FrameGraphManager() : QResourcesManager<FrameGraphNode *,
 {
 }
 
+// TO DO : Implement cleanup mecanism in FrameGraphNode
+
 } // Render
 
 } // Qt3D
