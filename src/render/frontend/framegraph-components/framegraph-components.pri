@@ -17,6 +17,8 @@ HEADERS += \
         $$PWD/qlayerfilter_p.h \
         $$PWD/qclearbuffer.h \
         $$PWD/qclearbuffer_p.h \
+        $$PWD/qsortmethod.h \
+        $$PWD/qsortmethod_p.h \
         $$PWD/qsortcriterion.h \
         $$PWD/qsortcriterion_p.h
 
@@ -30,6 +32,7 @@ SOURCES += \
         $$PWD/qrendertargetselector.cpp \
         $$PWD/qlayerfilter.cpp \
         $$PWD/qclearbuffer.cpp \
+        $$PWD/qsortmethod.cpp \
         $$PWD/qsortcriterion.cpp
 
 INCLUDEPATH += $$PWD
