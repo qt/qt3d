@@ -824,7 +824,7 @@ void GLTFParser::processJSONTechnique( QString id, QJsonObject jsonObj )
         QString semantic = po.value(KEY_SEMANTIC).toString();
         // The Standard has changed, it doesn't return the raw int value for a type
         // But a string
-        QParameter* p = new QParameter(t, pname, parseType(po.value(KEY_TYPE).toString().toUtf8()));
+        QParameter* p = new QParameter(pname, parseType(po.value(KEY_TYPE).toString().toUtf8()), t);
 //        Parameter::StandardUniform su = parseSemanticName(semantic.toUtf8());
 //        if (su != Parameter::None) {
 //            p->setStandardUniform(su);

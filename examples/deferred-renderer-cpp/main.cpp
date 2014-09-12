@@ -141,20 +141,18 @@ int main(int ac, char **av)
     Qt3D::QMaterial *sphereOneMaterial = new Qt3D::QMaterial();
 
     sphereOneMaterial->setEffect(sceneEffect);
-    sphereOneMaterial->addParameter(new Qt3D::QParameter(sphereOneMaterial, QStringLiteral("meshColor"), QColor(Qt::blue)));
+    sphereOneMaterial->addParameter(new Qt3D::QParameter(QStringLiteral("meshColor"), QColor(Qt::blue)));
 
-    Qt3D::QTransform *sphereOneTransform = new Qt3D::QTransform();
     Qt3D::QTranslateTransform *sphereOneTranslate = new Qt3D::QTranslateTransform();
     sphereOneTranslate->setDx(-10.0f);
     sphereOneTranslate->setDy(0.0f);
     sphereOneTranslate->setDz(25.0f);
-    sphereOneTransform->appendTransform(sphereOneTranslate);
 
     Qt3D::QPointLight *light2 = new Qt3D::QPointLight();
     light2->setColor(Qt::white);
     light2->setIntensity(1.5f);
 
-    sphereOne->addComponent(sphereOneTransform);
+    sphereOne->addComponent(new Qt3D::QTransform(sphereOneTranslate));
     sphereOne->addComponent(sphereOneMaterial);
     sphereOne->addComponent(sphereMesh);
     sphereOne->addComponent(sceneLayer);
@@ -163,7 +161,7 @@ int main(int ac, char **av)
     Qt3D::QEntity *sphereTwo = new Qt3D::QEntity();
     Qt3D::QMaterial *sphereTwoMaterial = new Qt3D::QMaterial();
     sphereTwoMaterial->setEffect(sceneEffect);
-    sphereTwoMaterial->addParameter(new Qt3D::QParameter(sphereTwoMaterial, QStringLiteral("meshColor"), QColor(Qt::yellow)));
+    sphereTwoMaterial->addParameter(new Qt3D::QParameter(QStringLiteral("meshColor"), QColor(Qt::yellow)));
 
     Qt3D::QPointLight *light3 = new Qt3D::QPointLight();
     light3->setColor(Qt::blue);
@@ -177,20 +175,18 @@ int main(int ac, char **av)
     // Screen Quad
     Qt3D::QEntity *screenQuad = new Qt3D::QEntity();
     Qt3D::QMaterial *screenQuadMaterial = new Qt3D::QMaterial();
-    screenQuadMaterial->addParameter(new Qt3D::QParameter(0, QStringLiteral("position"),QVariant::fromValue(gBuffer->positionTexture())));
-    screenQuadMaterial->addParameter(new Qt3D::QParameter(0, QStringLiteral("normal"), QVariant::fromValue(gBuffer->normalTexture())));
-    screenQuadMaterial->addParameter(new Qt3D::QParameter(0, QStringLiteral("color"), QVariant::fromValue(gBuffer->colorTexture())));
-    screenQuadMaterial->addParameter(new Qt3D::QParameter(0, QStringLiteral("winSize"), QSize(1024, 1024)));
+    screenQuadMaterial->addParameter(new Qt3D::QParameter(QStringLiteral("position"), gBuffer->positionTexture()));
+    screenQuadMaterial->addParameter(new Qt3D::QParameter(QStringLiteral("normal"), gBuffer->normalTexture()));
+    screenQuadMaterial->addParameter(new Qt3D::QParameter(QStringLiteral("color"), gBuffer->colorTexture()));
+    screenQuadMaterial->addParameter(new Qt3D::QParameter(QStringLiteral("winSize"), QSize(1024, 1024)));
     screenQuadMaterial->setEffect(finalEffect);
 
-    Qt3D::QTransform *screenQuadTransform = new Qt3D::QTransform();
     Qt3D::QRotateTransform *screenPlaneRotation = new Qt3D::QRotateTransform();
     screenPlaneRotation->setAngleDeg(90);
     screenPlaneRotation->setAxis(QVector3D(1.0f, 0.0f, 0.0f));
-    screenQuadTransform->appendTransform(screenPlaneRotation);
 
     screenQuad->addComponent(quadLayer);
-    screenQuad->addComponent(screenQuadTransform);
+    screenQuad->addComponent(new Qt3D::QTransform(screenPlaneRotation));
     screenQuad->addComponent(screenQuadMaterial);
     screenQuad->addComponent(planeMesh);
 

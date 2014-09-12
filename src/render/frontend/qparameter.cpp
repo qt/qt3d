@@ -72,13 +72,22 @@ QParameter::QParameter(QNode *parent)
 {
 }
 
-QParameter::QParameter(QNode *parent, const QString &name, const QVariant &value, QParameter::OpenGLTypes ty)
+QParameter::QParameter(const QString &name, const QVariant &value, QNode *parent, QParameter::OpenGLTypes ty)
     : QNode(*new QParameterPrivate(this), parent)
 {
     Q_D(QParameter);
     d->m_name = name;
     d->m_value = value;
     d->m_type = ty;
+}
+
+QParameter::QParameter(const QString &name, QTexture *texture, QNode *parent)
+    : QNode(*new QParameterPrivate(this), parent)
+{
+    Q_D(QParameter);
+    d->m_name = name;
+    d->m_value = QVariant::fromValue(texture);
+    d->m_type = Undefined;
 }
 
 void QParameter::copy(const QNode *ref)

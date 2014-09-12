@@ -50,6 +50,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QParameterPrivate;
+class QTexture;
 
 class QT3DRENDERERSHARED_EXPORT QParameter : public QNode
 {
@@ -90,7 +91,8 @@ public:
     };
 
     explicit QParameter(QNode *parent = 0);
-    QParameter(QNode* parent, const QString& name, const QVariant& value, OpenGLTypes ty = Undefined);
+    QParameter(const QString& name, const QVariant& value, QNode* parent = 0, OpenGLTypes ty = Undefined);
+    QParameter(const QString &name, QTexture *texture, QNode *parent = 0);
 
     void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
