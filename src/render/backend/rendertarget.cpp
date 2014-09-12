@@ -85,6 +85,12 @@ void RenderTarget::setRenderer(Renderer *renderer)
     m_renderer = renderer;
 }
 
+void RenderTarget::cleanup()
+{
+    if (m_renderer != Q_NULLPTR && !m_renderTargetUuid.isNull())
+        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_renderTargetUuid);
+}
+
 void RenderTarget::appendRenderAttachment(QRenderAttachment *attachment)
 {
     if (!m_renderAttachments.contains(attachment->uuid()))

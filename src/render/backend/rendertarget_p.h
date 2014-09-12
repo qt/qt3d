@@ -65,6 +65,7 @@ public:
 
     void setPeer(QRenderTarget *peer);
     void setRenderer(Renderer *renderer);
+    void cleanup();
 
     void appendRenderAttachment(QRenderAttachment *attachment);
     void removeRenderAttachment(const QUuid &attachmentId);
