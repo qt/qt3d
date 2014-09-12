@@ -62,7 +62,8 @@ HEADERS += \
     $$PWD/renderscene_p.h \
     $$PWD/scenemanager_p.h \
     $$PWD/attachmentpack_p.h \
-    $$PWD/attachmentmanager_p.h
+    $$PWD/attachmentmanager_p.h \
+    $$PWD/sortcriterionmanager_p.h
 
 SOURCES += \
     $$PWD/rendereraspect.cpp \
@@ -121,4 +122,5 @@ SOURCES += \
     $$PWD/renderscene.cpp \
     $$PWD/scenemanager.cpp \
     $$PWD/attachmentpack.cpp \
-    $$PWD/attachmentmanager.cpp
+    $$PWD/attachmentmanager.cpp \
+    $$PWD/sortcriterionmanager.cpp
