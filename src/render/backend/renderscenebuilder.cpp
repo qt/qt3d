@@ -91,6 +91,8 @@
 #include <Qt3DRenderer/private/texturemanager_p.h>
 #include <Qt3DRenderer/private/clearbuffer_p.h>
 #include <Qt3DRenderer/private/sortmethod_p.h>
+#include <Qt3DRenderer/private/sortcriterion_p.h>
+#include <Qt3DRenderer/private/sortcriterionmanager_p.h>
 
 #include <Qt3DCore/qcamera.h>
 #include <Qt3DCore/qcameralens.h>
@@ -258,6 +260,10 @@ void RenderSceneBuilder::createRenderElement(QNode *frontend)
         createRenderElementHelper<QCriterion, RenderCriterion, CriterionManager>(frontend,
                                                                                  m_renderer->criterionManager());
     }
+    else if (qobject_cast<QSortCriterion *>(frontend)) {
+        createRenderElementHelper<QSortCriterion, SortCriterion, SortCriterionManager>(frontend,
+                                                                                       m_renderer->sortCriterionManager());
+    }
     else if (qobject_cast<QFrameGraphItem *>(frontend)) {
         FrameGraphNode *fgNode = backendFrameGraphNode(frontend);
         if (qobject_cast<QFrameGraphItem *>(frontend->parentNode()))
@@ -299,6 +305,8 @@ void RenderSceneBuilder::releaseRenderElement(QNode *frontend)
         m_renderer->sceneManager()->releaseResource(frontend->uuid());
     else if (qobject_cast<QTexture *>(frontend))
         m_renderer->textureManager()->releaseResource(frontend->uuid());
+    else if (qobject_cast<QSortCriterion *>(frontend))
+        m_renderer->sortCriterionManager()->releaseResource(frontend->uuid());
 }
 
 RenderEntity* RenderSceneBuilder::createRenderNode(QEntity *entity)
