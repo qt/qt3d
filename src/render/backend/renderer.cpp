@@ -98,6 +98,7 @@
 #include <Qt3DRenderer/private/vaomanager_p.h>
 #include <Qt3DRenderer/private/viewportnode_p.h>
 #include <Qt3DRenderer/private/attachmentmanager_p.h>
+#include <Qt3DRenderer/private/sortcriterionmanager_p.h>
 
 #include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/qabstracteffect.h>
@@ -150,6 +151,7 @@ Renderer::Renderer(int cachedFrames)
     , m_renderTargetManager(new RenderTargetManager())
     , m_sceneManager(new SceneManager())
     , m_attachmentManager(new AttachmentManager())
+    , m_sortCriterionManager(new SortCriterionManager())
     , m_renderQueues(new RenderQueues(cachedFrames - 1))
     , m_renderThread(new RenderThread(this))
     , m_renderSceneBuilder(new RenderSceneBuilder(this))

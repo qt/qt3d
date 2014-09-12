@@ -120,6 +120,7 @@ class RenderStateSet;
 class RenderTargetManager;
 class SceneManager;
 class AttachmentManager;
+class SortCriterionManager;
 
 typedef QHandle<RenderMaterial, 16> HMaterial;
 typedef QHandle<RenderEffect, 16> HEffect;
@@ -171,6 +172,7 @@ public:
     inline RenderTargetManager *renderTargetManager() const { return m_renderTargetManager; }
     inline SceneManager *sceneManager() const { return m_sceneManager; }
     inline AttachmentManager *attachmentManager() const { return m_attachmentManager; }
+    inline SortCriterionManager *sortCriterionManager() const { return m_sortCriterionManager; }
 
     inline HMaterial defaultMaterialHandle() const { return m_defaultMaterialHandle; }
     inline HEffect defaultEffectHandle() const { return m_defaultEffectHandle; }
@@ -251,6 +253,7 @@ private:
     RenderTargetManager *m_renderTargetManager;
     SceneManager *m_sceneManager;
     AttachmentManager *m_attachmentManager;
+    SortCriterionManager *m_sortCriterionManager;
 
     QTimer *m_frameTimer;
 
