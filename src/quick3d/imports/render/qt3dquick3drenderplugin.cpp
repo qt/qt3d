@@ -86,6 +86,7 @@
 #include <Qt3DRenderer/qdithering.h>
 #include <Qt3DRenderer/qrenderattachment.h>
 #include <Qt3DRenderer/qclearbuffer.h>
+#include <Qt3DRenderer/qsortcriterion.h>
 #include <Qt3DQuickRenderer/quick3dtechnique.h>
 #include <Qt3DQuickRenderer/quick3dmaterial.h>
 #include <Qt3DQuickRenderer/quick3dtechniquefilter.h>
@@ -149,6 +150,8 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     // RenderTarget
     qmlRegisterType<Qt3D::QRenderAttachment>(uri, 2, 0, "RenderAttachment");
     qmlRegisterExtendedType<Qt3D::QRenderTarget, Qt3D::Render::Quick::Quick3DRenderTarget>(uri, 2, 0, "RenderTarget");
+
+    qmlRegisterType<Qt3D::QSortCriterion>(uri, 2, 0, "SortCriterion");
 
     // RenderStates
     qmlRegisterUncreatableType<Qt3D::QRenderState>(uri, 2, 0, "RenderState", QStringLiteral("QRenderState is a base class"));
