@@ -99,6 +99,7 @@
 #include <Qt3DQuickRenderer/private/shaderpropertyparser_p.h>
 #include <Qt3DQuickRenderer/quick3drenderpass.h>
 #include <Qt3DQuickRenderer/quick3dframegraphitem.h>
+#include <Qt3DQuickRenderer/quick3dsortmethod.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -118,7 +119,9 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterExtendedType<Qt3D::QMaterial, Qt3D::Render::Quick::Quick3DMaterial>(uri, 2, 0, "Material");
     qmlRegisterExtendedType<Qt3D::QRenderPass, Qt3D::Render::Quick::Quick3DRenderPass>(uri, 2, 0, "RenderPass");
     qmlRegisterType<Qt3D::QShaderProgram>(uri, 2, 0, "ShaderProgram");
+    qmlRegisterExtendedType<Qt3D::QTexture, Qt3D::Render::Quick::Quick3DTexture>(uri, 2, 0, "Texture");
 
+    // Meshes
     qmlRegisterUncreatableType<Qt3D::QAbstractMesh>(uri, 2, 0, "QAbstractMesh", QStringLiteral("QAbstractMesh is abstract"));
     qmlRegisterType<Qt3D::QMesh>(uri, 2, 0, "Mesh");
     qmlRegisterUncreatableType<Qt3D::QAbstractShapeMesh>(uri, 2, 0, "QAbstractShapeMesh", QStringLiteral("Shape is an abstract base class"));
@@ -128,16 +131,17 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3D::QTorusMesh>(uri, 2, 0, "TorusMesh");
     qmlRegisterType<Qt3D::QSphereMesh>(uri, 2, 0, "SphereMesh");
 
+    // Layers
     qmlRegisterType<Qt3D::QLayer>(uri, 2, 0, "Layer");
     qmlRegisterType<Qt3D::QLayerFilter>(uri, 2, 0, "LayerFilter");
 
+    // Lights
     qmlRegisterUncreatableType<Qt3D::QAbstractLight>(uri, 2, 0, "QAbstractLight", QStringLiteral("QAbstractLight is abstract"));
     qmlRegisterType<Qt3D::QPointLight>(uri, 2, 0, "PointLight");
     qmlRegisterType<Qt3D::QDirectionalLight>(uri, 2, 0, "DirectionalLight");
     qmlRegisterType<Qt3D::QSpotLight>(uri, 2, 0, "SpotLight");
 
-    qmlRegisterExtendedType<Qt3D::QTexture, Qt3D::Render::Quick::Quick3DTexture>(uri, 2, 0, "Texture");
-    // Framegraph components - TODO RenderTarget, RenderTargetSelector
+    // FrameGraph
     qmlRegisterExtendedType<Qt3D::QCameraSelector, Qt3D::Quick::Quick3DNode>(uri, 2, 0, "CameraSelector");
     qmlRegisterExtendedType<Qt3D::QRenderPassFilter, Qt3D::Render::Quick::Quick3DRenderPassFilter>(uri, 2, 0, "RenderPassFilter");
     qmlRegisterExtendedType<Qt3D::QTechniqueFilter, Qt3D::Render::Quick::Quick3DTechniqueFilter>(uri, 2, 0, "TechniqueFilter");
@@ -151,7 +155,9 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3D::QRenderAttachment>(uri, 2, 0, "RenderAttachment");
     qmlRegisterExtendedType<Qt3D::QRenderTarget, Qt3D::Render::Quick::Quick3DRenderTarget>(uri, 2, 0, "RenderTarget");
 
+    // Sorting
     qmlRegisterType<Qt3D::QSortCriterion>(uri, 2, 0, "SortCriterion");
+    qmlRegisterExtendedType<Qt3D::QSortMethod, Qt3D::Render::Quick::Quick3DSortMethod>(uri, 2, 0, "SortMethod");
 
     // RenderStates
     qmlRegisterUncreatableType<Qt3D::QRenderState>(uri, 2, 0, "RenderState", QStringLiteral("QRenderState is a base class"));
