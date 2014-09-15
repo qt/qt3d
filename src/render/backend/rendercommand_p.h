@@ -78,13 +78,6 @@ class RenderCommand
 public:
     RenderCommand();
 
-//    void setMaterial(HMaterial material);
-//    void setModelMatrix(HMatrix matrix);
-//    void setIntanceCount(uint instanceCount);
-//    void setTechnique(); // Do we really need the technique ?, isn't a shader enough
-
-
-//private:
     HVao m_vao; // VAO used during the submission step to store all states and VBOs
     HMeshData m_meshData;
     HShader m_shader; // Shader for given pass and mesh
@@ -96,6 +89,15 @@ public:
     // A QAttribute pack might be interesting
     // This is a temporary fix in the meantime, to remove the hacked methods in RenderTechnique
     QHash<QString, QString> m_parameterAttributeToShaderNames;
+
+    float m_depth;
+    int m_changeCost;
+
+    union sortingType {
+        char sorts[4];
+        int  global;
+    } m_sortingType;
+
 };
 
 bool operator < (const RenderCommand &r1, const RenderCommand &r2);

@@ -136,18 +136,33 @@ private:
 
     Renderer *m_renderer;
     QFrameAllocator *m_allocator;
-    RenderCameraLens *m_renderCamera;
-    TechniqueFilter *m_techniqueFilter;
-    RenderPassFilter *m_passFilter;
+
+    // Helps making the size of RenderView smaller
+    // Contains all the data needed for the actual building of the RenderView
+    // But that aren't used later by the Renderer
+    struct InnerData {
+        InnerData()
+            : m_renderCamera(Q_NULLPTR)
+            , m_techniqueFilter(Q_NULLPTR)
+            , m_passFilter(Q_NULLPTR)
+            , m_viewMatrix(Q_NULLPTR)
+        {
+        }
+        RenderCameraLens *m_renderCamera;
+        TechniqueFilter *m_techniqueFilter;
+        RenderPassFilter *m_passFilter;
+        QMatrix4x4 *m_viewMatrix;
+        QStringList m_layers;
+        QList<LightPair> m_lights;
+        QList<QUuid> m_sortingCriteria;
+        QVector3D m_eyePos;
+    } *m_data;
+
+    QColor *m_clearColor;
+    QRectF *m_viewport;
     HTarget m_renderTarget;
     AttachmentPack m_attachmentPack;
-    QRectF *m_viewport;
-    QStringList m_layers;
-    QMatrix4x4 *m_viewMatrix;
-    QColor *m_clearColor;
-    QList<LightPair> m_lights;
     QClearBuffer::BufferType m_clearBuffer;
-
     int m_frameIndex;
 
     // We do not use pointers to RenderNodes or Drawable's here so that the
@@ -177,6 +192,7 @@ private:
     QUniformValue *inverseViewportMatrix(const QMatrix4x4 &model) const;
 
     void setUniformValue(QUniformPack &uniformPack, const QString &name, const QVariant &value);
+    void buildSortingKey(RenderCommand *command);
 };
 
 } // namespace Render

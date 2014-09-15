@@ -40,6 +40,7 @@
 ****************************************************************************/
 
 #include "rendercommand_p.h"
+#include <Qt3DRenderer/qsortcriterion.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -52,7 +53,23 @@ RenderCommand::RenderCommand()
 
 bool operator <(const RenderCommand &r1, const RenderCommand &r2)
 {
-    return r1.m_shader.handle() < r2.m_shader.handle();
+    bool inf = true;
+    for (int i = 0; i < 4 && inf; i++) {
+        switch (r1.m_sortingType.sorts[i]) {
+        case 0:
+            return inf;
+        case QSortCriterion::StateChangeCost:
+            inf = r1.m_changeCost < r2.m_changeCost;
+            break;
+        case QSortCriterion::BackToFront:
+            inf = r1.m_depth < r2.m_depth;
+            break;
+        case QSortCriterion::Material:
+            inf = r1.m_shader != r2.m_shader;
+            break;
+        }
+    }
+    return inf;
 }
 
 } // namespace Render

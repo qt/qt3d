@@ -178,6 +178,7 @@ public:
     inline HEffect defaultEffectHandle() const { return m_defaultEffectHandle; }
     inline HTechnique defaultTechniqueHandle() const { return m_defaultTechniqueHandle; }
     inline HRenderPass defaultRenderPassHandle() const { return m_defaultRenderPassHandle; }
+    inline RenderStateSet *defaultRenderState() const { return m_defaultRenderStateSet; }
 
     inline RenderSceneBuilder *renderSceneBuilder() const { return m_renderSceneBuilder; }
 

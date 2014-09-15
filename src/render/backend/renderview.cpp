@@ -82,6 +82,9 @@
 #include <Qt3DRenderer/private/rendertargetmanager_p.h>
 #include <Qt3DRenderer/private/attachmentmanager_p.h>
 #include <Qt3DRenderer/private/clearbuffer_p.h>
+#include <Qt3DRenderer/private/sortmethod_p.h>
+#include <Qt3DRenderer/private/sortcriterionmanager_p.h>
+#include <Qt3DRenderer/sphere.h>
 
 #include "qalphatest.h"
 #include "qblendequation.h"
@@ -160,21 +163,21 @@ QUniformValue *RenderView::modelMatrix(const QMatrix4x4 &model) const
 QUniformValue *RenderView::viewMatrix(const QMatrix4x4 &) const
 {
     SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
-    t->setValue(*m_viewMatrix);
+    t->setValue(*m_data->m_viewMatrix);
     return t;
 }
 
 QUniformValue *RenderView::projectionMatrix(const QMatrix4x4 &) const
 {
     SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
-    t->setValue(m_renderCamera->projection());
+    t->setValue(m_data->m_renderCamera->projection());
     return t;
 }
 
 QUniformValue *RenderView::modelViewMatrix(const QMatrix4x4 &model) const
 {
     SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
-    t->setValue(*m_viewMatrix * model);
+    t->setValue(*m_data->m_viewMatrix * model);
     return t;
 }
 
@@ -182,9 +185,9 @@ QUniformValue *RenderView::modelViewProjectionMatrix(const QMatrix4x4 &model) co
 {
     SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
     QMatrix4x4 projection;
-    if (m_renderCamera)
-        projection = m_renderCamera->projection();
-    t->setValue(projection * *m_viewMatrix * model);
+    if (m_data->m_renderCamera)
+        projection = m_data->m_renderCamera->projection();
+    t->setValue(projection * *m_data->m_viewMatrix * model);
     return t;
 }
 
@@ -198,7 +201,7 @@ QUniformValue *RenderView::inverseModelMatrix(const QMatrix4x4 &model) const
 QUniformValue *RenderView::inverseViewMatrix(const QMatrix4x4 &) const
 {
     SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
-    t->setValue(m_viewMatrix->inverted());
+    t->setValue(m_data->m_viewMatrix->inverted());
     return t;
 }
 
@@ -206,8 +209,8 @@ QUniformValue *RenderView::inverseProjectionMatrix(const QMatrix4x4 &) const
 {
     SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
     QMatrix4x4 projection;
-    if (m_renderCamera)
-        projection = m_renderCamera->projection();
+    if (m_data->m_renderCamera)
+        projection = m_data->m_renderCamera->projection();
     t->setValue(projection.inverted());
     return t;
 }
@@ -215,7 +218,7 @@ QUniformValue *RenderView::inverseProjectionMatrix(const QMatrix4x4 &) const
 QUniformValue *RenderView::inverseModelViewMatrix(const QMatrix4x4 &model) const
 {
     SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
-    t->setValue((*m_viewMatrix * model).inverted());
+    t->setValue((*m_data->m_viewMatrix * model).inverted());
     return t;
 }
 
@@ -223,9 +226,9 @@ QUniformValue *RenderView::inverseModelViewProjectionMatrix(const QMatrix4x4 &mo
 {
     SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
     QMatrix4x4 projection;
-    if (m_renderCamera)
-        projection = m_renderCamera->projection();
-    t->setValue((projection * *m_viewMatrix * model).inverted());
+    if (m_data->m_renderCamera)
+        projection = m_data->m_renderCamera->projection();
+    t->setValue((projection * *m_data->m_viewMatrix * model).inverted());
     return t;
 }
 
@@ -239,7 +242,7 @@ QUniformValue *RenderView::modelNormalMatrix(const QMatrix4x4 &model) const
 QUniformValue *RenderView::modelViewNormalMatrix(const QMatrix4x4 &model) const
 {
     SpecifiedUniform<QMatrix3x3> *t = m_allocator->allocate<SpecifiedUniform<QMatrix3x3> >();
-    t->setValue((*m_viewMatrix * model).normalMatrix());
+    t->setValue((*m_data->m_viewMatrix * model).normalMatrix());
     return t;
 }
 
@@ -279,12 +282,9 @@ QUniformValue *RenderView::inverseViewportMatrix(const QMatrix4x4 &model) const
 RenderView::RenderView()
     : m_renderer(Q_NULLPTR)
     , m_allocator(Q_NULLPTR)
-    , m_renderCamera(Q_NULLPTR)
-    , m_techniqueFilter(Q_NULLPTR)
-    , m_passFilter(Q_NULLPTR)
-    , m_viewport(Q_NULLPTR)
-    , m_viewMatrix(Q_NULLPTR)
+    , m_data(Q_NULLPTR)
     , m_clearColor(Q_NULLPTR)
+    , m_viewport(Q_NULLPTR)
     , m_clearBuffer(QClearBuffer::None)
 {
 }
@@ -303,11 +303,13 @@ RenderView::~RenderView()
         m_allocator->deallocate<RenderCommand>(command);
     }
     // Deallocate viewMatrix
-    m_allocator->deallocate<QMatrix4x4>(m_viewMatrix);
+    m_allocator->deallocate<QMatrix4x4>(m_data->m_viewMatrix);
     // Deallocate viewport rect
     m_allocator->deallocate<QRectF>(m_viewport);
     // Deallocate clearColor
     m_allocator->deallocate<QColor>(m_clearColor);
+    // Deallocate m_data
+    m_allocator->deallocate<InnerData>(m_data);
 }
 
 // We need to overload the delete operator so that when the Renderer deletes the list of RenderViews, each RenderView
@@ -338,25 +340,26 @@ void RenderView::setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf)
         FrameGraphNode::FrameGraphNodeType type = node->nodeType();
         switch (type) {
         case FrameGraphNode::CameraSelector: // Can be set once
-            if (m_renderCamera == Q_NULLPTR) {
+            if (m_data->m_renderCamera == Q_NULLPTR) {
                 CameraSelector *cameraSelector = static_cast<CameraSelector *>(node);
                 RenderEntity *tmpCamNode = m_renderer->renderNodesManager()->lookupResource(cameraSelector->cameraUuid());
                 if (tmpCamNode) {
-                    m_renderCamera = tmpCamNode->renderComponent<RenderCameraLens>();
+                    m_data->m_renderCamera = tmpCamNode->renderComponent<RenderCameraLens>();
                     // If we have a viewMatrix pointer instead of directly a QMatrix4x4 object in RenderView
                     // This allows us to keep the size of RenderView smaller and avoid huge block fragmentation
-                    *m_viewMatrix = *tmpCamNode->worldTransform();
+                    *m_data->m_viewMatrix = *tmpCamNode->worldTransform();
+                    m_data->m_eyePos = tmpCamNode->worldBoundingVolume()->center();
                 }
                 break;
             }
 
         case FrameGraphNode::LayerFilter: // Can be set multiple times in the tree
-            m_layers << static_cast<LayerFilterNode *>(node)->layers();
+            m_data->m_layers << static_cast<LayerFilterNode *>(node)->layers();
             break;
 
         case FrameGraphNode::RenderPassFilter:
-            if (m_passFilter == Q_NULLPTR) // Can be set once
-                m_passFilter = static_cast<RenderPassFilter *>(node);
+            if (m_data->m_passFilter == Q_NULLPTR) // Can be set once
+                m_data->m_passFilter = static_cast<RenderPassFilter *>(node);
             break;
 
         case FrameGraphNode::RenderTarget:
@@ -378,8 +381,8 @@ void RenderView::setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf)
             break;
 
         case FrameGraphNode::TechniqueFilter:
-            if (m_techniqueFilter == Q_NULLPTR) // Can be set once
-                m_techniqueFilter = static_cast<TechniqueFilter *>(node);
+            if (m_data->m_techniqueFilter == Q_NULLPTR) // Can be set once
+                m_data->m_techniqueFilter = static_cast<TechniqueFilter *>(node);
             break;
 
         case FrameGraphNode::Viewport: // Can be set multiple times in the tree
@@ -387,6 +390,12 @@ void RenderView::setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf)
             // Make it so that the new viewport is actually
             // a subregion relative to that of the parent viewport
             computeViewport(static_cast<ViewportNode *>(node));
+            break;
+
+        case FrameGraphNode::SortMethod:
+            Render::SortMethod *sM;
+            sM = static_cast<Render::SortMethod *>(node);
+            m_data->m_sortingCriteria.append(sM->criteria());
             break;
 
         default:
@@ -400,17 +409,10 @@ void RenderView::setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf)
 
 void RenderView::sort()
 {
-    // TODO: Implement me!
-    // Find a way to let user specify the sorting to perform
-    // Maybe a Sorting tree within the FrameGraph or some predicates
-
-    // The goal here is to sort RenderCommand by :
-    // 1) Shader
-    // 2) RenderStateSet
-    // 2) Texture
+    // Compares the bitsetKey of the RenderCommands
+    // Key[Depth | StateCost | Shader]
 
     std::sort(m_commands.begin(), m_commands.end());
-
 }
 
 void RenderView::setRenderer(Renderer *renderer)
@@ -421,7 +423,8 @@ void RenderView::setRenderer(Renderer *renderer)
 void RenderView::setAllocator(QFrameAllocator *allocator)
 {
     m_allocator = allocator;
-    m_viewMatrix = m_allocator->allocate<QMatrix4x4>();
+    m_data = m_allocator->allocate<InnerData>();
+    m_data->m_viewMatrix = m_allocator->allocate<QMatrix4x4>();
 }
 
 void RenderView::preprocessRenderTree(RenderEntity *node)
@@ -431,7 +434,7 @@ void RenderView::preprocessRenderTree(RenderEntity *node)
     // Note : Layer filtering isn't applied there
     HLight lightHandle = node->componentHandle<RenderLight, 16>();
     if (!lightHandle.isNull())
-        m_lights.append(LightPair(lightHandle, *node->worldTransform()));
+        m_data->m_lights.append(LightPair(lightHandle, *node->worldTransform()));
 
     // Traverse children
     Q_FOREACH (RenderEntity *child, node->children())
@@ -469,10 +472,14 @@ void RenderView::buildRenderCommands(RenderEntity *node)
                 // 1 RenderCommand per RenderPass pass on an Entity with a Mesh
                 Q_FOREACH (RenderRenderPass *pass, passes) {
                     RenderCommand *command = m_allocator->allocate<RenderCommand>();
+                    command->m_depth = m_data->m_eyePos.distanceToPoint(node->worldBoundingVolume()->center());
                     command->m_meshData = mesh->meshData();
                     command->m_instancesCount = 0;
                     command->m_stateSet = buildRenderStateSet(pass);
+                    if (command->m_stateSet != Q_NULLPTR)
+                        command->m_changeCost = m_renderer->defaultRenderState()->changeCost(command->m_stateSet);
                     setShaderAndUniforms(command, pass, parameters, *(node->worldTransform()));
+                    buildSortingKey(command);
                     m_commands.append(command);
                 }
             }
@@ -502,9 +509,9 @@ RenderTechnique *RenderView::findTechniqueForEffect(RenderEffect *effect)
             if (technique != Q_NULLPTR &&
                     *m_renderer->contextInfo() == *technique->openGLFilter()) {
                 // If no techniqueFilter is present, we return the technique as it satisfies OpenGL version
-                bool findMatch = (m_techniqueFilter == Q_NULLPTR || m_techniqueFilter->filters().size() == 0) ? true : false;
-                if (!findMatch && technique->criteria().size() >= m_techniqueFilter->filters().size()) {
-                    Q_FOREACH (const QUuid &refCritId, m_techniqueFilter->filters()) {
+                bool findMatch = (m_data->m_techniqueFilter == Q_NULLPTR || m_data->m_techniqueFilter->filters().size() == 0) ? true : false;
+                if (!findMatch && technique->criteria().size() >= m_data->m_techniqueFilter->filters().size()) {
+                    Q_FOREACH (const QUuid &refCritId, m_data->m_techniqueFilter->filters()) {
                         RenderCriterion *refCriterion = m_renderer->criterionManager()->lookupResource(refCritId);
                         findMatch = false;
                         Q_FOREACH (const QUuid &critId, technique->criteria()) {
@@ -532,10 +539,10 @@ QList<RenderRenderPass *> RenderView::findRenderPassesForTechnique(RenderTechniq
             RenderRenderPass *renderPass = m_renderer->renderPassManager()->lookupResource(passId);
 
             if (renderPass != Q_NULLPTR) {
-                bool findMatch = (m_passFilter == Q_NULLPTR || m_passFilter->filters().size() == 0) ? true : false;
-                if (!findMatch && renderPass->criteria().size() >= m_passFilter->filters().size())
+                bool findMatch = (m_data->m_passFilter == Q_NULLPTR || m_data->m_passFilter->filters().size() == 0) ? true : false;
+                if (!findMatch && renderPass->criteria().size() >= m_data->m_passFilter->filters().size())
                 {
-                    Q_FOREACH (const QUuid &refCritId, m_passFilter->filters()) {
+                    Q_FOREACH (const QUuid &refCritId, m_data->m_passFilter->filters()) {
                         RenderCriterion *refCriterion = m_renderer->criterionManager()->lookupResource(refCritId);
                         findMatch = false;
                         Q_FOREACH (const QUuid &critId, renderPass->criteria()) {
@@ -653,6 +660,23 @@ void RenderView::setUniformValue(QUniformPack &uniformPack, const QString &name,
     }
 }
 
+void RenderView::buildSortingKey(RenderCommand *command)
+{
+    // Build a bitset key depending on the SortingCriterion
+    int sortCount = m_data->m_sortingCriteria.count();
+    command->m_sortingType.global = 0;
+
+    // Default sorting
+    if (sortCount == 0)
+        command->m_sortingType.sorts[0] = QSortCriterion::StateChangeCost;
+
+    // Handle at most 4 filters at once
+    for (int i = 0; i < sortCount && i < 4; i++) {
+        SortCriterion *sC = m_renderer->sortCriterionManager()->lookupResource(m_data->m_sortingCriteria[i]);
+        command->m_sortingType.sorts[i] = sC->sortType();
+    }
+}
+
 void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *rPass, QHash<QString, QVariant> &parameters, const QMatrix4x4 &worldTransform)
 {
     // The VAO Handle is set directly in the renderer thread so as to avoid having to use a mutex here
@@ -736,7 +760,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
                 // Maybe we should provide a flag in the shader to specify if it needs lights
                 // that might save a bit of performances
                 QHash<QString, int> m_countOfLightTypes;
-                Q_FOREACH (const LightPair &lightPair, m_lights) {
+                Q_FOREACH (const LightPair &lightPair, m_data->m_lights) {
                     RenderLight *light = m_renderer->lightManager()->data(lightPair.first);
                     if (light != Q_NULLPTR) {
                         if (!m_countOfLightTypes.contains(light->lightBlockName()))
@@ -788,10 +812,10 @@ void RenderView::computeViewport(ViewportNode *viewportNode)
 
 bool RenderView::checkContainedWithinLayer(RenderEntity *node)
 {
-    if (m_layers.isEmpty())
+    if (m_data->m_layers.isEmpty())
         return true;
     RenderLayer *renderLayer = node->renderComponent<RenderLayer>();
-    if (renderLayer == Q_NULLPTR || !m_layers.contains(renderLayer->layer()))
+    if (renderLayer == Q_NULLPTR || !m_data->m_layers.contains(renderLayer->layer()))
         return false;
     return true;
 }
