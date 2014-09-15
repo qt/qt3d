@@ -75,12 +75,15 @@ public:
     void addMeshData(QAbstractMeshFunctorPtr functor, const QUuid &meshUuid);
 
     QHash<QUuid, QAbstractMeshFunctorPtr> meshesPending();
+    HMeshData meshDataFromFunctor(QAbstractMeshFunctorPtr functor) const;
+    void addMeshDataForFunctor(HMeshData meshDataHandle, QAbstractMeshFunctorPtr functor);
 
 private:
     // List of meshes that we need to schedule jobs to load
     // and calculate bounds for.
 
     QHash<QUuid, QAbstractMeshFunctorPtr> m_meshesPending;
+    QHash<QAbstractMeshFunctorPtr, HMeshData> m_meshFunctors;
 };
 
 } // namespace Render

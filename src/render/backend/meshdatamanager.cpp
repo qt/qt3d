@@ -70,6 +70,20 @@ QHash<QUuid, QAbstractMeshFunctorPtr> MeshDataManager::meshesPending()
     return meshFunctors;
 }
 
+HMeshData MeshDataManager::meshDataFromFunctor(QAbstractMeshFunctorPtr functor) const
+{
+    Q_FOREACH (const QAbstractMeshFunctorPtr &ptr, m_meshFunctors.keys()) {
+        if (*ptr == *functor)
+            return m_meshFunctors.value(ptr);
+    }
+    return HMeshData();
+}
+
+void MeshDataManager::addMeshDataForFunctor(HMeshData meshDataHandle, QAbstractMeshFunctorPtr functor)
+{
+    m_meshFunctors.insert(functor, meshDataHandle);
+}
+
 } // namespace Render
 } // namespace Qt3D
 

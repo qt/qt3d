@@ -69,21 +69,30 @@ void LoadMeshDataJob::run()
 
     if (m_functor.isNull())
         return ;
-    // Load the mesh from disk (or wherever)
-    QMeshDataPtr meshDataPtr = m_functor->operator ()().staticCast<QMeshData>();
-    if (meshDataPtr.isNull()) {
-        qCDebug(Jobs) << Q_FUNC_INFO << "Mesh has no raw data";
-        return ;
-    }
 
-    // TO DO try to use QAbstractMeshData if possible
     QMutexLocker lock(m_renderer->mutex());
-    QMeshData *meshData = m_renderer->meshDataManager()->getOrCreateResource(m_meshUuid);
-    *meshData = *(meshDataPtr.data());
+    HMeshData meshDataHandle = m_renderer->meshDataManager()->meshDataFromFunctor(m_functor);
+    lock.unlock();
 
-    AttributePtr attr = meshData->attributeByName(QAbstractMeshData::defaultPositionAttributeName()).staticCast<Attribute>();
-    if (!attr)
-        qCWarning(Jobs) << Q_FUNC_INFO << "unknown attribute: position";
+    if (meshDataHandle.isNull()) {
+        // Load the mesh from disk (or wherever)
+        QMeshDataPtr meshDataPtr = m_functor->operator ()().staticCast<QMeshData>();
+        if (meshDataPtr.isNull()) {
+            qCDebug(Jobs) << Q_FUNC_INFO << "Mesh has no raw data";
+            return ;
+        }
+        // TO DO try to use QAbstractMeshData if possible
+        lock.relock();
+        meshDataHandle = m_renderer->meshDataManager()->acquire();
+        QMeshData *meshData = m_renderer->meshDataManager()->data(meshDataHandle);
+        *meshData = *(meshDataPtr.data());
+        m_renderer->meshDataManager()->addMeshDataForFunctor(meshDataHandle, m_functor);
+        AttributePtr attr = meshData->attributeByName(QAbstractMeshData::defaultPositionAttributeName()).staticCast<Attribute>();
+        if (!attr)
+            qCWarning(Jobs) << Q_FUNC_INFO << "unknown attribute: position";
+    }
+    lock.relock();
+    m_renderer->meshManager()->lookupResource(m_meshUuid)->setMeshData(meshDataHandle);
 }
 
 } // namespace Render

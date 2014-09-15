@@ -134,7 +134,12 @@ void RenderMesh::sceneChangeEvent(const QSceneChangePtr &e)
 
 HMeshData RenderMesh::meshData() const
 {
-    return m_renderer->meshDataManager()->lookupHandle(m_meshUuid);
+    return m_meshDataHandle;
+}
+
+void RenderMesh::setMeshData(HMeshData handle)
+{
+    m_meshDataHandle = handle;
 }
 
 void RenderMesh::setMeshFunctor(QAbstractMeshFunctorPtr functor)
