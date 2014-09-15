@@ -219,6 +219,19 @@ public:
                                 m_xyFaceResolution);
     }
 
+    bool operator ==(const QAbstractMeshFunctor &other) const Q_DECL_OVERRIDE
+    {
+        const CuboidMeshFunctor *otherFunctor = dynamic_cast<const CuboidMeshFunctor *>(&other);
+        if (otherFunctor != Q_NULLPTR)
+            return (otherFunctor->m_xExtent == m_xExtent &&
+                    otherFunctor->m_yExtent == m_yExtent &&
+                    otherFunctor->m_zExtent == m_zExtent &&
+                    otherFunctor->m_yzFaceResolution == m_yzFaceResolution &&
+                    otherFunctor->m_xzFaceResolution == m_xzFaceResolution &&
+                    otherFunctor->m_xyFaceResolution == m_xyFaceResolution);
+        return false;
+    }
+
 private:
     // Dimensions
     float m_xExtent;

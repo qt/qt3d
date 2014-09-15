@@ -60,12 +60,14 @@ class CylinderMeshFunctor : public QAbstractMeshFunctor
 public:
     CylinderMeshFunctor(int rings, int slices, float radius, float length);
     QAbstractMeshDataPtr operator ()() Q_DECL_OVERRIDE;
+    bool operator ==(const QAbstractMeshFunctor &other) const;
 
 private:
     int m_rings;
     int m_slices;
     float m_radius;
     float m_length;
+
 };
 
 class QCylinderMeshPrivate : public QAbstractShapeMeshPrivate
@@ -349,6 +351,17 @@ CylinderMeshFunctor::CylinderMeshFunctor(int rings, int slices, float radius, fl
 QAbstractMeshDataPtr CylinderMeshFunctor::operator ()()
 {
     return createCylinderMesh(m_radius, m_length, m_rings, m_slices);
+}
+
+bool CylinderMeshFunctor::operator ==(const QAbstractMeshFunctor &other) const
+{
+    const CylinderMeshFunctor *otherFunctor = dynamic_cast<const CylinderMeshFunctor *>(&other);
+    if (otherFunctor != Q_NULLPTR)
+        return (otherFunctor->m_radius == m_radius &&
+                otherFunctor->m_length == m_length &&
+                otherFunctor->m_rings == m_rings &&
+                otherFunctor->m_slices == m_slices);
+    return false;
 }
 
 } // Qt3D

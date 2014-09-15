@@ -58,6 +58,7 @@ class QT3DCORESHARED_EXPORT QAbstractMeshFunctor
 {
 public:
     virtual QAbstractMeshDataPtr operator()() = 0;
+    virtual bool operator ==(const QAbstractMeshFunctor &other) const = 0;
     virtual ~QAbstractMeshFunctor() {}
 };
 

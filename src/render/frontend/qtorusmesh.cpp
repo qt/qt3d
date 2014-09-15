@@ -60,6 +60,7 @@ class TorusMeshFunctor : public QAbstractMeshFunctor
 public:
     TorusMeshFunctor(int rings, int slices, float radius, float minorRadius);
     QAbstractMeshDataPtr operator ()() Q_DECL_OVERRIDE;
+    bool operator ==(const QAbstractMeshFunctor &other) const Q_DECL_OVERRIDE;
 
 private:
     int m_rings;
@@ -283,6 +284,17 @@ TorusMeshFunctor::TorusMeshFunctor(int rings, int slices, float radius, float mi
 QAbstractMeshDataPtr TorusMeshFunctor::operator ()()
 {
     return createTorusMesh(m_radius, m_minorRadius, m_rings, m_slices);
+}
+
+bool TorusMeshFunctor::operator ==(const QAbstractMeshFunctor &other) const
+{
+    const TorusMeshFunctor *otherFunctor = dynamic_cast<const TorusMeshFunctor *>(&other);
+    if (otherFunctor != Q_NULLPTR)
+        return (otherFunctor->m_radius == m_radius &&
+                otherFunctor->m_slices == m_slices &&
+                otherFunctor->m_rings == m_rings &&
+                otherFunctor->m_minorRadius == m_minorRadius);
+    return false;
 }
 
 } // Qt3D

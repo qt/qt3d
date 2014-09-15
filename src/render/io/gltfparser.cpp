@@ -212,6 +212,7 @@ private:
     public:
         explicit GLTFParserMeshFunctor(QMeshDataPtr meshData);
         QAbstractMeshDataPtr operator ()() Q_DECL_OVERRIDE;
+        bool operator ==(const QAbstractMeshFunctor &other) const Q_DECL_OVERRIDE;
 
     private:
         QMeshDataPtr m_meshData;
@@ -1027,6 +1028,11 @@ GLTFParserMesh::GLTFParserMeshFunctor::GLTFParserMeshFunctor(QMeshDataPtr meshDa
 QAbstractMeshDataPtr GLTFParserMesh::GLTFParserMeshFunctor::operator ()()
 {
     return m_meshData;
+}
+
+bool GLTFParserMesh::GLTFParserMeshFunctor::operator ==(const QAbstractMeshFunctor &) const
+{
+    return false;
 }
 
 } // of namespace Qt3D

@@ -197,6 +197,7 @@ private:
     public:
         explicit AssimpMeshFunctor(QMeshDataPtr meshData);
         QAbstractMeshDataPtr operator()() Q_DECL_OVERRIDE;
+        bool operator ==(const QAbstractMeshFunctor &other) const Q_DECL_OVERRIDE;
     private:
         QMeshDataPtr m_meshData;
     };
@@ -853,6 +854,11 @@ AssimpMesh::AssimpMeshFunctor::AssimpMeshFunctor(QMeshDataPtr meshData)
 QAbstractMeshDataPtr AssimpMesh::AssimpMeshFunctor::operator()()
 {
     return m_meshData;
+}
+
+bool AssimpMesh::AssimpMeshFunctor::operator ==(const QAbstractMeshFunctor &) const
+{
+    return false;
 }
 
 } // Qt3D

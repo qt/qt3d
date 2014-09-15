@@ -61,13 +61,13 @@ class SphereMeshFunctor : public QAbstractMeshFunctor
 public:
     SphereMeshFunctor(int rings, int slices, float radius, bool generateTangents);
     QAbstractMeshDataPtr operator ()() Q_DECL_OVERRIDE;
+    bool operator ==(const QAbstractMeshFunctor &other) const Q_DECL_OVERRIDE;
 
 private:
     int m_rings;
     int m_slices;
     float m_radius;
     bool m_generateTangents;
-
 };
 
 class QSphereMeshPrivate : public QAbstractShapeMeshPrivate
@@ -325,6 +325,17 @@ SphereMeshFunctor::SphereMeshFunctor(int rings, int slices, float radius, bool g
 QAbstractMeshDataPtr SphereMeshFunctor::operator ()()
 {
     return createSphereMesh(m_radius, m_rings, m_slices, m_generateTangents);
+}
+
+bool SphereMeshFunctor::operator ==(const QAbstractMeshFunctor &other) const
+{
+    const SphereMeshFunctor *otherFunctor = dynamic_cast<const SphereMeshFunctor *>(&other);
+    if (otherFunctor != Q_NULLPTR)
+        return (otherFunctor->m_rings == m_rings &&
+                otherFunctor->m_slices == m_slices &&
+                otherFunctor->m_radius == m_radius &&
+                otherFunctor->m_generateTangents == m_generateTangents);
+    return false;
 }
 
 } //Qt3D

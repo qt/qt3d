@@ -85,6 +85,14 @@ public:
         mesh->setVerticesPerPatch(4);
         return mesh;
     }
+
+    bool operator ==(const Qt3D::QAbstractMeshFunctor &other) const
+    {
+        const TessellatedQuadMeshFunctor *otherFunctor = dynamic_cast<const TessellatedQuadMeshFunctor *>(&other);
+        if (otherFunctor != Q_NULLPTR)
+            return true;
+        return false;
+    }
 };
 
 Qt3D::QAbstractMeshFunctorPtr TessellatedQuadMesh::meshFunctor() const

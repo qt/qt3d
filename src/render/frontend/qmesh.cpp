@@ -60,6 +60,7 @@ class MeshFunctor : public QAbstractMeshFunctor
 public :
     MeshFunctor(const QString &sourcePath);
     QAbstractMeshDataPtr operator()() Q_DECL_OVERRIDE;
+    bool operator ==(const QAbstractMeshFunctor &other) const Q_DECL_OVERRIDE;
 
 private:
     QString m_sourcePath;
@@ -141,6 +142,14 @@ QAbstractMeshDataPtr MeshFunctor::operator()()
 
     qCWarning(Render::Jobs) << Q_FUNC_INFO << "OBJ load failure for:" << m_sourcePath;
     return QMeshDataPtr();
+}
+
+bool MeshFunctor::operator ==(const QAbstractMeshFunctor &other) const
+{
+    const MeshFunctor *otherFunctor = dynamic_cast<const MeshFunctor *>(&other);
+    if (otherFunctor != Q_NULLPTR)
+        return (otherFunctor->m_sourcePath == m_sourcePath);
+    return false;
 }
 
 } // namespace Qt3D

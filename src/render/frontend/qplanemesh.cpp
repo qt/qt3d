@@ -154,6 +154,16 @@ public:
         return createPlaneMesh(m_width, m_height, m_meshResolution);
     }
 
+    bool operator ==(const QAbstractMeshFunctor &other) const Q_DECL_OVERRIDE
+    {
+        const PlaneMeshFunctor *otherFunctor = dynamic_cast<const PlaneMeshFunctor *>(&other);
+        if (otherFunctor != Q_NULLPTR)
+            return (otherFunctor->m_width == m_width &&
+                    otherFunctor->m_height == m_height &&
+                    otherFunctor->m_meshResolution == m_meshResolution);
+        return false;
+    }
+
 private:
     float m_width;
     float m_height;
