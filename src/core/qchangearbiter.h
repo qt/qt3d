@@ -93,6 +93,9 @@ public:
     Q_INVOKABLE void setPostman(Qt3D::QPostman *postman);
     Q_INVOKABLE void setScene(Qt3D::QSceneInterface *scene);
 
+    QPostman *postman() const;
+    QSceneInterface *scene() const;
+
     static void createUnmanagedThreadLocalChangeQueue(void *changeArbiter);
     static void destroyUnmanagedThreadLocalChangeQueue(void *changeArbiter);
     static void createThreadLocalChangeQueue(void *changeArbiter);

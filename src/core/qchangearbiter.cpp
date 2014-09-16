@@ -213,6 +213,18 @@ void QChangeArbiter::setScene(QSceneInterface *scene)
     d->m_scene = scene;
 }
 
+QPostman *QChangeArbiter::postman() const
+{
+    Q_D(const QChangeArbiter);
+    return d->m_postman;
+}
+
+QSceneInterface *QChangeArbiter::scene() const
+{
+    Q_D(const QChangeArbiter);
+    return d->m_scene;
+}
+
 void QChangeArbiter::registerObserver(QObserverInterface *observer,
                                       const QUuid &nodeId,
                                       ChangeFlags changeFlags)
