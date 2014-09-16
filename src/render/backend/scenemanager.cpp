@@ -55,6 +55,18 @@ SceneManager::SceneManager() : QResourcesManager<RenderScene,
 {
 }
 
+void SceneManager::addSceneData(const QString &source, const QUuid &sceneUuid)
+{
+    m_pendingJobs.append(LoadSceneJobPtr(new LoadSceneJob(source, sceneUuid)));
+}
+
+QVector<LoadSceneJobPtr> SceneManager::pendingSceneLoaderJobs()
+{
+    QVector<LoadSceneJobPtr> copy = m_pendingJobs;
+    m_pendingJobs.clear();
+    return copy;
+}
+
 void SceneManager::addLoadedSceneTree(const QString &source, QEntity *tree)
 {
     SceneManager::WriteLocker lock(this);

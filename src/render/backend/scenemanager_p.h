@@ -44,6 +44,7 @@
 
 #include <Qt3DCore/qresourcesmanager.h>
 #include <Qt3DRenderer/private/renderscene_p.h>
+#include <Qt3DRenderer/loadscenejob.h>
 #include <QUuid>
 
 QT_BEGIN_NAMESPACE
@@ -63,11 +64,15 @@ class SceneManager : public QResourcesManager<RenderScene,
 public:
     SceneManager();
 
+    void addSceneData(const QString &source, const QUuid &sceneUuid);
+    QVector<LoadSceneJobPtr> pendingSceneLoaderJobs();
+
     void addLoadedSceneTree(const QString &source, QEntity *tree);
     QEntity *sceneTreeFromSource(const QString &source);
 
 private:
     QHash<QString, QEntity *> m_loadedSceneTrees;
+    QVector<LoadSceneJobPtr> m_pendingJobs;
 };
 
 } // Render
