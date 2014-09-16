@@ -55,6 +55,18 @@ SceneManager::SceneManager() : QResourcesManager<RenderScene,
 {
 }
 
+void SceneManager::addLoadedSceneTree(const QString &source, QEntity *tree)
+{
+    SceneManager::WriteLocker lock(this);
+    m_loadedSceneTrees.insert(source, tree);
+}
+
+QEntity *SceneManager::sceneTreeFromSource(const QString &source)
+{
+    SceneManager::ReadLocker lock(this);
+    return m_loadedSceneTrees.value(source);
+}
+
 } // Render
 
 } // Qt3D

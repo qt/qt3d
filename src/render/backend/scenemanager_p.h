@@ -50,6 +50,8 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class QEntity;
+
 namespace Render {
 
 class SceneManager : public QResourcesManager<RenderScene,
@@ -60,6 +62,12 @@ class SceneManager : public QResourcesManager<RenderScene,
 {
 public:
     SceneManager();
+
+    void addLoadedSceneTree(const QString &source, QEntity *tree);
+    QEntity *sceneTreeFromSource(const QString &source);
+
+private:
+    QHash<QString, QEntity *> m_loadedSceneTrees;
 };
 
 } // Render
