@@ -45,6 +45,7 @@
 #include "qabstracttransform.h"
 #include "qmatrixtransform.h"
 
+#include <Qt3DCore/qsceneinterface.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <QMetaObject>
 #include <QMetaProperty>
@@ -114,6 +115,9 @@ void QEntity::addComponent(QComponent *comp)
     if (!comp->parent() || comp->parent() == this)
         addChild(comp);
 
+    if (!isClone() && !comp->isClone() && d->m_scene != Q_NULLPTR)
+        d->m_scene->addEntityForComponent(comp->uuid(), d->m_uuid);
+
     if (!isClone() && !comp->isClone() && d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentAdded, this));
         propertyChange->setPropertyName(QByteArrayLiteral("component"));
@@ -136,6 +140,10 @@ void QEntity::removeComponent(QComponent *comp)
         propertyChange->setPropertyName(QByteArrayLiteral("component"));
         notifyObservers(propertyChange);
     }
+
+    if (!isClone() && !comp->isClone() && d->m_scene != Q_NULLPTR)
+        d->m_scene->removeEntityForComponent(comp->uuid(), d->m_uuid);
+
     d->m_components.removeOne(comp);
 }
 

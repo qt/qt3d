@@ -45,7 +45,7 @@
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qaspectengine.h>
-#include <Qt3DCore/qscene.h>
+#include <Qt3DCore/qsceneinterface.h>
 #include <QEvent>
 #include <QMetaObject>
 #include <QMetaProperty>

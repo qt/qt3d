@@ -60,6 +60,7 @@ public:
     Q_DECLARE_PUBLIC(QScene)
     QScene *q_ptr;
     QHash<QUuid, QNode *> m_nodeLookupTable;
+    QMultiHash<QUuid, QUuid> m_componentToEntities;
     QMultiHash<QUuid, QObservableInterface *> m_observablesLookupTable;
     QChangeArbiter *m_arbiter;
     mutable QReadWriteLock m_lock;
@@ -136,6 +137,27 @@ void QScene::setArbiter(QChangeArbiter *arbiter)
 {
     Q_D(QScene);
     d->m_arbiter = arbiter;
+}
+
+QList<QUuid> QScene::entitiesForComponent(const QUuid &uuid) const
+{
+    Q_D(const QScene);
+    QReadLocker lock(&d->m_lock);
+    return d->m_componentToEntities.values(uuid);
+}
+
+void QScene::addEntityForComponent(const QUuid &componentUuid, const QUuid &entityUuid)
+{
+    Q_D(QScene);
+    QWriteLocker lock(&d->m_lock);
+    d->m_componentToEntities.insert(componentUuid, entityUuid);
+}
+
+void QScene::removeEntityForComponent(const QUuid &componentUuid, const QUuid &entityUuid)
+{
+    Q_D(QScene);
+    QWriteLocker lock(&d->m_lock);
+    d->m_componentToEntities.remove(componentUuid, entityUuid);
 }
 
 } // Qt3D

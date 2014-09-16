@@ -44,6 +44,7 @@
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <QObject>
+#include <QUuid>
 
 QT_BEGIN_NAMESPACE
 
@@ -68,6 +69,9 @@ public:
     virtual QObservableList lookupObservables(const QUuid &uuid) const = 0;
     virtual QNode *lookupNode(const QUuid &uuid) const = 0;
     virtual void setArbiter(QChangeArbiter *arbiter) = 0;
+    virtual QList<QUuid> entitiesForComponent(const QUuid &componentUuid) const = 0;
+    virtual void addEntityForComponent(const QUuid &componentUuid, const QUuid &entityUuid) = 0;
+    virtual void removeEntityForComponent(const QUuid &componentUuid, const QUuid &entityUuid) = 0;
 };
 
 } // Qt3D

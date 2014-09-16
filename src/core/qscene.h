@@ -42,7 +42,6 @@
 #ifndef QT3D_QSCENE_H
 #define QT3D_QSCENE_H
 
-#include <QUuid>
 #include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qsceneinterface.h>
 
@@ -65,6 +64,9 @@ public:
     QObservableList lookupObservables(const QUuid &uuid) const Q_DECL_OVERRIDE;
     QNode *lookupNode(const QUuid &uuid) const Q_DECL_OVERRIDE;
     void setArbiter(QChangeArbiter *arbiter) Q_DECL_OVERRIDE;
+    QList<QUuid> entitiesForComponent(const QUuid &uuid) const Q_DECL_OVERRIDE;
+    void addEntityForComponent(const QUuid &componentUuid, const QUuid &entityUuid) Q_DECL_OVERRIDE;
+    void removeEntityForComponent(const QUuid &componentUuid, const QUuid &entityUuid) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QScene)
