@@ -40,30 +40,48 @@
 ****************************************************************************/
 
 #include "qbackendobservable.h"
+#include <Qt3DCore/qchangearbiter.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class QBackendObservablePrivate
+{
+public:
+    QBackendObservablePrivate(QBackendObservable *qq)
+        : q_ptr(qq)
+        , m_arbiter(Q_NULLPTR)
+    {}
+
+    Q_DECLARE_PUBLIC(QBackendObservable)
+    QBackendObservable *q_ptr;
+    QChangeArbiter *m_arbiter;
+};
+
 QBackendObservable::QBackendObservable()
+    : d_ptr(new QBackendObservablePrivate(this))
 {
 }
 
 void QBackendObservable::registerObserver(QObserverInterface *observer)
 {
-    Q_UNUSED(observer);
-//    Find a way to associate that observable with the observer and node uuid it is observing
+    Q_D(QBackendObservable);
+    d->m_arbiter = dynamic_cast<QChangeArbiter *>(observer);
 }
 
 void QBackendObservable::unregisterObserver(QObserverInterface *observer)
 {
-    Q_UNUSED(observer);
-
+    Q_D(QBackendObservable);
+    if (d->m_arbiter == observer)
+        d->m_arbiter = Q_NULLPTR;
 }
 
 void QBackendObservable::notifyObservers(const QSceneChangePtr &e)
 {
-
+    Q_D(QBackendObservable);
+    if (d->m_arbiter != Q_NULLPTR)
+        d->m_arbiter->sceneChangeEventWithLock(e);
 }
 
 } // Qt3D

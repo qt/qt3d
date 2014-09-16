@@ -48,6 +48,8 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class QBackendObservablePrivate;
+
 class QT3DCORESHARED_EXPORT QBackendObservable : public QObservableInterface
 {
 public:
@@ -57,6 +59,10 @@ public:
 
 protected:
     void notifyObservers(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+
+private:
+    Q_DECLARE_PRIVATE(QBackendObservable)
+    QBackendObservablePrivate *d_ptr;
 };
 
 } // Qt3D
