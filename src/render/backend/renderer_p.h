@@ -78,6 +78,7 @@ class QAbstractShapeMesh;
 class RendererAspect;
 class QFrameAllocator;
 class QOpenGLFilter;
+class AbstractSceneParser;
 
 typedef QVector<QFrameAllocator *> QFrameAllocatorQueue;
 
@@ -181,6 +182,7 @@ public:
     inline RenderStateSet *defaultRenderState() const { return m_defaultRenderStateSet; }
 
     inline RenderSceneBuilder *renderSceneBuilder() const { return m_renderSceneBuilder; }
+    inline QList<AbstractSceneParser *> sceneParsers() const { return m_sceneParsers; }
 
     QOpenGLFilter *contextInfo() const;
 
@@ -264,6 +266,7 @@ private:
 
     void buildDefaultMaterial();
     void buildDefaultTechnique();
+    void loadSceneParsers();
 
     QMutex m_mutex;
     QWaitCondition m_submitRenderViewsCondition;
@@ -278,6 +281,7 @@ private:
     QAtomicInt m_running;
 
     QScopedPointer<QOpenGLDebugLogger> m_debugLogger;
+    QList<AbstractSceneParser *> m_sceneParsers;
 };
 
 } // namespace Render

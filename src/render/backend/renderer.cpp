@@ -99,6 +99,7 @@
 #include <Qt3DRenderer/private/viewportnode_p.h>
 #include <Qt3DRenderer/private/attachmentmanager_p.h>
 #include <Qt3DRenderer/private/sortcriterionmanager_p.h>
+#include <Qt3DRenderer/private/abstractsceneparser_p.h>
 
 #include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/qabstracteffect.h>
@@ -109,6 +110,9 @@
 #include <QSurface>
 #include <QElapsedTimer>
 #include <QOpenGLDebugLogger>
+#include <QLibraryInfo>
+#include <QPluginLoader>
+#include <QDir>
 
 // For Debug purposes only
 #include <QThread>
@@ -123,6 +127,8 @@ static void logOpenGLDebugMessage(const QOpenGLDebugMessage &debugMessage)
 {
     qDebug() << "OpenGL debug message:" << debugMessage;
 }
+
+const QString SCENE_PARSERS_PATH = QStringLiteral("/sceneparsers");
 
 Renderer::Renderer(int cachedFrames)
     : m_rendererAspect(Q_NULLPTR)
@@ -165,6 +171,7 @@ Renderer::Renderer(int cachedFrames)
 
     buildDefaultTechnique();
     buildDefaultMaterial();
+    loadSceneParsers();
 
     QLoggingCategory::setFilterRules(QString::fromUtf8( // multiline QStringLiteral doesn't compile on Windows...
                                                         "Qt3D.Render.*.debug=false\n"
@@ -213,6 +220,21 @@ void Renderer::buildDefaultTechnique()
     m_defaultTechnique->addParameter(ka);
     basicPass->addBinding(new QParameterMapper(QStringLiteral("ambient"), QStringLiteral("ka"), QParameterMapper::Uniform));
 
+}
+
+void Renderer::loadSceneParsers()
+{
+    QString pluginsPath = QLibraryInfo::location(QLibraryInfo::PluginsPath) + SCENE_PARSERS_PATH;
+    QDir sceneParsersPluginDir(pluginsPath);
+
+    Q_FOREACH (QString plugin, sceneParsersPluginDir.entryList(QDir::Files)) {
+        QPluginLoader loader(sceneParsersPluginDir.absoluteFilePath(plugin));
+        AbstractSceneParser *parser = qobject_cast<AbstractSceneParser *>(loader.instance());
+        if (parser != Q_NULLPTR)
+            m_sceneParsers.append(parser);
+        else
+            qWarning() << "Failed to load scene parser plugin " << loader.fileName();
+    }
 }
 
 void Renderer::buildDefaultMaterial()
@@ -269,8 +291,8 @@ void Renderer::initialize()
                 QObject::connect(m_debugLogger.data(), &QOpenGLDebugLogger::messageLogged, &logOpenGLDebugMessage);
                 QString mode = QString::fromLocal8Bit(debugLoggingMode);
                 m_debugLogger->startLogging(mode.toLower().startsWith(QLatin1String("sync"))
-                                                ? QOpenGLDebugLogger::SynchronousLogging
-                                                : QOpenGLDebugLogger::AsynchronousLogging);
+                                            ? QOpenGLDebugLogger::SynchronousLogging
+                                            : QOpenGLDebugLogger::AsynchronousLogging);
 
                 Q_FOREACH (const QOpenGLDebugMessage &msg, m_debugLogger->loggedMessages())
                     logOpenGLDebugMessage(msg);
