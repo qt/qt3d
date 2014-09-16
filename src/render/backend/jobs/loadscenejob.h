@@ -39,66 +39,42 @@
 **
 ****************************************************************************/
 
-#ifndef ABSTRACTSCENEPARSER_H
-#define ABSTRACTSCENEPARSER_H
+#ifndef QT3D_RENDER_LOADSCENEJOB_H
+#define QT3D_RENDER_LOADSCENEJOB_H
 
-#include <QObject>
-#include <QStringList>
-#include <QLoggingCategory>
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DCore/qjob.h>
+#include <QUuid>
+#include <QSharedPointer>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QEntity;
+namespace Render {
 
-Q_DECLARE_LOGGING_CATEGORY(SceneParsers)
+class Renderer;
 
-class QT3DRENDERERSHARED_EXPORT AbstractSceneParser : public QObject
+class LoadSceneJob : public Qt3D::QJob
 {
-    Q_OBJECT
-    Q_ENUMS(ParserStatus)
-    Q_PROPERTY(ParserStatus parserStatus READ parserStatus NOTIFY parserStatusChanged)
-    Q_PROPERTY(QStringList errors READ errors NOTIFY errorsChanged)
-
 public:
-
-    enum ParserStatus {
-        Empty,
-        Loading,
-        Loaded,
-        Error
-    };
-
-    AbstractSceneParser();
-    virtual ~AbstractSceneParser();
-
-    virtual void    setFilePath(const QString &path) = 0;
-    virtual bool    isPathExtensionSupported(const QString &path) = 0;
-    virtual QEntity *scene(QString id = QString()) = 0;
-    virtual QEntity *node(QString id) = 0;
-
-    ParserStatus parserStatus() const;
-    QStringList  errors() const;
-
-Q_SIGNALS:
-    void    parserStatusChanged();
-    void    errorsChanged();
+    explicit LoadSceneJob(const QString &source, const QUuid &sceneComponent);
+    void setRenderer(Renderer *renderer) { m_renderer = renderer; }
 
 protected:
-
-    void setParserStatus(ParserStatus parserStatus);
-    void logError(const QString &error);
-    void logInfo(const QString &info);
+    void run() Q_DECL_OVERRIDE;
 
 private:
-    ParserStatus m_parserStatus;
-    QStringList m_errors;
+    Renderer *m_renderer;
+    QString m_source;
+    QUuid m_sceneComponent;
 };
 
-}
+typedef QSharedPointer<LoadSceneJob> LoadSceneJobPtr;
+
+} // Render
+
+} // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // ABSTRACTSCENEPARSER_H
+#endif // LOADSCENEJOB_H

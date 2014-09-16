@@ -39,66 +39,45 @@
 **
 ****************************************************************************/
 
-#ifndef ABSTRACTSCENEPARSER_H
-#define ABSTRACTSCENEPARSER_H
-
-#include <QObject>
-#include <QStringList>
-#include <QLoggingCategory>
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include "loadscenejob.h"
+#include <private/renderer_p.h>
+#include <private/scenemanager_p.h>
+#include <Qt3DCore/qentity.h>
+#include <Qt3DRenderer/private/abstractsceneparser_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QEntity;
+namespace Render {
 
-Q_DECLARE_LOGGING_CATEGORY(SceneParsers)
-
-class QT3DRENDERERSHARED_EXPORT AbstractSceneParser : public QObject
+LoadSceneJob::LoadSceneJob(const QString &source, const QUuid &m_sceneComponent)
+    : QJob()
+    , m_renderer(Q_NULLPTR)
+    , m_source(source)
+    , m_sceneComponent(m_sceneComponent)
 {
-    Q_OBJECT
-    Q_ENUMS(ParserStatus)
-    Q_PROPERTY(ParserStatus parserStatus READ parserStatus NOTIFY parserStatusChanged)
-    Q_PROPERTY(QStringList errors READ errors NOTIFY errorsChanged)
-
-public:
-
-    enum ParserStatus {
-        Empty,
-        Loading,
-        Loaded,
-        Error
-    };
-
-    AbstractSceneParser();
-    virtual ~AbstractSceneParser();
-
-    virtual void    setFilePath(const QString &path) = 0;
-    virtual bool    isPathExtensionSupported(const QString &path) = 0;
-    virtual QEntity *scene(QString id = QString()) = 0;
-    virtual QEntity *node(QString id) = 0;
-
-    ParserStatus parserStatus() const;
-    QStringList  errors() const;
-
-Q_SIGNALS:
-    void    parserStatusChanged();
-    void    errorsChanged();
-
-protected:
-
-    void setParserStatus(ParserStatus parserStatus);
-    void logError(const QString &error);
-    void logInfo(const QString &info);
-
-private:
-    ParserStatus m_parserStatus;
-    QStringList m_errors;
-};
-
 }
 
-QT_END_NAMESPACE
+void LoadSceneJob::run()
+{
+    QEntity *sceneTree = m_renderer->sceneManager()->sceneTreeFromSource(m_source);
+    if (sceneTree == Q_NULLPTR) {
+        Q_FOREACH (AbstractSceneParser *parser, m_renderer->sceneParsers()) {
+            if (parser->isPathExtensionSupported(m_source)) {
+                parser->setFilePath(m_source);
+                sceneTree = parser->scene();
+                m_renderer->sceneManager()->addLoadedSceneTree(m_source, sceneTree);
+            }
+        }
+    }
+    // set clone of sceneTree in sceneComponent
+    RenderScene *scene = m_renderer->sceneManager()->lookupResource(m_sceneComponent);
+    scene->setSceneSubtree(sceneTree);
+}
 
-#endif // ABSTRACTSCENEPARSER_H
+} // Render
+
+} // Qt3D
+
+QT_END_NAMESPACE
