@@ -46,6 +46,7 @@
 #include <Qt3DRenderer/private/meshdatamanager_p.h>
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/private/rendersceneobserver_p.h>
+#include <Qt3DRenderer/private/scenemanager_p.h>
 
 #include <loadmeshdatajob.h>
 #include <updateworldtransformjob.h>
@@ -81,21 +82,25 @@ QVector<QJobPtr> RendererAspect::jobsToExecute()
     // Create jobs to load in any meshes that are pending
     if (m_renderer != Q_NULLPTR) {
         QHash<QUuid, QAbstractMeshFunctorPtr> meshSources = m_renderer->meshDataManager()->meshesPending();
-        QVector<QJobPtr> meshesJobs;
         Q_FOREACH (const QUuid &meshId, meshSources.keys()) {
             Render::LoadMeshDataJobPtr loadMeshJob(new Render::LoadMeshDataJob(meshSources[meshId], meshId));
             loadMeshJob->setRenderer(m_renderer);
-            meshesJobs.append(loadMeshJob);
+            jobs.append(loadMeshJob);
+        }
+
+        // TO DO: Have 2 jobs queue
+        // One for urgent jobs that are mandatory for the rendering of a frame
+        // Another for jobs that can span across multiple frames (Scene/Mesh loading)
+        QVector<Render::LoadSceneJobPtr> sceneJobs = m_renderer->sceneManager()->pendingSceneLoaderJobs();
+        Q_FOREACH (Render::LoadSceneJobPtr job, sceneJobs) {
+            job->setRenderer(m_renderer);
+            jobs.append(job);
         }
 
         // Create jobs to update transforms and bounding volumes
         Render::UpdateWorldTransformJobPtr worldTransformJob(new Render::UpdateWorldTransformJob(m_renderer->renderSceneRoot()));
         Render::UpdateBoundingVolumeJobPtr boundingVolumeJob(new Render::UpdateBoundingVolumeJob(m_renderer->renderSceneRoot()));
 
-        Q_FOREACH (QJobPtr meshJob, meshesJobs) {
-            worldTransformJob->addDependency(meshJob);
-            jobs.append(meshJob);
-        }
         // We can only update bounding volumes once all world transforms are known
         boundingVolumeJob->addDependency(worldTransformJob);
 

@@ -51,6 +51,8 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class QEntity;
+
 namespace Render {
 
 class Renderer;
@@ -70,6 +72,7 @@ public:
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
     QUuid sceneUuid() const;
     QString source() const;
+    void setSceneSubtree(QEntity *subTree);
 
 private:
     Renderer *m_renderer;
