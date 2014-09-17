@@ -7,7 +7,9 @@ SUBDIRS = \
     listresourcesmanager \
     qcircularbuffer \
     qboundedcircularbuffer \
-    nodes
+    nodes \
+    qchangearbiter \
+    qscene
 
 contains(QT_CONFIG, private_tests) {
     SUBDIRS += qframeallocator
