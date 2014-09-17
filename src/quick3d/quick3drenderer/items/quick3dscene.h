@@ -61,9 +61,6 @@ public:
     explicit Quick3DScene(QObject *parent = 0);
 
     inline QAbstractSceneLoader *parentScene() const { return qobject_cast<QAbstractSceneLoader *>(parent()); }
-
-    Q_INVOKABLE QNode *node(QString id);
-    Q_INVOKABLE QNode *scene(QString id);
 };
 
 } // Quick

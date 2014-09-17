@@ -56,38 +56,33 @@ class QAbstractSceneLoaderPrivate;
 class QT3DRENDERERSHARED_EXPORT QAbstractSceneLoader : public QComponent
 {
     Q_OBJECT
+    Q_ENUMS(Status)
     Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
-    Q_PROPERTY(QString sceneId READ sceneId WRITE setSceneId NOTIFY sceneIdChanged)
+    Q_PROPERTY(Status status READ status NOTIFY statusChanged)
 public:
     explicit QAbstractSceneLoader(QNode *parent = 0);
+
+    enum Status {
+        Loading = 0,
+        Loaded,
+        Error
+    };
 
     void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
     QString source() const;
     void setSource(QString arg);
 
-    QString sceneId() const;
-    void setSceneId(QString arg);
+    Status status() const;
+    void setStatus(Status status);
 
-    virtual QNode *node(QString id);
-    virtual QNode *scene(QString id);
+    virtual void sceneChangeEvent(const QSceneChangePtr &change) = 0;
 
-    void clear();
-
-    /**
-     * @brief findInTree - given a Node* object rooting a tree, find
-     * the top-most Scene entity within.
-     * @param root - the found Scene or NULL if no Scene was found
-     * @return
-     */
-    static QAbstractSceneLoader* findInTree(QNode* root);
 Q_SIGNALS:
-
     void sourceChanged(QString arg);
-    void sceneIdChanged(QString arg);
+    void statusChanged();
 
 protected:
-    void rebuild();
     Q_DECLARE_PRIVATE(QAbstractSceneLoader)
     QAbstractSceneLoader(QAbstractSceneLoaderPrivate &dd, QNode *parent = 0);
 };

@@ -54,9 +54,7 @@ namespace Render {
 
 QAbstractSceneLoaderPrivate::QAbstractSceneLoaderPrivate(QAbstractSceneLoader *qq)
     : QComponentPrivate(qq)
-    , m_sceneNode(Q_NULLPTR)
-    , m_sceneChild(Q_NULLPTR)
-    , m_currentParser(Q_NULLPTR)
+    , m_status(QAbstractSceneLoader::Loading)
 {
 }
 
@@ -68,8 +66,6 @@ QAbstractSceneLoader::QAbstractSceneLoader(QAbstractSceneLoaderPrivate &dd, QNod
 QAbstractSceneLoader::QAbstractSceneLoader(QNode *parent)
     : QComponent(*new QAbstractSceneLoaderPrivate(this), parent)
 {
-    Q_D(QAbstractSceneLoader);
-    d->m_sceneNode = this;
 }
 
 void QAbstractSceneLoader::copy(const QNode *ref)
@@ -77,7 +73,6 @@ void QAbstractSceneLoader::copy(const QNode *ref)
     Q_D(QAbstractSceneLoader);
     const QAbstractSceneLoader *s = qobject_cast<const QAbstractSceneLoader *>(ref);
     if (s != Q_NULLPTR) {
-        d->m_sceneId = s->sceneId();
         d->m_source = s->source();
     }
 }
@@ -88,43 +83,11 @@ QString QAbstractSceneLoader::source() const
     return d->m_source;
 }
 
-QString QAbstractSceneLoader::sceneId() const
-{
-    Q_D(const QAbstractSceneLoader);
-    return d->m_sceneId;
-}
-
-QAbstractSceneLoader *QAbstractSceneLoader::findInTree(QNode *root)
-{
-    if (!root)
-        return Q_NULLPTR;
-
-    QAbstractSceneLoader* s = qobject_cast<QAbstractSceneLoader*>(root);
-    if (s)
-        return s;
-
-    // recursive walk down the tree
-    foreach (QNode* nd, root->children()) {
-        s = findInTree(nd);
-        if (s)
-            return s;
-    }
-
-    return Q_NULLPTR;
-}
-
-void QAbstractSceneLoader::clear()
-{
-    Q_D(QAbstractSceneLoader);
-    d->m_sceneNode->removeAllChildren();
-}
-
 void QAbstractSceneLoader::setSource(QString arg)
 {
     Q_D(QAbstractSceneLoader);
     if (d->m_source != arg) {
         d->m_source = arg;
-        rebuild();
         emit sourceChanged(arg);
         QScenePropertyChangePtr change(new QScenePropertyChange(ComponentUpdated, this));
         change->setPropertyName(QByteArrayLiteral("source"));
@@ -133,64 +96,19 @@ void QAbstractSceneLoader::setSource(QString arg)
     }
 }
 
-void QAbstractSceneLoader::setSceneId(QString arg)
+QAbstractSceneLoader::Status QAbstractSceneLoader::status() const
 {
-    Q_D(QAbstractSceneLoader);
-    if (d->m_sceneId != arg) {
-        d->m_sceneId = arg;
-        rebuild();
-        emit sceneIdChanged(arg);
-    }
+    Q_D(const QAbstractSceneLoader);
+    return d->m_status;
 }
 
-QNode *QAbstractSceneLoader::node(QString id)
+void QAbstractSceneLoader::setStatus(QAbstractSceneLoader::Status status)
 {
     Q_D(QAbstractSceneLoader);
-    if (d->m_currentParser)
-        return d->m_currentParser->node(id);
-    return Q_NULLPTR;
-}
-
-QNode *QAbstractSceneLoader::scene(QString id)
-{
-    Q_D(QAbstractSceneLoader);
-    if (d->m_currentParser)
-        return d->m_currentParser->scene(id);
-    return Q_NULLPTR;
-}
-
-// Move that into a jobs
-void QAbstractSceneLoader::rebuild()
-{
-    Q_D(QAbstractSceneLoader);
-    if (d->m_sceneChild != Q_NULLPTR) {
-        d->m_sceneNode->removeChild(d->m_sceneChild);
-        d->m_sceneChild->deleteLater();
+    if (d->m_status != status) {
+        d->m_status = status;
+        emit statusChanged();
     }
-
-    // Make scene parsers plugins
-    QList<AbstractSceneParser *> parsers;
-    parsers << new GLTFParser();// << new AssimpParser();
-
-    // TO DO: Load Scene Parsers
-
-    bool parserFound = false;
-    Q_FOREACH (AbstractSceneParser *parser, parsers) {
-        if (parser->isPathExtensionSupported(d->m_source)) {
-            if (d->m_currentParser != Q_NULLPTR && parser != d->m_currentParser) {
-                delete d->m_currentParser;
-                d->m_currentParser = parser;
-            }
-            qCDebug(Render::Io) << Q_FUNC_INFO << parser;
-            parser->setFilePath(d->m_source);
-            if ((d->m_sceneChild = parser->scene(d->m_sceneId)) != Q_NULLPTR)
-                d->m_sceneNode->addChild(d->m_sceneChild);
-            parserFound = true;
-            break;
-        }
-    }
-    if (!parserFound)
-        qCWarning(Render::Frontend) << Q_FUNC_INFO << "Scene file format not supported by Qt3D";
 }
 
 } // Render

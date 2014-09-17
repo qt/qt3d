@@ -185,13 +185,17 @@ void QNode::removeChild(QNode *childNode)
     childNode->setScene(Q_NULLPTR);
 }
 
-QNode *QNode::clone(QNode *clonedParent) const
+// In most cases isClone is true so that the clone isn't handled like
+// a real node. If there is a need for a real clone, set isClone to false
+// eg When a subtree built in the backend needs to be cloned
+// in the main thread to be added to the scene graph
+QNode *QNode::clone(QNode *clonedParent, bool isClone) const
 {
     Q_D(const QNode);
 
     QNode *nodeClone = doClone(clonedParent);
     nodeClone->copy(this);
-    nodeClone->d_func()->m_isClone = true;
+    nodeClone->d_func()->m_isClone = isClone;
     Q_FOREACH (QNode *children, d->m_children)
         nodeClone->addChild(children->clone(nodeClone));
     return nodeClone;

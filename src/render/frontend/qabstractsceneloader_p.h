@@ -44,6 +44,7 @@
 
 #include <private/qcomponent_p.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRenderer/qabstractsceneloader.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -53,7 +54,6 @@ class AbstractSceneParser;
 
 namespace Render {
 
-class QAbstractSceneLoader;
 
 class QT3DRENDERERSHARED_EXPORT QAbstractSceneLoaderPrivate : public QComponentPrivate
 {
@@ -63,10 +63,7 @@ public:
     Q_DECLARE_PUBLIC(QAbstractSceneLoader)
 
     QString m_source;
-    QString m_sceneId;
-    QNode *m_sceneNode;
-    QNode *m_sceneChild;
-    AbstractSceneParser *m_currentParser;
+    QAbstractSceneLoader::Status m_status;
 };
 
 } // Render

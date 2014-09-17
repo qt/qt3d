@@ -54,16 +54,6 @@ Quick3DScene::Quick3DScene(QObject *parent)
 {
 }
 
-QNode *Quick3DScene::node(QString id)
-{
-    return parentScene()->node(id);
-}
-
-QNode *Quick3DScene::scene(QString id)
-{
-    return parentScene()->scene(id);
-}
-
 } // Quick
 
 } // Render

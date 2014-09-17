@@ -40,6 +40,12 @@
 ****************************************************************************/
 
 #include "qsceneloader.h"
+#include "qabstractsceneloader_p.h"
+#include <Qt3DCore/qsceneinterface.h>
+#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qentity.h>
+#include "renderlogging.h"
+#include <QThread>
 
 QT_BEGIN_NAMESPACE
 
@@ -48,6 +54,35 @@ namespace Qt3D {
 QSceneLoader::QSceneLoader(QNode *parent)
     : Render::QAbstractSceneLoader(parent)
 {
+}
+
+// Called in main thread
+void QSceneLoader::sceneChangeEvent(const QSceneChangePtr &change)
+{
+    Q_D(Render::QAbstractSceneLoader);
+    QScenePropertyChangePtr e = qSharedPointerCast<QScenePropertyChange>(change);
+    if (e->type() == ComponentUpdated) {
+        if (e->propertyName() == QByteArrayLiteral("scene")) {
+            QEntity *scene = e->value().value<QEntity *>();
+            if (scene != Q_NULLPTR && d->m_scene != Q_NULLPTR) {
+                QList<QUuid> entities = d->m_scene->entitiesForComponent(d->m_uuid);
+                if (entities.size() > 1)
+                    qCWarning(Render::Frontend) << "It is strongly discouraged to share SceneLoader component between entities";
+                Q_FOREACH (const QUuid &id, entities) {
+                    QEntity *parentEntity = qobject_cast<QEntity *>(d->m_scene->lookupNode(id));
+                    if (parentEntity != Q_NULLPTR) {
+                        QEntity *cloneScene = qobject_cast<QEntity *>(scene->clone(Q_NULLPTR, false));
+                        // TO DO : Make that work
+//                        qDebug() << QThread::currentThread() << parentEntity->thread() << scene->thread() << cloneScene->thread();
+//                        parentEntity->addChild(cloneScene);
+                    }
+                }
+            }
+        }
+        else if (e->propertyName() == QByteArrayLiteral("status")) {
+            QAbstractSceneLoader::setStatus(static_cast<QAbstractSceneLoader::Status>(e->value().toInt()));
+        }
+    }
 }
 
 QNode *QSceneLoader::doClone(QNode *clonedParent) const

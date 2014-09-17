@@ -79,7 +79,7 @@ public:
     void addChild(QNode *childNode);
     void removeChild(QNode *childNode);
 
-    QNode *clone(QNode *clonedParent = 0) const;
+    QNode *clone(QNode *clonedParent = 0, bool isClone = true) const;
     virtual void copy(const QNode *ref);
 
     bool isClone() const;
