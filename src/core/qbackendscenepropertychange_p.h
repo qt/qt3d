@@ -39,40 +39,31 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QSCENEPROPERTYCHANGE_P_H
-#define QT3D_QSCENEPROPERTYCHANGE_P_H
+#ifndef QT3D_QBACKENDSCENEPROPERTYCHANGE_P_H
+#define QT3D_QBACKENDSCENEPROPERTYCHANGE_P_H
 
-#include <private/qscenechange_p.h>
-#include <QVariant>
-#include <QMutex>
+#include <private/qscenepropertychange_p.h>
+#include <QUuid>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QScenePropertyChange;
-class QFrameAllocator;
+class QBackendScenePropertyChange;
 
-class QScenePropertyChangePrivate : public QSceneChangePrivate
+class QBackendScenePropertyChangePrivate : public QScenePropertyChangePrivate
 {
 public:
-    QScenePropertyChangePrivate(QScenePropertyChange *qq);
-    virtual ~QScenePropertyChangePrivate();
+    QBackendScenePropertyChangePrivate(QBackendScenePropertyChange *qq);
+    virtual ~QBackendScenePropertyChangePrivate();
 
-    static void *operator new(size_t);
-    static void operator delete(void *ptr);
+    Q_DECLARE_PUBLIC(QBackendScenePropertyChange)
 
-    Q_DECLARE_PUBLIC(QScenePropertyChange)
-
-    QByteArray m_propertyName;
-    QVariant m_value;
-
-    static QFrameAllocator *m_allocator;
-    static QMutex m_mutex;
+    QUuid m_targetUuid;
 };
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QSCENEPROPERTYCHANGE_P_H
+#endif // QT3D_QBACKENDSCENEPROPERTYCHANGE_P_H

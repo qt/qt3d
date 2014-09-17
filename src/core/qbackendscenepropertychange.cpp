@@ -39,40 +39,53 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QSCENEPROPERTYCHANGE_P_H
-#define QT3D_QSCENEPROPERTYCHANGE_P_H
-
-#include <private/qscenechange_p.h>
-#include <QVariant>
-#include <QMutex>
+#include "qbackendscenepropertychange.h"
+#include "qbackendscenepropertychange_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QScenePropertyChange;
-class QFrameAllocator;
-
-class QScenePropertyChangePrivate : public QSceneChangePrivate
+QBackendScenePropertyChangePrivate::QBackendScenePropertyChangePrivate(QBackendScenePropertyChange *qq)
+    : QScenePropertyChangePrivate(qq)
 {
-public:
-    QScenePropertyChangePrivate(QScenePropertyChange *qq);
-    virtual ~QScenePropertyChangePrivate();
+}
 
-    static void *operator new(size_t);
-    static void operator delete(void *ptr);
+QBackendScenePropertyChangePrivate::~QBackendScenePropertyChangePrivate()
+{
+}
 
-    Q_DECLARE_PUBLIC(QScenePropertyChange)
+QBackendScenePropertyChange::QBackendScenePropertyChange(ChangeFlag type, QObservableInterface *subject, QSceneChange::Priority priority)
+    : QScenePropertyChange(*new QBackendScenePropertyChangePrivate(this), type, subject, priority)
+{
+}
 
-    QByteArray m_propertyName;
-    QVariant m_value;
+QBackendScenePropertyChange::~QBackendScenePropertyChange()
+{
+}
 
-    static QFrameAllocator *m_allocator;
-    static QMutex m_mutex;
-};
+void QBackendScenePropertyChange::setTargetNode(const QUuid &id)
+{
+    Q_D(QBackendScenePropertyChange);
+    d->m_targetUuid = id;
+}
+
+QUuid QBackendScenePropertyChange::targetNode() const
+{
+    Q_D(const QBackendScenePropertyChange);
+    return d->m_targetUuid;
+}
+
+QBackendScenePropertyChange::QBackendScenePropertyChange(QBackendScenePropertyChangePrivate &dd)
+    : QScenePropertyChange(dd)
+{
+}
+
+QBackendScenePropertyChange::QBackendScenePropertyChange(QBackendScenePropertyChangePrivate &dd, ChangeFlag type, QObservableInterface *subject, QSceneChange::Priority priority)
+    : QScenePropertyChange(dd, type, subject, priority)
+{
+}
 
 } // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_QSCENEPROPERTYCHANGE_P_H

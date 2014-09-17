@@ -53,7 +53,6 @@ class QScenePropertyChangePrivate;
 class QT3DCORESHARED_EXPORT QScenePropertyChange : public QSceneChange
 {
 public:
-    QScenePropertyChange(ChangeFlag type, QObservableInterface *subject, Priority priority = Standard);
     QScenePropertyChange(ChangeFlag type, QNode *node, Priority priority = Standard);
     virtual ~QScenePropertyChange();
 
@@ -68,6 +67,7 @@ public:
 
 protected:
     Q_DECLARE_PRIVATE(QScenePropertyChange)
+    QScenePropertyChange(ChangeFlag type, QObservableInterface *subject, Priority priority = Standard);
     QScenePropertyChange(QScenePropertyChangePrivate &dd);
     QScenePropertyChange(QScenePropertyChangePrivate &dd, ChangeFlag type, QObservableInterface *subject, Priority priority = Standard);
     QScenePropertyChange(QScenePropertyChangePrivate &dd, ChangeFlag type, QNode *node, Priority priority = Standard);

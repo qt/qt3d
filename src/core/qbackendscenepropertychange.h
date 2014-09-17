@@ -39,40 +39,39 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QSCENEPROPERTYCHANGE_P_H
-#define QT3D_QSCENEPROPERTYCHANGE_P_H
+#ifndef QT3D_QBACKENDSCENEPROPERTYCHANGE_H
+#define QT3D_QBACKENDSCENEPROPERTYCHANGE_H
 
-#include <private/qscenechange_p.h>
-#include <QVariant>
-#include <QMutex>
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QScenePropertyChange;
-class QFrameAllocator;
+class QBackendScenePropertyChangePrivate;
 
-class QScenePropertyChangePrivate : public QSceneChangePrivate
+class QT3DCORESHARED_EXPORT QBackendScenePropertyChange : public QScenePropertyChange
 {
 public:
-    QScenePropertyChangePrivate(QScenePropertyChange *qq);
-    virtual ~QScenePropertyChangePrivate();
+    QBackendScenePropertyChange(ChangeFlag type, QObservableInterface *subject,
+                                Priority priority = Standard);
+    virtual ~QBackendScenePropertyChange();
 
-    static void *operator new(size_t);
-    static void operator delete(void *ptr);
+    void setTargetNode(const QUuid &id);
+    QUuid targetNode() const;
 
-    Q_DECLARE_PUBLIC(QScenePropertyChange)
-
-    QByteArray m_propertyName;
-    QVariant m_value;
-
-    static QFrameAllocator *m_allocator;
-    static QMutex m_mutex;
+protected:
+    Q_DECLARE_PRIVATE(QBackendScenePropertyChange)
+    QBackendScenePropertyChange(QBackendScenePropertyChangePrivate &dd);
+    QBackendScenePropertyChange(QBackendScenePropertyChangePrivate &dd, ChangeFlag type,
+                                QObservableInterface *subject, Priority priority = Standard);
 };
+
+typedef QSharedPointer<QBackendScenePropertyChange> QBackendScenePropertyChangePtr;
+
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QSCENEPROPERTYCHANGE_P_H
+#endif // QT3D_QBACKENDSCENEPROPERTYCHANGE_H
