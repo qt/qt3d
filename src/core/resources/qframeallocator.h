@@ -93,12 +93,14 @@ public:
     }
 
     template<typename T>
-    T* allocateRawMemory()
+    T* allocateRawMemory(size_t n = 0)
     {
-        uint allocatorIndex = allocatorIndexFromSize(sizeof(T)) - 1;
+        if (n == 0)
+            n = sizeof(T);
+        uint allocatorIndex = allocatorIndexFromSize(n) - 1;
         if (allocatorIndex < allocatorIndexFromSize(maxObjectSize()))
             return static_cast<T*>(allocateAtChunk(allocatorIndex));
-        qCritical() << "Allocation size too large for QFrameAllocator";
+        qCritical() << "Allocation size too large for QFrameAllocator " << n;
         return Q_NULLPTR;
     }
 

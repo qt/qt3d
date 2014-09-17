@@ -77,6 +77,11 @@ public:
         int t;
     }   composed;
 
+    typedef struct s_subclass : public composed
+    {
+        float toto;
+    } subclass;
+
 private slots:
 
     void initQFrameChunk();
@@ -97,6 +102,8 @@ private slots:
     void allocateWithQFrameAllocator();
     void deallocateWithQFrameAllocator();
     void testAllocationComposedValues();
+    void allocateSubclass();
+    void deallocateSubclass();
     void clearQFrameAllocator();
 };
 
@@ -590,6 +597,64 @@ void tst_QFrameAllocator::testAllocationComposedValues()
             QCOMPARE(c->list.at(j), j);
         }
     }
+}
+
+void tst_QFrameAllocator::allocateSubclass()
+{
+    Qt3D::QFrameAllocator f(128, 32);
+
+    QList<composed *> composeds;
+
+    for (int i = 0; i < 256; i++) {
+        // Allocate a composed object of size subclass
+        // c is actually a subclass
+        composed *c = f.allocateRawMemory<composed>(sizeof(subclass));
+        composeds << c;
+    }
+
+    QCOMPARE(composeds.count(), 256);
+
+    Q_FOREACH (composed *c, composeds) {
+        subclass *s = static_cast<subclass *>(c);
+        s->toto = 2586.0f;
+    }
+
+    for (int i = 0; i < 256; i++) {
+        subclass *s = static_cast<subclass *>(composeds.takeLast());
+        QVERIFY(s->toto == 2586.0f);
+    }
+}
+
+void tst_QFrameAllocator::deallocateSubclass()
+{
+    Qt3D::QFrameAllocator f(128, 32);
+
+    QList<composed *> composeds;
+
+    for (int i = 0; i < 256; i++) {
+        // Allocate a composed object of size subclass
+        // c is actually a subclass
+        composed *c = f.allocateRawMemory<composed>(sizeof(subclass));
+        composeds << c;
+    }
+
+    for (int l = 0; l < 5; l++) {
+
+        uint chunkCount = f.totalChunkCount();
+
+        for (int i = 0; i < 256; i++) {
+            f.deallocateRawMemory(composeds.takeLast());
+        }
+
+        for (int i = 0; i < 256; i++) {
+            // Allocate a composed object of size subclass
+            // c is actually a subclass
+            composed *c = f.allocateRawMemory<composed>(sizeof(subclass));
+            composeds << c;
+        }
+        QCOMPARE(chunkCount, f.totalChunkCount());
+    }
+
 }
 
 void tst_QFrameAllocator::clearQFrameAllocator()
