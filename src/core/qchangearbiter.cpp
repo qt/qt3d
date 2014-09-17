@@ -45,6 +45,7 @@
 
 #include "corelogging.h"
 #include "qsceneobserverinterface.h"
+#include "qsceneinterface.h"
 #include <QMutexLocker>
 #include <QReadLocker>
 #include <QThread>
@@ -145,7 +146,7 @@ void QChangeArbiter::distributeQueueChanges(ChangeQueue *changeQueue)
 
         case QSceneChange::Observable: {
             QObservableInterface *subject = change->subject().m_observable;
-            QUuid nodeId = d->m_observableToNodeId.value(subject);
+            QUuid nodeId = d->m_scene->nodeIdFromObservable(subject);
             if (d->m_nodeObservations.contains(nodeId)) {
                 QObserverList &observers = d->m_nodeObservations[nodeId];
                 Q_FOREACH (const QObserverPair&observer, observers) {
@@ -213,7 +214,7 @@ void QChangeArbiter::setScene(QSceneInterface *scene)
     d->m_scene = scene;
 }
 
-QPostman *QChangeArbiter::postman() const
+QObserverInterface *QChangeArbiter::postman() const
 {
     Q_D(const QChangeArbiter);
     return d->m_postman;
@@ -289,7 +290,7 @@ void QChangeArbiter::sceneChangeEventWithLock(const QSceneChangePtr &e)
 
 // Either we have the postman or we could make the QChangeArbiter agnostic to the postman
 // but that would require adding it to every QObserverList in m_aspectObservations.
-void QChangeArbiter::setPostman(QPostman *postman)
+void QChangeArbiter::setPostman(QObserverInterface *postman)
 {
     Q_D(QChangeArbiter);
     if (d->m_postman != postman) {

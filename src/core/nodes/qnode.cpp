@@ -253,6 +253,11 @@ void QNode::unregisterObserver(QObserverInterface *observer)
     }
 }
 
+void QNode::sceneChangeEvent(const QSceneChangePtr &)
+{
+    qWarning() << Q_FUNC_INFO << "sceneChangeEvent should have been subclassed";
+}
+
 void QNode::setScene(QSceneInterface *scene)
 {
     Q_D(QNode);

@@ -54,6 +54,7 @@ class QScenePrivate
 public:
     QScenePrivate(QScene *qq)
         : q_ptr(qq)
+        , m_arbiter(Q_NULLPTR)
     {
     }
 
@@ -62,6 +63,7 @@ public:
     QHash<QUuid, QNode *> m_nodeLookupTable;
     QMultiHash<QUuid, QUuid> m_componentToEntities;
     QMultiHash<QUuid, QObservableInterface *> m_observablesLookupTable;
+    QHash<QObservableInterface *, QUuid> m_observableToUuid;
     QChangeArbiter *m_arbiter;
     mutable QReadWriteLock m_lock;
 };
@@ -78,7 +80,9 @@ void QScene::addObservable(QObservableInterface *observable, const QUuid &uuid)
     Q_D(QScene);
     QWriteLocker lock(&d->m_lock);
     d->m_observablesLookupTable.insert(uuid, observable);
-    observable->registerObserver(d->m_arbiter);
+    d->m_observableToUuid.insert(observable, uuid);
+    if (d->m_arbiter != Q_NULLPTR)
+        observable->registerObserver(d->m_arbiter);
 }
 
 // Called by main thread only
@@ -88,7 +92,8 @@ void QScene::addObservable(QNode *observable)
     if (observable != Q_NULLPTR) {
         QWriteLocker lock(&d->m_lock);
         d->m_nodeLookupTable.insert(observable->uuid(), observable);
-        observable->registerObserver(d->m_arbiter);
+        if (d->m_arbiter != Q_NULLPTR)
+            observable->registerObserver(d->m_arbiter);
     }
 }
 
@@ -98,7 +103,9 @@ void QScene::removeObservable(QObservableInterface *observable, const QUuid &uui
     Q_D(QScene);
     QWriteLocker lock(&d->m_lock);
     d->m_observablesLookupTable.remove(uuid, observable);
-    observable->unregisterObserver(d->m_arbiter);
+    d->m_observableToUuid.remove(observable);
+    if (d->m_arbiter != Q_NULLPTR)
+        observable->unregisterObserver(d->m_arbiter);
 }
 
 // Called by main thread
@@ -109,11 +116,15 @@ void QScene::removeObservable(QNode *observable)
         QWriteLocker lock(&d->m_lock);
         QUuid nodeUuid = observable->uuid();
         QObservableList observables = d->m_observablesLookupTable.values(nodeUuid);
-        Q_FOREACH (QObservableInterface *o, observables)
-            o->unregisterObserver(d->m_arbiter);
+        Q_FOREACH (QObservableInterface *o, observables) {
+            if (d->m_arbiter != Q_NULLPTR)
+                o->unregisterObserver(d->m_arbiter);
+            d->m_observableToUuid.remove(o);
+        }
         d->m_observablesLookupTable.remove(nodeUuid);
         d->m_nodeLookupTable.remove(nodeUuid);
-        observable->unregisterObserver(d->m_arbiter);
+        if (d->m_arbiter != Q_NULLPTR)
+            observable->unregisterObserver(d->m_arbiter);
     }
 }
 
@@ -131,6 +142,13 @@ QNode *QScene::lookupNode(const QUuid &uuid) const
     Q_D(const QScene);
     QReadLocker lock(&d->m_lock);
     return d->m_nodeLookupTable.value(uuid);
+}
+
+QUuid QScene::nodeIdFromObservable(QObservableInterface *observable) const
+{
+    Q_D(const QScene);
+    QReadLocker lock(&d->m_lock);
+    return d->m_observableToUuid.value(observable);
 }
 
 void QScene::setArbiter(QChangeArbiter *arbiter)

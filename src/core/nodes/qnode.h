@@ -93,6 +93,8 @@ public:
     void registerObserver(QObserverInterface *observer) Q_DECL_OVERRIDE;
     void unregisterObserver(QObserverInterface *observer) Q_DECL_OVERRIDE;
 
+    virtual void sceneChangeEvent(const QSceneChangePtr &change);
+
     void setScene(QSceneInterface *scene);
     QSceneInterface *scene() const;
 

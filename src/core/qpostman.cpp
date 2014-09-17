@@ -42,7 +42,9 @@
 #include "qpostman_p.h"
 #include <private/qobject_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qbackendscenepropertychange.h>
 #include <Qt3DCore/qscene.h>
+#include <Qt3DCore/qnode.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -65,7 +67,7 @@ public:
 QPostman::QPostman(QObject *parent)
     : QObject(*new QPostmanPrivate(this), parent)
 {
-    qRegisterMetaType<QSharedPointer<QSceneChange> >("QSharedPointer<QSceneChanged>");
+    qRegisterMetaType<QSceneChangePtr >("QSceneChangePtr");
 }
 
 void QPostman::setScene(QSceneInterface *scene)
@@ -74,21 +76,22 @@ void QPostman::setScene(QSceneInterface *scene)
     d->m_scene = scene;
 }
 
-void QPostman::sceneChangeEvent(const QSceneChangePtr &)
+void QPostman::sceneChangeEvent(const QSceneChangePtr &e)
 {
-
+    QMetaObject::invokeMethod(this,
+                              "notifyFrontendNode",
+                              Q_ARG(QSceneChangePtr, e));
 }
 
-//void QPostman::sceneNodeUpdated(QSceneChangePtr &e)
-//{
-//    QMetaObject::invokeMethod(this,
-//                              "notifyFrontendNode",
-//                              Q_ARG(QSharedPointer<QSceneChange>, e));
-//}
-
-void QPostman::notifyFrontendNode(QSceneChangePtr &)
+void QPostman::notifyFrontendNode(QSceneChangePtr e)
 {
-    // TO DO: Lookup in the engine's table if a node for the current
+    Q_D(QPostman);
+    QBackendScenePropertyChangePtr change = qSharedPointerDynamicCast<QBackendScenePropertyChange>(e);
+    if (!change.isNull() && d->m_scene != Q_NULLPTR) {
+        QNode *n = d->m_scene->lookupNode(change->targetNode());
+        if (n != Q_NULLPTR)
+            n->sceneChangeEvent(change);
+    }
 }
 
 } //Qt3D

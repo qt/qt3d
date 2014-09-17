@@ -55,7 +55,7 @@ class QChangeArbiter;
 class QObservableInterface;
 class QJobManagerInterface;
 class QSceneObserverInterface;
-class QPostman;
+class QObserverInterface;
 class QSceneInterface;
 
 typedef QVector<QSceneChangePtr> ChangeQueue;
@@ -83,12 +83,6 @@ public:
     QHash<QUuid, QObserverList> m_nodeObservations;
     QList<QSceneObserverInterface *> m_sceneObservers;
 
-    // Observable to QUuid,
-    QHash<QObservableInterface *, QUuid> m_observableToNodeId;
-
-
-    QHash<QUuid, QObserverList> observersForNodeId;
-
     // Each thread has a TLS ChangeQueue so we never need to lock whilst
     // receiving a QSceneChange.
     QThreadStorage<ChangeQueue *> m_tlsChangeQueue;
@@ -97,7 +91,7 @@ public:
     // be accessed from the aspect thread during the syncChanges() phase.
     QList<ChangeQueue *> m_changeQueues;
     QList<ChangeQueue *> m_lockingChangeQueues;
-    QPostman *m_postman;
+    QObserverInterface *m_postman;
     QSceneInterface *m_scene;
 };
 

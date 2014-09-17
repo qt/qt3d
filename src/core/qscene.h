@@ -52,7 +52,7 @@ namespace Qt3D {
 class QNode;
 class QScenePrivate;
 
-class QScene : public QSceneInterface
+class QT3DCORESHARED_EXPORT QScene : public QSceneInterface
 {
 public:
     QScene();
@@ -63,6 +63,7 @@ public:
     void removeObservable(QNode *observable) Q_DECL_OVERRIDE;
     QObservableList lookupObservables(const QUuid &uuid) const Q_DECL_OVERRIDE;
     QNode *lookupNode(const QUuid &uuid) const Q_DECL_OVERRIDE;
+    QUuid nodeIdFromObservable(QObservableInterface *observable) const Q_DECL_OVERRIDE;
     void setArbiter(QChangeArbiter *arbiter) Q_DECL_OVERRIDE;
     QList<QUuid> entitiesForComponent(const QUuid &uuid) const Q_DECL_OVERRIDE;
     void addEntityForComponent(const QUuid &componentUuid, const QUuid &entityUuid) Q_DECL_OVERRIDE;
