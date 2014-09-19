@@ -74,7 +74,7 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QCriterion)
-    QCriterion *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
+    QCriterion *doClone(bool isClone) const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

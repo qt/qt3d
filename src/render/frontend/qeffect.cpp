@@ -69,16 +69,19 @@ QEffect::QEffect(QEffectPrivate &dd, QNode *parent)
 {
 }
 
-QEffect *QEffect::doClone(QNode *clonedParent) const
+QEffect *QEffect::doClone(bool isClone) const
 {
     Q_D(const QEffect);
-    QEffect *effect = new QEffect(clonedParent);
+    QEffect *effect = new QEffect();
+
+    effect->copy(this);
+    effect->d_func()->m_isClone = isClone;
 
     Q_FOREACH (QParameter *p, d->m_parameters)
-        effect->addParameter(qobject_cast<QParameter *>(p->clone(effect)));
+        effect->addParameter(qobject_cast<QParameter *>(p->clone(isClone)));
 
     Q_FOREACH (QAbstractTechnique *t, d->m_techniques)
-        effect->addTechnique(qobject_cast<QAbstractTechnique *>(t->clone(effect)));
+        effect->addTechnique(qobject_cast<QAbstractTechnique *>(t->clone(isClone)));
 
     return effect;
 }

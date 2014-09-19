@@ -170,9 +170,12 @@ void QScissorTest::setHeight(int height)
     }
 }
 
-QNode *QScissorTest::doClone(QNode *clonedParent) const
+QNode *QScissorTest::doClone(bool isClone) const
 {
-    return new QScissorTest(clonedParent);
+    QScissorTest *clone = new QScissorTest();
+    clone->copy(this);
+    clone->d_func()->m_isClone = isClone;
+    return clone;
 }
 
 } // Qt3D

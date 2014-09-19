@@ -50,9 +50,9 @@ TessellatedQuadMesh::TessellatedQuadMesh(Qt3D::QNode *parent)
 {
 }
 
-TessellatedQuadMesh *TessellatedQuadMesh::doClone(Qt3D::QNode *clonedParent) const
+TessellatedQuadMesh *TessellatedQuadMesh::doClone(bool isClone) const
 {
-    return new TessellatedQuadMesh(clonedParent);
+    return new TessellatedQuadMesh();
 }
 
 class TessellatedQuadMeshFunctor : public Qt3D::QAbstractMeshFunctor

@@ -88,7 +88,7 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QTranslateTransform)
     QTranslateTransform(QTranslateTransformPrivate &dd, QNode *parent = 0);
-    QTranslateTransform *doClone(QNode *clonedParent) const;
+    QTranslateTransform *doClone(bool isClone) const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3D

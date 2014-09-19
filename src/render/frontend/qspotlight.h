@@ -78,7 +78,7 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QSpotLight)
     QSpotLight(QSpotLightPrivate &dd, QNode *parent = 0);
-    QSpotLight *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
+    QSpotLight *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

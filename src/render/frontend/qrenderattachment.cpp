@@ -210,9 +210,12 @@ QString QRenderAttachment::name() const
     return d->m_name;
 }
 
-QNode *QRenderAttachment::doClone(QNode *clonedParent) const
+QNode *QRenderAttachment::doClone(bool isClone) const
 {
-    return new QRenderAttachment(clonedParent);
+    QRenderAttachment *clone = new QRenderAttachment();
+    clone->copy(this);
+    clone->d_func()->m_isClone = isClone;
+    return clone;
 }
 
 } // Qt3D

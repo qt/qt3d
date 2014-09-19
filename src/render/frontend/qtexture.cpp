@@ -235,10 +235,13 @@ void QTexture::setStatus(Status status)
     }
 }
 
-QNode *QTexture::doClone(QNode *clonedParent) const
+QNode *QTexture::doClone(bool isClone) const
 {
     // TO DO: Copy TexImageDataPtr
-    return new QTexture(clonedParent);
+    QTexture *clone = new QTexture();
+    clone->copy(this);
+    clone->d_func()->m_isClone = isClone;
+    return clone;
 }
 
 QTexture::Status QTexture::status() const

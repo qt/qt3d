@@ -69,7 +69,7 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QLayer)
     QLayer(QLayerPrivate &dd, QNode *parent = 0);
-    QLayer *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
+    QLayer *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

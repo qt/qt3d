@@ -85,17 +85,20 @@ QTechnique::QTechnique(QTechniquePrivate &dd, QNode *parent)
     QObject::connect(d->m_openGLFilter, SIGNAL(openGLFilterChanged()), this, SLOT(openGLFilterChanged()));
 }
 
-QTechnique *QTechnique::doClone(QNode *clonedParent) const
+QTechnique *QTechnique::doClone(bool isClone) const
 {
     Q_D(const QTechnique);
-    QTechnique *technique = new QTechnique(clonedParent);
+    QTechnique *technique = new QTechnique();
+
+    technique->copy(this);
+    technique->d_func()->m_isClone = isClone;
 
     Q_FOREACH (QCriterion *criterion, d->m_criteriaList)
-        technique->addCriterion(qobject_cast<QCriterion *>(criterion->clone(technique)));
+        technique->addCriterion(qobject_cast<QCriterion *>(criterion->clone(isClone)));
     Q_FOREACH (QAbstractRenderPass *pass, d->m_renderPasses)
-        technique->addPass(qobject_cast<QAbstractRenderPass *>(pass->clone(technique)));
+        technique->addPass(qobject_cast<QAbstractRenderPass *>(pass->clone(isClone)));
     Q_FOREACH (QParameter *p, d->m_parameters)
-        technique->addParameter(qobject_cast<QParameter *>(p->clone(technique)));
+        technique->addParameter(qobject_cast<QParameter *>(p->clone(isClone)));
 
     return technique;
 }

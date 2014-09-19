@@ -97,9 +97,12 @@ void QCullFace::setMode(QCullFace::CullingMode mode)
     }
 }
 
-QNode *QCullFace::doClone(QNode *clonedParent) const
+QNode *QCullFace::doClone(bool isClone) const
 {
-    return new QCullFace(clonedParent);
+    QCullFace *clone = new QCullFace();
+    clone->copy(this);
+    clone->d_func()->m_isClone = isClone;
+    return clone;
 }
 
 } // Qt3D

@@ -72,7 +72,7 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QFrameGraph)
     QFrameGraph(QFrameGraphPrivate &dd, QNode *parent = 0);
-    QFrameGraph *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
+    QFrameGraph *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
 };
 
 } //Qt3D

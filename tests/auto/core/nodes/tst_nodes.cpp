@@ -43,6 +43,7 @@
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qcomponent.h>
+#include <Qt3DCore/qscene.h>
 
 class tst_Nodes : public QObject
 {
@@ -84,9 +85,12 @@ public:
     QString customProperty() const { return m_customProperty; }
 
 protected:
-    Qt3D::QNode *doClone(Qt3D::QNode *clonedParent) const Q_DECL_OVERRIDE
+    Qt3D::QNode *doClone(bool isClone = true) const Q_DECL_OVERRIDE
     {
-        return new MyQNode(clonedParent);
+        MyQNode *clone = new MyQNode();
+        clone->copy(this);
+        //        clone->d_func()->m_isClone = isClone;
+        return clone;
     }
 
     QString m_customProperty;
@@ -102,9 +106,12 @@ public:
 
     // QNode interface
 protected:
-    Qt3D::QNode *doClone(Qt3D::QNode *clonedParent) const Q_DECL_OVERRIDE
+    Qt3D::QNode *doClone(bool isClone = true) const Q_DECL_OVERRIDE
     {
-        return new MyQComponent(clonedParent);
+        MyQComponent *clone = new MyQComponent();
+        clone->copy(this);
+//        clone->d_func()->m_isClone = isClone;
+        return clone;
     }
 };
 
@@ -341,8 +348,11 @@ void tst_Nodes::removingComponentsFromEntity()
 
 void tst_Nodes::checkCloning()
 {
+    Qt3D::QScene *scene = new Qt3D::QScene();
     MyQNode *root = new MyQNode();
+    root->setScene(scene);
     Qt3D::QEntity *entity = new Qt3D::QEntity(root);
+    root->addChild(entity);
 
     MyQComponent *comp1 = new MyQComponent();
     MyQComponent *comp2 = new MyQComponent();
@@ -350,13 +360,10 @@ void tst_Nodes::checkCloning()
 
     MyQNode *childNode = new MyQNode();
     entity->addChild(childNode);
-
-
     entity->addComponent(comp1);
     entity->addComponent(comp2);
     entity->addComponent(comp3);
 
-    root->addChild(entity);
     root->setCustomProperty(QStringLiteral("Corvette"));
 
     QVERIFY(root->customProperty() == QStringLiteral("Corvette"));

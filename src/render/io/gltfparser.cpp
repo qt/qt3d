@@ -73,6 +73,7 @@
 // need to move these to somewhere common?
 #include <Qt3DRenderer/private/renderstate_p.h>
 #include <Qt3DRenderer/private/blendstate_p.h>
+#include <Qt3DCore/private/qabstractmesh_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -227,7 +228,7 @@ public:
 
 private:
     QMeshDataPtr m_meshData;
-    GLTFParserMesh *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
+    GLTFParserMesh *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
 };
 
 GLTFParser::GLTFParser() : AbstractSceneParser(),
@@ -1014,9 +1015,12 @@ QAbstractMeshFunctorPtr GLTFParserMesh::meshFunctor() const
     return QAbstractMeshFunctorPtr(new GLTFParserMeshFunctor(m_meshData));
 }
 
-GLTFParserMesh *GLTFParserMesh::doClone(QNode *clonedParent) const
+GLTFParserMesh *GLTFParserMesh::doClone(bool isClone) const
 {
-    return new GLTFParserMesh(clonedParent);
+    GLTFParserMesh *clone = new GLTFParserMesh();
+    clone->copy(this);
+    clone->d_func()->m_isClone = isClone;
+    return clone;
 }
 
 GLTFParserMesh::GLTFParserMeshFunctor::GLTFParserMeshFunctor(QMeshDataPtr meshData)

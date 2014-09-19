@@ -73,9 +73,12 @@ QTranslateTransform::QTranslateTransform(QTranslateTransformPrivate &dd, QNode *
 {
 }
 
-QTranslateTransform *QTranslateTransform::doClone(QNode *clonedParent) const
+QTranslateTransform *QTranslateTransform::doClone(bool isClone) const
 {
-    return new QTranslateTransform(clonedParent);
+    QTranslateTransform *clone = new QTranslateTransform();
+    clone->copy(this);
+    clone->d_func()->m_isClone = isClone;
+    return clone;
 }
 
 

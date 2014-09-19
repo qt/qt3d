@@ -77,9 +77,12 @@ void QRigidBody::copy(const QNode *ref)
     }
 }
 
-QRigidBody *QRigidBody::doClone(QNode *clonedParent) const
+QRigidBody *QRigidBody::doClone(bool isClone) const
 {
-    return new QRigidBody(clonedParent);
+    QRigidBody *clone = new QRigidBody();
+    clone->copy(this);
+    clone->d_func()->m_isClone = isClone;
+    return clone;
 }
 
 void QRigidBody::setMass(float mass)

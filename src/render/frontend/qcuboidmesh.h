@@ -98,7 +98,7 @@ Q_SIGNALS:
 
 protected:
     QCuboidMesh(QCuboidMeshPrivate &dd, QNode *parent = 0);
-    QCuboidMesh *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
+    QCuboidMesh *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
     Q_DECLARE_PRIVATE(QCuboidMesh)
 };
 

@@ -67,18 +67,21 @@ QRenderPass::QRenderPass(QRenderPassPrivate &dd, QNode *parent)
 {
 }
 
-QRenderPass *QRenderPass::doClone(QNode *clonedParent) const
+QRenderPass *QRenderPass::doClone(bool isClone) const
 {
     Q_D(const QRenderPass);
-    QRenderPass *pass = new QRenderPass(clonedParent);
+    QRenderPass *pass = new QRenderPass();
+
+    pass->copy(this);
+    pass->d_func()->m_isClone = isClone;
 
     Q_FOREACH (QCriterion *crit, d->m_criteriaList)
-        pass->addCriterion(qobject_cast<QCriterion *>(crit->clone(pass)));
+        pass->addCriterion(qobject_cast<QCriterion *>(crit->clone(isClone)));
     Q_FOREACH (QParameterMapper *binding, d->m_bindings)
-        pass->addBinding(qobject_cast<QParameterMapper *>(binding->clone(pass)));
+        pass->addBinding(qobject_cast<QParameterMapper *>(binding->clone(isClone)));
     Q_FOREACH (QRenderState *renderState, d->m_renderStates)
-        pass->addRenderState(qobject_cast<QRenderState *>(renderState->clone(pass)));
-    pass->d_func()->m_shader = qobject_cast<QShaderProgram *>(d->m_shader->clone(pass));
+        pass->addRenderState(qobject_cast<QRenderState *>(renderState->clone(isClone)));
+    pass->d_func()->m_shader = qobject_cast<QShaderProgram *>(d->m_shader->clone(isClone));
 
     return pass;
 }

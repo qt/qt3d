@@ -76,7 +76,7 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QSortCriterion)
     QSortCriterion(QSortCriterionPrivate &dd, QNode *parent = 0);
-    QSortCriterion *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
+    QSortCriterion *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
 
 };
 

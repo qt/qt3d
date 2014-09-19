@@ -63,9 +63,12 @@ QDithering::QDithering(QNode *parent)
 {
 }
 
-QNode *QDithering::doClone(QNode *clonedParent) const
+QNode *QDithering::doClone(bool isClone) const
 {
-    return new QDithering(clonedParent);
+    QDithering *clone = new QDithering();
+    clone->copy(this);
+    clone->d_func()->m_isClone = isClone;
+    return clone;
 }
 
 } // Qt3D

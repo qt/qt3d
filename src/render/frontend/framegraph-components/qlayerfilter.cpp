@@ -73,13 +73,16 @@ QLayerFilter::QLayerFilter(QLayerFilterPrivate &dd, QNode *parent)
 {
 }
 
-QLayerFilter *QLayerFilter::doClone(QNode *clonedParent) const
+QLayerFilter *QLayerFilter::doClone(bool isClone) const
 {
     Q_D(const QLayerFilter);
-    QLayerFilter *filter = new QLayerFilter(clonedParent);
+    QLayerFilter *filter = new QLayerFilter();
+
+    filter->copy(this);
+    filter->d_func()->m_isClone = isClone;
 
     Q_FOREACH (QFrameGraphItem *fgChild, d->m_fgChildren)
-        filter->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(fgChild->clone(filter)));
+        filter->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(fgChild->clone(isClone)));
 
     return filter;
 }

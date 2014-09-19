@@ -65,15 +65,18 @@ QTechniqueFilter::QTechniqueFilter(QTechniqueFilterPrivate &dd, QNode *parent)
 {
 }
 
-QTechniqueFilter *QTechniqueFilter::doClone(QNode *clonedParent) const
+QTechniqueFilter *QTechniqueFilter::doClone(bool isClone) const
 {
     Q_D(const QTechniqueFilter);
-    QTechniqueFilter *clone = new QTechniqueFilter(clonedParent);
+    QTechniqueFilter *clone = new QTechniqueFilter();
+
+    clone->copy(this);
+    clone->d_func()->m_isClone = isClone;
 
     Q_FOREACH (QFrameGraphItem *fgChild, d->m_fgChildren)
-        clone->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(fgChild->clone(clone)));
+        clone->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(fgChild->clone(isClone)));
     Q_FOREACH (QCriterion *crit, d->m_criteriaList)
-        clone->addCriterion(qobject_cast<QCriterion *>(crit->clone(clonedParent)));
+        clone->addCriterion(qobject_cast<QCriterion *>(crit->clone(isClone)));
 
     return clone;
 }

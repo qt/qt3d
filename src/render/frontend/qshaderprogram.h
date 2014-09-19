@@ -146,7 +146,7 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QShaderProgram)
     QShaderProgram(QShaderProgramPrivate &dd, QNode *parent = 0);
-    QShaderProgram *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
+    QShaderProgram *doClone(bool isClone) const Q_DECL_OVERRIDE;
 };
 
 }

@@ -73,9 +73,12 @@ QScaleTransform::QScaleTransform(QScaleTransformPrivate &dd, QNode *parent)
 {
 }
 
-QScaleTransform *QScaleTransform::doClone(QNode *clonedParent) const
+QScaleTransform *QScaleTransform::doClone(bool isClone) const
 {
-    return new QScaleTransform(clonedParent);
+    QScaleTransform *clone = new QScaleTransform();
+    clone->copy(this);
+    clone->d_func()->m_isClone = isClone;
+    return clone;
 }
 
 QVector3D QScaleTransform::scale3D() const

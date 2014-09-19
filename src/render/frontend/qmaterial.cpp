@@ -61,16 +61,19 @@ QMaterial::QMaterial(QMaterialPrivate &dd, QNode *parent)
 {
 }
 
-QMaterial *QMaterial::doClone(QNode *clonedParent) const
+QMaterial *QMaterial::doClone(bool isClone) const
 {
     Q_D(const QMaterial);
-    QMaterial *mat = new QMaterial(clonedParent);
+    QMaterial *mat = new QMaterial();
+
+    mat->copy(this);
+    mat->d_func()->m_isClone = isClone;
 
     Q_FOREACH (QParameter *p, d->m_parameters)
-        mat->clone(qobject_cast<QParameter *>(p->clone(mat)));
+        mat->addParameter(qobject_cast<QParameter *>(p->clone(isClone)));
 
     if (d->m_effect != Q_NULLPTR)
-        mat->setEffect(qobject_cast<QAbstractEffect *>(d->m_effect->clone(mat)));
+        mat->setEffect(qobject_cast<QAbstractEffect *>(d->m_effect->clone(isClone)));
 
     return mat;
 }

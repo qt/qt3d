@@ -79,12 +79,14 @@ QFrameGraph::QFrameGraph(QFrameGraphPrivate &dd, QNode *parent)
 {
 }
 
-QFrameGraph *QFrameGraph::doClone(QNode *clonedParent) const
+QFrameGraph *QFrameGraph::doClone(bool isClone) const
 {
     Q_D(const QFrameGraph);
-    QFrameGraph *frameGraph = new QFrameGraph(clonedParent);
+    QFrameGraph *frameGraph = new QFrameGraph();
+    frameGraph->copy(this);
+    frameGraph->d_func()->m_isClone = isClone;
 
-    frameGraph->setActiveFrameGraph(qobject_cast<QFrameGraphItem *>(d->m_activeFrameGraph->clone(clonedParent)));
+    frameGraph->setActiveFrameGraph(qobject_cast<QFrameGraphItem *>(d->m_activeFrameGraph->clone(isClone)));
 
     return frameGraph;
 }

@@ -82,7 +82,7 @@ public:
 protected:
     Q_DECLARE_PRIVATE(QMaterial)
     QMaterial(QMaterialPrivate &dd, QNode *parent = 0);
-    QMaterial *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
+    QMaterial *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
 };
 
 }

@@ -79,7 +79,7 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QBlendEquation)
-    QNode *doClone(QNode *clonedParent) const;
+    QNode *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

@@ -59,7 +59,7 @@ public:
 
 private:
     Q_DECLARE_PRIVATE(QDithering)
-    QNode *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
+    QNode *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

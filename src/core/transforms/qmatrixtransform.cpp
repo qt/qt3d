@@ -56,9 +56,12 @@ QMatrixTransform::QMatrixTransform(QMatrixTransformPrivate &dd, QNode *parent)
 {
 }
 
-QMatrixTransform *QMatrixTransform::doClone(QNode *clonedParent) const
+QMatrixTransform *QMatrixTransform::doClone(bool isClone) const
 {
-    return new QMatrixTransform(clonedParent);
+    QMatrixTransform *clone = new QMatrixTransform();
+    clone->copy(this);
+    clone->d_func()->m_isClone = isClone;
+    return clone;
 }
 
 QMatrixTransform::QMatrixTransform(QNode *parent)

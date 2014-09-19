@@ -97,12 +97,12 @@ QTransform::QTransform(QTransformPrivate &dd, QNode *parent)
 {
 }
 
-QTransform *QTransform::doClone(QNode *clonedParent) const
+QTransform *QTransform::doClone(bool isClone) const
 {
     Q_D(const QTransform);
-    QTransform *clone = new QTransform(clonedParent);
+    QTransform *clone = new QTransform();
     Q_FOREACH (QAbstractTransform *t, d->m_transforms)
-        clone->appendTransform(qobject_cast<QAbstractTransform *>(t->clone(clone)));
+        clone->appendTransform(qobject_cast<QAbstractTransform *>(t->clone()));
     return clone;
 }
 

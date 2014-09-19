@@ -79,7 +79,7 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QMesh)
     QMesh(QMeshPrivate &dd, QNode *parent = 0);
-    QMesh *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
+    QMesh *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
 };
 
 }

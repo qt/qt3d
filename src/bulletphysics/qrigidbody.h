@@ -82,7 +82,7 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QRigidBody)
     QRigidBody(QRigidBodyPrivate &dd, Qt3D::QNode *parent = 0);
-    QRigidBody *doClone(QNode *clonedParent = 0) const Q_DECL_OVERRIDE;
+    QRigidBody *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
 };
 
 } // namespace BulletPhysics

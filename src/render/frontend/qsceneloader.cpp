@@ -71,9 +71,13 @@ void QSceneLoader::sceneChangeEvent(const QSceneChangePtr &change)
                 Q_FOREACH (const QUuid &id, entities) {
                     QEntity *parentEntity = qobject_cast<QEntity *>(d->m_scene->lookupNode(id));
                     if (parentEntity != Q_NULLPTR) {
-                        QEntity *cloneScene = qobject_cast<QEntity *>(scene->clone(Q_NULLPTR, false));
+                        scene->dumpObjectTree();
+
+                        qDebug() << "BUILDING SUBTREE DEEP CLONE";
+                        QEntity *cloneScene = qobject_cast<QEntity *>(scene->clone(false));
+                        cloneScene->dumpObjectTree();
                         // TO DO : Make that work
-//                        qDebug() << QThread::currentThread() << parentEntity->thread() << scene->thread() << cloneScene->thread();
+                        qDebug() << "<<<<<<<<<<<<<<<<< " << QThread::currentThread() << parentEntity->thread() << scene->thread() << cloneScene->thread();
 //                        parentEntity->addChild(cloneScene);
                     }
                 }
@@ -85,9 +89,12 @@ void QSceneLoader::sceneChangeEvent(const QSceneChangePtr &change)
     }
 }
 
-QNode *QSceneLoader::doClone(QNode *clonedParent) const
+QNode *QSceneLoader::doClone(bool isClone) const
 {
-    return new QSceneLoader(clonedParent);
+    QSceneLoader *clone = new QSceneLoader();
+    clone->copy(this);
+    clone->d_func()->m_isClone = isClone;
+    return clone;
 }
 
 } // Qt3D

@@ -67,7 +67,7 @@ public:
 protected:
     Q_DECLARE_PRIVATE(QRenderTarget)
     QRenderTarget(QRenderTargetPrivate &dd, QNode *parent = 0);
-    QRenderTarget *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
+    QRenderTarget *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

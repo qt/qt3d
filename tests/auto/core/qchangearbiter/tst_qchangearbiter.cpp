@@ -139,9 +139,12 @@ public:
 
     // QNode interface
 protected:
-    Qt3D::QNode *doClone(Qt3D::QNode *clonedParent) const
+    Qt3D::QNode *doClone(bool isClone = true) const
     {
-        return new tst_Node(clonedParent);
+        tst_Node *clone = new tst_Node();
+        clone->copy(this);
+//        clone->d_func()->m_isClone = isClone;
+        return clone;
     }
 
 private:

@@ -291,7 +291,7 @@ protected:
     Q_DECLARE_PRIVATE(QTexture)
     QTexture(QTexturePrivate &dd, QNode *parent = 0);
     void setStatus(Status status);
-    QNode *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
+    QNode *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3D

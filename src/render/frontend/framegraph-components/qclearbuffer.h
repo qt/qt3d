@@ -80,7 +80,7 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QClearBuffer)
     QClearBuffer(QClearBufferPrivate &dd, QNode *parent = 0);
-    QClearBuffer *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
+    QClearBuffer *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

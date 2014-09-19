@@ -119,7 +119,7 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QParameter)
     QParameter(QParameterPrivate &dd, QNode *parent = 0);
-    QParameter *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
+    QParameter *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

@@ -102,9 +102,12 @@ QSortCriterion::QSortCriterion(QSortCriterionPrivate &dd, QNode *parent)
 {
 }
 
-QSortCriterion *QSortCriterion::doClone(QNode *clonedParent) const
+QSortCriterion *QSortCriterion::doClone(bool isClone) const
 {
-    return new QSortCriterion(clonedParent);
+    QSortCriterion *clone = new QSortCriterion();
+    clone->copy(this);
+    clone->d_func()->m_isClone = isClone;
+    return clone;
 }
 
 } // Qt3D

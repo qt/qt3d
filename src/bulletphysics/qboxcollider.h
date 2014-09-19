@@ -79,7 +79,7 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QBoxCollider)
     QBoxCollider(QBoxColliderPrivate &dd, QNode *parent = 0);
-    QBoxCollider *doClone(QNode *clonedParent = 0) const Q_DECL_OVERRIDE;
+    QBoxCollider *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
 };
 
 } // namespace BulletPhysics

@@ -97,9 +97,12 @@ void QFrontFace::setDirection(QFrontFace::FaceDir direction)
     }
 }
 
-QNode *QFrontFace::doClone(QNode *clonedParent) const
+QNode *QFrontFace::doClone(bool isClone) const
 {
-    return new QFrontFace(clonedParent);
+    QFrontFace *clone = new QFrontFace();
+    clone->copy(this);
+    clone->d_func()->m_isClone = isClone;
+    return clone;
 }
 
 } // Qt3D

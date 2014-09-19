@@ -128,7 +128,7 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QRenderAttachment)
     QRenderAttachment(QRenderAttachmentPrivate &dd, QNode *parent = 0);
-    QNode *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
+    QNode *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

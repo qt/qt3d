@@ -87,7 +87,7 @@ Q_SIGNALS:
 
 protected:
     QParameterMapper(QParameterMapperPrivate &dd, QNode *parent = 0);
-    QNode *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
+    QNode *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
     Q_DECLARE_PRIVATE(QParameterMapper)
 };
 

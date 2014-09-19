@@ -91,9 +91,12 @@ QDirectionalLight::QDirectionalLight(QDirectionalLightPrivate &dd, QNode *parent
 {
 }
 
-QDirectionalLight *QDirectionalLight::doClone(QNode *clonedParent) const
+QDirectionalLight *QDirectionalLight::doClone(bool isClone) const
 {
-    return new QDirectionalLight(clonedParent);
+    QDirectionalLight *clone = new QDirectionalLight();
+    clone->copy(this);
+    clone->d_func()->m_isClone = isClone;
+    return clone;
 }
 
 void QDirectionalLight::setDirection(const QVector3D &direction)

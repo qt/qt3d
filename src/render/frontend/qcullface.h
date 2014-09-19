@@ -79,7 +79,7 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QCullFace)
-    QNode *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
+    QNode *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

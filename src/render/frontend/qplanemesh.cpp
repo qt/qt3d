@@ -84,9 +84,12 @@ QPlaneMesh::QPlaneMesh(QPlaneMeshPrivate &dd, QNode *parent)
 }
 
 
-QPlaneMesh *QPlaneMesh::doClone(QNode *clonedParent) const
+QPlaneMesh *QPlaneMesh::doClone(bool isClone) const
 {
-    return new QPlaneMesh(clonedParent);
+    QPlaneMesh *clone = new QPlaneMesh();
+    clone->copy(this);
+    clone->d_func()->m_isClone = isClone;
+    return clone;
 }
 
 void QPlaneMesh::setWidth(float width)

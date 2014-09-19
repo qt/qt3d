@@ -91,9 +91,12 @@ public:
     tst_Node() : Qt3D::QNode()
     {}
 protected:
-    Qt3D::QNode *doClone(Qt3D::QNode *clonedParent) const
+    Qt3D::QNode *doClone(bool isClone = true) const Q_DECL_OVERRIDE
     {
-        return new tst_Node();
+        tst_Node *clone = new tst_Node();
+        clone->copy(this);
+//        clone->d_func()->m_isClone = isClone;
+        return clone;
     }
 };
 
@@ -103,9 +106,12 @@ public:
     tst_Component() : Qt3D::QComponent()
     {}
 protected:
-    Qt3D::QNode *doClone(Qt3D::QNode *clonedParent) const
+    Qt3D::QNode *doClone(bool isClone = true) const
     {
-        return new tst_Component;
+        tst_Component *clone = new tst_Component;
+        clone->copy(this);
+//        clone->d_func()->m_isClone = isClone;
+        return clone;
     }
 };
 

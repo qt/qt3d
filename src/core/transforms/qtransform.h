@@ -99,7 +99,7 @@ protected:
 
     Q_DECLARE_PRIVATE(QTransform)
     QTransform(QTransformPrivate &dd, QNode *parent = 0);
-    QTransform *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
+    QTransform *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3D

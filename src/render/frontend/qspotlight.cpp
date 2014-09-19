@@ -95,9 +95,12 @@ QSpotLight::QSpotLight(QSpotLightPrivate &dd, QNode *parent)
 {
 }
 
-QSpotLight *QSpotLight::doClone(QNode *clonedParent) const
+QSpotLight *QSpotLight::doClone(bool isClone) const
 {
-    return new QSpotLight(clonedParent);
+    QSpotLight *clone = new QSpotLight();
+    clone->copy(this);
+    clone->d_func()->m_isClone = isClone;
+    return clone;
 }
 
 QVector3D QSpotLight::direction() const

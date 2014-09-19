@@ -82,7 +82,7 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QRotateTransform)
     QRotateTransform(QRotateTransformPrivate &dd, QNode *parent = 0);
-    QRotateTransform *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
+    QRotateTransform *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3D

@@ -69,7 +69,7 @@ public:
 protected:
     Q_DECLARE_PRIVATE(QEffect)
     QEffect(QEffectPrivate &dd, QNode *parent = 0);
-    QEffect *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
+    QEffect *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

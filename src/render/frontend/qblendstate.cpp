@@ -170,9 +170,12 @@ void QBlendState::setDstAlpha(QBlendState::Blending dstAlpha)
     }
 }
 
-QNode *QBlendState::doClone(QNode *clonedParent) const
+QNode *QBlendState::doClone(bool isClone) const
 {
-    return new QBlendState(clonedParent);
+    QBlendState *clone = new QBlendState();
+    clone->copy(this);
+    clone->d_func()->m_isClone = isClone;
+    return clone;
 }
 
 } // Qt3D

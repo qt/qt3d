@@ -65,6 +65,7 @@ public:
     QMultiHash<QUuid, QObservableInterface *> m_observablesLookupTable;
     QHash<QObservableInterface *, QUuid> m_observableToUuid;
     QChangeArbiter *m_arbiter;
+    QHash<QUuid, QNode *> m_clonesLookupTable;
     mutable QReadWriteLock m_lock;
 };
 
@@ -176,6 +177,24 @@ void QScene::removeEntityForComponent(const QUuid &componentUuid, const QUuid &e
     Q_D(QScene);
     QWriteLocker lock(&d->m_lock);
     d->m_componentToEntities.remove(componentUuid, entityUuid);
+}
+
+QNode *QScene::lookupClone(const QUuid &id) const
+{
+    Q_D(const QScene);
+    return d->m_clonesLookupTable.value(id);
+}
+
+void QScene::addCloneLookup(QNode *clone)
+{
+    Q_D(QScene);
+    d->m_clonesLookupTable.insert(clone->uuid(), clone);
+}
+
+void QScene::clearCloneLookup()
+{
+    Q_D(QScene);
+    d->m_clonesLookupTable.clear();
 }
 
 } // Qt3D

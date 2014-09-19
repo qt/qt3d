@@ -91,9 +91,12 @@ QMesh::QMesh(QMeshPrivate &dd, QNode *parent)
 {
 }
 
-QMesh *QMesh::doClone(QNode *clonedParent) const
+QMesh *QMesh::doClone(bool isClone) const
 {
-    return new QMesh(clonedParent);
+    QMesh *clone = new QMesh();
+    clone->copy(this);
+    clone->d_func()->m_isClone = isClone;
+    return clone;
 }
 
 void QMesh::setSource( const QString& source )

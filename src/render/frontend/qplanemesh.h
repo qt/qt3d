@@ -82,7 +82,7 @@ Q_SIGNALS:
 
 protected:
     QPlaneMesh(QPlaneMeshPrivate &dd, QNode *parent = 0);
-    QPlaneMesh *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
+    QPlaneMesh *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
     Q_DECLARE_PRIVATE(QPlaneMesh)
 };
 

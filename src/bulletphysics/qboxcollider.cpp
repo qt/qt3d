@@ -77,9 +77,12 @@ void QBoxCollider::copy(const QNode *ref)
     }
 }
 
-QBoxCollider *QBoxCollider::doClone(QNode *clonedParent) const
+QBoxCollider *QBoxCollider::doClone(bool isClone) const
 {
-    return new QBoxCollider(clonedParent);
+    QBoxCollider *clone = new QBoxCollider();
+    clone->copy(this);
+    clone->d_func()->m_isClone = isClone;
+    return clone;
 }
 
 void QBoxCollider::setCenter(const QVector3D &center)

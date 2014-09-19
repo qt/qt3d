@@ -133,7 +133,7 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QCameraLens)
     QCameraLens(QCameraLensPrivate &dd, QNode *parent = 0);
-    QCameraLens *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
+    QCameraLens *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

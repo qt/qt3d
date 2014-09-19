@@ -102,7 +102,14 @@ Q_SIGNALS:
 private:
     QString m_name;
     QVariant m_value;
-    Tag *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE { return new Tag(clonedParent); }
+    Tag *doClone(bool isClone) const Q_DECL_OVERRIDE
+    {
+        Tag *clone = new Tag();
+        clone->copy(this);
+        // TO DO : See if we keep this class
+//        clone->d_func()->m_isClone = isClone;
+        return clone;
+    }
 };
 
 } // namespace Qt3D

@@ -76,7 +76,7 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QScaleTransform)
     QScaleTransform(QScaleTransformPrivate &dd, QNode *parent = 0);
-    QScaleTransform *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
+    QScaleTransform *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

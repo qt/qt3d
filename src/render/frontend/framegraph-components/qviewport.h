@@ -76,7 +76,7 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QViewport)
     QViewport(QViewportPrivate &dd, QNode *parent = 0);
-    QViewport *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
+    QViewport *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

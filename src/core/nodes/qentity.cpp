@@ -77,12 +77,16 @@ QEntity::QEntity(QEntityPrivate &dd, QNode *parent)
 {
 }
 
-QEntity *QEntity::doClone(QNode *clonedParent) const
+QEntity *QEntity::doClone(bool isClone) const
 {
     Q_D(const QEntity);
-    QEntity *clone = new QEntity(clonedParent);
-    Q_FOREACH (QComponent *c, d->m_components)
-        clone->d_func()->m_components.append(qobject_cast<QComponent *>(c->clone(clone)));
+    QEntity *clone = new QEntity();
+    clone->copy(this);
+    clone->d_func()->m_isClone = isClone;
+    Q_FOREACH (QComponent *c, d->m_components) {
+        QNode *ccclone = c->clone(isClone);
+        clone->addComponent(qobject_cast<QComponent *>(ccclone));
+    }
     return clone;
 }
 

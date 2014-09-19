@@ -50,6 +50,7 @@
 #include <QMetaObject>
 #include <QMetaProperty>
 #include "corelogging.h"
+#include <Qt3DCore/QComponent>
 
 QT_BEGIN_NAMESPACE
 
@@ -189,22 +190,40 @@ void QNode::removeChild(QNode *childNode)
 // a real node. If there is a need for a real clone, set isClone to false
 // eg When a subtree built in the backend needs to be cloned
 // in the main thread to be added to the scene graph
-QNode *QNode::clone(QNode *clonedParent, bool isClone) const
+QNode *QNode::clone(bool isClone)
 {
-    Q_D(const QNode);
+    Q_D(QNode);
+    static int clearLock = 0;
 
-    QNode *nodeClone = doClone(clonedParent);
-    nodeClone->copy(this);
-    nodeClone->d_func()->m_isClone = isClone;
-    Q_FOREACH (QNode *children, d->m_children)
-        nodeClone->addChild(children->clone(nodeClone));
-    return nodeClone;
+    clearLock++;
+
+    if (d->m_scene == Q_NULLPTR)
+        return Q_NULLPTR;
+
+    QNode *clonedNode = d->m_scene->lookupClone(uuid());
+    if (clonedNode == Q_NULLPTR) {
+        clonedNode = doClone(isClone);
+        // doClone, returns new instance with content copied
+        // and relationships added
+        d->m_scene->addCloneLookup(clonedNode);
+    }
+    Q_FOREACH (QNode *c, children()) {
+        QNode *cclone = c->clone(isClone);
+        clonedNode->addChild(cclone);
+    }
+
+    if (--clearLock == 0)
+        d->m_scene->clearCloneLookup();
+    return clonedNode;
 }
 
 void QNode::copy(const QNode *ref)
 {
     Q_D(QNode);
     d->m_uuid = ref->uuid();
+    d->m_changeArbiter = ref->d_func()->m_changeArbiter;
+    d->m_scene = ref->d_func()->m_scene;
+    setObjectName(ref->objectName());
 }
 
 bool QNode::isClone() const

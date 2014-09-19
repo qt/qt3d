@@ -70,9 +70,14 @@ public:
     virtual QNode *lookupNode(const QUuid &uuid) const = 0;
     virtual QUuid nodeIdFromObservable(QObservableInterface *observable) const = 0;
     virtual void setArbiter(QChangeArbiter *arbiter) = 0;
+
     virtual QList<QUuid> entitiesForComponent(const QUuid &componentUuid) const = 0;
     virtual void addEntityForComponent(const QUuid &componentUuid, const QUuid &entityUuid) = 0;
     virtual void removeEntityForComponent(const QUuid &componentUuid, const QUuid &entityUuid) = 0;
+
+    virtual QNode *lookupClone(const QUuid &id) const = 0;
+    virtual void addCloneLookup(QNode *clone) = 0;
+    virtual void clearCloneLookup() = 0;
 };
 
 } // Qt3D

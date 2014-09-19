@@ -97,9 +97,12 @@ void QDepthMask::setMask(bool mask)
     }
 }
 
-QNode *QDepthMask::doClone(QNode *clonedParent) const
+QNode *QDepthMask::doClone(bool isClone) const
 {
-    return new QDepthMask(clonedParent);
+    QDepthMask *clone = new QDepthMask();
+    clone->copy(this);
+    clone->d_func()->m_isClone = isClone;
+    return clone;
 }
 
 } // Qt3D

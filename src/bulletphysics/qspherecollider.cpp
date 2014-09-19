@@ -77,9 +77,12 @@ void QSphereCollider::copy(const QNode *ref)
     }
 }
 
-QSphereCollider *QSphereCollider::doClone(QNode *clonedParent) const
+QSphereCollider *QSphereCollider::doClone(bool isClone) const
 {
-    return new QSphereCollider(clonedParent);
+    QSphereCollider *clone = new QSphereCollider();
+    clone->copy(this);
+    clone->d_func()->m_isClone = isClone;
+    return clone;
 }
 
 void QSphereCollider::setCenter(const QVector3D &center)

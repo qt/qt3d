@@ -89,9 +89,12 @@ QCuboidMesh::QCuboidMesh(QCuboidMeshPrivate &dd, QNode *parent)
     setDirty(true);
 }
 
-QCuboidMesh *QCuboidMesh::doClone(QNode *clonedParent) const
+QCuboidMesh *QCuboidMesh::doClone(bool isClone) const
 {
-    return new QCuboidMesh(clonedParent);
+    QCuboidMesh *clone = new QCuboidMesh();
+    clone->copy(this);
+    clone->d_func()->m_isClone = isClone;
+    return clone;
 }
 
 void QCuboidMesh::setXExtent(float xExtent)

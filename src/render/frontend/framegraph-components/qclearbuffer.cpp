@@ -79,9 +79,12 @@ QClearBuffer::BufferType QClearBuffer::buffers() const
 }
 
 
-QClearBuffer *QClearBuffer::doClone(QNode *clonedParent) const
+QClearBuffer *QClearBuffer::doClone(bool isClone) const
 {
-    return new QClearBuffer(clonedParent);
+    QClearBuffer *clone = new QClearBuffer();
+    clone->copy(this);
+    clone->d_func()->m_isClone = isClone;
+    return clone;
 }
 
 void QClearBuffer::setBuffers(QClearBuffer::BufferType buffers)

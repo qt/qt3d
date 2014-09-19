@@ -68,7 +68,7 @@ public:
 protected:
     Q_DECLARE_PRIVATE(QRenderPassFilter)
     QRenderPassFilter(QRenderPassFilterPrivate &dd, QNode *parent = 0);
-    QRenderPassFilter *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
+    QRenderPassFilter *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3D

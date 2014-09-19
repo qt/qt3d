@@ -100,8 +100,9 @@ void RenderRenderPass::setPeer(QRenderPass *peer)
             if (peer->shaderProgram() != Q_NULLPTR)
                 m_shaderUuid = peer->shaderProgram()->uuid();
             // The RenderPass clones frontend bindings in case the frontend ever removes them
+            // TO DO: We probably need a QParameterMapper manager
             Q_FOREACH (QParameterMapper *binding, peer->bindings())
-                appendBinding(qobject_cast<QParameterMapper *>(binding->clone()));
+                appendBinding(binding);
             Q_FOREACH (QCriterion *c, peer->criteria())
                 appendCriterion(c);
             Q_FOREACH (QRenderState *renderState, peer->renderStates())

@@ -81,9 +81,12 @@ QRotateTransform::QRotateTransform(QRotateTransformPrivate &dd, QNode *parent)
 {
 }
 
-QRotateTransform *QRotateTransform::doClone(QNode *clonedParent) const
+QRotateTransform *QRotateTransform::doClone(bool isClone) const
 {
-    return new QRotateTransform(clonedParent);
+    QRotateTransform *clone = new QRotateTransform();
+    clone->copy(this);
+    clone->d_func()->m_isClone = isClone;
+    return clone;
 }
 
 float QRotateTransform::angleDeg() const

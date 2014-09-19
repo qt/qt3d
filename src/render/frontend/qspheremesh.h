@@ -86,7 +86,7 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QSphereMesh)
-    QSphereMesh *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
+    QSphereMesh *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

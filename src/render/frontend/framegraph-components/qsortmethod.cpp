@@ -63,13 +63,16 @@ QSortMethod::QSortMethod(QSortMethodPrivate &dd, QNode *parent)
 {
 }
 
-QSortMethod *QSortMethod::doClone(QNode *clonedParent) const
+QSortMethod *QSortMethod::doClone(bool isClone) const
 {
     Q_D(const QSortMethod);
-    QSortMethod *clone = new QSortMethod(clonedParent);
+    QSortMethod *clone = new QSortMethod();
+
+    clone->copy(this);
+    clone->d_func()->m_isClone = isClone;
 
     Q_FOREACH (QSortCriterion *c, d->m_criteria)
-        clone->addCriterion(qobject_cast<QSortCriterion *>(c));
+        clone->addCriterion(qobject_cast<QSortCriterion *>(c->clone(isClone)));
 
     return clone;
 }

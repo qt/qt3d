@@ -73,7 +73,7 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QDirectionalLight)
     QDirectionalLight(QDirectionalLightPrivate &dd, QNode *parent = 0);
-    QDirectionalLight *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
+    QDirectionalLight *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

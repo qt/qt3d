@@ -79,7 +79,7 @@ public:
     void addChild(QNode *childNode);
     void removeChild(QNode *childNode);
 
-    QNode *clone(QNode *clonedParent = 0, bool isClone = true) const;
+    QNode *clone(bool isClone = true);
     virtual void copy(const QNode *ref);
 
     bool isClone() const;
@@ -101,7 +101,7 @@ public:
 protected:
     void notifyPropertyChange(const QByteArray &name, const QVariant &value);
     virtual void notifyObservers(const QSceneChangePtr &change);
-    virtual QNode *doClone(QNode *clonedParent = 0) const = 0;
+    virtual QNode *doClone(bool isClone = true) const = 0;
 
     Q_DECLARE_PRIVATE(QNode)
     QNode(QNodePrivate &dd, QNode *parent = 0);

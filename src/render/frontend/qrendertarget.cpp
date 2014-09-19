@@ -105,13 +105,16 @@ QList<QRenderAttachment *> QRenderTarget::attachments() const
     return d->m_attachments;
 }
 
-QRenderTarget *QRenderTarget::doClone(QNode *clonedParent) const
+QRenderTarget *QRenderTarget::doClone(bool isClone) const
 {
     Q_D(const QRenderTarget);
-    QRenderTarget *clone = new QRenderTarget(clonedParent);
+    QRenderTarget *clone = new QRenderTarget();
+
+    clone->copy(this);
+    clone->d_func()->m_isClone = isClone;
 
     Q_FOREACH (QRenderAttachment *attachment, d->m_attachments)
-        clone->addAttachment(qobject_cast<QRenderAttachment *>(attachment->clone()));
+        clone->addAttachment(qobject_cast<QRenderAttachment *>(attachment->clone(isClone)));
 
     return clone;
 }

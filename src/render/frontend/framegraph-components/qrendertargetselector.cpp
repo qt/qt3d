@@ -90,13 +90,16 @@ QRenderTargetSelector::QRenderTargetSelector(QRenderTargetSelectorPrivate &dd, Q
 {
 }
 
-QRenderTargetSelector *QRenderTargetSelector::doClone(QNode *clonedParent) const
+QRenderTargetSelector *QRenderTargetSelector::doClone(bool isClone) const
 {
     Q_D(const QRenderTargetSelector);
-    QRenderTargetSelector *clone = new QRenderTargetSelector(clonedParent);
+    QRenderTargetSelector *clone = new QRenderTargetSelector();
+
+    clone->copy(this);
+    clone->d_func()->m_isClone = isClone;
 
     Q_FOREACH (QFrameGraphItem *fgChild, d->m_fgChildren)
-        clone->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(fgChild->clone(clone)));
+        clone->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(fgChild->clone(isClone)));
 
     if (d->m_target != Q_NULLPTR)
         clone->setTarget(qobject_cast<QRenderTarget *>(d->m_target->clone(clone)));

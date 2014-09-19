@@ -146,9 +146,12 @@ void QStencilTest::setFunc(QStencilTest::StencilFunc func)
     }
 }
 
-QNode *QStencilTest::doClone(QNode *clonedParent) const
+QNode *QStencilTest::doClone(bool isClone) const
 {
-    return new QStencilTest(clonedParent);
+    QStencilTest *clone = new QStencilTest();
+    clone->copy(this);
+    clone->d_func()->m_isClone = isClone;
+    return clone;
 }
 
 } // Qt3D

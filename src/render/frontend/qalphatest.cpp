@@ -121,9 +121,12 @@ void QAlphaTest::setClamp(float clamp)
     }
 }
 
-QNode *QAlphaTest::doClone(QNode *clonedParent) const
+QNode *QAlphaTest::doClone(bool isClone) const
 {
-    return new QAlphaTest(clonedParent);
+    QAlphaTest *clone = new QAlphaTest();
+    clone->copy(this);
+    clone->d_func()->m_isClone = isClone;
+    return clone;
 }
 
 } // Qt3D

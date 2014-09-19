@@ -97,9 +97,12 @@ void QDepthTest::setFunc(QDepthTest::DepthFunc func)
     }
 }
 
-QNode *QDepthTest::doClone(QNode *clonedParent) const
+QNode *QDepthTest::doClone(bool isClone) const
 {
-    return new QDepthTest(clonedParent);
+    QDepthTest *clone = new QDepthTest();
+    clone->copy(this);
+    clone->d_func()->m_isClone = isClone;
+    return clone;
 }
 
 } // Qt3D

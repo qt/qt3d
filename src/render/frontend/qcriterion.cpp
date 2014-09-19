@@ -76,9 +76,12 @@ void QCriterion::copy(const QNode *ref)
     }
 }
 
-QCriterion *QCriterion::doClone(QNode *clonedParent) const
+QCriterion *QCriterion::doClone(bool isClone) const
 {
-    return new QCriterion(clonedParent);
+    QCriterion *clone = new QCriterion();
+    clone->copy(this);
+    clone->d_func()->m_isClone = isClone;
+    return clone;
 }
 
 void QCriterion::setValue(const QVariant &value)

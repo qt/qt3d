@@ -96,9 +96,12 @@ void QBlendEquation::setMode(QBlendEquation::BlendMode mode)
     }
 }
 
-QNode *QBlendEquation::doClone(QNode *clonedParent) const
+QNode *QBlendEquation::doClone(bool isClone) const
 {
-    return new QBlendEquation(clonedParent);
+    QBlendEquation *clone = new QBlendEquation();
+    clone->copy(this);
+    clone->d_func()->m_isClone = isClone;
+    return clone;
 }
 
 } // Qt3D

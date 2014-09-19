@@ -146,7 +146,7 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QEntity)
     QEntity(QEntityPrivate &dd, QNode *parent = 0);
-    QEntity *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
+    QEntity *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3D

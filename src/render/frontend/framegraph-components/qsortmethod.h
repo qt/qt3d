@@ -65,7 +65,7 @@ public:
 protected:
     Q_DECLARE_PRIVATE(QSortMethod)
     QSortMethod(QSortMethodPrivate &dd, QNode *parent = 0);
-    QSortMethod *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
+    QSortMethod *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

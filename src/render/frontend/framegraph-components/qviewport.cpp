@@ -73,13 +73,16 @@ QViewport::QViewport(QViewportPrivate &dd, QNode *parent)
 {
 }
 
-QViewport *QViewport::doClone(QNode *clonedParent) const
+QViewport *QViewport::doClone(bool isClone) const
 {
     Q_D(const QViewport);
-    QViewport *clone = new QViewport(clonedParent);
+    QViewport *clone = new QViewport();
+
+    clone->copy(this);
+    clone->d_func()->m_isClone = isClone;
 
     Q_FOREACH (QFrameGraphItem *fgChild, d->m_fgChildren)
-        clone->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(fgChild->clone(clone)));
+        clone->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(fgChild->clone(isClone)));
 
     return clone;
 }

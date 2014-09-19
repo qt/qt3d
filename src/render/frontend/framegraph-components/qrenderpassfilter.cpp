@@ -58,15 +58,18 @@ QRenderPassFilter::QRenderPassFilter(QRenderPassFilterPrivate &dd, QNode *parent
 {
 }
 
-QRenderPassFilter *QRenderPassFilter::doClone(QNode *clonedParent) const
+QRenderPassFilter *QRenderPassFilter::doClone(bool isClone) const
 {
     Q_D(const QRenderPassFilter);
-    QRenderPassFilter *clone = new QRenderPassFilter(clonedParent);
+    QRenderPassFilter *clone = new QRenderPassFilter();
+
+    clone->copy(this);
+    clone->d_func()->m_isClone = isClone;
 
     Q_FOREACH (QFrameGraphItem *fgChild, d->m_fgChildren)
-        clone->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(fgChild->clone(clone)));
+        clone->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(fgChild->clone(isClone)));
     Q_FOREACH (QCriterion *c, d->m_criteriaList)
-        clone->addCriterion(qobject_cast<QCriterion *>(c->clone(clone)));
+        clone->addCriterion(qobject_cast<QCriterion *>(c->clone(isClone)));
 
     return clone;
 }

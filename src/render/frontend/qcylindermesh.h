@@ -84,7 +84,7 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QCylinderMesh)
-    QCylinderMesh *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
+    QCylinderMesh *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D
