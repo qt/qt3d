@@ -733,8 +733,8 @@ void GLTFParser::processJSONProgram( QString id, QJsonObject jsonObj)
         return;
     }
 
-    prog->setFragmentSourceFile(m_shaderPaths[fragName]);
-    prog->setVertexSourceFile(m_shaderPaths[vertName]);
+    prog->setFragmentShaderSourceFile(m_shaderPaths[fragName]);
+    prog->setVertexShaderSourceFile(m_shaderPaths[vertName]);
     m_programs[id] = prog;
 }
 

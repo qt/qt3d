@@ -84,7 +84,6 @@ public:
     bool isLoaded() const;
 
 private:
-
     QOpenGLShaderProgram *m_program;
     Renderer *m_renderer;
 
@@ -95,10 +94,8 @@ private:
     QHash<QString, int> m_attributes;
     QHash<QString, int> m_fragOutputs;
 
-    QByteArray m_vertexSourceCode;
-    QByteArray m_fragmentSourceCode;
-    QString m_vertexSourceFile;
-    QString m_fragmentSourceFile;
+    QVector<QByteArray> m_shaderCode;
+    QVector<QString> m_shaderSourceFiles;
 
     QUuid m_shaderUuid;
 

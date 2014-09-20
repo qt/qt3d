@@ -99,8 +99,8 @@ Effect {
                     ]
 
                     shaderProgram: ShaderProgram {
-                        vertexSourceFile:   ":/shaders/phong.vert"
-                        fragmentSourceFile: ":/shaders/phong.frag"
+                        vertexShaderSourceFile:   ":/shaders/phong.vert"
+                        fragmentShaderSourceFile: ":/shaders/phong.frag"
                     }
                 }
             ]

@@ -52,7 +52,7 @@ Effect {
                 criteria : Criterion { name : "pass"; value : "geometry" }
                 shaderProgram : ShaderProgram {
                     id : sceneShaderGL3
-                    vertexShader:
+                    vertexShaderCode:
                         "
                         #version 140
 
@@ -76,7 +76,7 @@ Effect {
                             gl_Position = mvp * vertexPosition;
                         }
                     "
-                    fragmentShader:
+                    fragmentShaderCode:
                         "
                         #version 140
 
@@ -105,7 +105,7 @@ Effect {
                 criteria : Criterion { name : "pass"; value : "geometry" }
                 shaderProgram : ShaderProgram {
                     id : sceneShaderGL2
-                    vertexShader:
+                    vertexShaderCode:
                         "
                         #version 110
 
@@ -129,7 +129,7 @@ Effect {
                             gl_Position = mvp * vertexPosition;
                         }
                     "
-                    fragmentShader:
+                    fragmentShaderCode:
                         "
                         #version 110
 

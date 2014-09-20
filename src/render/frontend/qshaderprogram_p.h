@@ -57,9 +57,17 @@ public:
 
     Q_DECLARE_PUBLIC(QShaderProgram)
     QString m_vertexSourceFile;
+    QString m_tessControlSourceFile;
+    QString m_tessEvalSourceFile;
+    QString m_geometrySourceFile;
     QString m_fragmentSourceFile;
-    QByteArray m_cachedVertexCode;
-    QByteArray m_cachedFragmentCode;
+    QString m_computeSourceFile;
+    QByteArray m_vertexShaderCode;
+    QByteArray m_tessControlShaderCode;
+    QByteArray m_tessEvalShaderCode;
+    QByteArray m_geometryShaderCode;
+    QByteArray m_fragmentShaderCode;
+    QByteArray m_computeShaderCode;
 };
 
 } // Qt3D

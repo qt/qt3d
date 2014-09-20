@@ -51,7 +51,7 @@ Effect {
                 criteria : Criterion { name : "pass"; value : "final" }
                 shaderProgram : ShaderProgram {
                     id : finalShaderGL3
-                    vertexShader:
+                    vertexShaderCode:
                         "
                                     #version 140
 
@@ -63,7 +63,7 @@ Effect {
                                         gl_Position = modelMatrix * vertexPosition;
                                     }
                                 "
-                    fragmentShader:
+                    fragmentShaderCode:
                         "
                                     #version 140
 
@@ -111,7 +111,7 @@ Effect {
                 criteria : Criterion { name : "pass"; value : "final" }
                 shaderProgram : ShaderProgram {
                     id : finalShaderGL2
-                    vertexShader:
+                    vertexShaderCode:
                         "
                                     #version 110
 
@@ -123,7 +123,7 @@ Effect {
                                         gl_Position = modelMatrix * vertexPosition;
                                     }
                                 "
-                    fragmentShader:
+                    fragmentShaderCode:
                         "
                                     #version 110
 

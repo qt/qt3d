@@ -181,8 +181,8 @@ void Renderer::buildDefaultTechnique()
     m_defaultTechnique->setObjectName(QStringLiteral("default-technique"));
 
     QShaderProgram* defaultShader = new QShaderProgram;
-    defaultShader->setVertexSourceFile(QStringLiteral(":/shaders/diffuse.vert"));
-    defaultShader->setFragmentSourceFile(QStringLiteral(":/shaders/diffuse.frag"));
+    defaultShader->setVertexShaderSourceFile(QStringLiteral(":/shaders/diffuse.vert"));
+    defaultShader->setFragmentShaderSourceFile(QStringLiteral(":/shaders/diffuse.frag"));
     defaultShader->setObjectName(QStringLiteral("DefaultShader"));
 
     QRenderPass* basicPass = new QRenderPass;

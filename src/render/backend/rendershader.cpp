@@ -59,11 +59,13 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
-RenderShader::RenderShader() :
-    m_program(Q_NULLPTR),
-    m_renderer(Q_NULLPTR),
-    m_isLoaded(false)
+RenderShader::RenderShader()
+    : m_program(Q_NULLPTR)
+    , m_renderer(Q_NULLPTR)
+    , m_isLoaded(false)
 {
+    m_shaderCode.resize(static_cast<int>(QShaderProgram::Compute) + 1);
+    m_shaderSourceFiles.resize(static_cast<int>(QShaderProgram::Compute) + 1);
 }
 
 RenderShader::~RenderShader()
@@ -88,16 +90,21 @@ void RenderShader::setPeer(QShaderProgram *peer)
         if (!m_shaderUuid.isNull()) {
             arbiter->unregisterObserver(this, m_shaderUuid);
             m_shaderUuid = QUuid();
-            m_vertexSourceCode.clear();
-            m_fragmentSourceCode.clear();
+
+            for (int i = QShaderProgram::Vertex; i <= QShaderProgram::Compute; ++i) {
+                m_shaderCode[i].clear();
+                m_shaderSourceFiles[i].clear();
+            }
         }
+
         m_isLoaded = false;
         m_shaderUuid = peerUuid;
         arbiter->registerObserver(this, m_shaderUuid, NodeUpdated);
-        m_vertexSourceCode = peer->vertexSourceCode();
-        m_vertexSourceFile = peer->vertexSourceFile();
-        m_fragmentSourceCode = peer->fragmentSourceCode();
-        m_fragmentSourceFile = peer->fragmentSourceFile();
+        for (int i = QShaderProgram::Vertex; i <= QShaderProgram::Compute; ++i) {
+            QShaderProgram::ShaderType type = static_cast<const QShaderProgram::ShaderType>(i);
+            m_shaderCode[i] = peer->shaderCode(type);
+            m_shaderSourceFiles[i] = peer->shaderSourceFile(type);
+        }
     }
 }
 
@@ -123,24 +130,45 @@ QUuid RenderShader::shaderUuid() const
 
 void RenderShader::sceneChangeEvent(const QSceneChangePtr &e)
 {
-    QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
-    QVariant propertyValue = propertyChange->value();
-
     if (e->type() == NodeUpdated) {
+        QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
+        QVariant propertyValue = propertyChange->value();
+
         if (propertyChange->propertyName() == QByteArrayLiteral("vertexSourceCode")) {
-            m_vertexSourceCode = propertyValue.toByteArray();
+            m_shaderCode[QShaderProgram::Vertex] = propertyValue.toByteArray();
             m_isLoaded = false;
-        }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("fragmentSourceCode")) {
-            m_fragmentSourceCode = propertyValue.toByteArray();
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("fragmentSourceCode")) {
+            m_shaderCode[QShaderProgram::Fragment] = propertyValue.toByteArray();
             m_isLoaded = false;
-        }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("vertexSourceFile")) {
-            m_vertexSourceFile = propertyValue.toString();
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("tessellationControlSourceCode")) {
+            m_shaderCode[QShaderProgram::TessellationControl] = propertyValue.toByteArray();
             m_isLoaded = false;
-        }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("fragmentSourceFile")) {
-            m_fragmentSourceFile = propertyValue.toString();
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("tessellationEvaluationSourceCode")) {
+            m_shaderCode[QShaderProgram::TessellationEvaluation] = propertyValue.toByteArray();
+            m_isLoaded = false;
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("geometrySourceCode")) {
+            m_shaderCode[QShaderProgram::Geometry] = propertyValue.toByteArray();
+            m_isLoaded = false;
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("computeSourceCode")) {
+            m_shaderCode[QShaderProgram::Compute] = propertyValue.toByteArray();
+            m_isLoaded = false;
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("vertexSourceFile")) {
+            m_shaderSourceFiles[QShaderProgram::Vertex] = propertyValue.toString();
+            m_isLoaded = false;
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("fragmentSourceFile")) {
+            m_shaderSourceFiles[QShaderProgram::Fragment] = propertyValue.toString();
+            m_isLoaded = false;
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("tessellationControlSourceFile")) {
+            m_shaderSourceFiles[QShaderProgram::TessellationControl] = propertyValue.toString();
+            m_isLoaded = false;
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("tessellationEvaluationSourceFile")) {
+            m_shaderSourceFiles[QShaderProgram::TessellationEvaluation] = propertyValue.toString();
+            m_isLoaded = false;
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("geometrySourceFile")) {
+            m_shaderSourceFiles[QShaderProgram::Geometry] = propertyValue.toString();
+            m_isLoaded = false;
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("computeSourceFile")) {
+            m_shaderSourceFiles[QShaderProgram::Compute] = propertyValue.toString();
             m_isLoaded = false;
         }
     }
@@ -181,55 +209,52 @@ void RenderShader::setFragOutputs(const QHash<QString, int> &fragOutputs)
     m_fragOutputs = fragOutputs;
 }
 
+static QOpenGLShader::ShaderType shaderType(QShaderProgram::ShaderType type)
+{
+    switch (type) {
+    case QShaderProgram::Vertex: return QOpenGLShader::Vertex;
+    case QShaderProgram::TessellationControl: return QOpenGLShader::TessellationControl;
+    case QShaderProgram::TessellationEvaluation: return QOpenGLShader::TessellationEvaluation;
+    case QShaderProgram::Geometry: return QOpenGLShader::Geometry;
+    case QShaderProgram::Fragment: return QOpenGLShader::Fragment;
+    case QShaderProgram::Compute: return QOpenGLShader::Compute;
+    default: Q_UNREACHABLE();
+    }
+}
+
 QOpenGLShaderProgram* RenderShader::createProgram(QGraphicsContext *context)
 {
     Q_ASSERT(QOpenGLContext::currentContext());
-    // scoped pointer so early-returns delete automatically
+    // Scoped pointer so early-returns delete automatically
     QScopedPointer<QOpenGLShaderProgram> p(new QOpenGLShaderProgram);
 
-    if (!m_fragmentSourceFile.isEmpty()) {
-        QFile f(m_fragmentSourceFile);
-        if (!f.exists()) {
-            qWarning() << "couldn't find shader source file:" << m_fragmentSourceFile;
-        } else {
-            f.open(QIODevice::ReadOnly);
-            m_fragmentSourceCode = f.readAll();
-            f.close();
+    for (int i = QShaderProgram::Vertex; i <= QShaderProgram::Compute; ++i) {
+        QShaderProgram::ShaderType type = static_cast<const QShaderProgram::ShaderType>(i);
+        const QString sourceFile = m_shaderSourceFiles[type];
+        if (!sourceFile.isEmpty()) {
+            QFile f(sourceFile);
+            if (!f.exists()) {
+                qWarning() << "Couldn't read shader source file:" << sourceFile;
+            } else {
+                f.open(QIODevice::ReadOnly | QIODevice::Text);
+                m_shaderCode[type] = f.readAll();
+            }
+        }
+
+        // Compile shaders
+        if (!m_shaderCode[type].isEmpty()) {
+            if (!p->addShaderFromSourceCode(shaderType(type), m_shaderCode[type]))
+                qWarning() << "Failed to compile shader:" << p->log();
         }
     }
-    if (!m_vertexSourceFile.isEmpty()) {
-        QFile vs(m_vertexSourceFile);
-        if (!vs.exists()) {
-            qWarning() << "couldn't find shader source file:" << m_vertexSourceFile;
-        } else {
-            vs.open(QIODevice::ReadOnly);
-            m_vertexSourceCode = vs.readAll();
-            vs.close();
-        }
-    }
 
-    bool ok = p->addShaderFromSourceCode(QOpenGLShader::Vertex,
-                                         m_vertexSourceCode);
-    if (!ok) {
-        qWarning() << "bad vertex source:" << p->log();
-        return Q_NULLPTR;
-    }
-
-    ok = p->addShaderFromSourceCode(QOpenGLShader::Fragment,
-                                    m_fragmentSourceCode);
-    if (!ok) {
-        qWarning() << "bad fragment source:" << p->log();
-        return Q_NULLPTR;
-    }
-
-    // glBindFragDataLocation at that point
+    // Call glBindFragDataLocation and link the program
     context->bindFragOutputs(p->programId(), m_fragOutputs);
-
-    ok = p->link();
-    if (!ok) {
-        qWarning() << "program failed to link:" << p->log();
+    if (!p->link()) {
+        qWarning() << "Failed to link shader program:" << p->log();
         return Q_NULLPTR;
     }
+
     // take from scoped-pointer so it doesn't get deleted
     return p.take();
 }

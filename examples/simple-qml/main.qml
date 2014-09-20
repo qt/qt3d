@@ -272,7 +272,7 @@ Entity {
 
                                 shaderProgram : ShaderProgram {
                                     id : textureShaderLighting
-                                    vertexShader: "
+                                    vertexShaderCode: "
                                     #version 140
                                     in vec4 vertexPosition;
                                     in vec3 vertexNormal;
@@ -294,7 +294,7 @@ Entity {
                                         gl_Position  = customMvp * vertexPosition;
                                     }"
 
-                                    fragmentShader: "
+                                    fragmentShaderCode: "
                                     #version 140
                                     in vec2 texCoord;
                                     in vec3 worldPosition;
@@ -328,7 +328,7 @@ Entity {
                             RenderPass {
                                 criteria : [Criterion {name : "Name"; value : "Texture" }]
                                 shaderProgram : ShaderProgram {
-                                    vertexShader : "
+                                    vertexShaderCode : "
                                     #version 140
                                     in vec4 vertexPosition;
                                     in vec2 vertexTexCoord;
@@ -342,7 +342,7 @@ Entity {
                                         gl_Position = mvp * vertexPosition;
                                     }"
 
-                                    fragmentShader: "
+                                    fragmentShaderCode: "
                                     #version 140
                                     in vec2 texCoord;
                                     out vec4 fragColor;
@@ -363,7 +363,7 @@ Entity {
                                               DepthTest { func : DepthTest.LessOrEqual}
                                 ]
                                 shaderProgram : ShaderProgram {
-                                    vertexShader: "
+                                    vertexShaderCode: "
                                     #version 140
                                     in vec4 vertexPosition;
                                     in vec3 vertexNormal;
@@ -383,7 +383,7 @@ Entity {
                                     }
                                     "
 
-                                    fragmentShader: "
+                                    fragmentShaderCode: "
                                     #version 140
                                     in vec3 worldPosition;
                                     in vec3 normal;
@@ -415,7 +415,7 @@ Entity {
                             RenderPass {
                                 criteria : Criterion {name : "Name"; value : "Final" }
                                 shaderProgram : ShaderProgram {
-                                    vertexShader: "
+                                    vertexShaderCode: "
                                     #version 140
                                     in vec4 vertexPosition;
                                     in vec2 vertexTexCoord;
@@ -429,7 +429,7 @@ Entity {
                                     }
                                     "
 
-                                    fragmentShader: "
+                                    fragmentShaderCode: "
                                     #version 140
                                     in vec2 texCoord;
                                     out vec4 fragColor;
@@ -502,8 +502,8 @@ Entity {
                                 ]
                                 shaderProgram : ShaderProgram {
                                     id : diffuseShader
-                                    vertexSourceFile: ":/shaders/diffuse.vert"
-                                    fragmentSourceFile: ":/shaders/diffuse.frag"
+                                    vertexShaderSourceFile: ":/shaders/diffuse.vert"
+                                    fragmentShaderSourceFile: ":/shaders/diffuse.frag"
                                 }
                             }
                         ]

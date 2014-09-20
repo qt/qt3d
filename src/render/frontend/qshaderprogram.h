@@ -55,41 +55,93 @@ class QShaderProgramPrivate;
 class QT3DRENDERERSHARED_EXPORT QShaderProgram : public QAbstractShader
 {
     Q_OBJECT
-    Q_PROPERTY(QString vertexSourceFile READ vertexSourceFile WRITE setVertexSourceFile NOTIFY vertexSourceFileChanged)
-    Q_PROPERTY(QString fragmentSourceFile READ fragmentSourceFile WRITE setFragmentSourceFile NOTIFY fragmentSourceFileChanged)
-    Q_PROPERTY(QByteArray vertexShader READ vertexSourceCode WRITE setVertexShader NOTIFY vertexShaderChanged)
-    Q_PROPERTY(QByteArray fragmentShader READ fragmentSourceCode WRITE setFragmentShader NOTIFY fragmentShaderChanged)
+
+    Q_PROPERTY(QString vertexShaderSourceFile READ vertexShaderSourceFile WRITE setVertexShaderSourceFile NOTIFY vertexShaderSourceFileChanged)
+    Q_PROPERTY(QString tessellationControlShaderSourceFile READ tessellationControlShaderSourceFile WRITE setTessellationControlShaderSourceFile NOTIFY tessellationControlShaderSourceFileChanged)
+    Q_PROPERTY(QString tessellationEvaluationShaderSourceFile READ tessellationEvaluationShaderSourceFile WRITE setTessellationEvaluationShaderSourceFile NOTIFY tessellationEvaluationShaderSourceFileChanged)
+    Q_PROPERTY(QString geometryShaderSourceFile READ geometryShaderSourceFile WRITE setGeometryShaderSourceFile NOTIFY geometryShaderSourceFileChanged)
+    Q_PROPERTY(QString fragmentShaderSourceFile READ fragmentShaderSourceFile WRITE setFragmentShaderSourceFile NOTIFY fragmentShaderSourceFileChanged)
+    Q_PROPERTY(QString computeShaderSourceFile READ computeShaderSourceFile WRITE setComputeShaderSourceFile NOTIFY computeShaderSourceFileChanged)
+    Q_PROPERTY(QByteArray vertexShaderCode READ vertexShaderCode WRITE setVertexShaderCode NOTIFY vertexShaderCodeChanged)
+    Q_PROPERTY(QByteArray tessellationControlShaderCode READ tessellationControlShaderCode WRITE setTessellationControlShaderCode NOTIFY tessellationControlShaderCodeChanged)
+    Q_PROPERTY(QByteArray tessellationEvaluationShaderCode READ tessellationEvaluationShaderCode WRITE setTessellationEvaluationShaderCode NOTIFY tessellationEvaluationShaderCodeChanged)
+    Q_PROPERTY(QByteArray geometryShaderCode READ geometryShaderCode WRITE setGeometryShaderCode NOTIFY geometryShaderCodeChanged)
+    Q_PROPERTY(QByteArray fragmentShaderCode READ fragmentShaderCode WRITE setFragmentShaderCode NOTIFY fragmentShaderCodeChanged)
+    Q_PROPERTY(QByteArray computeShaderCode READ computeShaderCode WRITE setComputeShaderCode NOTIFY computeShaderCodeChanged)
+    Q_ENUMS(ShaderType)
 
 public:
     explicit QShaderProgram(QNode *parent = 0);
 
+    enum ShaderType {
+        Vertex = 0,
+        Fragment,
+        TessellationControl,
+        TessellationEvaluation,
+        Geometry,
+        Compute
+    };
+
     void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
-    void setVertexSourceFile(const QString &vertexSourceFile);
-    QString vertexSourceFile() const;
+    // Source from file
+    void setVertexShaderSourceFile(const QString &vertexShaderSourceFile);
+    QString vertexShaderSourceFile() const;
 
-    void setFragmentSourceFile(const QString &fragmentSource);
-    QString fragmentSourceFile() const;
+    void setTessellationControlShaderSourceFile(const QString &tessellationControlShaderSourceFile);
+    QString tessellationControlShaderSourceFile() const;
 
-    void setVertexShader(const QByteArray &vertexShader);
-    void setFragmentShader(const QByteArray &fragmentShader);
+    void setTessellationEvaluationShaderSourceFile(const QString &tessellationEvaluationShaderSourceFile);
+    QString tessellationEvaluationShaderSourceFile() const;
 
-    QByteArray vertexSourceCode() const;
-    QByteArray fragmentSourceCode() const;
+    void setGeometryShaderSourceFile(const QString &geometryShaderSourceFile);
+    QString geometryShaderSourceFile() const;
 
-    bool isLoaded() const;
+    void setFragmentShaderSourceFile(const QString &fragmentShaderSourceFile);
+    QString fragmentShaderSourceFile() const;
 
-    /**
-     * @brief load - call from main / worker thread to do synchronous
-     * loading of shader source files
-     */
-    void load();
+    void setComputeShaderSourceFile(const QString &computeShaderSourceFile);
+    QString computeShaderSourceFile() const;
+
+    void setShaderSourceFile(ShaderType type, const QString &sourceFile);
+    QString shaderSourceFile(ShaderType type) const;
+
+    // Source code in-line
+    void setVertexShaderCode(const QByteArray &vertexShaderCode);
+    QByteArray vertexShaderCode() const;
+
+    void setTessellationControlShaderCode(const QByteArray &tessellationControlShaderCode);
+    QByteArray tessellationControlShaderCode() const;
+
+    void setTessellationEvaluationShaderCode(const QByteArray &tessellationEvaluationShaderCode);
+    QByteArray tessellationEvaluationShaderCode() const;
+
+    void setGeometryShaderCode(const QByteArray &geometryShaderCode);
+    QByteArray geometryShaderCode() const;
+
+    void setFragmentShaderCode(const QByteArray &fragmentShaderCode);
+    QByteArray fragmentShaderCode() const;
+
+    void setComputeShaderCode(const QByteArray &computeShaderCode);
+    QByteArray computeShaderCode() const;
+
+    void setShaderCode(ShaderType type, const QByteArray &shaderCode);
+    QByteArray shaderCode(ShaderType type) const;
 
 Q_SIGNALS:
-    void vertexSourceFileChanged();
-    void fragmentSourceFileChanged();
-    void vertexShaderChanged();
-    void fragmentShaderChanged();
+    void vertexShaderSourceFileChanged();
+    void tessellationControlShaderSourceFileChanged();
+    void tessellationEvaluationShaderSourceFileChanged();
+    void geometryShaderSourceFileChanged();
+    void fragmentShaderSourceFileChanged();
+    void computeShaderSourceFileChanged();
+
+    void vertexShaderCodeChanged();
+    void tessellationControlShaderCodeChanged();
+    void tessellationEvaluationShaderCodeChanged();
+    void geometryShaderCodeChanged();
+    void fragmentShaderCodeChanged();
+    void computeShaderCodeChanged();
 
 protected:
     Q_DECLARE_PRIVATE(QShaderProgram)
