@@ -266,6 +266,16 @@ QAspectEngine *QNode::aspectEngine() const
     return d->m_engine;
 }
 
+void QNode::notifyPropertyChange(const QByteArray &name, const QVariant &value)
+{
+    // TODO: Review change types. Is there any need to distinguish between NodeUpdated, ComponentUpdated?
+    // They're both just property changes
+    QScenePropertyChangePtr e(new QScenePropertyChange(NodeUpdated, this));
+    e->setPropertyName(name);
+    e->setValue(value);
+    notifyObservers(e);
+}
+
 // Called by the main thread
 void QNode::notifyObservers(const QSceneChangePtr &change)
 {

@@ -96,6 +96,7 @@ public:
     QAspectEngine *aspectEngine() const;
 
 protected:
+    void notifyPropertyChange(const QByteArray &name, const QVariant &value);
     virtual void notifyObservers(const QSceneChangePtr &change);
     virtual QNode *doClone(QNode *clonedParent = 0) const = 0;
 
