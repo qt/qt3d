@@ -43,6 +43,10 @@ src_deferredrenderer.subdir = $$PWD/deferred-renderer
 src_deferredrenderer.target = sub-deferredrenderer
 src_deferredrenderer.depends = src_exampleresources
 
+src_wireframe.subdir = $$PWD/wireframe
+src_wireframe.target = sub-wireframe
+src_wireframe.depends = src_exampleresources
+
 SUBDIRS += \
     src_exampleresources \
     src_simpleqml \
@@ -53,7 +57,8 @@ SUBDIRS += \
     src_torusqml \
     src_toruscpp \
     src_bigmodelqml \
-    src_deferredrenderer
+    src_deferredrenderer \
+    src_wireframe
 
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d

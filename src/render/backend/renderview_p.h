@@ -173,6 +173,8 @@ private:
     QUniformValue *inverseModelViewProjectionMatrix(const QMatrix4x4 &model) const;
     QUniformValue *modelNormalMatrix(const QMatrix4x4 &model) const;
     QUniformValue *modelViewNormalMatrix(const QMatrix4x4 &model) const;
+    QUniformValue *viewportMatrix(const QMatrix4x4 &model) const;
+    QUniformValue *inverseViewportMatrix(const QMatrix4x4 &model) const;
 
     void setUniformValue(QUniformPack &uniformPack, const QString &name, const QVariant &value);
 };

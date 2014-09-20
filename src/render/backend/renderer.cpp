@@ -372,6 +372,11 @@ void Renderer::setSurface(QSurface* s)
     m_waitForWindowToBeSetCondition.wakeOne();
 }
 
+QSurface *Renderer::surface() const
+{
+    return m_surface;
+}
+
 void Renderer::render()
 {
     // Traversing the framegraph tree from root to lead node

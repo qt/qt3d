@@ -100,6 +100,8 @@
 #include <Qt3DCore/qabstracttechnique.h>
 #include <Qt3DCore/qframeallocator.h>
 
+#include <QtGui/qsurface.h>
+
 #include <algorithm>
 
 #include <QDebug>
@@ -129,6 +131,8 @@ RenderView::standardUniformsPFuncsHash RenderView::initializeStandardUniformSett
     setters[QStringLiteral("inverseModelViewProjection")] = &RenderView::inverseModelViewProjectionMatrix;
     setters[QStringLiteral("modelNormalMatrix")] = &RenderView::modelNormalMatrix;
     setters[QStringLiteral("modelViewNormal")] = &RenderView::modelViewNormalMatrix;
+    setters[QStringLiteral("viewportMatrix")] = &RenderView::viewportMatrix;
+    setters[QStringLiteral("inverseViewportMatrix")] = &RenderView::inverseViewportMatrix;
 
     return setters;
 }
@@ -236,6 +240,39 @@ QUniformValue *RenderView::modelViewNormalMatrix(const QMatrix4x4 &model) const
 {
     SpecifiedUniform<QMatrix3x3> *t = m_allocator->allocate<SpecifiedUniform<QMatrix3x3> >();
     t->setValue((*m_viewMatrix * model).normalMatrix());
+    return t;
+}
+
+// TODO: Move this somewhere global where QGraphicsContext::setViewport() can use it too
+static QRectF resolveViewport(const QRectF &fractionalViewport, const QSize &surfaceSize)
+{
+    return QRectF(fractionalViewport.x() * surfaceSize.width(),
+                  (1.0 - fractionalViewport.y() - fractionalViewport.height()) * surfaceSize.height(),
+                  fractionalViewport.width() * surfaceSize.width(),
+                  fractionalViewport.height() * surfaceSize.height());
+}
+
+QUniformValue *RenderView::viewportMatrix(const QMatrix4x4 &model) const
+{
+    // TODO: Can we avoid having to pass the model matrix in to these functions?
+    Q_UNUSED(model);
+    SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
+    QMatrix4x4 viewportMatrix;
+    QSize surfaceSize = m_renderer->surface()->size();
+    viewportMatrix.viewport(resolveViewport(*m_viewport, surfaceSize));
+    t->setValue(viewportMatrix);
+    return t;
+}
+
+QUniformValue *RenderView::inverseViewportMatrix(const QMatrix4x4 &model) const
+{
+    Q_UNUSED(model);
+    SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
+    QMatrix4x4 viewportMatrix;
+    QSize surfaceSize = m_renderer->surface()->size();
+    viewportMatrix.viewport(resolveViewport(*m_viewport, surfaceSize));
+    QMatrix4x4 inverseViewportMatrix = viewportMatrix.inverted();
+    t->setValue(inverseViewportMatrix);
     return t;
 }
 
