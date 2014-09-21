@@ -39,55 +39,21 @@
 **
 ****************************************************************************/
 
-#include "qmeshdata.h"
-#include "qmeshdata_p.h"
+#ifndef TESSELLATEDQUAD_H
+#define TESSELLATEDQUAD_H
 
-#include <QSet>
-#include "renderlogging.h"
-#include <QOpenGLVertexArrayObject>
+#include <Qt3DRenderer/qabstractshapemesh.h>
 
-QT_BEGIN_NAMESPACE
-
-namespace Qt3D {
-
-QMeshDataPrivate::QMeshDataPrivate(QMeshData *qq)
-    : QAbstractMeshDataPrivate(qq)
-    , m_primitiveType(0)
+class TessellatedQuadMesh : public Qt3D::QAbstractShapeMesh
 {
-}
+    Q_OBJECT
+public:
+    explicit TessellatedQuadMesh(Qt3D::QNode *parent = 0);
 
-QMeshData::QMeshData()
-    : QAbstractMeshData(*new QMeshDataPrivate(this))
-{
-}
+    Qt3D::QAbstractMeshFunctorPtr meshFunctor() const Q_DECL_OVERRIDE;
 
-QMeshData::QMeshData(QMeshDataPrivate &dd)
-    : QAbstractMeshData(dd)
-{
-}
+protected:
+    TessellatedQuadMesh *doClone(QNode *clonedParent) const Q_DECL_OVERRIDE;
+};
 
-QMeshData::QMeshData(int primitiveType)
-    : QAbstractMeshData(*new QMeshDataPrivate(this))
-{
-    setPrimitiveType(primitiveType);
-}
-
-void QMeshData::setPrimitiveType(int primitiveType)
-{
-    Q_D(QMeshData);
-    Q_ASSERT((primitiveType == GL_TRIANGLES) ||
-             (primitiveType == GL_LINES) ||
-             (primitiveType == GL_POINTS) ||
-             (primitiveType == GL_PATCHES));
-    d->m_primitiveType = primitiveType;
-}
-
-int QMeshData::primitiveType() const
-{
-    Q_D(const QMeshData);
-    return d->m_primitiveType;
-}
-
-} // of namespace
-
-QT_END_NAMESPACE
+#endif // TESSELLATEDQUAD_H

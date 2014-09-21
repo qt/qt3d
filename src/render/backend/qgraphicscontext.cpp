@@ -480,6 +480,11 @@ void QGraphicsContext::drawArrays(GLenum primitiveType,
                            count);
 }
 
+void QGraphicsContext::setVerticesPerPatch(GLint verticesPerPatch)
+{
+    m_glHelper->setVerticesPerPatch(verticesPerPatch);
+}
+
 void QGraphicsContext::blendEquation(GLenum mode)
 {
     m_glHelper->blendEquation(mode);

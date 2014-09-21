@@ -116,6 +116,12 @@ void QGraphicsHelperES2::drawArrays(GLenum primitiveType,
                           count);
 }
 
+void QGraphicsHelperES2::setVerticesPerPatch(GLint verticesPerPatch)
+{
+    Q_UNUSED(verticesPerPatch);
+    qWarning() << "Tessellation not supported with OpenGL ES 2";
+}
+
 void QGraphicsHelperES2::useProgram(GLuint programId)
 {
     m_funcs->glUseProgram(programId);
@@ -253,6 +259,8 @@ bool QGraphicsHelperES2::supportsFeature(QGraphicsHelperInterface::Feature featu
 {
     switch (feature) {
     case MRT:
+        return false;
+    case Tessellation:
         return false;
     default:
         return false;

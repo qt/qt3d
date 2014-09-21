@@ -611,13 +611,17 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
             GLint primCount = meshData->primitiveCount();
             GLint indexType = drawIndexed ? meshData->indexAttribute()->type() : 0;
 
-            if (drawIndexed)
+            if (primType == GL_PATCHES && meshData->verticesPerPatch() != 0)
+                m_graphicsContext->setVerticesPerPatch(meshData->verticesPerPatch());
+
+            if (drawIndexed) {
                 m_graphicsContext->drawElements(primType,
                                                 primCount,
                                                 indexType,
                                                 reinterpret_cast<void*>(meshData->indexAttribute()->byteOffset()));
-            else
+            } else {
                 m_graphicsContext->drawArrays(primType, 0, primCount);
+            }
 
             int err = glGetError();
             if (err)

@@ -79,6 +79,9 @@ public:
     virtual void setPrimitiveType(int primitiveType) = 0;
     virtual int primitiveType() const = 0;
 
+    void setVerticesPerPatch(int verticesPerPatch);
+    int verticesPerPatch() const;
+
     int primitiveCount() const;
 
     QList<QAbstractBufferPtr> buffers() const;

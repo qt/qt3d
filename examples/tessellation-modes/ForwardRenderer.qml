@@ -39,55 +39,32 @@
 **
 ****************************************************************************/
 
-#include "qmeshdata.h"
-#include "qmeshdata_p.h"
+import Qt3D 2.0
+import Qt3D.Render 2.0
 
-#include <QSet>
-#include "renderlogging.h"
-#include <QOpenGLVertexArrayObject>
+TechniqueFilter {
+    id: root
+    objectName : "techniqueFilter"
 
-QT_BEGIN_NAMESPACE
+    // Expose camera to allow user to choose which camera to use for rendering
+    property alias camera: cameraSelector.camera
 
-namespace Qt3D {
+    // Select the forward rendering Technique of any used Effect
+    criteria: [ Criterion { name: "renderingStyle"; value: "forward" } ]
 
-QMeshDataPrivate::QMeshDataPrivate(QMeshData *qq)
-    : QAbstractMeshDataPrivate(qq)
-    , m_primitiveType(0)
-{
+    // Use the whole viewport
+    Viewport {
+        id: viewport
+        objectName : "viewport"
+        rect: Qt.rect(0.0, 0.0, 1.0, 1.0)
+
+        // Use the specified camera
+        CameraSelector {
+            id : cameraSelector
+            objectName : "cameraSelector"
+            ClearBuffer {
+                buffers : ClearBuffer.ColorDepthBuffer
+            }
+        }
+    }
 }
-
-QMeshData::QMeshData()
-    : QAbstractMeshData(*new QMeshDataPrivate(this))
-{
-}
-
-QMeshData::QMeshData(QMeshDataPrivate &dd)
-    : QAbstractMeshData(dd)
-{
-}
-
-QMeshData::QMeshData(int primitiveType)
-    : QAbstractMeshData(*new QMeshDataPrivate(this))
-{
-    setPrimitiveType(primitiveType);
-}
-
-void QMeshData::setPrimitiveType(int primitiveType)
-{
-    Q_D(QMeshData);
-    Q_ASSERT((primitiveType == GL_TRIANGLES) ||
-             (primitiveType == GL_LINES) ||
-             (primitiveType == GL_POINTS) ||
-             (primitiveType == GL_PATCHES));
-    d->m_primitiveType = primitiveType;
-}
-
-int QMeshData::primitiveType() const
-{
-    Q_D(const QMeshData);
-    return d->m_primitiveType;
-}
-
-} // of namespace
-
-QT_END_NAMESPACE

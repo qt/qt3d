@@ -50,6 +50,7 @@ namespace Qt3D {
 
 QAbstractMeshDataPrivate::QAbstractMeshDataPrivate(QAbstractMeshData *qq)
     : q_ptr(qq)
+    , m_verticesPerPatch(0)
 {
 }
 
@@ -95,6 +96,18 @@ QAbstractAttributePtr QAbstractMeshData::indexAttribute() const
 {
     Q_D(const QAbstractMeshData);
     return d->m_indexAttr;
+}
+
+void QAbstractMeshData::setVerticesPerPatch(int verticesPerPatch)
+{
+    Q_D(QAbstractMeshData);
+    d->m_verticesPerPatch = verticesPerPatch;
+}
+
+int QAbstractMeshData::verticesPerPatch() const
+{
+    Q_D(const QAbstractMeshData);
+    return d->m_verticesPerPatch;
 }
 
 int QAbstractMeshData::primitiveCount() const

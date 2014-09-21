@@ -39,55 +39,44 @@
 **
 ****************************************************************************/
 
-#include "qmeshdata.h"
-#include "qmeshdata_p.h"
+import Qt3D 2.0
+import Qt3D.Render 2.0
 
-#include <QSet>
-#include "renderlogging.h"
-#include <QOpenGLVertexArrayObject>
+// For Qt.vector3d() and friends. For some reason this is provided by
+// QQuickValueTypeProvider in QtQuick rather than the default value
+// type provider in QtQml. So we will need to replicate this in Qt3D
+// for the types that we wish to support. Otherwise we'll have to import
+// QtQuick 2.1 all over the place.
+import QtQuick 2.1 as QQ2
 
-QT_BEGIN_NAMESPACE
+Material {
+    id: root
 
-namespace Qt3D {
+    property color ambient: Qt.rgba( 0.05, 0.05, 0.05, 1.0 )
+    property color diffuse: Qt.rgba( 0.7, 0.7, 0.7, 1.0 )
+    property color specular: Qt.rgba( 0.95, 0.95, 0.95, 1.0 )
+    property real shininess: 150.0
+    property real lineWidth: 1.0
+    property color lineColor: Qt.rgba( 1.0, 1.0, 1.0, 1.0 )
+    property real innerTessLevel0: 1.0
+    property real innerTessLevel1: 1.0
+    property real outerTessLevel0: 1.0
+    property real outerTessLevel1: 1.0
+    property real outerTessLevel2: 1.0
+    property real outerTessLevel3: 1.0
 
-QMeshDataPrivate::QMeshDataPrivate(QMeshData *qq)
-    : QAbstractMeshDataPrivate(qq)
-    , m_primitiveType(0)
-{
+    parameters: [
+        Parameter { name: "ambient"; value: Qt.vector3d(root.ambient.r, root.ambient.g, root.ambient.b) },
+        Parameter { name: "diffuse"; value: Qt.vector3d(root.diffuse.r, root.diffuse.g, root.diffuse.b) },
+        Parameter { name: "specular"; value: Qt.vector3d(root.specular.r, root.specular.g, root.specular.b) },
+        Parameter { name: "shininess"; value: root.shininess },
+        Parameter { name: "line.width"; value: root.lineWidth },
+        Parameter { name: "line.color"; value: root.lineColor },
+        Parameter { name: "innerTessLevel0"; value: root.innerTessLevel0 },
+        Parameter { name: "innerTessLevel1"; value: root.innerTessLevel1 },
+        Parameter { name: "outerTessLevel0"; value: root.outerTessLevel0 },
+        Parameter { name: "outerTessLevel1"; value: root.outerTessLevel1 },
+        Parameter { name: "outerTessLevel2"; value: root.outerTessLevel2 },
+        Parameter { name: "outerTessLevel3"; value: root.outerTessLevel3 }
+    ]
 }
-
-QMeshData::QMeshData()
-    : QAbstractMeshData(*new QMeshDataPrivate(this))
-{
-}
-
-QMeshData::QMeshData(QMeshDataPrivate &dd)
-    : QAbstractMeshData(dd)
-{
-}
-
-QMeshData::QMeshData(int primitiveType)
-    : QAbstractMeshData(*new QMeshDataPrivate(this))
-{
-    setPrimitiveType(primitiveType);
-}
-
-void QMeshData::setPrimitiveType(int primitiveType)
-{
-    Q_D(QMeshData);
-    Q_ASSERT((primitiveType == GL_TRIANGLES) ||
-             (primitiveType == GL_LINES) ||
-             (primitiveType == GL_POINTS) ||
-             (primitiveType == GL_PATCHES));
-    d->m_primitiveType = primitiveType;
-}
-
-int QMeshData::primitiveType() const
-{
-    Q_D(const QMeshData);
-    return d->m_primitiveType;
-}
-
-} // of namespace
-
-QT_END_NAMESPACE

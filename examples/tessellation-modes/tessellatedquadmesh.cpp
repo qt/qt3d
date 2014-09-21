@@ -39,55 +39,55 @@
 **
 ****************************************************************************/
 
-#include "qmeshdata.h"
-#include "qmeshdata_p.h"
+#include "tessellatedquadmesh.h"
 
-#include <QSet>
-#include "renderlogging.h"
-#include <QOpenGLVertexArrayObject>
+#include <Qt3DRenderer/qattribute.h>
+#include <Qt3DRenderer/qbuffer.h>
+#include <Qt3DRenderer/qmeshdata.h>
 
-QT_BEGIN_NAMESPACE
-
-namespace Qt3D {
-
-QMeshDataPrivate::QMeshDataPrivate(QMeshData *qq)
-    : QAbstractMeshDataPrivate(qq)
-    , m_primitiveType(0)
+TessellatedQuadMesh::TessellatedQuadMesh(Qt3D::QNode *parent)
+    : Qt3D::QAbstractShapeMesh(parent)
 {
 }
 
-QMeshData::QMeshData()
-    : QAbstractMeshData(*new QMeshDataPrivate(this))
+TessellatedQuadMesh *TessellatedQuadMesh::doClone(Qt3D::QNode *clonedParent) const
 {
+    return new TessellatedQuadMesh(clonedParent);
 }
 
-QMeshData::QMeshData(QMeshDataPrivate &dd)
-    : QAbstractMeshData(dd)
+class TessellatedQuadMeshFunctor : public Qt3D::QAbstractMeshFunctor
 {
-}
+public:
+    TessellatedQuadMeshFunctor() {}
 
-QMeshData::QMeshData(int primitiveType)
-    : QAbstractMeshData(*new QMeshDataPrivate(this))
+    Qt3D::QAbstractMeshDataPtr operator ()() Q_DECL_OVERRIDE
+    {
+        const float positionData[] = {
+            -0.8f, -0.8f, 0.0f,
+             0.8f, -0.8f, 0.0f,
+             0.8f,  0.8f, 0.0f,
+            -0.8f,  0.8f, 0.0f
+        };
+
+        const int nVerts = 4;
+        const int size = nVerts * 3 * sizeof(float);
+        QByteArray positionBytes;
+        positionBytes.resize(size);
+        memcpy(positionBytes.data(), positionData, size);
+
+        Qt3D::BufferPtr vertexBuffer(new Qt3D::Buffer(QOpenGLBuffer::VertexBuffer));
+        vertexBuffer->setUsage(QOpenGLBuffer::StaticDraw);
+        vertexBuffer->setData(positionBytes);
+
+        Qt3D::QMeshDataPtr mesh(new Qt3D::QMeshData(GL_PATCHES));
+        mesh->addAttribute(Qt3D::QAbstractMeshData::defaultPositionAttributeName(),
+                           Qt3D::AttributePtr(new Qt3D::Attribute(vertexBuffer, GL_FLOAT_VEC3, nVerts)));
+        mesh->setVerticesPerPatch(4);
+        return mesh;
+    }
+};
+
+Qt3D::QAbstractMeshFunctorPtr TessellatedQuadMesh::meshFunctor() const
 {
-    setPrimitiveType(primitiveType);
+    return Qt3D::QAbstractMeshFunctorPtr(new TessellatedQuadMeshFunctor);
 }
-
-void QMeshData::setPrimitiveType(int primitiveType)
-{
-    Q_D(QMeshData);
-    Q_ASSERT((primitiveType == GL_TRIANGLES) ||
-             (primitiveType == GL_LINES) ||
-             (primitiveType == GL_POINTS) ||
-             (primitiveType == GL_PATCHES));
-    d->m_primitiveType = primitiveType;
-}
-
-int QMeshData::primitiveType() const
-{
-    Q_D(const QMeshData);
-    return d->m_primitiveType;
-}
-
-} // of namespace
-
-QT_END_NAMESPACE

@@ -65,6 +65,7 @@ public:
     void drawArraysInstanced(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances) Q_DECL_OVERRIDE;
     void drawElements(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void *indices) Q_DECL_OVERRIDE;
     void drawArrays(GLenum primitiveType, GLint first, GLsizei count) Q_DECL_OVERRIDE;
+    void setVerticesPerPatch(GLint verticesPerPatch) Q_DECL_OVERRIDE;
     void useProgram(GLuint programId) Q_DECL_OVERRIDE;
     QVector<QPair<QString, int> > programUniformsAndLocations(GLuint programId) Q_DECL_OVERRIDE;
     QVector<QPair<QString, int> > programAttributesAndLocations(GLuint programId) Q_DECL_OVERRIDE;

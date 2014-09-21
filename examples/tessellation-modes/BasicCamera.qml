@@ -39,55 +39,38 @@
 **
 ****************************************************************************/
 
-#include "qmeshdata.h"
-#include "qmeshdata_p.h"
+import Qt3D 2.0
+import Qt3D.Render 2.0
 
-#include <QSet>
-#include "renderlogging.h"
-#include <QOpenGLVertexArrayObject>
+// For Qt.vector3d() and friends. For some reason this is provided by
+// QQuickValueTypeProvider in QtQuick rather than the default value
+// type provider in QtQml. So we will need to replicate this in Qt3D
+// for the types that we wish to support. Otherwise we'll have to import
+// QtQuick 2.1 all over the place.
+import QtQuick 2.1 as QQ2
 
-QT_BEGIN_NAMESPACE
+Camera {
+    id: mainCamera
+    objectName: "mainCamera"
 
-namespace Qt3D {
+    property alias position: lookAtTransform.position
+    property alias viewCenter: lookAtTransform.viewCenter
+    property alias upVector: lookAtTransform.upVector
 
-QMeshDataPrivate::QMeshDataPrivate(QMeshData *qq)
-    : QAbstractMeshDataPrivate(qq)
-    , m_primitiveType(0)
-{
+    lens: CameraLens {
+        projectionType: CameraLens.PerspectiveProjection
+        fieldOfView: 22.5
+        aspectRatio: _window.width / _window.height
+        onAspectRatioChanged: console.log( "aspectRatio = " + aspectRatio )
+        nearPlane:   0.01
+        farPlane:    1000.0
+    }
+
+    transform: Transform {
+        LookAt {
+            id: lookAtTransform
+            viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
+            upVector:   Qt.vector3d( 0.0, 1.0, 0.0 )
+        }
+    }
 }
-
-QMeshData::QMeshData()
-    : QAbstractMeshData(*new QMeshDataPrivate(this))
-{
-}
-
-QMeshData::QMeshData(QMeshDataPrivate &dd)
-    : QAbstractMeshData(dd)
-{
-}
-
-QMeshData::QMeshData(int primitiveType)
-    : QAbstractMeshData(*new QMeshDataPrivate(this))
-{
-    setPrimitiveType(primitiveType);
-}
-
-void QMeshData::setPrimitiveType(int primitiveType)
-{
-    Q_D(QMeshData);
-    Q_ASSERT((primitiveType == GL_TRIANGLES) ||
-             (primitiveType == GL_LINES) ||
-             (primitiveType == GL_POINTS) ||
-             (primitiveType == GL_PATCHES));
-    d->m_primitiveType = primitiveType;
-}
-
-int QMeshData::primitiveType() const
-{
-    Q_D(const QMeshData);
-    return d->m_primitiveType;
-}
-
-} // of namespace
-
-QT_END_NAMESPACE

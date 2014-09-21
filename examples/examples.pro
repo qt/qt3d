@@ -47,6 +47,10 @@ src_wireframe.subdir = $$PWD/wireframe
 src_wireframe.target = sub-wireframe
 src_wireframe.depends = src_exampleresources
 
+src_tessellationmodes.subdir = $$PWD/tessellation-modes
+src_tessellationmodes.target = sub-tessellationmodes
+src_tessellationmodes.depends = src_exampleresources
+
 SUBDIRS += \
     src_exampleresources \
     src_simpleqml \
@@ -58,7 +62,8 @@ SUBDIRS += \
     src_toruscpp \
     src_bigmodelqml \
     src_deferredrenderer \
-    src_wireframe
+    src_wireframe \
+    src_tessellationmodes
 
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d

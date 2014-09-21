@@ -43,6 +43,7 @@
 
 #include "qgraphicshelpergl3_p.h"
 #include <QOpenGLFunctions_3_2_Core>
+#include <QtOpenGLExtensions/qopenglextensions.h>
 #include "renderlogging.h"
 #include <private/attachmentpack_p.h>
 
@@ -51,8 +52,9 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
-QGraphicsHelperGL3::QGraphicsHelperGL3() :
-    m_funcs(0)
+QGraphicsHelperGL3::QGraphicsHelperGL3()
+    : m_funcs(Q_NULLPTR)
+    , m_tessFuncs()
 {
 }
 
@@ -64,6 +66,11 @@ void QGraphicsHelperGL3::initializeHelper(QOpenGLContext *context,
     const bool ok = m_funcs->initializeOpenGLFunctions();
     Q_ASSERT(ok);
     Q_UNUSED(ok);
+
+    if (context->hasExtension(QByteArrayLiteral("GL_ARB_tessellation_shader"))) {
+        m_tessFuncs.reset(new QOpenGLExtension_ARB_tessellation_shader);
+        m_tessFuncs->initializeOpenGLFunctions();
+    }
 }
 
 void QGraphicsHelperGL3::drawElementsInstanced(GLenum primitiveType,
@@ -110,6 +117,16 @@ void QGraphicsHelperGL3::drawArrays(GLenum primitiveType,
     m_funcs->glDrawArrays(primitiveType,
                           first,
                           count);
+}
+
+void QGraphicsHelperGL3::setVerticesPerPatch(GLint verticesPerPatch)
+{
+    if (!m_tessFuncs) {
+        qWarning() << "Tessellation not supported with OpenGL 3 without GL_ARB_tessellation_shader";
+        return;
+    }
+
+    m_tessFuncs->glPatchParameteri(GL_PATCH_VERTICES, verticesPerPatch);
 }
 
 void QGraphicsHelperGL3::useProgram(GLuint programId)
@@ -253,6 +270,8 @@ bool QGraphicsHelperGL3::supportsFeature(QGraphicsHelperInterface::Feature featu
     switch (feature) {
     case MRT:
         return true;
+    case Tessellation:
+        return !m_tessFuncs.isNull();
     default:
         return false;
     }

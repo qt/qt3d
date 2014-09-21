@@ -66,10 +66,10 @@ public:
     Q_DECLARE_PUBLIC(QAbstractMeshData)
     QAbstractMeshData *q_ptr;
 
-
     QMap<QString, QAbstractAttributePtr> m_attributes;
     QAbstractAttributePtr m_indexAttr;
     AxisAlignedBoundingBox m_bbox;
+    int m_verticesPerPatch;
 };
 
 } // Qt3D

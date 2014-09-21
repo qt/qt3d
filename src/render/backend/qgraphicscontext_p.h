@@ -163,6 +163,7 @@ public:
     void    drawArraysInstanced(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances);
     void    drawElements(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices);
     void    drawArrays(GLenum primitiveType, GLint first, GLsizei count);
+    void    setVerticesPerPatch(GLint verticesPerPatch);
     void    blendEquation(GLenum mode);
     void    alphaTest(GLenum mode1, GLenum mode2);
     void    depthTest(GLenum mode);

@@ -46,9 +46,12 @@
 
 #include <Qt3DRenderer/private/qgraphicshelperinterface_p.h>
 
+#include <QtCore/qscopedpointer.h>
+
 QT_BEGIN_NAMESPACE
 
 class QOpenGLFunctions_3_2_Core;
+class QOpenGLExtension_ARB_tessellation_shader;
 
 namespace Qt3D {
 namespace Render {
@@ -64,6 +67,7 @@ public:
     void drawArraysInstanced(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances) Q_DECL_OVERRIDE;
     void drawElements(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void *indices) Q_DECL_OVERRIDE;
     void drawArrays(GLenum primitiveType, GLint first, GLsizei count) Q_DECL_OVERRIDE;
+    void setVerticesPerPatch(GLint verticesPerPatch) Q_DECL_OVERRIDE;
     void useProgram(GLuint programId) Q_DECL_OVERRIDE;
     QVector<QPair<QString, int> > programUniformsAndLocations(GLuint programId) Q_DECL_OVERRIDE;
     QVector<QPair<QString, int> > programAttributesAndLocations(GLuint programId) Q_DECL_OVERRIDE;
@@ -86,6 +90,7 @@ public:
 
 private:
     QOpenGLFunctions_3_2_Core *m_funcs;
+    QScopedPointer<QOpenGLExtension_ARB_tessellation_shader> m_tessFuncs;
 };
 
 } // Render

@@ -39,55 +39,37 @@
 **
 ****************************************************************************/
 
-#include "qmeshdata.h"
-#include "qmeshdata_p.h"
+import Qt3D 2.0
+import Qt3D.Render 2.0
+import Qt3D.Examples 1.0
 
-#include <QSet>
-#include "renderlogging.h"
-#include <QOpenGLVertexArrayObject>
+// For Qt.vector3d() and friends. For some reason this is provided by
+// QQuickValueTypeProvider in QtQuick rather than the default value
+// type provider in QtQml. So we will need to replicate this in Qt3D
+// for the types that we wish to support. Otherwise we'll have to import
+// QtQuick 2.1 all over the place.
+import QtQuick 2.1 as QQ2
 
-QT_BEGIN_NAMESPACE
+Entity {
+    id: root
 
-namespace Qt3D {
+    property real x: 0.0
+    property real y: 0.0
+    property real z: 0.0
+    property real scale: 1.0
+    property real theta: 0.0
+    property Material material
 
-QMeshDataPrivate::QMeshDataPrivate(QMeshData *qq)
-    : QAbstractMeshDataPrivate(qq)
-    , m_primitiveType(0)
-{
+    components: [ transform, mesh, root.material ]
+
+    Transform {
+        id: transform
+        Translate { dx: root.x; dy: root.y; dz: root.z }
+        Scale { scale: root.scale }
+        Rotate{ angle: root.theta; axis: Qt.vector3d(0.0, 1.0, 0.0) }
+    }
+
+    TessellatedQuadMesh {
+        id: mesh
+    }
 }
-
-QMeshData::QMeshData()
-    : QAbstractMeshData(*new QMeshDataPrivate(this))
-{
-}
-
-QMeshData::QMeshData(QMeshDataPrivate &dd)
-    : QAbstractMeshData(dd)
-{
-}
-
-QMeshData::QMeshData(int primitiveType)
-    : QAbstractMeshData(*new QMeshDataPrivate(this))
-{
-    setPrimitiveType(primitiveType);
-}
-
-void QMeshData::setPrimitiveType(int primitiveType)
-{
-    Q_D(QMeshData);
-    Q_ASSERT((primitiveType == GL_TRIANGLES) ||
-             (primitiveType == GL_LINES) ||
-             (primitiveType == GL_POINTS) ||
-             (primitiveType == GL_PATCHES));
-    d->m_primitiveType = primitiveType;
-}
-
-int QMeshData::primitiveType() const
-{
-    Q_D(const QMeshData);
-    return d->m_primitiveType;
-}
-
-} // of namespace
-
-QT_END_NAMESPACE

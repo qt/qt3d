@@ -39,55 +39,37 @@
 **
 ****************************************************************************/
 
-#include "qmeshdata.h"
-#include "qmeshdata_p.h"
+#include "tessellatedquadmesh.h"
 
-#include <QSet>
-#include "renderlogging.h"
-#include <QOpenGLVertexArrayObject>
+#include <Qt3DQuick/quickwindow.h>
+#include <Qt3DRenderer/rendereraspect.h>
 
-QT_BEGIN_NAMESPACE
+#include <exampleresources.h>
 
-namespace Qt3D {
+#include <QGuiApplication>
+#include <QtQml>
 
-QMeshDataPrivate::QMeshDataPrivate(QMeshData *qq)
-    : QAbstractMeshDataPrivate(qq)
-    , m_primitiveType(0)
+int main(int argc, char* argv[])
 {
+    QGuiApplication app(argc, argv);
+
+    initializeAssetResources("../exampleresources/example-assets.qrb");
+
+    Qt3D::Quick::QuickWindow view;
+    view.registerAspect(new Qt3D::RendererAspect());
+
+    // Register our custom types
+    qmlRegisterType<TessellatedQuadMesh>("Qt3D.Examples", 1, 0, "TessellatedQuadMesh");
+
+    // Expose the window as a context property so we can set the aspect ratio
+    view.engine()->rootContext()->setContextProperty("_window", &view);
+
+    // There should be some synchronising mechanism to make sure
+    // the source is set after all aspects have been completely initialized
+    // Otherwise we might encounter cases where an Aspect's QML elements have
+    // not yet been registered
+    view.setSource(QUrl("qrc:/main.qml"));
+    view.show();
+
+    return app.exec();
 }
-
-QMeshData::QMeshData()
-    : QAbstractMeshData(*new QMeshDataPrivate(this))
-{
-}
-
-QMeshData::QMeshData(QMeshDataPrivate &dd)
-    : QAbstractMeshData(dd)
-{
-}
-
-QMeshData::QMeshData(int primitiveType)
-    : QAbstractMeshData(*new QMeshDataPrivate(this))
-{
-    setPrimitiveType(primitiveType);
-}
-
-void QMeshData::setPrimitiveType(int primitiveType)
-{
-    Q_D(QMeshData);
-    Q_ASSERT((primitiveType == GL_TRIANGLES) ||
-             (primitiveType == GL_LINES) ||
-             (primitiveType == GL_POINTS) ||
-             (primitiveType == GL_PATCHES));
-    d->m_primitiveType = primitiveType;
-}
-
-int QMeshData::primitiveType() const
-{
-    Q_D(const QMeshData);
-    return d->m_primitiveType;
-}
-
-} // of namespace
-
-QT_END_NAMESPACE

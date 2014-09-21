@@ -57,9 +57,9 @@ class Attachment;
 class QGraphicsHelperInterface
 {
 public:
-
     enum Feature {
-        MRT = 0
+        MRT = 0,
+        Tessellation
     };
 
     virtual ~QGraphicsHelperInterface() {}
@@ -68,6 +68,7 @@ public:
     virtual void    drawArraysInstanced(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances) = 0;
     virtual void    drawElements(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices) = 0;
     virtual void    drawArrays(GLenum primitiveType, GLint first, GLsizei count) = 0;
+    virtual void    setVerticesPerPatch(GLint verticesPerPatch) = 0;
     virtual void    useProgram(GLuint programId) = 0;
     virtual QVector<QPair<QString, int> > programUniformsAndLocations(GLuint programId) = 0;
     virtual QVector<QPair<QString, int> > programAttributesAndLocations(GLuint programId) = 0;
