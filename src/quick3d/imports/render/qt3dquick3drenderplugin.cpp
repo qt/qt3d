@@ -44,7 +44,6 @@
 #include "qt3dquick3drenderplugin.h"
 #include <Qt3DRenderer/qabstractsceneloader.h>
 #include <Qt3DRenderer/qsceneloader.h>
-#include <Qt3DRenderer/tag.h>
 #include <Qt3DRenderer/qmesh.h>
 #include <Qt3DRenderer/qrenderpass.h>
 #include <Qt3DRenderer/qshaderprogram.h>
@@ -113,7 +112,6 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterExtendedType<Qt3D::QTechnique, Qt3D::Render::Quick::Quick3DTechnique>(uri, 2, 0, "Technique");
     qmlRegisterType<Qt3D::QCriterion>(uri, 2, 0, "Criterion");
     qmlRegisterType<Qt3D::QOpenGLFilter>(uri, 2, 0, "OpenGLFilter");
-    qmlRegisterType<Qt3D::Tag>(uri, 2, 0, "Tag");
     qmlRegisterType<Qt3D::QParameter>(uri, 2, 0, "Parameter");
     qmlRegisterType<Qt3D::QParameterMapper>(uri, 2, 0, "ParameterMapper");
     qmlRegisterExtendedType<Qt3D::QMaterial, Qt3D::Render::Quick::Quick3DMaterial>(uri, 2, 0, "Material");

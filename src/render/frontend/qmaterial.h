@@ -48,7 +48,6 @@
 #include <Qt3DCore/qabstracteffect.h>
 #include <Qt3DCore/qabstractmaterial.h>
 
-#include <Qt3DRenderer/tag.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE

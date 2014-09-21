@@ -9,7 +9,6 @@ HEADERS += \
     $$PWD/qshaderprogram.h \
     $$PWD/qshaderprogram_p.h \
     $$PWD/qtechnique.h \
-    $$PWD/tag.h \
     $$PWD/qabstractshapemesh.h \
     $$PWD/qitemmodelbuffer.h \
     $$PWD/qtexture.h \
