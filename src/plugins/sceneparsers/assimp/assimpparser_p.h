@@ -120,21 +120,30 @@ private :
     void copyMaterialBlendingFunction(QMaterial *material, aiMaterial *assimpMaterial);
     void copyMaterialTextures(QMaterial *material, aiMaterial *assimpMaterial);
 
-    QScopedPointer<aiScene> m_aiScene;
+    class SceneImporter {
+    public :
+
+        SceneImporter();
+        ~SceneImporter();
+
+        Assimp::Importer *m_importer;
+        mutable const aiScene *m_aiScene;
+
+        QMap<uint, AssimpMesh *> m_meshes;
+        QMap<uint, QMaterial*> m_materials;
+        QMap<uint, QEffect *> m_effects;
+        QMap<uint, QTexture*> m_embeddedTextures;
+        QMap<QString, QTexture*> m_materialTextures;
+        QMap<aiNode*, QEntity*> m_cameras;
+        QHash<aiTextureType, QString> m_textureToParameterName;
+//    QMap<aiNode*, Light*> m_lights;
+    };
+
     QDir     m_sceneDir;
     bool     m_sceneParsed;
+    AssimpParser::SceneImporter *m_scene;
     static QStringList assimpSupportedFormatsList;
 
-    QMap<uint, AssimpMesh *> m_meshes;
-    QMap<uint, QMaterial*> m_materials;
-    QMap<uint, QEffect *> m_effects;
-    QMap<uint, QTexture*> m_embeddedTextures;
-    QMap<QString, QTexture*> m_materialTextures;
-    QMap<aiNode*, QEntity*> m_cameras;
-
-    QHash<aiTextureType, QString> m_textureToParameterName;
-
-//    QMap<aiNode*, Light*> m_lights;
 
 };
 

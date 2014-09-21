@@ -208,9 +208,11 @@ private:
  *  Initialized a new instance of AssimpParser.
  */
 AssimpParser::AssimpParser() : AbstractSceneParser(),
-    m_aiScene(0),
+    m_scene(Q_NULLPTR),
     m_sceneParsed(false)
 {
+    Assimp::DefaultLogger::create("AssimpLog.txt", Assimp::Logger::VERBOSE);
+    Assimp::DefaultLogger::kill();
 }
 
 /*!
@@ -282,10 +284,10 @@ QEntity *AssimpParser::scene(QString id)
     // m_aiScene shouldn't be null.
     // If it is either, the file failed to be imported or
     // setFilePath was not called
-    if (m_aiScene.isNull())
+    if (m_scene == Q_NULLPTR || m_scene->m_aiScene == Q_NULLPTR)
         return Q_NULLPTR;
 
-    aiNode *rootNode = m_aiScene->mRootNode;
+    aiNode *rootNode = m_scene->m_aiScene->mRootNode;
     // if id specified, tries to find node
     if (!id.isEmpty() &&
             !(rootNode = rootNode->FindNode(id.toUtf8().constData()))) {
@@ -304,10 +306,10 @@ QEntity *AssimpParser::scene(QString id)
  */
 QEntity *AssimpParser::node(QString id)
 {
-    if (m_aiScene.isNull())
+    if (m_scene == Q_NULLPTR || m_scene->m_aiScene == Q_NULLPTR)
         return Q_NULLPTR;
     parse();
-    aiNode *n = m_aiScene->mRootNode->FindNode(id.toUtf8().constData());
+    aiNode *n = m_scene->m_aiScene->mRootNode->FindNode(id.toUtf8().constData());
     return node(n);
 }
 
@@ -323,10 +325,10 @@ QEntity *AssimpParser::node(aiNode *node)
     // Add Meshes to the node
     for (uint i = 0; i < node->mNumMeshes; i++) {
         uint meshIdx = node->mMeshes[i];
-        AssimpMesh * mesh = m_meshes[meshIdx];
+        AssimpMesh * mesh = m_scene->m_meshes[meshIdx];
         // mesh material
-        if (m_materials.contains(meshIdx))
-            entityNode->addComponent(m_materials[meshIdx]);
+        if (m_scene->m_materials.contains(meshIdx))
+            entityNode->addComponent(m_scene->m_materials[meshIdx]);
         // mesh
         entityNode->addComponent(mesh);
     }
@@ -347,8 +349,8 @@ QEntity *AssimpParser::node(aiNode *node)
     entityNode->addComponent(transform);
 
     // Add Camera
-    if (m_cameras.contains(node))
-        entityNode->addChild(m_cameras[node]);
+    if (m_scene->m_cameras.contains(node))
+        entityNode->addChild(m_scene->m_cameras.value(node));
 
     // TO DO : Add lights ....
 
@@ -362,29 +364,26 @@ QEntity *AssimpParser::node(aiNode *node)
  */
 void AssimpParser::readSceneFile(const QString &path)
 {
-    Assimp::Importer importer;
-    Assimp::DefaultLogger::create("AssimpLog.txt", Assimp::Logger::VERBOSE);
+    cleanup();
+
+    m_scene = new SceneImporter();
 
     // SET THIS TO REMOVE POINTS AND LINES -> HAVE ONLY TRIANGLES
-    importer.SetPropertyInteger(AI_CONFIG_PP_SBP_REMOVE, aiPrimitiveType_LINE|aiPrimitiveType_POINT);
+    m_scene->m_importer->SetPropertyInteger(AI_CONFIG_PP_SBP_REMOVE, aiPrimitiveType_LINE|aiPrimitiveType_POINT);
     // SET CUSTOM FILE HANDLER TO HANDLE FILE READING THROUGH QT (RESOURCES, SOCKET ...)
-    importer.SetIOHandler(new AssimpHelper::AssimpIOSystem());
+    m_scene->m_importer->SetIOHandler(new AssimpHelper::AssimpIOSystem());
 
     // type and aiProcess_Triangulate discompose polygons with more than 3 points in triangles
     // aiProcess_SortByPType makes sur that meshes data are triangles
-    importer.ReadFile(path.toUtf8().constData(),
-                      aiProcess_SortByPType|
-                      aiProcess_Triangulate|
-                      aiProcess_JoinIdenticalVertices|
-                      aiProcess_GenSmoothNormals);
-    Assimp::DefaultLogger::kill();
-    cleanup();
-    aiScene *scene = Q_NULLPTR;
-    if (!(scene = importer.GetOrphanedScene())) {
+    m_scene->m_aiScene = m_scene->m_importer->ReadFile(path.toUtf8().constData(),
+                                                       aiProcess_SortByPType|
+                                                       aiProcess_Triangulate|
+                                                       aiProcess_JoinIdenticalVertices|
+                                                       aiProcess_GenSmoothNormals);
+    if (m_scene->m_aiScene == Q_NULLPTR) {
         qCWarning(AssimpParserLog) << "Assimp scene import failed";
         return ;
     }
-    m_aiScene.reset(scene);
     parse();
 }
 
@@ -393,14 +392,9 @@ void AssimpParser::readSceneFile(const QString &path)
  */
 void AssimpParser::cleanup()
 {
-    m_meshes.clear();
-    m_effects.clear();
-    m_embeddedTextures.clear();
-    m_materialTextures.clear();
-    m_cameras.clear();
     m_sceneParsed = false;
-    if (!m_aiScene.isNull())
-        m_aiScene.reset(0);
+    delete m_scene;
+    m_scene = Q_NULLPTR;
 }
 
 /*!
@@ -413,17 +407,17 @@ void AssimpParser::parse()
         // Set parsed flags
         m_sceneParsed = !m_sceneParsed;
 
-        for (uint i = 0; i < m_aiScene->mNumTextures; i++)
+        for (uint i = 0; i < m_scene->m_aiScene->mNumTextures; i++)
             loadEmbeddedTexture(i);
-        for (uint i = 0; i < m_aiScene->mNumMaterials; i++)
+        for (uint i = 0; i < m_scene->m_aiScene->mNumMaterials; i++)
             loadMaterial(i);
-        for (uint i = 0; i < m_aiScene->mNumMeshes; i++)
+        for (uint i = 0; i < m_scene->m_aiScene->mNumMeshes; i++)
             loadMesh(i);
-        for (uint i = 0; i < m_aiScene->mNumCameras; i++)
+        for (uint i = 0; i < m_scene->m_aiScene->mNumCameras; i++)
             loadCamera(i);
-        for (uint i = 0; i < m_aiScene->mNumLights; i++)
+        for (uint i = 0; i < m_scene->m_aiScene->mNumLights; i++)
             loadLight(i);
-        for (uint i = 0; i < m_aiScene->mNumAnimations; i++)
+        for (uint i = 0; i < m_scene->m_aiScene->mNumAnimations; i++)
             loadAnimation(i);
     }
 }
@@ -435,7 +429,7 @@ void AssimpParser::parse()
 void AssimpParser::loadMaterial(uint materialIndex)
 {
     QMaterial *material = new QMaterial();
-    aiMaterial *assimpMaterial = m_aiScene->mMaterials[materialIndex];
+    aiMaterial *assimpMaterial = m_scene->m_aiScene->mMaterials[materialIndex];
     // Material Name
     copyMaterialName(material, assimpMaterial);
     copyMaterialColorProperties(material, assimpMaterial);
@@ -447,7 +441,7 @@ void AssimpParser::loadMaterial(uint materialIndex)
 
     // TO DO : Set Material Effect and Technique
 
-    m_materials[materialIndex] = material;
+    m_scene->m_materials[materialIndex] = material;
 }
 
 /*!
@@ -456,7 +450,7 @@ void AssimpParser::loadMaterial(uint materialIndex)
  */
 void AssimpParser::loadMesh(uint meshIndex)
 {
-    aiMesh *mesh = m_aiScene->mMeshes[meshIndex];
+    aiMesh *mesh = m_scene->m_aiScene->mMeshes[meshIndex];
 
     // Primitive are always triangles with the current Assimp's configuration
     QMeshDataPtr meshData(new QMeshData(GL_TRIANGLES));
@@ -517,30 +511,30 @@ void AssimpParser::loadMesh(uint meshIndex)
     // Add vertex attributes to the mesh with the right array
     meshData->addAttribute(VERTICES_ATTRIBUTE_NAME,
                            AttributePtr(new Attribute(vbuffer,
-                                         GL_FLOAT_VEC3,
-                                         mesh->mNumVertices,
-                                         0,
-                                         chunkSize * sizeof(float))));
+                                                      GL_FLOAT_VEC3,
+                                                      mesh->mNumVertices,
+                                                      0,
+                                                      chunkSize * sizeof(float))));
     meshData->addAttribute(NORMAL_ATTRIBUTE_NAME,
                            AttributePtr(new Attribute(vbuffer,
-                                         GL_FLOAT_VEC3,
-                                         mesh->mNumVertices,
-                                         3 * sizeof(float),
-                                         chunkSize * sizeof(float))));
+                                                      GL_FLOAT_VEC3,
+                                                      mesh->mNumVertices,
+                                                      3 * sizeof(float),
+                                                      chunkSize * sizeof(float))));
     if (hasTangent)
         meshData->addAttribute(TANGENT_ATTRIBUTE_NAME,
                                AttributePtr(new Attribute(vbuffer,
-                                             GL_FLOAT_VEC3,
-                                             mesh->mNumVertices,
-                                             6 * sizeof(float),
-                                             chunkSize * sizeof(float))));
+                                                          GL_FLOAT_VEC3,
+                                                          mesh->mNumVertices,
+                                                          6 * sizeof(float),
+                                                          chunkSize * sizeof(float))));
     if (hasTexture)
         meshData->addAttribute(TEXTCOORD_ATTRIBUTE_NAME,
                                AttributePtr(new Attribute(vbuffer,
-                                             GL_FLOAT_VEC2,
-                                             mesh->mNumVertices,
-                                             (hasTangent ? 9 : 6) * sizeof(float),
-                                             chunkSize * sizeof(float))));
+                                                          GL_FLOAT_VEC2,
+                                                          mesh->mNumVertices,
+                                                          (hasTangent ? 9 : 6) * sizeof(float),
+                                                          chunkSize * sizeof(float))));
     if (hasColor)
         meshData->addAttribute(COLOR_ATTRIBUTE_NAME,
                                AttributePtr(new Attribute(vbuffer,
@@ -585,7 +579,7 @@ void AssimpParser::loadMesh(uint meshIndex)
 
     AssimpMesh *storedMesh = new AssimpMesh();
     storedMesh->setData(meshData);
-    m_meshes[meshIndex] = storedMesh;
+    m_scene->m_meshes[meshIndex] = storedMesh;
 
     qCDebug(AssimpParserLog) << Q_FUNC_INFO << " Mesh " << meshName << " Vertices " << mesh->mNumVertices << " Faces " << mesh->mNumFaces << " Indices " << indices;
 }
@@ -597,7 +591,7 @@ void AssimpParser::loadMesh(uint meshIndex)
  */
 void AssimpParser::loadEmbeddedTexture(uint textureIndex)
 {
-    aiTexture *assimpTexture = m_aiScene->mTextures[textureIndex];
+    aiTexture *assimpTexture = m_scene->m_aiScene->mTextures[textureIndex];
     QTexture *texture = new QTexture();
     TexImageDataPtr textureData(new TexImageData(0, 0));
 
@@ -618,7 +612,7 @@ void AssimpParser::loadEmbeddedTexture(uint textureIndex)
                          QOpenGLTexture::RGBA,
                          QOpenGLTexture::UInt8);
     texture->addImageData(textureData);
-    m_embeddedTextures[textureIndex] = texture;
+    m_scene->m_embeddedTextures[textureIndex] = texture;
 }
 
 /*!
@@ -626,7 +620,7 @@ void AssimpParser::loadEmbeddedTexture(uint textureIndex)
  */
 void AssimpParser::loadLight(uint lightIndex)
 {
-    aiLight *light = m_aiScene->mLights[lightIndex];
+    aiLight *light = m_scene->m_aiScene->mLights[lightIndex];
     // TODO: Implement me!
     Q_UNUSED(light);
 }
@@ -636,8 +630,8 @@ void AssimpParser::loadLight(uint lightIndex)
  */
 void AssimpParser::loadCamera(uint cameraIndex)
 {
-    aiCamera *assimpCamera = m_aiScene->mCameras[cameraIndex];
-    aiNode *cameraNode = m_aiScene->mRootNode->FindNode(assimpCamera->mName);
+    aiCamera *assimpCamera = m_scene->m_aiScene->mCameras[cameraIndex];
+    aiNode *cameraNode = m_scene->m_aiScene->mRootNode->FindNode(assimpCamera->mName);
 
     // If no node is associated to the camera in the scene, camera not saved
     if (cameraNode == Q_NULLPTR)
@@ -666,7 +660,7 @@ void AssimpParser::loadCamera(uint cameraIndex)
                       QVector3D(0, 0, 0));
     transform->setMatrix(viewMatrix);
     camera->addComponent(transform);
-    m_cameras[cameraNode] = camera;
+    m_scene->m_cameras[cameraNode] = camera;
 }
 
 // OPTIONAL
@@ -757,18 +751,18 @@ void AssimpParser::copyMaterialTextures(QMaterial *material, aiMaterial *assimpM
                                                 aiTextureType_SPECULAR,
                                                 /*aiTextureType_UNKNOWN*/};
 
-    if (m_textureToParameterName.isEmpty()) {
-        m_textureToParameterName[aiTextureType_AMBIENT] = ASSIMP_MATERIAL_AMBIENT_TEXTURE;
-        m_textureToParameterName[aiTextureType_DIFFUSE] = ASSIMP_MATERIAL_DIFFUSE_TEXTURE;
-        m_textureToParameterName[aiTextureType_DISPLACEMENT] = ASSIMP_MATERIAL_DISPLACEMENT_TEXTURE;
-        m_textureToParameterName[aiTextureType_EMISSIVE] = ASSIMP_MATERIAL_EMISSIVE_TEXTURE;
-        m_textureToParameterName[aiTextureType_HEIGHT] = ASSIMP_MATERIAL_HEIGHT_TEXTURE;
-        m_textureToParameterName[aiTextureType_LIGHTMAP] = ASSIMP_MATERIAL_LIGHTMAP_TEXTURE;
-        m_textureToParameterName[aiTextureType_NORMALS] = ASSIMP_MATERIAL_NORMALS_TEXTURE;
-        m_textureToParameterName[aiTextureType_OPACITY] = ASSIMP_MATERIAL_OPACITY_TEXTURE;
-        m_textureToParameterName[aiTextureType_REFLECTION] = ASSIMP_MATERIAL_REFLECTION_TEXTURE;
-        m_textureToParameterName[aiTextureType_SHININESS] = ASSIMP_MATERIAL_SHININESS_TEXTURE;
-        m_textureToParameterName[aiTextureType_SPECULAR] = ASSIMP_MATERIAL_SPECULAR_TEXTURE;
+    if (m_scene->m_textureToParameterName.isEmpty()) {
+        m_scene->m_textureToParameterName.insert(aiTextureType_AMBIENT, ASSIMP_MATERIAL_AMBIENT_TEXTURE);
+        m_scene->m_textureToParameterName.insert(aiTextureType_DIFFUSE, ASSIMP_MATERIAL_DIFFUSE_TEXTURE);
+        m_scene->m_textureToParameterName.insert(aiTextureType_DISPLACEMENT, ASSIMP_MATERIAL_DISPLACEMENT_TEXTURE);
+        m_scene->m_textureToParameterName.insert(aiTextureType_EMISSIVE, ASSIMP_MATERIAL_EMISSIVE_TEXTURE);
+        m_scene->m_textureToParameterName.insert(aiTextureType_HEIGHT, ASSIMP_MATERIAL_HEIGHT_TEXTURE);
+        m_scene->m_textureToParameterName.insert(aiTextureType_LIGHTMAP, ASSIMP_MATERIAL_LIGHTMAP_TEXTURE);
+        m_scene->m_textureToParameterName.insert(aiTextureType_NORMALS, ASSIMP_MATERIAL_NORMALS_TEXTURE);
+        m_scene->m_textureToParameterName.insert(aiTextureType_OPACITY, ASSIMP_MATERIAL_OPACITY_TEXTURE);
+        m_scene->m_textureToParameterName.insert(aiTextureType_REFLECTION, ASSIMP_MATERIAL_REFLECTION_TEXTURE);
+        m_scene->m_textureToParameterName.insert(aiTextureType_SHININESS, ASSIMP_MATERIAL_SHININESS_TEXTURE);
+        m_scene->m_textureToParameterName.insert(aiTextureType_SPECULAR, ASSIMP_MATERIAL_SPECULAR_TEXTURE);
     }
 
     for (unsigned int i = 0; i < sizeof(textureType)/sizeof(textureType[0]); i++) {
@@ -777,12 +771,12 @@ void AssimpParser::copyMaterialTextures(QMaterial *material, aiMaterial *assimpM
             QString fullPath = m_sceneDir.absoluteFilePath(QString::fromUtf8(path.data));
             // Load texture if not already loaded
             bool textureLoaded = true;
-            if (!m_materialTextures.contains(fullPath)) {
+            if (!m_scene->m_materialTextures.contains(fullPath)) {
                 QTexture *tex = new QTexture();
                 QImage textureImage;
                 if (!textureImage.load(fullPath) || !textureImage.isNull()) {
                     tex->setFromQImage(textureImage);
-                    m_materialTextures[fullPath] = tex;
+                    m_scene->m_materialTextures.insert(fullPath, tex);
                     qCWarning(AssimpParserLog) << Q_FUNC_INFO << " Loaded Texture " << fullPath;
                 }
                 else {
@@ -791,8 +785,8 @@ void AssimpParser::copyMaterialTextures(QMaterial *material, aiMaterial *assimpM
                 }
             }
             if (textureLoaded) {
-                material->addParameter(new QParameter(m_textureToParameterName[textureType[i]],
-                                       m_materialTextures[fullPath]));
+                material->addParameter(new QParameter(m_scene->m_textureToParameterName[textureType[i]],
+                                       m_scene->m_materialTextures[fullPath]));
             }
         }
     }
@@ -863,6 +857,18 @@ QAbstractMeshDataPtr AssimpMesh::AssimpMeshFunctor::operator()()
 bool AssimpMesh::AssimpMeshFunctor::operator ==(const QAbstractMeshFunctor &) const
 {
     return false;
+}
+
+AssimpParser::SceneImporter::SceneImporter()
+    : m_importer(new Assimp::Importer())
+    , m_aiScene(Q_NULLPTR)
+{
+    // The Assimp::Importer manages the lifetime of the aiScene object
+}
+
+AssimpParser::SceneImporter::~SceneImporter()
+{
+    delete m_importer;
 }
 
 } // Qt3D
