@@ -31,6 +31,14 @@ src_toruscpp.subdir = $$PWD/torus-cpp
 src_toruscpp.target = sub-toruscpp
 src_toruscpp.depends = src_exampleresources
 
+src_cylinderqml.subdir = $$PWD/cylinder-qml
+src_cylinderqml.target = sub-cylinderqml
+src_cylinderqml.depends = src_exampleresources
+
+src_cylindercpp.subdir = $$PWD/cylinder-cpp
+src_cylindercpp.target = sub-cylindercpp
+src_cylindercpp.depends = src_exampleresources
+
 src_bigmodelqml.subdir = $$PWD/bigmodel-qml
 src_bigmodelqml.target = sub-bigmodelqml
 src_bigmodelqml.depends = src_exampleresources
@@ -60,6 +68,8 @@ SUBDIRS += \
     src_multiviewport \
     src_torusqml \
     src_toruscpp \
+    src_cylinderqml \
+    src_cylindercpp \
     src_bigmodelqml \
     src_deferredrenderer \
     src_wireframe \

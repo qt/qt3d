@@ -21,6 +21,7 @@ HEADERS += \
     $$PWD/qparameter.h \
     $$PWD/qparameter_p.h \
     $$PWD/qparametermapper.h \
+    $$PWD/qcylindermesh.h \
     $$PWD/qtorusmesh.h \
     $$PWD/qspheremesh.h \
     $$PWD/qabstractshapemesh_p.h \
@@ -78,6 +79,7 @@ SOURCES += \
     $$PWD/qcriterion.cpp \
     $$PWD/qparameter.cpp \
     $$PWD/qparametermapper.cpp \
+    $$PWD/qcylindermesh.cpp \
     $$PWD/qtorusmesh.cpp \
     $$PWD/qspheremesh.cpp \
     $$PWD/qabstractlight.cpp \
