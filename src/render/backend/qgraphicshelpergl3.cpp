@@ -211,11 +211,6 @@ void QGraphicsHelperGL3::frontFace(GLenum mode)
 
 }
 
-bool QGraphicsHelperGL3::supportUniformBlock() const
-{
-    return true;
-}
-
 GLuint QGraphicsHelperGL3::createFrameBufferObject()
 {
     qDebug() << Q_FUNC_INFO;
@@ -272,6 +267,8 @@ bool QGraphicsHelperGL3::supportsFeature(QGraphicsHelperInterface::Feature featu
         return true;
     case Tessellation:
         return !m_tessFuncs.isNull();
+    case UniformBufferObject:
+        return true;
     default:
         return false;
     }

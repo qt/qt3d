@@ -78,7 +78,6 @@ public:
     void depthMask(GLenum mode) Q_DECL_OVERRIDE;
     void cullFace(GLenum mode) Q_DECL_OVERRIDE;
     void frontFace(GLenum mode) Q_DECL_OVERRIDE;
-    bool supportUniformBlock() const Q_DECL_OVERRIDE;
     GLuint createFrameBufferObject() Q_DECL_OVERRIDE;
     void releaseFrameBufferObject(GLuint frameBufferId) Q_DECL_OVERRIDE;
     void bindFrameBufferObject(GLuint frameBufferId) Q_DECL_OVERRIDE;

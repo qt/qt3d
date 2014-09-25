@@ -204,11 +204,6 @@ void QGraphicsHelperES2::frontFace(GLenum mode)
     m_funcs->glFrontFace(mode);
 }
 
-bool QGraphicsHelperES2::supportUniformBlock() const
-{
-    return false;
-}
-
 GLuint QGraphicsHelperES2::createFrameBufferObject()
 {
     GLuint id;
@@ -261,6 +256,8 @@ bool QGraphicsHelperES2::supportsFeature(QGraphicsHelperInterface::Feature featu
     case MRT:
         return false;
     case Tessellation:
+        return false;
+    case UniformBufferObject:
         return false;
     default:
         return false;

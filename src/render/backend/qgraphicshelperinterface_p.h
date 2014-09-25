@@ -59,7 +59,8 @@ class QGraphicsHelperInterface
 public:
     enum Feature {
         MRT = 0,
-        Tessellation
+        Tessellation,
+        UniformBufferObject
     };
 
     virtual ~QGraphicsHelperInterface() {}
@@ -79,7 +80,6 @@ public:
     virtual void    depthMask(GLenum mode) = 0;
     virtual void    cullFace(GLenum mode) = 0;
     virtual void    frontFace(GLenum mode) = 0;
-    virtual bool    supportUniformBlock() const = 0;
     virtual GLuint  createFrameBufferObject() = 0;
     virtual void    releaseFrameBufferObject(GLuint frameBufferId) = 0;
     virtual void    bindFrameBufferObject(GLuint frameBufferId) = 0;
@@ -89,6 +89,7 @@ public:
     virtual void    drawBuffers(GLsizei n, const int *bufs) = 0;
     virtual void    bindFragDataLocation(GLuint shader, const QHash<QString, int> &outputs) = 0;
 };
+
 
 } // Render
 } // Qt3D
