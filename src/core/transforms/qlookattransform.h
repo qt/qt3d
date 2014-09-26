@@ -65,7 +65,7 @@ public:
     explicit QLookAtTransform(QNode *parent = 0);
 
     void copy(const QNode *ref) Q_DECL_OVERRIDE;
-    QMatrix4x4 matrix() const Q_DECL_OVERRIDE;
+    QMatrix4x4 transformMatrix() const Q_DECL_OVERRIDE;
 
     void setPosition(const QVector3D &position);
     QVector3D position() const;

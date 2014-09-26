@@ -67,7 +67,7 @@ public:
     float   scale() const;
     void    setScale(float scale);
 
-    QMatrix4x4 matrix() const Q_DECL_OVERRIDE;
+    QMatrix4x4 transformMatrix() const Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
     void    scale3DChanged();

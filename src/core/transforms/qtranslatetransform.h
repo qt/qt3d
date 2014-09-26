@@ -73,14 +73,14 @@ public:
 
     QVector3D translation() const;
 
-    QMatrix4x4 matrix() const Q_DECL_OVERRIDE;
+    QMatrix4x4 transformMatrix() const Q_DECL_OVERRIDE;
 
 public Q_SLOTS:
     void setDx(float arg);
     void setDy(float arg);
     void setDz(float arg);
 
-    void setTranslation(QVector3D arg);
+    void setTranslation(const QVector3D &arg);
 
 Q_SIGNALS:
     void translateChanged();

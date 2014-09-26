@@ -63,7 +63,7 @@ void QLookAtTransform::copy(const QNode *ref)
     QAbstractTransform::copy(ref);
     const QLookAtTransform *transform = qobject_cast<const QLookAtTransform *>(ref);
     if (transform != Q_NULLPTR) {
-        d->m_matrix = matrix();
+        d->m_matrix = transformMatrix();
         d->m_position = position();
         d->m_upVector = upVector();
         d->m_viewCenter = viewCenter();
@@ -81,7 +81,7 @@ QLookAtTransform *QLookAtTransform::doClone(QNode *clonedParent) const
     return new QLookAtTransform(clonedParent);
 }
 
-QMatrix4x4 QLookAtTransform::matrix() const
+QMatrix4x4 QLookAtTransform::transformMatrix() const
 {
     Q_D(const QLookAtTransform);
     if (d->m_matrixDirty) {
@@ -107,7 +107,7 @@ void QLookAtTransform::setPosition(const QVector3D &position)
         d->m_matrixDirty = true;
         emit positionChanged();
         emit viewVectorChanged();
-        emit transformUpdated();
+        emit transformMatrixChanged();
     }
 }
 
@@ -118,7 +118,7 @@ void QLookAtTransform::setUpVector(const QVector3D &upVector)
         d->m_upVector = upVector;
         d->m_matrixDirty = true;
         emit upVectorChanged();
-        emit transformUpdated();
+        emit transformMatrixChanged();
     }
 }
 
@@ -137,7 +137,7 @@ void QLookAtTransform::setViewCenter(const QVector3D &viewCenter)
         d->m_matrixDirty = true;
         emit viewCenterChanged();
         emit viewVectorChanged();
-        emit transformUpdated();
+        emit transformMatrixChanged();
     }
 }
 

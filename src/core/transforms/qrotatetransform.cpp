@@ -104,7 +104,7 @@ QVector3D QRotateTransform::axis() const
     return d->m_axis;
 }
 
-QMatrix4x4 QRotateTransform::matrix() const
+QMatrix4x4 QRotateTransform::transformMatrix() const
 {
     Q_D(const QRotateTransform);
     QMatrix4x4 m;
@@ -118,7 +118,7 @@ void QRotateTransform::setAngleDeg(float arg)
     if (d->m_angleDeg != arg) {
         d->m_angleDeg = arg;
         emit angleChanged();
-        emit transformUpdated();
+        emit transformMatrixChanged();
     }
 }
 
@@ -134,7 +134,7 @@ void QRotateTransform::setAxis(const QVector3D& arg)
     if (d->m_axis != arg) {
         d->m_axis = arg;
         emit axisChanged();
-        emit transformUpdated();
+        emit transformMatrixChanged();
     }
 }
 

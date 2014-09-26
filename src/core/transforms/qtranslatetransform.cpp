@@ -103,7 +103,7 @@ QVector3D QTranslateTransform::translation() const
     return d->m_translation;
 }
 
-QMatrix4x4 QTranslateTransform::matrix() const
+QMatrix4x4 QTranslateTransform::transformMatrix() const
 {
     Q_D(const QTranslateTransform);
     QMatrix4x4 r;
@@ -117,7 +117,7 @@ void QTranslateTransform::setDx(float arg)
     if (arg != d->m_translation.x()) {
         d->m_translation.setX(arg);
         emit translateChanged();
-        emit transformUpdated();
+        emit transformMatrixChanged();
     }
 }
 
@@ -127,7 +127,7 @@ void QTranslateTransform::setDy(float arg)
     if (arg != d->m_translation.y()) {
         d->m_translation.setY(arg);
         emit translateChanged();
-        emit transformUpdated();
+        emit transformMatrixChanged();
     }
 }
 
@@ -137,16 +137,17 @@ void QTranslateTransform::setDz(float arg)
     if (arg != d->m_translation.z()) {
         d->m_translation.setZ(arg);
         emit translateChanged();
-        emit transformUpdated();
+        emit transformMatrixChanged();
     }
 }
 
-void QTranslateTransform::setTranslation(QVector3D arg)
+void QTranslateTransform::setTranslation(const QVector3D &arg)
 {
     Q_D(QTranslateTransform);
     if (d->m_translation != arg) {
         d->m_translation = arg;
         emit translateChanged();
+        emit transformMatrixChanged();
     }
 }
 

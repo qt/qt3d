@@ -63,8 +63,10 @@ public:
 
     void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
-    QMatrix4x4 matrix() const Q_DECL_OVERRIDE;
+    QMatrix4x4 matrix() const;
     void setMatrix(const QMatrix4x4 &matrix);
+
+    QMatrix4x4 transformMatrix() const Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
     void matrixChanged();

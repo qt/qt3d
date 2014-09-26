@@ -85,8 +85,13 @@ void QMatrixTransform::setMatrix(const QMatrix4x4 &matrix)
     if (d->m_matrix != matrix) {
         d->m_matrix = matrix;
         emit matrixChanged();
-        emit transformUpdated();
+        emit transformMatrixChanged();
     }
+}
+
+QMatrix4x4 QMatrixTransform::transformMatrix() const
+{
+    return matrix();
 }
 
 void QMatrixTransform::copy(const QNode *ref)

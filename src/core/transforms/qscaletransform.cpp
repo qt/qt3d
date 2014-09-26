@@ -90,7 +90,7 @@ void QScaleTransform::setScale3D(const QVector3D &scale3D)
     if (scale3D != d->m_scale3D) {
         d->m_scale3D = scale3D;
         emit scale3DChanged();
-        emit transformUpdated();
+        emit transformMatrixChanged();
     }
 }
 
@@ -109,7 +109,7 @@ void QScaleTransform::setScale(float scale)
     }
 }
 
-QMatrix4x4 QScaleTransform::matrix() const
+QMatrix4x4 QScaleTransform::transformMatrix() const
 {
     Q_D(const QScaleTransform);
     QMatrix4x4 mat;

@@ -68,7 +68,7 @@ public:
     float angleDeg() const;
     float angleRad() const;
     QVector3D axis() const;
-    QMatrix4x4 matrix() const Q_DECL_OVERRIDE;
+    QMatrix4x4 transformMatrix() const Q_DECL_OVERRIDE;
 
     void setAngleDeg(float arg);
     void setAngleRad(float arg);

@@ -56,13 +56,15 @@ class QAbstractTransformPrivate;
 class QT3DCORESHARED_EXPORT QAbstractTransform : public QNode
 {
     Q_OBJECT
+
+    Q_PROPERTY(QMatrix4x4 transformMatrix READ transformMatrix NOTIFY transformMatrixChanged)
 public:
     explicit QAbstractTransform(QNode *parent = 0);
     virtual ~QAbstractTransform();
 
-    virtual QMatrix4x4 matrix() const = 0;
+    virtual QMatrix4x4 transformMatrix() const = 0;
 Q_SIGNALS:
-    void transformUpdated();
+    void transformMatrixChanged();
 protected:
     Q_DECLARE_PRIVATE(QAbstractTransform)
     QAbstractTransform(QAbstractTransformPrivate &dd, QNode *parent = 0);

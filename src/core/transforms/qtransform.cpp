@@ -147,7 +147,7 @@ void QTransform::appendTransform(QAbstractTransform *transform)
 {
     Q_D(QTransform);
     d->m_transforms.append(transform);
-    QObject::connect(transform, SIGNAL(transformUpdated()), this, SLOT(setTransformsDirty()));
+    QObject::connect(transform, SIGNAL(transformMatrixChanged()), this, SLOT(setTransformsDirty()));
     setTransformsDirty();
 }
 
@@ -155,7 +155,7 @@ void QTransform::removeTransform(QAbstractTransform *transform)
 {
     Q_D(QTransform);
     d->m_transforms.removeOne(transform);
-    QObject::disconnect(transform, SIGNAL(transformUpdated()), this, SLOT(setTransformsDirty()));
+    QObject::disconnect(transform, SIGNAL(transformMatrixChanged()), this, SLOT(setTransformsDirty()));
     setTransformsDirty();
 }
 
@@ -164,7 +164,7 @@ QMatrix4x4 QTransform::applyTransforms() const
     Q_D(const QTransform);
     QMatrix4x4 m;
     Q_FOREACH (const QAbstractTransform *t, d->m_transforms)
-        m = t->matrix() * m;
+        m = t->transformMatrix() * m;
     return m;
 }
 
