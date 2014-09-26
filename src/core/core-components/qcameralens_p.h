@@ -58,18 +58,16 @@ class QT3DCORESHARED_EXPORT QCameraLensPrivate : public QComponentPrivate
 public:
     QCameraLensPrivate(QCameraLens *qq);
 
-    inline void updatePerpectiveProjection()
+    inline void updateProjectionMatrix()
     {
-        m_projectionMatrix.setToIdentity();
-        m_projectionMatrix.perspective(m_fieldOfView, m_aspectRatio, m_nearPlane, m_farPlane);
-        notifyObservers();
-    }
-
-    inline void updateOrthogonalProjection()
-    {
-        m_projectionMatrix.setToIdentity();
-        m_projectionMatrix.ortho(m_left, m_right, m_bottom, m_top, m_nearPlane, m_farPlane);
-        notifyObservers();
+        switch (m_projectionType) {
+        case QCameraLens::OrthogonalProjection:
+            updateOrthogonalProjection();
+            break;
+        case QCameraLens::PerspectiveProjection:
+            updatePerpectiveProjection();
+            break;
+        }
     }
 
     inline void notifyObservers()
@@ -100,6 +98,25 @@ public:
     float m_top;
 
     mutable QMatrix4x4 m_projectionMatrix;
+
+private:
+    inline void updatePerpectiveProjection()
+    {
+        Q_Q(QCameraLens);
+        m_projectionMatrix.setToIdentity();
+        m_projectionMatrix.perspective(m_fieldOfView, m_aspectRatio, m_nearPlane, m_farPlane);
+        Q_EMIT q->projectionMatrixChanged();
+        notifyObservers();
+    }
+
+    inline void updateOrthogonalProjection()
+    {
+        Q_Q(QCameraLens);
+        m_projectionMatrix.setToIdentity();
+        m_projectionMatrix.ortho(m_left, m_right, m_bottom, m_top, m_nearPlane, m_farPlane);
+        Q_EMIT q->projectionMatrixChanged();
+        notifyObservers();
+    }
 };
 
 } // namespace Qt3D

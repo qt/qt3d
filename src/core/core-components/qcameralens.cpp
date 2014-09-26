@@ -65,7 +65,7 @@ QCameraLens::QCameraLens(QNode *parent)
     : QComponent(*new QCameraLensPrivate(this), parent)
 {
     Q_D(QCameraLens);
-    d->updateOrthogonalProjection();
+    d->updateProjectionMatrix();
 }
 
 void QCameraLens::copy(const QNode *ref)
@@ -83,7 +83,7 @@ void QCameraLens::copy(const QNode *ref)
         d->m_right = lens->right();
         d->m_bottom = lens->bottom();
         d->m_top = lens->top();
-        d->m_projectionMatrix = lens->projectionMatrix();
+        d->updateProjectionMatrix();
     }
 }
 
@@ -105,6 +105,7 @@ void QCameraLens::setProjectionType(QCameraLens::ProjectionType projectionType)
     if (d->m_projectionType != projectionType) {
         d->m_projectionType = projectionType;
         emit projectionTypeChanged();
+        d->updateProjectionMatrix();
     }
 }
 
@@ -126,7 +127,7 @@ void QCameraLens::setOrthographicProjection( float left, float right,
     d->m_nearPlane = nearPlane;
     d->m_farPlane = farPlane;
     d->m_projectionType = OrthogonalProjection;
-    d->updateOrthogonalProjection();
+    d->updateProjectionMatrix();
 }
 
 void QCameraLens::setPerspectiveProjection( float fieldOfView, float aspectRatio,
@@ -138,7 +139,7 @@ void QCameraLens::setPerspectiveProjection( float fieldOfView, float aspectRatio
     d->m_nearPlane = nearPlane;
     d->m_farPlane = farPlane;
     d->m_projectionType = PerspectiveProjection;
-    d->updatePerpectiveProjection();
+    d->updateProjectionMatrix();
 }
 
 void QCameraLens::setNearPlane(float nearPlane)
@@ -147,9 +148,8 @@ void QCameraLens::setNearPlane(float nearPlane)
     if (qFuzzyCompare(d->m_nearPlane, nearPlane))
         return;
     d->m_nearPlane = nearPlane;
-    if (d->m_projectionType == PerspectiveProjection)
-        d->updatePerpectiveProjection();
     emit nearPlaneChanged();
+    d->updateProjectionMatrix();
 }
 
 float QCameraLens::nearPlane() const
@@ -164,9 +164,8 @@ void QCameraLens::setFarPlane(float farPlane)
     if (qFuzzyCompare(d->m_farPlane, farPlane))
         return;
     d->m_farPlane = farPlane;
-    if (d->m_projectionType == PerspectiveProjection)
-        d->updatePerpectiveProjection();
     emit farPlaneChanged();
+    d->updateProjectionMatrix();
 }
 
 float QCameraLens::farPlane() const
@@ -181,9 +180,8 @@ void QCameraLens::setFieldOfView(float fieldOfView)
     if (qFuzzyCompare(d->m_fieldOfView, fieldOfView))
         return;
     d->m_fieldOfView = fieldOfView;
-    if (d->m_projectionType == PerspectiveProjection)
-        d->updatePerpectiveProjection();
     emit fieldOfViewChanged();
+    d->updateProjectionMatrix();
 }
 
 float QCameraLens::fieldOfView() const
@@ -198,9 +196,8 @@ void QCameraLens::setAspectRatio(float aspectRatio)
     if (qFuzzyCompare(d->m_aspectRatio, aspectRatio))
         return;
     d->m_aspectRatio = aspectRatio;
-    if (d->m_projectionType == PerspectiveProjection)
-        d->updatePerpectiveProjection();
     emit aspectRatioChanged();
+    d->updateProjectionMatrix();
 }
 
 float QCameraLens::aspectRatio() const
@@ -215,9 +212,8 @@ void QCameraLens::setLeft(float left)
     if (qFuzzyCompare(d->m_left, left))
         return;
     d->m_left = left;
-    if (d->m_projectionType == OrthogonalProjection)
-        d->updateOrthogonalProjection();
     emit leftChanged();
+    d->updateProjectionMatrix();
 }
 
 float QCameraLens::left() const
@@ -232,9 +228,8 @@ void QCameraLens::setRight(float right)
     if (qFuzzyCompare(d->m_right, right))
         return;
     d->m_right = right;
-    if (d->m_projectionType == OrthogonalProjection)
-        d->updateOrthogonalProjection();
     emit rightChanged();
+    d->updateProjectionMatrix();
 }
 
 float QCameraLens::right() const
@@ -249,9 +244,8 @@ void QCameraLens::setBottom(float bottom)
     if (qFuzzyCompare(d->m_bottom, bottom))
         return;
     d->m_bottom = bottom;
-    if (d->m_projectionType == OrthogonalProjection)
-        d->updateOrthogonalProjection();
     emit bottomChanged();
+    d->updateProjectionMatrix();
 }
 
 float QCameraLens::bottom() const
@@ -266,9 +260,8 @@ void QCameraLens::setTop(float top)
     if (qFuzzyCompare(d->m_top, top))
         return;
     d->m_top = top;
-    if (d->m_projectionType == OrthogonalProjection)
-        d->updateOrthogonalProjection();
     emit topChanged();
+    d->updateProjectionMatrix();
 }
 
 float QCameraLens::top() const

@@ -69,6 +69,7 @@ class QT3DCORESHARED_EXPORT QCameraLens : public QComponent
     Q_PROPERTY(float right READ right WRITE setRight NOTIFY rightChanged)
     Q_PROPERTY(float bottom READ bottom WRITE setBottom NOTIFY bottomChanged)
     Q_PROPERTY(float top READ top WRITE setTop NOTIFY topChanged)
+    Q_PROPERTY(QMatrix4x4 projectionMatrix READ projectionMatrix NOTIFY projectionMatrixChanged)
 
 public:
     explicit QCameraLens(QNode *parent = 0);
@@ -127,6 +128,7 @@ Q_SIGNALS:
     void rightChanged();
     void bottomChanged();
     void topChanged();
+    void projectionMatrixChanged();
 
 protected:
     Q_DECLARE_PRIVATE(QCameraLens)
