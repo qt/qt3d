@@ -57,6 +57,7 @@ class QTransformPrivate;
 class QT3DCORESHARED_EXPORT QTransform : public QComponent
 {
     Q_OBJECT
+    Q_PROPERTY(QMatrix4x4 matrix READ matrix NOTIFY matrixChanged)
 
 public:
     explicit QTransform(QNode *parent = 0);
@@ -86,6 +87,9 @@ public:
 
 private Q_SLOTS:
     void setTransformsDirty();
+
+Q_SIGNALS:
+    void matrixChanged();
 
 protected:
     QMatrix4x4 applyTransforms() const;

@@ -100,6 +100,7 @@ void QTransform::setTransformsDirty()
             notifyObservers(e);
         }
     }
+    emit matrixChanged();
 }
 
 QMatrix4x4 QTransform::matrix() const
