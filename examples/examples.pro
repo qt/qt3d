@@ -17,7 +17,9 @@ SUBDIRS += \
     wireframe \
     tessellation-modes \
     deferred-renderer-qml \
-    deferred-renderer-cpp
+    deferred-renderer-cpp \
+    shadow-map-qml \
+
 
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d

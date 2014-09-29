@@ -1,0 +1,19 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>AdsMaterial.qml</file>
+        <file>AdsEffect.qml</file>
+        <file>Light.qml</file>
+        <file>ShadowMapFrameGraph.qml</file>
+
+        <file>Trefoil.qml</file>
+        <file>Toyplane.qml</file>
+        <file>GroundPlane.qml</file>
+
+        <file>shaders/ads.frag</file>
+        <file>shaders/ads.vert</file>
+        <file>shaders/shadowmap.frag</file>
+        <file>shaders/shadowmap.vert</file>
+    </qresource>
+</RCC>
+
