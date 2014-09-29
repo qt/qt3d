@@ -96,14 +96,8 @@ Effect {
 
                         // TODO: Support uniform arrays. We want to be able to do (or something similar) and map vectors or lists of values
                         // through to the uniforms
-                        //ParameterMapper { parameterName: "innerTessLevel"; shaderVariableName: "inner"; bindingType: ParameterMapper.Uniform }
-                        //ParameterMapper { parameterName: "outerTessLevel"; shaderVariableName: "outer"; bindingType: ParameterMapper.Uniform }
-                        ParameterMapper { parameterName: "innerTessLevel0"; shaderVariableName: "inner[0]"; bindingType: ParameterMapper.Uniform },
-                        ParameterMapper { parameterName: "innerTessLevel1"; shaderVariableName: "inner[1]"; bindingType: ParameterMapper.Uniform },
-                        ParameterMapper { parameterName: "outerTessLevel0"; shaderVariableName: "outer[0]"; bindingType: ParameterMapper.Uniform },
-                        ParameterMapper { parameterName: "outerTessLevel1"; shaderVariableName: "outer[1]"; bindingType: ParameterMapper.Uniform },
-                        ParameterMapper { parameterName: "outerTessLevel2"; shaderVariableName: "outer[2]"; bindingType: ParameterMapper.Uniform },
-                        ParameterMapper { parameterName: "outerTessLevel3"; shaderVariableName: "outer[3]"; bindingType: ParameterMapper.Uniform }
+                        ParameterMapper { parameterName: "innerTessLevel"; shaderVariableName: "inner[0]"; bindingType: ParameterMapper.Uniform },
+                        ParameterMapper { parameterName: "outerTessLevel"; shaderVariableName: "outer[0]"; bindingType: ParameterMapper.Uniform }
                     ]
 
                     shaderProgram: ShaderProgram {

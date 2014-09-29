@@ -78,12 +78,11 @@ Entity {
         ambient: Qt.rgba( 0.2, 0.0, 0.0, 1.0 )
         diffuse: Qt.rgba( 0.8, 0.0, 0.0, 1.0 )
 
-        innerTessLevel0: 1.0
-        innerTessLevel1: 1.0
-        outerTessLevel0: 1.0
-        outerTessLevel1: 1.0
-        outerTessLevel2: 1.0
-        outerTessLevel3: 1.0
+        property real innerLevel : 1.0
+        property real outerLevel : 1.0
+
+        innerTessLevel : [innerLevel, innerLevel]
+        outerTessLevel : [outerLevel, outerLevel, outerLevel, outerLevel]
 
         effect: TessellatedWireframeEffect {
             tessellationControlShaderSourceFile: ":/shaders/quads.tcs"
@@ -96,7 +95,7 @@ Entity {
 
             QQ2.NumberAnimation {
                 target: quadMaterial;
-                properties: "innerTessLevel0,innerTessLevel1,outerTessLevel0,outerTessLevel1,outerTessLevel2,outerTessLevel3";
+                properties: "innerLevel,outerLevel";
                 duration: 1000;
                 from: 1.0
                 to: 20.0
@@ -104,7 +103,7 @@ Entity {
 
             QQ2.NumberAnimation {
                 target: quadMaterial;
-                properties: "innerTessLevel0,innerTessLevel1,outerTessLevel0,outerTessLevel1,outerTessLevel2,outerTessLevel3";
+                properties: "innerLevel,outerLevel";
                 duration: 1000;
                 from: 20.0
                 to: 1.0

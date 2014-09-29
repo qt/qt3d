@@ -58,12 +58,9 @@ Material {
     property real shininess: 150.0
     property real lineWidth: 1.0
     property color lineColor: Qt.rgba( 1.0, 1.0, 1.0, 1.0 )
-    property real innerTessLevel0: 1.0
-    property real innerTessLevel1: 1.0
-    property real outerTessLevel0: 1.0
-    property real outerTessLevel1: 1.0
-    property real outerTessLevel2: 1.0
-    property real outerTessLevel3: 1.0
+    property var innerTessLevel: [1.0, 1.0 ]
+    property var outerTessLevel: [1.0, 1.0, 1.0, 1.0]
+
 
     parameters: [
         Parameter { name: "ambient"; value: Qt.vector3d(root.ambient.r, root.ambient.g, root.ambient.b) },
@@ -72,11 +69,7 @@ Material {
         Parameter { name: "shininess"; value: root.shininess },
         Parameter { name: "line.width"; value: root.lineWidth },
         Parameter { name: "line.color"; value: root.lineColor },
-        Parameter { name: "innerTessLevel0"; value: root.innerTessLevel0 },
-        Parameter { name: "innerTessLevel1"; value: root.innerTessLevel1 },
-        Parameter { name: "outerTessLevel0"; value: root.outerTessLevel0 },
-        Parameter { name: "outerTessLevel1"; value: root.outerTessLevel1 },
-        Parameter { name: "outerTessLevel2"; value: root.outerTessLevel2 },
-        Parameter { name: "outerTessLevel3"; value: root.outerTessLevel3 }
+        Parameter { name: "innerTessLevel"; value: root.innerTessLevel },
+        Parameter { name: "outerTessLevel"; value: root.outerTessLevel }
     ]
 }
