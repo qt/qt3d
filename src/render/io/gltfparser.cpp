@@ -165,42 +165,42 @@ const QString KEY_INTERNAL_FORMAT = QStringLiteral("internalFormat");
 //    return Parameter::None;
 //}
 
-QParameter::OpenGLTypes parseType(const QByteArray &s)
-{
-    if (s == "BYTE")                  return QParameter::Undefined;
-    if (s == "BYTE_VEC2")             return QParameter::Undefined;
-    if (s == "BYTE_VEC3")             return QParameter::Undefined;
-    if (s == "BYTE_VEC4")             return QParameter::Undefined;
-    if (s == "UNSIGNED_BYTE")         return QParameter::Undefined;
-    if (s == "UNSIGNED_BYTE_VEC2")    return QParameter::Undefined;
-    if (s == "UNSIGNED_BYTE_VEC3")    return QParameter::Undefined;
-    if (s == "UNSIGNED_BYTE_VEC4")    return QParameter::Undefined;
-    if (s == "SHORT")                 return QParameter::Undefined;
-    if (s == "SHORT_VEC2")            return QParameter::Undefined;
-    if (s == "SHORT_VEC3")            return QParameter::Undefined;
-    if (s == "SHORT_VEC4")            return QParameter::Undefined;
-    if (s == "UNSIGNED_SHORT")        return QParameter::Undefined;
-    if (s == "UNSIGNED_SHORT_VEC2")   return QParameter::Undefined;
-    if (s == "UNSIGNED_SHORT_VEC3")   return QParameter::Undefined;
-    if (s == "UNSIGNED_SHORT_VEC4")   return QParameter::Undefined;
-    if (s == "FLOAT")                 return QParameter::Float;
-    if (s == "FLOAT_VEC2")            return QParameter::FloatVec2;
-    if (s == "FLOAT_VEC3")            return QParameter::FloatVec3;
-    if (s == "FLOAT_VEC4")            return QParameter::FloatVec4;
-    if (s == "FLOAT_MAT2")            return QParameter::FloatMat2;
-    if (s == "FLOAT_MAT2")            return QParameter::FloatMat3;
-    if (s == "FLOAT_MAT2")            return QParameter::FloatMat4;
-    if (s == "INT")                   return QParameter::Int;
-    if (s == "INT_VEC2")              return QParameter::IntVec2;
-    if (s == "INT_VEC3")              return QParameter::IntVec3;
-    if (s == "INT_VEC4")              return QParameter::IntVec4;
-    if (s == "BOOL")                  return QParameter::Bool;
-    if (s == "BOOL_VEC2")             return QParameter::BoolVec2;
-    if (s == "BOOL_VEC3")             return QParameter::BoolVec3;
-    if (s == "BOOL_VEC4")             return QParameter::BoolVec4;
+//QParameter::OpenGLTypes parseType(const QByteArray &s)
+//{
+//    if (s == "BYTE")                  return QParameter::Undefined;
+//    if (s == "BYTE_VEC2")             return QParameter::Undefined;
+//    if (s == "BYTE_VEC3")             return QParameter::Undefined;
+//    if (s == "BYTE_VEC4")             return QParameter::Undefined;
+//    if (s == "UNSIGNED_BYTE")         return QParameter::Undefined;
+//    if (s == "UNSIGNED_BYTE_VEC2")    return QParameter::Undefined;
+//    if (s == "UNSIGNED_BYTE_VEC3")    return QParameter::Undefined;
+//    if (s == "UNSIGNED_BYTE_VEC4")    return QParameter::Undefined;
+//    if (s == "SHORT")                 return QParameter::Undefined;
+//    if (s == "SHORT_VEC2")            return QParameter::Undefined;
+//    if (s == "SHORT_VEC3")            return QParameter::Undefined;
+//    if (s == "SHORT_VEC4")            return QParameter::Undefined;
+//    if (s == "UNSIGNED_SHORT")        return QParameter::Undefined;
+//    if (s == "UNSIGNED_SHORT_VEC2")   return QParameter::Undefined;
+//    if (s == "UNSIGNED_SHORT_VEC3")   return QParameter::Undefined;
+//    if (s == "UNSIGNED_SHORT_VEC4")   return QParameter::Undefined;
+//    if (s == "FLOAT")                 return QParameter::Float;
+//    if (s == "FLOAT_VEC2")            return QParameter::FloatVec2;
+//    if (s == "FLOAT_VEC3")            return QParameter::FloatVec3;
+//    if (s == "FLOAT_VEC4")            return QParameter::FloatVec4;
+//    if (s == "FLOAT_MAT2")            return QParameter::FloatMat2;
+//    if (s == "FLOAT_MAT2")            return QParameter::FloatMat3;
+//    if (s == "FLOAT_MAT2")            return QParameter::FloatMat4;
+//    if (s == "INT")                   return QParameter::Int;
+//    if (s == "INT_VEC2")              return QParameter::IntVec2;
+//    if (s == "INT_VEC3")              return QParameter::IntVec3;
+//    if (s == "INT_VEC4")              return QParameter::IntVec4;
+//    if (s == "BOOL")                  return QParameter::Bool;
+//    if (s == "BOOL_VEC2")             return QParameter::BoolVec2;
+//    if (s == "BOOL_VEC3")             return QParameter::BoolVec3;
+//    if (s == "BOOL_VEC4")             return QParameter::BoolVec4;
 
-    return QParameter::Undefined;
-}
+//    return QParameter::Undefined;
+//}
 
 } // of anonymous namespace
 
@@ -826,7 +826,7 @@ void GLTFParser::processJSONTechnique( QString id, QJsonObject jsonObj )
         QString semantic = po.value(KEY_SEMANTIC).toString();
         // The Standard has changed, it doesn't return the raw int value for a type
         // But a string
-        QParameter* p = new QParameter(pname, parseType(po.value(KEY_TYPE).toString().toUtf8()), t);
+//        QParameter* p = new QParameter(pname, parseType(po.value(KEY_TYPE).toString().toUtf8()), t);
 //        Parameter::StandardUniform su = parseSemanticName(semantic.toUtf8());
 //        if (su != Parameter::None) {
 //            p->setStandardUniform(su);
@@ -837,9 +837,9 @@ void GLTFParser::processJSONTechnique( QString id, QJsonObject jsonObj )
 //            p->setMeshAttributeName(semantic);
 //        }
 
-        t->addParameter(p);
+//        t->addParameter(p);
 
-        paramDict[pname] = p;
+//        paramDict[pname] = p;
     } // of parameters iteration
 
     QJsonObject passes = jsonObj.value(KEY_PASSES).toObject();
@@ -948,44 +948,44 @@ GLTFParser::BufferData::BufferData(QJsonObject json)
 
 QVariant GLTFParser::parameterValueFromJSON(QParameter* p, QJsonValue val)
 {
-    switch (p->datatype()) {
-    case QParameter::Bool:
-        return val.toBool();
+//    switch (p->datatype()) {
+//    case QParameter::Bool:
+//        return val.toBool();
 
-    case QParameter::Float:
-        return val.toDouble();
+//    case QParameter::Float:
+//        return val.toDouble();
 
-    case QParameter::FloatVec2: {
-        QJsonArray a = val.toArray();
-        return QVector2D(a[0].toDouble(), a[1].toDouble());
-    }
+//    case QParameter::FloatVec2: {
+//        QJsonArray a = val.toArray();
+//        return QVector2D(a[0].toDouble(), a[1].toDouble());
+//    }
 
-    case QParameter::FloatVec3: {
-        QJsonArray a = val.toArray();
-        return QVector3D(a[0].toDouble(), a[1].toDouble(), a[3].toDouble());
-    }
+//    case QParameter::FloatVec3: {
+//        QJsonArray a = val.toArray();
+//        return QVector3D(a[0].toDouble(), a[1].toDouble(), a[3].toDouble());
+//    }
 
-    case QParameter::FloatVec4: {
-        QJsonArray a = val.toArray();
-        return QVector4D(a[0].toDouble(),
-                a[1].toDouble(),
-                a[2].toDouble(),
-                a[3].toDouble());
-    }
+//    case QParameter::FloatVec4: {
+//        QJsonArray a = val.toArray();
+//        return QVector4D(a[0].toDouble(),
+//                a[1].toDouble(),
+//                a[2].toDouble(),
+//                a[3].toDouble());
+//    }
 
-    case QParameter::FloatMat4: {
-        QJsonArray a = val.toArray();
+//    case QParameter::FloatMat4: {
+//        QJsonArray a = val.toArray();
 
-        QMatrix4x4 m;
-        for (int i=0; i<16; ++i) {
-            m(i % 4, i / 4) = a[i].toDouble();
-        }
-        return m;
-    }
+//        QMatrix4x4 m;
+//        for (int i=0; i<16; ++i) {
+//            m(i % 4, i / 4) = a[i].toDouble();
+//        }
+//        return m;
+//    }
 
-    default:
-        qCWarning(Render::Io) << Q_FUNC_INFO << "unhandled type:" << QString::number(p->datatype(), 16);
-    }
+//    default:
+//        qCWarning(Render::Io) << Q_FUNC_INFO << "unhandled type:" << QString::number(p->datatype(), 16);
+//    }
 
     return QVariant();
 }
