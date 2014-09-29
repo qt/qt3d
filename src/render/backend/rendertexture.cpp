@@ -258,7 +258,6 @@ void RenderTexture::sceneChangeEvent(const QSceneChangePtr &e)
     // Will be recreated with updated values the next time
     // buildGLTexture is called
     if (resetTexture) {
-        m_gl->destroy();
         delete m_gl;
         m_gl = Q_NULLPTR;
     }
