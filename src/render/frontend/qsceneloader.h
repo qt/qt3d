@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QSCENE_H
-#define QT3D_QSCENE_H
+#ifndef QT3D_QSCENELOADER_H
+#define QT3D_QSCENELOADER_H
 
 #include <Qt3DRenderer/qabstractsceneloader.h>
 
@@ -62,4 +62,4 @@ protected:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QSCENE_H
+#endif // QT3D_QSCENELOADER_H
