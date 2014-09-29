@@ -99,6 +99,7 @@
 #include <Qt3DQuickRenderer/quick3drenderpass.h>
 #include <Qt3DQuickRenderer/quick3dframegraphitem.h>
 #include <Qt3DQuickRenderer/quick3dsortmethod.h>
+#include <Qt3DQuickRenderer/quick3dparameter.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -112,7 +113,8 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterExtendedType<Qt3D::QTechnique, Qt3D::Render::Quick::Quick3DTechnique>(uri, 2, 0, "Technique");
     qmlRegisterType<Qt3D::QCriterion>(uri, 2, 0, "Criterion");
     qmlRegisterType<Qt3D::QOpenGLFilter>(uri, 2, 0, "OpenGLFilter");
-    qmlRegisterType<Qt3D::QParameter>(uri, 2, 0, "Parameter");
+    qmlRegisterUncreatableType<Qt3D::QParameter>(uri, 2, 0, "QParameter", "Quick3D should instantiate Quick3DParameter only");
+    qmlRegisterType<Qt3D::Render::Quick::Quick3DParameter>(uri, 2, 0, "Parameter");
     qmlRegisterType<Qt3D::QParameterMapper>(uri, 2, 0, "ParameterMapper");
     qmlRegisterExtendedType<Qt3D::QMaterial, Qt3D::Render::Quick::Quick3DMaterial>(uri, 2, 0, "Material");
     qmlRegisterExtendedType<Qt3D::QRenderPass, Qt3D::Render::Quick::Quick3DRenderPass>(uri, 2, 0, "RenderPass");
