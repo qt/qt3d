@@ -2,7 +2,7 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     exampleresources \
-    simple-qml \
+    playground-qml \
     gltf \
     assimp \
     cpp_example \

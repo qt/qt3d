@@ -21,4 +21,4 @@ OTHER_FILES += \
     ForwardRenderer.qml
 
 RESOURCES += \
-    simple-qml.qrc
+    playground-qml.qrc
