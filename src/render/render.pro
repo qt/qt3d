@@ -30,6 +30,7 @@ gcov {
 
 HEADERS += $$PRIVATE_HEADERS \
     qt3drenderer_global.h \
+    qt3drenderer_global_p.h \
     renderlogging.h
 
 !contains(QT_CONFIG, egl):DEFINES += QT_NO_EGL

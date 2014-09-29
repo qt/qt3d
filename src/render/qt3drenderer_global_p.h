@@ -39,58 +39,11 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QPARAMETER_H
-#define QT3D_QPARAMETER_H
+#ifndef QT3DRENDERER_GLOBAL_P_H
+#define QT3DRENDERER_GLOBAL_P_H
 
-#include <Qt3DCore/qnode.h>
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include "qt3drenderer_global.h"
 
-QT_BEGIN_NAMESPACE
+#define QT3DRENDERERSHARED_PRIVATE_EXPORT QT3DRENDERERSHARED_EXPORT
 
-namespace Qt3D {
-
-class QParameterPrivate;
-class QTexture;
-
-class QT3DRENDERERSHARED_EXPORT QParameter : public QNode
-{
-    Q_OBJECT
-    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
-    Q_PROPERTY(QVariant value READ value WRITE setValue NOTIFY valueChanged)
-
-public:
-    explicit QParameter(QNode *parent = 0);
-    QParameter(const QString& name, const QVariant& value, QNode* parent = 0);
-    QParameter(const QString &name, QTexture *texture, QNode *parent = 0);
-
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
-    void setName(const QString &name);
-    QString name() const;
-
-    /**
-     * @brief setDefaultValue - for non-texture uniform parameters
-     * @param dv
-     */
-    void setValue(const QVariant& dv);
-    QVariant value() const;
-
-    bool isTextureType() const;
-
-Q_SIGNALS:
-    void valueChanged();
-    void nameChanged();
-
-protected:
-    Q_DECLARE_PRIVATE(QParameter)
-    QParameter(QParameterPrivate &dd, QNode *parent = 0);
-    QParameter *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
-};
-
-} // Qt3D
-
-QT_END_NAMESPACE
-
-Q_DECLARE_METATYPE(Qt3D::QParameter *)
-
-#endif // QT3D_PARAMETER_H
+#endif // QT3DRENDERER_GLOBAL_P_H

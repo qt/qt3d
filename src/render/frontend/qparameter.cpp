@@ -52,8 +52,13 @@ namespace Qt3D {
 
 QParameterPrivate::QParameterPrivate(QParameter *qq)
     : QNodePrivate(qq)
-    , m_type(QParameter::Undefined)
+    , m_isTexture(false)
 {
+}
+
+void QParameterPrivate::setValue(const QVariant &v)
+{
+    m_value = v;
 }
 
 QParameter::QParameter(QParameterPrivate &dd, QNode *parent)
@@ -75,13 +80,12 @@ QParameter::QParameter(QNode *parent)
 {
 }
 
-QParameter::QParameter(const QString &name, const QVariant &value, QNode *parent, QParameter::OpenGLTypes ty)
+QParameter::QParameter(const QString &name, const QVariant &value, QNode *parent)
     : QNode(*new QParameterPrivate(this), parent)
 {
     Q_D(QParameter);
     d->m_name = name;
-    d->m_value = value;
-    d->m_type = ty;
+    setValue(value);
 }
 
 QParameter::QParameter(const QString &name, QTexture *texture, QNode *parent)
@@ -89,8 +93,7 @@ QParameter::QParameter(const QString &name, QTexture *texture, QNode *parent)
 {
     Q_D(QParameter);
     d->m_name = name;
-    d->m_value = QVariant::fromValue(texture);
-    d->m_type = Undefined;
+    setValue(QVariant::fromValue(texture));
 }
 
 void QParameter::copy(const QNode *ref)
@@ -101,7 +104,7 @@ void QParameter::copy(const QNode *ref)
     if (param != Q_NULLPTR) {
         d->m_name = param->name();
         d->m_value = param->value();
-        d->m_type = param->d_func()->m_type;
+        d->m_isTexture = param->isTextureType();
     }
 }
 
@@ -124,12 +127,12 @@ void QParameter::setValue(const QVariant &dv)
 {
     Q_D(QParameter);
     if (d->m_value != dv) {
-        d->m_value = dv;
+        d->setValue(dv);
         emit valueChanged();
 
         // In case texture are declared inline
         QTexture *txt = dv.value<QTexture *>();
-        if (txt != Q_NULLPTR && (!txt->parent() || txt->parent() == this))
+        if ((d->m_isTexture = (txt != Q_NULLPTR)) && (!txt->parent() || txt->parent() == this))
             QNode::addChild(txt);
 
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
@@ -145,33 +148,11 @@ QVariant QParameter::value() const
     return d->m_value;
 }
 
-QParameter::OpenGLTypes QParameter::datatype() const
-{
-    Q_D(const QParameter);
-    return d->m_type;
-}
-
-void QParameter::setDatatype(OpenGLTypes type)
-{
-    Q_D(QParameter);
-    if (d->m_type != type) {
-        d->m_type = type;
-        emit datatypeChanged();
-    }
-}
 
 bool QParameter::isTextureType() const
 {
     Q_D(const QParameter);
-    switch (d->m_type) {
-    case Sampler1D:
-    case Sampler2D:
-    case Sampler3D:
-    case SamplerCube:
-        return true;
-    default:
-        return false;
-    }
+    return d->m_isTexture;
 }
 
 } // Qt3D

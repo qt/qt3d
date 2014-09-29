@@ -43,6 +43,7 @@
 #define QT3D_QPARAMETER_P_H
 
 #include <private/qnode_p.h>
+#include <private/qt3drenderer_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -50,17 +51,19 @@ namespace Qt3D {
 
 class QParameter;
 
-class QParameterPrivate : public QNodePrivate
+class QT3DRENDERERSHARED_PRIVATE_EXPORT QParameterPrivate : public QNodePrivate
 {
 public:
     QParameterPrivate(QParameter *qq);
 
     Q_DECLARE_PUBLIC(QParameter)
 
+    virtual void setValue(const QVariant &v);
+
     QString m_name;
-    QParameter::OpenGLTypes m_type;
     QVariant m_value;
     QString m_meshName;
+    bool m_isTexture;
 };
 
 } // Qt3D
