@@ -23,7 +23,7 @@ $publicclassregexp = "Qt3D::.+";
 #   - any git symbolic ref resolvable from the module's repository (e.g. "refs/heads/master" to track master branch)
 #
 %dependencies = (
-    "qtbase" => "refs/heads/5.4",
-    "qtxmlpatterns" => "refs/heads/5.4",
-    "qtdeclarative" => "refs/heads/5.4",
+    "qtbase" => "refs/heads/dev",
+    "qtxmlpatterns" => "refs/heads/dev",
+    "qtdeclarative" => "refs/heads/dev",
 );
