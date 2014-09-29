@@ -60,20 +60,17 @@ QRotateTransformPrivate::QRotateTransformPrivate(QRotateTransform *qq)
 {
 }
 
+void QRotateTransformPrivate::copy(const QNodePrivate *ref)
+{
+    QAbstractTransformPrivate::copy(ref);
+    const QRotateTransformPrivate *transform = static_cast<const QRotateTransformPrivate *>(ref);
+    m_axis = transform->m_axis;
+    m_angleDeg = transform->m_angleDeg;
+}
+
 QRotateTransform::QRotateTransform(QNode *parent)
     : QAbstractTransform(*new QRotateTransformPrivate(this), parent)
 {
-}
-
-void QRotateTransform::copy(const QNode *ref)
-{
-    Q_D(QRotateTransform);
-    QAbstractTransform::copy(ref);
-    const QRotateTransform *transform = qobject_cast<const QRotateTransform *>(ref);
-    if (ref != Q_NULLPTR) {
-        d->m_axis = transform->axis();
-        d->m_angleDeg = transform->angleDeg();
-    }
 }
 
 QRotateTransform::QRotateTransform(QRotateTransformPrivate &dd, QNode *parent)
@@ -81,11 +78,10 @@ QRotateTransform::QRotateTransform(QRotateTransformPrivate &dd, QNode *parent)
 {
 }
 
-QRotateTransform *QRotateTransform::doClone(bool isClone) const
+QRotateTransform *QRotateTransform::doClone() const
 {
     QRotateTransform *clone = new QRotateTransform();
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d_func());
     return clone;
 }
 

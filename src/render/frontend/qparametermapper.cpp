@@ -52,6 +52,15 @@ QParameterMapperPrivate::QParameterMapperPrivate(QParameterMapper *qq)
 {
 }
 
+void QParameterMapperPrivate::copy(const QNodePrivate *ref)
+{
+    QNodePrivate::copy(ref);
+    const QParameterMapperPrivate *mapper = static_cast<const QParameterMapperPrivate *>(ref);
+    m_parameterName = mapper->m_parameterName;
+    m_shaderVariableName = mapper->m_shaderVariableName;
+    m_bindingType = mapper->m_bindingType;
+}
+
 QParameterMapper::QParameterMapper(QNode *parent)
     : QNode(*new QParameterMapperPrivate(this), parent)
 {
@@ -62,11 +71,10 @@ QParameterMapper::QParameterMapper(QParameterMapperPrivate &dd, QNode *parent)
 {
 }
 
-QNode *QParameterMapper::doClone(bool isClone) const
+QNode *QParameterMapper::doClone() const
 {
     QParameterMapper *clone = new QParameterMapper();
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d_func());
     return clone;
 }
 
@@ -77,18 +85,6 @@ QParameterMapper::QParameterMapper(const QString &parameterName, const QString &
     d->m_parameterName = parameterName;
     d->m_shaderVariableName = shaderParameterName;
     d->m_bindingType = bindingType;
-}
-
-void QParameterMapper::copy(const QNode *ref)
-{
-    Q_D(QParameterMapper);
-    QNode::copy(ref);
-    const QParameterMapper *mapper = qobject_cast<const QParameterMapper *>(ref);
-    if (mapper != Q_NULLPTR) {
-        d->m_parameterName = mapper->parameterName();
-        d->m_shaderVariableName = mapper->shaderVariableName();
-        d->m_bindingType = mapper->bindingType();
-    }
 }
 
 void QParameterMapper::setParameterName(const QString &name)

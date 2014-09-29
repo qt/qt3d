@@ -61,8 +61,6 @@ class QT3DRENDERERSHARED_EXPORT QViewport : public QFrameGraphItem
 public:
     explicit QViewport(QNode *parent = 0);
 
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
     QRectF rect() const;
     void setRect(const QRectF& rect);
 
@@ -74,9 +72,11 @@ Q_SIGNALS:
     void clearColorChanged();
 
 protected:
-    Q_DECLARE_PRIVATE(QViewport)
     QViewport(QViewportPrivate &dd, QNode *parent = 0);
-    QViewport *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
+
+private:
+    Q_DECLARE_PRIVATE(QViewport)
+    QViewport *doClone() const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

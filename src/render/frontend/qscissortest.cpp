@@ -41,6 +41,7 @@
 ****************************************************************************/
 
 #include "qscissortest.h"
+#include "qrenderstate_p.h"
 #include <private/qnode_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
@@ -49,17 +50,19 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QScissorTestPrivate : public QNodePrivate
+class QScissorTestPrivate : public QRenderStatePrivate
 {
 public:
     QScissorTestPrivate(QScissorTest *qq)
-        : QNodePrivate(qq)
+        : QRenderStatePrivate(qq)
         , m_left(0)
         , m_bottom(0)
         , m_width(0)
         , m_height(0)
     {
     }
+
+    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
 
     Q_DECLARE_PUBLIC(QScissorTest)
     int m_left;
@@ -73,17 +76,14 @@ QScissorTest::QScissorTest(QNode *parent)
 {
 }
 
-void QScissorTest::copy(const QNode *ref)
+void QScissorTestPrivate::copy(const QNodePrivate *ref)
 {
-    QRenderState::copy(ref);
-    Q_D(QScissorTest);
-    const QScissorTest *refState = qobject_cast<const QScissorTest *>(ref);
-    if (refState != Q_NULLPTR) {
-        d->m_left = refState->left();
-        d->m_bottom = refState->bottom();
-        d->m_width = refState->width();
-        d->m_height = refState->height();
-    }
+    QRenderStatePrivate::copy(ref);
+    const QScissorTestPrivate *refState = static_cast<const QScissorTestPrivate *>(ref);
+    m_left = refState->m_left;
+    m_bottom = refState->m_bottom;
+    m_width = refState->m_width;
+    m_height = refState->m_height;
 }
 
 int QScissorTest::left() const
@@ -102,7 +102,7 @@ void QScissorTest::setLeft(int left)
             QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
             propertyChange->setPropertyName(QByteArrayLiteral("left"));
             propertyChange->setValue(d->m_left);
-            notifyObservers(propertyChange);
+            d->notifyObservers(propertyChange);
         }
     }
 }
@@ -123,7 +123,7 @@ void QScissorTest::setBottom(int bottom)
             QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
             propertyChange->setPropertyName(QByteArrayLiteral("bottom"));
             propertyChange->setValue(d->m_bottom);
-            notifyObservers(propertyChange);
+            d->notifyObservers(propertyChange);
         }
     }
 }
@@ -144,7 +144,7 @@ void QScissorTest::setWidth(int width)
             QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
             propertyChange->setPropertyName(QByteArrayLiteral("width"));
             propertyChange->setValue(d->m_width);
-            notifyObservers(propertyChange);
+            d->notifyObservers(propertyChange);
         }
     }
 }
@@ -165,16 +165,15 @@ void QScissorTest::setHeight(int height)
             QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
             propertyChange->setPropertyName(QByteArrayLiteral("height"));
             propertyChange->setValue(d->m_height);
-            notifyObservers(propertyChange);
+            d->notifyObservers(propertyChange);
         }
     }
 }
 
-QNode *QScissorTest::doClone(bool isClone) const
+QNode *QScissorTest::doClone() const
 {
     QScissorTest *clone = new QScissorTest();
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d_func());
     return clone;
 }
 

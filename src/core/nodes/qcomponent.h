@@ -55,20 +55,13 @@ class QT3DCORESHARED_EXPORT QComponent : public QNode
 {
     Q_OBJECT
 
-    Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
-
 public:
     explicit QComponent(QNode *parent = 0);
 
-    void setEnabled(bool enabled);
-    bool isEnabled() const;
-
-Q_SIGNALS:
-    void enabledChanged();
-
 protected:
-    Q_DECLARE_PRIVATE(QComponent)
     QComponent(QComponentPrivate &dd, QNode *parent = 0);
+private:
+    Q_DECLARE_PRIVATE(QComponent)
 };
 
 } // namespace Qt3D

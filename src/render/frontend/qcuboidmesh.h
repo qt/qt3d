@@ -65,8 +65,6 @@ class QT3DRENDERERSHARED_EXPORT QCuboidMesh : public Qt3D::QAbstractShapeMesh
 public:
     explicit QCuboidMesh(QNode *parent = 0);
 
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
     void setXExtent(float xExtent);
     float xExtent() const;
 
@@ -98,7 +96,9 @@ Q_SIGNALS:
 
 protected:
     QCuboidMesh(QCuboidMeshPrivate &dd, QNode *parent = 0);
-    QCuboidMesh *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
+
+private:
+    QCuboidMesh *doClone() const Q_DECL_OVERRIDE;
     Q_DECLARE_PRIVATE(QCuboidMesh)
 };
 

@@ -42,7 +42,7 @@
 
 #include "qtechniquefilter.h"
 #include "qtechniquefilter_p.h"
-
+#include "qcriterion_p.h"
 #include <Qt3DRenderer/qcriterion.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
@@ -65,18 +65,17 @@ QTechniqueFilter::QTechniqueFilter(QTechniqueFilterPrivate &dd, QNode *parent)
 {
 }
 
-QTechniqueFilter *QTechniqueFilter::doClone(bool isClone) const
+QTechniqueFilter *QTechniqueFilter::doClone() const
 {
     Q_D(const QTechniqueFilter);
     QTechniqueFilter *clone = new QTechniqueFilter();
 
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d_func());
 
     Q_FOREACH (QFrameGraphItem *fgChild, d->m_fgChildren)
-        clone->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(fgChild->clone(isClone)));
+        clone->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(QNodePrivate::get(fgChild)->clone()));
     Q_FOREACH (QCriterion *crit, d->m_criteriaList)
-        clone->addCriterion(qobject_cast<QCriterion *>(crit->clone(isClone)));
+        clone->addCriterion(qobject_cast<QCriterion *>(QNodePrivate::get(crit)->clone()));
 
     return clone;
 }
@@ -96,14 +95,14 @@ void QTechniqueFilter::addCriterion(QCriterion *criterion)
     // Or not previously added as a child of the current node so that
     // 1) The backend gets notified about it's creation
     // 2) When the current node is destroyed, it gets destroyed as well
-    if (!criterion->parent() || criterion->parent() == this)
-        QNode::addChild(criterion);
+    if (!criterion->parent())
+        criterion->setParent(this);
 
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeAdded, this));
         propertyChange->setPropertyName(QByteArrayLiteral("techniqueCriterion"));
         propertyChange->setValue(QVariant::fromValue(criterion));
-        notifyObservers(propertyChange);
+        d->notifyObservers(propertyChange);
     }
 }
 
@@ -114,7 +113,7 @@ void QTechniqueFilter::removeCriterion(QCriterion *criterion)
         QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeRemoved, this));
         propertyChange->setPropertyName(QByteArrayLiteral("techniqueCriterion"));
         propertyChange->setValue(QVariant::fromValue(criterion->uuid()));
-        notifyObservers(propertyChange);
+        d->notifyObservers(propertyChange);
     }
     d->m_criteriaList.removeOne(criterion);
 }

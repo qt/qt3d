@@ -42,6 +42,7 @@
 #ifndef QT3D_QPARAMETER_H
 #define QT3D_QPARAMETER_H
 
+#include <QVariant>
 #include <Qt3DCore/qnode.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
@@ -63,8 +64,6 @@ public:
     QParameter(const QString& name, const QVariant& value, QNode* parent = 0);
     QParameter(const QString &name, QTexture *texture, QNode *parent = 0);
 
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
     void setName(const QString &name);
     QString name() const;
 
@@ -82,9 +81,11 @@ Q_SIGNALS:
     void nameChanged();
 
 protected:
-    Q_DECLARE_PRIVATE(QParameter)
     QParameter(QParameterPrivate &dd, QNode *parent = 0);
-    QParameter *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
+
+private:
+    Q_DECLARE_PRIVATE(QParameter)
+    QParameter *doClone() const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

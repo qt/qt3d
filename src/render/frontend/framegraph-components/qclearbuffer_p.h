@@ -53,6 +53,9 @@ class QClearBufferPrivate : public QFrameGraphItemPrivate
 {
 public:
     QClearBufferPrivate(QClearBuffer *qq);
+
+    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
+
     Q_DECLARE_PUBLIC(QClearBuffer)
     QClearBuffer::BufferType m_buffersType;
 };

@@ -63,9 +63,11 @@ public:
     void removeCriterion(QCriterion *criterion);
 
 protected:
-    Q_DECLARE_PRIVATE(QTechniqueFilter)
     QTechniqueFilter(QTechniqueFilterPrivate &dd, QNode *parent = 0);
-    QTechniqueFilter *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
+
+private:
+    Q_DECLARE_PRIVATE(QTechniqueFilter)
+    QTechniqueFilter *doClone() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3D

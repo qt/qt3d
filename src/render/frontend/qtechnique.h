@@ -66,8 +66,6 @@ class QT3DRENDERERSHARED_EXPORT QTechnique : public QAbstractTechnique
 public:
     explicit QTechnique(QNode *parent = 0);
 
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
     void addCriterion(QCriterion *criterion);
     void removeCriterion(QCriterion *criterion);
 
@@ -82,12 +80,14 @@ public:
     QOpenGLFilter *openGLFilter() const;
 
 protected:
-    Q_DECLARE_PRIVATE(QTechnique)
     QTechnique(QTechniquePrivate &dd, QNode *parent = 0);
-    QTechnique *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
 
 protected Q_SLOTS:
     void openGLFilterChanged();
+
+private:
+    Q_DECLARE_PRIVATE(QTechnique)
+    QTechnique *doClone() const Q_DECL_OVERRIDE;
 };
 
 }

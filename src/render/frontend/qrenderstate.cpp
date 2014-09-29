@@ -41,17 +41,23 @@
 ****************************************************************************/
 
 #include "qrenderstate.h"
+#include "qrenderstate_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QRenderState::QRenderState(QNode *parent)
-    : QNode(parent)
+QRenderStatePrivate::QRenderStatePrivate(QRenderState *qq)
+    : QNodePrivate(qq)
 {
 }
 
-QRenderState::QRenderState(QNodePrivate &dd, QNode *parent)
+QRenderState::QRenderState(QNode *parent)
+    : QNode(*new QRenderStatePrivate(this), parent)
+{
+}
+
+QRenderState::QRenderState(QRenderStatePrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
 }

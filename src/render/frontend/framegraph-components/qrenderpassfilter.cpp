@@ -43,6 +43,7 @@
 #include "qrenderpassfilter_p.h"
 
 #include "qcriterion.h"
+#include "qcriterion_p.h"
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -58,18 +59,17 @@ QRenderPassFilter::QRenderPassFilter(QRenderPassFilterPrivate &dd, QNode *parent
 {
 }
 
-QRenderPassFilter *QRenderPassFilter::doClone(bool isClone) const
+QRenderPassFilter *QRenderPassFilter::doClone() const
 {
     Q_D(const QRenderPassFilter);
     QRenderPassFilter *clone = new QRenderPassFilter();
 
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d_func());
 
     Q_FOREACH (QFrameGraphItem *fgChild, d->m_fgChildren)
-        clone->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(fgChild->clone(isClone)));
+        clone->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(QNodePrivate::get(fgChild)->clone()));
     Q_FOREACH (QCriterion *c, d->m_criteriaList)
-        clone->addCriterion(qobject_cast<QCriterion *>(c->clone(isClone)));
+        clone->addCriterion(qobject_cast<QCriterion *>(QNodePrivate::get(c)->clone()));
 
     return clone;
 }
@@ -90,14 +90,14 @@ void QRenderPassFilter::addCriterion(QCriterion *criterion)
         // Or not previously added as a child of the current node so that
         // 1) The backend gets notified about it's creation
         // 2) When the current node is destroyed, it gets destroyed as well
-        if (!criterion->parent() || criterion->parent() == this)
-            QNode::addChild(criterion);
+        if (!criterion->parent())
+            criterion->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeAdded, this));
             propertyChange->setPropertyName(QByteArrayLiteral("renderPassCriterion"));
             propertyChange->setValue(QVariant::fromValue(criterion));
-            notifyObservers(propertyChange);
+            d->notifyObservers(propertyChange);
         }
     }
 }
@@ -109,7 +109,7 @@ void QRenderPassFilter::removeCriterion(QCriterion *criterion)
         QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeRemoved, this));
         propertyChange->setPropertyName(QByteArrayLiteral("renderPassCriterion"));
         propertyChange->setValue(QVariant::fromValue(criterion));
-        notifyObservers(propertyChange);
+        d->notifyObservers(propertyChange);
     }
     d->m_criteriaList.removeOne(criterion);
 }

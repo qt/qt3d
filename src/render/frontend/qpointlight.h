@@ -63,7 +63,7 @@ public:
 protected:
     Q_DECLARE_PRIVATE(QPointLight)
     QPointLight(QPointLightPrivate &dd, QNode *parent);
-    QPointLight *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
+    QPointLight *doClone() const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

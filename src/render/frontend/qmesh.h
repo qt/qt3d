@@ -66,8 +66,6 @@ class QT3DRENDERERSHARED_EXPORT QMesh : public QAbstractMesh
 public:
     explicit QMesh(QNode *parent = 0);
 
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
     void setSource(const QString &source);
     QString source() const;
 
@@ -77,9 +75,11 @@ Q_SIGNALS:
     void sourceChanged();
 
 protected:
-    Q_DECLARE_PRIVATE(QMesh)
     QMesh(QMeshPrivate &dd, QNode *parent = 0);
-    QMesh *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
+
+private:
+    Q_DECLARE_PRIVATE(QMesh)
+    QMesh *doClone() const Q_DECL_OVERRIDE;
 };
 
 }

@@ -57,6 +57,8 @@ class QCuboidMeshPrivate : QAbstractShapeMeshPrivate
 public:
     QCuboidMeshPrivate(QCuboidMesh *qq);
 
+    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
+
     Q_DECLARE_PUBLIC(QCuboidMesh)
 
     // Dimensions

@@ -64,7 +64,6 @@ class QT3DCORESHARED_EXPORT QLookAtTransform : public Qt3D::QAbstractTransform
 public:
     explicit QLookAtTransform(QNode *parent = 0);
 
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
     QMatrix4x4 transformMatrix() const Q_DECL_OVERRIDE;
 
     void setPosition(const QVector3D &position);
@@ -88,7 +87,7 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QLookAtTransform)
     QLookAtTransform(QLookAtTransformPrivate &dd, QNode *parent = 0);
-    QLookAtTransform *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
+    QLookAtTransform *doClone() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3D

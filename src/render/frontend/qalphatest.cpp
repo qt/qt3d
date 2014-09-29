@@ -41,6 +41,7 @@
 ****************************************************************************/
 
 #include "qalphatest.h"
+#include "qrenderstate_p.h"
 #include <private/qnode_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
@@ -48,15 +49,17 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAlphaTestPrivate : public QNodePrivate
+class QAlphaTestPrivate : public QRenderStatePrivate
 {
 public:
     QAlphaTestPrivate(QAlphaTest *qq)
-        : QNodePrivate(qq)
+        : QRenderStatePrivate(qq)
         , m_func(QAlphaTest::Never)
         , m_clamp(0.0f)
     {
     }
+
+    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
 
     Q_DECLARE_PUBLIC(QAlphaTest)
     QAlphaTest::AlphaFunc m_func;
@@ -68,15 +71,12 @@ QAlphaTest::QAlphaTest(QNode *parent)
 {
 }
 
-void QAlphaTest::copy(const QNode *ref)
+void QAlphaTestPrivate::copy(const QNodePrivate *ref)
 {
-    QRenderState::copy(ref);
-    Q_D(QAlphaTest);
-    const QAlphaTest *refState = qobject_cast<const QAlphaTest *>(ref);
-    if (refState != Q_NULLPTR) {
-        d->m_func = refState->func();
-        d->m_clamp = refState->clamp();
-    }
+    QRenderStatePrivate::copy(ref);
+    const QAlphaTestPrivate *refState = static_cast<const QAlphaTestPrivate *>(ref);
+    m_func = refState->m_func;
+    m_clamp = refState->m_clamp;
 }
 
 QAlphaTest::AlphaFunc QAlphaTest::func() const
@@ -95,7 +95,7 @@ void QAlphaTest::setFunc(QAlphaTest::AlphaFunc func)
             QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
             propertyChange->setPropertyName(QByteArrayLiteral("func"));
             propertyChange->setValue(d->m_func);
-            notifyObservers(propertyChange);
+            d->notifyObservers(propertyChange);
         }
     }
 }
@@ -116,16 +116,15 @@ void QAlphaTest::setClamp(float clamp)
             QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
             propertyChange->setPropertyName(QByteArrayLiteral("clamp"));
             propertyChange->setValue(d->m_clamp);
-            notifyObservers(propertyChange);
+            d->notifyObservers(propertyChange);
         }
     }
 }
 
-QNode *QAlphaTest::doClone(bool isClone) const
+QNode *QAlphaTest::doClone() const
 {
     QAlphaTest *clone = new QAlphaTest();
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d_func());
     return clone;
 }
 

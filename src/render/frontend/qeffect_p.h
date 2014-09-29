@@ -56,8 +56,11 @@ class QT3DRENDERERSHARED_EXPORT QEffectPrivate : public QAbstractEffectPrivate
 {
 public :
     QEffectPrivate(QEffect *qq);
-    QList<QParameter *> m_parameters;
+
+    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
+
     Q_DECLARE_PUBLIC(QEffect)
+    QList<QParameter *> m_parameters;
 };
 
 } // Qt3D

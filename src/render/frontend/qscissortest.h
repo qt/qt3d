@@ -62,8 +62,6 @@ class QT3DRENDERERSHARED_EXPORT QScissorTest  : public QRenderState
 public:
     explicit QScissorTest(QNode *parent = 0);
 
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
     int left() const;
     void setLeft(int left);
 
@@ -84,7 +82,7 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QScissorTest)
-    QNode *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
+    QNode *doClone() const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

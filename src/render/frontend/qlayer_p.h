@@ -54,6 +54,9 @@ class QT3DRENDERERSHARED_EXPORT QLayerPrivate : QComponentPrivate
 {
 public:
     QLayerPrivate(QLayer *qq);
+
+    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
+
     Q_DECLARE_PUBLIC(QLayer)
     QString m_name;
 };

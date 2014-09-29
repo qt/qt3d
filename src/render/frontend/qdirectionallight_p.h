@@ -55,6 +55,8 @@ class QT3DRENDERERSHARED_EXPORT QDirectionalLightPrivate : QAbstractLightPrivate
 public:
     QDirectionalLightPrivate(QDirectionalLight *qq);
 
+    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
+
     Q_DECLARE_PUBLIC(QDirectionalLight)
     QVector3D m_direction;
 };

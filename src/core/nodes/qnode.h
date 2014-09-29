@@ -44,11 +44,8 @@
 
 #include <QObject>
 #include <Qt3DCore/qt3dcore_global.h>
-#include <Qt3DCore/qobservableinterface.h>
-#include <Qt3DCore/qchangearbiter.h>
-
-#include <QReadWriteLock>
 #include <QUuid>
+#include <Qt3DCore/qscenechange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -63,48 +60,29 @@ class QSceneInterface;
 typedef QList<QNode *> NodeList;
 typedef QSharedPointer<QNode> QNodePtr;
 
-class QT3DCORESHARED_EXPORT QNode : public QObject, public QObservableInterface
+class QT3DCORESHARED_EXPORT QNode : public QObject
 {
     Q_OBJECT
-
 public:
     explicit QNode(QNode *parent = 0);
     ~QNode();
 
-    void dump();
-
     const QUuid uuid() const;
-
-    NodeList children() const;
-    void addChild(QNode *childNode);
-    void removeChild(QNode *childNode);
-
-    QNode *clone(bool isClone = true);
-    virtual void copy(const QNode *ref);
-
-    bool isClone() const;
-
-    void removeAllChildren();
-
-    virtual QEntity* asEntity();
-
     QNode *parentNode() const;
 
-    void registerObserver(QObserverInterface *observer) Q_DECL_OVERRIDE;
-    void unregisterObserver(QObserverInterface *observer) Q_DECL_OVERRIDE;
-
-    virtual void sceneChangeEvent(const QSceneChangePtr &change);
-
-    void setScene(QSceneInterface *scene);
-    QSceneInterface *scene() const;
-
 protected:
-    void notifyPropertyChange(const QByteArray &name, const QVariant &value);
-    virtual void notifyObservers(const QSceneChangePtr &change);
-    virtual QNode *doClone(bool isClone = true) const = 0;
-
-    Q_DECLARE_PRIVATE(QNode)
     QNode(QNodePrivate &dd, QNode *parent = 0);
+    virtual void copy(const QNode *ref);
+    virtual void sceneChangeEvent(const QSceneChangePtr &change);
+    bool event(QEvent *e) Q_DECL_OVERRIDE;
+
+private:
+    Q_DECLARE_PRIVATE(QNode)
+    virtual QNode *doClone() const = 0;
+
+    friend class QAspectEngine;
+    friend class QPostman;
+    friend class QScene;
 };
 
 } // namespace Qt3D

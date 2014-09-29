@@ -69,6 +69,8 @@ public :
         , m_status(QTexture::Loading)
     {}
 
+    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
+
     Q_DECLARE_PUBLIC(QTexture)
 
     QTexture::Target m_target;
@@ -84,6 +86,20 @@ public :
     QTexture::Status m_status;
 };
 
+void QTexturePrivate::copy(const QNodePrivate *ref)
+{
+    QNodePrivate::copy(ref);
+    const QTexturePrivate *t = static_cast<const QTexturePrivate *>(ref);
+    m_target = t->m_target;
+    m_width = t->m_width;
+    m_height = t->m_height;
+    m_depth = t->m_depth;
+    m_format = t->m_format;
+    m_wrapMode = t->m_wrapMode;
+    m_minFilter = t->m_minFilter;
+    m_magFilter = t->m_magFilter;
+    m_autoMipMap = t->m_autoMipMap;
+}
 
 QTexture::QTexture(QNode *parent)
     : QNode(*new QTexturePrivate(this), parent)
@@ -99,21 +115,6 @@ QTexture::~QTexture()
 {
 }
 
-void QTexture::copy(const QNode *ref)
-{
-    QNode::copy(ref);
-    const QTexture *t = qobject_cast<const QTexture *>(ref);
-    if (t != Q_NULLPTR) {
-        setTarget(t->target());
-        setSize(t->width(), t->height(), t->depth());
-        setFormat(t->format());
-        setTarget(t->target());
-        setWrapMode(t->wrapMode());
-        setMinificationFilter(t->minificationFilter());
-        setMagnificationFilter(t->magnificationFilter());
-        setGenerateMipMaps(t->generateMipMaps());
-    }
-}
 
 void QTexture::setTarget(Target target)
 {
@@ -126,7 +127,7 @@ void QTexture::setTarget(Target target)
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
             change->setPropertyName(QByteArrayLiteral("target"));
             change->setValue(target);
-            notifyObservers(change);
+            d->notifyObservers(change);
         }
     }
 }
@@ -149,7 +150,7 @@ void QTexture::setWidth(int width)
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
             change->setPropertyName(QByteArrayLiteral("width"));
             change->setValue(width);
-            notifyObservers(change);
+            d->notifyObservers(change);
         }
     }
 }
@@ -165,7 +166,7 @@ void QTexture::setHeight(int height)
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
             change->setPropertyName(QByteArrayLiteral("height"));
             change->setValue(height);
-            notifyObservers(change);
+            d->notifyObservers(change);
         }
     }
 }
@@ -181,7 +182,7 @@ void QTexture::setDepth(int depth)
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
             change->setPropertyName(QByteArrayLiteral("depth"));
             change->setValue(depth);
-            notifyObservers(change);
+            d->notifyObservers(change);
         }
     }
 }
@@ -215,7 +216,7 @@ void QTexture::setFormat(TextureFormat format)
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
             change->setPropertyName(QByteArrayLiteral("format"));
             change->setValue(format);
-            notifyObservers(change);
+            d->notifyObservers(change);
         }
     }
 }
@@ -235,12 +236,11 @@ void QTexture::setStatus(Status status)
     }
 }
 
-QNode *QTexture::doClone(bool isClone) const
+QNode *QTexture::doClone() const
 {
     // TO DO: Copy TexImageDataPtr
     QTexture *clone = new QTexture();
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d_func());
     return clone;
 }
 
@@ -263,8 +263,7 @@ bool QTexture::setFromQImage(QImage img, int layer)
 
     if ((d->m_target != Target2D) &&
         (d->m_target != Target2DArray) &&
-        (d->m_target == TargetRectangle))
-    {
+        (d->m_target == TargetRectangle)) {
         qWarning() << Q_FUNC_INFO << "invalid texture target";
         setStatus(Error);
         return false;
@@ -300,7 +299,7 @@ void QTexture::setGenerateMipMaps(bool gen)
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
             change->setPropertyName(QByteArrayLiteral("mipmaps"));
             change->setValue(gen);
-            notifyObservers(change);
+            d->notifyObservers(change);
         }
     }
 }
@@ -322,7 +321,7 @@ void QTexture::setMinificationFilter(Filter f)
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
             change->setPropertyName(QByteArrayLiteral("minificationFilter"));
             change->setValue(f);
-            notifyObservers(change);
+            d->notifyObservers(change);
         }
     }
 }
@@ -338,7 +337,7 @@ void QTexture::setMagnificationFilter(Filter f)
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
             change->setPropertyName(QByteArrayLiteral("magnificationFilter"));
             change->setValue(f);
-            notifyObservers(change);
+            d->notifyObservers(change);
         }
     }
 }
@@ -366,7 +365,7 @@ void QTexture::setWrapMode(WrapMode wrapMode)
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
             change->setPropertyName(QByteArrayLiteral("wrapMode"));
             change->setValue(wrapMode);
-            notifyObservers(change);
+            d->notifyObservers(change);
         }
     }
 }

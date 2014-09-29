@@ -54,9 +54,11 @@ class QT3DRENDERERSHARED_EXPORT QMaterialPrivate : public QAbstractMaterialPriva
 public:
     QMaterialPrivate(QMaterial *qq);
 
+    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
+
+    Q_DECLARE_PUBLIC(QMaterial)
     QList<QParameter *> m_parameters;
     TextureDict m_textures;
-    Q_DECLARE_PUBLIC(QMaterial)
 };
 
 } // Qt3D

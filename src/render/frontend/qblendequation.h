@@ -69,8 +69,6 @@ public:
 
     explicit QBlendEquation(QNode *parent = 0);
 
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
     BlendMode mode() const;
     void setMode(BlendMode mode);
 
@@ -79,7 +77,7 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QBlendEquation)
-    QNode *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
+    QNode *doClone() const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

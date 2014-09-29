@@ -72,8 +72,6 @@ public:
 
     explicit QAlphaTest(QNode *parent = 0);
 
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
     AlphaFunc func() const;
     void setFunc(AlphaFunc func);
 
@@ -86,7 +84,7 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QAlphaTest)
-    QNode *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
+    QNode *doClone() const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

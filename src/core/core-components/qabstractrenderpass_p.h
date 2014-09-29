@@ -43,12 +43,12 @@
 #define QT3D_QABSTRACTRENDERPASS_P_H
 
 #include <private/qnode_p.h>
+#include <Qt3DCore/qabstractrenderpass.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAbstractRenderPass;
 class QAbstractShader;
 
 class QT3DCORESHARED_EXPORT QAbstractRenderPassPrivate : public QNodePrivate

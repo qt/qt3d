@@ -56,6 +56,8 @@ class QTransformPrivate : public QComponentPrivate
 public:
     QTransformPrivate(QTransform *qq);
 
+    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
+
     Q_DECLARE_PUBLIC(QTransform)
 
     mutable QAtomicInt m_transformsDirty;

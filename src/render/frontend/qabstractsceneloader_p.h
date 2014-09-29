@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QABSTRACTSCENE_P_H
-#define QT3D_QABSTRACTSCENE_P_H
+#ifndef QT3D_QABSTRACTSCENELOADER_P_H
+#define QT3D_QABSTRACTSCENELOADER_P_H
 
 #include <private/qcomponent_p.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
@@ -59,6 +59,8 @@ class QT3DRENDERERSHARED_EXPORT QAbstractSceneLoaderPrivate : public QComponentP
 {
 public:
     QAbstractSceneLoaderPrivate(QAbstractSceneLoader *qq);
+
+    virtual void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
 
     Q_DECLARE_PUBLIC(QAbstractSceneLoader)
 

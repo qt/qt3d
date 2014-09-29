@@ -53,18 +53,16 @@ QSortCriterionPrivate::QSortCriterionPrivate(QSortCriterion *qq)
 {
 }
 
+void QSortCriterionPrivate::copy(const QNodePrivate *ref)
+{
+    QNodePrivate::copy(ref);
+    const QSortCriterionPrivate *s = static_cast<const QSortCriterionPrivate *>(ref);
+    m_sort = s->m_sort;
+}
+
 QSortCriterion::QSortCriterion(QNode *parent)
     : QNode(*new QSortCriterionPrivate(this), parent)
 {
-}
-
-void QSortCriterion::copy(const QNode *ref)
-{
-    Q_D(QSortCriterion);
-    QNode::copy(ref);
-    const QSortCriterion *s = qobject_cast<const QSortCriterion *>(ref);
-    if (s != Q_NULLPTR)
-        d->m_sort = s->sort();
 }
 
 QSortCriterion::SortType QSortCriterion::sort() const
@@ -82,7 +80,7 @@ void QSortCriterion::setSort(QSortCriterion::SortType &sort)
             QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
             propertyChange->setPropertyName(QByteArrayLiteral("sort"));
             propertyChange->setValue(d->m_sort);
-            notifyObservers(propertyChange);
+            d->notifyObservers(propertyChange);
         }
 
         d->m_sort = sort;
@@ -92,7 +90,7 @@ void QSortCriterion::setSort(QSortCriterion::SortType &sort)
             QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
             propertyChange->setPropertyName(QByteArrayLiteral("sort"));
             propertyChange->setValue(d->m_sort);
-            notifyObservers(propertyChange);
+            d->notifyObservers(propertyChange);
         }
     }
 }
@@ -102,11 +100,10 @@ QSortCriterion::QSortCriterion(QSortCriterionPrivate &dd, QNode *parent)
 {
 }
 
-QSortCriterion *QSortCriterion::doClone(bool isClone) const
+QSortCriterion *QSortCriterion::doClone() const
 {
     QSortCriterion *clone = new QSortCriterion();
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d_func());
     return clone;
 }
 

@@ -44,16 +44,17 @@
 #define QT3D_QRENDERPASS_P_H
 
 #include <private/qabstractrenderpass_p.h>
+#include <Qt3DRenderer/qrenderpass.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QRenderPass;
 class QParameter;
 class QParameterMapper;
 class QRenderState;
+class QCriterion;
 typedef QList<QParameter*> ParameterList;
 
 namespace Render

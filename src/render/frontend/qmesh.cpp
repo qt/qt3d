@@ -71,19 +71,16 @@ QMeshPrivate::QMeshPrivate(QMesh *qq)
     : QAbstractMeshPrivate(qq)
 {}
 
+void QMeshPrivate::copy(const QNodePrivate *ref)
+{
+    QAbstractMeshPrivate::copy(ref);
+    const QMeshPrivate *mesh = static_cast<const QMeshPrivate *>(ref);
+    m_source = mesh->m_source;
+}
+
 QMesh::QMesh(QNode *parent)
     : QAbstractMesh(*new QMeshPrivate(this), parent)
 {
-}
-
-void QMesh::copy(const QNode *ref)
-{
-    Q_D(QMesh);
-    QAbstractMesh::copy(ref);
-    const QMesh *mesh = qobject_cast<const QMesh *>(ref);
-    if (mesh != Q_NULLPTR) {
-        d->m_source = mesh->source();
-    }
 }
 
 QMesh::QMesh(QMeshPrivate &dd, QNode *parent)
@@ -91,11 +88,10 @@ QMesh::QMesh(QMeshPrivate &dd, QNode *parent)
 {
 }
 
-QMesh *QMesh::doClone(bool isClone) const
+QMesh *QMesh::doClone() const
 {
     QMesh *clone = new QMesh();
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d_func());
     return clone;
 }
 

@@ -82,8 +82,6 @@ public:
 
     explicit QStencilTest(QNode *parent = 0);
 
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
     uint mask() const;
     void setMask(uint mask);
 
@@ -100,7 +98,7 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QStencilTest)
-    QNode *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
+    QNode *doClone() const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

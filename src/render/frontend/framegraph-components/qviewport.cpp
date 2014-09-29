@@ -53,19 +53,16 @@ QViewportPrivate::QViewportPrivate(QViewport *qq) :
 {
 }
 
+void QViewportPrivate::copy(const QNodePrivate *ref)
+{
+    QFrameGraphItemPrivate::copy(ref);
+    const QViewportPrivate *viewport = static_cast<const QViewportPrivate *>(ref);
+    m_rect = viewport->m_rect;
+}
+
 QViewport::QViewport(QNode *parent)
     : QFrameGraphItem(*new QViewportPrivate(this), parent)
 {
-}
-
-void QViewport::copy(const QNode *ref)
-{
-    Q_D(QViewport);
-    QFrameGraphItem::copy(ref);
-    const QViewport *viewport = qobject_cast<const QViewport *>(ref);
-    if (viewport != Q_NULLPTR) {
-        d->m_rect = viewport->rect();
-    }
 }
 
 QViewport::QViewport(QViewportPrivate &dd, QNode *parent)
@@ -73,16 +70,15 @@ QViewport::QViewport(QViewportPrivate &dd, QNode *parent)
 {
 }
 
-QViewport *QViewport::doClone(bool isClone) const
+QViewport *QViewport::doClone() const
 {
     Q_D(const QViewport);
     QViewport *clone = new QViewport();
 
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d_func());
 
     Q_FOREACH (QFrameGraphItem *fgChild, d->m_fgChildren)
-        clone->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(fgChild->clone(isClone)));
+        clone->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(QNodePrivate::get(fgChild)->clone()));
 
     return clone;
 }
@@ -103,7 +99,7 @@ void QViewport::setRect(const QRectF &rect)
             QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
             propertyChange->setPropertyName(QByteArrayLiteral("rect"));
             propertyChange->setValue(QVariant::fromValue(d->m_rect));
-            notifyObservers(propertyChange);
+            d->notifyObservers(propertyChange);
         }
     }
 }
@@ -124,7 +120,7 @@ void QViewport::setClearColor(const QColor &color)
             QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
             propertyChange->setPropertyName(QByteArrayLiteral("clearColor"));
             propertyChange->setValue(QVariant::fromValue(d->m_clearColor));
-            notifyObservers(propertyChange);
+            d->notifyObservers(propertyChange);
         }
     }
 }

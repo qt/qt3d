@@ -53,6 +53,11 @@ QRenderTargetPrivate::QRenderTargetPrivate(QRenderTarget *qq)
 {
 }
 
+void QRenderTargetPrivate::copy(const QNodePrivate *ref)
+{
+    QNodePrivate::copy(ref);
+}
+
 QRenderTarget::QRenderTarget(QNode *parent)
     : QComponent(*new QRenderTargetPrivate(this), parent)
 {
@@ -63,25 +68,20 @@ QRenderTarget::QRenderTarget(QRenderTargetPrivate &dd, QNode *parent)
 {
 }
 
-void QRenderTarget::copy(const QNode *ref)
-{
-    QNode::copy(ref);
-}
-
 void QRenderTarget::addAttachment(QRenderAttachment *attachment)
 {
     Q_D(QRenderTarget);
     if (!d->m_attachments.contains(attachment)) {
         d->m_attachments.append(attachment);
 
-        if (!attachment->parent() || attachment->parent() == this)
-            addChild(attachment);
+        if (!attachment->parent())
+            attachment->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
             change->setPropertyName(QByteArrayLiteral("attachment"));
-            change->setValue(QVariant::fromValue(attachment->clone()));
-            notifyObservers(change);
+            change->setValue(QVariant::fromValue(QNodePrivate::get(attachment)->clone()));
+            d->notifyObservers(change);
         }
     }
 }
@@ -93,8 +93,8 @@ void QRenderTarget::removeAttachment(QRenderAttachment *attachment)
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, this));
         change->setPropertyName(QByteArrayLiteral("attachment"));
-        change->setValue(QVariant::fromValue(attachment->clone()));
-        notifyObservers(change);
+        change->setValue(QVariant::fromValue(QNodePrivate::get(attachment)->clone()));
+        d->notifyObservers(change);
     }
     d->m_attachments.removeOne(attachment);
 }
@@ -105,16 +105,15 @@ QList<QRenderAttachment *> QRenderTarget::attachments() const
     return d->m_attachments;
 }
 
-QRenderTarget *QRenderTarget::doClone(bool isClone) const
+QRenderTarget *QRenderTarget::doClone() const
 {
     Q_D(const QRenderTarget);
     QRenderTarget *clone = new QRenderTarget();
 
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d_func());
 
     Q_FOREACH (QRenderAttachment *attachment, d->m_attachments)
-        clone->addAttachment(qobject_cast<QRenderAttachment *>(attachment->clone(isClone)));
+        clone->addAttachment(qobject_cast<QRenderAttachment *>(QNodePrivate::get(attachment)->clone()));
 
     return clone;
 }

@@ -65,7 +65,7 @@ void RenderSceneObserver::sceneNodeAdded(QSceneChangePtr &e)
     if (m_renderer) {
         QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
         QNode *n = propertyChange->value().value<QNodePtr>().data();
-        m_renderer->renderSceneBuilder()->createRenderElement(n);
+        m_renderer->renderSceneBuilder()->insertNodeTree(n);
     }
 }
 
@@ -74,7 +74,7 @@ void RenderSceneObserver::sceneNodeRemoved(QSceneChangePtr &e)
     if (m_renderer) {
         QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
         QNode *n = propertyChange->value().value<QNodePtr>().data();
-        m_renderer->renderSceneBuilder()->releaseRenderElement(n);
+        m_renderer->renderSceneBuilder()->releaseNodeTree(n);
     }
 }
 

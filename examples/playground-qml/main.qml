@@ -512,8 +512,11 @@ Entity {
             }
         }
 
-        SceneLoader
-        {
+        Entity {
+
+            id : sceneEntity
+
+            components : SceneLoader {
             id: scene
             source: ":/assets/test_scene.dae"
             objectName: "dae_scene"
@@ -529,6 +532,8 @@ Entity {
 //                running: true
 //            }
 //            components : [scaleSceneTransform]
+        }
+
         }
 
         Layer { id: ballLayer; name : "balls" }

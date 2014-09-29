@@ -97,7 +97,6 @@ public:
     };
 
     explicit QRenderAttachment(QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
     void setType(RenderAttachmentType type);
     RenderAttachmentType type() const;
@@ -126,9 +125,11 @@ Q_SIGNALS:
     void nameChanged();
 
 protected:
-    Q_DECLARE_PRIVATE(QRenderAttachment)
     QRenderAttachment(QRenderAttachmentPrivate &dd, QNode *parent = 0);
-    QNode *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
+
+private:
+    Q_DECLARE_PRIVATE(QRenderAttachment)
+    QNode *doClone() const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

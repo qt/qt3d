@@ -53,6 +53,13 @@ QAbstractColliderPrivate::QAbstractColliderPrivate(QAbstractCollider *qq)
 {
 }
 
+void QAbstractColliderPrivate::copy(const QNodePrivate *ref)
+{
+    QComponentPrivate::copy(ref);
+    const QAbstractColliderPrivate *other = static_cast<const QAbstractColliderPrivate *>(ref);
+    m_collisionBehavior = other->m_collisionBehavior;
+}
+
 QAbstractCollider::QAbstractCollider(QNode *parent)
     : Qt3D::QComponent(*new QAbstractColliderPrivate(this), parent)
 {
@@ -63,14 +70,6 @@ QAbstractCollider::QAbstractCollider(QAbstractColliderPrivate &dd, Qt3D::QNode *
 {
 }
 
-void QAbstractCollider::copy(const QNode *ref)
-{
-    Q_D(QAbstractCollider);
-    QComponent::copy(ref);
-    const QAbstractCollider *other = qobject_cast<const QAbstractCollider *>(ref);
-    if (other != Q_NULLPTR)
-        d->m_collisionBehavior = other->collisionBehavior();
-}
 
 void QAbstractCollider::setCollisionBehavior(CollisionBehavior collisionBehavior)
 {

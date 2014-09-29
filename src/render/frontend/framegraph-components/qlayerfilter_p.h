@@ -56,6 +56,8 @@ class QT3DRENDERERSHARED_EXPORT QLayerFilterPrivate : public QFrameGraphItemPriv
 public:
     explicit QLayerFilterPrivate(QLayerFilter *qq);
 
+    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
+
     Q_DECLARE_PUBLIC(QLayerFilter)
     QStringList m_layers;
 };

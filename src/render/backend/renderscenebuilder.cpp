@@ -108,6 +108,7 @@ namespace Render {
 RenderSceneBuilder::RenderSceneBuilder(Renderer *renderer)
     : Qt3D::NodeVisitor()
     , m_renderer(renderer)
+    , m_frameGraphRoot(Q_NULLPTR)
 {
 }
 
@@ -122,7 +123,7 @@ void RenderSceneBuilder::initializeFrameGraph()
     // References that the FrameGraphItem may be usings have been inserted
     // Into the scenegraph
     // Retrieve and set Renderer FrameGraph
-    QFrameGraph *fg = QEntity::findComponentInTree<QFrameGraph>(m_renderer->sceneGraphRoot());
+    QFrameGraph *fg = m_frameGraphRoot;
     Q_ASSERT_X(fg, Q_FUNC_INFO, "No FrameGraph component found. The FrameGraph defines the renderer configuration. Cannot continue");
     //    m_frameGraphEntityNode = m_renderer->renderNodesManager()->lookupHandle(fg->parentNode()->asEntity()->uuid());
     //    createFrameGraph(fg);
@@ -191,12 +192,13 @@ void RenderSceneBuilder::createRenderElement(QNode *frontend)
         RenderEntity *rEntity = createRenderNode(entity);
         if (parentEntity)
             rEntity->setParentHandle(m_renderer->renderNodesManager()->lookupHandle(parentEntity->uuid()));
+
         if (m_rootNodeHandle.isNull())
             m_rootNodeHandle = rEntity->handle();
     }
     else if (qobject_cast<QTransform *>(frontend)) {
         createRenderElementHelper<QTransform, RenderTransform, TransformManager>(frontend,
-                                                                                m_renderer->transformManager());
+                                                                                 m_renderer->transformManager());
     }
     else if (qobject_cast<QAbstractMesh *>(frontend)) {
         createRenderElementHelper<QAbstractMesh, RenderMesh, MeshManager>(frontend,
@@ -236,7 +238,7 @@ void RenderSceneBuilder::createRenderElement(QNode *frontend)
     }
     else if (qobject_cast<QAbstractSceneLoader *>(frontend)) {
         createRenderElementHelper<QAbstractSceneLoader, RenderScene, SceneManager>(frontend,
-                                                                            m_renderer->sceneManager());
+                                                                                   m_renderer->sceneManager());
     }
     else if (qobject_cast<QTexture *>(frontend)) {
         createRenderElementHelper<QTexture, RenderTexture, TextureManager>(frontend,
@@ -309,6 +311,31 @@ void RenderSceneBuilder::releaseRenderElement(QNode *frontend)
         m_renderer->sortCriterionManager()->releaseResource(frontend->uuid());
 }
 
+void RenderSceneBuilder::insertNodeTree(QNode *nd)
+{
+    if (nd != Q_NULLPTR) {
+        createRenderElement(nd);
+        Q_FOREACH (QObject *c, nd->children()) {
+            QNode *n = qobject_cast<QNode *>(c);
+            if (n != Q_NULLPTR)
+                createRenderElement(n);
+        }
+    }
+}
+
+void RenderSceneBuilder::releaseNodeTree(QNode *nd)
+{
+    if (nd != Q_NULLPTR) {
+        Q_FOREACH (QObject *c, nd->children()) {
+            QNode *n = qobject_cast<QNode *>(c);
+            if (n != Q_NULLPTR) {
+                releaseRenderElement(n);
+            }
+        }
+        releaseRenderElement(nd);
+    }
+}
+
 RenderEntity* RenderSceneBuilder::createRenderNode(QEntity *entity)
 {
     HRenderNode renderNodeHandle;
@@ -318,12 +345,30 @@ RenderEntity* RenderSceneBuilder::createRenderNode(QEntity *entity)
     rEntity->setRenderer(m_renderer);
     rEntity->setPeer(entity);
 
-    QList<QTransform *> transforms = entity->componentsOfType<QTransform>();
-    QList<QMaterial *> materials = entity->componentsOfType<QMaterial>();
-    QList<QAbstractMesh *> meshes = entity->componentsOfType<QAbstractMesh>();
-    QList<QCameraLens *> lenses = entity->componentsOfType<QCameraLens>();
-    QList<QLayer *> layers = entity->componentsOfType<QLayer>();
-    QList<QAbstractLight *> lights = entity->componentsOfType<QAbstractLight>();
+    QList<QTransform *> transforms;
+    QList<QMaterial *> materials;
+    QList<QAbstractMesh *> meshes;
+    QList<QCameraLens *> lenses;
+    QList<QLayer *> layers;
+    QList<QAbstractLight *> lights;
+
+    Q_FOREACH (QComponent *c, entity->components()) {
+        // TO DO: switch based on typeId
+        if (qobject_cast<QTransform *>(c))
+            transforms << qobject_cast<QTransform *>(c);
+        else if (qobject_cast<QMaterial *>(c))
+            materials << qobject_cast<QMaterial *>(c);
+        else if (qobject_cast<QAbstractMesh *>(c))
+            meshes << qobject_cast<QAbstractMesh *>(c);
+        else if (qobject_cast<QCameraLens *>(c))
+            lenses << qobject_cast<QCameraLens *>(c);
+        else if (qobject_cast<QLayer *>(c))
+            layers << qobject_cast<QLayer *>(c);
+        else if (qobject_cast<QAbstractLight *>(c))
+            lights << qobject_cast<QAbstractLight *>(c);
+        else if (qobject_cast<QFrameGraph *>(c))
+            m_frameGraphRoot = qobject_cast<QFrameGraph *>(c);
+    }
 
     // Retrieve Transform from Entity
     if (!transforms.isEmpty()) {

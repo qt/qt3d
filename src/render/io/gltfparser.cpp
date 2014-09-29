@@ -204,6 +204,8 @@ const QString KEY_INTERNAL_FORMAT = QStringLiteral("internalFormat");
 
 } // of anonymous namespace
 
+class GLTFParserMeshPrivate;
+
 class GLTFParserMesh : public QAbstractMesh
 {
     Q_OBJECT
@@ -222,13 +224,27 @@ private:
 public:
     explicit GLTFParserMesh(QNode *parent = 0);
 
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
     void setData(QMeshDataPtr data);
     QAbstractMeshFunctorPtr meshFunctor() const Q_DECL_OVERRIDE;
 
 private:
+    GLTFParserMesh *doClone() const Q_DECL_OVERRIDE;
+    Q_DECLARE_PRIVATE(GLTFParserMesh)
+};
+
+class GLTFParserMeshPrivate : public QAbstractMeshPrivate
+{
+public:
+
+    GLTFParserMeshPrivate(GLTFParserMesh *qq)
+        : QAbstractMeshPrivate(qq)
+    {
+    }
+
+    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
+
+    Q_DECLARE_PUBLIC(GLTFParserMesh)
     QMeshDataPtr m_meshData;
-    GLTFParserMesh *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
 };
 
 GLTFParser::GLTFParser() : AbstractSceneParser(),
@@ -337,8 +353,7 @@ QEntity* GLTFParser::scene(QString id)
         QEntity* child = node(nodeName);
         if (!child)
             continue;
-
-        sceneEntity->addChild(child);
+        child->setParent(sceneEntity);
     }
 
     return sceneEntity;
@@ -362,7 +377,7 @@ QEntity* GLTFParser::node(QString id)
             QEntity* child = node(c.toString());
             if (!child)
                 continue;
-            result->addChild(child);
+            child->setParent(result);
         }
     }
 
@@ -395,7 +410,7 @@ QEntity* GLTFParser::node(QString id)
             // need to make a child entity per material
             foreach (QString matId, materialDict.keys()) {
                 QEntity* subEntity(new QEntity);
-                result->addChild(subEntity);
+                subEntity->setParent(result);
 
                 subEntity->addComponent(material(matId));
                 foreach (GLTFParserMesh* m, materialDict.value(matId))
@@ -990,36 +1005,36 @@ QVariant GLTFParser::parameterValueFromJSON(QParameter* p, QJsonValue val)
     return QVariant();
 }
 
+void GLTFParserMeshPrivate::copy(const QNodePrivate *ref)
+{
+    QAbstractMeshPrivate::copy(ref);
+    const GLTFParserMeshPrivate *gltfMesh = static_cast<const GLTFParserMeshPrivate *>(ref);
+    m_meshData = gltfMesh->m_meshData;
+}
+
 GLTFParserMesh::GLTFParserMesh(QNode *parent)
-    : QAbstractMesh(parent)
+    : QAbstractMesh(*new GLTFParserMeshPrivate(this), parent)
 {
 }
 
-void GLTFParserMesh::copy(const QNode *ref)
-{
-    QAbstractMesh::copy(ref);
-    const GLTFParserMesh *gltfMesh = qobject_cast<const GLTFParserMesh *>(ref);
-    if (gltfMesh != Q_NULLPTR) {
-        m_meshData = gltfMesh->m_meshData;
-    }
-}
 
 void GLTFParserMesh::setData(QMeshDataPtr data)
 {
-   m_meshData = data;
+   Q_D(GLTFParserMesh);
+   d->m_meshData = data;
    QAbstractMesh::setDirty(this);
 }
 
 QAbstractMeshFunctorPtr GLTFParserMesh::meshFunctor() const
 {
-    return QAbstractMeshFunctorPtr(new GLTFParserMeshFunctor(m_meshData));
+    Q_D(const GLTFParserMesh);
+    return QAbstractMeshFunctorPtr(new GLTFParserMeshFunctor(d->m_meshData));
 }
 
-GLTFParserMesh *GLTFParserMesh::doClone(bool isClone) const
+GLTFParserMesh *GLTFParserMesh::doClone() const
 {
     GLTFParserMesh *clone = new GLTFParserMesh();
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d_func());
     return clone;
 }
 

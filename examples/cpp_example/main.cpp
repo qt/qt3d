@@ -84,7 +84,7 @@ int main(int ac, char **av)
     Qt3D::QEntity *rootEntity = new Qt3D::QEntity();
     rootEntity->setObjectName(QStringLiteral("rootEntity"));
     // Torus
-    Qt3D::QEntity *torusEntity = new Qt3D::QEntity();
+    Qt3D::QEntity *torusEntity = new Qt3D::QEntity(rootEntity);
 
     // Torus shape data
     Qt3D::QTorusMesh *torus = new Qt3D::QTorusMesh();
@@ -106,7 +106,7 @@ int main(int ac, char **av)
     torusEntity->addComponent(torusTransforms);
 
     // Scene file
-    Qt3D::QEntity *sceneEntity = new Qt3D::QEntity();
+    Qt3D::QEntity *sceneEntity = new Qt3D::QEntity(rootEntity);
     Qt3D::QSceneLoader  *scene = new Qt3D::QSceneLoader();
     scene->setObjectName(QStringLiteral("scene"));
     Qt3D::QTransform *sceneTransform = new Qt3D::QTransform();
@@ -121,7 +121,7 @@ int main(int ac, char **av)
     sceneEntity->addComponent(scene);
 
     // Camera
-    Qt3D::QCamera *cameraEntity = new Qt3D::QCamera();
+    Qt3D::QCamera *cameraEntity = new Qt3D::QCamera(rootEntity);
     cameraEntity->setObjectName(QStringLiteral("cameraEntity"));
     Qt3D::QCameraLens *cameraLens = new Qt3D::QCameraLens();
     Qt3D::QTransform *cameraTransform = new Qt3D::QTransform();
@@ -139,29 +139,19 @@ int main(int ac, char **av)
     // FrameGraph
     Qt3D::QFrameGraph *frameGraph = new Qt3D::QFrameGraph();
     Qt3D::QTechniqueFilter *techniqueFilter = new Qt3D::QTechniqueFilter();
-    Qt3D::QCameraSelector *cameraSelector = new Qt3D::QCameraSelector();
-    Qt3D::QRenderPassFilter *defaultRenderPassFilter = new Qt3D::QRenderPassFilter();
-    Qt3D::QViewport *viewport = new Qt3D::QViewport();
-    Qt3D::QClearBuffer *clearBuffer = new Qt3D::QClearBuffer();
+    Qt3D::QViewport *viewport = new Qt3D::QViewport(techniqueFilter);
+    Qt3D::QClearBuffer *clearBuffer = new Qt3D::QClearBuffer(viewport);
+    Qt3D::QCameraSelector *cameraSelector = new Qt3D::QCameraSelector(clearBuffer);
+    Qt3D::QRenderPassFilter *defaultRenderPassFilter = new Qt3D::QRenderPassFilter(cameraSelector);
 
     // TechiqueFilter and renderPassFilter are not implement yet
-
     viewport->setRect(QRectF(0, 0, 1, 1));
-    viewport->addChild(clearBuffer);
     clearBuffer->setBuffers(Qt3D::QClearBuffer::ColorDepthBuffer);
-    clearBuffer->addChild(cameraSelector);
     cameraSelector->setCamera(cameraEntity);
-    cameraSelector->addChild(defaultRenderPassFilter);
-    techniqueFilter->addChild(viewport);
     frameGraph->setActiveFrameGraph(techniqueFilter);
 
     // Setting the FrameGraph
     rootEntity->addComponent(frameGraph);
-
-    // Build Node Tree
-    rootEntity->addChild(cameraEntity);
-    rootEntity->addChild(torusEntity);
-    rootEntity->addChild(sceneEntity);
 
     // Set root object of the scene
     view.setRootObject(rootEntity);

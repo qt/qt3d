@@ -78,7 +78,7 @@ int main(int argc, char **argv)
     Qt3D::QEntity *rootEntity = new Qt3D::QEntity();
 
     // Camera
-    Qt3D::QCamera *cameraEntity = new Qt3D::QCamera();
+    Qt3D::QCamera *cameraEntity = new Qt3D::QCamera(rootEntity);
     cameraEntity->setObjectName(QStringLiteral("cameraEntity"));
     Qt3D::QCameraLens *cameraLens = new Qt3D::QCameraLens();
     Qt3D::QTransform *cameraTransform = new Qt3D::QTransform();
@@ -96,20 +96,16 @@ int main(int argc, char **argv)
     // FrameGraph
     Qt3D::QFrameGraph *frameGraph = new Qt3D::QFrameGraph();
     Qt3D::QTechniqueFilter *techniqueFilter = new Qt3D::QTechniqueFilter();
-    Qt3D::QCameraSelector *cameraSelector = new Qt3D::QCameraSelector();
-    Qt3D::QRenderPassFilter *defaultRenderPassFilter = new Qt3D::QRenderPassFilter();
-    Qt3D::QViewport *viewport = new Qt3D::QViewport();
-    Qt3D::QClearBuffer *clearBuffer = new Qt3D::QClearBuffer();
+    Qt3D::QViewport *viewport = new Qt3D::QViewport(techniqueFilter);
+    Qt3D::QClearBuffer *clearBuffer = new Qt3D::QClearBuffer(viewport);
+    Qt3D::QCameraSelector *cameraSelector = new Qt3D::QCameraSelector(clearBuffer);
+    Qt3D::QRenderPassFilter *defaultRenderPassFilter = new Qt3D::QRenderPassFilter(cameraSelector);
 
     // TechiqueFilter and renderPassFilter are not implement yet
 
     viewport->setRect(QRectF(0, 0, 1, 1));
-    viewport->addChild(clearBuffer);
     clearBuffer->setBuffers(Qt3D::QClearBuffer::ColorDepthBuffer);
-    clearBuffer->addChild(cameraSelector);
     cameraSelector->setCamera(cameraEntity);
-    cameraSelector->addChild(defaultRenderPassFilter);
-    techniqueFilter->addChild(viewport);
 
     frameGraph->setActiveFrameGraph(techniqueFilter);
 
@@ -134,16 +130,12 @@ int main(int argc, char **argv)
     cylinderTransforms->appendTransform(cylinderRotation);
 
     // Cylinder
-    Qt3D::QEntity *cylinderEntity = new Qt3D::QEntity();
+    Qt3D::QEntity *cylinderEntity = new Qt3D::QEntity(rootEntity);
     cylinderEntity->addComponent(cylinder);
     cylinderEntity->addComponent(cylinderTransforms);
 
     // Setting the FrameGraph
     rootEntity->addComponent(frameGraph);
-
-    // Build Node Tree
-    rootEntity->addChild(cameraEntity);
-    rootEntity->addChild(cylinderEntity);
 
     // Set root object of the scene
     view.setRootObject(rootEntity);

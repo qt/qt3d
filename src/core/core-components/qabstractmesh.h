@@ -43,6 +43,7 @@
 #define QT3D_QABSTRACTMESH_H
 
 #include <Qt3DCore/qcomponent.h>
+#include <QSharedPointer>
 #include <QUuid>
 
 QT_BEGIN_NAMESPACE
@@ -76,12 +77,11 @@ public:
 
     virtual QAbstractMeshFunctorPtr meshFunctor() const = 0;
 
-Q_SIGNALS:
-    void sourceChanged();
-
 protected:
-    Q_DECLARE_PRIVATE(QAbstractMesh)
     QAbstractMesh(QAbstractMeshPrivate &dd, QNode *parent = 0);
+
+private:
+    Q_DECLARE_PRIVATE(QAbstractMesh)
 };
 
 } // Qt3D

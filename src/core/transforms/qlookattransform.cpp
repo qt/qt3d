@@ -57,18 +57,15 @@ QLookAtTransform::QLookAtTransform(QNode *parent)
 {
 }
 
-void QLookAtTransform::copy(const QNode *ref)
+void QLookAtTransformPrivate::copy(const QNodePrivate *ref)
 {
-    Q_D(QLookAtTransform);
-    QAbstractTransform::copy(ref);
-    const QLookAtTransform *transform = qobject_cast<const QLookAtTransform *>(ref);
-    if (transform != Q_NULLPTR) {
-        d->m_matrix = transformMatrix();
-        d->m_position = position();
-        d->m_upVector = upVector();
-        d->m_viewCenter = viewCenter();
-        d->m_viewVector = viewVector();
-    }
+    QAbstractTransformPrivate::copy(ref);
+    const QLookAtTransformPrivate *transform = static_cast<const QLookAtTransformPrivate *>(ref);
+    m_matrix = transform->m_matrix;
+    m_position = transform->m_position;
+    m_upVector = transform->m_upVector;
+    m_viewCenter = transform->m_viewCenter;
+    m_viewVector = transform->m_viewVector;
 }
 
 QLookAtTransform::QLookAtTransform(QLookAtTransformPrivate &dd, QNode *parent)
@@ -76,11 +73,11 @@ QLookAtTransform::QLookAtTransform(QLookAtTransformPrivate &dd, QNode *parent)
 {
 }
 
-QLookAtTransform *QLookAtTransform::doClone(bool isClone) const
+QLookAtTransform *QLookAtTransform::doClone() const
 {
+    Q_D(const QLookAtTransform);
     QLookAtTransform *clone = new QLookAtTransform();
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d);
     return clone;
 }
 

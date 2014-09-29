@@ -41,6 +41,7 @@
 ****************************************************************************/
 
 #include "qdepthmask.h"
+#include "qrenderstate_p.h"
 #include <private/qnode_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
@@ -48,14 +49,16 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QDepthMaskPrivate : public QNodePrivate
+class QDepthMaskPrivate : public QRenderStatePrivate
 {
 public:
     QDepthMaskPrivate(QDepthMask *qq)
-        : QNodePrivate(qq)
+        : QRenderStatePrivate(qq)
         , m_mask(false)
     {
     }
+
+    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
 
     Q_DECLARE_PUBLIC(QDepthMask)
     bool m_mask;
@@ -66,14 +69,11 @@ QDepthMask::QDepthMask(QNode *parent)
 {
 }
 
-void QDepthMask::copy(const QNode *ref)
+void QDepthMaskPrivate::copy(const QNodePrivate *ref)
 {
-    QRenderState::copy(ref);
-    Q_D(QDepthMask);
-    const QDepthMask *refState = qobject_cast<const QDepthMask *>(ref);
-    if (refState != Q_NULLPTR) {
-        d->m_mask = refState->mask();
-    }
+    QRenderStatePrivate::copy(ref);
+    const QDepthMaskPrivate *refState = static_cast<const QDepthMaskPrivate *>(ref);
+    m_mask = refState->m_mask;
 }
 
 bool QDepthMask::mask() const
@@ -92,16 +92,15 @@ void QDepthMask::setMask(bool mask)
             QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
             propertyChange->setPropertyName(QByteArrayLiteral("mask"));
             propertyChange->setValue(d->m_mask);
-            notifyObservers(propertyChange);
+            d->notifyObservers(propertyChange);
         }
     }
 }
 
-QNode *QDepthMask::doClone(bool isClone) const
+QNode *QDepthMask::doClone() const
 {
     QDepthMask *clone = new QDepthMask();
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d_func());
     return clone;
 }
 

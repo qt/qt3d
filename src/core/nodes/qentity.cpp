@@ -42,6 +42,7 @@
 #include "qentity.h"
 #include "qentity_p.h"
 #include "qcomponent.h"
+#include "qcomponent_p.h"
 #include "qabstracttransform.h"
 #include "qmatrixtransform.h"
 
@@ -77,28 +78,24 @@ QEntity::QEntity(QEntityPrivate &dd, QNode *parent)
 {
 }
 
-QEntity *QEntity::doClone(bool isClone) const
+QEntity *QEntity::doClone() const
 {
     Q_D(const QEntity);
     QEntity *clone = new QEntity();
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d_func());
     Q_FOREACH (QComponent *c, d->m_components) {
-        QNode *ccclone = c->clone(isClone);
+        QNode *ccclone = QNodePrivate::get(c)->clone();
         clone->addComponent(qobject_cast<QComponent *>(ccclone));
     }
     return clone;
 }
 
-void QEntity::copy(const QNode *ref)
+void QEntityPrivate::copy(const QNodePrivate *ref)
 {
-    Q_D(QEntity);
-    QNode::copy(ref);
-    const QEntity *entity = qobject_cast<const QEntity *>(ref);
-    if (entity != Q_NULLPTR) {
-        d->m_enabled = entity->d_func()->m_enabled;
-        d->m_visible = entity->d_func()->m_visible;
-    }
+    QNodePrivate::copy(ref);
+    const QEntityPrivate *entity = static_cast<const QEntityPrivate *>(ref);
+    m_enabled = entity->m_enabled;
+    m_visible = entity->m_visible;
 }
 
 QList<QComponent *> QEntity::components() const
@@ -116,36 +113,34 @@ void QEntity::addComponent(QComponent *comp)
     d->m_components.append(comp);
     // We only set the Entity as the Component's parent when it has no parent
     // This will be the case mostly on C++ but rarely in QML
-    if (!comp->parent() || comp->parent() == this)
-        addChild(comp);
+    if (!comp->parent())
+        comp->setParent(this);
 
-    if (!isClone() && !comp->isClone() && d->m_scene != Q_NULLPTR)
+    if (d->m_scene != Q_NULLPTR)
         d->m_scene->addEntityForComponent(comp->uuid(), d->m_uuid);
 
-    if (!isClone() && !comp->isClone() && d->m_changeArbiter != Q_NULLPTR) {
+    if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentAdded, this));
         propertyChange->setPropertyName(QByteArrayLiteral("component"));
-        propertyChange->setValue(QVariant::fromValue(QNodePtr(comp->clone())));
-        notifyObservers(propertyChange);
+        propertyChange->setValue(QVariant::fromValue(QNodePtr(QNodePrivate::get(comp)->clone(), &QNodePrivate::nodePtrDeleter)));
+        d->notifyObservers(propertyChange);
     }
 }
 
-// As in most cases Components are children of the Entity
-// They shouldn't therefore also be called in the removeAllChildren of QNode
-// How to handle QML inline declaration however ?
 void QEntity::removeComponent(QComponent *comp)
 {
     Q_CHECK_PTR(comp);
     qCDebug(Nodes) << Q_FUNC_INFO << comp;
     Q_D(QEntity);
-    if (!isClone() && !comp->isClone() && d->m_changeArbiter != Q_NULLPTR) {
+
+    if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentRemoved, this));
-        propertyChange->setValue(QVariant::fromValue(QNodePtr(comp->clone())));
+        propertyChange->setValue(QVariant::fromValue(QNodePtr(QNodePrivate::get(comp)->clone(), &QNodePrivate::nodePtrDeleter)));
         propertyChange->setPropertyName(QByteArrayLiteral("component"));
-        notifyObservers(propertyChange);
+        d->notifyObservers(propertyChange);
     }
 
-    if (!isClone() && !comp->isClone() && d->m_scene != Q_NULLPTR)
+    if (d->m_scene != Q_NULLPTR)
         d->m_scene->removeEntityForComponent(comp->uuid(), d->m_uuid);
 
     d->m_components.removeOne(comp);
@@ -158,36 +153,16 @@ void QEntity::removeAllComponents()
         removeComponent(comp);
 }
 
-bool QEntity::isEnabled() const
-{
-    Q_D(const QEntity);
-    return d->m_enabled;
-}
-
-void QEntity::setEnabled(bool on)
-{
-    Q_D(QEntity);
-    if (d->m_enabled != on) {
-        d->m_enabled = on;
-        emit enabledChanged();
-    }
-}
-
 QEntity *QEntity::parentEntity()
 {
     QNode *parentNode = QNode::parentNode();
-    QEntity *parentEntity = qobject_cast<QEntity*>(parentNode);
+    QEntity *parentEntity = qobject_cast<QEntity *>(parentNode);
 
     while (parentEntity == Q_NULLPTR && parentNode != Q_NULLPTR) {
         parentNode = parentNode->parentNode();
         parentEntity = qobject_cast<QEntity*>(parentNode);
     }
     return parentEntity;
-}
-
-QEntity *QEntity::asEntity()
-{
-    return this;
 }
 
 } // namespace Qt3D

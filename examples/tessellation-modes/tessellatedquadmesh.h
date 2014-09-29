@@ -52,8 +52,8 @@ public:
 
     Qt3D::QAbstractMeshFunctorPtr meshFunctor() const Q_DECL_OVERRIDE;
 
-protected:
-    TessellatedQuadMesh *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
+private:
+    TessellatedQuadMesh *doClone() const Q_DECL_OVERRIDE;
 };
 
 #endif // TESSELLATEDQUAD_H

@@ -94,9 +94,11 @@ public:
     QList<QRenderState *> renderStates() const;
 
 protected:
-    Q_DECLARE_PRIVATE(QRenderPass)
     QRenderPass(QRenderPassPrivate &dd, QNode *parent = 0);
-    QRenderPass *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
+
+private:
+    Q_DECLARE_PRIVATE(QRenderPass)
+    QRenderPass *doClone() const Q_DECL_OVERRIDE;
 };
 
 }

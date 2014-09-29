@@ -49,12 +49,14 @@
 #include <Qt3DCore/qscene.h>
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qsceneobserverinterface.h>
+#include <Qt3DCore/private/qnode_p.h>
 
 class tst_QChangeArbiter : public QObject
 {
     Q_OBJECT
 public:
 
+#if 0
 private slots:
     void registerObservers();
     void registerSceneObserver();
@@ -62,8 +64,10 @@ private slots:
     void unregisterSceneObservers();
     void distributeFrontendChanges();
     void distributeBackendChanges();
+#endif
 };
 
+#if 0
 class tst_Node : public Qt3D::QNode
 {
 public:
@@ -74,49 +78,49 @@ public:
     {
         Qt3D::QScenePropertyChangePtr e(new Qt3D::QScenePropertyChange(Qt3D::NodeAdded, this));
         e->setPropertyName(QByteArrayLiteral("NodeAdded"));
-        notifyObservers(e);
+//        d_func()->notifyObservers(e);
     }
 
     void sendNodeRemovedNotification()
     {
         Qt3D::QScenePropertyChangePtr e(new Qt3D::QScenePropertyChange(Qt3D::NodeRemoved, this));
         e->setPropertyName(QByteArrayLiteral("NodeRemoved"));
-        notifyObservers(e);
+//        d->notifyObservers(e);
     }
 
     void sendNodeUpdatedNotification()
     {
         Qt3D::QScenePropertyChangePtr e(new Qt3D::QScenePropertyChange(Qt3D::NodeUpdated, this));
         e->setPropertyName(QByteArrayLiteral("NodeUpdated"));
-        notifyObservers(e);
+//        d->notifyObservers(e);
     }
 
     void sendComponentAddedNotification()
     {
         Qt3D::QScenePropertyChangePtr e(new Qt3D::QScenePropertyChange(Qt3D::ComponentAdded, this));
         e->setPropertyName(QByteArrayLiteral("ComponentAdded"));
-        notifyObservers(e);
+//        d->notifyObservers(e);
     }
 
     void sendComponentRemovedNotification()
     {
         Qt3D::QScenePropertyChangePtr e(new Qt3D::QScenePropertyChange(Qt3D::ComponentRemoved, this));
         e->setPropertyName(QByteArrayLiteral("ComponentRemoved"));
-        notifyObservers(e);
+//        d->notifyObservers(e);
     }
 
     void sendComponentUpdatedNotification()
     {
         Qt3D::QScenePropertyChangePtr e(new Qt3D::QScenePropertyChange(Qt3D::ComponentUpdated, this));
         e->setPropertyName(QByteArrayLiteral("ComponentUpdated"));
-        notifyObservers(e);
+//        d->notifyObservers(e);
     }
 
     void sendAllChangesNotification()
     {
         Qt3D::QScenePropertyChangePtr e(new Qt3D::QScenePropertyChange(Qt3D::AllChanges, this));
         e->setPropertyName(QByteArrayLiteral("AllChanges"));
-        notifyObservers(e);
+//        d->notifyObservers(e);
     }
 
     void sceneChangeEvent(const Qt3D::QSceneChangePtr &change) Q_DECL_OVERRIDE
@@ -139,11 +143,10 @@ public:
 
     // QNode interface
 protected:
-    Qt3D::QNode *doClone(bool isClone = true) const
+    Qt3D::QNode *doClone() const
     {
         tst_Node *clone = new tst_Node();
         clone->copy(this);
-//        clone->d_func()->m_isClone = isClone;
         return clone;
     }
 
@@ -253,8 +256,8 @@ public:
         Qt3D::QBackendScenePropertyChangePtr change = qSharedPointerDynamicCast<Qt3D::QBackendScenePropertyChange>(e);
         QVERIFY(!change.isNull());
         Qt3D::QNode *targetNode = m_sceneInterface->lookupNode(change->targetNode());
-        if (targetNode != Q_NULLPTR)
-            targetNode->sceneChangeEvent(e);
+//        if (targetNode != Q_NULLPTR)
+//            targetNode->sceneChangeEvent(e);
     }
 
 private:
@@ -367,11 +370,6 @@ void tst_QChangeArbiter::registerSceneObserver()
 
     root->addChild(child);
 
-    arbiter->syncChanges(); // Clones notifications
-    // Adding a child may trigger a notification for the clone as well
-    // This will be sorted out when we have refactored QNode
-    // We syncChanges just to be sure that those notification have been properly
-    // handled
     arbiter->syncChanges();
     Q_FOREACH (tst_SimpleObserver *o, observers) {
         QVERIFY(!o->lastChange().isNull());
@@ -480,11 +478,6 @@ void tst_QChangeArbiter::unregisterSceneObservers()
 
     root->addChild(child);
 
-    arbiter->syncChanges(); // Clones notifications
-    // Adding a child may trigger a notification for the clone as well
-    // This will be sorted out when we have refactored QNode
-    // We syncChanges just to be sure that those notification have been properly
-    // handled
     arbiter->syncChanges();
     Q_FOREACH (tst_SimpleObserver *o, observers) {
         QVERIFY(!o->lastChange().isNull());
@@ -508,11 +501,6 @@ void tst_QChangeArbiter::unregisterSceneObservers()
     }
 
     root->removeAllChildren();
-    arbiter->syncChanges(); // Clones notification
-    // Removing a child may trigger a notification for the clone as well
-    // This will be sorted out when we have refactored QNode
-    // We syncChanges just to be sure that those notification have been properly
-    // handled
     arbiter->syncChanges();
 
     Q_FOREACH (tst_SimpleObserver *o, observers) {
@@ -700,6 +688,7 @@ void tst_QChangeArbiter::distributeBackendChanges()
     QVERIFY(c->propertyName() == QByteArrayLiteral("Reply"));
     QVERIFY(c->type() == Qt3D::NodeUpdated);
 }
+#endif
 
 QTEST_APPLESS_MAIN(tst_QChangeArbiter)
 

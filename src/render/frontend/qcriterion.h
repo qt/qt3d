@@ -60,8 +60,6 @@ class QT3DRENDERERSHARED_EXPORT QCriterion : public QNode
 public:
     explicit QCriterion(QNode *parent = 0);
 
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
     void setValue(const QVariant &value);
     void setName(const QString &customType);
 
@@ -74,7 +72,7 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QCriterion)
-    QCriterion *doClone(bool isClone) const Q_DECL_OVERRIDE;
+    QCriterion *doClone() const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

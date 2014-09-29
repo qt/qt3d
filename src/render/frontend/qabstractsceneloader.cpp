@@ -68,13 +68,10 @@ QAbstractSceneLoader::QAbstractSceneLoader(QNode *parent)
 {
 }
 
-void QAbstractSceneLoader::copy(const QNode *ref)
+void QAbstractSceneLoaderPrivate::copy(const QNodePrivate *ref)
 {
-    Q_D(QAbstractSceneLoader);
-    const QAbstractSceneLoader *s = qobject_cast<const QAbstractSceneLoader *>(ref);
-    if (s != Q_NULLPTR) {
-        d->m_source = s->source();
-    }
+    const QAbstractSceneLoaderPrivate *s = static_cast<const QAbstractSceneLoaderPrivate *>(ref);
+    m_source = s->m_source;
 }
 
 QString QAbstractSceneLoader::source() const
@@ -92,7 +89,7 @@ void QAbstractSceneLoader::setSource(QString arg)
         QScenePropertyChangePtr change(new QScenePropertyChange(ComponentUpdated, this));
         change->setPropertyName(QByteArrayLiteral("source"));
         change->setValue(d->m_source);
-        notifyObservers(change);
+        d->notifyObservers(change);
     }
 }
 

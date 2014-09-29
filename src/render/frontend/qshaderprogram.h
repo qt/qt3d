@@ -82,8 +82,6 @@ public:
         Compute
     };
 
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
     // Source from file
     void setVertexShaderSourceFile(const QString &vertexShaderSourceFile);
     QString vertexShaderSourceFile() const;
@@ -144,9 +142,11 @@ Q_SIGNALS:
     void computeShaderCodeChanged();
 
 protected:
-    Q_DECLARE_PRIVATE(QShaderProgram)
     QShaderProgram(QShaderProgramPrivate &dd, QNode *parent = 0);
-    QShaderProgram *doClone(bool isClone) const Q_DECL_OVERRIDE;
+
+private:
+    Q_DECLARE_PRIVATE(QShaderProgram)
+    QShaderProgram *doClone() const Q_DECL_OVERRIDE;
 };
 
 }

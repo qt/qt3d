@@ -67,9 +67,11 @@ Q_SIGNALS:
     void targetChanged();
 
 protected:
-    Q_DECLARE_PRIVATE(QRenderTargetSelector)
     QRenderTargetSelector(QRenderTargetSelectorPrivate &dd, QNode *parent = 0);
-    QRenderTargetSelector *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
+
+private:
+    Q_DECLARE_PRIVATE(QRenderTargetSelector)
+    QRenderTargetSelector *doClone() const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

@@ -44,25 +44,15 @@
 
 DeferredRenderer::DeferredRenderer(Qt3D::QNode *parent)
     : Qt3D::QViewport(parent)
-    , m_clearGBuffer(new Qt3D::QClearBuffer())
-    , m_clearScreenQuad(new Qt3D::QClearBuffer())
-    , m_sceneFilter(new Qt3D::QLayerFilter())
-    , m_screenQuadFilter(new Qt3D::QLayerFilter())
-    , m_gBufferTargetSelector(new Qt3D::QRenderTargetSelector())
-    , m_geometryPassFilter(new Qt3D::QRenderPassFilter())
-    , m_finalPassFilter(new Qt3D::QRenderPassFilter())
-    , m_sceneCameraSelector(new Qt3D::QCameraSelector())
+    , m_screenQuadFilter(new Qt3D::QLayerFilter(this))
+    , m_sceneFilter(new Qt3D::QLayerFilter(this))
+    , m_clearScreenQuad(new Qt3D::QClearBuffer(m_screenQuadFilter))
+    , m_gBufferTargetSelector(new Qt3D::QRenderTargetSelector(m_sceneFilter))
+    , m_clearGBuffer(new Qt3D::QClearBuffer(m_gBufferTargetSelector))
+    , m_geometryPassFilter(new Qt3D::QRenderPassFilter(m_clearGBuffer))
+    , m_finalPassFilter(new Qt3D::QRenderPassFilter(m_clearScreenQuad))
+    , m_sceneCameraSelector(new Qt3D::QCameraSelector(m_geometryPassFilter))
 {
-    m_geometryPassFilter->addChild(m_sceneCameraSelector);
-    m_clearGBuffer->addChild(m_geometryPassFilter);
-    m_gBufferTargetSelector->addChild(m_clearGBuffer);
-    m_sceneFilter->addChild(m_gBufferTargetSelector);
-    addChild(m_sceneFilter);
-
-    m_clearScreenQuad->addChild(m_finalPassFilter);
-    m_screenQuadFilter->addChild(m_clearScreenQuad);
-    addChild(m_screenQuadFilter);
-
     m_clearGBuffer->setBuffers(Qt3D::QClearBuffer::ColorDepthBuffer);
     m_clearScreenQuad->setBuffers(Qt3D::QClearBuffer::ColorDepthBuffer);
 }
@@ -86,7 +76,7 @@ void DeferredRenderer::setGeometryPassCriteria(QList<Qt3D::QCriterion *> criteri
 void DeferredRenderer::setFinalPassCriteria(QList<Qt3D::QCriterion *> criteria)
 {
     Q_FOREACH (Qt3D::QCriterion *c, criteria)
-        m_finalPassFilter->addChild(c);
+        c->setParent(m_finalPassFilter);
 }
 
 void DeferredRenderer::setGBufferLayer(const QString &layerName)

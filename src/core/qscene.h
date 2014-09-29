@@ -62,19 +62,16 @@ public:
     void removeObservable(QObservableInterface *observable, const QUuid &uuid) Q_DECL_OVERRIDE;
     void removeObservable(QNode *observable) Q_DECL_OVERRIDE;
     QObservableList lookupObservables(const QUuid &uuid) const Q_DECL_OVERRIDE;
+
     QNode *lookupNode(const QUuid &uuid) const Q_DECL_OVERRIDE;
     QUuid nodeIdFromObservable(QObservableInterface *observable) const Q_DECL_OVERRIDE;
+
     void setArbiter(QChangeArbiter *arbiter) Q_DECL_OVERRIDE;
 
     // Component -> Entities
     QList<QUuid> entitiesForComponent(const QUuid &uuid) const Q_DECL_OVERRIDE;
     void addEntityForComponent(const QUuid &componentUuid, const QUuid &entityUuid) Q_DECL_OVERRIDE;
     void removeEntityForComponent(const QUuid &componentUuid, const QUuid &entityUuid) Q_DECL_OVERRIDE;
-
-    // QNode -> QNode *children
-    QNode *lookupClone(const QUuid &id) const Q_DECL_OVERRIDE;
-    void addCloneLookup(QNode *clone) Q_DECL_OVERRIDE;
-    void clearCloneLookup() Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QScene)

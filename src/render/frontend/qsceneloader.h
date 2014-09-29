@@ -56,7 +56,7 @@ public:
     void sceneChangeEvent(const QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 protected:
-    QNode *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
+    QNode *doClone() const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

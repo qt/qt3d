@@ -61,8 +61,6 @@ public:
     explicit QMatrixTransform(QNode *parent = 0);
     QMatrixTransform(const QMatrix4x4& m, QNode *parent = 0);
 
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
     QMatrix4x4 matrix() const;
     void setMatrix(const QMatrix4x4 &matrix);
 
@@ -74,7 +72,7 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QMatrixTransform)
     QMatrixTransform(QMatrixTransformPrivate &dd, QNode *parent = 0);
-    QMatrixTransform *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
+    QMatrixTransform *doClone() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3D

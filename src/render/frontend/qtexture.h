@@ -228,8 +228,6 @@ public:
         ClampToBorder  = 0x812D  // GL_CLAMP_TO_BORDER
     };
 
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
     void setTarget(Target target);
     Target target() const;
 
@@ -287,11 +285,12 @@ Q_SIGNALS:
     void minificationFilterChanged();
 
 protected:
-
-    Q_DECLARE_PRIVATE(QTexture)
     QTexture(QTexturePrivate &dd, QNode *parent = 0);
     void setStatus(Status status);
-    QNode *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
+
+private:
+    Q_DECLARE_PRIVATE(QTexture)
+    QNode *doClone() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3D

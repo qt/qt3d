@@ -68,14 +68,11 @@ QTechnique::QTechnique(QNode *parent)
     QObject::connect(d->m_openGLFilter, SIGNAL(openGLFilterChanged()), this, SLOT(openGLFilterChanged()));
 }
 
-void QTechnique::copy(const QNode *ref)
+void QTechniquePrivate::copy(const QNodePrivate *ref)
 {
-    Q_D(QTechnique);
-    QAbstractTechnique::copy(ref);
-    const QTechnique *tech = qobject_cast<const QTechnique *>(ref);
-    if (tech != Q_NULLPTR) {
-        d->m_openGLFilter->copy(tech->openGLFilter());
-    }
+    QAbstractTechniquePrivate::copy(ref);
+    const QTechniquePrivate *tech = static_cast<const QTechniquePrivate *>(ref);
+    m_openGLFilter->copy(tech->m_openGLFilter);
 }
 
 QTechnique::QTechnique(QTechniquePrivate &dd, QNode *parent)
@@ -85,20 +82,19 @@ QTechnique::QTechnique(QTechniquePrivate &dd, QNode *parent)
     QObject::connect(d->m_openGLFilter, SIGNAL(openGLFilterChanged()), this, SLOT(openGLFilterChanged()));
 }
 
-QTechnique *QTechnique::doClone(bool isClone) const
+QTechnique *QTechnique::doClone() const
 {
     Q_D(const QTechnique);
     QTechnique *technique = new QTechnique();
 
-    technique->copy(this);
-    technique->d_func()->m_isClone = isClone;
+    technique->d_func()->copy(d_func());
 
     Q_FOREACH (QCriterion *criterion, d->m_criteriaList)
-        technique->addCriterion(qobject_cast<QCriterion *>(criterion->clone(isClone)));
+        technique->addCriterion(qobject_cast<QCriterion *>(QNodePrivate::get(criterion)->clone()));
     Q_FOREACH (QAbstractRenderPass *pass, d->m_renderPasses)
-        technique->addPass(qobject_cast<QAbstractRenderPass *>(pass->clone(isClone)));
+        technique->addPass(qobject_cast<QAbstractRenderPass *>(QNodePrivate::get(pass)->clone()));
     Q_FOREACH (QParameter *p, d->m_parameters)
-        technique->addParameter(qobject_cast<QParameter *>(p->clone(isClone)));
+        technique->addParameter(qobject_cast<QParameter *>(QNodePrivate::get(p)->clone()));
 
     return technique;
 }
@@ -112,7 +108,7 @@ void QTechnique::openGLFilterChanged()
         QOpenGLFilter *clone = new QOpenGLFilter();
         clone->copy(d->m_openGLFilter);
         change->setValue(QVariant::fromValue(clone));
-        notifyObservers(change);
+        d->notifyObservers(change);
     }
 }
 
@@ -126,14 +122,14 @@ void QTechnique::addCriterion(QCriterion *criterion)
         // Or not previously added as a child of the current node so that
         // 1) The backend gets notified about it's creation
         // 2) When the current node is destroyed, it gets destroyed as well
-        if (!criterion->parent() || criterion->parent() == this)
-            QNode::addChild(criterion);
+        if (!criterion->parent())
+            criterion->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
             change->setPropertyName(QByteArrayLiteral("criterion"));
-            change->setValue(QVariant::fromValue(criterion->clone()));
-            notifyObservers(change);
+            change->setValue(QVariant::fromValue(QNodePrivate::get(criterion)->clone()));
+            d->notifyObservers(change);
         }
     }
 }
@@ -145,7 +141,7 @@ void QTechnique::removeCriterion(QCriterion *criterion)
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, this));
         change->setPropertyName(QByteArrayLiteral("criterion"));
         change->setValue(QVariant::fromValue(criterion->uuid()));
-        notifyObservers(change);
+        d->notifyObservers(change);
     }
     d->m_criteriaList.removeOne(criterion);
 }
@@ -173,14 +169,14 @@ void QTechnique::addParameter(QParameter *parameter)
         // Or not previously added as a child of the current node so that
         // 1) The backend gets notified about it's creation
         // 2) When the current node is destroyed, the child parameters get destroyed as well
-        if (!parameter->parent() || parameter->parent() == this)
-            QNode::addChild(parameter);
+        if (!parameter->parent())
+            parameter->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
             change->setPropertyName(QByteArrayLiteral("parameter"));
-            change->setValue(QVariant::fromValue(parameter->clone()));
-            notifyObservers(change);
+            change->setValue(QVariant::fromValue(QNodePrivate::get(parameter)->clone()));
+            d->notifyObservers(change);
         }
     }
 }
@@ -192,8 +188,8 @@ void QTechnique::removeParameter(QParameter *parameter)
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, this));
         change->setPropertyName(QByteArrayLiteral("parameter"));
-        change->setValue(QVariant::fromValue(parameter->clone()));
-        notifyObservers(change);
+        change->setValue(QVariant::fromValue(QNodePrivate::get(parameter)->clone()));
+        d->notifyObservers(change);
     }
     d->m_parameters.removeOne(parameter);
 }

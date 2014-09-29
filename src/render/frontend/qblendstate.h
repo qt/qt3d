@@ -87,8 +87,6 @@ public:
 
     explicit QBlendState(QNode *parent = 0);
 
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
     Blending srcRGB() const;
     void setSrcRGB(Blending srcRGB);
 
@@ -109,7 +107,7 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QBlendState)
-    QNode *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
+    QNode *doClone() const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

@@ -80,6 +80,8 @@ class QCylinderMeshPrivate : public QAbstractShapeMeshPrivate
         , m_length(1.0)
     {}
 
+    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
+
     Q_DECLARE_PUBLIC(QCylinderMesh)
     int m_rings;
     int m_slices;
@@ -87,24 +89,22 @@ class QCylinderMeshPrivate : public QAbstractShapeMeshPrivate
     float m_length;
 };
 
+void QCylinderMeshPrivate::copy(const QNodePrivate *ref)
+{
+    QAbstractShapeMeshPrivate::copy(ref);
+    const QCylinderMeshPrivate *mesh = static_cast<const QCylinderMeshPrivate *>(ref);
+    m_rings = mesh->m_rings;
+    m_slices = mesh->m_slices;
+    m_radius = mesh->m_radius;
+    m_length = mesh->m_length;
+}
+
 QCylinderMesh::QCylinderMesh(QNode *parent)
     : QAbstractShapeMesh(*new QCylinderMeshPrivate(this), parent)
 {
     setDirty(true);
 }
 
-void QCylinderMesh::copy(const QNode *ref)
-{
-    Q_D(QCylinderMesh);
-    QAbstractShapeMesh::copy(ref);
-    const QCylinderMesh *mesh = qobject_cast<const QCylinderMesh *>(ref);
-    if (mesh != Q_NULLPTR) {
-        d->m_rings = mesh->rings();
-        d->m_slices = mesh->slices();
-        d->m_radius = mesh->radius();
-        d->m_length = mesh->length();
-    }
-}
 
 void QCylinderMesh::setRings(int rings)
 {
@@ -334,9 +334,11 @@ QAbstractMeshFunctorPtr QCylinderMesh::meshFunctor() const
     return QAbstractMeshFunctorPtr(new CylinderMeshFunctor(d->m_rings, d->m_slices, d->m_radius, d->m_length));
 }
 
-QCylinderMesh *QCylinderMesh::doClone(bool isClone) const
+QCylinderMesh *QCylinderMesh::doClone() const
 {
-    return new QCylinderMesh();
+    QCylinderMesh *clone = new QCylinderMesh();
+    clone->d_func()->copy(d_func());
+    return clone;
 }
 
 CylinderMeshFunctor::CylinderMeshFunctor(int rings, int slices, float radius, float length)

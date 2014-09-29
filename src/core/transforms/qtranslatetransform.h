@@ -65,8 +65,6 @@ class QT3DCORESHARED_EXPORT QTranslateTransform : public QAbstractTransform
 public:
     explicit QTranslateTransform(QNode *parent = 0);
 
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
     float dx() const;
     float dy() const;
     float dz() const;
@@ -86,9 +84,11 @@ Q_SIGNALS:
     void translateChanged();
 
 protected:
-    Q_DECLARE_PRIVATE(QTranslateTransform)
     QTranslateTransform(QTranslateTransformPrivate &dd, QNode *parent = 0);
-    QTranslateTransform *doClone(bool isClone) const Q_DECL_OVERRIDE;
+
+private:
+    Q_DECLARE_PRIVATE(QTranslateTransform)
+    QTranslateTransform *doClone() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3D

@@ -70,8 +70,6 @@ public:
     explicit QParameterMapper(QNode *parent = 0);
     QParameterMapper(const QString &parameterName, const QString &shaderParameterName, QParameterMapper::Binding bindingType, QNode *parent = 0);
 
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
     void setParameterName(const QString &name);
     void setShaderVariableName(const QString &name);
     void setBindingType(Binding type);
@@ -87,8 +85,10 @@ Q_SIGNALS:
 
 protected:
     QParameterMapper(QParameterMapperPrivate &dd, QNode *parent = 0);
-    QNode *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
+
+private:
     Q_DECLARE_PRIVATE(QParameterMapper)
+    QNode *doClone() const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

@@ -63,9 +63,11 @@ public:
     QList<QSortCriterion *> criteria() const;
 
 protected:
-    Q_DECLARE_PRIVATE(QSortMethod)
     QSortMethod(QSortMethodPrivate &dd, QNode *parent = 0);
-    QSortMethod *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
+
+private:
+    Q_DECLARE_PRIVATE(QSortMethod)
+    QSortMethod *doClone() const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

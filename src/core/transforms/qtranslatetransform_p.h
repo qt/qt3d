@@ -55,6 +55,8 @@ public:
     QTranslateTransformPrivate(QTranslateTransform *qq);
     Q_DECLARE_PUBLIC(QTranslateTransform)
 
+    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
+
     QVector3D m_translation;
 };
 

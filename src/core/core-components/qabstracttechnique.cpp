@@ -98,14 +98,14 @@ void QAbstractTechnique::addPass(QAbstractRenderPass *pass)
         // Or not previously added as a child of the current node so that
         // 1) The backend gets notified about it's creation
         // 2) When the current node is destroyed, it gets destroyed as well
-        if (!pass->parent() || pass->parent() == this)
-            QNode::addChild(pass);
+        if (!pass->parent())
+            pass->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr e(new QScenePropertyChange(NodeAdded, this));
             e->setPropertyName(QByteArrayLiteral("pass"));
             e->setValue(QVariant::fromValue(pass));
-            notifyObservers(e);
+            d->notifyObservers(e);
         }
     }
 }
@@ -122,7 +122,7 @@ void QAbstractTechnique::removePass(QAbstractRenderPass *pass)
         QScenePropertyChangePtr e(new QScenePropertyChange(NodeRemoved, this));
         e->setPropertyName(QByteArrayLiteral("pass"));
         e->setValue(QVariant::fromValue(pass->uuid()));
-        notifyObservers(e);
+        d->notifyObservers(e);
     }
     d->m_renderPasses.removeOne(pass);
 }

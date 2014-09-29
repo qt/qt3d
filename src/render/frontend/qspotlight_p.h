@@ -53,6 +53,8 @@ class QT3DRENDERERSHARED_EXPORT QSpotLightPrivate : public QAbstractLightPrivate
 public:
     QSpotLightPrivate(QSpotLight *qq);
 
+    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
+
     Q_DECLARE_PUBLIC(QSpotLight)
     float m_cutOffAngle;
     QVector3D m_direction;

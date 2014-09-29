@@ -44,6 +44,7 @@
 
 #include <private/qnode_p.h>
 #include <Qt3DCore/qt3dcore_global.h>
+#include <Qt3DCore/qabstracttransform.h>
 
 QT_BEGIN_NAMESPACE
 

@@ -191,7 +191,7 @@ public :
 
 private:
     QMeshDataPtr m_meshData;
-    AssimpMesh *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
+    AssimpMesh *doClone() const Q_DECL_OVERRIDE;
 
     class AssimpMeshFunctor : public QAbstractMeshFunctor
     {
@@ -208,8 +208,8 @@ private:
  *  Initialized a new instance of AssimpParser.
  */
 AssimpParser::AssimpParser() : AbstractSceneParser(),
-    m_scene(Q_NULLPTR),
-    m_sceneParsed(false)
+    m_sceneParsed(false),
+    m_scene(Q_NULLPTR)
 {
     Assimp::DefaultLogger::create("AssimpLog.txt", Assimp::Logger::VERBOSE);
     Assimp::DefaultLogger::kill();
@@ -338,8 +338,9 @@ QEntity *AssimpParser::node(aiNode *node)
         // this-> is necessary here otherwise
         // it conflicts with the variable node
         QEntity *child = this->node(node->mChildren[i]);
+        // Are we sure each child are unique ???
         if (child != Q_NULLPTR)
-            entityNode->addChild(child);
+            child->setParent(entityNode);
     }
 
     // Add Transformations
@@ -350,7 +351,7 @@ QEntity *AssimpParser::node(aiNode *node)
 
     // Add Camera
     if (m_scene->m_cameras.contains(node))
-        entityNode->addChild(m_scene->m_cameras.value(node));
+        m_scene->m_cameras.value(node)->setParent(entityNode);
 
     // TO DO : Add lights ....
 
@@ -830,11 +831,10 @@ void AssimpMesh::setData(QMeshDataPtr data)
     QAbstractMesh::setDirty(this);
 }
 
-AssimpMesh *AssimpMesh::doClone(bool isClone) const
+AssimpMesh *AssimpMesh::doClone() const
 {
     AssimpMesh *clone = new AssimpMesh();
     clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
     return clone;
 }
 

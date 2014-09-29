@@ -79,12 +79,15 @@ Entity
         }
     }
 
-    SceneLoader
-    {
-        id: scene
-        source: ":/assets/test_scene.dae"
-        components : [Transform {
+    Entity {
+        components : [
+            Transform {
                 Rotate {angle : 90; axis : Qt.vector3d(0, 1, 0)}
+            },
+            SceneLoader
+            {
+                id: scene
+                source: ":/assets/test_scene.dae"
             }]
     }
 }

@@ -47,6 +47,9 @@
 #include "qparametermapper.h"
 #include "qscenepropertychange.h"
 #include "qrenderstate.h"
+#include "qcriterion_p.h"
+#include "qparametermapper_p.h"
+#include "private/qnode_p.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -67,21 +70,20 @@ QRenderPass::QRenderPass(QRenderPassPrivate &dd, QNode *parent)
 {
 }
 
-QRenderPass *QRenderPass::doClone(bool isClone) const
+QRenderPass *QRenderPass::doClone() const
 {
     Q_D(const QRenderPass);
     QRenderPass *pass = new QRenderPass();
 
-    pass->copy(this);
-    pass->d_func()->m_isClone = isClone;
+    pass->d_func()->copy(d_func());
 
     Q_FOREACH (QCriterion *crit, d->m_criteriaList)
-        pass->addCriterion(qobject_cast<QCriterion *>(crit->clone(isClone)));
+        pass->addCriterion(qobject_cast<QCriterion *>(QNodePrivate::get(crit)->clone()));
     Q_FOREACH (QParameterMapper *binding, d->m_bindings)
-        pass->addBinding(qobject_cast<QParameterMapper *>(binding->clone(isClone)));
+        pass->addBinding(qobject_cast<QParameterMapper *>(QNodePrivate::get(binding)->clone()));
     Q_FOREACH (QRenderState *renderState, d->m_renderStates)
-        pass->addRenderState(qobject_cast<QRenderState *>(renderState->clone(isClone)));
-    pass->d_func()->m_shader = qobject_cast<QShaderProgram *>(d->m_shader->clone(isClone));
+        pass->addRenderState(qobject_cast<QRenderState *>(QNodePrivate::get(renderState)->clone()));
+    pass->d_func()->m_shader = qobject_cast<QShaderProgram *>(QNodePrivate::get(d->m_shader)->clone());
 
     return pass;
 }
@@ -108,14 +110,14 @@ void QRenderPass::addCriterion(QCriterion *criterion)
         // Or not previously added as a child of the current node so that
         // 1) The backend gets notified about it's creation
         // 2) When the current node is destroyed, it gets destroyed as well
-        if (!criterion->parent() || criterion->parent() == this)
-            QNode::addChild(criterion);
+        if (!criterion->parent())
+            criterion->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
             change->setPropertyName(QByteArrayLiteral("criterion"));
-            change->setValue(QVariant::fromValue(criterion->clone()));
-            notifyObservers(change);
+            change->setValue(QVariant::fromValue(qobject_cast<QCriterion *>(QNodePrivate::get(criterion)->clone())));
+            d->notifyObservers(change);
         }
     }
 }
@@ -127,7 +129,7 @@ void QRenderPass::removeCriterion(QCriterion *criterion)
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, this));
         change->setPropertyName(QByteArrayLiteral("criterion"));
         change->setValue(QVariant::fromValue(criterion->uuid()));
-        notifyObservers(change);
+        d->notifyObservers(change);
     }
     d->m_criteriaList.removeOne(criterion);
 }
@@ -151,14 +153,14 @@ void QRenderPass::addBinding(QParameterMapper *binding)
     if (!d->m_bindings.contains(binding)) {
         d->m_bindings.append(binding);
 
-        if (!binding->parent() || binding->parent() == this)
-            QNode::addChild(binding);
+        if (!binding->parent())
+            binding->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
             change->setPropertyName(QByteArrayLiteral("binding"));
-            change->setValue(QVariant::fromValue(binding->clone()));
-            notifyObservers(change);
+            change->setValue(QVariant::fromValue(QNodePrivate::get(binding)->clone()));
+            d->notifyObservers(change);
         }
     }
 }
@@ -170,7 +172,7 @@ void QRenderPass::removeBinding(QParameterMapper *binding)
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, this));
         change->setPropertyName(QByteArrayLiteral("binding"));
         change->setValue(QVariant::fromValue(binding->uuid()));
-        notifyObservers(change);
+        d->notifyObservers(change);
     }
     d->m_bindings.removeOne(binding);
 }
@@ -188,14 +190,14 @@ void QRenderPass::addRenderState(QRenderState *state)
     if (!d->m_renderStates.contains(state)) {
         d->m_renderStates.append(state);
 
-        if (!state->parent() || state->parent() == this)
-            QNode::addChild(state);
+        if (!state->parent())
+            state->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
             change->setPropertyName(QByteArrayLiteral("renderState"));
-            change->setValue(QVariant::fromValue(state->clone()));
-            notifyObservers(change);
+            change->setValue(QVariant::fromValue(QNodePrivate::get(state)->clone()));
+            d->notifyObservers(change);
         }
     }
 }
@@ -207,7 +209,7 @@ void QRenderPass::removeRenderState(QRenderState *state)
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, this));
         change->setPropertyName(QByteArrayLiteral("renderState"));
         change->setValue(QVariant::fromValue(state->uuid()));
-        notifyObservers(change);
+        d->notifyObservers(change);
     }
     d->m_renderStates.removeOne(state);
 }

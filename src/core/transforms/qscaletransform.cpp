@@ -53,19 +53,16 @@ QScaleTransformPrivate::QScaleTransformPrivate(QScaleTransform *qq)
 {
 }
 
+void QScaleTransformPrivate::copy(const QNodePrivate *ref)
+{
+    QAbstractTransformPrivate::copy(ref);
+    const QScaleTransformPrivate *transform = static_cast<const QScaleTransformPrivate *>(ref);
+    m_scale3D = transform->m_scale3D;
+}
+
 QScaleTransform::QScaleTransform(QNode *parent) :
     QAbstractTransform(*new QScaleTransformPrivate(this), parent)
 {
-}
-
-void QScaleTransform::copy(const QNode *ref)
-{
-    Q_D(QScaleTransform);
-    QAbstractTransform::copy(ref);
-    const QScaleTransform *transform = qobject_cast<const QScaleTransform *>(ref);
-    if (ref != Q_NULLPTR) {
-        d->m_scale3D = transform->scale3D();
-    }
 }
 
 QScaleTransform::QScaleTransform(QScaleTransformPrivate &dd, QNode *parent)
@@ -73,11 +70,10 @@ QScaleTransform::QScaleTransform(QScaleTransformPrivate &dd, QNode *parent)
 {
 }
 
-QScaleTransform *QScaleTransform::doClone(bool isClone) const
+QScaleTransform *QScaleTransform::doClone() const
 {
     QScaleTransform *clone = new QScaleTransform();
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d_func());
     return clone;
 }
 

@@ -84,11 +84,10 @@ QPointLight::QPointLight(QPointLightPrivate &dd, QNode *parent)
 {
 }
 
-QPointLight *QPointLight::doClone(bool isClone) const
+QPointLight *QPointLight::doClone() const
 {
     QPointLight *clone = new QPointLight();
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d_func());
     return clone;
 }
 

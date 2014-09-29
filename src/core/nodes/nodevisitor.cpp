@@ -62,9 +62,7 @@ void NodeVisitor::traverse(QNode *rootNode)
     m_path = NodeList() << rootNode;
 
     m_matrixStack.clear();
-    QEntity* rootEntity = rootNode->asEntity();
-
-//    m_matrixStack.append(rootEntity ? rootEntity->matrix() : QMatrix4x4());
+    QEntity* rootEntity = qobject_cast<QEntity *>(rootNode);
 
     if (rootEntity)
         visitEntity(rootEntity);
@@ -110,15 +108,17 @@ void NodeVisitor::visitEntity(QEntity *nd)
 
 void NodeVisitor::traverseChildren()
 {
-    foreach (QNode* n, currentNode()->children()) {
-        outerVisitNode(n);
+    foreach (QObject *n, currentNode()->children()) {
+        QNode *node = qobject_cast<QNode *>(n);
+        if (node != Q_NULLPTR)
+            outerVisitNode(node);
     } // of children iteration
 }
 
 void NodeVisitor::outerVisitNode(QNode *n)
 {
     m_path.append(n);
-    QEntity* e = n->asEntity();
+    QEntity* e = qobject_cast<QEntity *>(n);
     if (e) {
         visitEntity(e);
         m_path.pop_back();

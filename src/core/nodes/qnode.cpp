@@ -47,6 +47,7 @@
 #include <Qt3DCore/qaspectengine.h>
 #include <Qt3DCore/qsceneinterface.h>
 #include <QEvent>
+#include <QChildEvent>
 #include <QMetaObject>
 #include <QMetaProperty>
 #include "corelogging.h"
@@ -56,223 +57,153 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+QHash<QUuid, QNode *> QNodePrivate::m_clonesLookupTable = QHash<QUuid, QNode *>();
+
 QNodePrivate::QNodePrivate(QNode *qq)
     : QObjectPrivate()
     , m_changeArbiter(Q_NULLPTR)
     , m_scene(Q_NULLPTR)
     , m_uuid(QUuid::createUuid())
-    , m_isClone(false)
 {
     q_ptr = qq;
 }
 
-QNode::QNode(QNode *parent)
-    : QObject(*new QNodePrivate(this), parent)
+void QNodePrivate::copy(const QNodePrivate *ref)
 {
-}
-
-QNode::QNode(QNodePrivate &dd, QNode *parent)
-    : QObject(dd, parent)
-{
-}
-
-QNode::~QNode()
-{
-    // TO DO should unregister itself from the QChangeArbiter
-    removeAllChildren();
-}
-
-void QNode::dump()
-{
-    const QMetaObject *meta = metaObject();
-    QStringList result;
-    for (int i = 0; i < meta->propertyCount(); ++i) {
-        const QMetaProperty metaProperty = meta->property(i);
-        const QVariant value = property(metaProperty.name());
-        result += QString(QStringLiteral("%1 %2 = %3;"))
-                .arg(QString::fromLatin1(metaProperty.typeName()))
-                .arg(QString::fromLatin1(metaProperty.name()))
-                .arg(value.toString());
-    }
-
-    qCDebug(Nodes) << result.join(QStringLiteral("\n"));
-
-    foreach (QObject *child, children()) {
-        QNode *node = qobject_cast<QNode *>(child);
-        if (!node)
-            continue;
-        node->dump();
+    if (ref != Q_NULLPTR) {
+        m_uuid = ref->m_uuid;
     }
 }
 
-const QUuid QNode::uuid() const
+// Called by QEvent::childAdded
+void QNodePrivate::addChild(QNode *childNode)
 {
-    Q_D(const QNode);
-    return d->m_uuid;
-}
 
-NodeList QNode::children() const
-{
-    Q_D(const QNode);
-    return d->m_children;
-}
-
-void QNode::addChild(QNode *childNode)
-{
     Q_ASSERT(childNode);
-    Q_D(QNode);
-    if (childNode == this)
-        return ;
-    if (d->m_children.contains(childNode))
+    if (childNode == q_ptr)
         return ;
 
-    d->m_children.append(childNode);
-    childNode->setParent(this);
-    childNode->setScene(scene());
+    // Set the scene
+    childNode->d_func()->setScene(m_scene);
 
-    if (!isClone() && !childNode->isClone() && d->m_scene != Q_NULLPTR)
-        d->m_scene->addObservable(childNode);
+    // addObservable set the QChangeArbiter
+    if (m_scene != Q_NULLPTR)
+        m_scene->addObservable(childNode);
 
-    if (!isClone() && !childNode->isClone() && d->m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr e(new QScenePropertyChange(NodeCreated, this));
+    // We notify only if we have a QChangeArbiter
+    if (m_changeArbiter != Q_NULLPTR) {
+        QScenePropertyChangePtr e(new QScenePropertyChange(NodeCreated, qobject_cast<QNode *>(q_ptr)));
         e->setPropertyName(QByteArrayLiteral("node"));
         // We need to clone the parent of the childNode we send
         QNode *parentClone = clone();
         QNode *childClone = Q_NULLPTR;
-        Q_FOREACH (QNode *clone, parentClone->children()) {
-            if (clone->uuid() == childNode->uuid()) {
+        Q_FOREACH (QObject *c, parentClone->children()) {
+            QNode *clone = qobject_cast<QNode *>(c);
+            if (clone != Q_NULLPTR && clone->uuid() == childNode->uuid()) {
                 childClone = clone;
                 break;
             }
         }
-        e->setValue(QVariant::fromValue(QNodePtr(childClone)));
+        e->setValue(QVariant::fromValue(QNodePtr(childClone, &QNodePrivate::nodePtrDeleter)));
         notifyObservers(e);
-        childNode->registerObserver(d->m_changeArbiter);
     }
 }
 
-void QNode::removeChild(QNode *childNode)
+// Called by QEvent::childRemoved
+void QNodePrivate::removeChild(QNode *childNode)
 {
     Q_ASSERT(childNode);
-    if (childNode->parent() != this)
+    if (childNode->parent() != q_ptr)
         qCWarning(Nodes) << Q_FUNC_INFO << "not a child of " << this;
 
-    Q_D(QNode);
-
-    if (!isClone() && !childNode->isClone() && d->m_scene != Q_NULLPTR)
-        d->m_scene->removeObservable(childNode);
-
     // Notify only if child isn't a clone
-    if (!isClone() && !childNode->isClone() && d->m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr e(new QScenePropertyChange(NodeAboutToBeDeleted, this));
+    if (m_changeArbiter != Q_NULLPTR) {
+        QScenePropertyChangePtr e(new QScenePropertyChange(NodeAboutToBeDeleted, qobject_cast<QNode *>(q_ptr)));
         e->setPropertyName(QByteArrayLiteral("node"));
         // We need to clone the parent of the childNode we send
         QNode *parentClone = clone();
         QNode *childClone = Q_NULLPTR;
-        Q_FOREACH (QNode *clone, parentClone->children()) {
-            if (clone->uuid() == childNode->uuid()) {
+        Q_FOREACH (QObject *c, parentClone->children()) {
+            QNode *clone = qobject_cast<QNode *>(c);
+            if (clone != Q_NULLPTR && clone->uuid() == childNode->uuid()) {
                 childClone = clone;
                 break;
             }
         }
-        e->setValue(QVariant::fromValue(QNodePtr(childClone)));
+        e->setValue(QVariant::fromValue(QNodePtr(childClone, &QNodePrivate::nodePtrDeleter)));
         notifyObservers(e);
-        childNode->unregisterObserver(d->m_changeArbiter);
     }
 
-    d->m_children.removeOne(childNode);
-    if (!childNode->isClone())
-        childNode->setParent(Q_NULLPTR);
-    childNode->setScene(Q_NULLPTR);
+    if (m_scene != Q_NULLPTR)
+        m_scene->removeObservable(childNode);
+    childNode->d_func()->setScene(Q_NULLPTR);
 }
 
 // In most cases isClone is true so that the clone isn't handled like
 // a real node. If there is a need for a real clone, set isClone to false
 // eg When a subtree built in the backend needs to be cloned
 // in the main thread to be added to the scene graph
-QNode *QNode::clone(bool isClone)
+QNode *QNodePrivate::clone()
 {
-    Q_D(QNode);
     static int clearLock = 0;
-
     clearLock++;
 
-    if (d->m_scene == Q_NULLPTR)
-        return Q_NULLPTR;
-
-    QNode *clonedNode = d->m_scene->lookupClone(uuid());
+    // We keep a reference of clones for the current subtree
+    // In order to preserve relationships when multiple entities
+    // reference the same component
+    QNode *clonedNode = QNodePrivate::m_clonesLookupTable.value(m_uuid);
     if (clonedNode == Q_NULLPTR) {
-        clonedNode = doClone(isClone);
+        clonedNode = qobject_cast<QNode *>(q_ptr)->doClone();
         // doClone, returns new instance with content copied
         // and relationships added
-        d->m_scene->addCloneLookup(clonedNode);
+        QNodePrivate::m_clonesLookupTable.insert(clonedNode->uuid(), clonedNode);
     }
-    Q_FOREACH (QNode *c, children()) {
-        QNode *cclone = c->clone(isClone);
-        clonedNode->addChild(cclone);
+    Q_FOREACH (QObject *c, q_ptr->children()) {
+        QNode *childNode = qobject_cast<QNode *>(c);
+        if (childNode != Q_NULLPTR) {
+            QNode *cclone = childNode->d_func()->clone();
+            if (cclone != Q_NULLPTR)
+                cclone->setParent(clonedNode);
+        }
     }
 
     if (--clearLock == 0)
-        d->m_scene->clearCloneLookup();
+        QNodePrivate::m_clonesLookupTable.clear();
+
     return clonedNode;
 }
 
-void QNode::copy(const QNode *ref)
+void QNodePrivate::removeAllChildren()
 {
-    Q_D(QNode);
-    d->m_uuid = ref->uuid();
-    d->m_changeArbiter = ref->d_func()->m_changeArbiter;
-    d->m_scene = ref->d_func()->m_scene;
-    setObjectName(ref->objectName());
-}
-
-bool QNode::isClone() const
-{
-    Q_D(const QNode);
-    return d->m_isClone;
-}
-
-void QNode::removeAllChildren()
-{
-    Q_FOREACH (QObject *child, children())
-        if (qobject_cast<QNode *>(child))
-            removeChild(qobject_cast<QNode *>(child));
-}
-
-QEntity *QNode::asEntity()
-{
-    return Q_NULLPTR;
-}
-
-QNode *QNode::parentNode() const
-{
-    return qobject_cast<QNode*>(parent());
+    Q_FOREACH (QObject *child, q_ptr->children()) {
+        QNode *childNode = qobject_cast<QNode *>(child);
+        if (childNode != Q_NULLPTR)
+            removeChild(childNode);
+    }
 }
 
 // Called in the QAspectThread context
-void QNode::registerObserver(QObserverInterface *observer)
+void QNodePrivate::registerObserver(QObserverInterface *observer)
 {
     Q_CHECK_PTR(observer);
 
     // For now we only care about the QChangeArbiter observing us
     QChangeArbiter *changeArbiter = dynamic_cast<QChangeArbiter *>(observer);
     if (changeArbiter) {
-        Q_D(QNode);
-        QWriteLocker locker(&d->m_observerLock);
-        d->m_changeArbiter = changeArbiter;
+        QWriteLocker locker(&m_observerLock);
+        m_changeArbiter = changeArbiter;
     }
 }
 
-void QNode::unregisterObserver(QObserverInterface *observer)
+void QNodePrivate::unregisterObserver(QObserverInterface *observer)
 {
     Q_CHECK_PTR(observer);
 
     // For now we only care about the QChangeArbiter observing us
-    Q_D(QNode);
     QChangeArbiter *changeArbiter = dynamic_cast<QChangeArbiter *>(observer);
-    if (changeArbiter == d->m_changeArbiter) {
-        QWriteLocker locker(&d->m_observerLock);
-        d->m_changeArbiter = Q_NULLPTR;
+    if (changeArbiter == m_changeArbiter) {
+        QWriteLocker locker(&m_observerLock);
+        m_changeArbiter = Q_NULLPTR;
     }
 }
 
@@ -281,36 +212,33 @@ void QNode::sceneChangeEvent(const QSceneChangePtr &)
     qWarning() << Q_FUNC_INFO << "sceneChangeEvent should have been subclassed";
 }
 
-void QNode::setScene(QSceneInterface *scene)
+void QNodePrivate::setScene(QSceneInterface *scene)
 {
-    Q_D(QNode);
-    if (d->m_scene != scene)
-        d->m_scene = scene;
+    if (m_scene != scene)
+        m_scene = scene;
 }
 
-QSceneInterface *QNode::scene() const
+QSceneInterface *QNodePrivate::scene() const
 {
-    Q_D(const QNode);
-    return d->m_scene;
+    return m_scene;
 }
 
-void QNode::notifyPropertyChange(const QByteArray &name, const QVariant &value)
+void QNodePrivate::notifyPropertyChange(const QByteArray &name, const QVariant &value)
 {
     // TODO: Review change types. Is there any need to distinguish between NodeUpdated, ComponentUpdated?
     // They're both just property changes
-    QScenePropertyChangePtr e(new QScenePropertyChange(NodeUpdated, this));
+    QScenePropertyChangePtr e(new QScenePropertyChange(NodeUpdated, qobject_cast<QNode *>(q_ptr)));
     e->setPropertyName(name);
     e->setValue(value);
     notifyObservers(e);
 }
 
 // Called by the main thread
-void QNode::notifyObservers(const QSceneChangePtr &change)
+void QNodePrivate::notifyObservers(const QSceneChangePtr &change)
 {
     Q_CHECK_PTR(change);
-    Q_D(QNode);
-    QReadLocker locker(&d->m_observerLock);
-    QChangeArbiter *changeArbiter = d->m_changeArbiter;
+    QReadLocker locker(&m_observerLock);
+    QChangeArbiter *changeArbiter = m_changeArbiter;
     locker.unlock();
     // There is a deadlock issue as sceneChangeEventWithLock locks the QChangeArbiter's mutex
     // while d->m_observerLock is locked by the locker right above.
@@ -321,6 +249,108 @@ void QNode::notifyObservers(const QSceneChangePtr &change)
         changeArbiter->sceneChangeEventWithLock(change);
 }
 
+// Inserts this tree into the main Scene tree.
+// Needed when SceneLoaders provide a cloned tree from the backend
+// and need to insert it in the main scene tree
+// QNode *root;
+// QNode *subtree;
+// QNodePrivate::get(root)->insertTree(subtree);
+
+void QNodePrivate::insertTree(QNode *treeRoot, int depth)
+{
+    if (m_scene != Q_NULLPTR) {
+        treeRoot->d_func()->setScene(m_scene);
+        m_scene->addObservable(treeRoot);
+    }
+
+    Q_FOREACH (QObject *c, treeRoot->children()) {
+        QNode *n = Q_NULLPTR;
+        if ((n = qobject_cast<QNode *>(c)) != Q_NULLPTR)
+            insertTree(n, depth + 1);
+    }
+
+    if (depth == 0)
+        treeRoot->setParent(q_ptr);
+}
+
+QNodePrivate *QNodePrivate::get(QNode *q)
+{
+    return q->d_func();
+}
+
+void QNodePrivate::nodePtrDeleter(QNode *q)
+{
+    QObject *p = q->parent();
+    if (p == Q_NULLPTR)
+        p = q;
+    p->deleteLater();
+}
+
+QNode::QNode(QNode *parent)
+    : QObject(*new QNodePrivate(this), parent)
+{
+    // We rely on QEvent::childAdded to be triggered on the parent
+    // So we don't actually need to invoke a method or anything
+    // to add ourselve with the parent
+}
+
+QNode::QNode(QNodePrivate &dd, QNode *parent)
+    : QObject(dd, parent)
+{
+}
+
+void QNode::copy(const QNode *ref)
+{
+    if (ref != Q_NULLPTR)
+        d_func()->copy(QNodePrivate::get(const_cast<QNode *>(ref)));
+}
+
+QNode::~QNode()
+{
+}
+
+const QUuid QNode::uuid() const
+{
+    Q_D(const QNode);
+    return d->m_uuid;
+}
+
+QNode *QNode::parentNode() const
+{
+    return qobject_cast<QNode*>(parent());
+}
+
+bool QNode::event(QEvent *e)
+{
+    Q_D(QNode);
+
+    switch (e->type()) {
+
+    case QEvent::ChildAdded: {
+        QNode *childNode = qobject_cast<QNode *>(static_cast<QChildEvent *>(e)->child());
+        if (childNode != Q_NULLPTR) {
+            d->addChild(childNode);
+        }
+        break;
+    }
+
+    case QEvent::ChildRemoved: {
+        QNode *childNode = qobject_cast<QNode *>(static_cast<QChildEvent *>(e)->child());
+        if (childNode != Q_NULLPTR) {
+            d->removeChild(childNode);
+        }
+        break;
+    }
+
+    default:
+        break;
+
+    } // switch
+
+    return QObject::event(e);
+}
+
 } // namespace Qt3D
+
 
 QT_END_NAMESPACE

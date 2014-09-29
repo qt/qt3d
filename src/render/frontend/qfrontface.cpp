@@ -41,6 +41,7 @@
 ****************************************************************************/
 
 #include "qfrontface.h"
+#include "qrenderstate_p.h"
 #include <private/qnode_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
@@ -48,14 +49,16 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QFrontFacePrivate : public QNodePrivate
+class QFrontFacePrivate : public QRenderStatePrivate
 {
 public:
     QFrontFacePrivate(QFrontFace *qq)
-        : QNodePrivate(qq)
+        : QRenderStatePrivate(qq)
         , m_direction(QFrontFace::ClockWise)
     {
     }
+
+    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
 
     Q_DECLARE_PUBLIC(QFrontFace)
     QFrontFace::FaceDir m_direction;
@@ -66,14 +69,11 @@ QFrontFace::QFrontFace(QNode *parent)
 {
 }
 
-void QFrontFace::copy(const QNode *ref)
+void QFrontFacePrivate::copy(const QNodePrivate *ref)
 {
-    QRenderState::copy(ref);
-    Q_D(QFrontFace);
-    const QFrontFace *refState = qobject_cast<const QFrontFace *>(ref);
-    if (refState != Q_NULLPTR) {
-        d->m_direction = refState->direction();
-    }
+    QRenderStatePrivate::copy(ref);
+    const QFrontFacePrivate *refState = static_cast<const QFrontFacePrivate *>(ref);
+    m_direction = refState->m_direction;
 }
 
 QFrontFace::FaceDir QFrontFace::direction() const
@@ -92,16 +92,15 @@ void QFrontFace::setDirection(QFrontFace::FaceDir direction)
             QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
             propertyChange->setPropertyName(QByteArrayLiteral("direction"));
             propertyChange->setValue(d->m_direction);
-            notifyObservers(propertyChange);
+            d->notifyObservers(propertyChange);
         }
     }
 }
 
-QNode *QFrontFace::doClone(bool isClone) const
+QNode *QFrontFace::doClone() const
 {
     QFrontFace *clone = new QFrontFace();
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d_func());
     return clone;
 }
 

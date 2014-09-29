@@ -74,10 +74,6 @@ public:
     virtual QList<QUuid> entitiesForComponent(const QUuid &componentUuid) const = 0;
     virtual void addEntityForComponent(const QUuid &componentUuid, const QUuid &entityUuid) = 0;
     virtual void removeEntityForComponent(const QUuid &componentUuid, const QUuid &entityUuid) = 0;
-
-    virtual QNode *lookupClone(const QUuid &id) const = 0;
-    virtual void addCloneLookup(QNode *clone) = 0;
-    virtual void clearCloneLookup() = 0;
 };
 
 } // Qt3D

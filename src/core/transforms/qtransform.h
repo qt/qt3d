@@ -64,8 +64,6 @@ public:
     QTransform(QList<QAbstractTransform *> transforms, QNode *parent = 0);
     QTransform(QAbstractTransform *transform, QNode *parent = 0);
 
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
     QMatrix4x4 matrix() const;
     void setMatrix(const QMatrix4x4 &m);
 
@@ -96,10 +94,11 @@ Q_SIGNALS:
 protected:
     QMatrix4x4 applyTransforms() const;
     QList<QAbstractTransform *> transformList() const;
-
-    Q_DECLARE_PRIVATE(QTransform)
     QTransform(QTransformPrivate &dd, QNode *parent = 0);
-    QTransform *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
+
+private:
+    Q_DECLARE_PRIVATE(QTransform)
+    QTransform *doClone() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3D

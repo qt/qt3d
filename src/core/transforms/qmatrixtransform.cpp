@@ -56,11 +56,17 @@ QMatrixTransform::QMatrixTransform(QMatrixTransformPrivate &dd, QNode *parent)
 {
 }
 
-QMatrixTransform *QMatrixTransform::doClone(bool isClone) const
+void QMatrixTransformPrivate::copy(const QNodePrivate *ref)
+{
+    QAbstractTransformPrivate::copy(ref);
+    const QMatrixTransformPrivate *matrix = static_cast<const QMatrixTransformPrivate *>(ref);
+    m_matrix = matrix->m_matrix;
+}
+
+QMatrixTransform *QMatrixTransform::doClone() const
 {
     QMatrixTransform *clone = new QMatrixTransform();
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d_func());
     return clone;
 }
 
@@ -95,16 +101,6 @@ void QMatrixTransform::setMatrix(const QMatrix4x4 &matrix)
 QMatrix4x4 QMatrixTransform::transformMatrix() const
 {
     return matrix();
-}
-
-void QMatrixTransform::copy(const QNode *ref)
-{
-    Q_D(QMatrixTransform);
-    QAbstractTransform::copy(ref);
-    const QMatrixTransform *matrix = qobject_cast<const QMatrixTransform *>(ref);
-    if (ref != Q_NULLPTR) {
-        d->m_matrix = matrix->matrix();
-    }
 }
 
 } // namespace Qt3D

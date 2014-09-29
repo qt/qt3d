@@ -51,31 +51,28 @@ QLayerPrivate::QLayerPrivate(QLayer *qq)
 {
 }
 
+void QLayerPrivate::copy(const QNodePrivate *ref)
+{
+    QComponentPrivate::copy(ref);
+    const QLayerPrivate *layer = static_cast<const QLayerPrivate *>(ref);
+    m_name = layer->m_name;
+}
+
 QLayer::QLayer(QNode *parent)
     : QComponent(*new QLayerPrivate(this), parent)
 {
 }
 
-void QLayer::copy(const QNode *ref)
-{
-    Q_D(QLayer);
-    QComponent::copy(ref);
-    const QLayer *layer = qobject_cast<const QLayer *>(ref);
-    if (layer != Q_NULLPTR) {
-        d->m_name = layer->name();
-    }
-}
 
 QLayer::QLayer(QLayerPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
 {
 }
 
-QLayer *QLayer::doClone(bool isClone) const
+QLayer *QLayer::doClone() const
 {
     QLayer *clone = new QLayer();
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d_func());
     return clone;
 }
 

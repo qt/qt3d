@@ -50,6 +50,8 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class QRenderStatePrivate;
+
 class QT3DRENDERERSHARED_EXPORT QRenderState : public QNode
 {
     Q_OBJECT
@@ -57,7 +59,10 @@ public:
     explicit QRenderState(QNode *parent = 0);
 
 protected:
-    QRenderState(QNodePrivate &dd, QNode *parent = 0);
+    QRenderState(QRenderStatePrivate &dd, QNode *parent = 0);
+
+private:
+    Q_DECLARE_PRIVATE(QRenderState)
 };
 
 } // Qt3D

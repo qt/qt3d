@@ -40,6 +40,7 @@
 ****************************************************************************/
 
 #include "qcriterion.h"
+#include "qcriterion_p.h"
 #include <private/qnode_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
@@ -47,40 +48,30 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QCriterionPrivate : public QNodePrivate
-{
-public:
-    QCriterionPrivate(QCriterion *qq)
-        : QNodePrivate(qq)
-    {
-    }
 
-    Q_DECLARE_PUBLIC(QCriterion)
-    QString m_name;
-    QVariant m_value;
-};
+QCriterionPrivate::QCriterionPrivate(QCriterion *qq)
+    : QNodePrivate(qq)
+{
+}
+
+void QCriterionPrivate::copy(const QNodePrivate *ref)
+{
+    QNodePrivate::copy(ref);
+    const QCriterionPrivate *criterion = static_cast<const QCriterionPrivate *>(ref);
+    m_name = criterion->m_name;
+    m_value = criterion->m_value;
+}
 
 QCriterion::QCriterion(QNode *parent)
     : QNode(*new QCriterionPrivate(this), parent)
 {
 }
 
-void QCriterion::copy(const QNode *ref)
-{
-    Q_D(QCriterion);
-    QNode::copy(ref);
-    const QCriterion *criterion = qobject_cast<const QCriterion *>(ref);
-    if (criterion != Q_NULLPTR) {
-        d->m_name = criterion->name();
-        d->m_value = criterion->value();
-    }
-}
 
-QCriterion *QCriterion::doClone(bool isClone) const
+QCriterion *QCriterion::doClone() const
 {
     QCriterion *clone = new QCriterion();
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d_func());
     return clone;
 }
 
@@ -93,7 +84,7 @@ void QCriterion::setValue(const QVariant &value)
         QScenePropertyChangePtr change(new QScenePropertyChange(ComponentUpdated, this));
         change->setPropertyName(QByteArrayLiteral("criterionValue"));
         change->setValue(value);
-        notifyObservers(change);
+        d->notifyObservers(change);
     }
 }
 
@@ -106,7 +97,7 @@ void QCriterion::setName(const QString &name)
         QScenePropertyChangePtr change(new QScenePropertyChange(ComponentUpdated, this));
         change->setPropertyName(QByteArrayLiteral("criterionName"));
         change->setValue(QVariant(name));
-        notifyObservers(change);
+        d->notifyObservers(change);
     }
 }
 

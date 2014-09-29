@@ -137,7 +137,7 @@ int main(int ac, char **av)
     rootEntity->addComponent(frameGraph);
 
     // Scene Content
-    Qt3D::QEntity *sphereOne = new Qt3D::QEntity();
+    Qt3D::QEntity *sphereOne = new Qt3D::QEntity(rootEntity);
     Qt3D::QMaterial *sphereOneMaterial = new Qt3D::QMaterial();
 
     sphereOneMaterial->setEffect(sceneEffect);
@@ -158,7 +158,7 @@ int main(int ac, char **av)
     sphereOne->addComponent(sceneLayer);
     sphereOne->addComponent(light2);
 
-    Qt3D::QEntity *sphereTwo = new Qt3D::QEntity();
+    Qt3D::QEntity *sphereTwo = new Qt3D::QEntity(rootEntity);
     Qt3D::QMaterial *sphereTwoMaterial = new Qt3D::QMaterial();
     sphereTwoMaterial->setEffect(sceneEffect);
     sphereTwoMaterial->addParameter(new Qt3D::QParameter(QStringLiteral("meshColor"), QColor(Qt::yellow)));
@@ -173,7 +173,7 @@ int main(int ac, char **av)
     sphereTwo->addComponent(light3);
 
     // Screen Quad
-    Qt3D::QEntity *screenQuad = new Qt3D::QEntity();
+    Qt3D::QEntity *screenQuad = new Qt3D::QEntity(rootEntity);
     Qt3D::QMaterial *screenQuadMaterial = new Qt3D::QMaterial();
     screenQuadMaterial->addParameter(new Qt3D::QParameter(QStringLiteral("position"), gBuffer->positionTexture()));
     screenQuadMaterial->addParameter(new Qt3D::QParameter(QStringLiteral("normal"), gBuffer->normalTexture()));
@@ -189,10 +189,6 @@ int main(int ac, char **av)
     screenQuad->addComponent(new Qt3D::QTransform(screenPlaneRotation));
     screenQuad->addComponent(screenQuadMaterial);
     screenQuad->addComponent(planeMesh);
-
-    rootEntity->addChild(sphereOne);
-    rootEntity->addChild(sphereTwo);
-    rootEntity->addChild(screenQuad);
 
     // Set root object of the scene
     view.setRootObject(rootEntity);

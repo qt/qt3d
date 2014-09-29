@@ -69,8 +69,6 @@ public:
         AllBuffers = 0xFFFFFFFF
     };
 
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
     void setBuffers(BufferType buffers);
     BufferType buffers() const;
 
@@ -78,9 +76,11 @@ Q_SIGNALS:
     void buffersChanged();
 
 protected:
-    Q_DECLARE_PRIVATE(QClearBuffer)
     QClearBuffer(QClearBufferPrivate &dd, QNode *parent = 0);
-    QClearBuffer *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
+
+private:
+    Q_DECLARE_PRIVATE(QClearBuffer)
+    QClearBuffer *doClone() const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

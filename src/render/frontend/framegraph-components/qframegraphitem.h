@@ -58,19 +58,15 @@ class QT3DRENDERERSHARED_EXPORT QFrameGraphItem : public QNode
 public:
     explicit QFrameGraphItem(QNode *parent = 0);
 
-    void setEnabled(bool enabled);
-    bool isEnabled() const;
-
     void appendFrameGraphItem(QFrameGraphItem *item);
     void removeFrameGraphItem(QFrameGraphItem *item);
     QList<QFrameGraphItem *> frameGraphChildren() const;
 
-Q_SIGNALS:
-    void enabledChanged();
-
 protected:
-    Q_DECLARE_PRIVATE(QFrameGraphItem)
     QFrameGraphItem(QFrameGraphItemPrivate &dd, QNode *parent = 0);
+
+private:
+    Q_DECLARE_PRIVATE(QFrameGraphItem)
 };
 
 } // Qt3D

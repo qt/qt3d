@@ -80,6 +80,8 @@ class QSphereMeshPrivate : public QAbstractShapeMeshPrivate
         , m_radius(1.0)
     {}
 
+    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
+
     Q_DECLARE_PUBLIC (QSphereMesh)
     bool m_generateTangents;
     int m_rings;
@@ -93,17 +95,14 @@ QSphereMesh::QSphereMesh(QNode *parent)
     setDirty(true);
 }
 
-void QSphereMesh::copy(const QNode *ref)
+void QSphereMeshPrivate::copy(const QNodePrivate *ref)
 {
-    Q_D(QSphereMesh);
-    QAbstractShapeMesh::copy(ref);
-    const QSphereMesh *mesh = qobject_cast<const QSphereMesh *>(ref);
-    if (mesh != Q_NULLPTR) {
-        d->m_generateTangents = mesh->generateTangents();
-        d->m_rings = mesh->rings();
-        d->m_slices = mesh->slices();
-        d->m_radius = mesh->radius();
-    }
+    QAbstractShapeMeshPrivate::copy(ref);
+    const QSphereMeshPrivate *mesh = static_cast<const QSphereMeshPrivate *>(ref);
+    m_generateTangents = mesh->m_generateTangents;
+    m_rings = mesh->m_rings;
+    m_slices = mesh->m_slices;
+    m_radius = mesh->m_radius;
 }
 
 void QSphereMesh::setRings(int rings)
@@ -158,11 +157,10 @@ QAbstractMeshFunctorPtr QSphereMesh::meshFunctor() const
     return QAbstractMeshFunctorPtr(new SphereMeshFunctor(d->m_rings, d->m_slices, d->m_radius, d->m_generateTangents));
 }
 
-QSphereMesh *QSphereMesh::doClone(bool isClone) const
+QSphereMesh *QSphereMesh::doClone() const
 {
     QSphereMesh *clone = new QSphereMesh();
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d_func());
     return clone;
 }
 

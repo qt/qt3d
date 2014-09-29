@@ -58,16 +58,16 @@ class QT3DRENDERERSHARED_EXPORT QRenderTarget : public QComponent
 public:
     explicit QRenderTarget(QNode *parent = 0);
 
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
     void addAttachment(QRenderAttachment *attachment);
     void removeAttachment(QRenderAttachment *attachment);
     QList<QRenderAttachment *> attachments() const;
 
 protected:
-    Q_DECLARE_PRIVATE(QRenderTarget)
     QRenderTarget(QRenderTargetPrivate &dd, QNode *parent = 0);
-    QRenderTarget *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
+
+private:
+    Q_DECLARE_PRIVATE(QRenderTarget)
+    QRenderTarget *doClone() const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

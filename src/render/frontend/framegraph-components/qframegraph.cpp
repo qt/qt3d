@@ -43,6 +43,7 @@
 #include "qframegraph_p.h"
 #include <Qt3DCore/qentity.h>
 #include <Qt3DRenderer/qframegraphitem.h>
+#include <Qt3DRenderer/private/qframegraphitem_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -79,14 +80,13 @@ QFrameGraph::QFrameGraph(QFrameGraphPrivate &dd, QNode *parent)
 {
 }
 
-QFrameGraph *QFrameGraph::doClone(bool isClone) const
+QFrameGraph *QFrameGraph::doClone() const
 {
     Q_D(const QFrameGraph);
     QFrameGraph *frameGraph = new QFrameGraph();
-    frameGraph->copy(this);
-    frameGraph->d_func()->m_isClone = isClone;
+    frameGraph->d_func()->copy(d_func());
 
-    frameGraph->setActiveFrameGraph(qobject_cast<QFrameGraphItem *>(d->m_activeFrameGraph->clone(isClone)));
+    frameGraph->setActiveFrameGraph(qobject_cast<QFrameGraphItem *>(QNodePrivate::get(d->m_activeFrameGraph)->clone()));
 
     return frameGraph;
 }
@@ -110,8 +110,8 @@ void QFrameGraph::setActiveFrameGraph(QFrameGraphItem *activeFrameGraph)
         d->m_activeFrameGraph = activeFrameGraph;
         emit activeFrameGraphChanged();
 
-        if (!activeFrameGraph->parent() || activeFrameGraph->parent() == this)
-            QNode::addChild(activeFrameGraph);
+        if (!activeFrameGraph->parent())
+            activeFrameGraph->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
         // TO DO : Add QChangeArbiterNotification

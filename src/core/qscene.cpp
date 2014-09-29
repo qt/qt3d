@@ -44,6 +44,8 @@
 #include <QReadLocker>
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qchangearbiter.h>
+#include <Qt3DCore/qobservableinterface.h>
+#include <Qt3DCore/private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -94,7 +96,7 @@ void QScene::addObservable(QNode *observable)
         QWriteLocker lock(&d->m_lock);
         d->m_nodeLookupTable.insert(observable->uuid(), observable);
         if (d->m_arbiter != Q_NULLPTR)
-            observable->registerObserver(d->m_arbiter);
+            observable->d_func()->registerObserver(d->m_arbiter);
     }
 }
 
@@ -125,7 +127,7 @@ void QScene::removeObservable(QNode *observable)
         d->m_observablesLookupTable.remove(nodeUuid);
         d->m_nodeLookupTable.remove(nodeUuid);
         if (d->m_arbiter != Q_NULLPTR)
-            observable->unregisterObserver(d->m_arbiter);
+            observable->d_func()->unregisterObserver(d->m_arbiter);
     }
 }
 
@@ -177,24 +179,6 @@ void QScene::removeEntityForComponent(const QUuid &componentUuid, const QUuid &e
     Q_D(QScene);
     QWriteLocker lock(&d->m_lock);
     d->m_componentToEntities.remove(componentUuid, entityUuid);
-}
-
-QNode *QScene::lookupClone(const QUuid &id) const
-{
-    Q_D(const QScene);
-    return d->m_clonesLookupTable.value(id);
-}
-
-void QScene::addCloneLookup(QNode *clone)
-{
-    Q_D(QScene);
-    d->m_clonesLookupTable.insert(clone->uuid(), clone);
-}
-
-void QScene::clearCloneLookup()
-{
-    Q_D(QScene);
-    d->m_clonesLookupTable.clear();
 }
 
 } // Qt3D

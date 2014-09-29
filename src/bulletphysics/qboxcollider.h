@@ -64,8 +64,6 @@ class QBoxCollider : public Qt3D::BulletPhysics::QAbstractCollider
 public:
     explicit QBoxCollider(Qt3D::QNode *parent = 0);
 
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
     void setCenter(const QVector3D &center);
     QVector3D center() const;
 
@@ -77,9 +75,11 @@ Q_SIGNALS:
     void halfExtentsChanged();
 
 protected:
-    Q_DECLARE_PRIVATE(QBoxCollider)
     QBoxCollider(QBoxColliderPrivate &dd, QNode *parent = 0);
-    QBoxCollider *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
+
+private:
+    Q_DECLARE_PRIVATE(QBoxCollider)
+    QBoxCollider *doClone() const Q_DECL_OVERRIDE;
 };
 
 } // namespace BulletPhysics

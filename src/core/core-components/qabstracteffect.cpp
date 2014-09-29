@@ -93,14 +93,14 @@ void QAbstractEffect::addTechnique(QAbstractTechnique *t)
         // Or not previously added as a child of the current node so that
         // 1) The backend gets notified about it's creation
         // 2) When the current node is destroyed, tit gets destroyed as well
-        if (!t->parent() || t->parent() == this)
-            QNode::addChild(t);
+        if (!t->parent())
+            t->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr e(new QScenePropertyChange(NodeAdded, this));
             e->setPropertyName(QByteArrayLiteral("technique"));
             e->setValue(QVariant::fromValue(t));
-            notifyObservers(e);
+            d->notifyObservers(e);
         }
     }
 }
@@ -117,7 +117,7 @@ void QAbstractEffect::removeTechnique(QAbstractTechnique *t)
         QScenePropertyChangePtr e(new QScenePropertyChange(NodeRemoved, this));
         e->setPropertyName(QByteArrayLiteral("technique"));
         e->setValue(QVariant::fromValue(t->uuid()));
-        notifyObservers(e);
+        d->notifyObservers(e);
     }
     d->m_techniques.removeOne(t);
 }

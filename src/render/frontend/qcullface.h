@@ -69,8 +69,6 @@ public:
 
     explicit QCullFace(QNode *parent = 0);
 
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
     CullingMode mode() const;
     void setMode(CullingMode mode);
 
@@ -79,7 +77,7 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QCullFace)
-    QNode *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
+    QNode *doClone() const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

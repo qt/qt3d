@@ -62,8 +62,6 @@ class QT3DBULLETPHYSICSSHARED_EXPORT QAbstractCollider : public Qt3D::QComponent
 public:
     explicit QAbstractCollider(QNode *parent = 0);
 
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
     enum CollisionBehavior {
         SolidColliderBehavior = 0,
         NonSolidColliderBehavior
@@ -76,8 +74,10 @@ Q_SIGNALS:
     void collisionBehaviorChanged();
 
 protected:
-    Q_DECLARE_PRIVATE(QAbstractCollider)
     QAbstractCollider(QAbstractColliderPrivate &dd, Qt3D::QNode *parent = 0);
+
+private:
+    Q_DECLARE_PRIVATE(QAbstractCollider)
 };
 
 } // namespace BulletPhysics

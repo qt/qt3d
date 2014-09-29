@@ -54,6 +54,8 @@ class QParameterMapperPrivate : public QNodePrivate
 public:
     QParameterMapperPrivate(QParameterMapper *qq);
 
+    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
+
     Q_DECLARE_PUBLIC(QParameterMapper)
 
     QString m_parameterName;

@@ -42,6 +42,7 @@
 #include "qcameraselector.h"
 #include "qcameraselector_p.h"
 #include <Qt3DCore/qentity.h>
+#include <Qt3DCore/private/qentity_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -53,19 +54,18 @@ QCameraSelector::QCameraSelector(QCameraSelectorPrivate &dd, QNode *parent)
 {
 }
 
-QCameraSelector *QCameraSelector::doClone(bool isClone) const
+QCameraSelector *QCameraSelector::doClone() const
 {
     Q_D(const QCameraSelector);
     QCameraSelector *cameraSelector = new QCameraSelector();
 
-    cameraSelector->copy(this);
-    cameraSelector->d_func()->m_isClone = isClone;
+    cameraSelector->d_func()->copy(d_func());
 
     Q_FOREACH (QFrameGraphItem *fgChild, d->m_fgChildren)
-        cameraSelector->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(fgChild->clone(isClone)));
+        cameraSelector->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(QNodePrivate::get(fgChild)->clone()));
 
     if (d->m_camera != Q_NULLPTR)
-        cameraSelector->setCamera(qobject_cast<QEntity *>(d->m_camera->clone(isClone)));
+        cameraSelector->setCamera(qobject_cast<QEntity *>(QNodePrivate::get(d->m_camera)->clone()));
 
     return cameraSelector;
 }
@@ -90,13 +90,13 @@ void QCameraSelector::setCamera(QEntity *camera)
         // Or not previously added as a child of the current node so that
         // 1) The backend gets notified about it's creation
         // 2) When the current node is destroyed, it gets destroyed as well
-        if (!camera->parent() || camera->parent() == this)
-            QNode::addChild(camera);
+        if (!camera->parent())
+            camera->setParent(this);
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
             propertyChange->setPropertyName(QByteArrayLiteral("camera"));
             propertyChange->setValue(QVariant::fromValue(d->m_camera->uuid()));
-            notifyObservers(propertyChange);
+            d->notifyObservers(propertyChange);
         }
     }
 }

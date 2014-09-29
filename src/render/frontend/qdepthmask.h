@@ -58,8 +58,6 @@ class QT3DRENDERERSHARED_EXPORT  QDepthMask : public QRenderState
 public:
     explicit QDepthMask(QNode *parent = 0);
 
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
     bool mask() const;
     void setMask(bool mask);
 
@@ -68,7 +66,7 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QDepthMask)
-    QNode *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
+    QNode *doClone() const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

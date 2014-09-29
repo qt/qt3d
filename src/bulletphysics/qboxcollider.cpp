@@ -54,6 +54,13 @@ QBoxColliderPrivate::QBoxColliderPrivate(QBoxCollider *qq)
 {
 }
 
+void QBoxColliderPrivate::copy(const QNodePrivate *ref)
+{
+    QAbstractColliderPrivate::copy(ref);
+    const QBoxColliderPrivate *other = static_cast<const QBoxColliderPrivate *>(ref);
+    m_center = other->m_center;
+    m_halfExtents = other->m_halfExtents;
+}
 
 QBoxCollider::QBoxCollider(Qt3D::QNode *parent)
     : QAbstractCollider(*new QBoxColliderPrivate(this), parent)
@@ -65,23 +72,10 @@ QBoxCollider::QBoxCollider(QBoxColliderPrivate &dd, QNode *parent)
 {
 }
 
-void QBoxCollider::copy(const QNode *ref)
-{
-    Q_D(QBoxCollider);
-    QAbstractCollider::copy(ref);
-    const QBoxCollider *other = qobject_cast<const QBoxCollider *>(ref);
-    if (other != Q_NULLPTR) {
-        const QBoxColliderPrivate *d_other = other->d_func();
-        d->m_center = d_other->m_center;
-        d->m_halfExtents = d_other->m_halfExtents;
-    }
-}
-
-QBoxCollider *QBoxCollider::doClone(bool isClone) const
+QBoxCollider *QBoxCollider::doClone() const
 {
     QBoxCollider *clone = new QBoxCollider();
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d_func());
     return clone;
 }
 

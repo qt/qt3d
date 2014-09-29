@@ -54,31 +54,28 @@ QShaderProgramPrivate::QShaderProgramPrivate(QShaderProgram *qq)
 {
 }
 
+void QShaderProgramPrivate::copy(const QNodePrivate *ref)
+{
+    QAbstractShaderPrivate::copy(ref);
+    const QShaderProgramPrivate *prog = static_cast<const QShaderProgramPrivate *>(ref);
+    m_vertexSourceFile = prog->m_vertexSourceFile;
+    m_tessControlSourceFile = prog->m_tessControlSourceFile;
+    m_tessEvalSourceFile = prog->m_tessEvalSourceFile;
+    m_geometrySourceFile = prog->m_geometrySourceFile;
+    m_fragmentSourceFile = prog->m_fragmentSourceFile;
+    m_computeSourceFile = prog->m_computeSourceFile;
+
+    m_vertexShaderCode = prog->m_vertexShaderCode;
+    m_tessControlShaderCode = prog->m_tessControlShaderCode;
+    m_tessEvalShaderCode = prog->m_tessEvalShaderCode;
+    m_geometryShaderCode = prog->m_geometryShaderCode;
+    m_fragmentShaderCode = prog->m_fragmentShaderCode;
+    m_computeShaderCode = prog->m_computeShaderCode;
+}
+
 QShaderProgram::QShaderProgram(QNode *parent)
     : QAbstractShader(*new QShaderProgramPrivate(this), parent)
 {
-}
-
-void QShaderProgram::copy(const QNode *ref)
-{
-    Q_D(QShaderProgram);
-    QAbstractShader::copy(ref);
-    const QShaderProgram *prog = qobject_cast<const QShaderProgram *>(ref);
-    if (prog != Q_NULLPTR) {
-        d->m_vertexSourceFile = prog->d_func()->m_vertexSourceFile;
-        d->m_tessControlSourceFile = prog->d_func()->m_tessControlSourceFile;
-        d->m_tessEvalSourceFile = prog->d_func()->m_tessEvalSourceFile;
-        d->m_geometrySourceFile = prog->d_func()->m_geometrySourceFile;
-        d->m_fragmentSourceFile = prog->d_func()->m_fragmentSourceFile;
-        d->m_computeSourceFile = prog->d_func()->m_computeSourceFile;
-
-        d->m_vertexShaderCode = prog->d_func()->m_vertexShaderCode;
-        d->m_tessControlShaderCode = prog->d_func()->m_tessControlShaderCode;
-        d->m_tessEvalShaderCode = prog->d_func()->m_tessEvalShaderCode;
-        d->m_geometryShaderCode = prog->d_func()->m_geometryShaderCode;
-        d->m_fragmentShaderCode = prog->d_func()->m_fragmentShaderCode;
-        d->m_computeShaderCode = prog->d_func()->m_computeShaderCode;
-    }
 }
 
 QShaderProgram::QShaderProgram(QShaderProgramPrivate &dd, QNode *parent)
@@ -86,11 +83,10 @@ QShaderProgram::QShaderProgram(QShaderProgramPrivate &dd, QNode *parent)
 {
 }
 
-QShaderProgram *QShaderProgram::doClone(bool isClone) const
+QShaderProgram *QShaderProgram::doClone() const
 {
     QShaderProgram *clone = new QShaderProgram();
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d_func());
     return clone;
 }
 
@@ -99,8 +95,8 @@ void QShaderProgram::setVertexShaderSourceFile(const QString& vertexShaderSource
     Q_D(QShaderProgram);
     if (vertexShaderSourceFile != d->m_vertexSourceFile) {
         d->m_vertexSourceFile = vertexShaderSourceFile;
-        notifyPropertyChange(QByteArrayLiteral("vertexSourceFile"),
-                             vertexShaderSourceFile);
+        d->notifyPropertyChange(QByteArrayLiteral("vertexSourceFile"),
+                                vertexShaderSourceFile);
         emit vertexShaderSourceFileChanged();
     }
 }
@@ -116,8 +112,8 @@ void QShaderProgram::setTessellationControlShaderSourceFile(const QString &tesse
     Q_D(QShaderProgram);
     if (tessellationControlShaderSourceFile != d->m_tessControlSourceFile) {
         d->m_tessControlSourceFile = tessellationControlShaderSourceFile;
-        notifyPropertyChange(QByteArrayLiteral("tessellationControlShaderSourceFile"),
-                             tessellationControlShaderSourceFile);
+        d->notifyPropertyChange(QByteArrayLiteral("tessellationControlShaderSourceFile"),
+                                tessellationControlShaderSourceFile);
         emit tessellationControlShaderSourceFileChanged();
     }
 }
@@ -133,8 +129,8 @@ void QShaderProgram::setTessellationEvaluationShaderSourceFile(const QString &te
     Q_D(QShaderProgram);
     if (tessellationEvaluationShaderSourceFile != d->m_tessEvalSourceFile) {
         d->m_tessEvalSourceFile = tessellationEvaluationShaderSourceFile;
-        notifyPropertyChange(QByteArrayLiteral("tessellationEvaluationShaderSourceFile"),
-                             tessellationEvaluationShaderSourceFile);
+        d->notifyPropertyChange(QByteArrayLiteral("tessellationEvaluationShaderSourceFile"),
+                                tessellationEvaluationShaderSourceFile);
         emit tessellationEvaluationShaderSourceFileChanged();
     }
 }
@@ -150,8 +146,8 @@ void QShaderProgram::setGeometryShaderSourceFile(const QString &geometryShaderSo
     Q_D(QShaderProgram);
     if (geometryShaderSourceFile != d->m_geometrySourceFile) {
         d->m_geometrySourceFile = geometryShaderSourceFile;
-        notifyPropertyChange(QByteArrayLiteral("geometryShaderSourceFile"),
-                             geometryShaderSourceFile);
+        d->notifyPropertyChange(QByteArrayLiteral("geometryShaderSourceFile"),
+                                geometryShaderSourceFile);
         emit geometryShaderSourceFileChanged();
     }
 }
@@ -167,8 +163,8 @@ void QShaderProgram::setFragmentShaderSourceFile(const QString& fragmentShaderSo
     Q_D(QShaderProgram);
     if (fragmentShaderSourceFile != d->m_fragmentSourceFile) {
         d->m_fragmentSourceFile = fragmentShaderSourceFile;
-        notifyPropertyChange(QByteArrayLiteral("fragmentSourceFile"),
-                             fragmentShaderSourceFile);
+        d->notifyPropertyChange(QByteArrayLiteral("fragmentSourceFile"),
+                                fragmentShaderSourceFile);
         emit fragmentShaderSourceFileChanged();
     }
 }
@@ -184,8 +180,8 @@ void QShaderProgram::setComputeShaderSourceFile(const QString &computeShaderSour
     Q_D(QShaderProgram);
     if (computeShaderSourceFile != d->m_computeSourceFile) {
         d->m_computeSourceFile = computeShaderSourceFile;
-        notifyPropertyChange(QByteArrayLiteral("computeShaderSourceFile"),
-                             computeShaderSourceFile);
+        d->notifyPropertyChange(QByteArrayLiteral("computeShaderSourceFile"),
+                                computeShaderSourceFile);
         emit computeShaderSourceFileChanged();
     }
 }
@@ -251,8 +247,8 @@ void QShaderProgram::setVertexShaderCode(const QByteArray &vertexShaderCode)
     Q_D(QShaderProgram);
     if (vertexShaderCode != d->m_vertexShaderCode) {
         d->m_vertexShaderCode = vertexShaderCode;
-        notifyPropertyChange(QByteArrayLiteral("vertexSourceCode"),
-                             vertexShaderCode);
+        d->notifyPropertyChange(QByteArrayLiteral("vertexSourceCode"),
+                                vertexShaderCode);
         emit vertexShaderCodeChanged();
     }
 }
@@ -268,8 +264,8 @@ void QShaderProgram::setTessellationControlShaderCode(const QByteArray &tessella
     Q_D(QShaderProgram);
     if (tessellationControlShaderCode != d->m_tessControlShaderCode) {
         d->m_tessControlShaderCode = tessellationControlShaderCode;
-        notifyPropertyChange(QByteArrayLiteral("tessellationControlSourceCode"),
-                             tessellationControlShaderCode);
+        d->notifyPropertyChange(QByteArrayLiteral("tessellationControlSourceCode"),
+                                tessellationControlShaderCode);
         emit tessellationControlShaderCodeChanged();
     }
 }
@@ -285,8 +281,8 @@ void QShaderProgram::setTessellationEvaluationShaderCode(const QByteArray &tesse
     Q_D(QShaderProgram);
     if (tessellationEvaluationShaderCode != d->m_tessEvalShaderCode) {
         d->m_tessEvalShaderCode = tessellationEvaluationShaderCode;
-        notifyPropertyChange(QByteArrayLiteral("tessellationEvaluationSourceCode"),
-                             tessellationEvaluationShaderCode);
+        d->notifyPropertyChange(QByteArrayLiteral("tessellationEvaluationSourceCode"),
+                                tessellationEvaluationShaderCode);
         emit tessellationEvaluationShaderCodeChanged();
     }
 }
@@ -302,8 +298,8 @@ void QShaderProgram::setGeometryShaderCode(const QByteArray &geometryShaderCode)
     Q_D(QShaderProgram);
     if (geometryShaderCode != d->m_geometryShaderCode) {
         d->m_geometryShaderCode = geometryShaderCode;
-        notifyPropertyChange(QByteArrayLiteral("geometrySourceCode"),
-                             geometryShaderCode);
+        d->notifyPropertyChange(QByteArrayLiteral("geometrySourceCode"),
+                                geometryShaderCode);
         emit geometryShaderCodeChanged();
     }
 }
@@ -322,8 +318,8 @@ void QShaderProgram::setFragmentShaderCode(const QByteArray &fragmentShaderCode)
     Q_D(QShaderProgram);
     if (fragmentShaderCode != d->m_fragmentShaderCode) {
         d->m_fragmentShaderCode = fragmentShaderCode;
-        notifyPropertyChange(QByteArrayLiteral("fragmentSourceCode"),
-                             fragmentShaderCode);
+        d->notifyPropertyChange(QByteArrayLiteral("fragmentSourceCode"),
+                                fragmentShaderCode);
         emit fragmentShaderCodeChanged();
     }
 }
@@ -339,8 +335,8 @@ void QShaderProgram::setComputeShaderCode(const QByteArray &computeShaderCode)
     Q_D(QShaderProgram);
     if (computeShaderCode != d->m_computeShaderCode) {
         d->m_computeShaderCode = computeShaderCode;
-        notifyPropertyChange(QByteArrayLiteral("computeSourceCode"),
-                             computeShaderCode);
+        d->notifyPropertyChange(QByteArrayLiteral("computeSourceCode"),
+                                computeShaderCode);
         emit computeShaderCodeChanged();
     }
 }

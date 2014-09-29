@@ -60,6 +60,7 @@
 #include <QWaitCondition>
 #include <QAtomicInt>
 #include <QScopedPointer>
+#include <QThreadStorage>
 
 QT_BEGIN_NAMESPACE
 

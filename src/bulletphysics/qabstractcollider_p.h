@@ -57,6 +57,8 @@ class QAbstractColliderPrivate : public Qt3D::QComponentPrivate
 public:
     QAbstractColliderPrivate(QAbstractCollider *qq);
 
+    virtual void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
+
     Q_DECLARE_PUBLIC(QAbstractCollider)
 
     QAbstractCollider::CollisionBehavior m_collisionBehavior;

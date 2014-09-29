@@ -71,19 +71,16 @@ QDirectionalLightPrivate::QDirectionalLightPrivate(QDirectionalLight *qq)
 {
 }
 
+void QDirectionalLightPrivate::copy(const QNodePrivate *ref)
+{
+    QAbstractLightPrivate::copy(ref);
+    const QDirectionalLightPrivate *light = static_cast<const QDirectionalLightPrivate *>(ref);
+    m_direction = light->m_direction;
+}
+
 QDirectionalLight::QDirectionalLight(QNode *parent)
     : QAbstractLight(*new QDirectionalLightPrivate(this), parent)
 {
-}
-
-void QDirectionalLight::copy(const QNode *ref)
-{
-    Q_D(QDirectionalLight);
-    QAbstractLight::copy(ref);
-    const QDirectionalLight *light = qobject_cast<const QDirectionalLight *>(ref);
-    if (ref != Q_NULLPTR) {
-        d->m_direction = light->direction();
-    }
 }
 
 QDirectionalLight::QDirectionalLight(QDirectionalLightPrivate &dd, QNode *parent)
@@ -91,11 +88,10 @@ QDirectionalLight::QDirectionalLight(QDirectionalLightPrivate &dd, QNode *parent
 {
 }
 
-QDirectionalLight *QDirectionalLight::doClone(bool isClone) const
+QDirectionalLight *QDirectionalLight::doClone() const
 {
     QDirectionalLight *clone = new QDirectionalLight();
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d_func());
     return clone;
 }
 
@@ -108,7 +104,7 @@ void QDirectionalLight::setDirection(const QVector3D &direction)
         QScenePropertyChangePtr change(new QScenePropertyChange(ComponentAdded, this));
         change->setPropertyName(QByteArrayLiteral("direction"));
         change->setValue(d->m_direction);
-        notifyObservers(change);
+        d->notifyObservers(change);
     }
 }
 

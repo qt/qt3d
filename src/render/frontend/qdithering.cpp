@@ -41,6 +41,7 @@
 ****************************************************************************/
 
 #include "qdithering.h"
+#include "qrenderstate_p.h"
 #include <private/qnode_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
@@ -48,11 +49,11 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QDitheringPrivate : public QNodePrivate
+class QDitheringPrivate : public QRenderStatePrivate
 {
 public:
     QDitheringPrivate(QDithering *qq)
-        : QNodePrivate(qq)
+        : QRenderStatePrivate(qq)
     {}
 
     Q_DECLARE_PUBLIC(QDithering)
@@ -63,11 +64,10 @@ QDithering::QDithering(QNode *parent)
 {
 }
 
-QNode *QDithering::doClone(bool isClone) const
+QNode *QDithering::doClone() const
 {
     QDithering *clone = new QDithering();
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d_func());
     return clone;
 }
 

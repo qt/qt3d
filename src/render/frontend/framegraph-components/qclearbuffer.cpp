@@ -53,6 +53,13 @@ QClearBufferPrivate::QClearBufferPrivate(QClearBuffer *qq)
 {
 }
 
+void QClearBufferPrivate::copy(const QNodePrivate *ref)
+{
+    QFrameGraphItemPrivate::copy(ref);
+    const QClearBufferPrivate *b = static_cast<const QClearBufferPrivate *>(ref);
+    m_buffersType = b->m_buffersType;
+}
+
 QClearBuffer::QClearBuffer(QNode *parent)
     : QFrameGraphItem(*new QClearBufferPrivate(this), parent)
 {
@@ -63,14 +70,6 @@ QClearBuffer::QClearBuffer(QClearBufferPrivate &dd, QNode *parent)
 {
 }
 
-void QClearBuffer::copy(const QNode *ref)
-{
-    Q_D(QClearBuffer);
-    QFrameGraphItem::copy(ref);
-    const QClearBuffer *b = qobject_cast<const QClearBuffer *>(ref);
-    if (b != Q_NULLPTR)
-        d->m_buffersType = b->buffers();
-}
 
 QClearBuffer::BufferType QClearBuffer::buffers() const
 {
@@ -79,11 +78,15 @@ QClearBuffer::BufferType QClearBuffer::buffers() const
 }
 
 
-QClearBuffer *QClearBuffer::doClone(bool isClone) const
+QClearBuffer *QClearBuffer::doClone() const
 {
+    Q_D(const QClearBuffer);
     QClearBuffer *clone = new QClearBuffer();
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d_func());
+
+    Q_FOREACH (QFrameGraphItem *fgChild, d->m_fgChildren)
+        clone->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(QNodePrivate::get(fgChild)->clone()));
+
     return clone;
 }
 
@@ -98,7 +101,7 @@ void QClearBuffer::setBuffers(QClearBuffer::BufferType buffers)
             QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
             propertyChange->setPropertyName(QByteArrayLiteral("buffers"));
             propertyChange->setValue(buffers);
-            notifyObservers(propertyChange);
+            d->notifyObservers(propertyChange);
         }
     }
 }

@@ -59,9 +59,9 @@ QEffect::QEffect(QNode *parent)
 {
 }
 
-void QEffect::copy(const QNode *ref)
+void QEffectPrivate::copy(const QNodePrivate *ref)
 {
-    QAbstractEffect::copy(ref);
+    QAbstractEffectPrivate::copy(ref);
 }
 
 QEffect::QEffect(QEffectPrivate &dd, QNode *parent)
@@ -69,19 +69,18 @@ QEffect::QEffect(QEffectPrivate &dd, QNode *parent)
 {
 }
 
-QEffect *QEffect::doClone(bool isClone) const
+QEffect *QEffect::doClone() const
 {
     Q_D(const QEffect);
     QEffect *effect = new QEffect();
 
-    effect->copy(this);
-    effect->d_func()->m_isClone = isClone;
+    effect->d_func()->copy(d_func());
 
     Q_FOREACH (QParameter *p, d->m_parameters)
-        effect->addParameter(qobject_cast<QParameter *>(p->clone(isClone)));
+        effect->addParameter(qobject_cast<QParameter *>(QNodePrivate::get(p)->clone()));
 
     Q_FOREACH (QAbstractTechnique *t, d->m_techniques)
-        effect->addTechnique(qobject_cast<QAbstractTechnique *>(t->clone(isClone)));
+        effect->addTechnique(qobject_cast<QAbstractTechnique *>(QNodePrivate::get(t)->clone()));
 
     return effect;
 }
@@ -96,14 +95,14 @@ void QEffect::addParameter(QParameter *parameter)
         // Or not previously added as a child of the current node so that
         // 1) The backend gets notified about it's creation
         // 2) When the current node is destroyed, it gets destroyed as well
-        if (!parameter->parent() || parameter->parent() == this)
-            addChild(parameter);
+        if (!parameter->parent())
+            parameter->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
             change->setPropertyName(QByteArrayLiteral("parameter"));
-            change->setValue(QVariant::fromValue(parameter->clone()));
-            notifyObservers(change);
+            change->setValue(QVariant::fromValue(QNodePrivate::get(parameter)->clone()));
+            d->notifyObservers(change);
         }
     }
 }
@@ -115,8 +114,8 @@ void QEffect::removeParameter(QParameter *parameter)
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, this));
         change->setPropertyName(QByteArrayLiteral("parameter"));
-        change->setValue(QVariant::fromValue(parameter->clone()));
-        notifyObservers(change);
+        change->setValue(QVariant::fromValue(QNodePrivate::get(parameter)->clone()));
+        d->notifyObservers(change);
     }
     d->m_parameters.removeOne(parameter);
 }

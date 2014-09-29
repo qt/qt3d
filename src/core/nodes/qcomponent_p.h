@@ -55,8 +55,6 @@ public:
     explicit QComponentPrivate(QComponent *qq);
 
     Q_DECLARE_PUBLIC(QComponent)
-
-    bool m_enabled;
 };
 
 }

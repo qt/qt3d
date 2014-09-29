@@ -57,6 +57,8 @@ class QFrameGraphItemPrivate : public QNodePrivate
 public:
     QFrameGraphItemPrivate(QFrameGraphItem *qq);
 
+    virtual void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
+
     Q_DECLARE_PUBLIC(QFrameGraphItem)
     bool m_enabled;
     QList<QFrameGraphItem *> m_fgChildren;

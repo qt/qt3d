@@ -41,6 +41,7 @@
 ****************************************************************************/
 
 #include "qstenciltest.h"
+#include "qrenderstate_p.h"
 #include <private/qnode_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
@@ -49,16 +50,18 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QStencilTestPrivate : public QNodePrivate
+class QStencilTestPrivate : public QRenderStatePrivate
 {
 public:
     QStencilTestPrivate(QStencilTest *qq)
-        : QNodePrivate(qq)
+        : QRenderStatePrivate(qq)
         , m_mask(0)
         , m_func(QStencilTest::Never)
         , m_faceMode(QStencilTest::FrontAndBack)
     {
     }
+
+    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
 
     Q_DECLARE_PUBLIC(QStencilTest)
     uint m_mask;
@@ -71,16 +74,13 @@ QStencilTest::QStencilTest(QNode *parent)
 {
 }
 
-void QStencilTest::copy(const QNode *ref)
+void QStencilTestPrivate::copy(const QNodePrivate *ref)
 {
-    QRenderState::copy(ref);
-    Q_D(QStencilTest);
-    const QStencilTest *refState = qobject_cast<const QStencilTest *>(ref);
-    if (refState != Q_NULLPTR) {
-        d->m_mask = refState->mask();
-        d->m_faceMode = refState->faceMode();
-        d->m_func = refState->func();
-    }
+    QRenderStatePrivate::copy(ref);
+    const QStencilTestPrivate *refState = static_cast<const QStencilTestPrivate *>(ref);
+    m_mask = refState->m_mask;
+    m_faceMode = refState->m_faceMode;
+    m_func = refState->m_func;
 }
 
 uint QStencilTest::mask() const
@@ -99,7 +99,7 @@ void QStencilTest::setMask(uint mask)
             QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
             propertyChange->setPropertyName(QByteArrayLiteral("mask"));
             propertyChange->setValue(d->m_mask);
-            notifyObservers(propertyChange);
+            d->notifyObservers(propertyChange);
         }
     }
 }
@@ -120,7 +120,7 @@ void QStencilTest::setFaceMode(QStencilTest::StencilFaceMode mode)
             QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
             propertyChange->setPropertyName(QByteArrayLiteral("faceMode"));
             propertyChange->setValue(d->m_faceMode);
-            notifyObservers(propertyChange);
+            d->notifyObservers(propertyChange);
         }
     }
 }
@@ -141,16 +141,15 @@ void QStencilTest::setFunc(QStencilTest::StencilFunc func)
             QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
             propertyChange->setPropertyName(QByteArrayLiteral("func"));
             propertyChange->setValue(d->m_func);
-            notifyObservers(propertyChange);
+            d->notifyObservers(propertyChange);
         }
     }
 }
 
-QNode *QStencilTest::doClone(bool isClone) const
+QNode *QStencilTest::doClone() const
 {
     QStencilTest *clone = new QStencilTest();
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d_func());
     return clone;
 }
 

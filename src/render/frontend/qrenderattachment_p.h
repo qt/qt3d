@@ -55,6 +55,9 @@ class QRenderAttachmentPrivate : public QNodePrivate
 {
 public:
     QRenderAttachmentPrivate(QRenderAttachment *qq);
+
+    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
+
     Q_DECLARE_PUBLIC(QRenderAttachment)
 
     QTexture *m_texture;

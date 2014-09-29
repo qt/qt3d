@@ -56,24 +56,28 @@ QMaterialPrivate::QMaterialPrivate(QMaterial *qq)
 {
 }
 
+void QMaterialPrivate::copy(const QNodePrivate *ref)
+{
+    QAbstractMaterialPrivate::copy(ref);
+}
+
 QMaterial::QMaterial(QMaterialPrivate &dd, QNode *parent)
     : QAbstractMaterial(dd, parent)
 {
 }
 
-QMaterial *QMaterial::doClone(bool isClone) const
+QMaterial *QMaterial::doClone() const
 {
     Q_D(const QMaterial);
     QMaterial *mat = new QMaterial();
 
-    mat->copy(this);
-    mat->d_func()->m_isClone = isClone;
+    mat->d_func()->copy(d_func());
 
     Q_FOREACH (QParameter *p, d->m_parameters)
-        mat->addParameter(qobject_cast<QParameter *>(p->clone(isClone)));
+        mat->addParameter(qobject_cast<QParameter *>(QNodePrivate::get(p)->clone()));
 
     if (d->m_effect != Q_NULLPTR)
-        mat->setEffect(qobject_cast<QAbstractEffect *>(d->m_effect->clone(isClone)));
+        mat->setEffect(qobject_cast<QAbstractEffect *>(QNodePrivate::get(d->m_effect)->clone()));
 
     return mat;
 }
@@ -83,10 +87,6 @@ QMaterial::QMaterial(QNode *parent)
 {
 }
 
-void QMaterial::copy(const QNode *ref)
-{
-    QAbstractMaterial::copy(ref);
-}
 
 void QMaterial::setEffect(QAbstractEffect *effect)
 {
@@ -105,14 +105,14 @@ void QMaterial::addParameter(QParameter *parameter)
         // Or not previously added as a child of the current node so that
         // 1) The backend gets notified about it's creation
         // 2) When the current node is destroyed, it gets destroyed as well
-        if (!parameter->parent() || parameter->parent() == this)
-            QNode::addChild(parameter);
+        if (!parameter->parent())
+            parameter->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
             change->setPropertyName(QByteArrayLiteral("parameter"));
-            change->setValue(QVariant::fromValue(parameter->clone()));
-            notifyObservers(change);
+            change->setValue(QVariant::fromValue(QNodePrivate::get(parameter)->clone()));
+            d->notifyObservers(change);
         }
     }
 }
@@ -123,8 +123,8 @@ void QMaterial::removeParameter(QParameter *parameter)
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, this));
         change->setPropertyName(QByteArrayLiteral("parameter"));
-        change->setValue(QVariant::fromValue(parameter->clone()));
-        notifyObservers(change);
+        change->setValue(QVariant::fromValue(QNodePrivate::get(parameter)->clone()));
+        d->notifyObservers(change);
     }
     d->m_parameters.removeOne(parameter);
 }

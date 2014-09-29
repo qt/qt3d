@@ -41,6 +41,7 @@
 
 #include "qtransform.h"
 #include "qtransform_p.h"
+#include "qabstracttransform_p.h"
 
 #include <Qt3DCore/qscenepropertychange.h>
 #include <qmatrixtransform.h>
@@ -55,6 +56,13 @@ QTransformPrivate::QTransformPrivate(QTransform *qq)
     , m_matrix()
     , m_sceneMatrix()
 {
+}
+
+void QTransformPrivate::copy(const QNodePrivate *ref)
+{
+    QComponentPrivate::copy(ref);
+    const QTransformPrivate *transform = static_cast<const QTransformPrivate *>(ref);
+    m_matrix = transform->m_matrix;
 }
 
 QTransform::QTransform(QNode *parent)
@@ -81,28 +89,18 @@ QTransform::QTransform(QAbstractTransform *transform, QNode *parent)
     appendTransform(transform);
 }
 
-void QTransform::copy(const QNode *ref)
-{
-    Q_D(QTransform);
-    QComponent::copy(ref);
-    const QTransform *transform = qobject_cast<const QTransform *>(ref);
-    if (transform != Q_NULLPTR) {
-        d->m_matrix = transform->matrix();
-        emit matrixChanged();
-    }
-}
-
 QTransform::QTransform(QTransformPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
 {
 }
 
-QTransform *QTransform::doClone(bool isClone) const
+QTransform *QTransform::doClone() const
 {
     Q_D(const QTransform);
     QTransform *clone = new QTransform();
+    clone->d_func()->copy(d_func());
     Q_FOREACH (QAbstractTransform *t, d->m_transforms)
-        clone->appendTransform(qobject_cast<QAbstractTransform *>(t->clone()));
+        clone->appendTransform(qobject_cast<QAbstractTransform *>(QNodePrivate::get(t)->clone()));
     return clone;
 }
 
@@ -115,7 +113,7 @@ void QTransform::setTransformsDirty()
             QScenePropertyChangePtr e(new QScenePropertyChange(ComponentUpdated, this));
             e->setPropertyName(QByteArrayLiteral("matrix"));
             e->setValue(matrix());
-            notifyObservers(e);
+            d->notifyObservers(e);
         }
     }
     emit matrixChanged();

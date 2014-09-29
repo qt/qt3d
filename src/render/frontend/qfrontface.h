@@ -66,8 +66,6 @@ public:
 
     explicit QFrontFace(QNode *parent = 0);
 
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
     FaceDir direction() const;
     void setDirection(FaceDir direction);
 
@@ -76,7 +74,7 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QFrontFace)
-    QNode *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
+    QNode *doClone() const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

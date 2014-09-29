@@ -74,8 +74,6 @@ class QT3DCORESHARED_EXPORT QCameraLens : public QComponent
 public:
     explicit QCameraLens(QNode *parent = 0);
 
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
     enum ProjectionType {
         OrthogonalProjection,
         PerspectiveProjection
@@ -131,9 +129,11 @@ Q_SIGNALS:
     void projectionMatrixChanged();
 
 protected:
-    Q_DECLARE_PRIVATE(QCameraLens)
     QCameraLens(QCameraLensPrivate &dd, QNode *parent = 0);
-    QCameraLens *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
+
+private:
+    Q_DECLARE_PRIVATE(QCameraLens)
+    QCameraLens *doClone() const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

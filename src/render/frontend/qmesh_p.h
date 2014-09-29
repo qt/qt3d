@@ -57,9 +57,10 @@ class QT3DRENDERERSHARED_EXPORT QMeshPrivate : public QAbstractMeshPrivate
 public:
     QMeshPrivate(QMesh *qq);
 
+    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
+
     Q_DECLARE_PUBLIC(QMesh)
 
-    QMeshDataPtr m_data;
     QString m_source;
 };
 

@@ -64,21 +64,16 @@ void QSceneLoader::sceneChangeEvent(const QSceneChangePtr &change)
     if (e->type() == ComponentUpdated) {
         if (e->propertyName() == QByteArrayLiteral("scene")) {
             QEntity *scene = e->value().value<QEntity *>();
+            // TO DO: We should send a QNodePtr so that it is release automatically
             if (scene != Q_NULLPTR && d->m_scene != Q_NULLPTR) {
                 QList<QUuid> entities = d->m_scene->entitiesForComponent(d->m_uuid);
-                if (entities.size() > 1)
+                if (entities.size() > 1) // TO DO: QComponent shareable property
                     qCWarning(Render::Frontend) << "It is strongly discouraged to share SceneLoader component between entities";
                 Q_FOREACH (const QUuid &id, entities) {
                     QEntity *parentEntity = qobject_cast<QEntity *>(d->m_scene->lookupNode(id));
                     if (parentEntity != Q_NULLPTR) {
-                        scene->dumpObjectTree();
-
-                        qDebug() << "BUILDING SUBTREE DEEP CLONE";
-                        QEntity *cloneScene = qobject_cast<QEntity *>(scene->clone(false));
-                        cloneScene->dumpObjectTree();
-                        // TO DO : Make that work
-                        qDebug() << "<<<<<<<<<<<<<<<<< " << QThread::currentThread() << parentEntity->thread() << scene->thread() << cloneScene->thread();
-//                        parentEntity->addChild(cloneScene);
+                        QEntity *cloneScene = qobject_cast<QEntity *>(QNodePrivate::get(scene)->clone());
+                        QNodePrivate::get(parentEntity)->insertTree(cloneScene);
                     }
                 }
             }
@@ -89,11 +84,10 @@ void QSceneLoader::sceneChangeEvent(const QSceneChangePtr &change)
     }
 }
 
-QNode *QSceneLoader::doClone(bool isClone) const
+QNode *QSceneLoader::doClone() const
 {
     QSceneLoader *clone = new QSceneLoader();
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d_func());
     return clone;
 }
 

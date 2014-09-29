@@ -45,6 +45,9 @@
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qcomponent.h>
 #include <Qt3DCore/qobservableinterface.h>
+#include <Qt3DCore/qobserverinterface.h>
+#include <Qt3DCore/qchangearbiter.h>
+#include <private/qnode_p.h>
 
 class tst_QScene : public QObject
 {
@@ -91,11 +94,10 @@ public:
     tst_Node() : Qt3D::QNode()
     {}
 protected:
-    Qt3D::QNode *doClone(bool isClone = true) const Q_DECL_OVERRIDE
+    Qt3D::QNode *doClone() const Q_DECL_OVERRIDE
     {
         tst_Node *clone = new tst_Node();
         clone->copy(this);
-//        clone->d_func()->m_isClone = isClone;
         return clone;
     }
 };
@@ -106,11 +108,10 @@ public:
     tst_Component() : Qt3D::QComponent()
     {}
 protected:
-    Qt3D::QNode *doClone(bool isClone = true) const
+    Qt3D::QNode *doClone() const
     {
         tst_Component *clone = new tst_Component;
         clone->copy(this);
-//        clone->d_func()->m_isClone = isClone;
         return clone;
     }
 };
@@ -256,18 +257,19 @@ void tst_QScene::addChildNode()
     QList<Qt3D::QNode *> nodes;
 
     Qt3D::QNode *root = new tst_Node();
-    root->setScene(scene);
+    Qt3D::QNodePrivate::get(root)->setScene(scene);
     scene->addObservable(root);
     for (int i = 0; i < 10; i++) {
         Qt3D::QNode *child = new tst_Node();
         if (nodes.isEmpty())
-            root->addChild(child);
+            child->setParent(root);
         else
-            nodes.last()->addChild(child);
+            child->setParent(nodes.last());
         nodes.append(child);
     }
 
     QVERIFY(scene->lookupNode(root->uuid()) == root);
+    QCoreApplication::processEvents();
 
     Q_FOREACH (Qt3D::QNode *n, nodes) {
         QVERIFY(scene->lookupNode(n->uuid()) == n);
@@ -281,14 +283,14 @@ void tst_QScene::removeChildNode()
     QList<Qt3D::QNode *> nodes;
 
     Qt3D::QNode *root = new tst_Node;
-    root->setScene(scene);
+    Qt3D::QNodePrivate::get(root)->setScene(scene);
     scene->addObservable(root);
     for (int i = 0; i < 10; i++) {
         Qt3D::QNode *child = new tst_Node;
         if (nodes.isEmpty())
-            root->addChild(child);
+            child->setParent(root);
         else
-            nodes.last()->addChild(child);
+            child->setParent(nodes.last());
         nodes.append(child);
     }
 
@@ -296,7 +298,8 @@ void tst_QScene::removeChildNode()
         Qt3D::QNode *lst = nodes.takeLast();
         QVERIFY(scene->lookupNode(lst->uuid()) == lst);
         if (lst->parentNode() != Q_NULLPTR) {
-            lst->parentNode()->removeChild(lst);
+            lst->setParent(Q_NULLPTR);
+            QCoreApplication::processEvents();
             QVERIFY(scene->lookupNode(lst->uuid()) == Q_NULLPTR);
         }
     }
@@ -313,8 +316,8 @@ void tst_QScene::addEntityForComponent()
         Qt3D::QEntity *entity = new Qt3D::QEntity();
         Qt3D::QComponent *comp = new tst_Component();
 
-        entity->setScene(scene);
-        comp->setScene(scene);
+        Qt3D::QNodePrivate::get(entity)->setScene(scene);
+        Qt3D::QNodePrivate::get(comp)->setScene(scene);
         entities << entity;
         components << comp;
     }
@@ -343,8 +346,8 @@ void tst_QScene::removeEntityForComponent()
         Qt3D::QEntity *entity = new Qt3D::QEntity();
         Qt3D::QComponent *comp = new tst_Component();
 
-        entity->setScene(scene);
-        comp->setScene(scene);
+        Qt3D::QNodePrivate::get(entity)->setScene(scene);
+        Qt3D::QNodePrivate::get(comp)->setScene(scene);
         entities << entity;
         components << comp;
     }
@@ -365,6 +368,6 @@ void tst_QScene::removeEntityForComponent()
     }
 }
 
-QTEST_APPLESS_MAIN(tst_QScene)
+QTEST_MAIN(tst_QScene)
 
 #include "tst_qscene.moc"

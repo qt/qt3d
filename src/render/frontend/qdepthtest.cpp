@@ -41,6 +41,7 @@
 ****************************************************************************/
 
 #include "qdepthtest.h"
+#include "qrenderstate_p.h"
 #include <private/qnode_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
@@ -48,32 +49,33 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QDepthTestPrivate : QNodePrivate
+class QDepthTest;
+
+class QDepthTestPrivate : public QRenderStatePrivate
 {
 public :
     QDepthTestPrivate(QDepthTest *qq)
-        : QNodePrivate(qq)
+        : QRenderStatePrivate(qq)
         , m_func(QDepthTest::Never)
     {
     }
+
+    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
 
     Q_DECLARE_PUBLIC(QDepthTest)
     QDepthTest::DepthFunc m_func;
 };
 
+void QDepthTestPrivate::copy(const QNodePrivate *ref)
+{
+    QRenderStatePrivate::copy(ref);
+    const QDepthTestPrivate *refState = static_cast<const QDepthTestPrivate *>(ref);
+    m_func = refState->m_func;
+}
+
 QDepthTest::QDepthTest(QNode *parent)
     : QRenderState(*new QDepthTestPrivate(this), parent)
 {
-}
-
-void QDepthTest::copy(const QNode *ref)
-{
-    QRenderState::copy(ref);
-    Q_D(QDepthTest);
-    const QDepthTest *refState = qobject_cast<const QDepthTest *>(ref);
-    if (refState != Q_NULLPTR) {
-        d->m_func = refState->func();
-    }
 }
 
 QDepthTest::DepthFunc QDepthTest::func() const
@@ -92,16 +94,15 @@ void QDepthTest::setFunc(QDepthTest::DepthFunc func)
             QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
             propertyChange->setPropertyName(QByteArrayLiteral("func"));
             propertyChange->setValue(d->m_func);
-            notifyObservers(propertyChange);
+            d->notifyObservers(propertyChange);
         }
     }
 }
 
-QNode *QDepthTest::doClone(bool isClone) const
+QNode *QDepthTest::doClone() const
 {
     QDepthTest *clone = new QDepthTest();
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d_func());
     return clone;
 }
 

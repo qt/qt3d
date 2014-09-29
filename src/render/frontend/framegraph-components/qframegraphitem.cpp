@@ -64,6 +64,11 @@ QFrameGraphItemPrivate::QFrameGraphItemPrivate(QFrameGraphItem *qq)
 {
 }
 
+void QFrameGraphItemPrivate::copy(const QNodePrivate *ref)
+{
+    QNodePrivate::copy(ref);
+}
+
 QFrameGraphItem::QFrameGraphItem(QNode *parent)
     : QNode(*new QFrameGraphItemPrivate(this), parent)
 {
@@ -74,26 +79,12 @@ QFrameGraphItem::QFrameGraphItem(QFrameGraphItemPrivate &dd, QNode *parent)
 {
 }
 
-void QFrameGraphItem::setEnabled(bool enabled)
-{
-    Q_D(QFrameGraphItem);
-    if (d->m_enabled != enabled) {
-        d->m_enabled = enabled;
-        emit enabledChanged();
-    }
-}
-
-bool QFrameGraphItem::isEnabled() const
-{
-    Q_D(const QFrameGraphItem);
-    return d->m_enabled;
-}
-
 void QFrameGraphItem::appendFrameGraphItem(QFrameGraphItem *item)
 {
     Q_D(QFrameGraphItem);
     if (!d->m_fgChildren.contains(item)) {
-        QNode::addChild(item);
+        if (!item->parent())
+            item->setParent(this);
         d->m_fgChildren.append(item);
     }
 }
@@ -103,7 +94,6 @@ void QFrameGraphItem::removeFrameGraphItem(QFrameGraphItem *item)
     Q_D(QFrameGraphItem);
     if (!d->m_fgChildren.contains(item)) {
         d->m_fgChildren.removeOne(item);
-        QNode::removeChild(item);
     }
 }
 

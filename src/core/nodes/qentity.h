@@ -60,93 +60,24 @@ class QT3DCORESHARED_EXPORT QEntity : public QNode
 {
     Q_OBJECT
 
-    Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
-
 public:
     explicit QEntity(QNode *parent = 0);
     virtual ~QEntity();
 
     ComponentList components() const;
-    virtual void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
-    template <class T>
-    QList<T*> componentsOfType() const
-    {
-        QList<T*> result;
-        Q_FOREACH (QComponent* comp, components()) {
-            T* i = qobject_cast<T*>(comp);
-            if (i)
-                result.append(i);
-        }
-
-        return result;
-    }
-
-    template <class T>
-    static T* findComponentInTree(QNode* root)
-    {
-        if (!root)
-            return Q_NULLPTR;
-
-        if (root->asEntity()) {
-            Q_FOREACH (QComponent* comp, root->asEntity()->components()) {
-                T* i = qobject_cast<T*>(comp);
-                if (i)
-                    return i;
-            } // of component iteration
-        } // of is-entity
-
-        Q_FOREACH (QNode* child, root->children()) {
-            T* i = findComponentInTree<T>(child);
-            if (i)
-                return i;
-        } // of child nodes iteration
-
-        return Q_NULLPTR;
-    }
-
-    template <class T>
-    static T* findEntityInTree(QNode* root)
-    {
-        if (!root)
-            return Q_NULLPTR;
-
-        if (root->asEntity()) {
-            Q_FOREACH (QNode* child, root->children()) {
-                if (!qobject_cast<QEntity*>(child))
-                    continue;
-                T* i = qobject_cast<T*>(child);
-                if (i)
-                    return i;
-            } // of child iteration
-        } // of is-entity
-
-        Q_FOREACH (QNode* child, root->children()) {
-            T* i = findEntityInTree<T>(child);
-            if (i)
-                return i;
-        } // of child nodes iteration
-
-        return Q_NULLPTR;
-    }
 
     void addComponent(QComponent *comp);
     void removeComponent(QComponent *comp);
     void removeAllComponents();
 
-    bool isEnabled() const;
-    void setEnabled(bool on);
-
     QEntity *parentEntity();
-    QEntity *asEntity() Q_DECL_OVERRIDE;
-
-Q_SIGNALS:
-    void enabledChanged();
 
 protected:
-    Q_DECLARE_PRIVATE(QEntity)
     QEntity(QEntityPrivate &dd, QNode *parent = 0);
-    QEntity *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
+
+private:
+    Q_DECLARE_PRIVATE(QEntity)
+    QEntity *doClone() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3D

@@ -57,6 +57,13 @@ QRenderAttachmentPrivate::QRenderAttachmentPrivate(QRenderAttachment *qq)
 {
 }
 
+void QRenderAttachmentPrivate::copy(const QNodePrivate *ref)
+{
+    QNodePrivate::copy(ref);
+    const QRenderAttachmentPrivate *rA = static_cast<const QRenderAttachmentPrivate *>(ref);
+    m_type = rA->m_type;
+}
+
 QRenderAttachment::QRenderAttachment(QNode *parent)
     : QNode(*new QRenderAttachmentPrivate(this), parent)
 {
@@ -65,17 +72,6 @@ QRenderAttachment::QRenderAttachment(QNode *parent)
 QRenderAttachment::QRenderAttachment(QRenderAttachmentPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
-}
-
-void QRenderAttachment::copy(const QNode *ref)
-{
-    QNode::copy(ref);
-    const QRenderAttachment *rA = qobject_cast<const QRenderAttachment *>(ref);
-    if (rA != Q_NULLPTR) {
-        setType(rA->type());
-        // TO DO: Send a clone once Texture is a QNode subclass
-        setTexture(rA->texture());
-    }
 }
 
 void QRenderAttachment::setType(QRenderAttachment::RenderAttachmentType type)
@@ -88,7 +84,7 @@ void QRenderAttachment::setType(QRenderAttachment::RenderAttachmentType type)
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
             change->setPropertyName(QByteArrayLiteral("type"));
             change->setValue(type);
-            notifyObservers(change);
+            d->notifyObservers(change);
         }
     }
 }
@@ -107,15 +103,15 @@ void QRenderAttachment::setTexture(QTexture *texture)
         emit textureChanged();
 
         // Handle inline declaration
-        if (!texture->parent() || texture->parent() == this)
-            QNode::addChild(texture);
+        if (!texture->parent())
+            texture->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
             change->setPropertyName(QByteArrayLiteral("texture"));
             // TO DO: Send a clone once Texture is a QNode subclass
             change->setValue(QVariant::fromValue(texture));
-            notifyObservers(change);
+            d->notifyObservers(change);
         }
     }
 }
@@ -136,7 +132,7 @@ void QRenderAttachment::setMipLevel(int level)
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
             change->setPropertyName(QByteArrayLiteral("mipLevel"));
             change->setValue(level);
-            notifyObservers(change);
+            d->notifyObservers(change);
         }
     }
 }
@@ -157,7 +153,7 @@ void QRenderAttachment::setLayer(int layer)
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
             change->setPropertyName(QByteArrayLiteral("layer"));
             change->setValue(layer);
-            notifyObservers(change);
+            d->notifyObservers(change);
         }
     }
 }
@@ -178,7 +174,7 @@ void QRenderAttachment::setFace(QRenderAttachment::CubeMapFace face)
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
             change->setPropertyName(QByteArrayLiteral("face"));
             change->setValue(face);
-            notifyObservers(change);
+            d->notifyObservers(change);
         }
     }
 }
@@ -199,7 +195,7 @@ void QRenderAttachment::setName(const QString &name)
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
             change->setPropertyName(QByteArrayLiteral("name"));
             change->setValue(name);
-            notifyObservers(change);
+            d->notifyObservers(change);
         }
     }
 }
@@ -210,11 +206,12 @@ QString QRenderAttachment::name() const
     return d->m_name;
 }
 
-QNode *QRenderAttachment::doClone(bool isClone) const
+QNode *QRenderAttachment::doClone() const
 {
-    QRenderAttachment *clone = new QRenderAttachment();
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    Q_D(const QRenderAttachment);
+    QRenderAttachment *clone = new QRenderAttachment();;
+    clone->d_func()->copy(d_func());
+    clone->setTexture(qobject_cast<QTexture *>(QNodePrivate::get(d->m_texture)->clone()));
     return clone;
 }
 

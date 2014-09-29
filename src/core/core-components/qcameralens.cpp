@@ -47,16 +47,16 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 QCameraLensPrivate::QCameraLensPrivate(QCameraLens *qq)
-  : QComponentPrivate(qq)
-  , m_projectionType(QCameraLens::OrthogonalProjection)
-  , m_nearPlane(0.1f)
-  , m_farPlane(1024.0f)
-  , m_fieldOfView(25.0f)
-  , m_aspectRatio(1.0f)
-  , m_left(-0.5f)
-  , m_right(0.5f)
-  , m_bottom(-0.5f)
-  , m_top(0.5f)
+    : QComponentPrivate(qq)
+    , m_projectionType(QCameraLens::OrthogonalProjection)
+    , m_nearPlane(0.1f)
+    , m_farPlane(1024.0f)
+    , m_fieldOfView(25.0f)
+    , m_aspectRatio(1.0f)
+    , m_left(-0.5f)
+    , m_right(0.5f)
+    , m_bottom(-0.5f)
+    , m_top(0.5f)
 {
 }
 
@@ -68,23 +68,20 @@ QCameraLens::QCameraLens(QNode *parent)
     d->updateProjectionMatrix();
 }
 
-void QCameraLens::copy(const QNode *ref)
+void QCameraLensPrivate::copy(const QNodePrivate *ref)
 {
-    Q_D(QCameraLens);
-    QComponent::copy(ref);
-    const QCameraLens *lens = qobject_cast<const QCameraLens *>(ref);
-    if (lens != Q_NULLPTR) {
-        d->m_projectionType = lens->projectionType();
-        d->m_nearPlane = lens->nearPlane();
-        d->m_farPlane = lens->farPlane();
-        d->m_fieldOfView = lens->fieldOfView();
-        d->m_aspectRatio = lens->aspectRatio();
-        d->m_left = lens->left();
-        d->m_right = lens->right();
-        d->m_bottom = lens->bottom();
-        d->m_top = lens->top();
-        d->updateProjectionMatrix();
-    }
+    QComponentPrivate::copy(ref);
+    const QCameraLensPrivate *lens = static_cast<const QCameraLensPrivate *>(ref);
+    m_projectionType = lens->m_projectionType;
+    m_nearPlane = lens->m_nearPlane;
+    m_farPlane = lens->m_farPlane;
+    m_fieldOfView = lens->m_fieldOfView;
+    m_aspectRatio = lens->m_aspectRatio;
+    m_left = lens->m_left;
+    m_right = lens->m_right;
+    m_bottom = lens->m_bottom;
+    m_top = lens->m_top;
+    m_projectionMatrix = lens->m_projectionMatrix;
 }
 
 QCameraLens::QCameraLens(QCameraLensPrivate &dd, QNode *parent)
@@ -94,11 +91,10 @@ QCameraLens::QCameraLens(QCameraLensPrivate &dd, QNode *parent)
     d->updateOrthogonalProjection();
 }
 
-QCameraLens *QCameraLens::doClone(bool isClone) const
+QCameraLens *QCameraLens::doClone() const
 {
     QCameraLens *clone = new QCameraLens();
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d_func());
     return clone;
 }
 
@@ -119,8 +115,8 @@ QCameraLens::ProjectionType QCameraLens::projectionType() const
 }
 
 void QCameraLens::setOrthographicProjection( float left, float right,
-                                        float bottom, float top,
-                                        float nearPlane, float farPlane )
+                                             float bottom, float top,
+                                             float nearPlane, float farPlane )
 {
     Q_D(QCameraLens);
     d->m_left = left;
@@ -134,7 +130,7 @@ void QCameraLens::setOrthographicProjection( float left, float right,
 }
 
 void QCameraLens::setPerspectiveProjection( float fieldOfView, float aspectRatio,
-                                       float nearPlane, float farPlane )
+                                            float nearPlane, float farPlane )
 {
     Q_D(QCameraLens);
     d->m_fieldOfView = fieldOfView;

@@ -60,7 +60,9 @@ HEADERS += \
     $$PWD/qrenderattachment.h \
     $$PWD/qrenderattachment_p.h \
     $$PWD/qrendertarget.h \
-    $$PWD/qrendertarget_p.h
+    $$PWD/qrendertarget_p.h \
+    $$PWD/qcriterion_p.h \
+    $$PWD/qrenderstate_p.h
 
 SOURCES += \
     $$PWD/qmaterial.cpp \

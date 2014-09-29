@@ -48,7 +48,6 @@ namespace Qt3D {
 
 QComponentPrivate::QComponentPrivate(QComponent *qq)
     : QNodePrivate(qq)
-    , m_enabled(true)
 {
 }
 
@@ -60,21 +59,6 @@ QComponent::QComponent(QNode *parent)
 QComponent::QComponent(QComponentPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
-}
-
-void QComponent::setEnabled(bool enabled)
-{
-    Q_D(QComponent);
-    if (d->m_enabled != enabled) {
-        d->m_enabled = enabled;
-        emit enabledChanged();
-    }
-}
-
-bool QComponent::isEnabled() const
-{
-    Q_D(const QComponent);
-    return d->m_enabled;
 }
 
 } // namespace Qt3D

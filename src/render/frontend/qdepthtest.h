@@ -71,8 +71,6 @@ public:
 
     explicit QDepthTest(QNode *parent = 0);
 
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
     DepthFunc func() const;
     void setFunc(DepthFunc func);
 
@@ -81,7 +79,7 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QDepthTest)
-    QNode *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
+    QNode *doClone() const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

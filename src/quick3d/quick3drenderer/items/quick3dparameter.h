@@ -66,7 +66,7 @@ private:
 
 protected:
     Quick3DParameter(Quick3DParameterPrivate &dd, QNode *parent = 0);
-    Quick3DParameter *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
+    Quick3DParameter *doClone() const Q_DECL_OVERRIDE;
 };
 
 } // Quick

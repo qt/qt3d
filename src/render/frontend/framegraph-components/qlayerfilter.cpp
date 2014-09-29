@@ -52,37 +52,32 @@ QLayerFilterPrivate::QLayerFilterPrivate(QLayerFilter *qq)
 {
 }
 
+void QLayerFilterPrivate::copy(const QNodePrivate *ref)
+{
+    QFrameGraphItemPrivate::copy(ref);
+    const QLayerFilterPrivate *layer = static_cast<const QLayerFilterPrivate *>(ref);
+    m_layers = layer->m_layers;
+}
+
 QLayerFilter::QLayerFilter(QNode *parent)
     : QFrameGraphItem(*new QLayerFilterPrivate(this), parent)
 {
 }
-
-void QLayerFilter::copy(const QNode *ref)
-{
-    Q_D(QLayerFilter);
-    QFrameGraphItem::copy(ref);
-    const QLayerFilter *layer = qobject_cast<const QLayerFilter *>(ref);
-    if (layer != Q_NULLPTR) {
-        d->m_layers = layer->layers();
-    }
-}
-
 
 QLayerFilter::QLayerFilter(QLayerFilterPrivate &dd, QNode *parent)
     : QFrameGraphItem(dd, parent)
 {
 }
 
-QLayerFilter *QLayerFilter::doClone(bool isClone) const
+QLayerFilter *QLayerFilter::doClone() const
 {
     Q_D(const QLayerFilter);
     QLayerFilter *filter = new QLayerFilter();
 
-    filter->copy(this);
-    filter->d_func()->m_isClone = isClone;
+    filter->d_func()->copy(d_func());
 
     Q_FOREACH (QFrameGraphItem *fgChild, d->m_fgChildren)
-        filter->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(fgChild->clone(isClone)));
+        filter->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(QNodePrivate::get(fgChild)->clone()));
 
     return filter;
 }
@@ -98,7 +93,7 @@ void QLayerFilter::setLayers(const QStringList &layers)
             QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
             propertyChange->setPropertyName(QByteArrayLiteral("layers"));
             propertyChange->setValue(QVariant::fromValue(d->m_layers));
-            notifyObservers(propertyChange);
+            d->notifyObservers(propertyChange);
         }
     }
 }

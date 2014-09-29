@@ -79,6 +79,9 @@ public:
     void        createRenderElement(QNode *frontend);
     void        releaseRenderElement(QNode *frontend);
 
+    void insertNodeTree(QNode *nd);
+    void releaseNodeTree(QNode *nd);
+
 protected:
     void visitNode(QNode *nd) Q_DECL_OVERRIDE;
 

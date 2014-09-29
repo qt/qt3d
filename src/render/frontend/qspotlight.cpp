@@ -74,20 +74,17 @@ QSpotLightPrivate::QSpotLightPrivate(QSpotLight *qq)
 {
 }
 
+void QSpotLightPrivate::copy(const QNodePrivate *ref)
+{
+    QAbstractLightPrivate::copy(ref);
+    const QSpotLightPrivate *light = static_cast<const QSpotLightPrivate *>(ref);
+    m_direction = light->m_direction;
+    m_cutOffAngle = light->m_cutOffAngle;
+}
+
 QSpotLight::QSpotLight(QNode *parent)
     : QAbstractLight(*new QSpotLightPrivate(this), parent)
 {
-}
-
-void QSpotLight::copy(const QNode *ref)
-{
-    Q_D(QSpotLight);
-    QAbstractLight::copy(ref);
-    const QSpotLight *light = qobject_cast<const QSpotLight *>(ref);
-    if (light != Q_NULLPTR) {
-        d->m_direction = light->direction();
-        d->m_cutOffAngle = light->cutOffAngle();
-    }
 }
 
 QSpotLight::QSpotLight(QSpotLightPrivate &dd, QNode *parent)
@@ -95,11 +92,10 @@ QSpotLight::QSpotLight(QSpotLightPrivate &dd, QNode *parent)
 {
 }
 
-QSpotLight *QSpotLight::doClone(bool isClone) const
+QSpotLight *QSpotLight::doClone() const
 {
     QSpotLight *clone = new QSpotLight();
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d_func());
     return clone;
 }
 
@@ -124,7 +120,7 @@ void QSpotLight::setDirection(const QVector3D &direction)
         QScenePropertyChangePtr change(new QScenePropertyChange(ComponentAdded, this));
         change->setPropertyName(QByteArrayLiteral("direction"));
         change->setValue(d->m_direction);
-        notifyObservers(change);
+        d->notifyObservers(change);
     }
 }
 
@@ -137,7 +133,7 @@ void QSpotLight::setCutOffAngle(float cutOffAngle)
         QScenePropertyChangePtr change(new QScenePropertyChange(ComponentAdded, this));
         change->setPropertyName(QByteArrayLiteral("cutOffAngle"));
         change->setValue(d->m_cutOffAngle);
-        notifyObservers(change);
+        d->notifyObservers(change);
     }
 }
 

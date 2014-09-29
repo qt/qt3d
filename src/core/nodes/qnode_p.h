@@ -42,9 +42,12 @@
 #ifndef QT3D_QNODE_P_H
 #define QT3D_QNODE_P_H
 
-#include <Qt3DCore/qt3dcore_global.h>
 #include <private/qobject_p.h>
+#include <QReadWriteLock>
+#include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qnode.h>
+#include <Qt3DCore/qobservableinterface.h>
+#include <Qt3DCore/qchangearbiter.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -53,14 +56,29 @@ namespace Qt3D {
 class QNode;
 class QAspectEngine;
 
-class QT3DCORESHARED_EXPORT QNodePrivate : public QObjectPrivate
+class QT3DCORESHARED_EXPORT QNodePrivate : public QObjectPrivate, public QObservableInterface
 {
 public:
     QNodePrivate(QNode *qq);
 
-    Q_DECLARE_PUBLIC(QNode)
+    // Clone should only be made in the main thread
+    QNode *clone();
 
-    NodeList m_children;
+    virtual void copy(const QNodePrivate *ref);
+
+
+    void setScene(QSceneInterface *scene);
+    QSceneInterface *scene() const;
+
+    void registerObserver(QObserverInterface *observer) Q_DECL_OVERRIDE;
+    void unregisterObserver(QObserverInterface *observer) Q_DECL_OVERRIDE;
+
+    void notifyPropertyChange(const QByteArray &name, const QVariant &value);
+    virtual void notifyObservers(const QSceneChangePtr &change);
+
+    void insertTree(QNode *treeRoot, int depth = 0);
+
+    Q_DECLARE_PUBLIC(QNode)
 
     // For now this just protects access to the m_changeArbiter.
     // Later on we may decide to extend support for multiple observers.
@@ -68,7 +86,16 @@ public:
     QChangeArbiter *m_changeArbiter;
     QSceneInterface *m_scene;
     mutable QUuid m_uuid;
-    bool m_isClone;
+
+    static QNodePrivate *get(QNode *q);
+    static void nodePtrDeleter(QNode *q);
+
+private:
+    void addChild(QNode *childNode);
+    void removeChild(QNode *childNode);
+    void removeAllChildren();
+
+    static QHash<QUuid, QNode *> m_clonesLookupTable;
 };
 
 } // namespace Qt3D

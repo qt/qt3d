@@ -58,6 +58,8 @@ class QBoxColliderPrivate : public QAbstractColliderPrivate
 public:
     QBoxColliderPrivate(QBoxCollider *qq);
 
+    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
+
     Q_DECLARE_PUBLIC(QBoxCollider)
 
     QVector3D m_center;

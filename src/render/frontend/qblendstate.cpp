@@ -41,6 +41,7 @@
 ****************************************************************************/
 
 #include "qblendstate.h"
+#include "qrenderstate_p.h"
 #include <Qt3DCore/qscenepropertychange.h>
 #include <private/qnode_p.h>
 
@@ -48,17 +49,19 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QBlendStatePrivate : public QNodePrivate
+class QBlendStatePrivate : public QRenderStatePrivate
 {
 public:
     QBlendStatePrivate(QBlendState *qq)
-        : QNodePrivate(qq)
+        : QRenderStatePrivate(qq)
         , m_srcRGB(QBlendState::Zero)
         , m_srcAlpha(QBlendState::Zero)
         , m_dstRGB(QBlendState::Zero)
         , m_dstAlpha(QBlendState::Zero)
     {
     }
+
+    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
 
     Q_DECLARE_PUBLIC(QBlendState)
 
@@ -73,17 +76,14 @@ QBlendState::QBlendState(QNode *parent)
 {
 }
 
-void QBlendState::copy(const QNode *ref)
+void QBlendStatePrivate::copy(const QNodePrivate *ref)
 {
-    QRenderState::copy(ref);
-    Q_D(QBlendState);
-    const QBlendState *refState = qobject_cast<const QBlendState *>(ref);
-    if (refState != Q_NULLPTR) {
-        d->m_srcRGB = refState->srcRGB();
-        d->m_srcAlpha = refState->srcAlpha();
-        d->m_dstAlpha = refState->dstAlpha();
-        d->m_dstRGB = refState->dstRGB();
-    }
+   QRenderStatePrivate::copy(ref);
+    const QBlendStatePrivate *refState = static_cast<const QBlendStatePrivate *>(ref);
+    m_srcRGB = refState->m_srcRGB;
+    m_srcAlpha = refState->m_srcAlpha;
+    m_dstAlpha = refState->m_dstAlpha;
+    m_dstRGB = refState->m_dstRGB;
 }
 
 QBlendState::Blending QBlendState::srcRGB() const
@@ -102,7 +102,7 @@ void QBlendState::setSrcRGB(QBlendState::Blending srcRGB)
             QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
             propertyChange->setPropertyName(QByteArrayLiteral("srcRGB"));
             propertyChange->setValue(d->m_srcRGB);
-            notifyObservers(propertyChange);
+            d->notifyObservers(propertyChange);
         }
     }
 }
@@ -123,7 +123,7 @@ void QBlendState::setDstRGB(QBlendState::Blending dstRGB)
             QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
             propertyChange->setPropertyName(QByteArrayLiteral("dstRGB"));
             propertyChange->setValue(d->m_dstRGB);
-            notifyObservers(propertyChange);
+            d->notifyObservers(propertyChange);
         }
     }
 }
@@ -144,7 +144,7 @@ void QBlendState::setSrcAlpha(QBlendState::Blending srcAlpha)
             QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
             propertyChange->setPropertyName(QByteArrayLiteral("srcAlpha"));
             propertyChange->setValue(d->m_srcAlpha);
-            notifyObservers(propertyChange);
+            d->notifyObservers(propertyChange);
         }
     }
 }
@@ -165,16 +165,15 @@ void QBlendState::setDstAlpha(QBlendState::Blending dstAlpha)
             QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
             propertyChange->setPropertyName(QByteArrayLiteral("dstAlpha"));
             propertyChange->setValue(d->m_dstAlpha);
-            notifyObservers(propertyChange);
+            d->notifyObservers(propertyChange);
         }
     }
 }
 
-QNode *QBlendState::doClone(bool isClone) const
+QNode *QBlendState::doClone() const
 {
     QBlendState *clone = new QBlendState();
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d_func());
     return clone;
 }
 

@@ -63,11 +63,11 @@ public:
     void setScreenQuadLayer(const QString &layerName);
 
 private:
-    Qt3D::QClearBuffer *m_clearGBuffer;
-    Qt3D::QClearBuffer *m_clearScreenQuad;
-    Qt3D::QLayerFilter *m_sceneFilter;
     Qt3D::QLayerFilter *m_screenQuadFilter;
+    Qt3D::QLayerFilter *m_sceneFilter;
+    Qt3D::QClearBuffer *m_clearScreenQuad;
     Qt3D::QRenderTargetSelector *m_gBufferTargetSelector;
+    Qt3D::QClearBuffer *m_clearGBuffer;
     Qt3D::QRenderPassFilter *m_geometryPassFilter;
     Qt3D::QRenderPassFilter *m_finalPassFilter;
     Qt3D::QCameraSelector *m_sceneCameraSelector;

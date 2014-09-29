@@ -65,9 +65,12 @@ public:
     virtual QMatrix4x4 transformMatrix() const = 0;
 Q_SIGNALS:
     void transformMatrixChanged();
+
 protected:
-    Q_DECLARE_PRIVATE(QAbstractTransform)
     QAbstractTransform(QAbstractTransformPrivate &dd, QNode *parent = 0);
+
+private:
+    Q_DECLARE_PRIVATE(QAbstractTransform)
 };
 
 } // namespace Qt3D

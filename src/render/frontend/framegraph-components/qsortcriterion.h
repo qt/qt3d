@@ -65,8 +65,6 @@ public:
         Material = (1 << 2)
     };
 
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
     SortType sort() const;
     void setSort(SortType &sort);
 
@@ -74,10 +72,11 @@ Q_SIGNALS:
     void sortChanged();
 
 protected:
-    Q_DECLARE_PRIVATE(QSortCriterion)
     QSortCriterion(QSortCriterionPrivate &dd, QNode *parent = 0);
-    QSortCriterion *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
 
+private:
+    QSortCriterion *doClone() const Q_DECL_OVERRIDE;
+    Q_DECLARE_PRIVATE(QSortCriterion)
 };
 
 } // Qt3D

@@ -42,7 +42,8 @@
 #ifndef QT3D_RENDER_ATTACHMENTPACK_P_H
 #define QT3D_RENDER_ATTACHMENTPACK_P_H
 
-#include <Qt3DRenderer/QRenderAttachment>
+#include <Qt3DRenderer/qrenderattachment.h>
+#include <QVector>
 
 QT_BEGIN_NAMESPACE
 

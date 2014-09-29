@@ -62,8 +62,6 @@ class QT3DRENDERERSHARED_EXPORT QPlaneMesh : public Qt3D::QAbstractShapeMesh
 public:
     explicit QPlaneMesh(QNode *parent = 0);
 
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
     void setWidth(float width);
     float width() const;
 
@@ -82,8 +80,10 @@ Q_SIGNALS:
 
 protected:
     QPlaneMesh(QPlaneMeshPrivate &dd, QNode *parent = 0);
-    QPlaneMesh *doClone(bool isClone = true) const Q_DECL_OVERRIDE;
+
+private:
     Q_DECLARE_PRIVATE(QPlaneMesh)
+    QPlaneMesh *doClone() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3D

@@ -40,6 +40,7 @@
 **
 ****************************************************************************/
 
+#include "qrenderstate_p.h"
 #include "qblendequation.h"
 #include <private/qnode_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
@@ -48,31 +49,30 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QBlendEquationPrivate : public QNodePrivate
+class QBlendEquationPrivate : public QRenderStatePrivate
 {
 public:
     QBlendEquationPrivate(QBlendEquation *qq)
-        : QNodePrivate(qq)
+        : QRenderStatePrivate(qq)
     {
     }
+
+    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
 
     Q_DECLARE_PUBLIC(QBlendEquation)
     QBlendEquation::BlendMode m_mode;
 };
 
+void QBlendEquationPrivate::copy(const QNodePrivate *ref)
+{
+    QRenderStatePrivate::copy(ref);
+    const QBlendEquationPrivate *refState = reinterpret_cast<const QBlendEquationPrivate *>(ref);
+    m_mode = refState->m_mode;
+}
+
 QBlendEquation::QBlendEquation(QNode *parent)
     : QRenderState(*new QBlendEquationPrivate(this), parent)
 {
-}
-
-void QBlendEquation::copy(const QNode *ref)
-{
-    Q_D(QBlendEquation);
-    QRenderState::copy(ref);
-    const QBlendEquation *refState = qobject_cast<const QBlendEquation *>(ref);
-    if (refState != Q_NULLPTR) {
-        d->m_mode = refState->mode();
-    }
 }
 
 QBlendEquation::BlendMode QBlendEquation::mode() const
@@ -91,16 +91,15 @@ void QBlendEquation::setMode(QBlendEquation::BlendMode mode)
             QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
             propertyChange->setPropertyName(QByteArrayLiteral("mode"));
             propertyChange->setValue(d->m_mode);
-            notifyObservers(propertyChange);
+            d->notifyObservers(propertyChange);
         }
     }
 }
 
-QNode *QBlendEquation::doClone(bool isClone) const
+QNode *QBlendEquation::doClone() const
 {
     QBlendEquation *clone = new QBlendEquation();
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d_func());
     return clone;
 }
 

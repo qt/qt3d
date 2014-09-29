@@ -52,6 +52,7 @@
 #include <private/qpostman_p.h>
 #include "qscene.h"
 #include <private/qaspectengine_p.h>
+#include <private/qnode_p.h>
 #include "qentity.h"
 #include "qcomponent.h"
 
@@ -92,15 +93,18 @@ QAspectEngine::QAspectEngine(QAspectEnginePrivate &dd, QObject *parent)
 void QAspectEngine::initNodeTree(QNode *node) const
 {
     Q_D(const QAspectEngine);
-    node->setScene(d->m_scene);
+    node->d_func()->setScene(d->m_scene);
     d->m_scene->addObservable(node);
     QEntity *entity = qobject_cast<QEntity *>(node);
     if (entity != Q_NULLPTR)
         Q_FOREACH (QComponent *comp, entity->components())
             d->m_scene->addEntityForComponent(comp->uuid(), entity->uuid());
 
-    Q_FOREACH (QNode *c, node->children())
-        initNodeTree(c);
+    Q_FOREACH (QObject *c, node->children()) {
+        QNode *childNode = qobject_cast<QNode *>(c);
+        if (childNode != Q_NULLPTR)
+            initNodeTree(childNode);
+    }
 }
 
 void QAspectEngine::initialize()

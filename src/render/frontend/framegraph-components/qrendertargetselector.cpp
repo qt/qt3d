@@ -43,6 +43,7 @@
 #include "qrendertargetselector_p.h"
 #include <Qt3DRenderer/qrendertarget.h>
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DRenderer/private/qrenderpass_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -67,14 +68,14 @@ void QRenderTargetSelector::setTarget(QRenderTarget *target)
         emit targetChanged();
 
         // For inline declaration cases
-        if (!target->parent() || target->parent() == this)
-            QNode::addChild(target);
+        if (!target->parent())
+            target->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
             propertyChange->setPropertyName(QByteArrayLiteral("target"));
             propertyChange->setValue(QVariant::fromValue(target->uuid()));
-            notifyObservers(propertyChange);
+            d->notifyObservers(propertyChange);
         }
     }
 }
@@ -90,19 +91,18 @@ QRenderTargetSelector::QRenderTargetSelector(QRenderTargetSelectorPrivate &dd, Q
 {
 }
 
-QRenderTargetSelector *QRenderTargetSelector::doClone(bool isClone) const
+QRenderTargetSelector *QRenderTargetSelector::doClone() const
 {
     Q_D(const QRenderTargetSelector);
     QRenderTargetSelector *clone = new QRenderTargetSelector();
 
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d_func());
 
     Q_FOREACH (QFrameGraphItem *fgChild, d->m_fgChildren)
-        clone->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(fgChild->clone(isClone)));
+        clone->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(QNodePrivate::get(fgChild)->clone()));
 
     if (d->m_target != Q_NULLPTR)
-        clone->setTarget(qobject_cast<QRenderTarget *>(d->m_target->clone(clone)));
+        clone->setTarget(qobject_cast<QRenderTarget *>(QNodePrivate::get(d->m_target)->clone()));
 
     return clone;
 }

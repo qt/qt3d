@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -39,62 +40,26 @@
 **
 ****************************************************************************/
 
-#include "qpostman_p.h"
-#include <private/qobject_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DCore/qbackendscenepropertychange.h>
-#include <Qt3DCore/qscene.h>
-#include <Qt3DCore/qnode.h>
+#ifndef QT3D_QRENDERSTATE_P_H
+#define QT3D_QRENDERSTATE_P_H
+
 #include <Qt3DCore/private/qnode_p.h>
+#include <Qt3DRenderer/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QPostmanPrivate : public QObjectPrivate
+class QRenderStatePrivate : public QNodePrivate
 {
 public:
-    QPostmanPrivate(QPostman *qq)
-        : QObjectPrivate()
-        , m_scene(Q_NULLPTR)
-    {
-        q_ptr = qq;
-    }
 
-    Q_DECLARE_PUBLIC(QPostman)
-    QSceneInterface *m_scene;
+    QRenderStatePrivate(QRenderState *qq);
+    Q_DECLARE_PUBLIC(QRenderState)
 };
 
-QPostman::QPostman(QObject *parent)
-    : QObject(*new QPostmanPrivate(this), parent)
-{
-    qRegisterMetaType<QSceneChangePtr >("QSceneChangePtr");
 }
-
-void QPostman::setScene(QSceneInterface *scene)
-{
-    Q_D(QPostman);
-    d->m_scene = scene;
-}
-
-void QPostman::sceneChangeEvent(const QSceneChangePtr &e)
-{
-    QMetaObject::invokeMethod(this,
-                              "notifyFrontendNode",
-                              Q_ARG(QSceneChangePtr, e));
-}
-
-void QPostman::notifyFrontendNode(QSceneChangePtr e)
-{
-    Q_D(QPostman);
-    QBackendScenePropertyChangePtr change = qSharedPointerDynamicCast<QBackendScenePropertyChange>(e);
-    if (!change.isNull() && d->m_scene != Q_NULLPTR) {
-        QNode *n = d->m_scene->lookupNode(change->targetNode());
-        if (n != Q_NULLPTR)
-            n->sceneChangeEvent(change);
-    }
-}
-
-} //Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_QRENDERSTATE_P_H

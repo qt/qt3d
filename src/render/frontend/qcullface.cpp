@@ -42,20 +42,23 @@
 
 #include "qcullface.h"
 #include <private/qnode_p.h>
+#include "qrenderstate_p.h"
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QCullFacePrivate : public QNodePrivate
+class QCullFacePrivate : public QRenderStatePrivate
 {
 public:
     QCullFacePrivate(QCullFace *qq)
-        : QNodePrivate(qq)
+        : QRenderStatePrivate(qq)
         , m_mode(QCullFace::Back)
     {
     }
+
+    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
 
     Q_DECLARE_PUBLIC(QCullFace)
     QCullFace::CullingMode m_mode;
@@ -66,14 +69,11 @@ QCullFace::QCullFace(QNode *parent)
 {
 }
 
-void QCullFace::copy(const QNode *ref)
+void QCullFacePrivate::copy(const QNodePrivate *ref)
 {
-    QRenderState::copy(ref);
-    Q_D(QCullFace);
-    const QCullFace *refState = qobject_cast<const QCullFace *>(ref);
-    if (refState != Q_NULLPTR) {
-        d->m_mode = refState->mode();
-    }
+    QRenderStatePrivate::copy(ref);
+    const QCullFacePrivate *refState = static_cast<const QCullFacePrivate *>(ref);
+    m_mode = refState->m_mode;
 }
 
 QCullFace::CullingMode QCullFace::mode() const
@@ -92,16 +92,15 @@ void QCullFace::setMode(QCullFace::CullingMode mode)
             QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
             propertyChange->setPropertyName(QByteArrayLiteral("mode"));
             propertyChange->setValue(d->m_mode);
-            notifyObservers(propertyChange);
+            d->notifyObservers(propertyChange);
         }
     }
 }
 
-QNode *QCullFace::doClone(bool isClone) const
+QNode *QCullFace::doClone() const
 {
     QCullFace *clone = new QCullFace();
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d_func());
     return clone;
 }
 

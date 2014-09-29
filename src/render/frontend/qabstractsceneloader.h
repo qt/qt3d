@@ -43,6 +43,7 @@
 #define QT3D_QABSTRACTSCENELOADER_H
 
 #include <Qt3DCore/qcomponent.h>
+#include <Qt3DCore/qscenechange.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
@@ -67,8 +68,6 @@ public:
         Loaded,
         Error
     };
-
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
     QString source() const;
     void setSource(QString arg);

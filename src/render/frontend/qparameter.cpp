@@ -61,17 +61,24 @@ void QParameterPrivate::setValue(const QVariant &v)
     m_value = v;
 }
 
+void QParameterPrivate::copy(const QNodePrivate *ref)
+{
+    QNodePrivate::copy(ref);
+    const QParameterPrivate *param = static_cast<const QParameterPrivate *>(ref);
+    m_name = param->m_name;
+    m_value = param->m_value;
+    m_isTexture = param->m_isTexture;
+}
+
 QParameter::QParameter(QParameterPrivate &dd, QNode *parent)
     : QNode(dd, parent)
-
 {
 }
 
-QParameter *QParameter::doClone(bool isClone) const
+QParameter *QParameter::doClone() const
 {
     QParameter *clone = new QParameter();
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d_func());
     return clone;
 }
 
@@ -96,17 +103,6 @@ QParameter::QParameter(const QString &name, QTexture *texture, QNode *parent)
     setValue(QVariant::fromValue(texture));
 }
 
-void QParameter::copy(const QNode *ref)
-{
-    Q_D(QParameter);
-    QNode::copy(ref);
-    const QParameter *param = qobject_cast<const QParameter *>(ref);
-    if (param != Q_NULLPTR) {
-        d->m_name = param->name();
-        d->m_value = param->value();
-        d->m_isTexture = param->isTextureType();
-    }
-}
 
 void QParameter::setName(const QString &name)
 {
@@ -132,13 +128,13 @@ void QParameter::setValue(const QVariant &dv)
 
         // In case texture are declared inline
         QTexture *txt = dv.value<QTexture *>();
-        if ((d->m_isTexture = (txt != Q_NULLPTR)) && (!txt->parent() || txt->parent() == this))
-            QNode::addChild(txt);
+        if ((d->m_isTexture = (txt != Q_NULLPTR)) && !txt->parent())
+           txt->setParent(this);
 
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
         change->setPropertyName(d->m_name.toUtf8());
         change->setValue(d->m_value);
-        notifyObservers(change);
+        d->notifyObservers(change);
     }
 }
 

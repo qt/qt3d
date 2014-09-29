@@ -65,23 +65,18 @@ QSphereCollider::QSphereCollider(QSphereColliderPrivate &dd, QNode *parent)
 {
 }
 
-void QSphereCollider::copy(const QNode *ref)
+void QSphereColliderPrivate::copy(const QNodePrivate *ref)
 {
-    Q_D(QSphereCollider);
-    QAbstractCollider::copy(ref);
-    const QSphereCollider *other = qobject_cast<const QSphereCollider *>(ref);
-    if (other != Q_NULLPTR) {
-        const QSphereColliderPrivate *d_other = other->d_func();
-        d->m_center = d_other->m_center;
-        d->m_radius = d_other->m_radius;
-    }
+    QAbstractColliderPrivate::copy(ref);
+    const QSphereColliderPrivate *other = static_cast<const QSphereColliderPrivate *>(ref);
+    m_center = other->m_center;
+    m_radius = other->m_radius;
 }
 
-QSphereCollider *QSphereCollider::doClone(bool isClone) const
+QSphereCollider *QSphereCollider::doClone() const
 {
     QSphereCollider *clone = new QSphereCollider();
-    clone->copy(this);
-    clone->d_func()->m_isClone = isClone;
+    clone->d_func()->copy(d_func());
     return clone;
 }
 
