@@ -121,21 +121,21 @@ RenderView::standardUniformsPFuncsHash RenderView::initializeStandardUniformSett
 {
     RenderView::standardUniformsPFuncsHash setters;
 
-    setters[QStringLiteral("modelMatrix")] = &RenderView::modelMatrix;
-    setters[QStringLiteral("viewMatrix")] = &RenderView::viewMatrix;
-    setters[QStringLiteral("projectionMatrix")] = &RenderView::projectionMatrix;
-    setters[QStringLiteral("modelView")] = &RenderView::modelViewMatrix;
-    setters[QStringLiteral("modelViewProjection")] = &RenderView::modelViewProjectionMatrix;
-    setters[QStringLiteral("mvp")] = &RenderView::modelViewProjectionMatrix;
-    setters[QStringLiteral("inverseModelMatrix")] = &RenderView::inverseModelMatrix;
-    setters[QStringLiteral("inverViewMatrix")] = &RenderView::inverseViewMatrix;
-    setters[QStringLiteral("inverseProjectionMatrix")] = &RenderView::inverseProjectionMatrix;
-    setters[QStringLiteral("inverseModelView")] = &RenderView::inverseModelViewMatrix;
-    setters[QStringLiteral("inverseModelViewProjection")] = &RenderView::inverseModelViewProjectionMatrix;
-    setters[QStringLiteral("modelNormalMatrix")] = &RenderView::modelNormalMatrix;
-    setters[QStringLiteral("modelViewNormal")] = &RenderView::modelViewNormalMatrix;
-    setters[QStringLiteral("viewportMatrix")] = &RenderView::viewportMatrix;
-    setters[QStringLiteral("inverseViewportMatrix")] = &RenderView::inverseViewportMatrix;
+    setters.insert(QStringLiteral("modelMatrix"), &RenderView::modelMatrix);
+    setters.insert(QStringLiteral("viewMatrix"), &RenderView::viewMatrix);
+    setters.insert(QStringLiteral("projectionMatrix"), &RenderView::projectionMatrix);
+    setters.insert(QStringLiteral("modelView"), &RenderView::modelViewMatrix);
+    setters.insert(QStringLiteral("modelViewProjection"), &RenderView::modelViewProjectionMatrix);
+    setters.insert(QStringLiteral("mvp"), &RenderView::modelViewProjectionMatrix);
+    setters.insert(QStringLiteral("inverseModelMatrix"), &RenderView::inverseModelMatrix);
+    setters.insert(QStringLiteral("inverViewMatrix"), &RenderView::inverseViewMatrix);
+    setters.insert(QStringLiteral("inverseProjectionMatrix"), &RenderView::inverseProjectionMatrix);
+    setters.insert(QStringLiteral("inverseModelView"), &RenderView::inverseModelViewMatrix);
+    setters.insert(QStringLiteral("inverseModelViewProjection"), &RenderView::inverseModelViewProjectionMatrix);
+    setters.insert(QStringLiteral("modelNormalMatrix"), &RenderView::modelNormalMatrix);
+    setters.insert(QStringLiteral("modelViewNormal"), &RenderView::modelViewNormalMatrix);
+    setters.insert(QStringLiteral("viewportMatrix"), &RenderView::viewportMatrix);
+    setters.insert(QStringLiteral("inverseViewportMatrix"), &RenderView::inverseViewportMatrix);
 
     return setters;
 }
@@ -155,95 +155,71 @@ QStringList RenderView::initializeStandardAttributeNames()
 
 QUniformValue *RenderView::modelMatrix(const QMatrix4x4 &model) const
 {
-    SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
-    t->setValue(model);
-    return t;
+    return QUniformValue::fromVariant(model, m_allocator);
 }
 
 QUniformValue *RenderView::viewMatrix(const QMatrix4x4 &) const
 {
-    SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
-    t->setValue(*m_data->m_viewMatrix);
-    return t;
+    return QUniformValue::fromVariant(*m_data->m_viewMatrix, m_allocator);
 }
 
 QUniformValue *RenderView::projectionMatrix(const QMatrix4x4 &) const
 {
-    SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
-    t->setValue(m_data->m_renderCamera->projection());
-    return t;
+    return QUniformValue::fromVariant(m_data->m_renderCamera->projection(), m_allocator);
 }
 
 QUniformValue *RenderView::modelViewMatrix(const QMatrix4x4 &model) const
 {
-    SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
-    t->setValue(*m_data->m_viewMatrix * model);
-    return t;
+    return QUniformValue::fromVariant(*m_data->m_viewMatrix * model, m_allocator);
 }
 
 QUniformValue *RenderView::modelViewProjectionMatrix(const QMatrix4x4 &model) const
 {
-    SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
     QMatrix4x4 projection;
     if (m_data->m_renderCamera)
         projection = m_data->m_renderCamera->projection();
-    t->setValue(projection * *m_data->m_viewMatrix * model);
-    return t;
+    return QUniformValue::fromVariant(projection * *m_data->m_viewMatrix * model, m_allocator);
 }
 
 QUniformValue *RenderView::inverseModelMatrix(const QMatrix4x4 &model) const
 {
-    SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
-    t->setValue(model.inverted());
-    return t;
+    return QUniformValue::fromVariant(model.inverted(), m_allocator);
 }
 
 QUniformValue *RenderView::inverseViewMatrix(const QMatrix4x4 &) const
 {
-    SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
-    t->setValue(m_data->m_viewMatrix->inverted());
-    return t;
+    return QUniformValue::fromVariant(m_data->m_viewMatrix->inverted(), m_allocator);
 }
 
 QUniformValue *RenderView::inverseProjectionMatrix(const QMatrix4x4 &) const
 {
-    SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
     QMatrix4x4 projection;
     if (m_data->m_renderCamera)
         projection = m_data->m_renderCamera->projection();
-    t->setValue(projection.inverted());
-    return t;
+    return QUniformValue::fromVariant(projection.inverted(), m_allocator);
 }
 
 QUniformValue *RenderView::inverseModelViewMatrix(const QMatrix4x4 &model) const
 {
-    SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
-    t->setValue((*m_data->m_viewMatrix * model).inverted());
-    return t;
+    return QUniformValue::fromVariant((*m_data->m_viewMatrix * model).inverted(), m_allocator);
 }
 
 QUniformValue *RenderView::inverseModelViewProjectionMatrix(const QMatrix4x4 &model) const
 {
-    SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
     QMatrix4x4 projection;
     if (m_data->m_renderCamera)
         projection = m_data->m_renderCamera->projection();
-    t->setValue((projection * *m_data->m_viewMatrix * model).inverted());
-    return t;
+    return QUniformValue::fromVariant((projection * *m_data->m_viewMatrix * model).inverted(0), m_allocator);
 }
 
 QUniformValue *RenderView::modelNormalMatrix(const QMatrix4x4 &model) const
 {
-    SpecifiedUniform<QMatrix3x3> *t = m_allocator->allocate<SpecifiedUniform<QMatrix3x3> >();
-    t->setValue(model.normalMatrix());
-    return t;
+    return QUniformValue::fromVariant(QVariant::fromValue(model.normalMatrix()), m_allocator);
 }
 
 QUniformValue *RenderView::modelViewNormalMatrix(const QMatrix4x4 &model) const
 {
-    SpecifiedUniform<QMatrix3x3> *t = m_allocator->allocate<SpecifiedUniform<QMatrix3x3> >();
-    t->setValue((*m_data->m_viewMatrix * model).normalMatrix());
-    return t;
+    return QUniformValue::fromVariant(QVariant::fromValue((*m_data->m_viewMatrix * model).normalMatrix()), m_allocator);
 }
 
 // TODO: Move this somewhere global where QGraphicsContext::setViewport() can use it too
@@ -259,24 +235,22 @@ QUniformValue *RenderView::viewportMatrix(const QMatrix4x4 &model) const
 {
     // TODO: Can we avoid having to pass the model matrix in to these functions?
     Q_UNUSED(model);
-    SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
     QMatrix4x4 viewportMatrix;
     QSize surfaceSize = m_renderer->surface()->size();
     viewportMatrix.viewport(resolveViewport(*m_viewport, surfaceSize));
-    t->setValue(viewportMatrix);
-    return t;
+    return QUniformValue::fromVariant(QVariant::fromValue(viewportMatrix), m_allocator);
+
 }
 
 QUniformValue *RenderView::inverseViewportMatrix(const QMatrix4x4 &model) const
 {
     Q_UNUSED(model);
-    SpecifiedUniform<QMatrix4x4> *t = m_allocator->allocate<SpecifiedUniform<QMatrix4x4> >();
     QMatrix4x4 viewportMatrix;
     QSize surfaceSize = m_renderer->surface()->size();
     viewportMatrix.viewport(resolveViewport(*m_viewport, surfaceSize));
     QMatrix4x4 inverseViewportMatrix = viewportMatrix.inverted();
-    t->setValue(inverseViewportMatrix);
-    return t;
+    return QUniformValue::fromVariant(QVariant::fromValue(inverseViewportMatrix), m_allocator);
+
 }
 
 RenderView::RenderView()

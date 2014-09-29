@@ -194,12 +194,12 @@ QOpenGLShaderProgram *RenderShader::getOrCreateProgram(QGraphicsContext *ctx)
     return m_program;
 }
 
-void RenderShader::updateUniforms(const QUniformPack &pack)
+void RenderShader::updateUniforms(QGraphicsContext *ctx, const QUniformPack &pack)
 {
     const QHash<QString, const QUniformValue* > &values = pack.uniforms();
     Q_FOREACH (const QString &uniformName, values.keys()) {
         if (m_uniforms.contains(uniformName)) {
-            values[uniformName]->apply(m_program, m_uniforms[uniformName], uniformName);
+            values.value(uniformName)->apply(ctx, m_uniforms.value(uniformName));
         }
     }
 }
@@ -273,16 +273,16 @@ QOpenGLShaderProgram* RenderShader::createDefaultProgram()
     return p;
 }
 
-void RenderShader::initializeUniforms(const QVector<QPair<QString, int> > &uniformsNamesAndLocations)
+void RenderShader::initializeUniforms(const QVector<ShaderUniform> &uniformsDescription)
 {
-    for (int i = 0; i < uniformsNamesAndLocations.size(); i++)
-        m_uniforms[uniformsNamesAndLocations[i].first] = uniformsNamesAndLocations[i].second;
+    for (int i = 0; i < uniformsDescription.size(); i++)
+        m_uniforms.insert(uniformsDescription[i].m_name, uniformsDescription[i]);
 }
 
-void RenderShader::initializeAttributes(const QVector<QPair<QString, int> > &attributesNameAndLocation)
+void RenderShader::initializeAttributes(const QVector<ShaderAttribute> &attributesDescription)
 {
-    for (int i = 0; i < attributesNameAndLocation.size(); i++)
-        m_attributes[attributesNameAndLocation[i].first] = attributesNameAndLocation[i].second;
+    for (int i = 0; i < attributesDescription.size(); i++)
+        m_attributes.insert(attributesDescription[i].m_name, attributesDescription[i]);
 }
 
 } // namespace Render

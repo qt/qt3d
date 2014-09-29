@@ -45,7 +45,7 @@
 #include <QOpenGLFunctions>
 #include <QOpenGLTexture>
 #include <QVector>
-#include <QPair>
+#include <Qt3DRenderer/private/shadervariables_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -71,8 +71,8 @@ public:
     virtual void    drawArrays(GLenum primitiveType, GLint first, GLsizei count) = 0;
     virtual void    setVerticesPerPatch(GLint verticesPerPatch) = 0;
     virtual void    useProgram(GLuint programId) = 0;
-    virtual QVector<QPair<QString, int> > programUniformsAndLocations(GLuint programId) = 0;
-    virtual QVector<QPair<QString, int> > programAttributesAndLocations(GLuint programId) = 0;
+    virtual QVector<ShaderUniform> programUniformsAndLocations(GLuint programId) = 0;
+    virtual QVector<ShaderAttribute> programAttributesAndLocations(GLuint programId) = 0;
     virtual void    vertexAttribDivisor(GLuint index, GLuint divisor) = 0;
     virtual void    blendEquation(GLenum mode) = 0;
     virtual void    alphaTest(GLenum mode1, GLenum mode2) = 0;
@@ -88,6 +88,8 @@ public:
     virtual bool    supportsFeature(Feature feature) const = 0;
     virtual void    drawBuffers(GLsizei n, const int *bufs) = 0;
     virtual void    bindFragDataLocation(GLuint shader, const QHash<QString, int> &outputs) = 0;
+    virtual void    bindUniform(const QVariant &v, const ShaderUniform &description) = 0;
+
 };
 
 

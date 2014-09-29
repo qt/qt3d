@@ -45,7 +45,6 @@
 #ifndef QT_OPENGL_ES_2
 
 #include <Qt3DRenderer/private/qgraphicshelperinterface_p.h>
-
 #include <QtCore/qscopedpointer.h>
 
 QT_BEGIN_NAMESPACE
@@ -69,8 +68,8 @@ public:
     void drawArrays(GLenum primitiveType, GLint first, GLsizei count) Q_DECL_OVERRIDE;
     void setVerticesPerPatch(GLint verticesPerPatch) Q_DECL_OVERRIDE;
     void useProgram(GLuint programId) Q_DECL_OVERRIDE;
-    QVector<QPair<QString, int> > programUniformsAndLocations(GLuint programId) Q_DECL_OVERRIDE;
-    QVector<QPair<QString, int> > programAttributesAndLocations(GLuint programId) Q_DECL_OVERRIDE;
+    QVector<ShaderUniform> programUniformsAndLocations(GLuint programId) Q_DECL_OVERRIDE;
+    QVector<ShaderAttribute> programAttributesAndLocations(GLuint programId) Q_DECL_OVERRIDE;
     void vertexAttribDivisor(GLuint index, GLuint divisor) Q_DECL_OVERRIDE;
     void blendEquation(GLenum mode) Q_DECL_OVERRIDE;
     void alphaTest(GLenum mode1, GLenum mode2) Q_DECL_OVERRIDE;
@@ -86,6 +85,7 @@ public:
     bool supportsFeature(Feature feature) const Q_DECL_OVERRIDE;
     void drawBuffers(GLsizei n, const int *bufs) Q_DECL_OVERRIDE;
     void bindFragDataLocation(GLuint shader, const QHash<QString, int> &outputs) Q_DECL_OVERRIDE;
+    void bindUniform(const QVariant &v, const ShaderUniform &description) Q_DECL_OVERRIDE;
 
 private:
     QOpenGLFunctions_3_2_Core *m_funcs;

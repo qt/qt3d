@@ -43,6 +43,7 @@
 #include "qopenglfunctions_es2.h"
 #include "renderlogging.h"
 #include <private/attachmentpack_p.h>
+#include <private/qgraphicsutils_p.h>
 
 #ifdef QT_OPENGL_ES_2
 
@@ -127,41 +128,40 @@ void QGraphicsHelperES2::useProgram(GLuint programId)
     m_funcs->glUseProgram(programId);
 }
 
-QVector<QPair<QString, int> > QGraphicsHelperES2::programUniformsAndLocations(GLuint programId)
+QVector<ShaderUniform> QGraphicsHelperES2::programUniformsAndLocations(GLuint programId)
 {
-    QVector<QPair<QString, int> > uniforms;
+    QVector<ShaderUniform> uniforms;
 
     GLint nbrActiveUniforms = 0;
     m_funcs->glGetProgramiv(programId, GL_ACTIVE_UNIFORMS, &nbrActiveUniforms);
     uniforms.resize(nbrActiveUniforms);
     for (GLint i = 0; i < nbrActiveUniforms; i++) {
+        ShaderUniform uniform;
         QByteArray uniformName(256, '\0');
-        GLenum type;
-        GLint size;
         // Size is 1 for scalar and more for struct or arrays
         // Type is the GL Type
-        m_funcs->glGetActiveUniform(programId, i, 256, NULL, &size, &type , uniformName.data());
-        GLint location = m_funcs->glGetUniformLocation(programId, uniformName.constData());
-        uniforms.append(QPair<QString, int>(QString::fromUtf8(uniformName), location));
+        m_funcs->glGetActiveUniform(programId, i, 256, NULL, &uniform.m_size, &uniform.m_type , uniformName.data());
+        uniform.m_location = m_funcs->glGetUniformLocation(programId, uniformName.constData());
+        uniform.m_name = QString::fromUtf8(uniformName);
+        uniforms.append(uniform);
     }
     return uniforms;
 }
 
-QVector<QPair<QString, int> > QGraphicsHelperES2::programAttributesAndLocations(GLuint programId)
+QVector<ShaderAttribute> QGraphicsHelperES2::programAttributesAndLocations(GLuint programId)
 {
-    QVector<QPair<QString, int> > attributes;
-
+    QVector<ShaderAttribute> attributes;
     GLint nbrActiveAttributes = 0;
     m_funcs->glGetProgramiv(programId, GL_ACTIVE_ATTRIBUTES, &nbrActiveAttributes);
     for (GLint i = 0; i < nbrActiveAttributes; i++) {
+        ShaderAttribute attribute;
         QByteArray attributeName(256, '\0');
-        GLenum type;
-        GLint size;
         // Size is 1 for scalar and more for struct or arrays
         // Type is the GL Type
-        m_funcs->glGetActiveAttrib(programId, i, 256, NULL, &size, &type , attributeName.data());
-        GLint location = m_funcs->glGetAttribLocation(programId, attributeName.constData());
-        attributes.append(QPair<QString, int>(QString::fromUtf8(attributeName), location));
+        m_funcs->glGetActiveAttrib(programId, i, 256, NULL, &attribute.m_size, &attribute.m_type , attributeName.data());
+        attribute.m_location = m_funcs->glGetAttribLocation(programId, attributeName.constData());
+        attribute.m_name = QString::fromUtf8(attributeName);
+        attributes.append(attribute);
     }
     return attributes;
 }
@@ -266,6 +266,98 @@ bool QGraphicsHelperES2::supportsFeature(QGraphicsHelperInterface::Feature featu
 void QGraphicsHelperES2::drawBuffers(GLsizei , const int *)
 {
     qCritical() << "drawBuffers is not supported by ES 2.0";
+}
+
+void QGraphicsHelperGL2::bindUniform(const QVariant &v, const ShaderUniform &description)
+{
+    switch (description.m_type) {
+
+    case GL_FLOAT:
+        m_funcs->glUniform1fv(description.m_location, description.m_size,
+                              QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 1));
+        break;
+
+    case GL_FLOAT_VEC2:
+        m_funcs->glUniform2fv(description.m_location, description.m_size,
+                              QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 2));
+        break;
+
+    case GL_FLOAT_VEC3:
+        m_funcs->glUniform3fv(description.m_location, description.m_size,
+                              QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 3));
+        break;
+
+    case GL_FLOAT_VEC4:
+        m_funcs->glUniform4fv(description.m_location, description.m_size,
+                              QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 4));
+        break;
+
+    case GL_FLOAT_MAT2:
+        m_funcs->glUniformMatrix2fv(description.m_location, description.m_size, GL_FALSE,
+                                    QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 4));
+        break;
+
+    case GL_FLOAT_MAT3:
+        m_funcs->glUniformMatrix3fv(description.m_location, description.m_size, GL_FALSE,
+                                      QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 9));
+        break;
+
+    case GL_FLOAT_MAT4:
+        m_funcs->glUniformMatrix4fv(description.m_location, description.m_size, GL_FALSE,
+                                    QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 16));
+        break;
+
+    case GL_INT:
+        m_funcs->glUniform1iv(description.m_location, description.m_size,
+                              QGraphicsUtils::valueArrayFromVariant<GLint>(v, description.m_size, 1));
+        break;
+
+    case GL_INT_VEC2:
+        m_funcs->glUniform2iv(description.m_location, description.m_size,
+                              QGraphicsUtils::valueArrayFromVariant<GLint>(v, description.m_size, 2));
+        break;
+
+    case GL_INT_VEC3:
+        m_funcs->glUniform3iv(description.m_location, description.m_size,
+                              QGraphicsUtils::valueArrayFromVariant<GLint>(v, description.m_size, 3));
+        break;
+
+    case GL_INT_VEC4:
+        m_funcs->glUniform4iv(description.m_location, description.m_size,
+                              QGraphicsUtils::valueArrayFromVariant<GLint>(v, description.m_size, 4));
+        break;
+
+    case GL_BOOL:
+        m_funcs->glUniform1iv(description.m_location, description.m_size,
+                              QGraphicsUtils::valueArrayFromVariant<GLint>(v, description.m_size, 1));
+        break;
+
+    case GL_BOOL_VEC2:
+        m_funcs->glUniform1iv(description.m_location, description.m_size,
+                              QGraphicsUtils::valueArrayFromVariant<GLint>(v, description.m_size, 2));
+        break;
+
+    case GL_BOOL_VEC3:
+        m_funcs->glUniform1iv(description.m_location, description.m_size,
+                              QGraphicsUtils::valueArrayFromVariant<GLint>(v, description.m_size, 3));
+        break;
+
+    case GL_BOOL_VEC4:
+        m_funcs->glUniform1iv(description.m_location, description.m_size,
+                              QGraphicsUtils::valueArrayFromVariant<GLint>(v, description.m_size, 4));
+        break;
+
+    case GL_SAMPLER_2D:
+    case GL_SAMPLER_CUBE: {
+        Q_ASSERT(description.m_size == 1);
+        m_funcs->glUniform1i(description.m_location, v.toInt());
+        break;
+    }
+
+    default:
+        qWarning() << Q_FUNC_INFO << "unsupported uniform type:" << description.m_type << "for " << description.m_name;
+        break;
+    }
 }
 
 void QGraphicsHelperES2::bindFragDataLocation(GLuint , const QHash<QString, int> &)

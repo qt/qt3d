@@ -521,6 +521,11 @@ void QGraphicsContext::bindFragOutputs(GLuint shader, const QHash<QString, int> 
         m_glHelper->bindFragDataLocation(shader, outputs);
 }
 
+void QGraphicsContext::bindUniform(const QVariant &v, const ShaderUniform &description)
+{
+    m_glHelper->bindUniform(v, description);
+}
+
 GLint QGraphicsContext::assignUnitForTexture(RenderTexture *tex)
 {
     int lowestScoredUnit = -1;
@@ -592,7 +597,7 @@ void QGraphicsContext::setUniforms(const QUniformPack &uniforms)
             const_cast<TextureUniform *>(texUniform)->setTextureUnit(texUnit);
         }
     }
-    m_activeShader->updateUniforms(uniforms);
+    m_activeShader->updateUniforms(this, uniforms);
 }
 
 void QGraphicsContext::specifyAttribute(QString nm, AttributePtr attr)

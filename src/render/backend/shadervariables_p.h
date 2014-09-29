@@ -39,79 +39,38 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERSHADER_H
-#define QT3D_RENDER_RENDERSHADER_H
+#ifndef QT3D_RENDER_SHADERVARIABLES_P_H
+#define QT3D_RENDER_SHADERVARIABLES_P_H
 
-#include <QVector>
-
-// for Parameter::StandardUniforms enum - maybe should move to
-// somewhere common to avoid this include?
-#include <Qt3DRenderer/qparameter.h>
-#include <Qt3DRenderer/private/quniformvalue_p.h>
-#include <Qt3DRenderer/private/shadervariables_p.h>
+#include <QtGlobal>
+#include <QOpenGLContext>
 
 QT_BEGIN_NAMESPACE
 
-class QOpenGLShaderProgram;
-
 namespace Qt3D {
-
-class QShaderProgram;
 
 namespace Render {
 
-class Renderer;
-class AttachmentPack;
-
-class RenderShader : public QObserverInterface
+struct ShaderAttribute
 {
-public:
-    RenderShader();
-    ~RenderShader();
+    QString m_name;
+    GLenum m_type;
+    int m_size;
+    int m_location;
+};
 
-    void cleanup();
-
-    void setPeer(QShaderProgram* peer);
-    void setRenderer(Renderer *renderer);
-    void updateUniforms(QGraphicsContext *ctx, const QUniformPack &pack);
-    void setFragOutputs(const QHash<QString, int> &fragOutputs);
-
-    QStringList uniformsNames() const;
-    QStringList attributesNames() const;
-
-    QUuid shaderUuid() const;
-
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    bool isLoaded() const;
-
-private:
-    QOpenGLShaderProgram *m_program;
-    Renderer *m_renderer;
-
-    QOpenGLShaderProgram *createProgram(QGraphicsContext *context);
-    QOpenGLShaderProgram *createDefaultProgram();
-
-    QHash<QString, ShaderUniform> m_uniforms;
-    QHash<QString, ShaderAttribute> m_attributes;
-    QHash<QString, int> m_fragOutputs;
-
-    QVector<QByteArray> m_shaderCode;
-    QVector<QString> m_shaderSourceFiles;
-
-    QUuid m_shaderUuid;
-
-    bool m_isLoaded;
-
-    // Private so that only GraphicContext can call it
-    void initializeUniforms(const QVector<ShaderUniform> &uniformsDescription);
-    void initializeAttributes(const QVector<ShaderAttribute> &attributesDescription);
-    QOpenGLShaderProgram *getOrCreateProgram(QGraphicsContext *ctx);
-    friend class QGraphicsContext;
+struct ShaderUniform
+{
+    QString m_name;
+    GLenum m_type;
+    int m_size;
+    int m_location;
 };
 
 } // Render
+
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERSHADER_H
+#endif // QT3D_RENDER_SHADERVARIABLES_P_H

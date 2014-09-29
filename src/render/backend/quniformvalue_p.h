@@ -51,6 +51,7 @@
 
 // for RenderTexturePtr
 #include <Qt3DRenderer/private/rendertextureprovider_p.h>
+#include <Qt3DRenderer/private/shadervariables_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -70,17 +71,6 @@ class QGraphicsContext;
 class QUniformValue
 {
 public:
-    enum Type {
-        Invalid = 0,
-        Int = 1,
-        UInt = 2,
-        Float = 3,
-        Double = 4,
-        Bool,
-        Texture,
-        Custom
-    };
-
     QUniformValue();
     virtual ~QUniformValue() {}
 
@@ -89,62 +79,10 @@ public:
     virtual bool operator ==(const QUniformValue &other);
     bool operator !=(const QUniformValue &other);
 
-    virtual bool isValid() const { return m_type != Invalid; }
-
-    virtual void apply(QOpenGLShaderProgram* prog, int location, const QString &name) const;
-
-    // For advanced use cases not handled by fromVariant
-    void setRawFromFloats(const float *ptr, unsigned int count, unsigned int tupleSize);
-    void setRawFromInts(const qint32 *ptr, unsigned int count, unsigned int tupleSize);
+    virtual void apply(QGraphicsContext *ctx, const ShaderUniform &description) const;
 
 protected:
-    Type m_type;
     QVariant m_var;
-
-private:
-    void convertToBytes() const;
-    int m_count;
-    unsigned int m_tupleSize;
-
-    // value as data suitable for passing to glUniformfv/iv
-    mutable QByteArray m_bytes;
-
-};
-
-
-template <typename T>
-class SpecifiedUniform : public QUniformValue
-{
-public :
-    SpecifiedUniform()
-        : QUniformValue()
-    {
-        m_type = Custom;
-    }
-
-    void setValue(const T &value) { m_value = value; }
-
-    bool operator ==(const QUniformValue &other) Q_DECL_OVERRIDE
-    {
-        Q_UNUSED(other);
-        // TO DO : find a way to improve that
-        return false;
-    }
-
-    bool isValid() const Q_DECL_OVERRIDE { return true; }
-
-    void apply(QOpenGLShaderProgram *prog, int location, const QString &name) const Q_DECL_OVERRIDE
-    {
-        prog->setUniformValue(location, (T)m_value);
-        int err = glGetError();
-        if (err) {
-            qCWarning(Render::Backend, "Error %d after setting uniform \"%s\" at location %d",
-                      err, qUtf8Printable(name), location);
-        }
-    }
-
-private :
-    T m_value;
 };
 
 class TextureUniform : public QUniformValue
@@ -154,7 +92,6 @@ public :
         : QUniformValue()
         , m_textureUnit(-1)
     {
-        m_type = Texture;
     }
 
     void setTextureId(const QUuid &id)
@@ -173,23 +110,7 @@ public :
     // Called by the QGraphicContext prior applying
     void setTextureUnit(int textureUnit) { m_textureUnit = textureUnit; }
 
-    bool isValid() const Q_DECL_OVERRIDE { return true; }
-
-    void apply(QOpenGLShaderProgram *prog, int location, const QString &name) const
-    {
-        // We assume that the texture has been successfully bound and attache to a texture unit
-        if (m_textureUnit != -1) {
-            prog->setUniformValue(location, m_textureUnit);
-            int err = glGetError();
-            if (err) {
-                qCWarning(Render::Backend, "Error %d after setting uniform \"%s\" at location %d",
-                          err, qUtf8Printable(name), location);
-            }
-        } else {
-            qCWarning(Render::Backend, "Invalid texture unit supplied for \"%s\"",
-                      qUtf8Printable(name));
-        }
-    }
+    void apply(QGraphicsContext *ctx, const ShaderUniform &description) const;
 
 private:
     QUuid m_textureId;
