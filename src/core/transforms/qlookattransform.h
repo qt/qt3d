@@ -56,10 +56,10 @@ class QLookAtTransformPrivate;
 class QT3DCORESHARED_EXPORT QLookAtTransform : public Qt3D::QAbstractTransform
 {
     Q_OBJECT
-    Q_PROPERTY(QVector3D position READ position WRITE setPosition)
-    Q_PROPERTY(QVector3D upVector READ upVector WRITE setUpVector)
-    Q_PROPERTY(QVector3D viewCenter READ viewCenter WRITE setViewCenter)
-    Q_PROPERTY(QVector3D viewVector READ viewVector NOTIFY viewVectorChanged)
+    Q_PROPERTY(QVector3D position READ position WRITE setPosition NOTIFY positionChanged)
+    Q_PROPERTY(QVector3D upVector READ upVector WRITE setUpVector NOTIFY upVectorChanged)
+    Q_PROPERTY(QVector3D viewCenter READ viewCenter WRITE setViewCenter NOTIFY viewCenterChanged)
+    Q_PROPERTY(QVector3D viewVector READ viewVector NOTIFY viewVectorChanged NOTIFY viewVectorChanged)
 
 public:
     explicit QLookAtTransform(QNode *parent = 0);

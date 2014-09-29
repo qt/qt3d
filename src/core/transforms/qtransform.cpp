@@ -71,6 +71,7 @@ void QTransform::copy(const QNode *ref)
     const QTransform *transform = qobject_cast<const QTransform *>(ref);
     if (transform != Q_NULLPTR) {
         d->m_matrix = transform->matrix();
+        emit matrixChanged();
     }
 }
 

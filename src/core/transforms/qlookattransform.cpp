@@ -150,7 +150,14 @@ QVector3D QLookAtTransform::viewCenter() const
 void QLookAtTransform::setViewVector(const QVector3D &viewVector)
 {
     Q_D(QLookAtTransform);
-    d->m_viewVector = viewVector;
+    if (!qFuzzyCompare(d->m_viewVector, viewVector)) {
+        d->m_viewVector = viewVector;
+        // modify the view center, not the position
+        d->m_viewCenter = d->m_position + viewVector;
+        emit viewVectorChanged();
+        emit viewCenterChanged();
+        emit transformMatrixChanged();
+    }
 }
 
 QVector3D QLookAtTransform::viewVector() const
