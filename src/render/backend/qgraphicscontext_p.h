@@ -44,6 +44,7 @@
 #define QT3D_RENDER_QGRAPHICSCONTEXT_H
 
 #include <QOpenGLContext>
+#include <QOpenGLFunctions>
 #include <QOpenGLBuffer>
 #include <QOpenGLVertexArrayObject>
 #include <QHash>

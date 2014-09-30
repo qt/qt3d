@@ -123,7 +123,7 @@ void QGraphicsContext::initialize()
     Q_ASSERT(m_gl);
 
     GLint numTexUnits;
-    glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &numTexUnits);
+    m_gl->functions()->glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &numTexUnits);
     qCDebug(Backend) << "context supports" << numTexUnits << "texture units";
 
     m_pinnedTextureUnits = QBitArray(numTexUnits);
@@ -143,7 +143,7 @@ void QGraphicsContext::beginDrawing(const QColor &clearColor)
         qCWarning(Backend) << Q_FUNC_INFO << "make current failed";
     }
 
-    GLint err = glGetError();
+    GLint err = m_gl->functions()->glGetError();
     if (err != 0) {
         qCWarning(Backend) << Q_FUNC_INFO << "glGetError:" << err;
     }
@@ -152,7 +152,7 @@ void QGraphicsContext::beginDrawing(const QColor &clearColor)
         initialize();
     }
 
-    glClearColor(clearColor.redF(), clearColor.greenF(), clearColor.blueF(), clearColor.alphaF());
+    m_gl->functions()->glClearColor(clearColor.redF(), clearColor.greenF(), clearColor.blueF(), clearColor.alphaF());
 
     if (m_activeShader)
         m_activeShader = NULL;
@@ -170,7 +170,7 @@ void QGraphicsContext::clearBackBuffer(QClearBuffer::BufferType buffers)
         if (buffers & QClearBuffer::StencilBuffer)
             mask |= GL_STENCIL_BUFFER_BIT;
 
-        glClear(mask);
+        m_gl->functions()->glClear(mask);
     }
 }
 
@@ -193,7 +193,7 @@ void QGraphicsContext::setViewport(const QRectF &viewport)
     //      1                                0---------------------> 1
     // The Viewport is defined between 0 and 1 which allows us to automatically
     // scale to the size of the provided window surface
-    glViewport(m_viewport.x() * m_surface->size().width(),
+    m_gl->functions()->glViewport(m_viewport.x() * m_surface->size().width(),
                (1.0 - m_viewport.y() - m_viewport.height()) * m_surface->size().height(),
                m_viewport.width()* m_surface->size().width(),
                m_viewport.height() * m_surface->size().height());
@@ -326,7 +326,7 @@ int QGraphicsContext::activateTexture(TextureScope scope, RenderTexture *tex, in
         glTex->bind(onUnit);
     }
 
-    int err = glGetError();
+    int err = m_gl->functions()->glGetError();
     if (err)
         qCWarning(Backend) << "GL error after activating texture" << QString::number(err, 16)
                            << tex->textureId() << "on unit" << onUnit;
@@ -387,7 +387,7 @@ void QGraphicsContext::resolveHighestOpenGLFunctions()
     m_contextInfo->setApi(m_gl->isOpenGLES() ? QOpenGLFilter::ES : QOpenGLFilter::Desktop);
     m_contextInfo->setProfile(static_cast<QOpenGLFilter::Profile>(m_gl->format().profile()));
     m_contextInfo->setExtensions(extensions);
-    m_contextInfo->setVendor(QString::fromUtf8(reinterpret_cast<const char *>(glGetString(GL_VENDOR))));
+    m_contextInfo->setVendor(QString::fromUtf8(reinterpret_cast<const char *>(m_gl->functions()->glGetString(GL_VENDOR))));
 }
 
 void QGraphicsContext::deactivateTexture(RenderTexture* tex)

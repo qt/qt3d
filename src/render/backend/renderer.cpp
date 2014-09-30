@@ -647,7 +647,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
                 m_graphicsContext->drawArrays(primType, 0, primCount);
             }
 
-            int err = glGetError();
+            int err = m_graphicsContext->openGLContext()->functions()->glGetError();
             if (err)
                 qCWarning(Rendering) << "GL error after drawing mesh:" << QString::number(err, 16);
 

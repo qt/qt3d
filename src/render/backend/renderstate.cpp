@@ -140,43 +140,43 @@ StateMaskSet RenderStateSet::stateMask() const
 
 void RenderStateSet::resetMasked(StateMaskSet maskOfStatesToReset, QGraphicsContext *gc)
 {
-    Q_UNUSED(gc);
     // TO DO -> Call gcHelper methods instead of raw GL
+    QOpenGLFunctions *funcs = gc->openGLContext()->functions();
 
     if (maskOfStatesToReset & ScissorStateMask) {
-        glDisable(GL_SCISSOR_TEST);
+        funcs->glDisable(GL_SCISSOR_TEST);
     }
 
     if (maskOfStatesToReset & BlendStateMask) {
-        glDisable(GL_BLEND);
+        funcs->glDisable(GL_BLEND);
     }
 
     if (maskOfStatesToReset & StencilWriteStateMask) {
-        glStencilMask(0);
+        funcs->glStencilMask(0);
     }
 
     if (maskOfStatesToReset & StencilTestStateMask) {
-        glDisable(GL_STENCIL_TEST);
+        funcs->glDisable(GL_STENCIL_TEST);
     }
 
     if (maskOfStatesToReset & DepthTestStateMask) {
-        glDisable(GL_DEPTH_TEST);
+        funcs->glDisable(GL_DEPTH_TEST);
     }
 
     if (maskOfStatesToReset & DepthWriteStateMask) {
-        glDepthMask(GL_TRUE); // reset to default
+        funcs->glDepthMask(GL_TRUE); // reset to default
     }
 
     if (maskOfStatesToReset & FrontFaceStateMask) {
-        glFrontFace(GL_CCW); // reset to default
+        funcs->glFrontFace(GL_CCW); // reset to default
     }
 
     if (maskOfStatesToReset & CullFaceStateMask) {
-        glDisable(GL_CULL_FACE);
+        funcs->glDisable(GL_CULL_FACE);
     }
 
     if (maskOfStatesToReset & DitheringStateMask) {
-        glDisable(GL_DITHER);
+        funcs->glDisable(GL_DITHER);
     }
 }
 

@@ -114,7 +114,7 @@ void TextureUniform::apply(QGraphicsContext *ctx, const ShaderUniform &descripti
     // We assume that the texture has been successfully bound and attache to a texture unit
     if (m_textureUnit != -1) {
         ctx->bindUniform(m_textureUnit, description);
-        int err = glGetError();
+        int err = ctx->openGLContext()->functions()->glGetError();
         if (err) {
             qCWarning(Render::Backend, "Error %d after setting uniform \"%s\" at location %d",
                       err, qUtf8Printable(description.m_name), description.m_location);

@@ -68,8 +68,8 @@ State* getOrCreateImpl(const State& data)
 void BlendState::apply(QGraphicsContext* gc) const
 {
     Q_UNUSED(gc);
-    glEnable(GL_BLEND);
-    glBlendFunc( m_1, m_2 );
+    gc->openGLContext()->functions()->glEnable(GL_BLEND);
+    gc->openGLContext()->functions()->glBlendFunc( m_1, m_2 );
 }
 
 StateMaskSet BlendState::mask() const
@@ -186,9 +186,9 @@ Dithering::Dithering()
 {
 }
 
-void Dithering::apply(QGraphicsContext *) const
+void Dithering::apply(QGraphicsContext *gc) const
 {
-    glEnable(GL_DITHER);
+    gc->openGLContext()->functions()->glEnable(GL_DITHER);
 }
 
 Dithering *Dithering::getOrCreate()
@@ -201,10 +201,10 @@ ScissorTest::ScissorTest(int left, int bottom, int width, int height)
 {
 }
 
-void ScissorTest::apply(QGraphicsContext *) const
+void ScissorTest::apply(QGraphicsContext *gc) const
 {
-    glEnable(GL_SCISSOR_TEST);
-    glScissor(m_1, m_2, m_3, m_4);
+    gc->openGLContext()->functions()->glEnable(GL_SCISSOR_TEST);
+    gc->openGLContext()->functions()->glScissor(m_1, m_2, m_3, m_4);
 }
 
 ScissorTest *ScissorTest::getOrCreate(int left, int bottom, int width, int height)
@@ -222,10 +222,10 @@ StencilTest::StencilTest(uint mask, GLenum func, GLenum faceMode)
 {
 }
 
-void StencilTest::apply(QGraphicsContext *) const
+void StencilTest::apply(QGraphicsContext *gc) const
 {
-    glEnable(GL_STENCIL_TEST);
-    glStencilFunc(m_2, m_3, m_1);
+    gc->openGLContext()->functions()->glEnable(GL_STENCIL_TEST);
+    gc->openGLContext()->functions()->glStencilFunc(m_2, m_3, m_1);
 }
 
 } // Render

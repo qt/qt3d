@@ -42,6 +42,7 @@
 #include "rendertexture_p.h"
 
 #include <QDebug>
+#include <QOpenGLFunctions>
 #include <QOpenGLTexture>
 #include <QOpenGLPixelTransferOptions>
 #include <qtexture.h>
@@ -132,10 +133,13 @@ QOpenGLTexture *RenderTexture::getOrCreateGLTexture()
         m_gl->generateMipMaps();
     }
 
-    int err = glGetError();
-    if (err)
-        qWarning() << Q_FUNC_INFO <<
-                      "GL error after generating mip-maps" << QString::number(err, 16);
+    // Ideally we might want to abstract that and use the QGraphicsContext as a wrapper
+    // around that.
+    if (QOpenGLContext *ctx = QOpenGLContext::currentContext()) {
+        int err = ctx->functions()->glGetError();
+        if (err)
+            qWarning() << Q_FUNC_INFO << "GL error after generating mip-maps" << QString::number(err, 16);
+    }
 
     return m_gl;
 }
@@ -161,7 +165,8 @@ QOpenGLTexture *RenderTexture::buildGLTexture()
     // FIXME : make this conditional on Qt version
     // work-around issue in QOpenGLTexture DSA emulaation which rasies
     // an Invalid Enum error
-    glGetError();
+    if (QOpenGLContext *ctx = QOpenGLContext::currentContext())
+        ctx->functions()->glGetError();
 
     return glTex;
 }
@@ -192,7 +197,8 @@ void RenderTexture::setToGLTexture(TexImageDataPtr imgData)
     // FIXME : make this conditional on Qt version
     // work-around issue in QOpenGLTexture DSA emulaation which rasies
     // an Invalid Enum error
-    glGetError();
+    if (QOpenGLContext *ctx = QOpenGLContext::currentContext())
+        ctx->functions()->glGetError();
 }
 
 
