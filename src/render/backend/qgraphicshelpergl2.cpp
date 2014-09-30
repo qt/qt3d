@@ -282,11 +282,11 @@ bool QGraphicsHelperGL2::supportsFeature(QGraphicsHelperInterface::Feature featu
 
 void QGraphicsHelperGL2::drawBuffers(GLsizei n, const int *bufs)
 {
-    GLenum drawBufs[n];
+    QVarLengthArray<GLenum, 16> drawBufs(n);
 
     for (int i = 0; i < n; i++)
         drawBufs[i] = GL_COLOR_ATTACHMENT0 + bufs[i];
-    m_funcs->glDrawBuffers(n, drawBufs);
+    m_funcs->glDrawBuffers(n, drawBufs.constData());
 }
 
 void QGraphicsHelperGL2::bindFragDataLocation(GLuint, const QHash<QString, int> &)
