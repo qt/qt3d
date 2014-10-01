@@ -3,6 +3,7 @@ TEMPLATE = subdirs
 SUBDIRS += \
     exampleresources \
     playground-qml \
+    simple-qml \
     gltf \
     assimp \
     cpp_example \
