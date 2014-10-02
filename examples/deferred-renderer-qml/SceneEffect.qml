@@ -53,8 +53,7 @@ Effect {
                 shaderProgram : ShaderProgram {
                     id : sceneShaderGL3
                     vertexShaderCode:
-                        "
-                        #version 140
+                        "#version 140
 
                         in vec4 vertexPosition;
                         in vec3 vertexNormal;
@@ -77,8 +76,7 @@ Effect {
                         }
                     "
                     fragmentShaderCode:
-                        "
-                        #version 140
+                        "#version 140
 
                         in vec4 color0;
                         in vec3 position0;
@@ -106,8 +104,7 @@ Effect {
                 shaderProgram : ShaderProgram {
                     id : sceneShaderGL2
                     vertexShaderCode:
-                        "
-                        #version 110
+                        "#version 110
 
                         attribute vec4 vertexPosition;
                         attribute vec3 vertexNormal;
@@ -130,8 +127,7 @@ Effect {
                         }
                     "
                     fragmentShaderCode:
-                        "
-                        #version 110
+                        "#version 110
 
                         varying vec4 color0;
                         varying vec3 position0;

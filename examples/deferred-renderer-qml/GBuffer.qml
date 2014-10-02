@@ -74,6 +74,8 @@ RenderTarget {
                 target : Texture.Target2D
                 width : 1024
                 height : 1024
+                // This texture format may not be supported by
+                // some OpenGL vendors when used as a color attachment
                 format : Texture.RGB32F
                 generateMipMaps : false
                 magnificationFilter : Texture.Linear
@@ -89,6 +91,8 @@ RenderTarget {
                 target : Texture.Target2D
                 width : 1024
                 height : 1024
+                // This texture format may not be supported by
+                // some OpenGL vendors when used as a color attachment
                 format : Texture.RGB16F
                 generateMipMaps : false
                 magnificationFilter : Texture.Linear
