@@ -189,6 +189,8 @@ private:
 
     void resolveHighestOpenGLFunctions();
 
+    void bindFrameBufferAttachmentHelper(const AttachmentPack &attachments);
+
     bool m_initialized;
     const unsigned int m_id;
     QOpenGLContext* m_gl;
