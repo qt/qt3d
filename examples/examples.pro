@@ -4,6 +4,7 @@ SUBDIRS += \
     exampleresources \
     playground-qml \
     simple-qml \
+    simple-cpp \
     gltf \
     assimp \
     cpp_example \
