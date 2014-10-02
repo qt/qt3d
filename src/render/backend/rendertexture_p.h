@@ -47,6 +47,7 @@
 #include <Qt3DRenderer/qtexture.h>
 #include <Qt3DRenderer/texturedata.h>
 #include <Qt3DCore/qobserverinterface.h>
+#include <QMutex>
 
 QT_BEGIN_NAMESPACE
 
@@ -64,6 +65,8 @@ class RenderTexture : public QObserverInterface
 {
 public:
     RenderTexture();
+    ~RenderTexture();
+    void cleanup();
 
     void setPeer(QTexture* peer);
     void setRenderer(Renderer *renderer);
@@ -71,6 +74,8 @@ public:
 
     GLint textureId();
     QUuid textureUuid();
+
+    bool isTextureReset() const;
 
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
@@ -80,6 +85,7 @@ private:
 
     QOpenGLTexture *buildGLTexture();
     void setToGLTexture(TexImageDataPtr imgData);
+    void updateWrapAndFilters();
 
     QUuid m_textureUuid;
 
@@ -93,7 +99,9 @@ private:
     QTexture::Filter m_minificationFilter;
     QTexture::WrapMode m_wrapMode;
     QList<TexImageDataPtr> m_imageData;
-
+    bool m_isDirty;
+    bool m_filtersAndWrapUpdated;
+    QMutex *m_lock;
 };
 
 } // namespace Render

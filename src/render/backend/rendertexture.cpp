@@ -70,8 +70,23 @@ RenderTexture::RenderTexture()
     , m_magnificationFilter(QTexture::Nearest)
     , m_minificationFilter(QTexture::Nearest)
     , m_wrapMode(QTexture::ClampToEdge)
+    , m_isDirty(false)
+    , m_filtersAndWrapUpdated(false)
+    , m_lock(new QMutex())
 {
     // We need backend -> frontend notifications to update the status of the texture
+}
+
+RenderTexture::~RenderTexture()
+{
+    cleanup();
+}
+
+void RenderTexture::cleanup()
+{
+    if (m_lock != Q_NULLPTR)
+        delete m_lock;
+    m_lock = Q_NULLPTR;
 }
 
 void RenderTexture::setPeer(QTexture *peer)
@@ -113,16 +128,41 @@ void RenderTexture::setRenderer(Renderer *renderer)
 
 QOpenGLTexture *RenderTexture::getOrCreateGLTexture()
 {
-    // We need to handle texture resize
-    if (m_gl)
+    // m_gl HAS to be destroyed in the OpenGL Thread
+    // Will be recreated with updated values the next time
+    // buildGLTexture is called
+
+
+    // getOrCreateGLTexture is called by the OpenGL Render Thread
+    // sceneChangeEvent is called by the QAspectThread
+    // only the OpenGL Render Thread can set isDirty to false
+    // only a sceneChangeEvent in QAspectThread can set isDirty to true
+    // We need the lock to make sure there are no races when the OpenGL
+    // thread tries to read isDirty or one of the texture properties in case
+    // we are receiving a sceneChangeEvent that modifies isDirty or one of the properties
+    // at the same time
+
+    QMutexLocker lock(m_lock);
+    if (m_isDirty) {
+        delete m_gl;
+        m_gl = Q_NULLPTR;
+        m_isDirty = false;
+    }
+
+    if (m_gl != Q_NULLPTR) {
+        if (m_filtersAndWrapUpdated) {
+            updateWrapAndFilters();
+            m_filtersAndWrapUpdated = false;
+        }
         return m_gl;
+    }
 
     m_gl = buildGLTexture();
 
     m_gl->allocateStorage();
     if (!m_gl->isStorageAllocated()) {
         qWarning() << Q_FUNC_INFO << "texture storage allocation failed";
-        return NULL;
+        return Q_NULLPTR;
     }
 
     foreach (TexImageDataPtr imgData, m_imageData) {
@@ -132,6 +172,9 @@ QOpenGLTexture *RenderTexture::getOrCreateGLTexture()
     if (m_generateMipMaps) {
         m_gl->generateMipMaps();
     }
+    // Filters and WrapMode are set
+    updateWrapAndFilters();
+    m_filtersAndWrapUpdated = false;
 
     // Ideally we might want to abstract that and use the QGraphicsContext as a wrapper
     // around that.
@@ -149,18 +192,11 @@ QOpenGLTexture *RenderTexture::buildGLTexture()
     QOpenGLTexture* glTex = new QOpenGLTexture(static_cast<QOpenGLTexture::Target>(m_target));
     glTex->setFormat(static_cast<QOpenGLTexture::TextureFormat>(m_format));
     glTex->setSize(m_width, m_height, m_depth);
-    glTex->setMinMagFilters(static_cast<QOpenGLTexture::Filter>(m_minificationFilter),
-                            static_cast<QOpenGLTexture::Filter>(m_magnificationFilter));
-
 
     if (!glTex->create()) {
         qWarning() << Q_FUNC_INFO << "creating QOpenGLTexture failed";
         return NULL;
     }
-
-    glTex->setWrapMode(static_cast<QOpenGLTexture::WrapMode>(m_wrapMode));
-    glTex->setMinMagFilters(static_cast<QOpenGLTexture::Filter>(m_minificationFilter),
-                            static_cast<QOpenGLTexture::Filter>(m_magnificationFilter));
 
     // FIXME : make this conditional on Qt version
     // work-around issue in QOpenGLTexture DSA emulaation which rasies
@@ -201,73 +237,82 @@ void RenderTexture::setToGLTexture(TexImageDataPtr imgData)
         ctx->functions()->glGetError();
 }
 
+void RenderTexture::updateWrapAndFilters()
+{
+    m_gl->setWrapMode(static_cast<QOpenGLTexture::WrapMode>(m_wrapMode));
+    m_gl->setMinMagFilters(static_cast<QOpenGLTexture::Filter>(m_minificationFilter),
+                           static_cast<QOpenGLTexture::Filter>(m_magnificationFilter));
+
+}
+
 
 GLint RenderTexture::textureId()
 {
     return getOrCreateGLTexture()->textureId();
 }
 
+bool RenderTexture::isTextureReset() const
+{
+    QMutexLocker lock(m_lock);
+    return m_isDirty;
+}
+
 void RenderTexture::sceneChangeEvent(const QSceneChangePtr &e)
 {
-    bool resetTexture = false;
+    // The QOpenGLTexture has to be manipulated from the RenderThread only
     if (e->type() == NodeUpdated) {
+
+        // We lock here so that we're sure the texture cannot be rebuilt while we are
+        // modifying one of its properties
+        QMutexLocker lock(m_lock);
+
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("width")) {
             int oldWidth = m_width;
             m_width = propertyChange->value().toInt();
-            resetTexture = (oldWidth != m_width);
+            m_isDirty = (oldWidth != m_width);
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("height")) {
             int oldHeight = m_height;
             m_height = propertyChange->value().toInt();
-            resetTexture = (oldHeight != m_height);
+            m_isDirty = (oldHeight != m_height);
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("depth")) {
             int oldDepth = m_depth;
             m_depth = propertyChange->value().toInt();
-            resetTexture = (oldDepth != m_depth);
+            m_isDirty = (oldDepth != m_depth);
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("mipmaps")) {
             bool oldMipMaps = m_generateMipMaps;
             m_generateMipMaps = propertyChange->value().toBool();
-            resetTexture = (oldMipMaps != m_generateMipMaps);
+            m_isDirty = (oldMipMaps != m_generateMipMaps);
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("minificationFilter")) {
+            QTexture::Filter oldMinFilter = m_minificationFilter;
             m_minificationFilter = static_cast<QTexture::Filter>(propertyChange->value().toInt());
-            if (m_gl)
-                m_gl->setMinMagFilters(static_cast<QOpenGLTexture::Filter>(m_minificationFilter),
-                                       static_cast<QOpenGLTexture::Filter>(m_magnificationFilter));
+            m_filtersAndWrapUpdated = (oldMinFilter != m_minificationFilter);
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("magnificationFilter")) {
+            QTexture::Filter oldMagFilter = m_magnificationFilter;
             m_magnificationFilter = static_cast<QTexture::Filter>(propertyChange->value().toInt());
-            if (m_gl)
-                m_gl->setMinMagFilters(static_cast<QOpenGLTexture::Filter>(m_minificationFilter),
-                                       static_cast<QOpenGLTexture::Filter>(m_magnificationFilter));
+            m_filtersAndWrapUpdated = (oldMagFilter != m_magnificationFilter);
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("wrapMode")) {
+            QTexture::WrapMode oldWrapMode = m_wrapMode;
             m_wrapMode = static_cast<QTexture::WrapMode>(propertyChange->value().toInt());
-            if (m_gl)
-                m_gl->setWrapMode(static_cast<QOpenGLTexture::WrapMode>(m_wrapMode));
+            m_filtersAndWrapUpdated = (oldWrapMode != m_wrapMode);
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("format")) {
             QTexture::TextureFormat oldFormat = m_format;
             m_format = static_cast<QTexture::TextureFormat>(propertyChange->value().toInt());
-            resetTexture = (oldFormat != m_format);
+            m_isDirty = (oldFormat != m_format);
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("target")) {
             QTexture::Target oldTarget = m_target;
             m_target = static_cast<QTexture::Target>(propertyChange->value().toInt());
-            resetTexture = (oldTarget != m_target);
+            m_isDirty = (oldTarget != m_target);
         }
     }
-
-    // Will be recreated with updated values the next time
-    // buildGLTexture is called
-    if (resetTexture) {
-        delete m_gl;
-        m_gl = Q_NULLPTR;
-    }
-
 }
 
 } // namespace Render

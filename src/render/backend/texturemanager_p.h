@@ -67,6 +67,8 @@ public:
 
 } // Render
 
+Q_DECLARE_RESOURCE_INFO(Render::RenderTexture, Q_REQUIRES_CLEANUP);
+
 } // Qt3D
 
 QT_END_NAMESPACE
