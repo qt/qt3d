@@ -54,12 +54,20 @@ class QComponentPrivate;
 class QT3DCORESHARED_EXPORT QComponent : public QNode
 {
     Q_OBJECT
+    Q_PROPERTY(bool shareable READ shareable WRITE setShareable NOTIFY shareableChanged)
 
 public:
     explicit QComponent(QNode *parent = 0);
 
+    bool shareable() const;
+    void setShareable(bool shareable);
+
 protected:
     QComponent(QComponentPrivate &dd, QNode *parent = 0);
+
+Q_SIGNALS:
+    void shareableChanged();
+
 private:
     Q_DECLARE_PRIVATE(QComponent)
 };

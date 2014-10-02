@@ -42,18 +42,43 @@
 #include "qcomponent.h"
 #include "qcomponent_p.h"
 
+#include <Qt3DCore/qscenepropertychange.h>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
 QComponentPrivate::QComponentPrivate(QComponent *qq)
     : QNodePrivate(qq)
+    , m_shareable(true)
 {
 }
 
 QComponent::QComponent(QNode *parent)
     : QNode(*new QComponentPrivate(this), parent)
 {
+}
+
+bool QComponent::shareable() const
+{
+    Q_D(const QComponent);
+    return d->m_shareable;
+}
+
+void QComponent::setShareable(bool shareable)
+{
+    Q_D(QComponent);
+    if (d->m_shareable != shareable) {
+        d->m_shareable = shareable;
+        emit shareableChanged();
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentUpdated, this));
+            propertyChange->setPropertyName(QByteArrayLiteral("shareable"));
+            propertyChange->setValue(d->m_shareable);
+            d->notifyObservers(propertyChange);
+        }
+    }
 }
 
 QComponent::QComponent(QComponentPrivate &dd, QNode *parent)
