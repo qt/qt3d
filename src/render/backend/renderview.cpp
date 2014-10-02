@@ -86,21 +86,19 @@
 #include <Qt3DRenderer/private/sortcriterionmanager_p.h>
 #include <Qt3DRenderer/sphere.h>
 
-#include "qalphatest.h"
-#include "qblendequation.h"
-#include "qblendstate.h"
-#include "qcullface.h"
-#include "qdepthmask.h"
-#include "qdepthtest.h"
-#include "qdithering.h"
-#include "qfrontface.h"
-#include "qscissortest.h"
-#include "qstenciltest.h"
+#include <Qt3DRenderer/qalphatest.h>
+#include <Qt3DRenderer/qblendequation.h>
+#include <Qt3DRenderer/qblendstate.h>
+#include <Qt3DRenderer/qcullface.h>
+#include <Qt3DRenderer/qdepthmask.h>
+#include <Qt3DRenderer/qdepthtest.h>
+#include <Qt3DRenderer/qdithering.h>
+#include <Qt3DRenderer/qfrontface.h>
+#include <Qt3DRenderer/qscissortest.h>
+#include <Qt3DRenderer/qstenciltest.h>
 #include <Qt3DRenderer/private/blendstate_p.h>
 
 #include <Qt3DCore/qentity.h>
-#include <Qt3DCore/qabstracteffect.h>
-#include <Qt3DCore/qabstracttechnique.h>
 #include <Qt3DCore/qframeallocator.h>
 
 #include <QtGui/qsurface.h>

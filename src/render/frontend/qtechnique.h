@@ -45,7 +45,6 @@
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DCore/qnode.h>
 #include <Qt3DRenderer/qrenderpass.h>
-#include <Qt3DCore/qabstracttechnique.h>
 #include <Qt3DRenderer/qcriterion.h>
 #include <QList>
 #include <QSharedPointer>
@@ -58,7 +57,7 @@ class QParameter;
 class QTechniquePrivate;
 class QOpenGLFilter;
 
-class QT3DRENDERERSHARED_EXPORT QTechnique : public QAbstractTechnique
+class QT3DRENDERERSHARED_EXPORT QTechnique : public QNode
 {
     Q_OBJECT
     Q_PROPERTY(Qt3D::QOpenGLFilter *openGLFilter READ openGLFilter)
@@ -75,6 +74,10 @@ public:
     void addParameter(QParameter *p);
     void removeParameter(QParameter *p);
     QList<QParameter *> parameters() const;
+
+    virtual void addPass(QRenderPass *pass);
+    virtual void removePass(QRenderPass *pass);
+    QList<QRenderPass *> renderPasses() const;
 
     QParameter* parameterByName(QString name) const;
     QOpenGLFilter *openGLFilter() const;
@@ -93,5 +96,7 @@ private:
 }
 
 QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE(Qt3D::QTechnique *)
 
 #endif // QT3D_QTECHNIQUE_H

@@ -44,7 +44,6 @@
 
 #include <QtGlobal>
 #include <QUuid>
-#include <Qt3DCore/qabstractrenderpass.h>
 #include <Qt3DCore/qresourcesmanager.h>
 #include <Qt3DRenderer/private/renderentity_p.h>
 

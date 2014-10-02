@@ -56,17 +56,18 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 QRenderPassPrivate::QRenderPassPrivate(QRenderPass *qq)
-    : QAbstractRenderPassPrivate(qq)
+    : QNodePrivate(qq)
+    , m_shader(Q_NULLPTR)
 {
 }
 
 QRenderPass::QRenderPass(QNode *parent)
-    : QAbstractRenderPass(*new QRenderPassPrivate(this), parent)
+    : QNode(*new QRenderPassPrivate(this), parent)
 {
 }
 
 QRenderPass::QRenderPass(QRenderPassPrivate &dd, QNode *parent)
-    : QAbstractRenderPass(dd, parent)
+    : QNode(dd, parent)
 {
 }
 
@@ -98,6 +99,48 @@ ParameterList QRenderPass::uniforms() const
 {
     Q_D(const QRenderPass);
     return d->m_uniforms;
+}
+
+/*!
+ * Sets the pass's \a shaderProgram. This posts a ComponentUpdated
+ * QScenePropertyChange to the QChangeArbiter. The value is set to
+ * the \a ShaderProgram and the property name to "shaderProgram".
+ */
+void QRenderPass::setShaderProgram(QShaderProgram *shaderProgram)
+{
+    Q_D(QRenderPass);
+    if (d->m_shader != shaderProgram) {
+
+        if (d->m_shader != Q_NULLPTR && d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr e(new QScenePropertyChange(NodeRemoved, this));
+            e->setPropertyName(QByteArrayLiteral("shaderProgram"));
+            e->setValue(QVariant::fromValue(d->m_shader->uuid()));
+            d->notifyObservers(e);
+        }
+
+        d->m_shader = shaderProgram;
+        emit shaderProgramChanged();
+
+        // We need to add it as a child of the current node if it has been declared inline
+        // Or not previously added as a child of the current node so that
+        // 1) The backend gets notified about it's creation
+        // 2) When the current node is destroyed, it gets destroyed as well
+        if (!shaderProgram->parent())
+            shaderProgram->setParent(this);
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr e(new QScenePropertyChange(NodeAdded, this));
+            e->setPropertyName(QByteArrayLiteral("shaderProgram"));
+            e->setValue(QVariant::fromValue(shaderProgram->uuid()));
+            d->notifyObservers(e);
+        }
+    }
+}
+
+QShaderProgram *QRenderPass::shaderProgram() const
+{
+    Q_D(const QRenderPass);
+    return d->m_shader;
 }
 
 void QRenderPass::addCriterion(QCriterion *criterion)

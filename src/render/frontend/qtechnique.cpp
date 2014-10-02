@@ -51,7 +51,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 QTechniquePrivate::QTechniquePrivate(QTechnique *qq)
-    : QAbstractTechniquePrivate(qq)
+    : QNodePrivate(qq)
     , m_openGLFilter(new QOpenGLFilter())
 {
 }
@@ -62,7 +62,7 @@ QTechniquePrivate::~QTechniquePrivate()
 }
 
 QTechnique::QTechnique(QNode *parent)
-    : QAbstractTechnique(*new QTechniquePrivate(this), parent)
+    : QNode(*new QTechniquePrivate(this), parent)
 {
     Q_D(QTechnique);
     QObject::connect(d->m_openGLFilter, SIGNAL(openGLFilterChanged()), this, SLOT(openGLFilterChanged()));
@@ -70,13 +70,13 @@ QTechnique::QTechnique(QNode *parent)
 
 void QTechniquePrivate::copy(const QNodePrivate *ref)
 {
-    QAbstractTechniquePrivate::copy(ref);
+    QNodePrivate::copy(ref);
     const QTechniquePrivate *tech = static_cast<const QTechniquePrivate *>(ref);
     m_openGLFilter->copy(tech->m_openGLFilter);
 }
 
 QTechnique::QTechnique(QTechniquePrivate &dd, QNode *parent)
-    : QAbstractTechnique(dd, parent)
+    : QNode(dd, parent)
 {
     Q_D(QTechnique);
     QObject::connect(d->m_openGLFilter, SIGNAL(openGLFilterChanged()), this, SLOT(openGLFilterChanged()));
@@ -91,8 +91,8 @@ QTechnique *QTechnique::doClone() const
 
     Q_FOREACH (QCriterion *criterion, d->m_criteriaList)
         technique->addCriterion(qobject_cast<QCriterion *>(QNodePrivate::get(criterion)->clone()));
-    Q_FOREACH (QAbstractRenderPass *pass, d->m_renderPasses)
-        technique->addPass(qobject_cast<QAbstractRenderPass *>(QNodePrivate::get(pass)->clone()));
+    Q_FOREACH (QRenderPass *pass, d->m_renderPasses)
+        technique->addPass(qobject_cast<QRenderPass *>(QNodePrivate::get(pass)->clone()));
     Q_FOREACH (QParameter *p, d->m_parameters)
         technique->addParameter(qobject_cast<QParameter *>(QNodePrivate::get(p)->clone()));
 
@@ -192,6 +192,59 @@ void QTechnique::removeParameter(QParameter *parameter)
         d->notifyObservers(change);
     }
     d->m_parameters.removeOne(parameter);
+}
+
+/*!
+ * Appends a \a pass to the technique. This posts a ComponentAdded
+ * QScenePropertyChange notification to the QChangeArbiter with the
+ * value being the \a pass and the property name being "pass".
+ */
+void QTechnique::addPass(QRenderPass *pass)
+{
+    Q_D(QTechnique);
+    if (!d->m_renderPasses.contains(pass)) {
+        d->m_renderPasses.append(pass);
+
+        // We need to add it as a child of the current node if it has been declared inline
+        // Or not previously added as a child of the current node so that
+        // 1) The backend gets notified about it's creation
+        // 2) When the current node is destroyed, it gets destroyed as well
+        if (!pass->parent())
+            pass->setParent(this);
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr e(new QScenePropertyChange(NodeAdded, this));
+            e->setPropertyName(QByteArrayLiteral("pass"));
+            e->setValue(QVariant::fromValue(pass));
+            d->notifyObservers(e);
+        }
+    }
+}
+
+/*!
+ * Removes a \a pass from the technique. This posts a ComponentRemoved
+ * QScenePropertyChange notification to the QChangeArbiter with the value
+ * being the \a pass' uuid and the property name being "pass".
+ */
+void QTechnique::removePass(QRenderPass *pass)
+{
+    Q_D(QTechnique);
+    if (d->m_changeArbiter) {
+        QScenePropertyChangePtr e(new QScenePropertyChange(NodeRemoved, this));
+        e->setPropertyName(QByteArrayLiteral("pass"));
+        e->setValue(QVariant::fromValue(pass->uuid()));
+        d->notifyObservers(e);
+    }
+    d->m_renderPasses.removeOne(pass);
+}
+
+/*!
+ * Returns the list of render passes contained in the technique.
+ */
+QList<QRenderPass *> QTechnique::renderPasses() const
+{
+    Q_D(const QTechnique);
+    return d->m_renderPasses;
 }
 
 QList<QParameter *> QTechnique::parameters() const

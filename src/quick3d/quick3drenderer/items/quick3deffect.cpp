@@ -103,7 +103,7 @@ void Quick3DEffect::clearTechniqueList(QQmlListProperty<QTechnique> *list)
     if (eff) {
         // Ownership of techniques is handled by the QmlEngine so we shouldn't class clearTechniques
         // which deletes techniques
-        Q_FOREACH (QAbstractTechnique *tech, eff->parentEffect()->techniques())
+        Q_FOREACH (QTechnique *tech, eff->parentEffect()->techniques())
             eff->parentEffect()->removeTechnique(tech);
     }
 }

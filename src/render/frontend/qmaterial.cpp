@@ -41,28 +41,51 @@
 
 #include "qmaterial.h"
 #include "qmaterial_p.h"
-#include <qtexture.h>
-#include <Qt3DCore/qabstracteffect.h>
+#include "qtexture.h"
+#include "qeffect.h"
 #include "renderlogging.h"
 #include "qparameter.h"
 #include <Qt3DCore/qscenepropertychange.h>
+
+/*!
+ * \class QMaterial
+ * \namespace Qt3D
+ *
+ * \inherits Component
+ *
+ * \brief Provides an abstract class that should be the base of all
+ * Material component classes in a scene.
+ *
+ * QAbstractMaterial provide a way to specify the rendering of an Entity.
+ * Any aspect can define its own subclass of QAbstractMaterial so that a
+ * Material can be used to describe a visual element, the way sound should
+ * reflect on an element, the temperature of a surface and so on.
+ *
+ * \sa QEffect, QMesh, QComponent
+ */
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
 QMaterialPrivate::QMaterialPrivate(QMaterial *qq)
-    : QAbstractMaterialPrivate(qq)
+    : QComponentPrivate(qq)
+    , m_effect(Q_NULLPTR)
 {
 }
 
 void QMaterialPrivate::copy(const QNodePrivate *ref)
 {
-    QAbstractMaterialPrivate::copy(ref);
+    QComponentPrivate::copy(ref);
+}
+
+QMaterial::QMaterial(QNode *parent)
+    : QComponent(*new QMaterialPrivate(this), parent)
+{
 }
 
 QMaterial::QMaterial(QMaterialPrivate &dd, QNode *parent)
-    : QAbstractMaterial(dd, parent)
+    : QComponent(dd, parent)
 {
 }
 
@@ -77,22 +100,52 @@ QMaterial *QMaterial::doClone() const
         mat->addParameter(qobject_cast<QParameter *>(QNodePrivate::get(p)->clone()));
 
     if (d->m_effect != Q_NULLPTR)
-        mat->setEffect(qobject_cast<QAbstractEffect *>(QNodePrivate::get(d->m_effect)->clone()));
+        mat->setEffect(qobject_cast<QEffect *>(QNodePrivate::get(d->m_effect)->clone()));
 
     return mat;
 }
 
-QMaterial::QMaterial(QNode *parent)
-    : QAbstractMaterial(*new QMaterialPrivate(this), parent)
+/*!
+ * Sets the \a effect to be used with the Material.
+ */
+void QMaterial::setEffect(QEffect *effect)
 {
+    Q_D(QMaterial);
+    if (effect != d->m_effect) {
+
+        if (d->m_effect != Q_NULLPTR && d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, this));
+            change->setPropertyName(QByteArrayLiteral("effect"));
+            change->setValue(QVariant::fromValue(d->m_effect));
+            d->notifyObservers(change);
+        }
+
+        d->m_effect = effect;
+        emit effectChanged();
+
+        // We need to add it as a child of the current node if it has been declared inline
+        // Or not previously added as a child of the current node so that
+        // 1) The backend gets notified about it's creation
+        // 2) When the current node is destroyed, it gets destroyed as well
+        if (!effect->parent())
+            effect->setParent(this);
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
+            change->setPropertyName(QByteArrayLiteral("effect"));
+            change->setValue(QVariant::fromValue(effect));
+            d->notifyObservers(change);
+        }
+    }
 }
 
-
-void QMaterial::setEffect(QAbstractEffect *effect)
+/*!
+ * Returns the effect used by the Material.
+ */
+QEffect *QMaterial::effect() const
 {
-    if (effect == QAbstractMaterial::effect())
-        return ;
-    QAbstractMaterial::setEffect(effect);
+    Q_D(const QMaterial);
+    return d->m_effect;
 }
 
 void QMaterial::addParameter(QParameter *parameter)

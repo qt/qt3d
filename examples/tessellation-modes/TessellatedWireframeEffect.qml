@@ -87,7 +87,6 @@ Effect {
 
             renderPasses: [
                 RenderPass {
-                    name: "lighting"
 
                     bindings: [
                         ParameterMapper { parameterName: "ambient";  shaderVariableName: "ka"; bindingType: ParameterMapper.Uniform },

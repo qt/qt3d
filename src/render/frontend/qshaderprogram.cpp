@@ -50,13 +50,13 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 QShaderProgramPrivate::QShaderProgramPrivate(QShaderProgram *qq)
-    : QAbstractShaderPrivate(qq)
+    : QNodePrivate(qq)
 {
 }
 
 void QShaderProgramPrivate::copy(const QNodePrivate *ref)
 {
-    QAbstractShaderPrivate::copy(ref);
+    QNodePrivate::copy(ref);
     const QShaderProgramPrivate *prog = static_cast<const QShaderProgramPrivate *>(ref);
     m_vertexSourceFile = prog->m_vertexSourceFile;
     m_tessControlSourceFile = prog->m_tessControlSourceFile;
@@ -74,12 +74,12 @@ void QShaderProgramPrivate::copy(const QNodePrivate *ref)
 }
 
 QShaderProgram::QShaderProgram(QNode *parent)
-    : QAbstractShader(*new QShaderProgramPrivate(this), parent)
+    : QNode(*new QShaderProgramPrivate(this), parent)
 {
 }
 
 QShaderProgram::QShaderProgram(QShaderProgramPrivate &dd, QNode *parent)
-    : QAbstractShader(dd, parent)
+    : QNode(dd, parent)
 {
 }
 

@@ -105,7 +105,7 @@ void RenderTechnique::setPeer(QTechnique *peer)
 
             Q_FOREACH (QParameter *p, peer->parameters())
                 m_parameterPack.appendParameter(p);
-            Q_FOREACH (QAbstractRenderPass *rPass, peer->renderPasses())
+            Q_FOREACH (QRenderPass *rPass, peer->renderPasses())
                 appendRenderPass(rPass);
             Q_FOREACH (QCriterion *criterion, peer->criteria())
                 appendCriterion(criterion);
@@ -135,7 +135,7 @@ void RenderTechnique::sceneChangeEvent(const QSceneChangePtr &e)
 
     case NodeAdded: {
         if (propertyChange->propertyName() == QByteArrayLiteral("pass")) {
-            appendRenderPass(propertyChange->value().value<QAbstractRenderPass *>());
+            appendRenderPass(propertyChange->value().value<QRenderPass *>());
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("parameter")) {
             m_parameterPack.appendParameter(propertyChange->value().value<QParameter*>());
@@ -169,9 +169,8 @@ const QHash<QString, QVariant> RenderTechnique::parameters() const
     return m_parameterPack.namedValues();
 }
 
-void RenderTechnique::appendRenderPass(QAbstractRenderPass *rPass)
+void RenderTechnique::appendRenderPass(QRenderPass *renderPass)
 {
-    QRenderPass *renderPass = qobject_cast<QRenderPass *>(rPass);
     if (!renderPass)
         return;
     if (!m_renderPasses.contains(renderPass->uuid()))

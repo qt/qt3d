@@ -52,8 +52,8 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAbstractTechnique;
-class QAbstractEffect;
+class QTechnique;
+class QEffect;
 
 template <typename T, int INDEXBITS>
 class QHandle;
@@ -74,10 +74,10 @@ public:
     ~RenderEffect();
     void cleanup();
 
-    void setPeer(QAbstractEffect *effect);
+    void setPeer(QEffect *effect);
     void setRenderer(Renderer *renderer);
     void sceneChangeEvent(const QSceneChangePtr &e);
-    void appendRenderTechnique(QAbstractTechnique *t);
+    void appendRenderTechnique(QTechnique *t);
 
     QList<QUuid> techniques() const;
     const QHash<QString, QVariant> parameters() const;

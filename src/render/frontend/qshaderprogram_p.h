@@ -42,7 +42,7 @@
 #ifndef QT3D_QSHADERPROGRAM_P_H
 #define QT3D_QSHADERPROGRAM_P_H
 
-#include <private/qabstractshader_p.h>
+#include <private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -50,7 +50,7 @@ namespace Qt3D {
 
 class QShaderProgram;
 
-class QShaderProgramPrivate : public QAbstractShaderPrivate
+class QShaderProgramPrivate : public QNodePrivate
 {
 public:
     QShaderProgramPrivate(QShaderProgram *qq);

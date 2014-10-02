@@ -48,8 +48,6 @@
 #include <Qt3DRenderer/rendereraspect.h>
 
 #include <Qt3DCore/qaspectmanager.h>
-#include <Qt3DCore/qabstracteffect.h>
-#include <Qt3DCore/qabstracttechnique.h>
 #include <Qt3DCore/qchangearbiter.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
@@ -77,7 +75,7 @@ void RenderEffect::cleanup()
         m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_effectUuid);
 }
 
-void RenderEffect::setPeer(QAbstractEffect *effect)
+void RenderEffect::setPeer(QEffect *effect)
 {
     QUuid peerUuid;
     if (effect != Q_NULLPTR)
@@ -93,12 +91,11 @@ void RenderEffect::setPeer(QAbstractEffect *effect)
         if (!m_effectUuid.isNull()) {
             arbiter->registerObserver(this, m_effectUuid, NodeAdded|NodeRemoved|ComponentUpdated);
 
-            Q_FOREACH (QAbstractTechnique *t, effect->techniques())
+            Q_FOREACH (QTechnique *t, effect->techniques())
                 appendRenderTechnique(t);
 
-            if (qobject_cast<QEffect*>(effect))
-                Q_FOREACH (QParameter *p, qobject_cast<QEffect*>(effect)->parameters())
-                    m_parameterPack.appendParameter(p);
+            Q_FOREACH (QParameter *p, effect->parameters())
+                m_parameterPack.appendParameter(p);
         }
     }
 }
@@ -117,7 +114,7 @@ void RenderEffect::sceneChangeEvent(const QSceneChangePtr &e)
 
     case NodeAdded:
         if (propertyChange->propertyName() == QByteArrayLiteral("technique")) {
-            appendRenderTechnique(propertyValue.value<QAbstractTechnique *>());
+            appendRenderTechnique(propertyValue.value<QTechnique *>());
         }
         // We don't need a RenderParameter as we store them in a QHash[QString name] = QVariant value
         else if (propertyChange->propertyName() == QByteArrayLiteral("parameter")) {
@@ -140,9 +137,8 @@ void RenderEffect::sceneChangeEvent(const QSceneChangePtr &e)
     }
 }
 
-void RenderEffect::appendRenderTechnique(QAbstractTechnique *t)
+void RenderEffect::appendRenderTechnique(QTechnique *technique)
 {
-    QTechnique *technique = qobject_cast<QTechnique *>(t);
     if (!technique)
         return ;
     if (!m_techniques.contains(technique->uuid()))

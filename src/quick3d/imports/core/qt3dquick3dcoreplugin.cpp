@@ -48,12 +48,7 @@
 #include <Qt3DCore/qmatrixtransform.h>
 #include <Qt3DCore/qtranslatetransform.h>
 #include <Qt3DCore/qrotatetransform.h>
-#include <Qt3DCore/qabstracteffect.h>
-#include <Qt3DCore/qabstractmaterial.h>
-#include <Qt3DCore/qabstracttechnique.h>
 #include <Qt3DCore/qabstractmesh.h>
-#include <Qt3DCore/qabstractrenderpass.h>
-#include <Qt3DCore/qabstractshader.h>
 #include <Qt3DQuick/quick3dentity.h>
 #include <Qt3DQuick/quick3dtransform.h>
 #include <Qt3DQuick/quick3dconfiguration.h>
@@ -64,11 +59,6 @@ void Qt3DQuick3DCorePlugin::registerTypes(const char *uri)
 {
     qmlRegisterUncreatableType<Qt3D::QComponent>(uri, 2, 0, "Component", QStringLiteral(""));
     qmlRegisterUncreatableType<Qt3D::QAbstractMesh>(uri, 2, 0, "QAbstractMesh", QStringLiteral(""));
-    qmlRegisterUncreatableType<Qt3D::QAbstractMaterial>(uri, 2, 0, "QAbstractMaterial", QStringLiteral(""));
-    qmlRegisterUncreatableType<Qt3D::QAbstractTechnique>(uri, 2, 0, "QAbstractTechnique", QStringLiteral(""));
-    qmlRegisterUncreatableType<Qt3D::QAbstractRenderPass>(uri, 2, 0, "QAbstractRenderPass", QStringLiteral(""));
-    qmlRegisterUncreatableType<Qt3D::QAbstractEffect>(uri, 2, 0, "QAbstractEffect", QStringLiteral(""));
-    qmlRegisterUncreatableType<Qt3D::QAbstractShader>(uri, 2, 0, "QAbstractShader", QStringLiteral(""));
     qmlRegisterUncreatableType<Qt3D::QAbstractTransform>(uri, 2, 0, "QAbstractTransform", QStringLiteral("QAbstractTransform is abstract"));
 
     qmlRegisterType<Qt3D::Quick::Quick3DConfiguration>(uri, 2, 0, "Configuration");

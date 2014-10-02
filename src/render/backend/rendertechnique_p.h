@@ -57,7 +57,7 @@ class QTechnique;
 class QParameter;
 class QOpenGLFilter;
 class QCriterion;
-class QAbstractRenderPass;
+class QRenderPass;
 
 namespace Render {
 
@@ -89,7 +89,7 @@ public:
     void sceneChangeEvent(const QSceneChangePtr &e);
     const QHash<QString, QVariant> parameters() const;
 
-    void appendRenderPass(QAbstractRenderPass *rPass);
+    void appendRenderPass(QRenderPass *rPass);
     void removeRenderPass(const QUuid &renderPassId);
 
     void appendCriterion(QCriterion *criterion);

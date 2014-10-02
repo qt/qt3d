@@ -126,7 +126,7 @@ void Quick3DTechnique::clearRenderPasses(QQmlListProperty<QRenderPass> *list)
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     if (technique) {
-        Q_FOREACH (QAbstractRenderPass *pass, technique->parentTechnique()->renderPasses())
+        Q_FOREACH (QRenderPass *pass, technique->parentTechnique()->renderPasses())
             technique->parentTechnique()->removePass(pass);
         emit technique->renderPassesChanged();
     }

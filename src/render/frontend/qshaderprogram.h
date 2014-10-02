@@ -43,7 +43,7 @@
 #define QT3D_QSHADERPROGRAM_H
 
 #include <QUuid>
-#include <Qt3DCore/qabstractshader.h>
+#include <Qt3DCore/qnode.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
@@ -52,7 +52,7 @@ namespace Qt3D {
 
 class QShaderProgramPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QShaderProgram : public QAbstractShader
+class QT3DRENDERERSHARED_EXPORT QShaderProgram : public QNode
 {
     Q_OBJECT
 
@@ -152,5 +152,7 @@ private:
 }
 
 QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE(Qt3D::QShaderProgram *)
 
 #endif // QT3D_QSHADERPROGRAM_H

@@ -43,8 +43,8 @@
 #define QT3D_RENDER_QUICK_QUICK3DEFFECT_H
 
 #include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
-#include <Qt3DCore/qabstracteffect.h>
 #include <QQmlListProperty>
+#include <Qt3DRenderer/qeffect.h>
 #include <Qt3DRenderer/qtechnique.h>
 
 
@@ -65,7 +65,7 @@ class QT3DQUICKRENDERERSHARED_EXPORT Quick3DEffect : public QObject
 public:
     explicit Quick3DEffect(QObject *parent = 0);
 
-    inline QAbstractEffect *parentEffect() const { return qobject_cast<QAbstractEffect*>(parent()); }
+    inline QEffect *parentEffect() const { return qobject_cast<QEffect*>(parent()); }
 
     QQmlListProperty<Qt3D::QTechnique> techniqueList();
     QQmlListProperty<Qt3D::QParameter> parameterList();

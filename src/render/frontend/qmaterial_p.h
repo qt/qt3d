@@ -42,14 +42,17 @@
 #ifndef QT3D_QMATERIAL_P_H
 #define QT3D_QMATERIAL_P_H
 
-#include <private/qabstractmaterial_p.h>
+#include <private/qcomponent_p.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DRENDERERSHARED_EXPORT QMaterialPrivate : public QAbstractMaterialPrivate
+class QParameter;
+class QEffect;
+
+class QT3DRENDERERSHARED_EXPORT QMaterialPrivate : public QComponentPrivate
 {
 public:
     QMaterialPrivate(QMaterial *qq);
@@ -59,6 +62,7 @@ public:
     Q_DECLARE_PUBLIC(QMaterial)
     QList<QParameter *> m_parameters;
     TextureDict m_textures;
+    QEffect *m_effect;
 };
 
 } // Qt3D

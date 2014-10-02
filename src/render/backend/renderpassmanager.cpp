@@ -40,7 +40,6 @@
 ****************************************************************************/
 
 #include "renderpassmanager_p.h"
-#include <Qt3DCore/qabstractrenderpass.h>
 
 QT_BEGIN_NAMESPACE
 

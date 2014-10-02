@@ -85,7 +85,6 @@ Effect {
 
             renderPasses: [
                 RenderPass {
-                    name: "lighting"
 
                     // The bindings property allows us to map from names of parameters (uniforms or vertex attributes)
                     // within a shader to more friendly names in QML. By default the parameter names are exposed from

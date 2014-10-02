@@ -61,6 +61,7 @@
 #include <Qt3DRenderer/qrendertarget.h>
 #include <Qt3DRenderer/qclearbuffer.h>
 #include <Qt3DRenderer/qtexture.h>
+#include <Qt3DRenderer/qeffect.h>
 
 #include <Qt3DRenderer/private/cameramanager_p.h>
 #include <Qt3DRenderer/private/cameraselectornode_p.h>
@@ -224,15 +225,15 @@ void RenderSceneBuilder::createRenderElement(QNode *frontend)
         createRenderElementHelper<QTechnique, RenderTechnique, TechniqueManager>(frontend,
                                                                                  m_renderer->techniqueManager());
     }
-    else if (qobject_cast<QAbstractEffect *>(frontend)) {
-        createRenderElementHelper<QAbstractEffect, RenderEffect, EffectManager>(frontend,
+    else if (qobject_cast<QEffect *>(frontend)) {
+        createRenderElementHelper<QEffect, RenderEffect, EffectManager>(frontend,
                                                                                 m_renderer->effectManager());
     }
     else if (qobject_cast<QRenderPass *>(frontend)) {
         createRenderElementHelper<QRenderPass, RenderRenderPass, RenderPassManager>(frontend,
                                                                                     m_renderer->renderPassManager());
     }
-    else if (qobject_cast<QAbstractShader *>(frontend)) {
+    else if (qobject_cast<QShaderProgram *>(frontend)) {
         createRenderElementHelper<QShaderProgram, RenderShader, ShaderManager>(frontend,
                                                                                m_renderer->shaderManager());
     }
@@ -289,15 +290,15 @@ void RenderSceneBuilder::releaseRenderElement(QNode *frontend)
         m_renderer->materialManager()->releaseResource(frontend->uuid());
     else if (qobject_cast<QTechnique *>(frontend))
         m_renderer->techniqueManager()->releaseResource(frontend->uuid());
-    else if (qobject_cast<QAbstractEffect *>(frontend))
+    else if (qobject_cast<QEffect *>(frontend))
         m_renderer->effectManager()->releaseResource(frontend->uuid());
-    else if (qobject_cast<QAbstractRenderPass *>(frontend))
+    else if (qobject_cast<QRenderPass *>(frontend))
         m_renderer->renderPassManager()->releaseResource(frontend->uuid());
     else if (qobject_cast<QCriterion *>(frontend))
         m_renderer->criterionManager()->releaseResource(frontend->uuid());
     else if (qobject_cast<QFrameGraphItem *>(frontend))
         m_renderer->frameGraphManager()->releaseResource(frontend->uuid());
-    else if (qobject_cast<QAbstractShader *>(frontend))
+    else if (qobject_cast<QShaderProgram *>(frontend))
         m_renderer->shaderManager()->releaseResource(frontend->uuid());
     else if (qobject_cast<QRenderTarget *>(frontend))
         m_renderer->renderTargetManager()->releaseResource(frontend->uuid());

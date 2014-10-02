@@ -43,7 +43,6 @@
 #ifndef QT3D_QRENDERPASS_H
 #define QT3D_QRENDERPASS_H
 
-#include <Qt3DCore/qabstractrenderpass.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 #include <Qt3DRenderer/qshaderprogram.h>
@@ -64,9 +63,10 @@ typedef QList<QParameter*> ParameterList;
 
 class QRenderPassPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QRenderPass : public QAbstractRenderPass
+class QT3DRENDERERSHARED_EXPORT QRenderPass : public QNode
 {
     Q_OBJECT
+    Q_PROPERTY(Qt3D::QShaderProgram * shaderProgram READ shaderProgram WRITE setShaderProgram NOTIFY shaderProgramChanged)
 
 public:
     explicit QRenderPass(QNode *parent = 0);
@@ -79,6 +79,9 @@ public:
 
     ParameterList attributes() const;
     ParameterList uniforms() const;
+
+    void setShaderProgram(QShaderProgram *shaderProgram);
+    QShaderProgram *shaderProgram() const;
 
     void addCriterion(QCriterion *criterion);
     void removeCriterion(QCriterion *criterion);
@@ -93,6 +96,9 @@ public:
     void removeRenderState(QRenderState *state);
     QList<QRenderState *> renderStates() const;
 
+Q_SIGNALS:
+    void shaderProgramChanged();
+
 protected:
     QRenderPass(QRenderPassPrivate &dd, QNode *parent = 0);
 
@@ -104,5 +110,7 @@ private:
 }
 
 QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE(Qt3D::QRenderPass *)
 
 #endif // QT3D_QRENDERPASS_H

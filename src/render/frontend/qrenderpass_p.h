@@ -43,7 +43,7 @@
 #ifndef QT3D_QRENDERPASS_P_H
 #define QT3D_QRENDERPASS_P_H
 
-#include <private/qabstractrenderpass_p.h>
+#include <private/qnode_p.h>
 #include <Qt3DRenderer/qrenderpass.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
@@ -62,7 +62,7 @@ namespace Render
 class RenderStateSet;
 }
 
-class QT3DRENDERERSHARED_EXPORT QRenderPassPrivate : public QAbstractRenderPassPrivate
+class QT3DRENDERERSHARED_EXPORT QRenderPassPrivate : public QNodePrivate
 {
 public:
     QRenderPassPrivate(QRenderPass *qq);
@@ -76,6 +76,7 @@ public:
     QList<QCriterion *> m_criteriaList;
     QList<QParameterMapper *> m_bindings;
     QList<QRenderState *> m_renderStates;
+    QShaderProgram *m_shader;
 };
 
 } // Qt3D

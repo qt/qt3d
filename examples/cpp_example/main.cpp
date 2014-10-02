@@ -52,7 +52,7 @@
 #include <Qt3DRenderer/qmesh.h>
 #include <Qt3DRenderer/qtechnique.h>
 #include <Qt3DRenderer/qmaterial.h>
-#include <Qt3DCore/qabstracteffect.h>
+#include <Qt3DRenderer/qeffect.h>
 #include <Qt3DRenderer/qtexture.h>
 #include <Qt3DRenderer/qrenderpass.h>
 #include <Qt3DRenderer/qsceneloader.h>

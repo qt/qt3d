@@ -42,7 +42,7 @@
 #ifndef QT3D_QTECHNIQUE_P_H
 #define QT3D_QTECHNIQUE_P_H
 
-#include <private/qabstracttechnique_p.h>
+#include <private/qnode_p.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
@@ -52,9 +52,10 @@ namespace Qt3D {
 class QTechnique;
 class QCriterion;
 class QParameter;
+class QRenderPass;
 class QOpenGLFilter;
 
-class QT3DRENDERERSHARED_EXPORT QTechniquePrivate : public QAbstractTechniquePrivate
+class QT3DRENDERERSHARED_EXPORT QTechniquePrivate : public QNodePrivate
 {
 public:
     QTechniquePrivate(QTechnique *dd);
@@ -65,6 +66,7 @@ public:
     Q_DECLARE_PUBLIC(QTechnique)
     QList<QCriterion *> m_criteriaList;
     QList<QParameter *> m_parameters;
+    QList<QRenderPass*> m_renderPasses;
     QOpenGLFilter *m_openGLFilter;
 };
 

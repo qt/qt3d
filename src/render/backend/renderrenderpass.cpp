@@ -51,8 +51,6 @@
 #include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/qchangearbiter.h>
 #include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DCore/qabstractshader.h>
-
 
 QT_BEGIN_NAMESPACE
 

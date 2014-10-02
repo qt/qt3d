@@ -45,9 +45,6 @@
 #include <QVariant>
 
 #include <Qt3DCore/qcomponent.h>
-#include <Qt3DCore/qabstracteffect.h>
-#include <Qt3DCore/qabstractmaterial.h>
-
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
@@ -57,16 +54,19 @@ namespace Qt3D {
 class QTexture;
 class QParameter;
 class QMaterialPrivate;
+class QEffect;
 typedef QMap<QString, QTexture*> TextureDict;
 
-class QT3DRENDERERSHARED_EXPORT QMaterial : public QAbstractMaterial
+class QT3DRENDERERSHARED_EXPORT QMaterial : public QComponent
 {
     Q_OBJECT
+    Q_PROPERTY(Qt3D::QEffect* effect READ effect WRITE setEffect NOTIFY effectChanged)
 
 public:
     explicit QMaterial(QNode *parent = 0);
 
-    void setEffect(QAbstractEffect *effect) Q_DECL_OVERRIDE;
+    void setEffect(QEffect *effect);
+    QEffect *effect() const;
 
     void addParameter(QParameter *parameter);
     void removeParameter(QParameter *parameter);
@@ -75,6 +75,9 @@ public:
     TextureDict textureValues() const;
 
     void setTextureParameter(QString name, QTexture* tex);
+
+Q_SIGNALS:
+    void effectChanged();
 
 protected:
     QMaterial(QMaterialPrivate &dd, QNode *parent = 0);

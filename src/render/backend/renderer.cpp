@@ -56,6 +56,7 @@
 #include <Qt3DRenderer/qtechnique.h>
 #include <Qt3DRenderer/rendereraspect.h>
 #include <Qt3DRenderer/renderlogging.h>
+#include <Qt3DRenderer/qeffect.h>
 
 #include <Qt3DRenderer/private/blendstate_p.h>
 #include <Qt3DRenderer/private/cameramanager_p.h>
@@ -102,10 +103,8 @@
 #include <Qt3DRenderer/private/abstractsceneparser_p.h>
 
 #include <Qt3DCore/qcameralens.h>
-#include <Qt3DCore/qabstracteffect.h>
 #include <Qt3DCore/qaspectmanager.h>
 
-#include <qeffect.h>
 #include <QStack>
 #include <QSurface>
 #include <QElapsedTimer>

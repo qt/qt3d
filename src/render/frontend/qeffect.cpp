@@ -51,21 +51,21 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 QEffectPrivate::QEffectPrivate(QEffect *qq)
-    : QAbstractEffectPrivate(qq)
+    : QNodePrivate(qq)
 {}
 
 QEffect::QEffect(QNode *parent)
-    : QAbstractEffect(*new QEffectPrivate(this), parent)
+    : QNode(*new QEffectPrivate(this), parent)
 {
 }
 
 void QEffectPrivate::copy(const QNodePrivate *ref)
 {
-    QAbstractEffectPrivate::copy(ref);
+    QNodePrivate::copy(ref);
 }
 
 QEffect::QEffect(QEffectPrivate &dd, QNode *parent)
-    : QAbstractEffect(dd, parent)
+    : QNode(dd, parent)
 {
 }
 
@@ -79,8 +79,8 @@ QEffect *QEffect::doClone() const
     Q_FOREACH (QParameter *p, d->m_parameters)
         effect->addParameter(qobject_cast<QParameter *>(QNodePrivate::get(p)->clone()));
 
-    Q_FOREACH (QAbstractTechnique *t, d->m_techniques)
-        effect->addTechnique(qobject_cast<QAbstractTechnique *>(QNodePrivate::get(t)->clone()));
+    Q_FOREACH (QTechnique *t, d->m_techniques)
+        effect->addTechnique(qobject_cast<QTechnique *>(QNodePrivate::get(t)->clone()));
 
     return effect;
 }
@@ -125,6 +125,61 @@ QList<QParameter *> QEffect::parameters() const
     Q_D(const QEffect);
     return d->m_parameters;
 }
+
+/*!
+ * Adds a new technique \a t to the effect. This posts a CommponentAdded
+ * QScenePropertyChange notification to the QChangeArbiter, the value is
+ * the added technique and the property name is "technique".
+ */
+void QEffect::addTechnique(QTechnique *t)
+{
+    Q_ASSERT(t);
+    Q_D(QEffect);
+    if (!d->m_techniques.contains(t)) {
+        d->m_techniques.append(t);
+
+        // We need to add it as a child of the current node if it has been declared inline
+        // Or not previously added as a child of the current node so that
+        // 1) The backend gets notified about it's creation
+        // 2) When the current node is destroyed, tit gets destroyed as well
+        if (!t->parent())
+            t->setParent(this);
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr e(new QScenePropertyChange(NodeAdded, this));
+            e->setPropertyName(QByteArrayLiteral("technique"));
+            e->setValue(QVariant::fromValue(t));
+            d->notifyObservers(e);
+        }
+    }
+}
+
+/*!
+ * Removes a technique \t from the effect. This posts a ComponentRemoved
+ * QScenePropertyChange notification to the QChangeArbiter, the value is
+ * the removed technique's uuid and the property name is "technique".
+ */
+void QEffect::removeTechnique(QTechnique *t)
+{
+    Q_D(QEffect);
+    if (d->m_changeArbiter != Q_NULLPTR) {
+        QScenePropertyChangePtr e(new QScenePropertyChange(NodeRemoved, this));
+        e->setPropertyName(QByteArrayLiteral("technique"));
+        e->setValue(QVariant::fromValue(t->uuid()));
+        d->notifyObservers(e);
+    }
+    d->m_techniques.removeOne(t);
+}
+
+/*!
+ * Returns the list of techniques used by the effect.
+ */
+QList<QTechnique *> QEffect::techniques() const
+{
+    Q_D(const QEffect);
+    return d->m_techniques;
+}
+
 
 } // Qt3D
 

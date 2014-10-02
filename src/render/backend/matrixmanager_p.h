@@ -45,7 +45,6 @@
 #include <QMatrix4x4>
 #include <QUuid>
 #include <Qt3DCore/qresourcesmanager.h>
-#include <Qt3DCore/qabstractrenderpass.h>
 #include <Qt3DCore/qhandle.h>
 
 QT_BEGIN_NAMESPACE

@@ -40,20 +40,20 @@
 ****************************************************************************/
 
 #include "rendermaterial_p.h"
-#include <Qt3DRenderer/rendereraspect.h>
-#include <Qt3DRenderer/private/qgraphicscontext_p.h>
-#include <Qt3DRenderer/private/rendertechnique_p.h>
-#include <Qt3DRenderer/private/rendertextureprovider_p.h>
-#include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DRenderer/private/effectmanager_p.h>
-#include <Qt3DRenderer/private/rendereffect_p.h>
-#include <qparameter.h>
-#include <qtechnique.h>
-#include <qmaterial.h>
-#include <Qt3DCore/qabstracteffect.h>
+#include "rendereraspect.h"
+#include "qgraphicscontext_p.h"
+#include "rendertechnique_p.h"
+#include "rendertextureprovider_p.h"
+#include "renderer_p.h"
+#include "effectmanager_p.h"
+#include "rendereffect_p.h"
+#include "qparameter.h"
+#include "qtechnique.h"
+#include "qmaterial.h"
+#include "qeffect.h"
+
 #include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/qscenepropertychange.h>
-
 #include <QOpenGLShaderProgram>
 
 QT_BEGIN_NAMESPACE
@@ -146,7 +146,7 @@ void RenderMaterial::sceneChangeEvent(const QSceneChangePtr &e)
             m_parameterPack.appendParameter(param);
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("effect")) {
-            Qt3D::QAbstractEffect *eff = propertyChange->value().value<Qt3D::QAbstractEffect *>();
+            QEffect *eff = propertyChange->value().value<QEffect *>();
             m_effectUuid = QUuid();
             if (eff != Q_NULLPTR)
                 m_effectUuid = eff->uuid();

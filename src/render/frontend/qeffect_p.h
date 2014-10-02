@@ -42,7 +42,7 @@
 #ifndef QT3D_QEFFECT_P_H
 #define QT3D_QEFFECT_P_H
 
-#include <private/qabstracteffect_p.h>
+#include <private/qnode_p.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
@@ -51,8 +51,9 @@ namespace Qt3D {
 
 class QEffect;
 class QParameter;
+class QTechnique;
 
-class QT3DRENDERERSHARED_EXPORT QEffectPrivate : public QAbstractEffectPrivate
+class QT3DRENDERERSHARED_EXPORT QEffectPrivate : public QNodePrivate
 {
 public :
     QEffectPrivate(QEffect *qq);
@@ -61,6 +62,7 @@ public :
 
     Q_DECLARE_PUBLIC(QEffect)
     QList<QParameter *> m_parameters;
+    QList<QTechnique *> m_techniques;
 };
 
 } // Qt3D
