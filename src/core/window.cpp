@@ -71,6 +71,7 @@ Window::Window(QScreen *screen)
     QSurfaceFormat format;
     format.setVersion(4, 3);
     format.setDepthBufferSize( 24 );
+    format.setSamples( 4 );
     format.setProfile(QSurfaceFormat::CoreProfile);
     setFormat(format);
 
