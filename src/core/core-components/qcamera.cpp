@@ -249,8 +249,8 @@ void QCamera::rotateAboutViewCenter( const QQuaternion& q )
         return ;
     lookAt->setUpVector(q.rotatedVector(lookAt->upVector()));
     QVector3D cameraToCenter = q.rotatedVector(lookAt->viewVector());
-    lookAt->setViewVector(cameraToCenter);
     lookAt->setPosition(lookAt->viewCenter() - cameraToCenter);
+    lookAt->setViewCenter(lookAt->position() + cameraToCenter);
 }
 
 } // Qt3D

@@ -157,6 +157,7 @@ void QLookAtTransform::setViewVector(const QVector3D &viewVector)
         d->m_viewVector = viewVector;
         // modify the view center, not the position
         d->m_viewCenter = d->m_position + viewVector;
+        d->m_matrixDirty = true;
         emit viewVectorChanged();
         emit viewCenterChanged();
         emit transformMatrixChanged();
