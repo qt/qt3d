@@ -67,6 +67,7 @@ public :
         , m_magFilter(QTexture::Nearest)
         , m_wrapMode(QTexture::ClampToEdge)
         , m_status(QTexture::Loading)
+        , m_maximumAnisotropy(1.0f)
     {}
 
     void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
@@ -84,6 +85,7 @@ public :
     // FIXME, store per direction
     QTexture::WrapMode m_wrapMode;
     QTexture::Status m_status;
+    float m_maximumAnisotropy;
 };
 
 void QTexturePrivate::copy(const QNodePrivate *ref)
@@ -374,6 +376,22 @@ QTexture::WrapMode QTexture::wrapMode() const
 {
     Q_D(const QTexture);
     return d->m_wrapMode;
+}
+
+void QTexture::setMaximumAnisotropy(float anisotropy)
+{
+    Q_D(QTexture);
+    if (!qFuzzyCompare(d->m_maximumAnisotropy, anisotropy)) {
+        d->m_maximumAnisotropy = anisotropy;
+        emit maximumAnisotropyChanged();
+        d->notifyPropertyChange(QByteArrayLiteral("maximumAnisotropy"), anisotropy);
+    }
+}
+
+float QTexture::maximumAnisotropy() const
+{
+    Q_D(const QTexture);
+    return d->m_maximumAnisotropy;
 }
 
 } // namespace Qt3D

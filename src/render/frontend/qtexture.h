@@ -71,6 +71,7 @@ class QT3DRENDERERSHARED_EXPORT QTexture : public QNode
     Q_PROPERTY(int depth READ depth WRITE setDepth NOTIFY depthChanged)
     Q_PROPERTY(Filter magnificationFilter READ magnificationFilter WRITE setMagnificationFilter NOTIFY magnificationFilterChanged)
     Q_PROPERTY(Filter minificationFilter READ minificationFilter WRITE setMinificationFilter NOTIFY minificationFilterChanged)
+    Q_PROPERTY(float maximumAnisotropy READ maximumAnisotropy WRITE setMaximumAnisotropy NOTIFY maximumAnisotropyChanged)
 
 public:
     explicit QTexture(QNode *parent = 0);
@@ -262,6 +263,9 @@ public:
     void setWrapMode(WrapMode wrapMode);
     WrapMode wrapMode() const;
 
+    void setMaximumAnisotropy(float anisotropy);
+    float maximumAnisotropy() const;
+
     void setSize(int width, int height=1, int depth=1);
 
     void setWidth(int width);
@@ -283,6 +287,7 @@ Q_SIGNALS:
     void depthChanged();
     void magnificationFilterChanged();
     void minificationFilterChanged();
+    void maximumAnisotropyChanged();
 
 protected:
     QTexture(QTexturePrivate &dd, QNode *parent = 0);

@@ -98,6 +98,7 @@ private:
     QTexture::Filter m_magnificationFilter;
     QTexture::Filter m_minificationFilter;
     QTexture::WrapMode m_wrapMode;
+    float m_maximumAnisotropy;
     QList<TexImageDataPtr> m_imageData;
     bool m_isDirty;
     bool m_filtersAndWrapUpdated;

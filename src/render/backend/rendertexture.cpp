@@ -70,6 +70,7 @@ RenderTexture::RenderTexture()
     , m_magnificationFilter(QTexture::Nearest)
     , m_minificationFilter(QTexture::Nearest)
     , m_wrapMode(QTexture::ClampToEdge)
+    , m_maximumAnisotropy(1.0f)
     , m_isDirty(false)
     , m_filtersAndWrapUpdated(false)
     , m_lock(new QMutex())
@@ -114,6 +115,7 @@ void RenderTexture::setPeer(QTexture *peer)
             m_magnificationFilter = peer->magnificationFilter();
             m_minificationFilter = peer->minificationFilter();
             m_wrapMode = peer->wrapMode();
+            m_maximumAnisotropy = peer->maximumAnisotropy();
             // See where it is best to handle source and loading
             Q_FOREACH (TexImageDataPtr imgData, peer->imageData())
                 m_imageData.append(imgData);
@@ -242,7 +244,7 @@ void RenderTexture::updateWrapAndFilters()
     m_gl->setWrapMode(static_cast<QOpenGLTexture::WrapMode>(m_wrapMode));
     m_gl->setMinMagFilters(static_cast<QOpenGLTexture::Filter>(m_minificationFilter),
                            static_cast<QOpenGLTexture::Filter>(m_magnificationFilter));
-
+    m_gl->setMaximumAnisotropy(m_maximumAnisotropy);
 }
 
 
@@ -311,6 +313,10 @@ void RenderTexture::sceneChangeEvent(const QSceneChangePtr &e)
             QTexture::Target oldTarget = m_target;
             m_target = static_cast<QTexture::Target>(propertyChange->value().toInt());
             m_isDirty = (oldTarget != m_target);
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("maximumAnisotropy")) {
+            float oldMaximumAnisotropy = m_maximumAnisotropy;
+            m_maximumAnisotropy = propertyChange->value().toFloat();
+            m_filtersAndWrapUpdated = !qFuzzyCompare(oldMaximumAnisotropy, m_maximumAnisotropy);
         }
     }
 }
