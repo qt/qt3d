@@ -73,8 +73,8 @@ FrameGraph {
                             texture: Texture {
                                 id: depthTexture
                                 target: Texture.Target2D
-                                width: _window.width
-                                height: _window.height
+                                width: 1024
+                                height: 1024
                                 format: Texture.D32
                                 generateMipMaps: false
                                 magnificationFilter: Texture.Nearest
