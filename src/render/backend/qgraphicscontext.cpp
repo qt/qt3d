@@ -185,6 +185,7 @@ void QGraphicsContext::endDrawing()
 void QGraphicsContext::setViewport(const QRectF &viewport)
 {
     m_viewport = viewport;
+    QSize renderTargetSize = (m_activeFBO != 0) ? m_renderTargetsSize.value(m_activeFBO) : m_surface->size();
     // Qt3D 0------------------> 1  OpenGL  1^
     //      |                                |
     //      |                                |
@@ -193,10 +194,10 @@ void QGraphicsContext::setViewport(const QRectF &viewport)
     //      1                                0---------------------> 1
     // The Viewport is defined between 0 and 1 which allows us to automatically
     // scale to the size of the provided window surface
-    m_gl->functions()->glViewport(m_viewport.x() * m_surface->size().width(),
-                                  (1.0 - m_viewport.y() - m_viewport.height()) * m_surface->size().height(),
-                                  m_viewport.width()* m_surface->size().width(),
-                                  m_viewport.height() * m_surface->size().height());
+    m_gl->functions()->glViewport(m_viewport.x() * renderTargetSize.width(),
+                                  (1.0 - m_viewport.y() - m_viewport.height()) * renderTargetSize.height(),
+                                  m_viewport.width() * renderTargetSize.width(),
+                                  m_viewport.height() * renderTargetSize.height());
 }
 
 void QGraphicsContext::releaseOpenGL()
@@ -252,7 +253,7 @@ void QGraphicsContext::activateShader(RenderShader *shader)
 
 void QGraphicsContext::activateRenderTarget(RenderTarget *renderTarget, const AttachmentPack &attachments)
 {
-    GLuint fboId = 0;
+    GLuint fboId = 0; // Default FBO
     if (renderTarget != Q_NULLPTR) {
         // New RenderTarget
         if (!m_renderTargets.contains(renderTarget->renderTargetUuid())) {
@@ -262,7 +263,7 @@ void QGraphicsContext::activateRenderTarget(RenderTarget *renderTarget, const At
                 m_renderTargets.insert(renderTarget->renderTargetUuid(), fboId);
                 // Bind FBO
                 m_glHelper->bindFrameBufferObject(fboId);
-                bindFrameBufferAttachmentHelper(attachments);
+                bindFrameBufferAttachmentHelper(fboId, attachments);
             } else {
                 qCritical() << "Failed to create FBO";
             }
@@ -278,25 +279,33 @@ void QGraphicsContext::activateRenderTarget(RenderTarget *renderTarget, const At
             }
             if (needsResize) {
                 m_glHelper->bindFrameBufferObject(fboId);
-                bindFrameBufferAttachmentHelper(attachments);
+                bindFrameBufferAttachmentHelper(fboId, attachments);
             }
         }
     }
-    m_glHelper->bindFrameBufferObject(fboId);
+    m_activeFBO = fboId;
+    m_glHelper->bindFrameBufferObject(m_activeFBO);
 }
 
-void QGraphicsContext::bindFrameBufferAttachmentHelper(const AttachmentPack &attachments)
+void QGraphicsContext::bindFrameBufferAttachmentHelper(GLuint fboId, const AttachmentPack &attachments)
 {
     // Set FBO attachments
     int drawBuffers[QRenderAttachment::ColorAttachment15 + 1];
     int i = 0;
+    QSize fboSize;
     Q_FOREACH (const Attachment &attachment, attachments.attachments()) {
         RenderTexture *rTex = m_renderer->textureManager()->lookupResource(attachment.m_textureUuid);
         if (rTex != Q_NULLPTR) {
             QOpenGLTexture *glTex = rTex->getOrCreateGLTexture();
-            m_glHelper->bindFrameBufferAttachment(glTex, attachment);
-            if (attachment.m_type <= QRenderAttachment::ColorAttachment15)
-                drawBuffers[i++] = attachment.m_type;
+            if (glTex != Q_NULLPTR) {
+                if (fboSize.isEmpty())
+                    fboSize = QSize(glTex->width(), glTex->height());
+                else
+                    fboSize = QSize(qMin(fboSize.width(), glTex->width()), qMin(fboSize.width(), glTex->width()));
+                m_glHelper->bindFrameBufferAttachment(glTex, attachment);
+                if (attachment.m_type <= QRenderAttachment::ColorAttachment15)
+                    drawBuffers[i++] = attachment.m_type;
+            }
         }
     }
     if (m_glHelper->checkFrameBufferComplete()) {
@@ -310,6 +319,7 @@ void QGraphicsContext::bindFrameBufferAttachmentHelper(const AttachmentPack &att
     } else {
         qWarning() << "FBO incomplete";
     }
+    m_renderTargetsSize.insert(fboId, fboSize);
 }
 
 

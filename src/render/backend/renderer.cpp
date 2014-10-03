@@ -474,15 +474,14 @@ void Renderer::submitRenderViews()
         m_graphicsContext->beginDrawing(renderViews.first()->clearColor());
         qCDebug(Memory) << Q_FUNC_INFO << "rendering frame " << renderViews.last()->frameIndex() << " Queue " << m_renderQueues->queuedFrames();
         for (int i = 0; i < renderViewsCount; i++) {
-            // Set the Viewport
-            m_graphicsContext->setViewport(renderViews[i]->viewport());
             // Set RenderTarget ...
             // Activate RenderTarget
             m_graphicsContext->activateRenderTarget(m_renderTargetManager->data(renderViews[i]->renderTarget()),
                                                     renderViews[i]->attachmentPack());
-
             // Clear BackBuffer
             m_graphicsContext->clearBackBuffer(renderViews[i]->clearBuffer());
+            // Set the Viewport
+            m_graphicsContext->setViewport(renderViews[i]->viewport());
 
             // Initialize QGraphicsContext for drawing
             executeCommands(renderViews.at(i)->commands());

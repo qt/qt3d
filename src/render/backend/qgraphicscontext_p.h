@@ -189,30 +189,32 @@ private:
 
     void resolveHighestOpenGLFunctions();
 
-    void bindFrameBufferAttachmentHelper(const AttachmentPack &attachments);
+    void bindFrameBufferAttachmentHelper(GLuint fboId, const AttachmentPack &attachments);
 
     bool m_initialized;
     const unsigned int m_id;
-    QOpenGLContext* m_gl;
-    QSurface* m_surface;
-    QGraphicsHelperInterface* m_glHelper;
+    QOpenGLContext *m_gl;
+    QSurface *m_surface;
+    QGraphicsHelperInterface *m_glHelper;
 
-    RenderShader* m_activeShader;
-    QHash<RenderShader*, QOpenGLShaderProgram*> m_shaderHash;
+    RenderShader *m_activeShader;
+    QHash<RenderShader *, QOpenGLShaderProgram *> m_shaderHash;
     QHash<BufferPtr, QOpenGLBuffer> m_bufferHash;
     QHash<QUuid, GLuint> m_renderTargets;
+    QHash<GLuint, QSize> m_renderTargetsSize;
 
     // active textures, indexed by texture unit
-    QVector<RenderTexture*> m_activeTextures;
+    QVector<RenderTexture *> m_activeTextures;
     QBitArray m_pinnedTextureUnits;
     QVector<TextureScope> m_textureScopes;
 
     // recency score for all render-textures we've seen. Higher scores
     // mean more recently used.
-    QHash<RenderTexture*, int> m_textureScores;
+    QHash<RenderTexture *, int> m_textureScores;
 
     RenderMaterial* m_material;
     QRectF m_viewport;
+    GLuint m_activeFBO;
 
     RenderStateSet* m_stateSet;
 
