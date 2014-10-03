@@ -169,9 +169,6 @@ QOpenGLTexture *RenderTexture::getOrCreateGLTexture()
         setToGLTexture(imgData);
     } // of image data in texture iteration
 
-    if (m_generateMipMaps) {
-        m_gl->generateMipMaps();
-    }
     // Filters and WrapMode are set
     updateWrapAndFilters();
     m_filtersAndWrapUpdated = false;
@@ -192,6 +189,9 @@ QOpenGLTexture *RenderTexture::buildGLTexture()
     QOpenGLTexture* glTex = new QOpenGLTexture(static_cast<QOpenGLTexture::Target>(m_target));
     glTex->setFormat(static_cast<QOpenGLTexture::TextureFormat>(m_format));
     glTex->setSize(m_width, m_height, m_depth);
+
+    if (m_generateMipMaps)
+        glTex->setMipLevels(glTex->maximumMipLevels());
 
     if (!glTex->create()) {
         qWarning() << Q_FUNC_INFO << "creating QOpenGLTexture failed";
