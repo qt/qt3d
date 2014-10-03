@@ -78,7 +78,7 @@ int main(int argc, char* argv[])
 
 
     // Camera
-    Qt3D::QCamera *cameraEntity = new Qt3D::QCamera();
+    Qt3D::QCamera *cameraEntity = new Qt3D::QCamera(rootEntity);
     Qt3D::QCameraLens *cameraLens = new Qt3D::QCameraLens();
     Qt3D::QTransform *cameraTransform = new Qt3D::QTransform();
     Qt3D::QLookAtTransform *cameraLookAtTransform = new Qt3D::QLookAtTransform();
@@ -101,22 +101,22 @@ int main(int argc, char* argv[])
 
     viewport->setRect(QRectF(0, 0, 1, 1));
     viewport->setClearColor(QColor::fromRgbF(0.0, 0.5, 1.0, 1.0));
-    viewport->addChild(cameraSelector);
+    cameraSelector->setParent(viewport);
     cameraSelector->setCamera(cameraEntity);
-    cameraSelector->addChild(clearBuffer);
+    clearBuffer->setParent(cameraSelector);
     clearBuffer->setBuffers(Qt3D::QClearBuffer::ColorDepthBuffer);
 
     frameGraph->setActiveFrameGraph(viewport);
 
 
     // Material
-    Qt3D::QMaterial *materialEntity = new Qt3D::QMaterial;
+    Qt3D::QMaterial *material = new Qt3D::QMaterial(rootEntity);
     Qt3D::QEffect *effect = new Qt3D::QEffect;
-    materialEntity->setEffect(effect);
+    material->setEffect(effect);
 
 
     // Torus
-    Qt3D::QEntity *torusEntity = new Qt3D::QEntity;
+    Qt3D::QEntity *torusEntity = new Qt3D::QEntity(rootEntity);
     Qt3D::QTorusMesh *torusMesh = new Qt3D::QTorusMesh;
     torusMesh->setRadius(5);
     torusMesh->setMinorRadius(1);
@@ -137,11 +137,11 @@ int main(int argc, char* argv[])
 
     torusEntity->addComponent(torusMesh);
     torusEntity->addComponent(torusTransform);
-    torusEntity->addComponent(materialEntity);
+    torusEntity->addComponent(material);
 
 
     // Sphere
-    Qt3D::QEntity *sphereEntity = new Qt3D::QEntity;
+    Qt3D::QEntity *sphereEntity = new Qt3D::QEntity(rootEntity);
     Qt3D::QSphereMesh *sphereMesh = new Qt3D::QSphereMesh;
     sphereMesh->setRadius(3);
 
@@ -167,16 +167,7 @@ int main(int argc, char* argv[])
 
     sphereEntity->addComponent(sphereMesh);
     sphereEntity->addComponent(sphereTransform);
-    sphereEntity->addComponent(materialEntity);
-
-
-    // Put everything into the scene
-    rootEntity->addChild(cameraEntity);
-    rootEntity->addChild(frameGraph);
-    rootEntity->addChild(materialEntity);
-    rootEntity->addChild(cameraEntity);
-    rootEntity->addChild(torusEntity);
-    rootEntity->addChild(sphereEntity);
+    sphereEntity->addComponent(material);
 
     rootEntity->addComponent(frameGraph);
 
