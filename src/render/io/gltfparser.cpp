@@ -963,6 +963,8 @@ GLTFParser::BufferData::BufferData(QJsonObject json)
 
 QVariant GLTFParser::parameterValueFromJSON(QParameter* p, QJsonValue val)
 {
+    Q_UNUSED(p);
+    Q_UNUSED(val);
 //    switch (p->datatype()) {
 //    case QParameter::Bool:
 //        return val.toBool();
