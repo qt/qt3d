@@ -134,6 +134,7 @@ QAbstractMeshDataPtr MeshFunctor::operator()()
     // TO DO : Maybe use Assimp instead of ObjLoader to handle more sources
     ObjLoader loader;
     loader.setLoadTextureCoordinatesEnabled(true);
+    loader.setTangentGenerationEnabled(true);
     qCDebug(Render::Jobs) << Q_FUNC_INFO << "Loading mesh from" << m_sourcePath;
 
     if (loader.load(m_sourcePath))
