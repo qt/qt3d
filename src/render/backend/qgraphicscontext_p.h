@@ -135,7 +135,7 @@ public:
 
     void specifyIndices(AttributePtr attr);
 
-    void setUniforms(const QUniformPack &uniforms);
+    void setUniforms(QUniformPack &uniforms);
 
     /**
      * @brief glBufferFor - given a client-side (CPU) buffer, provide the

@@ -615,23 +615,26 @@ void QGraphicsContext::setRenderer(Renderer *renderer)
 
 // It will be easier if the QGraphicContext applies the QUniformPack
 // than the other way around
-void QGraphicsContext::setUniforms(const QUniformPack &uniforms)
+void QGraphicsContext::setUniforms(QUniformPack &uniforms)
 {
     // Activate textures and update TextureUniform in the pack
     // with the correct textureUnit
     deactivateTexturesWithScope(TextureScopeMaterial);
 
-    QHash<QString, const QUniformValue *> uniformValues = uniforms.uniforms();
-    Q_FOREACH (const QUniformPack::NamedTexture &namedTex, uniforms.textures()) {
+    // Update the uniforms with the correct texture unit id's
+    QHash<QString, const QUniformValue *> &uniformValues = uniforms.uniforms();
+    for (int i = 0; i < uniforms.textures().size(); ++i) {
+        const QUniformPack::NamedTexture &namedTex = uniforms.textures().at(i);
         RenderTexture *t = m_renderer->textureManager()->lookupResource(namedTex.texId);
-        int texUnit = -1;
         const TextureUniform *texUniform = Q_NULLPTR;
         // TO DO : Rework the way textures are loaded
-        if (t != Q_NULLPTR &&
-                (texUnit = activateTexture(TextureScopeMaterial, t)) != -1 &&
-                uniformValues.contains(namedTex.glslName) &&
-                (texUniform = static_cast<const TextureUniform *>(uniformValues[namedTex.glslName])) != Q_NULLPTR) {
-            const_cast<TextureUniform *>(texUniform)->setTextureUnit(texUnit);
+        if (t != Q_NULLPTR) {
+            int texUnit = activateTexture(TextureScopeMaterial, t);
+            if (uniformValues.contains(namedTex.glslName)) {
+                texUniform = static_cast<const TextureUniform *>(uniformValues[namedTex.glslName]);
+                if (texUniform != Q_NULLPTR)
+                    const_cast<TextureUniform *>(texUniform)->setTextureUnit(texUnit);
+            }
         }
     }
     m_activeShader->updateUniforms(this, uniforms);

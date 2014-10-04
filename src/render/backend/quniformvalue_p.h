@@ -126,6 +126,7 @@ public:
     void setTexture(QString glslName, const QUuid &id);
 
     const QHash<QString, const QUniformValue* > &uniforms() const { return m_uniforms; }
+    QHash<QString, const QUniformValue* > &uniforms() { return m_uniforms; }
 
     struct NamedTexture {
         NamedTexture() {}
