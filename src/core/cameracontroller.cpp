@@ -66,7 +66,7 @@ CameraController::CameraController() :
     m_orbitMode( false ),
     m_linearSpeed( 40.0f ),
     m_time( 0.0f ),
-    m_orbitRate( -1.0f ),
+    m_orbitRate( -0.3f ),
     m_lookRate( 0.1f ),
     m_translateFast( false ),
     m_multisampleEnabled( true )
