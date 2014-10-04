@@ -86,6 +86,7 @@
 #include <Qt3DRenderer/qrenderattachment.h>
 #include <Qt3DRenderer/qclearbuffer.h>
 #include <Qt3DRenderer/qsortcriterion.h>
+#include <Qt3DRenderer/qalphacoverage.h>
 #include <Qt3DQuickRenderer/quick3dtechnique.h>
 #include <Qt3DQuickRenderer/quick3dmaterial.h>
 #include <Qt3DQuickRenderer/quick3dtechniquefilter.h>
@@ -171,6 +172,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3D::QStencilTest>(uri, 2, 0, "StencilTest");
     qmlRegisterType<Qt3D::QScissorTest>(uri, 2, 0, "ScissorTest");
     qmlRegisterType<Qt3D::QDithering>(uri, 2, 0, "Dithering");
+    qmlRegisterType<Qt3D::QAlphaCoverage>(uri, 2, 0, "AlphaCoverage");
 }
 
 QT_END_NAMESPACE
