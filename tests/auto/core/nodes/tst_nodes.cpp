@@ -159,7 +159,7 @@ void tst_Nodes::appendChildNodesToNode()
     for (int i = 0; i < 10; i++) {
         QVERIFY(child->parent() == parent);
         QVERIFY(child->parentNode() == parent);
-        Qt3D::QNode *n = new MyQNode(child);
+        (void) new MyQNode(child);
         parent = child;
         child = qobject_cast<Qt3D::QNode *>(child->children().first());
     }
@@ -188,7 +188,7 @@ void tst_Nodes::removingChildNodesFromNode()
     QVERIFY(child->parent() == Q_NULLPTR);
 
     for (int i = 0; i < 10; i++) {
-        Qt3D::QNode *n = new MyQNode(root);
+        (void) new MyQNode(root);
     }
     QVERIFY(root->children().count() == 10);
     Q_FOREACH (QObject *c, root->children())
@@ -197,7 +197,7 @@ void tst_Nodes::removingChildNodesFromNode()
 
     Qt3D::QNode *firstChild = child;
     for (int i = 0; i < 10; i++) {
-        Qt3D::QNode *m = new MyQNode(child);
+        (void) new MyQNode(child);
         child = qobject_cast<Qt3D::QNode *>(child->children().first());
     }
     QVERIFY(root->children().count() == 0);
