@@ -186,6 +186,21 @@ private:
     StencilTest(uint mask, GLenum func, GLenum faceMode);
 };
 
+class AlphaCoverage : public Qt3D::Render::RenderState
+{
+public:
+    void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
+    StateMaskSet mask() const Q_DECL_OVERRIDE
+    { return AlphaCoverageStateMask; }
+
+    bool isEqual(const AlphaCoverage &) { return true; }
+
+    static AlphaCoverage *getOrCreate();
+
+private:
+    AlphaCoverage();
+};
+
 } // Render
 } // Qt3D
 

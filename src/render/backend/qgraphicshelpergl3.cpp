@@ -212,6 +212,16 @@ void QGraphicsHelperGL3::frontFace(GLenum mode)
 
 }
 
+void QGraphicsHelperGL3::enableAlphaCoverage()
+{
+    m_funcs->glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+}
+
+void QGraphicsHelperGL3::disableAlphaCoverage()
+{
+    m_funcs->glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+}
+
 GLuint QGraphicsHelperGL3::createFrameBufferObject()
 {
     qDebug() << Q_FUNC_INFO;

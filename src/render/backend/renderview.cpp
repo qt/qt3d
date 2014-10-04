@@ -96,6 +96,7 @@
 #include <Qt3DRenderer/qfrontface.h>
 #include <Qt3DRenderer/qscissortest.h>
 #include <Qt3DRenderer/qstenciltest.h>
+#include <Qt3DRenderer/qalphacoverage.h>
 #include <Qt3DRenderer/private/blendstate_p.h>
 
 #include <Qt3DCore/qentity.h>
@@ -606,10 +607,13 @@ RenderStateSet *RenderView::buildRenderStateSet(RenderRenderPass *pass)
                                                             scissorTest->height()));
             }
             else if (qobject_cast<QStencilTest *>(renderState) != Q_NULLPTR) {
-                QStencilTest *stencilTest = qobject_cast<QStencilTest*>(renderState);
+                QStencilTest *stencilTest = qobject_cast<QStencilTest *>(renderState);
                 stateSet->addState(StencilTest::getOrCreate(stencilTest->mask(),
                                                             stencilTest->func(),
                                                             stencilTest->faceMode()));
+            }
+            else if (qobject_cast<QAlphaCoverage *>(renderState) != Q_NULLPTR) {
+                stateSet->addState(AlphaCoverage::getOrCreate());
             }
         }
 

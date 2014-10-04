@@ -553,6 +553,16 @@ void QGraphicsContext::bindUniform(const QVariant &v, const ShaderUniform &descr
     m_glHelper->bindUniform(v, description);
 }
 
+void QGraphicsContext::enableAlphaCoverage()
+{
+    m_glHelper->enableAlphaCoverage();
+}
+
+void QGraphicsContext::disableAlphaCoverage()
+{
+    m_glHelper->disableAlphaCoverage();
+}
+
 GLint QGraphicsContext::assignUnitForTexture(RenderTexture *tex)
 {
     int lowestScoredUnit = -1;

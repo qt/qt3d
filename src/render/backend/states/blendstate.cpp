@@ -228,6 +228,21 @@ void StencilTest::apply(QGraphicsContext *gc) const
     gc->openGLContext()->functions()->glStencilFunc(m_2, m_3, m_1);
 }
 
+AlphaCoverage::AlphaCoverage()
+    : RenderState()
+{
+}
+
+void AlphaCoverage::apply(QGraphicsContext *gc) const
+{
+    gc->enableAlphaCoverage();
+}
+
+AlphaCoverage *AlphaCoverage::getOrCreate()
+{
+    return getOrCreateImpl(AlphaCoverage());
+}
+
 } // Render
 } // Qt3D
 

@@ -80,6 +80,8 @@ public:
     virtual void    depthMask(GLenum mode) = 0;
     virtual void    cullFace(GLenum mode) = 0;
     virtual void    frontFace(GLenum mode) = 0;
+    virtual void    enableAlphaCoverage() = 0;
+    virtual void    disableAlphaCoverage() = 0;
     virtual GLuint  createFrameBufferObject() = 0;
     virtual void    releaseFrameBufferObject(GLuint frameBufferId) = 0;
     virtual void    bindFrameBufferObject(GLuint frameBufferId) = 0;

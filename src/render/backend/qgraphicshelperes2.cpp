@@ -204,6 +204,16 @@ void QGraphicsHelperES2::frontFace(GLenum mode)
     m_funcs->glFrontFace(mode);
 }
 
+void QGraphicsHelperES2::enableAlphaCoverage()
+{
+    m_funcs->glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+}
+
+void QGraphicsHelperES2::disableAlphaCoverage()
+{
+    m_funcs->glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+}
+
 GLuint QGraphicsHelperES2::createFrameBufferObject()
 {
     GLuint id;

@@ -141,6 +141,7 @@ StateMaskSet RenderStateSet::stateMask() const
 void RenderStateSet::resetMasked(StateMaskSet maskOfStatesToReset, QGraphicsContext *gc)
 {
     // TO DO -> Call gcHelper methods instead of raw GL
+    // QOpenGLFunctions shouldn't be used here directly
     QOpenGLFunctions *funcs = gc->openGLContext()->functions();
 
     if (maskOfStatesToReset & ScissorStateMask) {
@@ -177,6 +178,10 @@ void RenderStateSet::resetMasked(StateMaskSet maskOfStatesToReset, QGraphicsCont
 
     if (maskOfStatesToReset & DitheringStateMask) {
         funcs->glDisable(GL_DITHER);
+    }
+
+    if (maskOfStatesToReset & AlphaCoverageStateMask) {
+        gc->disableAlphaCoverage();
     }
 }
 
