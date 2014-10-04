@@ -64,12 +64,12 @@ QSceneObserverInterface *BulletPhysicsAspect::sceneObserver() const
 
 void BulletPhysicsAspect::registerAspectHelper(QEntity *rootObject)
 {
-
+    Q_UNUSED(rootObject);
 }
 
 void BulletPhysicsAspect::unregisterAspectHelper(QEntity *rootObject)
 {
-
+    Q_UNUSED(rootObject);
 }
 
 void BulletPhysicsAspect::onInitialize()
