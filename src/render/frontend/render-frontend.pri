@@ -62,7 +62,8 @@ HEADERS += \
     $$PWD/qrendertarget.h \
     $$PWD/qrendertarget_p.h \
     $$PWD/qcriterion_p.h \
-    $$PWD/qrenderstate_p.h
+    $$PWD/qrenderstate_p.h \
+    $$PWD/qalphacoverage.h
 
 SOURCES += \
     $$PWD/qmaterial.cpp \
@@ -103,4 +104,5 @@ SOURCES += \
     $$PWD/qdithering.cpp \
     $$PWD/qrenderstate.cpp \
     $$PWD/qrenderattachment.cpp \
-    $$PWD/qrendertarget.cpp
+    $$PWD/qrendertarget.cpp \
+    $$PWD/qalphacoverage.cpp
