@@ -142,7 +142,7 @@ int main(int ac, char **av)
     Qt3D::QViewport *viewport = new Qt3D::QViewport(techniqueFilter);
     Qt3D::QClearBuffer *clearBuffer = new Qt3D::QClearBuffer(viewport);
     Qt3D::QCameraSelector *cameraSelector = new Qt3D::QCameraSelector(clearBuffer);
-    Qt3D::QRenderPassFilter *defaultRenderPassFilter = new Qt3D::QRenderPassFilter(cameraSelector);
+    (void) new Qt3D::QRenderPassFilter(cameraSelector);
 
     // TechiqueFilter and renderPassFilter are not implement yet
     viewport->setRect(QRectF(0, 0, 1, 1));
