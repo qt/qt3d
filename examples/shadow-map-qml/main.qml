@@ -58,7 +58,7 @@ Entity {
         lens: CameraLens {
             projectionType: CameraLens.PerspectiveProjection
             fieldOfView: 45
-            aspectRatio: 2
+            aspectRatio: _window.width / _window.height
             nearPlane: 0.1
             farPlane: 1000.0
         }
