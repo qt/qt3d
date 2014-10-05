@@ -74,6 +74,7 @@ void QGraphicsHelperGL2::initializeHelper(QOpenGLContext *context,
         m_fboFuncs = new QOpenGLExtension_ARB_framebuffer_object();
         const bool extensionOk = m_fboFuncs->initializeOpenGLFunctions();
         Q_ASSERT(extensionOk);
+        Q_UNUSED(extensionOk);
     }
 }
 

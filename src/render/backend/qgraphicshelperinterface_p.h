@@ -52,7 +52,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
-class Attachment;
+struct Attachment;
 
 class QGraphicsHelperInterface
 {
