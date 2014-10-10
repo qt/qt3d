@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "qobservableinterface.h"
+#include "qobservableinterface_p.h"
 
 QT_BEGIN_NAMESPACE
 

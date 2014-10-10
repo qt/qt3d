@@ -42,7 +42,7 @@
 #ifndef QT3D_QBACKENDOBSERVABLE_H
 #define QT3D_QBACKENDOBSERVABLE_H
 
-#include <Qt3DCore/qobservableinterface.h>
+#include <Qt3DCore/private/qobservableinterface_p.h>
 
 QT_BEGIN_NAMESPACE
 

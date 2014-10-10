@@ -42,29 +42,32 @@
 #ifndef QT3D_QOBSERVABLE_P_H
 #define QT3D_QOBSERVABLE_P_H
 
-#include <QtGlobal>
+#include <Qt3DCore/private/qobservableinterface_p.h>
 #include <QReadWriteLock>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QObservable;
-class QObserverInterface;
-
-class QObservablePrivate
+class QObservable : public QObservableInterface
 {
 public:
-    QObservablePrivate(QObservable *qq);
+    QObservable();
 
-    Q_DECLARE_PUBLIC(QObservable)
-    QObservable *q_ptr;
+    // In most cases, only the QChangeArbiter should be able to call these
+    // Might be worth making them private and having a friend class
+    void registerObserver(QObserverInterface *observer) Q_DECL_OVERRIDE;
+    void unregisterObserver(QObserverInterface *observer) Q_DECL_OVERRIDE;
+
+protected:
+    void notifyObservers(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    const QList<QObserverInterface *> &observers() const;
 
     QList<QObserverInterface *> m_observers;
     QReadWriteLock m_lock;
 };
 
-} // Qt3D
+} // namespace Qt3D
 
 QT_END_NAMESPACE
 

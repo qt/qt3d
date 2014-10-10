@@ -40,9 +40,9 @@
 ****************************************************************************/
 
 #include <QtTest/QtTest>
-#include <Qt3DCore/qobserverinterface.h>
-#include <Qt3DCore/qobservableinterface.h>
-#include <Qt3DCore/qchangearbiter.h>
+#include <Qt3DCore/private/qobserverinterface_p.h>
+#include <Qt3DCore/private/qobservableinterface_p.h>
+#include <Qt3DCore/private/qchangearbiter_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qscenechange.h>
 #include <Qt3DCore/qbackendscenepropertychange.h>

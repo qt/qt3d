@@ -46,7 +46,7 @@
 #include <Qt3DRenderer/qviewport.h>
 
 #include <Qt3DCore/qaspectmanager.h>
-#include <Qt3DCore/qchangearbiter.h>
+#include <Qt3DCore/private/qchangearbiter_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE

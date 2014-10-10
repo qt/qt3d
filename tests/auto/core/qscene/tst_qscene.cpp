@@ -44,9 +44,9 @@
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qcomponent.h>
-#include <Qt3DCore/qobservableinterface.h>
-#include <Qt3DCore/qobserverinterface.h>
-#include <Qt3DCore/qchangearbiter.h>
+#include <Qt3DCore/private/qobservableinterface_p.h>
+#include <Qt3DCore/private/qobserverinterface_p.h>
+#include <Qt3DCore/private/qchangearbiter_p.h>
 #include <private/qnode_p.h>
 
 class tst_QScene : public QObject

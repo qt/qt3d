@@ -44,7 +44,7 @@
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DRenderer/private/parameterpack_p.h>
-#include <Qt3DCore/qobserverinterface.h>
+#include <Qt3DCore/private/qobserverinterface_p.h>
 #include <QList>
 #include <QUuid>
 

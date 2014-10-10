@@ -42,7 +42,7 @@
 #include "qaspectmanager.h"
 
 #include "qabstractaspect.h"
-#include "qchangearbiter.h"
+#include "qchangearbiter_p.h"
 // TODO Make the kind of job manager configurable (e.g. ThreadWeaver vs Intel TBB)
 #include "qjobmanager.h"
 #include "qjobmanagerinterface.h"

@@ -43,7 +43,7 @@
 #define QT3D_RENDER_CAMERASELECTOR_H
 
 #include <Qt3DRenderer/private/framegraphnode_p.h>
-#include <Qt3DCore/qobserverinterface.h>
+#include <Qt3DCore/private/qobserverinterface_p.h>
 #include <QUuid>
 
 QT_BEGIN_NAMESPACE

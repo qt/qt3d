@@ -43,6 +43,7 @@
 #define QT3D_QABSTRACTASPECT_P_H
 
 #include <private/qobject_p.h>
+#include <Qt3DCore/qabstractaspect.h>
 
 QT_BEGIN_NAMESPACE
 

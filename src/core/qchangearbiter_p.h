@@ -42,33 +42,82 @@
 #ifndef QT3D_QCHANGEARBITER_P_H
 #define QT3D_QCHANGEARBITER_P_H
 
-#include <private/qobject_p.h>
-#include <QMutex>
+#include <QObject>
+#include <QFlags>
+#include <QReadWriteLock>
+#include <QVariant>
+#include <QVector>
+#include <QPair>
 #include <QThreadStorage>
+#include <QMutex>
+
+#include <Qt3DCore/qscenechange.h>
+#include <Qt3DCore/private/qobserverinterface_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
 class QNode;
-class QChangeArbiter;
 class QObservableInterface;
 class QJobManagerInterface;
 class QSceneObserverInterface;
-class QObserverInterface;
+class QPostman;
 class QSceneInterface;
 
 typedef QVector<QSceneChangePtr> ChangeQueue;
 typedef QPair<ChangeFlags, QObserverInterface *> QObserverPair;
 typedef QList<QObserverPair> QObserverList;
 
-class QChangeArbiterPrivate : public QObjectPrivate
+class QT3DCORESHARED_EXPORT QChangeArbiter
+        : public QObject
+        , public QObserverInterface
 {
+    Q_OBJECT
 public:
-    QChangeArbiterPrivate(QChangeArbiter *qq);
+    explicit QChangeArbiter(QObject *parent = 0);
+    ~QChangeArbiter();
 
-    Q_DECLARE_PUBLIC(QChangeArbiter)
+    void initialize(Qt3D::QJobManagerInterface *jobManager);
 
+    void syncChanges();
+
+    void registerObserver(QObserverInterface *observer,
+                          const QUuid &nodeId,
+                          ChangeFlags changeFlags = AllChanges);
+    void unregisterObserver(QObserverInterface *observer,
+                            const QUuid &nodeId);
+
+    void registerSceneObserver(QSceneObserverInterface *observer);
+    void unregisterSceneObserver(QSceneObserverInterface *observer);
+
+    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;                 // QObserverInterface impl
+    void sceneChangeEventWithLock(const QSceneChangePtr &e);
+
+    Q_INVOKABLE void setPostman(Qt3D::QObserverInterface *postman);
+    Q_INVOKABLE void setScene(Qt3D::QSceneInterface *scene);
+
+    QObserverInterface *postman() const;
+    QSceneInterface *scene() const;
+
+    static void createUnmanagedThreadLocalChangeQueue(void *changeArbiter);
+    static void destroyUnmanagedThreadLocalChangeQueue(void *changeArbiter);
+    static void createThreadLocalChangeQueue(void *changeArbiter);
+    static void destroyThreadLocalChangeQueue(void *changeArbiter);
+
+protected:
+    typedef QVector<QSceneChangePtr> ChangeQueue;
+    typedef QPair<ChangeFlags, QObserverInterface *> QObserverPair;
+    typedef QList<QObserverPair> QObserverList;
+
+    void distributeQueueChanges(ChangeQueue *queue);
+
+    QThreadStorage<ChangeQueue *> *tlsChangeQueue();
+    void appendChangeQueue(ChangeQueue *queue);
+    void removeChangeQueue(ChangeQueue *queue);
+    void appendLockingChangeQueue(ChangeQueue *queue);
+
+private:
     QMutex m_mutex;
     QJobManagerInterface *m_jobManager;
 
@@ -95,7 +144,7 @@ public:
     QSceneInterface *m_scene;
 };
 
-} // Qt3D
+} // namespace Qt3D
 
 QT_END_NAMESPACE
 

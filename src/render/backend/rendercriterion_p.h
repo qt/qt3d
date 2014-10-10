@@ -43,7 +43,7 @@
 #define QT3D_RENDER_RENDERCRITERION_H
 
 #include <Qt3DRenderer/qcriterion.h>
-#include <Qt3DCore/qobserverinterface.h>
+#include <Qt3DCore/private/qobserverinterface_p.h>
 
 QT_BEGIN_NAMESPACE
 

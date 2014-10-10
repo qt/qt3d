@@ -44,7 +44,7 @@
 
 #include <QtGlobal>
 #include <QUuid>
-#include <Qt3DCore/qobserverinterface.h>
+#include <Qt3DCore/private/qobserverinterface_p.h>
 #include <Qt3DCore/qbackendobservable.h>
 
 QT_BEGIN_NAMESPACE

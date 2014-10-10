@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "qobserverinterface.h"
+#include "qobserverinterface_p.h"
 
 QT_BEGIN_NAMESPACE
 

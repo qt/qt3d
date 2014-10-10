@@ -44,7 +44,9 @@
 #define QT3D_RENDER_RENDERRENDERPASS_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DCore/qobserverinterface.h>
+#include <Qt3DCore/private/qabstractaspect_p.h>
+#include <Qt3DCore/private/qobservableinterface_p.h>
+#include <Qt3DCore/private/qobserverinterface_p.h>
 #include <QUuid>
 
 QT_BEGIN_NAMESPACE

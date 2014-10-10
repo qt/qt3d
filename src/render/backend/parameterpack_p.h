@@ -46,7 +46,7 @@
 #include <QHash>
 #include <QString>
 
-#include <Qt3DCore/qchangearbiter.h>
+#include <Qt3DCore/private/qchangearbiter_p.h>
 
 QT_BEGIN_NAMESPACE
 

@@ -42,7 +42,7 @@
 #ifndef QT3D_RENDER_RENDERATTACHMENT_H
 #define QT3D_RENDER_RENDERATTACHMENT_H
 
-#include <Qt3DCore/qobserverinterface.h>
+#include <Qt3DCore/private/qobserverinterface_p.h>
 #include <Qt3DRenderer/qrenderattachment.h>
 #include <Qt3DRenderer/private/attachmentpack_p.h>
 #include <QUuid>

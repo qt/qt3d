@@ -44,7 +44,7 @@
 #include "qabstractaspect.h"
 #include "qaspectthread.h"
 #include "qaspectmanager.h"
-#include "qchangearbiter.h"
+#include "qchangearbiter_p.h"
 #include "qabstractaspect.h"
 #include "qnode.h"
 #include "corelogging.h"

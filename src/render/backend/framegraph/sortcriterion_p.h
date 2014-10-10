@@ -43,7 +43,7 @@
 #define QT3D_RENDER_SORTCRITERION_P_H
 
 #include <QUuid>
-#include <Qt3DCore/qobserverinterface.h>
+#include <Qt3DCore/private/qobserverinterface_p.h>
 #include <Qt3DRenderer/qsortcriterion.h>
 
 QT_BEGIN_NAMESPACE

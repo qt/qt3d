@@ -42,7 +42,7 @@
 #ifndef QT3D_QPOSTMAN_P_H
 #define QT3D_QPOSTMAN_P_H
 
-#include <Qt3DCore/qobserverinterface.h>
+#include <Qt3DCore/private/qobserverinterface_p.h>
 
 QT_BEGIN_NAMESPACE
 

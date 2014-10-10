@@ -40,9 +40,9 @@
 ****************************************************************************/
 
 #include "clearbuffer_p.h"
-#include <Qt3DCore/qchangearbiter.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qaspectmanager.h>
+#include <Qt3DCore/private/qchangearbiter_p.h>
 #include <Qt3DRenderer/rendereraspect.h>
 #include <Qt3DRenderer/private/renderer_p.h>
 

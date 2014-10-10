@@ -42,7 +42,7 @@
 #ifndef QT3D_RENDER_FRAMEGRAPHNODE_H
 #define QT3D_RENDER_FRAMEGRAPHNODE_H
 
-#include <Qt3DCore/qobserverinterface.h>
+#include <Qt3DCore/private/qobserverinterface_p.h>
 #include <Qt3DCore/qhandle.h>
 #include <qglobal.h>
 #include <QVector>

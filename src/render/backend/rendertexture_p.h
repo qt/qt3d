@@ -46,7 +46,7 @@
 
 #include <Qt3DRenderer/qtexture.h>
 #include <Qt3DRenderer/texturedata.h>
-#include <Qt3DCore/qobserverinterface.h>
+#include <Qt3DCore/private/qobserverinterface_p.h>
 #include <QMutex>
 
 QT_BEGIN_NAMESPACE

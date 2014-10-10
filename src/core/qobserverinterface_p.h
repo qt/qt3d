@@ -39,32 +39,26 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QOBSERVABLEINTERFACE_H
-#define QT3D_QOBSERVABLEINTERFACE_H
+#ifndef QT3D_QOBSERVERINTERFACE_P_H
+#define QT3D_QOBSERVERINTERFACE_P_H
 
-#include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qscenechange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QObserverInterface;
-
-class QT3DCORESHARED_EXPORT QObservableInterface
+class QT3DCORESHARED_EXPORT QObserverInterface
 {
 public:
-    virtual ~QObservableInterface();
-
-    virtual void registerObserver(QObserverInterface *observer) = 0;
-    virtual void unregisterObserver(QObserverInterface *observer) = 0;
-
-protected:
-    virtual void notifyObservers(const QSceneChangePtr &e) = 0;
+    virtual ~QObserverInterface();
+    virtual void sceneChangeEvent(const QSceneChangePtr &e) = 0;
 };
 
 } // namespace Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QOBSERVABLEINTERFACE_H
+Q_DECLARE_METATYPE(Qt3D::QObserverInterface *)
+
+#endif // QT3D_QOBSERVERINTERFACE_P_H

@@ -39,58 +39,42 @@
 **
 ****************************************************************************/
 
-#include "qobservable.h"
-#include <Qt3DCore/qobserverinterface.h>
-#include <private/qobservable_p.h>
+#include "qobservable_p.h"
+#include "qobserverinterface_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QObservablePrivate::QObservablePrivate(QObservable *qq)
-    : q_ptr(qq)
-    , m_lock(QReadWriteLock::NonRecursive)
-{
-}
-
 QObservable::QObservable()
-    : d_ptr(new QObservablePrivate(this))
-{
-}
-
-QObservable::QObservable(QObservablePrivate &dd)
-    : d_ptr(&dd)
+    : m_lock(QReadWriteLock::NonRecursive)
 {
 }
 
 void QObservable::registerObserver(QObserverInterface *observer)
 {
-    Q_D(QObservable);
-    QWriteLocker locker(&d->m_lock);
-    if (!d->m_observers.contains(observer))
-        d->m_observers.append(observer);
+    QWriteLocker locker(&m_lock);
+    if (!m_observers.contains(observer))
+        m_observers.append(observer);
 }
 
 void QObservable::unregisterObserver(QObserverInterface *observer)
 {
-    Q_D(QObservable);
-    QWriteLocker locker(&d->m_lock);
-    d->m_observers.removeOne(observer);
+    QWriteLocker locker(&m_lock);
+    m_observers.removeOne(observer);
 }
 
 // This calls sceneChangeEvent on the QChangeArbiter
 void QObservable::notifyObservers(const QSceneChangePtr &e)
 {
-    Q_D(QObservable);
-    QReadLocker locker(&d->m_lock);
-    Q_FOREACH (QObserverInterface *observer, d->m_observers)
+    QReadLocker locker(&m_lock);
+    Q_FOREACH (QObserverInterface *observer, m_observers)
         observer->sceneChangeEvent(e);
 }
 
 const QList<QObserverInterface *> &QObservable::observers() const
 {
-    Q_D(const QObservable);
-    return d->m_observers;
+    return m_observers;
 }
 
 } // namespace Qt3D

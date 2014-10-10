@@ -23,15 +23,9 @@ HEADERS += \
     $$PWD/qtickclock.h \
     $$PWD/qscheduler.h \
     $$PWD/cameracontroller.h \
-    $$PWD/qchangearbiter.h \
     $$PWD/corelogging.h \
     $$PWD/qscenechange.h \
     $$PWD/qscenepropertychange.h \
-    $$PWD/qobservableinterface.h \
-    $$PWD/qobservable.h \
-    $$PWD/qobserverinterface.h \
-    $$PWD/qchangearbiter_p.h \
-    $$PWD/qobservable_p.h \
     $$PWD/qscenechange_p.h \
     $$PWD/qscenepropertychange_p.h \
     $$PWD/qsceneobserverinterface.h \
@@ -40,7 +34,11 @@ HEADERS += \
     $$PWD/qbackendobservable.h \
     $$PWD/qsceneinterface.h \
     $$PWD/qbackendscenepropertychange.h \
-    $$PWD/qbackendscenepropertychange_p.h
+    $$PWD/qbackendscenepropertychange_p.h \
+    $$PWD/qobservable_p.h \
+    $$PWD/qobservableinterface_p.h \
+    $$PWD/qobserverinterface_p.h \
+    $$PWD/qchangearbiter_p.h
 
 SOURCES += \
     $$PWD/window.cpp \

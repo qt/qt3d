@@ -54,7 +54,7 @@
 #include <Qt3DRenderer/private/transformmanager_p.h>
 #include <Qt3DRenderer/private/materialmanager_p.h>
 
-#include <Qt3DCore/qobserverinterface.h>
+#include <Qt3DCore/private/qobserverinterface_p.h>
 #include <Qt3DCore/qhandle.h>
 #include <QVector>
 #include <QUuid>

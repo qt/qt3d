@@ -46,8 +46,8 @@
 #include <QReadWriteLock>
 #include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qnode.h>
-#include <Qt3DCore/qobservableinterface.h>
-#include <Qt3DCore/qchangearbiter.h>
+#include <Qt3DCore/private/qobservableinterface_p.h>
+#include <Qt3DCore/private/qchangearbiter_p.h>
 
 QT_BEGIN_NAMESPACE
 
