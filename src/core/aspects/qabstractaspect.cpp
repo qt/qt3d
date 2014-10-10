@@ -68,6 +68,12 @@ QAbstractAspect::QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent)
 {
 }
 
+void QAbstractAspect::registerBackendType(const std::type_info &info, QBackendNodeCreatorFunctorPtr functor)
+{
+    Q_D(QAbstractAspect);
+    d->m_backendCreatorFunctors.insert(TypeIndex(info), functor);
+}
+
 QAbstractAspect::AspectType QAbstractAspect::aspectType() const
 {
     Q_D(const QAbstractAspect);

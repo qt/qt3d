@@ -39,51 +39,63 @@
 **
 ****************************************************************************/
 
-#include "qbackendobservable.h"
-#include <Qt3DCore/private/qchangearbiter_p.h>
+#ifndef QT3D_QBACKENDNODE_H
+#define QT3D_QBACKENDNODE_H
+
+#include <Qt3DCore/qt3dcore_global.h>
+#include <Qt3DCore/qscenechange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QBackendObservablePrivate
+class QBackendNodePrivate;
+class QBackendNode;
+class QAspectEngine;
+
+class QT3DCORESHARED_EXPORT QBackendNodeFunctor
 {
 public:
-    QBackendObservablePrivate(QBackendObservable *qq)
-        : q_ptr(qq)
-        , m_arbiter(Q_NULLPTR)
-    {}
-
-    Q_DECLARE_PUBLIC(QBackendObservable)
-    QBackendObservable *q_ptr;
-    QChangeArbiter *m_arbiter;
+    virtual ~QBackendNodeFunctor() {}
+    virtual QBackendNode *create(QNode *frontend) const = 0;
+    virtual QBackendNode *get(QNode *frontend) const = 0;
+    virtual void destroy(QNode *frontend) const = 0;
 };
 
-QBackendObservable::QBackendObservable()
-    : d_ptr(new QBackendObservablePrivate(this))
-{
-}
+typedef QSharedPointer<QBackendNodeFunctor> QBackendNodeFunctorPtr;
 
-void QBackendObservable::registerObserver(QObserverInterface *observer)
+class QT3DCORESHARED_EXPORT QBackendNode
 {
-    Q_D(QBackendObservable);
-    d->m_arbiter = dynamic_cast<QChangeArbiter *>(observer);
-}
+public:
+    enum Mode {
+        ReadOnly = 0,
+        ReadWrite
+    };
 
-void QBackendObservable::unregisterObserver(QObserverInterface *observer)
-{
-    Q_D(QBackendObservable);
-    if (d->m_arbiter == observer)
-        d->m_arbiter = Q_NULLPTR;
-}
+    explicit QBackendNode(Mode mode = ReadOnly);
+    virtual ~QBackendNode();
 
-void QBackendObservable::notifyObservers(const QSceneChangePtr &e)
-{
-    Q_D(QBackendObservable);
-    if (d->m_arbiter != Q_NULLPTR)
-        d->m_arbiter->sceneChangeEventWithLock(e);
-}
+    void setPeer(QNode *peer);
+    QUuid peerUuid() const;
+
+    Mode mode() const;
+    virtual void updateFromPeer(QNode *peer) = 0;
+
+protected:
+    void notifyObservers(const QSceneChangePtr &e);
+    virtual void sceneChangeEvent(const QSceneChangePtr &e) = 0;
+
+    QBackendNode(QBackendNodePrivate &dd);
+
+private:
+    Q_DECLARE_PRIVATE(QBackendNode)
+    QBackendNodePrivate *d_ptr;
+    friend class QBackendScenePropertyChange;
+};
+
 
 } // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_QBACKENDNODE_H

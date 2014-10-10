@@ -43,6 +43,7 @@
 #define QT3D_QABSTRACTASPECT_P_H
 
 #include <private/qobject_p.h>
+#include <private/qbackendnode_p.h>
 #include <Qt3DCore/qabstractaspect.h>
 
 QT_BEGIN_NAMESPACE
@@ -64,6 +65,7 @@ public:
     QEntity *m_root;
     QJobManagerInterface *m_jobManager;
     QAbstractAspect::AspectType m_aspectType;
+    QMap<TypeIndex, QBackendNodeFunctorPtr> m_backendCreatorFunctors;
 };
 
 } // Qt3D

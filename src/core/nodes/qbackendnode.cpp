@@ -39,84 +39,97 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QABSTRACTASPECT_H
-#define QT3D_QABSTRACTASPECT_H
-
-#include <QObject>
-#include <QSharedPointer>
-#include <Qt3DCore/qt3dcore_global.h>
-#include <Qt3DCore/qjobproviderinterface.h>
+#include "qbackendnode.h"
+#include "qbackendnode_p.h"
+#include "qaspectengine.h"
+#include "qchangearbiter_p.h"
+#include "qnode.h"
 
 QT_BEGIN_NAMESPACE
 
-class QWindow;
-class QSurface;
-
 namespace Qt3D {
 
-class QAspectManager;
-class QNode;
-class QEntity;
-class QAbstractAspectPrivate;
-class QSceneObserverInterface;
-class QJobManagerInterface;
-class QBackendNodeFunctor;
-
-typedef QSharedPointer<QBackendNodeFunctor> QBackendNodeFunctorPtr;
-
-class QT3DCORESHARED_EXPORT QAbstractAspect : public QObject, public QJobProviderInterface
+QBackendNodePrivate::QBackendNodePrivate(QBackendNode *qq, QBackendNode::Mode mode)
+    : QObservable()
+    , q_ptr(qq)
+    , m_mode(mode)
+    , m_arbiter(Q_NULLPTR)
 {
-    Q_OBJECT
-
-public:
-    enum AspectType {
-        AspectRenderer,
-        AspectAnimation,
-        AspectCollision,
-        AspectPhysics,
-        AspectPhysicsAndCollision,
-        AspectAI,
-        AspectAudio,
-        AspectOther
-    };
-
-    explicit QAbstractAspect(AspectType aspectType, QObject *parent = 0);
-
-    AspectType aspectType() const;
-
-    void registerAspect(QEntity *rootObject);
-
-    QJobManagerInterface *jobManager() const;
-
-    virtual QSceneObserverInterface *sceneObserver() const = 0;
-
-protected:
-    QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent = 0);
-
-    template<class Frontend>
-    void registerBackendType(QBackendNodeFunctorPtr);
-    void registerBackendType(const std::type_info &info, QBackendNodeFunctorPtr functor);
-
-private:
-    virtual void setRootEntity(QEntity *rootObject) = 0;
-    virtual void onInitialize(QSurface *surface) = 0;
-    virtual void onCleanup() = 0;
-
-    Q_DECLARE_PRIVATE(QAbstractAspect)
-    // These are only called by the aspect manager
-    friend class QAspectManager;
-};
-
-template<class Frontend>
-void QAbstractAspect::registerBackendType(QBackendNodeFunctorPtr functor)
-{
-    registerBackendType(typeid(Frontend), functor);
 }
 
-} // namespace Qt3D
+void QBackendNodePrivate::registerObserver(QObserverInterface *observer)
+{
+    Q_ASSERT(m_mode == QBackendNode::ReadWrite);
+    m_arbiter = dynamic_cast<QChangeArbiter *>(observer);
+}
+
+void QBackendNodePrivate::unregisterObserver(QObserverInterface *observer)
+{
+    Q_ASSERT(m_mode == QBackendNode::ReadWrite);
+    if (dynamic_cast<QChangeArbiter *>(observer) == m_arbiter)
+        m_arbiter = Q_NULLPTR;
+}
+
+void QBackendNodePrivate::notifyObservers(const QSceneChangePtr &e)
+{
+    Q_ASSERT(m_mode == QBackendNode::ReadWrite);
+    if (m_arbiter != Q_NULLPTR)
+        m_arbiter->sceneChangeEventWithLock(e);
+}
+
+void QBackendNodePrivate::sceneChangeEvent(const QSceneChangePtr &e)
+{
+    q_ptr->sceneChangeEvent(e);
+}
+
+QBackendNodePrivate *QBackendNodePrivate::get(QBackendNode *n)
+{
+    return n->d_func();
+}
+
+QBackendNode::QBackendNode(QBackendNode::Mode mode)
+    : d_ptr(new QBackendNodePrivate(this, mode))
+{
+}
+
+QBackendNode::~QBackendNode()
+{
+    delete d_ptr;
+}
+
+void QBackendNode::setPeer(QNode *peer)
+{
+    Q_D(QBackendNode);
+    QUuid peerUuid;
+    if (peer != Q_NULLPTR)
+        peerUuid = peer->uuid();
+    d->m_peerUuid = peerUuid;
+    updateFromPeer(peer);
+}
+
+QUuid QBackendNode::peerUuid() const
+{
+    Q_D(const QBackendNode);
+    return d->m_peerUuid;
+}
+
+QBackendNode::Mode QBackendNode::mode() const
+{
+    Q_D(const QBackendNode);
+    return d->m_mode;
+}
+
+QBackendNode::QBackendNode(QBackendNodePrivate &dd)
+    : d_ptr(&dd)
+{
+}
+
+void QBackendNode::notifyObservers(const QSceneChangePtr &e)
+{
+    Q_D(QBackendNode);
+    d->notifyObservers(e);
+}
+
+} // Qt3D
 
 QT_END_NAMESPACE
-
-Q_DECLARE_METATYPE(Qt3D::QAbstractAspect *)
-
-#endif // QT3D_ABSTRACTASPECT_H

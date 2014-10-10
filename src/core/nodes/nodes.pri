@@ -7,10 +7,14 @@ HEADERS += \
     $$PWD/qcomponent.h \
     $$PWD/qcomponent_p.h \
     $$PWD/qentity.h \
-    $$PWD/qentity_p.h
+    $$PWD/qentity_p.h \
+    $$PWD/qbackendnode_p.h \
+    $$PWD/qbackendnode.h
 
 SOURCES += \
     $$PWD/qnode.cpp \
     $$PWD/nodevisitor.cpp \
     $$PWD/qcomponent.cpp \
-    $$PWD/qentity.cpp
+    $$PWD/qentity.cpp \
+    $$PWD/qbackendnode.cpp
+

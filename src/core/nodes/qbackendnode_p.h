@@ -39,34 +39,43 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QBACKENDOBSERVABLE_H
-#define QT3D_QBACKENDOBSERVABLE_H
+#ifndef QT3D_QBACKENDNODE_P_H
+#define QT3D_QBACKENDNODE_P_H
 
-#include <Qt3DCore/private/qobservableinterface_p.h>
+#include <QUuid>
+#include <Qt3DCore/private/qobservable_p.h>
+#include <Qt3DCore/private/qobserverinterface_p.h>
+#include <Qt3DCore/qbackendnode.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QBackendObservablePrivate;
+class QChangeArbiter;
 
-class QT3DCORESHARED_EXPORT QBackendObservable : public QObservableInterface
+class QBackendNodePrivate
+        : public QObserverInterface
+        , public QObservable
 {
 public:
-    QBackendObservable();
+    QBackendNodePrivate(QBackendNode *qq, QBackendNode::Mode mode);
+
     void registerObserver(QObserverInterface *observer) Q_DECL_OVERRIDE;
     void unregisterObserver(QObserverInterface *observer) Q_DECL_OVERRIDE;
-
-protected:
     void notifyObservers(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
-private:
-    Q_DECLARE_PRIVATE(QBackendObservable)
-    QBackendObservablePrivate *d_ptr;
+    static QBackendNodePrivate *get(QBackendNode *n);
+
+    Q_DECLARE_PUBLIC(QBackendNode)
+    QBackendNode *q_ptr;
+    QBackendNode::Mode m_mode;
+    QChangeArbiter *m_arbiter;
+    QUuid m_peerUuid;
 };
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QBACKENDOBSERVABLE_H
+#endif // QT3D_QBACKENDNODE_P_H
