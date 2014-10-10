@@ -51,7 +51,7 @@
 #include <Qt3DRenderer/private/qgraphicscontext_p.h>
 #include <Qt3DRenderer/qmeshdata.h>
 
-#include <Qt3DCore/qaspectmanager.h>
+#include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 #include <QOpenGLContext>

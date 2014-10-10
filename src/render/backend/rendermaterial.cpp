@@ -52,7 +52,7 @@
 #include "qmaterial.h"
 #include "qeffect.h"
 
-#include <Qt3DCore/qaspectmanager.h>
+#include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <QOpenGLShaderProgram>
 

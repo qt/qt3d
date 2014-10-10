@@ -53,7 +53,7 @@
 #include <updateboundingvolumejob.h>
 
 #include <Qt3DCore/qnode.h>
-#include <Qt3DCore/qaspectmanager.h>
+#include <Qt3DCore/private/qaspectmanager_p.h>
 
 #include <QDebug>
 #include <QThread>

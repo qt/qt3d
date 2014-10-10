@@ -45,7 +45,7 @@
 #include "qrenderpassfilter.h"
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/private/criterionmanager_p.h>
-#include <Qt3DCore/qaspectmanager.h>
+#include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 

@@ -41,7 +41,7 @@
 
 #include "qaspectthread.h"
 
-#include <qaspectmanager.h>
+#include "qaspectmanager_p.h"
 
 #include "corelogging.h"
 #include <QMutexLocker>

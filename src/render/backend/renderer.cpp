@@ -103,7 +103,7 @@
 #include <Qt3DRenderer/private/abstractsceneparser_p.h>
 
 #include <Qt3DCore/qcameralens.h>
-#include <Qt3DCore/qaspectmanager.h>
+#include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/qjobmanagerinterface.h>
 
 #include <QStack>
@@ -260,7 +260,7 @@ void Renderer::createAllocators()
 {
     // Issue a set of jobs to create an allocator in TLS for each worker thread
     Q_ASSERT(m_rendererAspect);
-    QJobManagerInterface *jobManager = rendererAspect()->aspectManager()->jobManager();
+    QJobManagerInterface *jobManager = rendererAspect()->jobManager();
     Q_ASSERT(jobManager);
     jobManager->waitForPerThreadFunction(Renderer::createThreadLocalAllocator, this);
 }
@@ -269,7 +269,7 @@ void Renderer::destroyAllocators()
 {
     // Issue a set of jobs to create an allocator in TLS for each worker thread
     Q_ASSERT(m_rendererAspect);
-    QJobManagerInterface *jobManager = rendererAspect()->aspectManager()->jobManager();
+    QJobManagerInterface *jobManager = rendererAspect()->jobManager();
     Q_ASSERT(jobManager);
     jobManager->waitForPerThreadFunction(Renderer::destroyThreadLocalAllocator, this);
 }

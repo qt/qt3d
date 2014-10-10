@@ -60,7 +60,7 @@
 #include <Qt3DRenderer/renderlogging.h>
 #include <Qt3DRenderer/sphere.h>
 
-#include <Qt3DCore/qaspectmanager.h>
+#include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qscenepropertychange.h>

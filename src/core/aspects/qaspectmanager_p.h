@@ -42,29 +42,49 @@
 #ifndef QT3D_QASPECTMANAGER_P_H
 #define QT3D_QASPECTMANAGER_P_H
 
-#include <private/qobject_p.h>
+#include <QObject>
+#include <QList>
+#include <Qt3DCore/qt3dcore_global.h>
 
 QT_BEGIN_NAMESPACE
 
+class QWaitCondition;
 class QWindow;
 
 namespace Qt3D {
 
-class QAbstractAspect;
-class QAspectManager;
-class QScheduler;
+class QNode;
 class QEntity;
+class QScheduler;
 class QChangeArbiter;
+class QAbstractAspect;
 class QJobManagerInterface;
 class QSceneObserverInterface;
 
-class QAspectManagerPrivate : public QObjectPrivate
+class QT3DCORESHARED_EXPORT QAspectManager : public QObject
 {
-public :
-    QAspectManagerPrivate(QAspectManager *qq);
+    Q_OBJECT
+public:
+    explicit QAspectManager(QObject *parent = 0);
+    ~QAspectManager();
 
-    Q_DECLARE_PUBLIC(QAspectManager)
+public Q_SLOTS:
+    void initialize();
+    void shutdown();
 
+    void setRoot(Qt3D::QNode *rootObject);
+    void setWindow(QWindow* window);
+    void registerAspect(Qt3D::QAbstractAspect *aspect);
+    QWindow *window() const;
+
+    void exec();
+    void quit();
+
+    const QList<QAbstractAspect *> &aspects() const;
+    QJobManagerInterface *jobManager() const;
+    QChangeArbiter *changeArbiter() const;
+
+private:
     QList<QAbstractAspect *> m_aspects;
     QEntity *m_root;
     QWindow *m_window;
@@ -75,7 +95,7 @@ public :
     QAtomicInt m_terminated;
 };
 
-} // Qt3D
+} // namespace Qt3D
 
 QT_END_NAMESPACE
 

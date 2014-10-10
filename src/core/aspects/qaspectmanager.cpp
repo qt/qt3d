@@ -39,8 +39,7 @@
 **
 ****************************************************************************/
 
-#include "qaspectmanager.h"
-
+#include "qaspectmanager_p.h"
 #include "qabstractaspect.h"
 #include "qchangearbiter_p.h"
 // TODO Make the kind of job manager configurable (e.g. ThreadWeaver vs Intel TBB)
@@ -49,6 +48,7 @@
 #include "qscheduler.h"
 #include "qtickclock.h"
 #include "qentity.h"
+#include "qsceneobserverinterface.h"
 
 #include "corelogging.h"
 #include <QEventLoop>
@@ -56,76 +56,53 @@
 #include <QWaitCondition>
 #include <QWindow>
 
-#include <private/qaspectmanager_p.h>
-#include "qsceneobserverinterface.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QAspectManagerPrivate::QAspectManagerPrivate(QAspectManager *qq)
-    : QObjectPrivate()
+QAspectManager::QAspectManager(QObject *parent)
+    : QObject(parent)
     , m_root(Q_NULLPTR)
     , m_window(Q_NULLPTR)
+    , m_scheduler(new QScheduler(this))
+    , m_jobManager(new QJobManager(this))
+    , m_changeArbiter(new QChangeArbiter(this))
 {
+    qRegisterMetaType<QWindow*>("QWindow*");
     m_runMainLoop.fetchAndStoreOrdered(0);
     m_terminated.fetchAndStoreOrdered(0);
-    q_ptr = qq;
-    qRegisterMetaType<QWindow*>("QWindow*");
-}
-
-QAspectManager::QAspectManager(QObject *parent)
-    : QObject(*new QAspectManagerPrivate(this), parent)
-{
-    Q_D(QAspectManager);
-    d->m_scheduler = new QScheduler(this);
-    d->m_jobManager = new QJobManager(this);
-    d->m_changeArbiter = new QChangeArbiter(this);
     qCDebug(Aspects) << Q_FUNC_INFO;
 }
 
 QAspectManager::~QAspectManager()
 {
-    Q_D(QAspectManager);
-    delete d->m_changeArbiter;
-    delete d->m_jobManager;
-    delete d->m_scheduler;
-}
-
-QAspectManager::QAspectManager(QAspectManagerPrivate &dd, QObject *parent)
-    : QObject(dd, parent)
-{
-    Q_D(QAspectManager);
-    d->m_scheduler = new QScheduler(this);
-    d->m_jobManager = new QJobManager(this);
-    d->m_changeArbiter = new QChangeArbiter(this);
-    qCDebug(Aspects) << Q_FUNC_INFO;
+    delete m_changeArbiter;
+    delete m_jobManager;
+    delete m_scheduler;
 }
 
 void QAspectManager::initialize()
 {
-    Q_D(QAspectManager);
     qCDebug(Aspects) << Q_FUNC_INFO;
-    d->m_jobManager->initialize();
-    d->m_scheduler->setAspectManager(this);
-    d->m_changeArbiter->initialize(d->m_jobManager);
+    m_jobManager->initialize();
+    m_scheduler->setAspectManager(this);
+    m_changeArbiter->initialize(m_jobManager);
 }
 
 void QAspectManager::shutdown()
 {
-    Q_D(QAspectManager);
     qCDebug(Aspects) << Q_FUNC_INFO;
-    Q_FOREACH (QAbstractAspect *aspect, d->m_aspects) {
-        aspect->unregisterAspect(d->m_root);
+    Q_FOREACH (QAbstractAspect *aspect, m_aspects) {
+        aspect->unregisterAspect(m_root);
         aspect->cleanup();
-        d->m_changeArbiter->unregisterSceneObserver(aspect->sceneObserver());
+        m_changeArbiter->unregisterSceneObserver(aspect->sceneObserver());
     }
-    qDeleteAll(d->m_aspects);
+    qDeleteAll(m_aspects);
 }
 
 void QAspectManager::setRoot(QNode *rootObject)
 {
-    Q_D(QAspectManager);
     qCDebug(Aspects) << Q_FUNC_INFO;
 
     QEntity *root = qobject_cast<QEntity *>(rootObject);
@@ -133,46 +110,45 @@ void QAspectManager::setRoot(QNode *rootObject)
     if (!root)
         qWarning() << "Root object is not an Entity";
 
-    if (root == d->m_root)
+    if (root == m_root)
         return;
 
-    if (d->m_root) {
+    if (m_root) {
         // Allow each aspect chance to cleanup any resources from this scene
-        Q_FOREACH (QAbstractAspect *aspect, d->m_aspects)
-            aspect->unregisterAspect(d->m_root);
+        Q_FOREACH (QAbstractAspect *aspect, m_aspects)
+            aspect->unregisterAspect(m_root);
 
         // Allow each aspect chance to cleanup any scene-independent resources
-        Q_FOREACH (QAbstractAspect *aspect, d->m_aspects)
+        Q_FOREACH (QAbstractAspect *aspect, m_aspects)
             aspect->cleanup();
 
         // Destroy all aspects
-        qDeleteAll(d->m_aspects);
-        d->m_aspects.clear();
+        qDeleteAll(m_aspects);
+        m_aspects.clear();
 
-        d->m_root = Q_NULLPTR;
+        m_root = Q_NULLPTR;
     }
 
-    d->m_root = root;
+    m_root = root;
 
-    if (d->m_root) {
+    if (m_root) {
 
-        Q_FOREACH (QAbstractAspect *aspect, d->m_aspects)
-            aspect->registerAspect(d->m_root);
+        Q_FOREACH (QAbstractAspect *aspect, m_aspects)
+            aspect->registerAspect(m_root);
 
-        d->m_runMainLoop.fetchAndStoreOrdered(1);
+        m_runMainLoop.fetchAndStoreOrdered(1);
     }
 }
 
 // Called before register aspect
 void QAspectManager::setWindow(QWindow *window)
 {
-    Q_D(QAspectManager);
     qCDebug(Aspects) << Q_FUNC_INFO;
-    d->m_window = window;
+    m_window = window;
     // We need to create the window
     // Otherwise aspects won't be able to initialize the glContext
     // As show (which calls create) is only called after they're initialized
-    d->m_window->create();
+    m_window->create();
 }
 
 /*!
@@ -180,14 +156,13 @@ void QAspectManager::setWindow(QWindow *window)
  */
 void QAspectManager::registerAspect(QAbstractAspect *aspect)
 {
-    Q_D(QAspectManager);
     qCDebug(Aspects) << "Registering aspect";
 
     if (aspect != Q_NULLPTR) {
-        d->m_aspects.append(aspect);
+        m_aspects.append(aspect);
         aspect->initialize(this);
         // Register sceneObserver with the QChangeArbiter
-        d->m_changeArbiter->registerSceneObserver(aspect->sceneObserver());
+        m_changeArbiter->registerSceneObserver(aspect->sceneObserver());
     }
     else {
         qCWarning(Aspects) << "Failed to register aspect";
@@ -197,13 +172,11 @@ void QAspectManager::registerAspect(QAbstractAspect *aspect)
 
 QWindow *QAspectManager::window() const
 {
-    Q_D(const QAspectManager);
-    return d->m_window;
+    return m_window;
 }
 
 void QAspectManager::exec()
 {
-    Q_D(QAspectManager);
     // Gentlemen, start your engines
     QEventLoop eventLoop;
 
@@ -214,13 +187,13 @@ void QAspectManager::exec()
     tickClock.start();
 
     // Enter the main loop
-    while (!d->m_terminated.load())
+    while (!m_terminated.load())
     {
         // Process any pending events, waiting for more to arrive if queue is empty
         eventLoop.processEvents(QEventLoop::WaitForMoreEvents, 16);
 
         // Only enter main render loop once the renderer and other aspects are initialized
-        while (d->m_runMainLoop.load())
+        while (m_runMainLoop.load())
         {
             // Update the clocks (just main clock for now).
             // TODO: Add additional clocks
@@ -234,10 +207,10 @@ void QAspectManager::exec()
             // For each Aspect
             // Ask them to launch set of jobs for the current frame
             // Updates matrices, bounding volumes, render bins ...
-            d->m_scheduler->update(t);
+            m_scheduler->update(t);
 
             // Distribute accumulated changes
-            d->m_changeArbiter->syncChanges();
+            m_changeArbiter->syncChanges();
 
             // Process any pending events
             eventLoop.processEvents();
@@ -247,27 +220,23 @@ void QAspectManager::exec()
 
 void QAspectManager::quit()
 {
-    Q_D(QAspectManager);
-    d->m_runMainLoop.fetchAndStoreOrdered(0);
-    d->m_terminated.fetchAndStoreOrdered(1);
+    m_runMainLoop.fetchAndStoreOrdered(0);
+    m_terminated.fetchAndStoreOrdered(1);
 }
 
 const QList<QAbstractAspect *> &QAspectManager::aspects() const
 {
-    Q_D(const QAspectManager);
-    return d->m_aspects;
+    return m_aspects;
 }
 
 QJobManagerInterface *QAspectManager::jobManager() const
 {
-    Q_D(const QAspectManager);
-    return d->m_jobManager;
+    return m_jobManager;
 }
 
 QChangeArbiter *QAspectManager::changeArbiter() const
 {
-    Q_D(const QAspectManager);
-    return d->m_changeArbiter;
+    return m_changeArbiter;
 }
 
 } // namespace Qt3D

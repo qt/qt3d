@@ -52,6 +52,7 @@ namespace Qt3D {
 class QAbstractAspect;
 class QEntity;
 class QAspectManager;
+class QJobManager;
 
 class QAbstractAspectPrivate : public QObjectPrivate
 {
@@ -62,6 +63,7 @@ public:
 
     QAspectManager *m_aspectManager;
     QEntity *m_root;
+    QJobManagerInterface *m_jobManager;
     QAbstractAspect::AspectType m_aspectType;
 };
 

@@ -42,7 +42,7 @@
 #include "qscheduler.h"
 
 #include "qabstractaspect.h"
-#include "qaspectmanager.h"
+#include "qaspectmanager_p.h"
 #include "qjobmanagerinterface.h"
 
 QT_BEGIN_NAMESPACE

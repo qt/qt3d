@@ -42,6 +42,7 @@
 #include "qabstractaspect.h"
 #include "qentity.h"
 #include <private/qabstractaspect_p.h>
+#include <Qt3DCore/qjobmanager.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -50,6 +51,7 @@ namespace Qt3D {
 QAbstractAspectPrivate::QAbstractAspectPrivate(QAbstractAspect *qq)
     : QObjectPrivate()
     , m_root(Q_NULLPTR)
+    , m_jobManager(Q_NULLPTR)
 {
     q_ptr = qq;
 }
@@ -93,6 +95,12 @@ void QAbstractAspect::unregisterAspect(QEntity *rootObject)
     Q_D(QAbstractAspect);
     unregisterAspectHelper(rootObject);
     d->m_root = rootObject;
+}
+
+QJobManagerInterface *QAbstractAspect::jobManager() const
+{
+    Q_D(const QAbstractAspect);
+    return d->m_jobManager;
 }
 
 void QAbstractAspect::initialize(QAspectManager *aspectManager)
