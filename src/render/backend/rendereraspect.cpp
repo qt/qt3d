@@ -126,18 +126,13 @@ QSceneObserverInterface *RendererAspect::sceneObserver() const
     return m_sceneObserver;
 }
 
-void RendererAspect::registerAspectHelper(QEntity *rootObject)
+void RendererAspect::setRootEntity(QEntity *rootObject)
 {
     // setSceneGraphRoot is synchronized using the Renderer's mutex
     m_renderer->setSceneGraphRoot(rootObject);
 }
 
-void RendererAspect::unregisterAspectHelper(QEntity *rootObject)
-{
-    Q_UNUSED(rootObject);
-}
-
-void RendererAspect::onInitialize()
+void RendererAspect::onInitialize(QSurface *surface)
 {
     m_renderer->setRendererAspect(this);
     m_renderer->createAllocators();

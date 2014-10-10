@@ -47,6 +47,8 @@
 
 QT_BEGIN_NAMESPACE
 
+class QSurface;
+
 namespace Qt3D {
 
 class QT3DBULLETPHYSICSSHARED_EXPORT BulletPhysicsAspect : public QAbstractAspect
@@ -61,10 +63,9 @@ public:
     QSceneObserverInterface *sceneObserver() const Q_DECL_OVERRIDE;
 
     // AbstractAspect interface
-protected:
-    void registerAspectHelper(QEntity *rootObject) Q_DECL_OVERRIDE;
-    void unregisterAspectHelper(QEntity *rootObject) Q_DECL_OVERRIDE;
-    void onInitialize() Q_DECL_OVERRIDE;
+private:
+    void setRootEntity(QEntity *rootObject) Q_DECL_OVERRIDE;
+    void onInitialize(QSurface *surface) Q_DECL_OVERRIDE;
     void onCleanup() Q_DECL_OVERRIDE;
 };
 

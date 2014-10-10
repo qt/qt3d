@@ -62,17 +62,12 @@ QSceneObserverInterface *OpenALAspect::sceneObserver() const
     return Q_NULLPTR;
 }
 
-void OpenALAspect::registerAspectHelper(QEntity *)
+void OpenALAspect::setRootEntity(QEntity *)
 {
 
 }
 
-void OpenALAspect::unregisterAspectHelper(QEntity *)
-{
-
-}
-
-void OpenALAspect::onInitialize()
+void OpenALAspect::onInitialize(QSurface *)
 {
 
 }

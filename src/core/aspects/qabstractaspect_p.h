@@ -61,7 +61,6 @@ public:
 
     Q_DECLARE_PUBLIC(QAbstractAspect)
 
-    QAspectManager *m_aspectManager;
     QEntity *m_root;
     QJobManagerInterface *m_jobManager;
     QAbstractAspect::AspectType m_aspectType;

@@ -62,17 +62,12 @@ QSceneObserverInterface *BulletPhysicsAspect::sceneObserver() const
     return Q_NULLPTR;
 }
 
-void BulletPhysicsAspect::registerAspectHelper(QEntity *rootObject)
+void BulletPhysicsAspect::setRootEntity(QEntity *rootObject)
 {
     Q_UNUSED(rootObject);
 }
 
-void BulletPhysicsAspect::unregisterAspectHelper(QEntity *rootObject)
-{
-    Q_UNUSED(rootObject);
-}
-
-void BulletPhysicsAspect::onInitialize()
+void BulletPhysicsAspect::onInitialize(QSurface *surface)
 {
 
 }

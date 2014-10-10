@@ -50,6 +50,7 @@
 QT_BEGIN_NAMESPACE
 
 class QWindow;
+class QSurface;
 
 namespace Qt3D {
 
@@ -79,28 +80,24 @@ public:
     explicit QAbstractAspect(AspectType aspectType, QObject *parent = 0);
 
     AspectType aspectType() const;
-    QAspectManager *aspectManager() const;
 
     void registerAspect(QEntity *rootObject);
-    void unregisterAspect(QEntity *rootObject);
 
     QJobManagerInterface *jobManager() const;
+
     virtual QSceneObserverInterface *sceneObserver() const = 0;
 
 protected:
-    Q_DECLARE_PRIVATE(QAbstractAspect)
     QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent = 0);
 
+private:
+    virtual void setRootEntity(QEntity *rootObject) = 0;
+    virtual void onInitialize(QSurface *surface) = 0;
+    virtual void onCleanup() = 0;
+
+    Q_DECLARE_PRIVATE(QAbstractAspect)
     // These are only called by the aspect manager
     friend class QAspectManager;
-    void initialize(QAspectManager *aspectManager);
-    void cleanup();
-
-    virtual void registerAspectHelper(QEntity *rootObject) = 0;
-    virtual void unregisterAspectHelper(QEntity *rootObject) = 0;
-
-    virtual void onInitialize() = 0;
-    virtual void onCleanup() = 0;
 };
 
 } // namespace Qt3D

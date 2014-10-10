@@ -74,12 +74,6 @@ QAbstractAspect::AspectType QAbstractAspect::aspectType() const
     return d->m_aspectType;
 }
 
-QAspectManager *QAbstractAspect::aspectManager() const
-{
-    Q_D(const QAbstractAspect);
-    return d->m_aspectManager;
-}
-
 void QAbstractAspect::registerAspect(QEntity *rootObject)
 {
     Q_D(QAbstractAspect);
@@ -87,32 +81,13 @@ void QAbstractAspect::registerAspect(QEntity *rootObject)
         return;
 
     d->m_root = rootObject;
-    registerAspectHelper(rootObject);
-}
-
-void QAbstractAspect::unregisterAspect(QEntity *rootObject)
-{
-    Q_D(QAbstractAspect);
-    unregisterAspectHelper(rootObject);
-    d->m_root = rootObject;
+    setRootEntity(rootObject);
 }
 
 QJobManagerInterface *QAbstractAspect::jobManager() const
 {
     Q_D(const QAbstractAspect);
     return d->m_jobManager;
-}
-
-void QAbstractAspect::initialize(QAspectManager *aspectManager)
-{
-    Q_D(QAbstractAspect);
-    d->m_aspectManager = aspectManager;
-    onInitialize();
-}
-
-void QAbstractAspect::cleanup()
-{
-    onCleanup();
 }
 
 } // of namespace Qt3D

@@ -65,14 +65,11 @@ public:
     QVector<QJobPtr> jobsToExecute() Q_DECL_OVERRIDE;
     QSceneObserverInterface *sceneObserver() const Q_DECL_OVERRIDE;
 
-protected:
-    void registerAspectHelper(QEntity *rootObject) Q_DECL_OVERRIDE;
-    void unregisterAspectHelper(QEntity *rootObject) Q_DECL_OVERRIDE;
-
-    void onInitialize() Q_DECL_OVERRIDE;
+private:
+    void setRootEntity(QEntity *rootObject) Q_DECL_OVERRIDE;
+    void onInitialize(QSurface *surface) Q_DECL_OVERRIDE;
     void onCleanup() Q_DECL_OVERRIDE;
 
-private:
     Render::Renderer *m_renderer;
     Render::RenderSceneObserver *m_sceneObserver;
 };

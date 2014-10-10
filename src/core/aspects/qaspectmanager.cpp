@@ -55,6 +55,7 @@
 #include <QThread>
 #include <QWaitCondition>
 #include <QWindow>
+#include <QSurface>
 
 
 QT_BEGIN_NAMESPACE
@@ -93,9 +94,9 @@ void QAspectManager::initialize()
 void QAspectManager::shutdown()
 {
     qCDebug(Aspects) << Q_FUNC_INFO;
+
     Q_FOREACH (QAbstractAspect *aspect, m_aspects) {
-        aspect->unregisterAspect(m_root);
-        aspect->cleanup();
+        aspect->onCleanup();
         m_changeArbiter->unregisterSceneObserver(aspect->sceneObserver());
     }
     qDeleteAll(m_aspects);
@@ -116,26 +117,19 @@ void QAspectManager::setRoot(QNode *rootObject)
     if (m_root) {
         // Allow each aspect chance to cleanup any resources from this scene
         Q_FOREACH (QAbstractAspect *aspect, m_aspects)
-            aspect->unregisterAspect(m_root);
-
-        // Allow each aspect chance to cleanup any scene-independent resources
-        Q_FOREACH (QAbstractAspect *aspect, m_aspects)
-            aspect->cleanup();
+            aspect->onCleanup();
 
         // Destroy all aspects
         qDeleteAll(m_aspects);
         m_aspects.clear();
-
         m_root = Q_NULLPTR;
     }
 
     m_root = root;
 
     if (m_root) {
-
         Q_FOREACH (QAbstractAspect *aspect, m_aspects)
             aspect->registerAspect(m_root);
-
         m_runMainLoop.fetchAndStoreOrdered(1);
     }
 }
@@ -160,7 +154,8 @@ void QAspectManager::registerAspect(QAbstractAspect *aspect)
 
     if (aspect != Q_NULLPTR) {
         m_aspects.append(aspect);
-        aspect->initialize(this);
+        if (m_window != Q_NULLPTR)
+            aspect->onInitialize(m_window);
         // Register sceneObserver with the QChangeArbiter
         m_changeArbiter->registerSceneObserver(aspect->sceneObserver());
     }

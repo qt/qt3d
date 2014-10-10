@@ -60,10 +60,9 @@ public:
     QSceneObserverInterface *sceneObserver() const Q_DECL_OVERRIDE;
 
     // AbstractAspect interface
-protected:
-    void registerAspectHelper(QEntity *rootObject) Q_DECL_OVERRIDE;
-    void unregisterAspectHelper(QEntity *rootObject) Q_DECL_OVERRIDE;
-    void onInitialize() Q_DECL_OVERRIDE;
+private:
+    void setRootEntity(QEntity *rootObject) Q_DECL_OVERRIDE;
+    void onInitialize(QSurface *) Q_DECL_OVERRIDE;
     void onCleanup() Q_DECL_OVERRIDE;
 };
 
