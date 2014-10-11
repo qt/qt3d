@@ -59,10 +59,10 @@ GBuffer::GBuffer(Qt3D::QNode *parent)
     };
 
     const QString attachmentNames[AttachmentsCount] = {
-        QStringLiteral("color"),
-        QStringLiteral("position"),
-        QStringLiteral("normal"),
-        QStringLiteral("depth")
+        QString::fromLatin1("color"),
+        QString::fromLatin1("position"),
+        QString::fromLatin1("normal"),
+        QString::fromLatin1("depth")
     };
 
     for (int i = 0; i < AttachmentsCount; i++) {
