@@ -188,6 +188,13 @@ void QChangeArbiter::appendChangeQueue(QChangeArbiter::ChangeQueue *queue)
     d->m_changeQueues.append(queue);
 }
 
+void QChangeArbiter::removeChangeQueue(QChangeArbiter::ChangeQueue *queue)
+{
+    Q_D(QChangeArbiter);
+    QMutexLocker locker(&(d->m_mutex));
+    d->m_changeQueues.removeOne(queue);
+}
+
 void QChangeArbiter::appendLockingChangeQueue(QChangeArbiter::ChangeQueue *queue)
 {
     Q_D(QChangeArbiter);
@@ -337,6 +344,12 @@ void QChangeArbiter::destroyThreadLocalChangeQueue(void *changeArbiter)
 {
     // TODO: Implement me!
     Q_UNUSED(changeArbiter);
+    QChangeArbiter *arbiter = static_cast<QChangeArbiter *>(changeArbiter);
+    if (arbiter->tlsChangeQueue()->hasLocalData()) {
+        ChangeQueue *localChangeQueue = arbiter->tlsChangeQueue()->localData();
+        arbiter->removeChangeQueue(localChangeQueue);
+        arbiter->tlsChangeQueue()->setLocalData(Q_NULLPTR);
+    }
 }
 
 } // namespace Qt3D

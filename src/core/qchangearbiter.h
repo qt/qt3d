@@ -110,6 +110,7 @@ protected:
 
     QThreadStorage<ChangeQueue *> *tlsChangeQueue();
     void appendChangeQueue(ChangeQueue *queue);
+    void removeChangeQueue(ChangeQueue *queue);
     void appendLockingChangeQueue(ChangeQueue *queue);
 
     Q_DECLARE_PRIVATE(QChangeArbiter)
