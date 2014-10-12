@@ -131,16 +131,17 @@ void QGraphicsContext::initialize()
     m_textureScopes.resize(numTexUnits);
 }
 
-void QGraphicsContext::beginDrawing(const QColor &clearColor)
+bool QGraphicsContext::beginDrawing(const QColor &clearColor)
 {
     if (!m_gl || !m_surface) {
         qCWarning(Backend) << Q_FUNC_INFO << "no content or surface provided";
-        return;
+        return false;
     }
 
     bool ok = m_gl->makeCurrent(m_surface);
     if (!ok) {
         qCWarning(Backend) << Q_FUNC_INFO << "make current failed";
+        return false;
     }
 
     GLint err = m_gl->functions()->glGetError();
@@ -156,6 +157,8 @@ void QGraphicsContext::beginDrawing(const QColor &clearColor)
 
     if (m_activeShader)
         m_activeShader = NULL;
+
+    return true;
 }
 
 void QGraphicsContext::clearBackBuffer(QClearBuffer::BufferType buffers)

@@ -97,7 +97,7 @@ public:
 
     int id() const; // unique, small integer ID of this context
 
-    void beginDrawing(const QColor &clearColor);
+    bool beginDrawing(const QColor &clearColor);
     void clearBackBuffer(QClearBuffer::BufferType buffers);
     void endDrawing();
 

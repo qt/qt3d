@@ -472,8 +472,10 @@ void Renderer::submitRenderViews()
         if (renderViewsCount <= 0)
             continue;
 
-        // The clear color is the same for all RenderViews
-        m_graphicsContext->beginDrawing(renderViews.first()->clearColor());
+        // Bail out if we cannot make the OpenGL context current (e.g. if the window has been destroyed)
+        if (!m_graphicsContext->beginDrawing(renderViews.first()->clearColor()))
+            break;
+
         qCDebug(Memory) << Q_FUNC_INFO << "rendering frame " << renderViews.last()->frameIndex() << " Queue " << m_renderQueues->queuedFrames();
         for (int i = 0; i < renderViewsCount; i++) {
             // Set RenderTarget ...
