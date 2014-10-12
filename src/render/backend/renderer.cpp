@@ -244,7 +244,11 @@ void Renderer::buildDefaultMaterial()
 
 Renderer::~Renderer()
 {
+    // Bail out of the main render loop. Ensure that even if the render thread
+    // is waiting on RenderViews to be populated that we wake up the wait condition.
+    // We check for termination immediately after being awoken.
     m_running.fetchAndStoreOrdered(0);
+    m_submitRenderViewsCondition.wakeOne();
     m_renderThread->wait();
 }
 
@@ -448,6 +452,13 @@ void Renderer::submitRenderViews()
     // Otherwise it waits for submission to be done so as to never miss
     // Any important state change that could be in a RenderView
     locker.unlock();
+
+    // Make sure that we've not been told to terminate whilst waiting on
+    // the above wait condition
+    if (!m_running.load()) {
+        qCDebug(Rendering) << "RenderThread termination requested whilst waiting";
+        return;
+    }
 
     QElapsedTimer timer;
     quint64 queueElapsed = 0;
