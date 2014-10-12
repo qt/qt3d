@@ -222,9 +222,6 @@ void QAspectManager::exec()
         // Only enter main render loop once the renderer and other aspects are initialized
         while (d->m_runMainLoop.load())
         {
-            // Process any pending events
-            eventLoop.processEvents();
-
             // Update the clocks (just main clock for now).
             // TODO: Add additional clocks
             qint64 t = tickClock.waitForNextTick();
@@ -241,6 +238,9 @@ void QAspectManager::exec()
 
             // Distribute accumulated changes
             d->m_changeArbiter->syncChanges();
+
+            // Process any pending events
+            eventLoop.processEvents();
         }
     }
 }
