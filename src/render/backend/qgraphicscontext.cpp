@@ -176,8 +176,8 @@ void QGraphicsContext::clearBackBuffer(QClearBuffer::BufferType buffers)
 
 void QGraphicsContext::endDrawing()
 {
-    m_gl->doneCurrent();
     m_gl->swapBuffers(m_surface);
+    m_gl->doneCurrent();
     m_stateSet = Q_NULLPTR;
     decayTextureScores();
 }
