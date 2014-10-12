@@ -74,6 +74,7 @@ Window::Window(QScreen *screen)
     format.setSamples( 4 );
     format.setProfile(QSurfaceFormat::CoreProfile);
     setFormat(format);
+    create();
 
     m_aspectEngine->initialize();
     m_aspectEngine->setWindow(this);
