@@ -171,15 +171,6 @@ Renderer::Renderer(int cachedFrames)
     buildDefaultTechnique();
     buildDefaultMaterial();
     loadSceneParsers();
-
-    QLoggingCategory::setFilterRules(QString::fromUtf8( // multiline QStringLiteral doesn't compile on Windows...
-                                                        "Qt3D.Render.*.debug=false\n"
-                                                        //                                     "Qt3D.Render.Memory.debug=true\n"
-                                                        //                                     "Qt3D.Render.Rendering.debug=true\n"
-                                                        //                                     "Qt3D.Render.RenderNodes.debug=true\n"
-                                                        //                                     "Qt3D.Render.Frontend.debug=true\n"
-                                                        //                                     "qml.debug=true\n"
-                                                        ));
 }
 
 void Renderer::buildDefaultTechnique()
