@@ -104,6 +104,7 @@
 
 #include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/qaspectmanager.h>
+#include <Qt3DCore/qjobmanagerinterface.h>
 
 #include <QStack>
 #include <QSurface>
@@ -250,6 +251,65 @@ Renderer::~Renderer()
     m_running.fetchAndStoreOrdered(0);
     m_submitRenderViewsCondition.wakeOne();
     m_renderThread->wait();
+
+    // Clean up the TLS allocators
+    destroyAllocators();
+}
+
+void Renderer::createAllocators()
+{
+    // Issue a set of jobs to create an allocator in TLS for each worker thread
+    Q_ASSERT(m_rendererAspect);
+    QJobManagerInterface *jobManager = rendererAspect()->aspectManager()->jobManager();
+    Q_ASSERT(jobManager);
+    jobManager->waitForPerThreadFunction(Renderer::createThreadLocalAllocator, this);
+}
+
+void Renderer::destroyAllocators()
+{
+    // Issue a set of jobs to create an allocator in TLS for each worker thread
+    Q_ASSERT(m_rendererAspect);
+    QJobManagerInterface *jobManager = rendererAspect()->aspectManager()->jobManager();
+    Q_ASSERT(jobManager);
+    jobManager->waitForPerThreadFunction(Renderer::destroyThreadLocalAllocator, this);
+}
+
+QThreadStorage<QPair<int, QFrameAllocatorQueue *> *> *Renderer::tlsAllocators()
+{
+    return &m_tlsAllocators;
+}
+
+void Renderer::createThreadLocalAllocator(void *renderer)
+{
+    Q_ASSERT(renderer);
+    Renderer *theRenderer = static_cast<Renderer *>(renderer);
+    if (!theRenderer->tlsAllocators()->hasLocalData()) {
+        // RenderView has a sizeof 72
+        // RenderCommand has a sizeof 128
+        // QMatrix4x4 has a sizeof 68
+        // May need to fine tune parameters passed to QFrameAllocator for best performances
+        // We need to allocate one more buffer than we have frames to handle the case where we're computing frame 5
+        // While old frame 5 is being rendered
+        QFrameAllocatorQueue *allocatorQueue = new QFrameAllocatorQueue();
+        qDebug() << "cachedFrameCount =" << theRenderer->cachedFramesCount();
+        for (int i = 0; i < theRenderer->cachedFramesCount(); i++)
+            allocatorQueue->append(new QFrameAllocator(128, 16, 128));
+        theRenderer->tlsAllocators()->setLocalData(new QPair<int, QFrameAllocatorQueue *>(0, allocatorQueue));
+    }
+}
+
+void Renderer::destroyThreadLocalAllocator(void *renderer)
+{
+    Q_ASSERT(renderer);
+    Renderer *theRenderer = static_cast<Renderer *>(renderer);
+    if (theRenderer->tlsAllocators()->hasLocalData()) {
+        QPair<int, QFrameAllocatorQueue *> *frameAllocatorPair = theRenderer->tlsAllocators()->localData();
+        QFrameAllocatorQueue *allocatorQueue = frameAllocatorPair->second;
+        qDeleteAll(*allocatorQueue);
+        allocatorQueue->clear();
+        delete allocatorQueue;
+        theRenderer->tlsAllocators()->setLocalData(Q_NULLPTR);
+    }
 }
 
 // Called in RenderThread context by the run method of RenderThread
@@ -304,28 +364,15 @@ void Renderer::initialize()
 QFrameAllocator *Renderer::currentFrameAllocator(int frameIndex)
 {
     // frameIndex between 0 and m_cachedFramesCount
-    if (!m_tlsAllocators.hasLocalData()) {
-        qCDebug(Render::Backend) << Q_FUNC_INFO << "Initializing local data for Thread " << QThread::currentThread();
-        // RenderView has a sizeof 72
-        // RenderCommand has a sizeof 128
-        // QMatrix4x4 has a sizeof 68
-        // May need to fine tune parameters passed to QFrameAllocator for best performances
-        // We need to allocate one more buffer than we have frames to handle the case where we're computing frame 5
-        // While old frame 5 is being rendered
-        QFrameAllocatorQueue *allocatorQueue = new QFrameAllocatorQueue();
-        for (int i = 0; i < m_cachedFramesCount; i++)
-            allocatorQueue->append(new QFrameAllocator(128, 16, 128));
-        m_tlsAllocators.setLocalData(QPair<int, QFrameAllocatorQueue *>(0, allocatorQueue));
-    }
-    QPair<int, QFrameAllocatorQueue *> &data = m_tlsAllocators.localData();
     // Check if index is the same as the current frame
     // Otherwise we have to clear the QFrameAllocator at frameIndex
-    if (data.first != frameIndex) {
-        qCDebug(Render::Memory) << Q_FUNC_INFO << "clearing " << frameIndex << " previous" << data.first;
-        data.first = frameIndex;
-        data.second->at(frameIndex)->clear();
+    QPair<int, QFrameAllocatorQueue *> *data = m_tlsAllocators.localData();
+    if (data->first != frameIndex) {
+        qCDebug(Render::Memory) << Q_FUNC_INFO << "clearing " << frameIndex << " previous" << data->first;
+        data->first = frameIndex;
+        data->second->at(frameIndex)->clear();
     }
-    return data.second->at(frameIndex);
+    return data->second->at(frameIndex);
 }
 
 void Renderer::setFrameGraphRoot(Render::FrameGraphNode *fgRoot)

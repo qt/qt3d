@@ -140,6 +140,7 @@ void RendererAspect::unregisterAspectHelper(QEntity *rootObject)
 void RendererAspect::onInitialize()
 {
     m_renderer->setRendererAspect(this);
+    m_renderer->createAllocators();
     // setSurface is synchronized using the Renderer's mutex
     m_renderer->setSurface(aspectManager()->window());
 }

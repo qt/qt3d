@@ -138,6 +138,11 @@ public:
     void setRendererAspect(RendererAspect *aspect) { m_rendererAspect = aspect; }
     RendererAspect *rendererAspect() const { return m_rendererAspect; }
 
+    void createAllocators();
+    void destroyAllocators();
+
+    QThreadStorage<QPair<int, QFrameAllocatorQueue *> *> *tlsAllocators();
+
     void setFrameGraphRoot(Render::FrameGraphNode *fgRoot);
     Render::FrameGraphNode *frameGraphRoot() const;
 
@@ -276,7 +281,9 @@ private:
     uint m_frameCount;
     int m_currentPreprocessingFrameIndex;
 
-    QThreadStorage< QPair<int, QFrameAllocatorQueue *> > m_tlsAllocators;
+    static void createThreadLocalAllocator(void *renderer);
+    static void destroyThreadLocalAllocator(void *renderer);
+    QThreadStorage< QPair<int, QFrameAllocatorQueue *> *> m_tlsAllocators;
 
     const int m_cachedFramesCount;
     QAtomicInt m_running;
