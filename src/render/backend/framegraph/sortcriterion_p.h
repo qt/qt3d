@@ -45,6 +45,7 @@
 #include <QUuid>
 #include <Qt3DCore/private/qobserverinterface_p.h>
 #include <Qt3DRenderer/qsortcriterion.h>
+#include <Qt3DCore/qbackendnode.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -52,25 +53,21 @@ namespace Qt3D {
 
 namespace Render {
 
-class Renderer;
+class SortCriterionManager;
 
-class SortCriterion : public QObserverInterface
+class SortCriterion : public QBackendNode
 {
 public:
     SortCriterion();
 
     void cleanup();
-    void setRenderer(Renderer *renderer);
-    void setPeer(QSortCriterion *peer);
+    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
 
-    QUuid criterionUuid() const;
     QSortCriterion::SortType sortType() const;
 
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    Renderer *m_renderer;
-    QUuid m_criterionUuid;
     QSortCriterion::SortType m_type;
 };
 

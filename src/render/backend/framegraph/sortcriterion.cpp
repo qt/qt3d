@@ -40,11 +40,8 @@
 ****************************************************************************/
 
 #include "sortcriterion_p.h"
-#include <Qt3DRenderer/rendereraspect.h>
-#include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DCore/private/qchangearbiter_p.h>
+#include <Qt3DRenderer/private/sortcriterionmanager_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -53,44 +50,19 @@ namespace Qt3D {
 namespace Render {
 
 SortCriterion::SortCriterion()
-    : m_renderer(Q_NULLPTR)
+    : QBackendNode()
     , m_type(QSortCriterion::StateChangeCost)
 {
 }
 
 void SortCriterion::cleanup()
 {
-    if (m_renderer != Q_NULLPTR && !m_criterionUuid.isNull())
-        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_criterionUuid);
 }
 
-void SortCriterion::setRenderer(Renderer *renderer)
+void SortCriterion::updateFromPeer(QNode *peer)
 {
-    m_renderer = renderer;
-}
-
-void SortCriterion::setPeer(QSortCriterion *peer)
-{
-    QUuid peerUuid;
-    if (peer != Q_NULLPTR)
-        peerUuid = peer->uuid();
-    if (peerUuid != m_criterionUuid) {
-        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        if (!m_criterionUuid.isNull()) {
-            arbiter->unregisterObserver(this, m_criterionUuid);
-            m_type = QSortCriterion::StateChangeCost;
-        }
-        m_criterionUuid = peerUuid;
-        if (!m_criterionUuid.isNull()) {
-            arbiter->registerObserver(this, m_criterionUuid, NodeUpdated);
-            m_type = peer->sort();
-        }
-    }
-}
-
-QUuid SortCriterion::criterionUuid() const
-{
-    return m_criterionUuid;
+    QSortCriterion *criterion = static_cast<QSortCriterion *>(peer);
+    m_type = criterion->sort();
 }
 
 QSortCriterion::SortType SortCriterion::sortType() const
