@@ -40,10 +40,7 @@
 ****************************************************************************/
 
 #include "rendercriterion_p.h"
-#include <Qt3DRenderer/rendereraspect.h>
-#include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DCore/private/qaspectmanager_p.h>
-#include <Qt3DCore/private/qchangearbiter_p.h>
+#include "criterionmanager_p.h"
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -53,8 +50,7 @@ namespace Qt3D {
 namespace Render {
 
 RenderCriterion::RenderCriterion()
-    : m_renderer(Q_NULLPTR)
-    , m_peer(Q_NULLPTR)
+    : QBackendNode()
 {
 }
 
@@ -65,32 +61,16 @@ RenderCriterion::~RenderCriterion()
 
 void RenderCriterion::cleanup()
 {
-    if (m_renderer != Q_NULLPTR && !m_criterionUuid.isNull())
-        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_criterionUuid);
 }
 
-void RenderCriterion::setPeer(QCriterion *criterion)
+void RenderCriterion::updateFromPeer(QNode *peer)
 {
-    if (m_peer != criterion) {
-        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        if (!m_criterionUuid.isNull()) {
-            arbiter->unregisterObserver(this, m_criterionUuid);
-            m_criterionUuid = QUuid();
-        }
-        m_peer = criterion;
-        if (m_peer) {
-            m_criterionUuid = criterion->uuid();
-            arbiter->registerObserver(this, m_criterionUuid, NodeUpdated);
-            m_value = m_peer->value();
-            m_name = m_peer->name();
-        }
-    }
+    QCriterion *criterion = static_cast<QCriterion *>(peer);
+
+    m_value = criterion->value();
+    m_name = criterion->name();
 }
 
-void RenderCriterion::setRenderer(Renderer *renderer)
-{
-    m_renderer = renderer;
-}
 
 QVariant RenderCriterion::criterionValue() const
 {
@@ -110,11 +90,6 @@ void RenderCriterion::sceneChangeEvent(const QSceneChangePtr &e)
         m_value = propertyChange->value();
     else if (propertyChange->propertyName() == QByteArrayLiteral("name"))
         m_name = propertyChange->value().toString();
-}
-
-QUuid RenderCriterion::criterionUuid() const
-{
-    return m_criterionUuid;
 }
 
 bool RenderCriterion::operator ==(const RenderCriterion &other)

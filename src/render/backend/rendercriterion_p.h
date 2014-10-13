@@ -44,6 +44,7 @@
 
 #include <Qt3DRenderer/qcriterion.h>
 #include <Qt3DCore/private/qobserverinterface_p.h>
+#include <Qt3DCore/qbackendnode.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -53,30 +54,25 @@ class QCriterion;
 
 namespace Render {
 
-class Renderer;
+class CriterionManager;
 
-class RenderCriterion : public QObserverInterface
+class RenderCriterion : public QBackendNode
 {
 public:
     RenderCriterion();
     ~RenderCriterion();
     void cleanup();
-    void setPeer(QCriterion *criterion);
-    void setRenderer(Renderer *renderer);
+    void updateFromPeer(QNode *criterion) Q_DECL_OVERRIDE;
 
     QVariant criterionValue() const;
     QString criterionName() const;
     void sceneChangeEvent(const QSceneChangePtr &e);
-    QUuid criterionUuid() const;
     bool operator ==(const RenderCriterion &other);
     bool operator !=(const RenderCriterion &other);
 
 private:
-    Renderer *m_renderer;
-    QCriterion *m_peer;
     QVariant m_value;
     QString m_name;
-    QUuid m_criterionUuid;
 };
 
 } // Render
