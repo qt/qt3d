@@ -40,12 +40,9 @@
 ****************************************************************************/
 
 #include <Qt3DRenderer/private/renderattachment_p.h>
-#include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DCore/private/qchangearbiter_p.h>
-#include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRenderer/qtexture.h>
-#include <Qt3DRenderer/rendereraspect.h>
+#include <Qt3DRenderer/private/attachmentmanager_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -54,43 +51,21 @@ namespace Qt3D {
 namespace Render {
 
 RenderAttachment::RenderAttachment()
-    : m_renderer(Q_NULLPTR)
+    : QBackendNode()
 {
 }
 
-void RenderAttachment::setPeer(QRenderAttachment *peer)
+void RenderAttachment::updateFromPeer(QNode *peer)
 {
-    QUuid peerUuid;
-    if (peer != Q_NULLPTR)
-        peerUuid = peer->uuid();
-    if (peerUuid != m_attachmentUuid) {
-        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        if (!m_attachmentUuid.isNull()) {
-            arbiter->unregisterObserver(this, peerUuid);
-            m_attachmentData = Attachment();
-        }
-        m_attachmentUuid = peerUuid;
-        if (!m_attachmentUuid.isNull()) {
-            arbiter->registerObserver(this, m_attachmentUuid, NodeUpdated);
-            m_attachmentData.m_mipLevel = peer->mipLevel();
-            m_attachmentData.m_layer = peer->layer();
-            m_attachmentData.m_type = peer->type();
-            m_attachmentData.m_face = peer->face();
-            m_attachmentData.m_name = peer->name();
-            if (peer->texture())
-                m_attachmentData.m_textureUuid = peer->texture()->uuid();
-        }
-    }
-}
+    QRenderAttachment *attachment = static_cast<QRenderAttachment *>(peer);
 
-void RenderAttachment::setRenderer(Renderer *renderer)
-{
-    m_renderer = renderer;
-}
-
-QUuid RenderAttachment::attachmentUuid() const
-{
-    return m_attachmentUuid;
+    m_attachmentData.m_mipLevel = attachment->mipLevel();
+    m_attachmentData.m_layer = attachment->layer();
+    m_attachmentData.m_type = attachment->type();
+    m_attachmentData.m_face = attachment->face();
+    m_attachmentData.m_name = attachment->name();
+    if (attachment->texture())
+        m_attachmentData.m_textureUuid = attachment->texture()->uuid();
 }
 
 QUuid RenderAttachment::textureUuid() const

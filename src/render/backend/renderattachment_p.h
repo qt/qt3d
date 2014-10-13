@@ -42,9 +42,9 @@
 #ifndef QT3D_RENDER_RENDERATTACHMENT_H
 #define QT3D_RENDER_RENDERATTACHMENT_H
 
-#include <Qt3DCore/private/qobserverinterface_p.h>
 #include <Qt3DRenderer/qrenderattachment.h>
 #include <Qt3DRenderer/private/attachmentpack_p.h>
+#include <Qt3DCore/qbackendnode.h>
 #include <QUuid>
 
 QT_BEGIN_NAMESPACE
@@ -55,17 +55,15 @@ class QRenderAttachment;
 
 namespace Render {
 
-class Renderer;
+class AttachmentManager;
 
-class RenderAttachment : public QObserverInterface
+class RenderAttachment : public QBackendNode
 {
 public:
     RenderAttachment();
 
-    void setPeer(QRenderAttachment *peer);
-    void setRenderer(Renderer *renderer);
+    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
 
-    QUuid attachmentUuid() const;
     QUuid textureUuid() const;
     int mipLevel() const;
     int layer() const;
@@ -77,7 +75,6 @@ public:
 
 private:
     QUuid m_attachmentUuid;
-    Renderer *m_renderer;
     Attachment m_attachmentData;
 };
 
