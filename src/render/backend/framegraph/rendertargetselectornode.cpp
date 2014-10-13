@@ -59,23 +59,12 @@ RenderTargetSelector::RenderTargetSelector() :
 {
 }
 
-void RenderTargetSelector::setPeer(QRenderTargetSelector *peer)
+void RenderTargetSelector::updateFromPeer(QNode *peer)
 {
-    QUuid peerUuid;
-    if (peer != Q_NULLPTR)
-        peerUuid = peer->uuid();
-    if (m_frontendUuid != peerUuid) {
-        if (!m_frontendUuid.isNull()) {
-            m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_frontendUuid);
-            m_renderTargetUuid = QUuid();
-        }
-        m_frontendUuid = peerUuid;
-        if (!m_frontendUuid.isNull()) {
-            m_renderer->rendererAspect()->aspectManager()->changeArbiter()->registerObserver(this, m_frontendUuid, NodeUpdated);
-            if (peer->target() != Q_NULLPTR)
-                m_renderTargetUuid = peer->target()->uuid();
-        }
-    }
+    QRenderTargetSelector *selector = static_cast<QRenderTargetSelector *>(peer);
+    m_renderTargetUuid = QUuid();
+    if (selector->target() != Q_NULLPTR)
+        m_renderTargetUuid = selector->target()->uuid();
 }
 
 void RenderTargetSelector::sceneChangeEvent(const QSceneChangePtr &e)

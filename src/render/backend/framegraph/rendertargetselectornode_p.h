@@ -57,7 +57,7 @@ class RenderTargetSelector : public FrameGraphNode
 public:
     RenderTargetSelector();
 
-    void setPeer(QRenderTargetSelector *peer);
+    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
     QUuid renderTargetUuid() const;
 
