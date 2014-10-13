@@ -61,9 +61,9 @@ ParameterPack::ParameterPack()
 ParameterPack::~ParameterPack()
 {
     if (m_renderer != Q_NULLPTR && !m_peers.empty()) {
-        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        Q_FOREACH (const QUuid peer, m_peers)
-            arbiter->unregisterObserver(this, peer);
+//        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
+//        Q_FOREACH (const QUuid peer, m_peers)
+//            arbiter->unregisterObserver(this, peer);
     }
 }
 
@@ -76,8 +76,8 @@ void ParameterPack::appendParameter(QParameter *param)
 {
     if (!m_peers.contains(param->uuid())) {
         m_peers << param->uuid();
-        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        arbiter->registerObserver(this, param->uuid(), NodeUpdated);
+//        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
+//        arbiter->registerObserver(this, param->uuid(), NodeUpdated);
         m_namedValues[param->name()] = param->value();
     }
 }
@@ -87,18 +87,18 @@ void ParameterPack::removeParameter(QParameter *param)
     if (m_peers.contains(param->uuid())) {
         m_peers.removeOne(param->uuid());
         m_namedValues.remove(param->name());
-        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        arbiter->unregisterObserver(this, param->uuid());
+//        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
+//        arbiter->unregisterObserver(this, param->uuid());
     }
 }
 
 void ParameterPack::clear()
 {
     m_namedValues.clear();
-    QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-    Q_FOREACH (const QUuid &peerId, m_peers) {
-        arbiter->unregisterObserver(this, peerId);
-    }
+//    QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
+//    Q_FOREACH (const QUuid &peerId, m_peers) {
+//        arbiter->unregisterObserver(this, peerId);
+//    }
 }
 
 void ParameterPack::sceneChangeEvent(const QSceneChangePtr &e)
