@@ -259,11 +259,11 @@ void QGraphicsContext::activateRenderTarget(RenderTarget *renderTarget, const At
     GLuint fboId = 0; // Default FBO
     if (renderTarget != Q_NULLPTR) {
         // New RenderTarget
-        if (!m_renderTargets.contains(renderTarget->renderTargetUuid())) {
+        if (!m_renderTargets.contains(renderTarget->peerUuid())) {
             // The FBO is created and its attachments are set once
             if ((fboId = m_glHelper->createFrameBufferObject()) != 0) {
                 // Insert FBO into hash
-                m_renderTargets.insert(renderTarget->renderTargetUuid(), fboId);
+                m_renderTargets.insert(renderTarget->peerUuid(), fboId);
                 // Bind FBO
                 m_glHelper->bindFrameBufferObject(fboId);
                 bindFrameBufferAttachmentHelper(fboId, attachments);
@@ -271,7 +271,7 @@ void QGraphicsContext::activateRenderTarget(RenderTarget *renderTarget, const At
                 qCritical() << "Failed to create FBO";
             }
         } else {
-            fboId = m_renderTargets.value(renderTarget->renderTargetUuid());
+            fboId = m_renderTargets.value(renderTarget->peerUuid());
 
             // We need to check if  one of the attachment was resized
             bool needsResize = false;

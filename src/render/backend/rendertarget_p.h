@@ -44,6 +44,7 @@
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DCore/private/qobserverinterface_p.h>
+#include <Qt3DCore/qbackendnode.h>
 #include <QUuid>
 #include <QList>
 
@@ -56,28 +57,24 @@ class QRenderAttachment;
 
 namespace Render {
 
-class Renderer;
+class RenderTargetManager;
 
-class RenderTarget : public QObserverInterface
+class RenderTarget : public QBackendNode
 {
 public:
     RenderTarget();
 
-    void setPeer(QRenderTarget *peer);
-    void setRenderer(Renderer *renderer);
+    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
     void cleanup();
 
     void appendRenderAttachment(QRenderAttachment *attachment);
     void removeRenderAttachment(const QUuid &attachmentId);
 
     QList<QUuid> renderAttachments() const;
-    QUuid renderTargetUuid() const;
 
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    Renderer *m_renderer;
-    QUuid m_renderTargetUuid;
     QList<QUuid> m_renderAttachments;
 };
 

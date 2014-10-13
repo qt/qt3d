@@ -40,13 +40,10 @@
 ****************************************************************************/
 
 #include <Qt3DRenderer/private/rendertarget_p.h>
-#include <Qt3DCore/private/qchangearbiter_p.h>
-#include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRenderer/qrendertarget.h>
 #include <Qt3DRenderer/qrenderattachment.h>
-#include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DRenderer/rendereraspect.h>
+#include <Qt3DRenderer/private/rendertargetmanager_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -55,40 +52,20 @@ namespace Qt3D {
 namespace Render {
 
 RenderTarget::RenderTarget()
-    : m_renderer(Q_NULLPTR)
+    : QBackendNode()
 {
 }
 
-void RenderTarget::setPeer(QRenderTarget *peer)
+void RenderTarget::updateFromPeer(QNode *peer)
 {
-    QUuid peerUuid;
-
-    if (peer != Q_NULLPTR)
-        peerUuid = peer->uuid();
-    if (peerUuid != m_renderTargetUuid) {
-        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        if (!m_renderTargetUuid.isNull()) {
-            arbiter->unregisterObserver(this, m_renderTargetUuid);
-            m_renderAttachments.clear();
-        }
-        m_renderTargetUuid = peerUuid;
-        if (!m_renderTargetUuid.isNull()) {
-            arbiter->registerObserver(this, m_renderTargetUuid, NodeAdded|NodeRemoved|NodeUpdated);
-            Q_FOREACH (QRenderAttachment *att, peer->attachments())
-                appendRenderAttachment(att);
-        }
-    }
-}
-
-void RenderTarget::setRenderer(Renderer *renderer)
-{
-    m_renderer = renderer;
+    QRenderTarget *target = static_cast<QRenderTarget *>(peer);
+    m_renderAttachments.clear();
+    Q_FOREACH (QRenderAttachment *att, target->attachments())
+        appendRenderAttachment(att);
 }
 
 void RenderTarget::cleanup()
 {
-    if (m_renderer != Q_NULLPTR && !m_renderTargetUuid.isNull())
-        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_renderTargetUuid);
 }
 
 void RenderTarget::appendRenderAttachment(QRenderAttachment *attachment)
@@ -105,11 +82,6 @@ void RenderTarget::removeRenderAttachment(const QUuid &attachmentId)
 QList<QUuid> RenderTarget::renderAttachments() const
 {
     return m_renderAttachments;
-}
-
-QUuid RenderTarget::renderTargetUuid() const
-{
-    return m_renderTargetUuid;
 }
 
 void RenderTarget::sceneChangeEvent(const QSceneChangePtr &e)
