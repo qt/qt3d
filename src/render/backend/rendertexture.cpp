@@ -40,6 +40,7 @@
 ****************************************************************************/
 
 #include "rendertexture_p.h"
+#include "texturemanager_p.h"
 
 #include <QDebug>
 #include <QOpenGLFunctions>
@@ -47,7 +48,6 @@
 #include <QOpenGLPixelTransferOptions>
 #include <qtexture.h>
 #include <texturedata.h>
-#include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/rendereraspect.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
@@ -59,8 +59,8 @@ namespace Qt3D {
 namespace Render {
 
 RenderTexture::RenderTexture()
-    : m_gl(Q_NULLPTR)
-    , m_renderer(Q_NULLPTR)
+    : QBackendNode()
+    , m_gl(Q_NULLPTR)
     , m_width(1)
     , m_height(1)
     , m_depth(1)
@@ -90,42 +90,27 @@ void RenderTexture::cleanup()
     m_lock = Q_NULLPTR;
 }
 
-void RenderTexture::setPeer(QTexture *peer)
+void RenderTexture::updateFromPeer(QNode *peer)
 {
-    QUuid peerUuid;
-    if (peer != Q_NULLPTR)
-        peerUuid = peer->uuid();
-    if (peerUuid != m_textureUuid) {
-        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        if (!m_textureUuid.isNull()) {
-            arbiter->unregisterObserver(this, m_textureUuid);
-            m_gl->destroy();
-            delete m_gl;
-            m_gl = Q_NULLPTR;
-        }
-        m_textureUuid = peerUuid;
-        if (!m_textureUuid.isNull()) {
-            arbiter->registerObserver(this, m_textureUuid, NodeUpdated);
-            m_width = peer->width();
-            m_height = peer->height();
-            m_depth = peer->depth();
-            m_generateMipMaps = peer->generateMipMaps();
-            m_target = peer->target();
-            m_format = peer->format();
-            m_magnificationFilter = peer->magnificationFilter();
-            m_minificationFilter = peer->minificationFilter();
-            m_wrapMode = peer->wrapMode();
-            m_maximumAnisotropy = peer->maximumAnisotropy();
-            // See where it is best to handle source and loading
-            Q_FOREACH (TexImageDataPtr imgData, peer->imageData())
-                m_imageData.append(imgData);
-        }
-    }
-}
+    QTexture *texture = static_cast<QTexture *>(peer);
 
-void RenderTexture::setRenderer(Renderer *renderer)
-{
-    m_renderer = renderer;
+    QMutexLocker lock(m_lock);
+    if (texture != Q_NULLPTR) {
+        m_isDirty = true;
+        m_width = texture->width();
+        m_height = texture->height();
+        m_depth = texture->depth();
+        m_generateMipMaps = texture->generateMipMaps();
+        m_target = texture->target();
+        m_format = texture->format();
+        m_magnificationFilter = texture->magnificationFilter();
+        m_minificationFilter = texture->minificationFilter();
+        m_wrapMode = texture->wrapMode();
+        m_maximumAnisotropy = texture->maximumAnisotropy();
+        // See where it is best to handle source and loading
+        Q_FOREACH (TexImageDataPtr imgData, texture->imageData())
+            m_imageData.append(imgData);
+    }
 }
 
 QOpenGLTexture *RenderTexture::getOrCreateGLTexture()
@@ -273,43 +258,35 @@ void RenderTexture::sceneChangeEvent(const QSceneChangePtr &e)
             int oldWidth = m_width;
             m_width = propertyChange->value().toInt();
             m_isDirty = (oldWidth != m_width);
-        }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("height")) {
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("height")) {
             int oldHeight = m_height;
             m_height = propertyChange->value().toInt();
             m_isDirty = (oldHeight != m_height);
-        }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("depth")) {
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("depth")) {
             int oldDepth = m_depth;
             m_depth = propertyChange->value().toInt();
             m_isDirty = (oldDepth != m_depth);
-        }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("mipmaps")) {
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("mipmaps")) {
             bool oldMipMaps = m_generateMipMaps;
             m_generateMipMaps = propertyChange->value().toBool();
             m_isDirty = (oldMipMaps != m_generateMipMaps);
-        }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("minificationFilter")) {
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("minificationFilter")) {
             QTexture::Filter oldMinFilter = m_minificationFilter;
             m_minificationFilter = static_cast<QTexture::Filter>(propertyChange->value().toInt());
             m_filtersAndWrapUpdated = (oldMinFilter != m_minificationFilter);
-        }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("magnificationFilter")) {
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("magnificationFilter")) {
             QTexture::Filter oldMagFilter = m_magnificationFilter;
             m_magnificationFilter = static_cast<QTexture::Filter>(propertyChange->value().toInt());
             m_filtersAndWrapUpdated = (oldMagFilter != m_magnificationFilter);
-        }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("wrapMode")) {
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("wrapMode")) {
             QTexture::WrapMode oldWrapMode = m_wrapMode;
             m_wrapMode = static_cast<QTexture::WrapMode>(propertyChange->value().toInt());
             m_filtersAndWrapUpdated = (oldWrapMode != m_wrapMode);
-        }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("format")) {
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("format")) {
             QTexture::TextureFormat oldFormat = m_format;
             m_format = static_cast<QTexture::TextureFormat>(propertyChange->value().toInt());
             m_isDirty = (oldFormat != m_format);
-        }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("target")) {
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("target")) {
             QTexture::Target oldTarget = m_target;
             m_target = static_cast<QTexture::Target>(propertyChange->value().toInt());
             m_isDirty = (oldTarget != m_target);

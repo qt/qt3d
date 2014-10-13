@@ -46,6 +46,7 @@
 
 #include <Qt3DRenderer/qtexture.h>
 #include <Qt3DRenderer/texturedata.h>
+#include <Qt3DCore/qbackendnode.h>
 #include <Qt3DCore/private/qobserverinterface_p.h>
 #include <QMutex>
 
@@ -59,21 +60,20 @@ class QTexture;
 
 namespace Render {
 
-class Renderer;
+class TextureManager;
 
-class RenderTexture : public QObserverInterface
+class RenderTexture : public QBackendNode
 {
 public:
     RenderTexture();
     ~RenderTexture();
     void cleanup();
 
-    void setPeer(QTexture* peer);
-    void setRenderer(Renderer *renderer);
+    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
+
     QOpenGLTexture* getOrCreateGLTexture() ;
 
     GLint textureId();
-    QUuid textureUuid();
 
     bool isTextureReset() const;
 
@@ -81,13 +81,10 @@ public:
 
 private:
     QOpenGLTexture *m_gl;
-    Renderer *m_renderer;
 
     QOpenGLTexture *buildGLTexture();
     void setToGLTexture(TexImageDataPtr imgData);
     void updateWrapAndFilters();
-
-    QUuid m_textureUuid;
 
     int m_width;
     int m_height;
