@@ -40,13 +40,7 @@
 ****************************************************************************/
 
 #include "viewportnode_p.h"
-
-#include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DRenderer/rendereraspect.h>
 #include <Qt3DRenderer/qviewport.h>
-
-#include <Qt3DCore/private/qaspectmanager_p.h>
-#include <Qt3DCore/private/qchangearbiter_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -63,25 +57,14 @@ ViewportNode::ViewportNode()
 {
 }
 
-void ViewportNode::setPeer(Qt3D::QViewport *peer)
+void ViewportNode::updateFromPeer(QNode *peer)
 {
-    QUuid peerUuid;
-    if (peer != Q_NULLPTR)
-        peerUuid = peer->uuid();
-    if (m_frontendUuid != peerUuid) {
-        if (!m_frontendUuid.isNull()) {
-            m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_frontendUuid);
-        }
-        m_frontendUuid = peerUuid;
-        if (!m_frontendUuid.isNull()) {
-            m_renderer->rendererAspect()->aspectManager()->changeArbiter()->registerObserver(this, m_frontendUuid, NodeUpdated);
-            setXMin(peer->rect().x());
-            setXMax(peer->rect().width());
-            setYMin(peer->rect().y());
-            setYMax(peer->rect().height());
-            m_clearColor = peer->clearColor();
-        }
-    }
+    QViewport *viewport = static_cast<QViewport *>(peer);
+    setXMin(viewport->rect().x());
+    setXMax(viewport->rect().width());
+    setYMin(viewport->rect().y());
+    setYMax(viewport->rect().height());
+    m_clearColor = viewport->clearColor();
 }
 
 float ViewportNode::xMin() const

@@ -56,12 +56,12 @@ namespace Render {
 
 class Renderer;
 
-class ViewportNode : public Render::FrameGraphNode
+class ViewportNode : public FrameGraphNode
 {
 public:
     ViewportNode();
 
-    void setPeer(Qt3D::QViewport *peer);
+    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
 
     float xMin() const;
     void setXMin(float xMin);
