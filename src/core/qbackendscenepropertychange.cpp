@@ -41,6 +41,8 @@
 
 #include "qbackendscenepropertychange.h"
 #include "qbackendscenepropertychange_p.h"
+#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DCore/private/qbackendnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -55,8 +57,8 @@ QBackendScenePropertyChangePrivate::~QBackendScenePropertyChangePrivate()
 {
 }
 
-QBackendScenePropertyChange::QBackendScenePropertyChange(ChangeFlag type, QObservableInterface *subject, QSceneChange::Priority priority)
-    : QScenePropertyChange(*new QBackendScenePropertyChangePrivate(this), type, subject, priority)
+QBackendScenePropertyChange::QBackendScenePropertyChange(ChangeFlag type, QBackendNode *subject, QSceneChange::Priority priority)
+    : QScenePropertyChange(*new QBackendScenePropertyChangePrivate(this), type, subject->d_func(), priority)
 {
 }
 
@@ -81,8 +83,8 @@ QBackendScenePropertyChange::QBackendScenePropertyChange(QBackendScenePropertyCh
 {
 }
 
-QBackendScenePropertyChange::QBackendScenePropertyChange(QBackendScenePropertyChangePrivate &dd, ChangeFlag type, QObservableInterface *subject, QSceneChange::Priority priority)
-    : QScenePropertyChange(dd, type, subject, priority)
+QBackendScenePropertyChange::QBackendScenePropertyChange(QBackendScenePropertyChangePrivate &dd, ChangeFlag type, QBackendNode *subject, QSceneChange::Priority priority)
+    : QScenePropertyChange(dd, type, subject->d_func(), priority)
 {
 }
 

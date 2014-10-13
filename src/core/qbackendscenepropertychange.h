@@ -49,11 +49,12 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QBackendScenePropertyChangePrivate;
+class QBackendNode;
 
 class QT3DCORESHARED_EXPORT QBackendScenePropertyChange : public QScenePropertyChange
 {
 public:
-    QBackendScenePropertyChange(ChangeFlag type, QObservableInterface *subject,
+    QBackendScenePropertyChange(ChangeFlag type, QBackendNode *subject,
                                 Priority priority = Standard);
     virtual ~QBackendScenePropertyChange();
 
@@ -64,7 +65,7 @@ protected:
     Q_DECLARE_PRIVATE(QBackendScenePropertyChange)
     QBackendScenePropertyChange(QBackendScenePropertyChangePrivate &dd);
     QBackendScenePropertyChange(QBackendScenePropertyChangePrivate &dd, ChangeFlag type,
-                                QObservableInterface *subject, Priority priority = Standard);
+                                QBackendNode *subject, Priority priority = Standard);
 };
 
 typedef QSharedPointer<QBackendScenePropertyChange> QBackendScenePropertyChangePtr;
