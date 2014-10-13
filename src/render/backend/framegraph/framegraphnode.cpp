@@ -42,6 +42,7 @@
 #include "framegraphnode_p.h"
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/private/framegraphmanager_p.h>
+#include <Qt3DRenderer/qframegraph.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -82,7 +83,7 @@ void FrameGraphNode::setParentHandle(HFrameGraphNode parentHandle)
 {
     m_parentHandle = parentHandle;
     FrameGraphNode **parent = m_manager->data(m_parentHandle);
-    if (parent != Q_NULLPTR && !(*parent)->m_childrenHandles.contains(m_handle))
+    if (parent != Q_NULLPTR && *parent != Q_NULLPTR && !(*parent)->m_childrenHandles.contains(m_handle))
         (*parent)->m_childrenHandles.append(m_handle);
 }
 
@@ -136,6 +137,33 @@ QList<FrameGraphNode *> FrameGraphNode::children() const
             children << *child;
     }
     return children;
+}
+
+// TO DO: We need to rework that and probably add a RenderFrameGraph element
+FrameGraphComponentFunctor::FrameGraphComponentFunctor(Renderer *renderer)
+    : m_renderer(renderer)
+{
+}
+
+QBackendNode *FrameGraphComponentFunctor::create(QNode *frontend) const
+{
+    // TO DO: Ideally we should have a RenderFrameGraph component and use its setPeer method
+    // to do that
+    QFrameGraph *framegraph = static_cast<QFrameGraph *>(frontend);
+    if (framegraph->activeFrameGraph() != Q_NULLPTR)
+        m_renderer->setFrameGraphRoot(framegraph->activeFrameGraph()->uuid());
+    return Q_NULLPTR;
+}
+
+QBackendNode *FrameGraphComponentFunctor::get(QNode *frontend) const
+{
+    Q_UNUSED(frontend);
+    return Q_NULLPTR;
+}
+
+void FrameGraphComponentFunctor::destroy(QNode *frontend) const
+{
+    Q_UNUSED(frontend);
 }
 
 } // namespace Render

@@ -115,7 +115,6 @@ class LayerManager;
 class LightManager;
 class RenderThread;
 class CriterionManager;
-class RenderSceneBuilder;
 class FrameGraphManager;
 class TransformManager;
 class RenderStateSet;
@@ -143,11 +142,10 @@ public:
 
     QThreadStorage<QPair<int, QFrameAllocatorQueue *> *> *tlsAllocators();
 
-    void setFrameGraphRoot(Render::FrameGraphNode *fgRoot);
+    void setFrameGraphRoot(const QUuid &fgRoot);
     Render::FrameGraphNode *frameGraphRoot() const;
 
-    void setSceneGraphRoot(QEntity *sgRoot);
-    QEntity *sceneGraphRoot() const;
+    void setSceneGraphRoot(RenderEntity *sgRoot);
     RenderEntity *renderSceneRoot() const { return m_renderSceneRoot; }
 
     void render();
@@ -187,7 +185,6 @@ public:
     inline HRenderPass defaultRenderPassHandle() const { return m_defaultRenderPassHandle; }
     inline RenderStateSet *defaultRenderState() const { return m_defaultRenderStateSet; }
 
-    inline RenderSceneBuilder *renderSceneBuilder() const { return m_renderSceneBuilder; }
     inline QList<AbstractSceneParser *> sceneParsers() const { return m_sceneParsers; }
 
     QOpenGLFilter *contextInfo() const;
@@ -210,9 +207,8 @@ private:
     RendererAspect *m_rendererAspect;
 
     // Frame graph root
-    Render::FrameGraphNode *m_frameGraphRoot;
+    QUuid m_frameGraphRootUuid;
 
-    QEntity *m_sceneGraphRoot;
     RenderEntity *m_renderSceneRoot;
 
     QHash<QMaterial*, RenderMaterial*> m_materialHash;
@@ -268,7 +264,6 @@ private:
 
     RenderQueues *m_renderQueues;
     QScopedPointer<RenderThread> m_renderThread;
-    RenderSceneBuilder *m_renderSceneBuilder;
 
     void buildDefaultMaterial();
     void buildDefaultTechnique();

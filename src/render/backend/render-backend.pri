@@ -16,7 +16,6 @@ HEADERS += \
     $$PWD/rendertechnique_p.h \
     $$PWD/rendercameralens_p.h \
     $$PWD/quniformvalue_p.h \
-    $$PWD/renderscenebuilder_p.h \
     $$PWD/rendertexture_p.h \
     $$PWD/rendertextureprovider_p.h \
     $$PWD/meshdatamanager_p.h \
@@ -51,7 +50,6 @@ HEADERS += \
     $$PWD/entitymanager_p.h \
     $$PWD/rendercriterion_p.h \
     $$PWD/criterionmanager_p.h \
-    $$PWD/rendersceneobserver_p.h \
     $$PWD/framegraphmanager_p.h \
     $$PWD/rendertransform_p.h \
     $$PWD/transformmanager_p.h \
@@ -81,7 +79,6 @@ SOURCES += \
     $$PWD/rendertechnique.cpp \
     $$PWD/rendercameralens.cpp \
     $$PWD/quniformvalue.cpp \
-    $$PWD/renderscenebuilder.cpp \
     $$PWD/rendertexture.cpp \
     $$PWD/rendertextureprovider.cpp \
     $$PWD/meshdatamanager.cpp \
@@ -114,7 +111,6 @@ SOURCES += \
     $$PWD/entitymanager.cpp \
     $$PWD/rendercriterion.cpp \
     $$PWD/criterionmanager.cpp \
-    $$PWD/rendersceneobserver.cpp \
     $$PWD/framegraphmanager.cpp \
     $$PWD/rendertransform.cpp \
     $$PWD/transformmanager.cpp \

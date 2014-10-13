@@ -42,7 +42,6 @@
 #ifndef QT3D_RENDER_FRAMEGRAPHNODE_H
 #define QT3D_RENDER_FRAMEGRAPHNODE_H
 
-#include <Qt3DCore/private/qobserverinterface_p.h>
 #include <Qt3DCore/qhandle.h>
 #include <Qt3DCore/qnode.h>
 #include <Qt3DRenderer/qframegraphitem.h>
@@ -60,6 +59,8 @@ template<typename T, int INDEXBITS>
 class QHandle;
 
 namespace Render {
+
+class Renderer;
 
 class FrameGraphNode : public QBackendNode
 {
@@ -142,7 +143,7 @@ protected:
     Backend *createBackendFrameGraphNode(QNode *n) const
     {
         Frontend *f = qobject_cast<Frontend *>(n);
-        if (n != Q_NULLPTR) {
+        if (f != Q_NULLPTR) {
             HFrameGraphNode handle = m_manager->lookupHandle(n->uuid());
             if (handle.isNull()) {
                 handle = m_manager->getOrAcquireHandle(n->uuid());
@@ -162,6 +163,18 @@ protected:
 
 private:
     FrameGraphManager *m_manager;
+};
+
+class FrameGraphComponentFunctor : public QBackendNodeFunctor
+{
+public:
+    explicit FrameGraphComponentFunctor(Renderer *renderer);
+    QBackendNode *create(QNode *frontend) const Q_DECL_OVERRIDE;
+    QBackendNode *get(QNode *frontend) const Q_DECL_OVERRIDE;
+    void destroy(QNode *frontend) const Q_DECL_OVERRIDE;
+
+private:
+    Renderer *m_renderer;
 };
 
 } // namespace Render

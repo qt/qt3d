@@ -63,15 +63,19 @@ public:
     explicit RendererAspect(QObject *parent = 0);
 
     QVector<QJobPtr> jobsToExecute() Q_DECL_OVERRIDE;
-    QSceneObserverInterface *sceneObserver() const Q_DECL_OVERRIDE;
+
+    void sceneNodeAdded(QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneNodeRemoved(QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
     void setRootEntity(QEntity *rootObject) Q_DECL_OVERRIDE;
     void onInitialize(QSurface *surface) Q_DECL_OVERRIDE;
     void onCleanup() Q_DECL_OVERRIDE;
 
+    void visitNode(QNode *node);
+
     Render::Renderer *m_renderer;
-    Render::RenderSceneObserver *m_sceneObserver;
+    friend class Render::Renderer;
 };
 
 }

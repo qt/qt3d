@@ -81,7 +81,6 @@
 #include <Qt3DRenderer/private/renderpassfilternode_p.h>
 #include <Qt3DRenderer/private/renderpassmanager_p.h>
 #include <Qt3DRenderer/private/renderqueues_p.h>
-#include <Qt3DRenderer/private/renderscenebuilder_p.h>
 #include <Qt3DRenderer/private/rendershader_p.h>
 #include <Qt3DRenderer/private/renderstate_p.h>
 #include <Qt3DRenderer/private/rendertechnique_p.h>
@@ -132,7 +131,6 @@ const QString SCENE_PARSERS_PATH = QStringLiteral("/sceneparsers");
 
 Renderer::Renderer(int cachedFrames)
     : m_rendererAspect(Q_NULLPTR)
-    , m_frameGraphRoot(Q_NULLPTR)
     , m_graphicsContext(Q_NULLPTR)
     , m_surface(Q_NULLPTR)
     , m_textureProvider(new RenderTextureProvider)
@@ -160,7 +158,6 @@ Renderer::Renderer(int cachedFrames)
     , m_sortCriterionManager(new SortCriterionManager())
     , m_renderQueues(new RenderQueues(cachedFrames - 1))
     , m_renderThread(new RenderThread(this))
-    , m_renderSceneBuilder(new RenderSceneBuilder(this))
     , m_frameCount(0)
     , m_cachedFramesCount(cachedFrames)
     , m_debugLogger(Q_NULLPTR)
@@ -375,15 +372,18 @@ QFrameAllocator *Renderer::currentFrameAllocator(int frameIndex)
     return data->second->at(frameIndex);
 }
 
-void Renderer::setFrameGraphRoot(Render::FrameGraphNode *fgRoot)
+void Renderer::setFrameGraphRoot(const QUuid &frameGraphRootUuid)
 {
-    qCDebug(Backend) << Q_FUNC_INFO;
-    m_frameGraphRoot = fgRoot;
+    m_frameGraphRootUuid = frameGraphRootUuid;
+    qCDebug(Backend) << Q_FUNC_INFO << m_frameGraphRootUuid;
 }
 
 Render::FrameGraphNode *Renderer::frameGraphRoot() const
 {
-    return m_frameGraphRoot;
+    FrameGraphNode **fgRoot = m_frameGraphManager->lookupResource(m_frameGraphRootUuid);
+    if (fgRoot != Q_NULLPTR)
+        return *fgRoot;
+    return Q_NULLPTR;
 }
 
 // QAspectThread context
@@ -393,38 +393,32 @@ Render::FrameGraphNode *Renderer::frameGraphRoot() const
 // 3) setWindow -> waking Initialize if setSceneGraphRoot was called before
 // 4) Initialize resuming, performing initialization and waking up setSceneGraphRoot
 // 5) setSceneGraphRoot called || setSceneGraphRoot resuming if it was waiting
-void Renderer::setSceneGraphRoot(QEntity *sgRoot)
+void Renderer::setSceneGraphRoot(RenderEntity *sgRoot)
 {
     Q_ASSERT(sgRoot);
     QMutexLocker lock(&m_mutex); // This waits until initialize and setSurface have been called
     if (m_graphicsContext == Q_NULLPTR) // If initialization hasn't been completed we must wait
         m_waitForInitializationToBeCompleted.wait(&m_mutex);
 
-    m_sceneGraphRoot = sgRoot;
-    m_renderSceneBuilder->traverse(m_sceneGraphRoot);
-    m_renderSceneRoot = m_renderSceneBuilder->rootNode();
-    m_renderSceneBuilder->initializeFrameGraph();
+    m_renderSceneRoot = sgRoot;
     if (!m_renderSceneRoot)
         qCWarning(Backend) << "Failed to build render scene";
-    qCDebug(Backend) << Q_FUNC_INFO << "DUMPING SCENE";
     m_renderSceneRoot->dump();
+    qCDebug(Backend) << Q_FUNC_INFO << "DUMPING SCENE";
 
-    m_renderSceneBuilder->createRenderElement(m_defaultMaterial);
-    m_renderSceneBuilder->createRenderElement(m_defaultMaterial->effect());
-    m_renderSceneBuilder->createRenderElement(m_defaultTechnique);
-    m_renderSceneBuilder->createRenderElement(m_defaultTechnique->renderPasses().first());
-    m_renderSceneBuilder->createRenderElement(m_defaultTechnique->renderPasses().first()->shaderProgram());
+    // If that weren't for those lines, the renderer might not event need
+    // to know about the renderer aspect
+    m_rendererAspect->createBackendNode(m_defaultMaterial);
+    m_rendererAspect->createBackendNode(m_defaultMaterial->effect());
+    m_rendererAspect->createBackendNode(m_defaultTechnique);
+    m_rendererAspect->createBackendNode(m_defaultTechnique->renderPasses().first());
+    m_rendererAspect->createBackendNode(m_defaultTechnique->renderPasses().first()->shaderProgram());
 
     m_defaultMaterialHandle = m_materialManager->lookupHandle(m_defaultMaterial->uuid());
     m_defaultEffectHandle = m_effectManager->lookupHandle(m_defaultMaterial->effect()->uuid());
     m_defaultTechniqueHandle = m_techniqueManager->lookupHandle(m_defaultTechnique->uuid());
     m_defaultRenderPassHandle = m_renderPassManager->lookupHandle(m_defaultTechnique->renderPasses().first()->uuid());
     m_defaultRenderShader = m_shaderManager->lookupResource(m_defaultTechnique->renderPasses().first()->shaderProgram()->uuid());
-}
-
-QEntity *Renderer::sceneGraphRoot() const
-{
-    return m_sceneGraphRoot;
 }
 
 // Called in RenderAspect Thread context
@@ -571,7 +565,7 @@ QVector<QJobPtr> Renderer::createRenderBinJobs()
     // That way we will go in submitRenderView which will create the OpenGLContext in the
     // correct thread so that later on Jobs can query for OpenGL Versions, Extensions ...
     FrameGraphVisitor visitor;
-    visitor.traverse(m_frameGraphRoot, this, &renderBinJobs);
+    visitor.traverse(frameGraphRoot(), this, &renderBinJobs);
     m_renderQueues->setTargetRenderViewCount(renderBinJobs.size());
 
     return renderBinJobs;
