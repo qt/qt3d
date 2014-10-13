@@ -62,7 +62,7 @@ class CameraSelector : public FrameGraphNode
 public:
     CameraSelector();
 
-    void setPeer(Qt3D::QCameraSelector *peer);
+    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
 
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
     QUuid cameraUuid() const;

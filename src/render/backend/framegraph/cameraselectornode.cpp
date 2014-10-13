@@ -60,23 +60,12 @@ CameraSelector::CameraSelector()
 {
 }
 
-void CameraSelector::setPeer(Qt3D::QCameraSelector *peer)
+void CameraSelector::updateFromPeer(QNode *peer)
 {
-    QUuid peerUuid;
-    if (peer != Q_NULLPTR)
-        peerUuid = peer->uuid();
-    if (m_frontendUuid != peerUuid) {
-        if (!m_frontendUuid.isNull()) {
-            m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_frontendUuid);
-            m_cameraUuid = QUuid();
-        }
-        m_frontendUuid = peerUuid;
-        if (!m_frontendUuid.isNull()) {
-            m_renderer->rendererAspect()->aspectManager()->changeArbiter()->registerObserver(this, m_frontendUuid, NodeUpdated);
-            if (peer->camera() != Q_NULLPTR)
-                m_cameraUuid = peer->camera()->uuid();
-        }
-    }
+    QCameraSelector *selector = static_cast<QCameraSelector *>(peer);
+    m_cameraUuid = QUuid();
+    if (selector->camera() != Q_NULLPTR)
+        m_cameraUuid = selector->camera()->uuid();
 }
 
 void CameraSelector::sceneChangeEvent(const QSceneChangePtr &e)
