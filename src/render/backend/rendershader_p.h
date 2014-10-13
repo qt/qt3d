@@ -50,6 +50,7 @@
 #include <Qt3DRenderer/private/quniformvalue_p.h>
 #include <Qt3DRenderer/private/shadervariables_p.h>
 #include <Qt3DCore/private/qobserverinterface_p.h>
+#include <Qt3DCore/qbackendnode.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -61,10 +62,10 @@ class QShaderProgram;
 
 namespace Render {
 
-class Renderer;
+class ShaderManager;
 class AttachmentPack;
 
-class RenderShader : public QObserverInterface
+class RenderShader : public QBackendNode
 {
 public:
     RenderShader();
@@ -72,22 +73,18 @@ public:
 
     void cleanup();
 
-    void setPeer(QShaderProgram* peer);
-    void setRenderer(Renderer *renderer);
+    void updateFromPeer(QNode *peer);
     void updateUniforms(QGraphicsContext *ctx, const QUniformPack &pack);
     void setFragOutputs(const QHash<QString, int> &fragOutputs);
 
     QStringList uniformsNames() const;
     QStringList attributesNames() const;
 
-    QUuid shaderUuid() const;
-
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
     bool isLoaded() const;
 
 private:
     QOpenGLShaderProgram *m_program;
-    Renderer *m_renderer;
 
     QOpenGLShaderProgram *createProgram(QGraphicsContext *context);
     QOpenGLShaderProgram *createDefaultProgram();
@@ -98,8 +95,6 @@ private:
 
     QVector<QByteArray> m_shaderCode;
     QVector<QString> m_shaderSourceFiles;
-
-    QUuid m_shaderUuid;
 
     bool m_isLoaded;
 

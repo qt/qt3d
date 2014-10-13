@@ -40,6 +40,7 @@
 ****************************************************************************/
 
 #include "rendershader_p.h"
+#include "shadermanager_p.h"
 
 #include <QDebug>
 #include <QFile>
@@ -47,12 +48,8 @@
 #include <QOpenGLShaderProgram>
 #include <qshaderprogram.h>
 #include <Qt3DRenderer/private/qgraphicscontext_p.h>
-#include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/private/attachmentpack_p.h>
-#include <Qt3DRenderer/rendereraspect.h>
 #include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DCore/private/qaspectmanager_p.h>
-#include <Qt3DCore/private/qchangearbiter_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -60,8 +57,8 @@ namespace Qt3D {
 namespace Render {
 
 RenderShader::RenderShader()
-    : m_program(Q_NULLPTR)
-    , m_renderer(Q_NULLPTR)
+    : QBackendNode()
+    , m_program(Q_NULLPTR)
     , m_isLoaded(false)
 {
     m_shaderCode.resize(static_cast<int>(QShaderProgram::Compute) + 1);
@@ -78,39 +75,22 @@ void RenderShader::cleanup()
     m_isLoaded = false;
 }
 
-void RenderShader::setPeer(QShaderProgram *peer)
+void RenderShader::updateFromPeer(QNode *peer)
 {
-    Q_ASSERT(peer);
+    QShaderProgram *shader = static_cast<QShaderProgram *>(peer);
 
-    QUuid peerUuid = peer->uuid();
-
-    if (peerUuid != m_shaderUuid) {
-        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-
-        if (!m_shaderUuid.isNull()) {
-            arbiter->unregisterObserver(this, m_shaderUuid);
-            m_shaderUuid = QUuid();
-
-            for (int i = QShaderProgram::Vertex; i <= QShaderProgram::Compute; ++i) {
-                m_shaderCode[i].clear();
-                m_shaderSourceFiles[i].clear();
-            }
-        }
-
-        m_isLoaded = false;
-        m_shaderUuid = peerUuid;
-        arbiter->registerObserver(this, m_shaderUuid, NodeUpdated);
-        for (int i = QShaderProgram::Vertex; i <= QShaderProgram::Compute; ++i) {
-            QShaderProgram::ShaderType type = static_cast<const QShaderProgram::ShaderType>(i);
-            m_shaderCode[i] = peer->shaderCode(type);
-            m_shaderSourceFiles[i] = peer->shaderSourceFile(type);
-        }
+    for (int i = QShaderProgram::Vertex; i <= QShaderProgram::Compute; ++i) {
+        m_shaderCode[i].clear();
+        m_shaderSourceFiles[i].clear();
     }
-}
 
-void RenderShader::setRenderer(Renderer *renderer)
-{
-    m_renderer = renderer;
+    m_isLoaded = false;
+
+    for (int i = QShaderProgram::Vertex; i <= QShaderProgram::Compute; ++i) {
+        QShaderProgram::ShaderType type = static_cast<const QShaderProgram::ShaderType>(i);
+        m_shaderCode[i] = shader->shaderCode(type);
+        m_shaderSourceFiles[i] = shader->shaderSourceFile(type);
+    }
 }
 
 QStringList RenderShader::uniformsNames() const
@@ -121,11 +101,6 @@ QStringList RenderShader::uniformsNames() const
 QStringList RenderShader::attributesNames() const
 {
     return m_attributes.keys();
-}
-
-QUuid RenderShader::shaderUuid() const
-{
-    return m_shaderUuid;
 }
 
 void RenderShader::sceneChangeEvent(const QSceneChangePtr &e)
