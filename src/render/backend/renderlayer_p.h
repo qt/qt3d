@@ -44,6 +44,7 @@
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DCore/private/qobserverinterface_p.h>
+#include <Qt3DCore/qbackendnode.h>
 #include <QUuid>
 
 QT_BEGIN_NAMESPACE
@@ -54,26 +55,22 @@ class QLayer;
 
 namespace Render {
 
-class Renderer;
+class LayerManager;
 
-class RenderLayer : public QObserverInterface
+class RenderLayer : public QBackendNode
 {
 public:
     RenderLayer();
     ~RenderLayer();
     void cleanup();
 
-    void setPeer(QLayer *peer);
-    void setRenderer(Renderer *renderer);
-    QUuid layerUuid() const;
+    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
 
     QString layer() const;
-    void sceneChangeEvent(const QSceneChangePtr &e);
+    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    Renderer *m_renderer;
     QString m_layer;
-    QUuid m_layerUuid;
 };
 
 } // Render

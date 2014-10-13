@@ -40,12 +40,9 @@
 ****************************************************************************/
 
 #include "renderlayer_p.h"
-#include "renderer_p.h"
-#include "rendereraspect.h"
+#include "layermanager_p.h"
 #include "qlayer.h"
-#include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DCore/private/qchangearbiter_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -54,7 +51,7 @@ namespace Qt3D {
 namespace Render {
 
 RenderLayer::RenderLayer()
-    : m_renderer(Q_NULLPTR)
+    : QBackendNode()
 {
 }
 
@@ -65,36 +62,12 @@ RenderLayer::~RenderLayer()
 
 void RenderLayer::cleanup()
 {
-    if (!m_layerUuid.isNull())
-        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_layerUuid);
 }
 
-void RenderLayer::setPeer(QLayer *peer)
+void RenderLayer::updateFromPeer(QNode *peer)
 {
-    QUuid peerUuid;
-    if (peer != Q_NULLPTR)
-        peerUuid = peer->uuid();
-    if (m_layerUuid != peerUuid) {
-        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        if (!m_layerUuid.isNull()) {
-            arbiter->unregisterObserver(this, m_layerUuid);
-        }
-        m_layerUuid = peerUuid;
-        if (!m_layerUuid.isNull()) {
-            arbiter->registerObserver(this, m_layerUuid, NodeUpdated);
-            m_layer = peer->name();
-        }
-    }
-}
-
-void RenderLayer::setRenderer(Renderer *renderer)
-{
-    m_renderer = renderer;
-}
-
-QUuid RenderLayer::layerUuid() const
-{
-    return m_layerUuid;
+    QLayer *layer = static_cast<QLayer *>(peer);
+    m_layer = layer->name();
 }
 
 QString RenderLayer::layer() const
