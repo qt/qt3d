@@ -43,7 +43,7 @@
 #define QT3D_RENDER_RENDERCAMERA_H
 
 #include <Qt3DCore/private/qobserverinterface_p.h>
-
+#include <Qt3DCore/qbackendnode.h>
 #include <QMatrix4x4>
 #include <QRectF>
 #include <QUuid>
@@ -52,37 +52,28 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QCameraLens;
-
 namespace Render {
 
-class Renderer;
+class CameraManager;
 
-class RenderCameraLens : public QObserverInterface
+class RenderCameraLens : public QBackendNode
 {
 public:
     RenderCameraLens();
     ~RenderCameraLens();
     void cleanup();
 
-    void setRenderer(Renderer *renderer);
-    void setPeer(QCameraLens *peer);
+    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
 
     void setClearColor();
     QVector4D clearColor() const { return m_clearColor; }
-
-    unsigned int clearMask() const;
 
     void setProjection(const QMatrix4x4 &projection);
     inline QMatrix4x4 projection() const { return m_projection; }
 
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    QUuid lensUuid() const;
 
 private:
-    Renderer *m_renderer;
-    QUuid m_lensUuid;
-
     QVector4D m_clearColor;
     QMatrix4x4 m_projection;
 };

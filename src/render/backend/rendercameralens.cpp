@@ -40,16 +40,13 @@
 ****************************************************************************/
 
 #include "rendercameralens_p.h"
-#include "rendereraspect.h"
 #include "renderlogging.h"
+#include "cameramanager_p.h"
 
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/qentity.h>
-#include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DCore/private/qchangearbiter_p.h>
 
 #include <QOpenGLContext>
 
@@ -59,7 +56,7 @@ namespace Qt3D {
 namespace Render {
 
 RenderCameraLens::RenderCameraLens()
-    : m_renderer(Q_NULLPTR)
+    : QBackendNode()
 {
     m_clearColor = QVector4D(0.5, 0.5, 1.0, 1.0);
 }
@@ -71,40 +68,13 @@ RenderCameraLens::~RenderCameraLens()
 
 void RenderCameraLens::cleanup()
 {
-    if (!m_lensUuid.isNull()) {
-        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_lensUuid);
-    }
+
 }
 
-void RenderCameraLens::setRenderer(Renderer *renderer)
+void RenderCameraLens::updateFromPeer(QNode *peer)
 {
-    m_renderer = renderer;
-}
-
-void RenderCameraLens::setPeer(QCameraLens *peer)
-{
-    QUuid peerUuid;
-    if (peer != Q_NULLPTR)
-        peerUuid = peer->uuid();
-    if (peerUuid != m_lensUuid) {
-        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        if (!m_lensUuid.isNull()) {
-            arbiter->unregisterObserver(this, m_lensUuid);
-            m_lensUuid = QUuid();
-        }
-        m_lensUuid = peerUuid;
-        if (!m_lensUuid.isNull()) {
-            // Register for changes
-            arbiter->registerObserver(this, m_lensUuid, NodeUpdated);
-            setProjection(peer->projectionMatrix());
-        }
-    }
-}
-
-// TO DO : Move that else where
-unsigned int RenderCameraLens::clearMask() const
-{
-    return GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
+    QCameraLens *lens = static_cast<QCameraLens *>(peer);
+    setProjection(lens->projectionMatrix());
 }
 
 void RenderCameraLens::setProjection(const QMatrix4x4 &projection)
@@ -119,17 +89,12 @@ void RenderCameraLens::sceneChangeEvent(const QSceneChangePtr &e)
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         QMatrix4x4 projectionMatrix = propertyChange->value().value<QMatrix4x4>();
         m_projection = projectionMatrix;
-        }
+    }
         break;
 
     default:
         break;
     }
-}
-
-QUuid RenderCameraLens::lensUuid() const
-{
-    return m_lensUuid;
 }
 
 } // Render
