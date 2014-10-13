@@ -49,18 +49,16 @@
 #include <Qt3DRenderer/private/meshdatamanager_p.h>
 #include <Qt3DRenderer/private/meshmanager_p.h>
 #include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DRenderer/private/renderscenebuilder_p.h>
 #include <Qt3DRenderer/private/transformmanager_p.h>
+#include <Qt3DRenderer/private/entitymanager_p.h>
 #include <Qt3DRenderer/qabstractlight.h>
 #include <Qt3DRenderer/qabstractshapemesh.h>
 #include <Qt3DRenderer/qlayer.h>
 #include <Qt3DRenderer/qmaterial.h>
 #include <Qt3DRenderer/qmesh.h>
-#include <Qt3DRenderer/rendereraspect.h>
 #include <Qt3DRenderer/renderlogging.h>
 #include <Qt3DRenderer/sphere.h>
 
-#include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qscenepropertychange.h>
@@ -74,11 +72,8 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
-// TODO: Create custom allocators for each of the matrices and
-// bounding volumes to that they end up in contiguous arrays.
-
 RenderEntity::RenderEntity()
-    : m_renderer(Q_NULLPTR)
+    : QBackendNode()
     , m_localBoundingVolume(new Qt3D::Sphere)
     , m_worldBoundingVolume(new Qt3D::Sphere)
 {
@@ -102,18 +97,22 @@ void RenderEntity::cleanup()
         // Release all component will have to perform their own release when they receive the
         // NodeDeleted/NodeAboutToBeDeleted notification
         qCDebug(Render::RenderNodes) << Q_FUNC_INFO;
-
-        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_frontendUuid);
     }
     delete m_localBoundingVolume;
     delete m_worldBoundingVolume;
+    m_localBoundingVolume = Q_NULLPTR;
+    m_worldBoundingVolume = Q_NULLPTR;
 }
 
 void RenderEntity::setParentHandle(HEntity parentHandle)
 {
     Q_ASSERT(m_renderer);
-    m_parentHandle = parentHandle;
+    // Remove ourselves from previous parent children list
     RenderEntity *parent = m_renderer->renderNodesManager()->data(parentHandle);
+    if (parent != Q_NULLPTR && parent->m_childrenHandles.contains(m_handle))
+        parent->m_childrenHandles.remove(m_handle);
+    m_parentHandle = parentHandle;
+    parent = m_renderer->renderNodesManager()->data(parentHandle);
     if (parent != Q_NULLPTR && !parent->m_childrenHandles.contains(m_handle))
         parent->m_childrenHandles.append(m_handle);
 }
@@ -128,28 +127,28 @@ void RenderEntity::setHandle(HEntity handle)
     m_handle = handle;
 }
 
-void RenderEntity::setPeer(QEntity *peer)
+void RenderEntity::updateFromPeer(QNode *peer)
 {
-    QUuid peerUuid;
-    if (peer != Q_NULLPTR)
-        peerUuid = peer->uuid();
-    if (m_frontendUuid != peerUuid) {
-        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        if (!m_worldTransform.isNull())
-            m_renderer->worldMatrixManager()->release(m_worldTransform);
+    QEntity *entity = static_cast<QEntity *>(peer);
+    QEntity *parentEntity = entity->parentEntity();
+    if (parentEntity != Q_NULLPTR)
+        setParentHandle(m_renderer->renderNodesManager()->lookupHandle(parentEntity->uuid()));
 
-        if (m_frontendUuid.isNull()) {
-            arbiter->unregisterObserver(this, m_frontendUuid);
-            m_objectName.clear();
-        }
+    if (!m_worldTransform.isNull())
+        m_renderer->worldMatrixManager()->release(m_worldTransform);
+    m_objectName = peer->objectName();
+    m_worldTransform = m_renderer->worldMatrixManager()->getOrAcquireHandle(peerUuid());
 
-        m_frontendUuid = peerUuid;
-        if (!m_frontendUuid.isNull()) {
-            arbiter->registerObserver(this, m_frontendUuid, AllChanges);
-            m_objectName = peer->objectName();
-            m_worldTransform = m_renderer->worldMatrixManager()->getOrAcquireHandle(m_frontendUuid);
-        }
-    }
+    // TO DO: Suboptimal -> Maybe have a Hash<QComponent, QEntityList> instead
+    m_transformComponent = QUuid();
+    m_materialComponent = QUuid();
+    m_meshComponent = QUuid();
+    m_cameraComponent = QUuid();
+    m_layerComponent = QUuid();
+    m_lightComponent = QUuid();
+
+    Q_FOREACH (QComponent *comp, entity->components())
+        addComponent(comp);
 }
 
 void RenderEntity::sceneChangeEvent(const QSceneChangePtr &e)
@@ -347,6 +346,31 @@ QUuid RenderEntity::componentUuid<RenderLight>() const { return m_lightComponent
 
 template<>
 QUuid RenderEntity::componentUuid<RenderMesh>() const { return m_meshComponent; }
+
+RenderEntityFunctor::RenderEntityFunctor(Renderer *renderer)
+    : m_renderer(renderer)
+{
+}
+
+QBackendNode *RenderEntityFunctor::create(QNode *frontend) const
+{
+    HEntity renderNodeHandle = m_renderer->renderNodesManager()->getOrAcquireHandle(frontend->uuid());
+    RenderEntity *entity = m_renderer->renderNodesManager()->data(renderNodeHandle);
+    entity->setRenderer(m_renderer);
+    entity->setHandle(renderNodeHandle);
+    entity->setPeer(frontend);
+    return entity;
+}
+
+QBackendNode *RenderEntityFunctor::get(QNode *frontend) const
+{
+    return m_renderer->renderNodesManager()->lookupResource(frontend->uuid());
+}
+
+void RenderEntityFunctor::destroy(QNode *frontend) const
+{
+    m_renderer->renderNodesManager()->releaseResource(frontend->uuid());
+}
 
 
 } // namespace Render

@@ -70,7 +70,6 @@ class Sphere;
 class QNode;
 class QEntity;
 class QComponent;
-class QTransform;
 
 typedef QHandle<QMatrix4x4, 16> HMatrix;
 
@@ -85,7 +84,7 @@ namespace Render {
 class Renderer;
 class EntityManager;
 
-class RenderEntity : public QObserverInterface
+class RenderEntity : public QBackendNode
 {
 public:
     RenderEntity();
@@ -95,7 +94,7 @@ public:
     void setParentHandle(HEntity parentHandle);
     void setRenderer(Renderer *renderer);
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    void setPeer(QEntity *peer);
+    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
 
     void dump() const;
 
@@ -112,7 +111,6 @@ public:
     QMatrix4x4 *worldTransform();
     Sphere *localBoundingVolume() { return m_localBoundingVolume; }
     Sphere *worldBoundingVolume() { return m_worldBoundingVolume; }
-    QUuid entityUuid() const { return m_frontendUuid; }
 
     void addComponent(QComponent *component);
     void removeComponent(QComponent *component);
@@ -202,8 +200,6 @@ private:
     Sphere *m_localBoundingVolume;
     Sphere *m_worldBoundingVolume;
 
-    QUuid m_frontendUuid;
-
     // Handles to Components
     QUuid m_transformComponent;
     QUuid m_meshComponent;
@@ -268,6 +264,18 @@ QUuid RenderEntity::componentUuid<RenderLight>() const;
 
 template<>
 QUuid RenderEntity::componentUuid<RenderMesh>() const;
+
+class RenderEntityFunctor : public QBackendNodeFunctor
+{
+public:
+    explicit RenderEntityFunctor(Renderer *renderer);
+    QBackendNode *create(QNode *frontend) const Q_DECL_OVERRIDE;
+    QBackendNode *get(QNode *frontend) const Q_DECL_OVERRIDE;
+    void destroy(QNode *frontend) const Q_DECL_OVERRIDE;
+
+private:
+    Renderer *m_renderer;
+};
 
 } // namespace Render
 } // namespace Qt3D
