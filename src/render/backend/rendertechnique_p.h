@@ -48,6 +48,7 @@
 #include <Qt3DCore/private/qobserverinterface_p.h>
 #include <Qt3DRenderer/private/parameterpack_p.h>
 #include <Qt3DRenderer/qcriterion.h>
+#include <Qt3DCore/qbackendnode.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -61,30 +62,16 @@ class QRenderPass;
 
 namespace Render {
 
-class RenderBin;
-class RenderStateSet;
-class RenderShader;
-class Renderer;
+class TechniqueManager;
 
-class RenderTechnique : public QObserverInterface
+class RenderTechnique : public QBackendNode
 {
 public:
     RenderTechnique();
     ~RenderTechnique();
     void cleanup();
 
-    void setRenderer(Renderer *renderer);
-
-    void setPeer(QTechnique* peer);
-
-    RenderStateSet* stateSetForPass(unsigned int pass) const;
-
-    QString glslNameForMeshAttribute(unsigned int pass, QString meshAttributeName);
-
-    QStringList glslNamesForUniformParameter(QString pName) const;
-
-    // FIXME using front-end classes here, not ideal
-    QParameter* parameterByName(QString name) const;
+    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
 
     void sceneChangeEvent(const QSceneChangePtr &e);
     const QHash<QString, QVariant> parameters() const;
@@ -98,14 +85,9 @@ public:
     QList<QUuid> criteria() const;
     QList<QUuid> renderPasses() const;
     QOpenGLFilter *openGLFilter() const;
-    QUuid techniqueUuid() const;
 
 private:
-
-    Renderer *m_renderer;
-    unsigned int m_passCount;
     QOpenGLFilter *m_openglFilter;
-    QUuid m_techniqueUuid;
 
     ParameterPack m_parameterPack;
     QList<QUuid> m_criteriaList;

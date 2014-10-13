@@ -53,6 +53,7 @@
 #include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
+#include "techniquemanager_p.h"
 
 #include <QDebug>
 
@@ -61,10 +62,9 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
-RenderTechnique::RenderTechnique() :
-    m_renderer(Q_NULLPTR),
-    m_passCount(0),
-    m_openglFilter(new QOpenGLFilter())
+RenderTechnique::RenderTechnique()
+    : QBackendNode()
+    , m_openglFilter(new QOpenGLFilter())
 {
 }
 
@@ -76,44 +76,33 @@ RenderTechnique::~RenderTechnique()
 
 void RenderTechnique::cleanup()
 {
-    if (m_renderer != Q_NULLPTR && !m_techniqueUuid.isNull())
-        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_techniqueUuid);
 }
 
-void RenderTechnique::setRenderer(Renderer *renderer)
+//void RenderTechnique::setRenderer(Renderer *renderer)
+//{
+//    m_renderer = renderer;
+//    m_parameterPack.setRenderer(m_renderer);
+//}
+
+void RenderTechnique::updateFromPeer(QNode *peer)
 {
-    m_renderer = renderer;
-    m_parameterPack.setRenderer(m_renderer);
-}
+    m_parameterPack.clear();
+    m_renderPasses.clear();
+    m_criteriaList.clear();
 
-void RenderTechnique::setPeer(QTechnique *peer)
-{
-    QUuid peerUuid;
-    if (peer != Q_NULLPTR)
-        peerUuid = peer->uuid();
-    if (m_techniqueUuid != peerUuid) {
-        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        if (!m_techniqueUuid.isNull()) {
-            arbiter->unregisterObserver(this, m_techniqueUuid);
-            m_parameterPack.clear();
-            m_renderPasses.clear();
-            m_criteriaList.clear();
-       }
-        m_techniqueUuid = peerUuid;
-        if (!m_techniqueUuid.isNull()) {
-            arbiter->registerObserver(this, m_techniqueUuid, NodeAdded|NodeRemoved|NodeUpdated);
+    QTechnique *technique = static_cast<QTechnique *>(peer);
 
-            Q_FOREACH (QParameter *p, peer->parameters())
-                m_parameterPack.appendParameter(p);
-            Q_FOREACH (QRenderPass *rPass, peer->renderPasses())
-                appendRenderPass(rPass);
-            Q_FOREACH (QCriterion *criterion, peer->criteria())
-                appendCriterion(criterion);
+    if (technique != Q_NULLPTR) {
+        Q_FOREACH (QParameter *p, technique->parameters())
+            m_parameterPack.appendParameter(p);
+        Q_FOREACH (QRenderPass *rPass, technique->renderPasses())
+            appendRenderPass(rPass);
+        Q_FOREACH (QCriterion *criterion, technique->criteria())
+            appendCriterion(criterion);
 
-            // Copy OpenGLFilter info from frontend OpenGLFilter
-            QOpenGLFilter *peerFilter = peer->openGLFilter();
-            m_openglFilter->copy(peerFilter);
-        }
+        // Copy OpenGLFilter info from frontend OpenGLFilter
+        QOpenGLFilter *peerFilter = technique->openGLFilter();
+        m_openglFilter->copy(peerFilter);
     }
 }
 
@@ -195,11 +184,6 @@ QList<QUuid> RenderTechnique::renderPasses() const
 QOpenGLFilter *RenderTechnique::openGLFilter() const
 {
     return m_openglFilter;
-}
-
-QUuid RenderTechnique::techniqueUuid() const
-{
-    return m_techniqueUuid;
 }
 
 void RenderTechnique::appendCriterion(QCriterion *criterion)
