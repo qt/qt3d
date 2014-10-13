@@ -42,10 +42,6 @@
 #include "sortmethod_p.h"
 #include <Qt3DRenderer/qsortcriterion.h>
 #include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DCore/private/qaspectmanager_p.h>
-#include <Qt3DCore/private/qchangearbiter_p.h>
-#include <Qt3DRenderer/rendereraspect.h>
-#include <Qt3DRenderer/private/renderer_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -58,22 +54,12 @@ SortMethod::SortMethod()
 {
 }
 
-void SortMethod::setPeer(QSortMethod *peer)
+void SortMethod::updateFromPeer(QNode *peer)
 {
-    QUuid peerUuid;
-    if (peer != Q_NULLPTR)
-        peerUuid = peer->uuid();
-    if (m_frontendUuid != peerUuid) {
-        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        if (!m_frontendUuid.isNull())
-            arbiter->unregisterObserver(this, m_frontendUuid);
-        m_frontendUuid = peerUuid;
-        if (!m_frontendUuid.isNull()) {
-            arbiter->registerObserver(this, m_frontendUuid, NodeAdded|NodeRemoved);
-            Q_FOREACH (QSortCriterion *c, peer->criteria())
-                m_criteria.append(c->uuid());
-        }
-    }
+    QSortMethod *sortMethod = static_cast<QSortMethod *>(peer);
+    m_criteria.clear();
+    Q_FOREACH (QSortCriterion *c, sortMethod->criteria())
+        m_criteria.append(c->uuid());
 }
 
 void SortMethod::sceneChangeEvent(const QSceneChangePtr &e)

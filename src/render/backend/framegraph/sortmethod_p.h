@@ -42,7 +42,7 @@
 #ifndef QT3D_RENDER_SORTMETHOD_P_H
 #define QT3D_RENDER_SORTMETHOD_P_H
 
-#include <Qt3DRenderer/private/framegraphmanager_p.h>
+#include <Qt3DRenderer/private/framegraphnode_p.h>
 #include <Qt3DRenderer/qsortmethod.h>
 
 QT_BEGIN_NAMESPACE
@@ -56,7 +56,7 @@ class SortMethod : public FrameGraphNode
 public:
     SortMethod();
 
-    void setPeer(QSortMethod *peer);
+    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     QList<QUuid> criteria() const;
