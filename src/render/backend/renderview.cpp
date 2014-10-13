@@ -431,7 +431,7 @@ void RenderView::buildRenderCommands(RenderEntity *node)
                 RenderMaterial *material = Q_NULLPTR;
                 RenderEffect *effect = Q_NULLPTR;
                 if ((material = node->renderComponent<RenderMaterial>()) != Q_NULLPTR)
-                    effect = material->effect();
+                    effect = m_renderer->effectManager()->lookupResource(material->effect());
                 RenderTechnique *technique = findTechniqueForEffect(effect);
                 QList<RenderRenderPass *> passes = findRenderPassesForTechnique(technique);
                 if (passes.isEmpty()) {

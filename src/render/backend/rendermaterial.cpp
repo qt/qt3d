@@ -40,19 +40,16 @@
 ****************************************************************************/
 
 #include "rendermaterial_p.h"
-#include "rendereraspect.h"
 #include "qgraphicscontext_p.h"
 #include "rendertechnique_p.h"
 #include "rendertextureprovider_p.h"
-#include "renderer_p.h"
-#include "effectmanager_p.h"
 #include "rendereffect_p.h"
 #include "qparameter.h"
 #include "qtechnique.h"
 #include "qmaterial.h"
 #include "qeffect.h"
+#include "materialmanager_p.h"
 
-#include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <QOpenGLShaderProgram>
 
@@ -62,7 +59,7 @@ namespace Qt3D {
 namespace Render {
 
 RenderMaterial::RenderMaterial()
-    : m_renderer(Q_NULLPTR)
+    : QBackendNode()
     , m_textureProvider(Q_NULLPTR)
 {
 }
@@ -74,59 +71,23 @@ RenderMaterial::~RenderMaterial()
 
 void RenderMaterial::cleanup()
 {
-    if (m_renderer != Q_NULLPTR && !m_materialUuid.isNull()) {
-        m_parameterPack.clear(); // Has to be done before the RenderMaterial is deleted
-        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_materialUuid);
-    }
+    m_parameterPack.clear();
 }
 
-void RenderMaterial::setPeer(QMaterial *mat)
+void RenderMaterial::updateFromPeer(QNode *node)
 {
-    QUuid peerUuid;
-    if (mat != Q_NULLPTR)
-        peerUuid = mat->uuid();
-    if (m_materialUuid != peerUuid) {
-        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        if (!m_materialUuid.isNull()) {
-            m_parameterPack.clear();
-            m_effectUuid = QUuid();
-            arbiter->unregisterObserver(this, m_materialUuid);
-        }
-        m_materialUuid = peerUuid;
-        if (!m_materialUuid.isNull()) {
-            arbiter->registerObserver(this, m_materialUuid, NodeUpdated|NodeAdded|NodeRemoved);
-            if (mat->effect() != Q_NULLPTR)
-                m_effectUuid = mat->effect()->uuid();
-            Q_FOREACH (QParameter *p, mat->parameters())
-                m_parameterPack.appendParameter(p);
-        }
-    }
+    QMaterial *mat = static_cast<QMaterial *>(node);
+    m_parameterPack.clear();
+    if (mat->effect() != Q_NULLPTR)
+        m_effectUuid = mat->effect()->uuid();
+    Q_FOREACH (QParameter *p, mat->parameters())
+        m_parameterPack.appendParameter(p);
 }
 
-void RenderMaterial::setRenderer(Renderer *renderer)
-{
-    m_renderer = renderer;
-    m_parameterPack.setRenderer(m_renderer);
-}
-
-//void RenderMaterial::setTextureParameter(QString paramName, RenderTexturePtr tex)
+//void RenderMaterial::setRenderer(Renderer *renderer)
 //{
-//    Q_ASSERT(tex);
-//    Parameter* param = m_technique->parameterByName(paramName);
-//    if (!param)
-//        return;
-
-//    Q_ASSERT(param->isTextureType());
-
-//    QStringList names(m_technique->glslNamesForUniformParameter(paramName));
-//    Q_ASSERT(names.count() == (int) m_technique->passCount());
-
-//    for (unsigned int p=0; p<m_technique->passCount(); ++p) {
-//        if (names.at(p).isEmpty())
-//            continue; // not set in this pass
-
-//        m_packs.at(p)->setTexture(names.at(p), tex);
-//    } // of pass iteration
+//    m_renderer = renderer;
+//    m_parameterPack.setRenderer(m_renderer);
 //}
 
 void RenderMaterial::sceneChangeEvent(const QSceneChangePtr &e)
@@ -175,14 +136,9 @@ const QHash<QString, QVariant> RenderMaterial::parameters() const
     return m_parameterPack.namedValues();
 }
 
-RenderEffect *RenderMaterial::effect() const
+QUuid RenderMaterial::effect() const
 {
-    return m_renderer->effectManager()->lookupResource(m_effectUuid);
-}
-
-QUuid RenderMaterial::materialUuid() const
-{
-    return m_materialUuid;
+    return m_effectUuid;
 }
 
 } // namespace Render

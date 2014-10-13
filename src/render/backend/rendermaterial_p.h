@@ -49,6 +49,7 @@
 #include <Qt3DRenderer/private/quniformvalue_p.h>
 #include <Qt3DRenderer/private/rendertextureprovider_p.h>
 #include <Qt3DRenderer/private/parameterpack_p.h>
+#include <Qt3DCore/qbackendnode.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -63,27 +64,24 @@ class Renderer;
 class QGraphicsContext;
 class RenderTechnique;
 class RenderEffect;
+class MaterialManager;
 
-class RenderMaterial : public QObserverInterface
+class RenderMaterial : public QBackendNode
 {
 public:
     RenderMaterial();
     ~RenderMaterial();
     void cleanup();
 
-    void setPeer(QMaterial* mat);
-    void setRenderer(Renderer *renderer);
+    void updateFromPeer(QNode* mat) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     const QHash<QString, QVariant> parameters() const;
-    RenderEffect *effect() const;
-    QUuid materialUuid() const;
+    QUuid effect() const;
 
 private:
-    Renderer *m_renderer;
     RenderTextureProvider* m_textureProvider;
     ParameterPack m_parameterPack;
-    QUuid m_materialUuid;
     QUuid m_effectUuid;
 };
 
