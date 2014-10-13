@@ -43,6 +43,7 @@
 #define QT3D_RENDER_RENDERTRANSFORM_H
 
 #include <Qt3DCore/private/qobserverinterface_p.h>
+#include <Qt3DCore/qbackendnode.h>
 #include <QMatrix4x4>
 #include <QUuid>
 
@@ -50,28 +51,23 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QTransform;
-
 namespace Render {
 
 class Renderer;
+class TransformManager;
 
-class RenderTransform : public QObserverInterface
+class RenderTransform : public QBackendNode
 {
 public:
     RenderTransform();
     ~RenderTransform();
     void cleanup();
 
-    void setPeer(QTransform *peer);
-    void setRenderer(Renderer *renderer);
-    QUuid transformUuid() const;
+    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
     QMatrix4x4 transformMatrix() const;
-    void sceneChangeEvent(const QSceneChangePtr &e);
+    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    Renderer *m_renderer;
-    QUuid m_peerUuid;
     QMatrix4x4 m_transformMatrix;
 };
 

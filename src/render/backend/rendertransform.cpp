@@ -45,8 +45,8 @@
 #include <Qt3DCore/qaspectmanager.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
 #include <Qt3DCore/qtransform.h>
-#include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/rendereraspect.h>
+#include <Qt3DRenderer/private/transformmanager_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -55,7 +55,7 @@ namespace Qt3D {
 namespace Render {
 
 RenderTransform::RenderTransform()
-    : m_renderer(Q_NULLPTR)
+    : QBackendNode()
 {
 }
 
@@ -67,35 +67,13 @@ RenderTransform::~RenderTransform()
 void RenderTransform::cleanup()
 {
     m_transformMatrix.setToIdentity();
-    if (!m_peerUuid.isNull())
-        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_peerUuid);
 }
 
-void RenderTransform::setPeer(QTransform *peer)
+void RenderTransform::updateFromPeer(QNode *peer)
 {
-    QUuid peerUuid;
-    if (peer != Q_NULLPTR)
-        peerUuid = peer->uuid();
-    if (peerUuid != m_peerUuid) {
-        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        if (!m_peerUuid.isNull())
-            arbiter->unregisterObserver(this, m_peerUuid);
-        m_peerUuid = peerUuid;
-        if (peer) {
-            arbiter->registerObserver(this, m_peerUuid, NodeUpdated);
-            m_transformMatrix = peer->matrix();
-        }
-    }
-}
+    QTransform *transform = static_cast<QTransform *>(peer);
 
-void RenderTransform::setRenderer(Renderer *renderer)
-{
-    m_renderer = renderer;
-}
-
-QUuid RenderTransform::transformUuid() const
-{
-    return m_peerUuid;
+    m_transformMatrix = transform->matrix();
 }
 
 QMatrix4x4 RenderTransform::transformMatrix() const
