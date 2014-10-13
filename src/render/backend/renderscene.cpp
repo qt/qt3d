@@ -41,13 +41,9 @@
 
 #include "renderscene_p.h"
 #include <Qt3DCore/qentity.h>
-#include <Qt3DCore/private/qchangearbiter_p.h>
-#include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qsceneinterface.h>
 #include <Qt3DCore/qbackendscenepropertychange.h>
-#include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DRenderer/rendereraspect.h>
 #include <Qt3DRenderer/qabstractsceneloader.h>
 #include <Qt3DRenderer/private/scenemanager_p.h>
 
@@ -58,36 +54,17 @@ namespace Qt3D {
 namespace Render {
 
 RenderScene::RenderScene()
-    : QBackendObservable()
-    , m_renderer(Q_NULLPTR)
+    : QBackendNode(QBackendNode::ReadWrite)
+    , m_sceneManager(Q_NULLPTR)
 {
 }
 
-void RenderScene::setRenderer(Renderer *renderer)
+void RenderScene::updateFromPeer(QNode *peer)
 {
-    m_renderer = renderer;
-}
+    QAbstractSceneLoader *loader = static_cast<QAbstractSceneLoader *>(peer);
 
-void RenderScene::setPeer(QAbstractSceneLoader *peer)
-{
-    QUuid peerUuid;
-    if (peer)
-        peerUuid = peer->uuid();
-    if (peerUuid != m_peerUuid) {
-        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        if (!m_peerUuid.isNull()) {
-            arbiter->unregisterObserver(this, m_peerUuid);
-            arbiter->scene()->removeObservable(this, m_peerUuid);
-            m_source.clear();
-        }
-        m_peerUuid = peerUuid;
-        if (!m_peerUuid.isNull()) {
-            arbiter->registerObserver(this, m_peerUuid, NodeUpdated);
-            arbiter->scene()->addObservable(this, m_peerUuid);
-            m_source = peer->source();
-            m_renderer->sceneManager()->addSceneData(m_source, sceneUuid());
-        }
-    }
+    m_source = loader->source();
+    m_sceneManager->addSceneData(m_source, peerUuid());
 }
 
 void RenderScene::sceneChangeEvent(const QSceneChangePtr &e)
@@ -95,13 +72,8 @@ void RenderScene::sceneChangeEvent(const QSceneChangePtr &e)
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     if (propertyChange->propertyName() == QByteArrayLiteral("source")) {
         m_source = propertyChange->value().toString();
-        m_renderer->sceneManager()->addSceneData(m_source, sceneUuid());
+        m_sceneManager->addSceneData(m_source, peerUuid());
     }
-}
-
-QUuid RenderScene::sceneUuid() const
-{
-    return m_peerUuid;
 }
 
 QString RenderScene::source() const
@@ -116,13 +88,42 @@ void RenderScene::setSceneSubtree(QEntity *subTree)
     // The Frontend element has to perform the clone
     // So that the objects are created in the main thread
     e->setValue(QVariant::fromValue(subTree));
-    e->setTargetNode(m_peerUuid);
+    e->setTargetNode(peerUuid());
     notifyObservers(e);
     QBackendScenePropertyChangePtr e2(new QBackendScenePropertyChange(NodeUpdated, this));
     e2->setPropertyName(QByteArrayLiteral("status"));
     e2->setValue(subTree != Q_NULLPTR ? QAbstractSceneLoader::Loaded : QAbstractSceneLoader::Error);
-    e2->setTargetNode(m_peerUuid);
+    e2->setTargetNode(peerUuid());
     notifyObservers(e2);
+}
+
+void RenderScene::setSceneManager(SceneManager *manager)
+{
+    if (m_sceneManager != manager)
+        m_sceneManager = manager;
+}
+
+RenderSceneFunctor::RenderSceneFunctor(SceneManager *sceneManager)
+    : m_sceneManager(sceneManager)
+{
+}
+
+QBackendNode *RenderSceneFunctor::create(QNode *frontend) const
+{
+    RenderScene *scene = m_sceneManager->getOrCreateResource(frontend->uuid());
+    scene->setSceneManager(m_sceneManager);
+    scene->setPeer(frontend);
+    return scene;
+}
+
+QBackendNode *RenderSceneFunctor::get(QNode *frontend) const
+{
+    return m_sceneManager->lookupResource(frontend->uuid());
+}
+
+void RenderSceneFunctor::destroy(QNode *frontend) const
+{
+    m_sceneManager->releaseResource(frontend->uuid());
 }
 
 } // Render

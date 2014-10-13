@@ -44,8 +44,7 @@
 
 #include <QtGlobal>
 #include <QUuid>
-#include <Qt3DCore/private/qobserverinterface_p.h>
-#include <Qt3DCore/qbackendobservable.h>
+#include <Qt3DCore/qbackendnode.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -55,29 +54,36 @@ class QEntity;
 
 namespace Render {
 
-class Renderer;
-class QAbstractSceneLoader;
+class SceneManager;
 
-class RenderScene
-        : public QObserverInterface
-        , public QBackendObservable
+class RenderScene : public QBackendNode
 {
 public:
     RenderScene();
 
-    void setRenderer(Renderer *renderer);
-    void setPeer(QAbstractSceneLoader *peer);
+    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
 
     // QObserverInterface interface
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    QUuid sceneUuid() const;
     QString source() const;
     void setSceneSubtree(QEntity *subTree);
+    void setSceneManager(SceneManager *manager);
 
 private:
-    Renderer *m_renderer;
-    QUuid m_peerUuid;
+    SceneManager *m_sceneManager;
     QString m_source;
+};
+
+class RenderSceneFunctor : public QBackendNodeFunctor
+{
+public:
+    explicit RenderSceneFunctor(SceneManager *sceneManager);
+    QBackendNode *create(QNode *frontend) const Q_DECL_OVERRIDE;
+    QBackendNode *get(QNode *frontend) const Q_DECL_OVERRIDE;
+    void destroy(QNode *frontend) const Q_DECL_OVERRIDE;
+
+private:
+    SceneManager *m_sceneManager;
 };
 
 } // Render
