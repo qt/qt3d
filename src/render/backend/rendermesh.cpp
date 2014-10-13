@@ -42,16 +42,12 @@
 
 #include "rendermesh_p.h"
 #include "rendereraspect.h"
-#include <qtechnique.h>
-#include <Qt3DRenderer/private/rendertechnique_p.h>
-#include <Qt3DRenderer/private/rendermaterial_p.h>
-#include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DRenderer/private/meshdatamanager_p.h>
+#include "meshmanager_p.h"
+#include "meshdatamanager_p.h"
 #include "qmesh.h"
+
 #include <Qt3DRenderer/private/qgraphicscontext_p.h>
 #include <Qt3DRenderer/qmeshdata.h>
-
-#include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 #include <QOpenGLContext>
@@ -76,9 +72,10 @@ namespace Render {
  * \sa QMeshData
  */
 
-RenderMesh::RenderMesh() :
-    m_renderer(Q_NULLPTR),
-    m_meshDirty(true)
+RenderMesh::RenderMesh()
+    : QBackendNode()
+    , m_meshDirty(true)
+    , m_meshDataManager(Q_NULLPTR)
 {
 }
 
@@ -89,32 +86,13 @@ RenderMesh::~RenderMesh()
 
 void RenderMesh::cleanup()
 {
-    if (!m_meshUuid.isNull())
-        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_meshUuid);
 }
 
-void RenderMesh::setPeer(QAbstractMesh *peer)
+void RenderMesh::updateFromPeer(QNode *peer)
 {
-    QUuid peerUuid;
-    if (peer != Q_NULLPTR)
-        peerUuid = peer->uuid();
-    if (m_meshUuid != peerUuid) {
-        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        if (!m_meshUuid.isNull()) {
-            arbiter->unregisterObserver(this, m_meshUuid);
-        }
-        m_meshUuid = peerUuid;
-        if (!m_meshUuid.isNull()) {
-            arbiter->registerObserver(this, m_meshUuid, NodeUpdated);
-            m_meshDirty = true;
-            setMeshFunctor(peer->meshFunctor());
-        }
-    }
-}
-
-void RenderMesh::setRenderer(Renderer *renderer)
-{
-    m_renderer = renderer;
+    QAbstractMesh *mesh = static_cast<QAbstractMesh *>(peer);
+    m_meshDirty = true;
+    setMeshFunctor(mesh->meshFunctor());
 }
 
 void RenderMesh::sceneChangeEvent(const QSceneChangePtr &e)
@@ -142,245 +120,43 @@ void RenderMesh::setMeshData(HMeshData handle)
     m_meshDataHandle = handle;
 }
 
+void RenderMesh::setMeshDataManager(MeshDataManager *manager)
+{
+    if (m_meshDataManager != manager)
+        m_meshDataManager = manager;
+}
+
 void RenderMesh::setMeshFunctor(QAbstractMeshFunctorPtr functor)
 {
     if (m_functor != functor) {
         m_functor = functor;
-        m_renderer->meshDataManager()->addMeshData(m_functor, m_meshUuid);
+        m_meshDataManager->addMeshData(m_functor, peerUuid());
     }
 }
 
-//RenderStateSet *RenderMesh::stateSet()
-//{
-//    return m_technique->stateSetForPass(m_pass);
-//}
-
-//void RenderMesh::initializeGL(QGraphicsContext* gc)
-//{
-//    if (m_meshData.isNull())
-//        return ;
-//    m_vao.create();
-//    m_vao.bind();
-
-//    gc->activateShader(m_technique->shaderForPass(m_pass));
-
-//    foreach (QString nm, m_meshData->attributeNames()) {
-//        AttributePtr attr(m_meshData->attributeByName(nm));
-//        QString glsl = m_technique->glslNameForMeshAttribute(m_pass, nm);
-//        if (glsl.isEmpty())
-//            continue; // not used in this pass
-//        gc->specifyAttribute(glsl, attr);
-//    }
-
-//    m_drawIndexed = (m_meshData->indexAttr() != NULL);
-//    if (m_drawIndexed)
-//        gc->specifyIndices(m_meshData->indexAttr());
-//    m_vao.release();
-//}
-
-//void RenderMesh::releaseGL()
-//{
-//    m_vao.destroy();
-//}
-
-//void RenderMesh::sendDrawingCommands(QGraphicsContext* gc)
-//{
-//    if (m_meshData.isNull())
-//        return ;
-//    if (gc->activeMaterial() != m_material) {
-//        gc->setActiveMaterial(m_material);
-//        m_material->setUniformsForPass(m_pass, gc);
-//    }
-
-//    gc->setModelMatrix(m_modelMatrix);
-
-//    m_vao.bind();
-//    GLint primType = m_meshData->primitiveType();
-//    GLint primCount = m_meshData->primitiveCount();
-//    GLint indexType = m_drawIndexed ? m_meshData->indexAttr()->type() : 0;
-
-//    if (m_instanceCount > 0) {
-//        if (m_drawIndexed)
-//            gc->drawElementsInstanced(primType,
-//                                      primType,
-//                                      indexType,
-//                                      0,
-//                                      m_instanceCount);
-//        else
-//            gc->drawArraysInstanced(primType,
-//                                    0,
-//                                    primCount,
-//                                    m_instanceCount);
-//    }
-//    else {
-//        if (m_drawIndexed)
-//            gc->drawElements(primType,
-//                             primCount,
-//                             indexType,
-//                             reinterpret_cast<void*>(m_meshData->indexAttr()->byteOffset()));
-//        else
-//            gc->drawArrays(primType, 0, primCount);
-//    }  // non-instanced drawing
-
-//    int err = glGetError();
-//    if (err)
-//        qWarning() << "GL error after drawing mesh:" << QString::number(err, 16);
-
-
-//    m_vao.release();
-//}
-
-//RenderShader *RenderMesh::shader()
-//{
-//    return m_technique->shaderForPass(m_pass);
-//}
-
-//AxisAlignedBoundingBox RenderMesh::boundingBox() const
-//{
-//    if (!m_meshData)
-//        return AxisAlignedBoundingBox();
-
-//    return m_meshData->boundingBox();
-//}
-
-#if 0
-static bool areIndicesShort( const QVector<unsigned int>& indices )
+RenderMeshCreatorFunctor::RenderMeshCreatorFunctor(MeshManager *meshManager, MeshDataManager *meshDataManager)
+    : m_meshManager(meshManager)
+    , m_meshDataManager(meshDataManager)
 {
-    // optimization; check the last index first, since it is often
-    // (but not always) going to be the larger index values
-    if (indices.back() > 0xffff) {
-        return false;
-    }
-
-    for (int i=0; i<indices.size(); ++i) {
-        if (indices.at(i) > 0xffff) {
-            return false;
-        }
-    } // of indices iteration
-
-    return true;
 }
 
-void RenderMesh::setMeshData( DrawContext& dc )
+QBackendNode *RenderMeshCreatorFunctor::create(QNode *frontend) const
 {
-    // Construct buffers for the vertices, normals, texCoord, tangents and indices
-    QVector<QVector3D> points = m_loader->vertices();
-    QVector<QVector3D> normals = m_loader->normals();
-    QVector<QVector2D> texCoords = m_loader->textureCoordinates();
-    QVector<QVector4D> tangents = m_loader->tangents();
-
-    int vertexCount  = points.size();
-    QVector<unsigned int> elements = m_loader->indices();
-    m_drawCount = elements.size();
-    int faces = elements.size() / 3;
-
-    bool shortIndices = areIndicesShort(elements);
-
-    /** \todo Use QScopedPointers or try reinterpret_cast on the
-      * QVector<> objects.
-      */
-    float* v = new float[3 * vertexCount];
-    float* n = new float[3 * vertexCount];
-    float* tc = 0;
-    float* tang = 0;
-
-    if ( !texCoords.isEmpty() ) {
-        tc = new float[ 2 * vertexCount ];
-        if ( !tangents.isEmpty() )
-            tang = new float[ 4 * vertexCount ];
-    }
-
-    int idx = 0, tcIdx = 0, tangIdx = 0;
-    for ( int i = 0; i < vertexCount; ++i ) {
-        v[idx]   = points[i].x();
-        v[idx+1] = points[i].y();
-        v[idx+2] = points[i].z();
-        n[idx]   = normals[i].x();
-        n[idx+1] = normals[i].y();
-        n[idx+2] = normals[i].z();
-        idx += 3;
-        if ( tc != 0 ) {
-            tc[tcIdx]   = texCoords[i].x();
-            tc[tcIdx+1] = texCoords[i].y();
-            tcIdx += 2;
-        }
-        if ( tang != 0 ) {
-            tang[tangIdx]   = tangents[i].x();
-            tang[tangIdx+1] = tangents[i].y();
-            tang[tangIdx+2] = tangents[i].z();
-            tang[tangIdx+3] = tangents[i].w();
-            tangIdx += 4;
-        }
-    }
-
-    m_mode = GL_TRIANGLES;
-
-    // Create and populate the buffer objects
-    m_positionBuffer.create();
-    m_positionBuffer.setUsagePattern( QOpenGLBuffer::StaticDraw );
-    m_positionBuffer.bind();
-    m_positionBuffer.allocate( v, 3 * vertexCount * sizeof( float ) );
-
-    m_normalBuffer.create();
-    m_normalBuffer.setUsagePattern( QOpenGLBuffer::StaticDraw );
-    m_normalBuffer.bind();
-    m_normalBuffer.allocate( n, 3 * vertexCount * sizeof( float ) );
-
-    if ( tc ) {
-        m_textureCoordBuffer.create();
-        m_textureCoordBuffer.setUsagePattern( QOpenGLBuffer::StaticDraw );
-        m_textureCoordBuffer.bind();
-        m_textureCoordBuffer.allocate( tc, 2 * vertexCount * sizeof( float ) );
-    }
-
-    if ( tang ) {
-        m_tangentBuffer.create();
-        m_tangentBuffer.setUsagePattern( QOpenGLBuffer::StaticDraw );
-        m_tangentBuffer.bind();
-        m_tangentBuffer.allocate( tang, 4 * vertexCount * sizeof( float ) );
-    }
-
-    if ( shortIndices ) {
-        unsigned short* el = new unsigned short[elements.size()];
-        for ( int i = 0; i < elements.size(); ++i )
-            el[i] = static_cast<unsigned short>(elements[i]);
-
-        m_indexBuffer.create();
-        m_indexBuffer.setUsagePattern( QOpenGLBuffer::StaticDraw );
-        m_indexBuffer.bind();
-        m_indexBuffer.allocate( el, 3 * faces * sizeof( unsigned short ) );
-        m_indexType = GL_UNSIGNED_SHORT;
-        delete[] el;
-    } else {
-        unsigned int* el = new unsigned int[elements.size()];
-        for ( int i = 0; i < elements.size(); ++i )
-            el[i] = elements[i];
-
-        m_indexBuffer.create();
-        m_indexBuffer.setUsagePattern( QOpenGLBuffer::StaticDraw );
-        m_indexBuffer.bind();
-        m_indexBuffer.allocate( el, 3 * faces * sizeof( unsigned int ) );
-        m_indexType = GL_UNSIGNED_INT;
-
-        delete[] el;
-    }
-
-    // Calculate the bounding volume
-    // m_boundingVolume->update( points );
-
-    // Clean up
-    delete[] v;
-    delete[] n;
-    if ( tc != NULL )
-        delete[] tc;
-    if ( tang != NULL )
-        delete[] tang;
-
-    m_loader.reset();
-
-    setupVertexArrayObject( dc );
+    RenderMesh *mesh = m_meshManager->getOrCreateResource(frontend->uuid());
+    mesh->setMeshDataManager(m_meshDataManager);
+    mesh->setPeer(frontend);
+    return mesh;
 }
-#endif
+
+QBackendNode *RenderMeshCreatorFunctor::get(QNode *frontend) const
+{
+    return m_meshManager->lookupResource(frontend->uuid());
+}
+
+void RenderMeshCreatorFunctor::destroy(QNode *frontend) const
+{
+    m_meshManager->releaseResource(frontend->uuid());
+}
 
 } // Render
 } // Qt3D

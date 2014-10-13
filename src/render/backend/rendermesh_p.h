@@ -45,7 +45,7 @@
 #include <Qt3DCore/axisalignedboundingbox.h>
 #include <Qt3DCore/qhandle.h>
 #include <Qt3DCore/private/qobserverinterface_p.h>
-
+#include <Qt3DCore/qbackendnode.h>
 #include <QUuid>
 
 QT_BEGIN_NAMESPACE
@@ -64,44 +64,49 @@ typedef QHandle<QMeshData, 16> HMeshData;
 
 namespace Render {
 
-class Renderer;
+class MeshManager;
+class MeshDataManager;
 class RenderEntity;
 class RenderMaterial;
 class RenderTechnique;
 
-class RenderMesh : public QObserverInterface
+class RenderMesh : public QBackendNode
 {
 public:
     RenderMesh();
     ~RenderMesh();
     void cleanup();
 
-    void setPeer(QAbstractMesh *peer);
-    void setRenderer(Renderer *renderer);
+    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
 
-    void sceneChangeEvent(const QSceneChangePtr &e);
+    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
     HMeshData meshData() const;
     void setMeshData(HMeshData handle);
+    void setMeshDataManager(MeshDataManager *manager);
 
-    QUuid meshUuid() const { return m_meshUuid; }
     QAbstractMeshFunctorPtr meshFunctor() const { return m_functor; }
 
-    /**
-     * @brief mapAttributeNames - resolve mapping of mesh-data attribute
-     * names to parameters.
-     * @param t
-     */
-    void mapAttributeNames();
-
 private:
-    Renderer *m_renderer;
     QAbstractMeshFunctorPtr m_functor;
 
     bool m_meshDirty;
     HMeshData m_meshDataHandle;
-    QUuid m_meshUuid;
+    MeshDataManager *m_meshDataManager;
 
     void setMeshFunctor(QAbstractMeshFunctorPtr);
+};
+
+class RenderMeshCreatorFunctor : public QBackendNodeFunctor
+{
+public:
+    explicit RenderMeshCreatorFunctor(MeshManager *meshManager, MeshDataManager *meshDataManager);
+    QBackendNode *create(QNode *frontend) const Q_DECL_OVERRIDE;
+    QBackendNode *get(QNode *frontend) const Q_DECL_OVERRIDE;
+    void destroy(QNode *frontend) const Q_DECL_OVERRIDE;
+
+private:
+    MeshManager *m_meshManager;
+    MeshDataManager *m_meshDataManager;
 };
 
 } // Render
