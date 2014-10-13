@@ -42,11 +42,7 @@
 #include "techniquefilternode_p.h"
 #include "qcriterion.h"
 #include "qtechniquefilter.h"
-#include "rendereraspect.h"
-#include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/private/criterionmanager_p.h>
-#include <Qt3DCore/private/qaspectmanager_p.h>
-#include <Qt3DCore/private/qchangearbiter_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -59,24 +55,12 @@ TechniqueFilter::TechniqueFilter()
 {
 }
 
-void TechniqueFilter::setPeer(Qt3D::QTechniqueFilter *peer)
+void TechniqueFilter::updateFromPeer(QNode *peer)
 {
-    QUuid peerUuid;
-    if (peer != Q_NULLPTR)
-        peerUuid = peer->uuid();
-    if (m_frontendUuid != peerUuid) {
-        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        if (!m_frontendUuid.isNull()) {
-            arbiter->unregisterObserver(this, m_frontendUuid);
-            m_filters.clear();
-        }
-        m_frontendUuid = peerUuid;
-        if (!m_frontendUuid.isNull()) {
-            arbiter->registerObserver(this, m_frontendUuid, NodeAdded|NodeRemoved);
-            Q_FOREACH (QCriterion *criterion, peer->criteria())
-                appendFilter(criterion);
-        }
-    }
+    QTechniqueFilter *filter = static_cast<QTechniqueFilter *>(peer);
+    m_filters.clear();
+    Q_FOREACH (QCriterion *criterion, filter->criteria())
+        appendFilter(criterion);
 }
 
 QList<QUuid> TechniqueFilter::filters() const

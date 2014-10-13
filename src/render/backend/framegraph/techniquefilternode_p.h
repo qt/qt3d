@@ -68,11 +68,11 @@ typedef QHandle<RenderCriterion, 16> HCriterion;
 
 
 class TechniqueFilter
-        : public Render::FrameGraphNode
+        : public FrameGraphNode
 {
 public:
     TechniqueFilter();
-    void setPeer(Qt3D::QTechniqueFilter *peer);
+    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
 
     QList<QUuid> filters() const;
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
