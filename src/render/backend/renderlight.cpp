@@ -40,12 +40,9 @@
 ****************************************************************************/
 
 #include "renderlight_p.h"
-#include "renderer_p.h"
-#include "rendereraspect.h"
+#include "lightmanager_p.h"
 #include "qabstractlight.h"
-#include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DCore/private/qchangearbiter_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -54,7 +51,7 @@ namespace Qt3D {
 namespace Render {
 
 RenderLight::RenderLight()
-    : m_renderer(Q_NULLPTR)
+    : QBackendNode()
 {
 }
 
@@ -65,37 +62,18 @@ RenderLight::~RenderLight()
 
 void RenderLight::cleanup()
 {
-    if (!m_lightUuid.isNull())
-        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_lightUuid);
 }
 
-void RenderLight::setPeer(QAbstractLight *peer)
+void RenderLight::updateFromPeer(QNode *peer)
 {
-    QUuid peerUuid;
-    if (peer != Q_NULLPTR)
-        peerUuid = peer->uuid();
-    if (peerUuid != m_lightUuid) {
-        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        if (!m_lightUuid.isNull()) {
-            arbiter->unregisterObserver(this, m_lightUuid);
-            m_lightProperties.clear();
-        }
-        m_lightUuid = peerUuid;
-        if (!m_lightUuid.isNull()) {
-            arbiter->registerObserver(this, m_lightUuid, NodeUpdated);
-            m_lightProperties = peer->lightProperties();
-            // Properties common to all lights
-            m_lightProperties[QStringLiteral("color")] = peer->color();
-            m_lightProperties[QStringLiteral("intensity")] = peer->intensity();
-            m_lightUniformName = peer->lightUniformName();
-            m_lightBlockName = peer->lightBlockName();
-        }
-    }
-}
+    QAbstractLight *light = static_cast<QAbstractLight *>(peer);
 
-void RenderLight::setRenderer(Renderer *renderer)
-{
-    m_renderer = renderer;
+    m_lightProperties = light->lightProperties();
+    // Properties common to all lights
+    m_lightProperties[QStringLiteral("color")] = light->color();
+    m_lightProperties[QStringLiteral("intensity")] = light->intensity();
+    m_lightUniformName = light->lightUniformName();
+    m_lightBlockName = light->lightBlockName();
 }
 
 QHash<QString, QVariant> RenderLight::lightProperties() const
@@ -109,11 +87,6 @@ void RenderLight::sceneChangeEvent(const QSceneChangePtr &e)
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         m_lightProperties[QString::fromUtf8(propertyChange->propertyName())] = propertyChange->value();
     }
-}
-
-QUuid RenderLight::lightUuid() const
-{
-    return m_lightUuid;
 }
 
 QString RenderLight::lightBlockName() const

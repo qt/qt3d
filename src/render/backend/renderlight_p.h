@@ -43,6 +43,7 @@
 #define QT3D_RENDER_RENDERLIGHT_H
 
 #include <QtGlobal>
+#include <Qt3DCore/qbackendnode.h>
 #include <Qt3DCore/private/qobserverinterface_p.h>
 #include <QUuid>
 
@@ -54,28 +55,24 @@ class QAbstractLight;
 
 namespace Render {
 
-class Renderer;
+class LightManager;
 
-class RenderLight : public QObserverInterface
+class RenderLight : public QBackendNode
 {
 public:
     RenderLight();
     ~RenderLight();
     void cleanup();
 
-    void setPeer(QAbstractLight *peer);
-    void setRenderer(Renderer *renderer);
+    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
 
     QHash<QString, QVariant> lightProperties() const;
-    void sceneChangeEvent(const QSceneChangePtr &e);
-    QUuid lightUuid() const;
+    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
     QString lightUniformName() const;
     QString lightBlockName() const;
 
 private:
-    Renderer *m_renderer;
     QHash<QString, QVariant> m_lightProperties;
-    QUuid m_lightUuid;
     QString m_lightUniformName;
     QString m_lightBlockName;
 };
