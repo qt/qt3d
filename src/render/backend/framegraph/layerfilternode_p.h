@@ -60,7 +60,7 @@ class LayerFilterNode : public FrameGraphNode
 public:
     LayerFilterNode();
 
-    void setPeer(QLayerFilter *peer);
+    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
     QStringList layers() const;
     void setLayers(const QStringList &list);

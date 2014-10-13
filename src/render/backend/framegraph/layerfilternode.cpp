@@ -40,13 +40,8 @@
 ****************************************************************************/
 
 #include "layerfilternode_p.h"
-#include <Qt3DRenderer/private/renderer_p.h>
-#include "rendereraspect.h"
 #include "qlayerfilter.h"
-#include <Qt3DCore/private/qchangearbiter_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DCore/private/qaspectmanager_p.h>
-
 
 QT_BEGIN_NAMESPACE
 
@@ -59,23 +54,10 @@ LayerFilterNode::LayerFilterNode()
 {
 }
 
-void LayerFilterNode::setPeer(QLayerFilter *peer)
+void LayerFilterNode::updateFromPeer(QNode *peer)
 {
-    QUuid peerUuid;
-    if (peer != Q_NULLPTR)
-        peerUuid = peer->uuid();
-    if (m_frontendUuid != peerUuid) {
-        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        if (!m_frontendUuid.isNull()) {
-            arbiter->unregisterObserver(this, m_frontendUuid);
-            m_layers.clear();
-        }
-        m_frontendUuid = peerUuid;
-        if (!m_frontendUuid.isNull()) {
-            arbiter->registerObserver(this, m_frontendUuid, NodeUpdated);
-            m_layers = peer->layers();
-        }
-    }
+    QLayerFilter *layerFilter = static_cast<QLayerFilter *>(peer);
+    m_layers = layerFilter->layers();
 }
 
 void LayerFilterNode::sceneChangeEvent(const QSceneChangePtr &e)
