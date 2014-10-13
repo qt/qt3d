@@ -68,7 +68,7 @@ class RenderPassFilter
 public:
     RenderPassFilter();
 
-    void setPeer(Qt3D::QRenderPassFilter *peer);
+    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
     QList<QUuid> filters() const;
     void appendFilter(QCriterion *criterion);
     void removeFilter(const QUuid &criterionId);
