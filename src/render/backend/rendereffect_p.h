@@ -45,6 +45,7 @@
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DRenderer/private/parameterpack_p.h>
 #include <Qt3DCore/private/qobserverinterface_p.h>
+#include <Qt3DCore/qbackendnode.h>
 #include <QList>
 #include <QUuid>
 
@@ -64,29 +65,25 @@ class RenderTechnique;
 
 typedef QHandle<RenderTechnique, 16> HTechnique;
 
-class Renderer;
+class EffectManager;
 
 class RenderEffect
-        : public QObserverInterface
+        : public QBackendNode
 {
 public:
     RenderEffect();
     ~RenderEffect();
     void cleanup();
 
-    void setPeer(QEffect *effect);
-    void setRenderer(Renderer *renderer);
+    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const QSceneChangePtr &e);
     void appendRenderTechnique(QTechnique *t);
 
     QList<QUuid> techniques() const;
     const QHash<QString, QVariant> parameters() const;
-    QUuid effectUuid() const;
 
 private:
     QList<QUuid> m_techniques;
-    Renderer *m_renderer;
-    QUuid m_effectUuid;
     ParameterPack m_parameterPack;
 };
 

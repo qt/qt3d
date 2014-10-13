@@ -40,16 +40,14 @@
 ****************************************************************************/
 
 #include <Qt3DRenderer/private/rendereffect_p.h>
+#include <Qt3DRenderer/private/effectmanager_p.h>
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/private/renderscenebuilder_p.h>
 #include <Qt3DRenderer/private/techniquemanager_p.h>
 #include <Qt3DRenderer/qeffect.h>
 #include <Qt3DRenderer/qparameter.h>
-#include <Qt3DRenderer/rendereraspect.h>
 
-#include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DCore/private/qchangearbiter_p.h>
 
 #include <QVariant>
 
@@ -60,7 +58,7 @@ namespace Qt3D {
 namespace Render {
 
 RenderEffect::RenderEffect()
-    : m_renderer(Q_NULLPTR)
+    : QBackendNode()
 {
 }
 
@@ -71,40 +69,27 @@ RenderEffect::~RenderEffect()
 
 void RenderEffect::cleanup()
 {
-    if (m_renderer != Q_NULLPTR && !m_effectUuid.isNull())
-        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_effectUuid);
 }
 
-void RenderEffect::setPeer(QEffect *effect)
+void RenderEffect::updateFromPeer(QNode *peer)
 {
-    QUuid peerUuid;
-    if (effect != Q_NULLPTR)
-        peerUuid = effect->uuid();
-    if (peerUuid != m_effectUuid) {
-        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        if (!m_effectUuid.isNull()) {
-            arbiter->unregisterObserver(this, m_effectUuid);
-            m_techniques.clear();
-            m_parameterPack.clear();
-        }
-        m_effectUuid = peerUuid;
-        if (!m_effectUuid.isNull()) {
-            arbiter->registerObserver(this, m_effectUuid, NodeAdded|NodeRemoved|NodeUpdated);
+    QEffect *effect = static_cast<QEffect *>(peer);
 
-            Q_FOREACH (QTechnique *t, effect->techniques())
-                appendRenderTechnique(t);
+    m_techniques.clear();
+    m_parameterPack.clear();
 
-            Q_FOREACH (QParameter *p, effect->parameters())
-                m_parameterPack.appendParameter(p);
-        }
-    }
+    Q_FOREACH (QTechnique *t, effect->techniques())
+        appendRenderTechnique(t);
+
+    Q_FOREACH (QParameter *p, effect->parameters())
+        m_parameterPack.appendParameter(p);
 }
 
-void RenderEffect::setRenderer(Renderer *renderer)
-{
-    m_renderer = renderer;
-    m_parameterPack.setRenderer(m_renderer);
-}
+//void RenderEffect::setRenderer(Renderer *renderer)
+//{
+//    m_renderer = renderer;
+//    m_parameterPack.setRenderer(m_renderer);
+//}
 
 void RenderEffect::sceneChangeEvent(const QSceneChangePtr &e)
 {
@@ -148,11 +133,6 @@ void RenderEffect::appendRenderTechnique(QTechnique *technique)
 const QHash<QString, QVariant> RenderEffect::parameters() const
 {
     return m_parameterPack.namedValues();
-}
-
-QUuid RenderEffect::effectUuid() const
-{
-    return m_effectUuid;
 }
 
 QList<QUuid> RenderEffect::techniques() const
