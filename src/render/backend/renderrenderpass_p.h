@@ -47,6 +47,7 @@
 #include <Qt3DCore/private/qabstractaspect_p.h>
 #include <Qt3DCore/private/qobservableinterface_p.h>
 #include <Qt3DCore/private/qobserverinterface_p.h>
+#include <Qt3DCore/qbackendnode.h>
 #include <QUuid>
 
 QT_BEGIN_NAMESPACE
@@ -61,22 +62,20 @@ class QRenderState;
 
 namespace Render {
 
-class Renderer;
+class RenderPassManager;
 
-class RenderRenderPass : public QObserverInterface
+class RenderRenderPass : public QBackendNode
 {
 public:
     RenderRenderPass();
     ~RenderRenderPass();
     void cleanup();
 
-    void setRenderer(Renderer *renderer);
-    void setPeer(QRenderPass *peer);
-    void sceneChangeEvent(const QSceneChangePtr &e);
+    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
     QUuid shaderProgram() const;
     QList<QParameterMapper *> bindings() const;
     QList<QUuid> criteria() const;
-    QUuid renderPassUuid() const;
     QList<QRenderState *> renderStates() const;
 
     void appendCriterion(QCriterion *criterion);
@@ -89,8 +88,6 @@ public:
     void removeRenderState(const QUuid &renderStateId);
 
 private:
-    Renderer *m_renderer;
-    QUuid m_passUuid;
     QUuid m_shaderUuid;
     QHash<QUuid, QParameterMapper *> m_bindings;
     QHash<QUuid, QRenderState *> m_renderStates;

@@ -41,16 +41,14 @@
 ****************************************************************************/
 
 #include "renderrenderpass_p.h"
+#include "renderpassmanager_p.h"
 #include <Qt3DRenderer/private/criterionmanager_p.h>
 #include <Qt3DRenderer/private/rendercriterion_p.h>
-#include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/qparametermapper.h>
 #include <Qt3DRenderer/qrenderstate.h>
-#include <Qt3DRenderer/rendereraspect.h>
+#include <Qt3DRenderer/qrenderpass.h>
 
-#include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DCore/private/qchangearbiter_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,7 +57,7 @@ namespace Qt3D {
 namespace Render {
 
 RenderRenderPass::RenderRenderPass()
-    : m_renderer(Q_NULLPTR)
+    : QBackendNode()
 {
 }
 
@@ -70,43 +68,22 @@ RenderRenderPass::~RenderRenderPass()
 
 void RenderRenderPass::cleanup()
 {
-    if (m_renderer != Q_NULLPTR && !m_passUuid.isNull())
-        m_renderer->rendererAspect()->aspectManager()->changeArbiter()->unregisterObserver(this, m_passUuid);
 }
 
-void RenderRenderPass::setRenderer(Renderer *renderer)
+void RenderRenderPass::updateFromPeer(QNode *peer)
 {
-    m_renderer = renderer;
-}
+    QRenderPass *pass = static_cast<QRenderPass *>(peer);
 
-void RenderRenderPass::setPeer(QRenderPass *peer)
-{
-    QUuid peerUuid;
-    if (peer != Q_NULLPTR)
-        peerUuid = peer->uuid();
-    if (m_passUuid != peerUuid) {
-        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        if (!m_passUuid.isNull()) {
-            arbiter->unregisterObserver(this, m_passUuid);
-            m_criteriaList.clear();
-            m_bindings.clear();
-            m_shaderUuid = QUuid();
-        }
-        m_passUuid = peerUuid;
-        if (!m_passUuid.isNull()) {
-            arbiter->registerObserver(this, m_passUuid, NodeAdded|NodeRemoved);
-            if (peer->shaderProgram() != Q_NULLPTR)
-                m_shaderUuid = peer->shaderProgram()->uuid();
-            // The RenderPass clones frontend bindings in case the frontend ever removes them
-            // TO DO: We probably need a QParameterMapper manager
-            Q_FOREACH (QParameterMapper *binding, peer->bindings())
-                appendBinding(binding);
-            Q_FOREACH (QCriterion *c, peer->criteria())
-                appendCriterion(c);
-            Q_FOREACH (QRenderState *renderState, peer->renderStates())
-                appendRenderState(renderState);
-        }
-    }
+    if (pass->shaderProgram() != Q_NULLPTR)
+        m_shaderUuid = pass->shaderProgram()->uuid();
+    // The RenderPass clones frontend bindings in case the frontend ever removes them
+    // TO DO: We probably need a QParameterMapper manager
+    Q_FOREACH (QParameterMapper *binding, pass->bindings())
+        appendBinding(binding);
+    Q_FOREACH (QCriterion *c, pass->criteria())
+        appendCriterion(c);
+    Q_FOREACH (QRenderState *renderState, pass->renderStates())
+        appendRenderState(renderState);
 }
 
 void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
@@ -164,11 +141,6 @@ QList<QParameterMapper *> RenderRenderPass::bindings() const
 QList<QUuid> RenderRenderPass::criteria() const
 {
     return m_criteriaList;
-}
-
-QUuid RenderRenderPass::renderPassUuid() const
-{
-    return m_passUuid;
 }
 
 QList<QRenderState *> RenderRenderPass::renderStates() const
