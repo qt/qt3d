@@ -44,6 +44,10 @@
 
 #include <Qt3DCore/private/qobserverinterface_p.h>
 #include <Qt3DCore/qhandle.h>
+#include <Qt3DCore/qnode.h>
+#include <Qt3DRenderer/qframegraphitem.h>
+#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DRenderer/private/framegraphmanager_p.h>
 #include <qglobal.h>
 #include <QVector>
 #include <QUuid>
@@ -57,12 +61,7 @@ class QHandle;
 
 namespace Render {
 
-class Renderer;
-class FrameGraphNode;
-
-typedef QHandle<FrameGraphNode *, 8> HFrameGraphNode;
-
-class FrameGraphNode : public QObserverInterface
+class FrameGraphNode : public QBackendNode
 {
 public:
     FrameGraphNode();
@@ -81,11 +80,11 @@ public:
     };
     FrameGraphNodeType nodeType() const { return m_nodeType; }
 
-
     void setEnabled(bool enabled) { m_enabled = enabled; }
     bool isEnabled() const { return m_enabled; }
 
-    void setRenderer(Renderer *renderer);
+    void setFrameGraphManager(FrameGraphManager *manager);
+
     void setHandle(HFrameGraphNode handle);
     void setParentHandle(HFrameGraphNode parentHandle);
     void appendChildHandle(HFrameGraphNode childHandle);
@@ -97,12 +96,9 @@ public:
 
     FrameGraphNode *parent() const;
     QList<FrameGraphNode *> children() const;
-    QUuid frontendUuid() const { return m_frontendUuid; }
 
 protected:
     FrameGraphNode(FrameGraphNodeType nodeType);
-    Renderer *m_renderer;
-    QUuid m_frontendUuid;
 
 private:
     FrameGraphNodeType m_nodeType;
@@ -110,8 +106,62 @@ private:
     HFrameGraphNode m_handle;
     HFrameGraphNode m_parentHandle;
     QList<HFrameGraphNode> m_childrenHandles;
+    FrameGraphManager *m_manager;
 
     friend class FrameGraphVisitor;
+};
+
+template<typename Backend, typename Frontend>
+class FrameGraphNodeFunctor : public QBackendNodeFunctor
+{
+public:
+    explicit FrameGraphNodeFunctor(FrameGraphManager *manager)
+        : m_manager(manager)
+    {
+    }
+
+    QBackendNode *create(QNode *frontend) const Q_DECL_OVERRIDE
+    {
+        return createBackendFrameGraphNode(frontend);
+    }
+
+    QBackendNode *get(QNode *frontend) const Q_DECL_OVERRIDE
+    {
+        FrameGraphNode **node = m_manager->lookupResource(frontend->uuid());
+        if (node != Q_NULLPTR)
+            return *node;
+        return Q_NULLPTR;
+    }
+
+    void destroy(QNode *frontend) const Q_DECL_OVERRIDE
+    {
+        m_manager->releaseResource(frontend->uuid());
+    }
+
+protected:
+    Backend *createBackendFrameGraphNode(QNode *n) const
+    {
+        Frontend *f = qobject_cast<Frontend *>(n);
+        if (n != Q_NULLPTR) {
+            HFrameGraphNode handle = m_manager->lookupHandle(n->uuid());
+            if (handle.isNull()) {
+                handle = m_manager->getOrAcquireHandle(n->uuid());
+                Backend *backend = new Backend();
+                *m_manager->data(handle) = backend;
+                backend->setFrameGraphManager(m_manager);
+                backend->setHandle(handle);
+                backend->setPeer(f);
+                if (qobject_cast<QFrameGraphItem *>(n->parentNode()))
+                    backend->setParentHandle(m_manager->lookupHandle(n->parentNode()->uuid()));
+                return backend;
+            }
+            return static_cast<Backend *>(*m_manager->data(handle));
+        }
+        return Q_NULLPTR;
+    }
+
+private:
+    FrameGraphManager *m_manager;
 };
 
 } // namespace Render

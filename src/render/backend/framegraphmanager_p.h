@@ -43,7 +43,6 @@
 #define QT3D_RENDER_FRAMEGRAPHMANAGER_H
 
 #include <Qt3DCore/qresourcesmanager.h>
-#include <Qt3DRenderer/private/framegraphnode_p.h>
 #include <QUuid>
 
 QT_BEGIN_NAMESPACE
@@ -51,6 +50,8 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 namespace Render {
+
+class FrameGraphNode;
 
 typedef QHandle<FrameGraphNode *, 8> HFrameGraphNode;
 

@@ -49,15 +49,17 @@ namespace Qt3D {
 namespace Render {
 
 FrameGraphNode::FrameGraphNode()
-    : m_renderer(Q_NULLPTR)
+    : QBackendNode()
     , m_nodeType(InvalidNodeType)
     , m_enabled(true)
+    , m_manager(Q_NULLPTR)
 {
 }
 
 FrameGraphNode::FrameGraphNode(FrameGraphNodeType nodeType)
     : m_nodeType(nodeType)
     , m_enabled(true)
+    , m_manager(Q_NULLPTR)
 {
 }
 
@@ -65,9 +67,10 @@ FrameGraphNode::~FrameGraphNode()
 {
 }
 
-void FrameGraphNode::setRenderer(Renderer *renderer)
+void FrameGraphNode::setFrameGraphManager(FrameGraphManager *manager)
 {
-    m_renderer = renderer;
+    if (m_manager != manager)
+        m_manager = manager;
 }
 
 void FrameGraphNode::setHandle(HFrameGraphNode handle)
@@ -78,7 +81,7 @@ void FrameGraphNode::setHandle(HFrameGraphNode handle)
 void FrameGraphNode::setParentHandle(HFrameGraphNode parentHandle)
 {
     m_parentHandle = parentHandle;
-    FrameGraphNode **parent = m_renderer->frameGraphManager()->data(m_parentHandle);
+    FrameGraphNode **parent = m_manager->data(m_parentHandle);
     if (parent != Q_NULLPTR && !(*parent)->m_childrenHandles.contains(m_handle))
         (*parent)->m_childrenHandles.append(m_handle);
 }
@@ -86,7 +89,7 @@ void FrameGraphNode::setParentHandle(HFrameGraphNode parentHandle)
 void FrameGraphNode::appendChildHandle(HFrameGraphNode childHandle)
 {
     if (!m_childrenHandles.contains(childHandle)) {
-        FrameGraphNode **child = m_renderer->frameGraphManager()->data(childHandle);
+        FrameGraphNode **child = m_manager->data(childHandle);
         if (child != Q_NULLPTR) {
             m_childrenHandles.append(childHandle);
             (*child)->m_parentHandle = m_handle;
@@ -117,7 +120,7 @@ QList<HFrameGraphNode> FrameGraphNode::childrenHandles() const
 
 FrameGraphNode *FrameGraphNode::parent() const
 {
-    FrameGraphNode **parent = m_renderer->frameGraphManager()->data(m_parentHandle);
+    FrameGraphNode **parent = m_manager->data(m_parentHandle);
     if (parent != Q_NULLPTR)
         return *parent;
     return Q_NULLPTR;
@@ -128,7 +131,7 @@ QList<FrameGraphNode *> FrameGraphNode::children() const
     QList<FrameGraphNode *> children;
 
     Q_FOREACH (HFrameGraphNode handle, m_childrenHandles) {
-        FrameGraphNode **child = m_renderer->frameGraphManager()->data(handle);
+        FrameGraphNode **child = m_manager->data(handle);
         if (child != Q_NULLPTR)
             children << *child;
     }
