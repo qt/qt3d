@@ -51,12 +51,14 @@ namespace Qt3D {
 
 namespace Render {
 
+class FrameGraphManager;
+
 class ClearBuffer : public FrameGraphNode
 {
 public:
     ClearBuffer();
 
-    void setPeer(QClearBuffer *peer);
+    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
     QClearBuffer::BufferType type() const;
 

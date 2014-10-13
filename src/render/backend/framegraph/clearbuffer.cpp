@@ -41,10 +41,6 @@
 
 #include "clearbuffer_p.h"
 #include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DCore/private/qaspectmanager_p.h>
-#include <Qt3DCore/private/qchangearbiter_p.h>
-#include <Qt3DRenderer/rendereraspect.h>
-#include <Qt3DRenderer/private/renderer_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -58,21 +54,11 @@ ClearBuffer::ClearBuffer()
 {
 }
 
-void ClearBuffer::setPeer(QClearBuffer *peer)
+void ClearBuffer::updateFromPeer(QNode *peer)
 {
-    QUuid peerUuid;
-    if (peer != Q_NULLPTR)
-        peerUuid = peer->uuid();
-    if (m_frontendUuid != peerUuid) {
-        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-        if (!m_frontendUuid.isNull())
-            arbiter->unregisterObserver(this, m_frontendUuid);
-        m_frontendUuid = peerUuid;
-        if (!m_frontendUuid.isNull()) {
-            arbiter->registerObserver(this, m_frontendUuid, NodeUpdated);
-            m_type = peer->buffers();
-        }
-    }
+    QClearBuffer *clearBuffer = static_cast<QClearBuffer *>(peer);
+    m_type = clearBuffer->buffers();
+
 }
 
 void ClearBuffer::sceneChangeEvent(const QSceneChangePtr &e)
