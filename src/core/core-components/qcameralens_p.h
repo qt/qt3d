@@ -77,7 +77,7 @@ public:
         // Notify the aspects
         Q_Q(QCameraLens);
         if (m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentUpdated, q));
+            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, q));
             propertyChange->setPropertyName(QByteArrayLiteral("projectionMatrix"));
             propertyChange->setValue(QVariant::fromValue(m_projectionMatrix));
             QNodePrivate::notifyObservers(propertyChange);

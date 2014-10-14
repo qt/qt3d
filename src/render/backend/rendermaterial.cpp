@@ -94,7 +94,7 @@ void RenderMaterial::setPeer(QMaterial *mat)
         }
         m_materialUuid = peerUuid;
         if (!m_materialUuid.isNull()) {
-            arbiter->registerObserver(this, m_materialUuid, ComponentUpdated|NodeAdded|NodeRemoved);
+            arbiter->registerObserver(this, m_materialUuid, NodeUpdated|NodeAdded|NodeRemoved);
             if (mat->effect() != Q_NULLPTR)
                 m_effectUuid = mat->effect()->uuid();
             Q_FOREACH (QParameter *p, mat->parameters())
@@ -134,7 +134,7 @@ void RenderMaterial::sceneChangeEvent(const QSceneChangePtr &e)
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
 
     switch (e->type()) {
-    case ComponentUpdated: {
+    case NodeUpdated: {
         // Check for effect change
         break;
     }

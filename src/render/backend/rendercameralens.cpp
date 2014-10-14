@@ -95,7 +95,7 @@ void RenderCameraLens::setPeer(QCameraLens *peer)
         m_lensUuid = peerUuid;
         if (!m_lensUuid.isNull()) {
             // Register for changes
-            arbiter->registerObserver(this, m_lensUuid, ComponentUpdated);
+            arbiter->registerObserver(this, m_lensUuid, NodeUpdated);
             setProjection(peer->projectionMatrix());
         }
     }
@@ -115,7 +115,7 @@ void RenderCameraLens::setProjection(const QMatrix4x4 &projection)
 void RenderCameraLens::sceneChangeEvent(const QSceneChangePtr &e)
 {
     switch (e->type()) {
-    case ComponentUpdated: {
+    case NodeUpdated: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         QMatrix4x4 projectionMatrix = propertyChange->value().value<QMatrix4x4>();
         m_projection = projectionMatrix;

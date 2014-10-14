@@ -58,7 +58,6 @@ enum ChangeFlag {
     NodeRemoved             = 1 << 5,
     ComponentAdded          = 1 << 6,
     ComponentRemoved        = 1 << 7,
-    ComponentUpdated        = 1 << 8,
     AllChanges              = 0xFFFFFFFF
 };
 Q_DECLARE_FLAGS(ChangeFlags, ChangeFlag)

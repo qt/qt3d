@@ -73,7 +73,7 @@ void RenderTarget::setPeer(QRenderTarget *peer)
         }
         m_renderTargetUuid = peerUuid;
         if (!m_renderTargetUuid.isNull()) {
-            arbiter->registerObserver(this, m_renderTargetUuid, NodeAdded|NodeRemoved|ComponentUpdated);
+            arbiter->registerObserver(this, m_renderTargetUuid, NodeAdded|NodeRemoved|NodeUpdated);
             Q_FOREACH (QRenderAttachment *att, peer->attachments())
                 appendRenderAttachment(att);
         }

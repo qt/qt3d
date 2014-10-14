@@ -105,7 +105,7 @@ void RenderMesh::setPeer(QAbstractMesh *peer)
         }
         m_meshUuid = peerUuid;
         if (!m_meshUuid.isNull()) {
-            arbiter->registerObserver(this, m_meshUuid, ComponentUpdated);
+            arbiter->registerObserver(this, m_meshUuid, NodeUpdated);
             m_meshDirty = true;
             setMeshFunctor(peer->meshFunctor());
         }
@@ -120,7 +120,7 @@ void RenderMesh::setRenderer(Renderer *renderer)
 void RenderMesh::sceneChangeEvent(const QSceneChangePtr &e)
 {
     switch (e->type()) {
-    case ComponentUpdated: {
+    case NodeUpdated: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("meshFunctor")) // Mesh with source
             setMeshFunctor(propertyChange->value().value<QAbstractMeshFunctorPtr>());

@@ -61,7 +61,7 @@ void QSceneLoader::sceneChangeEvent(const QSceneChangePtr &change)
 {
     Q_D(Render::QAbstractSceneLoader);
     QScenePropertyChangePtr e = qSharedPointerCast<QScenePropertyChange>(change);
-    if (e->type() == ComponentUpdated) {
+    if (e->type() == NodeUpdated) {
         if (e->propertyName() == QByteArrayLiteral("scene")) {
             QEntity *scene = e->value().value<QEntity *>();
             // TO DO: We should send a QNodePtr so that it is release automatically

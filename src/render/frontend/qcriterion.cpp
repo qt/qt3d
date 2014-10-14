@@ -81,7 +81,7 @@ void QCriterion::setValue(const QVariant &value)
     if (value != d->m_value) {
         d->m_value = value;
         emit valueChanged();
-        QScenePropertyChangePtr change(new QScenePropertyChange(ComponentUpdated, this));
+        QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
         change->setPropertyName(QByteArrayLiteral("criterionValue"));
         change->setValue(value);
         d->notifyObservers(change);
@@ -94,7 +94,7 @@ void QCriterion::setName(const QString &name)
     if (name != d->m_name) {
         d->m_name = name;
         emit nameChanged();
-        QScenePropertyChangePtr change(new QScenePropertyChange(ComponentUpdated, this));
+        QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
         change->setPropertyName(QByteArrayLiteral("criterionName"));
         change->setValue(QVariant(name));
         d->notifyObservers(change);

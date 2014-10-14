@@ -80,7 +80,7 @@ void RenderCriterion::setPeer(QCriterion *criterion)
         m_peer = criterion;
         if (m_peer) {
             m_criterionUuid = criterion->uuid();
-            arbiter->registerObserver(this, m_criterionUuid, ComponentUpdated);
+            arbiter->registerObserver(this, m_criterionUuid, NodeUpdated);
             m_value = m_peer->value();
             m_name = m_peer->name();
         }

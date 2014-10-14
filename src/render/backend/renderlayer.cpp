@@ -81,7 +81,7 @@ void RenderLayer::setPeer(QLayer *peer)
         }
         m_layerUuid = peerUuid;
         if (!m_layerUuid.isNull()) {
-            arbiter->registerObserver(this, m_layerUuid, ComponentUpdated);
+            arbiter->registerObserver(this, m_layerUuid, NodeUpdated);
             m_layer = peer->name();
         }
     }
@@ -105,7 +105,7 @@ QString RenderLayer::layer() const
 void RenderLayer::sceneChangeEvent(const QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-    if (e->type() == ComponentUpdated && propertyChange->propertyName() == QByteArrayLiteral("layer"))
+    if (e->type() == NodeUpdated && propertyChange->propertyName() == QByteArrayLiteral("layer"))
         m_layer = propertyChange->value().toString();
 }
 

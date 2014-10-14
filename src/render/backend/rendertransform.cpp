@@ -82,7 +82,7 @@ void RenderTransform::setPeer(QTransform *peer)
             arbiter->unregisterObserver(this, m_peerUuid);
         m_peerUuid = peerUuid;
         if (peer) {
-            arbiter->registerObserver(this, m_peerUuid, ComponentUpdated);
+            arbiter->registerObserver(this, m_peerUuid, NodeUpdated);
             m_transformMatrix = peer->matrix();
         }
     }
@@ -106,7 +106,7 @@ QMatrix4x4 RenderTransform::transformMatrix() const
 void RenderTransform::sceneChangeEvent(const QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-    if (e->type() == ComponentUpdated && propertyChange->propertyName() == QByteArrayLiteral("matrix"))
+    if (e->type() == NodeUpdated && propertyChange->propertyName() == QByteArrayLiteral("matrix"))
         m_transformMatrix = propertyChange->value().value<QMatrix4x4>();
 }
 

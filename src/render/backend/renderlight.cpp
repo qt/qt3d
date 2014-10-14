@@ -82,7 +82,7 @@ void RenderLight::setPeer(QAbstractLight *peer)
         }
         m_lightUuid = peerUuid;
         if (!m_lightUuid.isNull()) {
-            arbiter->registerObserver(this, m_lightUuid, ComponentUpdated);
+            arbiter->registerObserver(this, m_lightUuid, NodeUpdated);
             m_lightProperties = peer->lightProperties();
             // Properties common to all lights
             m_lightProperties[QStringLiteral("color")] = peer->color();
@@ -105,7 +105,7 @@ QHash<QString, QVariant> RenderLight::lightProperties() const
 
 void RenderLight::sceneChangeEvent(const QSceneChangePtr &e)
 {
-    if (e->type() == ComponentUpdated) {
+    if (e->type() == NodeUpdated) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         m_lightProperties[QString::fromUtf8(propertyChange->propertyName())] = propertyChange->value();
     }

@@ -89,7 +89,7 @@ void RenderEffect::setPeer(QEffect *effect)
         }
         m_effectUuid = peerUuid;
         if (!m_effectUuid.isNull()) {
-            arbiter->registerObserver(this, m_effectUuid, NodeAdded|NodeRemoved|ComponentUpdated);
+            arbiter->registerObserver(this, m_effectUuid, NodeAdded|NodeRemoved|NodeUpdated);
 
             Q_FOREACH (QTechnique *t, effect->techniques())
                 appendRenderTechnique(t);
