@@ -105,6 +105,9 @@ Q_SIGNALS:
     void dstRGBChanged();
     void dstAlphaChanged();
 
+protected:
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
 private:
     Q_DECLARE_PRIVATE(QBlendState)
     QT3D_CLONEABLE(QBlendState)

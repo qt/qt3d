@@ -58,8 +58,6 @@ class QT3DCORESHARED_EXPORT QCameraLensPrivate : public QComponentPrivate
 public:
     QCameraLensPrivate(QCameraLens *qq);
 
-    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
-
     inline void updateProjectionMatrix()
     {
         switch (m_projectionType) {

@@ -55,8 +55,6 @@ class QViewportPrivate : public QFrameGraphItemPrivate
 public :
     QViewportPrivate(QViewport *qq);
 
-    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
-
     Q_DECLARE_PUBLIC(QViewport)
     QRectF m_rect;
     QColor m_clearColor;

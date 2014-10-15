@@ -80,6 +80,9 @@ Q_SIGNALS:
     void widthChanged();
     void heightChanged();
 
+protected:
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
 private:
     Q_DECLARE_PRIVATE(QScissorTest)
     QT3D_CLONEABLE(QScissorTest)

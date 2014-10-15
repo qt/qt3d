@@ -130,6 +130,7 @@ Q_SIGNALS:
 
 protected:
     QCameraLens(QCameraLensPrivate &dd, QNode *parent = 0);
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QCameraLens)

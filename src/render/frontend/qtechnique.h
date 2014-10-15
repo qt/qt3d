@@ -84,6 +84,7 @@ public:
 
 protected:
     QTechnique(QTechniquePrivate &dd, QNode *parent = 0);
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
 protected Q_SLOTS:
     void openGLFilterChanged();

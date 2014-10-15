@@ -79,6 +79,7 @@ Q_SIGNALS:
 
 protected:
     QRotateTransform(QRotateTransformPrivate &dd, QNode *parent = 0);
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QRotateTransform)

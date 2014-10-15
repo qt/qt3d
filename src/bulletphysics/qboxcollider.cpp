@@ -54,12 +54,12 @@ QBoxColliderPrivate::QBoxColliderPrivate(QBoxCollider *qq)
 {
 }
 
-void QBoxColliderPrivate::copy(const QNodePrivate *ref)
+void QBoxCollider::copy(const QNode *ref)
 {
-    QAbstractColliderPrivate::copy(ref);
-    const QBoxColliderPrivate *other = static_cast<const QBoxColliderPrivate *>(ref);
-    m_center = other->m_center;
-    m_halfExtents = other->m_halfExtents;
+    QAbstractCollider::copy(ref);
+    const QBoxCollider *other = static_cast<const QBoxCollider*>(ref);
+    d_func()->m_center = other->d_func()->m_center;
+    d_func()->m_halfExtents = other->d_func()->m_halfExtents;
 }
 
 QBoxCollider::QBoxCollider(Qt3D::QNode *parent)

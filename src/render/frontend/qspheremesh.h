@@ -82,6 +82,9 @@ Q_SIGNALS:
     void slicesChanged();
     void generateTangentsChanged();
 
+protected:
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
 private:
     Q_DECLARE_PRIVATE(QSphereMesh)
     QT3D_CLONEABLE(QSphereMesh)

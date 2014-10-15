@@ -60,8 +60,6 @@ class QT3DRENDERERSHARED_EXPORT QAbstractSceneLoaderPrivate : public QComponentP
 public:
     QAbstractSceneLoaderPrivate(QAbstractSceneLoader *qq);
 
-    virtual void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
-
     Q_DECLARE_PUBLIC(QAbstractSceneLoader)
 
     QString m_source;

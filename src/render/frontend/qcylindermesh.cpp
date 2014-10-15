@@ -80,8 +80,6 @@ class QCylinderMeshPrivate : public QAbstractShapeMeshPrivate
         , m_length(1.0)
     {}
 
-    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
-
     Q_DECLARE_PUBLIC(QCylinderMesh)
     int m_rings;
     int m_slices;
@@ -89,14 +87,14 @@ class QCylinderMeshPrivate : public QAbstractShapeMeshPrivate
     float m_length;
 };
 
-void QCylinderMeshPrivate::copy(const QNodePrivate *ref)
+void QCylinderMesh::copy(const QNode *ref)
 {
-    QAbstractShapeMeshPrivate::copy(ref);
-    const QCylinderMeshPrivate *mesh = static_cast<const QCylinderMeshPrivate *>(ref);
-    m_rings = mesh->m_rings;
-    m_slices = mesh->m_slices;
-    m_radius = mesh->m_radius;
-    m_length = mesh->m_length;
+    QAbstractShapeMesh::copy(ref);
+    const QCylinderMesh *mesh = static_cast<const QCylinderMesh*>(ref);
+    d_func()->m_rings = mesh->d_func()->m_rings;
+    d_func()->m_slices = mesh->d_func()->m_slices;
+    d_func()->m_radius = mesh->d_func()->m_radius;
+    d_func()->m_length = mesh->d_func()->m_length;
 }
 
 QCylinderMesh::QCylinderMesh(QNode *parent)

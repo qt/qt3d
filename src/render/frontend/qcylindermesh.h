@@ -80,6 +80,9 @@ Q_SIGNALS:
     void radiusChanged(float radius);
     void lengthChanged(float length);
 
+protected:
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
 private:
     Q_DECLARE_PRIVATE(QCylinderMesh)
     QT3D_CLONEABLE(QCylinderMesh)

@@ -56,8 +56,6 @@ class QRenderTargetPrivate : public QComponentPrivate
 public:
     QRenderTargetPrivate(QRenderTarget *qq);
 
-    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
-
     Q_DECLARE_PUBLIC(QRenderTarget)
     QList<QRenderAttachment *> m_attachments;
 };

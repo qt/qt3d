@@ -59,7 +59,7 @@ QSceneLoader::QSceneLoader(QNode *parent)
 // Called in main thread
 void QSceneLoader::sceneChangeEvent(const QSceneChangePtr &change)
 {
-    Q_D(Render::QAbstractSceneLoader);
+    Render::QAbstractSceneLoaderPrivate *d = static_cast<Render::QAbstractSceneLoaderPrivate*>(QNodePrivate::get(this));
     QScenePropertyChangePtr e = qSharedPointerCast<QScenePropertyChange>(change);
     if (e->type() == NodeUpdated) {
         if (e->propertyName() == QByteArrayLiteral("scene")) {

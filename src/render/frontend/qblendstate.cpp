@@ -61,8 +61,6 @@ public:
     {
     }
 
-    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
-
     Q_DECLARE_PUBLIC(QBlendState)
 
     QBlendState::Blending m_srcRGB;
@@ -76,14 +74,14 @@ QBlendState::QBlendState(QNode *parent)
 {
 }
 
-void QBlendStatePrivate::copy(const QNodePrivate *ref)
+void QBlendState::copy(const QNode *ref)
 {
-   QRenderStatePrivate::copy(ref);
-    const QBlendStatePrivate *refState = static_cast<const QBlendStatePrivate *>(ref);
-    m_srcRGB = refState->m_srcRGB;
-    m_srcAlpha = refState->m_srcAlpha;
-    m_dstAlpha = refState->m_dstAlpha;
-    m_dstRGB = refState->m_dstRGB;
+    QRenderState::copy(ref);
+    const QBlendState *refState = static_cast<const QBlendState*>(ref);
+    d_func()->m_srcRGB = refState->d_func()->m_srcRGB;
+    d_func()->m_srcAlpha = refState->d_func()->m_srcAlpha;
+    d_func()->m_dstAlpha = refState->d_func()->m_dstAlpha;
+    d_func()->m_dstRGB = refState->d_func()->m_dstRGB;
 }
 
 QBlendState::Blending QBlendState::srcRGB() const

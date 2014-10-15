@@ -60,12 +60,12 @@ QRotateTransformPrivate::QRotateTransformPrivate(QRotateTransform *qq)
 {
 }
 
-void QRotateTransformPrivate::copy(const QNodePrivate *ref)
+void QRotateTransform::copy(const QNode *ref)
 {
-    QAbstractTransformPrivate::copy(ref);
-    const QRotateTransformPrivate *transform = static_cast<const QRotateTransformPrivate *>(ref);
-    m_axis = transform->m_axis;
-    m_angleDeg = transform->m_angleDeg;
+    QAbstractTransform::copy(ref);
+    const QRotateTransform *transform = static_cast<const QRotateTransform*>(ref);
+    d_func()->m_axis = transform->d_func()->m_axis;
+    d_func()->m_angleDeg = transform->d_func()->m_angleDeg;
 }
 
 QRotateTransform::QRotateTransform(QNode *parent)

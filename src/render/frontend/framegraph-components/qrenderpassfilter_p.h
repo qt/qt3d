@@ -56,7 +56,6 @@ public:
     QRenderPassFilterPrivate(QRenderPassFilter *qq)
         : QFrameGraphItemPrivate(qq)
     {}
-    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
 
     Q_DECLARE_PUBLIC(QRenderPassFilter)
     QString m_renderPassName;

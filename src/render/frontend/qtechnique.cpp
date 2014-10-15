@@ -68,18 +68,18 @@ QTechnique::QTechnique(QNode *parent)
     QObject::connect(d->m_openGLFilter, SIGNAL(openGLFilterChanged()), this, SLOT(openGLFilterChanged()));
 }
 
-void QTechniquePrivate::copy(const QNodePrivate *ref)
+void QTechnique::copy(const QNode *ref)
 {
-    QNodePrivate::copy(ref);
-    const QTechniquePrivate *tech = static_cast<const QTechniquePrivate *>(ref);
-    m_openGLFilter->copy(tech->m_openGLFilter);
+    QNode::copy(ref);
+    const QTechnique *tech = static_cast<const QTechnique*>(ref);
+    d_func()->m_openGLFilter->copy(tech->d_func()->m_openGLFilter);
 
-    Q_FOREACH (QCriterion *criterion, tech->m_criteriaList)
-        q_func()->addCriterion(qobject_cast<QCriterion *>(QNodePrivate::get(criterion)->clone()));
-    Q_FOREACH (QRenderPass *pass, tech->m_renderPasses)
-        q_func()->addPass(qobject_cast<QRenderPass *>(QNodePrivate::get(pass)->clone()));
-    Q_FOREACH (QParameter *p, tech->m_parameters)
-        q_func()->addParameter(qobject_cast<QParameter *>(QNodePrivate::get(p)->clone()));
+    Q_FOREACH (QCriterion *criterion, tech->d_func()->m_criteriaList)
+        addCriterion(qobject_cast<QCriterion *>(QNodePrivate::get(criterion)->clone()));
+    Q_FOREACH (QRenderPass *pass, tech->d_func()->m_renderPasses)
+        addPass(qobject_cast<QRenderPass *>(QNodePrivate::get(pass)->clone()));
+    Q_FOREACH (QParameter *p, tech->d_func()->m_parameters)
+        addParameter(qobject_cast<QParameter *>(QNodePrivate::get(p)->clone()));
 }
 
 QTechnique::QTechnique(QTechniquePrivate &dd, QNode *parent)

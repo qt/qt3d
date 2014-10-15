@@ -56,11 +56,11 @@ QFrameGraphPrivate::QFrameGraphPrivate(QFrameGraph *qq)
 
 }
 
-void QFrameGraphPrivate::copy(const QNodePrivate *ref)
+void QFrameGraph::copy(const QNode *ref)
 {
-    QComponentPrivate::copy(ref);
-    const QFrameGraphPrivate *other = static_cast<const QFrameGraphPrivate *>(ref);
-    q_func()->setActiveFrameGraph(qobject_cast<QFrameGraphItem *>(QNodePrivate::get(other->m_activeFrameGraph)->clone()));
+    QComponent::copy(ref);
+    const QFrameGraph *other = static_cast<const QFrameGraph*>(ref);
+    setActiveFrameGraph(qobject_cast<QFrameGraphItem *>(QNodePrivate::get(other->d_func()->m_activeFrameGraph)->clone()));
 }
 
 /*!

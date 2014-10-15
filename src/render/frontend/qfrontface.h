@@ -72,6 +72,9 @@ public:
 Q_SIGNALS:
     void directionChanged();
 
+protected:
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
 private:
     Q_DECLARE_PRIVATE(QFrontFace)
     QT3D_CLONEABLE(QFrontFace)

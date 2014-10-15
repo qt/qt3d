@@ -77,6 +77,9 @@ public:
 Q_SIGNALS:
     void funcChanged();
 
+protected:
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
 private:
     Q_DECLARE_PRIVATE(QDepthTest)
     QT3D_CLONEABLE(QDepthTest)

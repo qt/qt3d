@@ -57,8 +57,6 @@ public :
 
     Q_DECLARE_PUBLIC(QEntity)
 
-    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
-
     ComponentList m_components;
     bool m_visible;
 

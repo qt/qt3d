@@ -94,7 +94,9 @@ Q_SIGNALS:
 protected:
     QMatrix4x4 applyTransforms() const;
     QList<QAbstractTransform *> transformList() const;
+
     QTransform(QTransformPrivate &dd, QNode *parent = 0);
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QTransform)

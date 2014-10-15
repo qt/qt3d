@@ -81,6 +81,7 @@ Q_SIGNALS:
 
 protected:
     QMaterial(QMaterialPrivate &dd, QNode *parent = 0);
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QMaterial)

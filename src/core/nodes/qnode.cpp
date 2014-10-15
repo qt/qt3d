@@ -68,13 +68,6 @@ QNodePrivate::QNodePrivate(QNode *qq)
     q_ptr = qq;
 }
 
-void QNodePrivate::copy(const QNodePrivate *ref)
-{
-    if (ref != Q_NULLPTR) {
-        m_uuid = ref->m_uuid;
-    }
-}
-
 // Called by QEvent::childAdded
 void QNodePrivate::addChild(QNode *childNode)
 {
@@ -341,8 +334,8 @@ QNode::QNode(QNodePrivate &dd, QNode *parent)
 
 void QNode::copy(const QNode *ref)
 {
-    if (ref != Q_NULLPTR)
-        d_func()->copy(QNodePrivate::get(const_cast<QNode *>(ref)));
+    if (ref)
+        d_func()->m_uuid = ref->d_func()->m_uuid;
 }
 
 QNode::~QNode()

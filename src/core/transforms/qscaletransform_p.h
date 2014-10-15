@@ -54,8 +54,6 @@ class QScaleTransformPrivate : public QAbstractTransformPrivate
 public:
     QScaleTransformPrivate(QScaleTransform *qq);
 
-    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
-
     Q_DECLARE_PUBLIC(QScaleTransform)
     QVector3D m_scale3D;
 };

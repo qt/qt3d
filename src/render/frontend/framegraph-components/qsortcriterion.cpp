@@ -53,11 +53,11 @@ QSortCriterionPrivate::QSortCriterionPrivate(QSortCriterion *qq)
 {
 }
 
-void QSortCriterionPrivate::copy(const QNodePrivate *ref)
+void QSortCriterion::copy(const QNode *ref)
 {
-    QNodePrivate::copy(ref);
-    const QSortCriterionPrivate *s = static_cast<const QSortCriterionPrivate *>(ref);
-    m_sort = s->m_sort;
+    QNode::copy(ref);
+    const QSortCriterion *s = static_cast<const QSortCriterion*>(ref);
+    d_func()->m_sort = s->d_func()->m_sort;
 }
 
 QSortCriterion::QSortCriterion(QNode *parent)

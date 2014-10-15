@@ -58,8 +58,6 @@ public:
     {
     }
 
-    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
-
     Q_DECLARE_PUBLIC(QDepthMask)
     bool m_mask;
 };
@@ -69,11 +67,11 @@ QDepthMask::QDepthMask(QNode *parent)
 {
 }
 
-void QDepthMaskPrivate::copy(const QNodePrivate *ref)
+void QDepthMask::copy(const QNode *ref)
 {
-    QRenderStatePrivate::copy(ref);
-    const QDepthMaskPrivate *refState = static_cast<const QDepthMaskPrivate *>(ref);
-    m_mask = refState->m_mask;
+    QRenderState::copy(ref);
+    const QDepthMask *refState = static_cast<const QDepthMask*>(ref);
+    d_func()->m_mask = refState->d_func()->m_mask;
 }
 
 bool QDepthMask::mask() const

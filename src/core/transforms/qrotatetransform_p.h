@@ -57,8 +57,6 @@ public:
 
     Q_DECLARE_PUBLIC(QRotateTransform)
 
-    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
-
     float m_angleDeg;
     QVector3D m_axis;
 };

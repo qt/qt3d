@@ -54,12 +54,12 @@ QSortMethodPrivate::QSortMethodPrivate(QSortMethod *qq)
 {
 }
 
-void QSortMethodPrivate::copy(const QNodePrivate *ref)
+void QSortMethod::copy(const QNode *ref)
 {
-    QFrameGraphItemPrivate::copy(ref);
-    const QSortMethodPrivate *other = static_cast<const QSortMethodPrivate*>(ref);
-    Q_FOREACH (QSortCriterion *c, other->m_criteria)
-        q_func()->addCriterion(qobject_cast<QSortCriterion *>(QNodePrivate::get(c)->clone()));
+    QFrameGraphItem::copy(ref);
+    const QSortMethod *other = static_cast<const QSortMethod*>(ref);
+    Q_FOREACH (QSortCriterion *c, other->d_func()->m_criteria)
+        addCriterion(qobject_cast<QSortCriterion *>(QNodePrivate::get(c)->clone()));
 }
 
 QSortMethod::QSortMethod(QNode *parent)

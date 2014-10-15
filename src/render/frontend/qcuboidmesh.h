@@ -96,6 +96,7 @@ Q_SIGNALS:
 
 protected:
     QCuboidMesh(QCuboidMeshPrivate &dd, QNode *parent = 0);
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     QT3D_CLONEABLE(QCuboidMesh)

@@ -57,17 +57,15 @@ public:
     {
     }
 
-    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
-
     Q_DECLARE_PUBLIC(QBlendEquation)
     QBlendEquation::BlendMode m_mode;
 };
 
-void QBlendEquationPrivate::copy(const QNodePrivate *ref)
+void QBlendEquation::copy(const QNode *ref)
 {
-    QRenderStatePrivate::copy(ref);
-    const QBlendEquationPrivate *refState = reinterpret_cast<const QBlendEquationPrivate *>(ref);
-    m_mode = refState->m_mode;
+    QRenderState::copy(ref);
+    const QBlendEquation *refState = reinterpret_cast<const QBlendEquation*>(ref);
+    d_func()->m_mode = refState->d_func()->m_mode;
 }
 
 QBlendEquation::QBlendEquation(QNode *parent)

@@ -61,18 +61,18 @@ QRenderPassPrivate::QRenderPassPrivate(QRenderPass *qq)
 {
 }
 
-void QRenderPassPrivate::copy(const QNodePrivate *ref)
+void QRenderPass::copy(const QNode *ref)
 {
-    QNodePrivate::copy(ref);
-    const QRenderPassPrivate *other = static_cast<const QRenderPassPrivate*>(ref);
-    m_shader = qobject_cast<QShaderProgram *>(QNodePrivate::get(other->m_shader)->clone());
+    QNode::copy(ref);
+    const QRenderPass *other = static_cast<const QRenderPass*>(ref);
+    d_func()->m_shader = qobject_cast<QShaderProgram *>(QNodePrivate::get(other->d_func()->m_shader)->clone());
 
-    Q_FOREACH (QCriterion *crit, other->m_criteriaList)
-        q_func()->addCriterion(qobject_cast<QCriterion *>(QNodePrivate::get(crit)->clone()));
-    Q_FOREACH (QParameterMapper *binding, other->m_bindings)
-        q_func()->addBinding(qobject_cast<QParameterMapper *>(QNodePrivate::get(binding)->clone()));
-    Q_FOREACH (QRenderState *renderState, other->m_renderStates)
-        q_func()->addRenderState(qobject_cast<QRenderState *>(QNodePrivate::get(renderState)->clone()));
+    Q_FOREACH (QCriterion *crit, other->d_func()->m_criteriaList)
+        addCriterion(qobject_cast<QCriterion *>(QNodePrivate::get(crit)->clone()));
+    Q_FOREACH (QParameterMapper *binding, other->d_func()->m_bindings)
+        addBinding(qobject_cast<QParameterMapper *>(QNodePrivate::get(binding)->clone()));
+    Q_FOREACH (QRenderState *renderState, other->d_func()->m_renderStates)
+        addRenderState(qobject_cast<QRenderState *>(QNodePrivate::get(renderState)->clone()));
 }
 
 QRenderPass::QRenderPass(QNode *parent)

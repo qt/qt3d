@@ -59,8 +59,6 @@ public:
     {
     }
 
-    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
-
     Q_DECLARE_PUBLIC(QAlphaTest)
     QAlphaTest::AlphaFunc m_func;
     float m_clamp;
@@ -71,12 +69,12 @@ QAlphaTest::QAlphaTest(QNode *parent)
 {
 }
 
-void QAlphaTestPrivate::copy(const QNodePrivate *ref)
+void QAlphaTest::copy(const QNode *ref)
 {
-    QRenderStatePrivate::copy(ref);
-    const QAlphaTestPrivate *refState = static_cast<const QAlphaTestPrivate *>(ref);
-    m_func = refState->m_func;
-    m_clamp = refState->m_clamp;
+    QRenderState::copy(ref);
+    const QAlphaTest *refState = static_cast<const QAlphaTest*>(ref);
+    d_func()->m_func = refState->d_func()->m_func;
+    d_func()->m_clamp = refState->d_func()->m_clamp;
 }
 
 QAlphaTest::AlphaFunc QAlphaTest::func() const

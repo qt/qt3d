@@ -51,11 +51,11 @@ QLayerPrivate::QLayerPrivate(QLayer *qq)
 {
 }
 
-void QLayerPrivate::copy(const QNodePrivate *ref)
+void QLayer::copy(const QNode *ref)
 {
-    QComponentPrivate::copy(ref);
-    const QLayerPrivate *layer = static_cast<const QLayerPrivate *>(ref);
-    m_name = layer->m_name;
+    QComponent::copy(ref);
+    const QLayer *layer = static_cast<const QLayer*>(ref);
+    d_func()->m_name = layer->d_func()->m_name;
 }
 
 QLayer::QLayer(QNode *parent)

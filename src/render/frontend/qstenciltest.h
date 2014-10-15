@@ -96,6 +96,9 @@ Q_SIGNALS:
     void faceModeChanged();
     void funcChanged();
 
+protected:
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
 private:
     Q_DECLARE_PRIVATE(QStencilTest)
     QT3D_CLONEABLE(QStencilTest)

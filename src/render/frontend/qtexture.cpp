@@ -70,8 +70,6 @@ public :
         , m_maximumAnisotropy(1.0f)
     {}
 
-    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
-
     Q_DECLARE_PUBLIC(QTexture)
 
     QTexture::Target m_target;
@@ -88,19 +86,19 @@ public :
     float m_maximumAnisotropy;
 };
 
-void QTexturePrivate::copy(const QNodePrivate *ref)
+void QTexture::copy(const QNode *ref)
 {
-    QNodePrivate::copy(ref);
-    const QTexturePrivate *t = static_cast<const QTexturePrivate *>(ref);
-    m_target = t->m_target;
-    m_width = t->m_width;
-    m_height = t->m_height;
-    m_depth = t->m_depth;
-    m_format = t->m_format;
-    m_wrapMode = t->m_wrapMode;
-    m_minFilter = t->m_minFilter;
-    m_magFilter = t->m_magFilter;
-    m_autoMipMap = t->m_autoMipMap;
+    QNode::copy(ref);
+    const QTexture *t = static_cast<const QTexture*>(ref);
+    d_func()->m_target = t->d_func()->m_target;
+    d_func()->m_width = t->d_func()->m_width;
+    d_func()->m_height = t->d_func()->m_height;
+    d_func()->m_depth = t->d_func()->m_depth;
+    d_func()->m_format = t->d_func()->m_format;
+    d_func()->m_wrapMode = t->d_func()->m_wrapMode;
+    d_func()->m_minFilter = t->d_func()->m_minFilter;
+    d_func()->m_magFilter = t->d_func()->m_magFilter;
+    d_func()->m_autoMipMap = t->d_func()->m_autoMipMap;
     // TO DO: Copy TexImageDataPtr
 }
 

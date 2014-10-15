@@ -70,9 +70,12 @@ Q_SIGNALS:
     void matrixChanged();
 
 protected:
-    Q_DECLARE_PRIVATE(QMatrixTransform)
     QMatrixTransform(QMatrixTransformPrivate &dd, QNode *parent = 0);
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
+private:
     QT3D_CLONEABLE(QMatrixTransform)
+    Q_DECLARE_PRIVATE(QMatrixTransform)
 };
 
 } // namespace Qt3D

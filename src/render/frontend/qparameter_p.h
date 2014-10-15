@@ -59,7 +59,6 @@ public:
     Q_DECLARE_PUBLIC(QParameter)
 
     virtual void setValue(const QVariant &v);
-    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
 
     QString m_name;
     QVariant m_value;

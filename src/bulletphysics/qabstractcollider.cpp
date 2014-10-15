@@ -53,11 +53,11 @@ QAbstractColliderPrivate::QAbstractColliderPrivate(QAbstractCollider *qq)
 {
 }
 
-void QAbstractColliderPrivate::copy(const QNodePrivate *ref)
+void QAbstractCollider::copy(const QNode *ref)
 {
-    QComponentPrivate::copy(ref);
-    const QAbstractColliderPrivate *other = static_cast<const QAbstractColliderPrivate *>(ref);
-    m_collisionBehavior = other->m_collisionBehavior;
+    QComponent::copy(ref);
+    const QAbstractCollider *other = static_cast<const QAbstractCollider *>(ref);
+    d_func()->m_collisionBehavior = other->d_func()->m_collisionBehavior;
 }
 
 QAbstractCollider::QAbstractCollider(QNode *parent)

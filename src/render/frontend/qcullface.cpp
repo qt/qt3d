@@ -58,8 +58,6 @@ public:
     {
     }
 
-    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
-
     Q_DECLARE_PUBLIC(QCullFace)
     QCullFace::CullingMode m_mode;
 };
@@ -69,11 +67,11 @@ QCullFace::QCullFace(QNode *parent)
 {
 }
 
-void QCullFacePrivate::copy(const QNodePrivate *ref)
+void QCullFace::copy(const QNode *ref)
 {
-    QRenderStatePrivate::copy(ref);
-    const QCullFacePrivate *refState = static_cast<const QCullFacePrivate *>(ref);
-    m_mode = refState->m_mode;
+    QRenderState::copy(ref);
+    const QCullFace *refState = static_cast<const QCullFace*>(ref);
+    d_func()->m_mode = refState->d_func()->m_mode;
 }
 
 QCullFace::CullingMode QCullFace::mode() const

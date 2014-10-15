@@ -61,8 +61,6 @@ public:
     {
     }
 
-    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
-
     Q_DECLARE_PUBLIC(QStencilTest)
     uint m_mask;
     QStencilTest::StencilFunc m_func;
@@ -74,13 +72,13 @@ QStencilTest::QStencilTest(QNode *parent)
 {
 }
 
-void QStencilTestPrivate::copy(const QNodePrivate *ref)
+void QStencilTest::copy(const QNode *ref)
 {
-    QRenderStatePrivate::copy(ref);
-    const QStencilTestPrivate *refState = static_cast<const QStencilTestPrivate *>(ref);
-    m_mask = refState->m_mask;
-    m_faceMode = refState->m_faceMode;
-    m_func = refState->m_func;
+    QRenderState::copy(ref);
+    const QStencilTest *refState = static_cast<const QStencilTest*>(ref);
+    d_func()->m_mask = refState->d_func()->m_mask;
+    d_func()->m_faceMode = refState->d_func()->m_faceMode;
+    d_func()->m_func = refState->d_func()->m_func;
 }
 
 uint QStencilTest::mask() const

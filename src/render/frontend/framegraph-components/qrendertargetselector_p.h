@@ -55,7 +55,6 @@ class QRenderTargetSelectorPrivate : public QFrameGraphItemPrivate
 {
 public:
     QRenderTargetSelectorPrivate(QRenderTargetSelector *qq);
-    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
 
     Q_DECLARE_PUBLIC(QRenderTargetSelector)
     QRenderTarget *m_target;

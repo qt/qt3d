@@ -71,11 +71,11 @@ QMeshPrivate::QMeshPrivate(QMesh *qq)
     : QAbstractMeshPrivate(qq)
 {}
 
-void QMeshPrivate::copy(const QNodePrivate *ref)
+void QMesh::copy(const QNode *ref)
 {
-    QAbstractMeshPrivate::copy(ref);
-    const QMeshPrivate *mesh = static_cast<const QMeshPrivate *>(ref);
-    m_source = mesh->m_source;
+    QAbstractMesh::copy(ref);
+    const QMesh *mesh = static_cast<const QMesh*>(ref);
+    d_func()->m_source = mesh->d_func()->m_source;
 }
 
 QMesh::QMesh(QNode *parent)

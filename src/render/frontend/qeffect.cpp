@@ -59,15 +59,15 @@ QEffect::QEffect(QNode *parent)
 {
 }
 
-void QEffectPrivate::copy(const QNodePrivate *ref)
+void QEffect::copy(const QNode* ref)
 {
-    QNodePrivate::copy(ref);
-    const QEffectPrivate *effect = static_cast<const QEffectPrivate*>(ref);
-    Q_FOREACH (QParameter *p, effect->m_parameters)
-        q_func()->addParameter(qobject_cast<QParameter *>(QNodePrivate::get(p)->clone()));
+    QNode::copy(ref);
+    const QEffect *effect = static_cast<const QEffect*>(ref);
+    Q_FOREACH (QParameter *p, effect->d_func()->m_parameters)
+        addParameter(qobject_cast<QParameter *>(QNodePrivate::get(p)->clone()));
 
-    Q_FOREACH (QTechnique *t, effect->m_techniques)
-        q_func()->addTechnique(qobject_cast<QTechnique *>(QNodePrivate::get(t)->clone()));
+    Q_FOREACH (QTechnique *t, effect->d_func()->m_techniques)
+        addTechnique(qobject_cast<QTechnique *>(QNodePrivate::get(t)->clone()));
 }
 
 QEffect::QEffect(QEffectPrivate &dd, QNode *parent)

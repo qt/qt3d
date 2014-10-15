@@ -82,6 +82,9 @@ Q_SIGNALS:
     void funcChanged();
     void clampChanged();
 
+protected:
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
 private:
     Q_DECLARE_PRIVATE(QAlphaTest)
     QT3D_CLONEABLE(QAlphaTest)

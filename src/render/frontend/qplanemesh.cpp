@@ -65,13 +65,13 @@ QPlaneMesh::QPlaneMesh(QNode *parent)
     setDirty(true);
 }
 
-void QPlaneMeshPrivate::copy(const QNodePrivate *ref)
+void QPlaneMesh::copy(const QNode *ref)
 {
-    QAbstractShapeMeshPrivate::copy(ref);
-    const QPlaneMeshPrivate *mesh = static_cast<const QPlaneMeshPrivate *>(ref);
-    m_width = mesh->m_width;
-    m_height = mesh->m_height;
-    m_meshResolution = mesh->m_meshResolution;
+    QAbstractShapeMesh::copy(ref);
+    const QPlaneMesh *mesh = static_cast<const QPlaneMesh*>(ref);
+    d_func()->m_width = mesh->d_func()->m_width;
+    d_func()->m_height = mesh->d_func()->m_height;
+    d_func()->m_meshResolution = mesh->d_func()->m_meshResolution;
 }
 
 QPlaneMesh::QPlaneMesh(QPlaneMeshPrivate &dd, QNode *parent)

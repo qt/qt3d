@@ -65,12 +65,12 @@ QSphereCollider::QSphereCollider(QSphereColliderPrivate &dd, QNode *parent)
 {
 }
 
-void QSphereColliderPrivate::copy(const QNodePrivate *ref)
+void QSphereCollider::copy(const QNode *ref)
 {
-    QAbstractColliderPrivate::copy(ref);
-    const QSphereColliderPrivate *other = static_cast<const QSphereColliderPrivate *>(ref);
-    m_center = other->m_center;
-    m_radius = other->m_radius;
+    QAbstractCollider::copy(ref);
+    const QSphereCollider *other = static_cast<const QSphereCollider*>(ref);
+    d_func()->m_center = other->d_func()->m_center;
+    d_func()->m_radius = other->d_func()->m_radius;
 }
 
 void QSphereCollider::setCenter(const QVector3D &center)

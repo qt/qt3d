@@ -53,11 +53,11 @@ QScaleTransformPrivate::QScaleTransformPrivate(QScaleTransform *qq)
 {
 }
 
-void QScaleTransformPrivate::copy(const QNodePrivate *ref)
+void QScaleTransform::copy(const QNode *ref)
 {
-    QAbstractTransformPrivate::copy(ref);
-    const QScaleTransformPrivate *transform = static_cast<const QScaleTransformPrivate *>(ref);
-    m_scale3D = transform->m_scale3D;
+    QAbstractTransform::copy(ref);
+    const QScaleTransform *transform = static_cast<const QScaleTransform*>(ref);
+    d_func()->m_scale3D = transform->d_func()->m_scale3D;
 }
 
 QScaleTransform::QScaleTransform(QNode *parent) :

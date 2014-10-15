@@ -55,8 +55,6 @@ class QMatrixTransformPrivate : public QAbstractTransformPrivate
 public:
     QMatrixTransformPrivate(QMatrixTransform *qq);
 
-    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
-
     Q_DECLARE_PUBLIC(QMatrixTransform)
     QMatrix4x4 m_matrix;
 };

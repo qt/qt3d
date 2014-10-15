@@ -81,6 +81,9 @@ Q_SIGNALS:
     void ringsChanged();
     void slicesChanged();
 
+protected:
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
 private:
     Q_DECLARE_PRIVATE(QTorusMesh)
     QT3D_CLONEABLE(QTorusMesh)

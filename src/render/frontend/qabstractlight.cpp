@@ -61,12 +61,12 @@ QAbstractLightPrivate::QAbstractLightPrivate(QAbstractLight *qq)
         , m_intensity(1.0f)
     {}
 
-void QAbstractLightPrivate::copy(const QNodePrivate *ref)
+void QAbstractLight::copy(const QNode *ref)
 {
-    QComponentPrivate::copy(ref);
-    const QAbstractLightPrivate *light = static_cast<const QAbstractLightPrivate *>(ref);
-    m_color = light->m_color;
-    m_intensity = light->m_intensity;
+    QComponent::copy(ref);
+    const QAbstractLight *light = static_cast<const QAbstractLight*>(ref);
+    d_func()->m_color = light->d_func()->m_color;
+    d_func()->m_intensity = light->d_func()->m_intensity;
 }
 
 /*!

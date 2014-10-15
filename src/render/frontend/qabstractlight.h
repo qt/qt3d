@@ -81,12 +81,15 @@ public :
     virtual const QString lightUniformName() const = 0;
 
 protected :
-    Q_DECLARE_PRIVATE(QAbstractLight)
     QAbstractLight(QAbstractLightPrivate &dd, QNode *parent = 0);
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
     void colorChanged();
     void intensityChanged();
+
+private:
+    Q_DECLARE_PRIVATE(QAbstractLight)
 };
 
 } // Qt3D

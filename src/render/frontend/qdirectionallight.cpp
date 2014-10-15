@@ -71,11 +71,11 @@ QDirectionalLightPrivate::QDirectionalLightPrivate(QDirectionalLight *qq)
 {
 }
 
-void QDirectionalLightPrivate::copy(const QNodePrivate *ref)
+void QDirectionalLight::copy(const QNode *ref)
 {
-    QAbstractLightPrivate::copy(ref);
-    const QDirectionalLightPrivate *light = static_cast<const QDirectionalLightPrivate *>(ref);
-    m_direction = light->m_direction;
+    QAbstractLight::copy(ref);
+    const QDirectionalLight *light = static_cast<const QDirectionalLight*>(ref);
+    d_func()->m_direction = light->d_func()->m_direction;
 }
 
 QDirectionalLight::QDirectionalLight(QNode *parent)

@@ -61,13 +61,13 @@ void QParameterPrivate::setValue(const QVariant &v)
     m_value = v;
 }
 
-void QParameterPrivate::copy(const QNodePrivate *ref)
+void QParameter::copy(const QNode *ref)
 {
-    QNodePrivate::copy(ref);
-    const QParameterPrivate *param = static_cast<const QParameterPrivate *>(ref);
-    m_name = param->m_name;
-    m_value = param->m_value;
-    m_isTexture = param->m_isTexture;
+    QNode::copy(ref);
+    const QParameter *param = static_cast<const QParameter*>(ref);
+    d_func()->m_name = param->d_func()->m_name;
+    d_func()->m_value = param->d_func()->m_value;
+    d_func()->m_isTexture = param->d_func()->m_isTexture;
 }
 
 QParameter::QParameter(QParameterPrivate &dd, QNode *parent)

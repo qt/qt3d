@@ -58,8 +58,6 @@ public:
     {
     }
 
-    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
-
     Q_DECLARE_PUBLIC(QFrontFace)
     QFrontFace::FaceDir m_direction;
 };
@@ -69,11 +67,11 @@ QFrontFace::QFrontFace(QNode *parent)
 {
 }
 
-void QFrontFacePrivate::copy(const QNodePrivate *ref)
+void QFrontFace::copy(const QNode *ref)
 {
-    QRenderStatePrivate::copy(ref);
-    const QFrontFacePrivate *refState = static_cast<const QFrontFacePrivate *>(ref);
-    m_direction = refState->m_direction;
+    QRenderState::copy(ref);
+    const QFrontFace *refState = static_cast<const QFrontFace*>(ref);
+    d_func()->m_direction = refState->d_func()->m_direction;
 }
 
 QFrontFace::FaceDir QFrontFace::direction() const

@@ -52,13 +52,13 @@ QParameterMapperPrivate::QParameterMapperPrivate(QParameterMapper *qq)
 {
 }
 
-void QParameterMapperPrivate::copy(const QNodePrivate *ref)
+void QParameterMapper::copy(const QNode *ref)
 {
-    QNodePrivate::copy(ref);
-    const QParameterMapperPrivate *mapper = static_cast<const QParameterMapperPrivate *>(ref);
-    m_parameterName = mapper->m_parameterName;
-    m_shaderVariableName = mapper->m_shaderVariableName;
-    m_bindingType = mapper->m_bindingType;
+    QNode::copy(ref);
+    const QParameterMapper *mapper = static_cast<const QParameterMapper*>(ref);
+    d_func()->m_parameterName = mapper->d_func()->m_parameterName;
+    d_func()->m_shaderVariableName = mapper->d_func()->m_shaderVariableName;
+    d_func()->m_bindingType = mapper->d_func()->m_bindingType;
 }
 
 QParameterMapper::QParameterMapper(QNode *parent)

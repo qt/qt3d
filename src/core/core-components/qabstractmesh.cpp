@@ -66,12 +66,12 @@ QAbstractMeshPrivate::QAbstractMeshPrivate(QAbstractMesh *qq)
 {
 }
 
-void QAbstractMeshPrivate::copy(const QNodePrivate *ref)
+void QAbstractMesh::copy(const QNode *ref)
 {
-    QNodePrivate::copy(ref);
-    const QAbstractMeshPrivate *abstractMesh = static_cast<const QAbstractMeshPrivate *>(ref);
-    m_uuid = abstractMesh->m_uuid;
-    m_dirty = abstractMesh->m_dirty;
+    QComponent::copy(ref);
+    const QAbstractMesh *abstractMesh = static_cast<const QAbstractMesh*>(ref);
+    d_func()->m_uuid = abstractMesh->d_func()->m_uuid;
+    d_func()->m_dirty = abstractMesh->d_func()->m_dirty;
 }
 
 

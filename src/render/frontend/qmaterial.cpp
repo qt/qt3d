@@ -74,15 +74,15 @@ QMaterialPrivate::QMaterialPrivate(QMaterial *qq)
 {
 }
 
-void QMaterialPrivate::copy(const QNodePrivate *ref)
+void QMaterial::copy(const QNode *ref)
 {
-    QComponentPrivate::copy(ref);
-    const QMaterialPrivate *material = static_cast<const QMaterialPrivate*>(ref);
-    Q_FOREACH (QParameter *p, material->m_parameters)
-        q_func()->addParameter(qobject_cast<QParameter *>(QNodePrivate::get(p)->clone()));
+    QComponent::copy(ref);
+    const QMaterial *material = static_cast<const QMaterial*>(ref);
+    Q_FOREACH (QParameter *p, material->d_func()->m_parameters)
+        addParameter(qobject_cast<QParameter *>(QNodePrivate::get(p)->clone()));
 
-    if (material->m_effect != Q_NULLPTR)
-        q_func()->setEffect(qobject_cast<QEffect *>(QNodePrivate::get(material->m_effect)->clone()));
+    if (material->d_func()->m_effect)
+        setEffect(qobject_cast<QEffect *>(QNodePrivate::get(material->d_func()->m_effect)->clone()));
 }
 
 QMaterial::QMaterial(QNode *parent)

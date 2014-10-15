@@ -54,8 +54,6 @@ class QSortCriterionPrivate : public QNodePrivate
 public:
     QSortCriterionPrivate(QSortCriterion *qq);
 
-    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
-
     Q_DECLARE_PUBLIC(QSortCriterion)
     QSortCriterion::SortType m_sort;
 };

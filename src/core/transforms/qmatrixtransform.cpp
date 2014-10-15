@@ -56,11 +56,11 @@ QMatrixTransform::QMatrixTransform(QMatrixTransformPrivate &dd, QNode *parent)
 {
 }
 
-void QMatrixTransformPrivate::copy(const QNodePrivate *ref)
+void QMatrixTransform::copy(const QNode *ref)
 {
-    QAbstractTransformPrivate::copy(ref);
-    const QMatrixTransformPrivate *matrix = static_cast<const QMatrixTransformPrivate *>(ref);
-    m_matrix = matrix->m_matrix;
+    QAbstractTransform::copy(ref);
+    const QMatrixTransform *matrix = static_cast<const QMatrixTransform*>(ref);
+    d_func()->m_matrix = matrix->d_func()->m_matrix;
 }
 
 QMatrixTransform::QMatrixTransform(QNode *parent)

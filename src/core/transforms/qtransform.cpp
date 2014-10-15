@@ -58,13 +58,13 @@ QTransformPrivate::QTransformPrivate(QTransform *qq)
 {
 }
 
-void QTransformPrivate::copy(const QNodePrivate *ref)
+void QTransform::copy(const QNode *ref)
 {
-    QComponentPrivate::copy(ref);
-    const QTransformPrivate *transform = static_cast<const QTransformPrivate *>(ref);
-    m_matrix = transform->m_matrix;
-    Q_FOREACH (QAbstractTransform *t, transform->m_transforms)
-        q_func()->appendTransform(qobject_cast<QAbstractTransform *>(QNodePrivate::get(t)->clone()));
+    QComponent::copy(ref);
+    const QTransform *transform = static_cast<const QTransform*>(ref);
+    d_func()->m_matrix = transform->d_func()->m_matrix;
+    Q_FOREACH (QAbstractTransform *t, transform->d_func()->m_transforms)
+        appendTransform(qobject_cast<QAbstractTransform *>(QNodePrivate::get(t)->clone()));
 }
 
 QTransform::QTransform(QNode *parent)

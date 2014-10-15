@@ -62,8 +62,6 @@ public:
     {
     }
 
-    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
-
     Q_DECLARE_PUBLIC(QScissorTest)
     int m_left;
     int m_bottom;
@@ -76,14 +74,14 @@ QScissorTest::QScissorTest(QNode *parent)
 {
 }
 
-void QScissorTestPrivate::copy(const QNodePrivate *ref)
+void QScissorTest::copy(const QNode *ref)
 {
-    QRenderStatePrivate::copy(ref);
-    const QScissorTestPrivate *refState = static_cast<const QScissorTestPrivate *>(ref);
-    m_left = refState->m_left;
-    m_bottom = refState->m_bottom;
-    m_width = refState->m_width;
-    m_height = refState->m_height;
+    QRenderState::copy(ref);
+    const QScissorTest *refState = static_cast<const QScissorTest*>(ref);
+    d_func()->m_left = refState->d_func()->m_left;
+    d_func()->m_bottom = refState->d_func()->m_bottom;
+    d_func()->m_width = refState->d_func()->m_width;
+    d_func()->m_height = refState->d_func()->m_height;
 }
 
 int QScissorTest::left() const

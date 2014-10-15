@@ -54,12 +54,12 @@ QCriterionPrivate::QCriterionPrivate(QCriterion *qq)
 {
 }
 
-void QCriterionPrivate::copy(const QNodePrivate *ref)
+void QCriterion::copy(const QNode *ref)
 {
-    QNodePrivate::copy(ref);
-    const QCriterionPrivate *criterion = static_cast<const QCriterionPrivate *>(ref);
-    m_name = criterion->m_name;
-    m_value = criterion->m_value;
+    QNode::copy(ref);
+    const QCriterion *criterion = static_cast<const QCriterion*>(ref);
+    d_func()->m_name = criterion->d_func()->m_name;
+    d_func()->m_value = criterion->d_func()->m_value;
 }
 
 QCriterion::QCriterion(QNode *parent)

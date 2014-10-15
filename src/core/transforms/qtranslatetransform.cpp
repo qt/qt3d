@@ -57,11 +57,11 @@ QTranslateTransform::QTranslateTransform(QNode *parent)
 {
 }
 
-void QTranslateTransformPrivate::copy(const QNodePrivate *ref)
+void QTranslateTransform::copy(const QNode *ref)
 {
-    QAbstractTransformPrivate::copy(ref);
-    const QTranslateTransformPrivate *transform = static_cast<const QTranslateTransformPrivate *>(ref);
-    m_translation = transform->m_translation;
+    QAbstractTransform::copy(ref);
+    const QTranslateTransform *transform = static_cast<const QTranslateTransform*>(ref);
+    d_func()->m_translation = transform->d_func()->m_translation;
 }
 
 

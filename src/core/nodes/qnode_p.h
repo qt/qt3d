@@ -64,9 +64,6 @@ public:
     // Clone should only be made in the main thread
     QNode *clone();
 
-    virtual void copy(const QNodePrivate *ref);
-
-
     void setScene(QSceneInterface *scene);
     QSceneInterface *scene() const;
 

@@ -57,8 +57,6 @@ class QSphereColliderPrivate : public QAbstractColliderPrivate
 public:
     QSphereColliderPrivate(QSphereCollider *qq);
 
-    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
-
     Q_DECLARE_PUBLIC(QSphereCollider)
 
     QVector3D m_center;

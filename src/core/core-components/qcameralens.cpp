@@ -68,20 +68,20 @@ QCameraLens::QCameraLens(QNode *parent)
     d->updateProjectionMatrix();
 }
 
-void QCameraLensPrivate::copy(const QNodePrivate *ref)
+void QCameraLens::copy(const QNode *ref)
 {
-    QComponentPrivate::copy(ref);
-    const QCameraLensPrivate *lens = static_cast<const QCameraLensPrivate *>(ref);
-    m_projectionType = lens->m_projectionType;
-    m_nearPlane = lens->m_nearPlane;
-    m_farPlane = lens->m_farPlane;
-    m_fieldOfView = lens->m_fieldOfView;
-    m_aspectRatio = lens->m_aspectRatio;
-    m_left = lens->m_left;
-    m_right = lens->m_right;
-    m_bottom = lens->m_bottom;
-    m_top = lens->m_top;
-    m_projectionMatrix = lens->m_projectionMatrix;
+    QComponent::copy(ref);
+    const QCameraLens *lens = static_cast<const QCameraLens*>(ref);
+    d_func()->m_projectionType = lens->d_func()->m_projectionType;
+    d_func()->m_nearPlane = lens->d_func()->m_nearPlane;
+    d_func()->m_farPlane = lens->d_func()->m_farPlane;
+    d_func()->m_fieldOfView = lens->d_func()->m_fieldOfView;
+    d_func()->m_aspectRatio = lens->d_func()->m_aspectRatio;
+    d_func()->m_left = lens->d_func()->m_left;
+    d_func()->m_right = lens->d_func()->m_right;
+    d_func()->m_bottom = lens->d_func()->m_bottom;
+    d_func()->m_top = lens->d_func()->m_top;
+    d_func()->m_projectionMatrix = lens->d_func()->m_projectionMatrix;
 }
 
 QCameraLens::QCameraLens(QCameraLensPrivate &dd, QNode *parent)

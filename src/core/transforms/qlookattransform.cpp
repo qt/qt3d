@@ -57,15 +57,15 @@ QLookAtTransform::QLookAtTransform(QNode *parent)
 {
 }
 
-void QLookAtTransformPrivate::copy(const QNodePrivate *ref)
+void QLookAtTransform::copy(const QNode *ref)
 {
-    QAbstractTransformPrivate::copy(ref);
-    const QLookAtTransformPrivate *transform = static_cast<const QLookAtTransformPrivate *>(ref);
-    m_matrix = transform->m_matrix;
-    m_position = transform->m_position;
-    m_upVector = transform->m_upVector;
-    m_viewCenter = transform->m_viewCenter;
-    m_viewVector = transform->m_viewVector;
+    QAbstractTransform::copy(ref);
+    const QLookAtTransform *transform = static_cast<const QLookAtTransform*>(ref);
+    d_func()->m_matrix = transform->d_func()->m_matrix;
+    d_func()->m_position = transform->d_func()->m_position;
+    d_func()->m_upVector = transform->d_func()->m_upVector;
+    d_func()->m_viewCenter = transform->d_func()->m_viewCenter;
+    d_func()->m_viewVector = transform->d_func()->m_viewVector;
 }
 
 QLookAtTransform::QLookAtTransform(QLookAtTransformPrivate &dd, QNode *parent)

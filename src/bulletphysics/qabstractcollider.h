@@ -75,6 +75,7 @@ Q_SIGNALS:
 
 protected:
     QAbstractCollider(QAbstractColliderPrivate &dd, Qt3D::QNode *parent = 0);
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QAbstractCollider)

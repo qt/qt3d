@@ -64,9 +64,9 @@ QFrameGraphItemPrivate::QFrameGraphItemPrivate(QFrameGraphItem *qq)
 {
 }
 
-void QFrameGraphItemPrivate::copy(const QNodePrivate *ref)
+void QFrameGraphItem::copy(const QNode *ref)
 {
-    QNodePrivate::copy(ref);
+    QNode::copy(ref);
 }
 
 QFrameGraphItem::QFrameGraphItem(QNode *parent)

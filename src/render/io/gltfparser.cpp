@@ -227,6 +227,9 @@ public:
     void setData(QMeshDataPtr data);
     QAbstractMeshFunctorPtr meshFunctor() const Q_DECL_OVERRIDE;
 
+protected:
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
 private:
     QT3D_CLONEABLE(GLTFParserMesh)
     Q_DECLARE_PRIVATE(GLTFParserMesh)
@@ -240,8 +243,6 @@ public:
         : QAbstractMeshPrivate(qq)
     {
     }
-
-    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
 
     Q_DECLARE_PUBLIC(GLTFParserMesh)
     QMeshDataPtr m_meshData;
@@ -1007,11 +1008,11 @@ QVariant GLTFParser::parameterValueFromJSON(QParameter* p, QJsonValue val)
     return QVariant();
 }
 
-void GLTFParserMeshPrivate::copy(const QNodePrivate *ref)
+void GLTFParserMesh::copy(const QNode *ref)
 {
-    QAbstractMeshPrivate::copy(ref);
-    const GLTFParserMeshPrivate *gltfMesh = static_cast<const GLTFParserMeshPrivate *>(ref);
-    m_meshData = gltfMesh->m_meshData;
+    QAbstractMesh::copy(ref);
+    const GLTFParserMesh *gltfMesh = static_cast<const GLTFParserMesh*>(ref);
+    d_func()->m_meshData = gltfMesh->d_func()->m_meshData;
 }
 
 GLTFParserMesh::GLTFParserMesh(QNode *parent)

@@ -60,8 +60,6 @@ class QT3DCORESHARED_EXPORT QAbstractMeshPrivate : public QComponentPrivate
 public:
     QAbstractMeshPrivate(QAbstractMesh *qq);
 
-    virtual void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
-
     Q_DECLARE_PUBLIC(QAbstractMesh)
 
     QUuid m_uuid;

@@ -70,6 +70,9 @@ Q_SIGNALS:
     void nameChanged();
     void valueChanged();
 
+protected:
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
 private:
     Q_DECLARE_PRIVATE(QCriterion)
     QT3D_CLONEABLE(QCriterion)

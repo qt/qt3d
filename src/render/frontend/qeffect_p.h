@@ -58,8 +58,6 @@ class QT3DRENDERERSHARED_EXPORT QEffectPrivate : public QNodePrivate
 public :
     QEffectPrivate(QEffect *qq);
 
-    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
-
     Q_DECLARE_PUBLIC(QEffect)
     QList<QParameter *> m_parameters;
     QList<QTechnique *> m_techniques;

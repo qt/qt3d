@@ -79,8 +79,6 @@ class QTorusMeshPrivate : public QAbstractShapeMeshPrivate
         , m_minorRadius(1.0)
     {}
 
-    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
-
     Q_DECLARE_PUBLIC(QTorusMesh)
     int m_rings;
     int m_slices;
@@ -88,14 +86,14 @@ class QTorusMeshPrivate : public QAbstractShapeMeshPrivate
     float m_minorRadius;
 };
 
-void QTorusMeshPrivate::copy(const QNodePrivate *ref)
+void QTorusMesh::copy(const QNode *ref)
 {
-    QAbstractShapeMeshPrivate::copy(ref);
-    const QTorusMeshPrivate *mesh = static_cast<const QTorusMeshPrivate *>(ref);
-    m_rings = mesh->m_rings;
-    m_slices = mesh->m_slices;
-    m_radius = mesh->m_radius;
-    m_minorRadius = mesh->m_minorRadius;
+    QAbstractShapeMesh::copy(ref);
+    const QTorusMesh *mesh = static_cast<const QTorusMesh*>(ref);
+    d_func()->m_rings = mesh->d_func()->m_rings;
+    d_func()->m_slices = mesh->d_func()->m_slices;
+    d_func()->m_radius = mesh->d_func()->m_radius;
+    d_func()->m_minorRadius = mesh->d_func()->m_minorRadius;
 }
 
 

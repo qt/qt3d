@@ -54,23 +54,23 @@ QShaderProgramPrivate::QShaderProgramPrivate(QShaderProgram *qq)
 {
 }
 
-void QShaderProgramPrivate::copy(const QNodePrivate *ref)
+void QShaderProgram::copy(const QNode *ref)
 {
-    QNodePrivate::copy(ref);
-    const QShaderProgramPrivate *prog = static_cast<const QShaderProgramPrivate *>(ref);
-    m_vertexSourceFile = prog->m_vertexSourceFile;
-    m_tessControlSourceFile = prog->m_tessControlSourceFile;
-    m_tessEvalSourceFile = prog->m_tessEvalSourceFile;
-    m_geometrySourceFile = prog->m_geometrySourceFile;
-    m_fragmentSourceFile = prog->m_fragmentSourceFile;
-    m_computeSourceFile = prog->m_computeSourceFile;
+    QNode::copy(ref);
+    const QShaderProgram *prog = static_cast<const QShaderProgram*>(ref);
+    d_func()->m_vertexSourceFile = prog->d_func()->m_vertexSourceFile;
+    d_func()->m_tessControlSourceFile = prog->d_func()->m_tessControlSourceFile;
+    d_func()->m_tessEvalSourceFile = prog->d_func()->m_tessEvalSourceFile;
+    d_func()->m_geometrySourceFile = prog->d_func()->m_geometrySourceFile;
+    d_func()->m_fragmentSourceFile = prog->d_func()->m_fragmentSourceFile;
+    d_func()->m_computeSourceFile = prog->d_func()->m_computeSourceFile;
 
-    m_vertexShaderCode = prog->m_vertexShaderCode;
-    m_tessControlShaderCode = prog->m_tessControlShaderCode;
-    m_tessEvalShaderCode = prog->m_tessEvalShaderCode;
-    m_geometryShaderCode = prog->m_geometryShaderCode;
-    m_fragmentShaderCode = prog->m_fragmentShaderCode;
-    m_computeShaderCode = prog->m_computeShaderCode;
+    d_func()->m_vertexShaderCode = prog->d_func()->m_vertexShaderCode;
+    d_func()->m_tessControlShaderCode = prog->d_func()->m_tessControlShaderCode;
+    d_func()->m_tessEvalShaderCode = prog->d_func()->m_tessEvalShaderCode;
+    d_func()->m_geometryShaderCode = prog->d_func()->m_geometryShaderCode;
+    d_func()->m_fragmentShaderCode = prog->d_func()->m_fragmentShaderCode;
+    d_func()->m_computeShaderCode = prog->d_func()->m_computeShaderCode;
 }
 
 QShaderProgram::QShaderProgram(QNode *parent)

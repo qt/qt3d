@@ -60,17 +60,15 @@ public :
     {
     }
 
-    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
-
     Q_DECLARE_PUBLIC(QDepthTest)
     QDepthTest::DepthFunc m_func;
 };
 
-void QDepthTestPrivate::copy(const QNodePrivate *ref)
+void QDepthTest::copy(const QNode *ref)
 {
-    QRenderStatePrivate::copy(ref);
-    const QDepthTestPrivate *refState = static_cast<const QDepthTestPrivate *>(ref);
-    m_func = refState->m_func;
+    QRenderState::copy(ref);
+    const QDepthTest *refState = static_cast<const QDepthTest*>(ref);
+    d_func()->m_func = refState->d_func()->m_func;
 }
 
 QDepthTest::QDepthTest(QNode *parent)

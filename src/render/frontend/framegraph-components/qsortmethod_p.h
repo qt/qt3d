@@ -55,7 +55,6 @@ class QSortMethodPrivate : public QFrameGraphItemPrivate
 {
 public:
     QSortMethodPrivate(QSortMethod *qq);
-    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
     Q_DECLARE_PUBLIC(QSortMethod)
     QList<QSortCriterion *> m_criteria;
 };

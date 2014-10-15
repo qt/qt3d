@@ -55,8 +55,6 @@ class QShaderProgramPrivate : public QNodePrivate
 public:
     QShaderProgramPrivate(QShaderProgram *qq);
 
-    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
-
     Q_DECLARE_PUBLIC(QShaderProgram)
     QString m_vertexSourceFile;
     QString m_tessControlSourceFile;

@@ -55,8 +55,6 @@ public :
 
     Q_DECLARE_PUBLIC(QLookAtTransform)
 
-    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
-
     mutable QMatrix4x4 m_matrix;
     QVector3D m_position;
     QVector3D m_upVector;

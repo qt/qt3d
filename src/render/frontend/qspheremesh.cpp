@@ -80,8 +80,6 @@ class QSphereMeshPrivate : public QAbstractShapeMeshPrivate
         , m_radius(1.0)
     {}
 
-    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
-
     Q_DECLARE_PUBLIC (QSphereMesh)
     bool m_generateTangents;
     int m_rings;
@@ -95,14 +93,14 @@ QSphereMesh::QSphereMesh(QNode *parent)
     setDirty(true);
 }
 
-void QSphereMeshPrivate::copy(const QNodePrivate *ref)
+void QSphereMesh::copy(const QNode *ref)
 {
-    QAbstractShapeMeshPrivate::copy(ref);
-    const QSphereMeshPrivate *mesh = static_cast<const QSphereMeshPrivate *>(ref);
-    m_generateTangents = mesh->m_generateTangents;
-    m_rings = mesh->m_rings;
-    m_slices = mesh->m_slices;
-    m_radius = mesh->m_radius;
+    QAbstractShapeMesh::copy(ref);
+    const QSphereMesh *mesh = static_cast<const QSphereMesh*>(ref);
+    d_func()->m_generateTangents = mesh->d_func()->m_generateTangents;
+    d_func()->m_rings = mesh->d_func()->m_rings;
+    d_func()->m_slices = mesh->d_func()->m_slices;
+    d_func()->m_radius = mesh->d_func()->m_radius;
 }
 
 void QSphereMesh::setRings(int rings)

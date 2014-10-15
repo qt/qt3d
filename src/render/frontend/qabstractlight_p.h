@@ -56,8 +56,6 @@ class QT3DRENDERERSHARED_EXPORT QAbstractLightPrivate : public QComponentPrivate
 public:
     QAbstractLightPrivate(QAbstractLight *qq);
 
-    virtual void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
-
     Q_DECLARE_PUBLIC(QAbstractLight)
     QColor m_color;
     float m_intensity;

@@ -61,8 +61,6 @@ public:
     QTechniquePrivate(QTechnique *dd);
     ~QTechniquePrivate();
 
-    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
-
     Q_DECLARE_PUBLIC(QTechnique)
     QList<QCriterion *> m_criteriaList;
     QList<QParameter *> m_parameters;

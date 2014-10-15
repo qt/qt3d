@@ -291,6 +291,7 @@ Q_SIGNALS:
 
 protected:
     QTexture(QTexturePrivate &dd, QNode *parent = 0);
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
     void setStatus(Status status);
 
 private:

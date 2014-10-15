@@ -64,6 +64,9 @@ public:
 Q_SIGNALS:
     void maskChanged();
 
+protected:
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
 private:
     Q_DECLARE_PRIVATE(QDepthMask)
     QT3D_CLONEABLE(QDepthMask)

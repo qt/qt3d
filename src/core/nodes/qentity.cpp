@@ -78,16 +78,16 @@ QEntity::QEntity(QEntityPrivate &dd, QNode *parent)
 {
 }
 
-void QEntityPrivate::copy(const QNodePrivate *ref)
+void QEntity::copy(const QNode *ref)
 {
-    QNodePrivate::copy(ref);
-    const QEntityPrivate *entity = static_cast<const QEntityPrivate *>(ref);
-    m_enabled = entity->m_enabled;
-    m_visible = entity->m_visible;
+    QNode::copy(ref);
+    const QEntity *entity = static_cast<const QEntity*>(ref);
+    d_func()->m_enabled = entity->d_func()->m_enabled;
+    d_func()->m_visible = entity->d_func()->m_visible;
 
-    Q_FOREACH (QComponent *c, entity->m_components) {
+    Q_FOREACH (QComponent *c, entity->d_func()->m_components) {
         QNode *ccclone = QNodePrivate::get(c)->clone();
-        q_func()->addComponent(qobject_cast<QComponent *>(ccclone));
+        addComponent(qobject_cast<QComponent *>(ccclone));
     }
 }
 

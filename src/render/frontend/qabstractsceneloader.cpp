@@ -68,10 +68,10 @@ QAbstractSceneLoader::QAbstractSceneLoader(QNode *parent)
 {
 }
 
-void QAbstractSceneLoaderPrivate::copy(const QNodePrivate *ref)
+void QAbstractSceneLoader::copy(const QNode *ref)
 {
-    const QAbstractSceneLoaderPrivate *s = static_cast<const QAbstractSceneLoaderPrivate *>(ref);
-    m_source = s->m_source;
+    const QAbstractSceneLoader *s = static_cast<const QAbstractSceneLoader*>(ref);
+    d_func()->m_source = s->d_func()->m_source;
 }
 
 QString QAbstractSceneLoader::source() const

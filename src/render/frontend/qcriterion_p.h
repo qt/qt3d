@@ -54,8 +54,6 @@ class QCriterionPrivate : public QNodePrivate
 public:
     QCriterionPrivate(QCriterion *qq);
 
-    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
-
     Q_DECLARE_PUBLIC(QCriterion)
     QString m_name;
     QVariant m_value;

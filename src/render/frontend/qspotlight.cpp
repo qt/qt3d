@@ -74,12 +74,12 @@ QSpotLightPrivate::QSpotLightPrivate(QSpotLight *qq)
 {
 }
 
-void QSpotLightPrivate::copy(const QNodePrivate *ref)
+void QSpotLight::copy(const QNode *ref)
 {
-    QAbstractLightPrivate::copy(ref);
-    const QSpotLightPrivate *light = static_cast<const QSpotLightPrivate *>(ref);
-    m_direction = light->m_direction;
-    m_cutOffAngle = light->m_cutOffAngle;
+    QAbstractLight::copy(ref);
+    const QSpotLight *light = static_cast<const QSpotLight*>(ref);
+    d_func()->m_direction = light->d_func()->m_direction;
+    d_func()->m_cutOffAngle = light->d_func()->m_cutOffAngle;
 }
 
 QSpotLight::QSpotLight(QNode *parent)

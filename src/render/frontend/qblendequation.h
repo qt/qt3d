@@ -75,6 +75,9 @@ public:
 Q_SIGNALS:
     void modeChanged();
 
+protected:
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
 private:
     Q_DECLARE_PRIVATE(QBlendEquation)
     QT3D_CLONEABLE(QBlendEquation)

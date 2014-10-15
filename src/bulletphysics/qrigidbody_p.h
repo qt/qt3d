@@ -55,8 +55,6 @@ class QRigidBodyPrivate : public Qt3D::QComponentPrivate
 public:
     explicit QRigidBodyPrivate(QRigidBody *qq);
 
-    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
-
     Q_DECLARE_PUBLIC(QRigidBody)
 
     float m_mass;

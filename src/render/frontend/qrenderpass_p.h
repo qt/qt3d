@@ -66,7 +66,6 @@ class QT3DRENDERERSHARED_EXPORT QRenderPassPrivate : public QNodePrivate
 {
 public:
     QRenderPassPrivate(QRenderPass *qq);
-    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
 
     Q_DECLARE_PUBLIC(QRenderPass)
     ParameterList m_attributes;

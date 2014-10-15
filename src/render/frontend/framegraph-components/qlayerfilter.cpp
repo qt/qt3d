@@ -52,13 +52,13 @@ QLayerFilterPrivate::QLayerFilterPrivate(QLayerFilter *qq)
 {
 }
 
-void QLayerFilterPrivate::copy(const QNodePrivate *ref)
+void QLayerFilter::copy(const QNode *ref)
 {
-    QFrameGraphItemPrivate::copy(ref);
-    const QLayerFilterPrivate *layer = static_cast<const QLayerFilterPrivate *>(ref);
-    m_layers = layer->m_layers;
-    Q_FOREACH (QFrameGraphItem *fgChild, layer->m_fgChildren)
-        q_func()->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(QNodePrivate::get(fgChild)->clone()));
+    QFrameGraphItem::copy(ref);
+    const QLayerFilter *layer = static_cast<const QLayerFilter*>(ref);
+    d_func()->m_layers = layer->d_func()->m_layers;
+    Q_FOREACH (QFrameGraphItem *fgChild, layer->d_func()->m_fgChildren)
+        appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(QNodePrivate::get(fgChild)->clone()));
 }
 
 QLayerFilter::QLayerFilter(QNode *parent)

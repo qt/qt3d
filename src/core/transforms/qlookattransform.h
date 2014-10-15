@@ -85,9 +85,12 @@ Q_SIGNALS:
     void viewVectorChanged();
 
 protected:
-    Q_DECLARE_PRIVATE(QLookAtTransform)
     QLookAtTransform(QLookAtTransformPrivate &dd, QNode *parent = 0);
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
+private:
     QT3D_CLONEABLE(QLookAtTransform)
+    Q_DECLARE_PRIVATE(QLookAtTransform)
 };
 
 } // namespace Qt3D
