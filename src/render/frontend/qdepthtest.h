@@ -79,7 +79,7 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QDepthTest)
-    QNode *doClone() const Q_DECL_OVERRIDE;
+    QT3D_CLONEABLE(QDepthTest)
 };
 
 } // Qt3D

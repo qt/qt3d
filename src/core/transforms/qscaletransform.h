@@ -76,7 +76,7 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QScaleTransform)
-    QScaleTransform *doClone() const Q_DECL_OVERRIDE;
+    QT3D_CLONEABLE(QScaleTransform)
 };
 
 } // Qt3D

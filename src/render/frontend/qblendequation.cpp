@@ -90,13 +90,6 @@ void QBlendEquation::setMode(QBlendEquation::BlendMode mode)
     }
 }
 
-QNode *QBlendEquation::doClone() const
-{
-    QBlendEquation *clone = new QBlendEquation();
-    clone->d_func()->copy(d_func());
-    return clone;
-}
-
 } // Qt3D
 
 QT_END_NAMESPACE

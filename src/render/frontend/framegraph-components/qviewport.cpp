@@ -58,6 +58,8 @@ void QViewportPrivate::copy(const QNodePrivate *ref)
     QFrameGraphItemPrivate::copy(ref);
     const QViewportPrivate *viewport = static_cast<const QViewportPrivate *>(ref);
     m_rect = viewport->m_rect;
+    Q_FOREACH (QFrameGraphItem *fgChild, viewport->m_fgChildren)
+        q_func()->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(QNodePrivate::get(fgChild)->clone()));
 }
 
 QViewport::QViewport(QNode *parent)
@@ -68,19 +70,6 @@ QViewport::QViewport(QNode *parent)
 QViewport::QViewport(QViewportPrivate &dd, QNode *parent)
     : QFrameGraphItem(dd, parent)
 {
-}
-
-QViewport *QViewport::doClone() const
-{
-    Q_D(const QViewport);
-    QViewport *clone = new QViewport();
-
-    clone->d_func()->copy(d_func());
-
-    Q_FOREACH (QFrameGraphItem *fgChild, d->m_fgChildren)
-        clone->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(QNodePrivate::get(fgChild)->clone()));
-
-    return clone;
 }
 
 QRectF QViewport::rect() const

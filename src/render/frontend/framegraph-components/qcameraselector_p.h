@@ -55,6 +55,7 @@ class QCameraSelectorPrivate : public QFrameGraphItemPrivate
 {
 public:
     QCameraSelectorPrivate(QCameraSelector *qq);
+    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
 
     Q_DECLARE_PUBLIC(QCameraSelector)
     QEntity *m_camera;

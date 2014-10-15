@@ -295,7 +295,7 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QTexture)
-    QNode *doClone() const Q_DECL_OVERRIDE;
+    QT3D_CLONEABLE(QTexture)
 };
 
 } // namespace Qt3D

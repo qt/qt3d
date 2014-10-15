@@ -82,7 +82,7 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QScissorTest)
-    QNode *doClone() const Q_DECL_OVERRIDE;
+    QT3D_CLONEABLE(QScissorTest)
 };
 
 } // Qt3D

@@ -71,7 +71,7 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QRenderTargetSelector)
-    QRenderTargetSelector *doClone() const Q_DECL_OVERRIDE;
+    QT3D_CLONEABLE(QRenderTargetSelector)
 };
 
 } // Qt3D

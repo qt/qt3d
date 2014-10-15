@@ -73,14 +73,6 @@ QLookAtTransform::QLookAtTransform(QLookAtTransformPrivate &dd, QNode *parent)
 {
 }
 
-QLookAtTransform *QLookAtTransform::doClone() const
-{
-    Q_D(const QLookAtTransform);
-    QLookAtTransform *clone = new QLookAtTransform();
-    clone->d_func()->copy(d);
-    return clone;
-}
-
 QMatrix4x4 QLookAtTransform::transformMatrix() const
 {
     Q_D(const QLookAtTransform);

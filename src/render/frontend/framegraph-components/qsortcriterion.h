@@ -75,7 +75,7 @@ protected:
     QSortCriterion(QSortCriterionPrivate &dd, QNode *parent = 0);
 
 private:
-    QSortCriterion *doClone() const Q_DECL_OVERRIDE;
+    QT3D_CLONEABLE(QSortCriterion)
     Q_DECLARE_PRIVATE(QSortCriterion)
 };
 

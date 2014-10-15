@@ -61,6 +61,20 @@ QRenderPassPrivate::QRenderPassPrivate(QRenderPass *qq)
 {
 }
 
+void QRenderPassPrivate::copy(const QNodePrivate *ref)
+{
+    QNodePrivate::copy(ref);
+    const QRenderPassPrivate *other = static_cast<const QRenderPassPrivate*>(ref);
+    m_shader = qobject_cast<QShaderProgram *>(QNodePrivate::get(other->m_shader)->clone());
+
+    Q_FOREACH (QCriterion *crit, other->m_criteriaList)
+        q_func()->addCriterion(qobject_cast<QCriterion *>(QNodePrivate::get(crit)->clone()));
+    Q_FOREACH (QParameterMapper *binding, other->m_bindings)
+        q_func()->addBinding(qobject_cast<QParameterMapper *>(QNodePrivate::get(binding)->clone()));
+    Q_FOREACH (QRenderState *renderState, other->m_renderStates)
+        q_func()->addRenderState(qobject_cast<QRenderState *>(QNodePrivate::get(renderState)->clone()));
+}
+
 QRenderPass::QRenderPass(QNode *parent)
     : QNode(*new QRenderPassPrivate(this), parent)
 {
@@ -69,24 +83,6 @@ QRenderPass::QRenderPass(QNode *parent)
 QRenderPass::QRenderPass(QRenderPassPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
-}
-
-QRenderPass *QRenderPass::doClone() const
-{
-    Q_D(const QRenderPass);
-    QRenderPass *pass = new QRenderPass();
-
-    pass->d_func()->copy(d_func());
-
-    Q_FOREACH (QCriterion *crit, d->m_criteriaList)
-        pass->addCriterion(qobject_cast<QCriterion *>(QNodePrivate::get(crit)->clone()));
-    Q_FOREACH (QParameterMapper *binding, d->m_bindings)
-        pass->addBinding(qobject_cast<QParameterMapper *>(QNodePrivate::get(binding)->clone()));
-    Q_FOREACH (QRenderState *renderState, d->m_renderStates)
-        pass->addRenderState(qobject_cast<QRenderState *>(QNodePrivate::get(renderState)->clone()));
-    pass->d_func()->m_shader = qobject_cast<QShaderProgram *>(QNodePrivate::get(d->m_shader)->clone());
-
-    return pass;
 }
 
 ParameterList QRenderPass::attributes() const

@@ -228,7 +228,7 @@ public:
     QAbstractMeshFunctorPtr meshFunctor() const Q_DECL_OVERRIDE;
 
 private:
-    GLTFParserMesh *doClone() const Q_DECL_OVERRIDE;
+    QT3D_CLONEABLE(GLTFParserMesh)
     Q_DECLARE_PRIVATE(GLTFParserMesh)
 };
 
@@ -1031,13 +1031,6 @@ QAbstractMeshFunctorPtr GLTFParserMesh::meshFunctor() const
 {
     Q_D(const GLTFParserMesh);
     return QAbstractMeshFunctorPtr(new GLTFParserMeshFunctor(d->m_meshData));
-}
-
-GLTFParserMesh *GLTFParserMesh::doClone() const
-{
-    GLTFParserMesh *clone = new GLTFParserMesh();
-    clone->d_func()->copy(d_func());
-    return clone;
 }
 
 GLTFParserMesh::GLTFParserMeshFunctor::GLTFParserMeshFunctor(QMeshDataPtr meshData)

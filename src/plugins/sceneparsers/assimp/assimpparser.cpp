@@ -191,7 +191,7 @@ public :
 
 private:
     QMeshDataPtr m_meshData;
-    AssimpMesh *doClone() const Q_DECL_OVERRIDE;
+    QT3D_CLONEABLE(AssimpMesh)
 
     class AssimpMeshFunctor : public QAbstractMeshFunctor
     {
@@ -829,13 +829,6 @@ void AssimpMesh::setData(QMeshDataPtr data)
 {
     m_meshData = data;
     QAbstractMesh::setDirty(this);
-}
-
-AssimpMesh *AssimpMesh::doClone() const
-{
-    AssimpMesh *clone = new AssimpMesh();
-    clone->copy(this);
-    return clone;
 }
 
 QAbstractMeshFunctorPtr AssimpMesh::meshFunctor() const

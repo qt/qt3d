@@ -94,12 +94,7 @@ public:
     tst_Node() : Qt3D::QNode()
     {}
 protected:
-    Qt3D::QNode *doClone() const Q_DECL_OVERRIDE
-    {
-        tst_Node *clone = new tst_Node();
-        clone->copy(this);
-        return clone;
-    }
+    QT3D_CLONEABLE(tst_Node)
 };
 
 class tst_Component : public Qt3D::QComponent
@@ -108,12 +103,7 @@ public:
     tst_Component() : Qt3D::QComponent()
     {}
 protected:
-    Qt3D::QNode *doClone() const
-    {
-        tst_Component *clone = new tst_Component;
-        clone->copy(this);
-        return clone;
-    }
+    QT3D_CLONEABLE(tst_Component)
 };
 
 void tst_QScene::addObservable()

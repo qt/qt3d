@@ -90,7 +90,7 @@ protected Q_SLOTS:
 
 private:
     Q_DECLARE_PRIVATE(QTechnique)
-    QTechnique *doClone() const Q_DECL_OVERRIDE;
+    QT3D_CLONEABLE(QTechnique)
 };
 
 }

@@ -56,6 +56,7 @@ class QFrameGraphPrivate : public QComponentPrivate
 {
 public:
     QFrameGraphPrivate(QFrameGraph *qq);
+    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
 
     Q_DECLARE_PUBLIC(QFrameGraph)
 

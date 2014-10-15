@@ -86,13 +86,6 @@ QSortCriterion::QSortCriterion(QSortCriterionPrivate &dd, QNode *parent)
 {
 }
 
-QSortCriterion *QSortCriterion::doClone() const
-{
-    QSortCriterion *clone = new QSortCriterion();
-    clone->d_func()->copy(d_func());
-    return clone;
-}
-
 } // Qt3D
 
 QT_END_NAMESPACE

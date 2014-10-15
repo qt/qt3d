@@ -91,13 +91,6 @@ QCameraLens::QCameraLens(QCameraLensPrivate &dd, QNode *parent)
     d->updateOrthogonalProjection();
 }
 
-QCameraLens *QCameraLens::doClone() const
-{
-    QCameraLens *clone = new QCameraLens();
-    clone->d_func()->copy(d_func());
-    return clone;
-}
-
 void QCameraLens::setProjectionType(QCameraLens::ProjectionType projectionType)
 {
     Q_D(QCameraLens);

@@ -91,13 +91,6 @@ void QDepthMask::setMask(bool mask)
     }
 }
 
-QNode *QDepthMask::doClone() const
-{
-    QDepthMask *clone = new QDepthMask();
-    clone->d_func()->copy(d_func());
-    return clone;
-}
-
 } // Qt3D
 
 QT_END_NAMESPACE

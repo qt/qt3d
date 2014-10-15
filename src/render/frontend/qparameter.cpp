@@ -75,13 +75,6 @@ QParameter::QParameter(QParameterPrivate &dd, QNode *parent)
 {
 }
 
-QParameter *QParameter::doClone() const
-{
-    QParameter *clone = new QParameter();
-    clone->d_func()->copy(d_func());
-    return clone;
-}
-
 QParameter::QParameter(QNode *parent)
     : QNode(*new QParameterPrivate(this), parent)
 {

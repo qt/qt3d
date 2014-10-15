@@ -57,6 +57,8 @@ void QLayerFilterPrivate::copy(const QNodePrivate *ref)
     QFrameGraphItemPrivate::copy(ref);
     const QLayerFilterPrivate *layer = static_cast<const QLayerFilterPrivate *>(ref);
     m_layers = layer->m_layers;
+    Q_FOREACH (QFrameGraphItem *fgChild, layer->m_fgChildren)
+        q_func()->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(QNodePrivate::get(fgChild)->clone()));
 }
 
 QLayerFilter::QLayerFilter(QNode *parent)
@@ -67,19 +69,6 @@ QLayerFilter::QLayerFilter(QNode *parent)
 QLayerFilter::QLayerFilter(QLayerFilterPrivate &dd, QNode *parent)
     : QFrameGraphItem(dd, parent)
 {
-}
-
-QLayerFilter *QLayerFilter::doClone() const
-{
-    Q_D(const QLayerFilter);
-    QLayerFilter *filter = new QLayerFilter();
-
-    filter->d_func()->copy(d_func());
-
-    Q_FOREACH (QFrameGraphItem *fgChild, d->m_fgChildren)
-        filter->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(QNodePrivate::get(fgChild)->clone()));
-
-    return filter;
 }
 
 void QLayerFilter::setLayers(const QStringList &layers)

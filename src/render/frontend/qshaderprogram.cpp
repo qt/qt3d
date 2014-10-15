@@ -83,13 +83,6 @@ QShaderProgram::QShaderProgram(QShaderProgramPrivate &dd, QNode *parent)
 {
 }
 
-QShaderProgram *QShaderProgram::doClone() const
-{
-    QShaderProgram *clone = new QShaderProgram();
-    clone->d_func()->copy(d_func());
-    return clone;
-}
-
 void QShaderProgram::setVertexShaderSourceFile(const QString& vertexShaderSourceFile)
 {
     Q_D(QShaderProgram);

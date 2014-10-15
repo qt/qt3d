@@ -77,12 +77,7 @@ public:
     QString customProperty() const { return m_customProperty; }
 
 protected:
-    Qt3D::QNode *doClone() const Q_DECL_OVERRIDE
-    {
-        MyQNode *clone = new MyQNode();
-        clone->copy(this);
-        return clone;
-    }
+    QT3D_CLONEABLE(MyQNode)
 
     QString m_customProperty;
 
@@ -97,10 +92,7 @@ public:
 
     // QNode interface
 protected:
-    Qt3D::QNode *doClone() const Q_DECL_OVERRIDE
-    {
-        return new MyQComponent();
-    }
+    QT3D_CLONEABLE(MyQComponent)
 };
 
 

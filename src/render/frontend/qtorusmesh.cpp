@@ -266,13 +266,6 @@ QAbstractMeshFunctorPtr QTorusMesh::meshFunctor() const
     return QAbstractMeshFunctorPtr(new TorusMeshFunctor(d->m_rings, d->m_slices, d->m_radius, d->m_minorRadius));
 }
 
-QTorusMesh *QTorusMesh::doClone() const
-{
-    QTorusMesh *clone = new QTorusMesh();
-    clone->d_func()->copy(d_func());
-    return clone;
-}
-
 TorusMeshFunctor::TorusMeshFunctor(int rings, int slices, float radius, float minorRadius)
     : QAbstractMeshFunctor()
     , m_rings(rings)

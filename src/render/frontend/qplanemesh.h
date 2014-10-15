@@ -83,7 +83,7 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QPlaneMesh)
-    QPlaneMesh *doClone() const Q_DECL_OVERRIDE;
+    QT3D_CLONEABLE(QPlaneMesh)
 };
 
 } // namespace Qt3D

@@ -55,6 +55,18 @@ QRenderTargetSelectorPrivate::QRenderTargetSelectorPrivate(QRenderTargetSelector
 {
 }
 
+void QRenderTargetSelectorPrivate::copy(const QNodePrivate *ref)
+{
+    QFrameGraphItemPrivate::copy(ref);
+
+    const QRenderTargetSelectorPrivate *other = static_cast<const QRenderTargetSelectorPrivate*>(ref);
+    Q_FOREACH (QFrameGraphItem *fgChild, other->m_fgChildren)
+        q_func()->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(QNodePrivate::get(fgChild)->clone()));
+
+    if (other->m_target != Q_NULLPTR)
+        q_func()->setTarget(qobject_cast<QRenderTarget *>(QNodePrivate::get(other->m_target)->clone()));
+}
+
 QRenderTargetSelector::QRenderTargetSelector(QNode *parent)
     : QFrameGraphItem(*new QRenderTargetSelectorPrivate(this), parent)
 {
@@ -82,22 +94,6 @@ QRenderTarget *QRenderTargetSelector::target() const
 QRenderTargetSelector::QRenderTargetSelector(QRenderTargetSelectorPrivate &dd, QNode *parent)
     : QFrameGraphItem(dd, parent)
 {
-}
-
-QRenderTargetSelector *QRenderTargetSelector::doClone() const
-{
-    Q_D(const QRenderTargetSelector);
-    QRenderTargetSelector *clone = new QRenderTargetSelector();
-
-    clone->d_func()->copy(d_func());
-
-    Q_FOREACH (QFrameGraphItem *fgChild, d->m_fgChildren)
-        clone->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(QNodePrivate::get(fgChild)->clone()));
-
-    if (d->m_target != Q_NULLPTR)
-        clone->setTarget(qobject_cast<QRenderTarget *>(QNodePrivate::get(d->m_target)->clone()));
-
-    return clone;
 }
 
 } // Qt3D

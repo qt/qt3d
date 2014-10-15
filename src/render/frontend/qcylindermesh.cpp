@@ -334,13 +334,6 @@ QAbstractMeshFunctorPtr QCylinderMesh::meshFunctor() const
     return QAbstractMeshFunctorPtr(new CylinderMeshFunctor(d->m_rings, d->m_slices, d->m_radius, d->m_length));
 }
 
-QCylinderMesh *QCylinderMesh::doClone() const
-{
-    QCylinderMesh *clone = new QCylinderMesh();
-    clone->d_func()->copy(d_func());
-    return clone;
-}
-
 CylinderMeshFunctor::CylinderMeshFunctor(int rings, int slices, float radius, float length)
     : QAbstractMeshFunctor()
     , m_rings(rings)

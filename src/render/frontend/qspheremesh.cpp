@@ -157,13 +157,6 @@ QAbstractMeshFunctorPtr QSphereMesh::meshFunctor() const
     return QAbstractMeshFunctorPtr(new SphereMeshFunctor(d->m_rings, d->m_slices, d->m_radius, d->m_generateTangents));
 }
 
-QSphereMesh *QSphereMesh::doClone() const
-{
-    QSphereMesh *clone = new QSphereMesh();
-    clone->d_func()->copy(d_func());
-    return clone;
-}
-
 int QSphereMesh::rings() const
 {
     Q_D(const QSphereMesh);

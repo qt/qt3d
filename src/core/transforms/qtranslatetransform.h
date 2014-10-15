@@ -88,7 +88,7 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QTranslateTransform)
-    QTranslateTransform *doClone() const Q_DECL_OVERRIDE;
+    QT3D_CLONEABLE(QTranslateTransform)
 };
 
 } // namespace Qt3D

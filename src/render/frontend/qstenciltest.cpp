@@ -128,13 +128,6 @@ void QStencilTest::setFunc(QStencilTest::StencilFunc func)
     }
 }
 
-QNode *QStencilTest::doClone() const
-{
-    QStencilTest *clone = new QStencilTest();
-    clone->d_func()->copy(d_func());
-    return clone;
-}
-
 } // Qt3D
 
 QT_END_NAMESPACE

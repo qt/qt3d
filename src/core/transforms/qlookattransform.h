@@ -87,7 +87,7 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QLookAtTransform)
     QLookAtTransform(QLookAtTransformPrivate &dd, QNode *parent = 0);
-    QLookAtTransform *doClone() const Q_DECL_OVERRIDE;
+    QT3D_CLONEABLE(QLookAtTransform)
 };
 
 } // namespace Qt3D

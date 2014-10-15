@@ -79,7 +79,7 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QBoxCollider)
-    QBoxCollider *doClone() const Q_DECL_OVERRIDE;
+    QT3D_CLONEABLE(QBoxCollider)
 };
 
 } // namespace BulletPhysics

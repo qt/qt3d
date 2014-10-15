@@ -77,7 +77,7 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QEntity)
-    QEntity *doClone() const Q_DECL_OVERRIDE;
+    QT3D_CLONEABLE(QEntity)
 };
 
 } // namespace Qt3D

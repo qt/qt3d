@@ -62,6 +62,7 @@ void QRenderAttachmentPrivate::copy(const QNodePrivate *ref)
     QNodePrivate::copy(ref);
     const QRenderAttachmentPrivate *rA = static_cast<const QRenderAttachmentPrivate *>(ref);
     m_type = rA->m_type;
+    q_func()->setTexture(qobject_cast<QTexture *>(QNodePrivate::get(rA->m_texture)->clone()));
 }
 
 QRenderAttachment::QRenderAttachment(QNode *parent)
@@ -166,15 +167,6 @@ QString QRenderAttachment::name() const
 {
     Q_D(const QRenderAttachment);
     return d->m_name;
-}
-
-QNode *QRenderAttachment::doClone() const
-{
-    Q_D(const QRenderAttachment);
-    QRenderAttachment *clone = new QRenderAttachment();;
-    clone->d_func()->copy(d_func());
-    clone->setTexture(qobject_cast<QTexture *>(QNodePrivate::get(d->m_texture)->clone()));
-    return clone;
 }
 
 } // Qt3D

@@ -129,7 +129,7 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QRenderAttachment)
-    QNode *doClone() const Q_DECL_OVERRIDE;
+    QT3D_CLONEABLE(QRenderAttachment)
 };
 
 } // Qt3D

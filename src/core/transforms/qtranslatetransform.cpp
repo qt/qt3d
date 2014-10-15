@@ -70,14 +70,6 @@ QTranslateTransform::QTranslateTransform(QTranslateTransformPrivate &dd, QNode *
 {
 }
 
-QTranslateTransform *QTranslateTransform::doClone() const
-{
-    QTranslateTransform *clone = new QTranslateTransform();
-    clone->d_func()->copy(d_func());
-    return clone;
-}
-
-
 float QTranslateTransform::dx() const
 {
     Q_D(const QTranslateTransform);

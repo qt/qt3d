@@ -55,6 +55,16 @@ QTechniqueFilterPrivate::QTechniqueFilterPrivate(QTechniqueFilter *qq)
 {
 }
 
+void QTechniqueFilterPrivate::copy(const QNodePrivate *ref)
+{
+    QFrameGraphItemPrivate::copy(ref);
+    const QTechniqueFilterPrivate *other = static_cast<const QTechniqueFilterPrivate*>(ref);
+    Q_FOREACH (QFrameGraphItem *fgChild, other->m_fgChildren)
+        q_func()->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(QNodePrivate::get(fgChild)->clone()));
+    Q_FOREACH (QCriterion *crit, other->m_criteriaList)
+        q_func()->addCriterion(qobject_cast<QCriterion *>(QNodePrivate::get(crit)->clone()));
+}
+
 QTechniqueFilter::QTechniqueFilter(QNode *parent)
     : QFrameGraphItem(*new QTechniqueFilterPrivate(this), parent)
 {
@@ -63,21 +73,6 @@ QTechniqueFilter::QTechniqueFilter(QNode *parent)
 QTechniqueFilter::QTechniqueFilter(QTechniqueFilterPrivate &dd, QNode *parent)
     : QFrameGraphItem(dd, parent)
 {
-}
-
-QTechniqueFilter *QTechniqueFilter::doClone() const
-{
-    Q_D(const QTechniqueFilter);
-    QTechniqueFilter *clone = new QTechniqueFilter();
-
-    clone->d_func()->copy(d_func());
-
-    Q_FOREACH (QFrameGraphItem *fgChild, d->m_fgChildren)
-        clone->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(QNodePrivate::get(fgChild)->clone()));
-    Q_FOREACH (QCriterion *crit, d->m_criteriaList)
-        clone->addCriterion(qobject_cast<QCriterion *>(QNodePrivate::get(crit)->clone()));
-
-    return clone;
 }
 
 QList<QCriterion *> QTechniqueFilter::criteria() const

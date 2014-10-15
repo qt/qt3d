@@ -73,13 +73,6 @@ void QSphereColliderPrivate::copy(const QNodePrivate *ref)
     m_radius = other->m_radius;
 }
 
-QSphereCollider *QSphereCollider::doClone() const
-{
-    QSphereCollider *clone = new QSphereCollider();
-    clone->d_func()->copy(d_func());
-    return clone;
-}
-
 void QSphereCollider::setCenter(const QVector3D &center)
 {
     Q_D(QSphereCollider);

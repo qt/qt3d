@@ -98,7 +98,7 @@ protected:
     QCuboidMesh(QCuboidMeshPrivate &dd, QNode *parent = 0);
 
 private:
-    QCuboidMesh *doClone() const Q_DECL_OVERRIDE;
+    QT3D_CLONEABLE(QCuboidMesh)
     Q_DECLARE_PRIVATE(QCuboidMesh)
 };
 

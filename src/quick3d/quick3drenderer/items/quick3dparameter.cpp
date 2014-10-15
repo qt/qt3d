@@ -94,13 +94,6 @@ Quick3DParameter::Quick3DParameter(Quick3DParameterPrivate &dd, QNode *parent)
 {
 }
 
-Quick3DParameter *Quick3DParameter::doClone() const
-{
-    Quick3DParameter *clone = new Quick3DParameter();
-    clone->d_func()->copy(d_func());
-    return clone;
-}
-
 } // Quick
 
 } // Render

@@ -62,13 +62,6 @@ QAlphaCoverage::QAlphaCoverage(QNode *parent)
 {
 }
 
-QNode *QAlphaCoverage::doClone() const
-{
-    QAlphaCoverage *clone = new QAlphaCoverage();
-    clone->d_func()->copy(d_func());
-    return clone;
-}
-
 } // Qt3D
 
 QT_END_NAMESPACE

@@ -70,7 +70,7 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QRenderPassFilter)
-    QRenderPassFilter *doClone() const Q_DECL_OVERRIDE;
+    QT3D_CLONEABLE(QRenderPassFilter)
 };
 
 } // namespace Qt3D

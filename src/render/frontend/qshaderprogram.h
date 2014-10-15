@@ -146,7 +146,7 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QShaderProgram)
-    QShaderProgram *doClone() const Q_DECL_OVERRIDE;
+    QT3D_CLONEABLE(QShaderProgram)
 };
 
 }

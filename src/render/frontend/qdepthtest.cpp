@@ -93,13 +93,6 @@ void QDepthTest::setFunc(QDepthTest::DepthFunc func)
     }
 }
 
-QNode *QDepthTest::doClone() const
-{
-    QDepthTest *clone = new QDepthTest();
-    clone->d_func()->copy(d_func());
-    return clone;
-}
-
 } // Qt3D
 
 QT_END_NAMESPACE

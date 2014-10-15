@@ -101,6 +101,7 @@ void QTexturePrivate::copy(const QNodePrivate *ref)
     m_minFilter = t->m_minFilter;
     m_magFilter = t->m_magFilter;
     m_autoMipMap = t->m_autoMipMap;
+    // TO DO: Copy TexImageDataPtr
 }
 
 QTexture::QTexture(QNode *parent)
@@ -201,14 +202,6 @@ void QTexture::setStatus(Status status)
         d->m_status = status;
         emit statusChanged();
     }
-}
-
-QNode *QTexture::doClone() const
-{
-    // TO DO: Copy TexImageDataPtr
-    QTexture *clone = new QTexture();
-    clone->d_func()->copy(d_func());
-    return clone;
 }
 
 QTexture::Status QTexture::status() const

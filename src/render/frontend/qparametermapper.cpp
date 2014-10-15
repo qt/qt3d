@@ -71,13 +71,6 @@ QParameterMapper::QParameterMapper(QParameterMapperPrivate &dd, QNode *parent)
 {
 }
 
-QNode *QParameterMapper::doClone() const
-{
-    QParameterMapper *clone = new QParameterMapper();
-    clone->d_func()->copy(d_func());
-    return clone;
-}
-
 QParameterMapper::QParameterMapper(const QString &parameterName, const QString &shaderParameterName, QParameterMapper::Binding bindingType, QNode *parent)
     : QNode(*new QParameterMapperPrivate(this), parent)
 {

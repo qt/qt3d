@@ -63,13 +63,6 @@ void QMatrixTransformPrivate::copy(const QNodePrivate *ref)
     m_matrix = matrix->m_matrix;
 }
 
-QMatrixTransform *QMatrixTransform::doClone() const
-{
-    QMatrixTransform *clone = new QMatrixTransform();
-    clone->d_func()->copy(d_func());
-    return clone;
-}
-
 QMatrixTransform::QMatrixTransform(QNode *parent)
     : QAbstractTransform(*new QMatrixTransformPrivate(this), parent)
 {

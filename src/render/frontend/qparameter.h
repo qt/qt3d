@@ -85,7 +85,7 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QParameter)
-    QParameter *doClone() const Q_DECL_OVERRIDE;
+    QT3D_CLONEABLE(QParameter)
 };
 
 } // Qt3D

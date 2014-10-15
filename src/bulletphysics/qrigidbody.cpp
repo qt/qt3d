@@ -73,13 +73,6 @@ void QRigidBodyPrivate::copy(const QNodePrivate *ref)
     m_centerOfMass = other->m_centerOfMass;
 }
 
-QRigidBody *QRigidBody::doClone() const
-{
-    QRigidBody *clone = new QRigidBody();
-    clone->d_func()->copy(d_func());
-    return clone;
-}
-
 void QRigidBody::setMass(float mass)
 {
     Q_D(QRigidBody);

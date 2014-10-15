@@ -88,13 +88,6 @@ QMesh::QMesh(QMeshPrivate &dd, QNode *parent)
 {
 }
 
-QMesh *QMesh::doClone() const
-{
-    QMesh *clone = new QMesh();
-    clone->d_func()->copy(d_func());
-    return clone;
-}
-
 void QMesh::setSource( const QString& source )
 {
     Q_D(QMesh);

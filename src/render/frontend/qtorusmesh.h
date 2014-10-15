@@ -83,7 +83,7 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QTorusMesh)
-    QTorusMesh *doClone() const Q_DECL_OVERRIDE;
+    QT3D_CLONEABLE(QTorusMesh)
 };
 
 } // Qt3D

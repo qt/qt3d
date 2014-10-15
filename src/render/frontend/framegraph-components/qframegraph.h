@@ -74,7 +74,7 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QFrameGraph)
-    QFrameGraph *doClone() const Q_DECL_OVERRIDE;
+    QT3D_CLONEABLE(QFrameGraph)
 };
 
 } //Qt3D

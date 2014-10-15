@@ -76,7 +76,7 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QViewport)
-    QViewport *doClone() const Q_DECL_OVERRIDE;
+    QT3D_CLONEABLE(QViewport)
 };
 
 } // Qt3D

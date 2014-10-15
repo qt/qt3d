@@ -69,7 +69,7 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QLayer)
-    QLayer *doClone() const Q_DECL_OVERRIDE;
+    QT3D_CLONEABLE(QLayer)
 };
 
 } // Qt3D

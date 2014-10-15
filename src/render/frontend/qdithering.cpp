@@ -64,13 +64,6 @@ QDithering::QDithering(QNode *parent)
 {
 }
 
-QNode *QDithering::doClone() const
-{
-    QDithering *clone = new QDithering();
-    clone->d_func()->copy(d_func());
-    return clone;
-}
-
 } // Qt3D
 
 QT_END_NAMESPACE

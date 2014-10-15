@@ -78,7 +78,7 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QSpotLight)
-    QSpotLight *doClone() const Q_DECL_OVERRIDE;
+    QT3D_CLONEABLE(QSpotLight)
 };
 
 } // Qt3D

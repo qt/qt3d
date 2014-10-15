@@ -69,7 +69,7 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QCameraSelector)
     QCameraSelector(QCameraSelectorPrivate &dd, QNode *parent = 0);
-    QCameraSelector *doClone() const Q_DECL_OVERRIDE;
+    QT3D_CLONEABLE(QCameraSelector)
 };
 
 } // namespace Qt3D

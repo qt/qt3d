@@ -84,13 +84,6 @@ void QSceneLoader::sceneChangeEvent(const QSceneChangePtr &change)
     }
 }
 
-QNode *QSceneLoader::doClone() const
-{
-    QSceneLoader *clone = new QSceneLoader();
-    clone->d_func()->copy(d_func());
-    return clone;
-}
-
 } // Qt3D
 
 QT_END_NAMESPACE

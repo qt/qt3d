@@ -82,7 +82,7 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QRigidBody)
-    QRigidBody *doClone() const Q_DECL_OVERRIDE;
+    QT3D_CLONEABLE(QRigidBody)
 };
 
 } // namespace BulletPhysics

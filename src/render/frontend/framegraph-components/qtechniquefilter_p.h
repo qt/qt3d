@@ -54,6 +54,7 @@ class QTechniqueFilterPrivate : public QFrameGraphItemPrivate
 {
 public :
     QTechniqueFilterPrivate(QTechniqueFilter *qq);
+    void copy(const QNodePrivate *ref) Q_DECL_OVERRIDE;
 
     Q_DECLARE_PUBLIC(QTechniqueFilter)
     QList<QCriterion *> m_criteriaList;

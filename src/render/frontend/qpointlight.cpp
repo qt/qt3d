@@ -84,13 +84,6 @@ QPointLight::QPointLight(QPointLightPrivate &dd, QNode *parent)
 {
 }
 
-QPointLight *QPointLight::doClone() const
-{
-    QPointLight *clone = new QPointLight();
-    clone->d_func()->copy(d_func());
-    return clone;
-}
-
 } // Qt3D
 
 QT_END_NAMESPACE

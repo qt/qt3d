@@ -72,13 +72,6 @@ QBoxCollider::QBoxCollider(QBoxColliderPrivate &dd, QNode *parent)
 {
 }
 
-QBoxCollider *QBoxCollider::doClone() const
-{
-    QBoxCollider *clone = new QBoxCollider();
-    clone->d_func()->copy(d_func());
-    return clone;
-}
-
 void QBoxCollider::setCenter(const QVector3D &center)
 {
     Q_D(QBoxCollider);

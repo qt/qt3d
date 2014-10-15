@@ -91,13 +91,6 @@ void QCullFace::setMode(QCullFace::CullingMode mode)
     }
 }
 
-QNode *QCullFace::doClone() const
-{
-    QCullFace *clone = new QCullFace();
-    clone->d_func()->copy(d_func());
-    return clone;
-}
-
 } // Qt3D
 
 QT_END_NAMESPACE

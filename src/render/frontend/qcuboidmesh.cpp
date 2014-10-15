@@ -86,13 +86,6 @@ QCuboidMesh::QCuboidMesh(QCuboidMeshPrivate &dd, QNode *parent)
     setDirty(true);
 }
 
-QCuboidMesh *QCuboidMesh::doClone() const
-{
-    QCuboidMesh *clone = new QCuboidMesh();
-    clone->d_func()->copy(d_func());
-    return clone;
-}
-
 void QCuboidMesh::setXExtent(float xExtent)
 {
     Q_D(QCuboidMesh);

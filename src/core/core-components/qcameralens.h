@@ -133,7 +133,7 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QCameraLens)
-    QCameraLens *doClone() const Q_DECL_OVERRIDE;
+    QT3D_CLONEABLE(QCameraLens)
 };
 
 } // Qt3D

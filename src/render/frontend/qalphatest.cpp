@@ -109,13 +109,6 @@ void QAlphaTest::setClamp(float clamp)
     }
 }
 
-QNode *QAlphaTest::doClone() const
-{
-    QAlphaTest *clone = new QAlphaTest();
-    clone->d_func()->copy(d_func());
-    return clone;
-}
-
 } // Qt3D
 
 QT_END_NAMESPACE

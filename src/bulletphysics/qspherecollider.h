@@ -79,7 +79,7 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QSphereCollider)
-    QSphereCollider *doClone() const Q_DECL_OVERRIDE;
+    QT3D_CLONEABLE(QSphereCollider)
 };
 
 } // namespace BulletPhysics

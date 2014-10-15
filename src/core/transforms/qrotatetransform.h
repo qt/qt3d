@@ -82,7 +82,7 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QRotateTransform)
-    QRotateTransform *doClone() const Q_DECL_OVERRIDE;
+    QT3D_CLONEABLE(QRotateTransform)
 };
 
 } // namespace Qt3D

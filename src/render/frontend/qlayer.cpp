@@ -69,13 +69,6 @@ QLayer::QLayer(QLayerPrivate &dd, QNode *parent)
 {
 }
 
-QLayer *QLayer::doClone() const
-{
-    QLayer *clone = new QLayer();
-    clone->d_func()->copy(d_func());
-    return clone;
-}
-
 QString QLayer::name() const
 {
     Q_D(const QLayer);

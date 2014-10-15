@@ -58,6 +58,9 @@ void QClearBufferPrivate::copy(const QNodePrivate *ref)
     QFrameGraphItemPrivate::copy(ref);
     const QClearBufferPrivate *b = static_cast<const QClearBufferPrivate *>(ref);
     m_buffersType = b->m_buffersType;
+
+    Q_FOREACH (QFrameGraphItem *fgChild, b->m_fgChildren)
+        q_func()->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(QNodePrivate::get(fgChild)->clone()));
 }
 
 QClearBuffer::QClearBuffer(QNode *parent)
@@ -75,19 +78,6 @@ QClearBuffer::BufferType QClearBuffer::buffers() const
 {
     Q_D(const QClearBuffer);
     return d->m_buffersType;
-}
-
-
-QClearBuffer *QClearBuffer::doClone() const
-{
-    Q_D(const QClearBuffer);
-    QClearBuffer *clone = new QClearBuffer();
-    clone->d_func()->copy(d_func());
-
-    Q_FOREACH (QFrameGraphItem *fgChild, d->m_fgChildren)
-        clone->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(QNodePrivate::get(fgChild)->clone()));
-
-    return clone;
 }
 
 void QClearBuffer::setBuffers(QClearBuffer::BufferType buffers)

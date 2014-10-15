@@ -59,21 +59,6 @@ QRenderPassFilter::QRenderPassFilter(QRenderPassFilterPrivate &dd, QNode *parent
 {
 }
 
-QRenderPassFilter *QRenderPassFilter::doClone() const
-{
-    Q_D(const QRenderPassFilter);
-    QRenderPassFilter *clone = new QRenderPassFilter();
-
-    clone->d_func()->copy(d_func());
-
-    Q_FOREACH (QFrameGraphItem *fgChild, d->m_fgChildren)
-        clone->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(QNodePrivate::get(fgChild)->clone()));
-    Q_FOREACH (QCriterion *c, d->m_criteriaList)
-        clone->addCriterion(qobject_cast<QCriterion *>(QNodePrivate::get(c)->clone()));
-
-    return clone;
-}
-
 QList<QCriterion *> QRenderPassFilter::criteria() const
 {
     Q_D(const QRenderPassFilter);
@@ -112,6 +97,16 @@ void QRenderPassFilter::removeCriterion(QCriterion *criterion)
         d->notifyObservers(propertyChange);
     }
     d->m_criteriaList.removeOne(criterion);
+}
+
+void QRenderPassFilterPrivate::copy(const QNodePrivate *ref)
+{
+    QFrameGraphItemPrivate::copy(ref);
+    const QRenderPassFilterPrivate *other = static_cast<const QRenderPassFilterPrivate*>(ref);
+    Q_FOREACH (QFrameGraphItem *fgChild, other->m_fgChildren)
+        q_func()->appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(QNodePrivate::get(fgChild)->clone()));
+    Q_FOREACH (QCriterion *c, other->m_criteriaList)
+        q_func()->addCriterion(qobject_cast<QCriterion *>(QNodePrivate::get(c)->clone()));
 }
 
 } // Qt3D

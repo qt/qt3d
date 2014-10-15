@@ -82,7 +82,7 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QCylinderMesh)
-    QCylinderMesh *doClone() const Q_DECL_OVERRIDE;
+    QT3D_CLONEABLE(QCylinderMesh)
 };
 
 } // Qt3D

@@ -72,7 +72,7 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QMatrixTransform)
     QMatrixTransform(QMatrixTransformPrivate &dd, QNode *parent = 0);
-    QMatrixTransform *doClone() const Q_DECL_OVERRIDE;
+    QT3D_CLONEABLE(QMatrixTransform)
 };
 
 } // namespace Qt3D

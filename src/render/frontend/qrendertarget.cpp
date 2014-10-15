@@ -56,6 +56,9 @@ QRenderTargetPrivate::QRenderTargetPrivate(QRenderTarget *qq)
 void QRenderTargetPrivate::copy(const QNodePrivate *ref)
 {
     QNodePrivate::copy(ref);
+    const QRenderTargetPrivate *other = static_cast<const QRenderTargetPrivate*>(ref);
+    Q_FOREACH (QRenderAttachment *attachment, other->m_attachments)
+        q_func()->addAttachment(qobject_cast<QRenderAttachment *>(QNodePrivate::get(attachment)->clone()));
 }
 
 QRenderTarget::QRenderTarget(QNode *parent)
@@ -103,19 +106,6 @@ QList<QRenderAttachment *> QRenderTarget::attachments() const
 {
     Q_D(const QRenderTarget);
     return d->m_attachments;
-}
-
-QRenderTarget *QRenderTarget::doClone() const
-{
-    Q_D(const QRenderTarget);
-    QRenderTarget *clone = new QRenderTarget();
-
-    clone->d_func()->copy(d_func());
-
-    Q_FOREACH (QRenderAttachment *attachment, d->m_attachments)
-        clone->addAttachment(qobject_cast<QRenderAttachment *>(QNodePrivate::get(attachment)->clone()));
-
-    return clone;
 }
 
 } // Qt3D

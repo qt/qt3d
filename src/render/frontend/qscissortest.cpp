@@ -146,13 +146,6 @@ void QScissorTest::setHeight(int height)
     }
 }
 
-QNode *QScissorTest::doClone() const
-{
-    QScissorTest *clone = new QScissorTest();
-    clone->d_func()->copy(d_func());
-    return clone;
-}
-
 } // Qt3D
 
 QT_END_NAMESPACE

@@ -79,7 +79,7 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QMesh)
-    QMesh *doClone() const Q_DECL_OVERRIDE;
+    QT3D_CLONEABLE(QMesh)
 };
 
 }

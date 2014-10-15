@@ -146,13 +146,6 @@ void QBlendState::setDstAlpha(QBlendState::Blending dstAlpha)
     }
 }
 
-QNode *QBlendState::doClone() const
-{
-    QBlendState *clone = new QBlendState();
-    clone->d_func()->copy(d_func());
-    return clone;
-}
-
 } // Qt3D
 
 QT_END_NAMESPACE
