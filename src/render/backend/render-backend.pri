@@ -65,7 +65,8 @@ HEADERS += \
     $$PWD/attachmentmanager_p.h \
     $$PWD/sortcriterionmanager_p.h \
     $$PWD/shadervariables_p.h \
-    $$PWD/qgraphicsutils_p.h
+    $$PWD/qgraphicsutils_p.h \
+    $$PWD/rendernodefunctor_p.h
 
 SOURCES += \
     $$PWD/rendereraspect.cpp \
