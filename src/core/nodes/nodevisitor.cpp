@@ -41,9 +41,6 @@
 
 #include "nodevisitor.h"
 
-#include "qnode.h"
-#include "qentity.h"
-
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
@@ -57,19 +54,6 @@ NodeVisitor::~NodeVisitor()
 {
 }
 
-void NodeVisitor::traverse(QNode *rootNode)
-{
-    m_path = NodeList() << rootNode;
-
-    m_matrixStack.clear();
-    QEntity* rootEntity = qobject_cast<QEntity *>(rootNode);
-
-    if (rootEntity)
-        visitEntity(rootEntity);
-    else
-        visitNode(rootNode);
-}
-
 QNode* NodeVisitor::rootNode() const
 {
     return m_path.front();
@@ -80,11 +64,6 @@ QNode* NodeVisitor::currentNode() const
     return m_path.back();
 }
 
-QMatrix4x4 NodeVisitor::currentMatrix() const
-{
-    return m_matrixStack.back();
-}
-
 NodeList NodeVisitor::path() const
 {
     return m_path;
@@ -93,39 +72,6 @@ NodeList NodeVisitor::path() const
 void NodeVisitor::setTraverseDisabled(bool on)
 {
     m_traverseDisabled = on;
-}
-
-void NodeVisitor::visitNode(QNode *nd)
-{
-    Q_UNUSED(nd);
-    traverseChildren();
-}
-
-void NodeVisitor::visitEntity(QEntity *nd)
-{
-    visitNode(nd);
-}
-
-void NodeVisitor::traverseChildren()
-{
-    foreach (QObject *n, currentNode()->children()) {
-        QNode *node = qobject_cast<QNode *>(n);
-        if (node != Q_NULLPTR)
-            outerVisitNode(node);
-    } // of children iteration
-}
-
-void NodeVisitor::outerVisitNode(QNode *n)
-{
-    m_path.append(n);
-    QEntity* e = qobject_cast<QEntity *>(n);
-    if (e) {
-        visitEntity(e);
-        m_path.pop_back();
-    }
-    else {
-        visitNode(n);
-    }
 }
 
 } // namespace Qt3D

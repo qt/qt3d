@@ -43,15 +43,13 @@
 #define NODEVISITOR_H
 
 #include <Qt3DCore/qt3dcore_global.h>
-#include <QMatrix4x4>
+#include <Qt3DCore/qnode.h>
+#include <Qt3DCore/qentity.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D
 {
-
-class QNode;
-class QEntity;
 
 typedef QList<QNode *> NodeList;
 
@@ -61,30 +59,157 @@ public:
     NodeVisitor();
     virtual ~NodeVisitor();
 
-    void traverse(QNode *rootNode);
+    template<typename NodeVisitorFunc, typename EntityVisitorFunc>
+    void traverse(QNode *rootNode, NodeVisitorFunc fN, EntityVisitorFunc fE)
+    {
+        startTraversing(rootNode, createFunctor(fN), createFunctor(fE));
+    }
+
+    template<typename Obj, typename NodeVisitorFunc, typename EntityVisitorFunc>
+    void traverse(QNode *rootNode, Obj *instance, NodeVisitorFunc fN, EntityVisitorFunc fE)
+    {
+        startTraversing(rootNode, createFunctor(instance, fN), createFunctor(instance, fE));
+    }
 
     QNode *rootNode() const;
-
     QNode *currentNode() const;
-
-    QMatrix4x4 currentMatrix() const;
-
     NodeList path() const;
-
     void setTraverseDisabled(bool on);
-
-protected:
-    virtual void visitNode(QNode *nd);
-    virtual void visitEntity(QEntity *ent);
-
-    void traverseChildren();
 
 private:
     NodeList m_path;
-    QVector<QMatrix4x4> m_matrixStack;
     bool m_traverseDisabled;
 
-    void outerVisitNode(QNode *n);
+    template<typename NodeVisitorFunctor, typename EntityVisitorFunctor>
+    void startTraversing(QNode *rootNode, NodeVisitorFunctor fN, EntityVisitorFunctor fE)
+    {
+        m_path = NodeList() << rootNode;
+        QEntity* rootEntity = qobject_cast<QEntity *>(rootNode);
+
+        if (rootEntity)
+            visitEntity(rootEntity, fN, fE);
+        else
+            visitNode(rootNode, fN, fE);
+    }
+
+    template<typename NodeVisitorFunctor, typename EntityVisitorFunctor>
+    void visitNode(QNode *nd, NodeVisitorFunctor &fN, EntityVisitorFunctor &fE)
+    {
+        fN(nd);
+        traverseChildren(fN, fE);
+    }
+
+    template<typename NodeVisitorFunctor, typename EntityVisitorFunctor>
+    void visitEntity(QEntity *ent, NodeVisitorFunctor &fN, EntityVisitorFunctor &fE)
+    {
+        fE(ent);
+        visitNode(ent, fN, fE);
+    }
+
+    template<typename NodeVisitorFunctor, typename EntityVisitorFunctor>
+    void traverseChildren(NodeVisitorFunctor &fN, EntityVisitorFunctor &fE)
+    {
+        Q_FOREACH (QObject *n, currentNode()->children()) {
+            QNode *node = qobject_cast<QNode *>(n);
+            if (node != Q_NULLPTR)
+                outerVisitNode(node, fN, fE);
+        } // of children iteration
+    }
+
+    template<typename NodeVisitorFunctor, typename EntityVisitorFunctor>
+    void outerVisitNode(QNode *n, NodeVisitorFunctor &fN, EntityVisitorFunctor &fE)
+    {
+        m_path.append(n);
+        QEntity* e = qobject_cast<QEntity *>(n);
+        if (e) {
+            visitEntity(e, fN, fE);
+            m_path.pop_back();
+        } else {
+            visitNode(n, fN, fE);
+        }
+    }
+
+    template <typename NodeType>
+    class FunctionFunctor {
+    public:
+        typedef void (*functionPtr)(NodeType);
+
+        FunctionFunctor(functionPtr fPtr)
+            : m_functionPointer(fPtr)
+        {}
+
+        void operator()(NodeType node)
+        {
+            (*m_functionPointer)(node);
+        }
+
+    private:
+        functionPtr m_functionPointer;
+    };
+
+    template <typename C, typename NodeType>
+    class MemberFunctionFunctor {
+    public:
+        typedef void (C::*functionPtr)(NodeType);
+
+        MemberFunctionFunctor(C* instance, functionPtr fPtr)
+            : m_instance(instance)
+            , m_functionPointer(fPtr)
+        {}
+
+        void operator()(NodeType node)
+        {
+            (*m_instance.*m_functionPointer)(node);
+        }
+
+    private:
+        C *m_instance;
+        functionPtr m_functionPointer;
+    };
+
+    template <typename C, typename NodeType>
+    class ConstMemberFunctionFunctor {
+    public:
+        typedef void (C::*functionPtr)(NodeType) const;
+
+        ConstMemberFunctionFunctor(C* instance, functionPtr fPtr)
+            : m_instance(instance)
+            , m_functionPointer(fPtr)
+        {}
+
+        void operator()(NodeType node) const
+        {
+            (*m_instance.*m_functionPointer)(node);
+        }
+
+    private:
+        C *m_instance;
+        functionPtr m_functionPointer;
+    };
+
+    template <typename T>
+    const T& createFunctor(const T& t)
+    {
+        return t;
+    }
+
+    template <typename NodeType>
+    FunctionFunctor<NodeType> createFunctor(void (*fPtr)(NodeType))
+    {
+        return FunctionFunctor<NodeType>(fPtr);
+    }
+
+    template <typename C, typename NodeType>
+    MemberFunctionFunctor<C, NodeType> createFunctor(C *instance, void (C::*fPtr)(NodeType))
+    {
+        return MemberFunctionFunctor<C, NodeType>(instance, fPtr);
+    }
+
+    template <typename C, typename NodeType>
+    ConstMemberFunctionFunctor<C, NodeType> createFunctor(C *instance, void (C::*fPtr)(NodeType) const)
+    {
+        return ConstMemberFunctionFunctor<C, NodeType>(instance, fPtr);
+    }
 };
 
 } // namespace Qt3D
