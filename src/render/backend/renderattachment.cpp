@@ -131,7 +131,7 @@ void RenderAttachment::sceneChangeEvent(const QSceneChangePtr &e)
             m_attachmentData.m_type = static_cast<QRenderAttachment::RenderAttachmentType>(propertyChange->value().toInt());
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("texture")) {
-            m_attachmentData.m_textureUuid = propertyChange->value().value<QTexture *>()->uuid();
+            m_attachmentData.m_textureUuid = propertyChange->value().toUuid();
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("mipLevel")) {
             m_attachmentData.m_mipLevel = propertyChange->value().toInt();

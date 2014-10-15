@@ -96,13 +96,6 @@ void QClearBuffer::setBuffers(QClearBuffer::BufferType buffers)
     if (d->m_buffersType != buffers) {
         d->m_buffersType = buffers;
         emit buffersChanged();
-
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
-            propertyChange->setPropertyName(QByteArrayLiteral("buffers"));
-            propertyChange->setValue(buffers);
-            d->notifyObservers(propertyChange);
-        }
     }
 }
 

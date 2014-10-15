@@ -109,12 +109,6 @@ void QTransform::setTransformsDirty()
     Q_D(QTransform);
     if (!d->m_transformsDirty.loadAcquire()) {
         d->m_transformsDirty.fetchAndStoreOrdered(1);
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr e(new QScenePropertyChange(NodeUpdated, this));
-            e->setPropertyName(QByteArrayLiteral("matrix"));
-            e->setValue(matrix());
-            d->notifyObservers(e);
-        }
     }
     emit matrixChanged();
 }

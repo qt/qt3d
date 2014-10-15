@@ -91,12 +91,6 @@ void QAlphaTest::setFunc(QAlphaTest::AlphaFunc func)
     if (d->m_func != func) {
         d->m_func = func;
         emit funcChanged();
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
-            propertyChange->setPropertyName(QByteArrayLiteral("func"));
-            propertyChange->setValue(d->m_func);
-            d->notifyObservers(propertyChange);
-        }
     }
 }
 
@@ -112,12 +106,6 @@ void QAlphaTest::setClamp(float clamp)
     if (d->m_clamp != clamp) {
         d->m_clamp = clamp;
         emit clampChanged();
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
-            propertyChange->setPropertyName(QByteArrayLiteral("clamp"));
-            propertyChange->setValue(d->m_clamp);
-            d->notifyObservers(propertyChange);
-        }
     }
 }
 

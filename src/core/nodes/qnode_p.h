@@ -94,6 +94,10 @@ private:
     void addChild(QNode *childNode);
     void removeChild(QNode *childNode);
     void removeAllChildren();
+    void registerNotifiedProperties();
+    void _q_onNodePropertyChanged();
+
+    QHash<int, QByteArray> m_notifiedProperties;
 
     static QHash<QUuid, QNode *> m_clonesLookupTable;
 };

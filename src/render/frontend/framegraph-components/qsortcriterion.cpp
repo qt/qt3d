@@ -76,22 +76,8 @@ void QSortCriterion::setSort(QSortCriterion::SortType &sort)
     Q_D(QSortCriterion);
     if (d->m_sort != sort) {
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
-            propertyChange->setPropertyName(QByteArrayLiteral("sort"));
-            propertyChange->setValue(d->m_sort);
-            d->notifyObservers(propertyChange);
-        }
-
         d->m_sort = sort;
         emit sortChanged();
-
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
-            propertyChange->setPropertyName(QByteArrayLiteral("sort"));
-            propertyChange->setValue(d->m_sort);
-            d->notifyObservers(propertyChange);
-        }
     }
 }
 

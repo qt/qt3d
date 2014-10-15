@@ -124,13 +124,6 @@ void QTexture::setTarget(Target target)
     if (d->m_target != target) {
         d->m_target = target;
         emit targetChanged();
-
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
-            change->setPropertyName(QByteArrayLiteral("target"));
-            change->setValue(target);
-            d->notifyObservers(change);
-        }
     }
 }
 
@@ -147,13 +140,6 @@ void QTexture::setWidth(int width)
     if (d->m_width != width) {
         d->m_width = width;
         emit widthChanged();
-
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
-            change->setPropertyName(QByteArrayLiteral("width"));
-            change->setValue(width);
-            d->notifyObservers(change);
-        }
     }
 }
 
@@ -163,13 +149,6 @@ void QTexture::setHeight(int height)
     if (d->m_height != height) {
         d->m_height = height;
         emit heightChanged();
-
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
-            change->setPropertyName(QByteArrayLiteral("height"));
-            change->setValue(height);
-            d->notifyObservers(change);
-        }
     }
 }
 
@@ -179,13 +158,6 @@ void QTexture::setDepth(int depth)
     if (d->m_depth != depth) {
         d->m_depth = depth;
         emit depthChanged();
-
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
-            change->setPropertyName(QByteArrayLiteral("depth"));
-            change->setValue(depth);
-            d->notifyObservers(change);
-        }
     }
 }
 
@@ -213,13 +185,6 @@ void QTexture::setFormat(TextureFormat format)
     if (d->m_format != format) {
         d->m_format = format;
         emit formatChanged();
-
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
-            change->setPropertyName(QByteArrayLiteral("format"));
-            change->setValue(format);
-            d->notifyObservers(change);
-        }
     }
 }
 
@@ -296,13 +261,6 @@ void QTexture::setGenerateMipMaps(bool gen)
     if (d->m_autoMipMap != gen) {
         d->m_autoMipMap = gen;
         emit generateMipMapsChanged();
-
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
-            change->setPropertyName(QByteArrayLiteral("mipmaps"));
-            change->setValue(gen);
-            d->notifyObservers(change);
-        }
     }
 }
 
@@ -318,13 +276,6 @@ void QTexture::setMinificationFilter(Filter f)
     if (d->m_minFilter != f) {
         d->m_minFilter = f;
         emit minificationFilterChanged();
-
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
-            change->setPropertyName(QByteArrayLiteral("minificationFilter"));
-            change->setValue(f);
-            d->notifyObservers(change);
-        }
     }
 }
 
@@ -334,13 +285,6 @@ void QTexture::setMagnificationFilter(Filter f)
     if (d->m_magFilter != f) {
         d->m_magFilter = f;
         emit magnificationFilterChanged();
-
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
-            change->setPropertyName(QByteArrayLiteral("magnificationFilter"));
-            change->setValue(f);
-            d->notifyObservers(change);
-        }
     }
 }
 
@@ -362,13 +306,6 @@ void QTexture::setWrapMode(WrapMode wrapMode)
     if (d->m_wrapMode != wrapMode) {
         d->m_wrapMode = wrapMode;
         emit wrapModeChanged();
-
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
-            change->setPropertyName(QByteArrayLiteral("wrapMode"));
-            change->setValue(wrapMode);
-            d->notifyObservers(change);
-        }
     }
 }
 
@@ -384,7 +321,6 @@ void QTexture::setMaximumAnisotropy(float anisotropy)
     if (!qFuzzyCompare(d->m_maximumAnisotropy, anisotropy)) {
         d->m_maximumAnisotropy = anisotropy;
         emit maximumAnisotropyChanged();
-        d->notifyPropertyChange(QByteArrayLiteral("maximumAnisotropy"), anisotropy);
     }
 }
 

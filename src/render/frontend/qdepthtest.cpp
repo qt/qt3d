@@ -90,12 +90,6 @@ void QDepthTest::setFunc(QDepthTest::DepthFunc func)
     if (d->m_func != func) {
         d->m_func = func;
         emit funcChanged();
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
-            propertyChange->setPropertyName(QByteArrayLiteral("func"));
-            propertyChange->setValue(d->m_func);
-            d->notifyObservers(propertyChange);
-        }
     }
 }
 

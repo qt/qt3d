@@ -95,12 +95,6 @@ void QViewport::setRect(const QRectF &rect)
     if (rect != d->m_rect) {
         d->m_rect = rect;
         emit rectChanged();
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
-            propertyChange->setPropertyName(QByteArrayLiteral("rect"));
-            propertyChange->setValue(QVariant::fromValue(d->m_rect));
-            d->notifyObservers(propertyChange);
-        }
     }
 }
 
@@ -116,12 +110,6 @@ void QViewport::setClearColor(const QColor &color)
     if (color != d->m_clearColor) {
         d->m_clearColor = color;
         emit clearColorChanged();
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
-            propertyChange->setPropertyName(QByteArrayLiteral("clearColor"));
-            propertyChange->setValue(QVariant::fromValue(d->m_clearColor));
-            d->notifyObservers(propertyChange);
-        }
     }
 }
 

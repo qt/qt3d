@@ -86,10 +86,6 @@ void QAbstractSceneLoader::setSource(QString arg)
     if (d->m_source != arg) {
         d->m_source = arg;
         emit sourceChanged(arg);
-        QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
-        change->setPropertyName(QByteArrayLiteral("source"));
-        change->setValue(d->m_source);
-        d->notifyObservers(change);
     }
 }
 

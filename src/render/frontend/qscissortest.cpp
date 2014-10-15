@@ -98,12 +98,6 @@ void QScissorTest::setLeft(int left)
     if (d->m_left != left) {
         d->m_left = left;
         emit leftChanged();
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
-            propertyChange->setPropertyName(QByteArrayLiteral("left"));
-            propertyChange->setValue(d->m_left);
-            d->notifyObservers(propertyChange);
-        }
     }
 }
 
@@ -119,12 +113,6 @@ void QScissorTest::setBottom(int bottom)
     if (d->m_bottom != bottom) {
         d->m_bottom = bottom;
         emit bottomChanged();
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
-            propertyChange->setPropertyName(QByteArrayLiteral("bottom"));
-            propertyChange->setValue(d->m_bottom);
-            d->notifyObservers(propertyChange);
-        }
     }
 }
 
@@ -140,12 +128,6 @@ void QScissorTest::setWidth(int width)
     if (d->m_width != width) {
         d->m_width = width;
         emit widthChanged();
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
-            propertyChange->setPropertyName(QByteArrayLiteral("width"));
-            propertyChange->setValue(d->m_width);
-            d->notifyObservers(propertyChange);
-        }
     }
 }
 
@@ -161,12 +143,6 @@ void QScissorTest::setHeight(int height)
     if (d->m_height != height) {
         d->m_height = height;
         emit heightChanged();
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
-            propertyChange->setPropertyName(QByteArrayLiteral("height"));
-            propertyChange->setValue(d->m_height);
-            d->notifyObservers(propertyChange);
-        }
     }
 }
 

@@ -71,13 +71,6 @@ void QComponent::setShareable(bool shareable)
     if (d->m_shareable != shareable) {
         d->m_shareable = shareable;
         emit shareableChanged();
-
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
-            propertyChange->setPropertyName(QByteArrayLiteral("shareable"));
-            propertyChange->setValue(d->m_shareable);
-            d->notifyObservers(propertyChange);
-        }
     }
 }
 

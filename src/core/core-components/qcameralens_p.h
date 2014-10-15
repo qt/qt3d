@@ -72,18 +72,6 @@ public:
         }
     }
 
-    inline void notifyObservers()
-    {
-        // Notify the aspects
-        Q_Q(QCameraLens);
-        if (m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, q));
-            propertyChange->setPropertyName(QByteArrayLiteral("projectionMatrix"));
-            propertyChange->setValue(QVariant::fromValue(m_projectionMatrix));
-            QNodePrivate::notifyObservers(propertyChange);
-        }
-    }
-
     Q_DECLARE_PUBLIC(QCameraLens)
 
     QCameraLens::ProjectionType m_projectionType;
@@ -108,7 +96,6 @@ private:
         m_projectionMatrix.setToIdentity();
         m_projectionMatrix.perspective(m_fieldOfView, m_aspectRatio, m_nearPlane, m_farPlane);
         Q_EMIT q->projectionMatrixChanged();
-        notifyObservers();
     }
 
     inline void updateOrthogonalProjection()
@@ -117,7 +104,6 @@ private:
         m_projectionMatrix.setToIdentity();
         m_projectionMatrix.ortho(m_left, m_right, m_bottom, m_top, m_nearPlane, m_farPlane);
         Q_EMIT q->projectionMatrixChanged();
-        notifyObservers();
     }
 };
 

@@ -117,10 +117,6 @@ void QSpotLight::setDirection(const QVector3D &direction)
     if (direction != d->m_direction) {
         d->m_direction = direction;
         emit directionChanged();
-        QScenePropertyChangePtr change(new QScenePropertyChange(ComponentAdded, this));
-        change->setPropertyName(QByteArrayLiteral("direction"));
-        change->setValue(d->m_direction);
-        d->notifyObservers(change);
     }
 }
 
@@ -130,10 +126,6 @@ void QSpotLight::setCutOffAngle(float cutOffAngle)
     if (d->m_cutOffAngle != cutOffAngle) {
         d->m_cutOffAngle = cutOffAngle;
         emit cutOffAngleChanged();
-        QScenePropertyChangePtr change(new QScenePropertyChange(ComponentAdded, this));
-        change->setPropertyName(QByteArrayLiteral("cutOffAngle"));
-        change->setValue(d->m_cutOffAngle);
-        d->notifyObservers(change);
     }
 }
 

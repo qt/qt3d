@@ -88,12 +88,6 @@ void QDepthMask::setMask(bool mask)
     if (d->m_mask != mask) {
         d->m_mask = mask;
         emit maskChanged();
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
-            propertyChange->setPropertyName(QByteArrayLiteral("mask"));
-            propertyChange->setValue(d->m_mask);
-            d->notifyObservers(propertyChange);
-        }
     }
 }
 

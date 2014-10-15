@@ -106,9 +106,9 @@ QString RenderCriterion::criterionName() const
 void RenderCriterion::sceneChangeEvent(const QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-    if (propertyChange->propertyName() == QByteArrayLiteral("criterionValue"))
+    if (propertyChange->propertyName() == QByteArrayLiteral("value"))
         m_value = propertyChange->value();
-    else if (propertyChange->propertyName() == QByteArrayLiteral("criterionName"))
+    else if (propertyChange->propertyName() == QByteArrayLiteral("name"))
         m_name = propertyChange->value().toString();
 }
 

@@ -65,18 +65,11 @@ void QRenderTargetSelector::setTarget(QRenderTarget *target)
     Q_D(QRenderTargetSelector);
     if (d->m_target != target) {
         d->m_target = target;
-        emit targetChanged();
 
         // For inline declaration cases
         if (!target->parent())
             target->setParent(this);
-
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
-            propertyChange->setPropertyName(QByteArrayLiteral("target"));
-            propertyChange->setValue(QVariant::fromValue(target->uuid()));
-            d->notifyObservers(propertyChange);
-        }
+        emit targetChanged();
     }
 }
 

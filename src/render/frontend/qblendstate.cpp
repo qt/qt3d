@@ -98,12 +98,6 @@ void QBlendState::setSrcRGB(QBlendState::Blending srcRGB)
     if (d->m_srcRGB != srcRGB) {
         d->m_srcRGB = srcRGB;
         emit srcRGBChanged();
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
-            propertyChange->setPropertyName(QByteArrayLiteral("srcRGB"));
-            propertyChange->setValue(d->m_srcRGB);
-            d->notifyObservers(propertyChange);
-        }
     }
 }
 
@@ -119,12 +113,6 @@ void QBlendState::setDstRGB(QBlendState::Blending dstRGB)
     if (d->m_dstRGB != dstRGB) {
         d->m_dstRGB = dstRGB;
         emit dstRGBChanged();
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
-            propertyChange->setPropertyName(QByteArrayLiteral("dstRGB"));
-            propertyChange->setValue(d->m_dstRGB);
-            d->notifyObservers(propertyChange);
-        }
     }
 }
 
@@ -140,12 +128,6 @@ void QBlendState::setSrcAlpha(QBlendState::Blending srcAlpha)
     if (d->m_srcAlpha != srcAlpha) {
         d->m_srcAlpha = srcAlpha;
         emit srcAlphaChanged();
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
-            propertyChange->setPropertyName(QByteArrayLiteral("srcAlpha"));
-            propertyChange->setValue(d->m_srcAlpha);
-            d->notifyObservers(propertyChange);
-        }
     }
 }
 
@@ -161,12 +143,6 @@ void QBlendState::setDstAlpha(QBlendState::Blending dstAlpha)
     if (d->m_dstAlpha != dstAlpha) {
         d->m_dstAlpha = dstAlpha;
         emit dstAlphaChanged();
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
-            propertyChange->setPropertyName(QByteArrayLiteral("dstAlpha"));
-            propertyChange->setValue(d->m_dstAlpha);
-            d->notifyObservers(propertyChange);
-        }
     }
 }
 

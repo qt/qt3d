@@ -95,12 +95,6 @@ void QStencilTest::setMask(uint mask)
     if (d->m_mask != mask) {
         d->m_mask = mask;
         emit maskChanged();
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
-            propertyChange->setPropertyName(QByteArrayLiteral("mask"));
-            propertyChange->setValue(d->m_mask);
-            d->notifyObservers(propertyChange);
-        }
     }
 }
 
@@ -116,12 +110,6 @@ void QStencilTest::setFaceMode(QStencilTest::StencilFaceMode mode)
     if (d->m_faceMode != mode) {
         d->m_faceMode = mode;
         emit faceModeChanged();
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
-            propertyChange->setPropertyName(QByteArrayLiteral("faceMode"));
-            propertyChange->setValue(d->m_faceMode);
-            d->notifyObservers(propertyChange);
-        }
     }
 }
 
@@ -137,12 +125,6 @@ void QStencilTest::setFunc(QStencilTest::StencilFunc func)
     if (d->m_func != func) {
         d->m_func = func;
         emit funcChanged();
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
-            propertyChange->setPropertyName(QByteArrayLiteral("func"));
-            propertyChange->setValue(d->m_func);
-            d->notifyObservers(propertyChange);
-        }
     }
 }
 

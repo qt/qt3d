@@ -182,6 +182,45 @@ void QNodePrivate::removeAllChildren()
     }
 }
 
+void QNodePrivate::registerNotifiedProperties()
+{
+    Q_Q(QNode);
+    if (!m_notifiedProperties.isEmpty())
+        return;
+
+    const int offset = QNode::staticMetaObject.propertyOffset();
+    const int count = q->metaObject()->propertyCount();
+
+    for (int index = offset; index < count; index++) {
+        const QMetaProperty property = q->metaObject()->property(index);
+        if (!property.hasNotifySignal())
+            continue;
+        m_notifiedProperties[property.notifySignalIndex()] = property.name();
+        const QByteArray signal = QByteArray::number(QSIGNAL_CODE)
+                                + property.notifySignal().methodSignature();
+        QObject::connect(q, signal,
+                         q, SLOT(_q_onNodePropertyChanged()));
+    }
+}
+
+void QNodePrivate::_q_onNodePropertyChanged()
+{
+    Q_Q(QNode);
+    const int signalIndex = q->senderSignalIndex();
+    if (!m_notifiedProperties.contains(signalIndex))
+        return;
+
+    const QByteArray name = m_notifiedProperties.value(signalIndex);
+    const QVariant data = q->property(name);
+    if (data.canConvert<QNode*>()) {
+        const QNode * const node = data.value<QNode*>();
+        const QUuid uuid = node ? node->uuid() : QUuid();
+        notifyPropertyChange(name, uuid);
+    } else {
+        notifyPropertyChange(name, data);
+    }
+}
+
 // Called in the QAspectThread context
 void QNodePrivate::registerObserver(QObserverInterface *observer)
 {
@@ -192,6 +231,7 @@ void QNodePrivate::registerObserver(QObserverInterface *observer)
     if (changeArbiter) {
         QWriteLocker locker(&m_observerLock);
         m_changeArbiter = changeArbiter;
+        registerNotifiedProperties();
     }
 }
 
@@ -354,3 +394,5 @@ bool QNode::event(QEvent *e)
 
 
 QT_END_NAMESPACE
+
+#include "moc_qnode.cpp"

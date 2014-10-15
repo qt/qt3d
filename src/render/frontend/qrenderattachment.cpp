@@ -80,12 +80,6 @@ void QRenderAttachment::setType(QRenderAttachment::RenderAttachmentType type)
     if (type != d->m_type) {
         d->m_type = type;
         emit typeChanged();
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
-            change->setPropertyName(QByteArrayLiteral("type"));
-            change->setValue(type);
-            d->notifyObservers(change);
-        }
     }
 }
 
@@ -100,19 +94,11 @@ void QRenderAttachment::setTexture(QTexture *texture)
     Q_D(QRenderAttachment);
     if (texture != d->m_texture) {
         d->m_texture = texture;
-        emit textureChanged();
 
         // Handle inline declaration
         if (!texture->parent())
             texture->setParent(this);
-
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
-            change->setPropertyName(QByteArrayLiteral("texture"));
-            // TO DO: Send a clone once Texture is a QNode subclass
-            change->setValue(QVariant::fromValue(texture));
-            d->notifyObservers(change);
-        }
+        emit textureChanged();
     }
 }
 
@@ -128,12 +114,6 @@ void QRenderAttachment::setMipLevel(int level)
     if (d->m_mipLevel != level) {
         d->m_mipLevel = level;
         emit mipLevelChanged();
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
-            change->setPropertyName(QByteArrayLiteral("mipLevel"));
-            change->setValue(level);
-            d->notifyObservers(change);
-        }
     }
 }
 
@@ -149,12 +129,6 @@ void QRenderAttachment::setLayer(int layer)
     if (d->m_layer != layer) {
         d->m_layer = layer;
         emit layerChanged();
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
-            change->setPropertyName(QByteArrayLiteral("layer"));
-            change->setValue(layer);
-            d->notifyObservers(change);
-        }
     }
 }
 
@@ -170,12 +144,6 @@ void QRenderAttachment::setFace(QRenderAttachment::CubeMapFace face)
     if (d->m_face != face) {
         d->m_face = face;
         emit faceChanged();
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
-            change->setPropertyName(QByteArrayLiteral("face"));
-            change->setValue(face);
-            d->notifyObservers(change);
-        }
     }
 }
 
@@ -191,12 +159,6 @@ void QRenderAttachment::setName(const QString &name)
     if (d->m_name != name) {
         d->m_name = name;
         emit nameChanged();
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
-            change->setPropertyName(QByteArrayLiteral("name"));
-            change->setValue(name);
-            d->notifyObservers(change);
-        }
     }
 }
 

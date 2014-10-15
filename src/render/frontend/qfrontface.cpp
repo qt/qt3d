@@ -88,12 +88,6 @@ void QFrontFace::setDirection(QFrontFace::FaceDir direction)
     if (d->m_direction != direction) {
         d->m_direction = direction;
         emit directionChanged();
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
-            propertyChange->setPropertyName(QByteArrayLiteral("direction"));
-            propertyChange->setValue(d->m_direction);
-            d->notifyObservers(propertyChange);
-        }
     }
 }
 

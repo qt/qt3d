@@ -88,12 +88,6 @@ void QCullFace::setMode(QCullFace::CullingMode mode)
     if (d->m_mode != mode) {
         d->m_mode = mode;
         emit modeChanged();
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
-            propertyChange->setPropertyName(QByteArrayLiteral("mode"));
-            propertyChange->setValue(d->m_mode);
-            d->notifyObservers(propertyChange);
-        }
     }
 }
 

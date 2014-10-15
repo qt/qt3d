@@ -84,7 +84,6 @@ void QCameraSelector::setCamera(QEntity *camera)
     Q_D(QCameraSelector);
     if (d->m_camera != camera) {
         d->m_camera = camera;
-        emit cameraChanged();
 
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
@@ -92,12 +91,7 @@ void QCameraSelector::setCamera(QEntity *camera)
         // 2) When the current node is destroyed, it gets destroyed as well
         if (!camera->parent())
             camera->setParent(this);
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeUpdated, this));
-            propertyChange->setPropertyName(QByteArrayLiteral("camera"));
-            propertyChange->setValue(QVariant::fromValue(d->m_camera->uuid()));
-            d->notifyObservers(propertyChange);
-        }
+        emit cameraChanged();
     }
 }
 
