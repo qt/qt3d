@@ -46,6 +46,7 @@
 #include <QSharedPointer>
 #include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qjobproviderinterface.h>
+#include <Qt3DCore/qsceneobserverinterface.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -56,15 +57,18 @@ namespace Qt3D {
 
 class QAspectManager;
 class QNode;
+class QBackendNode;
 class QEntity;
 class QAbstractAspectPrivate;
-class QSceneObserverInterface;
 class QJobManagerInterface;
 class QBackendNodeFunctor;
 
 typedef QSharedPointer<QBackendNodeFunctor> QBackendNodeFunctorPtr;
 
-class QT3DCORESHARED_EXPORT QAbstractAspect : public QObject, public QJobProviderInterface
+class QT3DCORESHARED_EXPORT QAbstractAspect
+        : public QObject
+        , public QJobProviderInterface
+        , public QSceneObserverInterface
 {
     Q_OBJECT
 
@@ -88,14 +92,16 @@ public:
 
     QJobManagerInterface *jobManager() const;
 
-    virtual QSceneObserverInterface *sceneObserver() const = 0;
-
 protected:
     QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent = 0);
 
+    QBackendNode *createBackendNode(QNode *frontend) const;
+    QBackendNode *getBackendNode(QNode *frontend) const;
+    void clearBackendNode(QNode *frontend) const;
+
     template<class Frontend>
-    void registerBackendType(QBackendNodeFunctorPtr);
-    void registerBackendType(const std::type_info &info, QBackendNodeFunctorPtr functor);
+    void registerBackendType(const QBackendNodeFunctorPtr &functor);
+    void registerBackendType(const QMetaObject &, const QBackendNodeFunctorPtr &functor);
 
 private:
     virtual void setRootEntity(QEntity *rootObject) = 0;
@@ -103,14 +109,13 @@ private:
     virtual void onCleanup() = 0;
 
     Q_DECLARE_PRIVATE(QAbstractAspect)
-    // These are only called by the aspect manager
     friend class QAspectManager;
 };
 
 template<class Frontend>
-void QAbstractAspect::registerBackendType(QBackendNodeFunctorPtr functor)
+void QAbstractAspect::registerBackendType(const QBackendNodeFunctorPtr &functor)
 {
-    registerBackendType(typeid(Frontend), functor);
+    registerBackendType(Frontend::staticMetaObject, functor);
 }
 
 } // namespace Qt3D

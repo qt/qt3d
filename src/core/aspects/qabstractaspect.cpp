@@ -43,6 +43,8 @@
 #include "qentity.h"
 #include <private/qabstractaspect_p.h>
 #include <Qt3DCore/qjobmanager.h>
+#include <private/qchangearbiter_p.h>
+#include <Qt3DCore/qsceneinterface.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -52,8 +54,14 @@ QAbstractAspectPrivate::QAbstractAspectPrivate(QAbstractAspect *qq)
     : QObjectPrivate()
     , m_root(Q_NULLPTR)
     , m_jobManager(Q_NULLPTR)
+    , m_arbiter(Q_NULLPTR)
 {
     q_ptr = qq;
+}
+
+QAbstractAspectPrivate *QAbstractAspectPrivate::get(QAbstractAspect *aspect)
+{
+    return aspect->d_func();
 }
 
 QAbstractAspect::QAbstractAspect(AspectType aspectType, QObject *parent)
@@ -68,10 +76,76 @@ QAbstractAspect::QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent)
 {
 }
 
-void QAbstractAspect::registerBackendType(const std::type_info &info, QBackendNodeCreatorFunctorPtr functor)
+void QAbstractAspect::registerBackendType(const QMetaObject &obj, const QBackendNodeFunctorPtr &functor)
 {
     Q_D(QAbstractAspect);
-    d->m_backendCreatorFunctors.insert(TypeIndex(info), functor);
+    d->m_backendCreatorFunctors.insert(QString::fromLatin1(obj.className()), functor);
+}
+
+QBackendNode *QAbstractAspect::createBackendNode(QNode *frontend) const
+{
+    Q_D(const QAbstractAspect);
+    const QMetaObject *metaObj = frontend->metaObject();
+    QBackendNodeFunctorPtr functor;
+    while (metaObj != Q_NULLPTR && functor.isNull()) {
+                functor = d->m_backendCreatorFunctors.value(QString::fromLatin1(metaObj->className()));
+        metaObj = metaObj->superClass();
+    }
+    if (!functor.isNull()) {
+        QBackendNode *backend = functor->get(frontend);
+        if (backend != Q_NULLPTR)
+            return backend;
+        backend = functor->create(frontend);
+        // backend could be null if the user decides that his functor should only
+        // perform some action when encountering a given type of item but doesn't need to
+        // return a QBackendNode pointer.
+        if (backend == Q_NULLPTR)
+            return Q_NULLPTR;
+        // Register backendNode with QChangeArbiter
+        QBackendNodePrivate *backendPriv = QBackendNodePrivate::get(backend);
+        // TO DO: Find a way to specify the changes to observe
+        d->m_arbiter->registerObserver(backendPriv, backend->peerUuid(), AllChanges);
+        if (backend->mode() == QBackendNode::ReadWrite)
+            d->m_arbiter->scene()->addObservable(backendPriv, backend->peerUuid());
+    }
+    return Q_NULLPTR;
+}
+
+QBackendNode *QAbstractAspect::getBackendNode(QNode *frontend) const
+{
+    Q_D(const QAbstractAspect);
+    const QMetaObject *metaObj = frontend->metaObject();
+    QBackendNodeFunctorPtr functor;
+
+    while (metaObj != Q_NULLPTR && functor.isNull()) {
+        functor = d->m_backendCreatorFunctors.value(QString::fromLatin1(metaObj->className()));
+        metaObj = metaObj->superClass();
+    }
+    if (!functor.isNull())
+        return functor->get(frontend);
+    return Q_NULLPTR;
+}
+
+void QAbstractAspect::clearBackendNode(QNode *frontend) const
+{
+    Q_D(const QAbstractAspect);
+    const QMetaObject *metaObj = frontend->metaObject();
+    QBackendNodeFunctorPtr functor;
+
+    while (metaObj != Q_NULLPTR && functor.isNull()) {
+        functor = d->m_backendCreatorFunctors.value(QString::fromLatin1(metaObj->className()));
+        metaObj = metaObj->superClass();
+    }
+    if (!functor.isNull()) {
+        QBackendNode *backend = functor->get(frontend);
+        if (backend != Q_NULLPTR) {
+            QBackendNodePrivate *backendPriv = QBackendNodePrivate::get(backend);
+            d->m_arbiter->unregisterObserver(backendPriv, backend->peerUuid());
+            if (backend->mode() == QBackendNode::ReadWrite)
+                d->m_arbiter->scene()->removeObservable(backendPriv, backend->peerUuid());
+            functor->destroy(frontend);
+        }
+    }
 }
 
 QAbstractAspect::AspectType QAbstractAspect::aspectType() const

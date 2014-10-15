@@ -220,10 +220,6 @@ void QChangeArbiter::registerObserver(QObserverInterface *observer,
 // Called from the QAspectThread context, no need to lock
 void QChangeArbiter::registerSceneObserver(QSceneObserverInterface *observer)
 {
-    if (observer == Q_NULLPTR) {
-        qCWarning(ChangeArbiter) << Q_FUNC_INFO << "SceneObserverInterface is null";
-        return ;
-    }
     if (!m_sceneObservers.contains(observer))
         m_sceneObservers << observer;
 }

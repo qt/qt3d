@@ -57,10 +57,11 @@ class QT3DBULLETPHYSICSSHARED_EXPORT BulletPhysicsAspect : public QAbstractAspec
 public:
     explicit BulletPhysicsAspect(QObject *parent = 0);
 
+    void sceneNodeAdded(QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneNodeRemoved(QSceneChangePtr &e) Q_DECL_OVERRIDE;
+
     // QJobProviderInterface interface
     QVector<QJobPtr> jobsToExecute() Q_DECL_OVERRIDE;
-
-    QSceneObserverInterface *sceneObserver() const Q_DECL_OVERRIDE;
 
     // AbstractAspect interface
 private:

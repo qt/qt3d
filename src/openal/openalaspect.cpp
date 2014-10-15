@@ -50,16 +50,21 @@ OpenALAspect::OpenALAspect(QObject *parent)
 {
 }
 
+void OpenALAspect::sceneNodeAdded(QSceneChangePtr &)
+{
+
+}
+
+void OpenALAspect::sceneNodeRemoved(QSceneChangePtr &)
+{
+
+}
+
 QVector<QJobPtr> OpenALAspect::jobsToExecute()
 {
     QVector<QJobPtr> jobs;
 
     return jobs;
-}
-
-QSceneObserverInterface *OpenALAspect::sceneObserver() const
-{
-    return Q_NULLPTR;
 }
 
 void OpenALAspect::setRootEntity(QEntity *)

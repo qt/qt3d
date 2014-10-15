@@ -55,15 +55,18 @@ class QT3DOPENALSHARED_EXPORT OpenALAspect : public QAbstractAspect
 public:
     explicit OpenALAspect(QObject *parent = 0);
 
+    void sceneNodeAdded(QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneNodeRemoved(QSceneChangePtr &e) Q_DECL_OVERRIDE;
+
     // QJobProviderInterface interface
     QVector<QJobPtr> jobsToExecute() Q_DECL_OVERRIDE;
-    QSceneObserverInterface *sceneObserver() const Q_DECL_OVERRIDE;
 
     // AbstractAspect interface
 private:
     void setRootEntity(QEntity *rootObject) Q_DECL_OVERRIDE;
     void onInitialize(QSurface *) Q_DECL_OVERRIDE;
     void onCleanup() Q_DECL_OVERRIDE;
+
 };
 
 } // Qt3D

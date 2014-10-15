@@ -50,16 +50,21 @@ BulletPhysicsAspect::BulletPhysicsAspect(QObject *parent)
 {
 }
 
+void BulletPhysicsAspect::sceneNodeAdded(QSceneChangePtr &)
+{
+
+}
+
+void BulletPhysicsAspect::sceneNodeRemoved(QSceneChangePtr &)
+{
+
+}
+
 QVector<QJobPtr> BulletPhysicsAspect::jobsToExecute()
 {
     QVector<QJobPtr> jobs;
 
     return jobs;
-}
-
-QSceneObserverInterface *BulletPhysicsAspect::sceneObserver() const
-{
-    return Q_NULLPTR;
 }
 
 void BulletPhysicsAspect::setRootEntity(QEntity *rootObject)

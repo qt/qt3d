@@ -55,7 +55,6 @@ public:
     virtual ~QSceneObserverInterface();
     virtual void sceneNodeAdded(QSceneChangePtr &e) = 0;
     virtual void sceneNodeRemoved(QSceneChangePtr &e) = 0;
-    virtual void sceneNodeUpdated(QSceneChangePtr &e) = 0;
 };
 
 } // Qt3D

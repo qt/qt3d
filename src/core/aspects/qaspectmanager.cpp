@@ -41,6 +41,7 @@
 
 #include "qaspectmanager_p.h"
 #include "qabstractaspect.h"
+#include "qabstractaspect_p.h"
 #include "qchangearbiter_p.h"
 // TODO Make the kind of job manager configurable (e.g. ThreadWeaver vs Intel TBB)
 #include "qjobmanager.h"
@@ -97,7 +98,7 @@ void QAspectManager::shutdown()
 
     Q_FOREACH (QAbstractAspect *aspect, m_aspects) {
         aspect->onCleanup();
-        m_changeArbiter->unregisterSceneObserver(aspect->sceneObserver());
+        m_changeArbiter->unregisterSceneObserver(aspect);
     }
     qDeleteAll(m_aspects);
 }
@@ -116,13 +117,9 @@ void QAspectManager::setRoot(QNode *rootObject)
 
     if (m_root) {
         // Allow each aspect chance to cleanup any resources from this scene
-        Q_FOREACH (QAbstractAspect *aspect, m_aspects)
+        Q_FOREACH (QAbstractAspect *aspect, m_aspects) {
             aspect->onCleanup();
-
-        // Destroy all aspects
-        qDeleteAll(m_aspects);
-        m_aspects.clear();
-        m_root = Q_NULLPTR;
+        }
     }
 
     m_root = root;
@@ -143,6 +140,8 @@ void QAspectManager::setWindow(QWindow *window)
     // Otherwise aspects won't be able to initialize the glContext
     // As show (which calls create) is only called after they're initialized
     m_window->create();
+    Q_FOREACH (QAbstractAspect *aspect, m_aspects)
+        aspect->onInitialize(m_window);
 }
 
 /*!
@@ -154,10 +153,12 @@ void QAspectManager::registerAspect(QAbstractAspect *aspect)
 
     if (aspect != Q_NULLPTR) {
         m_aspects.append(aspect);
+        QAbstractAspectPrivate::get(aspect)->m_jobManager = m_jobManager;
+        QAbstractAspectPrivate::get(aspect)->m_arbiter = m_changeArbiter;
+        // Register sceneObserver with the QChangeArbiter
+        m_changeArbiter->registerSceneObserver(aspect);
         if (m_window != Q_NULLPTR)
             aspect->onInitialize(m_window);
-        // Register sceneObserver with the QChangeArbiter
-        m_changeArbiter->registerSceneObserver(aspect->sceneObserver());
     }
     else {
         qCWarning(Aspects) << "Failed to register aspect";
