@@ -44,7 +44,6 @@
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DRenderer/private/parameterpack_p.h>
-#include <Qt3DCore/private/qobserverinterface_p.h>
 #include <Qt3DCore/qbackendnode.h>
 #include <QList>
 #include <QUuid>
@@ -54,18 +53,8 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QTechnique;
-class QEffect;
-
-template <typename T, int INDEXBITS>
-class QHandle;
 
 namespace Render {
-
-class RenderTechnique;
-
-typedef QHandle<RenderTechnique, 16> HTechnique;
-
-class EffectManager;
 
 class RenderEffect
         : public QBackendNode

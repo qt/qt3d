@@ -45,8 +45,8 @@
 
 #include <Qt3DRenderer/qtechnique.h>
 #include <Qt3DRenderer/private/quniformvalue_p.h>
+#include <Qt3DRenderer/private/handle_types_p.h>
 #include <Qt3DCore/qjob.h>
-#include <Qt3DCore/qhandle.h>
 
 #include <QHash>
 #include <QMatrix4x4>
@@ -122,11 +122,6 @@ class RenderTargetManager;
 class SceneManager;
 class AttachmentManager;
 class SortCriterionManager;
-
-typedef QHandle<RenderMaterial, 16> HMaterial;
-typedef QHandle<RenderEffect, 16> HEffect;
-typedef QHandle<RenderRenderPass, 16> HRenderPass;
-typedef QHandle<RenderTechnique, 16> HTechnique;
 
 class Renderer
 {

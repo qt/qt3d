@@ -46,7 +46,8 @@ HEADERS += \
     $$PWD/shadervariables_p.h \
     $$PWD/qgraphicsutils_p.h \
     $$PWD/rendernodefunctor_p.h \
-    $$PWD/managers_p.h
+    $$PWD/managers_p.h \
+    $$PWD/handle_types_p.h
 
 SOURCES += \
     $$PWD/rendereraspect.cpp \

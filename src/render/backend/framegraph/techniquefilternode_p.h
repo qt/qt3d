@@ -61,12 +61,6 @@ class QHandle;
 
 namespace Render {
 
-class Renderer;
-class RenderCriterion;
-
-typedef QHandle<RenderCriterion, 16> HCriterion;
-
-
 class TechniqueFilter
         : public FrameGraphNode
 {

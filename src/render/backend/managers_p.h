@@ -59,6 +59,7 @@
 #include <Qt3DRenderer/private/rendertransform_p.h>
 #include <Qt3DRenderer/private/rendertarget_p.h>
 #include <Qt3DRenderer/private/renderrenderpass_p.h>
+#include <Qt3DRenderer/private/handle_types_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -67,31 +68,6 @@ namespace Qt3D {
 class QMeshData;
 
 namespace Render {
-
-class RenderShader;
-class FrameGraphNode;
-
-typedef QHandle<RenderAttachment, 16> HAttachment;
-typedef QHandle<RenderCameraLens, 8> HCamera;
-typedef QHandle<RenderCriterion, 16> HCriterion;
-typedef QHandle<RenderEffect, 16> HEffect;
-typedef QHandle<RenderEntity, 16> HEntity;
-typedef QHandle<FrameGraphNode *, 8> HFrameGraphNode;
-typedef QHandle<RenderLayer, 16> HLayer;
-typedef QHandle<RenderLight, 16> HLight;
-typedef QHandle<RenderMaterial, 16> HMaterial;
-typedef QHandle<QMatrix4x4, 16> HMatrix;
-typedef QHandle<RenderShader, 16> HShader;
-typedef QHandle<QOpenGLVertexArrayObject*, 16> HVao;
-typedef QHandle<QMeshData, 16> HMeshData;
-typedef QHandle<RenderShader, 16> HShader;
-typedef QHandle<SortCriterion, 8> HSortCriterion;
-typedef QHandle<RenderTechnique, 16> HTechnique;
-typedef QHandle<RenderTexture, 16> HTexture;
-typedef QHandle<RenderTransform, 16> HTransform;
-typedef QHandle<RenderMesh, 16> HMesh;
-typedef QHandle<RenderTarget, 8> HTarget;
-typedef QHandle<RenderRenderPass, 16> HRenderPass;
 
 class AttachmentManager : public QResourcesManager<
         RenderAttachment,

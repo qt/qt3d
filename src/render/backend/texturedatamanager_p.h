@@ -45,6 +45,7 @@
 #include <Qt3DCore/QResourcesManager>
 #include <Qt3DRenderer/qtexture.h>
 #include <Qt3DRenderer/texturedata.h>
+#include <Qt3DRenderer/private/handle_types_p.h>
 
 #include <QUuid>
 
@@ -54,8 +55,6 @@ namespace Qt3D {
 
 namespace Render {
 
-typedef QHandle<TexImageData, 16> HTextureData;
-
 class TextureDataManager : public QResourcesManager<TexImageData,
                                                     QUuid,
                                                     16,
@@ -63,7 +62,7 @@ class TextureDataManager : public QResourcesManager<TexImageData,
                                                     Qt3D::ObjectLevelLockingPolicy>
 {
 public:
-    TextureDataManager();
+    TextureDataManager() {}
 
     void addTextureData(QTexture *texture);
 

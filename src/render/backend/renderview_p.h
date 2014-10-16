@@ -43,12 +43,12 @@
 #ifndef QT3D_RENDER_RENDERVIEW_H
 #define QT3D_RENDER_RENDERVIEW_H
 
+#include <Qt3DRenderer/qparameter.h>
+#include <Qt3DRenderer/qclearbuffer.h>
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/private/rendercameralens_p.h>
-#include <Qt3DRenderer/qparameter.h>
-#include <Qt3DCore/qhandle.h>
 #include <Qt3DRenderer/private/attachmentpack_p.h>
-#include <Qt3DRenderer/qclearbuffer.h>
+#include <Qt3DRenderer/private/handle_types_p.h>
 #include <QVector>
 #include <QMutex>
 #include <QColor>
@@ -67,17 +67,8 @@ class RenderCommand;
 class RenderPassFilter;
 class TechniqueFilter;
 class ViewportNode;
-class RenderMesh;
 class RenderEffect;
 class RenderRenderPass;
-class RenderLight;
-class RenderTarget;
-
-typedef QHandle<RenderMesh, 16> HMesh;
-typedef QHandle<RenderMaterial, 16> HMaterial;
-typedef QHandle<RenderTechnique, 16> HTechnique;
-typedef QHandle<RenderLight, 16> HLight;
-typedef QHandle<RenderTarget, 8> HTarget;
 
 typedef QPair<HLight, QMatrix4x4> LightPair;
 

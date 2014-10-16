@@ -46,6 +46,7 @@
 #include <Qt3DCore/qresourcesmanager.h>
 #include <Qt3DRenderer/qmeshdata.h>
 #include <Qt3DRenderer/private/rendermesh_p.h>
+#include <Qt3DRenderer/private/handle_types_p.h>
 
 #include <QHash>
 #include <QPair>
@@ -57,9 +58,6 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
-typedef QHandle<QMeshData, 16> HMeshData;
-typedef QHandle<RenderMesh, 16> HMesh;
-
 class MeshDataManager : public QResourcesManager<QMeshData,
                                                  QUuid,
                                                  16,
@@ -67,11 +65,7 @@ class MeshDataManager : public QResourcesManager<QMeshData,
                                                  Qt3D::ObjectLevelLockingPolicy>
 {
 public:
-    MeshDataManager();
-
-    inline bool hasMeshData(const QUuid &id) { return contains(id); }
-    inline QMeshData* getOrCreateMeshData(const QUuid &id) { return getOrCreateResource(id); }
-    inline QMeshData* meshData(const QUuid &id) { return lookupResource(id); }
+    MeshDataManager() {}
     void addMeshData(QAbstractMeshFunctorPtr functor, const QUuid &meshUuid);
 
     QHash<QUuid, QAbstractMeshFunctorPtr> meshesPending();

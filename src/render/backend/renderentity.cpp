@@ -41,6 +41,7 @@
 
 #include "renderentity_p.h"
 #include <Qt3DRenderer/private/meshdatamanager_p.h>
+#include <Qt3DRenderer/private/managers_p.h>
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/qabstractlight.h>
 #include <Qt3DRenderer/qlayer.h>

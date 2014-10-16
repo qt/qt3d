@@ -53,13 +53,9 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-typedef QHandle<QMeshData, 16> HMeshData;
-
 namespace Render {
 
 class Renderer;
-class RenderMesh;
-typedef QHandle<RenderMesh, 16> HMesh;
 
 class LoadMeshDataJob : public Qt3D::QJob
 {

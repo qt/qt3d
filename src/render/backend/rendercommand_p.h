@@ -46,7 +46,7 @@
 #include <qglobal.h>
 #include <Qt3DRenderer/private/quniformvalue_p.h>
 #include <Qt3DRenderer/private/qmeshdata_p.h>
-#include <Qt3DCore/qhandle.h>
+#include <Qt3DRenderer/private/handle_types_p.h>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
 #include <QMatrix4x4>
@@ -59,19 +59,7 @@ namespace Qt3D {
 
 namespace Render {
 
-class RenderTarget;
-class RenderMaterial;
-class RenderMesh;
-class RenderShader;
-class RenderTechnique;
 class RenderStateSet;
-
-typedef QHandle<QOpenGLVertexArrayObject*, 16> HVao;
-typedef QHandle<RenderMaterial, 16> HMaterial;
-typedef QHandle<RenderMesh, 16> HMesh;
-typedef QHandle<RenderShader, 16> HShader;
-typedef QHandle<QMeshData, 16> HMeshData;
-typedef QHandle<RenderTechnique, 16> HTechnique;
 
 class RenderCommand
 {

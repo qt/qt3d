@@ -39,77 +39,69 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERMESH_H
-#define QT3D_RENDER_RENDERMESH_H
+#ifndef QT3D_RENDER_HANDLE_TYPES_P_H
+#define QT3D_RENDER_HANDLE_TYPES_P_H
 
-#include <Qt3DCore/axisalignedboundingbox.h>
-#include <Qt3DRenderer/private/handle_types_p.h>
-#include <Qt3DCore/qbackendnode.h>
-#include <QUuid>
+#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DCore/qhandle.h>
 
 QT_BEGIN_NAMESPACE
 
-class QReadWriteLock;
+class QMatrix4x4;
+class QOpenGLVertexArrayObject;
 
 namespace Qt3D {
 
-class QAbstractMesh;
-class QAbstractMeshFunctor;
-class QRenderPass;
 class QMeshData;
-
-typedef QSharedPointer<QAbstractMeshFunctor> QAbstractMeshFunctorPtr;
+class TexImageData;
 
 namespace Render {
 
-class MeshManager;
-class MeshDataManager;
+class RenderAttachment;
+class RenderCameraLens;
+class RenderCriterion;
+class RenderEffect;
 class RenderEntity;
+class RenderShader;
+class FrameGraphNode;
+class RenderLayer;
+class RenderLight;
 class RenderMaterial;
+class SortCriterion;
 class RenderTechnique;
+class RenderTexture;
+class RenderTransform;
+class RenderMesh;
+class RenderTarget;
+class RenderRenderPass;
 
-class RenderMesh : public QBackendNode
-{
-public:
-    RenderMesh();
-    ~RenderMesh();
-    void cleanup();
-
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
-
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    HMeshData meshData() const;
-    void setMeshData(HMeshData handle);
-    void setMeshDataManager(MeshDataManager *manager);
-
-    QAbstractMeshFunctorPtr meshFunctor() const { return m_functor; }
-
-private:
-    QAbstractMeshFunctorPtr m_functor;
-
-    bool m_meshDirty;
-    HMeshData m_meshDataHandle;
-    MeshDataManager *m_meshDataManager;
-
-    void setMeshFunctor(QAbstractMeshFunctorPtr);
-};
-
-class RenderMeshCreatorFunctor : public QBackendNodeFunctor
-{
-public:
-    explicit RenderMeshCreatorFunctor(MeshManager *meshManager, MeshDataManager *meshDataManager);
-    QBackendNode *create(QNode *frontend) const Q_DECL_OVERRIDE;
-    QBackendNode *get(QNode *frontend) const Q_DECL_OVERRIDE;
-    void destroy(QNode *frontend) const Q_DECL_OVERRIDE;
-
-private:
-    MeshManager *m_meshManager;
-    MeshDataManager *m_meshDataManager;
-};
+typedef QHandle<RenderAttachment, 16> HAttachment;
+typedef QHandle<RenderCameraLens, 8> HCamera;
+typedef QHandle<RenderCriterion, 16> HCriterion;
+typedef QHandle<RenderEffect, 16> HEffect;
+typedef QHandle<RenderEntity, 16> HEntity;
+typedef QHandle<FrameGraphNode *, 8> HFrameGraphNode;
+typedef QHandle<RenderLayer, 16> HLayer;
+typedef QHandle<RenderLight, 16> HLight;
+typedef QHandle<RenderMaterial, 16> HMaterial;
+typedef QHandle<QMatrix4x4, 16> HMatrix;
+typedef QHandle<RenderShader, 16> HShader;
+typedef QHandle<QOpenGLVertexArrayObject*, 16> HVao;
+typedef QHandle<QMeshData, 16> HMeshData;
+typedef QHandle<RenderShader, 16> HShader;
+typedef QHandle<SortCriterion, 8> HSortCriterion;
+typedef QHandle<RenderTechnique, 16> HTechnique;
+typedef QHandle<RenderTexture, 16> HTexture;
+typedef QHandle<RenderTransform, 16> HTransform;
+typedef QHandle<RenderMesh, 16> HMesh;
+typedef QHandle<RenderTarget, 8> HTarget;
+typedef QHandle<RenderRenderPass, 16> HRenderPass;
+typedef QHandle<TexImageData, 16> HTextureData;
 
 } // Render
+
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERMESH_H
+#endif // QT3D_RENDER_HANDLE_TYPES_P_H

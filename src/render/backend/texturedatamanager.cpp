@@ -47,15 +47,6 @@ namespace Qt3D {
 
 namespace Render {
 
-TextureDataManager::TextureDataManager()
-    : QResourcesManager<TexImageData,
-                        QUuid,
-                        16,
-                        Qt3D::ListAllocatingPolicy,
-                        Qt3D::ObjectLevelLockingPolicy>()
-{
-}
-
 void Qt3D::Render::TextureDataManager::addTextureData(Qt3D::QTexture *texture)
 {
     if (!contains(texture->uuid()) && !m_texturesPending.contains(texture))

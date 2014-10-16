@@ -44,7 +44,8 @@
 #define QT3D_RENDER_RENDERNODE_H
 
 #include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DRenderer/private/managers_p.h>
+#include <Qt3DRenderer/private/handle_types_p.h>
+#include <Qt3DCore/qbackendnode.h>
 #include <Qt3DCore/qhandle.h>
 #include <QVector>
 #include <QUuid>
@@ -64,20 +65,6 @@ class QComponent;
 namespace Render {
 
 class Renderer;
-class EntityManager;
-class RenderLight;
-class RenderEntity;
-class RenderLayer;
-class RenderMesh;
-class RenderTransform;
-
-typedef QHandle<RenderCameraLens, 8> HCamera;
-typedef QHandle<RenderEntity, 16> HEntity;
-typedef QHandle<RenderLayer, 16> HLayer;
-typedef QHandle<RenderLight, 16> HLight;
-typedef QHandle<QMatrix4x4, 16> HMatrix;
-typedef QHandle<RenderTransform, 16> HTransform;
-typedef QHandle<RenderMesh, 16> HMesh;
 
 class RenderEntity : public QBackendNode
 {

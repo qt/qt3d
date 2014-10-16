@@ -46,15 +46,6 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
-MeshDataManager::MeshDataManager()
-    : QResourcesManager<QMeshData,
-                        QUuid,
-                        16,
-                        Qt3D::ListAllocatingPolicy,
-                        Qt3D::ObjectLevelLockingPolicy>()
-{
-}
-
 // Called by aspect thread when RenderMesh receive a new functor in syncChanges
 void MeshDataManager::addMeshData(QAbstractMeshFunctorPtr functor, const QUuid &meshUuid)
 {
