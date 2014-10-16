@@ -60,8 +60,8 @@ void QTechniqueFilter::copy(const QNode *ref)
     const QTechniqueFilter *other = static_cast<const QTechniqueFilter*>(ref);
     Q_FOREACH (QFrameGraphItem *fgChild, other->d_func()->m_fgChildren)
         appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(QNodePrivate::get(fgChild)->clone()));
-    Q_FOREACH (QAnnotation *crit, other->d_func()->m_criteriaList)
-        addCriterion(qobject_cast<QAnnotation *>(QNodePrivate::get(crit)->clone()));
+    Q_FOREACH (QAnnotation *crit, other->d_func()->m_requireList)
+        addRequirement(qobject_cast<QAnnotation *>(QNodePrivate::get(crit)->clone()));
 }
 
 QTechniqueFilter::QTechniqueFilter(QNode *parent)
@@ -77,13 +77,13 @@ QTechniqueFilter::QTechniqueFilter(QTechniqueFilterPrivate &dd, QNode *parent)
 QList<QAnnotation *> QTechniqueFilter::criteria() const
 {
     Q_D(const QTechniqueFilter);
-    return d->m_criteriaList;
+    return d->m_requireList;
 }
 
-void QTechniqueFilter::addCriterion(QAnnotation *criterion)
+void QTechniqueFilter::addRequirement(QAnnotation *criterion)
 {
     Q_D(QTechniqueFilter);
-    d->m_criteriaList.append(criterion);
+    d->m_requireList.append(criterion);
 
     // We need to add it as a child of the current node if it has been declared inline
     // Or not previously added as a child of the current node so that
@@ -94,22 +94,22 @@ void QTechniqueFilter::addCriterion(QAnnotation *criterion)
 
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeAdded, this));
-        propertyChange->setPropertyName(QByteArrayLiteral("techniqueCriterion"));
+        propertyChange->setPropertyName(QByteArrayLiteral("require"));
         propertyChange->setValue(QVariant::fromValue(criterion));
         d->notifyObservers(propertyChange);
     }
 }
 
-void QTechniqueFilter::removeCriterion(QAnnotation *criterion)
+void QTechniqueFilter::removeRequirement(QAnnotation *criterion)
 {
     Q_D(QTechniqueFilter);
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeRemoved, this));
-        propertyChange->setPropertyName(QByteArrayLiteral("techniqueCriterion"));
+        propertyChange->setPropertyName(QByteArrayLiteral("require"));
         propertyChange->setValue(QVariant::fromValue(criterion->uuid()));
         d->notifyObservers(propertyChange);
     }
-    d->m_criteriaList.removeOne(criterion);
+    d->m_requireList.removeOne(criterion);
 }
 
 } // Qt3D

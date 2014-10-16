@@ -59,8 +59,8 @@ public:
     explicit QTechniqueFilter(QNode *parent = 0);
 
     QList<QAnnotation *> criteria() const;
-    void addCriterion(QAnnotation *criterion);
-    void removeCriterion(QAnnotation *criterion);
+    void addRequirement(QAnnotation *criterion);
+    void removeRequirement(QAnnotation *criterion);
 
 protected:
     QTechniqueFilter(QTechniqueFilterPrivate &dd, QNode *parent = 0);

@@ -84,13 +84,13 @@ void TechniqueFilter::sceneChangeEvent(const QSceneChangePtr &e)
     switch (e->type()) {
     case NodeAdded: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("techniqueCriterion"))
+        if (propertyChange->propertyName() == QByteArrayLiteral("require"))
             appendFilter(propertyChange->value().value<QAnnotation *>());
     }
         break;
     case NodeRemoved: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("techniqueCriterion"))
+        if (propertyChange->propertyName() == QByteArrayLiteral("require"))
             removeFilter(propertyChange->value().toUuid());
     }
         break;

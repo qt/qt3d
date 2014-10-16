@@ -59,19 +59,19 @@ namespace Quick {
 class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTechniqueFilter : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3D::QAnnotation> criteria READ criteriaList)
+    Q_PROPERTY(QQmlListProperty<Qt3D::QAnnotation> requires READ requireList)
 
 public:
     explicit Quick3DTechniqueFilter(QObject *parent = 0);
-    QQmlListProperty<Qt3D::QAnnotation> criteriaList();
+    QQmlListProperty<Qt3D::QAnnotation> requireList();
 
     inline QTechniqueFilter *parentTechniqueFilter() const { return qobject_cast<Qt3D::QTechniqueFilter*>(parent()); }
 
 private:
-    static void appendCriterion(QQmlListProperty<QAnnotation> *list, QAnnotation *criterion);
-    static QAnnotation *criterionAt(QQmlListProperty<QAnnotation> *list, int index);
-    static int criteriaCount(QQmlListProperty<QAnnotation> *list);
-    static void clearCriteria(QQmlListProperty<QAnnotation> *list);
+    static void appendRequire(QQmlListProperty<QAnnotation> *list, QAnnotation *criterion);
+    static QAnnotation *requireAt(QQmlListProperty<QAnnotation> *list, int index);
+    static int requiresCount(QQmlListProperty<QAnnotation> *list);
+    static void clearRequires(QQmlListProperty<QAnnotation> *list);
 
 };
 

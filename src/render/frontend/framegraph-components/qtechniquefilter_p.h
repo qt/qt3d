@@ -56,7 +56,7 @@ public :
     QTechniqueFilterPrivate(QTechniqueFilter *qq);
 
     Q_DECLARE_PUBLIC(QTechniqueFilter)
-    QList<QAnnotation *> m_criteriaList;
+    QList<QAnnotation *> m_requireList;
 };
 
 } // Qt3D

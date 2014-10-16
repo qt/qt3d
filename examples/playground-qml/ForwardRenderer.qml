@@ -61,7 +61,7 @@ TechniqueFilter {
     property alias clearColor : viewport.clearColor
     property alias colorAttachmentTexture : defaultColorAttachment.texture
 
-    criteria : [
+    requires : [
         Annotation { name : "RenderingStyle"; value : "forward";},
         Annotation { name : "Enabled"; value : true;}
     ]
