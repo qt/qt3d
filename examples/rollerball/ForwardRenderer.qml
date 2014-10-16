@@ -50,7 +50,7 @@ TechniqueFilter {
     property alias camera: cameraSelector.camera
 
     // Select the forward rendering Technique of any used Effect
-    criteria: [ Criterion { name: "renderingStyle"; value: "forward" } ]
+    criteria: [ Annotation { name: "renderingStyle"; value: "forward" } ]
 
     // Use the whole viewport
     Viewport {

@@ -42,8 +42,7 @@
 #include "qrenderpassfilter.h"
 #include "qrenderpassfilter_p.h"
 
-#include "qcriterion.h"
-#include "qcriterion_p.h"
+#include "qannotation.h"
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -59,13 +58,13 @@ QRenderPassFilter::QRenderPassFilter(QRenderPassFilterPrivate &dd, QNode *parent
 {
 }
 
-QList<QCriterion *> QRenderPassFilter::criteria() const
+QList<QAnnotation *> QRenderPassFilter::criteria() const
 {
     Q_D(const QRenderPassFilter);
     return d->m_criteriaList;
 }
 
-void QRenderPassFilter::addCriterion(QCriterion *criterion)
+void QRenderPassFilter::addCriterion(QAnnotation *criterion)
 {
     Q_D(QRenderPassFilter);
     if (!d->m_criteriaList.contains(criterion)) {
@@ -87,7 +86,7 @@ void QRenderPassFilter::addCriterion(QCriterion *criterion)
     }
 }
 
-void QRenderPassFilter::removeCriterion(QCriterion *criterion)
+void QRenderPassFilter::removeCriterion(QAnnotation *criterion)
 {
     Q_D(QRenderPassFilter);
     if (d->m_changeArbiter != Q_NULLPTR) {
@@ -105,8 +104,8 @@ void QRenderPassFilter::copy(const QNode *ref)
     const QRenderPassFilter *other = static_cast<const QRenderPassFilter*>(ref);
     Q_FOREACH (QFrameGraphItem *fgChild, other->d_func()->m_fgChildren)
         appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(QNodePrivate::get(fgChild)->clone()));
-    Q_FOREACH (QCriterion *c, other->d_func()->m_criteriaList)
-        addCriterion(qobject_cast<QCriterion *>(QNodePrivate::get(c)->clone()));
+    Q_FOREACH (QAnnotation *c, other->d_func()->m_criteriaList)
+        addCriterion(qobject_cast<QAnnotation *>(QNodePrivate::get(c)->clone()));
 }
 
 } // Qt3D

@@ -39,49 +39,28 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QCRITERION_H
-#define QT3D_QCRITERION_H
+#ifndef QT3D_QANNOTATION_P_H
+#define QT3D_QANNOTATION_P_H
 
-#include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DCore/qnode.h>
-#include <QVariant>
+#include <Qt3DCore/private/qnode_p.h>
+#include <Qt3DRenderer/qannotation.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QCriterionPrivate;
-
-class QT3DRENDERERSHARED_EXPORT QCriterion : public QNode
+class QAnnotationPrivate : public QNodePrivate
 {
-    Q_OBJECT
-    Q_PROPERTY(QVariant value READ value WRITE setValue NOTIFY valueChanged)
-    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
 public:
-    explicit QCriterion(QNode *parent = 0);
+    QAnnotationPrivate(QAnnotation *qq);
 
-    void setValue(const QVariant &value);
-    void setName(const QString &customType);
-
-    QVariant value() const;
-    QString name() const;
-
-Q_SIGNALS:
-    void nameChanged();
-    void valueChanged();
-
-protected:
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
-private:
-    Q_DECLARE_PRIVATE(QCriterion)
-    QT3D_CLONEABLE(QCriterion)
+    Q_DECLARE_PUBLIC(QAnnotation)
+    QString m_name;
+    QVariant m_value;
 };
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3D::QCriterion *)
-
-#endif // QT3D_QCRITERION_H
+#endif // QT3D_QANNOTATION_P_H

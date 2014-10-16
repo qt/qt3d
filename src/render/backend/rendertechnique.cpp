@@ -94,7 +94,7 @@ void RenderTechnique::updateFromPeer(QNode *peer)
             m_parameterPack.appendParameter(p);
         Q_FOREACH (QRenderPass *rPass, technique->renderPasses())
             appendRenderPass(rPass);
-        Q_FOREACH (QCriterion *criterion, technique->criteria())
+        Q_FOREACH (QAnnotation *criterion, technique->criteria())
             appendCriterion(criterion);
 
         // Copy OpenGLFilter info from frontend OpenGLFilter
@@ -127,7 +127,7 @@ void RenderTechnique::sceneChangeEvent(const QSceneChangePtr &e)
             m_parameterPack.appendParameter(propertyChange->value().value<QParameter*>());
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("criterion")) {
-            appendCriterion(propertyChange->value().value<QCriterion *>());
+            appendCriterion(propertyChange->value().value<QAnnotation *>());
         }
         break;
     }
@@ -183,7 +183,7 @@ QOpenGLFilter *RenderTechnique::openGLFilter() const
     return m_openglFilter;
 }
 
-void RenderTechnique::appendCriterion(QCriterion *criterion)
+void RenderTechnique::appendCriterion(QAnnotation *criterion)
 {
     if (!m_criteriaList.contains(criterion->uuid()))
         m_criteriaList.append(criterion->uuid());

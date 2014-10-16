@@ -48,7 +48,7 @@
 #include <Qt3DRenderer/QRenderPassFilter>
 #include <Qt3DRenderer/QRenderTargetSelector>
 #include <Qt3DRenderer/QCameraSelector>
-#include <Qt3DRenderer/QCriterion>
+#include <Qt3DRenderer/QAnnotation>
 
 class DeferredRenderer : public Qt3D::QViewport
 {
@@ -57,8 +57,8 @@ public:
 
     void setSceneCamera(Qt3D::QEntity *camera);
     void setGBuffer(Qt3D::QRenderTarget *gBuffer);
-    void setGeometryPassCriteria(QList<Qt3D::QCriterion *> criteria);
-    void setFinalPassCriteria(QList<Qt3D::QCriterion *> criteria);
+    void setGeometryPassCriteria(QList<Qt3D::QAnnotation *> criteria);
+    void setFinalPassCriteria(QList<Qt3D::QAnnotation *> criteria);
     void setGBufferLayer(const QString &layerName);
     void setScreenQuadLayer(const QString &layerName);
 

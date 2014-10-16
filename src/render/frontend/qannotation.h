@@ -39,65 +39,49 @@
 **
 ****************************************************************************/
 
-#include "qcriterion.h"
-#include "qcriterion_p.h"
-#include <private/qnode_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#ifndef QT3D_QANNOTATION_H
+#define QT3D_QANNOTATION_H
+
+#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DCore/qnode.h>
+#include <QVariant>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class QAnnotationPrivate;
 
-QCriterionPrivate::QCriterionPrivate(QCriterion *qq)
-    : QNodePrivate(qq)
+class QT3DRENDERERSHARED_EXPORT QAnnotation : public QNode
 {
-}
+    Q_OBJECT
+    Q_PROPERTY(QVariant value READ value WRITE setValue NOTIFY valueChanged)
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+public:
+    explicit QAnnotation(QNode *parent = 0);
 
-void QCriterion::copy(const QNode *ref)
-{
-    QNode::copy(ref);
-    const QCriterion *criterion = static_cast<const QCriterion*>(ref);
-    d_func()->m_name = criterion->d_func()->m_name;
-    d_func()->m_value = criterion->d_func()->m_value;
-}
+    void setValue(const QVariant &value);
+    void setName(const QString &customType);
 
-QCriterion::QCriterion(QNode *parent)
-    : QNode(*new QCriterionPrivate(this), parent)
-{
-}
+    QVariant value() const;
+    QString name() const;
 
-void QCriterion::setValue(const QVariant &value)
-{
-    Q_D(QCriterion);
-    if (value != d->m_value) {
-        d->m_value = value;
-        emit valueChanged();
-    }
-}
+Q_SIGNALS:
+    void nameChanged();
+    void valueChanged();
 
-void QCriterion::setName(const QString &name)
-{
-    Q_D(QCriterion);
-    if (name != d->m_name) {
-        d->m_name = name;
-        emit nameChanged();
-    }
-}
+protected:
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
-
-QVariant QCriterion::value() const
-{
-    Q_D(const QCriterion);
-    return d->m_value;
-}
-
-QString QCriterion::name() const
-{
-    Q_D(const QCriterion);
-    return d->m_name;
-}
+private:
+    Q_DECLARE_PRIVATE(QAnnotation)
+    QT3D_CLONEABLE(QAnnotation)
+};
 
 } // Qt3D
 
 QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE(Qt3D::QAnnotation *)
+
+#endif // QT3D_QANNOTATION_H

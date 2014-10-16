@@ -74,8 +74,8 @@ void QTechnique::copy(const QNode *ref)
     const QTechnique *tech = static_cast<const QTechnique*>(ref);
     d_func()->m_openGLFilter->copy(tech->d_func()->m_openGLFilter);
 
-    Q_FOREACH (QCriterion *criterion, tech->d_func()->m_criteriaList)
-        addCriterion(qobject_cast<QCriterion *>(QNodePrivate::get(criterion)->clone()));
+    Q_FOREACH (QAnnotation *criterion, tech->d_func()->m_criteriaList)
+        addCriterion(qobject_cast<QAnnotation *>(QNodePrivate::get(criterion)->clone()));
     Q_FOREACH (QRenderPass *pass, tech->d_func()->m_renderPasses)
         addPass(qobject_cast<QRenderPass *>(QNodePrivate::get(pass)->clone()));
     Q_FOREACH (QParameter *p, tech->d_func()->m_parameters)
@@ -102,7 +102,7 @@ void QTechnique::openGLFilterChanged()
     }
 }
 
-void QTechnique::addCriterion(QCriterion *criterion)
+void QTechnique::addCriterion(QAnnotation *criterion)
 {
     Q_D(QTechnique);
     if (!d->m_criteriaList.contains(criterion)) {
@@ -124,7 +124,7 @@ void QTechnique::addCriterion(QCriterion *criterion)
     }
 }
 
-void QTechnique::removeCriterion(QCriterion *criterion)
+void QTechnique::removeCriterion(QAnnotation *criterion)
 {
     Q_D(QTechnique);
     if (d->m_changeArbiter != Q_NULLPTR) {
@@ -136,7 +136,7 @@ void QTechnique::removeCriterion(QCriterion *criterion)
     d->m_criteriaList.removeOne(criterion);
 }
 
-QList<QCriterion *> QTechnique::criteria() const
+QList<QAnnotation *> QTechnique::criteria() const
 {
     Q_D(const QTechnique);
     return d->m_criteriaList;

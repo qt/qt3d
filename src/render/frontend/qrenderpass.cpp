@@ -43,11 +43,10 @@
 #include "qrenderpass.h"
 #include "qrenderpass_p.h"
 #include "qparameter.h"
-#include "qcriterion.h"
+#include "qannotation.h"
 #include "qparametermapper.h"
 #include "qscenepropertychange.h"
 #include "qrenderstate.h"
-#include "qcriterion_p.h"
 #include "qparametermapper_p.h"
 #include "private/qnode_p.h"
 
@@ -67,8 +66,8 @@ void QRenderPass::copy(const QNode *ref)
     const QRenderPass *other = static_cast<const QRenderPass*>(ref);
     d_func()->m_shader = qobject_cast<QShaderProgram *>(QNodePrivate::get(other->d_func()->m_shader)->clone());
 
-    Q_FOREACH (QCriterion *crit, other->d_func()->m_criteriaList)
-        addCriterion(qobject_cast<QCriterion *>(QNodePrivate::get(crit)->clone()));
+    Q_FOREACH (QAnnotation *crit, other->d_func()->m_criteriaList)
+        addCriterion(qobject_cast<QAnnotation *>(QNodePrivate::get(crit)->clone()));
     Q_FOREACH (QParameterMapper *binding, other->d_func()->m_bindings)
         addBinding(qobject_cast<QParameterMapper *>(QNodePrivate::get(binding)->clone()));
     Q_FOREACH (QRenderState *renderState, other->d_func()->m_renderStates)
@@ -139,7 +138,7 @@ QShaderProgram *QRenderPass::shaderProgram() const
     return d->m_shader;
 }
 
-void QRenderPass::addCriterion(QCriterion *criterion)
+void QRenderPass::addCriterion(QAnnotation *criterion)
 {
     Q_D(QRenderPass);
     if (!d->m_criteriaList.contains(criterion)) {
@@ -155,13 +154,13 @@ void QRenderPass::addCriterion(QCriterion *criterion)
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
             change->setPropertyName(QByteArrayLiteral("criterion"));
-            change->setValue(QVariant::fromValue(qobject_cast<QCriterion *>(QNodePrivate::get(criterion)->clone())));
+            change->setValue(QVariant::fromValue(qobject_cast<QAnnotation *>(QNodePrivate::get(criterion)->clone())));
             d->notifyObservers(change);
         }
     }
 }
 
-void QRenderPass::removeCriterion(QCriterion *criterion)
+void QRenderPass::removeCriterion(QAnnotation *criterion)
 {
     Q_D(QRenderPass);
     if (d->m_changeArbiter != Q_NULLPTR) {
@@ -173,7 +172,7 @@ void QRenderPass::removeCriterion(QCriterion *criterion)
     d->m_criteriaList.removeOne(criterion);
 }
 
-QList<QCriterion *> QRenderPass::criteria() const
+QList<QAnnotation *> QRenderPass::criteria() const
 {
     Q_D(const QRenderPass);
     return d->m_criteriaList;

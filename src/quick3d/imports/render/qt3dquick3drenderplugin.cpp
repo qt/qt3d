@@ -57,7 +57,7 @@
 #include <Qt3DRenderer/qcameraselector.h>
 #include <Qt3DRenderer/qeffect.h>
 #include <Qt3DRenderer/qparameter.h>
-#include <Qt3DRenderer/qcriterion.h>
+#include <Qt3DRenderer/qannotation.h>
 #include <Qt3DRenderer/qparametermapper.h>
 #include <Qt3DRenderer/qcuboidmesh.h>
 #include <Qt3DRenderer/qcylindermesh.h>
@@ -111,7 +111,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
 //    qmlRegisterCustomType<Qt3D::Effect>(uri, 2, 0, "Effect", new Qt3D::Render::Quick::ShaderPropertyParser());
     qmlRegisterExtendedType<Qt3D::QEffect, Qt3D::Render::Quick::Quick3DEffect>(uri, 2, 0, "Effect");
     qmlRegisterExtendedType<Qt3D::QTechnique, Qt3D::Render::Quick::Quick3DTechnique>(uri, 2, 0, "Technique");
-    qmlRegisterType<Qt3D::QCriterion>(uri, 2, 0, "Criterion");
+    qmlRegisterType<Qt3D::QAnnotation>(uri, 2, 0, "Annotation");
     qmlRegisterType<Qt3D::QOpenGLFilter>(uri, 2, 0, "OpenGLFilter");
     qmlRegisterUncreatableType<Qt3D::QParameter>(uri, 2, 0, "QParameter", "Quick3D should instantiate Quick3DParameter only");
     qmlRegisterType<Qt3D::Render::Quick::Quick3DParameter>(uri, 2, 0, "Parameter");

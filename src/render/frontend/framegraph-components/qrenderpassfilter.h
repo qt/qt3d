@@ -52,7 +52,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QRenderPassFilterPrivate;
-class QCriterion;
+class QAnnotation;
 
 class QT3DRENDERERSHARED_EXPORT QRenderPassFilter : public QFrameGraphItem
 {
@@ -61,9 +61,9 @@ class QT3DRENDERERSHARED_EXPORT QRenderPassFilter : public QFrameGraphItem
 public:
     explicit QRenderPassFilter(QNode *parent = 0);
 
-    QList<QCriterion *> criteria() const;
-    void addCriterion(QCriterion *criterion);
-    void removeCriterion(QCriterion *criterion);
+    QList<QAnnotation *> criteria() const;
+    void addCriterion(QAnnotation *criterion);
+    void removeCriterion(QAnnotation *criterion);
 
 protected:
     QRenderPassFilter(QRenderPassFilterPrivate &dd, QNode *parent = 0);

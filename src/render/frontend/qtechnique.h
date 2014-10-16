@@ -45,7 +45,7 @@
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DCore/qnode.h>
 #include <Qt3DRenderer/qrenderpass.h>
-#include <Qt3DRenderer/qcriterion.h>
+#include <Qt3DRenderer/qannotation.h>
 #include <QList>
 #include <QSharedPointer>
 
@@ -65,10 +65,10 @@ class QT3DRENDERERSHARED_EXPORT QTechnique : public QNode
 public:
     explicit QTechnique(QNode *parent = 0);
 
-    void addCriterion(QCriterion *criterion);
-    void removeCriterion(QCriterion *criterion);
+    void addCriterion(QAnnotation *criterion);
+    void removeCriterion(QAnnotation *criterion);
 
-    QList<QCriterion *> criteria() const;
+    QList<QAnnotation *> criteria() const;
     void clearCriteria();
 
     void addParameter(QParameter *p);

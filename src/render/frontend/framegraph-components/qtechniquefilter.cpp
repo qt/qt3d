@@ -42,8 +42,7 @@
 
 #include "qtechniquefilter.h"
 #include "qtechniquefilter_p.h"
-#include "qcriterion_p.h"
-#include <Qt3DRenderer/qcriterion.h>
+#include <Qt3DRenderer/qannotation.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -61,8 +60,8 @@ void QTechniqueFilter::copy(const QNode *ref)
     const QTechniqueFilter *other = static_cast<const QTechniqueFilter*>(ref);
     Q_FOREACH (QFrameGraphItem *fgChild, other->d_func()->m_fgChildren)
         appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(QNodePrivate::get(fgChild)->clone()));
-    Q_FOREACH (QCriterion *crit, other->d_func()->m_criteriaList)
-        addCriterion(qobject_cast<QCriterion *>(QNodePrivate::get(crit)->clone()));
+    Q_FOREACH (QAnnotation *crit, other->d_func()->m_criteriaList)
+        addCriterion(qobject_cast<QAnnotation *>(QNodePrivate::get(crit)->clone()));
 }
 
 QTechniqueFilter::QTechniqueFilter(QNode *parent)
@@ -75,13 +74,13 @@ QTechniqueFilter::QTechniqueFilter(QTechniqueFilterPrivate &dd, QNode *parent)
 {
 }
 
-QList<QCriterion *> QTechniqueFilter::criteria() const
+QList<QAnnotation *> QTechniqueFilter::criteria() const
 {
     Q_D(const QTechniqueFilter);
     return d->m_criteriaList;
 }
 
-void QTechniqueFilter::addCriterion(QCriterion *criterion)
+void QTechniqueFilter::addCriterion(QAnnotation *criterion)
 {
     Q_D(QTechniqueFilter);
     d->m_criteriaList.append(criterion);
@@ -101,7 +100,7 @@ void QTechniqueFilter::addCriterion(QCriterion *criterion)
     }
 }
 
-void QTechniqueFilter::removeCriterion(QCriterion *criterion)
+void QTechniqueFilter::removeCriterion(QAnnotation *criterion)
 {
     Q_D(QTechniqueFilter);
     if (d->m_changeArbiter != Q_NULLPTR) {

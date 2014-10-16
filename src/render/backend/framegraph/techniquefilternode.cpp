@@ -40,7 +40,7 @@
 ****************************************************************************/
 
 #include "techniquefilternode_p.h"
-#include "qcriterion.h"
+#include "qannotation.h"
 #include "qtechniquefilter.h"
 #include <Qt3DRenderer/private/managers_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
@@ -59,7 +59,7 @@ void TechniqueFilter::updateFromPeer(QNode *peer)
 {
     QTechniqueFilter *filter = static_cast<QTechniqueFilter *>(peer);
     m_filters.clear();
-    Q_FOREACH (QCriterion *criterion, filter->criteria())
+    Q_FOREACH (QAnnotation *criterion, filter->criteria())
         appendFilter(criterion);
 }
 
@@ -68,7 +68,7 @@ QList<QUuid> TechniqueFilter::filters() const
     return m_filters;
 }
 
-void TechniqueFilter::appendFilter(QCriterion *criterion)
+void TechniqueFilter::appendFilter(QAnnotation *criterion)
 {
     if (!m_filters.contains(criterion->uuid()))
         m_filters.append(criterion->uuid());
@@ -85,7 +85,7 @@ void TechniqueFilter::sceneChangeEvent(const QSceneChangePtr &e)
     case NodeAdded: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("techniqueCriterion"))
-            appendFilter(propertyChange->value().value<QCriterion *>());
+            appendFilter(propertyChange->value().value<QAnnotation *>());
     }
         break;
     case NodeRemoved: {

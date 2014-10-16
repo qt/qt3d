@@ -42,7 +42,7 @@
 #ifndef QT3D_RENDER_RENDERCRITERION_H
 #define QT3D_RENDER_RENDERCRITERION_H
 
-#include <Qt3DRenderer/qcriterion.h>
+#include <Qt3DRenderer/qannotation.h>
 #include <Qt3DCore/private/qobserverinterface_p.h>
 #include <Qt3DCore/qbackendnode.h>
 
@@ -50,7 +50,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QCriterion;
+class QAnnotation;
 
 namespace Render {
 

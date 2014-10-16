@@ -39,28 +39,64 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QCRITERION_P_H
-#define QT3D_QCRITERION_P_H
-
-#include <Qt3DCore/private/qnode_p.h>
-#include <Qt3DRenderer/qcriterion.h>
+#include "qannotation.h"
+#include "qannotation_p.h"
+#include <private/qnode_p.h>
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QCriterionPrivate : public QNodePrivate
-{
-public:
-    QCriterionPrivate(QCriterion *qq);
 
-    Q_DECLARE_PUBLIC(QCriterion)
-    QString m_name;
-    QVariant m_value;
-};
+QAnnotationPrivate::QAnnotationPrivate(QAnnotation *qq)
+    : QNodePrivate(qq)
+{
+}
+
+void QAnnotation::copy(const QNode *ref)
+{
+    QNode::copy(ref);
+    const QAnnotation *criterion = static_cast<const QAnnotation*>(ref);
+    d_func()->m_name = criterion->d_func()->m_name;
+    d_func()->m_value = criterion->d_func()->m_value;
+}
+
+QAnnotation::QAnnotation(QNode *parent)
+    : QNode(*new QAnnotationPrivate(this), parent)
+{
+}
+
+void QAnnotation::setValue(const QVariant &value)
+{
+    Q_D(QAnnotation);
+    if (value != d->m_value) {
+        d->m_value = value;
+        emit valueChanged();
+    }
+}
+
+void QAnnotation::setName(const QString &name)
+{
+    Q_D(QAnnotation);
+    if (name != d->m_name) {
+        d->m_name = name;
+        emit nameChanged();
+    }
+}
+
+QVariant QAnnotation::value() const
+{
+    Q_D(const QAnnotation);
+    return d->m_value;
+}
+
+QString QAnnotation::name() const
+{
+    Q_D(const QAnnotation);
+    return d->m_name;
+}
 
 } // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_QCRITERION_P_H

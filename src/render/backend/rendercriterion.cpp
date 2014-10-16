@@ -64,7 +64,7 @@ void RenderCriterion::cleanup()
 
 void RenderCriterion::updateFromPeer(QNode *peer)
 {
-    QCriterion *criterion = static_cast<QCriterion *>(peer);
+    QAnnotation *criterion = static_cast<QAnnotation *>(peer);
 
     m_value = criterion->value();
     m_name = criterion->name();

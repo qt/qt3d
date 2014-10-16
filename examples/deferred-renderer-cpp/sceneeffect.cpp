@@ -50,7 +50,7 @@ SceneEffect::SceneEffect(Qt3D::QNode *parent)
     , m_gl2Technique(new Qt3D::QTechnique())
     , m_gl2Pass(new Qt3D::QRenderPass())
     , m_gl3Pass(new Qt3D::QRenderPass())
-    , m_passCriterion(new Qt3D::QCriterion(this))
+    , m_passCriterion(new Qt3D::QAnnotation(this))
 {
 
     m_gl3Technique->openGLFilter()->setProfile(Qt3D::QOpenGLFilter::None);
@@ -87,7 +87,7 @@ SceneEffect::SceneEffect(Qt3D::QNode *parent)
     addTechnique(m_gl2Technique);
 }
 
-QList<Qt3D::QCriterion *> SceneEffect::passCriteria() const
+QList<Qt3D::QAnnotation *> SceneEffect::passCriteria() const
 {
-    return QList<Qt3D::QCriterion *>() << m_passCriterion;
+    return QList<Qt3D::QAnnotation *>() << m_passCriterion;
 }

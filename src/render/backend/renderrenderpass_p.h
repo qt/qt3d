@@ -57,7 +57,7 @@ namespace Qt3D {
 class QRenderPass;
 class QAbstractShader;
 class QParameterMapper;
-class QCriterion;
+class QAnnotation;
 class QRenderState;
 
 namespace Render {
@@ -78,7 +78,7 @@ public:
     QList<QUuid> criteria() const;
     QList<QRenderState *> renderStates() const;
 
-    void appendCriterion(QCriterion *criterion);
+    void appendCriterion(QAnnotation *criterion);
     void removeCriterion(const QUuid &criterionId);
 
     void appendBinding(QParameterMapper *binding);

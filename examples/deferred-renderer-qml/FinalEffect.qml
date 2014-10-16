@@ -48,7 +48,7 @@ Effect {
         Technique {
             openGLFilter {api : OpenGLFilter.Desktop; profile : OpenGLFilter.Core; minorVersion : 1; majorVersion : 3 }
             renderPasses : RenderPass {
-                criteria : Criterion { name : "pass"; value : "final" }
+                criteria : Annotation { name : "pass"; value : "final" }
                 shaderProgram : ShaderProgram {
                     id : finalShaderGL3
                     vertexShaderCode:
@@ -106,7 +106,7 @@ Effect {
         Technique {
             openGLFilter {api : OpenGLFilter.Desktop; profile : OpenGLFilter.None; minorVersion : 0; majorVersion : 2 }
             renderPasses : RenderPass {
-                criteria : Criterion { name : "pass"; value : "final" }
+                criteria : Annotation { name : "pass"; value : "final" }
                 shaderProgram : ShaderProgram {
                     id : finalShaderGL2
                     vertexShaderCode:

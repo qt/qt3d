@@ -15,7 +15,6 @@ HEADERS += \
     $$PWD/qabstractsceneloader.h \
     $$PWD/qeffect.h \
     $$PWD/qsceneloader.h \
-    $$PWD/qcriterion.h \
     $$PWD/qparameter.h \
     $$PWD/qparameter_p.h \
     $$PWD/qparametermapper.h \
@@ -59,9 +58,10 @@ HEADERS += \
     $$PWD/qrenderattachment_p.h \
     $$PWD/qrendertarget.h \
     $$PWD/qrendertarget_p.h \
-    $$PWD/qcriterion_p.h \
     $$PWD/qrenderstate_p.h \
-    $$PWD/qalphacoverage.h
+    $$PWD/qalphacoverage.h \
+    $$PWD/qannotation.h \
+    $$PWD/qannotation_p.h
 
 SOURCES += \
     $$PWD/qmaterial.cpp \
@@ -75,7 +75,6 @@ SOURCES += \
     $$PWD/qabstractsceneloader.cpp \
     $$PWD/qeffect.cpp \
     $$PWD/qsceneloader.cpp \
-    $$PWD/qcriterion.cpp \
     $$PWD/qparameter.cpp \
     $$PWD/qparametermapper.cpp \
     $$PWD/qcylindermesh.cpp \
@@ -102,4 +101,5 @@ SOURCES += \
     $$PWD/qrenderstate.cpp \
     $$PWD/qrenderattachment.cpp \
     $$PWD/qrendertarget.cpp \
-    $$PWD/qalphacoverage.cpp
+    $$PWD/qalphacoverage.cpp \
+    $$PWD/qannotation.cpp

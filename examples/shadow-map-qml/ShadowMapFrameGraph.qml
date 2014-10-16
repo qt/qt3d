@@ -62,7 +62,7 @@ FrameGraph {
         clearColor: Qt.rgba(0.0, 0.4, 0.7, 1.0)
 
         RenderPassFilter {
-            criteria: [ Criterion { name: "pass"; value: "shadowmap" } ]
+            criteria: [ Annotation { name: "pass"; value: "shadowmap" } ]
 
             RenderTargetSelector {
                 target: RenderTarget {
@@ -96,7 +96,7 @@ FrameGraph {
         }
 
         RenderPassFilter {
-            criteria: [ Criterion { name: "pass"; value: "forward" } ]
+            criteria: [ Annotation { name: "pass"; value: "forward" } ]
 
             ClearBuffer {
                 buffers: ClearBuffer.ColorDepthBuffer

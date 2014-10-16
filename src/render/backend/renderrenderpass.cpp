@@ -78,7 +78,7 @@ void RenderRenderPass::updateFromPeer(QNode *peer)
     // TO DO: We probably need a QParameterMapper manager
     Q_FOREACH (QParameterMapper *binding, pass->bindings())
         appendBinding(binding);
-    Q_FOREACH (QCriterion *c, pass->criteria())
+    Q_FOREACH (QAnnotation *c, pass->criteria())
         appendCriterion(c);
     Q_FOREACH (QRenderState *renderState, pass->renderStates())
         appendRenderState(renderState);
@@ -91,7 +91,7 @@ void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
 
     case NodeAdded: {
         if (propertyChange->propertyName() == QByteArrayLiteral("criterion")) {
-            appendCriterion(propertyChange->value().value<QCriterion *>());
+            appendCriterion(propertyChange->value().value<QAnnotation *>());
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("shaderProgram")) {
             m_shaderUuid = propertyChange->value().toUuid();
@@ -146,7 +146,7 @@ QList<QRenderState *> RenderRenderPass::renderStates() const
     return m_renderStates.values();
 }
 
-void RenderRenderPass::appendCriterion(QCriterion *criterion)
+void RenderRenderPass::appendCriterion(QAnnotation *criterion)
 {
     if (!m_criteriaList.contains(criterion->uuid()))
         m_criteriaList.append(criterion->uuid());

@@ -47,7 +47,7 @@
 
 #include <Qt3DRenderer/qshaderprogram.h>
 #include <Qt3DRenderer/qrenderstate.h>
-#include <Qt3DRenderer/qcriterion.h>
+#include <Qt3DRenderer/qannotation.h>
 
 #include <QHash>
 #include <QList>
@@ -83,9 +83,9 @@ public:
     void setShaderProgram(QShaderProgram *shaderProgram);
     QShaderProgram *shaderProgram() const;
 
-    void addCriterion(QCriterion *criterion);
-    void removeCriterion(QCriterion *criterion);
-    QList<QCriterion *> criteria() const;
+    void addCriterion(QAnnotation *criterion);
+    void removeCriterion(QAnnotation *criterion);
+    QList<QAnnotation *> criteria() const;
     void clearCriteria();
 
     void addBinding(QParameterMapper *binding);

@@ -40,7 +40,7 @@
 ****************************************************************************/
 
 #include "renderpassfilternode_p.h"
-#include "qcriterion.h"
+#include "qannotation.h"
 #include "qrenderpassfilter.h"
 #include <Qt3DCore/qscenepropertychange.h>
 
@@ -58,7 +58,7 @@ void RenderPassFilter::updateFromPeer(QNode *peer)
 {
     QRenderPassFilter *filter = static_cast<QRenderPassFilter *>(peer);
     m_filters.clear();
-    Q_FOREACH (QCriterion *criterion, filter->criteria())
+    Q_FOREACH (QAnnotation *criterion, filter->criteria())
         appendFilter(criterion);
 }
 
@@ -67,7 +67,7 @@ QList<QUuid> RenderPassFilter::filters() const
     return m_filters;
 }
 
-void RenderPassFilter::appendFilter(QCriterion *criterion)
+void RenderPassFilter::appendFilter(QAnnotation *criterion)
 {
     if (!m_filters.contains(criterion->uuid()))
         m_filters.append(criterion->uuid());
@@ -84,7 +84,7 @@ void RenderPassFilter::sceneChangeEvent(const QSceneChangePtr &e)
     case NodeAdded: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("renderPassCriterion"))
-            appendFilter(propertyChange->value().value<QCriterion *>());
+            appendFilter(propertyChange->value().value<QAnnotation *>());
     }
         break;
     case NodeRemoved: {

@@ -56,9 +56,9 @@ Quick3DRenderPass::Quick3DRenderPass(QObject *parent)
 {
 }
 
-QQmlListProperty<QCriterion> Quick3DRenderPass::criteriaList()
+QQmlListProperty<QAnnotation> Quick3DRenderPass::criteriaList()
 {
-    return QQmlListProperty<Qt3D::QCriterion>(this, 0,
+    return QQmlListProperty<Qt3D::QAnnotation>(this, 0,
                                               &Quick3DRenderPass::appendCriteria,
                                               &Quick3DRenderPass::criteriaCount,
                                               &Quick3DRenderPass::criterionAt,
@@ -83,28 +83,28 @@ QQmlListProperty<QRenderState> Quick3DRenderPass::renderStateList()
                                               &Quick3DRenderPass::clearRenderStates);
 }
 
-void Quick3DRenderPass::appendCriteria(QQmlListProperty<QCriterion> *list, QCriterion *criterion)
+void Quick3DRenderPass::appendCriteria(QQmlListProperty<QAnnotation> *list, QAnnotation *criterion)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
     rPass->parentRenderPass()->addCriterion(criterion);
 }
 
-QCriterion *Quick3DRenderPass::criterionAt(QQmlListProperty<QCriterion> *list, int index)
+QAnnotation *Quick3DRenderPass::criterionAt(QQmlListProperty<QAnnotation> *list, int index)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
     return rPass->parentRenderPass()->criteria().at(index);
 }
 
-int Quick3DRenderPass::criteriaCount(QQmlListProperty<QCriterion> *list)
+int Quick3DRenderPass::criteriaCount(QQmlListProperty<QAnnotation> *list)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
     return rPass->parentRenderPass()->criteria().count();
 }
 
-void Quick3DRenderPass::clearCriteria(QQmlListProperty<QCriterion> *list)
+void Quick3DRenderPass::clearCriteria(QQmlListProperty<QAnnotation> *list)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
-    Q_FOREACH (QCriterion *c, rPass->parentRenderPass()->criteria())
+    Q_FOREACH (QAnnotation *c, rPass->parentRenderPass()->criteria())
         rPass->parentRenderPass()->removeCriterion(c);
 }
 

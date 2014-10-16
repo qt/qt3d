@@ -50,7 +50,7 @@ FinalEffect::FinalEffect(Qt3D::QNode *parent)
     , m_gl2Technique(new Qt3D::QTechnique())
     , m_gl2Pass(new Qt3D::QRenderPass())
     , m_gl3Pass(new Qt3D::QRenderPass())
-    , m_passCriterion(new Qt3D::QCriterion(this))
+    , m_passCriterion(new Qt3D::QAnnotation(this))
 {
     m_gl3Technique->openGLFilter()->setApi(Qt3D::QOpenGLFilter::Desktop);
     m_gl3Technique->openGLFilter()->setMajorVersion(3);
@@ -85,7 +85,7 @@ FinalEffect::FinalEffect(Qt3D::QNode *parent)
     addTechnique(m_gl2Technique);
 }
 
-QList<Qt3D::QCriterion *> FinalEffect::passCriteria() const
+QList<Qt3D::QAnnotation *> FinalEffect::passCriteria() const
 {
-    return QList<Qt3D::QCriterion *>() << m_passCriterion;
+    return QList<Qt3D::QAnnotation *>() << m_passCriterion;
 }

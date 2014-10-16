@@ -62,8 +62,8 @@ TechniqueFilter {
     property alias colorAttachmentTexture : defaultColorAttachment.texture
 
     criteria : [
-        Criterion { name : "RenderingStyle"; value : "forward";},
-        Criterion { name : "Enabled"; value : true;}
+        Annotation { name : "RenderingStyle"; value : "forward";},
+        Annotation { name : "Enabled"; value : true;}
     ]
 
     ClearBuffer {
@@ -84,7 +84,7 @@ TechniqueFilter {
                     LayerFilter {
                         id : layerFilter
                         objectName : "layerFilter"
-                        RenderPassFilter { criteria : [Criterion {name : "Name"; value : "TextureLighting";}] }
+                        RenderPassFilter { criteria : [Annotation {name : "Name"; value : "TextureLighting";}] }
                     }
                 }
             }
@@ -108,10 +108,10 @@ TechniqueFilter {
                         }
                     ]
                 }
-                RenderPassFilter { criteria : [Criterion {name : "Name"; value : "Texture";}] }
-                RenderPassFilter { criteria : [Criterion {name : "Name"; value : "Lighting";}] }
+                RenderPassFilter { criteria : [Annotation {name : "Name"; value : "Texture";}] }
+                RenderPassFilter { criteria : [Annotation {name : "Name"; value : "Lighting";}] }
             }
-            RenderPassFilter { criteria : [Criterion {name : "Name"; value : "Final";}] }
+            RenderPassFilter { criteria : [Annotation {name : "Name"; value : "Final";}] }
         }
     }
 }

@@ -257,13 +257,13 @@ Entity {
                 techniques : [
                     Technique {
                         criteria : [
-                            Criterion { name : "RenderingStyle"; value : "forward"},
-                            Criterion { name : "Enabled"; value : true}
+                            Annotation { name : "RenderingStyle"; value : "forward"},
+                            Annotation { name : "Enabled"; value : true}
                         ]
                         openGLFilter {api : OpenGLFilter.Desktop; profile : OpenGLFilter.Core; minorVersion : 1; majorVersion : 3 }
                         renderPasses : [
                             RenderPass {
-                                criteria : [Criterion {name : "Name"; value : "TextureLighting" }]
+                                criteria : [Annotation {name : "Name"; value : "TextureLighting" }]
                                 bindings : [ // Add only the bindings needed for a shader
                                     ParameterMapper {parameterName: "vertexTexCoord"; shaderVariableName: "texCoord0"; bindingType: ParameterMapper.Attribute},
                                     ParameterMapper {parameterName: "tex"; shaderVariableName: "texture"; bindingType: ParameterMapper.Uniform},
@@ -326,7 +326,7 @@ Entity {
                                 }
                             },
                             RenderPass {
-                                criteria : [Criterion {name : "Name"; value : "Texture" }]
+                                criteria : [Annotation {name : "Name"; value : "Texture" }]
                                 shaderProgram : ShaderProgram {
                                     vertexShaderCode : "
                                     #version 140
@@ -356,7 +356,7 @@ Entity {
                                 }
                             },
                             RenderPass {
-                                criteria : [Criterion {name : "Name"; value : "Lighting" }]
+                                criteria : [Annotation {name : "Name"; value : "Lighting" }]
                                 renderStates : [BlendState {srcRGB: BlendState.One; dstRGB : BlendState.One},
                                               BlendEquation {mode: BlendEquation.FuncAdd},
                                               CullFace { mode : CullFace.Back },
@@ -413,7 +413,7 @@ Entity {
                                 }
                             },
                             RenderPass {
-                                criteria : Criterion {name : "Name"; value : "Final" }
+                                criteria : Annotation {name : "Name"; value : "Final" }
                                 shaderProgram : ShaderProgram {
                                     vertexShaderCode: "
                                     #version 140
@@ -485,8 +485,8 @@ Entity {
                     Technique {
                         openGLFilter {api : OpenGLFilter.Desktop; profile : OpenGLFilter.Core; minorVersion : 1; majorVersion : 3 }
                         criteria : [
-                            Criterion { name : "RenderingStyle"; value : "forward"},
-                            Criterion { name : "Enabled"; value : timer.test; onValueChanged: console.log("VALUE " + value)}
+                            Annotation { name : "RenderingStyle"; value : "forward"},
+                            Annotation { name : "Enabled"; value : timer.test; onValueChanged: console.log("VALUE " + value)}
                         ]
 
                         parameters : [Parameter { name : "lightPos"; value : Qt.vector4d(10.0, 10.0, 0.0, 1.0);}]

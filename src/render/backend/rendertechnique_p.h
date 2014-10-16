@@ -47,7 +47,7 @@
 #include <QStringList>
 #include <Qt3DCore/private/qobserverinterface_p.h>
 #include <Qt3DRenderer/private/parameterpack_p.h>
-#include <Qt3DRenderer/qcriterion.h>
+#include <Qt3DRenderer/qannotation.h>
 #include <Qt3DCore/qbackendnode.h>
 
 QT_BEGIN_NAMESPACE
@@ -57,7 +57,7 @@ namespace Qt3D {
 class QTechnique;
 class QParameter;
 class QOpenGLFilter;
-class QCriterion;
+class QAnnotation;
 class QRenderPass;
 
 namespace Render {
@@ -79,7 +79,7 @@ public:
     void appendRenderPass(QRenderPass *rPass);
     void removeRenderPass(const QUuid &renderPassId);
 
-    void appendCriterion(QCriterion *criterion);
+    void appendCriterion(QAnnotation *criterion);
     void removeCriterion(const QUuid &criterionId);
 
     QList<QUuid> criteria() const;

@@ -44,7 +44,7 @@
 
 #include <Qt3DQuick/quick3dnode.h>
 #include <Qt3DRenderer/qrenderpassfilter.h>
-#include <Qt3DRenderer/qcriterion.h>
+#include <Qt3DRenderer/qannotation.h>
 #include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
 
 QT_BEGIN_NAMESPACE
@@ -58,19 +58,19 @@ namespace Quick {
 class QT3DQUICKRENDERERSHARED_EXPORT Quick3DRenderPassFilter : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3D::QCriterion> criteria READ criteriaList)
+    Q_PROPERTY(QQmlListProperty<Qt3D::QAnnotation> criteria READ criteriaList)
 public:
     explicit Quick3DRenderPassFilter(QObject *parent = 0);
 
-    QQmlListProperty<Qt3D::QCriterion> criteriaList();
+    QQmlListProperty<Qt3D::QAnnotation> criteriaList();
 
     inline QRenderPassFilter *parentRenderPassFilter() const { return qobject_cast<Qt3D::QRenderPassFilter*>(parent()); }
 
 private:
-    static void appendCriterion(QQmlListProperty<QCriterion> *list, QCriterion *criterion);
-    static QCriterion *criterionAt(QQmlListProperty<QCriterion> *list, int index);
-    static int criteriaCount(QQmlListProperty<QCriterion> *list);
-    static void clearCriteria(QQmlListProperty<QCriterion> *list);
+    static void appendCriterion(QQmlListProperty<QAnnotation> *list, QAnnotation *criterion);
+    static QAnnotation *criterionAt(QQmlListProperty<QAnnotation> *list, int index);
+    static int criteriaCount(QQmlListProperty<QAnnotation> *list);
+    static void clearCriteria(QQmlListProperty<QAnnotation> *list);
 };
 
 } // Quick

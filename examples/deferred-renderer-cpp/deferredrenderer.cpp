@@ -67,15 +67,15 @@ void DeferredRenderer::setGBuffer(Qt3D::QRenderTarget *gBuffer)
     m_gBufferTargetSelector->setTarget(gBuffer);
 }
 
-void DeferredRenderer::setGeometryPassCriteria(QList<Qt3D::QCriterion *> criteria)
+void DeferredRenderer::setGeometryPassCriteria(QList<Qt3D::QAnnotation *> criteria)
 {
-    Q_FOREACH (Qt3D::QCriterion *c, criteria)
+    Q_FOREACH (Qt3D::QAnnotation *c, criteria)
         m_geometryPassFilter->addCriterion(c);
 }
 
-void DeferredRenderer::setFinalPassCriteria(QList<Qt3D::QCriterion *> criteria)
+void DeferredRenderer::setFinalPassCriteria(QList<Qt3D::QAnnotation *> criteria)
 {
-    Q_FOREACH (Qt3D::QCriterion *c, criteria)
+    Q_FOREACH (Qt3D::QAnnotation *c, criteria)
         c->setParent(m_finalPassFilter);
 }
 

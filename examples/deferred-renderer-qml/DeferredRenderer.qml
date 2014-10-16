@@ -59,7 +59,7 @@ Viewport {
 
                 RenderPassFilter {
                     id : geometryPass
-                    criteria : Criterion { name : "pass"; value : "geometry" }
+                    criteria : Annotation { name : "pass"; value : "geometry" }
 
                     CameraSelector {
                         id : sceneCameraSelector
@@ -77,7 +77,7 @@ Viewport {
 
             RenderPassFilter {
                 id : finalPass
-                criteria : Criterion { name : "pass"; value : "final" }
+                criteria : Annotation { name : "pass"; value : "final" }
             }
 
         }
