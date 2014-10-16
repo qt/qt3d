@@ -46,9 +46,10 @@
 
 #include "qspheremesh.h"
 #include "renderlogging.h"
-#include "qabstractshapemesh_p.h"
 #include "qbuffer.h"
 #include "qattribute.h"
+#include "qmeshdata.h"
+#include <private/qabstractmesh_p.h>
 
 #include <cmath>
 
@@ -70,10 +71,10 @@ private:
     bool m_generateTangents;
 };
 
-class QSphereMeshPrivate : public QAbstractShapeMeshPrivate
+class QSphereMeshPrivate : public QAbstractMeshPrivate
 {
     QSphereMeshPrivate(QSphereMesh *qq)
-        : QAbstractShapeMeshPrivate(qq)
+        : QAbstractMeshPrivate(qq)
         , m_generateTangents(false)
         , m_rings(16)
         , m_slices(16)
@@ -88,14 +89,14 @@ class QSphereMeshPrivate : public QAbstractShapeMeshPrivate
 };
 
 QSphereMesh::QSphereMesh(QNode *parent)
-    : QAbstractShapeMesh(*new QSphereMeshPrivate(this), parent)
+    : QAbstractMesh(*new QSphereMeshPrivate(this), parent)
 {
     setDirty(true);
 }
 
 void QSphereMesh::copy(const QNode *ref)
 {
-    QAbstractShapeMesh::copy(ref);
+    QAbstractMesh::copy(ref);
     const QSphereMesh *mesh = static_cast<const QSphereMesh*>(ref);
     d_func()->m_generateTangents = mesh->d_func()->m_generateTangents;
     d_func()->m_rings = mesh->d_func()->m_rings;

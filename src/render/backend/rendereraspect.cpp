@@ -48,7 +48,6 @@
 
 #include <Qt3DRenderer/qabstractlight.h>
 #include <Qt3DRenderer/qabstractsceneloader.h>
-#include <Qt3DRenderer/qabstractshapemesh.h>
 #include <Qt3DRenderer/qcameraselector.h>
 #include <Qt3DRenderer/qframegraph.h>
 #include <Qt3DRenderer/qlayer.h>

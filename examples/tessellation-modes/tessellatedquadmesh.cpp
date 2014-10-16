@@ -46,7 +46,7 @@
 #include <Qt3DRenderer/qmeshdata.h>
 
 TessellatedQuadMesh::TessellatedQuadMesh(Qt3D::QNode *parent)
-    : Qt3D::QAbstractShapeMesh(parent)
+    : Qt3D::QAbstractMesh(parent)
 {
 }
 

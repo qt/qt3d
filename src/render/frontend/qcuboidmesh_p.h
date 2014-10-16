@@ -42,7 +42,7 @@
 #ifndef QCUBOIDMESH_P_H
 #define QCUBOIDMESH_P_H
 
-#include "qabstractshapemesh_p.h"
+#include <Qt3DCore/private/qabstractmesh_p.h>
 
 #include <QtCore/qsize.h>
 
@@ -52,7 +52,7 @@ namespace Qt3D {
 
 class QCuboidMesh;
 
-class QCuboidMeshPrivate : QAbstractShapeMeshPrivate
+class QCuboidMeshPrivate : QAbstractMeshPrivate
 {
 public:
     QCuboidMeshPrivate(QCuboidMesh *qq);

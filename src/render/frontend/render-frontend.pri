@@ -9,7 +9,6 @@ HEADERS += \
     $$PWD/qshaderprogram.h \
     $$PWD/qshaderprogram_p.h \
     $$PWD/qtechnique.h \
-    $$PWD/qabstractshapemesh.h \
     $$PWD/qitemmodelbuffer.h \
     $$PWD/qtexture.h \
     $$PWD/sphere.h \
@@ -23,7 +22,6 @@ HEADERS += \
     $$PWD/qcylindermesh.h \
     $$PWD/qtorusmesh.h \
     $$PWD/qspheremesh.h \
-    $$PWD/qabstractshapemesh_p.h \
     $$PWD/qmesh_p.h \
     $$PWD/qabstractlight.h \
     $$PWD/qpointlight.h \
@@ -71,7 +69,6 @@ SOURCES += \
     $$PWD/qrenderpass.cpp \
     $$PWD/qshaderprogram.cpp \
     $$PWD/qtechnique.cpp \
-    $$PWD/qabstractshapemesh.cpp \
     $$PWD/qitemmodelbuffer.cpp \
     $$PWD/qtexture.cpp \
     $$PWD/sphere.cpp \

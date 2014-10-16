@@ -43,7 +43,8 @@
 #define QT3D_QPLANEMESH_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/qabstractshapemesh.h>
+#include <Qt3DCore/qabstractmesh.h>
+#include <QSize>
 
 QT_BEGIN_NAMESPACE
 
@@ -51,7 +52,7 @@ namespace Qt3D {
 
 class QPlaneMeshPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QPlaneMesh : public Qt3D::QAbstractShapeMesh
+class QT3DRENDERERSHARED_EXPORT QPlaneMesh : public Qt3D::QAbstractMesh
 {
     Q_OBJECT
 

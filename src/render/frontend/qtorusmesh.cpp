@@ -45,9 +45,10 @@
 #endif
 
 #include "qtorusmesh.h"
-#include "qabstractshapemesh_p.h"
 #include "qbuffer.h"
 #include "qattribute.h"
+#include "qmeshdata.h"
+#include <Qt3DCore/private/qabstractmesh_p.h>
 
 #include <cmath>
 
@@ -69,10 +70,10 @@ private:
     float m_minorRadius;
 };
 
-class QTorusMeshPrivate : public QAbstractShapeMeshPrivate
+class QTorusMeshPrivate : public QAbstractMeshPrivate
 {
     QTorusMeshPrivate(QTorusMesh *qq)
-        : QAbstractShapeMeshPrivate(qq)
+        : QAbstractMeshPrivate(qq)
         , m_rings(16)
         , m_slices(16)
         , m_radius(1.0)
@@ -88,7 +89,7 @@ class QTorusMeshPrivate : public QAbstractShapeMeshPrivate
 
 void QTorusMesh::copy(const QNode *ref)
 {
-    QAbstractShapeMesh::copy(ref);
+    QAbstractMesh::copy(ref);
     const QTorusMesh *mesh = static_cast<const QTorusMesh*>(ref);
     d_func()->m_rings = mesh->d_func()->m_rings;
     d_func()->m_slices = mesh->d_func()->m_slices;
@@ -98,7 +99,7 @@ void QTorusMesh::copy(const QNode *ref)
 
 
 QTorusMesh::QTorusMesh(QNode *parent)
-    : QAbstractShapeMesh(*new QTorusMeshPrivate(this), parent)
+    : QAbstractMesh(*new QTorusMeshPrivate(this), parent)
 {
     setDirty(true);
 }

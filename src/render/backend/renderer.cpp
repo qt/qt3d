@@ -47,7 +47,6 @@
 
 #include "jobs/renderviewjob.h"
 
-#include <Qt3DRenderer/qabstractshapemesh.h>
 #include <Qt3DRenderer/qmaterial.h>
 #include <Qt3DRenderer/qmesh.h>
 #include <Qt3DRenderer/qparametermapper.h>

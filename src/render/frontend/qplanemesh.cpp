@@ -52,7 +52,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 QPlaneMeshPrivate::QPlaneMeshPrivate(QPlaneMesh *qq)
-    : QAbstractShapeMeshPrivate(qq)
+    : QAbstractMeshPrivate(qq)
     , m_width(1.0f)
     , m_height(1.0f)
     , m_meshResolution(2, 2)
@@ -60,14 +60,14 @@ QPlaneMeshPrivate::QPlaneMeshPrivate(QPlaneMesh *qq)
 }
 
 QPlaneMesh::QPlaneMesh(QNode *parent)
-    : QAbstractShapeMesh(*new QPlaneMeshPrivate(this), parent)
+    : QAbstractMesh(*new QPlaneMeshPrivate(this), parent)
 {
     setDirty(true);
 }
 
 void QPlaneMesh::copy(const QNode *ref)
 {
-    QAbstractShapeMesh::copy(ref);
+    QAbstractMesh::copy(ref);
     const QPlaneMesh *mesh = static_cast<const QPlaneMesh*>(ref);
     d_func()->m_width = mesh->d_func()->m_width;
     d_func()->m_height = mesh->d_func()->m_height;
@@ -75,7 +75,7 @@ void QPlaneMesh::copy(const QNode *ref)
 }
 
 QPlaneMesh::QPlaneMesh(QPlaneMeshPrivate &dd, QNode *parent)
-    : QAbstractShapeMesh(dd, parent)
+    : QAbstractMesh(dd, parent)
 {
     setDirty(true);
 }

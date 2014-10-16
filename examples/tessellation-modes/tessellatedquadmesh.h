@@ -42,9 +42,9 @@
 #ifndef TESSELLATEDQUAD_H
 #define TESSELLATEDQUAD_H
 
-#include <Qt3DRenderer/qabstractshapemesh.h>
+#include <Qt3DCore/qabstractmesh.h>
 
-class TessellatedQuadMesh : public Qt3D::QAbstractShapeMesh
+class TessellatedQuadMesh : public Qt3D::QAbstractMesh
 {
     Q_OBJECT
 public:

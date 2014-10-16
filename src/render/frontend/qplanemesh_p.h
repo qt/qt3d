@@ -42,7 +42,7 @@
 #ifndef QPLANEMESH_P_H
 #define QPLANEMESH_P_H
 
-#include "qabstractshapemesh_p.h"
+#include <Qt3DCore/private/qabstractmesh_p.h>
 
 #include <QtCore/qsize.h>
 
@@ -52,7 +52,7 @@ namespace Qt3D {
 
 class QPlaneMesh;
 
-class QPlaneMeshPrivate : public QAbstractShapeMeshPrivate
+class QPlaneMeshPrivate : public QAbstractMeshPrivate
 {
 public:
     QPlaneMeshPrivate(QPlaneMesh *qq);

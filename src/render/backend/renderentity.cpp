@@ -43,7 +43,6 @@
 #include <Qt3DRenderer/private/meshdatamanager_p.h>
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/qabstractlight.h>
-#include <Qt3DRenderer/qabstractshapemesh.h>
 #include <Qt3DRenderer/qlayer.h>
 #include <Qt3DRenderer/qmaterial.h>
 #include <Qt3DRenderer/qmesh.h>

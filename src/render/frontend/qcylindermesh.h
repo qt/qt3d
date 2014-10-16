@@ -43,7 +43,7 @@
 #define QT3D_QCYLINDERMESH_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/qabstractshapemesh.h>
+#include <Qt3DCore/qabstractmesh.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -52,7 +52,7 @@ namespace Qt3D {
 
 class QCylinderMeshPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QCylinderMesh : public Qt3D::QAbstractShapeMesh
+class QT3DRENDERERSHARED_EXPORT QCylinderMesh : public Qt3D::QAbstractMesh
 {
     Q_OBJECT
     Q_PROPERTY(int rings READ rings WRITE setRings NOTIFY ringsChanged)

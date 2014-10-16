@@ -45,9 +45,10 @@
 #endif
 
 #include "qcylindermesh.h"
-#include "qabstractshapemesh_p.h"
 #include "qbuffer.h"
 #include "qattribute.h"
+#include "qmeshdata.h"
+#include <Qt3DCore/private/qabstractmesh_p.h>
 
 #include <cmath>
 
@@ -70,10 +71,10 @@ private:
 
 };
 
-class QCylinderMeshPrivate : public QAbstractShapeMeshPrivate
+class QCylinderMeshPrivate : public QAbstractMeshPrivate
 {
     QCylinderMeshPrivate(QCylinderMesh *qq)
-        : QAbstractShapeMeshPrivate(qq)
+        : QAbstractMeshPrivate(qq)
         , m_rings(16)
         , m_slices(16)
         , m_radius(1.0)
@@ -89,7 +90,7 @@ class QCylinderMeshPrivate : public QAbstractShapeMeshPrivate
 
 void QCylinderMesh::copy(const QNode *ref)
 {
-    QAbstractShapeMesh::copy(ref);
+    QAbstractMesh::copy(ref);
     const QCylinderMesh *mesh = static_cast<const QCylinderMesh*>(ref);
     d_func()->m_rings = mesh->d_func()->m_rings;
     d_func()->m_slices = mesh->d_func()->m_slices;
@@ -98,7 +99,7 @@ void QCylinderMesh::copy(const QNode *ref)
 }
 
 QCylinderMesh::QCylinderMesh(QNode *parent)
-    : QAbstractShapeMesh(*new QCylinderMeshPrivate(this), parent)
+    : QAbstractMesh(*new QCylinderMeshPrivate(this), parent)
 {
     setDirty(true);
 }
