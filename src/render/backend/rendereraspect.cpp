@@ -71,7 +71,7 @@
 #include <Qt3DRenderer/private/cameraselectornode_p.h>
 #include <Qt3DRenderer/private/layerfilternode_p.h>
 #include <Qt3DRenderer/private/meshdatamanager_p.h>
-#include <Qt3DRenderer/private/rendercriterion_p.h>
+#include <Qt3DRenderer/private/renderannotation_p.h>
 #include <Qt3DRenderer/private/renderentity_p.h>
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/private/renderpassfilternode_p.h>
@@ -119,7 +119,7 @@ RendererAspect::RendererAspect(QObject *parent)
     registerBackendType<QTexture>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderTexture, Render::TextureManager>(m_renderer->textureManager())));
     registerBackendType<QShaderProgram>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderShader, Render::ShaderManager>(m_renderer->shaderManager())));
     registerBackendType<QEffect>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderEffect, Render::EffectManager>(m_renderer->effectManager())));
-    registerBackendType<QAnnotation>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderCriterion, Render::CriterionManager>(m_renderer->criterionManager())));
+    registerBackendType<QAnnotation>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderAnnotation, Render::CriterionManager>(m_renderer->criterionManager())));
     registerBackendType<QCameraLens>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderCameraLens, Render::CameraManager>(m_renderer->cameraManager())));
     registerBackendType<QAbstractLight>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderLight, Render::LightManager>(m_renderer->lightManager())));
     registerBackendType<QLayer>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderLayer, Render::LayerManager>(m_renderer->layerManager())));

@@ -35,7 +35,6 @@ HEADERS += \
     $$PWD/renderlayer_p.h \
     $$PWD/renderlight_p.h \
     $$PWD/renderentity_p.h \
-    $$PWD/rendercriterion_p.h \
     $$PWD/rendertransform_p.h \
     $$PWD/renderstate_p.h \
     $$PWD/rendertarget_p.h \
@@ -47,7 +46,8 @@ HEADERS += \
     $$PWD/qgraphicsutils_p.h \
     $$PWD/rendernodefunctor_p.h \
     $$PWD/managers_p.h \
-    $$PWD/handle_types_p.h
+    $$PWD/handle_types_p.h \
+    $$PWD/renderannotation_p.h
 
 SOURCES += \
     $$PWD/rendereraspect.cpp \
@@ -79,11 +79,11 @@ SOURCES += \
     $$PWD/renderlayer.cpp \
     $$PWD/renderlight.cpp \
     $$PWD/renderentity.cpp \
-    $$PWD/rendercriterion.cpp \
     $$PWD/rendertransform.cpp \
     $$PWD/renderstate.cpp \
     $$PWD/rendertarget.cpp \
     $$PWD/renderattachment.cpp \
     $$PWD/renderscene.cpp \
     $$PWD/scenemanager.cpp \
-    $$PWD/attachmentpack.cpp
+    $$PWD/attachmentpack.cpp \
+    $$PWD/renderannotation.cpp

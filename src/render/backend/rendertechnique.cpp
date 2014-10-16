@@ -46,7 +46,7 @@
 #include <Qt3DRenderer/qopenglfilter.h>
 #include <Qt3DRenderer/rendereraspect.h>
 #include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DRenderer/private/rendercriterion_p.h>
+#include <Qt3DRenderer/private/renderannotation_p.h>
 #include <Qt3DRenderer/private/rendershader_p.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>

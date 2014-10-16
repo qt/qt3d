@@ -59,7 +59,7 @@ namespace Render {
 
 class RenderAttachment;
 class RenderCameraLens;
-class RenderCriterion;
+class RenderAnnotation;
 class RenderEffect;
 class RenderEntity;
 class RenderShader;
@@ -77,7 +77,7 @@ class RenderRenderPass;
 
 typedef QHandle<RenderAttachment, 16> HAttachment;
 typedef QHandle<RenderCameraLens, 8> HCamera;
-typedef QHandle<RenderCriterion, 16> HCriterion;
+typedef QHandle<RenderAnnotation, 16> HCriterion;
 typedef QHandle<RenderEffect, 16> HEffect;
 typedef QHandle<RenderEntity, 16> HEntity;
 typedef QHandle<FrameGraphNode *, 8> HFrameGraphNode;

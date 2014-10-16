@@ -41,7 +41,7 @@
 ****************************************************************************/
 
 #include "renderrenderpass_p.h"
-#include <Qt3DRenderer/private/rendercriterion_p.h>
+#include <Qt3DRenderer/private/renderannotation_p.h>
 #include <Qt3DRenderer/qparametermapper.h>
 #include <Qt3DRenderer/qrenderstate.h>
 #include <Qt3DRenderer/qrenderpass.h>

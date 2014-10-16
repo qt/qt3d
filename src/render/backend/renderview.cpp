@@ -469,10 +469,10 @@ RenderTechnique *RenderView::findTechniqueForEffect(RenderEffect *effect)
                 bool findMatch = (m_data->m_techniqueFilter == Q_NULLPTR || m_data->m_techniqueFilter->filters().size() == 0) ? true : false;
                 if (!findMatch && technique->criteria().size() >= m_data->m_techniqueFilter->filters().size()) {
                     Q_FOREACH (const QUuid &refCritId, m_data->m_techniqueFilter->filters()) {
-                        RenderCriterion *refCriterion = m_renderer->criterionManager()->lookupResource(refCritId);
+                        RenderAnnotation *refCriterion = m_renderer->criterionManager()->lookupResource(refCritId);
                         findMatch = false;
                         Q_FOREACH (const QUuid &critId, technique->criteria()) {
-                            RenderCriterion *rCrit = m_renderer->criterionManager()->lookupResource(critId);
+                            RenderAnnotation *rCrit = m_renderer->criterionManager()->lookupResource(critId);
                             if ((findMatch = (*rCrit == *refCriterion)))
                                 break;
                         }
@@ -500,10 +500,10 @@ QList<RenderRenderPass *> RenderView::findRenderPassesForTechnique(RenderTechniq
                 if (!findMatch && renderPass->criteria().size() >= m_data->m_passFilter->filters().size())
                 {
                     Q_FOREACH (const QUuid &refCritId, m_data->m_passFilter->filters()) {
-                        RenderCriterion *refCriterion = m_renderer->criterionManager()->lookupResource(refCritId);
+                        RenderAnnotation *refCriterion = m_renderer->criterionManager()->lookupResource(refCritId);
                         findMatch = false;
                         Q_FOREACH (const QUuid &critId, renderPass->criteria()) {
-                            RenderCriterion *rCrit = m_renderer->criterionManager()->lookupResource(critId);
+                            RenderAnnotation *rCrit = m_renderer->criterionManager()->lookupResource(critId);
                             if ((findMatch = (*rCrit == *refCriterion)))
                                 break;
                         }
