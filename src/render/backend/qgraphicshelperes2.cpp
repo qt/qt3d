@@ -278,7 +278,7 @@ void QGraphicsHelperES2::drawBuffers(GLsizei , const int *)
     qCritical() << "drawBuffers is not supported by ES 2.0";
 }
 
-void QGraphicsHelperGL2::bindUniform(const QVariant &v, const ShaderUniform &description)
+void QGraphicsHelperES2::bindUniform(const QVariant &v, const ShaderUniform &description)
 {
     switch (description.m_type) {
 
