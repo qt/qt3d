@@ -85,7 +85,7 @@ void RenderTechnique::updateFromPeer(QNode *peer)
 {
     m_parameterPack.clear();
     m_renderPasses.clear();
-    m_criteriaList.clear();
+    m_annotationList.clear();
 
     QTechnique *technique = static_cast<QTechnique *>(peer);
 
@@ -95,7 +95,7 @@ void RenderTechnique::updateFromPeer(QNode *peer)
         Q_FOREACH (QRenderPass *rPass, technique->renderPasses())
             appendRenderPass(rPass);
         Q_FOREACH (QAnnotation *annotation, technique->annotations())
-            appendCriterion(annotation);
+            appendAnnotation(annotation);
 
         // Copy OpenGLFilter info from frontend OpenGLFilter
         QOpenGLFilter *peerFilter = technique->openGLFilter();
@@ -126,8 +126,8 @@ void RenderTechnique::sceneChangeEvent(const QSceneChangePtr &e)
         else if (propertyChange->propertyName() == QByteArrayLiteral("parameter")) {
             m_parameterPack.appendParameter(propertyChange->value().value<QParameter*>());
         }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("criterion")) {
-            appendCriterion(propertyChange->value().value<QAnnotation *>());
+        else if (propertyChange->propertyName() == QByteArrayLiteral("annotation")) {
+            appendAnnotation(propertyChange->value().value<QAnnotation *>());
         }
         break;
     }
@@ -139,8 +139,8 @@ void RenderTechnique::sceneChangeEvent(const QSceneChangePtr &e)
         else if (propertyChange->propertyName() == QByteArrayLiteral("parameter")) {
             m_parameterPack.removeParameter(propertyChange->value().value<QParameter*>());
         }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("criterion")) {
-            removeCriterion(propertyChange->value().toUuid());
+        else if (propertyChange->propertyName() == QByteArrayLiteral("annotation")) {
+            removeAnnotation(propertyChange->value().toUuid());
         }
         break;
     }
@@ -168,9 +168,9 @@ void RenderTechnique::removeRenderPass(const QUuid &renderPassId)
     m_renderPasses.removeOne(renderPassId);
 }
 
-QList<QUuid> RenderTechnique::criteria() const
+QList<QUuid> RenderTechnique::annotations() const
 {
-    return m_criteriaList;
+    return m_annotationList;
 }
 
 QList<QUuid> RenderTechnique::renderPasses() const
@@ -183,15 +183,15 @@ QOpenGLFilter *RenderTechnique::openGLFilter() const
     return m_openglFilter;
 }
 
-void RenderTechnique::appendCriterion(QAnnotation *criterion)
+void RenderTechnique::appendAnnotation(QAnnotation *criterion)
 {
-    if (!m_criteriaList.contains(criterion->uuid()))
-        m_criteriaList.append(criterion->uuid());
+    if (!m_annotationList.contains(criterion->uuid()))
+        m_annotationList.append(criterion->uuid());
 }
 
-void RenderTechnique::removeCriterion(const QUuid &criterionId)
+void RenderTechnique::removeAnnotation(const QUuid &criterionId)
 {
-    m_criteriaList.removeOne(criterionId);
+    m_annotationList.removeOne(criterionId);
 }
 
 } // namespace Render

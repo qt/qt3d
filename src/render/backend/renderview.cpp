@@ -467,11 +467,11 @@ RenderTechnique *RenderView::findTechniqueForEffect(RenderEffect *effect)
                     *m_renderer->contextInfo() == *technique->openGLFilter()) {
                 // If no techniqueFilter is present, we return the technique as it satisfies OpenGL version
                 bool findMatch = (m_data->m_techniqueFilter == Q_NULLPTR || m_data->m_techniqueFilter->filters().size() == 0) ? true : false;
-                if (!findMatch && technique->criteria().size() >= m_data->m_techniqueFilter->filters().size()) {
+                if (!findMatch && technique->annotations().size() >= m_data->m_techniqueFilter->filters().size()) {
                     Q_FOREACH (const QUuid &refCritId, m_data->m_techniqueFilter->filters()) {
                         RenderAnnotation *refCriterion = m_renderer->criterionManager()->lookupResource(refCritId);
                         findMatch = false;
-                        Q_FOREACH (const QUuid &critId, technique->criteria()) {
+                        Q_FOREACH (const QUuid &critId, technique->annotations()) {
                             RenderAnnotation *rCrit = m_renderer->criterionManager()->lookupResource(critId);
                             if ((findMatch = (*rCrit == *refCriterion)))
                                 break;

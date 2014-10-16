@@ -79,10 +79,10 @@ public:
     void appendRenderPass(QRenderPass *rPass);
     void removeRenderPass(const QUuid &renderPassId);
 
-    void appendCriterion(QAnnotation *criterion);
-    void removeCriterion(const QUuid &criterionId);
+    void appendAnnotation(QAnnotation *criterion);
+    void removeAnnotation(const QUuid &criterionId);
 
-    QList<QUuid> criteria() const;
+    QList<QUuid> annotations() const;
     QList<QUuid> renderPasses() const;
     QOpenGLFilter *openGLFilter() const;
 
@@ -90,7 +90,7 @@ private:
     QOpenGLFilter *m_openglFilter;
 
     ParameterPack m_parameterPack;
-    QList<QUuid> m_criteriaList;
+    QList<QUuid> m_annotationList;
     QList<QUuid> m_renderPasses;
 };
 
