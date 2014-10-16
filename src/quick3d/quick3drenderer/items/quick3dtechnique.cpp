@@ -102,7 +102,6 @@ void Quick3DTechnique::appendRenderPass(QQmlListProperty<QRenderPass> *list, QRe
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     if (technique) {
         technique->parentTechnique()->addPass(renderPass);
-        emit technique->renderPassesChanged();
     }
 }
 
@@ -128,52 +127,50 @@ void Quick3DTechnique::clearRenderPasses(QQmlListProperty<QRenderPass> *list)
     if (technique) {
         Q_FOREACH (QRenderPass *pass, technique->parentTechnique()->renderPasses())
             technique->parentTechnique()->removePass(pass);
-        emit technique->renderPassesChanged();
     }
 }
 
-QQmlListProperty<Qt3D::QAnnotation> Quick3DTechnique::criteriaList()
+QQmlListProperty<Qt3D::QAnnotation> Quick3DTechnique::annotationList()
 {
     return QQmlListProperty<Qt3D::QAnnotation>(this, 0,
-                                       &Quick3DTechnique::appendCriterion,
-                                       &Quick3DTechnique::criteriaCount,
-                                       &Quick3DTechnique::criterionAt,
-                                       &Quick3DTechnique::clearCriteriaList);
+                                       &Quick3DTechnique::appendAnnotation,
+                                       &Quick3DTechnique::annotationCount,
+                                       &Quick3DTechnique::annotationAt,
+                                       &Quick3DTechnique::clearAnnotationList);
 }
 
-void Quick3DTechnique::appendCriterion(QQmlListProperty<QAnnotation> *list, QAnnotation *criterion)
+void Quick3DTechnique::appendAnnotation(QQmlListProperty<QAnnotation> *list, QAnnotation *annotation)
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     if (technique) {
-        if (!criterion->parent())
-            criterion->setParent(technique->parentTechnique());
-        technique->parentTechnique()->addCriterion(criterion);
-        emit technique->criteriaChanged();
+        if (!annotation->parent())
+            annotation->setParent(technique->parentTechnique());
+        technique->parentTechnique()->addAnnotation(annotation);
     }
 }
 
-QAnnotation *Quick3DTechnique::criterionAt(QQmlListProperty<QAnnotation> *list, int index)
+QAnnotation *Quick3DTechnique::annotationAt(QQmlListProperty<QAnnotation> *list, int index)
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     if (technique)
-        return technique->parentTechnique()->criteria().at(index);
+        return technique->parentTechnique()->annotations().at(index);
     return 0;
 }
 
-int Quick3DTechnique::criteriaCount(QQmlListProperty<QAnnotation> *list)
+int Quick3DTechnique::annotationCount(QQmlListProperty<QAnnotation> *list)
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     if (technique)
-        return technique->parentTechnique()->criteria().size();
+        return technique->parentTechnique()->annotations().size();
     return 0;
 }
 
-void Quick3DTechnique::clearCriteriaList(QQmlListProperty<QAnnotation> *list)
+void Quick3DTechnique::clearAnnotationList(QQmlListProperty<QAnnotation> *list)
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     if (technique) {
-        technique->parentTechnique()->clearCriteria();
-        emit technique->criteriaChanged();
+        Q_FOREACH (QAnnotation *a, technique->parentTechnique()->annotations())
+            technique->parentTechnique()->removeAnnotation(a);
     }
 }
 

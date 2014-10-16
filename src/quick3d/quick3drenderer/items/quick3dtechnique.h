@@ -57,22 +57,18 @@ namespace Quick {
 class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTechnique : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3D::QAnnotation> criteria READ criteriaList NOTIFY criteriaChanged)
-    Q_PROPERTY(QQmlListProperty<Qt3D::QRenderPass> renderPasses READ renderPassList NOTIFY renderPassesChanged)
+    Q_PROPERTY(QQmlListProperty<Qt3D::QAnnotation> annotations READ annotationList)
+    Q_PROPERTY(QQmlListProperty<Qt3D::QRenderPass> renderPasses READ renderPassList)
     Q_PROPERTY(QQmlListProperty<Qt3D::QParameter> parameters READ parameterList)
 public:
     explicit Quick3DTechnique(QObject *parent = 0);
 
-    QQmlListProperty<Qt3D::QAnnotation> criteriaList();
+    QQmlListProperty<Qt3D::QAnnotation> annotationList();
     QQmlListProperty<Qt3D::QRenderPass> renderPassList();
     QQmlListProperty<Qt3D::QParameter> parameterList();
 
     // Use QAbstractTechnique when it has been properly defined
     inline QTechnique *parentTechnique() const { return qobject_cast<QTechnique*>(parent()); }
-
-Q_SIGNALS:
-    void criteriaChanged();
-    void renderPassesChanged();
 
 private:
 
@@ -81,10 +77,10 @@ private:
     static int parametersCount(QQmlListProperty<QParameter> *list);
     static void clearParameterList(QQmlListProperty<QParameter> *list);
 
-    static void appendCriterion(QQmlListProperty<QAnnotation> *list, QAnnotation *criterion);
-    static QAnnotation *criterionAt(QQmlListProperty<QAnnotation> *list, int index);
-    static int criteriaCount(QQmlListProperty<QAnnotation> *list);
-    static void clearCriteriaList(QQmlListProperty<QAnnotation> *list);
+    static void appendAnnotation(QQmlListProperty<QAnnotation> *list, QAnnotation *Annotation);
+    static QAnnotation *annotationAt(QQmlListProperty<QAnnotation> *list, int index);
+    static int annotationCount(QQmlListProperty<QAnnotation> *list);
+    static void clearAnnotationList(QQmlListProperty<QAnnotation> *list);
 
     static void appendRenderPass(QQmlListProperty<QRenderPass> *list, QRenderPass* renderPass);
     static QRenderPass *renderPassAt(QQmlListProperty<QRenderPass> *list, int index);

@@ -65,11 +65,9 @@ class QT3DRENDERERSHARED_EXPORT QTechnique : public QNode
 public:
     explicit QTechnique(QNode *parent = 0);
 
-    void addCriterion(QAnnotation *criterion);
-    void removeCriterion(QAnnotation *criterion);
-
-    QList<QAnnotation *> criteria() const;
-    void clearCriteria();
+    void addAnnotation(QAnnotation *criterion);
+    void removeAnnotation(QAnnotation *criterion);
+    QList<QAnnotation *> annotations() const;
 
     void addParameter(QParameter *p);
     void removeParameter(QParameter *p);

@@ -256,7 +256,7 @@ Entity {
             effect : Effect {
                 techniques : [
                     Technique {
-                        criteria : [
+                        annotations : [
                             Annotation { name : "RenderingStyle"; value : "forward"},
                             Annotation { name : "Enabled"; value : true}
                         ]
@@ -484,7 +484,7 @@ Entity {
                 techniques : [
                     Technique {
                         openGLFilter {api : OpenGLFilter.Desktop; profile : OpenGLFilter.Core; minorVersion : 1; majorVersion : 3 }
-                        criteria : [
+                        annotations : [
                             Annotation { name : "RenderingStyle"; value : "forward"},
                             Annotation { name : "Enabled"; value : timer.test; onValueChanged: console.log("VALUE " + value)}
                         ]

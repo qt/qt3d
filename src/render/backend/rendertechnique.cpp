@@ -94,8 +94,8 @@ void RenderTechnique::updateFromPeer(QNode *peer)
             m_parameterPack.appendParameter(p);
         Q_FOREACH (QRenderPass *rPass, technique->renderPasses())
             appendRenderPass(rPass);
-        Q_FOREACH (QAnnotation *criterion, technique->criteria())
-            appendCriterion(criterion);
+        Q_FOREACH (QAnnotation *annotation, technique->annotations())
+            appendCriterion(annotation);
 
         // Copy OpenGLFilter info from frontend OpenGLFilter
         QOpenGLFilter *peerFilter = technique->openGLFilter();

@@ -62,7 +62,7 @@ public:
     ~QTechniquePrivate();
 
     Q_DECLARE_PUBLIC(QTechnique)
-    QList<QAnnotation *> m_criteriaList;
+    QList<QAnnotation *> m_annotationList;
     QList<QParameter *> m_parameters;
     QList<QRenderPass*> m_renderPasses;
     QOpenGLFilter *m_openGLFilter;

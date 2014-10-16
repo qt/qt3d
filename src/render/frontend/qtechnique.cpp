@@ -74,8 +74,8 @@ void QTechnique::copy(const QNode *ref)
     const QTechnique *tech = static_cast<const QTechnique*>(ref);
     d_func()->m_openGLFilter->copy(tech->d_func()->m_openGLFilter);
 
-    Q_FOREACH (QAnnotation *criterion, tech->d_func()->m_criteriaList)
-        addCriterion(qobject_cast<QAnnotation *>(QNodePrivate::get(criterion)->clone()));
+    Q_FOREACH (QAnnotation *annotation, tech->d_func()->m_annotationList)
+        addAnnotation(qobject_cast<QAnnotation *>(QNodePrivate::get(annotation)->clone()));
     Q_FOREACH (QRenderPass *pass, tech->d_func()->m_renderPasses)
         addPass(qobject_cast<QRenderPass *>(QNodePrivate::get(pass)->clone()));
     Q_FOREACH (QParameter *p, tech->d_func()->m_parameters)
@@ -102,11 +102,11 @@ void QTechnique::openGLFilterChanged()
     }
 }
 
-void QTechnique::addCriterion(QAnnotation *criterion)
+void QTechnique::addAnnotation(QAnnotation *criterion)
 {
     Q_D(QTechnique);
-    if (!d->m_criteriaList.contains(criterion)) {
-        d->m_criteriaList.append(criterion);
+    if (!d->m_annotationList.contains(criterion)) {
+        d->m_annotationList.append(criterion);
 
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
@@ -117,36 +117,29 @@ void QTechnique::addCriterion(QAnnotation *criterion)
 
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
-            change->setPropertyName(QByteArrayLiteral("criterion"));
+            change->setPropertyName(QByteArrayLiteral("annotation"));
             change->setValue(QVariant::fromValue(QNodePrivate::get(criterion)->clone()));
             d->notifyObservers(change);
         }
     }
 }
 
-void QTechnique::removeCriterion(QAnnotation *criterion)
+void QTechnique::removeAnnotation(QAnnotation *criterion)
 {
     Q_D(QTechnique);
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, this));
-        change->setPropertyName(QByteArrayLiteral("criterion"));
+        change->setPropertyName(QByteArrayLiteral("annotation"));
         change->setValue(QVariant::fromValue(criterion->uuid()));
         d->notifyObservers(change);
     }
-    d->m_criteriaList.removeOne(criterion);
+    d->m_annotationList.removeOne(criterion);
 }
 
-QList<QAnnotation *> QTechnique::criteria() const
+QList<QAnnotation *> QTechnique::annotations() const
 {
     Q_D(const QTechnique);
-    return d->m_criteriaList;
-}
-
-void QTechnique::clearCriteria()
-{
-    Q_D(QTechnique);
-    while (d->m_criteriaList.size() > 0)
-        removeCriterion(d->m_criteriaList.takeFirst());
+    return d->m_annotationList;
 }
 
 void QTechnique::addParameter(QParameter *parameter)
