@@ -43,7 +43,7 @@
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRenderer/qrendertarget.h>
 #include <Qt3DRenderer/qrenderattachment.h>
-#include <Qt3DRenderer/private/rendertargetmanager_p.h>
+#include <QVariant>
 
 QT_BEGIN_NAMESPACE
 

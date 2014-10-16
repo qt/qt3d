@@ -43,18 +43,8 @@
 #ifndef QT3D_RENDER_RENDERNODE_H
 #define QT3D_RENDER_RENDERNODE_H
 
-#include <Qt3DRenderer/private/rendermesh_p.h>
-#include <Qt3DRenderer/private/meshmanager_p.h>
-#include <Qt3DRenderer/private/renderlayer_p.h>
 #include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DRenderer/private/layermanager_p.h>
-#include <Qt3DRenderer/private/lightmanager_p.h>
-#include <Qt3DRenderer/private/cameramanager_p.h>
-#include <Qt3DRenderer/private/rendertransform_p.h>
-#include <Qt3DRenderer/private/transformmanager_p.h>
-#include <Qt3DRenderer/private/materialmanager_p.h>
-
-#include <Qt3DCore/private/qobserverinterface_p.h>
+#include <Qt3DRenderer/private/managers_p.h>
 #include <Qt3DCore/qhandle.h>
 #include <QVector>
 #include <QUuid>
@@ -71,18 +61,23 @@ class QNode;
 class QEntity;
 class QComponent;
 
-typedef QHandle<QMatrix4x4, 16> HMatrix;
-
-namespace Render {
-class RenderEntity;
-}
-
-typedef QHandle<Render::RenderEntity, 16> HEntity;
-
 namespace Render {
 
 class Renderer;
 class EntityManager;
+class RenderLight;
+class RenderEntity;
+class RenderLayer;
+class RenderMesh;
+class RenderTransform;
+
+typedef QHandle<RenderCameraLens, 8> HCamera;
+typedef QHandle<RenderEntity, 16> HEntity;
+typedef QHandle<RenderLayer, 16> HLayer;
+typedef QHandle<RenderLight, 16> HLight;
+typedef QHandle<QMatrix4x4, 16> HMatrix;
+typedef QHandle<RenderTransform, 16> HTransform;
+typedef QHandle<RenderMesh, 16> HMesh;
 
 class RenderEntity : public QBackendNode
 {

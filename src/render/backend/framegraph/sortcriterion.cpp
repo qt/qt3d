@@ -41,7 +41,7 @@
 
 #include "sortcriterion_p.h"
 #include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DRenderer/private/sortcriterionmanager_p.h>
+#include <QVariant>
 
 QT_BEGIN_NAMESPACE
 

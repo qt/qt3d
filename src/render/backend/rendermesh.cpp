@@ -42,11 +42,11 @@
 
 #include "rendermesh_p.h"
 #include "rendereraspect.h"
-#include "meshmanager_p.h"
 #include "meshdatamanager_p.h"
 #include "qmesh.h"
 
 #include <Qt3DRenderer/private/qgraphicscontext_p.h>
+#include <Qt3DRenderer/private/managers_p.h>
 #include <Qt3DRenderer/qmeshdata.h>
 #include <Qt3DCore/qscenepropertychange.h>
 

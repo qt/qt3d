@@ -40,17 +40,8 @@
 ****************************************************************************/
 
 #include "renderentity_p.h"
-#include <Qt3DRenderer/private/cameramanager_p.h>
-#include <Qt3DRenderer/private/entitymanager_p.h>
-#include <Qt3DRenderer/private/layermanager_p.h>
-#include <Qt3DRenderer/private/lightmanager_p.h>
-#include <Qt3DRenderer/private/materialmanager_p.h>
-#include <Qt3DRenderer/private/matrixmanager_p.h>
 #include <Qt3DRenderer/private/meshdatamanager_p.h>
-#include <Qt3DRenderer/private/meshmanager_p.h>
 #include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DRenderer/private/transformmanager_p.h>
-#include <Qt3DRenderer/private/entitymanager_p.h>
 #include <Qt3DRenderer/qabstractlight.h>
 #include <Qt3DRenderer/qabstractshapemesh.h>
 #include <Qt3DRenderer/qlayer.h>

@@ -40,9 +40,9 @@
 ****************************************************************************/
 
 #include "renderlayer_p.h"
-#include "layermanager_p.h"
 #include "qlayer.h"
 #include <Qt3DCore/qscenepropertychange.h>
+#include <QVariant>
 
 QT_BEGIN_NAMESPACE
 

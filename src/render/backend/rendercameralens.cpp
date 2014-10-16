@@ -41,7 +41,6 @@
 
 #include "rendercameralens_p.h"
 #include "renderlogging.h"
-#include "cameramanager_p.h"
 
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/qcameralens.h>

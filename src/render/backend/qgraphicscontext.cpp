@@ -53,7 +53,7 @@
 #include <Qt3DRenderer/private/rendertarget_p.h>
 #include <Qt3DRenderer/private/qgraphicshelperinterface_p.h>
 #include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DRenderer/private/texturemanager_p.h>
+#include <Qt3DRenderer/private/managers_p.h>
 #include <Qt3DRenderer/private/attachmentpack_p.h>
 #include <QOpenGLShaderProgram>
 

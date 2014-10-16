@@ -46,7 +46,6 @@
 #include <Qt3DCore/private/qchangearbiter_p.h>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DRenderer/rendereraspect.h>
-#include <Qt3DRenderer/private/transformmanager_p.h>
 
 QT_BEGIN_NAMESPACE
 

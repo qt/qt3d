@@ -42,7 +42,6 @@
 #include "rendereraspect.h"
 
 #include <Qt3DRenderer/private/rendermesh_p.h>
-#include <Qt3DRenderer/private/meshmanager_p.h>
 #include <Qt3DRenderer/private/meshdatamanager_p.h>
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/private/scenemanager_p.h>
@@ -70,37 +69,21 @@
 #include <Qt3DRenderer/qeffect.h>
 #include <Qt3DCore/qcameralens.h>
 
-#include <Qt3DRenderer/private/cameramanager_p.h>
 #include <Qt3DRenderer/private/cameraselectornode_p.h>
-#include <Qt3DRenderer/private/criterionmanager_p.h>
-#include <Qt3DRenderer/private/effectmanager_p.h>
-#include <Qt3DRenderer/private/entitymanager_p.h>
 #include <Qt3DRenderer/private/layerfilternode_p.h>
-#include <Qt3DRenderer/private/layermanager_p.h>
-#include <Qt3DRenderer/private/lightmanager_p.h>
-#include <Qt3DRenderer/private/materialmanager_p.h>
 #include <Qt3DRenderer/private/meshdatamanager_p.h>
-#include <Qt3DRenderer/private/meshmanager_p.h>
 #include <Qt3DRenderer/private/rendercriterion_p.h>
 #include <Qt3DRenderer/private/renderentity_p.h>
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/private/renderpassfilternode_p.h>
-#include <Qt3DRenderer/private/renderpassmanager_p.h>
 #include <Qt3DRenderer/private/rendertargetselectornode_p.h>
-#include <Qt3DRenderer/private/shadermanager_p.h>
 #include <Qt3DRenderer/private/techniquefilternode_p.h>
-#include <Qt3DRenderer/private/techniquemanager_p.h>
-#include <Qt3DRenderer/private/transformmanager_p.h>
 #include <Qt3DRenderer/private/viewportnode_p.h>
 #include <Qt3DRenderer/private/rendertarget_p.h>
-#include <Qt3DRenderer/private/rendertargetmanager_p.h>
 #include <Qt3DRenderer/private/scenemanager_p.h>
-#include <Qt3DRenderer/private/attachmentmanager_p.h>
-#include <Qt3DRenderer/private/texturemanager_p.h>
 #include <Qt3DRenderer/private/clearbuffer_p.h>
 #include <Qt3DRenderer/private/sortmethod_p.h>
 #include <Qt3DRenderer/private/sortcriterion_p.h>
-#include <Qt3DRenderer/private/sortcriterionmanager_p.h>
 #include <Qt3DRenderer/private/rendernodefunctor_p.h>
 #include <Qt3DRenderer/private/framegraphnode_p.h>
 #include <Qt3DCore/qentity.h>

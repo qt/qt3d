@@ -45,8 +45,8 @@
 #include <qmesh.h>
 #include <sphere.h>
 #include <Qt3DRenderer/private/renderer_p.h>
+#include <Qt3DRenderer/private/managers_p.h>
 #include <Qt3DRenderer/private/meshdatamanager_p.h>
-#include <Qt3DRenderer/private/meshmanager_p.h>
 
 #include <QThread>
 #include "renderlogging.h"

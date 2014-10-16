@@ -40,9 +40,7 @@
 ****************************************************************************/
 
 #include <Qt3DRenderer/private/rendereffect_p.h>
-#include <Qt3DRenderer/private/effectmanager_p.h>
 #include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DRenderer/private/techniquemanager_p.h>
 #include <Qt3DRenderer/qeffect.h>
 #include <Qt3DRenderer/qparameter.h>
 

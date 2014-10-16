@@ -47,19 +47,11 @@
 #include <Qt3DRenderer/qtexture.h>
 #include <Qt3DRenderer/qrendertarget.h>
 
-#include <Qt3DRenderer/private/cameramanager_p.h>
 #include <Qt3DRenderer/private/cameraselectornode_p.h>
-#include <Qt3DRenderer/private/criterionmanager_p.h>
-#include <Qt3DRenderer/private/effectmanager_p.h>
-#include <Qt3DRenderer/private/entitymanager_p.h>
 #include <Qt3DRenderer/private/framegraphnode_p.h>
 #include <Qt3DRenderer/private/layerfilternode_p.h>
-#include <Qt3DRenderer/private/layermanager_p.h>
-#include <Qt3DRenderer/private/lightmanager_p.h>
-#include <Qt3DRenderer/private/materialmanager_p.h>
 #include <Qt3DRenderer/private/qmeshdata_p.h>
 #include <Qt3DRenderer/private/meshdatamanager_p.h>
-#include <Qt3DRenderer/private/meshmanager_p.h>
 #include <Qt3DRenderer/private/qparameter_p.h>
 #include <Qt3DRenderer/private/qparametermapper_p.h>
 #include <Qt3DRenderer/private/rendercameralens_p.h>
@@ -70,20 +62,12 @@
 #include <Qt3DRenderer/private/renderlayer_p.h>
 #include <Qt3DRenderer/private/renderlight_p.h>
 #include <Qt3DRenderer/private/renderpassfilternode_p.h>
-#include <Qt3DRenderer/private/renderpassmanager_p.h>
 #include <Qt3DRenderer/private/renderrenderpass_p.h>
-#include <Qt3DRenderer/private/shadermanager_p.h>
 #include <Qt3DRenderer/private/techniquefilternode_p.h>
-#include <Qt3DRenderer/private/techniquemanager_p.h>
-#include <Qt3DRenderer/private/texturemanager_p.h>
-#include <Qt3DRenderer/private/vaomanager_p.h>
 #include <Qt3DRenderer/private/viewportnode_p.h>
 #include <Qt3DRenderer/private/rendertargetselectornode_p.h>
-#include <Qt3DRenderer/private/rendertargetmanager_p.h>
-#include <Qt3DRenderer/private/attachmentmanager_p.h>
 #include <Qt3DRenderer/private/clearbuffer_p.h>
 #include <Qt3DRenderer/private/sortmethod_p.h>
-#include <Qt3DRenderer/private/sortcriterionmanager_p.h>
 #include <Qt3DRenderer/sphere.h>
 
 #include <Qt3DRenderer/qalphatest.h>

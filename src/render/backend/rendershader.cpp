@@ -40,7 +40,6 @@
 ****************************************************************************/
 
 #include "rendershader_p.h"
-#include "shadermanager_p.h"
 
 #include <QDebug>
 #include <QFile>

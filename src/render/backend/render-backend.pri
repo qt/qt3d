@@ -27,44 +27,26 @@ HEADERS += \
     $$PWD/qgraphicshelpergl2_p.h \
     $$PWD/renderview_p.h \
     $$PWD/rendercommand_p.h \
-    $$PWD/cameramanager_p.h \
     $$PWD/renderqueues_p.h \
-    $$PWD/materialmanager_p.h \
-    $$PWD/meshmanager_p.h \
-    $$PWD/matrixmanager_p.h \
-    $$PWD/vaomanager_p.h \
-    $$PWD/shadermanager_p.h \
-    $$PWD/techniquemanager_p.h \
     $$PWD/rendereffect_p.h \
-    $$PWD/effectmanager_p.h \
     $$PWD/renderrenderpass_p.h \
-    $$PWD/renderpassmanager_p.h \
     $$PWD/parameterpack_p.h \
-    $$PWD/texturemanager_p.h \
     $$PWD/texturedatamanager_p.h \
     $$PWD/renderlayer_p.h \
-    $$PWD/layermanager_p.h \
     $$PWD/renderlight_p.h \
-    $$PWD/lightmanager_p.h \
     $$PWD/renderentity_p.h \
-    $$PWD/entitymanager_p.h \
     $$PWD/rendercriterion_p.h \
-    $$PWD/criterionmanager_p.h \
-    $$PWD/framegraphmanager_p.h \
     $$PWD/rendertransform_p.h \
-    $$PWD/transformmanager_p.h \
     $$PWD/renderstate_p.h \
     $$PWD/rendertarget_p.h \
     $$PWD/renderattachment_p.h \
-    $$PWD/rendertargetmanager_p.h \
     $$PWD/renderscene_p.h \
     $$PWD/scenemanager_p.h \
     $$PWD/attachmentpack_p.h \
-    $$PWD/attachmentmanager_p.h \
-    $$PWD/sortcriterionmanager_p.h \
     $$PWD/shadervariables_p.h \
     $$PWD/qgraphicsutils_p.h \
-    $$PWD/rendernodefunctor_p.h
+    $$PWD/rendernodefunctor_p.h \
+    $$PWD/managers_p.h
 
 SOURCES += \
     $$PWD/rendereraspect.cpp \
@@ -88,38 +70,19 @@ SOURCES += \
     $$PWD/qgraphicshelpergl2.cpp \
     $$PWD/renderview.cpp \
     $$PWD/rendercommand.cpp \
-    $$PWD/cameramanager.cpp \
     $$PWD/renderqueues.cpp \
-    $$PWD/materialmanager.cpp \
-    $$PWD/meshmanager.cpp \
-    $$PWD/matrixmanager.cpp \
-    $$PWD/vaomanager.cpp \
-    $$PWD/shadermanager.cpp \
-    $$PWD/techniquemanager.cpp \
     $$PWD/rendereffect.cpp \
-    $$PWD/effectmanager.cpp \
     $$PWD/renderrenderpass.cpp \
-    $$PWD/renderpassmanager.cpp \
     $$PWD/parameterpack.cpp \
-    $$PWD/texturemanager.cpp \
     $$PWD/texturedatamanager.cpp \
     $$PWD/renderlayer.cpp \
-    $$PWD/layermanager.cpp \
     $$PWD/renderlight.cpp \
-    $$PWD/lightmanager.cpp \
     $$PWD/renderentity.cpp \
-    $$PWD/entitymanager.cpp \
     $$PWD/rendercriterion.cpp \
-    $$PWD/criterionmanager.cpp \
-    $$PWD/framegraphmanager.cpp \
     $$PWD/rendertransform.cpp \
-    $$PWD/transformmanager.cpp \
     $$PWD/renderstate.cpp \
     $$PWD/rendertarget.cpp \
     $$PWD/renderattachment.cpp \
-    $$PWD/rendertargetmanager.cpp \
     $$PWD/renderscene.cpp \
     $$PWD/scenemanager.cpp \
-    $$PWD/attachmentpack.cpp \
-    $$PWD/attachmentmanager.cpp \
-    $$PWD/sortcriterionmanager.cpp
+    $$PWD/attachmentpack.cpp

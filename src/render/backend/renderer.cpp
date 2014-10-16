@@ -59,19 +59,9 @@
 #include <Qt3DRenderer/qeffect.h>
 
 #include <Qt3DRenderer/private/blendstate_p.h>
-#include <Qt3DRenderer/private/cameramanager_p.h>
 #include <Qt3DRenderer/private/cameraselectornode_p.h>
-#include <Qt3DRenderer/private/criterionmanager_p.h>
-#include <Qt3DRenderer/private/effectmanager_p.h>
-#include <Qt3DRenderer/private/entitymanager_p.h>
-#include <Qt3DRenderer/private/framegraphmanager_p.h>
 #include <Qt3DRenderer/private/framegraphvisitor_p.h>
-#include <Qt3DRenderer/private/layermanager_p.h>
-#include <Qt3DRenderer/private/lightmanager_p.h>
-#include <Qt3DRenderer/private/materialmanager_p.h>
-#include <Qt3DRenderer/private/matrixmanager_p.h>
 #include <Qt3DRenderer/private/meshdatamanager_p.h>
-#include <Qt3DRenderer/private/meshmanager_p.h>
 #include <Qt3DRenderer/private/qgraphicscontext_p.h>
 #include <Qt3DRenderer/private/rendercameralens_p.h>
 #include <Qt3DRenderer/private/rendercommand_p.h>
@@ -79,7 +69,6 @@
 #include <Qt3DRenderer/private/rendermaterial_p.h>
 #include <Qt3DRenderer/private/rendermesh_p.h>
 #include <Qt3DRenderer/private/renderpassfilternode_p.h>
-#include <Qt3DRenderer/private/renderpassmanager_p.h>
 #include <Qt3DRenderer/private/renderqueues_p.h>
 #include <Qt3DRenderer/private/rendershader_p.h>
 #include <Qt3DRenderer/private/renderstate_p.h>
@@ -87,18 +76,10 @@
 #include <Qt3DRenderer/private/rendertextureprovider_p.h>
 #include <Qt3DRenderer/private/renderthread_p.h>
 #include <Qt3DRenderer/private/renderview_p.h>
-#include <Qt3DRenderer/private/shadermanager_p.h>
 #include <Qt3DRenderer/private/techniquefilternode_p.h>
-#include <Qt3DRenderer/private/techniquemanager_p.h>
 #include <Qt3DRenderer/private/texturedatamanager_p.h>
-#include <Qt3DRenderer/private/texturemanager_p.h>
-#include <Qt3DRenderer/private/transformmanager_p.h>
-#include <Qt3DRenderer/private/rendertargetmanager_p.h>
 #include <Qt3DRenderer/private/scenemanager_p.h>
-#include <Qt3DRenderer/private/vaomanager_p.h>
 #include <Qt3DRenderer/private/viewportnode_p.h>
-#include <Qt3DRenderer/private/attachmentmanager_p.h>
-#include <Qt3DRenderer/private/sortcriterionmanager_p.h>
 #include <Qt3DRenderer/private/abstractsceneparser_p.h>
 
 #include <Qt3DCore/qcameralens.h>

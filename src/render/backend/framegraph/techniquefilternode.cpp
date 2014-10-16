@@ -42,7 +42,7 @@
 #include "techniquefilternode_p.h"
 #include "qcriterion.h"
 #include "qtechniquefilter.h"
-#include <Qt3DRenderer/private/criterionmanager_p.h>
+#include <Qt3DRenderer/private/managers_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE

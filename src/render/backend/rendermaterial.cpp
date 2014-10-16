@@ -48,7 +48,6 @@
 #include "qtechnique.h"
 #include "qmaterial.h"
 #include "qeffect.h"
-#include "materialmanager_p.h"
 
 #include <Qt3DCore/qscenepropertychange.h>
 #include <QOpenGLShaderProgram>
