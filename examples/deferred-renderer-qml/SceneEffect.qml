@@ -49,7 +49,7 @@ Effect {
         Technique {
             openGLFilter {api : OpenGLFilter.Desktop; profile : OpenGLFilter.Core; minorVersion : 1; majorVersion : 3 }
             renderPasses : RenderPass {
-                criteria : Annotation { name : "pass"; value : "geometry" }
+                annotations : Annotation { name : "pass"; value : "geometry" }
                 shaderProgram : ShaderProgram {
                     id : sceneShaderGL3
                     vertexShaderCode:
@@ -100,7 +100,7 @@ Effect {
         Technique {
             openGLFilter {api : OpenGLFilter.Desktop; profile : OpenGLFilter.Core; minorVersion : 0; majorVersion : 2 }
             renderPasses : RenderPass {
-                criteria : Annotation { name : "pass"; value : "geometry" }
+                annotations : Annotation { name : "pass"; value : "geometry" }
                 shaderProgram : ShaderProgram {
                     id : sceneShaderGL2
                     vertexShaderCode:

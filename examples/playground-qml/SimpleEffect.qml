@@ -49,7 +49,7 @@ Effect {
         Technique {
             id: technique1
 
-            criteria : [
+            annotations : [
                 TechniqueCriterion { criterionType : TechniqueCriterion.CustomType; criterionCustomType: "useEarlyZ"; criterionValue : true},
                 TechniqueCriterion { criterionType : TechniqueCriterion.RenderingStyle; criterionValue : "forward"}
             ]
@@ -71,7 +71,7 @@ Effect {
         Technique {
             id: technique2
 
-            criteria : [
+            annotations : [
                 TechniqueCriterion { criterionType : TechniqueCriterion.CustomType; criterionCustomType: "useEarlyZ"; criterionValue : false},
                 TechniqueCriterion { criterionType : TechniqueCriterion.RenderingStyle; criterionValue : "forward"}
             ]
@@ -86,7 +86,7 @@ Effect {
         Technique {
             id: technique3
 
-            criteria : [
+            annotations : [
                 TechniqueCriterion { criterionType : TechniqueCriterion.CustomType; criterionCustomType: "useEarlyZ"; criterionValue : false},
                 TechniqueCriterion { criterionType : TechniqueCriterion.RenderingStyle; criterionValue : "deferred"}
             ]

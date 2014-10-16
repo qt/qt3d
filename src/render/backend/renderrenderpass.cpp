@@ -78,7 +78,7 @@ void RenderRenderPass::updateFromPeer(QNode *peer)
     // TO DO: We probably need a QParameterMapper manager
     Q_FOREACH (QParameterMapper *binding, pass->bindings())
         appendBinding(binding);
-    Q_FOREACH (QAnnotation *c, pass->criteria())
+    Q_FOREACH (QAnnotation *c, pass->annotations())
         appendCriterion(c);
     Q_FOREACH (QRenderState *renderState, pass->renderStates())
         appendRenderState(renderState);

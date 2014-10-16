@@ -66,7 +66,7 @@ class QRenderPassPrivate;
 class QT3DRENDERERSHARED_EXPORT QRenderPass : public QNode
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3D::QShaderProgram * shaderProgram READ shaderProgram WRITE setShaderProgram NOTIFY shaderProgramChanged)
+    Q_PROPERTY(Qt3D::QShaderProgram *shaderProgram READ shaderProgram WRITE setShaderProgram NOTIFY shaderProgramChanged)
 
 public:
     explicit QRenderPass(QNode *parent = 0);
@@ -83,10 +83,9 @@ public:
     void setShaderProgram(QShaderProgram *shaderProgram);
     QShaderProgram *shaderProgram() const;
 
-    void addCriterion(QAnnotation *criterion);
-    void removeCriterion(QAnnotation *criterion);
-    QList<QAnnotation *> criteria() const;
-    void clearCriteria();
+    void addAnnotation(QAnnotation *criterion);
+    void removeAnnotation(QAnnotation *criterion);
+    QList<QAnnotation *> annotations() const;
 
     void addBinding(QParameterMapper *binding);
     void removeBinding(QParameterMapper *binding);

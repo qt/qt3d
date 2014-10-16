@@ -69,7 +69,7 @@ FinalEffect::FinalEffect(Qt3D::QNode *parent)
     gl3Shader->setVertexShaderSourceFile(QStringLiteral(":/final_gl3.vert"));
     gl3Shader->setFragmentShaderSourceFile(QStringLiteral(":/final_gl3.frag"));
 
-    m_gl3Pass->addCriterion(m_passCriterion);
+    m_gl3Pass->addAnnotation(m_passCriterion);
     m_gl3Pass->setShaderProgram(gl3Shader);
     m_gl3Technique->addPass(m_gl3Pass);
 
@@ -77,7 +77,7 @@ FinalEffect::FinalEffect(Qt3D::QNode *parent)
     gl2Shader->setVertexShaderSourceFile(QStringLiteral(":/final_gl2.vert"));
     gl2Shader->setFragmentShaderSourceFile(QStringLiteral(":/final_gl2.frag"));
 
-    m_gl2Pass->addCriterion(m_passCriterion);
+    m_gl2Pass->addAnnotation(m_passCriterion);
     m_gl2Pass->setShaderProgram(gl2Shader);
     m_gl2Technique->addPass(m_gl2Pass);
 

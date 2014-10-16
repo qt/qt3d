@@ -82,7 +82,7 @@ Effect {
 
             renderPasses: [
                 RenderPass {
-                    criteria: [ Annotation { name: "pass"; value: "shadowmap" } ]
+                    annotations: [ Annotation { name: "pass"; value: "shadowmap" } ]
 
                     shaderProgram: ShaderProgram {
                         vertexShaderSourceFile:   ":/shaders/shadowmap.vert"
@@ -96,7 +96,7 @@ Effect {
                 },
 
                 RenderPass {
-                    criteria: [ Annotation { name : "pass"; value : "forward" } ]
+                    annotations: [ Annotation { name : "pass"; value : "forward" } ]
 
                     // The bindings property allows us to map from names of parameters (uniforms or vertex attributes)
                     // within a shader to more friendly names in QML. By default the parameter names are exposed from

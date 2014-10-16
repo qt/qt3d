@@ -56,13 +56,13 @@ Quick3DRenderPass::Quick3DRenderPass(QObject *parent)
 {
 }
 
-QQmlListProperty<QAnnotation> Quick3DRenderPass::criteriaList()
+QQmlListProperty<QAnnotation> Quick3DRenderPass::annotationList()
 {
     return QQmlListProperty<Qt3D::QAnnotation>(this, 0,
-                                              &Quick3DRenderPass::appendCriteria,
-                                              &Quick3DRenderPass::criteriaCount,
-                                              &Quick3DRenderPass::criterionAt,
-                                              &Quick3DRenderPass::clearCriteria);
+                                              &Quick3DRenderPass::appendAnnotation,
+                                              &Quick3DRenderPass::annotationsCount,
+                                              &Quick3DRenderPass::annotationAt,
+                                              &Quick3DRenderPass::clearAnnotations);
 }
 
 QQmlListProperty<QParameterMapper> Quick3DRenderPass::bindingList()
@@ -83,29 +83,29 @@ QQmlListProperty<QRenderState> Quick3DRenderPass::renderStateList()
                                               &Quick3DRenderPass::clearRenderStates);
 }
 
-void Quick3DRenderPass::appendCriteria(QQmlListProperty<QAnnotation> *list, QAnnotation *criterion)
+void Quick3DRenderPass::appendAnnotation(QQmlListProperty<QAnnotation> *list, QAnnotation *annotation)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
-    rPass->parentRenderPass()->addCriterion(criterion);
+    rPass->parentRenderPass()->addAnnotation(annotation);
 }
 
-QAnnotation *Quick3DRenderPass::criterionAt(QQmlListProperty<QAnnotation> *list, int index)
+QAnnotation *Quick3DRenderPass::annotationAt(QQmlListProperty<QAnnotation> *list, int index)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
-    return rPass->parentRenderPass()->criteria().at(index);
+    return rPass->parentRenderPass()->annotations().at(index);
 }
 
-int Quick3DRenderPass::criteriaCount(QQmlListProperty<QAnnotation> *list)
+int Quick3DRenderPass::annotationsCount(QQmlListProperty<QAnnotation> *list)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
-    return rPass->parentRenderPass()->criteria().count();
+    return rPass->parentRenderPass()->annotations().count();
 }
 
-void Quick3DRenderPass::clearCriteria(QQmlListProperty<QAnnotation> *list)
+void Quick3DRenderPass::clearAnnotations(QQmlListProperty<QAnnotation> *list)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
-    Q_FOREACH (QAnnotation *c, rPass->parentRenderPass()->criteria())
-        rPass->parentRenderPass()->removeCriterion(c);
+    Q_FOREACH (QAnnotation *c, rPass->parentRenderPass()->annotations())
+        rPass->parentRenderPass()->removeAnnotation(c);
 }
 
 void Quick3DRenderPass::appendBinding(QQmlListProperty<QParameterMapper> *list, QParameterMapper *binding)

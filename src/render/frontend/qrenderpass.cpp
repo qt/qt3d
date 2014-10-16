@@ -66,8 +66,8 @@ void QRenderPass::copy(const QNode *ref)
     const QRenderPass *other = static_cast<const QRenderPass*>(ref);
     d_func()->m_shader = qobject_cast<QShaderProgram *>(QNodePrivate::get(other->d_func()->m_shader)->clone());
 
-    Q_FOREACH (QAnnotation *crit, other->d_func()->m_criteriaList)
-        addCriterion(qobject_cast<QAnnotation *>(QNodePrivate::get(crit)->clone()));
+    Q_FOREACH (QAnnotation *crit, other->d_func()->m_annotationList)
+        addAnnotation(qobject_cast<QAnnotation *>(QNodePrivate::get(crit)->clone()));
     Q_FOREACH (QParameterMapper *binding, other->d_func()->m_bindings)
         addBinding(qobject_cast<QParameterMapper *>(QNodePrivate::get(binding)->clone()));
     Q_FOREACH (QRenderState *renderState, other->d_func()->m_renderStates)
@@ -138,51 +138,44 @@ QShaderProgram *QRenderPass::shaderProgram() const
     return d->m_shader;
 }
 
-void QRenderPass::addCriterion(QAnnotation *criterion)
+void QRenderPass::addAnnotation(QAnnotation *annotation)
 {
     Q_D(QRenderPass);
-    if (!d->m_criteriaList.contains(criterion)) {
-        d->m_criteriaList.append(criterion);
+    if (!d->m_annotationList.contains(annotation)) {
+        d->m_annotationList.append(annotation);
 
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
         // 1) The backend gets notified about it's creation
         // 2) When the current node is destroyed, it gets destroyed as well
-        if (!criterion->parent())
-            criterion->setParent(this);
+        if (!annotation->parent())
+            annotation->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
             change->setPropertyName(QByteArrayLiteral("criterion"));
-            change->setValue(QVariant::fromValue(qobject_cast<QAnnotation *>(QNodePrivate::get(criterion)->clone())));
+            change->setValue(QVariant::fromValue(qobject_cast<QAnnotation *>(QNodePrivate::get(annotation)->clone())));
             d->notifyObservers(change);
         }
     }
 }
 
-void QRenderPass::removeCriterion(QAnnotation *criterion)
+void QRenderPass::removeAnnotation(QAnnotation *annotation)
 {
     Q_D(QRenderPass);
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, this));
         change->setPropertyName(QByteArrayLiteral("criterion"));
-        change->setValue(QVariant::fromValue(criterion->uuid()));
+        change->setValue(QVariant::fromValue(annotation->uuid()));
         d->notifyObservers(change);
     }
-    d->m_criteriaList.removeOne(criterion);
+    d->m_annotationList.removeOne(annotation);
 }
 
-QList<QAnnotation *> QRenderPass::criteria() const
+QList<QAnnotation *> QRenderPass::annotations() const
 {
     Q_D(const QRenderPass);
-    return d->m_criteriaList;
-}
-
-void QRenderPass::clearCriteria()
-{
-    Q_D(QRenderPass);
-    while (d->m_criteriaList.size() > 0)
-        removeCriterion(d->m_criteriaList.takeFirst());
+    return d->m_annotationList;
 }
 
 void QRenderPass::addBinding(QParameterMapper *binding)

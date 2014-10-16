@@ -263,7 +263,7 @@ Entity {
                         openGLFilter {api : OpenGLFilter.Desktop; profile : OpenGLFilter.Core; minorVersion : 1; majorVersion : 3 }
                         renderPasses : [
                             RenderPass {
-                                criteria : [Annotation {name : "Name"; value : "TextureLighting" }]
+                                annotations : [Annotation {name : "Name"; value : "TextureLighting" }]
                                 bindings : [ // Add only the bindings needed for a shader
                                     ParameterMapper {parameterName: "vertexTexCoord"; shaderVariableName: "texCoord0"; bindingType: ParameterMapper.Attribute},
                                     ParameterMapper {parameterName: "tex"; shaderVariableName: "texture"; bindingType: ParameterMapper.Uniform},
@@ -326,7 +326,7 @@ Entity {
                                 }
                             },
                             RenderPass {
-                                criteria : [Annotation {name : "Name"; value : "Texture" }]
+                                annotations : [Annotation {name : "Name"; value : "Texture" }]
                                 shaderProgram : ShaderProgram {
                                     vertexShaderCode : "
                                     #version 140
@@ -356,7 +356,7 @@ Entity {
                                 }
                             },
                             RenderPass {
-                                criteria : [Annotation {name : "Name"; value : "Lighting" }]
+                                annotations : [Annotation {name : "Name"; value : "Lighting" }]
                                 renderStates : [BlendState {srcRGB: BlendState.One; dstRGB : BlendState.One},
                                               BlendEquation {mode: BlendEquation.FuncAdd},
                                               CullFace { mode : CullFace.Back },
@@ -413,7 +413,7 @@ Entity {
                                 }
                             },
                             RenderPass {
-                                criteria : Annotation {name : "Name"; value : "Final" }
+                                annotations : Annotation {name : "Name"; value : "Final" }
                                 shaderProgram : ShaderProgram {
                                     vertexShaderCode: "
                                     #version 140
@@ -493,7 +493,7 @@ Entity {
 
                         renderPasses : [
                             RenderPass {
-                                criteria : []
+                                annotations : []
                                 bindings : [ // Add only the bindings needed for a shader
                                     ParameterMapper {parameterName: "ambient"; shaderVariableName: "ka"; bindingType: ParameterMapper.Uniform},
                                     ParameterMapper {parameterName: "diffuse"; shaderVariableName: "kd"; bindingType: ParameterMapper.Uniform},
