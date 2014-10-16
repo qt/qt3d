@@ -79,7 +79,7 @@ void RenderRenderPass::updateFromPeer(QNode *peer)
     Q_FOREACH (QParameterMapper *binding, pass->bindings())
         appendBinding(binding);
     Q_FOREACH (QAnnotation *c, pass->annotations())
-        appendCriterion(c);
+        appendAnnotation(c);
     Q_FOREACH (QRenderState *renderState, pass->renderStates())
         appendRenderState(renderState);
 }
@@ -90,8 +90,8 @@ void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
     switch (e->type()) {
 
     case NodeAdded: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("criterion")) {
-            appendCriterion(propertyChange->value().value<QAnnotation *>());
+        if (propertyChange->propertyName() == QByteArrayLiteral("annotation")) {
+            appendAnnotation(propertyChange->value().value<QAnnotation *>());
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("shaderProgram")) {
             m_shaderUuid = propertyChange->value().toUuid();
@@ -106,8 +106,8 @@ void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
     }
 
     case NodeRemoved: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("criterion")) {
-            removeCriterion(propertyChange->value().toUuid());
+        if (propertyChange->propertyName() == QByteArrayLiteral("annotation")) {
+            removeAnnotation(propertyChange->value().toUuid());
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("shaderProgram")) {
             m_shaderUuid = QUuid();
@@ -136,9 +136,9 @@ QList<QParameterMapper *> RenderRenderPass::bindings() const
     return m_bindings.values();
 }
 
-QList<QUuid> RenderRenderPass::criteria() const
+QList<QUuid> RenderRenderPass::annotations() const
 {
-    return m_criteriaList;
+    return m_annotationList;
 }
 
 QList<QRenderState *> RenderRenderPass::renderStates() const
@@ -146,15 +146,15 @@ QList<QRenderState *> RenderRenderPass::renderStates() const
     return m_renderStates.values();
 }
 
-void RenderRenderPass::appendCriterion(QAnnotation *criterion)
+void RenderRenderPass::appendAnnotation(QAnnotation *annotation)
 {
-    if (!m_criteriaList.contains(criterion->uuid()))
-        m_criteriaList.append(criterion->uuid());
+    if (!m_annotationList.contains(annotation->uuid()))
+        m_annotationList.append(annotation->uuid());
 }
 
-void RenderRenderPass::removeCriterion(const QUuid &criterionId)
+void RenderRenderPass::removeAnnotation(const QUuid &annotationId)
 {
-    m_criteriaList.removeOne(criterionId);
+    m_annotationList.removeOne(annotationId);
 }
 
 void RenderRenderPass::appendBinding(QParameterMapper *binding)

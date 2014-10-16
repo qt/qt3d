@@ -497,12 +497,12 @@ QList<RenderRenderPass *> RenderView::findRenderPassesForTechnique(RenderTechniq
 
             if (renderPass != Q_NULLPTR) {
                 bool findMatch = (m_data->m_passFilter == Q_NULLPTR || m_data->m_passFilter->filters().size() == 0) ? true : false;
-                if (!findMatch && renderPass->criteria().size() >= m_data->m_passFilter->filters().size())
+                if (!findMatch && renderPass->annotations().size() >= m_data->m_passFilter->filters().size())
                 {
                     Q_FOREACH (const QUuid &refCritId, m_data->m_passFilter->filters()) {
                         RenderAnnotation *refCriterion = m_renderer->criterionManager()->lookupResource(refCritId);
                         findMatch = false;
-                        Q_FOREACH (const QUuid &critId, renderPass->criteria()) {
+                        Q_FOREACH (const QUuid &critId, renderPass->annotations()) {
                             RenderAnnotation *rCrit = m_renderer->criterionManager()->lookupResource(critId);
                             if ((findMatch = (*rCrit == *refCriterion)))
                                 break;

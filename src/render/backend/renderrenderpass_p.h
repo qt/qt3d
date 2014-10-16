@@ -75,11 +75,11 @@ public:
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
     QUuid shaderProgram() const;
     QList<QParameterMapper *> bindings() const;
-    QList<QUuid> criteria() const;
+    QList<QUuid> annotations() const;
     QList<QRenderState *> renderStates() const;
 
-    void appendCriterion(QAnnotation *criterion);
-    void removeCriterion(const QUuid &criterionId);
+    void appendAnnotation(QAnnotation *criterion);
+    void removeAnnotation(const QUuid &criterionId);
 
     void appendBinding(QParameterMapper *binding);
     void removeBinding(const QUuid &bindingId);
@@ -91,7 +91,7 @@ private:
     QUuid m_shaderUuid;
     QHash<QUuid, QParameterMapper *> m_bindings;
     QHash<QUuid, QRenderState *> m_renderStates;
-    QList<QUuid> m_criteriaList;
+    QList<QUuid> m_annotationList;
 };
 
 } // Render
