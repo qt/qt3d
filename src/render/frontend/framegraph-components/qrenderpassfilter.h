@@ -61,9 +61,9 @@ class QT3DRENDERERSHARED_EXPORT QRenderPassFilter : public QFrameGraphItem
 public:
     explicit QRenderPassFilter(QNode *parent = 0);
 
-    QList<QAnnotation *> criteria() const;
-    void addCriterion(QAnnotation *criterion);
-    void removeCriterion(QAnnotation *criterion);
+    QList<QAnnotation *> includes() const;
+    void addInclude(QAnnotation *criterion);
+    void removeInclude(QAnnotation *criterion);
 
 protected:
     QRenderPassFilter(QRenderPassFilterPrivate &dd, QNode *parent = 0);

@@ -58,19 +58,19 @@ namespace Quick {
 class QT3DQUICKRENDERERSHARED_EXPORT Quick3DRenderPassFilter : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3D::QAnnotation> criteria READ criteriaList)
+    Q_PROPERTY(QQmlListProperty<Qt3D::QAnnotation> includes READ includeList)
 public:
     explicit Quick3DRenderPassFilter(QObject *parent = 0);
 
-    QQmlListProperty<Qt3D::QAnnotation> criteriaList();
+    QQmlListProperty<Qt3D::QAnnotation> includeList();
 
     inline QRenderPassFilter *parentRenderPassFilter() const { return qobject_cast<Qt3D::QRenderPassFilter*>(parent()); }
 
 private:
-    static void appendCriterion(QQmlListProperty<QAnnotation> *list, QAnnotation *criterion);
-    static QAnnotation *criterionAt(QQmlListProperty<QAnnotation> *list, int index);
-    static int criteriaCount(QQmlListProperty<QAnnotation> *list);
-    static void clearCriteria(QQmlListProperty<QAnnotation> *list);
+    static void appendInclude(QQmlListProperty<QAnnotation> *list, QAnnotation *criterion);
+    static QAnnotation *includeAt(QQmlListProperty<QAnnotation> *list, int index);
+    static int includesCount(QQmlListProperty<QAnnotation> *list);
+    static void clearIncludes(QQmlListProperty<QAnnotation> *list);
 };
 
 } // Quick

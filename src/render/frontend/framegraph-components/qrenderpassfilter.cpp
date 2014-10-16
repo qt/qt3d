@@ -58,44 +58,44 @@ QRenderPassFilter::QRenderPassFilter(QRenderPassFilterPrivate &dd, QNode *parent
 {
 }
 
-QList<QAnnotation *> QRenderPassFilter::criteria() const
+QList<QAnnotation *> QRenderPassFilter::includes() const
 {
     Q_D(const QRenderPassFilter);
-    return d->m_criteriaList;
+    return d->m_includeList;
 }
 
-void QRenderPassFilter::addCriterion(QAnnotation *criterion)
+void QRenderPassFilter::addInclude(QAnnotation *annotation)
 {
     Q_D(QRenderPassFilter);
-    if (!d->m_criteriaList.contains(criterion)) {
-        d->m_criteriaList.append(criterion);
+    if (!d->m_includeList.contains(annotation)) {
+        d->m_includeList.append(annotation);
 
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
         // 1) The backend gets notified about it's creation
         // 2) When the current node is destroyed, it gets destroyed as well
-        if (!criterion->parent())
-            criterion->setParent(this);
+        if (!annotation->parent())
+            annotation->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeAdded, this));
-            propertyChange->setPropertyName(QByteArrayLiteral("renderPassCriterion"));
-            propertyChange->setValue(QVariant::fromValue(criterion));
+            propertyChange->setPropertyName(QByteArrayLiteral("include"));
+            propertyChange->setValue(QVariant::fromValue(annotation));
             d->notifyObservers(propertyChange);
         }
     }
 }
 
-void QRenderPassFilter::removeCriterion(QAnnotation *criterion)
+void QRenderPassFilter::removeInclude(QAnnotation *annotation)
 {
     Q_D(QRenderPassFilter);
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeRemoved, this));
-        propertyChange->setPropertyName(QByteArrayLiteral("renderPassCriterion"));
-        propertyChange->setValue(QVariant::fromValue(criterion));
+        propertyChange->setPropertyName(QByteArrayLiteral("include"));
+        propertyChange->setValue(QVariant::fromValue(annotation));
         d->notifyObservers(propertyChange);
     }
-    d->m_criteriaList.removeOne(criterion);
+    d->m_includeList.removeOne(annotation);
 }
 
 void QRenderPassFilter::copy(const QNode *ref)
@@ -104,8 +104,8 @@ void QRenderPassFilter::copy(const QNode *ref)
     const QRenderPassFilter *other = static_cast<const QRenderPassFilter*>(ref);
     Q_FOREACH (QFrameGraphItem *fgChild, other->d_func()->m_fgChildren)
         appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(QNodePrivate::get(fgChild)->clone()));
-    Q_FOREACH (QAnnotation *c, other->d_func()->m_criteriaList)
-        addCriterion(qobject_cast<QAnnotation *>(QNodePrivate::get(c)->clone()));
+    Q_FOREACH (QAnnotation *c, other->d_func()->m_includeList)
+        addInclude(qobject_cast<QAnnotation *>(QNodePrivate::get(c)->clone()));
 }
 
 } // Qt3D

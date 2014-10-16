@@ -84,7 +84,7 @@ TechniqueFilter {
                     LayerFilter {
                         id : layerFilter
                         objectName : "layerFilter"
-                        RenderPassFilter { criteria : [Annotation {name : "Name"; value : "TextureLighting";}] }
+                        RenderPassFilter { includes : [Annotation {name : "Name"; value : "TextureLighting";}] }
                     }
                 }
             }
@@ -108,10 +108,10 @@ TechniqueFilter {
                         }
                     ]
                 }
-                RenderPassFilter { criteria : [Annotation {name : "Name"; value : "Texture";}] }
-                RenderPassFilter { criteria : [Annotation {name : "Name"; value : "Lighting";}] }
+                RenderPassFilter { includes : [Annotation {name : "Name"; value : "Texture";}] }
+                RenderPassFilter { includes : [Annotation {name : "Name"; value : "Lighting";}] }
             }
-            RenderPassFilter { criteria : [Annotation {name : "Name"; value : "Final";}] }
+            RenderPassFilter { includes : [Annotation {name : "Name"; value : "Final";}] }
         }
     }
 }

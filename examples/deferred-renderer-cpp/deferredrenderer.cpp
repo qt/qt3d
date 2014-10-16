@@ -70,7 +70,7 @@ void DeferredRenderer::setGBuffer(Qt3D::QRenderTarget *gBuffer)
 void DeferredRenderer::setGeometryPassCriteria(QList<Qt3D::QAnnotation *> criteria)
 {
     Q_FOREACH (Qt3D::QAnnotation *c, criteria)
-        m_geometryPassFilter->addCriterion(c);
+        m_geometryPassFilter->addInclude(c);
 }
 
 void DeferredRenderer::setFinalPassCriteria(QList<Qt3D::QAnnotation *> criteria)
