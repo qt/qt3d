@@ -61,7 +61,6 @@ RenderShader::RenderShader()
     , m_isLoaded(false)
 {
     m_shaderCode.resize(static_cast<int>(QShaderProgram::Compute) + 1);
-    m_shaderSourceFiles.resize(static_cast<int>(QShaderProgram::Compute) + 1);
 }
 
 RenderShader::~RenderShader()
@@ -80,7 +79,6 @@ void RenderShader::updateFromPeer(QNode *peer)
 
     for (int i = QShaderProgram::Vertex; i <= QShaderProgram::Compute; ++i) {
         m_shaderCode[i].clear();
-        m_shaderSourceFiles[i].clear();
     }
 
     m_isLoaded = false;
@@ -88,7 +86,6 @@ void RenderShader::updateFromPeer(QNode *peer)
     for (int i = QShaderProgram::Vertex; i <= QShaderProgram::Compute; ++i) {
         QShaderProgram::ShaderType type = static_cast<const QShaderProgram::ShaderType>(i);
         m_shaderCode[i] = shader->shaderCode(type);
-        m_shaderSourceFiles[i] = shader->shaderSourceFile(type);
     }
 }
 
@@ -125,24 +122,6 @@ void RenderShader::sceneChangeEvent(const QSceneChangePtr &e)
             m_isLoaded = false;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("computeSourceCode")) {
             m_shaderCode[QShaderProgram::Compute] = propertyValue.toByteArray();
-            m_isLoaded = false;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("vertexSourceFile")) {
-            m_shaderSourceFiles[QShaderProgram::Vertex] = propertyValue.toString();
-            m_isLoaded = false;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("fragmentSourceFile")) {
-            m_shaderSourceFiles[QShaderProgram::Fragment] = propertyValue.toString();
-            m_isLoaded = false;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("tessellationControlSourceFile")) {
-            m_shaderSourceFiles[QShaderProgram::TessellationControl] = propertyValue.toString();
-            m_isLoaded = false;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("tessellationEvaluationSourceFile")) {
-            m_shaderSourceFiles[QShaderProgram::TessellationEvaluation] = propertyValue.toString();
-            m_isLoaded = false;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("geometrySourceFile")) {
-            m_shaderSourceFiles[QShaderProgram::Geometry] = propertyValue.toString();
-            m_isLoaded = false;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("computeSourceFile")) {
-            m_shaderSourceFiles[QShaderProgram::Compute] = propertyValue.toString();
             m_isLoaded = false;
         }
     }
@@ -204,17 +183,6 @@ QOpenGLShaderProgram* RenderShader::createProgram(QGraphicsContext *context)
 
     for (int i = QShaderProgram::Vertex; i <= QShaderProgram::Compute; ++i) {
         QShaderProgram::ShaderType type = static_cast<const QShaderProgram::ShaderType>(i);
-        const QString sourceFile = m_shaderSourceFiles[type];
-        if (!sourceFile.isEmpty()) {
-            QFile f(sourceFile);
-            if (!f.exists()) {
-                qWarning() << "Couldn't read shader source file:" << sourceFile;
-            } else {
-                f.open(QIODevice::ReadOnly | QIODevice::Text);
-                m_shaderCode[type] = f.readAll();
-            }
-        }
-
         // Compile shaders
         if (!m_shaderCode[type].isEmpty()) {
             if (!p->addShaderFromSourceCode(shaderType(type), m_shaderCode[type]))

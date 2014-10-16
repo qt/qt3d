@@ -69,6 +69,7 @@
 #include <QColor>
 #include <QVector2D>
 #include <QVector3D>
+#include <QUrl>
 
 // need to move these to somewhere common?
 #include <Qt3DRenderer/private/renderstate_p.h>
@@ -751,8 +752,8 @@ void GLTFParser::processJSONProgram( QString id, QJsonObject jsonObj)
         return;
     }
 
-    prog->setFragmentShaderSourceFile(m_shaderPaths[fragName]);
-    prog->setVertexShaderSourceFile(m_shaderPaths[vertName]);
+    prog->setFragmentShaderCode(Qt3D::QShaderProgram::loadSource(QUrl(m_shaderPaths[fragName])));
+    prog->setVertexShaderCode(Qt3D::QShaderProgram::loadSource(QUrl(m_shaderPaths[vertName])));
     m_programs[id] = prog;
 }
 

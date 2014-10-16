@@ -102,9 +102,9 @@ Effect {
                     ]
 
                     shaderProgram: ShaderProgram {
-                        vertexShaderSourceFile:   ":/shaders/robustwireframe.vert"
-                        geometryShaderSourceFile: ":/shaders/robustwireframe.geom"
-                        fragmentShaderSourceFile: ":/shaders/robustwireframe.frag"
+                        vertexShaderCode: loadSource("qrc:/shaders/robustwireframe.vert")
+                        geometryShaderCode: loadSource("qrc:/shaders/robustwireframe.geom")
+                        fragmentShaderCode: loadSource("qrc:/shaders/robustwireframe.frag")
                     }
                 }
             ]

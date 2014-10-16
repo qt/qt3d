@@ -44,6 +44,7 @@
 #include <Qt3DCore/qscenepropertychange.h>
 #include <QDebug>
 #include <QFile>
+#include <QUrl>
 
 QT_BEGIN_NAMESPACE
 
@@ -58,12 +59,6 @@ void QShaderProgram::copy(const QNode *ref)
 {
     QNode::copy(ref);
     const QShaderProgram *prog = static_cast<const QShaderProgram*>(ref);
-    d_func()->m_vertexSourceFile = prog->d_func()->m_vertexSourceFile;
-    d_func()->m_tessControlSourceFile = prog->d_func()->m_tessControlSourceFile;
-    d_func()->m_tessEvalSourceFile = prog->d_func()->m_tessEvalSourceFile;
-    d_func()->m_geometrySourceFile = prog->d_func()->m_geometrySourceFile;
-    d_func()->m_fragmentSourceFile = prog->d_func()->m_fragmentSourceFile;
-    d_func()->m_computeSourceFile = prog->d_func()->m_computeSourceFile;
 
     d_func()->m_vertexShaderCode = prog->d_func()->m_vertexShaderCode;
     d_func()->m_tessControlShaderCode = prog->d_func()->m_tessControlShaderCode;
@@ -81,143 +76,6 @@ QShaderProgram::QShaderProgram(QNode *parent)
 QShaderProgram::QShaderProgram(QShaderProgramPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
-}
-
-void QShaderProgram::setVertexShaderSourceFile(const QString& vertexShaderSourceFile)
-{
-    Q_D(QShaderProgram);
-    if (vertexShaderSourceFile != d->m_vertexSourceFile) {
-        d->m_vertexSourceFile = vertexShaderSourceFile;
-        emit vertexShaderSourceFileChanged();
-    }
-}
-
-QString QShaderProgram::vertexShaderSourceFile() const
-{
-    Q_D(const QShaderProgram);
-    return d->m_vertexSourceFile;
-}
-
-void QShaderProgram::setTessellationControlShaderSourceFile(const QString &tessellationControlShaderSourceFile)
-{
-    Q_D(QShaderProgram);
-    if (tessellationControlShaderSourceFile != d->m_tessControlSourceFile) {
-        d->m_tessControlSourceFile = tessellationControlShaderSourceFile;
-        emit tessellationControlShaderSourceFileChanged();
-    }
-}
-
-QString QShaderProgram::tessellationControlShaderSourceFile() const
-{
-    Q_D(const QShaderProgram);
-    return d->m_tessControlSourceFile;
-}
-
-void QShaderProgram::setTessellationEvaluationShaderSourceFile(const QString &tessellationEvaluationShaderSourceFile)
-{
-    Q_D(QShaderProgram);
-    if (tessellationEvaluationShaderSourceFile != d->m_tessEvalSourceFile) {
-        d->m_tessEvalSourceFile = tessellationEvaluationShaderSourceFile;
-        emit tessellationEvaluationShaderSourceFileChanged();
-    }
-}
-
-QString QShaderProgram::tessellationEvaluationShaderSourceFile() const
-{
-    Q_D(const QShaderProgram);
-    return d->m_tessEvalSourceFile;
-}
-
-void QShaderProgram::setGeometryShaderSourceFile(const QString &geometryShaderSourceFile)
-{
-    Q_D(QShaderProgram);
-    if (geometryShaderSourceFile != d->m_geometrySourceFile) {
-        d->m_geometrySourceFile = geometryShaderSourceFile;
-        emit geometryShaderSourceFileChanged();
-    }
-}
-
-QString QShaderProgram::geometryShaderSourceFile() const
-{
-    Q_D(const QShaderProgram);
-    return d->m_geometrySourceFile;
-}
-
-void QShaderProgram::setFragmentShaderSourceFile(const QString& fragmentShaderSourceFile)
-{
-    Q_D(QShaderProgram);
-    if (fragmentShaderSourceFile != d->m_fragmentSourceFile) {
-        d->m_fragmentSourceFile = fragmentShaderSourceFile;
-        emit fragmentShaderSourceFileChanged();
-    }
-}
-
-QString QShaderProgram::fragmentShaderSourceFile() const
-{
-    Q_D(const QShaderProgram);
-    return d->m_fragmentSourceFile;
-}
-
-void QShaderProgram::setComputeShaderSourceFile(const QString &computeShaderSourceFile)
-{
-    Q_D(QShaderProgram);
-    if (computeShaderSourceFile != d->m_computeSourceFile) {
-        d->m_computeSourceFile = computeShaderSourceFile;
-        emit computeShaderSourceFileChanged();
-    }
-}
-
-QString QShaderProgram::computeShaderSourceFile() const
-{
-    Q_D(const QShaderProgram);
-    return d->m_computeSourceFile;
-}
-
-void QShaderProgram::setShaderSourceFile(ShaderType type, const QString &sourceFile)
-{
-    switch (type) {
-    case Vertex:
-        setVertexShaderSourceFile(sourceFile);
-        break;
-    case TessellationControl:
-        setTessellationControlShaderSourceFile(sourceFile);
-        break;
-    case TessellationEvaluation:
-        setTessellationEvaluationShaderSourceFile(sourceFile);
-        break;
-    case Geometry:
-        setGeometryShaderSourceFile(sourceFile);
-        break;
-    case Fragment:
-        setFragmentShaderSourceFile(sourceFile);
-        break;
-    case Compute:
-        setComputeShaderSourceFile(sourceFile);
-        break;
-    default:
-        Q_UNREACHABLE();
-    }
-}
-
-QString QShaderProgram::shaderSourceFile(ShaderType type) const
-{
-    Q_D(const QShaderProgram);
-    switch (type) {
-    case Vertex:
-        return d->m_vertexSourceFile;
-    case TessellationControl:
-        return d->m_tessControlSourceFile;
-    case TessellationEvaluation:
-        return d->m_tessEvalSourceFile;
-    case Geometry:
-        return d->m_geometrySourceFile;
-    case Fragment:
-        return d->m_fragmentSourceFile;
-    case Compute:
-        return d->m_computeSourceFile;
-    default:
-        Q_UNREACHABLE();
-    }
 }
 
 /*!
@@ -363,6 +221,21 @@ QByteArray QShaderProgram::shaderCode(ShaderType type) const
     default:
         Q_UNREACHABLE();
     }
+}
+
+QByteArray QShaderProgram::loadSource(const QUrl &sourceUrl)
+{
+    // TO DO: Handle remote path
+    // Expect a file for now
+    // Resources file are a bit tricky to handle, there may be a nicer way to do that.
+    QString filePath = sourceUrl.toString().replace(QStringLiteral("qrc"), QStringLiteral(""));
+
+    QFile f(filePath);
+    if (!f.exists())
+        qWarning() << "Couldn't read shader source file:" << sourceUrl;
+    else
+        f.open(QIODevice::ReadOnly | QIODevice::Text);
+    return f.readAll();
 }
 
 } // of namespace Qt3D

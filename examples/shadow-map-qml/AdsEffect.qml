@@ -85,8 +85,8 @@ Effect {
                     annotations: [ Annotation { name: "pass"; value: "shadowmap" } ]
 
                     shaderProgram: ShaderProgram {
-                        vertexShaderSourceFile:   ":/shaders/shadowmap.vert"
-                        fragmentShaderSourceFile: ":/shaders/shadowmap.frag"
+                        vertexShaderCode:   loadSource("qrc:/shaders/shadowmap.vert")
+                        fragmentShaderCode: loadSource("qrc:/shaders/shadowmap.frag")
                     }
 
                     renderStates: [
@@ -110,8 +110,8 @@ Effect {
                     ]
 
                     shaderProgram: ShaderProgram {
-                        vertexShaderSourceFile:   ":/shaders/ads.vert"
-                        fragmentShaderSourceFile: ":/shaders/ads.frag"
+                        vertexShaderCode:   loadSource("qrc:/shaders/ads.vert")
+                        fragmentShaderCode: loadSource("qrc:/shaders/ads.frag")
                     }
 
                     // no special render state set. this set of states is the default

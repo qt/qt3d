@@ -502,8 +502,8 @@ Entity {
                                 ]
                                 shaderProgram : ShaderProgram {
                                     id : diffuseShader
-                                    vertexShaderSourceFile: ":/shaders/diffuse.vert"
-                                    fragmentShaderSourceFile: ":/shaders/diffuse.frag"
+                                    vertexShaderCode: loadSource("qrc:/shaders/diffuse.vert")
+                                    fragmentShaderCode: loadSource("qrc:/shaders/diffuse.frag")
                                 }
                             }
                         ]

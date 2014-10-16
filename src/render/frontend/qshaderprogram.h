@@ -55,13 +55,6 @@ class QShaderProgramPrivate;
 class QT3DRENDERERSHARED_EXPORT QShaderProgram : public QNode
 {
     Q_OBJECT
-
-    Q_PROPERTY(QString vertexShaderSourceFile READ vertexShaderSourceFile WRITE setVertexShaderSourceFile NOTIFY vertexShaderSourceFileChanged)
-    Q_PROPERTY(QString tessellationControlShaderSourceFile READ tessellationControlShaderSourceFile WRITE setTessellationControlShaderSourceFile NOTIFY tessellationControlShaderSourceFileChanged)
-    Q_PROPERTY(QString tessellationEvaluationShaderSourceFile READ tessellationEvaluationShaderSourceFile WRITE setTessellationEvaluationShaderSourceFile NOTIFY tessellationEvaluationShaderSourceFileChanged)
-    Q_PROPERTY(QString geometryShaderSourceFile READ geometryShaderSourceFile WRITE setGeometryShaderSourceFile NOTIFY geometryShaderSourceFileChanged)
-    Q_PROPERTY(QString fragmentShaderSourceFile READ fragmentShaderSourceFile WRITE setFragmentShaderSourceFile NOTIFY fragmentShaderSourceFileChanged)
-    Q_PROPERTY(QString computeShaderSourceFile READ computeShaderSourceFile WRITE setComputeShaderSourceFile NOTIFY computeShaderSourceFileChanged)
     Q_PROPERTY(QByteArray vertexShaderCode READ vertexShaderCode WRITE setVertexShaderCode NOTIFY vertexShaderCodeChanged)
     Q_PROPERTY(QByteArray tessellationControlShaderCode READ tessellationControlShaderCode WRITE setTessellationControlShaderCode NOTIFY tessellationControlShaderCodeChanged)
     Q_PROPERTY(QByteArray tessellationEvaluationShaderCode READ tessellationEvaluationShaderCode WRITE setTessellationEvaluationShaderCode NOTIFY tessellationEvaluationShaderCodeChanged)
@@ -81,28 +74,6 @@ public:
         Geometry,
         Compute
     };
-
-    // Source from file
-    void setVertexShaderSourceFile(const QString &vertexShaderSourceFile);
-    QString vertexShaderSourceFile() const;
-
-    void setTessellationControlShaderSourceFile(const QString &tessellationControlShaderSourceFile);
-    QString tessellationControlShaderSourceFile() const;
-
-    void setTessellationEvaluationShaderSourceFile(const QString &tessellationEvaluationShaderSourceFile);
-    QString tessellationEvaluationShaderSourceFile() const;
-
-    void setGeometryShaderSourceFile(const QString &geometryShaderSourceFile);
-    QString geometryShaderSourceFile() const;
-
-    void setFragmentShaderSourceFile(const QString &fragmentShaderSourceFile);
-    QString fragmentShaderSourceFile() const;
-
-    void setComputeShaderSourceFile(const QString &computeShaderSourceFile);
-    QString computeShaderSourceFile() const;
-
-    void setShaderSourceFile(ShaderType type, const QString &sourceFile);
-    QString shaderSourceFile(ShaderType type) const;
 
     // Source code in-line
     void setVertexShaderCode(const QByteArray &vertexShaderCode);
@@ -126,14 +97,9 @@ public:
     void setShaderCode(ShaderType type, const QByteArray &shaderCode);
     QByteArray shaderCode(ShaderType type) const;
 
-Q_SIGNALS:
-    void vertexShaderSourceFileChanged();
-    void tessellationControlShaderSourceFileChanged();
-    void tessellationEvaluationShaderSourceFileChanged();
-    void geometryShaderSourceFileChanged();
-    void fragmentShaderSourceFileChanged();
-    void computeShaderSourceFileChanged();
+    Q_INVOKABLE static QByteArray loadSource(const QUrl &sourceUrl);
 
+Q_SIGNALS:
     void vertexShaderCodeChanged();
     void tessellationControlShaderCodeChanged();
     void tessellationEvaluationShaderCodeChanged();

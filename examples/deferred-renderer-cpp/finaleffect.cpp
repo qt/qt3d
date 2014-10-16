@@ -43,6 +43,7 @@
 
 #include <Qt3DRenderer/QOpenGLFilter>
 #include <Qt3DRenderer/QShaderProgram>
+#include <QUrl>
 
 FinalEffect::FinalEffect(Qt3D::QNode *parent)
     : Qt3D::QEffect(parent)
@@ -66,16 +67,16 @@ FinalEffect::FinalEffect(Qt3D::QNode *parent)
     m_passCriterion->setValue(QStringLiteral("final"));
 
     Qt3D::QShaderProgram *gl3Shader = new Qt3D::QShaderProgram();
-    gl3Shader->setVertexShaderSourceFile(QStringLiteral(":/final_gl3.vert"));
-    gl3Shader->setFragmentShaderSourceFile(QStringLiteral(":/final_gl3.frag"));
+    gl3Shader->setVertexShaderCode(gl3Shader->loadSource(QUrl(QStringLiteral(":/final_gl3.vert"))));
+    gl3Shader->setFragmentShaderCode(gl3Shader->loadSource(QUrl(QStringLiteral(":/final_gl3.frag"))));
 
     m_gl3Pass->addAnnotation(m_passCriterion);
     m_gl3Pass->setShaderProgram(gl3Shader);
     m_gl3Technique->addPass(m_gl3Pass);
 
     Qt3D::QShaderProgram *gl2Shader = new Qt3D::QShaderProgram();
-    gl2Shader->setVertexShaderSourceFile(QStringLiteral(":/final_gl2.vert"));
-    gl2Shader->setFragmentShaderSourceFile(QStringLiteral(":/final_gl2.frag"));
+    gl2Shader->setVertexShaderCode(gl2Shader->loadSource(QUrl(QStringLiteral(":/final_gl2.vert"))));
+    gl2Shader->setFragmentShaderCode(gl2Shader->loadSource(QUrl(QStringLiteral(":/final_gl2.frag"))));
 
     m_gl2Pass->addAnnotation(m_passCriterion);
     m_gl2Pass->setShaderProgram(gl2Shader);

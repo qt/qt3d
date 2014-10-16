@@ -85,8 +85,8 @@ Entity {
         outerTessLevel : [outerLevel, outerLevel, outerLevel, outerLevel]
 
         effect: TessellatedWireframeEffect {
-            tessellationControlShaderSourceFile: ":/shaders/quads.tcs"
-            tessellationEvaluationShaderSourceFile: ":/shaders/quads.tes"
+            tessellationControlShaderCode: shaderProgram.loadSource("qrc:/shaders/quads.tcs")
+            tessellationEvaluationShaderCode: shaderProgram.loadSource("qrc:/shaders/quads.tes")
         }
 
         QQ2.SequentialAnimation {

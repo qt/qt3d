@@ -54,11 +54,12 @@ Effect {
 
     // It's expected that users of this will specify the tessellation control and evaluation
     // shaders and if necessary suitable replacements for the other stages
-    property alias vertexShaderSourceFile: program.vertexShaderSourceFile
-    property alias tessellationControlShaderSourceFile: program.tessellationControlShaderSourceFile
-    property alias tessellationEvaluationShaderSourceFile: program.tessellationEvaluationShaderSourceFile
-    property alias geometryShaderSourceFile: program.geometryShaderSourceFile
-    property alias fragmentShaderSourceFile: program.fragmentShaderSourceFile
+    property alias vertexShaderCode: program.vertexShaderCode
+    property alias tessellationControlShaderCode: program.tessellationControlShaderCode
+    property alias tessellationEvaluationShaderCode: program.tessellationEvaluationShaderCode
+    property alias geometryShaderCode: program.geometryShaderCode
+    property alias fragmentShaderCode: program.fragmentShaderCode
+    property alias shaderProgram: program
 
     parameters: [
         Parameter { name: "ambient";   value: Qt.vector3d( 0.1, 0.1, 0.1 ) },
@@ -101,9 +102,9 @@ Effect {
 
                     shaderProgram: ShaderProgram {
                         id: program
-                        vertexShaderSourceFile:   ":/shaders/passthru.vert"
-                        geometryShaderSourceFile: ":/shaders/robustwireframe.geom"
-                        fragmentShaderSourceFile: ":/shaders/phongwireframe.frag"
+                        vertexShaderCode:   loadSource("qrc:/shaders/passthru.vert")
+                        geometryShaderCode: loadSource("qrc:/shaders/robustwireframe.geom")
+                        fragmentShaderCode: loadSource("qrc:/shaders/phongwireframe.frag")
                     }
                 }
             ]

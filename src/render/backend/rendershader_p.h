@@ -94,7 +94,6 @@ private:
     QHash<QString, int> m_fragOutputs;
 
     QVector<QByteArray> m_shaderCode;
-    QVector<QString> m_shaderSourceFiles;
 
     bool m_isLoaded;
 

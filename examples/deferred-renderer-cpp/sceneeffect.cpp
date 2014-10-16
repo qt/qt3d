@@ -43,6 +43,7 @@
 
 #include <Qt3DRenderer/QOpenGLFilter>
 #include <Qt3DRenderer/QShaderProgram>
+#include <QUrl>
 
 SceneEffect::SceneEffect(Qt3D::QNode *parent)
     : Qt3D::QEffect(parent)
@@ -68,16 +69,16 @@ SceneEffect::SceneEffect(Qt3D::QNode *parent)
     m_passCriterion->setValue(QStringLiteral("geometry"));
 
     Qt3D::QShaderProgram *gl3Shader = new Qt3D::QShaderProgram();
-    gl3Shader->setVertexShaderSourceFile(QStringLiteral(":/geometry_gl3.vert"));
-    gl3Shader->setFragmentShaderSourceFile(QStringLiteral(":/geometry_gl3.frag"));
+    gl3Shader->setVertexShaderCode(Qt3D::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/geometry_gl3.vert"))));
+    gl3Shader->setFragmentShaderCode(Qt3D::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/geometry_gl3.frag"))));
 
     m_gl3Pass->addAnnotation(m_passCriterion);
     m_gl3Pass->setShaderProgram(gl3Shader);
     m_gl3Technique->addPass(m_gl3Pass);
 
     Qt3D::QShaderProgram *gl2Shader = new Qt3D::QShaderProgram();
-    gl2Shader->setVertexShaderSourceFile(QStringLiteral(":/geometry_gl2.vert"));
-    gl2Shader->setFragmentShaderSourceFile(QStringLiteral(":/geometry_gl2.frag"));
+    gl2Shader->setVertexShaderCode(Qt3D::QShaderProgram::loadSource(QUrl(QStringLiteral(":/geometry_gl2.vert"))));
+    gl2Shader->setFragmentShaderCode(Qt3D::QShaderProgram::loadSource(QUrl(QStringLiteral(":/geometry_gl2.frag"))));
 
     m_gl2Pass->addAnnotation(m_passCriterion);
     m_gl2Pass->setShaderProgram(gl2Shader);

@@ -92,6 +92,7 @@
 #include <QLibraryInfo>
 #include <QPluginLoader>
 #include <QDir>
+#include <QUrl>
 
 // For Debug purposes only
 #include <QThread>
@@ -158,8 +159,8 @@ void Renderer::buildDefaultTechnique()
     m_defaultTechnique->setObjectName(QStringLiteral("default-technique"));
 
     QShaderProgram* defaultShader = new QShaderProgram;
-    defaultShader->setVertexShaderSourceFile(QStringLiteral(":/shaders/diffuse.vert"));
-    defaultShader->setFragmentShaderSourceFile(QStringLiteral(":/shaders/diffuse.frag"));
+    defaultShader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/diffuse.vert"))));
+    defaultShader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/diffuse.frag"))));
     defaultShader->setObjectName(QStringLiteral("DefaultShader"));
 
     QRenderPass* basicPass = new QRenderPass;
