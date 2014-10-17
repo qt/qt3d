@@ -6,11 +6,11 @@ SOURCES += \
 
 HEADERS += \
     $$PWD/qjobmanager.h \
-    $$PWD/qjobproviderinterface.h \
     $$PWD/weaverjob_p.h \
     $$PWD/qjobmanager_p.h \
     $$PWD/qaspectjob.h \
     $$PWD/qaspectjob_p.h \
-    $$PWD/qaspectjobmanagerinterface.h
+    $$PWD/qaspectjobmanagerinterface.h \
+    $$PWD/qaspectjobproviderinterface.h
 
 INCLUDEPATH += $$PWD

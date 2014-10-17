@@ -45,7 +45,7 @@
 #include <QObject>
 #include <QSharedPointer>
 #include <Qt3DCore/qt3dcore_global.h>
-#include <Qt3DCore/qjobproviderinterface.h>
+#include <Qt3DCore/qaspectjobproviderinterface.h>
 #include <Qt3DCore/qsceneobserverinterface.h>
 
 QT_BEGIN_NAMESPACE
@@ -67,7 +67,7 @@ typedef QSharedPointer<QBackendNodeFunctor> QBackendNodeFunctorPtr;
 
 class QT3DCORESHARED_EXPORT QAbstractAspect
         : public QObject
-        , public QJobProviderInterface
+        , public QAspectJobProviderInterface
         , public QSceneObserverInterface
 {
     Q_OBJECT

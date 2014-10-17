@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QJOBPROVIDERINTERFACE_H
-#define QT3D_QJOBPROVIDERINTERFACE_H
+#ifndef QT3D_QASPECTJOBPROVIDERINTERFACE_H
+#define QT3D_QASPECTJOBPROVIDERINTERFACE_H
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qaspectjob.h>
@@ -51,10 +51,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QJobProviderInterface
+class QAspectJobProviderInterface
 {
 public:
-    virtual ~QJobProviderInterface() {}
+    virtual ~QAspectJobProviderInterface() {}
     virtual QVector<QAspectJobPtr> jobsToExecute() = 0;
 };
 
@@ -62,4 +62,4 @@ public:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QJOBPROVIDERINTERFACE_H
+#endif // QT3D_QASPECTJOBPROVIDERINTERFACE_H
