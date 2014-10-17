@@ -47,7 +47,8 @@ HEADERS += \
     $$PWD/rendernodefunctor_p.h \
     $$PWD/managers_p.h \
     $$PWD/handle_types_p.h \
-    $$PWD/renderannotation_p.h
+    $$PWD/renderannotation_p.h \
+    $$PWD/renderparameter_p.h
 
 SOURCES += \
     $$PWD/rendereraspect.cpp \
@@ -86,4 +87,5 @@ SOURCES += \
     $$PWD/renderscene.cpp \
     $$PWD/scenemanager.cpp \
     $$PWD/attachmentpack.cpp \
-    $$PWD/renderannotation.cpp
+    $$PWD/renderannotation.cpp \
+    $$PWD/renderparameter.cpp
