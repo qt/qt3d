@@ -76,17 +76,11 @@ void RenderEffect::updateFromPeer(QNode *peer)
     m_parameterPack.clear();
 
     Q_FOREACH (QTechnique *t, effect->techniques())
-        appendRenderTechnique(t);
+        appendRenderTechnique(t->uuid());
 
     Q_FOREACH (QParameter *p, effect->parameters())
-        m_parameterPack.appendParameter(p);
+        m_parameterPack.appendParameter(p->uuid());
 }
-
-//void RenderEffect::setRenderer(Renderer *renderer)
-//{
-//    m_renderer = renderer;
-//    m_parameterPack.setRenderer(m_renderer);
-//}
 
 void RenderEffect::sceneChangeEvent(const QSceneChangePtr &e)
 {
@@ -95,23 +89,17 @@ void RenderEffect::sceneChangeEvent(const QSceneChangePtr &e)
     switch (e->type()) {
 
     case NodeAdded:
-        if (propertyChange->propertyName() == QByteArrayLiteral("technique")) {
-            appendRenderTechnique(propertyValue.value<QTechnique *>());
-        }
-        // We don't need a RenderParameter as we store them in a QHash[QString name] = QVariant value
-        else if (propertyChange->propertyName() == QByteArrayLiteral("parameter")) {
-            m_parameterPack.appendParameter(propertyValue.value<QParameter*>());
-        }
+        if (propertyChange->propertyName() == QByteArrayLiteral("technique"))
+            appendRenderTechnique(propertyValue.toUuid());
+        else if (propertyChange->propertyName() == QByteArrayLiteral("parameter"))
+            m_parameterPack.appendParameter(propertyValue.toUuid());
         break;
 
     case NodeRemoved:
-        if (propertyChange->propertyName() == QByteArrayLiteral("technique")) {
-            QUuid techniqueUuid = propertyValue.value<QUuid>();
-            m_techniques.removeOne(techniqueUuid);
-        }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("parameter")) {
-            m_parameterPack.removeParameter(propertyValue.value<QParameter*>());
-        }
+        if (propertyChange->propertyName() == QByteArrayLiteral("technique"))
+            m_techniques.removeOne(propertyValue.toUuid());
+        else if (propertyChange->propertyName() == QByteArrayLiteral("parameter"))
+            m_parameterPack.removeParameter(propertyValue.toUuid());
         break;
 
     default :
@@ -119,22 +107,20 @@ void RenderEffect::sceneChangeEvent(const QSceneChangePtr &e)
     }
 }
 
-void RenderEffect::appendRenderTechnique(QTechnique *technique)
+void RenderEffect::appendRenderTechnique(const QUuid &technique)
 {
-    if (!technique)
-        return ;
-    if (!m_techniques.contains(technique->uuid()))
-        m_techniques.append(technique->uuid());
-}
-
-const QHash<QString, QVariant> RenderEffect::parameters() const
-{
-    return m_parameterPack.namedValues();
+    if (!m_techniques.contains(technique))
+        m_techniques.append(technique);
 }
 
 QList<QUuid> RenderEffect::techniques() const
 {
     return m_techniques;
+}
+
+QList<QUuid> RenderEffect::parameters() const
+{
+    return m_parameterPack.parameters();
 }
 
 } // Render

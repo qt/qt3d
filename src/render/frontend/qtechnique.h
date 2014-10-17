@@ -73,8 +73,8 @@ public:
     void removeParameter(QParameter *p);
     QList<QParameter *> parameters() const;
 
-    virtual void addPass(QRenderPass *pass);
-    virtual void removePass(QRenderPass *pass);
+    void addPass(QRenderPass *pass);
+    void removePass(QRenderPass *pass);
     QList<QRenderPass *> renderPasses() const;
 
     QParameter* parameterByName(QString name) const;

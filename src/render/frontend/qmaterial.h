@@ -60,7 +60,7 @@ typedef QMap<QString, QTexture*> TextureDict;
 class QT3DRENDERERSHARED_EXPORT QMaterial : public QComponent
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3D::QEffect* effect READ effect WRITE setEffect NOTIFY effectChanged)
+    Q_PROPERTY(Qt3D::QEffect *effect READ effect WRITE setEffect NOTIFY effectChanged)
 
 public:
     explicit QMaterial(QNode *parent = 0);

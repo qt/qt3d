@@ -66,10 +66,10 @@ public:
 
     void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const QSceneChangePtr &e);
-    void appendRenderTechnique(QTechnique *t);
+    void appendRenderTechnique(const QUuid &t);
 
     QList<QUuid> techniques() const;
-    const QHash<QString, QVariant> parameters() const;
+    QList<QUuid> parameters() const;
 
 private:
     QList<QUuid> m_techniques;

@@ -73,12 +73,12 @@ public:
     void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
 
     void sceneChangeEvent(const QSceneChangePtr &e);
-    const QHash<QString, QVariant> parameters() const;
+    QList<QUuid> parameters() const;
 
-    void appendRenderPass(QRenderPass *rPass);
+    void appendRenderPass(const QUuid &renderPassId);
     void removeRenderPass(const QUuid &renderPassId);
 
-    void appendAnnotation(QAnnotation *criterion);
+    void appendAnnotation(const QUuid &criterionId);
     void removeAnnotation(const QUuid &criterionId);
 
     QList<QUuid> annotations() const;

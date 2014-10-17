@@ -74,7 +74,7 @@ public:
     void updateFromPeer(QNode* mat) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
-    const QHash<QString, QVariant> parameters() const;
+    QList<QUuid> parameters() const;
     QUuid effect() const;
 
 private:

@@ -154,7 +154,7 @@ void QRenderPass::addAnnotation(QAnnotation *annotation)
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
             change->setPropertyName(QByteArrayLiteral("annotation"));
-            change->setValue(QVariant::fromValue(qobject_cast<QAnnotation *>(QNodePrivate::get(annotation)->clone())));
+            change->setValue(QVariant::fromValue(annotation->uuid()));
             d->notifyObservers(change);
         }
     }

@@ -40,12 +40,7 @@
 ****************************************************************************/
 
 #include "parameterpack_p.h"
-#include <Qt3DRenderer/qparameter.h>
-#include <Qt3DRenderer/rendereraspect.h>
-#include <Qt3DRenderer/private/renderer_p.h>
-
 #include <Qt3DCore/private/qaspectmanager_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -54,67 +49,35 @@ namespace Qt3D {
 namespace Render {
 
 ParameterPack::ParameterPack()
-    : m_renderer(Q_NULLPTR)
 {
 }
 
 ParameterPack::~ParameterPack()
 {
-    if (m_renderer != Q_NULLPTR && !m_peers.empty()) {
-//        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-//        Q_FOREACH (const QUuid peer, m_peers)
-//            arbiter->unregisterObserver(this, peer);
-    }
-}
-
-void ParameterPack::setRenderer(Renderer *renderer)
-{
-    m_renderer = renderer;
-}
-
-void ParameterPack::appendParameter(QParameter *param)
-{
-    if (!m_peers.contains(param->uuid())) {
-        m_peers << param->uuid();
-//        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-//        arbiter->registerObserver(this, param->uuid(), NodeUpdated);
-        m_namedValues[param->name()] = param->value();
-    }
-}
-
-void ParameterPack::removeParameter(QParameter *param)
-{
-    if (m_peers.contains(param->uuid())) {
-        m_peers.removeOne(param->uuid());
-        m_namedValues.remove(param->name());
-//        QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-//        arbiter->unregisterObserver(this, param->uuid());
-    }
 }
 
 void ParameterPack::clear()
 {
-    m_namedValues.clear();
-//    QChangeArbiter *arbiter = m_renderer->rendererAspect()->aspectManager()->changeArbiter();
-//    Q_FOREACH (const QUuid &peerId, m_peers) {
-//        arbiter->unregisterObserver(this, peerId);
-//    }
+    m_peers.clear();
 }
 
-void ParameterPack::sceneChangeEvent(const QSceneChangePtr &e)
+void ParameterPack::appendParameter(const QUuid &parameterId)
 {
-    if (e->type() == NodeUpdated) {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        QString propertyName = QString::fromLatin1(propertyChange->propertyName());
-        QVariant propertyValue = propertyChange->value();
-        if (m_namedValues.contains(propertyName))
-            m_namedValues[propertyName] = propertyValue;
+    if (!m_peers.contains(parameterId)) {
+        m_peers.append(parameterId);
     }
 }
 
-const QHash<QString, QVariant> ParameterPack::namedValues() const
+void ParameterPack::removeParameter(const QUuid &parameterId)
 {
-    return m_namedValues;
+    if (m_peers.contains(parameterId)) {
+        m_peers.removeOne(parameterId);
+    }
+}
+
+QList<QUuid> ParameterPack::parameters() const
+{
+    return m_peers;
 }
 
 } // Render

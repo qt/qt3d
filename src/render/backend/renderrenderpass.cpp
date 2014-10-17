@@ -79,7 +79,7 @@ void RenderRenderPass::updateFromPeer(QNode *peer)
     Q_FOREACH (QParameterMapper *binding, pass->bindings())
         appendBinding(binding);
     Q_FOREACH (QAnnotation *c, pass->annotations())
-        appendAnnotation(c);
+        appendAnnotation(c->uuid());
     Q_FOREACH (QRenderState *renderState, pass->renderStates())
         appendRenderState(renderState);
 }
@@ -91,7 +91,7 @@ void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
 
     case NodeAdded: {
         if (propertyChange->propertyName() == QByteArrayLiteral("annotation")) {
-            appendAnnotation(propertyChange->value().value<QAnnotation *>());
+            appendAnnotation(propertyChange->value().toUuid());
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("shaderProgram")) {
             m_shaderUuid = propertyChange->value().toUuid();
@@ -146,10 +146,10 @@ QList<QRenderState *> RenderRenderPass::renderStates() const
     return m_renderStates.values();
 }
 
-void RenderRenderPass::appendAnnotation(QAnnotation *annotation)
+void RenderRenderPass::appendAnnotation(const QUuid &annotationId)
 {
-    if (!m_annotationList.contains(annotation->uuid()))
-        m_annotationList.append(annotation->uuid());
+    if (!m_annotationList.contains(annotationId))
+        m_annotationList.append(annotationId);
 }
 
 void RenderRenderPass::removeAnnotation(const QUuid &annotationId)

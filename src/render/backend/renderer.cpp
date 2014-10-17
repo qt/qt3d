@@ -137,6 +137,7 @@ Renderer::Renderer(int cachedFrames)
     , m_sceneManager(new SceneManager())
     , m_attachmentManager(new AttachmentManager())
     , m_sortCriterionManager(new SortCriterionManager())
+    , m_parameterManager(new ParameterManager())
     , m_renderQueues(new RenderQueues(cachedFrames - 1))
     , m_renderThread(new RenderThread(this))
     , m_frameCount(0)
@@ -394,6 +395,15 @@ void Renderer::setSceneGraphRoot(RenderEntity *sgRoot)
     m_rendererAspect->createBackendNode(m_defaultTechnique);
     m_rendererAspect->createBackendNode(m_defaultTechnique->renderPasses().first());
     m_rendererAspect->createBackendNode(m_defaultTechnique->renderPasses().first()->shaderProgram());
+
+    // We create backend resources for all the parameters
+    Q_FOREACH (QParameter *p, m_defaultMaterial->parameters())
+        m_rendererAspect->createBackendNode(p);
+    Q_FOREACH (QParameter *p, m_defaultTechnique->parameters())
+        m_rendererAspect->createBackendNode(p);
+    Q_FOREACH (QParameter *p, m_defaultMaterial->effect()->parameters())
+        m_rendererAspect->createBackendNode(p);
+
 
     m_defaultMaterialHandle = m_materialManager->lookupHandle(m_defaultMaterial->uuid());
     m_defaultEffectHandle = m_effectManager->lookupHandle(m_defaultMaterial->effect()->uuid());

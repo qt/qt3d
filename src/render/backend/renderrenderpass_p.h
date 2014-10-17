@@ -76,7 +76,7 @@ public:
     QList<QUuid> annotations() const;
     QList<QRenderState *> renderStates() const;
 
-    void appendAnnotation(QAnnotation *criterion);
+    void appendAnnotation(const QUuid &criterionId);
     void removeAnnotation(const QUuid &criterionId);
 
     void appendBinding(QParameterMapper *binding);

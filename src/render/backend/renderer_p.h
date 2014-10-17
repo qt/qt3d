@@ -122,6 +122,7 @@ class RenderTargetManager;
 class SceneManager;
 class AttachmentManager;
 class SortCriterionManager;
+class ParameterManager;
 
 class Renderer
 {
@@ -173,6 +174,7 @@ public:
     inline SceneManager *sceneManager() const { return m_sceneManager; }
     inline AttachmentManager *attachmentManager() const { return m_attachmentManager; }
     inline SortCriterionManager *sortCriterionManager() const { return m_sortCriterionManager; }
+    inline ParameterManager *parameterManager() const { return m_parameterManager; }
 
     inline HMaterial defaultMaterialHandle() const { return m_defaultMaterialHandle; }
     inline HEffect defaultEffectHandle() const { return m_defaultEffectHandle; }
@@ -209,10 +211,6 @@ private:
     QHash<QMaterial*, RenderMaterial*> m_materialHash;
     QHash<QTechnique *, RenderTechnique*> m_techniqueHash;
     QHash<QShaderProgram*, RenderShader*> m_shaderHash;
-
-    RenderTechnique *createTechnique(QTechnique *tech);
-    RenderShader *getOrCreateShader(QShaderProgram *sp);
-    RenderMaterial *getOrCreateMaterial(QMaterial *mat);
 
     QMaterial* m_defaultMaterial;
     QTechnique* m_defaultTechnique;
@@ -254,6 +252,7 @@ private:
     SceneManager *m_sceneManager;
     AttachmentManager *m_attachmentManager;
     SortCriterionManager *m_sortCriterionManager;
+    ParameterManager *m_parameterManager;
 
     QTimer *m_frameTimer;
 

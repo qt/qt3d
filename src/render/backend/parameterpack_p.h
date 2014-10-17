@@ -42,39 +42,27 @@
 #ifndef QT3D_RENDER_PARAMETERPACK_H
 #define QT3D_RENDER_PARAMETERPACK_H
 
-#include <QVariant>
-#include <QHash>
-#include <QString>
-
-#include <Qt3DCore/private/qchangearbiter_p.h>
+#include <QUuid>
+#include <QList>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QParameter;
-
 namespace Render {
 
-class Renderer;
-
-class ParameterPack : public QObserverInterface
+class ParameterPack
 {
 public:
     ParameterPack();
     ~ParameterPack();
-    void setRenderer(Renderer *renderer);
-    void appendParameter(QParameter *param);
-    void removeParameter(QParameter *param);
     void clear();
-    void sceneChangeEvent(const QSceneChangePtr &e);
-    const QHash<QString, QVariant> namedValues() const;
+    void appendParameter(const QUuid &parameterId);
+    void removeParameter(const QUuid &parameterId);
+    QList<QUuid> parameters() const;
 
 private:
-    QHash<QString, QVariant> m_namedValues;
     QList<QUuid> m_peers;
-    Renderer *m_renderer;
-
 };
 
 } // Render
