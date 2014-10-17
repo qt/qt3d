@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QJOBMANAGERINTERFACE_H
-#define QJOBMANAGERINTERFACE_H
+#ifndef QT3D_QASPECTJOBMANAGERINTERFACE_H
+#define QT3D_QASPECTJOBMANAGERINTERFACE_H
 
 #include <QObject>
 
@@ -50,11 +50,11 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QJobManagerInterface : public QObject
+class QAspectJobManagerInterface : public QObject
 {
     Q_OBJECT
 public:
-    explicit QJobManagerInterface(QObject *p = 0)
+    explicit QAspectJobManagerInterface(QObject *p = 0)
         : QObject(p)
     {}
 
@@ -71,4 +71,4 @@ public:
 
 QT_END_NAMESPACE
 
-#endif // QJOBMANAGERINTERFACE_H
+#endif // QT3D_QASPECTJOBMANAGERINTERFACE_H

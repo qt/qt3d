@@ -45,7 +45,7 @@
 #include "qchangearbiter_p.h"
 // TODO Make the kind of job manager configurable (e.g. ThreadWeaver vs Intel TBB)
 #include "qjobmanager.h"
-#include "qjobmanagerinterface.h"
+#include "qaspectjobmanagerinterface.h"
 #include "qscheduler.h"
 #include "qtickclock.h"
 #include "qentity.h"
@@ -219,7 +219,7 @@ const QList<QAbstractAspect *> &QAspectManager::aspects() const
     return m_aspects;
 }
 
-QJobManagerInterface *QAspectManager::jobManager() const
+QAspectJobManagerInterface *QAspectManager::jobManager() const
 {
     return m_jobManager;
 }

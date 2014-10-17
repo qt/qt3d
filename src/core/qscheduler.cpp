@@ -43,7 +43,7 @@
 
 #include "qabstractaspect.h"
 #include "qaspectmanager_p.h"
-#include "qjobmanagerinterface.h"
+#include "qaspectjobmanagerinterface.h"
 
 QT_BEGIN_NAMESPACE
 

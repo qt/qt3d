@@ -164,7 +164,7 @@ void QAbstractAspect::registerAspect(QEntity *rootObject)
     setRootEntity(rootObject);
 }
 
-QJobManagerInterface *QAbstractAspect::jobManager() const
+QAspectJobManagerInterface *QAbstractAspect::jobManager() const
 {
     Q_D(const QAbstractAspect);
     return d->m_jobManager;

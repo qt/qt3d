@@ -42,7 +42,7 @@
 #ifndef QT3D_QJOBMANAGER_H
 #define QT3D_QJOBMANAGER_H
 
-#include <Qt3DCore/qjobmanagerinterface.h>
+#include <Qt3DCore/qaspectjobmanagerinterface.h>
 #include <Qt3DCore/qt3dcore_global.h>
 
 #include <Qt3DCore/qaspectjob.h>
@@ -55,7 +55,7 @@ namespace Qt3D {
 
 class QJobManagerPrivate;
 
-class QJobManager : public QJobManagerInterface
+class QJobManager : public QAspectJobManagerInterface
 {
     Q_OBJECT
 public:

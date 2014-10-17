@@ -62,7 +62,7 @@ namespace {
 class SynchronizedJob : public ThreadWeaver::Job
 {
 public:
-    SynchronizedJob(QJobManagerInterface::JobFunction func, void *arg, QAtomicInt *atomicCount)
+    SynchronizedJob(QAspectJobManagerInterface::JobFunction func, void *arg, QAtomicInt *atomicCount)
         : m_func(func)
         , m_arg(arg)
         , m_atomicCount(atomicCount)
@@ -72,7 +72,7 @@ protected:
     void run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
 
 private:
-    QJobManagerInterface::JobFunction m_func;
+    QAspectJobManagerInterface::JobFunction m_func;
     void *m_arg;
     QAtomicInt *m_atomicCount;
 };
@@ -106,7 +106,7 @@ QJobManagerPrivate::QJobManagerPrivate(QJobManager *qq)
 }
 
 QJobManager::QJobManager(QObject *parent)
-    : QJobManagerInterface(parent)
+    : QAspectJobManagerInterface(parent)
     , d_ptr(new QJobManagerPrivate(this))
 {
     Q_D(QJobManager);
@@ -115,7 +115,7 @@ QJobManager::QJobManager(QObject *parent)
 }
 
 QJobManager::QJobManager(QJobManagerPrivate &dd, QObject *parent)
-    : QJobManagerInterface(parent)
+    : QAspectJobManagerInterface(parent)
     , d_ptr(&dd)
 {
     Q_D(QJobManager);
