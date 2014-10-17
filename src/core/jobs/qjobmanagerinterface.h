@@ -44,7 +44,7 @@
 
 #include <QObject>
 
-#include <Qt3DCore/qjob.h>
+#include <Qt3DCore/qaspectjob.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,7 +59,7 @@ public:
     {}
 
     virtual void initialize() {}
-    virtual void enqueueJobs(const QVector<QJobPtr> &jobQueue) = 0;
+    virtual void enqueueJobs(const QVector<QAspectJobPtr> &jobQueue) = 0;
     virtual void waitForAllJobs() = 0;
 
     // Callback signature for running SynchronizedJobs

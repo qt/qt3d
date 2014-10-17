@@ -60,9 +60,9 @@ void OpenALAspect::sceneNodeRemoved(QSceneChangePtr &)
 
 }
 
-QVector<QJobPtr> OpenALAspect::jobsToExecute()
+QVector<QAspectJobPtr> OpenALAspect::jobsToExecute()
 {
-    QVector<QJobPtr> jobs;
+    QVector<QAspectJobPtr> jobs;
 
     return jobs;
 }

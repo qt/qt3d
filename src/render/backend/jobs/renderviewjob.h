@@ -42,7 +42,7 @@
 #ifndef QT3D_RENDER_RENDERVIEWJOB_H
 #define QT3D_RENDER_RENDERVIEWJOB_H
 
-#include <Qt3DCore/qjob.h>
+#include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qframeallocator.h>
 #include <QThreadStorage>
 
@@ -56,7 +56,7 @@ class Renderer;
 class FrameGraphNode;
 
 
-class RenderViewJob : public QJob
+class RenderViewJob : public QAspectJob
 {
 public:
     RenderViewJob()

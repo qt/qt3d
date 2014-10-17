@@ -42,7 +42,7 @@
 #ifndef QT3D_RENDER_LOADSCENEJOB_H
 #define QT3D_RENDER_LOADSCENEJOB_H
 
-#include <Qt3DCore/qjob.h>
+#include <Qt3DCore/qaspectjob.h>
 #include <QUuid>
 #include <QSharedPointer>
 
@@ -54,7 +54,7 @@ namespace Render {
 
 class Renderer;
 
-class LoadSceneJob : public Qt3D::QJob
+class LoadSceneJob : public Qt3D::QAspectJob
 {
 public:
     explicit LoadSceneJob(const QString &source, const QUuid &sceneComponent);

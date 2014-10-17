@@ -43,7 +43,7 @@
 #define QT3D_RENDER_LOADMESHDATAJOB_H
 
 #include <QUuid>
-#include <Qt3DCore/qjob.h>
+#include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qhandle.h>
 #include <Qt3DRenderer/qmeshdata.h>
 #include <Qt3DCore/qabstractmesh.h>
@@ -57,7 +57,7 @@ namespace Render {
 
 class Renderer;
 
-class LoadMeshDataJob : public Qt3D::QJob
+class LoadMeshDataJob : public Qt3D::QAspectJob
 {
 public:
     LoadMeshDataJob(QAbstractMeshFunctorPtr functor, const QUuid &meshUuid);

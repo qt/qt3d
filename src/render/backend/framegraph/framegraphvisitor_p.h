@@ -44,7 +44,7 @@
 
 #include <qglobal.h>
 
-#include <Qt3DCore/qjob.h>
+#include <Qt3DCore/qaspectjob.h>
 
 #include <QVector>
 
@@ -63,13 +63,13 @@ public:
 
     void traverse(FrameGraphNode *root,
                   Renderer *renderer,
-                  QVector<QJobPtr> *jobs);
+                  QVector<QAspectJobPtr> *jobs);
 
 private:
     void visit(Render::FrameGraphNode *node);
 
     Renderer *m_renderer;
-    QVector<QJobPtr> *m_jobs;
+    QVector<QAspectJobPtr> *m_jobs;
     int m_renderviewIndex;
 };
 

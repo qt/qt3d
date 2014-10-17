@@ -43,7 +43,7 @@
 #define QT3D_QJOBPROVIDERINTERFACE_H
 
 #include <Qt3DCore/qt3dcore_global.h>
-#include <Qt3DCore/qjob.h>
+#include <Qt3DCore/qaspectjob.h>
 
 #include <QVector>
 
@@ -55,7 +55,7 @@ class QJobProviderInterface
 {
 public:
     virtual ~QJobProviderInterface() {}
-    virtual QVector<QJobPtr> jobsToExecute() = 0;
+    virtual QVector<QAspectJobPtr> jobsToExecute() = 0;
 };
 
 }

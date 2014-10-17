@@ -39,37 +39,30 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QJOB_H
-#define QT3D_QJOB_H
+#ifndef QT3D_QASPECTJOB_P_H
+#define QT3D_QASPECTJOB_P_H
 
-#include <Qt3DCore/qt3dcore_global.h>
-
-#include <QSharedPointer>
-#include <QVector>
+#include <QtGlobal>
+#include <QWeakPointer>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DCORESHARED_EXPORT QJob
+class QAspectJob;
+
+class QAspectJobPrivate
 {
 public:
-    QJob();
-    virtual ~QJob();
+    QAspectJobPrivate(QAspectJob *qq);
 
-    void addDependency(QWeakPointer<QJob> dependency);
-    const QVector<QWeakPointer<QJob> > &dependencies() const { return m_dependencies; }
-
-    virtual void run() = 0;
-
-private:
-    QVector<QWeakPointer<QJob> > m_dependencies;
+    Q_DECLARE_PUBLIC(QAspectJob)
+    QVector<QWeakPointer<QAspectJob> > m_dependencies;
+    QAspectJob *q_ptr;
 };
 
-typedef QSharedPointer<QJob> QJobPtr;
-
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QJOB_H
+#endif // QT3D_QASPECTJOB_P_H

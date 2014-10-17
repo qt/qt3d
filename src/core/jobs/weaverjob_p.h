@@ -43,7 +43,7 @@
 #define QT3D_WEAVERJOB_H
 
 #include <job.h>
-#include <Qt3DCore/qjob.h>
+#include <Qt3DCore/qaspectjob.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -56,7 +56,7 @@ public:
 
     void run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
 
-    QJobPtr m_job;
+    QAspectJobPtr m_job;
 };
 
 } // namespace Qt3D

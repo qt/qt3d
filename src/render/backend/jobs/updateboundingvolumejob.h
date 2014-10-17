@@ -42,7 +42,7 @@
 #ifndef QT3D_RENDER_UPDATEBOUNDINGVOLUMEJOB_H
 #define QT3D_RENDER_UPDATEBOUNDINGVOLUMEJOB_H
 
-#include <Qt3DCore/qjob.h>
+#include <Qt3DCore/qaspectjob.h>
 
 #include <QSharedPointer>
 
@@ -53,7 +53,7 @@ namespace Render {
 
 class RenderEntity;
 
-class UpdateBoundingVolumeJob : public Qt3D::QJob
+class UpdateBoundingVolumeJob : public Qt3D::QAspectJob
 {
 public:
     explicit UpdateBoundingVolumeJob(RenderEntity *m_node);

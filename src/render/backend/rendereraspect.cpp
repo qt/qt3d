@@ -141,10 +141,10 @@ RendererAspect::RendererAspect(QObject *parent)
     registerBackendType<QParameter>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderParameter, Render::ParameterManager>(m_renderer->parameterManager())));
 }
 
-QVector<QJobPtr> RendererAspect::jobsToExecute()
+QVector<QAspectJobPtr> RendererAspect::jobsToExecute()
 {
     // Create jobs that will get exectued by the threadpool
-    QVector<QJobPtr> jobs;
+    QVector<QAspectJobPtr> jobs;
 
     // Create jobs to load in any meshes that are pending
     if (m_renderer != Q_NULLPTR) {
@@ -177,10 +177,10 @@ QVector<QJobPtr> RendererAspect::jobsToExecute()
 
         // Traverse the current framegraph and create jobs to populate
         // RenderBins with RenderCommands
-        QVector<QJobPtr> renderBinJobs = m_renderer->createRenderBinJobs();
+        QVector<QAspectJobPtr> renderBinJobs = m_renderer->createRenderBinJobs();
         // TODO: Add wrapper around ThreadWeaver::Collection
         for (int i = 0; i < renderBinJobs.size(); ++i) {
-            QJobPtr renderBinJob = renderBinJobs.at(i);
+            QAspectJobPtr renderBinJob = renderBinJobs.at(i);
             renderBinJob->addDependency(boundingVolumeJob);
             jobs.append(renderBinJob);
         }

@@ -70,15 +70,15 @@ void QScheduler::update(qint64 time)
 
     // Get tasks for this frame from each aspect
     const QList<QAbstractAspect *> &aspects = m_aspectManager->aspects();
-    QHash<QAbstractAspect::AspectType, QVector<QJobPtr> > jobs;
+    QHash<QAbstractAspect::AspectType, QVector<QAspectJobPtr> > jobs;
     Q_FOREACH (QAbstractAspect *aspect, aspects) {
-        QVector<QJobPtr> aspectJobs = aspect->jobsToExecute();
+        QVector<QAspectJobPtr> aspectJobs = aspect->jobsToExecute();
         jobs.insert(aspect->aspectType(), aspectJobs);
     }
 
     // TODO: Set up dependencies between jobs as needed
     // For now just queue them up as they are with render tasks first
-    QVector<QJobPtr> jobQueue;
+    QVector<QAspectJobPtr> jobQueue;
     for (int i = QAbstractAspect::AspectRenderer; i <= QAbstractAspect::AspectOther; ++i) {
         QAbstractAspect::AspectType aspectType = static_cast<QAbstractAspect::AspectType>(i);
         if (jobs.contains(aspectType))

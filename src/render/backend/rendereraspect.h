@@ -62,7 +62,7 @@ class QT3DRENDERERSHARED_EXPORT RendererAspect : public QAbstractAspect
 public:
     explicit RendererAspect(QObject *parent = 0);
 
-    QVector<QJobPtr> jobsToExecute() Q_DECL_OVERRIDE;
+    QVector<QAspectJobPtr> jobsToExecute() Q_DECL_OVERRIDE;
 
     void sceneNodeAdded(QSceneChangePtr &e) Q_DECL_OVERRIDE;
     void sceneNodeRemoved(QSceneChangePtr &e) Q_DECL_OVERRIDE;

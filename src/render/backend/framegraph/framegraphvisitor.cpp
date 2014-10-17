@@ -59,7 +59,7 @@ FrameGraphVisitor::FrameGraphVisitor()
 
 void FrameGraphVisitor::traverse(FrameGraphNode *root,
                                  Renderer *renderer,
-                                 QVector<QJobPtr> *jobs)
+                                 QVector<QAspectJobPtr> *jobs)
 {
     m_renderer = renderer;
     m_jobs = jobs;
@@ -86,7 +86,7 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
     // TODO: Pass in only framegraph config that has changed from previous
     // index RenderViewJob.
     if (node->childrenHandles().empty()) {
-        QJobPtr job = m_renderer->createRenderViewJob(node, m_renderviewIndex++);
+        QAspectJobPtr job = m_renderer->createRenderViewJob(node, m_renderviewIndex++);
         m_jobs->append(job);
     }
 }

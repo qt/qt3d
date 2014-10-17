@@ -57,7 +57,7 @@ namespace Qt3D {
 namespace Render {
 
 LoadMeshDataJob::LoadMeshDataJob(QAbstractMeshFunctorPtr functor, const QUuid &meshUuid)
-    : QJob()
+    : QAspectJob()
     , m_meshUuid(meshUuid)
     , m_functor(functor)
 {

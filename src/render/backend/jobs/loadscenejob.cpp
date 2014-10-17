@@ -52,7 +52,7 @@ namespace Qt3D {
 namespace Render {
 
 LoadSceneJob::LoadSceneJob(const QString &source, const QUuid &m_sceneComponent)
-    : QJob()
+    : QAspectJob()
     , m_renderer(Q_NULLPTR)
     , m_source(source)
     , m_sceneComponent(m_sceneComponent)

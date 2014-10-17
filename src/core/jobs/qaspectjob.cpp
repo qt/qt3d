@@ -39,44 +39,45 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QJOBMANAGER_H
-#define QT3D_QJOBMANAGER_H
-
-#include <Qt3DCore/qjobmanagerinterface.h>
-#include <Qt3DCore/qt3dcore_global.h>
-
-#include <Qt3DCore/qaspectjob.h>
-
-#include <QVector>
+#include "qaspectjob.h"
+#include "qaspectjob_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QJobManagerPrivate;
-
-class QJobManager : public QJobManagerInterface
+QAspectJobPrivate::QAspectJobPrivate(QAspectJob *qq)
+    : q_ptr(qq)
 {
-    Q_OBJECT
-public:
-    explicit QJobManager(QObject *parent = 0);
+}
 
-    void initialize() Q_DECL_OVERRIDE;
+QAspectJob::QAspectJob()
+    : d_ptr(new QAspectJobPrivate(this))
+{
+}
 
-    void enqueueJobs(const QVector<QAspectJobPtr> &jobQueue) Q_DECL_OVERRIDE;
+QAspectJob::QAspectJob(QAspectJobPrivate &dd)
+    : d_ptr(&dd)
+{
+}
 
-    void waitForAllJobs() Q_DECL_OVERRIDE;
+QAspectJob::~QAspectJob()
+{
+    delete d_ptr;
+}
 
-    void waitForPerThreadFunction(JobFunction func, void *arg) Q_DECL_OVERRIDE;
+void QAspectJob::addDependency(QWeakPointer<QAspectJob> dependency)
+{
+    Q_D(QAspectJob);
+    d->m_dependencies.append(dependency);
+}
 
-protected:
-    QJobManager(QJobManagerPrivate &dd, QObject *parent);
-    Q_DECLARE_PRIVATE(QJobManager)
-    QJobManagerPrivate *d_ptr;
-};
+QVector<QWeakPointer<QAspectJob> > QAspectJob::dependencies() const
+{
+    Q_D(const QAspectJob);
+    return d->m_dependencies;
+}
 
 } // namespace Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_QJOBMANAGER_H

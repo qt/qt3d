@@ -60,9 +60,9 @@ void BulletPhysicsAspect::sceneNodeRemoved(QSceneChangePtr &)
 
 }
 
-QVector<QJobPtr> BulletPhysicsAspect::jobsToExecute()
+QVector<QAspectJobPtr> BulletPhysicsAspect::jobsToExecute()
 {
-    QVector<QJobPtr> jobs;
+    QVector<QAspectJobPtr> jobs;
 
     return jobs;
 }

@@ -59,7 +59,7 @@ public:
     void sceneNodeRemoved(QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     // QJobProviderInterface interface
-    QVector<QJobPtr> jobsToExecute() Q_DECL_OVERRIDE;
+    QVector<QAspectJobPtr> jobsToExecute() Q_DECL_OVERRIDE;
 
     // AbstractAspect interface
 private:

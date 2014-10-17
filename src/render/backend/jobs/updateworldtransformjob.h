@@ -42,7 +42,7 @@
 #ifndef QT3D_RENDER_UPDATEWORLDTRANSFORMJOB_H
 #define QT3D_RENDER_UPDATEWORLDTRANSFORMJOB_H
 
-#include <Qt3DCore/qjob.h>
+#include <Qt3DCore/qaspectjob.h>
 
 #include <QSharedPointer>
 
@@ -53,7 +53,7 @@ namespace Render {
 
 class RenderEntity;
 
-class UpdateWorldTransformJob : public QJob
+class UpdateWorldTransformJob : public QAspectJob
 {
 public:
     explicit UpdateWorldTransformJob(RenderEntity *node);

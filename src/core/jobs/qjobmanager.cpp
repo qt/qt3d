@@ -127,22 +127,22 @@ void QJobManager::initialize()
 {
 }
 
-void QJobManager::enqueueJobs(const QVector<QJobPtr> &jobQueue)
+void QJobManager::enqueueJobs(const QVector<QAspectJobPtr> &jobQueue)
 {
     Q_D(QJobManager);
     // Convert QJobs to ThreadWeaver::Jobs
-    QHash<QJob *, QSharedPointer<WeaverJob> > jobsMap;
-    Q_FOREACH (const QJobPtr &job, jobQueue) {
+    QHash<QAspectJob *, QSharedPointer<WeaverJob> > jobsMap;
+    Q_FOREACH (const QAspectJobPtr &job, jobQueue) {
         QSharedPointer<WeaverJob> weaverJob(new WeaverJob);
         weaverJob->m_job = job;
         jobsMap.insert(job.data(), weaverJob);
     }
 
     // Resolve dependencies
-    Q_FOREACH (const QJobPtr &job, jobQueue) {
-        const QVector<QWeakPointer<QJob> > &deps = job->dependencies();
+    Q_FOREACH (const QAspectJobPtr &job, jobQueue) {
+        const QVector<QWeakPointer<QAspectJob> > &deps = job->dependencies();
 
-        Q_FOREACH (const QWeakPointer<QJob> &dep, deps) {
+        Q_FOREACH (const QWeakPointer<QAspectJob> &dep, deps) {
             QSharedPointer<WeaverJob> weaverDep = jobsMap.value(dep.data());
 
             if (weaverDep) {
@@ -153,7 +153,7 @@ void QJobManager::enqueueJobs(const QVector<QJobPtr> &jobQueue)
         }
     }
 
-    Q_FOREACH (const QJobPtr &job, jobQueue) {
+    Q_FOREACH (const QAspectJobPtr &job, jobQueue) {
         QSharedPointer<WeaverJob> weaverJob = jobsMap.value(job.data());
         d->m_weaver->enqueue(weaverJob);
     }

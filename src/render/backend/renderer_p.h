@@ -46,7 +46,7 @@
 #include <Qt3DRenderer/qtechnique.h>
 #include <Qt3DRenderer/private/quniformvalue_p.h>
 #include <Qt3DRenderer/private/handle_types_p.h>
-#include <Qt3DCore/qjob.h>
+#include <Qt3DCore/qaspectjob.h>
 
 #include <QHash>
 #include <QMatrix4x4>
@@ -147,8 +147,8 @@ public:
     void render();
     void doRender();
 
-    QVector<QJobPtr> createRenderBinJobs();
-    QJobPtr createRenderViewJob(FrameGraphNode *node, int submitOrderIndex);
+    QVector<QAspectJobPtr> createRenderBinJobs();
+    QAspectJobPtr createRenderViewJob(FrameGraphNode *node, int submitOrderIndex);
     void executeCommands(const QVector<RenderCommand *> &commands);
 
     inline RenderQueues* renderQueues() const { return m_renderQueues; }

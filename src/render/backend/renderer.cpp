@@ -542,7 +542,7 @@ void Renderer::submitRenderViews()
 
 // Waits to be told to create jobs for the next frame
 // Called by RendererAspect jobsToExecute context of QAspectThread
-QVector<QJobPtr> Renderer::createRenderBinJobs()
+QVector<QAspectJobPtr> Renderer::createRenderBinJobs()
 {
     // Traverse the current framegraph. For each leaf node create a
     // RenderView and set its configuration then create a job to
@@ -550,7 +550,7 @@ QVector<QJobPtr> Renderer::createRenderBinJobs()
     // their details from the RenderNodes that are visible to the
     // Camera selected by the framegraph configuration
 
-    QVector<QJobPtr> renderBinJobs;
+    QVector<QAspectJobPtr> renderBinJobs;
 
     // We do not create jobs if the graphicContext hasn't been set.
     // That way we will go in submitRenderView which will create the OpenGLContext in the
@@ -563,7 +563,7 @@ QVector<QJobPtr> Renderer::createRenderBinJobs()
 }
 
 // Called during while traversing the FrameGraph for each leaf node context of QAspectThread
-QJobPtr Renderer::createRenderViewJob(FrameGraphNode *node, int submitOrderIndex)
+QAspectJobPtr Renderer::createRenderViewJob(FrameGraphNode *node, int submitOrderIndex)
 {
     RenderViewJobPtr job(new RenderViewJob);
     job->setRenderer(this);
