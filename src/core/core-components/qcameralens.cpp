@@ -112,13 +112,13 @@ void QCameraLens::setOrthographicProjection( float left, float right,
                                              float nearPlane, float farPlane )
 {
     Q_D(QCameraLens);
-    d->m_left = left;
-    d->m_right = right;
-    d->m_bottom = bottom;
-    d->m_top = top;
-    d->m_nearPlane = nearPlane;
-    d->m_farPlane = farPlane;
-    d->m_projectionType = OrthogonalProjection;
+    setLeft(left);
+    setRight(right);
+    setBottom(bottom);
+    setTop(top);
+    setNearPlane(nearPlane);
+    setFarPlane(farPlane);
+    setProjectionType(OrthogonalProjection);
     d->updateProjectionMatrix();
 }
 
@@ -126,11 +126,11 @@ void QCameraLens::setPerspectiveProjection( float fieldOfView, float aspectRatio
                                             float nearPlane, float farPlane )
 {
     Q_D(QCameraLens);
-    d->m_fieldOfView = fieldOfView;
-    d->m_aspectRatio = aspectRatio;
-    d->m_nearPlane = nearPlane;
-    d->m_farPlane = farPlane;
-    d->m_projectionType = PerspectiveProjection;
+    setFieldOfView(fieldOfView);
+    setAspectRatio(aspectRatio);
+    setNearPlane(nearPlane);
+    setFarPlane(farPlane);
+    setProjectionType(PerspectiveProjection);
     d->updateProjectionMatrix();
 }
 
