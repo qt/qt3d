@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QJOBMANAGER_P_H
-#define QT3D_QJOBMANAGER_P_H
+#ifndef QT3D_QASPECTJOBMANAGER_P_H
+#define QT3D_QASPECTJOBMANAGER_P_H
 
 #include <private/qobject_p.h>
 
@@ -52,15 +52,15 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QJobManager;
+class QAspectJobManager;
 
-class QJobManagerPrivate : public QObjectPrivate
+class QAspectJobManagerPrivate : public QObjectPrivate
 {
 public:
-    QJobManagerPrivate(QJobManager *qq);
+    QAspectJobManagerPrivate(QAspectJobManager *qq);
 
-    Q_DECLARE_PUBLIC(QJobManager)
-    QJobManager *q_ptr;
+    Q_DECLARE_PUBLIC(QAspectJobManager)
+    QAspectJobManager *q_ptr;
     ThreadWeaver::Queue *m_weaver;
 };
 
@@ -68,4 +68,4 @@ public:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QJOBMANAGER_P_H
+#endif // QT3D_QASPECTJOBMANAGER_P_H

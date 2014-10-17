@@ -43,10 +43,10 @@
 #include <dependencypolicy.h>
 #include <thread.h>
 
-#include "qjobmanager.h"
+#include "qaspectjobmanager.h"
 #include "job.h"
 #include "weaverjob_p.h"
-#include "qjobmanager_p.h"
+#include "qaspectjobmanager_p.h"
 
 #include <QAtomicInt>
 #include <QDebug>
@@ -98,38 +98,38 @@ void SynchronizedJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *t
 
 } // anonymous
 
-QJobManagerPrivate::QJobManagerPrivate(QJobManager *qq)
+QAspectJobManagerPrivate::QAspectJobManagerPrivate(QAspectJobManager *qq)
     : QObjectPrivate()
     , q_ptr(qq)
     , m_weaver(Q_NULLPTR)
 {
 }
 
-QJobManager::QJobManager(QObject *parent)
+QAspectJobManager::QAspectJobManager(QObject *parent)
     : QAspectJobManagerInterface(parent)
-    , d_ptr(new QJobManagerPrivate(this))
+    , d_ptr(new QAspectJobManagerPrivate(this))
 {
-    Q_D(QJobManager);
+    Q_D(QAspectJobManager);
     d->m_weaver = new ThreadWeaver::Queue(this);
     d->m_weaver->setMaximumNumberOfThreads(QThread::idealThreadCount());
 }
 
-QJobManager::QJobManager(QJobManagerPrivate &dd, QObject *parent)
+QAspectJobManager::QAspectJobManager(QAspectJobManagerPrivate &dd, QObject *parent)
     : QAspectJobManagerInterface(parent)
     , d_ptr(&dd)
 {
-    Q_D(QJobManager);
+    Q_D(QAspectJobManager);
     d->m_weaver = new ThreadWeaver::Queue(this);
     d->m_weaver->setMaximumNumberOfThreads(QThread::idealThreadCount());
 }
 
-void QJobManager::initialize()
+void QAspectJobManager::initialize()
 {
 }
 
-void QJobManager::enqueueJobs(const QVector<QAspectJobPtr> &jobQueue)
+void QAspectJobManager::enqueueJobs(const QVector<QAspectJobPtr> &jobQueue)
 {
-    Q_D(QJobManager);
+    Q_D(QAspectJobManager);
     // Convert QJobs to ThreadWeaver::Jobs
     QHash<QAspectJob *, QSharedPointer<WeaverJob> > jobsMap;
     Q_FOREACH (const QAspectJobPtr &job, jobQueue) {
@@ -159,15 +159,15 @@ void QJobManager::enqueueJobs(const QVector<QAspectJobPtr> &jobQueue)
     }
 }
 
-void QJobManager::waitForAllJobs()
+void QAspectJobManager::waitForAllJobs()
 {
-    Q_D(QJobManager);
+    Q_D(QAspectJobManager);
     d->m_weaver->finish();
 }
 
-void QJobManager::waitForPerThreadFunction(JobFunction func, void *arg)
+void QAspectJobManager::waitForPerThreadFunction(JobFunction func, void *arg)
 {
-    Q_D(QJobManager);
+    Q_D(QAspectJobManager);
     const int threadCount = d->m_weaver->maximumNumberOfThreads();
     QAtomicInt atomicCount(threadCount);
 

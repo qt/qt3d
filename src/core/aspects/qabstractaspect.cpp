@@ -42,7 +42,7 @@
 #include "qabstractaspect.h"
 #include "qentity.h"
 #include <private/qabstractaspect_p.h>
-#include <Qt3DCore/qjobmanager.h>
+#include <Qt3DCore/qaspectjobmanager.h>
 #include <private/qchangearbiter_p.h>
 #include <Qt3DCore/qsceneinterface.h>
 
