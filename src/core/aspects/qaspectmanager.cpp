@@ -49,13 +49,11 @@
 #include "qscheduler.h"
 #include "qtickclock.h"
 #include "qentity.h"
-#include "qsceneobserverinterface.h"
 
 #include "corelogging.h"
 #include <QEventLoop>
 #include <QThread>
 #include <QWaitCondition>
-#include <QWindow>
 #include <QSurface>
 
 
@@ -66,12 +64,12 @@ namespace Qt3D {
 QAspectManager::QAspectManager(QObject *parent)
     : QObject(parent)
     , m_root(Q_NULLPTR)
-    , m_window(Q_NULLPTR)
+    , m_surface(Q_NULLPTR)
     , m_scheduler(new QScheduler(this))
     , m_jobManager(new QJobManager(this))
     , m_changeArbiter(new QChangeArbiter(this))
 {
-    qRegisterMetaType<QWindow*>("QWindow*");
+    qRegisterMetaType<QSurface *>("QSurface*");
     m_runMainLoop.fetchAndStoreOrdered(0);
     m_terminated.fetchAndStoreOrdered(0);
     qCDebug(Aspects) << Q_FUNC_INFO;
@@ -132,16 +130,12 @@ void QAspectManager::setRoot(QNode *rootObject)
 }
 
 // Called before register aspect
-void QAspectManager::setWindow(QWindow *window)
+void QAspectManager::setSurface(QSurface *surface)
 {
     qCDebug(Aspects) << Q_FUNC_INFO;
-    m_window = window;
-    // We need to create the window
-    // Otherwise aspects won't be able to initialize the glContext
-    // As show (which calls create) is only called after they're initialized
-    m_window->create();
+    m_surface = surface;
     Q_FOREACH (QAbstractAspect *aspect, m_aspects)
-        aspect->onInitialize(m_window);
+        aspect->onInitialize(m_surface);
 }
 
 /*!
@@ -157,8 +151,8 @@ void QAspectManager::registerAspect(QAbstractAspect *aspect)
         QAbstractAspectPrivate::get(aspect)->m_arbiter = m_changeArbiter;
         // Register sceneObserver with the QChangeArbiter
         m_changeArbiter->registerSceneObserver(aspect);
-        if (m_window != Q_NULLPTR)
-            aspect->onInitialize(m_window);
+        if (m_surface != Q_NULLPTR)
+            aspect->onInitialize(m_surface);
     }
     else {
         qCWarning(Aspects) << "Failed to register aspect";
@@ -166,9 +160,9 @@ void QAspectManager::registerAspect(QAbstractAspect *aspect)
     qCDebug(Aspects) << "Completed registering aspect";
 }
 
-QWindow *QAspectManager::window() const
+QSurface *QAspectManager::surface() const
 {
-    return m_window;
+    return m_surface;
 }
 
 void QAspectManager::exec()

@@ -130,12 +130,12 @@ void QAspectEngine::shutdown()
     d->m_aspectThread->wait();
 }
 
-void QAspectEngine::setWindow(QWindow *window)
+void QAspectEngine::setSurface(QSurface *surface)
 {
     Q_D(QAspectEngine);
     QMetaObject::invokeMethod(d->m_aspectThread->aspectManager(),
-                              "setWindow",
-                              Q_ARG(QWindow *, window));
+                              "setSurface",
+                              Q_ARG(QSurface *, surface));
 }
 
 /*!

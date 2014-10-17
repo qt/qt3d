@@ -48,7 +48,7 @@
 
 QT_BEGIN_NAMESPACE
 
-class QWindow;
+class QSurface;
 
 namespace Qt3D {
 
@@ -67,7 +67,7 @@ public:
     void shutdown();
 
     void setRoot(QNode *rootObject);
-    void setWindow(QWindow *window);
+    void setSurface(QSurface *surface);
     void registerAspect(QAbstractAspect *aspect);
 
 protected:

@@ -77,7 +77,7 @@ Window::Window(QScreen *screen)
     create();
 
     m_aspectEngine->initialize();
-    m_aspectEngine->setWindow(this);
+    m_aspectEngine->setSurface(this);
 
     m_controller = new CameraController();
 

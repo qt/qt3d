@@ -49,7 +49,7 @@
 QT_BEGIN_NAMESPACE
 
 class QWaitCondition;
-class QWindow;
+class QSurface;
 
 namespace Qt3D {
 
@@ -73,9 +73,9 @@ public Q_SLOTS:
     void shutdown();
 
     void setRoot(Qt3D::QNode *rootObject);
-    void setWindow(QWindow* window);
+    void setSurface(QSurface *surface);
     void registerAspect(Qt3D::QAbstractAspect *aspect);
-    QWindow *window() const;
+    QSurface *surface() const;
 
     void exec();
     void quit();
@@ -87,7 +87,7 @@ public Q_SLOTS:
 private:
     QList<QAbstractAspect *> m_aspects;
     QEntity *m_root;
-    QWindow *m_window;
+    QSurface *m_surface;
     QScheduler *m_scheduler;
     QJobManagerInterface *m_jobManager;
     QChangeArbiter *m_changeArbiter;
