@@ -74,6 +74,7 @@ class RenderTransform;
 class RenderMesh;
 class RenderTarget;
 class RenderRenderPass;
+class RenderParameter;
 
 typedef QHandle<RenderAttachment, 16> HAttachment;
 typedef QHandle<RenderCameraLens, 8> HCamera;
@@ -97,6 +98,7 @@ typedef QHandle<RenderMesh, 16> HMesh;
 typedef QHandle<RenderTarget, 8> HTarget;
 typedef QHandle<RenderRenderPass, 16> HRenderPass;
 typedef QHandle<TexImageData, 16> HTextureData;
+typedef QHandle<RenderParameter, 16> HParameter;
 
 } // Render
 
