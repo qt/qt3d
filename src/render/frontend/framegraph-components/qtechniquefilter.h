@@ -43,7 +43,7 @@
 #define QT3D_QTECHNIQUEFILTER_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/qframegraphitem.h>
+#include <Qt3DRenderer/qframegraphnode.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -52,7 +52,7 @@ namespace Qt3D {
 class QTechniqueFilterPrivate;
 class QAnnotation;
 
-class QT3DRENDERERSHARED_EXPORT QTechniqueFilter : public QFrameGraphItem
+class QT3DRENDERERSHARED_EXPORT QTechniqueFilter : public QFrameGraphNode
 {
     Q_OBJECT
 public:

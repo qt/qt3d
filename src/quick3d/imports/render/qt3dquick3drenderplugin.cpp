@@ -147,7 +147,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterExtendedType<Qt3D::QViewport, Qt3D::Render::Quick::Quick3DViewport>(uri, 2, 0, "Viewport");
     qmlRegisterType<Qt3D::QRenderTargetSelector>(uri, 2, 0, "RenderTargetSelector");
     qmlRegisterType<Qt3D::QClearBuffer>(uri, 2, 0, "ClearBuffer");
-    qmlRegisterExtendedUncreatableType<Qt3D::QFrameGraphItem, Qt3D::Render::Quick::Quick3DFrameGraphItem>(uri, 2, 0, "FrameGraphItem", QStringLiteral("FrameGraphItem is a base class"));
+    qmlRegisterExtendedUncreatableType<Qt3D::QFrameGraphNode, Qt3D::Render::Quick::Quick3DFrameGraphItem>(uri, 2, 0, "FrameGraphNode", QStringLiteral("FrameGraphNode is a base class"));
     qmlRegisterType<Qt3D::QFrameGraph>(uri, 2, 0, "FrameGraph");
 
     // RenderTarget

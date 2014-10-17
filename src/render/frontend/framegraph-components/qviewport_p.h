@@ -42,7 +42,7 @@
 #ifndef QT3D_QVIEWPORT_P_H
 #define QT3D_QVIEWPORT_P_H
 
-#include <private/qframegraphitem_p.h>
+#include <private/qframegraphnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -50,7 +50,7 @@ namespace Qt3D {
 
 class QViewport;
 
-class QViewportPrivate : public QFrameGraphItemPrivate
+class QViewportPrivate : public QFrameGraphNodePrivate
 {
 public :
     QViewportPrivate(QViewport *qq);

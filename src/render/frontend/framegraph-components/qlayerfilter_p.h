@@ -43,7 +43,7 @@
 #define QT3D_QLAYERFILTER_P_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <private/qframegraphitem_p.h>
+#include <private/qframegraphnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -51,7 +51,7 @@ namespace Qt3D {
 
 class QLayerFilter;
 
-class QT3DRENDERERSHARED_EXPORT QLayerFilterPrivate : public QFrameGraphItemPrivate
+class QT3DRENDERERSHARED_EXPORT QLayerFilterPrivate : public QFrameGraphNodePrivate
 {
 public:
     explicit QLayerFilterPrivate(QLayerFilter *qq);

@@ -42,7 +42,7 @@
 #ifndef QT3D_QVIEWPORT_H
 #define QT3D_QVIEWPORT_H
 
-#include <Qt3DRenderer/qframegraphitem.h>
+#include <Qt3DRenderer/qframegraphnode.h>
 #include <QRectF>
 #include <QColor>
 
@@ -52,7 +52,7 @@ namespace Qt3D {
 
 class QViewportPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QViewport : public QFrameGraphItem
+class QT3DRENDERERSHARED_EXPORT QViewport : public QFrameGraphNode
 {
     Q_OBJECT
     Q_PROPERTY(QRectF rect READ rect WRITE setRect NOTIFY rectChanged)

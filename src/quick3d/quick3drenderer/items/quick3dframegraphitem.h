@@ -43,7 +43,7 @@
 #define QT3D_RENDER_QUICK_QUICK3DFRAMEGRAPHITEM_H
 
 #include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
-#include <Qt3DRenderer/qframegraphitem.h>
+#include <Qt3DRenderer/qframegraphnode.h>
 #include <QQmlListProperty>
 
 QT_BEGIN_NAMESPACE
@@ -57,20 +57,20 @@ namespace Quick {
 class QT3DQUICKRENDERERSHARED_EXPORT Quick3DFrameGraphItem : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3D::QFrameGraphItem> frameGraphChildren READ frameGraphChildrenList)
+    Q_PROPERTY(QQmlListProperty<Qt3D::QFrameGraphNode> frameGraphChildren READ frameGraphChildrenList)
     Q_CLASSINFO("DefaultProperty", "frameGraphChildren")
 
 public:
     explicit Quick3DFrameGraphItem(QObject *parent = 0);
 
-    inline QFrameGraphItem *parentFrameGraphItem() const { return qobject_cast<QFrameGraphItem *>(parent()); }
-    QQmlListProperty<QFrameGraphItem> frameGraphChildrenList();
+    inline QFrameGraphNode *parentFrameGraphItem() const { return qobject_cast<QFrameGraphNode *>(parent()); }
+    QQmlListProperty<QFrameGraphNode> frameGraphChildrenList();
 
 private:
-    static void apprendFrameGraphItem(QQmlListProperty<QFrameGraphItem> *list, QFrameGraphItem *item);
-    static QFrameGraphItem *frameGraphItemAt(QQmlListProperty<QFrameGraphItem> *list, int index);
-    static int frameGraphItemsCount(QQmlListProperty<QFrameGraphItem> *list);
-    static void clearFrameGraphItemList(QQmlListProperty<QFrameGraphItem> *list);
+    static void apprendFrameGraphItem(QQmlListProperty<QFrameGraphNode> *list, QFrameGraphNode *item);
+    static QFrameGraphNode *frameGraphItemAt(QQmlListProperty<QFrameGraphNode> *list, int index);
+    static int frameGraphItemsCount(QQmlListProperty<QFrameGraphNode> *list);
+    static void clearFrameGraphItemList(QQmlListProperty<QFrameGraphNode> *list);
 };
 
 } // Quick

@@ -42,7 +42,7 @@
 #ifndef QT3D_QTECHNIQUEFILTER_P_H
 #define QT3D_QTECHNIQUEFILTER_P_H
 
-#include <private/qframegraphitem_p.h>
+#include <private/qframegraphnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -50,7 +50,7 @@ namespace Qt3D {
 
 class QTechniqueFilter;
 
-class QTechniqueFilterPrivate : public QFrameGraphItemPrivate
+class QTechniqueFilterPrivate : public QFrameGraphNodePrivate
 {
 public :
     QTechniqueFilterPrivate(QTechniqueFilter *qq);

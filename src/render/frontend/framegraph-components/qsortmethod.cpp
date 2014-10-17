@@ -50,25 +50,25 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 QSortMethodPrivate::QSortMethodPrivate(QSortMethod *qq)
-    : QFrameGraphItemPrivate(qq)
+    : QFrameGraphNodePrivate(qq)
 {
 }
 
 void QSortMethod::copy(const QNode *ref)
 {
-    QFrameGraphItem::copy(ref);
+    QFrameGraphNode::copy(ref);
     const QSortMethod *other = static_cast<const QSortMethod*>(ref);
     Q_FOREACH (QSortCriterion *c, other->d_func()->m_criteria)
         addCriterion(qobject_cast<QSortCriterion *>(QNodePrivate::get(c)->clone()));
 }
 
 QSortMethod::QSortMethod(QNode *parent)
-    : QFrameGraphItem(*new QSortMethodPrivate(this), parent)
+    : QFrameGraphNode(*new QSortMethodPrivate(this), parent)
 {
 }
 
 QSortMethod::QSortMethod(QSortMethodPrivate &dd, QNode *parent)
-    : QFrameGraphItem(dd, parent)
+    : QFrameGraphNode(dd, parent)
 {
 }
 

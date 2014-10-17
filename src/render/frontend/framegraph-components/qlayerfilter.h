@@ -42,7 +42,7 @@
 #ifndef QT3D_QLAYERFILTER_H
 #define QT3D_QLAYERFILTER_H
 
-#include <Qt3DRenderer/qframegraphitem.h>
+#include <Qt3DRenderer/qframegraphnode.h>
 #include <QStringList>
 
 QT_BEGIN_NAMESPACE
@@ -51,7 +51,7 @@ namespace Qt3D {
 
 class QLayerFilterPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QLayerFilter : public QFrameGraphItem
+class QT3DRENDERERSHARED_EXPORT QLayerFilter : public QFrameGraphNode
 {
     Q_OBJECT
     Q_PROPERTY(QStringList layers READ layers WRITE setLayers NOTIFY layersChanged)

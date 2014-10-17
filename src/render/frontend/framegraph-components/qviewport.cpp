@@ -49,26 +49,26 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 QViewportPrivate::QViewportPrivate(QViewport *qq) :
-    QFrameGraphItemPrivate(qq)
+    QFrameGraphNodePrivate(qq)
 {
 }
 
 void QViewport::copy(const QNode *ref)
 {
-    QFrameGraphItem::copy(ref);
+    QFrameGraphNode::copy(ref);
     const QViewport *viewport = static_cast<const QViewport*>(ref);
     d_func()->m_rect = viewport->d_func()->m_rect;
-    Q_FOREACH (QFrameGraphItem *fgChild, viewport->d_func()->m_fgChildren)
-        appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(QNodePrivate::get(fgChild)->clone()));
+    Q_FOREACH (QFrameGraphNode *fgChild, viewport->d_func()->m_fgChildren)
+        appendFrameGraphNode(qobject_cast<QFrameGraphNode *>(QNodePrivate::get(fgChild)->clone()));
 }
 
 QViewport::QViewport(QNode *parent)
-    : QFrameGraphItem(*new QViewportPrivate(this), parent)
+    : QFrameGraphNode(*new QViewportPrivate(this), parent)
 {
 }
 
 QViewport::QViewport(QViewportPrivate &dd, QNode *parent)
-    : QFrameGraphItem(dd, parent)
+    : QFrameGraphNode(dd, parent)
 {
 }
 

@@ -45,7 +45,7 @@
 #include <Qt3DCore/qhandle.h>
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qbackendnode.h>
-#include <Qt3DRenderer/qframegraphitem.h>
+#include <Qt3DRenderer/qframegraphnode.h>
 #include <Qt3DRenderer/private/managers_p.h>
 #include <qglobal.h>
 #include <QVector>
@@ -147,7 +147,7 @@ protected:
                 backend->setFrameGraphManager(m_manager);
                 backend->setHandle(handle);
                 backend->setPeer(f);
-                if (qobject_cast<QFrameGraphItem *>(n->parentNode()))
+                if (qobject_cast<QFrameGraphNode *>(n->parentNode()))
                     backend->setParentHandle(m_manager->lookupHandle(n->parentNode()->uuid()));
                 return backend;
             }

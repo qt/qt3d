@@ -54,23 +54,23 @@ Quick3DFrameGraphItem::Quick3DFrameGraphItem(QObject *parent)
 {
 }
 
-QQmlListProperty<QFrameGraphItem> Quick3DFrameGraphItem::frameGraphChildrenList()
+QQmlListProperty<QFrameGraphNode> Quick3DFrameGraphItem::frameGraphChildrenList()
 {
-    return QQmlListProperty<QFrameGraphItem>(this, 0,
+    return QQmlListProperty<QFrameGraphNode>(this, 0,
                                              &Quick3DFrameGraphItem::apprendFrameGraphItem,
                                              &Quick3DFrameGraphItem::frameGraphItemsCount,
                                              &Quick3DFrameGraphItem::frameGraphItemAt,
                                              &Quick3DFrameGraphItem::clearFrameGraphItemList);
 }
 
-void Quick3DFrameGraphItem::apprendFrameGraphItem(QQmlListProperty<QFrameGraphItem> *list, QFrameGraphItem *item)
+void Quick3DFrameGraphItem::apprendFrameGraphItem(QQmlListProperty<QFrameGraphNode> *list, QFrameGraphNode *item)
 {
     Quick3DFrameGraphItem *fg = qobject_cast<Quick3DFrameGraphItem *>(list->object);
     if (fg)
-        return fg->parentFrameGraphItem()->appendFrameGraphItem(item);
+        return fg->parentFrameGraphItem()->appendFrameGraphNode(item);
 }
 
-QFrameGraphItem *Quick3DFrameGraphItem::frameGraphItemAt(QQmlListProperty<QFrameGraphItem> *list, int index)
+QFrameGraphNode *Quick3DFrameGraphItem::frameGraphItemAt(QQmlListProperty<QFrameGraphNode> *list, int index)
 {
     Quick3DFrameGraphItem *fg = qobject_cast<Quick3DFrameGraphItem *>(list->object);
     if (fg)
@@ -78,7 +78,7 @@ QFrameGraphItem *Quick3DFrameGraphItem::frameGraphItemAt(QQmlListProperty<QFrame
     return Q_NULLPTR;
 }
 
-int Quick3DFrameGraphItem::frameGraphItemsCount(QQmlListProperty<QFrameGraphItem> *list)
+int Quick3DFrameGraphItem::frameGraphItemsCount(QQmlListProperty<QFrameGraphNode> *list)
 {
     Quick3DFrameGraphItem *fg = qobject_cast<Quick3DFrameGraphItem *>(list->object);
     if (fg)
@@ -86,12 +86,12 @@ int Quick3DFrameGraphItem::frameGraphItemsCount(QQmlListProperty<QFrameGraphItem
     return -1;
 }
 
-void Quick3DFrameGraphItem::clearFrameGraphItemList(QQmlListProperty<QFrameGraphItem> *list)
+void Quick3DFrameGraphItem::clearFrameGraphItemList(QQmlListProperty<QFrameGraphNode> *list)
 {
     Quick3DFrameGraphItem *fg = qobject_cast<Quick3DFrameGraphItem *>(list->object);
     if (fg) {
-        Q_FOREACH (QFrameGraphItem *item, fg->parentFrameGraphItem()->frameGraphChildren())
-            fg->parentFrameGraphItem()->removeFrameGraphItem(item);
+        Q_FOREACH (QFrameGraphNode *item, fg->parentFrameGraphItem()->frameGraphChildren())
+            fg->parentFrameGraphItem()->removeFrameGraphNode(item);
     }
 }
 

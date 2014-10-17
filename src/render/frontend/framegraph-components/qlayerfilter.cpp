@@ -48,26 +48,26 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 QLayerFilterPrivate::QLayerFilterPrivate(QLayerFilter *qq)
-    : QFrameGraphItemPrivate(qq)
+    : QFrameGraphNodePrivate(qq)
 {
 }
 
 void QLayerFilter::copy(const QNode *ref)
 {
-    QFrameGraphItem::copy(ref);
+    QFrameGraphNode::copy(ref);
     const QLayerFilter *layer = static_cast<const QLayerFilter*>(ref);
     d_func()->m_layers = layer->d_func()->m_layers;
-    Q_FOREACH (QFrameGraphItem *fgChild, layer->d_func()->m_fgChildren)
-        appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(QNodePrivate::get(fgChild)->clone()));
+    Q_FOREACH (QFrameGraphNode *fgChild, layer->d_func()->m_fgChildren)
+        appendFrameGraphNode(qobject_cast<QFrameGraphNode *>(QNodePrivate::get(fgChild)->clone()));
 }
 
 QLayerFilter::QLayerFilter(QNode *parent)
-    : QFrameGraphItem(*new QLayerFilterPrivate(this), parent)
+    : QFrameGraphNode(*new QLayerFilterPrivate(this), parent)
 {
 }
 
 QLayerFilter::QLayerFilter(QLayerFilterPrivate &dd, QNode *parent)
-    : QFrameGraphItem(dd, parent)
+    : QFrameGraphNode(dd, parent)
 {
 }
 

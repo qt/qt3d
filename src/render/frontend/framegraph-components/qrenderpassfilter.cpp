@@ -50,11 +50,11 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 QRenderPassFilter::QRenderPassFilter(QNode *parent)
-    : QFrameGraphItem(*new QRenderPassFilterPrivate(this), parent)
+    : QFrameGraphNode(*new QRenderPassFilterPrivate(this), parent)
 {}
 
 QRenderPassFilter::QRenderPassFilter(QRenderPassFilterPrivate &dd, QNode *parent)
-    : QFrameGraphItem(dd, parent)
+    : QFrameGraphNode(dd, parent)
 {
 }
 
@@ -100,10 +100,10 @@ void QRenderPassFilter::removeInclude(QAnnotation *annotation)
 
 void QRenderPassFilter::copy(const QNode *ref)
 {
-    QFrameGraphItem::copy(ref);
+    QFrameGraphNode::copy(ref);
     const QRenderPassFilter *other = static_cast<const QRenderPassFilter*>(ref);
-    Q_FOREACH (QFrameGraphItem *fgChild, other->d_func()->m_fgChildren)
-        appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(QNodePrivate::get(fgChild)->clone()));
+    Q_FOREACH (QFrameGraphNode *fgChild, other->d_func()->m_fgChildren)
+        appendFrameGraphNode(qobject_cast<QFrameGraphNode *>(QNodePrivate::get(fgChild)->clone()));
     Q_FOREACH (QAnnotation *c, other->d_func()->m_includeList)
         addInclude(qobject_cast<QAnnotation *>(QNodePrivate::get(c)->clone()));
 }

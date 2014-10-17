@@ -42,7 +42,7 @@
 #ifndef QT3D_QRENDERTARGETSELECTOR_P_H
 #define QT3D_QRENDERTARGETSELECTOR_P_H
 
-#include <private/qframegraphitem_p.h>
+#include <private/qframegraphnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -51,7 +51,7 @@ namespace Qt3D {
 class QRenderTargetSelector;
 class QRenderTarget;
 
-class QRenderTargetSelectorPrivate : public QFrameGraphItemPrivate
+class QRenderTargetSelectorPrivate : public QFrameGraphNodePrivate
 {
 public:
     QRenderTargetSelectorPrivate(QRenderTargetSelector *qq);

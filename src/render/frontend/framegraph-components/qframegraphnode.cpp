@@ -39,31 +39,71 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QFRAMEGRAPHITEM_P_H
-#define QT3D_QFRAMEGRAPHITEM_P_H
+#include "qframegraphnode.h"
+#include "qframegraphnode_p.h"
 
-#include <QtCore/QtGlobal>
-#include <private/qnode_p.h>
-#include <Qt3DRenderer/qframegraphitem.h>
+/*!
+ * \class FrameGraphNode
+ *
+ * \brief Base class of all FrameGraph configuration nodes.
+ *
+ * This is an abstract class so it cannot be instanced directly
+ * but rather through one of its subclasses.
+ *
+ * \since 5.3
+ * \namespace Qt3D
+ */
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QFrameGraphItem;
-
-class QFrameGraphItemPrivate : public QNodePrivate
+QFrameGraphNodePrivate::QFrameGraphNodePrivate(QFrameGraphNode *qq)
+    : QNodePrivate(qq)
+    , m_enabled(true)
 {
-public:
-    QFrameGraphItemPrivate(QFrameGraphItem *qq);
+}
 
-    Q_DECLARE_PUBLIC(QFrameGraphItem)
-    bool m_enabled;
-    QList<QFrameGraphItem *> m_fgChildren;
-};
+void QFrameGraphNode::copy(const QNode *ref)
+{
+    QNode::copy(ref);
+}
+
+QFrameGraphNode::QFrameGraphNode(QNode *parent)
+    : QNode(*new QFrameGraphNodePrivate(this), parent)
+{
+}
+
+QFrameGraphNode::QFrameGraphNode(QFrameGraphNodePrivate &dd, QNode *parent)
+    : QNode(dd, parent)
+{
+}
+
+void QFrameGraphNode::appendFrameGraphNode(QFrameGraphNode *item)
+{
+    Q_D(QFrameGraphNode);
+    if (!d->m_fgChildren.contains(item)) {
+        if (!item->parent())
+            item->setParent(this);
+        d->m_fgChildren.append(item);
+    }
+}
+
+void QFrameGraphNode::removeFrameGraphNode(QFrameGraphNode *item)
+{
+    Q_D(QFrameGraphNode);
+    if (!d->m_fgChildren.contains(item)) {
+        d->m_fgChildren.removeOne(item);
+    }
+}
+
+QList<QFrameGraphNode *> QFrameGraphNode::frameGraphChildren() const
+{
+    Q_D(const QFrameGraphNode);
+    return d->m_fgChildren;
+}
+
 
 } // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_QFRAMEGRAPHITEM_P_H

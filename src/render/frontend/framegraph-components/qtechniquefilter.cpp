@@ -50,27 +50,27 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 QTechniqueFilterPrivate::QTechniqueFilterPrivate(QTechniqueFilter *qq)
-    : QFrameGraphItemPrivate(qq)
+    : QFrameGraphNodePrivate(qq)
 {
 }
 
 void QTechniqueFilter::copy(const QNode *ref)
 {
-    QFrameGraphItem::copy(ref);
+    QFrameGraphNode::copy(ref);
     const QTechniqueFilter *other = static_cast<const QTechniqueFilter*>(ref);
-    Q_FOREACH (QFrameGraphItem *fgChild, other->d_func()->m_fgChildren)
-        appendFrameGraphItem(qobject_cast<QFrameGraphItem *>(QNodePrivate::get(fgChild)->clone()));
+    Q_FOREACH (QFrameGraphNode *fgChild, other->d_func()->m_fgChildren)
+        appendFrameGraphNode(qobject_cast<QFrameGraphNode *>(QNodePrivate::get(fgChild)->clone()));
     Q_FOREACH (QAnnotation *crit, other->d_func()->m_requireList)
         addRequirement(qobject_cast<QAnnotation *>(QNodePrivate::get(crit)->clone()));
 }
 
 QTechniqueFilter::QTechniqueFilter(QNode *parent)
-    : QFrameGraphItem(*new QTechniqueFilterPrivate(this), parent)
+    : QFrameGraphNode(*new QTechniqueFilterPrivate(this), parent)
 {
 }
 
 QTechniqueFilter::QTechniqueFilter(QTechniqueFilterPrivate &dd, QNode *parent)
-    : QFrameGraphItem(dd, parent)
+    : QFrameGraphNode(dd, parent)
 {
 }
 

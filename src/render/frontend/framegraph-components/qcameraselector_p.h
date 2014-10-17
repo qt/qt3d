@@ -42,7 +42,7 @@
 #ifndef QT3D_QCAMERASELECTOR_P_H
 #define QT3D_QCAMERASELECTOR_P_H
 
-#include <private/qframegraphitem_p.h>
+#include <private/qframegraphnode_p.h>
 #include <Qt3DRenderer/qcameraselector.h>
 
 QT_BEGIN_NAMESPACE
@@ -51,7 +51,7 @@ namespace Qt3D {
 
 class QCameraSelector;
 
-class QCameraSelectorPrivate : public QFrameGraphItemPrivate
+class QCameraSelectorPrivate : public QFrameGraphNodePrivate
 {
 public:
     QCameraSelectorPrivate(QCameraSelector *qq);

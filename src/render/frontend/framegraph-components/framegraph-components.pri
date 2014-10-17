@@ -1,7 +1,5 @@
 HEADERS += \
         $$PWD/qframegraph.h \
-        $$PWD/qframegraphitem.h \
-        $$PWD/qframegraphitem_p.h \
         $$PWD/qframegraph_p.h \
         $$PWD/qrenderpassfilter.h \
         $$PWD/qrenderpassfilter_p.h \
@@ -20,11 +18,12 @@ HEADERS += \
         $$PWD/qsortmethod.h \
         $$PWD/qsortmethod_p.h \
         $$PWD/qsortcriterion.h \
-        $$PWD/qsortcriterion_p.h
+        $$PWD/qsortcriterion_p.h \
+        $$PWD/qframegraphnode.h \
+        $$PWD/qframegraphnode_p.h
 
 SOURCES += \
         $$PWD/qframegraph.cpp \
-        $$PWD/qframegraphitem.cpp \
         $$PWD/qrenderpassfilter.cpp \
         $$PWD/qviewport.cpp \
         $$PWD/qtechniquefilter.cpp \
@@ -33,6 +32,7 @@ SOURCES += \
         $$PWD/qlayerfilter.cpp \
         $$PWD/qclearbuffer.cpp \
         $$PWD/qsortmethod.cpp \
-        $$PWD/qsortcriterion.cpp
+        $$PWD/qsortcriterion.cpp \
+        $$PWD/qframegraphnode.cpp
 
 INCLUDEPATH += $$PWD

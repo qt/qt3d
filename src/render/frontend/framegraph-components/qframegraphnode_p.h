@@ -39,39 +39,31 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QFRAMEGRAPHNODE_H
-#define QT3D_QFRAMEGRAPHNODE_H
+#ifndef QT3D_QFRAMEGRAPHNODE_P_H
+#define QT3D_QFRAMEGRAPHNODE_P_H
 
-#include <Qt3DCore/qnode.h>
-#include <Qt3DRenderer/qt3drenderer_global.h>
-#include <QObject>
+#include <QtCore/QtGlobal>
+#include <private/qnode_p.h>
+#include <Qt3DRenderer/qframegraphnode.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QFrameGraphItemPrivate;
+class QFrameGraphNode;
 
-class QT3DRENDERERSHARED_EXPORT QFrameGraphItem : public QNode
+class QFrameGraphNodePrivate : public QNodePrivate
 {
-    Q_OBJECT
 public:
-    explicit QFrameGraphItem(QNode *parent = 0);
+    QFrameGraphNodePrivate(QFrameGraphNode *qq);
 
-    void appendFrameGraphItem(QFrameGraphItem *item);
-    void removeFrameGraphItem(QFrameGraphItem *item);
-    QList<QFrameGraphItem *> frameGraphChildren() const;
-
-protected:
-    QFrameGraphItem(QFrameGraphItemPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
-private:
-    Q_DECLARE_PRIVATE(QFrameGraphItem)
+    Q_DECLARE_PUBLIC(QFrameGraphNode)
+    bool m_enabled;
+    QList<QFrameGraphNode *> m_fgChildren;
 };
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QFRAMEGRAPHNODE_H
+#endif // QT3D_QFRAMEGRAPHNODE_P_H

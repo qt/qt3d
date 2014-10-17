@@ -50,7 +50,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QFrameGraph;
-class QFrameGraphItem;
+class QFrameGraphNode;
 
 class QFrameGraphPrivate : public QComponentPrivate
 {
@@ -59,7 +59,7 @@ public:
 
     Q_DECLARE_PUBLIC(QFrameGraph)
 
-    QFrameGraphItem *m_activeFrameGraph;
+    QFrameGraphNode *m_activeFrameGraph;
 };
 
 }

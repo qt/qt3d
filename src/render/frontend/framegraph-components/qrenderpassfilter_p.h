@@ -42,7 +42,7 @@
 #ifndef QT3D_QRENDERPASSFILTER_P_H
 #define QT3D_QRENDERPASSFILTER_P_H
 
-#include <private/qframegraphitem_p.h>
+#include <private/qframegraphnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -50,11 +50,11 @@ namespace Qt3D {
 
 class QRenderPassFilter;
 
-class QRenderPassFilterPrivate : public QFrameGraphItemPrivate
+class QRenderPassFilterPrivate : public QFrameGraphNodePrivate
 {
 public:
     QRenderPassFilterPrivate(QRenderPassFilter *qq)
-        : QFrameGraphItemPrivate(qq)
+        : QFrameGraphNodePrivate(qq)
     {}
 
     Q_DECLARE_PUBLIC(QRenderPassFilter)

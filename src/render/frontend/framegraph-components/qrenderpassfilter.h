@@ -43,7 +43,7 @@
 #define QT3D_QRENDERPASSFILTER_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/qframegraphitem.h>
+#include <Qt3DRenderer/qframegraphnode.h>
 #include <QString>
 
 
@@ -54,7 +54,7 @@ namespace Qt3D {
 class QRenderPassFilterPrivate;
 class QAnnotation;
 
-class QT3DRENDERERSHARED_EXPORT QRenderPassFilter : public QFrameGraphItem
+class QT3DRENDERERSHARED_EXPORT QRenderPassFilter : public QFrameGraphNode
 {
     Q_OBJECT
 

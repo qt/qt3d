@@ -42,7 +42,7 @@
 #ifndef QT3D_QSORTMETHOD_P_H
 #define QT3D_QSORTMETHOD_P_H
 
-#include <private/qframegraphitem_p.h>
+#include <private/qframegraphnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -51,7 +51,7 @@ namespace Qt3D {
 class QSortMethod;
 class QSortCriterion;
 
-class QSortMethodPrivate : public QFrameGraphItemPrivate
+class QSortMethodPrivate : public QFrameGraphNodePrivate
 {
 public:
     QSortMethodPrivate(QSortMethod *qq);

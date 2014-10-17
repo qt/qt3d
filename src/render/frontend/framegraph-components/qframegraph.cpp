@@ -42,8 +42,8 @@
 #include "qframegraph.h"
 #include "qframegraph_p.h"
 #include <Qt3DCore/qentity.h>
-#include <Qt3DRenderer/qframegraphitem.h>
-#include <Qt3DRenderer/private/qframegraphitem_p.h>
+#include <Qt3DRenderer/qframegraphnode.h>
+#include <Qt3DRenderer/private/qframegraphnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -60,7 +60,7 @@ void QFrameGraph::copy(const QNode *ref)
 {
     QComponent::copy(ref);
     const QFrameGraph *other = static_cast<const QFrameGraph*>(ref);
-    setActiveFrameGraph(qobject_cast<QFrameGraphItem *>(QNodePrivate::get(other->d_func()->m_activeFrameGraph)->clone()));
+    setActiveFrameGraph(qobject_cast<QFrameGraphNode *>(QNodePrivate::get(other->d_func()->m_activeFrameGraph)->clone()));
 }
 
 /*!
@@ -90,7 +90,7 @@ QFrameGraph::QFrameGraph(QFrameGraphPrivate &dd, QNode *parent)
 /*!
  * Returns the current activeFrameGraph root node.
  */
-QFrameGraphItem *QFrameGraph::activeFrameGraph() const
+QFrameGraphNode *QFrameGraph::activeFrameGraph() const
 {
     Q_D(const QFrameGraph);
     return d->m_activeFrameGraph;
@@ -99,7 +99,7 @@ QFrameGraphItem *QFrameGraph::activeFrameGraph() const
 /*!
  * Sets the root node \a activeFrameGraph of the FrameGraph.
  */
-void QFrameGraph::setActiveFrameGraph(QFrameGraphItem *activeFrameGraph)
+void QFrameGraph::setActiveFrameGraph(QFrameGraphNode *activeFrameGraph)
 {
     Q_D(QFrameGraph);
     if (activeFrameGraph != d->m_activeFrameGraph) {

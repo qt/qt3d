@@ -44,7 +44,7 @@
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DCore/qnode.h>
-#include <Qt3DRenderer/qframegraphitem.h>
+#include <Qt3DRenderer/qframegraphnode.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -53,7 +53,7 @@ namespace Qt3D {
 class QRenderTargetSelectorPrivate;
 class QRenderTarget;
 
-class QT3DRENDERERSHARED_EXPORT QRenderTargetSelector : public QFrameGraphItem
+class QT3DRENDERERSHARED_EXPORT QRenderTargetSelector : public QFrameGraphNode
 {
     Q_OBJECT
     Q_PROPERTY(Qt3D::QRenderTarget *target READ target WRITE setTarget NOTIFY targetChanged)

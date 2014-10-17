@@ -43,7 +43,7 @@
 #define QT3D_QCAMERASELECTOR_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/qframegraphitem.h>
+#include <Qt3DRenderer/qframegraphnode.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -52,7 +52,7 @@ namespace Qt3D {
 class QCamera;
 class QCameraSelectorPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QCameraSelector : public QFrameGraphItem
+class QT3DRENDERERSHARED_EXPORT QCameraSelector : public QFrameGraphNode
 {
     Q_OBJECT
     Q_PROPERTY(Qt3D::QEntity *camera READ camera WRITE setCamera NOTIFY cameraChanged)

@@ -42,7 +42,7 @@
 #ifndef QT3D_QCLEARBUFFER_H
 #define QT3D_QCLEARBUFFER_H
 
-#include <Qt3DRenderer/qframegraphitem.h>
+#include <Qt3DRenderer/qframegraphnode.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -50,7 +50,7 @@ namespace Qt3D {
 
 class QClearBufferPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QClearBuffer : public QFrameGraphItem
+class QT3DRENDERERSHARED_EXPORT QClearBuffer : public QFrameGraphNode
 {
     Q_OBJECT
     Q_ENUMS(BufferType)

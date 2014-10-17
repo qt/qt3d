@@ -42,14 +42,14 @@
 #ifndef QT3D_QCLEARBUFFER_P_H
 #define QT3D_QCLEARBUFFER_P_H
 
-#include <private/qframegraphitem_p.h>
+#include <private/qframegraphnode_p.h>
 #include <Qt3DRenderer/qclearbuffer.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QClearBufferPrivate : public QFrameGraphItemPrivate
+class QClearBufferPrivate : public QFrameGraphNodePrivate
 {
 public:
     QClearBufferPrivate(QClearBuffer *qq);
