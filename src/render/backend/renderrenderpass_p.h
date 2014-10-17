@@ -45,8 +45,6 @@
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DCore/private/qabstractaspect_p.h>
-#include <Qt3DCore/private/qobservableinterface_p.h>
-#include <Qt3DCore/private/qobserverinterface_p.h>
 #include <Qt3DCore/qbackendnode.h>
 #include <QUuid>
 

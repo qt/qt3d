@@ -43,12 +43,10 @@
 #define QT3D_RENDER_RENDERTEXTURE_H
 
 #include <QOpenGLContext>
-
+#include <QMutex>
 #include <Qt3DRenderer/qtexture.h>
 #include <Qt3DRenderer/texturedata.h>
 #include <Qt3DCore/qbackendnode.h>
-#include <Qt3DCore/private/qobserverinterface_p.h>
-#include <QMutex>
 
 QT_BEGIN_NAMESPACE
 

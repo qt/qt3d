@@ -42,6 +42,7 @@
 #include "rendertechnique_p.h"
 
 #include <Qt3DRenderer/qrenderpass.h>
+#include <Qt3DRenderer/qparameter.h>
 #include <Qt3DRenderer/qtechnique.h>
 #include <Qt3DRenderer/qopenglfilter.h>
 #include <Qt3DRenderer/rendereraspect.h>

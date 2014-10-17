@@ -43,7 +43,6 @@
 #define QT3D_RENDER_RENDERANNOTATION_P_H
 
 #include <Qt3DRenderer/qannotation.h>
-#include <Qt3DCore/private/qobserverinterface_p.h>
 #include <Qt3DCore/qbackendnode.h>
 
 QT_BEGIN_NAMESPACE

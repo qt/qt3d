@@ -44,8 +44,6 @@
 
 #include <QVariant>
 
-#include <Qt3DCore/private/qobserverinterface_p.h>
-
 #include <Qt3DRenderer/private/quniformvalue_p.h>
 #include <Qt3DRenderer/private/rendertextureprovider_p.h>
 #include <Qt3DRenderer/private/parameterpack_p.h>

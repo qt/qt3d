@@ -43,13 +43,8 @@
 #define QT3D_RENDER_RENDERSHADER_H
 
 #include <QVector>
-
-// for Parameter::StandardUniforms enum - maybe should move to
-// somewhere common to avoid this include?
-#include <Qt3DRenderer/qparameter.h>
 #include <Qt3DRenderer/private/quniformvalue_p.h>
 #include <Qt3DRenderer/private/shadervariables_p.h>
-#include <Qt3DCore/private/qobserverinterface_p.h>
 #include <Qt3DCore/qbackendnode.h>
 
 QT_BEGIN_NAMESPACE
