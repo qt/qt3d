@@ -270,7 +270,6 @@ void Renderer::createThreadLocalAllocator(void *renderer)
         // We need to allocate one more buffer than we have frames to handle the case where we're computing frame 5
         // While old frame 5 is being rendered
         QFrameAllocatorQueue *allocatorQueue = new QFrameAllocatorQueue();
-        qDebug() << "cachedFrameCount =" << theRenderer->cachedFramesCount();
         for (int i = 0; i < theRenderer->cachedFramesCount(); i++)
             allocatorQueue->append(new QFrameAllocator(128, 16, 128));
         theRenderer->tlsAllocators()->setLocalData(new QPair<int, QFrameAllocatorQueue *>(0, allocatorQueue));
