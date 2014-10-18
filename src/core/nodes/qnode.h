@@ -77,6 +77,9 @@ public:
     const QUuid uuid() const;
     QNode *parentNode() const;
 
+    bool notificationsBlocked() const;
+    bool blockNotifications(bool block);
+
 protected:
     QNode(QNodePrivate &dd, QNode *parent = 0);
     virtual void copy(const QNode *ref);

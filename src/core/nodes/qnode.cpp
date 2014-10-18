@@ -64,6 +64,7 @@ QNodePrivate::QNodePrivate(QNode *qq)
     , m_changeArbiter(Q_NULLPTR)
     , m_scene(Q_NULLPTR)
     , m_uuid(QUuid::createUuid())
+    , m_blockNotifications(false)
 {
     q_ptr = qq;
 }
@@ -269,7 +270,12 @@ void QNodePrivate::notifyPropertyChange(const QByteArray &name, const QVariant &
 // Called by the main thread
 void QNodePrivate::notifyObservers(const QSceneChangePtr &change)
 {
-    Q_CHECK_PTR(change);
+    Q_ASSERT(change);
+
+    // Don't send notifications if we are blocking
+    if (m_blockNotifications && change->type() == NodeUpdated)
+        return;
+
     QReadLocker locker(&m_observerLock);
     QChangeArbiter *changeArbiter = m_changeArbiter;
     locker.unlock();
@@ -351,6 +357,38 @@ const QUuid QNode::uuid() const
 QNode *QNode::parentNode() const
 {
     return qobject_cast<QNode*>(parent());
+}
+
+/*!
+    Returns \c true if aspect notifications are blocked; otherwise returns \c false.
+
+    Notifications are not blocked by default.
+
+    \sa blockNotifications()
+*/
+bool QNode::notificationsBlocked() const
+{
+    Q_D(const QNode);
+    return d->m_blockNotifications;
+}
+
+/*!
+    If \a block is true, property change notifications sent by this object
+    to aspects are blocked. If \a block is false, no such blocking will occur.
+
+    The return value is the previous value of notificationsBlocked().
+
+    Note that the other notification types will be sent even if the
+    notifications for this object have been blocked.
+
+    \sa notificationsBlocked()
+*/
+bool QNode::blockNotifications(bool block)
+{
+    Q_D(QNode);
+    bool previous = d->m_blockNotifications;
+    d->m_blockNotifications = block;
+    return previous;
 }
 
 bool QNode::event(QEvent *e)

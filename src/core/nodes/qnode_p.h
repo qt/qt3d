@@ -83,6 +83,7 @@ public:
     QChangeArbiter *m_changeArbiter;
     QSceneInterface *m_scene;
     mutable QUuid m_uuid;
+    bool m_blockNotifications;
 
     static QNodePrivate *get(QNode *q);
     static void nodePtrDeleter(QNode *q);
