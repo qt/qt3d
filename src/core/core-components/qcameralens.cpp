@@ -112,6 +112,7 @@ void QCameraLens::setOrthographicProjection( float left, float right,
                                              float nearPlane, float farPlane )
 {
     Q_D(QCameraLens);
+    bool block = blockNotifications(true);
     setLeft(left);
     setRight(right);
     setBottom(bottom);
@@ -119,6 +120,7 @@ void QCameraLens::setOrthographicProjection( float left, float right,
     setNearPlane(nearPlane);
     setFarPlane(farPlane);
     setProjectionType(OrthogonalProjection);
+    blockNotifications(block);
     d->updateProjectionMatrix();
 }
 
@@ -126,11 +128,13 @@ void QCameraLens::setPerspectiveProjection( float fieldOfView, float aspectRatio
                                             float nearPlane, float farPlane )
 {
     Q_D(QCameraLens);
+    bool block = blockNotifications(true);
     setFieldOfView(fieldOfView);
     setAspectRatio(aspectRatio);
     setNearPlane(nearPlane);
     setFarPlane(farPlane);
     setProjectionType(PerspectiveProjection);
+    blockNotifications(block);
     d->updateProjectionMatrix();
 }
 
