@@ -259,8 +259,10 @@ QSceneInterface *QNodePrivate::scene() const
 
 void QNodePrivate::notifyPropertyChange(const QByteArray &name, const QVariant &value)
 {
-    // TODO: Review change types. Is there any need to distinguish between NodeUpdated, ComponentUpdated?
-    // They're both just property changes
+    // Bail out early if we can to avoid operator new
+    if (m_blockNotifications)
+        return;
+
     QScenePropertyChangePtr e(new QScenePropertyChange(NodeUpdated, qobject_cast<QNode *>(q_ptr)));
     e->setPropertyName(name);
     e->setValue(value);
