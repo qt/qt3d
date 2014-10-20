@@ -56,7 +56,7 @@ public:
     QLayerPrivate(QLayer *qq);
 
     Q_DECLARE_PUBLIC(QLayer)
-    QString m_name;
+    QStringList m_names;
 };
 
 } // Qt3D

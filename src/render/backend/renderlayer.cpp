@@ -67,19 +67,19 @@ void RenderLayer::cleanup()
 void RenderLayer::updateFromPeer(QNode *peer)
 {
     QLayer *layer = static_cast<QLayer *>(peer);
-    m_layer = layer->name();
+    m_layers = layer->names();
 }
 
-QString RenderLayer::layer() const
+QStringList RenderLayer::layers() const
 {
-    return m_layer;
+    return m_layers;
 }
 
 void RenderLayer::sceneChangeEvent(const QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-    if (e->type() == NodeUpdated && propertyChange->propertyName() == QByteArrayLiteral("layer"))
-        m_layer = propertyChange->value().toString();
+    if (e->type() == NodeUpdated && propertyChange->propertyName() == QByteArrayLiteral("names"))
+        m_layers = propertyChange->value().toStringList();
 }
 
 } // Render

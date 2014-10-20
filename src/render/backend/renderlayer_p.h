@@ -45,6 +45,7 @@
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DCore/qbackendnode.h>
 #include <QUuid>
+#include <QStringList>
 
 QT_BEGIN_NAMESPACE
 
@@ -65,11 +66,11 @@ public:
 
     void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
 
-    QString layer() const;
+    QStringList layers() const;
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    QString m_layer;
+    QStringList m_layers;
 };
 
 } // Render

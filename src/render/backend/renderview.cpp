@@ -778,10 +778,14 @@ bool RenderView::checkContainedWithinLayer(RenderEntity *node)
 {
     if (m_data->m_layers.isEmpty())
         return true;
+    // TO DO: find all RenderLayer components associated to node, not just the first one
     RenderLayer *renderLayer = node->renderComponent<RenderLayer>();
-    if (renderLayer == Q_NULLPTR || !m_data->m_layers.contains(renderLayer->layer()))
-        return false;
-    return true;
+    if (renderLayer != Q_NULLPTR) {
+        Q_FOREACH (const QString &layerName, renderLayer->layers())
+            if (m_data->m_layers.contains(layerName))
+                return true;
+    }
+    return false;
 }
 
 } // namespace Render

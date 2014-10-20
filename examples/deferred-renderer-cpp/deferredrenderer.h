@@ -59,8 +59,8 @@ public:
     void setGBuffer(Qt3D::QRenderTarget *gBuffer);
     void setGeometryPassCriteria(QList<Qt3D::QAnnotation *> criteria);
     void setFinalPassCriteria(QList<Qt3D::QAnnotation *> criteria);
-    void setGBufferLayer(const QString &layerName);
-    void setScreenQuadLayer(const QString &layerName);
+    void setGBufferLayers(const QStringList &layerName);
+    void setScreenQuadLayers(const QStringList &layerName);
 
 private:
     Qt3D::QLayerFilter *m_screenQuadFilter;

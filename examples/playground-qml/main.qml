@@ -536,7 +536,7 @@ Entity {
 
         }
 
-        Layer { id: ballLayer; name : "balls" }
+        Layer { id: ballLayer; names : "balls" }
 
         Entity {
             id: ball

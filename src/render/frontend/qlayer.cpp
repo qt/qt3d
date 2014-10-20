@@ -55,7 +55,7 @@ void QLayer::copy(const QNode *ref)
 {
     QComponent::copy(ref);
     const QLayer *layer = static_cast<const QLayer*>(ref);
-    d_func()->m_name = layer->d_func()->m_name;
+    d_func()->m_names = layer->d_func()->m_names;
 }
 
 QLayer::QLayer(QNode *parent)
@@ -63,24 +63,23 @@ QLayer::QLayer(QNode *parent)
 {
 }
 
-
 QLayer::QLayer(QLayerPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
 {
 }
 
-QString QLayer::name() const
+QStringList QLayer::names() const
 {
     Q_D(const QLayer);
-    return d->m_name;
+    return d->m_names;
 }
 
-void QLayer::setName(const QString &name)
+void QLayer::setNames(const QStringList &names)
 {
     Q_D(QLayer);
-    if (d->m_name != name) {
-        d->m_name = name;
-        emit nameChanged();
+    if (d->m_names != names) {
+        d->m_names = names;
+        emit namesChanged();
     }
 }
 

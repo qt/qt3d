@@ -77,8 +77,8 @@ SceneEffect::SceneEffect(Qt3D::QNode *parent)
     m_gl3Technique->addPass(m_gl3Pass);
 
     Qt3D::QShaderProgram *gl2Shader = new Qt3D::QShaderProgram();
-    gl2Shader->setVertexShaderCode(Qt3D::QShaderProgram::loadSource(QUrl(QStringLiteral(":/geometry_gl2.vert"))));
-    gl2Shader->setFragmentShaderCode(Qt3D::QShaderProgram::loadSource(QUrl(QStringLiteral(":/geometry_gl2.frag"))));
+    gl2Shader->setVertexShaderCode(Qt3D::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/geometry_gl2.vert"))));
+    gl2Shader->setFragmentShaderCode(Qt3D::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/geometry_gl2.frag"))));
 
     m_gl2Pass->addAnnotation(m_passCriterion);
     m_gl2Pass->setShaderProgram(gl2Shader);

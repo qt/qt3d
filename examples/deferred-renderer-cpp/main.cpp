@@ -84,10 +84,10 @@ int main(int ac, char **av)
     sphereMesh->setSlices(100);
 
     Qt3D::QLayer *sceneLayer = new Qt3D::QLayer();
-    sceneLayer->setName("scene");
+    sceneLayer->setNames(QStringList("scene"));
 
     Qt3D::QLayer *quadLayer = new Qt3D::QLayer();
-    quadLayer->setName("screenQuad");
+    quadLayer->setNames(QStringList("screenQuad"));
 
     Qt3D::QPlaneMesh *planeMesh = new Qt3D::QPlaneMesh();
     planeMesh->setMeshResolution(QSize(2, 2));
@@ -130,8 +130,8 @@ int main(int ac, char **av)
     deferredRenderer->setGeometryPassCriteria(sceneEffect->passCriteria());
     deferredRenderer->setGBuffer(gBuffer);
     deferredRenderer->setSceneCamera(camera);
-    deferredRenderer->setGBufferLayer(sceneLayer->name());
-    deferredRenderer->setScreenQuadLayer(quadLayer->name());
+    deferredRenderer->setGBufferLayers(sceneLayer->names());
+    deferredRenderer->setScreenQuadLayers(quadLayer->names());
 
     frameGraph->setActiveFrameGraph(deferredRenderer);
     rootEntity->addComponent(frameGraph);

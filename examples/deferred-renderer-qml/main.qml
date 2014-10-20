@@ -66,7 +66,7 @@ Entity {
         id : screenQuadEntity
         components : [
             Layer {
-                name : "screenQuad"
+                names : "screenQuad"
             },
             PlaneMesh {
                 width: 2.0
@@ -120,7 +120,7 @@ Entity {
 
         Layer {
             id : sceneLayer
-            name : "scene"
+            names : "scene"
         }
 
         SphereMesh {
