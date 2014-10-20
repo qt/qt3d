@@ -48,7 +48,6 @@
 #include <Qt3DCore/qmatrixtransform.h>
 #include <Qt3DCore/qtranslatetransform.h>
 #include <Qt3DCore/qrotatetransform.h>
-#include <Qt3DCore/qabstractmesh.h>
 #include <Qt3DQuick/quick3dentity.h>
 #include <Qt3DQuick/quick3dtransform.h>
 #include <Qt3DQuick/quick3dconfiguration.h>
@@ -58,7 +57,6 @@ QT_BEGIN_NAMESPACE
 void Qt3DQuick3DCorePlugin::registerTypes(const char *uri)
 {
     qmlRegisterUncreatableType<Qt3D::QComponent>(uri, 2, 0, "Component", QStringLiteral(""));
-    qmlRegisterUncreatableType<Qt3D::QAbstractMesh>(uri, 2, 0, "QAbstractMesh", QStringLiteral(""));
     qmlRegisterUncreatableType<Qt3D::QAbstractTransform>(uri, 2, 0, "QAbstractTransform", QStringLiteral("QAbstractTransform is abstract"));
 
     qmlRegisterType<Qt3D::Quick::Quick3DConfiguration>(uri, 2, 0, "Configuration");

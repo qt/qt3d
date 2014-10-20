@@ -61,7 +61,7 @@ class SphereMeshFunctor : public QAbstractMeshFunctor
 {
 public:
     SphereMeshFunctor(int rings, int slices, float radius, bool generateTangents);
-    QAbstractMeshDataPtr operator ()() Q_DECL_OVERRIDE;
+    QMeshDataPtr operator ()() Q_DECL_OVERRIDE;
     bool operator ==(const QAbstractMeshFunctor &other) const Q_DECL_OVERRIDE;
 
 private:
@@ -232,17 +232,17 @@ QMeshDataPtr createSphereMesh(double radius, int rings, int slices, bool hasTang
     buf->setUsage(QOpenGLBuffer::StaticDraw);
     buf->setData(bufferBytes);
 
-    mesh->addAttribute(QAbstractMeshData::defaultPositionAttributeName(), AttributePtr(new Attribute(buf, GL_FLOAT_VEC3, nVerts, 0, stride)));
+    mesh->addAttribute(QMeshData::defaultPositionAttributeName(), AttributePtr(new Attribute(buf, GL_FLOAT_VEC3, nVerts, 0, stride)));
     quint32 offset = sizeof(float) * 3;
 
-    mesh->addAttribute(QAbstractMeshData::defaultTextureCoordinateAttributeName(), AttributePtr(new Attribute(buf, GL_FLOAT_VEC2, nVerts, offset, stride)));
+    mesh->addAttribute(QMeshData::defaultTextureCoordinateAttributeName(), AttributePtr(new Attribute(buf, GL_FLOAT_VEC2, nVerts, offset, stride)));
     offset += sizeof(float) * 2;
 
-    mesh->addAttribute(QAbstractMeshData::defaultNormalAttributeName(), AttributePtr(new Attribute(buf, GL_FLOAT_VEC3, nVerts, offset, stride)));
+    mesh->addAttribute(QMeshData::defaultNormalAttributeName(), AttributePtr(new Attribute(buf, GL_FLOAT_VEC3, nVerts, offset, stride)));
     offset += sizeof(float) * 3;
 
     if (hasTangents) {
-        mesh->addAttribute(QAbstractMeshData::defaultTangentAttributeName(), AttributePtr(new Attribute(buf, GL_FLOAT_VEC4, nVerts, offset, stride)));
+        mesh->addAttribute(QMeshData::defaultTangentAttributeName(), AttributePtr(new Attribute(buf, GL_FLOAT_VEC4, nVerts, offset, stride)));
         offset += sizeof(float) * 4;
     }
 
@@ -300,7 +300,7 @@ QMeshDataPtr createSphereMesh(double radius, int rings, int slices, bool hasTang
     indexBuffer->setData(indexBytes);
     mesh->setIndexAttribute(AttributePtr(new Attribute(indexBuffer, GL_UNSIGNED_SHORT, indices, 0, 0)));
 
-    mesh->computeBoundsFromAttribute(QAbstractMeshData::defaultPositionAttributeName());
+    mesh->computeBoundsFromAttribute(QMeshData::defaultPositionAttributeName());
     qCDebug(Render::Frontend) << "computed sphere bounds is:" << mesh->boundingBox();
 
     return mesh;
@@ -315,7 +315,7 @@ SphereMeshFunctor::SphereMeshFunctor(int rings, int slices, float radius, bool g
 {
 }
 
-QAbstractMeshDataPtr SphereMeshFunctor::operator ()()
+QMeshDataPtr SphereMeshFunctor::operator ()()
 {
     return createSphereMesh(m_radius, m_rings, m_slices, m_generateTangents);
 }

@@ -42,7 +42,7 @@
 #ifndef QT3D_QABSTRACTMESH_P_H
 #define QT3D_QABSTRACTMESH_P_H
 
-#include <Qt3DCore/qt3dcore_global.h>
+#include <Qt3DRenderer/qt3drenderer_global.h>
 #include <private/qcomponent_p.h>
 
 #include <QString>
@@ -55,7 +55,7 @@ namespace Qt3D {
 
 class QAbstractMesh;
 
-class QT3DCORESHARED_EXPORT QAbstractMeshPrivate : public QComponentPrivate
+class QT3DRENDERERSHARED_EXPORT QAbstractMeshPrivate : public QComponentPrivate
 {
 public:
     QAbstractMeshPrivate(QAbstractMesh *qq);

@@ -59,7 +59,7 @@ class MeshFunctor : public QAbstractMeshFunctor
 {
 public :
     MeshFunctor(const QString &sourcePath);
-    QAbstractMeshDataPtr operator()() Q_DECL_OVERRIDE;
+    QMeshDataPtr operator()() Q_DECL_OVERRIDE;
     bool operator ==(const QAbstractMeshFunctor &other) const Q_DECL_OVERRIDE;
 
 private:
@@ -117,7 +117,7 @@ MeshFunctor::MeshFunctor(const QString &sourcePath)
 {
 }
 
-QAbstractMeshDataPtr MeshFunctor::operator()()
+QMeshDataPtr MeshFunctor::operator()()
 {
     if (m_sourcePath.isEmpty()) {
         qCWarning(Render::Jobs) << Q_FUNC_INFO << "Mesh is empty, nothing to load";

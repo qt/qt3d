@@ -39,41 +39,56 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QABSTRACTMESHDATA_P_H
-#define QT3D_QABSTRACTMESHDATA_P_H
+#ifndef QT3D_QABSTRACTMESH_H
+#define QT3D_QABSTRACTMESH_H
 
-#include <Qt3DCore/qt3dcore_global.h>
-#include <Qt3DCore/axisalignedboundingbox.h>
-
-#include <QMap>
+#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DCore/qcomponent.h>
 #include <QSharedPointer>
+#include <QUuid>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAbstractMeshData;
-class QAbstractAttribute;
-class QAbstractBuffer;
+class QAbstractMeshPrivate;
+class QMeshData;
 
-typedef QSharedPointer<QAbstractAttribute> QAbstractAttributePtr;
+typedef QSharedPointer<QMeshData> QMeshDataPtr;
 
-class QT3DCORESHARED_EXPORT QAbstractMeshDataPrivate
+class QT3DRENDERERSHARED_EXPORT QAbstractMeshFunctor
 {
 public:
-    QAbstractMeshDataPrivate(QAbstractMeshData *qq);
+    virtual QMeshDataPtr operator()() = 0;
+    virtual bool operator ==(const QAbstractMeshFunctor &other) const = 0;
+    virtual ~QAbstractMeshFunctor() {}
+};
 
-    Q_DECLARE_PUBLIC(QAbstractMeshData)
-    QAbstractMeshData *q_ptr;
+typedef QSharedPointer<QAbstractMeshFunctor> QAbstractMeshFunctorPtr;
 
-    QMap<QString, QAbstractAttributePtr> m_attributes;
-    QAbstractAttributePtr m_indexAttr;
-    AxisAlignedBoundingBox m_bbox;
-    int m_verticesPerPatch;
+class QT3DRENDERERSHARED_EXPORT QAbstractMesh : public QComponent
+{
+    Q_OBJECT
+
+public:
+    QAbstractMesh(QNode *parent = 0);
+
+    void update();
+
+    virtual QAbstractMeshFunctorPtr meshFunctor() const = 0;
+
+protected:
+    QAbstractMesh(QAbstractMeshPrivate &dd, QNode *parent = 0);
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
+private:
+    Q_DECLARE_PRIVATE(QAbstractMesh)
 };
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QABSTRACTMESHDATA_P_H
+Q_DECLARE_METATYPE(Qt3D::QAbstractMeshFunctorPtr)
+
+#endif // QABSTRACTMESH_H

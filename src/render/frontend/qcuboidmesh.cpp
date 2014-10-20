@@ -203,7 +203,7 @@ public:
     {
     }
 
-    QAbstractMeshDataPtr operator ()() Q_DECL_OVERRIDE
+    QMeshDataPtr operator ()() Q_DECL_OVERRIDE
     {
         return createCuboidMesh(m_xExtent, m_yExtent, m_zExtent,
                                 m_yzFaceResolution,
@@ -498,24 +498,24 @@ QMeshDataPtr createCuboidMesh(float xExtent,
 
     QMeshDataPtr mesh(new QMeshData(GL_TRIANGLES));
     quint32 offset = 0;
-    mesh->addAttribute(QAbstractMeshData::defaultPositionAttributeName(),
+    mesh->addAttribute(QMeshData::defaultPositionAttributeName(),
                        AttributePtr(new Attribute(vertexBuffer, GL_FLOAT_VEC3, nVerts, offset, stride)));
     offset += 3 * sizeof(float);
 
-    mesh->addAttribute(QAbstractMeshData::defaultTextureCoordinateAttributeName(),
+    mesh->addAttribute(QMeshData::defaultTextureCoordinateAttributeName(),
                        AttributePtr(new Attribute(vertexBuffer, GL_FLOAT_VEC2, nVerts, offset, stride)));
     offset += 2 * sizeof(float);
 
-    mesh->addAttribute(QAbstractMeshData::defaultNormalAttributeName(),
+    mesh->addAttribute(QMeshData::defaultNormalAttributeName(),
                        AttributePtr(new Attribute(vertexBuffer, GL_FLOAT_VEC3, nVerts, offset, stride)));
     offset += 3 * sizeof(float);
 
-    mesh->addAttribute(QAbstractMeshData::defaultTangentAttributeName(),
+    mesh->addAttribute(QMeshData::defaultTangentAttributeName(),
                        AttributePtr(new Attribute(vertexBuffer, GL_FLOAT_VEC4, nVerts, offset, stride)));
 
     mesh->setIndexAttribute(AttributePtr(new Attribute(indexBuffer, GL_UNSIGNED_SHORT, indexCount, 0, 0)));
 
-    mesh->computeBoundsFromAttribute(QAbstractMeshData::defaultPositionAttributeName());
+    mesh->computeBoundsFromAttribute(QMeshData::defaultPositionAttributeName());
     qCDebug(Render::Frontend) << "computed axis-aligned bounding box is:" << mesh->boundingBox();
 
     return mesh;

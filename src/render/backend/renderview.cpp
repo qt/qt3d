@@ -127,11 +127,11 @@ QStringList RenderView::initializeStandardAttributeNames()
 {
     QStringList attributesNames;
 
-    attributesNames << QAbstractMeshData::defaultPositionAttributeName();
-    attributesNames << QAbstractMeshData::defaultTextureCoordinateAttributeName();
-    attributesNames << QAbstractMeshData::defaultNormalAttributeName();
-    attributesNames << QAbstractMeshData::defaultColorAttributeName();
-    attributesNames << QAbstractMeshData::defaultTangentAttributeName();
+    attributesNames << QMeshData::defaultPositionAttributeName();
+    attributesNames << QMeshData::defaultTextureCoordinateAttributeName();
+    attributesNames << QMeshData::defaultNormalAttributeName();
+    attributesNames << QMeshData::defaultColorAttributeName();
+    attributesNames << QMeshData::defaultTangentAttributeName();
 
     return attributesNames;
 }

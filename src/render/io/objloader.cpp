@@ -254,21 +254,21 @@ QMeshData *ObjLoader::mesh() const
     buf->setData(bufferBytes);
 
 
-    mesh->addAttribute(QAbstractMeshData::defaultPositionAttributeName(), AttributePtr(new Attribute(buf, GL_FLOAT_VEC3, count, 0, stride)));
+    mesh->addAttribute(QMeshData::defaultPositionAttributeName(), AttributePtr(new Attribute(buf, GL_FLOAT_VEC3, count, 0, stride)));
     quint32 offset = sizeof(float) * 3;
 
     if (hasTextureCoordinates()) {
-        mesh->addAttribute(QAbstractMeshData::defaultTextureCoordinateAttributeName(), AttributePtr(new Attribute(buf, GL_FLOAT_VEC2, count, offset, stride)));
+        mesh->addAttribute(QMeshData::defaultTextureCoordinateAttributeName(), AttributePtr(new Attribute(buf, GL_FLOAT_VEC2, count, offset, stride)));
         offset += sizeof(float) * 2;
     }
 
     if (hasNormals()) {
-        mesh->addAttribute(QAbstractMeshData::defaultNormalAttributeName(), AttributePtr(new Attribute(buf, GL_FLOAT_VEC3, count, offset, stride)));
+        mesh->addAttribute(QMeshData::defaultNormalAttributeName(), AttributePtr(new Attribute(buf, GL_FLOAT_VEC3, count, offset, stride)));
         offset += sizeof(float) * 3;
     }
 
     if (hasTangents()) {
-        mesh->addAttribute(QAbstractMeshData::defaultTangentAttributeName(), AttributePtr(new Attribute(buf, GL_FLOAT_VEC4, count, offset, stride)));
+        mesh->addAttribute(QMeshData::defaultTangentAttributeName(), AttributePtr(new Attribute(buf, GL_FLOAT_VEC4, count, offset, stride)));
         offset += sizeof(float) * 4;
     }
 
@@ -294,7 +294,7 @@ QMeshData *ObjLoader::mesh() const
     indexBuffer->setData(indexBytes);
     mesh->setIndexAttribute(AttributePtr(new Attribute(indexBuffer, ty, m_indices.size(), 0, 0)));
 
-    mesh->computeBoundsFromAttribute(QAbstractMeshData::defaultPositionAttributeName());
+    mesh->computeBoundsFromAttribute(QMeshData::defaultPositionAttributeName());
     qCDebug(Render::Io) << "computed bounds is:" << mesh->boundingBox();
 
     return mesh;

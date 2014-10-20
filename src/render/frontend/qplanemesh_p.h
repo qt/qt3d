@@ -39,11 +39,10 @@
 **
 ****************************************************************************/
 
-#ifndef QPLANEMESH_P_H
-#define QPLANEMESH_P_H
+#ifndef QT3D_QPLANEMESH_P_H
+#define QT3D_QPLANEMESH_P_H
 
-#include <Qt3DCore/private/qabstractmesh_p.h>
-
+#include <private/qabstractmesh_p.h>
 #include <QtCore/qsize.h>
 
 QT_BEGIN_NAMESPACE
@@ -68,4 +67,4 @@ public:
 
 QT_END_NAMESPACE
 
-#endif // QPLANEMESH_P_H
+#endif // QT3D_QPLANEMESH_P_H

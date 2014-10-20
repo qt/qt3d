@@ -50,7 +50,7 @@
 #include <Qt3DRenderer/qbuffer.h>
 #include <QJsonDocument>
 #include <QMultiHash>
-#include <Qt3DCore/qabstractmesh.h>
+#include <Qt3DRenderer/qabstractmesh.h>
 #include <QImage>
 
 #include <Qt3DRenderer/private/abstractsceneparser_p.h>

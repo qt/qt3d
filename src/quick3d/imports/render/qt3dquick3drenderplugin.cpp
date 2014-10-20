@@ -42,6 +42,7 @@
 
 #include <QtQml>
 #include "qt3dquick3drenderplugin.h"
+#include <Qt3DRenderer/qabstractmesh.h>
 #include <Qt3DRenderer/qabstractsceneloader.h>
 #include <Qt3DRenderer/qsceneloader.h>
 #include <Qt3DRenderer/qmesh.h>

@@ -46,7 +46,7 @@
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qhandle.h>
 #include <Qt3DRenderer/qmeshdata.h>
-#include <Qt3DCore/qabstractmesh.h>
+#include <Qt3DRenderer/qabstractmesh.h>
 #include <QSharedPointer>
 
 QT_BEGIN_NAMESPACE

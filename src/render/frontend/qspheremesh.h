@@ -43,7 +43,7 @@
 #define QT3D_QSPHEREMESH_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DCore/qabstractmesh.h>
+#include <Qt3DRenderer/qabstractmesh.h>
 
 QT_BEGIN_NAMESPACE
 

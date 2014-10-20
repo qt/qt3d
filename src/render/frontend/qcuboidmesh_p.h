@@ -42,7 +42,7 @@
 #ifndef QCUBOIDMESH_P_H
 #define QCUBOIDMESH_P_H
 
-#include <Qt3DCore/private/qabstractmesh_p.h>
+#include <Qt3DRenderer/private/qabstractmesh_p.h>
 
 #include <QtCore/qsize.h>
 

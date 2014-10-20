@@ -61,7 +61,9 @@ HEADERS += \
     $$PWD/qrenderstate_p.h \
     $$PWD/qalphacoverage.h \
     $$PWD/qannotation.h \
-    $$PWD/qannotation_p.h
+    $$PWD/qannotation_p.h \
+    $$PWD/qabstractmesh_p.h \
+    $$PWD/qabstractmesh.h
 
 SOURCES += \
     $$PWD/qmaterial.cpp \
@@ -102,4 +104,5 @@ SOURCES += \
     $$PWD/qrenderattachment.cpp \
     $$PWD/qrendertarget.cpp \
     $$PWD/qalphacoverage.cpp \
-    $$PWD/qannotation.cpp
+    $$PWD/qannotation.cpp \
+    $$PWD/qabstractmesh.cpp

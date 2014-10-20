@@ -48,7 +48,7 @@
 #include "qbuffer.h"
 #include "qattribute.h"
 #include "qmeshdata.h"
-#include <Qt3DCore/private/qabstractmesh_p.h>
+#include <Qt3DRenderer/private/qabstractmesh_p.h>
 
 #include <cmath>
 
@@ -60,7 +60,7 @@ class TorusMeshFunctor : public QAbstractMeshFunctor
 {
 public:
     TorusMeshFunctor(int rings, int slices, float radius, float minorRadius);
-    QAbstractMeshDataPtr operator ()() Q_DECL_OVERRIDE;
+    QMeshDataPtr operator ()() Q_DECL_OVERRIDE;
     bool operator ==(const QAbstractMeshFunctor &other) const Q_DECL_OVERRIDE;
 
 private:
@@ -167,10 +167,10 @@ float QTorusMesh::minorRadius() const
     return d->m_minorRadius;
 }
 
-QAbstractMeshDataPtr createTorusMesh(double radius, double minorRadius,
+QMeshDataPtr createTorusMesh(double radius, double minorRadius,
                             int rings, int sides)
 {
-    QAbstractMeshDataPtr mesh(new QMeshData(GL_TRIANGLES));
+    QMeshDataPtr mesh(new QMeshData(GL_TRIANGLES));
 
     int nVerts  = sides * ( rings + 1 );
     QByteArray bufferBytes;
@@ -217,13 +217,13 @@ QAbstractMeshDataPtr createTorusMesh(double radius, double minorRadius,
     buf->setUsage(QOpenGLBuffer::StaticDraw);
     buf->setData(bufferBytes);
 
-    mesh->addAttribute(QAbstractMeshData::defaultPositionAttributeName(), QAbstractAttributePtr(new Attribute(buf, GL_FLOAT_VEC3, nVerts, 0, stride)));
+    mesh->addAttribute(QMeshData::defaultPositionAttributeName(), QAbstractAttributePtr(new Attribute(buf, GL_FLOAT_VEC3, nVerts, 0, stride)));
     quint32 offset = sizeof(float) * 3;
 
-    mesh->addAttribute(QAbstractMeshData::defaultTextureCoordinateAttributeName(), QAbstractAttributePtr(new Attribute(buf, GL_FLOAT_VEC2, nVerts, offset, stride)));
+    mesh->addAttribute(QMeshData::defaultTextureCoordinateAttributeName(), QAbstractAttributePtr(new Attribute(buf, GL_FLOAT_VEC2, nVerts, offset, stride)));
     offset += sizeof(float) * 2;
 
-    mesh->addAttribute(QAbstractMeshData::defaultNormalAttributeName(), QAbstractAttributePtr(new Attribute(buf, GL_FLOAT_VEC3, nVerts, offset, stride)));
+    mesh->addAttribute(QMeshData::defaultNormalAttributeName(), QAbstractAttributePtr(new Attribute(buf, GL_FLOAT_VEC3, nVerts, offset, stride)));
     offset += sizeof(float) * 3;
 
     QByteArray indexBytes;
@@ -254,7 +254,7 @@ QAbstractMeshDataPtr createTorusMesh(double radius, double minorRadius,
     indexBuffer->setData(indexBytes);
     mesh->setIndexAttribute(AttributePtr(new Attribute(indexBuffer, GL_UNSIGNED_SHORT, indices, 0, 0)));
 
-    mesh->computeBoundsFromAttribute(QAbstractMeshData::defaultPositionAttributeName());
+    mesh->computeBoundsFromAttribute(QMeshData::defaultPositionAttributeName());
 
     return mesh;
 }
@@ -274,7 +274,7 @@ TorusMeshFunctor::TorusMeshFunctor(int rings, int slices, float radius, float mi
 {
 }
 
-QAbstractMeshDataPtr TorusMeshFunctor::operator ()()
+QMeshDataPtr TorusMeshFunctor::operator ()()
 {
     return createTorusMesh(m_radius, m_minorRadius, m_rings, m_slices);
 }

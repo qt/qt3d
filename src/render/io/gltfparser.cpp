@@ -74,7 +74,7 @@
 // need to move these to somewhere common?
 #include <Qt3DRenderer/private/renderstate_p.h>
 #include <Qt3DRenderer/private/blendstate_p.h>
-#include <Qt3DCore/private/qabstractmesh_p.h>
+#include <private/qabstractmesh_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -215,7 +215,7 @@ private:
     {
     public:
         explicit GLTFParserMeshFunctor(QMeshDataPtr meshData);
-        QAbstractMeshDataPtr operator ()() Q_DECL_OVERRIDE;
+        QMeshDataPtr operator ()() Q_DECL_OVERRIDE;
         bool operator ==(const QAbstractMeshFunctor &other) const Q_DECL_OVERRIDE;
 
     private:
@@ -1041,7 +1041,7 @@ GLTFParserMesh::GLTFParserMeshFunctor::GLTFParserMeshFunctor(QMeshDataPtr meshDa
 {
 }
 
-QAbstractMeshDataPtr GLTFParserMesh::GLTFParserMeshFunctor::operator ()()
+QMeshDataPtr GLTFParserMesh::GLTFParserMeshFunctor::operator ()()
 {
     return m_meshData;
 }

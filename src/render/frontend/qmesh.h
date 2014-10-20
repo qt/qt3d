@@ -42,7 +42,7 @@
 #ifndef QT3D_QMESH_H
 #define QT3D_QMESH_H
 
-#include <Qt3DCore/qabstractmesh.h>
+#include <Qt3DRenderer/qabstractmesh.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DRenderer/qmeshdata.h>
 
@@ -51,9 +51,9 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QMeshPrivate;
-class QAbstractMeshData;
+class QMeshData;
 
-typedef QSharedPointer<QAbstractMeshData> QAbstractMeshDataPtr;
+typedef QSharedPointer<QMeshData> QMeshDataPtr;
 /**
 * @brief Simple static mesh
 *

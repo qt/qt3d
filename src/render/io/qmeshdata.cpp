@@ -41,9 +41,8 @@
 
 #include "qmeshdata.h"
 #include "qmeshdata_p.h"
-
-#include <QSet>
-#include "renderlogging.h"
+#include <Qt3DCore/qabstractattribute.h>
+#include <Qt3DCore/qabstractbuffer.h>
 #include <QOpenGLVertexArrayObject>
 
 QT_BEGIN_NAMESPACE
@@ -51,25 +50,118 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 QMeshDataPrivate::QMeshDataPrivate(QMeshData *qq)
-    : QAbstractMeshDataPrivate(qq)
+    : q_ptr(qq)
+    , m_verticesPerPatch(0)
     , m_primitiveType(0)
 {
 }
 
-QMeshData::QMeshData()
-    : QAbstractMeshData(*new QMeshDataPrivate(this))
+QMeshData::QMeshData(int primitiveType)
+    : d_ptr(new QMeshDataPrivate(this))
+{
+    setPrimitiveType(primitiveType);
+}
+
+QMeshData::~QMeshData()
 {
 }
 
 QMeshData::QMeshData(QMeshDataPrivate &dd)
-    : QAbstractMeshData(dd)
+    : d_ptr(&dd)
 {
 }
 
-QMeshData::QMeshData(int primitiveType)
-    : QAbstractMeshData(*new QMeshDataPrivate(this))
+void QMeshData::addAttribute(const QString &name, QAbstractAttributePtr attr)
 {
-    setPrimitiveType(primitiveType);
+    Q_D(QMeshData);
+    d->m_attributes.insert(name, attr);
+}
+
+void QMeshData::setIndexAttribute(QAbstractAttributePtr attr)
+{
+    Q_D(QMeshData);
+    d->m_indexAttr = attr;
+}
+
+QStringList QMeshData::attributeNames() const
+{
+    Q_D(const QMeshData);
+    return d->m_attributes.keys();
+}
+
+QAbstractAttributePtr QMeshData::attributeByName(QString name) const
+{
+    Q_D(const QMeshData);
+    return d->m_attributes.value(name);
+}
+
+QAbstractAttributePtr QMeshData::indexAttribute() const
+{
+    Q_D(const QMeshData);
+    return d->m_indexAttr;
+}
+
+void QMeshData::setVerticesPerPatch(int verticesPerPatch)
+{
+    Q_D(QMeshData);
+    d->m_verticesPerPatch = verticesPerPatch;
+}
+
+int QMeshData::verticesPerPatch() const
+{
+    Q_D(const QMeshData);
+    return d->m_verticesPerPatch;
+}
+
+int QMeshData::primitiveCount() const
+{
+    Q_D(const QMeshData);
+    if (d->m_indexAttr) {
+        return d->m_indexAttr->count();
+    } else {
+        // assume all attribute arrays have the same size
+        // will break with instanced drawing, but probably per-instance
+        // arrays aren't coming from this code-path.
+        // Maybe.
+        return d->m_attributes.first()->count();
+    }
+}
+
+QList<QAbstractBufferPtr> QMeshData::buffers() const
+{
+    Q_D(const QMeshData);
+    QSet<QAbstractBufferPtr> r;
+    if (d->m_indexAttr)
+        r.insert(d->m_indexAttr->buffer());
+
+    Q_FOREACH (QAbstractAttributePtr v, d->m_attributes.values())
+        r.insert(v->buffer());
+
+    return r.toList();
+}
+
+void QMeshData::setBoundingBox(const AxisAlignedBoundingBox &bbox)
+{
+    Q_D(QMeshData);
+    d->m_bbox = bbox;
+}
+
+void QMeshData::computeBoundsFromAttribute(const QString &name)
+{
+    Q_D(QMeshData);
+    QAbstractAttributePtr attr = attributeByName(name);
+    if (!attr) {
+        qWarning() << Q_FUNC_INFO << "unknoen attribute:" << name;
+        return;
+    }
+    d->m_bbox.clear();
+    d->m_bbox.update(attr->asVector3D());
+}
+
+AxisAlignedBoundingBox QMeshData::boundingBox() const
+{
+    Q_D(const QMeshData);
+    return d->m_bbox;
 }
 
 void QMeshData::setPrimitiveType(int primitiveType)
@@ -88,6 +180,6 @@ int QMeshData::primitiveType() const
     return d->m_primitiveType;
 }
 
-} // of namespace
+} // Qt3D
 
 QT_END_NAMESPACE

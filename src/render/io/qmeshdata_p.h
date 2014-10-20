@@ -42,20 +42,34 @@
 #ifndef QT3D_QMESHDATA_P_H
 #define QT3D_QMESHDATA_P_H
 
-#include <private/qabstractmeshdata_p.h>
-#include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/qmeshdata.h>
+#include <Qt3DCore/qt3dcore_global.h>
+#include <Qt3DCore/axisalignedboundingbox.h>
+
+#include <QMap>
+#include <QSharedPointer>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DRENDERERSHARED_EXPORT QMeshDataPrivate : public QAbstractMeshDataPrivate
+class QMeshData;
+class QAbstractAttribute;
+class QAbstractBuffer;
+
+typedef QSharedPointer<QAbstractAttribute> QAbstractAttributePtr;
+
+class QT3DCORESHARED_EXPORT QMeshDataPrivate
 {
 public:
     QMeshDataPrivate(QMeshData *qq);
 
     Q_DECLARE_PUBLIC(QMeshData)
+    QMeshData *q_ptr;
+
+    QMap<QString, QAbstractAttributePtr> m_attributes;
+    QAbstractAttributePtr m_indexAttr;
+    AxisAlignedBoundingBox m_bbox;
+    int m_verticesPerPatch;
     int m_primitiveType;
 };
 

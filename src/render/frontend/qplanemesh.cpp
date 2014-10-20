@@ -141,7 +141,7 @@ public:
     {
     }
 
-    QAbstractMeshDataPtr operator ()() Q_DECL_OVERRIDE
+    QMeshDataPtr operator ()() Q_DECL_OVERRIDE
     {
         return createPlaneMesh(m_width, m_height, m_meshResolution);
     }
@@ -226,19 +226,19 @@ QMeshDataPtr createPlaneMesh(float w, float h, const QSize &resolution)
     // Create the mesh data, specify the vertex format and data
     QMeshDataPtr mesh(new QMeshData(GL_TRIANGLES));
     quint32 offset = 0;
-    mesh->addAttribute(QAbstractMeshData::defaultPositionAttributeName(),
+    mesh->addAttribute(QMeshData::defaultPositionAttributeName(),
                        AttributePtr(new Attribute(buf, GL_FLOAT_VEC3, nVerts, offset, stride)));
     offset += 3 * sizeof(float);
 
-    mesh->addAttribute(QAbstractMeshData::defaultTextureCoordinateAttributeName(),
+    mesh->addAttribute(QMeshData::defaultTextureCoordinateAttributeName(),
                        AttributePtr(new Attribute(buf, GL_FLOAT_VEC2, nVerts, offset, stride)));
     offset += 2 * sizeof(float);
 
-    mesh->addAttribute(QAbstractMeshData::defaultNormalAttributeName(),
+    mesh->addAttribute(QMeshData::defaultNormalAttributeName(),
                        AttributePtr(new Attribute(buf, GL_FLOAT_VEC3, nVerts, offset, stride)));
     offset += 3 * sizeof(float);
 
-    mesh->addAttribute(QAbstractMeshData::defaultTangentAttributeName(),
+    mesh->addAttribute(QMeshData::defaultTangentAttributeName(),
                        AttributePtr(new Attribute(buf, GL_FLOAT_VEC4, nVerts, offset, stride)));
 
     // Create the index data. 2 triangles per rectangular face
@@ -275,7 +275,7 @@ QMeshDataPtr createPlaneMesh(float w, float h, const QSize &resolution)
     // Specify index data on the mesh
     mesh->setIndexAttribute(AttributePtr(new Attribute(indexBuffer, GL_UNSIGNED_SHORT, indices, 0, 0)));
 
-    mesh->computeBoundsFromAttribute(QAbstractMeshData::defaultPositionAttributeName());
+    mesh->computeBoundsFromAttribute(QMeshData::defaultPositionAttributeName());
     qCDebug(Render::Frontend) << "computed axis-aligned bounding box is:" << mesh->boundingBox();
 
     return mesh;

@@ -42,39 +42,64 @@
 #ifndef QT3D_QMESHDATA_H
 #define QT3D_QMESHDATA_H
 
-#include <QSharedPointer>
-#include <Qt3DCore/qabstractmeshdata.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DCore/axisalignedboundingbox.h>
+#include <QSharedPointer>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-/**
- * @brief The QMeshData class is shared by all instances of a RenderMesh,
- * and holds the actual client (CPU)-side buffers representing mesh attributes
- * and indices.
- */
-
+class QAbstractAttribute;
+class QAbstractBuffer;
 class QMeshDataPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QMeshData : public QAbstractMeshData
+typedef QSharedPointer<QAbstractAttribute> QAbstractAttributePtr;
+typedef QSharedPointer<QAbstractBuffer> QAbstractBufferPtr;
+
+class QT3DRENDERERSHARED_EXPORT QMeshData
 {
 public:
-    QMeshData();
-    explicit QMeshData(int primitiveType);
+    explicit QMeshData(int primitiveType = 0);
+    virtual ~QMeshData();
 
-    void setPrimitiveType(int primitiveType) Q_DECL_OVERRIDE;
-    int primitiveType() const Q_DECL_OVERRIDE;
+    void addAttribute(const QString& name, QAbstractAttributePtr attr);
+    void setIndexAttribute(QAbstractAttributePtr attr);
+
+    QStringList attributeNames() const;
+    QAbstractAttributePtr attributeByName(QString name) const;
+    QAbstractAttributePtr indexAttribute() const;
+
+    static const QString defaultPositionAttributeName() { return QStringLiteral("vertexPosition"); }
+    static const QString defaultNormalAttributeName() { return QStringLiteral("vertexNormal"); }
+    static const QString defaultColorAttributeName() { return QStringLiteral("vertexColor"); }
+    static const QString defaultTextureCoordinateAttributeName() { return QStringLiteral("vertexTexCoord"); }
+    static const QString defaultTangentAttributeName() { return QStringLiteral("vertexTangent"); }
+
+    void setPrimitiveType(int primitiveType);
+    int primitiveType() const;
+
+    void setVerticesPerPatch(int verticesPerPatch);
+    int verticesPerPatch() const;
+
+    int primitiveCount() const;
+
+    QList<QAbstractBufferPtr> buffers() const;
+
+    void setBoundingBox(const AxisAlignedBoundingBox &bbox);
+    void computeBoundsFromAttribute(const QString &name);
+
+    AxisAlignedBoundingBox boundingBox() const;
 
 protected:
     Q_DECLARE_PRIVATE(QMeshData)
+    QMeshDataPrivate *d_ptr;
     QMeshData(QMeshDataPrivate &dd);
 };
 
 typedef QSharedPointer<QMeshData> QMeshDataPtr;
 
-}
+} // Qt3D
 
 QT_END_NAMESPACE
 

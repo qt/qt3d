@@ -42,7 +42,7 @@
 #ifndef QT3D_RENDER_MESHDATAMANAGER_H
 #define QT3D_RENDER_MESHDATAMANAGER_H
 
-#include <Qt3DCore/qabstractmesh.h>
+#include <Qt3DRenderer/qabstractmesh.h>
 #include <Qt3DCore/qresourcesmanager.h>
 #include <Qt3DRenderer/qmeshdata.h>
 #include <Qt3DRenderer/private/rendermesh_p.h>

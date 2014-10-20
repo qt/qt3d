@@ -45,7 +45,7 @@
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/qmatrixtransform.h>
 #include <Qt3DCore/qcameralens.h>
-#include <Qt3DCore/private/qabstractmesh_p.h>
+#include <private/qabstractmesh_p.h>
 #include <Qt3DRenderer/qparameter.h>
 #include <Qt3DRenderer/qmesh.h>
 #include <Qt3DRenderer/qmaterial.h>
@@ -108,11 +108,11 @@ const QString ASSIMP_MATERIAL_REFLECTIVITY = QStringLiteral("reflectivity");
 
 const QString ASSIMP_MATERIAL_NAME = QStringLiteral("name");
 
-const QString VERTICES_ATTRIBUTE_NAME = QAbstractMeshData::defaultPositionAttributeName();
-const QString NORMAL_ATTRIBUTE_NAME =  QAbstractMeshData::defaultNormalAttributeName();
-const QString TANGENT_ATTRIBUTE_NAME = QAbstractMeshData::defaultTangentAttributeName();
-const QString TEXTCOORD_ATTRIBUTE_NAME = QAbstractMeshData::defaultTextureCoordinateAttributeName();
-const QString COLOR_ATTRIBUTE_NAME = QAbstractMeshData::defaultColorAttributeName();
+const QString VERTICES_ATTRIBUTE_NAME = QMeshData::defaultPositionAttributeName();
+const QString NORMAL_ATTRIBUTE_NAME =  QMeshData::defaultNormalAttributeName();
+const QString TANGENT_ATTRIBUTE_NAME = QMeshData::defaultTangentAttributeName();
+const QString TEXTCOORD_ATTRIBUTE_NAME = QMeshData::defaultTextureCoordinateAttributeName();
+const QString COLOR_ATTRIBUTE_NAME = QMeshData::defaultColorAttributeName();
 
 }
 
@@ -197,7 +197,7 @@ private:
     {
     public:
         explicit AssimpMeshFunctor(QMeshDataPtr meshData);
-        QAbstractMeshDataPtr operator()() Q_DECL_OVERRIDE;
+        QMeshDataPtr operator()() Q_DECL_OVERRIDE;
         bool operator ==(const QAbstractMeshFunctor &other) const Q_DECL_OVERRIDE;
     private:
         QMeshDataPtr m_meshData;
@@ -842,7 +842,7 @@ AssimpMesh::AssimpMeshFunctor::AssimpMeshFunctor(QMeshDataPtr meshData)
 {
 }
 
-QAbstractMeshDataPtr AssimpMesh::AssimpMeshFunctor::operator()()
+QMeshDataPtr AssimpMesh::AssimpMeshFunctor::operator()()
 {
     return m_meshData;
 }

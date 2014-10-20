@@ -48,7 +48,7 @@
 #include "qbuffer.h"
 #include "qattribute.h"
 #include "qmeshdata.h"
-#include <Qt3DCore/private/qabstractmesh_p.h>
+#include <Qt3DRenderer/private/qabstractmesh_p.h>
 
 #include <cmath>
 
@@ -60,7 +60,7 @@ class CylinderMeshFunctor : public QAbstractMeshFunctor
 {
 public:
     CylinderMeshFunctor(int rings, int slices, float radius, float length);
-    QAbstractMeshDataPtr operator ()() Q_DECL_OVERRIDE;
+    QMeshDataPtr operator ()() Q_DECL_OVERRIDE;
     bool operator ==(const QAbstractMeshFunctor &other) const;
 
 private:
@@ -169,26 +169,26 @@ float QCylinderMesh::length() const
     return d->m_length;
 }
 
-QAbstractMeshDataPtr assembleMesh(const QByteArray &verticesBytes, quint32 vertexSize, int verticesCount,
+QMeshDataPtr assembleMesh(const QByteArray &verticesBytes, quint32 vertexSize, int verticesCount,
                                   const QByteArray &indicesBytes, int indicesCount)
 {
-    QAbstractMeshDataPtr mesh(new QMeshData(GL_TRIANGLES));
+    QMeshDataPtr mesh(new QMeshData(GL_TRIANGLES));
 
     BufferPtr verticesBuffer(new Buffer(QOpenGLBuffer::VertexBuffer));
     verticesBuffer->setUsage(QOpenGLBuffer::StaticDraw);
     verticesBuffer->setData(verticesBytes);
 
-    mesh->addAttribute(QAbstractMeshData::defaultPositionAttributeName(),
+    mesh->addAttribute(QMeshData::defaultPositionAttributeName(),
                        QAbstractAttributePtr(new Attribute(verticesBuffer, GL_FLOAT_VEC3,
                                                            verticesCount, 0, vertexSize)));
     quint32 offset = sizeof(float) * 3;
 
-    mesh->addAttribute(QAbstractMeshData::defaultTextureCoordinateAttributeName(),
+    mesh->addAttribute(QMeshData::defaultTextureCoordinateAttributeName(),
                        QAbstractAttributePtr(new Attribute(verticesBuffer, GL_FLOAT_VEC2,
                                                            verticesCount, offset, vertexSize)));
     offset += sizeof(float) * 2;
 
-    mesh->addAttribute(QAbstractMeshData::defaultNormalAttributeName(),
+    mesh->addAttribute(QMeshData::defaultNormalAttributeName(),
                        QAbstractAttributePtr(new Attribute(verticesBuffer, GL_FLOAT_VEC3,
                                                            verticesCount, offset, vertexSize)));
     offset += sizeof(float) * 3;
@@ -198,7 +198,7 @@ QAbstractMeshDataPtr assembleMesh(const QByteArray &verticesBytes, quint32 verte
     indicesBuffer->setData(indicesBytes);
     mesh->setIndexAttribute(AttributePtr(new Attribute(indicesBuffer, GL_UNSIGNED_SHORT, indicesCount, 0, 0)));
 
-    mesh->computeBoundsFromAttribute(QAbstractMeshData::defaultPositionAttributeName());
+    mesh->computeBoundsFromAttribute(QMeshData::defaultPositionAttributeName());
 
     return mesh;
 }
@@ -297,7 +297,7 @@ void createDisc(float *&verticesPtr, quint16 *&indicesPtr,
     }
 }
 
-QAbstractMeshDataPtr createCylinderMesh(double radius, double length,
+QMeshDataPtr createCylinderMesh(double radius, double length,
                                         int rings, int slices)
 {
     const int verticesCount  = (slices + 1) * rings + 2 * (slices + 1) + 2;
@@ -342,7 +342,7 @@ CylinderMeshFunctor::CylinderMeshFunctor(int rings, int slices, float radius, fl
 {
 }
 
-QAbstractMeshDataPtr CylinderMeshFunctor::operator ()()
+QMeshDataPtr CylinderMeshFunctor::operator ()()
 {
     return createCylinderMesh(m_radius, m_length, m_rings, m_slices);
 }

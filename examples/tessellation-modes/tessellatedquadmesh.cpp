@@ -55,7 +55,7 @@ class TessellatedQuadMeshFunctor : public Qt3D::QAbstractMeshFunctor
 public:
     TessellatedQuadMeshFunctor() {}
 
-    Qt3D::QAbstractMeshDataPtr operator ()() Q_DECL_OVERRIDE
+    Qt3D::QMeshDataPtr operator ()() Q_DECL_OVERRIDE
     {
         const float positionData[] = {
             -0.8f, -0.8f, 0.0f,
@@ -75,7 +75,7 @@ public:
         vertexBuffer->setData(positionBytes);
 
         Qt3D::QMeshDataPtr mesh(new Qt3D::QMeshData(GL_PATCHES));
-        mesh->addAttribute(Qt3D::QAbstractMeshData::defaultPositionAttributeName(),
+        mesh->addAttribute(Qt3D::QMeshData::defaultPositionAttributeName(),
                            Qt3D::AttributePtr(new Qt3D::Attribute(vertexBuffer, GL_FLOAT_VEC3, nVerts)));
         mesh->setVerticesPerPatch(4);
         return mesh;
