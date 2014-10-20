@@ -62,7 +62,7 @@ QPlaneMeshPrivate::QPlaneMeshPrivate(QPlaneMesh *qq)
 QPlaneMesh::QPlaneMesh(QNode *parent)
     : QAbstractMesh(*new QPlaneMeshPrivate(this), parent)
 {
-    setDirty(true);
+    update();
 }
 
 void QPlaneMesh::copy(const QNode *ref)
@@ -77,7 +77,7 @@ void QPlaneMesh::copy(const QNode *ref)
 QPlaneMesh::QPlaneMesh(QPlaneMeshPrivate &dd, QNode *parent)
     : QAbstractMesh(dd, parent)
 {
-    setDirty(true);
+    update();
 }
 
 
@@ -87,7 +87,7 @@ void QPlaneMesh::setWidth(float width)
     if (width != d->m_width) {
         d->m_width = width;
         emit widthChanged();
-        setDirty(true);
+        update();
     }
 }
 
@@ -103,7 +103,7 @@ void QPlaneMesh::setHeight(float height)
     if (height != d->m_height) {
         d->m_height = height;
         emit heightChanged();
-        setDirty(true);
+        update();
     }
 }
 
@@ -119,7 +119,7 @@ void QPlaneMesh::setMeshResolution(const QSize &resolution)
     if (resolution != d->m_meshResolution) {
         d->m_meshResolution = resolution;
         emit meshResolutionChanged();
-        setDirty(true);
+        update();
     }
 }
 

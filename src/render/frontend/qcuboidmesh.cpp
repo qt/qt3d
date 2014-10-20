@@ -77,13 +77,13 @@ void QCuboidMesh::copy(const QNode *ref)
 QCuboidMesh::QCuboidMesh(QNode *parent)
     : QAbstractMesh(*new QCuboidMeshPrivate(this), parent)
 {
-    setDirty(true);
+    update();
 }
 
 QCuboidMesh::QCuboidMesh(QCuboidMeshPrivate &dd, QNode *parent)
     : QAbstractMesh(dd, parent)
 {
-    setDirty(true);
+    update();
 }
 
 void QCuboidMesh::setXExtent(float xExtent)
@@ -92,7 +92,7 @@ void QCuboidMesh::setXExtent(float xExtent)
     if (d->m_xExtent != xExtent) {
         d->m_xExtent = xExtent;
         emit xExtentChanged();
-        setDirty(true);
+        update();
     }
 }
 
@@ -108,7 +108,7 @@ void QCuboidMesh::setYExtent(float yExtent)
     if (d->m_yExtent != yExtent) {
         d->m_yExtent = yExtent;
         emit yExtentChanged();
-        setDirty(true);
+        update();
     }
 }
 
@@ -124,7 +124,7 @@ void QCuboidMesh::setZExtent(float zExtent)
     if (d->m_zExtent != zExtent) {
         d->m_zExtent = zExtent;
         emit zExtentChanged();
-        setDirty(true);
+        update();
     }
 }
 
@@ -140,7 +140,7 @@ void QCuboidMesh::setYZMeshResolution(const QSize &resolution)
     if (d->m_yzFaceResolution != resolution) {
         d->m_yzFaceResolution = resolution;
         emit yzMeshResolutionChanged();
-        setDirty(true);
+        update();
     }
 }
 
@@ -156,7 +156,7 @@ void QCuboidMesh::setXZMeshResolution(const QSize &resolution)
     if (d->m_xzFaceResolution != resolution) {
         d->m_xzFaceResolution = resolution;
         emit xzMeshResolutionChanged();
-        setDirty(true);
+        update();
     }
 }
 
@@ -172,7 +172,7 @@ void QCuboidMesh::setXYMeshResolution(const QSize &resolution)
     if (d->m_xyFaceResolution != resolution) {
         d->m_xyFaceResolution = resolution;
         emit xyMeshResolutionChanged();
-        setDirty(true);
+        update();
     }
 }
 

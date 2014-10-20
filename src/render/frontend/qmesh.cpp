@@ -96,7 +96,7 @@ void QMesh::setSource( const QString& source )
     d->m_source = source;
     emit sourceChanged();
     // Let aspects know about the change
-    QAbstractMesh::setDirty(true);
+    QAbstractMesh::update();
 }
 
 QString QMesh::source() const

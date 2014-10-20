@@ -828,7 +828,7 @@ void AssimpMesh::copy(const QNode *ref)
 void AssimpMesh::setData(QMeshDataPtr data)
 {
     m_meshData = data;
-    QAbstractMesh::setDirty(this);
+    QAbstractMesh::update();
 }
 
 QAbstractMeshFunctorPtr AssimpMesh::meshFunctor() const

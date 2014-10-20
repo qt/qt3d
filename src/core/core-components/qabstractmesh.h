@@ -72,8 +72,7 @@ class QT3DCORESHARED_EXPORT QAbstractMesh : public QComponent
 public:
     QAbstractMesh(QNode *parent = 0);
 
-    bool isDirty() const;
-    void setDirty(bool dirty);
+    void update();
 
     virtual QAbstractMeshFunctorPtr meshFunctor() const = 0;
 

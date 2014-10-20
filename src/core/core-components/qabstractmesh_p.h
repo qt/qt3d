@@ -63,7 +63,6 @@ public:
     Q_DECLARE_PUBLIC(QAbstractMesh)
 
     QUuid m_uuid;
-    bool m_dirty;
 };
 
 }

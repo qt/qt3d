@@ -62,7 +62,6 @@ namespace Qt3D {
 
 QAbstractMeshPrivate::QAbstractMeshPrivate(QAbstractMesh *qq)
     : QComponentPrivate(qq)
-    , m_dirty(false)
 {
 }
 
@@ -71,7 +70,6 @@ void QAbstractMesh::copy(const QNode *ref)
     QComponent::copy(ref);
     const QAbstractMesh *abstractMesh = static_cast<const QAbstractMesh*>(ref);
     d_func()->m_uuid = abstractMesh->d_func()->m_uuid;
-    d_func()->m_dirty = abstractMesh->d_func()->m_dirty;
 }
 
 
@@ -85,17 +83,9 @@ QAbstractMesh::QAbstractMesh(QAbstractMeshPrivate &dd, QNode *parent)
 {
 }
 
-bool QAbstractMesh::isDirty() const
-{
-    Q_D(const QAbstractMesh);
-    return d->m_dirty;
-}
-
-void QAbstractMesh::setDirty(bool dirty)
+void QAbstractMesh::update()
 {
     Q_D(QAbstractMesh);
-    if (dirty != d->m_dirty) {
-        d->m_dirty = dirty;
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
             change->setPropertyName(QByteArrayLiteral("meshFunctor"));
@@ -104,9 +94,7 @@ void QAbstractMesh::setDirty(bool dirty)
             // TO DO see if we can clear the d->m_dirty on request.
             // This would allow to send a single notification for classes that have several property changes occur
             // over a single given frame or maybe that's the job of the QChangeArbiter
-            d->m_dirty = false;
         }
-    }
 }
 
 } // Qt3D

@@ -101,7 +101,7 @@ void QCylinderMesh::copy(const QNode *ref)
 QCylinderMesh::QCylinderMesh(QNode *parent)
     : QAbstractMesh(*new QCylinderMeshPrivate(this), parent)
 {
-    setDirty(true);
+    update();
 }
 
 
@@ -111,7 +111,7 @@ void QCylinderMesh::setRings(int rings)
     if (rings != d->m_rings) {
         d->m_rings = rings;
         emit ringsChanged(rings);
-        setDirty(true);
+        update();
     }
 }
 
@@ -121,7 +121,7 @@ void QCylinderMesh::setSlices(int slices)
     if (slices != d->m_slices) {
         d->m_slices = slices;
         emit slicesChanged(slices);
-        setDirty(true);
+        update();
     }
 }
 
@@ -131,7 +131,7 @@ void QCylinderMesh::setRadius(float radius)
     if (radius != d->m_radius) {
         d->m_radius = radius;
         emit radiusChanged(radius);
-        setDirty(true);
+        update();
     }
 }
 
@@ -141,7 +141,7 @@ void QCylinderMesh::setLength(float length)
     if (length != d->m_length) {
         d->m_length = length;
         emit lengthChanged(length);
-        setDirty(true);
+        update();
     }
 }
 

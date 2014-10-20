@@ -91,7 +91,7 @@ class QSphereMeshPrivate : public QAbstractMeshPrivate
 QSphereMesh::QSphereMesh(QNode *parent)
     : QAbstractMesh(*new QSphereMeshPrivate(this), parent)
 {
-    setDirty(true);
+    update();
 }
 
 void QSphereMesh::copy(const QNode *ref)
@@ -110,7 +110,7 @@ void QSphereMesh::setRings(int rings)
     if (rings != d->m_rings) {
         d->m_rings = rings;
         emit ringsChanged();
-        QAbstractMesh::setDirty(true);
+        QAbstractMesh::update();
     }
 }
 
@@ -120,7 +120,7 @@ void QSphereMesh::setSlices(int slices)
     if (slices != d->m_slices) {
         d->m_slices = slices;
         emit slicesChanged();
-        QAbstractMesh::setDirty(true);
+        QAbstractMesh::update();
     }
 }
 
@@ -130,7 +130,7 @@ void QSphereMesh::setRadius(float radius)
     if (radius != d->m_radius) {
         d->m_radius = radius;
         emit radiusChanged();
-        QAbstractMesh::setDirty(true);
+        QAbstractMesh::update();
     }
 }
 
@@ -140,7 +140,7 @@ void QSphereMesh::setGenerateTangents(bool gen)
     if (d->m_generateTangents != gen) {
         d->m_generateTangents = gen;
         emit generateTangentsChanged();
-        QAbstractMesh::setDirty(true);
+        QAbstractMesh::update();
     }
 }
 

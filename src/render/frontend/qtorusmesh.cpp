@@ -101,7 +101,7 @@ void QTorusMesh::copy(const QNode *ref)
 QTorusMesh::QTorusMesh(QNode *parent)
     : QAbstractMesh(*new QTorusMeshPrivate(this), parent)
 {
-    setDirty(true);
+    update();
 }
 void QTorusMesh::setRings(int rings)
 {
@@ -109,7 +109,7 @@ void QTorusMesh::setRings(int rings)
     if (rings != d->m_rings) {
         d->m_rings = rings;
         emit ringsChanged();
-        QAbstractMesh::setDirty(true);
+        QAbstractMesh::update();
     }
 }
 
@@ -119,7 +119,7 @@ void QTorusMesh::setSlices(int slices)
     if (slices != d->m_slices) {
         d->m_slices = slices;
         emit slicesChanged();
-        QAbstractMesh::setDirty(true);
+        QAbstractMesh::update();
     }
 }
 
@@ -129,7 +129,7 @@ void QTorusMesh::setRadius(float radius)
     if (radius != d->m_radius) {
         d->m_radius = radius;
         emit radiusChanged();
-        QAbstractMesh::setDirty(true);
+        QAbstractMesh::update();
     }
 }
 
@@ -139,7 +139,7 @@ void QTorusMesh::setMinorRadius(float minorRadius)
     if (minorRadius != d->m_minorRadius) {
         d->m_minorRadius = minorRadius;
         emit minorRadiusChanged();
-        QAbstractMesh::setDirty(true);
+        QAbstractMesh::update();
     }
 }
 

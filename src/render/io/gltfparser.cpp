@@ -1026,7 +1026,7 @@ void GLTFParserMesh::setData(QMeshDataPtr data)
 {
    Q_D(GLTFParserMesh);
    d->m_meshData = data;
-   QAbstractMesh::setDirty(this);
+   QAbstractMesh::update();
 }
 
 QAbstractMeshFunctorPtr GLTFParserMesh::meshFunctor() const
