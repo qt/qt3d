@@ -454,7 +454,7 @@ void AssimpParser::loadMesh(uint meshIndex)
     aiMesh *mesh = m_scene->m_aiScene->mMeshes[meshIndex];
 
     // Primitive are always triangles with the current Assimp's configuration
-    QMeshDataPtr meshData(new QMeshData(GL_TRIANGLES));
+    QMeshDataPtr meshData(new QMeshData(QMeshData::Triangles));
 
     // Mesh Name
     QString meshName = QString::fromUtf8(mesh->mName.data);

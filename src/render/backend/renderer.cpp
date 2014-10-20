@@ -668,7 +668,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
             GLint primCount = meshData->primitiveCount();
             GLint indexType = drawIndexed ? meshData->indexAttribute()->type() : 0;
 
-            if (primType == GL_PATCHES && meshData->verticesPerPatch() != 0)
+            if (primType == QMeshData::Patches && meshData->verticesPerPatch() != 0)
                 m_graphicsContext->setVerticesPerPatch(meshData->verticesPerPatch());
 
             if (drawIndexed) {

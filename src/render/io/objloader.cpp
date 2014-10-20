@@ -214,7 +214,7 @@ bool ObjLoader::load(::QIODevice *ioDev)
 
 QMeshData *ObjLoader::mesh() const
 {
-    QMeshData *mesh = new QMeshData(GL_TRIANGLES);
+    QMeshData *mesh = new QMeshData(QMeshData::Triangles);
 
     QByteArray bufferBytes;
     const int count = m_points.size();

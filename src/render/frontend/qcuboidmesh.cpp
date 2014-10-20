@@ -496,7 +496,7 @@ QMeshDataPtr createCuboidMesh(float xExtent,
     indexBuffer->setUsage(QOpenGLBuffer::StaticDraw);
     indexBuffer->setData(indexBytes);
 
-    QMeshDataPtr mesh(new QMeshData(GL_TRIANGLES));
+    QMeshDataPtr mesh(new QMeshData(QMeshData::Triangles));
     quint32 offset = 0;
     mesh->addAttribute(QMeshData::defaultPositionAttributeName(),
                        AttributePtr(new Attribute(vertexBuffer, GL_FLOAT_VEC3, nVerts, offset, stride)));

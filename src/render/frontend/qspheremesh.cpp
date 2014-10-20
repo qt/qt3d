@@ -176,7 +176,7 @@ float QSphereMesh::radius() const
 
 QMeshDataPtr createSphereMesh(double radius, int rings, int slices, bool hasTangents)
 {
-    QMeshDataPtr mesh(new QMeshData(GL_TRIANGLES));
+    QMeshDataPtr mesh(new QMeshData(QMeshData::Triangles));
 
     int nVerts  = ( slices + 1 ) * ( rings + 1 ); // One extra line of latitude
     QByteArray bufferBytes;

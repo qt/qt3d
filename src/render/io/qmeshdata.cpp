@@ -56,7 +56,7 @@ QMeshDataPrivate::QMeshDataPrivate(QMeshData *qq)
 {
 }
 
-QMeshData::QMeshData(int primitiveType)
+QMeshData::QMeshData(PrimitiveTypes primitiveType)
     : d_ptr(new QMeshDataPrivate(this))
 {
     setPrimitiveType(primitiveType);
@@ -164,13 +164,9 @@ AxisAlignedBoundingBox QMeshData::boundingBox() const
     return d->m_bbox;
 }
 
-void QMeshData::setPrimitiveType(int primitiveType)
+void QMeshData::setPrimitiveType(PrimitiveTypes primitiveType)
 {
     Q_D(QMeshData);
-    Q_ASSERT((primitiveType == GL_TRIANGLES) ||
-             (primitiveType == GL_LINES) ||
-             (primitiveType == GL_POINTS) ||
-             (primitiveType == GL_PATCHES));
     d->m_primitiveType = primitiveType;
 }
 

@@ -224,7 +224,7 @@ QMeshDataPtr createPlaneMesh(float w, float h, const QSize &resolution)
     buf->setData(bufferBytes);
 
     // Create the mesh data, specify the vertex format and data
-    QMeshDataPtr mesh(new QMeshData(GL_TRIANGLES));
+    QMeshDataPtr mesh(new QMeshData(QMeshData::Triangles));
     quint32 offset = 0;
     mesh->addAttribute(QMeshData::defaultPositionAttributeName(),
                        AttributePtr(new Attribute(buf, GL_FLOAT_VEC3, nVerts, offset, stride)));

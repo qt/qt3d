@@ -74,7 +74,7 @@ public:
         vertexBuffer->setUsage(QOpenGLBuffer::StaticDraw);
         vertexBuffer->setData(positionBytes);
 
-        Qt3D::QMeshDataPtr mesh(new Qt3D::QMeshData(GL_PATCHES));
+        Qt3D::QMeshDataPtr mesh(new Qt3D::QMeshData(Qt3D::QMeshData::Patches));
         mesh->addAttribute(Qt3D::QMeshData::defaultPositionAttributeName(),
                            Qt3D::AttributePtr(new Qt3D::Attribute(vertexBuffer, GL_FLOAT_VEC3, nVerts)));
         mesh->setVerticesPerPatch(4);

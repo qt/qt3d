@@ -60,7 +60,22 @@ typedef QSharedPointer<QAbstractBuffer> QAbstractBufferPtr;
 class QT3DRENDERERSHARED_EXPORT QMeshData
 {
 public:
-    explicit QMeshData(int primitiveType = 0);
+    enum PrimitiveTypes {
+        Points = 0x0000,
+        Lines = 0x0001,
+        LineLoop = 0x0002,
+        LineStrip = 0x0003,
+        Triangles = 0x0004,
+        TriangleStrip = 0x0005,
+        TriangleFan = 0x0006,
+        LinesAdjacency = 0x000A,
+        TrianglesAdjacency = 0x000C,
+        LineStripAdjacency = 0x000B,
+        TriangleStripAdjacency = 0x000D,
+        Patches = 0x000E
+    };
+
+    explicit QMeshData(PrimitiveTypes primitiveType = Triangles);
     virtual ~QMeshData();
 
     void addAttribute(const QString& name, QAbstractAttributePtr attr);
@@ -76,7 +91,7 @@ public:
     static const QString defaultTextureCoordinateAttributeName() { return QStringLiteral("vertexTexCoord"); }
     static const QString defaultTangentAttributeName() { return QStringLiteral("vertexTangent"); }
 
-    void setPrimitiveType(int primitiveType);
+    void setPrimitiveType(PrimitiveTypes primitiveType);
     int primitiveType() const;
 
     void setVerticesPerPatch(int verticesPerPatch);

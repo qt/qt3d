@@ -700,7 +700,7 @@ void GLTFParser::processJSONMesh( QString id, QJsonObject jsonObj )
             continue;
         }
 
-        QMeshDataPtr md( new QMeshData( type ) );
+        QMeshDataPtr md( new QMeshData( static_cast<QMeshData::PrimitiveTypes>(type) ) );
         m_meshMaterialDict[md.data()] = material;
 
         QJsonObject attrs = primObj.value(KEY_ATTRIBUTES).toObject();

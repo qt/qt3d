@@ -172,7 +172,7 @@ float QCylinderMesh::length() const
 QMeshDataPtr assembleMesh(const QByteArray &verticesBytes, quint32 vertexSize, int verticesCount,
                                   const QByteArray &indicesBytes, int indicesCount)
 {
-    QMeshDataPtr mesh(new QMeshData(GL_TRIANGLES));
+    QMeshDataPtr mesh(new QMeshData(QMeshData::Triangles));
 
     BufferPtr verticesBuffer(new Buffer(QOpenGLBuffer::VertexBuffer));
     verticesBuffer->setUsage(QOpenGLBuffer::StaticDraw);
