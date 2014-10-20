@@ -58,7 +58,7 @@ namespace Qt3D {
 
 class QParameter;
 class QRenderState;
-class QParameterMapper;
+class QParameterMapping;
 typedef QList<QParameter*> ParameterList;
 
 class QRenderPassPrivate;
@@ -87,9 +87,9 @@ public:
     void removeAnnotation(QAnnotation *criterion);
     QList<QAnnotation *> annotations() const;
 
-    void addBinding(QParameterMapper *binding);
-    void removeBinding(QParameterMapper *binding);
-    QList<QParameterMapper *> bindings() const;
+    void addBinding(QParameterMapping *binding);
+    void removeBinding(QParameterMapping *binding);
+    QList<QParameterMapping *> bindings() const;
 
     void addRenderState(QRenderState *state);
     void removeRenderState(QRenderState *state);

@@ -52,7 +52,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QParameter;
-class QParameterMapper;
+class QParameterMapping;
 class QRenderState;
 class QAnnotation;
 typedef QList<QParameter*> ParameterList;
@@ -74,7 +74,7 @@ public:
     // map Parameter names to GLSL names
     QHash<QString, QString> m_parameterNameDict;
     QList<QAnnotation *> m_annotationList;
-    QList<QParameterMapper *> m_bindings;
+    QList<QParameterMapping *> m_bindings;
     QList<QRenderState *> m_renderStates;
     QShaderProgram *m_shader;
 };

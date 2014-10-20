@@ -104,9 +104,9 @@ Effect {
                     // ka uniform name in the shader to a property called ambient
                     bindings: [
                         // Uniforms (those provided by the user)
-                        ParameterMapper { parameterName: "ambient";  shaderVariableName: "ka"; bindingType: ParameterMapper.Uniform },
-                        ParameterMapper { parameterName: "diffuse";  shaderVariableName: "kd"; bindingType: ParameterMapper.Uniform },
-                        ParameterMapper { parameterName: "specular"; shaderVariableName: "ks"; bindingType: ParameterMapper.Uniform }
+                        ParameterMapping { parameterName: "ambient";  shaderVariableName: "ka"; bindingType: ParameterMapping.Uniform },
+                        ParameterMapping { parameterName: "diffuse";  shaderVariableName: "kd"; bindingType: ParameterMapping.Uniform },
+                        ParameterMapping { parameterName: "specular"; shaderVariableName: "ks"; bindingType: ParameterMapping.Uniform }
                     ]
 
                     shaderProgram: ShaderProgram {

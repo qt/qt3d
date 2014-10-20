@@ -42,7 +42,7 @@
 
 #include "renderrenderpass_p.h"
 #include <Qt3DRenderer/private/renderannotation_p.h>
-#include <Qt3DRenderer/qparametermapper.h>
+#include <Qt3DRenderer/qparametermapping.h>
 #include <Qt3DRenderer/qrenderstate.h>
 #include <Qt3DRenderer/qrenderpass.h>
 
@@ -76,7 +76,7 @@ void RenderRenderPass::updateFromPeer(QNode *peer)
         m_shaderUuid = pass->shaderProgram()->uuid();
     // The RenderPass clones frontend bindings in case the frontend ever removes them
     // TO DO: We probably need a QParameterMapper manager
-    Q_FOREACH (QParameterMapper *binding, pass->bindings())
+    Q_FOREACH (QParameterMapping *binding, pass->bindings())
         appendBinding(binding);
     Q_FOREACH (QAnnotation *c, pass->annotations())
         appendAnnotation(c->uuid());
@@ -97,7 +97,7 @@ void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
             m_shaderUuid = propertyChange->value().toUuid();
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("binding")) {
-            appendBinding(propertyChange->value().value<QParameterMapper *>());
+            appendBinding(propertyChange->value().value<QParameterMapping *>());
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("renderState")) {
             appendRenderState(propertyChange->value().value<QRenderState *>());
@@ -131,7 +131,7 @@ QUuid RenderRenderPass::shaderProgram() const
     return m_shaderUuid;
 }
 
-QList<QParameterMapper *> RenderRenderPass::bindings() const
+QList<QParameterMapping *> RenderRenderPass::bindings() const
 {
     return m_bindings.values();
 }
@@ -157,7 +157,7 @@ void RenderRenderPass::removeAnnotation(const QUuid &annotationId)
     m_annotationList.removeOne(annotationId);
 }
 
-void RenderRenderPass::appendBinding(QParameterMapper *binding)
+void RenderRenderPass::appendBinding(QParameterMapping *binding)
 {
     if (!m_bindings.contains(binding->uuid()))
         m_bindings[binding->uuid()] = binding;

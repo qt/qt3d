@@ -59,7 +59,7 @@
 #include <Qt3DRenderer/qeffect.h>
 #include <Qt3DRenderer/qparameter.h>
 #include <Qt3DRenderer/qannotation.h>
-#include <Qt3DRenderer/qparametermapper.h>
+#include <Qt3DRenderer/qparametermapping.h>
 #include <Qt3DRenderer/qcuboidmesh.h>
 #include <Qt3DRenderer/qcylindermesh.h>
 #include <Qt3DRenderer/qplanemesh.h>
@@ -116,7 +116,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3D::QOpenGLFilter>(uri, 2, 0, "OpenGLFilter");
     qmlRegisterUncreatableType<Qt3D::QParameter>(uri, 2, 0, "QParameter", "Quick3D should instantiate Quick3DParameter only");
     qmlRegisterType<Qt3D::Render::Quick::Quick3DParameter>(uri, 2, 0, "Parameter");
-    qmlRegisterType<Qt3D::QParameterMapper>(uri, 2, 0, "ParameterMapper");
+    qmlRegisterType<Qt3D::QParameterMapping>(uri, 2, 0, "ParameterMapping");
     qmlRegisterExtendedType<Qt3D::QMaterial, Qt3D::Render::Quick::Quick3DMaterial>(uri, 2, 0, "Material");
     qmlRegisterExtendedType<Qt3D::QRenderPass, Qt3D::Render::Quick::Quick3DRenderPass>(uri, 2, 0, "RenderPass");
     qmlRegisterType<Qt3D::QShaderProgram>(uri, 2, 0, "ShaderProgram");

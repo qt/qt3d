@@ -90,14 +90,14 @@ Effect {
                 RenderPass {
 
                     bindings: [
-                        ParameterMapper { parameterName: "ambient";  shaderVariableName: "ka"; bindingType: ParameterMapper.Uniform },
-                        ParameterMapper { parameterName: "diffuse";  shaderVariableName: "kd"; bindingType: ParameterMapper.Uniform },
-                        ParameterMapper { parameterName: "specular"; shaderVariableName: "ks"; bindingType: ParameterMapper.Uniform },
+                        ParameterMapping { parameterName: "ambient";  shaderVariableName: "ka"; bindingType: ParameterMapping.Uniform },
+                        ParameterMapping { parameterName: "diffuse";  shaderVariableName: "kd"; bindingType: ParameterMapping.Uniform },
+                        ParameterMapping { parameterName: "specular"; shaderVariableName: "ks"; bindingType: ParameterMapping.Uniform },
 
                         // TODO: Support uniform arrays. We want to be able to do (or something similar) and map vectors or lists of values
                         // through to the uniforms
-                        ParameterMapper { parameterName: "innerTessLevel"; shaderVariableName: "inner[0]"; bindingType: ParameterMapper.Uniform },
-                        ParameterMapper { parameterName: "outerTessLevel"; shaderVariableName: "outer[0]"; bindingType: ParameterMapper.Uniform }
+                        ParameterMapping { parameterName: "innerTessLevel"; shaderVariableName: "inner[0]"; bindingType: ParameterMapping.Uniform },
+                        ParameterMapping { parameterName: "outerTessLevel"; shaderVariableName: "outer[0]"; bindingType: ParameterMapping.Uniform }
                     ]
 
                     shaderProgram: ShaderProgram {

@@ -53,7 +53,6 @@
 #include <Qt3DRenderer/private/qmeshdata_p.h>
 #include <Qt3DRenderer/private/meshdatamanager_p.h>
 #include <Qt3DRenderer/private/qparameter_p.h>
-#include <Qt3DRenderer/private/qparametermapper_p.h>
 #include <Qt3DRenderer/private/rendercameralens_p.h>
 #include <Qt3DRenderer/private/rendercommand_p.h>
 #include <Qt3DRenderer/private/rendereffect_p.h>
@@ -70,6 +69,7 @@
 #include <Qt3DRenderer/private/sortmethod_p.h>
 #include <Qt3DRenderer/sphere.h>
 
+#include <Qt3DRenderer/qparametermapping.h>
 #include <Qt3DRenderer/qalphatest.h>
 #include <Qt3DRenderer/qblendequation.h>
 #include <Qt3DRenderer/qblendstate.h>
@@ -693,17 +693,17 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
                 }
 
                 // Set uniforms and attributes explicitly binded
-                Q_FOREACH (QParameterMapper *binding, rPass->bindings()) {
+                Q_FOREACH (QParameterMapping *binding, rPass->bindings()) {
                     if (!parameters.contains(binding->parameterName())) {
-                        if (binding->bindingType() == QParameterMapper::Attribute
+                        if (binding->bindingType() == QParameterMapping::Attribute
                                 && attributeNames.contains(binding->shaderVariableName()))
                             command->m_parameterAttributeToShaderNames.insert(binding->parameterName(), binding->shaderVariableName());
-                        else if (binding->bindingType() == QParameterMapper::StandardUniform
+                        else if (binding->bindingType() == QParameterMapping::StandardUniform
                                  && uniformNames.contains(binding->shaderVariableName())
                                  && m_standardUniformSetters.contains(binding->parameterName()))
                             command->m_uniforms.setUniform(binding->shaderVariableName(),
                                                            (this->*m_standardUniformSetters[binding->parameterName()])(worldTransform));
-                        else if (binding->bindingType() == QParameterMapper::FragmentOutput && fragOutputs.contains(binding->parameterName()))
+                        else if (binding->bindingType() == QParameterMapping::FragmentOutput && fragOutputs.contains(binding->parameterName()))
                             fragOutputs.insert(binding->shaderVariableName(), fragOutputs.take(binding->parameterName()));
                         else
                             qCWarning(Render::Backend) << Q_FUNC_INFO << "Trying to bind a Parameter that hasn't been defined " << binding->parameterName();

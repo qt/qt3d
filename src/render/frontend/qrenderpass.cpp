@@ -44,10 +44,9 @@
 #include "qrenderpass_p.h"
 #include "qparameter.h"
 #include "qannotation.h"
-#include "qparametermapper.h"
+#include "qparametermapping.h"
 #include "qscenepropertychange.h"
 #include "qrenderstate.h"
-#include "qparametermapper_p.h"
 #include "private/qnode_p.h"
 
 QT_BEGIN_NAMESPACE
@@ -68,8 +67,8 @@ void QRenderPass::copy(const QNode *ref)
 
     Q_FOREACH (QAnnotation *crit, other->d_func()->m_annotationList)
         addAnnotation(qobject_cast<QAnnotation *>(QNodePrivate::get(crit)->clone()));
-    Q_FOREACH (QParameterMapper *binding, other->d_func()->m_bindings)
-        addBinding(qobject_cast<QParameterMapper *>(QNodePrivate::get(binding)->clone()));
+    Q_FOREACH (QParameterMapping *binding, other->d_func()->m_bindings)
+        addBinding(qobject_cast<QParameterMapping *>(QNodePrivate::get(binding)->clone()));
     Q_FOREACH (QRenderState *renderState, other->d_func()->m_renderStates)
         addRenderState(qobject_cast<QRenderState *>(QNodePrivate::get(renderState)->clone()));
 }
@@ -178,7 +177,7 @@ QList<QAnnotation *> QRenderPass::annotations() const
     return d->m_annotationList;
 }
 
-void QRenderPass::addBinding(QParameterMapper *binding)
+void QRenderPass::addBinding(QParameterMapping *binding)
 {
     Q_D(QRenderPass);
     if (!d->m_bindings.contains(binding)) {
@@ -196,7 +195,7 @@ void QRenderPass::addBinding(QParameterMapper *binding)
     }
 }
 
-void QRenderPass::removeBinding(QParameterMapper *binding)
+void QRenderPass::removeBinding(QParameterMapping *binding)
 {
     Q_D(QRenderPass);
     if (d->m_changeArbiter != Q_NULLPTR) {
@@ -208,7 +207,7 @@ void QRenderPass::removeBinding(QParameterMapper *binding)
     d->m_bindings.removeOne(binding);
 }
 
-QList<QParameterMapper *> QRenderPass::bindings() const
+QList<QParameterMapping *> QRenderPass::bindings() const
 {
     Q_D(const QRenderPass);
     return d->m_bindings;

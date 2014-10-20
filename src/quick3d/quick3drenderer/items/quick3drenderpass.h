@@ -59,13 +59,13 @@ class QT3DQUICKRENDERERSHARED_EXPORT Quick3DRenderPass : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Qt3D::QAnnotation> annotations READ annotationList)
-    Q_PROPERTY(QQmlListProperty<Qt3D::QParameterMapper> bindings READ bindingList)
+    Q_PROPERTY(QQmlListProperty<Qt3D::QParameterMapping> bindings READ bindingList)
     Q_PROPERTY(QQmlListProperty<Qt3D::QRenderState> renderStates READ renderStateList)
 public:
     explicit Quick3DRenderPass(QObject *parent = 0);
 
     QQmlListProperty<Qt3D::QAnnotation> annotationList();
-    QQmlListProperty<Qt3D::QParameterMapper> bindingList();
+    QQmlListProperty<Qt3D::QParameterMapping> bindingList();
     QQmlListProperty<Qt3D::QRenderState> renderStateList();
     inline QRenderPass *parentRenderPass() const { return qobject_cast<QRenderPass *>(parent()); }
 
@@ -75,10 +75,10 @@ private:
     static int annotationsCount(QQmlListProperty<Qt3D::QAnnotation> *list);
     static void clearAnnotations(QQmlListProperty<Qt3D::QAnnotation> *list);
 
-    static void appendBinding(QQmlListProperty<Qt3D::QParameterMapper> *list, QParameterMapper *binding);
-    static QParameterMapper *bindingAt(QQmlListProperty<Qt3D::QParameterMapper> *list, int index);
-    static int bindingsCount(QQmlListProperty<Qt3D::QParameterMapper> *list);
-    static void clearBindings(QQmlListProperty<Qt3D::QParameterMapper> *list);
+    static void appendBinding(QQmlListProperty<Qt3D::QParameterMapping> *list, QParameterMapping *binding);
+    static QParameterMapping *bindingAt(QQmlListProperty<Qt3D::QParameterMapping> *list, int index);
+    static int bindingsCount(QQmlListProperty<Qt3D::QParameterMapping> *list);
+    static void clearBindings(QQmlListProperty<Qt3D::QParameterMapping> *list);
 
     static void appendRenderState(QQmlListProperty<Qt3D::QRenderState> *list, QRenderState *state);
     static QRenderState *renderStateAt(QQmlListProperty<Qt3D::QRenderState> *list, int index);

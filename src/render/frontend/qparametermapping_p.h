@@ -39,61 +39,30 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QPARAMETERBINDER_H
-#define QT3D_QPARAMETERBINDER_H
+#ifndef QT3D_QPARAMETERMAPPING_P_H
+#define QT3D_QPARAMETERMAPPING_P_H
 
-#include <Qt3DCore/qnode.h>
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <private/qnode_p.h>
+#include <Qt3DRenderer/QParameterMapping>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QParameterMapperPrivate;
-
-class QT3DRENDERERSHARED_EXPORT QParameterMapper : public QNode
+class QParameterMappingPrivate : public QNodePrivate
 {
-    Q_OBJECT
-    Q_ENUMS(Binding)
-    Q_PROPERTY(QString parameterName READ parameterName WRITE setParameterName NOTIFY parameterNameChanged)
-    Q_PROPERTY(QString shaderVariableName READ shaderVariableName WRITE setShaderVariableName NOTIFY shaderVariableNameChanged)
-    Q_PROPERTY(Binding bindingType READ bindingType WRITE setBindingType NOTIFY bindingTypeChanged)
 public:
-    enum Binding
-    {
-        Uniform = 0,
-        Attribute,
-        StandardUniform,
-        FragmentOutput
-    };
+    QParameterMappingPrivate(QParameterMapping *qq);
 
-    explicit QParameterMapper(QNode *parent = 0);
-    QParameterMapper(const QString &parameterName, const QString &shaderParameterName, QParameterMapper::Binding bindingType, QNode *parent = 0);
+    Q_DECLARE_PUBLIC(QParameterMapping)
 
-    void setParameterName(const QString &name);
-    void setShaderVariableName(const QString &name);
-    void setBindingType(Binding type);
-
-    QString parameterName() const;
-    QString shaderVariableName() const;
-    Binding bindingType() const;
-
-Q_SIGNALS:
-    void parameterNameChanged();
-    void shaderVariableNameChanged();
-    void bindingTypeChanged();
-
-protected:
-    QParameterMapper(QParameterMapperPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
-private:
-    Q_DECLARE_PRIVATE(QParameterMapper)
-    QT3D_CLONEABLE(QParameterMapper)
+    QString m_parameterName;
+    QString m_shaderVariableName;
+    QParameterMapping::Binding m_bindingType;
 };
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QPARAMETERBINDER_H
+#endif // QT3D_QPARAMETERMAPPING_P_H

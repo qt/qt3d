@@ -54,7 +54,7 @@ namespace Qt3D {
 
 class QRenderPass;
 class QAbstractShader;
-class QParameterMapper;
+class QParameterMapping;
 class QAnnotation;
 class QRenderState;
 
@@ -72,14 +72,14 @@ public:
     void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
     QUuid shaderProgram() const;
-    QList<QParameterMapper *> bindings() const;
+    QList<QParameterMapping *> bindings() const;
     QList<QUuid> annotations() const;
     QList<QRenderState *> renderStates() const;
 
     void appendAnnotation(const QUuid &criterionId);
     void removeAnnotation(const QUuid &criterionId);
 
-    void appendBinding(QParameterMapper *binding);
+    void appendBinding(QParameterMapping *binding);
     void removeBinding(const QUuid &bindingId);
 
     void appendRenderState(QRenderState *renderState);
@@ -87,7 +87,7 @@ public:
 
 private:
     QUuid m_shaderUuid;
-    QHash<QUuid, QParameterMapper *> m_bindings;
+    QHash<QUuid, QParameterMapping *> m_bindings;
     QHash<QUuid, QRenderState *> m_renderStates;
     QList<QUuid> m_annotationList;
 };

@@ -265,9 +265,9 @@ Entity {
                             RenderPass {
                                 annotations : [Annotation {name : "Name"; value : "TextureLighting" }]
                                 bindings : [ // Add only the bindings needed for a shader
-                                    ParameterMapper {parameterName: "vertexTexCoord"; shaderVariableName: "texCoord0"; bindingType: ParameterMapper.Attribute},
-                                    ParameterMapper {parameterName: "tex"; shaderVariableName: "texture"; bindingType: ParameterMapper.Uniform},
-                                    ParameterMapper {parameterName: "modelViewProjection"; shaderVariableName: "customMvp"; bindingType: ParameterMapper.StandardUniform}
+                                    ParameterMapping {parameterName: "vertexTexCoord"; shaderVariableName: "texCoord0"; bindingType: ParameterMapping.Attribute},
+                                    ParameterMapping {parameterName: "tex"; shaderVariableName: "texture"; bindingType: ParameterMapping.Uniform},
+                                    ParameterMapping {parameterName: "modelViewProjection"; shaderVariableName: "customMvp"; bindingType: ParameterMapping.StandardUniform}
                                 ]
 
                                 shaderProgram : ShaderProgram {
@@ -495,10 +495,10 @@ Entity {
                             RenderPass {
                                 annotations : []
                                 bindings : [ // Add only the bindings needed for a shader
-                                    ParameterMapper {parameterName: "ambient"; shaderVariableName: "ka"; bindingType: ParameterMapper.Uniform},
-                                    ParameterMapper {parameterName: "diffuse"; shaderVariableName: "kd"; bindingType: ParameterMapper.Uniform},
-                                    ParameterMapper {parameterName: "lightPos"; shaderVariableName: "lightPosition"; bindingType: ParameterMapper.Uniform},
-                                    ParameterMapper {parameterName: "lightIntensity"; shaderVariableName: "lightIntensity"; bindingType: ParameterMapper.Uniform}
+                                    ParameterMapping {parameterName: "ambient"; shaderVariableName: "ka"; bindingType: ParameterMapping.Uniform},
+                                    ParameterMapping {parameterName: "diffuse"; shaderVariableName: "kd"; bindingType: ParameterMapping.Uniform},
+                                    ParameterMapping {parameterName: "lightPos"; shaderVariableName: "lightPosition"; bindingType: ParameterMapping.Uniform},
+                                    ParameterMapping {parameterName: "lightIntensity"; shaderVariableName: "lightIntensity"; bindingType: ParameterMapping.Uniform}
                                 ]
                                 shaderProgram : ShaderProgram {
                                     id : diffuseShader

@@ -17,7 +17,6 @@ HEADERS += \
     $$PWD/qsceneloader.h \
     $$PWD/qparameter.h \
     $$PWD/qparameter_p.h \
-    $$PWD/qparametermapper.h \
     $$PWD/qcylindermesh.h \
     $$PWD/qtorusmesh.h \
     $$PWD/qspheremesh.h \
@@ -37,7 +36,6 @@ HEADERS += \
     $$PWD/qrenderpass_p.h \
     $$PWD/qlayer.h \
     $$PWD/qlayer_p.h \
-    $$PWD/qparametermapper_p.h \
     $$PWD/qopenglfilter.h \
     $$PWD/qplanemesh.h \
     $$PWD/qplanemesh_p.h \
@@ -63,7 +61,9 @@ HEADERS += \
     $$PWD/qannotation.h \
     $$PWD/qannotation_p.h \
     $$PWD/qabstractmesh_p.h \
-    $$PWD/qabstractmesh.h
+    $$PWD/qabstractmesh.h \
+    $$PWD/qparametermapping_p.h \
+    $$PWD/qparametermapping.h
 
 SOURCES += \
     $$PWD/qmaterial.cpp \
@@ -78,7 +78,6 @@ SOURCES += \
     $$PWD/qeffect.cpp \
     $$PWD/qsceneloader.cpp \
     $$PWD/qparameter.cpp \
-    $$PWD/qparametermapper.cpp \
     $$PWD/qcylindermesh.cpp \
     $$PWD/qtorusmesh.cpp \
     $$PWD/qspheremesh.cpp \
@@ -105,4 +104,5 @@ SOURCES += \
     $$PWD/qrendertarget.cpp \
     $$PWD/qalphacoverage.cpp \
     $$PWD/qannotation.cpp \
-    $$PWD/qabstractmesh.cpp
+    $$PWD/qabstractmesh.cpp \
+    $$PWD/qparametermapping.cpp
