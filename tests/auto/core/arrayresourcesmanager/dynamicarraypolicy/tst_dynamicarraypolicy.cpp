@@ -44,12 +44,12 @@
 #include <Qt3DCore/qresourcesmanager.h>
 #include <Qt3DCore/qhandle.h>
 
-class tst_ArrayResourcesManager : public QObject
+class tst_DynamicArrayPolicy : public QObject
 {
     Q_OBJECT
 public:
-    tst_ArrayResourcesManager() {}
-    ~tst_ArrayResourcesManager() {}
+    tst_DynamicArrayPolicy() {}
+    ~tst_DynamicArrayPolicy() {}
 
 private slots:
     void createResourcesManager();
@@ -79,7 +79,7 @@ typedef Qt3D::QHandle<tst_ArrayResource, 4> tHandle4;
 typedef Qt3D::QHandle<tst_ArrayResource, 8> tHandle8;
 typedef Qt3D::QHandle<tst_ArrayResource, 16> tHandle16;
 
-void tst_ArrayResourcesManager::createResourcesManager()
+void tst_DynamicArrayPolicy::createResourcesManager()
 {
     Qt3D::QResourcesManager<tst_ArrayResource, int, 16> manager16;
     Qt3D::QResourcesManager<tst_ArrayResource, int, 4> manager4;
@@ -93,7 +93,7 @@ void tst_ArrayResourcesManager::createResourcesManager()
  * Check that the handles returned when a registering resources
  * have a correct index and counter.
  */
-void tst_ArrayResourcesManager::acquireResources()
+void tst_DynamicArrayPolicy::acquireResources()
 {
     Qt3D::QResourcesManager<tst_ArrayResource, uint, 4> manager;
 
@@ -112,7 +112,7 @@ void tst_ArrayResourcesManager::acquireResources()
 /*!
  * Test that values can be properly retrieved.
  */
-void tst_ArrayResourcesManager::getResources()
+void tst_DynamicArrayPolicy::getResources()
 {
 
     Qt3D::QResourcesManager<tst_ArrayResource, int, 8> manager;
@@ -144,7 +144,7 @@ void tst_ArrayResourcesManager::getResources()
  * Test that when a resize of the data vectors in the manager occurs,
  * everything behaves correctly.
  */
-void tst_ArrayResourcesManager::registerResourcesResize()
+void tst_DynamicArrayPolicy::registerResourcesResize()
 {
     Qt3D::QResourcesManager<tst_ArrayResource, uint, 16> manager;
     QList<tHandle16> handles;
@@ -172,7 +172,7 @@ void tst_ArrayResourcesManager::registerResourcesResize()
 /*!
  * Checks for the removal of resources.
  */
-void tst_ArrayResourcesManager::removeResource()
+void tst_DynamicArrayPolicy::removeResource()
 {
     Qt3D::QResourcesManager<tst_ArrayResource, int> manager;
 
@@ -196,7 +196,7 @@ void tst_ArrayResourcesManager::removeResource()
 /*!
  * Checks that reset behaves correctly.
  */
-void tst_ArrayResourcesManager::resetResource()
+void tst_DynamicArrayPolicy::resetResource()
 {
     Qt3D::QResourcesManager<tst_ArrayResource, uint> manager;
 
@@ -223,7 +223,7 @@ void tst_ArrayResourcesManager::resetResource()
     }
 }
 
-void tst_ArrayResourcesManager::lookupResource()
+void tst_DynamicArrayPolicy::lookupResource()
 {
     Qt3D::QResourcesManager<tst_ArrayResource, uint> manager;
 
@@ -248,7 +248,7 @@ void tst_ArrayResourcesManager::lookupResource()
     QVERIFY(manager.data(t) == resource);
 }
 
-void tst_ArrayResourcesManager::releaseResource()
+void tst_DynamicArrayPolicy::releaseResource()
 {
     Qt3D::QResourcesManager<tst_ArrayResource, uint> manager;
     QList<tst_ArrayResource *> resources;
@@ -307,7 +307,7 @@ protected:
     Manager *m_manager;
 };
 
-void tst_ArrayResourcesManager::heavyDutyMultiThreadedAccess()
+void tst_DynamicArrayPolicy::heavyDutyMultiThreadedAccess()
 {
     tst_Thread::Manager *manager = new tst_Thread::Manager();
 
@@ -383,7 +383,7 @@ protected:
     int m_releaseAbove;
 };
 
-void tst_ArrayResourcesManager::heavyDutyMultiThreadedAccessRelease()
+void tst_DynamicArrayPolicy::heavyDutyMultiThreadedAccessRelease()
 {
     tst_Thread2::Manager *manager = new tst_Thread2::Manager();
 
@@ -419,7 +419,7 @@ void tst_ArrayResourcesManager::heavyDutyMultiThreadedAccessRelease()
     delete manager;
 }
 
-void tst_ArrayResourcesManager::maximumNumberOfResources()
+void tst_DynamicArrayPolicy::maximumNumberOfResources()
 {
     Qt3D::QResourcesManager<tst_ArrayResource, uint> manager;
 
@@ -435,6 +435,6 @@ void tst_ArrayResourcesManager::maximumNumberOfResources()
     }
 }
 
-QTEST_APPLESS_MAIN(tst_ArrayResourcesManager)
+QTEST_APPLESS_MAIN(tst_DynamicArrayPolicy)
 
-#include "tst_arrayresourcesmanager.moc"
+#include "tst_dynamicarraypolicy.moc"

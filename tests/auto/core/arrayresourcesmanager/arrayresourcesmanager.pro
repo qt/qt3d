@@ -1,7 +1,5 @@
-TARGET = tst_arrayresourcesmanager
-CONFIG += testcase
-TEMPLATE = app
+TEMPLATE = subdirs
 
-SOURCES += tst_arrayresourcesmanager.cpp
-
-QT += testlib 3dcore
+SUBDIRS = \
+    dynamicarraypolicy \
+    preallocatedarraypolicy

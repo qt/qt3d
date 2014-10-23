@@ -176,15 +176,99 @@ struct Int2Type
     };
 };
 
-
 template <typename T, int INDEXBITS>
 class ArrayAllocatingPolicy
 {
 public:
     ArrayAllocatingPolicy()
+    {
+        reset();
+    }
+
+    T* allocateResource()
+    {
+        Q_ASSERT(!m_freeList.isEmpty());
+        int idx = m_freeList.last();
+        m_freeList.pop_back();
+        int bucketIdx = idx / BucketSize;
+        int localIdx = idx % BucketSize;
+        Q_ASSERT(bucketIdx <= m_buckets.size());
+        if (bucketIdx == m_buckets.size()) {
+            m_buckets.append(Bucket(BucketSize));
+            m_bucketDataPtrs[bucketIdx] = m_buckets.last().data();
+        }
+        return m_bucketDataPtrs[bucketIdx] + localIdx;
+    }
+
+    void releaseResource(T *r)
+    {
+        // search linearly over buckets to find the index of the resource
+        // and put it into the free list
+        const int numBuckets = m_buckets.size();
+        for (int bucketIdx = 0; bucketIdx < numBuckets; ++bucketIdx) {
+            const T* firstItem = m_bucketDataPtrs[bucketIdx];
+            if (firstItem > r || r > firstItem + BucketSize) {
+                // resource is not in this bucket when its pointer address
+                // is outside the address range spanned by the addresses of
+                // the first and last items in a bucket
+                continue;
+            }
+
+            // now we found the bucket we can reconstruct the global index
+            // and put it back into the free list
+            const int localIdx = static_cast<int>(r - firstItem);
+            const int idx = bucketIdx * BucketSize + localIdx;
+            m_freeList.append(idx);
+            performCleanup(r, Int2Type<QResourceInfo<T>::needsCleanup>());
+            // release the actual resource by overwriting it with a default
+            // constructed item which can then be reused later
+            *r = T();
+            break;
+        }
+    }
+
+    void reset()
+    {
+        m_buckets.clear();
+        m_freeList.resize(MaxSize);
+        for (int i = 0; i < MaxSize; i++)
+            m_freeList[i] = MaxSize - (i + 1);
+    }
+
+private:
+
+    enum {
+        MaxSize = (1 << INDEXBITS),
+        // use at most 1024 items per bucket, or put all items into a single
+        // bucket if MaxSize is small enough
+        BucketSize = (1 << (INDEXBITS < 10 ? INDEXBITS : 10))
+    };
+
+    typedef QVector<T> Bucket;
+    QList<Bucket> m_buckets;
+    // optimization: quick access to bucket data pointers
+    // this improves the performance of the releaseResource benchmarks
+    // and reduces their runtime by a factor 2
+    T* m_bucketDataPtrs[MaxSize / BucketSize];
+    QVector<int> m_freeList;
+
+    void performCleanup(T *r, Int2Type<true>)
+    {
+        r->cleanup();
+    }
+
+    void performCleanup(T *, Int2Type<false>)
+    {}
+
+};
+
+template <typename T, int INDEXBITS>
+class ArrayPreallocationPolicy
+{
+public:
+    ArrayPreallocationPolicy()
         : m_resourcesEntries(1 << INDEXBITS)
     {
-        m_resourcesEntries.resize(1 << INDEXBITS);
         for (int i = 0; i < m_resourcesEntries.size(); i++)
             m_freeEntryIndices << i;
     }
@@ -192,7 +276,7 @@ public:
     T* allocateResource()
     {
         int idx = m_freeEntryIndices.takeFirst();
-        T* newT = m_resourcesEntries.begin() + idx;
+        T* newT = m_resourcesEntries.data() + idx;
         m_resourcesToIndices[newT] = idx;
         return newT;
     }
