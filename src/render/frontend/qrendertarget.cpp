@@ -83,7 +83,7 @@ void QRenderTarget::addAttachment(QRenderAttachment *attachment)
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
             change->setPropertyName(QByteArrayLiteral("attachment"));
-            change->setValue(QVariant::fromValue(QNodePrivate::get(attachment)->clone()));
+            change->setValue(QVariant::fromValue(attachment->uuid()));
             d->notifyObservers(change);
         }
     }
@@ -96,7 +96,7 @@ void QRenderTarget::removeAttachment(QRenderAttachment *attachment)
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, this));
         change->setPropertyName(QByteArrayLiteral("attachment"));
-        change->setValue(QVariant::fromValue(QNodePrivate::get(attachment)->clone()));
+        change->setValue(QVariant::fromValue(attachment->uuid()));
         d->notifyObservers(change);
     }
     d->m_attachments.removeOne(attachment);

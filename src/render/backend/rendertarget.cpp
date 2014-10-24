@@ -61,17 +61,17 @@ void RenderTarget::updateFromPeer(QNode *peer)
     QRenderTarget *target = static_cast<QRenderTarget *>(peer);
     m_renderAttachments.clear();
     Q_FOREACH (QRenderAttachment *att, target->attachments())
-        appendRenderAttachment(att);
+        appendRenderAttachment(att->uuid());
 }
 
 void RenderTarget::cleanup()
 {
 }
 
-void RenderTarget::appendRenderAttachment(QRenderAttachment *attachment)
+void RenderTarget::appendRenderAttachment(const QUuid &attachmentId)
 {
-    if (!m_renderAttachments.contains(attachment->uuid()))
-        m_renderAttachments.append(attachment->uuid());
+    if (!m_renderAttachments.contains(attachmentId))
+        m_renderAttachments.append(attachmentId);
 }
 
 void RenderTarget::removeRenderAttachment(const QUuid &attachmentId)
@@ -88,9 +88,9 @@ void RenderTarget::sceneChangeEvent(const QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     if (e->type() == NodeAdded && propertyChange->propertyName() == QByteArrayLiteral("attachment"))
-        appendRenderAttachment(propertyChange->value().value<QRenderAttachment *>());
+        appendRenderAttachment(propertyChange->value().toUuid());
     else if (e->type() == NodeRemoved && propertyChange->propertyName() == QByteArrayLiteral("attachment"))
-        removeRenderAttachment(propertyChange->value().value<QRenderAttachment *>()->uuid());
+        removeRenderAttachment(propertyChange->value().toUuid());
 }
 
 } // Render

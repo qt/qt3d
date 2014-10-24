@@ -65,7 +65,7 @@ public:
     void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
     void cleanup();
 
-    void appendRenderAttachment(QRenderAttachment *attachment);
+    void appendRenderAttachment(const QUuid &attachmentId);
     void removeRenderAttachment(const QUuid &attachmentId);
 
     QList<QUuid> renderAttachments() const;
