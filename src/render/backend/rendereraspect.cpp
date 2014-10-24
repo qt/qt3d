@@ -191,7 +191,8 @@ QVector<QAspectJobPtr> RendererAspect::jobsToExecute()
 void RendererAspect::sceneNodeAdded(QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
-    QNode *n = propertyChange->value().value<QNodePtr>().data();
+    QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
+    QNode *n = nodePtr.data();
     NodeVisitor visitor;
     visitor.traverse(n, this, &RendererAspect::visitNode, &RendererAspect::visitNode);
 }
@@ -199,7 +200,8 @@ void RendererAspect::sceneNodeAdded(QSceneChangePtr &e)
 void RendererAspect::sceneNodeRemoved(QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
-    QNode *n = propertyChange->value().value<QNodePtr>().data();
+    QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
+    QNode *n = nodePtr.data();
     QAbstractAspect::clearBackendNode(n);
 }
 

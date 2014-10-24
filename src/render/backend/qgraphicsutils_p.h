@@ -243,7 +243,8 @@ static const char *bytesFromVariant(const QVariant &v)
 
         // 16 floats
     case QMetaType::QMatrix4x4: {
-        float *data = v.value<QMatrix4x4>().data();
+        QMatrix4x4 mat = v.value<QMatrix4x4>();
+        float *data = mat.data();
         for (int i = 0; i < 16; i++) {
             T d = data[i];
             memcpy(array.data() + i * byteSize, &d, byteSize);
@@ -255,56 +256,64 @@ static const char *bytesFromVariant(const QVariant &v)
 
         float *data = Q_NULLPTR;
         if (v.userType() == QMatrix3x3Type) {
-            data = v.value<QMatrix3x3>().data();
+            QMatrix3x3 mat = v.value<QMatrix3x3>();
+            data = mat.data();
             for (int i = 0; i < 9; i++) {
                 T d = data[i];
                 memcpy(array.data() + i * byteSize, &d, byteSize);
             }
         }
         else if (v.userType() == QMatrix2x2Type) {
-            data = v.value<QMatrix2x2>().data();
+            QMatrix2x2 mat = v.value<QMatrix2x2>();
+            data = mat.data();
             for (int i = 0; i < 4; i++) {
                 T d = data[i];
                 memcpy(array.data() + i * byteSize, &d, byteSize);
             }
         }
         else if (v.userType() == QMatrix2x3Type) {
-            data = v.value<QMatrix2x3>().data();
+            QMatrix2x3 mat = v.value<QMatrix2x3>();
+            data = mat.data();
             for (int i = 0; i < 6; i++) {
                 T d = data[i];
                 memcpy(array.data() + i * byteSize, &d, byteSize);
             }
         }
         else if (v.userType() == QMatrix3x2Type) {
-            data = v.value<QMatrix3x2>().data();
+            QMatrix3x2 mat = v.value<QMatrix3x2>();
+            data = mat.data();
             for (int i = 0; i < 6; i++) {
                 T d = data[i];
                 memcpy(array.data() + i * byteSize, &d, byteSize);
             }
         }
         else if (v.userType() == QMatrix2x4Type) {
-            data = v.value<QMatrix2x4>().data();
+            QMatrix2x4 mat = v.value<QMatrix2x4>();
+            data = mat.data();
             for (int i = 0; i < 8; i++) {
                 T d = data[i];
                 memcpy(array.data() + i * byteSize, &d, byteSize);
             }
         }
         else if (v.userType() == QMatrix4x2Type) {
-            data = v.value<QMatrix4x2>().data();
+            QMatrix4x2 mat = v.value<QMatrix4x2>();
+            data = mat.data();
             for (int i = 0; i < 8; i++) {
                 T d = data[i];
                 memcpy(array.data() + i * byteSize, &d, byteSize);
             }
         }
         else if (v.userType() == QMatrix3x4Type) {
-            data = v.value<QMatrix3x4>().data();
+            QMatrix3x4 mat = v.value<QMatrix3x4>();
+            data = mat.data();
             for (int i = 0; i < 12; i++) {
                 T d = data[i];
                 memcpy(array.data() + i * byteSize, &d, byteSize);
             }
         }
         else if (v.userType() == QMatrix4x3Type) {
-            data = v.value<QMatrix4x3>().data();
+            QMatrix4x3 mat = v.value<QMatrix4x3>();
+            data = mat.data();
             for (int i = 0; i < 12; i++) {
                 T d = data[i];
                 memcpy(array.data() + i * byteSize, &d, byteSize);

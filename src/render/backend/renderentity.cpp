@@ -148,14 +148,16 @@ void RenderEntity::sceneChangeEvent(const QSceneChangePtr &e)
     switch (e->type()) {
 
     case ComponentAdded: {
-        QComponent *component = qobject_cast<QComponent *>(propertyChange->value().value<QNodePtr>().data());
+        QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
+        QComponent *component = qobject_cast<QComponent *>(nodePtr.data());
         qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "Component Added" << m_objectName << component->objectName();
         addComponent(component);
         break;
     }
 
     case ComponentRemoved: {
-        QComponent *component = qobject_cast<QComponent *>(propertyChange->value().value<QNodePtr>().data());
+        QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
+        QComponent *component = qobject_cast<QComponent *>(nodePtr.data());
         qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "Component Removed";
         removeComponent(component);
         break;
