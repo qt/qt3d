@@ -267,43 +267,43 @@ class ArrayPreallocationPolicy
 {
 public:
     ArrayPreallocationPolicy()
-        : m_resourcesEntries(1 << INDEXBITS)
     {
-        for (int i = 0; i < m_resourcesEntries.size(); i++)
-            m_freeEntryIndices << i;
+        reset();
     }
 
     T* allocateResource()
     {
-        int idx = m_freeEntryIndices.takeFirst();
-        T* newT = m_resourcesEntries.data() + idx;
-        m_resourcesToIndices[newT] = idx;
-        return newT;
+        Q_ASSERT(!m_freeList.isEmpty());
+        int idx = m_freeList.last();
+        m_freeList.pop_back();
+        return m_bucket.data() + idx;
     }
 
     void releaseResource(T *r)
     {
-        if (m_resourcesToIndices.contains(r)) {
-            int idx = m_resourcesToIndices.take(r);
-            performCleanup(r, Int2Type<QResourceInfo<T>::needsCleanup>());
-            m_resourcesEntries[idx] = T();
-            m_freeEntryIndices.append(idx);
-        }
+        Q_ASSERT(m_bucket.data() <= r && r < m_bucket.data() + MaxSize);
+        int idx = r - m_bucket.data();
+        m_freeList.append(idx);
+        performCleanup(r, Int2Type<QResourceInfo<T>::needsCleanup>());
+        *r = T();
     }
 
     void reset()
     {
-        m_resourcesToIndices.clear();
-        m_resourcesEntries.clear();
-        m_resourcesEntries.resize(1 << INDEXBITS);
-        for (int i = 0; i < m_resourcesEntries.size(); i++)
-            m_freeEntryIndices << i;
+        m_bucket.clear();
+        m_bucket.resize(MaxSize);
+        m_freeList.resize(MaxSize);
+        for (int i = 0; i < MaxSize; i++)
+            m_freeList[i] = MaxSize - (i + 1);
     }
 
 private:
-    QVector<T> m_resourcesEntries;
-    QList<int> m_freeEntryIndices;
-    QHash<T*, int> m_resourcesToIndices;
+    enum {
+      MaxSize = 1 << INDEXBITS
+    };
+
+    QVector<T> m_bucket;
+    QVector<int> m_freeList;
 
     void performCleanup(T *r, Int2Type<true>)
     {
