@@ -76,6 +76,10 @@ QAspectEnginePrivate::QAspectEnginePrivate(QAspectEngine *qq)
 QAspectEngine::QAspectEngine(QObject *parent)
     : QObject(*new QAspectEnginePrivate(this), parent)
 {
+    // Don't show any debug output from Qt3D. If you need to enable additional logging
+    // for debugging use a rules file as explained in the QLoggingCategory documentation.
+    QLoggingCategory::setFilterRules(QString::fromUtf8("Qt3D.*.debug=false\n"));
+
     qCDebug(Aspects) << Q_FUNC_INFO;
     Q_D(QAspectEngine);
     d->m_aspectThread = new QAspectThread(this);
