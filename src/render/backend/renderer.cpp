@@ -53,7 +53,7 @@
 #include <Qt3DRenderer/qrenderpass.h>
 #include <Qt3DRenderer/qshaderprogram.h>
 #include <Qt3DRenderer/qtechnique.h>
-#include <Qt3DRenderer/rendereraspect.h>
+#include <Qt3DRenderer/qrenderaspect.h>
 #include <Qt3DRenderer/renderlogging.h>
 #include <Qt3DRenderer/qeffect.h>
 
@@ -540,7 +540,7 @@ void Renderer::submitRenderViews()
 }
 
 // Waits to be told to create jobs for the next frame
-// Called by RendererAspect jobsToExecute context of QAspectThread
+// Called by QRenderAspect jobsToExecute context of QAspectThread
 QVector<QAspectJobPtr> Renderer::createRenderBinJobs()
 {
     // Traverse the current framegraph. For each leaf node create a

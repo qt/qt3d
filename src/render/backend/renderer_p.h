@@ -76,7 +76,7 @@ class QShaderProgram;
 class QMesh;
 class QRenderPass;
 class QAbstractShapeMesh;
-class RendererAspect;
+class QRenderAspect;
 class QFrameAllocator;
 class QOpenGLFilter;
 class AbstractSceneParser;
@@ -130,8 +130,8 @@ public:
     explicit Renderer(int cachedFrames = 5);
     ~Renderer();
 
-    void setRendererAspect(RendererAspect *aspect) { m_rendererAspect = aspect; }
-    RendererAspect *rendererAspect() const { return m_rendererAspect; }
+    void setQRenderAspect(QRenderAspect *aspect) { m_rendererAspect = aspect; }
+    QRenderAspect *rendererAspect() const { return m_rendererAspect; }
 
     void createAllocators();
     void destroyAllocators();
@@ -201,7 +201,7 @@ public:
     QMutex* mutex() { return &m_mutex; }
 
 private:
-    RendererAspect *m_rendererAspect;
+    QRenderAspect *m_rendererAspect;
 
     // Frame graph root
     QUuid m_frameGraphRootUuid;

@@ -64,7 +64,7 @@
 #include <Qt3DRenderer/qrenderpassfilter.h>
 #include <Qt3DRenderer/qtechniquefilter.h>
 #include <Qt3DRenderer/qviewport.h>
-#include <Qt3DRenderer/rendereraspect.h>
+#include <Qt3DRenderer/qrenderaspect.h>
 #include <Qt3DRenderer/qframegraph.h>
 #include <Qt3DRenderer/qclearbuffer.h>
 
@@ -73,7 +73,7 @@ int main(int argc, char **argv)
     QGuiApplication app(argc, argv);
 
     Qt3D::Window view;
-    view.registerAspect(new Qt3D::RendererAspect());
+    view.registerAspect(new Qt3D::QRenderAspect());
 
     // Root entity
     Qt3D::QEntity *rootEntity = new Qt3D::QEntity();

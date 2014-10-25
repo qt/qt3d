@@ -41,7 +41,6 @@
 ****************************************************************************/
 
 #include "rendermesh_p.h"
-#include "rendereraspect.h"
 #include "meshdatamanager_p.h"
 #include "qmesh.h"
 

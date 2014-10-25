@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDERERASPECT_H
-#define QT3D_RENDERERASPECT_H
+#ifndef QT3D_QRENDERASPECT_H
+#define QT3D_QRENDERASPECT_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DCore/qabstractaspect.h>
@@ -56,11 +56,11 @@ class Renderer;
 class RenderSceneObserver;
 }
 
-class QT3DRENDERERSHARED_EXPORT RendererAspect : public QAbstractAspect
+class QT3DRENDERERSHARED_EXPORT QRenderAspect : public QAbstractAspect
 {
     Q_OBJECT
 public:
-    explicit RendererAspect(QObject *parent = 0);
+    explicit QRenderAspect(QObject *parent = 0);
 
     QVector<QAspectJobPtr> jobsToExecute() Q_DECL_OVERRIDE;
 
@@ -82,4 +82,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDERERASPECT_H
+#endif // QT3D_QRENDERASPECT_H

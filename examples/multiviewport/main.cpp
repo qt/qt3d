@@ -40,7 +40,7 @@
 ****************************************************************************/
 
 #include <Qt3DQuick/quickwindow.h>
-#include <Qt3DRenderer/rendereraspect.h>
+#include <Qt3DRenderer/qrenderaspect.h>
 
 #include <exampleresources.h>
 
@@ -52,7 +52,7 @@ int main(int ac, char **av)
     Qt3D::Quick::QuickWindow win;
 
     initializeAssetResources("../exampleresources/example-assets.qrb");
-    win.registerAspect(new Qt3D::RendererAspect);
+    win.registerAspect(new Qt3D::QRenderAspect);
     win.setSource(QUrl("qrc:/main.qml"));
     win.show();
 

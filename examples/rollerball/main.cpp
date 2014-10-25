@@ -40,7 +40,7 @@
 ****************************************************************************/
 
 #include <Qt3DQuick/quickwindow.h>
-#include <Qt3DRenderer/rendereraspect.h>
+#include <Qt3DRenderer/qrenderaspect.h>
 #include <Qt3DBulletPhysics/bulletphysicsaspect.h>
 
 #include <exampleresources.h>
@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
     initializeAssetResources("../exampleresources/example-assets.qrb");
 
     Qt3D::Quick::QuickWindow view;
-    view.registerAspect(new Qt3D::RendererAspect());
+    view.registerAspect(new Qt3D::QRenderAspect());
     view.registerAspect(new Qt3D::BulletPhysicsAspect());
 
     // Expose the window as a context property so we can set the aspect ratio

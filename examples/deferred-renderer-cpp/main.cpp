@@ -41,7 +41,7 @@
 
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/Window>
-#include <Qt3DRenderer/RendererAspect>
+#include <Qt3DRenderer/QRenderAspect>
 #include <Qt3DRenderer/QFrameGraph>
 #include <Qt3DRenderer/QMaterial>
 #include <Qt3DRenderer/QSphereMesh>
@@ -68,7 +68,7 @@ int main(int ac, char **av)
     QGuiApplication app(ac, av);
 
     Qt3D::Window view;
-    view.registerAspect(new Qt3D::RendererAspect());
+    view.registerAspect(new Qt3D::QRenderAspect());
 
     // Root entity
     Qt3D::QEntity *rootEntity = new Qt3D::QEntity();

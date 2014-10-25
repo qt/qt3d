@@ -40,7 +40,7 @@
 ****************************************************************************/
 
 #include <Qt3DQuick/quickwindow.h>
-#include <Qt3DRenderer/rendereraspect.h>
+#include <Qt3DRenderer/qrenderaspect.h>
 
 
 #include <QGuiApplication>
@@ -51,7 +51,7 @@ int main(int argc, char* argv[])
     QGuiApplication app(argc, argv);
 
     Qt3D::Quick::QuickWindow view;
-    view.registerAspect(new Qt3D::RendererAspect());
+    view.registerAspect(new Qt3D::QRenderAspect());
     // There should be some synchronising mechanism to make sure
     // the source is set after alll aspects have been completely initialized
     // Otherwise we might encounter cases where an Aspect's QML elements have

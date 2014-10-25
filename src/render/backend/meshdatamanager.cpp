@@ -52,7 +52,7 @@ void MeshDataManager::addMeshData(QAbstractMeshFunctorPtr functor, const QUuid &
     m_meshesPending[meshUuid] = functor;
 }
 
-// Called by single thread in RendererAspect
+// Called by single thread in QRenderAspect
 // Needs to be protected as we ways call it while addMeshData is called
 QHash<QUuid, QAbstractMeshFunctorPtr> MeshDataManager::meshesPending()
 {

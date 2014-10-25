@@ -40,7 +40,7 @@
 ****************************************************************************/
 
 #include <Qt3DQuick/quickwindow.h>
-#include <Qt3DRenderer/rendereraspect.h>
+#include <Qt3DRenderer/qrenderaspect.h>
 
 #include <QGuiApplication>
 
@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
     QGuiApplication app(argc, argv);
 
     Qt3D::Quick::QuickWindow view;
-    view.registerAspect(new Qt3D::RendererAspect());
+    view.registerAspect(new Qt3D::QRenderAspect());
 
     view.setSource(QUrl("qrc:/main.qml"));
     view.show();

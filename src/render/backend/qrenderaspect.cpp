@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "rendereraspect.h"
+#include "qrenderaspect.h"
 
 #include <Qt3DRenderer/private/rendermesh_p.h>
 #include <Qt3DRenderer/private/meshdatamanager_p.h>
@@ -60,7 +60,6 @@
 #include <Qt3DRenderer/qrendertargetselector.h>
 #include <Qt3DRenderer/qtechniquefilter.h>
 #include <Qt3DRenderer/qviewport.h>
-#include <Qt3DRenderer/rendereraspect.h>
 #include <Qt3DRenderer/renderlogging.h>
 #include <Qt3DRenderer/qrendertarget.h>
 #include <Qt3DRenderer/qclearbuffer.h>
@@ -105,7 +104,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-RendererAspect::RendererAspect(QObject *parent)
+QRenderAspect::QRenderAspect(QObject *parent)
     : QAbstractAspect(QAbstractAspect::AspectRenderer, parent)
     , m_renderer(new Render::Renderer())
 {
@@ -141,7 +140,7 @@ RendererAspect::RendererAspect(QObject *parent)
     registerBackendType<QParameter>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderParameter, Render::ParameterManager>(m_renderer->parameterManager())));
 }
 
-QVector<QAspectJobPtr> RendererAspect::jobsToExecute()
+QVector<QAspectJobPtr> QRenderAspect::jobsToExecute()
 {
     // Create jobs that will get exectued by the threadpool
     QVector<QAspectJobPtr> jobs;
@@ -188,16 +187,16 @@ QVector<QAspectJobPtr> RendererAspect::jobsToExecute()
     return jobs;
 }
 
-void RendererAspect::sceneNodeAdded(QSceneChangePtr &e)
+void QRenderAspect::sceneNodeAdded(QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
     QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
     QNode *n = nodePtr.data();
     NodeVisitor visitor;
-    visitor.traverse(n, this, &RendererAspect::visitNode, &RendererAspect::visitNode);
+    visitor.traverse(n, this, &QRenderAspect::visitNode, &QRenderAspect::visitNode);
 }
 
-void RendererAspect::sceneNodeRemoved(QSceneChangePtr &e)
+void QRenderAspect::sceneNodeRemoved(QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
     QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
@@ -205,30 +204,30 @@ void RendererAspect::sceneNodeRemoved(QSceneChangePtr &e)
     QAbstractAspect::clearBackendNode(n);
 }
 
-void RendererAspect::setRootEntity(QEntity *rootObject)
+void QRenderAspect::setRootEntity(QEntity *rootObject)
 {
     // setSceneGraphRoot is synchronized using the Renderer's mutex
     NodeVisitor visitor;
-    visitor.traverse(rootObject, this, &RendererAspect::visitNode, &RendererAspect::visitNode);
+    visitor.traverse(rootObject, this, &QRenderAspect::visitNode, &QRenderAspect::visitNode);
     m_renderer->setSceneGraphRoot(m_renderer->renderNodesManager()->lookupResource(rootObject->uuid()));
 }
 
-void RendererAspect::onInitialize(QSurface *surface)
+void QRenderAspect::onInitialize(QSurface *surface)
 {
-    m_renderer->setRendererAspect(this);
+    m_renderer->setQRenderAspect(this);
     m_renderer->createAllocators();
     // setSurface is synchronized using the Renderer's mutex
     m_renderer->setSurface(surface);
 }
 
-void RendererAspect::onCleanup()
+void QRenderAspect::onCleanup()
 {
     delete m_renderer;
     //Render::Renderer *renderer = m_renderThread->renderer();
     //QMetaObject::invokeMethod(renderer, "cleanup");
 }
 
-void RendererAspect::visitNode(QNode *node)
+void QRenderAspect::visitNode(QNode *node)
 {
     QAbstractAspect::createBackendNode(node);
 }

@@ -51,7 +51,7 @@
 #include <Qt3DCore/QRotateTransform>
 #include <Qt3DCore/QTranslateTransform>
 
-#include <Qt3DRenderer/RendererAspect>
+#include <Qt3DRenderer/QRenderAspect>
 #include <Qt3DRenderer/QFrameGraph>
 #include <Qt3DRenderer/QViewport>
 #include <Qt3DRenderer/QCameraSelector>
@@ -70,7 +70,7 @@ int main(int argc, char* argv[])
     QGuiApplication app(argc, argv);
 
     Qt3D::Window view;
-    view.registerAspect(new Qt3D::RendererAspect());
+    view.registerAspect(new Qt3D::QRenderAspect());
 
 
     // Root entity

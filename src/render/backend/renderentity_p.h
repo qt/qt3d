@@ -56,7 +56,7 @@ class QMatrix4x4;
 
 namespace Qt3D {
 
-class RendererAspect;
+class QRenderAspect;
 class Sphere;
 class QNode;
 class QEntity;
