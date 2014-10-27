@@ -93,7 +93,7 @@ void RenderTechnique::updateFromPeer(QNode *peer)
 
         // Copy OpenGLFilter info from frontend OpenGLFilter
         QOpenGLFilter *peerFilter = technique->openGLFilter();
-        m_openglFilter->copy(peerFilter);
+        m_openglFilter->copy(*peerFilter);
     }
 }
 
@@ -106,7 +106,7 @@ void RenderTechnique::sceneChangeEvent(const QSceneChangePtr &e)
         if (propertyChange->propertyName() == QByteArrayLiteral("openGLFilter")) {
             QOpenGLFilter *filter = propertyChange->value().value<QOpenGLFilter *>();
             if (filter != Q_NULLPTR) {
-                m_openglFilter->copy(filter);
+                m_openglFilter->copy(*filter);
                 delete filter;
             }
         }

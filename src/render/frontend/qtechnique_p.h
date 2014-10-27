@@ -43,6 +43,7 @@
 #define QT3D_QTECHNIQUE_P_H
 
 #include <private/qnode_p.h>
+#include <Qt3DRenderer/qopenglfilter.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
@@ -53,7 +54,6 @@ class QTechnique;
 class QAnnotation;
 class QParameter;
 class QRenderPass;
-class QOpenGLFilter;
 
 class QT3DRENDERERSHARED_EXPORT QTechniquePrivate : public QNodePrivate
 {
@@ -65,7 +65,7 @@ public:
     QList<QAnnotation *> m_annotationList;
     QList<QParameter *> m_parameters;
     QList<QRenderPass*> m_renderPasses;
-    QOpenGLFilter *m_openGLFilter;
+    QOpenGLFilter m_openGLFilter;
 };
 
 } // Qt3D

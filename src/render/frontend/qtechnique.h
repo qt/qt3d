@@ -77,8 +77,7 @@ public:
     void removePass(QRenderPass *pass);
     QList<QRenderPass *> renderPasses() const;
 
-    QParameter* parameterByName(QString name) const;
-    QOpenGLFilter *openGLFilter() const;
+    QOpenGLFilter *openGLFilter();
 
 protected:
     QTechnique(QTechniquePrivate &dd, QNode *parent = 0);

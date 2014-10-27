@@ -534,28 +534,28 @@ QMaterial* GLTFParser::material(QString id)
 
     processName(jsonObj, mat);
 
-    QJsonObject values = tech.value(KEY_VALUES).toObject();
-    foreach (QString vName, values.keys()) {
-        QParameter* param = technique->parameterByName(vName);
-        if (!param) {
-            qWarning() << "unknown parameter:" << vName << "in technique" << tname
-                       << "processing material" << id;
-            continue;
-        }
+//    QJsonObject values = tech.value(KEY_VALUES).toObject();
+//    foreach (QString vName, values.keys()) {
+//        QParameter* param = technique->parameterForName(vName);
+//        if (!param) {
+//            qWarning() << "unknown parameter:" << vName << "in technique" << tname
+//                       << "processing material" << id;
+//            continue;
+//        }
 
-        if (param->isTextureType()) {
-            QString textureId = values.value(vName).toString();
-            if (!m_textures.contains(textureId)) {
-                qWarning() << "unknown texture" << textureId << "for parameter" << vName
-                           << "of material" << id;
-            } else {
-                mat->setTextureParameter(vName, m_textures.value(textureId));
-            }
-        } else {
-            //            QVariant var = parameterValueFromJSON(param, values.value(vName));
-            mat->addParameter(param);
-        }
-    } // of material technique-instance values iteration
+//        if (param->isTextureType()) {
+//            QString textureId = values.value(vName).toString();
+//            if (!m_textures.contains(textureId)) {
+//                qWarning() << "unknown texture" << textureId << "for parameter" << vName
+//                           << "of material" << id;
+//            } else {
+//                mat->setTextureParameter(vName, m_textures.value(textureId));
+//            }
+//        } else {
+//            //            QVariant var = parameterValueFromJSON(param, values.value(vName));
+//            mat->addParameter(param);
+//        }
+//    } // of material technique-instance values iteration
 
     m_materialCache[id] = mat;
     return mat;

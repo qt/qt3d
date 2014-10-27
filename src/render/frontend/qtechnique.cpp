@@ -52,27 +52,32 @@ namespace Qt3D {
 
 QTechniquePrivate::QTechniquePrivate(QTechnique *qq)
     : QNodePrivate(qq)
-    , m_openGLFilter(new QOpenGLFilter())
 {
 }
 
 QTechniquePrivate::~QTechniquePrivate()
 {
-    delete m_openGLFilter;
 }
 
 QTechnique::QTechnique(QNode *parent)
     : QNode(*new QTechniquePrivate(this), parent)
 {
     Q_D(QTechnique);
-    QObject::connect(d->m_openGLFilter, SIGNAL(openGLFilterChanged()), this, SLOT(openGLFilterChanged()));
+    QObject::connect(&d->m_openGLFilter, SIGNAL(openGLFilterChanged()), this, SLOT(openGLFilterChanged()));
+}
+
+QTechnique::QTechnique(QTechniquePrivate &dd, QNode *parent)
+    : QNode(dd, parent)
+{
+    Q_D(QTechnique);
+    QObject::connect(&d->m_openGLFilter, SIGNAL(openGLFilterChanged()), this, SLOT(openGLFilterChanged()));
 }
 
 void QTechnique::copy(const QNode *ref)
 {
     QNode::copy(ref);
     const QTechnique *tech = static_cast<const QTechnique*>(ref);
-    d_func()->m_openGLFilter->copy(tech->d_func()->m_openGLFilter);
+    d_func()->m_openGLFilter.copy(tech->d_func()->m_openGLFilter);
 
     Q_FOREACH (QAnnotation *annotation, tech->d_func()->m_annotationList)
         addAnnotation(qobject_cast<QAnnotation *>(QNodePrivate::get(annotation)->clone()));
@@ -80,13 +85,6 @@ void QTechnique::copy(const QNode *ref)
         addPass(qobject_cast<QRenderPass *>(QNodePrivate::get(pass)->clone()));
     Q_FOREACH (QParameter *p, tech->d_func()->m_parameters)
         addParameter(qobject_cast<QParameter *>(QNodePrivate::get(p)->clone()));
-}
-
-QTechnique::QTechnique(QTechniquePrivate &dd, QNode *parent)
-    : QNode(dd, parent)
-{
-    Q_D(QTechnique);
-    QObject::connect(d->m_openGLFilter, SIGNAL(openGLFilterChanged()), this, SLOT(openGLFilterChanged()));
 }
 
 void QTechnique::openGLFilterChanged()
@@ -236,20 +234,10 @@ QList<QParameter *> QTechnique::parameters() const
     return d->m_parameters;
 }
 
-QParameter *QTechnique::parameterByName(QString name) const
+QOpenGLFilter *QTechnique::openGLFilter()
 {
-    Q_D(const QTechnique);
-    foreach (QParameter* p, d->m_parameters) {
-        if (p->name() == name)
-            return p;
-    }
-    return NULL;
-}
-
-QOpenGLFilter *QTechnique::openGLFilter() const
-{
-    Q_D(const QTechnique);
-    return d->m_openGLFilter;
+    Q_D(QTechnique);
+    return &d->m_openGLFilter;
 }
 
 } // of namespace Qt3D
