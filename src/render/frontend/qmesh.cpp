@@ -45,9 +45,7 @@
 #include <QDebug>
 #include <QFile>
 #include <QFileInfo>
-
 #include <Qt3DRenderer/private/objloader_p.h>
-
 #include <Qt3DCore/qscenepropertychange.h>
 #include "renderlogging.h"
 
@@ -58,12 +56,12 @@ namespace Qt3D {
 class MeshFunctor : public QAbstractMeshFunctor
 {
 public :
-    MeshFunctor(const QString &sourcePath);
+    MeshFunctor(const QUrl &sourcePath);
     QMeshDataPtr operator()() Q_DECL_OVERRIDE;
     bool operator ==(const QAbstractMeshFunctor &other) const Q_DECL_OVERRIDE;
 
 private:
-    QString m_sourcePath;
+    QUrl m_sourcePath;
 };
 
 
@@ -88,7 +86,7 @@ QMesh::QMesh(QMeshPrivate &dd, QNode *parent)
 {
 }
 
-void QMesh::setSource( const QString& source )
+void QMesh::setSource(const QUrl& source)
 {
     Q_D(QMesh);
     if (d->m_source == source)
@@ -99,7 +97,7 @@ void QMesh::setSource( const QString& source )
     QAbstractMesh::update();
 }
 
-QString QMesh::source() const
+QUrl QMesh::source() const
 {
     Q_D(const QMesh);
     return d->m_source;
@@ -111,7 +109,7 @@ QAbstractMeshFunctorPtr QMesh::meshFunctor() const
     return QAbstractMeshFunctorPtr(new MeshFunctor(d->m_source));
 }
 
-MeshFunctor::MeshFunctor(const QString &sourcePath)
+MeshFunctor::MeshFunctor(const QUrl &sourcePath)
     : QAbstractMeshFunctor()
     , m_sourcePath(sourcePath)
 {
@@ -130,10 +128,12 @@ QMeshDataPtr MeshFunctor::operator()()
     loader.setTangentGenerationEnabled(true);
     qCDebug(Render::Jobs) << Q_FUNC_INFO << "Loading mesh from" << m_sourcePath;
 
-    if (loader.load(m_sourcePath))
+    // TO DO: Handle file download if remote url
+    QString filePath = m_sourcePath.toString().replace(QStringLiteral("qrc:/"), QStringLiteral(""));
+    if (loader.load(filePath))
         return QMeshDataPtr(loader.mesh());
 
-    qCWarning(Render::Jobs) << Q_FUNC_INFO << "OBJ load failure for:" << m_sourcePath;
+    qCWarning(Render::Jobs) << Q_FUNC_INFO << "OBJ load failure for:" << filePath;
     return QMeshDataPtr();
 }
 

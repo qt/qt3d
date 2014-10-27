@@ -45,6 +45,7 @@
 #include <private/qabstractmesh_p.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DRenderer/qmeshdata.h>
+#include <QUrl>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,7 +60,7 @@ public:
 
     Q_DECLARE_PUBLIC(QMesh)
 
-    QString m_source;
+    QUrl m_source;
 };
 
 } // Qt3D

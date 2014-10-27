@@ -45,6 +45,7 @@
 #include <Qt3DRenderer/qabstractmesh.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DRenderer/qmeshdata.h>
+#include <QUrl>
 
 QT_BEGIN_NAMESPACE
 
@@ -61,13 +62,13 @@ typedef QSharedPointer<QMeshData> QMeshDataPtr;
 class QT3DRENDERERSHARED_EXPORT QMesh : public QAbstractMesh
 {
     Q_OBJECT
-    Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
 
 public:
     explicit QMesh(QNode *parent = 0);
 
-    void setSource(const QString &source);
-    QString source() const;
+    void setSource(const QUrl &source);
+    QUrl source() const;
 
     QAbstractMeshFunctorPtr meshFunctor() const Q_DECL_OVERRIDE;
 
