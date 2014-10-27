@@ -102,20 +102,14 @@ Entity {
 
         Camera {
             id: camera
-            lens : CameraLens {
-                projectionType: CameraLens.PerspectiveProjection
-                fieldOfView: 45
-                aspectRatio: 16/9
-                nearPlane : 0.01
-                farPlane : 1000.0
-            }
-            transform : Transform {
-                LookAt {
-                    position: Qt.vector3d( 10.0, 10.0, -25.0 )
-                    upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
-                    viewCenter: Qt.vector3d( 0.0, 0.0, 10.0 )
-                }
-            }
+            projectionType: CameraLens.PerspectiveProjection
+            fieldOfView: 45
+            aspectRatio: 16/9
+            nearPlane : 0.01
+            farPlane : 1000.0
+            position: Qt.vector3d( 10.0, 10.0, -25.0 )
+            upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
+            viewCenter: Qt.vector3d( 0.0, 0.0, 10.0 )
         }
 
         Layer {

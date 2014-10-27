@@ -69,7 +69,7 @@ Entity {
             ball2.mesh = test ? null : ballMesh
             ball1.mesh = test ? cubeMesh : ballMesh
             test = !test
-//                        instanciator.active = test
+            //                        instanciator.active = test
             external_forward_renderer.activeFrameGraph.layerFilters = test ? ["balls"] : []
         }
     }
@@ -198,27 +198,25 @@ Entity {
             farPlane : 1000.0
         }
 
-        Camera {
-            id: camera1
-            objectName: "mainCamera"
-            lens : CameraLens {
+        Entity {
+            components: Transform {
+                Rotate {
+                    angle : 0
+                    axis : Qt.vector3d(0, 1, 0)
+                }
+            }
+
+            Camera {
+                id: camera1
+                objectName: "mainCamera"
                 projectionType: CameraLens.PerspectiveProjection
                 fieldOfView: 45
                 aspectRatio: 16/9
                 nearPlane : 0.01
                 farPlane : 1000.0
-            }
-
-            transform : Transform {
-                LookAt {
-                    position: Qt.vector3d( 10.0, 10.0, -25.0 )
-                    upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
-                    viewCenter: Qt.vector3d( 0.0, 0.0, 10.0 )
-                }
-                Rotate {
-                    angle : 0
-                    axis : Qt.vector3d(0, 1, 0)
-                }
+                position: Qt.vector3d( 10.0, 10.0, -25.0 )
+                upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
+                viewCenter: Qt.vector3d( 0.0, 0.0, 10.0 )
             }
         }
 
@@ -251,7 +249,7 @@ Entity {
             id : ballTexturedMaterial
 
             parameters : [Parameter { name : "tex"; value : Texture2D { source : "assets/gltf/wine/Wood_Cherry_Original_.jpg" } },
-            Parameter { name : "gBuffer"; value : colorAttachment }
+                Parameter { name : "gBuffer"; value : colorAttachment }
             ]
 
             effect : Effect {
@@ -359,9 +357,9 @@ Entity {
                             RenderPass {
                                 annotations : [Annotation {name : "Name"; value : "Lighting" }]
                                 renderStates : [BlendState {srcRGB: BlendState.One; dstRGB : BlendState.One},
-                                              BlendEquation {mode: BlendEquation.FuncAdd},
-                                              CullFace { mode : CullFace.Back },
-                                              DepthTest { func : DepthTest.LessOrEqual}
+                                    BlendEquation {mode: BlendEquation.FuncAdd},
+                                    CullFace { mode : CullFace.Back },
+                                    DepthTest { func : DepthTest.LessOrEqual}
                                 ]
                                 shaderProgram : ShaderProgram {
                                     vertexShaderCode: "
@@ -518,22 +516,22 @@ Entity {
             id : sceneEntity
 
             components : SceneLoader {
-            id: scene
-            source: ":/assets/test_scene.dae"
-            objectName: "dae_scene"
-            property Transform scaleSceneTransform : Transform { Scale {id: sceneScale; scale : 1} }
+                id: scene
+                source: ":/assets/test_scene.dae"
+                objectName: "dae_scene"
+                property Transform scaleSceneTransform : Transform { Scale {id: sceneScale; scale : 1} }
 
-//            QQ2.NumberAnimation {
-//                target : sceneScale
-//                property : "scale"
-//                from : 1
-//                to : 5
-//                duration : 1000
-//                loops : QQ2.Animation.Infinite
-//                running: true
-//            }
-//            components : [scaleSceneTransform]
-        }
+                //            QQ2.NumberAnimation {
+                //                target : sceneScale
+                //                property : "scale"
+                //                from : 1
+                //                to : 5
+                //                duration : 1000
+                //                loops : QQ2.Animation.Infinite
+                //                running: true
+                //            }
+                //            components : [scaleSceneTransform]
+            }
 
         }
 

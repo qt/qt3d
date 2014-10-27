@@ -56,29 +56,18 @@ Entity {
     property vector3d lightIntensity: Qt.vector3d(1.0, 1.0, 1.0)
 
     readonly property Camera lightCamera: lightCamera
-    readonly property matrix4x4 lightViewProjection: lightProjection.projectionMatrix.times(lightView.matrix)
+    readonly property matrix4x4 lightViewProjection: lightCamera.projectionMatrix.times(lightCamera.matrix)
 
     Camera {
         id: lightCamera
-
-        lens : CameraLens {
-            id: lightProjection
-            objectName: "lightCameraLens"
-            projectionType: CameraLens.PerspectiveProjection
-            fieldOfView: 45
-            aspectRatio: 1
-            nearPlane : 0.1
-            farPlane : 200.0
-        }
-
-        transform : Transform {
-            id: lightView
-            objectName: "lightCameraView"
-            LookAt {
-                position: root.lightPosition
-                viewCenter: Qt.vector3d(0.0, 0.0, 0.0)
-                upVector: Qt.vector3d(0.0, 1.0, 0.0)
-            }
-        }
+        objectName: "lightCameraLens"
+        projectionType: CameraLens.PerspectiveProjection
+        fieldOfView: 45
+        aspectRatio: 1
+        nearPlane : 0.1
+        farPlane : 200.0
+        position: root.lightPosition
+        viewCenter: Qt.vector3d(0.0, 0.0, 0.0)
+        upVector: Qt.vector3d(0.0, 1.0, 0.0)
     }
 }

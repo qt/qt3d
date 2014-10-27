@@ -52,25 +52,12 @@ import QtQuick 2.1 as QQ2
 Camera {
     id: mainCamera
     objectName: "mainCamera"
-
-    property alias position: lookAtTransform.position
-    property alias viewCenter: lookAtTransform.viewCenter
-    property alias upVector: lookAtTransform.upVector
-
-    lens: CameraLens {
-        projectionType: CameraLens.PerspectiveProjection
-        fieldOfView: 22.5
-        aspectRatio: _window.width / _window.height
-        onAspectRatioChanged: console.log( "aspectRatio = " + aspectRatio )
-        nearPlane:   0.01
-        farPlane:    1000.0
-    }
-
-    transform: Transform {
-        LookAt {
-            id: lookAtTransform
-            viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
-            upVector:   Qt.vector3d( 0.0, 1.0, 0.0 )
-        }
-    }
+    projectionType: CameraLens.PerspectiveProjection
+    fieldOfView: 22.5
+    aspectRatio: _window.width / _window.height
+    onAspectRatioChanged: console.log( "aspectRatio = " + aspectRatio )
+    nearPlane:   0.01
+    farPlane:    1000.0
+    viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
+    upVector:   Qt.vector3d( 0.0, 1.0, 0.0 )
 }

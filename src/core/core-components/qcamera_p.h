@@ -63,6 +63,7 @@ public:
 
     QCameraLens *m_lens;
     QTransform *m_transform;
+    QLookAtTransform *m_lookAt;
 };
 
 } // namespace Qt3D

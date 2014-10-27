@@ -123,17 +123,11 @@ int main(int ac, char **av)
     // Camera
     Qt3D::QCamera *cameraEntity = new Qt3D::QCamera(rootEntity);
     cameraEntity->setObjectName(QStringLiteral("cameraEntity"));
-    Qt3D::QCameraLens *cameraLens = new Qt3D::QCameraLens();
-    Qt3D::QTransform *cameraTransform = new Qt3D::QTransform();
-    Qt3D::QLookAtTransform *cameraLookAtTransform = new Qt3D::QLookAtTransform();
 
-    cameraLens->setPerspectiveProjection(60.0f, 16.0f/9.0f, 0.1f, 1000.0f);
-    cameraLookAtTransform->setPosition(QVector3D(-5, 0, -20.0f));
-    cameraLookAtTransform->setViewCenter(QVector3D(11, 0, 5));
-    cameraLookAtTransform->setUpVector(QVector3D(0, 1, 0));
-    cameraTransform->appendTransform(cameraLookAtTransform);
-    cameraEntity->setTransform(cameraTransform);
-    cameraEntity->setLens(cameraLens);
+    cameraEntity->lens()->setPerspectiveProjection(60.0f, 16.0f/9.0f, 0.1f, 1000.0f);
+    cameraEntity->setPosition(QVector3D(-5, 0, -20.0f));
+    cameraEntity->setViewCenter(QVector3D(11, 0, 5));
+    cameraEntity->setUpVector(QVector3D(0, 1, 0));
     view.setCamera(cameraEntity);
 
     // FrameGraph
