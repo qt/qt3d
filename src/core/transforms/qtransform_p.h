@@ -58,11 +58,14 @@ public:
 
     Q_DECLARE_PUBLIC(QTransform)
 
-    mutable QAtomicInt m_transformsDirty;
+    mutable bool m_transformsDirty;
     QList<QAbstractTransform*> m_transforms;
 
     mutable QMatrix4x4 m_matrix;
     QMatrix4x4 m_sceneMatrix;
+
+private:
+    void _q_update();
 };
 
 }

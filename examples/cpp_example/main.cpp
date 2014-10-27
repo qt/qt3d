@@ -101,8 +101,8 @@ int main(int ac, char **av)
     torusTranslation->setTranslation(QVector3D(-5.0f, 3.5f, 2.0f));
     torusRotation->setAxis(QVector3D(1, 0, 0));
     torusRotation->setAngleDeg(35.0f);
-    torusTransforms->appendTransform(torusTranslation);
-    torusTransforms->appendTransform(torusRotation);
+    torusTransforms->addTransform(torusTranslation);
+    torusTransforms->addTransform(torusRotation);
     torusEntity->addComponent(torusTransforms);
 
     // Scene file
@@ -114,7 +114,7 @@ int main(int ac, char **av)
     sceneTranslateTransform->setDx(2.5);
     sceneTranslateTransform->setDy(0.5);
     sceneTranslateTransform->setDz(-10);
-    sceneTransform->appendTransform(sceneTranslateTransform);
+    sceneTransform->addTransform(sceneTranslateTransform);
     sceneEntity->addComponent(sceneTransform);
 //    scene->setSource(":/assets/gltf/wine/wine.json");
     scene->setSource(":/assets/test_scene.dae");

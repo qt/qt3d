@@ -125,8 +125,8 @@ int main(int argc, char* argv[])
     torusRotateTransform->setAxis(QVector3D(1, 0, 0));
     torusRotateTransform->setAngleDeg(45);
 
-    torusTransform->appendTransform(torusScaleTransform);
-    torusTransform->appendTransform(torusRotateTransform);
+    torusTransform->addTransform(torusScaleTransform);
+    torusTransform->addTransform(torusRotateTransform);
 
 
     torusEntity->addComponent(torusMesh);
@@ -156,8 +156,8 @@ int main(int argc, char* argv[])
     sphereRotateTransformAnimation->setLoopCount(-1);
     sphereRotateTransformAnimation->start();
 
-    sphereTransform->appendTransform(sphereTranslateTransform);
-    sphereTransform->appendTransform(sphereRotateTransform);
+    sphereTransform->addTransform(sphereTranslateTransform);
+    sphereTransform->addTransform(sphereRotateTransform);
 
     sphereEntity->addComponent(sphereMesh);
     sphereEntity->addComponent(sphereTransform);

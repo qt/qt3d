@@ -344,9 +344,8 @@ QEntity *AssimpParser::node(aiNode *node)
     }
 
     // Add Transformations
-    QTransform *transform = new QTransform();
     QMatrix4x4 qTransformMatrix = AssimpParser::aiMatrix4x4ToQMatrix4x4(node->mTransformation);
-    transform->setMatrix(qTransformMatrix);
+    QTransform *transform = new QTransform(new QMatrixTransform(qTransformMatrix));
     entityNode->addComponent(transform);
 
     // Add Camera
@@ -659,7 +658,7 @@ void AssimpParser::loadCamera(uint cameraIndex)
     viewMatrix.lookAt(QVector3D(0, 0, 0),
                       QVector3D(assimpCamera->mLookAt.x, assimpCamera->mLookAt.y, assimpCamera->mLookAt.z),
                       QVector3D(0, 0, 0));
-    transform->setMatrix(viewMatrix);
+    transform->addTransform(new QMatrixTransform(viewMatrix));
     camera->addComponent(transform);
     m_scene->m_cameras[cameraNode] = camera;
 }

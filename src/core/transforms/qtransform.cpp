@@ -52,6 +52,7 @@ namespace Qt3D {
 
 QTransformPrivate::QTransformPrivate(QTransform *qq)
     : QComponentPrivate(qq)
+    , m_transformsDirty(false)
     , m_transforms()
     , m_matrix()
     , m_sceneMatrix()
@@ -64,31 +65,25 @@ void QTransform::copy(const QNode *ref)
     const QTransform *transform = static_cast<const QTransform*>(ref);
     d_func()->m_matrix = transform->d_func()->m_matrix;
     Q_FOREACH (QAbstractTransform *t, transform->d_func()->m_transforms)
-        appendTransform(qobject_cast<QAbstractTransform *>(QNodePrivate::get(t)->clone()));
+        addTransform(qobject_cast<QAbstractTransform *>(QNodePrivate::get(t)->clone()));
 }
 
 QTransform::QTransform(QNode *parent)
     : Qt3D::QComponent(*new QTransformPrivate(this), parent)
 {
-    Q_D(QTransform);
-    d->m_transformsDirty.fetchAndStoreOrdered(0);
 }
 
 QTransform::QTransform(QList<QAbstractTransform *> transforms, QNode *parent)
     : Qt3D::QComponent(*new QTransformPrivate(this), parent)
 {
-    Q_D(QTransform);
-    d->m_transformsDirty.fetchAndStoreOrdered(0);
     Q_FOREACH (QAbstractTransform *t, transforms)
-        appendTransform(t);
+        addTransform(t);
 }
 
 QTransform::QTransform(QAbstractTransform *transform, QNode *parent)
     : Qt3D::QComponent(*new QTransformPrivate(this), parent)
 {
-    Q_D(QTransform);
-    d->m_transformsDirty.fetchAndStoreOrdered(0);
-    appendTransform(transform);
+    addTransform(transform);
 }
 
 QTransform::QTransform(QTransformPrivate &dd, QNode *parent)
@@ -96,32 +91,21 @@ QTransform::QTransform(QTransformPrivate &dd, QNode *parent)
 {
 }
 
-void QTransform::setTransformsDirty()
+void QTransformPrivate::_q_update()
 {
-    Q_D(QTransform);
-    if (!d->m_transformsDirty.loadAcquire()) {
-        d->m_transformsDirty.fetchAndStoreOrdered(1);
-    }
-    emit matrixChanged();
+    if (!m_transformsDirty)
+        m_transformsDirty = true;
+    emit static_cast<QTransform *>(q_ptr)->matrixChanged();
 }
 
 QMatrix4x4 QTransform::matrix() const
 {
     Q_D(const QTransform);
-    if (d->m_transformsDirty.loadAcquire()) {
+    if (d->m_transformsDirty) {
         d->m_matrix = applyTransforms();
-        d->m_transformsDirty.fetchAndStoreOrdered(0);
+        d->m_transformsDirty = false;
     }
     return d->m_matrix;
-}
-
-void QTransform::setMatrix(const QMatrix4x4 &m)
-{
-    Q_D(QTransform);
-    qDeleteAll(d->m_transforms);
-    d->m_transforms.clear();
-    appendTransform(new QMatrixTransform(m));
-    setTransformsDirty();
 }
 
 /*!
@@ -146,20 +130,20 @@ void QTransform::setRotationCenter(const QVector3D &rc)
     Q_UNUSED(rc);
 }
 
-void QTransform::appendTransform(QAbstractTransform *transform)
+void QTransform::addTransform(QAbstractTransform *transform)
 {
     Q_D(QTransform);
     d->m_transforms.append(transform);
-    QObject::connect(transform, SIGNAL(transformMatrixChanged()), this, SLOT(setTransformsDirty()));
-    setTransformsDirty();
+    QObject::connect(transform, SIGNAL(transformMatrixChanged()), this, SLOT(_q_update()));
+    d->_q_update();
 }
 
 void QTransform::removeTransform(QAbstractTransform *transform)
 {
     Q_D(QTransform);
     d->m_transforms.removeOne(transform);
-    QObject::disconnect(transform, SIGNAL(transformMatrixChanged()), this, SLOT(setTransformsDirty()));
-    setTransformsDirty();
+    QObject::disconnect(transform, SIGNAL(transformMatrixChanged()), this, SLOT(_q_update()));
+    d->_q_update();
 }
 
 QMatrix4x4 QTransform::applyTransforms() const
@@ -180,3 +164,5 @@ QList<QAbstractTransform *> QTransform::transformList() const
 } // namespace Qt3D
 
 QT_END_NAMESPACE
+
+#include "moc_qtransform.cpp"

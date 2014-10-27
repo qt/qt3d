@@ -120,8 +120,8 @@ int main(int argc, char **argv)
     cylinderRotation->setAngleDeg(45.0f);
     cylinderRotation->setAxis(QVector3D(1, 0, 0));
 
-    cylinderTransforms->appendTransform(cylinderScale);
-    cylinderTransforms->appendTransform(cylinderRotation);
+    cylinderTransforms->addTransform(cylinderScale);
+    cylinderTransforms->addTransform(cylinderRotation);
 
     // Cylinder
     Qt3D::QEntity *cylinderEntity = new Qt3D::QEntity(rootEntity);

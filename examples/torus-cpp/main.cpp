@@ -120,8 +120,8 @@ int main(int argc, char **argv)
     torusRotation->setAngleDeg(45.0f);
     torusRotation->setAxis(QVector3D(1, 0, 0));
 
-    torusTransforms->appendTransform(torusScale);
-    torusTransforms->appendTransform(torusRotation);
+    torusTransforms->addTransform(torusScale);
+    torusTransforms->addTransform(torusRotation);
 
     // Torus
     Qt3D::QEntity *torusEntity = new Qt3D::QEntity(rootEntity);

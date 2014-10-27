@@ -68,7 +68,7 @@ void Quick3DTransform::qmlAppendTransform(QQmlListProperty<QAbstractTransform> *
         return;
 
     Quick3DTransform *self = static_cast<Quick3DTransform *>(list->object);
-    self->parentTransform()->appendTransform(obj);
+    self->parentTransform()->addTransform(obj);
 }
 
 QAbstractTransform* Quick3DTransform::transformAt(QQmlListProperty<QAbstractTransform> *list, int index)

@@ -65,42 +65,28 @@ public:
     QTransform(QAbstractTransform *transform, QNode *parent = 0);
 
     QMatrix4x4 matrix() const;
-    void setMatrix(const QMatrix4x4 &m);
 
     QVector3D rotationCenter() const;
     void setRotationCenter(const QVector3D &rc);
 
     QList<QAbstractTransform*> transforms() const;
 
-    template <class T>
-    T *findFirstTransform() const
-    {
-        T *transform = Q_NULLPTR;
-        Q_FOREACH (QAbstractTransform *trans, transformList())
-            if ((transform = qobject_cast<T*>(trans)) != Q_NULLPTR)
-                break;
-        return transform;
-    }
-
-    void appendTransform(QAbstractTransform *xform);
+    void addTransform(QAbstractTransform *xform);
     void removeTransform(QAbstractTransform *xform);
-
-private Q_SLOTS:
-    void setTransformsDirty();
 
 Q_SIGNALS:
     void matrixChanged();
 
 protected:
-    QMatrix4x4 applyTransforms() const;
-    QList<QAbstractTransform *> transformList() const;
-
     QTransform(QTransformPrivate &dd, QNode *parent = 0);
+    QList<QAbstractTransform *> transformList() const;
     void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QTransform)
     QT3D_CLONEABLE(QTransform)
+    Q_PRIVATE_SLOT(d_func(), void _q_update())
+    QMatrix4x4 applyTransforms() const;
 };
 
 } // namespace Qt3D
