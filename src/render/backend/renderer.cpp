@@ -258,6 +258,11 @@ QThreadStorage<QPair<int, QFrameAllocatorQueue *> *> *Renderer::tlsAllocators()
     return &m_tlsAllocators;
 }
 
+/*!
+ * For each worker thread we create a QFrameAllocatorQueue which contains m_cachedFrameCount + 1
+ * QFrameAllocators. We need an additional QFrameAllocator otherwise we may be clearing the QFrameAllocator
+ * of the frame we are currently rendering.
+ */
 void Renderer::createThreadLocalAllocator(void *renderer)
 {
     Q_ASSERT(renderer);
@@ -270,7 +275,7 @@ void Renderer::createThreadLocalAllocator(void *renderer)
         // We need to allocate one more buffer than we have frames to handle the case where we're computing frame 5
         // While old frame 5 is being rendered
         QFrameAllocatorQueue *allocatorQueue = new QFrameAllocatorQueue();
-        for (int i = 0; i < theRenderer->cachedFramesCount(); i++)
+        for (int i = 0; i <= theRenderer->cachedFramesCount(); i++)
             allocatorQueue->append(new QFrameAllocator(128, 16, 128));
         theRenderer->tlsAllocators()->setLocalData(new QPair<int, QFrameAllocatorQueue *>(0, allocatorQueue));
     }
@@ -339,6 +344,10 @@ void Renderer::initialize()
     m_waitForInitializationToBeCompleted.wakeOne();
 }
 
+/*!
+ * Returns the a FrameAllocator for the frame identified by \a frameIndex in the context
+ * of the caller thread. This also clears the FrameAllocator before usage.
+ */
 QFrameAllocator *Renderer::currentFrameAllocator(int frameIndex)
 {
     // frameIndex between 0 and m_cachedFramesCount
@@ -465,7 +474,7 @@ void Renderer::enqueueRenderView(Render::RenderView *renderView, int submitOrder
         // - This method is called by the last RenderViewJobs in ThreadWeaver
         // - A new call to generate new RenderViewJobs cannot happen before all RenderViewJobs have finished executing aka locking the AspectThread
         // - The Renderer thread doesn't modify the currentPreprocessingFrameIndex value
-        m_currentPreprocessingFrameIndex = (m_currentPreprocessingFrameIndex + 1) % m_cachedFramesCount;
+        m_currentPreprocessingFrameIndex = (m_currentPreprocessingFrameIndex + 1) % (m_cachedFramesCount + 1);
         m_renderQueues->pushFrameQueue();
         qCDebug(Memory) << Q_FUNC_INFO << "Next frame index " << m_currentPreprocessingFrameIndex;
         m_submitRenderViewsCondition.wakeOne();
