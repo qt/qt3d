@@ -55,7 +55,7 @@ FrameGraph {
 
     property alias viewCamera: viewCameraSelector.camera
     property alias lightCamera: lightCameraSelector.camera
-    readonly property Texture shadowTexture: depthTexture
+    readonly property Texture2D shadowTexture: depthTexture
 
     activeFrameGraph: Viewport {
         rect: Qt.rect(0.0, 0.0, 1.0, 1.0)
@@ -70,16 +70,18 @@ FrameGraph {
                         RenderAttachment {
                             name: "depth"
                             type: RenderAttachment.DepthAttachment
-                            texture: Texture {
+                            texture: Texture2D {
                                 id: depthTexture
-                                target: Texture.Target2D
                                 width: 1024
                                 height: 1024
                                 format: Texture.D32
                                 generateMipMaps: false
                                 magnificationFilter: Texture.Nearest
                                 minificationFilter: Texture.Nearest
-                                wrapMode: Texture.ClampToEdge
+                                wrapMode {
+                                    x: WrapMode.ClampToEdge
+                                    y: WrapMode.ClampToEdge
+                                }
                             }
                         }
                     ]

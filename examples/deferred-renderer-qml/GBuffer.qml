@@ -54,24 +54,25 @@ RenderTarget {
         RenderAttachment {
             name : "color"
             type : RenderAttachment.ColorAttachment0
-            texture : Texture {
+            texture : Texture2D {
                 id : colorAttachment
-                target : Texture.Target2D
                 width : 1024
                 height : 1024
                 format : Texture.RGBA32F
                 generateMipMaps : false
                 magnificationFilter : Texture.Linear
                 minificationFilter : Texture.Linear
-                wrapMode : Texture.ClampToEdge
+                wrapMode {
+                    x: WrapMode.ClampToEdge
+                    y: WrapMode.ClampToEdge
+                }
             }
         },
         RenderAttachment {
             name : "position"
             type : RenderAttachment.ColorAttachment1
-            texture : Texture {
+            texture : Texture2D {
                 id : positionAttachment
-                target : Texture.Target2D
                 width : 1024
                 height : 1024
                 // This texture format may not be supported by
@@ -80,15 +81,17 @@ RenderTarget {
                 generateMipMaps : false
                 magnificationFilter : Texture.Linear
                 minificationFilter : Texture.Linear
-                wrapMode : Texture.ClampToEdge
+                wrapMode {
+                    x: WrapMode.ClampToEdge
+                    y: WrapMode.ClampToEdge
+                }
             }
         },
         RenderAttachment {
             name : "normal"
             type : RenderAttachment.ColorAttachment2
-            texture : Texture {
+            texture : Texture2D {
                 id : normalAttachment
-                target : Texture.Target2D
                 width : 1024
                 height : 1024
                 // This texture format may not be supported by
@@ -97,22 +100,27 @@ RenderTarget {
                 generateMipMaps : false
                 magnificationFilter : Texture.Linear
                 minificationFilter : Texture.Linear
-                wrapMode : Texture.ClampToEdge
+                wrapMode {
+                    x: WrapMode.ClampToEdge
+                    y: WrapMode.ClampToEdge
+                }
             }
         },
         RenderAttachment {
             name : "depth"
             type : RenderAttachment.DepthAttachment
-            texture : Texture {
+            texture : Texture2D {
                 id : depthAttachment
-                target : Texture.Target2D
                 width : 1024
                 height : 1024
                 format : Texture.D32F
                 generateMipMaps : false
                 magnificationFilter : Texture.Linear
                 minificationFilter : Texture.Linear
-                wrapMode : Texture.ClampToEdge
+                wrapMode {
+                    x: WrapMode.ClampToEdge
+                    y: WrapMode.ClampToEdge
+                }
             }
         }
     ] // attachments

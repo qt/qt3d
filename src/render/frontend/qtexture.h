@@ -52,6 +52,44 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QTexturePrivate;
+class QTextureWrapModePrivate;
+
+class QT3DRENDERERSHARED_EXPORT QTextureWrapMode: public QObject
+{
+    Q_OBJECT
+    Q_ENUMS(WrapMode)
+    Q_PROPERTY(WrapMode x READ x WRITE setX NOTIFY xChanged)
+    Q_PROPERTY(WrapMode y READ y WRITE setY NOTIFY yChanged)
+    Q_PROPERTY(WrapMode z READ z WRITE setZ NOTIFY zChanged)
+
+public:
+    enum WrapMode {
+        Repeat         = 0x2901, // GL_REPEAT
+        MirroredRepeat = 0x8370, // GL_MIRRORED_REPEAT
+        ClampToEdge    = 0x812F, // GL_CLAMP_TO_EDGE
+        ClampToBorder  = 0x812D  // GL_CLAMP_TO_BORDER
+    };
+
+    explicit QTextureWrapMode(WrapMode wrapMode = ClampToEdge, QObject *parent = 0);
+    explicit QTextureWrapMode(WrapMode x, WrapMode y, WrapMode z, QObject *parent = 0);
+
+    void setX(WrapMode x);
+    WrapMode x() const;
+
+    void setY(WrapMode y);
+    WrapMode y() const;
+
+    void setZ(WrapMode z);
+    WrapMode z() const;
+
+Q_SIGNALS:
+    void xChanged();
+    void yChanged();
+    void zChanged();
+
+private:
+    Q_DECLARE_PRIVATE(QTextureWrapMode)
+};
 
 class QT3DRENDERERSHARED_EXPORT QTexture : public QNode
 {
@@ -59,12 +97,11 @@ class QT3DRENDERERSHARED_EXPORT QTexture : public QNode
     Q_ENUMS(Target)
     Q_ENUMS(TextureFormat)
     Q_ENUMS(Filter)
-    Q_ENUMS(WrapMode)
     Q_ENUMS(Status)
-    Q_PROPERTY(Target target READ target WRITE setTarget NOTIFY targetChanged)
+    Q_PROPERTY(Target target READ target CONSTANT)
     Q_PROPERTY(TextureFormat format READ format WRITE setFormat NOTIFY formatChanged)
     Q_PROPERTY(bool generateMipMaps READ generateMipMaps WRITE setGenerateMipMaps NOTIFY generateMipMapsChanged)
-    Q_PROPERTY(WrapMode wrapMode READ wrapMode WRITE setWrapMode NOTIFY wrapModeChanged)
+    Q_PROPERTY(Qt3D::QTextureWrapMode *wrapMode READ wrapMode CONSTANT)
     Q_PROPERTY(Status status READ status NOTIFY statusChanged)
     Q_PROPERTY(int width READ width WRITE setWidth NOTIFY widthChanged)
     Q_PROPERTY(int height READ height WRITE setHeight NOTIFY heightChanged)
@@ -74,8 +111,6 @@ class QT3DRENDERERSHARED_EXPORT QTexture : public QNode
     Q_PROPERTY(float maximumAnisotropy READ maximumAnisotropy WRITE setMaximumAnisotropy NOTIFY maximumAnisotropyChanged)
 
 public:
-    explicit QTexture(QNode *parent = 0);
-    ~QTexture();
 
     enum Status {
         Loading = 0,
@@ -222,14 +257,22 @@ public:
         LinearMipMapLinear      = 0x2703    // GL_LINEAR_MIPMAP_LINEAR
     };
 
-    enum WrapMode {
-        Repeat         = 0x2901, // GL_REPEAT
-        MirroredRepeat = 0x8370, // GL_MIRRORED_REPEAT
-        ClampToEdge    = 0x812F, // GL_CLAMP_TO_EDGE
-        ClampToBorder  = 0x812D  // GL_CLAMP_TO_BORDER
+    enum CubeMapFace {
+        CubeMapPositiveX = 0x8515,  // GL_TEXTURE_CUBE_MAP_POSITIVE_X
+        CubeMapNegativeX = 0x8516,  // GL_TEXTURE_CUBE_MAP_NEGATIVE_X
+        CubeMapPositiveY = 0x8517,  // GL_TEXTURE_CUBE_MAP_POSITIVE_Y
+        CubeMapNegativeY = 0x8518,  // GL_TEXTURE_CUBE_MAP_NEGATIVE_Y
+        CubeMapPositiveZ = 0x8519,  // GL_TEXTURE_CUBE_MAP_POSITIVE_Z
+        CubeMapNegativeZ = 0x851A   // GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
     };
 
-    void setTarget(Target target);
+    explicit QTexture(Target target, QNode *parent = 0);
+    explicit QTexture(Target target, TextureFormat format, int width, int height = 1, int depth = 1,
+                      bool mipMaps = false, Filter magnificationFilter = Nearest, Filter minificationFilter = Nearest,
+                      float maximumAnisotropy = 1.0f, QNode *parent = 0);
+    ~QTexture();
+
+
     Target target() const;
 
     void setFormat(TextureFormat format);
@@ -257,11 +300,10 @@ public:
     void setMagnificationFilter(Filter f);
 
     Filter minificationFilter() const;
-
     Filter magnificationFilter() const;
 
-    void setWrapMode(WrapMode wrapMode);
-    WrapMode wrapMode() const;
+    void setWrapMode(const QTextureWrapMode &wrapMode);
+    QTextureWrapMode *wrapMode();
 
     void setMaximumAnisotropy(float anisotropy);
     float maximumAnisotropy() const;
@@ -277,11 +319,9 @@ public:
     int depth() const;
 
 Q_SIGNALS:
-    void targetChanged();
     void formatChanged();
     void statusChanged();
     void generateMipMapsChanged();
-    void wrapModeChanged();
     void widthChanged();
     void heightChanged();
     void depthChanged();
@@ -290,6 +330,7 @@ Q_SIGNALS:
     void maximumAnisotropyChanged();
 
 protected:
+    explicit QTexture(QNode *parent = 0);
     QTexture(QTexturePrivate &dd, QNode *parent = 0);
     void copy(const QNode *ref) Q_DECL_OVERRIDE;
     void setStatus(Status status);
@@ -304,5 +345,6 @@ private:
 QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(Qt3D::QTexture*)
+Q_DECLARE_METATYPE(Qt3D::QTextureWrapMode*)
 
 #endif // QT3D_QTEXTURE_H

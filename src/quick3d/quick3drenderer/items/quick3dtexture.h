@@ -56,24 +56,95 @@ namespace Render {
 
 namespace Quick {
 
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTexture :
-        public QObject
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTexture1D : public QTexture
+{
+    Q_OBJECT
+public:
+    explicit Quick3DTexture1D(QNode *parent = 0);
+};
+
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTexture1DArray : public QTexture
+{
+    Q_OBJECT
+public:
+    explicit Quick3DTexture1DArray(QNode *parent = 0);
+};
+
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTexture2D : public QTexture
+{
+    Q_OBJECT
+public:
+    explicit Quick3DTexture2D(QNode *parent = 0);
+};
+
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTexture2DArray : public QTexture
+{
+    Q_OBJECT
+public:
+    explicit Quick3DTexture2DArray(QNode *parent = 0);
+};
+
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTexture3D : public QTexture
+{
+    Q_OBJECT
+public:
+    explicit Quick3DTexture3D(QNode *parent = 0);
+};
+
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTextureCubeMap : public QTexture
+{
+    Q_OBJECT
+public:
+    explicit Quick3DTextureCubeMap(QNode *parent = 0);
+};
+
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTextureCubeMapArray : public QTexture
+{
+    Q_OBJECT
+public:
+    explicit Quick3DTextureCubeMapArray(QNode *parent = 0);
+};
+
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTexture2DMultisample : public QTexture
+{
+    Q_OBJECT
+public:
+    explicit Quick3DTexture2DMultisample(QNode *parent = 0);
+};
+
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTexture2DMultisampleArray : public QTexture
+{
+    Q_OBJECT
+public:
+    explicit Quick3DTexture2DMultisampleArray(QNode *parent = 0);
+};
+
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTextureRectangle : public QTexture
+{
+    Q_OBJECT
+public:
+    explicit Quick3DTextureRectangle(QNode *parent = 0);
+};
+
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTextureBuffer : public QTexture
+{
+    Q_OBJECT
+public:
+    explicit Quick3DTextureBuffer(QNode *parent = 0);
+};
+
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTexture2DExtension : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
-    Q_PROPERTY(bool rectangle READ isRectangle WRITE setRectangle NOTIFY isRectangleChanged)
 public:
-    explicit Quick3DTexture(QObject *parent = 0);
+    explicit Quick3DTexture2DExtension(QObject *parent = 0);
 
     QUrl source() const;
     void setSource(QUrl arg);
 
-    void setRectangle(bool r);
-    bool isRectangle() const;
-
 Q_SIGNALS:
     void sourceChanged();
-    void isRectangleChanged();
 
 private:
     QUrl m_source;

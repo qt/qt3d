@@ -68,13 +68,12 @@ GBuffer::GBuffer(Qt3D::QNode *parent)
     for (int i = 0; i < AttachmentsCount; i++) {
         Qt3D::QRenderAttachment *attachment = new Qt3D::QRenderAttachment(this);
 
-        m_textures[i] = new Qt3D::QTexture();
-        m_textures[i]->setTarget(Qt3D::QTexture::Target2D);
+        m_textures[i] = new Qt3D::QTexture(Qt3D::QTexture::Target2D);
         m_textures[i]->setFormat(formats[i]);
         m_textures[i]->setWidth(1024);
         m_textures[i]->setHeight(1024);
         m_textures[i]->setGenerateMipMaps(false);
-        m_textures[i]->setWrapMode(Qt3D::QTexture::ClampToEdge);
+        m_textures[i]->setWrapMode(Qt3D::QTextureWrapMode(Qt3D::QTextureWrapMode::ClampToEdge));
         m_textures[i]->setMinificationFilter(Qt3D::QTexture::Linear);
         m_textures[i]->setMagnificationFilter(Qt3D::QTexture::Linear);
 

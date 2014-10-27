@@ -67,7 +67,9 @@ RenderTexture::RenderTexture()
     , m_format(QTexture::RGBA8U)
     , m_magnificationFilter(QTexture::Nearest)
     , m_minificationFilter(QTexture::Nearest)
-    , m_wrapMode(QTexture::ClampToEdge)
+    , m_wrapModeX(QTextureWrapMode::ClampToEdge)
+    , m_wrapModeY(QTextureWrapMode::ClampToEdge)
+    , m_wrapModeZ(QTextureWrapMode::ClampToEdge)
     , m_maximumAnisotropy(1.0f)
     , m_isDirty(false)
     , m_filtersAndWrapUpdated(false)
@@ -103,7 +105,9 @@ void RenderTexture::updateFromPeer(QNode *peer)
         m_format = texture->format();
         m_magnificationFilter = texture->magnificationFilter();
         m_minificationFilter = texture->minificationFilter();
-        m_wrapMode = texture->wrapMode();
+        m_wrapModeX = texture->wrapMode()->x();
+        m_wrapModeY = texture->wrapMode()->y();
+        m_wrapModeZ = texture->wrapMode()->z();
         m_maximumAnisotropy = texture->maximumAnisotropy();
         // See where it is best to handle source and loading
         Q_FOREACH (TexImageDataPtr imgData, texture->imageData())
@@ -224,7 +228,15 @@ void RenderTexture::setToGLTexture(TexImageDataPtr imgData)
 
 void RenderTexture::updateWrapAndFilters()
 {
-    m_gl->setWrapMode(static_cast<QOpenGLTexture::WrapMode>(m_wrapMode));
+    m_gl->setWrapMode(QOpenGLTexture::DirectionS, static_cast<QOpenGLTexture::WrapMode>(m_wrapModeX));
+    if (m_target != QTexture::Target1D &&
+            m_target != QTexture::Target1DArray &&
+            m_target != QTexture::TargetBuffer)
+        m_gl->setWrapMode(QOpenGLTexture::DirectionT, static_cast<QOpenGLTexture::WrapMode>(m_wrapModeY));
+    if (m_target == QTexture::Target3D ||
+            m_target == QTexture::TargetCubeMap ||
+            m_target == QTexture::TargetCubeMapArray)
+        m_gl->setWrapMode(QOpenGLTexture::DirectionR, static_cast<QOpenGLTexture::WrapMode>(m_wrapModeZ));
     m_gl->setMinMagFilters(static_cast<QOpenGLTexture::Filter>(m_minificationFilter),
                            static_cast<QOpenGLTexture::Filter>(m_magnificationFilter));
     m_gl->setMaximumAnisotropy(m_maximumAnisotropy);
@@ -276,10 +288,18 @@ void RenderTexture::sceneChangeEvent(const QSceneChangePtr &e)
             QTexture::Filter oldMagFilter = m_magnificationFilter;
             m_magnificationFilter = static_cast<QTexture::Filter>(propertyChange->value().toInt());
             m_filtersAndWrapUpdated = (oldMagFilter != m_magnificationFilter);
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("wrapMode")) {
-            QTexture::WrapMode oldWrapMode = m_wrapMode;
-            m_wrapMode = static_cast<QTexture::WrapMode>(propertyChange->value().toInt());
-            m_filtersAndWrapUpdated = (oldWrapMode != m_wrapMode);
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("wrapModeX")) {
+            QTextureWrapMode::WrapMode oldWrapModeX = m_wrapModeX;
+            m_wrapModeX = static_cast<QTextureWrapMode::WrapMode>(propertyChange->value().toInt());
+            m_filtersAndWrapUpdated = (oldWrapModeX != m_wrapModeX);
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("wrapModeX")) {
+            QTextureWrapMode::WrapMode oldWrapModeY = m_wrapModeY;
+            m_wrapModeY = static_cast<QTextureWrapMode::WrapMode>(propertyChange->value().toInt());
+            m_filtersAndWrapUpdated = (oldWrapModeY != m_wrapModeY);
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("wrapModeX")) {
+            QTextureWrapMode::WrapMode oldWrapModeZ = m_wrapModeZ;
+            m_wrapModeZ =static_cast<QTextureWrapMode::WrapMode>(propertyChange->value().toInt());
+             m_filtersAndWrapUpdated = (oldWrapModeZ != m_wrapModeZ);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("format")) {
             QTexture::TextureFormat oldFormat = m_format;
             m_format = static_cast<QTexture::TextureFormat>(propertyChange->value().toInt());

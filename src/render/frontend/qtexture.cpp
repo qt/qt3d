@@ -65,7 +65,6 @@ public :
         , m_autoMipMap(false)
         , m_minFilter(QTexture::Nearest)
         , m_magFilter(QTexture::Nearest)
-        , m_wrapMode(QTexture::ClampToEdge)
         , m_status(QTexture::Loading)
         , m_maximumAnisotropy(1.0f)
     {}
@@ -81,7 +80,7 @@ public :
 
     QTexture::Filter m_minFilter, m_magFilter;
     // FIXME, store per direction
-    QTexture::WrapMode m_wrapMode;
+    QTextureWrapMode m_wrapMode;
     QTexture::Status m_status;
     float m_maximumAnisotropy;
 };
@@ -95,7 +94,9 @@ void QTexture::copy(const QNode *ref)
     d_func()->m_height = t->d_func()->m_height;
     d_func()->m_depth = t->d_func()->m_depth;
     d_func()->m_format = t->d_func()->m_format;
-    d_func()->m_wrapMode = t->d_func()->m_wrapMode;
+    d_func()->m_wrapMode.setX(t->d_func()->m_wrapMode.x());
+    d_func()->m_wrapMode.setY(t->d_func()->m_wrapMode.y());
+    d_func()->m_wrapMode.setZ(t->d_func()->m_wrapMode.z());
     d_func()->m_minFilter = t->d_func()->m_minFilter;
     d_func()->m_magFilter = t->d_func()->m_magFilter;
     d_func()->m_autoMipMap = t->d_func()->m_autoMipMap;
@@ -107,6 +108,29 @@ QTexture::QTexture(QNode *parent)
 {
 }
 
+QTexture::QTexture(Target target, QNode *parent)
+    : QNode(*new QTexturePrivate(this), parent)
+{
+    d_func()->m_target = target;
+}
+
+QTexture::QTexture(QTexture::Target target, QTexture::TextureFormat format,
+                   int width, int height, int depth, bool mipMaps,
+                   QTexture::Filter magnificationFilter, QTexture::Filter minificationFilter,
+                   float maximumAnisotropy, QNode *parent)
+    : QNode(*new QTexturePrivate(this), parent)
+{
+    d_func()->m_target = target;
+    d_func()->m_format = format;
+    d_func()->m_width = width;
+    d_func()->m_height = height;
+    d_func()->m_depth = depth;
+    d_func()->m_autoMipMap = mipMaps;
+    d_func()->m_magFilter = magnificationFilter;
+    d_func()->m_minFilter = minificationFilter;
+    d_func()->m_maximumAnisotropy = maximumAnisotropy;
+}
+
 QTexture::QTexture(QTexturePrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
@@ -114,16 +138,6 @@ QTexture::QTexture(QTexturePrivate &dd, QNode *parent)
 
 QTexture::~QTexture()
 {
-}
-
-
-void QTexture::setTarget(Target target)
-{
-    Q_D(QTexture);
-    if (d->m_target != target) {
-        d->m_target = target;
-        emit targetChanged();
-    }
 }
 
 void QTexture::setSize(int w, int h, int d)
@@ -291,19 +305,36 @@ QTexture::Filter QTexture::magnificationFilter() const
     return d->m_magFilter;
 }
 
-void QTexture::setWrapMode(WrapMode wrapMode)
+void QTexture::setWrapMode(const QTextureWrapMode &wrapMode)
 {
     Q_D(QTexture);
-    if (d->m_wrapMode != wrapMode) {
-        d->m_wrapMode = wrapMode;
-        emit wrapModeChanged();
+    if (d->m_wrapMode.x() != wrapMode.x()) {
+        d->m_wrapMode.setX(wrapMode.x());
+        QScenePropertyChangePtr e(new QScenePropertyChange(NodeUpdated, this));
+        e->setPropertyName(QByteArrayLiteral("wrapModeX"));
+        e->setValue(static_cast<int>(d->m_wrapMode.x()));
+        d->notifyObservers(e);
+    }
+    if (d->m_wrapMode.y() != wrapMode.y()) {
+        d->m_wrapMode.setY(wrapMode.y());
+        QScenePropertyChangePtr e(new QScenePropertyChange(NodeUpdated, this));
+        e->setPropertyName(QByteArrayLiteral("wrapModeY"));
+        e->setValue(static_cast<int>(d->m_wrapMode.y()));
+        d->notifyObservers(e);
+    }
+    if (d->m_wrapMode.z() != wrapMode.z()) {
+        d->m_wrapMode.setZ(wrapMode.z());
+        QScenePropertyChangePtr e(new QScenePropertyChange(NodeUpdated, this));
+        e->setPropertyName(QByteArrayLiteral("wrapModeZ"));
+        e->setValue(static_cast<int>(d->m_wrapMode.z()));
+        d->notifyObservers(e);
     }
 }
 
-QTexture::WrapMode QTexture::wrapMode() const
+QTextureWrapMode *QTexture::wrapMode()
 {
-    Q_D(const QTexture);
-    return d->m_wrapMode;
+    Q_D(QTexture);
+    return &d->m_wrapMode;
 }
 
 void QTexture::setMaximumAnisotropy(float anisotropy)
@@ -319,6 +350,86 @@ float QTexture::maximumAnisotropy() const
 {
     Q_D(const QTexture);
     return d->m_maximumAnisotropy;
+}
+
+class QTextureWrapModePrivate : public QObjectPrivate
+{
+public:
+    QTextureWrapModePrivate(QTextureWrapMode *qq)
+        : QObjectPrivate()
+        , q_ptr(qq)
+        , m_x(QTextureWrapMode::ClampToEdge)
+        , m_y(QTextureWrapMode::ClampToEdge)
+        , m_z(QTextureWrapMode::ClampToEdge)
+    {
+    }
+
+    Q_DECLARE_PUBLIC(QTextureWrapMode)
+    QTextureWrapMode *q_ptr;
+    QTextureWrapMode::WrapMode m_x;
+    QTextureWrapMode::WrapMode m_y;
+    QTextureWrapMode::WrapMode m_z;
+};
+
+QTextureWrapMode::QTextureWrapMode(WrapMode wrapMode, QObject *parent)
+    : QObject(*new QTextureWrapModePrivate(this), parent)
+{
+    d_func()->m_x = wrapMode;
+    d_func()->m_y = wrapMode;
+    d_func()->m_z = wrapMode;
+}
+
+QTextureWrapMode::QTextureWrapMode(WrapMode x,WrapMode y, WrapMode z, QObject *parent)
+    : QObject(*new QTextureWrapModePrivate(this), parent)
+{
+    d_func()->m_x = x;
+    d_func()->m_y = y;
+    d_func()->m_z = z;
+}
+
+void QTextureWrapMode::setX(WrapMode x)
+{
+    Q_D(QTextureWrapMode);
+    if (d->m_x != x) {
+        d->m_x = x;
+        emit xChanged();
+    }
+}
+
+QTextureWrapMode::WrapMode QTextureWrapMode::x() const
+{
+    Q_D(const QTextureWrapMode);
+    return d->m_x;
+}
+
+void QTextureWrapMode::setY(WrapMode y)
+{
+    Q_D(QTextureWrapMode);
+    if (d->m_y != y) {
+        d->m_y = y;
+        emit yChanged();
+    }
+}
+
+QTextureWrapMode::WrapMode QTextureWrapMode::y() const
+{
+    Q_D(const QTextureWrapMode);
+    return d->m_y;
+}
+
+void QTextureWrapMode::setZ(WrapMode z)
+{
+    Q_D(QTextureWrapMode);
+    if (d->m_z != z) {
+        d->m_z = z;
+        emit zChanged();
+    }
+}
+
+QTextureWrapMode::WrapMode QTextureWrapMode::z() const
+{
+    Q_D(const QTextureWrapMode);
+    return d->m_z;
 }
 
 } // namespace Qt3D

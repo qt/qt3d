@@ -52,7 +52,7 @@ import QtQuick 2.1
 Effect {
     id: root
 
-    property Texture shadowTexture
+    property Texture2D shadowTexture
     property Light light
 
     // These parameters act as default values for the effect. They take

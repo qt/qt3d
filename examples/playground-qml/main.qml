@@ -117,17 +117,18 @@ Entity {
             }
         }
 
-        Texture
-        {
+        Texture2D {
             id : colorAttachment
-            target : Texture.Target2D
             width : 512
             height : 512
             format : Texture.RGBA32F
             generateMipMaps : false
             magnificationFilter : Texture.Linear
             minificationFilter : Texture.Linear
-            wrapMode : Texture.ClampToEdge
+            wrapMode {
+                x: WrapMode.ClampToEdge
+                y: WrapMode.ClampToEdge
+            }
         }
 
         components: [external_forward_renderer]
@@ -249,7 +250,7 @@ Entity {
         Material {
             id : ballTexturedMaterial
 
-            parameters : [Parameter { name : "tex"; value : Texture { source : "assets/gltf/wine/Wood_Cherry_Original_.jpg" } },
+            parameters : [Parameter { name : "tex"; value : Texture2D { source : "assets/gltf/wine/Wood_Cherry_Original_.jpg" } },
             Parameter { name : "gBuffer"; value : colorAttachment }
             ]
 

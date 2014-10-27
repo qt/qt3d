@@ -50,20 +50,73 @@ namespace Render {
 
 namespace Quick {
 
-// TO DO: This needs to be reworked to handle more than just 2D images
-Quick3DTexture::Quick3DTexture(QObject *parent)
-    : QObject(parent)
+Quick3DTexture1D::Quick3DTexture1D(QNode *parent)
+    : QTexture(Target1D, parent)
 {
-    parentTexture()->setTarget(QTexture::Target2D);
-    parentTexture()->setFormat(QTexture::RGBA8_UNorm);
 }
 
-QUrl Quick3DTexture::source() const
+Quick3DTexture1DArray::Quick3DTexture1DArray(QNode *parent)
+    : QTexture(Target1DArray, parent)
+{
+}
+
+Quick3DTexture2D::Quick3DTexture2D(QNode *parent)
+    : QTexture(Target2D, parent)
+{
+}
+
+Quick3DTexture2DArray::Quick3DTexture2DArray(QNode *parent)
+    : QTexture(Target2DArray, parent)
+{
+}
+
+Quick3DTexture3D::Quick3DTexture3D(QNode *parent)
+    : QTexture(Target3D, parent)
+{
+}
+
+Quick3DTextureCubeMap::Quick3DTextureCubeMap(QNode *parent)
+    : QTexture(TargetCubeMap, parent)
+{
+}
+
+Quick3DTextureCubeMapArray::Quick3DTextureCubeMapArray(QNode *parent)
+    : QTexture(TargetCubeMapArray, parent)
+{
+}
+
+Quick3DTexture2DMultisample::Quick3DTexture2DMultisample(QNode *parent)
+    : QTexture(Target2DMultisample, parent)
+{
+}
+
+Quick3DTexture2DMultisampleArray::Quick3DTexture2DMultisampleArray(QNode *parent)
+    : QTexture(Target2DMultisampleArray, parent)
+{
+}
+
+Quick3DTextureRectangle::Quick3DTextureRectangle(QNode *parent)
+    : QTexture(TargetRectangle, parent)
+{
+}
+
+Quick3DTextureBuffer::Quick3DTextureBuffer(QNode *parent)
+    : QTexture(TargetBuffer, parent)
+{
+}
+
+// TO DO: This needs to be reworked to handle more than just 2D images
+Quick3DTexture2DExtension::Quick3DTexture2DExtension(QObject *parent)
+    : QObject(parent)
+{
+}
+
+QUrl Quick3DTexture2DExtension::source() const
 {
     return m_source;
 }
 
-void Quick3DTexture::setSource(QUrl arg)
+void Quick3DTexture2DExtension::setSource(QUrl arg)
 {
     if (m_source != arg) {
         m_source = arg;
@@ -86,17 +139,6 @@ void Quick3DTexture::setSource(QUrl arg)
         }
         emit sourceChanged();
     }
-}
-
-void Quick3DTexture::setRectangle(bool r)
-{
-    parentTexture()->setTarget(r ? QTexture::TargetRectangle :
-                                   QTexture::Target2D);
-}
-
-bool Quick3DTexture::isRectangle() const
-{
-    return (parentTexture()->target() == QTexture::TargetRectangle);
 }
 
 } // Quick
