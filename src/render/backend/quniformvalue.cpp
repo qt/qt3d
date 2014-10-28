@@ -85,8 +85,6 @@ void QUniformValue::apply(QGraphicsContext *ctx, const ShaderUniform &shaderDesc
 
 QUniformPack::~QUniformPack()
 {
-    // TO DO : Should be a qDeleteAll but crashes for some reason at the moment
-    // Will be fixed later as this is going to evolve
     m_uniforms.clear();
 }
 
