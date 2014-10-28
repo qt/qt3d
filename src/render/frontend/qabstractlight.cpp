@@ -59,7 +59,13 @@ QAbstractLightPrivate::QAbstractLightPrivate(QAbstractLight *qq)
         : QComponentPrivate(qq)
         , m_color(QColor(255, 255, 255))
         , m_intensity(1.0f)
-    {}
+{}
+
+QAbstractLightPrivate::QAbstractLightPrivate(const QString &uniformName, const QString &blockName, QAbstractLight *qq)
+    : QComponentPrivate(qq)
+    , m_lightUniformName(uniformName)
+    , m_lightBlockName(blockName)
+{}
 
 void QAbstractLight::copy(const QNode *ref)
 {
@@ -101,8 +107,7 @@ QColor QAbstractLight::color() const
 void QAbstractLight::setColor(const QColor &color)
 {
     Q_D(QAbstractLight);
-    if (d->m_color != color)
-    {
+    if (d->m_color != color) {
         d->m_color = color;
         emit colorChanged();
     }
@@ -121,6 +126,18 @@ void QAbstractLight::setIntensity(float intensity)
         d->m_intensity = intensity;
         emit intensityChanged();
     }
+}
+
+const QString QAbstractLight::lightBlockName() const
+{
+    Q_D(const QAbstractLight);
+    return d->m_lightBlockName;
+}
+
+const QString QAbstractLight::lightUniformName() const
+{
+    Q_D(const QAbstractLight);
+    return d->m_lightUniformName;
 }
 
 } // Qt3D

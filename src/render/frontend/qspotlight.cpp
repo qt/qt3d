@@ -69,7 +69,7 @@ namespace Qt3D {
  */
 
 QSpotLightPrivate::QSpotLightPrivate(QSpotLight *qq)
-    :QAbstractLightPrivate(qq)
+    : QAbstractLightPrivate(QStringLiteral("spotLights"), QStringLiteral("SpotLight"), qq)
     , m_cutOffAngle(45.0f)
 {
 }
@@ -120,15 +120,6 @@ void QSpotLight::setCutOffAngle(float cutOffAngle)
         d->m_cutOffAngle = cutOffAngle;
         emit cutOffAngleChanged();
     }
-}
-
-QHash<QString, QVariant> QSpotLight::lightProperties() const
-{
-    Q_D(const QSpotLight);
-    QHash<QString, QVariant> props;
-    props[QStringLiteral("direction")] = d->m_direction;
-    props[QStringLiteral("cutOffAngle")] = d->m_cutOffAngle;
-    return props;
 }
 
 } // Qt3D

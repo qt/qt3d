@@ -55,10 +55,13 @@ class QT3DRENDERERSHARED_EXPORT QAbstractLightPrivate : public QComponentPrivate
 {
 public:
     QAbstractLightPrivate(QAbstractLight *qq);
+    QAbstractLightPrivate(const QString &uniformName, const QString &blockName, QAbstractLight *qq);
 
     Q_DECLARE_PUBLIC(QAbstractLight)
     QColor m_color;
     float m_intensity;
+    const QString m_lightUniformName;
+    const QString m_lightBlockName;
 };
 
 }

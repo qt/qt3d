@@ -67,7 +67,7 @@ namespace Qt3D {
  */
 
 QDirectionalLightPrivate::QDirectionalLightPrivate(QDirectionalLight *qq)
-    : QAbstractLightPrivate(qq)
+    : QAbstractLightPrivate(QStringLiteral("directionnalLights"), QStringLiteral("DirectionnalLight"), qq)
 {
 }
 
@@ -101,14 +101,6 @@ QVector3D QDirectionalLight::direction() const
 {
     Q_D(const QDirectionalLight);
     return d->m_direction;
-}
-
-QHash<QString, QVariant> QDirectionalLight::lightProperties() const
-{
-    Q_D(const QDirectionalLight);
-    QHash<QString, QVariant> props;
-    props[QStringLiteral("direction")] = d->m_direction;
-    return props;
 }
 
 } // Qt3D

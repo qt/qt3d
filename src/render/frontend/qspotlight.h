@@ -65,10 +65,6 @@ public:
     void setDirection(const QVector3D &direction);
     void setCutOffAngle(float cutOffAngle);
 
-    QHash<QString, QVariant> lightProperties() const Q_DECL_OVERRIDE;
-    const QString lightBlockName() const Q_DECL_OVERRIDE { return QStringLiteral("SpotLight"); }
-    const QString lightUniformName() const Q_DECL_OVERRIDE { return QStringLiteral("spotLights"); }
-
 Q_SIGNALS:
     void directionChanged();
     void cutOffAngleChanged();

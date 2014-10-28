@@ -43,6 +43,9 @@
 #include "qabstractlight.h"
 #include <Qt3DCore/qscenepropertychange.h>
 #include <QVariant>
+#include <QMetaProperty>
+
+#include <QDebug>
 
 QT_BEGIN_NAMESPACE
 
@@ -68,10 +71,19 @@ void RenderLight::updateFromPeer(QNode *peer)
 {
     QAbstractLight *light = static_cast<QAbstractLight *>(peer);
 
-    m_lightProperties = light->lightProperties();
-    // Properties common to all lights
-    m_lightProperties[QStringLiteral("color")] = light->color();
-    m_lightProperties[QStringLiteral("intensity")] = light->intensity();
+    const int offset = light->staticMetaObject.propertyOffset();
+    const int count = light->metaObject()->propertyCount();
+
+    // Retrieve light properties and values
+    for (int index = offset; index < count; index++) {
+        const QMetaProperty property = light->metaObject()->property(index);
+        QString propertyName = QString::fromLatin1(property.name());
+        if (propertyName != QStringLiteral("childNodes") && propertyName != QStringLiteral("data")) {
+            qDebug() << property.name();
+            m_lightProperties.insert(propertyName, property.read(light));
+        }
+    }
+
     m_lightUniformName = light->lightUniformName();
     m_lightBlockName = light->lightBlockName();
 }

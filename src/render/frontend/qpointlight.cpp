@@ -65,18 +65,13 @@ namespace Qt3D {
  */
 
 QPointLightPrivate::QPointLightPrivate(QPointLight *qq)
-    : QAbstractLightPrivate(qq)
+    : QAbstractLightPrivate(QStringLiteral("pointLights"), QStringLiteral("PointLight"), qq)
 {
 }
 
 QPointLight::QPointLight(QNode *parent)
     : QAbstractLight(*new QPointLightPrivate(this), parent)
 {
-}
-
-QHash<QString, QVariant> QPointLight::lightProperties() const
-{
-    return QHash<QString, QVariant>();
 }
 
 QPointLight::QPointLight(QPointLightPrivate &dd, QNode *parent)
