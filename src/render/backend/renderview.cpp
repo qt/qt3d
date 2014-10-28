@@ -519,31 +519,34 @@ QList<RenderRenderPass *> RenderView::findRenderPassesForTechnique(RenderTechniq
     return passes;
 }
 
+static void addParametersForIds(QHash<QString, QVariant> *params, ParameterManager* manager,
+                                const QList<QUuid> &parameterIds)
+{
+    Q_FOREACH (const QUuid &paramId, parameterIds) {
+        RenderParameter *param = manager->lookupResource(paramId);
+        if (param != Q_NULLPTR)
+            params->insert(param->name(), param->value());
+    }
+}
+
 QHash<QString, QVariant> RenderView::parametersFromMaterialEffectTechnique(RenderMaterial *material,
                                                                            RenderEffect *effect,
                                                                            RenderTechnique *technique)
 {
     QHash<QString, QVariant> params;
-    QList<QUuid> parameterIds;
 
     // Material is preferred over Effect
     // Effect is preferred over Technique
     // By filling the hash in reverse preference order, we're ensured that we preserve preference
 
     if (effect != Q_NULLPTR)
-        parameterIds.append(effect->parameters());
+        addParametersForIds(&params, m_renderer->parameterManager(), effect->parameters());
 
     if (technique != Q_NULLPTR)
-        parameterIds.append(technique->parameters());
+        addParametersForIds(&params, m_renderer->parameterManager(), technique->parameters());
 
     if (material != Q_NULLPTR)
-        parameterIds.append(material->parameters());
-
-    Q_FOREACH (const QUuid &paramId, parameterIds) {
-        RenderParameter *param = m_renderer->parameterManager()->lookupResource(paramId);
-        if (param != Q_NULLPTR)
-            params.insert(param->name(), param->value());
-    }
+        addParametersForIds(&params, m_renderer->parameterManager(), material->parameters());
 
     return params;
 }
