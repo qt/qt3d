@@ -111,8 +111,8 @@ void QChangeArbiter::initialize(QAspectJobManagerInterface *jobManager)
 
 void QChangeArbiter::distributeQueueChanges(ChangeQueue *changeQueue)
 {
-    for (int i = 0; i < changeQueue->size(); i++) {
-        QSceneChangePtr change = changeQueue->takeFirst();
+    for (int i = 0, n = changeQueue->size(); i < n; i++) {
+        QSceneChangePtr& change = (*changeQueue)[i];
         // Lookup which observers care about the subject this change came from
         // and distribute the change to them
         if (change.isNull())
@@ -158,6 +158,7 @@ void QChangeArbiter::distributeQueueChanges(ChangeQueue *changeQueue)
 
         } // observableType switch
     }
+    changeQueue->clear();
 }
 
 QThreadStorage<QChangeArbiter::ChangeQueue *> *QChangeArbiter::tlsChangeQueue()
