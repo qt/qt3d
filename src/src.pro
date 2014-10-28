@@ -15,6 +15,9 @@ src_openal.subdir = $$PWD/openal
 src_openal.target = sub-openal
 src_openal.depends = src_core
 
+src_input.subdir = $$PWD/input
+src_input.target = sub-input
+src_input.depends = src_render
 
 # Quick3D libs
 src_quick3d_core.subdir = $$PWD/quick3d/quick3d
@@ -47,6 +50,7 @@ src_plugins_sceneparsers.depends = src_render
 SUBDIRS += \
     src_core \
     src_render \
+    src_input \
     src_openal \
     src_quick3d_core \
     src_quick3d_core_imports \
