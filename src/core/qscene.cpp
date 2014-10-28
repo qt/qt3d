@@ -85,7 +85,7 @@ void QScene::addObservable(QObservableInterface *observable, const QUuid &uuid)
     d->m_observablesLookupTable.insert(uuid, observable);
     d->m_observableToUuid.insert(observable, uuid);
     if (d->m_arbiter != Q_NULLPTR)
-        observable->registerObserver(d->m_arbiter);
+        observable->setArbiter(d->m_arbiter);
 }
 
 // Called by main thread only
@@ -96,7 +96,7 @@ void QScene::addObservable(QNode *observable)
         QWriteLocker lock(&d->m_lock);
         d->m_nodeLookupTable.insert(observable->uuid(), observable);
         if (d->m_arbiter != Q_NULLPTR)
-            observable->d_func()->registerObserver(d->m_arbiter);
+            observable->d_func()->setArbiter(d->m_arbiter);
     }
 }
 
@@ -107,8 +107,7 @@ void QScene::removeObservable(QObservableInterface *observable, const QUuid &uui
     QWriteLocker lock(&d->m_lock);
     d->m_observablesLookupTable.remove(uuid, observable);
     d->m_observableToUuid.remove(observable);
-    if (d->m_arbiter != Q_NULLPTR)
-        observable->unregisterObserver(d->m_arbiter);
+    observable->setArbiter(Q_NULLPTR);
 }
 
 // Called by main thread
@@ -120,14 +119,12 @@ void QScene::removeObservable(QNode *observable)
         QUuid nodeUuid = observable->uuid();
         QObservableList observables = d->m_observablesLookupTable.values(nodeUuid);
         Q_FOREACH (QObservableInterface *o, observables) {
-            if (d->m_arbiter != Q_NULLPTR)
-                o->unregisterObserver(d->m_arbiter);
+            o->setArbiter(Q_NULLPTR);
             d->m_observableToUuid.remove(o);
         }
         d->m_observablesLookupTable.remove(nodeUuid);
         d->m_nodeLookupTable.remove(nodeUuid);
-        if (d->m_arbiter != Q_NULLPTR)
-            observable->d_func()->unregisterObserver(d->m_arbiter);
+        observable->d_func()->setArbiter(Q_NULLPTR);
     }
 }
 

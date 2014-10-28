@@ -70,15 +70,9 @@ private slots:
 class tst_Observable : public Qt3D::QObservableInterface
 {
 public:
-    void registerObserver(Qt3D::QObserverInterface *observer)
+    void setArbiter(Qt3D::QChangeArbiter *observer)
     {
-        m_arbiter = dynamic_cast<Qt3D::QChangeArbiter *>(observer);
-        QVERIFY(m_arbiter != Q_NULLPTR);
-    }
-
-    void unregisterObserver(Qt3D::QObserverInterface *observer)
-    {
-        QVERIFY(m_arbiter == observer);
+        m_arbiter = observer;
     }
 
 protected:

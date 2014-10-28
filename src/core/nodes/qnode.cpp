@@ -69,7 +69,7 @@ QNodePrivate::QNodePrivate(QNode *qq)
     q_ptr = qq;
 }
 
-// Called by QEvent::childAdded
+// Called by QEvent::childAdded (main thread)
 void QNodePrivate::addChild(QNode *childNode)
 {
 
@@ -103,7 +103,7 @@ void QNodePrivate::addChild(QNode *childNode)
     }
 }
 
-// Called by QEvent::childRemoved
+// Called by QEvent::childRemoved (main thread)
 void QNodePrivate::removeChild(QNode *childNode)
 {
     Q_ASSERT(childNode);
@@ -197,6 +197,27 @@ void QNodePrivate::registerNotifiedProperties()
     }
 }
 
+void QNodePrivate::unregisterNotifiedProperties()
+{
+    Q_Q(QNode);
+    if (!m_notifiedProperties.isEmpty())
+        return;
+
+    const int offset = QNode::staticMetaObject.propertyOffset();
+    const int count = q->metaObject()->propertyCount();
+
+    for (int index = offset; index < count; index++) {
+        const QMetaProperty property = q->metaObject()->property(index);
+        if (!property.hasNotifySignal())
+            continue;
+        const QByteArray signal = QByteArray::number(QSIGNAL_CODE)
+                + property.notifySignal().methodSignature();
+        QObject::disconnect(q, signal,
+                            q, SLOT(_q_onNodePropertyChanged()));
+    }
+    m_notifiedProperties.clear();
+}
+
 void QNodePrivate::_q_onNodePropertyChanged()
 {
     // Bail out early if we can to avoid the cost below
@@ -219,30 +240,14 @@ void QNodePrivate::_q_onNodePropertyChanged()
     }
 }
 
-// Called in the QAspectThread context
-void QNodePrivate::registerObserver(QObserverInterface *observer)
+// Called in the main thread by QScene -> following QEvent::childAdded / addChild
+void QNodePrivate::setArbiter(QChangeArbiter *arbiter)
 {
-    Q_CHECK_PTR(observer);
-
-    // For now we only care about the QChangeArbiter observing us
-    QChangeArbiter *changeArbiter = dynamic_cast<QChangeArbiter *>(observer);
-    if (changeArbiter) {
-        QWriteLocker locker(&m_observerLock);
-        m_changeArbiter = changeArbiter;
+    if (m_changeArbiter && m_changeArbiter != arbiter)
+        unregisterNotifiedProperties();
+    m_changeArbiter = arbiter;
+    if (m_changeArbiter)
         registerNotifiedProperties();
-    }
-}
-
-void QNodePrivate::unregisterObserver(QObserverInterface *observer)
-{
-    Q_CHECK_PTR(observer);
-
-    // For now we only care about the QChangeArbiter observing us
-    QChangeArbiter *changeArbiter = dynamic_cast<QChangeArbiter *>(observer);
-    if (changeArbiter == m_changeArbiter) {
-        QWriteLocker locker(&m_observerLock);
-        m_changeArbiter = Q_NULLPTR;
-    }
 }
 
 void QNode::sceneChangeEvent(const QSceneChangePtr &)
@@ -282,16 +287,8 @@ void QNodePrivate::notifyObservers(const QSceneChangePtr &change)
     if (m_blockNotifications && change->type() == NodeUpdated)
         return;
 
-    QReadLocker locker(&m_observerLock);
-    QChangeArbiter *changeArbiter = m_changeArbiter;
-    locker.unlock();
-    // There is a deadlock issue as sceneChangeEventWithLock locks the QChangeArbiter's mutex
-    // while d->m_observerLock is locked by the locker right above.
-    // In the case that a call the QChangeArbiter registerObserver which locks the QChangeArviter's mutex
-    // and calls registerObserver on the same Node with locks d->m_observerLock
-
-    if (changeArbiter != Q_NULLPTR)
-        changeArbiter->sceneChangeEventWithLock(change);
+    if (m_changeArbiter != Q_NULLPTR)
+        m_changeArbiter->sceneChangeEventWithLock(change);
 }
 
 // Inserts this tree into the main Scene tree.

@@ -43,7 +43,6 @@
 #define QT3D_QNODE_P_H
 
 #include <private/qobject_p.h>
-#include <QReadWriteLock>
 #include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/private/qobservableinterface_p.h>
@@ -67,8 +66,7 @@ public:
     void setScene(QSceneInterface *scene);
     QSceneInterface *scene() const;
 
-    void registerObserver(QObserverInterface *observer) Q_DECL_OVERRIDE;
-    void unregisterObserver(QObserverInterface *observer) Q_DECL_OVERRIDE;
+    void setArbiter(QChangeArbiter *arbiter) Q_DECL_OVERRIDE;
 
     void notifyPropertyChange(const QByteArray &name, const QVariant &value);
     virtual void notifyObservers(const QSceneChangePtr &change);
@@ -79,7 +77,6 @@ public:
 
     // For now this just protects access to the m_changeArbiter.
     // Later on we may decide to extend support for multiple observers.
-    QReadWriteLock m_observerLock;
     QChangeArbiter *m_changeArbiter;
     QSceneInterface *m_scene;
     mutable QUuid m_uuid;
@@ -93,6 +90,7 @@ private:
     void removeChild(QNode *childNode);
     void removeAllChildren();
     void registerNotifiedProperties();
+    void unregisterNotifiedProperties();
     void _q_onNodePropertyChanged();
 
     QHash<int, QByteArray> m_notifiedProperties;

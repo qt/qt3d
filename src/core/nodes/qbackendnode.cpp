@@ -50,31 +50,26 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 QBackendNodePrivate::QBackendNodePrivate(QBackendNode *qq, QBackendNode::Mode mode)
-    : QObservable()
-    , q_ptr(qq)
+    : q_ptr(qq)
     , m_mode(mode)
     , m_arbiter(Q_NULLPTR)
 {
 }
 
-void QBackendNodePrivate::registerObserver(QObserverInterface *observer)
+// Called by backend thread (renderer or other) while we are locked to sync changes
+void QBackendNodePrivate::setArbiter(QChangeArbiter *arbiter)
 {
     Q_ASSERT(m_mode == QBackendNode::ReadWrite);
-    m_arbiter = dynamic_cast<QChangeArbiter *>(observer);
+    m_arbiter = arbiter;
 }
 
-void QBackendNodePrivate::unregisterObserver(QObserverInterface *observer)
-{
-    Q_ASSERT(m_mode == QBackendNode::ReadWrite);
-    if (dynamic_cast<QChangeArbiter *>(observer) == m_arbiter)
-        m_arbiter = Q_NULLPTR;
-}
-
+// Called by backend thread/worker threads. We don't need locking
+// as setting/unsetting the arbiter cannot happen at that time
 void QBackendNodePrivate::notifyObservers(const QSceneChangePtr &e)
 {
     Q_ASSERT(m_mode == QBackendNode::ReadWrite);
     if (m_arbiter != Q_NULLPTR)
-        m_arbiter->sceneChangeEventWithLock(e);
+        m_arbiter->sceneChangeEvent(e);
 }
 
 void QBackendNodePrivate::sceneChangeEvent(const QSceneChangePtr &e)

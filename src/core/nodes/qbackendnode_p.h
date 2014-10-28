@@ -43,25 +43,23 @@
 #define QT3D_QBACKENDNODE_P_H
 
 #include <QUuid>
-#include <Qt3DCore/private/qobservable_p.h>
+#include <Qt3DCore/private/qobservableinterface_p.h>
 #include <Qt3DCore/private/qobserverinterface_p.h>
 #include <Qt3DCore/qbackendnode.h>
+#include <Qt3DCore/private/qchangearbiter_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QChangeArbiter;
-
 class QBackendNodePrivate
         : public QObserverInterface
-        , public QObservable
+        , public QObservableInterface
 {
 public:
     QBackendNodePrivate(QBackendNode *qq, QBackendNode::Mode mode);
 
-    void registerObserver(QObserverInterface *observer) Q_DECL_OVERRIDE;
-    void unregisterObserver(QObserverInterface *observer) Q_DECL_OVERRIDE;
+    void setArbiter(QChangeArbiter *arbiter) Q_DECL_OVERRIDE;
     void notifyObservers(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
