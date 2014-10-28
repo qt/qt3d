@@ -49,7 +49,7 @@ namespace BulletPhysics {
 
 QAbstractColliderPrivate::QAbstractColliderPrivate(QAbstractCollider *qq)
     : Qt3D::QComponentPrivate(qq)
-    , m_collisionBehavior(QAbstractCollider::SolidColliderBehavior)
+    , m_collisionBehavior(QAbstractCollider::NotifyOnly)
 {
 }
 

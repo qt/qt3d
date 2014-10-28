@@ -63,8 +63,8 @@ public:
     explicit QAbstractCollider(QNode *parent = 0);
 
     enum CollisionBehavior {
-        SolidColliderBehavior = 0,
-        NonSolidColliderBehavior
+        NotifyOnly = 0,
+        NotifyAndPreventIntersection
     };
 
     void setCollisionBehavior(CollisionBehavior collisionBehavior);
