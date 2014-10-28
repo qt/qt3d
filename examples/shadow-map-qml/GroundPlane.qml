@@ -42,13 +42,6 @@
 import Qt3D 2.0
 import Qt3D.Render 2.0
 
-// For Qt.vector3d() and friends. For some reason this is provided by
-// QQuickValueTypeProvider in QtQuick rather than the default value
-// type provider in QtQml. So we will need to replicate this in Qt3D
-// for the types that we wish to support. Otherwise we'll have to import
-// QtQuick 2.1 all over the place.
-import QtQuick 2.1 as QQ2
-
 Entity {
     id: root
     property Material material

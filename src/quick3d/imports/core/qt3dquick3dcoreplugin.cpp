@@ -51,11 +51,14 @@
 #include <Qt3DQuick/quick3dentity.h>
 #include <Qt3DQuick/quick3dtransform.h>
 #include <Qt3DQuick/quick3dconfiguration.h>
+#include <private/qt3dquick_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
 void Qt3DQuick3DCorePlugin::registerTypes(const char *uri)
 {
+    Qt3D::Quick::Quick3D_initializeProviders();
+
     qmlRegisterUncreatableType<Qt3D::QComponent>(uri, 2, 0, "Component", QStringLiteral(""));
     qmlRegisterUncreatableType<Qt3D::QAbstractTransform>(uri, 2, 0, "QAbstractTransform", QStringLiteral("QAbstractTransform is abstract"));
 

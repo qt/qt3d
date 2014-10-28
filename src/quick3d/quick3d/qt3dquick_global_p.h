@@ -39,63 +39,25 @@
 **
 ****************************************************************************/
 
-import Qt3D 2.0
-import Qt3D.Render 2.0
+#ifndef QT3DQUICK_GLOBAL_P_H
+#define QT3DQUICK_GLOBAL_P_H
 
-Entity {
-    id: sceneRoot
+#include <Qt3DQuick/qt3dquick_global.h>
 
-    Camera {
-        id: camera
-        projectionType: CameraLens.PerspectiveProjection
-        fieldOfView: 45
-        aspectRatio: 16/9
-        nearPlane : 0.1
-        farPlane : 1000.0
-        position: Qt.vector3d( 0.0, 0.0, -20.0 )
-        upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
-        viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
-    }
+#define QT3DQUICKSHARED_PRIVATE_EXPORT QT3DQUICKSHARED_EXPORT
 
-    Configuration  {
-        controlledCamera: camera
-    }
+QT_BEGIN_NAMESPACE
 
-    FrameGraph {
-        id : external_forward_renderer
-        activeFrameGraph : ForwardRenderer {
-            camera: camera
-        }
-    }
+namespace Qt3D {
 
-    components: [external_forward_renderer]
+namespace Quick {
 
-    CylinderMesh {
-        id: mesh
-        radius: 1
-        length: 3
-        rings: 100
-        slices: 20
-    }
+QT3DQUICKSHARED_PRIVATE_EXPORT void Quick3D_initializeProviders();
 
-    Transform {
-        id: transform
-        Scale { scale3D: Qt.vector3d(1.5, 1.5, 1.5) }
-        Rotate {
-            angle: 45
-            axis: Qt.vector3d(1, 0, 0)
-        }
-    }
+} // Quick
 
-    Material {
-        id: material
-        effect : Effect {
-        }
-    }
+} // Qt3D
 
-    Entity {
-        id: mainEntity
-        objectName: "mainEntity"
-        components: [ mesh, material, transform ]
-    }
-}
+QT_END_NAMESPACE
+
+#endif // QT3DQUICK_GLOBAL_P_H

@@ -1,6 +1,3 @@
-import Qt3D 2.0
-import Qt3D.Render 2.0
-
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
@@ -41,6 +38,9 @@ import Qt3D.Render 2.0
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
+
+import Qt3D 2.0
+import Qt3D.Render 2.0
 
 Effect {
     id : sceneMaterialEffect

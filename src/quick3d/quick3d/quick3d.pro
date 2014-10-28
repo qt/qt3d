@@ -1,6 +1,6 @@
 TARGET   = Qt3DQuick
 
-QT      += core-private gui-private qml qml-private quick 3dcore
+QT      += core-private gui-private qml qml-private quick quick-private 3dcore
 
 DEFINES += QT3DQUICK_LIBRARY
 
@@ -18,9 +18,13 @@ gcov {
 
 HEADERS += $$PRIVATE_HEADERS \
     qt3dquick_global.h \
-    quickwindow.h
+    quickwindow.h \
+    qt3dquick_global_p.h \
+    qt3dquickvaluetypes_p.h
 
-SOURCES += quickwindow.cpp
+SOURCES += quickwindow.cpp \
+    qt3dquick_global.cpp \
+    qt3dquickvaluetypes.cpp
 
 !contains(QT_CONFIG, egl):DEFINES += QT_NO_EGL
 
