@@ -69,13 +69,13 @@ QVector<LoadSceneJobPtr> SceneManager::pendingSceneLoaderJobs()
 
 void SceneManager::addLoadedSceneTree(const QString &source, QEntity *tree)
 {
-    SceneManager::WriteLocker lock(this);
+    SceneManager::Locker lock(this);
     m_loadedSceneTrees.insert(source, tree);
 }
 
 QEntity *SceneManager::sceneTreeFromSource(const QString &source)
 {
-    SceneManager::ReadLocker lock(this);
+    SceneManager::Locker lock(this);
     return m_loadedSceneTrees.value(source);
 }
 

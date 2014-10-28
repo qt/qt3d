@@ -71,7 +71,7 @@ public:
     tst_ArrayResource() : m_value(0)
     {}
 
-    int m_value;
+    QAtomicInt m_value;
 };
 
 typedef Qt3D::QHandle<tst_ArrayResource> tHandle;
@@ -298,7 +298,7 @@ protected:
             tst_ArrayResource *r = m_manager->getOrCreateResource(i);
             i++;
             QVERIFY(r != Q_NULLPTR);
-            Manager::WriteLocker lock(m_manager);
+            Manager::Locker lock(m_manager);
             r->m_value++;
         }
         qDebug() << QThread::currentThread() << "Done";
@@ -370,9 +370,8 @@ protected:
         while (i < max) {
             tst_ArrayResource *r = m_manager->getOrCreateResource(i);
             QVERIFY(r != Q_NULLPTR);
-            Manager::WriteLocker lock(m_manager);
-            r->m_value++;
-            if (r->m_value > m_releaseAbove)
+            int oldValue = r->m_value.fetchAndAddOrdered(+1);
+            if (oldValue == m_releaseAbove)
                 m_manager->releaseResource(i);
             i++;
         }
