@@ -382,45 +382,45 @@ public:
     QHandle<T, INDEXBITS> getOrAcquireHandle(const C &id)
     {
         typename LockingPolicy<QResourcesManager>::Locker lock(this);
-        if (!m_handleToResourceMapper.contains(id)) {
-            m_handleToResourceMapper[id] = m_handleManager.acquire(AllocatingPolicy<T, INDEXBITS>::allocateResource());
-        }
-        return m_handleToResourceMapper[id];
+        QHandle<T, INDEXBITS> &handle = m_handleToResourceMapper[id];
+        if (handle.isNull())
+            handle = m_handleManager.acquire(AllocatingPolicy<T, INDEXBITS>::allocateResource());
+        return handle;
     }
 
     QHandle<T, INDEXBITS> lookupHandle(const C &id)
     {
-        QHandle<T, INDEXBITS> handle;
         typename LockingPolicy<QResourcesManager>::Locker lock(this);
-        if (m_handleToResourceMapper.contains(id))
-            handle = m_handleToResourceMapper[id];
-        return handle;
+        return m_handleToResourceMapper.value(id);
     }
 
     T *lookupResource(const C &id)
     {
         T* ret = Q_NULLPTR;
-        typename LockingPolicy<QResourcesManager>::Locker lock(this);
-        if (m_handleToResourceMapper.contains(id))
-            ret = m_handleManager.data(m_handleToResourceMapper[id]);
+        {
+            typename LockingPolicy<QResourcesManager>::Locker lock(this);
+            QHandle<T, INDEXBITS> handle = m_handleToResourceMapper.value(id);
+            if (!handle.isNull())
+                ret = m_handleManager.data(handle);
+        }
         return ret;
     }
 
     T *getOrCreateResource(const C &id)
     {
         typename LockingPolicy<QResourcesManager>::Locker lock(this);
-        if (!m_handleToResourceMapper.contains(id)) {
-            m_handleToResourceMapper[id] = m_handleManager.acquire(AllocatingPolicy<T, INDEXBITS>::allocateResource());
-        }
-        return m_handleManager.data(m_handleToResourceMapper[id]);
+        QHandle<T, INDEXBITS> &handle = m_handleToResourceMapper[id];
+        if (handle.isNull())
+            handle = m_handleManager.acquire(AllocatingPolicy<T, INDEXBITS>::allocateResource());
+        return m_handleManager.data(handle);
     }
 
     void releaseResource(const C &id)
     {
         typename LockingPolicy<QResourcesManager>::Locker lock(this);
-        if (m_handleToResourceMapper.contains(id)) {
-            releaseLocked(m_handleToResourceMapper.take(id));
-        }
+        QHandle<T, INDEXBITS> handle = m_handleToResourceMapper.take(id);
+        if (!handle.isNull())
+            releaseLocked(handle);
     }
 
     int maxResourcesEntries() const { return m_maxResourcesEntries; }
