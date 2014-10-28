@@ -92,7 +92,9 @@ void QRigidBody::setCenterOfMass(const QVector3D &centerOfMass)
 {
     Q_D(QRigidBody);
     if (!qFuzzyCompare(d->m_centerOfMass,centerOfMass)) {
-        d->m_centerOfMass = centerOfMass;
+        setCenterOfMassX(centerOfMass.x());
+        setCenterOfMassY(centerOfMass.y());
+        setCenterOfMassZ(centerOfMass.z());
         emit centerOfMassChanged();
     }
 }
@@ -101,6 +103,51 @@ QVector3D QRigidBody::centerOfMass() const
 {
     Q_D(const QRigidBody);
     return d->m_centerOfMass;
+}
+
+void QRigidBody::setCenterOfMassX(float x)
+{
+    Q_D(QRigidBody);
+    if (!qFuzzyCompare(d->m_centerOfMass.x(), x)) {
+        d->m_centerOfMass.setX(x);
+        emit centerOfMassXChanged();
+    }
+}
+
+float QRigidBody::centerOfMassX() const
+{
+    Q_D(const QRigidBody);
+    return d->m_centerOfMass.x();
+}
+
+void QRigidBody::setCenterOfMassY(float y)
+{
+    Q_D(QRigidBody);
+    if (!qFuzzyCompare(d->m_centerOfMass.y(), y)) {
+        d->m_centerOfMass.setY(y);
+        emit centerOfMassYChanged();
+    }
+}
+
+float QRigidBody::centerOfMassY() const
+{
+    Q_D(const QRigidBody);
+    return d->m_centerOfMass.y();
+}
+
+void QRigidBody::setCenterOfMassZ(float z)
+{
+    Q_D(QRigidBody);
+    if (!qFuzzyCompare(d->m_centerOfMass.z(), z)) {
+        d->m_centerOfMass.setZ(z);
+        emit centerOfMassZChanged();
+    }
+}
+
+float QRigidBody::centerOfMassZ() const
+{
+    Q_D(const QRigidBody);
+    return d->m_centerOfMass.z();
 }
 
 } // namespace BulletPhysics

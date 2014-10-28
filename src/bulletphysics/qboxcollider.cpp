@@ -75,8 +75,10 @@ QBoxCollider::QBoxCollider(QBoxColliderPrivate &dd, QNode *parent)
 void QBoxCollider::setCenter(const QVector3D &center)
 {
     Q_D(QBoxCollider);
-    if (d->m_center != center) {
-        d->m_center = center;
+    if (!qFuzzyCompare(d->m_center, center)) {
+        setCenterX(center.x());
+        setCenterY(center.y());
+        setCenterZ(center.z());
         emit centerChanged();
     }
 }
@@ -100,6 +102,51 @@ QVector3D QBoxCollider::halfExtents() const
 {
     Q_D(const QBoxCollider);
     return d->m_halfExtents;
+}
+
+void QBoxCollider::setCenterX(float x)
+{
+    Q_D(QBoxCollider);
+    if (!qFuzzyCompare(d->m_center.x(), x)) {
+        d->m_center.setX(x);
+        emit centerXChanged();
+    }
+}
+
+float QBoxCollider::centerX() const
+{
+    Q_D(const QBoxCollider);
+    return d->m_center.x();
+}
+
+void QBoxCollider::setCenterY(float y)
+{
+    Q_D(QBoxCollider);
+    if (!qFuzzyCompare(d->m_center.y(), y)) {
+        d->m_center.setY(y);
+        emit centerYChanged();
+    }
+}
+
+float QBoxCollider::centerY() const
+{
+    Q_D(const QBoxCollider);
+    return d->m_center.y();
+}
+
+void QBoxCollider::setCenterZ(float z)
+{
+    Q_D(QBoxCollider);
+    if (!qFuzzyCompare(d->m_center.z(), z)) {
+        d->m_center.setZ(z);
+        emit centerZChanged();
+    }
+}
+
+float QBoxCollider::centerZ() const
+{
+    Q_D(const QBoxCollider);
+    return d->m_center.z();
 }
 
 } // namespace BulletPhysics

@@ -63,6 +63,9 @@ class QT3DBULLETPHYSICSSHARED_EXPORT QRigidBody : public Qt3D::QComponent
 
     Q_PROPERTY(float mass READ mass WRITE setMass NOTIFY massChanged)
     Q_PROPERTY(QVector3D centerOfMass READ centerOfMass WRITE setCenterOfMass NOTIFY centerOfMassChanged)
+    Q_PROPERTY(float centerOfMassX READ centerOfMassX WRITE setCenterOfMassX NOTIFY centerOfMassXChanged)
+    Q_PROPERTY(float centerOfMassY READ centerOfMassY WRITE setCenterOfMassY NOTIFY centerOfMassYChanged)
+    Q_PROPERTY(float centerOfMassZ READ centerOfMassZ WRITE setCenterOfMassZ NOTIFY centerOfMassZChanged)
 
 public:
     explicit QRigidBody(Qt3D::QNode *parent = 0);
@@ -73,8 +76,20 @@ public:
     void setCenterOfMass(const QVector3D &centerOfMass);
     QVector3D centerOfMass() const;
 
+    void setCenterOfMassX(float x);
+    float centerOfMassX() const;
+
+    void setCenterOfMassY(float y);
+    float centerOfMassY() const;
+
+    void setCenterOfMassZ(float z);
+    float centerOfMassZ() const;
+
 Q_SIGNALS:
     void massChanged();
+    void centerOfMassXChanged();
+    void centerOfMassYChanged();
+    void centerOfMassZChanged();
     void centerOfMassChanged();
 
 protected:

@@ -59,6 +59,9 @@ class QT3DBULLETPHYSICSSHARED_EXPORT QSphereCollider : public Qt3D::BulletPhysic
     Q_OBJECT
 
     Q_PROPERTY(QVector3D center READ center WRITE setCenter NOTIFY centerChanged)
+    Q_PROPERTY(float centerX READ centerX WRITE setCenterX NOTIFY centerXChanged)
+    Q_PROPERTY(float centerY READ centerY WRITE setCenterY NOTIFY centerYChanged)
+    Q_PROPERTY(float centerZ READ centerZ WRITE setCenterZ NOTIFY centerZChanged)
     Q_PROPERTY(float radius READ radius WRITE setRadius NOTIFY radiusChanged)
 
 public:
@@ -70,7 +73,19 @@ public:
     void setRadius(float radius);
     float radius() const;
 
+    void setCenterX(float x);
+    float centerX() const;
+
+    void setCenterY(float y);
+    float centerY() const;
+
+    void setCenterZ(float z);
+    float centerZ() const;
+
 Q_SIGNALS:
+    void centerXChanged();
+    void centerYChanged();
+    void centerZChanged();
     void centerChanged();
     void radiusChanged();
 

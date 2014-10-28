@@ -76,8 +76,10 @@ void QSphereCollider::copy(const QNode *ref)
 void QSphereCollider::setCenter(const QVector3D &center)
 {
     Q_D(QSphereCollider);
-    if (d->m_center != center) {
-        d->m_center = center;
+    if (!qFuzzyCompare(d->m_center, center)) {
+        setCenterX(center.x());
+        setCenterY(center.y());
+        setCenterZ(center.z());
         emit centerChanged();
     }
 }
@@ -101,6 +103,51 @@ float QSphereCollider::radius() const
 {
     Q_D(const QSphereCollider);
     return d->m_radius;
+}
+
+void QSphereCollider::setCenterX(float x)
+{
+    Q_D(QSphereCollider);
+    if (!qFuzzyCompare(d->m_center.x(), x)) {
+        d->m_center.setX(x);
+        emit centerXChanged();
+    }
+}
+
+float QSphereCollider::centerX() const
+{
+    Q_D(const QSphereCollider);
+    return d->m_center.x();
+}
+
+void QSphereCollider::setCenterY(float y)
+{
+    Q_D(QSphereCollider);
+    if (!qFuzzyCompare(d->m_center.y(), y)) {
+        d->m_center.setY(y);
+        emit centerYChanged();
+    }
+}
+
+float QSphereCollider::centerY() const
+{
+    Q_D(const QSphereCollider);
+    return d->m_center.y();
+}
+
+void QSphereCollider::setCenterZ(float z)
+{
+    Q_D(QSphereCollider);
+    if (!qFuzzyCompare(d->m_center.z(), z)) {
+        d->m_center.setZ(z);
+        emit centerZChanged();
+    }
+}
+
+float QSphereCollider::centerZ() const
+{
+    Q_D(const QSphereCollider);
+    return d->m_center.z();
 }
 
 } // namespace BulletPhysics
