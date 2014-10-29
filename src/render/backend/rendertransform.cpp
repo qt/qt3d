@@ -81,9 +81,10 @@ QMatrix4x4 RenderTransform::transformMatrix() const
 
 void RenderTransform::sceneChangeEvent(const QSceneChangePtr &e)
 {
-    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-    if (e->type() == NodeUpdated && propertyChange->propertyName() == QByteArrayLiteral("matrix"))
+    if (e->type() == NodeUpdated) {
+        const QScenePropertyChangePtr &propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         m_transformMatrix = propertyChange->value().value<QMatrix4x4>();
+    }
 }
 
 } // Render
