@@ -717,10 +717,17 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
                 }
 
                 // If there are remaining parameters, those are set as uniforms
-                Q_FOREACH (const QString &paramName, parameters.keys()) {
-                    if (uniformNames.contains(paramName))
-                        setUniformValue(command->m_uniforms, paramName, parameters.take(paramName));
-                    // Else param unused by current shader
+                if (!uniformNames.isEmpty() && !parameters.isEmpty()) {
+                    QHash<QString, QVariant>::iterator it = parameters.begin();
+                    while (it != parameters.end()) {
+                        if (uniformNames.contains(it.key())) {
+                            setUniformValue(command->m_uniforms, it.key(), it.value());
+                            it = parameters.erase(it);
+                        } else {
+                            // Else param unused by current shader
+                            ++it;
+                        }
+                    }
                 }
 
                 // Sets lights in shader
