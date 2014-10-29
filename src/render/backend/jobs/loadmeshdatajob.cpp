@@ -56,7 +56,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
-LoadMeshDataJob::LoadMeshDataJob(QAbstractMeshFunctorPtr functor, const QUuid &meshUuid)
+LoadMeshDataJob::LoadMeshDataJob(QAbstractMeshFunctorPtr functor, const QNodeUuid &meshUuid)
     : QAspectJob()
     , m_meshUuid(meshUuid)
     , m_functor(functor)

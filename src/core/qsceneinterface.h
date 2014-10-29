@@ -44,7 +44,7 @@
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <QObject>
-#include <QUuid>
+#include <Qt3DCore/qnodeuuid.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -62,18 +62,18 @@ class QT3DCORESHARED_EXPORT QSceneInterface
 {
 public:
     virtual ~QSceneInterface() {}
-    virtual void addObservable(QObservableInterface *observable, const QUuid &uuid) = 0;
+    virtual void addObservable(QObservableInterface *observable, const QNodeUuid &uuid) = 0;
     virtual void addObservable(QNode *observable) = 0;
-    virtual void removeObservable(QObservableInterface *observable, const QUuid &uuid) = 0;
+    virtual void removeObservable(QObservableInterface *observable, const QNodeUuid &uuid) = 0;
     virtual void removeObservable(QNode *observable) = 0;
-    virtual QObservableList lookupObservables(const QUuid &uuid) const = 0;
-    virtual QNode *lookupNode(const QUuid &uuid) const = 0;
-    virtual QUuid nodeIdFromObservable(QObservableInterface *observable) const = 0;
+    virtual QObservableList lookupObservables(const QNodeUuid &uuid) const = 0;
+    virtual QNode *lookupNode(const QNodeUuid &uuid) const = 0;
+    virtual QNodeUuid nodeIdFromObservable(QObservableInterface *observable) const = 0;
     virtual void setArbiter(QChangeArbiter *arbiter) = 0;
 
-    virtual QList<QUuid> entitiesForComponent(const QUuid &componentUuid) const = 0;
-    virtual void addEntityForComponent(const QUuid &componentUuid, const QUuid &entityUuid) = 0;
-    virtual void removeEntityForComponent(const QUuid &componentUuid, const QUuid &entityUuid) = 0;
+    virtual QList<QNodeUuid> entitiesForComponent(const QNodeUuid &componentUuid) const = 0;
+    virtual void addEntityForComponent(const QNodeUuid &componentUuid, const QNodeUuid &entityUuid) = 0;
+    virtual void removeEntityForComponent(const QNodeUuid &componentUuid, const QNodeUuid &entityUuid) = 0;
 };
 
 } // Qt3D

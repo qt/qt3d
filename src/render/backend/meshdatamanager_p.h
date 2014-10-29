@@ -51,7 +51,7 @@
 #include <QHash>
 #include <QPair>
 #include <QString>
-#include <QUuid>
+#include <Qt3DCore/qnodeuuid.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,16 +59,16 @@ namespace Qt3D {
 namespace Render {
 
 class MeshDataManager : public QResourcesManager<QMeshData,
-                                                 QUuid,
+                                                 QNodeUuid,
                                                  16,
                                                  Qt3D::ListAllocatingPolicy,
                                                  Qt3D::ObjectLevelLockingPolicy>
 {
 public:
     MeshDataManager() {}
-    void addMeshData(QAbstractMeshFunctorPtr functor, const QUuid &meshUuid);
+    void addMeshData(QAbstractMeshFunctorPtr functor, const QNodeUuid &meshUuid);
 
-    QHash<QUuid, QAbstractMeshFunctorPtr> meshesPending();
+    QHash<QNodeUuid, QAbstractMeshFunctorPtr> meshesPending();
     HMeshData meshDataFromFunctor(QAbstractMeshFunctorPtr functor) const;
     void addMeshDataForFunctor(HMeshData meshDataHandle, QAbstractMeshFunctorPtr functor);
 
@@ -76,7 +76,7 @@ private:
     // List of meshes that we need to schedule jobs to load
     // and calculate bounds for.
 
-    QHash<QUuid, QAbstractMeshFunctorPtr> m_meshesPending;
+    QHash<QNodeUuid, QAbstractMeshFunctorPtr> m_meshesPending;
     QHash<QAbstractMeshFunctorPtr, HMeshData> m_meshFunctors;
 };
 

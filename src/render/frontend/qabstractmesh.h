@@ -45,7 +45,6 @@
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DCore/qcomponent.h>
 #include <QSharedPointer>
-#include <QUuid>
 
 QT_BEGIN_NAMESPACE
 

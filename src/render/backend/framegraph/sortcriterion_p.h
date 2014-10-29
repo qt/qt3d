@@ -42,7 +42,6 @@
 #ifndef QT3D_RENDER_SORTCRITERION_P_H
 #define QT3D_RENDER_SORTCRITERION_P_H
 
-#include <QUuid>
 #include <Qt3DRenderer/qsortcriterion.h>
 #include <Qt3DCore/qbackendnode.h>
 

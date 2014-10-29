@@ -44,6 +44,7 @@
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qscenechange.h>
+#include <Qt3DCore/qnodeuuid.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -76,7 +77,7 @@ public:
     virtual ~QBackendNode();
 
     void setPeer(QNode *peer);
-    QUuid peerUuid() const;
+    QNodeUuid peerUuid() const;
 
     Mode mode() const;
     virtual void updateFromPeer(QNode *peer) = 0;

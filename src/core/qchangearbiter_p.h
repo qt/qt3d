@@ -50,7 +50,7 @@
 #include <QPair>
 #include <QThreadStorage>
 #include <QMutex>
-
+#include <Qt3DCore/qnodeuuid.h>
 #include <Qt3DCore/qscenechange.h>
 #include <Qt3DCore/private/qobserverinterface_p.h>
 
@@ -83,10 +83,10 @@ public:
     void syncChanges();
 
     void registerObserver(QObserverInterface *observer,
-                          const QUuid &nodeId,
+                          const QNodeUuid &nodeId,
                           ChangeFlags changeFlags = AllChanges);
     void unregisterObserver(QObserverInterface *observer,
-                            const QUuid &nodeId);
+                            const QNodeUuid &nodeId);
 
     void registerSceneObserver(QSceneObserverInterface *observer);
     void unregisterSceneObserver(QSceneObserverInterface *observer);
@@ -129,7 +129,7 @@ private:
     //
     // We keep these distinct because we do not manage the main thread which means
     // the mechanisms for working with objects there is different.
-    QHash<QUuid, QObserverList> m_nodeObservations;
+    QHash<QNodeUuid, QObserverList> m_nodeObservations;
     QList<QSceneObserverInterface *> m_sceneObservers;
 
     // Each thread has a TLS ChangeQueue so we never need to lock whilst

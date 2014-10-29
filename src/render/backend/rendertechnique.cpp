@@ -144,28 +144,28 @@ void RenderTechnique::sceneChangeEvent(const QSceneChangePtr &e)
     }
 }
 
-QList<QUuid> RenderTechnique::parameters() const
+QList<QNodeUuid> RenderTechnique::parameters() const
 {
     return m_parameterPack.parameters();
 }
 
-void RenderTechnique::appendRenderPass(const QUuid &renderPassId)
+void RenderTechnique::appendRenderPass(const QNodeUuid &renderPassId)
 {
     if (!m_renderPasses.contains(renderPassId))
         m_renderPasses.append(renderPassId);
 }
 
-void RenderTechnique::removeRenderPass(const QUuid &renderPassId)
+void RenderTechnique::removeRenderPass(const QNodeUuid &renderPassId)
 {
     m_renderPasses.removeOne(renderPassId);
 }
 
-QList<QUuid> RenderTechnique::annotations() const
+QList<QNodeUuid> RenderTechnique::annotations() const
 {
     return m_annotationList;
 }
 
-QList<QUuid> RenderTechnique::renderPasses() const
+QList<QNodeUuid> RenderTechnique::renderPasses() const
 {
     return m_renderPasses;
 }
@@ -175,13 +175,13 @@ QOpenGLFilter *RenderTechnique::openGLFilter() const
     return m_openglFilter;
 }
 
-void RenderTechnique::appendAnnotation(const QUuid &criterionId)
+void RenderTechnique::appendAnnotation(const QNodeUuid &criterionId)
 {
     if (!m_annotationList.contains(criterionId))
         m_annotationList.append(criterionId);
 }
 
-void RenderTechnique::removeAnnotation(const QUuid &criterionId)
+void RenderTechnique::removeAnnotation(const QNodeUuid &criterionId)
 {
     m_annotationList.removeOne(criterionId);
 }

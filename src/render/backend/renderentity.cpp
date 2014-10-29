@@ -131,12 +131,12 @@ void RenderEntity::updateFromPeer(QNode *peer)
     m_worldTransform = m_renderer->worldMatrixManager()->getOrAcquireHandle(peerUuid());
 
     // TO DO: Suboptimal -> Maybe have a Hash<QComponent, QEntityList> instead
-    m_transformComponent = QUuid();
-    m_materialComponent = QUuid();
-    m_meshComponent = QUuid();
-    m_cameraComponent = QUuid();
-    m_layerComponent = QUuid();
-    m_lightComponent = QUuid();
+    m_transformComponent = QNodeUuid();
+    m_materialComponent = QNodeUuid();
+    m_meshComponent = QNodeUuid();
+    m_cameraComponent = QNodeUuid();
+    m_layerComponent = QNodeUuid();
+    m_lightComponent = QNodeUuid();
 
     Q_FOREACH (QComponent *comp, entity->components())
         addComponent(comp);
@@ -237,17 +237,17 @@ void RenderEntity::addComponent(QComponent *component)
 void RenderEntity::removeComponent(QComponent *component)
 {
     if (qobject_cast<QTransform *>(component) != Q_NULLPTR)
-        m_transformComponent = QUuid();
+        m_transformComponent = QNodeUuid();
     else if (qobject_cast<QAbstractMesh *>(component) != Q_NULLPTR)
-        m_meshComponent = QUuid();
+        m_meshComponent = QNodeUuid();
     else if (qobject_cast<QCameraLens *>(component) != Q_NULLPTR)
-        m_cameraComponent = QUuid();
+        m_cameraComponent = QNodeUuid();
     else if (qobject_cast<QLayer *>(component) != Q_NULLPTR)
-        m_layerComponent = QUuid();
+        m_layerComponent = QNodeUuid();
     else if (qobject_cast<QAbstractLight *>(component) != Q_NULLPTR)
-        m_lightComponent = QUuid();
+        m_lightComponent = QNodeUuid();
     else if (qobject_cast<QMaterial *>(component) != Q_NULLPTR)
-        m_materialComponent = QUuid();
+        m_materialComponent = QNodeUuid();
 }
 
 template<>
@@ -323,22 +323,22 @@ RenderTransform *RenderEntity::renderComponent<RenderTransform>() const
 }
 
 template<>
-QUuid RenderEntity::componentUuid<RenderTransform>() const { return m_transformComponent; }
+QNodeUuid RenderEntity::componentUuid<RenderTransform>() const { return m_transformComponent; }
 
 template<>
-QUuid RenderEntity::componentUuid<RenderCameraLens>() const { return m_cameraComponent; }
+QNodeUuid RenderEntity::componentUuid<RenderCameraLens>() const { return m_cameraComponent; }
 
 template<>
-QUuid RenderEntity::componentUuid<RenderLayer>() const { return m_layerComponent; }
+QNodeUuid RenderEntity::componentUuid<RenderLayer>() const { return m_layerComponent; }
 
 template<>
-QUuid RenderEntity::componentUuid<RenderMaterial>() const { return m_materialComponent; }
+QNodeUuid RenderEntity::componentUuid<RenderMaterial>() const { return m_materialComponent; }
 
 template<>
-QUuid RenderEntity::componentUuid<RenderLight>() const { return m_lightComponent; }
+QNodeUuid RenderEntity::componentUuid<RenderLight>() const { return m_lightComponent; }
 
 template<>
-QUuid RenderEntity::componentUuid<RenderMesh>() const { return m_meshComponent; }
+QNodeUuid RenderEntity::componentUuid<RenderMesh>() const { return m_meshComponent; }
 
 RenderEntityFunctor::RenderEntityFunctor(Renderer *renderer)
     : m_renderer(renderer)

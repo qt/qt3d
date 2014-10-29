@@ -64,13 +64,13 @@ public:
     RenderPassFilter();
 
     void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
-    QList<QUuid> filters() const;
+    QList<QNodeUuid> filters() const;
     void appendFilter(QAnnotation *criterion);
-    void removeFilter(const QUuid &criterionId);
+    void removeFilter(const QNodeUuid &criterionId);
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    QList<QUuid> m_filters;
+    QList<QNodeUuid> m_filters;
 };
 
 } // namespace Render

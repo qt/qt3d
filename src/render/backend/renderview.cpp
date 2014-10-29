@@ -325,7 +325,7 @@ void RenderView::setConfigFromFrameGraphLeafNode(FrameGraphNode *fgLeaf)
             RenderTarget *renderTarget;
             if ((renderTarget = m_renderer->renderTargetManager()->data(m_renderTarget)) != Q_NULLPTR) {
                 // Add renderTarget Handle and build renderCommand AttachmentPack
-                Q_FOREACH (const QUuid &attachmentId, renderTarget->renderAttachments()) {
+                Q_FOREACH (const QNodeUuid &attachmentId, renderTarget->renderAttachments()) {
                     RenderAttachment *attachment = m_renderer->attachmentManager()->lookupResource(attachmentId);
                     if (attachment != Q_NULLPTR)
                         m_attachmentPack.addAttachment(attachment->attachment());
@@ -461,17 +461,17 @@ HTarget RenderView::renderTarget() const
 RenderTechnique *RenderView::findTechniqueForEffect(RenderEffect *effect)
 {
     if (effect != Q_NULLPTR) {
-        Q_FOREACH (const QUuid &techniqueId, effect->techniques()) {
+        Q_FOREACH (const QNodeUuid &techniqueId, effect->techniques()) {
             RenderTechnique *technique = m_renderer->techniqueManager()->lookupResource(techniqueId);
             if (technique != Q_NULLPTR &&
                     *m_renderer->contextInfo() == *technique->openGLFilter()) {
                 // If no techniqueFilter is present, we return the technique as it satisfies OpenGL version
                 bool findMatch = (m_data->m_techniqueFilter == Q_NULLPTR || m_data->m_techniqueFilter->filters().size() == 0) ? true : false;
                 if (!findMatch && technique->annotations().size() >= m_data->m_techniqueFilter->filters().size()) {
-                    Q_FOREACH (const QUuid &refCritId, m_data->m_techniqueFilter->filters()) {
+                    Q_FOREACH (const QNodeUuid &refCritId, m_data->m_techniqueFilter->filters()) {
                         RenderAnnotation *refCriterion = m_renderer->criterionManager()->lookupResource(refCritId);
                         findMatch = false;
-                        Q_FOREACH (const QUuid &critId, technique->annotations()) {
+                        Q_FOREACH (const QNodeUuid &critId, technique->annotations()) {
                             RenderAnnotation *rCrit = m_renderer->criterionManager()->lookupResource(critId);
                             if ((findMatch = (*rCrit == *refCriterion)))
                                 break;
@@ -492,17 +492,17 @@ QList<RenderRenderPass *> RenderView::findRenderPassesForTechnique(RenderTechniq
 {
     QList<RenderRenderPass *> passes;
     if (technique != Q_NULLPTR) {
-        Q_FOREACH (const QUuid &passId, technique->renderPasses()) {
+        Q_FOREACH (const QNodeUuid &passId, technique->renderPasses()) {
             RenderRenderPass *renderPass = m_renderer->renderPassManager()->lookupResource(passId);
 
             if (renderPass != Q_NULLPTR) {
                 bool findMatch = (m_data->m_passFilter == Q_NULLPTR || m_data->m_passFilter->filters().size() == 0) ? true : false;
                 if (!findMatch && renderPass->annotations().size() >= m_data->m_passFilter->filters().size())
                 {
-                    Q_FOREACH (const QUuid &refCritId, m_data->m_passFilter->filters()) {
+                    Q_FOREACH (const QNodeUuid &refCritId, m_data->m_passFilter->filters()) {
                         RenderAnnotation *refCriterion = m_renderer->criterionManager()->lookupResource(refCritId);
                         findMatch = false;
-                        Q_FOREACH (const QUuid &critId, renderPass->annotations()) {
+                        Q_FOREACH (const QNodeUuid &critId, renderPass->annotations()) {
                             RenderAnnotation *rCrit = m_renderer->criterionManager()->lookupResource(critId);
                             if ((findMatch = (*rCrit == *refCriterion)))
                                 break;
@@ -520,9 +520,9 @@ QList<RenderRenderPass *> RenderView::findRenderPassesForTechnique(RenderTechniq
 }
 
 static void addParametersForIds(QHash<QString, QVariant> *params, ParameterManager* manager,
-                                const QList<QUuid> &parameterIds)
+                                const QList<QNodeUuid> &parameterIds)
 {
-    Q_FOREACH (const QUuid &paramId, parameterIds) {
+    Q_FOREACH (const QNodeUuid &paramId, parameterIds) {
         RenderParameter *param = manager->lookupResource(paramId);
         if (param != Q_NULLPTR)
             params->insert(param->name(), param->value());

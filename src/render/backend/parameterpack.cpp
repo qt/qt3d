@@ -61,21 +61,21 @@ void ParameterPack::clear()
     m_peers.clear();
 }
 
-void ParameterPack::appendParameter(const QUuid &parameterId)
+void ParameterPack::appendParameter(const QNodeUuid &parameterId)
 {
     if (!m_peers.contains(parameterId)) {
         m_peers.append(parameterId);
     }
 }
 
-void ParameterPack::removeParameter(const QUuid &parameterId)
+void ParameterPack::removeParameter(const QNodeUuid &parameterId)
 {
     if (m_peers.contains(parameterId)) {
         m_peers.removeOne(parameterId);
     }
 }
 
-QList<QUuid> ParameterPack::parameters() const
+QList<QNodeUuid> ParameterPack::parameters() const
 {
     return m_peers;
 }

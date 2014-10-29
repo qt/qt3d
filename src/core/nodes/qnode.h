@@ -44,7 +44,7 @@
 
 #include <QObject>
 #include <Qt3DCore/qt3dcore_global.h>
-#include <QUuid>
+#include <Qt3DCore/qnodeuuid.h>
 #include <Qt3DCore/qscenechange.h>
 
 QT_BEGIN_NAMESPACE
@@ -74,7 +74,7 @@ public:
     explicit QNode(QNode *parent = 0);
     ~QNode();
 
-    const QUuid uuid() const;
+    const QNodeUuid uuid() const;
     QNode *parentNode() const;
 
     bool notificationsBlocked() const;

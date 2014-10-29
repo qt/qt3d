@@ -68,18 +68,18 @@ void RenderTarget::cleanup()
 {
 }
 
-void RenderTarget::appendRenderAttachment(const QUuid &attachmentId)
+void RenderTarget::appendRenderAttachment(const QNodeUuid &attachmentId)
 {
     if (!m_renderAttachments.contains(attachmentId))
         m_renderAttachments.append(attachmentId);
 }
 
-void RenderTarget::removeRenderAttachment(const QUuid &attachmentId)
+void RenderTarget::removeRenderAttachment(const QNodeUuid &attachmentId)
 {
     m_renderAttachments.removeOne(attachmentId);
 }
 
-QList<QUuid> RenderTarget::renderAttachments() const
+QList<QNodeUuid> RenderTarget::renderAttachments() const
 {
     return m_renderAttachments;
 }

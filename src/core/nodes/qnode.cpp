@@ -57,7 +57,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QHash<QUuid, QNode *> QNodePrivate::m_clonesLookupTable = QHash<QUuid, QNode *>();
+QHash<QNodeUuid, QNode *> QNodePrivate::m_clonesLookupTable = QHash<QNodeUuid, QNode *>();
 
 QNodePrivate::QNodePrivate(QNode *qq)
     : QObjectPrivate()
@@ -233,7 +233,7 @@ void QNodePrivate::_q_onNodePropertyChanged()
     const QVariant data = q->property(name);
     if (data.canConvert<QNode*>()) {
         const QNode * const node = data.value<QNode*>();
-        const QUuid uuid = node ? node->uuid() : QUuid();
+        const QNodeUuid uuid = node ? node->uuid() : QNodeUuid();
         notifyPropertyChange(name, uuid);
     } else {
         notifyPropertyChange(name, data);
@@ -351,7 +351,7 @@ QNode::~QNode()
 {
 }
 
-const QUuid QNode::uuid() const
+const QNodeUuid QNode::uuid() const
 {
     Q_D(const QNode);
     return d->m_uuid;

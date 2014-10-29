@@ -45,7 +45,6 @@
 #include <private/qobject_p.h>
 #include <QMutex>
 #include <QWaitCondition>
-#include <QUuid>
 #include <QHash>
 
 QT_BEGIN_NAMESPACE

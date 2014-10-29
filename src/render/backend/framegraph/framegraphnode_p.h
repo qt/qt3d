@@ -49,7 +49,6 @@
 #include <Qt3DRenderer/private/managers_p.h>
 #include <qglobal.h>
 #include <QVector>
-#include <QUuid>
 
 QT_BEGIN_NAMESPACE
 

@@ -63,7 +63,7 @@ void TechniqueFilter::updateFromPeer(QNode *peer)
         appendFilter(criterion);
 }
 
-QList<QUuid> TechniqueFilter::filters() const
+QList<QNodeUuid> TechniqueFilter::filters() const
 {
     return m_filters;
 }
@@ -74,7 +74,7 @@ void TechniqueFilter::appendFilter(QAnnotation *criterion)
         m_filters.append(criterion->uuid());
 }
 
-void TechniqueFilter::removeFilter(const QUuid &criterionId)
+void TechniqueFilter::removeFilter(const QNodeUuid &criterionId)
 {
     m_filters.removeOne(criterionId);
 }

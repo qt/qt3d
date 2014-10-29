@@ -95,14 +95,14 @@ QBackendNode::~QBackendNode()
 void QBackendNode::setPeer(QNode *peer)
 {
     Q_D(QBackendNode);
-    QUuid peerUuid;
+    QNodeUuid peerUuid;
     if (peer != Q_NULLPTR)
         peerUuid = peer->uuid();
     d->m_peerUuid = peerUuid;
     updateFromPeer(peer);
 }
 
-QUuid QBackendNode::peerUuid() const
+QNodeUuid QBackendNode::peerUuid() const
 {
     Q_D(const QBackendNode);
     return d->m_peerUuid;

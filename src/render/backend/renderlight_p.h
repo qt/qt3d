@@ -43,7 +43,6 @@
 #define QT3D_RENDER_RENDERLIGHT_H
 
 #include <Qt3DCore/qbackendnode.h>
-#include <QUuid>
 
 QT_BEGIN_NAMESPACE
 

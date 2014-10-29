@@ -43,7 +43,7 @@
 #define QT3D_RENDER_CAMERASELECTOR_H
 
 #include <Qt3DRenderer/private/framegraphnode_p.h>
-#include <QUuid>
+#include <Qt3DCore/qnodeuuid.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -64,10 +64,10 @@ public:
     void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
 
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    QUuid cameraUuid() const;
+    QNodeUuid cameraUuid() const;
 
 private:
-    QUuid m_cameraUuid;
+    QNodeUuid m_cameraUuid;
 };
 
 } // namespace Render

@@ -45,7 +45,6 @@
 #include <Qt3DCore/axisalignedboundingbox.h>
 #include <Qt3DRenderer/private/handle_types_p.h>
 #include <Qt3DCore/qbackendnode.h>
-#include <QUuid>
 
 QT_BEGIN_NAMESPACE
 

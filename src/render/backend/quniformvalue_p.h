@@ -46,7 +46,7 @@
 #include <QByteArray>
 #include <QVector>
 #include <QOpenGLShaderProgram>
-#include <QUuid>
+#include <Qt3DCore/qnodeuuid.h>
 #include <Qt3DRenderer/renderlogging.h>
 
 // for RenderTexturePtr
@@ -94,12 +94,12 @@ public :
     {
     }
 
-    void setTextureId(const QUuid &id)
+    void setTextureId(const QNodeUuid &id)
     {
         m_textureId = id;
     }
 
-    QUuid textureId() const { return m_textureId; }
+    QNodeUuid textureId() const { return m_textureId; }
 
     bool operator ==(const QUniformValue &other) Q_DECL_OVERRIDE
     {
@@ -113,7 +113,7 @@ public :
     void apply(QGraphicsContext *ctx, const ShaderUniform &description) const;
 
 private:
-    QUuid m_textureId;
+    QNodeUuid m_textureId;
     int m_textureUnit;
 };
 
@@ -123,20 +123,20 @@ public:
     ~QUniformPack();
 
     void setUniform(QString glslName, const QUniformValue *val);
-    void setTexture(QString glslName, const QUuid &id);
+    void setTexture(QString glslName, const QNodeUuid &id);
 
     const QHash<QString, const QUniformValue* > &uniforms() const { return m_uniforms; }
     QHash<QString, const QUniformValue* > &uniforms() { return m_uniforms; }
 
     struct NamedTexture {
         NamedTexture() {}
-        NamedTexture(QString nm, const QUuid &t) :
+        NamedTexture(QString nm, const QNodeUuid &t) :
             glslName(nm),
             texId(t)
         { }
 
         QString glslName;
-        QUuid texId;
+        QNodeUuid texId;
     };
 
     QVector<NamedTexture> textures() const { return m_textures; }

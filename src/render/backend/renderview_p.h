@@ -145,7 +145,7 @@ private:
         QMatrix4x4 *m_viewMatrix;
         QStringList m_layers;
         QList<LightPair> m_lights;
-        QList<QUuid> m_sortingCriteria;
+        QList<QNodeUuid> m_sortingCriteria;
         QVector3D m_eyePos;
     } *m_data;
 

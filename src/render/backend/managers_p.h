@@ -72,7 +72,7 @@ namespace Render {
 
 class AttachmentManager : public QResourcesManager<
         RenderAttachment,
-        QUuid,
+        QNodeUuid,
         16,
         Qt3D::ArrayAllocatingPolicy,
         Qt3D::ObjectLevelLockingPolicy>
@@ -83,7 +83,7 @@ public:
 
 class CameraManager : public QResourcesManager<
         RenderCameraLens,
-        QUuid,
+        QNodeUuid,
         8,
         Qt3D::ArrayAllocatingPolicy>
 {
@@ -93,7 +93,7 @@ public:
 
 class CriterionManager : public QResourcesManager<
         RenderAnnotation,
-        QUuid,
+        QNodeUuid,
         16,
         Qt3D::ArrayAllocatingPolicy,
         Qt3D::ObjectLevelLockingPolicy>
@@ -105,7 +105,7 @@ public:
 
 class EffectManager : public QResourcesManager<
         RenderEffect,
-        QUuid,
+        QNodeUuid,
         16,
         Qt3D::ArrayAllocatingPolicy,
         Qt3D::ObjectLevelLockingPolicy>
@@ -114,7 +114,7 @@ public:
     EffectManager() {}
 };
 
-class EntityManager : public QResourcesManager<RenderEntity, QUuid, 16>
+class EntityManager : public QResourcesManager<RenderEntity, QNodeUuid, 16>
 {
 public:
     EntityManager() {}
@@ -122,7 +122,7 @@ public:
 
 class FrameGraphManager : public QResourcesManager<
         FrameGraphNode *,
-        QUuid,
+        QNodeUuid,
         8,
         Qt3D::ArrayAllocatingPolicy>
 {
@@ -132,7 +132,7 @@ public:
 
 class LayerManager : public QResourcesManager<
         RenderLayer,
-        QUuid,
+        QNodeUuid,
         16,
         Qt3D::ArrayAllocatingPolicy,
         Qt3D::ObjectLevelLockingPolicy>
@@ -143,7 +143,7 @@ public:
 
 class LightManager : public QResourcesManager<
         RenderLight,
-        QUuid,
+        QNodeUuid,
         16,
         Qt3D::ArrayAllocatingPolicy,
         Qt3D::ObjectLevelLockingPolicy>
@@ -154,7 +154,7 @@ public:
 
 class MaterialManager : public QResourcesManager<
         RenderMaterial,
-        QUuid,
+        QNodeUuid,
         16,
         Qt3D::ArrayAllocatingPolicy,
         Qt3D::ObjectLevelLockingPolicy>
@@ -163,7 +163,7 @@ public:
     MaterialManager() {}
 };
 
-class MatrixManager : public QResourcesManager<QMatrix4x4, QUuid, 16>
+class MatrixManager : public QResourcesManager<QMatrix4x4, QNodeUuid, 16>
 {
 public:
     MatrixManager() {}
@@ -171,7 +171,7 @@ public:
 
 class MeshManager : public QResourcesManager<
         RenderMesh,
-        QUuid,
+        QNodeUuid,
         16,
         Qt3D::ArrayAllocatingPolicy,
         Qt3D::ObjectLevelLockingPolicy>
@@ -182,7 +182,7 @@ public:
 
 class ShaderManager : public QResourcesManager<
         RenderShader,
-        QUuid,
+        QNodeUuid,
         16,
         Qt3D::ArrayAllocatingPolicy,
         Qt3D::ObjectLevelLockingPolicy>
@@ -193,7 +193,7 @@ public:
 
 class SortCriterionManager : public QResourcesManager<
         SortCriterion,
-        QUuid,
+        QNodeUuid,
         8,
         Qt3D::ArrayAllocatingPolicy,
         Qt3D::ObjectLevelLockingPolicy>
@@ -204,7 +204,7 @@ public:
 
 class TechniqueManager : public QResourcesManager<
         RenderTechnique,
-        QUuid,
+        QNodeUuid,
         16,
         Qt3D::ArrayAllocatingPolicy,
         Qt3D::ObjectLevelLockingPolicy>
@@ -215,7 +215,7 @@ public:
 
 class TextureManager : public QResourcesManager<
         RenderTexture,
-        QUuid,
+        QNodeUuid,
         16,
         Qt3D::ArrayAllocatingPolicy,
         Qt3D::ObjectLevelLockingPolicy>
@@ -226,7 +226,7 @@ public:
 
 class TransformManager : public QResourcesManager<
         RenderTransform,
-        QUuid,
+        QNodeUuid,
         16,
         Qt3D::ArrayAllocatingPolicy,
         Qt3D::ObjectLevelLockingPolicy>
@@ -246,7 +246,7 @@ public:
 
 class RenderTargetManager : public QResourcesManager<
         RenderTarget,
-        QUuid,
+        QNodeUuid,
         8,
         Qt3D::ArrayAllocatingPolicy,
         Qt3D::ObjectLevelLockingPolicy>
@@ -257,7 +257,7 @@ public:
 
 class RenderPassManager : public QResourcesManager<
         RenderRenderPass,
-        QUuid,
+        QNodeUuid,
         16,
         Qt3D::ArrayAllocatingPolicy,
         Qt3D::ObjectLevelLockingPolicy>
@@ -269,7 +269,7 @@ public:
 
 class ParameterManager : public QResourcesManager<
         RenderParameter,
-        QUuid,
+        QNodeUuid,
         16,
         Qt3D::ArrayAllocatingPolicy,
         Qt3D::ObjectLevelLockingPolicy>

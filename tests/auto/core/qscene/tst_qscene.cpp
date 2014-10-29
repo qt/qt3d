@@ -192,7 +192,7 @@ void tst_QScene::removeObservable()
     scene->removeObservable(observables.at(0), node2->uuid());
     QCOMPARE(scene->lookupObservables(node2->uuid()).count(), 5);
 
-    QVERIFY(scene->nodeIdFromObservable(observables.at(0)) == QUuid());
+    QVERIFY(scene->nodeIdFromObservable(observables.at(0)) == Qt3D::QNodeUuid());
 }
 
 void tst_QScene::removeNodeObservable()
@@ -227,7 +227,7 @@ void tst_QScene::removeNodeObservable()
 
     QVERIFY(scene->lookupNode(node1->uuid()) == Q_NULLPTR);
     QVERIFY(scene->lookupObservables(node1->uuid()).empty());
-    QVERIFY(scene->nodeIdFromObservable(observables.at(0)) == QUuid());
+    QVERIFY(scene->nodeIdFromObservable(observables.at(0)) == Qt3D::QNodeUuid());
 
     QVERIFY(scene->lookupNode(node2->uuid()) == node2);
     QCOMPARE(scene->lookupObservables(node2->uuid()).count(), 5);
@@ -314,7 +314,7 @@ void tst_QScene::addEntityForComponent()
     }
 
     for (int i = 0; i < 10; i++) {
-        QList<QUuid> uuids = scene->entitiesForComponent(components.at(i)->uuid());
+        QList<Qt3D::QNodeUuid> uuids = scene->entitiesForComponent(components.at(i)->uuid());
         QCOMPARE(uuids.count(), 10);
     }
 }

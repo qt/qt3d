@@ -107,18 +107,18 @@ void RenderEffect::sceneChangeEvent(const QSceneChangePtr &e)
     }
 }
 
-void RenderEffect::appendRenderTechnique(const QUuid &technique)
+void RenderEffect::appendRenderTechnique(const QNodeUuid &technique)
 {
     if (!m_techniques.contains(technique))
         m_techniques.append(technique);
 }
 
-QList<QUuid> RenderEffect::techniques() const
+QList<QNodeUuid> RenderEffect::techniques() const
 {
     return m_techniques;
 }
 
-QList<QUuid> RenderEffect::parameters() const
+QList<QNodeUuid> RenderEffect::parameters() const
 {
     return m_parameterPack.parameters();
 }

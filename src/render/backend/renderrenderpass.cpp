@@ -110,7 +110,7 @@ void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
             removeAnnotation(propertyChange->value().toUuid());
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("shaderProgram")) {
-            m_shaderUuid = QUuid();
+            m_shaderUuid = QNodeUuid();
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("binding")) {
             removeBinding(propertyChange->value().toUuid());
@@ -126,7 +126,7 @@ void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
     }
 }
 
-QUuid RenderRenderPass::shaderProgram() const
+QNodeUuid RenderRenderPass::shaderProgram() const
 {
     return m_shaderUuid;
 }
@@ -136,7 +136,7 @@ QList<QParameterMapping *> RenderRenderPass::bindings() const
     return m_bindings.values();
 }
 
-QList<QUuid> RenderRenderPass::annotations() const
+QList<QNodeUuid> RenderRenderPass::annotations() const
 {
     return m_annotationList;
 }
@@ -146,13 +146,13 @@ QList<QRenderState *> RenderRenderPass::renderStates() const
     return m_renderStates.values();
 }
 
-void RenderRenderPass::appendAnnotation(const QUuid &annotationId)
+void RenderRenderPass::appendAnnotation(const QNodeUuid &annotationId)
 {
     if (!m_annotationList.contains(annotationId))
         m_annotationList.append(annotationId);
 }
 
-void RenderRenderPass::removeAnnotation(const QUuid &annotationId)
+void RenderRenderPass::removeAnnotation(const QNodeUuid &annotationId)
 {
     m_annotationList.removeOne(annotationId);
 }
@@ -163,7 +163,7 @@ void RenderRenderPass::appendBinding(QParameterMapping *binding)
         m_bindings[binding->uuid()] = binding;
 }
 
-void RenderRenderPass::removeBinding(const QUuid &bindingId)
+void RenderRenderPass::removeBinding(const QNodeUuid &bindingId)
 {
     m_bindings.remove(bindingId);
 }
@@ -174,7 +174,7 @@ void RenderRenderPass::appendRenderState(QRenderState *renderState)
         m_renderStates[renderState->uuid()] = renderState;
 }
 
-void RenderRenderPass::removeRenderState(const QUuid &renderStateId)
+void RenderRenderPass::removeRenderState(const QNodeUuid &renderStateId)
 {
     m_renderStates.remove(renderStateId);
 }

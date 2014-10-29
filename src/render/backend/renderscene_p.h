@@ -43,7 +43,6 @@
 #define QT3D_RENDER_RENDERSCENE_P_H
 
 #include <QtGlobal>
-#include <QUuid>
 #include <Qt3DCore/qbackendnode.h>
 
 QT_BEGIN_NAMESPACE

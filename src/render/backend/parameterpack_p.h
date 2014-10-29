@@ -42,7 +42,7 @@
 #ifndef QT3D_RENDER_PARAMETERPACK_H
 #define QT3D_RENDER_PARAMETERPACK_H
 
-#include <QUuid>
+#include <Qt3DCore/qnodeuuid.h>
 #include <QList>
 
 QT_BEGIN_NAMESPACE
@@ -57,12 +57,12 @@ public:
     ParameterPack();
     ~ParameterPack();
     void clear();
-    void appendParameter(const QUuid &parameterId);
-    void removeParameter(const QUuid &parameterId);
-    QList<QUuid> parameters() const;
+    void appendParameter(const QNodeUuid &parameterId);
+    void removeParameter(const QNodeUuid &parameterId);
+    QList<QNodeUuid> parameters() const;
 
 private:
-    QList<QUuid> m_peers;
+    QList<QNodeUuid> m_peers;
 };
 
 } // Render

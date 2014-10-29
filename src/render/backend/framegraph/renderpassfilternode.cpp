@@ -62,7 +62,7 @@ void RenderPassFilter::updateFromPeer(QNode *peer)
         appendFilter(criterion);
 }
 
-QList<QUuid> RenderPassFilter::filters() const
+QList<QNodeUuid> RenderPassFilter::filters() const
 {
     return m_filters;
 }
@@ -73,7 +73,7 @@ void RenderPassFilter::appendFilter(QAnnotation *criterion)
         m_filters.append(criterion->uuid());
 }
 
-void RenderPassFilter::removeFilter(const QUuid &criterionId)
+void RenderPassFilter::removeFilter(const QNodeUuid &criterionId)
 {
     m_filters.removeOne(criterionId);
 }

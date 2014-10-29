@@ -42,7 +42,6 @@
 #ifndef QT3D_QSHADERPROGRAM_H
 #define QT3D_QSHADERPROGRAM_H
 
-#include <QUuid>
 #include <Qt3DCore/qnode.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 

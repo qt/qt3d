@@ -45,8 +45,8 @@
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DRenderer/private/parameterpack_p.h>
 #include <Qt3DCore/qbackendnode.h>
+#include <Qt3DCore/qnodeuuid.h>
 #include <QList>
-#include <QUuid>
 
 QT_BEGIN_NAMESPACE
 
@@ -66,13 +66,13 @@ public:
 
     void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const QSceneChangePtr &e);
-    void appendRenderTechnique(const QUuid &t);
+    void appendRenderTechnique(const QNodeUuid &t);
 
-    QList<QUuid> techniques() const;
-    QList<QUuid> parameters() const;
+    QList<QNodeUuid> techniques() const;
+    QList<QNodeUuid> parameters() const;
 
 private:
-    QList<QUuid> m_techniques;
+    QList<QNodeUuid> m_techniques;
     ParameterPack m_parameterPack;
 };
 

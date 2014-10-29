@@ -47,16 +47,16 @@ namespace Qt3D {
 namespace Render {
 
 // Called by aspect thread when RenderMesh receive a new functor in syncChanges
-void MeshDataManager::addMeshData(QAbstractMeshFunctorPtr functor, const QUuid &meshUuid)
+void MeshDataManager::addMeshData(QAbstractMeshFunctorPtr functor, const QNodeUuid &meshUuid)
 {
     m_meshesPending[meshUuid] = functor;
 }
 
 // Called by single thread in QRenderAspect
 // Needs to be protected as we ways call it while addMeshData is called
-QHash<QUuid, QAbstractMeshFunctorPtr> MeshDataManager::meshesPending()
+QHash<QNodeUuid, QAbstractMeshFunctorPtr> MeshDataManager::meshesPending()
 {
-    QHash<QUuid, QAbstractMeshFunctorPtr> meshFunctors = m_meshesPending;
+    QHash<QNodeUuid, QAbstractMeshFunctorPtr> meshFunctors = m_meshesPending;
     m_meshesPending.clear();
     return meshFunctors;
 }

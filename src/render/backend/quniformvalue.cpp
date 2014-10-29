@@ -93,7 +93,7 @@ void QUniformPack::setUniform(QString glslName, const QUniformValue *val)
     m_uniforms[glslName] = val;
 }
 
-void QUniformPack::setTexture(QString glslName, const QUuid &texId)
+void QUniformPack::setTexture(QString glslName, const QNodeUuid &texId)
 {
     for (int t=0; t<m_textures.size(); ++t) {
         if (m_textures[t].glslName != glslName) {

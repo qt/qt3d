@@ -44,7 +44,6 @@
 
 #include <Qt3DCore/qbackendnode.h>
 #include <QMatrix4x4>
-#include <QUuid>
 
 QT_BEGIN_NAMESPACE
 

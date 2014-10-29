@@ -104,7 +104,7 @@ void RenderMaterial::sceneChangeEvent(const QSceneChangePtr &e)
         if (propertyChange->propertyName() == QByteArrayLiteral("parameter"))
             m_parameterPack.removeParameter(propertyChange->value().toUuid());
         else if (propertyChange->propertyName() == QByteArrayLiteral("effect"))
-            m_effectUuid = QUuid();
+            m_effectUuid = QNodeUuid();
         break;
     }
 
@@ -113,12 +113,12 @@ void RenderMaterial::sceneChangeEvent(const QSceneChangePtr &e)
     }
 }
 
-QList<QUuid> RenderMaterial::parameters() const
+QList<QNodeUuid> RenderMaterial::parameters() const
 {
     return m_parameterPack.parameters();
 }
 
-QUuid RenderMaterial::effect() const
+QNodeUuid RenderMaterial::effect() const
 {
     return m_effectUuid;
 }

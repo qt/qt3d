@@ -39,49 +39,20 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERATTACHMENT_H
-#define QT3D_RENDER_RENDERATTACHMENT_H
+#ifndef QT3D_QNODEUUID_H
+#define QT3D_QNODEUUID_H
 
-#include <Qt3DRenderer/qrenderattachment.h>
-#include <Qt3DRenderer/private/attachmentpack_p.h>
-#include <Qt3DCore/qbackendnode.h>
-#include <Qt3DCore/qnodeuuid.h>
+#include <Qt3DCore/qt3dcore_global.h>
+#include <QUuid>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QRenderAttachment;
+typedef QUuid QNodeUuid;
 
-namespace Render {
-
-class AttachmentManager;
-
-class RenderAttachment : public QBackendNode
-{
-public:
-    RenderAttachment();
-
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
-
-    QNodeUuid textureUuid() const;
-    int mipLevel() const;
-    int layer() const;
-    QString name() const;
-    QRenderAttachment::CubeMapFace face() const;
-    QRenderAttachment::RenderAttachmentType type() const;
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    Attachment attachment() const;
-
-private:
-    QNodeUuid m_attachmentUuid;
-    Attachment m_attachmentData;
-};
-
-} // Render
-
-} // Qt3D
+}
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERATTACHMENT_H
+#endif // QT3D_QNODEUUID_H

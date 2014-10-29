@@ -68,11 +68,11 @@ namespace Qt3D {
  * the QPostman to deliver the messages to the frontend QNode.
  *
  * QNode observables are registered automatically. However QObservableInterface have to be registered manually
- * by providing the QUuid of the frontend QNode that observables is mapped to.
+ * by providing the NodeUuid of the frontend QNode that observables is mapped to.
  *
- * Observers can be registered to receive messages from a QObservableInterface/QNode observable by providing a QNode QUuid.
+ * Observers can be registered to receive messages from a QObservableInterface/QNode observable by providing a QNode NodeUuid.
  * When a notification from a QObservableInterface is received, it is then sent to all observers observing the
- * QNode QUuid as well as the QPostman to update the frontend QNode.
+ * QNode NodeUuid as well as the QPostman to update the frontend QNode.
  */
 
 
@@ -131,7 +131,7 @@ void QChangeArbiter::distributeQueueChanges(ChangeQueue *changeQueue)
 
         case QSceneChange::Observable: {
             QObservableInterface *subject = change->subject().m_observable;
-            QUuid nodeId = m_scene->nodeIdFromObservable(subject);
+            QNodeUuid nodeId = m_scene->nodeIdFromObservable(subject);
             if (m_nodeObservations.contains(nodeId)) {
                 QObserverList &observers = m_nodeObservations[nodeId];
                 Q_FOREACH (const QObserverPair&observer, observers) {
@@ -210,7 +210,7 @@ QSceneInterface *QChangeArbiter::scene() const
 }
 
 void QChangeArbiter::registerObserver(QObserverInterface *observer,
-                                      const QUuid &nodeId,
+                                      const QNodeUuid &nodeId,
                                       ChangeFlags changeFlags)
 {
     QMutexLocker locker(&m_mutex);
@@ -225,7 +225,7 @@ void QChangeArbiter::registerSceneObserver(QSceneObserverInterface *observer)
         m_sceneObservers << observer;
 }
 
-void QChangeArbiter::unregisterObserver(QObserverInterface *observer, const QUuid &nodeId)
+void QChangeArbiter::unregisterObserver(QObserverInterface *observer, const QNodeUuid &nodeId)
 {
     QMutexLocker locker(&m_mutex);
     if (m_nodeObservations.contains(nodeId)) {

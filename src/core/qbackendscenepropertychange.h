@@ -43,6 +43,7 @@
 #define QT3D_QBACKENDSCENEPROPERTYCHANGE_H
 
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodeuuid.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -58,8 +59,8 @@ public:
                                 Priority priority = Standard);
     virtual ~QBackendScenePropertyChange();
 
-    void setTargetNode(const QUuid &id);
-    QUuid targetNode() const;
+    void setTargetNode(const QNodeUuid &id);
+    QNodeUuid targetNode() const;
 
 protected:
     Q_DECLARE_PRIVATE(QBackendScenePropertyChange)

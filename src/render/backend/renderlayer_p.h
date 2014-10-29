@@ -44,7 +44,6 @@
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DCore/qbackendnode.h>
-#include <QUuid>
 #include <QStringList>
 
 QT_BEGIN_NAMESPACE

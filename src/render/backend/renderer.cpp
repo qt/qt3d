@@ -362,7 +362,7 @@ QFrameAllocator *Renderer::currentFrameAllocator(int frameIndex)
     return data->second->at(frameIndex);
 }
 
-void Renderer::setFrameGraphRoot(const QUuid &frameGraphRootUuid)
+void Renderer::setFrameGraphRoot(const QNodeUuid &frameGraphRootUuid)
 {
     m_frameGraphRootUuid = frameGraphRootUuid;
     qCDebug(Backend) << Q_FUNC_INFO << m_frameGraphRootUuid;
