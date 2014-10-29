@@ -95,14 +95,14 @@ void RenderMaterial::sceneChangeEvent(const QSceneChangePtr &e)
         // Check for shader parameter
     case NodeAdded: {
         if (propertyChange->propertyName() == QByteArrayLiteral("parameter"))
-            m_parameterPack.appendParameter(propertyChange->value().toUuid());
+            m_parameterPack.appendParameter(propertyChange->value().value<QNodeUuid>());
         else if (propertyChange->propertyName() == QByteArrayLiteral("effect"))
-                m_effectUuid = propertyChange->value().toUuid();
+                m_effectUuid = propertyChange->value().value<QNodeUuid>();
         break;
     }
     case NodeRemoved: {
         if (propertyChange->propertyName() == QByteArrayLiteral("parameter"))
-            m_parameterPack.removeParameter(propertyChange->value().toUuid());
+            m_parameterPack.removeParameter(propertyChange->value().value<QNodeUuid>());
         else if (propertyChange->propertyName() == QByteArrayLiteral("effect"))
             m_effectUuid = QNodeUuid();
         break;

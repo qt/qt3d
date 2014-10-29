@@ -39,68 +39,30 @@
 **
 ****************************************************************************/
 
-#include "techniquefilternode_p.h"
-#include "qannotation.h"
-#include "qtechniquefilter.h"
-#include <Qt3DRenderer/private/managers_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include "qnodeuuid.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
-namespace Render {
 
-TechniqueFilter::TechniqueFilter()
-    : FrameGraphNode(FrameGraphNode::TechniqueFilter)
+QNodeUuid QNodeUuid::createUuid()
 {
+#if defined(Q_ATOMIC_INT64_IS_SUPPORTED)
+    static QAtomicInteger<quint64> m_curId = QAtomicInteger<quint64>(1);
+#else
+    static QAtomicInteger<quint32> m_curId = QAtomicInteger<quint32>(1);
+#endif
+    QNodeUuid uuid;
+    uuid.m_uuid = m_curId.fetchAndAddOrdered(1);
+    return uuid;
 }
 
-void TechniqueFilter::updateFromPeer(QNode *peer)
+QDebug operator<<(QDebug d, const QNodeUuid &id)
 {
-    QTechniqueFilter *filter = static_cast<QTechniqueFilter *>(peer);
-    m_filters.clear();
-    Q_FOREACH (QAnnotation *criterion, filter->criteria())
-        appendFilter(criterion);
+    d << id.guid();
+    return d;
 }
 
-QList<QNodeUuid> TechniqueFilter::filters() const
-{
-    return m_filters;
 }
-
-void TechniqueFilter::appendFilter(QAnnotation *criterion)
-{
-    if (!m_filters.contains(criterion->uuid()))
-        m_filters.append(criterion->uuid());
-}
-
-void TechniqueFilter::removeFilter(const QNodeUuid &criterionId)
-{
-    m_filters.removeOne(criterionId);
-}
-
-void TechniqueFilter::sceneChangeEvent(const QSceneChangePtr &e)
-{
-    switch (e->type()) {
-    case NodeAdded: {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("require"))
-            appendFilter(propertyChange->value().value<QAnnotation *>());
-    }
-        break;
-    case NodeRemoved: {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("require"))
-            removeFilter(propertyChange->value().value<QNodeUuid>());
-    }
-        break;
-    default:
-        break;
-    }
-}
-
-} // Render
-
-} // Qt3D
 
 QT_END_NAMESPACE

@@ -243,11 +243,11 @@ RenderTechnique *findTechniqueForEffect(Renderer *renderer,
 
             // Iterate through the filter criteria and for each one search for a criteria on the
             // technique that satisfies it
-            Q_FOREACH (const QUuid &filterAnnotationId, techniqueFilter->filters()) {
+            Q_FOREACH (const QNodeUuid &filterAnnotationId, techniqueFilter->filters()) {
                 foundMatch = false;
                 RenderAnnotation *filterAnnotation = renderer->criterionManager()->lookupResource(filterAnnotationId);
 
-                Q_FOREACH (const QUuid &techniqueAnnotationId, technique->annotations()) {
+                Q_FOREACH (const QNodeUuid &techniqueAnnotationId, technique->annotations()) {
                     RenderAnnotation *techniqueAnnotation = renderer->criterionManager()->lookupResource(techniqueAnnotationId);
                     if ((foundMatch = (*techniqueAnnotation == *filterAnnotation)))
                         break;
@@ -279,7 +279,7 @@ QVector<RenderRenderPass *> findRenderPassesForTechnique(Renderer *renderer,
 
     QVector<RenderRenderPass *> passes;
     passes.reserve(3); // We rarely get more than 2 or 3 passes
-    Q_FOREACH (const QUuid &passId, technique->renderPasses()) {
+    Q_FOREACH (const QNodeUuid &passId, technique->renderPasses()) {
         RenderRenderPass *renderPass = renderer->renderPassManager()->lookupResource(passId);
 
         if (renderPass) {
@@ -290,11 +290,11 @@ QVector<RenderRenderPass *> findRenderPassesForTechnique(Renderer *renderer,
             if (!foundMatch && renderPass->annotations().size() >= passFilter->filters().size()) {
 
                 // Iterate through the filter criteria and look for render passes with criteria that satisfy them
-                Q_FOREACH (const QUuid &filterAnnotationId, passFilter->filters()) {
+                Q_FOREACH (const QNodeUuid &filterAnnotationId, passFilter->filters()) {
                     foundMatch = false;
                     RenderAnnotation *filterAnnotation = renderer->criterionManager()->lookupResource(filterAnnotationId);
 
-                    Q_FOREACH (const QUuid &passAnnotationId, renderPass->annotations()) {
+                    Q_FOREACH (const QNodeUuid &passAnnotationId, renderPass->annotations()) {
                         RenderAnnotation *passAnnotation = renderer->criterionManager()->lookupResource(passAnnotationId);
                         if ((foundMatch = (*passAnnotation == *filterAnnotation)))
                             break;

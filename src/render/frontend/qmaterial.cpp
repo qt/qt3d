@@ -106,7 +106,7 @@ void QMaterial::setEffect(QEffect *effect)
         if (d->m_effect != Q_NULLPTR && d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, this));
             change->setPropertyName(QByteArrayLiteral("effect"));
-            change->setValue(QVariant(d->m_effect->uuid()));
+            change->setValue(QVariant::fromValue(d->m_effect->uuid()));
             d->notifyObservers(change);
         }
 
@@ -123,7 +123,7 @@ void QMaterial::setEffect(QEffect *effect)
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
             change->setPropertyName(QByteArrayLiteral("effect"));
-            change->setValue(QVariant(effect->uuid()));
+            change->setValue(QVariant::fromValue(effect->uuid()));
             d->notifyObservers(change);
         }
     }
@@ -154,7 +154,7 @@ void QMaterial::addParameter(QParameter *parameter)
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
             change->setPropertyName(QByteArrayLiteral("parameter"));
-            change->setValue(QVariant(parameter->uuid()));
+            change->setValue(QVariant::fromValue(parameter->uuid()));
             d->notifyObservers(change);
         }
     }
@@ -166,7 +166,7 @@ void QMaterial::removeParameter(QParameter *parameter)
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, this));
         change->setPropertyName(QByteArrayLiteral("parameter"));
-        change->setValue(QVariant(parameter->uuid()));
+        change->setValue(QVariant::fromValue(parameter->uuid()));
         d->notifyObservers(change);
     }
     d->m_parameters.removeOne(parameter);

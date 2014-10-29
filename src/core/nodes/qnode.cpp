@@ -63,7 +63,7 @@ QNodePrivate::QNodePrivate(QNode *qq)
     : QObjectPrivate()
     , m_changeArbiter(Q_NULLPTR)
     , m_scene(Q_NULLPTR)
-    , m_uuid(QUuid::createUuid())
+    , m_uuid(QNodeUuid::createUuid())
     , m_blockNotifications(false)
     , m_propertyChangesSetup(false)
     , m_signals(this)
@@ -225,7 +225,7 @@ void QNodePrivate::propertyChanged(int propertyIndex)
     if (data.canConvert<QNode*>()) {
         const QNode * const node = data.value<QNode*>();
         const QNodeUuid uuid = node ? node->uuid() : QNodeUuid();
-        notifyPropertyChange(property.name(), uuid);
+        notifyPropertyChange(property.name(), QVariant::fromValue(uuid));
     } else {
         notifyPropertyChange(property.name(), data);
     }

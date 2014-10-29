@@ -73,7 +73,7 @@ void CameraSelector::sceneChangeEvent(const QSceneChangePtr &e)
     if (e->type() == NodeUpdated) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("camera")) {
-            m_cameraUuid = propertyChange->value().toUuid();
+            m_cameraUuid = propertyChange->value().value<QNodeUuid>();
         }
     }
 }

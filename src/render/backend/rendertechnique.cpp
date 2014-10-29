@@ -115,26 +115,26 @@ void RenderTechnique::sceneChangeEvent(const QSceneChangePtr &e)
 
     case NodeAdded: {
         if (propertyChange->propertyName() == QByteArrayLiteral("pass")) {
-            appendRenderPass(propertyChange->value().toUuid());
+            appendRenderPass(propertyChange->value().value<QNodeUuid>());
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("parameter")) {
-            m_parameterPack.appendParameter(propertyChange->value().toUuid());
+            m_parameterPack.appendParameter(propertyChange->value().value<QNodeUuid>());
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("annotation")) {
-            appendAnnotation(propertyChange->value().toUuid());
+            appendAnnotation(propertyChange->value().value<QNodeUuid>());
         }
         break;
     }
 
     case NodeRemoved: {
         if (propertyChange->propertyName() == QByteArrayLiteral("pass")) {
-            removeRenderPass(propertyChange->value().toUuid());
+            removeRenderPass(propertyChange->value().value<QNodeUuid>());
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("parameter")) {
-            m_parameterPack.removeParameter(propertyChange->value().toUuid());
+            m_parameterPack.removeParameter(propertyChange->value().value<QNodeUuid>());
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("annotation")) {
-            removeAnnotation(propertyChange->value().toUuid());
+            removeAnnotation(propertyChange->value().value<QNodeUuid>());
         }
         break;
     }

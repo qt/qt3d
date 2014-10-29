@@ -90,16 +90,16 @@ void RenderEffect::sceneChangeEvent(const QSceneChangePtr &e)
 
     case NodeAdded:
         if (propertyChange->propertyName() == QByteArrayLiteral("technique"))
-            appendRenderTechnique(propertyValue.toUuid());
+            appendRenderTechnique(propertyValue.value<QNodeUuid>());
         else if (propertyChange->propertyName() == QByteArrayLiteral("parameter"))
-            m_parameterPack.appendParameter(propertyValue.toUuid());
+            m_parameterPack.appendParameter(propertyValue.value<QNodeUuid>());
         break;
 
     case NodeRemoved:
         if (propertyChange->propertyName() == QByteArrayLiteral("technique"))
-            m_techniques.removeOne(propertyValue.toUuid());
+            m_techniques.removeOne(propertyValue.value<QNodeUuid>());
         else if (propertyChange->propertyName() == QByteArrayLiteral("parameter"))
-            m_parameterPack.removeParameter(propertyValue.toUuid());
+            m_parameterPack.removeParameter(propertyValue.value<QNodeUuid>());
         break;
 
     default :

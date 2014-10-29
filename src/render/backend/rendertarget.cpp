@@ -88,9 +88,9 @@ void RenderTarget::sceneChangeEvent(const QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     if (e->type() == NodeAdded && propertyChange->propertyName() == QByteArrayLiteral("attachment"))
-        appendRenderAttachment(propertyChange->value().toUuid());
+        appendRenderAttachment(propertyChange->value().value<QNodeUuid>());
     else if (e->type() == NodeRemoved && propertyChange->propertyName() == QByteArrayLiteral("attachment"))
-        removeRenderAttachment(propertyChange->value().toUuid());
+        removeRenderAttachment(propertyChange->value().value<QNodeUuid>());
 }
 
 } // Render

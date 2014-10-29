@@ -72,7 +72,7 @@ void RenderTargetSelector::sceneChangeEvent(const QSceneChangePtr &e)
     if (e->type() == NodeUpdated) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("target"))
-            m_renderTargetUuid = propertyChange->value().toUuid();
+            m_renderTargetUuid = propertyChange->value().value<QNodeUuid>();
     }
 }
 

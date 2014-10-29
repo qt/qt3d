@@ -17,5 +17,6 @@ SOURCES += \
     $$PWD/nodevisitor.cpp \
     $$PWD/qcomponent.cpp \
     $$PWD/qentity.cpp \
-    $$PWD/qbackendnode.cpp
+    $$PWD/qbackendnode.cpp \
+    $$PWD/qnodeuuid.cpp
 

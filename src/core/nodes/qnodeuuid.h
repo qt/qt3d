@@ -43,16 +43,72 @@
 #define QT3D_QNODEUUID_H
 
 #include <Qt3DCore/qt3dcore_global.h>
-#include <QUuid>
+#include <QDebug>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-typedef QUuid QNodeUuid;
+class QT3DCORESHARED_EXPORT QNodeUuid
+{
+public:
+    QNodeUuid()
+        : m_uuid(0)
+    {}
 
+    static QNodeUuid createUuid();
+
+    inline bool isNull() const
+    {
+        return m_uuid == 0;
+    }
+
+    inline bool operator ==(const QNodeUuid &other) const
+    {
+        return other.m_uuid == m_uuid;
+    }
+
+    inline bool operator !=(const QNodeUuid &other) const
+    {
+        return !operator ==(other);
+    }
+
+    inline bool operator <(const QNodeUuid &other) const
+    {
+        return m_uuid < other.m_uuid;
+    }
+
+    inline bool operator >(const QNodeUuid &other) const
+    {
+        return m_uuid > other.m_uuid;
+    }
+
+    inline quint64 guid() const
+    {
+        return m_uuid;
+    }
+
+private:
+    quint64 m_uuid;
+};
+
+
+#ifndef QT_NO_DEBUG_STREAM
+QT3DCORESHARED_EXPORT QDebug operator<<(QDebug d, const QNodeUuid &id);
+#endif
+
+QT3DCORESHARED_EXPORT inline uint qHash(const QNodeUuid &uuid, uint) Q_DECL_NOTHROW
+{
+    return uuid.guid();
 }
 
+} // Qt3D
+
+Q_DECLARE_TYPEINFO(Qt3D::QNodeUuid, Q_MOVABLE_TYPE);
+
 QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE(Qt3D::QNodeUuid)
+
 
 #endif // QT3D_QNODEUUID_H
