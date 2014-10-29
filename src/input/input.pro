@@ -1,6 +1,6 @@
 TARGET = Qt3DInput
 
-QT += core 3dcore 3dcore-private 3drenderer
+QT += core core-private 3dcore 3dcore-private 3drenderer
 
 DEFINES += QT3DINPUT_LIBRARY
 
