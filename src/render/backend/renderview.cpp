@@ -737,8 +737,6 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
                 Q_FOREACH (const LightPair &lightPair, m_data->m_lights) {
                     RenderLight *light = m_renderer->lightManager()->data(lightPair.first);
                     if (light != Q_NULLPTR) {
-                        if (!m_countOfLightTypes.contains(light->lightBlockName()))
-                            m_countOfLightTypes[light->lightBlockName()] = 0;
                         int lightIdx = m_countOfLightTypes[light->lightBlockName()]++;
 
                         QHash<QString, QVariant> lightProperties = light->lightProperties();
