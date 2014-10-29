@@ -150,9 +150,15 @@ QOpenGLShaderProgram *RenderShader::getOrCreateProgram(QGraphicsContext *ctx)
 void RenderShader::updateUniforms(QGraphicsContext *ctx, const QUniformPack &pack)
 {
     const QHash<QString, const QUniformValue* > &values = pack.uniforms();
-    Q_FOREACH (const QString &uniformName, values.keys()) {
-        if (m_uniforms.contains(uniformName)) {
-            values.value(uniformName)->apply(ctx, m_uniforms.value(uniformName));
+    QHash<QString, const QUniformValue* >::const_iterator valueIt = values.constBegin();
+    const QHash<QString, const QUniformValue* >::const_iterator valueEnd = values.constEnd();
+
+    const QHash<QString, ShaderUniform>::const_iterator uniformEnd = m_uniforms.constEnd();
+
+    for (; valueIt != valueEnd; ++valueIt) {
+        QHash<QString, ShaderUniform>::const_iterator uniformIt = m_uniforms.constFind(valueIt.key());
+        if (uniformIt != uniformEnd) {
+            valueIt.value()->apply(ctx, uniformIt.value());
         }
     }
 }
