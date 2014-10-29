@@ -164,7 +164,7 @@ public:
         const int numBuckets = m_buckets.size();
         for (int bucketIdx = 0; bucketIdx < numBuckets; ++bucketIdx) {
             const T* firstItem = m_bucketDataPtrs[bucketIdx];
-            if (firstItem > r || r > firstItem + BucketSize) {
+            if (firstItem > r || r >= firstItem + BucketSize) {
                 // resource is not in this bucket when its pointer address
                 // is outside the address range spanned by the addresses of
                 // the first and last items in a bucket
