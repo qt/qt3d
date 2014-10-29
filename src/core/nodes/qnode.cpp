@@ -199,12 +199,16 @@ void QNodePrivate::registerNotifiedProperties()
 
 void QNodePrivate::_q_onNodePropertyChanged()
 {
-    Q_Q(QNode);
-    const int signalIndex = q->senderSignalIndex();
-    if (!m_notifiedProperties.contains(signalIndex))
+    // Bail out early if we can to avoid the cost below
+    if (m_blockNotifications)
         return;
 
-    const QByteArray name = m_notifiedProperties.value(signalIndex);
+    Q_Q(QNode);
+    const int signalIndex = q->senderSignalIndex();
+    const QByteArray &name = m_notifiedProperties.value(signalIndex);
+    if (name.isEmpty()) // not contained
+        return;
+
     const QVariant data = q->property(name);
     if (data.canConvert<QNode*>()) {
         const QNode * const node = data.value<QNode*>();
