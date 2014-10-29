@@ -53,11 +53,11 @@ namespace Qt3D
 
 typedef QList<QNode *> NodeList;
 
-class QT3DCORESHARED_EXPORT NodeVisitor
+class QT3DCORESHARED_EXPORT QNodeVisitor
 {
 public:
-    NodeVisitor();
-    virtual ~NodeVisitor();
+    QNodeVisitor();
+    virtual ~QNodeVisitor();
 
     template<typename NodeVisitorFunc, typename EntityVisitorFunc>
     void traverse(QNode *rootNode_, NodeVisitorFunc fN, EntityVisitorFunc fE)

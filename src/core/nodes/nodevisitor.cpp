@@ -45,31 +45,31 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-NodeVisitor::NodeVisitor()
+QNodeVisitor::QNodeVisitor()
     : m_traverseDisabled(false)
 {
 }
 
-NodeVisitor::~NodeVisitor()
+QNodeVisitor::~QNodeVisitor()
 {
 }
 
-QNode* NodeVisitor::rootNode() const
+QNode* QNodeVisitor::rootNode() const
 {
     return m_path.front();
 }
 
-QNode* NodeVisitor::currentNode() const
+QNode* QNodeVisitor::currentNode() const
 {
     return m_path.back();
 }
 
-NodeList NodeVisitor::path() const
+NodeList QNodeVisitor::path() const
 {
     return m_path;
 }
 
-void NodeVisitor::setTraverseDisabled(bool on)
+void QNodeVisitor::setTraverseDisabled(bool on)
 {
     m_traverseDisabled = on;
 }

@@ -192,7 +192,7 @@ void QRenderAspect::sceneNodeAdded(QSceneChangePtr &e)
     QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
     QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
     QNode *n = nodePtr.data();
-    NodeVisitor visitor;
+    QNodeVisitor visitor;
     visitor.traverse(n, this, &QRenderAspect::visitNode, &QRenderAspect::visitNode);
 }
 
@@ -207,7 +207,7 @@ void QRenderAspect::sceneNodeRemoved(QSceneChangePtr &e)
 void QRenderAspect::setRootEntity(QEntity *rootObject)
 {
     // setSceneGraphRoot is synchronized using the Renderer's mutex
-    NodeVisitor visitor;
+    QNodeVisitor visitor;
     visitor.traverse(rootObject, this, &QRenderAspect::visitNode, &QRenderAspect::visitNode);
     m_renderer->setSceneGraphRoot(m_renderer->renderNodesManager()->lookupResource(rootObject->uuid()));
 }
