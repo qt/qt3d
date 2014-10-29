@@ -56,6 +56,7 @@ QAbstractSceneLoaderPrivate::QAbstractSceneLoaderPrivate(QAbstractSceneLoader *q
     : QComponentPrivate(qq)
     , m_status(QAbstractSceneLoader::Loading)
 {
+    m_shareable = false;
 }
 
 QAbstractSceneLoader::QAbstractSceneLoader(QAbstractSceneLoaderPrivate &dd, QNode *parent)
