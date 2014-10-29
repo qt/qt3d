@@ -42,6 +42,10 @@ src_quick3d_imports_bulletphysics.file = $$PWD/quick3d/imports/bulletphysics/imp
 src_quick3d_imports_bulletphysics.target = sub-quick3d-imports-bulletphysics
 src_quick3d_imports_bulletphysics.depends = src_bulletphysics
 
+src_quick3d_imports_input.file = $$PWD/quick3d/imports/input/importsinputs.pro
+src_quick3d_imports_input.target = sub-quick3d-imports-input
+src_quick3d_imports_input.depends = src_quick3d_render
+
 # Qt3D Scene Parser plugins
 src_plugins_sceneparsers.file = $$PWD/plugins/sceneparsers/sceneparsers.pro
 src_plugins_sceneparsers.target = sub-plugins-sceneparsers
@@ -56,6 +60,7 @@ SUBDIRS += \
     src_quick3d_core_imports \
     src_quick3d_render \
     src_quick3d_imports_render \
+    src_quick3d_imports_input \
     src_plugins_sceneparsers
 
 config_bullet {
