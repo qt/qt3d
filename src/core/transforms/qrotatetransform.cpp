@@ -58,6 +58,14 @@ QRotateTransformPrivate::QRotateTransformPrivate(QRotateTransform *qq)
     , m_angleDeg(0)
     , m_axis(0.0f, 1.0f, 0.0f)
 {
+    updateMatrix();
+}
+
+void QRotateTransformPrivate::updateMatrix()
+{
+    QMatrix4x4 m;
+    m.rotate(m_angleDeg, m_axis);
+    m_matrix = m;
 }
 
 void QRotateTransform::copy(const QNode *ref)
@@ -99,9 +107,7 @@ QVector3D QRotateTransform::axis() const
 QMatrix4x4 QRotateTransform::transformMatrix() const
 {
     Q_D(const QRotateTransform);
-    QMatrix4x4 m;
-    m.rotate(d->m_angleDeg, d->m_axis);
-    return m;
+    return d->m_matrix;
 }
 
 void QRotateTransform::setAngleDeg(float arg)
@@ -109,6 +115,7 @@ void QRotateTransform::setAngleDeg(float arg)
     Q_D(QRotateTransform);
     if (d->m_angleDeg != arg) {
         d->m_angleDeg = arg;
+        d->updateMatrix();
         emit angleChanged();
         emit transformMatrixChanged();
     }
@@ -125,6 +132,7 @@ void QRotateTransform::setAxis(const QVector3D& arg)
     Q_D(QRotateTransform);
     if (d->m_axis != arg) {
         d->m_axis = arg;
+        d->updateMatrix();
         emit axisChanged();
         emit transformMatrixChanged();
     }

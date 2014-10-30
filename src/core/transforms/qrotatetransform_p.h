@@ -55,10 +55,14 @@ class QRotateTransformPrivate : public QAbstractTransformPrivate
 public:
     QRotateTransformPrivate(QRotateTransform *qq);
 
+    QMatrix4x4 m_matrix;
+
     Q_DECLARE_PUBLIC(QRotateTransform)
 
     float m_angleDeg;
     QVector3D m_axis;
+
+    void updateMatrix();
 };
 
 } // Qt3D
