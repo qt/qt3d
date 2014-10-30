@@ -60,15 +60,15 @@ public:
     virtual ~NodeVisitor();
 
     template<typename NodeVisitorFunc, typename EntityVisitorFunc>
-    void traverse(QNode *rootNode, NodeVisitorFunc fN, EntityVisitorFunc fE)
+    void traverse(QNode *rootNode_, NodeVisitorFunc fN, EntityVisitorFunc fE)
     {
-        startTraversing(rootNode, createFunctor(fN), createFunctor(fE));
+        startTraversing(rootNode_, createFunctor(fN), createFunctor(fE));
     }
 
     template<typename Obj, typename NodeVisitorFunc, typename EntityVisitorFunc>
-    void traverse(QNode *rootNode, Obj *instance, NodeVisitorFunc fN, EntityVisitorFunc fE)
+    void traverse(QNode *rootNode_, Obj *instance, NodeVisitorFunc fN, EntityVisitorFunc fE)
     {
-        startTraversing(rootNode, createFunctor(instance, fN), createFunctor(instance, fE));
+        startTraversing(rootNode_, createFunctor(instance, fN), createFunctor(instance, fE));
     }
 
     QNode *rootNode() const;
@@ -81,15 +81,15 @@ private:
     bool m_traverseDisabled;
 
     template<typename NodeVisitorFunctor, typename EntityVisitorFunctor>
-    void startTraversing(QNode *rootNode, NodeVisitorFunctor fN, EntityVisitorFunctor fE)
+    void startTraversing(QNode *rootNode_, NodeVisitorFunctor fN, EntityVisitorFunctor fE)
     {
-        m_path = NodeList() << rootNode;
-        QEntity* rootEntity = qobject_cast<QEntity *>(rootNode);
+        m_path = NodeList() << rootNode_;
+        QEntity* rootEntity = qobject_cast<QEntity *>(rootNode_);
 
         if (rootEntity)
             visitEntity(rootEntity, fN, fE);
         else
-            visitNode(rootNode, fN, fE);
+            visitNode(rootNode_, fN, fE);
     }
 
     template<typename NodeVisitorFunctor, typename EntityVisitorFunctor>
