@@ -20,11 +20,14 @@ HEADERS += $$PRIVATE_HEADERS \
     qt3dquick_global.h \
     quickwindow.h \
     qt3dquick_global_p.h \
-    qt3dquickvaluetypes_p.h
+    qt3dquickvaluetypes_p.h \
+    qqmlaspectengine.h \
+    qqmlaspectengine_p.h
 
 SOURCES += quickwindow.cpp \
     qt3dquick_global.cpp \
-    qt3dquickvaluetypes.cpp
+    qt3dquickvaluetypes.cpp \
+    qqmlaspectengine.cpp
 
 !contains(QT_CONFIG, egl):DEFINES += QT_NO_EGL
 
