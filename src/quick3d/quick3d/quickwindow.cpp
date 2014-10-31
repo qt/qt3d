@@ -40,15 +40,8 @@
 ****************************************************************************/
 
 #include "quickwindow.h"
-#include <Qt3DCore/qaspectengine.h>
-#include <Qt3DCore/qentity.h>
+
 #include <Qt3DCore/cameracontroller.h>
-
-#include <QQmlComponent>
-#include <QQmlContext>
-
-#include <QDebug>
-#include <QTimer>
 
 QT_BEGIN_NAMESPACE
 
@@ -60,7 +53,6 @@ QuickWindow *QuickWindow::m_instance = Q_NULLPTR;
 
 QuickWindow::QuickWindow(QScreen *screen)
     : Window(screen)
-    , m_engine(new QQmlEngine)
 {
 
     // HACKED TO BE ABLE TO ASSIGN CAMERA TO CONTROLLER
@@ -68,101 +60,9 @@ QuickWindow::QuickWindow(QScreen *screen)
     QuickWindow::m_instance = this;
 }
 
-QuickWindow::~QuickWindow()
-{
-}
-
-QuickWindow::Status QuickWindow::status() const
-{
-    if (!m_engine)
-        return Error;
-
-    if (!m_component)
-        return Null;
-
-    return Status(m_component->status());
-}
-
-void QuickWindow::setSource(const QUrl& source)
-{
-    if (!m_engine) {
-        qWarning() << "Window: invalid qml engine.";
-        return;
-    }
-
-    // If the engine already has a scene object tree, tidy up first
-    if (m_aspectEngine->rootEntity())
-        m_aspectEngine->setRootEntity(Q_NULLPTR);
-
-    if (m_component)
-        m_component = QSharedPointer<QQmlComponent>();
-
-    if (!source.isEmpty()) {
-        m_component = QSharedPointer<QQmlComponent>(new QQmlComponent(m_engine.data(), source, this));
-        if (!m_component->isLoading()) {
-            continueExecute();
-        } else {
-            QObject::connect(m_component.data(), SIGNAL(statusChanged(QQmlComponent::Status)),
-                             this, SLOT(continueExecute()));
-        }
-    }
-}
-
-void QuickWindow::setCamera(QCamera *camera)
-{
-    Window::setCamera(camera);
-    if (m_camera) {
-        m_controller->setCamera(m_camera);
-        m_updateTimer->start();
-    }
-}
-
 QuickWindow *QuickWindow::getInstance()
 {
     return QuickWindow::m_instance;
-}
-
-QQmlEngine *QuickWindow::engine() const
-{
-    return m_engine.data();
-}
-
-void QuickWindow::continueExecute()
-{
-    qDebug() << Q_FUNC_INFO;
-
-    QObject::disconnect(m_component.data(), SIGNAL(statusChanged(QQmlComponent::Status)),
-               this, SLOT(continueExecute()));
-
-    if (m_component->isError()) {
-        QList<QQmlError> errorList = m_component->errors();
-        Q_FOREACH ( const QQmlError& error, errorList ) {
-            QMessageLogger(error.url().toString().toLatin1().constData(), error.line(), 0).warning()
-                << error;
-        }
-        emit statusChanged(status());
-        return;
-    }
-
-    QObject* obj = m_component->create();
-
-    if (m_component->isError()) {
-        QList<QQmlError> errorList = m_component->errors();
-        Q_FOREACH ( const QQmlError& error, errorList ) {
-            QMessageLogger(error.url().toString().toLatin1().constData(), error.line(), 0).warning()
-                << error;
-        }
-        emit statusChanged(status());
-        return;
-    }
-
-    QEntity *rootEntity = qobject_cast<QEntity *>(obj);
-    if (rootEntity)
-        setRootEntity(rootEntity);
-    else
-        delete obj;
-
-    emit statusChanged(status());
 }
 
 } // Quick

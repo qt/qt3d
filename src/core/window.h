@@ -66,10 +66,7 @@ public:
     explicit Window(QScreen *screen = 0);
     ~Window();
 
-    void setRootEntity(QEntity *root);
-
-    void registerAspect(QAbstractAspect *aspect);
-    virtual void setCamera(QCamera *camera);
+    void setCamera(QCamera *camera);
 
 protected:
     virtual void keyPressEvent(QKeyEvent *e);
@@ -85,7 +82,6 @@ private Q_SLOTS:
     void onUpdate();
 
 protected:
-    QAspectEngine *m_aspectEngine;
     QCamera* m_camera;
 
     // temporary, borrowed from training material

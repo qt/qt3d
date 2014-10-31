@@ -47,6 +47,7 @@
 #include <Qt3DCore/qcamera.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qcameralens.h>
+#include <Qt3DCore/qaspectengine.h>
 
 #include <Qt3DRenderer/qtorusmesh.h>
 #include <Qt3DRenderer/qmesh.h>
@@ -78,7 +79,13 @@ int main(int ac, char **av)
     initializeAssetResources("../exampleresources/example-assets.qrb");
 
     Qt3D::Window view;
-    view.registerAspect(new Qt3D::QRenderAspect());
+    Qt3D::QAspectEngine engine;
+    engine.registerAspect(new Qt3D::QRenderAspect());
+    engine.initialize();
+    QVariantMap data;
+    data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
+    data.insert(QStringLiteral("window"), QVariant::fromValue(&view));
+    engine.setData(data);
 
     // Root entity
     Qt3D::QEntity *rootEntity = new Qt3D::QEntity();
@@ -148,7 +155,8 @@ int main(int ac, char **av)
     rootEntity->addComponent(frameGraph);
 
     // Set root object of the scene
-    view.setRootEntity(rootEntity);
+    engine.setRootEntity(rootEntity);
+    // Show window
     view.show();
 
     return app.exec();

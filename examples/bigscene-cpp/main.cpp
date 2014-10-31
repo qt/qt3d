@@ -48,6 +48,7 @@
 #include <Qt3DCore/QTranslateTransform>
 #include <Qt3DCore/QRotateTransform>
 #include <Qt3DCore/QScaleTransform>
+#include <Qt3DCore/qaspectengine.h>
 #include <Qt3DRenderer/QViewport>
 #include <Qt3DRenderer/QFrameGraph>
 #include <Qt3DRenderer/QClearBuffer>
@@ -64,8 +65,13 @@ int main(int ac, char **av)
     QGuiApplication app(ac, av);
 
     Window view;
-    view.registerAspect(new QRenderAspect());
-
+    Qt3D::QAspectEngine engine;
+    engine.registerAspect(new Qt3D::QRenderAspect());
+    engine.initialize();
+    QVariantMap data;
+    data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
+    data.insert(QStringLiteral("window"), QVariant::fromValue(&view));
+    engine.setData(data);
     QEntity *root = new QEntity();
 
     // Camera
@@ -136,7 +142,7 @@ int main(int ac, char **av)
         e->setParent(root);
     }
 
-    view.setRootEntity(root);
+    engine.setRootEntity(root);
     view.show();
     return app.exec();
 }

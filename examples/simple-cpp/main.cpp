@@ -50,6 +50,7 @@
 #include <Qt3DCore/QScaleTransform>
 #include <Qt3DCore/QRotateTransform>
 #include <Qt3DCore/QTranslateTransform>
+#include <Qt3DCore/qaspectengine.h>
 
 #include <Qt3DRenderer/QRenderAspect>
 #include <Qt3DRenderer/QFrameGraph>
@@ -70,8 +71,13 @@ int main(int argc, char* argv[])
     QGuiApplication app(argc, argv);
 
     Qt3D::Window view;
-    view.registerAspect(new Qt3D::QRenderAspect());
-
+    Qt3D::QAspectEngine engine;
+    engine.registerAspect(new Qt3D::QRenderAspect());
+    engine.initialize();
+    QVariantMap data;
+    data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
+    data.insert(QStringLiteral("window"), QVariant::fromValue(&view));
+    engine.setData(data);
 
     // Root entity
     Qt3D::QEntity *rootEntity = new Qt3D::QEntity();
@@ -165,7 +171,7 @@ int main(int argc, char* argv[])
 
     rootEntity->addComponent(frameGraph);
 
-    view.setRootEntity(rootEntity);
+    engine.setRootEntity(rootEntity);
     view.show();
 
     return app.exec();

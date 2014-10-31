@@ -59,9 +59,8 @@ namespace Qt3D {
 
 Window::Window(QScreen *screen)
     : QWindow(screen)
-    , m_aspectEngine(new QAspectEngine(this))
-    , m_camera(NULL)
-    , m_controller(NULL)
+    , m_camera(Q_NULLPTR)
+    , m_controller(new CameraController())
 
 {
     setSurfaceType(QSurface::OpenGLSurface);
@@ -76,12 +75,6 @@ Window::Window(QScreen *screen)
     setFormat(format);
     create();
 
-    m_aspectEngine->initialize();
-    QVariantMap data;
-    data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(this)));
-    data.insert(QStringLiteral("window"), QVariant::fromValue(this));
-    m_aspectEngine->setData(data);
-
     m_controller = new CameraController();
 
     m_updateTimer = new QTimer(this);
@@ -91,16 +84,6 @@ Window::Window(QScreen *screen)
 
 Window::~Window()
 {
-    m_aspectEngine->shutdown();
-    delete m_aspectEngine;
-}
-
-/*!
- * Registers an Aspect module to the AspectEngine;
- */
-void Window::registerAspect(QAbstractAspect *aspect)
-{
-    m_aspectEngine->registerAspect(aspect);
 }
 
 void Window::onUpdate()
@@ -108,32 +91,19 @@ void Window::onUpdate()
     m_controller->update(1.0 / 60.0);
 }
 
-void Window::setRootEntity(QEntity *root)
-{
-    m_aspectEngine->setRootEntity(root);
-
-    // Hook up controller input to camera
-    // TODO: Do this more generically as we may want keyboard ot control an Entity etc
-    // What happens if there is no camera
-    // What happens if at some point the camera is added but not directly when the scene is created ?
-    // eg scene file provided and camera tree node created after parsing ?
-    // What happens if there are multiple cameras in the scene ?
-    if (m_camera) {
-        qCDebug(Nodes) << "found a camera in the scene";
-        m_controller->setCamera(m_camera);
-        m_updateTimer->start();
-    }
-}
-
 void Window::resizeEvent( QResizeEvent* e )
 {
     Q_UNUSED( e );
-
 }
 
 void Window::setCamera(QCamera *camera)
 {
     m_camera = camera;
+    if (m_camera) {
+        qCDebug(Nodes) << "found a camera in the scene";
+        m_controller->setCamera(m_camera);
+        m_updateTimer->start();
+    }
 }
 
 void Window::keyPressEvent( QKeyEvent* e )

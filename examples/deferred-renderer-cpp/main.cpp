@@ -55,6 +55,7 @@
 #include <Qt3DCore/QRotateTransform>
 #include <Qt3DCore/QTranslateTransform>
 #include <Qt3DRenderer/QPointLight>
+#include <Qt3DCore/qaspectengine.h>
 
 #include <QGuiApplication>
 
@@ -68,7 +69,13 @@ int main(int ac, char **av)
     QGuiApplication app(ac, av);
 
     Qt3D::Window view;
-    view.registerAspect(new Qt3D::QRenderAspect());
+    Qt3D::QAspectEngine engine;
+    engine.registerAspect(new Qt3D::QRenderAspect());
+    engine.initialize();
+    QVariantMap data;
+    data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
+    data.insert(QStringLiteral("window"), QVariant::fromValue(&view));
+    engine.setData(data);
 
     // Root entity
     Qt3D::QEntity *rootEntity = new Qt3D::QEntity();
@@ -185,7 +192,8 @@ int main(int ac, char **av)
     screenQuad->addComponent(planeMesh);
 
     // Set root object of the scene
-    view.setRootEntity(rootEntity);
+    engine.setRootEntity(rootEntity);
+    // Show window
     view.show();
 
     return app.exec();

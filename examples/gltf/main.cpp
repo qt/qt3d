@@ -53,8 +53,17 @@ int main(int argc, char* argv[])
     initializeAssetResources("../exampleresources/example-assets.qrb");
 
     Qt3D::Quick::QuickWindow view;
-    view.registerAspect(new Qt3D::QRenderAspect());
-    view.setSource(QUrl("qrc:/main.qml"));
+    Qt3D::Quick::QQmlAspectEngine engine;
+
+    engine.aspectEngine()->registerAspect(new Qt3D::QRenderAspect());
+
+    QVariantMap data;
+    data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
+    data.insert(QStringLiteral("window"), QVariant::fromValue(&view));
+    engine.aspectEngine()->setData(data);
+    engine.aspectEngine()->initialize();
+
+    engine.setSource(QUrl("qrc:/main.qml"));
     view.show();
 
     return app.exec();

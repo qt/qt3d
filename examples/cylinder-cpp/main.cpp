@@ -58,6 +58,7 @@
 #include <Qt3DCore/qrotatetransform.h>
 #include <Qt3DCore/qlookattransform.h>
 #include <Qt3DCore/qtransform.h>
+#include <Qt3DCore/qaspectengine.h>
 
 #include <Qt3DRenderer/qcameraselector.h>
 #include <Qt3DRenderer/qrenderpassfilter.h>
@@ -72,7 +73,13 @@ int main(int argc, char **argv)
     QGuiApplication app(argc, argv);
 
     Qt3D::Window view;
-    view.registerAspect(new Qt3D::QRenderAspect());
+    Qt3D::QAspectEngine engine;
+    engine.registerAspect(new Qt3D::QRenderAspect());
+    engine.initialize();
+    QVariantMap data;
+    data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
+    data.insert(QStringLiteral("window"), QVariant::fromValue(&view));
+    engine.setData(data);
 
     // Root entity
     Qt3D::QEntity *rootEntity = new Qt3D::QEntity();
@@ -132,7 +139,8 @@ int main(int argc, char **argv)
     rootEntity->addComponent(frameGraph);
 
     // Set root object of the scene
-    view.setRootEntity(rootEntity);
+    engine.setRootEntity(rootEntity);
+    // Show window
     view.show();
 
     return app.exec();

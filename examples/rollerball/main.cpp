@@ -55,17 +55,24 @@ int main(int argc, char* argv[])
     initializeAssetResources("../exampleresources/example-assets.qrb");
 
     Qt3D::Quick::QuickWindow view;
-    view.registerAspect(new Qt3D::QRenderAspect());
-    view.registerAspect(new Qt3D::BulletPhysicsAspect());
+    Qt3D::Quick::QQmlAspectEngine engine;
+
+    engine.aspectEngine()->registerAspect(new Qt3D::QRenderAspect());
+    engine.aspectEngine()->registerAspect(new Qt3D::BulletPhysicsAspect());
+    QVariantMap data;
+    data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
+    data.insert(QStringLiteral("window"), QVariant::fromValue(&view));
+    engine.aspectEngine()->setData(data);
+    engine.aspectEngine()->initialize();
 
     // Expose the window as a context property so we can set the aspect ratio
-    view.engine()->rootContext()->setContextProperty("_window", &view);
+    engine.qmlEngine()->rootContext()->setContextProperty("_window", &view);
 
     // There should be some synchronising mechanism to make sure
     // the source is set after all aspects have been completely initialized
     // Otherwise we might encounter cases where an Aspect's QML elements have
     // not yet been registered
-    view.setSource(QUrl("qrc:/main.qml"));
+    engine.setSource(QUrl("qrc:/main.qml"));
     view.show();
 
     return app.exec();

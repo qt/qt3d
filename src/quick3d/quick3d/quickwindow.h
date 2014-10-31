@@ -46,13 +46,12 @@
 #include <QQmlEngine>
 
 #include <Qt3DQuick/qt3dquick_global.h>
+#include <Qt3DQuick/qqmlaspectengine.h>
 #include <Qt3DCore/window.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
-
-class QAspectEngine;
 
 namespace Quick {
 
@@ -62,29 +61,11 @@ class QT3DQUICKSHARED_EXPORT QuickWindow : public Qt3D::Window
 {
     Q_OBJECT
 public:
-    enum Status { Null, Ready, Loading, Error };
-
     explicit QuickWindow(QScreen *screen = 0);
-    ~QuickWindow();
 
-    Status status() const;
-    void setSource(const QUrl& url);
-
-    void setCamera(QCamera *camera);
     static QuickWindow *getInstance();
 
-    QQmlEngine *engine() const;
-
-Q_SIGNALS:
-    void statusChanged(Status);
-
-private Q_SLOTS:
-    void continueExecute();
-
 private:
-    QScopedPointer<QQmlEngine> m_engine;
-    QSharedPointer<QQmlComponent> m_component;
-
     static QuickWindow *m_instance;
 };
 

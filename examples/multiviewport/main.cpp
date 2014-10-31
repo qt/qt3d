@@ -49,12 +49,18 @@
 int main(int ac, char **av)
 {
     QGuiApplication app(ac, av);
-    Qt3D::Quick::QuickWindow win;
+    Qt3D::Quick::QuickWindow view;
+    Qt3D::Quick::QQmlAspectEngine engine;
 
     initializeAssetResources("../exampleresources/example-assets.qrb");
-    win.registerAspect(new Qt3D::QRenderAspect);
-    win.setSource(QUrl("qrc:/main.qml"));
-    win.show();
+    engine.aspectEngine()->registerAspect(new Qt3D::QRenderAspect);
+    QVariantMap data;
+    data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
+    data.insert(QStringLiteral("window"), QVariant::fromValue(&view));
+    engine.aspectEngine()->setData(data);
+    engine.aspectEngine()->initialize();
+    engine.setSource(QUrl("qrc:/main.qml"));
+    view.show();
 
     return app.exec();
 }
