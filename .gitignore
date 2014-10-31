@@ -59,7 +59,6 @@ tests/auto/cmake/build
 *.Release
 
 # Examples and demoes
-examples/*/*
 !examples/*/*[.]*
 !examples/*/README
 examples/*/*[.]app
