@@ -19,6 +19,7 @@ SUBDIRS += \
     deferred-renderer-qml \
     deferred-renderer-cpp \
     shadow-map-qml \
+    bigscene-cpp
 
 
 # TODO Port the old examples to new APIs
