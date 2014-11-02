@@ -58,7 +58,7 @@ class QEntity;
 class QScheduler;
 class QChangeArbiter;
 class QAbstractAspect;
-class QAspectJobManagerInterface;
+class QAbstractAspectJobManager;
 class QSceneObserverInterface;
 
 class QT3DCORESHARED_EXPORT QAspectManager : public QObject
@@ -81,7 +81,7 @@ public Q_SLOTS:
     void quit();
 
     const QList<QAbstractAspect *> &aspects() const;
-    QAspectJobManagerInterface *jobManager() const;
+    QAbstractAspectJobManager *jobManager() const;
     QChangeArbiter *changeArbiter() const;
 
 private:
@@ -89,7 +89,7 @@ private:
     QEntity *m_root;
     QSurface *m_surface;
     QScheduler *m_scheduler;
-    QAspectJobManagerInterface *m_jobManager;
+    QAbstractAspectJobManager *m_jobManager;
     QChangeArbiter *m_changeArbiter;
     QAtomicInt m_runMainLoop;
     QAtomicInt m_terminated;

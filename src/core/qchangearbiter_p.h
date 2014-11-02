@@ -60,7 +60,7 @@ namespace Qt3D {
 
 class QNode;
 class QObservableInterface;
-class QAspectJobManagerInterface;
+class QAbstractAspectJobManager;
 class QSceneObserverInterface;
 class QPostman;
 class QSceneInterface;
@@ -78,7 +78,7 @@ public:
     explicit QChangeArbiter(QObject *parent = 0);
     ~QChangeArbiter();
 
-    void initialize(Qt3D::QAspectJobManagerInterface *jobManager);
+    void initialize(Qt3D::QAbstractAspectJobManager *jobManager);
 
     void syncChanges();
 
@@ -119,7 +119,7 @@ protected:
 
 private:
     QMutex m_mutex;
-    QAspectJobManagerInterface *m_jobManager;
+    QAbstractAspectJobManager *m_jobManager;
 
     // The lists of observers indexed by observable. We maintain two
     // distinct hashes:

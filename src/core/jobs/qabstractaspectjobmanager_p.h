@@ -39,43 +39,27 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QASPECTJOBMANAGER_H
-#define QT3D_QASPECTJOBMANAGER_H
+#ifndef QABSTRACTASPECTJOBMANAGER_P_H
+#define QABSTRACTASPECTJOBMANAGER_P_H
 
-#include <Qt3DCore/qabstractaspectjobmanager.h>
-#include <Qt3DCore/qt3dcore_global.h>
-
-#include <Qt3DCore/qaspectjob.h>
-
-#include <QVector>
+#include <private/qobject_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAspectJobManagerPrivate;
+class QAbstractAspectJobManager;
 
-class QAspectJobManager : public QAbstractAspectJobManager
+class QAbstractAspectJobManagerPrivate : public QObjectPrivate
 {
-    Q_OBJECT
 public:
-    explicit QAspectJobManager(QObject *parent = 0);
-
-    void initialize() Q_DECL_OVERRIDE;
-
-    void enqueueJobs(const QVector<QAspectJobPtr> &jobQueue) Q_DECL_OVERRIDE;
-
-    void waitForAllJobs() Q_DECL_OVERRIDE;
-
-    void waitForPerThreadFunction(JobFunction func, void *arg) Q_DECL_OVERRIDE;
-
-protected:
-    QAspectJobManager(QAspectJobManagerPrivate &dd, QObject *parent);
-    Q_DECLARE_PRIVATE(QAspectJobManager)
+    QAbstractAspectJobManagerPrivate()
+        : QObjectPrivate()
+    {}
 };
 
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QASPECTJOBMANAGER_H
+#endif // QABSTRACTASPECTJOBMANAGER_P_H

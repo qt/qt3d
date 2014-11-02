@@ -41,7 +41,7 @@
 
 #include "qchangearbiter_p.h"
 #include "qcomponent.h"
-#include "qaspectjobmanagerinterface.h"
+#include "qabstractaspectjobmanager.h"
 
 #include "corelogging.h"
 #include "qsceneobserverinterface.h"
@@ -100,7 +100,7 @@ QChangeArbiter::~QChangeArbiter()
     m_changeQueues.clear();
 }
 
-void QChangeArbiter::initialize(QAspectJobManagerInterface *jobManager)
+void QChangeArbiter::initialize(QAbstractAspectJobManager *jobManager)
 {
     Q_CHECK_PTR(jobManager);
     m_jobManager = jobManager;

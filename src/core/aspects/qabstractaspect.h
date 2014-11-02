@@ -60,7 +60,7 @@ class QNode;
 class QBackendNode;
 class QEntity;
 class QAbstractAspectPrivate;
-class QAspectJobManagerInterface;
+class QAbstractAspectJobManager;
 class QBackendNodeFunctor;
 
 typedef QSharedPointer<QBackendNodeFunctor> QBackendNodeFunctorPtr;
@@ -90,7 +90,7 @@ public:
 
     void registerAspect(QEntity *rootObject);
 
-    QAspectJobManagerInterface *jobManager() const;
+    QAbstractAspectJobManager *jobManager() const;
 
 protected:
     QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent = 0);

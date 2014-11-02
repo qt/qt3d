@@ -42,7 +42,7 @@
 #ifndef QT3D_QASPECTJOBMANAGER_P_H
 #define QT3D_QASPECTJOBMANAGER_P_H
 
-#include <private/qobject_p.h>
+#include <private/qabstractaspectjobmanager_p.h>
 
 namespace ThreadWeaver {
 class Queue;
@@ -54,13 +54,15 @@ namespace Qt3D {
 
 class QAspectJobManager;
 
-class QAspectJobManagerPrivate : public QObjectPrivate
+class QAspectJobManagerPrivate : public QAbstractAspectJobManagerPrivate
 {
 public:
     QAspectJobManagerPrivate(QAspectJobManager *qq);
 
     Q_DECLARE_PUBLIC(QAspectJobManager)
     QAspectJobManager *q_ptr;
+
+    // Owned by QAspectJobManager via QObject parent-child
     ThreadWeaver::Queue *m_weaver;
 };
 

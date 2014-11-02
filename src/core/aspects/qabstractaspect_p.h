@@ -53,7 +53,7 @@ namespace Qt3D {
 class QAbstractAspect;
 class QEntity;
 class QAspectManager;
-class QAspectJobManagerInterface;
+class QAbstractAspectJobManager;
 class QChangeArbiter;
 
 class QAbstractAspectPrivate : public QObjectPrivate
@@ -64,7 +64,7 @@ public:
     Q_DECLARE_PUBLIC(QAbstractAspect)
 
     QEntity *m_root;
-    QAspectJobManagerInterface *m_jobManager;
+    QAbstractAspectJobManager *m_jobManager;
     QChangeArbiter *m_arbiter;
     QAbstractAspect::AspectType m_aspectType;
     QHash<QString, QBackendNodeFunctorPtr> m_backendCreatorFunctors;

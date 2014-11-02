@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QASPECTJOBMANAGERINTERFACE_H
-#define QT3D_QASPECTJOBMANAGERINTERFACE_H
+#ifndef QT3D_QABSTRACTASPECTJOBMANAGER_H
+#define QT3D_QABSTRACTASPECTJOBMANAGER_H
 
 #include <QObject>
 
@@ -50,13 +50,13 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAspectJobManagerInterface : public QObject
+class QAbstractAspectJobManagerPrivate;
+
+class QAbstractAspectJobManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit QAspectJobManagerInterface(QObject *p = 0)
-        : QObject(p)
-    {}
+    explicit QAbstractAspectJobManager(QObject *p = 0);
 
     virtual void initialize() {}
     virtual void enqueueJobs(const QVector<QAspectJobPtr> &jobQueue) = 0;
@@ -65,10 +65,14 @@ public:
     // Callback signature for running SynchronizedJobs
     typedef void (*JobFunction)(void *);
     virtual void waitForPerThreadFunction(JobFunction func, void *arg) = 0;
+
+protected:
+    QAbstractAspectJobManager(QAbstractAspectJobManagerPrivate &dd, QObject *parent);
+    Q_DECLARE_PRIVATE(QAbstractAspectJobManager)
 };
 
 } // namespace Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QASPECTJOBMANAGERINTERFACE_H
+#endif // QT3D_QABSTRACTASPECTJOBMANAGER_H
