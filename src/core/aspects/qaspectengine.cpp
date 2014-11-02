@@ -129,6 +129,10 @@ void QAspectEngine::shutdown()
 {
     Q_D(QAspectEngine);
     qCDebug(Aspects) << Q_FUNC_INFO;
+
+    // Cleanup the scene before quitting the backend
+    setRootEntity(Q_NULLPTR);
+
     QMetaObject::invokeMethod(d->m_aspectThread->aspectManager(),
                               "quit");
     d->m_aspectThread->wait();
@@ -168,6 +172,10 @@ void QAspectEngine::setRootEntity(QEntity *root)
     // and the deletion of the old frontend tree will cause the backends to
     // free any related resources
     d->m_root.reset(root);
+
+    // Do we actually have a new scene?
+    if (!d->m_root)
+        return;
 
     // The aspect engine takes ownership of the scene root. We also set the
     // parent of the scene root to be the engine
