@@ -5,13 +5,15 @@ HEADERS += \
     $$PWD/qkeyboardinput.h \
     $$PWD/qkeyboardinput_p.h \
     $$PWD/keyboardcontroller_p.h \
-    $$PWD/keyboardinput_p.h
+    $$PWD/keyboardinput_p.h \
+    $$PWD/inputhandler_p.h
 
 SOURCES += \
     $$PWD/qinputaspect.cpp \
     $$PWD/qkeyboardcontroller.cpp \
     $$PWD/qkeyboardinput.cpp \
     $$PWD/keyboardcontroller.cpp \
-    $$PWD/keyboardinput.cpp
+    $$PWD/keyboardinput.cpp \
+    $$PWD/inputhandler.cpp
 
 INCLUDEPATH += $$PWD
