@@ -101,14 +101,9 @@ void QAspectManager::shutdown()
     qDeleteAll(m_aspects);
 }
 
-void QAspectManager::setRoot(QNode *rootObject)
+void QAspectManager::setRootEntity(Qt3D::QEntity *root)
 {
     qCDebug(Aspects) << Q_FUNC_INFO;
-
-    QEntity *root = qobject_cast<QEntity *>(rootObject);
-
-    if (!root)
-        qWarning() << "Root object is not an Entity";
 
     if (root == m_root)
         return;

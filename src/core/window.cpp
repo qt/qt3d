@@ -105,17 +105,9 @@ void Window::onUpdate()
     m_controller->update(1.0 / 60.0);
 }
 
-void Window::setRootObject( QObject* obj )
+void Window::setRootEntity(QEntity *root)
 {
-    if (m_root == obj)
-        return;
-
-    if (obj) {
-        obj->setParent( this );
-        m_root = QSharedPointer<QObject>(obj);
-    }
-
-    m_aspectEngine->setRoot(qobject_cast<QNode *>(obj));
+    m_aspectEngine->setRootEntity(root);
 
     // Hook up controller input to camera
     // TODO: Do this more generically as we may want keyboard ot control an Entity etc

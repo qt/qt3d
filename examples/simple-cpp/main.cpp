@@ -165,7 +165,7 @@ int main(int argc, char* argv[])
 
     rootEntity->addComponent(frameGraph);
 
-    view.setRootObject(rootEntity);
+    view.setRootEntity(rootEntity);
     view.show();
 
     return app.exec();

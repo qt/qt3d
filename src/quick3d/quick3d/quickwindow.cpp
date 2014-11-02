@@ -41,12 +41,14 @@
 
 #include "quickwindow.h"
 #include <Qt3DCore/qaspectengine.h>
+#include <Qt3DCore/qentity.h>
+#include <Qt3DCore/cameracontroller.h>
 
 #include <QQmlComponent>
 #include <QQmlContext>
+
 #include <QDebug>
 #include <QTimer>
-#include <Qt3DCore/cameracontroller.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -88,11 +90,9 @@ void QuickWindow::setSource(const QUrl& source)
         return;
     }
 
-    if (m_root) {
-        m_aspectEngine->shutdown();
-        m_aspectEngine->setRoot(0);
-        m_root = QSharedPointer<QObject>();
-    }
+    // If the engine already has a scene object tree, tidy up first
+    if (m_aspectEngine->rootEntity())
+        m_aspectEngine->setRootEntity(Q_NULLPTR);
 
     if (m_component)
         m_component = QSharedPointer<QQmlComponent>();
@@ -156,7 +156,12 @@ void QuickWindow::continueExecute()
         return;
     }
 
-    setRootObject(obj);
+    QEntity *rootEntity = qobject_cast<QEntity *>(obj);
+    if (rootEntity)
+        setRootEntity(rootEntity);
+    else
+        delete obj;
+
     emit statusChanged(status());
 }
 

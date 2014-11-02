@@ -132,8 +132,7 @@ int main(int argc, char **argv)
     rootEntity->addComponent(frameGraph);
 
     // Set root object of the scene
-    view.setRootObject(rootEntity);
-    // Show window
+    view.setRootEntity(rootEntity);
     view.show();
 
     return app.exec();

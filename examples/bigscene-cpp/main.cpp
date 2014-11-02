@@ -136,7 +136,7 @@ int main(int ac, char **av)
         e->setParent(root);
     }
 
-    view.setRootObject(root);
+    view.setRootEntity(root);
     view.show();
     return app.exec();
 }

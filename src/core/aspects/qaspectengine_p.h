@@ -43,14 +43,13 @@
 #define QT3D_QASPECTENGINE_P_H
 
 #include <private/qobject_p.h>
-#include <QMutex>
-#include <QWaitCondition>
-#include <QHash>
+#include <QtCore/qsharedpointer.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class QEntity;
 class QNode;
 class QAspectEngine;
 class QAspectThread;
@@ -67,6 +66,7 @@ public:
     QAspectThread *m_aspectThread;
     QPostman *m_postman;
     QSceneInterface *m_scene;
+    QSharedPointer<QEntity> m_root;
 };
 
 } // Qt3D

@@ -72,7 +72,7 @@ public Q_SLOTS:
     void initialize();
     void shutdown();
 
-    void setRoot(Qt3D::QNode *rootObject);
+    void setRootEntity(Qt3D::QEntity *root);
     void setSurface(QSurface *surface);
     void registerAspect(Qt3D::QAbstractAspect *aspect);
     QSurface *surface() const;

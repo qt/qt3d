@@ -69,7 +69,7 @@ QAspectEnginePrivate::QAspectEnginePrivate(QAspectEngine *qq)
     m_postman->setScene(m_scene);
     qRegisterMetaType<Qt3D::QAbstractAspect *>();
     qRegisterMetaType<Qt3D::QObserverInterface *>();
-    qRegisterMetaType<Qt3D::QNode *>();
+    qRegisterMetaType<Qt3D::QEntity *>();
     qRegisterMetaType<Qt3D::QSceneInterface *>();
 }
 
@@ -157,16 +157,42 @@ void QAspectEngine::registerAspect(QAbstractAspect *aspect)
                               Q_ARG(Qt3D::QAbstractAspect *, aspect));
 }
 
-void QAspectEngine::setRoot(QNode *rootObject)
+void QAspectEngine::setRootEntity(QEntity *root)
 {
-    Q_D(QAspectEngine);
     qCDebug(Aspects) << "Setting scene root on aspect manager";
-    initNodeTree(rootObject);
+    Q_D(QAspectEngine);
+    if (d->m_root == root)
+        return;
+
+    // Set the new root object. This will cause the old tree to be deleted
+    // and the deletion of the old frontend tree will cause the backends to
+    // free any related resources
+    d->m_root.reset(root);
+
+    // The aspect engine takes ownership of the scene root. We also set the
+    // parent of the scene root to be the engine
+    d->m_root->setParent(this);
+
+    // Prepare the frontend tree for use by giving each node a pointer to the
+    // scene object and adding each node to the scene
+    // TODO: We probably need a call symmetric to this one above in order to
+    // deregister the nodes from the scene
+    initNodeTree(root);
+
+    // Finally, tell the aspects about the new scene object tree. This is done
+    // in a blocking manner to allow the backends to get synchronized before the
+    // main thread starts triggering potentially more notifications
     QMetaObject::invokeMethod(d->m_aspectThread->aspectManager(),
-                              "setRoot",
+                              "setRootEntity",
                               Qt::BlockingQueuedConnection,
-                              Q_ARG(Qt3D::QNode *, rootObject));
+                              Q_ARG(Qt3D::QEntity *, root));
     qCDebug(Aspects) << "Done setting scene root on aspect manager";
+}
+
+QSharedPointer<QEntity> QAspectEngine::rootEntity() const
+{
+    Q_D(const QAspectEngine);
+    return d->m_root;
 }
 
 } // namespace Qt3D

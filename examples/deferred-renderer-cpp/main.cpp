@@ -185,8 +185,7 @@ int main(int ac, char **av)
     screenQuad->addComponent(planeMesh);
 
     // Set root object of the scene
-    view.setRootObject(rootEntity);
-    // Show window
+    view.setRootEntity(rootEntity);
     view.show();
 
     return app.exec();

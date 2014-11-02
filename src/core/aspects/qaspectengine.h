@@ -52,10 +52,11 @@ class QSurface;
 
 namespace Qt3D {
 
-class QNode;
 class QAbstractAspect;
 class QAspectThread;
 class QAspectEnginePrivate;
+class QEntity;
+class QNode;
 
 class QT3DCORESHARED_EXPORT QAspectEngine : public QObject
 {
@@ -66,7 +67,9 @@ public:
     void initialize();
     void shutdown();
 
-    void setRoot(QNode *rootObject);
+    void setRootEntity(QEntity *root);
+    QSharedPointer<QEntity> rootEntity() const;
+
     void setSurface(QSurface *surface);
     void registerAspect(QAbstractAspect *aspect);
 
