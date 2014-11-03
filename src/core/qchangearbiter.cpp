@@ -184,6 +184,12 @@ void QChangeArbiter::appendLockingChangeQueue(QChangeArbiter::ChangeQueue *queue
     m_lockingChangeQueues.append(queue);
 }
 
+void QChangeArbiter::removeLockingChangeQueue(QChangeArbiter::ChangeQueue *queue)
+{
+    QMutexLocker locker(&m_mutex);
+    m_lockingChangeQueues.removeOne(queue);
+}
+
 void QChangeArbiter::syncChanges()
 {
     QMutexLocker locker(&m_mutex);
@@ -273,7 +279,7 @@ void QChangeArbiter::setPostman(QObserverInterface *postman)
 
 void QChangeArbiter::createUnmanagedThreadLocalChangeQueue(void *changeArbiter)
 {
-    Q_CHECK_PTR(changeArbiter);
+    Q_ASSERT(changeArbiter);
 
     QChangeArbiter *arbiter = static_cast<QChangeArbiter *>(changeArbiter);
 
@@ -287,8 +293,15 @@ void QChangeArbiter::createUnmanagedThreadLocalChangeQueue(void *changeArbiter)
 
 void QChangeArbiter::destroyUnmanagedThreadLocalChangeQueue(void *changeArbiter)
 {
-    // TODO: Implement me!
-    Q_UNUSED(changeArbiter);
+    Q_ASSERT(changeArbiter);
+
+    QChangeArbiter *arbiter = static_cast<QChangeArbiter *>(changeArbiter);
+    qCDebug(ChangeArbiter) << Q_FUNC_INFO << QThread::currentThread();
+    if (arbiter->tlsChangeQueue()->hasLocalData()) {
+        ChangeQueue *localChangeQueue = arbiter->tlsChangeQueue()->localData();
+        arbiter->removeLockingChangeQueue(localChangeQueue);
+        arbiter->tlsChangeQueue()->setLocalData(Q_NULLPTR);
+    }
 }
 
 void QChangeArbiter::createThreadLocalChangeQueue(void *changeArbiter)

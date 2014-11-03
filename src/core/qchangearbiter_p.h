@@ -116,6 +116,7 @@ protected:
     void appendChangeQueue(ChangeQueue *queue);
     void removeChangeQueue(ChangeQueue *queue);
     void appendLockingChangeQueue(ChangeQueue *queue);
+    void removeLockingChangeQueue(ChangeQueue *queue);
 
 private:
     QMutex m_mutex;

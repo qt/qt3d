@@ -132,7 +132,9 @@ void QAspectEngine::shutdown()
 
     // Cleanup the scene before quitting the backend
     setRootEntity(Q_NULLPTR);
-
+    d->m_scene->setArbiter(Q_NULLPTR);
+    QChangeArbiter *arbiter = d->m_aspectThread->aspectManager()->changeArbiter();
+    QChangeArbiter::destroyUnmanagedThreadLocalChangeQueue(arbiter);
     QMetaObject::invokeMethod(d->m_aspectThread->aspectManager(),
                               "quit");
     d->m_aspectThread->wait();
