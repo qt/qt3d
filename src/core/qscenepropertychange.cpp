@@ -101,7 +101,7 @@ QScenePropertyChange::QScenePropertyChange(QScenePropertyChangePrivate &dd, Chan
 {
 }
 
-QByteArray QScenePropertyChange::propertyName() const
+const char *QScenePropertyChange::propertyName() const
 {
     Q_D(const QScenePropertyChange);
     return d->m_propertyName;
@@ -113,7 +113,7 @@ QVariant QScenePropertyChange::value() const
     return d->m_value;
 }
 
-void QScenePropertyChange::setPropertyName(const QByteArray &name)
+void QScenePropertyChange::setPropertyName(const char *name)
 {
     Q_D(QScenePropertyChange);
     d->m_propertyName = name;

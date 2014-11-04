@@ -88,7 +88,6 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QNode)
-    Q_PRIVATE_SLOT(d_func(), void _q_onNodePropertyChanged())
     virtual QNode *doClone() const = 0;
 
     friend class QAspectEngine;

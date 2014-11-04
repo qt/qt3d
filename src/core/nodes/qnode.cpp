@@ -65,6 +65,8 @@ QNodePrivate::QNodePrivate(QNode *qq)
     , m_scene(Q_NULLPTR)
     , m_uuid(QUuid::createUuid())
     , m_blockNotifications(false)
+    , m_propertyChangesSetup(false)
+    , m_signals(this)
 {
     q_ptr = qq;
 }
@@ -179,64 +181,50 @@ void QNodePrivate::removeAllChildren()
 void QNodePrivate::registerNotifiedProperties()
 {
     Q_Q(QNode);
-    if (!m_notifiedProperties.isEmpty())
+    if (m_propertyChangesSetup)
         return;
 
     const int offset = QNode::staticMetaObject.propertyOffset();
     const int count = q->metaObject()->propertyCount();
 
-    for (int index = offset; index < count; index++) {
-        const QMetaProperty property = q->metaObject()->property(index);
-        if (!property.hasNotifySignal())
-            continue;
-        m_notifiedProperties[property.notifySignalIndex()] = property.name();
-        const QByteArray signal = QByteArray::number(QSIGNAL_CODE)
-                                + property.notifySignal().methodSignature();
-        QObject::connect(q, signal,
-                         q, SLOT(_q_onNodePropertyChanged()));
-    }
+    for (int index = offset; index < count; index++)
+        m_signals.connectToPropertyChange(q, index);
+
+    m_propertyChangesSetup = true;
 }
 
 void QNodePrivate::unregisterNotifiedProperties()
 {
     Q_Q(QNode);
-    if (!m_notifiedProperties.isEmpty())
+    if (!m_propertyChangesSetup)
         return;
 
     const int offset = QNode::staticMetaObject.propertyOffset();
     const int count = q->metaObject()->propertyCount();
 
-    for (int index = offset; index < count; index++) {
-        const QMetaProperty property = q->metaObject()->property(index);
-        if (!property.hasNotifySignal())
-            continue;
-        const QByteArray signal = QByteArray::number(QSIGNAL_CODE)
-                + property.notifySignal().methodSignature();
-        QObject::disconnect(q, signal,
-                            q, SLOT(_q_onNodePropertyChanged()));
-    }
-    m_notifiedProperties.clear();
+    for (int index = offset; index < count; index++)
+        m_signals.disconnectFromPropertyChange(q, index);
+
+    m_propertyChangesSetup = false;
 }
 
-void QNodePrivate::_q_onNodePropertyChanged()
+void QNodePrivate::propertyChanged(int propertyIndex)
 {
     // Bail out early if we can to avoid the cost below
     if (m_blockNotifications)
         return;
 
     Q_Q(QNode);
-    const int signalIndex = q->senderSignalIndex();
-    const QByteArray &name = m_notifiedProperties.value(signalIndex);
-    if (name.isEmpty()) // not contained
-        return;
 
-    const QVariant data = q->property(name);
-    if (data.canConvert<QNode*>()) {
+    const QMetaProperty property = q->metaObject()->property(propertyIndex);
+
+    const QVariant data = property.read(q);
+    if (property.userType() == qMetaTypeId<QNode*>()) {
         const QNode * const node = data.value<QNode*>();
         const QNodeUuid uuid = node ? node->uuid() : QNodeUuid();
-        notifyPropertyChange(name, uuid);
+        notifyPropertyChange(property.name(), uuid);
     } else {
-        notifyPropertyChange(name, data);
+        notifyPropertyChange(property.name(), data);
     }
 }
 
@@ -266,7 +254,7 @@ QSceneInterface *QNodePrivate::scene() const
     return m_scene;
 }
 
-void QNodePrivate::notifyPropertyChange(const QByteArray &name, const QVariant &value)
+void QNodePrivate::notifyPropertyChange(const char *name, const QVariant &value)
 {
     // Bail out early if we can to avoid operator new
     if (m_blockNotifications)

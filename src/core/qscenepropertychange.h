@@ -56,10 +56,10 @@ public:
     QScenePropertyChange(ChangeFlag type, QNode *node, Priority priority = Standard);
     virtual ~QScenePropertyChange();
 
-    QByteArray propertyName() const;
+    const char *propertyName() const;
     QVariant value() const;
 
-    void setPropertyName(const QByteArray &name);
+    void setPropertyName(const char *name);
     void setValue(const QVariant &value);
 
     static void *operator new(size_t size);

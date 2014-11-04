@@ -64,7 +64,9 @@ public:
 
     Q_DECLARE_PUBLIC(QScenePropertyChange)
 
-    QByteArray m_propertyName;
+    /// FIXME: use QMetaProperty here once the NodeAboutToBeDeleted etc. change events
+    /// get refactored to their own QSceneChange subclass
+    const char *m_propertyName;
     QVariant m_value;
 
     static QFrameAllocator *m_allocator;

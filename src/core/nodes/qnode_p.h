@@ -47,6 +47,7 @@
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/private/qobservableinterface_p.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
+#include "propertychangehandler_p.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -68,7 +69,7 @@ public:
 
     void setArbiter(QChangeArbiter *arbiter) Q_DECL_OVERRIDE;
 
-    void notifyPropertyChange(const QByteArray &name, const QVariant &value);
+    void notifyPropertyChange(const char *name, const QVariant &value);
     virtual void notifyObservers(const QSceneChangePtr &change);
 
     void insertTree(QNode *treeRoot, int depth = 0);
@@ -91,9 +92,11 @@ private:
     void removeAllChildren();
     void registerNotifiedProperties();
     void unregisterNotifiedProperties();
-    void _q_onNodePropertyChanged();
+    void propertyChanged(int propertyIndex);
 
-    QHash<int, QByteArray> m_notifiedProperties;
+    friend class PropertyChangeHandler<QNodePrivate>;
+    bool m_propertyChangesSetup;
+    PropertyChangeHandler<QNodePrivate> m_signals;
 
     static QHash<QNodeUuid, QNode *> m_clonesLookupTable;
 };
