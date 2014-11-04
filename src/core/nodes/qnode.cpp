@@ -88,7 +88,8 @@ void QNodePrivate::addChild(QNode *childNode)
 
     // We notify only if we have a QChangeArbiter
     if (m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr e(new QScenePropertyChange(NodeCreated, qobject_cast<QNode *>(q_ptr)));
+        Q_Q(QNode);
+        QScenePropertyChangePtr e(new QScenePropertyChange(NodeCreated, q));
         e->setPropertyName(QByteArrayLiteral("node"));
         // We need to clone the parent of the childNode we send
         QNode *parentClone = clone();
@@ -114,7 +115,8 @@ void QNodePrivate::removeChild(QNode *childNode)
 
     // Notify only if child isn't a clone
     if (m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr e(new QScenePropertyChange(NodeAboutToBeDeleted, qobject_cast<QNode *>(q_ptr)));
+        Q_Q(QNode);
+        QScenePropertyChangePtr e(new QScenePropertyChange(NodeAboutToBeDeleted, q));
         e->setPropertyName(QByteArrayLiteral("node"));
         // We need to clone the parent of the childNode we send
         QNode *parentClone = clone();
@@ -149,7 +151,8 @@ QNode *QNodePrivate::clone()
     // reference the same component
     QNode *clonedNode = QNodePrivate::m_clonesLookupTable.value(m_uuid);
     if (clonedNode == Q_NULLPTR) {
-        clonedNode = qobject_cast<QNode *>(q_ptr)->doClone();
+        Q_Q(QNode);
+        clonedNode = q->doClone();
         // doClone, returns new instance with content copied
         // and relationships added
         QNodePrivate::m_clonesLookupTable.insert(clonedNode->uuid(), clonedNode);
@@ -260,7 +263,8 @@ void QNodePrivate::notifyPropertyChange(const char *name, const QVariant &value)
     if (m_blockNotifications)
         return;
 
-    QScenePropertyChangePtr e(new QScenePropertyChange(NodeUpdated, qobject_cast<QNode *>(q_ptr)));
+    Q_Q(QNode);
+    QScenePropertyChangePtr e(new QScenePropertyChange(NodeUpdated, q));
     e->setPropertyName(name);
     e->setValue(value);
     notifyObservers(e);
