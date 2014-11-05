@@ -222,7 +222,7 @@ void QNodePrivate::propertyChanged(int propertyIndex)
     const QMetaProperty property = q->metaObject()->property(propertyIndex);
 
     const QVariant data = property.read(q);
-    if (property.userType() == qMetaTypeId<QNode*>()) {
+    if (data.canConvert<QNode*>()) {
         const QNode * const node = data.value<QNode*>();
         const QNodeUuid uuid = node ? node->uuid() : QNodeUuid();
         notifyPropertyChange(property.name(), uuid);
