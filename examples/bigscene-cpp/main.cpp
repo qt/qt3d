@@ -72,7 +72,7 @@ int main(int ac, char **av)
     QCamera *cameraEntity = new QCamera(root);
     cameraEntity->setObjectName(QStringLiteral("cameraEntity"));
     cameraEntity->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
-    cameraEntity->setPosition(QVector3D(0, 0, -20.0f));
+    cameraEntity->setPosition(QVector3D(0, -250.0f, -50.0f));
     cameraEntity->setUpVector(QVector3D(0, 1, 0));
     cameraEntity->setViewCenter(QVector3D(0, 0, 0));
     view.setCamera(cameraEntity);
@@ -89,8 +89,9 @@ int main(int ac, char **av)
     frameGraph->setActiveFrameGraph(techniqueFilter);
     root->addComponent(frameGraph);
 
-    float radius = 300.0f;
-    int max = 1000;
+    const float radius = 100.0f;
+    const int max = 1000;
+    const float det = 1.0f / max;
     // Scene
     for (int i = 0; i < max; i++) {
         QEntity *e = new QEntity();
@@ -102,29 +103,28 @@ int main(int ac, char **av)
 
         mesh->setRings(50.0f);
         mesh->setSlices(30.0f);
-        mesh->setRadius(5.0f);
-        mesh->setLength(10.0f);
+        mesh->setRadius(2.5f);
+        mesh->setLength(5.0f);
 
-        float det = 1.0f / max;
-        float angle = M_PI * 2.0f * i * det;
+        const float angle = M_PI * 2.0f * i * det * 10.;
 
-        translation->setTranslation(QVector3D(radius * cos(angle), 20.0f * cos(i * 0.15f * M_PI * 2.0f), radius * sin(angle)));
+        translation->setTranslation(QVector3D(radius * cos(angle), 200.* i * det, radius * sin(angle)));
         rotateX->setAxis(QVector3D(1.0f, 0.0f, 0.0f));
         rotateZ->setAxis(QVector3D(0.0f, 0.0f, 1.0f));
         rotateX->setAngleDeg(30.0f * i);
         rotateZ->setAngleDeg(45.0f * i);
 
         QPropertyAnimation *animX = new QPropertyAnimation(rotateX, "angle");
-        animX->setDuration(1200);
-        animX->setStartValue(QVariant::fromValue(i * det * 30.0f));
-        animX->setEndValue(QVariant::fromValue((i + 1) * det * 390.0f));
+        animX->setDuration(2400 * i);
+        animX->setStartValue(QVariant::fromValue(i * 30.0f));
+        animX->setEndValue(QVariant::fromValue((i + 1) * 390.0f));
         animX->setLoopCount(-1);
         animX->start();
 
         QPropertyAnimation *animZ = new QPropertyAnimation(rotateZ, "angle");
-        animZ->setDuration(1700);
-        animZ->setStartValue(QVariant::fromValue(i * det * 20.0f));
-        animZ->setEndValue(QVariant::fromValue((i + 1) * det * 380.0f));
+        animZ->setDuration(2400 * i);
+        animZ->setStartValue(QVariant::fromValue(i * 20.0f));
+        animZ->setEndValue(QVariant::fromValue((i + 1) * 380.0f));
         animZ->setLoopCount(-1);
         animZ->start();
 
