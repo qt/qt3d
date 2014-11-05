@@ -256,7 +256,7 @@ void QChangeArbiter::sceneChangeEvent(const QSceneChangePtr &e)
 
     // Add the change to the thread local storage queue - no locking required => yay!
     ChangeQueue *localChangeQueue = m_tlsChangeQueue.localData();
-    localChangeQueue->append(e);
+    localChangeQueue->push_back(e);
 
     //    qCDebug(ChangeArbiter) << "Change queue for thread" << QThread::currentThread() << "now contains" << localChangeQueue->count() << "items";
 }

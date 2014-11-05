@@ -106,7 +106,7 @@ public:
     static void destroyThreadLocalChangeQueue(void *changeArbiter);
 
 protected:
-    typedef QVector<QSceneChangePtr> ChangeQueue;
+    typedef std::vector<QSceneChangePtr> ChangeQueue;
     typedef QPair<ChangeFlags, QObserverInterface *> QObserverPair;
     typedef QList<QObserverPair> QObserverList;
 
