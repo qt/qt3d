@@ -49,10 +49,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-template <typename T, int INDEXBITS>
+template <typename T, uint INDEXBITS>
 class QHandleManager;
 
-template <typename T, int INDEXBITS = 16>
+template <typename T, uint INDEXBITS = 16>
 class QHandle
 {
 public:
@@ -106,7 +106,7 @@ private:
     };
 };
 
-template <typename T, int INDEXBITS>
+template <typename T, uint INDEXBITS>
 QDebug operator<<(QDebug dbg, const QHandle<T, INDEXBITS> &h)
 {
     QString binNumber = QString::number(h.handle(), 2).rightJustified(32, QChar::fromLatin1('0'));

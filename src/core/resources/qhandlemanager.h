@@ -52,7 +52,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-template <typename T, int INDEXBITS = 16>
+template <typename T, uint INDEXBITS = 16>
 class QHandleManager
 {
 public:
@@ -107,7 +107,7 @@ private:
     QVector<HandleEntry<T> > m_entries;
 };
 
-template <typename T, int INDEXBITS>
+template <typename T, uint INDEXBITS>
 void QHandleManager<T, INDEXBITS>::reset()
 {
     m_activeEntryCount = 0;
@@ -119,7 +119,7 @@ void QHandleManager<T, INDEXBITS>::reset()
     m_entries[QHandle<T, INDEXBITS>::MaxIndex].m_endOfFreeList = true;
 }
 
-template <typename T, int INDEXBITS>
+template <typename T, uint INDEXBITS>
 QHandle<T, INDEXBITS> QHandleManager<T, INDEXBITS>::acquire(T *d)
 {
     typedef QHandle<T, INDEXBITS> qHandle;
@@ -143,7 +143,7 @@ QHandle<T, INDEXBITS> QHandleManager<T, INDEXBITS>::acquire(T *d)
     return qHandle(newIndex, m_entries[newIndex].m_counter);
 }
 
-template <typename T, int INDEXBITS>
+template <typename T, uint INDEXBITS>
 void QHandleManager<T, INDEXBITS>::release(const QHandle<T, INDEXBITS> &handle)
 {
     const quint32 index = handle.index();
@@ -159,7 +159,7 @@ void QHandleManager<T, INDEXBITS>::release(const QHandle<T, INDEXBITS> &handle)
 
 // Needed in case the QResourcesManager has reordered
 // memory so that the handle still points to valid data
-template <typename T, int INDEXBITS>
+template <typename T, uint INDEXBITS>
 void QHandleManager<T, INDEXBITS>::update(const QHandle<T, INDEXBITS> &handle, T *d)
 {
     const quint32 index = handle.index();
@@ -168,7 +168,7 @@ void QHandleManager<T, INDEXBITS>::update(const QHandle<T, INDEXBITS> &handle, T
     m_entries[index].m_data = d;
 }
 
-template <typename T, int INDEXBITS>
+template <typename T, uint INDEXBITS>
 T *QHandleManager<T, INDEXBITS>::data(const QHandle<T, INDEXBITS> &handle, bool *ok)
 {
     const quint32 index = handle.index();
@@ -185,7 +185,7 @@ T *QHandleManager<T, INDEXBITS>::data(const QHandle<T, INDEXBITS> &handle, bool 
     return d;
 }
 
-template <typename T, int INDEXBITS>
+template <typename T, uint INDEXBITS>
 const T *QHandleManager<T, INDEXBITS>::constData(const QHandle<T, INDEXBITS> &handle, bool *ok) const
 {
     const quint32 index = handle.index();

@@ -55,7 +55,7 @@ namespace Qt3D {
 class QAnnotation;
 class QTechniqueFilter;
 
-template <typename T, int INDEXBITS>
+template <typename T, uint INDEXBITS>
 class QHandle;
 
 namespace Render {

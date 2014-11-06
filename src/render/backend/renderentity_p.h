@@ -98,7 +98,7 @@ public:
     void addComponent(QComponent *component);
     void removeComponent(QComponent *component);
 
-    template<class Backend, int INDEXBITS>
+    template<class Backend, uint INDEXBITS>
     QHandle<Backend, INDEXBITS> componentHandle() const
     {
         return QHandle<Backend, INDEXBITS>();
@@ -131,7 +131,7 @@ public:
         return componentList;
     }
 
-    template<class Backend, int INDEXBITS>
+    template<class Backend, uint INDEXBITS>
     QList<QHandle<Backend, INDEXBITS> > componentHandlesInTree() const
     {
         QList<QHandle<Backend, INDEXBITS> > handles;

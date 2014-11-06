@@ -52,7 +52,7 @@ namespace Qt3D {
 class QAnnotation;
 class QRenderPassFilter;
 
-template <typename T, int INDEXBITS>
+template <typename T, uint INDEXBITS>
 class QHandle;
 
 namespace Render {

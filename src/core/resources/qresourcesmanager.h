@@ -133,7 +133,7 @@ struct Int2Type
     };
 };
 
-template <typename T, int INDEXBITS>
+template <typename T, uint INDEXBITS>
 class ArrayAllocatingPolicy
 {
 public:
@@ -219,7 +219,7 @@ private:
 
 };
 
-template <typename T, int INDEXBITS>
+template <typename T, uint INDEXBITS>
 class ArrayPreallocationPolicy
 {
 public:
@@ -272,7 +272,7 @@ private:
 
 };
 
-template <typename T, int INDEXBITS>
+template <typename T, uint INDEXBITS>
 class ListAllocatingPolicy
 {
 public:
@@ -328,8 +328,8 @@ private:
     {}
 };
 
-template <typename T, typename C, int INDEXBITS = 16,
-          template <typename, int> class AllocatingPolicy = ArrayAllocatingPolicy,
+template <typename T, typename C, uint INDEXBITS = 16,
+          template <typename, uint> class AllocatingPolicy = ArrayAllocatingPolicy,
           template <class> class LockingPolicy = NonLockingPolicy
           >
 class QResourcesManager
