@@ -157,9 +157,9 @@ private:
     // the render thread is submitting these commands.
     QVector<RenderCommand *> m_commands;
 
-    typedef QHash<QString, QUniformValue* (RenderView::*)(const QMatrix4x4& model) const> standardUniformsPFuncsHash;
-    static  standardUniformsPFuncsHash ms_standardUniformSetters;
-    static standardUniformsPFuncsHash initializeStandardUniformSetters();
+    typedef QHash<QString, QUniformValue* (RenderView::*)(const QMatrix4x4& model) const> StandardUniformsPFuncsHash;
+    static StandardUniformsPFuncsHash ms_standardUniformSetters;
+    static StandardUniformsPFuncsHash initializeStandardUniformSetters();
     static QStringList ms_standardAttributesNames;
     static QStringList initializeStandardAttributeNames();
 

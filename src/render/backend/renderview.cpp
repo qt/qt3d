@@ -119,12 +119,12 @@ bool isEntityInLayers(const RenderEntity *entity, const QStringList &layers)
 
 } // anonymouse namespace
 
-RenderView::standardUniformsPFuncsHash RenderView::ms_standardUniformSetters = RenderView::initializeStandardUniformSetters();
+RenderView::StandardUniformsPFuncsHash RenderView::ms_standardUniformSetters = RenderView::initializeStandardUniformSetters();
 QStringList RenderView::ms_standardAttributesNames = RenderView::initializeStandardAttributeNames();
 
-RenderView::standardUniformsPFuncsHash RenderView::initializeStandardUniformSetters()
+RenderView::StandardUniformsPFuncsHash RenderView::initializeStandardUniformSetters()
 {
-    RenderView::standardUniformsPFuncsHash setters;
+    RenderView::StandardUniformsPFuncsHash setters;
 
     setters.insert(QStringLiteral("modelMatrix"), &RenderView::modelMatrix);
     setters.insert(QStringLiteral("viewMatrix"), &RenderView::viewMatrix);
