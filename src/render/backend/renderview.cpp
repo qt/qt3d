@@ -62,25 +62,14 @@
 #include <Qt3DRenderer/private/renderlight_p.h>
 #include <Qt3DRenderer/private/renderpassfilternode_p.h>
 #include <Qt3DRenderer/private/renderrenderpass_p.h>
+#include <Qt3DRenderer/private/renderstate_p.h>
 #include <Qt3DRenderer/private/techniquefilternode_p.h>
 #include <Qt3DRenderer/private/viewportnode_p.h>
 
 #include <Qt3DRenderer/qparametermapping.h>
-#include <Qt3DRenderer/qalphatest.h>
-#include <Qt3DRenderer/qblendequation.h>
-#include <Qt3DRenderer/qblendstate.h>
-#include <Qt3DRenderer/qcullface.h>
-#include <Qt3DRenderer/qdepthmask.h>
-#include <Qt3DRenderer/qdepthtest.h>
-#include <Qt3DRenderer/qdithering.h>
-#include <Qt3DRenderer/qfrontface.h>
-#include <Qt3DRenderer/qscissortest.h>
-#include <Qt3DRenderer/qstenciltest.h>
-#include <Qt3DRenderer/qalphacoverage.h>
 
 // TODO: Move out once this is all refactored
 #include <Qt3DRenderer/private/renderviewjobutils_p.h>
-#include <Qt3DRenderer/private/blendstate_p.h>
 
 #include <Qt3DCore/qentity.h>
 
@@ -360,7 +349,9 @@ void RenderView::buildRenderCommands(RenderEntity *node)
                     command->m_depth = m_data->m_eyePos.distanceToPoint(node->worldBoundingVolume()->center());
                     command->m_meshData = mesh->meshData();
                     command->m_instancesCount = 0;
-                    command->m_stateSet = buildRenderStateSet(pass);
+
+                    // TODO: Build the state set for a render pass only once per-pass. Not once per rendercommand and pass.
+                    command->m_stateSet = buildRenderStateSet(pass, m_allocator);
                     if (command->m_stateSet != Q_NULLPTR)
                         command->m_changeCost = m_renderer->defaultRenderState()->changeCost(command->m_stateSet);
                     setShaderAndUniforms(command, pass, parameters, *(node->worldTransform()));
@@ -379,68 +370,6 @@ void RenderView::buildRenderCommands(RenderEntity *node)
 const AttachmentPack &RenderView::attachmentPack() const
 {
     return m_attachmentPack;
-}
-
-// Build a RenderStateSet from the QRenderState stored in the RenderRenderPass
-RenderStateSet *RenderView::buildRenderStateSet(RenderRenderPass *pass)
-{
-    if (pass != Q_NULLPTR && pass->renderStates().count() > 0) {
-        RenderStateSet *stateSet = m_allocator->allocate<RenderStateSet>();
-
-        Q_FOREACH (QRenderState *renderState, pass->renderStates()) {
-            if (qobject_cast<QAlphaTest *>(renderState) != Q_NULLPTR) {
-                QAlphaTest *alphaTest = qobject_cast<QAlphaTest *>(renderState);
-                stateSet->addState(AlphaFunc::getOrCreate(alphaTest->func(), alphaTest->clamp()));
-            }
-            else if (qobject_cast<QBlendEquation *>(renderState) != Q_NULLPTR) {
-                QBlendEquation *blendEquation = qobject_cast<QBlendEquation *>(renderState);
-                stateSet->addState(BlendEquation::getOrCreate(blendEquation->mode()));
-            }
-            else if (qobject_cast<QBlendState *>(renderState) != Q_NULLPTR) {
-                QBlendState *blendState = qobject_cast<QBlendState *>(renderState);
-                // TO DO : Handle Alpha here as weel
-                stateSet->addState(BlendState::getOrCreate(blendState->srcRGB(), blendState->dstRGB()));
-            }
-            else if (qobject_cast<QCullFace *>(renderState) != Q_NULLPTR) {
-                QCullFace *cullFace = qobject_cast<QCullFace *>(renderState);
-                stateSet->addState(CullFace::getOrCreate(cullFace->mode()));
-            }
-            else if (qobject_cast<QDepthMask *>(renderState) != Q_NULLPTR) {
-                QDepthMask *depthMask = qobject_cast<QDepthMask *>(renderState);
-                stateSet->addState(DepthMask::getOrCreate(depthMask->mask()));
-            }
-            else if (qobject_cast<QDepthTest *>(renderState) != Q_NULLPTR) {
-                QDepthTest *depthTest = qobject_cast<QDepthTest *>(renderState);
-                stateSet->addState(DepthTest::getOrCreate(depthTest->func()));
-            }
-            else if (qobject_cast<QDithering *>(renderState) != Q_NULLPTR) {
-                stateSet->addState(Dithering::getOrCreate());
-            }
-            else if (qobject_cast<QFrontFace *>(renderState) != Q_NULLPTR) {
-                QFrontFace *frontFace = qobject_cast<QFrontFace *>(renderState);
-                stateSet->addState(FrontFace::getOrCreate(frontFace->direction()));
-            }
-            else if (qobject_cast<QScissorTest *>(renderState) != Q_NULLPTR) {
-                QScissorTest *scissorTest = qobject_cast<QScissorTest *>(renderState);
-                stateSet->addState(ScissorTest::getOrCreate(scissorTest->left(),
-                                                            scissorTest->bottom(),
-                                                            scissorTest->width(),
-                                                            scissorTest->height()));
-            }
-            else if (qobject_cast<QStencilTest *>(renderState) != Q_NULLPTR) {
-                QStencilTest *stencilTest = qobject_cast<QStencilTest *>(renderState);
-                stateSet->addState(StencilTest::getOrCreate(stencilTest->mask(),
-                                                            stencilTest->func(),
-                                                            stencilTest->faceMode()));
-            }
-            else if (qobject_cast<QAlphaCoverage *>(renderState) != Q_NULLPTR) {
-                stateSet->addState(AlphaCoverage::getOrCreate());
-            }
-        }
-
-        return stateSet;
-    }
-    return Q_NULLPTR;
 }
 
 void RenderView::setUniformValue(QUniformPack &uniformPack, const QString &name, const QVariant &value)

@@ -192,7 +192,6 @@ public:
 
 private:
     void setShaderAndUniforms(RenderCommand *command, RenderRenderPass *pass, QHash<QString, QVariant> &parameters, const QMatrix4x4 &worldTransform);
-    RenderStateSet *buildRenderStateSet(RenderRenderPass *pass);
 
     Renderer *m_renderer;
     QFrameAllocator *m_allocator;

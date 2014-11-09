@@ -50,6 +50,9 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
+
+class QFrameAllocator;
+
 namespace Render {
 
 class FrameGraphNode;
@@ -58,6 +61,7 @@ class RenderEffect;
 class RenderEntity;
 class RenderMaterial;
 class RenderRenderPass;
+class RenderStateSet;
 class RenderTechnique;
 class RenderView;
 class Renderer;
@@ -79,6 +83,9 @@ Q_AUTOTEST_EXPORT QHash<QString, QVariant> parametersFromMaterialEffectTechnique
                                                                                  RenderMaterial *material,
                                                                                  RenderEffect *effect,
                                                                                  RenderTechnique *technique);
+
+Q_AUTOTEST_EXPORT RenderStateSet *buildRenderStateSet(RenderRenderPass *pass,
+                                                      QFrameAllocator *allocator);
 
 } // namespace Render
 } // namespace Qt3D

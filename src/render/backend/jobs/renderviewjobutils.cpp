@@ -41,7 +41,18 @@
 
 #include "renderviewjobutils_p.h"
 
+#include <Qt3DRenderer/qalphacoverage.h>
+#include <Qt3DRenderer/qalphatest.h>
+#include <Qt3DRenderer/qblendequation.h>
+#include <Qt3DRenderer/qblendstate.h>
+#include <Qt3DRenderer/qcullface.h>
+#include <Qt3DRenderer/qdepthmask.h>
+#include <Qt3DRenderer/qdepthtest.h>
+#include <Qt3DRenderer/qdithering.h>
+#include <Qt3DRenderer/qfrontface.h>
 #include <Qt3DRenderer/qopenglfilter.h>
+#include <Qt3DRenderer/qscissortest.h>
+#include <Qt3DRenderer/qstenciltest.h>
 #include <Qt3DRenderer/sphere.h>
 
 #include <Qt3DRenderer/private/cameraselectornode_p.h>
@@ -50,12 +61,15 @@
 #include <Qt3DRenderer/private/managers_p.h>
 #include <Qt3DRenderer/private/rendereffect_p.h>
 #include <Qt3DRenderer/private/renderpassfilternode_p.h>
+#include <Qt3DRenderer/private/renderstate_p.h>
 #include <Qt3DRenderer/private/rendertargetselectornode_p.h>
 #include <Qt3DRenderer/private/renderview_p.h>
 #include <Qt3DRenderer/private/sortmethod_p.h>
 #include <Qt3DRenderer/private/techniquefilternode_p.h>
 #include <Qt3DRenderer/private/viewportnode_p.h>
 
+// TODO: Rename this include to something more descriptive
+#include <Qt3DRenderer/private/blendstate_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -334,6 +348,69 @@ QHash<QString, QVariant> parametersFromMaterialEffectTechnique(ParameterManager 
         addParametersForIds(&params, manager, material->parameters());
 
     return params;
+}
+
+RenderStateSet *buildRenderStateSet(RenderRenderPass *pass, QFrameAllocator *allocator)
+{
+    if (!pass || pass->renderStates().isEmpty())
+        return Q_NULLPTR;
+
+    RenderStateSet *stateSet = allocator->allocate<RenderStateSet>();
+
+    // TODO: Don't use QObject subclasses as backend storage and replace this if
+    // cascade with a switch
+    Q_FOREACH (QRenderState *renderState, pass->renderStates()) {
+        if (qobject_cast<QAlphaTest *>(renderState) != Q_NULLPTR) {
+            QAlphaTest *alphaTest = qobject_cast<QAlphaTest *>(renderState);
+            stateSet->addState(AlphaFunc::getOrCreate(alphaTest->func(), alphaTest->clamp()));
+        }
+        else if (qobject_cast<QBlendEquation *>(renderState) != Q_NULLPTR) {
+            QBlendEquation *blendEquation = qobject_cast<QBlendEquation *>(renderState);
+            stateSet->addState(BlendEquation::getOrCreate(blendEquation->mode()));
+        }
+        else if (qobject_cast<QBlendState *>(renderState) != Q_NULLPTR) {
+            QBlendState *blendState = qobject_cast<QBlendState *>(renderState);
+            // TO DO : Handle Alpha here as weel
+            stateSet->addState(BlendState::getOrCreate(blendState->srcRGB(), blendState->dstRGB()));
+        }
+        else if (qobject_cast<QCullFace *>(renderState) != Q_NULLPTR) {
+            QCullFace *cullFace = qobject_cast<QCullFace *>(renderState);
+            stateSet->addState(CullFace::getOrCreate(cullFace->mode()));
+        }
+        else if (qobject_cast<QDepthMask *>(renderState) != Q_NULLPTR) {
+            QDepthMask *depthMask = qobject_cast<QDepthMask *>(renderState);
+            stateSet->addState(DepthMask::getOrCreate(depthMask->mask()));
+        }
+        else if (qobject_cast<QDepthTest *>(renderState) != Q_NULLPTR) {
+            QDepthTest *depthTest = qobject_cast<QDepthTest *>(renderState);
+            stateSet->addState(DepthTest::getOrCreate(depthTest->func()));
+        }
+        else if (qobject_cast<QDithering *>(renderState) != Q_NULLPTR) {
+            stateSet->addState(Dithering::getOrCreate());
+        }
+        else if (qobject_cast<QFrontFace *>(renderState) != Q_NULLPTR) {
+            QFrontFace *frontFace = qobject_cast<QFrontFace *>(renderState);
+            stateSet->addState(FrontFace::getOrCreate(frontFace->direction()));
+        }
+        else if (qobject_cast<QScissorTest *>(renderState) != Q_NULLPTR) {
+            QScissorTest *scissorTest = qobject_cast<QScissorTest *>(renderState);
+            stateSet->addState(ScissorTest::getOrCreate(scissorTest->left(),
+                                                        scissorTest->bottom(),
+                                                        scissorTest->width(),
+                                                        scissorTest->height()));
+        }
+        else if (qobject_cast<QStencilTest *>(renderState) != Q_NULLPTR) {
+            QStencilTest *stencilTest = qobject_cast<QStencilTest *>(renderState);
+            stateSet->addState(StencilTest::getOrCreate(stencilTest->mask(),
+                                                        stencilTest->func(),
+                                                        stencilTest->faceMode()));
+        }
+        else if (qobject_cast<QAlphaCoverage *>(renderState) != Q_NULLPTR) {
+            stateSet->addState(AlphaCoverage::getOrCreate());
+        }
+    }
+
+    return stateSet;
 }
 
 } // namespace Render
