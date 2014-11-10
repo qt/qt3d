@@ -52,6 +52,7 @@ QKeyboardInputPrivate::QKeyboardInputPrivate(QKeyboardInput *qq)
     , m_controller(Q_NULLPTR)
     , m_focus(false)
 {
+    m_shareable = false;
 }
 
 QKeyboardInput::QKeyboardInput(QNode *parent)
