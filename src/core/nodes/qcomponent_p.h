@@ -54,8 +54,12 @@ class QT3DCORESHARED_EXPORT QComponentPrivate : public QNodePrivate
 public:
     explicit QComponentPrivate(QComponent *qq);
 
+    void addEntity(QEntity *entity);
+    void removeEntity(QEntity *entity);
+
     Q_DECLARE_PUBLIC(QComponent)
     bool m_shareable;
+    QVector<QEntity *> m_entities;
 };
 
 }

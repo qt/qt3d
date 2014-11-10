@@ -118,6 +118,7 @@ void QEntity::addComponent(QComponent *comp)
         propertyChange->setValue(QVariant::fromValue(QNodePtr(QNodePrivate::get(comp)->clone(), &QNodePrivate::nodePtrDeleter)));
         d->notifyObservers(propertyChange);
     }
+    static_cast<QComponentPrivate *>(QComponentPrivate::get(comp))->addEntity(this);
 }
 
 void QEntity::removeComponent(QComponent *comp)
@@ -125,6 +126,8 @@ void QEntity::removeComponent(QComponent *comp)
     Q_CHECK_PTR(comp);
     qCDebug(Nodes) << Q_FUNC_INFO << comp;
     Q_D(QEntity);
+
+    static_cast<QComponentPrivate *>(QComponentPrivate::get(comp))->removeEntity(this);
 
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentRemoved, this));

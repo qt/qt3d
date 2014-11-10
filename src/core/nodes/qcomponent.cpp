@@ -41,6 +41,7 @@
 
 #include "qcomponent.h"
 #include "qcomponent_p.h"
+#include "qentity.h"
 
 #include <Qt3DCore/qscenepropertychange.h>
 
@@ -52,6 +53,34 @@ QComponentPrivate::QComponentPrivate(QComponent *qq)
     : QNodePrivate(qq)
     , m_shareable(true)
 {
+}
+
+void QComponentPrivate::addEntity(QEntity *entity)
+{
+    m_entities.append(entity);
+
+    // We notify only if we have a QChangeArbiter
+    if (m_changeArbiter != Q_NULLPTR) {
+        Q_Q(QComponent);
+        QScenePropertyChangePtr e(new QScenePropertyChange(ComponentAdded, q));
+        e->setPropertyName(QByteArrayLiteral("entity"));
+        e->setValue(QVariant::fromValue(entity->uuid()));
+        notifyObservers(e);
+    }
+}
+
+void QComponentPrivate::removeEntity(QEntity *entity)
+{
+    // We notify only if we have a QChangeArbiter
+    if (m_changeArbiter != Q_NULLPTR) {
+        Q_Q(QComponent);
+        QScenePropertyChangePtr e(new QScenePropertyChange(ComponentRemoved, q));
+        e->setPropertyName(QByteArrayLiteral("entity"));
+        e->setValue(QVariant::fromValue(entity->uuid()));
+        notifyObservers(e);
+    }
+
+    m_entities.removeAll(entity);
 }
 
 QComponent::QComponent(QNode *parent)
@@ -72,6 +101,16 @@ void QComponent::setShareable(bool shareable)
         d->m_shareable = shareable;
         emit shareableChanged();
     }
+}
+
+/*!
+ * \brief QComponent::entities
+ * \return a QVector containing all the entities that reference this component.
+ */
+QVector<QEntity *> QComponent::entities() const
+{
+    Q_D(const QComponent);
+    return d->m_entities;
 }
 
 QComponent::QComponent(QComponentPrivate &dd, QNode *parent)

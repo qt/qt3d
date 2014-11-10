@@ -62,6 +62,8 @@ public:
     bool shareable() const;
     void setShareable(bool shareable);
 
+    QVector<QEntity *> entities() const;
+
 protected:
     QComponent(QComponentPrivate &dd, QNode *parent = 0);
 
