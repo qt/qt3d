@@ -44,7 +44,8 @@
 #include "inputhandler_p.h"
 #include "keyboardcontroller_p.h"
 #include "keyboardinput_p.h"
-
+#include <Qt3DCore/qnodevisitor.h>
+#include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DInput/qkeyboardcontroller.h>
 #include <Qt3DInput/qkeyboardinput.h>
 
@@ -75,27 +76,39 @@ QVector<QAspectJobPtr> QInputAspect::jobsToExecute()
 
 void QInputAspect::sceneNodeAdded(QSceneChangePtr &e)
 {
-
+    QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
+    QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
+    QNode *n = nodePtr.data();
+    QNodeVisitor visitor;
+    visitor.traverse(n, this, &QInputAspect::visitNode, &QInputAspect::visitNode);
 }
 
 void QInputAspect::sceneNodeRemoved(QSceneChangePtr &e)
 {
-
+    QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
+    QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
+    QNode *n = nodePtr.data();
+    QAbstractAspect::clearBackendNode(n);
 }
 
 void QInputAspect::setRootEntity(QEntity *rootObject)
 {
-
+    Q_UNUSED(rootObject);
 }
 
 void QInputAspect::onInitialize(const QVariantMap &data)
 {
-
+    Q_UNUSED(data);
 }
 
 void QInputAspect::onCleanup()
 {
 
+}
+
+void QInputAspect::visitNode(QNode *node)
+{
+    Q_UNUSED(node);
 }
 
 } // Qt3D

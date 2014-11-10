@@ -67,6 +67,8 @@ private:
     void onInitialize(const QVariantMap &data) Q_DECL_OVERRIDE;
     void onCleanup() Q_DECL_OVERRIDE;
 
+    void visitNode(QNode *node);
+
     Q_DECLARE_PRIVATE(QInputAspect)
 };
 
