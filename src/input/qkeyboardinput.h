@@ -56,14 +56,18 @@ class QT3DINPUTSHARED_EXPORT QKeyboardInput : public QComponent
 {
     Q_OBJECT
     Q_PROPERTY(Qt3D::QKeyboardController *controller READ controller WRITE setController NOTIFY controllerChanged)
+    Q_PROPERTY(bool focus READ focus WRITE setFocus NOTIFY focusChanged)
 public:
     explicit QKeyboardInput(QNode *parent = 0);
 
     void setController(QKeyboardController *controller);
     QKeyboardController *controller() const;
+    bool focus() const;
+    void setFocus(bool focus);
 
 Q_SIGNALS:
     void controllerChanged();
+    void focusChanged();
 
 protected:
     QKeyboardInput(QKeyboardInputPrivate &dd, QNode *parent = 0);

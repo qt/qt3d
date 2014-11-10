@@ -58,6 +58,7 @@ public:
 
     Q_DECLARE_PUBLIC(QKeyboardInput)
     QKeyboardController *m_controller;
+    bool m_focus;
 };
 
 } // Qt3D

@@ -50,6 +50,7 @@ namespace Qt3D {
 QKeyboardInputPrivate::QKeyboardInputPrivate(QKeyboardInput *qq)
     : QComponentPrivate(qq)
     , m_controller(Q_NULLPTR)
+    , m_focus(false)
 {
 }
 
@@ -85,6 +86,21 @@ QKeyboardController *QKeyboardInput::controller() const
 {
     Q_D(const QKeyboardInput);
     return d->m_controller;
+}
+
+bool QKeyboardInput::focus() const
+{
+    Q_D(const QKeyboardInput);
+    return d->m_focus;
+}
+
+void QKeyboardInput::setFocus(bool focus)
+{
+    Q_D(QKeyboardInput);
+    if (d->m_focus != focus) {
+        d->m_focus = focus;
+        emit focusChanged();
+    }
 }
 
 } // Qt3D
