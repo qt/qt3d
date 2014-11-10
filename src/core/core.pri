@@ -36,7 +36,8 @@ HEADERS += \
     $$PWD/qbackendscenepropertychange_p.h \
     $$PWD/qobservableinterface_p.h \
     $$PWD/qobserverinterface_p.h \
-    $$PWD/qchangearbiter_p.h
+    $$PWD/qchangearbiter_p.h \
+    $$PWD/qt3dcore_global_p.h
 
 SOURCES += \
     $$PWD/window.cpp \
