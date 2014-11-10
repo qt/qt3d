@@ -40,6 +40,9 @@
 ****************************************************************************/
 
 #include "keyboardcontroller_p.h"
+#include "inputhandler_p.h"
+#include "inputmanagers_p.h"
+#include <Qt3DCore/qnode.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -60,6 +63,28 @@ void KeyboardController::updateFromPeer(QNode *peer)
 void KeyboardController::sceneChangeEvent(const QSceneChangePtr &)
 {
 
+}
+
+KeyboardControllerFunctor::KeyboardControllerFunctor(InputHandler *handler)
+    : m_handler(handler)
+{
+}
+
+QBackendNode *KeyboardControllerFunctor::create(QNode *frontend) const
+{
+    KeyboardController *controller = m_handler->keyboardControllerManager()->getOrCreateResource(frontend->uuid());
+    controller->setPeer(frontend);
+    return controller;
+}
+
+QBackendNode *KeyboardControllerFunctor::get(QNode *frontend) const
+{
+    return m_handler->keyboardControllerManager()->lookupResource(frontend->uuid());
+}
+
+void KeyboardControllerFunctor::destroy(QNode *frontend) const
+{
+    m_handler->keyboardControllerManager()->releaseResource(frontend->uuid());
 }
 
 } // Inputs
