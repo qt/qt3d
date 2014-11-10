@@ -8,7 +8,8 @@ HEADERS += \
     $$PWD/keyboardinput_p.h \
     $$PWD/inputhandler_p.h \
     $$PWD/inputmanagers_p.h \
-    $$PWD/handle_types_p.h
+    $$PWD/handle_types_p.h \
+    $$PWD/qinputaspect_p.h
 
 SOURCES += \
     $$PWD/qinputaspect.cpp \

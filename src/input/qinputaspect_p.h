@@ -39,58 +39,34 @@
 **
 ****************************************************************************/
 
-#include "qinputaspect.h"
-#include "qinputaspect_p.h"
-#include "inputhandler_p.h"
+#ifndef QT3D_QINPUTASPECT_P_H
+#define QT3D_QINPUTASPECT_P_H
+
+#include <private/qabstractaspect_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QInputAspectPrivate::QInputAspectPrivate(QInputAspect *qq)
-    : QAbstractAspectPrivate(qq)
-    , m_inputHandler(new Input::InputHandler())
-{
-    m_aspectType = QAbstractAspect::AspectOther;
-}
+class QInputAspect;
 
-QInputAspect::QInputAspect(QObject *parent)
-    : QAbstractAspect(*new QInputAspectPrivate(this), parent)
-{
-}
+namespace Input {
 
-QVector<QAspectJobPtr> QInputAspect::jobsToExecute()
-{
-    QVector<QAspectJobPtr> jobs;
-
-    return jobs;
-}
-
-void QInputAspect::sceneNodeAdded(QSceneChangePtr &e)
-{
+class InputHandler;
 
 }
 
-void QInputAspect::sceneNodeRemoved(QSceneChangePtr &e)
+class QInputAspectPrivate : public QAbstractAspectPrivate
 {
+public:
+    QInputAspectPrivate(QInputAspect *qq);
 
-}
-
-void QInputAspect::setRootEntity(QEntity *rootObject)
-{
-
-}
-
-void QInputAspect::onInitialize(const QVariantMap &data)
-{
-
-}
-
-void QInputAspect::onCleanup()
-{
-
-}
+    Q_DECLARE_PUBLIC(QInputAspect)
+    Input::InputHandler *m_inputHandler;
+};
 
 } // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_QINPUTASPECT_P_H

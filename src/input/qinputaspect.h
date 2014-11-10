@@ -49,6 +49,8 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class QInputAspectPrivate;
+
 class QT3DINPUTSHARED_EXPORT QInputAspect : public QAbstractAspect
 {
     Q_OBJECT
@@ -64,6 +66,8 @@ private:
     void setRootEntity(QEntity *rootObject) Q_DECL_OVERRIDE;
     void onInitialize(const QVariantMap &data) Q_DECL_OVERRIDE;
     void onCleanup() Q_DECL_OVERRIDE;
+
+    Q_DECLARE_PRIVATE(QInputAspect)
 };
 
 } // Qt3D
