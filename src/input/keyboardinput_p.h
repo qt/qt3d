@@ -51,6 +51,8 @@ namespace Qt3D {
 
 namespace Input {
 
+class InputHandler;
+
 class KeyboardInput : public QBackendNode
 {
 public:
@@ -63,6 +65,19 @@ protected:
 
 private:
     QNodeUuid m_keyboardController;
+};
+
+class KeyboardInputFunctor : public QBackendNodeFunctor
+{
+public:
+    explicit KeyboardInputFunctor(InputHandler *handler);
+
+    QBackendNode *create(QNode *frontend) const Q_DECL_OVERRIDE;
+    QBackendNode *get(QNode *frontend) const Q_DECL_OVERRIDE;
+    void destroy(QNode *frontend) const Q_DECL_OVERRIDE;
+
+private:
+    InputHandler *m_handler;
 };
 
 } // Input

@@ -42,6 +42,8 @@
 #include "keyboardinput_p.h"
 #include "qkeyboardinput.h"
 #include "qkeyboardcontroller.h"
+#include "inputhandler_p.h"
+#include "inputmanagers_p.h"
 #include <QVariant>
 #include <Qt3DCore/qscenepropertychange.h>
 
@@ -75,6 +77,28 @@ void KeyboardInput::sceneChangeEvent(const QSceneChangePtr &e)
         if (propertyChange->propertyName() == QByteArrayLiteral("controller"))
             m_keyboardController = propertyChange->value().value<QNodeUuid>();
     }
+}
+
+KeyboardInputFunctor::KeyboardInputFunctor(InputHandler *handler)
+    : m_handler(handler)
+{
+}
+
+QBackendNode *KeyboardInputFunctor::create(QNode *frontend) const
+{
+    KeyboardInput *input = m_handler->keyboardInputManager()->getOrCreateResource(frontend->uuid());
+    input->setPeer(frontend);
+    return input;
+}
+
+QBackendNode *KeyboardInputFunctor::get(QNode *frontend) const
+{
+    return m_handler->keyboardInputManager()->lookupResource(frontend->uuid());
+}
+
+void KeyboardInputFunctor::destroy(QNode *frontend) const
+{
+    m_handler->keyboardInputManager()->releaseResource(frontend->uuid());
 }
 
 } // Input
