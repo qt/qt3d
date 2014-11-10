@@ -42,6 +42,11 @@
 #include "qinputaspect.h"
 #include "qinputaspect_p.h"
 #include "inputhandler_p.h"
+#include "keyboardcontroller_p.h"
+#include "keyboardinput_p.h"
+
+#include <Qt3DInput/qkeyboardcontroller.h>
+#include <Qt3DInput/qkeyboardinput.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -57,6 +62,8 @@ QInputAspectPrivate::QInputAspectPrivate(QInputAspect *qq)
 QInputAspect::QInputAspect(QObject *parent)
     : QAbstractAspect(*new QInputAspectPrivate(this), parent)
 {
+    registerBackendType<QKeyboardController>(QBackendNodeFunctorPtr(new Input::KeyboardControllerFunctor(d_func()->m_inputHandler)));
+    registerBackendType<QKeyboardInput>(QBackendNodeFunctorPtr(new Input::KeyboardInputFunctor(d_func()->m_inputHandler)));
 }
 
 QVector<QAspectJobPtr> QInputAspect::jobsToExecute()
