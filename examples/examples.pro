@@ -20,7 +20,8 @@ SUBDIRS += \
     deferred-renderer-cpp \
     shadow-map-qml \
     bigscene-cpp \
-    materials
+    materials \
+    keyboardinput-qml
 
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d
