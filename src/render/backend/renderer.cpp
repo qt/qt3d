@@ -42,7 +42,6 @@
 
 #include "renderer_p.h"
 
-#include <Qt3DCore/nodevisitor.h>
 #include <Qt3DCore/qentity.h>
 
 #include "jobs/renderviewjob.h"

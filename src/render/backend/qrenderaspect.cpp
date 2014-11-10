@@ -86,7 +86,7 @@
 #include <Qt3DRenderer/private/framegraphnode_p.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
-#include <Qt3DCore/nodevisitor.h>
+#include <Qt3DCore/qnodevisitor.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 #include <loadmeshdatajob.h>

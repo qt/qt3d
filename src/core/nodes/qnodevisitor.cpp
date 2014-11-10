@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "nodevisitor.h"
+#include "qnodevisitor.h"
 
 QT_BEGIN_NAMESPACE
 

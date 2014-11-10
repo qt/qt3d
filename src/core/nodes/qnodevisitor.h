@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef NODEVISITOR_H
-#define NODEVISITOR_H
+#ifndef QT3D_QNODEVISITOR_H
+#define QT3D_QNODEVISITOR_H
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qnode.h>
@@ -216,4 +216,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // NODEVISITOR_H
+#endif // QT3D_QNODEVISITOR_H
