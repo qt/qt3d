@@ -50,12 +50,20 @@ namespace Qt3D {
 
 namespace Input {
 
+class KeyboardInputManager;
+class KeyboardControllerManager;
+
 class InputHandler
 {
 public:
     InputHandler();
 
+    inline KeyboardControllerManager *keyboardControllerManager() const { return m_keyboardControllerManager; }
+    inline KeyboardInputManager *keyboardInputManager() const  { return m_keyboardInputManager; }
+
 private:
+    KeyboardControllerManager *m_keyboardControllerManager;
+    KeyboardInputManager *m_keyboardInputManager;
 
 };
 

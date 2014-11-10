@@ -40,12 +40,19 @@
 ****************************************************************************/
 
 #include "inputhandler_p.h"
+#include "inputmanagers_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
 namespace Input {
+
+InputHandler::InputHandler()
+    : m_keyboardControllerManager(new KeyboardControllerManager())
+    , m_keyboardInputManager(new KeyboardInputManager())
+{
+}
 
 } // Input
 
