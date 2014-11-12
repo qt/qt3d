@@ -65,6 +65,7 @@ public:
 protected:
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
     void requestFocus();
+    void setController(const QNodeUuid &controller);
 
 private:
     InputHandler *m_inputHandler;

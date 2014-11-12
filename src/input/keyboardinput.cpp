@@ -65,7 +65,7 @@ void KeyboardInput::updateFromPeer(QNode *peer)
 {
     QKeyboardInput *input = static_cast<QKeyboardInput *>(peer);
     if (input->controller() != Q_NULLPTR)
-        m_keyboardController = input->controller()->uuid();
+        setController(input->controller()->uuid());
     m_focus = false;
     if (input->focus())
         requestFocus();
@@ -102,7 +102,7 @@ void KeyboardInput::sceneChangeEvent(const QSceneChangePtr &e)
         if (propertyChange->propertyName() == QByteArrayLiteral("controller")) {
             const QNodeUuid newId = propertyChange->value().value<QNodeUuid>();
             if (m_keyboardController != newId) {
-                m_keyboardController = newId;
+                setController(newId);
                 focusRequest = m_focus;
             }
         } else if (propertyChange->propertyName() == QByteArrayLiteral("focus")) {
@@ -118,6 +118,15 @@ void KeyboardInput::requestFocus()
     KeyboardController *controller = m_inputHandler->keyboardControllerManager()->lookupResource(m_keyboardController);
     if (controller)
         controller->requestFocusForInput(peerUuid());
+}
+
+void KeyboardInput::setController(const QNodeUuid &controller)
+{
+    if (!m_keyboardController.isNull())
+        m_inputHandler->keyboardControllerManager()->lookupResource(m_keyboardController)->removeKeyboardInput(peerUuid());
+    m_keyboardController = controller;
+    if (!m_keyboardController.isNull())
+        m_inputHandler->keyboardControllerManager()->lookupResource(m_keyboardController)->addKeyboardInput(peerUuid());
 }
 
 KeyboardInputFunctor::KeyboardInputFunctor(InputHandler *handler)
