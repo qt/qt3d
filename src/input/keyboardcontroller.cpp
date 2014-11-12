@@ -50,19 +50,19 @@ namespace Qt3D {
 
 namespace Input {
 
+// TO DO: Send change to frontend when activeInput changes
+
 KeyboardController::KeyboardController()
-    : QBackendNode()
+    : QBackendNode(QBackendNode::ReadWrite)
 {
 }
 
-void KeyboardController::updateFromPeer(QNode *peer)
+void KeyboardController::updateFromPeer(QNode *)
 {
-
 }
 
 void KeyboardController::sceneChangeEvent(const QSceneChangePtr &)
 {
-
 }
 
 KeyboardControllerFunctor::KeyboardControllerFunctor(InputHandler *handler)

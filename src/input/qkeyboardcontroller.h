@@ -50,20 +50,29 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QKeyboardControllerPrivate;
+class QKeyboardInput;
 
 class QT3DINPUTSHARED_EXPORT QKeyboardController : public QNode
 {
     Q_OBJECT
+    Q_PROPERTY(Qt3D::QKeyboardInput *activeInput READ activeInput NOTIFY activeInputChanged)
 
 public:
     explicit QKeyboardController(QNode *parent = 0);
 
+    QKeyboardInput *activeInput() const;
+
 protected:
     QKeyboardController(QKeyboardControllerPrivate &dd, QNode *parent = 0);
+    void sceneChangeEvent(const QSceneChangePtr &change) Q_DECL_OVERRIDE;
+
+Q_SIGNALS:
+    void activeInputChanged();
 
 private:
     Q_DECLARE_PRIVATE(QKeyboardController)
     QT3D_CLONEABLE(QKeyboardController)
+    void setActiveInput(QKeyboardInput *activeInput);
 };
 
 } // Qt3D

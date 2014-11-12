@@ -49,6 +49,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QKeyboardController;
+class QKeyboardInput;
 
 class QKeyboardControllerPrivate : public QNodePrivate
 {
@@ -56,6 +57,7 @@ public:
     QKeyboardControllerPrivate(QKeyboardController *qq);
 
     Q_DECLARE_PUBLIC(QKeyboardController)
+    QKeyboardInput *m_activeInput;
 };
 
 } // Qt3D
