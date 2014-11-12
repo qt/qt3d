@@ -54,7 +54,7 @@ namespace Qt3D {
 namespace Render {
 
 RenderTargetSelector::RenderTargetSelector() :
-    FrameGraphNode(FrameGraphNodeType::RenderTarget)
+    FrameGraphNode(FrameGraphNode::RenderTarget)
 {
 }
 
