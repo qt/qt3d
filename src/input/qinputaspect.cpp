@@ -98,7 +98,8 @@ void QInputAspect::sceneNodeRemoved(QSceneChangePtr &e)
 
 void QInputAspect::setRootEntity(QEntity *rootObject)
 {
-    Q_UNUSED(rootObject);
+    QNodeVisitor visitor;
+    visitor.traverse(rootObject, this, &QInputAspect::visitNode, &QInputAspect::visitNode);
 }
 
 void QInputAspect::onInitialize(const QVariantMap &data)
@@ -119,7 +120,7 @@ void QInputAspect::onCleanup()
 
 void QInputAspect::visitNode(QNode *node)
 {
-    Q_UNUSED(node);
+    QAbstractAspect::createBackendNode(node);
 }
 
 } // Qt3D
