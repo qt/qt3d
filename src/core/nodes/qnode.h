@@ -85,6 +85,7 @@ protected:
     virtual void copy(const QNode *ref);
     virtual void sceneChangeEvent(const QSceneChangePtr &change);
     bool event(QEvent *e) Q_DECL_OVERRIDE;
+    QSceneInterface *scene() const;
 
 private:
     Q_DECLARE_PRIVATE(QNode)

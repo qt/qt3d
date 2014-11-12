@@ -416,6 +416,12 @@ bool QNode::event(QEvent *e)
     return QObject::event(e);
 }
 
+QSceneInterface *QNode::scene() const
+{
+    Q_D(const QNode);
+    return d->m_scene;
+}
+
 } // namespace Qt3D
 
 
