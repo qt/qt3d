@@ -28,4 +28,7 @@ OTHER_FILES += \
     assets/gltf/SuperMurdoch/* \
     assets/gltf/wine/* \
     assets/obj/* \
-    assets/textures/*
+    assets/textures/pattern_09/* \
+    assets/chest/* \
+    assets/houseplants/* \
+    assets/metalbarrel/*
