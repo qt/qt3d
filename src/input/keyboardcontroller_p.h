@@ -58,6 +58,7 @@ class KeyboardController : public QBackendNode
 public:
     KeyboardController();
     void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
+    void requestFocusForInput(const QNodeUuid &inputId);
 
 protected:
     void sceneChangeEvent(const QSceneChangePtr &) Q_DECL_OVERRIDE;

@@ -61,6 +61,14 @@ void KeyboardController::updateFromPeer(QNode *)
 {
 }
 
+void KeyboardController::requestFocusForInput(const QNodeUuid &inputId)
+{
+    Q_UNUSED(inputId);
+    // Saves the last inputId, this will then be used in an Aspect Job to determine which
+    // input will have the focus. This in turn will call KeyboardInput::setFocus which will
+    // decide if sending a notification to the frontend is necessary
+}
+
 void KeyboardController::sceneChangeEvent(const QSceneChangePtr &)
 {
 }
