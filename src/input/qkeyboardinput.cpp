@@ -42,6 +42,7 @@
 #include "qkeyboardinput.h"
 #include "qkeyboardinput_p.h"
 #include "qkeyboardcontroller.h"
+#include <Qt3DCore/qbackendscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -72,6 +73,16 @@ void QKeyboardInput::copy(const QNode *ref)
 
     if (input->d_func()->m_controller != Q_NULLPTR)
         setController(qobject_cast<QKeyboardController *>(QNodePrivate::get(input->d_func()->m_controller)->clone()));
+}
+
+void QKeyboardInput::sceneChangeEvent(const QSceneChangePtr &change)
+{
+    QBackendScenePropertyChangePtr e = qSharedPointerCast<QBackendScenePropertyChange>(change);
+    if (e->type() == NodeUpdated && e->propertyName() == QByteArrayLiteral("focus")) {
+        bool block = blockNotifications(true);
+        setFocus(e->value().toBool());
+        blockNotifications(block);
+    }
 }
 
 void QKeyboardInput::setController(QKeyboardController *controller)

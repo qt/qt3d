@@ -59,12 +59,17 @@ public:
     KeyboardInput();
     void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
     QNodeUuid keyboardController() const;
+    void setInputHandler(InputHandler *handler);
+    void setFocus(bool focus);
 
 protected:
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void requestFocus();
 
 private:
+    InputHandler *m_inputHandler;
     QNodeUuid m_keyboardController;
+    bool m_focus;
 };
 
 class KeyboardInputFunctor : public QBackendNodeFunctor
