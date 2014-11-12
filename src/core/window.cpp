@@ -77,7 +77,10 @@ Window::Window(QScreen *screen)
     create();
 
     m_aspectEngine->initialize();
-    m_aspectEngine->setSurface(this);
+    QVariantMap data;
+    data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(this)));
+    data.insert(QStringLiteral("window"), QVariant::fromValue(this));
+    m_aspectEngine->setData(data);
 
     m_controller = new CameraController();
 

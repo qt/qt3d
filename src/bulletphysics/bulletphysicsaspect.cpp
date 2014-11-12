@@ -72,7 +72,7 @@ void BulletPhysicsAspect::setRootEntity(QEntity *rootObject)
     Q_UNUSED(rootObject);
 }
 
-void BulletPhysicsAspect::onInitialize(QSurface *surface)
+void BulletPhysicsAspect::onInitialize(const QVariantMap &data)
 {
 
 }

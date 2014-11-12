@@ -64,7 +64,6 @@ namespace Qt3D {
 QAspectManager::QAspectManager(QObject *parent)
     : QObject(parent)
     , m_root(Q_NULLPTR)
-    , m_surface(Q_NULLPTR)
     , m_scheduler(new QScheduler(this))
     , m_jobManager(new QAspectJobManager(this))
     , m_changeArbiter(new QChangeArbiter(this))
@@ -124,13 +123,13 @@ void QAspectManager::setRootEntity(Qt3D::QEntity *root)
     }
 }
 
-// Called before register aspect
-void QAspectManager::setSurface(QSurface *surface)
+// Should be called after aspects are registered
+void QAspectManager::setData(const QVariantMap &data)
 {
     qCDebug(Aspects) << Q_FUNC_INFO;
-    m_surface = surface;
+    m_data = data;
     Q_FOREACH (QAbstractAspect *aspect, m_aspects)
-        aspect->onInitialize(m_surface);
+        aspect->onInitialize(m_data);
 }
 
 /*!
@@ -146,8 +145,7 @@ void QAspectManager::registerAspect(QAbstractAspect *aspect)
         QAbstractAspectPrivate::get(aspect)->m_arbiter = m_changeArbiter;
         // Register sceneObserver with the QChangeArbiter
         m_changeArbiter->registerSceneObserver(aspect);
-        if (m_surface != Q_NULLPTR)
-            aspect->onInitialize(m_surface);
+        aspect->onInitialize(m_data);
     }
     else {
         qCWarning(Aspects) << "Failed to register aspect";
@@ -155,9 +153,9 @@ void QAspectManager::registerAspect(QAbstractAspect *aspect)
     qCDebug(Aspects) << "Completed registering aspect";
 }
 
-QSurface *QAspectManager::surface() const
+QVariantMap QAspectManager::data() const
 {
-    return m_surface;
+    return m_data;
 }
 
 void QAspectManager::exec()

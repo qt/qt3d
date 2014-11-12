@@ -140,12 +140,12 @@ void QAspectEngine::shutdown()
     d->m_aspectThread->wait();
 }
 
-void QAspectEngine::setSurface(QSurface *surface)
+void QAspectEngine::setData(const QVariantMap &data)
 {
     Q_D(QAspectEngine);
     QMetaObject::invokeMethod(d->m_aspectThread->aspectManager(),
-                              "setSurface",
-                              Q_ARG(QSurface *, surface));
+                              "setData",
+                              Q_ARG(const QVariantMap &, data));
 }
 
 /*!

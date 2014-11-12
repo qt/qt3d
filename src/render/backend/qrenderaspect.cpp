@@ -212,12 +212,17 @@ void QRenderAspect::setRootEntity(QEntity *rootObject)
     m_renderer->setSceneGraphRoot(m_renderer->renderNodesManager()->lookupResource(rootObject->uuid()));
 }
 
-void QRenderAspect::onInitialize(QSurface *surface)
+void QRenderAspect::onInitialize(const QVariantMap &data)
 {
     m_renderer->setQRenderAspect(this);
     m_renderer->createAllocators();
     // setSurface is synchronized using the Renderer's mutex
-    m_renderer->setSurface(surface);
+    QSurface *s = Q_NULLPTR;
+    const QVariant &v = data.value(QStringLiteral("surface"));
+    if (v.isValid())
+        s = v.value<QSurface *>();
+    if (s)
+        m_renderer->setSurface(s);
 }
 
 void QRenderAspect::onCleanup()

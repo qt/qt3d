@@ -70,7 +70,7 @@ public:
     void setRootEntity(QEntity *root);
     QSharedPointer<QEntity> rootEntity() const;
 
-    void setSurface(QSurface *surface);
+    void setData(const QVariantMap &data);
     void registerAspect(QAbstractAspect *aspect);
 
 protected:

@@ -44,6 +44,7 @@
 
 #include <QObject>
 #include <QList>
+#include <QVariant>
 #include <Qt3DCore/qt3dcore_global.h>
 
 QT_BEGIN_NAMESPACE
@@ -73,9 +74,9 @@ public Q_SLOTS:
     void shutdown();
 
     void setRootEntity(Qt3D::QEntity *root);
-    void setSurface(QSurface *surface);
+    void setData(const QVariantMap &data);
     void registerAspect(Qt3D::QAbstractAspect *aspect);
-    QSurface *surface() const;
+    QVariantMap data() const;
 
     void exec();
     void quit();
@@ -87,7 +88,7 @@ public Q_SLOTS:
 private:
     QList<QAbstractAspect *> m_aspects;
     QEntity *m_root;
-    QSurface *m_surface;
+    QVariantMap m_data;
     QScheduler *m_scheduler;
     QAbstractAspectJobManager *m_jobManager;
     QChangeArbiter *m_changeArbiter;

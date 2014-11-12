@@ -72,7 +72,7 @@ void QInputAspect::setRootEntity(QEntity *rootObject)
 
 }
 
-void QInputAspect::onInitialize(QSurface *surface)
+void QInputAspect::onInitialize(const QVariantMap &data)
 {
 
 }

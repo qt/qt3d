@@ -105,7 +105,7 @@ protected:
 
 private:
     virtual void setRootEntity(QEntity *rootObject) = 0;
-    virtual void onInitialize(QSurface *surface) = 0;
+    virtual void onInitialize(const QVariantMap &data) = 0;
     virtual void onCleanup() = 0;
 
     Q_DECLARE_PRIVATE(QAbstractAspect)

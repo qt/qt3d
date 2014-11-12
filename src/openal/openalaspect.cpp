@@ -72,7 +72,7 @@ void OpenALAspect::setRootEntity(QEntity *)
 
 }
 
-void OpenALAspect::onInitialize(QSurface *)
+void OpenALAspect::onInitialize(const QVariantMap &)
 {
 
 }

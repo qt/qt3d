@@ -64,7 +64,7 @@ public:
     // AbstractAspect interface
 private:
     void setRootEntity(QEntity *rootObject) Q_DECL_OVERRIDE;
-    void onInitialize(QSurface *) Q_DECL_OVERRIDE;
+    void onInitialize(const QVariantMap &) Q_DECL_OVERRIDE;
     void onCleanup() Q_DECL_OVERRIDE;
 
 };
