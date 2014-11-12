@@ -54,6 +54,7 @@ namespace Input {
 
 KeyboardController::KeyboardController()
     : QBackendNode(QBackendNode::ReadWrite)
+    , m_inputHandler(Q_NULLPTR)
 {
 }
 
@@ -63,10 +64,29 @@ void KeyboardController::updateFromPeer(QNode *)
 
 void KeyboardController::requestFocusForInput(const QNodeUuid &inputId)
 {
-    Q_UNUSED(inputId);
     // Saves the last inputId, this will then be used in an Aspect Job to determine which
     // input will have the focus. This in turn will call KeyboardInput::setFocus which will
     // decide if sending a notification to the frontend is necessary
+    m_lastRequester = inputId;
+}
+
+void KeyboardController::setInputHandler(InputHandler *handler)
+{
+    m_inputHandler = handler;
+}
+
+void KeyboardController::addKeyboardInput(const QNodeUuid &input)
+{
+    if (!m_keyboardInputs.contains(input)) {
+        m_keyboardInputs.append(input);
+        m_keyboardInputHandles.append(m_inputHandler->keyboardInputManager()->lookupHandle(input));
+    }
+}
+
+void KeyboardController::removeKeyboardInput(const QNodeUuid &input)
+{
+    m_keyboardInputs.removeAll(input);
+    m_keyboardInputHandles.removeAll(m_inputHandler->keyboardInputManager()->lookupHandle(input));
 }
 
 void KeyboardController::sceneChangeEvent(const QSceneChangePtr &)
@@ -81,6 +101,7 @@ KeyboardControllerFunctor::KeyboardControllerFunctor(InputHandler *handler)
 QBackendNode *KeyboardControllerFunctor::create(QNode *frontend) const
 {
     KeyboardController *controller = m_handler->keyboardControllerManager()->getOrCreateResource(frontend->uuid());
+    controller->setInputHandler(m_handler);
     controller->setPeer(frontend);
     return controller;
 }

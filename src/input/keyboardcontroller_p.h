@@ -44,6 +44,7 @@
 
 #include <Qt3DCore/qbackendnode.h>
 #include <Qt3DCore/qnodeuuid.h>
+#include <Qt3DInput/private/handle_types_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,12 +60,23 @@ public:
     KeyboardController();
     void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
     void requestFocusForInput(const QNodeUuid &inputId);
+    void setInputHandler(InputHandler *handler);
+
+    void addKeyboardInput(const QNodeUuid &input);
+    void removeKeyboardInput(const QNodeUuid &input);
+
+    inline QNodeUuid lastKeyboardInputRequester() const { return m_lastRequester; }
+    inline QVector<QNodeUuid> keyboardInputs() const { return m_keyboardInputs; }
+    inline QVector<HKeyboardInput> keyboardInputsHandles() const { return m_keyboardInputHandles; }
 
 protected:
     void sceneChangeEvent(const QSceneChangePtr &) Q_DECL_OVERRIDE;
 
 private:
-    QList<QNodeUuid> m_keyboardObserver;
+    InputHandler *m_inputHandler;
+    QVector<QNodeUuid> m_keyboardInputs;
+    QVector<HKeyboardInput> m_keyboardInputHandles;
+    QNodeUuid m_lastRequester;
 };
 
 class KeyboardControllerFunctor : public QBackendNodeFunctor
