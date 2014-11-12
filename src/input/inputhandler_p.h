@@ -54,6 +54,7 @@ namespace Input {
 
 class KeyboardInputManager;
 class KeyboardControllerManager;
+class KeyboardEventFilter;
 
 class InputHandler
 {
@@ -70,6 +71,7 @@ private:
     KeyboardControllerManager *m_keyboardControllerManager;
     KeyboardInputManager *m_keyboardInputManager;
     QWindow *m_window;
+    KeyboardEventFilter *m_keyboardEventFilter;
 };
 
 } // Input

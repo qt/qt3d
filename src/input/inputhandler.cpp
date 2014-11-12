@@ -41,6 +41,8 @@
 
 #include "inputhandler_p.h"
 #include "inputmanagers_p.h"
+#include "keyboardeventfilter_p.h"
+#include <QWindow>
 
 QT_BEGIN_NAMESPACE
 
@@ -52,13 +54,20 @@ InputHandler::InputHandler()
     : m_keyboardControllerManager(new KeyboardControllerManager())
     , m_keyboardInputManager(new KeyboardInputManager())
     , m_window(Q_NULLPTR)
+    , m_keyboardEventFilter(new KeyboardEventFilter())
 {
+    m_keyboardEventFilter->setInputHandler(this);
 }
 
+// Called in MainThread
 void InputHandler::setWindow(QWindow *window)
 {
     if (window != m_window) {
+        if (m_window)
+            m_window->removeEventFilter(m_keyboardEventFilter);
         m_window = window;
+        if (m_window)
+            m_window->installEventFilter(m_keyboardEventFilter);
     }
 }
 
