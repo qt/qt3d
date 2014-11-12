@@ -48,6 +48,7 @@
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DInput/qkeyboardcontroller.h>
 #include <Qt3DInput/qkeyboardinput.h>
+#include <QWindow>
 
 QT_BEGIN_NAMESPACE
 
@@ -98,7 +99,12 @@ void QInputAspect::setRootEntity(QEntity *rootObject)
 
 void QInputAspect::onInitialize(const QVariantMap &data)
 {
-    Q_UNUSED(data);
+    QWindow *w = Q_NULLPTR;
+    const QVariant &v = data.value(QStringLiteral("window"));
+    if (v.isValid())
+        w = v.value<QWindow *>();
+    Q_D(QInputAspect);
+    d->m_inputHandler->setWindow(w);
 }
 
 void QInputAspect::onCleanup()

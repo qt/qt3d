@@ -51,7 +51,15 @@ namespace Input {
 InputHandler::InputHandler()
     : m_keyboardControllerManager(new KeyboardControllerManager())
     , m_keyboardInputManager(new KeyboardInputManager())
+    , m_window(Q_NULLPTR)
 {
+}
+
+void InputHandler::setWindow(QWindow *window)
+{
+    if (window != m_window) {
+        m_window = window;
+    }
 }
 
 } // Input

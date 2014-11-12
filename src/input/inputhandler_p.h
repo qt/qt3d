@@ -46,6 +46,8 @@
 
 QT_BEGIN_NAMESPACE
 
+class QWindow;
+
 namespace Qt3D {
 
 namespace Input {
@@ -58,13 +60,16 @@ class InputHandler
 public:
     InputHandler();
 
+    void setWindow(QWindow *window);
+    inline QWindow *window() const { return m_window; }
+
     inline KeyboardControllerManager *keyboardControllerManager() const { return m_keyboardControllerManager; }
     inline KeyboardInputManager *keyboardInputManager() const  { return m_keyboardInputManager; }
 
 private:
     KeyboardControllerManager *m_keyboardControllerManager;
     KeyboardInputManager *m_keyboardInputManager;
-
+    QWindow *m_window;
 };
 
 } // Input
