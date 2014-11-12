@@ -65,10 +65,32 @@ void InputHandler::setWindow(QWindow *window)
     if (window != m_window) {
         if (m_window)
             m_window->removeEventFilter(m_keyboardEventFilter);
+        clearPendingKeyEvents();
         m_window = window;
         if (m_window)
             m_window->installEventFilter(m_keyboardEventFilter);
     }
+}
+
+// Called by the keyboardEventFilter in the main thread
+void InputHandler::appendKeyEvent(const QKeyEvent &event)
+{
+    QMutexLocker lock(&m_mutex);
+    m_pendingEvents.append(event);
+}
+
+// Called by QInputASpect::jobsToExecute (aspectThread)
+QList<QKeyEvent> InputHandler::pendingKeyEvents() const
+{
+    QMutexLocker lock(&m_mutex);
+    return m_pendingEvents;
+}
+
+// Called by QInputASpect::jobsToExecute (aspectThread)
+void InputHandler::clearPendingKeyEvents()
+{
+    QMutexLocker lock(&m_mutex);
+    m_pendingEvents.clear();
 }
 
 } // Input

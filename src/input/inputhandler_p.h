@@ -43,6 +43,8 @@
 #define QT3D_INPUT_INPUTHANDLER_P_H
 
 #include <Qt3DInput/qt3dinput_global.h>
+#include <QKeyEvent>
+#include <QMutex>
 
 QT_BEGIN_NAMESPACE
 
@@ -67,11 +69,17 @@ public:
     inline KeyboardControllerManager *keyboardControllerManager() const { return m_keyboardControllerManager; }
     inline KeyboardInputManager *keyboardInputManager() const  { return m_keyboardInputManager; }
 
+    void appendKeyEvent(const QKeyEvent &event);
+    QList<QKeyEvent> pendingKeyEvents() const;
+    void clearPendingKeyEvents();
+
 private:
     KeyboardControllerManager *m_keyboardControllerManager;
     KeyboardInputManager *m_keyboardInputManager;
     QWindow *m_window;
     KeyboardEventFilter *m_keyboardEventFilter;
+    QList<QKeyEvent> m_pendingEvents;
+    mutable QMutex m_mutex;
 };
 
 } // Input

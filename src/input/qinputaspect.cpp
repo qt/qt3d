@@ -72,6 +72,10 @@ QVector<QAspectJobPtr> QInputAspect::jobsToExecute()
 {
     QVector<QAspectJobPtr> jobs;
 
+    // One job for Keyboard focus change event
+    // One job for Keyboard events (depends on the focus change job if there was one)
+    // One job for Mouse events
+
     return jobs;
 }
 
@@ -109,7 +113,8 @@ void QInputAspect::onInitialize(const QVariantMap &data)
 
 void QInputAspect::onCleanup()
 {
-
+    Q_D(QInputAspect);
+    d->m_inputHandler->setWindow(Q_NULLPTR);
 }
 
 void QInputAspect::visitNode(QNode *node)
