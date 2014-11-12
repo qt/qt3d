@@ -9,7 +9,8 @@ HEADERS += \
     $$PWD/inputhandler_p.h \
     $$PWD/inputmanagers_p.h \
     $$PWD/handle_types_p.h \
-    $$PWD/qinputaspect_p.h
+    $$PWD/qinputaspect_p.h \
+    $$PWD/keyboardeventfilter_p.h
 
 SOURCES += \
     $$PWD/qinputaspect.cpp \
@@ -17,6 +18,7 @@ SOURCES += \
     $$PWD/qkeyboardinput.cpp \
     $$PWD/keyboardcontroller.cpp \
     $$PWD/keyboardinput.cpp \
-    $$PWD/inputhandler.cpp
+    $$PWD/inputhandler.cpp \
+    $$PWD/keyboardeventfilter.cpp
 
 INCLUDEPATH += $$PWD
