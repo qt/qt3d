@@ -18,7 +18,7 @@ include (io/render-io.pri)
 RESOURCES += $$PWD/render.qrc
 
 OTHER_FILES += \
-    $$PWD/shaders/* \
+    $$PWD/shaders/*
 
 gcov {
     CONFIG += static

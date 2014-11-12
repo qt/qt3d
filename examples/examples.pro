@@ -19,8 +19,8 @@ SUBDIRS += \
     deferred-renderer-qml \
     deferred-renderer-cpp \
     shadow-map-qml \
-    bigscene-cpp
-
+    bigscene-cpp \
+    materials
 
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d

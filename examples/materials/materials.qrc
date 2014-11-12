@@ -1,0 +1,25 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>ForwardRenderer.qml</file>
+        <file>BasicCamera.qml</file>
+        <file>TrefoilKnot.qml</file>
+        <file>AdsEffect.qml</file>
+        <file>AdsMaterial.qml</file>
+        <file>PlaneEntity.qml</file>
+        <file>DiffuseMapEffect.qml</file>
+        <file>DiffuseMapMaterial.qml</file>
+        <file>MipMappedTexture.qml</file>
+        <file>DiffuseSpecularMapEffect.qml</file>
+        <file>DiffuseSpecularMapMaterial.qml</file>
+        <file>NormalDiffuseSpecularMapEffect.qml</file>
+        <file>NormalDiffuseSpecularMapMaterial.qml</file>
+        <file>RenderableEntity.qml</file>
+        <file>NormalDiffuseMapEffect.qml</file>
+        <file>NormalDiffuseMapMaterial.qml</file>
+        <file>NormalDiffuseMapAlphaEffect.qml</file>
+        <file>HousePlant.qml</file>
+        <file>Barrel.qml</file>
+        <file>Chest.qml</file>
+    </qresource>
+</RCC>

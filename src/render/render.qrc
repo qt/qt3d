@@ -6,5 +6,14 @@
         <file>shaders/diffuse.vert</file>
         <file>shaders/phong.frag</file>
         <file>shaders/phong.vert</file>
+        <file>shaders/diffusemap.frag</file>
+        <file>shaders/diffusemap.vert</file>
+        <file>shaders/diffusespecularmap.frag</file>
+        <file>shaders/diffusespecularmap.vert</file>
+        <file>shaders/normaldiffusespecularmap.frag</file>
+        <file>shaders/normaldiffusespecularmap.vert</file>
+        <file>shaders/normaldiffusemap.vert</file>
+        <file>shaders/normaldiffusemap.frag</file>
+        <file>shaders/normaldiffusemapalpha.frag</file>
     </qresource>
 </RCC>
