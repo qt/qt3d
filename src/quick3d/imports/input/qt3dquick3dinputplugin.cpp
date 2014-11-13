@@ -42,13 +42,14 @@
 #include <QtQml>
 #include <Qt3DInput/qkeyboardcontroller.h>
 #include <Qt3DInput/qkeyboardinput.h>
-
+#include <Qt3DInput/q3dkeyevent.h>
 #include "qt3dquick3dinputplugin.h"
 
 QT_BEGIN_NAMESPACE
 
 void Qt3DQuick3DInputPlugin::registerTypes(const char *uri)
 {
+    qmlRegisterUncreatableType<Qt3D::Q3DKeyEvent>(uri, 2, 0, "KeyEvent", QStringLiteral("Events cannot be created"));
     qmlRegisterType<Qt3D::QKeyboardController>(uri, 2, 0, "KeyboardController");
     qmlRegisterType<Qt3D::QKeyboardInput>(uri, 2, 0, "KeyboardInput");
 }
