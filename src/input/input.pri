@@ -11,7 +11,8 @@ HEADERS += \
     $$PWD/handle_types_p.h \
     $$PWD/qinputaspect_p.h \
     $$PWD/keyboardeventfilter_p.h \
-    $$PWD/assignkeyboardfocusjob_p.h
+    $$PWD/assignkeyboardfocusjob_p.h \
+    $$PWD/keyeventdispatcherjob_p.h
 
 SOURCES += \
     $$PWD/qinputaspect.cpp \
@@ -21,6 +22,7 @@ SOURCES += \
     $$PWD/keyboardinput.cpp \
     $$PWD/inputhandler.cpp \
     $$PWD/keyboardeventfilter.cpp \
-    $$PWD/assignkeyboardfocusjob.cpp
+    $$PWD/assignkeyboardfocusjob.cpp \
+    $$PWD/keyeventdispatcherjob.cpp
 
 INCLUDEPATH += $$PWD
