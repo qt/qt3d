@@ -43,6 +43,7 @@
 #define QT3D_INPUT_INPUTHANDLER_P_H
 
 #include <Qt3DInput/qt3dinput_global.h>
+#include <Qt3DInput/private/handle_types_p.h>
 #include <QKeyEvent>
 #include <QMutex>
 
@@ -73,9 +74,13 @@ public:
     QList<QKeyEvent> pendingKeyEvents() const;
     void clearPendingKeyEvents();
 
+    void appendKeyboardController(HKeyboardController controller);
+    void removeKeyboardController(HKeyboardController controller);
+
 private:
     KeyboardControllerManager *m_keyboardControllerManager;
     KeyboardInputManager *m_keyboardInputManager;
+    QVector<HKeyboardController> m_activeKeyboardControllers;
     QWindow *m_window;
     KeyboardEventFilter *m_keyboardEventFilter;
     QList<QKeyEvent> m_pendingEvents;

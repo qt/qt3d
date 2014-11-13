@@ -93,6 +93,16 @@ void InputHandler::clearPendingKeyEvents()
     m_pendingEvents.clear();
 }
 
+void InputHandler::appendKeyboardController(HKeyboardController controller)
+{
+    m_activeKeyboardControllers.append(controller);
+}
+
+void InputHandler::removeKeyboardController(HKeyboardController controller)
+{
+    m_activeKeyboardControllers.removeAll(controller);
+}
+
 } // Input
 
 } // Qt3D
