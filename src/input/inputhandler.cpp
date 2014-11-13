@@ -42,6 +42,7 @@
 #include "inputhandler_p.h"
 #include "inputmanagers_p.h"
 #include "keyboardeventfilter_p.h"
+#include "assignkeyboardfocusjob_p.h"
 #include <QWindow>
 
 QT_BEGIN_NAMESPACE
@@ -101,6 +102,25 @@ void InputHandler::appendKeyboardController(HKeyboardController controller)
 void InputHandler::removeKeyboardController(HKeyboardController controller)
 {
     m_activeKeyboardControllers.removeAll(controller);
+}
+
+// Return a vector of jobs to be performed for keyboard events
+// Handles all dependencies between jobs
+QVector<QAspectJobPtr> InputHandler::keyboardJobs() const
+{
+    // One job for Keyboard focus change event per Keyboard Controller
+    QVector<QAspectJobPtr> jobs;
+    Q_FOREACH (const HKeyboardController cHandle, m_activeKeyboardControllers) {
+        KeyboardController *controller = m_keyboardControllerManager->data(cHandle);
+        if (controller && controller->lastKeyboardInputRequester() != controller->currentFocusItem()) {
+            AssignKeyboardFocusJob *job = new AssignKeyboardFocusJob(controller->peerUuid());
+            job->setInputHandler(const_cast<InputHandler *>(this));
+            jobs.append(QAspectJobPtr(job));
+        }
+    }
+    // One job for Keyboard events (depends on the focus change job if there was one)
+    // TO DO
+    return jobs;
 }
 
 } // Input

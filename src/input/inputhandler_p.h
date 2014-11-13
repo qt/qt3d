@@ -44,6 +44,7 @@
 
 #include <Qt3DInput/qt3dinput_global.h>
 #include <Qt3DInput/private/handle_types_p.h>
+#include <Qt3DCore/qaspectjob.h>
 #include <QKeyEvent>
 #include <QMutex>
 
@@ -76,6 +77,8 @@ public:
 
     void appendKeyboardController(HKeyboardController controller);
     void removeKeyboardController(HKeyboardController controller);
+
+    QVector<QAspectJobPtr> keyboardJobs() const;
 
 private:
     KeyboardControllerManager *m_keyboardControllerManager;

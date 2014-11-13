@@ -70,10 +70,10 @@ QInputAspect::QInputAspect(QObject *parent)
 
 QVector<QAspectJobPtr> QInputAspect::jobsToExecute()
 {
+    Q_D(QInputAspect);
     QVector<QAspectJobPtr> jobs;
 
-    // One job for Keyboard focus change event
-    // One job for Keyboard events (depends on the focus change job if there was one)
+    jobs.append(d->m_inputHandler->keyboardJobs());
     // One job for Mouse events
 
     return jobs;
