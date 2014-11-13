@@ -65,6 +65,9 @@ public:
     void addKeyboardInput(const QNodeUuid &input);
     void removeKeyboardInput(const QNodeUuid &input);
 
+    void setCurrentFocusItem(const QNodeUuid &input);
+
+    inline QNodeUuid currentFocusItem() const { return m_currentFocusItem; }
     inline QNodeUuid lastKeyboardInputRequester() const { return m_lastRequester; }
     inline QVector<QNodeUuid> keyboardInputs() const { return m_keyboardInputs; }
     inline QVector<HKeyboardInput> keyboardInputsHandles() const { return m_keyboardInputHandles; }
@@ -77,6 +80,7 @@ private:
     QVector<QNodeUuid> m_keyboardInputs;
     QVector<HKeyboardInput> m_keyboardInputHandles;
     QNodeUuid m_lastRequester;
+    QNodeUuid m_currentFocusItem;
 };
 
 class KeyboardControllerFunctor : public QBackendNodeFunctor

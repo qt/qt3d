@@ -89,6 +89,11 @@ void KeyboardController::removeKeyboardInput(const QNodeUuid &input)
     m_keyboardInputHandles.removeAll(m_inputHandler->keyboardInputManager()->lookupHandle(input));
 }
 
+void KeyboardController::setCurrentFocusItem(const QNodeUuid &input)
+{
+    m_currentFocusItem = input;
+}
+
 void KeyboardController::sceneChangeEvent(const QSceneChangePtr &)
 {
 }

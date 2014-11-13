@@ -65,14 +65,16 @@ void AssignKeyboardFocusJob::setInputHandler(InputHandler *handler)
 
 void AssignKeyboardFocusJob::run()
 {
-        KeyboardController *controller = m_inputHandler->keyboardControllerManager()->lookupResource(m_keyboardController);
-        Q_FOREACH (const HKeyboardInput handle, controller->keyboardInputsHandles()) {
-            KeyboardInput *input = m_inputHandler->keyboardInputManager()->data(handle);
-            if (input)
-                input->setFocus(input->peerUuid() == controller->lastKeyboardInputRequester());
+    KeyboardController *controller = m_inputHandler->keyboardControllerManager()->lookupResource(m_keyboardController);
+    Q_FOREACH (const HKeyboardInput handle, controller->keyboardInputsHandles()) {
+        KeyboardInput *input = m_inputHandler->keyboardInputManager()->data(handle);
+        if (input) {
+            bool hasFocus = input->peerUuid() == controller->lastKeyboardInputRequester();
+            input->setFocus(hasFocus);
+            if (hasFocus)
+                controller->setCurrentFocusItem(input->peerUuid());
         }
-        // Sets the last requester id to null so that we won't run this job next frame if not needed
-        controller->requestFocusForInput(QNodeUuid());
+    }
 }
 
 } // Input
