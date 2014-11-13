@@ -105,11 +105,12 @@ Entity {
                 dx: -5
             }
             Scale {
-                scale: sphere2.input.focus ? 2 : 1
+                scale: sphere1.input.focus ? 2 : 1
             }
         }
         property KeyboardInput input: KeyboardInput {
             controller: keyboardController
+            focus: false
         }
 
         components: [material, transform, sphereMesh, input]
@@ -130,6 +131,7 @@ Entity {
         }
         property KeyboardInput input: KeyboardInput {
             controller: keyboardController
+            focus: true
         }
 
         components: [material, transform, sphereMesh, input]
@@ -145,7 +147,7 @@ Entity {
                 dx: 5
             }
             Scale {
-                scale: sphere2.input.focus ? 2 : 1
+                scale: sphere3.input.focus ? 2 : 1
             }
         }
         property KeyboardInput input: KeyboardInput {
