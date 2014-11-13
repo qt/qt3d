@@ -43,6 +43,7 @@
 #include "inputmanagers_p.h"
 #include "keyboardeventfilter_p.h"
 #include "assignkeyboardfocusjob_p.h"
+#include "keyeventdispatcherjob_p.h"
 #include <QWindow>
 
 QT_BEGIN_NAMESPACE
@@ -81,10 +82,12 @@ void InputHandler::appendKeyEvent(const QKeyEvent &event)
 }
 
 // Called by QInputASpect::jobsToExecute (aspectThread)
-QList<QKeyEvent> InputHandler::pendingKeyEvents() const
+QList<QKeyEvent> InputHandler::pendingKeyEvents()
 {
     QMutexLocker lock(&m_mutex);
-    return m_pendingEvents;
+    QList<QKeyEvent> pendingEvents = m_pendingEvents;
+    m_pendingEvents.clear();
+    return pendingEvents;
 }
 
 // Called by QInputASpect::jobsToExecute (aspectThread)
@@ -106,20 +109,33 @@ void InputHandler::removeKeyboardController(HKeyboardController controller)
 
 // Return a vector of jobs to be performed for keyboard events
 // Handles all dependencies between jobs
-QVector<QAspectJobPtr> InputHandler::keyboardJobs() const
+QVector<QAspectJobPtr> InputHandler::keyboardJobs()
 {
     // One job for Keyboard focus change event per Keyboard Controller
     QVector<QAspectJobPtr> jobs;
+    const QList<QKeyEvent> events = pendingKeyEvents();
+
     Q_FOREACH (const HKeyboardController cHandle, m_activeKeyboardControllers) {
         KeyboardController *controller = m_keyboardControllerManager->data(cHandle);
-        if (controller && controller->lastKeyboardInputRequester() != controller->currentFocusItem()) {
-            AssignKeyboardFocusJob *job = new AssignKeyboardFocusJob(controller->peerUuid());
-            job->setInputHandler(const_cast<InputHandler *>(this));
-            jobs.append(QAspectJobPtr(job));
+        if (controller) {
+            QAspectJobPtr focusChangeJob;
+            if (controller->lastKeyboardInputRequester() != controller->currentFocusItem()) {
+                AssignKeyboardFocusJob *job = new AssignKeyboardFocusJob(controller->peerUuid());
+                job->setInputHandler(this);
+                focusChangeJob.reset(job);
+                jobs.append(focusChangeJob);
+                // One job for Keyboard events (depends on the focus change job if there was one)
+            }
+            // Event dispacthing job
+            if (!events.isEmpty()) {
+                KeyEventDispatcherJob *job = new KeyEventDispatcherJob(controller->currentFocusItem(), events);
+                job->setInputHandler(this);
+                if (focusChangeJob)
+                    job->addDependency(focusChangeJob);
+                jobs.append(QAspectJobPtr(job));
+            }
         }
     }
-    // One job for Keyboard events (depends on the focus change job if there was one)
-    // TO DO
     return jobs;
 }
 

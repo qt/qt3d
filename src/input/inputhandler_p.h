@@ -72,13 +72,13 @@ public:
     inline KeyboardInputManager *keyboardInputManager() const  { return m_keyboardInputManager; }
 
     void appendKeyEvent(const QKeyEvent &event);
-    QList<QKeyEvent> pendingKeyEvents() const;
+    QList<QKeyEvent> pendingKeyEvents();
     void clearPendingKeyEvents();
 
     void appendKeyboardController(HKeyboardController controller);
     void removeKeyboardController(HKeyboardController controller);
 
-    QVector<QAspectJobPtr> keyboardJobs() const;
+    QVector<QAspectJobPtr> keyboardJobs();
 
 private:
     KeyboardControllerManager *m_keyboardControllerManager;
