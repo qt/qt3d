@@ -26,4 +26,5 @@ $publicclassregexp = "Qt3D::.+";
     "qtbase" => "refs/heads/dev",
     "qtxmlpatterns" => "refs/heads/dev",
     "qtdeclarative" => "refs/heads/dev",
+    "qtimageformats" => "refs/heads/dev",
 );
