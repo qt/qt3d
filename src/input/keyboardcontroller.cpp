@@ -53,7 +53,7 @@ namespace Input {
 // TO DO: Send change to frontend when activeInput changes
 
 KeyboardController::KeyboardController()
-    : QBackendNode(QBackendNode::ReadWrite)
+    : QBackendNode()
     , m_inputHandler(Q_NULLPTR)
 {
 }
