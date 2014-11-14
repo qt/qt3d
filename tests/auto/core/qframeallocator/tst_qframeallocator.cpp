@@ -538,8 +538,8 @@ void tst_QFrameAllocator::allocateWithQFrameAllocator()
 
 void tst_QFrameAllocator::deallocateWithQFrameAllocator()
 {
-    Qt3D::QFrameAllocator f2(96, 16);
-    QCOMPARE(f2.allocatorPoolSize(), 6);
+    Qt3D::QFrameAllocator f2(256, 4);
+    QCOMPARE(f2.allocatorPoolSize(), 256 / 4);
 
     small *s = f2.allocate<small>();
     QVERIFY(s);
@@ -561,8 +561,6 @@ void tst_QFrameAllocator::testAllocationComposedValues()
     Qt3D::QFrameAllocator f(128, 32);
 
     composed t;
-
-    qDebug() << sizeof(QVector<int>);
 
     QVector<int> *v = f.allocate<QVector<int> >();
 

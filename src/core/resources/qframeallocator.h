@@ -67,45 +67,30 @@ public:
     template<typename T>
     T* allocate()
     {
-        uint allocatorIndex = allocatorIndexFromSize(sizeof(T)) - 1;
-        if (allocatorIndex < allocatorIndexFromSize(maxObjectSize())) {
-            T *ptr = static_cast<T*>(allocateAtChunk(allocatorIndex));
-            new (ptr) T(); // Don't forget to call the constructor of the object using the placement new operator
-            return ptr;
-        }
-        qWarning() << "Trying to allocate an object larger (" << sizeof(T) << ") than maxObjectSize (" << maxObjectSize() << ") Using operator new";
-        return new T();
+        void* ptr = allocateRawMemory(sizeof(T));
+        new (ptr) T(); // Don't forget to call the constructor of the object using the placement new operator
+        return static_cast<T*>(ptr);
     }
-
 
     template<typename T>
     void deallocate(T *ptr)
     {
-        uint allocatorIndex = allocatorIndexFromSize(sizeof(*ptr)) - 1;
-        if (allocatorIndex < allocatorIndexFromSize(maxObjectSize())) {
-            ptr->~T(); // Call destructor
-            deallocateAtChunck(ptr, allocatorIndex);
-        }
-        else {
-            qWarning() << "Trying to deallocate an object larger (" << sizeof(T) << ") than maxObjectSize (" << maxObjectSize() << ") Using operator delete";
-            delete ptr;
-        }
+        ptr->~T(); // Call destructor
+        deallocateRawMemory(ptr, sizeof(T));
     }
 
     void* allocateRawMemory(size_t size)
     {
+        Q_ASSERT(size <= maxObjectSize());
         uint allocatorIndex = allocatorIndexFromSize(size) - 1;
-        if (allocatorIndex < allocatorIndexFromSize(maxObjectSize()))
-            return allocateAtChunk(allocatorIndex);
-        qCritical() << "Allocation size too large for QFrameAllocator " << size;
-        return Q_NULLPTR;
+        return allocateAtChunk(allocatorIndex);
     }
 
     void deallocateRawMemory(void *ptr, size_t size)
     {
+        Q_ASSERT(size <= maxObjectSize());
         uint allocatorIndex = allocatorIndexFromSize(size) - 1;
-        if (allocatorIndex < allocatorIndexFromSize(maxObjectSize()))
-            deallocateAtChunck(ptr, allocatorIndex);
+        deallocateAtChunck(ptr, allocatorIndex);
     }
 
     void clear();
