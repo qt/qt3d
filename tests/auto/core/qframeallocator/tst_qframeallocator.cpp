@@ -50,37 +50,37 @@ public:
     tst_QFrameAllocator() : QObject() {}
     ~tst_QFrameAllocator() {}
 
-    typedef struct s_small
+    struct small
     {
         char c;
-    } small;
+    };
 
-    typedef struct s_medium
+    struct medium
     {
         int a, b, c;
-    } medium;
+    };
 
-    typedef struct s_big
+    struct big
     {
         int t[8];
-    } big;
+    };
 
-    typedef struct s_huge
+    struct huge
     {
         int t[64];
-    } huge;
+    };
 
-    typedef struct s_composed
+    struct composed
     {
         QVector<int> vec;
         QList<int> list;
         int t;
-    }   composed;
+    };
 
-    typedef struct s_subclass : public composed
+    struct subclass : public composed
     {
         float toto;
-    } subclass;
+    };
 
 private slots:
 
