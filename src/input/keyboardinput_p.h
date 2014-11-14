@@ -44,10 +44,13 @@
 
 #include <Qt3DCore/qbackendnode.h>
 #include <Qt3DCore/qnodeuuid.h>
+#include <Qt3DInput/q3dkeyevent.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
+
+class Q3DKeyEvent;
 
 namespace Input {
 
@@ -61,6 +64,7 @@ public:
     QNodeUuid keyboardController() const;
     void setInputHandler(InputHandler *handler);
     void setFocus(bool focus);
+    void keyEvent(const Q3DKeyEventPtr &event);
 
 protected:
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
