@@ -63,7 +63,9 @@ HEADERS += \
     $$PWD/qabstractmesh_p.h \
     $$PWD/qabstractmesh.h \
     $$PWD/qparametermapping_p.h \
-    $$PWD/qparametermapping.h
+    $$PWD/qparametermapping.h \
+    $$PWD/qshaderdata.h \
+    $$PWD/qshaderdata_p.h
 
 SOURCES += \
     $$PWD/qmaterial.cpp \
@@ -105,4 +107,5 @@ SOURCES += \
     $$PWD/qalphacoverage.cpp \
     $$PWD/qannotation.cpp \
     $$PWD/qabstractmesh.cpp \
-    $$PWD/qparametermapping.cpp
+    $$PWD/qparametermapping.cpp \
+    $$PWD/qshaderdata.cpp
