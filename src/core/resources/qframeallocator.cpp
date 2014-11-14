@@ -63,30 +63,27 @@ QFrameAllocatorPrivate::QFrameAllocatorPrivate(QFrameAllocator *qq)
 QFrameAllocator::QFrameAllocator(uint maxObjectSize, uint alignment, uint pageSize)
     : d_ptr(new QFrameAllocatorPrivate(this))
 {
+    Q_ASSERT(alignment && pageSize && pageSize < UCHAR_MAX);
     Q_D(QFrameAllocator);
     d->m_maxObjectSize = maxObjectSize;
     d->m_alignment = alignment;
-    d->m_allocatorPoolSize = allocatorIndexFromSize(maxObjectSize);
-    Q_ASSERT(alignment && pageSize && pageSize < UCHAR_MAX);
-    d->m_allocatorPool.resize(d->m_allocatorPoolSize);
-    for (int i = 0; i < d->m_allocatorPoolSize; i++) {
+    d->m_allocatorPool.resize(d->allocatorIndexFromSize(maxObjectSize) + 1);
+    for (int i = 0, n = d->m_allocatorPool.size(); i < n; ++i)
         d->m_allocatorPool[i].init((i + 1) * d->m_alignment, pageSize);
-    }
 }
 
 QFrameAllocator::~QFrameAllocator()
 {
     Q_D(QFrameAllocator);
-    for (int i = 0; i < d->m_allocatorPoolSize; i++) {
+    for (int i = 0, n = d->m_allocatorPool.size(); i < n; ++i)
         d->m_allocatorPool[i].release();
-    }
 }
 
 // Clear all memory chunks, allocated memory is not released
 void QFrameAllocator::clear()
 {
     Q_D(QFrameAllocator);
-    for (int i = 0; i < d->m_allocatorPoolSize; i++)
+    for (int i = 0, n = d->m_allocatorPool.size(); i < n; ++i)
         d->m_allocatorPool[i].clear();
 }
 
@@ -94,7 +91,7 @@ void QFrameAllocator::clear()
 void QFrameAllocator::trim()
 {
     Q_D(QFrameAllocator);
-    for (int i = 0; i < d->m_allocatorPoolSize; i++)
+    for (int i = 0, n = d->m_allocatorPool.size(); i < n; ++i)
         d->m_allocatorPool[i].trim();
 }
 
@@ -104,36 +101,18 @@ uint QFrameAllocator::maxObjectSize() const
     return d->m_maxObjectSize;
 }
 
-void *QFrameAllocator::allocateAtChunk(uint allocatorIndex)
-{
-    Q_D(QFrameAllocator);
-    return d->m_allocatorPool[allocatorIndex].allocate();
-}
-
-void QFrameAllocator::deallocateAtChunck(void *ptr, uint allocatorIndex)
-{
-    Q_D(QFrameAllocator);
-    d->m_allocatorPool[allocatorIndex].deallocate(ptr);
-}
-
-uint QFrameAllocator::allocatorIndexFromSize(uint targetSize) const
-{
-    Q_D(const QFrameAllocator);
-    return (targetSize + d->m_alignment - 1) / d->m_alignment;
-}
-
 int QFrameAllocator::allocatorPoolSize() const
 {
     Q_D(const QFrameAllocator);
-    return d->m_allocatorPoolSize;
+    return d->m_allocatorPool.size();
 }
 
 uint QFrameAllocator::totalChunkCount() const
 {
     Q_D(const QFrameAllocator);
     uint chunkCount = 0;
-    for (int i = 0; i < d->m_allocatorPoolSize; i++)
-        chunkCount += d->m_allocatorPool[i].chunkCount();
+    foreach (const QFixedFrameAllocator& allocator, d->m_allocatorPool)
+        chunkCount += allocator.chunkCount();
     return chunkCount;
 }
 
@@ -145,7 +124,8 @@ QFixedFrameAllocator::QFixedFrameAllocator()
 {
 }
 
-QFixedFrameAllocator::~QFixedFrameAllocator() {
+QFixedFrameAllocator::~QFixedFrameAllocator()
+{
     release();
 }
 
@@ -293,6 +273,22 @@ void QFrameChunk::release()
     VALGRIND_DESTROY_MEMPOOL(m_data);
 #endif
     delete [] m_data;
+}
+
+void* QFrameAllocator::allocateRawMemory(size_t size)
+{
+    Q_D(QFrameAllocator);
+    Q_ASSERT(size <= d->m_maxObjectSize);
+    uint allocatorIndex = d->allocatorIndexFromSize(size);
+    return d->allocateAtChunk(allocatorIndex);
+}
+
+void QFrameAllocator::deallocateRawMemory(void* ptr, size_t size)
+{
+    Q_D(QFrameAllocator);
+    Q_ASSERT(size <= d->m_maxObjectSize);
+    uint allocatorIndex = d->allocatorIndexFromSize(size);
+    d->deallocateAtChunck(ptr, allocatorIndex);
 }
 
 } // Qt3D

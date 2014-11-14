@@ -98,12 +98,26 @@ class QFrameAllocatorPrivate
 public:
     QFrameAllocatorPrivate(QFrameAllocator *qq);
 
+    inline void *allocateAtChunk(uint allocatorIndex)
+    {
+        return m_allocatorPool[allocatorIndex].allocate();
+    }
+
+    inline void deallocateAtChunck(void *ptr, uint allocatorIndex)
+    {
+        m_allocatorPool[allocatorIndex].deallocate(ptr);
+    }
+
+    inline uint allocatorIndexFromSize(uint targetSize) const
+    {
+        return (targetSize + m_alignment - 1) / m_alignment - 1;
+    }
+
     Q_DECLARE_PUBLIC(QFrameAllocator)
     QFrameAllocator *q_ptr;
 
     uint m_maxObjectSize;
     uint m_alignment;
-    int m_allocatorPoolSize;
     QVector<QFixedFrameAllocator> m_allocatorPool;
 };
 

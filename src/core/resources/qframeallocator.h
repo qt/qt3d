@@ -79,19 +79,9 @@ public:
         deallocateRawMemory(ptr, sizeof(T));
     }
 
-    void* allocateRawMemory(size_t size)
-    {
-        Q_ASSERT(size <= maxObjectSize());
-        uint allocatorIndex = allocatorIndexFromSize(size) - 1;
-        return allocateAtChunk(allocatorIndex);
-    }
+    void* allocateRawMemory(size_t size);
 
-    void deallocateRawMemory(void *ptr, size_t size)
-    {
-        Q_ASSERT(size <= maxObjectSize());
-        uint allocatorIndex = allocatorIndexFromSize(size) - 1;
-        deallocateAtChunck(ptr, allocatorIndex);
-    }
+    void deallocateRawMemory(void *ptr, size_t size);
 
     void clear();
     void trim();
@@ -100,10 +90,6 @@ public:
     int allocatorPoolSize() const;
 
 private:
-    void *allocateAtChunk(uint allocatorIndex);
-    void deallocateAtChunck(void *ptr, uint allocatorIndex);
-    uint allocatorIndexFromSize(uint targetSize) const;
-
     Q_DECLARE_PRIVATE(QFrameAllocator)
     QFrameAllocatorPrivate *d_ptr;
 };
