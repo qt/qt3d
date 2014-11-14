@@ -87,6 +87,7 @@
 #include <Qt3DRenderer/qclearbuffer.h>
 #include <Qt3DRenderer/qsortcriterion.h>
 #include <Qt3DRenderer/qalphacoverage.h>
+#include <Qt3DRenderer/qshaderdata.h>
 #include <Qt3DQuickRenderer/quick3dtechnique.h>
 #include <Qt3DQuickRenderer/quick3dmaterial.h>
 #include <Qt3DQuickRenderer/quick3dtechniquefilter.h>
@@ -120,6 +121,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterExtendedType<Qt3D::QMaterial, Qt3D::Render::Quick::Quick3DMaterial>(uri, 2, 0, "Material");
     qmlRegisterExtendedType<Qt3D::QRenderPass, Qt3D::Render::Quick::Quick3DRenderPass>(uri, 2, 0, "RenderPass");
     qmlRegisterType<Qt3D::QShaderProgram>(uri, 2, 0, "ShaderProgram");
+    qmlRegisterType<Qt3D::QShaderData>(uri, 2, 0, "ShaderData");
 
     // Textures
     qmlRegisterType<Qt3D::QTextureWrapMode>(uri, 2, 0, "WrapMode");//, QStringLiteral("QTextureWrapMode cannot be created from QML"));
