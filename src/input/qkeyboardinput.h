@@ -43,6 +43,7 @@
 #define QT3D_INPUT_QKEYBOARDINPUT_H
 
 #include <Qt3DInput/qt3dinput_global.h>
+#include <Qt3DInput/q3dkeyevent.h>
 #include <Qt3DCore/qcomponent.h>
 
 QT_BEGIN_NAMESPACE
@@ -69,10 +70,55 @@ Q_SIGNALS:
     void controllerChanged();
     void focusChanged();
 
+    void digit0Pressed(Q3DKeyEvent *event);
+    void digit1Pressed(Q3DKeyEvent *event);
+    void digit2Pressed(Q3DKeyEvent *event);
+    void digit3Pressed(Q3DKeyEvent *event);
+    void digit4Pressed(Q3DKeyEvent *event);
+    void digit5Pressed(Q3DKeyEvent *event);
+    void digit6Pressed(Q3DKeyEvent *event);
+    void digit7Pressed(Q3DKeyEvent *event);
+    void digit8Pressed(Q3DKeyEvent *event);
+    void digit9Pressed(Q3DKeyEvent *event);
+
+    void leftPressed(Q3DKeyEvent *event);
+    void rightPressed(Q3DKeyEvent *event);
+    void upPressed(Q3DKeyEvent *event);
+    void downPressed(Q3DKeyEvent *event);
+    void tabPressed(Q3DKeyEvent *event);
+    void backtabPressed(Q3DKeyEvent *event);
+
+    void asteriskPressed(Q3DKeyEvent *event);
+    void numberSignPressed(Q3DKeyEvent *event);
+    void escapePressed(Q3DKeyEvent *event);
+    void returnPressed(Q3DKeyEvent *event);
+    void enterPressed(Q3DKeyEvent *event);
+    void deletePressed(Q3DKeyEvent *event);
+    void spacePressed(Q3DKeyEvent *event);
+    void backPressed(Q3DKeyEvent *event);
+    void cancelPressed(Q3DKeyEvent *event);
+    void selectPressed(Q3DKeyEvent *event);
+    void yesPressed(Q3DKeyEvent *event);
+    void noPressed(Q3DKeyEvent *event);
+    void context1Pressed(Q3DKeyEvent *event);
+    void context2Pressed(Q3DKeyEvent *event);
+    void context3Pressed(Q3DKeyEvent *event);
+    void context4Pressed(Q3DKeyEvent *event);
+    void callPressed(Q3DKeyEvent *event);
+    void hangupPressed(Q3DKeyEvent *event);
+    void flipPressed(Q3DKeyEvent *event);
+    void menuPressed(Q3DKeyEvent *event);
+    void volumeUpPressed(Q3DKeyEvent *event);
+    void volumeDownPressed(Q3DKeyEvent *event);
+
+    void pressed(Q3DKeyEvent *event);
+    void released(Q3DKeyEvent *event);
+
 protected:
     QKeyboardInput(QKeyboardInputPrivate &dd, QNode *parent = 0);
     void copy(const QNode *ref) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const QSceneChangePtr &change) Q_DECL_OVERRIDE;
+    void keyEvent(Q3DKeyEvent *event);
 
 private:
     Q_DECLARE_PRIVATE(QKeyboardInput)
