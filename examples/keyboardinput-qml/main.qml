@@ -102,7 +102,7 @@ Entity {
         }
         property Transform transform: Transform {
             Translate {
-                dx: -5
+                dx: 5
             }
             Scale {
                 scale: sphere1.input.focus ? 2 : 1
@@ -110,7 +110,10 @@ Entity {
         }
         property KeyboardInput input: KeyboardInput {
             controller: keyboardController
-            focus: false
+            focus: true
+            onTabPressed: {
+                sphere2.input.focus = true
+            }
         }
 
         components: [material, transform, sphereMesh, input]
@@ -131,7 +134,10 @@ Entity {
         }
         property KeyboardInput input: KeyboardInput {
             controller: keyboardController
-            focus: true
+
+            onTabPressed: {
+                sphere3.input.focus = true;
+            }
         }
 
         components: [material, transform, sphereMesh, input]
@@ -144,7 +150,8 @@ Entity {
         }
         property Transform transform: Transform {
             Translate {
-                dx: 5
+                id: sphere3dTranslate
+                dx: -5
             }
             Scale {
                 scale: sphere3.input.focus ? 2 : 1
@@ -152,6 +159,27 @@ Entity {
         }
         property KeyboardInput input: KeyboardInput {
             controller: keyboardController
+
+            onPressed: {
+                switch (event.key) {
+                case Qt.Key_W:
+                    sphere3dTranslate.dy += 0.1;
+                    break;
+                case Qt.Key_S:
+                    sphere3dTranslate.dy -= 0.1;
+                    break;
+                case Qt.Key_A:
+                    sphere3dTranslate.dx += 0.1;
+                    break;
+                case Qt.Key_D:
+                    sphere3dTranslate.dx -= 0.1;
+                    break;
+                }
+            }
+            onTabPressed: {
+                sphere1.input.focus = true;
+            }
+
         }
 
         components: [material, transform, sphereMesh, input]
