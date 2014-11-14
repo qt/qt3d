@@ -289,7 +289,7 @@ void RenderView::operator delete(void *ptr)
 {
     RenderView *rView = static_cast<RenderView *>(ptr);
     if (rView != Q_NULLPTR && rView->m_allocator != Q_NULLPTR)
-        rView->m_allocator->deallocateRawMemory<RenderView>(rView);
+        rView->m_allocator->deallocateRawMemory(rView, sizeof(RenderView));
 }
 
 // Since placement new is used we need a matching operator delete, at least MSVC complains otherwise
@@ -297,7 +297,7 @@ void RenderView::operator delete(void *ptr, void *)
 {
     RenderView *rView = static_cast<RenderView *>(ptr);
     if (rView != Q_NULLPTR && rView->m_allocator != Q_NULLPTR)
-        rView->m_allocator->deallocateRawMemory<RenderView>(rView);
+        rView->m_allocator->deallocateRawMemory(rView, sizeof(RenderView));
 }
 
 void RenderView::sort()

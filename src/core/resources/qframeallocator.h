@@ -92,22 +92,18 @@ public:
         }
     }
 
-    template<typename T>
-    T* allocateRawMemory(size_t n = 0)
+    void* allocateRawMemory(size_t size)
     {
-        if (n == 0)
-            n = sizeof(T);
-        uint allocatorIndex = allocatorIndexFromSize(n) - 1;
+        uint allocatorIndex = allocatorIndexFromSize(size) - 1;
         if (allocatorIndex < allocatorIndexFromSize(maxObjectSize()))
-            return static_cast<T*>(allocateAtChunk(allocatorIndex));
-        qCritical() << "Allocation size too large for QFrameAllocator " << n;
+            return allocateAtChunk(allocatorIndex);
+        qCritical() << "Allocation size too large for QFrameAllocator " << size;
         return Q_NULLPTR;
     }
 
-    template<typename T>
-    void deallocateRawMemory(T *ptr)
+    void deallocateRawMemory(void *ptr, size_t size)
     {
-        uint allocatorIndex = allocatorIndexFromSize(sizeof(*ptr)) - 1;
+        uint allocatorIndex = allocatorIndexFromSize(size) - 1;
         if (allocatorIndex < allocatorIndexFromSize(maxObjectSize()))
             deallocateAtChunck(ptr, allocatorIndex);
     }

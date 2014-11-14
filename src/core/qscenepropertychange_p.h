@@ -59,8 +59,8 @@ public:
     QScenePropertyChangePrivate(QScenePropertyChange *qq);
     virtual ~QScenePropertyChangePrivate();
 
-    static void *operator new(size_t);
-    static void operator delete(void *ptr);
+    static void *operator new(size_t size);
+    static void operator delete(void *ptr, size_t size);
 
     Q_DECLARE_PUBLIC(QScenePropertyChange)
 

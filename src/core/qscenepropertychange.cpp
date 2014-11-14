@@ -60,16 +60,16 @@ QScenePropertyChangePrivate::~QScenePropertyChangePrivate()
 
 }
 
-void *QScenePropertyChangePrivate::operator new(size_t n)
+void *QScenePropertyChangePrivate::operator new(size_t size)
 {
     QMutexLocker locker(&QScenePropertyChangePrivate::m_mutex);
-    return QScenePropertyChangePrivate::m_allocator->allocateRawMemory<QScenePropertyChangePrivate>(n);
+    return QScenePropertyChangePrivate::m_allocator->allocateRawMemory(size);
 }
 
-void QScenePropertyChangePrivate::operator delete(void *ptr)
+void QScenePropertyChangePrivate::operator delete(void *ptr, size_t size)
 {
     QMutexLocker locker(&QScenePropertyChangePrivate::m_mutex);
-    QScenePropertyChangePrivate::m_allocator->deallocateRawMemory<QScenePropertyChangePrivate>(static_cast<QScenePropertyChangePrivate *>(ptr));
+    QScenePropertyChangePrivate::m_allocator->deallocateRawMemory(ptr, size);
 }
 
 QScenePropertyChange::QScenePropertyChange(ChangeFlag type, QObservableInterface *subject, QSceneChange::Priority priority)
@@ -128,13 +128,13 @@ void QScenePropertyChange::setValue(const QVariant &value)
 void *QScenePropertyChange::operator new(size_t n)
 {
     QMutexLocker locker(&QScenePropertyChangePrivate::m_mutex);
-    return QScenePropertyChangePrivate::m_allocator->allocateRawMemory<QScenePropertyChange>(n);
+    return QScenePropertyChangePrivate::m_allocator->allocateRawMemory(n);
 }
 
-void QScenePropertyChange::operator delete(void *ptr)
+void QScenePropertyChange::operator delete(void *ptr, size_t size)
 {
     QMutexLocker locker(&QScenePropertyChangePrivate::m_mutex);
-    QScenePropertyChangePrivate::m_allocator->deallocateRawMemory<QScenePropertyChange>(static_cast<QScenePropertyChange *>(ptr));
+    QScenePropertyChangePrivate::m_allocator->deallocateRawMemory(ptr, size);
 }
 
 } // Qt3D

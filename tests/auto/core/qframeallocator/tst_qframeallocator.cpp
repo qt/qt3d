@@ -80,6 +80,8 @@ public:
     struct subclass : public composed
     {
         float toto;
+        // add some more data to force the subclass into a different bucket
+        char data[32];
     };
 
 private slots:
@@ -608,7 +610,7 @@ void tst_QFrameAllocator::allocateSubclass()
     for (int i = 0; i < 256; i++) {
         // Allocate a composed object of size subclass
         // c is actually a subclass
-        composed *c = f.allocateRawMemory<composed>(sizeof(subclass));
+        composed *c = static_cast<composed*>(f.allocateRawMemory(sizeof(subclass)));
         composeds << c;
     }
 
@@ -629,30 +631,27 @@ void tst_QFrameAllocator::deallocateSubclass()
 {
     Qt3D::QFrameAllocator f(128, 32);
 
-    QList<composed *> composeds;
 
-    for (int i = 0; i < 256; i++) {
-        // Allocate a composed object of size subclass
-        // c is actually a subclass
-        composed *c = f.allocateRawMemory<composed>(sizeof(subclass));
-        composeds << c;
-    }
+    const int NUM_ITEMS = 256;
+    QVector<void *> allocated(NUM_ITEMS);
+    uint chunkCount = 0;
 
-    for (int l = 0; l < 5; l++) {
+    for (int l = 0; l < 6; l++) {
 
-        uint chunkCount = f.totalChunkCount();
-
-        for (int i = 0; i < 256; i++) {
-            f.deallocateRawMemory(composeds.takeLast());
-        }
-
-        for (int i = 0; i < 256; i++) {
+        for (int i = 0; i < NUM_ITEMS; i++) {
             // Allocate a composed object of size subclass
             // c is actually a subclass
-            composed *c = f.allocateRawMemory<composed>(sizeof(subclass));
-            composeds << c;
+            allocated[i] = f.allocateRawMemory(sizeof(subclass));
         }
-        QCOMPARE(chunkCount, f.totalChunkCount());
+
+        if (!chunkCount)
+            chunkCount = f.totalChunkCount();
+        else
+            QCOMPARE(chunkCount, f.totalChunkCount());
+
+        for (int i = 0; i < NUM_ITEMS; i++) {
+            f.deallocateRawMemory(allocated[i], sizeof(subclass));
+        }
     }
 
 }
