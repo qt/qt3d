@@ -1,7 +1,7 @@
 TARGET = tst_qcircularbuffer
 CONFIG += testcase
 TEMPLATE = app
-QT += testlib 3dcore
+QT += testlib 3dcore 3dcore-private
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 

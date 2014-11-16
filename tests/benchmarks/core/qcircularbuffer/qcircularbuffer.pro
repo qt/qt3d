@@ -1,7 +1,7 @@
 TARGET = tst_bench_qcircularbuffer
 CONFIG += release
 TEMPLATE = app
-QT += testlib 3dcore
+QT += testlib 3dcore 3dcore-private
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 

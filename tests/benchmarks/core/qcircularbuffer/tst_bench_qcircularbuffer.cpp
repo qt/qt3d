@@ -42,7 +42,7 @@
 #include <QObject>
 #include <QtTest/QtTest>
 
-#include <Qt3DCore/qcircularbuffer.h>
+#include <Qt3DCore/private/qcircularbuffer_p.h>
 
 using namespace Qt3D;
 

@@ -39,10 +39,10 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QBOUNDEDCIRCULARBUFFER_H
-#define QT3D_QBOUNDEDCIRCULARBUFFER_H
+#ifndef QT3D_QBOUNDEDCIRCULARBUFFER_P_H
+#define QT3D_QBOUNDEDCIRCULARBUFFER_P_H
 
-#include <Qt3DCore/qcircularbuffer.h>
+#include <Qt3DCore/private/qcircularbuffer_p.h>
 
 #include <QReadWriteLock>
 #include <QReadLocker>
@@ -137,4 +137,4 @@ protected:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QBOUNDEDCIRCULARBUFFER_H
+#endif // QT3D_QBOUNDEDCIRCULARBUFFER_P_H

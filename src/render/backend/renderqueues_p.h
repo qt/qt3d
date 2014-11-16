@@ -46,7 +46,7 @@
 #include <QAtomicInt>
 #include <QtGlobal>
 #include <QMutex>
-#include <Qt3DCore/qboundedcircularbuffer.h>
+#include <Qt3DCore/private/qboundedcircularbuffer_p.h>
 
 QT_BEGIN_NAMESPACE
 
