@@ -51,8 +51,6 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D
 {
 
-typedef QList<QNode *> NodeList;
-
 class QT3DCORESHARED_EXPORT QNodeVisitor
 {
 public:
@@ -73,17 +71,17 @@ public:
 
     QNode *rootNode() const;
     QNode *currentNode() const;
-    NodeList path() const;
+    QNodeList path() const;
     void setTraverseDisabled(bool on);
 
 private:
-    NodeList m_path;
+    QNodeList m_path;
     bool m_traverseDisabled;
 
     template<typename NodeVisitorFunctor, typename EntityVisitorFunctor>
     void startTraversing(QNode *rootNode_, NodeVisitorFunctor fN, EntityVisitorFunctor fE)
     {
-        m_path = NodeList() << rootNode_;
+        m_path = QNodeList() << rootNode_;
         QEntity* rootEntity = qobject_cast<QEntity *>(rootNode_);
 
         if (rootEntity)

@@ -64,7 +64,7 @@ QNode* QNodeVisitor::currentNode() const
     return m_path.back();
 }
 
-NodeList QNodeVisitor::path() const
+QNodeList QNodeVisitor::path() const
 {
     return m_path;
 }

@@ -57,7 +57,7 @@ class QEntity;
 class QAspectEngine;
 class QSceneInterface;
 
-typedef QList<QNode *> NodeList;
+typedef QList<QNode *> QNodeList;
 typedef QSharedPointer<QNode> QNodePtr;
 
 #define QT3D_CLONEABLE(Class)                \
