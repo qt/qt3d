@@ -110,12 +110,6 @@ QGraphicsContext::~QGraphicsContext()
     static_contexts.remove(m_id);
 }
 
-void QGraphicsContext::setSurface(QSurface *s)
-{
-    qCDebug(Backend) << Q_FUNC_INFO;
-    m_surface = s;
-}
-
 void QGraphicsContext::initialize()
 {
     m_initialized = true;
@@ -131,12 +125,12 @@ void QGraphicsContext::initialize()
     m_textureScopes.resize(numTexUnits);
 }
 
-bool QGraphicsContext::beginDrawing(const QColor &clearColor)
+bool QGraphicsContext::beginDrawing(QSurface *surface, const QColor &clearColor)
 {
-    if (!m_gl || !m_surface) {
-        qCWarning(Backend) << Q_FUNC_INFO << "no content or surface provided";
-        return false;
-    }
+    Q_ASSERT(surface);
+    Q_ASSERT(m_gl);
+
+    m_surface = surface;
 
     bool ok = m_gl->makeCurrent(m_surface);
     if (!ok) {
@@ -209,18 +203,17 @@ void QGraphicsContext::releaseOpenGL()
     m_bufferHash.clear();
 }
 
-void QGraphicsContext::setOpenGLContext(QOpenGLContext* ctx)
+void QGraphicsContext::setOpenGLContext(QOpenGLContext* ctx, QSurface *surface)
 {
+    Q_ASSERT(surface);
+    Q_ASSERT(ctx);
+
     releaseOpenGL();
     m_gl = ctx;
-    //    m_gl->setParent(this);
 
-    // The Context should be made current to the surface
-    // otherwise gl functions initialization fails
-
-    Q_ASSERT(m_surface);
-    m_gl->makeCurrent(m_surface);
+    m_gl->makeCurrent(surface);
     resolveHighestOpenGLFunctions();
+    m_gl->doneCurrent();
 }
 
 // That assumes that the shaderProgram in RenderShader stays the same

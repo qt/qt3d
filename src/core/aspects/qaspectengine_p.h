@@ -43,6 +43,7 @@
 #define QT3D_QASPECTENGINE_P_H
 
 #include <private/qobject_p.h>
+#include <Qt3DCore/qaspectengine.h>
 #include <QtCore/qsharedpointer.h>
 
 QT_BEGIN_NAMESPACE

@@ -195,12 +195,15 @@ public:
     void submitRenderViews();
 
     void initialize();
+    void shutdown();
 
     QFrameAllocator *currentFrameAllocator(int frameIndex);
 
     QMutex* mutex() { return &m_mutex; }
 
 private:
+    bool canRender() const;
+
     QRenderAspect *m_rendererAspect;
 
     // Frame graph root

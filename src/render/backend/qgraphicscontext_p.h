@@ -93,11 +93,9 @@ public:
     QGraphicsContext();
     ~QGraphicsContext();
 
-    void setSurface(QSurface* s);
-
     int id() const; // unique, small integer ID of this context
 
-    bool beginDrawing(const QColor &clearColor);
+    bool beginDrawing(QSurface *surface, const QColor &clearColor);
     void clearBackBuffer(QClearBuffer::BufferType buffers);
     void endDrawing();
 
@@ -109,7 +107,7 @@ public:
      * this context
      */
     void releaseOpenGL();
-    void setOpenGLContext(QOpenGLContext* ctx);
+    void setOpenGLContext(QOpenGLContext* ctx, QSurface *surface);
     QOpenGLContext *openGLContext() { return m_gl; }
 
     void activateShader(RenderShader* shader);

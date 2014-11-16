@@ -150,6 +150,7 @@ void QAspectEngine::setData(const QVariantMap &data)
     Q_D(QAspectEngine);
     QMetaObject::invokeMethod(d->m_aspectThread->aspectManager(),
                               "setData",
+                              Qt::BlockingQueuedConnection,
                               Q_ARG(const QVariantMap &, data));
 }
 

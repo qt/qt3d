@@ -60,7 +60,7 @@ RenderThread::RenderThread(Renderer *renderer)
 {
 }
 
-// Called by Renderer in the AspectThread
+// Called by Renderer in the context of the Aspect Thread
 void RenderThread::waitForStart( Priority priority )
 {
     qCDebug(Render::Backend) << "Starting Render thread and then going to sleep until it is ready for us...";
@@ -74,17 +74,31 @@ void RenderThread::waitForStart( Priority priority )
 void RenderThread::run()
 {
     m_mutex.lock();
-    // We lock the renderer's mutex before unlocking the render thread mutex
-    // To ensure that the Renderer's initialize waitCondition is setup while other threads
-    // are still waiting for this RenderThread's waitCondition to be satisfied
+
+    // We lock the renderer's mutex here before unlocking the render thread mutex
+    // and returning control to the calling thread (the Aspect Thread). This is
+    // to ensure that the Renderer's initialize() waitCondition is reached before
+    // other threads try to wake it up. This is guaranteed by having the
+    // Renderer::setSurface() function try to lock the renderer's mutex too.
+    // That function will block until the mutex is unlocked by the wait condition
+    // in the initialize() call below.
     QMutexLocker locker(m_renderer->mutex());
+
+    // Now we have ensured we will reach the wait condition as described above,
+    // return control to the aspect thread that created us.
     m_waitCondition.wakeOne();
     m_mutex.unlock();
-    // Renderer waits for a surface to be set
+
+    // This call to Renderer::initialize() waits for a surface to be set on the
+    // renderer in the context of the Aspect Thread
     m_renderer->initialize();
     locker.unlock();
 
+    // Enter the main OpenGL submission loop.
     m_renderer->render();
+
+    // Clean up any OpenGL resources
+    m_renderer->shutdown();
 
     qCDebug(Render::Backend) << "Exiting RenderThread";
 }

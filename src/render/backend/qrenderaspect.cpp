@@ -98,6 +98,7 @@
 #include <Qt3DCore/private/qaspectmanager_p.h>
 
 #include <QDebug>
+#include <QOffscreenSurface>
 #include <QThread>
 #include <QWindow>
 
@@ -108,9 +109,44 @@ namespace Qt3D {
 QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect *qq)
     : QAbstractAspectPrivate(qq)
     , m_renderer(new Render::Renderer)
+    , m_surfaceEventFilter(new Render::PlatformSurfaceFilter(m_renderer))
     , m_initialized(false)
 {
     m_aspectType = QAbstractAspect::AspectRenderer;
+}
+
+void QRenderAspectPrivate::setSurface(QSurface *surface)
+{
+    if (m_surface == surface)
+        return;
+
+    m_surface = surface;
+
+    // If we have a new surface, install the platform surface event filter onto it
+    // so that we get informed when the underlying platform surface is about to be
+    // deleted and we can tell the renderer about it before it's too late.
+    if (m_surface) {
+        bool hasPlatformSurface = false;
+        switch (m_surface->surfaceClass()) {
+        case QSurface::Window: {
+            QWindow *window = static_cast<QWindow *>(m_surface);
+            m_surfaceEventFilter->setWindow(window);
+            hasPlatformSurface = (window->handle() != Q_NULLPTR);
+            break;
+        }
+
+        case QSurface::Offscreen: {
+            QOffscreenSurface *offscreen = static_cast<QOffscreenSurface *>(m_surface);
+            m_surfaceEventFilter->setOffscreenSurface(offscreen);
+            hasPlatformSurface = (offscreen->handle() != Q_NULLPTR);
+            break;
+        }
+        }
+
+        // If the window/offscreen surface has a native surface, tell the renderer
+        if (hasPlatformSurface)
+            m_renderer->setSurface(surface);
+    }
 }
 
 QRenderAspect::QRenderAspect(QObject *parent)
@@ -252,7 +288,7 @@ void QRenderAspect::onInitialize(const QVariantMap &data)
         surface = v.value<QSurface *>();
 
     if (surface)
-        d->m_renderer->setSurface(surface);
+        d->setSurface(surface);
 }
 
 void QRenderAspect::onCleanup()

@@ -92,6 +92,8 @@
 #include <QPluginLoader>
 #include <QDir>
 #include <QUrl>
+#include <QOffscreenSurface>
+#include <QWindow>
 
 // For Debug purposes only
 #include <QThread>
@@ -144,6 +146,9 @@ Renderer::Renderer(int cachedFrames)
     , m_debugLogger(Q_NULLPTR)
 {
     m_currentPreprocessingFrameIndex = 0;
+
+    // Set renderer as running - it will wait in the context of the
+    // RenderThread for RenderViews to be submitted
     m_running.fetchAndStoreOrdered(1);
     m_renderThread->waitForStart();
 
@@ -305,7 +310,6 @@ void Renderer::initialize()
     bool enableDebugLogging = !debugLoggingMode.isEmpty();
 
     m_graphicsContext.reset(new QGraphicsContext);
-    m_graphicsContext->setSurface(m_surface);
     m_graphicsContext->setRenderer(this);
 
     QSurfaceFormat sf = m_surface->format();
@@ -316,7 +320,7 @@ void Renderer::initialize()
     ctx->setFormat(sf);
     if (!ctx->create())
         qCWarning(Backend) << Q_FUNC_INFO << "OpenGL context creation failed";
-    m_graphicsContext->setOpenGLContext(ctx);
+    m_graphicsContext->setOpenGLContext(ctx, m_surface);
 
     if (enableDebugLogging) {
         bool supported = ctx->hasExtension("GL_KHR_debug");
@@ -341,6 +345,24 @@ void Renderer::initialize()
 
     // Awake setScenegraphRoot in case it was waiting
     m_waitForInitializationToBeCompleted.wakeOne();
+}
+
+/*!
+    \internal
+
+    Called in the context of the RenderThread to do any shutdown and cleanup
+    that needs to be performed in the thread where the OpenGL context lives
+*/
+void Renderer::shutdown()
+{
+    // Stop and destroy the OpenGL logger
+    if (m_debugLogger) {
+        m_debugLogger->stopLogging();
+        m_debugLogger.reset(Q_NULLPTR);
+    }
+
+    // Clean up the graphics context
+    m_graphicsContext.reset(Q_NULLPTR);
 }
 
 /*!
@@ -421,11 +443,24 @@ void Renderer::setSceneGraphRoot(RenderEntity *sgRoot)
 
 // Called in RenderAspect Thread context
 // Cannot do OpenGLContext initialization here
-void Renderer::setSurface(QSurface* s)
+void Renderer::setSurface(QSurface* surface)
 {
     qCDebug(Backend) << Q_FUNC_INFO << QThread::currentThread();
-    QMutexLocker locker(&m_mutex); // The will wait until initialize has been called by RenderThread::run
-    m_surface = s;
+    // Locking this mutex will wait until initialize() has been called by
+    // RenderThread::run() and the RenderThread is waiting on the
+    // m_waitForWindowToBeSetCondition condition.
+    //
+    // The first time this is called Renderer::setSurface will cause the
+    // Renderer::initialize() function to continue execution in the context
+    // of the Render Thread. On subsequent calls, just the surface will be
+    // updated.
+
+    // TODO: Remove the need for a valid surface from the renderer initialization
+    // We can use an offscreen surface to create and assess the OpenGL context.
+    // This should allow us to get rid of the "swapBuffers called on a non-exposed
+    // window" warning that we sometimes see.
+    QMutexLocker locker(&m_mutex);
+    m_surface = surface;
     m_waitForWindowToBeSetCondition.wakeOne();
 }
 
@@ -480,30 +515,47 @@ void Renderer::enqueueRenderView(Render::RenderView *renderView, int submitOrder
     }
 }
 
+bool Renderer::canRender() const
+{
+    // Make sure that we've not been told to terminate whilst waiting on
+    // the above wait condition
+    if (!m_running.load()) {
+        qCDebug(Rendering) << "RenderThread termination requested whilst waiting";
+        return false;
+    }
+
+    // Make sure that the surface we are rendering too has not been unset
+    // (probably due to the window being destroyed or changing QScreens).
+    if (!m_surface) {
+        qCDebug(Rendering) << "QSurface has been removed";
+        return false;
+    }
+
+    return true;
+}
+
 // Happens in RenderThread context when all RenderViewJobs are done
 void Renderer::submitRenderViews()
 {
     QMutexLocker locker(&m_mutex);
     m_submitRenderViewsCondition.wait(locker.mutex());
-    // Allow RenderViewJobs to be processed for the next frame
-    // Without having to wait for the current RenderViews to be submitted
-    // as long as there is available space in the renderQueues.
-    // Otherwise it waits for submission to be done so as to never miss
-    // Any important state change that could be in a RenderView
     locker.unlock();
-
-    // Make sure that we've not been told to terminate whilst waiting on
-    // the above wait condition
-    if (!m_running.load()) {
-        qCDebug(Rendering) << "RenderThread termination requested whilst waiting";
-        return;
-    }
 
     QElapsedTimer timer;
     quint64 queueElapsed = 0;
     timer.start();
     while (m_renderQueues->queuedFrames() > 0)
     {
+        // Lock the mutex to protect access to m_surface and check if we are still set
+        // to the running state and that we have a valid surface on which to draw
+        locker.relock();
+        if (!canRender()) {
+            QVector<Render::RenderView *> renderViews = m_renderQueues->nextFrameQueue();
+            qDeleteAll(renderViews);
+            m_renderQueues->popFrameQueue();
+            return;
+        }
+
         QVector<Render::RenderView *> renderViews = m_renderQueues->nextFrameQueue();
         int renderViewsCount = renderViews.size();
         quint64 frameElapsed = queueElapsed;
@@ -512,7 +564,7 @@ void Renderer::submitRenderViews()
             continue;
 
         // Bail out if we cannot make the OpenGL context current (e.g. if the window has been destroyed)
-        if (!m_graphicsContext->beginDrawing(renderViews.first()->clearColor()))
+        if (!m_graphicsContext->beginDrawing(m_surface, renderViews.first()->clearColor()))
             break;
 
         qCDebug(Memory) << Q_FUNC_INFO << "rendering frame " << renderViews.last()->frameIndex() << " Queue " << m_renderQueues->queuedFrames();
@@ -533,7 +585,12 @@ void Renderer::submitRenderViews()
             qCDebug(Rendering) << Q_FUNC_INFO << "Submitted Renderview " << i + 1 << "/" << renderViewsCount  << "in " << frameElapsed << "ms";
             frameElapsed = timer.elapsed();
         }
+
         m_graphicsContext->endDrawing();
+
+        // Let the Aspect Thread get a look in if it needs to change the surface
+        locker.unlock();
+
         qDeleteAll(renderViews);
         m_renderQueues->popFrameQueue();
         queueElapsed = timer.elapsed() - queueElapsed;

@@ -39,50 +39,63 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QASPECTENGINE_H
-#define QT3D_QASPECTENGINE_H
+#ifndef QT3D_RENDER_PLATFORMSURFACEFILTER_H
+#define QT3D_RENDER_PLATFORMSURFACEFILTER_H
 
-#include <QObject>
-#include <Qt3DCore/qt3dcore_global.h>
-#include <QList>
+#include <QtCore/qobject.h>
+#include <QtGui/qsurface.h>
 
 QT_BEGIN_NAMESPACE
 
+class QOffscreenSurface;
+class QWindow;
+
 namespace Qt3D {
+namespace Render {
 
-class QAbstractAspect;
-class QAspectThread;
-class QAspectEnginePrivate;
-class QEntity;
-class QNode;
+class Renderer;
 
-class QT3DCORESHARED_EXPORT QAspectEngine : public QObject
+class PlatformSurfaceFilter : public QObject
 {
     Q_OBJECT
+
 public:
-    explicit QAspectEngine(QObject *parent = 0);
-    ~QAspectEngine();
+    explicit PlatformSurfaceFilter(Renderer *renderAspect,
+                                   QObject *parent = 0);
+    ~PlatformSurfaceFilter();
 
-    void initialize();
-    void shutdown();
+    void setWindow(QWindow *window);
+    void setOffscreenSurface(QOffscreenSurface *offscreen);
 
-    void setRootEntity(QEntity *root);
-    QSharedPointer<QEntity> rootEntity() const;
-
-    void setData(const QVariantMap &data);
-    void registerAspect(QAbstractAspect *aspect);
-
-protected:
-    Q_DECLARE_PRIVATE(QAspectEngine)
-    QAspectEngine(QAspectEnginePrivate &dd, QObject *parent = 0);
+    bool eventFilter(QObject *obj, QEvent *e) Q_DECL_OVERRIDE;
 
 private:
-    void initNodeTree(QNode *node) const;
+    void setRendererSurface(QSurface *surface);
+
+    template<class T>
+    void setSurface(T *surface)
+    {
+        if (m_obj == surface)
+            return;
+
+        if (m_obj)
+            m_obj->removeEventFilter(this);
+
+        m_surface = surface;
+        m_obj = surface;
+
+        if (m_obj)
+            m_obj->installEventFilter(this);
+    }
+
+    QObject *m_obj;
+    QSurface *m_surface;
+    Renderer *m_renderer;
 };
 
+} // namespace Render
 } // namespace Qt3D
 
 QT_END_NAMESPACE
 
-
-#endif // QT3D_QASPECTENGINE_H
+#endif // QT3D_RENDER_PLATFORMSURFACEFILTER_H

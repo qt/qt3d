@@ -45,7 +45,11 @@
 #include <Qt3DCore/private/qabstractaspect_p.h>
 #include <Qt3DRenderer/qrenderaspect.h>
 
+#include <Qt3DRenderer/private/platformsurfacefilter_p.h>
+
 QT_BEGIN_NAMESPACE
+
+class QSurface;
 
 namespace Qt3D {
 
@@ -59,7 +63,15 @@ class QRenderAspectPrivate : public QAbstractAspectPrivate
 
     Q_DECLARE_PUBLIC(QRenderAspect)
 
+    void setSurface(QSurface *surface);
+
     Render::Renderer *m_renderer;
+
+    // The filter has affinity with the main thread so we have to delete it there
+    // via QScopedPointerDeleteLater
+    QScopedPointer<Render::PlatformSurfaceFilter, QScopedPointerDeleteLater> m_surfaceEventFilter;
+    QSurface *m_surface;
+
     bool m_initialized;
 };
 
