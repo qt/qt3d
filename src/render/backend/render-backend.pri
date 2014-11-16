@@ -8,7 +8,6 @@ HEADERS += \
     $$PWD/qrenderaspect_p.h \
     $$PWD/renderthread_p.h \
     $$PWD/renderconfiguration_p.h \
-    $$PWD/renderdevice_p.h \
     $$PWD/renderer_p.h \
     $$PWD/rendermaterial_p.h \
     $$PWD/rendermesh_p.h \
@@ -56,7 +55,6 @@ SOURCES += \
     $$PWD/qrenderaspect.cpp \
     $$PWD/renderthread.cpp \
     $$PWD/renderconfiguration.cpp \
-    $$PWD/renderdevice.cpp \
     $$PWD/renderer.cpp \
     $$PWD/rendermaterial.cpp \
     $$PWD/rendermesh.cpp \
