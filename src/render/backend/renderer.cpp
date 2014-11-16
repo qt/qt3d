@@ -707,7 +707,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
                 if (command->m_parameterAttributeToShaderNames.contains(nm))
                     m_graphicsContext->specifyAttribute(command->m_parameterAttributeToShaderNames[nm], attr);
                 else
-                    qCWarning(Render::Rendering) << "Couldn't find a Parameter attribute named " << nm;
+                    qCDebug(Render::Rendering) << "Couldn't find a Parameter attribute named " << nm;
             }
             if (drawIndexed)
                 m_graphicsContext->specifyIndices(meshData->indexAttribute().staticCast<Attribute>());
