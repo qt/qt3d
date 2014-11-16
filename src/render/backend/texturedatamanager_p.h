@@ -47,7 +47,7 @@
 #include <Qt3DRenderer/texturedata.h>
 #include <Qt3DRenderer/private/handle_types_p.h>
 
-#include <Qt3DCore/qnodeuuid.h>
+#include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -56,7 +56,7 @@ namespace Qt3D {
 namespace Render {
 
 class TextureDataManager : public QResourceManager<TexImageData,
-                                                   QNodeUuid,
+                                                   QNodeId,
                                                    16,
                                                    Qt3D::ListAllocatingPolicy,
                                                    Qt3D::ObjectLevelLockingPolicy>

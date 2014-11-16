@@ -43,7 +43,7 @@
 #define QT3D_INPUT_ASSIGNKEYBOARDFOCUSJOB_P_H
 
 #include <Qt3DCore/qaspectjob.h>
-#include <Qt3DCore/qnodeuuid.h>
+#include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -56,13 +56,13 @@ class InputHandler;
 class AssignKeyboardFocusJob : public QAspectJob
 {
 public:
-    explicit AssignKeyboardFocusJob(const QNodeUuid &controller);
+    explicit AssignKeyboardFocusJob(const QNodeId &controller);
     void setInputHandler(InputHandler *handler);
     void run() Q_DECL_OVERRIDE;
 
 private:
     InputHandler *m_inputHandler;
-    const QNodeUuid m_keyboardController;
+    const QNodeId m_keyboardController;
 };
 
 } // Input

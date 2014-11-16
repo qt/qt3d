@@ -62,7 +62,7 @@ void KeyboardController::updateFromPeer(QNode *)
 {
 }
 
-void KeyboardController::requestFocusForInput(const QNodeUuid &inputId)
+void KeyboardController::requestFocusForInput(const QNodeId &inputId)
 {
     // Saves the last inputId, this will then be used in an Aspect Job to determine which
     // input will have the focus. This in turn will call KeyboardInput::setFocus which will
@@ -75,7 +75,7 @@ void KeyboardController::setInputHandler(InputHandler *handler)
     m_inputHandler = handler;
 }
 
-void KeyboardController::addKeyboardInput(const QNodeUuid &input)
+void KeyboardController::addKeyboardInput(const QNodeId &input)
 {
     if (!m_keyboardInputs.contains(input)) {
         m_keyboardInputs.append(input);
@@ -83,13 +83,13 @@ void KeyboardController::addKeyboardInput(const QNodeUuid &input)
     }
 }
 
-void KeyboardController::removeKeyboardInput(const QNodeUuid &input)
+void KeyboardController::removeKeyboardInput(const QNodeId &input)
 {
     m_keyboardInputs.removeAll(input);
     m_keyboardInputHandles.removeAll(m_inputHandler->keyboardInputManager()->lookupHandle(input));
 }
 
-void KeyboardController::setCurrentFocusItem(const QNodeUuid &input)
+void KeyboardController::setCurrentFocusItem(const QNodeId &input)
 {
     m_currentFocusItem = input;
 }

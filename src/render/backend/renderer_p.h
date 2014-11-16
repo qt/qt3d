@@ -138,7 +138,7 @@ public:
 
     QThreadStorage<QPair<int, QFrameAllocatorQueue *> *> *tlsAllocators();
 
-    void setFrameGraphRoot(const QNodeUuid &fgRoot);
+    void setFrameGraphRoot(const QNodeId &fgRoot);
     Render::FrameGraphNode *frameGraphRoot() const;
 
     void setSceneGraphRoot(RenderEntity *sgRoot);
@@ -207,7 +207,7 @@ private:
     QRenderAspect *m_rendererAspect;
 
     // Frame graph root
-    QNodeUuid m_frameGraphRootUuid;
+    QNodeId m_frameGraphRootUuid;
 
     RenderEntity *m_renderSceneRoot;
 

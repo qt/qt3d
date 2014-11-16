@@ -39,76 +39,30 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QNODEUUID_H
-#define QT3D_QNODEUUID_H
-
-#include <Qt3DCore/qt3dcore_global.h>
-#include <QDebug>
+#include "qnodeid.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DCORESHARED_EXPORT QNodeUuid
+QNodeId QNodeId::createUuid()
 {
-public:
-    QNodeUuid()
-        : m_uuid(0)
-    {}
-
-    static QNodeUuid createUuid();
-
-    inline bool isNull() const
-    {
-        return m_uuid == 0;
-    }
-
-    inline bool operator ==(const QNodeUuid &other) const
-    {
-        return other.m_uuid == m_uuid;
-    }
-
-    inline bool operator !=(const QNodeUuid &other) const
-    {
-        return !operator ==(other);
-    }
-
-    inline bool operator <(const QNodeUuid &other) const
-    {
-        return m_uuid < other.m_uuid;
-    }
-
-    inline bool operator >(const QNodeUuid &other) const
-    {
-        return m_uuid > other.m_uuid;
-    }
-
-    inline quint64 guid() const
-    {
-        return m_uuid;
-    }
-
-private:
-    quint64 m_uuid;
-};
-
-
-#ifndef QT_NO_DEBUG_STREAM
-QT3DCORESHARED_EXPORT QDebug operator<<(QDebug d, const QNodeUuid &id);
+#if defined(Q_ATOMIC_INT64_IS_SUPPORTED)
+    static QAtomicInteger<quint64> m_curId = QAtomicInteger<quint64>(1);
+#else
+    static QAtomicInteger<quint32> m_curId = QAtomicInteger<quint32>(1);
 #endif
-
-QT3DCORESHARED_EXPORT inline uint qHash(const QNodeUuid &uuid, uint) Q_DECL_NOTHROW
-{
-    return uuid.guid();
+    QNodeId uuid;
+    uuid.m_uuid = m_curId.fetchAndAddOrdered(1);
+    return uuid;
 }
 
-} // Qt3D
+QDebug operator<<(QDebug d, const QNodeId &id)
+{
+    d << id.guid();
+    return d;
+}
 
-Q_DECLARE_TYPEINFO(Qt3D::QNodeUuid, Q_MOVABLE_TYPE);
+}
 
 QT_END_NAMESPACE
-
-Q_DECLARE_METATYPE(Qt3D::QNodeUuid)
-
-
-#endif // QT3D_QNODEUUID_H

@@ -57,21 +57,21 @@ class QT3DCORESHARED_EXPORT QScene : public QSceneInterface
 public:
     QScene();
 
-    void addObservable(QObservableInterface *observable, const QNodeUuid &uuid) Q_DECL_OVERRIDE;
+    void addObservable(QObservableInterface *observable, const QNodeId &uuid) Q_DECL_OVERRIDE;
     void addObservable(QNode *observable) Q_DECL_OVERRIDE;
-    void removeObservable(QObservableInterface *observable, const QNodeUuid &uuid) Q_DECL_OVERRIDE;
+    void removeObservable(QObservableInterface *observable, const QNodeId &uuid) Q_DECL_OVERRIDE;
     void removeObservable(QNode *observable) Q_DECL_OVERRIDE;
-    QObservableList lookupObservables(const QNodeUuid &uuid) const Q_DECL_OVERRIDE;
+    QObservableList lookupObservables(const QNodeId &uuid) const Q_DECL_OVERRIDE;
 
-    QNode *lookupNode(const QNodeUuid &uuid) const Q_DECL_OVERRIDE;
-    QNodeUuid nodeIdFromObservable(QObservableInterface *observable) const Q_DECL_OVERRIDE;
+    QNode *lookupNode(const QNodeId &uuid) const Q_DECL_OVERRIDE;
+    QNodeId nodeIdFromObservable(QObservableInterface *observable) const Q_DECL_OVERRIDE;
 
     void setArbiter(QChangeArbiter *arbiter) Q_DECL_OVERRIDE;
 
     // Component -> Entities
-    QList<QNodeUuid> entitiesForComponent(const QNodeUuid &uuid) const Q_DECL_OVERRIDE;
-    void addEntityForComponent(const QNodeUuid &componentUuid, const QNodeUuid &entityUuid) Q_DECL_OVERRIDE;
-    void removeEntityForComponent(const QNodeUuid &componentUuid, const QNodeUuid &entityUuid) Q_DECL_OVERRIDE;
+    QList<QNodeId> entitiesForComponent(const QNodeId &uuid) const Q_DECL_OVERRIDE;
+    void addEntityForComponent(const QNodeId &componentUuid, const QNodeId &entityUuid) Q_DECL_OVERRIDE;
+    void removeEntityForComponent(const QNodeId &componentUuid, const QNodeId &entityUuid) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QScene)

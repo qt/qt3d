@@ -67,14 +67,14 @@ public:
     TechniqueFilter();
     void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
 
-    QList<QNodeUuid> filters() const;
+    QList<QNodeId> filters() const;
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
     void appendFilter(QAnnotation *criterion);
-    void removeFilter(const QNodeUuid &criterionId);
+    void removeFilter(const QNodeId &criterionId);
 
-    QList<QNodeUuid> m_filters;
+    QList<QNodeId> m_filters;
 };
 
 } // Render

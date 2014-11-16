@@ -188,7 +188,7 @@ public:
     void setRenderTargetHandle(HTarget renderTargetHandle) { m_renderTarget = renderTargetHandle; }
     HTarget renderTargetHandle() const { return m_renderTarget; }
 
-    void addSortCriteria(const QList<QNodeUuid> &sortMethodUid) { m_data->m_sortingCriteria.append(sortMethodUid); }
+    void addSortCriteria(const QList<QNodeId> &sortMethodUid) { m_data->m_sortingCriteria.append(sortMethodUid); }
 
 private:
     void setShaderAndUniforms(RenderCommand *command, RenderRenderPass *pass, QHash<QString, QVariant> &parameters, const QMatrix4x4 &worldTransform);
@@ -213,7 +213,7 @@ private:
         QMatrix4x4 *m_viewMatrix;
         QStringList m_layers;
         QList<LightPair> m_lights;
-        QList<QNodeUuid> m_sortingCriteria;
+        QList<QNodeId> m_sortingCriteria;
         QVector3D m_eyePos;
     } *m_data;
 

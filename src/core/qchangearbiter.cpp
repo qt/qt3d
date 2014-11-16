@@ -131,7 +131,7 @@ void QChangeArbiter::distributeQueueChanges(ChangeQueue *changeQueue)
 
         case QSceneChange::Observable: {
             QObservableInterface *subject = change->subject().m_observable;
-            QNodeUuid nodeId = m_scene->nodeIdFromObservable(subject);
+            QNodeId nodeId = m_scene->nodeIdFromObservable(subject);
             if (m_nodeObservations.contains(nodeId)) {
                 QObserverList &observers = m_nodeObservations[nodeId];
                 Q_FOREACH (const QObserverPair&observer, observers) {
@@ -216,7 +216,7 @@ QSceneInterface *QChangeArbiter::scene() const
 }
 
 void QChangeArbiter::registerObserver(QObserverInterface *observer,
-                                      const QNodeUuid &nodeId,
+                                      const QNodeId &nodeId,
                                       ChangeFlags changeFlags)
 {
     QMutexLocker locker(&m_mutex);
@@ -231,7 +231,7 @@ void QChangeArbiter::registerSceneObserver(QSceneObserverInterface *observer)
         m_sceneObservers << observer;
 }
 
-void QChangeArbiter::unregisterObserver(QObserverInterface *observer, const QNodeUuid &nodeId)
+void QChangeArbiter::unregisterObserver(QObserverInterface *observer, const QNodeId &nodeId)
 {
     QMutexLocker locker(&m_mutex);
     if (m_nodeObservations.contains(nodeId)) {

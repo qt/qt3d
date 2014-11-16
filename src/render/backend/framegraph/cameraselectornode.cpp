@@ -62,7 +62,7 @@ CameraSelector::CameraSelector()
 void CameraSelector::updateFromPeer(QNode *peer)
 {
     QCameraSelector *selector = static_cast<QCameraSelector *>(peer);
-    m_cameraUuid = QNodeUuid();
+    m_cameraUuid = QNodeId();
     if (selector->camera() != Q_NULLPTR)
         m_cameraUuid = selector->camera()->uuid();
 }
@@ -73,12 +73,12 @@ void CameraSelector::sceneChangeEvent(const QSceneChangePtr &e)
     if (e->type() == NodeUpdated) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("camera")) {
-            m_cameraUuid = propertyChange->value().value<QNodeUuid>();
+            m_cameraUuid = propertyChange->value().value<QNodeId>();
         }
     }
 }
 
-QNodeUuid CameraSelector::cameraUuid() const
+QNodeId CameraSelector::cameraUuid() const
 {
     return m_cameraUuid;
 }

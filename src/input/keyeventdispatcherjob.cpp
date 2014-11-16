@@ -50,7 +50,7 @@ namespace Qt3D {
 
 namespace Input {
 
-KeyEventDispatcherJob::KeyEventDispatcherJob(const QNodeUuid &input, const QList<QKeyEvent> &events)
+KeyEventDispatcherJob::KeyEventDispatcherJob(const QNodeId &input, const QList<QKeyEvent> &events)
     : QAspectJob()
     , m_inputHandler(Q_NULLPTR)
     , m_keyboardInput(input)

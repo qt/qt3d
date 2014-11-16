@@ -46,7 +46,7 @@
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DCore/private/qabstractaspect_p.h>
 #include <Qt3DCore/qbackendnode.h>
-#include <Qt3DCore/qnodeuuid.h>
+#include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -71,25 +71,25 @@ public:
 
     void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    QNodeUuid shaderProgram() const;
+    QNodeId shaderProgram() const;
     QList<QParameterMapping *> bindings() const;
-    QList<QNodeUuid> annotations() const;
+    QList<QNodeId> annotations() const;
     QList<QRenderState *> renderStates() const;
 
-    void appendAnnotation(const QNodeUuid &criterionId);
-    void removeAnnotation(const QNodeUuid &criterionId);
+    void appendAnnotation(const QNodeId &criterionId);
+    void removeAnnotation(const QNodeId &criterionId);
 
     void appendBinding(QParameterMapping *binding);
-    void removeBinding(const QNodeUuid &bindingId);
+    void removeBinding(const QNodeId &bindingId);
 
     void appendRenderState(QRenderState *renderState);
-    void removeRenderState(const QNodeUuid &renderStateId);
+    void removeRenderState(const QNodeId &renderStateId);
 
 private:
-    QNodeUuid m_shaderUuid;
-    QHash<QNodeUuid, QParameterMapping *> m_bindings;
-    QHash<QNodeUuid, QRenderState *> m_renderStates;
-    QList<QNodeUuid> m_annotationList;
+    QNodeId m_shaderUuid;
+    QHash<QNodeId, QParameterMapping *> m_bindings;
+    QHash<QNodeId, QRenderState *> m_renderStates;
+    QList<QNodeId> m_annotationList;
 };
 
 } // Render

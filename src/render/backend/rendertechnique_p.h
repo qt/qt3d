@@ -73,24 +73,24 @@ public:
     void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
 
     void sceneChangeEvent(const QSceneChangePtr &e);
-    QList<QNodeUuid> parameters() const;
+    QList<QNodeId> parameters() const;
 
-    void appendRenderPass(const QNodeUuid &renderPassId);
-    void removeRenderPass(const QNodeUuid &renderPassId);
+    void appendRenderPass(const QNodeId &renderPassId);
+    void removeRenderPass(const QNodeId &renderPassId);
 
-    void appendAnnotation(const QNodeUuid &criterionId);
-    void removeAnnotation(const QNodeUuid &criterionId);
+    void appendAnnotation(const QNodeId &criterionId);
+    void removeAnnotation(const QNodeId &criterionId);
 
-    QList<QNodeUuid> annotations() const;
-    QList<QNodeUuid> renderPasses() const;
+    QList<QNodeId> annotations() const;
+    QList<QNodeId> renderPasses() const;
     QOpenGLFilter *openGLFilter() const;
 
 private:
     QOpenGLFilter *m_openglFilter;
 
     ParameterPack m_parameterPack;
-    QList<QNodeUuid> m_annotationList;
-    QList<QNodeUuid> m_renderPasses;
+    QList<QNodeId> m_annotationList;
+    QList<QNodeId> m_renderPasses;
 };
 
 } // namespace Render

@@ -43,7 +43,7 @@
 #define QT3D_INPUT_KEYEVENTDISPATCHERJOB_P_H
 
 #include <Qt3DCore/qaspectjob.h>
-#include <Qt3DCore/qnodeuuid.h>
+#include <Qt3DCore/qnodeid.h>
 #include <QKeyEvent>
 
 QT_BEGIN_NAMESPACE
@@ -57,13 +57,13 @@ class InputHandler;
 class KeyEventDispatcherJob : public QAspectJob
 {
 public:
-    explicit KeyEventDispatcherJob(const QNodeUuid &input, const QList<QKeyEvent> &events);
+    explicit KeyEventDispatcherJob(const QNodeId &input, const QList<QKeyEvent> &events);
     void setInputHandler(InputHandler *handler);
     void run() Q_DECL_OVERRIDE;
 
 private:
     InputHandler *m_inputHandler;
-    const QNodeUuid m_keyboardInput;
+    const QNodeId m_keyboardInput;
     const QList<QKeyEvent> m_events;
 };
 

@@ -68,18 +68,18 @@ void RenderTarget::cleanup()
 {
 }
 
-void RenderTarget::appendRenderAttachment(const QNodeUuid &attachmentId)
+void RenderTarget::appendRenderAttachment(const QNodeId &attachmentId)
 {
     if (!m_renderAttachments.contains(attachmentId))
         m_renderAttachments.append(attachmentId);
 }
 
-void RenderTarget::removeRenderAttachment(const QNodeUuid &attachmentId)
+void RenderTarget::removeRenderAttachment(const QNodeId &attachmentId)
 {
     m_renderAttachments.removeOne(attachmentId);
 }
 
-QList<QNodeUuid> RenderTarget::renderAttachments() const
+QList<QNodeId> RenderTarget::renderAttachments() const
 {
     return m_renderAttachments;
 }
@@ -88,9 +88,9 @@ void RenderTarget::sceneChangeEvent(const QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     if (e->type() == NodeAdded && propertyChange->propertyName() == QByteArrayLiteral("attachment"))
-        appendRenderAttachment(propertyChange->value().value<QNodeUuid>());
+        appendRenderAttachment(propertyChange->value().value<QNodeId>());
     else if (e->type() == NodeRemoved && propertyChange->propertyName() == QByteArrayLiteral("attachment"))
-        removeRenderAttachment(propertyChange->value().value<QNodeUuid>());
+        removeRenderAttachment(propertyChange->value().value<QNodeId>());
 }
 
 } // Render

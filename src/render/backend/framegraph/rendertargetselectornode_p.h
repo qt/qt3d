@@ -59,10 +59,10 @@ public:
 
     void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    QNodeUuid renderTargetUuid() const;
+    QNodeId renderTargetUuid() const;
 
 private:
-    QNodeUuid m_renderTargetUuid;
+    QNodeId m_renderTargetUuid;
 };
 
 } // Render

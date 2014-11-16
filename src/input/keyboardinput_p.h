@@ -43,7 +43,7 @@
 #define QT3D_INPUT_KEYBOARDINPUT_P_H
 
 #include <Qt3DCore/qbackendnode.h>
-#include <Qt3DCore/qnodeuuid.h>
+#include <Qt3DCore/qnodeid.h>
 #include <Qt3DInput/q3dkeyevent.h>
 
 QT_BEGIN_NAMESPACE
@@ -61,7 +61,7 @@ class KeyboardInput : public QBackendNode
 public:
     KeyboardInput();
     void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
-    QNodeUuid keyboardController() const;
+    QNodeId keyboardController() const;
     void setInputHandler(InputHandler *handler);
     void setFocus(bool focus);
     void keyEvent(const Q3DKeyEventPtr &event);
@@ -69,11 +69,11 @@ public:
 protected:
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
     void requestFocus();
-    void setController(const QNodeUuid &controller);
+    void setController(const QNodeId &controller);
 
 private:
     InputHandler *m_inputHandler;
-    QNodeUuid m_keyboardController;
+    QNodeId m_keyboardController;
     bool m_focus;
 };
 

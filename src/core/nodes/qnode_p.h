@@ -80,7 +80,7 @@ public:
     // Later on we may decide to extend support for multiple observers.
     QChangeArbiter *m_changeArbiter;
     QSceneInterface *m_scene;
-    mutable QNodeUuid m_uuid;
+    mutable QNodeId m_uuid;
     bool m_blockNotifications;
 
     static QNodePrivate *get(QNode *q);
@@ -98,7 +98,7 @@ private:
     bool m_propertyChangesSetup;
     PropertyChangeHandler<QNodePrivate> m_signals;
 
-    static QHash<QNodeUuid, QNode *> m_clonesLookupTable;
+    static QHash<QNodeId, QNode *> m_clonesLookupTable;
 };
 
 } // namespace Qt3D

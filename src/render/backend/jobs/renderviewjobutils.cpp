@@ -123,7 +123,7 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
 
         case FrameGraphNode::RenderTarget: {
             // Can be set once and we take render target nearest to the leaf node
-            QNodeUuid renderTargetUid = static_cast<const RenderTargetSelector *>(node)->renderTargetUuid();
+            QNodeId renderTargetUid = static_cast<const RenderTargetSelector *>(node)->renderTargetUuid();
             HTarget renderTargetHandle = renderer->renderTargetManager()->lookupHandle(renderTargetUid);
             if (rv->renderTargetHandle().isNull()) {
                 rv->setRenderTargetHandle(renderTargetHandle);
@@ -131,7 +131,7 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                 RenderTarget *renderTarget = renderer->renderTargetManager()->data(renderTargetHandle);
                 if (renderTarget) {
                     // Add renderTarget Handle and build renderCommand AttachmentPack
-                    Q_FOREACH (const QNodeUuid &attachmentId, renderTarget->renderAttachments()) {
+                    Q_FOREACH (const QNodeId &attachmentId, renderTarget->renderAttachments()) {
                         RenderAttachment *attachment = renderer->attachmentManager()->lookupResource(attachmentId);
                         if (attachment)
                             rv->addRenderAttachment(attachment->attachment());
@@ -221,7 +221,7 @@ RenderTechnique *findTechniqueForEffect(Renderer *renderer,
         return Q_NULLPTR;
 
     // Iterate through the techniques in the effect
-    Q_FOREACH (const QNodeUuid &techniqueId, effect->techniques()) {
+    Q_FOREACH (const QNodeId &techniqueId, effect->techniques()) {
         RenderTechnique *technique = renderer->techniqueManager()->lookupResource(techniqueId);
 
         if (!technique)
@@ -243,11 +243,11 @@ RenderTechnique *findTechniqueForEffect(Renderer *renderer,
 
             // Iterate through the filter criteria and for each one search for a criteria on the
             // technique that satisfies it
-            Q_FOREACH (const QNodeUuid &filterAnnotationId, techniqueFilter->filters()) {
+            Q_FOREACH (const QNodeId &filterAnnotationId, techniqueFilter->filters()) {
                 foundMatch = false;
                 RenderAnnotation *filterAnnotation = renderer->criterionManager()->lookupResource(filterAnnotationId);
 
-                Q_FOREACH (const QNodeUuid &techniqueAnnotationId, technique->annotations()) {
+                Q_FOREACH (const QNodeId &techniqueAnnotationId, technique->annotations()) {
                     RenderAnnotation *techniqueAnnotation = renderer->criterionManager()->lookupResource(techniqueAnnotationId);
                     if ((foundMatch = (*techniqueAnnotation == *filterAnnotation)))
                         break;
@@ -279,7 +279,7 @@ QVector<RenderRenderPass *> findRenderPassesForTechnique(Renderer *renderer,
 
     QVector<RenderRenderPass *> passes;
     passes.reserve(3); // We rarely get more than 2 or 3 passes
-    Q_FOREACH (const QNodeUuid &passId, technique->renderPasses()) {
+    Q_FOREACH (const QNodeId &passId, technique->renderPasses()) {
         RenderRenderPass *renderPass = renderer->renderPassManager()->lookupResource(passId);
 
         if (renderPass) {
@@ -290,11 +290,11 @@ QVector<RenderRenderPass *> findRenderPassesForTechnique(Renderer *renderer,
             if (!foundMatch && renderPass->annotations().size() >= passFilter->filters().size()) {
 
                 // Iterate through the filter criteria and look for render passes with criteria that satisfy them
-                Q_FOREACH (const QNodeUuid &filterAnnotationId, passFilter->filters()) {
+                Q_FOREACH (const QNodeId &filterAnnotationId, passFilter->filters()) {
                     foundMatch = false;
                     RenderAnnotation *filterAnnotation = renderer->criterionManager()->lookupResource(filterAnnotationId);
 
-                    Q_FOREACH (const QNodeUuid &passAnnotationId, renderPass->annotations()) {
+                    Q_FOREACH (const QNodeId &passAnnotationId, renderPass->annotations()) {
                         RenderAnnotation *passAnnotation = renderer->criterionManager()->lookupResource(passAnnotationId);
                         if ((foundMatch = (*passAnnotation == *filterAnnotation)))
                             break;
@@ -318,9 +318,9 @@ QVector<RenderRenderPass *> findRenderPassesForTechnique(Renderer *renderer,
 }
 
 static void addParametersForIds(QHash<QString, QVariant> *params, ParameterManager *manager,
-                                const QList<QNodeUuid> &parameterIds)
+                                const QList<QNodeId> &parameterIds)
 {
-    Q_FOREACH (const QNodeUuid &paramId, parameterIds) {
+    Q_FOREACH (const QNodeId &paramId, parameterIds) {
         RenderParameter *param = manager->lookupResource(paramId);
         if (param != Q_NULLPTR)
             params->insert(param->name(), param->value());

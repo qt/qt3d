@@ -66,13 +66,13 @@ QBackendScenePropertyChange::~QBackendScenePropertyChange()
 {
 }
 
-void QBackendScenePropertyChange::setTargetNode(const QNodeUuid &id)
+void QBackendScenePropertyChange::setTargetNode(const QNodeId &id)
 {
     Q_D(QBackendScenePropertyChange);
     d->m_targetUuid = id;
 }
 
-QNodeUuid QBackendScenePropertyChange::targetNode() const
+QNodeId QBackendScenePropertyChange::targetNode() const
 {
     Q_D(const QBackendScenePropertyChange);
     return d->m_targetUuid;

@@ -51,7 +51,7 @@ namespace Qt3D {
 
 namespace Input {
 
-AssignKeyboardFocusJob::AssignKeyboardFocusJob(const QNodeUuid &controller)
+AssignKeyboardFocusJob::AssignKeyboardFocusJob(const QNodeId &controller)
     : QAspectJob()
     , m_inputHandler(Q_NULLPTR)
     , m_keyboardController(controller)

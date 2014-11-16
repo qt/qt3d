@@ -63,7 +63,7 @@ void TechniqueFilter::updateFromPeer(QNode *peer)
         appendFilter(criterion);
 }
 
-QList<QNodeUuid> TechniqueFilter::filters() const
+QList<QNodeId> TechniqueFilter::filters() const
 {
     return m_filters;
 }
@@ -74,7 +74,7 @@ void TechniqueFilter::appendFilter(QAnnotation *criterion)
         m_filters.append(criterion->uuid());
 }
 
-void TechniqueFilter::removeFilter(const QNodeUuid &criterionId)
+void TechniqueFilter::removeFilter(const QNodeId &criterionId)
 {
     m_filters.removeOne(criterionId);
 }
@@ -91,7 +91,7 @@ void TechniqueFilter::sceneChangeEvent(const QSceneChangePtr &e)
     case NodeRemoved: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("require"))
-            removeFilter(propertyChange->value().value<QNodeUuid>());
+            removeFilter(propertyChange->value().value<QNodeId>());
     }
         break;
     default:

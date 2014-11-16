@@ -62,7 +62,7 @@ void RenderPassFilter::updateFromPeer(QNode *peer)
         appendFilter(criterion);
 }
 
-QList<QNodeUuid> RenderPassFilter::filters() const
+QList<QNodeId> RenderPassFilter::filters() const
 {
     return m_filters;
 }
@@ -73,7 +73,7 @@ void RenderPassFilter::appendFilter(QAnnotation *criterion)
         m_filters.append(criterion->uuid());
 }
 
-void RenderPassFilter::removeFilter(const QNodeUuid &criterionId)
+void RenderPassFilter::removeFilter(const QNodeId &criterionId)
 {
     m_filters.removeOne(criterionId);
 }
@@ -90,7 +90,7 @@ void RenderPassFilter::sceneChangeEvent(const QSceneChangePtr &e)
     case NodeRemoved: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("include"))
-            removeFilter(propertyChange->value().value<QNodeUuid>());
+            removeFilter(propertyChange->value().value<QNodeId>());
     }
         break;
     default:

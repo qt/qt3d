@@ -43,7 +43,7 @@
 #define QT3D_RENDER_RENDERTARGET_H
 
 #include <Qt3DCore/qbackendnode.h>
-#include <Qt3DCore/qnodeuuid.h>
+#include <Qt3DCore/qnodeid.h>
 #include <QList>
 
 QT_BEGIN_NAMESPACE
@@ -65,15 +65,15 @@ public:
     void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
     void cleanup();
 
-    void appendRenderAttachment(const QNodeUuid &attachmentId);
-    void removeRenderAttachment(const QNodeUuid &attachmentId);
+    void appendRenderAttachment(const QNodeId &attachmentId);
+    void removeRenderAttachment(const QNodeId &attachmentId);
 
-    QList<QNodeUuid> renderAttachments() const;
+    QList<QNodeId> renderAttachments() const;
 
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    QList<QNodeUuid> m_renderAttachments;
+    QList<QNodeId> m_renderAttachments;
 };
 
 } // Render

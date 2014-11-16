@@ -39,30 +39,76 @@
 **
 ****************************************************************************/
 
-#include "qnodeuuid.h"
+#ifndef QT3D_QNODEID_H
+#define QT3D_QNODEID_H
+
+#include <Qt3DCore/qt3dcore_global.h>
+#include <QDebug>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QNodeUuid QNodeUuid::createUuid()
+class QT3DCORESHARED_EXPORT QNodeId
 {
-#if defined(Q_ATOMIC_INT64_IS_SUPPORTED)
-    static QAtomicInteger<quint64> m_curId = QAtomicInteger<quint64>(1);
-#else
-    static QAtomicInteger<quint32> m_curId = QAtomicInteger<quint32>(1);
+public:
+    QNodeId()
+        : m_uuid(0)
+    {}
+
+    static QNodeId createUuid();
+
+    inline bool isNull() const
+    {
+        return m_uuid == 0;
+    }
+
+    inline bool operator ==(const QNodeId &other) const
+    {
+        return other.m_uuid == m_uuid;
+    }
+
+    inline bool operator !=(const QNodeId &other) const
+    {
+        return !operator ==(other);
+    }
+
+    inline bool operator <(const QNodeId &other) const
+    {
+        return m_uuid < other.m_uuid;
+    }
+
+    inline bool operator >(const QNodeId &other) const
+    {
+        return m_uuid > other.m_uuid;
+    }
+
+    inline quint64 guid() const
+    {
+        return m_uuid;
+    }
+
+private:
+    quint64 m_uuid;
+};
+
+
+#ifndef QT_NO_DEBUG_STREAM
+QT3DCORESHARED_EXPORT QDebug operator<<(QDebug d, const QNodeId &id);
 #endif
-    QNodeUuid uuid;
-    uuid.m_uuid = m_curId.fetchAndAddOrdered(1);
-    return uuid;
-}
 
-QDebug operator<<(QDebug d, const QNodeUuid &id)
+QT3DCORESHARED_EXPORT inline uint qHash(const QNodeId &uuid, uint) Q_DECL_NOTHROW
 {
-    d << id.guid();
-    return d;
+    return uuid.guid();
 }
 
-}
+} // Qt3D
+
+Q_DECLARE_TYPEINFO(Qt3D::QNodeId, Q_MOVABLE_TYPE);
 
 QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE(Qt3D::QNodeId)
+
+
+#endif // QT3D_QNODEID_H

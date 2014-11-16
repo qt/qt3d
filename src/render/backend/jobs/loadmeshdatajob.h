@@ -42,7 +42,7 @@
 #ifndef QT3D_RENDER_LOADMESHDATAJOB_H
 #define QT3D_RENDER_LOADMESHDATAJOB_H
 
-#include <Qt3DCore/qnodeuuid.h>
+#include <Qt3DCore/qnodeid.h>
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qhandle.h>
 #include <Qt3DRenderer/qmeshdata.h>
@@ -60,13 +60,13 @@ class Renderer;
 class LoadMeshDataJob : public Qt3D::QAspectJob
 {
 public:
-    LoadMeshDataJob(QAbstractMeshFunctorPtr functor, const QNodeUuid &meshUuid);
+    LoadMeshDataJob(QAbstractMeshFunctorPtr functor, const QNodeId &meshUuid);
     void setRenderer(Renderer *renderer) { m_renderer = renderer; }
 protected:
     void run() Q_DECL_OVERRIDE;
 
 private:
-    QNodeUuid m_meshUuid;
+    QNodeId m_meshUuid;
     QAbstractMeshFunctorPtr m_functor;
     Renderer *m_renderer;
 };

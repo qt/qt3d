@@ -56,7 +56,7 @@ namespace Input {
 
 class KeyboardInputManager : public QResourceManager<
         KeyboardInput,
-        QNodeUuid,
+        QNodeId,
         16,
         Qt3D::ArrayAllocatingPolicy>
 {
@@ -66,7 +66,7 @@ public:
 
 class KeyboardControllerManager : public QResourceManager<
         KeyboardController,
-        QNodeUuid,
+        QNodeId,
         8,
         Qt3D::ArrayAllocatingPolicy>
 {

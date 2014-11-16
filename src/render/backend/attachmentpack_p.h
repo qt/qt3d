@@ -57,7 +57,7 @@ struct Attachment
     QString m_name;
     int m_mipLevel;
     int m_layer;
-    QNodeUuid m_textureUuid;
+    QNodeId m_textureUuid;
     QRenderAttachment::RenderAttachmentType m_type;
     QRenderAttachment::CubeMapFace m_face;
 };

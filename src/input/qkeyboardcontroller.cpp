@@ -74,7 +74,7 @@ void QKeyboardController::sceneChangeEvent(const QSceneChangePtr &change)
 {
     QBackendScenePropertyChangePtr e = qSharedPointerCast<QBackendScenePropertyChange>(change);
     if (e->type() == NodeUpdated && e->propertyName() == QByteArrayLiteral("activeInput")) {
-        QNodeUuid activeInputId = e->value().value<QNodeUuid>();
+        QNodeId activeInputId = e->value().value<QNodeId>();
         setActiveInput(qobject_cast<QKeyboardInput *>(scene()->lookupNode(activeInputId)));
     }
 }

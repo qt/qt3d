@@ -46,7 +46,7 @@
 #include <private/qcomponent_p.h>
 
 #include <QString>
-#include <Qt3DCore/qnodeuuid.h>
+#include <Qt3DCore/qnodeid.h>
 #include <QSharedPointer>
 
 QT_BEGIN_NAMESPACE
@@ -62,7 +62,7 @@ public:
 
     Q_DECLARE_PUBLIC(QAbstractMesh)
 
-    QNodeUuid m_uuid;
+    QNodeId m_uuid;
 };
 
 }

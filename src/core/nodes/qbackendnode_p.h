@@ -42,7 +42,7 @@
 #ifndef QT3D_QBACKENDNODE_P_H
 #define QT3D_QBACKENDNODE_P_H
 
-#include <Qt3DCore/qnodeuuid.h>
+#include <Qt3DCore/qnodeid.h>
 #include <Qt3DCore/private/qobservableinterface_p.h>
 #include <Qt3DCore/private/qobserverinterface_p.h>
 #include <Qt3DCore/qbackendnode.h>
@@ -70,7 +70,7 @@ public:
     QBackendNode::Mode m_mode;
 
     QChangeArbiter *m_arbiter;
-    QNodeUuid m_peerUuid;
+    QNodeId m_peerUuid;
 };
 
 } // Qt3D

@@ -45,7 +45,7 @@
 #include <Qt3DRenderer/qrenderattachment.h>
 #include <Qt3DRenderer/private/attachmentpack_p.h>
 #include <Qt3DCore/qbackendnode.h>
-#include <Qt3DCore/qnodeuuid.h>
+#include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -64,7 +64,7 @@ public:
 
     void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
 
-    QNodeUuid textureUuid() const;
+    QNodeId textureUuid() const;
     int mipLevel() const;
     int layer() const;
     QString name() const;
@@ -74,7 +74,7 @@ public:
     Attachment attachment() const;
 
 private:
-    QNodeUuid m_attachmentUuid;
+    QNodeId m_attachmentUuid;
     Attachment m_attachmentData;
 };
 

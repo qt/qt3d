@@ -45,7 +45,7 @@
 #include <Qt3DCore/private/qresourcemanager_p.h>
 #include <Qt3DRenderer/private/renderscene_p.h>
 #include <Qt3DRenderer/loadscenejob.h>
-#include <Qt3DCore/qnodeuuid.h>
+#include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -56,7 +56,7 @@ class QEntity;
 namespace Render {
 
 class SceneManager : public QResourceManager<RenderScene,
-                                             QNodeUuid,
+                                             QNodeId,
                                              8,
                                              Qt3D::ArrayAllocatingPolicy,
                                              Qt3D::ObjectLevelLockingPolicy>
@@ -64,7 +64,7 @@ class SceneManager : public QResourceManager<RenderScene,
 public:
     SceneManager();
 
-    void addSceneData(const QString &source, const QNodeUuid &sceneUuid);
+    void addSceneData(const QString &source, const QNodeId &sceneUuid);
     QVector<LoadSceneJobPtr> pendingSceneLoaderJobs();
 
     void addLoadedSceneTree(const QString &source, QEntity *tree);

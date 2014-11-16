@@ -43,7 +43,7 @@
 #define QT3D_QBACKENDSCENEPROPERTYCHANGE_P_H
 
 #include <private/qscenepropertychange_p.h>
-#include <Qt3DCore/qnodeuuid.h>
+#include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,7 +59,7 @@ public:
 
     Q_DECLARE_PUBLIC(QBackendScenePropertyChange)
 
-    QNodeUuid m_targetUuid;
+    QNodeId m_targetUuid;
 };
 
 } // Qt3D

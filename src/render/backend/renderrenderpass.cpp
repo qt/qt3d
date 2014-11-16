@@ -91,10 +91,10 @@ void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
 
     case NodeAdded: {
         if (propertyChange->propertyName() == QByteArrayLiteral("annotation")) {
-            appendAnnotation(propertyChange->value().value<QNodeUuid>());
+            appendAnnotation(propertyChange->value().value<QNodeId>());
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("shaderProgram")) {
-            m_shaderUuid = propertyChange->value().value<QNodeUuid>();
+            m_shaderUuid = propertyChange->value().value<QNodeId>();
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("binding")) {
             appendBinding(propertyChange->value().value<QParameterMapping *>());
@@ -107,16 +107,16 @@ void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
 
     case NodeRemoved: {
         if (propertyChange->propertyName() == QByteArrayLiteral("annotation")) {
-            removeAnnotation(propertyChange->value().value<QNodeUuid>());
+            removeAnnotation(propertyChange->value().value<QNodeId>());
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("shaderProgram")) {
-            m_shaderUuid = QNodeUuid();
+            m_shaderUuid = QNodeId();
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("binding")) {
-            removeBinding(propertyChange->value().value<QNodeUuid>());
+            removeBinding(propertyChange->value().value<QNodeId>());
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("renderState")) {
-            removeRenderState(propertyChange->value().value<QNodeUuid>());
+            removeRenderState(propertyChange->value().value<QNodeId>());
         }
         break;
     }
@@ -126,7 +126,7 @@ void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
     }
 }
 
-QNodeUuid RenderRenderPass::shaderProgram() const
+QNodeId RenderRenderPass::shaderProgram() const
 {
     return m_shaderUuid;
 }
@@ -136,7 +136,7 @@ QList<QParameterMapping *> RenderRenderPass::bindings() const
     return m_bindings.values();
 }
 
-QList<QNodeUuid> RenderRenderPass::annotations() const
+QList<QNodeId> RenderRenderPass::annotations() const
 {
     return m_annotationList;
 }
@@ -146,13 +146,13 @@ QList<QRenderState *> RenderRenderPass::renderStates() const
     return m_renderStates.values();
 }
 
-void RenderRenderPass::appendAnnotation(const QNodeUuid &annotationId)
+void RenderRenderPass::appendAnnotation(const QNodeId &annotationId)
 {
     if (!m_annotationList.contains(annotationId))
         m_annotationList.append(annotationId);
 }
 
-void RenderRenderPass::removeAnnotation(const QNodeUuid &annotationId)
+void RenderRenderPass::removeAnnotation(const QNodeId &annotationId)
 {
     m_annotationList.removeOne(annotationId);
 }
@@ -163,7 +163,7 @@ void RenderRenderPass::appendBinding(QParameterMapping *binding)
         m_bindings[binding->uuid()] = binding;
 }
 
-void RenderRenderPass::removeBinding(const QNodeUuid &bindingId)
+void RenderRenderPass::removeBinding(const QNodeId &bindingId)
 {
     m_bindings.remove(bindingId);
 }
@@ -174,7 +174,7 @@ void RenderRenderPass::appendRenderState(QRenderState *renderState)
         m_renderStates[renderState->uuid()] = renderState;
 }
 
-void RenderRenderPass::removeRenderState(const QNodeUuid &renderStateId)
+void RenderRenderPass::removeRenderState(const QNodeId &renderStateId)
 {
     m_renderStates.remove(renderStateId);
 }

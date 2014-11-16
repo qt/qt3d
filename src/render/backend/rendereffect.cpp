@@ -90,16 +90,16 @@ void RenderEffect::sceneChangeEvent(const QSceneChangePtr &e)
 
     case NodeAdded:
         if (propertyChange->propertyName() == QByteArrayLiteral("technique"))
-            appendRenderTechnique(propertyValue.value<QNodeUuid>());
+            appendRenderTechnique(propertyValue.value<QNodeId>());
         else if (propertyChange->propertyName() == QByteArrayLiteral("parameter"))
-            m_parameterPack.appendParameter(propertyValue.value<QNodeUuid>());
+            m_parameterPack.appendParameter(propertyValue.value<QNodeId>());
         break;
 
     case NodeRemoved:
         if (propertyChange->propertyName() == QByteArrayLiteral("technique"))
-            m_techniques.removeOne(propertyValue.value<QNodeUuid>());
+            m_techniques.removeOne(propertyValue.value<QNodeId>());
         else if (propertyChange->propertyName() == QByteArrayLiteral("parameter"))
-            m_parameterPack.removeParameter(propertyValue.value<QNodeUuid>());
+            m_parameterPack.removeParameter(propertyValue.value<QNodeId>());
         break;
 
     default :
@@ -107,18 +107,18 @@ void RenderEffect::sceneChangeEvent(const QSceneChangePtr &e)
     }
 }
 
-void RenderEffect::appendRenderTechnique(const QNodeUuid &technique)
+void RenderEffect::appendRenderTechnique(const QNodeId &technique)
 {
     if (!m_techniques.contains(technique))
         m_techniques.append(technique);
 }
 
-QList<QNodeUuid> RenderEffect::techniques() const
+QList<QNodeId> RenderEffect::techniques() const
 {
     return m_techniques;
 }
 
-QList<QNodeUuid> RenderEffect::parameters() const
+QList<QNodeId> RenderEffect::parameters() const
 {
     return m_parameterPack.parameters();
 }

@@ -76,7 +76,7 @@ void SortMethod::sceneChangeEvent(const QSceneChangePtr &e)
     }
 }
 
-QList<QNodeUuid> SortMethod::criteria() const
+QList<QNodeId> SortMethod::criteria() const
 {
     return m_criteria;
 }

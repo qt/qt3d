@@ -48,14 +48,14 @@ namespace Qt3D {
 namespace Render {
 
 SceneManager::SceneManager() : QResourceManager<RenderScene,
-                                                 QNodeUuid,
+                                                 QNodeId,
                                                  8,
                                                  Qt3D::ArrayAllocatingPolicy,
                                                  Qt3D::ObjectLevelLockingPolicy>()
 {
 }
 
-void SceneManager::addSceneData(const QString &source, const QNodeUuid &sceneUuid)
+void SceneManager::addSceneData(const QString &source, const QNodeId &sceneUuid)
 {
     m_pendingJobs.append(LoadSceneJobPtr(new LoadSceneJob(source, sceneUuid)));
 }

@@ -61,7 +61,7 @@ RenderTargetSelector::RenderTargetSelector() :
 void RenderTargetSelector::updateFromPeer(QNode *peer)
 {
     QRenderTargetSelector *selector = static_cast<QRenderTargetSelector *>(peer);
-    m_renderTargetUuid = QNodeUuid();
+    m_renderTargetUuid = QNodeId();
     if (selector->target() != Q_NULLPTR)
         m_renderTargetUuid = selector->target()->uuid();
 }
@@ -72,11 +72,11 @@ void RenderTargetSelector::sceneChangeEvent(const QSceneChangePtr &e)
     if (e->type() == NodeUpdated) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("target"))
-            m_renderTargetUuid = propertyChange->value().value<QNodeUuid>();
+            m_renderTargetUuid = propertyChange->value().value<QNodeId>();
     }
 }
 
-QNodeUuid RenderTargetSelector::renderTargetUuid() const
+QNodeId RenderTargetSelector::renderTargetUuid() const
 {
     return m_renderTargetUuid;
 }

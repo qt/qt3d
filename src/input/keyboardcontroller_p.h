@@ -43,7 +43,7 @@
 #define QT3D_INPUT_KEYBOARDCONTROLLER_P_H
 
 #include <Qt3DCore/qbackendnode.h>
-#include <Qt3DCore/qnodeuuid.h>
+#include <Qt3DCore/qnodeid.h>
 #include <Qt3DInput/private/handle_types_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -59,17 +59,17 @@ class KeyboardController : public QBackendNode
 public:
     KeyboardController();
     void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
-    void requestFocusForInput(const QNodeUuid &inputId);
+    void requestFocusForInput(const QNodeId &inputId);
     void setInputHandler(InputHandler *handler);
 
-    void addKeyboardInput(const QNodeUuid &input);
-    void removeKeyboardInput(const QNodeUuid &input);
+    void addKeyboardInput(const QNodeId &input);
+    void removeKeyboardInput(const QNodeId &input);
 
-    void setCurrentFocusItem(const QNodeUuid &input);
+    void setCurrentFocusItem(const QNodeId &input);
 
-    inline QNodeUuid currentFocusItem() const { return m_currentFocusItem; }
-    inline QNodeUuid lastKeyboardInputRequester() const { return m_lastRequester; }
-    inline QVector<QNodeUuid> keyboardInputs() const { return m_keyboardInputs; }
+    inline QNodeId currentFocusItem() const { return m_currentFocusItem; }
+    inline QNodeId lastKeyboardInputRequester() const { return m_lastRequester; }
+    inline QVector<QNodeId> keyboardInputs() const { return m_keyboardInputs; }
     inline QVector<HKeyboardInput> keyboardInputsHandles() const { return m_keyboardInputHandles; }
 
 protected:
@@ -77,10 +77,10 @@ protected:
 
 private:
     InputHandler *m_inputHandler;
-    QVector<QNodeUuid> m_keyboardInputs;
+    QVector<QNodeId> m_keyboardInputs;
     QVector<HKeyboardInput> m_keyboardInputHandles;
-    QNodeUuid m_lastRequester;
-    QNodeUuid m_currentFocusItem;
+    QNodeId m_lastRequester;
+    QNodeId m_currentFocusItem;
 };
 
 class KeyboardControllerFunctor : public QBackendNodeFunctor

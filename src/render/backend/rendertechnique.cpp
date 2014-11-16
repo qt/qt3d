@@ -115,26 +115,26 @@ void RenderTechnique::sceneChangeEvent(const QSceneChangePtr &e)
 
     case NodeAdded: {
         if (propertyChange->propertyName() == QByteArrayLiteral("pass")) {
-            appendRenderPass(propertyChange->value().value<QNodeUuid>());
+            appendRenderPass(propertyChange->value().value<QNodeId>());
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("parameter")) {
-            m_parameterPack.appendParameter(propertyChange->value().value<QNodeUuid>());
+            m_parameterPack.appendParameter(propertyChange->value().value<QNodeId>());
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("annotation")) {
-            appendAnnotation(propertyChange->value().value<QNodeUuid>());
+            appendAnnotation(propertyChange->value().value<QNodeId>());
         }
         break;
     }
 
     case NodeRemoved: {
         if (propertyChange->propertyName() == QByteArrayLiteral("pass")) {
-            removeRenderPass(propertyChange->value().value<QNodeUuid>());
+            removeRenderPass(propertyChange->value().value<QNodeId>());
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("parameter")) {
-            m_parameterPack.removeParameter(propertyChange->value().value<QNodeUuid>());
+            m_parameterPack.removeParameter(propertyChange->value().value<QNodeId>());
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("annotation")) {
-            removeAnnotation(propertyChange->value().value<QNodeUuid>());
+            removeAnnotation(propertyChange->value().value<QNodeId>());
         }
         break;
     }
@@ -144,28 +144,28 @@ void RenderTechnique::sceneChangeEvent(const QSceneChangePtr &e)
     }
 }
 
-QList<QNodeUuid> RenderTechnique::parameters() const
+QList<QNodeId> RenderTechnique::parameters() const
 {
     return m_parameterPack.parameters();
 }
 
-void RenderTechnique::appendRenderPass(const QNodeUuid &renderPassId)
+void RenderTechnique::appendRenderPass(const QNodeId &renderPassId)
 {
     if (!m_renderPasses.contains(renderPassId))
         m_renderPasses.append(renderPassId);
 }
 
-void RenderTechnique::removeRenderPass(const QNodeUuid &renderPassId)
+void RenderTechnique::removeRenderPass(const QNodeId &renderPassId)
 {
     m_renderPasses.removeOne(renderPassId);
 }
 
-QList<QNodeUuid> RenderTechnique::annotations() const
+QList<QNodeId> RenderTechnique::annotations() const
 {
     return m_annotationList;
 }
 
-QList<QNodeUuid> RenderTechnique::renderPasses() const
+QList<QNodeId> RenderTechnique::renderPasses() const
 {
     return m_renderPasses;
 }
@@ -175,13 +175,13 @@ QOpenGLFilter *RenderTechnique::openGLFilter() const
     return m_openglFilter;
 }
 
-void RenderTechnique::appendAnnotation(const QNodeUuid &criterionId)
+void RenderTechnique::appendAnnotation(const QNodeId &criterionId)
 {
     if (!m_annotationList.contains(criterionId))
         m_annotationList.append(criterionId);
 }
 
-void RenderTechnique::removeAnnotation(const QNodeUuid &criterionId)
+void RenderTechnique::removeAnnotation(const QNodeId &criterionId)
 {
     m_annotationList.removeOne(criterionId);
 }

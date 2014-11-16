@@ -68,7 +68,7 @@ void RenderAttachment::updateFromPeer(QNode *peer)
         m_attachmentData.m_textureUuid = attachment->texture()->uuid();
 }
 
-QNodeUuid RenderAttachment::textureUuid() const
+QNodeId RenderAttachment::textureUuid() const
 {
     return m_attachmentData.m_textureUuid;
 }
@@ -106,7 +106,7 @@ void RenderAttachment::sceneChangeEvent(const QSceneChangePtr &e)
             m_attachmentData.m_type = static_cast<QRenderAttachment::RenderAttachmentType>(propertyChange->value().toInt());
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("texture")) {
-            m_attachmentData.m_textureUuid = propertyChange->value().value<QNodeUuid>();
+            m_attachmentData.m_textureUuid = propertyChange->value().value<QNodeId>();
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("mipLevel")) {
             m_attachmentData.m_mipLevel = propertyChange->value().toInt();

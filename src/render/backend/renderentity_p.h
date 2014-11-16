@@ -46,7 +46,7 @@
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/private/handle_types_p.h>
 #include <Qt3DCore/qbackendnode.h>
-#include <Qt3DCore/qnodeuuid.h>
+#include <Qt3DCore/qnodeid.h>
 #include <Qt3DCore/qhandle.h>
 #include <QVector>
 
@@ -111,17 +111,17 @@ public:
     }
 
     template<class Backend>
-    QNodeUuid componentUuid() const
+    QNodeId componentUuid() const
     {
-        return QNodeUuid();
+        return QNodeId();
     }
 
     template<class Backend>
-    QList<QNodeUuid> componentUuidInTree() const
+    QList<QNodeId> componentUuidInTree() const
     {
-        QList<QNodeUuid> componentList;
+        QList<QNodeId> componentList;
 
-        QNodeUuid componentId = componentUuid<Backend>();
+        QNodeId componentId = componentUuid<Backend>();
         if (!componentId.isNull())
             componentList.append(componentId);
 
@@ -184,12 +184,12 @@ private:
     Sphere *m_worldBoundingVolume;
 
     // Handles to Components
-    QNodeUuid m_transformComponent;
-    QNodeUuid m_meshComponent;
-    QNodeUuid m_materialComponent;
-    QNodeUuid m_layerComponent;
-    QNodeUuid m_lightComponent;
-    QNodeUuid m_cameraComponent;
+    QNodeId m_transformComponent;
+    QNodeId m_meshComponent;
+    QNodeId m_materialComponent;
+    QNodeId m_layerComponent;
+    QNodeId m_lightComponent;
+    QNodeId m_cameraComponent;
 
     QString m_objectName;
 };
@@ -231,22 +231,22 @@ template<>
 RenderTransform *RenderEntity::renderComponent<RenderTransform>() const;
 
 template<>
-QNodeUuid RenderEntity::componentUuid<RenderTransform>() const;
+QNodeId RenderEntity::componentUuid<RenderTransform>() const;
 
 template<>
-QNodeUuid RenderEntity::componentUuid<RenderCameraLens>() const;
+QNodeId RenderEntity::componentUuid<RenderCameraLens>() const;
 
 template<>
-QNodeUuid RenderEntity::componentUuid<RenderLayer>() const;
+QNodeId RenderEntity::componentUuid<RenderLayer>() const;
 
 template<>
-QNodeUuid RenderEntity::componentUuid<RenderMaterial>() const;
+QNodeId RenderEntity::componentUuid<RenderMaterial>() const;
 
 template<>
-QNodeUuid RenderEntity::componentUuid<RenderLight>() const;
+QNodeId RenderEntity::componentUuid<RenderLight>() const;
 
 template<>
-QNodeUuid RenderEntity::componentUuid<RenderMesh>() const;
+QNodeId RenderEntity::componentUuid<RenderMesh>() const;
 
 class RenderEntityFunctor : public QBackendNodeFunctor
 {

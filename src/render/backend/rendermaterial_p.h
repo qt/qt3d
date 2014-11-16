@@ -74,13 +74,13 @@ public:
     void updateFromPeer(QNode* mat) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
-    QList<QNodeUuid> parameters() const;
-    QNodeUuid effect() const;
+    QList<QNodeId> parameters() const;
+    QNodeId effect() const;
 
 private:
     RenderTextureProvider* m_textureProvider;
     ParameterPack m_parameterPack;
-    QNodeUuid m_effectUuid;
+    QNodeId m_effectUuid;
 };
 
 } // Render

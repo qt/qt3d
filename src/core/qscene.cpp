@@ -62,12 +62,12 @@ public:
 
     Q_DECLARE_PUBLIC(QScene)
     QScene *q_ptr;
-    QHash<QNodeUuid, QNode *> m_nodeLookupTable;
-    QMultiHash<QNodeUuid, QNodeUuid> m_componentToEntities;
-    QMultiHash<QNodeUuid, QObservableInterface *> m_observablesLookupTable;
-    QHash<QObservableInterface *, QNodeUuid> m_observableToUuid;
+    QHash<QNodeId, QNode *> m_nodeLookupTable;
+    QMultiHash<QNodeId, QNodeId> m_componentToEntities;
+    QMultiHash<QNodeId, QObservableInterface *> m_observablesLookupTable;
+    QHash<QObservableInterface *, QNodeId> m_observableToUuid;
     QChangeArbiter *m_arbiter;
-    QHash<QNodeUuid, QNode *> m_clonesLookupTable;
+    QHash<QNodeId, QNode *> m_clonesLookupTable;
     mutable QReadWriteLock m_lock;
 };
 
@@ -78,7 +78,7 @@ QScene::QScene()
 }
 
 // Called by any thread
-void QScene::addObservable(QObservableInterface *observable, const QNodeUuid &uuid)
+void QScene::addObservable(QObservableInterface *observable, const QNodeId &uuid)
 {
     Q_D(QScene);
     QWriteLocker lock(&d->m_lock);
@@ -101,7 +101,7 @@ void QScene::addObservable(QNode *observable)
 }
 
 // Called by any thread
-void QScene::removeObservable(QObservableInterface *observable, const QNodeUuid &uuid)
+void QScene::removeObservable(QObservableInterface *observable, const QNodeId &uuid)
 {
     Q_D(QScene);
     QWriteLocker lock(&d->m_lock);
@@ -116,7 +116,7 @@ void QScene::removeObservable(QNode *observable)
     Q_D(QScene);
     if (observable != Q_NULLPTR) {
         QWriteLocker lock(&d->m_lock);
-        QNodeUuid nodeUuid = observable->uuid();
+        QNodeId nodeUuid = observable->uuid();
         QObservableList observables = d->m_observablesLookupTable.values(nodeUuid);
         Q_FOREACH (QObservableInterface *o, observables) {
             o->setArbiter(Q_NULLPTR);
@@ -129,7 +129,7 @@ void QScene::removeObservable(QNode *observable)
 }
 
 // Called by any thread
-QObservableList QScene::lookupObservables(const QNodeUuid &uuid) const
+QObservableList QScene::lookupObservables(const QNodeId &uuid) const
 {
     Q_D(const QScene);
     QReadLocker lock(&d->m_lock);
@@ -137,14 +137,14 @@ QObservableList QScene::lookupObservables(const QNodeUuid &uuid) const
 }
 
 // Called by any thread
-QNode *QScene::lookupNode(const QNodeUuid &uuid) const
+QNode *QScene::lookupNode(const QNodeId &uuid) const
 {
     Q_D(const QScene);
     QReadLocker lock(&d->m_lock);
     return d->m_nodeLookupTable.value(uuid);
 }
 
-QNodeUuid QScene::nodeIdFromObservable(QObservableInterface *observable) const
+QNodeId QScene::nodeIdFromObservable(QObservableInterface *observable) const
 {
     Q_D(const QScene);
     QReadLocker lock(&d->m_lock);
@@ -157,21 +157,21 @@ void QScene::setArbiter(QChangeArbiter *arbiter)
     d->m_arbiter = arbiter;
 }
 
-QList<QNodeUuid> QScene::entitiesForComponent(const QNodeUuid &uuid) const
+QList<QNodeId> QScene::entitiesForComponent(const QNodeId &uuid) const
 {
     Q_D(const QScene);
     QReadLocker lock(&d->m_lock);
     return d->m_componentToEntities.values(uuid);
 }
 
-void QScene::addEntityForComponent(const QNodeUuid &componentUuid, const QNodeUuid &entityUuid)
+void QScene::addEntityForComponent(const QNodeId &componentUuid, const QNodeId &entityUuid)
 {
     Q_D(QScene);
     QWriteLocker lock(&d->m_lock);
     d->m_componentToEntities.insert(componentUuid, entityUuid);
 }
 
-void QScene::removeEntityForComponent(const QNodeUuid &componentUuid, const QNodeUuid &entityUuid)
+void QScene::removeEntityForComponent(const QNodeId &componentUuid, const QNodeId &entityUuid)
 {
     Q_D(QScene);
     QWriteLocker lock(&d->m_lock);
