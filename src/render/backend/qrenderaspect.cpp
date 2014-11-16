@@ -40,6 +40,7 @@
 ****************************************************************************/
 
 #include "qrenderaspect.h"
+#include "qrenderaspect_p.h"
 
 #include <Qt3DRenderer/private/rendermesh_p.h>
 #include <Qt3DRenderer/private/meshdatamanager_p.h>
@@ -104,40 +105,59 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect *qq)
+    : QAbstractAspectPrivate(qq)
+    , m_renderer(new Render::Renderer)
+    , m_initialized(false)
+{
+    m_aspectType = QAbstractAspect::AspectRenderer;
+}
+
 QRenderAspect::QRenderAspect(QObject *parent)
-    : QAbstractAspect(QAbstractAspect::AspectRenderer, parent)
-    , m_renderer(new Render::Renderer())
+    : QAbstractAspect(*new QRenderAspectPrivate(this), parent)
 {
     // Won't return until the private RenderThread in Renderer has been created
     // The Renderer is set to wait the surface with a wait condition
     // Threads modifying the Renderer should be synchronized using the Renderer's mutex
-    registerBackendType<QEntity>(QBackendNodeFunctorPtr(new Render::RenderEntityFunctor(m_renderer)));
-    registerBackendType<QTransform>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderTransform, Render::TransformManager>(m_renderer->transformManager())));
-    registerBackendType<QMaterial>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderMaterial, Render::MaterialManager>(m_renderer->materialManager())));
-    registerBackendType<QTechnique>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderTechnique, Render::TechniqueManager>(m_renderer->techniqueManager())));
-    registerBackendType<QTexture>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderTexture, Render::TextureManager>(m_renderer->textureManager())));
-    registerBackendType<QShaderProgram>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderShader, Render::ShaderManager>(m_renderer->shaderManager())));
-    registerBackendType<QEffect>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderEffect, Render::EffectManager>(m_renderer->effectManager())));
-    registerBackendType<QAnnotation>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderAnnotation, Render::CriterionManager>(m_renderer->criterionManager())));
-    registerBackendType<QCameraLens>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderCameraLens, Render::CameraManager>(m_renderer->cameraManager())));
-    registerBackendType<QAbstractLight>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderLight, Render::LightManager>(m_renderer->lightManager())));
-    registerBackendType<QLayer>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderLayer, Render::LayerManager>(m_renderer->layerManager())));
-    registerBackendType<QAbstractMesh>(QBackendNodeFunctorPtr(new Render::RenderMeshCreatorFunctor(m_renderer->meshManager(), m_renderer->meshDataManager())));
-    registerBackendType<QRenderPass>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderRenderPass, Render::RenderPassManager>(m_renderer->renderPassManager())));
-    registerBackendType<Render::QAbstractSceneLoader>(QBackendNodeFunctorPtr(new Render::RenderSceneFunctor(m_renderer->sceneManager())));
-    registerBackendType<QRenderTarget>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderTarget, Render::RenderTargetManager>(m_renderer->renderTargetManager())));
-    registerBackendType<QRenderAttachment>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderAttachment, Render::AttachmentManager>(m_renderer->attachmentManager())));
-    registerBackendType<QSortCriterion>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::SortCriterion, Render::SortCriterionManager>(m_renderer->sortCriterionManager())));
-    registerBackendType<QClearBuffer>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::ClearBuffer, QClearBuffer>(m_renderer->frameGraphManager())));
-    registerBackendType<QTechniqueFilter>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::TechniqueFilter, QTechniqueFilter>(m_renderer->frameGraphManager())));
-    registerBackendType<QViewport>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::ViewportNode, QViewport>(m_renderer->frameGraphManager())));
-    registerBackendType<QRenderPassFilter>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::RenderPassFilter, QRenderPassFilter>(m_renderer->frameGraphManager())));
-    registerBackendType<QCameraSelector>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::CameraSelector, QCameraSelector>(m_renderer->frameGraphManager())));
-    registerBackendType<QRenderTargetSelector>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::RenderTargetSelector, QRenderTargetSelector>(m_renderer->frameGraphManager())));
-    registerBackendType<QLayerFilter>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::LayerFilterNode, QLayerFilter>(m_renderer->frameGraphManager())));
-    registerBackendType<QSortMethod>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::SortMethod, QSortMethod>(m_renderer->frameGraphManager())));
-    registerBackendType<QFrameGraph>(QBackendNodeFunctorPtr(new Render::FrameGraphComponentFunctor(m_renderer)));
-    registerBackendType<QParameter>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderParameter, Render::ParameterManager>(m_renderer->parameterManager())));
+    registerBackendTypes();
+}
+
+QRenderAspect::QRenderAspect(QRenderAspectPrivate &dd, QObject *parent)
+    : QAbstractAspect(dd, parent)
+{
+    registerBackendTypes();
+}
+
+void QRenderAspect::registerBackendTypes()
+{
+    Q_D(QRenderAspect);
+    registerBackendType<QEntity>(QBackendNodeFunctorPtr(new Render::RenderEntityFunctor(d->m_renderer)));
+    registerBackendType<QTransform>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderTransform, Render::TransformManager>(d->m_renderer->transformManager())));
+    registerBackendType<QMaterial>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderMaterial, Render::MaterialManager>(d->m_renderer->materialManager())));
+    registerBackendType<QTechnique>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderTechnique, Render::TechniqueManager>(d->m_renderer->techniqueManager())));
+    registerBackendType<QTexture>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderTexture, Render::TextureManager>(d->m_renderer->textureManager())));
+    registerBackendType<QShaderProgram>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderShader, Render::ShaderManager>(d->m_renderer->shaderManager())));
+    registerBackendType<QEffect>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderEffect, Render::EffectManager>(d->m_renderer->effectManager())));
+    registerBackendType<QAnnotation>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderAnnotation, Render::CriterionManager>(d->m_renderer->criterionManager())));
+    registerBackendType<QCameraLens>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderCameraLens, Render::CameraManager>(d->m_renderer->cameraManager())));
+    registerBackendType<QAbstractLight>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderLight, Render::LightManager>(d->m_renderer->lightManager())));
+    registerBackendType<QLayer>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderLayer, Render::LayerManager>(d->m_renderer->layerManager())));
+    registerBackendType<QAbstractMesh>(QBackendNodeFunctorPtr(new Render::RenderMeshCreatorFunctor(d->m_renderer->meshManager(), d->m_renderer->meshDataManager())));
+    registerBackendType<QRenderPass>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderRenderPass, Render::RenderPassManager>(d->m_renderer->renderPassManager())));
+    registerBackendType<Render::QAbstractSceneLoader>(QBackendNodeFunctorPtr(new Render::RenderSceneFunctor(d->m_renderer->sceneManager())));
+    registerBackendType<QRenderTarget>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderTarget, Render::RenderTargetManager>(d->m_renderer->renderTargetManager())));
+    registerBackendType<QRenderAttachment>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderAttachment, Render::AttachmentManager>(d->m_renderer->attachmentManager())));
+    registerBackendType<QSortCriterion>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::SortCriterion, Render::SortCriterionManager>(d->m_renderer->sortCriterionManager())));
+    registerBackendType<QClearBuffer>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::ClearBuffer, QClearBuffer>(d->m_renderer->frameGraphManager())));
+    registerBackendType<QTechniqueFilter>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::TechniqueFilter, QTechniqueFilter>(d->m_renderer->frameGraphManager())));
+    registerBackendType<QViewport>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::ViewportNode, QViewport>(d->m_renderer->frameGraphManager())));
+    registerBackendType<QRenderPassFilter>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::RenderPassFilter, QRenderPassFilter>(d->m_renderer->frameGraphManager())));
+    registerBackendType<QCameraSelector>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::CameraSelector, QCameraSelector>(d->m_renderer->frameGraphManager())));
+    registerBackendType<QRenderTargetSelector>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::RenderTargetSelector, QRenderTargetSelector>(d->m_renderer->frameGraphManager())));
+    registerBackendType<QLayerFilter>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::LayerFilterNode, QLayerFilter>(d->m_renderer->frameGraphManager())));
+    registerBackendType<QSortMethod>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::SortMethod, QSortMethod>(d->m_renderer->frameGraphManager())));
+    registerBackendType<QFrameGraph>(QBackendNodeFunctorPtr(new Render::FrameGraphComponentFunctor(d->m_renderer)));
+    registerBackendType<QParameter>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderParameter, Render::ParameterManager>(d->m_renderer->parameterManager())));
 }
 
 QVector<QAspectJobPtr> QRenderAspect::jobsToExecute()
@@ -146,26 +166,27 @@ QVector<QAspectJobPtr> QRenderAspect::jobsToExecute()
     QVector<QAspectJobPtr> jobs;
 
     // Create jobs to load in any meshes that are pending
-    if (m_renderer != Q_NULLPTR) {
-        QHash<QNodeUuid, QAbstractMeshFunctorPtr> meshSources = m_renderer->meshDataManager()->meshesPending();
+    Q_D(QRenderAspect);
+    if (d->m_renderer != Q_NULLPTR) {
+        QHash<QNodeUuid, QAbstractMeshFunctorPtr> meshSources = d->m_renderer->meshDataManager()->meshesPending();
         Q_FOREACH (const QNodeUuid &meshId, meshSources.keys()) {
             Render::LoadMeshDataJobPtr loadMeshJob(new Render::LoadMeshDataJob(meshSources[meshId], meshId));
-            loadMeshJob->setRenderer(m_renderer);
+            loadMeshJob->setRenderer(d->m_renderer);
             jobs.append(loadMeshJob);
         }
 
         // TO DO: Have 2 jobs queue
         // One for urgent jobs that are mandatory for the rendering of a frame
         // Another for jobs that can span across multiple frames (Scene/Mesh loading)
-        QVector<Render::LoadSceneJobPtr> sceneJobs = m_renderer->sceneManager()->pendingSceneLoaderJobs();
+        QVector<Render::LoadSceneJobPtr> sceneJobs = d->m_renderer->sceneManager()->pendingSceneLoaderJobs();
         Q_FOREACH (Render::LoadSceneJobPtr job, sceneJobs) {
-            job->setRenderer(m_renderer);
+            job->setRenderer(d->m_renderer);
             jobs.append(job);
         }
 
         // Create jobs to update transforms and bounding volumes
-        Render::UpdateWorldTransformJobPtr worldTransformJob(new Render::UpdateWorldTransformJob(m_renderer->renderSceneRoot()));
-        Render::UpdateBoundingVolumeJobPtr boundingVolumeJob(new Render::UpdateBoundingVolumeJob(m_renderer->renderSceneRoot()));
+        Render::UpdateWorldTransformJobPtr worldTransformJob(new Render::UpdateWorldTransformJob(d->m_renderer->renderSceneRoot()));
+        Render::UpdateBoundingVolumeJobPtr boundingVolumeJob(new Render::UpdateBoundingVolumeJob(d->m_renderer->renderSceneRoot()));
 
         // We can only update bounding volumes once all world transforms are known
         boundingVolumeJob->addDependency(worldTransformJob);
@@ -176,7 +197,7 @@ QVector<QAspectJobPtr> QRenderAspect::jobsToExecute()
 
         // Traverse the current framegraph and create jobs to populate
         // RenderBins with RenderCommands
-        QVector<QAspectJobPtr> renderBinJobs = m_renderer->createRenderBinJobs();
+        QVector<QAspectJobPtr> renderBinJobs = d->m_renderer->createRenderBinJobs();
         // TODO: Add wrapper around ThreadWeaver::Collection
         for (int i = 0; i < renderBinJobs.size(); ++i) {
             QAspectJobPtr renderBinJob = renderBinJobs.at(i);
@@ -207,29 +228,38 @@ void QRenderAspect::sceneNodeRemoved(QSceneChangePtr &e)
 void QRenderAspect::setRootEntity(QEntity *rootObject)
 {
     // setSceneGraphRoot is synchronized using the Renderer's mutex
+    Q_D(QRenderAspect);
     QNodeVisitor visitor;
     visitor.traverse(rootObject, this, &QRenderAspect::visitNode, &QRenderAspect::visitNode);
-    m_renderer->setSceneGraphRoot(m_renderer->renderNodesManager()->lookupResource(rootObject->uuid()));
+    d->m_renderer->setSceneGraphRoot(d->m_renderer->renderNodesManager()->lookupResource(rootObject->uuid()));
 }
 
 void QRenderAspect::onInitialize(const QVariantMap &data)
 {
-    m_renderer->setQRenderAspect(this);
-    m_renderer->createAllocators();
-    // setSurface is synchronized using the Renderer's mutex
-    QSurface *s = Q_NULLPTR;
+    // TODO: Remove the m_initialized variable and split out onInitialize()
+    // and setting a resource (the QSurface) on the aspects.
+    // TODO: d-pointer this class too as it is public
+    Q_D(QRenderAspect);
+    if (!d->m_initialized) {
+        d->m_renderer->setQRenderAspect(this);
+        d->m_renderer->createAllocators();
+        d->m_initialized = true;
+    }
+
+    QSurface *surface = Q_NULLPTR;
     const QVariant &v = data.value(QStringLiteral("surface"));
     if (v.isValid())
-        s = v.value<QSurface *>();
-    if (s)
-        m_renderer->setSurface(s);
+        surface = v.value<QSurface *>();
+
+    if (surface)
+        d->m_renderer->setSurface(surface);
 }
 
 void QRenderAspect::onCleanup()
 {
-    delete m_renderer;
-    //Render::Renderer *renderer = m_renderThread->renderer();
-    //QMetaObject::invokeMethod(renderer, "cleanup");
+    Q_D(QRenderAspect);
+    delete d->m_renderer;
+    d->m_renderer = Q_NULLPTR;
 }
 
 void QRenderAspect::visitNode(QNode *node)

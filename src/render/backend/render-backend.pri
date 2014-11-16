@@ -5,6 +5,7 @@ include("jobs/render-jobs.pri")
 
 HEADERS += \
     $$PWD/qrenderaspect.h \
+    $$PWD/qrenderaspect_p.h \
     $$PWD/renderthread_p.h \
     $$PWD/renderconfiguration_p.h \
     $$PWD/renderdevice_p.h \

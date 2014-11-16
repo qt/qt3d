@@ -39,11 +39,11 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QRENDERASPECT_H
-#define QT3D_QRENDERASPECT_H
+#ifndef QT3D_QRENDERASPECT_P_H
+#define QT3D_QRENDERASPECT_P_H
 
-#include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DCore/qabstractaspect.h>
+#include <Qt3DCore/private/qabstractaspect_p.h>
+#include <Qt3DRenderer/qrenderaspect.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -53,37 +53,18 @@ namespace Render {
 class Renderer;
 }
 
-class QRenderAspectPrivate;
-
-class QT3DRENDERERSHARED_EXPORT QRenderAspect : public QAbstractAspect
+class QRenderAspectPrivate : public QAbstractAspectPrivate
 {
-    Q_OBJECT
-public:
-    explicit QRenderAspect(QObject *parent = 0);
+    QRenderAspectPrivate(QRenderAspect *qq);
 
-    QVector<QAspectJobPtr> jobsToExecute() Q_DECL_OVERRIDE;
+    Q_DECLARE_PUBLIC(QRenderAspect)
 
-    void sceneNodeAdded(QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    void sceneNodeRemoved(QSceneChangePtr &e) Q_DECL_OVERRIDE;
-
-protected:
-    void registerBackendTypes();
-
-private:
-    void setRootEntity(QEntity *rootObject) Q_DECL_OVERRIDE;
-    void onInitialize(const QVariantMap &data) Q_DECL_OVERRIDE;
-    void onCleanup() Q_DECL_OVERRIDE;
-
-    void visitNode(QNode *node);
-
-    Q_DECLARE_PRIVATE(QRenderAspect)
-    QRenderAspect(QRenderAspectPrivate &dd, QObject *parent);
-
-    friend class Render::Renderer;
+    Render::Renderer *m_renderer;
+    bool m_initialized;
 };
 
 }
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QRENDERASPECT_H
+#endif // QT3D_QRENDERASPECT_P_H
