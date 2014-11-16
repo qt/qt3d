@@ -94,6 +94,11 @@ QAspectEngine::QAspectEngine(QAspectEnginePrivate &dd, QObject *parent)
     d->m_aspectThread->waitForStart(QThread::HighestPriority);
 }
 
+QAspectEngine::~QAspectEngine()
+{
+    shutdown();
+}
+
 void QAspectEngine::initNodeTree(QNode *node) const
 {
     Q_D(const QAspectEngine);

@@ -63,6 +63,7 @@ class QT3DCORESHARED_EXPORT QAspectEngine : public QObject
     Q_OBJECT
 public:
     explicit QAspectEngine(QObject *parent = 0);
+    ~QAspectEngine();
 
     void initialize();
     void shutdown();
