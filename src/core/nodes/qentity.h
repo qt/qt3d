@@ -54,7 +54,7 @@ namespace Qt3D {
 class QComponent;
 class QEntityPrivate;
 
-typedef QList<QComponent*> ComponentList;
+typedef QList<QComponent*> QComponentList;
 
 class QT3DCORESHARED_EXPORT QEntity : public QNode
 {
@@ -64,7 +64,7 @@ public:
     explicit QEntity(QNode *parent = 0);
     virtual ~QEntity();
 
-    ComponentList components() const;
+    QComponentList components() const;
 
     void addComponent(QComponent *comp);
     void removeComponent(QComponent *comp);

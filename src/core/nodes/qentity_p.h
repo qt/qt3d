@@ -57,7 +57,7 @@ public :
 
     Q_DECLARE_PUBLIC(QEntity)
 
-    ComponentList m_components;
+    QComponentList m_components;
     bool m_visible;
 
     // TODO: Is a bool enough here or do we need additional states for entities?
