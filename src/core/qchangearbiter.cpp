@@ -43,9 +43,9 @@
 #include "qcomponent.h"
 #include "qabstractaspectjobmanager.h"
 
-#include "corelogging.h"
 #include "qsceneobserverinterface.h"
 #include "qsceneinterface.h"
+#include <Qt3DCore/private/corelogging_p.h>
 #include <QMutexLocker>
 #include <QReadLocker>
 #include <QThread>

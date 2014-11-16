@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "corelogging.h"
+#include "corelogging_p.h"
 
 QT_BEGIN_NAMESPACE
 

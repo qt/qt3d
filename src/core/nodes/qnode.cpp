@@ -50,8 +50,8 @@
 #include <QChildEvent>
 #include <QMetaObject>
 #include <QMetaProperty>
-#include "corelogging.h"
 #include <Qt3DCore/QComponent>
+#include <Qt3DCore/private/corelogging_p.h>
 
 QT_BEGIN_NAMESPACE
 

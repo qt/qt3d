@@ -48,9 +48,9 @@
 
 #include <Qt3DCore/qsceneinterface.h>
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/private/corelogging_p.h>
 #include <QMetaObject>
 #include <QMetaProperty>
-#include "corelogging.h"
 
 QT_BEGIN_NAMESPACE
 

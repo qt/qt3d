@@ -49,9 +49,9 @@
 #include "qnode.h"
 #include "qcamera.h"
 #include "qentity.h"
-#include "corelogging.h"
 #include "qaspectengine.h"
 #include "cameracontroller.h"
+#include <Qt3DCore/private/corelogging_p.h>
 
 QT_BEGIN_NAMESPACE
 

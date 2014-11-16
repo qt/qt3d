@@ -43,7 +43,7 @@
 
 #include "qaspectmanager_p.h"
 
-#include "corelogging.h"
+#include <Qt3DCore/private/corelogging_p.h>
 #include <QMutexLocker>
 
 QT_BEGIN_NAMESPACE

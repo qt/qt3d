@@ -41,7 +41,7 @@
 
 #include "qaspectscheduler.h"
 
-#include "corelogging.h"
+#include <Qt3DCore/private/corelogging_p.h>
 
 QT_BEGIN_NAMESPACE
 

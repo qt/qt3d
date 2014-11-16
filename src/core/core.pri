@@ -23,7 +23,7 @@ HEADERS += \
     $$PWD/qtickclock.h \
     $$PWD/qscheduler.h \
     $$PWD/cameracontroller.h \
-    $$PWD/corelogging.h \
+    $$PWD/corelogging_p.h \
     $$PWD/qscenechange.h \
     $$PWD/qscenepropertychange.h \
     $$PWD/qscenechange_p.h \

@@ -47,7 +47,7 @@
 #include "qchangearbiter_p.h"
 #include "qabstractaspect.h"
 #include "qnode.h"
-#include "corelogging.h"
+#include <Qt3DCore/private/corelogging_p.h>
 #include <QMetaObject>
 #include <private/qpostman_p.h>
 #include "qscene.h"

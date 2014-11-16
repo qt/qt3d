@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_CORELOGGING_H
-#define QT3D_CORELOGGING_H
+#ifndef QT3D_CORELOGGING_P_H
+#define QT3D_CORELOGGING_P_H
 
 #include <QLoggingCategory>
 
@@ -58,4 +58,4 @@ Q_DECLARE_LOGGING_CATEGORY(ChangeArbiter)
 
 QT_END_NAMESPACE
 
-#endif // QT3D_CORELOGGING_H
+#endif // QT3D_CORELOGGING_P_H

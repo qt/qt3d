@@ -50,7 +50,7 @@
 #include "qtickclock.h"
 #include "qentity.h"
 
-#include "corelogging.h"
+#include <Qt3DCore/private/corelogging_p.h>
 #include <QEventLoop>
 #include <QThread>
 #include <QWaitCondition>
