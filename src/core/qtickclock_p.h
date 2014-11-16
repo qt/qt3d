@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QTICKCLOCK_H
-#define QTICKCLOCK_H
+#ifndef QT3D_QTICKCLOCK_P_H
+#define QT3D_QTICKCLOCK_P_H
 
 #include <QObject>
 #include <Qt3DCore/qt3dcore_global.h>
@@ -74,4 +74,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QTICKCLOCK_H
+#endif // QT3D_QTICKCLOCK_P_H

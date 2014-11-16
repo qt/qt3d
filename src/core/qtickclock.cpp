@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "qtickclock.h"
+#include "qtickclock_p.h"
 
 #include <Qt3DCore/private/corelogging_p.h>
 #include <QThread>

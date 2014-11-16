@@ -46,11 +46,11 @@
 // TODO Make the kind of job manager configurable (e.g. ThreadWeaver vs Intel TBB)
 #include "qaspectjobmanager.h"
 #include "qabstractaspectjobmanager.h"
-#include "qtickclock.h"
 #include "qentity.h"
 
 #include <Qt3DCore/private/corelogging_p.h>
 #include <Qt3DCore/private/qscheduler_p.h>
+#include <Qt3DCore/private/qtickclock_p.h>
 #include <QEventLoop>
 #include <QThread>
 #include <QWaitCondition>

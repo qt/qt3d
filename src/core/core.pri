@@ -20,7 +20,7 @@ include (./io/io.pri)
 HEADERS += \
     $$PWD/qt3dcore_global.h \
     $$PWD/window.h \
-    $$PWD/qtickclock.h \
+    $$PWD/qtickclock_p.h \
     $$PWD/qscheduler_p.h \
     $$PWD/cameracontroller.h \
     $$PWD/corelogging_p.h \
