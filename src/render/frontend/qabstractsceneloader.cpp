@@ -41,7 +41,7 @@
 
 #include "qabstractsceneloader.h"
 #include "qabstractsceneloader_p.h"
-#include "renderlogging.h"
+#include <Qt3DRenderer/private/renderlogging_p.h>
 #include <Qt3DRenderer/private/abstractsceneparser_p.h>
 #include <Qt3DRenderer/private/gltfparser_p.h>
 #include <Qt3DCore/qscenepropertychange.h>

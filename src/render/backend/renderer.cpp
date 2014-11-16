@@ -53,7 +53,6 @@
 #include <Qt3DRenderer/qshaderprogram.h>
 #include <Qt3DRenderer/qtechnique.h>
 #include <Qt3DRenderer/qrenderaspect.h>
-#include <Qt3DRenderer/renderlogging.h>
 #include <Qt3DRenderer/qeffect.h>
 
 #include <Qt3DRenderer/private/blendstate_p.h>
@@ -64,6 +63,7 @@
 #include <Qt3DRenderer/private/rendercameralens_p.h>
 #include <Qt3DRenderer/private/rendercommand_p.h>
 #include <Qt3DRenderer/private/renderentity_p.h>
+#include <Qt3DRenderer/private/renderlogging_p.h>
 #include <Qt3DRenderer/private/rendermaterial_p.h>
 #include <Qt3DRenderer/private/rendermesh_p.h>
 #include <Qt3DRenderer/private/renderpassfilternode_p.h>

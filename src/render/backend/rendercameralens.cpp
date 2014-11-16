@@ -40,7 +40,7 @@
 ****************************************************************************/
 
 #include "rendercameralens_p.h"
-#include "renderlogging.h"
+#include <Qt3DRenderer/private/renderlogging_p.h>
 
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/qcameralens.h>

@@ -40,7 +40,7 @@
 ****************************************************************************/
 
 #include "abstractsceneparser_p.h"
-#include "renderlogging.h"
+#include <Qt3DRenderer/private/renderlogging_p.h>
 #include <QStringList>
 
 QT_BEGIN_NAMESPACE

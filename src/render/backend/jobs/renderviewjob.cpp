@@ -44,8 +44,8 @@
 #include <Qt3DRenderer/private/renderview_p.h>
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/private/renderviewjobutils_p.h>
+#include <Qt3DRenderer/private/renderlogging_p.h>
 
-#include "renderlogging.h"
 
 QT_BEGIN_NAMESPACE
 

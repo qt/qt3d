@@ -45,7 +45,7 @@
 #endif
 
 #include "qspheremesh.h"
-#include "renderlogging.h"
+#include <Qt3DRenderer/private/renderlogging_p.h>
 #include "qbuffer.h"
 #include "qattribute.h"
 #include "qmeshdata.h"

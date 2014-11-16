@@ -42,7 +42,6 @@
 
 #include "renderview_p.h"
 #include <Qt3DRenderer/qmaterial.h>
-#include <Qt3DRenderer/renderlogging.h>
 #include <Qt3DRenderer/qtexture.h>
 #include <Qt3DRenderer/qrendertarget.h>
 #include <Qt3DRenderer/sphere.h>
@@ -60,6 +59,7 @@
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/private/renderlayer_p.h>
 #include <Qt3DRenderer/private/renderlight_p.h>
+#include <Qt3DRenderer/private/renderlogging_p.h>
 #include <Qt3DRenderer/private/renderpassfilternode_p.h>
 #include <Qt3DRenderer/private/renderrenderpass_p.h>
 #include <Qt3DRenderer/private/renderstate_p.h>

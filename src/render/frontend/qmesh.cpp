@@ -47,7 +47,7 @@
 #include <QFileInfo>
 #include <Qt3DRenderer/private/objloader_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
-#include "renderlogging.h"
+#include <Qt3DRenderer/private/renderlogging_p.h>
 
 QT_BEGIN_NAMESPACE
 

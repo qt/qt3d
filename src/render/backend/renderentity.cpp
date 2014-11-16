@@ -47,7 +47,7 @@
 #include <Qt3DRenderer/qlayer.h>
 #include <Qt3DRenderer/qmaterial.h>
 #include <Qt3DRenderer/qmesh.h>
-#include <Qt3DRenderer/renderlogging.h>
+#include <Qt3DRenderer/private/renderlogging_p.h>
 #include <Qt3DRenderer/sphere.h>
 
 #include <Qt3DCore/qcameralens.h>

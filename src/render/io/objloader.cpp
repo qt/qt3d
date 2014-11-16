@@ -46,7 +46,7 @@
 #include "qattribute.h"
 #include <Qt3DCore/qaxisalignedboundingbox.h>
 
-#include "renderlogging.h"
+#include <Qt3DRenderer/private/renderlogging_p.h>
 #include <QFile>
 #include <QOpenGLBuffer>
 #include <QOpenGLShaderProgram>

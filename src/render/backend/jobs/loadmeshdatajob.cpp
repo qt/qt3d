@@ -47,9 +47,9 @@
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/private/managers_p.h>
 #include <Qt3DRenderer/private/meshdatamanager_p.h>
+#include <Qt3DRenderer/private/renderlogging_p.h>
 
 #include <QThread>
-#include "renderlogging.h"
 
 QT_BEGIN_NAMESPACE
 

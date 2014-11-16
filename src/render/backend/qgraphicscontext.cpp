@@ -44,7 +44,7 @@
 
 #include <Qt3DRenderer/qopenglfilter.h>
 #include <Qt3DRenderer/qparameter.h>
-#include <Qt3DRenderer/renderlogging.h>
+#include <Qt3DRenderer/private/renderlogging_p.h>
 #include <Qt3DRenderer/private/rendershader_p.h>
 #include <Qt3DRenderer/private/rendermaterial_p.h>
 #include <Qt3DRenderer/private/rendertexture_p.h>

@@ -61,7 +61,6 @@
 #include <Qt3DRenderer/qrendertargetselector.h>
 #include <Qt3DRenderer/qtechniquefilter.h>
 #include <Qt3DRenderer/qviewport.h>
-#include <Qt3DRenderer/renderlogging.h>
 #include <Qt3DRenderer/qrendertarget.h>
 #include <Qt3DRenderer/qclearbuffer.h>
 #include <Qt3DRenderer/qtexture.h>
@@ -83,6 +82,7 @@
 #include <Qt3DRenderer/private/clearbuffer_p.h>
 #include <Qt3DRenderer/private/sortmethod_p.h>
 #include <Qt3DRenderer/private/sortcriterion_p.h>
+#include <Qt3DRenderer/private/renderlogging_p.h>
 #include <Qt3DRenderer/private/rendernodefunctor_p.h>
 #include <Qt3DRenderer/private/framegraphnode_p.h>
 #include <Qt3DCore/qentity.h>

@@ -55,7 +55,7 @@
 #include <QFileInfo>
 #include <QColor>
 #include <qmath.h>
-#include "renderlogging.h"
+#include <Qt3DRenderer/private/renderlogging_p.h>
 
 QT_BEGIN_NAMESPACE
 

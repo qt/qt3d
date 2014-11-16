@@ -43,7 +43,7 @@
 #include "gltfparser_p.h"
 
 #include "texturedata.h"
-#include "renderlogging.h"
+#include <Qt3DRenderer/private/renderlogging_p.h>
 
 #include <Qt3DCore/qentity.h>
 #include <qmesh.h>

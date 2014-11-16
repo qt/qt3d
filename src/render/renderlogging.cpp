@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "renderlogging.h"
+#include "renderlogging_p.h"
 
 QT_BEGIN_NAMESPACE
 

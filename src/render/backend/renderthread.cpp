@@ -43,7 +43,7 @@
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/private/renderview_p.h>
 
-#include "renderlogging.h"
+#include <Qt3DRenderer/private/renderlogging_p.h>
 #include <QEventLoop>
 #include <QTime>
 #include <QMutexLocker>

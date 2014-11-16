@@ -45,7 +45,7 @@
 #include <Qt3DRenderer/private/renderentity_p.h>
 #include <sphere.h>
 #include <Qt3DRenderer/private/rendertransform_p.h>
-#include "renderlogging.h"
+#include <Qt3DRenderer/private/renderlogging_p.h>
 #include <QThread>
 
 QT_BEGIN_NAMESPACE

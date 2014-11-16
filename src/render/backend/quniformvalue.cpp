@@ -50,7 +50,7 @@
 #include <QDebug>
 #include <QColor>
 #include <QQuaternion>
-#include "renderlogging.h"
+#include <Qt3DRenderer/private/renderlogging_p.h>
 
 QT_BEGIN_NAMESPACE
 

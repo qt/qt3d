@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERLOGGING_H
-#define QT3D_RENDER_RENDERLOGGING_H
+#ifndef QT3D_RENDER_RENDERLOGGING_P_H
+#define QT3D_RENDER_RENDERLOGGING_P_H
 
 #include <QLoggingCategory>
 
@@ -65,4 +65,4 @@ Q_DECLARE_LOGGING_CATEGORY(Memory)
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERLOGGING_H
+#endif // QT3D_RENDER_RENDERLOGGING_P_H

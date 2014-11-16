@@ -42,10 +42,10 @@
 #include "qplanemesh.h"
 #include "qplanemesh_p.h"
 
-#include <Qt3DRenderer/renderlogging.h>
 #include <Qt3DRenderer/qattribute.h>
 #include <Qt3DRenderer/qbuffer.h>
 #include <Qt3DRenderer/qmeshdata.h>
+#include <Qt3DRenderer/private/renderlogging_p.h>
 
 QT_BEGIN_NAMESPACE
 

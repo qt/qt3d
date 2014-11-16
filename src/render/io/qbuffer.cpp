@@ -41,7 +41,7 @@
 
 #include "qbuffer.h"
 #include "qbuffer_p.h"
-#include "renderlogging.h"
+#include <Qt3DRenderer/private/renderlogging_p.h>
 
 QT_BEGIN_NAMESPACE
 

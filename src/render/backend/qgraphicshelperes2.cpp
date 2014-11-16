@@ -41,7 +41,7 @@
 
 #include "qgraphicshelperes2_p.h"
 #include "qopenglfunctions_es2.h"
-#include "renderlogging.h"
+#include <Qt3DRenderer/private/renderlogging_p.h>
 #include <private/attachmentpack_p.h>
 #include <private/qgraphicsutils_p.h>
 

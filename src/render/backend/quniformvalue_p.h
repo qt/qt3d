@@ -47,7 +47,7 @@
 #include <QVector>
 #include <QOpenGLShaderProgram>
 #include <Qt3DCore/qnodeuuid.h>
-#include <Qt3DRenderer/renderlogging.h>
+#include <Qt3DRenderer/private/renderlogging_p.h>
 
 // for RenderTexturePtr
 #include <Qt3DRenderer/private/rendertextureprovider_p.h>

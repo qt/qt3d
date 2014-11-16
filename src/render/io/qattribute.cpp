@@ -45,7 +45,7 @@
 #include <QVector2D>
 #include <QVector>
 #include <Qt3DCore/qabstractbuffer.h>
-#include "renderlogging.h"
+#include <Qt3DRenderer/private/renderlogging_p.h>
 
 QT_BEGIN_NAMESPACE
 
