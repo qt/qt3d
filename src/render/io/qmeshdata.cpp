@@ -140,7 +140,7 @@ QList<QAbstractBufferPtr> QMeshData::buffers() const
     return r.toList();
 }
 
-void QMeshData::setBoundingBox(const AxisAlignedBoundingBox &bbox)
+void QMeshData::setBoundingBox(const QAxisAlignedBoundingBox &bbox)
 {
     Q_D(QMeshData);
     d->m_bbox = bbox;
@@ -158,7 +158,7 @@ void QMeshData::computeBoundsFromAttribute(const QString &name)
     d->m_bbox.update(attr->asVector3D());
 }
 
-AxisAlignedBoundingBox QMeshData::boundingBox() const
+QAxisAlignedBoundingBox QMeshData::boundingBox() const
 {
     Q_D(const QMeshData);
     return d->m_bbox;

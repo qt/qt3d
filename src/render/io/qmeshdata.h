@@ -43,7 +43,7 @@
 #define QT3D_QMESHDATA_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DCore/axisalignedboundingbox.h>
+#include <Qt3DCore/qaxisalignedboundingbox.h>
 #include <QSharedPointer>
 
 QT_BEGIN_NAMESPACE
@@ -101,10 +101,10 @@ public:
 
     QList<QAbstractBufferPtr> buffers() const;
 
-    void setBoundingBox(const AxisAlignedBoundingBox &bbox);
+    void setBoundingBox(const QAxisAlignedBoundingBox &bbox);
     void computeBoundsFromAttribute(const QString &name);
 
-    AxisAlignedBoundingBox boundingBox() const;
+    QAxisAlignedBoundingBox boundingBox() const;
 
 protected:
     Q_DECLARE_PRIVATE(QMeshData)

@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "axisalignedboundingbox.h"
+#include "qaxisalignedboundingbox.h"
 
 #include <QDebug>
 #include <QMatrix4x4>
@@ -48,7 +48,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-void AxisAlignedBoundingBox::update(const QVector<QVector3D> &points)
+void QAxisAlignedBoundingBox::update(const QVector<QVector3D> &points)
 {
     if (points.isEmpty()) {
         m_center = QVector3D();
@@ -87,7 +87,7 @@ void AxisAlignedBoundingBox::update(const QVector<QVector3D> &points)
 #endif
 }
 
-QDebug operator<<(QDebug dbg, const AxisAlignedBoundingBox &c)
+QDebug operator<<(QDebug dbg, const QAxisAlignedBoundingBox &c)
 {
     dbg.nospace() << "AABB ( min:" << c.minPoint() << ", max:" << c.maxPoint() << ")";
     return dbg.space();

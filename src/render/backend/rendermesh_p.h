@@ -42,7 +42,7 @@
 #ifndef QT3D_RENDER_RENDERMESH_H
 #define QT3D_RENDER_RENDERMESH_H
 
-#include <Qt3DCore/axisalignedboundingbox.h>
+#include <Qt3DCore/qaxisalignedboundingbox.h>
 #include <Qt3DRenderer/private/handle_types_p.h>
 #include <Qt3DCore/qbackendnode.h>
 

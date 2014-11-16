@@ -43,7 +43,7 @@
 #define QT3D_QMESHDATA_P_H
 
 #include <Qt3DCore/qt3dcore_global.h>
-#include <Qt3DCore/axisalignedboundingbox.h>
+#include <Qt3DCore/qaxisalignedboundingbox.h>
 
 #include <QMap>
 #include <QSharedPointer>
@@ -68,7 +68,7 @@ public:
 
     QMap<QString, QAbstractAttributePtr> m_attributes;
     QAbstractAttributePtr m_indexAttr;
-    AxisAlignedBoundingBox m_bbox;
+    QAxisAlignedBoundingBox m_bbox;
     int m_verticesPerPatch;
     int m_primitiveType;
 };

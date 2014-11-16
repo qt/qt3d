@@ -1,10 +1,10 @@
 
 HEADERS += \
-    $$PWD/axisalignedboundingbox.h \
+    $$PWD/qaxisalignedboundingbox.h \
     $$PWD/bounds.h
 
 SOURCES += \
-    $$PWD/axisalignedboundingbox.cpp \
+    $$PWD/qaxisalignedboundingbox.cpp \
     $$PWD/bounds.cpp
 
 INCLUDEPATH += $$PWD

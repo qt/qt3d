@@ -50,12 +50,12 @@ Bounds::Bounds(QObject *parent) :
 {
 }
 
-AxisAlignedBoundingBox Bounds::box() const
+QAxisAlignedBoundingBox Bounds::box() const
 {
     return m_box;
 }
 
-void Bounds::setBox( const AxisAlignedBoundingBox& aabb )
+void Bounds::setBox( const QAxisAlignedBoundingBox& aabb )
 {
     m_box = aabb;
 }

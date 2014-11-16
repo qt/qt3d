@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef AXIS_ALIGNED_BOUNDING_BOX
-#define AXIS_ALIGNED_BOUNDING_BOX
+#ifndef QT3D_QAXISALIGNEDBOUNDINGBOX_H
+#define QT3D_QAXISALIGNEDBOUNDINGBOX_H
 
 #include <Qt3DCore/qt3dcore_global.h>
 
@@ -54,15 +54,15 @@ class QDebug;
 
 namespace Qt3D {
 
-class QT3DCORESHARED_EXPORT AxisAlignedBoundingBox
+class QT3DCORESHARED_EXPORT QAxisAlignedBoundingBox
 {
 public:
-    inline AxisAlignedBoundingBox()
+    inline QAxisAlignedBoundingBox()
         : m_center(),
           m_radii()
     {}
 
-    inline explicit AxisAlignedBoundingBox(const QVector<QVector3D> &points)
+    inline explicit QAxisAlignedBoundingBox(const QVector<QVector3D> &points)
         : m_center(),
           m_radii()
     {
@@ -108,21 +108,21 @@ public:
         update(pts);
     }
 
-    inline void expandToContain(const AxisAlignedBoundingBox &other)
+    inline void expandToContain(const QAxisAlignedBoundingBox &other)
     {
         QVector<QVector3D> pts = QVector<QVector3D>() << other.minPoint() << other.maxPoint();
         update(pts);
     }
 
-    inline AxisAlignedBoundingBox transformBy(const QMatrix4x4 &mat) const
+    inline QAxisAlignedBoundingBox transformBy(const QMatrix4x4 &mat) const
     {
-        AxisAlignedBoundingBox r;
+        QAxisAlignedBoundingBox r;
         r.m_center = mat.map(m_center);
         r.m_radii = mat.map(m_radii);
         return r;
     }
 
-    inline AxisAlignedBoundingBox &transform(const QMatrix4x4 &mat)
+    inline QAxisAlignedBoundingBox &transform(const QMatrix4x4 &mat)
     {
         m_center = mat.map(m_center);
         m_radii = mat.map(m_radii);
@@ -133,14 +133,14 @@ private:
     QVector3D m_center;
     QVector3D m_radii;
 
-    friend bool intersects(const AxisAlignedBoundingBox &a,
-                           const AxisAlignedBoundingBox &b);
+    friend bool intersects(const QAxisAlignedBoundingBox &a,
+                           const QAxisAlignedBoundingBox &b);
 };
 
-QT3DCORESHARED_EXPORT QDebug operator<<(QDebug dbg, const AxisAlignedBoundingBox &c);
+QT3DCORESHARED_EXPORT QDebug operator<<(QDebug dbg, const QAxisAlignedBoundingBox &c);
 
-inline bool intersects(const AxisAlignedBoundingBox &a,
-                       const AxisAlignedBoundingBox &b)
+inline bool intersects(const QAxisAlignedBoundingBox &a,
+                       const QAxisAlignedBoundingBox &b)
 {
     // Test y axis last as this is often the least discriminatory in OpenGL applications
     // where worlds tend to be mostly in the xz-plane
@@ -157,4 +157,4 @@ inline bool intersects(const AxisAlignedBoundingBox &a,
 
 QT_END_NAMESPACE
 
-#endif // AXIS_ALIGNED_BOUNDING_BOX
+#endif // QT3D_QAXISALIGNEDBOUNDINGBOX_H

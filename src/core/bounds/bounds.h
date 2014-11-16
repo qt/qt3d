@@ -45,7 +45,7 @@
 #include <QObject>
 #include <Qt3DCore/qt3dcore_global.h>
 
-#include <Qt3DCore/axisalignedboundingbox.h>
+#include <Qt3DCore/qaxisalignedboundingbox.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -57,11 +57,11 @@ class QT3DCORESHARED_EXPORT Bounds : public QObject
 public:
     explicit Bounds(QObject *parent = 0);
 
-    AxisAlignedBoundingBox box() const;
-    void setBox( const AxisAlignedBoundingBox& aabb );
+    QAxisAlignedBoundingBox box() const;
+    void setBox( const QAxisAlignedBoundingBox& aabb );
 
 private:
-    AxisAlignedBoundingBox m_box;
+    QAxisAlignedBoundingBox m_box;
 };
 
 } // namespace Qt3D
