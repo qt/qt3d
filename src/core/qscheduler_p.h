@@ -39,8 +39,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QSCHEDULER_H
-#define QT3D_QSCHEDULER_H
+#ifndef QT3D_QSCHEDULER_P_H
+#define QT3D_QSCHEDULER_P_H
 
 #include <QObject>
 #include <Qt3DCore/qt3dcore_global.h>
@@ -70,4 +70,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QSCHEDULER_H
+#endif // QT3D_QSCHEDULER_P_H

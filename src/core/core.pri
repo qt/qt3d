@@ -21,7 +21,7 @@ HEADERS += \
     $$PWD/qt3dcore_global.h \
     $$PWD/window.h \
     $$PWD/qtickclock.h \
-    $$PWD/qscheduler.h \
+    $$PWD/qscheduler_p.h \
     $$PWD/cameracontroller.h \
     $$PWD/corelogging_p.h \
     $$PWD/qscenechange.h \

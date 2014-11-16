@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "qscheduler.h"
+#include "qscheduler_p.h"
 
 #include "qabstractaspect.h"
 #include "qaspectmanager_p.h"
