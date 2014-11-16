@@ -8,6 +8,8 @@ SUBDIRS = \
     qcircularbuffer \
     qboundedcircularbuffer \
     nodes \
+    qentity \
+    qaspectengine \
     qchangearbiter \
     qscene
 
