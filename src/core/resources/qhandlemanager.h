@@ -157,7 +157,7 @@ void QHandleManager<T, INDEXBITS>::release(const QHandle<T, INDEXBITS> &handle)
     --m_activeEntryCount;
 }
 
-// Needed in case the QResourcesManager has reordered
+// Needed in case the QResourceManager has reordered
 // memory so that the handle still points to valid data
 template <typename T, uint INDEXBITS>
 void QHandleManager<T, INDEXBITS>::update(const QHandle<T, INDEXBITS> &handle, T *d)

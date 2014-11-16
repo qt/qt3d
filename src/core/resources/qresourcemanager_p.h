@@ -332,56 +332,56 @@ template <typename T, typename C, uint INDEXBITS = 16,
           template <typename, uint> class AllocatingPolicy = ArrayAllocatingPolicy,
           template <class> class LockingPolicy = NonLockingPolicy
           >
-class QResourcesManager
+class QResourceManager
         : public AllocatingPolicy<T, INDEXBITS>
-        , public LockingPolicy< QResourcesManager<T, C, INDEXBITS, AllocatingPolicy, LockingPolicy> >
+        , public LockingPolicy< QResourceManager<T, C, INDEXBITS, AllocatingPolicy, LockingPolicy> >
 {
 public:
-    QResourcesManager() :
+    QResourceManager() :
         AllocatingPolicy<T, INDEXBITS>(),
         m_maxResourcesEntries((1 << INDEXBITS) - 1)
     {
     }
 
-    ~QResourcesManager()
+    ~QResourceManager()
     {}
 
     QHandle<T, INDEXBITS> acquire()
     {
-        typename LockingPolicy<QResourcesManager>::Locker lock(this);
+        typename LockingPolicy<QResourceManager>::Locker lock(this);
         QHandle<T, INDEXBITS> handle = m_handleManager.acquire(AllocatingPolicy<T, INDEXBITS>::allocateResource());
         return handle;
     }
 
     T* data(const QHandle<T, INDEXBITS> &handle)
     {
-        typename LockingPolicy<QResourcesManager>::Locker lock(this);
+        typename LockingPolicy<QResourceManager>::Locker lock(this);
         T* d = m_handleManager.data(handle);
         return d;
     }
 
     void release(const QHandle<T, INDEXBITS> &handle)
     {
-        typename LockingPolicy<QResourcesManager>::Locker lock(this);
+        typename LockingPolicy<QResourceManager>::Locker lock(this);
         releaseLocked(handle);
     }
 
     void reset()
     {
-        typename LockingPolicy<QResourcesManager>::Locker lock(this);
+        typename LockingPolicy<QResourceManager>::Locker lock(this);
         m_handleManager.reset();
         AllocatingPolicy<T, INDEXBITS>::reset();
     }
 
     bool contains(const C &id) const
     {
-        typename LockingPolicy<QResourcesManager>::Locker lock(this);
+        typename LockingPolicy<QResourceManager>::Locker lock(this);
         return m_handleToResourceMapper.contains(id);
     }
 
     QHandle<T, INDEXBITS> getOrAcquireHandle(const C &id)
     {
-        typename LockingPolicy<QResourcesManager>::Locker lock(this);
+        typename LockingPolicy<QResourceManager>::Locker lock(this);
         QHandle<T, INDEXBITS> &handle = m_handleToResourceMapper[id];
         if (handle.isNull())
             handle = m_handleManager.acquire(AllocatingPolicy<T, INDEXBITS>::allocateResource());
@@ -390,7 +390,7 @@ public:
 
     QHandle<T, INDEXBITS> lookupHandle(const C &id)
     {
-        typename LockingPolicy<QResourcesManager>::Locker lock(this);
+        typename LockingPolicy<QResourceManager>::Locker lock(this);
         return m_handleToResourceMapper.value(id);
     }
 
@@ -398,7 +398,7 @@ public:
     {
         T* ret = Q_NULLPTR;
         {
-            typename LockingPolicy<QResourcesManager>::Locker lock(this);
+            typename LockingPolicy<QResourceManager>::Locker lock(this);
             QHandle<T, INDEXBITS> handle = m_handleToResourceMapper.value(id);
             if (!handle.isNull())
                 ret = m_handleManager.data(handle);
@@ -408,7 +408,7 @@ public:
 
     T *getOrCreateResource(const C &id)
     {
-        typename LockingPolicy<QResourcesManager>::Locker lock(this);
+        typename LockingPolicy<QResourceManager>::Locker lock(this);
         QHandle<T, INDEXBITS> &handle = m_handleToResourceMapper[id];
         if (handle.isNull())
             handle = m_handleManager.acquire(AllocatingPolicy<T, INDEXBITS>::allocateResource());
@@ -417,7 +417,7 @@ public:
 
     void releaseResource(const C &id)
     {
-        typename LockingPolicy<QResourcesManager>::Locker lock(this);
+        typename LockingPolicy<QResourceManager>::Locker lock(this);
         QHandle<T, INDEXBITS> handle = m_handleToResourceMapper.take(id);
         if (!handle.isNull())
             releaseLocked(handle);

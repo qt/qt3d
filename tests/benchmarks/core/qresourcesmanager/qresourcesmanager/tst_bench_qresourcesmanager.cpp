@@ -41,11 +41,11 @@
 
 #include <QtTest/QtTest>
 #include <QMatrix4x4>
-#include <Qt3DCore/qresourcesmanager.h>
 #include <Qt3DCore/qhandle.h>
+#include <Qt3DCore/private/qresourcemanager_p.h>
 #include <ctime>
 
-class tst_QResourcesManager : public QObject
+class tst_QResourceManager : public QObject
 {
     Q_OBJECT
 private Q_SLOTS:
@@ -81,7 +81,7 @@ public:
 template<typename Resource>
 void benchmarkAllocateResources()
 {
-    Qt3D::QResourcesManager<Resource, int, 16> manager;
+    Qt3D::QResourceManager<Resource, int, 16> manager;
 
     volatile Resource *c;
     QBENCHMARK_ONCE {
@@ -95,7 +95,7 @@ void benchmarkAllocateResources()
 template<typename Resource>
 void benchmarkAccessResources()
 {
-    Qt3D::QResourcesManager<Resource, int, 16> manager;
+    Qt3D::QResourceManager<Resource, int, 16> manager;
     const int max = (1 << 16) - 1;
     QVector<Qt3D::QHandle<Resource> > handles(max);
     for (int i = 0; i < max; i++)
@@ -111,7 +111,7 @@ void benchmarkAccessResources()
 
 template<typename Resource>
 void benchmarkRandomAccessResource() {
-    Qt3D::QResourcesManager<Resource, int, 16> manager;
+    Qt3D::QResourceManager<Resource, int, 16> manager;
     const int max = (1 << 16) - 1;
     QVector<Qt3D::QHandle<Resource> > handles(max);
     for (int i = 0; i < max; i++)
@@ -130,7 +130,7 @@ void benchmarkRandomAccessResource() {
 template<typename Resource>
 void benchmarkLookupResources()
 {
-    Qt3D::QResourcesManager<Resource, int, 16> manager;
+    Qt3D::QResourceManager<Resource, int, 16> manager;
     const int max = (1 << 16) - 1;
     for (int i = 0; i < max; i++)
         manager.getOrCreateResource(i);
@@ -146,7 +146,7 @@ void benchmarkLookupResources()
 template<typename Resource>
 void benchmarkRandomLookupResources()
 {
-    Qt3D::QResourcesManager<Resource, int, 16> manager;
+    Qt3D::QResourceManager<Resource, int, 16> manager;
     const int max = (1 << 16) - 1;
     QVector<int> resourcesIndices(max);
     for (int i = 0; i < max; i++) {
@@ -166,7 +166,7 @@ void benchmarkRandomLookupResources()
 template<typename Resource>
 void benchmarkReleaseResources()
 {
-    Qt3D::QResourcesManager<Resource, int, 16> manager;
+    Qt3D::QResourceManager<Resource, int, 16> manager;
     const int max = (1 << 16) - 1;
     QVector<Qt3D::QHandle<Resource> > handles(max);
     for (int i = 0; i < max; i++)
@@ -177,66 +177,66 @@ void benchmarkReleaseResources()
     }
 }
 
-void tst_QResourcesManager::benchmarkAllocateSmallResources()
+void tst_QResourceManager::benchmarkAllocateSmallResources()
 {
     benchmarkAllocateResources<tst_SmallArrayResource>();
 }
 
-void tst_QResourcesManager::benchmarkAccessSmallResources()
+void tst_QResourceManager::benchmarkAccessSmallResources()
 {
     benchmarkAccessResources<tst_SmallArrayResource>();
 }
 
-void tst_QResourcesManager::benchmarkLookupSmallResources()
+void tst_QResourceManager::benchmarkLookupSmallResources()
 {
     benchmarkLookupResources<tst_SmallArrayResource>();
 }
 
-void tst_QResourcesManager::benchmarRandomAccessSmallResources()
+void tst_QResourceManager::benchmarRandomAccessSmallResources()
 {
     benchmarkRandomAccessResource<tst_SmallArrayResource>();
 }
 
-void tst_QResourcesManager::benchmarkRandomLookupSmallResources()
+void tst_QResourceManager::benchmarkRandomLookupSmallResources()
 {
     benchmarkRandomLookupResources<tst_SmallArrayResource>();
 }
 
-void tst_QResourcesManager::benchmarkReleaseSmallResources()
+void tst_QResourceManager::benchmarkReleaseSmallResources()
 {
     benchmarkReleaseResources<tst_SmallArrayResource>();
 }
 
-void tst_QResourcesManager::benchmarkAllocateBigResources()
+void tst_QResourceManager::benchmarkAllocateBigResources()
 {
     benchmarkAllocateResources<tst_BigArrayResource>();
 }
 
-void tst_QResourcesManager::benchmarkAccessBigResources()
+void tst_QResourceManager::benchmarkAccessBigResources()
 {
     benchmarkAccessResources<tst_BigArrayResource>();
 }
 
-void tst_QResourcesManager::benchmarRandomAccessBigResources()
+void tst_QResourceManager::benchmarRandomAccessBigResources()
 {
     benchmarkRandomAccessResource<tst_BigArrayResource>();
 }
 
-void tst_QResourcesManager::benchmarkLookupBigResources()
+void tst_QResourceManager::benchmarkLookupBigResources()
 {
     benchmarkLookupResources<tst_BigArrayResource>();
 }
 
-void tst_QResourcesManager::benchmarkRandomLookupBigResources()
+void tst_QResourceManager::benchmarkRandomLookupBigResources()
 {
     benchmarkRandomLookupResources<tst_BigArrayResource>();
 }
 
-void tst_QResourcesManager::benchmarkReleaseBigResources()
+void tst_QResourceManager::benchmarkReleaseBigResources()
 {
     benchmarkReleaseResources<tst_BigArrayResource>();
 }
 
-QTEST_APPLESS_MAIN(tst_QResourcesManager)
+QTEST_APPLESS_MAIN(tst_QResourceManager)
 
 #include "tst_bench_qresourcesmanager.moc"

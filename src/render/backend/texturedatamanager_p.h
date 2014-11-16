@@ -42,7 +42,7 @@
 #ifndef QT3D_RENDER_TEXTUREDATAMANAGER_H
 #define QT3D_RENDER_TEXTUREDATAMANAGER_H
 
-#include <Qt3DCore/QResourcesManager>
+#include <Qt3DCore/private/qresourcemanager_p.h>
 #include <Qt3DRenderer/qtexture.h>
 #include <Qt3DRenderer/texturedata.h>
 #include <Qt3DRenderer/private/handle_types_p.h>
@@ -55,11 +55,11 @@ namespace Qt3D {
 
 namespace Render {
 
-class TextureDataManager : public QResourcesManager<TexImageData,
-                                                    QNodeUuid,
-                                                    16,
-                                                    Qt3D::ListAllocatingPolicy,
-                                                    Qt3D::ObjectLevelLockingPolicy>
+class TextureDataManager : public QResourceManager<TexImageData,
+                                                   QNodeUuid,
+                                                   16,
+                                                   Qt3D::ListAllocatingPolicy,
+                                                   Qt3D::ObjectLevelLockingPolicy>
 {
 public:
     TextureDataManager() {}

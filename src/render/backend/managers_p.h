@@ -42,7 +42,7 @@
 #ifndef QT3D_RENDER_MANAGERS_P_H
 #define QT3D_RENDER_MANAGERS_P_H
 
-#include <Qt3DCore/qresourcesmanager.h>
+#include <Qt3DCore/private/qresourcemanager_p.h>
 #include <Qt3DRenderer/private/renderattachment_p.h>
 #include <Qt3DRenderer/private/rendercameralens_p.h>
 #include <Qt3DRenderer/private/renderannotation_p.h>
@@ -70,7 +70,7 @@ class QMeshData;
 
 namespace Render {
 
-class AttachmentManager : public QResourcesManager<
+class AttachmentManager : public QResourceManager<
         RenderAttachment,
         QNodeUuid,
         16,
@@ -81,7 +81,7 @@ public:
     AttachmentManager() {}
 };
 
-class CameraManager : public QResourcesManager<
+class CameraManager : public QResourceManager<
         RenderCameraLens,
         QNodeUuid,
         8,
@@ -91,7 +91,7 @@ public:
     CameraManager() {}
 };
 
-class CriterionManager : public QResourcesManager<
+class CriterionManager : public QResourceManager<
         RenderAnnotation,
         QNodeUuid,
         16,
@@ -103,7 +103,7 @@ public:
     CriterionManager() {}
 };
 
-class EffectManager : public QResourcesManager<
+class EffectManager : public QResourceManager<
         RenderEffect,
         QNodeUuid,
         16,
@@ -114,13 +114,13 @@ public:
     EffectManager() {}
 };
 
-class EntityManager : public QResourcesManager<RenderEntity, QNodeUuid, 16>
+class EntityManager : public QResourceManager<RenderEntity, QNodeUuid, 16>
 {
 public:
     EntityManager() {}
 };
 
-class FrameGraphManager : public QResourcesManager<
+class FrameGraphManager : public QResourceManager<
         FrameGraphNode *,
         QNodeUuid,
         8,
@@ -130,7 +130,7 @@ public:
     FrameGraphManager() {}
 };
 
-class LayerManager : public QResourcesManager<
+class LayerManager : public QResourceManager<
         RenderLayer,
         QNodeUuid,
         16,
@@ -141,7 +141,7 @@ public:
     LayerManager() {}
 };
 
-class LightManager : public QResourcesManager<
+class LightManager : public QResourceManager<
         RenderLight,
         QNodeUuid,
         16,
@@ -152,7 +152,7 @@ public:
     LightManager() {}
 };
 
-class MaterialManager : public QResourcesManager<
+class MaterialManager : public QResourceManager<
         RenderMaterial,
         QNodeUuid,
         16,
@@ -163,13 +163,13 @@ public:
     MaterialManager() {}
 };
 
-class MatrixManager : public QResourcesManager<QMatrix4x4, QNodeUuid, 16>
+class MatrixManager : public QResourceManager<QMatrix4x4, QNodeUuid, 16>
 {
 public:
     MatrixManager() {}
 };
 
-class MeshManager : public QResourcesManager<
+class MeshManager : public QResourceManager<
         RenderMesh,
         QNodeUuid,
         16,
@@ -180,7 +180,7 @@ public:
     MeshManager() {}
 };
 
-class ShaderManager : public QResourcesManager<
+class ShaderManager : public QResourceManager<
         RenderShader,
         QNodeUuid,
         16,
@@ -191,7 +191,7 @@ public:
     ShaderManager() {}
 };
 
-class SortCriterionManager : public QResourcesManager<
+class SortCriterionManager : public QResourceManager<
         SortCriterion,
         QNodeUuid,
         8,
@@ -202,7 +202,7 @@ public:
     SortCriterionManager() {}
 };
 
-class TechniqueManager : public QResourcesManager<
+class TechniqueManager : public QResourceManager<
         RenderTechnique,
         QNodeUuid,
         16,
@@ -213,7 +213,7 @@ public:
     TechniqueManager() {}
 };
 
-class TextureManager : public QResourcesManager<
+class TextureManager : public QResourceManager<
         RenderTexture,
         QNodeUuid,
         16,
@@ -224,7 +224,7 @@ public:
     TextureManager() {}
 };
 
-class TransformManager : public QResourcesManager<
+class TransformManager : public QResourceManager<
         RenderTransform,
         QNodeUuid,
         16,
@@ -235,7 +235,7 @@ public:
     TransformManager() {}
 };
 
-class VAOManager : public QResourcesManager<
+class VAOManager : public QResourceManager<
         QOpenGLVertexArrayObject *,
         QPair<HMeshData, HShader>,
         16>
@@ -244,7 +244,7 @@ public:
     VAOManager() {}
 };
 
-class RenderTargetManager : public QResourcesManager<
+class RenderTargetManager : public QResourceManager<
         RenderTarget,
         QNodeUuid,
         8,
@@ -255,7 +255,7 @@ public:
     RenderTargetManager() {}
 };
 
-class RenderPassManager : public QResourcesManager<
+class RenderPassManager : public QResourceManager<
         RenderRenderPass,
         QNodeUuid,
         16,
@@ -267,7 +267,7 @@ public:
 };
 
 
-class ParameterManager : public QResourcesManager<
+class ParameterManager : public QResourceManager<
         RenderParameter,
         QNodeUuid,
         16,

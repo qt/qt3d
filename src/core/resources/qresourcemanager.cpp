@@ -40,12 +40,12 @@
 ****************************************************************************/
 
 /*!
- * \class QResourcesManager
+ * \class QResourceManager
  *
- * \brief The QResourcesManager allocates memory for resources that can be referenced by a
+ * \brief The QResourceManager allocates memory for resources that can be referenced by a
  * QHandle.
  *
- * Using a QHandleManager for handle management, the QResourcesManager's responsibility is
+ * Using a QHandleManager for handle management, the QResourceManager's responsibility is
  * to provide memory for resources and to offer ways to interact with the resource through
  * the QHandle.
  *
@@ -73,7 +73,7 @@
  *
  * \since 5.3
  * \namespace Qt3D
- * \sa QResourcesManager
+ * \sa QResourceManager
  * \sa ListAllocatingPolicy
  */
 
@@ -91,7 +91,7 @@
  *
  * \since 5.3
  * \namespace Qt3D
- * \sa QResourcesManager
+ * \sa QResourceManager
  * \sa ArrayAllocatingPolicy
  */
 
@@ -100,7 +100,7 @@
  *
  * \brief Provided locking access to a resource through the use of a QReadWriteLock.
  *
- * This policy should be used in a QResourcesManager when multiple thread might access the manager for
+ * This policy should be used in a QResourceManager when multiple thread might access the manager for
  * read or write operations at the same time.
  *
  * It provides two convenience classes WriteLocker and ReadLocker that behave like QReadLocker and QWriteLocker.

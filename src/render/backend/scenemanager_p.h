@@ -42,7 +42,7 @@
 #ifndef QT3D_RENDER_SCENEMANAGER_P_H
 #define QT3D_RENDER_SCENEMANAGER_P_H
 
-#include <Qt3DCore/qresourcesmanager.h>
+#include <Qt3DCore/private/qresourcemanager_p.h>
 #include <Qt3DRenderer/private/renderscene_p.h>
 #include <Qt3DRenderer/loadscenejob.h>
 #include <Qt3DCore/qnodeuuid.h>
@@ -55,11 +55,11 @@ class QEntity;
 
 namespace Render {
 
-class SceneManager : public QResourcesManager<RenderScene,
-                                              QNodeUuid,
-                                              8,
-                                              Qt3D::ArrayAllocatingPolicy,
-                                              Qt3D::ObjectLevelLockingPolicy>
+class SceneManager : public QResourceManager<RenderScene,
+                                             QNodeUuid,
+                                             8,
+                                             Qt3D::ArrayAllocatingPolicy,
+                                             Qt3D::ObjectLevelLockingPolicy>
 {
 public:
     SceneManager();

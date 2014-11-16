@@ -41,7 +41,7 @@
 
 #include <QtTest/QtTest>
 #include <QMatrix4x4>
-#include <Qt3DCore/QResourcesManager>
+#include <Qt3DCore/private/qresourcemanager_p.h>
 
 class tst_ArrayPolicy : public QObject
 {

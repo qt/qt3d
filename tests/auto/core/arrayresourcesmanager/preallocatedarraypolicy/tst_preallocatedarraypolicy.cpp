@@ -41,7 +41,7 @@
 
 #include <QtTest/QtTest>
 #include <QList>
-#include <Qt3DCore/qresourcesmanager.h>
+#include <Qt3DCore/private/qresourcemanager_p.h>
 #include <Qt3DCore/qhandle.h>
 
 class tst_PreallocatedArrayPolicy : public QObject
@@ -81,9 +81,9 @@ typedef Qt3D::QHandle<tst_ArrayResource, 16> tHandle16;
 
 void tst_PreallocatedArrayPolicy::createResourcesManager()
 {
-    Qt3D::QResourcesManager<tst_ArrayResource, int, 16, Qt3D::ArrayPreallocationPolicy> manager16;
-    Qt3D::QResourcesManager<tst_ArrayResource, int, 4, Qt3D::ArrayPreallocationPolicy> manager4;
-    Qt3D::QResourcesManager<tst_ArrayResource, int, 8, Qt3D::ArrayPreallocationPolicy> manager8;
+    Qt3D::QResourceManager<tst_ArrayResource, int, 16, Qt3D::ArrayPreallocationPolicy> manager16;
+    Qt3D::QResourceManager<tst_ArrayResource, int, 4, Qt3D::ArrayPreallocationPolicy> manager4;
+    Qt3D::QResourceManager<tst_ArrayResource, int, 8, Qt3D::ArrayPreallocationPolicy> manager8;
     QVERIFY(manager16.maxResourcesEntries() == 65535);
     QVERIFY(manager8.maxResourcesEntries() == 255);
     QVERIFY(manager4.maxResourcesEntries() == 15);
@@ -95,7 +95,7 @@ void tst_PreallocatedArrayPolicy::createResourcesManager()
  */
 void tst_PreallocatedArrayPolicy::acquireResources()
 {
-    Qt3D::QResourcesManager<tst_ArrayResource, uint, 4, Qt3D::ArrayPreallocationPolicy> manager;
+    Qt3D::QResourceManager<tst_ArrayResource, uint, 4, Qt3D::ArrayPreallocationPolicy> manager;
 
     QList<tHandle4> handles;
 
@@ -115,7 +115,7 @@ void tst_PreallocatedArrayPolicy::acquireResources()
 void tst_PreallocatedArrayPolicy::getResources()
 {
 
-    Qt3D::QResourcesManager<tst_ArrayResource, int, 8, Qt3D::ArrayPreallocationPolicy> manager;
+    Qt3D::QResourceManager<tst_ArrayResource, int, 8, Qt3D::ArrayPreallocationPolicy> manager;
     QList<tst_ArrayResource *> resources;
     QList<tHandle8> handles;
 
@@ -146,7 +146,7 @@ void tst_PreallocatedArrayPolicy::getResources()
  */
 void tst_PreallocatedArrayPolicy::registerResourcesResize()
 {
-    Qt3D::QResourcesManager<tst_ArrayResource, uint, 16, Qt3D::ArrayPreallocationPolicy> manager;
+    Qt3D::QResourceManager<tst_ArrayResource, uint, 16, Qt3D::ArrayPreallocationPolicy> manager;
     QList<tHandle16> handles;
 
     for (uint i = 0; i < 2; i++) {
@@ -174,7 +174,7 @@ void tst_PreallocatedArrayPolicy::registerResourcesResize()
  */
 void tst_PreallocatedArrayPolicy::removeResource()
 {
-    Qt3D::QResourcesManager<tst_ArrayResource, int, 16, Qt3D::ArrayPreallocationPolicy> manager;
+    Qt3D::QResourceManager<tst_ArrayResource, int, 16, Qt3D::ArrayPreallocationPolicy> manager;
 
     QList<tst_ArrayResource *> resources;
     QList<tHandle> handles;
@@ -198,7 +198,7 @@ void tst_PreallocatedArrayPolicy::removeResource()
  */
 void tst_PreallocatedArrayPolicy::resetResource()
 {
-    Qt3D::QResourcesManager<tst_ArrayResource, uint, 16, Qt3D::ArrayPreallocationPolicy> manager;
+    Qt3D::QResourceManager<tst_ArrayResource, uint, 16, Qt3D::ArrayPreallocationPolicy> manager;
 
     QList<tst_ArrayResource *> resources;
     QList<tHandle16> handles;
@@ -225,7 +225,7 @@ void tst_PreallocatedArrayPolicy::resetResource()
 
 void tst_PreallocatedArrayPolicy::lookupResource()
 {
-    Qt3D::QResourcesManager<tst_ArrayResource, uint, 16, Qt3D::ArrayPreallocationPolicy> manager;
+    Qt3D::QResourceManager<tst_ArrayResource, uint, 16, Qt3D::ArrayPreallocationPolicy> manager;
 
     QList<tst_ArrayResource *> resources;
     QList<tHandle16> handles;
@@ -250,7 +250,7 @@ void tst_PreallocatedArrayPolicy::lookupResource()
 
 void tst_PreallocatedArrayPolicy::releaseResource()
 {
-    Qt3D::QResourcesManager<tst_ArrayResource, uint, 16, Qt3D::ArrayPreallocationPolicy> manager;
+    Qt3D::QResourceManager<tst_ArrayResource, uint, 16, Qt3D::ArrayPreallocationPolicy> manager;
     QList<tst_ArrayResource *> resources;
 
     for (int i = 0; i < 5; i++) {
@@ -272,7 +272,7 @@ class tst_Thread : public QThread
     Q_OBJECT
 public:
 
-    typedef Qt3D::QResourcesManager<tst_ArrayResource,
+    typedef Qt3D::QResourceManager<tst_ArrayResource,
     int,
     16,
     Qt3D::ArrayPreallocationPolicy,
@@ -344,7 +344,7 @@ class tst_Thread2 : public QThread
     Q_OBJECT
 public:
 
-    typedef Qt3D::QResourcesManager<tst_ArrayResource,
+    typedef Qt3D::QResourceManager<tst_ArrayResource,
     int,
     16,
     Qt3D::ArrayPreallocationPolicy,
@@ -420,7 +420,7 @@ void tst_PreallocatedArrayPolicy::heavyDutyMultiThreadedAccessRelease()
 
 void tst_PreallocatedArrayPolicy::maximumNumberOfResources()
 {
-    Qt3D::QResourcesManager<tst_ArrayResource, uint, 16, Qt3D::ArrayPreallocationPolicy> manager;
+    Qt3D::QResourceManager<tst_ArrayResource, uint, 16, Qt3D::ArrayPreallocationPolicy> manager;
 
     QList<tst_ArrayResource *> resources;
     QList<tHandle16> handles;

@@ -47,7 +47,7 @@ namespace Qt3D {
 
 namespace Render {
 
-SceneManager::SceneManager() : QResourcesManager<RenderScene,
+SceneManager::SceneManager() : QResourceManager<RenderScene,
                                                  QNodeUuid,
                                                  8,
                                                  Qt3D::ArrayAllocatingPolicy,

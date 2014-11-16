@@ -43,10 +43,10 @@
 #define QT3D_INPUT_INPUTMANAGERS_P_H
 
 #include <QtGlobal>
-#include <Qt3DCore/qresourcesmanager.h>
 #include <Qt3DInput/private/handle_types_p.h>
 #include <Qt3DInput/private/keyboardcontroller_p.h>
 #include <Qt3DInput/private/keyboardinput_p.h>
+#include <Qt3DCore/private/qresourcemanager_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -54,7 +54,7 @@ namespace Qt3D {
 
 namespace Input {
 
-class KeyboardInputManager : public QResourcesManager<
+class KeyboardInputManager : public QResourceManager<
         KeyboardInput,
         QNodeUuid,
         16,
@@ -64,7 +64,7 @@ public:
     KeyboardInputManager() {}
 };
 
-class KeyboardControllerManager : public QResourcesManager<
+class KeyboardControllerManager : public QResourceManager<
         KeyboardController,
         QNodeUuid,
         8,

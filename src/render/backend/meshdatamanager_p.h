@@ -43,10 +43,11 @@
 #define QT3D_RENDER_MESHDATAMANAGER_H
 
 #include <Qt3DRenderer/qabstractmesh.h>
-#include <Qt3DCore/qresourcesmanager.h>
 #include <Qt3DRenderer/qmeshdata.h>
 #include <Qt3DRenderer/private/rendermesh_p.h>
 #include <Qt3DRenderer/private/handle_types_p.h>
+
+#include <Qt3DCore/private/qresourcemanager_p.h>
 
 #include <QHash>
 #include <QPair>
@@ -58,7 +59,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
-class MeshDataManager : public QResourcesManager<QMeshData,
+class MeshDataManager : public QResourceManager<QMeshData,
                                                  QNodeUuid,
                                                  16,
                                                  Qt3D::ListAllocatingPolicy,
