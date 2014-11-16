@@ -42,7 +42,6 @@
 #ifndef QT3D_QTICKCLOCK_P_H
 #define QT3D_QTICKCLOCK_P_H
 
-#include <QObject>
 #include <Qt3DCore/qt3dcore_global.h>
 
 #include <QElapsedTimer>
@@ -51,11 +50,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QTickClock : public QObject
+class QTickClock
 {
-    Q_OBJECT
 public:
-    explicit QTickClock(QObject *parent = 0);
+    QTickClock();
 
     void setTickFrequency(float frequency);
 

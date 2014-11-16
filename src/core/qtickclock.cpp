@@ -48,9 +48,8 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QTickClock::QTickClock(QObject *parent)
-    : QObject(parent)
-    , m_tickInterval(1000000000 / 60) // Nanoseconds
+QTickClock::QTickClock()
+    : m_tickInterval(1000000000 / 60) // Nanoseconds
     , m_time(0)
 {
 }
