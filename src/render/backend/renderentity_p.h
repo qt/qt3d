@@ -104,10 +104,22 @@ public:
         return QHandle<Backend, INDEXBITS>();
     }
 
+    template<class Backend, uint INDEXBITS>
+    QList<QHandle<Backend, INDEXBITS> > componentsHandle() const
+    {
+        return QList<QHandle<Backend, INDEXBITS> >();
+    }
+
     template<class Backend>
-    Backend* renderComponent() const
+    Backend *renderComponent() const
     {
         return Q_NULLPTR;
+    }
+
+    template<class Backend>
+    QList<Backend *> renderComponents() const
+    {
+        return QList<Backend *>();
     }
 
     template<class Backend>
@@ -117,48 +129,9 @@ public:
     }
 
     template<class Backend>
-    QList<QNodeId> componentUuidInTree() const
+    QList<QNodeId> componentsUuid() const
     {
-        QList<QNodeId> componentList;
-
-        QNodeId componentId = componentUuid<Backend>();
-        if (!componentId.isNull())
-            componentList.append(componentId);
-
-        Q_FOREACH (RenderEntity *child, children())
-            componentList.append(child->componentUuidInTree<Backend>());
-
-        return componentList;
-    }
-
-    template<class Backend, uint INDEXBITS>
-    QList<QHandle<Backend, INDEXBITS> > componentHandlesInTree() const
-    {
-        QList<QHandle<Backend, INDEXBITS> > handles;
-
-        QHandle<Backend, INDEXBITS> h = componentHandle<Backend, INDEXBITS>();
-        if (!h.isNull())
-            handles.append(h);
-
-        Q_FOREACH (RenderEntity *child, children())
-            handles.append(child->componentHandlesInTree<Backend, INDEXBITS>());
-
-        return handles;
-    }
-
-    template<class Backend>
-    QList<Backend *> renderComponentsInTree() const
-    {
-        QList<Backend *> components;
-
-        Backend *component = renderComponent<Backend>();
-        if (component != Q_NULLPTR)
-            components.append(component);
-
-        Q_FOREACH (RenderEntity *child, children())
-            components.append(child->renderComponentsInTree<Backend>());
-
-        return components;
+        return QList<QNodeId>();
     }
 
 private:
@@ -187,9 +160,9 @@ private:
     QNodeId m_transformComponent;
     QNodeId m_meshComponent;
     QNodeId m_materialComponent;
-    QNodeId m_layerComponent;
-    QNodeId m_lightComponent;
     QNodeId m_cameraComponent;
+    QList<QNodeId> m_layerComponents;
+    QList<QNodeId> m_lightComponents;
 
     QString m_objectName;
 };
@@ -205,18 +178,6 @@ HMaterial RenderEntity::componentHandle<RenderMaterial>() const;
 
 template<>
 RenderMaterial *RenderEntity::renderComponent<RenderMaterial>() const;
-
-template<>
-HLayer RenderEntity::componentHandle<RenderLayer>() const;
-
-template<>
-RenderLayer *RenderEntity::renderComponent<RenderLayer>() const;
-
-template<>
-HLight RenderEntity::componentHandle<RenderLight>() const;
-
-template<>
-RenderLight *RenderEntity::renderComponent<RenderLight>() const;
 
 template<>
 HCamera RenderEntity::componentHandle<RenderCameraLens>() const;
@@ -237,16 +198,28 @@ template<>
 QNodeId RenderEntity::componentUuid<RenderCameraLens>() const;
 
 template<>
-QNodeId RenderEntity::componentUuid<RenderLayer>() const;
-
-template<>
 QNodeId RenderEntity::componentUuid<RenderMaterial>() const;
 
 template<>
-QNodeId RenderEntity::componentUuid<RenderLight>() const;
+QNodeId RenderEntity::componentUuid<RenderMesh>() const;
 
 template<>
-QNodeId RenderEntity::componentUuid<RenderMesh>() const;
+QList<HLayer> RenderEntity::componentsHandle<RenderLayer>() const;
+
+template<>
+QList<RenderLayer *> RenderEntity::renderComponents<RenderLayer>() const;
+
+template<>
+QList<HLight> RenderEntity::componentsHandle<RenderLight>() const;
+
+template<>
+QList<RenderLight *> RenderEntity::renderComponents<RenderLight>() const;
+
+template<>
+QList<QNodeId> RenderEntity::componentsUuid<RenderLayer>() const;
+
+template<>
+QList<QNodeId> RenderEntity::componentsUuid<RenderLight>() const;
 
 class RenderEntityFunctor : public QBackendNodeFunctor
 {

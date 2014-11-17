@@ -135,8 +135,8 @@ void RenderEntity::updateFromPeer(QNode *peer)
     m_materialComponent = QNodeId();
     m_meshComponent = QNodeId();
     m_cameraComponent = QNodeId();
-    m_layerComponent = QNodeId();
-    m_lightComponent = QNodeId();
+    m_layerComponents.clear();
+    m_lightComponents.clear();
 
     Q_FOREACH (QComponent *comp, entity->components())
         addComponent(comp);
@@ -235,9 +235,9 @@ void RenderEntity::addComponent(QComponent *component)
     else if (qobject_cast<QCameraLens *>(component) != Q_NULLPTR)
         m_cameraComponent = component->uuid();
     else if (qobject_cast<QLayer *>(component) != Q_NULLPTR)
-        m_layerComponent = component->uuid();
+        m_layerComponents.append(component->uuid());
     else if (qobject_cast<QAbstractLight *>(component) != Q_NULLPTR)
-        m_lightComponent = component->uuid();
+        m_lightComponents.append(component->uuid());
     else if (qobject_cast<QMaterial *>(component) != Q_NULLPTR)
         m_materialComponent = component->uuid();
 }
@@ -251,9 +251,9 @@ void RenderEntity::removeComponent(QComponent *component)
     else if (qobject_cast<QCameraLens *>(component) != Q_NULLPTR)
         m_cameraComponent = QNodeId();
     else if (qobject_cast<QLayer *>(component) != Q_NULLPTR)
-        m_layerComponent = QNodeId();
+        m_layerComponents.removeAll(component->uuid());
     else if (qobject_cast<QAbstractLight *>(component) != Q_NULLPTR)
-        m_lightComponent = QNodeId();
+        m_lightComponents.removeAll(component->uuid());
     else if (qobject_cast<QMaterial *>(component) != Q_NULLPTR)
         m_materialComponent = QNodeId();
 }
@@ -280,30 +280,6 @@ template<>
 RenderMaterial *RenderEntity::renderComponent<RenderMaterial>() const
 {
     return m_renderer->materialManager()->lookupResource(m_materialComponent);
-}
-
-template<>
-HLayer RenderEntity::componentHandle<RenderLayer>() const
-{
-    return m_renderer->layerManager()->lookupHandle(m_layerComponent);
-}
-
-template<>
-RenderLayer *RenderEntity::renderComponent<RenderLayer>() const
-{
-    return m_renderer->layerManager()->lookupResource(m_layerComponent);
-}
-
-template<>
-HLight RenderEntity::componentHandle<RenderLight>() const
-{
-    return m_renderer->lightManager()->lookupHandle(m_lightComponent);
-}
-
-template<>
-RenderLight *RenderEntity::renderComponent<RenderLight>() const
-{
-    return m_renderer->lightManager()->lookupResource(m_lightComponent);
 }
 
 template<>
@@ -337,16 +313,52 @@ template<>
 QNodeId RenderEntity::componentUuid<RenderCameraLens>() const { return m_cameraComponent; }
 
 template<>
-QNodeId RenderEntity::componentUuid<RenderLayer>() const { return m_layerComponent; }
-
-template<>
 QNodeId RenderEntity::componentUuid<RenderMaterial>() const { return m_materialComponent; }
 
 template<>
-QNodeId RenderEntity::componentUuid<RenderLight>() const { return m_lightComponent; }
+QNodeId RenderEntity::componentUuid<RenderMesh>() const { return m_meshComponent; }
 
 template<>
-QNodeId RenderEntity::componentUuid<RenderMesh>() const { return m_meshComponent; }
+QList<HLayer> RenderEntity::componentsHandle<RenderLayer>() const
+{
+    QList<HLayer> layerHandles;
+    Q_FOREACH (const QNodeId &id, m_layerComponents)
+        layerHandles.append(m_renderer->layerManager()->lookupHandle(id));
+    return layerHandles;
+}
+
+template<>
+QList<RenderLayer *> RenderEntity::renderComponents<RenderLayer>() const
+{
+    QList<RenderLayer *> layers;
+    Q_FOREACH (const QNodeId &id, m_layerComponents)
+        layers.append(m_renderer->layerManager()->lookupResource(id));
+    return layers;
+}
+
+template<>
+QList<HLight> RenderEntity::componentsHandle<RenderLight>() const
+{
+    QList<HLight> lightHandles;
+    Q_FOREACH (const QNodeId &id, m_lightComponents)
+        lightHandles.append(m_renderer->lightManager()->lookupHandle(id));
+    return lightHandles;
+}
+
+template<>
+QList<RenderLight *> RenderEntity::renderComponents<RenderLight>() const
+{
+    QList<RenderLight *> lights;
+    Q_FOREACH (const QNodeId &id, m_lightComponents)
+        lights.append(m_renderer->lightManager()->lookupResource(id));
+    return lights;
+}
+
+template<>
+QList<QNodeId> RenderEntity::componentsUuid<RenderLayer>() const { return m_layerComponents; }
+
+template<>
+QList<QNodeId> RenderEntity::componentsUuid<RenderLight>() const { return m_lightComponents; }
 
 RenderEntityFunctor::RenderEntityFunctor(Renderer *renderer)
     : m_renderer(renderer)

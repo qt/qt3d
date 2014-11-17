@@ -90,10 +90,9 @@ bool isEntityInLayers(const RenderEntity *entity, const QStringList &layers)
     if (layers.isEmpty())
         return true;
 
-    // TODO: find all RenderLayer components associated to node, not just the first one
-    RenderLayer *renderLayer = entity->renderComponent<RenderLayer>();
-    if (renderLayer) {
-        Q_FOREACH (const QString &layerName, renderLayer->layers())
+    QList<RenderLayer *> renderLayers = entity->renderComponents<RenderLayer>();
+    Q_FOREACH (RenderLayer *layer, renderLayers) {
+        Q_FOREACH (const QString &layerName, layer->layers())
             if (layers.contains(layerName))
                 return true;
     }

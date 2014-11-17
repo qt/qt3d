@@ -193,15 +193,18 @@ void preprocessRenderTree(RenderView *rv, const RenderEntity *node)
     // should use the same generic methods as any user data that needs to get into
     // uniforms.
 
+    // The goal is to use QShaderData in a later revision
+
     // Retrieve light for the currentNode and append it to list of current lights
     // As only light components of an Entity are considered active
     // Note : Layer filtering isn't applied there
     //
     // TODO: Perhaps make this block of code configurable by allowing the Technique
     // or similar to provide a functor?
-    HLight lightHandle = node->componentHandle<RenderLight, 16>();
-    if (!lightHandle.isNull())
-        rv->appendLight(lightHandle, *node->worldTransform());
+    QList<HLight> lightHandles = node->componentsHandle<RenderLight, 16>();
+    Q_FOREACH (const HLight lightHandle, lightHandles)
+        if (!lightHandle.isNull())
+            rv->appendLight(lightHandle, *node->worldTransform());
 
     // Traverse children
     Q_FOREACH (RenderEntity *child, node->children())
