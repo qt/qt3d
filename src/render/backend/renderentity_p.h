@@ -163,6 +163,7 @@ private:
     QNodeId m_cameraComponent;
     QList<QNodeId> m_layerComponents;
     QList<QNodeId> m_lightComponents;
+    QList<QNodeId> m_shaderDataComponents;
 
     QString m_objectName;
 };
@@ -210,16 +211,25 @@ template<>
 QList<RenderLayer *> RenderEntity::renderComponents<RenderLayer>() const;
 
 template<>
+QList<QNodeId> RenderEntity::componentsUuid<RenderLayer>() const;
+
+template<>
 QList<HLight> RenderEntity::componentsHandle<RenderLight>() const;
 
 template<>
 QList<RenderLight *> RenderEntity::renderComponents<RenderLight>() const;
 
 template<>
-QList<QNodeId> RenderEntity::componentsUuid<RenderLayer>() const;
+QList<QNodeId> RenderEntity::componentsUuid<RenderLight>() const;
 
 template<>
-QList<QNodeId> RenderEntity::componentsUuid<RenderLight>() const;
+QList<HShaderData> RenderEntity::componentsHandle<RenderShaderData>() const;
+
+template<>
+QList<RenderShaderData *> RenderEntity::renderComponents<RenderShaderData>() const;
+
+template<>
+QList<QNodeId> RenderEntity::componentsUuid<RenderShaderData>() const;
 
 class RenderEntityFunctor : public QBackendNodeFunctor
 {

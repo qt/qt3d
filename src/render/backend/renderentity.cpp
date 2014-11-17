@@ -358,7 +358,29 @@ template<>
 QList<QNodeId> RenderEntity::componentsUuid<RenderLayer>() const { return m_layerComponents; }
 
 template<>
+QList<HShaderData> RenderEntity::componentsHandle<RenderShaderData>() const
+{
+    QList<HShaderData> shaderDataHandles;
+    Q_FOREACH (const QNodeId &id, m_shaderDataComponents)
+        shaderDataHandles.append(m_renderer->shaderDataManager()->lookupHandle(id));
+    return shaderDataHandles;
+}
+
+template<>
+QList<RenderShaderData *> RenderEntity::renderComponents<RenderShaderData>() const
+{
+    QList<RenderShaderData *> shaderDatas;
+    Q_FOREACH (const QNodeId &id, m_shaderDataComponents)
+        shaderDatas.append(m_renderer->shaderDataManager()->lookupResource(id));
+    return shaderDatas;
+}
+
+template<>
 QList<QNodeId> RenderEntity::componentsUuid<RenderLight>() const { return m_lightComponents; }
+
+template<>
+QList<QNodeId> RenderEntity::componentsUuid<RenderShaderData>() const { return m_shaderDataComponents; }
+
 
 RenderEntityFunctor::RenderEntityFunctor(Renderer *renderer)
     : m_renderer(renderer)
@@ -384,7 +406,6 @@ void RenderEntityFunctor::destroy(QNode *frontend) const
 {
     m_renderer->renderNodesManager()->releaseResource(frontend->uuid());
 }
-
 
 } // namespace Render
 } // namespace Qt3D
