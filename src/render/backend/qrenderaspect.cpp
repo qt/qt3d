@@ -65,6 +65,7 @@
 #include <Qt3DRenderer/qclearbuffer.h>
 #include <Qt3DRenderer/qtexture.h>
 #include <Qt3DRenderer/qeffect.h>
+#include <Qt3DRenderer/qshaderdata.h>
 #include <Qt3DCore/qcameralens.h>
 
 #include <Qt3DRenderer/private/cameraselectornode_p.h>
@@ -194,6 +195,7 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<QSortMethod>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::SortMethod, QSortMethod>(d->m_renderer->frameGraphManager())));
     registerBackendType<QFrameGraph>(QBackendNodeFunctorPtr(new Render::FrameGraphComponentFunctor(d->m_renderer)));
     registerBackendType<QParameter>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderParameter, Render::ParameterManager>(d->m_renderer->parameterManager())));
+    registerBackendType<QShaderData>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderShaderData, Render::ShaderDataManager>(d->m_renderer->shaderDataManager())));
 }
 
 QVector<QAspectJobPtr> QRenderAspect::jobsToExecute()
