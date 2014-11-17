@@ -123,6 +123,7 @@ class SceneManager;
 class AttachmentManager;
 class SortCriterionManager;
 class ParameterManager;
+class ShaderDataManager;
 
 class Renderer
 {
@@ -175,6 +176,7 @@ public:
     inline AttachmentManager *attachmentManager() const { return m_attachmentManager; }
     inline SortCriterionManager *sortCriterionManager() const { return m_sortCriterionManager; }
     inline ParameterManager *parameterManager() const { return m_parameterManager; }
+    inline ShaderDataManager *shaderDataManager() const { return m_shaderDataManager; }
 
     inline HMaterial defaultMaterialHandle() const { return m_defaultMaterialHandle; }
     inline HEffect defaultEffectHandle() const { return m_defaultEffectHandle; }
@@ -256,6 +258,7 @@ private:
     AttachmentManager *m_attachmentManager;
     SortCriterionManager *m_sortCriterionManager;
     ParameterManager *m_parameterManager;
+    ShaderDataManager *m_shaderDataManager;
 
     QTimer *m_frameTimer;
 
