@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "renderviewjob.h"
+#include "renderviewjob_p.h"
 
 #include <Qt3DRenderer/private/renderview_p.h>
 #include <Qt3DRenderer/private/renderer_p.h>

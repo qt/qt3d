@@ -44,7 +44,6 @@
 
 #include <Qt3DCore/qentity.h>
 
-#include "jobs/renderviewjob.h"
 
 #include <Qt3DRenderer/qmaterial.h>
 #include <Qt3DRenderer/qmesh.h>
@@ -55,6 +54,7 @@
 #include <Qt3DRenderer/qrenderaspect.h>
 #include <Qt3DRenderer/qeffect.h>
 
+#include <Qt3DRenderer/private/renderviewjob_p.h>
 #include <Qt3DRenderer/private/blendstate_p.h>
 #include <Qt3DRenderer/private/cameraselectornode_p.h>
 #include <Qt3DRenderer/private/framegraphvisitor_p.h>
