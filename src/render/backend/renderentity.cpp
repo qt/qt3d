@@ -49,6 +49,7 @@
 #include <Qt3DRenderer/qmesh.h>
 #include <Qt3DRenderer/private/renderlogging_p.h>
 #include <Qt3DRenderer/sphere.h>
+#include <Qt3DRenderer/qshaderdata.h>
 
 #include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/qentity.h>
@@ -240,6 +241,8 @@ void RenderEntity::addComponent(QComponent *component)
         m_lightComponents.append(component->uuid());
     else if (qobject_cast<QMaterial *>(component) != Q_NULLPTR)
         m_materialComponent = component->uuid();
+    else if (qobject_cast<QShaderData *>(component) != Q_NULLPTR)
+        m_shaderDataComponents.append(component->uuid());
 }
 
 void RenderEntity::removeComponent(QComponent *component)
@@ -256,6 +259,8 @@ void RenderEntity::removeComponent(QComponent *component)
         m_lightComponents.removeAll(component->uuid());
     else if (qobject_cast<QMaterial *>(component) != Q_NULLPTR)
         m_materialComponent = QNodeId();
+    else if (qobject_cast<QShaderData *>(component) != Q_NULLPTR)
+        m_shaderDataComponents.removeAll(component->uuid());
 }
 
 template<>
