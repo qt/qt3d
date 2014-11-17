@@ -6,7 +6,7 @@ HEADERS += \
     $$PWD/loadmeshdatajob_p.h \
     $$PWD/renderviewjob_p.h \
     $$PWD/renderviewjobutils_p.h \
-    $$PWD/loadscenejob.h
+    $$PWD/loadscenejob_p.h
 
 SOURCES += \
     $$PWD/updateworldtransformjob.cpp \
