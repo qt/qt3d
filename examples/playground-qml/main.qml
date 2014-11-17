@@ -94,6 +94,16 @@ Entity {
         }
     }
 
+    Entity {
+        components: ShaderData {
+            id: testPrototype
+            property vector3d position;
+            property int posistionTransformed: ShaderData.ModelToEye
+            property vector3d direction;
+            property color color;
+        }
+    }
+
     // Scene graph
     Entity {
         id: sceneRoot
