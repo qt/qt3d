@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "loadmeshdatajob.h"
+#include "loadmeshdatajob_p.h"
 
 #include <qattribute.h>
 #include <qmesh.h>

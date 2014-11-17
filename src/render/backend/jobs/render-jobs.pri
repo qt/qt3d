@@ -3,7 +3,7 @@ INCLUDEPATH += $$PWD
 HEADERS += \
     $$PWD/updateworldtransformjob.h \
     $$PWD/updateboundingvolumejob.h \
-    $$PWD/loadmeshdatajob.h \
+    $$PWD/loadmeshdatajob_p.h \
     $$PWD/renderviewjob.h \
     $$PWD/renderviewjobutils_p.h \
     $$PWD/loadscenejob.h
