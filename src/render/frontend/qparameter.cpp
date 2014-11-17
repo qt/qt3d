@@ -52,7 +52,6 @@ namespace Qt3D {
 
 QParameterPrivate::QParameterPrivate(QParameter *qq)
     : QNodePrivate(qq)
-    , m_isTexture(false)
 {
 }
 
@@ -67,7 +66,6 @@ void QParameter::copy(const QNode *ref)
     const QParameter *param = static_cast<const QParameter*>(ref);
     d_func()->m_name = param->d_func()->m_name;
     d_func()->m_value = param->d_func()->m_value;
-    d_func()->m_isTexture = param->d_func()->m_isTexture;
 }
 
 QParameter::QParameter(QParameterPrivate &dd, QNode *parent)
@@ -120,8 +118,8 @@ void QParameter::setValue(const QVariant &dv)
         emit valueChanged();
 
         // In case texture are declared inline
-        QTexture *txt = dv.value<QTexture *>();
-        if ((d->m_isTexture = (txt != Q_NULLPTR)) && !txt->parent())
+        QNode *txt = dv.value<QNode *>();
+        if (txt != Q_NULLPTR && !txt->parent())
            txt->setParent(this);
 
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
@@ -139,13 +137,6 @@ QVariant QParameter::value() const
 {
     Q_D(const QParameter);
     return d->m_value;
-}
-
-
-bool QParameter::isTextureType() const
-{
-    Q_D(const QParameter);
-    return d->m_isTexture;
 }
 
 } // Qt3D

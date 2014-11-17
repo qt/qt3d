@@ -63,7 +63,6 @@ public:
     QString m_name;
     QVariant m_value;
     QString m_meshName;
-    bool m_isTexture;
 };
 
 } // Qt3D

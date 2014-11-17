@@ -74,8 +74,6 @@ public:
     void setValue(const QVariant& dv);
     QVariant value() const;
 
-    bool isTextureType() const;
-
 Q_SIGNALS:
     void valueChanged();
     void nameChanged();
