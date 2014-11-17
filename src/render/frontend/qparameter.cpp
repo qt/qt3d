@@ -126,7 +126,11 @@ void QParameter::setValue(const QVariant &dv)
 
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
         change->setPropertyName(d->m_name.toUtf8());
-        change->setValue(d->m_value);
+        if (txt != Q_NULLPTR)
+            change->setValue(QVariant::fromValue(QNode::clone(txt)));
+        else
+            change->setValue(d->m_value);
+
         d->notifyObservers(change);
     }
 }
