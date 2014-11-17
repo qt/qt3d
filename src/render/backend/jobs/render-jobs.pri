@@ -1,7 +1,7 @@
 INCLUDEPATH += $$PWD
 
 HEADERS += \
-    $$PWD/updateworldtransformjob.h \
+    $$PWD/updateworldtransformjob_p.h \
     $$PWD/updateboundingvolumejob_p.h \
     $$PWD/loadmeshdatajob_p.h \
     $$PWD/renderviewjob_p.h \

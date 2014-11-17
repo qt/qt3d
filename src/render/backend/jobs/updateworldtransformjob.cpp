@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "updateworldtransformjob.h"
+#include "updateworldtransformjob_p.h"
 
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/private/renderentity_p.h>
