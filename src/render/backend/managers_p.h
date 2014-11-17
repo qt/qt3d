@@ -60,6 +60,7 @@
 #include <Qt3DRenderer/private/rendertarget_p.h>
 #include <Qt3DRenderer/private/renderrenderpass_p.h>
 #include <Qt3DRenderer/private/renderparameter_p.h>
+#include <Qt3DRenderer/private/rendershaderdata_p.h>
 #include <Qt3DRenderer/private/handle_types_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -276,6 +277,17 @@ class ParameterManager : public QResourceManager<
 {
 public:
     ParameterManager() {}
+};
+
+class ShaderDataManager : public QResourceManager<
+        RenderShaderData,
+        QNodeId,
+        16,
+        Qt3D::ArrayAllocatingPolicy,
+        Qt3D::ObjectLevelLockingPolicy>
+{
+public:
+    ShaderDataManager() {}
 };
 
 } // Render
