@@ -79,7 +79,6 @@ void RenderLight::updateFromPeer(QNode *peer)
         const QMetaProperty property = light->metaObject()->property(index);
         QString propertyName = QString::fromLatin1(property.name());
         if (propertyName != QStringLiteral("childNodes") && propertyName != QStringLiteral("data")) {
-            qDebug() << property.name();
             m_lightProperties.insert(propertyName, property.read(light));
         }
     }
