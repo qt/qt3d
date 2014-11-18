@@ -103,7 +103,7 @@ void QMaterial::setEffect(QEffect *effect)
     Q_D(QMaterial);
     if (effect != d->m_effect) {
 
-        if (d->m_effect != Q_NULLPTR && d->m_changeArbiter != Q_NULLPTR) {
+        if (d->m_effect && d->m_changeArbiter) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, this));
             change->setPropertyName(QByteArrayLiteral("effect"));
             change->setValue(QVariant::fromValue(d->m_effect->uuid()));
@@ -117,10 +117,10 @@ void QMaterial::setEffect(QEffect *effect)
         // Or not previously added as a child of the current node so that
         // 1) The backend gets notified about it's creation
         // 2) When the current node is destroyed, it gets destroyed as well
-        if (!effect->parent())
+        if (effect && !effect->parent())
             effect->setParent(this);
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
+        if (d->m_effect && d->m_changeArbiter) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
             change->setPropertyName(QByteArrayLiteral("effect"));
             change->setValue(QVariant::fromValue(effect->uuid()));
