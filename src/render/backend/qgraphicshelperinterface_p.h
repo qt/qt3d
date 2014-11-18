@@ -73,6 +73,7 @@ public:
     virtual void    useProgram(GLuint programId) = 0;
     virtual QVector<ShaderUniform> programUniformsAndLocations(GLuint programId) = 0;
     virtual QVector<ShaderAttribute> programAttributesAndLocations(GLuint programId) = 0;
+    virtual QVector<ShaderUniformBlock> programUniformBlocks(GLuint programId) = 0;
     virtual void    vertexAttribDivisor(GLuint index, GLuint divisor) = 0;
     virtual void    blendEquation(GLenum mode) = 0;
     virtual void    alphaTest(GLenum mode1, GLenum mode2) = 0;

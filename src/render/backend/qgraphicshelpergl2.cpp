@@ -171,6 +171,14 @@ QVector<ShaderAttribute> QGraphicsHelperGL2::programAttributesAndLocations(GLuin
     return attributes;
 }
 
+QVector<ShaderUniformBlock> QGraphicsHelperGL2::programUniformBlocks(GLuint programId)
+{
+    Q_UNUSED(programId)
+    QVector<ShaderUniformBlock> blocks;
+    qWarning() << "UBO are not supported by OpenGL 2.0 (since OpenGL 3.1)";
+    return blocks;
+}
+
 void QGraphicsHelperGL2::vertexAttribDivisor(GLuint index,
                                              GLuint divisor)
 {

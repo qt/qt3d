@@ -61,10 +61,28 @@ struct ShaderAttribute
 
 struct ShaderUniform
 {
+    ShaderUniform()
+        : m_size(0)
+        , m_offset(-1)
+        , m_location(-1)
+        , m_blockIndex(-1)
+    {}
+
     QString m_name;
     GLenum m_type;
     int m_size;
-    int m_location;
+    int m_offset; // -1 default, >= 0 if uniform defined in uniform block
+    int m_location; // -1 if uniform defined in a uniform block
+    int m_blockIndex; // -1 is the default, >= 0 if uniform defined in uniform block
+};
+
+struct ShaderUniformBlock
+{
+    QString m_name;
+    int m_index;
+    int m_binding;
+    int m_activeUniformsCount;
+    int m_size;
 };
 
 } // Render

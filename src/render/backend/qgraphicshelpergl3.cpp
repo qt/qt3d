@@ -150,8 +150,11 @@ QVector<ShaderUniform> QGraphicsHelperGL3::programUniformsAndLocations(GLuint pr
         m_funcs->glGetActiveUniform(programId, i, 256, NULL, &uniform.m_size, &uniform.m_type , uniformName.data());
         uniform.m_location = m_funcs->glGetUniformLocation(programId, uniformName.constData());
         uniform.m_name = QString::fromUtf8(uniformName);
+        m_funcs->glGetActiveUniformsiv(programId, 1, (GLuint*)&i, GL_UNIFORM_BLOCK_INDEX, &uniform.m_blockIndex);
+        m_funcs->glGetActiveUniformsiv(programId, 1, (GLuint*)&i, GL_UNIFORM_OFFSET, &uniform.m_offset);
         uniforms.append(uniform);
     }
+
     return uniforms;
 }
 
@@ -171,6 +174,25 @@ QVector<ShaderAttribute> QGraphicsHelperGL3::programAttributesAndLocations(GLuin
         attributes.append(attribute);
     }
     return attributes;
+}
+
+QVector<ShaderUniformBlock> QGraphicsHelperGL3::programUniformBlocks(GLuint programId)
+{
+    QVector<ShaderUniformBlock> blocks;
+    GLint nbrActiveUniformsBlocks = 0;
+    m_funcs->glGetProgramiv(programId, GL_ACTIVE_UNIFORM_BLOCKS, &nbrActiveUniformsBlocks);
+    blocks.resize(nbrActiveUniformsBlocks);
+    for (GLint i = 0; i < nbrActiveUniformsBlocks; i++) {
+        QByteArray uniformBlockName(256, '\0');
+        ShaderUniformBlock uniformBlock;
+        m_funcs->glGetActiveUniformBlockName(programId, i, 256, NULL, uniformBlockName.data());
+        uniformBlock.m_name = QString::fromUtf8(uniformBlockName);
+        m_funcs->glGetActiveUniformBlockiv(programId, i, GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS, &uniformBlock.m_activeUniformsCount);
+        m_funcs->glGetActiveUniformBlockiv(programId, i, GL_UNIFORM_BLOCK_BINDING, &uniformBlock.m_binding);
+        m_funcs->glGetActiveUniformBlockiv(programId, i, GL_UNIFORM_BLOCK_DATA_SIZE, &uniformBlock.m_size);
+        blocks.append(uniformBlock);
+    }
+    return blocks;
 }
 
 void QGraphicsHelperGL3::vertexAttribDivisor(GLuint index, GLuint divisor)
