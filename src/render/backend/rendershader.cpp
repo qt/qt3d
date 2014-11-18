@@ -99,6 +99,11 @@ QVector<QString> RenderShader::attributesNames() const
     return m_attributesNames;
 }
 
+QVector<QString> RenderShader::uniformBlockNames() const
+{
+    return m_uniformBlockNames;
+}
+
 void RenderShader::sceneChangeEvent(const QSceneChangePtr &e)
 {
     if (e->type() == NodeUpdated) {
@@ -130,6 +135,21 @@ void RenderShader::sceneChangeEvent(const QSceneChangePtr &e)
 bool RenderShader::isLoaded() const
 {
     return m_isLoaded;
+}
+
+QVector<ShaderUniform> RenderShader::uniforms() const
+{
+    return m_uniforms;
+}
+
+QVector<ShaderAttribute> RenderShader::attributes() const
+{
+    return m_attributes;
+}
+
+QVector<ShaderUniformBlock> RenderShader::uniformBlocks() const
+{
+    return m_uniformBlocks;
 }
 
 /*!

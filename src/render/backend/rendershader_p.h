@@ -74,9 +74,14 @@ public:
 
     QVector<QString> uniformsNames() const;
     QVector<QString> attributesNames() const;
+    QVector<QString> uniformBlockNames() const;
 
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
     bool isLoaded() const;
+
+    QVector<ShaderUniform> uniforms() const;
+    QVector<ShaderAttribute> attributes() const;
+    QVector<ShaderUniformBlock> uniformBlocks() const;
 
 private:
     QOpenGLShaderProgram *m_program;
