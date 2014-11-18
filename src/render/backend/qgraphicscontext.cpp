@@ -232,6 +232,8 @@ void QGraphicsContext::activateShader(RenderShader *shader)
         m_shaderHash[shader] = prog;
         shader->initializeUniforms(m_glHelper->programUniformsAndLocations(prog->programId()));
         shader->initializeAttributes(m_glHelper->programAttributesAndLocations(prog->programId()));
+        if (m_glHelper->supportsFeature(QGraphicsHelperInterface::UniformBufferObject))
+            shader->initializeUniformBlocks(m_glHelper->programUniformBlocks(prog->programId()));
         m_activeShader = Q_NULLPTR;
     }
 
