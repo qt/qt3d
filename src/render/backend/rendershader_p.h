@@ -90,6 +90,9 @@ private:
     QVector<QString> m_attributesNames;
     QVector<ShaderAttribute> m_attributes;
 
+    QVector<QString> m_uniformBlockNames;
+    QVector<ShaderUniformBlock> m_uniformBlocks;
+
     QHash<QString, int> m_fragOutputs;
 
     QVector<QByteArray> m_shaderCode;
@@ -99,6 +102,7 @@ private:
     // Private so that only GraphicContext can call it
     void initializeUniforms(const QVector<ShaderUniform> &uniformsDescription);
     void initializeAttributes(const QVector<ShaderAttribute> &attributesDescription);
+    void initializeUniformBlocks(const QVector<ShaderUniformBlock> &uniformBlockDescription);
     QOpenGLShaderProgram *getOrCreateProgram(QGraphicsContext *ctx);
     friend class QGraphicsContext;
 };

@@ -233,6 +233,14 @@ void RenderShader::initializeAttributes(const QVector<ShaderAttribute> &attribut
         m_attributesNames[i] = attributesDescription[i].m_name;
 }
 
+void RenderShader::initializeUniformBlocks(const QVector<ShaderUniformBlock> &uniformBlockDescription)
+{
+    m_uniformBlocks = uniformBlockDescription;
+    m_uniformBlockNames.resize(uniformBlockDescription.size());
+    for (int i = 0; i < uniformBlockDescription.size(); ++i)
+        m_uniformBlockNames[i] = uniformBlockDescription[i].m_name;
+}
+
 } // namespace Render
 } // namespace Qt3D
 
