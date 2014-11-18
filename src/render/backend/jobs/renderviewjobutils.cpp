@@ -206,6 +206,13 @@ void preprocessRenderTree(RenderView *rv, const RenderEntity *node)
         if (!lightHandle.isNull())
             rv->appendLight(lightHandle, *node->worldTransform());
 
+    // For each of entity that has a QShaderData component we need to save the worldTransform so that we can
+    // later use the shaderData with the correct space transforms
+    QList<HShaderData> shaderDataHandles = node->componentsHandle<RenderShaderData, 16>();
+    Q_FOREACH (const HShaderData shaderDataHandle, shaderDataHandles)
+        if (!shaderDataHandle.isNull())
+            rv->appendShaderData(shaderDataHandle, *node->worldTransform());
+
     // Traverse children
     Q_FOREACH (RenderEntity *child, node->children())
         preprocessRenderTree(rv, child);

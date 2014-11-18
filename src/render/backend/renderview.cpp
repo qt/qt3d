@@ -45,6 +45,7 @@
 #include <Qt3DRenderer/qtexture.h>
 #include <Qt3DRenderer/qrendertarget.h>
 #include <Qt3DRenderer/sphere.h>
+#include <Qt3DRenderer/qshaderdata.h>
 
 #include <Qt3DRenderer/private/cameraselectornode_p.h>
 #include <Qt3DRenderer/private/framegraphnode_p.h>
@@ -379,9 +380,34 @@ void RenderView::setUniformValue(QUniformPack &uniformPack, const QString &name,
         TextureUniform *texUniform = m_allocator->allocate<TextureUniform>();
         texUniform->setTextureId(tex->uuid());
         uniformPack.setUniform(name, texUniform);
-    }
-    else {
+    } else {
         uniformPack.setUniform(name, QUniformValue::fromVariant(value, m_allocator));
+    }
+}
+
+void RenderView::setUniformBlockValue(QUniformPack &uniformPack, const QVector<QString> &uniformNames, const QString &blockName, const QVariant &value)
+{
+    QShaderData *shaderData = Q_NULLPTR;
+    if ((shaderData = value.value<QShaderData *>())) {
+        RenderShaderData *rShaderData = m_renderer->shaderDataManager()->lookupResource(shaderData->uuid());
+        if (rShaderData) {
+            const QHash<const char *, QVariant> &properties = rShaderData->properties();
+            QHash<const char *, QVariant>::const_iterator it = properties.begin();
+            const QHash<const char *, QVariant>::const_iterator end = properties.end();
+            while (it != end) {
+                // TO DO, we assign a UniformBlockBufferValue to the UniformPack
+                // Internally this points to the UBO
+                // The UBO should be created and managed by the RenderShaderData
+                // However we need to create the UBO the first time based on the size / offset
+                // of the shader introspection
+                // Also, uniform block arrays were only introduced in 4.3, how to handle that for previous versions ?
+                // Check if the rShaderData is contained in m_data.m_shaderData if it has a transformed property
+                // If a QShaderData has a transform property but isn't in m_data.m_shaderData -> hasn't been assigned as the
+                // component of an Entity, we should print a warning
+                qDebug() << "Properties " << it.key();
+                ++it;
+            }
+        }
     }
 }
 
@@ -426,6 +452,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
             // equals to the parameter name
             const QVector<QString> &uniformNames = shader->uniformsNames();
             const QVector<QString> &attributeNames = shader->attributesNames();
+            const QVector<QString> &uniformBlockNames = shader->uniformBlockNames();
 
             // Set fragData Name and index
             // Later on we might want to relink the shader if attachments have changed
@@ -450,7 +477,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
                 // Set default attributes
                 Q_FOREACH (const QString &attributeName, attributeNames) {
                     if (ms_standardAttributesNames.contains(attributeName))
-                        command->m_parameterAttributeToShaderNames[attributeName] = attributeName;
+                        command->m_parameterAttributeToShaderNames.insert(attributeName, attributeName);
                 }
 
                 // Set uniforms and attributes explicitly binded
@@ -458,7 +485,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
                     ParameterInfoList::iterator it = findParamInfo(&parameters, binding->parameterName());
                     if (it == parameters.end()) {
                         if (binding->bindingType() == QParameterMapping::Attribute
-                            && attributeNames.contains(binding->shaderVariableName())) {
+                                && attributeNames.contains(binding->shaderVariableName())) {
                             command->m_parameterAttributeToShaderNames.insert(binding->parameterName(), binding->shaderVariableName());
                         } else if (binding->bindingType() == QParameterMapping::StandardUniform
                                    && uniformNames.contains(binding->shaderVariableName())
@@ -477,36 +504,23 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
                     }
                 }
 
-                // If there are remaining parameters, those are set as uniforms
-                if (!uniformNames.isEmpty() && !parameters.isEmpty()) {
+                // Parameters remaining could be
+                // -> uniform scalar / vector
+                // -> uniform struct / arrays
+                // -> uniform block / array (4.3)
+
+                if ((!uniformNames.isEmpty() || !uniformBlockNames.isEmpty()) && !parameters.isEmpty()) {
                     ParameterInfoList::iterator it = parameters.begin();
                     while (it != parameters.end()) {
-                        if (uniformNames.contains(it->name)) {
+                        if (uniformNames.contains(it->name)) { // Parameter is a regular uniform
                             setUniformValue(command->m_uniforms, it->name, it->value);
+                            it = parameters.erase(it);
+                        } else if (uniformBlockNames.contains(it->name)) { // Parameter is a uniform block
+                            setUniformBlockValue(command->m_uniforms, uniformNames, it->name, it->value);
                             it = parameters.erase(it);
                         } else {
                             // Else param unused by current shader
                             ++it;
-                        }
-                    }
-                }
-
-                // Sets lights in shader
-                // Maybe we should provide a flag in the shader to specify if it needs lights
-                // that might save a bit of performances
-                QHash<QString, int> m_countOfLightTypes;
-                Q_FOREACH (const LightPair &lightPair, m_data->m_lights) {
-                    RenderLight *light = m_renderer->lightManager()->data(lightPair.first);
-                    if (light != Q_NULLPTR) {
-                        int lightIdx = m_countOfLightTypes[light->lightBlockName()]++;
-
-                        QHash<QString, QVariant> lightProperties = light->lightProperties();
-                        lightProperties[QStringLiteral("position")] = lightPair.second.map(QVector3D());
-                        Q_FOREACH (const QString &propertyName, lightProperties.keys()) {
-                            QString lightShaderUniform(light->lightUniformName() + QStringLiteral("[") + QString::number(lightIdx) + QStringLiteral("].") + propertyName);
-                            if (uniformNames.contains(lightShaderUniform)) {
-                                command->m_uniforms.setUniform(lightShaderUniform, QUniformValue::fromVariant(lightProperties[propertyName], m_allocator));
-                            }
                         }
                     }
                 }

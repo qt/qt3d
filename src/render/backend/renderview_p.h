@@ -78,6 +78,7 @@ class RenderEffect;
 class RenderRenderPass;
 
 typedef QPair<HLight, QMatrix4x4> LightPair;
+typedef QPair<HShaderData, QMatrix4x4> ShaderDataPair;
 
 // This class is kind of analogous to RenderBin but I want to avoid trampling
 // on that until we get this working
@@ -177,6 +178,11 @@ public:
         m_data->m_lights.append(LightPair(lightHandle, worldMatrix));
     }
 
+    inline void appendShaderData(HShaderData shaderDataHandle, const QMatrix4x4 &worldMatrix)
+    {
+        m_data->m_shaderData.append(ShaderDataPair(shaderDataHandle, worldMatrix));
+    }
+
     void buildRenderCommands(RenderEntity *preprocessedTreeRoot);
     QVector<RenderCommand *> commands() const { return m_commands; }
 
@@ -217,6 +223,7 @@ private:
         QStringList m_layers;
         QList<LightPair> m_lights;
         QList<QNodeId> m_sortingCriteria;
+        QVector<ShaderDataPair> m_shaderData;
         QVector3D m_eyePos;
     } *m_data;
 
@@ -254,6 +261,7 @@ private:
     QUniformValue *inverseViewportMatrix(const QMatrix4x4 &model) const;
 
     void setUniformValue(QUniformPack &uniformPack, const QString &name, const QVariant &value);
+    void setUniformBlockValue(QUniformPack &uniformPack, const QVector<QString> &uniformNames, const QString &blockName, const QVariant &value);
     void buildSortingKey(RenderCommand *command);
 };
 
