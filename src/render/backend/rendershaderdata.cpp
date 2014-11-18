@@ -66,6 +66,8 @@ void RenderShaderData::updateFromPeer(QNode *peer)
 
     for (int i = propertyOffset; i < propertyCount; ++i) {
         const QMetaProperty property = metaObject->property(i);
+        if (strcmp(property.name(), "data") == 0 || strcmp(property.name(), "childNodes") == 0) // We don't handle default Node properties
+            continue;
         m_properties.insert(property.name(), shaderData->property(property.name()));
     }
 }

@@ -56,6 +56,7 @@ public:
     RenderShaderData();
 
     void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
+    inline QHash<const char *, QVariant> properties() const { return m_properties; }
 
 protected:
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
