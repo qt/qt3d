@@ -40,12 +40,16 @@
 ****************************************************************************/
 
 import Qt3D 2.0
+import Qt3D.Render 2.0
 
-// This object is like Node in that it has a transformation component
-// attached. In addition it also has a Mesh property attached so it
-// can in addition be rendered
+Entity {
+    property Transform transform;
+    property Mesh mesh;
+    property Material material;
 
-Object {
-    //property Transform transform
-    property Mesh mesh
+    components: [
+        transform,
+        mesh,
+        material
+    ]
 }

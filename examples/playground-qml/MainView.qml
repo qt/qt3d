@@ -41,57 +41,82 @@
 
 import Qt3D 2.0
 import Qt3D.Render 2.0
+import QtQuick 2.0 as QQ2
 
-TechniqueFilter {
-    id: root
+Entity {
 
-    objectName : "techniqueFilter"
+    property Entity camera: Camera {
+        projectionType: CameraLens.PerspectiveProjection
+        fieldOfView: 45
+        aspectRatio: 16/9
+        nearPlane: 0.01
+        farPlane: 1000.0
+        position: Qt.vector3d( 10.0, 10.0, -25.0 )
+        upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
+        viewCenter: Qt.vector3d( 0.0, 0.0, 10.0 )
+    }
 
-    // Expose the viewport rect and camera. This allows users of this
-    // forward rendering framegraph to decide which camera in the
-    // scene renders to a given viewport region.
-    //
-    // Using this as a building block for a larger framegraph would
-    // allow a scene to be rendered multiple times to different
-    // viewports using different cameras for e.g.
-    property alias mainCameraViewport: mainCamera.camera
-    property alias detailCameraViewport: detailCamera.camera
-    property alias layerFilters: layerFilter.layers
-    property alias clearColor: viewport.clearColor
+    // Shareable Components
 
-    requires : [
-        Annotation { name: "RenderingStyle"; value: "forward";},
-        Annotation { name: "Enabled"; value: true;}
-    ]
+    Mesh {
+        id: ballMesh
+        objectName: "ballMesh"
+        source: ":/assets/ball.obj"
+    }
 
-    ClearBuffer {
-        buffers: ClearBuffer.ColorDepthBuffer
+    Mesh {
+        id: cubeMesh
+        objectName: "cubeMesh"
+        source: ":/assets/cube.obj"
+    }
 
-        // Main Viewport
-        Viewport {
-            id: viewport
-            rect: Qt.rect(0.0, 0, 1.0, 1.0)
+    AnimatedDiffuseMaterial {
+        id: animatedMaterial
+        texture: Texture2D { source : "assets/gltf/wine/Wood_Cherry_Original_.jpg" }
+    }
 
-            CameraSelector {
-                id : mainCamera
+    // Scene elements
 
-                LayerFilter {
-                    id: layerFilter
-                    RenderPassFilter { includes: [
-                            Annotation {name : "Name"; value : "Texture"}
-                        ] }
-                }
-            }
+    Entity {
+        id : sceneEntity
+        components : SceneLoader {
+            id: scene
+            source: ":/assets/test_scene.dae"
+            objectName: "dae_scene"
         }
     }
 
-    Viewport {
-        id : detailViewport
-        rect: Qt.rect(0.75, 0.0, 0.25, 0.25)
+    RenderableEntity {
+        mesh: ballMesh
+        material: animatedMaterial
+        transform: Transform {
+            Translate {
+                dx: 0; dy: -10; dz : 25
+                QQ2.SequentialAnimation on dz {
+                    running : true
+                    loops: QQ2.Animation.Infinite
+                    QQ2.NumberAnimation { to : -1000; duration : 2000 }
+                    QQ2.NumberAnimation { to : 1000; duration : 1000 }
+                }
+            }
+            Scale {scale : 0.3}
+        }
+    }
 
-        CameraSelector {
-            id: detailCamera
-                RenderPassFilter { includes : [Annotation {name : "Name"; value : "ColorMaterial";}] }
+    RenderableEntity {
+        mesh: cubeMesh
+        material: animatedMaterial
+        transform: Transform {
+            Translate {
+                dx: 0; dy: -10; dz : 25
+                QQ2.SequentialAnimation on dx {
+                    running : true
+                    loops: QQ2.Animation.Infinite
+                    QQ2.NumberAnimation { to : -100; duration : 2000 }
+                    QQ2.NumberAnimation { to : 100; duration : 1000 }
+                }
+            }
+            Scale {scale : 0.3}
         }
     }
 }

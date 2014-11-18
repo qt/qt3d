@@ -42,66 +42,26 @@
 import Qt3D 2.0
 import Qt3D.Render 2.0
 
-Effect {
-    id: simpleEffect
 
-    techniques: [
-        Technique {
-            id: technique1
+Entity {
 
-            annotations : [
-                TechniqueCriterion { criterionType : TechniqueCriterion.CustomType; criterionCustomType: "useEarlyZ"; criterionValue : true},
-                TechniqueCriterion { criterionType : TechniqueCriterion.RenderingStyle; criterionValue : "forward"}
-            ]
-
-            renderPasses: [
-                RenderPass {
-                    shaderProgram: ShaderProgram {
-                        vertexSource: ":/shaders/zfill.vert"
-                        fragmentSource: ":/shaders/zfill.frag"
-                    }
-                },
-
-                RenderPass {
-                    shaderProgram: phongProgram
+    property Entity camera : Entity {
+        components : [
+            CameraLens {
+                projectionType: CameraLens.PerspectiveProjection
+                fieldOfView: 60
+                aspectRatio: 16/9
+                nearPlane: 0.001
+                farPlane: 10000.0
+            },
+            Transform {
+                LookAt {
+                    position: Qt.vector3d( 10.0, 10.0, -25.0 )
+                    upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
+                    viewCenter: Qt.vector3d( 0.0, 0.0, 10.0 )
                 }
-            ]
-        },
-
-        Technique {
-            id: technique2
-
-            annotations : [
-                TechniqueCriterion { criterionType : TechniqueCriterion.CustomType; criterionCustomType: "useEarlyZ"; criterionValue : false},
-                TechniqueCriterion { criterionType : TechniqueCriterion.RenderingStyle; criterionValue : "forward"}
-            ]
-
-            renderPasses: [
-                RenderPass {
-                    shaderProgram: phongProgram
-                }
-            ]
-        },
-
-        Technique {
-            id: technique3
-
-            annotations : [
-                TechniqueCriterion { criterionType : TechniqueCriterion.CustomType; criterionCustomType: "useEarlyZ"; criterionValue : false},
-                TechniqueCriterion { criterionType : TechniqueCriterion.RenderingStyle; criterionValue : "deferred"}
-            ]
-
-            renderPasses: [
-                RenderPass {},
-                RenderPass {},
-                RenderPass {}
-            ]
-        }
-    ]
-
-    ShaderProgram {
-        id: phongProgram
-        vertexSource: ":/shaders/phong.vert"
-        fragmentSource: ":/shaders/phong.frag"
+            }
+        ]
     }
+
 }

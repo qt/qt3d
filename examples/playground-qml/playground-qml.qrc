@@ -1,12 +1,15 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
-        <file>SimpleEffect.qml</file>
-        <file>Renderable.qml</file>
         <file>AdsEffect.qml</file>
         <file>assets/ball.obj</file>
         <file>ForwardRenderer.qml</file>
         <file>assets/test_scene.dae</file>
         <file>assets/cube.obj</file>
+        <file>ComplexTechnique.qml</file>
+        <file>MainView.qml</file>
+        <file>DetailView.qml</file>
+        <file>RenderableEntity.qml</file>
+        <file>AnimatedDiffuseMaterial.qml</file>
     </qresource>
 </RCC>

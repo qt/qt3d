@@ -1,6 +1,6 @@
 TEMPLATE = app
 
-QT += 3dcore 3drenderer 3dquick qml quick
+QT += 3dcore 3drenderer 3dquick qml quick 3dinput
 
 include("../exampleresources/exampleresources.pri")
 
@@ -12,13 +12,17 @@ SOURCES += \
 OTHER_FILES += \
     main.qml \
     AdsEffect.qml \
-    Renderable.qml \
     SimpleEffect.qml \
     elements/ViewportEntity.qml \
     elements/TechniqueFilterEntity.qml \
     elements/RenderPassFilterEntity.qml \
     elements/CameraSelectorEntity.qml \
-    ForwardRenderer.qml
+    ForwardRenderer.qml \
+    ComplexTechnique.qml \
+    RenderableEntity.qml \
+    MainView.qml \
+    DetailView.qml \
+    AnimatedDiffuseMaterial.qml
 
 RESOURCES += \
     playground-qml.qrc
