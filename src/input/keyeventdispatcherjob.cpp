@@ -66,10 +66,11 @@ void KeyEventDispatcherJob::setInputHandler(InputHandler *handler)
 void KeyEventDispatcherJob::run()
 {
     KeyboardInput *input = m_inputHandler->keyboardInputManager()->lookupResource(m_keyboardInput);
-    Q_FOREACH (const QKeyEvent &e, m_events) {
-        // Send events to frontend
-        input->keyEvent(Q3DKeyEventPtr(new Q3DKeyEvent(e)));
-    }
+    if (input)
+        Q_FOREACH (const QKeyEvent &e, m_events) {
+            // Send events to frontend
+            input->keyEvent(Q3DKeyEventPtr(new Q3DKeyEvent(e)));
+        }
 }
 
 } // Input

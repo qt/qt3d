@@ -132,11 +132,17 @@ void KeyboardInput::requestFocus()
 
 void KeyboardInput::setController(const QNodeId &controller)
 {
-    if (!m_keyboardController.isNull())
-        m_inputHandler->keyboardControllerManager()->lookupResource(m_keyboardController)->removeKeyboardInput(peerUuid());
+    if (!m_keyboardController.isNull()) {
+        KeyboardController *controller =  m_inputHandler->keyboardControllerManager()->lookupResource(m_keyboardController);
+        if (controller)
+            controller->removeKeyboardInput(peerUuid());
+    }
     m_keyboardController = controller;
-    if (!m_keyboardController.isNull())
-        m_inputHandler->keyboardControllerManager()->lookupResource(m_keyboardController)->addKeyboardInput(peerUuid());
+    if (!m_keyboardController.isNull()) {
+        KeyboardController *controller =  m_inputHandler->keyboardControllerManager()->lookupResource(m_keyboardController);
+        if (controller)
+            controller->addKeyboardInput(peerUuid());
+    }
 }
 
 KeyboardInputFunctor::KeyboardInputFunctor(InputHandler *handler)

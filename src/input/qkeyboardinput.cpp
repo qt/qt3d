@@ -167,6 +167,10 @@ void QKeyboardInput::setController(QKeyboardController *controller)
 {
     Q_D(QKeyboardInput);
     if (d->m_controller != controller) {
+
+        if (controller && !controller->parent())
+            controller->setParent(this);
+
         d->m_controller = controller;
         emit controllerChanged();
     }
