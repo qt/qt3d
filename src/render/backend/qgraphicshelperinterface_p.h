@@ -92,7 +92,7 @@ public:
     virtual void    drawBuffers(GLsizei n, const int *bufs) = 0;
     virtual void    bindFragDataLocation(GLuint shader, const QHash<QString, int> &outputs) = 0;
     virtual void    bindUniform(const QVariant &v, const ShaderUniform &description) = 0;
-
+    virtual void    bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding) = 0;
 };
 
 

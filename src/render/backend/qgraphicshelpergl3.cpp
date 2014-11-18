@@ -499,6 +499,11 @@ void QGraphicsHelperGL3::bindUniform(const QVariant &v, const ShaderUniform &des
     }
 }
 
+void QGraphicsHelperGL3::bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding)
+{
+    m_funcs->glUniformBlockBinding(programId, uniformBlockIndex, uniformBlockBinding);
+}
+
 } // Render
 } // Qt3D
 

@@ -383,6 +383,14 @@ void QGraphicsHelperES2::bindFragDataLocation(GLuint , const QHash<QString, int>
     qCritical() << "bindFragDataLocation is not supported by ES 2.0";
 }
 
+void QGraphicsHelperES2::bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding)
+{
+    Q_UNUSED(programId)
+    Q_UNUSED(uniformBlockIndex)
+    Q_UNUSED(uniformBlockBinding)
+    qWarning() << "UBO are not supported by OpenGL 2.0 (since OpenGL 3.1)";
+}
+
 } // Render
 } //Qt3D
 

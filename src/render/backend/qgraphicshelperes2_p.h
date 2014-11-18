@@ -89,6 +89,7 @@ public:
     void drawBuffers(GLsizei n, const int *bufs) Q_DECL_OVERRIDE;
     void bindFragDataLocation(GLuint shader, const QHash<QString, int> &outputs) Q_DECL_OVERRIDE;
     void bindUniform(const QVariant &v, const ShaderUniform &description) Q_DECL_OVERRIDE;
+    void bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding) Q_DECL_OVERRIDE;
 
 private:
     QOpenGLFunctions_ES2 *m_funcs;
