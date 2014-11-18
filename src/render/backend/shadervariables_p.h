@@ -74,6 +74,7 @@ struct ShaderUniform
     int m_offset; // -1 default, >= 0 if uniform defined in uniform block
     int m_location; // -1 if uniform defined in a uniform block
     int m_blockIndex; // -1 is the default, >= 0 if uniform defined in uniform block
+    int m_arrayStride; // 0, only set if uniform defined in uniform block and if it's an array
 };
 
 struct ShaderUniformBlock
