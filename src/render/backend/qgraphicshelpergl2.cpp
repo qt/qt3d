@@ -429,6 +429,14 @@ void QGraphicsHelperGL2::bindBufferBase(GLenum target, GLuint index, GLuint buff
     qWarning() << "bindBufferBase is not supported by OpenGL 2.0 (since OpenGL 3.0)";
 }
 
+void QGraphicsHelperGL2::buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer)
+{
+    Q_UNUSED(v)
+    Q_UNUSED(description)
+    Q_UNUSED(buffer)
+    qWarning() << "UBO are not supported by OpenGL 2.0 (since OpenGL 3.1)";
+}
+
 } // Render
 } // Qt3D
 

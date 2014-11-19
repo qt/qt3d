@@ -399,6 +399,14 @@ void QGraphicsHelperES2::bindBufferBase(GLenum target, GLuint index, GLuint buff
     qWarning() << "bindBufferBase is not supported by ES 2.0 (since ES 3.0)";
 }
 
+void QGraphicsHelperES2::buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer)
+{
+    Q_UNUSED(v)
+    Q_UNUSED(description)
+    Q_UNUSED(buffer)
+    qWarning() << "UBO are not supported by ES 2.0 (since ES 3.0)";
+}
+
 } // Render
 } //Qt3D
 

@@ -512,6 +512,210 @@ void QGraphicsHelperGL3::bindBufferBase(GLenum target, GLuint index, GLuint buff
     m_funcs->glBindBufferBase(target, index, buffer);
 }
 
+void QGraphicsHelperGL3::buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer)
+{
+    char *bufferData = buffer.data();
+
+    switch (description.m_type) {
+
+    case GL_FLOAT: {
+        const GLfloat *data = QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 1);
+        QGraphicsUtils::fillDataArray(bufferData, data, description, 1);
+        break;
+    }
+
+    case GL_FLOAT_VEC2: {
+        const GLfloat *data = QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 2);
+        QGraphicsUtils::fillDataArray(bufferData, data, description, 2);
+        break;
+    }
+
+    case GL_FLOAT_VEC3: {
+        const GLfloat *data = QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 3);
+        QGraphicsUtils::fillDataArray(bufferData, data, description, 3);
+        break;
+    }
+
+    case GL_FLOAT_VEC4: {
+        const GLfloat *data = QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 4);
+        QGraphicsUtils::fillDataArray(bufferData, data, description, 4);
+        break;
+    }
+
+    case GL_FLOAT_MAT2: {
+        const GLfloat *data = QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 4);
+        QGraphicsUtils::fillDataMatrixArray(bufferData, data, description, 2, 2);
+        break;
+    }
+
+    case GL_FLOAT_MAT2x3: {
+        const GLfloat *data = QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 6);
+        QGraphicsUtils::fillDataMatrixArray(bufferData, data, description, 2, 3);
+        break;
+    }
+
+    case GL_FLOAT_MAT2x4: {
+        const GLfloat *data = QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 8);
+        QGraphicsUtils::fillDataMatrixArray(bufferData, data, description, 2, 4);
+        break;
+    }
+
+    case GL_FLOAT_MAT3: {
+        const GLfloat *data = QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 9);
+        QGraphicsUtils::fillDataMatrixArray(bufferData, data, description, 3, 3);
+        break;
+    }
+
+    case GL_FLOAT_MAT3x2: {
+        const GLfloat *data = QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 6);
+        QGraphicsUtils::fillDataMatrixArray(bufferData, data, description, 3, 2);
+        break;
+    }
+
+    case GL_FLOAT_MAT3x4: {
+        const GLfloat *data = QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 12);
+        QGraphicsUtils::fillDataMatrixArray(bufferData, data, description, 3, 4);
+        break;
+    }
+
+    case GL_FLOAT_MAT4: {
+        const GLfloat *data = QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 16);
+        QGraphicsUtils::fillDataMatrixArray(bufferData, data, description, 4, 4);
+        break;
+    }
+
+    case GL_FLOAT_MAT4x2: {
+        const GLfloat *data = QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 8);
+        QGraphicsUtils::fillDataMatrixArray(bufferData, data, description, 4, 2);
+        break;
+    }
+
+    case GL_FLOAT_MAT4x3: {
+        const GLfloat *data = QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 12);
+        QGraphicsUtils::fillDataMatrixArray(bufferData, data, description, 4, 3);
+        break;
+    }
+
+    case GL_INT: {
+        const GLint *data = QGraphicsUtils::valueArrayFromVariant<GLint>(v, description.m_size, 1);
+        QGraphicsUtils::fillDataArray(bufferData, data, description, 1);
+        break;
+    }
+
+    case GL_INT_VEC2: {
+        const GLint *data = QGraphicsUtils::valueArrayFromVariant<GLint>(v, description.m_size, 2);
+        QGraphicsUtils::fillDataArray(bufferData, data, description, 2);
+        break;
+    }
+
+    case GL_INT_VEC3: {
+        const GLint *data = QGraphicsUtils::valueArrayFromVariant<GLint>(v, description.m_size, 3);
+        QGraphicsUtils::fillDataArray(bufferData, data, description, 3);
+        break;
+    }
+
+    case GL_INT_VEC4: {
+        const GLint *data = QGraphicsUtils::valueArrayFromVariant<GLint>(v, description.m_size, 4);
+        QGraphicsUtils::fillDataArray(bufferData, data, description, 4);
+        break;
+    }
+
+    case GL_UNSIGNED_INT: {
+        const GLuint *data = QGraphicsUtils::valueArrayFromVariant<GLuint>(v, description.m_size, 1);
+        QGraphicsUtils::fillDataArray(bufferData, data, description, 1);
+        break;
+    }
+
+    case GL_UNSIGNED_INT_VEC2: {
+        const GLuint *data = QGraphicsUtils::valueArrayFromVariant<GLuint>(v, description.m_size, 2);
+        QGraphicsUtils::fillDataArray(bufferData, data, description, 2);
+        break;
+    }
+
+    case GL_UNSIGNED_INT_VEC3: {
+        const GLuint *data = QGraphicsUtils::valueArrayFromVariant<GLuint>(v, description.m_size, 3);
+        QGraphicsUtils::fillDataArray(bufferData, data, description, 3);
+        break;
+    }
+
+    case GL_UNSIGNED_INT_VEC4: {
+        const GLuint *data = QGraphicsUtils::valueArrayFromVariant<GLuint>(v, description.m_size, 4);
+        QGraphicsUtils::fillDataArray(bufferData, data, description, 4);
+        break;
+    }
+
+    case GL_BOOL: {
+        const GLboolean *data = QGraphicsUtils::valueArrayFromVariant<GLboolean>(v, description.m_size, 1);
+        QGraphicsUtils::fillDataArray(bufferData, data, description, 1);
+        break;
+    }
+
+    case GL_BOOL_VEC2: {
+        const GLboolean *data = QGraphicsUtils::valueArrayFromVariant<GLboolean>(v, description.m_size, 2);
+        QGraphicsUtils::fillDataArray(bufferData, data, description, 2);
+        break;
+    }
+
+    case GL_BOOL_VEC3: {
+        const GLboolean *data = QGraphicsUtils::valueArrayFromVariant<GLboolean>(v, description.m_size, 3);
+        QGraphicsUtils::fillDataArray(bufferData, data, description, 3);
+        break;
+    }
+
+    case GL_BOOL_VEC4: {
+        const GLboolean *data = QGraphicsUtils::valueArrayFromVariant<GLboolean>(v, description.m_size, 4);
+        QGraphicsUtils::fillDataArray(bufferData, data, description, 4);
+        break;
+    }
+
+    case GL_SAMPLER_1D:
+    case GL_SAMPLER_2D:
+    case GL_SAMPLER_3D:
+    case GL_SAMPLER_CUBE:
+    case GL_SAMPLER_BUFFER:
+    case GL_SAMPLER_2D_RECT:
+    case GL_INT_SAMPLER_1D:
+    case GL_INT_SAMPLER_2D:
+    case GL_INT_SAMPLER_3D:
+    case GL_INT_SAMPLER_CUBE:
+    case GL_INT_SAMPLER_BUFFER:
+    case GL_INT_SAMPLER_2D_RECT:
+    case GL_UNSIGNED_INT_SAMPLER_1D:
+    case GL_UNSIGNED_INT_SAMPLER_2D:
+    case GL_UNSIGNED_INT_SAMPLER_3D:
+    case GL_UNSIGNED_INT_SAMPLER_CUBE:
+    case GL_UNSIGNED_INT_SAMPLER_BUFFER:
+    case GL_UNSIGNED_INT_SAMPLER_2D_RECT:
+    case GL_SAMPLER_1D_SHADOW:
+    case GL_SAMPLER_2D_SHADOW:
+    case GL_SAMPLER_CUBE_SHADOW:
+    case GL_SAMPLER_1D_ARRAY:
+    case GL_SAMPLER_2D_ARRAY:
+    case GL_INT_SAMPLER_1D_ARRAY:
+    case GL_INT_SAMPLER_2D_ARRAY:
+    case GL_UNSIGNED_INT_SAMPLER_1D_ARRAY:
+    case GL_UNSIGNED_INT_SAMPLER_2D_ARRAY:
+    case GL_SAMPLER_1D_ARRAY_SHADOW:
+    case GL_SAMPLER_2D_ARRAY_SHADOW:
+    case GL_SAMPLER_2D_RECT_SHADOW:
+    case GL_SAMPLER_2D_MULTISAMPLE:
+    case GL_INT_SAMPLER_2D_MULTISAMPLE:
+    case GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE:
+    case GL_SAMPLER_2D_MULTISAMPLE_ARRAY:
+    case GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY:
+    case GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY: {
+        Q_ASSERT(description.m_size == 1);
+        int value = v.toInt();
+        QGraphicsUtils::fillDataArray<GLint>(bufferData, &value, description, 1);
+        break;
+    }
+
+    default:
+        qWarning() << Q_FUNC_INFO << "unsupported uniform type:" << description.m_type << "for " << description.m_name;
+        break;
+    }
+}
+
 } // Render
 } // Qt3D
 
