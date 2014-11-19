@@ -388,7 +388,15 @@ void QGraphicsHelperES2::bindUniformBlock(GLuint programId, GLuint uniformBlockI
     Q_UNUSED(programId)
     Q_UNUSED(uniformBlockIndex)
     Q_UNUSED(uniformBlockBinding)
-    qWarning() << "UBO are not supported by OpenGL 2.0 (since OpenGL 3.1)";
+    qWarning() << "UBO are not supported by ES 2.0 (since ES 3.0)";
+}
+
+void QGraphicsHelperES2::bindBufferBase(GLenum target, GLuint index, GLuint buffer)
+{
+    Q_UNUSED(target);
+    Q_UNUSED(index);
+    Q_UNUSED(buffer);
+    qWarning() << "bindBufferBase is not supported by ES 2.0 (since ES 3.0)";
 }
 
 } // Render

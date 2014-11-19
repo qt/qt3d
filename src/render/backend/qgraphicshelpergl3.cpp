@@ -505,6 +505,11 @@ void QGraphicsHelperGL3::bindUniformBlock(GLuint programId, GLuint uniformBlockI
     m_funcs->glUniformBlockBinding(programId, uniformBlockIndex, uniformBlockBinding);
 }
 
+void QGraphicsHelperGL3::bindBufferBase(GLenum target, GLuint index, GLuint buffer)
+{
+    m_funcs->glBindBufferBase(target, index, buffer);
+}
+
 } // Render
 } // Qt3D
 

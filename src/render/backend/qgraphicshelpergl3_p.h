@@ -90,6 +90,7 @@ public:
     void bindFragDataLocation(GLuint shader, const QHash<QString, int> &outputs) Q_DECL_OVERRIDE;
     void bindUniform(const QVariant &v, const ShaderUniform &description) Q_DECL_OVERRIDE;
     void bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding) Q_DECL_OVERRIDE;
+    void bindBufferBase(GLenum target, GLuint index, GLuint buffer) Q_DECL_OVERRIDE;
 
 private:
     QOpenGLFunctions_3_2_Core *m_funcs;
