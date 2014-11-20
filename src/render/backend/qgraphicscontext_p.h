@@ -171,6 +171,9 @@ public:
     void    frontFace(GLenum mode);
     void    bindFragOutputs(GLuint shader, const QHash<QString, int> &outputs);
     void    bindUniform(const QVariant &v, const ShaderUniform &description);
+    void    bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding);
+    void    bindBufferBase(GLenum target, GLuint bindingIndex, GLuint buffer);
+    void    buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer);
     void    enableAlphaCoverage();
     void    disableAlphaCoverage();
 

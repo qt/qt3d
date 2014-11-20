@@ -551,6 +551,21 @@ void QGraphicsContext::bindUniform(const QVariant &v, const ShaderUniform &descr
     m_glHelper->bindUniform(v, description);
 }
 
+void QGraphicsContext::bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding)
+{
+    m_glHelper->bindUniformBlock(programId, uniformBlockIndex, uniformBlockBinding);
+}
+
+void QGraphicsContext::bindBufferBase(GLenum target, GLuint bindingIndex, GLuint buffer)
+{
+    m_glHelper->bindBufferBase(target, bindingIndex, buffer);
+}
+
+void QGraphicsContext::buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer)
+{
+    m_glHelper->buildUniformBuffer(v, description, buffer);
+}
+
 void QGraphicsContext::enableAlphaCoverage()
 {
     m_glHelper->enableAlphaCoverage();
