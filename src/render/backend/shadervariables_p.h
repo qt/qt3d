@@ -76,6 +76,7 @@ struct ShaderUniform
     int m_blockIndex; // -1 is the default, >= 0 if uniform defined in uniform block
     int m_arrayStride; // 0, only set if uniform defined in uniform block and if it's an array
     int m_matrixStride; // 0, only set if uniform defined in uniform block and is a matrix
+    // size, offset and strides are in bytes
 };
 
 struct ShaderUniformBlock

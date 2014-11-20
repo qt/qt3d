@@ -650,6 +650,19 @@ void QGraphicsContext::setUniforms(QUniformPack &uniforms)
             }
         }
     }
+
+    // Bind UniformBlocks to UBO
+    const QVector<BlockToUBO> &ubos = uniforms.uniformBuffers();
+    for (int i = 0; i < ubos.length(); ++i) {
+        RenderShaderData *shaderData = m_renderer->shaderDataManager()->lookupResource(ubos[i].second);
+        if (shaderData != Q_NULLPTR) {
+            // bind Uniform Block of index ubos[i].first to binding point i
+            bindUniformBlock(m_shaderHash.value(m_activeShader)->programId(), ubos[i].first, i);
+            // bind the UBO to the binding point i
+            // Specs specify that there are at least 14 binding points
+            shaderData->apply(this, i);
+        }
+    }
     m_activeShader->updateUniforms(this, uniforms);
 }
 
