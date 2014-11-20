@@ -43,12 +43,16 @@
 #define QT3D_RENDER_RENDERSHADERDATA_P_H
 
 #include <Qt3DCore/qbackendnode.h>
+#include <private/shadervariables_p.h>
+#include <private/uniformbuffer_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
 namespace Render {
+
+class QGraphicsContext;
 
 class RenderShaderData : public QBackendNode
 {
@@ -57,12 +61,25 @@ public:
 
     void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
     inline QHash<const char *, QVariant> properties() const { return m_properties; }
+    inline QHash<const char *, ShaderUniform> activeProperties() const { return m_activeProperties; }
+    inline bool initialized() const { return m_initialized; }
+
+    void initialize(const ShaderUniformBlock &block);
+    void appendActiveProperty(const char *propertyName, const ShaderUniform &description);
+    void apply(QGraphicsContext *ctx, int bindingPoint);
 
 protected:
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void updateUniformBuffer(QGraphicsContext *ctx);
 
 private:
     QHash<const char *, QVariant> m_properties;
+    QHash<const char *, ShaderUniform> m_activeProperties;
+    ShaderUniformBlock m_block;
+    QByteArray m_data;
+    UniformBuffer m_ubo;
+    bool m_initialized;
+    bool m_needsBufferUpdate;
 };
 
 } // Render

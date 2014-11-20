@@ -44,6 +44,7 @@
 #include <QMetaProperty>
 #include <QMetaObject>
 #include <Qt3DCore/qscenepropertychange.h>
+#include <private/qgraphicscontext_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -53,6 +54,8 @@ namespace Render {
 
 RenderShaderData::RenderShaderData()
     : QBackendNode()
+    , m_initialized(false)
+    , m_needsBufferUpdate(true)
 {
 }
 
@@ -72,12 +75,59 @@ void RenderShaderData::updateFromPeer(QNode *peer)
     }
 }
 
+void RenderShaderData::initialize(const ShaderUniformBlock &block)
+{
+    m_block = block;
+    Q_ASSERT(m_block.m_size > 0);
+    // Allocate CPU side buffer
+    m_data = QByteArray(m_block.m_size, 0);
+    m_initialized = true;
+    // Force UBO buffer to be allocated on the GPU when apply is called
+    m_needsBufferUpdate = true;
+}
+
+void RenderShaderData::appendActiveProperty(const char *propertyName, const ShaderUniform &description)
+{
+    m_activeProperties.insert(propertyName, description);
+}
+
+void RenderShaderData::updateUniformBuffer(QGraphicsContext *ctx)
+{
+    if (!m_ubo.isCreated()) {
+        m_ubo.create(ctx);
+        m_ubo.allocate(ctx, m_block.m_size);
+    }
+
+    // TO DO: Only update values that have changed rather than the whole buffer
+    QHash<const char *, ShaderUniform>::const_iterator uniformsIt = m_activeProperties.begin();
+    const QHash<const char *, ShaderUniform>::const_iterator uniformsEnd = m_activeProperties.end();
+
+    while (uniformsIt != uniformsEnd) {
+        ctx->buildUniformBuffer(m_properties.value(uniformsIt.key()), uniformsIt.value(), m_data);
+        ++uniformsIt;
+    }
+    m_ubo.update(ctx, m_data.constData(), m_block.m_size);
+}
+
+// Make sure QGraphicsContext::bindUniformBlock is called prior to this
+void RenderShaderData::apply(QGraphicsContext *ctx, int bindingPoint)
+{
+    // Upload new data to GPU if it has changed
+    if (m_needsBufferUpdate) {
+        updateUniformBuffer(ctx);
+        m_needsBufferUpdate = false;
+    }
+    m_ubo.bindToUniformBlock(ctx, bindingPoint);
+}
+
 void RenderShaderData::sceneChangeEvent(const QSceneChangePtr &e)
 {
     if (e->type() == NodeUpdated) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        if (m_properties.contains(propertyChange->propertyName()))
+        if (m_properties.contains(propertyChange->propertyName())) {
             m_properties.insert(propertyChange->propertyName(), propertyChange->value());
+            m_needsBufferUpdate = true;
+        }
     }
 }
 
