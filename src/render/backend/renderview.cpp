@@ -385,28 +385,66 @@ void RenderView::setUniformValue(QUniformPack &uniformPack, const QString &name,
     }
 }
 
-void RenderView::setUniformBlockValue(QUniformPack &uniformPack, const QVector<QString> &uniformNames, const QString &blockName, const QVariant &value)
+void RenderView::setUniformBlockValue(QUniformPack &uniformPack, RenderShader *shader, const ShaderUniformBlock &block, const QVariant &value)
 {
     QShaderData *shaderData = Q_NULLPTR;
     if ((shaderData = value.value<QShaderData *>())) {
         RenderShaderData *rShaderData = m_renderer->shaderDataManager()->lookupResource(shaderData->uuid());
         if (rShaderData) {
-            const QHash<const char *, QVariant> &properties = rShaderData->properties();
-            QHash<const char *, QVariant>::const_iterator it = properties.begin();
-            const QHash<const char *, QVariant>::const_iterator end = properties.end();
-            while (it != end) {
-                // TO DO, we assign a UniformBlockBufferValue to the UniformPack
-                // Internally this points to the UBO
-                // The UBO should be created and managed by the RenderShaderData
-                // However we need to create the UBO the first time based on the size / offset
-                // of the shader introspection
-                // Also, uniform block arrays were only introduced in 4.3, how to handle that for previous versions ?
-                // Check if the rShaderData is contained in m_data.m_shaderData if it has a transformed property
-                // If a QShaderData has a transform property but isn't in m_data.m_shaderData -> hasn't been assigned as the
-                // component of an Entity, we should print a warning
-                qDebug() << "Properties " << it.key();
-                ++it;
+            if (!rShaderData->initialized()) {
+                // Provides necessary info to rShaderData
+                // to build the UBO
+
+                // Find all uniforms for the shader block
+                const QVector<ShaderUniform> &uniforms = shader->uniforms();
+                QVector<ShaderUniform>::const_iterator uniformsIt = uniforms.begin();
+                const QVector<ShaderUniform>::const_iterator uniformsEnd = uniforms.end();
+                QVector<ShaderUniform> activeBlockUniforms;
+
+                while (uniformsIt != uniformsEnd) {
+                    if (uniformsIt->m_blockIndex == block.m_index)
+                        activeBlockUniforms.append(*uniformsIt);
+                    ++uniformsIt;
+                }
+
+                const QHash<const char *, QVariant> &properties = rShaderData->properties();
+                QHash<const char *, QVariant>::const_iterator it = properties.begin();
+                const QHash<const char *, QVariant>::const_iterator end = properties.end();
+
+                while (it != end) {
+                    // TO DO, we assign a UniformBlockBufferValue to the UniformPack
+                    // Internally this points to the UBO
+                    // The UBO should be created and managed by the RenderShaderData
+                    // However we need to create the UBO the first time based on the size / offset
+                    // of the shader introspection
+                    // Also, uniform block arrays were only introduced in 4.3, how to handle that for previous versions ?
+                    // Check if the rShaderData is contained in m_data.m_shaderData if it has a transformed property
+                    // If a QShaderData has a transform property but isn't in m_data.m_shaderData -> hasn't been assigned as the
+                    // component of an Entity, we should print a warning
+
+                    // TO DO: Find all transform properties (ModelToEye/ModelToWorld) and apply them.
+
+                    QVector<ShaderUniform>::iterator activeUniformIt = activeBlockUniforms.begin();
+                    const QVector<ShaderUniform>::const_iterator activeUniformEnd = activeBlockUniforms.end();
+
+                    while (activeUniformIt != activeUniformEnd) {
+                        if (block.m_name + QStringLiteral(".") + QString::fromUtf8(it.key()) == (*activeUniformIt).m_name) {
+                            rShaderData->appendActiveProperty(it.key(), *activeUniformIt);
+                            activeBlockUniforms.erase(activeUniformIt);
+                            break;
+                        }
+                        ++activeUniformIt;
+                    }
+                    ++it;
+                }
+                // the RenderShaderData is initialized once even though it may be used by several different shaders
+                // the reasoning being that is that now matter which shader is using it, they should all be providing the same
+                // uniform block to interface it with
+                // Be Careful, the block passed is used to store data shared by all shaders using the same UniformBlock (size, name)
+                // the index however could vary on a per shader basis so it shouldn't be used
+                rShaderData->initialize(block);
             }
+            uniformPack.setUniformBuffer(BlockToUBO(block.m_index, rShaderData->peerUuid()));
         }
     }
 }
@@ -515,8 +553,8 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
                         if (uniformNames.contains(it->name)) { // Parameter is a regular uniform
                             setUniformValue(command->m_uniforms, it->name, it->value);
                             it = parameters.erase(it);
-                        } else if (uniformBlockNames.contains(it->name)) { // Parameter is a uniform block
-                            setUniformBlockValue(command->m_uniforms, uniformNames, it->name, it->value);
+                        } else if (int idx = uniformBlockNames.indexOf(it->name) != -1) { // Parameter is a uniform block
+                            setUniformBlockValue(command->m_uniforms, shader, shader->uniformBlocks().at(idx), it->value);
                             it = parameters.erase(it);
                         } else {
                             // Else param unused by current shader

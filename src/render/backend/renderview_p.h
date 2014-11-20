@@ -261,7 +261,7 @@ private:
     QUniformValue *inverseViewportMatrix(const QMatrix4x4 &model) const;
 
     void setUniformValue(QUniformPack &uniformPack, const QString &name, const QVariant &value);
-    void setUniformBlockValue(QUniformPack &uniformPack, const QVector<QString> &uniformNames, const QString &blockName, const QVariant &value);
+    void setUniformBlockValue(QUniformPack &uniformPack, RenderShader *shader, const ShaderUniformBlock &block, const QVariant &value);
     void buildSortingKey(RenderCommand *command);
 };
 
