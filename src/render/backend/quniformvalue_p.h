@@ -117,6 +117,8 @@ private:
     int m_textureUnit;
 };
 
+typedef QPair<int, QNodeId> BlockToUBO;
+
 class QUniformPack
 {
 public:
@@ -124,9 +126,10 @@ public:
 
     void setUniform(const QString &glslName, const QUniformValue *val);
     void setTexture(const QString &glslName, const QNodeId &id);
+    void setUniformBuffer(const BlockToUBO &blockToUBO);
 
-    const QHash<QString, const QUniformValue* > &uniforms() const { return m_uniforms; }
-    QHash<QString, const QUniformValue* > &uniforms() { return m_uniforms; }
+    inline const QHash<QString, const QUniformValue* > &uniforms() const { return m_uniforms; }
+    inline QHash<QString, const QUniformValue* > &uniforms() { return m_uniforms; }
 
     struct NamedTexture
     {
@@ -140,12 +143,14 @@ public:
         QNodeId texId;
     };
 
-    QVector<NamedTexture> textures() const { return m_textures; }
+    inline QVector<NamedTexture> textures() const { return m_textures; }
+    inline QVector<BlockToUBO> uniformBuffers() const { return m_uniformBuffers; }
 
 private:
     QHash<QString, const QUniformValue* > m_uniforms;
 
     QVector<NamedTexture> m_textures;
+    QVector<BlockToUBO> m_uniformBuffers;
 };
 
 } // Render

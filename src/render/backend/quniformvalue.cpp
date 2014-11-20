@@ -107,6 +107,12 @@ void QUniformPack::setTexture(const QString &glslName, const QNodeId &texId)
     m_textures.append(NamedTexture(glslName, texId));
 }
 
+// Contains Uniform Block Index and QNodeId of the RenderShaderData (UBO)
+void QUniformPack::setUniformBuffer(const BlockToUBO &blockToUBO)
+{
+    m_uniformBuffers.append(blockToUBO);
+}
+
 void TextureUniform::apply(QGraphicsContext *ctx, const ShaderUniform &description) const
 {
     // We assume that the texture has been successfully bound and attache to a texture unit
