@@ -51,25 +51,25 @@ Material {
     property bool enabled: true
     property Texture2D texture;
 
-    QQ2.ParallelAnimation {
-        running: true
-        loops : QQ2.Animation.Infinite
-        QQ2.SequentialAnimation {
-            QQ2.ColorAnimation { target: material; property: "ambientColor"; to: "lightsteelblue"; duration: 1000 }
-            QQ2.ColorAnimation { target: material; property: "ambientColor"; to: "purple"; duration: 1000 }
-            QQ2.ColorAnimation { target: material; property: "ambientColor"; to: "#cc2200"; duration: 1000 }
-        }
-        QQ2.SequentialAnimation {
-            QQ2.ColorAnimation { target: material; property: "diffuseColor"; to: "yellow"; duration: 1000 }
-            QQ2.ColorAnimation { target: material; property: "diffuseColor"; to: "orange"; duration: 1000 }
-            QQ2.ColorAnimation { target: material; property: "diffuseColor"; to: "pink"; duration: 1000 }
-        }
-    }
 
     parameters: [
         Parameter { name: "ambient"; value: Qt.vector3d(material.ambientColor.r, material.ambientColor.g, material.ambientColor.b) },
         Parameter { name: "lightIntensity"; value: Qt.vector3d(0.5, 0.5, 0.5)},
-        Parameter { name: "texture"; value: texture}
+        Parameter { name: "texture"; value: texture},
+        Parameter { name: "PointLightBlock"; value: ShaderData {
+                property color colorAmbient;
+                property color colorDiffuse;
+                property color colorSpecular;
+                property real shininess: 1.0;
+                property vector3d position: Qt.vector3d(1.0, 1.0, 0.0)
+                property vector3d intensity: Qt.vector3d(0.7, 0.8, 0.6);
+
+                QQ2.ColorAnimation on colorAmbient { from: "blue"; to: "yellow"; duration: 1000; loops: QQ2.Animation.Infinite }
+                QQ2.ColorAnimation on colorDiffuse { from: "red"; to: "green"; duration: 1000; loops: QQ2.Animation.Infinite }
+                QQ2.ColorAnimation on colorSpecular { from: "white"; to: "orange"; duration: 1000; loops: QQ2.Animation.Infinite }
+                QQ2.NumberAnimation on shininess { from: 0; to: 1.0; duration: 1000; loops: QQ2.Animation.Infinite }
+
+            } }
     ]
 
     effect : Effect {
@@ -135,6 +135,67 @@ Material {
                                 fragColor = texture2D(tex, texCoord);
                             }
                             "
+                        }
+                    },
+                    RenderPass {
+                        annotations : [Annotation {name : "Name"; value : "Texture" }]
+                        renderStates : [BlendState {srcRGB: BlendState.One; dstRGB : BlendState.One},
+                            BlendEquation {mode: BlendEquation.FuncAdd},
+                            CullFace { mode : CullFace.Back },
+                            DepthTest { func : DepthTest.LessOrEqual}
+                        ]
+                        shaderProgram : ShaderProgram {
+                            vertexShaderCode: "
+                            #version 140
+                            in vec4 vertexPosition;
+                            in vec3 vertexNormal;
+
+                            out vec3 worldPosition;
+                            out vec3 normal;
+
+                            uniform mat4 modelViewProjection;
+                            uniform mat4 modelView;
+                            uniform mat3 modelViewNormal;
+
+                            void main()
+                            {
+                                worldPosition = vec3(modelView * vertexPosition);
+                                normal = normalize(modelViewNormal * vertexNormal);
+                                gl_Position = modelViewProjection * vertexPosition;
+                            }
+                            "
+
+                            fragmentShaderCode: "
+                            #version 140
+                            in vec3 worldPosition;
+                            in vec3 normal;
+                            out vec4 fragColor;
+
+                            uniform PointLightBlock
+                            {
+                                vec4 colorAmbient;
+                                vec4 colorDiffuse;
+                                vec4 colorSpecular;
+                                float shininess;
+                                vec3 position;
+                                vec3 intensity;
+                            } lightSource;
+
+
+                            void main()
+                            {
+                                vec3 n = normalize(normal);
+                                vec3 s = normalize(lightSource.position - worldPosition);
+                                vec3 v = normalize(-worldPosition);
+                                vec3 r = reflect(-s, n);
+
+                                float diffuse = max(dot(s, n), 0.0);
+                                float specular = step(diffuse, 0.0) * pow(max(dot(r, v), 0.0), lightSource.shininess);
+                                fragColor = vec4(lightSource.intensity, 1.0) * (
+                                                lightSource.colorAmbient +
+                                                lightSource.colorDiffuse * diffuse +
+                                                lightSource.colorSpecular * specular);
+                            }"
                         }
                     }
                 ]

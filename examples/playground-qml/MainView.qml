@@ -95,8 +95,8 @@ Entity {
                 QQ2.SequentialAnimation on dz {
                     running : true
                     loops: QQ2.Animation.Infinite
-                    QQ2.NumberAnimation { to : -1000; duration : 2000 }
-                    QQ2.NumberAnimation { to : 1000; duration : 1000 }
+                    QQ2.NumberAnimation { to : -1000; duration : 5000 }
+                    QQ2.NumberAnimation { to : 1000; duration : 3000 }
                 }
             }
             Scale {scale : 0.3}
@@ -112,8 +112,8 @@ Entity {
                 QQ2.SequentialAnimation on dx {
                     running : true
                     loops: QQ2.Animation.Infinite
-                    QQ2.NumberAnimation { to : -100; duration : 2000 }
-                    QQ2.NumberAnimation { to : 100; duration : 1000 }
+                    QQ2.NumberAnimation { to : -100; duration : 10000 }
+                    QQ2.NumberAnimation { to : 100; duration : 5000 }
                 }
             }
             Scale {scale : 0.3}
