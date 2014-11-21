@@ -72,7 +72,7 @@ void QSceneLoader::sceneChangeEvent(const QSceneChangePtr &change)
                 Q_FOREACH (const QNodeId &id, entities) {
                     QEntity *parentEntity = qobject_cast<QEntity *>(d->m_scene->lookupNode(id));
                     if (parentEntity != Q_NULLPTR) {
-                        QEntity *cloneScene = qobject_cast<QEntity *>(QNodePrivate::get(scene)->clone());
+                        QEntity *cloneScene = qobject_cast<QEntity *>(QNode::clone(scene));
                         QNodePrivate::get(parentEntity)->insertTree(cloneScene);
                     }
                 }

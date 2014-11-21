@@ -92,7 +92,7 @@ void QNodePrivate::addChild(QNode *childNode)
         QScenePropertyChangePtr e(new QScenePropertyChange(NodeCreated, q));
         e->setPropertyName(QByteArrayLiteral("node"));
         // We need to clone the parent of the childNode we send
-        QNode *parentClone = clone();
+        QNode *parentClone = QNode::clone(q_func());
         QNode *childClone = Q_NULLPTR;
         Q_FOREACH (QObject *c, parentClone->children()) {
             QNode *clone = qobject_cast<QNode *>(c);
@@ -119,7 +119,7 @@ void QNodePrivate::removeChild(QNode *childNode)
         QScenePropertyChangePtr e(new QScenePropertyChange(NodeAboutToBeDeleted, q));
         e->setPropertyName(QByteArrayLiteral("node"));
         // We need to clone the parent of the childNode we send
-        QNode *parentClone = clone();
+        QNode *parentClone = QNode::clone(q_func());
         QNode *childClone = Q_NULLPTR;
         Q_FOREACH (QObject *c, parentClone->children()) {
             QNode *clone = qobject_cast<QNode *>(c);
@@ -135,41 +135,6 @@ void QNodePrivate::removeChild(QNode *childNode)
     if (m_scene != Q_NULLPTR)
         m_scene->removeObservable(childNode);
     childNode->d_func()->setScene(Q_NULLPTR);
-}
-
-// In most cases isClone is true so that the clone isn't handled like
-// a real node. If there is a need for a real clone, set isClone to false
-// eg When a subtree built in the backend needs to be cloned
-// in the main thread to be added to the scene graph
-QNode *QNodePrivate::clone()
-{
-    static int clearLock = 0;
-    clearLock++;
-
-    // We keep a reference of clones for the current subtree
-    // In order to preserve relationships when multiple entities
-    // reference the same component
-    QNode *clonedNode = QNodePrivate::m_clonesLookupTable.value(m_uuid);
-    if (clonedNode == Q_NULLPTR) {
-        Q_Q(QNode);
-        clonedNode = q->doClone();
-        // doClone, returns new instance with content copied
-        // and relationships added
-        QNodePrivate::m_clonesLookupTable.insert(clonedNode->uuid(), clonedNode);
-    }
-    Q_FOREACH (QObject *c, q_ptr->children()) {
-        QNode *childNode = qobject_cast<QNode *>(c);
-        if (childNode != Q_NULLPTR) {
-            QNode *cclone = childNode->d_func()->clone();
-            if (cclone != Q_NULLPTR)
-                cclone->setParent(clonedNode);
-        }
-    }
-
-    if (--clearLock == 0)
-        QNodePrivate::m_clonesLookupTable.clear();
-
-    return clonedNode;
 }
 
 void QNodePrivate::removeAllChildren()
@@ -384,6 +349,36 @@ bool QNode::blockNotifications(bool block)
     bool previous = d->m_blockNotifications;
     d->m_blockNotifications = block;
     return previous;
+}
+
+QNode *QNode::clone(QNode *node)
+{
+    static int clearLock = 0;
+    clearLock++;
+
+    // We keep a reference of clones for the current subtree
+    // In order to preserve relationships when multiple entities
+    // reference the same component
+    QNode *clonedNode = QNodePrivate::m_clonesLookupTable.value(node->uuid());
+    if (clonedNode == Q_NULLPTR) {
+        clonedNode = node->doClone();
+        // doClone, returns new instance with content copied
+        // and relationships added
+        QNodePrivate::m_clonesLookupTable.insert(clonedNode->uuid(), clonedNode);
+    }
+    Q_FOREACH (QObject *c, node->children()) {
+        QNode *childNode = qobject_cast<QNode *>(c);
+        if (childNode != Q_NULLPTR) {
+            QNode *cclone = QNode::clone(childNode);
+            if (cclone != Q_NULLPTR)
+                cclone->setParent(clonedNode);
+        }
+    }
+
+    if (--clearLock == 0)
+        QNodePrivate::m_clonesLookupTable.clear();
+
+    return clonedNode;
 }
 
 bool QNode::event(QEvent *e)

@@ -62,7 +62,7 @@ void QRenderAttachment::copy(const QNode *ref)
     QNode::copy(ref);
     const QRenderAttachment *rA = static_cast<const QRenderAttachment*>(ref);
     d_func()->m_type = rA->d_func()->m_type;
-    setTexture(qobject_cast<QTexture *>(QNodePrivate::get(rA->d_func()->m_texture)->clone()));
+    setTexture(qobject_cast<QTexture *>(QNode::clone(rA->d_func()->m_texture)));
 }
 
 QRenderAttachment::QRenderAttachment(QNode *parent)

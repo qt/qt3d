@@ -58,7 +58,7 @@ void QRenderTarget::copy(const QNode *ref)
     QNode::copy(ref);
     const QRenderTarget *other = static_cast<const QRenderTarget*>(ref);
     Q_FOREACH (QRenderAttachment *attachment, other->d_func()->m_attachments)
-        addAttachment(qobject_cast<QRenderAttachment *>(QNodePrivate::get(attachment)->clone()));
+        addAttachment(qobject_cast<QRenderAttachment *>(QNode::clone(attachment)));
 }
 
 QRenderTarget::QRenderTarget(QNode *parent)

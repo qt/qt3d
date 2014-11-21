@@ -61,9 +61,6 @@ class QT3DCORESHARED_EXPORT QNodePrivate : public QObjectPrivate, public QObserv
 public:
     QNodePrivate(QNode *qq);
 
-    // Clone should only be made in the main thread
-    QNode *clone();
-
     void setScene(QSceneInterface *scene);
     QSceneInterface *scene() const;
 

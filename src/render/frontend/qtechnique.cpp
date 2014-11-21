@@ -80,11 +80,11 @@ void QTechnique::copy(const QNode *ref)
     d_func()->m_openGLFilter.copy(tech->d_func()->m_openGLFilter);
 
     Q_FOREACH (QAnnotation *annotation, tech->d_func()->m_annotationList)
-        addAnnotation(qobject_cast<QAnnotation *>(QNodePrivate::get(annotation)->clone()));
+        addAnnotation(qobject_cast<QAnnotation *>(QNode::clone(annotation)));
     Q_FOREACH (QRenderPass *pass, tech->d_func()->m_renderPasses)
-        addPass(qobject_cast<QRenderPass *>(QNodePrivate::get(pass)->clone()));
+        addPass(qobject_cast<QRenderPass *>(QNode::clone(pass)));
     Q_FOREACH (QParameter *p, tech->d_func()->m_parameters)
-        addParameter(qobject_cast<QParameter *>(QNodePrivate::get(p)->clone()));
+        addParameter(qobject_cast<QParameter *>(QNode::clone(p)));
 }
 
 void QTechnique::openGLFilterChanged()

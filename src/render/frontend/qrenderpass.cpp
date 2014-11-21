@@ -63,14 +63,14 @@ void QRenderPass::copy(const QNode *ref)
 {
     QNode::copy(ref);
     const QRenderPass *other = static_cast<const QRenderPass*>(ref);
-    d_func()->m_shader = qobject_cast<QShaderProgram *>(QNodePrivate::get(other->d_func()->m_shader)->clone());
+    d_func()->m_shader = qobject_cast<QShaderProgram *>(QNode::clone(other->d_func()->m_shader));
 
     Q_FOREACH (QAnnotation *crit, other->d_func()->m_annotationList)
-        addAnnotation(qobject_cast<QAnnotation *>(QNodePrivate::get(crit)->clone()));
+        addAnnotation(qobject_cast<QAnnotation *>(QNode::clone(crit)));
     Q_FOREACH (QParameterMapping *binding, other->d_func()->m_bindings)
-        addBinding(qobject_cast<QParameterMapping *>(QNodePrivate::get(binding)->clone()));
+        addBinding(qobject_cast<QParameterMapping *>(QNode::clone(binding)));
     Q_FOREACH (QRenderState *renderState, other->d_func()->m_renderStates)
-        addRenderState(qobject_cast<QRenderState *>(QNodePrivate::get(renderState)->clone()));
+        addRenderState(qobject_cast<QRenderState *>(QNode::clone(renderState)));
 }
 
 QRenderPass::QRenderPass(QNode *parent)
@@ -189,7 +189,7 @@ void QRenderPass::addBinding(QParameterMapping *binding)
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
             change->setPropertyName(QByteArrayLiteral("binding"));
-            change->setValue(QVariant::fromValue(QNodePrivate::get(binding)->clone()));
+            change->setValue(QVariant::fromValue(QNode::clone(binding)));
             d->notifyObservers(change);
         }
     }
@@ -226,7 +226,7 @@ void QRenderPass::addRenderState(QRenderState *state)
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
             change->setPropertyName(QByteArrayLiteral("renderState"));
-            change->setValue(QVariant::fromValue(QNodePrivate::get(state)->clone()));
+            change->setValue(QVariant::fromValue(QNode::clone(state)));
             d->notifyObservers(change);
         }
     }

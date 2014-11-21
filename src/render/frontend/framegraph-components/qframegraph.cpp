@@ -60,7 +60,7 @@ void QFrameGraph::copy(const QNode *ref)
 {
     QComponent::copy(ref);
     const QFrameGraph *other = static_cast<const QFrameGraph*>(ref);
-    setActiveFrameGraph(qobject_cast<QFrameGraphNode *>(QNodePrivate::get(other->d_func()->m_activeFrameGraph)->clone()));
+    setActiveFrameGraph(qobject_cast<QFrameGraphNode *>(QNode::clone(other->d_func()->m_activeFrameGraph)));
 }
 
 /*!

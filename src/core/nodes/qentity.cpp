@@ -86,7 +86,7 @@ void QEntity::copy(const QNode *ref)
     d_func()->m_visible = entity->d_func()->m_visible;
 
     Q_FOREACH (QComponent *c, entity->d_func()->m_components) {
-        QNode *ccclone = QNodePrivate::get(c)->clone();
+        QNode *ccclone = QNode::clone(c);
         addComponent(qobject_cast<QComponent *>(ccclone));
     }
 }
@@ -115,7 +115,7 @@ void QEntity::addComponent(QComponent *comp)
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentAdded, this));
         propertyChange->setPropertyName(QByteArrayLiteral("component"));
-        propertyChange->setValue(QVariant::fromValue(QNodePtr(QNodePrivate::get(comp)->clone(), &QNodePrivate::nodePtrDeleter)));
+        propertyChange->setValue(QVariant::fromValue(QNodePtr(QNode::clone(comp), &QNodePrivate::nodePtrDeleter)));
         d->notifyObservers(propertyChange);
     }
     static_cast<QComponentPrivate *>(QComponentPrivate::get(comp))->addEntity(this);
@@ -131,7 +131,7 @@ void QEntity::removeComponent(QComponent *comp)
 
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentRemoved, this));
-        propertyChange->setValue(QVariant::fromValue(QNodePtr(QNodePrivate::get(comp)->clone(), &QNodePrivate::nodePtrDeleter)));
+        propertyChange->setValue(QVariant::fromValue(QNodePtr(QNode::clone(comp), &QNodePrivate::nodePtrDeleter)));
         propertyChange->setPropertyName(QByteArrayLiteral("component"));
         d->notifyObservers(propertyChange);
     }

@@ -81,6 +81,9 @@ public:
     bool blockNotifications(bool block);
 
 protected:
+    // Clone should only be made in the main thread
+    static QNode *clone(QNode *node);
+
     QNode(QNodePrivate &dd, QNode *parent = 0);
     virtual void copy(const QNode *ref);
     virtual void sceneChangeEvent(const QSceneChangePtr &change);

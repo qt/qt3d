@@ -72,7 +72,7 @@ void QKeyboardInput::copy(const QNode *ref)
     const QKeyboardInput *input = static_cast<const QKeyboardInput *>(ref);
 
     if (input->d_func()->m_controller != Q_NULLPTR)
-        setController(qobject_cast<QKeyboardController *>(QNodePrivate::get(input->d_func()->m_controller)->clone()));
+        setController(qobject_cast<QKeyboardController *>(QNode::clone(input->d_func()->m_controller)));
 }
 
 // SigMap and the sigMap table are taken from QQ2 QQuickKeysAttached

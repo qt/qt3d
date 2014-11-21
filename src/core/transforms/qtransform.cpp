@@ -65,7 +65,7 @@ void QTransform::copy(const QNode *ref)
     const QTransform *transform = static_cast<const QTransform*>(ref);
     d_func()->m_matrix = transform->d_func()->m_matrix;
     Q_FOREACH (QAbstractTransform *t, transform->d_func()->m_transforms)
-        addTransform(qobject_cast<QAbstractTransform *>(QNodePrivate::get(t)->clone()));
+        addTransform(qobject_cast<QAbstractTransform *>(QNode::clone(t)));
 }
 
 QTransform::QTransform(QNode *parent)

@@ -79,10 +79,10 @@ void QMaterial::copy(const QNode *ref)
     QComponent::copy(ref);
     const QMaterial *material = static_cast<const QMaterial*>(ref);
     Q_FOREACH (QParameter *p, material->d_func()->m_parameters)
-        addParameter(qobject_cast<QParameter *>(QNodePrivate::get(p)->clone()));
+        addParameter(qobject_cast<QParameter *>(QNode::clone(p)));
 
     if (material->d_func()->m_effect)
-        setEffect(qobject_cast<QEffect *>(QNodePrivate::get(material->d_func()->m_effect)->clone()));
+        setEffect(qobject_cast<QEffect *>(QNode::clone(material->d_func()->m_effect)));
 }
 
 QMaterial::QMaterial(QNode *parent)
