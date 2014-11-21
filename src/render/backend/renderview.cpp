@@ -412,7 +412,7 @@ void RenderView::setUniformBlockValue(QUniformPack &uniformPack, RenderShader *s
                 const QHash<const char *, QVariant>::const_iterator end = properties.end();
 
                 while (it != end) {
-                    // TO DO, we assign a UniformBlockBufferValue to the UniformPack
+                    // We assign a UniformBlockBufferValue to the UniformPack
                     // Internally this points to the UBO
                     // The UBO should be created and managed by the RenderShaderData
                     // However we need to create the UBO the first time based on the size / offset

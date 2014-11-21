@@ -201,10 +201,6 @@ void preprocessRenderTree(RenderView *rv, const RenderEntity *node)
     //
     // TODO: Perhaps make this block of code configurable by allowing the Technique
     // or similar to provide a functor?
-    QList<HLight> lightHandles = node->componentsHandle<RenderLight, 16>();
-    Q_FOREACH (const HLight lightHandle, lightHandles)
-        if (!lightHandle.isNull())
-            rv->appendLight(lightHandle, *node->worldTransform());
 
     // For each of entity that has a QShaderData component we need to save the worldTransform so that we can
     // later use the shaderData with the correct space transforms

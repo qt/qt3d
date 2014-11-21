@@ -77,7 +77,6 @@ class ViewportNode;
 class RenderEffect;
 class RenderRenderPass;
 
-typedef QPair<HLight, QMatrix4x4> LightPair;
 typedef QPair<HShaderData, QMatrix4x4> ShaderDataPair;
 
 // This class is kind of analogous to RenderBin but I want to avoid trampling
@@ -173,11 +172,6 @@ public:
     inline void setClearBuffer(QClearBuffer::BufferType clearBuffer) { m_clearBuffer = clearBuffer; }
     inline QClearBuffer::BufferType clearBuffer() const { return m_clearBuffer; }
 
-    inline void appendLight(HLight lightHandle, const QMatrix4x4 &worldMatrix)
-    {
-        m_data->m_lights.append(LightPair(lightHandle, worldMatrix));
-    }
-
     inline void appendShaderData(HShaderData shaderDataHandle, const QMatrix4x4 &worldMatrix)
     {
         m_data->m_shaderData.append(ShaderDataPair(shaderDataHandle, worldMatrix));
@@ -221,7 +215,6 @@ private:
         const RenderPassFilter *m_passFilter;
         QMatrix4x4 *m_viewMatrix;
         QStringList m_layers;
-        QList<LightPair> m_lights;
         QList<QNodeId> m_sortingCriteria;
         QVector<ShaderDataPair> m_shaderData;
         QVector3D m_eyePos;
