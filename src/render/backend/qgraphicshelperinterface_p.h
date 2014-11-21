@@ -95,6 +95,7 @@ public:
     virtual void    bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding) = 0;
     virtual void    bindBufferBase(GLenum target, GLuint index, GLuint buffer) = 0;
     virtual void    buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer) = 0;
+    virtual uint    uniformByteSize(const ShaderUniform &description) = 0;
 };
 
 

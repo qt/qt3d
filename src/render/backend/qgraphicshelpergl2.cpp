@@ -437,6 +437,68 @@ void QGraphicsHelperGL2::buildUniformBuffer(const QVariant &v, const ShaderUnifo
     qWarning() << "UBO are not supported by OpenGL 2.0 (since OpenGL 3.1)";
 }
 
+uint QGraphicsHelperGL2::uniformByteSize(const ShaderUniform &description)
+{
+    uint rawByteSize = 0;
+    int arrayStride = qMax(description.m_arrayStride, 0);
+    int matrixStride = qMax(description.m_matrixStride, 0);
+
+    switch (description.m_type) {
+
+    case GL_FLOAT_VEC2:
+    case GL_INT_VEC2:
+        rawByteSize = 8;
+        break;
+
+    case GL_FLOAT_VEC3:
+    case GL_INT_VEC3:
+        rawByteSize = 12;
+        break;
+
+    case GL_FLOAT_VEC4:
+    case GL_INT_VEC4:
+        rawByteSize = 16;
+        break;
+
+    case GL_FLOAT_MAT2:
+        rawByteSize = matrixStride ? 2 * matrixStride : 16;
+        break;
+
+    case GL_FLOAT_MAT3:
+        rawByteSize = matrixStride ? 3 * matrixStride : 36;
+        break;
+
+    case GL_FLOAT_MAT4:
+        rawByteSize = matrixStride ? 4 * matrixStride : 64;
+        break;
+
+    case GL_BOOL:
+        rawByteSize = 1;
+        break;
+
+    case GL_BOOL_VEC2:
+        rawByteSize = 2;
+        break;
+
+    case GL_BOOL_VEC3:
+        rawByteSize = 3;
+        break;
+
+    case GL_BOOL_VEC4:
+        rawByteSize = 4;
+        break;
+
+    case GL_INT:
+    case GL_FLOAT:
+    case GL_SAMPLER_2D:
+    case GL_SAMPLER_CUBE:
+        rawByteSize = 4;
+        break;
+    }
+
+    return arrayStride ? rawByteSize * arrayStride : rawByteSize;
+}
+
 } // Render
 } // Qt3D
 

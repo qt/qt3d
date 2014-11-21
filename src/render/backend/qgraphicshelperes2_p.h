@@ -92,6 +92,7 @@ public:
     void bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding) Q_DECL_OVERRIDE;
     void bindBufferBase(GLenum target, GLuint index, GLuint buffer) Q_DECL_OVERRIDE;
     void buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer) Q_DECL_OVERRIDE;
+    uint uniformByteSize(const ShaderUniform &description) Q_DECL_OVERRIDE;
 
 private:
     QOpenGLFunctions_ES2 *m_funcs;
