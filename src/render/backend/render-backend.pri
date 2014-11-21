@@ -33,7 +33,6 @@ HEADERS += \
     $$PWD/parameterpack_p.h \
     $$PWD/texturedatamanager_p.h \
     $$PWD/renderlayer_p.h \
-    $$PWD/renderlight_p.h \
     $$PWD/renderentity_p.h \
     $$PWD/rendertransform_p.h \
     $$PWD/renderstate_p.h \
@@ -79,7 +78,6 @@ SOURCES += \
     $$PWD/parameterpack.cpp \
     $$PWD/texturedatamanager.cpp \
     $$PWD/renderlayer.cpp \
-    $$PWD/renderlight.cpp \
     $$PWD/renderentity.cpp \
     $$PWD/rendertransform.cpp \
     $$PWD/renderstate.cpp \

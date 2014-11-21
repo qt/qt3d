@@ -162,7 +162,6 @@ private:
     QNodeId m_materialComponent;
     QNodeId m_cameraComponent;
     QList<QNodeId> m_layerComponents;
-    QList<QNodeId> m_lightComponents;
     QList<QNodeId> m_shaderDataComponents;
 
     QString m_objectName;
@@ -212,15 +211,6 @@ QList<RenderLayer *> RenderEntity::renderComponents<RenderLayer>() const;
 
 template<>
 QList<QNodeId> RenderEntity::componentsUuid<RenderLayer>() const;
-
-template<>
-QList<HLight> RenderEntity::componentsHandle<RenderLight>() const;
-
-template<>
-QList<RenderLight *> RenderEntity::renderComponents<RenderLight>() const;
-
-template<>
-QList<QNodeId> RenderEntity::componentsUuid<RenderLight>() const;
 
 template<>
 QList<HShaderData> RenderEntity::componentsHandle<RenderShaderData>() const;

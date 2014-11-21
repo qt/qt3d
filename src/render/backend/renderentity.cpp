@@ -137,7 +137,7 @@ void RenderEntity::updateFromPeer(QNode *peer)
     m_meshComponent = QNodeId();
     m_cameraComponent = QNodeId();
     m_layerComponents.clear();
-    m_lightComponents.clear();
+    m_shaderDataComponents.clear();
 
     Q_FOREACH (QComponent *comp, entity->components())
         addComponent(comp);
@@ -237,8 +237,6 @@ void RenderEntity::addComponent(QComponent *component)
         m_cameraComponent = component->uuid();
     else if (qobject_cast<QLayer *>(component) != Q_NULLPTR)
         m_layerComponents.append(component->uuid());
-    else if (qobject_cast<QAbstractLight *>(component) != Q_NULLPTR)
-        m_lightComponents.append(component->uuid());
     else if (qobject_cast<QMaterial *>(component) != Q_NULLPTR)
         m_materialComponent = component->uuid();
     else if (qobject_cast<QShaderData *>(component) != Q_NULLPTR)
@@ -255,8 +253,6 @@ void RenderEntity::removeComponent(QComponent *component)
         m_cameraComponent = QNodeId();
     else if (qobject_cast<QLayer *>(component) != Q_NULLPTR)
         m_layerComponents.removeAll(component->uuid());
-    else if (qobject_cast<QAbstractLight *>(component) != Q_NULLPTR)
-        m_lightComponents.removeAll(component->uuid());
     else if (qobject_cast<QMaterial *>(component) != Q_NULLPTR)
         m_materialComponent = QNodeId();
     else if (qobject_cast<QShaderData *>(component) != Q_NULLPTR)
@@ -342,24 +338,6 @@ QList<RenderLayer *> RenderEntity::renderComponents<RenderLayer>() const
 }
 
 template<>
-QList<HLight> RenderEntity::componentsHandle<RenderLight>() const
-{
-    QList<HLight> lightHandles;
-    Q_FOREACH (const QNodeId &id, m_lightComponents)
-        lightHandles.append(m_renderer->lightManager()->lookupHandle(id));
-    return lightHandles;
-}
-
-template<>
-QList<RenderLight *> RenderEntity::renderComponents<RenderLight>() const
-{
-    QList<RenderLight *> lights;
-    Q_FOREACH (const QNodeId &id, m_lightComponents)
-        lights.append(m_renderer->lightManager()->lookupResource(id));
-    return lights;
-}
-
-template<>
 QList<QNodeId> RenderEntity::componentsUuid<RenderLayer>() const { return m_layerComponents; }
 
 template<>
@@ -379,9 +357,6 @@ QList<RenderShaderData *> RenderEntity::renderComponents<RenderShaderData>() con
         shaderDatas.append(m_renderer->shaderDataManager()->lookupResource(id));
     return shaderDatas;
 }
-
-template<>
-QList<QNodeId> RenderEntity::componentsUuid<RenderLight>() const { return m_lightComponents; }
 
 template<>
 QList<QNodeId> RenderEntity::componentsUuid<RenderShaderData>() const { return m_shaderDataComponents; }

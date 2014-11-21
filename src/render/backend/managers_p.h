@@ -49,7 +49,6 @@
 #include <Qt3DRenderer/private/rendereffect_p.h>
 #include <Qt3DRenderer/private/renderentity_p.h>
 #include <Qt3DRenderer/private/renderlayer_p.h>
-#include <Qt3DRenderer/private/renderlight_p.h>
 #include <Qt3DRenderer/private/rendermaterial_p.h>
 #include <Qt3DRenderer/private/rendermesh_p.h>
 #include <Qt3DRenderer/private/rendershader_p.h>
@@ -140,17 +139,6 @@ class LayerManager : public QResourceManager<
 {
 public:
     LayerManager() {}
-};
-
-class LightManager : public QResourceManager<
-        RenderLight,
-        QNodeId,
-        16,
-        Qt3D::ArrayAllocatingPolicy,
-        Qt3D::ObjectLevelLockingPolicy>
-{
-public:
-    LightManager() {}
 };
 
 class MaterialManager : public QResourceManager<
@@ -296,7 +284,6 @@ Q_DECLARE_RESOURCE_INFO(Render::RenderAnnotation, Q_REQUIRES_CLEANUP);
 Q_DECLARE_RESOURCE_INFO(Render::RenderEffect, Q_REQUIRES_CLEANUP);
 Q_DECLARE_RESOURCE_INFO(Render::RenderEntity, Q_REQUIRES_CLEANUP);
 Q_DECLARE_RESOURCE_INFO(Render::RenderLayer, Q_REQUIRES_CLEANUP);
-Q_DECLARE_RESOURCE_INFO(Render::RenderLight, Q_REQUIRES_CLEANUP);
 Q_DECLARE_RESOURCE_INFO(Render::RenderMaterial, Q_REQUIRES_CLEANUP);
 Q_DECLARE_RESOURCE_INFO(Render::RenderMesh, Q_REQUIRES_CLEANUP);
 Q_DECLARE_RESOURCE_INFO(Render::RenderShader, Q_REQUIRES_CLEANUP);

@@ -167,7 +167,6 @@ public:
     inline TextureManager *textureManager() const { return m_textureManager; }
     inline TextureDataManager *textureDataManager() const { return m_textureDataManager; }
     inline LayerManager *layerManager() const { return m_layerManager; }
-    inline LightManager *lightManager() const { return m_lightManager; }
     inline CriterionManager *criterionManager() const { return m_criterionManager; }
     inline FrameGraphManager *frameGraphManager() const { return m_frameGraphManager; }
     inline TransformManager *transformManager() const { return m_transformManager; }
@@ -249,7 +248,6 @@ private:
     TextureManager *m_textureManager;
     TextureDataManager *m_textureDataManager;
     LayerManager *m_layerManager;
-    LightManager *m_lightManager;
     CriterionManager *m_criterionManager;
     FrameGraphManager *m_frameGraphManager;
     TransformManager *m_transformManager;
