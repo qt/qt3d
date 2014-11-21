@@ -70,7 +70,7 @@ void QShaderData::copy(const QNode *ref)
     // this may change in a later refactoring
 
     const QMetaObject *metaObject = shaderData->metaObject();
-    const int propertyOffset = metaObject->propertyOffset();
+    const int propertyOffset = QShaderData::staticMetaObject.propertyOffset();
     const int propertyCount = metaObject->propertyCount();
 
     // Copy properties of shaderData
