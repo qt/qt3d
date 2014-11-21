@@ -77,8 +77,6 @@ class ViewportNode;
 class RenderEffect;
 class RenderRenderPass;
 
-typedef QPair<HShaderData, QMatrix4x4> ShaderDataPair;
-
 // This class is kind of analogous to RenderBin but I want to avoid trampling
 // on that until we get this working
 class Q_AUTOTEST_EXPORT RenderView
@@ -172,11 +170,6 @@ public:
     inline void setClearBuffer(QClearBuffer::BufferType clearBuffer) { m_clearBuffer = clearBuffer; }
     inline QClearBuffer::BufferType clearBuffer() const { return m_clearBuffer; }
 
-    inline void appendShaderData(HShaderData shaderDataHandle, const QMatrix4x4 &worldMatrix)
-    {
-        m_data->m_shaderData.append(ShaderDataPair(shaderDataHandle, worldMatrix));
-    }
-
     void buildRenderCommands(RenderEntity *preprocessedTreeRoot);
     QVector<RenderCommand *> commands() const { return m_commands; }
 
@@ -216,7 +209,6 @@ private:
         QMatrix4x4 *m_viewMatrix;
         QStringList m_layers;
         QList<QNodeId> m_sortingCriteria;
-        QVector<ShaderDataPair> m_shaderData;
         QVector3D m_eyePos;
     } *m_data;
 

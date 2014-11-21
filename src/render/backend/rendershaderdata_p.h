@@ -60,6 +60,7 @@ public:
     RenderShaderData();
 
     void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
+    inline QHash<QString, QVariant> & properties() { return m_properties; }
     inline QHash<QString, QVariant> properties() const { return m_properties; }
     inline QHash<QString, ShaderUniform> activeProperties() const { return m_activeProperties; }
     inline bool initialized() const { return m_initialized; }
