@@ -64,14 +64,14 @@ void RenderShaderData::updateFromPeer(QNode *peer)
     m_properties.clear();
     const QShaderData *shaderData = static_cast<const QShaderData *>(peer);
     const QMetaObject *metaObject = shaderData->metaObject();
-    const int propertyOffset = metaObject->propertyOffset();
+    const int propertyOffset = QShaderData::staticMetaObject.propertyOffset();
     const int propertyCount = metaObject->propertyCount();
 
     for (int i = propertyOffset; i < propertyCount; ++i) {
         const QMetaProperty property = metaObject->property(i);
         if (strcmp(property.name(), "data") == 0 || strcmp(property.name(), "childNodes") == 0) // We don't handle default Node properties
             continue;
-        m_properties.insert(property.name(), shaderData->property(property.name()));
+        m_properties.insert(QString::fromLatin1(property.name()), shaderData->property(property.name()));
     }
 }
 
@@ -86,7 +86,7 @@ void RenderShaderData::initialize(const ShaderUniformBlock &block)
     m_needsBufferUpdate = true;
 }
 
-void RenderShaderData::appendActiveProperty(const char *propertyName, const ShaderUniform &description)
+void RenderShaderData::appendActiveProperty(const QString &propertyName, const ShaderUniform &description)
 {
     m_activeProperties.insert(propertyName, description);
 }
@@ -99,8 +99,8 @@ void RenderShaderData::updateUniformBuffer(QGraphicsContext *ctx)
     }
 
     // TO DO: Only update values that have changed rather than the whole buffer
-    QHash<const char *, ShaderUniform>::const_iterator uniformsIt = m_activeProperties.begin();
-    const QHash<const char *, ShaderUniform>::const_iterator uniformsEnd = m_activeProperties.end();
+    QHash<QString, ShaderUniform>::const_iterator uniformsIt = m_activeProperties.begin();
+    const QHash<QString, ShaderUniform>::const_iterator uniformsEnd = m_activeProperties.end();
 
     while (uniformsIt != uniformsEnd) {
         ctx->buildUniformBuffer(m_properties.value(uniformsIt.key()), uniformsIt.value(), m_data);
@@ -124,8 +124,9 @@ void RenderShaderData::sceneChangeEvent(const QSceneChangePtr &e)
 {
     if (e->type() == NodeUpdated) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        if (m_properties.contains(propertyChange->propertyName())) {
-            m_properties.insert(propertyChange->propertyName(), propertyChange->value());
+        QString propertyName = QString::fromLatin1(propertyChange->propertyName());
+        if (m_properties.contains(propertyName)) {
+            m_properties.insert(propertyName, propertyChange->value());
             m_needsBufferUpdate = true;
         }
     }

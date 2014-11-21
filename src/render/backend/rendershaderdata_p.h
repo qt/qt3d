@@ -60,12 +60,12 @@ public:
     RenderShaderData();
 
     void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
-    inline QHash<const char *, QVariant> properties() const { return m_properties; }
-    inline QHash<const char *, ShaderUniform> activeProperties() const { return m_activeProperties; }
+    inline QHash<QString, QVariant> properties() const { return m_properties; }
+    inline QHash<QString, ShaderUniform> activeProperties() const { return m_activeProperties; }
     inline bool initialized() const { return m_initialized; }
 
     void initialize(const ShaderUniformBlock &block);
-    void appendActiveProperty(const char *propertyName, const ShaderUniform &description);
+    void appendActiveProperty(const QString &propertyName, const ShaderUniform &description);
     void apply(QGraphicsContext *ctx, int bindingPoint);
 
 protected:
@@ -73,8 +73,8 @@ protected:
     void updateUniformBuffer(QGraphicsContext *ctx);
 
 private:
-    QHash<const char *, QVariant> m_properties;
-    QHash<const char *, ShaderUniform> m_activeProperties;
+    QHash<QString, QVariant> m_properties;
+    QHash<QString, ShaderUniform> m_activeProperties;
     ShaderUniformBlock m_block;
     QByteArray m_data;
     UniformBuffer m_ubo;

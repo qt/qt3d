@@ -406,9 +406,9 @@ void RenderView::setUniformBlockValue(QUniformPack &uniformPack, RenderShader *s
                     ++uniformsIt;
                 }
 
-                const QHash<const char *, QVariant> &properties = rShaderData->properties();
-                QHash<const char *, QVariant>::const_iterator it = properties.begin();
-                const QHash<const char *, QVariant>::const_iterator end = properties.end();
+                const QHash<QString, QVariant> &properties = rShaderData->properties();
+                QHash<QString, QVariant>::const_iterator it = properties.begin();
+                const QHash<QString, QVariant>::const_iterator end = properties.end();
 
                 while (it != end) {
                     // We assign a UniformBlockBufferValue to the UniformPack
@@ -427,7 +427,7 @@ void RenderView::setUniformBlockValue(QUniformPack &uniformPack, RenderShader *s
                     const QVector<ShaderUniform>::const_iterator activeUniformEnd = activeBlockUniforms.end();
 
                     while (activeUniformIt != activeUniformEnd) {
-                        if (block.m_name + QStringLiteral(".") + QString::fromUtf8(it.key()) == (*activeUniformIt).m_name) {
+                        if (block.m_name + QStringLiteral(".") + it.key() == (*activeUniformIt).m_name) {
                             rShaderData->appendActiveProperty(it.key(), *activeUniformIt);
                             activeBlockUniforms.erase(activeUniformIt);
                             break;
