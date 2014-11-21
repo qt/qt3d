@@ -69,17 +69,19 @@ namespace Qt3D {
  */
 
 QSpotLightPrivate::QSpotLightPrivate(QSpotLight *qq)
-    : QAbstractLightPrivate(QStringLiteral("spotLights"), QStringLiteral("SpotLight"), qq)
+    : QAbstractLightPrivate(qq)
     , m_cutOffAngle(45.0f)
 {
 }
 
 void QSpotLight::copy(const QNode *ref)
 {
-    QAbstractLight::copy(ref);
     const QSpotLight *light = static_cast<const QSpotLight*>(ref);
     d_func()->m_direction = light->d_func()->m_direction;
     d_func()->m_cutOffAngle = light->d_func()->m_cutOffAngle;
+    // This needs to be last otherwise, properties value won't be copied
+    // as we use shader introspection in QShaderData::copy
+    QAbstractLight::copy(ref);
 }
 
 QSpotLight::QSpotLight(QNode *parent)

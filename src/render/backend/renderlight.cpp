@@ -82,9 +82,6 @@ void RenderLight::updateFromPeer(QNode *peer)
             m_lightProperties.insert(propertyName, property.read(light));
         }
     }
-
-    m_lightUniformName = light->lightUniformName();
-    m_lightBlockName = light->lightBlockName();
 }
 
 QHash<QString, QVariant> RenderLight::lightProperties() const

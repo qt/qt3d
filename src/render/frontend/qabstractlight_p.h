@@ -43,7 +43,7 @@
 #define QT3D_QABSTRACTLIGHT_P_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <private/qcomponent_p.h>
+#include <private/qshaderdata_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -51,17 +51,15 @@ namespace Qt3D {
 
 class QAbstractLight;
 
-class QT3DRENDERERSHARED_EXPORT QAbstractLightPrivate : public QComponentPrivate
+class QT3DRENDERERSHARED_EXPORT QAbstractLightPrivate : public QShaderDataPrivate
 {
 public:
     QAbstractLightPrivate(QAbstractLight *qq);
-    QAbstractLightPrivate(const QString &uniformName, const QString &blockName, QAbstractLight *qq);
 
     Q_DECLARE_PUBLIC(QAbstractLight)
     QColor m_color;
     float m_intensity;
-    const QString m_lightUniformName;
-    const QString m_lightBlockName;
+    QVector3D m_position;
 };
 
 }

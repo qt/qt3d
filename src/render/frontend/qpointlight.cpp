@@ -65,7 +65,7 @@ namespace Qt3D {
  */
 
 QPointLightPrivate::QPointLightPrivate(QPointLight *qq)
-    : QAbstractLightPrivate(QStringLiteral("pointLights"), QStringLiteral("PointLight"), qq)
+    : QAbstractLightPrivate(qq)
 {
 }
 

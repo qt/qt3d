@@ -56,36 +56,32 @@ namespace Qt3D
 
 
 QAbstractLightPrivate::QAbstractLightPrivate(QAbstractLight *qq)
-        : QComponentPrivate(qq)
+        : QShaderDataPrivate(qq)
         , m_color(QColor(255, 255, 255))
         , m_intensity(1.0f)
 {}
 
-QAbstractLightPrivate::QAbstractLightPrivate(const QString &uniformName, const QString &blockName, QAbstractLight *qq)
-    : QComponentPrivate(qq)
-    , m_lightUniformName(uniformName)
-    , m_lightBlockName(blockName)
-{}
-
 void QAbstractLight::copy(const QNode *ref)
 {
-    QComponent::copy(ref);
     const QAbstractLight *light = static_cast<const QAbstractLight*>(ref);
     d_func()->m_color = light->d_func()->m_color;
     d_func()->m_intensity = light->d_func()->m_intensity;
+    // This needs to be last otherwise, properties value won't be copied
+    // as we use shader introspection in QShaderData::copy
+    QShaderData::copy(ref);
 }
 
 /*!
  * Constructs a new QAbstractLight with the given \a parent.
  */
 QAbstractLight::QAbstractLight(Qt3D::QNode *parent) :
-    QComponent(*new QAbstractLightPrivate(this), parent)
+    QShaderData(*new QAbstractLightPrivate(this), parent)
 {
 }
 
 
 QAbstractLight::QAbstractLight(QAbstractLightPrivate &dd, QNode *parent)
-    : QComponent(dd, parent)
+    : QShaderData(dd, parent)
 {
 }
 
@@ -128,16 +124,24 @@ void QAbstractLight::setIntensity(float intensity)
     }
 }
 
-const QString QAbstractLight::lightBlockName() const
+void QAbstractLight::setPosition(const QVector3D &position)
 {
-    Q_D(const QAbstractLight);
-    return d->m_lightBlockName;
+    Q_D(QAbstractLight);
+    if (d->m_position != position) {
+        d->m_position = position;
+        emit positionChanged();
+    }
 }
 
-const QString QAbstractLight::lightUniformName() const
+QVector3D QAbstractLight::position() const
 {
     Q_D(const QAbstractLight);
-    return d->m_lightUniformName;
+    return d->m_position;
+}
+
+QShaderData::TransformType QAbstractLight::positionTransformed() const
+{
+    return QShaderData::ModelToEye;
 }
 
 } // Qt3D

@@ -42,7 +42,7 @@
 #ifndef QT3D_QABSTRACTLIGHT_H
 #define QT3D_QABSTRACTLIGHT_H
 
-#include <Qt3DCore/qcomponent.h>
+#include <Qt3DRenderer/qshaderdata.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 #include <QVector3D>
@@ -55,16 +55,15 @@ namespace Qt3D
 
 class QAbstractLightPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QAbstractLight : public QComponent
+class QT3DRENDERERSHARED_EXPORT QAbstractLight : public QShaderData
 {
     Q_OBJECT
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
     Q_PROPERTY(float intensity READ intensity WRITE setIntensity NOTIFY intensityChanged)
-    Q_PROPERTY(QString lightBlockName READ lightBlockName CONSTANT)
-    Q_PROPERTY(QString lightUniformName READ lightUniformName CONSTANT)
+    Q_PROPERTY(QVector3D position READ position WRITE setPosition NOTIFY positionChanged)
+    Q_PROPERTY(TransformType positionTransformed READ positionTransformed CONSTANT)
 
 public :
-
     explicit QAbstractLight(QNode *parent = 0);
 
     QColor color() const;
@@ -73,9 +72,10 @@ public :
     float intensity() const;
     void setIntensity(float intensity);
 
-    // Returns the name used as the struct name for a given lightType to be used in shaders
-    const QString lightBlockName() const;
-    const QString lightUniformName() const;
+    void setPosition(const QVector3D &position);
+    QVector3D position() const;
+
+    TransformType positionTransformed() const;
 
 protected :
     QAbstractLight(QAbstractLightPrivate &dd, QNode *parent = 0);
@@ -84,6 +84,7 @@ protected :
 Q_SIGNALS:
     void colorChanged();
     void intensityChanged();
+    void positionChanged();
 
 private:
     Q_DECLARE_PRIVATE(QAbstractLight)
