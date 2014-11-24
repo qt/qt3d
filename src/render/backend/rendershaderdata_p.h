@@ -45,6 +45,7 @@
 #include <Qt3DCore/qbackendnode.h>
 #include <private/shadervariables_p.h>
 #include <private/uniformbuffer_p.h>
+#include <QMutex>
 
 QT_BEGIN_NAMESPACE
 
@@ -58,6 +59,7 @@ class RenderShaderData : public QBackendNode
 {
 public:
     RenderShaderData();
+    ~RenderShaderData();
 
     void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
     inline QHash<QString, QVariant> & properties() { return m_properties; }
@@ -81,7 +83,9 @@ private:
     UniformBuffer m_ubo;
     QStringList m_updatedProperties;
     bool m_initialized;
-    bool m_needsBufferUpdate;
+    QAtomicInt m_needsBufferUpdate;
+    // QMutex has no copy operator
+    QMutex *m_mutex;
 };
 
 } // Render

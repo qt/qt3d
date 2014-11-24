@@ -55,8 +55,14 @@ namespace Render {
 RenderShaderData::RenderShaderData()
     : QBackendNode()
     , m_initialized(false)
-    , m_needsBufferUpdate(true)
+    , m_mutex(new QMutex)
 {
+    m_needsBufferUpdate.fetchAndStoreOrdered(1);
+}
+
+RenderShaderData::~RenderShaderData()
+{
+    delete m_mutex;
 }
 
 void RenderShaderData::updateFromPeer(QNode *peer)
@@ -83,7 +89,7 @@ void RenderShaderData::initialize(const ShaderUniformBlock &block)
     m_data = QByteArray(m_block.m_size, 0);
     m_initialized = true;
     // Force UBO buffer to be allocated on the GPU when apply is called
-    m_needsBufferUpdate = true;
+    m_needsBufferUpdate.fetchAndStoreOrdered(1);
 }
 
 void RenderShaderData::appendActiveProperty(const QString &propertyName, const ShaderUniform &description)
@@ -127,22 +133,28 @@ void RenderShaderData::updateUniformBuffer(QGraphicsContext *ctx)
 void RenderShaderData::apply(QGraphicsContext *ctx, int bindingPoint)
 {
     // Upload new data to GPU if it has changed
-    if (m_needsBufferUpdate) {
+    if (m_needsBufferUpdate.fetchAndStoreOrdered(0)) {
+        QMutexLocker lock(m_mutex);
+        // We lock in case m_properties is being updated at the same time
         updateUniformBuffer(ctx);
-        m_needsBufferUpdate = false;
     }
     m_ubo.bindToUniformBlock(ctx, bindingPoint);
 }
 
+// We have a concurrency issue here, updateUniformBuffer might be called
+// by the RenderThread while sceneChangeEvent is being called by the
+// AspectThread / Job thread for transformed properties
 void RenderShaderData::sceneChangeEvent(const QSceneChangePtr &e)
 {
     if (e->type() == NodeUpdated) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         QString propertyName = QString::fromLatin1(propertyChange->propertyName());
+        QMutexLocker lock(m_mutex);
+        // lock to update m_properties;
         if (m_properties.contains(propertyName)) {
             m_properties.insert(propertyName, propertyChange->value());
             m_updatedProperties.append(propertyName);
-            m_needsBufferUpdate = true;
+            m_needsBufferUpdate.fetchAndStoreOrdered(1);
         }
     }
 }
