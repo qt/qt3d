@@ -93,20 +93,34 @@ void RenderShaderData::appendActiveProperty(const QString &propertyName, const S
 
 void RenderShaderData::updateUniformBuffer(QGraphicsContext *ctx)
 {
+    const QHash<QString, ShaderUniform>::const_iterator uniformsEnd = m_activeProperties.end();
+    QHash<QString, ShaderUniform>::const_iterator uniformsIt = m_activeProperties.begin();
+
     if (!m_ubo.isCreated()) {
         m_ubo.create(ctx);
         m_ubo.allocate(ctx, m_block.m_size);
+        // We need to fill the UBO the first time it is created
+        while (uniformsIt != uniformsEnd) {
+            ctx->buildUniformBuffer(m_properties.value(uniformsIt.key()), uniformsIt.value(), m_data);
+            ++uniformsIt;
+        }
+        // Upload the whole buffer to GPU for the first time
+        m_ubo.update(ctx, m_data.constData(), m_block.m_size);
     }
 
-    // TO DO: Only update values that have changed rather than the whole buffer
-    QHash<QString, ShaderUniform>::const_iterator uniformsIt = m_activeProperties.begin();
-    const QHash<QString, ShaderUniform>::const_iterator uniformsEnd = m_activeProperties.end();
-
-    while (uniformsIt != uniformsEnd) {
-        ctx->buildUniformBuffer(m_properties.value(uniformsIt.key()), uniformsIt.value(), m_data);
-        ++uniformsIt;
+    Q_FOREACH (const QString &property, m_updatedProperties) {
+        uniformsIt = m_activeProperties.begin();
+        while (uniformsIt != uniformsEnd) {
+            if (uniformsIt.key() == property) {
+                // Update CPU side sub buffer
+                ctx->buildUniformBuffer(m_properties.value(uniformsIt.key()), uniformsIt.value(), m_data);
+                // Upload sub buffer to GPU
+                m_ubo.update(ctx, m_data.constData() + uniformsIt.value().m_offset, uniformsIt.value().m_rawByteSize, uniformsIt.value().m_offset);
+            }
+            ++uniformsIt;
+        }
     }
-    m_ubo.update(ctx, m_data.constData(), m_block.m_size);
+    m_updatedProperties.clear();
 }
 
 // Make sure QGraphicsContext::bindUniformBlock is called prior to this
@@ -127,6 +141,7 @@ void RenderShaderData::sceneChangeEvent(const QSceneChangePtr &e)
         QString propertyName = QString::fromLatin1(propertyChange->propertyName());
         if (m_properties.contains(propertyName)) {
             m_properties.insert(propertyName, propertyChange->value());
+            m_updatedProperties.append(propertyName);
             m_needsBufferUpdate = true;
         }
     }

@@ -79,6 +79,7 @@ private:
     ShaderUniformBlock m_block;
     QByteArray m_data;
     UniformBuffer m_ubo;
+    QStringList m_updatedProperties;
     bool m_initialized;
     bool m_needsBufferUpdate;
 };
