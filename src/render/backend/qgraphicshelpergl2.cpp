@@ -378,17 +378,17 @@ void QGraphicsHelperGL2::bindUniform(const QVariant &v, const ShaderUniform &des
         break;
 
     case GL_BOOL_VEC2:
-        m_funcs->glUniform1iv(description.m_location, description.m_size,
+        m_funcs->glUniform2iv(description.m_location, description.m_size,
                               QGraphicsUtils::valueArrayFromVariant<GLint>(v, description.m_size, 2));
         break;
 
     case GL_BOOL_VEC3:
-        m_funcs->glUniform1iv(description.m_location, description.m_size,
+        m_funcs->glUniform3iv(description.m_location, description.m_size,
                               QGraphicsUtils::valueArrayFromVariant<GLint>(v, description.m_size, 3));
         break;
 
     case GL_BOOL_VEC4:
-        m_funcs->glUniform1iv(description.m_location, description.m_size,
+        m_funcs->glUniform4iv(description.m_location, description.m_size,
                               QGraphicsUtils::valueArrayFromVariant<GLint>(v, description.m_size, 4));
         break;
 
