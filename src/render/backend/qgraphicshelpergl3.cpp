@@ -156,6 +156,9 @@ QVector<ShaderUniform> QGraphicsHelperGL3::programUniformsAndLocations(GLuint pr
         m_funcs->glGetActiveUniformsiv(programId, 1, (GLuint*)&i, GL_UNIFORM_MATRIX_STRIDE, &uniform.m_matrixStride);
         uniform.m_rawByteSize = uniformByteSize(uniform);
         uniforms.append(uniform);
+        qCDebug(Render::Rendering) << uniform.m_name << "size" << uniform.m_size
+                                   << " offset" << uniform.m_offset
+                                   << " rawSize" << uniform.m_rawByteSize;
     }
 
     return uniforms;
