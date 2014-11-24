@@ -75,12 +75,10 @@ void UniformBuffer::allocate(QGraphicsContext *ctx, uint size, bool dynamic)
     ctx->openGLContext()->functions()->glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
-void UniformBuffer::update(QGraphicsContext *ctx, const void *data, uint size)
+void UniformBuffer::update(QGraphicsContext *ctx, const void *data, uint size, int offset)
 {
     ctx->openGLContext()->functions()->glBindBuffer(GL_UNIFORM_BUFFER, m_bufferId);
-    // TO DO: At the moment, replaces the whole buffer,
-    // look at updating only the parts that have change
-    ctx->openGLContext()->functions()->glBufferSubData(GL_UNIFORM_BUFFER, 0, size, data);
+    ctx->openGLContext()->functions()->glBufferSubData(GL_UNIFORM_BUFFER, offset, size, data);
     ctx->openGLContext()->functions()->glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 

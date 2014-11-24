@@ -61,7 +61,7 @@ public:
     void create(QGraphicsContext *ctx);
     void destroy(QGraphicsContext *ctx);
     void allocate(QGraphicsContext *ctx, uint size, bool dynamic = true);
-    void update(QGraphicsContext *ctx, const void *data, uint size);
+    void update(QGraphicsContext *ctx, const void *data, uint size, int offset = 0);
     void bindToUniformBlock(QGraphicsContext *ctx, int bindingPoint);
 
     inline GLuint bufferId() const { return m_bufferId; }
