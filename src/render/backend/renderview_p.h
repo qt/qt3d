@@ -77,8 +77,12 @@ class ViewportNode;
 class RenderEffect;
 class RenderRenderPass;
 
+typedef QPair<ShaderUniform, QVariant> ActivePropertyContent;
+typedef QPair<QString, ActivePropertyContent > ActiveProperty;
+
 // This class is kind of analogous to RenderBin but I want to avoid trampling
 // on that until we get this working
+
 class Q_AUTOTEST_EXPORT RenderView
 {
 public:
@@ -218,6 +222,7 @@ private:
     AttachmentPack m_attachmentPack;
     QClearBuffer::BufferType m_clearBuffer;
     int m_frameIndex;
+    QHash<QString, QVariant> m_activeUniformNamesToValue;
 
     // We do not use pointers to RenderNodes or Drawable's here so that the
     // render aspect is free to change the drawables on the next frame whilst
@@ -247,6 +252,9 @@ private:
 
     void setUniformValue(QUniformPack &uniformPack, const QString &name, const QVariant &value);
     void setUniformBlockValue(QUniformPack &uniformPack, RenderShader *shader, const ShaderUniformBlock &block, const QVariant &value);
+    void buildActiveUniformNameValueMap(const QHash<QString, ShaderUniform> &uniforms, const QString &blockName, const QString &qmlPropertyName, const QVariant &value);
+    void buildActiveUniformNameValueMapStructHelper(const QHash<QString, ShaderUniform> &uniforms, RenderShaderData *rShaderData, const QString &blockName, const QString &qmlPropertyName = QString());
+
     void buildSortingKey(RenderCommand *command);
 };
 

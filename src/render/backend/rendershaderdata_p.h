@@ -70,6 +70,7 @@ public:
 
     void initialize(const ShaderUniformBlock &block);
     void appendActiveProperty(const QString &propertyName, const ShaderUniform &description);
+    void setActiveUniformValues(const QHash<QString, QVariant> &newValues);
     void apply(QGraphicsContext *ctx, int bindingPoint);
 
 protected:
@@ -79,6 +80,7 @@ protected:
 private:
     QHash<QString, QVariant> m_properties;
     QHash<QString, ShaderUniform> m_activeProperties;
+    QHash<QString, QVariant> m_activeUniformToValues;
     ShaderUniformBlock m_block;
     QByteArray m_data;
     UniformBuffer m_ubo;

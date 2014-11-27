@@ -51,7 +51,6 @@ Material {
     property bool enabled: true
     property Texture2D texture;
 
-
     parameters: [
         Parameter { name: "ambient"; value: Qt.vector3d(material.ambientColor.r, material.ambientColor.g, material.ambientColor.b) },
         Parameter { name: "lightIntensity"; value: Qt.vector3d(0.5, 0.5, 0.5)},
@@ -63,6 +62,50 @@ Material {
                 property real shininess: 1.0;
                 property vector3d position: Qt.vector3d(1.0, 1.0, 0.0)
                 property vector3d intensity: Qt.vector3d(0.7, 0.8, 0.6);
+
+                property ShaderData s: ShaderData {
+                    property real innerV: 3.0
+                    property var innerVec3Array: [Qt.vector3d(1, 1, 1), Qt.vector3d(2, 2, 2), Qt.vector3d(3, 3, 3), Qt.vector3d(4, 4, 4)]
+                }
+
+                property ShaderDataArray u: ShaderDataArray {
+                    id: array
+                    ShaderData {
+                        property real innerV: 2.0
+                        property vector3d innerVec3
+                        property var innerVec3Array: [Qt.vector3d(1, 1, 1), Qt.vector3d(2, 2, 2), Qt.vector3d(3, 3, 3), Qt.vector3d(4, 4, 4)]
+                        property ShaderData t: ShaderData {
+                            property real a: 1.0
+                            property real b: 5.0
+                            property var r: [Qt.vector3d(1, 1, 1), Qt.vector3d(2, 2, 2), Qt.vector3d(3, 3, 3), Qt.vector3d(4, 4, 4)]
+                        }
+                        property ShaderDataArray c: ShaderDataArray {
+                            ShaderData {
+                                property real a: 3.0
+                                property real b: 4.0
+                                property var r: [Qt.vector3d(1, 1, 1), Qt.vector3d(2, 2, 2), Qt.vector3d(3, 3, 3), Qt.vector3d(4, 4, 4)]
+                            }
+                            ShaderData {
+                                property real a: 2.0
+                                property real b: 3.0
+                                property var r: [Qt.vector3d(2, 2, 2), Qt.vector3d(1, 1, 1), Qt.vector3d(4, 4, 4), Qt.vector3d(3, 3, 3)]
+                            }
+                        }
+                    }
+                    ShaderData {
+                        property real innerV: 3.2
+                        property var innerVec3Array: [Qt.vector3d(1, 0, 1), Qt.vector3d(0, 2, 2), Qt.vector3d(3, 0, 3), Qt.vector3d(4, 0, 4)]
+                        property ShaderData t: ShaderData {
+                            property real a: 1.0
+                            property real b: 5.0
+                            property var r: [Qt.vector3d(1, 1, 1), Qt.vector3d(2, 2, 2), Qt.vector3d(3, 3, 3), Qt.vector3d(4, 4, 4)]
+                        }
+                    }
+                    ShaderData {
+                        property real innerV: 0.2
+                        property var innerVec3Array: [Qt.vector3d(1, 0, 1), Qt.vector3d(0, 2, 2), Qt.vector3d(3, 0, 3), Qt.vector3d(4, 0, 4)]
+                    }
+                }
 
                 QQ2.ColorAnimation on colorAmbient { from: "blue"; to: "yellow"; duration: 1000; loops: QQ2.Animation.Infinite }
                 QQ2.ColorAnimation on colorDiffuse { from: "red"; to: "green"; duration: 1000; loops: QQ2.Animation.Infinite }
@@ -171,6 +214,22 @@ Material {
                             in vec3 normal;
                             out vec4 fragColor;
 
+                            struct subStruct
+                            {
+                                float a;
+                                float b;
+                                float r[4];
+                            };
+
+                            struct innerStruct
+                            {
+                                float innerV;
+                                vec3  innerVec3;
+                                vec3  innerVec3Array[4];
+                                subStruct t;
+                                subStruct c[2];
+                            };
+
                             uniform PointLightBlock
                             {
                                 vec4 colorAmbient;
@@ -179,6 +238,8 @@ Material {
                                 float shininess;
                                 vec3 position;
                                 vec3 intensity;
+                                innerStruct s;
+                                innerStruct u[4];
                             } lightSource;
 
 
@@ -191,10 +252,26 @@ Material {
 
                                 float diffuse = max(dot(s, n), 0.0);
                                 float specular = step(diffuse, 0.0) * pow(max(dot(r, v), 0.0), lightSource.shininess);
-                                fragColor = vec4(lightSource.intensity, 1.0) * (
-                                                lightSource.colorAmbient +
-                                                lightSource.colorDiffuse * diffuse +
-                                                lightSource.colorSpecular * specular);
+
+                                vec3 sum = vec3(0.0, 0.0, 0.0);
+
+                                for (int i = 0; i < 4; ++i) {
+                                    sum += lightSource.s.innerVec3Array[i];
+                                }
+
+                                float tmp = 0;
+
+                                for (int i = 0; i < 4; ++i) {
+                                    tmp += lightSource.u[i].innerV;
+                                }
+
+                                if (sum == vec3(10.0, 10.0, 10.0))
+                                    fragColor = vec4(lightSource.intensity, 1.0) * (
+                                                    lightSource.colorAmbient * lightSource.s.innerV +
+                                                    lightSource.colorDiffuse * diffuse +
+                                                    lightSource.colorSpecular * specular);
+                                else
+                                    fragColor = vec4(1.0, 1.0, 1.0, 1.0) * tmp;
                             }"
                         }
                     }

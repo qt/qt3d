@@ -81,6 +81,10 @@ void RenderShaderData::updateFromPeer(QNode *peer)
             if (strcmp(property.name(), "data") == 0 || strcmp(property.name(), "childNodes") == 0) // We don't handle default Node properties
                 continue;
             // We should be making clones of inner QShaderData properties
+            // TO DO: If the property is a QShaderData as well, we should register ourself as an observer of updates
+            // otherwise we won't ever be notified about a nested property change
+            // Q_D(QBackendNode);
+            // d->m_arbiter->registerObserver(QBackendNodePrivate::get(this), subQShaderData->nodeId(),NodeUpdated)
             m_properties.insert(QString::fromLatin1(property.name()),
                                 m_propertyReader->readProperty(shaderData->property(property.name())));
         }
@@ -103,6 +107,14 @@ void RenderShaderData::appendActiveProperty(const QString &propertyName, const S
     m_activeProperties.insert(propertyName, description);
 }
 
+// TO DO: This isn't the cleanest solution but for now, this helps us getting UBOs working
+// and we'll be able to correct that easily once we have something working
+void RenderShaderData::setActiveUniformValues(const QHash<QString, QVariant> &newValues)
+{
+    QMutexLocker lock(m_mutex);
+    m_activeUniformToValues = newValues;
+}
+
 void RenderShaderData::updateUniformBuffer(QGraphicsContext *ctx)
 {
     const QHash<QString, ShaderUniform>::const_iterator uniformsEnd = m_activeProperties.end();
@@ -113,23 +125,22 @@ void RenderShaderData::updateUniformBuffer(QGraphicsContext *ctx)
         m_ubo.allocate(ctx, m_block.m_size);
         // We need to fill the UBO the first time it is created
         while (uniformsIt != uniformsEnd) {
-            ctx->buildUniformBuffer(m_properties.value(uniformsIt.key()), uniformsIt.value(), m_data);
+            if (m_activeUniformToValues.contains(uniformsIt.key()))
+                ctx->buildUniformBuffer(m_activeUniformToValues.value(uniformsIt.key()), uniformsIt.value(), m_data);
             ++uniformsIt;
         }
         // Upload the whole buffer to GPU for the first time
         m_ubo.update(ctx, m_data.constData(), m_block.m_size);
     }
-    Q_FOREACH (const QString &property, m_updatedProperties) {
-        uniformsIt = m_activeProperties.begin();
-        while (uniformsIt != uniformsEnd) {
-            if (uniformsIt.key() == property) {
+    uniformsIt = m_activeProperties.begin();
+    while (uniformsIt != uniformsEnd) {
+            if (m_activeUniformToValues.contains(uniformsIt.key())) {
                 // Update CPU side sub buffer
-                ctx->buildUniformBuffer(m_properties.value(uniformsIt.key()), uniformsIt.value(), m_data);
+                ctx->buildUniformBuffer(m_activeUniformToValues.value(uniformsIt.key()), uniformsIt.value(), m_data);
                 // Upload sub buffer to GPU
                 m_ubo.update(ctx, m_data.constData() + uniformsIt.value().m_offset, uniformsIt.value().m_rawByteSize, uniformsIt.value().m_offset);
-            }
-            ++uniformsIt;
         }
+        ++uniformsIt;
     }
     m_updatedProperties.clear();
 }
@@ -151,6 +162,8 @@ void RenderShaderData::apply(QGraphicsContext *ctx, int bindingPoint)
 // AspectThread / Job thread for transformed properties
 void RenderShaderData::sceneChangeEvent(const QSceneChangePtr &e)
 {
+    // TO DO check if property update comes from the root QShaderData
+    // or if it comes from one of the nested QShaderData
     if (!m_propertyReader.isNull() && e->type() == NodeUpdated) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         QString propertyName = QString::fromLatin1(propertyChange->propertyName());
