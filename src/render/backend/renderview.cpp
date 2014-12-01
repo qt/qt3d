@@ -425,8 +425,8 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
             // Builds the QUniformPack, sets shader standard uniforms and store attributes name / glname bindings
             // If a parameter is defined and not found in the bindings it is assumed to be a binding of Uniform type with the glsl name
             // equals to the parameter name
-            QStringList uniformNames = shader->uniformsNames();
-            QStringList attributeNames = shader->attributesNames();
+            const QStringList &uniformNames = shader->uniformsNames();
+            const QStringList &attributeNames = shader->attributesNames();
 
             // Set fragData Name and index
             // Later on we might want to relink the shader if attachments have changed
@@ -511,7 +511,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
                 }
             }
             // Set frag outputs in the shaders if hash not empty
-            if (!fragOutputs.empty())
+            if (!fragOutputs.isEmpty())
                 shader->setFragOutputs(fragOutputs);
         }
     }
