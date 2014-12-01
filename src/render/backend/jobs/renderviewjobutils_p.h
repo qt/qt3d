@@ -80,16 +80,40 @@ Q_AUTOTEST_EXPORT RenderRenderPassList findRenderPassesForTechnique(Renderer *re
                                                                     RenderView *renderView,
                                                                     RenderTechnique *technique);
 
-Q_AUTOTEST_EXPORT QHash<QString, QVariant> parametersFromMaterialEffectTechnique(ParameterManager *manager,
-                                                                                 RenderMaterial *material,
-                                                                                 RenderEffect *effect,
-                                                                                 RenderTechnique *technique);
+struct ParameterInfo
+{
+    ParameterInfo(const QString &name = QString(), const QVariant &value = QVariant())
+      : name(name)
+      , value(value)
+    {}
+
+    QString name;
+    QVariant value;
+
+    bool operator<(const QString &otherName) const
+    {
+        return name < otherName;
+    }
+};
+
+typedef QVarLengthArray<ParameterInfo, 16> ParameterInfoList;
+
+Q_AUTOTEST_EXPORT void parametersFromMaterialEffectTechnique(ParameterInfoList *infoList,
+                                                             ParameterManager *manager,
+                                                             RenderMaterial *material,
+                                                             RenderEffect *effect,
+                                                             RenderTechnique *technique);
+
+Q_AUTOTEST_EXPORT ParameterInfoList::iterator findParamInfo(ParameterInfoList *infoList,
+                                                            const QString &name);
 
 Q_AUTOTEST_EXPORT RenderStateSet *buildRenderStateSet(RenderRenderPass *pass,
                                                       QFrameAllocator *allocator);
 
 } // namespace Render
 } // namespace Qt3D
+
+Q_DECLARE_TYPEINFO(Qt3D::Render::ParameterInfo, Q_MOVABLE_TYPE);
 
 QT_END_NAMESPACE
 

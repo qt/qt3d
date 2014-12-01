@@ -316,37 +316,46 @@ RenderRenderPassList findRenderPassesForTechnique(Renderer *renderer,
     return passes;
 }
 
-static void addParametersForIds(QHash<QString, QVariant> *params, ParameterManager *manager,
+
+ParameterInfoList::iterator findParamInfo(ParameterInfoList *params, const QString &name)
+{
+    ParameterInfoList::iterator it = std::lower_bound(params->begin(), params->end(), name);
+    if (it != params->end() && it->name != name)
+        return params->end();
+    return it;
+}
+
+static void addParametersForIds(ParameterInfoList *params, ParameterManager *manager,
                                 const QList<QNodeId> &parameterIds)
 {
     Q_FOREACH (const QNodeId &paramId, parameterIds) {
         RenderParameter *param = manager->lookupResource(paramId);
-        if (param != Q_NULLPTR)
-            params->insert(param->name(), param->value());
+        if (param != Q_NULLPTR) {
+            ParameterInfoList::iterator it = std::lower_bound(params->begin(), params->end(), param->name());
+            if (it == params->end() || it->name != param->name())
+                params->insert(it, ParameterInfo(param->name(), param->value()));
+        }
     }
 }
 
-QHash<QString, QVariant> parametersFromMaterialEffectTechnique(ParameterManager *manager,
-                                                               RenderMaterial *material,
-                                                               RenderEffect *effect,
-                                                               RenderTechnique *technique)
+void parametersFromMaterialEffectTechnique(ParameterInfoList *infoList,
+                                           ParameterManager *manager,
+                                           RenderMaterial *material,
+                                           RenderEffect *effect,
+                                           RenderTechnique *technique)
 {
-    QHash<QString, QVariant> params;
-
     // Material is preferred over Effect
     // Effect is preferred over Technique
     // By filling the hash in reverse preference order, we ensure that we preserve preference
 
     if (effect)
-        addParametersForIds(&params, manager, effect->parameters());
+        addParametersForIds(infoList, manager, effect->parameters());
 
     if (technique)
-        addParametersForIds(&params, manager, technique->parameters());
+        addParametersForIds(infoList, manager, technique->parameters());
 
     if (material)
-        addParametersForIds(&params, manager, material->parameters());
-
-    return params;
+        addParametersForIds(infoList, manager, material->parameters());
 }
 
 RenderStateSet *buildRenderStateSet(RenderRenderPass *pass, QFrameAllocator *allocator)

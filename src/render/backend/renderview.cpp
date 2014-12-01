@@ -68,9 +68,6 @@
 
 #include <Qt3DRenderer/qparametermapping.h>
 
-// TODO: Move out once this is all refactored
-#include <Qt3DRenderer/private/renderviewjobutils_p.h>
-
 #include <Qt3DCore/qentity.h>
 
 #include <QtGui/qsurface.h>
@@ -340,8 +337,8 @@ void RenderView::buildRenderCommands(RenderEntity *node)
                 }
 
                 // Get the parameters for our selected rendering setup
-                QHash<QString, QVariant> parameters =
-                    parametersFromMaterialEffectTechnique(m_renderer->parameterManager(), material, effect, technique);
+                ParameterInfoList parameters;
+                parametersFromMaterialEffectTechnique(&parameters, m_renderer->parameterManager(), material, effect, technique);
 
                 // 1 RenderCommand per RenderPass pass on an Entity with a Mesh
                 Q_FOREACH (RenderRenderPass *pass, passes) {
@@ -403,7 +400,7 @@ void RenderView::buildSortingKey(RenderCommand *command)
     }
 }
 
-void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *rPass, QHash<QString, QVariant> &parameters, const QMatrix4x4 &worldTransform)
+void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *rPass, ParameterInfoList &parameters, const QMatrix4x4 &worldTransform)
 {
     // The VAO Handle is set directly in the renderer thread so as to avoid having to use a mutex here
     // Set shader, technique, and effect by basically doing :
@@ -456,7 +453,8 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
 
                 // Set uniforms and attributes explicitly binded
                 Q_FOREACH (QParameterMapping *binding, rPass->bindings()) {
-                    if (!parameters.contains(binding->parameterName())) {
+                    ParameterInfoList::iterator it = findParamInfo(&parameters, binding->parameterName());
+                    if (it == parameters.end()) {
                         if (binding->bindingType() == QParameterMapping::Attribute
                             && attributeNames.contains(binding->shaderVariableName())) {
                             command->m_parameterAttributeToShaderNames.insert(binding->parameterName(), binding->shaderVariableName());
@@ -472,16 +470,17 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
                             qCWarning(Render::Backend) << Q_FUNC_INFO << "Trying to bind a Parameter that hasn't been defined " << binding->parameterName();
                         }
                     } else {
-                        setUniformValue(command->m_uniforms, binding->shaderVariableName(), parameters.take(binding->parameterName()));
+                        setUniformValue(command->m_uniforms, binding->shaderVariableName(), it->value);
+                        parameters.erase(it);
                     }
                 }
 
                 // If there are remaining parameters, those are set as uniforms
                 if (!uniformNames.isEmpty() && !parameters.isEmpty()) {
-                    QHash<QString, QVariant>::iterator it = parameters.begin();
+                    ParameterInfoList::iterator it = parameters.begin();
                     while (it != parameters.end()) {
-                        if (uniformNames.contains(it.key())) {
-                            setUniformValue(command->m_uniforms, it.key(), it.value());
+                        if (uniformNames.contains(it->name)) {
+                            setUniformValue(command->m_uniforms, it->name, it->value);
                             it = parameters.erase(it);
                         } else {
                             // Else param unused by current shader

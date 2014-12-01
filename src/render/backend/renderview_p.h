@@ -53,6 +53,9 @@
 
 #include <Qt3DCore/qframeallocator.h>
 
+// TODO: Move out once this is all refactored
+#include <Qt3DRenderer/private/renderviewjobutils_p.h>
+
 #include <QVector>
 #include <QMutex>
 #include <QColor>
@@ -191,7 +194,7 @@ public:
     void addSortCriteria(const QList<QNodeId> &sortMethodUid) { m_data->m_sortingCriteria.append(sortMethodUid); }
 
 private:
-    void setShaderAndUniforms(RenderCommand *command, RenderRenderPass *pass, QHash<QString, QVariant> &parameters, const QMatrix4x4 &worldTransform);
+    void setShaderAndUniforms(RenderCommand *command, RenderRenderPass *pass, ParameterInfoList &parameters, const QMatrix4x4 &worldTransform);
 
     Renderer *m_renderer;
     QFrameAllocator *m_allocator;
