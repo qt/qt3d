@@ -78,11 +78,11 @@ public:
     explicit QMeshData(PrimitiveTypes primitiveType = Triangles);
     virtual ~QMeshData();
 
-    void addAttribute(const QString& name, QAbstractAttributePtr attr);
-    void setIndexAttribute(QAbstractAttributePtr attr);
+    void addAttribute(const QString &name, const QAbstractAttributePtr &attr);
+    void setIndexAttribute(const QAbstractAttributePtr &attr);
 
     QStringList attributeNames() const;
-    QAbstractAttributePtr attributeByName(QString name) const;
+    QAbstractAttributePtr attributeByName(const QString &name) const;
     QAbstractAttributePtr indexAttribute() const;
 
     static const QString defaultPositionAttributeName() { return QStringLiteral("vertexPosition"); }

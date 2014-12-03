@@ -71,13 +71,19 @@ QMeshData::QMeshData(QMeshDataPrivate &dd)
 {
 }
 
-void QMeshData::addAttribute(const QString &name, QAbstractAttributePtr attr)
+void QMeshData::addAttribute(const QString &name, const QAbstractAttributePtr &attr)
 {
     Q_D(QMeshData);
-    d->m_attributes.insert(name, attr);
+    const int i = d->m_attributesNames.indexOf(name);
+    if (i != -1) {
+        d->m_attributes[i] = attr;
+    } else {
+        d->m_attributesNames.append(name);
+        d->m_attributes.append(attr);
+    }
 }
 
-void QMeshData::setIndexAttribute(QAbstractAttributePtr attr)
+void QMeshData::setIndexAttribute(const QAbstractAttributePtr &attr)
 {
     Q_D(QMeshData);
     d->m_indexAttr = attr;
@@ -86,13 +92,17 @@ void QMeshData::setIndexAttribute(QAbstractAttributePtr attr)
 QStringList QMeshData::attributeNames() const
 {
     Q_D(const QMeshData);
-    return d->m_attributes.keys();
+    return d->m_attributesNames;
 }
 
-QAbstractAttributePtr QMeshData::attributeByName(QString name) const
+QAbstractAttributePtr QMeshData::attributeByName(const QString &name) const
 {
     Q_D(const QMeshData);
-    return d->m_attributes.value(name);
+    const int i = d->m_attributesNames.indexOf(name);
+    if (i != -1)
+        return d->m_attributes[i];
+    else
+        return QAbstractAttributePtr();
 }
 
 QAbstractAttributePtr QMeshData::indexAttribute() const
@@ -134,7 +144,7 @@ QList<QAbstractBufferPtr> QMeshData::buffers() const
     if (d->m_indexAttr)
         r.insert(d->m_indexAttr->buffer());
 
-    Q_FOREACH (QAbstractAttributePtr v, d->m_attributes.values())
+    Q_FOREACH (const QAbstractAttributePtr &v, d->m_attributes)
         r.insert(v->buffer());
 
     return r.toList();

@@ -66,7 +66,8 @@ public:
     Q_DECLARE_PUBLIC(QMeshData)
     QMeshData *q_ptr;
 
-    QMap<QString, QAbstractAttributePtr> m_attributes;
+    QStringList m_attributesNames;
+    QVector<QAbstractAttributePtr> m_attributes;
     QAbstractAttributePtr m_indexAttr;
     QAxisAlignedBoundingBox m_bbox;
     int m_verticesPerPatch;
