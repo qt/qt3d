@@ -68,7 +68,7 @@ public:
     QAbstractAspectJobManager *m_jobManager;
     QChangeArbiter *m_arbiter;
     QAbstractAspect::AspectType m_aspectType;
-    QHash<QString, QBackendNodeFunctorPtr> m_backendCreatorFunctors;
+    QHash<QByteArray, QBackendNodeFunctorPtr> m_backendCreatorFunctors;
 
     static QAbstractAspectPrivate *get(QAbstractAspect *aspect);
 };

@@ -48,6 +48,12 @@
 
 QT_BEGIN_NAMESPACE
 
+static QByteArray className(const QMetaObject &obj)
+{
+    // note: class names are stored in static meta objects, thus the usage of fromRawData here is fine
+    return QByteArray::fromRawData(obj.className(), strlen(obj.className()));
+}
+
 namespace Qt3D {
 
 QAbstractAspectPrivate::QAbstractAspectPrivate(QAbstractAspect *qq)
@@ -79,7 +85,7 @@ QAbstractAspect::QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent)
 void QAbstractAspect::registerBackendType(const QMetaObject &obj, const QBackendNodeFunctorPtr &functor)
 {
     Q_D(QAbstractAspect);
-    d->m_backendCreatorFunctors.insert(QString::fromLatin1(obj.className()), functor);
+    d->m_backendCreatorFunctors.insert(className(obj), functor);
 }
 
 QBackendNode *QAbstractAspect::createBackendNode(QNode *frontend) const
@@ -88,7 +94,7 @@ QBackendNode *QAbstractAspect::createBackendNode(QNode *frontend) const
     const QMetaObject *metaObj = frontend->metaObject();
     QBackendNodeFunctorPtr functor;
     while (metaObj != Q_NULLPTR && functor.isNull()) {
-                functor = d->m_backendCreatorFunctors.value(QString::fromLatin1(metaObj->className()));
+                functor = d->m_backendCreatorFunctors.value(className(*metaObj));
         metaObj = metaObj->superClass();
     }
     if (!functor.isNull()) {
@@ -118,7 +124,7 @@ QBackendNode *QAbstractAspect::getBackendNode(QNode *frontend) const
     QBackendNodeFunctorPtr functor;
 
     while (metaObj != Q_NULLPTR && functor.isNull()) {
-        functor = d->m_backendCreatorFunctors.value(QString::fromLatin1(metaObj->className()));
+        functor = d->m_backendCreatorFunctors.value(className(*metaObj));
         metaObj = metaObj->superClass();
     }
     if (!functor.isNull())
@@ -133,7 +139,7 @@ void QAbstractAspect::clearBackendNode(QNode *frontend) const
     QBackendNodeFunctorPtr functor;
 
     while (metaObj != Q_NULLPTR && functor.isNull()) {
-        functor = d->m_backendCreatorFunctors.value(QString::fromLatin1(metaObj->className()));
+        functor = d->m_backendCreatorFunctors.value(className(*metaObj));
         metaObj = metaObj->superClass();
     }
     if (!functor.isNull()) {
