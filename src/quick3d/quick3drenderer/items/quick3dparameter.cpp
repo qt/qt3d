@@ -78,8 +78,7 @@ void Quick3DParameterPrivate::setValue(const QVariant &value)
             }
             QParameterPrivate::setValue(values);
         }
-    }
-    else {
+    } else {
         QParameterPrivate::setValue(value);
     }
 }
