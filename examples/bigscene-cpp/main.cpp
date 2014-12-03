@@ -41,6 +41,7 @@
 
 #include <QGuiApplication>
 #include <QPropertyAnimation>
+#include <QUrl>
 #include <Qt3DCore/Window>
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QCamera>
@@ -50,12 +51,19 @@
 #include <Qt3DCore/QScaleTransform>
 #include <Qt3DCore/qaspectengine.h>
 #include <Qt3DRenderer/QViewport>
+#include <Qt3DRenderer/QMaterial>
+#include <Qt3DRenderer/QEffect>
+#include <Qt3DRenderer/QRenderPass>
+#include <Qt3DRenderer/QTechnique>
+#include <Qt3DRenderer/QShaderProgram>
+#include <Qt3DRenderer/QParameter>
 #include <Qt3DRenderer/QFrameGraph>
 #include <Qt3DRenderer/QClearBuffer>
 #include <Qt3DRenderer/QCylinderMesh>
 #include <Qt3DRenderer/QRenderAspect>
 #include <Qt3DRenderer/QCameraSelector>
 #include <Qt3DRenderer/QTechniqueFilter>
+#include <Qt3DRenderer/QOpenGLFilter>
 #include <qmath.h>
 
 using namespace Qt3D;
@@ -95,6 +103,27 @@ int main(int ac, char **av)
     frameGraph->setActiveFrameGraph(techniqueFilter);
     root->addComponent(frameGraph);
 
+    QShaderProgram *shader = new QShaderProgram();
+    shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/diffuse.vert"))));
+    shader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/diffuse.frag"))));
+
+    QRenderPass *renderPass = new QRenderPass();
+    renderPass->setShaderProgram(shader);
+
+    QTechnique *technique = new QTechnique();
+    technique->openGLFilter()->setApi(Qt3D::QOpenGLFilter::Desktop);
+    technique->openGLFilter()->setMajorVersion(3);
+    technique->openGLFilter()->setMinorVersion(1);
+    technique->openGLFilter()->setProfile(Qt3D::QOpenGLFilter::Core);
+    technique->addPass(renderPass);
+
+    QEffect *effect = new QEffect();
+    QParameter* lightPos = new QParameter(QStringLiteral("lightPosition"), QVector4D(10.0f, 10.0f, 0.0f, 1.0f));
+    QParameter* lightIntensity = new QParameter(QStringLiteral("lightIntensity"), QVector3D(0.5f, 0.5f, 0.5f));
+    effect->addParameter(lightPos);
+    effect->addParameter(lightIntensity);
+    effect->addTechnique(technique);
+
     const float radius = 100.0f;
     const int max = 1000;
     const float det = 1.0f / max;
@@ -106,6 +135,7 @@ int main(int ac, char **av)
         QRotateTransform *rotateX = new QRotateTransform();
         QRotateTransform *rotateZ = new QRotateTransform();
         QCylinderMesh *mesh = new QCylinderMesh();
+        QMaterial *material = new QMaterial();
 
         mesh->setRings(50.0f);
         mesh->setSlices(30.0f);
@@ -114,20 +144,27 @@ int main(int ac, char **av)
 
         const float angle = M_PI * 2.0f * i * det * 10.;
 
+        QParameter *diffuseColorParameter = new QParameter(QStringLiteral("kd"), QVector3D(cosf(angle), 0.3f, sinf(angle)));
+        QParameter* ambientColorParameter = new QParameter(QStringLiteral("ka"), QVector3D(cosf(angle), sinf(angle), 0.5f));
+
+        material->setEffect(effect);
+        material->addParameter(diffuseColorParameter);
+        material->addParameter(ambientColorParameter);
+
         translation->setTranslation(QVector3D(radius * cos(angle), 200.* i * det, radius * sin(angle)));
         rotateX->setAxis(QVector3D(1.0f, 0.0f, 0.0f));
         rotateZ->setAxis(QVector3D(0.0f, 0.0f, 1.0f));
         rotateX->setAngleDeg(30.0f * i);
         rotateZ->setAngleDeg(45.0f * i);
 
-        QPropertyAnimation *animX = new QPropertyAnimation(rotateX, "angle");
+        QPropertyAnimation *animX = new QPropertyAnimation(rotateX, QByteArrayLiteral("angle"));
         animX->setDuration(2400 * i);
         animX->setStartValue(QVariant::fromValue(i * 30.0f));
         animX->setEndValue(QVariant::fromValue((i + 1) * 390.0f));
         animX->setLoopCount(-1);
         animX->start();
 
-        QPropertyAnimation *animZ = new QPropertyAnimation(rotateZ, "angle");
+        QPropertyAnimation *animZ = new QPropertyAnimation(rotateZ, QByteArrayLiteral("angle"));
         animZ->setDuration(2400 * i);
         animZ->setStartValue(QVariant::fromValue(i * 20.0f));
         animZ->setEndValue(QVariant::fromValue((i + 1) * 380.0f));
@@ -139,6 +176,7 @@ int main(int ac, char **av)
         transform->addTransform(translation);
         e->addComponent(transform);
         e->addComponent(mesh);
+        e->addComponent(material);
         e->setParent(root);
     }
 
