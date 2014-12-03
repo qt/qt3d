@@ -542,10 +542,14 @@ JobPointer Weaver::takeFirstAvailableJobOrSuspendOrWait(Thread *th, bool threadW
 {
     QMutexLocker l(m_mutex); Q_UNUSED(l);
     Q_ASSERT(threadWasBusy == false || (threadWasBusy == true && m_active > 0));
+
+#ifndef QT_NO_DEBUG
     debug(3, "WeaverImpl::takeFirstAvailableJobOrWait: trying to assign new job to thread %i (%s state).\n",
           th->id(), qPrintable(state()->stateName()));
     debug(5, "WeaverImpl::takeFirstAvailableJobOrWait: %i active threads, was busy: %s, suspend: %s, assign new job: %s.\n",
           activeThreadCount(), threadWasBusy ? "yes" : "no", suspendIfInactive ? "yes" : "no", !justReturning ? "yes" : "no");
+#endif
+
     if (threadWasBusy) {
         // cleanup and send events:
         decActiveThreadCount();
