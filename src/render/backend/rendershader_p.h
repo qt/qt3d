@@ -72,8 +72,8 @@ public:
     void updateUniforms(QGraphicsContext *ctx, const QUniformPack &pack);
     void setFragOutputs(const QHash<QString, int> &fragOutputs);
 
-    QStringList uniformsNames() const;
-    QStringList attributesNames() const;
+    QVector<QString> uniformsNames() const;
+    QVector<QString> attributesNames() const;
 
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
     bool isLoaded() const;
@@ -84,8 +84,12 @@ private:
     QOpenGLShaderProgram *createProgram(QGraphicsContext *context);
     QOpenGLShaderProgram *createDefaultProgram();
 
-    QHash<QString, ShaderUniform> m_uniforms;
-    QHash<QString, ShaderAttribute> m_attributes;
+    QVector<QString> m_uniformsNames;
+    QVector<ShaderUniform> m_uniforms;
+
+    QVector<QString> m_attributesNames;
+    QVector<ShaderAttribute> m_attributes;
+
     QHash<QString, int> m_fragOutputs;
 
     QVector<QByteArray> m_shaderCode;

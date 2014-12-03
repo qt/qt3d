@@ -89,14 +89,14 @@ void RenderShader::updateFromPeer(QNode *peer)
     }
 }
 
-QStringList RenderShader::uniformsNames() const
+QVector<QString> RenderShader::uniformsNames() const
 {
-    return m_uniforms.keys();
+    return m_uniformsNames;
 }
 
-QStringList RenderShader::attributesNames() const
+QVector<QString> RenderShader::attributesNames() const
 {
-    return m_attributes.keys();
+    return m_attributesNames;
 }
 
 void RenderShader::sceneChangeEvent(const QSceneChangePtr &e)
@@ -150,16 +150,12 @@ QOpenGLShaderProgram *RenderShader::getOrCreateProgram(QGraphicsContext *ctx)
 void RenderShader::updateUniforms(QGraphicsContext *ctx, const QUniformPack &pack)
 {
     const QHash<QString, const QUniformValue* > &values = pack.uniforms();
-    QHash<QString, const QUniformValue* >::const_iterator valueIt = values.constBegin();
     const QHash<QString, const QUniformValue* >::const_iterator valueEnd = values.constEnd();
 
-    const QHash<QString, ShaderUniform>::const_iterator uniformEnd = m_uniforms.constEnd();
-
-    for (; valueIt != valueEnd; ++valueIt) {
-        QHash<QString, ShaderUniform>::const_iterator uniformIt = m_uniforms.constFind(valueIt.key());
-        if (uniformIt != uniformEnd) {
-            valueIt.value()->apply(ctx, uniformIt.value());
-        }
+    foreach (const ShaderUniform &uniform, m_uniforms) {
+        QHash<QString, const QUniformValue* >::const_iterator valueIt = values.constFind(uniform.m_name);
+        if (valueIt != valueEnd)
+            valueIt.value()->apply(ctx, uniform);
     }
 }
 
@@ -223,14 +219,18 @@ QOpenGLShaderProgram* RenderShader::createDefaultProgram()
 
 void RenderShader::initializeUniforms(const QVector<ShaderUniform> &uniformsDescription)
 {
+    m_uniforms = uniformsDescription;
+    m_uniformsNames.resize(uniformsDescription.size());
     for (int i = 0; i < uniformsDescription.size(); i++)
-        m_uniforms.insert(uniformsDescription[i].m_name, uniformsDescription[i]);
+        m_uniformsNames[i] = uniformsDescription[i].m_name;
 }
 
 void RenderShader::initializeAttributes(const QVector<ShaderAttribute> &attributesDescription)
 {
+    m_attributes = attributesDescription;
+    m_attributesNames.resize(attributesDescription.size());
     for (int i = 0; i < attributesDescription.size(); i++)
-        m_attributes.insert(attributesDescription[i].m_name, attributesDescription[i]);
+        m_attributesNames[i] = attributesDescription[i].m_name;
 }
 
 } // namespace Render
