@@ -13,7 +13,8 @@ HEADERS += \
     $$PWD/quick3dframegraphitem.h \
     $$PWD/quick3dsortmethod.h \
     $$PWD/quick3dparameter_p.h \
-    $$PWD/quick3dparameter.h
+    $$PWD/quick3dparameter.h \
+    $$PWD/quick3dshaderdata.h
 
 SOURCES += \
     $$PWD/quick3drenderpassfilter.cpp \
@@ -29,6 +30,7 @@ SOURCES += \
     $$PWD/quick3drenderpass.cpp \
     $$PWD/quick3dframegraphitem.cpp \
     $$PWD/quick3dsortmethod.cpp \
-    $$PWD/quick3dparameter.cpp
+    $$PWD/quick3dparameter.cpp \
+    $$PWD/quick3dshaderdata.cpp
 
 INCLUDEPATH += $$PWD

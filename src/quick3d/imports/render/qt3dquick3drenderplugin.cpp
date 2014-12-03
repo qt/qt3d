@@ -102,11 +102,27 @@
 #include <Qt3DQuickRenderer/quick3dframegraphitem.h>
 #include <Qt3DQuickRenderer/quick3dsortmethod.h>
 #include <Qt3DQuickRenderer/quick3dparameter.h>
+#include <Qt3DQuickRenderer/quick3dshaderdata.h>
 
 QT_BEGIN_NAMESPACE
 
+QVariantList QJSValueToVariantListConverter(const QJSValue &jsValue)
+{
+    QVariantList values;
+    QJSValueIterator it(jsValue);
+    while (it.hasNext()) {
+        it.next();
+        if (it.hasNext()) // The last element in an Array is the count, which we don't want
+            values << it.value().toVariant();
+    }
+    return values;
+}
+
 void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
 {
+    // Converters from QJSValue
+    QMetaType::registerConverter<QJSValue, QVariantList>(QJSValueToVariantListConverter);
+
     // @uri Qt3D.Render
     qmlRegisterUncreatableType<Qt3D::Render::QAbstractSceneLoader>(uri, 2, 0, "QAbstractSceneLoader", "QAbstractScene is abstract");
     qmlRegisterExtendedType<Qt3D::QSceneLoader, Qt3D::Render::Quick::Quick3DScene>(uri, 2, 0, "SceneLoader");
@@ -121,7 +137,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterExtendedType<Qt3D::QMaterial, Qt3D::Render::Quick::Quick3DMaterial>(uri, 2, 0, "Material");
     qmlRegisterExtendedType<Qt3D::QRenderPass, Qt3D::Render::Quick::Quick3DRenderPass>(uri, 2, 0, "RenderPass");
     qmlRegisterType<Qt3D::QShaderProgram>(uri, 2, 0, "ShaderProgram");
-    qmlRegisterType<Qt3D::QShaderData>(uri, 2, 0, "ShaderData");
+    qmlRegisterType<Qt3D::Render::Quick::Quick3DShaderData>(uri, 2, 0, "ShaderData");
 
     // Textures
     qmlRegisterType<Qt3D::QTextureWrapMode>(uri, 2, 0, "WrapMode");//, QStringLiteral("QTextureWrapMode cannot be created from QML"));

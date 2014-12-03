@@ -39,14 +39,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERSHADERDATA_P_H
-#define QT3D_RENDER_RENDERSHADERDATA_P_H
+#ifndef QT3D_RENDER_QUICK_QUICK3DSHADERDATA_H
+#define QT3D_RENDER_QUICK_QUICK3DSHADERDATA_H
 
-#include <Qt3DCore/qbackendnode.h>
-#include <private/shadervariables_p.h>
-#include <private/uniformbuffer_p.h>
+#include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
 #include <Qt3DRenderer/qshaderdata.h>
-#include <QMutex>
+
+#include <QJSValue>
+#include <QJSValueIterator>
 
 QT_BEGIN_NAMESPACE
 
@@ -54,41 +54,19 @@ namespace Qt3D {
 
 namespace Render {
 
-class QGraphicsContext;
+namespace Quick {
 
-class RenderShaderData : public QBackendNode
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DShaderData : public QShaderData
 {
+    Q_OBJECT
 public:
-    RenderShaderData();
-    ~RenderShaderData();
-
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
-    inline QHash<QString, QVariant> & properties() { return m_properties; }
-    inline QHash<QString, QVariant> properties() const { return m_properties; }
-    inline QHash<QString, ShaderUniform> activeProperties() const { return m_activeProperties; }
-    inline bool initialized() const { return m_initialized; }
-
-    void initialize(const ShaderUniformBlock &block);
-    void appendActiveProperty(const QString &propertyName, const ShaderUniform &description);
-    void apply(QGraphicsContext *ctx, int bindingPoint);
-
-protected:
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    void updateUniformBuffer(QGraphicsContext *ctx);
+    explicit Quick3DShaderData(QNode *parent = 0);
 
 private:
-    QHash<QString, QVariant> m_properties;
-    QHash<QString, ShaderUniform> m_activeProperties;
-    ShaderUniformBlock m_block;
-    QByteArray m_data;
-    UniformBuffer m_ubo;
-    QStringList m_updatedProperties;
-    bool m_initialized;
-    QAtomicInt m_needsBufferUpdate;
-    // QMutex has no copy operator
-    QMutex *m_mutex;
-    PropertyReaderInterfacePtr m_propertyReader;
+    QT3D_CLONEABLE(Quick3DShaderData)
 };
+
+} // Quick
 
 } // Render
 
@@ -96,4 +74,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERSHADERDATA_P_H
+#endif // QT3D_RENDER_QUICK_QUICK3DSHADERDATA_H

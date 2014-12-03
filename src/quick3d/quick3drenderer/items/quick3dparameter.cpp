@@ -55,7 +55,7 @@ namespace Quick {
 
 namespace {
 
-const int QJSValueTypeId = qMetaTypeId<QJSValue>();
+const int qjsValueTypeId = qMetaTypeId<QJSValue>();
 
 }
 
@@ -66,7 +66,7 @@ Quick3DParameterPrivate::Quick3DParameterPrivate(Quick3DParameter *qq)
 
 void Quick3DParameterPrivate::setValue(const QVariant &value)
 {
-    if (value.userType() == QJSValueTypeId) {
+    if (value.userType() == qjsValueTypeId) {
         QJSValue v = value.value<QJSValue>();
         if (v.isArray()) {
             QJSValueIterator it(v);

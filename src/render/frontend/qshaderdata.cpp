@@ -48,12 +48,25 @@ namespace Qt3D {
 
 QShaderDataPrivate::QShaderDataPrivate(QShaderData *qq)
     : QComponentPrivate(qq)
+    , m_propertyReader(PropertyReaderInterfacePtr(new QShaderDataPropertyReader()))
+{
+}
+
+QShaderDataPrivate::QShaderDataPrivate(QShaderData *qq, PropertyReaderInterfacePtr reader)
+    : QComponentPrivate(qq)
+    , m_propertyReader(reader)
 {
 }
 
 QShaderData::QShaderData(QNode *parent)
     : QComponent(*new QShaderDataPrivate(this), parent)
 {
+}
+
+PropertyReaderInterfacePtr QShaderData::propertyReader() const
+{
+    Q_D(const QShaderData);
+    return d->m_propertyReader;
 }
 
 QShaderData::QShaderData(QShaderDataPrivate &dd, QNode *parent)
@@ -76,7 +89,7 @@ void QShaderData::copy(const QNode *ref)
     // Copy properties of shaderData
     for (int i = propertyOffset; i < propertyCount; ++i) {
         const QMetaProperty property = metaObject->property(i);
-        setProperty(property.name(), shaderData->property(property.name()));
+        setProperty(property.name(), propertyReader()->readProperty(shaderData->property(property.name())));
     }
 }
 

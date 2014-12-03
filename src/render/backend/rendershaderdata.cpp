@@ -41,6 +41,7 @@
 
 #include "rendershaderdata_p.h"
 #include "qshaderdata.h"
+#include "qshaderdata_p.h"
 #include <QMetaProperty>
 #include <QMetaObject>
 #include <Qt3DCore/qscenepropertychange.h>
@@ -69,15 +70,20 @@ void RenderShaderData::updateFromPeer(QNode *peer)
 {
     m_properties.clear();
     const QShaderData *shaderData = static_cast<const QShaderData *>(peer);
-    const QMetaObject *metaObject = shaderData->metaObject();
-    const int propertyOffset = QShaderData::staticMetaObject.propertyOffset();
-    const int propertyCount = metaObject->propertyCount();
+    m_propertyReader = shaderData->propertyReader();
+    if (!m_propertyReader.isNull()) {
+        const QMetaObject *metaObject = shaderData->metaObject();
+        const int propertyOffset = QShaderData::staticMetaObject.propertyOffset();
+        const int propertyCount = metaObject->propertyCount();
 
-    for (int i = propertyOffset; i < propertyCount; ++i) {
-        const QMetaProperty property = metaObject->property(i);
-        if (strcmp(property.name(), "data") == 0 || strcmp(property.name(), "childNodes") == 0) // We don't handle default Node properties
-            continue;
-        m_properties.insert(QString::fromLatin1(property.name()), shaderData->property(property.name()));
+        for (int i = propertyOffset; i < propertyCount; ++i) {
+            const QMetaProperty property = metaObject->property(i);
+            if (strcmp(property.name(), "data") == 0 || strcmp(property.name(), "childNodes") == 0) // We don't handle default Node properties
+                continue;
+            // We should be making clones of inner QShaderData properties
+            m_properties.insert(QString::fromLatin1(property.name()),
+                                m_propertyReader->readProperty(shaderData->property(property.name())));
+        }
     }
 }
 
@@ -113,7 +119,6 @@ void RenderShaderData::updateUniformBuffer(QGraphicsContext *ctx)
         // Upload the whole buffer to GPU for the first time
         m_ubo.update(ctx, m_data.constData(), m_block.m_size);
     }
-
     Q_FOREACH (const QString &property, m_updatedProperties) {
         uniformsIt = m_activeProperties.begin();
         while (uniformsIt != uniformsEnd) {
@@ -146,13 +151,13 @@ void RenderShaderData::apply(QGraphicsContext *ctx, int bindingPoint)
 // AspectThread / Job thread for transformed properties
 void RenderShaderData::sceneChangeEvent(const QSceneChangePtr &e)
 {
-    if (e->type() == NodeUpdated) {
+    if (!m_propertyReader.isNull() && e->type() == NodeUpdated) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         QString propertyName = QString::fromLatin1(propertyChange->propertyName());
         QMutexLocker lock(m_mutex);
         // lock to update m_properties;
         if (m_properties.contains(propertyName)) {
-            m_properties.insert(propertyName, propertyChange->value());
+            m_properties.insert(propertyName, m_propertyReader->readProperty(propertyChange->value()));
             m_updatedProperties.append(propertyName);
             m_needsBufferUpdate.fetchAndStoreOrdered(1);
         }

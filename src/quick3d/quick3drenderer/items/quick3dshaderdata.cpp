@@ -39,14 +39,10 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERSHADERDATA_P_H
-#define QT3D_RENDER_RENDERSHADERDATA_P_H
+#include "quick3dshaderdata.h"
+#include <private/qshaderdata_p.h>
 
-#include <Qt3DCore/qbackendnode.h>
-#include <private/shadervariables_p.h>
-#include <private/uniformbuffer_p.h>
-#include <Qt3DRenderer/qshaderdata.h>
-#include <QMutex>
+#include <QMetaProperty>
 
 QT_BEGIN_NAMESPACE
 
@@ -54,46 +50,40 @@ namespace Qt3D {
 
 namespace Render {
 
-class QGraphicsContext;
+namespace Quick {
 
-class RenderShaderData : public QBackendNode
+namespace {
+
+const int qjsValueTypeId = qMetaTypeId<QJSValue>();
+
+}
+
+class Quick3DShaderDataPropertyReader : public PropertyReaderInterface
 {
 public:
-    RenderShaderData();
-    ~RenderShaderData();
-
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
-    inline QHash<QString, QVariant> & properties() { return m_properties; }
-    inline QHash<QString, QVariant> properties() const { return m_properties; }
-    inline QHash<QString, ShaderUniform> activeProperties() const { return m_activeProperties; }
-    inline bool initialized() const { return m_initialized; }
-
-    void initialize(const ShaderUniformBlock &block);
-    void appendActiveProperty(const QString &propertyName, const ShaderUniform &description);
-    void apply(QGraphicsContext *ctx, int bindingPoint);
-
-protected:
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    void updateUniformBuffer(QGraphicsContext *ctx);
-
-private:
-    QHash<QString, QVariant> m_properties;
-    QHash<QString, ShaderUniform> m_activeProperties;
-    ShaderUniformBlock m_block;
-    QByteArray m_data;
-    UniformBuffer m_ubo;
-    QStringList m_updatedProperties;
-    bool m_initialized;
-    QAtomicInt m_needsBufferUpdate;
-    // QMutex has no copy operator
-    QMutex *m_mutex;
-    PropertyReaderInterfacePtr m_propertyReader;
+    QVariant readProperty(const QVariant &v) Q_DECL_OVERRIDE
+    {
+        if (v.userType() == qjsValueTypeId) {
+            QJSValue jsValue = v.value<QJSValue>();
+            if (jsValue.isArray())
+                return v.value<QVariantList>();
+            else if (jsValue.isVariant())
+                return jsValue.toVariant();
+        }
+        return v;
+    }
 };
+
+Quick3DShaderData::Quick3DShaderData(QNode *parent)
+    : QShaderData(*new QShaderDataPrivate(this, PropertyReaderInterfacePtr(new Quick3DShaderDataPropertyReader()))
+                  , parent)
+{
+}
+
+} // Quick
 
 } // Render
 
 } // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_RENDER_RENDERSHADERDATA_P_H

@@ -51,6 +51,15 @@ namespace Qt3D {
 
 class QShaderDataPrivate;
 
+class QT3DRENDERERSHARED_EXPORT PropertyReaderInterface
+{
+public:
+    virtual ~PropertyReaderInterface() {}
+    virtual QVariant readProperty(const QVariant &v) = 0;
+};
+
+typedef QSharedPointer<PropertyReaderInterface> PropertyReaderInterfacePtr;
+
 class QT3DRENDERERSHARED_EXPORT QShaderData : public QComponent
 {
     Q_OBJECT
@@ -63,9 +72,12 @@ public:
         ModelToWorld
     };
 
+    PropertyReaderInterfacePtr propertyReader() const;
+
 protected:
     QShaderData(QShaderDataPrivate &dd, QNode *parent = 0);
     void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
 
 private:
     Q_DECLARE_PRIVATE(QShaderData)

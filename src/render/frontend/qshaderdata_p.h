@@ -43,17 +43,27 @@
 #define QT3D_QSHADERDATA_P_H
 
 #include <private/qcomponent_p.h>
+#include <Qt3DRenderer/qshaderdata.h>
+#include <Qt3DRenderer/private/qt3drenderer_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QShaderData;
+class QShaderDataPropertyReader: public PropertyReaderInterface
+{
+    QVariant readProperty(const QVariant &v) Q_DECL_OVERRIDE
+    {
+        return v;
+    }
+};
 
-class QShaderDataPrivate : public QComponentPrivate
+class QT3DRENDERERSHARED_PRIVATE_EXPORT QShaderDataPrivate : public QComponentPrivate
 {
 public:
     QShaderDataPrivate(QShaderData *qq);
+    QShaderDataPrivate(QShaderData *qq, PropertyReaderInterfacePtr reader);
+    PropertyReaderInterfacePtr m_propertyReader;
 
     Q_DECLARE_PUBLIC(QShaderData)
 };
