@@ -75,9 +75,10 @@ Q_AUTOTEST_EXPORT RenderTechnique *findTechniqueForEffect(Renderer *renderer,
                                                           RenderView *renderView,
                                                           RenderEffect *effect);
 
-Q_AUTOTEST_EXPORT QVector<RenderRenderPass *> findRenderPassesForTechnique(Renderer *renderer,
-                                                                           RenderView *renderView,
-                                                                           RenderTechnique *technique);
+typedef QVarLengthArray<RenderRenderPass*, 4> RenderRenderPassList;
+Q_AUTOTEST_EXPORT RenderRenderPassList findRenderPassesForTechnique(Renderer *renderer,
+                                                                    RenderView *renderView,
+                                                                    RenderTechnique *technique);
 
 Q_AUTOTEST_EXPORT QHash<QString, QVariant> parametersFromMaterialEffectTechnique(ParameterManager *manager,
                                                                                  RenderMaterial *material,

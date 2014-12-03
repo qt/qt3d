@@ -270,15 +270,14 @@ RenderTechnique *findTechniqueForEffect(Renderer *renderer,
 }
 
 
-QVector<RenderRenderPass *> findRenderPassesForTechnique(Renderer *renderer,
+RenderRenderPassList findRenderPassesForTechnique(Renderer *renderer,
                                                          RenderView *renderView,
                                                          RenderTechnique *technique)
 {
     Q_ASSERT(renderer);
     Q_ASSERT(technique);
 
-    QVector<RenderRenderPass *> passes;
-    passes.reserve(3); // We rarely get more than 2 or 3 passes
+    RenderRenderPassList passes;
     Q_FOREACH (const QNodeId &passId, technique->renderPasses()) {
         RenderRenderPass *renderPass = renderer->renderPassManager()->lookupResource(passId);
 

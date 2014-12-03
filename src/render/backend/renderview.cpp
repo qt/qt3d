@@ -329,7 +329,7 @@ void RenderView::buildRenderCommands(RenderEntity *node)
                     effect = m_renderer->effectManager()->lookupResource(material->effect());
                 RenderTechnique *technique = findTechniqueForEffect(m_renderer, this, effect);
 
-                QVector<RenderRenderPass *> passes;
+                RenderRenderPassList passes;
                 if (technique) {
                     passes = findRenderPassesForTechnique(m_renderer, this, technique);
                 } else {
