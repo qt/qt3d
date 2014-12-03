@@ -108,7 +108,7 @@ public:
 protected:
     typedef std::vector<QSceneChangePtr> ChangeQueue;
     typedef QPair<ChangeFlags, QObserverInterface *> QObserverPair;
-    typedef QList<QObserverPair> QObserverList;
+    typedef QVector<QObserverPair> QObserverList;
 
     void distributeQueueChanges(ChangeQueue *queue);
 
