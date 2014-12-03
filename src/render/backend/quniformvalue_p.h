@@ -122,17 +122,18 @@ class QUniformPack
 public:
     ~QUniformPack();
 
-    void setUniform(QString glslName, const QUniformValue *val);
-    void setTexture(QString glslName, const QNodeId &id);
+    void setUniform(const QString &glslName, const QUniformValue *val);
+    void setTexture(const QString &glslName, const QNodeId &id);
 
     const QHash<QString, const QUniformValue* > &uniforms() const { return m_uniforms; }
     QHash<QString, const QUniformValue* > &uniforms() { return m_uniforms; }
 
-    struct NamedTexture {
+    struct NamedTexture
+    {
         NamedTexture() {}
-        NamedTexture(QString nm, const QNodeId &t) :
-            glslName(nm),
-            texId(t)
+        NamedTexture(const QString &nm, const QNodeId &t)
+            : glslName(nm)
+            , texId(t)
         { }
 
         QString glslName;

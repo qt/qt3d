@@ -88,12 +88,12 @@ QUniformPack::~QUniformPack()
     m_uniforms.clear();
 }
 
-void QUniformPack::setUniform(QString glslName, const QUniformValue *val)
+void QUniformPack::setUniform(const QString &glslName, const QUniformValue *val)
 {
     m_uniforms[glslName] = val;
 }
 
-void QUniformPack::setTexture(QString glslName, const QNodeId &texId)
+void QUniformPack::setTexture(const QString &glslName, const QNodeId &texId)
 {
     for (int t=0; t<m_textures.size(); ++t) {
         if (m_textures[t].glslName != glslName) {
