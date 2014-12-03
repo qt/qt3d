@@ -110,6 +110,7 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect *qq)
     , m_renderer(new Render::Renderer)
     , m_surfaceEventFilter(new Render::PlatformSurfaceFilter(m_renderer))
     , m_initialized(false)
+    , m_surface(Q_NULLPTR)
 {
     m_aspectType = QAbstractAspect::AspectRenderer;
 }
