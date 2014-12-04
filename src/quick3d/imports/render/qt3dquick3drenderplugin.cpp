@@ -119,10 +119,21 @@ QVariantList QJSValueToVariantListConverter(const QJSValue &jsValue)
     return values;
 }
 
+QVariantList Quick3DShaderDataArrayToVariantListConverter(Qt3D::Render::Quick::Quick3DShaderDataArray *array)
+{
+    QList<Qt3D::Render::Quick::Quick3DShaderData *> arrayValues = array->values();
+    QVariantList values;
+    values.reserve(arrayValues.size());
+    Q_FOREACH (Qt3D::Render::Quick::Quick3DShaderData *data, arrayValues)
+        values.append(QVariant::fromValue(data));
+    return values;
+}
+
 void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
 {
     // Converters from QJSValue
     QMetaType::registerConverter<QJSValue, QVariantList>(QJSValueToVariantListConverter);
+    QMetaType::registerConverter<Qt3D::Render::Quick::Quick3DShaderDataArray*, QVariantList>(Quick3DShaderDataArrayToVariantListConverter);
 
     // @uri Qt3D.Render
     qmlRegisterUncreatableType<Qt3D::Render::QAbstractSceneLoader>(uri, 2, 0, "QAbstractSceneLoader", "QAbstractScene is abstract");

@@ -42,6 +42,7 @@
 #include "quick3dshaderdata.h"
 #include <private/qshaderdata_p.h>
 
+#include <Qt3DQuickRenderer/quick3dshaderdataarray.h>
 #include <QMetaProperty>
 
 QT_BEGIN_NAMESPACE
@@ -55,12 +56,17 @@ namespace Quick {
 namespace {
 
 const int qjsValueTypeId = qMetaTypeId<QJSValue>();
+const int quick3DShaderDataArrayTypeId = qMetaTypeId<Quick3DShaderDataArray*>();
 
 }
 
 class Quick3DShaderDataPropertyReader : public PropertyReaderInterface
 {
 public:
+    Quick3DShaderDataPropertyReader()
+    {
+    }
+
     QVariant readProperty(const QVariant &v) Q_DECL_OVERRIDE
     {
         if (v.userType() == qjsValueTypeId) {
@@ -69,6 +75,8 @@ public:
                 return v.value<QVariantList>();
             else if (jsValue.isVariant())
                 return jsValue.toVariant();
+        } else if (v.userType() == quick3DShaderDataArrayTypeId) {
+            return v.value<QVariantList>();
         }
         return v;
     }
